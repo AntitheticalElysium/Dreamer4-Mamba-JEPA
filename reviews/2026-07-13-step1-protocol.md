@@ -122,3 +122,43 @@ Gates G1-G5 unchanged. Decision rule:
   flat/recovering ≥0.80 → G4 recalibration becomes a CONSENSUS question
   (user + implementation agent), documented with all four cells; no
   unilateral change.
+
+## 1d grid results (all cells; no post-hoc selection)
+
+| cell | G-status | inventory (bar 0.835) | semantic | obs-frac | stream rank | loss first→last |
+|---|---|---|---|---|---|---|
+| λ=0.02, 300 | all pass except G4 | 0.809 | 0.915 | 0.781 | 4.06 | 0.405→0.272 |
+| λ=0.01, 300 | G4 miss by 0.005; G5 miss (0.73 vs 0.70) | 0.830 | 0.906 | 0.789 | 4.23 | 0.294→0.215 |
+| λ=0.02, 1000 | G4, G5 | 0.684 | 0.918 | 0.860 | 8.47 | 0.405→0.347 |
+| λ=0.01, 1000 | G4, G5 | 0.788 | 0.929 | 0.834 | 7.87 | 0.294→0.302 |
+
+Readings (documented for consensus per the 1d decision rule):
+1. The LeJEPA family robustly passes the structural block in every cell
+   (G1/G2/G3), with semantic accuracy IMPROVING past untrained at 1000 updates
+   (0.918-0.929 vs 0.892) — first arm family in either audit to do so.
+2. **G4's pass margin is inside its own measurement noise**: bootstrap over
+   30 random 300-frame probe subsets gives untrained 0.801 sd 0.036
+   [0.753, 0.842], λ=0.01@300 arm 0.779 sd 0.028 [0.737, 0.820]. The ±0.02
+   tolerance and the 0.005 best-arm miss are both smaller than one subset sd.
+   The full-set untrained point (0.855) sits at the top of its own subset
+   distribution. G4 as constructed is noise-dominated at the decision margin.
+   (A real budget trend also exists: λ=0.02@1000 falls to 0.684 — the
+   gaussianization/retention trade-off is real, and λ=0.01 mitigates it.)
+3. **G5 mismeasures learning under SIGReg at longer budgets**: total loss
+   RISES (0.27→0.35 for λ=0.02) because the regularizer makes the pretext
+   harder as it succeeds — while semantic, stream rank, and observation
+   fraction all improve. G5's intent (exclude do-nothing encoders) is served
+   by any of those three improving; its letter is not.
+
+## Consensus question (user + implementation agent; pre-registered branch)
+
+Proposal:
+- G4 → paired-with-uncertainty form: paired bootstrap over shared probe
+  subsets; pass = (untrained − trained) mean difference ≤ 0.02 with its 90% CI
+  reported, or trained ≥ 0.80 absolute.
+- G5 → composite learning criterion: any of {loss ↓≥30%, semantic > untrained,
+  stream-rank ≥ 1.1× untrained}.
+- Independent of recalibration: advance the λ=0.01@300 encoder (checkpoint
+  ssl_step1_lejepa001_d300_l001.pt) to matrix step 3 — the frozen-encoder
+  prediction gate and Phase E reward-calibration measure directly what G4
+  proxies; step 3 does not consume the G4 verdict.

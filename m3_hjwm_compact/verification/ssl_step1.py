@@ -96,15 +96,20 @@ def probes_block(target_encoder, probe, cfg, device):
     }
 
 
-def curve_point(target_encoder, probe, cfg, device, step, loss_mean):
+def curve_point(target_encoder, probe, cfg, device, step, loss_mean, with_inventory=False):
     tokens = encode(target_encoder, probe.obs[:200], device)
     stats = target_statistics(tokens, cfg.registers)
-    return {
+    point = {
         "step": step,
         "loss_mean_100": loss_mean,
         "observation_variance_fraction": stats["target_observation_variance_fraction"],
         "stream_rank_mean": stats["target_stream_effective_rank_mean"],
     }
+    if with_inventory:
+        point["inventory_r2"] = inventory_probe(
+            tokens, probe.inventory[:200], cfg.registers
+        )["inventory_r2_mean_varying"]
+    return point
 
 
 def gates(final: dict, untrained: dict, losses: list[float]) -> dict:
@@ -167,7 +172,7 @@ def train_ijepa(cfg, frames, probe, steps, device, batch=64, sigreg_weight=0.0):
         if (step + 1) % 25 == 0:
             point = curve_point(
                 model.target_encoder, probe, cfg, device, step + 1,
-                float(np.mean(losses[-100:])),
+                float(np.mean(losses[-100:])), with_inventory=((step + 1) % 50 == 0),
             )
             curve.append(point)
             print(f"[ijepa] step {step+1} loss {point['loss_mean_100']:.4f} "
@@ -229,7 +234,7 @@ def main():
         "untrained": untrained,
         "arms": {},
     }
-    for arm_name, weight in (("ijepa", 0.0), ("lejepa", 0.02)):
+    for arm_name, weight in (("ijepa", 0.0), ("lejepa", 0.02), ("lejepa001", 0.01)):
       if arm_name in args.arms:
         model, losses, curve, aborted, minutes = train_ijepa(
             cfg, frames, probe, args.steps, device, sigreg_weight=weight)
