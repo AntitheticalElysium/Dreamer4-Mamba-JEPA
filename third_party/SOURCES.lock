@@ -14,6 +14,7 @@ nicklashansen__mmbench2  https://github.com/nicklashansen/mmbench2.git  3dda6ea5
 NM512__r2dreamer  https://github.com/NM512/r2dreamer.git  546e4fab8146ea4b14e1d7726bbc1a8a1d50322f  
 realwenlongwang__Drama  https://github.com/realwenlongwang/Drama.git  a50bd54c34e77d1d13e988a031733a47817098e2  
 state-spaces__mamba  https://github.com/state-spaces/mamba.git  f577286d052741c35d39cd43bdc3fad27120f22c  
+rbalestr-lab__lejepa  https://github.com/rbalestr-lab/lejepa  c293d291ca87cd4fddee9d3fffe4e914c7272052  
 
 vjepa2 (third_party/vjepa2): shallow clone, LOCALLY MODIFIED — treat as vendored snapshot
 Drama (third_party/Drama): vendored snapshot, no git metadata

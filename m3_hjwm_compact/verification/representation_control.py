@@ -55,6 +55,7 @@ class Transitions:
     next_obs: np.ndarray
     semantic: np.ndarray
     inventory: np.ndarray
+    player_pos: np.ndarray
 
     def __len__(self):
         return len(self.actions)
@@ -78,7 +79,7 @@ def collect(seed: int, count: int) -> Transitions:
         return observation, info
 
     current_obs, current_info = labelled_reset()
-    observations, actions, next_observations, semantics, inventories = [], [], [], [], []
+    observations, actions, next_observations, semantics, inventories, positions = [], [], [], [], [], []
     while len(actions) < count:
         action = int(rng.integers(env.action_space.n))
         next_obs, _, done, next_info = env.step(action)
@@ -88,6 +89,7 @@ def collect(seed: int, count: int) -> Transitions:
         semantics.append(np.asarray(current_info["semantic"], dtype=np.uint8))
         inventory = current_info["inventory"]
         inventories.append([float(inventory.get(key, 0.0)) for key in INVENTORY_KEYS])
+        positions.append(np.asarray(current_info["player_pos"], dtype=np.int64))
         if done:
             current_obs, current_info = labelled_reset()
         else:
@@ -98,6 +100,7 @@ def collect(seed: int, count: int) -> Transitions:
         next_obs=np.stack(next_observations),
         semantic=np.stack(semantics),
         inventory=np.asarray(inventories, dtype=np.float32),
+        player_pos=np.stack(positions),
     )
 
 
@@ -183,6 +186,22 @@ def prediction_controls(model, data: Transitions, batch: int, device):
     current = torch.cat(currents)
     shuffled_target = target.roll(1, 0)
 
+    # Copy-latent is a near-unbeatable bar on the *mean over all tokens* because
+    # most Crafter tokens do not change between frames (untrained-encoder copy
+    # cosine is already ~0.02). Score the tokens that actually moved, and report
+    # the unrelated-pair distance as the scale ruler.
+    per_token_pred = cosine_distance(prediction, target)
+    per_token_copy = cosine_distance(current, target)
+    ruler = float(cosine_distance(current, target.roll(7, 0)).mean())
+    if per_token_copy.dim() > 1:  # dense variant: [N, S]
+        motion = per_token_copy
+        changed = motion >= motion.flatten().quantile(0.75)
+        pred_changed = float(per_token_pred[changed].mean())
+        copy_changed = float(per_token_copy[changed].mean())
+    else:  # pooled variant: single stream
+        pred_changed = float(per_token_pred.mean())
+        copy_changed = float(per_token_copy.mean())
+
     shuffled_predictions = []
     shuffled_actions = np.roll(data.actions, 1)
     for start in range(0, len(data), batch):
@@ -196,10 +215,14 @@ def prediction_controls(model, data: Transitions, batch: int, device):
             shuffled_predictions.append(modes[:, 0].float().cpu())
     shuffled_prediction = torch.cat(shuffled_predictions)
     return {
-        "heldout_one_step_cosine": float(cosine_distance(prediction, target).mean()),
+        "heldout_one_step_cosine": float(per_token_pred.mean()),
         "shuffled_target_cosine": float(cosine_distance(prediction, shuffled_target).mean()),
         "shuffled_action_cosine": float(cosine_distance(shuffled_prediction, target).mean()),
-        "copy_latent_cosine": float(cosine_distance(current, target).mean()),
+        "copy_latent_cosine": float(per_token_copy.mean()),
+        "unrelated_pair_cosine": ruler,
+        "pred_cosine_changed_tokens": pred_changed,
+        "copy_cosine_changed_tokens": copy_changed,
+        "improvement_over_copy_changed_tokens": copy_changed - pred_changed,
     }
 
 
@@ -220,36 +243,92 @@ def target_statistics(tokens: Tensor):
     }
 
 
-def semantic_probe(tokens: Tensor, semantic: np.ndarray, registers: int, grid: int, device):
-    local = tokens[:, registers:].reshape(-1, tokens.shape[-1])
-    labels = F.interpolate(
-        torch.from_numpy(semantic).float().unsqueeze(1),
-        size=(grid, grid),
-        mode="nearest",
-    ).long().flatten()
-    split_frames = len(tokens) // 2
-    split = split_frames * grid * grid
-    train_x, test_x = local[:split].to(device), local[split:].to(device)
-    train_y, test_y = labels[:split].to(device), labels[split:].to(device)
-    classes = int(labels.max()) + 1
+def local_view_labels(semantic: np.ndarray, player_pos: np.ndarray, grid: int):
+    """Per-token semantic labels aligned with Crafter's *rendered local view*.
+
+    `info["semantic"]` is the GLOBAL world map indexed [world_x, world_y]
+    (crafter SemanticView returns world._mat_map with objects overlaid); the
+    observation is the local egocentric view. Geometry from crafter env.render()
+    and engine.LocalView at the pinned commit:
+      - final image rows = world y, cols = world x (canvas is transposed);
+      - 9x7 world tiles of `unit = 64 // 9 = 7` px; image rows >= 49 are the
+        inventory HUD, row/col 63 is border padding;
+      - tile (tx, ty) shows world cell player_pos + (tx - 4, ty - 3).
+    Each token is labelled by the tile under its centre pixel; tokens whose
+    centre falls in the HUD or outside the world are masked invalid.
+    """
+    n = len(semantic)
+    area_x, area_y = semantic.shape[1], semantic.shape[2]
+    unit = 64 // 9
+    world_rows = 7 * unit  # image rows showing world tiles
+    patch = 64 // grid
+    labels = np.zeros((n, grid, grid), dtype=np.int64)
+    valid = np.zeros((n, grid, grid), dtype=bool)
+    for i in range(grid):        # token row -> image row -> world y offset
+        centre_row = i * patch + patch // 2
+        if centre_row >= world_rows:
+            continue
+        ty = centre_row // unit
+        for j in range(grid):    # token col -> image col -> world x offset
+            centre_col = j * patch + patch // 2
+            tx = centre_col // unit
+            if tx >= 9:
+                continue
+            wx = player_pos[:, 0] + (tx - 4)
+            wy = player_pos[:, 1] + (ty - 3)
+            inside = (wx >= 0) & (wx < area_x) & (wy >= 0) & (wy < area_y)
+            labels[inside, i, j] = semantic[np.arange(n)[inside], wx[inside], wy[inside]]
+            valid[:, i, j] = inside
+    return labels, valid
+
+
+def semantic_probe(
+    tokens: Tensor, semantic: np.ndarray, player_pos: np.ndarray,
+    registers: int, grid: int, device,
+):
+    labels_np, valid_np = local_view_labels(semantic, player_pos, grid)
+    local = tokens[:, registers:].reshape(len(tokens), grid, grid, -1)
+    labels = torch.from_numpy(labels_np)
+    valid = torch.from_numpy(valid_np)
+
+    # Random frame-level split (tokens of one frame never straddle the split).
+    rng = np.random.default_rng(91)
+    order = rng.permutation(len(tokens))
+    half = len(tokens) // 2
+    train_f, test_f = order[:half], order[half:]
+
+    def gather(frames):
+        x = local[frames][valid[frames]]
+        y = labels[frames][valid[frames]]
+        return x.to(device), y.to(device)
+
+    train_x, train_y = gather(train_f)
+    test_x, test_y = gather(test_f)
+    classes = int(labels[valid].max()) + 1
     torch.manual_seed(91)
     probe = nn.Linear(tokens.shape[-1], classes).to(device)
-    optimizer = torch.optim.AdamW(probe.parameters(), lr=3e-2, weight_decay=1e-3)
-    for _ in range(100):
-        logits = probe(train_x)
-        loss = F.cross_entropy(logits, train_y)
+    optimizer = torch.optim.AdamW(probe.parameters(), lr=1e-2, weight_decay=1e-3)
+    for _ in range(500):
+        loss = F.cross_entropy(probe(train_x), train_y)
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
         optimizer.step()
     with torch.no_grad():
+        train_accuracy = (probe(train_x).argmax(-1) == train_y).float().mean()
         accuracy = (probe(test_x).argmax(-1) == test_y).float().mean()
         majority = torch.bincount(train_y, minlength=classes).argmax()
         baseline = (test_y == majority).float().mean()
-    return {
+    result = {
         "semantic_token_accuracy": float(accuracy),
+        "semantic_train_accuracy": float(train_accuracy),
         "semantic_majority_accuracy": float(baseline),
         "semantic_classes": classes,
+        "semantic_valid_fraction": float(valid.float().mean()),
     }
+    # A converged linear probe can never sit below majority; if it does, the
+    # labels are misaligned with the features and the probe result is invalid.
+    result["semantic_probe_sane"] = bool(train_accuracy >= baseline - 1e-3)
+    return result
 
 
 def inventory_probe(tokens: Tensor, inventory: np.ndarray, registers: int):
@@ -323,14 +402,14 @@ def train_variant(
         "transitions": len(train_data),
         "heldout_transitions": len(heldout),
         "parameters": sum(parameter.numel() for parameter in model.parameters()),
-        "initial_loss_mean_20": float(np.mean(losses[: min(20, len(losses))])),
-        "final_loss_mean_20": float(np.mean(losses[-min(20, len(losses)) :])),
+        "initial_loss_mean_20": float(np.mean(losses[:20])) if losses else None,
+        "final_loss_mean_20": float(np.mean(losses[-20:])) if losses else None,
         "elapsed_seconds": elapsed,
         "peak_allocated_mib": peak_mib,
         **controls,
         **target_statistics(target_tokens),
         **semantic_probe(
-            target_tokens, heldout.semantic, cfg.registers, grid, device
+            target_tokens, heldout.semantic, heldout.player_pos, cfg.registers, grid, device
         ),
         **inventory_probe(target_tokens, heldout.inventory, cfg.registers),
     }
@@ -368,7 +447,13 @@ def main():
         predictor_depth=2,
         mask_ratio=0.6,
     )
+    # Untrained-encoder baseline first: every probe number must be read relative
+    # to this row, and a converged probe below majority marks the probe invalid.
     results = [
+        train_variant("dense", cfg, train_data, heldout, 0, args.batch, device)
+    ]
+    results[0]["variant"] = "untrained_baseline"
+    results += [
         train_variant(
             variant,
             cfg,

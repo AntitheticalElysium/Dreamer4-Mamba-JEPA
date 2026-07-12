@@ -1,0 +1,66 @@
+{
+  "config": "full compact objective (jepa+reward+continuation), GRU, b=4, T=16",
+  "replay_steps": 2808,
+  "jepa_loss_first20_last20": [
+    0.8322143375873565,
+    0.02937718676403165
+  ],
+  "reward_loss_first20_last20": [
+    5.367330241203308,
+    0.21032678857445716
+  ],
+  "rank_curve": [
+    {
+      "step": 0,
+      "target_cov_rank": 12.48433780670166
+    },
+    {
+      "step": 25,
+      "target_cov_rank": 12.508166313171387
+    },
+    {
+      "step": 50,
+      "target_cov_rank": 11.98968505859375
+    },
+    {
+      "step": 75,
+      "target_cov_rank": 11.030420303344727
+    },
+    {
+      "step": 100,
+      "target_cov_rank": 9.98703670501709
+    },
+    {
+      "step": 125,
+      "target_cov_rank": 8.93757438659668
+    },
+    {
+      "step": 150,
+      "target_cov_rank": 7.919443130493164
+    },
+    {
+      "step": 175,
+      "target_cov_rank": 6.970048904418945
+    },
+    {
+      "step": 200,
+      "target_cov_rank": 6.126279354095459
+    },
+    {
+      "step": 225,
+      "target_cov_rank": 5.4411091804504395
+    },
+    {
+      "step": 250,
+      "target_cov_rank": 4.918011665344238
+    },
+    {
+      "step": 275,
+      "target_cov_rank": 4.502817153930664
+    },
+    {
+      "step": 300,
+      "target_cov_rank": 4.189013957977295
+    }
+  ]
+}

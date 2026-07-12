@@ -67,6 +67,8 @@ class ModelConfig:
             raise ValueError("mixture predictor needs >=2 modes")
         if self.mode_balance_temperature <= 0:
             raise ValueError("mode_balance_temperature must be positive")
+        if not 0.0 <= self.mask_ratio < 1.0:
+            raise ValueError("mask_ratio must be in [0, 1); 0 disables masking")
 
 
 @dataclass(frozen=True)
@@ -76,6 +78,15 @@ class LossConfig:
     mode_balance: float = 0.01
     reward: float = 1.0
     continuation: float = 1.0
+    # Anti-collapse regularization on the online tokens (VICReg, arXiv:2105.04906
+    # Eq. 1-4). The 25:1 variance:covariance ratio follows the paper; the absolute
+    # scale against the cosine JEPA term comes from the 2026-07-12 rank-collapse
+    # probes (reviews/2026-07-12-senior-review-phase-b.md): every unregularized
+    # objective variant collapsed to effective rank ~3 within 300 updates, while
+    # these weights held rank at ~16-19. Do not zero these without rerunning that
+    # control.
+    variance: float = 1.0
+    covariance: float = 0.04
     # Reliability auxiliaries are opt-in and must not shape the world model while
     # they are uncalibrated shadow signals.
     manifold: float = 0.0
@@ -118,6 +129,24 @@ def ema_update(target: nn.Module, source: nn.Module, decay: float) -> None:
     for name, b in target.named_buffers():
         if name in source_buffers:
             b.copy_(source_buffers[name])
+
+
+def variance_covariance_losses(
+    x: Tensor, gamma: float = 1.0, eps: float = 1e-4
+) -> tuple[Tensor, Tensor]:
+    """VICReg variance and covariance terms (arXiv:2105.04906, Eq. 1-4).
+
+    Every token vector in the batch is one sample. Computed in float32: under
+    bf16 autocast the batch variance of near-collapsed embeddings underflows.
+    """
+    flat = x.reshape(-1, x.shape[-1]).float()
+    std = (flat.var(0) + eps).sqrt()
+    variance = F.relu(gamma - std).mean()
+    centered = flat - flat.mean(0, keepdim=True)
+    cov = centered.T @ centered / max(1, flat.shape[0] - 1)
+    off_diagonal = cov - torch.diag(torch.diag(cov))
+    covariance = off_diagonal.pow(2).sum() / flat.shape[-1]
+    return variance, covariance
 
 
 def effective_rank(x: Tensor, eps: float = 1e-8) -> Tensor:
@@ -670,7 +699,12 @@ class M3HJWM(nn.Module):
 
         flat = obs.reshape(b * t, *obs.shape[2:])
         grid = self.cfg.image_size // self.cfg.patch_size
-        mask = multi_block_mask(b * t, grid, self.cfg.mask_ratio, self.cfg.target_blocks, obs.device)
+        # mask_ratio == 0 selects the unmasked (Dreamer-CDP-shaped) objective so
+        # masked-vs-unmasked stays a controlled comparison, not a hard-coded choice.
+        if self.cfg.mask_ratio > 0:
+            mask = multi_block_mask(b * t, grid, self.cfg.mask_ratio, self.cfg.target_blocks, obs.device)
+        else:
+            mask = None
         context_repr = self.online_encoder(flat, mask).reshape(b, t, self.streams, self.cfg.token_dim)
         with torch.no_grad():
             targets = self.target_encoder(flat).reshape(b, t, self.streams, self.cfg.token_dim)
@@ -707,12 +741,20 @@ class M3HJWM(nn.Module):
             manifold_loss = flat_context.new_zeros(())
             energy_loss = flat_context.new_zeros(())
 
+        if weights.variance != 0.0 or weights.covariance != 0.0:
+            variance_loss, covariance_loss = variance_covariance_losses(context_repr)
+        else:
+            variance_loss = flat_context.new_zeros(())
+            covariance_loss = flat_context.new_zeros(())
+
         loss = (
             weights.jepa * prediction.regression
             + weights.mode_router * prediction.router_loss
             + weights.mode_balance * prediction.balance_loss
             + weights.reward * reward_loss
             + weights.continuation * continue_loss
+            + weights.variance * variance_loss
+            + weights.covariance * covariance_loss
             + weights.manifold * manifold_loss
             + weights.energy * energy_loss
         )
@@ -723,6 +765,8 @@ class M3HJWM(nn.Module):
             "balance": prediction.balance_loss.detach(),
             "reward": reward_loss.detach(),
             "continuation": continue_loss.detach(),
+            "variance": variance_loss.detach(),
+            "covariance": covariance_loss.detach(),
             "manifold": manifold_loss.detach(),
             "energy": energy_loss.detach(),
             "target_effective_rank": effective_rank(targets.detach()),

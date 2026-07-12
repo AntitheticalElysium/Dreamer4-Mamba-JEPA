@@ -1,0 +1,66 @@
+{
+  "config": "full compact objective, GRU, b=4, T=16, mask_ratio=0.0, tag=fixed_unmasked",
+  "replay_steps": 2712,
+  "jepa_loss_first20_last20": [
+    0.9152411311864853,
+    0.21294714510440826
+  ],
+  "reward_loss_first20_last20": [
+    5.334711718559265,
+    0.20809227265417576
+  ],
+  "rank_curve": [
+    {
+      "step": 0,
+      "target_cov_rank": 12.484492301940918
+    },
+    {
+      "step": 25,
+      "target_cov_rank": 12.254572868347168
+    },
+    {
+      "step": 50,
+      "target_cov_rank": 11.95681381225586
+    },
+    {
+      "step": 75,
+      "target_cov_rank": 11.743123054504395
+    },
+    {
+      "step": 100,
+      "target_cov_rank": 11.6343355178833
+    },
+    {
+      "step": 125,
+      "target_cov_rank": 11.617396354675293
+    },
+    {
+      "step": 150,
+      "target_cov_rank": 11.762289047241211
+    },
+    {
+      "step": 175,
+      "target_cov_rank": 12.054657936096191
+    },
+    {
+      "step": 200,
+      "target_cov_rank": 12.521751403808594
+    },
+    {
+      "step": 225,
+      "target_cov_rank": 13.130820274353027
+    },
+    {
+      "step": 250,
+      "target_cov_rank": 13.84798812866211
+    },
+    {
+      "step": 275,
+      "target_cov_rank": 14.62342357635498
+    },
+    {
+      "step": 300,
+      "target_cov_rank": 15.445074081420898
+    }
+  ]
+}
