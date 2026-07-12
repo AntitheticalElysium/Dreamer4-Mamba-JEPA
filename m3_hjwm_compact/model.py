@@ -266,12 +266,32 @@ class RepresentationEncoder(nn.Module):
         self.mask_token = nn.Parameter(torch.randn(1, 1, cfg.token_dim) * 0.02)
         self.register_count = cfg.registers
 
-    def forward(self, obs: Tensor, target_mask: Tensor | None = None) -> Tensor:
+    def forward(
+        self,
+        obs: Tensor,
+        target_mask: Tensor | None = None,
+        visible_index: Tensor | None = None,
+    ) -> Tensor:
+        """Encode a frame.
+
+        `visible_index` [B, K] selects local tokens BEFORE the spatial mixer and
+        drops the rest (I-JEPA context encoding: the mixer attends over visible
+        tokens + registers only). Mutually exclusive with `target_mask`, which
+        substitutes a mask token (legacy hybrid path). Known deviation from ViT
+        I-JEPA: the conv stem's receptive field leaks some masked-patch pixels
+        into visible tokens; see reviews/2026-07-13-step1-protocol.md.
+        """
+        if target_mask is not None and visible_index is not None:
+            raise ValueError("target_mask and visible_index are mutually exclusive")
         x = obs.float() / 255.0 if obs.dtype == torch.uint8 else obs.float()
         local = self.project(self.stem(x)).flatten(2).transpose(1, 2)
         if target_mask is not None:
             mask = target_mask.flatten(1)[..., None]
             local = torch.where(mask, self.mask_token.to(local.dtype), local)
+        if visible_index is not None:
+            local = local.gather(
+                1, visible_index[..., None].expand(-1, -1, local.shape[-1])
+            )
         regs = self.registers.expand(local.shape[0], -1, -1)
         tokens = torch.cat([regs, local], dim=1)
         for block in self.spatial:
