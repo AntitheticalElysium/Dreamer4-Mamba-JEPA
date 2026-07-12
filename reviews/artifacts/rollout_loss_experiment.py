@@ -1,5 +1,10 @@
-"""Option-3 test: V-JEPA-2-AC rollout loss (Eq. 3-4, arXiv:2506.09985) added to
-the world objective. Scratchpad-only; m3_hjwm_compact is not modified.
+"""Archived rollout experiment plus the corrected core-loss runner.
+
+AUDIT STATUS (2026-07-13): the rollout loss is now implemented and tested in
+``m3_hjwm_compact``. This experiment's old verdict is not reproducible evidence:
+the representation gate was a false pass, replay sampling was unseeded, changed
+tokens came from each model's own latent, and backend latent spaces differed.
+``main`` is disabled until a Phase-B-passing shared representation exists.
 
 L_total = L_forward (unchanged compact objective incl. VICReg)
         + L_rollout, where L_rollout autoregressively composes
@@ -30,72 +35,45 @@ from pathlib import Path
 import numpy as np
 import torch
 
-sys.path.insert(0, "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/m3_hjwm_compact")
-sys.path.insert(0, "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/m3_hjwm_compact/verification")
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "m3_hjwm_compact"))
+sys.path.insert(0, str(ROOT / "m3_hjwm_compact" / "verification"))
 
 from data import Episode, EpisodeReplay  # noqa: E402
-from model import LossConfig, M3HJWM, ModelConfig, cosine_distance, multi_block_mask  # noqa: E402
+from model import LossConfig, M3HJWM, ModelConfig  # noqa: E402
 from phase_b_long import heldout_prediction_eval, load_shared_data  # noqa: E402
 from phase_d_backend import openloop_eval  # noqa: E402
 
 SCRATCH = Path(__file__).parent
-ARTIFACTS = Path("/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts")
+ARTIFACTS = Path(__file__).resolve().parent
 T_ROLL = 2
-
-
-def rollout_loss(model: M3HJWM, batch: dict) -> torch.Tensor:
-    obs, actions = batch["obs"], batch["actions"].long()
-    b, t = obs.shape[:2]
-    prefix = t - T_ROLL                     # obs 0..prefix-1 teacher-forced
-    cfg = model.cfg
-    grid = cfg.image_size // cfg.patch_size
-
-    flat = obs[:, :prefix].reshape(b * prefix, *obs.shape[2:])
-    if cfg.mask_ratio > 0:
-        mask = multi_block_mask(b * prefix, grid, cfg.mask_ratio, cfg.target_blocks, obs.device)
-    else:
-        mask = None
-    tokens = model.online_encoder(flat, mask).reshape(b, prefix, model.streams, cfg.token_dim)
-
-    previous = batch["previous_actions"][:, :prefix].long()
-    previous = model._previous_action_indices(previous)
-    inputs = tokens + model.action_input(previous)[:, :, None]
-
-    with torch.no_grad():
-        final_target = model.target_encoder(obs[:, prefix + T_ROLL - 1])
-
-    horizon = torch.ones(b, dtype=torch.long, device=obs.device)
-    prediction = None
-    for j in range(T_ROLL):
-        context, _ = model.temporal.sequence(inputs)
-        step_action = actions[:, prefix - 1 + j]
-        modes, logits = model.future.all_predictions(context[:, -1], step_action, horizon)
-        idx = logits.argmax(-1)
-        prediction = modes[torch.arange(b, device=obs.device), idx]
-        if j < T_ROLL - 1:
-            nxt = prediction + model.action_input(step_action)[:, None]
-            inputs = torch.cat([inputs, nxt[:, None]], dim=1)
-    return cosine_distance(prediction, final_target).mean()
-
 
 def run(backend: str, data, device, steps=4000):
     replay = EpisodeReplay()
     for ep in data["train_episodes"]:
         replay.add(Episode(**ep))
     torch.manual_seed(101)
-    cfg = ModelConfig(temporal_backend=backend, predictor="deterministic", mask_ratio=0.0)
+    cfg = ModelConfig(
+        temporal_backend=backend,
+        predictor="deterministic",
+        mask_ratio=0.0,
+        rollout_steps=T_ROLL,
+    )
     model = M3HJWM(cfg).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
-    weights = LossConfig()
+    weights = LossConfig(rollout=1.0)
+    train_rng = np.random.default_rng(101)
     torch.cuda.reset_peak_memory_stats()
     started = time.perf_counter()
     roll_history = []
     for step in range(steps):
-        batch = replay.sample(batch=4, observations=16, device=device)
+        batch = replay.sample(
+            batch=4, observations=16, device=device, rng=train_rng
+        )
         with torch.autocast("cuda", dtype=torch.bfloat16):
             output = model(batch, weights)
-            roll = rollout_loss(model, batch)
-            loss = output.loss + roll        # Eq. 4: unweighted sum
+            roll = output.metrics["rollout"]
+            loss = output.loss
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 100.0)
@@ -112,7 +90,7 @@ def run(backend: str, data, device, steps=4000):
     for ep in data["heldout_episodes"]:
         heldout_replay.add(Episode(**ep))
     one_step = heldout_prediction_eval(model, heldout_replay, device)
-    per_k, step_ms = openloop_eval(model, data["heldout_episodes"], device)
+    per_k, latency = openloop_eval(model, data["heldout_episodes"], device)
     torch.save({"model": model.state_dict()}, SCRATCH / f"rollout_{backend}.pt")
     del model
     torch.cuda.empty_cache()
@@ -123,11 +101,15 @@ def run(backend: str, data, device, steps=4000):
         "rollout_loss_first_last_100": [float(np.mean(roll_history[:100])), float(np.mean(roll_history[-100:]))],
         "one_step": one_step,
         "openloop": per_k,
-        "imagine_step_ms": step_ms,
+        "imagine_step_latency": latency,
     }
 
 
 def main():
+    raise RuntimeError(
+        "rollout efficacy is gated by Phase B and a fixed shared representation; "
+        "the archived single-seed protocol must not be rerun as validation"
+    )
     device = torch.device("cuda")
     data = load_shared_data()
     baseline = {  # attention predictor, no rollout loss (commit d64d586 artifacts)

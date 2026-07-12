@@ -37,14 +37,27 @@ class EpisodeReplay:
             old = self.episodes.pop(0)
             self.steps -= len(old.actions)
 
-    def sample(self, batch: int, observations: int, device):
+    def sample(
+        self,
+        batch: int,
+        observations: int,
+        device,
+        rng: np.random.Generator | None = None,
+    ):
+        """Sample episode-bounded windows.
+
+        Verification code should always pass an explicitly seeded Generator so
+        architecture arms see identical window indices. The optional fallback is
+        retained for interactive use and backward compatibility.
+        """
         valid = [ep for ep in self.episodes if len(ep.obs) >= observations]
         if not valid:
             raise RuntimeError("no sufficiently long episode in replay")
+        randint = np.random.randint if rng is None else rng.integers
         obs, actions, rewards, continues, previous_actions = [], [], [], [], []
         for _ in range(batch):
-            ep = valid[np.random.randint(len(valid))]
-            start = np.random.randint(0, len(ep.obs) - observations + 1)
+            ep = valid[int(randint(len(valid)))]
+            start = int(randint(0, len(ep.obs) - observations + 1))
             obs.append(ep.obs[start:start + observations])
             actions.append(ep.actions[start:start + observations - 1])
             rewards.append(ep.rewards[start:start + observations - 1])

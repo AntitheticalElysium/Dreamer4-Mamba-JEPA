@@ -54,8 +54,19 @@ class ModelConfig:
     reward_low: float = -20.0
     reward_high: float = 20.0
     ema_decay: float = 0.996
-    mask_ratio: float = 0.60
+    # The masked temporal hybrid remains an explicit ablation. It is not the
+    # default: replacing post-convolution tokens is not an I-JEPA context
+    # encoder, and it creates a real-token/generation mismatch at imagination.
+    mask_ratio: float = 0.0
     target_blocks: int = 4
+    # The anti-collapse auxiliary operates on L2-normalized directions scaled by
+    # sqrt(dim), so an isotropic spherical representation has unit per-dimension
+    # variance without forcing the raw control-state magnitude to grow.
+    variance_target: float = 1.0
+    # Number of autoregressive transitions in the optional V-JEPA-2-AC-shaped
+    # bridge loss. The loss weight lives in LossConfig and defaults to zero until
+    # the corrected representation and multi-seed gates pass.
+    rollout_steps: int = 2
     reliability_hidden: int = 64
 
     def validate(self) -> None:
@@ -69,6 +80,10 @@ class ModelConfig:
             raise ValueError("mode_balance_temperature must be positive")
         if not 0.0 <= self.mask_ratio < 1.0:
             raise ValueError("mask_ratio must be in [0, 1); 0 disables masking")
+        if self.rollout_steps < 2:
+            raise ValueError("rollout_steps must be at least 2")
+        if self.variance_target <= 0:
+            raise ValueError("variance_target must be positive")
 
 
 @dataclass(frozen=True)
@@ -78,15 +93,16 @@ class LossConfig:
     mode_balance: float = 0.01
     reward: float = 1.0
     continuation: float = 1.0
-    # Anti-collapse regularization on the online tokens (VICReg, arXiv:2105.04906
-    # Eq. 1-4). The 25:1 variance:covariance ratio follows the paper; the absolute
-    # scale against the cosine JEPA term comes from the 2026-07-12 rank-collapse
-    # probes (reviews/2026-07-12-senior-review-phase-b.md): every unregularized
-    # objective variant collapsed to effective rank ~3 within 300 updates, while
-    # these weights held rank at ~16-19. Do not zero these without rerunning that
-    # control.
+    # VICReg-inspired anti-collapse regularization on online tokens. Unlike the
+    # original image-level VICReg objective, dense streams are separate variables:
+    # statistics are taken across observations at each fixed stream, never across
+    # token positions. The 25:1 variance:covariance ratio follows VICReg after a
+    # common rescaling; its absolute scale remains an empirical hyperparameter.
     variance: float = 1.0
     covariance: float = 0.04
+    # Optional two-step autoregressive bridge, adapted from V-JEPA 2-AC Eq. 3-4.
+    # It is deliberately opt-in pending corrected, multi-seed Phase B/D evidence.
+    rollout: float = 0.0
     # Reliability auxiliaries are opt-in and must not shape the world model while
     # they are uncalibrated shadow signals.
     manifold: float = 0.0
@@ -134,18 +150,31 @@ def ema_update(target: nn.Module, source: nn.Module, decay: float) -> None:
 def variance_covariance_losses(
     x: Tensor, gamma: float = 1.0, eps: float = 1e-4
 ) -> tuple[Tensor, Tensor]:
-    """VICReg variance and covariance terms (arXiv:2105.04906, Eq. 1-4).
+    """Streamwise VICReg-inspired variance and covariance terms.
 
-    Every token vector in the batch is one sample. Computed in float32: under
-    bf16 autocast the batch variance of near-collapsed embeddings underflows.
+    For ``[..., streams, dim]`` inputs, leading axes are observations and each
+    stream is regularized independently. Flattening streams into the sample axis
+    is invalid for dense representations: a fixed position codebook would then
+    satisfy both terms while ignoring every observation. A two-dimensional
+    ``[samples, dim]`` tensor is treated as one stream.
+
+    Computed in float32 because near-collapsed bf16 variances can underflow.
     """
-    flat = x.reshape(-1, x.shape[-1]).float()
-    std = (flat.var(0) + eps).sqrt()
+    if x.ndim < 2:
+        raise ValueError("anti-collapse input must have a feature dimension")
+    if x.ndim == 2:
+        streams = x.float()[:, None, :]
+    else:
+        streams = x.reshape(-1, x.shape[-2], x.shape[-1]).float()
+    samples = streams.shape[0]
+    if samples < 2:
+        raise ValueError("anti-collapse statistics require at least two observations")
+    std = (streams.var(0) + eps).sqrt()
     variance = F.relu(gamma - std).mean()
-    centered = flat - flat.mean(0, keepdim=True)
-    cov = centered.T @ centered / max(1, flat.shape[0] - 1)
-    off_diagonal = cov - torch.diag(torch.diag(cov))
-    covariance = off_diagonal.pow(2).sum() / flat.shape[-1]
+    centered = streams - streams.mean(0, keepdim=True)
+    cov = torch.einsum("nsd,nse->sde", centered, centered) / (samples - 1)
+    off_diagonal = cov - torch.diag_embed(torch.diagonal(cov, dim1=-2, dim2=-1))
+    covariance = off_diagonal.pow(2).sum(dim=(-2, -1)).mean() / streams.shape[-1]
     return variance, covariance
 
 
@@ -162,6 +191,8 @@ def multi_block_mask(
 ) -> Tensor:
     """Boolean target mask [B,grid,grid]; context receives its complement."""
     target = torch.zeros(batch, grid, grid, dtype=torch.bool, device=device)
+    if ratio == 0.0:
+        return target
     wanted = max(1, round(grid * grid * ratio))
     for b in range(batch):
         for _ in range(blocks * 8):
@@ -453,13 +484,13 @@ class Prediction:
 class FuturePredictor(nn.Module):
     """Deterministic or hard-assigned multi-predictor JEPA future model.
 
-    Architecture follows the pinned JEPA sources, not a per-token MLP: I-JEPA's
-    predictor is a ViT (self-attention across tokens, positional embeddings);
-    V-JEPA-2-AC prepends action/state tokens to the frame-token sequence and
-    attends jointly (`ac_predictor.py`). Cross-token attention is load-bearing
-    here: Crafter's dominant transition shifts content BETWEEN token positions,
-    which per-token maps cannot express (measured: the per-token-MLP predictor
-    never beat the copy baseline on changed tokens; see reviews/).
+    This is a small adaptation of pinned JEPA predictor structure, not a source
+    reproduction. I-JEPA uses a ViT predictor with fixed sinusoidal positions;
+    V-JEPA-2-AC interleaves action/proprioception tokens over time and uses causal
+    attention. Here, learned positions and action/horizon tokens enter a two-block
+    single-step spatial predictor. The source-backed invariant is cross-token
+    attention: Crafter view shifts move content BETWEEN token positions, which a
+    per-token map cannot express.
 
     The mixture is an experimental backend motivated by MoP-JEPA. Note the
     paper mixes over a POOLED latent with well-separated modes; measured Crafter
@@ -497,8 +528,8 @@ class FuturePredictor(nn.Module):
         # meaningless there and the conditioning tokens still carry action/horizon.
         x = x[:, None].expand(b, self.modes, s, d) + self.mode_embed[None, :, None]
         x = x.reshape(b * self.modes, s, d)
-        # V-JEPA-2-AC style: conditioning enters as tokens in the attention
-        # sequence, not as a broadcast add over every token.
+        # V-JEPA-2-AC-inspired (not identical): conditioning enters as tokens in
+        # the attention sequence, not as a broadcast add over every token.
         conditioning = torch.stack([self.action(action), self.horizon(horizon)], dim=1)
         conditioning = conditioning[:, None].expand(b, self.modes, 2, d).reshape(b * self.modes, 2, d)
         x = torch.cat([conditioning, x], dim=1)
@@ -704,6 +735,58 @@ class M3HJWM(nn.Module):
         control = self.pool(next_tokens)
         return next_state, self.reward(control), self.continuation(control), pred
 
+    def _rollout_bridge_loss(
+        self,
+        context_repr: Tensor,
+        previous_action: Tensor,
+        actions: Tensor,
+        targets: Tensor,
+    ) -> Tensor:
+        """Final-state autoregressive loss adapted from V-JEPA 2-AC Eq. 3-4.
+
+        A real prefix initializes the temporal model. Generated target-like tokens
+        are then fed back through the exact deployment composition for
+        ``cfg.rollout_steps`` transitions. As in V-JEPA 2-AC post-training, the
+        visual representation is treated as fixed for this auxiliary: gradients
+        cross predictor -> temporal -> predictor, but do not use the bridge to make
+        the encoder itself easier to predict.
+
+        The compact model uses cosine distance rather than V-JEPA 2-AC's L1 loss,
+        and its temporal core is separate from the spatial predictor. These are
+        explicit adaptations, not claims of source equivalence.
+        """
+        b, t = context_repr.shape[:2]
+        steps = self.cfg.rollout_steps
+        if t <= steps:
+            raise ValueError(
+                f"rollout_steps={steps} requires more than {steps} observations"
+            )
+        prefix = t - steps
+        # Stop the auxiliary at the visual representation, while retaining
+        # gradients for the action embedding and temporal/predictor parameters.
+        inputs = (
+            context_repr[:, :prefix].detach()
+            + self.action_input(previous_action[:, :prefix])[:, :, None]
+        )
+        horizon = torch.ones(b, dtype=torch.long, device=context_repr.device)
+        prediction = None
+        for index in range(steps):
+            context, _ = self.temporal.sequence(inputs)
+            action = actions[:, prefix - 1 + index]
+            modes, logits = self.future.all_predictions(context[:, -1], action, horizon)
+            # Deterministic is the validated/default predictor. For an experimental
+            # mixture this follows deployment's router choice; the argmax itself is
+            # intentionally non-differentiable and does not replace router training.
+            assignment = logits.argmax(-1)
+            prediction = modes[
+                torch.arange(b, device=context_repr.device), assignment
+            ]
+            if index < steps - 1:
+                generated_input = prediction + self.action_input(action)[:, None]
+                inputs = torch.cat([inputs, generated_input[:, None]], dim=1)
+        final_target = targets[:, prefix + steps - 1]
+        return cosine_distance(prediction, final_target).mean()
+
     def forward(self, batch: dict[str, Tensor], weights: LossConfig = LossConfig()):
         obs, actions = batch["obs"], batch["actions"].long()
         rewards, continues = batch["rewards"].float(), batch["continues"].float()
@@ -758,10 +841,34 @@ class M3HJWM(nn.Module):
             energy_loss = flat_context.new_zeros(())
 
         if weights.variance != 0.0 or weights.covariance != 0.0:
-            variance_loss, covariance_loss = variance_covariance_losses(context_repr)
+            # Random masks are themselves a source of per-stream variance. Never
+            # let the anti-collapse term be satisfied by mask randomness: use a
+            # dense online pass for this auxiliary when the prediction path is
+            # masked. The unmasked default reuses the existing representation.
+            regularization_repr = context_repr
+            if mask is not None:
+                regularization_repr = self.online_encoder(flat).reshape(
+                    b, t, self.streams, self.cfg.token_dim
+                )
+            # The predictive loss is cosine-based. Normalize away token norms so
+            # the variance hinge cannot be satisfied by magnitude changes along a
+            # collapsed direction; sqrt(D) preserves VICReg's gamma=1 scale.
+            regularization_repr = F.normalize(
+                regularization_repr.float(), dim=-1
+            ) * math.sqrt(self.cfg.token_dim)
+            variance_loss, covariance_loss = variance_covariance_losses(
+                regularization_repr, gamma=self.cfg.variance_target
+            )
         else:
             variance_loss = flat_context.new_zeros(())
             covariance_loss = flat_context.new_zeros(())
+
+        if weights.rollout != 0.0:
+            rollout_loss = self._rollout_bridge_loss(
+                context_repr, previous_action, actions, targets
+            )
+        else:
+            rollout_loss = flat_context.new_zeros(())
 
         loss = (
             weights.jepa * prediction.regression
@@ -771,8 +878,19 @@ class M3HJWM(nn.Module):
             + weights.continuation * continue_loss
             + weights.variance * variance_loss
             + weights.covariance * covariance_loss
+            + weights.rollout * rollout_loss
             + weights.manifold * manifold_loss
             + weights.energy * energy_loss
+        )
+        target_samples = targets.detach().reshape(-1, self.streams, self.cfg.token_dim).float()
+        target_stream_mean = target_samples.mean(0, keepdim=True)
+        target_observation_variance = (target_samples - target_stream_mean).pow(2).mean()
+        target_position_variance = (
+            target_stream_mean - target_stream_mean.mean(1, keepdim=True)
+        ).pow(2).mean()
+        patch_targets = target_samples[:, self.cfg.registers :]
+        pooled_targets = (
+            patch_targets.mean(1) if patch_targets.shape[1] else target_samples.mean(1)
         )
         metrics = {
             "loss": loss.detach(),
@@ -783,9 +901,19 @@ class M3HJWM(nn.Module):
             "continuation": continue_loss.detach(),
             "variance": variance_loss.detach(),
             "covariance": covariance_loss.detach(),
+            "rollout": rollout_loss.detach(),
             "manifold": manifold_loss.detach(),
             "energy": energy_loss.detach(),
+            # Keep the historical key for artifact compatibility, but make its
+            # flattened nature explicit and pair it with observation-sensitive
+            # diagnostics. Flat rank alone is not an anti-collapse certificate.
             "target_effective_rank": effective_rank(targets.detach()),
+            "target_flat_effective_rank": effective_rank(targets.detach()),
+            "target_pooled_effective_rank": effective_rank(pooled_targets),
+            "target_fixed_stream_variance": target_observation_variance,
+            "target_position_variance": target_position_variance,
+            "target_observation_variance_fraction": target_observation_variance
+            / (target_observation_variance + target_position_variance).clamp_min(1e-12),
         }
         return WorldOutput(
             loss,

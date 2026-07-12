@@ -131,13 +131,15 @@ class RepresentationControl(nn.Module):
 
     def forward(self, obs: Tensor, action: Tensor, next_obs: Tensor):
         grid = self.cfg.image_size // self.cfg.patch_size
-        mask = multi_block_mask(
-            obs.shape[0],
-            grid,
-            self.cfg.mask_ratio,
-            self.cfg.target_blocks,
-            obs.device,
-        )
+        mask = None
+        if self.cfg.mask_ratio > 0:
+            mask = multi_block_mask(
+                obs.shape[0],
+                grid,
+                self.cfg.mask_ratio,
+                self.cfg.target_blocks,
+                obs.device,
+            )
         context = self.project(self.online(obs, mask))
         with torch.no_grad():
             target = self.project(self.target(next_obs))
@@ -163,6 +165,43 @@ def encode_all(encoder, array: np.ndarray, batch: int, device) -> Tensor:
     return torch.cat(encoded)
 
 
+def patch_change_scores(obs: Tensor | np.ndarray, next_obs: Tensor | np.ndarray, patch_size: int):
+    """Mean absolute RGB change for each fixed image patch.
+
+    This mask is representation-independent, so different encoders/backends are
+    evaluated on exactly the same changed locations. Leading dimensions are
+    preserved and the final output axis is the flattened patch grid.
+    """
+    current = torch.as_tensor(obs).float()
+    future = torch.as_tensor(next_obs).float()
+    if current.shape != future.shape or current.ndim < 4:
+        raise ValueError("obs and next_obs must have matching [...,C,H,W] shapes")
+    height, width = current.shape[-2:]
+    if height % patch_size or width % patch_size:
+        raise ValueError("image dimensions must be divisible by patch_size")
+    leading = current.shape[:-3]
+    flat = (future - current).abs().reshape(-1, current.shape[-3], height, width)
+    grid_h, grid_w = height // patch_size, width // patch_size
+    scores = flat.reshape(
+        len(flat), current.shape[-3], grid_h, patch_size, grid_w, patch_size
+    ).mean(dim=(1, 3, 5))
+    return scores.reshape(*leading, grid_h * grid_w)
+
+
+def changed_patch_mask(scores: Tensor, quantile: float = 0.75) -> Tensor:
+    """Select high-change patches independently for each transition/window."""
+    if not 0.0 <= quantile < 1.0:
+        raise ValueError("quantile must be in [0, 1)")
+    rows = scores.float().reshape(-1, scores.shape[-1])
+    result = torch.zeros_like(rows, dtype=torch.bool)
+    for index, row in enumerate(rows):
+        positive = row[row > 0]
+        if len(positive):
+            threshold = positive.quantile(quantile)
+            result[index] = (row > 0) & (row >= threshold)
+    return result.reshape(scores.shape)
+
+
 @torch.no_grad()
 def prediction_controls(model, data: Transitions, batch: int, device):
     predictions, targets, currents = [], [], []
@@ -186,21 +225,23 @@ def prediction_controls(model, data: Transitions, batch: int, device):
     current = torch.cat(currents)
     shuffled_target = target.roll(1, 0)
 
-    # Copy-latent is a near-unbeatable bar on the *mean over all tokens* because
-    # most Crafter tokens do not change between frames (untrained-encoder copy
-    # cosine is already ~0.02). Score the tokens that actually moved, and report
-    # the unrelated-pair distance as the scale ruler.
+    # Registers have no fixed pixel correspondence. Dense changed-token scores
+    # therefore use only local streams and a raw-pixel mask shared by every arm.
     per_token_pred = cosine_distance(prediction, target)
     per_token_copy = cosine_distance(current, target)
     ruler = float(cosine_distance(current, target.roll(7, 0)).mean())
-    if per_token_copy.dim() > 1:  # dense variant: [N, S]
-        motion = per_token_copy
-        changed = motion >= motion.flatten().quantile(0.75)
-        pred_changed = float(per_token_pred[changed].mean())
-        copy_changed = float(per_token_copy[changed].mean())
+    if per_token_copy.dim() > 1 and prediction.shape[1] > model.cfg.registers:
+        local_pred = per_token_pred[:, model.cfg.registers :]
+        local_copy = per_token_copy[:, model.cfg.registers :]
+        motion = patch_change_scores(data.obs, data.next_obs, model.cfg.patch_size)
+        changed = changed_patch_mask(motion)
+        pred_changed = float(local_pred[changed].mean())
+        copy_changed = float(local_copy[changed].mean())
+        changed_fraction = float(changed.float().mean())
     else:  # pooled variant: single stream
         pred_changed = float(per_token_pred.mean())
         copy_changed = float(per_token_copy.mean())
+        changed_fraction = 1.0
 
     shuffled_predictions = []
     shuffled_actions = np.roll(data.actions, 1)
@@ -223,11 +264,25 @@ def prediction_controls(model, data: Transitions, batch: int, device):
         "pred_cosine_changed_tokens": pred_changed,
         "copy_cosine_changed_tokens": copy_changed,
         "improvement_over_copy_changed_tokens": copy_changed - pred_changed,
+        "changed_patch_fraction": changed_fraction,
+        "changed_patch_source": "raw_rgb_mean_absolute_change_top_positive_quartile",
     }
 
 
-def target_statistics(tokens: Tensor):
-    flat = tokens.reshape(-1, tokens.shape[-1]).float()
+def target_statistics(tokens: Tensor, registers: int = 2):
+    def covariance_effective_rank(vectors: Tensor) -> Tensor:
+        vectors = vectors.double()
+        vectors = vectors - vectors.mean(0, keepdim=True)
+        matrix = vectors.T @ vectors / max(1, len(vectors) - 1)
+        matrix = 0.5 * (matrix + matrix.T)
+        values = torch.linalg.eigvalsh(matrix).clamp_min(0)
+        probabilities = values / values.sum().clamp_min(1e-12)
+        return torch.exp(
+            -(probabilities * probabilities.clamp_min(1e-12).log()).sum()
+        )
+
+    samples = tokens.reshape(-1, tokens.shape[-2], tokens.shape[-1]).float()
+    flat = samples.flatten(0, 1)
     centered = flat - flat.mean(0, keepdim=True)
     covariance = centered.T @ centered / max(1, len(centered) - 1)
     eigenvalues = torch.linalg.eigvalsh(covariance).clamp_min(0).flip(0)
@@ -235,10 +290,61 @@ def target_statistics(tokens: Tensor):
     covariance_rank = torch.exp(
         -(normalized * normalized.clamp_min(1e-12).log()).sum()
     )
+    # Double precision and explicit symmetrization make the diagnostic robust to
+    # nearly constant streams with repeated eigenvalues.
+    stream_samples = samples.double()
+    stream_centered = stream_samples - stream_samples.mean(0, keepdim=True)
+    stream_covariance = torch.einsum(
+        "nsd,nse->sde", stream_centered, stream_centered
+    ) / max(1, len(samples) - 1)
+    stream_covariance = 0.5 * (
+        stream_covariance + stream_covariance.transpose(-1, -2)
+    )
+    stream_eigenvalues = torch.linalg.eigvalsh(stream_covariance).clamp_min(0)
+    stream_probabilities = stream_eigenvalues / stream_eigenvalues.sum(
+        -1, keepdim=True
+    ).clamp_min(1e-12)
+    stream_ranks = torch.exp(
+        -(stream_probabilities * stream_probabilities.clamp_min(1e-12).log()).sum(-1)
+    )
+    stream_mean = samples.mean(0, keepdim=True)
+    observation_variance = (samples - stream_mean).pow(2).mean()
+    position_variance = (
+        stream_mean - stream_mean.mean(1, keepdim=True)
+    ).pow(2).mean()
+    registers = min(registers, samples.shape[1])
+    register_pool = (
+        samples[:, :registers].mean(1) if registers else samples.mean(1)
+    )
+    patch_pool = (
+        samples[:, registers:].mean(1)
+        if samples.shape[1] > registers
+        else samples.mean(1)
+    )
+    unrelated = samples.roll(max(1, len(samples) // 3), 0)
     return {
         "target_element_variance": float(flat.var(0, unbiased=False).mean()),
         "target_effective_rank_singular": float(effective_rank(tokens)),
         "target_effective_rank_covariance": float(covariance_rank),
+        "target_flat_effective_rank_covariance": float(covariance_rank),
+        "target_stream_effective_rank_mean": float(stream_ranks.mean()),
+        "target_stream_effective_rank_min": float(stream_ranks.min()),
+        "target_register_pool_effective_rank": float(effective_rank(register_pool)),
+        "target_patch_pool_effective_rank": float(effective_rank(patch_pool)),
+        "target_register_pool_covariance_rank": float(
+            covariance_effective_rank(register_pool)
+        ),
+        "target_patch_pool_covariance_rank": float(
+            covariance_effective_rank(patch_pool)
+        ),
+        "target_fixed_stream_variance": float(observation_variance),
+        "target_position_variance": float(position_variance),
+        "target_observation_variance_fraction": float(
+            observation_variance / (observation_variance + position_variance).clamp_min(1e-12)
+        ),
+        "target_same_stream_unrelated_cosine": float(
+            cosine_distance(samples, unrelated).mean()
+        ),
         "covariance_eigenvalues_desc": [float(value) for value in eigenvalues],
     }
 
@@ -316,18 +422,25 @@ def semantic_probe(
     with torch.no_grad():
         train_accuracy = (probe(train_x).argmax(-1) == train_y).float().mean()
         accuracy = (probe(test_x).argmax(-1) == test_y).float().mean()
-        majority = torch.bincount(train_y, minlength=classes).argmax()
-        baseline = (test_y == majority).float().mean()
+        train_majority = torch.bincount(train_y, minlength=classes).argmax()
+        test_majority = torch.bincount(test_y, minlength=classes).argmax()
+        train_baseline = (train_y == train_majority).float().mean()
+        baseline = (test_y == test_majority).float().mean()
     result = {
         "semantic_token_accuracy": float(accuracy),
         "semantic_train_accuracy": float(train_accuracy),
+        "semantic_train_majority_accuracy": float(train_baseline),
         "semantic_majority_accuracy": float(baseline),
         "semantic_classes": classes,
         "semantic_valid_fraction": float(valid.float().mean()),
     }
-    # A converged linear probe can never sit below majority; if it does, the
-    # labels are misaligned with the features and the probe result is invalid.
-    result["semantic_probe_sane"] = bool(train_accuracy >= baseline - 1e-3)
+    # Training must clear its own majority baseline (optimizer sanity), and the
+    # held-out score must clear the held-out majority baseline (probe validity).
+    # A failure invalidates the probe; it does not by itself prove why it failed.
+    result["semantic_probe_sane"] = bool(
+        train_accuracy >= train_baseline - 1e-3
+        and accuracy >= baseline - 1e-3
+    )
     return result
 
 
@@ -336,16 +449,25 @@ def inventory_probe(tokens: Tensor, inventory: np.ndarray, registers: int):
         tokens[:, :registers].mean(1) if registers else tokens.mean(1)
     ).double()
     labels = torch.from_numpy(inventory).double()
+    rng = np.random.default_rng(91)
+    order = torch.from_numpy(rng.permutation(len(features)))
     split = len(features) // 2
-    train_x = torch.cat([features[:split], torch.ones(split, 1)], dim=1)
-    test_x = torch.cat(
-        [features[split:], torch.ones(len(features) - split, 1)], dim=1
-    )
-    train_y, test_y = labels[:split], labels[split:]
+    train_i, test_i = order[:split], order[split:]
+    train_x, test_x = features[train_i], features[test_i]
+    train_y, test_y = labels[train_i], labels[test_i]
+    # Standardization makes the ridge penalty invariant to arbitrary encoder
+    # scale. Centering supplies an unpenalized intercept.
+    x_mean = train_x.mean(0, keepdim=True)
+    x_std = train_x.std(0, keepdim=True).clamp_min(1e-6)
+    y_mean = train_y.mean(0, keepdim=True)
+    train_x = (train_x - x_mean) / x_std
+    test_x = (test_x - x_mean) / x_std
     ridge = 1e-2 * torch.eye(train_x.shape[1], dtype=train_x.dtype)
-    weights = torch.linalg.solve(train_x.T @ train_x + ridge, train_x.T @ train_y)
-    prediction = test_x @ weights
-    denominator = ((test_y - train_y.mean(0)) ** 2).sum(0)
+    weights = torch.linalg.solve(
+        train_x.T @ train_x + ridge, train_x.T @ (train_y - y_mean)
+    )
+    prediction = test_x @ weights + y_mean
+    denominator = ((test_y - test_y.mean(0)) ** 2).sum(0)
     r2 = 1.0 - ((test_y - prediction) ** 2).sum(0) / denominator.clamp_min(1e-12)
     valid = denominator > 1e-8
     return {
@@ -407,7 +529,7 @@ def train_variant(
         "elapsed_seconds": elapsed,
         "peak_allocated_mib": peak_mib,
         **controls,
-        **target_statistics(target_tokens),
+        **target_statistics(target_tokens, cfg.registers),
         **semantic_probe(
             target_tokens, heldout.semantic, heldout.player_pos, cfg.registers, grid, device
         ),

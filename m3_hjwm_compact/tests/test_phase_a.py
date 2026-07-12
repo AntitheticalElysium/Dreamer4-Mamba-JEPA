@@ -195,6 +195,27 @@ def test_replay_rejects_misaligned_transition_arrays():
         replay.add(episode)
 
 
+def test_replay_sampling_is_reproducible_with_an_explicit_generator():
+    replay = EpisodeReplay()
+    observations = np.arange(8 * 3 * 4 * 4, dtype=np.uint8).reshape(8, 3, 4, 4)
+    replay.add(
+        Episode(
+            obs=observations,
+            actions=np.arange(7, dtype=np.int64),
+            rewards=np.arange(7, dtype=np.float32),
+            continues=np.ones(7, np.float32),
+        )
+    )
+    first = replay.sample(
+        4, 4, torch.device("cpu"), rng=np.random.default_rng(123)
+    )
+    second = replay.sample(
+        4, 4, torch.device("cpu"), rng=np.random.default_rng(123)
+    )
+    for key in first:
+        torch.testing.assert_close(first[key], second[key])
+
+
 def test_world_update_invalidates_pre_update_recurrent_state():
     cfg = tiny_config()
     model = M3HJWM(cfg)

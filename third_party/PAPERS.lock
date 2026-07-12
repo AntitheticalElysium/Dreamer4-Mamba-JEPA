@@ -1,0 +1,23 @@
+# Primary-paper snapshots used by the 2026-07-12/13 audit.
+# Format: local filename | paper/title | sha256
+
+10356_a_path_towards_autonomous_mach.pdf | A Path Towards Autonomous Machine Intelligence v0.9.2 | 5dda279009beae358f08b18b2a4374bfbe65f8c9ed773ea0b9b49f9068566022
+2105.04906v3-vicreg.pdf | VICReg: Variance-Invariance-Covariance Regularization for Self-Supervised Learning | c227c290d5eb2ba459fd502de3b4e1da36a0ea4c88989b7d8153e211751e9e77
+2109.06780v2.pdf | Benchmarking the Spectrum of Agent Capabilities (Crafter) | feb836d70c6dc2c181ff8408eadf9ad186d768041dc4cf087c7af901af2fabfc
+2301.08243v3.pdf | Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture (I-JEPA) | eddbdc093eb4d48662bcf4fbd1c6735ccd606205cc9070977ce317d68aff3941
+2312.00752v2.pdf | Mamba: Linear-Time Sequence Modeling with Selective State Spaces | adf70ed1803c85b1899dec3e21f3af0b124411439e8654b840ea65f7b9f52b2e
+2405.21060v1.pdf | Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality (Mamba-2) | 6fe16414fa471a5ab150cddcba5840d3a94e347e96992c50c12c1fb8b919479f
+2410.08893v4.pdf | Drama: Mamba-Enabled Model-Based Reinforcement Learning Is Sample and Parameter Efficient | 99ec210196690ae8b0c89fbe128fb7606e16110cdb8fa5cd1712c1cc65a81893
+2506.09985v1.pdf | V-JEPA 2: Self-Supervised Video Models Enable Understanding, Prediction and Planning | 9cfcfde5fb0d9730637da5b9e7317825c3f3d09e91f3553e22eeba42c74d2226
+2509.24527v1.pdf | Training Agents Inside of Scalable World Models (Dreamer 4) | 8655cce4bf12ce6210f6694f83c1a723c7acd7579214ca3ebc57c4394d0b1aeb
+2511.08544v2-lejepa.pdf | LeJEPA: Provable and Scalable Self-Supervised Learning Without the Heuristics | fe06b5488907f56aa9682e2e2febc552d85fe761fda43f2727e65d60fbeb6485
+2602.08032v2.pdf | Horizon Imagination: Efficient On-Policy Rollout in Diffusion World Models | 558762743a882b3f957a3b4a70a6e877336eb4828a1666794462ec090f821882
+2603.02765v1.pdf | Next Embedding Prediction Makes World Models Stronger (NE-Dreamer) | b302af4b4e824a2896fb57b8e19e3355db36ebfba15f52c8f37e80c506e69ad3
+2603.07083v2.pdf | Dreamer-CDP: Improving Reconstruction-Free World Models via Continuous Deterministic Representation Prediction | 7f346a7acae13b36c8b8bea67b5e79681b0c79c476df99ed5444fa3dde3b0bd3
+2603.15569v1.pdf | Mamba-3: Improved Sequence Modeling using State Space Principles | 17e65b882c4b7dc7dad82a437e54c5fa973e4624d5653dc431f1a2a55538c826
+2603.18202v2.pdf | R2-Dreamer: Redundancy-Reduced World Models without Decoders or Augmentation | 6d091be6ccfa4592d2b81b3be98198a0378ce76767534282f83a372f4eeddc60
+2603.19312v3.pdf | LeWorldModel: Stable End-to-End Joint-Embedding Predictive Architecture for Reinforcement Learning | 553a01501ac74ec56721cfdb936d3825ac941734133a1fd761f614c01b6887e9
+2605.06732v2.pdf | On Training in Imagination | d5090958c236509a195949febba05be65e00413a54c92dffe616f812f1e02d00
+2605.13013v1.pdf | JEDI: Joint Embedding Diffusion World Model for Multi-Agent Trajectory Modeling and Planning | f78f2d417cbd156a859a204773e0efe010bf35b8174530c4fcacc5d7c1421c81
+2606.27326v1.pdf | Hallucination in World Models is More Common than You Think | 2f10358cff583fc00df6a434c31a01872748bd9ed767c5874ff23eaecf823beb
+2607.05238v1.pdf | MoP-JEPA: Hard-Assigned Predictor Mixtures for Stochastic JEPA World Models | c454b6399693ee2afbc6b261f00b0d66392c71cb9bd698602956bd344f27932e

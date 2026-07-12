@@ -1,11 +1,10 @@
 """Predictor architecture contracts.
 
-Ground truth (pinned sources): I-JEPA's predictor is a ViT with self-attention
-across tokens and positional embeddings; V-JEPA-2-AC's predictor prepends
-action/state tokens to the frame-token sequence and attends jointly. Crafter's
+Source-backed structural invariants: I-JEPA's predictor has self-attention and
+positional embeddings; V-JEPA-2-AC jointly attends to visual and conditioning
+tokens. The compact predictor is a deliberately smaller adaptation. Crafter's
 dominant transition moves content BETWEEN token positions (view shift), which a
-per-token MLP cannot express — measured as the failed copy-fidelity bar
-(reviews/2026-07-12-validation-run-results.md).
+per-token MLP cannot express.
 """
 import sys
 from pathlib import Path

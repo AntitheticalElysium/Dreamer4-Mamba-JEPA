@@ -18,7 +18,7 @@ COMPACT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(COMPACT_ROOT))
 
 from agent import ActorCritic  # noqa: E402
-from model import M3HJWM, ModelConfig  # noqa: E402
+from model import LossConfig, M3HJWM, ModelConfig  # noqa: E402
 from train import TrainConfig, actor_critic_update, world_update  # noqa: E402
 
 
@@ -73,6 +73,8 @@ def main():
     parser.add_argument("--sequence", type=int, default=16)
     parser.add_argument("--imagination-batch", type=int, default=16)
     parser.add_argument("--imagination-horizon", type=int, default=8)
+    parser.add_argument("--rollout-weight", type=float, default=0.0)
+    parser.add_argument("--mask-ratio", type=float, default=0.0)
     args = parser.parse_args()
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is required")
@@ -91,6 +93,7 @@ def main():
         predictor=args.predictor,
         predictor_depth=2,
         modes=2,
+        mask_ratio=args.mask_ratio,
     )
     train_cfg = TrainConfig(
         batch_size=args.batch,
@@ -105,12 +108,13 @@ def main():
     world_optimizer = torch.optim.AdamW(world.parameters(), lr=train_cfg.world_lr)
     actor_optimizer = torch.optim.AdamW(agent.actor.parameters(), lr=train_cfg.actor_lr)
     critic_optimizer = torch.optim.AdamW(agent.critics.parameters(), lr=train_cfg.critic_lr)
+    loss_weights = LossConfig(rollout=args.rollout_weight)
 
     # Warm the world kernels and allocate optimizer moments.
-    world_update(world, batch, world_optimizer, train_cfg)
+    world_update(world, batch, world_optimizer, train_cfg, loss_weights)
     synchronize()
     world_result = phase_measure(
-        lambda: world_update(world, batch, world_optimizer, train_cfg)
+        lambda: world_update(world, batch, world_optimizer, train_cfg, loss_weights)
     )
 
     amp_dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
@@ -151,6 +155,8 @@ def main():
             "dim": cfg.token_dim,
             "imagination_batch": args.imagination_batch,
             "imagination_horizon": args.imagination_horizon,
+            "rollout_weight": args.rollout_weight,
+            "mask_ratio": args.mask_ratio,
             "amp_dtype": str(amp_dtype),
             "world_parameters": sum(parameter.numel() for parameter in world.parameters()),
             "agent_parameters": sum(parameter.numel() for parameter in agent.parameters()),

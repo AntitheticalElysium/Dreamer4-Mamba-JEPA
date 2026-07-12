@@ -1,4 +1,11 @@
-"""Phase D: temporal-backend comparison (GRU vs Mamba-2) + copy-fidelity bar.
+"""Phase D metric helpers and the archived v1 backend protocol.
+
+AUDIT STATUS (2026-07-13): ``openloop_eval`` contains the corrected fixed-RGB
+changed-patch metric, paired window bootstrap, and warm latency measurement.
+The v1 ``main`` training comparison is disabled: it trains separate encoders and
+therefore compares errors in different latent spaces. A future Phase D must load
+one Phase-B-passing encoder, freeze it for both arms, reset the same replay RNG,
+and only then train/compare GRU and Mamba-2.
 
 PRE-REGISTERED:
   - Mask setting: the Phase B arm with higher improvement_over_copy_changed
@@ -22,16 +29,77 @@ from pathlib import Path
 import numpy as np
 import torch
 
-sys.path.insert(0, "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/m3_hjwm_compact")
-sys.path.insert(0, "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/m3_hjwm_compact/verification")
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "m3_hjwm_compact"))
+sys.path.insert(0, str(ROOT / "m3_hjwm_compact" / "verification"))
 
 from data import Episode, EpisodeReplay  # noqa: E402
 from model import LossConfig, M3HJWM, ModelConfig, cosine_distance  # noqa: E402
 from phase_b_long import load_shared_data  # noqa: E402
+from representation_control import changed_patch_mask, patch_change_scores  # noqa: E402
 
 SCRATCH = Path(__file__).parent
-ARTIFACTS = Path("/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts")
+ARTIFACTS = Path(__file__).resolve().parent
 PREFIX, HORIZON, WINDOWS = 8, 16, 48
+
+
+def paired_bootstrap_interval(values: torch.Tensor, seed: int, draws: int = 2000):
+    """Window-level paired bootstrap; tokens within a window are not iid."""
+    array = values.detach().float().cpu().numpy()
+    if array.ndim != 1 or not len(array):
+        raise ValueError("paired bootstrap requires a non-empty vector")
+    rng = np.random.default_rng(seed)
+    indices = rng.integers(0, len(array), size=(draws, len(array)))
+    means = array[indices].mean(1)
+    return [float(np.quantile(means, 0.025)), float(np.quantile(means, 0.975))]
+
+
+def changed_window_summary(
+    local_pred: torch.Tensor,
+    local_copy: torch.Tensor,
+    changed: torch.Tensor,
+    seed: int,
+):
+    """Aggregate changed patches at the paired rollout-window level."""
+    counts = changed.sum(1)
+    valid_windows = counts > 0
+    if not bool(valid_windows.any()):
+        return {
+            "pred_cosine_changed": float("nan"),
+            "copy_cosine_changed": float("nan"),
+            "copy_margin_changed": float("nan"),
+            "paired_window_margin_mean": float("nan"),
+            "paired_window_margin_bootstrap_95": [float("nan"), float("nan")],
+            "relative_window_margin": float("nan"),
+            "fraction_windows_beating_copy": float("nan"),
+            "valid_windows": 0,
+            "beats_copy_changed": False,
+            "changed_patch_fraction": float(changed.float().mean()),
+        }
+    window_pred = (
+        (local_pred * changed).sum(1)[valid_windows] / counts[valid_windows]
+    )
+    window_copy = (
+        (local_copy * changed).sum(1)[valid_windows] / counts[valid_windows]
+    )
+    window_margin = window_copy - window_pred
+    interval = paired_bootstrap_interval(window_margin, seed=seed)
+    mean_margin = float(window_margin.mean())
+    relative_margin = mean_margin / max(1e-12, float(window_copy.mean()))
+    return {
+        "pred_cosine_changed": float(local_pred[changed].mean()),
+        "copy_cosine_changed": float(local_copy[changed].mean()),
+        "copy_margin_changed": float(
+            local_copy[changed].mean() - local_pred[changed].mean()
+        ),
+        "paired_window_margin_mean": mean_margin,
+        "paired_window_margin_bootstrap_95": interval,
+        "relative_window_margin": relative_margin,
+        "fraction_windows_beating_copy": float((window_margin > 0).float().mean()),
+        "valid_windows": int(valid_windows.sum()),
+        "beats_copy_changed": bool(interval[0] > 0.0 and relative_margin >= 0.05),
+        "changed_patch_fraction": float(changed.float().mean()),
+    }
 
 
 def pick_mask_setting():
@@ -55,10 +123,13 @@ def train_backend(backend, mask_ratio, data, steps, device):
     model = M3HJWM(cfg).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
     weights = LossConfig()
+    train_rng = np.random.default_rng(101)
     torch.cuda.reset_peak_memory_stats()
     started = time.perf_counter()
     for step in range(steps):
-        batch = replay.sample(batch=4, observations=16, device=device)
+        batch = replay.sample(
+            batch=4, observations=16, device=device, rng=train_rng
+        )
         with torch.autocast("cuda", dtype=torch.bfloat16):
             output = model(batch, weights)
         optimizer.zero_grad(set_to_none=True)
@@ -103,6 +174,7 @@ def openloop_eval(model, episodes, device):
     prev0 = torch.from_numpy(np.asarray([w["prev_action"] for w in windows])).to(device)
     n = obs.shape[0]
 
+    model.eval()
     state = model.initial_state(n, device)
     for t in range(PREFIX):
         prev = prev0 if t == 0 else actions[:, t - 1]
@@ -115,28 +187,68 @@ def openloop_eval(model, episodes, device):
     # baseline freezes the latent of the last observed frame.
     anchor = model.target_encoder(obs[:, PREFIX - 1]).float()
     per_k = []
-    latencies = []
     for k in range(HORIZON):
-        torch.cuda.synchronize(); t0 = time.perf_counter()
         with torch.autocast("cuda", dtype=torch.bfloat16):
-            state, _, _, pred = model.imagine_step(state, actions[:, PREFIX - 1 + k])
-        torch.cuda.synchronize(); latencies.append(time.perf_counter() - t0)
+            state, _, _, pred = model.imagine_step(
+                state, actions[:, PREFIX - 1 + k], deterministic_mode=True
+            )
         real = model.target_encoder(obs[:, PREFIX + k]).float()
         d_pred = cosine_distance(pred.selected.float(), real)
         d_copy = cosine_distance(anchor, real)
-        changed = d_copy >= d_copy.flatten().quantile(0.75)
+        local_pred = d_pred[:, model.cfg.registers :]
+        local_copy = d_copy[:, model.cfg.registers :]
+        raw_change = patch_change_scores(
+            obs[:, PREFIX - 1].cpu(), obs[:, PREFIX + k].cpu(), model.cfg.patch_size
+        )
+        changed = changed_patch_mask(raw_change).to(local_pred.device)
+        changed_summary = changed_window_summary(
+            local_pred, local_copy, changed, seed=500 + k
+        )
         per_k.append({
             "k": k + 1,
             "pred_cosine": float(d_pred.mean()),
             "copy_cosine": float(d_copy.mean()),
-            "pred_cosine_changed": float(d_pred[changed].mean()),
-            "copy_cosine_changed": float(d_copy[changed].mean()),
-            "beats_copy_changed": bool(d_pred[changed].mean() < d_copy[changed].mean()),
+            **changed_summary,
         })
-    return per_k, float(np.mean(latencies) * 1e3)
+
+    # Warm the exact deployment shape before timing. The old protocol charged
+    # one-time attention-kernel compilation to the first (GRU) arm only.
+    timing_action = actions[:, PREFIX - 1]
+    with torch.autocast("cuda", dtype=torch.bfloat16):
+        for _ in range(20):
+            state, _, _, _ = model.imagine_step(
+                state, timing_action, deterministic_mode=True
+            )
+    torch.cuda.synchronize()
+    timings = []
+    for _ in range(8):
+        start = torch.cuda.Event(enable_timing=True)
+        end = torch.cuda.Event(enable_timing=True)
+        start.record()
+        with torch.autocast("cuda", dtype=torch.bfloat16):
+            for _ in range(50):
+                state, _, _, _ = model.imagine_step(
+                    state, timing_action, deterministic_mode=True
+                )
+        end.record()
+        end.synchronize()
+        timings.append(start.elapsed_time(end) / 50)
+    latency = {
+        "median_ms": float(np.median(timings)),
+        "min_ms": float(np.min(timings)),
+        "max_ms": float(np.max(timings)),
+        "warmup_steps": 20,
+        "timed_steps": 8 * 50,
+    }
+    return per_k, latency
 
 
 def main():
+    raise RuntimeError(
+        "archived Phase D v1 is invalid for backend attribution: first obtain a "
+        "Phase-B-passing encoder, freeze the same checkpoint for both backends, "
+        "and implement a v2 matched-latent protocol"
+    )
     device = torch.device("cuda")
     data = load_shared_data()
     winner, winner_report = pick_mask_setting()
@@ -149,14 +261,16 @@ def main():
     cfg = ModelConfig(temporal_backend="gru", predictor="deterministic", mask_ratio=mask_ratio)
     gru = M3HJWM(cfg).to(device)
     gru.load_state_dict(torch.load(winner_report["checkpoint"], weights_only=False)["model"])
-    per_k, step_ms = openloop_eval(gru, data["heldout_episodes"], device)
+    per_k, latency = openloop_eval(gru, data["heldout_episodes"], device)
     results["gru"] = {"reused_phase_b_checkpoint": True, "openloop": per_k,
-                      "imagine_step_ms": step_ms}
+                      "imagine_step_latency": latency}
     del gru; torch.cuda.empty_cache()
 
     mamba, stats = train_backend("mamba2", mask_ratio, data, steps, device)
-    per_k, step_ms = openloop_eval(mamba, data["heldout_episodes"], device)
-    results["mamba2"] = {**stats, "openloop": per_k, "imagine_step_ms": step_ms}
+    per_k, latency = openloop_eval(mamba, data["heldout_episodes"], device)
+    results["mamba2"] = {
+        **stats, "openloop": per_k, "imagine_step_latency": latency
+    }
     torch.save({"model": mamba.state_dict()}, SCRATCH / "phase_d_mamba2.pt")
     del mamba; torch.cuda.empty_cache()
 

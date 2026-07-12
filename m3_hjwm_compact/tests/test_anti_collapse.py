@@ -14,9 +14,11 @@ import torch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from model import (  # noqa: E402
+    effective_rank,
     LossConfig,
     M3HJWM,
     ModelConfig,
+    multi_block_mask,
     variance_covariance_losses,
 )
 
@@ -55,6 +57,21 @@ def test_whitened_embeddings_are_not_penalized():
     assert covariance.item() < 0.02
 
 
+def test_fixed_position_codebook_cannot_fake_noncollapse():
+    """Flat rank can be maximal even when no token depends on the input."""
+    torch.manual_seed(1)
+    streams, dim = 18, 16
+    codebook = torch.randn(streams, dim)
+    codebook = codebook - codebook.mean(0, keepdim=True)
+    # Repeating a fixed spatial code across every observation must be recognized
+    # as collapse even though flattening tokens reports high rank.
+    x = codebook[None, None].expand(4, 8, streams, dim).contiguous()
+    assert float(effective_rank(x)) > 10
+    variance, covariance = variance_covariance_losses(x)
+    assert float(variance) > 0.95
+    assert float(covariance) == pytest.approx(0.0, abs=1e-8)
+
+
 def test_anti_collapse_is_on_by_default_and_reported():
     weights = LossConfig()
     assert weights.variance > 0 and weights.covariance > 0
@@ -82,7 +99,7 @@ def test_variance_loss_reaches_encoder_parameters():
 
 def test_mask_ratio_zero_disables_stochastic_masking():
     data = batch()
-    masked = M3HJWM(small_config())
+    masked = M3HJWM(small_config(mask_ratio=0.6))
     torch.manual_seed(11)
     first = masked(data).metrics["jepa"]
     second = masked(data).metrics["jepa"]
@@ -93,6 +110,23 @@ def test_mask_ratio_zero_disables_stochastic_masking():
     first = unmasked(data).metrics["jepa"]
     second = unmasked(data).metrics["jepa"]
     assert torch.allclose(first, second), "unmasked objective must be deterministic"
+
+
+def test_zero_ratio_mask_helper_returns_no_masked_tokens():
+    mask = multi_block_mask(32, 8, 0.0, 4, torch.device("cpu"))
+    assert not bool(mask.any())
+
+
+def test_mask_randomness_cannot_satisfy_anti_collapse_term():
+    data = batch()
+    model = M3HJWM(small_config(mask_ratio=0.6))
+    torch.manual_seed(12)
+    first = model(data).metrics
+    torch.manual_seed(13)
+    second = model(data).metrics
+    assert not torch.allclose(first["jepa"], second["jepa"])
+    torch.testing.assert_close(first["variance"], second["variance"])
+    torch.testing.assert_close(first["covariance"], second["covariance"])
 
 
 def test_mask_ratio_bounds_validated():

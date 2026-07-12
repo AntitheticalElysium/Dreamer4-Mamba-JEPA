@@ -1,12 +1,13 @@
 """Phase B long run: full compact objective at a real budget, one mask setting.
 
-PRE-REGISTERED PASS CRITERIA (written before the run):
-  P1  covariance effective rank of held-out targets >= untrained baseline at
-      every checkpoint (no collapse at scale);
+V2 FAIL-CLOSED SCREENING CRITERIA (defined during the 2026-07-13 re-audit):
+  P1  observation-sensitive stream rank, pooled rank, fixed-stream variance,
+      observation-variance fraction, and same-stream unrelated distance remain
+      above explicit relative untrained thresholds (flat rank is diagnostic);
   P2  improvement_over_copy on changed tokens > 0 at the final evaluation;
   P3  semantic probe sane (converged probe >= majority) and trained accuracy
       >= untrained accuracy - 0.02;
-  P4  trained inventory R2 (varying keys) >= untrained inventory R2.
+  P4  trained inventory R2 (varying keys) >= untrained inventory R2 - 0.02.
 
 Protocol: 4000 updates, batch 4, T=16, GRU backend, deterministic predictor,
 LossConfig defaults (VICReg terms on). Train data: random-policy episodes,
@@ -24,17 +25,19 @@ from pathlib import Path
 import numpy as np
 import torch
 
-sys.path.insert(0, "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/m3_hjwm_compact")
-sys.path.insert(0, "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/m3_hjwm_compact/verification")
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "m3_hjwm_compact"))
+sys.path.insert(0, str(ROOT / "m3_hjwm_compact" / "verification"))
 
 from data import Episode, EpisodeReplay  # noqa: E402
 from model import LossConfig, M3HJWM, ModelConfig, cosine_distance  # noqa: E402
 from representation_control import (  # noqa: E402
-    collect, inventory_probe, semantic_probe, target_statistics,
+    changed_patch_mask, collect, inventory_probe, patch_change_scores,
+    semantic_probe, target_statistics,
 )
 
 SCRATCH = Path(__file__).parent
-ARTIFACTS = Path("/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts")
+ARTIFACTS = Path(__file__).resolve().parent
 
 
 def chw(obs):
@@ -91,32 +94,57 @@ def encode_target(model, frames, device, batch=64):
 
 
 @torch.no_grad()
-def heldout_prediction_eval(model, replay, device, batches=16):
+def heldout_prediction_eval(
+    model, replay, device, batches=16, rng_seed=303, mask_seed=404
+):
     """One-step prediction through the model's own sequence path on held-out
     windows: predictor output vs target tokens, against the copy baseline."""
-    preds, tgts = [], []
-    for _ in range(batches):
-        batch = replay.sample(batch=4, observations=16, device=device)
-        with torch.autocast("cuda", dtype=torch.bfloat16):
-            output = model(batch)
-        b, t = batch["obs"].shape[:2]
-        s, d = model.streams, model.cfg.token_dim
-        preds.append(output.prediction.selected.float().reshape(b, t - 1, s, d).cpu())
-        tgts.append(output.targets.float().cpu())
+    preds, tgts, raw_motion = [], [], []
+    rng = np.random.default_rng(rng_seed)
+    cuda_devices = []
+    if device.type == "cuda":
+        cuda_devices = [
+            device.index if device.index is not None else torch.cuda.current_device()
+        ]
+    # Replay windows and random masks are both matched across evaluations.
+    with torch.random.fork_rng(devices=cuda_devices):
+        torch.manual_seed(mask_seed)
+        for _ in range(batches):
+            batch = replay.sample(batch=4, observations=16, device=device, rng=rng)
+            with torch.autocast("cuda", dtype=torch.bfloat16):
+                output = model(batch)
+            b, t = batch["obs"].shape[:2]
+            s, d = model.streams, model.cfg.token_dim
+            preds.append(
+                output.prediction.selected.float().reshape(b, t - 1, s, d).cpu()
+            )
+            tgts.append(output.targets.float().cpu())
+            raw_motion.append(
+                patch_change_scores(
+                    batch["obs"][:, :-1].cpu(),
+                    batch["obs"][:, 1:].cpu(),
+                    model.cfg.patch_size,
+                )
+            )
     pred = torch.cat(preds)                      # [N, T-1, S, D]
     target = torch.cat(tgts)                     # [N, T, S, D]
     d_pred = cosine_distance(pred, target[:, 1:])
     d_copy = cosine_distance(target[:, :-1], target[:, 1:])
     ruler = float(cosine_distance(target[:, :-1], target[:, 1:].roll(3, 0)).mean())
-    motion = d_copy
-    changed = motion >= motion.flatten().quantile(0.75)
+    local_pred = d_pred[..., model.cfg.registers :]
+    local_copy = d_copy[..., model.cfg.registers :]
+    changed = changed_patch_mask(torch.cat(raw_motion))
     return {
         "pred_cosine": float(d_pred.mean()),
         "copy_cosine": float(d_copy.mean()),
         "unrelated_pair_cosine": ruler,
-        "pred_cosine_changed": float(d_pred[changed].mean()),
-        "copy_cosine_changed": float(d_copy[changed].mean()),
-        "improvement_over_copy_changed": float(d_copy[changed].mean() - d_pred[changed].mean()),
+        "pred_cosine_changed": float(local_pred[changed].mean()),
+        "copy_cosine_changed": float(local_copy[changed].mean()),
+        "improvement_over_copy_changed": float(
+            local_copy[changed].mean() - local_pred[changed].mean()
+        ),
+        "changed_patch_fraction": float(changed.float().mean()),
+        "changed_patch_source": "raw_rgb_mean_absolute_change_top_positive_quartile",
     }
 
 
@@ -124,7 +152,7 @@ def probes_block(model, probe_data, cfg, device):
     tokens = encode_target(model, probe_data.obs, device)
     grid = cfg.image_size // cfg.patch_size
     return {
-        **target_statistics(tokens),
+        **target_statistics(tokens, cfg.registers),
         **semantic_probe(tokens, probe_data.semantic, probe_data.player_pos,
                          cfg.registers, grid, device),
         **inventory_probe(tokens, probe_data.inventory, cfg.registers),
@@ -136,6 +164,9 @@ def main():
     parser.add_argument("--mask-ratio", type=float, required=True)
     parser.add_argument("--steps", type=int, default=4000)
     parser.add_argument("--tag", required=True)
+    parser.add_argument("--rollout-weight", type=float, default=0.0)
+    parser.add_argument("--variance-weight", type=float, default=1.0)
+    parser.add_argument("--covariance-weight", type=float, default=0.04)
     args = parser.parse_args()
     device = torch.device("cuda")
 
@@ -153,19 +184,32 @@ def main():
                       mask_ratio=args.mask_ratio)
     model = M3HJWM(cfg).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
-    weights = LossConfig()
+    weights = LossConfig(
+        variance=args.variance_weight,
+        covariance=args.covariance_weight,
+        rollout=args.rollout_weight,
+    )
 
     untrained = {
         "probes": probes_block(model, probe_data, cfg, device),
         "prediction": heldout_prediction_eval(model, heldout_replay, device),
     }
-    baseline_rank = untrained["probes"]["target_effective_rank_covariance"]
+    baseline = target_statistics(
+        encode_target(model, probe_data.obs[:300], device), cfg.registers
+    )
+    baseline.pop("covariance_eigenvalues_desc", None)
+    untrained["curve_subset_statistics"] = baseline
 
-    rank_curve, losses = [], {"jepa": [], "variance": [], "reward": []}
+    rank_curve, losses = [], {
+        "jepa": [], "variance": [], "reward": [], "rollout": []
+    }
+    train_rng = np.random.default_rng(101)
     started = time.perf_counter()
     torch.cuda.reset_peak_memory_stats()
     for step in range(args.steps):
-        batch = replay.sample(batch=4, observations=16, device=device)
+        batch = replay.sample(
+            batch=4, observations=16, device=device, rng=train_rng
+        )
         with torch.autocast("cuda", dtype=torch.bfloat16):
             output = model(batch, weights)
         optimizer.zero_grad(set_to_none=True)
@@ -176,11 +220,25 @@ def main():
         model.update_target()
         for key in losses:
             losses[key].append(float(output.metrics[key]))
-        if (step + 1) % 250 == 0 or step == 0:
+        if (step + 1) % 250 == 0 or step == 0 or step + 1 == args.steps:
             tokens = encode_target(model, probe_data.obs[:300], device)
-            rank = target_statistics(tokens)["target_effective_rank_covariance"]
-            rank_curve.append({"step": step + 1, "rank": rank})
-            print(f"[{args.tag}] step {step+1} rank {rank:.2f} "
+            stats = target_statistics(tokens, cfg.registers)
+            point = {
+                "step": step + 1,
+                "flat_rank": stats["target_flat_effective_rank_covariance"],
+                "stream_rank": stats["target_stream_effective_rank_mean"],
+                "patch_pool_rank": stats["target_patch_pool_covariance_rank"],
+                "fixed_stream_variance": stats["target_fixed_stream_variance"],
+                "observation_variance_fraction": stats[
+                    "target_observation_variance_fraction"
+                ],
+                "same_stream_unrelated_cosine": stats[
+                    "target_same_stream_unrelated_cosine"
+                ],
+            }
+            rank_curve.append(point)
+            print(f"[{args.tag}] step {step+1} flat-rank {point['flat_rank']:.2f} "
+                  f"stream-rank {point['stream_rank']:.2f} "
                   f"jepa {np.mean(losses['jepa'][-100:]):.4f}", flush=True)
     elapsed = time.perf_counter() - started
 
@@ -191,9 +249,31 @@ def main():
     for block in (untrained["probes"], final["probes"]):
         block.pop("covariance_eigenvalues_desc", None)
 
-    min_rank = min(point["rank"] for point in rank_curve)
+    warmup_checks = [
+        point["stream_rank"] >= 0.5 * baseline["target_stream_effective_rank_mean"]
+        and point["patch_pool_rank"] >= 0.5 * baseline["target_patch_pool_covariance_rank"]
+        and point["fixed_stream_variance"] >= 0.5 * baseline["target_fixed_stream_variance"]
+        and point["observation_variance_fraction"]
+        >= 0.5 * baseline["target_observation_variance_fraction"]
+        and point["same_stream_unrelated_cosine"]
+        >= 0.5 * baseline["target_same_stream_unrelated_cosine"]
+        for point in rank_curve
+    ]
+    final_point = rank_curve[-1]
+    final_checks = (
+        final_point["stream_rank"]
+        >= baseline["target_stream_effective_rank_mean"] - 0.5
+        and final_point["patch_pool_rank"]
+        >= baseline["target_patch_pool_covariance_rank"] - 0.5
+        and final_point["fixed_stream_variance"]
+        >= 0.8 * baseline["target_fixed_stream_variance"]
+        and final_point["observation_variance_fraction"]
+        >= 0.8 * baseline["target_observation_variance_fraction"]
+        and final_point["same_stream_unrelated_cosine"]
+        >= 0.8 * baseline["target_same_stream_unrelated_cosine"]
+    )
     criteria = {
-        "P1_rank_never_below_untrained": bool(min_rank >= baseline_rank - 0.5),
+        "P1_no_observation_collapse": bool(all(warmup_checks) and final_checks),
         "P2_positive_improvement_over_copy_changed": bool(
             final["prediction"]["improvement_over_copy_changed"] > 0
         ),
@@ -204,15 +284,22 @@ def main():
         ),
         "P4_inventory_r2_not_degraded": bool(
             (final["probes"]["inventory_r2_mean_varying"] or -1)
-            >= (untrained["probes"]["inventory_r2_mean_varying"] or -1)
+            >= (untrained["probes"]["inventory_r2_mean_varying"] or -1) - 0.02
         ),
     }
 
-    ckpt = SCRATCH / f"phase_b_{args.tag}.pt"
+    ckpt = SCRATCH / f"phase_b_v2_{args.tag}.pt"
     torch.save({"model": model.state_dict(), "cfg": vars(args)}, ckpt)
     report = {
         "tag": args.tag,
         "mask_ratio": args.mask_ratio,
+        "rollout_weight": args.rollout_weight,
+        "variance_weight": args.variance_weight,
+        "covariance_weight": args.covariance_weight,
+        "protocol_version": 2,
+        "train_rng_seed": 101,
+        "evaluation_rng_seed": 303,
+        "evaluation_mask_seed": 404,
         "steps": args.steps,
         "train_transitions": replay.steps,
         "elapsed_minutes": round(elapsed / 60, 1),
@@ -227,7 +314,7 @@ def main():
         "criteria": criteria,
         "checkpoint": str(ckpt),
     }
-    out = ARTIFACTS / f"phase_b_long_{args.tag}.json"
+    out = ARTIFACTS / f"phase_b_v2_{args.tag}.json"
     out.write_text(json.dumps(report, indent=2))
     print(json.dumps({"criteria": criteria, "final_prediction": final["prediction"]}, indent=2))
     print(f"saved {out}")

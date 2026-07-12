@@ -11,7 +11,7 @@ import torch
 COMPACT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(COMPACT_ROOT))
 
-from model import M3HJWM, ModelConfig  # noqa: E402
+from model import LossConfig, M3HJWM, ModelConfig  # noqa: E402
 
 
 pytestmark = pytest.mark.skipif(
@@ -104,5 +104,49 @@ def test_mamba2_mixed_precision_sequence_gradients_are_finite():
     assert x.grad is not None and torch.isfinite(x.grad).all()
     assert all(
         parameter.grad is None or torch.isfinite(parameter.grad).all()
+        for parameter in model.temporal.parameters()
+    )
+
+
+def test_mamba2_fp32_deployment_cache_matches_autocast_sequence():
+    """Production initial_state defaults to fp32 even when calls use bf16 AMP."""
+    torch.manual_seed(43)
+    model = mamba2_model().float().eval()
+    x = torch.randn(2, 8, model.streams, 64, device="cuda")
+    with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16):
+        sequence, _ = model.temporal.sequence(x)
+        state = model.temporal.init_state(2, model.streams, x.device, torch.float32)
+        outputs = []
+        for index in range(x.shape[1]):
+            output, state = model.temporal.step(x[:, index], state)
+            outputs.append(output)
+        stepped = torch.stack(outputs, 1)
+    torch.testing.assert_close(sequence.float(), stepped.float(), atol=0.05, rtol=0.05)
+
+
+def test_mamba2_rollout_bridge_is_finite_and_differentiable():
+    torch.manual_seed(47)
+    model = mamba2_model().float().train()
+    cfg = model.cfg
+    data = {
+        "obs": torch.randint(
+            0, 256, (2, 4, 3, cfg.image_size, cfg.image_size),
+            dtype=torch.uint8, device="cuda",
+        ),
+        "actions": torch.randint(0, cfg.action_dim, (2, 3), device="cuda"),
+        "rewards": torch.zeros(2, 3, device="cuda"),
+        "continues": torch.ones(2, 3, device="cuda"),
+    }
+    weights = LossConfig(
+        jepa=0.0, mode_router=0.0, mode_balance=0.0, reward=0.0,
+        continuation=0.0, variance=0.0, covariance=0.0, rollout=1.0,
+        manifold=0.0, energy=0.0,
+    )
+    with torch.autocast("cuda", dtype=torch.bfloat16):
+        output = model(data, weights)
+    output.loss.backward()
+    assert torch.isfinite(output.metrics["rollout"])
+    assert any(
+        parameter.grad is not None and bool(torch.isfinite(parameter.grad).all())
         for parameter in model.temporal.parameters()
     )

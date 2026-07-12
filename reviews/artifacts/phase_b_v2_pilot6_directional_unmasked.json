@@ -1,0 +1,177 @@
+{
+  "tag": "pilot6_directional_unmasked",
+  "mask_ratio": 0.0,
+  "rollout_weight": 0.0,
+  "variance_weight": 1.0,
+  "covariance_weight": 0.04,
+  "protocol_version": 2,
+  "train_rng_seed": 101,
+  "evaluation_rng_seed": 303,
+  "steps": 500,
+  "train_transitions": 7867,
+  "elapsed_minutes": 0.3,
+  "peak_vram_mib": 193.8,
+  "loss_first_last_100": {
+    "jepa": [
+      0.4644117121398449,
+      0.15522626802325248
+    ],
+    "variance": [
+      0.648183102607727,
+      0.32909097388386727
+    ],
+    "reward": [
+      3.7936028361320497,
+      0.2190714009478688
+    ],
+    "rollout": [
+      0.0,
+      0.0
+    ]
+  },
+  "rank_curve": [
+    {
+      "step": 1,
+      "flat_rank": 12.562529563903809,
+      "stream_rank": 3.7484466049590175,
+      "patch_pool_rank": 1.4443078457610747,
+      "fixed_stream_variance": 0.047381769865751266,
+      "observation_variance_fraction": 0.4410671889781952
+    },
+    {
+      "step": 250,
+      "flat_rank": 6.598398685455322,
+      "stream_rank": 3.092397448634501,
+      "patch_pool_rank": 1.6010214567624321,
+      "fixed_stream_variance": 0.24003173410892487,
+      "observation_variance_fraction": 0.6908859014511108
+    },
+    {
+      "step": 500,
+      "flat_rank": 8.602143287658691,
+      "stream_rank": 4.741275715485959,
+      "patch_pool_rank": 2.873897666105623,
+      "fixed_stream_variance": 0.3600446581840515,
+      "observation_variance_fraction": 0.6335436105728149
+    }
+  ],
+  "untrained": {
+    "probes": {
+      "target_element_variance": 0.10937336087226868,
+      "target_effective_rank_singular": 37.891334533691406,
+      "target_effective_rank_covariance": 11.831820487976074,
+      "target_flat_effective_rank_covariance": 11.831820487976074,
+      "target_stream_effective_rank_mean": 3.831679328121648,
+      "target_stream_effective_rank_min": 1.4932547541152317,
+      "target_register_pool_effective_rank": 8.736078262329102,
+      "target_patch_pool_effective_rank": 8.755719184875488,
+      "target_register_pool_covariance_rank": 1.5089557158759175,
+      "target_patch_pool_covariance_rank": 1.397269464358311,
+      "target_fixed_stream_variance": 0.04711860418319702,
+      "target_position_variance": 0.062254760414361954,
+      "target_observation_variance_fraction": 0.43080511689186096,
+      "target_same_stream_unrelated_cosine": 0.1397339552640915,
+      "semantic_token_accuracy": 0.8957291841506958,
+      "semantic_train_accuracy": 0.9067708849906921,
+      "semantic_train_majority_accuracy": 0.7148958444595337,
+      "semantic_majority_accuracy": 0.7165625095367432,
+      "semantic_classes": 19,
+      "semantic_valid_fraction": 0.75,
+      "semantic_probe_sane": true,
+      "inventory_r2_mean_varying": 0.8686586183852778,
+      "inventory_r2": {
+        "health": 0.8283371587659963,
+        "food": 0.9183913158638876,
+        "drink": 0.905929727257401,
+        "energy": 0.821325955565652,
+        "sapling": 0.8693089344734525,
+        "wood": null,
+        "stone": null,
+        "coal": null,
+        "iron": null,
+        "diamond": null
+      }
+    },
+    "prediction": {
+      "pred_cosine": 1.0278924703598022,
+      "copy_cosine": 0.012857653200626373,
+      "unrelated_pair_cosine": 0.15172356367111206,
+      "pred_cosine_changed": 1.0227798223495483,
+      "copy_cosine_changed": 0.02420855686068535,
+      "improvement_over_copy_changed": -0.9985712766647339,
+      "changed_patch_fraction": 0.18095703423023224,
+      "changed_patch_source": "raw_rgb_mean_absolute_change_top_positive_quartile"
+    },
+    "curve_subset_statistics": {
+      "target_element_variance": 0.10737224668264389,
+      "target_effective_rank_singular": 38.270835876464844,
+      "target_effective_rank_covariance": 12.557759284973145,
+      "target_flat_effective_rank_covariance": 12.557759284973145,
+      "target_stream_effective_rank_mean": 3.7504632003488396,
+      "target_stream_effective_rank_min": 1.5361024808044477,
+      "target_register_pool_effective_rank": 8.170310974121094,
+      "target_patch_pool_effective_rank": 8.02042293548584,
+      "target_register_pool_covariance_rank": 1.556426783747817,
+      "target_patch_pool_covariance_rank": 1.4445480361893983,
+      "target_fixed_stream_variance": 0.04731137678027153,
+      "target_position_variance": 0.06006087362766266,
+      "target_observation_variance_fraction": 0.4406294524669647,
+      "target_same_stream_unrelated_cosine": 0.1566203385591507
+    }
+  },
+  "final": {
+    "probes": {
+      "target_element_variance": 0.5521194934844971,
+      "target_effective_rank_singular": 34.891292572021484,
+      "target_effective_rank_covariance": 9.660541534423828,
+      "target_flat_effective_rank_covariance": 9.660541534423828,
+      "target_stream_effective_rank_mean": 5.48565336063937,
+      "target_stream_effective_rank_min": 3.2853442919985825,
+      "target_register_pool_effective_rank": 14.704649925231934,
+      "target_patch_pool_effective_rank": 11.764387130737305,
+      "target_register_pool_covariance_rank": 3.375576661580613,
+      "target_patch_pool_covariance_rank": 3.024277666647051,
+      "target_fixed_stream_variance": 0.3748490512371063,
+      "target_position_variance": 0.17727044224739075,
+      "target_observation_variance_fraction": 0.6789274215698242,
+      "target_same_stream_unrelated_cosine": 0.40050363540649414,
+      "semantic_token_accuracy": 0.901145875453949,
+      "semantic_train_accuracy": 0.9118750095367432,
+      "semantic_train_majority_accuracy": 0.7148958444595337,
+      "semantic_majority_accuracy": 0.7165625095367432,
+      "semantic_classes": 19,
+      "semantic_valid_fraction": 0.75,
+      "semantic_probe_sane": true,
+      "inventory_r2_mean_varying": 0.8211596335580778,
+      "inventory_r2": {
+        "health": 0.8237852694750735,
+        "food": 0.9221592382635441,
+        "drink": 0.9220488601248578,
+        "energy": 0.5920074184254869,
+        "sapling": 0.8457973815014264,
+        "wood": null,
+        "stone": null,
+        "coal": null,
+        "iron": null,
+        "diamond": null
+      }
+    },
+    "prediction": {
+      "pred_cosine": 0.17263220250606537,
+      "copy_cosine": 0.038460053503513336,
+      "unrelated_pair_cosine": 0.43291929364204407,
+      "pred_cosine_changed": 0.20270955562591553,
+      "copy_cosine_changed": 0.06829023361206055,
+      "improvement_over_copy_changed": -0.13441932201385498,
+      "changed_patch_fraction": 0.18095703423023224,
+      "changed_patch_source": "raw_rgb_mean_absolute_change_top_positive_quartile"
+    }
+  },
+  "criteria": {
+    "P1_no_observation_collapse": true,
+    "P2_positive_improvement_over_copy_changed": false,
+    "P3_semantic_probe_sane_and_not_degraded": true,
+    "P4_inventory_r2_not_degraded": false
+  },
+  "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/phase_b_v2_pilot6_directional_unmasked.pt"
+}
