@@ -3,90 +3,90 @@
   "mask_ratio": 0.6,
   "steps": 4000,
   "train_transitions": 8280,
-  "elapsed_minutes": 4.6,
-  "peak_vram_mib": 181.2,
+  "elapsed_minutes": 5.5,
+  "peak_vram_mib": 191.7,
   "loss_first_last_100": {
     "jepa": [
-      0.5628173846006393,
-      0.21453369542956352
+      0.5468535962700843,
+      0.05374699365347624
     ],
     "variance": [
-      0.34043527506291865,
-      0.0018683455046266317
+      0.33726174719631674,
+      0.0029634648188948632
     ],
     "reward": [
-      3.933625795841217,
-      0.11420563637744635
+      3.809970452785492,
+      0.13542521334718913
     ]
   },
   "rank_curve": [
     {
       "step": 1,
-      "rank": 12.476324081420898
+      "rank": 12.484173774719238
     },
     {
       "step": 250,
-      "rank": 11.731724739074707
+      "rank": 11.862967491149902
     },
     {
       "step": 500,
-      "rank": 15.27324104309082
+      "rank": 15.667878150939941
     },
     {
       "step": 750,
-      "rank": 17.60807228088379
+      "rank": 17.38943862915039
     },
     {
       "step": 1000,
-      "rank": 18.839168548583984
+      "rank": 18.397157669067383
     },
     {
       "step": 1250,
-      "rank": 19.674922943115234
+      "rank": 19.27001953125
     },
     {
       "step": 1500,
-      "rank": 20.60369110107422
+      "rank": 20.192394256591797
     },
     {
       "step": 1750,
-      "rank": 21.64647102355957
+      "rank": 21.125429153442383
     },
     {
       "step": 2000,
-      "rank": 22.91301918029785
+      "rank": 22.082569122314453
     },
     {
       "step": 2250,
-      "rank": 24.277799606323242
+      "rank": 23.267078399658203
     },
     {
       "step": 2500,
-      "rank": 25.46065902709961
+      "rank": 24.447803497314453
     },
     {
       "step": 2750,
-      "rank": 26.53866195678711
+      "rank": 25.495878219604492
     },
     {
       "step": 3000,
-      "rank": 27.37790298461914
+      "rank": 26.52332878112793
     },
     {
       "step": 3250,
-      "rank": 28.212249755859375
+      "rank": 27.41046905517578
     },
     {
       "step": 3500,
-      "rank": 28.977397918701172
+      "rank": 28.177522659301758
     },
     {
       "step": 3750,
-      "rank": 29.606348037719727
+      "rank": 28.780073165893555
     },
     {
       "step": 4000,
-      "rank": 30.083452224731445
+      "rank": 29.248191833496094
     }
   ],
   "untrained": {
@@ -115,31 +115,31 @@
       }
     },
     "prediction": {
-      "pred_cosine": 0.9952795505523682,
-      "copy_cosine": 0.011024047620594501,
-      "unrelated_pair_cosine": 0.1490599364042282,
-      "pred_cosine_changed": 0.9866723418235779,
-      "copy_cosine_changed": 0.043275948613882065,
-      "improvement_over_copy_changed": -0.9433963894844055
+      "pred_cosine": 1.082209825515747,
+      "copy_cosine": 0.009987948462367058,
+      "unrelated_pair_cosine": 0.15791186690330505,
+      "pred_cosine_changed": 1.0804288387298584,
+      "copy_cosine_changed": 0.038916897028684616,
+      "improvement_over_copy_changed": -1.0415118932724
     }
   },
   "final": {
     "probes": {
-      "target_element_variance": 2.635478973388672,
-      "target_effective_rank_singular": 41.044960021972656,
-      "target_effective_rank_covariance": 30.0833797454834,
-      "semantic_token_accuracy": 0.8381250500679016,
-      "semantic_train_accuracy": 0.8457291722297668,
+      "target_element_variance": 2.451155662536621,
+      "target_effective_rank_singular": 41.179931640625,
+      "target_effective_rank_covariance": 29.170154571533203,
+      "semantic_token_accuracy": 0.8629167079925537,
+      "semantic_train_accuracy": 0.8730208277702332,
       "semantic_majority_accuracy": 0.7155208587646484,
       "semantic_classes": 18,
       "semantic_valid_fraction": 0.75,
       "semantic_probe_sane": true,
-      "inventory_r2_mean_varying": 0.3381903160146386,
+      "inventory_r2_mean_varying": 0.2913724547356875,
       "inventory_r2": {
-        "health": 0.8448794669695131,
-        "food": 0.11008151319049542,
-        "drink": 0.08461476336133333,
-        "energy": 0.3131855205372125,
+        "health": 0.6464393633408663,
+        "food": 0.5469156357596576,
+        "drink": 0.2787002868565025,
+        "energy": -0.30656546701427634,
         "sapling": null,
         "wood": null,
         "stone": null,
@@ -149,12 +149,12 @@
       }
     },
     "prediction": {
-      "pred_cosine": 0.2083291858434677,
-      "copy_cosine": 0.004871327895671129,
-      "unrelated_pair_cosine": 0.06820569187402725,
-      "pred_cosine_changed": 0.2419314831495285,
-      "copy_cosine_changed": 0.019261498004198074,
-      "improvement_over_copy_changed": -0.22266998887062073
+      "pred_cosine": 0.05325859785079956,
+      "copy_cosine": 0.012603445909917355,
+      "unrelated_pair_cosine": 0.16168345510959625,
+      "pred_cosine_changed": 0.08005411922931671,
+      "copy_cosine_changed": 0.04986162111163139,
+      "improvement_over_copy_changed": -0.030192498117685318
     }
   },
   "criteria": {

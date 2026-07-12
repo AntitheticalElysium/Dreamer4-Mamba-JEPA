@@ -3,90 +3,90 @@
   "mask_ratio": 0.0,
   "steps": 4000,
   "train_transitions": 8280,
-  "elapsed_minutes": 1.6,
-  "peak_vram_mib": 181.2,
+  "elapsed_minutes": 1.7,
+  "peak_vram_mib": 191.7,
   "loss_first_last_100": {
     "jepa": [
-      0.6008850854635238,
-      0.02997783524915576
+      0.4674796038866043,
+      0.014276039982214571
     ],
     "variance": [
-      0.2734998646378517,
-      0.0005372187402099371
+      0.304818726554513,
+      0.0006088569574058056
     ],
     "reward": [
-      3.8908467972278595,
-      0.04239542054972844
+      3.7253492188453676,
+      0.0455916647677077
     ]
   },
   "rank_curve": [
     {
       "step": 1,
-      "rank": 12.484516143798828
+      "rank": 12.484736442565918
     },
     {
       "step": 250,
-      "rank": 14.251300811767578
+      "rank": 13.149438858032227
     },
     {
       "step": 500,
-      "rank": 20.968788146972656
+      "rank": 20.846158981323242
     },
     {
       "step": 750,
-      "rank": 24.80280113220215
+      "rank": 25.42924690246582
     },
     {
       "step": 1000,
-      "rank": 27.53614616394043
+      "rank": 28.785907745361328
     },
     {
       "step": 1250,
-      "rank": 29.95354652404785
+      "rank": 30.869644165039062
     },
     {
       "step": 1500,
-      "rank": 31.965106964111328
+      "rank": 32.45795822143555
     },
     {
       "step": 1750,
-      "rank": 33.60014724731445
+      "rank": 34.13959884643555
     },
     {
       "step": 2000,
-      "rank": 34.9466552734375
+      "rank": 35.94609832763672
     },
     {
       "step": 2250,
-      "rank": 36.33710861206055
+      "rank": 37.308677673339844
     },
     {
       "step": 2500,
-      "rank": 37.58969497680664
+      "rank": 38.26875686645508
     },
     {
       "step": 2750,
-      "rank": 38.60853576660156
+      "rank": 39.05765151977539
     },
     {
       "step": 3000,
-      "rank": 39.515846252441406
+      "rank": 39.78368377685547
     },
     {
       "step": 3250,
-      "rank": 40.327491760253906
+      "rank": 40.50300598144531
     },
     {
       "step": 3500,
-      "rank": 40.996315002441406
+      "rank": 41.190555572509766
     },
     {
       "step": 3750,
-      "rank": 41.65203857421875
+      "rank": 41.86885070800781
     },
     {
       "step": 4000,
-      "rank": 42.347957611083984
+      "rank": 42.56333541870117
     }
   ],
   "untrained": {
@@ -115,31 +115,31 @@
       }
     },
     "prediction": {
-      "pred_cosine": 1.1219515800476074,
-      "copy_cosine": 0.01126839779317379,
-      "unrelated_pair_cosine": 0.14295852184295654,
-      "pred_cosine_changed": 1.1367969512939453,
-      "copy_cosine_changed": 0.04335353150963783,
-      "improvement_over_copy_changed": -1.0934433937072754
+      "pred_cosine": 1.0288540124893188,
+      "copy_cosine": 0.011604663915932178,
+      "unrelated_pair_cosine": 0.16692039370536804,
+      "pred_cosine_changed": 1.0275989770889282,
+      "copy_cosine_changed": 0.04494217038154602,
+      "improvement_over_copy_changed": -0.9826568365097046
     }
   },
   "final": {
     "probes": {
-      "target_element_variance": 1.0354840755462646,
-      "target_effective_rank_singular": 50.142982482910156,
-      "target_effective_rank_covariance": 42.377559661865234,
-      "semantic_token_accuracy": 0.8637500405311584,
-      "semantic_train_accuracy": 0.8736458420753479,
+      "target_element_variance": 1.0294218063354492,
+      "target_effective_rank_singular": 49.93031311035156,
+      "target_effective_rank_covariance": 42.62043762207031,
+      "semantic_token_accuracy": 0.8515625,
+      "semantic_train_accuracy": 0.8575000166893005,
       "semantic_majority_accuracy": 0.7155208587646484,
       "semantic_classes": 18,
       "semantic_valid_fraction": 0.75,
       "semantic_probe_sane": true,
-      "inventory_r2_mean_varying": -0.1792266240821061,
+      "inventory_r2_mean_varying": -1.1537892875823637,
       "inventory_r2": {
-        "health": 0.8407617568378573,
-        "food": -0.7260833750033411,
-        "drink": -0.9725183261332064,
-        "energy": 0.14093344797026586,
+        "health": 0.9634261957258058,
+        "food": -2.0567898945889853,
+        "drink": -3.7810442048632495,
+        "energy": 0.2592507533969737,
         "sapling": null,
         "wood": null,
         "stone": null,
@@ -149,19 +149,19 @@
       }
     },
     "prediction": {
-      "pred_cosine": 0.030506681650877,
-      "copy_cosine": 0.00719064474105835,
-      "unrelated_pair_cosine": 0.07247364521026611,
-      "pred_cosine_changed": 0.047017887234687805,
-      "copy_cosine_changed": 0.027855167165398598,
-      "improvement_over_copy_changed": -0.019162720069289207
+      "pred_cosine": 0.01609397493302822,
+      "copy_cosine": 0.006363137625157833,
+      "unrelated_pair_cosine": 0.06070185825228691,
+      "pred_cosine_changed": 0.031877707690000534,
+      "copy_cosine_changed": 0.024703027680516243,
+      "improvement_over_copy_changed": -0.007174680009484291
     }
   },
   "criteria": {
     "P1_rank_never_below_untrained": true,
     "P2_positive_improvement_over_copy_changed": false,
     "P3_semantic_probe_sane_and_not_degraded": false,
-    "P4_inventory_r2_not_degraded": true
+    "P4_inventory_r2_not_degraded": false
   },
   "checkpoint": "/tmp/claude-1000/-home-antithetical-EPITA-PERSO-DynamicHorizons-Mamba-JEPA/4ebd37e3-0b90-4a5a-89b7-11a73ff32f60/scratchpad/phase_b_unmasked.pt"
 }

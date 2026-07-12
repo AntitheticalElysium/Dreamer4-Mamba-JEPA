@@ -150,3 +150,39 @@ Test-harness lesson recorded: a constant perturbation sits in LayerNorm's null
 space — perturb with random directions when testing information flow.
 
 Phase B/D re-run under the identical pre-registered protocol: in progress.
+
+## Re-run with the attention predictor (identical protocol, commit b9c5e80)
+
+**Phase B (one-step, teacher-forced):** the fix does what the root-cause
+analysis predicted, but P2 is still short:
+
+| changed-token gap (copy − pred) | per-token MLP | attention predictor |
+|---|---|---|
+| masked | −0.223 | **−0.030** (7× closer) |
+| unmasked | −0.019 | **−0.0072** (pred 0.032 vs copy 0.025) |
+
+P1 passes (rank 29/43, rising). P3 unchanged-borderline (0.85–0.86 vs 0.89).
+P4 flips against unmasked (inventory R² −1.15; masked holds +0.29): with
+attention, the unmasked objective invests registers elsewhere. The masked arm
+is no longer prediction-crippled (0.080 vs copy 0.050), so the masking decision
+is genuinely open again.
+
+**Phase D (multi-step, open-loop): new dominant failure mode exposed.**
+D1 still fails for both backends — and the earlier "Mamba-2 wins D2" result
+**flips at multi-step**: with the attention predictor, Mamba-2 diverges in
+closed loop (changed-token error 0.027 → 0.21 → 0.52 → 0.74 at k=1,2,4,8)
+while GRU now degrades gracefully (0.038 → 0.27 at k=8; better than its
+previous 0.31, and 0.28 at k=16 vs 0.55 before). Reading: training is purely
+teacher-forced; feeding generated tokens back is out-of-distribution, and the
+SSM accumulates the drift where GRU's saturating gates bound it. Both D2
+verdicts (previous pro-Mamba, current pro-GRU) are single-seed screening
+results conditional on the predictor — the backend question is REOPENED, not
+answered.
+
+**Where this leaves the critical path.** One-step prediction is nearly at the
+copy bar; the binding failure is now closed-loop compounding — exactly what
+V-JEPA-2-AC's training recipe addresses with short multi-step rollout losses
+(teacher forcing + k-step rollout). Proposed next single change for the
+implementation agent: add a 2–4-step closed-loop rollout term to the world
+objective (V-JEPA-2-AC recipe, pinned source), re-run this identical protocol,
+and only then revisit backend choice and data scale.
