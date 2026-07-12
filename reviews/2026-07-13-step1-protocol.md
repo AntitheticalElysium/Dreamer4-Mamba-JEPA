@@ -81,3 +81,23 @@ LeJEPA/SIGReg image-level objective; no other knobs turned first.
 Step 3/4 (frozen-encoder temporal + backend attribution) follow the matrix as
 written in the re-audit; their thresholds will be pre-registered in their own
 protocol file after step 2 fixes the encoder.
+
+## Amendment 1c (pre-registered before the 1c run; after v1/v2 failures)
+
+- v1 (token-dropping I-JEPA): failed G2a/G2b/G3 — conv-stem leak (deviation 1)
+  made the task trivial (loss →0.009). As pre-registered, fallback applied.
+- v2 (leak-free SparK/CNN-JEPA sparse stem, pinned b7b246c): G3 recovered;
+  G2a/G2b still fail — I-JEPA asymmetry alone does not preserve per-stream
+  diversity at this scale. Protocol fallback #2 applies.
+- **Arm 1c `lejepa`**: identical to v2 plus SIGReg, the published LeJEPA
+  composition (pinned rbalestr-lab/lejepa @ c293d29, MINIMAL.md):
+  `loss = (1-λ)·L_ijepa + λ·L_SIGReg`, λ = 0.02 (their example default; official
+  grid 0.01-0.1). SIGReg ported verbatim (17-knot quadrature on [0,3], 256
+  fresh random unit projections, ECF match to standard Gaussian, ×N scaling)
+  with two labelled adaptations: (a) sample axis = observations per stream
+  (the corrected axis semantics; LeJEPA's axis is the image batch), statistic
+  averaged over streams; (b) applied directly to a dense online-encoder pass
+  with NO projector — the 2026-07-13 re-audit measured that a projector hides
+  encoder collapse (its VICReg-projector arm: flat rank 3.5), and the gates
+  measure encoder tokens.
+- Gates G1-G5 unchanged. Same data, seeds, budget.
