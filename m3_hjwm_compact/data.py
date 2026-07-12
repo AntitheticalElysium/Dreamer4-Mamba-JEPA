@@ -21,8 +21,16 @@ class EpisodeReplay:
         self.steps = 0
 
     def add(self, episode: Episode):
-        if len(episode.obs) != len(episode.actions) + 1:
-            raise ValueError("episode obs must have one more element than actions")
+        transitions = len(episode.actions)
+        if (
+            len(episode.obs) != transitions + 1
+            or len(episode.rewards) != transitions
+            or len(episode.continues) != transitions
+        ):
+            raise ValueError(
+                "episode actions/rewards/continues must have equal length and "
+                "obs must have one additional element"
+            )
         self.episodes.append(episode)
         self.steps += len(episode.actions)
         while self.steps > self.capacity_steps:
@@ -33,7 +41,7 @@ class EpisodeReplay:
         valid = [ep for ep in self.episodes if len(ep.obs) >= observations]
         if not valid:
             raise RuntimeError("no sufficiently long episode in replay")
-        obs, actions, rewards, continues = [], [], [], []
+        obs, actions, rewards, continues, previous_actions = [], [], [], [], []
         for _ in range(batch):
             ep = valid[np.random.randint(len(valid))]
             start = np.random.randint(0, len(ep.obs) - observations + 1)
@@ -41,11 +49,17 @@ class EpisodeReplay:
             actions.append(ep.actions[start:start + observations - 1])
             rewards.append(ep.rewards[start:start + observations - 1])
             continues.append(ep.continues[start:start + observations - 1])
+            previous = np.full(observations, -1, dtype=np.int64)
+            if start > 0:
+                previous[0] = ep.actions[start - 1]
+            previous[1:] = ep.actions[start:start + observations - 1]
+            previous_actions.append(previous)
         return {
             "obs": torch.from_numpy(np.stack(obs)).to(device),
             "actions": torch.from_numpy(np.stack(actions)).to(device),
             "rewards": torch.from_numpy(np.stack(rewards)).to(device),
             "continues": torch.from_numpy(np.stack(continues)).to(device),
+            "previous_actions": torch.from_numpy(np.stack(previous_actions)).to(device),
         }
 
 
@@ -78,4 +92,8 @@ class CrafterAdapter:
             done = bool(terminated or truncated)
         else:
             obs, reward, done, info = result
-        return self.chw(obs), float(reward), float(not done), info
+        continuation = info.get("discount")
+        if continuation is None:
+            # Gymnasium truncation is a time limit, not an absorbing transition.
+            continuation = float(not terminated) if len(result) == 5 else float(not done)
+        return self.chw(obs), float(reward), float(continuation), info

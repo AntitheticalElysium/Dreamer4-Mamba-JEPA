@@ -35,15 +35,19 @@ class ModelConfig:
     spatial_depth: int = 1
     spatial_heads: int = 4
 
-    temporal_backend: Literal["auto", "mamba3", "mamba2", "gru"] = "auto"
+    # Backends are selected explicitly so a failed Mamba import can never turn a
+    # named experiment into a GRU experiment. GRU is the portable default.
+    temporal_backend: Literal["auto", "mamba3", "mamba2", "gru"] = "gru"
     temporal_depth: int = 1
     mamba_d_state: int = 32
-    mamba_headdim: int = 32
+    mamba_headdim: int = 16
 
     action_dim: int = 17
-    predictor: Literal["deterministic", "mixture"] = "mixture"
+    # Mixtures remain an experimental control until the mode-validity gates pass.
+    predictor: Literal["deterministic", "mixture"] = "deterministic"
     predictor_depth: int = 2
     modes: int = 4
+    mode_balance_temperature: float = 0.1
     horizon_bins: int = 32
 
     reward_bins: int = 255
@@ -61,6 +65,8 @@ class ModelConfig:
             raise ValueError("token_dim must be divisible by spatial_heads")
         if self.predictor == "mixture" and self.modes < 2:
             raise ValueError("mixture predictor needs >=2 modes")
+        if self.mode_balance_temperature <= 0:
+            raise ValueError("mode_balance_temperature must be positive")
 
 
 @dataclass(frozen=True)
@@ -70,8 +76,10 @@ class LossConfig:
     mode_balance: float = 0.01
     reward: float = 1.0
     continuation: float = 1.0
-    manifold: float = 0.05
-    energy: float = 0.05
+    # Reliability auxiliaries are opt-in and must not shape the world model while
+    # they are uncalibrated shadow signals.
+    manifold: float = 0.0
+    energy: float = 0.0
 
 
 def symlog(x: Tensor) -> Tensor:
@@ -228,6 +236,13 @@ class EMARepresentationEncoder(nn.Module):
     def forward(self, obs: Tensor) -> Tensor:
         return self.model(obs)
 
+    def train(self, mode: bool = True):
+        # Parent-module .train() recursively visits children. Keep the teacher in
+        # inference mode even if stochastic/normalizing layers are added later.
+        super().train(False)
+        self.model.eval()
+        return self
+
 
 # ---------------------------------------------------------------------------
 # Temporal backend
@@ -285,6 +300,7 @@ class MambaSequenceAdapter(nn.Module):
     """
     def __init__(self, cfg: ModelConfig, version: str):
         super().__init__()
+        self.version = version
         try:
             if version == "mamba3":
                 from mamba_ssm.modules.mamba3 import Mamba3
@@ -318,25 +334,64 @@ class MambaSequenceAdapter(nn.Module):
         y = y.reshape(b, s, t, d).permute(0, 2, 1, 3)
         return y, TemporalState(None, y[:, -1])
 
-    def init_state(self, *args, **kwargs):
-        raise NotImplementedError("pin official commit and wire allocate_inference_cache()")
+    def init_state(self, batch: int, streams: int, device, dtype):
+        flat_batch = batch * streams
+        caches = [
+            tuple(
+                tensor
+                for tensor in layer.allocate_inference_cache(
+                    flat_batch, max_seqlen=1, device=device, dtype=dtype
+                )
+            )
+            for layer in self.layers
+        ]
+        output = torch.zeros(batch, streams, self.layers[0].d_model, device=device, dtype=dtype)
+        return TemporalState(caches, output)
 
-    def step(self, *args, **kwargs):
-        raise NotImplementedError("pin official commit and wire official step() exactly")
+    @staticmethod
+    def _reset_cache(cache: tuple[Tensor, ...], reset_rows: Tensor) -> None:
+        if not bool(reset_rows.any()):
+            return
+        for tensor in cache:
+            tensor[reset_rows] = 0
+
+    def step(self, x: Tensor, state: TemporalState, reset: Tensor | None = None):
+        if state.cache is None:
+            raise RuntimeError("Mamba recurrent step requires an allocated official cache")
+        b, s, d = x.shape
+        y = x.reshape(b * s, d)
+        if reset is not None:
+            reset_rows = reset.bool()[:, None].expand(b, s).reshape(-1)
+            for cache in state.cache:
+                self._reset_cache(cache, reset_rows)
+
+        next_caches = []
+        for layer, norm, cache in zip(self.layers, self.norms, state.cache):
+            residual = y
+            normalized = norm(y)
+            if self.version == "mamba3":
+                update, *next_cache = layer.step(normalized, *cache)
+            else:
+                update, *next_cache = layer.step(normalized[:, None], *cache)
+                update = update[:, 0]
+            y = residual + update
+            next_caches.append(tuple(next_cache))
+        output = y.reshape(b, s, d)
+        return output, TemporalState(next_caches, output)
 
 
 class TemporalModel(nn.Module):
     def __init__(self, cfg: ModelConfig):
         super().__init__()
-        wanted = "mamba3" if cfg.temporal_backend == "auto" else cfg.temporal_backend
+        if cfg.temporal_backend == "auto":
+            raise ValueError(
+                "temporal backend must be explicit; benchmark and select mamba2, "
+                "mamba3, or gru without silent substitution"
+            )
+        wanted = cfg.temporal_backend
         if wanted in ("mamba3", "mamba2"):
-            try:
-                self.impl = MambaSequenceAdapter(cfg, wanted)
-                self.name = wanted
-            except Exception as exc:
-                warnings.warn(f"{exc}; using GRU reference backend", RuntimeWarning)
-                self.impl = GRUTemporal(cfg.token_dim, cfg.temporal_depth)
-                self.name = "gru"
+            self.impl = MambaSequenceAdapter(cfg, wanted)
+            self.name = wanted
         else:
             self.impl = GRUTemporal(cfg.token_dim, cfg.temporal_depth)
             self.name = "gru"
@@ -392,7 +447,10 @@ class FuturePredictor(nn.Module):
         self.mode_embed = nn.Parameter(torch.randn(self.modes, cfg.token_dim) * 0.02)
         self.blocks = nn.ModuleList([PredictorBlock(cfg.token_dim) for _ in range(cfg.predictor_depth)])
         self.out = nn.Linear(cfg.token_dim, cfg.token_dim)
-        self.router = nn.Sequential(nn.LayerNorm(cfg.token_dim), nn.Linear(cfg.token_dim, self.modes))
+        self.router = nn.Sequential(
+            nn.LayerNorm(3 * cfg.token_dim),
+            nn.Linear(3 * cfg.token_dim, self.modes),
+        )
 
     def all_predictions(self, context: Tensor, action: Tensor, horizon: Tensor):
         b, s, d = context.shape
@@ -402,7 +460,12 @@ class FuturePredictor(nn.Module):
         for block in self.blocks:
             x = block(x)
         modes = self.out(x).reshape(b, self.modes, s, d)
-        logits = self.router(context.mean(1))
+        # MoP-JEPA defines context as (state, action). Omitting the action makes
+        # deployment routing incapable of representing action-dependent branches.
+        route_context = torch.cat(
+            [context.mean(1), self.action(action), self.horizon(horizon)], dim=-1
+        )
+        logits = self.router(route_context)
         return modes, logits
 
     def forward(self, context: Tensor, action: Tensor, horizon: Tensor, target: Tensor | None = None):
@@ -419,8 +482,18 @@ class FuturePredictor(nn.Module):
         selected = modes[torch.arange(b, device=context.device), assignment]
         regression = dist.gather(1, assignment[:, None]).mean()
         router_loss = F.cross_entropy(logits, assignment.detach()) if self.modes > 1 else regression.new_zeros(())
-        usage = F.one_hot(assignment, self.modes).float().mean(0)
-        balance = ((usage - 1.0 / self.modes) ** 2).mean() if self.modes > 1 else regression.new_zeros(())
+        if self.modes > 1:
+            # The paper's KL over hard argmin assignments is nondifferentiable and
+            # cannot itself prevent dead heads. This explicitly labelled soft
+            # surrogate has a gradient to the predictor heads; hard usage remains
+            # a diagnostic in the verification harness.
+            soft_assignment = torch.softmax(
+                -dist / self.cfg.mode_balance_temperature, dim=-1
+            )
+            usage = soft_assignment.mean(0).clamp_min(1e-8)
+            balance = (usage * (usage.log() + math.log(self.modes))).sum()
+        else:
+            balance = regression.new_zeros(())
         return Prediction(selected, modes if self.modes > 1 else None, assignment, logits, regression, router_loss, balance)
 
 
@@ -507,6 +580,7 @@ class ReliabilitySystem(nn.Module):
 class WorldState:
     temporal: TemporalState
     tokens: Tensor
+    revision: int
 
 
 @dataclass
@@ -515,6 +589,9 @@ class WorldOutput:
     metrics: dict[str, Tensor]
     context: Tensor
     targets: Tensor
+    prediction: Prediction
+    reward_logits: Tensor
+    continue_logits: Tensor
 
 
 class M3HJWM(nn.Module):
@@ -522,9 +599,12 @@ class M3HJWM(nn.Module):
         super().__init__()
         cfg.validate()
         self.cfg = cfg
+        self._revision = 0
         self.online_encoder = RepresentationEncoder(cfg)
         self.target_encoder = EMARepresentationEncoder(self.online_encoder, cfg.ema_decay)
-        self.action_input = nn.Embedding(cfg.action_dim, cfg.token_dim)
+        # The final index is a true begin-of-sequence action, distinct from
+        # Crafter's valid action 0.
+        self.action_input = nn.Embedding(cfg.action_dim + 1, cfg.token_dim)
         self.temporal = TemporalModel(cfg)
         self.future = FuturePredictor(cfg)
         self.reward = RewardHead(cfg)
@@ -541,15 +621,29 @@ class M3HJWM(nn.Module):
 
     def initial_state(self, batch: int, device, dtype=torch.float32):
         temporal = self.temporal.init_state(batch, self.streams, device, dtype)
-        return WorldState(temporal, temporal.output)
+        return WorldState(temporal, temporal.output, self._revision)
+
+    def _assert_fresh(self, state: WorldState) -> None:
+        if state.revision != self._revision:
+            raise RuntimeError(
+                "stale recurrent world state: rebuild it from a real replay prefix "
+                "after every world-model update"
+            )
+
+    def _previous_action_indices(self, previous_action: Tensor) -> Tensor:
+        bos = torch.full_like(previous_action, self.cfg.action_dim)
+        return torch.where(previous_action < 0, bos, previous_action)
 
     def observe_step(self, obs: Tensor, previous_action: Tensor, state: WorldState, reset: Tensor | None = None):
+        self._assert_fresh(state)
         tokens = self.online_encoder(obs)
+        previous_action = self._previous_action_indices(previous_action)
         x = tokens + self.action_input(previous_action)[:, None]
         out, temporal = self.temporal.step(x, state.temporal, reset)
-        return WorldState(temporal, out)
+        return WorldState(temporal, out, self._revision)
 
     def imagine_step(self, state: WorldState, action: Tensor, deterministic_mode: bool = False):
+        self._assert_fresh(state)
         b = action.shape[0]
         horizon = torch.ones(b, dtype=torch.long, device=action.device)
         modes, logits = self.future.all_predictions(state.tokens, action, horizon)
@@ -561,7 +655,7 @@ class M3HJWM(nn.Module):
         )
         x = generated + self.action_input(action)[:, None]
         next_tokens, temporal = self.temporal.step(x, state.temporal)
-        next_state = WorldState(temporal, next_tokens)
+        next_state = WorldState(temporal, next_tokens, self._revision)
         control = self.pool(next_tokens)
         return next_state, self.reward(control), self.continuation(control), pred
 
@@ -581,8 +675,15 @@ class M3HJWM(nn.Module):
         with torch.no_grad():
             targets = self.target_encoder(flat).reshape(b, t, self.streams, self.cfg.token_dim)
 
-        previous_action = torch.zeros(b, t, dtype=torch.long, device=obs.device)
-        previous_action[:, 1:] = actions
+        previous_action = batch.get("previous_actions")
+        if previous_action is None:
+            previous_action = torch.full(
+                (b, t), -1, dtype=torch.long, device=obs.device
+            )
+            previous_action[:, 1:] = actions
+        elif previous_action.shape != (b, t):
+            raise ValueError("previous_actions must be [B,T] when supplied")
+        previous_action = self._previous_action_indices(previous_action.long())
         temporal_input = context_repr + self.action_input(previous_action)[:, :, None]
         context, _ = self.temporal.sequence(temporal_input, resets)
 
@@ -598,7 +699,13 @@ class M3HJWM(nn.Module):
         continue_logits = self.continuation(post)
         reward_loss = self.reward.loss(reward_logits, rewards).mean()
         continue_loss = F.binary_cross_entropy_with_logits(continue_logits, continues)
-        manifold_loss, energy_loss = self.reliability.auxiliary_losses(flat_context, flat_action, flat_target)
+        if weights.manifold != 0.0 or weights.energy != 0.0:
+            manifold_loss, energy_loss = self.reliability.auxiliary_losses(
+                flat_context, flat_action, flat_target
+            )
+        else:
+            manifold_loss = flat_context.new_zeros(())
+            energy_loss = flat_context.new_zeros(())
 
         loss = (
             weights.jepa * prediction.regression
@@ -620,8 +727,19 @@ class M3HJWM(nn.Module):
             "energy": energy_loss.detach(),
             "target_effective_rank": effective_rank(targets.detach()),
         }
-        return WorldOutput(loss, metrics, context, targets)
+        return WorldOutput(
+            loss,
+            metrics,
+            context,
+            targets,
+            prediction,
+            reward_logits,
+            continue_logits,
+        )
 
     @torch.no_grad()
     def update_target(self):
         self.target_encoder.update(self.online_encoder)
+
+    def mark_parameters_updated(self):
+        self._revision += 1

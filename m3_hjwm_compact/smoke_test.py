@@ -66,6 +66,8 @@ def run():
     actor_opt = torch.optim.AdamW(agent.actor.parameters(), lr=3e-5)
     critic_opt = torch.optim.AdamW(agent.critics.parameters(), lr=3e-5)
     wm_metrics = world_update(world, batch(cfg, b=1, t=3), world_opt, train_cfg)
+    # Any cache produced before a world update is stale by construction.
+    start = world.initial_state(1, torch.device("cpu"))
     ac_metrics = actor_critic_update(world, agent, start, actor_opt, critic_opt, train_cfg)
 
     print("all smoke tests passed")

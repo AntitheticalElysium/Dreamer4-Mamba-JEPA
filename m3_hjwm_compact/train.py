@@ -51,6 +51,7 @@ def world_update(
     output.loss.backward()
     torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.grad_clip)
     optimizer.step()
+    model.mark_parameters_updated()
     model.update_target()
     return {name: float(value) for name, value in output.metrics.items()}
 
@@ -63,19 +64,21 @@ def actor_critic_update(
     critic_optimizer,
     cfg: TrainConfig,
 ):
-    # Categorical policy and mode selection use score-function gradients.
-    with frozen(world):
+    # Categorical policy and mode selection use score-function gradients. The
+    # imagination helper clones/detaches the start cache and evaluates world-model
+    # transitions under no_grad, leaving actor and critic graphs disjoint.
+    with autocast_context(next(world.parameters()).device, cfg.amp):
         trajectory = imagine(world, agent, start, cfg.imagination_horizon)
-    actor_loss, critic_loss, metrics = actor_critic_losses(
-        trajectory,
-        gamma=cfg.gamma,
-        lambda_=cfg.lambda_,
-        entropy_coef=cfg.entropy_coef,
-        use_reliability=cfg.use_reliability_weights,
-    )
+        actor_loss, critic_loss, metrics = actor_critic_losses(
+            trajectory,
+            gamma=cfg.gamma,
+            lambda_=cfg.lambda_,
+            entropy_coef=cfg.entropy_coef,
+            use_reliability=cfg.use_reliability_weights,
+        )
 
     actor_optimizer.zero_grad(set_to_none=True)
-    actor_loss.backward(retain_graph=True)
+    actor_loss.backward()
     torch.nn.utils.clip_grad_norm_(agent.actor.parameters(), cfg.grad_clip)
     actor_optimizer.step()
 

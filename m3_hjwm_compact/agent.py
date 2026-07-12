@@ -7,7 +7,7 @@ import torch
 from torch import Tensor, nn
 import torch.nn.functional as F
 
-from model import M3HJWM, WorldState
+from model import M3HJWM, TemporalState, WorldState
 
 
 class MLP(nn.Module):
@@ -67,26 +67,49 @@ def imagine(
     deterministic_policy: bool = False,
     deterministic_modes: bool = False,
 ):
-    state = start
+    def clone_detached(value):
+        if isinstance(value, Tensor):
+            return value.detach().clone()
+        if isinstance(value, list):
+            return [clone_detached(item) for item in value]
+        if isinstance(value, tuple):
+            return tuple(clone_detached(item) for item in value)
+        return value
+
+    # Official recurrent kernels update cache tensors in place. Clone the start
+    # state so repeated imagination calls cannot mutate a replay-prefix state, and
+    # detach it so critic losses cannot flow into the preceding world-model graph.
+    state = WorldState(
+        TemporalState(
+            clone_detached(start.temporal.cache),
+            start.temporal.output.detach().clone(),
+        ),
+        start.tokens.detach().clone(),
+        start.revision,
+    )
     controls = [world.pool(state.tokens)]
     actions, logps, ents, rewards, conts, errors, confidence = [], [], [], [], [], [], []
 
     for _ in range(horizon):
         control = controls[-1]
         action, logp, entropy = agent.sample(control, deterministic_policy)
-        next_state, reward_logits, continue_logits, pred = world.imagine_step(
-            state, action, deterministic_modes
-        )
-        reward = world.reward.decode(reward_logits)
-        continuation = torch.sigmoid(continue_logits)
-        next_control = world.pool(next_state.tokens)
+        # Categorical actions use a score-function estimator; no pathwise gradient
+        # through the frozen world is required. Keeping this block graph-free also
+        # prevents simultaneous world/actor/critic graphs on a 6 GB device.
+        with torch.no_grad():
+            next_state, reward_logits, continue_logits, pred = world.imagine_step(
+                state, action, deterministic_modes
+            )
+            reward = world.reward.decode(reward_logits)
+            continuation = torch.sigmoid(continue_logits)
+            next_control = world.pool(next_state.tokens)
 
-        value_disagreement = agent.value_members(next_control).var(0, unbiased=False)
-        signals = world.reliability.signals(
-            state.tokens, action, pred.selected, pred.all_modes, value_disagreement
-        )
-        predicted_error = world.reliability.predicted_error(signals)
-        weight = torch.exp(-predicted_error / max(reliability_temperature, 1e-6))
+            value_disagreement = agent.value_members(next_control).var(0, unbiased=False)
+            signals = world.reliability.signals(
+                state.tokens, action, pred.selected, pred.all_modes, value_disagreement
+            )
+            predicted_error = world.reliability.predicted_error(signals)
+            weight = torch.exp(-predicted_error / max(reliability_temperature, 1e-6))
 
         actions.append(action); logps.append(logp); ents.append(entropy)
         rewards.append(reward); conts.append(continuation)
