@@ -1,0 +1,167 @@
+{
+  "tag": "masked",
+  "mask_ratio": 0.6,
+  "steps": 4000,
+  "train_transitions": 8280,
+  "elapsed_minutes": 4.6,
+  "peak_vram_mib": 181.2,
+  "loss_first_last_100": {
+    "jepa": [
+      0.5628173846006393,
+      0.21453369542956352
+    ],
+    "variance": [
+      0.34043527506291865,
+      0.0018683455046266317
+    ],
+    "reward": [
+      3.933625795841217,
+      0.11420563637744635
+    ]
+  },
+  "rank_curve": [
+    {
+      "step": 1,
+      "rank": 12.476324081420898
+    },
+    {
+      "step": 250,
+      "rank": 11.731724739074707
+    },
+    {
+      "step": 500,
+      "rank": 15.27324104309082
+    },
+    {
+      "step": 750,
+      "rank": 17.60807228088379
+    },
+    {
+      "step": 1000,
+      "rank": 18.839168548583984
+    },
+    {
+      "step": 1250,
+      "rank": 19.674922943115234
+    },
+    {
+      "step": 1500,
+      "rank": 20.60369110107422
+    },
+    {
+      "step": 1750,
+      "rank": 21.64647102355957
+    },
+    {
+      "step": 2000,
+      "rank": 22.91301918029785
+    },
+    {
+      "step": 2250,
+      "rank": 24.277799606323242
+    },
+    {
+      "step": 2500,
+      "rank": 25.46065902709961
+    },
+    {
+      "step": 2750,
+      "rank": 26.53866195678711
+    },
+    {
+      "step": 3000,
+      "rank": 27.37790298461914
+    },
+    {
+      "step": 3250,
+      "rank": 28.212249755859375
+    },
+    {
+      "step": 3500,
+      "rank": 28.977397918701172
+    },
+    {
+      "step": 3750,
+      "rank": 29.606348037719727
+    },
+    {
+      "step": 4000,
+      "rank": 30.083452224731445
+    }
+  ],
+  "untrained": {
+    "probes": {
+      "target_element_variance": 0.1090582013130188,
+      "target_effective_rank_singular": 37.92438888549805,
+      "target_effective_rank_covariance": 11.88442611694336,
+      "semantic_token_accuracy": 0.8916667103767395,
+      "semantic_train_accuracy": 0.9026041626930237,
+      "semantic_majority_accuracy": 0.7155208587646484,
+      "semantic_classes": 18,
+      "semantic_valid_fraction": 0.75,
+      "semantic_probe_sane": true,
+      "inventory_r2_mean_varying": -0.4602960028299461,
+      "inventory_r2": {
+        "health": -2.353895839558935,
+        "food": 0.31636708867035435,
+        "drink": 0.30272268261128255,
+        "energy": -0.10637794304248627,
+        "sapling": null,
+        "wood": null,
+        "stone": null,
+        "coal": null,
+        "iron": null,
+        "diamond": null
+      }
+    },
+    "prediction": {
+      "pred_cosine": 0.9952795505523682,
+      "copy_cosine": 0.011024047620594501,
+      "unrelated_pair_cosine": 0.1490599364042282,
+      "pred_cosine_changed": 0.9866723418235779,
+      "copy_cosine_changed": 0.043275948613882065,
+      "improvement_over_copy_changed": -0.9433963894844055
+    }
+  },
+  "final": {
+    "probes": {
+      "target_element_variance": 2.635478973388672,
+      "target_effective_rank_singular": 41.044960021972656,
+      "target_effective_rank_covariance": 30.0833797454834,
+      "semantic_token_accuracy": 0.8381250500679016,
+      "semantic_train_accuracy": 0.8457291722297668,
+      "semantic_majority_accuracy": 0.7155208587646484,
+      "semantic_classes": 18,
+      "semantic_valid_fraction": 0.75,
+      "semantic_probe_sane": true,
+      "inventory_r2_mean_varying": 0.3381903160146386,
+      "inventory_r2": {
+        "health": 0.8448794669695131,
+        "food": 0.11008151319049542,
+        "drink": 0.08461476336133333,
+        "energy": 0.3131855205372125,
+        "sapling": null,
+        "wood": null,
+        "stone": null,
+        "coal": null,
+        "iron": null,
+        "diamond": null
+      }
+    },
+    "prediction": {
+      "pred_cosine": 0.2083291858434677,
+      "copy_cosine": 0.004871327895671129,
+      "unrelated_pair_cosine": 0.06820569187402725,
+      "pred_cosine_changed": 0.2419314831495285,
+      "copy_cosine_changed": 0.019261498004198074,
+      "improvement_over_copy_changed": -0.22266998887062073
+    }
+  },
+  "criteria": {
+    "P1_rank_never_below_untrained": true,
+    "P2_positive_improvement_over_copy_changed": false,
+    "P3_semantic_probe_sane_and_not_degraded": false,
+    "P4_inventory_r2_not_degraded": true
+  },
+  "checkpoint": "/tmp/claude-1000/-home-antithetical-EPITA-PERSO-DynamicHorizons-Mamba-JEPA/4ebd37e3-0b90-4a5a-89b7-11a73ff32f60/scratchpad/phase_b_masked.pt"
+}
