@@ -101,3 +101,24 @@ protocol file after step 2 fixes the encoder.
   encoder collapse (its VICReg-projector arm: flat rank 3.5), and the gates
   measure encoder tokens.
 - Gates G1-G5 unchanged. Same data, seeds, budget.
+
+## Amendment 1d (pre-registered before the 1d runs)
+
+1c result: G1a/G1b/G2a/G2b/G3/G5 PASS; G4 FAILS (registers 0.809 vs bar 0.835)
+— and supplementary analysis shows the loss of inventory information is real,
+not a probe-carrier artifact (HUD-row tokens 0.911→0.804, all-pool 0.907→0.796).
+No gate is amended. Observation for the record: every trained arm across both
+audits fails G4 (hybrid 0.728; re-audit corrected-VICReg 0.811; lejepa 0.809 vs
+untrained 0.855-0.87), so G4-as-constructed may be unpassable for lossy
+training at these budgets; this is to be settled with data, not by softening.
+
+**1d grid (all cells reported, no post-hoc selection):**
+λ ∈ {0.01, 0.02} × budget ∈ {300, 1000}; the (0.02, 300) cell is the existing
+1c run. λ stays inside the official LeJEPA grid. Curve logging gains the
+inventory R² every 50 updates to show whether retention recovers with budget.
+Gates G1-G5 unchanged. Decision rule:
+- any cell passes all gates → it advances to step 2 as-is;
+- no cell passes G4 but ≥1 cell passes all others AND its G4 trajectory is
+  flat/recovering ≥0.80 → G4 recalibration becomes a CONSENSUS question
+  (user + implementation agent), documented with all four cells; no
+  unilateral change.

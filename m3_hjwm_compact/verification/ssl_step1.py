@@ -143,9 +143,10 @@ def gates(final: dict, untrained: dict, losses: list[float]) -> dict:
     }
 
 
-def train_ijepa(cfg, frames, probe, steps, device, batch=64):
+def train_ijepa(cfg, frames, probe, steps, device, batch=64, sigreg_weight=0.0):
     torch.manual_seed(101)
     model = IJEPAPretrainer(cfg).to(device)
+    model.sigreg_weight = sigreg_weight
     params = list(model.online_encoder.parameters()) + list(model.predictor.parameters())
     optimizer = torch.optim.AdamW(params, lr=3e-4, weight_decay=1e-4)
     frame_rng = np.random.default_rng(2027)
@@ -228,18 +229,21 @@ def main():
         "untrained": untrained,
         "arms": {},
     }
-    if "ijepa" in args.arms:
-        model, losses, curve, aborted, minutes = train_ijepa(cfg, frames, probe, args.steps, device)
+    for arm_name, weight in (("ijepa", 0.0), ("lejepa", 0.02)):
+      if arm_name in args.arms:
+        model, losses, curve, aborted, minutes = train_ijepa(
+            cfg, frames, probe, args.steps, device, sigreg_weight=weight)
         final = probes_block(model.target_encoder, probe, cfg, device)
-        report["arms"]["ijepa"] = {
+        report["arms"][arm_name] = {
             "minutes": minutes, "aborted": aborted, "curve": curve,
+            "sigreg_weight": weight,
             "final": final, "gates": gates(final, untrained, losses),
         }
         torch.save(
             {"online": model.online_encoder.state_dict(),
              "target": model.target_encoder.state_dict(),
              "steps": args.steps},
-            ARTIFACTS / f"ssl_step1_ijepa_{args.tag}.pt",
+            ARTIFACTS / f"ssl_step1_{arm_name}_{args.tag}.pt",
         )
         del model
         torch.cuda.empty_cache()

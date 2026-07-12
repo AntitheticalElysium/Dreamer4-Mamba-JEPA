@@ -183,3 +183,30 @@ def test_leak_free_pretrainer_trains():
     loss.backward()
     stem_grads = [p.grad for p in model.online_encoder.stem.parameters()]
     assert any(g is not None and g.abs().sum() > 0 for g in stem_grads)
+
+
+def test_sigreg_prefers_gaussian_over_collapsed():
+    from ssl_ijepa import SIGReg
+
+    torch.manual_seed(13)
+    sigreg = SIGReg()
+    gaussian = torch.randn(512, 4, 16)
+    collapsed = torch.ones(512, 4, 16) + 0.01 * torch.randn(512, 4, 16)
+    low_rank = torch.randn(512, 4, 1).expand(512, 4, 16).contiguous()
+    g = float(sigreg(gaussian))
+    c = float(sigreg(collapsed))
+    r = float(sigreg(low_rank))
+    assert g < c / 10, f"gaussian {g} should score far below collapsed {c}"
+    assert g < r / 10, f"gaussian {g} should score far below rank-1 {r}"
+
+
+def test_sigreg_gradient_reaches_encoder():
+    cfg = config()
+    torch.manual_seed(14)
+    model = IJEPAPretrainer(cfg, leak_free=True)
+    model.sigreg_weight = 0.02
+    obs = torch.randint(0, 255, (4, 3, 64, 64), dtype=torch.uint8)
+    loss = model.loss(obs, torch.Generator().manual_seed(15))
+    loss.backward()
+    stem_grads = [p.grad for p in model.online_encoder.stem.parameters()]
+    assert any(g is not None and g.abs().sum() > 0 for g in stem_grads)

@@ -191,6 +191,44 @@ class IJEPAPredictor(nn.Module):
         return self.proj(self.norm(x[:, -pred_index.shape[1]:]))
 
 
+class SIGReg(nn.Module):
+    """Sketched Isotropic Gaussian Regularization, ported from the pinned
+    official LeJEPA (rbalestr-lab/lejepa @ c293d29, MINIMAL.md): empirical
+    characteristic function of 256 random 1-D projections matched to the
+    standard Gaussian on a 17-knot quadrature grid over [0, 3], scaled by the
+    sample count.
+
+    Adaptations (reviews/2026-07-13-step1-protocol.md, amendment 1c): the
+    sample axis is observations-at-a-fixed-stream (corrected axis semantics),
+    statistic averaged over streams; applied to encoder tokens directly, no
+    projector (a projector was measured to hide encoder collapse).
+    """
+
+    def __init__(self, knots: int = 17, projections: int = 256):
+        super().__init__()
+        self.projections = projections
+        t = torch.linspace(0, 3, knots, dtype=torch.float32)
+        dt = 3 / (knots - 1)
+        weights = torch.full((knots,), 2 * dt, dtype=torch.float32)
+        weights[[0, -1]] = dt
+        window = torch.exp(-t.square() / 2.0)
+        self.register_buffer("t", t)
+        self.register_buffer("phi", window)
+        self.register_buffer("weights", weights * window)
+
+    def forward(self, tokens: Tensor) -> Tensor:
+        """tokens: [B, S, D]; samples = B observations at each fixed stream."""
+        proj = tokens.float().transpose(0, 1)            # [S, B, D]
+        directions = torch.randn(
+            proj.size(-1), self.projections, device=proj.device
+        )
+        directions = directions / directions.norm(p=2, dim=0).clamp_min(1e-12)
+        x_t = (proj @ directions).unsqueeze(-1) * self.t  # [S, B, P, K]
+        err = (x_t.cos().mean(-3) - self.phi).square() + x_t.sin().mean(-3).square()
+        statistic = (err @ self.weights) * proj.size(-2)
+        return statistic.mean()
+
+
 class IJEPAPretrainer(nn.Module):
     def __init__(self, cfg: ModelConfig, leak_free: bool = True):
         super().__init__()
@@ -201,6 +239,10 @@ class IJEPAPretrainer(nn.Module):
         self.online_encoder = RepresentationEncoder(cfg)
         self.target_encoder = EMARepresentationEncoder(self.online_encoder, cfg.ema_decay)
         self.predictor = IJEPAPredictor(cfg)
+        # LeJEPA composition (amendment 1c): loss = (1-l)*prediction + l*SIGReg.
+        # sigreg_weight = 0 recovers the pure I-JEPA arm.
+        self.sigreg = SIGReg()
+        self.sigreg_weight = 0.0
 
     def _encode_context(self, obs: Tensor, context_index: Tensor) -> Tensor:
         if not self.leak_free:
@@ -237,7 +279,17 @@ class IJEPAPretrainer(nn.Module):
                 1, pred_index[..., None].expand(-1, -1, targets.shape[-1])
             )
             total = total + F.smooth_l1_loss(prediction, block_target)
-        return total / len(pred_indices)
+        prediction_loss = total / len(pred_indices)
+        if self.sigreg_weight == 0.0:
+            return prediction_loss
+        # Dense online pass so mask randomness cannot satisfy the regularizer
+        # (re-audit correction) and gradients shape the whole token map.
+        dense = self.online_encoder(obs)
+        sigreg_loss = self.sigreg(dense)
+        return (
+            (1.0 - self.sigreg_weight) * prediction_loss
+            + self.sigreg_weight * sigreg_loss
+        )
 
     @torch.no_grad()
     def update_target(self):
