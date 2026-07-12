@@ -22,11 +22,66 @@ from torch import Tensor, nn
 import torch.nn.functional as F
 
 from model import (
+    ConvBlock,
     EMARepresentationEncoder,
     ModelConfig,
     RepresentationEncoder,
     SpatialBlock,
 )
+
+
+def _masked_group_norm(norm: nn.GroupNorm, x: Tensor, active: Tensor) -> Tensor:
+    """GroupNorm(1, C) with statistics over visible positions only.
+
+    SparK computes norm statistics on non-masked positions (sparse_encoder.py::
+    sp_bn_forward in the pinned CNN-JEPA); with dense statistics the masked
+    zeros would bias mean/var and leak the mask pattern itself.
+    """
+    if norm.num_groups != 1:
+        raise NotImplementedError("masked path supports GroupNorm(1, C) only")
+    weight = active.expand_as(x)
+    count = weight.sum(dim=(1, 2, 3), keepdim=True).clamp_min(1.0)
+    mean = (x * weight).sum(dim=(1, 2, 3), keepdim=True) / count
+    var = ((x - mean).pow(2) * weight).sum(dim=(1, 2, 3), keepdim=True) / count
+    out = (x - mean) / (var + norm.eps).sqrt()
+    out = out * norm.weight.view(1, -1, 1, 1) + norm.bias.view(1, -1, 1, 1)
+    return out * active
+
+
+def _sparse_stage(module: nn.Module, x: Tensor, active: Tensor) -> Tensor:
+    """Execute a stem module sparsely: re-zero masked positions after every conv
+    and use visible-only norm statistics (SparK sp_conv_forward recipe)."""
+    if isinstance(module, nn.Conv2d):
+        x = module(x)
+        if module.stride[0] > 1:
+            active = F.max_pool2d(active, kernel_size=module.stride, stride=module.stride)
+        return x * active, active
+    if isinstance(module, nn.GroupNorm):
+        return _masked_group_norm(module, x, active), active
+    if isinstance(module, ConvBlock):
+        residual = x
+        y = x
+        for child in module.net:
+            y, active = _sparse_stage(child, y, active)
+        return residual + y, active
+    x = module(x)  # pointwise activations keep zeros at zero (SiLU(0) == 0)
+    return x * active, active
+
+
+def sparse_stem_tokens(
+    encoder: RepresentationEncoder, obs: Tensor, patch_active: Tensor
+) -> Tensor:
+    """Leak-free local tokens: masked-patch content cannot influence visible
+    tokens. `patch_active` is [B, grid, grid] True at VISIBLE patches."""
+    x = obs.float() / 255.0 if obs.dtype == torch.uint8 else obs.float()
+    scale = x.shape[-1] // patch_active.shape[-1]
+    active = patch_active[:, None].float()
+    active = active.repeat_interleave(scale, dim=2).repeat_interleave(scale, dim=3)
+    x = x * active
+    for module in encoder.stem:
+        x, active = _sparse_stage(module, x, active)
+    x = encoder.project(x) * active
+    return x.flatten(2).transpose(1, 2)
 
 
 def sincos_2d_pos_embed(dim: int, grid: int) -> Tensor:
@@ -137,14 +192,32 @@ class IJEPAPredictor(nn.Module):
 
 
 class IJEPAPretrainer(nn.Module):
-    def __init__(self, cfg: ModelConfig):
+    def __init__(self, cfg: ModelConfig, leak_free: bool = True):
         super().__init__()
         cfg.validate()
         self.cfg = cfg
+        self.leak_free = leak_free
         self.grid = cfg.image_size // cfg.patch_size
         self.online_encoder = RepresentationEncoder(cfg)
         self.target_encoder = EMARepresentationEncoder(self.online_encoder, cfg.ema_decay)
         self.predictor = IJEPAPredictor(cfg)
+
+    def _encode_context(self, obs: Tensor, context_index: Tensor) -> Tensor:
+        if not self.leak_free:
+            return self.online_encoder(obs, visible_index=context_index)
+        # SparK-style sparse execution (pinned CNN-JEPA): masked-patch content
+        # cannot reach visible tokens through the conv receptive field.
+        active = torch.zeros(
+            obs.shape[0], self.grid * self.grid, dtype=torch.bool, device=obs.device
+        )
+        active.scatter_(1, context_index, True)
+        local = sparse_stem_tokens(
+            self.online_encoder, obs, active.reshape(-1, self.grid, self.grid)
+        )
+        local = local.gather(
+            1, context_index[..., None].expand(-1, -1, local.shape[-1])
+        )
+        return self.online_encoder.mix(local)
 
     def loss(self, obs: Tensor, generator) -> Tensor:
         context_index, pred_indices = sample_ijepa_masks(
@@ -152,7 +225,7 @@ class IJEPAPretrainer(nn.Module):
         )
         device = obs.device
         context_index = context_index.to(device)
-        context = self.online_encoder(obs, visible_index=context_index)
+        context = self._encode_context(obs, context_index)
         with torch.no_grad():
             full = self.target_encoder(obs)
             targets = F.layer_norm(full, (full.shape[-1],))[:, self.cfg.registers:]

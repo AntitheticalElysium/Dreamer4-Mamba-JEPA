@@ -123,3 +123,63 @@ def test_sincos_embedding_distinguishes_rows_and_columns():
     assert pos.shape == (64, 64)
     distances = torch.cdist(pos, pos)
     assert distances[distances > 0].min() > 1e-3
+
+
+def _two_frames_differing_only_under_mask(cfg):
+    torch.manual_seed(9)
+    grid = cfg.image_size // cfg.patch_size
+    active = torch.ones(1, grid, grid, dtype=torch.bool)
+    active[0, 2:5, 2:5] = False  # masked block
+    a = torch.randint(0, 255, (1, 3, 64, 64), dtype=torch.uint8)
+    b = a.clone()
+    pixel = active.repeat_interleave(8, 1).repeat_interleave(8, 2)
+    noise = torch.randint(0, 255, b.shape, dtype=torch.uint8)
+    b[:, :, ~pixel[0]] = noise[:, :, ~pixel[0]]
+    return a, b, active
+
+
+def test_sparse_stem_is_leak_free_and_dense_stem_is_not():
+    from ssl_ijepa import sparse_stem_tokens
+
+    cfg = config()
+    torch.manual_seed(8)
+    encoder = RepresentationEncoder(cfg).eval()
+    a, b, active = _two_frames_differing_only_under_mask(cfg)
+    with torch.no_grad():
+        sparse_a = sparse_stem_tokens(encoder, a, active)
+        sparse_b = sparse_stem_tokens(encoder, b, active)
+        dense_a = encoder.project(encoder.stem(a.float() / 255.0)).flatten(2).transpose(1, 2)
+        dense_b = encoder.project(encoder.stem(b.float() / 255.0)).flatten(2).transpose(1, 2)
+    visible = active.flatten(1)[0]
+    leak_sparse = (sparse_a[:, visible] - sparse_b[:, visible]).abs().max()
+    leak_dense = (dense_a[:, visible] - dense_b[:, visible]).abs().max()
+    assert float(leak_sparse) < 1e-5, f"sparse path leaks masked content: {leak_sparse}"
+    # sensitivity guard: the dense path MUST leak, or this test tests nothing
+    assert float(leak_dense) > 1e-3, "dense-path leak vanished; test insensitive"
+
+
+def test_sparse_stem_matches_dense_when_everything_visible():
+    from ssl_ijepa import sparse_stem_tokens
+
+    cfg = config()
+    torch.manual_seed(10)
+    encoder = RepresentationEncoder(cfg).eval()
+    obs = torch.randint(0, 255, (2, 3, 64, 64), dtype=torch.uint8)
+    grid = cfg.image_size // cfg.patch_size
+    with torch.no_grad():
+        sparse = sparse_stem_tokens(
+            encoder, obs, torch.ones(2, grid, grid, dtype=torch.bool)
+        )
+        dense = encoder.project(encoder.stem(obs.float() / 255.0)).flatten(2).transpose(1, 2)
+    assert torch.allclose(sparse, dense, atol=1e-4), "all-visible sparse != dense"
+
+
+def test_leak_free_pretrainer_trains():
+    cfg = config()
+    torch.manual_seed(11)
+    model = IJEPAPretrainer(cfg, leak_free=True)
+    obs = torch.randint(0, 255, (4, 3, 64, 64), dtype=torch.uint8)
+    loss = model.loss(obs, torch.Generator().manual_seed(12))
+    loss.backward()
+    stem_grads = [p.grad for p in model.online_encoder.stem.parameters()]
+    assert any(g is not None and g.abs().sum() > 0 for g in stem_grads)

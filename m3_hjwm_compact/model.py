@@ -292,6 +292,10 @@ class RepresentationEncoder(nn.Module):
             local = local.gather(
                 1, visible_index[..., None].expand(-1, -1, local.shape[-1])
             )
+        return self.mix(local)
+
+    def mix(self, local: Tensor) -> Tensor:
+        """Prepend registers and run the spatial mixer over given local tokens."""
         regs = self.registers.expand(local.shape[0], -1, -1)
         tokens = torch.cat([regs, local], dim=1)
         for block in self.spatial:
