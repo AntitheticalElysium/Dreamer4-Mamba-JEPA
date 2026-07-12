@@ -186,3 +186,48 @@ V-JEPA-2-AC's training recipe addresses with short multi-step rollout losses
 implementation agent: add a 2–4-step closed-loop rollout term to the world
 objective (V-JEPA-2-AC recipe, pinned source), re-run this identical protocol,
 and only then revisit backend choice and data scale.
+
+## Rollout-loss experiment (option 3): D1 crossed for the first time
+
+Protocol and criteria pre-registered in `reviews/artifacts/rollout_loss_experiment.py`
+(V-JEPA-2-AC Eq. 3-4: unweighted `L_forward + L_rollout`, T=2, final-step cosine,
+gradient through the predictor→temporal→predictor composition via re-run
+parallel scans). Unmasked, 4000 updates, same data/seed as all prior runs.
+
+| open-loop, changed tokens | GRU pred/copy | Mamba-2 pred/copy |
+|---|---|---|
+| k=4 | 0.112 / 0.114 **← beats copy** | 0.068 / 0.063 |
+| k=8 | 0.174 / 0.201 **← beats copy** | 0.116 / 0.122 **← beats copy** |
+| k=16 | 0.227 / 0.273 **← beats copy** | 0.165 / 0.181 **← beats copy** |
+
+- **R2 / D1 (beats copy at some k ≤ 8): PASS for both backends** — first time
+  any model in this project (old repo included) has beaten the copy baseline in
+  open loop. GRU crosses at k=4, Mamba-2 at k=8; both stay better through k=16.
+- **Mamba-2: all criteria pass.** R1: 7.6×/6.4× improvement at k=4/8 (0.520→0.068,
+  0.740→0.116) — the divergence is fully resolved by the bridge. R3: one-step
+  0.0333 vs 0.0319 baseline (+4%).
+- **GRU: R1 formally missed** (1.8×/1.5× vs required 2×) and **R3 missed**
+  (one-step 0.0486, +52%) — GRU pays for multi-step stability with one-step
+  accuracy; Mamba-2 does not.
+- **The backend story stabilizes:** without the bridge the SSM amplified
+  out-of-distribution feedback (previous run's divergence); with the bridge,
+  Mamba-2 beats GRU at every horizon again, plus the standing 7.5× recurrent
+  speed advantage. D2 verdict: **Mamba-2 default, conditional on the bridge —
+  which is now a validated part of the objective.**
+- Cost: +2 parallel-scan passes/update; 3.2-3.4 min per 4k-update run; 722 MiB
+  peak. Rollout losses converge (0.54→0.023).
+
+Caveats: single seed, screening scale, random-policy data; k ≤ 2 does not beat
+copy (near-unbeatable one-step bar, as analyzed) — the crossover at k=4-8 sits
+exactly at the spec's imagination horizon (5-8).
+
+**Consensus package for the implementation-agent handoff:**
+1. Implement the rollout term in `m3_hjwm_compact` properly (scratchpad probe
+   archived as reference; needs a config flag, tests: gradient-through-
+   composition, loss-decreases regression, backend parity).
+2. Spec v2 amendments per `2026-07-12-imagination-bridge-analysis.md` §4
+   (objective term, backend=mamba2 default, Phase E/F calibrate on imagined
+   states, options 1/2 recorded as non-goals).
+3. Next gates in order: Phase E (reward/continue calibration on imagined
+   states from real prefixes), then 3-seed confirmation of this result, then
+   Phase F shadow-reliability calibration. Phase G stays gated on E.
