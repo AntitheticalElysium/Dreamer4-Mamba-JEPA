@@ -439,16 +439,6 @@ class TemporalModel(nn.Module):
 # Future predictor, task heads, and reliability
 # ---------------------------------------------------------------------------
 
-class PredictorBlock(nn.Module):
-    def __init__(self, dim: int):
-        super().__init__()
-        self.norm = nn.LayerNorm(dim)
-        self.net = nn.Sequential(nn.Linear(dim, 4 * dim), nn.GELU(), nn.Linear(4 * dim, dim))
-
-    def forward(self, x: Tensor) -> Tensor:
-        return x + self.net(self.norm(x))
-
-
 @dataclass
 class Prediction:
     selected: Tensor
@@ -463,18 +453,35 @@ class Prediction:
 class FuturePredictor(nn.Module):
     """Deterministic or hard-assigned multi-predictor JEPA future model.
 
-    The mixture is an experimental backend motivated by MoP-JEPA. It must be
-    verified with shuffled-context, input-agnostic-codebook, mode-precision, and
-    route-validity controls before claiming useful multimodality.
+    Architecture follows the pinned JEPA sources, not a per-token MLP: I-JEPA's
+    predictor is a ViT (self-attention across tokens, positional embeddings);
+    V-JEPA-2-AC prepends action/state tokens to the frame-token sequence and
+    attends jointly (`ac_predictor.py`). Cross-token attention is load-bearing
+    here: Crafter's dominant transition shifts content BETWEEN token positions,
+    which per-token maps cannot express (measured: the per-token-MLP predictor
+    never beat the copy baseline on changed tokens; see reviews/).
+
+    The mixture is an experimental backend motivated by MoP-JEPA. Note the
+    paper mixes over a POOLED latent with well-separated modes; measured Crafter
+    branch dispersion (0.0075 pooled cosine) is far below its separation regime,
+    so the deterministic predictor is the Crafter default.
     """
     def __init__(self, cfg: ModelConfig):
         super().__init__()
         self.cfg = cfg
+        grid = cfg.image_size // cfg.patch_size
+        self.streams = cfg.registers + grid * grid
         self.action = nn.Embedding(cfg.action_dim, cfg.token_dim)
         self.horizon = nn.Embedding(cfg.horizon_bins, cfg.token_dim)
         self.modes = cfg.modes if cfg.predictor == "mixture" else 1
         self.mode_embed = nn.Parameter(torch.randn(self.modes, cfg.token_dim) * 0.02)
-        self.blocks = nn.ModuleList([PredictorBlock(cfg.token_dim) for _ in range(cfg.predictor_depth)])
+        # The encoder is convolutional with no explicit positions; the predictor
+        # needs them to express directional movement (I-JEPA: predictor_pos_embed).
+        self.pos_embed = nn.Parameter(torch.randn(1, self.streams, cfg.token_dim) * 0.02)
+        self.blocks = nn.ModuleList(
+            [SpatialBlock(cfg.token_dim, cfg.spatial_heads) for _ in range(cfg.predictor_depth)]
+        )
+        self.norm = nn.LayerNorm(cfg.token_dim)
         self.out = nn.Linear(cfg.token_dim, cfg.token_dim)
         self.router = nn.Sequential(
             nn.LayerNorm(3 * cfg.token_dim),
@@ -483,12 +490,21 @@ class FuturePredictor(nn.Module):
 
     def all_predictions(self, context: Tensor, action: Tensor, horizon: Tensor):
         b, s, d = context.shape
-        x = context[:, None] + self.action(action)[:, None, None] + self.horizon(horizon)[:, None, None]
-        x = x + self.mode_embed[None, :, None]
+        x = context
+        if s == self.streams:
+            x = x + self.pos_embed
+        # else: pooled/synthetic harness contexts (single stream); positions are
+        # meaningless there and the conditioning tokens still carry action/horizon.
+        x = x[:, None].expand(b, self.modes, s, d) + self.mode_embed[None, :, None]
         x = x.reshape(b * self.modes, s, d)
+        # V-JEPA-2-AC style: conditioning enters as tokens in the attention
+        # sequence, not as a broadcast add over every token.
+        conditioning = torch.stack([self.action(action), self.horizon(horizon)], dim=1)
+        conditioning = conditioning[:, None].expand(b, self.modes, 2, d).reshape(b * self.modes, 2, d)
+        x = torch.cat([conditioning, x], dim=1)
         for block in self.blocks:
             x = block(x)
-        modes = self.out(x).reshape(b, self.modes, s, d)
+        modes = self.out(self.norm(x[:, 2:])).reshape(b, self.modes, s, d)
         # MoP-JEPA defines context as (state, action). Omitting the action makes
         # deployment routing incapable of representing action-dependent branches.
         route_context = torch.cat(

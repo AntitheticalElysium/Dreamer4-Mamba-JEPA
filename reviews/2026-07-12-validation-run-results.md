@@ -95,3 +95,58 @@ B/D under identical protocol. Secondary levers if needed, in order: more data
   architecture is the suspect.
 - Phase D: D1 fail (blocks Phase G), D2 answered (Mamba-2).
 - Phases E/F/G: remain blocked pending D1.
+
+---
+
+# Addendum: MoP-JEPA applicability (numbers) and predictor ground-truth alignment
+
+## MoP-JEPA read in full (2607.05238) — why it does not transfer to Crafter
+
+The paper is internally sound: for stochastic branchings, a regression-optimal
+single predictor outputs the conditional mean of successor embeddings (Prop. 1),
+and hard-assigned heads converge to a quantizer of the transition distribution
+(Prop. 3) — *under a well-separated-modes assumption*. Its testbeds are OGBench
+teleport mazes, where a successor "mode" is a distant maze cell: mode separation
+is on the order of the distance between unrelated states.
+
+Measured in the paper's own currency (pooled L2-normalized latents, cosine
+distance, trained Phase B encoder; `reviews/artifacts/crafter_branch_latents_*`):
+
+| quantity (pooled cosine) | value |
+|---|---|
+| Crafter branch dispersion, same action, 8 RNG branches (mean) | **0.0075** |
+| … p90 / max over 60 probe states | 0.011 / 0.277 |
+| one-step copy distance (ordinary world drift) | 0.0141 |
+| unrelated-state distance (MoP's mode-separation scale) | **0.284** |
+
+Crafter's typical stochastic spread is **2.6%** of the separation scale MoP's
+propositions assume, and **half** the deterministic one-step motion the
+predictor must model anyway. Hard assignment (argmin over head distances) would
+be decided at the 0.0075 scale while training error lives at 0.03–0.05: no
+learnable mode structure, except for ~1–2% of transitions (the 0.277 outlier —
+consequential combat/health branches exist but are rare). Conclusion: MoP-JEPA
+motivates the mixture *interface*, not its use on Crafter. Two port deviations
+also noted for the record: the paper mixes over a **pooled** latent (compact
+port mixed over 66 dense tokens) and L2-normalizes latents before prediction.
+
+## Predictor brought back to JEPA ground truth
+
+Checked both pinned implementations: I-JEPA's predictor is a ViT
+(self-attention across tokens + positional embeddings); V-JEPA-2-AC's
+(`ac_predictor.py`) prepends learned action/state tokens to the frame-token
+sequence and attends jointly. The compact predictor was a per-token MLP — an
+undocumented divergence from every source, and the measured root cause of the
+failed copy-fidelity bar.
+
+Change (commit below): `FuturePredictor` now uses self-attention blocks over
+[action token, horizon token, context tokens + learned positional embeddings],
+V-JEPA-2-AC-shaped conditioning, LayerNorm + projection head (I-JEPA shape).
+Deviations from source, justified: depth 2 and no separate predictor width
+(model is 64-dim; I-JEPA's narrowing/deepening is a large-scale concern).
+
+Test-first: `test_predictor.py` written before the change; cross-token flow and
+position sensitivity failed on the per-token MLP, pass after (28/28 suite).
+Test-harness lesson recorded: a constant perturbation sits in LayerNorm's null
+space — perturb with random directions when testing information flow.
+
+Phase B/D re-run under the identical pre-registered protocol: in progress.

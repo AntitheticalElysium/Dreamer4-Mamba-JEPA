@@ -1,0 +1,12 @@
+{
+  "probes": 60,
+  "branches": 8,
+  "branch_dispersion_pooled_mean": 0.00751521090666453,
+  "branch_dispersion_pooled_p90": 0.011294484138488771,
+  "branch_dispersion_pooled_max": 0.27667236328125,
+  "branch_dispersion_worst_token_mean": 0.028286333878835043,
+  "one_step_copy_pooled_mean": 0.014135381206870079,
+  "unrelated_pair_pooled_mean": 0.28373390436172485,
+  "ratio_dispersion_to_copy": 0.5316595850285231,
+  "ratio_dispersion_to_unrelated": 0.026486827238959735
+}
