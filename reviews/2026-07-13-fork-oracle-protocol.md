@@ -69,3 +69,46 @@ Follow-ups also adopted from the companion's verification record: small-replay
 hash recorded; per-arm checkpoint hash manifest committed;
 m3_hjwm/ARCHITECTURE_SPEC.md status reconciliation delegated to the
 implementation agent (its own suggestion) after this consensus round.
+
+## Results (48 anchors, 4 env seeds, 12 branches; artifacts fork_oracle_v1.json)
+
+- **R-A: the S3-A bar is GENEROUSLY reachable — the aleatoric-ceiling
+  hypothesis is dead.** Empirical oracle deterministic error on changed patches
+  at k=8: 0.006 vs copy 0.101 — a **91% relative improvement** (cluster 95%
+  CI [86%, 95%]; identical on day-only anchors). The branch-future conditional
+  mean is nearly a point; environment stochasticity is almost irrelevant on
+  changed patches. The ≥5% bar is reachable eighteen times over BY CONSTRUCTION
+  in the same frozen latent space. The gap between our trained models
+  (margin ≈ 0) and the oracle is entirely a MODEL deficiency.
+- **R-B: actions carry massive signal.** 81% of anchors are action-effective;
+  median effect/dispersion = 22.6. The evaluation distribution can discriminate
+  action-conditioned dynamics; the trained models' action-shuffle insensitivity
+  (companion diagnostic) is therefore a model failure, not a dataset artifact.
+- **R-C: consequential stochasticity is modest** (~7% branch divergence in
+  reward/inventory/achievements at k=8; termination/health 0%).
+- **Registers: copy 0.144 vs oracle 0.0013** — register futures are nearly
+  deterministic; the companion's register-drift finding also reflects untapped
+  headroom, not noise.
+
+Combined diagnosis: gate sound, distribution sound, bar reachable, actions
+informative — and the dynamics stack (temporal core + predictor over the frozen
+space) captures almost none of it, settling at copy-parity where an oracle gets
+91%. The wall is in the dynamics learning, with candidate causes: (a) loss
+allocation — static tokens dominate the JEPA gradient, and copying is optimal
+for ~85% of tokens (cf. Dreamer 4's ramp loss weight, which exists precisely to
+focus capacity on high-signal terms); (b) optimization budget (losses still
+declining at 4,000 updates — companion's observation); (c) predictor/action-
+pathway capacity at d=64.
+
+## Consensus question (options, cheapest-discriminating first)
+
+1. **Budget-extension probe:** identical S3-v2 protocol, 4k → 16k updates,
+   rollout=1 arms only, 3 seeds. Zero new knobs; directly tests the underfit
+   hypothesis the companion raised.
+2. **Step 4 as diagnostic at the surviving budget** (user directive: Mamba is
+   the next goal): GRU vs Mamba-2, same frozen encoder/replay indices — the
+   temporal core is inside the failing stack, so backend comparison is now
+   lever-relevant, not just thesis-relevant.
+3. **Changed-token loss weighting** (Dreamer-4 ramp-weight precedent, adapted):
+   only if (1) fails to move the margin; labelled adaptation with its own
+   pre-registration.
