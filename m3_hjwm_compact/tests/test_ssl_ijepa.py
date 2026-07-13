@@ -191,9 +191,10 @@ def test_sigreg_prefers_gaussian_over_collapsed():
 
     torch.manual_seed(13)
     sigreg = SIGReg()
-    gaussian = torch.randn(512, 4, 16)
-    collapsed = torch.ones(512, 4, 16) + 0.01 * torch.randn(512, 4, 16)
-    low_rank = torch.randn(512, 4, 1).expand(512, 4, 16).contiguous()
+    # Official LeJEPA layout: [views, image samples, projection features].
+    gaussian = torch.randn(1, 512, 16)
+    collapsed = torch.ones(1, 512, 16) + 0.01 * torch.randn(1, 512, 16)
+    low_rank = torch.randn(1, 512, 1).expand(1, 512, 16).contiguous()
     g = float(sigreg(gaussian))
     c = float(sigreg(collapsed))
     r = float(sigreg(low_rank))
@@ -201,7 +202,27 @@ def test_sigreg_prefers_gaussian_over_collapsed():
     assert g < r / 10, f"gaussian {g} should score far below rank-1 {r}"
 
 
-def test_sigreg_gradient_reaches_encoder():
+def test_sigreg_matches_pinned_lejepa_axis_exactly():
+    from ssl_ijepa import SIGReg
+
+    sigreg = SIGReg()
+    projected = torch.randn(3, 19, 11)
+    torch.manual_seed(140)
+    actual = sigreg(projected)
+
+    # MINIMAL.md @ c293d291, kept explicit to catch an accidental transpose of
+    # the view and image-sample axes.
+    torch.manual_seed(140)
+    directions = torch.randn(projected.size(-1), 256)
+    directions = directions / directions.norm(p=2, dim=0)
+    x_t = (projected @ directions).unsqueeze(-1) * sigreg.t
+    err = ((x_t.cos().mean(-3) - sigreg.phi).square()
+           + x_t.sin().mean(-3).square())
+    expected = ((err @ sigreg.weights) * projected.size(-2)).mean()
+    assert torch.equal(actual, expected)
+
+
+def test_global_sigreg_gradient_reaches_encoder_and_projector():
     cfg = config()
     torch.manual_seed(14)
     model = IJEPAPretrainer(cfg, leak_free=True)
@@ -210,7 +231,9 @@ def test_sigreg_gradient_reaches_encoder():
     loss = model.loss(obs, torch.Generator().manual_seed(15))
     loss.backward()
     stem_grads = [p.grad for p in model.online_encoder.stem.parameters()]
+    projector_grads = [p.grad for p in model.projector.parameters()]
     assert any(g is not None and g.abs().sum() > 0 for g in stem_grads)
+    assert any(g is not None and g.abs().sum() > 0 for g in projector_grads)
 
 
 def test_target_blocks_are_rectangles_with_batch_shared_size():

@@ -199,10 +199,9 @@ class SIGReg(nn.Module):
     standard Gaussian on a 17-knot quadrature grid over [0, 3], scaled by the
     sample count.
 
-    Adaptations (reviews/2026-07-13-step1-protocol.md, amendment 1c): the
-    sample axis is observations-at-a-fixed-stream (corrected axis semantics),
-    statistic averaged over streams; applied to encoder tokens directly, no
-    projector (a projector was measured to hide encoder collapse).
+    Input follows the official layout exactly: [views, image samples,
+    projection features]. The empirical characteristic function is averaged
+    over image samples (axis -3), then over views and random projections.
     """
 
     def __init__(self, knots: int = 17, projections: int = 256):
@@ -217,14 +216,18 @@ class SIGReg(nn.Module):
         self.register_buffer("phi", window)
         self.register_buffer("weights", weights * window)
 
-    def forward(self, tokens: Tensor) -> Tensor:
-        """tokens: [B, S, D]; samples = B observations at each fixed stream."""
-        proj = tokens.float().transpose(0, 1)            # [S, B, D]
+    def forward(self, projected_views: Tensor) -> Tensor:
+        """`projected_views`: [views, image samples, projection features]."""
+        if projected_views.ndim != 3:
+            raise ValueError(
+                "SIGReg expects [views, image samples, projection features]"
+            )
+        proj = projected_views.float()
         directions = torch.randn(
             proj.size(-1), self.projections, device=proj.device
         )
         directions = directions / directions.norm(p=2, dim=0).clamp_min(1e-12)
-        x_t = (proj @ directions).unsqueeze(-1) * self.t  # [S, B, P, K]
+        x_t = (proj @ directions).unsqueeze(-1) * self.t  # [V, N, P, knots]
         err = (x_t.cos().mean(-3) - self.phi).square() + x_t.sin().mean(-3).square()
         statistic = (err @ self.weights) * proj.size(-2)
         return statistic.mean()
@@ -240,22 +243,15 @@ class IJEPAPretrainer(nn.Module):
         self.online_encoder = RepresentationEncoder(cfg)
         self.target_encoder = EMARepresentationEncoder(self.online_encoder, cfg.ema_decay)
         self.predictor = IJEPAPredictor(cfg)
-        # LeJEPA composition (amendment 1c): loss = (1-l)*prediction + l*SIGReg.
-        # sigreg_weight = 0 recovers the pure I-JEPA arm. sigreg_mode selects
-        # where the regularizer acts (amendment 1g):
-        #   "stream": per-stream over observations on all dense tokens (1c-1f);
-        #   "global": official LeJEPA axis — one pooled embedding per image
-        #             through a projector (MINIMAL.md: MLP w/ BatchNorm), SIGReg
-        #             over the image batch;
-        #   "scoped": per-stream, world-view rows 0-5 only (48 tokens), no
-        #             direct pressure on HUD rows or registers.
+        # Labelled I-JEPA/LeJEPA composition (protocol amendment 1g):
+        # loss = (1-l)*masked_prediction + l*SIGReg. SIGReg acts only at the
+        # official LeJEPA application point: one global projected embedding per
+        # image, with the image batch as its sample axis. sigreg_weight = 0
+        # recovers the pure I-JEPA control.
         self.sigreg = SIGReg()
         self.sigreg_weight = 0.0
-        self.sigreg_mode = "stream"
-        grid = cfg.image_size // cfg.patch_size
-        self.world_streams = 6 * grid  # rows 0-5 of the 8x8 grid
         # Official projector shape (MINIMAL.md: MLP(512,[2048,2048,128], BN)),
-        # scaled to d=64. Used by "global" mode only; gates never read it.
+        # scaled to the compact encoder width. Gates never read it.
         self.projector = nn.Sequential(
             nn.Linear(cfg.token_dim, 4 * cfg.token_dim),
             nn.BatchNorm1d(4 * cfg.token_dim), nn.ReLU(),
@@ -323,17 +319,13 @@ class IJEPAPretrainer(nn.Module):
         prediction_loss = total / len(pred_indices)
         if self.sigreg_weight == 0.0:
             return prediction_loss, prediction_loss.detach(), obs.new_zeros(())
-        # Dense online pass so mask randomness cannot satisfy the regularizer
-        # (re-audit correction) and gradients shape the whole token map.
+        # Dense online pass so mask randomness cannot satisfy the regularizer.
+        # Mean pooling supplies one architecture-neutral global embedding per
+        # image; [None, B, D] is LeJEPA's [views, samples, features] layout for
+        # the single-view Crafter input.
         dense = self.online_encoder(obs)
-        if self.sigreg_mode == "global":
-            pooled = self.projector(dense.mean(1))
-            sigreg_loss = self.sigreg(pooled[:, None, :])
-        elif self.sigreg_mode == "scoped":
-            regs = self.cfg.registers
-            sigreg_loss = self.sigreg(dense[:, regs:regs + self.world_streams])
-        else:
-            sigreg_loss = self.sigreg(dense)
+        projected = self.projector(dense.mean(1))
+        sigreg_loss = self.sigreg(projected[None])
         combined = (
             (1.0 - self.sigreg_weight) * prediction_loss
             + self.sigreg_weight * sigreg_loss

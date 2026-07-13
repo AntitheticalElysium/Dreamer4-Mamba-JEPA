@@ -340,3 +340,20 @@ step-1 encoder. Companion verification of this run is requested before step 3
 formally launches; the step-3 protocol (frozen encoder; rollout 0 vs 1;
 3 seeds; GRU; paired window-bootstrap copy margin) will be pre-registered in
 its own file.
+
+### Post-1g implementation verification and consolidation
+
+Companion verification reproduced the saved G4' mean/UCB, strictly loaded the
+winner checkpoint, and confirmed numerical equality between its global SIGReg
+path and `MINIMAL.md @ c293d291` under identical random directions. The
+operative implementation is therefore global-only: the historical dense-stream
+and Crafter-row-scoped modes were removed from executable code, while their
+artifacts above remain as negative evidence.
+
+One shadow-only instrumentation mismatch was found: the recorded 1g
+`heldout_sigreg_fixedproj` series evaluated dense per-stream tokens, not the
+global projector output. It was not a gate and does not affect the step-1
+verdict; the gated held-out pretext series and the training SIGReg component are
+correct. Future runs evaluate the shadow SIGReg diagnostic on globally pooled,
+projected embeddings with fixed random directions and the projector in eval
+mode, so held-out evaluation cannot mutate BatchNorm state.
