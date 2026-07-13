@@ -132,3 +132,44 @@ Data-scale rerun (single training lever, defined by TRANSITIONS):
 - Rollout steps/weights, budget (4000), architecture, optimizer unchanged.
 Decision: gates evaluated on the 40k arms; the 7.9k arms are the attribution
 baseline. All 12 reported regardless.
+
+## S3-v2 results (12 arms, corrected instrument; stop per decision rule)
+
+Provenance: encoder/replay/heldout sha256 in step3_v2.json; per-arm checkpoints
+with raw window rows saved. 138 non-overlapping manifest windows, 20 episodes.
+
+**S3-B′ (paired cluster inference): PASS 3/3 at BOTH scales.** Paired
+rollout1−rollout0 differences +0.029..+0.088 with cluster-CI lower bounds all
+> 0 (min +0.024). The bridge effect is now statistically established on the
+corrected instrument — upgraded from the v1 "directional evidence".
+
+**S3-A: FAIL at both scales (1/3 seeds each; the passing seed differs by
+scale).** Roll-1 margins scatter around zero (−0.018..+0.009; 32-55% of
+windows beat copy).
+
+**Data-scale attribution (the registered single lever): NO EFFECT.** 7,871 →
+42,979 transitions produced no systematic S3-A movement (seed-101 even
+declined). The "more data turns parity into a win" hypothesis is refuted at
+this scale. S3-C: 2/3 at 40k (seed 303 exceeded the 1.2× one-step tolerance).
+
+Structural hypothesis for consensus (not acted on): the S3-A residual may be
+aleatoric-capped. The Phase C fork probe measured that ~53% of transitions
+carry small creature-jitter divergence; a deterministic predictor cannot beat
+copy on unpredictable patches in expectation — it can only match copy there
+and win on predictable changes (view shifts). If jitter patches are a large
+fraction of the changed-patch mask at k=8, the registered ≥5% margin may be
+structurally unreachable regardless of training. This is measurable: fork-probe
+labelling of predictable vs jitter patches on the same held-out windows.
+
+## Consensus question (options)
+
+1. **Aleatoric-decomposition analysis** (measurement, no training): label
+   changed patches predictable-vs-jitter via the fork probe on the manifest
+   windows; report the S3-A margin separately per class. If the residual is
+   jitter-dominated → redesign S3-A on predictable patches (gate change,
+   dual consensus) or gate Phase-E quantities instead.
+2. **rollout_steps 2 → 4** — the last untried training lever; cheap
+   pre-registered 6-arm run.
+3. **Proceed to step 4 (backend attribution)** under S3-B′/S3-C: a paired
+   GRU-vs-Mamba-2 comparison is well-posed without an absolute copy win; the
+   S3-A question can be settled in parallel. Protocol change, dual consensus.
