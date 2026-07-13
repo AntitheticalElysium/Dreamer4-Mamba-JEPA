@@ -26,10 +26,45 @@ from data import Episode, EpisodeReplay  # noqa: E402
 from model import LossConfig, M3HJWM, ModelConfig  # noqa: E402
 from ssl_ijepa import IJEPAPretrainer  # noqa: E402
 from ssl_step1 import load_shared_data  # noqa: E402
-from phase_d_backend import openloop_eval  # noqa: E402  (audited instrument)
+from openloop_v2 import openloop_eval_v2, paired_difference_gate  # noqa: E402
 
 ARTIFACTS = REPO_ROOT / "reviews" / "artifacts"
 ENCODER_CKPT = ARTIFACTS / "ssl_step1_lejepa_global_g1000.pt"
+TRAIN_40K_CACHE = REPO_ROOT / "data" / "replay_40k_v1.pt"
+HELDOUT_20_CACHE = REPO_ROOT / "data" / "heldout_20ep_v1.pt"
+TRANSITION_TARGET = 40_000
+
+
+def sha256(path: Path) -> str:
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def load_scaled_data():
+    from ssl_step1 import collect_episodes
+    import torch as _torch
+    if TRAIN_40K_CACHE.exists():
+        train = _torch.load(TRAIN_40K_CACHE, weights_only=False)
+    else:
+        train, total, seed = [], 0, 0
+        seeds = [0, 1] + list(range(10, 60))
+        for seed in seeds:
+            batch = collect_episodes(seed, 24)
+            train.extend(batch)
+            total = sum(len(ep["actions"]) for ep in train)
+            if total >= TRANSITION_TARGET:
+                break
+        _torch.save(train, TRAIN_40K_CACHE)
+    if HELDOUT_20_CACHE.exists():
+        heldout = _torch.load(HELDOUT_20_CACHE, weights_only=False)
+    else:
+        heldout = collect_episodes(2, 10) + collect_episodes(9, 10)
+        _torch.save(heldout, HELDOUT_20_CACHE)
+    return train, heldout
 K_PRIMARY = 8
 SEEDS = (101, 202, 303)
 
@@ -51,9 +86,10 @@ def build_frozen_world(device) -> M3HJWM:
     return world
 
 
-def run_arm(seed: int, rollout_weight: float, data, device, steps: int):
-    replay = EpisodeReplay()
-    for ep in data["train_episodes"]:
+def run_arm(seed: int, rollout_weight: float, train_episodes, heldout_episodes,
+            device, steps: int, tag: str, scale: str):
+    replay = EpisodeReplay(capacity_steps=500_000)
+    for ep in train_episodes:
         replay.add(Episode(**ep))
     torch.manual_seed(seed)
     world = build_frozen_world(device)
@@ -63,7 +99,7 @@ def run_arm(seed: int, rollout_weight: float, data, device, steps: int):
     trainable = [p for p in world.parameters() if p.requires_grad]
     optimizer = torch.optim.AdamW(trainable, lr=1e-4)
     replay_rng = np.random.default_rng(seed)  # identical schedule across the pair
-    metrics_hist = {"jepa": [], "reward": [], "rollout": []}
+    metrics_hist = {"jepa": [], "reward": [], "continuation": [], "rollout": []}
     started = time.perf_counter()
     torch.cuda.reset_peak_memory_stats()
     for _ in range(steps):
@@ -81,9 +117,23 @@ def run_arm(seed: int, rollout_weight: float, data, device, steps: int):
                 metrics_hist[key].append(float(output.metrics[key]))
     minutes = round((time.perf_counter() - started) / 60, 2)
 
-    per_k, extras = openloop_eval(world, data["heldout_episodes"], device)
+    per_k, latency, manifest = openloop_eval_v2(world, heldout_episodes, device)
+    trainable_state = {
+        name: p.detach().cpu() for name, p in world.named_parameters() if p.requires_grad
+    }
+    torch.save(
+        {"trainable": trainable_state,
+         "optimizer": optimizer.state_dict(),
+         "torch_rng_cpu": torch.get_rng_state(),
+         "torch_rng_cuda": torch.cuda.get_rng_state_all(),
+         "numpy_rng": replay_rng.bit_generator.state,
+         "metrics_hist": metrics_hist,
+         "per_k": per_k, "manifest": manifest},
+        ARTIFACTS / f"step3_{tag}_{scale}_s{seed}_r{int(rollout_weight)}.pt",
+    )
     result = {
         "seed": seed,
+        "scale": scale,
         "rollout_weight": rollout_weight,
         "train_minutes": minutes,
         "peak_vram_mib": round(torch.cuda.max_memory_allocated() / 2**20, 1),
@@ -91,8 +141,14 @@ def run_arm(seed: int, rollout_weight: float, data, device, steps: int):
             k: [float(np.mean(v[:100])), float(np.mean(v[-100:]))]
             for k, v in metrics_hist.items() if v
         },
-        "openloop": per_k,
-        **({"eval_extras": extras} if isinstance(extras, dict) else {}),
+        "openloop": [
+            {k: v for k, v in p.items() if k not in ("window_margins", "window_valid")}
+            for p in per_k
+        ],
+        "per_k_raw": per_k,
+        "manifest": manifest,
+        "manifest_windows": len(manifest),
+        "latency": latency,
     }
     del world
     torch.cuda.empty_cache()
@@ -103,23 +159,29 @@ def gate_summary(results: list[dict]) -> dict:
     by = {(r["seed"], r["rollout_weight"]): r for r in results}
 
     def at_k(r, k):
-        return next(p for p in r["openloop"] if p["k"] == k)
+        return next(p for p in r["per_k_raw"] if p["k"] == k)
 
-    s3a_votes, s3b_votes, s3c_votes = [], [], []
+    s3a_votes, s3b_votes, s3c_votes, s3b_detail = [], [], [], []
+    manifest = results[0]["manifest"]
     for seed in SEEDS:
-        roll = at_k(by[(seed, 1.0)], K_PRIMARY)
-        base = at_k(by[(seed, 0.0)], K_PRIMARY)
-        lower = roll["paired_window_margin_bootstrap_95"][0]
-        s3a_votes.append(bool(lower > 0 and roll["relative_window_margin"] >= 0.05))
-        s3b_votes.append(bool(
-            roll["paired_window_margin_mean"] > base["paired_window_margin_mean"]
+        roll = by[(seed, 1.0)]
+        base = by[(seed, 0.0)]
+        roll_k = at_k(roll, K_PRIMARY)
+        s3a_votes.append(bool(
+            roll_k["margin_cluster_bootstrap_95"][0] > 0
+            and roll_k["relative_margin"] >= 0.05
         ))
-        one_roll = at_k(by[(seed, 1.0)], 1)["pred_cosine_changed"]
-        one_base = at_k(by[(seed, 0.0)], 1)["pred_cosine_changed"]
+        paired = paired_difference_gate(
+            roll["per_k_raw"], base["per_k_raw"], manifest, K_PRIMARY)
+        s3b_detail.append(paired)
+        s3b_votes.append(paired["pass"])
+        one_roll = at_k(roll, 1)["pred_cosine_changed"]
+        one_base = at_k(base, 1)["pred_cosine_changed"]
         s3c_votes.append(bool(one_roll <= 1.2 * one_base))
     return {
         "S3A_votes": s3a_votes, "S3A_pass": sum(s3a_votes) >= 2,
-        "S3B_votes": s3b_votes, "S3B_pass": sum(s3b_votes) >= 2,
+        "S3Bp_votes": s3b_votes, "S3Bp_pass": sum(s3b_votes) >= 2,
+        "S3Bp_detail": s3b_detail,
         "S3C_votes": s3c_votes, "S3C_pass": sum(s3c_votes) >= 2,
         "k_primary": K_PRIMARY,
     }
@@ -132,20 +194,38 @@ def main():
     parser.add_argument("--seeds", nargs="+", type=int, default=list(SEEDS))
     args = parser.parse_args()
     device = torch.device("cuda")
-    data = load_shared_data()
+    small = load_shared_data()["train_episodes"]
+    big, heldout = load_scaled_data()
 
-    results = []
-    for seed in args.seeds:
-        for rollout_weight in (0.0, 1.0):
-            print(f"[step3] seed {seed} rollout {rollout_weight}", flush=True)
-            results.append(run_arm(seed, rollout_weight, data, device, args.steps))
+    scales = {"7k9": small, "40k": big}
     report = {
-        "protocol": "reviews/2026-07-13-step3-protocol.md",
+        "protocol": "reviews/2026-07-13-step3-protocol.md (amendment S3-v2)",
         "encoder": str(ENCODER_CKPT.name),
+        "hashes": {
+            "encoder": sha256(ENCODER_CKPT),
+            "train_40k": sha256(TRAIN_40K_CACHE),
+            "heldout_20": sha256(HELDOUT_20_CACHE),
+        },
+        "train_transitions": {
+            name: sum(len(ep["actions"]) for ep in eps) for name, eps in scales.items()
+        },
         "steps": args.steps,
-        "gates": gate_summary(results) if len(args.seeds) == len(SEEDS) else "partial",
-        "results": results,
+        "gates": {}, "results": {},
     }
+    for scale, episodes in scales.items():
+        results = []
+        for seed in args.seeds:
+            for rollout_weight in (0.0, 1.0):
+                print(f"[step3v2] scale {scale} seed {seed} rollout {rollout_weight}", flush=True)
+                arm = run_arm(seed, rollout_weight, episodes, heldout,
+                              device, args.steps, args.tag, scale)
+                results.append(arm)
+        report["results"][scale] = [
+            {k: v for k, v in r.items() if k not in ("per_k_raw", "manifest")}
+            for r in results
+        ]
+        if len(args.seeds) == len(SEEDS):
+            report["gates"][scale] = gate_summary(results)
     out = ARTIFACTS / f"step3_{args.tag}.json"
     out.write_text(json.dumps(report, indent=2))
     print(json.dumps(report["gates"], indent=2))
