@@ -147,6 +147,20 @@ def ema_update(target: nn.Module, source: nn.Module, decay: float) -> None:
             b.copy_(source_buffers[name])
 
 
+def sincos_2d_pos_embed(dim: int, grid: int) -> Tensor:
+    """Fixed 2D sin-cos positional embeddings (I-JEPA src/utils pattern)."""
+    if dim % 4:
+        raise ValueError("sincos embedding needs dim divisible by 4")
+    quarter = dim // 4
+    omega = 1.0 / (10000 ** (torch.arange(quarter, dtype=torch.float64) / quarter))
+    coords = torch.arange(grid, dtype=torch.float64)
+    out = torch.einsum("p,f->pf", coords, omega)
+    per_axis = torch.cat([out.sin(), out.cos()], dim=1)
+    row = per_axis[:, None].expand(grid, grid, dim // 2)
+    col = per_axis[None, :].expand(grid, grid, dim // 2)
+    return torch.cat([row, col], dim=-1).reshape(grid * grid, dim).float()
+
+
 def variance_covariance_losses(
     x: Tensor, gamma: float = 1.0, eps: float = 1e-4
 ) -> tuple[Tensor, Tensor]:
@@ -265,6 +279,14 @@ class RepresentationEncoder(nn.Module):
         )
         self.mask_token = nn.Parameter(torch.randn(1, 1, cfg.token_dim) * 0.02)
         self.register_count = cfg.registers
+        # Official I-JEPA adds fixed positions inside the encoder BEFORE token
+        # dropping (vision_transformer.py:401-410 at the pinned commit); without
+        # this, attention over dropped-token subsets cannot know where its
+        # tokens are. 2026-07-13 consensus correction.
+        grid = cfg.image_size // cfg.patch_size
+        self.register_buffer(
+            "pos_embed", sincos_2d_pos_embed(cfg.token_dim, grid)[None], persistent=False
+        )
 
     def forward(
         self,
@@ -285,6 +307,7 @@ class RepresentationEncoder(nn.Module):
             raise ValueError("target_mask and visible_index are mutually exclusive")
         x = obs.float() / 255.0 if obs.dtype == torch.uint8 else obs.float()
         local = self.project(self.stem(x)).flatten(2).transpose(1, 2)
+        local = local + self.pos_embed.to(local.dtype)
         if target_mask is not None:
             mask = target_mask.flatten(1)[..., None]
             local = torch.where(mask, self.mask_token.to(local.dtype), local)

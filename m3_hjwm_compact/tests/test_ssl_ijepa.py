@@ -171,6 +171,7 @@ def test_sparse_stem_matches_dense_when_everything_visible():
             encoder, obs, torch.ones(2, grid, grid, dtype=torch.bool)
         )
         dense = encoder.project(encoder.stem(obs.float() / 255.0)).flatten(2).transpose(1, 2)
+        dense = dense + encoder.pos_embed  # positions are part of the encoder now
     assert torch.allclose(sparse, dense, atol=1e-4), "all-visible sparse != dense"
 
 
@@ -210,3 +211,33 @@ def test_sigreg_gradient_reaches_encoder():
     loss.backward()
     stem_grads = [p.grad for p in model.online_encoder.stem.parameters()]
     assert any(g is not None and g.abs().sum() > 0 for g in stem_grads)
+
+
+def test_target_blocks_are_rectangles_with_batch_shared_size():
+    """2026-07-13 consensus correction: official collator samples ONE block size
+    per batch; trimming must never break rectangularity."""
+    for seed in range(5):
+        g = torch.Generator().manual_seed(seed)
+        _, preds = sample_ijepa_masks(16, 8, g)
+        sizes = set()
+        for block in preds:
+            for row in block:
+                rows, cols = row // 8, row % 8
+                h = int(rows.max() - rows.min() + 1)
+                w = int(cols.max() - cols.min() + 1)
+                assert len(row) == h * w, f"non-rectangular mask (seed {seed})"
+                sizes.add((h, w))
+        assert len(sizes) == 1, f"block sizes not batch-shared: {sizes}"
+
+
+def test_encoder_adds_positions_before_token_dropping():
+    """Official I-JEPA: positions inside the encoder, before apply_masks."""
+    cfg = config()
+    torch.manual_seed(20)
+    encoder = RepresentationEncoder(cfg).eval()
+    uniform = torch.full((1, 3, 64, 64), 128, dtype=torch.uint8)
+    with torch.no_grad():
+        tokens = encoder(uniform)
+    local = tokens[0, cfg.registers:]
+    spread = local.std(0).mean()
+    assert float(spread) > 1e-3, "identical patches are position-indistinguishable"

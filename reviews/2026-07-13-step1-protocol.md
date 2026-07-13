@@ -162,3 +162,40 @@ Proposal:
   ssl_step1_lejepa001_d300_l001.pt) to matrix step 3 — the frozen-encoder
   prediction gate and Phase E reward-calibration measure directly what G4
   proxies; step 3 does not consume the G4 verdict.
+
+## Amendment 1e (consensus corrections; pre-registered before the 1e rerun)
+
+Per the implementation agent's review (all findings verified and reproduced by
+the senior reviewer: encoder positions confirmed at vision_transformer.py:401;
+batch-shared block sizes at multiblock.py:128-135; non-rectangular masks 22-41%
+across 5 seeds; paired G4 degradation 0.0276 mean, 41.7% of paired subsets
+<= 0.02, UCB90 0.068):
+
+Fidelity corrections (implemented, tested):
+- Encoder gains fixed 2D-sincos positional embeddings added BEFORE token
+  dropping/masking, matching the official encoder; sparse path matches dense.
+- Mask sampler: ONE pred-block size and ONE context size per batch (official
+  collator); rectangularity + batch-shared-size regression test added.
+
+Instrumentation corrections:
+- Prediction and SIGReg components logged separately.
+- Held-out pretext bank: fixed mask sets on 128 fixed held-out frames,
+  evaluated every 50 updates against the current EMA target.
+- SIGReg diagnostic on fixed evaluation projections (pre-drawn A).
+- Checkpoints save the full pretrainer, optimizer, config, NumPy/torch RNG
+  states, and component histories.
+
+Redesigned gates (replacing G4/G5; G1-G3 unchanged):
+- **G4' (episode-blocked paired non-inferiority):** probe stream split into 8
+  contiguous 50-frame blocks; 200 block-bootstrap resamples; paired
+  degradation (untrained R2 − trained R2) computed per resample on identical
+  frames; PASS iff the one-sided 90% upper confidence bound <= 0.02. No
+  absolute-R2 escape clause.
+- **G5' (component learning):** held-out pretext-bank prediction loss at the
+  final evaluation <= 0.70 x its first evaluation. SIGReg component is
+  reported as a diagnostic, not gated. (Caveat on record: the EMA target
+  moves; G1/G2 guard the degenerate route to a trivially easy bank.)
+
+Rerun: λ=0.01, 300 updates, + untrained control only. No other arms, no other
+knobs. Prior 1c/1d results remain on file as evidence from the less faithful
+implementation; they do not carry forward.

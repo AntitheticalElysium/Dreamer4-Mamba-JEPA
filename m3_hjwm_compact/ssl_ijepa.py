@@ -27,6 +27,7 @@ from model import (
     ModelConfig,
     RepresentationEncoder,
     SpatialBlock,
+    sincos_2d_pos_embed,
 )
 
 
@@ -81,32 +82,26 @@ def sparse_stem_tokens(
     for module in encoder.stem:
         x, active = _sparse_stage(module, x, active)
     x = encoder.project(x) * active
-    return x.flatten(2).transpose(1, 2)
+    local = x.flatten(2).transpose(1, 2)
+    # Positions are part of the encoder (official I-JEPA adds them before token
+    # dropping); the sparse path must match the dense forward.
+    return local + encoder.pos_embed.to(local.dtype)
 
 
-def sincos_2d_pos_embed(dim: int, grid: int) -> Tensor:
-    """Fixed 2D sin-cos embeddings, as in the pinned I-JEPA (pos_embs.py)."""
-    if dim % 4:
-        raise ValueError("sincos embedding needs dim divisible by 4")
-    quarter = dim // 4
-    omega = 1.0 / (10000 ** (torch.arange(quarter, dtype=torch.float64) / quarter))
-    coords = torch.arange(grid, dtype=torch.float64)
-    out = torch.einsum("p,f->pf", coords, omega)
-    per_axis = torch.cat([out.sin(), out.cos()], dim=1)      # [grid, dim/2]
-    row = per_axis[:, None].expand(grid, grid, dim // 2)
-    col = per_axis[None, :].expand(grid, grid, dim // 2)
-    return torch.cat([row, col], dim=-1).reshape(grid * grid, dim).float()
-
-
-def _sample_block(grid: int, scale: tuple, aspect: tuple, generator) -> Tensor:
-    """One rectangular block of grid cells (official _sample_block_size/_mask)."""
-    rand = torch.rand(3, generator=generator)
+def _sample_block_size(grid: int, scale: tuple, aspect: tuple, generator) -> tuple:
+    """One (h, w) block size (official MaskCollator._sample_block_size)."""
+    rand = torch.rand(2, generator=generator)
     target_scale = scale[0] + float(rand[0]) * (scale[1] - scale[0])
     max_keep = max(1, int(grid * grid * target_scale))
     log_low, log_high = math.log(aspect[0]), math.log(aspect[1])
     ratio = math.exp(log_low + float(rand[1]) * (log_high - log_low))
     h = max(1, min(grid, int(round(math.sqrt(max_keep * ratio)))))
     w = max(1, min(grid, int(round(math.sqrt(max_keep / ratio)))))
+    return h, w
+
+
+def _place_block(grid: int, size: tuple, generator) -> Tensor:
+    h, w = size
     top = int(torch.randint(0, grid - h + 1, (1,), generator=generator))
     left = int(torch.randint(0, grid - w + 1, (1,), generator=generator))
     block = torch.zeros(grid, grid, dtype=torch.bool)
@@ -126,17 +121,22 @@ def sample_ijepa_masks(
 ):
     """Returns (context_index [B,Kc], pred_indices list of n_pred [B,Kp]).
 
-    Counts are trimmed to the per-batch minimum, as in the official collator, so
-    every sample in the batch has uniform index shapes.
+    Faithful to the official MaskCollator (2026-07-13 consensus correction):
+    ONE pred-block size and ONE context-block size are sampled PER BATCH
+    (multiblock.py:128-135 at the pinned commit); only locations vary per image.
+    Every target block is therefore an identical-size rectangle across the
+    batch, and no trimming can break rectangularity. Only the context (a
+    rectangle minus target overlap — non-rectangular in the official code as
+    well) is trimmed to the batch minimum.
     """
+    p_size = _sample_block_size(grid, pred_scale, aspect, generator)
+    e_size = _sample_block_size(grid, enc_scale, (1.0, 1.0), generator)
     contexts, preds = [], [[] for _ in range(n_pred)]
-    min_ctx, min_pred = grid * grid, [grid * grid] * n_pred
+    min_ctx = grid * grid
     for _ in range(batch):
-        pred_blocks = [
-            _sample_block(grid, pred_scale, aspect, generator) for _ in range(n_pred)
-        ]
+        pred_blocks = [_place_block(grid, p_size, generator) for _ in range(n_pred)]
         union = torch.stack(pred_blocks).any(0)
-        context = _sample_block(grid, enc_scale, (1.0, 1.0), generator) & ~union
+        context = _place_block(grid, e_size, generator) & ~union
         if int(context.sum()) < min_keep:
             candidates = (~union).nonzero().flatten()
             if len(candidates) < min_keep:  # pathological union; keep any cells
@@ -146,13 +146,9 @@ def sample_ijepa_masks(
         contexts.append(context.nonzero().flatten())
         min_ctx = min(min_ctx, len(contexts[-1]))
         for i, block in enumerate(pred_blocks):
-            idx = block.nonzero().flatten()
-            preds[i].append(idx)
-            min_pred[i] = min(min_pred[i], len(idx))
+            preds[i].append(block.nonzero().flatten())
     context_index = torch.stack([c[:min_ctx] for c in contexts])
-    pred_indices = [
-        torch.stack([p[:min_pred[i]] for p in preds[i]]) for i in range(n_pred)
-    ]
+    pred_indices = [torch.stack(p) for p in preds]
     return context_index, pred_indices
 
 
