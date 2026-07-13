@@ -29,6 +29,7 @@ ARTIFACTS = Path(__file__).resolve().parents[2] / "reviews" / "artifacts"
 # Durable, gitignored cache; scratchpad/tmp caches proved non-reproducible
 # (2026-07-13 re-audit, moderate finding 13).
 DATA_CACHE = Path(__file__).resolve().parents[2] / "data" / "shared_random_policy_v1.pt"
+PROBE_V2_CACHE = Path(__file__).resolve().parents[2] / "data" / "probe_3seed_v2.pt"
 # Relative abort (protocol amendment 1e-abort): thresholds must survive
 # architecture changes that shift metric scales.
 def abort_threshold(untrained_obs_frac: float) -> float:
@@ -116,11 +117,13 @@ def curve_point(target_encoder, probe, cfg, device, step, loss_mean, with_invent
 
 
 def g4_blocked_noninferiority(
-    tokens_untrained, tokens_trained, inventory, registers, blocks=8, resamples=200
+    tokens_untrained, tokens_trained, inventory, registers, blocks=None, resamples=200
 ):
     """Amendment 1e G4': paired degradation over episode-blocked bootstrap;
     PASS iff one-sided 90% upper confidence bound <= 0.02."""
     n = len(tokens_untrained)
+    if blocks is None:
+        blocks = max(8, n // 50)
     block_size = n // blocks
     idx_blocks = [np.arange(i * block_size, (i + 1) * block_size) for i in range(blocks)]
     rng = np.random.default_rng(404)
@@ -274,12 +277,21 @@ def main():
     parser.add_argument("--steps", type=int, default=300)
     parser.add_argument("--tag", default="step1")
     parser.add_argument("--arms", nargs="+", default=["ijepa", "hybrid"])
+    parser.add_argument("--probe-v2", action="store_true")
     args = parser.parse_args()
     device = torch.device("cuda")
 
     data = load_shared_data()
     frames = np.concatenate([ep["obs"] for ep in data["train_episodes"]])
-    probe = data["heldout_probe"]
+    if args.probe_v2:
+        if PROBE_V2_CACHE.exists():
+            probe = torch.load(PROBE_V2_CACHE, weights_only=False)
+        else:
+            from representation_control import concatenate
+            probe = concatenate([collect(s, 400) for s in (2, 5, 6)])
+            torch.save(probe, PROBE_V2_CACHE)
+    else:
+        probe = data["heldout_probe"]
 
     torch.manual_seed(101)
     cfg = ModelConfig(temporal_backend="gru", predictor="deterministic", mask_ratio=0.0)

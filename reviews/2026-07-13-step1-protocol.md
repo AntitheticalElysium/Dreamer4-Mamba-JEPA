@@ -213,3 +213,22 @@ sensitivity relative to their own start): abort iff
 All gate thresholds were already untrained-relative; the abort rule now is too.
 Per-stream rank/cosine gates are unaffected by the position constant (stream-
 mean centering removes it). No other change; rerun λ=0.01@300 + untrained.
+
+### 1e results and pre-registered 1f (final step-1 run)
+
+1e (λ=0.01@300, corrected implementation): G1a/G1b/G2b/G3/G5' PASS
+(semantic 0.893→0.923; held-out pretext bank −38%; obs-frac 0.20→0.70).
+G2a misses by ~10% (3.32 vs bar 3.69). G4' point estimate improves 3× over the
+pre-correction arm (paired degradation 0.0098 vs 0.0276) but UCB90 = 0.066
+fails the ≤0.02 rule — the 8-block bootstrap is noise-dominated (blocks are
+50-frame chunks of a single seed-2 stream). Component logging shows the total-
+loss decline is mostly SIGReg; the held-out bank, not the training component,
+carries the learning evidence — vindicating the component-logging requirement.
+
+**1f (pre-registered):** λ=0.01, 1000 updates (1d evidence: stream rank rises
+strongly with budget under SIGReg — 4.2→7.9 at λ=0.01), probe enlarged to
+3 seeds × 400 frames (seeds 2, 5, 6; 24 blocks of 50) for G4' precision —
+an instrument improvement, not a bar change; every gate and threshold
+unchanged. Untrained baseline recomputed on the same enlarged probe within the
+same run. Pass = all of G1a/G1b/G2a/G2b/G3/G4'/G5' → step-1 PASS; encoder
+advances to matrix step 2/3. Any failure → report and stop for consensus.
