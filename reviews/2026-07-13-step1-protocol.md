@@ -199,3 +199,17 @@ Redesigned gates (replacing G4/G5; G1-G3 unchanged):
 Rerun: λ=0.01, 300 updates, + untrained control only. No other arms, no other
 knobs. Prior 1c/1d results remain on file as evidence from the less faithful
 implementation; they do not carry forward.
+
+### 1e abort-rule correction (pre-registered before the retry)
+
+The first 1e run aborted at step 25: sincos positions are position-constant
+vectors, which mechanically inflate position variance and halve the UNTRAINED
+observation-variance fraction (0.426 pre-positions → 0.202 with positions). The
+absolute abort constant (0.30) silently changed meaning under the architecture
+correction — the arm was improving (0.202 → 0.281, rising) when it fired.
+Correction, preserving the rule's intent (catch encoders LOSING observation
+sensitivity relative to their own start): abort iff
+`obs_frac < max(0.6 × untrained_obs_frac, untrained_obs_frac − 0.10)`.
+All gate thresholds were already untrained-relative; the abort rule now is too.
+Per-stream rank/cosine gates are unaffected by the position constant (stream-
+mean centering removes it). No other change; rerun λ=0.01@300 + untrained.

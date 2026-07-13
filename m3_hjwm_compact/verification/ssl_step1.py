@@ -29,7 +29,10 @@ ARTIFACTS = Path(__file__).resolve().parents[2] / "reviews" / "artifacts"
 # Durable, gitignored cache; scratchpad/tmp caches proved non-reproducible
 # (2026-07-13 re-audit, moderate finding 13).
 DATA_CACHE = Path(__file__).resolve().parents[2] / "data" / "shared_random_policy_v1.pt"
-ABORT_OBS_FRACTION = 0.30
+# Relative abort (protocol amendment 1e-abort): thresholds must survive
+# architecture changes that shift metric scales.
+def abort_threshold(untrained_obs_frac: float) -> float:
+    return max(0.6 * untrained_obs_frac, untrained_obs_frac - 0.10)
 
 
 def collect_episodes(seed: int, episodes: int, max_len: int = 200):
@@ -173,7 +176,7 @@ def gates(final: dict, untrained: dict, losses: list[float]) -> dict:
     }
 
 
-def train_ijepa(cfg, frames, probe, steps, device, batch=64, sigreg_weight=0.0):
+def train_ijepa(cfg, frames, probe, steps, device, batch=64, sigreg_weight=0.0, untrained_obs_frac=0.0):
     torch.manual_seed(101)
     model = IJEPAPretrainer(cfg).to(device)
     model.sigreg_weight = sigreg_weight
@@ -233,7 +236,7 @@ def train_ijepa(cfg, frames, probe, steps, device, batch=64, sigreg_weight=0.0):
             print(f"[ijepa] step {step+1} loss {point['loss_mean_100']:.4f} "
                   f"obs_frac {point['observation_variance_fraction']:.3f} "
                   f"stream_rank {point['stream_rank_mean']:.2f}", flush=True)
-            if point["observation_variance_fraction"] < ABORT_OBS_FRACTION:
+            if point["observation_variance_fraction"] < abort_threshold(untrained_obs_frac):
                 aborted = True
                 break
     minutes = round((time.perf_counter() - started) / 60, 2)
@@ -296,7 +299,8 @@ def main():
     for arm_name, weight in (("ijepa", 0.0), ("lejepa", 0.02), ("lejepa001", 0.01)):
       if arm_name in args.arms:
         model, losses, curve, aborted, minutes, extras = train_ijepa(
-            cfg, frames, probe, args.steps, device, sigreg_weight=weight)
+            cfg, frames, probe, args.steps, device, sigreg_weight=weight,
+            untrained_obs_frac=untrained["target_observation_variance_fraction"])
         pred_hist, sig_hist = extras["pred_hist"], extras["sig_hist"]
         bank_curve = extras["bank_curve"]
         optimizer_state, rng_state = extras["optimizer_state"], extras["rng_state"]
