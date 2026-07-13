@@ -232,3 +232,37 @@ an instrument improvement, not a bar change; every gate and threshold
 unchanged. Untrained baseline recomputed on the same enlarged probe within the
 same run. Pass = all of G1a/G1b/G2a/G2b/G3/G4'/G5' → step-1 PASS; encoder
 advances to matrix step 2/3. Any failure → report and stop for consensus.
+
+### 1f result: 6/7 pass; G4' fails decisively; STOP per decision rule
+
+λ=0.01 @ 1000 updates, 3-seed 24-block probe (untrained baselines recomputed on
+the same probe):
+
+| gate | result |
+|---|---|
+| G1a obs-variance fraction | PASS (0.189 → 0.952) |
+| G1b same-stream unrelated | PASS (0.038 → 0.871) |
+| G2a stream rank | PASS (4.57 → 11.75, 2.6× untrained) |
+| G2b pool rank | PASS (1.40 → 9.04) |
+| G3 semantic | PASS (0.894 → 0.932) |
+| G4' blocked non-inferiority | **FAIL** (paired degradation mean 0.0372, UCB90 0.0749, 24 blocks — no longer instrument noise) |
+| G5' held-out pretext bank | PASS (0.381 → 0.216, −43%) |
+
+The budget trade-off reproduces with the corrected implementation and a precise
+instrument: at 300 updates retention holds (G4' mean 0.0098) but rank has not
+yet grown (G2a fail); at 1000 rank is excellent but HUD inventory erodes
+(0.707 → 0.648 on the harder 3-seed probe). Component curves concur: the
+training prediction component RISES (0.154 → 0.230) as SIGReg raises pretext
+difficulty while held-out prediction improves — the regularizer and retention
+pull against each other on low-entropy HUD digit patches.
+
+**Stopped for consensus** (pre-registered rule). Candidate resolutions, in
+preference order, NOT enacted:
+1. Spatially scoped SIGReg: regularize world-view tokens (rows 0-5) only,
+   exempting HUD rows and registers — mechanistically motivated (the HUD is UI
+   state, not world appearance; gaussianizing digit patches is precisely what
+   destroys counts), one run to test, all gates unchanged.
+2. Intermediate budget (~500) accepting partial rank growth — rejected as
+   forking-paths budget-tuning unless (1) fails.
+3. Advance under explicit G4' waiver with step-3/Phase-E downstream
+   arbitration — requires both-agent + user consensus.
