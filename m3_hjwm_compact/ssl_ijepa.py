@@ -258,6 +258,27 @@ class IJEPAPretrainer(nn.Module):
         return self.online_encoder.mix(local)
 
     def loss(self, obs: Tensor, generator) -> Tensor:
+        return self.losses(obs, generator)[0]
+
+    def pretext_loss(self, obs: Tensor, context_index: Tensor, pred_indices) -> Tensor:
+        """Masked-prediction loss for GIVEN masks (used by the held-out bank)."""
+        device = obs.device
+        context = self._encode_context(obs, context_index)
+        with torch.no_grad():
+            full = self.target_encoder(obs)
+            targets = F.layer_norm(full, (full.shape[-1],))[:, self.cfg.registers:]
+        total = obs.new_zeros(())
+        for pred_index in pred_indices:
+            pred_index = pred_index.to(device)
+            prediction = self.predictor(context, context_index, pred_index)
+            block_target = targets.gather(
+                1, pred_index[..., None].expand(-1, -1, targets.shape[-1])
+            )
+            total = total + F.smooth_l1_loss(prediction, block_target)
+        return total / len(pred_indices)
+
+    def losses(self, obs: Tensor, generator):
+        """Returns (total, prediction_component, sigreg_component)."""
         context_index, pred_indices = sample_ijepa_masks(
             obs.shape[0], self.grid, generator
         )
@@ -277,15 +298,16 @@ class IJEPAPretrainer(nn.Module):
             total = total + F.smooth_l1_loss(prediction, block_target)
         prediction_loss = total / len(pred_indices)
         if self.sigreg_weight == 0.0:
-            return prediction_loss
+            return prediction_loss, prediction_loss.detach(), obs.new_zeros(())
         # Dense online pass so mask randomness cannot satisfy the regularizer
         # (re-audit correction) and gradients shape the whole token map.
         dense = self.online_encoder(obs)
         sigreg_loss = self.sigreg(dense)
-        return (
+        combined = (
             (1.0 - self.sigreg_weight) * prediction_loss
             + self.sigreg_weight * sigreg_loss
         )
+        return combined, prediction_loss.detach(), sigreg_loss.detach()
 
     @torch.no_grad()
     def update_target(self):

@@ -112,6 +112,34 @@ def curve_point(target_encoder, probe, cfg, device, step, loss_mean, with_invent
     return point
 
 
+def g4_blocked_noninferiority(
+    tokens_untrained, tokens_trained, inventory, registers, blocks=8, resamples=200
+):
+    """Amendment 1e G4': paired degradation over episode-blocked bootstrap;
+    PASS iff one-sided 90% upper confidence bound <= 0.02."""
+    n = len(tokens_untrained)
+    block_size = n // blocks
+    idx_blocks = [np.arange(i * block_size, (i + 1) * block_size) for i in range(blocks)]
+    rng = np.random.default_rng(404)
+    diffs = []
+    for _ in range(resamples):
+        chosen = rng.integers(0, blocks, size=blocks)
+        idx = np.concatenate([idx_blocks[c] for c in chosen])
+        ru = inventory_probe(tokens_untrained[idx], inventory[idx], registers)[
+            "inventory_r2_mean_varying"]
+        rt = inventory_probe(tokens_trained[idx], inventory[idx], registers)[
+            "inventory_r2_mean_varying"]
+        if ru is not None and rt is not None:
+            diffs.append(ru - rt)
+    diffs = np.array(diffs)
+    ucb = float(np.quantile(diffs, 0.90))
+    return {
+        "G4p_paired_degradation_mean": float(diffs.mean()),
+        "G4p_ucb90": ucb,
+        "G4p_pass": bool(ucb <= 0.02),
+    }
+
+
 def gates(final: dict, untrained: dict, losses: list[float]) -> dict:
     first = float(np.mean(losses[:100])) if losses else None
     last = float(np.mean(losses[-100:])) if losses else None
@@ -137,13 +165,10 @@ def gates(final: dict, untrained: dict, losses: list[float]) -> dict:
             and final["semantic_token_accuracy"]
             >= untrained["semantic_token_accuracy"] - 0.02
         ),
-        "G4_inventory": bool(
-            (final.get("inventory_r2_mean_varying") or -1.0)
-            >= (untrained.get("inventory_r2_mean_varying") or -1.0) - 0.02
-        ),
-        "G5_loss_decreased_30pct": bool(
-            losses and last is not None and last <= 0.70 * first
-        ),
+        "legacy_G4_point": [
+            untrained.get("inventory_r2_mean_varying"),
+            final.get("inventory_r2_mean_varying"),
+        ],
         "loss_first_last_100": [first, last],
     }
 
@@ -156,19 +181,49 @@ def train_ijepa(cfg, frames, probe, steps, device, batch=64, sigreg_weight=0.0):
     optimizer = torch.optim.AdamW(params, lr=3e-4, weight_decay=1e-4)
     frame_rng = np.random.default_rng(2027)
     mask_generator = torch.Generator().manual_seed(2027)
-    losses, curve, aborted = [], [], False
+
+    # Held-out pretext bank: fixed frames + fixed masks (amendment 1e / G5').
+    from ssl_ijepa import sample_ijepa_masks
+    bank_frames = torch.from_numpy(probe.obs[:128]).to(device)
+    bank_gen = torch.Generator().manual_seed(31415)
+    bank = [sample_ijepa_masks(128, cfg.image_size // cfg.patch_size, bank_gen)
+            for _ in range(4)]
+    fixed_directions = torch.randn(
+        cfg.token_dim, 256, generator=torch.Generator().manual_seed(27182)
+    ).to(device)
+    fixed_directions = fixed_directions / fixed_directions.norm(dim=0).clamp_min(1e-12)
+
+    @torch.no_grad()
+    def bank_eval():
+        vals = []
+        with torch.autocast("cuda", dtype=torch.bfloat16):
+            for ctx, preds_i in bank:
+                vals.append(float(model.pretext_loss(bank_frames, ctx.to(device), preds_i)))
+            dense = model.online_encoder(bank_frames).float().transpose(0, 1)
+            x_t = (dense @ fixed_directions).unsqueeze(-1) * model.sigreg.t
+            err = (x_t.cos().mean(-3) - model.sigreg.phi).square() + x_t.sin().mean(-3).square()
+            sig = float(((err @ model.sigreg.weights) * dense.size(-2)).mean())
+        return float(np.mean(vals)), sig
+
+    losses, pred_hist, sig_hist, curve, bank_curve, aborted = [], [], [], [], [], False
     started = time.perf_counter()
     for step in range(steps):
         idx = frame_rng.integers(0, len(frames), size=batch)
         obs = torch.from_numpy(frames[idx]).to(device)
         with torch.autocast("cuda", dtype=torch.bfloat16):
-            loss = model.loss(obs, mask_generator)
+            loss, pred_component, sig_component = model.losses(obs, mask_generator)
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(params, 10.0)
         optimizer.step()
         model.update_target()
         losses.append(float(loss.detach()))
+        pred_hist.append(float(pred_component))
+        sig_hist.append(float(sig_component))
+        if step % 50 == 0 or step == steps - 1:
+            held_pred, held_sig = bank_eval()
+            bank_curve.append({"step": step + 1, "heldout_pretext": held_pred,
+                               "heldout_sigreg_fixedproj": held_sig})
         if (step + 1) % 25 == 0:
             point = curve_point(
                 model.target_encoder, probe, cfg, device, step + 1,
@@ -182,7 +237,10 @@ def train_ijepa(cfg, frames, probe, steps, device, batch=64, sigreg_weight=0.0):
                 aborted = True
                 break
     minutes = round((time.perf_counter() - started) / 60, 2)
-    return model, losses, curve, aborted, minutes
+    return (model, losses, curve, aborted, minutes,
+            {"pred_hist": pred_hist, "sig_hist": sig_hist, "bank_curve": bank_curve,
+             "optimizer_state": optimizer.state_dict(),
+             "rng_state": frame_rng.bit_generator.state})
 
 
 def train_hybrid(cfg, episodes, steps, device):
@@ -224,6 +282,7 @@ def main():
     cfg = ModelConfig(temporal_backend="gru", predictor="deterministic", mask_ratio=0.0)
     untrained_model = IJEPAPretrainer(cfg).to(device)
     untrained = probes_block(untrained_model.target_encoder, probe, cfg, device)
+    untrained_tokens = encode(untrained_model.target_encoder, probe.obs, device)
     del untrained_model
     torch.cuda.empty_cache()
 
@@ -236,17 +295,38 @@ def main():
     }
     for arm_name, weight in (("ijepa", 0.0), ("lejepa", 0.02), ("lejepa001", 0.01)):
       if arm_name in args.arms:
-        model, losses, curve, aborted, minutes = train_ijepa(
+        model, losses, curve, aborted, minutes, extras = train_ijepa(
             cfg, frames, probe, args.steps, device, sigreg_weight=weight)
+        pred_hist, sig_hist = extras["pred_hist"], extras["sig_hist"]
+        bank_curve = extras["bank_curve"]
+        optimizer_state, rng_state = extras["optimizer_state"], extras["rng_state"]
         final = probes_block(model.target_encoder, probe, cfg, device)
+        arm_gates = gates(final, untrained, losses)
+        tokens_t = encode(model.target_encoder, probe.obs, device)
+        arm_gates.update(g4_blocked_noninferiority(
+            untrained_tokens, tokens_t, probe.inventory, cfg.registers))
+        arm_gates["G5p_bank_first_last"] = [
+            bank_curve[0]["heldout_pretext"], bank_curve[-1]["heldout_pretext"]]
+        arm_gates["G5p_pass"] = bool(
+            bank_curve[-1]["heldout_pretext"] <= 0.70 * bank_curve[0]["heldout_pretext"])
         report["arms"][arm_name] = {
             "minutes": minutes, "aborted": aborted, "curve": curve,
+            "bank_curve": bank_curve,
+            "component_first_last_100": {
+                "prediction": [float(np.mean(pred_hist[:100])), float(np.mean(pred_hist[-100:]))],
+                "sigreg": [float(np.mean(sig_hist[:100])), float(np.mean(sig_hist[-100:]))],
+            },
             "sigreg_weight": weight,
-            "final": final, "gates": gates(final, untrained, losses),
+            "final": final, "gates": arm_gates,
         }
         torch.save(
-            {"online": model.online_encoder.state_dict(),
-             "target": model.target_encoder.state_dict(),
+            {"pretrainer": model.state_dict(),
+             "optimizer": optimizer_state,
+             "config": {"sigreg_weight": weight, "steps": args.steps,
+                        "lr": 3e-4, "weight_decay": 1e-4, "batch": 64},
+             "numpy_rng": rng_state,
+             "component_histories": {"total": losses, "prediction": pred_hist,
+                                     "sigreg": sig_hist},
              "steps": args.steps},
             ARTIFACTS / f"ssl_step1_{arm_name}_{args.tag}.pt",
         )
