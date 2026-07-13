@@ -79,3 +79,45 @@ def test_paired_difference_gate_uses_shared_valid_windows():
     out = paired_difference_gate(per_k_roll, per_k_base, manifest, k=8)
     assert out["paired_diff_mean"] == pytest.approx(0.05)
     assert out["pass"] is True
+
+
+def test_loo_oracle_matches_brute_force():
+    import torch
+    from fork_oracle_v2 import loo_oracle_error
+
+    torch.manual_seed(3)
+    branch = torch.randn(6, 5, 8)
+    fast = loo_oracle_error(branch)
+    unit = torch.nn.functional.normalize(branch.float(), dim=-1)
+    slow = []
+    for b in range(6):
+        others = torch.cat([unit[:b], unit[b + 1:]])
+        p = torch.nn.functional.normalize(others.mean(0), dim=-1)
+        slow.append(1.0 - (p * unit[b]).sum(-1))
+    slow = torch.stack(slow).mean(0)
+    assert torch.allclose(fast, slow, atol=1e-5)
+
+
+def test_shift_copy_geometry():
+    import numpy as np
+    from fork_oracle_v2 import shift_copy_frame
+
+    frame = np.zeros((3, 64, 64), dtype=np.uint8)
+    frame[:, 21:28, 21:28] = 200          # one bright world tile
+    frame[:, 50:, :] = 77                 # HUD must never move
+    right = shift_copy_frame(frame, 2)    # player moves right -> content shifts left
+    assert right[:, 21:28, 14:21].max() == 200 and right[:, 21:28, 21:28].max() == 0
+    down = shift_copy_frame(frame, 4)     # player moves down -> content shifts up
+    assert down[:, 14:21, 21:28].max() == 200
+    noop = shift_copy_frame(frame, 0)
+    assert np.array_equal(noop, frame)
+    for moved in (right, down):
+        assert np.array_equal(moved[:, 50:, :], frame[:, 50:, :]), "HUD moved"
+
+
+def test_all_pairs_divergence_counts_pairs_not_reference():
+    from fork_oracle_v2 import all_pairs_divergence
+
+    outcomes = [{"x": 0}, {"x": 0}, {"x": 1}]
+    # pairs: (0,1) same, (0,2) diff, (1,2) diff -> 2/3
+    assert abs(all_pairs_divergence(outcomes, "x") - 2 / 3) < 1e-9
