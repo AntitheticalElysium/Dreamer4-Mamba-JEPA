@@ -55,3 +55,40 @@ re-audit's corrected evaluator): 48 held-out windows, 8-step observed prefix,
 Decision rule: all three gates pass → step 4 (identical protocol, GRU vs
 Mamba-2, same frozen encoder, same replay indices, same instrument). Any gate
 fails → stop, report all six runs, consensus before any change.
+
+## Step-3 v1 results (all six runs; stop per decision rule)
+
+| seed | arm | k=8 paired margin (95% CI) | relative | k=1 pred/copy |
+|---|---|---|---|---|
+| 101 | rollout 0 | −0.092 [−0.119, −0.064] | −0.96 | 0.0353/0.0317 |
+| 101 | rollout 1 | −0.010 [−0.025, +0.005] | −0.11 | 0.0389/0.0317 |
+| 202 | rollout 0 | −0.081 [−0.105, −0.054] | −0.84 | 0.0350/0.0317 |
+| 202 | rollout 1 | **+0.005** [−0.007, +0.019] | +0.06 | 0.0390/0.0317 |
+| 303 | rollout 0 | −0.054 [−0.075, −0.034] | −0.57 | 0.0347/0.0317 |
+| 303 | rollout 1 | −0.003 [−0.017, +0.011] | −0.03 | 0.0393/0.0317 |
+
+- **S3-B PASS 3/3** — the rollout bridge improves the paired k=8 margin in
+  every seed, eliminating ~90% of the copy deficit with clean attribution
+  (same frozen encoder, identical replay indices, paired windows). This is the
+  bridge-efficacy result the invalidated 2026-07-12 experiment claimed, now
+  properly established.
+- **S3-C PASS 3/3** — one-step regression ratio ≈ 1.11 ≤ 1.2.
+- **S3-A FAIL 0/3** — with the bridge, the model is statistically
+  indistinguishable from the copy baseline at k=8 (all three CIs straddle
+  zero; 38–46% of windows beat copy) but does not BEAT it by the registered
+  bar (lower CI > 0 and ≥5%). Stopped for consensus.
+
+Diagnostics: rollout component converges (0.52→0.037); warm imagine step
+1.4 ms; 90 MiB peak.
+
+## Consensus question
+
+The bridge works; the residual ask is turning copy-parity into a copy-win.
+Candidates, preference order:
+1. **Data scale** (the longest-deferred lever, consensus-sanctioned two rounds
+   ago and never exercised): grow replay from 48 to ~200 random-policy
+   episodes (~40k transitions), identical protocol otherwise, single change.
+2. rollout_steps 2 → 4 (deeper bridge) — second knob, defer unless (1) fails.
+3. Proceed to step 4 under parity (backend attribution is a paired comparison
+   and does not logically require an absolute copy win) — protocol change,
+   needs explicit consensus.
