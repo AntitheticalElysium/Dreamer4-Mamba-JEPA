@@ -302,3 +302,41 @@ Arms (λ=0.01, 1000 updates, identical data/seeds; all other gates unchanged):
 Advancement rule: an arm advances only on a full G1-G3 + G4' + G5' pass. If
 BOTH pass, the faithful-global arm advances (less adaptation). If neither
 passes, stop for consensus; the 500-update feasibility probe stays deferred.
+
+## 1g results — STEP 1 PASSED by the faithful-global arm
+
+| gate | A `lejepa_global` (faithful axis) | B `lejepa_scoped` |
+|---|---|---|
+| G1a obs-variance fraction | PASS (0.184 → 0.576) | PASS (→ 0.934) |
+| G1b same-stream unrelated | PASS | PASS |
+| G2a stream rank | PASS (4.30 → 5.42) | PASS (→ 13.18) |
+| G2b pool rank | PASS (1.40 → 6.00) | PASS (→ 9.12) |
+| G3 semantic | PASS (0.893 → 0.910) | PASS (→ 0.930) |
+| G4' per-seed non-inferiority | **PASS** (per-seed {+0.031, −0.025, −0.006, −0.013, −0.049}, mean −0.013, UCB90 0.0035) | FAIL (mean 0.021, UCB 0.0295; 3 of 5 seeds > 0.03) |
+| G5' held-out pretext bank | **PASS** (0.380 → 0.076, −80%; training prediction component also falls 0.118 → 0.067) | FAIL (−18%; prediction component RISES 0.155 → 0.279) |
+
+Late-curve stability (step-2 condition): obs-frac plateaued, stream rank gently
+rising, curve-subset inventory STABLE 0.899→0.910 over the last 250 updates,
+bank flat at floor. No late reversal.
+
+Readings:
+1. **The user's faithfulness challenge was correct and decisive.** Global
+   SIGReg through the projector (the official application point) prevents
+   dense-token collapse — the token-level gates pass — WITHOUT gaussianizing
+   individual patch tokens, so HUD information survives (G4' passes with the
+   trained encoder non-inferior, on average better, than untrained). The
+   Crafter-specific scoped variant not only loses on adaptation grounds, it
+   fails its own mechanistic promise: indirect pressure through attention still
+   erodes HUD (3 of 5 seeds degrade > 0.03), exactly the caveat in the
+   companion's conditional endorsement.
+2. Unlike every per-stream variant, the global arm's pretext does not fight the
+   regularizer: prediction difficulty falls alongside SIGReg.
+3. Winner checkpoint: `reviews/artifacts/ssl_step1_lejepa_global_g1000.pt`
+   (full state: pretrainer, optimizer, torch/numpy/mask RNG, config,
+   component histories).
+
+Per the pre-registered advancement rule, `lejepa_global` @ 1000 updates is the
+step-1 encoder. Companion verification of this run is requested before step 3
+formally launches; the step-3 protocol (frozen encoder; rollout 0 vs 1;
+3 seeds; GRU; paired window-bootstrap copy margin) will be pre-registered in
+its own file.
