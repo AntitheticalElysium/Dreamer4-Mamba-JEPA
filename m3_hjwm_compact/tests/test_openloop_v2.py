@@ -87,15 +87,20 @@ def test_loo_oracle_matches_brute_force():
 
     torch.manual_seed(3)
     branch = torch.randn(6, 5, 8)
-    fast = loo_oracle_error(branch)
+    fast = loo_oracle_error(branch)          # [B, S] per-branch
     unit = torch.nn.functional.normalize(branch.float(), dim=-1)
     slow = []
     for b in range(6):
         others = torch.cat([unit[:b], unit[b + 1:]])
         p = torch.nn.functional.normalize(others.mean(0), dim=-1)
         slow.append(1.0 - (p * unit[b]).sum(-1))
-    slow = torch.stack(slow).mean(0)
+    slow = torch.stack(slow)                 # [B, S]
+    assert fast.shape == (6, 5), "must stay per-branch until masks are applied"
     assert torch.allclose(fast, slow, atol=1e-5)
+    # branch-specific masking control: masking branch 0's row must only use
+    # branch 0's error (2026-07-13 correction)
+    mask = torch.zeros(5, dtype=torch.bool); mask[2] = True
+    assert torch.allclose(fast[0][mask], slow[0][mask])
 
 
 def test_shift_copy_geometry():

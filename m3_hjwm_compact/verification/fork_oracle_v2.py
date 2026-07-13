@@ -164,13 +164,16 @@ def collect_bundle():
 
 
 def loo_oracle_error(branch_tokens):
-    """Leave-one-branch-out: predict branch b with the mean direction of the
-    others; error = mean_b (1 - p_b . u_b). branch_tokens [B, S, D]."""
+    """Leave-one-branch-out PER-BRANCH errors [B, S]: predict branch b with the
+    mean direction of the others; error_b = 1 - p_b . u_b. Branch-specific
+    masks must be applied to branch-specific rows BEFORE averaging
+    (2026-07-13 companion correction: pre-averaging under per-branch masks
+    biased the filed estimates)."""
     unit = F.normalize(branch_tokens.float(), dim=-1)
     total = unit.sum(0, keepdim=True)
     loo_mean = (total - unit) / (unit.shape[0] - 1)
     p = F.normalize(loo_mean, dim=-1)
-    return (1.0 - (p * unit).sum(-1)).mean(0)          # [S]
+    return 1.0 - (p * unit).sum(-1)                    # [B, S]
 
 
 def all_pairs_divergence(outcomes, key):
@@ -253,7 +256,7 @@ def main():
 
         copy_err_tok = cosine_distance(
             anchor_tok[None].expand_as(branch_k), branch_k)          # [B, S]
-        loo_err_tok = loo_oracle_error(branch_k)                     # [S]
+        loo_err_tok = loo_oracle_error(branch_k)                     # [B, S]
 
         # per-branch S3-style masks (primary) + union (secondary)
         change = patch_change_scores(
@@ -265,7 +268,7 @@ def main():
             sel = per_branch_mask[b]
             if sel.any():
                 copy_perbranch.append(float(copy_err_tok[b, regs:][sel].mean()))
-                loo_perbranch.append(float(loo_err_tok[regs:][sel].mean()))
+                loo_perbranch.append(float(loo_err_tok[b, regs:][sel].mean()))
         union = per_branch_mask.any(0)
 
         # shift-copy baseline at k=1
@@ -293,9 +296,9 @@ def main():
             "copy_changed_perbranch": float(np.mean(copy_perbranch)) if copy_perbranch else None,
             "loo_oracle_changed_perbranch": float(np.mean(loo_perbranch)) if loo_perbranch else None,
             "copy_changed_union": float(copy_err_tok[:, regs:][:, union].mean()) if union.any() else None,
-            "loo_oracle_changed_union": float(loo_err_tok[regs:][union].mean()) if union.any() else None,
+            "loo_oracle_changed_union": float(loo_err_tok[:, regs:][:, union].mean()) if union.any() else None,
             "copy_registers": float(copy_err_tok[:, :regs].mean()),
-            "loo_oracle_registers": float(loo_err_tok[:regs].mean()),
+            "loo_oracle_registers": float(loo_err_tok[:, :regs].mean()),
             "k1_copy_changed": float(np.mean(copy1)) if copy1 else None,
             "k1_shiftcopy_changed": float(np.mean(shift1)) if shift1 else None,
             "k1_action_is_move": anchor["suffixes"]["true"][0] in MOVE_DELTA,
