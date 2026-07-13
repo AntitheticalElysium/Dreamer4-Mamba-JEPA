@@ -218,3 +218,39 @@ inits — AND the pooled/global-state causal baseline arm UNCONDITIONALLY
 4k→8k→16k runs only while causal metrics move. Step 4 (GRU vs Mamba-2) on the
 first architecture with reproducible held-out action use — the global baseline
 also gives the backend comparison a second, source-faithful topology.
+
+### Stage A results (causal_stage_a.json; 4 models, 48 anchors)
+
+- 4-way retrieval: 0.250/0.271/0.276/0.266, CIs straddling or grazing 0.25 —
+  chance-level counterfactual selection confirmed on the archived instrument.
+- Matched separation: positive with CI > 0 for all three S3 arms but tiny
+  (+0.0008..+0.0018); noop-minus-true is 10-30x larger (+0.011..+0.029):
+  models learned "acting ≠ not acting", not WHICH action.
+- **H1 (injection attenuation) REJECTED — inverted**: at k≥4 prediction
+  divergence under different suffixes is 20-60x the TRUE target divergence,
+  with direction alignment ≈ 0 (0.00-0.05). The action pathway transmits
+  amply; the learned mapping is directionally uncorrelated with the
+  environment's. Remaining hypotheses: H2 (topology/transport) and H3
+  (objective/horizon never required the correct mapping).
+- Instrument notes: transmission ratios at k=1-3 blow up on near-zero true
+  divergence (ineffective first actions) — Stage B filters pairs by minimum
+  target divergence and reports medians. Transport diagnostic inconclusive as
+  computed (same-pos 0.923 vs transported 0.854; repeating-tile confound) —
+  distinctive-token refinement noted, not over-read.
+
+### Stage B registration (pre-registered before runs)
+
+Arms (40k replay, frozen encoder, LossConfig rollout=1 with rollout_steps=8 —
+horizon-matched: T=16 = 8 real prefix + 8 autoregressive), seeds {101, 202}:
+  B1 current topology (66 independent streams, GRU);
+  B2 global shared memory (GlobalGRUTemporal drop-in backend; pooled state
+     h via stacked GRUCell(hidden 192), per-token context = input + proj(h));
+  B3 shuffled-action control on B1 (actions rolled across the batch during
+     training) — its causal metrics MUST stay at chance or the metric is
+     broken.
+Ladder: evaluate causal metrics (retrieval, matched separation, noop control,
+filtered transmission/alignment) + S3-v2 open-loop margins at 4k; continue an
+arm to 8k then 16k ONLY if retrieval mean improves ≥ +0.02 or matched
+separation doubles rung-to-rung (user pre-authorized longer training).
+Success (unchanged): retrieval cluster-CI lower bound > 0.25 AND separation
+CI > 0, held-out. First passing arm → step 4 GRU-vs-Mamba-2.

@@ -37,7 +37,7 @@ class ModelConfig:
 
     # Backends are selected explicitly so a failed Mamba import can never turn a
     # named experiment into a GRU experiment. GRU is the portable default.
-    temporal_backend: Literal["auto", "mamba3", "mamba2", "gru"] = "gru"
+    temporal_backend: Literal["auto", "mamba3", "mamba2", "gru", "global_gru"] = "gru"
     temporal_depth: int = 1
     mamba_d_state: int = 32
     mamba_headdim: int = 16
@@ -361,6 +361,59 @@ class TemporalState:
     output: Tensor
 
 
+class GlobalGRUTemporal(nn.Module):
+    """Shared-global-memory backend (2026-07-13 causal-probe consensus arm).
+
+    Every cited system keeps ONE temporal state per timestep: DreamerV3/
+    Dreamer-CDP (RSSM deter), DRAMA (flattened latent into a single d_model
+    Mamba sequence); V-JEPA-2/Dreamer-4 keep dense tokens but attend across
+    them jointly in time. The compact default instead maintains an independent
+    recurrent history per spatial token — an uncited hypothesis. This arm
+    pools the token map into one GRU state of size `global_hidden` and emits
+    per-token context as `input + proj(h)` (drop-in TemporalModel contract),
+    isolating shared-vs-independent memory with everything else unchanged.
+    """
+
+    def __init__(self, dim: int, depth: int, global_hidden: int = 192):
+        super().__init__()
+        self.dim, self.depth, self.hidden = dim, depth, global_hidden
+        self.cells = nn.ModuleList([
+            nn.GRUCell(dim if layer == 0 else global_hidden, global_hidden)
+            for layer in range(depth)
+        ])
+        self.norms = nn.ModuleList([nn.LayerNorm(global_hidden) for _ in range(depth)])
+        self.out = nn.Linear(global_hidden, dim)
+
+    def init_state(self, batch: int, streams: int, device, dtype) -> TemporalState:
+        h = [torch.zeros(batch, self.hidden, device=device, dtype=dtype)
+             for _ in range(self.depth)]
+        return TemporalState(
+            h, torch.zeros(batch, streams, self.dim, device=device, dtype=dtype))
+
+    def step(self, x: Tensor, state: TemporalState, reset: Tensor | None = None):
+        pooled = x.mean(1)                                     # [B, D]
+        old = list(state.cache)
+        if reset is not None:
+            keep = (~reset.bool())[:, None].to(pooled.dtype)
+            old = [h * keep for h in old]
+        y, new = pooled, []
+        for cell, norm, h in zip(self.cells, self.norms, old):
+            h = cell(y, h)
+            y = norm(h)
+            new.append(h)
+        out = x + self.out(y)[:, None]                         # broadcast global
+        return out, TemporalState(new, out)
+
+    def sequence(self, x: Tensor, resets: Tensor | None = None):
+        b, t, s, _ = x.shape
+        state = self.init_state(b, s, x.device, x.dtype)
+        ys = []
+        for i in range(t):
+            y, state = self.step(x[:, i], state, None if resets is None else resets[:, i])
+            ys.append(y)
+        return torch.stack(ys, 1), state
+
+
 class GRUTemporal(nn.Module):
     """CPU-safe reference backend; not the research claim."""
     def __init__(self, dim: int, depth: int):
@@ -499,6 +552,9 @@ class TemporalModel(nn.Module):
         if wanted in ("mamba3", "mamba2"):
             self.impl = MambaSequenceAdapter(cfg, wanted)
             self.name = wanted
+        elif wanted == "global_gru":
+            self.impl = GlobalGRUTemporal(cfg.token_dim, cfg.temporal_depth)
+            self.name = "global_gru"
         else:
             self.impl = GRUTemporal(cfg.token_dim, cfg.temporal_depth)
             self.name = "gru"

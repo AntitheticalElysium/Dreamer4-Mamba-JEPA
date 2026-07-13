@@ -92,13 +92,20 @@ def stage_a_model(world, encoder, anchors, device):
         # no-action control at true target
         noop_err = float(cosine_distance(noop_pred[k], targets[0, k]).mean())
 
-        # layerwise divergence transmission (suffix pairs at each k)
+        # layerwise divergence transmission (suffix pairs at each k).
+        # Stage-B correction: pairs with near-zero TRUE divergence (ineffective
+        # first actions) explode the ratio; report None for those, aggregate
+        # with medians over valid pairs.
         transmission, alignment = [], []
         for kk in range(SUFFIX):
             pd = preds[0, kk] - preds[1, kk]
             td = targets[0, kk] - targets[1, kk]
-            denom = td.norm()
-            transmission.append(float(pd.norm() / denom.clamp_min(1e-9)))
+            denom = float(td.norm())
+            if denom < 1e-3:
+                transmission.append(None)
+                alignment.append(None)
+                continue
+            transmission.append(float(pd.norm() / denom))
             alignment.append(float(F.cosine_similarity(
                 pd.flatten(), td.flatten(), dim=0)))
         rows.append({
@@ -116,12 +123,16 @@ def stage_a_model(world, encoder, anchors, device):
         "matched_separation_mean": float(np.mean([r["matched_separation"] for r in rows])),
         "matched_separation_ci": cluster_ci([r["matched_separation"] for r in rows], seeds),
         "noop_minus_true_mean": float(np.mean([r["noop_minus_true"] for r in rows])),
-        "transmission_by_k": [
-            float(np.mean([r["transmission_k"][kk] for r in rows]))
+        "transmission_by_k_median": [
+            (lambda vals: float(np.median(vals)) if vals else None)(
+                [r["transmission_k"][kk] for r in rows
+                 if r["transmission_k"][kk] is not None])
             for kk in range(SUFFIX)
         ],
-        "alignment_by_k": [
-            float(np.mean([r["alignment_k"][kk] for r in rows]))
+        "alignment_by_k_median": [
+            (lambda vals: float(np.median(vals)) if vals else None)(
+                [r["alignment_k"][kk] for r in rows
+                 if r["alignment_k"][kk] is not None])
             for kk in range(SUFFIX)
         ],
     }

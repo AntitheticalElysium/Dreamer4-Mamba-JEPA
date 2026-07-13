@@ -126,3 +126,40 @@ def test_all_pairs_divergence_counts_pairs_not_reference():
     outcomes = [{"x": 0}, {"x": 0}, {"x": 1}]
     # pairs: (0,1) same, (0,2) diff, (1,2) diff -> 2/3
     assert abs(all_pairs_divergence(outcomes, "x") - 2 / 3) < 1e-9
+
+
+def test_global_gru_backend_contract():
+    import torch
+    from model import GlobalGRUTemporal, M3HJWM, ModelConfig
+
+    torch.manual_seed(6)
+    core = GlobalGRUTemporal(dim=16, depth=2, global_hidden=24)
+    x = torch.randn(3, 5, 7, 16)
+    seq_out, seq_state = core.sequence(x)
+    state = core.init_state(3, 7, x.device, x.dtype)
+    outs = []
+    for t in range(5):
+        y, state = core.step(x[:, t], state)
+        outs.append(y)
+    assert torch.allclose(seq_out, torch.stack(outs, 1), atol=1e-5), \
+        "sequence and step composition must agree"
+    # reset isolation: resetting row 0 must not affect row 1
+    state_a = core.init_state(2, 7, x.device, x.dtype)
+    _, state_a = core.step(x[:2, 0], state_a)
+    _, state_reset = core.step(
+        x[:2, 1], state_a, reset=torch.tensor([True, False]))
+    _, state_none = core.step(x[:2, 1], state_a)
+    assert torch.allclose(state_reset.cache[0][1], state_none.cache[0][1], atol=1e-6)
+    assert not torch.allclose(state_reset.cache[0][0], state_none.cache[0][0])
+    # drop-in through the full world model
+    cfg = ModelConfig(temporal_backend="global_gru", predictor="deterministic",
+                      mask_ratio=0.0)
+    world = M3HJWM(cfg)
+    batch = {
+        "obs": torch.randint(0, 255, (2, 4, 3, 64, 64), dtype=torch.uint8),
+        "actions": torch.randint(0, cfg.action_dim, (2, 3)),
+        "rewards": torch.randn(2, 3),
+        "continues": torch.ones(2, 3),
+    }
+    out = world(batch)
+    assert torch.isfinite(out.loss)
