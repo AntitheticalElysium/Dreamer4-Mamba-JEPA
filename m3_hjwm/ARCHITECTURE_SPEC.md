@@ -1,5 +1,17 @@
 # M3-HJWM architecture specification (verification revision)
 
+> **STATUS RECONCILIATION (2026-07-13, dual-agent consensus):** this spec is the
+> original reference design; the operative implementation is `m3_hjwm_compact/`.
+> Since this document was written: the §3 representation objective was replaced
+> by faithful same-frame I-JEPA + global projected SIGReg (LeJEPA), which
+> **passed the corrected step-1 gates** (reviews/2026-07-13-step1-protocol.md);
+> a V-JEPA-2-AC-style rollout bridge is merged (opt-in) and its drift-suppression
+> effect is established (S3-B', reviews/2026-07-13-step3-protocol.md); the S3-A
+> copy-margin gate and action-conditioned dynamics remain OPEN
+> (reviews/2026-07-13-fork-oracle-protocol.md and successors). Statements below
+> about unresolved representation gates are historical.
+
+
 Status, 2026-07-13: this document is a falsifiable target, not a claim that the
 model is ready for policy training. The representation objective still fails at
 least one binding Phase B gate. Mamba-3, predictor mixtures, reliability
