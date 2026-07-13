@@ -92,3 +92,43 @@ Candidates, preference order:
 3. Proceed to step 4 under parity (backend attribution is a paired comparison
    and does not logically require an absolute copy win) — protocol change,
    needs explicit consensus.
+
+## Amendment S3-v2 (pre-registered; companion consensus corrections before the data-scale rerun)
+
+Companion findings verified by senior reproduction (1 exact duplicate window,
+52 overlapping same-episode pairs, max 10 windows from one episode, 7,871 train
+transitions). Wording adopted: v1 shows "no copy win was demonstrated", not
+"parity"; S3-B v1 downgraded to strong directional evidence pending cluster
+inference; S3-C passed its tolerance while one-step did regress ~11-13%.
+
+Instrument corrections (before any new run):
+1. **Window manifest:** predeclared, deterministic, NON-overlapping windows per
+   episode (stride = prefix+horizon, start offset 1), each tagged
+   (episode_id, start); no duplicates by construction. Both arms of a pair
+   evaluate the identical manifest.
+2. **Episode-cluster bootstrap:** resample EPISODES with replacement (2000
+   draws), aggregate their windows; applied to (a) each arm's copy margin
+   (S3-A) and (b) the per-window PAIRED rollout1−rollout0 margin difference
+   (new S3-B' statistic). Cross-arm draws remain paired by manifest.
+3. **Provenance:** every arm saves trainable/optimizer/torch+numpy RNG state,
+   the window manifest, and raw per-window margin rows; the report records
+   sha256 of the encoder checkpoint, replay cache, and held-out cache.
+4. Continuation loss history added to the recorded metrics.
+
+Gates (S3-A and S3-C unchanged in form, now on the corrected instrument):
+- S3-A: cluster-bootstrap 95% lower bound of the copy margin > 0 AND ≥5%
+  relative improvement at k=8, ≥2 of 3 seeds.
+- **S3-B' (upgraded):** cluster-bootstrap 95% lower bound of the paired
+  per-window margin difference (rollout1 − rollout0) > 0 at k=8, ≥2 of 3 seeds.
+- S3-C: unchanged (≤1.2× one-step ratio, ≥2/3 seeds).
+
+Data-scale rerun (single training lever, defined by TRANSITIONS):
+- Train replay: collect random-policy episodes (seeds 0, 1, 10, 11, …) until
+  ≥40,000 transitions (fixed threshold; v1 had 7,871).
+- Held-out: 20 episodes (seeds 2 and 9; more clusters for the bootstrap).
+- BOTH data scales run under the corrected instrument (12 arms total:
+  {7.9k, 40k} × rollout {0,1} × seeds {101,202,303}) so the data effect is
+  attributed against a same-instrument baseline, not against v1's biased CIs.
+- Rollout steps/weights, budget (4000), architecture, optimizer unchanged.
+Decision: gates evaluated on the 40k arms; the 7.9k arms are the attribution
+baseline. All 12 reported regardless.
