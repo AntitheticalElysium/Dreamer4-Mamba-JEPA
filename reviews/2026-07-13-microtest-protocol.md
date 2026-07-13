@@ -167,3 +167,54 @@ Copy margin is retained as the dynamics-fidelity gate alongside it.
    unified feature/action causal arm if VRAM permits.
 6. GRU vs Mamba-2 on the first arm with reproducible held-out action selection
    (user directive standing).
+
+## Amendment: causal-action probe v2 (pre-registered before running)
+
+Consensus inputs: user directives (distinguish WHY actions are unused; run the
+global-memory baseline REGARDLESS — verified: DreamerV3 RSSM, Dreamer-CDP, and
+DRAMA all use one shared global temporal state, DRAMA flattening its
+categorical latent into a single d_model vector per step; V-JEPA-2/Dreamer-4
+keep dense tokens with joint cross-token attention — our 66 independent
+recurrent streams match no cited system) + conversation-agent suggestions
+adopted after critical review (three-hypothesis discrimination; layerwise
+divergence localization; latent transport diagnostic; conditional budget
+ladder; causal ranking loss stays DEFERRED — user-confirmed not a priority;
+margin formula recorded for the future, action-effective anchors only).
+Verified fact for the record: the training objective contains no
+counterfactual term — cosine to the realized future + rollout bridge + task
+heads; nothing requires the true action to out-predict alternatives.
+
+Three hypotheses to discriminate:
+  H1 conditioning ignored/attenuated (action signal dies at injection);
+  H2 topology cannot express action effects (esp. spatial transport across
+     token positions — the independent-streams question);
+  H3 teacher-forcing/short-horizon dominance (drift learned, counterfactual
+     mapping never required).
+
+Stage A (free; measurements on EXISTING checkpoints + archived bundle):
+1. Causal metrics on S3-v2 40k rollout-1 checkpoints (3 seeds) + microtest
+   model: 4-way same-anchor suffix retrieval (chance 25%), matched
+   true-vs-wrong separation, no-action (all-noop) control; changed-patch and
+   all-token variants; env-seed cluster CIs.
+2. Layerwise divergence transmission: for same-anchor suffix pairs, the ratio
+   r_k = d(pred_s(k), pred_s'(k)) / d(target_s(k), target_s'(k)) per horizon
+   k, plus direction alignment cos(pred_s−pred_s', target_s−target_s').
+   r collapsing at k=1 → H1; healthy at k=1 but decaying through the recurrent
+   state → H2-temporal; healthy but misaligned → H2-predictor/H3.
+3. Latent transport diagnostic (frozen-encoder property, model-free): for k=1
+   move-succeeded branches, cos(content_{t+1}(x,y), content_t(x+dx,y+dy)) vs
+   same-position baseline, content = token − pos_embed. Transport-structured
+   representation ⇒ the dynamics model must ROUTE content across positions;
+   absence changes the architecture-arm interpretation.
+
+Numeric definitions (registered now): "held-out action use" = 4-way retrieval
+with env-seed cluster-CI lower bound > 25% AND matched separation CI > 0.
+"Memorization" = the same on training anchors only.
+
+Stage B (training; after Stage A): horizon-matched probe arms per the agreed
+sequence — incl. trained no-action and shuffled-action controls, several
+inits — AND the pooled/global-state causal baseline arm UNCONDITIONALLY
+(user directive; Dreamer-CDP/LeWM-shaped, separately runnable). Budget ladder
+4k→8k→16k runs only while causal metrics move. Step 4 (GRU vs Mamba-2) on the
+first architecture with reproducible held-out action use — the global baseline
+also gives the backend comparison a second, source-faithful topology.
