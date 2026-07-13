@@ -266,3 +266,39 @@ preference order, NOT enacted:
    forking-paths budget-tuning unless (1) fails.
 3. Advance under explicit G4' waiver with step-3/Phase-E downstream
    arbitration — requires both-agent + user consensus.
+
+## Amendment 1g (pre-registered before the 1g runs)
+
+User challenge accepted: spatially scoped SIGReg risks Crafter-specific
+hardcoding, and the FAITHFUL LeJEPA axis must be tested first-class. Verified
+before registering: (a) github.com/galilai-group/lejepa and the pinned
+rbalestr-lab/lejepa are the SAME repository (identical HEAD c293d29 — org
+rename); (b) the paper (2511.08544v2, Eq. "LeJEPA", §5-6) applies SIGReg to
+GLOBAL per-view embeddings over the image-batch axis, DINO-style multi-view,
+with a projector — never to dense patch tokens; §6.4/Table 4 shows SIGReg
+replaces the predictor/EMA as the anti-collapse mechanism.
+
+Pre-run repairs (companion consensus, all landed + tested):
+- G4' redesigned: paired degradation per independent probe seed (fixed
+  non-overlapping internal splits), bootstrap over seeds; 5 probe seeds
+  (2,5,6,7,8) x 400 frames; bar unchanged at 0.02 UCB90.
+- Checkpoints now save torch CPU/CUDA RNG, mask-generator state, and the full
+  ModelConfig (previously NumPy state only).
+- Mask-size helper corrected to the exact official form: one shared uniform
+  draw for scale AND aspect, linear aspect interpolation, official clamping.
+
+Arms (λ=0.01, 1000 updates, identical data/seeds; all other gates unchanged):
+- **A `lejepa_global` (faithful axis):** SIGReg on projector(pooled dense
+  tokens), samples = image batch — the official application point, projector
+  shape scaled from MINIMAL.md. Labelled composition: the predictive term
+  remains I-JEPA masked prediction (our downstream needs dense tokens; the
+  paper's multi-crop view-consistency term is a Crafter-augmentation minefield
+  deferred on purpose). Gates never read the projector.
+- **B `lejepa_scoped` (mechanistic ablation):** per-stream SIGReg on world
+  rows 0-5 only (48 tokens); described as removal of DIRECT SIGReg pressure —
+  post-attention world tokens still depend on HUD tokens indirectly.
+- Untrained control recomputed in-run on the 5-seed probe.
+
+Advancement rule: an arm advances only on a full G1-G3 + G4' + G5' pass. If
+BOTH pass, the faithful-global arm advances (less adaptation). If neither
+passes, stop for consensus; the 500-update feasibility probe stays deferred.

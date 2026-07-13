@@ -89,15 +89,20 @@ def sparse_stem_tokens(
 
 
 def _sample_block_size(grid: int, scale: tuple, aspect: tuple, generator) -> tuple:
-    """One (h, w) block size (official MaskCollator._sample_block_size)."""
-    rand = torch.rand(2, generator=generator)
-    target_scale = scale[0] + float(rand[0]) * (scale[1] - scale[0])
-    max_keep = max(1, int(grid * grid * target_scale))
-    log_low, log_high = math.log(aspect[0]), math.log(aspect[1])
-    ratio = math.exp(log_low + float(rand[1]) * (log_high - log_low))
-    h = max(1, min(grid, int(round(math.sqrt(max_keep * ratio)))))
-    w = max(1, min(grid, int(round(math.sqrt(max_keep / ratio)))))
-    return h, w
+    """One (h, w) block size — exact official MaskCollator._sample_block_size:
+    a SINGLE shared uniform draw sets both scale and aspect ratio, and the
+    aspect ratio is linearly interpolated (2026-07-13 consensus correction #2)."""
+    rand = float(torch.rand(1, generator=generator))
+    target_scale = scale[0] + rand * (scale[1] - scale[0])
+    max_keep = int(grid * grid * target_scale)
+    ratio = aspect[0] + rand * (aspect[1] - aspect[0])
+    h = int(round(math.sqrt(max_keep * ratio)))
+    w = int(round(math.sqrt(max_keep / ratio)))
+    while h >= grid:
+        h -= 1
+    while w >= grid:
+        w -= 1
+    return max(1, h), max(1, w)
 
 
 def _place_block(grid: int, size: tuple, generator) -> Tensor:
@@ -236,9 +241,28 @@ class IJEPAPretrainer(nn.Module):
         self.target_encoder = EMARepresentationEncoder(self.online_encoder, cfg.ema_decay)
         self.predictor = IJEPAPredictor(cfg)
         # LeJEPA composition (amendment 1c): loss = (1-l)*prediction + l*SIGReg.
-        # sigreg_weight = 0 recovers the pure I-JEPA arm.
+        # sigreg_weight = 0 recovers the pure I-JEPA arm. sigreg_mode selects
+        # where the regularizer acts (amendment 1g):
+        #   "stream": per-stream over observations on all dense tokens (1c-1f);
+        #   "global": official LeJEPA axis — one pooled embedding per image
+        #             through a projector (MINIMAL.md: MLP w/ BatchNorm), SIGReg
+        #             over the image batch;
+        #   "scoped": per-stream, world-view rows 0-5 only (48 tokens), no
+        #             direct pressure on HUD rows or registers.
         self.sigreg = SIGReg()
         self.sigreg_weight = 0.0
+        self.sigreg_mode = "stream"
+        grid = cfg.image_size // cfg.patch_size
+        self.world_streams = 6 * grid  # rows 0-5 of the 8x8 grid
+        # Official projector shape (MINIMAL.md: MLP(512,[2048,2048,128], BN)),
+        # scaled to d=64. Used by "global" mode only; gates never read it.
+        self.projector = nn.Sequential(
+            nn.Linear(cfg.token_dim, 4 * cfg.token_dim),
+            nn.BatchNorm1d(4 * cfg.token_dim), nn.ReLU(),
+            nn.Linear(4 * cfg.token_dim, 4 * cfg.token_dim),
+            nn.BatchNorm1d(4 * cfg.token_dim), nn.ReLU(),
+            nn.Linear(4 * cfg.token_dim, cfg.token_dim),
+        )
 
     def _encode_context(self, obs: Tensor, context_index: Tensor) -> Tensor:
         if not self.leak_free:
@@ -302,7 +326,14 @@ class IJEPAPretrainer(nn.Module):
         # Dense online pass so mask randomness cannot satisfy the regularizer
         # (re-audit correction) and gradients shape the whole token map.
         dense = self.online_encoder(obs)
-        sigreg_loss = self.sigreg(dense)
+        if self.sigreg_mode == "global":
+            pooled = self.projector(dense.mean(1))
+            sigreg_loss = self.sigreg(pooled[:, None, :])
+        elif self.sigreg_mode == "scoped":
+            regs = self.cfg.registers
+            sigreg_loss = self.sigreg(dense[:, regs:regs + self.world_streams])
+        else:
+            sigreg_loss = self.sigreg(dense)
         combined = (
             (1.0 - self.sigreg_weight) * prediction_loss
             + self.sigreg_weight * sigreg_loss

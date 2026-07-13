@@ -30,6 +30,8 @@ ARTIFACTS = Path(__file__).resolve().parents[2] / "reviews" / "artifacts"
 # (2026-07-13 re-audit, moderate finding 13).
 DATA_CACHE = Path(__file__).resolve().parents[2] / "data" / "shared_random_policy_v1.pt"
 PROBE_V2_CACHE = Path(__file__).resolve().parents[2] / "data" / "probe_3seed_v2.pt"
+PROBE_V3_CACHE = Path(__file__).resolve().parents[2] / "data" / "probe_5seed_v3.pt"
+PROBE_SEEDS = (2, 5, 6, 7, 8)
 # Relative abort (protocol amendment 1e-abort): thresholds must survive
 # architecture changes that shift metric scales.
 def abort_threshold(untrained_obs_frac: float) -> float:
@@ -116,6 +118,33 @@ def curve_point(target_encoder, probe, cfg, device, step, loss_mean, with_invent
     return point
 
 
+def g4_seed_noninferiority(encode_fn, untrained_encoder, trained_encoder,
+                           probe_by_seed, registers, resamples=1000):
+    """Amendment 1g G4': paired degradation per independent probe seed (the
+    probe's internal split is fixed and non-overlapping within each seed),
+    bootstrap over seeds; PASS iff one-sided 90% UCB <= 0.02."""
+    per_seed = {}
+    for seed, part in probe_by_seed.items():
+        tu = encode_fn(untrained_encoder, part.obs)
+        tt = encode_fn(trained_encoder, part.obs)
+        ru = inventory_probe(tu, part.inventory, registers)["inventory_r2_mean_varying"]
+        rt = inventory_probe(tt, part.inventory, registers)["inventory_r2_mean_varying"]
+        per_seed[seed] = float(ru - rt)
+    values = np.array(list(per_seed.values()))
+    rng = np.random.default_rng(404)
+    boot = np.array([
+        values[rng.integers(0, len(values), size=len(values))].mean()
+        for _ in range(resamples)
+    ])
+    ucb = float(np.quantile(boot, 0.90))
+    return {
+        "G4p_per_seed_degradation": per_seed,
+        "G4p_paired_degradation_mean": float(values.mean()),
+        "G4p_ucb90": ucb,
+        "G4p_pass": bool(ucb <= 0.02),
+    }
+
+
 def g4_blocked_noninferiority(
     tokens_untrained, tokens_trained, inventory, registers, blocks=None, resamples=200
 ):
@@ -179,11 +208,15 @@ def gates(final: dict, untrained: dict, losses: list[float]) -> dict:
     }
 
 
-def train_ijepa(cfg, frames, probe, steps, device, batch=64, sigreg_weight=0.0, untrained_obs_frac=0.0):
+def train_ijepa(cfg, frames, probe, steps, device, batch=64, sigreg_weight=0.0,
+                sigreg_mode="stream", untrained_obs_frac=0.0):
     torch.manual_seed(101)
     model = IJEPAPretrainer(cfg).to(device)
     model.sigreg_weight = sigreg_weight
+    model.sigreg_mode = sigreg_mode
     params = list(model.online_encoder.parameters()) + list(model.predictor.parameters())
+    if sigreg_mode == "global":
+        params += list(model.projector.parameters())
     optimizer = torch.optim.AdamW(params, lr=3e-4, weight_decay=1e-4)
     frame_rng = np.random.default_rng(2027)
     mask_generator = torch.Generator().manual_seed(2027)
@@ -246,6 +279,7 @@ def train_ijepa(cfg, frames, probe, steps, device, batch=64, sigreg_weight=0.0, 
     return (model, losses, curve, aborted, minutes,
             {"pred_hist": pred_hist, "sig_hist": sig_hist, "bank_curve": bank_curve,
              "optimizer_state": optimizer.state_dict(),
+             "mask_gen_state": mask_generator.get_state(),
              "rng_state": frame_rng.bit_generator.state})
 
 
@@ -283,22 +317,20 @@ def main():
 
     data = load_shared_data()
     frames = np.concatenate([ep["obs"] for ep in data["train_episodes"]])
-    if args.probe_v2:
-        if PROBE_V2_CACHE.exists():
-            probe = torch.load(PROBE_V2_CACHE, weights_only=False)
-        else:
-            from representation_control import concatenate
-            probe = concatenate([collect(s, 400) for s in (2, 5, 6)])
-            torch.save(probe, PROBE_V2_CACHE)
+    from representation_control import concatenate
+    if PROBE_V3_CACHE.exists():
+        probe_by_seed = torch.load(PROBE_V3_CACHE, weights_only=False)
     else:
-        probe = data["heldout_probe"]
+        probe_by_seed = {s: collect(s, 400) for s in PROBE_SEEDS}
+        torch.save(probe_by_seed, PROBE_V3_CACHE)
+    probe = concatenate(list(probe_by_seed.values()))
 
     torch.manual_seed(101)
     cfg = ModelConfig(temporal_backend="gru", predictor="deterministic", mask_ratio=0.0)
     untrained_model = IJEPAPretrainer(cfg).to(device)
     untrained = probes_block(untrained_model.target_encoder, probe, cfg, device)
     untrained_tokens = encode(untrained_model.target_encoder, probe.obs, device)
-    del untrained_model
+    untrained_encoder_ref = untrained_model.target_encoder
     torch.cuda.empty_cache()
 
     report = {
@@ -308,19 +340,26 @@ def main():
         "untrained": untrained,
         "arms": {},
     }
-    for arm_name, weight in (("ijepa", 0.0), ("lejepa", 0.02), ("lejepa001", 0.01)):
+    for arm_name, weight, mode in (
+        ("ijepa", 0.0, "stream"), ("lejepa", 0.02, "stream"),
+        ("lejepa001", 0.01, "stream"),
+        ("lejepa_global", 0.01, "global"), ("lejepa_scoped", 0.01, "scoped"),
+    ):
       if arm_name in args.arms:
         model, losses, curve, aborted, minutes, extras = train_ijepa(
             cfg, frames, probe, args.steps, device, sigreg_weight=weight,
+            sigreg_mode=mode,
             untrained_obs_frac=untrained["target_observation_variance_fraction"])
         pred_hist, sig_hist = extras["pred_hist"], extras["sig_hist"]
         bank_curve = extras["bank_curve"]
         optimizer_state, rng_state = extras["optimizer_state"], extras["rng_state"]
+        mask_gen_state = extras["mask_gen_state"]
         final = probes_block(model.target_encoder, probe, cfg, device)
         arm_gates = gates(final, untrained, losses)
-        tokens_t = encode(model.target_encoder, probe.obs, device)
-        arm_gates.update(g4_blocked_noninferiority(
-            untrained_tokens, tokens_t, probe.inventory, cfg.registers))
+        encode_fn = lambda enc, arr: encode(enc, arr, device)
+        arm_gates.update(g4_seed_noninferiority(
+            encode_fn, untrained_encoder_ref, model.target_encoder,
+            probe_by_seed, cfg.registers))
         arm_gates["G5p_bank_first_last"] = [
             bank_curve[0]["heldout_pretext"], bank_curve[-1]["heldout_pretext"]]
         arm_gates["G5p_pass"] = bool(
@@ -341,6 +380,10 @@ def main():
              "config": {"sigreg_weight": weight, "steps": args.steps,
                         "lr": 3e-4, "weight_decay": 1e-4, "batch": 64},
              "numpy_rng": rng_state,
+             "torch_rng_cpu": torch.get_rng_state(),
+             "torch_rng_cuda": torch.cuda.get_rng_state_all(),
+             "mask_generator_state": mask_gen_state,
+             "model_config": __import__("dataclasses").asdict(cfg),
              "component_histories": {"total": losses, "prediction": pred_hist,
                                      "sigreg": sig_hist},
              "steps": args.steps},
