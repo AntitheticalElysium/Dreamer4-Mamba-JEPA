@@ -39,6 +39,10 @@ class ModelConfig:
     # named experiment into a GRU experiment. GRU is the portable default.
     temporal_backend: Literal["auto", "mamba3", "mamba2", "gru", "global_gru"] = "gru"
     temporal_depth: int = 1
+    # Hidden width of the shared-global-memory ablation backend (global_gru).
+    # 64 is parameter-matched to the independent-stream GRU default
+    # (2026-07-14 consolidation protocol); 192 was the original Stage-B arm.
+    global_hidden: int = 192
     mamba_d_state: int = 32
     mamba_headdim: int = 16
 
@@ -553,7 +557,8 @@ class TemporalModel(nn.Module):
             self.impl = MambaSequenceAdapter(cfg, wanted)
             self.name = wanted
         elif wanted == "global_gru":
-            self.impl = GlobalGRUTemporal(cfg.token_dim, cfg.temporal_depth)
+            self.impl = GlobalGRUTemporal(
+                cfg.token_dim, cfg.temporal_depth, global_hidden=cfg.global_hidden)
             self.name = "global_gru"
         else:
             self.impl = GRUTemporal(cfg.token_dim, cfg.temporal_depth)
