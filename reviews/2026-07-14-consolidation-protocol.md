@@ -68,3 +68,49 @@ then higher lower bound) proceeds; both fail → stop for consensus.
 8k + 16k checkpoints with optimizer/RNG state; raw distance matrices; training
 loss histories; peak VRAM; full config + parameter counts; sha256 manifest of
 encoder, replay, both bundles, and all checkpoints; HEAD commit recorded.
+
+## Results (consolidation.json; final bundle 192 anchors / 16 seeds / 64 night, hashed)
+
+Retrieval (all-token) on the fresh final set, seed-level t-intervals:
+
+| arm | s101 | s202 | s303 | matched shuffled control |
+|---|---|---|---|---|
+| C1 GRU | 28.3% [26.8, 29.7] | 27.2% [25.4, 29.0] | 27.5% [26.2, 28.8] | 25.7% [24.8, 26.5], sep CI ∋ 0 |
+| C2 global-64 | 28.8% [27.6, 30.0] | 28.4% [26.8, 30.0] | 29.0% [27.6, 30.5] | 24.7% [24.1, 25.4], sep CI ∋ 0 |
+
+Symmetric separation: every trained arm's 95% lower bound > 0
+(+0.0029..+0.0035); both shuffled controls' CIs contain zero. Changed-patch
+retrieval confirms direction in 5/6 trained arms (C1-s303 LB 25.4% marginal).
+
+### Pre-registered gate evaluation (per arm family, majority of 3 seeds)
+
+| gate | C1 GRU | C2 global-64 |
+|---|---|---|
+| G-a retrieval ≥27% & LB>25.5% | PASS 2/3 (s202 LB 25.43% marginal miss) | **PASS 3/3** |
+| G-b symmetric separation LB>0 | PASS 3/3 | **PASS 3/3** |
+| G-c ≥ control +1.5pts | PASS 3/3 | **PASS 3/3** |
+| G-d changed-patch LB>25.5% | PASS 2/3 | **PASS 3/3** |
+| seeds passing ALL gates | 1/3 | **3/3** |
+
+**Decision (per registered tie-break — more seeds passing, then higher lower
+bounds): C2, the parameter-matched shared-global-memory topology, is selected.**
+Both families exhibit real held-out counterfactual action use; the global
+topology is more reliable across seeds and uniformly higher. The topology-
+matched shuffled controls sitting exactly at chance with zero separation
+certify that the trained deltas are causal, not metric-structural.
+
+### Step-4 handoff (consensus items)
+
+1. Step 4 compares GRU vs Mamba-2 ON THE SELECTED GLOBAL TOPOLOGY. The
+   existing Mamba adapter is per-stream and is NOT a valid comparator
+   (companion finding, adopted). Proposed design for dual sign-off:
+   `GlobalMambaTemporal` mirroring GlobalGRUTemporal exactly — pooled token
+   input sequence through Mamba-2 block(s) (official kernels, cache semantics
+   already test-covered), per-token context = input + proj(state) — which is
+   also the SOURCE-ALIGNED shape: DRAMA runs its Mamba over a single global
+   flattened latent per step.
+2. Seeds 63-78 are now consumed. Step 4's final evaluation set: fresh seeds
+   79-94, same construction, generated and hashed before training.
+3. Gates for step 4: same G-a..G-d family plus paired per-anchor
+   backend-difference CI (same seeds, same replay schedules, same init where
+   shapes permit).

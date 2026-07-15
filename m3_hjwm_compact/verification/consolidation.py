@@ -270,7 +270,15 @@ def main():
         + [("C3_gru_shuf", "gru", 192, 101, True),
            ("C3_glob64_shuf", "global_gru", 64, 101, True)]
     )
-    report = {
+    report_path = ARTIFACTS / "consolidation.json"
+    if report_path.exists():
+        report = json.loads(report_path.read_text())
+        print(f"[resume] {len(report['arms'])} arms already complete:",
+              list(report["arms"]), flush=True)
+        report["head_commit_resume"] = head
+    else:
+        report = None
+    report = report or {
         "protocol": "reviews/2026-07-14-consolidation-protocol.md",
         "head_commit": head,
         "hashes": {"encoder": sha256_file(ENCODER_CKPT),
@@ -284,6 +292,8 @@ def main():
         "arms": {},
     }
     for name, backend, hidden, seed, shuffled in arms:
+        if name in report["arms"]:
+            continue
         world, info = run_arm(name, backend, hidden, seed, shuffled,
                               train, monitor_anchors, encoder, device)
         rows = symmetric_eval(world, encoder, final_anchors, device)
