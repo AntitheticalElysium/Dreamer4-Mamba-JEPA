@@ -1,0 +1,16 @@
+{
+  "bundle": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/data/exploratory_monitor_131_134.pt",
+  "sha256": "3b45ac6b7360fd1f4cd3310d15ff517ccfc6f3f0bbdf2df62c151d980ccf4138",
+  "anchors": 24,
+  "night": 8,
+  "seeds": [
+    131,
+    132,
+    133,
+    134
+  ],
+  "branches": 3,
+  "canonical_collector": true,
+  "live_env_canonical": true,
+  "verify_repeat": true
+}
