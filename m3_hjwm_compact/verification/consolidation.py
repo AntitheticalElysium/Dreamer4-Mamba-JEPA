@@ -150,14 +150,25 @@ def symmetric_eval(world, encoder, anchors, device):
         preds = [openloop_anchor(world, anchor, anchor["suffixes"][n], device)[SUFFIX - 1]
                  for n in SUFFIX_NAMES]
 
+        # 2026-07-14 companion correction (finding 1): candidate-specific
+        # masks make argmin columns incomparable and can leak mask structure.
+        # PRIMARY changed metric uses ONE common mask per anchor (union over
+        # all suffixes and branches); the per-target variant is retained as a
+        # diagnostic only and never used for retrieval.
+        common_mask = np.stack([m.numpy() if hasattr(m, "numpy") else np.asarray(m)
+                                for m in masks]).any(0)
+        common_mask = torch.from_numpy(common_mask)
         d_all = np.zeros((4, 4)); d_patch = np.zeros((4, 4)); d_changed = np.full((4, 4), np.nan)
+        d_changed_targetmask = np.full((4, 4), np.nan)
         for s in range(4):
             for t in range(4):
                 d = cosine_distance(preds[s], targets[t])          # [S]
                 d_all[s, t] = float(d.mean())
                 d_patch[s, t] = float(d[regs:].mean())
+                if bool(common_mask.any()):
+                    d_changed[s, t] = float(d[regs:][common_mask].mean())
                 if masks[t].any():
-                    d_changed[s, t] = float(d[regs:][masks[t]].mean())
+                    d_changed_targetmask[s, t] = float(d[regs:][masks[t]].mean())
         def retrieval(m):
             valid = ~np.isnan(m).any(1)
             if not valid.any():
@@ -171,6 +182,7 @@ def symmetric_eval(world, encoder, anchors, device):
             "env_seed": anchor["env_seed"], "anchor": i, "night": anchor["night"],
             "d_all": d_all.tolist(), "d_patch": d_patch.tolist(),
             "d_changed": d_changed.tolist(),
+            "d_changed_targetmask_diagnostic": d_changed_targetmask.tolist(),
             "retrieval_all": retrieval(d_all),
             "retrieval_patch": retrieval(d_patch),
             "retrieval_changed": retrieval(d_changed),

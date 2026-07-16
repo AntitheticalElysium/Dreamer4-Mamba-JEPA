@@ -37,7 +37,7 @@ class ModelConfig:
 
     # Backends are selected explicitly so a failed Mamba import can never turn a
     # named experiment into a GRU experiment. GRU is the portable default.
-    temporal_backend: Literal["auto", "mamba3", "mamba2", "gru", "global_gru"] = "gru"
+    temporal_backend: Literal["auto", "mamba3", "mamba2", "gru", "global_gru", "global_mamba2"] = "gru"
     temporal_depth: int = 1
     # Hidden width of the shared-global-memory ablation backend (global_gru).
     # 64 is parameter-matched to the independent-stream GRU default
@@ -418,6 +418,70 @@ class GlobalGRUTemporal(nn.Module):
         return torch.stack(ys, 1), state
 
 
+class GlobalMambaTemporal(nn.Module):
+    """Shared-global-memory backend with an official Mamba-2 core (step 4).
+
+    SOURCE-INSPIRED, not a reproduction: DRAMA supports the single-global-
+    vector precedent (it concatenates a flattened categorical latent and action
+    through a stem into its Mamba; mixer_seq_simple.py:188) but does not
+    mean-pool dense JEPA tokens nor broadcast state back to them. This adapter
+    mirrors GlobalGRUTemporal's contract exactly — pooled [B, T, D] sequence
+    through official Mamba-2 blocks (pinned kernels/cache semantics), per-token
+    context = input + proj(core output) — so the step-4 backend comparison
+    changes ONLY the recurrent core.
+    """
+
+    def __init__(self, cfg: ModelConfig):
+        super().__init__()
+        from mamba_ssm.modules.mamba2 import Mamba2
+        self.dim = cfg.token_dim
+        self.layers = nn.ModuleList([
+            Mamba2(d_model=cfg.token_dim, d_state=cfg.mamba_d_state,
+                   headdim=cfg.mamba_headdim, use_mem_eff_path=False)
+            for _ in range(cfg.temporal_depth)
+        ])
+        self.norms = nn.ModuleList(
+            [nn.LayerNorm(cfg.token_dim) for _ in self.layers])
+        self.out = nn.Linear(cfg.token_dim, cfg.token_dim)
+
+    def init_state(self, batch: int, streams: int, device, dtype) -> TemporalState:
+        caches = [
+            tuple(layer.allocate_inference_cache(batch, max_seqlen=1,
+                                                 device=device, dtype=dtype))
+            for layer in self.layers
+        ]
+        return TemporalState(
+            caches, torch.zeros(batch, streams, self.dim, device=device, dtype=dtype))
+
+    def step(self, x: Tensor, state: TemporalState, reset: Tensor | None = None):
+        pooled = x.mean(1)                                     # [B, D]
+        caches = state.cache
+        if reset is not None:
+            rows = reset.bool()
+            for cache in caches:
+                for tensor in cache:
+                    tensor[rows] = 0
+        y = pooled
+        next_caches = []
+        for layer, norm, cache in zip(self.layers, self.norms, caches):
+            update, *next_cache = layer.step(norm(y)[:, None], *cache)
+            y = y + update[:, 0]
+            next_caches.append(tuple(next_cache))
+        out = x + self.out(y)[:, None]
+        return out, TemporalState(next_caches, out)
+
+    def sequence(self, x: Tensor, resets: Tensor | None = None):
+        if resets is not None and bool(resets[:, 1:].any()):
+            raise NotImplementedError("segment sequences at episode boundaries")
+        b, t, s, _ = x.shape
+        pooled = x.mean(2)                                     # [B, T, D]
+        y = pooled
+        for layer, norm in zip(self.layers, self.norms):
+            y = y + layer(norm(y))
+        out = x + self.out(y)[:, :, None]
+        return out, TemporalState(None, out[:, -1])
+
+
 class GRUTemporal(nn.Module):
     """CPU-safe reference backend; not the research claim."""
     def __init__(self, dim: int, depth: int):
@@ -560,6 +624,9 @@ class TemporalModel(nn.Module):
             self.impl = GlobalGRUTemporal(
                 cfg.token_dim, cfg.temporal_depth, global_hidden=cfg.global_hidden)
             self.name = "global_gru"
+        elif wanted == "global_mamba2":
+            self.impl = GlobalMambaTemporal(cfg)
+            self.name = "global_mamba2"
         else:
             self.impl = GRUTemporal(cfg.token_dim, cfg.temporal_depth)
             self.name = "gru"
