@@ -220,6 +220,15 @@ in that round's report was premature.
 ## Status
 
 2026-07-16: fresh smoke evidence exists and was independently reproduced by
+
+2026-07-16 RUN COMPLETE (2.4h wall): ALL 24 gate decisions pass (both
+families 3/3 seeds, G-a..G-d, blind final set 79-94). Backend verdict:
+PARITY (pooled +0.35 pts, two-level CI [-0.69, +1.43]; per-seed +1.30/
++0.26/-0.52 — sign not consistent; all four strata parity). Pre-registered
+tie-break applied: OPERATIONAL BACKEND = GRU-64. Note for the record: Mamba
+trains FASTER wall-clock (9.7 vs 13.8 min/arm, sequence path) but remains
+4.4x slower per deployment step with 76x larger cache — the registered
+deployment-centric criterion stands. Controls 24.7-25.5% on the final set.
 the companion (12/12 resume-valid, hashes match, parity at 30 steps). The
 two launch blockers (validity hierarchy, resume integrity) are repaired in
 this amendment's commit. USER AUTHORIZED LAUNCH; companion pre-approved
