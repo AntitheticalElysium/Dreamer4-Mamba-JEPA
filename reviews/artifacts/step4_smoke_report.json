@@ -10,7 +10,7 @@
       "peak_vram_alloc_mib": 69.8,
       "peak_vram_reserved_mib": 112.0,
       "checkpoint_sha256": {
-        "30": "b070402b70b72be21e5d24ad91c745326b3d8c4136b1b36c24f27a3e26c24f19"
+        "30": "3b619801cd67760c661b77588ac9b7b6d31f3e221018bee2f4c554fab1abd47c"
       },
       "monitor": [
         {
@@ -28,7 +28,7 @@
       "peak_vram_alloc_mib": 312.6,
       "peak_vram_reserved_mib": 366.0,
       "checkpoint_sha256": {
-        "30": "68b527bfbc4e4c9029b72897511946edac43f13284b7f0bfe8ae2295d198f5e5"
+        "30": "b3e5bc02424a26a30ac2492b6c92483ae150ca3a0bfda6ffb7e247be4986edb5"
       },
       "monitor": [
         {
@@ -46,7 +46,7 @@
       "peak_vram_alloc_mib": 69.8,
       "peak_vram_reserved_mib": 110.0,
       "checkpoint_sha256": {
-        "30": "d77217c36470244107aafb4aa74d24626b41da592245dc8db1c1ffa0b2e3e77a"
+        "30": "f5970a108745605ba89958b12636881cd5818aef0816fcddf100884f19b0fb6b"
       },
       "monitor": [
         {
@@ -64,7 +64,7 @@
       "peak_vram_alloc_mib": 70.0,
       "peak_vram_reserved_mib": 112.0,
       "checkpoint_sha256": {
-        "30": "a2551d01819422cf6c67549cd1b634e6ccdcb5baebcc941698c29e59da66bce8"
+        "30": "cf7cbd78b14a997ffbb4e55359a1c93743273cb62595625741c4aedfd67c71d0"
       },
       "monitor": [
         {
@@ -82,7 +82,7 @@
       "peak_vram_alloc_mib": 69.8,
       "peak_vram_reserved_mib": 112.0,
       "checkpoint_sha256": {
-        "30": "247d9d33201eda6fa64558f6192223f595d3f6c0bd9159a3e299d52d9d2faa23"
+        "30": "fd355b14fe66ab00d3c2e519d91e0b90f8bfb518bf0c81895995adb237fc529b"
       },
       "monitor": [
         {
@@ -100,7 +100,7 @@
       "peak_vram_alloc_mib": 70.0,
       "peak_vram_reserved_mib": 110.0,
       "checkpoint_sha256": {
-        "30": "072efdd3b68eb430c15f44a9ae5549e7b346140ad234859a8f0f195be45fdbef"
+        "30": "0bfdd0ea4c88bfdf2444241d1298c4b46ffaf4f3abbbe39aed01554787022b65"
       },
       "monitor": [
         {
@@ -118,7 +118,7 @@
       "peak_vram_alloc_mib": 69.8,
       "peak_vram_reserved_mib": 110.0,
       "checkpoint_sha256": {
-        "30": "aedea89680a98975b5dda44f1e2fe588d161dd00a2d00e4acb7a4d27d47d5766"
+        "30": "7f2142dd1b2c895543a0871644d2927ba62fbd0445d012ee7307896b2d03c57a"
       },
       "monitor": [
         {
@@ -134,9 +134,9 @@
       "shared_state_digest": "987c7d3c9556b56e2fa067c0b62a0f8b0d0edba39baf3ed88562bb24cba97760",
       "replay_stream_digest": "5b642082b20b92adedcccfbf064852fd8fb0406cbaa3929a4ebaf07958f31d26",
       "peak_vram_alloc_mib": 70.0,
-      "peak_vram_reserved_mib": 110.0,
+      "peak_vram_reserved_mib": 112.0,
       "checkpoint_sha256": {
-        "30": "326329cab4f0d95818c6e9b5e798169ce05334c3bbf05654ba4a161980db3543"
+        "30": "43e3e1221257231a96f4a5df69878afbea64833ce6bacd6e84d578f999d34c76"
       },
       "monitor": [
         {
@@ -154,7 +154,7 @@
       "peak_vram_alloc_mib": 69.8,
       "peak_vram_reserved_mib": 112.0,
       "checkpoint_sha256": {
-        "30": "d5f72a0f3745e866ef2c875bdf32b02a9ecdc8da7dd798de3728eb8971352708"
+        "30": "4b62ce9e9f1d192856cb2943aca1b57e8dc6f1bfc85d77c6dc6ae714de308d1f"
       },
       "monitor": [
         {
@@ -172,7 +172,7 @@
       "peak_vram_alloc_mib": 70.0,
       "peak_vram_reserved_mib": 110.0,
       "checkpoint_sha256": {
-        "30": "5344599983ff7236395d5fda766630cc3468c3549c668d2423250176b9d0070a"
+        "30": "f000e218fd2fb1bd2237a1fb5897061fbc0c96318036d9a12dc76662563f4ed2"
       },
       "monitor": [
         {
@@ -190,7 +190,7 @@
       "peak_vram_alloc_mib": 69.8,
       "peak_vram_reserved_mib": 110.0,
       "checkpoint_sha256": {
-        "30": "a4b41e7614d7b4c4fc6995701b66da2ee3003d73e85a150da3fc21e75cf6a56c"
+        "30": "10eb681dec3f81fb12cc2d29dc5d052b242d50174d81ec5cbba42992058e524e"
       },
       "monitor": [
         {
@@ -206,9 +206,9 @@
       "shared_state_digest": "90e20ffdf4c4019606f47fbceffe5361dab0ca62aab3a65091394bce85b5d5c9",
       "replay_stream_digest": "44025886633461120c49c02fa72d5c7fcaa15702f06cb3dafc352ef58310309c",
       "peak_vram_alloc_mib": 70.0,
-      "peak_vram_reserved_mib": 112.0,
+      "peak_vram_reserved_mib": 110.0,
       "checkpoint_sha256": {
-        "30": "3f7b3f71d249e1531543252bc0231f7b6da958fecf6f2111481e1e57717319b5"
+        "30": "a1927835990421aff9c6033bc68c5590f574dcb06661a1da79f4632ff1915e31"
       },
       "monitor": [
         {
@@ -219,18 +219,25 @@
       ]
     }
   },
-  "head_commit": "16b667046af7f244c87f9a598299360a1a7804cc",
-  "source_digest": "b902c16e42bf58a94885b780b1d7c1b2a06be92cba2202215db117cad7187e8f",
-  "tracked_dirty": [],
+  "head_commit": "02547739ecd57549e45798150e1d36313824efbb",
+  "source_digest": "5d7eb5b5548b8ff114ecb893e9c9d3d5108adf372fbfceb22b235f7369a76d79",
+  "tracked_dirty": [
+    " M reviews/artifacts/step4_smoke_report.json"
+  ],
   "versions": {
     "python": "3.12.12",
     "torch": "2.12.1+cu130",
     "cuda": "13.0",
     "numpy": "2.1.0",
     "mamba_ssm": "2.3.2.post1",
-    "crafter": "unknown",
+    "crafter": "1.8.3",
     "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
-    "gpu_total_mib": 5795
+    "nvidia_driver": "610.43.03",
+    "gpu_total_mib": 5795,
+    "mamba_source_sha256": {
+      "mamba2.py": "605e4439ff0baec8d8acaf4a191d9f0570eea9900065a065909124c472b08707",
+      "ssd_combined.py": "0b7c4cfa9e994278860e7254c27baa31ca32019a808a423ed24b80eabcbe919d"
+    }
   },
   "hashes": {
     "encoder": "0b37a2466c8915c6c700e6dca0cf000aa319eaca10ced970dc1beff8439e567f",
@@ -790,16 +797,23 @@
       "global_hidden": 64,
       "temporal_params": 29248,
       "cache_mib_B48": 0.0117,
-      "warm_step_ms_B48": 0.1185,
-      "warm_seq_ms_B4T16": 1.9832
+      "warm_step_ms_B48": 0.1224,
+      "warm_seq_ms_B4T16": 2.0607
     },
     "mamba2": {
       "backend": "global_mamba2",
       "global_hidden": 64,
       "temporal_params": 34584,
       "cache_mib_B48": 0.8906,
-      "warm_step_ms_B48": 0.56,
-      "warm_seq_ms_B4T16": 0.8572
+      "warm_step_ms_B48": 0.555,
+      "warm_seq_ms_B4T16": 0.8633
     }
+  },
+  "overall_decision": {
+    "gru_family_valid": false,
+    "mamba_family_valid": false,
+    "paired_verdict": "parity",
+    "decision": "no_valid_family",
+    "note": "no backend winner is licensed; the paired difference is a relative diagnostic only"
   }
 }
