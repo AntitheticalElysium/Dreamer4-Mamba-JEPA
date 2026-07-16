@@ -78,6 +78,7 @@ def run_branches_canonical(snapshot, suffix, base_seed, branches, suffix_len,
             del fork
         if verify_repeat:
             same = (np.array_equal(runs[0][0], runs[1][0])
+                    and np.array_equal(runs[0][1], runs[1][1])
                     and runs[0][2] == runs[1][2] and runs[0][3] == runs[1][3]
                     and runs[0][4] == runs[1][4])
             if not same:

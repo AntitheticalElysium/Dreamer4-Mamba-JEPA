@@ -11,23 +11,57 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "verification"))
 
 
 def test_candidate_specific_masks_can_flip_argmin_common_mask_cannot():
-    """Synthetic demonstration of companion finding #1: per-target masks make
-    retrieval columns incomparable; a common mask cannot reorder a dominated
-    candidate."""
-    # token-space distances: prediction is uniformly closer to target 0
-    d = np.array([[0.10, 0.20], [0.30, 0.20]])   # d[token, target]
-    mask_t0 = np.array([True, False])            # target-0 mask sees token 0
-    mask_t1 = np.array([False, True])            # target-1 mask sees token 1
-    per_target = [d[mask_t0, 0].mean(), d[mask_t1, 1].mean()]   # [0.10, 0.20]
-    # flip case: swap which tokens each mask selects
-    flipped = [d[mask_t1, 0].mean(), d[mask_t0, 1].mean()]      # [0.30, 0.20]
-    assert int(np.argmin(per_target)) != int(np.argmin(flipped)), \
+    """Synthetic demonstration of companion finding #1 (fixture corrected
+    2026-07-15: the original fixture's column means tied at 0.20, so the
+    common-mask assertion compared False == False and proved nothing).
+
+    Here target 0 is strictly POINTWISE closer at every token, so every
+    possible common mask must select it; candidate-specific masks can still
+    flip the argmin by scoring each target on different tokens."""
+    d = np.array([[0.10, 0.20], [0.30, 0.35]])   # d[token, target]
+    assert (d[:, 0] < d[:, 1]).all(), "fixture: target 0 pointwise dominant"
+    # per-target masks score each target on its own tokens -> incomparable
+    per_target = [d[[0], 0].mean(), d[[1], 1].mean()]   # [0.10, 0.35] -> 0
+    flipped = [d[[1], 0].mean(), d[[0], 1].mean()]      # [0.30, 0.20] -> 1
+    assert int(np.argmin(per_target)) == 0
+    assert int(np.argmin(flipped)) == 1, \
         "mask choice alone flipped the winner - the flaw is real"
-    common = mask_t0 | mask_t1
-    a = d[common, 0].mean()
-    b = d[common, 1].mean()
-    assert (a < b) == (d[:, 0].mean() < d[:, 1].mean()), \
-        "common mask must preserve the ordering direction of the full comparison"
+    # ANY common mask preserves the dominated ordering, strictly
+    for common in ([True, False], [False, True], [True, True]):
+        m = np.array(common)
+        assert d[m, 0].mean() < d[m, 1].mean(), \
+            f"common mask {common} failed to preserve the pointwise order"
+
+
+@pytest.mark.slow
+def test_collector_is_end_to_end_repeatable_one_seed():
+    """Companion critical finding (2026-07-15): canonicalizing only branch
+    snapshots leaves live anchor DISCOVERY nondeterministic (identity-hashed
+    chunk sets). After canonicalizing the live env at every reset, two full
+    collection runs on one seed must produce identical anchor sequences."""
+    pytest.importorskip("crafter")
+    import hashlib
+
+    from collect_final_79_94 import collect
+
+    def digest(anchors):
+        h = hashlib.sha256()
+        for a in anchors:
+            h.update(np.asarray(a["player_pos"]).tobytes())
+            h.update(a["obs_hist"].tobytes())
+            h.update(np.asarray(a["act_hist"]).tobytes())
+            h.update(repr(sorted(a["suffixes"].items())).encode())
+            h.update(str(a["night"]).encode())
+            for name in sorted(a["branches"]):
+                h.update(a["branches"][name]["frames"].tobytes())
+                h.update(a["branches"][name]["positions"].tobytes())
+        return h.hexdigest()
+
+    run1 = collect(seeds=(79,), verify_repeat=False)
+    run2 = collect(seeds=(79,), verify_repeat=False)
+    assert len(run1) == len(run2) == 12
+    assert digest(run1) == digest(run2), \
+        "collector is not end-to-end deterministic"
 
 
 @pytest.mark.slow

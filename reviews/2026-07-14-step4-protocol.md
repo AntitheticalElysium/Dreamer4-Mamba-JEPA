@@ -77,8 +77,60 @@ differ ONLY in the temporal core. Identical replay RNG schedules per seed.
   otherwise the result is parity and the choice falls to engineering figures
   (latency, VRAM, cache) — reported warm, both directions.
 
+## Amendment (2026-07-15, adopted from companion NO-GO audit — supersedes
+## conflicting clauses above)
+
+1. COLLECTOR REPAIRED: the live env is canonicalized after every reset
+   (companion's critical finding: branch forks were canonical but anchor
+   DISCOVERY was not, so `canonical_collector: true` was overstated). New
+   regression: two full seed-79 collections must be digest-identical
+   (test_collector_is_end_to_end_repeatable_one_seed). Bundle REGENERATED:
+   sha256 ebabcb2c1c31e82b0aae4d0d9ebc0be63f785ee1718b26a086eaf18e633be674,
+   192 anchors / 64 night, manifest records live_env_canonical=true. The
+   branch verifier now also compares positions.
+2. SHUFFLED CONTROLS x3 SEEDS per backend (M3, seeds 101/202/303) — G-c
+   becomes a formal family gate instead of a single-seed screening
+   diagnostic. Total arms: 12.
+3. HIERARCHICAL DECISION RULE (pre-declared; replaces "positive pooled lower
+   bound" which risked treating 3x16 clusters as 48 independent units):
+   - Primary metric: all-token symmetric retrieval, paired per anchor.
+   - Per training seed: env-seed-clustered bootstrap CI of the mean paired
+     Mamba-minus-GRU difference; all three reported.
+   - Pooled: TWO-LEVEL bootstrap (resample training seeds, then env seeds
+     within each), plus a t interval over the 3 seed means (acknowledged low
+     power).
+   - Mamba wins ONLY IF pooled two-level LB > 0 AND all three per-seed
+     differences are positive; symmetric rule for GRU; otherwise PARITY and
+     the choice falls to engineering figures (warm latency, VRAM, cache size,
+     both directions).
+   - retrieval_changed (common mask) is reported as a secondary verdict, not
+     decision-bearing.
+4. GRU-72 CONDITIONAL CAPACITY CONTROL pre-registered: if Mamba wins, run
+   M4 global-GRU-72 x3 seeds (245,123 params vs Mamba 245,083) under the
+   identical contract before attributing the win to the backend rather than
+   +2.2% capacity. If GRU-72 matches Mamba, the claim downgrades to
+   "capacity, not backend".
+5. RUNNER (verification/step4_runner.py) implements five executable checks:
+   paired-init shared-parameter digests asserted equal across arms per seed;
+   replay-stream sha256 asserted equal across arms per seed (hashed before
+   action shuffling); final bundle opened only after all 12 checkpoints
+   exist and its sha256 matches the manifest; evaluation under .eval();
+   full per-checkpoint provenance (HEAD, versions, full ModelConfig +
+   LossConfig, encoder hash, total+component loss histories, NumPy/CPU/CUDA
+   RNG states, VRAM, param counts). Smoke mode (--smoke) exercises every
+   check on the monitor bundle only.
+6. CONSOLIDATION CORRECTION PERSISTED: the eight consol_rows_*.json files
+   were re-evaluated from the committed 16k checkpoints with the
+   common-union-mask metric (companion's corrected table reproduced exactly:
+   per-position GRU 27.73/27.47/27.21, global-64 29.17/27.87/29.56, shuffled
+   controls 25.00/25.52 with CIs containing chance). Corrected gate outcome:
+   per-position 2/3 seeds, global-64 3/3 — global-64 remains the operational
+   selection with a narrower margin than first reported.
+7. LossConfig defaults now encode the validated recipe (variance=0,
+   covariance=0, rollout=1.0); the runner consumes plain LossConfig().
+
 ## Status
 
-Repairs complete and committed; per companion NO-GO, training does NOT start
-until it verifies these repairs. Fresh-bundle generation (allowed once the
-determinism regression passes — it does) may proceed in parallel.
+All companion NO-GO conditions addressed and regression-tested (70/70 incl.
+two slow environment regressions). Training still does NOT start until the
+companion verifies these repairs.

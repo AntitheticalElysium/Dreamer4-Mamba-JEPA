@@ -72,11 +72,17 @@ def test_fixed_position_codebook_cannot_fake_noncollapse():
     assert float(covariance) == pytest.approx(0.0, abs=1e-8)
 
 
-def test_anti_collapse_is_on_by_default_and_reported():
+def test_defaults_pin_validated_recipe_and_anti_collapse_reports_when_enabled():
+    """2026-07-15 spec-drift repair: defaults must encode the VALIDATED
+    frozen-encoder recipe (streamwise anti-collapse off, rollout bridge on),
+    not the rejected joint-training configuration. Anti-collapse metrics must
+    still be computed and reported when explicitly enabled."""
     weights = LossConfig()
-    assert weights.variance > 0 and weights.covariance > 0
+    assert weights.variance == 0.0 and weights.covariance == 0.0
+    assert weights.rollout > 0
     model = M3HJWM(small_config())
-    output = model(batch())
+    enabled = LossConfig(variance=1.0, covariance=0.04, rollout=0.0)
+    output = model(batch(), enabled)
     assert "variance" in output.metrics and "covariance" in output.metrics
     assert float(output.metrics["variance"]) > 0
 

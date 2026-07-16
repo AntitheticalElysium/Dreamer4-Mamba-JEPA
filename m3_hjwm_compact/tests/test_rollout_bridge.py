@@ -66,8 +66,11 @@ def rollout_only():
     )
 
 
-def test_rollout_bridge_is_opt_in():
-    assert LossConfig().rollout == 0.0
+def test_rollout_bridge_is_on_by_default():
+    # 2026-07-15: the "opt-in pending Phase B/D evidence" condition was met
+    # (S3-B' passed 3/3 seeds at both scales); defaults now encode the
+    # validated recipe.
+    assert LossConfig().rollout > 0
 
 
 def test_rollout_uses_generated_middle_state_and_final_real_target_only():

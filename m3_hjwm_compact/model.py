@@ -102,11 +102,17 @@ class LossConfig:
     # statistics are taken across observations at each fixed stream, never across
     # token positions. The 25:1 variance:covariance ratio follows VICReg after a
     # common rescaling; its absolute scale remains an empirical hyperparameter.
-    variance: float = 1.0
-    covariance: float = 0.04
-    # Optional two-step autoregressive bridge, adapted from V-JEPA 2-AC Eq. 3-4.
-    # It is deliberately opt-in pending corrected, multi-seed Phase B/D evidence.
-    rollout: float = 0.0
+    # OFF by default (2026-07-15): the validated pipeline pretrains and FREEZES
+    # the I-JEPA/SIGReg encoder (step-1 gates), where these terms are unused;
+    # every gated dynamics result (S3-B', Stage B, consolidation) trained with
+    # variance=covariance=0. Enable explicitly only for online-encoder runs,
+    # which reopen the step-1 representation gates.
+    variance: float = 0.0
+    covariance: float = 0.0
+    # Two-step autoregressive bridge, adapted from V-JEPA 2-AC Eq. 3-4. ON by
+    # default (2026-07-15): S3-B' passed 3/3 seeds at both data scales, and all
+    # subsequent validated arms train with rollout=1.0, rollout_steps=2.
+    rollout: float = 1.0
     # Reliability auxiliaries are opt-in and must not shape the world model while
     # they are uncalibrated shadow signals.
     manifold: float = 0.0

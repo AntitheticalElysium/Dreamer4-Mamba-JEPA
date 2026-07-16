@@ -21,3 +21,14 @@
 2605.13013v1.pdf | JEDI: Joint Embedding Diffusion World Model for Multi-Agent Trajectory Modeling and Planning | f78f2d417cbd156a859a204773e0efe010bf35b8174530c4fcacc5d7c1421c81
 2606.27326v1.pdf | Hallucination in World Models is More Common than You Think | 2f10358cff583fc00df6a434c31a01872748bd9ed767c5874ff23eaecf823beb
 2607.05238v1.pdf | MoP-JEPA: Hard-Assigned Predictor Mixtures for Stochastic JEPA World Models | c454b6399693ee2afbc6b261f00b0d66392c71cb9bd698602956bd344f27932e
+
+# Control-centric action-conditioned self-prediction corpus (added 2026-07-15,
+# closing the literature gap identified by both external reviews: the project
+# was strong on 2025-26 JEPA/world-model work, thin on the RL self-prediction
+# line that is the exact topic of the current blocker).
+2007.05929v4.pdf | Data-Efficient Reinforcement Learning with Self-Predictive Representations (SPR) | 77ea8bcaf2a484982ac91031d66de43c07b8c1057023a9d1c7754e762dfdc151
+2406.02035v1.pdf | A Unifying Framework for Action-Conditional Self-Predictive Reinforcement Learning (BYOL-AC) | 38c8e0a756c804bdb0630c0a149179a3d75394fe7de7e3c70ad5c14e0c31ab27
+2212.03319v1.pdf | Understanding Self-Predictive Learning for Reinforcement Learning | e609dad7ab3dbcb3a1ca53debec84566ae9cd12b6b1568ceb41aea45ff0909fd
+2306.13229v3.pdf | TACO: Temporal Latent Action-Driven Contrastive Loss for Visual Reinforcement Learning | 93e21eba6d0721628f69eef345afcffc89d2be32e3e15bca7f867ff2be55733c
+1906.02736v1.pdf | DeepMDP: Learning Continuous Latent Space Models for Representation Learning | 8d378562cd5c69829af5a7d1e35300b0f81905e6ed5c06e04626603c8a7e2e33
+2006.10742v2.pdf | Learning Invariant Representations for Reinforcement Learning without Reconstruction (DBC) | 8322d722f58393f703be8cbc7c24de360a028926db6843feb0e2adc3a392b952

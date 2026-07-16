@@ -19,7 +19,8 @@ REPO_ROOT = COMPACT_ROOT.parent
 sys.path.insert(0, str(COMPACT_ROOT))
 sys.path.insert(0, str(COMPACT_ROOT / "verification"))
 
-from crafter_canonical import canonical_snapshot, chw, run_branches_canonical  # noqa: E402
+from crafter_canonical import (  # noqa: E402
+    canonical_snapshot, canonicalize, chw, run_branches_canonical)
 from fork_oracle_v2 import PREFIX, SUFFIX, _task_signature, sha256_file  # noqa: E402
 
 OUT = REPO_ROOT / "data" / "final_bundle_79_94.pt"
@@ -29,20 +30,27 @@ BRANCHES = 3
 SUFFIX_NAMES = ("true", "alt0", "alt1", "alt2")
 
 
-def main():
+def collect(seeds=SEEDS, day_quota=DAY_QUOTA, night_quota=NIGHT_QUOTA,
+            verify_repeat=True):
+    """Deterministic anchor collection. The LIVE env is canonicalized after
+    every reset (2026-07-15 companion critical finding: canonicalizing only
+    the branch snapshots leaves anchor DISCOVERY dependent on identity-set
+    iteration order, so two runs picked different anchors)."""
     import crafter
 
     anchors = []
-    for env_seed in SEEDS:
+    for env_seed in seeds:
         env = crafter.Env(seed=env_seed, length=100_000)
         rng = np.random.default_rng(env_seed)
         obs = env.reset()
+        canonicalize(env)
         obs_hist, act_hist = [chw(obs)], []
-        day_left, night_left = DAY_QUOTA, NIGHT_QUOTA
+        day_left, night_left = day_quota, night_quota
         done, since = False, 0
         while day_left or night_left:
             if done:
                 obs = env.reset()
+                canonicalize(env)
                 obs_hist, act_hist, done, since = [chw(obs)], [], False, 0
             daylight = float(env._world.daylight)
             is_night = daylight < 0.5
@@ -65,7 +73,7 @@ def main():
                 for name, suf in suffixes.items():
                     fr, oc, pos = run_branches_canonical(
                         snapshot, suf, base, BRANCHES, SUFFIX,
-                        _task_signature, verify_repeat=True)
+                        _task_signature, verify_repeat=verify_repeat)
                     anchor["branches"][name] = {
                         "frames": fr, "outcomes": oc, "positions": pos}
                 live_done = False
@@ -93,14 +101,19 @@ def main():
             since += 1
         del env
         print(f"[79-94] seed {env_seed} done ({len(anchors)} anchors)", flush=True)
+    return anchors
 
+
+def main():
+    anchors = collect()
     torch.save(anchors, OUT)
     manifest = {
         "bundle": str(OUT), "sha256": sha256_file(OUT),
         "anchors": len(anchors),
         "night": int(sum(a["night"] for a in anchors)),
         "seeds": list(SEEDS), "branches": BRANCHES,
-        "canonical_collector": True, "verify_repeat": True,
+        "canonical_collector": True, "live_env_canonical": True,
+        "verify_repeat": True,
     }
     (REPO_ROOT / "reviews" / "artifacts" / "final_bundle_79_94.manifest.json"
      ).write_text(json.dumps(manifest, indent=2))
