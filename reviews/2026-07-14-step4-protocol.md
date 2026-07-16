@@ -171,8 +171,57 @@ uncommitted source state and its checkpoints were deleted — non-reproducible,
 hence inadmissible as evidence. The claim "all NO-GO conditions addressed"
 in that round's report was premature.
 
+## Third amendment (2026-07-16, final pre-launch — companion conditional GO
+## + user launch authorization)
+
+1. VALIDITY HIERARCHY (pre-registered; the backend comparison is licensed
+   only inside it):
+   a. Neither family passes its majority gates -> `no_valid_family`: NO
+      backend winner is licensed (the paired difference is reported as a
+      relative diagnostic only).
+   b. Exactly one family passes -> that family is retained OPERATIONALLY
+      (it met the validity contract); no general backend-superiority claim.
+   c. Both pass -> the paired two-level backend verdict applies.
+   d. Both pass at statistical parity -> PRE-REGISTERED TIE-BREAK: choose
+      GRU-64, because the intended online imagination path repeatedly calls
+      step() (GRU ~4.7x faster warm step, ~76x smaller cache, fewer params,
+      simpler dependency); Mamba must show a predictive win or an
+      end-to-end imagination-throughput advantage to displace it. Sequence-
+      training throughput (where Mamba is ~2.3x faster) is explicitly NOT
+      the primary engineering criterion.
+   e. Mamba wins and is valid -> verdict is `mamba_wins_pending_gru72` until
+      the M4 capacity control has run; only a Mamba win over GRU-72 licenses
+      backend (rather than capacity) attribution.
+2. RESUME INTEGRITY: an arm resumes only if the checkpoint's CURRENT sha256
+   equals the hash recorded in the report when it was written, AND its full
+   ModelConfig + LossConfig equal the current run's constructions, AND the
+   python/torch/mamba_ssm fingerprint matches (environment drift = retrain).
+   Evaluation additionally validates dtypes and finiteness of every loaded
+   tensor. Regression: mutating one saved weight while preserving all
+   metadata must cause resume rejection.
+3. PROVENANCE: state digests hash raw bytes in original dtype (int64
+   2^24 / 2^24+1 collision regression); the source digest is derived from
+   git-tracked python files under m3_hjwm_compact plus the installed
+   mamba2/ssd kernel sources; NVIDIA driver and crafter versions recorded;
+   smoke asserts the monitor bundle hash against a pinned constant.
+4. STRATA discrimination regression added (synthetic anchors where pixel-
+   and task-effectiveness disagree).
+5. RECORD CLEANUP: retracted statements rewritten in place in the literature
+   notes; ledger "at chance" wording fixed; ModelConfig rollout comment
+   fixed; this status section updated.
+6. ARTIFACT RETENTION: full-run 16k checkpoints are force-added (they are
+   otherwise gitignored) together with the report; 8k rung checkpoints stay
+   local with hashes pinned in the report.
+7. POST-STEP-4 SEED HYGIENE (companion directive on record): seeds 79-94 are
+   SPENT by this run for any future arm selection; BYOL-AC-motivated,
+   depth, TACO-inspired, or topology selection requires a newly reserved
+   untouched bundle.
+
 ## Status
 
-Runner repairs complete per the 2026-07-16 audit; fresh smoke evidence to be
-generated from a clean commit. Training still does NOT start until the
-companion verifies this round.
+2026-07-16: fresh smoke evidence exists and was independently reproduced by
+the companion (12/12 resume-valid, hashes match, parity at 30 steps). The
+two launch blockers (validity hierarchy, resume integrity) are repaired in
+this amendment's commit. USER AUTHORIZED LAUNCH; companion pre-approved
+pending exactly these bounded repairs + a passing resume smoke. The 12-arm
+16k run proceeds after this commit's smoke pair passes.

@@ -67,9 +67,10 @@ class ModelConfig:
     # sqrt(dim), so an isotropic spherical representation has unit per-dimension
     # variance without forcing the raw control-state magnitude to grow.
     variance_target: float = 1.0
-    # Number of autoregressive transitions in the optional V-JEPA-2-AC-shaped
-    # bridge loss. The loss weight lives in LossConfig and defaults to zero until
-    # the corrected representation and multi-seed gates pass.
+    # Number of autoregressive transitions in the V-JEPA-2-AC-shaped bridge
+    # loss. The weight lives in LossConfig and defaults to 1.0 (its gating
+    # condition — corrected representation + multi-seed gates — was met on
+    # 2026-07-13/14; see frozen_dynamics_recipe).
     rollout_steps: int = 2
     reliability_hidden: int = 64
 

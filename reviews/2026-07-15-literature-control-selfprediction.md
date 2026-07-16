@@ -108,11 +108,11 @@ performs spectral decomposition of the transition matrix; orthogonal
 initialization preserved along the ODE.
 
 Licenses for us: (a) our stop-gradient/EMA-target discipline is load-bearing,
-not incidental; (b) "optimization budget was the lever" has a sharper,
-cheaper-to-test refinement: a **predictor/temporal-core update-ratio ablation**
-(e.g., 2-4 predictor steps per encoder-free world update, total FLOPs
-matched) may recover the 16k-step benefit at lower cost — registered as a
-post-step-4 ablation candidate, not a step-4 change.
+not incidental; (b) a **predictor/temporal-core update-ratio ablation** is a
+cheap post-step-4 candidate for refining "budget matters" — but note
+(2026-07-16 correction) the paper's two-timescale analysis concerns JOINTLY
+learned representations, so under our frozen encoder this is an empirical
+optimization probe, not a theorem-backed transplant.
 
 ## 4. TACO — Zheng et al., NeurIPS 2023 (2306.13229v3)
 
@@ -138,13 +138,15 @@ next-latent-distribution prediction — with guarantees (via MMD/Wasserstein
 metrics) that the latent state is a good representation (bounds value-function
 quality; connects to bisimulation). Atari: large gains as auxiliary task.
 
-Licenses for us: the missing ingredient it names is **grounding**: our
-dynamics stack currently trains with NO reward/continuation pressure on the
-temporal path (heads exist but Phase E is gated off). DeepMDP says latent
-transition + REWARD prediction jointly is what buys control-relevant
-representations; pure observation-side self-prediction is not sufficient for
-control. This sequences Phase E (reward/continuation calibration) as the
-theory-backed next lever after step 4, before any policy work.
+Licenses for us (REWRITTEN 2026-07-16 — the original text here falsely said
+the temporal path had no reward pressure): reward/continuation heads already
+train the temporal core (pooled post-temporal context, weight 1.0 in every
+validated run; gradient-verified). What DeepMDP adds is a reason to VALIDATE
+that channel: jointly learned reward-aware latents carry control-relevance
+bounds. It does not establish that reward grounding is required or by itself
+sufficient. Phase E is therefore held-out calibration of the existing
+reward/continuation channel plus imagined-rollout validation — not the first
+introduction of reward grounding.
 
 ## 6. DBC — Zhang et al., ICLR 2021 (2006.10742v2)
 
@@ -165,11 +167,14 @@ bisimulation-style probe is the right kind of check.
 2. First post-step-4 lever if signal stays weak: **predictor action-
    conditioning strength** (per-action heads / AdaLN-modulation), per BYOL-AC
    — separately labelled arm, same gates, untouched-seed evaluation.
-3. Second lever: **rollout depth K 2->5 with per-step targets** (SPR) and/or
-   **predictor update-ratio** (Tang) — cheap, well-precedented optimization-
-   side ablations that refine "budget matters".
-4. Phase E is theory-motivated, not just roadmap: reward grounding is what
-   DeepMDP/DBC say converts predictive features into control-relevant ones.
+3. Second lever: an **"SPR-inspired" depth ablation** (K 2->5 with per-step
+   targets — not faithful SPR, which trains jointly with RL) and/or a
+   **predictor update-ratio probe** (an empirical optimization ablation; Tang's
+   two-timescale theory is derived for JOINTLY learned representations and
+   does not transplant to our frozen encoder as a theorem).
+4. Phase E validates the EXISTING reward/continuation channel (held-out
+   calibration + imagined rollouts); DeepMDP/DBC supply the control-relevance
+   framing, not a claim that grounding is newly missing.
 5. TACO-style contrastive term stays in reserve, clearly labelled as
    gate-adjacent (it optimizes the discrimination the gate measures).
 6. SPR's spatial transition model is PRECEDENT for our dense-token action

@@ -117,6 +117,136 @@ def test_replay_digest_covers_every_batch_tensor():
         assert digest(changed) != digest(base), f"{key} not covered by digest"
 
 
+def _gates(passed: bool):
+    return {"majority": {"G_a": passed, "G_b": passed, "G_c": passed,
+                         "G_d": passed, "all_gates": passed}}
+
+
+def test_backend_winner_requires_valid_families():
+    """Companion 2026-07-16 launch blocker 1: a backend must never be
+    declared the winner when neither family passed its validity gates
+    (20% vs 21% retrieval: Mamba consistently 'better', both invalid)."""
+    from step4_runner import overall_decision
+
+    win = {"verdict": "M2_mamba2_wins"}
+    out = overall_decision({"M1_gru64": _gates(False), "M2_mamba2": _gates(False)}, win)
+    assert out["decision"] == "no_valid_family"
+    out = overall_decision({"M1_gru64": _gates(True), "M2_mamba2": _gates(False)}, win)
+    assert out["decision"] == "single_valid_family:M1_gru64"
+    # both valid + parity -> pre-registered GRU-64 engineering tie-break
+    out = overall_decision({"M1_gru64": _gates(True), "M2_mamba2": _gates(True)},
+                           {"verdict": "parity"})
+    assert out["decision"] == "parity_tiebreak:M1_gru64"
+    # a valid Mamba win is NOT attributed to the backend before GRU-72
+    out = overall_decision({"M1_gru64": _gates(True), "M2_mamba2": _gates(True)}, win)
+    assert out["decision"] == "mamba_wins_pending_gru72"
+    out = overall_decision({"M1_gru64": _gates(True), "M2_mamba2": _gates(True)},
+                           win, gru72_verdict={"verdict": "parity"})
+    assert out["decision"] == "mamba_win_explained_by_capacity"
+    out = overall_decision({"M1_gru64": _gates(True), "M2_mamba2": _gates(True)},
+                           win, gru72_verdict={"verdict": "M2_mamba2_wins"})
+    assert out["decision"] == "mamba_wins_backend_attributed"
+
+
+def test_resume_rejects_tampered_checkpoint():
+    """Companion 2026-07-16 launch blocker 2: a checkpoint whose weights were
+    altered while all small metadata was preserved must be rejected (the old
+    resume compared metadata only, so tampered weights loaded silently)."""
+    import hashlib
+
+    from step4_runner import checkpoint_resume_errors
+
+    expected = {
+        "arm": {"name": "M1_gru64_s101", "backend": "global_gru",
+                "global_hidden": 64, "seed": 101, "shuffled": False, "steps": 30},
+        "model_config": {"temporal_backend": "global_gru"},
+        "loss_config": {"rollout": 1.0},
+        "source_digest": "src", "encoder_sha256": "enc",
+        "replay_file_sha256": "rep",
+        "versions": {"python": "3.12.12", "torch": "2.12.1", "cuda": "13.0",
+                     "numpy": "2.1.0", "mamba_ssm": "2.3.2", "crafter": "1.8.3"},
+    }
+    good_ckpt = {"state_dict": {"w": torch.zeros(4)},
+                 "provenance": {"arm": dict(expected["arm"]),
+                                "model_config": dict(expected["model_config"]),
+                                "loss_config": dict(expected["loss_config"]),
+                                "source_digest": "src", "encoder_sha256": "enc",
+                                "replay_file_sha256": "rep",
+                                "versions": dict(expected["versions"])}}
+
+    def fake_hash(ckpt):
+        return hashlib.sha256(repr(
+            [(k, v.numpy().tobytes()) for k, v in ckpt["state_dict"].items()]
+        ).encode()).hexdigest()
+
+    recorded = fake_hash(good_ckpt)
+    assert checkpoint_resume_errors(good_ckpt, recorded, recorded, expected) == []
+    # tamper ONE weight, preserve every piece of metadata
+    tampered = {"state_dict": {"w": torch.ones(4)},
+                "provenance": good_ckpt["provenance"]}
+    errs = checkpoint_resume_errors(tampered, fake_hash(tampered), recorded, expected)
+    assert any("hash" in e for e in errs), "weight tamper must be rejected"
+    # environment drift must be rejected
+    drifted = {"state_dict": good_ckpt["state_dict"],
+               "provenance": {**good_ckpt["provenance"],
+                              "versions": {**expected["versions"], "torch": "9.9"}}}
+    errs = checkpoint_resume_errors(drifted, recorded, recorded, expected)
+    assert any("environment drift: torch" in e for e in errs)
+    # config tamper must be rejected
+    reconfigured = {"state_dict": good_ckpt["state_dict"],
+                    "provenance": {**good_ckpt["provenance"],
+                                   "model_config": {"temporal_backend": "gru",
+                                                    "rollout_steps": 999}}}
+    errs = checkpoint_resume_errors(reconfigured, recorded, recorded, expected)
+    assert any("ModelConfig" in e for e in errs)
+    # missing report hash must be rejected
+    errs = checkpoint_resume_errors(good_ckpt, recorded, None, expected)
+    assert any("no checkpoint hash" in e for e in errs)
+
+
+def test_state_digest_hashes_raw_bytes_not_float32():
+    """Companion 2026-07-16: casting to float32 before hashing collided on
+    int64 values above 2^24."""
+    from step4_runner import shared_state_digest
+
+    class Holder(torch.nn.Module):
+        def __init__(self, value):
+            super().__init__()
+            self.register_buffer("v", torch.tensor([value], dtype=torch.int64))
+
+    a = shared_state_digest(Holder(2 ** 24))
+    b = shared_state_digest(Holder(2 ** 24 + 1))
+    assert a != b, "int64 2^24 vs 2^24+1 must not collide"
+
+
+def test_anchor_strata_discriminate_pixel_from_task():
+    """Strata must actually discriminate: pixel- and task-effectiveness are
+    distinct notions and each must be detectable independently."""
+    from step4_runner import anchor_strata
+
+    frames = np.zeros((2, 3, 3, 8, 8), dtype=np.uint8)   # [branch, T, C, H, W]
+    outcome = [{"reward_sum": 0.0, "terminated": False}] * 2
+
+    def anchor(pixel_diff, task_diff, night=False):
+        alt_frames = frames.copy()
+        if pixel_diff:
+            alt_frames[0, -1, 0, 0, 0] = 255
+        alt_out = ([{"reward_sum": 1.0, "terminated": False}] * 2
+                   if task_diff else outcome)
+        return {"night": night,
+                "branches": {"true": {"frames": frames, "outcomes": outcome},
+                             "alt0": {"frames": alt_frames, "outcomes": alt_out}}}
+
+    strata = anchor_strata([anchor(True, False), anchor(False, True),
+                            anchor(False, False, night=True)])
+    assert strata[0] == {"night": False, "pixel_effective": True,
+                         "task_effective": False}
+    assert strata[1] == {"night": False, "pixel_effective": False,
+                         "task_effective": True}
+    assert strata[2] == {"night": True, "pixel_effective": False,
+                         "task_effective": False}
+
+
 @pytest.mark.slow
 def test_collector_is_end_to_end_repeatable_one_seed():
     """Companion critical finding (2026-07-15): canonicalizing only branch

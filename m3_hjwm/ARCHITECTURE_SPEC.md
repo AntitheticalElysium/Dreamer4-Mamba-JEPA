@@ -1,7 +1,8 @@
 # M3-HJWM architecture specification (verification revision)
 
-> **STATUS RECONCILIATION (2026-07-13, dual-agent consensus; updated
-> 2026-07-15):** this spec is the original reference design; the operative
+> **STATUS RECONCILIATION (2026-07-13, dual-agent consensus; deltas below
+> incorporate the 2026-07-15 and 2026-07-16 audits):** this spec is the
+> original reference design; the operative
 > implementation is `m3_hjwm_compact/`. Since this document was written: the §3
 > representation objective was replaced by faithful same-frame I-JEPA + global
 > projected SIGReg (LeJEPA), which **passed the corrected step-1 gates**

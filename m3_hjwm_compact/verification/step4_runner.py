@@ -70,15 +70,11 @@ FINAL_MANIFEST = REPO_ROOT / "reviews" / "artifacts" / "final_bundle_79_94.manif
 TRAIN_SEEDS = (101, 202, 303)
 STEPS_TOTAL, CKPT_AT = 16_000, (8_000, 16_000)
 
-# Source files whose behavior the run depends on; hashed into every
-# checkpoint. Resume and evaluation REQUIRE digest equality.
-SOURCE_FILES = (
-    "verification/step4_runner.py", "model.py", "data.py",
-    "verification/consolidation.py", "verification/step3_temporal.py",
-    "ssl_ijepa.py", "verification/fork_oracle_v2.py",
-    "verification/causal_stage_a.py", "verification/representation_control.py",
-    "verification/microtest.py",
-)
+# Pinned monitor-bundle hash: smoke runs must fail loudly if the monitor
+# bundle ever changes (2026-07-16 third amendment, coverage for the
+# manifest-assert branch that real runs exercise on the final bundle).
+MONITOR_BUNDLE_SHA256 = \
+    "6e1a3addc6b55363aa83f606e17b18a7050a66e7d9c0a42e6b169b308c71222b"
 
 # (name-template, backend, global_hidden, shuffled)
 ARM_SPECS = (
@@ -108,31 +104,72 @@ def tracked_dirty() -> list[str]:
 
 
 def source_digest() -> str:
+    """Digest over ALL git-tracked python files under m3_hjwm_compact (derived
+    from git, not a hand-maintained list — 2026-07-16 third amendment) plus
+    the installed Mamba-2 module and SSD kernel sources."""
+    tracked = subprocess.run(
+        ["git", "ls-files", "--", "m3_hjwm_compact/*.py", "m3_hjwm_compact/**/*.py"],
+        capture_output=True, text=True, cwd=REPO_ROOT).stdout.split()
     h = hashlib.sha256()
-    for rel in SOURCE_FILES:
+    for rel in sorted(set(tracked)):
         h.update(rel.encode())
-        h.update((COMPACT_ROOT / rel).read_bytes())
+        h.update((REPO_ROOT / rel).read_bytes())
+    for path in _mamba_source_files():
+        h.update(path.name.encode())
+        h.update(path.read_bytes())
     return h.hexdigest()
 
 
+def _mamba_source_files():
+    import mamba_ssm
+    import mamba_ssm.modules.mamba2 as m2
+    root = Path(mamba_ssm.__file__).parent
+    return (Path(m2.__file__), root / "ops" / "triton" / "ssd_combined.py")
+
+
 def software_versions() -> dict:
-    import crafter
+    import importlib.metadata as md
     import mamba_ssm
     props = torch.cuda.get_device_properties(0)
+    try:
+        driver = subprocess.run(
+            ["nvidia-smi", "--query-gpu=driver_version", "--format=csv,noheader"],
+            capture_output=True, text=True).stdout.strip().splitlines()[0]
+    except Exception:
+        driver = "unknown"
+    def dist_version(name):
+        try:
+            return md.version(name)
+        except Exception:
+            return "unknown"
     return {
         "python": platform.python_version(),
         "torch": torch.__version__, "cuda": torch.version.cuda,
         "numpy": np.__version__,
-        "mamba_ssm": getattr(mamba_ssm, "__version__", "unknown"),
-        "crafter": getattr(crafter, "__version__", "unknown"),
-        "gpu": props.name,
+        "mamba_ssm": getattr(mamba_ssm, "__version__", dist_version("mamba_ssm")),
+        "crafter": dist_version("crafter"),
+        "gpu": props.name, "nvidia_driver": driver,
         "gpu_total_mib": round(props.total_memory / 2**20),
+        "mamba_source_sha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                                for p in _mamba_source_files()},
     }
+
+
+# Version keys that must match for a checkpoint to be resumable; environment
+# drift in any of them forces a retrain (pre-declared, third amendment).
+RESUME_VERSION_KEYS = ("python", "torch", "cuda", "numpy", "mamba_ssm", "crafter")
+
+
+def _tensor_bytes(tensor) -> bytes:
+    """Raw bytes in ORIGINAL dtype (2026-07-16: the old float32 cast collided
+    on int64 values above 2^24)."""
+    t = tensor.detach().cpu().contiguous().reshape(-1)
+    return t.view(torch.uint8).numpy().tobytes()
 
 
 def shared_state_digest(module, exclude_prefix: str = "temporal.") -> str:
     """CHECK-1 digest: full state_dict (parameters AND buffers) outside the
-    declared temporal-core difference, with names, shapes, and dtypes."""
+    declared temporal-core difference — names, shapes, dtypes, raw bytes."""
     h = hashlib.sha256()
     for name, tensor in sorted(module.state_dict().items()):
         if name.startswith(exclude_prefix):
@@ -140,7 +177,7 @@ def shared_state_digest(module, exclude_prefix: str = "temporal.") -> str:
         h.update(name.encode())
         h.update(str(tuple(tensor.shape)).encode())
         h.update(str(tensor.dtype).encode())
-        h.update(tensor.detach().cpu().to(torch.float32).numpy().tobytes())
+        h.update(_tensor_bytes(tensor))
     return h.hexdigest()
 
 
@@ -148,7 +185,7 @@ def hash_batch(h, batch: dict) -> None:
     """CHECK-2: fold EVERY sampled tensor into the running digest."""
     for key in sorted(batch):
         h.update(key.encode())
-        h.update(batch[key].detach().cpu().numpy().tobytes())
+        h.update(_tensor_bytes(batch[key]))
 
 
 # --------------------------------------------------------------------------
@@ -257,21 +294,71 @@ def train_arm(name, backend, hidden, seed, shuffled, train_data,
     return world, info
 
 
-def resume_valid(name, backend, hidden, seed, shuffled, ckpt_step) -> bool:
-    """Strict resume: report presence alone is NOT trusted."""
+def expected_model_config(backend, hidden) -> dict:
+    """Exactly mirrors build_world's construction (consolidation.py)."""
+    return dataclasses.asdict(ModelConfig(
+        temporal_backend=backend, predictor="deterministic", mask_ratio=0.0,
+        rollout_steps=2, global_hidden=hidden))
+
+
+def checkpoint_resume_errors(ckpt: dict, file_hash: str, recorded_hash: str | None,
+                             expected: dict) -> list[str]:
+    """Pure integrity check (testable without GPU). `expected` carries:
+    arm fields, model_config, loss_config, source_digest, encoder/replay
+    hashes, and the RESUME_VERSION_KEYS fingerprint."""
+    errors = []
+    if recorded_hash is None:
+        errors.append("no checkpoint hash recorded in report")
+    elif file_hash != recorded_hash:
+        errors.append("checkpoint file hash != hash recorded at write time")
+    prov = ckpt.get("provenance", {})
+    arm = prov.get("arm", {})
+    for key, want in expected["arm"].items():
+        if arm.get(key) != want:
+            errors.append(f"arm.{key}: {arm.get(key)!r} != {want!r}")
+    if prov.get("model_config") != expected["model_config"]:
+        errors.append("ModelConfig mismatch")
+    if prov.get("loss_config") != expected["loss_config"]:
+        errors.append("LossConfig mismatch")
+    if prov.get("source_digest") != expected["source_digest"]:
+        errors.append("source digest mismatch")
+    if prov.get("encoder_sha256") != expected["encoder_sha256"]:
+        errors.append("encoder hash mismatch")
+    if prov.get("replay_file_sha256") != expected["replay_file_sha256"]:
+        errors.append("replay file hash mismatch")
+    versions = prov.get("versions", {})
+    for key in RESUME_VERSION_KEYS:
+        if versions.get(key) != expected["versions"].get(key):
+            errors.append(f"environment drift: {key} "
+                          f"{versions.get(key)!r} != {expected['versions'].get(key)!r}")
+    return errors
+
+
+def resume_valid(name, backend, hidden, seed, shuffled, ckpt_step, report) -> bool:
+    """Strict resume (third amendment): report presence is NOT trusted; the
+    checkpoint's current sha256 must equal the hash recorded when it was
+    written, and full configs + environment fingerprint must match."""
     path = ARTIFACTS / f"step4_{name}_{ckpt_step}.pt"
     if not path.exists():
         return False
-    prov = torch.load(path, weights_only=False).get("provenance", {})
-    arm = prov.get("arm", {})
-    return (prov.get("source_digest") == source_digest()
-            and prov.get("encoder_sha256") == sha256_file(ENCODER_CKPT)
-            and prov.get("replay_file_sha256") == sha256_file(TRAIN_40K_CACHE)
-            and arm.get("backend") == backend
-            and arm.get("global_hidden") == hidden
-            and arm.get("seed") == seed
-            and arm.get("shuffled") == shuffled
-            and arm.get("steps") == ckpt_step)
+    recorded = (report.get("arms", {}).get(name, {})
+                .get("checkpoint_sha256", {}).get(str(ckpt_step)))
+    ckpt = torch.load(path, weights_only=False)
+    expected = {
+        "arm": {"name": name, "backend": backend, "global_hidden": hidden,
+                "seed": seed, "shuffled": shuffled, "steps": ckpt_step},
+        "model_config": expected_model_config(backend, hidden),
+        "loss_config": dataclasses.asdict(frozen_dynamics_recipe()),
+        "source_digest": source_digest(),
+        "encoder_sha256": sha256_file(ENCODER_CKPT),
+        "replay_file_sha256": sha256_file(TRAIN_40K_CACHE),
+        "versions": software_versions(),
+    }
+    errors = checkpoint_resume_errors(ckpt, sha256_file(path), recorded, expected)
+    if errors:
+        print(f"[{name}] resume REJECTED: {errors}", flush=True)
+        return False
+    return True
 
 
 def load_arm_for_eval(name, backend, hidden, seed, shuffled, ckpt_step, device):
@@ -290,6 +377,9 @@ def load_arm_for_eval(name, backend, hidden, seed, shuffled, ckpt_step, device):
         f"(missing {set(current) - set(saved)}, extra {set(saved) - set(current)})")
     for key in current:
         assert current[key].shape == saved[key].shape, f"{name}: shape {key}"
+        assert current[key].dtype == saved[key].dtype, f"{name}: dtype {key}"
+        if saved[key].is_floating_point():
+            assert bool(torch.isfinite(saved[key]).all()), f"{name}: non-finite {key}"
     world.load_state_dict(saved, strict=True)
     world.eval()   # CHECK-4
     return world
@@ -417,6 +507,48 @@ def backend_verdict(rows_by_arm, left="M1_gru64", right="M2_mamba2",
             "verdict": verdict}
 
 
+def overall_decision(family_gates: dict, verdict: dict,
+                     gru72_verdict: dict | None = None) -> dict:
+    """Pre-registered validity hierarchy (third amendment): the backend
+    comparison is licensed ONLY between families that passed their majority
+    validity gates. Pre-registered parity tie-break: GRU-64, because the
+    online imagination path repeatedly calls step() (GRU ~4.7x faster warm
+    step, ~76x smaller cache, fewer params, simpler dependency)."""
+    gru_valid = family_gates["M1_gru64"]["majority"]["all_gates"]
+    mamba_valid = family_gates["M2_mamba2"]["majority"]["all_gates"]
+    base = {"gru_family_valid": gru_valid, "mamba_family_valid": mamba_valid,
+            "paired_verdict": verdict["verdict"]}
+    if not gru_valid and not mamba_valid:
+        return {**base, "decision": "no_valid_family",
+                "note": "no backend winner is licensed; the paired difference "
+                        "is a relative diagnostic only"}
+    if gru_valid != mamba_valid:
+        winner = "M1_gru64" if gru_valid else "M2_mamba2"
+        return {**base, "decision": f"single_valid_family:{winner}",
+                "note": "retained operationally (met the validity contract); "
+                        "no general backend-superiority claim is licensed"}
+    if verdict["verdict"] == "parity":
+        return {**base, "decision": "parity_tiebreak:M1_gru64",
+                "note": "pre-registered engineering tie-break: deployment "
+                        "step() latency/cache/simplicity favor GRU-64; "
+                        "sequence-training throughput is explicitly not the "
+                        "primary criterion"}
+    if verdict["verdict"] == "M2_mamba2_wins":
+        if gru72_verdict is None:
+            return {**base, "decision": "mamba_wins_pending_gru72",
+                    "note": "backend attribution is NOT licensed until the "
+                            "pre-registered GRU-72 capacity control runs "
+                            "(--gru72)"}
+        beats_72 = gru72_verdict["verdict"] == "M2_mamba2_wins"
+        return {**base, "gru72_verdict": gru72_verdict["verdict"],
+                "decision": ("mamba_wins_backend_attributed" if beats_72
+                             else "mamba_win_explained_by_capacity"),
+                "note": ("Mamba also beats parameter-matched GRU-72" if beats_72
+                         else "GRU-72 matches Mamba: the win downgrades to "
+                              "capacity, not backend")}
+    return {**base, "decision": "gru_wins"}
+
+
 # --------------------------------------------------------------------------
 # engineering figures (parity tie-breaker evidence)
 # --------------------------------------------------------------------------
@@ -520,7 +652,8 @@ def main(smoke=False, gru72=False):
             if arm_seed != seed:
                 continue
             if (name in report["arms"]
-                    and resume_valid(name, backend, hidden, seed, shuffled, ckpt_step)):
+                    and resume_valid(name, backend, hidden, seed, shuffled,
+                                     ckpt_step, report)):
                 print(f"[{name}] resume-valid checkpoint found, skipping", flush=True)
                 continue
             report["arms"].pop(name, None)
@@ -543,6 +676,8 @@ def main(smoke=False, gru72=False):
                if not (ARTIFACTS / f"step4_{name}_{ckpt_step}.pt").exists()]
     assert not missing, f"CHECK-3 blindness: arms incomplete {missing}"
     if smoke:
+        assert report["hashes"]["monitor_bundle"] == MONITOR_BUNDLE_SHA256, \
+            "monitor bundle hash != pinned constant"
         final_anchors = monitor_anchors
         report["eval_bundle"] = "monitor_21_24"
     else:
@@ -589,6 +724,9 @@ def main(smoke=False, gru72=False):
     if gru72:
         report["gru72_vs_mamba"] = backend_verdict(
             rows_by_arm, left="M4_gru72", right="M2_mamba2")
+    report["overall_decision"] = overall_decision(
+        report["family_gates"], report["backend_verdict"],
+        report.get("gru72_vs_mamba"))
     report["engineering"] = {
         "gru64": engineering_figures("global_gru", 64, device),
         "mamba2": engineering_figures("global_mamba2", 64, device),
@@ -599,13 +737,14 @@ def main(smoke=False, gru72=False):
             report["arms"][name].setdefault("checkpoint_sha256", {})[str(ckpt_step)] = \
                 sha256_file(path)
     report_path.write_text(json.dumps(report, indent=2, default=str))
-    print(json.dumps({"verdict": report["backend_verdict"]["verdict"],
+    print(json.dumps({"decision": report["overall_decision"]["decision"],
+                      "paired_verdict": report["backend_verdict"]["verdict"],
                       "pooled": report["backend_verdict"]["pooled_two_level"],
                       "gates": {f: report["family_gates"][f]["majority"]
                                 for f in report["family_gates"]}}, indent=2))
-    if report["backend_verdict"]["verdict"] == "M2_mamba2_wins" and not gru72:
-        print("Mamba family won: rerun with --gru72 for the pre-registered "
-              "capacity control before any backend attribution.")
+    if report["overall_decision"]["decision"] == "mamba_wins_pending_gru72":
+        print("Rerun with --gru72: backend attribution requires the "
+              "pre-registered capacity control.")
 
 
 if __name__ == "__main__":
