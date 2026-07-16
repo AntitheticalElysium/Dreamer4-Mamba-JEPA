@@ -1,0 +1,118 @@
+{
+  "protocol": "reviews/2026-07-16-long-context-scale-protocol.md",
+  "outcome_blind": true,
+  "batch": 1,
+  "observations": 128,
+  "dtype": "BF16 autocast, FP32 parameters/cache",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_total_mib": 5794.625,
+  "arms": {
+    "LS-G64": {
+      "arm": "LS-G64",
+      "trainable_parameters": 239747,
+      "temporal_parameters": 29248,
+      "initial_shared_state_digest": "f65cc5049c9b3e795cd5f15cf945e34648a353b3c1c7829b347eb1b2520d9806",
+      "cold_train_step": {
+        "loss": 8.290032386779785,
+        "grad_norm_before_clip": 4.533751487731934,
+        "finite_loss": true,
+        "finite_gradients": true,
+        "milliseconds": 743.0474339998909
+      },
+      "steady_train_step": {
+        "loss": 8.22067928314209,
+        "grad_norm_before_clip": 4.548862457275391,
+        "finite_loss": true,
+        "finite_gradients": true,
+        "milliseconds": 245.1445539991255
+      },
+      "peak_allocated_mib": 100.84619140625,
+      "peak_reserved_mib": 120.0,
+      "temporal_sequence_ms_B1_T128": 20.452696400752757,
+      "temporal_recurrent_step_ms_B1": 0.2218515997810755,
+      "temporal_cache_mib_B1_fp32": 0.000244140625,
+      "world_imagination_ms_B1_H8": 11.627271200995892
+    },
+    "LS-M64": {
+      "arm": "LS-M64",
+      "trainable_parameters": 245083,
+      "temporal_parameters": 34584,
+      "initial_shared_state_digest": "f65cc5049c9b3e795cd5f15cf945e34648a353b3c1c7829b347eb1b2520d9806",
+      "cold_train_step": {
+        "loss": 8.50697135925293,
+        "grad_norm_before_clip": 3.9384067058563232,
+        "finite_loss": true,
+        "finite_gradients": true,
+        "milliseconds": 13197.482247996959
+      },
+      "steady_train_step": {
+        "loss": 8.448896408081055,
+        "grad_norm_before_clip": 3.9413089752197266,
+        "finite_loss": true,
+        "finite_gradients": true,
+        "milliseconds": 39.02101299900096
+      },
+      "peak_allocated_mib": 100.0166015625,
+      "peak_reserved_mib": 370.0,
+      "temporal_sequence_ms_B1_T128": 1.1252586002228782,
+      "temporal_recurrent_step_ms_B1": 0.6613187997572822,
+      "temporal_cache_mib_B1_fp32": 0.0185546875,
+      "world_imagination_ms_B1_H8": 15.644485200755298
+    },
+    "LL-G": {
+      "arm": "LL-G",
+      "trainable_parameters": 3582503,
+      "temporal_parameters": 3372004,
+      "initial_shared_state_digest": "f65cc5049c9b3e795cd5f15cf945e34648a353b3c1c7829b347eb1b2520d9806",
+      "cold_train_step": {
+        "loss": 8.446993827819824,
+        "grad_norm_before_clip": 8.604873657226562,
+        "finite_loss": true,
+        "finite_gradients": true,
+        "milliseconds": 428.4311789961066
+      },
+      "steady_train_step": {
+        "loss": 7.942411422729492,
+        "grad_norm_before_clip": 8.005602836608887,
+        "finite_loss": true,
+        "finite_gradients": true,
+        "milliseconds": 419.834804997663
+      },
+      "peak_allocated_mib": 160.55810546875,
+      "peak_reserved_mib": 186.0,
+      "temporal_sequence_ms_B1_T128": 35.62938340037363,
+      "temporal_recurrent_step_ms_B1": 0.40384804997302126,
+      "temporal_cache_mib_B1_fp32": 0.003997802734375,
+      "world_imagination_ms_B1_H8": 12.686878800741397
+    },
+    "LL-M": {
+      "arm": "LL-M",
+      "trainable_parameters": 3586531,
+      "temporal_parameters": 3376032,
+      "initial_shared_state_digest": "f65cc5049c9b3e795cd5f15cf945e34648a353b3c1c7829b347eb1b2520d9806",
+      "cold_train_step": {
+        "loss": 8.359786033630371,
+        "grad_norm_before_clip": 6.843930244445801,
+        "finite_loss": true,
+        "finite_gradients": true,
+        "milliseconds": 11702.926671001478
+      },
+      "steady_train_step": {
+        "loss": 7.882547378540039,
+        "grad_norm_before_clip": 6.34178352355957,
+        "finite_loss": true,
+        "finite_gradients": true,
+        "milliseconds": 50.87032399751479
+      },
+      "peak_allocated_mib": 157.556640625,
+      "peak_reserved_mib": 406.0,
+      "temporal_sequence_ms_B1_T128": 1.9314392004162073,
+      "temporal_recurrent_step_ms_B1": 1.3446062999719288,
+      "temporal_cache_mib_B1_fp32": 0.53515625,
+      "world_imagination_ms_B1_H8": 20.539453800302
+    }
+  },
+  "shared_state_pairing_pass": true,
+  "all_numerical_gates_pass": true,
+  "all_vram_gates_pass": true
+}
