@@ -1,0 +1,27 @@
+{
+  "bundle": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/data/final_bundle_79_94.pt",
+  "sha256": "026b482717ad18c3c5da6238f0e3f829bb82007e4f8d276a82c72fe373901492",
+  "anchors": 192,
+  "night": 64,
+  "seeds": [
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94
+  ],
+  "branches": 3,
+  "canonical_collector": true,
+  "verify_repeat": true
+}
