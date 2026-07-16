@@ -119,6 +119,27 @@ class LossConfig:
     energy: float = 0.0
 
 
+# Named phase recipes (2026-07-15 companion audit): every training path must
+# state which regime it is in rather than relying on ambient defaults. Plain
+# LossConfig() IS the frozen-dynamics recipe; the online path must opt in.
+
+def frozen_dynamics_recipe() -> LossConfig:
+    """Validated frozen-encoder dynamics recipe (S3-B', Stage B, consolidation,
+    step 4): rollout bridge on, streamwise anti-collapse off (unused under a
+    frozen step-1 encoder). Reward/continuation stay at 1.0 — they train the
+    temporal core through the pooled post-transition heads (uncalibrated for
+    imagined deployment until Phase E)."""
+    return LossConfig()
+
+
+def online_hybrid_recipe() -> LossConfig:
+    """Joint online-encoder configuration (pre-freeze lineage): streamwise
+    VICReg-style anti-collapse ON, rollout bridge OFF. Any run using this
+    recipe reopens the step-1 representation gates as LIVE gates — the frozen
+    certificate does not transfer."""
+    return LossConfig(variance=1.0, covariance=0.04, rollout=0.0)
+
+
 def symlog(x: Tensor) -> Tensor:
     return torch.sign(x) * torch.log1p(x.abs())
 

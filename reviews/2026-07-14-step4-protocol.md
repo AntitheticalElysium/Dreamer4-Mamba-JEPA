@@ -129,8 +129,50 @@ differ ONLY in the temporal core. Identical replay RNG schedules per seed.
 7. LossConfig defaults now encode the validated recipe (variance=0,
    covariance=0, rollout=1.0); the runner consumes plain LossConfig().
 
+## Second amendment (2026-07-16, companion runner audit — all 8 findings
+## adopted)
+
+1. FAMILY GATES now implement the registered per-training-seed majority rule
+   (G-a..G-d decided per seed with env-seed clustering inside each model,
+   G-c against the SAME-SEED shuffled control, then 2/3 majority). Synthetic
+   regression pins the 2x30%/1x20% case the pooled rule failed.
+2. STRICT RESUME + STRICT LOAD: an arm resumes only when its checkpoint's
+   source digest, arm config, step count, encoder hash and replay-file hash
+   all match; evaluation asserts exact state_dict key/shape equality and
+   loads strict=True from FULL state_dict checkpoints (buffers included).
+3. DIGESTS: shared-init digest covers the full non-temporal state_dict
+   (parameters AND buffers, names/shapes/dtypes); replay digest covers EVERY
+   sampled tensor; the replay file's own sha256 is pinned. Regression tests
+   cover buffer mutations and per-tensor batch coverage.
+4. PROVENANCE: source-file digest over all imported run modules; clean
+   tracked tree REQUIRED for real runs (refused otherwise; smoke records
+   dirt); Python/torch/NumPy/mamba_ssm/crafter/GPU versions; peak allocated
+   AND reserved VRAM; checkpoint sha256s in the report.
+5. STRATA implemented and pre-registered: day/night; action-effective with
+   PIXEL-effective (any alt suffix changes any final-frame pixel vs true)
+   PRIMARY and task/outcome-effective SECONDARY; stratified backend verdicts
+   reported for all four strata.
+6. GRU-72 is EXECUTABLE via --gru72 (M4 x3 seeds + paired M4-vs-M2 verdict),
+   not a printed reminder.
+7. ENGINEERING FIGURES measured by the runner itself (warm step ms @B=48,
+   warm sequence ms @B=4,T=16, cache MiB @B=48, temporal params) for both
+   backends — the pre-declared parity tie-breaker evidence.
+8. PHASE RECIPES: `frozen_dynamics_recipe()` (= plain LossConfig, used by the
+   runner) vs `online_hybrid_recipe()` (anti-collapse ON, rollout OFF) now
+   used explicitly by train.py/ssl_step1.py; ARCHITECTURE_SPEC.md
+   reconciliation banner updated (operative two-stage system, global pooled
+   topology, phase recipes, reward/continuation already train the temporal
+   core). SPR/TACO/DBC sources pinned in SOURCES.lock. The stale 2026-07-15
+   smoke report was DELETED; a fresh smoke must run from a clean committed
+   tree and its checkpoints must be retained.
+
+Prior-round correction on record: the 2026-07-15 smoke was executed from an
+uncommitted source state and its checkpoints were deleted — non-reproducible,
+hence inadmissible as evidence. The claim "all NO-GO conditions addressed"
+in that round's report was premature.
+
 ## Status
 
-All companion NO-GO conditions addressed and regression-tested (70/70 incl.
-two slow environment regressions). Training still does NOT start until the
-companion verifies these repairs.
+Runner repairs complete per the 2026-07-16 audit; fresh smoke evidence to be
+generated from a clean commit. Training still does NOT start until the
+companion verifies this round.

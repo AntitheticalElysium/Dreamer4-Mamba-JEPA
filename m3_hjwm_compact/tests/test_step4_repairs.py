@@ -33,6 +33,90 @@ def test_candidate_specific_masks_can_flip_argmin_common_mask_cannot():
             f"common mask {common} failed to preserve the pointwise order"
 
 
+def _mk_rows(value, separation=0.05, env_seeds=range(16), per_env=2):
+    return [{"anchor": e * 100 + i, "env_seed": e, "night": False,
+             "retrieval_all": value, "retrieval_changed": value,
+             "separation_all": separation}
+            for e in env_seeds for i in range(per_env)]
+
+
+def test_family_gates_use_per_seed_majority_not_pooled():
+    """Companion 2026-07-16 critical finding: the registered rule is per-
+    training-seed gates + 2/3 majority; pooling all seeds' rows lets one bad
+    seed sink the family (2x 30% + 1x 20% pooled to 26.67% failed G-a)."""
+    from step4_runner import gate_decisions_per_seed
+
+    rows_by_seed = {101: _mk_rows(0.30), 202: _mk_rows(0.30), 303: _mk_rows(0.20)}
+    controls = {s: _mk_rows(0.25, separation=0.0) for s in rows_by_seed}
+    out = gate_decisions_per_seed(rows_by_seed, controls)
+    assert out["per_seed"]["101"]["G_a"] and out["per_seed"]["202"]["G_a"]
+    assert not out["per_seed"]["303"]["G_a"]
+    assert out["majority"]["G_a"], "2/3 seeds passing must pass the majority gate"
+    assert out["majority"]["all_gates"]
+    # env clustering preserved WITHIN each model (16 env clusters, not 48)
+    assert out["per_seed"]["101"]["retrieval_all"]["n_seeds"] == 16
+    # pooled counter-example: concatenating all rows fails the same threshold
+    pooled = np.mean([r["retrieval_all"]
+                      for rows in rows_by_seed.values() for r in rows])
+    assert pooled < 0.27, "fixture must demonstrate the pooled-rule failure"
+
+
+def test_shared_state_digest_covers_buffers_and_excludes_temporal():
+    """Companion 2026-07-16 finding: the old digest hashed parameters only —
+    a mutated shared BUFFER (e.g. positional embedding) went undetected."""
+    from step4_runner import shared_state_digest
+
+    class Sub(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.w = torch.nn.Parameter(torch.zeros(3))
+            self.register_buffer("pos", torch.zeros(3))
+
+    class Toy(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.encoder = Sub()
+            self.temporal = Sub()
+
+    m = Toy()
+    base = shared_state_digest(m)
+    with torch.no_grad():
+        m.encoder.pos += 1.0
+    assert shared_state_digest(m) != base, "shared buffer mutation must change digest"
+    with torch.no_grad():
+        m.encoder.pos -= 1.0
+    assert shared_state_digest(m) == base
+    with torch.no_grad():
+        m.temporal.w += 1.0
+        m.temporal.pos += 1.0
+    assert shared_state_digest(m) == base, "temporal-core state must be excluded"
+
+
+def test_replay_digest_covers_every_batch_tensor():
+    """Companion 2026-07-16 finding: the old digest hashed only actions/
+    rewards/continues — batches differing in observations collided."""
+    import hashlib
+
+    from step4_runner import hash_batch
+
+    def digest(batch):
+        h = hashlib.sha256()
+        hash_batch(h, batch)
+        return h.hexdigest()
+
+    torch.manual_seed(0)
+    base = {"obs": torch.randint(0, 255, (2, 4, 3, 8, 8), dtype=torch.uint8),
+            "actions": torch.randint(0, 17, (2, 3)),
+            "previous_actions": torch.randint(0, 17, (2, 3)),
+            "rewards": torch.randn(2, 3), "continues": torch.ones(2, 3)}
+    same = {k: v.clone() for k, v in base.items()}
+    assert digest(base) == digest(same)
+    for key in base:
+        changed = {k: v.clone() for k, v in base.items()}
+        changed[key] = changed[key] + 1
+        assert digest(changed) != digest(base), f"{key} not covered by digest"
+
+
 @pytest.mark.slow
 def test_collector_is_end_to_end_repeatable_one_seed():
     """Companion critical finding (2026-07-15): canonicalizing only branch

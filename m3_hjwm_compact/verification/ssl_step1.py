@@ -19,7 +19,7 @@ sys.path.insert(0, str(COMPACT_ROOT))
 sys.path.insert(0, str(COMPACT_ROOT / "verification"))
 
 from data import Episode, EpisodeReplay  # noqa: E402
-from model import LossConfig, M3HJWM, ModelConfig  # noqa: E402
+from model import LossConfig, M3HJWM, ModelConfig, online_hybrid_recipe  # noqa: E402
 from ssl_ijepa import IJEPAPretrainer  # noqa: E402
 from representation_control import (  # noqa: E402
     collect, inventory_probe, semantic_probe, target_statistics,
@@ -276,7 +276,9 @@ def train_hybrid(cfg, episodes, steps, device):
     for _ in range(steps):
         batch = replay.sample(batch=4, observations=16, device=device, rng=rng)
         with torch.autocast("cuda", dtype=torch.bfloat16):
-            output = model(batch, LossConfig())
+            # Online joint baseline: this path trains the encoder, so it uses
+            # the explicit online recipe (2026-07-15 phase-recipe split).
+            output = model(batch, online_hybrid_recipe())
         optimizer.zero_grad(set_to_none=True)
         output.loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 10.0)

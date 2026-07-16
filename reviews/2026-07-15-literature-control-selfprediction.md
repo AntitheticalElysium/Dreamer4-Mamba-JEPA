@@ -1,5 +1,37 @@
 # Control-centric action-conditioned self-prediction: literature notes
 
+> **CORRECTIONS (2026-07-16, companion ground-truth check — read these before
+> the sections below):**
+> 1. **RETRACTED**: "the stack currently trains with NO reward/continuation
+>    pressure on the temporal path" (item 4 rationale below) is FALSE.
+>    LossConfig defaults reward=continuation=1.0 and both heads consume pooled
+>    POST-temporal context; the companion's gradient diagnostic confirms the
+>    temporal core receives reward gradients in every validated run. Phase E
+>    is therefore held-out CALIBRATION + imagined-rollout validation, not the
+>    first introduction of reward grounding. DeepMDP also does not establish
+>    that reward grounding is required or sufficient — only that jointly
+>    learned reward-aware latents carry control-relevance bounds.
+> 2. SPR (source verified at mila-iqia/spr@0b9dd4e): precedents dense spatial
+>    action-conditioned CONV transitions with per-step targets and joint RL
+>    training. Merely raising our rollout_steps to 5 is NOT a faithful SPR
+>    arm; label any such arm "SPR-inspired depth ablation".
+> 3. BYOL-AC: literal per-action predictors would add ~1.80M params beside a
+>    240k model — not "trivial". The realistic ablation is action-modulated
+>    predictor conditioning (FiLM/AdaLN-zero, cf. LeWM) or small per-action
+>    heads, labelled "BYOL-AC-motivated". Its spectral results rest on strong
+>    idealized assumptions, and our predictor already receives a direct action
+>    token — BYOL-AC motivates an ablation; it does not diagnose the current
+>    architecture as weakly conditioned.
+> 4. Tang et al.: the two-timescale/semi-gradient analysis concerns JOINTLY
+>    learned representations; with our frozen encoder an update-ratio ablation
+>    is an empirical optimization probe, not a theorem-backed transplant.
+> 5. TACO (source verified at FrankZheng2022/TACO@84c38e3): faithful TACO
+>    contrasts batch-matched pairs in a BxB InfoNCE. A same-anchor
+>    true-vs-wrong-action objective is "TACO-inspired counterfactual action
+>    ranking" — gate-adjacent, separately labelled, untouched-set evaluation.
+> 6. SPR/TACO/DBC official repositories are pinned under third_party/sources/
+>    (see SOURCES.lock) as of 2026-07-16.
+
 Date: 2026-07-15. Context: both external reviews (third-agent transcript,
 companion audit) independently identified the same corpus gap — the project's
 pinned literature was strong on 2025-26 JEPA/world-model work and missing the

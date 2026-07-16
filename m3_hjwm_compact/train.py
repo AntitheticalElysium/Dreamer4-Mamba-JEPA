@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from contextlib import nullcontext
 import torch
 
-from model import M3HJWM, LossConfig, WorldState
+from model import M3HJWM, LossConfig, WorldState, online_hybrid_recipe
 from agent import ActorCritic, imagine, actor_critic_losses, frozen
 
 
@@ -43,8 +43,14 @@ def world_update(
     batch: dict[str, torch.Tensor],
     optimizer: torch.optim.Optimizer,
     cfg: TrainConfig,
-    loss_weights: LossConfig = LossConfig(),
+    loss_weights: LossConfig | None = None,
 ):
+    # This generic path backpropagates into the online encoder and EMA-updates
+    # the target, so it defaults to the ONLINE recipe (anti-collapse on,
+    # rollout off). Frozen-dynamics runs pass frozen_dynamics_recipe()
+    # explicitly (2026-07-15 phase-recipe split).
+    if loss_weights is None:
+        loss_weights = online_hybrid_recipe()
     optimizer.zero_grad(set_to_none=True)
     with autocast_context(next(model.parameters()).device, cfg.amp):
         output = model(batch, loss_weights)

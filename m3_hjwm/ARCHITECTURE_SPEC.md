@@ -1,15 +1,38 @@
 # M3-HJWM architecture specification (verification revision)
 
-> **STATUS RECONCILIATION (2026-07-13, dual-agent consensus):** this spec is the
-> original reference design; the operative implementation is `m3_hjwm_compact/`.
-> Since this document was written: the §3 representation objective was replaced
-> by faithful same-frame I-JEPA + global projected SIGReg (LeJEPA), which
-> **passed the corrected step-1 gates** (reviews/2026-07-13-step1-protocol.md);
-> a V-JEPA-2-AC-style rollout bridge is merged (opt-in) and its drift-suppression
-> effect is established (S3-B', reviews/2026-07-13-step3-protocol.md); the S3-A
-> copy-margin gate and action-conditioned dynamics remain OPEN
-> (reviews/2026-07-13-fork-oracle-protocol.md and successors). Statements below
-> about unresolved representation gates are historical.
+> **STATUS RECONCILIATION (2026-07-13, dual-agent consensus; updated
+> 2026-07-15):** this spec is the original reference design; the operative
+> implementation is `m3_hjwm_compact/`. Since this document was written: the §3
+> representation objective was replaced by faithful same-frame I-JEPA + global
+> projected SIGReg (LeJEPA), which **passed the corrected step-1 gates**
+> (reviews/2026-07-13-step1-protocol.md); a V-JEPA-2-AC-style rollout bridge is
+> merged and its measured effect is an improved 8-step open-loop changed-patch
+> margin over rollout-off (S3-B', 3/3 seeds, both scales — it did not by itself
+> beat copy); weak-but-real out-of-sample causal action selection is
+> established (Stage B + consolidation, 27-30% vs 25% chance).
+>
+> **2026-07-15 operative deltas from this spec** (authoritative component table:
+> reviews/ARCHITECTURE_EVIDENCE_LEDGER.md):
+> - OPERATIVE SYSTEM IS TWO-STAGE: the encoder is pretrained (I-JEPA/SIGReg)
+>   and FROZEN for all dynamics work (registered decision; unfreezing reopens
+>   the step-1 gates). The joint objective below describes the online lineage.
+> - OPERATIVE TEMPORAL TOPOLOGY: dense per-frame tokens + ONE shared global
+>   recurrent memory (mean-pool -> GRU/Mamba core -> broadcast add, dense
+>   residual bypass). This matches no cited system exactly (labelled
+>   divergence); selected operationally 3/3 vs 2/3 seeds over per-stream
+>   recurrence — NOT a proven architectural optimum (paired diff +1.09 pts,
+>   CI [-0.22, +2.39]). The 66-stream per-position recurrence described below
+>   is retained only as a comparison arm.
+> - LOSS RECIPES ARE PHASE-EXPLICIT (`model.frozen_dynamics_recipe()`:
+>   rollout ON at 1.0, streamwise variance/covariance OFF — the validated
+>   frozen-dynamics contract, and the meaning of plain `LossConfig()`;
+>   `model.online_hybrid_recipe()`: anti-collapse ON, rollout OFF). The
+>   "defaults to zero" statement for the rollout weight below is historical.
+> - Reward/continuation heads DO train the temporal core through the pooled
+>   post-transition context in all validated dynamics runs; they remain
+>   UNCALIBRATED for imagined deployment until Phase E.
+> - Mamba-3 remains NO-GO on this hardware; Mamba-2 (official cache/step) is
+>   the step-4 comparator inside the global topology, never a silent default.
 
 
 Status, 2026-07-13: this document is a falsifiable target, not a claim that the
@@ -144,9 +167,11 @@ It feeds the first generated successor through the exact temporal deployment
 composition and differentiates through predictor → temporal → predictor. The
 visual prefix is detached for this auxiliary, matching V-JEPA 2-AC's frozen
 encoder post-training assumption. Deviations are explicit: cosine replaces L1,
-and the compact temporal core is separate from the spatial predictor. Its weight
-defaults to zero until the corrected representation gate and multi-seed fixed-
-representation comparison pass.
+and the compact temporal core is separate from the spatial predictor. Its
+gating condition (corrected representation gate + multi-seed fixed-
+representation comparison) was met on 2026-07-13/14 (S3-B' 3/3 seeds, both
+scales); the weight now defaults to 1.0 in the frozen-dynamics recipe (see the
+2026-07-15 reconciliation banner).
 
 No loss is allowed to decode an action from a hidden state that already consumed
 that action. An optional inverse objective must use `(Y_t,Y_{t+1}) -> a_t`.
