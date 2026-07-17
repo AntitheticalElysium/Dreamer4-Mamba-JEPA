@@ -614,5 +614,117 @@
       "interesting": false
     },
     "note": "EXPLORATORY: screening thresholds only; any 'interesting' outcome licenses a registered confirmation on fresh seeds, never a default change. Seeds 131-134 are spent for selection after this screen."
+  },
+  "extension": {
+    "arms": {
+      "X-FLG_s707": {
+        "trainable_params": 3242062,
+        "temporal_params": 3031563,
+        "train_minutes": 18.3,
+        "temporal_class": "FlattenedGRUTemporal",
+        "predictor_class": "FuturePredictor",
+        "shared_state_digest": "c9ee4be1059bd0940b9c7a95084b27308aa592f44f111ad2d44b759f760a46f3",
+        "replay_stream_digest": "20333d0373e9edcf864d90fcef6d8d4676bef1ac887ef44cac8a8a349ac149eb",
+        "peak_vram_reserved_mib": 172.0,
+        "checkpoint_sha256": "ca366b1e0308848a75a62de7b20b5dbff9db2a28667fbdf9daed885c7d06a5a5",
+        "loss_last500": 0.02255805665999651
+      },
+      "X-FLM_s707": {
+        "trainable_params": 3242739,
+        "temporal_params": 3032240,
+        "train_minutes": 12.4,
+        "temporal_class": "FlattenedMambaTemporal",
+        "predictor_class": "FuturePredictor",
+        "shared_state_digest": "c9ee4be1059bd0940b9c7a95084b27308aa592f44f111ad2d44b759f760a46f3",
+        "replay_stream_digest": "20333d0373e9edcf864d90fcef6d8d4676bef1ac887ef44cac8a8a349ac149eb",
+        "peak_vram_reserved_mib": 382.0,
+        "checkpoint_sha256": "4fc0c8a89dfd9673e7f7b875834cedaea158fecdf4ef5a89761756ae6b1e78ec",
+        "loss_last500": 0.01823903963714838
+      },
+      "X-FLM-shuf_s505": {
+        "trainable_params": 3242739,
+        "temporal_params": 3032240,
+        "train_minutes": 12.2,
+        "temporal_class": "FlattenedMambaTemporal",
+        "predictor_class": "FuturePredictor",
+        "shared_state_digest": "2cf13e594cafc9fb435dff135decffd3d80b81a73da58c9bba44d684724022b3",
+        "replay_stream_digest": "304e1b3e687adbb30e435333b022fbd0691b96e98c37ec4df2c3b1a9455271c0",
+        "peak_vram_reserved_mib": 166.0,
+        "checkpoint_sha256": "19313eb02472501e6f419acfc9d45f0f45b2cf892492b00e918738208cee28c7",
+        "loss_last500": 0.019714173490181567
+      }
+    },
+    "evaluation": {
+      "X-FLG_s707": {
+        "retrieval_all": {
+          "mean": 0.3645833333333333,
+          "ci95": [
+            0.2786852994662987,
+            0.4504813672003679
+          ]
+        },
+        "retrieval_changed": {
+          "mean": 0.37499999999999994,
+          "ci95": [
+            0.2523366546343354,
+            0.4976633453656645
+          ]
+        },
+        "separation_all": {
+          "mean": 0.01351218320067144,
+          "ci95": [
+            0.004123525719604525,
+            0.022900840681738355
+          ]
+        }
+      },
+      "X-FLM_s707": {
+        "retrieval_all": {
+          "mean": 0.3333333333333333,
+          "ci95": [
+            0.27440776823445434,
+            0.3922588984322123
+          ]
+        },
+        "retrieval_changed": {
+          "mean": 0.375,
+          "ci95": [
+            0.375,
+            0.375
+          ]
+        },
+        "separation_all": {
+          "mean": 0.012690268007443389,
+          "ci95": [
+            0.006427912750560154,
+            0.018952623264326625
+          ]
+        }
+      },
+      "X-FLM-shuf_s505": {
+        "retrieval_all": {
+          "mean": 0.25,
+          "ci95": [
+            0.25,
+            0.25
+          ]
+        },
+        "retrieval_changed": {
+          "mean": 0.27083333333333337,
+          "ci95": [
+            0.24677707211709896,
+            0.2948895945495678
+          ]
+        },
+        "separation_all": {
+          "mean": 0.0007106358211280572,
+          "ci95": [
+            -0.0005207979133799167,
+            0.001942069555636031
+          ]
+        }
+      }
+    },
+    "note": "post-registration extension (committed AFTER the registered readout at cb27d20): consistency data only, never merged into the registered H-T/H-C criteria"
   }
 }
