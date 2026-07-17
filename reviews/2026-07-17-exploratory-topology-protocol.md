@@ -87,3 +87,37 @@ No superiority claims, no default changes, no gate changes, no reuse of
 seeds 79-94 or 115-130, no policy/reliability work. Anything "interesting"
 goes to the companion + user for a registered three-seed confirmation with
 fresh final seeds.
+
+## OUTCOMES (appended 2026-07-17 after the run; registered readout committed
+## at cb27d20, extension at 956ee02, corrections per companion audit)
+
+- H-T: PASS mechanically. FL retrieval 29.17/37.50 (G), 30.21/35.42 (M) vs
+  pooled baseline 31.94%; ALL FL separations positive and 2-3x every pooled
+  baseline (0.00693-0.01257 vs 0.00304-0.00499); FL-G shuffled control
+  26.04% / sep 0.000698. Extension seed 707: FL-G 36.46% / 0.01351,
+  FL-M 33.33% / 0.01269; FL-M shuffled control 25.00% / 0.00071.
+- H-C: FAIL mechanically (AdaLN mean +0.35 pts vs required +1.0; seed 505
+  below baseline). Not a general rejection of action modulation.
+- LICENSED CONCLUSION (companion correction adopted): "a large full-grid,
+  no-bypass JEPA adapter is a promising architecture family with stronger
+  action-discriminative open-loop behavior than the pooled controls." NOT
+  licensed: "pooling/bypass proven causal" — the arm moved capacity,
+  flattening, projections, mixing, and bypass together. Factor isolation:
+  reviews/2026-07-17-mechanism-screen-protocol.md.
+- Across 3 seeds: FL-G 34.38% / sep 0.01096, FL-M 32.99% / sep 0.01118 —
+  backend PARITY again (mixed per-seed signs); Mamba trains ~1.43x faster
+  end-to-end and fits ~18-21% lower teacher-forced JEPA but its matched
+  open-loop error crosses over around k=3-4 and is worse at k=8 in all
+  three seeds (companion diagnostic; cache mismatch refuted) — motivates a
+  controlled K=2-vs-K=5 per-step-target test, NOT a blind K increase.
+- Strata (post-hoc summaries added to the report JSON): night separation is
+  2-5x weaker than day in every FL arm (e.g. 0.0023-0.0056 vs 0.0083-0.0179)
+  though still above pooled controls. Tie-aware retrieval (preregistered
+  primary for any confirmation): FL mean ~33.6% vs pooled baseline 31.5% —
+  direction robust to tie policy.
+- Corrections adopted: t(n-1) critical values fixed in seed_level_summary
+  (FL-G per-env CIs now include zero at n=4; FL-M extension CIs remain
+  positive; no registered decision used these CIs); "RSSM-shaped" and
+  "LeWM-faithful" relabelled; xtopo checkpoints + monitor bundles force-
+  added for artifact retention; seeds 115-130 REMAIN RESERVED; fresh-seed
+  confirmation is ON HOLD pending the mechanism screen.

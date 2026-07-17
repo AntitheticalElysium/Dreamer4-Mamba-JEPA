@@ -726,5 +726,539 @@
       }
     },
     "note": "post-registration extension (committed AFTER the registered readout at cb27d20): consistency data only, never merged into the registered H-T/H-C criteria"
-  }
+  },
+  "strata_summaries": {
+    "X-FLG_s505": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.3125,
+        "separation_all": 0.008287572884000838
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.25,
+        "separation_all": 0.004211738191467399
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.29347826086956524,
+        "separation_all": 0.007230220507641416
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.28846153846153844,
+        "separation_all": 0.0073689971274385835
+      }
+    },
+    "X-FLG_s606": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.421875,
+        "separation_all": 0.017464612756157294
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.28125,
+        "separation_all": 0.002387544111115858
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.3804347826086957,
+        "separation_all": 0.012979745955975808
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.38461538461538464,
+        "separation_all": 0.016614491030430563
+      }
+    },
+    "X-FLM_s505": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.3125,
+        "separation_all": 0.01061113002166773
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.28125,
+        "separation_all": 0.0036335519010511526
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.30434782608695654,
+        "separation_all": 0.008645499806743171
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.3076923076923077,
+        "separation_all": 0.00948931381870539
+      }
+    },
+    "X-FLM_s606": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.390625,
+        "separation_all": 0.01718486520985607
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.28125,
+        "separation_all": 0.003331009453783434
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.358695652173913,
+        "separation_all": 0.013113300825563678
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.3076923076923077,
+        "separation_all": 0.015032522201251527
+      }
+    },
+    "X-ADA_s505": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.3125,
+        "separation_all": 0.00767784573448201
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.28125,
+        "separation_all": 0.004380884522106499
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.30434782608695654,
+        "separation_all": 0.006864895996894092
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.3076923076923077,
+        "separation_all": 0.00815290471729942
+      }
+    },
+    "X-ADA_s606": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.359375,
+        "separation_all": 0.009098973183427006
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.3125,
+        "separation_all": 0.0038655359724846967
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.34782608695652173,
+        "separation_all": 0.007674254726726506
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.34615384615384615,
+        "separation_all": 0.010202999799870528
+      }
+    },
+    "X-FLG-shuf_s505": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.234375,
+        "separation_all": 0.0007544737454736607
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.3125,
+        "separation_all": 0.0005852321046404536
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.2608695652173913,
+        "separation_all": 0.000728410294117487
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.28846153846153844,
+        "separation_all": 0.0011760349122759623
+      }
+    },
+    "X-ADA-shuf_s505": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.265625,
+        "separation_all": 0.00011877331417053938
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.25,
+        "separation_all": 0.0003919077571481462
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.2608695652173913,
+        "separation_all": 0.0002189406558223391
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.2692307692307692,
+        "separation_all": 0.00046879908022208136
+      }
+    },
+    "base_M1_gru64_s101": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.421875,
+        "separation_all": 0.0062233386949325595
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.21875,
+        "separation_all": 0.0012621565256267786
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.358695652173913,
+        "separation_all": 0.004768290057562399
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.3076923076923077,
+        "separation_all": 0.004279319149179336
+      }
+    },
+    "base_M1_gru64_s202": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.328125,
+        "separation_all": 0.005451841396279632
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.25,
+        "separation_all": 0.0020878032082691797
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.30434782608695654,
+        "separation_all": 0.004518777739418589
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.28846153846153844,
+        "separation_all": 0.004124074971351103
+      }
+    },
+    "base_M1_gru64_s303": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.328125,
+        "separation_all": 0.003998169772482168
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.25,
+        "separation_all": 0.0011298515407058103
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.30434782608695654,
+        "separation_all": 0.003174327334146138
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.2692307692307692,
+        "separation_all": 0.0026219858883474124
+      }
+    },
+    "base_M2_mamba2_s101": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.359375,
+        "separation_all": 0.006974557647481561
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.21875,
+        "separation_all": 0.0010063595448931068
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.31521739130434784,
+        "separation_all": 0.005201904292123906
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.28846153846153844,
+        "separation_all": 0.0049531999259040905
+      }
+    },
+    "base_M2_mamba2_s202": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.34375,
+        "separation_all": 0.004795024714743098
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.3125,
+        "separation_all": 0.0019976377564792855
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.33695652173913043,
+        "separation_all": 0.004030499890770602
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.3269230769230769,
+        "separation_all": 0.0041787042401922065
+      }
+    },
+    "base_M2_mamba2_s303": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.359375,
+        "separation_all": 0.005712829869783793
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.28125,
+        "separation_all": 0.00216665353703623
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.33695652173913043,
+        "separation_all": 0.004727761139688285
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.34615384615384615,
+        "separation_all": 0.0047039300895845276
+      }
+    },
+    "base_M3_gru64_shuf_s101": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.25,
+        "separation_all": 1.8584561379005656e-05
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.25,
+        "separation_all": 0.000138924864586444
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.25,
+        "separation_all": 6.125008255459315e-05
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.25,
+        "separation_all": 0.00025384943597973967
+      }
+    },
+    "base_M3_gru64_shuf_s202": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.25,
+        "separation_all": -8.037934700646978e-06
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.25,
+        "separation_all": 0.00010582664981484457
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.25,
+        "separation_all": 3.121766275253934e-05
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.25,
+        "separation_all": 7.832358376337906e-05
+      }
+    },
+    "base_M3_gru64_shuf_s303": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.25,
+        "separation_all": 0.00041184729586045106
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.25,
+        "separation_all": -1.808669185265812e-05
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.25,
+        "separation_all": 0.0002802114434324327
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.25,
+        "separation_all": 0.00026552148688680264
+      }
+    },
+    "base_M3_mamba2_shuf_s101": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.25,
+        "separation_all": -5.4573038748156194e-05
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.25,
+        "separation_all": 0.00021951267262920694
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.25,
+        "separation_all": 3.838838091578941e-05
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.25,
+        "separation_all": 0.00019331282386795005
+      }
+    },
+    "base_M3_mamba2_shuf_s202": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.234375,
+        "separation_all": 0.0001994897223388161
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.25,
+        "separation_all": 3.821047721430529e-05
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.2391304347826087,
+        "separation_all": 0.00015206605978850001
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.25,
+        "separation_all": 0.0002484834179855307
+      }
+    },
+    "base_M3_mamba2_shuf_s303": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.25,
+        "separation_all": 0.0001886995645084715
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.28125,
+        "separation_all": 0.00016397179570049134
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.2608695652173913,
+        "separation_all": 0.0001883029303364989
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.2692307692307692,
+        "separation_all": 0.0002835169195746757
+      }
+    },
+    "X-FLG_s707": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.390625,
+        "separation_all": 0.01748252480077402
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.3125,
+        "separation_all": 0.005571500000466282
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.3695652173913043,
+        "separation_all": 0.014099669426787592
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.40384615384615385,
+        "separation_all": 0.018890322586043902
+      }
+    },
+    "X-FLM_s707": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.34375,
+        "separation_all": 0.017882978262302156
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.3125,
+        "separation_all": 0.0023048474977258584
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.33695652173913043,
+        "separation_all": 0.013242018790375712
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.34615384615384615,
+        "separation_all": 0.013805490840847296
+      }
+    },
+    "X-FLM-shuf_s505": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.25,
+        "separation_all": 0.0005495112272910769
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.25,
+        "separation_all": 0.0010328850088020176
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.25,
+        "separation_all": 0.0007415330307423205
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.25,
+        "separation_all": 0.001195029045144717
+      }
+    }
+  },
+  "tie_aware_retrieval": {
+    "X-FLG_s505": 0.2951388888888889,
+    "X-FLG_s606": 0.37152777777777785,
+    "X-FLM_s505": 0.3020833333333333,
+    "X-FLM_s606": 0.3541666666666667,
+    "X-ADA_s505": 0.3020833333333333,
+    "X-ADA_s606": 0.3368055555555555,
+    "X-FLG-shuf_s505": 0.2569444444444444,
+    "X-ADA-shuf_s505": 0.2604166666666667,
+    "base_M1_gru64_s101": 0.34722222222222227,
+    "base_M1_gru64_s202": 0.3020833333333333,
+    "base_M1_gru64_s303": 0.296875,
+    "base_M2_mamba2_s101": 0.3055555555555556,
+    "base_M2_mamba2_s202": 0.3263888888888889,
+    "base_M2_mamba2_s303": 0.3333333333333333,
+    "base_M3_gru64_shuf_s101": 0.25,
+    "base_M3_gru64_shuf_s202": 0.25,
+    "base_M3_gru64_shuf_s303": 0.25,
+    "base_M3_mamba2_shuf_s101": 0.2552083333333333,
+    "base_M3_mamba2_shuf_s202": 0.23958333333333334,
+    "base_M3_mamba2_shuf_s303": 0.2604166666666667,
+    "X-FLG_s707": 0.3541666666666667,
+    "X-FLM_s707": 0.3385416666666667,
+    "X-FLM-shuf_s505": 0.24305555555555555
+  },
+  "strata_note": "2026-07-17 companion audit item 3/8: stratified summaries + tie-aware retrieval added post-hoc from the committed rows (no re-evaluation). Night separation is visibly weaker than day across FL arms; tie-aware retrieval is the preregistered primary for any future confirmation."
 }

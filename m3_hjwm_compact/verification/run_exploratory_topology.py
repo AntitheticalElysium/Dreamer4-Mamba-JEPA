@@ -103,11 +103,11 @@ def exclude_prefixes(arm: str) -> tuple[str, ...]:
 
 
 def train_arm(name, arm, seed, shuffled, train_data, encoder, monitor_ref,
-              device):
+              device, builder=build_exploratory_world):
     replay = EpisodeReplay(capacity_steps=500_000)
     for ep in train_data:
         replay.add(Episode(**ep))
-    world = build_exploratory_world(arm, seed, device)
+    world = builder(arm, seed, device)
     # pair shared state against the per-seed global-gru reference
     state = world.state_dict()
     skips = exclude_prefixes(arm)

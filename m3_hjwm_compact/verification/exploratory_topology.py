@@ -8,9 +8,13 @@ defaults change; results license at most a registered confirmation.
 Two labelled hypotheses from the 4b post-mortem and the literature round:
 
 H-T (topology): the pooled bottleneck + dense residual bypass — not the
-  backend — limits action-discriminative dynamics. Test: DRAMA/RSSM-SHAPED
-  flattened-latent cores where the recurrent state CARRIES the whole context
-  (no bypass), GRU vs Mamba-2 inside the identical adapter.
+  backend — limits action-discriminative dynamics. Test: full-grid
+  bottleneck / no-bypass cores (DRAMA-inspired input stem) where the
+  recurrent state CARRIES the whole context, GRU vs Mamba-2 inside the
+  identical adapter. (2026-07-17 companion audit: this arm moves capacity,
+  mixing, projections, and bypass TOGETHER — see the mechanism screen for
+  factor isolation; "H-T positive" licenses only "promising architecture
+  family", not a causal pooling/bypass claim.)
 H-C (conditioning): BYOL-AC says action-conditioned prediction selects
   action-distinguishing features in proportion to conditioning strength.
   Test: LeWM-faithful AdaLN-zero modulation added on top of the existing
@@ -43,14 +47,16 @@ FLAT_HEADDIM = 64
 # --------------------------------------------------------------------------
 
 class FlattenedGRUTemporal(nn.Module):
-    """DRAMA/RSSM-SHAPED single-state core (source-inspired, NOT a
-    reproduction). Divergence from the pooled arms: the FULL S*D token grid
-    is flattened through a stem into the recurrent state, and the per-token
-    context is emitted PURELY from that state — there is NO dense residual
-    bypass, so the state must carry the temporal context (DreamerV3/CDP
-    rssm.py:84 deterministic state; DRAMA mixer_seq_simple.py:188 flattened
-    latent stem). Labelled divergences from DRAMA: continuous JEPA tokens,
-    action embedding added per-token upstream, AdamW recipe."""
+    """Full-grid bottleneck / no-bypass JEPA ablation with a DRAMA-INSPIRED
+    input stem (2026-07-17 companion relabel: NOT "RSSM-shaped" — CDP's RSSM
+    updates a prior from the previous stochastic state before folding in
+    observations, semantics this deterministic core does not reproduce; the
+    only shared invariant with DRAMA is flattened-latent-through-stem,
+    mixer_seq_simple.py:188). The FULL S*D token grid is flattened through a
+    stem into the recurrent state and the per-token context is emitted PURELY
+    from that state — no dense residual bypass. NOTE (companion): this arm
+    changes capacity, mixing, projections, AND bypass together; the mechanism
+    screen isolates those factors."""
 
     def __init__(self, dim: int, streams: int, hidden: int, depth: int = FLAT_DEPTH):
         super().__init__()
@@ -203,10 +209,11 @@ class ConditionalSpatialBlock(nn.Module):
 
 
 class AdaLNFuturePredictor(FuturePredictor):
-    """FuturePredictor with action/horizon AdaLN-zero modulation ADDED on top
-    of the existing conditioning tokens (strictly increases action-
-    conditioning strength while keeping the token path; BYOL-AC-motivated,
-    LeWM-inspired — labelled, not a LeWM reproduction)."""
+    """FuturePredictor with action/horizon AdaLN-zero modulation added on top
+    of the existing conditioning tokens (BYOL-AC-motivated, LeWM-INSPIRED —
+    an adapted block, not LeWM-faithful; 2026-07-17 companion correction:
+    zero-init gates initially SUPPRESS the conditioned branches, so this does
+    not 'strictly increase' conditioning strength at initialization)."""
 
     def __init__(self, cfg: ModelConfig):
         super().__init__(cfg)

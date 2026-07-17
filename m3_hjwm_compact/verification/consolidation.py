@@ -201,7 +201,10 @@ def seed_level_summary(rows, key):
     n = len(means)
     mean = float(means.mean())
     se = float(means.std(ddof=1) / np.sqrt(n))
-    tcrit = 2.131 if n == 16 else 2.0   # t(15, .975) = 2.131
+    # two-sided t(n-1, .975); the old flat 2.0 fallback understated small-n
+    # intervals (2026-07-17 companion audit: n=4 needs 3.182, not 2.0)
+    tcrit = {2: 12.706, 3: 4.303, 4: 3.182, 5: 2.776, 6: 2.571, 8: 2.365,
+             12: 2.201, 16: 2.131}.get(n, 2.0 if n > 16 else 4.303)
     return {"mean": mean, "ci95": [mean - tcrit * se, mean + tcrit * se], "n_seeds": n}
 
 

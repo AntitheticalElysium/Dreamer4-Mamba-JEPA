@@ -64,8 +64,10 @@ partially aligned with what the evidence says, with two corrections:
    well-supported context and there is no 1,000+-step dependency structure
    for a state-space model to exploit — DRAMA's decisive GRU gap appears at
    1,664 tokens on a purpose-built memory task. On this data, at these
-   horizons, backend parity is the EXPECTED literature outcome, which the
-   4b review documents.
+   horizons, backend parity is a PLAUSIBLE literature outcome (2026-07-17
+   companion correction: DRAMA's synthetic result shows Mamba CAN win under
+   deliberately long dependencies; it does not predict equality on Crafter,
+   so "expected" overstated it), which the 4b review documents.
 
 The testable version of the user's concern is therefore: **is the pooled
 bottleneck (not the backend) what's limiting action-discriminative dynamics?**
