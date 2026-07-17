@@ -64,3 +64,34 @@ architecture search.
 
 No reliability weighting in any score (shadow-only). No actor/critic. No
 new training. Seeds 79-94, 115-130 untouched.
+
+## OUTCOMES (appended 2026-07-18 after the evaluation; consensus on gate
+## action pending)
+
+PLANNER: NO-GO for BOTH backends under the proposal margins (and under both
+G-E1 readings — the strict per-seed-CI implementation and the registered
+pooled-CI text; the implementation-vs-text divergence is recorded in the
+report and both are computed).
+
+| gate | full-grid Mamba-2 | full-grid GRU |
+|---|---|---|
+| G-E1 ranking | FAIL (signs +/-/+; pooled adv +0.022, CI [-0.009,+0.047]) | FAIL narrowly (signs +/+/+; pooled adv +0.055, CI [-0.005,+0.115]) |
+| G-E2 reward events | FAIL (h1 AUROC mean 0.52 — seed 707 at 0.05 is INVERTED; h8 0.74) | FAIL (h1 0.90 PASSES; h8 0.50 = chance) |
+| G-E3 continuation | PASS (AUROC 0.93, Brier 0.020) | PASS (AUROC 0.92, Brier 0.028) |
+
+Readings:
+1. CONTINUATION HEADS WORK — first task-head gate the project has ever
+   passed (terminal-enriched set, seeds 900-915; AUROC 0.83-0.95 across all
+   nine evaluated checkpoints including pooled references).
+2. The GRU control's reward head is strong at short horizon (h1 event AUROC
+   0.85-0.95 per seed) and its ranking advantage is sign-consistent
+   (+0.018/+0.097/+0.048) with pooled CI missing zero by 0.005 — close, not
+   licensed. Its failure mode is long-horizon: h8 event AUROC 0.50.
+3. The sprint candidate (Mamba) has the WEAKER task heads: erratic h1
+   (0.73/0.05/inverted), inconsistent ranking signs — consistent with the
+   4b/exploratory open-loop "smoother, less discriminative" diagnostic, and
+   now visible in reward space, not just latent space.
+4. Per protocol, failure routes to task-supervision/imagined-state
+   diagnosis: candidate levers for consensus = reward-event class imbalance
+   (event rate ~3-5% of steps), horizon-wise reward degradation (h1->h8),
+   and imagined-state distribution shift; NOT architecture search.
