@@ -61,6 +61,16 @@ ARM_LIST = (
     ("X-FLG-shuf_s505", "X-FLG", 505, True),
     ("X-ADA-shuf_s505", "X-ADA", 505, True),
 )
+# LABELLED POST-REGISTRATION EXTENSION (2026-07-17, after the registered
+# readout was computed and committed at cb27d20): one more training seed for
+# each flattened arm plus the missing Mamba-side shuffled control. Reported
+# in a separate "extension" block; the registered readout is NOT recomputed
+# over these arms.
+EXTENSION_ARMS = (
+    ("X-FLG_s707", "X-FLG", 707, False),
+    ("X-FLM_s707", "X-FLM", 707, False),
+    ("X-FLM-shuf_s505", "X-FLM", 505, True),
+)
 STEP4_BASELINES = tuple(
     (f"{family}_s{seed}", backend, 64)
     for family, backend in (("M1_gru64", "global_gru"), ("M2_mamba2", "global_mamba2"),
@@ -329,5 +339,60 @@ def main():
     print(json.dumps(readout, indent=2))
 
 
+def run_extension():
+    """Train/evaluate EXTENSION_ARMS only; report under a separate
+    'extension' block. The committed registered readout is left untouched."""
+    device = torch.device("cuda")
+    dirty = tracked_dirty()
+    if dirty:
+        raise RuntimeError("commit before the extension run:\n" + "\n".join(dirty))
+    manifest = json.loads(MANIFEST_PATH.read_text())
+    assert sha256_file(BUNDLE_PATH) == manifest["sha256"], "bundle hash drift"
+    anchors = torch.load(BUNDLE_PATH, weights_only=False)
+    strata = anchor_strata(anchors)
+    train, _ = load_scaled_data()
+    pretrainer = IJEPAPretrainer(
+        ModelConfig(temporal_backend="gru", predictor="deterministic", mask_ratio=0.0))
+    pretrainer.load_state_dict(
+        torch.load(ENCODER_CKPT, weights_only=False)["pretrainer"], strict=True)
+    encoder = pretrainer.target_encoder.to(device).eval()
+    report = json.loads(REPORT_PATH.read_text())
+    extension = report.setdefault("extension", {"arms": {}, "evaluation": {}})
+    references = {}
+    for seed in sorted({seed for _, _, seed, _ in EXTENSION_ARMS}):
+        torch.manual_seed(seed)
+        ref = build_world("global_gru", 64, device)
+        references[seed] = {n: t.detach().cpu().clone()
+                            for n, t in ref.state_dict().items()}
+        del ref
+        torch.cuda.empty_cache()
+    for name, arm, seed, shuffled in EXTENSION_ARMS:
+        if name in extension["arms"] \
+                and (ARTIFACTS / f"xtopo_{name}_{STEPS}.pt").exists():
+            continue
+        world, info = train_arm(name, arm, seed, shuffled, train, encoder,
+                                references[seed], device)
+        extension["arms"][name] = info
+        REPORT_PATH.write_text(json.dumps(report, indent=2, default=str))
+        del world
+        torch.cuda.empty_cache()
+    for name, arm, seed, shuffled in EXTENSION_ARMS:
+        world = load_xtopo_for_eval(name, arm, seed, device)
+        rows = attach_strata(symmetric_eval(world, encoder, anchors, device), strata)
+        (ARTIFACTS / f"xtopo_rows_{name}.json").write_text(json.dumps(rows))
+        out = {k: seed_level_summary(rows, k)
+               for k in ("retrieval_all", "retrieval_changed", "separation_all")}
+        extension["evaluation"][name] = {
+            k: {"mean": v["mean"], "ci95": v["ci95"]} for k, v in out.items()}
+        del world
+        torch.cuda.empty_cache()
+    extension["note"] = (
+        "post-registration extension (committed AFTER the registered readout "
+        "at cb27d20): consistency data only, never merged into the "
+        "registered H-T/H-C criteria")
+    REPORT_PATH.write_text(json.dumps(report, indent=2, default=str))
+    print(json.dumps(extension["evaluation"], indent=2))
+
+
 if __name__ == "__main__":
-    main()
+    run_extension() if "--extension" in sys.argv else main()
