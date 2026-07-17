@@ -64,3 +64,48 @@ train minutes, loss tails.
   temporal path.
 - If several arms land "unresolved", the screen scale (24 anchors, 2 seeds)
   was insufficient and the confirmation must carry the factor arms.
+
+## OUTCOMES (appended 2026-07-18; results committed at 5d344e2; companion
+## verification + corrections adopted)
+
+All three registered ordering calls: UNRESOLVED at the 75/25 rule.
+Independent companion recomputation matches exactly:
+
+| arm | mean separation | gap recovered |
+|---|---:|---:|
+| pooled-64 anchor | 0.003981 | 0% |
+| MS-PC (3M pooled+bypass) | 0.007198 | 52.97% |
+| MS-FB (flattened+bypass) | 0.006029 | 33.72% |
+| MS-FF (full-grid, no recurrent cache) | 0.007191 | 52.86% |
+| full-grid recurrent/no-bypass anchor | 0.010055 | 100% |
+
+Pairwise bypass result (the only clean single-factor pair): restoring the
+unit-strength bypass hurt both matched runs (505: 0.006929 -> 0.004659;
+606: 0.012439 -> 0.007399).
+
+LICENSED CONCLUSION (companion wording adopted): "the full-grid
+recurrent/no-bypass combination remains the best tested candidate, while its
+gain appears distributed across capacity, global spatial mixing, explicit
+recurrence, and bypass removal. No single mechanism was identified at the
+registered resolution." NOT licensed: any single factor proven necessary.
+
+Interpretation corrections on record:
+1. MS-FF removes the RECURRENT CACHE, not all temporal state — the world
+   model remains autoregressively recursive through generated tokens. Label:
+   "explicit recurrent-cache control". It is also not operator-exact (width
+   332 + residual GELU vs width 261 + GRU cells); a cleaner future control
+   resets the exact flattened GRU's cache every step.
+2. The anchors are not fully paired (low anchor = pooled seeds 101/202/303;
+   high anchor averages GRU+Mamba full-grid arms; mechanism arms are
+   GRU-only, seeds 505/606). Percentages are screening heuristics, not
+   paired effect sizes.
+3. The bypass is a FIXED unit-scale residual; its negative result may
+   involve scale/normalization as well as information bypass. Any revisit
+   should use a normalized or learnably gated residual control.
+
+CONSEQUENCE (2026-07-18 tri-party directive): pivot to the one-week
+vertical-slice sprint — full-grid/no-bypass Mamba-2 as SPRINT CANDIDATE
+(not confirmed default), identically shaped GRU as first-class control,
+architecture moratorium during assembly, Phase E task-head validation as
+the binding gate before any planner. Confirmation seeds 115-130 remain
+reserved; fresh-seed topology confirmation deferred until after the sprint.

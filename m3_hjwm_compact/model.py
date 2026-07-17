@@ -45,6 +45,21 @@ class ModelConfig:
     global_hidden: int = 192
     mamba_d_state: int = 32
     mamba_headdim: int = 16
+    # 2026-07-18 sprint contract: topology is an explicit axis, no longer
+    # conflated with the backend name. "pooled" preserves every legacy
+    # backend exactly; "full_grid" selects the sprint-candidate family
+    # (flatten 66x64 -> stem -> recurrent core -> out -> reshape) with
+    # temporal_backend restricted to "gru"/"mamba2". dense_bypass applies to
+    # full_grid only (the pooled family's bypass is inherent to its classes);
+    # the sprint candidate runs bypass OFF (mechanism screen: restoring the
+    # unit-scale bypass hurt pairwise in both seeds).
+    temporal_topology: Literal["pooled", "full_grid"] = "pooled"
+    dense_bypass: bool = False
+    flat_hidden: int = 256        # full-grid Mamba-2 width (exploratory arm)
+    flat_gru_hidden: int = 261    # mechanically matched GRU control width
+    flat_depth: int = 2
+    flat_d_state: int = 64
+    flat_headdim: int = 64
 
     action_dim: int = 17
     # Mixtures remain an experimental control until the mode-validity gates pass.
@@ -89,6 +104,16 @@ class ModelConfig:
             raise ValueError("rollout_steps must be at least 2")
         if self.variance_target <= 0:
             raise ValueError("variance_target must be positive")
+        if self.temporal_topology == "full_grid":
+            if self.temporal_backend not in ("gru", "mamba2"):
+                raise ValueError(
+                    "full_grid topology takes temporal_backend 'gru' or "
+                    f"'mamba2', not {self.temporal_backend!r} (topology and "
+                    "backend are separate axes)")
+        elif self.dense_bypass:
+            raise ValueError(
+                "dense_bypass is a full_grid switch; the pooled family's "
+                "bypass is inherent to its classes")
 
 
 @dataclass(frozen=True)
@@ -510,6 +535,128 @@ class GlobalMambaTemporal(nn.Module):
         return out, TemporalState(None, out[:, -1])
 
 
+class FullGridGRUTemporal(nn.Module):
+    """Production full-grid temporal core, GRU control (2026-07-18 sprint
+    promotion of verification/exploratory_topology.FlattenedGRUTemporal —
+    attribute names kept identical so verification checkpoints load
+    strict=True). One global recurrent state receives the COMPLETE flattened
+    token grid through a learned stem; per-token context is emitted from the
+    state via the output projection. With bypass=False (sprint contract) the
+    state carries the entire temporal context; bypass=True restores the
+    unit-scale dense residual (mechanism-screen control, hurt pairwise)."""
+
+    def __init__(self, dim: int, streams: int, hidden: int, depth: int,
+                 bypass: bool = False):
+        super().__init__()
+        self.dim, self.streams, self.hidden, self.depth = dim, streams, hidden, depth
+        self.bypass = bypass
+        self.stem = nn.Linear(dim * streams, hidden)
+        self.cells = nn.ModuleList([nn.GRUCell(hidden, hidden) for _ in range(depth)])
+        self.norms = nn.ModuleList([nn.LayerNorm(hidden) for _ in range(depth)])
+        self.final_norm = nn.LayerNorm(hidden)
+        self.out_proj = nn.Linear(hidden, dim * streams)
+
+    def init_state(self, batch: int, streams: int, device, dtype) -> TemporalState:
+        if streams != self.streams:
+            raise ValueError("full-grid core is stream-count-specific")
+        cache = [torch.zeros(batch, self.hidden, device=device, dtype=dtype)
+                 for _ in self.cells]
+        output = torch.zeros(batch, streams, self.dim, device=device, dtype=dtype)
+        return TemporalState(cache, output)
+
+    def step(self, x: Tensor, state: TemporalState, reset: Tensor | None = None):
+        b, s, d = x.shape
+        y = self.stem(x.reshape(b, s * d))
+        old = list(state.cache)
+        if reset is not None:
+            keep = (~reset.bool())[:, None].to(y.dtype)
+            old = [h * keep for h in old]
+        new = []
+        for cell, norm, h in zip(self.cells, self.norms, old):
+            h = cell(y, h)
+            y = norm(h)
+            new.append(h)
+        out = self.out_proj(self.final_norm(y)).reshape(b, s, d)
+        if self.bypass:
+            out = x + out
+        return out, TemporalState(new, out)
+
+    def sequence(self, x: Tensor, resets: Tensor | None = None):
+        state = self.init_state(x.shape[0], x.shape[2], x.device, x.dtype)
+        outputs = []
+        for index in range(x.shape[1]):
+            output, state = self.step(
+                x[:, index], state, None if resets is None else resets[:, index])
+            outputs.append(output)
+        return torch.stack(outputs, 1), state
+
+
+class FullGridMambaTemporal(nn.Module):
+    """Production full-grid temporal core, official Mamba-2 (sprint
+    candidate; promotion of FlattenedMambaTemporal, attribute names kept for
+    strict checkpoint compatibility). ONE global Mamba sequence state
+    receives the complete grid — not 66 dense states."""
+
+    def __init__(self, dim: int, streams: int, hidden: int, depth: int,
+                 d_state: int, headdim: int, bypass: bool = False):
+        super().__init__()
+        from mamba_ssm.modules.mamba2 import Mamba2
+        self.dim, self.streams, self.hidden, self.depth = dim, streams, hidden, depth
+        self.bypass = bypass
+        self.stem = nn.Linear(dim * streams, hidden)
+        self.layers = nn.ModuleList([
+            Mamba2(d_model=hidden, d_state=d_state, headdim=headdim,
+                   use_mem_eff_path=False)
+            for _ in range(depth)
+        ])
+        self.norms = nn.ModuleList([nn.LayerNorm(hidden) for _ in self.layers])
+        self.final_norm = nn.LayerNorm(hidden)
+        self.out_proj = nn.Linear(hidden, dim * streams)
+
+    def init_state(self, batch: int, streams: int, device, dtype) -> TemporalState:
+        if streams != self.streams:
+            raise ValueError("full-grid core is stream-count-specific")
+        caches = [
+            tuple(layer.allocate_inference_cache(batch, max_seqlen=1,
+                                                 device=device, dtype=dtype))
+            for layer in self.layers
+        ]
+        output = torch.zeros(batch, streams, self.dim, device=device, dtype=dtype)
+        return TemporalState(caches, output)
+
+    def step(self, x: Tensor, state: TemporalState, reset: Tensor | None = None):
+        if state.cache is None:
+            raise RuntimeError("full-grid Mamba step requires official caches")
+        b, s, d = x.shape
+        if reset is not None:
+            rows = reset.bool()
+            for cache in state.cache:
+                for tensor in cache:
+                    tensor[rows] = 0
+        y = self.stem(x.reshape(b, s * d))
+        next_caches = []
+        for layer, norm, cache in zip(self.layers, self.norms, state.cache):
+            update, *next_cache = layer.step(norm(y)[:, None], *cache)
+            y = y + update[:, 0]
+            next_caches.append(tuple(next_cache))
+        out = self.out_proj(self.final_norm(y)).reshape(b, s, d)
+        if self.bypass:
+            out = x + out
+        return out, TemporalState(next_caches, out)
+
+    def sequence(self, x: Tensor, resets: Tensor | None = None):
+        if resets is not None and bool(resets[:, 1:].any()):
+            raise NotImplementedError("segment sequences at episode boundaries")
+        b, t, s, d = x.shape
+        y = self.stem(x.reshape(b, t, s * d))
+        for layer, norm in zip(self.layers, self.norms):
+            y = y + layer(norm(y))
+        out = self.out_proj(self.final_norm(y)).reshape(b, t, s, d)
+        if self.bypass:
+            out = x + out
+        return out, TemporalState(None, out[:, -1])
+
+
 class GRUTemporal(nn.Module):
     """CPU-safe reference backend; not the research claim."""
     def __init__(self, dim: int, depth: int):
@@ -645,6 +792,20 @@ class TemporalModel(nn.Module):
                 "mamba3, or gru without silent substitution"
             )
         wanted = cfg.temporal_backend
+        if cfg.temporal_topology == "full_grid":
+            grid = cfg.image_size // cfg.patch_size
+            streams = cfg.registers + grid * grid
+            if wanted == "mamba2":
+                self.impl = FullGridMambaTemporal(
+                    cfg.token_dim, streams, cfg.flat_hidden, cfg.flat_depth,
+                    cfg.flat_d_state, cfg.flat_headdim, bypass=cfg.dense_bypass)
+                self.name = "full_grid_mamba2"
+            else:
+                self.impl = FullGridGRUTemporal(
+                    cfg.token_dim, streams, cfg.flat_gru_hidden, cfg.flat_depth,
+                    bypass=cfg.dense_bypass)
+                self.name = "full_grid_gru"
+            return
         if wanted in ("mamba3", "mamba2"):
             self.impl = MambaSequenceAdapter(cfg, wanted)
             self.name = wanted

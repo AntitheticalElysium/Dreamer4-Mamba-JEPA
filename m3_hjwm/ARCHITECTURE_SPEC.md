@@ -36,10 +36,31 @@
 >   the step-4 comparator inside the global topology, never a silent default.
 
 
-Status, 2026-07-13: this document is a falsifiable target, not a claim that the
-model is ready for policy training. The representation objective still fails at
-least one binding Phase B gate. Mamba-3, predictor mixtures, reliability
-weighting, and online policy training are all off the critical path or no-go.
+> **CURRENT SYSTEM CONTRACT (2026-07-18, tri-party sprint directive — this
+> block supersedes the historical status line below):**
+> - VALIDATED OPERATIONAL BASELINE: pooled global GRU-64 (step-4 winner via
+>   parity tie-break; all causal gates passed on the blind 79-94 set).
+> - RESEARCH / SPRINT CANDIDATE: full-grid no-bypass Mamba-2 —
+>   66x64 tokens = 4,224-dim flattened input -> learned 4,224->256 stem ->
+>   2 Mamba-2 blocks (d_state=64, headdim=64) -> learned 256->4,224 output
+>   -> reshape to 66x64; NO dense residual bypass; ONE global Mamba sequence
+>   state receiving the complete grid (not 66 dense states). Chosen as the
+>   research hypothesis, NOT as proven superior.
+> - PARAMETER-MATCHED CONTROL: same adapter with 2 width-261 GRU cells.
+> - EXPERIMENTAL/DEFERRED: predictor mixtures, reliability weighting
+>   (shadow-only), Mamba-3 (hardware NO-GO), AdaLN conditioning, LeJEPA-pure
+>   encoder, long-context scaling.
+> - GATES OPEN: Phase E task-head validation (reward/continuation +
+>   candidate ranking) is the BINDING gate before any planner; actor/critic
+>   NO-GO until the planner gate passes; fresh-seed topology confirmation
+>   deferred (seeds 115-130 reserved).
+> - The step-1 representation gates PASSED (2026-07-13, corrected); the
+>   historical claim below that a Phase B gate still fails is obsolete.
+
+Status, 2026-07-13 (HISTORICAL — see the contract block above): this document
+is a falsifiable target, not a claim that the model is ready for policy
+training. Mamba-3, predictor mixtures, reliability weighting, and online
+policy training are all off the critical path or no-go.
 
 ## 1. Scope
 
