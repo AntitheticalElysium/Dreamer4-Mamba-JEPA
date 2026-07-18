@@ -82,14 +82,21 @@ def clone_world_state(state: WorldState) -> WorldState:
                       state.tokens.clone(), state.revision)
 
 
-def collect_terminal_enriched():
-    """Random-policy episodes run to termination on eval-only seeds 900-915."""
+def collect_terminal_enriched(seeds=range(900, 916), out_path=None):
+    """Random-policy episodes run to termination. CANONICALIZED after every
+    reset (2026-07-18 companion BLOCKER 4: pinned Crafter seeds its world
+    with Python hash(), so uncanonicalized collection is not process-
+    reproducible — the committed 900-915 tensor remains valid as a
+    hash-pinned artifact, but regeneration claims were false)."""
     import crafter
+    from crafter_canonical import canonicalize
+    out_path = out_path or TERMINAL_SET
     episodes = []
-    for env_seed in range(900, 916):
+    for env_seed in seeds:
         env = crafter.Env(seed=env_seed, length=10_000)
         rng = np.random.default_rng(env_seed)
         obs = env.reset()
+        canonicalize(env)
         frames = [np.ascontiguousarray(obs.transpose(2, 0, 1))]
         actions, rewards, dones = [], [], []
         done = False
@@ -108,7 +115,7 @@ def collect_terminal_enriched():
             "continues": (1.0 - np.asarray(dones, dtype=np.float32)),
         })
         del env
-    torch.save(episodes, TERMINAL_SET)
+    torch.save(episodes, out_path)
     return episodes
 
 

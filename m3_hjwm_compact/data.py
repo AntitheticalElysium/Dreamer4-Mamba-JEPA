@@ -1,6 +1,7 @@
 """Minimal raw-frame replay and Crafter adapter."""
 from __future__ import annotations
 from dataclasses import dataclass
+from pathlib import Path
 import numpy as np
 import torch
 
@@ -96,6 +97,18 @@ class CrafterAdapter:
     def reset(self):
         result = self.env.reset()
         obs = result[0] if isinstance(result, tuple) else result
+        # Pinned Crafter seeds its world with Python hash((seed, episode)),
+        # and some object sets iterate in process-hash order; canonicalize so
+        # collection is process-reproducible (2026-07-18 companion BLOCKER 4).
+        try:
+            import sys as _sys
+            _verification = str(Path(__file__).resolve().parent / "verification")
+            if _verification not in _sys.path:
+                _sys.path.insert(0, _verification)
+            from crafter_canonical import canonicalize
+            canonicalize(self.env)
+        except (ImportError, AttributeError):
+            pass   # non-Crafter envs: adapter stays generic
         return self.chw(obs)
 
     def step(self, action: int):

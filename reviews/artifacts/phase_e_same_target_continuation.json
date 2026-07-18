@@ -1,0 +1,956 @@
+{
+  "protocol": "reviews/2026-07-18-phase-e-depth-diagnostic-protocol.md#continuation-depth-supplement",
+  "head": "24d5a7d4f3a08f22acf80ccc74b5ed0a8b6d7d21",
+  "source_digest": "92d18ee69d2763451ee9fa47d0787035f1d5d73a690e6158feaa963b29d6e217",
+  "script_sha256": "5f4ee121e65d48dbad0a613d83fc2b16d234553823f52e29ae8bfc72285350f0",
+  "versions": {
+    "python": "3.12.12",
+    "torch": "2.12.1+cu130",
+    "cuda": "13.0",
+    "numpy": "2.1.0",
+    "mamba_ssm": "2.3.2.post1",
+    "crafter": "1.8.3",
+    "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+    "nvidia_driver": "610.43.03",
+    "gpu_total_mib": 5795,
+    "mamba_source_sha256": {
+      "mamba2.py": "605e4439ff0baec8d8acaf4a191d9f0570eea9900065a065909124c472b08707",
+      "ssd_combined.py": "0b7c4cfa9e994278860e7254c27baa31ca32019a808a423ed24b80eabcbe919d"
+    }
+  },
+  "hashes": {
+    "heldout": "709e9646ce5ee1cf36ef4118f6b5d4482751a300b8c97186929af6f0271b27ad",
+    "checkpoints": {
+      "fullgrid_mamba2_s505": "6524eff4abc286b85556686e0bd76c848a04993532e46adf730005e2a02a989b",
+      "fullgrid_mamba2_s606": "9e29e16e41b237d911278f611ff61b2ab4c391741523d45aee70aefd672bbbaf",
+      "fullgrid_mamba2_s707": "4fc0c8a89dfd9673e7f7b875834cedaea158fecdf4ef5a89761756ae6b1e78ec",
+      "fullgrid_gru_s505": "3aa852c22b21cdd87456eeab71c0e0b98e0ade34074a88a7f92fb8b08da420b7",
+      "fullgrid_gru_s606": "76bab037bfa8a7b01f579c3d5f654479253cd9ff152485e6e6c7bea99308164b",
+      "fullgrid_gru_s707": "ca366b1e0308848a75a62de7b20b5dbff9db2a28667fbdf9daed885c7d06a5a5"
+    },
+    "raw_rows": "21be653be57c6b05c6d1e36243d8ac35b6e4380982a02f6938c9a76ad624bc18"
+  },
+  "construction": {
+    "history": 8,
+    "max_depth": 8,
+    "horizons": [
+      0,
+      1,
+      2,
+      4,
+      8
+    ],
+    "n_targets": 3262,
+    "n_terminals": 14,
+    "n_episodes": 20,
+    "bootstrap_draws": 1000
+  },
+  "checkpoints": {
+    "fullgrid_mamba2_s505": {
+      "metrics": {
+        "k0": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.9467584447572133,
+          "terminal_auroc_ci95": [
+            0.8644707085840618,
+            0.9940035266919376
+          ],
+          "terminal_average_precision": 0.5489066705694974,
+          "terminal_average_precision_ci95": [
+            0.2529404717847311,
+            0.8066049919070076
+          ],
+          "brier": 0.002837267005816102,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.3360673270632417,
+          "brier_skill_ci95": [
+            0.09700184635606449,
+            0.5633055656408698
+          ],
+          "binary_nll": 0.01857028715312481,
+          "binary_nll_terminal": 4.2738542556762695,
+          "binary_nll_nonterminal": 0.00022854594863019884,
+          "predicted_termination_terminal_mean": 0.2771991789340973,
+          "predicted_termination_nonterminal_mean": 0.00022131351579446346,
+          "terminal_recall_at_0_5": 0.35714285714285715,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k1": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.8513040992258972,
+          "terminal_auroc_ci95": [
+            0.7183870632397036,
+            0.9529083381469465
+          ],
+          "terminal_average_precision": 0.31201975520718905,
+          "terminal_average_precision_ci95": [
+            0.0888133873380377,
+            0.5690708262796167
+          ],
+          "brier": 0.0042245592921972275,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.011434969955689711,
+          "brier_skill_ci95": [
+            -0.0005681214955996105,
+            0.026285315330824826
+          ],
+          "binary_nll": 0.0319284163415432,
+          "binary_nll_terminal": 7.407052040100098,
+          "binary_nll_nonterminal": 0.00013909507833886892,
+          "predicted_termination_terminal_mean": 0.008031981065869331,
+          "predicted_termination_nonterminal_mean": 0.00013874184514861554,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k2": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.8146991555242787,
+          "terminal_auroc_ci95": [
+            0.6677038884586451,
+            0.9373469545732374
+          ],
+          "terminal_average_precision": 0.29526620463101627,
+          "terminal_average_precision_ci95": [
+            0.08712062479062144,
+            0.5409748524820797
+          ],
+          "brier": 0.004244115203619003,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.00685880263856431,
+          "brier_skill_ci95": [
+            -0.0019289645191880144,
+            0.016766223451856584
+          ],
+          "binary_nll": 0.03352445363998413,
+          "binary_nll_terminal": 7.789612770080566,
+          "binary_nll_nonterminal": 9.304222476202995e-05,
+          "predicted_termination_terminal_mean": 0.005642954725772142,
+          "predicted_termination_nonterminal_mean": 9.291686728829518e-05,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k4": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.5684707072484166,
+          "terminal_auroc_ci95": [
+            0.4140924651298299,
+            0.7277060419707363
+          ],
+          "terminal_average_precision": 0.14787275526283974,
+          "terminal_average_precision_ci95": [
+            0.003777073925095608,
+            0.3389006531367618
+          ],
+          "brier": 0.0042847758159041405,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": -0.0026559553811700276,
+          "brier_skill_ci95": [
+            -0.005018645235939317,
+            0.0005119321374267616
+          ],
+          "binary_nll": 0.04238605499267578,
+          "binary_nll_terminal": 9.864645004272461,
+          "binary_nll_nonterminal": 4.8730715207057074e-05,
+          "predicted_termination_terminal_mean": 0.0008277467568404973,
+          "predicted_termination_nonterminal_mean": 4.8723584768595174e-05,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k8": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.4188951442646024,
+          "terminal_auroc_ci95": [
+            0.27022055077856405,
+            0.5691969057056434
+          ],
+          "terminal_average_precision": 0.003953358093303891,
+          "terminal_average_precision_ci95": [
+            0.0025187148317084435,
+            0.008096638736390629
+          ],
+          "brier": 0.004291575402021408,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": -0.004247087754840617,
+          "brier_skill_ci95": [
+            -0.005766418177345134,
+            -0.0028528189387664327
+          ],
+          "binary_nll": 0.04690263792872429,
+          "binary_nll_terminal": 10.91727352142334,
+          "binary_nll_nonterminal": 4.758982322528027e-05,
+          "predicted_termination_terminal_mean": 3.239086800022051e-05,
+          "predicted_termination_nonterminal_mean": 4.758575596497394e-05,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        }
+      },
+      "peak_allocated_mib": 145.96044921875,
+      "peak_reserved_mib": 188.0
+    },
+    "fullgrid_mamba2_s606": {
+      "metrics": {
+        "k0": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.986750087966221,
+          "terminal_auroc_ci95": [
+            0.9714267653475712,
+            0.9967980843855816
+          ],
+          "terminal_average_precision": 0.5599337874640461,
+          "terminal_average_precision_ci95": [
+            0.32405176267385943,
+            0.7710807931527167
+          ],
+          "brier": 0.002548722317442298,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.403588024206308,
+          "brier_skill_ci95": [
+            0.1583333060864823,
+            0.6404785737672631
+          ],
+          "binary_nll": 0.013550321571528912,
+          "binary_nll_terminal": 2.9549195766448975,
+          "binary_nll_nonterminal": 0.0008720061159692705,
+          "predicted_termination_terminal_mean": 0.36924678087234497,
+          "predicted_termination_nonterminal_mean": 0.0008130569476634264,
+          "terminal_recall_at_0_5": 0.42857142857142855,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k1": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.9117478888106967,
+          "terminal_auroc_ci95": [
+            0.8267512913958629,
+            0.9714265619927122
+          ],
+          "terminal_average_precision": 0.1589408416700049,
+          "terminal_average_precision_ci95": [
+            0.040048889926005984,
+            0.3867490142573528
+          ],
+          "brier": 0.0041490099392831326,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.029113843222137836,
+          "brier_skill_ci95": [
+            -0.0014890322399720877,
+            0.07753805359103001
+          ],
+          "binary_nll": 0.02768632397055626,
+          "binary_nll_terminal": 6.346094608306885,
+          "binary_nll_nonterminal": 0.0004518076893873513,
+          "predicted_termination_terminal_mean": 0.019541773945093155,
+          "predicted_termination_nonterminal_mean": 0.00044345378410071135,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k2": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.8611123328641802,
+          "terminal_auroc_ci95": [
+            0.7691225893856389,
+            0.9396928093002811
+          ],
+          "terminal_average_precision": 0.09909265502069278,
+          "terminal_average_precision_ci95": [
+            0.021573346590692707,
+            0.3573898995122972
+          ],
+          "brier": 0.004252755548804998,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.0048369247318764685,
+          "brier_skill_ci95": [
+            -0.0031626578313528387,
+            0.01544348590633188
+          ],
+          "binary_nll": 0.03290509805083275,
+          "binary_nll_terminal": 7.621078968048096,
+          "binary_nll_nonterminal": 0.0001974468323169276,
+          "predicted_termination_terminal_mean": 0.004852175712585449,
+          "predicted_termination_nonterminal_mean": 0.00019637777586467564,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k4": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.7878694581280788,
+          "terminal_auroc_ci95": [
+            0.6595291290750669,
+            0.893127439866174
+          ],
+          "terminal_average_precision": 0.03135950418308255,
+          "terminal_average_precision_ci95": [
+            0.010460640895904955,
+            0.11519068757238747
+          ],
+          "brier": 0.00428597629070282,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": -0.002936871643279604,
+          "brier_skill_ci95": [
+            -0.005014822434469662,
+            -0.0005616678239551203
+          ],
+          "binary_nll": 0.0376899354159832,
+          "binary_nll_terminal": 8.74885082244873,
+          "binary_nll_nonterminal": 0.00014182804443407804,
+          "predicted_termination_terminal_mean": 0.0008830300648696721,
+          "predicted_termination_nonterminal_mean": 0.0001409481919836253,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k8": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.6467276565798734,
+          "terminal_auroc_ci95": [
+            0.49207071443053,
+            0.79629056709404
+          ],
+          "terminal_average_precision": 0.009704553397817027,
+          "terminal_average_precision_ci95": [
+            0.004741894599980539,
+            0.03067859606171484
+          ],
+          "brier": 0.004290338605642319,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": -0.003957672086817743,
+          "brier_skill_ci95": [
+            -0.005544952389677555,
+            -0.002399968652412765
+          ],
+          "binary_nll": 0.042706143110990524,
+          "binary_nll_terminal": 9.923332214355469,
+          "binary_nll_nonterminal": 0.00011723028728738427,
+          "predicted_termination_terminal_mean": 0.00021729724539909512,
+          "predicted_termination_nonterminal_mean": 0.00011704979260684922,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        }
+      },
+      "peak_allocated_mib": 147.4892578125,
+      "peak_reserved_mib": 188.0
+    },
+    "fullgrid_mamba2_s707": {
+      "metrics": {
+        "k0": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.928054627023223,
+          "terminal_auroc_ci95": [
+            0.8350772439905714,
+            0.986702135646559
+          ],
+          "terminal_average_precision": 0.46566888155654945,
+          "terminal_average_precision_ci95": [
+            0.19969633562179306,
+            0.7117792066344095
+          ],
+          "brier": 0.0031995102763175964,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.2513008449717079,
+          "brier_skill_ci95": [
+            0.057943726810628336,
+            0.4511712447934523
+          ],
+          "binary_nll": 0.025530027225613594,
+          "binary_nll_terminal": 5.926459789276123,
+          "binary_nll_nonterminal": 9.498583676759154e-05,
+          "predicted_termination_terminal_mean": 0.1838495433330536,
+          "predicted_termination_nonterminal_mean": 9.31990725803189e-05,
+          "terminal_recall_at_0_5": 0.21428571428571427,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k1": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.8566480471498944,
+          "terminal_auroc_ci95": [
+            0.7458862922607948,
+            0.950911114195747
+          ],
+          "terminal_average_precision": 0.06684208388527048,
+          "terminal_average_precision_ci95": [
+            0.019641512257460195,
+            0.20564469637462404
+          ],
+          "brier": 0.004286587238311768,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": -0.0030798360094113075,
+          "brier_skill_ci95": [
+            -0.005089623528498249,
+            -0.0009825406898324176
+          ],
+          "binary_nll": 0.04079881310462952,
+          "binary_nll_terminal": 9.49247932434082,
+          "binary_nll_nonterminal": 5.880661774426699e-05,
+          "predicted_termination_terminal_mean": 0.0007288540946319699,
+          "predicted_termination_nonterminal_mean": 5.829826113767922e-05,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k2": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.8747580928923293,
+          "terminal_auroc_ci95": [
+            0.765866080678429,
+            0.9588476024044186
+          ],
+          "terminal_average_precision": 0.08747916810744595,
+          "terminal_average_precision_ci95": [
+            0.021380751221514404,
+            0.33658503461042893
+          ],
+          "brier": 0.0042829751037061214,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": -0.0022345809880057743,
+          "brier_skill_ci95": [
+            -0.004869487749127632,
+            0.0011241079257635496
+          ],
+          "binary_nll": 0.041128434240818024,
+          "binary_nll_terminal": 9.574456214904785,
+          "binary_nll_nonterminal": 3.649695645435713e-05,
+          "predicted_termination_terminal_mean": 0.0010787972714751959,
+          "predicted_termination_nonterminal_mean": 3.631314029917121e-05,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k4": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.7252265130190007,
+          "terminal_auroc_ci95": [
+            0.5678624598649221,
+            0.8546343455843066
+          ],
+          "terminal_average_precision": 0.023703405076653465,
+          "terminal_average_precision_ci95": [
+            0.007336331553015944,
+            0.10759733233869774
+          ],
+          "brier": 0.004291522316634655,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": -0.004234665546198002,
+          "brier_skill_ci95": [
+            -0.005724271321128493,
+            -0.002829417624154401
+          ],
+          "binary_nll": 0.048812463879585266,
+          "binary_nll_terminal": 11.371195793151855,
+          "binary_nll_nonterminal": 9.079739356820937e-06,
+          "predicted_termination_terminal_mean": 3.7789344787597656e-05,
+          "predicted_termination_nonterminal_mean": 9.079211849893909e-06,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k8": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.6394484517945109,
+          "terminal_auroc_ci95": [
+            0.487088467380676,
+            0.7847733797114633
+          ],
+          "terminal_average_precision": 0.021960220921481945,
+          "terminal_average_precision_ci95": [
+            0.004699378845395096,
+            0.10994625950534083
+          ],
+          "brier": 0.004291661083698273,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": -0.004267137635456608,
+          "brier_skill_ci95": [
+            -0.005783239645344001,
+            -0.0028617924817613606
+          ],
+          "binary_nll": 0.0510416179895401,
+          "binary_nll_terminal": 11.891188621520996,
+          "binary_nll_nonterminal": 6.502399173768936e-06,
+          "predicted_termination_terminal_mean": 2.148747444152832e-05,
+          "predicted_termination_nonterminal_mean": 6.502228188765002e-06,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        }
+      },
+      "peak_allocated_mib": 147.4892578125,
+      "peak_reserved_mib": 188.0
+    },
+    "fullgrid_gru_s505": {
+      "metrics": {
+        "k0": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.9337944229415904,
+          "terminal_auroc_ci95": [
+            0.8603730829958623,
+            0.9871266838231005
+          ],
+          "terminal_average_precision": 0.42024434515829606,
+          "terminal_average_precision_ci95": [
+            0.1613969386483735,
+            0.6890212399345318
+          ],
+          "brier": 0.0036457690875977278,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.1468743652687251,
+          "brier_skill_ci95": [
+            0.035666470568108406,
+            0.2806907288952665
+          ],
+          "binary_nll": 0.019572636112570763,
+          "binary_nll_terminal": 4.387446403503418,
+          "binary_nll_nonterminal": 0.000745594035834074,
+          "predicted_termination_terminal_mean": 0.09250783920288086,
+          "predicted_termination_nonterminal_mean": 0.0007363369804807007,
+          "terminal_recall_at_0_5": 0.07142857142857142,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k1": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.93481703026038,
+          "terminal_auroc_ci95": [
+            0.8837792040791519,
+            0.9732298871282258
+          ],
+          "terminal_average_precision": 0.13014062894166242,
+          "terminal_average_precision_ci95": [
+            0.030991960208453188,
+            0.3184850751581462
+          ],
+          "brier": 0.004166307393461466,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.025066164606032948,
+          "brier_skill_ci95": [
+            -0.00012800305820303003,
+            0.05618454004483726
+          ],
+          "binary_nll": 0.02301926724612713,
+          "binary_nll_terminal": 5.054581165313721,
+          "binary_nll_nonterminal": 0.0013314990792423487,
+          "predicted_termination_terminal_mean": 0.020410090684890747,
+          "predicted_termination_nonterminal_mean": 0.001308221835643053,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k2": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.930286769880366,
+          "terminal_auroc_ci95": [
+            0.8703709266178192,
+            0.9750405470648238
+          ],
+          "terminal_average_precision": 0.13966107284133583,
+          "terminal_average_precision_ci95": [
+            0.03638511967884476,
+            0.3201933052581302
+          ],
+          "brier": 0.004188768099993467,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.019810262749326846,
+          "brier_skill_ci95": [
+            0.0024079903172174316,
+            0.04229788801101638
+          ],
+          "binary_nll": 0.02432393655180931,
+          "binary_nll_terminal": 5.4866509437561035,
+          "binary_nll_nonterminal": 0.0007794224075041711,
+          "predicted_termination_terminal_mean": 0.014267615042626858,
+          "predicted_termination_nonterminal_mean": 0.0007707477197982371,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k4": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.9008620689655172,
+          "terminal_auroc_ci95": [
+            0.8259018855663967,
+            0.9593210831928783
+          ],
+          "terminal_average_precision": 0.08366527225639743,
+          "terminal_average_precision_ci95": [
+            0.029958487386421435,
+            0.2887966550158095
+          ],
+          "brier": 0.004251687787473202,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.005086785472379507,
+          "brier_skill_ci95": [
+            -0.0018781979144191553,
+            0.013763060025289686
+          ],
+          "binary_nll": 0.02978949248790741,
+          "binary_nll_terminal": 6.874161243438721,
+          "binary_nll_nonterminal": 0.00028788764029741287,
+          "predicted_termination_terminal_mean": 0.005033391062170267,
+          "predicted_termination_nonterminal_mean": 0.00028652179753407836,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k8": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.6549744897959184,
+          "terminal_auroc_ci95": [
+            0.4783230008256813,
+            0.8003497166939466
+          ],
+          "terminal_average_precision": 0.009402679561122082,
+          "terminal_average_precision_ci95": [
+            0.0048228027732139704,
+            0.02104675227408848
+          ],
+          "brier": 0.004291420802474022,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": -0.00421091079633773,
+          "brier_skill_ci95": [
+            -0.005697306785264861,
+            -0.0028298300466127026
+          ],
+          "binary_nll": 0.04479316249489784,
+          "binary_nll_terminal": 10.418914794921875,
+          "binary_nll_nonterminal": 7.711824582656845e-05,
+          "predicted_termination_terminal_mean": 8.086221350822598e-05,
+          "predicted_termination_nonterminal_mean": 7.698202534811571e-05,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        }
+      },
+      "peak_allocated_mib": 94.3212890625,
+      "peak_reserved_mib": 144.0
+    },
+    "fullgrid_gru_s606": {
+      "metrics": {
+        "k0": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.9390064215341309,
+          "terminal_auroc_ci95": [
+            0.8562222953029914,
+            0.9878085310409895
+          ],
+          "terminal_average_precision": 0.3797346730499665,
+          "terminal_average_precision_ci95": [
+            0.12477908206874853,
+            0.6299152318901945
+          ],
+          "brier": 0.003598479786887765,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.15794026486764023,
+          "brier_skill_ci95": [
+            0.025985332575168888,
+            0.31271420060267774
+          ],
+          "binary_nll": 0.021231409162282944,
+          "binary_nll_terminal": 4.814467430114746,
+          "binary_nll_nonterminal": 0.0005709089455194771,
+          "predicted_termination_terminal_mean": 0.10739608108997345,
+          "predicted_termination_nonterminal_mean": 0.0005595541442744434,
+          "terminal_recall_at_0_5": 0.07142857142857142,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k1": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.9551482230823364,
+          "terminal_auroc_ci95": [
+            0.9139576079981946,
+            0.9846371458012059
+          ],
+          "terminal_average_precision": 0.1963077503679091,
+          "terminal_average_precision_ci95": [
+            0.0614266776154712,
+            0.4135433526100787
+          ],
+          "brier": 0.003964459989219904,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.07229932466771682,
+          "brier_skill_ci95": [
+            0.0002556725263133109,
+            0.16844688046125958
+          ],
+          "binary_nll": 0.02305733971297741,
+          "binary_nll_terminal": 5.149322986602783,
+          "binary_nll_nonterminal": 0.0009613665170036256,
+          "predicted_termination_terminal_mean": 0.05328693985939026,
+          "predicted_termination_nonterminal_mean": 0.0009189630509354174,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k2": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.9422611717100634,
+          "terminal_auroc_ci95": [
+            0.8790632718849872,
+            0.9839641207235129
+          ],
+          "terminal_average_precision": 0.18548775370414808,
+          "terminal_average_precision_ci95": [
+            0.05735685669310254,
+            0.3943664288125784
+          ],
+          "brier": 0.004014320205897093,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.060631819683578,
+          "brier_skill_ci95": [
+            -0.0036018206315117703,
+            0.1583022888986856
+          ],
+          "binary_nll": 0.025635378435254097,
+          "binary_nll_terminal": 5.838078498840332,
+          "binary_nll_nonterminal": 0.0005817404598928988,
+          "predicted_termination_terminal_mean": 0.04234810918569565,
+          "predicted_termination_nonterminal_mean": 0.00056104437680915,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k4": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.9347180682617875,
+          "terminal_auroc_ci95": [
+            0.865428592012986,
+            0.9824898704416806
+          ],
+          "terminal_average_precision": 0.208780829366624,
+          "terminal_average_precision_ci95": [
+            0.05800063015512381,
+            0.46410906150215187
+          ],
+          "brier": 0.004199111368507147,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.017389893465395212,
+          "brier_skill_ci95": [
+            -0.004092071411057424,
+            0.051278046416204266
+          ],
+          "binary_nll": 0.031764883548021317,
+          "binary_nll_terminal": 7.371851444244385,
+          "binary_nll_nonterminal": 0.00012657720071729273,
+          "predicted_termination_terminal_mean": 0.01178768277168274,
+          "predicted_termination_nonterminal_mean": 0.00012435005919542164,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k8": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.6265174173117523,
+          "terminal_auroc_ci95": [
+            0.4607984142312676,
+            0.774583864586192
+          ],
+          "terminal_average_precision": 0.01184535793508638,
+          "terminal_average_precision_ci95": [
+            0.005482292578878054,
+            0.02798471870064742
+          ],
+          "brier": 0.004291732795536518,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": -0.004283918513798168,
+          "brier_skill_ci95": [
+            -0.005791386503323792,
+            -0.002867361950431302
+          ],
+          "binary_nll": 0.05089564993977547,
+          "binary_nll_terminal": 11.8568696975708,
+          "binary_nll_nonterminal": 7.834557436581235e-06,
+          "predicted_termination_terminal_mean": 1.3181141184759326e-05,
+          "predicted_termination_nonterminal_mean": 7.834377356630284e-06,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        }
+      },
+      "peak_allocated_mib": 94.3212890625,
+      "peak_reserved_mib": 146.0
+    },
+    "fullgrid_gru_s707": {
+      "metrics": {
+        "k0": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.9657261611541168,
+          "terminal_auroc_ci95": [
+            0.9296533738257433,
+            0.9914638433282136
+          ],
+          "terminal_average_precision": 0.35805583736347824,
+          "terminal_average_precision_ci95": [
+            0.14248006307277303,
+            0.6279239802945955
+          ],
+          "brier": 0.003917002584785223,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.08340456126066675,
+          "brier_skill_ci95": [
+            0.008706847316916969,
+            0.21134049437921165
+          ],
+          "binary_nll": 0.02287791110575199,
+          "binary_nll_terminal": 5.267186164855957,
+          "binary_nll_nonterminal": 0.0002731345302890986,
+          "predicted_termination_terminal_mean": 0.057666633278131485,
+          "predicted_termination_nonterminal_mean": 0.0002679257304407656,
+          "terminal_recall_at_0_5": 0.07142857142857142,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k1": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.9604921710063336,
+          "terminal_auroc_ci95": [
+            0.9240452349629534,
+            0.9846152179896513
+          ],
+          "terminal_average_precision": 0.16958181814777917,
+          "terminal_average_precision_ci95": [
+            0.05249506277086623,
+            0.35432679066289036
+          ],
+          "brier": 0.004221342038363218,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.01218782117947348,
+          "brier_skill_ci95": [
+            0.0009201694820960755,
+            0.02809513557605548
+          ],
+          "binary_nll": 0.02622152492403984,
+          "binary_nll_terminal": 6.042259693145752,
+          "binary_nll_nonterminal": 0.0002903215354308486,
+          "predicted_termination_terminal_mean": 0.008738658390939236,
+          "predicted_termination_nonterminal_mean": 0.00028860478778369725,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k2": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.9605141625615764,
+          "terminal_auroc_ci95": [
+            0.9233310442846364,
+            0.9844747047843431
+          ],
+          "terminal_average_precision": 0.20034355868646414,
+          "terminal_average_precision_ci95": [
+            0.07638506378798467,
+            0.38684567124526403
+          ],
+          "brier": 0.004225451499223709,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.011226189677100984,
+          "brier_skill_ci95": [
+            2.7118331919173746e-05,
+            0.028454709021493538
+          ],
+          "binary_nll": 0.027681732550263405,
+          "binary_nll_terminal": 6.408602237701416,
+          "binary_nll_nonterminal": 0.00017777048924472183,
+          "predicted_termination_terminal_mean": 0.008002554066479206,
+          "predicted_termination_nonterminal_mean": 0.00017721945187076926,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k4": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.959667487684729,
+          "terminal_auroc_ci95": [
+            0.9206366096451125,
+            0.9862953281257776
+          ],
+          "terminal_average_precision": 0.24818205351965109,
+          "terminal_average_precision_ci95": [
+            0.08397503029074352,
+            0.5194072892266983
+          ],
+          "brier": 0.00426475889980793,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": 0.0020280890110091487,
+          "brier_skill_ci95": [
+            -0.0025809245254493573,
+            0.008147521221458986
+          ],
+          "binary_nll": 0.03143500164151192,
+          "binary_nll_terminal": 7.309384346008301,
+          "binary_nll_nonterminal": 6.453307287301868e-05,
+          "predicted_termination_terminal_mean": 0.0031933316495269537,
+          "predicted_termination_nonterminal_mean": 6.444554310292006e-05,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        },
+        "k8": {
+          "n": 3262,
+          "terminals": 14,
+          "terminal_rate": 0.004291845493562232,
+          "terminal_auroc": 0.7241929099225898,
+          "terminal_auroc_ci95": [
+            0.5709856632383232,
+            0.8557115409898869
+          ],
+          "terminal_average_precision": 0.020802628729775268,
+          "terminal_average_precision_ci95": [
+            0.007664613009488106,
+            0.052526268754077045
+          ],
+          "brier": 0.004290254320949316,
+          "climatology_brier": 0.004273425787687302,
+          "brier_skill": -0.003937949106429084,
+          "brier_skill_ci95": [
+            -0.005562124064354679,
+            -0.0023483380017743547
+          ],
+          "binary_nll": 0.05219968035817146,
+          "binary_nll_terminal": 12.156732559204102,
+          "binary_nll_nonterminal": 2.4971368475235067e-05,
+          "predicted_termination_terminal_mean": 0.00019153101311530918,
+          "predicted_termination_nonterminal_mean": 2.4941828087321483e-05,
+          "terminal_recall_at_0_5": 0.0,
+          "nonterminal_false_positive_at_0_5": 0.0
+        }
+      },
+      "peak_allocated_mib": 94.3212890625,
+      "peak_reserved_mib": 144.0
+    }
+  }
+}

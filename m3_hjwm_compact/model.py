@@ -1291,7 +1291,56 @@ class M3HJWM(nn.Module):
 
     @torch.no_grad()
     def update_target(self):
+        if getattr(self, "encoder_frozen", False):
+            raise RuntimeError(
+                "update_target() called under the frozen-encoder contract; "
+                "target EMA is disabled in frozen phases "
+                "(2026-07-18 companion BLOCKER 2)")
         self.target_encoder.update(self.online_encoder)
 
     def mark_parameters_updated(self):
         self._revision += 1
+
+
+def enforce_frozen_encoder(world: "M3HJWM") -> "M3HJWM":
+    """Make the frozen-encoder phase an EXECUTABLE invariant, not prose
+    (2026-07-18 companion BLOCKER 2): encoder parameters lose requires_grad,
+    target EMA raises, and `assert_encoder_frozen` can verify zero gradients
+    and bit identity after training."""
+    for parameter in world.online_encoder.parameters():
+        parameter.requires_grad_(False)
+    for parameter in world.target_encoder.parameters():
+        parameter.requires_grad_(False)
+    world.encoder_frozen = True
+    world._frozen_encoder_digest = _encoder_state_digest(world)
+    return world
+
+
+def _encoder_state_digest(world: "M3HJWM") -> str:
+    import hashlib
+    h = hashlib.sha256()
+    for module in (world.online_encoder, world.target_encoder):
+        for name, tensor in sorted(module.state_dict().items()):
+            h.update(name.encode())
+            h.update(tensor.detach().cpu().contiguous().reshape(-1)
+                     .view(torch.uint8).numpy().tobytes())
+    return h.hexdigest()
+
+
+def assert_encoder_frozen(world: "M3HJWM", optimizer=None) -> None:
+    """Verify the frozen contract held: no encoder tensor changed, none is in
+    the optimizer, and none accumulated a gradient."""
+    if not getattr(world, "encoder_frozen", False):
+        raise RuntimeError("world was never placed under the frozen contract")
+    if _encoder_state_digest(world) != world._frozen_encoder_digest:
+        raise RuntimeError("encoder state drifted during a frozen phase")
+    encoder_params = {id(p) for p in world.online_encoder.parameters()}
+    encoder_params |= {id(p) for p in world.target_encoder.parameters()}
+    for parameter in world.online_encoder.parameters():
+        if parameter.grad is not None and bool(parameter.grad.abs().sum() > 0):
+            raise RuntimeError("frozen encoder accumulated gradient")
+    if optimizer is not None:
+        for group in optimizer.param_groups:
+            for parameter in group["params"]:
+                if id(parameter) in encoder_params:
+                    raise RuntimeError("frozen encoder parameter in optimizer")

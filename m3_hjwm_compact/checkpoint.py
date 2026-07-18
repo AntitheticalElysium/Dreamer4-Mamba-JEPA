@@ -35,8 +35,15 @@ def _model_source_sha256() -> str:
         (Path(__file__).parent / "model.py").read_bytes()).hexdigest()
 
 
+def derived_encoder_digest(world: M3HJWM) -> str:
+    """Digest DERIVED from the actual online+target encoder state (2026-07-18
+    companion HIGH 3: caller-supplied strings are not provenance)."""
+    from model import _encoder_state_digest
+    return _encoder_state_digest(world)
+
+
 def save_world_checkpoint(path, world: M3HJWM, loss_config: LossConfig,
-                          optimizer=None, encoder_sha256: str | None = None,
+                          optimizer=None,
                           loss_histories: dict | None = None,
                           numpy_rng=None, extra: dict | None = None) -> str:
     payload = {
@@ -50,7 +57,7 @@ def save_world_checkpoint(path, world: M3HJWM, loss_config: LossConfig,
             "head": _git_head(),
             "model_source_sha256": _model_source_sha256(),
             "torch": torch.__version__,
-            "encoder_sha256": encoder_sha256,
+            "encoder_state_sha256": derived_encoder_digest(world),
         },
         "loss_histories": loss_histories or {},
         "extra": extra or {},
@@ -97,7 +104,29 @@ def load_world_checkpoint(path, device,
     for key, tensor in world.state_dict().items():
         if tensor.is_floating_point() and not bool(torch.isfinite(tensor).all()):
             raise RuntimeError(f"non-finite checkpoint tensor {key}")
+    stored = payload["provenance"].get("encoder_state_sha256")
+    if stored is not None and derived_encoder_digest(world) != stored:
+        raise RuntimeError(
+            "loaded encoder state does not match the checkpoint's derived "
+            "encoder digest")
+    if payload["provenance"].get("model_source_sha256") != _model_source_sha256():
+        payload.setdefault("warnings", []).append(
+            "model.py differs from the checkpoint's source; state loaded "
+            "strict, but behavior may have changed — verify before reuse")
     return world, payload
+
+
+def restore_optimizer_and_rng(payload: dict, optimizer) -> None:
+    """Explicit resumption (2026-07-18 companion HIGH 3): restore optimizer
+    and RNG state saved by save_world_checkpoint(optimizer=...)."""
+    if "optimizer" not in payload:
+        raise RuntimeError("checkpoint carries no optimizer state")
+    optimizer.load_state_dict(payload["optimizer"])
+    rng = payload.get("rng", {})
+    if rng.get("torch_cpu") is not None:
+        torch.set_rng_state(rng["torch_cpu"])
+    if rng.get("torch_cuda") is not None and torch.cuda.is_available():
+        torch.cuda.set_rng_state(rng["torch_cuda"])
 
 
 def sprint_candidate_config(backend: str = "mamba2") -> ModelConfig:

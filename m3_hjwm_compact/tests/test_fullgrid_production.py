@@ -91,20 +91,23 @@ def test_checkpoint_roundtrip_and_drift_rejection(tmp_path):
                             sprint_candidate_config)
     from model import LossConfig
 
+    from checkpoint import derived_encoder_digest
+
     device = torch.device("cuda")
     cfg = sprint_candidate_config("gru")
     torch.manual_seed(4)
     world = M3HJWM(cfg).to(device)
     path = tmp_path / "w.pt"
-    digest = save_world_checkpoint(path, world, LossConfig(),
-                                   encoder_sha256="e" * 64)
+    digest = save_world_checkpoint(path, world, LossConfig())
     loaded, payload = load_world_checkpoint(path, device, expect_config=cfg,
                                             expect_sha256=digest)
     for (ka, va), (kb, vb) in zip(sorted(world.state_dict().items()),
                                   sorted(loaded.state_dict().items())):
         assert ka == kb
         torch.testing.assert_close(va.cpu(), vb.cpu())
-    assert payload["provenance"]["encoder_sha256"] == "e" * 64
+    # provenance is DERIVED from actual encoder state, never caller-supplied
+    assert payload["provenance"]["encoder_state_sha256"] == \
+        derived_encoder_digest(loaded)
     # config drift must be rejected
     drifted = dataclasses.replace(cfg, flat_gru_hidden=100)
     with pytest.raises(RuntimeError, match="config drift"):
@@ -177,6 +180,34 @@ def test_reward_continuation_equal_batched_vs_recurrent():
     c_seq = world.continuation(world.pool(seq))
     c_step = world.continuation(world.pool(stepped))
     torch.testing.assert_close(c_seq, c_step, atol=1e-5, rtol=1e-5)
+
+
+def test_frozen_encoder_contract_is_executable():
+    """2026-07-18 companion BLOCKER 2: 'frozen' must be an enforced invariant
+    — EMA raises, encoder params leave the trainable set, drift is caught."""
+    from model import assert_encoder_frozen, enforce_frozen_encoder
+
+    cfg = ModelConfig(temporal_backend="gru", predictor="deterministic",
+                      mask_ratio=0.0)
+    torch.manual_seed(9)
+    world = enforce_frozen_encoder(M3HJWM(cfg))
+    with pytest.raises(RuntimeError, match="frozen-encoder contract"):
+        world.update_target()
+    assert all(not p.requires_grad for p in world.online_encoder.parameters())
+    trainable = [p for p in world.parameters() if p.requires_grad]
+    optimizer = torch.optim.AdamW(trainable, lr=1e-3)
+    assert_encoder_frozen(world, optimizer)   # clean state passes
+    first = next(world.online_encoder.parameters())
+    saved = first.detach().clone()
+    with torch.no_grad():
+        first.add_(1.0)
+    with pytest.raises(RuntimeError, match="drifted"):
+        assert_encoder_frozen(world, optimizer)
+    with torch.no_grad():
+        first.copy_(saved)   # bit-exact restore (add/sub round-trip is not)
+    bad_optimizer = torch.optim.AdamW(world.parameters(), lr=1e-3)
+    with pytest.raises(RuntimeError, match="in optimizer"):
+        assert_encoder_frozen(world, bad_optimizer)
 
 
 def test_planner_batch_step_feasible_at_128_candidates():
