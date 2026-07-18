@@ -61,38 +61,47 @@ def build_fresh_world(device):
 
 
 def build_schedule(train):
-    uniform, terminal_aligned = [], []
+    """Uniform 16-obs windows, IDENTICAL for both arms. NOTE (protocol
+    amendment, companion HIGH-5 structural fact re-encountered at runtime):
+    an unpadded 16-obs window cannot place a terminal at generated depths
+    1-2 — the episode ends at its terminal — so terminal alignment lives in
+    a SEPARATE 10-obs episode-end pool consumed only by Arm B's per-step
+    path (recorded as part of the combined intervention per user directive)."""
+    uniform = []
     for e, ep in enumerate(train):
-        continues = np.asarray(ep["continues"])
         for start in range(len(ep["obs"]) - WINDOW + 1):
             uniform.append((e, start))
-            if (continues[start + PREFIX - 1:start + PREFIX + K_GEN - 1] < 0.5).any():
-                terminal_aligned.append((e, start))
     rng = np.random.default_rng(40_000 + SEED)
-    n_term = int(UPDATES * BATCH * TERMINAL_MIX)
-    picks = ([uniform[int(rng.integers(len(uniform)))]
-              for _ in range(UPDATES * BATCH - n_term)]
-             + [terminal_aligned[int(rng.integers(len(terminal_aligned)))]
-                for _ in range(n_term)])
-    order = rng.permutation(len(picks))
-    schedule = [picks[i] for i in order]
+    schedule = [uniform[int(rng.integers(len(uniform)))]
+                for _ in range(UPDATES * BATCH)]
     digest = hashlib.sha256(
         np.asarray(schedule, dtype=np.int64).tobytes()).hexdigest()
-    return schedule, digest, len(terminal_aligned)
+    return schedule, digest
 
 
-def make_batch(train, picks, device):
+def terminal_pool_10(train):
+    """Episode-end 10-obs windows whose LAST transition (relative index 8,
+    generated depth 2) is terminal."""
+    pool = []
+    for e, ep in enumerate(train):
+        continues = np.asarray(ep["continues"])
+        if len(ep["obs"]) >= PREFIX + K_GEN + 1 and continues[-1] < 0.5:
+            pool.append((e, len(ep["obs"]) - (PREFIX + K_GEN)))
+    return pool
+
+
+def make_batch(train, picks, device, window=WINDOW):
     obs, actions, rewards, continues, previous = [], [], [], [], []
     for e, start in picks:
         ep = train[e]
-        obs.append(ep["obs"][start:start + WINDOW])
-        actions.append(ep["actions"][start:start + WINDOW - 1])
-        rewards.append(ep["rewards"][start:start + WINDOW - 1])
-        continues.append(ep["continues"][start:start + WINDOW - 1])
-        prev = np.full(WINDOW, -1, dtype=np.int64)
+        obs.append(ep["obs"][start:start + window])
+        actions.append(ep["actions"][start:start + window - 1])
+        rewards.append(ep["rewards"][start:start + window - 1])
+        continues.append(ep["continues"][start:start + window - 1])
+        prev = np.full(window, -1, dtype=np.int64)
         if start:
             prev[0] = ep["actions"][start - 1]
-        prev[1:] = ep["actions"][start:start + WINDOW - 1]
+        prev[1:] = ep["actions"][start:start + window - 1]
         previous.append(prev)
     to = lambda x, dt: torch.from_numpy(np.stack(x)).to(device=device, dtype=dt)
     return {"obs": to(obs, torch.uint8), "actions": to(actions, torch.int64),
@@ -130,13 +139,14 @@ def per_step_generated_loss(world, batch, device):
     return total / K_GEN
 
 
-def train_arm(arm, schedule, train, device):
+def train_arm(arm, schedule, train, device, terminal_pool=()):
     world = build_fresh_world(device)
     init_digest = state_digest(world, exclude_heads=False)
     weights = frozen_dynamics_recipe()
     trainable = [p for p in world.parameters() if p.requires_grad]
     optimizer = torch.optim.AdamW(trainable, lr=1e-4)
-    rng_note = f"schedule-driven, no sampling rng ({arm})"
+    rng_term = np.random.default_rng(50_000 + SEED)
+    rng_note = f"schedule-driven; terminal rng 50000+{SEED} ({arm})"
     losses, extras = [], []
     torch.cuda.reset_peak_memory_stats()
     started = time.perf_counter()
@@ -148,6 +158,12 @@ def train_arm(arm, schedule, train, device):
             loss = out.loss
             if arm == "B":
                 extra = per_step_generated_loss(world, batch, device)
+                if terminal_pool and u % int(1 / TERMINAL_MIX) == 0:
+                    tpicks = [terminal_pool[int(rng_term.integers(
+                        len(terminal_pool)))] for _ in range(BATCH)]
+                    tbatch = make_batch(train, tpicks, device,
+                                        window=PREFIX + K_GEN)
+                    extra = extra + per_step_generated_loss(world, tbatch, device)
                 loss = loss + extra
                 extras.append(float(extra.detach()))
         optimizer.zero_grad(set_to_none=True)
@@ -194,7 +210,10 @@ def main():
     carrays = same_target.window_arrays(terminal_eps, crows)
     actual_c = cont_depth.continuation_targets(terminal_eps, crows)
     train, _ = load_scaled_data()
-    schedule, sched_digest, n_term_pool = build_schedule(train)
+    schedule, sched_digest = build_schedule(train)
+    terminal_pool = terminal_pool_10(train)
+    assert terminal_pool, "no terminal episode-end windows in replay"
+    n_term_pool = len(terminal_pool)
 
     report = {"protocol": "reviews/2026-07-18-stage2-ab-protocol.md",
               "head": git_head(), "source_digest": source_digest(),
@@ -206,7 +225,8 @@ def main():
               "arms": {}, "evaluation": {}}
     worlds = {}
     for arm in ("A", "B"):
-        world, info = train_arm(arm, schedule, train, device)
+        world, info = train_arm(arm, schedule, train, device,
+                                terminal_pool if arm == "B" else ())
         report["arms"][arm] = info
         worlds[arm] = world
         REPORT_PATH.write_text(json.dumps(report, indent=2, default=str))

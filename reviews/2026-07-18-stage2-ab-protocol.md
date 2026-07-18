@@ -52,3 +52,12 @@ under the executable contract, AdamW 1e-4, clip 100, bf16):
   EVALUATION-ONLY planner harness (built during this stage, user item 8)
   runs planner-vs-random Crafter episodes against the FINAL bundles under
   the revised gate. Actor/critic remains NO-GO throughout.
+
+## Amendment (2026-07-18, pre-outcome, structural): unpadded 16-obs windows
+## CANNOT place a terminal at generated depths 1-2 (episodes end at their
+## terminal — companion HIGH-5, re-encountered at implementation). The
+## terminal-aligned curriculum therefore uses a separate 10-obs episode-end
+## pool (terminal at generated depth 2) consumed only by Arm B's per-step
+## path every 10th update — recorded as part of the COMBINED intervention
+## (user directive item 4). Main 16-obs schedules remain identical across
+## arms.
