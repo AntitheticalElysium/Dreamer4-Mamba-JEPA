@@ -24,6 +24,7 @@ carries no literature authority.
 | Deterministic prediction (no mixture) | Dreamer-CDP (deterministic CDP target); MoP-JEPA (mixtures, deferred) | Mixture backend exists but off | Crafter branch dispersion 0.0075 pooled cosine, far below MoP separation regime; oracle found consequential divergence at many anchors | "Deterministic default is regime-appropriate for random-policy Crafter"; mixtures DEFERRED not rejected (policy shift may change regime) |
 | Streamwise VICReg terms | VICReg (2105.04906), axis = observations | Sample axis corrected after false-pass position-codebook bug | Regression tests pin the axis; terms OFF in validated recipe (frozen encoder makes them moot) | "Available diagnostic/regularizer for online-encoder training only" |
 | Reward/continuation heads on 2-register pool | DreamerV3 heads | Consume pooled POST-TEMPORAL context; weights 1.0 in every validated dynamics run — they DO backpropagate into the temporal core (companion gradient diagnostic 2026-07-16: temporal-core grad sum 8.41 under reward-only backward; encoder/predictor 0). CORRECTED 2026-07-16 — the previous row ("none yet on temporal path") was FALSE | Gradients verified; predictive quality UNCALIBRATED for imagined deployment | "Reward/continuation already train the temporal core; Phase E = held-out calibration + imagined-rollout validation, NOT first introduction of reward grounding" |
+| Per-step generated latent/task objective (Stage 2) | SPR recurrent jump supervision; V-JEPA-2 autoregressive latent sequence | Local Arm B equally summed latent+reward+continuation on natural generated states and added a depth-2 terminal pool every tenth update. This matches neither source and couples data, task, representation, and compute changes | GRU-505: K8 reward-event AUROC improves `.671->.730`, but latent error worsens at K1/2/4/8, K8 Pearson is flat, continuation calibration collapses, and zero-suffix false reward exceeds budget. Independent audit `2026-07-18-stage2-independent-audit.md` | "The combined Arm-B objective improves K8 reward-event discrimination/amplitude on one dev seed while harming other required properties." NOT "per-step supervision repairs the world model", NOT source-faithful, NOT planner-ready |
 | Causal fork evaluation (same-anchor 4-way, common RNG, canonical env) | Hallucination-in-WM action-sensitivity diagnostics (2606.27326); own construction | Novel protocol implementation (canonicalized Crafter, bit-exact repeats, common-union masks) | Collector end-to-end deterministic (digest regression); synthetic mask-flip regression; shuffled-trained controls statistically consistent with chance | "A controlled counterfactual action-selection protocol for Crafter" — candidate methodological contribution |
 | Control-centric objectives (action-conditioning strength, counterfactual InfoNCE, predictor update-ratio) | BYOL-AC (2406.02035); TACO (2306.13229 + pinned source); Tang (2212.03319) | Not implemented. Faithfulness pre-labelled: literal BYOL-AC per-action predictors = ~1.80M extra params (NOT trivial at 240k scale) — the realistic arm is action-modulated conditioning (FiLM/AdaLN) or small per-action heads, "BYOL-AC-motivated"; faithful TACO = batch-matched BxB InfoNCE — same-anchor true-vs-wrong-action negatives are "TACO-inspired counterfactual action ranking", gate-adjacent; Tang's two-timescale result is derived for JOINTLY learned representations — an update-ratio ablation under our frozen encoder is an empirical probe, not a theorem transplant | Literature notes 2026-07-15 + 2026-07-16 corrections; SPR/TACO/DBC sources pinned | Registered FUTURE arms, all post-step-4; source-faithful vs source-inspired variants must be labelled at registration |
 
@@ -83,3 +84,26 @@ carries no literature authority.
   if run, loss routing per audit section 7.3 (dynamics on uniform replay
   only; event term = reward-only factorial; terminal-aligned continuation
   curriculum; boundary masking).
+
+## 2026-07-18 Stage-2 A/B independent ruling
+
+- The implementation, checkpoint provenance, frozen encoder, transition
+  indexing, and main schedule reproduce; no conventional correctness defect
+  explains the outcome.
+- Arm B is a COMBINED intervention, not a pure per-step objective: every
+  update adds natural latent+reward+continuation supervision, and every tenth
+  update adds another depth-2 terminal batch. Equal optimizer updates do not
+  mean equal data or compute.
+- The terminal pool is also extreme negative-reward/event oversampling.
+  Consequently the earlier record "event oversampling OFF" is false in
+  realized distributional effect.
+- The narrow K8 reward-event AUROC/magnitude gain is retained. "Deep reward
+  repaired", "central hypothesis confirmed", and causal attribution to
+  per-step supervision are withdrawn. Signed correlation, latent accuracy,
+  continuation calibration, zero-suffix false reward, and planner ranking do
+  not pass.
+- Stage-2B remains diagnostic only. The next clean control uses uniform replay,
+  generated latent supervision, and a separately toggled gradient-balanced
+  generated reward term; generated continuation and terminal sampling are
+  absent. Final-tier evaluation, Mamba transfer, planner execution, and online
+  policy remain NO-GO.

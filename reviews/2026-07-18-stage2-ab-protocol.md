@@ -22,10 +22,12 @@ under the executable contract, AdamW 1e-4, clip 100, bf16):
   per-step latent targets (cosine, as the bridge) AND per-step reward +
   continuation supervision on the generated contexts, with post-terminal
   masking of every loss. Terminal-aligned continuation curriculum is
-  INCLUDED and recorded as part of the combined intervention (user item 4):
-  a fraction of windows are aligned so terminal transitions can appear at
-  generated depths 1-2 (fixing the C-matrix position shortcut), applied
-  IDENTICALLY in both arms' schedules so the contrast stays pure.
+  INCLUDED and recorded as part of the combined intervention (user item 4).
+  Original registration intended terminal-aligned windows to enter both
+  schedules. The pre-outcome structural amendment below supersedes that
+  intent: the realizable terminal pool was added only to Arm B, so the final
+  contrast is explicitly a combined intervention rather than a pure
+  per-step-supervision contrast.
 - Event oversampling OFF in both arms (companion item 5). Shared heads
   (item 2) — the failed depth-indexed continuation is not carried.
 - Backend: GRU seed 505 first as the cheap discriminator (user item 3);
@@ -62,25 +64,54 @@ under the executable contract, AdamW 1e-4, clip 100, bf16):
 ## (user directive item 4). Main 16-obs schedules remain identical across
 ## arms.
 
-## OUTCOMES (appended 2026-07-18 after the GRU-505 discriminator; companion
-## verification pending — no replication launched)
+## CORRECTED OUTCOMES (independent audit accepted by user, 2026-07-18)
 
-SPLIT VERDICT — Arm B FAILS full acceptance but confirms the central
-hypothesis on its own target:
-- DEEP REWARD REPAIRED (the Stage-2 hypothesis): K8 event AUROC .671 -> .730
-  (first trained configuration ever past the .70 headroom bar), K2/K4 also
-  up (.759->.779, .747->.768), K1 intact (.806 -> .804), decoded K8 event
-  magnitude 11x (.0057 -> .0624). Equal updates, identical init+schedule —
-  this is the causal per-step-supervision effect at full-world scale.
-- CONTINUATION K1 REGRESSED: .941 -> .787 (K2/K4 flat, K8 -.016). Suspect:
-  the combined per-step term couples reward and continuation supervision on
-  the same generated steps + the depth-2-only terminal pool — exactly the
-  coupling the companion warned against (Stage-1 HIGH 3 analog).
-- RANKING: point regression (adv .277 -> .234, regret .129 -> .171), paired
-  env-clustered CI [-.181, +.146] — unresolved at one seed, not a pass.
-- ACCEPTANCE: NOT MET (continuation-K1 and ranking criteria). No
-  replication or planner license. Consensus route: decouple continuation
-  from the per-step reward term (separate sampling/loss arms per the
-  companion's Stage-2 contract 7.3) and rerun the single-factor variant, OR
-  accept reward-only per-step supervision (latent+reward, continuation
-  teacher-forced-only) as the next A/B arm. Decision needs companion+user.
+Arm B **fails the full registered acceptance contract**. The implementation,
+checkpoints, indexing, frozen encoder, main replay schedule, and dev readouts
+are reproducible. The earlier phrases "deep reward repaired", "central
+hypothesis confirmed", and "causal per-step-supervision effect" exceeded the
+evidence and are withdrawn.
+
+- NARROW POSITIVE: K8 reward-event AUROC rises `.671 -> .730`; the paired
+  episode-cluster delta is `+.059`, CI `[+.008,+.111]`. Decoded absolute event
+  magnitude rises `.0057 -> .0624`. This licenses "the combined Arm-B
+  objective improves K8 reward-event discrimination and amplitude on this
+  dev set."
+- REWARD ACCEPTANCE FAILS: K8 signed Pearson is flat/slightly lower
+  (`.1615 -> .1605`), AP changes only `.119 -> .128`, and MAE worsens
+  `.0245 -> .0416`. K0 AUROC significantly falls by `.075`. K8 zero-target
+  absolute prediction grows about 25x (`.00082 -> .02038`). Excluding the 16
+  terminal-reward rows makes the paired K8 AUROC CI cross zero
+  (`[-.004,+.116]`).
+- THE CONTRAST IS COMBINED: Arm B adds a natural generated batch every update
+  and an additional terminal-pool generated batch every tenth update. It has
+  the same optimizer-update count but more examples and compute
+  (`18.5 -> 28.8` minutes). The terminal pool is also a reward-event
+  intervention: K2 is 100% terminal and 100% nonzero reward with mean reward
+  about `-.25`. Therefore realized "event oversampling OFF" is false in
+  distributional effect.
+- LATENT DYNAMICS WORSEN: paired frozen-target cosine-error deltas for B-A are
+  `+.0079/+.0074/+.0124/+.0314` at K1/K2/K4/K8, all CIs excluding zero.
+  Main JEPA loss also ends worse (`.02181 -> .02976`). The world model was not
+  repaired; generated task fitting traded against latent accuracy.
+- CONTINUATION CALIBRATION FAILS: K1 terminal AUROC falls
+  `.941 -> .787`. K2/K4 AUROC is similar, but calling those depths "flat" hid
+  severe calibration collapse: Arm-B Brier skill is `-2.745/-12.030/-10.499`
+  at K2/K4/K8, with nonterminal false-terminal rates
+  `2.64%/9.77%/8.78%`.
+- PLANNER-SAFETY FAILS: ranking advantage changes `.277 -> .234`
+  (paired CI spans zero), while cumulative prediction on truly zero-return
+  suffixes grows by `+.1125`, CI `[+.0631,+.1854]`, far beyond the registered
+  `+.02` budget. This required metric was absent from the original outcome
+  block.
+- MECHANISM: an initialization-batch diagnostic found shared-dynamics
+  gradient norms about `2.52/23.54/14.52` for the equally weighted generated
+  latent/reward/continuation terms. Task gradients dominate and mildly oppose
+  the latent gradient. This is evidence for objective interference, not a
+  transition-indexing or cache bug.
+
+No replication, Mamba transfer, final-tier evaluation, planner execution, or
+actor/critic training is licensed. The registered follow-up is a uniform-data
+factorial separating generated latent supervision from a gradient-balanced
+generated reward term, with generated continuation and the terminal pool both
+absent. See `reviews/2026-07-18-stage2c-decoupled-protocol.md`.
