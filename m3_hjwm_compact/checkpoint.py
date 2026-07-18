@@ -116,17 +116,35 @@ def load_world_checkpoint(path, device,
     return world, payload
 
 
-def restore_optimizer_and_rng(payload: dict, optimizer) -> None:
+def restore_optimizer_and_rng(payload: dict, optimizer, numpy_rng=None) -> None:
     """Explicit resumption (2026-07-18 companion HIGH 3): restore optimizer
-    and RNG state saved by save_world_checkpoint(optimizer=...)."""
+    and every RNG state saved by
+    save_world_checkpoint(optimizer=..., numpy_rng=...).
+
+    NumPy's Generator state belongs to a particular Generator instance; it
+    cannot be restored through the legacy module-global NumPy RNG. Refuse a
+    silently partial resume when a checkpoint carries that state but the
+    caller omits the corresponding Generator.
+    """
     if "optimizer" not in payload:
         raise RuntimeError("checkpoint carries no optimizer state")
-    optimizer.load_state_dict(payload["optimizer"])
     rng = payload.get("rng", {})
+    if rng.get("numpy") is not None and numpy_rng is None:
+        raise RuntimeError(
+            "checkpoint carries NumPy Generator state; pass numpy_rng "
+            "to restore_optimizer_and_rng for an exact resume")
+    if rng.get("torch_cuda") is not None and not torch.cuda.is_available():
+        raise RuntimeError(
+            "checkpoint carries CUDA RNG state, but CUDA is unavailable; "
+            "exact resumption is impossible")
+
+    optimizer.load_state_dict(payload["optimizer"])
     if rng.get("torch_cpu") is not None:
         torch.set_rng_state(rng["torch_cpu"])
-    if rng.get("torch_cuda") is not None and torch.cuda.is_available():
+    if rng.get("torch_cuda") is not None:
         torch.cuda.set_rng_state(rng["torch_cuda"])
+    if rng.get("numpy") is not None:
+        numpy_rng.bit_generator.state = rng["numpy"]
 
 
 def sprint_candidate_config(backend: str = "mamba2") -> ModelConfig:

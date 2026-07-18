@@ -55,3 +55,31 @@ carries no literature authority.
 - Two-stage frozen-encoder contract is a REGISTERED DECISION as of
   2026-07-15: resuming encoder updates reopens step-1/inventory/causal gates
   as live gates for the entire run.
+
+## 2026-07-18 Stage-1/1b/1c rulings (companion audit adopted in full)
+
+- GENERATED-STATE HEAD SUPERVISION: VALIDATED as a causal mechanism for deep
+  deployed task prediction (equal-update 2x2: H1-R1/H2-R2 contrasts positive
+  3/3 seeds on Mamba terminal+reward AUROC; heterogeneous on GRU ranking).
+  NOT validated as the cause of every ranking pass (absolute CIs are not
+  intervention CIs; H0 also has positive absolute ranking CIs on the fresh
+  bundle).
+- H2 (event-mixture): DIAGNOSTIC ARM ONLY - raises event magnitude/Pearson
+  but multiplies zero-reward MAE 8-13x and adds +.11-.15 false predicted
+  return on truly zero-return suffixes (all-seed CIs exclude zero); also
+  confounds reward coverage with 7x terminal-frequency change. NOT a
+  planner-head selection.
+- SHARED HEAD CROSS-DEPTH CONFLICT: real (1c: D8 improves K8 Pearson/
+  magnitude/Mamba ranking with CIs excluding zero, but GRU LOSES K1 event
+  AUROC/Pearson significantly; K8 magnitude still ~3% of truth).
+  -> Depth-indexed/MTP-inspired head control (Dreamer 4: one output layer
+  per forecast distance) is the next source-backed lever (C0-C3 matrix).
+- My Stage-1 claim "H2 wins the full acceptance list, both backends, all
+  seeds": REFUTED (137/168 reward comparisons improve, 31 worsen - mostly
+  K1; 14 continuation worsen; GRU-606 ranking/regret worsen). Corrected
+  claim: "broad partial recovery, strongest at deep task readouts".
+- Planner + online policy: NO-GO unchanged. Stage-2 full-world retrain:
+  HOLD until C-matrix answers whether heads alone reach probe headroom;
+  if run, loss routing per audit section 7.3 (dynamics on uniform replay
+  only; event term = reward-only factorial; terminal-aligned continuation
+  curriculum; boundary masking).
