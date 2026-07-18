@@ -35,3 +35,32 @@ K1 not significantly below C0 and zero-suffix false reward <= C0 + .02.
 Reaching -> head-design selected, Stage-2 HOLD converts to "not needed for
 heads"; not reaching -> full-world Stage 2 justified with the audit's 7.3
 loss routing.
+
+## OUTCOMES (appended 2026-07-18; companion audit verified — its table
+## reproduces exactly from the committed report)
+
+CLEAN PREREGISTERED NEGATIVE: C1, C2, C3 all REJECTED by the selection rule
+(K8 AUROC >= .70 never reached: best .682; C2/C3 exceed the false-reward
+budget: zero-suffix predicted return up to +.13 over C0; Mamba C1
+significantly WORSENS ranking [-.0689,-.0071]; GRU C3 damages K1
+[-.1239,-.0251]). No replication seed needed for this candidate screen; one
+seed does NOT license "depth-indexed heads can never help".
+
+FLAWS ON RECORD (companion findings, all conceded):
+1. CONTINUATION POSITION SHORTCUT: terminal labels occur ONLY at depth slot
+   8 in the training windows (131/131), so depth-indexed continuation for
+   depths 1-7 trained purely on "continue" — K1/K2/K4 terminal AUROC =
+   exactly .500; the strong K8 value is substantially a window-position
+   artifact. Depth-indexed continuation is INVALID as deployment evidence;
+   future continuation training needs terminal + matched non-terminal
+   targets at EVERY supervised depth + post-terminal masking.
+2. C0 is not an exact Stage-1c D8 reproduction (schedule off-by-one, fixed
+   in the runner; max drift .0022 AUROC, identical rankings).
+3. NOT Dreamer-4 MTP (relabelled "depth-indexed generated-state readout
+   control"); this screen does NOT disprove MTP.
+4. C1 capacity confound recorded (heads 6.29x params).
+5. C2 coefficient / C3 calibration-budget were implementation choices, not
+   protocol-specified; the negative applies to this implementation.
+
+CONSEQUENCE (user + companion consensus): Stage-2 HOLD LIFTED for one
+controlled A/B — reviews/2026-07-18-stage2-ab-protocol.md.

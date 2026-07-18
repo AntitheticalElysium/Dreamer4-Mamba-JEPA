@@ -48,10 +48,15 @@ GAMMA = 0.997
 
 
 class DepthIndexedHead(nn.Module):
-    """Dreamer-4/MTP-INSPIRED (paper Eq. 9: one output layer per forecast
-    distance; NOT faithful — no task conditioning): shared trunk from the
-    base head, one final linear per distance, all initialized from the base
-    head's final layer so C1 starts exactly at the shared-head function."""
+    """DEPTH-INDEXED GENERATED-STATE READOUT CONTROL (2026-07-18 companion
+    relabel — this is NOT Dreamer-4 MTP: Dreamer 4 predicts r_{t:t+L-1}
+    JOINTLY from one task-conditioned state emitting [B,T,L,K] logits;
+    this applies head d_k to an already-generated depth-k state for its
+    contemporaneous reward). Shared trunk from the base head, one final
+    linear per distance, initialized from the base head's final layer.
+    Heads grow 49,920 -> 314,112 params (6.29x) — any positive result would
+    have confounded specialization with capacity; recorded, moot given the
+    operational failure."""
 
     def __init__(self, base_net: nn.Sequential, out_features: int,
                  distances: int = DISTANCES):
@@ -151,7 +156,13 @@ def train_arm(world, arm, schedule, ev_index, train, device, rng):
     losses = []
     for phase, updates in phases:
         for u in range(updates):
-            picks = schedule[(u * BATCH) % (len(schedule) - BATCH):][:BATCH]
+            # 2026-07-18 companion fix: the original modulo expression repeated
+            # the first batch on the final update and skipped the true final
+            # batch (max observed effect .0022 AUROC, identical rankings)
+            offset = (u * BATCH) % len(schedule)
+            picks = (schedule[offset:offset + BATCH]
+                     if offset + BATCH <= len(schedule)
+                     else schedule[-BATCH:])
             batch = make_batch(train, picks, device)
             with torch.autocast("cuda", dtype=torch.bfloat16):
                 pooled, dists, r_t, c_t = rollout_contexts(world, batch)
