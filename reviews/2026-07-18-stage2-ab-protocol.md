@@ -61,3 +61,26 @@ under the executable contract, AdamW 1e-4, clip 100, bf16):
 ## path every 10th update — recorded as part of the COMBINED intervention
 ## (user directive item 4). Main 16-obs schedules remain identical across
 ## arms.
+
+## OUTCOMES (appended 2026-07-18 after the GRU-505 discriminator; companion
+## verification pending — no replication launched)
+
+SPLIT VERDICT — Arm B FAILS full acceptance but confirms the central
+hypothesis on its own target:
+- DEEP REWARD REPAIRED (the Stage-2 hypothesis): K8 event AUROC .671 -> .730
+  (first trained configuration ever past the .70 headroom bar), K2/K4 also
+  up (.759->.779, .747->.768), K1 intact (.806 -> .804), decoded K8 event
+  magnitude 11x (.0057 -> .0624). Equal updates, identical init+schedule —
+  this is the causal per-step-supervision effect at full-world scale.
+- CONTINUATION K1 REGRESSED: .941 -> .787 (K2/K4 flat, K8 -.016). Suspect:
+  the combined per-step term couples reward and continuation supervision on
+  the same generated steps + the depth-2-only terminal pool — exactly the
+  coupling the companion warned against (Stage-1 HIGH 3 analog).
+- RANKING: point regression (adv .277 -> .234, regret .129 -> .171), paired
+  env-clustered CI [-.181, +.146] — unresolved at one seed, not a pass.
+- ACCEPTANCE: NOT MET (continuation-K1 and ranking criteria). No
+  replication or planner license. Consensus route: decouple continuation
+  from the per-step reward term (separate sampling/loss arms per the
+  companion's Stage-2 contract 7.3) and rerun the single-factor variant, OR
+  accept reward-only per-step supervision (latent+reward, continuation
+  teacher-forced-only) as the next A/B arm. Decision needs companion+user.
