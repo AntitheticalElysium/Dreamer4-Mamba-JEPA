@@ -113,6 +113,36 @@ def load_specs(fit: dict) -> dict[str, CalibrationSpec]:
     return specs
 
 
+def dev_reward_outputs(
+    logits: torch.Tensor,
+    rewards: torch.Tensor,
+    spec: CalibrationSpec,
+    device: torch.device,
+    *,
+    low: float,
+    high: float,
+) -> tuple[np.ndarray, float]:
+    """Decode on the canonical inference device, even after CPU collection.
+
+    Stage-2C decoded float32 reward logits on CUDA. Moving collected logits to
+    CPU before softmax changes many values by a few float32 ULPs and invalidates
+    the bit-exact E-I reconstruction control. Calibration fitting remains
+    deterministic float64 CPU work; DEV predictions deliberately preserve the
+    original inference-device operator.
+    """
+    device_logits = logits.to(device)
+    device_rewards = rewards.to(device)
+    decoded = decode_calibrated(
+        device_logits, spec, low=low, high=high
+    )
+    nll = calibration_nll(
+        device_logits, device_rewards, spec, low=low, high=high
+    )
+    return decoded.float().cpu().numpy(), float(
+        nll.float().mean().cpu()
+    )
+
+
 def _summarize_ranking_rows(rows: list[dict]) -> dict:
     differing = [row for row in rows if row["differs"]]
 
@@ -379,22 +409,18 @@ def main() -> None:
             key = f"k{depth}"
             logits = logits_by_depth[key]
             rewards = torch.from_numpy(actual)
-            decoded = decode_calibrated(
+            decoded, nll = dev_reward_outputs(
                 logits,
+                rewards,
                 spec,
+                device,
                 low=world.cfg.reward_low,
                 high=world.cfg.reward_high,
-            ).numpy()
+            )
             predictions[key] = decoded.tolist()
             metrics[key] = {
                 **reward_metrics(decoded, actual),
-                "nll": float(calibration_nll(
-                    logits,
-                    rewards,
-                    spec,
-                    low=world.cfg.reward_low,
-                    high=world.cfg.reward_high,
-                ).mean()),
+                "nll": nll,
             }
         ranking = calibrated_ranking_metrics(
             world, anchors, device, spec

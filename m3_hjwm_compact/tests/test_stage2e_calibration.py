@@ -22,7 +22,11 @@ from stage2e_calibration import (  # noqa: E402
     fit_calibrator,
     select_calibrator,
 )
-from stage2e_evaluate import assert_identity, dev_contract  # noqa: E402
+from stage2e_evaluate import (  # noqa: E402
+    assert_identity,
+    dev_contract,
+    dev_reward_outputs,
+)
 import stage2e_fit_calibration as fit_module  # noqa: E402
 
 
@@ -51,6 +55,24 @@ def test_identity_calibration_is_bit_exact():
         logits, identity, low=LOW, high=HIGH
     )
     assert torch.equal(observed, expected)
+
+
+def test_dev_decode_preserves_canonical_cuda_operator():
+    if not torch.cuda.is_available():
+        return
+    generator = torch.Generator().manual_seed(2718)
+    logits = torch.randn(31, 255, generator=generator).cuda()
+    rewards = torch.randn(31, generator=generator)
+    expected = decode_two_hot(logits, LOW, HIGH).float().cpu()
+    observed, _ = dev_reward_outputs(
+        logits.cpu(),
+        rewards,
+        CalibrationSpec("E-I"),
+        torch.device("cuda"),
+        low=LOW,
+        high=HIGH,
+    )
+    assert torch.equal(torch.from_numpy(observed), expected)
 
 
 def test_zero_bias_changes_only_center_and_temperature_is_positive():
