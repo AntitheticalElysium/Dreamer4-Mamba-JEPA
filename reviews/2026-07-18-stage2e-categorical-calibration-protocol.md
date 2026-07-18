@@ -166,3 +166,32 @@ The CAL-selected arm must satisfy all conditions:
 
 Mamba transfer, FINAL, planner execution, actor/critic, reliability weighting,
 and online policy training remain NO-GO throughout Stage-2E.
+
+## Outcome appendix — 2026-07-19
+
+Status: **VALID NEGATIVE; selected E-TZ rejected**
+
+The CAL artifact was committed before DEV. Unweighted CAL NLL selected E-TZ
+with `T=1.4998668`, zero-bin bias `1.2552725`, and NLL `.187375935`
+versus identity `.195777025`.
+
+The first DEV invocation stopped at the exact E-I control. The new evaluator
+had decoded CPU-copied logits on CPU, whereas the canonical Stage-2C path
+decoded float32 logits on CUDA; differences were at most `3.58e-7`. Commit
+`e2b40ca` restored canonical CUDA decode and added a regression. The original
+Stage-2C evaluator and checkpoint reproduced the committed rows exactly, and
+the repaired E-I path then passed natural-prediction and fork-row identity.
+No non-identity DEV result was observed before this outcome-independent
+repair.
+
+E-TZ reduced absolute predicted return on zero-return suffixes from C-LR
+`.06404` to `.04177`, but its A-relative delta remained
+`+.03230 [.02432,.04041]`, above the registered `+.02` ceiling. K8 Pearson
+improved `+.01634 [.00456,.02642]`, while event MAE significantly worsened
+`+.01334 [.00554,.02294]` and event magnitude fell. Four of eleven gate
+conditions failed.
+
+Decision: reject global temperature/zero-bin calibration and do not select
+another arm or sweep a threshold on spent DEV. FINAL, planner, Mamba transfer,
+and online training remain NO-GO. Full audit:
+`reviews/2026-07-19-stage2e-outcome-and-independent-review.md`.

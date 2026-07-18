@@ -2,12 +2,15 @@
 from __future__ import annotations
 
 import copy
+import hashlib
+import json
 import sys
 from pathlib import Path
 
 import torch
 
 COMPACT_ROOT = Path(__file__).resolve().parents[1]
+ARTIFACTS = COMPACT_ROOT.parent / "reviews" / "artifacts"
 sys.path.insert(0, str(COMPACT_ROOT))
 sys.path.insert(0, str(COMPACT_ROOT / "verification"))
 
@@ -309,3 +312,67 @@ def test_gate_rejects_dev_false_reward_or_ranking_harm():
     ] = _metric(-0.05, -0.08, -0.02)
     result = evaluate_gates(paired, report, fit)
     assert not result["pass"]
+
+
+def test_committed_stage2e_outcome_is_hash_bound_exact_and_rejected():
+    paths = {
+        "fit": ARTIFACTS / "stage2e_calibration_fit.json",
+        "report": ARTIFACTS / "stage2e_report.json",
+        "raw": ARTIFACTS / "stage2e_raw.json",
+        "analysis": ARTIFACTS / "stage2e_analysis.json",
+    }
+    expected = {
+        "fit": (
+            "6c9f436fb64e1c6b92fa9cc3b351e24b4a49063cc430145f29a519a874351a0d"
+        ),
+        "report": (
+            "4e0320980cd9634df2b34d4aec33e123754afd8bf3dc911debcb3cfee8250d6e"
+        ),
+        "raw": (
+            "d08160e39ed621febeee888e78617698428f982d86b2f73571ced71aa8bf019d"
+        ),
+        "analysis": (
+            "5a58adf1cedc10331baba0888061e166ee8d2a10c8d74f7e4a76ab36f32a8542"
+        ),
+    }
+    for name, path in paths.items():
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == expected[name]
+
+    fit = json.loads(paths["fit"].read_text())
+    report = json.loads(paths["report"].read_text())
+    raw = json.loads(paths["raw"].read_text())
+    analysis = json.loads(paths["analysis"].read_text())
+    assert fit["selected_arm"] == report["selected_arm"] == "E-TZ"
+    assert report["fit_sha256"] == expected["fit"]
+    assert report["raw_sha256"] == expected["raw"]
+    assert analysis["provenance"]["fit_sha256"] == expected["fit"]
+    assert analysis["provenance"]["report_sha256"] == expected["report"]
+    assert analysis["provenance"]["raw_sha256"] == expected["raw"]
+
+    identity = raw["arms"]["E-I"]
+    baseline = raw["arms"]["C-LR"]
+    assert identity["reward_predictions"] == baseline["reward_predictions"]
+    assert identity["ranking_rows"] == baseline["ranking_rows"]
+    for arm in ARM_ORDER:
+        assert (
+            raw["arms"][arm]["continuation_predictions"]
+            == baseline["continuation_predictions"]
+        )
+        assert raw["arms"][arm]["latent_errors"] == baseline["latent_errors"]
+
+    gate = analysis["gate"]
+    assert gate["selected_arm"] == "E-TZ"
+    assert not gate["pass"]
+    assert not gate["planner_go"]
+    assert gate["route"].startswith(
+        "REJECT_GLOBAL_CATEGORICAL_CALIBRATION"
+    )
+    failures = {
+        item["name"] for item in gate["conditions"] if not item["pass"]
+    }
+    assert failures == {
+        "selected zero-suffix absolute reward stays within A + .02",
+        "selected K8 AUROC/AP/Pearson/event-MAE points preserve C-LR",
+        "selected K8 paired metrics show no significant harm versus C-LR",
+        "selected K1 zero-MAE safety versus A",
+    }
