@@ -205,3 +205,24 @@ inherited C-L continuation K1 safety failure remains unresolved.
   frozen-trunk calibration step; no full-world objective, Mamba transfer,
   FINAL evaluation, planner execution, actor/critic, or online policy is
   licensed here.
+
+## Outcome (appended after fitting)
+
+Independent outcome record:
+`reviews/2026-07-18-stage2d-outcome-and-independent-review.md`.
+
+- I isolation: **PASS exactly**. Both arms retain the registered non-reward
+  digest, and latent/continuation raw predictions are elementwise identical
+  to C-L at every depth.
+- M generated-state mechanism: **FAIL on safety**. D-G improves K8 Pearson
+  over D-R by `+.04879 [+.01245, +.12829]`, but increases absolute
+  zero-suffix return by `+.01260 [+.00949, +.01681]`.
+- D-R candidate: **FAIL**. Aggregate ranking is exactly C-L's and deep reward
+  does not improve.
+- D-G candidate: **FAIL**. K8 discrimination partially improves, but ranking
+  falls below C-L and is significantly worse than A.
+- Registered route: **STOP reward-head adaptation on C-L**. The next allowed
+  diagnostic is low-capacity, split-safe calibration of frozen C-LR outputs;
+  no shared-world update or Mamba transfer.
+
+The FINAL tier was not accessed.
