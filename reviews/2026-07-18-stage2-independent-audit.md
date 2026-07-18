@@ -87,6 +87,31 @@ paired reward/continuation/ranking intervals, zero-suffix false reward, and
 direct latent accuracy. Mamba, replication, and the final tier remain blocked
 unless the complete candidate passes.
 
+## Machine-readable independent reproduction
+
+The corrected readout was regenerated from the two strict checkpoints by the
+committed `m3_hjwm_compact/verification/stage2_ab_independent_analysis.py` at
+source head `7e3c10332a70a2b28ef345082298933f49afd58d`:
+
+- `reviews/artifacts/stage2_ab_independent_analysis.json`
+  SHA-256
+  `853902e547fec5d63b7eeebf02f587c90b1cbd7dd99588295247e09e5d121df7`;
+- `reviews/artifacts/stage2_ab_independent_raw.json`
+  SHA-256
+  `90b81a256e839f4d3341a997017671828bd9a5af9d443f9f811ce192dfcd2fb6`.
+
+The artifact contains all paired reward, continuation, latent, ranking, and
+zero-suffix contrasts; terminal-excluded K8 reward analysis; exact main and
+terminal-pool label distributions; and separately backpropagated component
+gradient norms. It records the fixed checkpoint hashes and uses only the
+spent DEV tier.
+
+After adding the missing Stage-2 contracts, the CUDA-enabled compact suite is
+`121 passed` with one pre-existing tensor-to-scalar warning. The ten new tests
+cover indexing, masking, old-loss equivalence, component gradient isolation,
+terminal-free scheduling, paired analysis, gate directions, false-reward
+budgeting, and the FINAL-tier access prohibition.
+
 ## Source-grounded boundary
 
 - SPR source `mila-iqia__spr@0b9dd4e` unrolls a transition model and predicts
