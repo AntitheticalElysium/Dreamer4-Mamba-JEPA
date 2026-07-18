@@ -57,3 +57,46 @@ planner-vs-random episodes on a further fresh bundle under the revised gate
 of the consensus audit §7). No architecture/topology changes; no K=5; no
 full-world retraining (that is Stage 2, conditional on this result); no
 policy training.
+
+## OUTCOMES (appended 2026-07-18 after the run; companion verification
+## pending — no gate is ACTED on here)
+
+MECHANISM ANSWERED: shared task heads CAN substantially recover on the
+generated-state distribution. H2 (per-step generated-state supervision +
+50/50 event-containing task batches) improves on H0 across the acceptance
+list for BOTH backends (family means over 3 seeds, all on the fresh pinned
+bundles; H1 recovers part of it; coverage adds the rest):
+
+- K8 reward: event AUROC .586->.654 (Mamba) / .588->.642 (GRU); Pearson
+  .031->.144 / .147->.182; Spearman up; event MAE down; decoded event
+  magnitude 10x / 4x (.0044->.0442 / .0137->.0562) — REAL but still ~10-12%
+  of actual event magnitude (.46): partially repaired, not calibrated.
+- Continuation at depth: K8 terminal AUROC .526->.806 (Mamba) / .808->.911
+  (GRU); Brier skill crosses from negative to ~0; BUT absolute calibration
+  remains poor (P(term|terminal) at K8 .023/.013, recall@0.5 ~0) — ranking
+  recovered, calibration only marginally.
+- RANKING (the decisive metric): H2 chosen-minus-random advantage is
+  POSITIVE IN ALL SIX RUNS with per-seed env-clustered 95% CIs EXCLUDING
+  ZERO IN ALL SIX (Mamba +.122/[.056,.173], +.167/[.085,.251],
+  +.150/[.082,.228]; GRU +.121/[.004,.251], +.175/[.090,.273],
+  +.147/[.009,.282]); mean regret falls ~33%; within-anchor Spearman
+  .10->.37 (Mamba) / .15->.27 (GRU). This is the first time the ranking
+  criterion shape (sign consistency + CI exclusion, per seed, both
+  backends) has ever been met — on adapted heads, fresh data.
+- H1 vs H2 factorial: H1 alone recovers most of the continuation-rank
+  repair and part of reward; the event-containing mixture (H2) is what
+  restores reward magnitude/Pearson. Covariate shift AND sparse coverage
+  are both real, separable mechanisms.
+
+IMPLEMENTATION NOTE ON RECORD: H3 as implemented is VACUOUS for deployed
+heads — its auxiliary heads share no trainable parameters with the planner
+head through the frozen trunk, so H3 planner-head results are bit-identical
+to H1 (incidentally an exact H1 replication check). A meaningful H3 needs a
+shared trainable trunk or aux-informed head input; deferred.
+
+ROUTING (per protocol + consensus audit): this licenses Stage 2 — full
+frozen-encoder world retrain at K=2 with per-step latent AND task targets,
+H2's sampling arm, boundary masking, GRU primary + Mamba matched — and a
+planner-readiness re-evaluation under the REVISED gate (consensus audit §7)
+afterward. Planner remains NO-GO pending that and companion verification of
+this round.
