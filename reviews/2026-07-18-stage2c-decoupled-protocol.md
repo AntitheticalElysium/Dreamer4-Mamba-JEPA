@@ -174,3 +174,22 @@ an architectural claim or planner execution.
 
 Actor/critic, reliability weighting, predictor mixtures, FINAL evaluation, and
 online policy training remain NO-GO throughout this experiment.
+
+## Outcome (appended after fitting)
+
+Independent outcome record:
+`reviews/2026-07-18-stage2c-outcome-and-independent-review.md`.
+
+- G1 direct latent mechanism: **PASS**. C-L lowers latent cosine error at K1,
+  K2, K4, and K8, with all paired intervals below zero.
+- G1 deployment gate: **FAIL**. C-L significantly worsens fork ranking and
+  weakens the deployed reward readout.
+- G2: **FAIL**. C-LR restores ranking and improves K8 reward discrimination,
+  magnitude, and continuation calibration, but absolute zero-suffix predicted
+  return exceeds the registered budget by
+  `+.05457 [+.03682, +.07243]`. It also gives back part of C-L's latent gain.
+- Overall route: **STOP full-world generated-objective expansion**. Do not
+  transfer to Mamba or add task/terminal curricula. A frozen-trunk,
+  reward-head-only equal-update factorial is the next permitted diagnostic.
+
+The FINAL tier was not accessed.

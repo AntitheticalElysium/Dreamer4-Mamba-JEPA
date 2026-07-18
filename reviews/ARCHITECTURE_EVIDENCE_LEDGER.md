@@ -25,6 +25,7 @@ carries no literature authority.
 | Streamwise VICReg terms | VICReg (2105.04906), axis = observations | Sample axis corrected after false-pass position-codebook bug | Regression tests pin the axis; terms OFF in validated recipe (frozen encoder makes them moot) | "Available diagnostic/regularizer for online-encoder training only" |
 | Reward/continuation heads on 2-register pool | DreamerV3 heads | Consume pooled POST-TEMPORAL context; weights 1.0 in every validated dynamics run — they DO backpropagate into the temporal core (companion gradient diagnostic 2026-07-16: temporal-core grad sum 8.41 under reward-only backward; encoder/predictor 0). CORRECTED 2026-07-16 — the previous row ("none yet on temporal path") was FALSE | Gradients verified; predictive quality UNCALIBRATED for imagined deployment | "Reward/continuation already train the temporal core; Phase E = held-out calibration + imagined-rollout validation, NOT first introduction of reward grounding" |
 | Per-step generated latent/task objective (Stage 2) | SPR recurrent jump supervision; V-JEPA-2 autoregressive latent sequence | Local Arm B equally summed latent+reward+continuation on natural generated states and added a depth-2 terminal pool every tenth update. This matches neither source and couples data, task, representation, and compute changes | GRU-505: K8 reward-event AUROC improves `.671->.730`, but latent error worsens at K1/2/4/8, K8 Pearson is flat, continuation calibration collapses, and zero-suffix false reward exceeds budget. Independent audit `2026-07-18-stage2-independent-audit.md` | "The combined Arm-B objective improves K8 reward-event discrimination/amplitude on one dev seed while harming other required properties." NOT "per-step supervision repairs the world model", NOT source-faithful, NOT planner-ready |
+| Decoupled generated latent/reward factorial (Stage 2C) | SPR recurrent jump supervision; V-JEPA-2 autoregressive latent sequence | Local uniform-replay factorial: C-L adds generated K1/K2 latent cosine targets; C-LR adds a locally gradient-balanced `0.10` generated reward NLL. Generated continuation and terminal/event pools are absent. Still SPR/V-JEPA-2-shaped, not a reproduction | GRU-505 spent DEV: C-L improves latent cosine error at K1/2/4/8 with all paired CIs below zero but significantly harms fork ranking. C-LR restores ranking and improves K8 AUROC `.671->.736`, while false zero-suffix return rises `.0095->.0640`; continuation improves rather than collapsing. `2026-07-18-stage2c-outcome-and-independent-review.md` | "Generated latent targets improve latent rollout fidelity; generated reward through the shared trunk recovers task discrimination but causes an unsafe calibration/representation trade-off." Neither arm is deployable; full-world generated expansion is stopped |
 | Causal fork evaluation (same-anchor 4-way, common RNG, canonical env) | Hallucination-in-WM action-sensitivity diagnostics (2606.27326); own construction | Novel protocol implementation (canonicalized Crafter, bit-exact repeats, common-union masks) | Collector end-to-end deterministic (digest regression); synthetic mask-flip regression; shuffled-trained controls statistically consistent with chance | "A controlled counterfactual action-selection protocol for Crafter" — candidate methodological contribution |
 | Control-centric objectives (action-conditioning strength, counterfactual InfoNCE, predictor update-ratio) | BYOL-AC (2406.02035); TACO (2306.13229 + pinned source); Tang (2212.03319) | Not implemented. Faithfulness pre-labelled: literal BYOL-AC per-action predictors = ~1.80M extra params (NOT trivial at 240k scale) — the realistic arm is action-modulated conditioning (FiLM/AdaLN) or small per-action heads, "BYOL-AC-motivated"; faithful TACO = batch-matched BxB InfoNCE — same-anchor true-vs-wrong-action negatives are "TACO-inspired counterfactual action ranking", gate-adjacent; Tang's two-timescale result is derived for JOINTLY learned representations — an update-ratio ablation under our frozen encoder is an empirical probe, not a theorem transplant | Literature notes 2026-07-15 + 2026-07-16 corrections; SPR/TACO/DBC sources pinned | Registered FUTURE arms, all post-step-4; source-faithful vs source-inspired variants must be labelled at registration |
 
@@ -107,3 +108,26 @@ carries no literature authority.
   generated reward term; generated continuation and terminal sampling are
   absent. Final-tier evaluation, Mamba transfer, planner execution, and online
   policy remain NO-GO.
+
+## 2026-07-18 Stage-2C independent ruling
+
+- C-L DIRECT MECHANISM: PASS. Uniform per-step K1/K2 generated latent targets
+  improve held-out latent cosine error at K1/2/4/8; all paired intervals
+  exclude zero in the favorable direction.
+- C-L DEPLOYMENT: FAIL. Fork chosen-minus-random falls
+  `.2770 -> .1056`, paired delta `-.1714 [-.4159, -.0125]`; K8 reward
+  Pearson/magnitude also fall. Latent accuracy alone is rejected as a control
+  proxy.
+- C-LR TASK EFFECT: REAL BUT UNSAFE. K8 reward AUROC rises
+  `.6711 -> .7359`, paired delta `+.0648 [+.0141, +.1267]`, ranking returns
+  to baseline, and K8 continuation Brier skill improves. Absolute predicted
+  return on zero-return suffixes rises `.0095 -> .0640`, exceeding the
+  `+.02` budget with its CI.
+- The old Arm-B continuation collapse is not intrinsic to generated reward:
+  with generated continuation and the terminal pool removed, C-LR improves
+  deep continuation. The remaining blocker is reward calibration and shared
+  objective interference.
+- Full-world generated-objective expansion, Mamba transfer, replication,
+  planner execution, and online policy remain NO-GO. The only licensed next
+  diagnostic is an equal-update reward-head-only real/generated-state
+  factorial with the C-L trunk and continuation head frozen.
