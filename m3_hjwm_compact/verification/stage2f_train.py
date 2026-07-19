@@ -46,7 +46,9 @@ from step4_runner import (  # noqa: E402
 ARTIFACTS = REPO_ROOT / "reviews" / "artifacts"
 REPORT_PATH = ARTIFACTS / "stage2f_train_report.json"
 RAW_PATH = ARTIFACTS / "stage2f_train_raw.json"
-EXPECTED_PREFLIGHT_SHA256 = "__PIN_AFTER_PREFLIGHT_COMMIT__"
+EXPECTED_PREFLIGHT_SHA256 = (
+    "9ece53e398d21547e0dee25f4b3147db90eacd2360d833a23bbde17990e86a00"
+)
 ARMS = {
     "F-LZ": "local_symlog",
     "F-DZ": "dreamerv3_symexp",

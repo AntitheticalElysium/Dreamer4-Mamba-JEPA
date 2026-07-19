@@ -286,3 +286,21 @@ phrases before smoke training:
 
 Neither correction uses training or DEV results and neither changes an arm,
 coefficient, gate, or routing decision.
+
+## Pre-training gate clarification — 2026-07-19
+
+Before full training, “not significantly worse” is made executable as follows:
+
+- for higher-is-better reward, continuation, and chosen-minus-random metrics,
+  the paired 95% CI upper bound must be `>= 0`;
+- for lower-is-better event MAE, latent cosine error, zero-reward MAE, and
+  regret, the paired 95% CI lower bound must be `<= 0`;
+- the K0/K1 zero-MAE point delta versus A must additionally be `<= +.005`,
+  matching the preceding Stage-2E safety contract;
+- operator-mechanism zero-suffix improvement requires both a negative point
+  delta and a paired CI upper bound `< 0`;
+- operational zero-suffix safety retains the already registered point and CI
+  upper-bound ceiling of `+.02` versus A.
+
+This clarification resolves directionality only. It does not change a metric,
+threshold, arm, dataset, or outcome route.

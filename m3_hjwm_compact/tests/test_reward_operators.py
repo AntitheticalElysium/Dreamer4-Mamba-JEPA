@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
+import hashlib
 import sys
 from pathlib import Path
 
@@ -276,3 +277,10 @@ def test_preflight_and_training_cannot_access_evaluation_tiers():
             "manifest['final']",
         ):
             assert forbidden not in source
+    preflight = (
+        COMPACT_ROOT.parent
+        / "reviews/artifacts/stage2f_preflight.json"
+    )
+    assert train_module.EXPECTED_PREFLIGHT_SHA256 == hashlib.sha256(
+        preflight.read_bytes()
+    ).hexdigest()
