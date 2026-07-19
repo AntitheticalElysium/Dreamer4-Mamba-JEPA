@@ -88,7 +88,14 @@ def build_relevance_heads(
     device: torch.device,
 ) -> RewardRelevanceHeads:
     """Initialize without consuming the base world's global RNG stream."""
-    with torch.random.fork_rng(devices=[]):
+    devices = []
+    if device.type == "cuda":
+        devices = [
+            device.index
+            if device.index is not None
+            else torch.cuda.current_device()
+        ]
+    with torch.random.fork_rng(devices=devices):
         torch.manual_seed(AUXILIARY_SEED)
         heads = RewardRelevanceHeads(dim)
     return heads.to(device)

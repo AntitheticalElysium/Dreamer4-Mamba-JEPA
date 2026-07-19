@@ -252,6 +252,20 @@ def test_auxiliary_head_initialization_preserves_global_rng():
         assert torch.equal(value, second.state_dict()[name])
 
 
+def test_auxiliary_head_initialization_preserves_cuda_rng():
+    if not torch.cuda.is_available():
+        return
+    device = torch.device("cuda")
+    torch.cuda.manual_seed(1719)
+    before = torch.cuda.get_rng_state().clone()
+    first = build_relevance_heads(16, device)
+    after = torch.cuda.get_rng_state().clone()
+    second = build_relevance_heads(16, device)
+    assert torch.equal(before, after)
+    for name, value in first.state_dict().items():
+        assert torch.equal(value, second.state_dict()[name])
+
+
 def test_auxiliary_gradient_reaches_shared_world_but_not_task_heads():
     torch.manual_seed(505)
     world = enforce_frozen_encoder(M3HJWM(tiny_config()))
