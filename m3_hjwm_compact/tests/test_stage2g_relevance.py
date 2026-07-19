@@ -49,6 +49,20 @@ import stage2g_train as train_module  # noqa: E402
 EXPECTED_PREFLIGHT_SHA256 = (
     "5551ead595a0d1ae71d4e479918176439e1a1405cbcdb11b07d9159919f5b97d"
 )
+EXPECTED_TRAINING_SHA256 = {
+    "stage2g_train_report.json": (
+        "4cc81e774c9d7ab21fa667b03ce12d47ec9ef20a4a82c35f0a90184c5f2e8e60"
+    ),
+    "stage2g_train_raw.json": (
+        "87637ab2ed4df4d77f06f661d6449c2bf87b3aef5b868dff68a62bf8c7290876"
+    ),
+    "stage2g_gla_s505.pt": (
+        "c7c909654b6eda45149e080417da2c1fb0637120b9c725b3e0ff2482392336e5"
+    ),
+    "stage2g_glra_s505.pt": (
+        "40cdbf59b23b9878e2ec1660e795babf3b0254d99dbcd889939135f84c0f7823"
+    ),
+}
 
 
 def tiny_config() -> ModelConfig:
@@ -317,6 +331,44 @@ def test_sealed_preflight_chain_and_coefficient_are_exact():
             preflight["smokes_256"][arm]["peak_reserved_mib"]
             < 5500
         )
+
+
+def test_sealed_training_chain_and_factorial_are_exact():
+    for name, expected in EXPECTED_TRAINING_SHA256.items():
+        assert hashlib.sha256(
+            (ARTIFACTS / name).read_bytes()
+        ).hexdigest() == expected
+    report = json.loads(
+        (ARTIFACTS / "stage2g_train_report.json").read_text()
+    )
+    raw = json.loads(
+        (ARTIFACTS / "stage2g_train_raw.json").read_text()
+    )
+    assert report["preflight_sha256"] == EXPECTED_PREFLIGHT_SHA256
+    assert report["raw_sha256"] == EXPECTED_TRAINING_SHA256[
+        "stage2g_train_raw.json"
+    ]
+    assert set(report["arms"]) == set(raw["arms"]) == {
+        "G-LA",
+        "G-LRA",
+    }
+    assert report["arms"]["G-LA"]["generated_reward_weight"] == 0.0
+    assert report["arms"]["G-LRA"]["generated_reward_weight"] == 0.10
+    for arm in ("G-LA", "G-LRA"):
+        block = report["arms"][arm]
+        assert block["world_final_digest"] == (
+            block["roundtrip_world_digest"]
+        )
+        assert block["auxiliary_final_digest"] == (
+            block["roundtrip_auxiliary_digest"]
+        )
+        assert block["peak_reserved_mib"] < 5500
+        assert block["probes"]["u16000"]["loss"] < (
+            block["probes"]["u0"]["loss"]
+        )
+        for values in raw["arms"][arm]["histories"].values():
+            assert len(values) == 16_000
+            assert all(np.isfinite(values))
 
 
 def test_auxiliary_head_initialization_preserves_global_rng():

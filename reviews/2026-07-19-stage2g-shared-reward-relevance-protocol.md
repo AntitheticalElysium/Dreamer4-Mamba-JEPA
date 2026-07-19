@@ -363,3 +363,34 @@ and keep fixed-probe decoded reward below `.009` absolute.
 This is only a trainability, routing, and short-horizon safety pass. It is not
 reward, ranking, or planner evidence. It authorizes the two registered
 16,000-update GRU arms and nothing larger.
+
+## Full-training seal — 2026-07-19
+
+Status: **both registered arms complete; DEV evaluation authorized only after
+this seal is committed and hash-pinned**
+
+| Field | G-LA | G-LRA |
+|---|---:|---:|
+| checkpoint SHA-256 | `c7c90965...36e5` | `40cdbf59...7823` |
+| final world digest | `f0ebb034...56d1a` | `a0e2cb78...94cb8` |
+| final auxiliary digest | `9c5d3287...25d8` | `7e98d18d...e002f` |
+| training time | `2225.89 s` | `2199.54 s` |
+| peak allocated VRAM | `123.19 MiB` | `123.90 MiB` |
+| peak reserved VRAM | `174 MiB` | `174 MiB` |
+| final-probe event AUROC | `.84391` | `.88151` |
+| final-probe sign AUROC | `.95703` | `.97656` |
+
+Training report SHA-256:
+`4cc81e774c9d7ab21fa667b03ce12d47ec9ef20a4a82c35f0a90184c5f2e8e60`.
+
+Raw history SHA-256:
+`87637ab2ed4df4d77f06f661d6449c2bf87b3aef5b868dff68a62bf8c7290876`.
+
+Every component history contains exactly 16,000 finite values. Both
+checkpoints strict-load with the registered GRU config, reproduce their full
+world digests, and restore their training-only auxiliary state to the exact
+recorded digest. Their frozen encoder digests are identical.
+
+The probe improvement confirms that the auxiliary remains trainable at full
+budget. It is not evidence of reward safety or control usefulness. No DEV or
+FINAL artifact was imported by the training modules.
