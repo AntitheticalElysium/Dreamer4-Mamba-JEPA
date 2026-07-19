@@ -32,6 +32,7 @@ from stage2g_relevance import (  # noqa: E402
     build_auxiliary_contract,
     build_relevance_heads,
     generated_planner_states,
+    probe_relevance,
     relevance_loss,
     relevance_pools,
     schedule_label_audit,
@@ -264,6 +265,33 @@ def test_auxiliary_head_initialization_preserves_cuda_rng():
     assert torch.equal(before, after)
     for name, value in first.state_dict().items():
         assert torch.equal(value, second.state_dict()[name])
+
+
+def test_fixed_probe_runs_end_to_end_on_cuda():
+    if not torch.cuda.is_available():
+        return
+    device = torch.device("cuda")
+    source = indexed_batch()
+    train = []
+    for index in range(BATCH):
+        train.append({
+            name: value[index].cpu().numpy()
+            for name, value in source.items()
+            if name != "previous_actions"
+        })
+    torch.manual_seed(505)
+    world = enforce_frozen_encoder(M3HJWM(tiny_config()).to(device))
+    heads = build_relevance_heads(world.cfg.token_dim, device)
+    output = probe_relevance(
+        world,
+        heads,
+        train,
+        [(index, 0) for index in range(BATCH)],
+    )
+    assert output["event_rows"] == 2
+    assert output["zero_rows"] == 6
+    assert output["event_auroc"] is not None
+    assert output["sign_auroc"] is not None
 
 
 def test_auxiliary_gradient_reaches_shared_world_but_not_task_heads():

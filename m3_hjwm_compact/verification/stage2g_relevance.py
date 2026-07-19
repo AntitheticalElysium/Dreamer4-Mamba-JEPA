@@ -401,7 +401,7 @@ def probe_relevance(
             reward_logits = world.reward(planner_state)
             decoded = world.reward.decode(reward_logits)
         event_scores.append(event_logits.float().cpu().reshape(-1))
-        sign_scores.append(sign_logits.float().cpu()[event])
+        sign_scores.append(sign_logits[event].float().cpu())
         rewards.append(reward.float().cpu().reshape(-1))
         planner_rewards.append(decoded.float().cpu().reshape(-1))
         event_losses.append(float(event_loss))
