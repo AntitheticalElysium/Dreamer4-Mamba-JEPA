@@ -286,7 +286,10 @@ def validate_smoke(arm: str, info: dict, reference: dict) -> None:
     before = info["probes"]["u0"]
     after = info["probes"][f"u{SMOKE_UPDATES}"]
     if not after["loss"] < before["loss"]:
-        raise RuntimeError(f"{arm} auxiliary probe loss did not fall")
+        raise RuntimeError(
+            f"{arm} auxiliary probe loss did not fall: "
+            f"{before['loss']} -> {after['loss']}"
+        )
     for metric in ("event_auroc", "sign_auroc"):
         if after[metric] is None or after[metric] <= 0.55:
             raise RuntimeError(
@@ -390,33 +393,9 @@ def main() -> None:
         del reference_world
         torch.cuda.empty_cache()
 
-    smokes = {}
-    for arm in ARM_REWARD_WEIGHTS:
-        world = build_fresh_world(device)
-        arm_heads = build_relevance_heads(world.cfg.token_dim, device)
-        if state_digest(world, exclude_heads=False) != fresh_digest:
-            raise RuntimeError(f"{arm} fresh world differs")
-        if module_state_digest(arm_heads) != auxiliary_initial_digest:
-            raise RuntimeError(f"{arm} auxiliary initialization differs")
-        world, arm_heads, info = train_relevance_world(
-            world,
-            arm_heads,
-            train,
-            base_schedule,
-            auxiliary_schedule,
-            probe,
-            arm=arm,
-            lambda_aux=coefficient,
-            updates=SMOKE_UPDATES,
-            probe_updates=(0, SMOKE_UPDATES),
-        )
-        validate_smoke(arm, info, references[arm])
-        smokes[arm] = info
-        del world, arm_heads
-        torch.cuda.empty_cache()
-
     output = {
         "format": "stage2g_preflight_v1",
+        "status": "smoke_pending",
         "protocol": PROTOCOL,
         "protocol_sha256": _sha(REPO_ROOT / PROTOCOL),
         "head": git_head(),
@@ -441,8 +420,47 @@ def main() -> None:
             ),
         },
         "references_256": references,
-        "smokes_256": smokes,
+        "smokes_256": {},
     }
+    OUTPUT.write_text(json.dumps(output, indent=2))
+
+    smokes = {}
+    for arm in ARM_REWARD_WEIGHTS:
+        world = build_fresh_world(device)
+        arm_heads = build_relevance_heads(world.cfg.token_dim, device)
+        if state_digest(world, exclude_heads=False) != fresh_digest:
+            raise RuntimeError(f"{arm} fresh world differs")
+        if module_state_digest(arm_heads) != auxiliary_initial_digest:
+            raise RuntimeError(f"{arm} auxiliary initialization differs")
+        world, arm_heads, info = train_relevance_world(
+            world,
+            arm_heads,
+            train,
+            base_schedule,
+            auxiliary_schedule,
+            probe,
+            arm=arm,
+            lambda_aux=coefficient,
+            updates=SMOKE_UPDATES,
+            probe_updates=(0, SMOKE_UPDATES),
+        )
+        smokes[arm] = info
+        output["smokes_256"] = smokes
+        try:
+            validate_smoke(arm, info, references[arm])
+        except RuntimeError as error:
+            output["status"] = "smoke_failed"
+            output["failure"] = {
+                "arm": arm,
+                "error": str(error),
+            }
+            OUTPUT.write_text(json.dumps(output, indent=2))
+            raise
+        OUTPUT.write_text(json.dumps(output, indent=2))
+        del world, arm_heads
+        torch.cuda.empty_cache()
+
+    output["status"] = "passed"
     OUTPUT.write_text(json.dumps(output, indent=2))
     print(
         f"{OUTPUT}: lambda_aux={coefficient:.9f}; "
