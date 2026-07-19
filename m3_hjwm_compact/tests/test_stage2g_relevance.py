@@ -43,6 +43,7 @@ from stage2g_relevance import (  # noqa: E402
 )
 import stage2g_preflight as preflight_module  # noqa: E402
 import stage2g_relevance as relevance_module  # noqa: E402
+import stage2g_train as train_module  # noqa: E402
 
 
 EXPECTED_PREFLIGHT_SHA256 = (
@@ -236,7 +237,11 @@ def test_factorial_preserves_the_registered_generated_reward_axis():
 
 
 def test_preflight_and_training_machinery_cannot_access_evaluation_tiers():
-    for module in (preflight_module, relevance_module):
+    for module in (
+        preflight_module,
+        relevance_module,
+        train_module,
+    ):
         source = Path(module.__file__).read_text().lower()
         for forbidden in (
             "stage2_eval_bundles",
@@ -255,6 +260,10 @@ def test_sealed_preflight_chain_and_coefficient_are_exact():
     path = ARTIFACTS / "stage2g_preflight.json"
     assert hashlib.sha256(path.read_bytes()).hexdigest() == (
         EXPECTED_PREFLIGHT_SHA256
+    )
+    assert (
+        train_module.EXPECTED_PREFLIGHT_SHA256
+        == EXPECTED_PREFLIGHT_SHA256
     )
     preflight = json.loads(path.read_text())
     assert preflight["status"] == "passed"
