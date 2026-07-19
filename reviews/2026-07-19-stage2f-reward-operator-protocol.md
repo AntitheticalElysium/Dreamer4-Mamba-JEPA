@@ -161,13 +161,15 @@ before any operator smoke or full run.
 ## Required unit and source-alignment tests
 
 - support is strictly increasing, symmetric, has exact center zero, and
-  matches an independent implementation of the pinned equations;
+  matches an independent implementation of the pinned equations within
+  backend float32 transcendental precision;
 - original-space two-hot targets are nonnegative, sum to one, interpolate the
   known Crafter rewards correctly, and clip endpoints;
 - loss and target match an independent searchsorted reference;
 - uniform symmetric logits decode exactly zero;
 - asymmetric uncertain logits make local and DreamerV3 decoders diverge;
-- zero output initialization decodes exactly zero for both operators;
+- zero output initialization preserves the historical local near-zero decode
+  exactly and the DreamerV3 symmetric decoder returns exact zero;
 - local default output remains bit-identical to the pre-change path;
 - legacy local checkpoint strict-load and prediction identity pass;
 - new DreamerV3 checkpoint round-trip restores the operator;
@@ -266,3 +268,21 @@ before planner execution.
 Mamba transfer, reliability weighting, FINAL, planner execution, actor/critic,
 and online policy training remain **NO-GO** throughout Stage-2F.
 
+## Pre-training clarification — 2026-07-19
+
+The first executable source-alignment tests corrected two over-exact protocol
+phrases before smoke training:
+
+1. PyTorch and independent NumPy float32 `expm1` differ by at most 3 reward
+   units in multi-million-magnitude tail bins (maximum relative difference
+   below `9.6e-7`). Formula equality, strict ordering, exact symmetry, exact
+   center zero, and known endpoints are the source-alignment requirements;
+   cross-library transcendental bit identity is not.
+2. The historical local decoder uses a naïve left-to-right reduction and maps
+   uniform logits to approximately `-1.15e-7`. DreamerV3/CDP explicitly uses
+   symmetric summation and returns exact zero. The local result must remain
+   bit-identical rather than being silently “fixed”; only the DreamerV3 arm
+   requires exact zero.
+
+Neither correction uses training or DEV results and neither changes an arm,
+coefficient, gate, or routing decision.

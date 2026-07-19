@@ -14,7 +14,6 @@ import hashlib
 import subprocess
 from pathlib import Path
 
-import numpy as np
 import torch
 
 from model import LossConfig, M3HJWM, ModelConfig
@@ -33,6 +32,13 @@ def _git_head() -> str:
 def _model_source_sha256() -> str:
     return hashlib.sha256(
         (Path(__file__).parent / "model.py").read_bytes()).hexdigest()
+
+
+def _normalized_model_config(values: dict) -> dict:
+    """Add explicit defaults to checkpoints written before config axes."""
+    output = dict(values)
+    output.setdefault("reward_operator", "local_symlog")
+    return output
 
 
 def derived_encoder_digest(world: M3HJWM) -> str:
@@ -88,12 +94,17 @@ def load_world_checkpoint(path, device,
     payload = torch.load(path, weights_only=False)
     if payload.get("format") != "m3_world_checkpoint_v1":
         raise RuntimeError("not a m3_world_checkpoint_v1 file")
-    cfg = ModelConfig(**payload["model_config"])
+    stored_config = _normalized_model_config(payload["model_config"])
+    cfg = ModelConfig(**stored_config)
     if expect_config is not None and dataclasses.asdict(expect_config) != \
-            payload["model_config"]:
-        diffs = {k: (dataclasses.asdict(expect_config)[k], payload["model_config"][k])
-                 for k in payload["model_config"]
-                 if dataclasses.asdict(expect_config).get(k) != payload["model_config"][k]}
+            stored_config:
+        expected = dataclasses.asdict(expect_config)
+        keys = set(expected) | set(stored_config)
+        diffs = {
+            key: (expected.get(key), stored_config.get(key))
+            for key in keys
+            if expected.get(key) != stored_config.get(key)
+        }
         raise RuntimeError(f"checkpoint config drift: {diffs}")
     world = M3HJWM(cfg).to(device)
     if type(world.temporal.impl).__name__ != payload["temporal_class"]:

@@ -12,8 +12,9 @@ The full representation encoder (visual stem + spatial mixer + registers) has an
 EMA target copy. No target-side trainable layer is accidentally left outside EMA.
 """
 from __future__ import annotations
-from dataclasses import dataclass, replace
-import copy, math, warnings
+from dataclasses import dataclass
+import copy
+import math
 from typing import Literal, Any
 
 import torch
@@ -72,6 +73,14 @@ class ModelConfig:
     reward_bins: int = 255
     reward_low: float = -20.0
     reward_high: float = 20.0
+    # Explicit reward-distribution axis. "local_symlog" is the historical
+    # DRAMA-shaped operator: interpolate in symlog space and decode
+    # symexp(E[symlog]). "dreamerv3_symexp" is the pinned DreamerV3/CDP
+    # distribution only: interpolate on symexp-spaced original-reward bins
+    # and decode E[reward]. It does not make the surrounding model DreamerV3.
+    reward_operator: Literal[
+        "local_symlog", "dreamerv3_symexp"
+    ] = "local_symlog"
     ema_decay: float = 0.996
     # The masked temporal hybrid remains an explicit ablation. It is not the
     # default: replacing post-convolution tokens is not an I-JEPA context
@@ -104,6 +113,21 @@ class ModelConfig:
             raise ValueError("rollout_steps must be at least 2")
         if self.variance_target <= 0:
             raise ValueError("variance_target must be positive")
+        if self.reward_bins < 3:
+            raise ValueError("reward_bins must be at least 3")
+        if self.reward_low >= 0 or self.reward_high <= 0:
+            raise ValueError("reward support bounds must straddle zero")
+        if self.reward_operator == "dreamerv3_symexp":
+            if self.reward_bins % 2 != 1:
+                raise ValueError(
+                    "the registered DreamerV3/CDP comparator requires "
+                    "an odd number of reward bins"
+                )
+            if self.reward_low != -self.reward_high:
+                raise ValueError(
+                    "the registered DreamerV3/CDP comparator requires "
+                    "symmetric symlog support bounds"
+                )
         if self.temporal_topology == "full_grid":
             if self.temporal_backend not in ("gru", "mamba2"):
                 raise ValueError(
@@ -187,6 +211,87 @@ def two_hot(x: Tensor, bins: int, low: float, high: float) -> Tensor:
 def decode_two_hot(logits: Tensor, low: float, high: float) -> Tensor:
     support = torch.linspace(low, high, logits.shape[-1], device=logits.device, dtype=logits.dtype)
     return symexp((logits.softmax(-1) * support).sum(-1))
+
+
+def dreamerv3_reward_support(
+    bins: int,
+    low: float,
+    high: float,
+    *,
+    device=None,
+    dtype: torch.dtype = torch.float32,
+) -> Tensor:
+    """Pinned DreamerV3/CDP odd-bin symexp support in reward space."""
+    if bins < 3 or bins % 2 != 1:
+        raise ValueError("DreamerV3 reward support requires odd bins >= 3")
+    if low >= 0 or high <= 0 or low != -high:
+        raise ValueError(
+            "DreamerV3 reward support requires symmetric bounds around zero"
+        )
+    half = torch.linspace(
+        low,
+        0.0,
+        (bins - 1) // 2 + 1,
+        device=device,
+        dtype=dtype,
+    )
+    half = symexp(half)
+    return torch.cat((half, -half[:-1].flip(0)), dim=0)
+
+
+def dreamerv3_two_hot(x: Tensor, support: Tensor) -> Tensor:
+    """Interpolate targets in original reward space as DreamerV3/CDP does."""
+    if support.ndim != 1 or support.numel() < 3:
+        raise ValueError("support must be a one-dimensional reward grid")
+    if not bool(torch.all(support[1:] > support[:-1])):
+        raise ValueError("reward support must be strictly increasing")
+    value = x.float().clamp(float(support[0]), float(support[-1]))
+    bins = support.to(device=value.device, dtype=value.dtype)
+    below = torch.searchsorted(bins, value, right=True) - 1
+    above = torch.searchsorted(bins, value, right=False)
+    below = below.clamp(0, len(bins) - 1)
+    above = above.clamp(0, len(bins) - 1)
+    equal = below == above
+    distance_below = torch.where(
+        equal, torch.ones_like(value), (bins[below] - value).abs()
+    )
+    distance_above = torch.where(
+        equal, torch.ones_like(value), (bins[above] - value).abs()
+    )
+    total = distance_below + distance_above
+    weight_below = distance_above / total
+    weight_above = distance_below / total
+    return (
+        F.one_hot(below, len(bins)).to(value.dtype)
+        * weight_below[..., None]
+        + F.one_hot(above, len(bins)).to(value.dtype)
+        * weight_above[..., None]
+    )
+
+
+def decode_dreamerv3_two_hot(
+    logits: Tensor,
+    support: Tensor,
+) -> Tensor:
+    """Symmetric E[reward] used by the pinned DreamerV3/CDP output."""
+    if logits.shape[-1] != len(support):
+        raise ValueError("reward logit/support size mismatch")
+    if len(support) % 2 != 1:
+        raise ValueError("registered DreamerV3 decoder requires odd bins")
+    probabilities = logits.float().softmax(-1)
+    bins = support.to(
+        device=probabilities.device, dtype=probabilities.dtype
+    )
+    middle = (len(bins) - 1) // 2
+    negative = probabilities[..., :middle] * bins[:middle]
+    center = (
+        probabilities[..., middle:middle + 1]
+        * bins[middle:middle + 1]
+    ).sum(-1)
+    positive = (
+        probabilities[..., middle + 1:] * bins[middle + 1:]
+    )
+    return center + (negative.flip(-1) + positive).sum(-1)
 
 
 def cosine_distance(a: Tensor, b: Tensor) -> Tensor:
@@ -945,16 +1050,53 @@ class RewardHead(nn.Module):
             nn.LayerNorm(cfg.token_dim), nn.Linear(cfg.token_dim, 2 * cfg.token_dim),
             nn.SiLU(), nn.Linear(2 * cfg.token_dim, cfg.reward_bins),
         )
+        self.register_buffer(
+            "_dreamerv3_support",
+            (
+                dreamerv3_reward_support(
+                    cfg.reward_bins, cfg.reward_low, cfg.reward_high
+                )
+                if cfg.reward_operator == "dreamerv3_symexp"
+                else torch.empty(0)
+            ),
+            persistent=False,
+        )
 
     def forward(self, x: Tensor) -> Tensor:
         return self.net(x)
 
     def loss(self, logits: Tensor, reward: Tensor):
-        target = two_hot(reward, self.cfg.reward_bins, self.cfg.reward_low, self.cfg.reward_high)
-        return -(target * logits.log_softmax(-1)).sum(-1)
+        if self.cfg.reward_operator == "local_symlog":
+            target = two_hot(
+                reward,
+                self.cfg.reward_bins,
+                self.cfg.reward_low,
+                self.cfg.reward_high,
+            )
+            return -(target * logits.log_softmax(-1)).sum(-1)
+        if self.cfg.reward_operator == "dreamerv3_symexp":
+            target = dreamerv3_two_hot(
+                reward, self._dreamerv3_support
+            )
+            return -(
+                target * logits.float().log_softmax(-1)
+            ).sum(-1)
+        raise RuntimeError(
+            f"unknown reward operator {self.cfg.reward_operator!r}"
+        )
 
     def decode(self, logits: Tensor):
-        return decode_two_hot(logits, self.cfg.reward_low, self.cfg.reward_high)
+        if self.cfg.reward_operator == "local_symlog":
+            return decode_two_hot(
+                logits, self.cfg.reward_low, self.cfg.reward_high
+            )
+        if self.cfg.reward_operator == "dreamerv3_symexp":
+            return decode_dreamerv3_two_hot(
+                logits, self._dreamerv3_support
+            )
+        raise RuntimeError(
+            f"unknown reward operator {self.cfg.reward_operator!r}"
+        )
 
 
 class ContinueHead(nn.Module):
