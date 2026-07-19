@@ -273,6 +273,14 @@ def test_fixed_probe_runs_end_to_end_on_cuda():
     device = torch.device("cuda")
     source = indexed_batch()
     train = []
+    zero_source = copy.deepcopy(source)
+    zero_source["rewards"].zero_()
+    for index in range(BATCH):
+        train.append({
+            name: value[index].cpu().numpy()
+            for name, value in zero_source.items()
+            if name != "previous_actions"
+        })
     for index in range(BATCH):
         train.append({
             name: value[index].cpu().numpy()
@@ -286,12 +294,13 @@ def test_fixed_probe_runs_end_to_end_on_cuda():
         world,
         heads,
         train,
-        [(index, 0) for index in range(BATCH)],
+        [(index, 0) for index in range(2 * BATCH)],
     )
     assert output["event_rows"] == 2
-    assert output["zero_rows"] == 6
+    assert output["zero_rows"] == 14
     assert output["event_auroc"] is not None
     assert output["sign_auroc"] is not None
+    assert np.isfinite(output["loss"])
 
 
 def test_auxiliary_gradient_reaches_shared_world_but_not_task_heads():

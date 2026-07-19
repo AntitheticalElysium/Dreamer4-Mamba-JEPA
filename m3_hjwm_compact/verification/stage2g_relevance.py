@@ -378,8 +378,6 @@ def probe_relevance(
     sign_scores = []
     rewards = []
     planner_rewards = []
-    event_losses = []
-    sign_losses = []
     for start in range(0, len(picks), BATCH):
         batch_picks = picks[start:start + BATCH]
         if len(batch_picks) != BATCH:
@@ -391,31 +389,36 @@ def probe_relevance(
             planner_state, reward = generated_planner_states(world, batch)
             event_logits, sign_logits = heads(planner_state)
             event = reward.abs() > 1e-6
-            event_loss = F.binary_cross_entropy_with_logits(
-                event_logits, event.to(event_logits.dtype)
-            )
-            sign_loss = F.binary_cross_entropy_with_logits(
-                sign_logits[event],
-                (reward[event] > 0).to(sign_logits.dtype),
-            )
             reward_logits = world.reward(planner_state)
             decoded = world.reward.decode(reward_logits)
         event_scores.append(event_logits.float().cpu().reshape(-1))
         sign_scores.append(sign_logits[event].float().cpu())
         rewards.append(reward.float().cpu().reshape(-1))
         planner_rewards.append(decoded.float().cpu().reshape(-1))
-        event_losses.append(float(event_loss))
-        sign_losses.append(float(sign_loss))
-    event_scores_np = torch.cat(event_scores).numpy()
-    sign_scores_np = torch.cat(sign_scores).numpy()
-    rewards_np = torch.cat(rewards).numpy()
+    event_scores_tensor = torch.cat(event_scores)
+    sign_scores_tensor = torch.cat(sign_scores)
+    rewards_tensor = torch.cat(rewards)
+    event_labels_tensor = rewards_tensor.abs() > 1e-6
+    sign_labels_tensor = rewards_tensor[event_labels_tensor] > 0
+    if not bool(event_labels_tensor.any()):
+        raise RuntimeError("fixed relevance probe contains no event")
+    event_loss = F.binary_cross_entropy_with_logits(
+        event_scores_tensor,
+        event_labels_tensor.to(event_scores_tensor.dtype),
+    )
+    sign_loss = F.binary_cross_entropy_with_logits(
+        sign_scores_tensor,
+        sign_labels_tensor.to(sign_scores_tensor.dtype),
+    )
+    event_scores_np = event_scores_tensor.numpy()
+    sign_scores_np = sign_scores_tensor.numpy()
     decoded_np = torch.cat(planner_rewards).numpy()
-    event_labels = np.abs(rewards_np) > 1e-6
-    sign_labels = rewards_np[event_labels] > 0
+    event_labels = event_labels_tensor.numpy()
+    sign_labels = sign_labels_tensor.numpy()
     return {
-        "loss": float(np.mean(event_losses) + np.mean(sign_losses)),
-        "event_loss": float(np.mean(event_losses)),
-        "sign_loss": float(np.mean(sign_losses)),
+        "loss": float(event_loss + sign_loss),
+        "event_loss": float(event_loss),
+        "sign_loss": float(sign_loss),
         "event_auroc": binary_auroc(event_scores_np, event_labels),
         "sign_auroc": binary_auroc(sign_scores_np, sign_labels),
         "decoded_absolute_maximum": float(np.abs(decoded_np).max()),
