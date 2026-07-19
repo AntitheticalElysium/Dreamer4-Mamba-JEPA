@@ -2,10 +2,13 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import sys
 from pathlib import Path
 
 COMPACT_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = COMPACT_ROOT.parent
+ARTIFACTS = REPO_ROOT / "reviews" / "artifacts"
 sys.path.insert(0, str(COMPACT_ROOT))
 sys.path.insert(0, str(COMPACT_ROOT / "verification"))
 
@@ -15,6 +18,27 @@ from stage2f_evaluate import (  # noqa: E402
     assert_reference_exact,
     dev_contract,
 )
+
+EXPECTED_OUTCOME_SHA256 = {
+    "stage2f_preflight.json": (
+        "9ece53e398d21547e0dee25f4b3147db90eacd2360d833a23bbde17990e86a00"
+    ),
+    "stage2f_train_report.json": (
+        "a602155d14badfc370a94cc922cc584d7fe1093f789b2e58de3b7f64928d4f08"
+    ),
+    "stage2f_train_raw.json": (
+        "9fdb9f318bbb847fafd18852ea7a43bdc96ff28abbb1339b1474fe8631759c87"
+    ),
+    "stage2f_eval_report.json": (
+        "93d9abb86a41cd13d3b52c157a6f387cd31bd75d4042ccd12110c7659ea244b4"
+    ),
+    "stage2f_eval_raw.json": (
+        "ec11705526282638492722dd85b24a3c1d5ce68a8265055e2dc67a4349d18b93"
+    ),
+    "stage2f_analysis.json": (
+        "b70b0325158c786fcc56c08360c54fee4b6fb716dcce58fa8f97d62a1db2193b"
+    ),
+}
 
 
 def metric(delta: float, low: float = -0.01,
@@ -152,6 +176,67 @@ def test_evaluator_dev_contract_never_indexes_final():
 def test_evaluator_static_hashes_match_sealed_artifacts():
     for path, expected in EXPECTED_STATIC_SHA256.items():
         assert hashlib.sha256(path.read_bytes()).hexdigest() == expected
+
+
+def test_committed_outcome_artifacts_are_byte_exact():
+    for name, expected in EXPECTED_OUTCOME_SHA256.items():
+        path = ARTIFACTS / name
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == expected
+
+
+def test_committed_outcome_chain_and_split_verdict_are_exact():
+    train = json.loads(
+        (ARTIFACTS / "stage2f_train_report.json").read_text()
+    )
+    report = json.loads(
+        (ARTIFACTS / "stage2f_eval_report.json").read_text()
+    )
+    analysis = json.loads(
+        (ARTIFACTS / "stage2f_analysis.json").read_text()
+    )
+
+    assert train["preflight_sha256"] == EXPECTED_OUTCOME_SHA256[
+        "stage2f_preflight.json"
+    ]
+    assert train["raw_sha256"] == EXPECTED_OUTCOME_SHA256[
+        "stage2f_train_raw.json"
+    ]
+    assert report["train_report_sha256"] == EXPECTED_OUTCOME_SHA256[
+        "stage2f_train_report.json"
+    ]
+    assert report["raw_sha256"] == EXPECTED_OUTCOME_SHA256[
+        "stage2f_eval_raw.json"
+    ]
+    assert analysis["provenance"]["report_sha256"] == (
+        EXPECTED_OUTCOME_SHA256["stage2f_eval_report.json"]
+    )
+    assert analysis["provenance"]["raw_sha256"] == (
+        EXPECTED_OUTCOME_SHA256["stage2f_eval_raw.json"]
+    )
+    assert analysis["provenance"]["train_report_sha256"] == (
+        EXPECTED_OUTCOME_SHA256["stage2f_train_report.json"]
+    )
+
+    gate = analysis["gate"]
+    assert gate["valid"] is True
+    assert gate["mechanism_pass"] is True
+    assert gate["operational_pass"] is False
+    assert gate["planner_go"] is False
+    assert gate["route"] == (
+        "OPERATOR_CAUSAL_BUT_INSUFFICIENT; "
+        "no planner and no DEV tuning"
+    )
+    assert {
+        item["name"]
+        for item in gate["operational_conditions"]
+        if not item["pass"]
+    } == {
+        "F-DZ zero-suffix false reward stays within A + .02",
+        "F-DZ K8 reward points preserve F-R",
+        "F-DZ K0 reward safety versus A",
+        "F-DZ K1 reward safety versus A",
+        "F-DZ latent/continuation safety versus F-R",
+    }
 
 
 def test_reference_assertion_is_exact_and_fails_closed():

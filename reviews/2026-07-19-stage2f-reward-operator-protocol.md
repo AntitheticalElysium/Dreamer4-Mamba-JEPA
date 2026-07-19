@@ -304,3 +304,34 @@ Before full training, “not significantly worse” is made executable as follow
 
 This clarification resolves directionality only. It does not change a metric,
 threshold, arm, dataset, or outcome route.
+
+## Outcome appendix — 2026-07-19
+
+Status: **VALID SPLIT VERDICT — mechanism PASS, operational FAIL**
+
+F-R exactly reproduced the committed C-LR reward, continuation, latent, and
+fork rows. F-LZ and F-DZ shared exact zero-initialized state digest
+`0dcd7b3f...0b27`, trained on the same schedule, remained finite, and
+strict-loaded with the correct serialized operator.
+
+Zero initialization alone significantly reduced K8 event AUROC:
+`F-LZ - F-R = -.03977 [-.07455,-.00400]`. The initialization factorial was
+therefore necessary.
+
+Against F-LZ, F-DZ significantly reduced absolute zero-suffix return by
+`-.02903 [-.03760,-.02146]` and improved latent cosine error at K2/K4/K8.
+Registered K8 reward, ranking, and continuation harm intervals did not resolve
+against F-DZ, so the permissive operator-mechanism gate passes. Ranking and
+event-MAE points nevertheless worsen and must remain explicit negative
+evidence.
+
+F-DZ fails the operational gate: its absolute zero-suffix delta versus A is
+`+.01794 [.01179,.02309]` (CI exceeds `+.02`); K8 AUROC/AP/event-MAE points do
+not preserve F-R; K0 Pearson significantly worsens versus A; K1 zero-MAE
+significantly worsens versus A; and K4 terminal AUROC significantly worsens
+versus F-R.
+
+Decision: do not promote F-DZ and do not tune another categorical variant on
+DEV. Route to a separately registered reward-relevant
+representation/action-conditioning control. Full audit:
+`reviews/2026-07-19-stage2f-outcome-and-independent-review.md`.
