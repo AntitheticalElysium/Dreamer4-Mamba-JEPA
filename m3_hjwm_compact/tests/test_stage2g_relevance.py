@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import copy
+import hashlib
+import json
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -10,6 +12,8 @@ import numpy as np
 import torch
 
 COMPACT_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = COMPACT_ROOT.parent
+ARTIFACTS = REPO_ROOT / "reviews" / "artifacts"
 sys.path.insert(0, str(COMPACT_ROOT))
 sys.path.insert(0, str(COMPACT_ROOT / "verification"))
 
@@ -39,6 +43,11 @@ from stage2g_relevance import (  # noqa: E402
 )
 import stage2g_preflight as preflight_module  # noqa: E402
 import stage2g_relevance as relevance_module  # noqa: E402
+
+
+EXPECTED_PREFLIGHT_SHA256 = (
+    "5551ead595a0d1ae71d4e479918176439e1a1405cbcdb11b07d9159919f5b97d"
+)
 
 
 def tiny_config() -> ModelConfig:
@@ -240,6 +249,65 @@ def test_preflight_and_training_machinery_cannot_access_evaluation_tiers():
             "manifest['final']",
         ):
             assert forbidden not in source
+
+
+def test_sealed_preflight_chain_and_coefficient_are_exact():
+    path = ARTIFACTS / "stage2g_preflight.json"
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == (
+        EXPECTED_PREFLIGHT_SHA256
+    )
+    preflight = json.loads(path.read_text())
+    assert preflight["status"] == "passed"
+    assert preflight["local_regression"]["exact"] is True
+    assert (
+        preflight["base_schedule_sha256"]
+        == "427eb8a311ac9a99ec7f5fd529added9035777a1146864c4ab53d68c2c1295d0"
+    )
+    contract = preflight["auxiliary_contract"]
+    assert contract["probe_schedule_overlap"] == 0
+    for name in ("schedule_labels", "probe_labels"):
+        assert contract[name]["event_window_fraction"] == 0.5
+        assert contract[name]["positive_window_fraction"] == 0.25
+        assert contract[name]["negative_window_fraction"] == 0.25
+        assert contract[name]["terminal_row_fraction"] == 0.0
+
+    gradient = preflight["gradient_registration"]
+    expected = (
+        0.10
+        * gradient["raw_generated_reward_rms"]
+        / gradient["raw_auxiliary_rms"]
+    )
+    assert gradient["lambda_aux"] == expected
+    assert 0.01 <= expected <= 10.0
+    assert gradient["detached_routes"]["shared"] == 0.0
+    assert gradient["detached_routes"]["auxiliary_heads"] > 0.0
+    for row in gradient["auxiliary_routes"]:
+        for key in (
+            "shared",
+            "action_input",
+            "future",
+            "temporal",
+            "auxiliary_heads",
+        ):
+            assert row[key] > 0.0
+        for key in (
+            "reward_head",
+            "continuation_head",
+            "online_encoder",
+            "target_encoder",
+        ):
+            assert row[key] == 0.0
+    for arm in ("G-LA", "G-LRA"):
+        before = preflight["smokes_256"][arm]["probes"]["u0"]
+        after = preflight["smokes_256"][arm]["probes"]["u256"]
+        assert after["loss"] < before["loss"]
+        assert after["event_auroc"] > 0.55
+        assert after["sign_auroc"] > 0.55
+        assert after["decoded_absolute_maximum"] < 100.0
+        assert (
+            preflight["smokes_256"][arm]["peak_reserved_mib"]
+            < 5500
+        )
 
 
 def test_auxiliary_head_initialization_preserves_global_rng():

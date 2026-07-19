@@ -308,3 +308,58 @@ and a fresh evaluation tier before planner execution.
 Mamba transfer, predictor mixtures, reliability weighting, FINAL, planner
 execution, actor/critic, and online policy training remain **NO-GO**
 throughout Stage-2G.
+
+## Preflight outcome — 2026-07-19
+
+Status: **PASS; full matched G-LA/G-LRA training authorized**
+
+Three invalid preflight attempts were blocked before full training:
+
+1. auxiliary initialization restored CPU but not CUDA RNG state;
+2. the fixed probe moved logits to CPU before applying a CUDA mask;
+3. class-ordered probe chunks computed sign BCE on empty all-zero chunks,
+   producing `NaN`.
+
+The first two attempts stopped before any smoke update. The third completed
+bounded smoke work, but its probe gate was mathematically invalid. The repair
+aggregates all probe logits and labels before computing either BCE; it does
+not change an arm, coefficient, threshold, dataset, or outcome route. CUDA
+regressions now pin both failure classes.
+
+The valid clean run records:
+
+- preflight SHA-256:
+  `5551ead595a0d1ae71d4e479918176439e1a1405cbcdb11b07d9159919f5b97d`;
+- exact historical 64-update C-LR state/history fingerprints;
+- base schedule SHA-256:
+  `427eb8a311ac9a99ec7f5fd529added9035777a1146864c4ab53d68c2c1295d0`;
+- auxiliary schedule SHA-256:
+  `d109da9a1c8950ec929dd5dcdf5873e871f78c40a26cf0b5a5413e22d1550f1b`;
+- disjoint probe SHA-256:
+  `9c4c2b80017e6b4e687fc3c44c91e954021a4a2ef828e1522a55f3eebe5d0fae`;
+- raw generated-reward shared-gradient RMS `21.69279`;
+- raw auxiliary shared-gradient RMS `11.00702`;
+- mechanically fixed
+  `lambda_aux = 0.19708130570134666`.
+
+Every one of the 16 auxiliary gradient checks reaches action input, future
+predictor, temporal core, and auxiliary heads while planner reward,
+continuation, online encoder, and target encoder gradients remain exactly
+zero. The detached control has exactly zero shared-world gradient.
+
+Held-out auxiliary-probe changes after 256 updates:
+
+| Arm | BCE | Event AUROC | Sign AUROC |
+|---|---:|---:|---:|
+| G-LA, u0 | `1.45734` | `.53434` | `.41016` |
+| G-LA, u256 | `1.14777` | `.72754` | `.80469` |
+| G-LRA, u0 | `1.45734` | `.53434` | `.41016` |
+| G-LRA, u256 | `1.16020` | `.73893` | `.80078` |
+
+Both auxiliary worlds differ from their exact 256-update no-aux references.
+Both remain finite, preserve the frozen encoder, reserve 174 MiB peak VRAM,
+and keep fixed-probe decoded reward below `.009` absolute.
+
+This is only a trainability, routing, and short-horizon safety pass. It is not
+reward, ranking, or planner evidence. It authorizes the two registered
+16,000-update GRU arms and nothing larger.
