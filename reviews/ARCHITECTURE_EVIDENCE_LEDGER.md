@@ -29,6 +29,7 @@ carries no literature authority.
 | Frozen-trunk reward-head state factorial (Stage 2D) | local Stage-1 equal-update mechanism control; no claimed external reproduction | Starting from C-L, D-R refits only the shared two-hot reward head on matched real states; D-G replaces only the last two head inputs with generated K1/K2 states. All non-reward state is bit-identical | GRU-505 spent DEV: isolation exact. D-G improves K8 Pearson over D-R `+.0488 [+.0125,+.1283]` but increases false reward and worsens fork ranking; D-R leaves aggregate C-L ranking unchanged. `2026-07-18-stage2d-outcome-and-independent-review.md` | "Generated-state covariate shift affects deep reward decoding, but reward-head adaptation on fixed C-L cannot recover control." NOT proof that two-hot alone is at fault; both arms rejected |
 | Frozen C-LR categorical calibration (Stage 2E) | local control; no claimed external reproduction | Global post-hoc temperature and exact-zero-bin logit bias fitted by unweighted local two-hot NLL. Model, recurrence, continuation, and latents remain frozen | CAL selected E-TZ (`T=1.4999`, zero bias `1.2553`). Spent DEV: false zero-suffix return falls `.0640->.0418` but remains `+.0323 [.0243,.0404]` over A; K8 Pearson improves while event MAE significantly worsens and magnitude falls. `2026-07-19-stage2e-outcome-and-independent-review.md` | "C-LR's unsafe reward trade-off is not repairable by these two global calibration scalars." NOT "categorical rewards are the sole cause"; local-vs-DreamerV3 operator remains untested |
 | Matched reward-distribution operator control (Stage 2F) | DreamerV3/CDP `a851fa3` reward distribution; DRAMA/local comparator | Explicit operator axis only. F-LZ/F-DZ share zero final reward-output init because DreamerV3 uses `outscale:0`; local MLP/trunk/data remain. F-R retains historical random init, so the 3-arm design separates init and operator | F-DZ vs F-LZ significantly reduces zero-suffix false reward `-.0290 [-.0376,-.0215]` and improves K2/K4/K8 latent error; registered mechanism screen passes. Operational gate fails: false-return CI exceeds budget, K8 point conjunction fails, K0 Pearson/K1 zero-MAE/K4 continuation regress. Zero init alone significantly lowers K8 AUROC. `2026-07-19-stage2f-outcome-and-independent-review.md` | "DreamerV3/CDP reward distribution causally reduces matched false reward and changes representation, but is insufficient and not deployable." NOT "DreamerV3 heads are better"; F-DZ is rejected |
+| Shared-path sparse-reward relevance auxiliary (Stage 2G) | DeepMDP/DBC motivate reward-relevant geometry; TACO/BYOL-AC delimit stronger action-conditioned alternatives | Deliberately local and source-unfaithful: two training-only linear event/sign heads consume the exact generated planner reward input; balanced actual-action windows; shared gradients enter action/predictor/temporal path while planner heads and encoders receive none. No counterfactual negatives, BxB future matching, or per-action predictor | Seed-505 exact factorial on spent DEV. Auxiliary probes reach event/sign AUROC `.844/.957` (G-LA) and `.882/.977` (G-LRA), but both registered mechanism gates fail. Both significantly harm latent error and terminal AUROC at every depth; G-LA increases false reward over C-L, and neither improves fork ranking. `2026-07-19-stage2g-outcome-and-independent-review.md` | "Actual-action event/sign supervision is trainable but does not produce useful action geometry under this registered contract and is rejected." NOT a test or rejection of faithful TACO/BYOL-AC; NOT evidence that linear mode diversity or event separability is control uncertainty |
 | Causal fork evaluation (same-anchor 4-way, common RNG, canonical env) | Hallucination-in-WM action-sensitivity diagnostics (2606.27326); own construction | Novel protocol implementation (canonicalized Crafter, bit-exact repeats, common-union masks) | Collector end-to-end deterministic (digest regression); synthetic mask-flip regression; shuffled-trained controls statistically consistent with chance | "A controlled counterfactual action-selection protocol for Crafter" — candidate methodological contribution |
 | Control-centric objectives (action-conditioning strength, counterfactual InfoNCE, predictor update-ratio) | BYOL-AC (2406.02035); TACO (2306.13229 + pinned source); Tang (2212.03319) | Not implemented. Faithfulness pre-labelled: literal BYOL-AC per-action predictors = ~1.80M extra params (NOT trivial at 240k scale) — the realistic arm is action-modulated conditioning (FiLM/AdaLN) or small per-action heads, "BYOL-AC-motivated"; faithful TACO = batch-matched BxB InfoNCE — same-anchor true-vs-wrong-action negatives are "TACO-inspired counterfactual action ranking", gate-adjacent; Tang's two-timescale result is derived for JOINTLY learned representations — an update-ratio ablation under our frozen encoder is an empirical probe, not a theorem transplant | Literature notes 2026-07-15 + 2026-07-16 corrections; SPR/TACO/DBC sources pinned | Registered FUTURE arms, all post-step-4; source-faithful vs source-inspired variants must be labelled at registration |
 
@@ -194,3 +195,28 @@ carries no literature authority.
   representation/action-conditioning auxiliary with an actually shared
   trainable path. Mamba, FINAL, planner execution, and online policy remain
   NO-GO.
+
+## 2026-07-19 Stage-2G independent ruling
+
+- VALIDITY: PASS after replacing an uncommitted tautological provenance
+  placeholder before DEV. Exact initialization, schedules, coefficient,
+  checkpoint metadata, encoder/full-state digests, and A/C-L/C-LR raw
+  references all reproduce.
+- AUXILIARY TRAINABILITY: PASS only as a training diagnostic. Final fixed-probe
+  event/sign AUROC reaches `.844/.957` for G-LA and `.882/.977` for G-LRA.
+  This does not license action-identity or planner claims.
+- BOTH MECHANISMS: FAIL. G-LA improves K8 event AUROC over C-L but increases
+  false reward, loses ranking as a point, and significantly harms latent and
+  terminal AUROC at every depth. G-LRA does not preserve C-LR reward/ranking
+  and has the same broad temporal harm.
+- BOTH OPERATIONAL CANDIDATES: FAIL. A-relative false-return deltas are about
+  `+.037` with CI upper bounds around `+.055-.059`; ranking points remain
+  below A/C-LR.
+- INTERPRETATION: actual-action event/sign separability is not evidence of
+  counterfactual action geometry. The local auxiliary has no same-state
+  alternative-action contrast, TACO BxB future matching, or BYOL-AC
+  per-action predictor. Its rejection does not reject those sources.
+- Stop reward-head/operator/relevance tuning on spent Stage-2 DEV. Any next
+  control must be separately registered around action identity, use a
+  training-only screen plus a fresh tier, and preserve matched arms. Mamba,
+  FINAL, planner execution, and online policy remain NO-GO.

@@ -30,6 +30,18 @@ from stage2g_evaluate import (  # noqa: E402
     dev_contract,
 )
 
+EXPECTED_OUTCOME_SHA256 = {
+    "stage2g_eval_report.json": (
+        "8a294c59836d3515ffc6a5d680fa3de7fcc605080966e9f4a5f2a61bb6790f37"
+    ),
+    "stage2g_eval_raw.json": (
+        "ebfc2cbe0e04ee3e579b80d2eda7686e5a4a10eea7f555889d6de866c480f574"
+    ),
+    "stage2g_analysis.json": (
+        "5036e11d2a0b5c30d6e417a10826df085826bf0be757be630110226cf0edac57"
+    ),
+}
+
 
 def metric(
     delta: float = 0.0,
@@ -208,6 +220,51 @@ def test_evaluator_dev_contract_never_indexes_final():
 def test_evaluator_static_hashes_match_sealed_artifacts():
     for path, expected in EXPECTED_STATIC_SHA256.items():
         assert hashlib.sha256(path.read_bytes()).hexdigest() == expected
+
+
+def test_committed_outcome_artifacts_are_byte_exact():
+    for name, expected in EXPECTED_OUTCOME_SHA256.items():
+        path = ARTIFACTS / name
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == expected
+
+
+def test_committed_outcome_chain_and_rejection_are_exact():
+    report = json.loads(
+        (ARTIFACTS / "stage2g_eval_report.json").read_text()
+    )
+    analysis = json.loads(
+        (ARTIFACTS / "stage2g_analysis.json").read_text()
+    )
+    assert report["head"] == (
+        "0a0e7904aa5aa436f46e1e0e8e866048f94945d3"
+    )
+    assert report["raw_sha256"] == EXPECTED_OUTCOME_SHA256[
+        "stage2g_eval_raw.json"
+    ]
+    assert analysis["provenance"]["report_sha256"] == (
+        EXPECTED_OUTCOME_SHA256["stage2g_eval_report.json"]
+    )
+    assert analysis["provenance"]["raw_sha256"] == (
+        EXPECTED_OUTCOME_SHA256["stage2g_eval_raw.json"]
+    )
+    assert analysis["provenance"]["train_report_sha256"] == (
+        EXPECTED_STATIC_SHA256[TRAIN_REPORT]
+    )
+    gate = analysis["gate"]
+    assert gate["valid"] is True
+    assert gate["mechanism_pass"] == {
+        "G-LA": False,
+        "G-LRA": False,
+    }
+    assert gate["operational_pass"] == {
+        "G-LA": False,
+        "G-LRA": False,
+    }
+    assert gate["route"] == (
+        "REJECT_LOCAL_EVENT_SIGN_AUXILIARY; consider separately "
+        "registered conditioning or contrastive control"
+    )
+    assert gate["planner_go"] is False
 
 
 def test_training_contract_accepts_only_sealed_values():

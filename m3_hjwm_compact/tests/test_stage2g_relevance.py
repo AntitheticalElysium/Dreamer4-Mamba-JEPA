@@ -203,6 +203,25 @@ def test_generated_relevance_uses_actions_and_rewards_at_k1_k2():
     )
 
 
+def test_relevance_state_is_the_exact_planner_reward_head_input():
+    torch.manual_seed(505)
+    world = enforce_frozen_encoder(M3HJWM(tiny_config()))
+    seen = []
+
+    def capture_input(_module, inputs):
+        seen.append(inputs[0].detach().clone())
+
+    handle = world.reward.register_forward_pre_hook(capture_input)
+    try:
+        planner_state, _ = generated_planner_states(
+            world, indexed_batch()
+        )
+    finally:
+        handle.remove()
+    assert len(seen) == 2
+    assert torch.equal(planner_state, torch.stack(seen, dim=1))
+
+
 def test_pool_partition_excludes_terminal_and_mixed_windows():
     train = [
         episode("zero"),

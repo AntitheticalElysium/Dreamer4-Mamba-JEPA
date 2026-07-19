@@ -394,3 +394,63 @@ recorded digest. Their frozen encoder digests are identical.
 The probe improvement confirms that the auxiliary remains trainable at full
 budget. It is not evidence of reward safety or control usefulness. No DEV or
 FINAL artifact was imported by the training modules.
+
+## DEV outcome — 2026-07-19
+
+Status: **VALID NEGATIVE; reject the local event/sign auxiliary**
+
+The evaluator and gates were sealed at
+`0a0e7904aa5aa436f46e1e0e8e866048f94945d3` before DEV access. A placeholder
+tautology in an uncommitted validity draft was found and replaced before that
+seal; the committed gate pins the exact initialization, schedules,
+coefficient, checkpoints, encoder, and full state digests.
+
+A, C-L, and C-LR reproduce every committed Stage-2C raw block exactly. Every
+world remains bit-identical during evaluation. The analysis is deterministic
+and reproduced byte-for-byte.
+
+| Arm | K8 AUROC | K8 Pearson | K8 latent error | K8 terminal AUROC | Zero-suffix abs return | Chosen-random |
+|---|---:|---:|---:|---:|---:|---:|
+| A | `.6711` | `.1615` | `.0560` | `.8701` | `.00947` | `.2770` |
+| C-L | `.6775` | `.0552` | `.0519` | `.9186` | `.00638` | `.1056` |
+| C-LR | `.7359` | `.1892` | `.0534` | `.9139` | `.06404` | `.2754` |
+| G-LA | `.7252` | `.0982` | `.0637` | `.8214` | `.04656` | `.0627` |
+| G-LRA | `.7197` | `.1007` | `.0638` | `.8220` | `.04743` | `.1611` |
+
+G-LA improves K8 event AUROC versus C-L by
+`+.04776 [+.01083,+.08356]`, but increases false reward by
+`+.04017 [+.01611,+.06689]`, does not improve ranking, and significantly
+harms latent error and terminal AUROC at every depth.
+
+G-LRA does not improve K8 AUROC/Pearson or ranking versus C-LR and also
+significantly harms latent error and terminal AUROC at every depth. Its
+false-reward point improves versus C-LR, but the complete mechanism still
+fails.
+
+Both candidates exceed the A-relative false-return budget:
+
+- G-LA: `+.03709 [+.01981,+.05456]`;
+- G-LRA: `+.03796 [+.01557,+.05885]`.
+
+Registered decisions:
+
+- G-LA mechanism: **FAIL**;
+- G-LRA mechanism: **FAIL**;
+- G-LA operational: **FAIL**;
+- G-LRA operational: **FAIL**;
+- route: **REJECT_LOCAL_EVENT_SIGN_AUXILIARY**;
+- planner/Mamba/FINAL/online policy: **NO-GO**.
+
+Artifacts:
+
+- evaluation report:
+  `8a294c59836d3515ffc6a5d680fa3de7fcc605080966e9f4a5f2a61bb6790f37`;
+- evaluation raw:
+  `ebfc2cbe0e04ee3e579b80d2eda7686e5a4a10eea7f555889d6de866c480f574`;
+- analysis:
+  `5036e11d2a0b5c30d6e417a10826df085826bf0be757be630110226cf0edac57`.
+
+The auxiliary probe learned event/sign labels strongly, but those labels did
+not imply useful action identity. The full independent audit and source
+boundary are in
+`reviews/2026-07-19-stage2g-outcome-and-independent-review.md`.
