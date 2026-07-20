@@ -68,11 +68,28 @@ checkpoint, hashes, raw rows, and commands are recorded in
 
 The imagined exhaustive planner is separately positive but weaker: 44.87
 versus 19.00 random on 30 fresh seeds, paired delta +25.87
-[15.80, 36.73]. It misses its deliberately stricter absolute mean-return gate
-of 50. Therefore the project now has a working learned control baseline, but
-does not yet claim that imagination planning itself is solved.
+[15.80, 36.73].
 
-This remains a D4-style reduced baseline, not a full Dreamer-4 reproduction.
-The working policy is behavior-cloned from demonstrations; it is not an
-actor/value pair trained in imagination. Mamba and CDP/JEPA are still disabled,
-so subsequent swaps have a genuine positive control.
+The missing Dreamer-4 actor/value phase is now implemented as a separate
+source-pinned runner. It copies the actor exactly from BC, freezes an exact BC
+prior and the complete world, generates one 32-decision rollout from each
+replay context with four shortcut steps, learns a zero-output symexp-twohot
+value head from TD-lambda targets, and updates the actor with balanced PMPO
+plus reverse `KL(actor || prior)`. It never calls the shooting planner.
+
+The initial batch-16 checkpoint passed development but failed its first sealed
+set and remains recorded as a negative result. Correcting only replay-context
+diversity to the inspected Dreamer-4 reproduction's batch of 64 produced the
+selected 250-update actor. On 100 fixed fresh seeds, direct greedy execution
+scores **281.33** versus **249.32** for the paired frozen BC policy and
+**18.32** random. The paired actor-minus-BC delta is
+**+32.01 [6.66, 57.94]**. Actor, value, training history, and frozen
+invariants reproduce exactly.
+
+This completes the reduced Transformer Dreamer-4-style control baseline. It
+does not reproduce the paper's scale, Minecraft task interface, 192-frame
+context, or `tau_ctx=0.1` context corruption. The frozen world still predicts
+continuation near one in imagined rollouts, so this result establishes a
+working end-to-end actor/value baseline, not that CartPole imagination is
+perfectly calibrated. Mamba and CDP/JEPA remain disabled and can now be
+introduced one at a time against a positive actor-critic control.

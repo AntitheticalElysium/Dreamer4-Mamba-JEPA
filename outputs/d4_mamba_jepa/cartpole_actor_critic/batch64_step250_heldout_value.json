@@ -1,0 +1,141 @@
+{
+  "claim_boundary": "finite value predictions and TD-lambda targets on fresh imagined trajectories from a separate replay; no update",
+  "config": {
+    "batch_size": 64,
+    "batches": 8,
+    "context": 8,
+    "denoise_steps": 4,
+    "gamma": 0.997,
+    "horizon": 32,
+    "lambda": 0.95,
+    "seed": 20260799
+  },
+  "format": "d4_lite_actor_value_heldout_v1",
+  "frozen_hashes_after": {
+    "actor": "74ac5dbb7cf968ecfe8c116048a7c5a9a0e8e14b758f6127ae33442f23c2fa6e",
+    "prior": "c7729cadea75bb239b13b584d51898956fcee2a0355d3f53d0576577b662ccbb",
+    "value": "754528ea67a070139276b3f46e26b29fde44c9fca231581ffca8e659074a4856",
+    "world": "5e8615c2bf28d8d040667cc5754a28a826819b48fdd0a818a1c7cf3535e24ab5"
+  },
+  "frozen_hashes_before": {
+    "actor": "74ac5dbb7cf968ecfe8c116048a7c5a9a0e8e14b758f6127ae33442f23c2fa6e",
+    "prior": "c7729cadea75bb239b13b584d51898956fcee2a0355d3f53d0576577b662ccbb",
+    "value": "754528ea67a070139276b3f46e26b29fde44c9fca231581ffca8e659074a4856",
+    "world": "5e8615c2bf28d8d040667cc5754a28a826819b48fdd0a818a1c7cf3535e24ab5"
+  },
+  "metrics": {
+    "mean_continue": 0.9999953508377075,
+    "mean_return": 52.46549606323242,
+    "mean_reward": 1.9997408390045166,
+    "mean_value": 29.520582914352417,
+    "negative_advantages": 1040,
+    "positive_advantages": 15344,
+    "return_std": 13.221686005592346,
+    "value_cross_entropy": 3.13596773147583,
+    "value_mae": 24.005067110061646
+  },
+  "provenance": {
+    "actor_checkpoint": "outputs/d4_mamba_jepa/cartpole_actor_critic/batch64_step250_repeat.pt",
+    "actor_checkpoint_sha256": "c8d99bd0598a19d6e23fafa34834f12cfa750eb02b2e7f9ca18f8bfa29e4a1c3",
+    "actor_training_implementation_sha256": "c84ef6ef714ae12cda38527c411cf26b8f96944a3907e21883d38f9fb7596014",
+    "analysis_script": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/d4_actor_value_heldout.py",
+    "analysis_script_sha256": "28cc8ee6bc2a4fb86c0293da94d0b77a5ff9cdd45bbe36fa819a12fd8c57002d",
+    "bc_checkpoint_sha256": "c57f9bbf688e5d54cb6f50df7b2ea87110de58860a73ae901931970379ba80bd",
+    "heldout_replay": "outputs/d4_mamba_jepa/cartpole_baseline_v3/dev_replay.pt",
+    "heldout_replay_episodes": 70,
+    "heldout_replay_sha256": "1ecaa877829913f48bbfb24d5a2c9e53a64261cfac80e11d3aa2aa3589d44747",
+    "world_checkpoint": "outputs/d4_mamba_jepa/cartpole_baseline_v3/run_seed20260722/world.pt",
+    "world_checkpoint_sha256": "a63bb1fe31b69f8b24e68534401fd18be50b36bb06fb3fedbac7f9231c32551d"
+  },
+  "rows": [
+    {
+      "mean_continue": 0.9999924898147583,
+      "mean_return": 50.745635986328125,
+      "mean_reward": 1.9997824430465698,
+      "mean_value": 28.330915451049805,
+      "negative_advantages": 161,
+      "positive_advantages": 1887,
+      "return_std": 14.21570110321045,
+      "value_cross_entropy": 3.176464557647705,
+      "value_mae": 23.82183265686035
+    },
+    {
+      "mean_continue": 0.9999969005584717,
+      "mean_return": 53.78707504272461,
+      "mean_reward": 1.999740719795227,
+      "mean_value": 30.59060287475586,
+      "negative_advantages": 126,
+      "positive_advantages": 1922,
+      "return_std": 12.327919960021973,
+      "value_cross_entropy": 3.1552207469940186,
+      "value_mae": 24.14051055908203
+    },
+    {
+      "mean_continue": 0.9999974966049194,
+      "mean_return": 54.17573928833008,
+      "mean_reward": 1.999705195426941,
+      "mean_value": 30.874635696411133,
+      "negative_advantages": 111,
+      "positive_advantages": 1937,
+      "return_std": 12.299942016601562,
+      "value_cross_entropy": 3.132762908935547,
+      "value_mae": 24.195154190063477
+    },
+    {
+      "mean_continue": 0.9999940395355225,
+      "mean_return": 51.56339645385742,
+      "mean_reward": 1.9997401237487793,
+      "mean_value": 28.04156494140625,
+      "negative_advantages": 97,
+      "positive_advantages": 1951,
+      "return_std": 14.688921928405762,
+      "value_cross_entropy": 3.2621023654937744,
+      "value_mae": 24.168540954589844
+    },
+    {
+      "mean_continue": 0.9999984502792358,
+      "mean_return": 54.04463195800781,
+      "mean_reward": 1.9996914863586426,
+      "mean_value": 30.795684814453125,
+      "negative_advantages": 144,
+      "positive_advantages": 1904,
+      "return_std": 10.786953926086426,
+      "value_cross_entropy": 2.9142167568206787,
+      "value_mae": 24.427453994750977
+    },
+    {
+      "mean_continue": 0.9999974966049194,
+      "mean_return": 51.89822006225586,
+      "mean_reward": 1.9997836351394653,
+      "mean_value": 28.51218032836914,
+      "negative_advantages": 116,
+      "positive_advantages": 1932,
+      "return_std": 13.563651084899902,
+      "value_cross_entropy": 3.0988664627075195,
+      "value_mae": 24.34035873413086
+    },
+    {
+      "mean_continue": 0.9999886751174927,
+      "mean_return": 51.91643524169922,
+      "mean_reward": 1.9997557401657104,
+      "mean_value": 29.14615821838379,
+      "negative_advantages": 110,
+      "positive_advantages": 1938,
+      "return_std": 14.0678129196167,
+      "value_cross_entropy": 3.181649923324585,
+      "value_mae": 23.544706344604492
+    },
+    {
+      "mean_continue": 0.9999972581863403,
+      "mean_return": 51.59283447265625,
+      "mean_reward": 1.9997273683547974,
+      "mean_value": 29.872920989990234,
+      "negative_advantages": 175,
+      "positive_advantages": 1873,
+      "return_std": 13.822585105895996,
+      "value_cross_entropy": 3.1664581298828125,
+      "value_mae": 23.401979446411133
+    }
+  ],
+  "status": "PASS"
+}

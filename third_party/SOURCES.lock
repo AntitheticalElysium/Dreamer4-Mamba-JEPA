@@ -2,6 +2,7 @@
 # Regenerate: git -C <dir> rev-parse HEAD
 
 corl-team__nedreamer  https://github.com/corl-team/nedreamer.git  11cd3a978b83743f795cbfa81c2e095344912c17  
+danijar__dreamerv3  https://github.com/danijar/dreamerv3.git  e3f02248693a79dc8b0ebd62c93683888ddaccfe
 danijar__crafter  https://github.com/danijar/crafter.git  e04542a2159f1aad3d4c5ad52e8185717380ee3a  
 edwhu__dreamer4-jax  https://github.com/edwhu/dreamer4-jax.git  8144b940d801971f12ec5633553b95001e555949  
 Farama-Foundation__Gymnasium  https://github.com/Farama-Foundation/Gymnasium.git  a923da5d4415a1aa5195d99341069da5e16deed7

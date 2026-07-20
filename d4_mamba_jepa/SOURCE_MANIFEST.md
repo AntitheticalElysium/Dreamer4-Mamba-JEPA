@@ -16,6 +16,7 @@ source checkouts were clean and detached at the recorded revisions.
 | Environment | `danijar/crafter` | `e04542a2159f1aad3d4c5ad52e8185717380ee3a` | MIT | `third_party/sources/danijar__crafter` | Use official environment; wrap only observation layout and deterministic snapshot iteration |
 | Small control baseline | `Farama-Foundation/Gymnasium` | `a923da5d4415a1aa5195d99341069da5e16deed7` (`v1.2.2`) | MIT | `third_party/sources/Farama-Foundation__Gymnasium` | Use official `CartPole-v1` dynamics, reward, termination, and RGB renderer; local action repeat and pixel views are separately registered deviations |
 | Full Dreamer-4 algorithm reference | `edwhu/dreamer4-jax` | `8144b940d801971f12ec5633553b95001e555949` | No license file found in inspected checkout | `third_party/sources/edwhu__dreamer4-jax` | Read-only algorithm reference; no code copied |
+| DreamerV3 actor/value reference | `danijar/dreamerv3` | `e3f02248693a79dc8b0ebd62c93683888ddaccfe` | MIT | `third_party/sources/danijar__dreamerv3` | Read-only reference for categorical value learning, TD-lambda indexing, optimizer defaults, and actor/value gradient boundaries |
 
 ## Byte-level source identities
 
@@ -41,6 +42,11 @@ source checkouts were clean and detached at the recorded revisions.
 | Existing 20-episode held-out replay | `709e9646ce5ee1cf36ef4118f6b5d4482751a300b8c97186929af6f0271b27ad` |
 | Gymnasium `gymnasium/envs/classic_control/cartpole.py` | `b758e3286711a2c44b0817265412c9fab1dce8b1b385e2126bc710ceedd47378` |
 | Gymnasium `LICENSE` | `7dacaa9772e856aee6943b32ef663d3634d91d72ec7bbc74d136943673f91e18` |
+| Dreamer 4 paper `2509.24527v1.pdf` | `8655cce4bf12ce6210f6694f83c1a723c7acd7579214ca3ebc57c4394d0b1aeb` |
+| Dreamer-4 JAX `scripts/train_policy.py` | `d16d9e6ba220664afbb73e7f4f80056371dd6fffb3c592d2d09a7ef2b840d7d1` |
+| Dreamer-4 JAX `dreamer/imagination.py` | `562bab8c4bd5d465c8661022cefdeca37cce419b52e16c5d63db8ddca0b4d4ac` |
+| DreamerV3 `dreamerv3/agent.py` | `adce8e4274bc098c218bf9a20fd3327545f0ad7d850b5fe328597382e91b5269` |
+| DreamerV3 `dreamerv3/configs.yaml` | `9dff9c7062e3e33951cb54c6dd4b598aaf7e56e18e2cff39c812eaa797bcfcfc` |
 
 The installed `.venv` copies of `mamba_ssm/modules/mamba2.py` and
 `mamba_ssm/utils/determinism.py` are byte-identical to the pinned official
@@ -58,6 +64,8 @@ entered in `DEVIATION_LEDGER.md` first:
 - shortcut signal and step embeddings;
 - flow output parameterization;
 - symlog/symexp reward representation;
+- Dreamer-4 PMPO sign-balanced policy loss and reverse behavioral-prior KL;
+- TD-lambda transition indexing and categorical value targets;
 - official Mamba-2 recurrence and cache tensors;
 - Crafter action IDs, reward, termination, and achievement statistics.
 - CartPole dynamics, action IDs, reward, termination, time limit, and renderer.

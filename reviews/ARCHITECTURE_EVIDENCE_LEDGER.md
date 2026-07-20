@@ -33,6 +33,7 @@ carries no literature authority.
 | Causal fork evaluation (same-anchor 4-way, common RNG, canonical env) | Hallucination-in-WM action-sensitivity diagnostics (2606.27326); own construction | Novel protocol implementation (canonicalized Crafter, bit-exact repeats, common-union masks) | Collector end-to-end deterministic (digest regression); synthetic mask-flip regression; shuffled-trained controls statistically consistent with chance | "A controlled counterfactual action-selection protocol for Crafter" — candidate methodological contribution |
 | Source-pinned D4-lite CartPole control baseline | MMBench2 `3dda6ea` tokenizer/dynamics/reward/BC head; Gymnasium `v1.2.2` CartPole | 64×64 reduced scale; discrete actions; action repeat 2; pixel-only full-foreground/zoom/frame-difference adapter; local continuation head; corrected task heads read the same noised-flow agent tokens as upstream reward training | World action shuffle raises held-out flow loss 18.16%; exhaustive imagined planner 44.87 vs 19.00 random on 30 fresh seeds, paired +25.87 [15.80,36.73]; frozen BC policy 288.70 vs 17.60 random, 30/30 wins, paired +271.10 [234.07,309.77]; substantive evaluation exact on repeat | "A positive, reproducible small D4-style pixel-control baseline and action-sensitive imagined planner." NOT full Dreamer 4, NOT raw-RGB transfer, NOT imagination-trained policy, NOT evidence for Mamba or JEPA |
 | D4-lite categorical BC policy | MMBench2 `PolicyHeadMTP` attention pooling, MLP, small-output initialization, and detached-head training boundary | Categorical logits replace continuous tanh means; trained on deterministic CartPole balance demonstrations while tokenizer/world stay frozen | 87.04% held-out action accuracy; fresh 30-seed return 288.70, min 63, max 500; policy tensors bit-exact on retraining | "Source-shaped categorical behavior-cloning control head over the frozen world representation." NOT Dreamer actor/value learning or model-based policy optimization |
+| D4-lite imagination actor-critic | Dreamer 4 Section 3.3 equations 10-11; DreamerV3 categorical critic/TD-lambda; inspected `edwhu/dreamer4-jax` actor runner | Actor copied exactly from BC; frozen BC prior and full world; one H32/K4 rollout per distinct replay context; zero-output symexp-twohot value; PMPO alpha .5 plus reverse prior KL beta .3; local batch 64, context 8, binary actions, direct greedy execution | Batch-16 selected checkpoint rejected on first sealed set (208.60 vs 242.60 BC, delta -34.00 [-71.87,3.77]). Source-aligned batch-64/250-update checkpoint: DEV 288.50 vs 243.67 BC; fixed fresh 100 seeds 281.33 vs 249.32 BC and 18.32 random; paired actor-BC +32.01 [6.66,57.94]. Actor/value/history bit-identical on retraining; first 30 executed rows exact on repeat; frozen world/prior hashes exact | "Working reduced Transformer Dreamer-4-style imagination-trained actor/value baseline at BC parity." NOT paper-scale reproduction, NOT proof of calibrated terminal imagination, NOT evidence for Mamba or JEPA |
 | Control-centric objectives (action-conditioning strength, counterfactual InfoNCE, predictor update-ratio) | BYOL-AC (2406.02035); TACO (2306.13229 + pinned source); Tang (2212.03319) | Not implemented. Faithfulness pre-labelled: literal BYOL-AC per-action predictors = ~1.80M extra params (NOT trivial at 240k scale) — the realistic arm is action-modulated conditioning (FiLM/AdaLN) or small per-action heads, "BYOL-AC-motivated"; faithful TACO = batch-matched BxB InfoNCE — same-anchor true-vs-wrong-action negatives are "TACO-inspired counterfactual action ranking", gate-adjacent; Tang's two-timescale result is derived for JOINTLY learned representations — an update-ratio ablation under our frozen encoder is an empirical probe, not a theorem transplant | Literature notes 2026-07-15 + 2026-07-16 corrections; SPR/TACO/DBC sources pinned | Registered FUTURE arms, all post-step-4; source-faithful vs source-inspired variants must be labelled at registration |
 
 | Full-grid / no-bypass temporal family (SPRINT CANDIDATE) | DRAMA-inspired input stem (mixer_seq_simple.py:188 flattened-latent-through-stem invariant only); own construction otherwise | 66x64 tokens -> Linear(4224->256) stem -> 2 recurrent blocks (Mamba-2 d_state=64/headdim=64, or width-261 GRU control) -> LayerNorm -> Linear(256->4224) -> reshape; NO dense bypass; ONE global sequence state, not 66 dense states | Exploratory screen: 6 runs (3 seeds x 2 backends) sep 0.0069-0.0135, all above every pooled baseline (0.0030-0.0050), controls at chance; mechanism screen: no single factor identified (capacity 53%, cache-free full-grid 53%, bypass-restored 34% of the gap; bypass restoration hurts pairwise in both seeds); night 2-5x weaker than day | "Best tested candidate; gain distributed across capacity, mixing, recurrence, and bypass removal" — NOT a confirmed default (fresh-seed confirmation deferred; 2026-07-18 sprint uses it as CANDIDATE with matched GRU control) |
@@ -243,3 +244,31 @@ carries no literature authority.
   checkpoint. Each may now be introduced one at a time against this exact
   Transformer/frozen-representation positive control; the CartPole pixel
   adapter and BC data must remain matched.
+
+## 2026-07-20 D4-lite imagination actor-critic ruling
+
+- IMPLEMENTATION: PASS. The actor is initialized tensor-exactly from BC; an
+  exact frozen BC copy is the behavioral prior; the tokenizer, Transformer
+  dynamics, reward, and continuation heads remain frozen. One sampled rollout
+  is generated per replay context. The value uses categorical symlog two-hot
+  TD-lambda targets and the actor uses the Dreamer-4 PMPO equation plus reverse
+  prior KL. Direct execution cannot route to the shooting planner.
+- SMALL-BATCH OUTCOME: REJECTED and retained. Batch 16/1,000 updates passed
+  development mean parity but failed the first 30-seed sealed set: 208.60
+  versus 242.60 paired BC, delta -34.00 `[-71.87,3.77]`.
+- SOURCE-ALIGNED CORRECTION: PASS. The inspected actor runner uses 64 contexts
+  per update, while measured batch-16 peak VRAM was only 63 MB. Changing only
+  batch diversity to 64 selected the registered 250-update rung.
+- EXECUTED CONTROL: PASS. On fixed fresh seeds `980000:980100`, the direct
+  actor reaches 281.33, paired frozen BC 249.32, and random 18.32. Paired
+  actor-minus-BC is +32.01 with bootstrap CI `[6.66,57.94]`; it therefore
+  clears both mean parity and the -25 noninferiority bound.
+- REPRODUCIBILITY: PASS. Independent retraining produces bit-identical actor,
+  value, prior, optimizer history, and diagnostic rows. The first 30
+  substantive executed rows repeat exactly; the full 100-seed repeat is
+  separately hash-pinned.
+- CLAIM BOUNDARY: this is the first complete reduced Transformer
+  Dreamer-4-style world/BC/actor/value pipeline in the project. It is not a
+  faithful 2B-parameter Minecraft reproduction. Imagined continuation remains
+  near one, so the result does not establish calibrated failure prediction or
+  large improvement beyond the BC prior.

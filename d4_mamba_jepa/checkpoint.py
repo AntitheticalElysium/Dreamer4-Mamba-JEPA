@@ -32,6 +32,7 @@ IMPLEMENTATION_FILES = (
     "checkpoint.py",
     "crafter_preflight.py",
     "cartpole_baseline.py",
+    "imagination_actor_critic.py",
 )
 
 
