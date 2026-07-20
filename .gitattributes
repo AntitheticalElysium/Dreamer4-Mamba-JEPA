@@ -1,0 +1,4 @@
+# Preserve the exact checkpoint-pinned source bytes in these three files.
+d4_mamba_jepa/__init__.py whitespace=-blank-at-eof
+d4_mamba_jepa/rollout.py whitespace=-blank-at-eof
+d4_mamba_jepa/temporal.py whitespace=-blank-at-eof
