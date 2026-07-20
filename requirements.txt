@@ -32,7 +32,8 @@ torchao
 transformers
 
 # --- RL environments (real-data sources for the probe) ---
-gymnasium[atari,accept-rom-license]==1.2.2
+gymnasium[atari,classic-control,accept-rom-license]==1.2.2
+Pillow==11.3.0
 
 # --- Probe / analysis ---
 scipy            # Spearman rho, ROC

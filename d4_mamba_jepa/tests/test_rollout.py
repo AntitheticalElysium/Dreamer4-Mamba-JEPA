@@ -75,6 +75,36 @@ def test_random_shooting_covers_actions_and_returns_finite_scores():
     assert torch.isfinite(result.scores).all()
 
 
+def test_full_enumeration_covers_every_binary_plan_once():
+    torch.manual_seed(57)
+    cfg = tiny_config(n_actions=2)
+    world = D4LiteWorld(cfg).eval()
+    context = torch.randn(1, 2, cfg.n_spatial, cfg.d_spatial)
+    actions = torch.tensor([[-1, 0]])
+    result = categorical_random_shooting(
+        world,
+        context_packed=context,
+        context_led_to_actions=actions,
+        horizon=2,
+        candidates=4,
+        schedule=shortcut_schedule(cfg.k_max, cfg.k_max),
+        generator=torch.Generator().manual_seed(109),
+        common_random_numbers=True,
+        enumerate_all=True,
+    )
+    assert result.plans.tolist() == [[0, 0], [0, 1], [1, 0], [1, 1]]
+    with pytest.raises(ValueError, match="requires 4 candidates"):
+        categorical_random_shooting(
+            world,
+            context_packed=context,
+            context_led_to_actions=actions,
+            horizon=2,
+            candidates=3,
+            schedule=shortcut_schedule(cfg.k_max, cfg.k_max),
+            enumerate_all=True,
+        )
+
+
 @pytest.mark.skipif(
     not torch.cuda.is_available() or importlib.util.find_spec("mamba_ssm") is None,
     reason="official mamba_ssm and CUDA are required",

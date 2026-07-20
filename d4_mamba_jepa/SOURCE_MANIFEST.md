@@ -1,7 +1,7 @@
 # Source manifest
 
 Audit date: 2026-07-20
-Workspace baseline: `d1ccfa1`
+Workspace baseline: `6796b33`
 
 Remote `HEAD` was checked on the audit date for every source below. The local
 source checkouts were clean and detached at the recorded revisions.
@@ -14,6 +14,7 @@ source checkouts were clean and detached at the recorded revisions.
 | JEPA-style continuous deterministic prediction | `fmi-basel/Dreamer-CDP` | `a851fa3e3d70b624b094ee1810ad4bb602346092` | MIT | `third_party/sources/fmi-basel__Dreamer-CDP` | Reuse predictor, stop-gradient target, cosine loss, and learning-rate separation as source references; do not transplant the RSSM |
 | Temporal selective state-space layer | `state-spaces/mamba` | `f577286d052741c35d39cd43bdc3fad27120f22c` | Apache-2.0 | `third_party/sources/state-spaces__mamba` | Call official `Mamba2`, `allocate_inference_cache`, and `step`; no local kernel fork |
 | Environment | `danijar/crafter` | `e04542a2159f1aad3d4c5ad52e8185717380ee3a` | MIT | `third_party/sources/danijar__crafter` | Use official environment; wrap only observation layout and deterministic snapshot iteration |
+| Small control baseline | `Farama-Foundation/Gymnasium` | `a923da5d4415a1aa5195d99341069da5e16deed7` (`v1.2.2`) | MIT | `third_party/sources/Farama-Foundation__Gymnasium` | Use official `CartPole-v1` dynamics, reward, termination, and RGB renderer; local action repeat and pixel views are separately registered deviations |
 | Full Dreamer-4 algorithm reference | `edwhu/dreamer4-jax` | `8144b940d801971f12ec5633553b95001e555949` | No license file found in inspected checkout | `third_party/sources/edwhu__dreamer4-jax` | Read-only algorithm reference; no code copied |
 
 ## Byte-level source identities
@@ -38,11 +39,14 @@ source checkouts were clean and detached at the recorded revisions.
 | Existing canonical Crafter wrapper | `a10083a7eb990f65b53955b7e79f5c2491572be8c3961d4717b3a66b309bc2ea` |
 | Existing 40k transition replay | `c55257feb2f903d32806b2694dd35e049fcd48397d3525b505c9dd715c455dad` |
 | Existing 20-episode held-out replay | `709e9646ce5ee1cf36ef4118f6b5d4482751a300b8c97186929af6f0271b27ad` |
+| Gymnasium `gymnasium/envs/classic_control/cartpole.py` | `b758e3286711a2c44b0817265412c9fab1dce8b1b385e2126bc710ceedd47378` |
+| Gymnasium `LICENSE` | `7dacaa9772e856aee6943b32ef663d3634d91d72ec7bbc74d136943673f91e18` |
 
 The installed `.venv` copies of `mamba_ssm/modules/mamba2.py` and
 `mamba_ssm/utils/determinism.py` are byte-identical to the pinned official
 sources. The installed Crafter `env.py`, `engine.py`, and `worldgen.py` are
-likewise byte-identical to the pinned checkout.
+likewise byte-identical to the pinned checkout. The installed Gymnasium
+`1.2.2` CartPole source is byte-identical to the pinned `v1.2.2` checkout.
 
 ## Upstream code that remains authoritative
 
@@ -56,3 +60,4 @@ entered in `DEVIATION_LEDGER.md` first:
 - symlog/symexp reward representation;
 - official Mamba-2 recurrence and cache tensors;
 - Crafter action IDs, reward, termination, and achievement statistics.
+- CartPole dynamics, action IDs, reward, termination, time limit, and renderer.

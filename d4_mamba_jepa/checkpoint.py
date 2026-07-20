@@ -31,6 +31,7 @@ IMPLEMENTATION_FILES = (
     "rollout.py",
     "checkpoint.py",
     "crafter_preflight.py",
+    "cartpole_baseline.py",
 )
 
 
@@ -67,8 +68,12 @@ def _atomic_save(payload: dict, target: Path) -> str:
             delete=False,
         ) as handle:
             temporary_name = handle.name
-        torch.save(payload, temporary_name)
-        with open(temporary_name, "rb") as handle:
+        # Passing a path makes PyTorch embed the random temporary basename in
+        # the ZIP archive. A binary handle gives the stable ``archive/`` root,
+        # so identical state produces identical checkpoint bytes.
+        with open(temporary_name, "wb") as handle:
+            torch.save(payload, handle)
+            handle.flush()
             os.fsync(handle.fileno())
         os.replace(temporary_name, target)
         temporary_name = None

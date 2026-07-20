@@ -69,3 +69,23 @@ def test_optimizer_groups_cover_every_trainable_parameter_once():
         id(parameter) for parameter in expected
     }
     assert len(grouped) == len({id(parameter) for parameter in grouped})
+
+
+def test_task_heads_share_the_noised_flow_forward(monkeypatch):
+    torch.manual_seed(89)
+    cfg = tiny_config()
+    world = D4LiteWorld(cfg)
+    batch = moving_square_batch(cfg, batch_size=2, device="cpu", seed=17)
+
+    def reject_second_clean_forward(*args, **kwargs):
+        raise AssertionError("world_loss made a second clean task-head pass")
+
+    monkeypatch.setattr(world, "forward_dynamics", reject_second_clean_forward)
+    loss, _ = world_loss(
+        world,
+        batch,
+        normalizer=WorldLossNormalizer(),
+    )
+    loss.backward()
+    assert world.reward_head.out.weight.grad is not None
+    assert world.continuation_head.out.weight.grad is not None

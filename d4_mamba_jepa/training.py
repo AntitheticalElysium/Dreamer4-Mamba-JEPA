@@ -141,7 +141,7 @@ def world_loss(
     # encoder gradients enter only through the registered CDP and
     # reconstruction routes below.
     detached = encoded.packed.detach()
-    flow, flow_metrics = shortcut_flow_loss(
+    flow, flow_metrics, agent_tokens = shortcut_flow_loss(
         world.dynamics,
         clean=detached,
         led_to_actions=batch.led_to_actions,
@@ -149,24 +149,14 @@ def world_loss(
         bootstrap_rows=bootstrap_rows,
         global_step=global_step,
         bootstrap_start=bootstrap_start,
+        return_agent_tokens=True,
     )
 
-    B, T = detached.shape[:2]
-    steps = torch.full(
-        (B, T),
-        world.cfg.max_step_index,
-        device=detached.device,
-        dtype=torch.long,
-    )
-    signals = torch.full(
-        (B, T),
-        world.cfg.k_max,
-        device=detached.device,
-        dtype=torch.long,
-    )
-    _, agent_tokens = world.forward_dynamics(
-        detached, batch.led_to_actions, steps, signals
-    )
+    # MMBench2 trains the reward head from the agent tokens returned by the
+    # same noised shortcut-flow forward pass. Reusing those tokens is essential:
+    # at deployment the head reads a partially denoised generated slot, not a
+    # second clean-latent pass. The local continuation head follows that same
+    # routing.
     heads = world.forward_task_heads(agent_tokens)
     reward = reward_mtp_loss(
         heads["reward_logits"],

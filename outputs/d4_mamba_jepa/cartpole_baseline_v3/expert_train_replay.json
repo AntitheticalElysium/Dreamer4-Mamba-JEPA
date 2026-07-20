@@ -1,0 +1,52 @@
+{
+  "collection": {
+    "epsilon": 0.0,
+    "noisy_balance_episodes": 40,
+    "noisy_balance_rule": "action = int(theta + 0.5 * theta_dot > 0)",
+    "privileged_state_used_only_for_replay_collection": true,
+    "random_episodes": 1,
+    "seed_base": 850000
+  },
+  "collection_seconds": 111.00950370699866,
+  "episodes": 41,
+  "format": "d4_lite_cartpole_pixels_v1",
+  "path": "outputs/d4_mamba_jepa/cartpole_baseline_v3/expert_train_replay.pt",
+  "policy_lengths": {
+    "noisy_balance": {
+      "episodes": 40,
+      "maximum": 250,
+      "mean": 250.0,
+      "minimum": 250
+    },
+    "random": {
+      "episodes": 1,
+      "maximum": 6,
+      "mean": 6.0,
+      "minimum": 6
+    }
+  },
+  "preprocessing": {
+    "action_repeat": 2,
+    "cart_localization": "exact RGB [129,132,203], no simulator state",
+    "foreground": "distance from white RGB background plus 3px max filter",
+    "output_resolution_chw": [
+      3,
+      64,
+      64
+    ],
+    "resize": "Pillow bilinear",
+    "source_resolution_hwc": [
+      400,
+      600,
+      3
+    ],
+    "view": "channels = full foreground, 256px pixel-localized zoom, full-scene frame difference"
+  },
+  "sha256": "3f3e5969c7cd12f8e9ff2f48a1a6e10e48eadd06f89083f06ee1efa493d5ef9d",
+  "source": {
+    "cartpole_commit": "a923da5d4415a1aa5195d99341069da5e16deed7",
+    "cartpole_sha256": "b758e3286711a2c44b0817265412c9fab1dce8b1b385e2126bc710ceedd47378",
+    "environment_id": "CartPole-v1"
+  },
+  "transitions": 10006
+}

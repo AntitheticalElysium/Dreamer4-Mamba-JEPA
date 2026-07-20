@@ -48,17 +48,31 @@ not reconstruction-free.
 
 ## Current state
 
-The source and implementation gates, four-arm CUDA smokes, controlled overfit,
-a real-Crafter `T-BASE` preflight, and the matched real-Crafter Stage M1 have
-run. The baseline demonstrably uses actions and can execute the random-shooting
-planner. M-BASE passes every frozen relative feasibility gate against T-BASE,
-and both arms reproduce exactly under the pinned deterministic contract.
+There is now a positive, reproducible executed-control baseline before either
+research modification:
 
-Exact results and claim boundaries are recorded in
-`reviews/2026-07-20-d4-mamba-jepa-reboot-implementation-and-preflight.md` and
-`reviews/2026-07-20-d4-stage-m1-matched-backend-outcome.md`.
+- official, source-pinned Gymnasium `CartPole-v1`;
+- the Transformer tokenizer and shortcut world model only (`T-BASE`);
+- a 20,000-update world checkpoint;
+- a categorical port of the upstream MMBench2 BC policy head, trained with the
+  tokenizer and world frozen;
+- 30 fresh evaluation seeds, repeated exactly.
 
-Both backends still fail terminal calibration and have weak K=4 generated
-reward ranking. Mamba is viable, not superior: it is slower and uses more
-memory at sequence length 16. CDP has not yet been trained on real Crafter.
-The next isolated stage is the matched `BASE`-versus-`CDP` factorial.
+The frozen pixel policy averages **288.70** return versus **17.60** for matched
+uniform random, wins all 30 pairs, and has a paired bootstrap delta of
+**+271.10 [234.07, 309.77]**. Its held-out demonstration action accuracy is
+87.04%. The repeated evaluation has identical substantive rows, summaries,
+confidence interval, and gate decision. The world checkpoint, policy
+checkpoint, hashes, raw rows, and commands are recorded in
+`reviews/2026-07-20-d4-lite-cartpole-working-baseline.md`.
+
+The imagined exhaustive planner is separately positive but weaker: 44.87
+versus 19.00 random on 30 fresh seeds, paired delta +25.87
+[15.80, 36.73]. It misses its deliberately stricter absolute mean-return gate
+of 50. Therefore the project now has a working learned control baseline, but
+does not yet claim that imagination planning itself is solved.
+
+This remains a D4-style reduced baseline, not a full Dreamer-4 reproduction.
+The working policy is behavior-cloned from demonstrations; it is not an
+actor/value pair trained in imagination. Mamba and CDP/JEPA are still disabled,
+so subsequent swaps have a genuine positive control.

@@ -1,0 +1,84 @@
+{
+  "config": {
+    "d_model": 64,
+    "n_actions": 2
+  },
+  "format": "d4_lite_cartpole_bc_policy_v1",
+  "metrics": {
+    "accuracy": {
+      "heldout_demonstrations": {
+        "accuracy": 0.8703835227272727,
+        "accuracy_action_0": 0.929627001285553,
+        "accuracy_action_1": 0.8100358247756958,
+        "predicted_action_one_fraction": 0.43678978085517883,
+        "rows": 2816,
+        "target_action_one_fraction": 0.49538353085517883
+      },
+      "train_demonstrations": {
+        "accuracy": 0.8821022727272727,
+        "accuracy_action_0": 0.9209039807319641,
+        "accuracy_action_1": 0.8428571224212646,
+        "predicted_action_one_fraction": 0.4588068127632141,
+        "rows": 2816,
+        "target_action_one_fraction": 0.49715909361839294
+      }
+    },
+    "first_100_loss": 0.6791726320981979,
+    "last_100_loss": 0.27292265608906746,
+    "train_seconds": 46.70033626500299
+  },
+  "optimization": {
+    "batch_size": 16,
+    "bc_gradients_enter_policy_head_only": true,
+    "demonstration_policy": "noisy_balance",
+    "dev_replay_sha256": "606bda40aceab2064bbf3af1caa0972b7feaeaa744db894e522910e6ff1f872d",
+    "gradient_clip": 1.0,
+    "learning_rate": 0.0003,
+    "seed": 20260724,
+    "steps": 3000,
+    "train_replay_sha256": "3f3e5969c7cd12f8e9ff2f48a1a6e10e48eadd06f89083f06ee1efa493d5ef9d",
+    "weight_decay": 0.01,
+    "world_and_tokenizer_frozen": true
+  },
+  "policy": {
+    "path": "outputs/d4_mamba_jepa/cartpole_baseline_v3/policy_expert.pt",
+    "sha256": "c57f9bbf688e5d54cb6f50df7b2ea87110de58860a73ae901931970379ba80bd"
+  },
+  "provenance": {
+    "evaluation_implementation_sha256": "c52dfc2e590838c3e1e7cb3023bd398ae9e202fafd5063a5d28fb31d3617395a",
+    "sources": {
+      "crafter_canonicalizer": {
+        "commit": "d1ccfa1",
+        "license": "workspace-local",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/m3_hjwm_compact/verification/crafter_canonical.py",
+        "sha256": "a10083a7eb990f65b53955b7e79f5c2491572be8c3961d4717b3a66b309bc2ea"
+      },
+      "gymnasium_cartpole": {
+        "commit": "a923da5d4415a1aa5195d99341069da5e16deed7",
+        "license": "MIT",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/third_party/sources/Farama-Foundation__Gymnasium/gymnasium/envs/classic_control/cartpole.py",
+        "sha256": "b758e3286711a2c44b0817265412c9fab1dce8b1b385e2126bc710ceedd47378"
+      },
+      "local_replay_adapter": {
+        "commit": "d1ccfa1",
+        "license": "workspace-local",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/m3_hjwm_compact/data.py",
+        "sha256": "861cf76325cc9e5473e6fac837c1206657afc02bc4e32121e6d552055fb51929"
+      },
+      "mamba2": {
+        "commit": "f577286d052741c35d39cd43bdc3fad27120f22c",
+        "license": "Apache-2.0",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/third_party/sources/state-spaces__mamba/mamba_ssm/modules/mamba2.py",
+        "sha256": "605e4439ff0baec8d8acaf4a191d9f0570eea9900065a065909124c472b08707"
+      },
+      "mmbench2_model": {
+        "commit": "3dda6ea5bc60382ad9e1dcd1c6c3af67d69326a9",
+        "license": "MIT",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/third_party/sources/nicklashansen__mmbench2/src/model.py",
+        "sha256": "40f0c763e3e2a62c1dee2786cc6faffb7b08c8145068d8cf7d853ae89c893510"
+      }
+    }
+  },
+  "world_checkpoint_sha256": "a63bb1fe31b69f8b24e68534401fd18be50b36bb06fb3fedbac7f9231c32551d",
+  "world_checkpoint_stored_implementation_sha256": "fab52872b62cd68bfcefe350f110c3d205fd69f490f8c1363aa2b0a544fa0af2"
+}

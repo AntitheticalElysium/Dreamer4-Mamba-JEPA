@@ -52,7 +52,11 @@ def shortcut_flow_loss(
     bootstrap_rows: int = 0,
     global_step: int = 0,
     bootstrap_start: int = 10_000,
-) -> tuple[Tensor, dict[str, Tensor]]:
+    return_agent_tokens: bool = False,
+) -> (
+    tuple[Tensor, dict[str, Tensor]]
+    | tuple[Tensor, dict[str, Tensor], Tensor]
+):
     """MMBench2 shortcut-flow objective, with task heads deliberately absent.
 
     This is a direct PyTorch port of the flow portion of
@@ -98,7 +102,7 @@ def shortcut_flow_loss(
     empirical_weight = 0.9 * tau_empirical + 0.1
     self_weight = 0.9 * tau_self + 0.1
 
-    predicted, _ = dynamics(
+    predicted, agent_tokens = dynamics(
         led_to_actions,
         full_step_index,
         signal_index,
@@ -169,13 +173,20 @@ def shortcut_flow_loss(
     loss = (
         empirical_loss * empirical_rows + self_loss * bootstrap_rows
     ) / B
-    return loss, {
+    metrics = {
         "flow_mse": flow_per.mean().detach(),
         "bootstrap_mse": bootstrap_mse.detach(),
         "empirical_loss": empirical_loss.detach(),
         "self_loss": self_loss.detach(),
         "tau_mean": tau.mean().detach(),
     }
+    if return_agent_tokens:
+        if agent_tokens is None:
+            raise RuntimeError(
+                "task-head routing requested but dynamics returned no agent tokens"
+            )
+        return loss, metrics, agent_tokens
+    return loss, metrics
 
 
 def continuation_mtp_loss(

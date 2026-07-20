@@ -47,6 +47,7 @@ def sample_next_packed(
     schedule: dict,
     use_cache: bool,
     generator: torch.Generator | None = None,
+    initial_noise: Tensor | None = None,
 ) -> tuple[Tensor, Tensor]:
     """Generate one next latent and its post-transition agent tokens.
 
@@ -69,12 +70,21 @@ def sample_next_packed(
     tau_index = schedule["tau_index"]
     dt = float(schedule["dt"])
 
-    z = torch.randn(
-        (B, 1, n_spatial, d_spatial),
-        device=device,
-        dtype=dtype,
-        generator=generator,
-    )
+    expected_noise_shape = (B, 1, n_spatial, d_spatial)
+    if initial_noise is None:
+        z = torch.randn(
+            expected_noise_shape,
+            device=device,
+            dtype=dtype,
+            generator=generator,
+        )
+    else:
+        if initial_noise.shape != expected_noise_shape:
+            raise ValueError(
+                f"initial_noise shape {tuple(initial_noise.shape)} "
+                f"!= {expected_noise_shape}"
+            )
+        z = initial_noise.to(device=device, dtype=dtype)
     max_step = world.cfg.max_step_index
 
     cache = None
@@ -162,6 +172,7 @@ def score_action_plans(
     discount: float = 0.99,
     use_cache: bool = True,
     generator: torch.Generator | None = None,
+    common_random_numbers: bool = False,
 ) -> dict[str, Tensor]:
     """Score categorical plans by predicted reward and continuation."""
     if action_plans.ndim != 2:
@@ -183,6 +194,20 @@ def score_action_plans(
 
     for step in range(horizon):
         led_to = torch.cat([led_to, action_plans[:, step : step + 1]], dim=1)
+        initial_noise = None
+        if common_random_numbers:
+            shared = torch.randn(
+                (
+                    1,
+                    1,
+                    past.shape[2],
+                    past.shape[3],
+                ),
+                device=past.device,
+                dtype=past.dtype,
+                generator=generator,
+            )
+            initial_noise = shared.expand(candidates, -1, -1, -1).clone()
         next_latent, agent = sample_next_packed(
             world,
             past_packed=past,
@@ -190,6 +215,7 @@ def score_action_plans(
             schedule=schedule,
             use_cache=use_cache,
             generator=generator,
+            initial_noise=initial_noise,
         )
         heads = world.forward_task_heads(agent)
         reward_logits = heads["reward_logits"][:, 0, 0]
@@ -236,20 +262,36 @@ def categorical_random_shooting(
     discount: float = 0.99,
     use_cache: bool = True,
     generator: torch.Generator | None = None,
+    common_random_numbers: bool = False,
+    selection: str = "best_plan",
+    enumerate_all: bool = False,
 ) -> ShootingResult:
     if candidates < world.cfg.n_actions:
         raise ValueError("candidates must cover every first action at least once")
-    plans = torch.randint(
-        0,
-        world.cfg.n_actions,
-        (candidates, horizon),
-        device=context_packed.device,
-        generator=generator,
-    )
-    # Stratify the first decision. Later actions remain random.
-    plans[:, 0] = torch.arange(
-        candidates, device=plans.device
-    ) % world.cfg.n_actions
+    if enumerate_all:
+        expected = world.cfg.n_actions ** horizon
+        if candidates != expected:
+            raise ValueError(
+                f"full enumeration requires {expected} candidates, got {candidates}"
+            )
+        numbers = torch.arange(candidates, device=context_packed.device)
+        digits = []
+        for power in reversed(range(horizon)):
+            divisor = world.cfg.n_actions ** power
+            digits.append((numbers // divisor) % world.cfg.n_actions)
+        plans = torch.stack(digits, dim=1)
+    else:
+        plans = torch.randint(
+            0,
+            world.cfg.n_actions,
+            (candidates, horizon),
+            device=context_packed.device,
+            generator=generator,
+        )
+        # Stratify the first decision. Later actions remain random.
+        plans[:, 0] = torch.arange(
+            candidates, device=plans.device
+        ) % world.cfg.n_actions
     outputs = score_action_plans(
         world,
         context_packed=context_packed,
@@ -259,8 +301,24 @@ def categorical_random_shooting(
         discount=discount,
         use_cache=use_cache,
         generator=generator,
+        common_random_numbers=common_random_numbers,
     )
-    best = int(outputs["score"].argmax().item())
+    if selection == "best_plan":
+        best = int(outputs["score"].argmax().item())
+    elif selection == "first_action_mean":
+        action_values = torch.stack(
+            [
+                outputs["score"][plans[:, 0] == action].mean()
+                for action in range(world.cfg.n_actions)
+            ]
+        )
+        chosen_action = int(action_values.argmax().item())
+        eligible = torch.where(plans[:, 0] == chosen_action)[0]
+        best = int(
+            eligible[outputs["score"][eligible].argmax()].item()
+        )
+    else:
+        raise ValueError(f"unsupported shooting selection {selection!r}")
     selected = plans[best].clone()
     return ShootingResult(
         action=int(selected[0].item()),
@@ -269,4 +327,3 @@ def categorical_random_shooting(
         plans=plans,
         scores=outputs["score"],
     )
-

@@ -127,3 +127,22 @@ def test_tokenizer_checkpoint_roundtrip(tmp_path):
         torch.testing.assert_close(tensor, loaded.state_dict()[name])
     assert loaded.encoder.mae.p_min == 0.0
     assert loaded.encoder.mae.p_max == 0.0
+
+
+def test_identical_checkpoint_state_has_identical_bytes(tmp_path):
+    torch.manual_seed(83)
+    world = D4LiteWorld(tiny_config())
+    normalizer = WorldLossNormalizer()
+    first = save_checkpoint(
+        tmp_path / "first.pt",
+        world=world,
+        normalizer=normalizer,
+        step=7,
+    )
+    second = save_checkpoint(
+        tmp_path / "second.pt",
+        world=world,
+        normalizer=normalizer,
+        step=7,
+    )
+    assert first == second

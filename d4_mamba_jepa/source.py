@@ -61,6 +61,16 @@ CRAFTER_CANONICAL = SourceIdentity(
     license="workspace-local",
 )
 
+GYMNASIUM_CARTPOLE = SourceIdentity(
+    name="Farama-Foundation/Gymnasium:CartPole-v1",
+    path=REPO_ROOT
+    / "third_party/sources/Farama-Foundation__Gymnasium"
+    / "gymnasium/envs/classic_control/cartpole.py",
+    commit="a923da5d4415a1aa5195d99341069da5e16deed7",
+    sha256="b758e3286711a2c44b0817265412c9fab1dce8b1b385e2126bc710ceedd47378",
+    license="MIT",
+)
+
 
 class SourceDriftError(RuntimeError):
     """A primary source no longer matches the registered implementation."""
@@ -120,6 +130,24 @@ def verify_installed_mamba2() -> str:
     return actual
 
 
+def verify_installed_cartpole() -> str:
+    """Require Gymnasium's imported CartPole to match the source pin."""
+    import inspect
+    from gymnasium.envs.classic_control.cartpole import CartPoleEnv
+
+    verify_source(GYMNASIUM_CARTPOLE)
+    installed = Path(inspect.getsourcefile(CartPoleEnv) or "")
+    if not installed.is_file():
+        raise SourceDriftError("cannot locate installed Gymnasium CartPole source")
+    actual = file_sha256(installed)
+    if actual != GYMNASIUM_CARTPOLE.sha256:
+        raise SourceDriftError(
+            f"installed CartPole digest drift: "
+            f"{actual} != {GYMNASIUM_CARTPOLE.sha256}"
+        )
+    return actual
+
+
 def source_report() -> dict[str, dict[str, str]]:
     return {
         "mmbench2_model": {
@@ -145,5 +173,11 @@ def source_report() -> dict[str, dict[str, str]]:
             "commit": CRAFTER_CANONICAL.commit,
             "sha256": verify_source(CRAFTER_CANONICAL),
             "license": CRAFTER_CANONICAL.license,
+        },
+        "gymnasium_cartpole": {
+            "path": str(GYMNASIUM_CARTPOLE.path),
+            "commit": GYMNASIUM_CARTPOLE.commit,
+            "sha256": verify_installed_cartpole(),
+            "license": GYMNASIUM_CARTPOLE.license,
         },
     }
