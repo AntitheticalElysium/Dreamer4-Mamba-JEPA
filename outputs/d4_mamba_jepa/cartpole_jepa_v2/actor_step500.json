@@ -1,0 +1,173 @@
+{
+  "algorithm": {
+    "actor_initialized_from_bc": true,
+    "actor_value_losses_use_imagined_data_only": true,
+    "batch_size": 64,
+    "context": 8,
+    "denoise_steps": 4,
+    "gamma": 0.997,
+    "gradient_clip": 1.0,
+    "horizon": 32,
+    "lambda": 0.95,
+    "learning_rate": 0.0001,
+    "one_rollout_per_context": true,
+    "optimizer": "Adam",
+    "pmpo_alpha": 0.5,
+    "prior_frozen": true,
+    "reverse_prior_kl_beta": 0.3,
+    "reward_and_continuation_frozen": true,
+    "seed": 20260725,
+    "shooting_planner_used": false,
+    "steps": 500,
+    "weight_decay": 0.0,
+    "world_frozen": true
+  },
+  "bc_checkpoint_sha256": "d65d5fa55ad22591bd5d39a423303c83be4bd8a34e668e7e2987683af2c47296",
+  "checkpoint": {
+    "path": "outputs/d4_mamba_jepa/cartpole_jepa_v2/actor_step500.pt",
+    "sha256": "95b6acc9d42cad08819ad8ba1a73e69f70a8722d7cb3c598158bca5a528f94a0"
+  },
+  "config": {
+    "d_model": 64,
+    "n_actions": 2,
+    "value_bins": 255,
+    "value_log_high": 10.0,
+    "value_log_low": -10.0
+  },
+  "format": "d4_lite_cartpole_imagination_actor_critic_v1",
+  "frozen_invariants": {
+    "initial_actor_tensor_sha256": "8368ba98e592f50d337f224c727fe83f0299bf4ef582a5ccaf2463373bf8390b",
+    "prior_tensor_sha256_after": "8368ba98e592f50d337f224c727fe83f0299bf4ef582a5ccaf2463373bf8390b",
+    "prior_tensor_sha256_before": "8368ba98e592f50d337f224c727fe83f0299bf4ef582a5ccaf2463373bf8390b",
+    "world_tensor_sha256_after": "1dad5e7772323ba1ecbd97a6c56954c7d6fc7176f3a0fce688637dceac9a911f",
+    "world_tensor_sha256_before": "1dad5e7772323ba1ecbd97a6c56954c7d6fc7176f3a0fce688637dceac9a911f"
+  },
+  "metrics": {
+    "actor_l2_delta_from_bc": 0.6227638329938856,
+    "first_25": {
+      "actor_loss": 0.2294250077009201,
+      "entropy": 0.45639344930648806,
+      "gradient_norm": 0.34760829925537107,
+      "mean_advantage": 19.61291618347168,
+      "mean_continue": 0.9941422128677369,
+      "mean_return": 19.616277542114258,
+      "mean_reward": 1.9968937826156616,
+      "negative_count": 0.0,
+      "pmpo_negative_loss": 0.0,
+      "pmpo_positive_loss": 0.22921731293201447,
+      "positive_count": 2048.0,
+      "prior_kl": 0.0006923206611969901,
+      "prior_kl_loss": 0.00020769620674099932,
+      "return_std": 8.20352108001709,
+      "total_loss": 5.756693572998047,
+      "value_loss": 5.527268581390381,
+      "value_mae": 19.61291618347168
+    },
+    "last_25": {
+      "actor_loss": 0.012982669919729233,
+      "entropy": 0.26414470732212064,
+      "gradient_norm": 8.770421257019043,
+      "mean_advantage": 22.88186004638672,
+      "mean_continue": 0.9945496368408203,
+      "mean_return": 73.56418090820313,
+      "mean_reward": 1.9966938066482545,
+      "negative_count": 104.72,
+      "pmpo_negative_loss": -0.14814103037118911,
+      "pmpo_positive_loss": 0.13088177293539047,
+      "positive_count": 1943.28,
+      "prior_kl": 0.10080642014741897,
+      "prior_kl_loss": 0.030241927206516264,
+      "return_std": 9.640849933624267,
+      "total_loss": 2.592825632095337,
+      "value_loss": 2.579842948913574,
+      "value_mae": 23.53807388305664
+    },
+    "negative_count_total": 32654,
+    "peak_vram_bytes": 181823488,
+    "positive_count_total": 991346,
+    "train_seconds": 174.89815123800145,
+    "value_l2_delta_from_initial": 4.265537163354952
+  },
+  "provenance": {
+    "actor_sources": {
+      "Dreamer 4 paper:arXiv:2509.24527v1": {
+        "commit": "arXiv:2509.24527v1",
+        "license": "paper",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/third_party/papers/2509.24527v1.pdf",
+        "sha256": "8655cce4bf12ce6210f6694f83c1a723c7acd7579214ca3ebc57c4394d0b1aeb"
+      },
+      "danijar/dreamerv3:dreamerv3/agent.py": {
+        "commit": "e3f02248693a79dc8b0ebd62c93683888ddaccfe",
+        "license": "MIT",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/third_party/sources/danijar__dreamerv3/dreamerv3/agent.py",
+        "sha256": "adce8e4274bc098c218bf9a20fd3327545f0ad7d850b5fe328597382e91b5269"
+      },
+      "danijar/dreamerv3:dreamerv3/configs.yaml": {
+        "commit": "e3f02248693a79dc8b0ebd62c93683888ddaccfe",
+        "license": "MIT",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/third_party/sources/danijar__dreamerv3/dreamerv3/configs.yaml",
+        "sha256": "9dff9c7062e3e33951cb54c6dd4b598aaf7e56e18e2cff39c812eaa797bcfcfc"
+      },
+      "edwhu/dreamer4-jax:dreamer/imagination.py": {
+        "commit": "8144b940d801971f12ec5633553b95001e555949",
+        "license": "no license file in inspected checkout; read-only reference",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/third_party/sources/edwhu__dreamer4-jax/dreamer/imagination.py",
+        "sha256": "562bab8c4bd5d465c8661022cefdeca37cce419b52e16c5d63db8ddca0b4d4ac"
+      },
+      "edwhu/dreamer4-jax:scripts/train_policy.py": {
+        "commit": "8144b940d801971f12ec5633553b95001e555949",
+        "license": "no license file in inspected checkout; read-only reference",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/third_party/sources/edwhu__dreamer4-jax/scripts/train_policy.py",
+        "sha256": "d16d9e6ba220664afbb73e7f4f80056371dd6fffb3c592d2d09a7ef2b840d7d1"
+      }
+    },
+    "bc_checkpoint": "outputs/d4_mamba_jepa/cartpole_jepa_v2/policy_expert.pt",
+    "bc_stored_implementation_sha256": "b77d164516357518caf002803f2dc2ab146dbd84bbd0b4ec29be469898466ee4",
+    "current_implementation_sha256": "b77d164516357518caf002803f2dc2ab146dbd84bbd0b4ec29be469898466ee4",
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+    "python": "3.12.12",
+    "replay": {
+      "context_windows": 6274,
+      "episodes": 260,
+      "path": "outputs/d4_mamba_jepa/cartpole_baseline_v3/train_replay.pt",
+      "sha256": "75177c4f28f54378eb6a0d26ef47292ffcae2fa700c417c0ace54d7bb8e005ff"
+    },
+    "torch": "2.12.1+cu130",
+    "world_checkpoint": "outputs/d4_mamba_jepa/cartpole_jepa_v2/run_seed20260722/world.pt",
+    "world_sources": {
+      "crafter_canonicalizer": {
+        "commit": "d1ccfa1",
+        "license": "workspace-local",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/m3_hjwm_compact/verification/crafter_canonical.py",
+        "sha256": "a10083a7eb990f65b53955b7e79f5c2491572be8c3961d4717b3a66b309bc2ea"
+      },
+      "gymnasium_cartpole": {
+        "commit": "a923da5d4415a1aa5195d99341069da5e16deed7",
+        "license": "MIT",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/third_party/sources/Farama-Foundation__Gymnasium/gymnasium/envs/classic_control/cartpole.py",
+        "sha256": "b758e3286711a2c44b0817265412c9fab1dce8b1b385e2126bc710ceedd47378"
+      },
+      "local_replay_adapter": {
+        "commit": "d1ccfa1",
+        "license": "workspace-local",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/m3_hjwm_compact/data.py",
+        "sha256": "861cf76325cc9e5473e6fac837c1206657afc02bc4e32121e6d552055fb51929"
+      },
+      "mamba2": {
+        "commit": "f577286d052741c35d39cd43bdc3fad27120f22c",
+        "license": "Apache-2.0",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/third_party/sources/state-spaces__mamba/mamba_ssm/modules/mamba2.py",
+        "sha256": "605e4439ff0baec8d8acaf4a191d9f0570eea9900065a065909124c472b08707"
+      },
+      "mmbench2_model": {
+        "commit": "3dda6ea5bc60382ad9e1dcd1c6c3af67d69326a9",
+        "license": "MIT",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/third_party/sources/nicklashansen__mmbench2/src/model.py",
+        "sha256": "40f0c763e3e2a62c1dee2786cc6faffb7b08c8145068d8cf7d853ae89c893510"
+      }
+    },
+    "world_stored_implementation_sha256": "b77d164516357518caf002803f2dc2ab146dbd84bbd0b4ec29be469898466ee4"
+  },
+  "world_checkpoint_sha256": "39b9fc4b2c8d242cdbf94af4286b52efb4bdc5aa190b095786e63f72b8ba323a"
+}

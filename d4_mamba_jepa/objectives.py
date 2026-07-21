@@ -193,8 +193,15 @@ def continuation_mtp_loss(
     logits: Tensor,
     led_to_continues: Tensor,
     valid: Tensor,
+    *,
+    terminal_weight: float = 1.0,
 ) -> Tensor:
-    """Align MTP head ``l`` with continuation at state slot ``t+l``."""
+    """Align MTP head ``l`` with continuation at state slot ``t+l``.
+
+    ``terminal_weight`` (default 1.0, unchanged for base/cdp) up-weights the
+    rare terminal (continue==0) targets so the head does not collapse to the
+    majority "continue" label on a sparse-terminal task.
+    """
     if logits.ndim != 3:
         raise ValueError("logits must have shape [B,T,L]")
     B, T, L = logits.shape
@@ -212,6 +219,12 @@ def continuation_mtp_loss(
         logits, targets, reduction="none"
     )
     weights = mask.to(per.dtype)
+    if terminal_weight != 1.0:
+        weights = weights * torch.where(
+            targets == 0.0,
+            torch.as_tensor(float(terminal_weight), device=logits.device, dtype=per.dtype),
+            torch.ones((), device=logits.device, dtype=per.dtype),
+        )
     return (per * weights).sum() / weights.sum().clamp_min(1.0)
 
 
@@ -234,6 +247,81 @@ def cdp_cosine_loss(
         prediction.float(), target.float(), dim=-1, eps=1e-8
     )
     return loss.mean(), prediction
+
+
+def jepa_self_prediction_loss(
+    world: nn.Module,
+    *,
+    frames: Tensor,
+    clean: Tensor,
+    led_to_actions: Tensor,
+) -> tuple[Tensor, dict[str, Tensor]]:
+    """Non-generative SPR/BYOL action-conditioned self-prediction.
+
+    Faithful to ``mila-iqia/spr`` (commit ``0b9dd4e7``) ``do_spr_loss`` and
+    ``spr_loss``: the deterministic action-conditioned predictor produces the
+    next embedding (the rollout primitive), which is projected+predicted online;
+    the target is the stop-gradient EMA target encoder applied to the *actual*
+    next observation, projected by the EMA target projection. The loss is the
+    L2-normalized MSE (proportional in gradient to negative cosine). There is no
+    denoising, no decoder, and no reconstruction term.
+
+    ``clean`` are the online-encoder packed latents (gradients flow to the
+    online encoder); ``frames`` are the observations whose future is the target.
+    """
+    B, T, N, D = clean.shape
+    K = int(getattr(world.cfg, "jepa_jumps", 1))
+    context = T - K
+    if context < 1:
+        raise ValueError("jepa_jumps must leave at least one context step")
+    device = clean.device
+    max_step = world.cfg.max_step_index
+    k_max = world.cfg.k_max
+    with torch.no_grad():
+        target_latent = world.encode_frames_target(frames)  # [B,T,N,D]
+
+    # Autoregressive multi-step rollout: feed the predictor's own output back,
+    # matching each step to the EMA target of the actual future frame. This is
+    # the SPR `jumps` mechanism and makes training match the imagined rollout.
+    past = clean[:, :context]  # online latents; gradients flow to encoder
+    online_steps, target_steps = [], []
+    for jump in range(K):
+        pos = context + jump  # position being predicted
+        time = past.shape[1]
+        steps = torch.full((B, time), max_step, device=device, dtype=torch.long)
+        signals = torch.full((B, time), k_max, device=device, dtype=torch.long)
+        _, agent = world.forward_dynamics(
+            past, led_to_actions[:, :time], steps, signals
+        )
+        next_action_tokens = world.dynamics.action_encoder(
+            led_to_actions[:, pos : pos + 1], batch_time_shape=(B, 1), act_mask=None
+        )[:, :, 0]
+        pred_z = world.jepa_predictor(agent[:, -1:], next_action_tokens)  # [B,1,N,D]
+        online_steps.append(world.jepa_online_project(pred_z))  # [B,1,P]
+        target_steps.append(world.jepa_target_project(target_latent[:, pos : pos + 1]))
+        past = torch.cat([past, pred_z], dim=1)
+
+    online = torch.cat(online_steps, dim=1)  # [B,K,P]
+    target = torch.cat(target_steps, dim=1)  # [B,K,P], no grad
+
+    f_online = torch.nn.functional.normalize(
+        online.float(), p=2.0, dim=-1, eps=1e-3
+    )
+    f_target = torch.nn.functional.normalize(
+        target.float().detach(), p=2.0, dim=-1, eps=1e-3
+    )
+    per = torch.nn.functional.mse_loss(f_online, f_target, reduction="none").sum(-1)
+    loss = per.mean()
+    cosine = (f_online * f_target).sum(-1).mean()
+    # Collapse diagnostics: dispersion of online predictions and targets.
+    online_std = f_online.reshape(-1, f_online.shape[-1]).std(dim=0).mean()
+    target_std = f_target.reshape(-1, f_target.shape[-1]).std(dim=0).mean()
+    metrics = {
+        "jepa_cosine": cosine.detach(),
+        "jepa_online_std": online_std.detach(),
+        "jepa_target_std": target_std.detach(),
+    }
+    return loss, metrics
 
 
 def reconstruction_anchor_loss(

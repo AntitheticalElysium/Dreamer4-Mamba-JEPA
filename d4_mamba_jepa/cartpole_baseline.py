@@ -10,7 +10,7 @@ has access to pixels and past actions only.
 from __future__ import annotations
 
 import argparse
-from dataclasses import asdict
+from dataclasses import asdict, replace
 import hashlib
 import json
 import os
@@ -36,7 +36,7 @@ from .config import D4LiteConfig
 from .crafter_preflight import evaluate_tokenizer, evaluate_world
 from .data import Episode, EpisodeReplay, SequenceBatch, replay_sample_to_sequence
 from .model import D4LiteWorld, build_tokenizer
-from .objectives import optimizer_groups
+from .objectives import jepa_self_prediction_loss, optimizer_groups
 from .rollout import categorical_random_shooting, shortcut_schedule
 from .source import GYMNASIUM_CARTPOLE, source_report, verify_installed_cartpole
 from .training import (
@@ -88,6 +88,13 @@ def cartpole_config() -> D4LiteConfig:
         temporal_backend="transformer",
         representation_objective="base",
     )
+
+
+def cartpole_jepa_config() -> D4LiteConfig:
+    """Non-generative JEPA arm: identical to the T-BASE control except the
+    representation objective. Temporal operator, tokenizer scale, pixel adapter,
+    heads, and every non-temporal axis are held fixed."""
+    return replace(cartpole_config(), representation_objective="jepa")
 
 
 def _atomic_json(path: Path, payload: dict) -> None:
@@ -613,6 +620,182 @@ def _mean_window(history: list[dict[str, float]], count: int = 100) -> dict:
         key: float(np.mean([row[key] for row in rows]))
         for key in rows[0]
     }
+
+
+def train_jepa_world(
+    *,
+    train_replay_path: Path,
+    dev_replay_path: Path,
+    output_dir: Path,
+    device: torch.device,
+    world_steps: int,
+    batch_size: int,
+    learning_rate: float,
+    terminal_fraction: float,
+    seed: int,
+) -> dict:
+    """Train the non-generative T-JEPA world in one joint phase.
+
+    Online encoder + dynamics + action-conditioned predictor + task heads are
+    trained together by SPR/BYOL EMA-target self-prediction. There is no
+    tokenizer MAE phase, no decoder, no flow. The EMA target encoder/projection
+    are updated after every optimizer step with the I-JEPA/V-JEPA momentum ramp.
+    """
+    cfg = cartpole_jepa_config()
+    if cfg.representation_objective != "jepa" or cfg.temporal_backend != "transformer":
+        raise RuntimeError("JEPA arm requires transformer temporal + jepa objective")
+    # Oversample terminal windows so the continuation head sees enough failures.
+    terminal_fraction = max(terminal_fraction, cfg.jepa_terminal_fraction)
+    torch.manual_seed(seed)
+    if device.type == "cuda":
+        torch.cuda.manual_seed_all(seed)
+        torch.cuda.reset_peak_memory_stats(device)
+
+    train_replay, train_records = load_cartpole_replay(train_replay_path)
+    dev_replay, dev_records = load_cartpole_replay(dev_replay_path)
+    train_sha = file_sha256(train_replay_path)
+    dev_sha = file_sha256(dev_replay_path)
+    fixed_eval = _fixed_batches(
+        dev_replay, cfg=cfg, count=8, batch_size=8,
+        terminal_fraction=0.5, seed=seed + 1,
+    )
+
+    world = D4LiteWorld(cfg).to(device).train()
+    normalizer = WorldLossNormalizer().to(device)
+    trainable = [p for p in world.parameters() if p.requires_grad]
+    optimizer = torch.optim.AdamW(
+        trainable, lr=learning_rate, weight_decay=1e-2, betas=(0.9, 0.999),
+    )
+    world_rng = np.random.default_rng(seed + 3)
+
+    def dev_cosine() -> float:
+        world.eval()
+        values: list[float] = []
+        with torch.no_grad():
+            for batch in fixed_eval:
+                with torch.autocast(
+                    device_type=device.type, dtype=torch.bfloat16,
+                    enabled=device.type == "cuda",
+                ):
+                    observations = batch.observations.to(device)
+                    actions = batch.led_to_actions.to(device)
+                    clean = world.encode_frames(
+                        observations, frozen=True
+                    ).packed
+                    _, metric = jepa_self_prediction_loss(
+                        world, frames=observations, clean=clean,
+                        led_to_actions=actions,
+                    )
+                values.append(float(metric["jepa_cosine"].item()))
+        world.train()
+        return float(np.mean(values))
+
+    cosine_before = dev_cosine()
+    history: list[dict[str, float]] = []
+    world_start = time.perf_counter()
+    for step in range(world_steps):
+        batch = sample_cartpole_sequences(
+            train_replay, batch_size=batch_size,
+            sequence_length=cfg.sequence_length,
+            terminal_fraction=terminal_fraction, device=device, rng=world_rng,
+        )
+        optimizer.zero_grad(set_to_none=True)
+        with torch.autocast(
+            device_type=device.type, dtype=torch.bfloat16,
+            enabled=device.type == "cuda",
+        ):
+            loss, metrics = world_loss(world, batch, normalizer=normalizer)
+        if not bool(torch.isfinite(loss)):
+            raise RuntimeError(f"non-finite JEPA world loss at step {step}")
+        loss.backward()
+        gradient_norm = torch.nn.utils.clip_grad_norm_(trainable, 1.0)
+        if not bool(torch.isfinite(gradient_norm)):
+            raise RuntimeError(f"non-finite gradient at step {step}")
+        if step < 1_000:
+            scale = float(step + 1) / 1_000.0
+            for group in optimizer.param_groups:
+                group["lr"] = learning_rate * scale
+        optimizer.step()
+        frac = step / max(1, world_steps - 1)
+        tau = cfg.jepa_ema_tau + (cfg.jepa_ema_tau_final - cfg.jepa_ema_tau) * frac
+        world.update_jepa_target(tau)
+        history.append({
+            "jepa": float(metrics["loss/jepa"].item()),
+            "reward": float(metrics["loss/reward"].item()),
+            "continuation": float(metrics["loss/continuation"].item()),
+            "cosine": float(metrics["jepa/jepa_cosine"].item()),
+            "online_std": float(metrics["jepa/jepa_online_std"].item()),
+        })
+        if (step + 1) % 500 == 0:
+            recent = history[-100:]
+            print(
+                f"jepa-world {step + 1}/{world_steps}: "
+                f"jepa={np.mean([r['jepa'] for r in recent]):.5f} "
+                f"cos={np.mean([r['cosine'] for r in recent]):.4f} "
+                f"onstd={np.mean([r['online_std'] for r in recent]):.4f} "
+                f"reward={np.mean([r['reward'] for r in recent]):.4f} "
+                f"cont={np.mean([r['continuation'] for r in recent]):.4f}",
+                flush=True,
+            )
+    if device.type == "cuda":
+        torch.cuda.synchronize(device)
+    world_seconds = time.perf_counter() - world_start
+    cosine_after = dev_cosine()
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    world_path = output_dir / "world.pt"
+    world_sha = save_checkpoint(
+        world_path, world=world, normalizer=normalizer, optimizer=optimizer,
+        numpy_rng=world_rng, step=world_steps,
+        extra={
+            "format": FORMAT,
+            "train_replay_sha256": train_sha,
+            "dev_replay_sha256": dev_sha,
+            "seed": seed,
+            "terminal_fraction": terminal_fraction,
+            "representation_objective": "jepa",
+            "jepa_ema_tau": cfg.jepa_ema_tau,
+            "jepa_ema_tau_final": cfg.jepa_ema_tau_final,
+        },
+    )
+    report = {
+        "format": FORMAT,
+        "status": "trained",
+        "arm_id": cfg.arm_id,
+        "config": asdict(cfg),
+        "world_checkpoint": {"path": str(world_path), "sha256": world_sha},
+        "provenance": {
+            "implementation_sha256": implementation_sha256(),
+            "sources": source_report(),
+            "train_replay": {"path": str(train_replay_path), "sha256": train_sha,
+                             "episodes": len(train_records)},
+            "dev_replay": {"path": str(dev_replay_path), "sha256": dev_sha,
+                           "episodes": len(dev_records)},
+        },
+        "metrics": {
+            "dev_cosine_before": cosine_before,
+            "dev_cosine_after": cosine_after,
+            "final_jepa": history[-1]["jepa"] if history else None,
+            "final_online_std": history[-1]["online_std"] if history else None,
+        },
+        "optimization": {
+            "seed": seed, "world_steps": world_steps, "batch_size": batch_size,
+            "sequence_length": cfg.sequence_length, "learning_rate": learning_rate,
+            "terminal_fraction": terminal_fraction,
+            "warmup": {"world": 1_000},
+        },
+        "runtime": {
+            "python": platform.python_version(), "torch": torch.__version__,
+            "device": str(device),
+            "world_seconds": world_seconds,
+            "peak_vram_bytes": (
+                int(torch.cuda.max_memory_allocated(device))
+                if device.type == "cuda" else 0
+            ),
+        },
+    }
+    _atomic_json(output_dir / "jepa_world_report.json", report)
+    return report
 
 
 def train_baseline(
@@ -1420,8 +1603,8 @@ def evaluate_executed_control(
         strict_implementation=False,
     )
     world.eval()
-    if world.cfg.arm_id != "T-BASE" or world.cfg.n_actions != 2:
-        raise RuntimeError("checkpoint is not the registered CartPole baseline")
+    if world.cfg.arm_id not in {"T-BASE", "T-JEPA"} or world.cfg.n_actions != 2:
+        raise RuntimeError("checkpoint is not a registered CartPole control arm")
     rows = []
     for policy_index, policy in enumerate(
         ("random", "planner", "oracle_reference")
@@ -1787,6 +1970,19 @@ def main() -> None:
         "--device", default="cuda" if torch.cuda.is_available() else "cpu"
     )
 
+    train_jepa = subparsers.add_parser("train-jepa")
+    train_jepa.add_argument("--train-replay", type=Path, required=True)
+    train_jepa.add_argument("--dev-replay", type=Path, required=True)
+    train_jepa.add_argument("--output-dir", type=Path, required=True)
+    train_jepa.add_argument("--world-steps", type=int, default=20_000)
+    train_jepa.add_argument("--batch-size", type=int, default=8)
+    train_jepa.add_argument("--learning-rate", type=float, default=3e-4)
+    train_jepa.add_argument("--terminal-fraction", type=float, default=0.25)
+    train_jepa.add_argument("--seed", type=int, default=20260720)
+    train_jepa.add_argument(
+        "--device", default="cuda" if torch.cuda.is_available() else "cpu"
+    )
+
     train_policy = subparsers.add_parser("train-policy")
     train_policy.add_argument("--world-checkpoint", type=Path, required=True)
     train_policy.add_argument("--world-checkpoint-sha256", required=True)
@@ -1867,6 +2063,19 @@ def main() -> None:
             output_dir=args.output_dir,
             device=torch.device(args.device),
             tokenizer_steps=args.tokenizer_steps,
+            world_steps=args.world_steps,
+            batch_size=args.batch_size,
+            learning_rate=args.learning_rate,
+            terminal_fraction=args.terminal_fraction,
+            seed=args.seed,
+        )
+        print(json.dumps(report, indent=2, sort_keys=True))
+    elif args.command == "train-jepa":
+        report = train_jepa_world(
+            train_replay_path=args.train_replay,
+            dev_replay_path=args.dev_replay,
+            output_dir=args.output_dir,
+            device=torch.device(args.device),
             world_steps=args.world_steps,
             batch_size=args.batch_size,
             learning_rate=args.learning_rate,

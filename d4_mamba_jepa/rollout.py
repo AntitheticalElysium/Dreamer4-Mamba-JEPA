@@ -38,6 +38,36 @@ def shortcut_schedule(k_max: int, denoise_steps: int) -> dict:
     }
 
 
+def _sample_next_jepa(
+    world, past_packed: Tensor, led_to_actions: Tensor
+) -> tuple[Tensor, Tensor]:
+    """Deterministic non-generative rollout step: one dynamics pass over the
+    clean context, the action-conditioned predictor for the next embedding, and
+    a second clean pass for the post-transition agent tokens. No denoising."""
+    B, time = past_packed.shape[:2]
+    device = past_packed.device
+    max_step = world.cfg.max_step_index
+    k_max = world.cfg.k_max
+    steps = torch.full((B, time), max_step, device=device, dtype=torch.long)
+    signals = torch.full((B, time), k_max, device=device, dtype=torch.long)
+    _, agent_ctx = world.forward_dynamics(
+        past_packed, led_to_actions[:, :time], steps, signals
+    )
+    next_action_tokens = world.dynamics.action_encoder(
+        led_to_actions[:, time : time + 1],
+        batch_time_shape=(B, 1),
+        act_mask=None,
+    )[:, :, 0]
+    next_latent = world.jepa_predictor(agent_ctx[:, -1:], next_action_tokens)[:, 0]
+    new_sequence = torch.cat([past_packed, next_latent[:, None]], dim=1)
+    steps2 = torch.full((B, time + 1), max_step, device=device, dtype=torch.long)
+    signals2 = torch.full((B, time + 1), k_max, device=device, dtype=torch.long)
+    _, agent_new = world.forward_dynamics(
+        new_sequence, led_to_actions, steps2, signals2
+    )
+    return next_latent, agent_new[:, -1:]
+
+
 @torch.inference_mode()
 def sample_next_packed(
     world,
@@ -49,6 +79,12 @@ def sample_next_packed(
     generator: torch.Generator | None = None,
     initial_noise: Tensor | None = None,
 ) -> tuple[Tensor, Tensor]:
+    if getattr(world.cfg, "representation_objective", "base") == "jepa":
+        if past_packed.ndim != 4:
+            raise ValueError("past_packed must have shape [B,t,S,D]")
+        if led_to_actions.shape != (past_packed.shape[0], past_packed.shape[1] + 1):
+            raise ValueError("led_to_actions must have shape [B,t+1]")
+        return _sample_next_jepa(world, past_packed, led_to_actions)
     """Generate one next latent and its post-transition agent tokens.
 
     ``past_packed`` has ``t`` clean states. ``led_to_actions`` has ``t+1``

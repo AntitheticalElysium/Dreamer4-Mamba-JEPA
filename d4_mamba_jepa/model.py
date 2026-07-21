@@ -1,6 +1,7 @@
 """D4-lite model assembly around the unchanged MMBench2 implementation."""
 from __future__ import annotations
 
+import copy
 from dataclasses import dataclass
 from typing import Optional
 
@@ -117,6 +118,33 @@ class CDPPredictor(nn.Module):
         )
 
 
+class JepaProjector(nn.Module):
+    """SPR/BYOL global projection or prediction MLP.
+
+    Faithful to ``mila-iqia/spr`` commit ``0b9dd4e7`` ``src/models.py``
+    ``global_classifier`` (``Linear -> BatchNorm1d -> ReLU -> Linear``). The
+    batch-norm is the documented SPR/BYOL anti-collapse component; it is applied
+    over the folded ``[B*T]`` batch, matching SPR's flattened application.
+    """
+
+    def __init__(self, in_dim: int, out_dim: int, hidden: Optional[int] = None):
+        super().__init__()
+        hidden = hidden or out_dim
+        self.net = nn.Sequential(
+            nn.Linear(in_dim, hidden),
+            nn.BatchNorm1d(hidden),
+            nn.ReLU(inplace=True),
+            nn.Linear(hidden, out_dim),
+        )
+
+    def forward(self, x: Tensor) -> Tensor:
+        if x.ndim != 3:
+            raise ValueError("projector input must be [B,T,F]")
+        B, T, F = x.shape
+        y = self.net(x.reshape(B * T, F))
+        return y.reshape(B, T, -1)
+
+
 def build_tokenizer(cfg: D4LiteConfig, *, training_mask: bool = True) -> nn.Module:
     """Construct the upstream tokenizer at the registered D4-lite scale."""
     upstream = load_mmbench2_model()
@@ -209,6 +237,13 @@ class D4LiteWorld(nn.Module):
 
         if cfg.temporal_backend == "mamba2":
             replace_dynamics_time_attention(self.dynamics, cfg)
+        # Attributes present in every arm for state-dict/introspection symmetry.
+        self.cdp_predictor = None
+        self.jepa_predictor = None
+        self.target_encoder = None
+        self.jepa_projection = None
+        self.jepa_prediction = None
+        self.jepa_target_projection = None
         if cfg.representation_objective == "cdp":
             self.cdp_predictor = CDPPredictor(
                 d_model=cfg.dynamics_d_model,
@@ -221,17 +256,50 @@ class D4LiteWorld(nn.Module):
             self.decoder.eval()
             for parameter in self.decoder.parameters():
                 parameter.requires_grad_(False)
+        elif cfg.representation_objective == "jepa":
+            self._build_jepa()
         else:
-            self.cdp_predictor = None
             self.freeze_tokenizer()
+
+    def _build_jepa(self) -> None:
+        """Non-generative SPR/BYOL arm: drop the decoder, keep the online
+        encoder trainable, add a stop-gradient EMA target encoder, a
+        deterministic action-conditioned next-embedding predictor (the rollout),
+        and asymmetric projection/prediction heads."""
+        cfg = self.cfg
+        self.decoder = None  # non-generative: no pixel decoder
+        self.target_encoder = copy.deepcopy(self.encoder)
+        self.target_encoder.eval()
+        for parameter in self.target_encoder.parameters():
+            parameter.requires_grad_(False)
+        self.jepa_predictor = CDPPredictor(
+            d_model=cfg.dynamics_d_model,
+            n_spatial=cfg.n_spatial,
+            d_spatial=cfg.d_spatial,
+            hidden_ratio=cfg.jepa_predictor_hidden_ratio,
+        )
+        flat = cfg.n_spatial * cfg.d_spatial
+        self.jepa_projection = JepaProjector(flat, cfg.jepa_projection_dim)
+        self.jepa_prediction = JepaProjector(
+            cfg.jepa_projection_dim, cfg.jepa_projection_dim
+        )
+        self.jepa_target_projection = copy.deepcopy(self.jepa_projection)
+        self.jepa_target_projection.eval()
+        for parameter in self.jepa_target_projection.parameters():
+            parameter.requires_grad_(False)
+        # Online encoder is trained jointly by self-prediction.
+        self.encoder.train()
+        for parameter in self.encoder.parameters():
+            parameter.requires_grad_(True)
 
     def freeze_tokenizer(self) -> None:
         self.encoder.eval()
-        self.decoder.eval()
         for parameter in self.encoder.parameters():
             parameter.requires_grad_(False)
-        for parameter in self.decoder.parameters():
-            parameter.requires_grad_(False)
+        if self.decoder is not None:
+            self.decoder.eval()
+            for parameter in self.decoder.parameters():
+                parameter.requires_grad_(False)
 
     def encode_frames(self, frames: Tensor, *, frozen: bool = True) -> EncodedSequence:
         """Encode ``[B,T,C,H,W]`` frames with upstream patchification."""
@@ -311,3 +379,78 @@ class D4LiteWorld(nn.Module):
         return self.cdp_predictor(
             agent_tokens[:, :-1], next_action_tokens
         )
+
+    # --- Non-generative JEPA arm -------------------------------------------
+    def predict_next_jepa(self, clean: Tensor, led_to_actions: Tensor) -> Tensor:
+        """Deterministic z[t+1] from clean causal state t and action_t.
+
+        No denoising: one dynamics pass over clean latents, then the
+        action-conditioned predictor. Returns [B, T-1, n_spatial, d_spatial].
+        """
+        if self.jepa_predictor is None:
+            raise RuntimeError("JEPA predictor disabled in this arm")
+        if clean.shape[1] < 2:
+            raise ValueError("JEPA prediction requires at least two timesteps")
+        B, T = clean.shape[:2]
+        steps = torch.full(
+            (B, T), self.cfg.max_step_index, device=clean.device, dtype=torch.long
+        )
+        signals = torch.full(
+            (B, T), self.cfg.k_max, device=clean.device, dtype=torch.long
+        )
+        _, agent_tokens = self.forward_dynamics(clean, led_to_actions, steps, signals)
+        next_action_tokens = self.dynamics.action_encoder(
+            led_to_actions[:, 1:], batch_time_shape=(B, T - 1), act_mask=None
+        )[:, :, 0]
+        return self.jepa_predictor(agent_tokens[:, :-1], next_action_tokens)
+
+    def encode_frames_target(self, frames: Tensor) -> Tensor:
+        """Encode frames with the stop-gradient EMA target encoder -> packed."""
+        if self.target_encoder is None:
+            raise RuntimeError("JEPA target encoder disabled in this arm")
+        upstream = load_mmbench2_model()
+        pixels = frames.float()
+        if frames.dtype == torch.uint8:
+            pixels = pixels / 255.0
+        patches = upstream.temporal_patchify(pixels, self.cfg.patch_size)
+        with torch.no_grad():
+            bottleneck, _ = self.target_encoder(patches)
+        return upstream.pack_bottleneck_to_spatial(
+            bottleneck, n_spatial=self.cfg.n_spatial, k=self.cfg.packing_factor
+        )
+
+    def jepa_online_project(self, latent: Tensor) -> Tensor:
+        """Online path: projection then prediction head (BYOL predictor)."""
+        B, T = latent.shape[:2]
+        flat = latent.reshape(B, T, -1)
+        return self.jepa_prediction(self.jepa_projection(flat))
+
+    def jepa_target_project(self, latent: Tensor) -> Tensor:
+        """Target path: EMA projection only, stop-gradient."""
+        B, T = latent.shape[:2]
+        flat = latent.reshape(B, T, -1)
+        with torch.no_grad():
+            return self.jepa_target_projection(flat)
+
+    @torch.no_grad()
+    def update_jepa_target(self, tau: float) -> None:
+        """EMA update of the target encoder and target projection.
+
+        ``target = tau*target + (1-tau)*online`` with the momentum ``tau``
+        ramped toward 1 over training, following the I-JEPA (``52c1ae95``) and
+        V-JEPA-2 (``204698b4``) target-encoder momentum schedule cited for the
+        target-encoder mechanics. This is the same EMA as SPR's
+        ``update_state_dict`` (rlpyt) up to the reciprocal tau naming. Buffers
+        (BatchNorm running statistics) are copied directly from the online net.
+        """
+        if self.target_encoder is None:
+            raise RuntimeError("JEPA target encoder disabled in this arm")
+        pairs = (
+            (self.target_encoder, self.encoder),
+            (self.jepa_target_projection, self.jepa_projection),
+        )
+        for target, online in pairs:
+            for tp, sp in zip(target.parameters(), online.parameters()):
+                tp.mul_(tau).add_(sp.detach(), alpha=1.0 - tau)
+            for tb, sb in zip(target.buffers(), online.buffers()):
+                tb.copy_(sb)

@@ -10,6 +10,7 @@ from .data import SequenceBatch
 from .objectives import (
     cdp_cosine_loss,
     continuation_mtp_loss,
+    jepa_self_prediction_loss,
     reconstruction_anchor_loss,
     shortcut_flow_loss,
 )
@@ -21,6 +22,7 @@ class LossWeights:
     flow: float = 1.0
     reward: float = 1.0
     continuation: float = 1.0
+    jepa: float = 1.0
 
 
 class WorldLossNormalizer(nn.Module):
@@ -120,6 +122,67 @@ def reward_mtp_loss(
     )
 
 
+def _jepa_world_loss(
+    world: nn.Module,
+    batch: SequenceBatch,
+    *,
+    normalizer: WorldLossNormalizer,
+    weights: LossWeights,
+) -> tuple[Tensor, dict[str, Tensor]]:
+    """Non-generative JEPA world loss: SPR self-prediction (which trains the
+    online encoder + dynamics + predictor) plus the reward/continuation heads,
+    read from a deterministic clean dynamics pass matching deployment. There is
+    no flow, cdp, or reconstruction term. The EMA target is updated by the
+    caller after ``optimizer.step()``."""
+    encoded = world.encode_frames(batch.observations, frozen=False)
+    clean = encoded.packed
+    jepa, jepa_metrics = jepa_self_prediction_loss(
+        world,
+        frames=batch.observations,
+        clean=clean,
+        led_to_actions=batch.led_to_actions,
+    )
+    B, T = clean.shape[:2]
+    steps = torch.full(
+        (B, T), world.cfg.max_step_index, device=clean.device, dtype=torch.long
+    )
+    signals = torch.full(
+        (B, T), world.cfg.k_max, device=clean.device, dtype=torch.long
+    )
+    _, agent_tokens = world.forward_dynamics(
+        clean, batch.led_to_actions, steps, signals
+    )
+    heads = world.forward_task_heads(agent_tokens)
+    reward = reward_mtp_loss(
+        heads["reward_logits"],
+        heads["reward_centers"],
+        batch.led_to_rewards,
+        batch.outcome_valid,
+    )
+    continuation = continuation_mtp_loss(
+        heads["continue_logits"],
+        batch.led_to_continues,
+        batch.outcome_valid,
+        terminal_weight=getattr(world.cfg, "jepa_terminal_weight", 1.0),
+    )
+    reward_n = normalizer.apply("reward", reward, active=weights.reward > 0)
+    continuation_n = normalizer.apply(
+        "continuation", continuation, active=weights.continuation > 0
+    )
+    total = (
+        weights.jepa * jepa
+        + weights.reward * reward_n
+        + weights.continuation * continuation_n
+    )
+    terms = {"jepa": jepa, "reward": reward, "continuation": continuation}
+    metrics = {
+        **{f"loss/{name}": value.detach() for name, value in terms.items()},
+        **{f"jepa/{name}": value for name, value in jepa_metrics.items()},
+        "loss/total": total.detach(),
+    }
+    return total, metrics
+
+
 def world_loss(
     world: nn.Module,
     batch: SequenceBatch,
@@ -131,6 +194,10 @@ def world_loss(
     bootstrap_start: int = 10_000,
 ) -> tuple[Tensor, dict[str, Tensor]]:
     """Compute independently reportable D4 flow, task, and CDP terms."""
+    if world.cfg.representation_objective == "jepa":
+        return _jepa_world_loss(
+            world, batch, normalizer=normalizer, weights=weights
+        )
     train_encoder = world.cfg.representation_objective == "cdp"
     encoded = world.encode_frames(
         batch.observations, frozen=not train_encoder

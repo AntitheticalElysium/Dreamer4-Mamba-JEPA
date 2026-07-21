@@ -129,7 +129,9 @@ def module_state_sha256(module: nn.Module) -> str:
         digest.update(b"\0")
         digest.update(str(tuple(value.shape)).encode())
         digest.update(b"\0")
-        digest.update(value.view(torch.uint8).numpy().tobytes())
+        # reshape(-1) makes 0-dim tensors (e.g. BatchNorm num_batches_tracked)
+        # viewable as bytes; it is a no-op on the byte content otherwise.
+        digest.update(value.reshape(-1).view(torch.uint8).numpy().tobytes())
         digest.update(b"\0")
     return digest.hexdigest()
 
@@ -663,8 +665,8 @@ def train_imagination_actor_critic(
         expected_sha256=world_checkpoint_sha256,
         strict_implementation=False,
     )
-    if world.cfg.arm_id != "T-BASE" or world.cfg.n_actions != 2:
-        raise RuntimeError("world is not the registered Transformer control")
+    if world.cfg.arm_id not in {"T-BASE", "T-JEPA"} or world.cfg.n_actions != 2:
+        raise RuntimeError("world is not a registered CartPole control arm")
     freeze_module(world)
     loaded_bc, bc_payload = load_bc_policy(
         bc_checkpoint,
