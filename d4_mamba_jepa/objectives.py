@@ -277,14 +277,19 @@ def jepa_self_prediction_loss(
     device = clean.device
     max_step = world.cfg.max_step_index
     k_max = world.cfg.k_max
-    with torch.no_grad():
-        target_latent = world.encode_frames_target(frames)  # [B,T,N,D]
+    anticollapse = getattr(world.cfg, "jepa_anticollapse", "ema")
+    if anticollapse == "ema":
+        with torch.no_grad():
+            target_latent = world.encode_frames_target(frames)  # EMA encoder
+    else:
+        # LeJEPA: the target is the (non-EMA) online encoder of the actual
+        # frame, stop-gradient. No EMA, no teacher.
+        target_latent = clean.detach()
 
-    # Autoregressive multi-step rollout: feed the predictor's own output back,
-    # matching each step to the EMA target of the actual future frame. This is
-    # the SPR `jumps` mechanism and makes training match the imagined rollout.
+    # Autoregressive multi-step rollout (SPR `jumps`, shared by both arms): feed
+    # the predictor's own output back and match each step to the actual future.
     past = clean[:, :context]  # online latents; gradients flow to encoder
-    online_steps, target_steps = [], []
+    pred_steps, tgt_steps = [], []
     for jump in range(K):
         pos = context + jump  # position being predicted
         time = past.shape[1]
@@ -297,31 +302,64 @@ def jepa_self_prediction_loss(
             led_to_actions[:, pos : pos + 1], batch_time_shape=(B, 1), act_mask=None
         )[:, :, 0]
         pred_z = world.jepa_predictor(agent[:, -1:], next_action_tokens)  # [B,1,N,D]
-        online_steps.append(world.jepa_online_project(pred_z))  # [B,1,P]
-        target_steps.append(world.jepa_target_project(target_latent[:, pos : pos + 1]))
+        pred_steps.append(pred_z)
+        tgt_steps.append(target_latent[:, pos : pos + 1])
         past = torch.cat([past, pred_z], dim=1)
 
-    online = torch.cat(online_steps, dim=1)  # [B,K,P]
-    target = torch.cat(target_steps, dim=1)  # [B,K,P], no grad
+    pred = torch.cat(pred_steps, dim=1)  # [B,K,N,D]
+    tgt = torch.cat(tgt_steps, dim=1)  # [B,K,N,D]
 
-    f_online = torch.nn.functional.normalize(
-        online.float(), p=2.0, dim=-1, eps=1e-3
-    )
-    f_target = torch.nn.functional.normalize(
-        target.float().detach(), p=2.0, dim=-1, eps=1e-3
-    )
-    per = torch.nn.functional.mse_loss(f_online, f_target, reduction="none").sum(-1)
-    loss = per.mean()
-    cosine = (f_online * f_target).sum(-1).mean()
-    # Collapse diagnostics: dispersion of online predictions and targets.
-    online_std = f_online.reshape(-1, f_online.shape[-1]).std(dim=0).mean()
-    target_std = f_target.reshape(-1, f_target.shape[-1]).std(dim=0).mean()
-    metrics = {
+    if anticollapse == "ema":
+        # SPR/BYOL: project both, L2-normalized MSE (= negative cosine).
+        online = world.jepa_online_project(pred)  # [B,K,P]
+        target = world.jepa_target_project(tgt)  # [B,K,P], no grad
+        f_online = torch.nn.functional.normalize(online.float(), p=2.0, dim=-1, eps=1e-3)
+        f_target = torch.nn.functional.normalize(
+            target.float().detach(), p=2.0, dim=-1, eps=1e-3
+        )
+        per = torch.nn.functional.mse_loss(f_online, f_target, reduction="none").sum(-1)
+        loss = per.mean()
+        cosine = (f_online * f_target).sum(-1).mean()
+        online_std = f_online.reshape(-1, f_online.shape[-1]).std(dim=0).mean()
+        target_std = f_target.reshape(-1, f_target.shape[-1]).std(dim=0).mean()
+        return loss, {
+            "jepa_cosine": cosine.detach(),
+            "jepa_online_std": online_std.detach(),
+            "jepa_target_std": target_std.detach(),
+        }
+
+    # LeJEPA: the invariance (prediction) loss AND SIGReg both act on the
+    # projector output (a throwaway space), per the paper. The prediction target
+    # is the (non-EMA) stop-gradient online encoder. Predicting in the projected
+    # space keeps the predictor action-sensitive -- raw-space MSE is too easy on
+    # CartPole and hits cos~0.98 by predicting the action-independent typical
+    # next latent, washing out the action effect -- while SIGReg on the same
+    # projected space prevents collapse without forcing the raw downstream latent
+    # to be Gaussian. Per spatial token.
+    projector = world.jepa_sigreg_projector
+    d_spatial = clean.shape[-1]
+    # Prediction (invariance) and SIGReg both act on the projector output
+    # (LeJEPA), L2-normalized (negative cosine, the direction-focused form the
+    # EMA arm uses). Non-EMA stop-gradient target.
+    online_p = projector(pred.reshape(-1, d_spatial)).reshape(B, K, -1)
+    target_p = projector(tgt.reshape(-1, d_spatial)).reshape(B, K, -1).detach()
+    f_online = torch.nn.functional.normalize(online_p.float(), p=2.0, dim=-1, eps=1e-3)
+    f_target = torch.nn.functional.normalize(target_p.float(), p=2.0, dim=-1, eps=1e-3)
+    prediction_loss = torch.nn.functional.mse_loss(
+        f_online, f_target, reduction="none"
+    ).sum(-1).mean()
+    embeddings = clean.reshape(-1, d_spatial)  # [B*T*N, d_spatial]
+    sigreg = world.sigreg_test(projector(embeddings))
+    loss = prediction_loss + float(world.cfg.jepa_sigreg_lambda) * sigreg
+    with torch.no_grad():
+        cosine = (f_online * f_target).sum(-1).mean()
+        online_std = embeddings.float().std(dim=0).mean()
+    return loss, {
         "jepa_cosine": cosine.detach(),
         "jepa_online_std": online_std.detach(),
-        "jepa_target_std": target_std.detach(),
+        "jepa_sigreg": sigreg.detach(),
+        "jepa_prediction": prediction_loss.detach(),
     }
-    return loss, metrics
 
 
 def reconstruction_anchor_loss(

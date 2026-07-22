@@ -633,6 +633,8 @@ def train_jepa_world(
     learning_rate: float,
     terminal_fraction: float,
     seed: int,
+    anticollapse: str = "ema",
+    sigreg_lambda: float | None = None,
 ) -> dict:
     """Train the non-generative T-JEPA world in one joint phase.
 
@@ -641,7 +643,10 @@ def train_jepa_world(
     tokenizer MAE phase, no decoder, no flow. The EMA target encoder/projection
     are updated after every optimizer step with the I-JEPA/V-JEPA momentum ramp.
     """
-    cfg = cartpole_jepa_config()
+    overrides = {"jepa_anticollapse": anticollapse}
+    if sigreg_lambda is not None:
+        overrides["jepa_sigreg_lambda"] = sigreg_lambda
+    cfg = replace(cartpole_jepa_config(), **overrides)
     if cfg.representation_objective != "jepa" or cfg.temporal_backend != "transformer":
         raise RuntimeError("JEPA arm requires transformer temporal + jepa objective")
     # Oversample terminal windows so the continuation head sees enough failures.
@@ -716,9 +721,10 @@ def train_jepa_world(
             for group in optimizer.param_groups:
                 group["lr"] = learning_rate * scale
         optimizer.step()
-        frac = step / max(1, world_steps - 1)
-        tau = cfg.jepa_ema_tau + (cfg.jepa_ema_tau_final - cfg.jepa_ema_tau) * frac
-        world.update_jepa_target(tau)
+        if cfg.jepa_anticollapse == "ema":
+            frac = step / max(1, world_steps - 1)
+            tau = cfg.jepa_ema_tau + (cfg.jepa_ema_tau_final - cfg.jepa_ema_tau) * frac
+            world.update_jepa_target(tau)
         history.append({
             "jepa": float(metrics["loss/jepa"].item()),
             "reward": float(metrics["loss/reward"].item()),
@@ -1980,6 +1986,10 @@ def main() -> None:
     train_jepa.add_argument("--terminal-fraction", type=float, default=0.25)
     train_jepa.add_argument("--seed", type=int, default=20260720)
     train_jepa.add_argument(
+        "--anticollapse", choices=("ema", "sigreg"), default="ema"
+    )
+    train_jepa.add_argument("--sigreg-lambda", type=float, default=None)
+    train_jepa.add_argument(
         "--device", default="cuda" if torch.cuda.is_available() else "cpu"
     )
 
@@ -2081,6 +2091,8 @@ def main() -> None:
             learning_rate=args.learning_rate,
             terminal_fraction=args.terminal_fraction,
             seed=args.seed,
+            anticollapse=args.anticollapse,
+            sigreg_lambda=args.sigreg_lambda,
         )
         print(json.dumps(report, indent=2, sort_keys=True))
     elif args.command == "train-policy":

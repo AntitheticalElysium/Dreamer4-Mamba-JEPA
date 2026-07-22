@@ -109,3 +109,27 @@ def test_jepa_loss_is_bounded_and_target_detached():
     loss.backward()
     # gradient must not reach the target encoder through the detached target.
     assert all(p.grad is None for p in world.target_encoder.parameters())
+
+
+def test_sigreg_arm_drops_ema_and_heads_and_penalizes_collapse():
+    from dataclasses import replace
+    from d4_mamba_jepa.training import WorldLossNormalizer, world_loss
+
+    cfg = replace(cartpole_jepa_config(), jepa_anticollapse="sigreg", jepa_sigreg_slices=64)
+    world = D4LiteWorld(cfg).train()
+    # LeJEPA drops the EMA target and the projection/prediction heads.
+    assert world.target_encoder is None
+    assert world.jepa_projection is None and world.jepa_prediction is None
+    assert world.jepa_target_projection is None
+    assert world.sigreg_test is not None
+    assert world.jepa_predictor is not None  # predictor (the rollout) is kept
+    # SIGReg is low for isotropic Gaussian, high for collapsed embeddings.
+    gaussian = torch.randn(96, 128)
+    collapsed = torch.zeros(96, 128) + torch.randn(1, 128)
+    assert float(world.sigreg_test(gaussian)) < float(world.sigreg_test(collapsed))
+    # Loss is finite and reports the SIGReg + prediction terms; encoder trains.
+    loss, m = world_loss(world, _batch(cfg), normalizer=WorldLossNormalizer())
+    assert bool(torch.isfinite(loss))
+    assert "jepa/jepa_sigreg" in m and "jepa/jepa_prediction" in m
+    loss.backward()
+    assert any(p.grad is not None and p.grad.abs().sum() > 0 for p in world.encoder.parameters())

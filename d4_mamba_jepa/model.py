@@ -9,7 +9,7 @@ import torch
 from torch import Tensor, nn
 
 from .config import D4LiteConfig
-from .source import load_mmbench2_model
+from .source import load_lejepa_sigreg, load_mmbench2_model
 from .temporal import replace_dynamics_time_attention
 
 
@@ -244,6 +244,8 @@ class D4LiteWorld(nn.Module):
         self.jepa_projection = None
         self.jepa_prediction = None
         self.jepa_target_projection = None
+        self.sigreg_test = None
+        self.jepa_sigreg_projector = None
         if cfg.representation_objective == "cdp":
             self.cdp_predictor = CDPPredictor(
                 d_model=cfg.dynamics_d_model,
@@ -268,10 +270,8 @@ class D4LiteWorld(nn.Module):
         and asymmetric projection/prediction heads."""
         cfg = self.cfg
         self.decoder = None  # non-generative: no pixel decoder
-        self.target_encoder = copy.deepcopy(self.encoder)
-        self.target_encoder.eval()
-        for parameter in self.target_encoder.parameters():
-            parameter.requires_grad_(False)
+        # The deterministic action-conditioned predictor (the rollout) is shared
+        # by both anti-collapse mechanisms.
         self.jepa_predictor = CDPPredictor(
             d_model=cfg.dynamics_d_model,
             n_spatial=cfg.n_spatial,
@@ -279,14 +279,40 @@ class D4LiteWorld(nn.Module):
             hidden_ratio=cfg.jepa_predictor_hidden_ratio,
         )
         flat = cfg.n_spatial * cfg.d_spatial
-        self.jepa_projection = JepaProjector(flat, cfg.jepa_projection_dim)
-        self.jepa_prediction = JepaProjector(
-            cfg.jepa_projection_dim, cfg.jepa_projection_dim
-        )
-        self.jepa_target_projection = copy.deepcopy(self.jepa_projection)
-        self.jepa_target_projection.eval()
-        for parameter in self.jepa_target_projection.parameters():
-            parameter.requires_grad_(False)
+        if cfg.jepa_anticollapse == "ema":
+            # SPR/BYOL: stop-grad EMA target encoder + asymmetric heads.
+            self.target_encoder = copy.deepcopy(self.encoder)
+            self.target_encoder.eval()
+            for parameter in self.target_encoder.parameters():
+                parameter.requires_grad_(False)
+            self.jepa_projection = JepaProjector(flat, cfg.jepa_projection_dim)
+            self.jepa_prediction = JepaProjector(
+                cfg.jepa_projection_dim, cfg.jepa_projection_dim
+            )
+            self.jepa_target_projection = copy.deepcopy(self.jepa_projection)
+            self.jepa_target_projection.eval()
+            for parameter in self.jepa_target_projection.parameters():
+                parameter.requires_grad_(False)
+        else:
+            # LeJEPA: no EMA target, no projection/prediction heuristics; the
+            # prediction target is the (non-EMA) online encoder, stop-gradient.
+            # Anti-collapse is SIGReg on the online embeddings.
+            SlicingUnivariateTest, EppsPulley = load_lejepa_sigreg()
+            self.sigreg_test = SlicingUnivariateTest(
+                univariate_test=EppsPulley(n_points=cfg.jepa_sigreg_points),
+                num_slices=cfg.jepa_sigreg_slices,
+                reduction="mean",
+            )
+            # LeJEPA keeps a projector (config projector_arch="MLP"). SIGReg and
+            # the prediction/invariance loss it regularizes act in this
+            # throwaway projected space, so the raw downstream encoder latent is
+            # free to keep task structure. Applied per spatial token.
+            proj = cfg.jepa_projection_dim
+            self.jepa_sigreg_projector = nn.Sequential(
+                nn.Linear(cfg.d_spatial, 2 * proj),
+                nn.GELU(),
+                nn.Linear(2 * proj, proj),
+            )
         # Online encoder is trained jointly by self-prediction.
         self.encoder.train()
         for parameter in self.encoder.parameters():

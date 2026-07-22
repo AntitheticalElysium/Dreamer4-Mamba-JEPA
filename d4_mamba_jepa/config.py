@@ -82,6 +82,17 @@ class D4LiteConfig:
     # collapse to the majority "continue" label on a rare-terminal task.
     jepa_terminal_weight: float = 8.0
     jepa_terminal_fraction: float = 0.5
+    # Anti-collapse mechanism, the single axis compared head-to-head:
+    #   "ema"    = SPR/BYOL stop-gradient EMA target encoder + asymmetric
+    #              projection/prediction heads (D031).
+    #   "sigreg" = LeJEPA: drop the EMA target and the projection/prediction
+    #              heuristics; prediction loss to the (non-EMA) stop-gradient
+    #              online target, anti-collapse by Sketched Isotropic Gaussian
+    #              Regularization (rbalestr-lab/lejepa c293d291).
+    jepa_anticollapse: str = "ema"  # ema | sigreg
+    jepa_sigreg_lambda: float = 0.05    # SIGReg weight (paper bstat_lambda 0.01-0.1)
+    jepa_sigreg_slices: int = 1024      # random projection slices
+    jepa_sigreg_points: int = 17        # Epps-Pulley integration points (odd)
 
     def __post_init__(self) -> None:
         if self.temporal_backend not in {"transformer", "mamba2"}:
@@ -108,6 +119,14 @@ class D4LiteConfig:
             )
         if self.jepa_terminal_weight < 1.0:
             raise ValueError("jepa_terminal_weight must be >= 1")
+        if self.jepa_anticollapse not in {"ema", "sigreg"}:
+            raise ValueError(
+                f"unsupported jepa_anticollapse={self.jepa_anticollapse!r}"
+            )
+        if self.jepa_sigreg_lambda < 0.0 or self.jepa_sigreg_slices < 1:
+            raise ValueError("SIGReg lambda>=0 and slices>=1 required")
+        if self.jepa_sigreg_points % 2 == 0:
+            raise ValueError("jepa_sigreg_points must be odd (Epps-Pulley)")
         if self.image_size % self.patch_size:
             raise ValueError("image_size must be divisible by patch_size")
         if self.n_latents % self.packing_factor:

@@ -72,6 +72,31 @@ GYMNASIUM_CARTPOLE = SourceIdentity(
 )
 
 
+LEJEPA_ROOT = REPO_ROOT / "third_party/sources/rbalestr-lab__lejepa"
+LEJEPA_COMMIT = "c293d291ca87cd4fddee9d3fffe4e914c7272052"
+LEJEPA_SLICING = SourceIdentity(
+    name="rbalestr-lab/lejepa:lejepa/multivariate/slicing.py",
+    path=LEJEPA_ROOT / "lejepa/multivariate/slicing.py",
+    commit=LEJEPA_COMMIT,
+    sha256="86c0fe3a714dc945ba3e23ab4093f6ed41966039f9681bd53c733e3ca5dff56b",
+    license="see repo",
+)
+LEJEPA_EPPS = SourceIdentity(
+    name="rbalestr-lab/lejepa:lejepa/univariate/epps_pulley.py",
+    path=LEJEPA_ROOT / "lejepa/univariate/epps_pulley.py",
+    commit=LEJEPA_COMMIT,
+    sha256="e6554ee42de27b74d62befb5f353d4d7a4f92c6c1eade25edaa6595a6b593149",
+    license="see repo",
+)
+LEJEPA_BASE = SourceIdentity(
+    name="rbalestr-lab/lejepa:lejepa/univariate/base.py",
+    path=LEJEPA_ROOT / "lejepa/univariate/base.py",
+    commit=LEJEPA_COMMIT,
+    sha256="08d4f115990656ea3459dacbba5991622725f9040ebc64ae8d34f4e76299eef6",
+    license="see repo",
+)
+
+
 class SourceDriftError(RuntimeError):
     """A primary source no longer matches the registered implementation."""
 
@@ -146,6 +171,40 @@ def verify_installed_cartpole() -> str:
             f"{actual} != {GYMNASIUM_CARTPOLE.sha256}"
         )
     return actual
+
+
+@lru_cache(maxsize=1)
+def load_lejepa_sigreg():
+    """Return the pinned LeJEPA ``(SlicingUnivariateTest, EppsPulley)`` classes.
+
+    SIGReg is used unchanged from ``rbalestr-lab/lejepa`` commit
+    ``c293d291``: the sliced random-projection multivariate test
+    (``lejepa/multivariate/slicing.py``) with the Epps-Pulley univariate
+    normality test (``lejepa/univariate/epps_pulley.py``). Digests are verified
+    before import so any source drift hard-fails.
+    """
+    for identity in (LEJEPA_SLICING, LEJEPA_EPPS, LEJEPA_BASE):
+        verify_source(identity)
+    root = str(LEJEPA_ROOT)
+    if root not in sys.path:
+        sys.path.insert(0, root)
+    from lejepa.multivariate.slicing import SlicingUnivariateTest
+    from lejepa.univariate.epps_pulley import EppsPulley
+
+    return SlicingUnivariateTest, EppsPulley
+
+
+def lejepa_source_report() -> dict[str, str]:
+    """Separate SIGReg provenance (kept out of ``source_report`` so it does not
+    change the checkpoint provenance contract for non-SIGReg checkpoints)."""
+    return {
+        "path": str(LEJEPA_SLICING.path),
+        "commit": LEJEPA_SLICING.commit,
+        "slicing_sha256": verify_source(LEJEPA_SLICING),
+        "epps_pulley_sha256": verify_source(LEJEPA_EPPS),
+        "base_sha256": verify_source(LEJEPA_BASE),
+        "license": LEJEPA_SLICING.license,
+    }
 
 
 def source_report() -> dict[str, dict[str, str]]:
