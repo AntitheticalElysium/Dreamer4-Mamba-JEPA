@@ -282,9 +282,12 @@ def jepa_self_prediction_loss(
         with torch.no_grad():
             target_latent = world.encode_frames_target(frames)  # EMA encoder
     else:
-        # LeJEPA: the target is the (non-EMA) online encoder of the actual
-        # frame, stop-gradient. No EMA, no teacher.
-        target_latent = clean.detach()
+        # LeJEPA (arXiv:2511.08544, Algorithm 2): the target is the online
+        # encoder of the actual frame. No EMA, no teacher-student, and no
+        # stop-gradient -- the paper's claim is that SIGReg alone prevents the
+        # collapse those heuristics otherwise guard against, so introducing one
+        # here would not be the method under test.
+        target_latent = clean
 
     # Autoregressive multi-step rollout (SPR `jumps`, shared by both arms): feed
     # the predictor's own output back and match each step to the actual future.
@@ -328,31 +331,31 @@ def jepa_self_prediction_loss(
             "jepa_target_std": target_std.detach(),
         }
 
-    # LeJEPA: the invariance (prediction) loss AND SIGReg both act on the
-    # projector output (a throwaway space), per the paper. The prediction target
-    # is the (non-EMA) stop-gradient online encoder. Predicting in the projected
-    # space keeps the predictor action-sensitive -- raw-space MSE is too easy on
-    # CartPole and hits cos~0.98 by predicting the action-independent typical
-    # next latent, washing out the action effect -- while SIGReg on the same
-    # projected space prevents collapse without forcing the raw downstream latent
-    # to be Gaussian. Per spatial token.
+    # LeJEPA (Balestriero & LeCun, arXiv:2511.08544, Algorithm 2). Our encoder is
+    # transformer-based, so we take the ViT reference path in which ``forward``
+    # includes a projector (reference config: ``projector_arch="MLP"``); the
+    # ResNet path is the ``a_emb = g_emb`` no-projector special case. Both the
+    # invariance term and SIGReg therefore act on the projector output. Two terms
+    # only, no other heuristics:
+    #   * invariance/prediction: Algorithm 2's raw squared error between the
+    #     predictor's next embedding and the actual next embedding. No L2
+    #     normalization and no stop-gradient -- LeJEPA is heuristics-free.
+    #   * SIGReg: the Epps-Pulley sliced-normality statistic on the projected
+    #     real embeddings, imported unchanged from the pinned source.
+    # Combined with the reference convex combination (1-lambda)*sim + lambda*sigreg.
     projector = world.jepa_sigreg_projector
     d_spatial = clean.shape[-1]
-    # Prediction (invariance) and SIGReg both act on the projector output
-    # (LeJEPA), L2-normalized (negative cosine, the direction-focused form the
-    # EMA arm uses). Non-EMA stop-gradient target.
+    lam = float(world.cfg.jepa_sigreg_lambda)
     online_p = projector(pred.reshape(-1, d_spatial)).reshape(B, K, -1)
-    target_p = projector(tgt.reshape(-1, d_spatial)).reshape(B, K, -1).detach()
-    f_online = torch.nn.functional.normalize(online_p.float(), p=2.0, dim=-1, eps=1e-3)
-    f_target = torch.nn.functional.normalize(target_p.float(), p=2.0, dim=-1, eps=1e-3)
-    prediction_loss = torch.nn.functional.mse_loss(
-        f_online, f_target, reduction="none"
-    ).sum(-1).mean()
+    target_p = projector(tgt.reshape(-1, d_spatial)).reshape(B, K, -1)
+    prediction_loss = (online_p.float() - target_p.float()).square().mean()
     embeddings = clean.reshape(-1, d_spatial)  # [B*T*N, d_spatial]
     sigreg = world.sigreg_test(projector(embeddings))
-    loss = prediction_loss + float(world.cfg.jepa_sigreg_lambda) * sigreg
+    loss = (1.0 - lam) * prediction_loss + lam * sigreg
     with torch.no_grad():
-        cosine = (f_online * f_target).sum(-1).mean()
+        cosine = torch.nn.functional.cosine_similarity(
+            online_p.float(), target_p.float(), dim=-1, eps=1e-8
+        ).mean()
         online_std = embeddings.float().std(dim=0).mean()
     return loss, {
         "jepa_cosine": cosine.detach(),

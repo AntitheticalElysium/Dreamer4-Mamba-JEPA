@@ -32,3 +32,11 @@
 2306.13229v3.pdf | TACO: Temporal Latent Action-Driven Contrastive Loss for Visual Reinforcement Learning | 93e21eba6d0721628f69eef345afcffc89d2be32e3e15bca7f867ff2be55733c
 1906.02736v1.pdf | DeepMDP: Learning Continuous Latent Space Models for Representation Learning | 8d378562cd5c69829af5a7d1e35300b0f81905e6ed5c06e04626603c8a7e2e33
 2006.10742v2.pdf | Learning Invariant Representations for Reinforcement Learning without Reconstruction (DBC) | 8322d722f58393f703be8cbc7c24de360a028926db6843feb0e2adc3a392b952
+
+# Subspace / low-intrinsic-dimension SIGReg corpus (added 2026-07-23). Closes the
+# question raised by the EMA-vs-SIGReg ablation: LeJEPA's ambient isotropic-Gaussian
+# prior mismatches the intrinsic geometry of low-dimensional control tasks. LeWM
+# (2603.19312, already pinned) is the SIGReg world-model baseline these improve on.
+2605.09241.pdf | Sub-JEPA: Subspace Gaussian Regularization for Stable End-to-End World Models | f88624aa985b9303ddce94a03f8d8bba22f535508e695a3b1b6256c4e7fcc8f6
+2605.26379.pdf | When Does LeJEPA Learn a World Model? | 912f41e8c3fe5389f2136362533e4c7fc3695df8ad1b796adb285a49bb11f676
+2605.31111.pdf | Subspace-Decomposed JEPAs: Disentangling Progression and Content in Latent World Models (SD-JEPA) | c9510496e19e31585d2160514dcdfc333e01fb00be3ab8d917a73a4b37e0c2ef

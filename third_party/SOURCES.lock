@@ -27,3 +27,8 @@ Drama (third_party/Drama): vendored snapshot, no git metadata
 mila-iqia__spr  https://github.com/mila-iqia/spr.git  0b9dd4e7b9bbdfaecdf9a3713bf5931fb54ab0ca  
 FrankZheng2022__TACO  https://github.com/FrankZheng2022/TACO.git  84c38e34f4f9dfd2b059fb6d1356757e8d40712e  
 facebookresearch__deep_bisim4control  https://github.com/facebookresearch/deep_bisim4control.git  5967b6d0ccfc1032837cbe542f7bc5a96dc02cbb  
+# Subspace SIGReg source (pinned 2026-07-23). Sub-JEPA is a 73-line patch plus a
+# 171-line module on top of lucas-maes/le-wm (already vendored above): SIGReg is
+# applied inside frozen orthogonal subspaces (MultiSubspaceSIGReg) instead of the
+# full ambient space. Apache-2.0. The le-wm submodule is NOT initialised.
+intcomp__Sub-JEPA  https://github.com/intcomp/Sub-JEPA.git  c21fe3cad03565e077e928d548b66e6ab706c262  
