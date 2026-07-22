@@ -60,6 +60,23 @@ does not block, while the EMA teacher does.
 **Conclusion: the anti-collapse mechanism is load-bearing for imagination-based
 control. A better *representation* (SIGReg) does not imply a better *imagination*.**
 
+### Consistent with the LeJEPA paper (2511.08544v3), not a contradiction
+
+The paper's objective is to make embeddings an isotropic Gaussian that minimizes
+downstream *probing* risk (linear/nonlinear probe accuracy, §3–4) — the metric
+it optimizes and validates. It never claims, or optimizes for, action-conditioned
+multi-step **rollout** fidelity (imagination). Our result matches the paper on
+what it promises: SIGReg delivers the *better representation* (BC parity, higher
+terminal-AUC). Faithfulness is confirmed against the paper as well as the code:
+Definition 1 (`Enc(x_{t+1})` predictable from `Enc(x_t)`, non-degenerate) holds,
+and §2.2 explicitly sanctions the action-conditioned predictor `Pred` "when
+there exists an asymmetry between views, e.g., by conditioning on observed
+actions" — so keeping it is prescribed, and the dropped "predictor heuristic" is
+the BYOL anti-collapse head, which we removed. The EMA teacher's lagging target
+enforces temporal/action-sensitivity as a *side effect* that helps imagination;
+SIGReg's distributional regularization does the embedding job (better) but not
+that dynamics job.
+
 ## Faithfulness and exhaustiveness
 
 Seven faithful variants were run to convergence, all giving the same qualitative
