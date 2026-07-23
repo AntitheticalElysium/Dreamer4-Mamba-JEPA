@@ -133,3 +133,79 @@ def test_sigreg_arm_drops_ema_and_heads_and_penalizes_collapse():
     assert "jepa/jepa_sigreg" in m and "jepa/jepa_prediction" in m
     loss.backward()
     assert any(p.grad is not None and p.grad.abs().sum() > 0 for p in world.encoder.parameters())
+
+
+def _jepa_world(backend="transformer"):
+    from d4_mamba_jepa.cartpole_baseline import cartpole_jepa_config
+    from d4_mamba_jepa.model import D4LiteWorld
+
+    return D4LiteWorld(cartpole_jepa_config(backend))
+
+
+def test_jepa_heads_train_on_rollout_latents_like_deployment():
+    """Regression for the JEPA train/deployment head mismatch.
+
+    Training must expose the reward/continuation heads to post-transition agent
+    tokens produced from PREDICTOR-generated latents, which is what
+    ``rollout._sample_next_jepa`` feeds them at deployment. Previously they were
+    trained on a clean pass over real encoder latents.
+    """
+    import torch
+
+    from d4_mamba_jepa.objectives import jepa_self_prediction_loss
+    from d4_mamba_jepa.rollout import sample_next_packed
+
+    world = _jepa_world()
+    world.eval()
+    cfg = world.cfg
+    B, T = 2, cfg.sequence_length
+    torch.manual_seed(0)
+    frames = torch.rand(B, T, 3, cfg.image_size, cfg.image_size)
+    actions = torch.randint(0, cfg.n_actions, (B, T))
+
+    encoded = world.encode_frames(frames, frozen=True)
+    _, _, rollout_agents = jepa_self_prediction_loss(
+        world,
+        frames=frames,
+        clean=encoded.packed,
+        led_to_actions=actions,
+        return_rollout_agents=True,
+    )
+    # Shape contract: one post-transition token set per imagined jump.
+    assert rollout_agents.shape == (
+        B, cfg.jepa_jumps, cfg.n_agent, cfg.dynamics_d_model
+    )
+
+    # The training tokens must be numerically identical to what the deployment
+    # rollout primitive produces for the first imagined step from the same
+    # context, which is only true if both read predictor-generated latents.
+    context = T - cfg.jepa_jumps
+    with torch.no_grad():
+        _, deploy_agent = sample_next_packed(
+            world,
+            past_packed=encoded.packed[:, :context],
+            led_to_actions=actions[:, : context + 1],
+            schedule=None,
+            use_cache=False,
+        )
+    torch.testing.assert_close(
+        rollout_agents[:, 0], deploy_agent[:, 0], rtol=1e-4, atol=1e-4
+    )
+
+
+def test_jepa_targets_stay_frozen_after_train():
+    """Freezing is by requires_grad, not by the eval() calls in _build_jepa.
+
+    ``world.train()`` recurses into children and flips their mode, so the
+    eval() calls do not survive it. The stop-gradient invariant must hold
+    regardless.
+    """
+    world = _jepa_world()
+    world.train()
+    assert not any(p.requires_grad for p in world.target_encoder.parameters())
+    assert not any(
+        p.requires_grad for p in world.jepa_target_projection.parameters()
+    )
+    # Documents the known mode behaviour so a future change is deliberate.
+    assert world.target_encoder.training is True
+    assert world.jepa_target_projection.training is True

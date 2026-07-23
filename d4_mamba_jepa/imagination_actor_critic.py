@@ -72,6 +72,12 @@ EDWHU_POLICY = SourceIdentity(
     sha256="d16d9e6ba220664afbb73e7f4f80056371dd6fffb3c592d2d09a7ef2b840d7d1",
     license="no license file in inspected checkout; read-only reference",
 )
+# TD-lambda here follows Dreamer 4 equation 10, whose lambda-return carries the
+# continuation factor c_t (see ``td_lambda_returns``, which multiplies by
+# ``continues``). The inspected ``edwhu/dreamer4-jax`` runner computes TD-lambda
+# from V1..VT and r1..rT with a bootstrap VT and no continuation term, so it is
+# a read-only reference for the actor/value loop and optimizer shape, NOT the
+# source of the return equation.
 EDWHU_IMAGINATION = SourceIdentity(
     name="edwhu/dreamer4-jax:dreamer/imagination.py",
     path=REPO_ROOT
@@ -263,7 +269,12 @@ def td_lambda_returns(
     gamma: float,
     lambda_: float,
 ) -> torch.Tensor:
-    """Compute returns for ``s_t,a_t,r_{t+1},c_{t+1},s_{t+1}``."""
+    """Compute returns for ``s_t,a_t,r_{t+1},c_{t+1},s_{t+1}``.
+
+    Follows Dreamer 4 equation 10: the lambda-return is discounted by
+    ``gamma * c_t``. The inspected ``edwhu/dreamer4-jax`` runner omits the
+    continuation factor and is therefore not the source of this equation.
+    """
     if rewards.ndim != 2 or continues.shape != rewards.shape:
         raise ValueError("rewards and continues must have shape [B,H]")
     if values.shape != (rewards.shape[0], rewards.shape[1] + 1):

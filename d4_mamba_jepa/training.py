@@ -130,39 +130,40 @@ def _jepa_world_loss(
     weights: LossWeights,
 ) -> tuple[Tensor, dict[str, Tensor]]:
     """Non-generative JEPA world loss: SPR self-prediction (which trains the
-    online encoder + dynamics + predictor) plus the reward/continuation heads,
-    read from a deterministic clean dynamics pass matching deployment. There is
-    no flow, cdp, or reconstruction term. The EMA target is updated by the
-    caller after ``optimizer.step()``."""
+    online encoder + dynamics + predictor) plus the reward/continuation heads.
+
+    The heads are read from the post-transition agent tokens of the imagined
+    multi-step rollout, i.e. from predictor-generated latents, because that is
+    what ``rollout._sample_next_jepa`` feeds them at deployment. This is the
+    JEPA analogue of the D012 contract; an earlier version trained them on a
+    clean real-latent pass and so had a train/deployment distribution mismatch.
+    There is no flow, cdp, or reconstruction term. The EMA target is updated by
+    the caller after ``optimizer.step()``."""
     encoded = world.encode_frames(batch.observations, frozen=False)
     clean = encoded.packed
-    jepa, jepa_metrics = jepa_self_prediction_loss(
+    jepa, jepa_metrics, rollout_agents = jepa_self_prediction_loss(
         world,
         frames=batch.observations,
         clean=clean,
         led_to_actions=batch.led_to_actions,
+        return_rollout_agents=True,
     )
-    B, T = clean.shape[:2]
-    steps = torch.full(
-        (B, T), world.cfg.max_step_index, device=clean.device, dtype=torch.long
-    )
-    signals = torch.full(
-        (B, T), world.cfg.k_max, device=clean.device, dtype=torch.long
-    )
-    _, agent_tokens = world.forward_dynamics(
-        clean, batch.led_to_actions, steps, signals
-    )
-    heads = world.forward_task_heads(agent_tokens)
+    # rollout_agents[:, j] is the imagined state at absolute position
+    # context + j, so the real reward/continuation targets are sliced to match.
+    T = clean.shape[1]
+    K = rollout_agents.shape[1]
+    context = T - K
+    heads = world.forward_task_heads(rollout_agents)
     reward = reward_mtp_loss(
         heads["reward_logits"],
         heads["reward_centers"],
-        batch.led_to_rewards,
-        batch.outcome_valid,
+        batch.led_to_rewards[:, context : context + K],
+        batch.outcome_valid[:, context : context + K],
     )
     continuation = continuation_mtp_loss(
         heads["continue_logits"],
-        batch.led_to_continues,
-        batch.outcome_valid,
+        batch.led_to_continues[:, context : context + K],
+        batch.outcome_valid[:, context : context + K],
         terminal_weight=getattr(world.cfg, "jepa_terminal_weight", 1.0),
     )
     reward_n = normalizer.apply("reward", reward, active=weights.reward > 0)

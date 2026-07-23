@@ -282,6 +282,13 @@ class D4LiteWorld(nn.Module):
         if cfg.jepa_anticollapse == "ema":
             # SPR/BYOL: stop-grad EMA target encoder + asymmetric heads.
             self.target_encoder = copy.deepcopy(self.encoder)
+            # NOTE: this eval() does not survive a later ``world.train()``,
+            # which recurses into every child. What actually guarantees the
+            # stop-gradient is ``requires_grad_(False)`` below, and that does
+            # hold (see tests/test_jepa_arm.py::test_jepa_targets_stay_frozen).
+            # The mode matters only for the BatchNorm inside the target
+            # projection, which additionally has its buffers overwritten from
+            # the online net on every ``update_jepa_target`` call.
             self.target_encoder.eval()
             for parameter in self.target_encoder.parameters():
                 parameter.requires_grad_(False)
@@ -290,6 +297,8 @@ class D4LiteWorld(nn.Module):
                 cfg.jepa_projection_dim, cfg.jepa_projection_dim
             )
             self.jepa_target_projection = copy.deepcopy(self.jepa_projection)
+            # Same caveat as the target encoder above: freezing is by
+            # requires_grad, not by this mode flag.
             self.jepa_target_projection.eval()
             for parameter in self.jepa_target_projection.parameters():
                 parameter.requires_grad_(False)

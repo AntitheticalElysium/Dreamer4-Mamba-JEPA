@@ -255,8 +255,14 @@ def jepa_self_prediction_loss(
     frames: Tensor,
     clean: Tensor,
     led_to_actions: Tensor,
-) -> tuple[Tensor, dict[str, Tensor]]:
+    return_rollout_agents: bool = False,
+) -> tuple[Tensor, dict[str, Tensor]] | tuple[Tensor, dict[str, Tensor], Tensor]:
     """Non-generative SPR/BYOL action-conditioned self-prediction.
+
+    With ``return_rollout_agents`` the post-transition agent tokens of each
+    imagined step are also returned, so the reward/continuation heads can be
+    trained on the predictor-generated latents they are read on at deployment
+    rather than on real encoder latents.
 
     Faithful to ``mila-iqia/spr`` (commit ``0b9dd4e7``) ``do_spr_loss`` and
     ``spr_loss``: the deterministic action-conditioned predictor produces the
@@ -292,7 +298,7 @@ def jepa_self_prediction_loss(
     # Autoregressive multi-step rollout (SPR `jumps`, shared by both arms): feed
     # the predictor's own output back and match each step to the actual future.
     past = clean[:, :context]  # online latents; gradients flow to encoder
-    pred_steps, tgt_steps = [], []
+    pred_steps, tgt_steps, rollout_agents = [], [], []
     for jump in range(K):
         pos = context + jump  # position being predicted
         time = past.shape[1]
@@ -308,6 +314,23 @@ def jepa_self_prediction_loss(
         pred_steps.append(pred_z)
         tgt_steps.append(target_latent[:, pos : pos + 1])
         past = torch.cat([past, pred_z], dim=1)
+        if return_rollout_agents:
+            # Post-transition agent tokens for the state just generated. This
+            # repeats the exact second pass `rollout._sample_next_jepa` performs
+            # at deployment, so the reward/continuation heads are trained on the
+            # same predictor-generated latent distribution they are later read
+            # on. This is the JEPA analogue of the D012 contract.
+            time2 = past.shape[1]
+            steps2 = torch.full(
+                (B, time2), max_step, device=device, dtype=torch.long
+            )
+            signals2 = torch.full(
+                (B, time2), k_max, device=device, dtype=torch.long
+            )
+            _, agent_after = world.forward_dynamics(
+                past, led_to_actions[:, :time2], steps2, signals2
+            )
+            rollout_agents.append(agent_after[:, -1:])
 
     pred = torch.cat(pred_steps, dim=1)  # [B,K,N,D]
     tgt = torch.cat(tgt_steps, dim=1)  # [B,K,N,D]
@@ -325,11 +348,14 @@ def jepa_self_prediction_loss(
         cosine = (f_online * f_target).sum(-1).mean()
         online_std = f_online.reshape(-1, f_online.shape[-1]).std(dim=0).mean()
         target_std = f_target.reshape(-1, f_target.shape[-1]).std(dim=0).mean()
-        return loss, {
+        metrics = {
             "jepa_cosine": cosine.detach(),
             "jepa_online_std": online_std.detach(),
             "jepa_target_std": target_std.detach(),
         }
+        if return_rollout_agents:
+            return loss, metrics, torch.cat(rollout_agents, dim=1)
+        return loss, metrics
 
     # LeJEPA (Balestriero & LeCun, arXiv:2511.08544, Algorithm 2). Our encoder is
     # transformer-based, so we take the ViT reference path in which ``forward``
@@ -357,12 +383,15 @@ def jepa_self_prediction_loss(
             online_p.float(), target_p.float(), dim=-1, eps=1e-8
         ).mean()
         online_std = embeddings.float().std(dim=0).mean()
-    return loss, {
+    metrics = {
         "jepa_cosine": cosine.detach(),
         "jepa_online_std": online_std.detach(),
         "jepa_sigreg": sigreg.detach(),
         "jepa_prediction": prediction_loss.detach(),
     }
+    if return_rollout_agents:
+        return loss, metrics, torch.cat(rollout_agents, dim=1)
+    return loss, metrics
 
 
 def reconstruction_anchor_loss(
