@@ -145,6 +145,39 @@ is a demonstrated limit, not an unfinished search.
 
 `M-BASE`/`T-BASE` remain historical context only.
 
+### Why the actor gains so little: the mechanism (D040)
+
+The obvious suspect was the continuation head. `M-JEPA` imagines continuation
+0.284 over 32 steps while its BC really survives ~227 steps, which looks like
+gross over-prediction of termination and would have justified a per-arm terminal
+weight. Measured on held-out **real** states, that hypothesis is refuted:
+
+| on real states | M-JEPA | T-JEPA |
+|---|---:|---:|
+| mean predicted P(continue) | 0.9946 | 0.9994 |
+| empirical continuation rate | 0.9896 | 0.9896 |
+| calibration error | **+0.0050** | +0.0097 |
+| implied vs true episode length | 186 vs 96 | 1552 vs 96 |
+
+`M-JEPA`'s head is *better* calibrated than `T-JEPA`'s. The 0.284 therefore
+arises only on **imagined** states, and it lines up exactly with the fidelity
+curves above (imagined NRMSE 1.40 → 2.54 against `T-JEPA`'s 0.70 → 1.59, state
+variance contracting 0.213 → 0.036).
+
+The complete mechanism is therefore:
+
+1. `M-JEPA` predicts one step better (dev cosine 0.675) and represents state
+   better (BC 0.9105, executed 454).
+2. Its multi-step imagined rollouts nevertheless drift off the real manifold
+   faster than `T-JEPA`'s.
+3. The correctly-calibrated continuation head reads those drifted latents as
+   terminal, so imagined survival collapses.
+4. The actor consequently trains on an effective horizon of roughly 8 of 32
+   steps, and can only nudge an already-excellent BC.
+
+The lever this identifies — reducing multi-step rollout drift — is a change to
+the predictor and its training, i.e. the architecture this arm holds fixed.
+
 ## Verdict
 
 The combined architecture works. Swapping the temporal operator to Mamba-2
