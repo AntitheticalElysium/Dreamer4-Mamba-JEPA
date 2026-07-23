@@ -178,6 +178,43 @@ The complete mechanism is therefore:
 The lever this identifies — reducing multi-step rollout drift — is a change to
 the predictor and its training, i.e. the architecture this arm holds fixed.
 
+### Can the drift be trained away? (D041)
+
+D040 identified rollout drift as the residual cause, and there was one untried,
+source-faithful lever: the world is trained on `jepa_jumps=5` autoregressive
+steps but the actor imagines 32, so drift past step 5 is unconstrained. The SPR
+`jumps` mechanism (D034) already parameterises exactly this. A pre-declared
+5/8/11 ladder was selected on development seeds (11 is the ceiling under the
+existing `jepa_jumps < sequence_length` check at `sequence_length=12`).
+
+| jumps | dev cos | BC acc | imagined continuation | imagined return | dev actor | dev BC | delta | gate-2 gap |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| **5** | 0.675 | 0.9105 | 0.444 | 6.25 | 474.43 | 445.10 | **+29.33** | 6.52 |
+| 8 | 0.721 | 0.9134 | **0.978** | **68.54** | 245.87 | 368.40 | −122.53 | **23.07** |
+| 11 | 0.556 | 0.8089 | 0.840 | 8.16 | 42.07 | 50.03 | −7.97 | 0.64 |
+
+The drift mechanism is **confirmed**: at `jumps=8` imagined continuation rises
+0.444 → 0.978 and imagined return 6.25 → 68.54, the world improves on every
+metric, and gate-2 divergence becomes the best in the project (23.07; BC 33.8 vs
+anti-BC 10.7, a 3.15× separation). **And the actor collapses anyway**, to −122.53
+against its BC — a long, now-survivable imagined horizon simply lets it exploit
+the model's residual long-horizon error. At `jumps=11` world training
+destabilises outright.
+
+So the ladder selects 5 and the inherited value stands. The result is a genuine
+tradeoff, not a tuning failure:
+
+- **too short** (5): imagined survival collapses, the actor gets little signal,
+  and improves only marginally;
+- **matched** (8): the actor gets abundant signal and exploits it — the
+  compounding-error regime of *On Training in Imagination* (`2605.06732`),
+  reproduced here;
+- **too long** (11): the world itself destabilises.
+
+Fixing the drift is therefore necessary but nowhere near sufficient; what the
+actor needs is a rollout that is both survivable *and* accurate, which this
+architecture does not deliver at 32 steps.
+
 ## Verdict
 
 The combined architecture works. Swapping the temporal operator to Mamba-2

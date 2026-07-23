@@ -661,6 +661,7 @@ def train_jepa_world(
     anticollapse: str = "ema",
     sigreg_lambda: float | None = None,
     temporal_backend: str = "transformer",
+    jepa_jumps: int | None = None,
 ) -> dict:
     """Train the non-generative JEPA world in one joint phase.
 
@@ -670,6 +671,8 @@ def train_jepa_world(
     are updated after every optimizer step with the I-JEPA/V-JEPA momentum ramp.
     """
     overrides = {"jepa_anticollapse": anticollapse}
+    if jepa_jumps is not None:
+        overrides["jepa_jumps"] = int(jepa_jumps)
     if sigreg_lambda is not None:
         overrides["jepa_sigreg_lambda"] = sigreg_lambda
     cfg = replace(cartpole_jepa_config(temporal_backend), **overrides)
@@ -2034,6 +2037,11 @@ def main() -> None:
         help="transformer = T-JEPA; mamba2 = M-JEPA (D022 d_state=64, headdim=64)",
     )
     train_jepa.add_argument(
+        "--jepa-jumps", type=int, default=None,
+        help="SPR multi-step rollout length (D034/D041); omit to keep the "
+             "configured default of 5",
+    )
+    train_jepa.add_argument(
         "--device", default="cuda" if torch.cuda.is_available() else "cpu"
     )
 
@@ -2138,6 +2146,7 @@ def main() -> None:
             anticollapse=args.anticollapse,
             sigreg_lambda=args.sigreg_lambda,
             temporal_backend=args.temporal_backend,
+            jepa_jumps=args.jepa_jumps,
         )
         print(json.dumps(report, indent=2, sort_keys=True))
     elif args.command == "train-policy":
