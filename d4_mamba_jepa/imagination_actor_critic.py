@@ -993,6 +993,7 @@ def evaluate_actor_parity(
     historical_bc_mean: float,
     noninferiority_margin: float,
     device: torch.device,
+    max_episode_steps: int | None = None,
 ) -> dict:
     """Evaluate direct actor execution against its frozen paired BC prior."""
     world, _, world_payload = load_checkpoint(
@@ -1052,6 +1053,7 @@ def evaluate_actor_parity(
                 selection="best_plan",
                 enumerate_all=False,
                 bc_policy=policy_module,
+                max_episode_steps=max_episode_steps,
             )
             row["policy"] = policy_name
             rows.append(row)
@@ -1158,6 +1160,7 @@ def evaluate_actor_parity(
             "fresh_from_replay": True,
             "context": context,
             "environment_action_repeat": ACTION_REPEAT,
+            "environment_max_episode_steps": max_episode_steps,
             "learning_during_evaluation": False,
             "shooting_planner_used": False,
             "historical_bc_mean": historical_bc_mean,
@@ -1236,6 +1239,11 @@ def main() -> None:
     evaluate.add_argument("--historical-bc-mean", type=float, default=288.7)
     evaluate.add_argument("--noninferiority-margin", type=float, default=25.0)
     evaluate.add_argument(
+        "--max-episode-steps", type=int, default=None,
+        help="override only the CartPole TimeLimit truncation (D039); "
+             "omit to keep the pinned v1 value of 500",
+    )
+    evaluate.add_argument(
         "--device", default="cuda" if torch.cuda.is_available() else "cpu"
     )
 
@@ -1279,6 +1287,7 @@ def main() -> None:
             historical_bc_mean=args.historical_bc_mean,
             noninferiority_margin=args.noninferiority_margin,
             device=torch.device(args.device),
+            max_episode_steps=args.max_episode_steps,
         )
         print(json.dumps(report["summary"], indent=2, sort_keys=True))
         print(json.dumps(report["gate"], indent=2, sort_keys=True))

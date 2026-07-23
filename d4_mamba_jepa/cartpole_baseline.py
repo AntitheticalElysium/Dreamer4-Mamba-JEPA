@@ -259,12 +259,19 @@ def preprocess_rgb(
 class CartPolePixels:
     """Thin adapter around the exact installed and source-pinned environment."""
 
-    def __init__(self, *, image_size: int = 64):
+    def __init__(self, *, image_size: int = 64, max_episode_steps: int | None = None):
         os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
         verify_installed_cartpole()
         import gymnasium as gym
 
-        self.env = gym.make(ENVIRONMENT_ID, render_mode="rgb_array")
+        # max_episode_steps=None keeps the pinned CartPole-v1 registration exactly
+        # (500). An explicit value overrides only the TimeLimit truncation wrapper;
+        # dynamics, reward, termination and the renderer are untouched.
+        extra = (
+            {} if max_episode_steps is None
+            else {"max_episode_steps": int(max_episode_steps)}
+        )
+        self.env = gym.make(ENVIRONMENT_ID, render_mode="rgb_array", **extra)
         if int(self.env.action_space.n) != 2:
             raise RuntimeError("CartPole action contract drift")
         self.image_size = int(image_size)
@@ -1502,8 +1509,11 @@ def _run_control_episode(
     selection: str,
     enumerate_all: bool,
     bc_policy: CartPoleBCPolicy | None = None,
+    max_episode_steps: int | None = None,
 ) -> dict:
-    environment = CartPolePixels(image_size=world.cfg.image_size)
+    environment = CartPolePixels(
+        image_size=world.cfg.image_size, max_episode_steps=max_episode_steps
+    )
     observation = environment.reset(seed=environment_seed)
     observations = [observation]
     led_to_actions = [-1]

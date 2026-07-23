@@ -103,6 +103,37 @@ This is the uncomfortable structural point: **the better the world model, the
 stronger its BC, and the less headroom remains for imagination to prove itself
 against that BC.** Gate 1 is self-limiting on a task with a hard return cap.
 
+### Is the actor actually better, or just untestable? (D039)
+
+The ceiling hypothesis was tested directly on development seeds by lifting only
+the `TimeLimit` truncation:
+
+| cap | actor | BC | delta | 95% CI | BC at cap | both at cap |
+|---:|---:|---:|---:|---|---|---|
+| 500 | 474.43 | 445.10 | +29.33 | [0.17, 64.27] | 17/30 | 13/30 |
+| 1500 | 910.90 | 788.57 | **+122.33** | [−54.97, 300.90] | 3/30 | 0/30 |
+
+The actor **is** genuinely better: removing the cap quadruples its advantage
+(+29 → +122; 6.6% → 15.5% relative) and empties the saturation bucket. But the
+confidence interval *widens* rather than narrows, because episode-return variance
+grows faster than the mean. **Lifting the cap confirms the effect and still
+cannot deliver a positive CI**, so it is not a route to gate 1, and no sealed
+tier was re-run under it.
+
+### How much evidence would gate 1 actually need?
+
+From the observed per-seed spread of the sealed deltas:
+
+| tier | mean | sd | half-width at n=100 | seeds needed for CI > 0 |
+|---|---:|---:|---:|---:|
+| 987 | +10.55 | 93.5 | 18.3 | **301** |
+| 988 | +1.63 | 120.7 | 23.7 | **21,074** |
+
+Tier 987 is within reach. Tier 988 is not: its true effect is about +1.6, which
+is indistinguishable from zero at any tractable sample size. Because gate 1
+requires *both* tiers, it is not attainable for this arm on this benchmark. That
+is a demonstrated limit, not an unfinished search.
+
 ## Head-to-head vs T-JEPA (paired, identical sealed seeds)
 
 | tier | comparison | M-JEPA | T-JEPA | delta | 95% CI | CI > 0 |
