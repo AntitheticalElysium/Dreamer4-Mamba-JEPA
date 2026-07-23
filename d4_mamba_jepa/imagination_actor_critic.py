@@ -665,7 +665,7 @@ def train_imagination_actor_critic(
         expected_sha256=world_checkpoint_sha256,
         strict_implementation=False,
     )
-    if world.cfg.arm_id not in {"T-BASE", "T-JEPA"} or world.cfg.n_actions != 2:
+    if world.cfg.arm_id not in {"T-BASE", "T-JEPA", "M-JEPA"} or world.cfg.n_actions != 2:
         raise RuntimeError("world is not a registered CartPole control arm")
     freeze_module(world)
     loaded_bc, bc_payload = load_bc_policy(

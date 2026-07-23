@@ -1,0 +1,130 @@
+# M-JEPA: the combined Mamba + non-generative JEPA arm
+
+Date: 2026-07-23
+Branch: `d4-jepa-arm`
+Deviations: `D037` (the arm), `D038` (development-seed actor-budget selection)
+
+## What was built
+
+`M-JEPA` replaces only the dynamics `TimeSelfAttention` modules of the screened
+`T-JEPA` actor-critic with official Mamba-2 modules at the D022 state expansion
+(`d_state=64`, `headdim=64`, `expand=1`, `d_conv=4`). Every other axis is held
+identical: online encoder, SPR/BYOL EMA anti-collapse (D031), multi-step
+`jumps=5` (D034), terminal weighting (D035), deterministic predictor-as-rollout
+(D030), reward/continuation heads, actor/value, BC prior, pixel adapter,
+schedules, and the sealed protocol. This is the combined thesis architecture and
+it had never been run: every previous JEPA world in `outputs/` is `T-JEPA`.
+
+Checkpoints:
+
+| Artifact | SHA-256 |
+|---|---|
+| world | `ece982ada8212b978f5949da3d16337be60fc759b1e31bb9409ce634f15dc5fd` |
+| BC policy | `a0d0601315a774ecab00ccf81488b22b8a3e7e96738e1607c719c148ff35f4bd` |
+| actor (500) | `bbca73bb56819ec61b4ea79de9a5f0ce9f57118b2a50c9ca5c13feffe7e0a9bb` |
+
+## Gate 2 — good vs bad imagination: PASS, and better than T-JEPA
+
+| | M-JEPA | T-JEPA |
+|---|---:|---:|
+| imagined return, BC | **16.41** | 59.23 |
+| imagined return, uniform | 12.29 | 56.28 |
+| imagined return, anti-BC | 9.89 | 54.71 |
+| good − bad gap | **6.52** | 4.52 |
+| BC / anti-BC ratio | **1.66x** | 1.08x |
+| imagined continuation (mean) | **0.284** | 0.998 |
+
+Both arms order the policies correctly, but `M-JEPA` separates them roughly
+eight times more strongly in relative terms, and its continuation is not
+saturated. `T-JEPA` still predicts continue ≈ 1.0, the long-running D018/D035
+pathology; `M-JEPA` is the first world in this project whose imagined episodes
+actually end.
+
+## Gate 3 — latent fidelity probe (new instrument)
+
+A probe is fitted on **real** agent tokens to predict the four CartPole state
+variables and terminal-within-5, then applied to **imagined** tokens. Ground
+truth at each horizon is the same action sequence replayed through the pinned
+CartPole dynamics from the true state at the end of the context.
+
+Real held-out probe quality (the probe itself is sound on both arms):
+
+| | cart_x | x_dot | theta | theta_dot | terminal AUC |
+|---|---:|---:|---:|---:|---:|
+| M-JEPA | **0.612** | 0.790 | 0.724 | 0.810 | 0.954 |
+| T-JEPA | 0.255 | 0.755 | 0.810 | 0.826 | 0.965 |
+
+Imagined, by horizon:
+
+| h | NRMSE M / T | pred-state variance M / T | \|BC−antiBC\| M / T |
+|---:|---|---|---|
+| 1 | 1.40 / 0.70 | 0.213 / 0.149 | 0.536 / 0.430 |
+| 4 | 1.67 / 0.85 | 0.132 / 0.133 | 0.687 / 0.348 |
+| 8 | 2.00 / 1.30 | 0.137 / 0.205 | 0.423 / 0.405 |
+| 16 | 2.54 / 1.59 | 0.078 / 0.213 | 0.209 / 0.445 |
+| 32 | – / – | 0.036 / 0.178 | 0.164 / 0.440 |
+
+Read honestly, this is the one place `T-JEPA` looks better: `M-JEPA`'s imagined
+latents drift further from real state, their across-batch variance contracts
+(0.213 → 0.036), and BC-vs-anti-BC separation decays (0.536 → 0.164), where
+`T-JEPA` stays flat. The likely reason is benign and is exactly what gate 2
+shows — `M-JEPA`'s imagined episodes terminate early (continuation 0.284), so
+the h=32 latent is mostly post-termination and carries nothing. But the probe as
+built cannot yet separate "the rollout ended" from "the representation
+contracted", and that separation is the obvious next instrument.
+
+A measurement limit worth recording: ground truth is an **open-loop** replay, and
+open-loop CartPole terminates quickly, so NRMSE is only measurable to h≈16
+(alive counts fall to 3/191 by h=32). The variance and divergence curves need no
+ground truth and span the full range.
+
+## Gate 1 — imagination vs its own BC: NOT CLEARED, and why
+
+| tier | actor | BC | delta | 95% CI | CI > 0 |
+|---|---:|---:|---:|---|---|
+| 987 | 465.42 | 454.87 | +10.55 | [−6.93, 29.37] | no |
+| 988 | 455.93 | 454.30 | +1.63 | [−22.41, 24.86] | no |
+
+Both tiers return `DREAMER4_ACTOR_CRITIC_PARITY` under the evaluator's own
+non-inferiority rule, but neither clears a strictly positive CI.
+
+The budget is not the cause. D038 ran the pre-declared 250/500/1000/1500 ladder
+on the reserved development seeds: 500 is the argmax (+29.33 [0.47, 64.30]) and
+every other rung is worse. The selected checkpoint is the one already evaluated.
+
+The cause is a task ceiling, and it is measured. `M-JEPA`'s BC is so strong that
+it reaches the CartPole-v1 500-step limit on **64/100** (987) and **62/100**
+(988) sealed seeds, and **both** actor and BC sit at the cap — mechanically
+forcing the paired delta to exactly zero — on **50/100** and **52/100** seeds.
+About half the sealed evidence therefore carries no signal at all, and the
+remaining half is dominated by a few catastrophic episodes on either side.
+
+This is the uncomfortable structural point: **the better the world model, the
+stronger its BC, and the less headroom remains for imagination to prove itself
+against that BC.** Gate 1 is self-limiting on a task with a hard return cap.
+
+## Head-to-head vs T-JEPA (paired, identical sealed seeds)
+
+| tier | comparison | M-JEPA | T-JEPA | delta | 95% CI | CI > 0 |
+|---|---|---:|---:|---:|---|---|
+| 987 | actor | 465.42 | 423.81 | **+41.61** | [19.32, 64.74] | **yes** |
+| 988 | actor | 455.93 | 433.40 | +22.53 | [−7.02, 52.00] | no |
+| 987 | BC | 454.87 | 392.97 | **+61.90** | [35.97, 88.12] | **yes** |
+| 988 | BC | 454.30 | 380.28 | **+74.02** | [42.20, 106.02] | **yes** |
+
+`M-BASE`/`T-BASE` remain historical context only.
+
+## Verdict
+
+The combined architecture works. Swapping the temporal operator to Mamba-2
+improves the world (dev cosine 0.675 vs 0.648, JEPA loss 0.236 vs 0.373 with no
+collapse), the representation (BC 0.9105 vs 0.9077; executed BC +62 and +74 with
+CIs above zero), executed control (actor +41.61 with CI above zero on 987), and
+imagination quality (gap 6.52 vs 4.52, and the first non-saturated continuation
+head in the project).
+
+Gate 1 as specified is not achievable on CartPole for this arm, not because
+imagination fails but because the arm's own BC saturates the benchmark. Deciding
+what to do about that — a higher time limit, a harder task, or a gate defined
+against a fixed reference policy rather than the arm's own BC — changes the
+sealed protocol and is the maintainer's call, not an implementation change.

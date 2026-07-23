@@ -90,11 +90,29 @@ def cartpole_config() -> D4LiteConfig:
     )
 
 
-def cartpole_jepa_config() -> D4LiteConfig:
+def cartpole_jepa_config(temporal_backend: str = "transformer") -> D4LiteConfig:
     """Non-generative JEPA arm: identical to the T-BASE control except the
-    representation objective. Temporal operator, tokenizer scale, pixel adapter,
-    heads, and every non-temporal axis are held fixed."""
-    return replace(cartpole_config(), representation_objective="jepa")
+    representation objective. Tokenizer scale, pixel adapter, heads, and every
+    non-temporal axis are held fixed.
+
+    ``temporal_backend="mamba2"`` selects the combined `M-JEPA` arm. It carries
+    the D022 state expansion (`d_state=64`, `headdim=64`) explicitly, because the
+    dataclass defaults are still the parameter-matched `d_state=16, headdim=32`
+    of the rejected D021 configuration.
+    """
+    cfg = replace(cartpole_config(), representation_objective="jepa")
+    if temporal_backend == "transformer":
+        return cfg
+    if temporal_backend != "mamba2":
+        raise ValueError(f"unsupported temporal_backend={temporal_backend!r}")
+    return replace(
+        cfg,
+        temporal_backend="mamba2",
+        mamba_d_state=64,
+        mamba_headdim=64,
+        mamba_expand=1,
+        mamba_d_conv=4,
+    )
 
 
 def _atomic_json(path: Path, payload: dict) -> None:
@@ -635,8 +653,9 @@ def train_jepa_world(
     seed: int,
     anticollapse: str = "ema",
     sigreg_lambda: float | None = None,
+    temporal_backend: str = "transformer",
 ) -> dict:
-    """Train the non-generative T-JEPA world in one joint phase.
+    """Train the non-generative JEPA world in one joint phase.
 
     Online encoder + dynamics + action-conditioned predictor + task heads are
     trained together by SPR/BYOL EMA-target self-prediction. There is no
@@ -646,9 +665,18 @@ def train_jepa_world(
     overrides = {"jepa_anticollapse": anticollapse}
     if sigreg_lambda is not None:
         overrides["jepa_sigreg_lambda"] = sigreg_lambda
-    cfg = replace(cartpole_jepa_config(), **overrides)
-    if cfg.representation_objective != "jepa" or cfg.temporal_backend != "transformer":
-        raise RuntimeError("JEPA arm requires transformer temporal + jepa objective")
+    cfg = replace(cartpole_jepa_config(temporal_backend), **overrides)
+    if cfg.representation_objective != "jepa":
+        raise RuntimeError("JEPA arm requires the jepa representation objective")
+    if cfg.temporal_backend not in {"transformer", "mamba2"}:
+        raise RuntimeError(f"unsupported temporal backend {cfg.temporal_backend!r}")
+    if cfg.temporal_backend == "mamba2" and (
+        cfg.mamba_d_state != 64 or cfg.mamba_headdim != 64
+    ):
+        raise RuntimeError(
+            "M-JEPA must use the D022 state expansion (d_state=64, headdim=64); "
+            "the parameter-matched d_state=16/headdim=32 is the rejected D021"
+        )
     # Oversample terminal windows so the continuation head sees enough failures.
     terminal_fraction = max(terminal_fraction, cfg.jepa_terminal_fraction)
     torch.manual_seed(seed)
@@ -1609,7 +1637,7 @@ def evaluate_executed_control(
         strict_implementation=False,
     )
     world.eval()
-    if world.cfg.arm_id not in {"T-BASE", "T-JEPA"} or world.cfg.n_actions != 2:
+    if world.cfg.arm_id not in {"T-BASE", "T-JEPA", "M-JEPA"} or world.cfg.n_actions != 2:
         raise RuntimeError("checkpoint is not a registered CartPole control arm")
     rows = []
     for policy_index, policy in enumerate(
@@ -1990,6 +2018,12 @@ def main() -> None:
     )
     train_jepa.add_argument("--sigreg-lambda", type=float, default=None)
     train_jepa.add_argument(
+        "--temporal-backend",
+        choices=("transformer", "mamba2"),
+        default="transformer",
+        help="transformer = T-JEPA; mamba2 = M-JEPA (D022 d_state=64, headdim=64)",
+    )
+    train_jepa.add_argument(
         "--device", default="cuda" if torch.cuda.is_available() else "cpu"
     )
 
@@ -2093,6 +2127,7 @@ def main() -> None:
             seed=args.seed,
             anticollapse=args.anticollapse,
             sigreg_lambda=args.sigreg_lambda,
+            temporal_backend=args.temporal_backend,
         )
         print(json.dumps(report, indent=2, sort_keys=True))
     elif args.command == "train-policy":
