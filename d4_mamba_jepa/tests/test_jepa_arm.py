@@ -194,18 +194,43 @@ def test_jepa_heads_train_on_rollout_latents_like_deployment():
 
 
 def test_jepa_targets_stay_frozen_after_train():
-    """Freezing is by requires_grad, not by the eval() calls in _build_jepa.
-
-    ``world.train()`` recurses into children and flips their mode, so the
-    eval() calls do not survive it. The stop-gradient invariant must hold
-    regardless.
-    """
+    """Freezing is by requires_grad only (D062); the mode stays training."""
     world = _jepa_world()
     world.train()
     assert not any(p.requires_grad for p in world.target_encoder.parameters())
     assert not any(
         p.requires_grad for p in world.jepa_target_projection.parameters()
     )
-    # Documents the known mode behaviour so a future change is deliberate.
     assert world.target_encoder.training is True
     assert world.jepa_target_projection.training is True
+
+
+def test_jepa_target_stays_in_training_mode():
+    """D062 regression: the EMA target must never be in eval() mode.
+
+    A BatchNorm target in eval() mode normalizes with stale running statistics
+    instead of current-batch statistics, which silently collapses the SPR
+    representation while the training cosine looks high (the causally-validated
+    D062 bug). ``_build_jepa`` must freeze the target by ``requires_grad`` ONLY
+    and leave it in training mode -- from construction (this is what the baseline
+    got wrong) and across an ``eval() -> train()`` cycle.
+    """
+    world = _jepa_world()
+    # 1. Never constructed in eval mode. On the pre-D062 baseline the target was
+    #    built with .eval(), so this assertion would have FAILED there.
+    assert world.target_encoder.training is True
+    assert world.jepa_target_projection.training is True
+    # 2. The mode is load-bearing only because the projection has BatchNorm.
+    assert any(
+        isinstance(module, torch.nn.BatchNorm1d)
+        for module in world.jepa_target_projection.modules()
+    ), "target projection must contain BatchNorm for the D062 mode to matter"
+    # 3. Frozen by requires_grad, and it survives a diagnostic eval()->train().
+    world.eval()
+    world.train()
+    assert world.target_encoder.training is True
+    assert world.jepa_target_projection.training is True
+    assert not any(p.requires_grad for p in world.target_encoder.parameters())
+    assert not any(
+        p.requires_grad for p in world.jepa_target_projection.parameters()
+    )

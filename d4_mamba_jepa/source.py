@@ -45,21 +45,23 @@ MAMBA2_SOURCE = SourceIdentity(
     license="Apache-2.0",
 )
 
-COMPACT_DATA = SourceIdentity(
-    name="local audited replay adapter:m3_hjwm_compact/data.py",
-    path=REPO_ROOT / "m3_hjwm_compact/data.py",
-    commit="d1ccfa1",
-    sha256="861cf76325cc9e5473e6fac837c1206657afc02bc4e32121e6d552055fb51929",
-    license="workspace-local",
-)
-
-CRAFTER_CANONICAL = SourceIdentity(
-    name="local audited Crafter canonicalizer",
-    path=REPO_ROOT / "m3_hjwm_compact/verification/crafter_canonical.py",
-    commit="d1ccfa1",
-    sha256="a10083a7eb990f65b53955b7e79f5c2491572be8c3961d4717b3a66b309bc2ea",
-    license="workspace-local",
-)
+# Craftax-Classic replaces the danijar/crafter-via-m3 environment (Craftax
+# migration). We pin the installed distribution version and digest the exact
+# files whose behaviour we depend on: reward/termination (game_logic), the
+# action/achievement/observation constants, and the pixel renderer. The package
+# is located via importlib without importing it, so this stays JAX-free and safe
+# to call from the torch training process.
+CRAFTAX_DISTRIBUTION = "craftax"
+CRAFTAX_VERSION = "1.6.1"
+CRAFTAX_LICENSE = "MIT"
+CRAFTAX_CLASSIC_DIGESTS = {
+    "craftax_classic/game_logic.py":
+        "e5812a161b485a5edba6da0e34b7e3352550fe29ed7d0c8f66c8071ecac20755",
+    "craftax_classic/constants.py":
+        "5b00ec29b51f7d011bb01c98aa74e5fd6b8a7cee6ab717f61dc59d6407f6baa4",
+    "craftax_classic/renderer.py":
+        "e415a83a2ce6d859d960be3e2d591b2c347b77d6e91275981b22dd769390ba13",
+}
 
 GYMNASIUM_CARTPOLE = SourceIdentity(
     name="Farama-Foundation/Gymnasium:CartPole-v1",
@@ -173,6 +175,57 @@ def verify_installed_cartpole() -> str:
     return actual
 
 
+def _craftax_package_root() -> Path:
+    """Locate the installed craftax package WITHOUT importing it (no JAX)."""
+    import importlib.util
+
+    spec = importlib.util.find_spec("craftax")
+    if spec is None or not spec.origin:
+        raise SourceDriftError("craftax is not installed")
+    return Path(spec.origin).parent
+
+
+def verify_installed_craftax() -> dict[str, str]:
+    """Require the installed Craftax-Classic to match the pinned version+digests.
+
+    JAX-free: uses importlib metadata and file hashing only, so it is safe to
+    call from the torch training process.
+    """
+    import importlib.metadata as metadata
+
+    try:
+        version = metadata.version(CRAFTAX_DISTRIBUTION)
+    except metadata.PackageNotFoundError as exc:
+        raise SourceDriftError("craftax is not installed") from exc
+    if version != CRAFTAX_VERSION:
+        raise SourceDriftError(
+            f"craftax version drift: {version} != {CRAFTAX_VERSION}"
+        )
+    root = _craftax_package_root()
+    digests: dict[str, str] = {"version": version}
+    for relpath, expected in CRAFTAX_CLASSIC_DIGESTS.items():
+        path = root / relpath
+        if not path.is_file():
+            raise SourceDriftError(f"missing pinned craftax file: {path}")
+        actual = file_sha256(path)
+        if actual != expected:
+            raise SourceDriftError(
+                f"craftax {relpath} digest drift: {actual} != {expected}"
+            )
+        digests[relpath] = actual
+    return digests
+
+
+def craftax_source_report() -> dict[str, str]:
+    """Craftax provenance, kept separate from ``source_report`` so the core
+    checkpoint provenance contract does not change for non-Craftax runs."""
+    return {
+        "distribution": CRAFTAX_DISTRIBUTION,
+        "license": CRAFTAX_LICENSE,
+        **verify_installed_craftax(),
+    }
+
+
 @lru_cache(maxsize=1)
 def load_lejepa_sigreg():
     """Return the pinned LeJEPA ``(SlicingUnivariateTest, EppsPulley)`` classes.
@@ -220,18 +273,6 @@ def source_report() -> dict[str, dict[str, str]]:
             "commit": MAMBA2_SOURCE.commit,
             "sha256": verify_installed_mamba2(),
             "license": MAMBA2_SOURCE.license,
-        },
-        "local_replay_adapter": {
-            "path": str(COMPACT_DATA.path),
-            "commit": COMPACT_DATA.commit,
-            "sha256": verify_source(COMPACT_DATA),
-            "license": COMPACT_DATA.license,
-        },
-        "crafter_canonicalizer": {
-            "path": str(CRAFTER_CANONICAL.path),
-            "commit": CRAFTER_CANONICAL.commit,
-            "sha256": verify_source(CRAFTER_CANONICAL),
-            "license": CRAFTER_CANONICAL.license,
         },
         "gymnasium_cartpole": {
             "path": str(GYMNASIUM_CARTPOLE.path),
