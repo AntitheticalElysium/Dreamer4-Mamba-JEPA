@@ -205,6 +205,57 @@ def test_jepa_targets_stay_frozen_after_train():
     assert world.jepa_target_projection.training is True
 
 
+def test_jepa_rollout_context_agent_is_exact_and_saves_a_pass():
+    """Carrying the last context-agent token across rollout steps is bit-exact.
+
+    pass-1 of step k (the clean context pass) recomputes exactly what step k-1's
+    pass-2 produced, so reusing it must give identical latents/agents while doing
+    one fewer dynamics pass per step after the first.
+    """
+    from d4_mamba_jepa.rollout import sample_next_packed
+
+    world = D4LiteWorld(cartpole_jepa_config()).eval()
+    cfg = world.cfg
+    torch.manual_seed(0)
+    B, context, horizon = 2, 4, 5
+    frames = torch.randint(
+        0, 255, (B, context, 3, cfg.image_size, cfg.image_size), dtype=torch.uint8
+    )
+    past0 = world.encode_frames(frames, frozen=True).packed
+    actions = torch.randint(0, cfg.n_actions, (B, context + horizon))
+    ctx_actions, plan = actions[:, :context], actions[:, context:context + horizon]
+
+    def rollout(carry):
+        past, context_agent, outs = past0.clone(), None, []
+        for k in range(horizon):
+            led = torch.cat([ctx_actions, plan[:, : k + 1]], dim=1)
+            nl, ag = sample_next_packed(
+                world, past_packed=past, led_to_actions=led, schedule=None,
+                use_cache=False, context_agent=(context_agent if carry else None),
+            )
+            outs.append((nl, ag))
+            context_agent = ag
+            past = torch.cat([past, nl[:, None]], dim=1)
+        return outs
+
+    naive, carried = rollout(False), rollout(True)
+    for (nl0, ag0), (nl1, ag1) in zip(naive, carried):
+        assert torch.equal(nl0, nl1)   # bit-exact latents
+        assert torch.equal(ag0, ag1)   # bit-exact agent tokens
+
+    # Count dynamics passes: naive = 2/step; carried = 2 (first) + 1/subsequent.
+    calls = {"n": 0}
+    original = world.forward_dynamics
+    world.forward_dynamics = lambda *a, **k: (calls.__setitem__("n", calls["n"] + 1), original(*a, **k))[1]
+    rollout(True); carried_calls = calls["n"]
+    calls["n"] = 0
+    rollout(False); naive_calls = calls["n"]
+    world.forward_dynamics = original
+    assert carried_calls == horizon + 1
+    assert naive_calls == 2 * horizon
+    assert carried_calls < naive_calls
+
+
 def test_jepa_target_stays_in_training_mode():
     """D062 regression: the EMA target must never be in eval() mode.
 

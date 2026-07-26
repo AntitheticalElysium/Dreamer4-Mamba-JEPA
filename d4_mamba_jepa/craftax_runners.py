@@ -21,13 +21,21 @@ Imports torch (no JAX): consumes a hash-pinned Craftax replay produced offline b
 from __future__ import annotations
 
 import copy
-from dataclasses import replace
+import json
 from pathlib import Path
 
 import numpy as np
 import torch
 
-from .cartpole_baseline import CartPoleBCPolicy, _clean_agent_tokens
+from .cartpole_baseline import (
+    CartPoleBCPolicy,
+    POLICY_FORMAT,
+    _atomic_torch_save,
+    _clean_agent_tokens,
+    load_bc_policy,
+    sample_cartpole_sequences,
+)
+from .checkpoint import file_sha256, load_checkpoint, save_checkpoint
 from .config import D4LiteConfig
 from .data import EpisodeReplay, load_episode_replay, replay_sample_to_sequence
 from .imagination_actor_critic import (
@@ -63,6 +71,26 @@ def _sample_sequences(replay, batch_size, sequence_length, device, rng):
     return replay_sample_to_sequence(sample)
 
 
+def _write_report(path: Path, payload: dict) -> None:
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+
+
+def save_policy_checkpoint(
+    path: str | Path, policy: CartPoleBCPolicy, *, world_checkpoint_sha256: str
+) -> str:
+    """Serialize a policy head in ``POLICY_FORMAT`` (loadable by ``load_bc_policy``)."""
+    payload = {
+        "format": POLICY_FORMAT,
+        "world_checkpoint_sha256": world_checkpoint_sha256,
+        "config": {
+            "d_model": policy.d_model,
+            "n_actions": policy.n_actions,
+        },
+        "policy": {k: v.detach().cpu() for k, v in policy.state_dict().items()},
+    }
+    return _atomic_torch_save(Path(path), payload)
+
+
 def train_craftax_jepa_world(
     *,
     replay: EpisodeReplay,
@@ -73,12 +101,21 @@ def train_craftax_jepa_world(
     seed: int = 0,
     device: torch.device,
     warmup: int = 1_000,
+    terminal_fraction: float | None = None,
+    output_dir: str | Path | None = None,
 ) -> tuple[D4LiteWorld, WorldLossNormalizer, list[dict]]:
-    """Joint-phase JEPA world training on a Craftax replay (reuses world_loss)."""
+    """Joint-phase JEPA world training on a Craftax replay (reuses world_loss).
+
+    Terminal windows are oversampled (``terminal_fraction``, default
+    ``cfg.jepa_terminal_fraction``) so the continuation head sees enough episode
+    ends (D035); the replay must therefore contain terminal (death/lava, not
+    timeout) episodes.
+    """
     if cfg.representation_objective != "jepa":
         raise RuntimeError("Craftax world runner requires the jepa objective")
     if cfg.n_actions != 17:
         raise RuntimeError("Craftax world config must have n_actions=17")
+    fraction = cfg.jepa_terminal_fraction if terminal_fraction is None else terminal_fraction
     torch.manual_seed(seed)
     if device.type == "cuda":
         torch.cuda.manual_seed_all(seed)
@@ -89,7 +126,10 @@ def train_craftax_jepa_world(
     rng = np.random.default_rng(seed + 3)
     history: list[dict] = []
     for step in range(world_steps):
-        batch = _sample_sequences(replay, batch_size, cfg.sequence_length, device, rng)
+        batch = sample_cartpole_sequences(
+            replay, batch_size=batch_size, sequence_length=cfg.sequence_length,
+            terminal_fraction=fraction, device=device, rng=rng,
+        )
         optimizer.zero_grad(set_to_none=True)
         with torch.autocast(device_type=device.type, dtype=torch.bfloat16,
                             enabled=device.type == "cuda"):
@@ -113,6 +153,20 @@ def train_craftax_jepa_world(
             "cosine": float(metrics["jepa/jepa_cosine"].item()),
             "online_std": float(metrics["jepa/jepa_online_std"].item()),
         })
+    if output_dir is not None:
+        out = Path(output_dir)
+        out.mkdir(parents=True, exist_ok=True)
+        world_sha = save_checkpoint(
+            out / "world.pt", world=world, normalizer=normalizer,
+            optimizer=optimizer, numpy_rng=rng, step=world_steps,
+            extra={"format": "craftax_jepa_world_v1", "seed": seed,
+                   "terminal_fraction": fraction},
+        )
+        _write_report(out / "world_report.json", {
+            "world_checkpoint": "world.pt", "world_checkpoint_sha256": world_sha,
+            "arm_id": cfg.arm_id, "config": cfg.to_dict(),
+            "final": history[-1] if history else None,
+        })
     return world, normalizer, history
 
 
@@ -126,8 +180,15 @@ def train_craftax_bc(
     seed: int = 0,
     device: torch.device,
     warmup: int = 250,
+    output_dir: str | Path | None = None,
+    world_checkpoint_sha256: str = "in_memory",
 ) -> tuple[CartPoleBCPolicy, list[float]]:
-    """Train the gradient-isolated BC policy head on Craftax demonstration actions."""
+    """Train the gradient-isolated BC policy head on Craftax demonstration actions.
+
+    When ``output_dir`` is given, ``bc.pt`` is saved paired to
+    ``world_checkpoint_sha256`` (pass the sha from the saved world so
+    ``load_bc_policy`` accepts the pairing).
+    """
     freeze_module(world)
     world.eval()
     policy = CartPoleBCPolicy(
@@ -159,6 +220,18 @@ def train_craftax_bc(
                 group["lr"] = learning_rate * float(step + 1) / warmup
         optimizer.step()
         losses.append(float(loss.detach().item()))
+    if output_dir is not None:
+        out = Path(output_dir)
+        out.mkdir(parents=True, exist_ok=True)
+        bc_sha = save_policy_checkpoint(
+            out / "bc.pt", policy, world_checkpoint_sha256=world_checkpoint_sha256
+        )
+        _write_report(out / "bc_report.json", {
+            "bc_checkpoint": "bc.pt", "bc_checkpoint_sha256": bc_sha,
+            "world_checkpoint_sha256": world_checkpoint_sha256,
+            "first_loss": losses[0] if losses else None,
+            "last_loss": losses[-1] if losses else None,
+        })
     return policy, losses
 
 
@@ -179,6 +252,8 @@ def train_craftax_imagination(
     gradient_clip: float = 1.0,
     seed: int = 0,
     device: torch.device,
+    output_dir: str | Path | None = None,
+    world_checkpoint_sha256: str = "in_memory",
 ) -> tuple[CartPoleBCPolicy, CartPoleValueHead, list[dict]]:
     """Dreamer-4 actor/value imagination on a frozen Craftax world (reuses the
     exact PMPO/TD-lambda core; only the CartPole n_actions==2 gate is dropped)."""
@@ -207,6 +282,22 @@ def train_craftax_imagination(
             gradient_clip=gradient_clip, generator=generator, device=device,
         )
         history.append(metrics)
+    if output_dir is not None:
+        out = Path(output_dir)
+        out.mkdir(parents=True, exist_ok=True)
+        actor_sha = save_policy_checkpoint(
+            out / "actor.pt", actor, world_checkpoint_sha256=world_checkpoint_sha256
+        )
+        torch.save(
+            {"value": {k: v.detach().cpu() for k, v in value.state_dict().items()}},
+            out / "value.pt",
+        )
+        _write_report(out / "imagination_report.json", {
+            "actor_checkpoint": "actor.pt", "actor_checkpoint_sha256": actor_sha,
+            "value_checkpoint": "value.pt",
+            "world_checkpoint_sha256": world_checkpoint_sha256,
+            "final": history[-1] if history else None,
+        })
     return actor, value, history
 
 
@@ -270,6 +361,7 @@ def craftax_preflight(
 
 __all__ = [
     "craftax_jepa_config",
+    "save_policy_checkpoint",
     "train_craftax_jepa_world",
     "train_craftax_bc",
     "train_craftax_imagination",

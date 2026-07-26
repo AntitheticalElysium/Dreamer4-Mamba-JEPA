@@ -19,12 +19,15 @@ DEVICE = torch.device("cpu")
 def _synthetic_replay(n_ep=4, length=20, seed=0):
     rng = np.random.default_rng(seed)
     replay = EpisodeReplay(capacity_steps=10 ** 6)
-    for _ in range(n_ep):
+    for i in range(n_ep):
+        continues = np.ones(length, dtype=np.float32)
+        if i % 2 == 0:
+            continues[-1] = 0.0  # terminal episodes for the continuation head
         replay.add(Episode(
             obs=rng.integers(0, 256, (length + 1, 3, 64, 64), dtype=np.uint8),
             actions=rng.integers(0, 17, length).astype(np.int64),
             rewards=rng.random(length).astype(np.float32),
-            continues=np.ones(length, dtype=np.float32),
+            continues=continues,
         ))
     return replay
 
@@ -64,3 +67,59 @@ def test_full_architecture_runs_on_craftax_replay():
     assert np.isfinite(imag[-1]["total_loss"])
     # The imagination update actually moved the actor off its BC prior.
     assert module_state_sha256(actor) != prior_hash
+
+
+def test_craftax_world_terminal_oversampling_requires_terminal_episodes():
+    # A replay whose episodes never terminate (continues all 1) must be rejected
+    # by the terminal-oversampling world runner, proving oversampling is active.
+    import pytest
+    rng = np.random.default_rng(0)
+    replay = EpisodeReplay(capacity_steps=10 ** 6)
+    for _ in range(3):
+        replay.add(Episode(
+            obs=rng.integers(0, 256, (20, 3, 64, 64), dtype=np.uint8),
+            actions=rng.integers(0, 17, 19).astype(np.int64),
+            rewards=rng.random(19).astype(np.float32),
+            continues=np.ones(19, dtype=np.float32),  # never terminal
+        ))
+    with pytest.raises(RuntimeError, match="terminal"):
+        train_craftax_jepa_world(
+            replay=replay, cfg=craftax_jepa_config("transformer"),
+            world_steps=1, batch_size=2, seed=0, device=DEVICE, warmup=1,
+        )
+
+
+def test_craftax_checkpoint_roundtrip(tmp_path):
+    from d4_mamba_jepa.checkpoint import file_sha256, load_checkpoint
+    from d4_mamba_jepa.cartpole_baseline import load_bc_policy
+    # a replay with a terminal episode so the world runner's oversampling works
+    rng = np.random.default_rng(1)
+    replay = EpisodeReplay(capacity_steps=10 ** 6)
+    for i in range(4):
+        cont = np.ones(19, dtype=np.float32)
+        if i == 0:
+            cont[-1] = 0.0  # one terminal episode
+        replay.add(Episode(
+            obs=rng.integers(0, 256, (20, 3, 64, 64), dtype=np.uint8),
+            actions=rng.integers(0, 17, 19).astype(np.int64),
+            rewards=rng.random(19).astype(np.float32), continues=cont))
+    cfg = craftax_jepa_config("transformer")
+    train_craftax_jepa_world(
+        replay=replay, cfg=cfg, world_steps=2, batch_size=2, seed=0,
+        device=DEVICE, warmup=1, output_dir=tmp_path)
+    import json
+    wr = json.loads((tmp_path / "world_report.json").read_text())
+    world_sha = wr["world_checkpoint_sha256"]
+    assert file_sha256(tmp_path / "world.pt") == world_sha
+    # world loads back
+    world, _, _ = load_checkpoint(tmp_path / "world.pt", device=DEVICE,
+                                  expected_sha256=world_sha, strict_implementation=False)
+    assert world.cfg.n_actions == 17
+    # BC saves + loads paired to the world sha
+    train_craftax_bc(world=world, replay=replay, steps=2, batch_size=2, seed=1,
+                     device=DEVICE, warmup=1, output_dir=tmp_path,
+                     world_checkpoint_sha256=world_sha)
+    br = json.loads((tmp_path / "bc_report.json").read_text())
+    bc, _ = load_bc_policy(tmp_path / "bc.pt", expected_sha256=br["bc_checkpoint_sha256"],
+                           expected_world_sha256=world_sha, device=DEVICE)
+    assert bc.n_actions == 17

@@ -39,26 +39,42 @@ def shortcut_schedule(k_max: int, denoise_steps: int) -> dict:
 
 
 def _sample_next_jepa(
-    world, past_packed: Tensor, led_to_actions: Tensor
+    world,
+    past_packed: Tensor,
+    led_to_actions: Tensor,
+    context_agent: Tensor | None = None,
 ) -> tuple[Tensor, Tensor]:
-    """Deterministic non-generative rollout step: one dynamics pass over the
-    clean context, the action-conditioned predictor for the next embedding, and
-    a second clean pass for the post-transition agent tokens. No denoising."""
+    """Deterministic non-generative rollout step: the action-conditioned
+    predictor for the next embedding, then a clean pass for the post-transition
+    agent tokens. No denoising.
+
+    ``context_agent`` is the caller-carried last-context agent token
+    ``[B, 1, n_agent, D]``. When supplied, the first ("clean context") dynamics
+    pass is skipped: the block-causal agent token at the last context position is
+    exactly what the previous rollout step's second pass already produced (same
+    sequence, same led-to actions), so reusing it is numerically identical and
+    halves the dynamics passes per imagined step. When ``None`` (the first step),
+    the context pass runs as before.
+    """
     B, time = past_packed.shape[:2]
     device = past_packed.device
     max_step = world.cfg.max_step_index
     k_max = world.cfg.k_max
-    steps = torch.full((B, time), max_step, device=device, dtype=torch.long)
-    signals = torch.full((B, time), k_max, device=device, dtype=torch.long)
-    _, agent_ctx = world.forward_dynamics(
-        past_packed, led_to_actions[:, :time], steps, signals
-    )
+    if context_agent is None:
+        steps = torch.full((B, time), max_step, device=device, dtype=torch.long)
+        signals = torch.full((B, time), k_max, device=device, dtype=torch.long)
+        _, agent_ctx = world.forward_dynamics(
+            past_packed, led_to_actions[:, :time], steps, signals
+        )
+        last_context_agent = agent_ctx[:, -1:]
+    else:
+        last_context_agent = context_agent
     next_action_tokens = world.dynamics.action_encoder(
         led_to_actions[:, time : time + 1],
         batch_time_shape=(B, 1),
         act_mask=None,
     )[:, :, 0]
-    next_latent = world.jepa_predictor(agent_ctx[:, -1:], next_action_tokens)[:, 0]
+    next_latent = world.jepa_predictor(last_context_agent, next_action_tokens)[:, 0]
     new_sequence = torch.cat([past_packed, next_latent[:, None]], dim=1)
     steps2 = torch.full((B, time + 1), max_step, device=device, dtype=torch.long)
     signals2 = torch.full((B, time + 1), k_max, device=device, dtype=torch.long)
@@ -78,13 +94,16 @@ def sample_next_packed(
     use_cache: bool,
     generator: torch.Generator | None = None,
     initial_noise: Tensor | None = None,
+    context_agent: Tensor | None = None,
 ) -> tuple[Tensor, Tensor]:
     if getattr(world.cfg, "representation_objective", "base") == "jepa":
         if past_packed.ndim != 4:
             raise ValueError("past_packed must have shape [B,t,S,D]")
         if led_to_actions.shape != (past_packed.shape[0], past_packed.shape[1] + 1):
             raise ValueError("led_to_actions must have shape [B,t+1]")
-        return _sample_next_jepa(world, past_packed, led_to_actions)
+        return _sample_next_jepa(
+            world, past_packed, led_to_actions, context_agent=context_agent
+        )
     """Generate one next latent and its post-transition agent tokens.
 
     ``past_packed`` has ``t`` clean states. ``led_to_actions`` has ``t+1``
@@ -227,6 +246,12 @@ def score_action_plans(
     predicted_rewards = []
     predicted_continues = []
     generated = []
+    # This rollout does NOT cap the context (``past`` grows every step), so the
+    # last agent token from one step is exactly the next step's clean-context
+    # agent: carry it to skip the redundant first dynamics pass (bit-exact; see
+    # tests). Ignored by the generative arm. (imagine_trajectory caps the
+    # context, so its windows shift and this exact reuse does not apply there.)
+    context_agent = None
 
     for step in range(horizon):
         led_to = torch.cat([led_to, action_plans[:, step : step + 1]], dim=1)
@@ -252,7 +277,9 @@ def score_action_plans(
             use_cache=use_cache,
             generator=generator,
             initial_noise=initial_noise,
+            context_agent=context_agent,
         )
+        context_agent = agent
         heads = world.forward_task_heads(agent)
         reward_logits = heads["reward_logits"][:, 0, 0]
         probabilities = reward_logits.float().softmax(dim=-1)
