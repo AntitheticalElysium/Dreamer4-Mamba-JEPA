@@ -282,15 +282,15 @@ class D4LiteWorld(nn.Module):
         if cfg.jepa_anticollapse == "ema":
             # SPR/BYOL: stop-grad EMA target encoder + asymmetric heads.
             self.target_encoder = copy.deepcopy(self.encoder)
-            # D062: the EMA target must stay in TRAINING mode during JEPA
-            # optimization so its BatchNorm normalizes with current-batch
-            # statistics, exactly as pinned SPR does (``do_spr_loss`` uses
-            # ``no_grad``, never ``eval()``). Forcing ``eval()`` here -- or in any
-            # diagnostic that then fails to restore modes -- makes the target use
-            # stale running statistics and silently collapses the representation
-            # while the training cosine looks high (the causally-validated D062
-            # bug). The stop-gradient is enforced ONLY by ``requires_grad_(False)``
-            # below; the module mode is left at its default (train). See
+            # The EMA target must stay in TRAINING mode during JEPA optimization
+            # so its BatchNorm normalizes with current-batch statistics, exactly
+            # as pinned SPR does (``do_spr_loss`` uses ``no_grad``, never
+            # ``eval()``). Forcing ``eval()`` here -- or in any diagnostic that
+            # then fails to restore modes -- makes the target use stale running
+            # statistics and silently collapses the representation while the
+            # training cosine looks high (a causally-validated bug). The
+            # stop-gradient is enforced ONLY by ``requires_grad_(False)`` below;
+            # the module mode is left at its default (train). See
             # tests/test_jepa_arm.py::test_jepa_target_stays_in_training_mode.
             for parameter in self.target_encoder.parameters():
                 parameter.requires_grad_(False)
@@ -299,9 +299,9 @@ class D4LiteWorld(nn.Module):
                 cfg.jepa_projection_dim, cfg.jepa_projection_dim
             )
             self.jepa_target_projection = copy.deepcopy(self.jepa_projection)
-            # D062 (see the target encoder above): freeze by requires_grad only
+            # As above (see the target encoder): freeze by requires_grad only
             # and keep BatchNorm in training mode so targets use current-batch
-            # statistics. This projection is the one whose BatchNorm the D062 bug
+            # statistics. This projection is the one whose BatchNorm the bug
             # actually corrupted.
             for parameter in self.jepa_target_projection.parameters():
                 parameter.requires_grad_(False)

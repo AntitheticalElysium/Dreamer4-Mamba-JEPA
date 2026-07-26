@@ -50,7 +50,7 @@ def test_episode_three_way_disjoint():
 
 
 def test_preserved_modes_restores_heterogeneous_mode_map():
-    """D062-generalized: a diagnostic must restore the EXACT prior mode map."""
+    """Mode-map safety: a diagnostic must restore the EXACT prior mode map."""
     module = nn.Sequential(nn.Linear(4, 4), nn.BatchNorm1d(4), nn.Linear(4, 2))
     module[0].train()
     module[1].eval()   # deliberately heterogeneous

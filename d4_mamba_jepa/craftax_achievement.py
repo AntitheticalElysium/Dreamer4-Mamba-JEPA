@@ -6,7 +6,7 @@ env, score with the official geometric-mean Crafter score, and report paired
 episode-level bootstrap confidence intervals for actor-minus-BC and
 actor-minus-random.
 
-Deployment samples the categorical policy at temperature 1 (D053; greedy argmax
+Deployment samples the categorical policy at temperature 1 (greedy argmax
 collapses an imbalanced discrete policy onto the most frequent action). Imports
 craftax via ``craftax_env`` -- run as an evaluation job, not from training.
 """

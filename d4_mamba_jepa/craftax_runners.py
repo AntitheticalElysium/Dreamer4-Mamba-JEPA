@@ -52,8 +52,9 @@ from .training import WorldLossNormalizer, world_loss
 def craftax_jepa_config(temporal_backend: str = "transformer") -> D4LiteConfig:
     """17-action, 64x64 Craftax JEPA world config.
 
-    For the Mamba arm the D022 state expansion (d_state=64, headdim=64) is set
-    explicitly; the ``D4LiteConfig`` defaults (16/32) are the rejected D021.
+    For the Mamba arm the state expansion (d_state=64, headdim=64) is set
+    explicitly; the ``D4LiteConfig`` defaults (16/32) are the rejected
+    parameter-matched configuration.
     """
     overrides = dict(
         representation_objective="jepa",

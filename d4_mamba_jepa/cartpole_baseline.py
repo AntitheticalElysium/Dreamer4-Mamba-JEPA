@@ -96,9 +96,9 @@ def cartpole_jepa_config(temporal_backend: str = "transformer") -> D4LiteConfig:
     non-temporal axis are held fixed.
 
     ``temporal_backend="mamba2"`` selects the combined `M-JEPA` arm. It carries
-    the D022 state expansion (`d_state=64`, `headdim=64`) explicitly, because the
+    the state expansion (`d_state=64`, `headdim=64`) explicitly, because the
     dataclass defaults are still the parameter-matched `d_state=16, headdim=32`
-    of the rejected D021 configuration.
+    of the rejected configuration.
     """
     cfg = replace(cartpole_config(), representation_objective="jepa")
     if temporal_backend == "transformer":
@@ -684,8 +684,8 @@ def train_jepa_world(
         cfg.mamba_d_state != 64 or cfg.mamba_headdim != 64
     ):
         raise RuntimeError(
-            "M-JEPA must use the D022 state expansion (d_state=64, headdim=64); "
-            "the parameter-matched d_state=16/headdim=32 is the rejected D021"
+            "M-JEPA must use the state expansion (d_state=64, headdim=64); "
+            "the parameter-matched d_state=16/headdim=32 is rejected"
         )
     # Oversample terminal windows so the continuation head sees enough failures.
     terminal_fraction = max(terminal_fraction, cfg.jepa_terminal_fraction)
@@ -2034,7 +2034,7 @@ def main() -> None:
         "--temporal-backend",
         choices=("transformer", "mamba2"),
         default="transformer",
-        help="transformer = T-JEPA; mamba2 = M-JEPA (D022 d_state=64, headdim=64)",
+        help="transformer = T-JEPA; mamba2 = M-JEPA (d_state=64, headdim=64)",
     )
     train_jepa.add_argument(
         "--jepa-jumps", type=int, default=None,

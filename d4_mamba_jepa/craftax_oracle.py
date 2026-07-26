@@ -18,7 +18,7 @@ Trust properties (why its verdicts can be believed):
   TIMESTEP-SHIFTED (off-by-one) inputs; a trustworthy oracle scores them
   ~1 / ~0 / ~0 / low.
 - Encoding preserves and restores every module's train/eval mode exactly
-  (generalizes the D062 fix so a diagnostic can never corrupt BatchNorm).
+  (so a diagnostic can never corrupt BatchNorm via a left-over eval-mode).
 - Probe data is isolated in both directions: ``.probe_only.pt`` payloads carry a
   marker the replay loader rejects, and privileged labels never enter training.
 
@@ -140,9 +140,9 @@ def load_probe_data(path) -> ProbeData:
 def preserved_modes(module: torch.nn.Module):
     """Record every submodule's training flag and restore it exactly on exit.
 
-    Generalizes the D062 fix: a diagnostic may switch modes for inference but
-    must never leave the module in a different heterogeneous mode map than it
-    found (which is how the D062 BatchNorm bug was introduced).
+    A diagnostic may switch modes for inference but must never leave the module
+    in a different heterogeneous mode map than it found (which is how the
+    BatchNorm eval-mode bug was introduced).
     """
     saved = {name: m.training for name, m in module.named_modules()}
     try:
