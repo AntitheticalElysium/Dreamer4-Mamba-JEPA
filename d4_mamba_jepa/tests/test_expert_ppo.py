@@ -13,7 +13,7 @@ import jax.numpy as jnp
 import numpy as np
 from flax import serialization
 
-from d4_mamba_jepa.craftax_ppo_expert import (
+from d4_mamba_jepa.expert.ppo_expert import (
     ActorCriticRNN,
     ScannedRNN,
     cat_entropy,
