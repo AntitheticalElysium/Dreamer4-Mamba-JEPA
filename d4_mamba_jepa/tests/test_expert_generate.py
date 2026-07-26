@@ -25,18 +25,19 @@ def test_generate_expert_replay_produces_valid_replay(tmp_path):
     pp.write_bytes(serialization.to_bytes(params))
 
     out = tmp_path / "expert_replay.pt"
+    # 3 episodes from 2 envs => exercises the multi-batch loop + per-slot slicing.
     manifest = generate_expert_replay(
-        params_path=pp, out_path=out, n_episodes=2, max_steps=8,
-        layer_size=32, seed=100,
+        params_path=pp, out_path=out, n_episodes=3, max_steps=8,
+        layer_size=32, seed=100, num_envs=2,
     )
-    assert manifest.n_episodes == 2
+    assert manifest.n_episodes == 3
     assert 0.0 <= manifest.noop_fraction <= 1.0
     assert manifest.replay_sha256
 
     replay = load_episode_replay(
         out, expected_sha256=manifest.replay_sha256, capacity_steps=10 ** 7
     )
-    assert len(replay.episodes) == 2
-    ep = replay.episodes[0]
-    assert ep.obs.shape[1:] == (3, 64, 64) and ep.obs.dtype.name == "uint8"
-    assert ep.obs.shape[0] == ep.actions.shape[0] + 1  # obs == actions + 1
+    assert len(replay.episodes) == 3
+    for ep in replay.episodes:
+        assert ep.obs.shape[1:] == (3, 64, 64) and ep.obs.dtype.name == "uint8"
+        assert ep.obs.shape[0] == ep.actions.shape[0] + 1  # obs == actions + 1

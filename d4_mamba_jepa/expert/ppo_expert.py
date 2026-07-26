@@ -45,6 +45,7 @@ from flax.linen.initializers import constant, orthogonal
 from flax.training.train_state import TrainState
 
 from craftax.craftax_env import make_craftax_env_from_name
+from craftax.craftax_classic.constants import BlockType
 
 REFERENCE = (
     "Craftax_Baselines@7ce36fa05b84a2c9e758012f1e6da402e1e3a891:ppo_rnn.py"
@@ -121,6 +122,34 @@ class LogWrapper(GymnaxWrapper):
         info["timestep"] = state.timestep
         info["returned_episode"] = done
         return obs, state, reward, done, info
+
+
+class DeathPenaltyWrapper(GymnaxWrapper):
+    """Subtract a penalty on death/lava (CrafterDojo's survival shaping).
+
+    Without it the expert plateaus at short episodes; the penalty pushes it to
+    survive long enough to reach the deep crafting chain (the paper's competent
+    experts survive ~9000 steps).
+    """
+
+    def __init__(self, env, death_penalty: float):
+        super().__init__(env)
+        self.death_penalty = float(death_penalty)
+
+    @functools.partial(jax.jit, static_argnums=(0, 2))
+    def reset(self, key, params=None):
+        return self._env.reset(key, params)
+
+    @functools.partial(jax.jit, static_argnums=(0, 4))
+    def step(self, key, state, action, params=None):
+        obs, env_state, reward, done, info = self._env.step(key, state, action, params)
+        is_lava = (
+            env_state.map[env_state.player_position[0], env_state.player_position[1]]
+            == BlockType.LAVA.value
+        )
+        is_dead = env_state.player_health <= 0
+        reward = reward - self.death_penalty * (is_lava | is_dead)
+        return obs, env_state, reward, done, info
 
 
 class OptimisticResetVecEnvWrapper(GymnaxWrapper):
@@ -258,6 +287,7 @@ def default_config() -> dict:
         "ANNEAL_LR": True,
         "LAYER_SIZE": 512,
         "OPTIMISTIC_RESET_RATIO": 16,
+        "DEATH_PENALTY": 10,  # CrafterDojo survival shaping (train_ppo.sh)
         "SEED": 0,
         "PROGRESS_EVERY": 10,
     }
@@ -272,6 +302,8 @@ def make_train(config):
     )
     env = make_craftax_env_from_name(config["ENV_NAME"], auto_reset=False)
     env_params = env.default_params
+    if config.get("DEATH_PENALTY", 0):
+        env = DeathPenaltyWrapper(env, config["DEATH_PENALTY"])
     env = LogWrapper(env)
     env = OptimisticResetVecEnvWrapper(
         env, num_envs=config["NUM_ENVS"],
@@ -465,12 +497,14 @@ def _cli() -> None:
     p.add_argument("--total-timesteps", type=lambda x: int(float(x)), default=int(3e8))
     p.add_argument("--num-envs", type=int, default=256)
     p.add_argument("--layer-size", type=int, default=512)
+    p.add_argument("--death-penalty", type=float, default=10.0)
     p.add_argument("--seed", type=int, default=0)
     args = p.parse_args()
     import json
     summary = train_expert(
         {"TOTAL_TIMESTEPS": args.total_timesteps, "NUM_ENVS": args.num_envs,
-         "LAYER_SIZE": args.layer_size, "SEED": args.seed},
+         "LAYER_SIZE": args.layer_size, "DEATH_PENALTY": args.death_penalty,
+         "SEED": args.seed},
         output_path=args.out)
     print(json.dumps(summary, indent=2))
 
