@@ -89,8 +89,10 @@ def generate_random_replay(
     max_steps: int,
     env_seed_base: int = 0,
     target_size: int = 64,
+    action_fn_factory=random_action_fn,
+    policy_name: str = "uniform_random",
 ) -> ReplayManifest:
-    """Generate ``n_episodes`` uniform-random episodes and save the replay.
+    """Generate ``n_episodes`` episodes under ``action_fn_factory`` and save them.
 
     Each saved episode dict additionally carries ``achievements`` as a bool
     array ``[T+1, 22]`` (cumulative per frame), reconstructed from the final
@@ -105,7 +107,7 @@ def generate_random_replay(
         seed = int(env_seed_base) + i
         collected = collect_episode(
             seed=seed,
-            action_fn=random_action_fn(seed),
+            action_fn=action_fn_factory(seed),
             max_steps=max_steps,
             target_size=target_size,
         )
@@ -141,7 +143,7 @@ def generate_random_replay(
         env_seed_base=int(env_seed_base),
         max_steps=int(max_steps),
         target_size=int(target_size),
-        policy="uniform_random",
+        policy=str(policy_name),
         replay_sha256=replay_sha,
         achievement_names=achievement_names(),
         created=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
