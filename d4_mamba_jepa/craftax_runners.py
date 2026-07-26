@@ -12,7 +12,8 @@ the model/data primitives -- runs on Craftax.
 ``craftax_preflight`` chains world -> BC -> imagination at a tiny budget on a
 real Craftax replay and asserts every phase runs (finite losses, gradients flow,
 no CartPole gate). It is the executable "the architecture runs on Craftax" gate,
-the Craftax-native replacement for the legacy danijar/m3 ``crafter_preflight``.
+the Craftax-native replacement for the legacy danijar/m3 preflight CLI that was
+removed from ``world_eval`` (formerly ``crafter_preflight``).
 
 Imports torch (no JAX): consumes a hash-pinned Craftax replay produced offline by
 ``craftax_data``; it does not touch the live JAX environment.

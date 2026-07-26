@@ -30,7 +30,7 @@ IMPLEMENTATION_FILES = (
     "training.py",
     "rollout.py",
     "checkpoint.py",
-    "crafter_preflight.py",
+    "world_eval.py",
     "cartpole_baseline.py",
     "imagination_actor_critic.py",
 )

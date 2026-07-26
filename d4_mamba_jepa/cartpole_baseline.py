@@ -33,7 +33,7 @@ from .checkpoint import (
     save_tokenizer_checkpoint,
 )
 from .config import D4LiteConfig
-from .crafter_preflight import evaluate_tokenizer, evaluate_world
+from .world_eval import evaluate_tokenizer, evaluate_world
 from .data import Episode, EpisodeReplay, SequenceBatch, replay_sample_to_sequence
 from .model import D4LiteWorld, build_tokenizer
 from .objectives import jepa_self_prediction_loss, optimizer_groups

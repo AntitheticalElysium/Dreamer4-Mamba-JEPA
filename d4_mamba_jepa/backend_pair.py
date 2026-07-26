@@ -21,11 +21,7 @@ from .checkpoint import (
     save_checkpoint,
 )
 from .config import D4LiteConfig
-from .crafter_preflight import (
-    DEV_REPLAY,
-    DEV_REPLAY_SHA256,
-    TRAIN_REPLAY,
-    TRAIN_REPLAY_SHA256,
+from .world_eval import (
     _aligned_eval_batches,
     _fixed_eval_batches,
     _to_device,
@@ -36,6 +32,19 @@ from .model import D4LiteWorld
 from .objectives import optimizer_groups
 from .source import source_report
 from .training import WorldLossNormalizer, world_loss
+
+# Legacy danijar/m3 CartPole-Crafter replay paths (relocated here from the
+# removed crafter_preflight CLI; used only by this legacy backend-comparison
+# harness, which does not run on the Craftax branch).
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+TRAIN_REPLAY = _REPO_ROOT / "data/replay_40k_v1.pt"
+TRAIN_REPLAY_SHA256 = (
+    "c55257feb2f903d32806b2694dd35e049fcd48397d3525b505c9dd715c455dad"
+)
+DEV_REPLAY = _REPO_ROOT / "data/heldout_20ep_v1.pt"
+DEV_REPLAY_SHA256 = (
+    "709e9646ce5ee1cf36ef4118f6b5d4482751a300b8c97186929af6f0271b27ad"
+)
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
