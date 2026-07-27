@@ -47,6 +47,7 @@ def main() -> None:
     parser.add_argument("--output", type=Path,
                         default=REPO_ROOT / "reviews/artifacts/craftax_oracle.json")
     parser.add_argument("--arms", default="t_jepa,m_jepa")
+    parser.add_argument("--run-dir", type=Path, default=RUN_DIR)
     parser.add_argument("--device",
                         default="cuda" if torch.cuda.is_available() else "cpu")
     args = parser.parse_args()
@@ -59,10 +60,15 @@ def main() -> None:
     reports = {}
     for arm in [a.strip() for a in args.arms.split(",") if a.strip()]:
         started = time.perf_counter()
-        world, _, _ = load_checkpoint(RUN_DIR / arm / "world.pt", device=device)
+        world, _, _ = load_checkpoint(args.run_dir / arm / "world.pt", device=device)
         world = world.to(device)
         report = representation_oracle(world, probe)
-        arm_id = world.cfg.arm_id
+        # Key by directory: capacity rungs all share one `arm_id`.
+        arm_id = f"{arm} ({world.cfg.arm_id}, d_bottleneck={world.cfg.d_bottleneck})"
+        report["config"] = {"arm_id": world.cfg.arm_id,
+                            "d_bottleneck": world.cfg.d_bottleneck,
+                            "latent_dims": world.cfg.n_spatial * world.cfg.d_spatial,
+                            "representation_objective": world.cfg.representation_objective}
         reports[arm_id] = report
         audit = report["audit"]
         print(f"\n=== {arm_id} ({time.perf_counter() - started:.0f}s) ===", flush=True)
