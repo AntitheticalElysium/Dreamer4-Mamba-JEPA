@@ -23,6 +23,7 @@ from __future__ import annotations
 import copy
 import json
 from pathlib import Path
+import time
 
 import numpy as np
 import torch
@@ -104,6 +105,7 @@ def train_craftax_jepa_world(
     warmup: int = 1_000,
     terminal_fraction: float | None = None,
     output_dir: str | Path | None = None,
+    log_every: int = 500,
 ) -> tuple[D4LiteWorld, WorldLossNormalizer, list[dict]]:
     """Joint-phase JEPA world training on a Craftax replay (reuses world_loss).
 
@@ -126,6 +128,7 @@ def train_craftax_jepa_world(
     optimizer = torch.optim.AdamW(trainable, lr=learning_rate, weight_decay=1e-2)
     rng = np.random.default_rng(seed + 3)
     history: list[dict] = []
+    started = time.perf_counter()
     for step in range(world_steps):
         batch = sample_cartpole_sequences(
             replay, batch_size=batch_size, sequence_length=cfg.sequence_length,
@@ -153,7 +156,21 @@ def train_craftax_jepa_world(
             "jepa": float(metrics["loss/jepa"].item()),
             "cosine": float(metrics["jepa/jepa_cosine"].item()),
             "online_std": float(metrics["jepa/jepa_online_std"].item()),
+            "reward": float(metrics["loss/reward"].item()),
+            "continuation": float(metrics["loss/continuation"].item()),
         })
+        if log_every and (step + 1) % log_every == 0:
+            recent = history[-log_every:]
+            print(
+                f"[{cfg.arm_id}] world {step + 1}/{world_steps}: "
+                f"jepa={np.mean([r['jepa'] for r in recent]):.5f} "
+                f"cos={np.mean([r['cosine'] for r in recent]):.4f} "
+                f"onstd={np.mean([r['online_std'] for r in recent]):.4f} "
+                f"reward={np.mean([r['reward'] for r in recent]):.4f} "
+                f"cont={np.mean([r['continuation'] for r in recent]):.4f} "
+                f"({(time.perf_counter() - started) / (step + 1):.3f}s/update)",
+                flush=True,
+            )
     if output_dir is not None:
         out = Path(output_dir)
         out.mkdir(parents=True, exist_ok=True)

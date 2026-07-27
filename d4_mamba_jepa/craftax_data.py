@@ -27,6 +27,9 @@ from .craftax_env import (
     achievement_names,
     collect_episode,
 )
+# Defined in the JAX-free data layer so the torch training stack can split a
+# replay without importing JAX; re-exported here for the generation CLI.
+from .data import whole_episode_splits
 
 
 FORMAT = "d4_mamba_jepa_craftax_replay_v1"
@@ -162,20 +165,6 @@ def _serialize(records: list[dict]) -> bytes:
     return buffer.getvalue()
 
 
-def whole_episode_splits(
-    n_episodes: int, *, seed: int, fractions=(0.8, 0.1, 0.1)
-) -> dict[str, list[int]]:
-    """Deterministic disjoint whole-episode train/dev/sealed index split."""
-    if abs(sum(fractions) - 1.0) > 1e-9:
-        raise ValueError("fractions must sum to 1")
-    rng = np.random.default_rng(seed)
-    order = rng.permutation(int(n_episodes))
-    n_train = int(round(fractions[0] * n_episodes))
-    n_dev = int(round(fractions[1] * n_episodes))
-    train = sorted(int(i) for i in order[:n_train])
-    dev = sorted(int(i) for i in order[n_train:n_train + n_dev])
-    sealed = sorted(int(i) for i in order[n_train + n_dev:])
-    return {"train": train, "dev": dev, "sealed": sealed}
 
 
 def _cli() -> None:

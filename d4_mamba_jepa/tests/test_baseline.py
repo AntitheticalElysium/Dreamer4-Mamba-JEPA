@@ -1,4 +1,5 @@
 from dataclasses import replace
+import hashlib
 
 import numpy as np
 import pytest
@@ -128,6 +129,36 @@ def test_replay_loader_rejects_digest_drift(tmp_path):
     torch.save([], path)
     with pytest.raises(RuntimeError, match="digest drift"):
         load_episode_replay(path, expected_sha256="0" * 64)
+
+
+def _write_replay(tmp_path, n_episodes, transitions):
+    records = [
+        {
+            "obs": torch.zeros((transitions + 1, 3, 8, 8), dtype=torch.uint8),
+            "actions": torch.zeros(transitions, dtype=torch.int64),
+            "rewards": torch.zeros(transitions, dtype=torch.float32),
+            "continues": torch.ones(transitions, dtype=torch.float32),
+        }
+        for _ in range(n_episodes)
+    ]
+    path = tmp_path / "episodes.pt"
+    torch.save(records, path)
+    return path, hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def test_replay_loader_keeps_every_episode_by_default(tmp_path):
+    """A hash-pinned file is a dataset, not a FIFO buffer: it loads whole."""
+    path, digest = _write_replay(tmp_path, n_episodes=8, transitions=50)
+    replay = load_episode_replay(path, expected_sha256=digest)
+    assert len(replay.episodes) == 8
+    assert replay.steps == 400
+
+
+def test_replay_loader_refuses_to_silently_drop_episodes(tmp_path):
+    """An explicit capacity below the file size must error, not truncate."""
+    path, digest = _write_replay(tmp_path, n_episodes=8, transitions=50)
+    with pytest.raises(RuntimeError, match="would drop episodes"):
+        load_episode_replay(path, expected_sha256=digest, capacity_steps=100)
 
 
 def test_transformer_baseline_forward_and_flow_gradients():

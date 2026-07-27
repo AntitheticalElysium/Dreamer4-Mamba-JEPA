@@ -181,13 +181,52 @@ def transitions_to_led_to(
     return out
 
 
+def whole_episode_splits(
+    n_episodes: int, *, seed: int, fractions=(0.8, 0.1, 0.1)
+) -> dict[str, list[int]]:
+    """Deterministic disjoint whole-episode train/dev/sealed index split.
+
+    Lives here rather than in ``craftax_data`` so the torch training stack can
+    split a replay without importing JAX; ``craftax_data`` re-exports it.
+    """
+    if abs(sum(fractions) - 1.0) > 1e-9:
+        raise ValueError("fractions must sum to 1")
+    rng = np.random.default_rng(seed)
+    order = rng.permutation(int(n_episodes))
+    n_train = int(round(fractions[0] * n_episodes))
+    n_dev = int(round(fractions[1] * n_episodes))
+    train = sorted(int(i) for i in order[:n_train])
+    dev = sorted(int(i) for i in order[n_train:n_train + n_dev])
+    sealed = sorted(int(i) for i in order[n_train + n_dev:])
+    return {"train": train, "dev": dev, "sealed": sealed}
+
+
+def subset_replay(replay: EpisodeReplay, indices) -> EpisodeReplay:
+    """A replay holding only ``indices`` of ``replay.episodes`` (no copy of obs)."""
+    indices = [int(i) for i in indices]
+    subset = EpisodeReplay(capacity_steps=max(1, replay.capacity_steps))
+    for index in indices:
+        subset.add(replay.episodes[index])
+    if len(subset.episodes) != len(indices):
+        raise RuntimeError("subset replay dropped episodes")
+    return subset
+
+
 def load_episode_replay(
     path: str | Path,
     *,
     expected_sha256: str,
-    capacity_steps: int = 500_000,
+    capacity_steps: int | None = None,
 ) -> EpisodeReplay:
-    """Load and fully validate a hash-pinned list of episode dictionaries."""
+    """Load and fully validate a hash-pinned list of episode dictionaries.
+
+    ``capacity_steps=None`` (the default) sizes the replay to the file, so a
+    hash-pinned dataset is loaded WHOLE. A pinned file is a fixed dataset, not a
+    FIFO buffer, and the previous fixed default silently dropped the oldest
+    episodes past 500,000 transitions -- which would discard ~28% of the 696,746
+    transition Craftax expert replay with no error. An explicit capacity smaller
+    than the file is now a hard error rather than a silent drop.
+    """
     source = Path(path)
     actual = hashlib.sha256(source.read_bytes()).hexdigest()
     if actual != expected_sha256:
@@ -205,6 +244,16 @@ def load_episode_replay(
         )
     if not isinstance(records, list):
         raise RuntimeError("replay payload must be a list of episodes")
+    total_steps = sum(len(np.asarray(record["actions"])) for record in records
+                      if isinstance(record, dict) and "actions" in record)
+    if capacity_steps is None:
+        capacity_steps = max(1, total_steps)
+    elif capacity_steps < total_steps:
+        raise RuntimeError(
+            f"capacity_steps={capacity_steps} would drop episodes from {source}: "
+            f"the file holds {total_steps} transitions. Pass capacity_steps=None "
+            "to load it whole."
+        )
     replay = EpisodeReplay(capacity_steps=capacity_steps)
     for index, record in enumerate(records):
         if not isinstance(record, dict):
@@ -220,6 +269,11 @@ def load_episode_replay(
                 continues=np.asarray(record["continues"]),
             )
         )
+    if len(replay.episodes) != len(records) or replay.steps != total_steps:
+        raise RuntimeError(
+            f"replay truncated on load: kept {len(replay.episodes)}/{len(records)} "
+            f"episodes and {replay.steps}/{total_steps} transitions"
+        )
     return replay
 
 
@@ -230,4 +284,6 @@ __all__ = [
     "replay_sample_to_sequence",
     "transitions_to_led_to",
     "load_episode_replay",
+    "whole_episode_splits",
+    "subset_replay",
 ]
