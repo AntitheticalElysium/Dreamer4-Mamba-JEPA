@@ -118,6 +118,64 @@ groups, `achievement_group` scores the latent with no constant, timestep, or
 pixel reference, and achievements are cumulative and monotone within an episode,
 so an episode-progress probe would score high. Instrument gap, not a result.
 
+## Random-encoder floor — training REMOVES the information
+
+`reviews/artifacts/craftax_oracle_random.py`, same probe, same oracle, untrained
+(randomly initialized) encoders. The oracle had constant/timestep/pixel floors
+but no random-encoder floor, so part of every reported latent R^2 could have
+been Johnson-Lindenstrauss projection rather than anything training produced.
+
+Untrained versus trained, at IDENTICAL geometry (`n_latents=16, d_bottleneck=16`,
+latent 256 dims):
+
+| target | random | trained T-JEPA | delta |
+|---|---:|---:|---:|
+| food | 0.633 | 0.165 | **−0.47** |
+| wood | 0.630 | 0.097 | **−0.53** |
+| sapling | 0.664 | 0.041 | **−0.62** |
+| wood_sword | 0.479 | 0.051 | −0.43 |
+| stone | 0.407 | 0.082 | −0.33 |
+| drink | 0.663 | 0.418 | −0.25 |
+| energy | 0.558 | 0.541 | −0.02 |
+| iron_pickaxe | 0.832 | 0.622 | −0.21 |
+| **health** | 0.465 | **0.866** | **+0.40** |
+
+Training moves every target DOWN except health, which is the only one with a
+gradient path from a loss term (reward = +1/achievement + 0.1 x health_delta).
+
+The geometry is not the constraint. Untrained encoders at larger `n_latents`
+approach the pixel ceiling: at `n_latents=256`, food 0.944, sapling 0.932,
+diamond 0.931, wood 0.879, iron 0.943 (4 targets `preserved`).
+
+So the earlier framing was wrong in an important way: this is not "the encoder
+fails to acquire task state". It is "the encoder is initialized with it and
+training removes it".
+
+Still open, and the reason T-BASE matters: this does not yet distinguish the
+JEPA objective specifically from ANY training under this setup. If T-BASE also
+falls below the random floor at matched geometry, the cause is something common
+to our training (e.g. the tanh bottleneck saturating, or joint-training
+dynamics), not the non-generative objective.
+
+## Closest action-conditioned baseline: V-JEPA 2-AC
+
+Read 2026-07-27 because I-JEPA/V-JEPA are not action-conditioned and are
+therefore the wrong comparison. From `facebookresearch/vjepa2`
+(`configs/train/vitg16/droid-256px-8f.yaml`, `app/vjepa_droid/train.py`):
+
+| | V-JEPA 2-AC | ours |
+|---|---|---|
+| encoder init | pretrained V-JEPA 2 ViT-g (`pretrain_checkpoint: vitg.pt`, `load_encoder=True`) | **random** |
+| encoder trained? | yes, full LR (`enc_lr_scale` default 1.0) | yes |
+| bottleneck | **none** — full patch-token grid | 16 latents -> 4 packed tokens |
+| tokens / clip | 256px, patch 16, tubelet 2, 8 frames | 64 patches -> 4 spatial |
+| autoregressive steps | `auto_steps: 2` | `jepa_jumps: 5` |
+| normalize reps | true | true (L2-normalized MSE) |
+
+The AC objective there never has to build a representation from scratch; it
+refines one already trained by masked latent prediction at scale. Registered as
+a note on D032, untested here.
+
 ## Direction
 
 The oracle localizes the failure to the encoder. The next two runs test why:
@@ -132,3 +190,32 @@ low intrinsic dimension; Craftax is exactly the higher-dimensional task its
 rejection note said to re-open it on). If T-BASE preserves what JEPA loses, that
 identifies what a reconstruction-free objective must supply by other means — it
 is not a route to adopt reconstruction.
+
+## Unattended run queue launched 2026-07-27 (all parameters)
+
+Shared by every stage: expert replay
+`7e5cdfc8...` (320 ep / 696,746 tr), split seed 20260727 -> train 256 / dev 32 /
+sealed 32 (sealed never loaded), run seed 20260727, batch 8, lr 1e-4, AdamW wd
+1e-2, grad clip 1.0, warmup 1,000, `sequence_length=16`, `jepa_jumps=5`,
+`jepa_terminal_fraction=0.5`, `jepa_terminal_weight=8`, EMA tau 0.99 -> 0.999,
+20,000 updates, device cuda. Probe: `expert_probe_v1.probe_only.pt`, 3,802
+frames / 48 episodes, stride 30. Oracle split seed 20260726, margin 0.05.
+
+| stage | what | key parameters |
+|---|---|---|
+| A | `n_latents` ladder | 64:16 and 256:16 (`d_bottleneck` pinned at the paper's 16) |
+| B | oracle on both A rungs | — |
+| C | T-BASE @ `n_latents=16` | MAE tokenizer, 20k x batch 8, objective control at EXACT baseline geometry |
+| D | oracle on C | — |
+| E | T-BASE @ `n_latents=64` | objective x geometry interaction |
+| F | oracle on E | — |
+| G | encoder time-course | one baseline world, oracle at steps 0/250/500/1k/2.5k/5k/10k/20k |
+
+Scripts: `reviews/artifacts/craftax_{capacity,tbase,oracle_run,oracle_random,timecourse}.py`,
+driven by `craftax_queue.sh` and `craftax_queue2.sh`. Logs in
+`outputs/d4_mamba_jepa/queue/`.
+
+Stage G exists because the random-encoder floor showed training REMOVES the
+targets; the curve shape distinguishes an early optimization transient from the
+objective grinding the information away over 20k updates, and those imply
+different fixes. No architectural change is made by any stage.

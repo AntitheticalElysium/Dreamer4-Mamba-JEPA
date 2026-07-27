@@ -41,7 +41,11 @@ SEED = 20260727  # identical to the baseline run
 
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--bottlenecks", default="32,64")
+    p.add_argument("--bottlenecks", default="")
+    p.add_argument(
+        "--grid", default="",
+        help="comma-separated n_latents:d_bottleneck pairs, e.g. 64:16,256:16",
+    )
     p.add_argument("--world-steps", type=int, default=20_000)
     p.add_argument("--backend", default="transformer")
     p.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
@@ -53,12 +57,21 @@ def main() -> None:
     train_replay = subset_replay(replay, splits["train"])
     dev_replay = subset_replay(replay, splits["dev"])
 
+    if args.grid:
+        rungs = [tuple(int(x) for x in item.split(":"))
+                 for item in args.grid.split(",") if item.strip()]
+    else:
+        rungs = [(16, int(x.strip())) for x in args.bottlenecks.split(",") if x.strip()]
+
     results = {}
-    for raw in args.bottlenecks.split(","):
-        d = int(raw.strip())
-        cfg = replace(craftax_jepa_config(args.backend), d_bottleneck=d)
-        arm_dir = OUT / f"d_bottleneck_{d}"
-        print(f"=== d_bottleneck={d} (latent {cfg.n_spatial * cfg.d_spatial} dims) ===",
+    for n_latents, d in rungs:
+        cfg = replace(craftax_jepa_config(args.backend),
+                      n_latents=n_latents, d_bottleneck=d)
+        label = (f"d_bottleneck_{d}" if n_latents == 16
+                 else f"n_latents_{n_latents}_d_bottleneck_{d}")
+        arm_dir = OUT / label
+        print(f"=== n_latents={n_latents} d_bottleneck={d} "
+              f"(n_spatial={cfg.n_spatial}, latent {cfg.n_spatial * cfg.d_spatial} dims) ===",
               flush=True)
         dev_batches = _fixed_dev_batches(
             dev_replay, cfg=cfg, count=16, batch_size=8, seed=SPLIT_SEED + 1
@@ -69,8 +82,10 @@ def main() -> None:
             output_dir=arm_dir,
         )
         cosine = _dev_cosine(world, dev_batches, device)
-        results[d] = {
+        results[label] = {
+            "n_latents": n_latents,
             "d_bottleneck": d,
+            "n_spatial": cfg.n_spatial,
             "latent_dims": cfg.n_spatial * cfg.d_spatial,
             "dev_cosine": cosine,
             "final_jepa_loss": history[-1]["jepa"],

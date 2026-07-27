@@ -48,11 +48,11 @@ OUT = REPO_ROOT / "outputs/d4_mamba_jepa/craftax_tbase"
 SEED = 20260727
 
 
-def craftax_base_config() -> D4LiteConfig:
+def craftax_base_config(n_latents: int = 16) -> D4LiteConfig:
     """T-BASE: identical to the JEPA arm except the representation objective."""
     return D4LiteConfig(
         representation_objective="base", n_actions=17, image_size=64,
-        temporal_backend="transformer",
+        temporal_backend="transformer", n_latents=n_latents,
     )
 
 
@@ -71,13 +71,15 @@ def main() -> None:
     p.add_argument("--tokenizer-steps", type=int, default=20_000)
     p.add_argument("--batch-size", type=int, default=8)
     p.add_argument("--learning-rate", type=float, default=1e-4)
+    p.add_argument("--n-latents", type=int, default=16)
     p.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = p.parse_args()
     device = torch.device(args.device)
-    arm_dir = OUT / "t_base"
+    arm_dir = OUT / (f"t_base" if args.n_latents == 16
+                     else f"t_base_n_latents_{args.n_latents}")
     arm_dir.mkdir(parents=True, exist_ok=True)
 
-    cfg = craftax_base_config()
+    cfg = craftax_base_config(args.n_latents)
     replay = load_episode_replay(REPLAY, expected_sha256=REPLAY_SHA)
     splits = whole_episode_splits(len(replay.episodes), seed=SPLIT_SEED)
     train_replay = subset_replay(replay, splits["train"])
