@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import argparse
 import functools
+import os
 import time
 from pathlib import Path
 from typing import Any, NamedTuple, Sequence
@@ -290,6 +291,7 @@ def default_config() -> dict:
         "DEATH_PENALTY": 10,  # CrafterDojo survival shaping (train_ppo.sh)
         "SEED": 0,
         "PROGRESS_EVERY": 10,
+        "SAVE_EVERY": 200,  # updates between periodic checkpoints (crash-safe + mid-eval)
     }
 
 
@@ -429,6 +431,17 @@ def make_train(config):
                           f"ep_len={float(metric['returned_episode_lengths']):.0f}", flush=True)
             jax.debug.callback(_progress, metric, ustep)
 
+            def _save_ckpt(params, ustep):
+                u = int(ustep)
+                path = config.get("CHECKPOINT_PATH")
+                if path and u > 0 and u % config["SAVE_EVERY"] == 0:
+                    p = Path(path)
+                    p.parent.mkdir(parents=True, exist_ok=True)
+                    tmp = p.with_suffix(p.suffix + ".tmp")
+                    tmp.write_bytes(serialization.to_bytes(params))
+                    os.replace(tmp, p)  # atomic: concurrent readers never see a partial file
+            jax.debug.callback(_save_ckpt, train_state.params, ustep + 1)
+
             runner_state = (train_state, env_state, last_obs, last_done, hstate, rng, ustep + 1)
             return runner_state, metric
 
@@ -446,13 +459,14 @@ def train_expert(config: dict | None = None, *, output_path: str | Path) -> dict
     cfg = default_config()
     if config:
         cfg.update({k.upper(): v for k, v in config.items()})
+    out_path = Path(output_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    cfg["CHECKPOINT_PATH"] = str(out_path)  # periodic saves overwrite this (latest policy)
     train = jax.jit(make_train(cfg))
     t0 = time.time()
     out = jax.block_until_ready(train(jax.random.PRNGKey(cfg["SEED"])))
     seconds = time.time() - t0
     params = out["runner_state"][0].params
-    out_path = Path(output_path)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_bytes(serialization.to_bytes(params))
     final = jax.tree.map(lambda x: float(x[-1]), out["metric"])
     return {
