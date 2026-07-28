@@ -605,3 +605,54 @@ not i2 against stage G. The direction of degradation is stable across all runs.
 |---|---|---|---|
 | tf=0.5 | i1 (done) | h2 (done, 20k) | j2 (running) |
 | tf=0.0 | i2 (done) | — | j1 (running) |
+
+## Completed 2x2: self-prediction is the primary cause of inventory erosion
+
+All cells 2,500 updates from a shared initialization. Inventory mean over
+{wood, stone, sapling, wood_sword, iron_sword, diamond}; vitals over
+{health, food, drink, energy}.
+
+| arm | inventory | vitals | dev_cos |
+|---|---:|---:|---:|
+| INIT (shared) | 0.618 | 0.580 | −0.03 |
+| tf=0.5, all losses (baseline) | 0.404 | 0.622 | 0.548 |
+| tf=0.5, self-prediction only | 0.405 | 0.359 | 0.629 |
+| tf=0.0, all losses | 0.491 | 0.264 | 0.528 |
+| tf=0.0, self-prediction only | 0.474 | 0.356 | 0.520 |
+
+1. THE TASK HEADS CONTRIBUTE ~NOTHING TO INVENTORY EROSION: 0.404 vs 0.405 at
+   tf=0.5, and 0.491 vs 0.474 at tf=0.0 (within measured run-to-run variance).
+2. SELF-PREDICTION ALONE, CLEAN SAMPLER, STILL ERODES: 0.618 -> 0.474, ~67% of
+   the baseline's total erosion. This is the pre-declared condition for blaming
+   SPR/global prediction and it is MET.
+3. The sampler owns the remaining ~40% of the baseline's extra erosion
+   (0.404 -> 0.491) and, with the heads, the entire vitals story.
+4. Sign flip on vitals: under terminal oversampling the heads PRESERVE vitals
+   (0.622); under uniform sampling they DEGRADE them (0.264 vs 0.356 without
+   heads), because uniform sampling makes continue~1 and reward~0 nearly
+   everywhere, so the heads supply a near-constant target.
+
+BUDGET CAVEAT: the earlier heads-only run was 20,000 updates and did erode badly
+(food 0.08, wood 0.10). These cells are 2,500. "Heads contribute nothing" is
+established at 2,500 updates only; the two budgets are not comparable.
+
+### Mechanism candidate, now specific
+
+`CDPPredictor.forward` mean-pools the agent tokens to ONE 64-d vector
+(`context = agent_tokens.mean(dim=2)`), passes through a 64-d hidden layer, and
+the SPR loss compares 64-d projections. The self-prediction target therefore
+cannot require the encoder to retain twelve independent inventory counts --
+there is no channel through which they would be needed. This is consistent with
+every cell above and with the `n_latents` ladder having produced no improvement
+(it widened the output, never this channel). Not yet isolated by an experiment.
+
+### Status of the ranked diagnosis
+
+| candidate | status after these runs |
+|---|---|
+| Terminal sampling | CONTRIBUTOR, ~40% of extra erosion; fully owns the health signature; NOT the primary cause by its own pre-declared test |
+| Self-prediction / global 64-d predictor | PRIMARY cause of inventory erosion, isolated with heads off and sampler clean |
+| Task heads | ~zero contribution to inventory at 2.5k; own the vitals story; untested at 20k under a clean sampler |
+| Unanchored full-LR encoder | UNTESTED; strongest remaining structural divergence (both references freeze a pretrained encoder) |
+| Loss-scale mismatch (JEPA unnormalized) | UNTESTED, verified present |
+| SIGReg / collapse | deprioritized by the user; rank collapse already refuted |
