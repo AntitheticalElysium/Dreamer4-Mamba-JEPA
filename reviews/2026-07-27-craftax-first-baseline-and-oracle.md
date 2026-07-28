@@ -684,3 +684,84 @@ gradient is therefore a 64-d global comparison regardless of the predictor's inp
 width. Widening one side of a two-sided bottleneck predictably did nothing.
 
 Live candidate: the loss-side projection. Not run; awaiting approval.
+
+## 2026-07-28 second audit — four errors of mine, all confirmed
+
+### 1. My MTP "correction" was backwards; the original figures were right
+
+Verified by computing the slot structure directly. `_jepa_world_loss` passes the
+heads a K=`jepa_jumps`=5 position window; `continuation_mtp_loss` expands it over
+L=`continuation_horizon`=8 with slot (t,lead) valid iff t < K-lead, reading
+position t+lead. Position usage within the window is {0:1, 1:2, 2:3, 3:4, 4:5},
+15 valid slots per row. A terminal window puts its terminal at position 4, so it
+occupies 5/15 = 33.3% of a terminal row's slots. With 4 of 8 rows terminal:
+
+  terminal fraction after MTP = 4*5/(8*15) = **16.67%**
+  continuation BCE mass at terminal_weight=8 = **61.54%**
+
+My 3.44% applied MTP to the full 15-transition sequence (wrong window) and my
+10.01% was the pre-expansion head-slot count. Both wrong. The 16.68% / 61.6% /
+17.78% / −0.0238 figures stand.
+
+### 2. I used a 6-target subset mean as the headline
+
+Recomputed over ALL 12 inventory targets:
+
+| arm @2500 | inv linear | inv nonlinear | vitals linear |
+|---|---:|---:|---:|
+| INIT | 0.661 | 0.596 | 0.580 |
+| tf=.5 all | 0.461 | 0.395 | 0.622 |
+| tf=.5 jepa-only | 0.451 | 0.377 | 0.359 |
+| tf=0 all | 0.507 | 0.419 | 0.264 |
+| tf=0 jepa-only | 0.507 | 0.369 | 0.356 |
+
+The sampler accounts for **22.9%** of baseline erosion over 12 targets, not the
+40% I reported from {wood, stone, sapling, wood_sword, iron_sword, diamond}.
+This also violates `craftax_oracle`'s own stated contract that no group mean is a
+gate, because a mean hides per-target failures.
+
+### 3. "The task heads contribute nothing" was cancellation, not absence
+
+| | mean effect | mean ABS effect | min | max |
+|---|---:|---:|---|---|
+| tf=.5 | +0.011 | **0.113** | iron_sword −0.292 | diamond +0.225 |
+| tf=0 | +0.000 | **0.073** | wood_pickaxe −0.254 | diamond +0.109 |
+
+The nonlinear inventory mean IMPROVES +0.050 with heads at tf=0, and at step
+1,000 under tf=.5 the heads improve the linear mean by +0.055. The effect is
+large per-target and time-dependent; only its mean is near zero.
+
+### 4. EMA schedule confound — and it removes my variance argument
+
+The time-course ramps tau over `args.world_steps`, so the 2,500-update ablations
+reached tau=0.99900 by their end while the real 20,000-step baseline is at
+tau=0.99113 at update 2,500. Those runs are therefore NOT prefixes of the run
+that failed the oracle.
+
+Consequence I had missed: I attributed the stage-G vs i1 difference to
+run-to-run variance and used that 0.029 spread to dismiss D045's baseline cell.
+It was a SCHEDULE difference, not variance. I therefore have no variance
+estimate, and "+0.035 is noise" was unfounded — the honest statement is that it
+is uninterpretable at n=1. D045's rejection still stands, because k1/k2 and
+i1/j1 all ran under the same compressed schedule and are internally matched.
+
+## Encoder-anchor grid (running): the discriminating test
+
+`craftax_encoder_anchor.py`, tf=0, JEPA-only, EMA ramp PINNED to 20,000 steps so
+2,500 updates is a genuine prefix. 3 conditions x 3 seeds (20260727/8/9):
+
+| condition | encoder LR | source precedent |
+|---|---|---|
+| full | 1e-4 | current, unanchored |
+| slow | 6e-6 | Dreamer-CDP `enc_lr` (66.7x separation) |
+| frozen | 0 | V-JEPA 2-AC / Dreamer 4 |
+
+Retains the FULL oracle report at every probe (all 16 targets, linear and
+nonlinear, bootstrap CIs, pixel ceilings, floors, achievements, verdicts) plus a
+checkpoint, and pins the probe payload by sha256 — all of which the time-course
+discarded. Three seeds give the variance estimate the earlier ablations lacked.
+
+NOTE on the frozen arm: its oracle score is constant BY CONSTRUCTION, since the
+probe reads the encoder and the encoder never moves. The informative quantity
+there is dev cosine — whether self-prediction is achievable without moving the
+encoder at all.
