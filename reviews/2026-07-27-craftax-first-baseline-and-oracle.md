@@ -553,3 +553,55 @@ actually saw (−0.0127), T-JEPA's imagined +0.00051 is wrong in the opposite
 direction and M-JEPA's −0.0259 is roughly right in sign. The heads remain
 miscalibrated; my stated diagnosis of HOW was measured against a distribution
 the model never saw.
+
+## Paired sampler control (2,500 updates, same init) — mixed verdict
+
+Pre-declared criterion (second agent): "if removing forced terminal windows
+prevents the health spike AND state erosion, the primary cause is established."
+
+| target | init | tf=0.5 | tf=0.0 |
+|---|---:|---:|---:|
+| health | 0.47 | **0.94** | **−0.06** |
+| food | 0.63 | 0.45 | 0.24 |
+| drink | 0.66 | 0.51 | 0.48 |
+| energy | 0.56 | 0.59 | 0.40 |
+| wood | 0.63 | 0.34 | 0.47 |
+| stone | 0.41 | 0.37 | 0.32 |
+| sapling | 0.66 | 0.37 | 0.52 |
+| wood_sword | 0.48 | 0.20 | 0.27 |
+| iron_sword | 0.79 | 0.52 | 0.70 |
+| diamond | 0.73 | 0.63 | 0.66 |
+| dev_cos | — | 0.548 | 0.528 |
+
+CONFIRMED: the health spike is ENTIRELY the sampler. Without forced terminal
+windows health is not merely un-spiked, it is destroyed (0.47 -> −0.06). The
+health signature previously read as evidence of "reward supervision preserves
+what it touches" is a product of the terminal oversampling.
+
+NOT CONFIRMED (their own criterion): erosion persists without the sampler --
+wood 0.63->0.47, sapling 0.66->0.52, food 0.63->0.24, iron_sword 0.79->0.70.
+Inventory-target mean 0.617 init -> 0.405 (tf=0.5) -> 0.490 (tf=0.0), so the
+sampler accounts for roughly 40% of the erosion at this budget, not all of it.
+
+NEW: removing the sampler makes VITALS worse (mean 0.62 -> 0.27), because death
+prediction was the only thing making vitals task-relevant. The sampler was
+simultaneously distorting the objective and supplying the only pressure keeping
+vitals in the latent.
+
+This refines the "what the loss demands" account rather than overturning it:
+inventory is unsupervised under both samplers and erodes under both.
+
+### Reproducibility caveat, quantified
+
+i1 (tf=0.5) is a fresh rerun of the baseline configuration and differs
+materially from stage G at the same step (food 0.45 vs 0.30, sapling 0.37 vs
+0.28, diamond 0.63 vs 0.51) despite nominally identical settings. Per-target
+magnitudes are single-run evidence; only the paired i1/i2 comparison is valid,
+not i2 against stage G. The direction of degradation is stable across all runs.
+
+## Running: self-prediction-only arms to complete the 2x2
+
+| | all losses | heads only | self-prediction only |
+|---|---|---|---|
+| tf=0.5 | i1 (done) | h2 (done, 20k) | j2 (running) |
+| tf=0.0 | i2 (done) | — | j1 (running) |

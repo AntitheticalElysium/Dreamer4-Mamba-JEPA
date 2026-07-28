@@ -72,6 +72,8 @@ def main() -> None:
     p.add_argument("--terminal-fraction", type=float, default=None,
                    help="override cfg.jepa_terminal_fraction; 0.0 removes the "
                         "forced terminal windows entirely")
+    p.add_argument("--reward-weight", type=float, default=None)
+    p.add_argument("--continuation-weight", type=float, default=None)
     p.add_argument("--tag", default="", help="label recorded in the output json")
     p.add_argument("--device",
                    default="cuda" if torch.cuda.is_available() else "cpu")
@@ -95,10 +97,14 @@ def main() -> None:
                          if args.terminal_fraction is None
                          else float(args.terminal_fraction))
     print(f"terminal_fraction={terminal_fraction} tag={args.tag!r}", flush=True)
-    weights = LossWeights()
-    if args.jepa_weight is not None:
-        weights = LossWeights(jepa=args.jepa_weight)
-        print(f"DIAGNOSTIC: LossWeights.jepa={weights.jepa}", flush=True)
+    weights = LossWeights(
+        jepa=1.0 if args.jepa_weight is None else args.jepa_weight,
+        reward=1.0 if args.reward_weight is None else args.reward_weight,
+        continuation=1.0 if args.continuation_weight is None
+        else args.continuation_weight,
+    )
+    print(f"LossWeights: jepa={weights.jepa} reward={weights.reward} "
+          f"continuation={weights.continuation}", flush=True)
     dev_batches = _fixed_dev_batches(dev_replay, cfg=cfg, count=16, batch_size=8,
                                      seed=SPLIT_SEED + 1)
     torch.manual_seed(SEED)
