@@ -72,6 +72,8 @@ def main() -> None:
     p.add_argument("--terminal-fraction", type=float, default=None,
                    help="override cfg.jepa_terminal_fraction; 0.0 removes the "
                         "forced terminal windows entirely")
+    p.add_argument("--predictor-context", default=None,
+                   choices=[None, "pooled_agent", "concat_agent", "spatial_agent"])
     p.add_argument("--reward-weight", type=float, default=None)
     p.add_argument("--continuation-weight", type=float, default=None)
     p.add_argument("--tag", default="", help="label recorded in the output json")
@@ -88,6 +90,10 @@ def main() -> None:
     dev_replay = subset_replay(replay, splits["dev"])
 
     cfg = craftax_jepa_config("transformer")
+    if args.predictor_context is not None:
+        from dataclasses import replace as _replace
+        cfg = _replace(cfg, jepa_predictor_context=args.predictor_context)
+        print(f"predictor_context={cfg.jepa_predictor_context}", flush=True)
     # NOTE: cfg.jepa_weight is a DEAD field -- declared and validated in
     # D4LiteConfig but read by no code. The live knob is LossWeights.jepa,
     # which world_loss consumes. An earlier version of this diagnostic set the

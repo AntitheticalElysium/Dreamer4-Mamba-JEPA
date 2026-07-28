@@ -304,13 +304,15 @@ def jepa_self_prediction_loss(
         time = past.shape[1]
         steps = torch.full((B, time), max_step, device=device, dtype=torch.long)
         signals = torch.full((B, time), k_max, device=device, dtype=torch.long)
-        _, agent = world.forward_dynamics(
+        spatial, agent = world.forward_dynamics(
             past, led_to_actions[:, :time], steps, signals
         )
         next_action_tokens = world.dynamics.action_encoder(
             led_to_actions[:, pos : pos + 1], batch_time_shape=(B, 1), act_mask=None
         )[:, :, 0]
-        pred_z = world.jepa_predictor(agent[:, -1:], next_action_tokens)  # [B,1,N,D]
+        pred_z = world.jepa_predictor(
+            agent[:, -1:], next_action_tokens, spatial[:, -1:]
+        )  # [B,1,N,D]
         pred_steps.append(pred_z)
         tgt_steps.append(target_latent[:, pos : pos + 1])
         past = torch.cat([past, pred_z], dim=1)

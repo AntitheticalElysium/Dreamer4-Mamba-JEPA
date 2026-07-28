@@ -60,13 +60,21 @@ def _sample_next_jepa(
     device = past_packed.device
     max_step = world.cfg.max_step_index
     k_max = world.cfg.k_max
-    if context_agent is None:
+    needs_spatial = getattr(
+        world.cfg, "jepa_predictor_context", "pooled_agent"
+    ) == "spatial_agent"
+    last_context_spatial = None
+    if context_agent is None or needs_spatial:
+        # The cached carry holds only the agent token, so a predictor that also
+        # reads the spatial stream must redo the context pass. Numerically
+        # identical either way; only the caching shortcut is skipped.
         steps = torch.full((B, time), max_step, device=device, dtype=torch.long)
         signals = torch.full((B, time), k_max, device=device, dtype=torch.long)
-        _, agent_ctx = world.forward_dynamics(
+        spatial_ctx, agent_ctx = world.forward_dynamics(
             past_packed, led_to_actions[:, :time], steps, signals
         )
-        last_context_agent = agent_ctx[:, -1:]
+        last_context_agent = agent_ctx[:, -1:] if context_agent is None else context_agent
+        last_context_spatial = spatial_ctx[:, -1:]
     else:
         last_context_agent = context_agent
     next_action_tokens = world.dynamics.action_encoder(
@@ -74,7 +82,9 @@ def _sample_next_jepa(
         batch_time_shape=(B, 1),
         act_mask=None,
     )[:, :, 0]
-    next_latent = world.jepa_predictor(last_context_agent, next_action_tokens)[:, 0]
+    next_latent = world.jepa_predictor(
+        last_context_agent, next_action_tokens, last_context_spatial
+    )[:, 0]
     new_sequence = torch.cat([past_packed, next_latent[:, None]], dim=1)
     steps2 = torch.full((B, time + 1), max_step, device=device, dtype=torch.long)
     signals2 = torch.full((B, time + 1), k_max, device=device, dtype=torch.long)

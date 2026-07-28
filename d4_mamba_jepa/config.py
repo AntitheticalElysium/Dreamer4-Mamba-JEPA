@@ -68,6 +68,9 @@ class D4LiteConfig:
     # stop-gradient EMA target encoder + asymmetric predictor of
     # ``mila-iqia/spr`` with the I-JEPA/V-JEPA-2 linear momentum ramp.
     jepa_predictor_hidden_ratio: float = 1.0
+    # How much post-dynamics state reaches the action-conditioned predictor.
+    # "pooled_agent" (default) is the original mean over agent tokens.
+    jepa_predictor_context: str = "pooled_agent"
     jepa_projection_dim: int = 64
     jepa_weight: float = 1.0
     jepa_ema_tau: float = 0.99       # initial EMA momentum (target = tau*target + (1-tau)*online)
@@ -119,6 +122,13 @@ class D4LiteConfig:
             )
         if self.jepa_terminal_weight < 1.0:
             raise ValueError("jepa_terminal_weight must be >= 1")
+        if self.jepa_predictor_context not in {
+            "pooled_agent", "concat_agent", "spatial_agent"
+        }:
+            raise ValueError(
+                f"unsupported jepa_predictor_context="
+                f"{self.jepa_predictor_context!r}"
+            )
         if self.jepa_anticollapse not in {"ema", "sigreg"}:
             raise ValueError(
                 f"unsupported jepa_anticollapse={self.jepa_anticollapse!r}"

@@ -656,3 +656,31 @@ every cell above and with the `n_latents` ladder having produced no improvement
 | Unanchored full-LR encoder | UNTESTED; strongest remaining structural divergence (both references freeze a pretrained encoder) |
 | Loss-scale mismatch (JEPA unnormalized) | UNTESTED, verified present |
 | SIGReg / collapse | deprioritized by the user; rank collapse already refuted |
+
+## D045: widening the predictor channel — NEGATIVE
+
+`jepa_predictor_context`: pooled agent (64-d) -> spatial stream + agent tokens
+(384-d), hidden width scaled with it. Default unchanged and bit-identical;
+108 existing tests plus 2 new ones pass.
+
+| arm | channel | inventory | vitals | dev_cos |
+|---|---|---:|---:|---:|
+| INIT | — | 0.618 | 0.580 | — |
+| tf=0.0, jepa-only, pooled | 64 | 0.474 | 0.356 | 0.520 |
+| tf=0.0, jepa-only, spatial+agent | 384 | **0.477** | 0.417 | 0.496 |
+| tf=0.5, all losses, pooled | 64 | 0.404 | 0.622 | 0.548 |
+| tf=0.5, all losses, spatial+agent | 384 | **0.439** | 0.527 | 0.608 |
+
+A 6x wider channel moves the isolated cell by +0.003. The baseline cell's +0.035
+is NOT claimed: stage G and i1, nominally identical, gave 0.375 and 0.404 (spread
+0.029), so one run per cell cannot separate it.
+
+The change works mechanically (dev cosine 0.548 -> 0.608 in the baseline cell),
+so the predictor does exploit the wider context; it just does not reduce erosion.
+
+WHY, per the pre-registered first suspect in D045: the SPR loss projects through
+`JepaProjector` to a GLOBAL 64-d vector (`jepa_projection_dim=64`). The encoder's
+gradient is therefore a 64-d global comparison regardless of the predictor's input
+width. Widening one side of a two-sided bottleneck predictably did nothing.
+
+Live candidate: the loss-side projection. Not run; awaiting approval.

@@ -327,3 +327,61 @@ def test_cfg_jepa_weight_is_honoured_not_a_dead_field():
     assert abs(raw_one - raw_zero) < 1e-5
     assert abs(total_one - raw_one) < 1e-5
     assert abs(total_zero) < 1e-6
+
+
+def test_jepa_predictor_context_modes_widen_the_channel():
+    """The predictor's view of the post-dynamics state is what `context_mode` moves.
+
+    `pooled_agent` (default) sees a mean over agent tokens = d_model. Dreamer-CDP
+    predicts from a 4096-d deterministic state, so the pooled channel is a local
+    narrowing; these modes widen it without touching anything else.
+    """
+    from dataclasses import replace
+
+    from d4_mamba_jepa.model import CDPPredictor
+
+    cfg = cartpole_jepa_config()
+    expected = {
+        "pooled_agent": cfg.dynamics_d_model,
+        "concat_agent": cfg.n_agent * cfg.dynamics_d_model,
+        "spatial_agent": (cfg.n_agent * cfg.dynamics_d_model
+                          + cfg.n_spatial * cfg.d_spatial),
+    }
+    B, T = 2, 3
+    agent = torch.randn(B, T, cfg.n_agent, cfg.dynamics_d_model)
+    spatial = torch.randn(B, T, cfg.n_spatial, cfg.d_spatial)
+    action = torch.randn(B, T, cfg.dynamics_d_model)
+
+    for mode, dim in expected.items():
+        predictor = CDPPredictor(
+            d_model=cfg.dynamics_d_model, n_spatial=cfg.n_spatial,
+            d_spatial=cfg.d_spatial, hidden_ratio=cfg.jepa_predictor_hidden_ratio,
+            context_mode=mode, n_agent=cfg.n_agent,
+        )
+        assert predictor.context_dim == dim, mode
+        out = predictor(agent, action, spatial)
+        assert out.shape == (B, T, cfg.n_spatial, cfg.d_spatial), mode
+
+    # The default must still consume exactly the pooled agent token.
+    default = CDPPredictor(
+        d_model=cfg.dynamics_d_model, n_spatial=cfg.n_spatial,
+        d_spatial=cfg.d_spatial, hidden_ratio=cfg.jepa_predictor_hidden_ratio,
+    )
+    assert default.context_mode == "pooled_agent"
+    assert default.net[0].in_features == 2 * cfg.dynamics_d_model
+    # spatial_tokens is ignored by the default mode.
+    a = default(agent, action, spatial)
+    b = default(agent, action, None)
+    assert torch.equal(a, b)
+
+
+def test_world_builds_with_widened_predictor_context():
+    from dataclasses import replace
+
+    cfg = replace(cartpole_jepa_config(), jepa_predictor_context="spatial_agent")
+    world = D4LiteWorld(cfg)
+    assert world.jepa_predictor.context_mode == "spatial_agent"
+    clean = torch.randn(2, cfg.sequence_length, cfg.n_spatial, cfg.d_spatial)
+    led = torch.zeros(2, cfg.sequence_length, dtype=torch.long)
+    out = world.predict_next_jepa(clean, led)
+    assert out.shape == (2, cfg.sequence_length - 1, cfg.n_spatial, cfg.d_spatial)

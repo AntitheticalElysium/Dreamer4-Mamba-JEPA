@@ -92,24 +92,66 @@ class CDPPredictor(nn.Module):
         n_spatial: int,
         d_spatial: int,
         hidden_ratio: float,
+        context_mode: str = "pooled_agent",
+        n_agent: int = 2,
     ):
         super().__init__()
-        hidden = max(d_model, int(d_model * hidden_ratio))
         self.n_spatial = int(n_spatial)
         self.d_spatial = int(d_spatial)
+        self.context_mode = str(context_mode)
+        self.n_agent = int(n_agent)
+        # How much of the post-dynamics state reaches the predictor:
+        #   pooled_agent  = mean over agent tokens            -> d_model
+        #   concat_agent  = all agent tokens                  -> n_agent*d_model
+        #   spatial_agent = spatial stream + agent tokens     -> +n_spatial*d_spatial
+        # `pooled_agent` is the default and reproduces the original module
+        # exactly; Dreamer-CDP by contrast predicts from a 4096-d deterministic
+        # state (`rssm.py:140`), so the pooled 64-d channel is a local narrowing.
+        if self.context_mode == "pooled_agent":
+            context_dim = d_model
+        elif self.context_mode == "concat_agent":
+            context_dim = self.n_agent * d_model
+        elif self.context_mode == "spatial_agent":
+            context_dim = self.n_agent * d_model + self.n_spatial * self.d_spatial
+        else:
+            raise ValueError(f"unsupported context_mode={context_mode!r}")
+        hidden = max(d_model, int(d_model * hidden_ratio))
+        if self.context_mode != "pooled_agent":
+            # A wider context through an unchanged 64-unit hidden layer would
+            # simply move the bottleneck; scale the hidden width with it.
+            hidden = max(hidden, context_dim)
+        self.context_dim = context_dim
         self.net = nn.Sequential(
-            nn.Linear(2 * d_model, hidden),
+            nn.Linear(context_dim + d_model, hidden),
             nn.LayerNorm(hidden),
             nn.SiLU(),
             nn.Linear(hidden, self.n_spatial * self.d_spatial),
         )
 
-    def forward(self, agent_tokens: Tensor, next_action_tokens: Tensor) -> Tensor:
+    def forward(
+        self,
+        agent_tokens: Tensor,
+        next_action_tokens: Tensor,
+        spatial_tokens: Tensor | None = None,
+    ) -> Tensor:
         if agent_tokens.ndim != 4:
             raise ValueError("agent_tokens must have shape [B,T,N,D]")
         if next_action_tokens.ndim != 3:
             raise ValueError("next_action_tokens must have shape [B,T,D]")
-        context = agent_tokens.mean(dim=2)
+        if self.context_mode == "pooled_agent":
+            context = agent_tokens.mean(dim=2)
+        elif self.context_mode == "concat_agent":
+            context = agent_tokens.flatten(2)
+        else:
+            if spatial_tokens is None:
+                raise ValueError(
+                    "context_mode='spatial_agent' requires spatial_tokens"
+                )
+            if spatial_tokens.ndim != 4:
+                raise ValueError("spatial_tokens must have shape [B,T,S,D]")
+            context = torch.cat(
+                [spatial_tokens.flatten(2), agent_tokens.flatten(2)], dim=-1
+            )
         if context.shape[:2] != next_action_tokens.shape[:2]:
             raise ValueError("context and next-action time axes differ")
         prediction = self.net(torch.cat([context, next_action_tokens], dim=-1))
@@ -277,6 +319,8 @@ class D4LiteWorld(nn.Module):
             n_spatial=cfg.n_spatial,
             d_spatial=cfg.d_spatial,
             hidden_ratio=cfg.jepa_predictor_hidden_ratio,
+            context_mode=cfg.jepa_predictor_context,
+            n_agent=cfg.n_agent,
         )
         flat = cfg.n_spatial * cfg.d_spatial
         if cfg.jepa_anticollapse == "ema":
@@ -436,11 +480,15 @@ class D4LiteWorld(nn.Module):
         signals = torch.full(
             (B, T), self.cfg.k_max, device=clean.device, dtype=torch.long
         )
-        _, agent_tokens = self.forward_dynamics(clean, led_to_actions, steps, signals)
+        spatial_tokens, agent_tokens = self.forward_dynamics(
+            clean, led_to_actions, steps, signals
+        )
         next_action_tokens = self.dynamics.action_encoder(
             led_to_actions[:, 1:], batch_time_shape=(B, T - 1), act_mask=None
         )[:, :, 0]
-        return self.jepa_predictor(agent_tokens[:, :-1], next_action_tokens)
+        return self.jepa_predictor(
+            agent_tokens[:, :-1], next_action_tokens, spatial_tokens[:, :-1]
+        )
 
     def encode_frames_target(self, frames: Tensor) -> Tensor:
         """Encode frames with the stop-gradient EMA target encoder -> packed."""
