@@ -219,3 +219,41 @@ Stage G exists because the random-encoder floor showed training REMOVES the
 targets; the curve shape distinguishes an early optimization transient from the
 objective grinding the information away over 20k updates, and those imply
 different fixes. No architectural change is made by any stage.
+
+## Stage A/B result: `n_latents` is eliminated too
+
+Ladder 16/64/256 with `d_bottleneck` pinned at the paper's 16, all else at the
+baseline. Dev cosine DECREASES with capacity (0.7314 / 0.6415 / 0.5219) while
+training JEPA loss falls (0.186 / 0.151 / 0.141).
+
+Trained vs the random floor at each geometry (linear R^2):
+
+| target | n=16 rand -> trained | n=64 rand -> trained | n=256 rand -> trained |
+|---|---|---|---|
+| food | 0.633 -> 0.165 | 0.872 -> 0.219 | 0.944 -> 0.216 |
+| sapling | 0.664 -> 0.041 | 0.845 -> 0.000 | 0.932 -> 0.335 |
+| wood | 0.630 -> 0.097 | 0.783 -> 0.160 | 0.879 -> 0.302 |
+| stone | 0.407 -> 0.082 | 0.719 -> 0.111 | 0.797 -> 0.201 |
+| energy | 0.558 -> 0.541 | 0.855 -> 0.628 | 0.920 -> 0.451 |
+| health | 0.465 -> 0.866 | 0.770 -> 0.916 | 0.843 -> 0.907 |
+
+Preserved counts stay at 1/16 (health) at every rung. The random floor converts
+extra capacity into retained state; the trained encoder does not, so the gap
+WIDENS with capacity (food 0.47 -> 0.65 -> 0.73).
+
+Qualification: trained values do rise somewhat (wood 0.097 -> 0.302, sapling
+0.041 -> 0.335), so capacity is not irrelevant -- it is insufficient, and it
+never changes a verdict.
+
+INSTRUMENT CAVEAT: the nonlinear latent probe is unreliable at high latent
+dimension and must not be quoted there. At n=256 it repeatedly falls BELOW the
+linear probe (food 0.216 lin / 0.057 non; stone_pickaxe 0.542 / -0.053), which
+is a 128-unit MLP overfitting 4,096 features on ~1,900 training frames. Verdicts
+use max(linear, nonlinear) so they are unaffected, but the "MLP ~= linear,
+therefore genuinely absent" reading established at n=16 does NOT transfer up the
+ladder.
+
+Both capacity axes are now eliminated (`d_bottleneck` 16/32/64, `n_latents`
+16/64/256). What remains under test is the training itself; T-BASE at matched
+geometry is the discriminator between the JEPA objective specifically and any
+training in this setup.
