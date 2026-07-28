@@ -257,3 +257,73 @@ Both capacity axes are now eliminated (`d_bottleneck` 16/32/64, `n_latents`
 16/64/256). What remains under test is the training itself; T-BASE at matched
 geometry is the discriminator between the JEPA objective specifically and any
 training in this setup.
+
+## Stage C/D: T-BASE separates the objective effect from a training-common effect
+
+T-BASE at `n_latents=16` (identical geometry to the baseline JEPA arm), MAE
+tokenizer 20k x batch 8, reconstruction loss 0.0697 -> 0.0094. In T-BASE the
+encoder is trained by the tokenizer phase and then FROZEN, so this is exactly
+the encoder T-BASE deploys -- tokenizer-only is the correct isolation, not a
+confound.
+
+Inventory mean over all 12 targets: **random 0.661 > T-BASE 0.521 > T-JEPA 0.320**
+
+| target | random | T-JEPA | T-BASE |
+|---|---:|---:|---:|
+| sapling | 0.664 | 0.041 | 0.576 |
+| wood | 0.630 | 0.097 | 0.464 |
+| stone | 0.407 | 0.082 | 0.383 |
+| diamond | 0.733 | 0.514 | 0.863 |
+| iron | 0.693 | 0.559 | 0.790 |
+| iron_sword | 0.793 | 0.816 | 0.949 |
+| food | 0.633 | 0.165 | 0.141 |
+| health | 0.465 | 0.866 | 0.568 |
+
+Both pre-registered possibilities are true and separable:
+
+1. The OBJECTIVE matters: reconstruction retains ~63% more inventory information
+   than self-prediction at matched geometry (14x on sapling).
+2. A TRAINING-COMMON effect also exists: T-BASE is below the random floor on 11
+   of 16 targets, so the JEPA objective is not the whole story.
+
+Health confirms the "loss demands it" mechanism in reverse. T-BASE is
+tokenizer-only and has NO reward head; its health falls from T-JEPA's 0.866 to
+0.568, toward the random floor of 0.465. Health is high precisely when a loss
+term supervises it.
+
+## Refuted: dimensional collapse (`craftax_latent_rank.py`)
+
+Hypothesis: the training-common effect is the latent collapsing to a low-rank
+subspace, which `online_std` cannot see because it measures per-dimension
+variance rather than rank.
+
+REFUTED, in the opposite direction:
+
+| encoder | dims | effective rank | var top-1 | dead dims |
+|---|---:|---:|---:|---:|
+| RANDOM n16 | 256 | 4.0 | 0.563 | 0.00 |
+| T-JEPA n16 | 256 | 12.0 | 0.242 | 0.00 |
+| M-JEPA n16 | 256 | 13.1 | 0.240 | 0.00 |
+| T-BASE n16 | 256 | 30.3 | 0.217 | 0.00 |
+| RANDOM n256 | 4096 | 3.0 | 0.740 | 0.00 |
+| T-JEPA n256 | 4096 | 7.7 | 0.278 | 0.00 |
+
+Training RAISES effective rank, and the encoder retaining the most information
+(random, 0.661) has the LOWEST rank (4.0). No dead dimensions anywhere.
+
+The metric was also the wrong instrument for the question: effective rank
+measures variance concentration, not extractable information. A random
+projection concentrates variance in few directions while staying near-injective,
+so ridge recovers targets from low-variance directions. Rank and retention are
+not the same axis. Recorded as a refuted mechanism, not a finding.
+
+## Causal status (only what is demonstrated)
+
+- Capacity eliminated on both axes (`d_bottleneck` 16/32/64, `n_latents` 16/64/256).
+- BC under-training eliminated (30k ladder, flat from 10k).
+- The objective demonstrably matters (reconstruction >> self-prediction).
+- A training-common effect also exists and is NOT rank collapse.
+- Per-target retention tracks loss supervision (health).
+
+No single cause is claimed for the residual; nothing measured identifies it
+uniquely.
