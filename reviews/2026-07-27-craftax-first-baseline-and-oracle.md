@@ -327,3 +327,35 @@ not the same axis. Recorded as a refuted mechanism, not a finding.
 
 No single cause is claimed for the residual; nothing measured identifies it
 uniquely.
+
+## Stage E/F: the objective x capacity interaction
+
+T-BASE at `n_latents=64`, everything else identical. Inventory mean R^2 over all
+12 targets:
+
+| encoder | n=16 | n=64 | gain from capacity |
+|---|---:|---:|---:|
+| random (untrained) | 0.661 | 0.803 | +0.14 |
+| T-BASE (reconstruction) | 0.521 | 0.712 | **+0.19** |
+| T-JEPA (self-prediction) | 0.320 | 0.348 | **+0.03** |
+
+Per target, e.g. food: T-BASE 0.141 -> 0.726, T-JEPA 0.165 -> 0.219. Sapling:
+T-BASE 0.576 -> 0.832, T-JEPA 0.041 -> 0.000.
+
+This sharpens the capacity conclusion rather than contradicting it. Capacity is
+eliminated FOR THE SELF-PREDICTION OBJECTIVE, and that is now a non-trivial
+claim, because the same capacity is demonstrably usable: both the random encoder
+and the reconstruction objective convert it into retained state.
+
+It also revises the "training-common effect" recorded at stage D. T-BASE's
+deficit against the random floor SHRINKS with capacity (0.14 at n=16 -> 0.09 at
+n=64) while T-JEPA's GROWS (0.34 -> 0.455). One account covers both without
+needing a second mechanism:
+
+  reconstruction's incentive is proportional to pixel area, so the 4-pixel HUD
+  digits are under-weighted when capacity is scarce and retained when it is not;
+  self-prediction has no comparable incentive at any capacity.
+
+Recorded as the LEADING READING, not a conclusion. It is consistent with every
+measurement so far (including health, which is retained by whichever arm has a
+loss term touching it), but no single measurement isolates it.
