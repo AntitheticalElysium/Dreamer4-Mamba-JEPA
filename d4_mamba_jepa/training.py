@@ -170,8 +170,14 @@ def _jepa_world_loss(
     continuation_n = normalizer.apply(
         "continuation", continuation, active=weights.continuation > 0
     )
+    # `cfg.jepa_weight` was declared and validated in D4LiteConfig but read by no
+    # code, so setting it changed nothing and a diagnostic that set it silently
+    # reproduced the baseline bit-for-bit. It is now honoured as a multiplier
+    # alongside the caller-supplied LossWeights; both default to 1.0, so every
+    # existing result is bit-unchanged.
+    jepa_weight = weights.jepa * float(getattr(world.cfg, "jepa_weight", 1.0))
     total = (
-        weights.jepa * jepa
+        jepa_weight * jepa
         + weights.reward * reward_n
         + weights.continuation * continuation_n
     )

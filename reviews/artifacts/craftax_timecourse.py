@@ -38,7 +38,7 @@ from d4_mamba_jepa.craftax_run import SPLIT_SEED, _dev_cosine, _fixed_dev_batche
 from d4_mamba_jepa.craftax_runners import craftax_jepa_config
 from d4_mamba_jepa.data import load_episode_replay, subset_replay, whole_episode_splits
 from d4_mamba_jepa.model import D4LiteWorld
-from d4_mamba_jepa.training import WorldLossNormalizer, world_loss
+from d4_mamba_jepa.training import LossWeights, WorldLossNormalizer, world_loss
 
 REPLAY = REPO_ROOT / "d4_mamba_jepa/artifacts/expert/craftax_expert_v1.pt"
 REPLAY_SHA = "7e5cdfc8b8cc813e0b51113f0c959c2c3ddcf3877a9ff0e1777ccfd7d4e0155b"
@@ -82,10 +82,15 @@ def main() -> None:
     dev_replay = subset_replay(replay, splits["dev"])
 
     cfg = craftax_jepa_config("transformer")
+    # NOTE: cfg.jepa_weight is a DEAD field -- declared and validated in
+    # D4LiteConfig but read by no code. The live knob is LossWeights.jepa,
+    # which world_loss consumes. An earlier version of this diagnostic set the
+    # config field and silently changed nothing, reproducing the baseline
+    # bit-for-bit. Do not reintroduce that.
+    weights = LossWeights()
     if args.jepa_weight is not None:
-        from dataclasses import replace as _replace
-        cfg = _replace(cfg, jepa_weight=args.jepa_weight)
-        print(f"DIAGNOSTIC: jepa_weight={cfg.jepa_weight}", flush=True)
+        weights = LossWeights(jepa=args.jepa_weight)
+        print(f"DIAGNOSTIC: LossWeights.jepa={weights.jepa}", flush=True)
     dev_batches = _fixed_dev_batches(dev_replay, cfg=cfg, count=16, batch_size=8,
                                      seed=SPLIT_SEED + 1)
     torch.manual_seed(SEED)
@@ -122,7 +127,8 @@ def main() -> None:
         optimizer.zero_grad(set_to_none=True)
         with torch.autocast(device_type=device.type, dtype=torch.bfloat16,
                             enabled=device.type == "cuda"):
-            loss, _ = world_loss(world, batch, normalizer=normalizer)
+            loss, _ = world_loss(world, batch, normalizer=normalizer,
+                                 weights=weights)
         if not bool(torch.isfinite(loss)):
             raise RuntimeError(f"non-finite loss at step {step}")
         loss.backward()

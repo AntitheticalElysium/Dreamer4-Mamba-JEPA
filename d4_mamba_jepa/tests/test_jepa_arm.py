@@ -285,3 +285,45 @@ def test_jepa_target_stays_in_training_mode():
     assert not any(
         p.requires_grad for p in world.jepa_target_projection.parameters()
     )
+
+
+def test_cfg_jepa_weight_is_honoured_not_a_dead_field():
+    """`cfg.jepa_weight` must actually scale the self-prediction term.
+
+    It was previously declared and validated in D4LiteConfig but read by no
+    code, so a diagnostic that set it to 0.0 silently trained the ordinary
+    baseline and reproduced it bit-for-bit. Regression: the default must leave
+    the total equal to the raw term, and 0.0 must remove its contribution.
+    """
+    from dataclasses import replace
+
+    from d4_mamba_jepa.training import LossWeights
+
+    cfg = cartpole_jepa_config()
+    torch.manual_seed(0)
+    batch = SequenceBatch(
+        observations=torch.randint(
+            0, 255, (2, cfg.sequence_length, 3, cfg.image_size, cfg.image_size),
+            dtype=torch.uint8),
+        led_to_actions=torch.zeros((2, cfg.sequence_length), dtype=torch.long),
+        led_to_rewards=torch.zeros((2, cfg.sequence_length)),
+        led_to_continues=torch.ones((2, cfg.sequence_length)),
+        outcome_valid=torch.ones((2, cfg.sequence_length), dtype=torch.bool),
+    )
+
+    def evaluate(weight):
+        torch.manual_seed(1)
+        world = D4LiteWorld(replace(cfg, jepa_weight=weight))
+        total, metrics = world_loss(
+            world, batch, normalizer=WorldLossNormalizer(),
+            weights=LossWeights(reward=0.0, continuation=0.0),
+        )
+        return float(total), float(metrics["loss/jepa"])
+
+    total_one, raw_one = evaluate(1.0)
+    total_zero, raw_zero = evaluate(0.0)
+
+    # The reported raw term is unchanged; only its contribution is scaled.
+    assert abs(raw_one - raw_zero) < 1e-5
+    assert abs(total_one - raw_one) < 1e-5
+    assert abs(total_zero) < 1e-6

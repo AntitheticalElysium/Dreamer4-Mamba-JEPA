@@ -414,3 +414,26 @@ self-prediction term removed, so the encoder is trained ONLY by the
 reward/continuation heads. If the decay vanishes, self-prediction is the cause;
 if it persists, the heads/dynamics are. Diagnostic on an existing code path; no
 architectural change is proposed by it.
+
+## Stage H, first attempt: VOID — a dead config field
+
+The first `--jepa-weight 0.0` run reproduced stage G BIT-FOR-BIT, every value
+including `dev_cos`. That is not a result; it is proof the flag did nothing.
+
+Cause: `cfg.jepa_weight` was declared in `D4LiteConfig` (config.py:72) and
+validated in `__post_init__`, but **read by no code**. The live knob is
+`LossWeights.jepa`, consumed by `world_loss`. Anyone setting the config field --
+including this diagnostic -- silently trained the ordinary baseline.
+
+Fixed: `_jepa_world_loss` now honours `cfg.jepa_weight` as a multiplier
+alongside the caller-supplied `LossWeights`. Both default to 1.0, so every
+result recorded above is bit-unchanged. Regression added
+(`test_cfg_jepa_weight_is_honoured_not_a_dead_field`): default leaves total ==
+raw term, 0.0 removes the contribution, and the reported raw term is unaffected.
+Suite: 108 passed.
+
+Re-run with the live knob confirms it now bites: at step 250, `dev_cos` +0.069
+against +0.292 for the baseline, with targets holding or improving (food 0.68 vs
+0.62, wood 0.67 vs 0.61, stone 0.49 vs 0.40). The real stage H is running.
+
+The void run is retained as evidence in the log; no conclusion was drawn from it.
