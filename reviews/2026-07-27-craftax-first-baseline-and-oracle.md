@@ -359,3 +359,58 @@ needing a second mechanism:
 Recorded as the LEADING READING, not a conclusion. It is consistent with every
 measurement so far (including health, which is retained by whichever arm has a
 loss term touching it), but no single measurement isolates it.
+
+## Stage G: the time-course — flat, then monotone decay
+
+One baseline world (`n_latents=16`, every parameter the baseline's), oracle at
+steps 0/250/500/1k/2.5k/5k/10k/20k. Latent linear R^2:
+
+| step | dev_cos | health | food | drink | energy | wood | stone | sapling | wood_sword | iron_sword | diamond |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0 | −0.03 | 0.47 | 0.63 | 0.66 | 0.56 | 0.63 | 0.41 | 0.66 | 0.48 | 0.79 | 0.73 |
+| 250 | +0.29 | 0.48 | 0.62 | 0.65 | 0.55 | 0.61 | 0.40 | 0.67 | 0.48 | 0.81 | 0.72 |
+| 500 | +0.46 | 0.48 | 0.60 | 0.64 | 0.54 | 0.62 | 0.40 | 0.65 | 0.48 | 0.83 | 0.70 |
+| 1,000 | +0.46 | 0.82 | 0.65 | 0.63 | 0.59 | 0.59 | 0.37 | 0.55 | 0.31 | 0.81 | 0.59 |
+| 2,500 | +0.60 | 0.94 | 0.30 | 0.50 | 0.47 | 0.38 | 0.27 | 0.28 | 0.13 | 0.68 | 0.51 |
+| 5,000 | +0.70 | 0.94 | 0.21 | 0.42 | 0.40 | 0.36 | 0.29 | 0.14 | −0.00 | 0.59 | 0.67 |
+| 10,000 | +0.72 | 0.91 | 0.19 | 0.37 | 0.37 | 0.30 | 0.25 | 0.02 | 0.07 | 0.49 | 0.50 |
+| 20,000 | +0.73 | 0.89 | 0.15 | 0.36 | 0.52 | 0.35 | 0.19 | −0.01 | 0.06 | 0.44 | 0.39 |
+
+Against the shapes pre-declared in the script before it ran:
+
+* NOT an early transient. Through step 500 the encoder learns to self-predict
+  (dev cosine 0 -> 0.46) with task state completely flat.
+* IS monotone decay over the remaining 19,000 steps -- the pre-declared reading
+  for which is "the objective grinding it away, and the loss is the thing to
+  change".
+
+Two further readings:
+
+* The objective and the task state are in DIRECT COMPETITION. Dev cosine rises
+  monotonically 0.46 -> 0.73 across exactly the interval in which food, sapling,
+  wood_sword and diamond fall.
+* The encoder REALLOCATES rather than merely forgetting. Health rises 0.48 ->
+  0.94 over steps 1,000-2,500, the same window in which everything else starts
+  to fall. It acquires what the reward head supervises while shedding what
+  nothing supervises -- the health mechanism seen a third time, now with a time
+  axis.
+
+Onset coincides with the end of the 1,000-step linear warmup, i.e. with full-LR
+optimization beginning. The EMA tau ramp is smooth and has no discontinuity
+there, so this is not a separate schedule effect.
+
+### What stage G does and does not establish
+
+It isolates THE OBJECTIVE as the cause, holding architecture, capacity, the tanh
+bottleneck, data and budget fixed -- the T-BASE control at identical geometry is
+what licenses that. It does NOT identify WHICH COMPONENT: the self-prediction
+loss, the SPR/BYOL EMA anti-collapse (D031), and the task heads are not
+separated. Stage H tests that.
+
+## Stage H (running): component decomposition
+
+`craftax_timecourse.py --jepa-weight 0.0`: identical run with the
+self-prediction term removed, so the encoder is trained ONLY by the
+reward/continuation heads. If the decay vanishes, self-prediction is the cause;
+if it persists, the heads/dynamics are. Diagnostic on an existing code path; no
+architectural change is proposed by it.

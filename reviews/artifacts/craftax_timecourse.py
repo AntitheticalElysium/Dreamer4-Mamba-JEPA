@@ -66,6 +66,9 @@ def main() -> None:
     p.add_argument("--learning-rate", type=float, default=1e-4)
     p.add_argument("--output", type=Path,
                    default=REPO_ROOT / "reviews/artifacts/craftax_timecourse.json")
+    p.add_argument("--jepa-weight", type=float, default=None,
+                   help="diagnostic: 0.0 removes the self-prediction term so the "
+                        "encoder is trained ONLY by the reward/continuation heads")
     p.add_argument("--device",
                    default="cuda" if torch.cuda.is_available() else "cpu")
     args = p.parse_args()
@@ -79,6 +82,10 @@ def main() -> None:
     dev_replay = subset_replay(replay, splits["dev"])
 
     cfg = craftax_jepa_config("transformer")
+    if args.jepa_weight is not None:
+        from dataclasses import replace as _replace
+        cfg = _replace(cfg, jepa_weight=args.jepa_weight)
+        print(f"DIAGNOSTIC: jepa_weight={cfg.jepa_weight}", flush=True)
     dev_batches = _fixed_dev_batches(dev_replay, cfg=cfg, count=16, batch_size=8,
                                      seed=SPLIT_SEED + 1)
     torch.manual_seed(SEED)
