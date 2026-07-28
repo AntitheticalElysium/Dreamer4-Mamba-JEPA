@@ -482,3 +482,74 @@ SIGReg is an anti-collapse regularizer on the embedding DISTRIBUTION; it does
 not increase target coverage. If coverage is what determines retention, SIGReg
 addresses a different failure mode than the one measured here. This should be
 settled before committing to it.
+
+## 2026-07-28 — second-agent claims verified
+
+### CORRECTED: V-JEPA 2-AC freezes its encoder (my D032 note was wrong)
+
+I recorded on 2026-07-27 that V-JEPA 2-AC "also trains its encoder (full LR by
+default)" because the encoder appears in `init_opt`'s param groups. That was
+WRONG. In the training step (`app/vjepa_droid/train.py:408-449`) the encoder is
+absent from the loss graph:
+
+```python
+def forward_target(c):
+    with torch.no_grad():
+        h = target_encoder(c)      # the ONLY encoder call in the step
+h = forward_target(clips)
+z_tf, z_ar = forward_predictions(h)   # predictor only
+loss = loss_fn(z_tf, h) + loss_fn(z_ar, h)
+```
+
+`grep "encoder("` over the file returns exactly one hit. So V-JEPA 2-AC
+effectively FREEZES its pretrained encoder. Dreamer 4 likewise freezes its
+pretrained tokenizer during dynamics learning. Our arm jointly trains a RANDOM
+encoder at full LR through a 4-token bottleneck. Ledger D032 corrected.
+
+### Other claims, all verified against pinned sources
+
+| claim | verdict | evidence |
+|---|---|---|
+| Predictor collapses to a 64-d channel | CORRECT | `CDPPredictor.forward` does `context = agent_tokens.mean(dim=2)`, then `Linear(2*64, 64)`; the `n_latents` ladder widened the OUTPUT only |
+| `WorldLossNormalizer` omits JEPA | CORRECT | `_jepa_world_loss` normalizes reward/continuation only; no `"jepa"` EmaRms term is even registered |
+| Dreamer-CDP separates encoder LR | CORRECT | `enc_lr: 6e-6` vs `dyn_lr: 4e-4` = 66.7x (`dreamerv3/configs.yaml:85`) |
+| SPR is not a standalone precedent | CORRECT | `src/algos.py:131` optimizes RL + reward + SPR jointly through `stem_parameters()` |
+
+The predictor point invalidates my own framing: the `n_latents` 16/64/256 ladder
+did NOT test the predictor/projection bottleneck, because both stay 64-d
+regardless. My description of the self-prediction target as "256 dimensions" was
+misleading.
+
+### Sampler audit (`craftax_sampler_audit.py`) — mechanism confirmed, magnitudes overstated
+
+Measured by running the REAL sampler over exact episode structure (true lengths,
+rewards, continues; 1x1 dummy pixels). The operative slice is the HEAD window:
+`_jepa_world_loss` reads heads at `[context, context+K)` with K=`jepa_jumps`=5,
+and a terminal window places its terminal at the final position, inside it.
+
+| quantity | claimed | measured (head window) | replay |
+|---|---:|---:|---:|
+| terminal fraction in head loss | 16.68% | **10.01%** | 0.0105% |
+| amplification | 1,590x | **955x** | — |
+| continuation BCE mass on terminals | 61.6% | **47.1%** | — |
+| negative-reward frequency | 17.78% (21.8x) | **11.49% (14.1x)** | 0.815% |
+| positive-reward frequency | ~unchanged | 2.10% (1.04x) | 2.02% |
+| mean reward label | +0.0094 -> −0.0238 | +0.0094 -> **−0.0127** | +0.0094 |
+
+At `terminal_fraction=0.0`: terminal fraction 0.019%, BCE mass 0.15%, reward
+mean +0.0143.
+
+The claimed 16.68% double-counted MTP expansion (a terminal occupies several
+head slots, but so does every other target, so the FRACTION barely moves:
+3.34% -> 3.44% over the full sequence). The real route to 10.01% is the 5-position
+head window, which they did not state.
+
+### CORRECTION to an earlier finding of mine
+
+I reported the reward heads as "18x under-predicting" and "wrong sign" by
+comparing imagined reward against the REPLAY mean of +0.00939. That is the wrong
+reference: the model never trained on that distribution. Against the labels it
+actually saw (−0.0127), T-JEPA's imagined +0.00051 is wrong in the opposite
+direction and M-JEPA's −0.0259 is roughly right in sign. The heads remain
+miscalibrated; my stated diagnosis of HOW was measured against a distribution
+the model never saw.

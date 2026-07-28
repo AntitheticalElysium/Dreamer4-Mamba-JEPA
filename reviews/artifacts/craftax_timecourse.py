@@ -69,6 +69,10 @@ def main() -> None:
     p.add_argument("--jepa-weight", type=float, default=None,
                    help="diagnostic: 0.0 removes the self-prediction term so the "
                         "encoder is trained ONLY by the reward/continuation heads")
+    p.add_argument("--terminal-fraction", type=float, default=None,
+                   help="override cfg.jepa_terminal_fraction; 0.0 removes the "
+                        "forced terminal windows entirely")
+    p.add_argument("--tag", default="", help="label recorded in the output json")
     p.add_argument("--device",
                    default="cuda" if torch.cuda.is_available() else "cpu")
     args = p.parse_args()
@@ -87,6 +91,10 @@ def main() -> None:
     # which world_loss consumes. An earlier version of this diagnostic set the
     # config field and silently changed nothing, reproducing the baseline
     # bit-for-bit. Do not reintroduce that.
+    terminal_fraction = (cfg.jepa_terminal_fraction
+                         if args.terminal_fraction is None
+                         else float(args.terminal_fraction))
+    print(f"terminal_fraction={terminal_fraction} tag={args.tag!r}", flush=True)
     weights = LossWeights()
     if args.jepa_weight is not None:
         weights = LossWeights(jepa=args.jepa_weight)
@@ -108,7 +116,9 @@ def main() -> None:
         report = representation_oracle(world, probe)
         cosine = _dev_cosine(world, dev_batches, device)
         curve[step] = {"dev_cosine": cosine, "targets": _summary(report),
-                       "audit_pass": report["audit"]["pass"]}
+                       "audit_pass": report["audit"]["pass"],
+                       "terminal_fraction": terminal_fraction,
+                       "tag": args.tag}
         tracked = " ".join(
             f"{n}={curve[step]['targets'][n]['latent_linear_r2']:+.2f}"
             for n in TRACKED if n in curve[step]["targets"])
@@ -123,7 +133,7 @@ def main() -> None:
         batch = sample_cartpole_sequences(
             train_replay, batch_size=args.batch_size,
             sequence_length=cfg.sequence_length,
-            terminal_fraction=cfg.jepa_terminal_fraction, device=device, rng=rng)
+            terminal_fraction=terminal_fraction, device=device, rng=rng)
         optimizer.zero_grad(set_to_none=True)
         with torch.autocast(device_type=device.type, dtype=torch.bfloat16,
                             enabled=device.type == "cuda"):
