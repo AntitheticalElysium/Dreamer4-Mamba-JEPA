@@ -437,3 +437,48 @@ against +0.292 for the baseline, with targets holding or improving (food 0.68 vs
 0.62, wood 0.67 vs 0.61, stone 0.49 vs 0.40). The real stage H is running.
 
 The void run is retained as evidence in the log; no conclusion was drawn from it.
+
+## Stage H (corrected): self-prediction is NOT the culprit
+
+`LossWeights.jepa=0.0` -- encoder trained ONLY by the reward/continuation heads.
+`dev_cos` stays 0.03-0.11 throughout, confirming no self-prediction occurred.
+
+| target | init | baseline @20k | heads-only @20k |
+|---|---:|---:|---:|
+| food | 0.63 | 0.15 | 0.08 |
+| wood | 0.63 | 0.35 | 0.10 |
+| diamond | 0.73 | 0.39 | -0.19 |
+| iron_sword | 0.79 | 0.44 | 0.61 |
+| stone | 0.41 | 0.19 | 0.14 |
+| sapling | 0.66 | -0.01 | -0.02 |
+| health | 0.47 | 0.89 | 0.80 |
+
+REFUTED: that the self-prediction loss (or the D031 EMA anti-collapse) is what
+discards task state. Removing it makes retention WORSE on most targets, so it is
+partially PROTECTIVE. Health still rises, because health is still in the reward.
+
+### Leading account (not a conclusion)
+
+Retention tracks the DIMENSIONALITY AND COVERAGE of the training target, not the
+objective family:
+
+| training target | target dims | inventory mean R^2 |
+|---|---:|---:|
+| full frame (T-BASE reconstruction) | 12,288 | 0.521 |
+| next latent + heads (T-JEPA baseline) | 256 + 2 | 0.320 |
+| reward + continue only (stage H) | 2 | lowest on most |
+| none (random init) | -- | 0.661 |
+
+This fits every measurement today: the objective swap, the capacity interaction
+(a full-frame target can use extra capacity; a 2-scalar target has nothing to
+use it for), the time-course, and health.
+
+NOT excluded: with `jepa=0` there is no anti-collapse at all and rank was not
+measured on that run, so partial collapse could contribute to its position.
+
+### Consequence for direction (for the user to weigh)
+
+SIGReg is an anti-collapse regularizer on the embedding DISTRIBUTION; it does
+not increase target coverage. If coverage is what determines retention, SIGReg
+addresses a different failure mode than the one measured here. This should be
+settled before committing to it.
