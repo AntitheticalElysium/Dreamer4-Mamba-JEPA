@@ -33,6 +33,8 @@ IMPLEMENTATION_FILES = (
     "world_eval.py",
     "cartpole_baseline.py",
     "imagination_actor_critic.py",
+    "craftax_runners.py",
+    "craftax_run.py",
 )
 
 

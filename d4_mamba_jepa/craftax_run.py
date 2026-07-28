@@ -86,19 +86,28 @@ def _fixed_dev_batches(dev_replay, *, cfg, count, batch_size, seed):
 def _dev_cosine(world, batches, device) -> float:
     """Held-out self-prediction cosine (the world-quality read-out)."""
     was_training = world.training
+    # SIGReg resamples projections by incrementing an internal global-step
+    # buffer. Evaluation must not advance that training state.
+    sigreg_step = None
+    if world.sigreg_test is not None:
+        sigreg_step = world.sigreg_test.global_step.detach().clone()
     world.eval()
-    values = []
-    for batch in batches:
-        observations = batch.observations.to(device)
-        actions = batch.led_to_actions.to(device)
-        with torch.autocast(device_type=device.type, dtype=torch.bfloat16,
-                            enabled=device.type == "cuda"):
-            clean = world.encode_frames(observations, frozen=True).packed
-            _, metric = jepa_self_prediction_loss(
-                world, frames=observations, clean=clean, led_to_actions=actions,
-            )
-        values.append(float(metric["jepa_cosine"].item()))
-    world.train(was_training)
+    try:
+        values = []
+        for batch in batches:
+            observations = batch.observations.to(device)
+            actions = batch.led_to_actions.to(device)
+            with torch.autocast(device_type=device.type, dtype=torch.bfloat16,
+                                enabled=device.type == "cuda"):
+                clean = world.encode_frames(observations, frozen=True).packed
+                _, metric = jepa_self_prediction_loss(
+                    world, frames=observations, clean=clean, led_to_actions=actions,
+                )
+            values.append(float(metric["jepa_cosine"].item()))
+    finally:
+        if sigreg_step is not None:
+            world.sigreg_test.global_step.copy_(sigreg_step)
+        world.train(was_training)
     return float(np.mean(values))
 
 
@@ -143,6 +152,7 @@ def run_arm(
     world_steps: int,
     bc_steps: int,
     actor_steps: int,
+    encoder_learning_rate: float | None = None,
 ) -> dict:
     """world -> BC -> imagination for one temporal backend."""
     cfg = craftax_jepa_config(temporal_backend)
@@ -158,8 +168,9 @@ def run_arm(
     started = time.perf_counter()
     world, _, world_history = train_craftax_jepa_world(
         replay=train_replay, cfg=cfg, world_steps=world_steps,
-        batch_size=WORLD_BATCH, learning_rate=LEARNING_RATE, seed=seed,
-        device=device, output_dir=arm_dir,
+        batch_size=WORLD_BATCH, learning_rate=LEARNING_RATE,
+        encoder_learning_rate=encoder_learning_rate, seed=seed,
+        device=device, ema_schedule_steps=world_steps, output_dir=arm_dir,
     )
     world_seconds = time.perf_counter() - started
     world_sha = json.loads((arm_dir / "world_report.json").read_text())[
@@ -200,6 +211,13 @@ def run_arm(
         "world": {
             "updates": world_steps,
             "batch_size": WORLD_BATCH,
+            "learning_rate": LEARNING_RATE,
+            "encoder_learning_rate": (
+                LEARNING_RATE
+                if encoder_learning_rate is None
+                else encoder_learning_rate
+            ),
+            "separate_encoder_group": encoder_learning_rate is not None,
             "seconds": world_seconds,
             "checkpoint_sha256": world_sha,
             "final_jepa_loss": world_history[-1]["jepa"],
@@ -243,6 +261,7 @@ def run(
     bc_steps: int,
     actor_steps: int,
     backends: list[str],
+    encoder_learning_rate: float | None = None,
 ) -> dict:
     replay = load_episode_replay(replay_path, expected_sha256=replay_sha256)
     splits = whole_episode_splits(len(replay.episodes), seed=SPLIT_SEED)
@@ -269,6 +288,7 @@ def run(
             dev_replay=dev_replay, output_dir=output_dir, device=device,
             seed=seed, world_steps=world_steps, bc_steps=bc_steps,
             actor_steps=actor_steps,
+            encoder_learning_rate=encoder_learning_rate,
         )
         arms[result["arm_id"]] = result
         _write_json(output_dir / "report.json", {"partial": True, "arms": arms})
@@ -277,9 +297,18 @@ def run(
         "format": FORMAT,
         "status": "completed",
         "claim_boundary": (
-            "first Craftax expert-data run of the screened CartPole JEPA recipe; "
-            "no recipe or architecture change, no executed evaluation, and no "
-            "selection performed. Sealed episodes untouched."
+            (
+                "Craftax expert-data encoder-timescale ablation of the screened "
+                "JEPA recipe; the world encoder LR is the only moved training "
+                "axis, BC and imagination remain unchanged, no executed "
+                "evaluation, and no selection performed. Sealed episodes untouched."
+            )
+            if encoder_learning_rate is not None
+            else (
+                "first Craftax expert-data run of the screened CartPole JEPA "
+                "recipe; no recipe or architecture change, no executed evaluation, "
+                "and no selection performed. Sealed episodes untouched."
+            )
         ),
         "data": {
             "replay_path": str(replay_path),
@@ -301,6 +330,21 @@ def run(
             "bc_updates": bc_steps,
             "actor_updates": actor_steps,
             "actor_horizon": ACTOR_HORIZON,
+            "world_learning_rate": LEARNING_RATE,
+            "encoder_learning_rate": (
+                LEARNING_RATE
+                if encoder_learning_rate is None
+                else encoder_learning_rate
+            ),
+        },
+        "intervention": {
+            "axis": (
+                "encoder_learning_rate"
+                if encoder_learning_rate is not None
+                else "none"
+            ),
+            "encoder_learning_rate": encoder_learning_rate,
+            "bc_and_imagination_world_frozen": True,
         },
         "provenance": {
             "implementation_sha256": implementation_sha256(),
@@ -330,6 +374,13 @@ def main() -> None:
     parser.add_argument("--world-steps", type=int, default=WORLD_STEPS)
     parser.add_argument("--bc-steps", type=int, default=BC_STEPS)
     parser.add_argument("--actor-steps", type=int, default=ACTOR_STEPS)
+    parser.add_argument(
+        "--encoder-lr", type=float, default=None,
+        help=(
+            "optional world-encoder AdamW group LR; all other world parameters "
+            "stay at 1e-4, while BC/imagination continue to freeze the world"
+        ),
+    )
     parser.add_argument("--seed", type=int, default=20260727)
     parser.add_argument(
         "--backends", default="transformer,mamba2",
@@ -349,6 +400,7 @@ def main() -> None:
         bc_steps=args.bc_steps,
         actor_steps=args.actor_steps,
         backends=[b.strip() for b in args.backends.split(",") if b.strip()],
+        encoder_learning_rate=args.encoder_lr,
     )
     print(json.dumps({
         arm: {

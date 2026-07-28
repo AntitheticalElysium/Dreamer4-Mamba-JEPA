@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import numpy as np
 import torch
+from dataclasses import replace
 
 from d4_mamba_jepa.craftax_runners import (
     craftax_jepa_config,
@@ -87,6 +88,76 @@ def test_craftax_world_terminal_oversampling_requires_terminal_episodes():
             replay=replay, cfg=craftax_jepa_config("transformer"),
             world_steps=1, batch_size=2, seed=0, device=DEVICE, warmup=1,
         )
+
+
+def test_craftax_world_can_freeze_only_encoder_with_separate_lr_group():
+    from d4_mamba_jepa.model import D4LiteWorld
+
+    replay = _synthetic_replay()
+    cfg = craftax_jepa_config("transformer")
+    torch.manual_seed(13)
+    initial = D4LiteWorld(cfg)
+    initial_encoder = {
+        name: value.detach().clone()
+        for name, value in initial.encoder.state_dict().items()
+    }
+    initial_predictor = {
+        name: value.detach().clone()
+        for name, value in initial.jepa_predictor.state_dict().items()
+    }
+    world, _, _ = train_craftax_jepa_world(
+        replay=replay, cfg=cfg, world_steps=2, batch_size=2,
+        learning_rate=1e-4, encoder_learning_rate=0.0,
+        terminal_fraction=0.0, seed=13, device=DEVICE, warmup=1,
+    )
+    assert all(
+        torch.equal(value, initial_encoder[name])
+        for name, value in world.encoder.state_dict().items()
+    )
+    assert any(
+        not torch.equal(value, initial_predictor[name])
+        for name, value in world.jepa_predictor.state_dict().items()
+    )
+
+
+def test_equal_encoder_lr_group_is_a_noop_control():
+    replay = _synthetic_replay()
+    cfg = craftax_jepa_config("transformer")
+    default, _, default_history = train_craftax_jepa_world(
+        replay=replay, cfg=cfg, world_steps=2, batch_size=2,
+        learning_rate=1e-4, encoder_learning_rate=None,
+        terminal_fraction=0.0, seed=19, device=DEVICE, warmup=1,
+    )
+    grouped, _, grouped_history = train_craftax_jepa_world(
+        replay=replay, cfg=cfg, world_steps=2, batch_size=2,
+        learning_rate=1e-4, encoder_learning_rate=1e-4,
+        terminal_fraction=0.0, seed=19, device=DEVICE, warmup=1,
+    )
+    assert default_history == grouped_history
+    assert all(
+        torch.equal(value, grouped.state_dict()[name])
+        for name, value in default.state_dict().items()
+    )
+
+
+def test_sigreg_dev_cosine_does_not_advance_training_slice_state():
+    from d4_mamba_jepa.craftax_run import _dev_cosine, _fixed_dev_batches
+    from d4_mamba_jepa.model import D4LiteWorld
+
+    replay = _synthetic_replay()
+    cfg = replace(
+        craftax_jepa_config("transformer"),
+        jepa_anticollapse="sigreg",
+        jepa_sigreg_slices=16,
+    )
+    world = D4LiteWorld(cfg)
+    batches = _fixed_dev_batches(
+        replay, cfg=cfg, count=1, batch_size=2, seed=7
+    )
+    before = world.sigreg_test.global_step.detach().clone()
+    cosine = _dev_cosine(world, batches, DEVICE)
+    assert np.isfinite(cosine)
+    assert torch.equal(world.sigreg_test.global_step, before)
 
 
 def test_craftax_checkpoint_roundtrip(tmp_path):

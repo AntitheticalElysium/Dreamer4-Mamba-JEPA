@@ -100,9 +100,11 @@ def train_craftax_jepa_world(
     world_steps: int,
     batch_size: int,
     learning_rate: float = 1e-4,
+    encoder_learning_rate: float | None = None,
     seed: int = 0,
     device: torch.device,
     warmup: int = 1_000,
+    ema_schedule_steps: int | None = None,
     terminal_fraction: float | None = None,
     output_dir: str | Path | None = None,
     log_every: int = 500,
@@ -118,14 +120,53 @@ def train_craftax_jepa_world(
         raise RuntimeError("Craftax world runner requires the jepa objective")
     if cfg.n_actions != 17:
         raise RuntimeError("Craftax world config must have n_actions=17")
+    if learning_rate <= 0.0:
+        raise ValueError("learning_rate must be positive")
+    if encoder_learning_rate is not None and encoder_learning_rate < 0.0:
+        raise ValueError("encoder_learning_rate must be non-negative")
+    if ema_schedule_steps is not None and ema_schedule_steps < 1:
+        raise ValueError("ema_schedule_steps must be positive")
     fraction = cfg.jepa_terminal_fraction if terminal_fraction is None else terminal_fraction
+    ema_steps = world_steps if ema_schedule_steps is None else int(ema_schedule_steps)
     torch.manual_seed(seed)
     if device.type == "cuda":
         torch.cuda.manual_seed_all(seed)
     world = D4LiteWorld(cfg).to(device).train()
     normalizer = WorldLossNormalizer().to(device)
-    trainable = [p for p in world.parameters() if p.requires_grad]
-    optimizer = torch.optim.AdamW(trainable, lr=learning_rate, weight_decay=1e-2)
+    if encoder_learning_rate is None:
+        # Preserve the original one-group optimizer exactly when the new
+        # intervention is not requested.
+        trainable = [p for p in world.parameters() if p.requires_grad]
+        optimizer = torch.optim.AdamW(
+            trainable, lr=learning_rate, weight_decay=1e-2
+        )
+    else:
+        encoder_params = list(world.encoder.parameters())
+        encoder_ids = {id(p) for p in encoder_params}
+        if encoder_learning_rate == 0.0:
+            for parameter in encoder_params:
+                parameter.requires_grad_(False)
+        other_params = [
+            p for p in world.parameters()
+            if p.requires_grad and id(p) not in encoder_ids
+        ]
+        groups = [{
+            "params": other_params,
+            "lr": learning_rate,
+            "base_lr": learning_rate,
+        }]
+        if encoder_learning_rate > 0.0:
+            groups.append({
+                "params": encoder_params,
+                "lr": encoder_learning_rate,
+                "base_lr": encoder_learning_rate,
+            })
+        optimizer = torch.optim.AdamW(
+            groups, lr=learning_rate, weight_decay=1e-2
+        )
+        # Preserve model parameter order for global gradient-norm accumulation.
+        # Group ordering must not become a hidden part of the LR intervention.
+        trainable = [p for p in world.parameters() if p.requires_grad]
     rng = np.random.default_rng(seed + 3)
     history: list[dict] = []
     started = time.perf_counter()
@@ -146,10 +187,15 @@ def train_craftax_jepa_world(
             raise RuntimeError(f"non-finite gradient at step {step}")
         if step < warmup:
             for group in optimizer.param_groups:
-                group["lr"] = learning_rate * float(step + 1) / warmup
+                base_lr = (
+                    learning_rate
+                    if encoder_learning_rate is None
+                    else float(group["base_lr"])
+                )
+                group["lr"] = base_lr * float(step + 1) / warmup
         optimizer.step()
         if cfg.jepa_anticollapse == "ema":
-            frac = step / max(1, world_steps - 1)
+            frac = min(1.0, step / max(1, ema_steps - 1))
             tau = cfg.jepa_ema_tau + (cfg.jepa_ema_tau_final - cfg.jepa_ema_tau) * frac
             world.update_jepa_target(tau)
         history.append({
@@ -178,11 +224,25 @@ def train_craftax_jepa_world(
             out / "world.pt", world=world, normalizer=normalizer,
             optimizer=optimizer, numpy_rng=rng, step=world_steps,
             extra={"format": "craftax_jepa_world_v1", "seed": seed,
-                   "terminal_fraction": fraction},
+                   "terminal_fraction": fraction,
+                   "learning_rate": learning_rate,
+                   "encoder_learning_rate": encoder_learning_rate,
+                   "ema_schedule_steps": ema_steps},
         )
         _write_report(out / "world_report.json", {
             "world_checkpoint": "world.pt", "world_checkpoint_sha256": world_sha,
             "arm_id": cfg.arm_id, "config": cfg.to_dict(),
+            "optimization": {
+                "learning_rate": learning_rate,
+                "encoder_learning_rate": (
+                    learning_rate
+                    if encoder_learning_rate is None
+                    else encoder_learning_rate
+                ),
+                "separate_encoder_group": encoder_learning_rate is not None,
+                "warmup": warmup,
+                "ema_schedule_steps": ema_steps,
+            },
             "final": history[-1] if history else None,
         })
     return world, normalizer, history

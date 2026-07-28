@@ -89,9 +89,10 @@ class D4LiteConfig:
     #   "ema"    = SPR/BYOL stop-gradient EMA target encoder + asymmetric
     #              projection/prediction heads (D031).
     #   "sigreg" = LeJEPA: drop the EMA target and the projection/prediction
-    #              heuristics; prediction loss to the (non-EMA) stop-gradient
-    #              online target, anti-collapse by Sketched Isotropic Gaussian
-    #              Regularization (rbalestr-lab/lejepa c293d291).
+    #              heuristics; raw prediction loss to the non-EMA online target
+    #              with gradients on both sides, anti-collapse by Sketched
+    #              Isotropic Gaussian Regularization
+    #              (rbalestr-lab/lejepa c293d291).
     jepa_anticollapse: str = "ema"  # ema | sigreg
     jepa_sigreg_lambda: float = 0.05    # SIGReg weight (paper bstat_lambda 0.01-0.1)
     jepa_sigreg_slices: int = 1024      # random projection slices

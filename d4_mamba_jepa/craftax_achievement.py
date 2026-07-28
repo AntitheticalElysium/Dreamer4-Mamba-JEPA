@@ -64,6 +64,8 @@ def run_policy_episode(
     names = achievement_names()
     final = np.zeros(len(names), dtype=bool)
     length = 0
+    episode_return = 0.0
+    final_env_score = 0.0
     for _ in range(int(max_steps)):
         if policy_name == "random":
             action = int(rng.integers(N_ACTIONS))
@@ -78,6 +80,8 @@ def run_policy_episode(
         observations.append(result.obs)
         led_to_actions.append(action)
         final = result.achievements
+        episode_return += float(result.reward)
+        final_env_score = float(result.score)
         length += 1
         if result.done:
             break
@@ -86,6 +90,8 @@ def run_policy_episode(
         "env_seed": int(env_seed),
         "achievements": {names[i]: int(final[i]) for i in range(len(names))},
         "achievement_count": int(final.sum()),
+        "return": episode_return,
+        "env_score": final_env_score,
         "length": length,
     }
 
@@ -112,13 +118,14 @@ def _paired_score_ci(rows_a, rows_b, seeds, *, seed, draws=20000):
 
 def evaluate_craftax_achievement(
     *, world, bc_policy, actor_policy, seeds, context, max_steps, device,
-    policy_seed_base=7_000_000, mode="sample",
+    policy_seed_base=7_000_000, mode="sample", progress=False,
 ) -> dict:
     """Run random / BC / actor over ``seeds`` and report official-score parity."""
+    seeds = [int(seed) for seed in seeds]
     policies = {"random": None, "bc": bc_policy, "imagination_actor": actor_policy}
     by_policy = {name: {} for name in policies}
     for name, policy in policies.items():
-        for env_seed in seeds:
+        for index, env_seed in enumerate(seeds):
             row = run_policy_episode(
                 world=world, policy=policy, policy_name=("random" if name == "random" else name),
                 env_seed=env_seed,
@@ -126,6 +133,14 @@ def evaluate_craftax_achievement(
                 context=context, max_steps=max_steps, device=device, mode=mode,
             )
             by_policy[name][int(env_seed)] = row
+            if progress:
+                print(
+                    f"[executed {name}] {index + 1}/{len(seeds)} "
+                    f"seed={env_seed} return={row['return']:+.3f} "
+                    f"achievements={row['achievement_count']} "
+                    f"length={row['length']}",
+                    flush=True,
+                )
 
     summary = {}
     for name in policies:
@@ -134,6 +149,9 @@ def evaluate_craftax_achievement(
         summary[name] = {
             "crafter_score": score,
             "mean_achievement_count": float(np.mean([r["achievement_count"] for r in rows])),
+            "mean_return": float(np.mean([r["return"] for r in rows])),
+            "mean_env_score": float(np.mean([r["env_score"] for r in rows])),
+            "mean_length": float(np.mean([r["length"] for r in rows])),
             "success_rates": rates,
         }
     actor_minus_bc, actor_minus_bc_ci = _paired_score_ci(

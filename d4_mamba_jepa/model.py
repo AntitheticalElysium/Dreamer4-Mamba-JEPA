@@ -350,9 +350,9 @@ class D4LiteWorld(nn.Module):
             for parameter in self.jepa_target_projection.parameters():
                 parameter.requires_grad_(False)
         else:
-            # LeJEPA: no EMA target, no projection/prediction heuristics; the
-            # prediction target is the (non-EMA) online encoder, stop-gradient.
-            # Anti-collapse is SIGReg on the online embeddings.
+            # LeJEPA: no EMA target and no asymmetric prediction heuristics.
+            # Both sides use the non-EMA online encoder with gradients; SIGReg
+            # on its projected embeddings supplies the anti-collapse pressure.
             SlicingUnivariateTest, EppsPulley = load_lejepa_sigreg()
             self.sigreg_test = SlicingUnivariateTest(
                 univariate_test=EppsPulley(n_points=cfg.jepa_sigreg_points),
