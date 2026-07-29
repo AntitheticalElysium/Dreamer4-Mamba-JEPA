@@ -20,7 +20,7 @@ import torch
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
-from d4_mamba_jepa.cartpole_baseline import load_bc_policy
+from d4_mamba_jepa.common import load_bc_policy
 from d4_mamba_jepa.checkpoint import (
     file_sha256, implementation_sha256, load_checkpoint,
 )

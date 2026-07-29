@@ -30,16 +30,11 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 
-from .cartpole_baseline import (
-    ACTION_REPEAT,
-    CartPoleBCPolicy,
-    _atomic_json,
+from .common import (
+    BCPolicy,
     _atomic_torch_save,
     _episode_window,
-    _run_control_episode,
     load_bc_policy,
-    load_cartpole_replay,
-    paired_bootstrap_interval,
 )
 from .checkpoint import file_sha256, implementation_sha256, load_checkpoint
 from .data import EpisodeReplay, SequenceBatch, replay_sample_to_sequence
@@ -179,7 +174,7 @@ def unfreeze_module(module: nn.Module) -> nn.Module:
     return module
 
 
-class CartPoleValueHead(nn.Module):
+class ValueHead(nn.Module):
     """Dreamer categorical value distribution over current agent tokens.
 
     The attention pooling and MLP shape match the source-shaped local policy
@@ -422,7 +417,7 @@ class ReplayContextSampler:
 @torch.no_grad()
 def imagine_trajectory(
     world: D4LiteWorld,
-    actor: CartPoleBCPolicy,
+    actor: BCPolicy,
     context_batch: SequenceBatch,
     *,
     horizon: int,
@@ -528,9 +523,9 @@ def imagine_trajectory(
 def actor_critic_update(
     *,
     world: D4LiteWorld,
-    actor: CartPoleBCPolicy,
-    prior: CartPoleBCPolicy,
-    value: CartPoleValueHead,
+    actor: BCPolicy,
+    prior: BCPolicy,
+    value: ValueHead,
     optimizer: torch.optim.Optimizer,
     context_batch: SequenceBatch,
     horizon: int,
@@ -643,275 +638,6 @@ def _mean_metrics(rows: Iterable[dict[str, float]]) -> dict[str, float]:
         for key in materialized[0]
     }
 
-
-def train_imagination_actor_critic(
-    *,
-    world_checkpoint: Path,
-    world_checkpoint_sha256: str,
-    bc_checkpoint: Path,
-    bc_checkpoint_sha256: str,
-    replay_path: Path,
-    output: Path,
-    device: torch.device,
-    steps: int,
-    batch_size: int,
-    context: int,
-    horizon: int,
-    denoise_steps: int,
-    learning_rate: float,
-    gamma: float,
-    lambda_: float,
-    alpha: float,
-    beta: float,
-    gradient_clip: float,
-    seed: int,
-) -> dict:
-    """Train only actor and value heads on trajectories generated in imagination."""
-    if steps < 1:
-        raise ValueError("steps must be positive")
-    actor_sources = actor_source_report()
-    world, _, world_payload = load_checkpoint(
-        world_checkpoint,
-        device=device,
-        expected_sha256=world_checkpoint_sha256,
-        strict_implementation=False,
-    )
-    if world.cfg.arm_id not in {"T-BASE", "T-JEPA", "M-JEPA"} or world.cfg.n_actions != 2:
-        raise RuntimeError("world is not a registered CartPole control arm")
-    freeze_module(world)
-    loaded_bc, bc_payload = load_bc_policy(
-        bc_checkpoint,
-        expected_sha256=bc_checkpoint_sha256,
-        expected_world_sha256=world_checkpoint_sha256,
-        device=device,
-    )
-    freeze_module(loaded_bc)
-
-    torch.manual_seed(seed)
-    if device.type == "cuda":
-        torch.cuda.manual_seed_all(seed)
-        torch.cuda.reset_peak_memory_stats(device)
-    actor = unfreeze_module(copy.deepcopy(loaded_bc).to(device))
-    prior = freeze_module(copy.deepcopy(loaded_bc).to(device))
-    value = CartPoleValueHead(
-        d_model=world.cfg.dynamics_d_model,
-        num_bins=world.cfg.reward_bins,
-        log_low=world.cfg.reward_log_low,
-        log_high=world.cfg.reward_log_high,
-    ).to(device)
-    actor.train()
-    value.train()
-
-    initial_actor_state = _cpu_state_dict(actor)
-    initial_value_state = _cpu_state_dict(value)
-    initial_actor_hash = module_state_sha256(actor)
-    prior_hash = module_state_sha256(prior)
-    if initial_actor_hash != prior_hash:
-        raise RuntimeError("actor and BC prior did not initialize identically")
-    with torch.no_grad():
-        probe = torch.randn(
-            2,
-            3,
-            world.cfg.n_agent,
-            world.cfg.dynamics_d_model,
-            device=device,
-        )
-        initial_values = decode_symlog_distribution(
-            *value(probe)
-        )
-    if float(initial_values.abs().max().item()) > 1e-6:
-        raise RuntimeError("value expectation is not numerically zero at initialization")
-
-    optimizer = torch.optim.Adam(
-        list(actor.parameters()) + list(value.parameters()),
-        lr=learning_rate,
-        betas=(0.9, 0.999),
-        eps=1e-8,
-        weight_decay=0.0,
-    )
-    replay, replay_records = load_cartpole_replay(replay_path)
-    sampler = ReplayContextSampler(
-        replay,
-        context=context,
-        device=device,
-        seed=seed + 1,
-    )
-    rollout_generator = torch.Generator(device=device).manual_seed(seed + 2)
-    world_hash_before = module_state_sha256(world)
-    prior_hash_before = module_state_sha256(prior)
-    history: list[dict[str, float]] = []
-    positive_total = 0
-    negative_total = 0
-    started = time.perf_counter()
-    for step in range(steps):
-        metrics = actor_critic_update(
-            world=world,
-            actor=actor,
-            prior=prior,
-            value=value,
-            optimizer=optimizer,
-            context_batch=sampler.sample(batch_size),
-            horizon=horizon,
-            denoise_steps=denoise_steps,
-            context=context,
-            gamma=gamma,
-            lambda_=lambda_,
-            alpha=alpha,
-            beta=beta,
-            gradient_clip=gradient_clip,
-            generator=rollout_generator,
-            device=device,
-        )
-        history.append(metrics)
-        positive_total += metrics["positive_count"]
-        negative_total += metrics["negative_count"]
-        if (step + 1) % 25 == 0 or step == 0:
-            recent = _mean_metrics(history[-25:])
-            print(
-                f"imagination {step + 1}/{steps}: "
-                f"actor={recent['actor_loss']:.5f} "
-                f"value={recent['value_loss']:.5f} "
-                f"return={recent['mean_return']:.3f} "
-                f"kl={recent['prior_kl']:.5f} "
-                f"pos={positive_total} neg={negative_total}",
-                flush=True,
-            )
-    if device.type == "cuda":
-        torch.cuda.synchronize(device)
-    train_seconds = time.perf_counter() - started
-    world_hash_after = module_state_sha256(world)
-    prior_hash_after = module_state_sha256(prior)
-    if world_hash_after != world_hash_before:
-        raise RuntimeError("frozen world changed during actor/value training")
-    if prior_hash_after != prior_hash_before:
-        raise RuntimeError("frozen BC prior changed during actor/value training")
-    actor_delta = state_dict_l2_distance(
-        initial_actor_state,
-        _cpu_state_dict(actor),
-    )
-    value_delta = state_dict_l2_distance(
-        initial_value_state,
-        _cpu_state_dict(value),
-    )
-    if actor_delta <= 0.0 or value_delta <= 0.0:
-        raise RuntimeError("actor or value head did not update")
-    if positive_total <= 0 or negative_total <= 0:
-        raise RuntimeError("PMPO did not observe both advantage signs")
-
-    payload = {
-        "format": FORMAT,
-        "world_checkpoint_sha256": world_checkpoint_sha256,
-        "bc_checkpoint_sha256": bc_checkpoint_sha256,
-        "actor": _cpu_state_dict(actor),
-        "prior": _cpu_state_dict(prior),
-        "value": _cpu_state_dict(value),
-        "optimizer": optimizer.state_dict(),
-        "config": {
-            "d_model": world.cfg.dynamics_d_model,
-            "n_actions": world.cfg.n_actions,
-            "value_bins": world.cfg.reward_bins,
-            "value_log_low": world.cfg.reward_log_low,
-            "value_log_high": world.cfg.reward_log_high,
-        },
-        "algorithm": {
-            "steps": steps,
-            "batch_size": batch_size,
-            "context": context,
-            "horizon": horizon,
-            "denoise_steps": denoise_steps,
-            "learning_rate": learning_rate,
-            "optimizer": "Adam",
-            "weight_decay": 0.0,
-            "gamma": gamma,
-            "lambda": lambda_,
-            "pmpo_alpha": alpha,
-            "reverse_prior_kl_beta": beta,
-            "gradient_clip": gradient_clip,
-            "one_rollout_per_context": True,
-            "actor_initialized_from_bc": True,
-            "world_frozen": True,
-            "prior_frozen": True,
-            "reward_and_continuation_frozen": True,
-            "actor_value_losses_use_imagined_data_only": True,
-            "shooting_planner_used": False,
-            "seed": seed,
-        },
-        "rng": {
-            "torch_cpu": torch.get_rng_state(),
-            "torch_cuda_all": (
-                torch.cuda.get_rng_state_all()
-                if torch.cuda.is_available()
-                else None
-            ),
-            "rollout_generator": rollout_generator.get_state(),
-            "numpy_context_generator": copy.deepcopy(
-                sampler.rng.bit_generator.state
-            ),
-        },
-        "metrics": {
-            "first_25": _mean_metrics(history[:25]),
-            "last_25": _mean_metrics(history[-25:]),
-            "positive_count_total": positive_total,
-            "negative_count_total": negative_total,
-            "actor_l2_delta_from_bc": actor_delta,
-            "value_l2_delta_from_initial": value_delta,
-            "train_seconds": train_seconds,
-            "peak_vram_bytes": (
-                int(torch.cuda.max_memory_allocated(device))
-                if device.type == "cuda"
-                else 0
-            ),
-        },
-        "history": history,
-        "frozen_invariants": {
-            "world_tensor_sha256_before": world_hash_before,
-            "world_tensor_sha256_after": world_hash_after,
-            "prior_tensor_sha256_before": prior_hash_before,
-            "prior_tensor_sha256_after": prior_hash_after,
-            "initial_actor_tensor_sha256": initial_actor_hash,
-        },
-        "provenance": {
-            "actor_sources": actor_sources,
-            "world_sources": source_report(),
-            "current_implementation_sha256": implementation_sha256(),
-            "world_stored_implementation_sha256": world_payload[
-                "provenance"
-            ]["implementation_sha256"],
-            "bc_stored_implementation_sha256": bc_payload["provenance"][
-                "evaluation_implementation_sha256"
-            ],
-            "world_checkpoint": str(world_checkpoint),
-            "bc_checkpoint": str(bc_checkpoint),
-            "replay": {
-                "path": str(replay_path),
-                "sha256": file_sha256(replay_path),
-                "episodes": len(replay_records),
-                "context_windows": len(sampler.windows),
-            },
-            "python": platform.python_version(),
-            "torch": torch.__version__,
-            "device": str(device),
-            "gpu": (
-                torch.cuda.get_device_name(device)
-                if device.type == "cuda"
-                else None
-            ),
-        },
-    }
-    checkpoint_sha256 = _atomic_torch_save(output, payload)
-    report = {
-        key: value_
-        for key, value_ in payload.items()
-        if key not in {"actor", "prior", "value", "optimizer", "rng", "history"}
-    }
-    report["checkpoint"] = {
-        "path": str(output),
-        "sha256": checkpoint_sha256,
-    }
-    _atomic_json(output.with_suffix(".json"), report)
-    return report
-
-
 def load_imagination_actor_critic(
     path: Path,
     *,
@@ -919,7 +645,7 @@ def load_imagination_actor_critic(
     expected_world_sha256: str,
     expected_bc_sha256: str,
     device: torch.device,
-) -> tuple[CartPoleBCPolicy, CartPoleBCPolicy, CartPoleValueHead, dict]:
+) -> tuple[BCPolicy, BCPolicy, ValueHead, dict]:
     actual = file_sha256(path)
     if actual != expected_sha256:
         raise RuntimeError(f"actor/critic checkpoint digest drift: {actual}")
@@ -933,15 +659,15 @@ def load_imagination_actor_critic(
     if payload["provenance"]["actor_sources"] != actor_source_report():
         raise RuntimeError("actor/critic primary-source provenance drift")
     cfg = payload["config"]
-    actor = CartPoleBCPolicy(
+    actor = BCPolicy(
         d_model=cfg["d_model"],
         n_actions=cfg["n_actions"],
     ).to(device)
-    prior = CartPoleBCPolicy(
+    prior = BCPolicy(
         d_model=cfg["d_model"],
         n_actions=cfg["n_actions"],
     ).to(device)
-    value = CartPoleValueHead(
+    value = ValueHead(
         d_model=cfg["d_model"],
         num_bins=cfg["value_bins"],
         log_low=cfg["value_log_low"],
@@ -960,21 +686,6 @@ def load_imagination_actor_critic(
     return actor, prior, value, payload
 
 
-def _summary(rows: list[dict], policy: str) -> dict[str, float | int]:
-    selected = [row for row in rows if row["policy"] == policy]
-    returns = [row["return"] for row in selected]
-    return {
-        "episodes": len(selected),
-        "mean_return": float(np.mean(returns)),
-        "median_return": float(np.median(returns)),
-        "minimum_return": float(np.min(returns)),
-        "maximum_return": float(np.max(returns)),
-        "total_wall_seconds": float(
-            sum(row["wall_seconds"] for row in selected)
-        ),
-    }
-
-
 def _direct_execution_policy(policy_name: str) -> str:
     """Map report labels onto direct environment controllers.
 
@@ -987,324 +698,3 @@ def _direct_execution_policy(policy_name: str) -> str:
     if policy_name in {"random", "oracle_reference"}:
         return policy_name
     raise ValueError(f"unsupported direct policy {policy_name!r}")
-
-
-def evaluate_actor_parity(
-    *,
-    world_checkpoint: Path,
-    world_checkpoint_sha256: str,
-    bc_checkpoint: Path,
-    bc_checkpoint_sha256: str,
-    actor_checkpoint: Path,
-    actor_checkpoint_sha256: str,
-    output: Path,
-    seeds: list[int],
-    context: int,
-    policy_seed_base: int,
-    historical_bc_mean: float,
-    noninferiority_margin: float,
-    device: torch.device,
-    max_episode_steps: int | None = None,
-) -> dict:
-    """Evaluate direct actor execution against its frozen paired BC prior."""
-    world, _, world_payload = load_checkpoint(
-        world_checkpoint,
-        device=device,
-        expected_sha256=world_checkpoint_sha256,
-        strict_implementation=False,
-    )
-    freeze_module(world)
-    bc, _ = load_bc_policy(
-        bc_checkpoint,
-        expected_sha256=bc_checkpoint_sha256,
-        expected_world_sha256=world_checkpoint_sha256,
-        device=device,
-    )
-    freeze_module(bc)
-    actor, prior, _, actor_payload = load_imagination_actor_critic(
-        actor_checkpoint,
-        expected_sha256=actor_checkpoint_sha256,
-        expected_world_sha256=world_checkpoint_sha256,
-        expected_bc_sha256=bc_checkpoint_sha256,
-        device=device,
-    )
-    if module_state_sha256(bc) != module_state_sha256(prior):
-        raise RuntimeError("actor checkpoint prior is not the paired BC policy")
-    if module_state_sha256(world) != actor_payload["frozen_invariants"][
-        "world_tensor_sha256_after"
-    ]:
-        raise RuntimeError("evaluation world differs from training world")
-
-    policies = (
-        ("random", None),
-        ("bc_policy", bc),
-        ("imagination_actor", actor),
-        ("oracle_reference", None),
-    )
-    rows: list[dict] = []
-    for policy_index, (policy_name, policy_module) in enumerate(policies):
-        for index, environment_seed in enumerate(seeds):
-            execution_name = _direct_execution_policy(policy_name)
-            row = _run_control_episode(
-                world=world,
-                policy=execution_name,
-                environment_seed=environment_seed,
-                policy_seed=(
-                    policy_seed_base
-                    + 1_000_000 * policy_index
-                    + environment_seed
-                ),
-                device=device,
-                context=context,
-                horizon=1,
-                candidates=2,
-                denoise_steps=1,
-                discount=1.0,
-                common_random_numbers=False,
-                selection="best_plan",
-                enumerate_all=False,
-                bc_policy=policy_module,
-                max_episode_steps=max_episode_steps,
-            )
-            row["policy"] = policy_name
-            rows.append(row)
-            print(
-                f"{policy_name} {index + 1}/{len(seeds)} "
-                f"seed={environment_seed} return={row['return']:.0f}",
-                flush=True,
-            )
-            _atomic_json(
-                output.with_name(f".{output.name}.progress"),
-                {"status": "running", "rows": rows},
-            )
-
-    names = tuple(name for name, _ in policies)
-    summaries = {name: _summary(rows, name) for name in names}
-    by_policy_seed = {
-        name: {
-            row["environment_seed"]: row
-            for row in rows
-            if row["policy"] == name
-        }
-        for name in names
-    }
-    actor_minus_bc = [
-        by_policy_seed["imagination_actor"][seed]["return"]
-        - by_policy_seed["bc_policy"][seed]["return"]
-        for seed in seeds
-    ]
-    actor_minus_random = [
-        by_policy_seed["imagination_actor"][seed]["return"]
-        - by_policy_seed["random"][seed]["return"]
-        for seed in seeds
-    ]
-    parity_ci = paired_bootstrap_interval(
-        actor_minus_bc,
-        seed=policy_seed_base + 7_000_000,
-    )
-    random_ci = paired_bootstrap_interval(
-        actor_minus_random,
-        seed=policy_seed_base + 8_000_000,
-    )
-    actor_mean = float(summaries["imagination_actor"]["mean_return"])
-    bc_mean = float(summaries["bc_policy"]["mean_return"])
-    evidence = actor_payload["metrics"]
-    invariants = actor_payload["frozen_invariants"]
-    gate = {
-        "actor_mean_at_least_paired_bc": actor_mean >= bc_mean,
-        "actor_mean_at_least_historical_reference": (
-            actor_mean >= historical_bc_mean
-        ),
-        "actor_minus_bc_mean": float(np.mean(actor_minus_bc)),
-        "actor_minus_bc_bootstrap_95_ci": parity_ci,
-        "actor_noninferiority_ci_lower_at_least_margin": (
-            parity_ci[0] >= -noninferiority_margin
-        ),
-        "actor_changed_from_bc": (
-            evidence["actor_l2_delta_from_bc"] > 0.0
-        ),
-        "value_head_trained": (
-            evidence["value_l2_delta_from_initial"] > 0.0
-        ),
-        "both_pmpo_sign_sets_observed": (
-            evidence["positive_count_total"] > 0
-            and evidence["negative_count_total"] > 0
-        ),
-        "world_frozen": (
-            invariants["world_tensor_sha256_before"]
-            == invariants["world_tensor_sha256_after"]
-        ),
-        "prior_frozen": (
-            invariants["prior_tensor_sha256_before"]
-            == invariants["prior_tensor_sha256_after"]
-        ),
-        "actor_minus_random_mean": float(np.mean(actor_minus_random)),
-        "actor_minus_random_bootstrap_95_ci": random_ci,
-        "actor_beats_random_with_ci": random_ci[0] > 0.0,
-    }
-    required = (
-        "actor_mean_at_least_paired_bc",
-        "actor_noninferiority_ci_lower_at_least_margin",
-        "actor_beats_random_with_ci",
-        "actor_changed_from_bc",
-        "value_head_trained",
-        "both_pmpo_sign_sets_observed",
-        "world_frozen",
-        "prior_frozen",
-    )
-    gate["parity_achieved"] = all(bool(gate[name]) for name in required)
-    payload = {
-        "format": EVALUATION_FORMAT,
-        "status": "completed",
-        "result": (
-            "DREAMER4_ACTOR_CRITIC_PARITY"
-            if gate["parity_achieved"]
-            else "PARITY_NOT_ACHIEVED"
-        ),
-        "claim_boundary": (
-            "direct greedy execution of an actor trained only on frozen-world "
-            "imagination; no shooting, online learning, simulator state, "
-            "Mamba, or CDP/JEPA"
-        ),
-        "protocol": {
-            "seeds": seeds,
-            "fresh_from_replay": True,
-            "context": context,
-            "environment_action_repeat": ACTION_REPEAT,
-            "environment_max_episode_steps": max_episode_steps,
-            "learning_during_evaluation": False,
-            "shooting_planner_used": False,
-            "historical_bc_mean": historical_bc_mean,
-            "historical_bc_mean_is_descriptive_only": True,
-            "noninferiority_margin": noninferiority_margin,
-            "paired_bootstrap_draws": 20_000,
-        },
-        "provenance": {
-            "world_checkpoint": str(world_checkpoint),
-            "world_checkpoint_sha256": file_sha256(world_checkpoint),
-            "world_checkpoint_step": world_payload["step"],
-            "bc_checkpoint": str(bc_checkpoint),
-            "bc_checkpoint_sha256": file_sha256(bc_checkpoint),
-            "actor_checkpoint": str(actor_checkpoint),
-            "actor_checkpoint_sha256": file_sha256(actor_checkpoint),
-            "evaluation_implementation_sha256": implementation_sha256(),
-            "actor_sources": actor_source_report(),
-            "world_sources": source_report(),
-        },
-        "rows": rows,
-        "summary": summaries,
-        "actor_minus_bc": actor_minus_bc,
-        "actor_minus_random": actor_minus_random,
-        "gate": gate,
-    }
-    _atomic_json(output, payload)
-    output.with_name(f".{output.name}.progress").unlink(missing_ok=True)
-    return payload
-
-
-def _parse_seeds(text: str) -> list[int]:
-    if ":" in text:
-        start, stop = text.split(":", 1)
-        return list(range(int(start), int(stop)))
-    return [int(part) for part in text.split(",") if part]
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers(dest="command", required=True)
-
-    train = subparsers.add_parser("train")
-    train.add_argument("--world-checkpoint", type=Path, required=True)
-    train.add_argument("--world-checkpoint-sha256", required=True)
-    train.add_argument("--bc-checkpoint", type=Path, required=True)
-    train.add_argument("--bc-checkpoint-sha256", required=True)
-    train.add_argument("--replay", type=Path, required=True)
-    train.add_argument("--output", type=Path, required=True)
-    train.add_argument("--steps", type=int, default=1_000)
-    train.add_argument("--batch-size", type=int, default=16)
-    train.add_argument("--context", type=int, default=8)
-    train.add_argument("--horizon", type=int, default=32)
-    train.add_argument("--denoise-steps", type=int, default=4)
-    train.add_argument("--learning-rate", type=float, default=1e-4)
-    train.add_argument("--gamma", type=float, default=0.997)
-    train.add_argument("--lambda", dest="lambda_", type=float, default=0.95)
-    train.add_argument("--alpha", type=float, default=0.5)
-    train.add_argument("--beta", type=float, default=0.3)
-    train.add_argument("--gradient-clip", type=float, default=1.0)
-    train.add_argument("--seed", type=int, default=20260725)
-    train.add_argument(
-        "--device", default="cuda" if torch.cuda.is_available() else "cpu"
-    )
-
-    evaluate = subparsers.add_parser("evaluate")
-    evaluate.add_argument("--world-checkpoint", type=Path, required=True)
-    evaluate.add_argument("--world-checkpoint-sha256", required=True)
-    evaluate.add_argument("--bc-checkpoint", type=Path, required=True)
-    evaluate.add_argument("--bc-checkpoint-sha256", required=True)
-    evaluate.add_argument("--actor-checkpoint", type=Path, required=True)
-    evaluate.add_argument("--actor-checkpoint-sha256", required=True)
-    evaluate.add_argument("--output", type=Path, required=True)
-    evaluate.add_argument("--seeds", default="970000:970030")
-    evaluate.add_argument("--context", type=int, default=8)
-    evaluate.add_argument("--policy-seed-base", type=int, default=20260725)
-    evaluate.add_argument("--historical-bc-mean", type=float, default=288.7)
-    evaluate.add_argument("--noninferiority-margin", type=float, default=25.0)
-    evaluate.add_argument(
-        "--max-episode-steps", type=int, default=None,
-        help="override only the CartPole TimeLimit truncation (D039); "
-             "omit to keep the pinned v1 value of 500",
-    )
-    evaluate.add_argument(
-        "--device", default="cuda" if torch.cuda.is_available() else "cpu"
-    )
-
-    args = parser.parse_args()
-    if args.command == "train":
-        report = train_imagination_actor_critic(
-            world_checkpoint=args.world_checkpoint,
-            world_checkpoint_sha256=args.world_checkpoint_sha256,
-            bc_checkpoint=args.bc_checkpoint,
-            bc_checkpoint_sha256=args.bc_checkpoint_sha256,
-            replay_path=args.replay,
-            output=args.output,
-            device=torch.device(args.device),
-            steps=args.steps,
-            batch_size=args.batch_size,
-            context=args.context,
-            horizon=args.horizon,
-            denoise_steps=args.denoise_steps,
-            learning_rate=args.learning_rate,
-            gamma=args.gamma,
-            lambda_=args.lambda_,
-            alpha=args.alpha,
-            beta=args.beta,
-            gradient_clip=args.gradient_clip,
-            seed=args.seed,
-        )
-        print(json.dumps(report["metrics"], indent=2, sort_keys=True))
-        print(json.dumps(report["checkpoint"], indent=2, sort_keys=True))
-    elif args.command == "evaluate":
-        report = evaluate_actor_parity(
-            world_checkpoint=args.world_checkpoint,
-            world_checkpoint_sha256=args.world_checkpoint_sha256,
-            bc_checkpoint=args.bc_checkpoint,
-            bc_checkpoint_sha256=args.bc_checkpoint_sha256,
-            actor_checkpoint=args.actor_checkpoint,
-            actor_checkpoint_sha256=args.actor_checkpoint_sha256,
-            output=args.output,
-            seeds=_parse_seeds(args.seeds),
-            context=args.context,
-            policy_seed_base=args.policy_seed_base,
-            historical_bc_mean=args.historical_bc_mean,
-            noninferiority_margin=args.noninferiority_margin,
-            device=torch.device(args.device),
-            max_episode_steps=args.max_episode_steps,
-        )
-        print(json.dumps(report["summary"], indent=2, sort_keys=True))
-        print(json.dumps(report["gate"], indent=2, sort_keys=True))
-    else:
-        raise AssertionError(args.command)
-
-
-if __name__ == "__main__":
-    main()

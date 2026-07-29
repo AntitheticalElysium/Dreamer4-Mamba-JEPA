@@ -21,7 +21,7 @@ import torch
 from d4_mamba_jepa.cartpole_baseline import (
     _clean_agent_tokens,
     load_cartpole_replay,
-    sample_cartpole_sequences,
+    sample_sequences,
 )
 from d4_mamba_jepa.checkpoint import file_sha256, load_checkpoint
 
@@ -48,7 +48,7 @@ def main() -> None:
 
     probs, truth = [], []
     for _ in range(args.batches):
-        batch = sample_cartpole_sequences(
+        batch = sample_sequences(
             replay, batch_size=args.batch_size,
             sequence_length=world.cfg.sequence_length,
             terminal_fraction=0.0, rng=rng, device=device,

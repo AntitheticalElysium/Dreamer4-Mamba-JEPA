@@ -3,8 +3,8 @@ from __future__ import annotations
 
 import torch
 
-from .config import D4LiteConfig
-from .data import SequenceBatch
+from d4_mamba_jepa.config import D4LiteConfig
+from d4_mamba_jepa.data import SequenceBatch
 
 
 def moving_square_batch(

@@ -5,12 +5,12 @@ import numpy as np
 import pytest
 import torch
 
-from d4_mamba_jepa.cartpole_baseline import CartPoleBCPolicy
+from d4_mamba_jepa.common import BCPolicy
 from d4_mamba_jepa.checkpoint import file_sha256
 from d4_mamba_jepa.data import Episode, EpisodeReplay
 from d4_mamba_jepa.imagination_actor_critic import (
     FORMAT,
-    CartPoleValueHead,
+    ValueHead,
     ReplayContextSampler,
     _direct_execution_policy,
     actor_critic_update,
@@ -99,7 +99,7 @@ def test_reverse_prior_kl_is_zero_at_exact_bc_initialization():
 
 def test_value_distribution_starts_at_zero_expectation():
     torch.manual_seed(3)
-    value = CartPoleValueHead(
+    value = ValueHead(
         d_model=16,
         num_bins=51,
         log_low=-5.0,
@@ -110,7 +110,7 @@ def test_value_distribution_starts_at_zero_expectation():
     assert not logits.any()
     decoded = decode_symlog_distribution(logits, centers)
     torch.testing.assert_close(decoded, torch.zeros_like(decoded))
-    wide = CartPoleValueHead(
+    wide = ValueHead(
         d_model=16,
         num_bins=255,
         log_low=-10.0,
@@ -125,7 +125,7 @@ def test_value_distribution_starts_at_zero_expectation():
 
 def test_actor_copy_and_frozen_prior_have_exact_identity():
     torch.manual_seed(5)
-    bc = CartPoleBCPolicy(d_model=16, n_actions=2)
+    bc = BCPolicy(d_model=16, n_actions=2)
     actor = copy.deepcopy(bc)
     prior = freeze_module(copy.deepcopy(bc))
     assert module_state_sha256(actor) == module_state_sha256(prior)
@@ -195,9 +195,9 @@ def test_one_update_changes_only_actor_and_value():
     device = torch.device("cpu")
     cfg = tiny_config(n_actions=2)
     world = freeze_module(D4LiteWorld(cfg))
-    actor = CartPoleBCPolicy(d_model=cfg.dynamics_d_model, n_actions=2)
+    actor = BCPolicy(d_model=cfg.dynamics_d_model, n_actions=2)
     prior = freeze_module(copy.deepcopy(actor))
-    value = CartPoleValueHead(
+    value = ValueHead(
         d_model=cfg.dynamics_d_model,
         num_bins=cfg.reward_bins,
         log_low=cfg.reward_log_low,
@@ -265,9 +265,9 @@ def _write_actor_checkpoint(
     source_report: dict | None = None,
 ) -> str:
     torch.manual_seed(23)
-    actor = CartPoleBCPolicy(d_model=16, n_actions=2)
+    actor = BCPolicy(d_model=16, n_actions=2)
     prior = freeze_module(copy.deepcopy(actor))
-    value = CartPoleValueHead(
+    value = ValueHead(
         d_model=16,
         num_bins=17,
         log_low=-10.0,

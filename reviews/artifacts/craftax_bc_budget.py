@@ -29,7 +29,7 @@ import torch
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
-from d4_mamba_jepa.cartpole_baseline import CartPoleBCPolicy, _clean_agent_tokens
+from d4_mamba_jepa.common import BCPolicy, _clean_agent_tokens
 from d4_mamba_jepa.checkpoint import load_checkpoint
 from d4_mamba_jepa.craftax_run import SPLIT_SEED, _dev_bc_accuracy, _fixed_dev_batches
 from d4_mamba_jepa.data import (
@@ -65,7 +65,7 @@ def run_arm(arm_dir: Path, *, train_replay, dev_replay, device, steps, ladder, s
     dev_batches = _fixed_dev_batches(
         dev_replay, cfg=cfg, count=16, batch_size=8, seed=SPLIT_SEED + 1
     )
-    policy = CartPoleBCPolicy(
+    policy = BCPolicy(
         d_model=cfg.dynamics_d_model, n_actions=cfg.n_actions
     ).to(device)
     optimizer = torch.optim.AdamW(

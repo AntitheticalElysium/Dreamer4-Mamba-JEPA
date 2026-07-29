@@ -40,7 +40,7 @@ import torch
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
-from d4_mamba_jepa.cartpole_baseline import sample_cartpole_sequences
+from d4_mamba_jepa.common import sample_sequences
 from d4_mamba_jepa.checkpoint import (
     file_sha256, implementation_sha256, save_checkpoint,
 )
@@ -220,7 +220,7 @@ def main() -> None:
     if 0 in ladder:
         probe_now(0)
     for step in range(args.world_steps):
-        batch = sample_cartpole_sequences(
+        batch = sample_sequences(
             train_replay, batch_size=args.batch_size,
             sequence_length=cfg.sequence_length,
             terminal_fraction=args.terminal_fraction, device=device, rng=rng)

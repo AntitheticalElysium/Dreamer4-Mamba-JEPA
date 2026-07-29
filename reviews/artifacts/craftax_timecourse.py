@@ -32,7 +32,7 @@ import torch
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
-from d4_mamba_jepa.cartpole_baseline import sample_cartpole_sequences
+from d4_mamba_jepa.common import sample_sequences
 from d4_mamba_jepa.craftax_oracle import load_probe_data, representation_oracle
 from d4_mamba_jepa.craftax_run import SPLIT_SEED, _dev_cosine, _fixed_dev_batches
 from d4_mamba_jepa.craftax_runners import craftax_jepa_config
@@ -142,7 +142,7 @@ def main() -> None:
     if 0 in ladder:
         probe_now(0)
     for step in range(args.world_steps):
-        batch = sample_cartpole_sequences(
+        batch = sample_sequences(
             train_replay, batch_size=args.batch_size,
             sequence_length=cfg.sequence_length,
             terminal_fraction=terminal_fraction, device=device, rng=rng)

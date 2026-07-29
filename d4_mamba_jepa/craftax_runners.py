@@ -2,9 +2,9 @@
 
 The numerical core is unchanged and env-agnostic (``world_loss``,
 ``imagine_trajectory``, ``actor_critic_update``, ``ReplayContextSampler``,
-``CartPoleValueHead``, ``CartPoleBCPolicy``). What was CartPole-specific was only
+``ValueHead``, ``BCPolicy``). What was CartPole-specific was only
 the config factory (``cartpole_jepa_config``, n_actions=2), the replay loaders
-(``load_cartpole_replay``/``sample_cartpole_sequences``) and a hard
+(``load_cartpole_replay``/``sample_sequences``) and a hard
 ``n_actions == 2`` assertion in ``train_imagination_actor_critic``. This module
 provides the 17-action Craftax equivalents so the FULL architecture -- not just
 the model/data primitives -- runs on Craftax.
@@ -28,19 +28,19 @@ import time
 import numpy as np
 import torch
 
-from .cartpole_baseline import (
-    CartPoleBCPolicy,
+from .common import (
+    BCPolicy,
     POLICY_FORMAT,
     _atomic_torch_save,
     _clean_agent_tokens,
     load_bc_policy,
-    sample_cartpole_sequences,
+    sample_sequences,
 )
 from .checkpoint import file_sha256, load_checkpoint, save_checkpoint
 from .config import D4LiteConfig
 from .data import EpisodeReplay, load_episode_replay, replay_sample_to_sequence
 from .imagination_actor_critic import (
-    CartPoleValueHead,
+    ValueHead,
     ReplayContextSampler,
     actor_critic_update,
     freeze_module,
@@ -78,7 +78,7 @@ def _write_report(path: Path, payload: dict) -> None:
 
 
 def save_policy_checkpoint(
-    path: str | Path, policy: CartPoleBCPolicy, *, world_checkpoint_sha256: str
+    path: str | Path, policy: BCPolicy, *, world_checkpoint_sha256: str
 ) -> str:
     """Serialize a policy head in ``POLICY_FORMAT`` (loadable by ``load_bc_policy``)."""
     payload = {
@@ -171,7 +171,7 @@ def train_craftax_jepa_world(
     history: list[dict] = []
     started = time.perf_counter()
     for step in range(world_steps):
-        batch = sample_cartpole_sequences(
+        batch = sample_sequences(
             replay, batch_size=batch_size, sequence_length=cfg.sequence_length,
             terminal_fraction=fraction, device=device, rng=rng,
         )
@@ -260,7 +260,7 @@ def train_craftax_bc(
     warmup: int = 250,
     output_dir: str | Path | None = None,
     world_checkpoint_sha256: str = "in_memory",
-) -> tuple[CartPoleBCPolicy, list[float]]:
+) -> tuple[BCPolicy, list[float]]:
     """Train the gradient-isolated BC policy head on Craftax demonstration actions.
 
     When ``output_dir`` is given, ``bc.pt`` is saved paired to
@@ -277,7 +277,7 @@ def train_craftax_bc(
     torch.manual_seed(seed)
     if device.type == "cuda":
         torch.cuda.manual_seed_all(seed)
-    policy = CartPoleBCPolicy(
+    policy = BCPolicy(
         d_model=world.cfg.dynamics_d_model, n_actions=world.cfg.n_actions
     ).to(device)
     optimizer = torch.optim.AdamW(policy.parameters(), lr=learning_rate, weight_decay=1e-2)
@@ -324,7 +324,7 @@ def train_craftax_bc(
 def train_craftax_imagination(
     *,
     world: D4LiteWorld,
-    bc: CartPoleBCPolicy,
+    bc: BCPolicy,
     replay: EpisodeReplay,
     steps: int,
     batch_size: int,
@@ -340,7 +340,7 @@ def train_craftax_imagination(
     device: torch.device,
     output_dir: str | Path | None = None,
     world_checkpoint_sha256: str = "in_memory",
-) -> tuple[CartPoleBCPolicy, CartPoleValueHead, list[dict]]:
+) -> tuple[BCPolicy, ValueHead, list[dict]]:
     """Dreamer-4 actor/value imagination on a frozen Craftax world (reuses the
     exact PMPO/TD-lambda core; only the CartPole n_actions==2 gate is dropped)."""
     freeze_module(world)
@@ -351,7 +351,7 @@ def train_craftax_imagination(
     torch.manual_seed(seed)
     if device.type == "cuda":
         torch.cuda.manual_seed_all(seed)
-    value = CartPoleValueHead(
+    value = ValueHead(
         d_model=world.cfg.dynamics_d_model, num_bins=world.cfg.reward_bins,
         log_low=world.cfg.reward_log_low, log_high=world.cfg.reward_log_high,
     ).to(device)

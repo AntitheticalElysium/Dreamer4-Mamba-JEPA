@@ -32,7 +32,7 @@ import time
 import numpy as np
 import torch
 
-from .cartpole_baseline import _clean_agent_tokens
+from .common import _clean_agent_tokens
 from .checkpoint import file_sha256, implementation_sha256
 from .craftax_runners import (
     craftax_jepa_config,

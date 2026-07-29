@@ -30,7 +30,7 @@ import torch
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
-from d4_mamba_jepa.cartpole_baseline import sample_cartpole_sequences
+from d4_mamba_jepa.common import sample_sequences
 from d4_mamba_jepa.checkpoint import save_checkpoint, save_tokenizer_checkpoint
 from d4_mamba_jepa.config import D4LiteConfig
 from d4_mamba_jepa.craftax_run import SPLIT_SEED, _fixed_dev_batches
@@ -104,7 +104,7 @@ def main() -> None:
     history: list[float] = []
     started = time.perf_counter()
     for step in range(args.tokenizer_steps):
-        batch = sample_cartpole_sequences(
+        batch = sample_sequences(
             train_replay, batch_size=args.batch_size,
             sequence_length=cfg.sequence_length,
             terminal_fraction=cfg.jepa_terminal_fraction, device=device, rng=rng,

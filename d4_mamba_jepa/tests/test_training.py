@@ -1,6 +1,6 @@
 import torch
 
-from d4_mamba_jepa.diagnostics import moving_square_batch
+from d4_mamba_jepa.tests.synthetic import moving_square_batch
 from d4_mamba_jepa.model import D4LiteWorld
 from d4_mamba_jepa.objectives import optimizer_groups
 from d4_mamba_jepa.tests.test_baseline import tiny_config

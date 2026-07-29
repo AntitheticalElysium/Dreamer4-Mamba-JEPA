@@ -162,7 +162,7 @@ def test_sigreg_dev_cosine_does_not_advance_training_slice_state():
 
 def test_craftax_checkpoint_roundtrip(tmp_path):
     from d4_mamba_jepa.checkpoint import file_sha256, load_checkpoint
-    from d4_mamba_jepa.cartpole_baseline import load_bc_policy
+    from d4_mamba_jepa.common import load_bc_policy
     # a replay with a terminal episode so the world runner's oversampling works
     rng = np.random.default_rng(1)
     replay = EpisodeReplay(capacity_steps=10 ** 6)

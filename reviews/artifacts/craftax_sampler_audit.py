@@ -4,7 +4,7 @@ Claim under test: `terminal_fraction=0.5` plus MTP horizon repetition plus
 `terminal_weight=8` turns the effective objective into a death/health objective,
 because the replay holds only 58 terminal transitions in 553,145.
 
-Measured by running the REAL sampler (`sample_cartpole_sequences`) over episode
+Measured by running the REAL sampler (`sample_sequences`) over episode
 structure reconstructed exactly from the replay -- true lengths, actions,
 rewards and continues -- with 1x1 dummy pixels, since which windows get drawn
 depends only on episode length and `continues`. That makes this exact for the
@@ -29,7 +29,7 @@ import torch
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
-from d4_mamba_jepa.cartpole_baseline import sample_cartpole_sequences
+from d4_mamba_jepa.common import sample_sequences
 from d4_mamba_jepa.craftax_runners import craftax_jepa_config
 from d4_mamba_jepa.data import Episode, EpisodeReplay, whole_episode_splits
 
@@ -60,7 +60,7 @@ def audit(replay, *, terminal_fraction, batches, batch_size, sequence_length,
     cont, rew = [], []
     hcont, hrew = [], []   # the HEAD window only
     for _ in range(batches):
-        b = sample_cartpole_sequences(
+        b = sample_sequences(
             replay, batch_size=batch_size, sequence_length=sequence_length,
             terminal_fraction=terminal_fraction, device=torch.device("cpu"), rng=rng)
         valid = b.outcome_valid.numpy()

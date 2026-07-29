@@ -1,16 +1,21 @@
 """Unit tests for the non-generative T-JEPA arm (D030-D033)."""
 from __future__ import annotations
 
-from dataclasses import asdict
+from dataclasses import asdict, replace
 
 import torch
 
-from d4_mamba_jepa.cartpole_baseline import cartpole_config, cartpole_jepa_config
+from d4_mamba_jepa.craftax_runners import craftax_jepa_config as cartpole_jepa_config
 from d4_mamba_jepa.data import SequenceBatch
 from d4_mamba_jepa.model import D4LiteWorld
 from d4_mamba_jepa.objectives import jepa_self_prediction_loss
 from d4_mamba_jepa.rollout import sample_next_packed, shortcut_schedule
 from d4_mamba_jepa.training import WorldLossNormalizer, world_loss
+
+
+def cartpole_config():
+    """Reconstruction (base) twin of the JEPA arm: same scale, other objective."""
+    return replace(cartpole_jepa_config(), representation_objective="base")
 
 DEVICE = torch.device("cpu")
 
@@ -136,7 +141,7 @@ def test_sigreg_arm_drops_ema_and_heads_and_penalizes_collapse():
 
 
 def _jepa_world(backend="transformer"):
-    from d4_mamba_jepa.cartpole_baseline import cartpole_jepa_config
+    from d4_mamba_jepa.craftax_runners import craftax_jepa_config as cartpole_jepa_config
     from d4_mamba_jepa.model import D4LiteWorld
 
     return D4LiteWorld(cartpole_jepa_config(backend))
@@ -430,8 +435,8 @@ def test_craftax_heads_are_seeded_independently_of_the_backend():
     from d4_mamba_jepa import craftax_runners
 
     for fn, ctor in (
-        (craftax_runners.train_craftax_bc, "CartPoleBCPolicy("),
-        (craftax_runners.train_craftax_imagination, "CartPoleValueHead("),
+        (craftax_runners.train_craftax_bc, "BCPolicy("),
+        (craftax_runners.train_craftax_imagination, "ValueHead("),
     ):
         src = inspect.getsource(fn)
         assert ctor in src, ctor
