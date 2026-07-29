@@ -269,6 +269,14 @@ def train_craftax_bc(
     """
     freeze_module(world)
     world.eval()
+    # Seed BEFORE constructing the head. Without this the head inherits whatever
+    # global RNG state the preceding world phase left, which differs between the
+    # transformer and mamba2 arms, so paired arms started BC from different
+    # weights. The head is the compared object; its initialization must not
+    # depend on the backend that trained the world.
+    torch.manual_seed(seed)
+    if device.type == "cuda":
+        torch.cuda.manual_seed_all(seed)
     policy = CartPoleBCPolicy(
         d_model=world.cfg.dynamics_d_model, n_actions=world.cfg.n_actions
     ).to(device)
@@ -338,6 +346,11 @@ def train_craftax_imagination(
     freeze_module(world)
     actor = unfreeze_module(copy.deepcopy(bc).to(device))
     prior = freeze_module(copy.deepcopy(bc).to(device))
+    # Same reason as the BC head: seed before constructing the value head so it
+    # does not inherit backend-dependent RNG state.
+    torch.manual_seed(seed)
+    if device.type == "cuda":
+        torch.cuda.manual_seed_all(seed)
     value = CartPoleValueHead(
         d_model=world.cfg.dynamics_d_model, num_bins=world.cfg.reward_bins,
         log_low=world.cfg.reward_log_low, log_high=world.cfg.reward_log_high,

@@ -385,3 +385,57 @@ def test_world_builds_with_widened_predictor_context():
     led = torch.zeros(2, cfg.sequence_length, dtype=torch.long)
     out = world.predict_next_jepa(clean, led)
     assert out.shape == (2, cfg.sequence_length - 1, cfg.n_spatial, cfg.d_spatial)
+
+
+def test_backend_swap_does_not_perturb_shared_initialization():
+    """T and M arms must differ ONLY in the temporal modules at init.
+
+    `replace_dynamics_time_attention` used to run BEFORE the JEPA predictor and
+    the three projection MLPs were constructed, so it consumed RNG and every
+    mamba2 world drew different weights for those four SHARED modules than the
+    transformer world at the same seed. 16 shared tensors differed, silently
+    voiding D037's "the temporal operator is the single moved axis" contract.
+    """
+    from d4_mamba_jepa.craftax_runners import craftax_jepa_config
+
+    def build(backend, seed=20260727):
+        torch.manual_seed(seed)
+        return D4LiteWorld(craftax_jepa_config(backend))
+
+    left = build("transformer").state_dict()
+    right = build("mamba2").state_dict()
+    shared = sorted(set(left) & set(right))
+    assert shared, "arms share no tensors"
+    mismatched = [
+        k for k in shared
+        if left[k].shape != right[k].shape or not torch.equal(left[k], right[k])
+    ]
+    assert not mismatched, f"shared init differs at {mismatched[:8]}"
+
+    # Whatever is NOT shared must be temporal, in both directions.
+    only = sorted((set(left) - set(right)) | (set(right) - set(left)))
+    assert only, "backend-specific temporal state was not isolated"
+    assert all(".time." in k for k in only), only[:8]
+
+
+def test_craftax_heads_are_seeded_independently_of_the_backend():
+    """BC and value heads must not inherit backend-dependent RNG state.
+
+    Neither runner reseeded before constructing its head, so the head picked up
+    whatever global RNG state the preceding world phase left -- which differs
+    between backends. The head is the compared object.
+    """
+    import inspect
+
+    from d4_mamba_jepa import craftax_runners
+
+    for fn, ctor in (
+        (craftax_runners.train_craftax_bc, "CartPoleBCPolicy("),
+        (craftax_runners.train_craftax_imagination, "CartPoleValueHead("),
+    ):
+        src = inspect.getsource(fn)
+        assert ctor in src, ctor
+        before = src.split(ctor)[0]
+        assert "torch.manual_seed(seed)" in before, (
+            f"{fn.__name__} constructs {ctor} without seeding first"
+        )

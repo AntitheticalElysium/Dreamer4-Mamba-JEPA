@@ -277,8 +277,14 @@ class D4LiteWorld(nn.Module):
             cfg.dynamics_d_model, cfg.continuation_horizon
         )
 
-        if cfg.temporal_backend == "mamba2":
-            replace_dynamics_time_attention(self.dynamics, cfg)
+        # NOTE: the Mamba-2 substitution is deliberately deferred to the END of
+        # construction. It used to run here, before the JEPA predictor and the
+        # three projection MLPs were built, so it consumed RNG and every
+        # `mamba2` world drew DIFFERENT weights for those four shared modules
+        # than the `transformer` world at the same seed. That silently broke the
+        # "temporal operator is the single moved axis" contract of D037: 16
+        # shared tensors differed at initialization. Building the backend last
+        # makes every non-temporal module bit-identical across backends.
         # Attributes present in every arm for state-dict/introspection symmetry.
         self.cdp_predictor = None
         self.jepa_predictor = None
@@ -304,6 +310,11 @@ class D4LiteWorld(nn.Module):
             self._build_jepa()
         else:
             self.freeze_tokenizer()
+
+        # Backend substitution LAST, so it cannot perturb the initialization of
+        # any module shared with the transformer arm (see the note above).
+        if cfg.temporal_backend == "mamba2":
+            replace_dynamics_time_attention(self.dynamics, cfg)
 
     def _build_jepa(self) -> None:
         """Non-generative SPR/BYOL arm: drop the decoder, keep the online
