@@ -1,4 +1,10 @@
-# Deviation ledger
+# Deviation ledger — ARCHIVE
+
+SUPERSEDED 2026-07-29 by `spec/ARCHITECTURE.md` (component-by-component, current
+state) and `spec/ABLATIONS.md` (run log with commits). Those are the working
+documents. This file is retained unedited as the historical record of D000-D046;
+do not add rows here.
+
 
 Every departure from a pinned primary implementation must be entered here
 before training. A change is not allowed to hide behind a generic "D4-Mamba"
