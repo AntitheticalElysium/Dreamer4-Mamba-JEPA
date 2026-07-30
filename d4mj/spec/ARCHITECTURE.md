@@ -1,0 +1,481 @@
+# Dreamer 4 + JEPA + Mamba — Global Architecture Draft
+
+**Status:** System map for review, not a component specification.
+
+This draft answers only:
+
+1. what the complete system is;
+2. where JEPA enters;
+3. where Mamba enters;
+4. which Dreamer 4 mechanisms remain around them.
+
+Shapes, layer choices, exact masks, loss formulas, and temporal indexing belong
+in the later component expansions.
+
+## Labels
+
+- `[D4]`: retained from the Dreamer 4 paper.
+- `[D4-ENTAILED]`: not stated verbatim, but required for consistency between
+  explicit Dreamer 4 statements.
+- `[JEPA-R]`: JEPA change to visual representation learning.
+- `[JEPA-D]`: JEPA change to action-conditioned world dynamics.
+- `[MAMBA]`: Mamba change to temporal sequence processing.
+- `[DESIGN]`: our integration choice, not a Dreamer 4 claim.
+- `[D4-UNKNOWN]`: required boundary that the paper does not specify.
+
+## One-sentence architecture
+
+> Keep Dreamer 4's offline training phases, causal spatial world model,
+> one-way task/agent interface, behavior cloning, reward learning, and
+> imagination RL; learn its visual state with JEPA, predict the next state with
+> action-conditioned JEPA, and replace temporal attention in the dynamics with
+> Mamba.
+
+`[DESIGN]` Assembly is not success: at matched active parameters, the combined
+arm must match the paper-constrained anchor on paired executed control, and any
+claimed JEPA or Mamba advantage must win its own preregistered metric.
+
+Representation JEPA and dynamics JEPA are separate interventions:
+
+- `[JEPA-R]` learns the observation latent \(z_t\);
+- `[JEPA-D]` predicts \(z_{t+1}\) from world history and action;
+- `[MAMBA]` carries the dynamics history used for that prediction.
+
+EMA and SIGReg belong only to Phase 1A (`[JEPA-R]`). Once the encoder is
+frozen, Phase 1B (`[JEPA-D]`) predicts fixed \(Z^*\) targets and uses neither
+mechanism.
+
+The encoder state, latent, and dynamics memory are not the same object:
+
+```text
+e_t = causal tokenizer state/cache used while encoding real observations
+z_t = backend-independent observation latent
+m_t = dynamics temporal memory (Transformer cache or Mamba state)
+h_t = one-way agent readout computed from the current world state
+Z*  = C* ∘ E* = declared frozen latent function for one representation arm
+
+imagined state       S_t      = (z_t, m_t)
+real-execution state S_t^real = (e_t, z_t, m_t)
+
+Observe(reset_t, e_{t-1}, m_{t-1}, a_{t-1}, o_t, optional q_t)
+    -> S_t^real = (e_t, z_t, m_t), h_t
+
+EvaluateCandidate(S_t, a_t, optional noise) -> candidate z_{t+1}
+Commit(S_t, a_t, accepted z_{t+1}, optional q_{t+1})
+    -> S_{t+1}, h_{t+1}
+
+Advance = one or more read-only EvaluateCandidate calls + exactly one Commit
+```
+
+`Observe` encodes and commits a real observation. \(m_t\) is the committed prefix
+**through block \(t\) inclusive**, so \(z_t\) is carried alongside only for loss,
+decoding and bookkeeping — no call may ingest it as a second temporal block.
+\(h_t\) is produced before \(a_t\) becomes visible. `EvaluateCandidate` may see
+\(a_t\) and may emit *ephemeral* world and agent outputs — a candidate block for
+\(t{+}1\) contains \(a_t\), and \(h_{t+1}\) predicts \(a_{t+1}\), so there is no
+leak — but it may not mutate the committed prefix, and rejected candidates'
+outputs are discarded. Whether the accepted candidate's state and \(h_{t+1}\) are
+committed directly or recomputed from the accepted latent is a transition-family
+decision. Tasks remain agent-side only.
+
+\(m_t\) spans **every** token slot, agent slots included: temporal mixing is
+per-slot, so agent streams carry their own recurrent summary and world streams
+can never read them. The firewall therefore needs no partition of \(m_t\) — it
+is a property of per-slot time mixing plus the spatial mask. The slot set of
+\(m_t\) changes when the agent modality is introduced in Phase 2; before that
+`Commit` returns no \(h\).
+
+## Whole-system flow
+
+Phase 1A and Phase 1B below are the tokenizer and dynamics subphases of Dreamer
+4 Phase 1, not separate replacements for its three-phase lifecycle.
+
+```text
+PHASE 1A — REPRESENTATION
+
+                         ┌─ D4 control: causal MAE encoder + decoder
+offline video ──────────┤
+                         └─ JEPA-R: causal encoder
+                              ├─ independent masked-EMA arm (run first)
+                              └─ independent SIGReg arm (run second):
+                                   full symmetric recipe OR named ablation
+                                      │
+                                      ▼
+                              frozen latent function Z*
+                                      │
+                                      ├─► canonical latent z
+                                      └─► diagnostic decoder ─► pixels
+
+PHASE 1B — WORLD MODEL
+
+(z history, actions, temporal memory)
+                  │
+                  ▼
+       D4 spatial/modal backbone
+                  │
+                  ▼
+       Transformer time mixer  OR  Mamba time mixer
+                  │
+                  ├─► D4 shortcut-flow transition
+                  └─► JEPA-D direct latent transition
+
+PHASE 2 — AGENT ADAPTATION
+
+world backbone + in-backbone agent/task modality
+                  │
+                  ├─► policy at state S_t ─► action a_t
+                  └─► reward/continuation at resulting state S_t+1
+
+The agent modality reads the world; the world never reads agent/task state.
+
+PHASE 3 — IMAGINATION RL
+
+dataset context ─► initialize S_t
+                  │
+                  ▼
+policy ─► action ─► world transition ─► next state/reward/continuation
+  ▲                                                       │
+  └──────────────── imagined rollout ◄────────────────────┘
+                              │
+                              ▼
+                  value learning + PMPO
+                  + frozen BC policy prior
+
+DEPLOYMENT
+
+real observation ─► Z* ─► update S_t^real ─► agent policy ─► environment action
+```
+
+## Box 1 — Offline data and sequence construction
+
+- **Input → operation → output:** Episodic videos, optional actions, rewards,
+  optional tasks, and terminal facts → retain unshifted episodes and construct
+  episode-safe causal sequences with the preceding action → world-pretraining
+  and agent-adaptation batches. `[DESIGN]` Only true episode starts receive
+  BOS; noninitial windows receive the real preceding action. `[DESIGN]` Storage
+  and block arrays carry different indices and must be named differently
+  (`action_taken[t]` vs `led_to_action[t]`); every offset statement names its
+  array.
+- **What stays from D4 — `[D4]`:** Offline video pretraining, optional
+  action-labeled data, task/reward-labeled agent data, and alternating short and
+  long training sequences, where batch length exceeds context length so the model
+  never assumes a start frame. `[D4-ENTAILED]` Block \(t\) exposes \(a_{t-1}\), while
+  \(h_t\) predicts the outgoing \(a_t\); exposing \(a_t\) in the same block
+  would leak the behavior-cloning target.
+- **What JEPA changes — `[JEPA-R]` / `[JEPA-D]`:** The same episodes also yield
+  paired representation views and future-latent prediction targets; no new
+  external labels are introduced.
+- **What Mamba changes — `[MAMBA]`:** The data do not change; sequence batches
+  must contain enough boundary and prefix information to initialize temporal
+  memory. A random crop is not an episode start: use a real prefix/burn-in, or
+  declare and test an explicitly bounded-memory approximation.
+
+## Box 2 — Visual representation system
+
+- **Input → operation → output:** Causal video context → train one
+  representation arm, declare its exported latent function, and freeze it
+  before dynamics training → canonical \(z_t\), deployment function
+  \(Z^*=C^*\!\circ E^*\), and optional post-hoc pixel diagnostics.
+- **What stays from D4 — `[D4]`:** The paper-constrained control keeps the
+  causal MAE tokenizer, \(L_\mathrm{MSE}+0.2L_\mathrm{LPIPS}\), `tanh`
+  bottleneck, and encoder freeze before dynamics training.
+- **What JEPA changes — `[JEPA-R]`:** Replace the defining pixel objective, not
+  the latent interface. Test masked EMA prediction, then an independent SIGReg
+  arm declared as either full symmetric LeJEPA or an anti-collapse ablation.
+  Both are causal-D4 adaptations. Declare the exported copy; pinned V-JEPA 2-AC
+  supports the EMA target default. JEPA decoders train only after freeze.
+- **What Mamba changes — `[DESIGN]`:** Nothing in the primary thesis path.
+  Keeping the encoder common isolates Mamba to dynamics; encoder-Mamba would
+  be a separate experiment.
+
+## Box 3 — Causal world backbone
+
+- **Input → operation → output:** Latent history, actions, temporal memory, and
+  optional in-backbone agent/task tokens → causal spatial/modal processing plus
+  a temporal mixer → world features, updated memory, and agent readout \(h_t\).
+- **What stays from D4 — `[D4]`:** All arms retain interleaved latent, action,
+  and register tokens; separate space-only and time-only layers; temporal
+  mixing every four layers (reproductions ship 2 and 1 — verify the anchor,
+  do not inherit it); and the one-way agent firewall. The Transformer
+  anchor retains pre-RMSNorm, RoPE, SwiGLU, QKNorm, attention-logit soft
+  capping, and dynamics GQA. Flow arms also retain the signal/step token.
+- **What JEPA changes — `[JEPA-R]` / `[JEPA-D]`:** The input latent may come
+  from \(Z^*\). Direct JEPA-D removes flow noise and signal-level/step
+  conditioning; causality and the task firewall are untouched. `[DESIGN]` The
+  conditioning *slot* is retained in every arm — flow puts its signal/step
+  embedding there, Direct a single learned transition-family vector (one vector,
+  not a lookup table with unreachable rows). Deleting the slot would change block
+  width, every later segment's spatial RoPE index, attention cost, stream count
+  and state size at once, so slot-wise comparability and shared init across arms
+  would be lost for a 1-of-\(S\) saving.
+- **What Mamba changes — `[MAMBA]` / `[DESIGN]`:** Replace each dynamics
+  time-attention sublayer with complete `Mamba2`, retaining its projections,
+  causal convolution, SSD, gate/internal norm and D4's outer block, MLP, space
+  layers, and cadence. One stream per fixed token slot preserves shape and
+  causal isolation, not functional equivalence. Mamba time layers drop temporal
+  RoPE, QKNorm, logit capping, and GQA; spatial attention keeps them. Fixed-size
+  dynamics state and speed are measured hypotheses.
+
+## Box 4 — Action-conditioned next-state model
+
+- **Input → operation → output:** Current imagined state \(S_t=(z_t,m_t)\),
+  chosen action \(a_t\), and optional noise → apply one transactional
+  `Advance` → \(S_{t+1}=(z_{t+1},m_{t+1})\) and \(h_{t+1}\).
+- **What stays from D4 — `[D4]`:** An autoregressive action-conditioned world
+  model and stochastic shortcut flow with four denoising evaluations.
+  `[D4-UNKNOWN]` The paper calls signal
+  \(\tau_{\mathrm{ctx}}=0.1\) a slight corruption despite defining
+  \(\tau=0\) as noise; reproductions use roughly \(0.9\) signal. Resolve this
+  before freezing the anchor. `[D4-UNKNOWN]` D4 states four denoising forwards
+  but never says which latent condition supplies the persistent next-step prefix
+  and agent readout. Rungs never write the cache, and both reproductions rescan
+  the whole prefix every frame, so no source adjudicates it. Two coherent
+  contracts: **(B)** commit the final rung's state in four forwards, so
+  \(m_{t+1}\) and \(h_{t+1}\) are conditioned on that rung's noisy input; or
+  **(A)** add a fifth accepted-latent commit, so persistent state corresponds
+  exactly to \(\hat z_{t+1}\) but the frame exceeds the stated four. B has partial
+  corroboration — the reproduction reads \(h\) from the final rung, and §3.3
+  trains heads on noisy representations — and neither has any for the cache. A
+  hybrid that reads \(h\) from one condition and commits \(m\) from another is
+  possible but leaves them inconsistent. Both arms implement the same semantic
+  choice. This also decides whether \(\tau_{\mathrm{ctx}}\) applies at commit or
+  at read.
+- **What JEPA changes — `[JEPA-D]`:** The thesis branch directly predicts the
+  frozen \(Z^*\) target. Its prediction readout must see \(a_t\) without
+  exposing it to \(h_t\), so V-JEPA 2-AC's same-slot readout cannot be copied
+  unchanged; placeholder/query versus separate readout-plus-commit remains a
+  component decision. Short generated-prefix training replaces flow's explicit
+  corruption-conditioned robustness path; two steps are source-backed
+  (`auto_steps: 2`). The branch is deterministic unless stochasticity is added.
+  `[D4-UNKNOWN]` Pinned V-JEPA 2-AC runs its predictor *entirely* in a
+  LayerNormed feature space — inputs, recursive outputs and targets all pass
+  `normalize_reps` — so adopting it makes normalization part of \(Z^*\), not a
+  loss detail. LayerNorm discards per-token mean and scale, so a Direct arm that
+  normalizes and a Flow arm that does not are **not** the same representation,
+  and Stage A's fixed-representation claim fails. Choose one: normalize inside
+  \(Z^*\) for every arm (changes the flow anchor's target and noise space), or
+  keep \(Z^*\) unnormalized and define the mapping from readout space back to
+  \(Z^*\) before `Commit`. Feeding an unnormalized recursive readout back with
+  no mapping has no source support either.
+- **What Mamba changes — `[MAMBA]` / `[DESIGN]`:** `Advance` consumes and
+  returns per-layer `(conv_state, ssm_state)` and obeys the read-only
+  evaluate/one-commit transaction — stricter here than for a cache, since
+  `step()` mutates state in place, so rungs must snapshot and restore where a
+  cache merely declines to append. Whichever commit contract is chosen applies
+  identically to both arms; no execution count is attributed to a backend before
+  that choice is fixed. Count every execution.
+
+## Box 5 — Agent adaptation and heads
+
+- **Input → operation → output:** Pretrained dynamics plus labeled
+  action/reward, optional task, and boundary sequences → continue the dynamics
+  objective while fitting the one-way agent readout and heads → adapted world
+  model, BC policy, reward model, and continuation estimate; copy and freeze
+  the BC policy at the Phase-3 boundary.
+- **What stays from D4 — `[D4]`:** A distinct adaptation phase,
+  agent tokens, continued world training, and one policy/reward head per MTP
+  distance. Policy is categorical or vectorized-binary; reward is
+  symexp-twohot; value starts in Phase 3. `[D4-UNKNOWN]` The source of \(c_t\)
+  is unspecified. `[DESIGN]` Add environmental nontermination: terminal=0;
+  truncation resets runtime but bootstraps. At \(h_t\), policy lead 0 is
+  outgoing \(a_t\), reward lead 0 incoming \(r_t\). `[D4]` Adaptation reuses the
+  pretraining setting, so flow-arm heads are deliberately trained on *noisy*
+  representations across the sampled signal range — that is what makes them
+  usable on generated latents at imagination time.
+- **What JEPA changes — `[JEPA-R]` / `[JEPA-D]`:** Keep \(Z^*\) frozen and
+  continue its transition objective. Heads stay interface-compatible;
+  generated-prefix robustness is gated without changing target semantics.
+  `[JEPA-D]` Deleting the signal level also deletes the channel that spread head
+  training over imperfect latents, so each arm must declare the latent condition
+  its heads are trained on and show it matches the condition they are read under
+  in imagination.
+- **What Mamba changes — `[MAMBA]`:** Head semantics stay fixed; scan and
+  recurrent step must preserve world outputs, readouts, final states, and the
+  firewall within registered tolerances.
+
+## Box 6 — Imagination engine
+
+- **Input → operation → output:** Dataset context, frozen \(Z^*\), world,
+  reward and continuation models, current policy/value heads, and optional
+  task → encode and scan the context to initialize \(S_t\), then alternate
+  policy actions and `Advance` calls → imagined trajectories with states,
+  actions, rewards, continuations, and values.
+- **What stays from D4 — `[D4]`:** Start one rollout per diverse dataset
+  context, sample policy actions and latent futures, and keep the world model
+  frozen during the default imagination-RL phase.
+- **What JEPA changes — `[JEPA-D]`:** Direct predicted latents replace flow
+  samples in the thesis branch and are fed back recursively. The diagnostic
+  decoder is not part of the control loop.
+- **What Mamba changes — `[MAMBA]`:** The context scan initializes every
+  temporal-layer state pair. Each rollout owns its branch of that state, and
+  `Advance` and `Observe` obey the same state-branch, commit, and reset
+  semantics.
+
+## Box 7 — Value and policy improvement
+
+- **Input → operation → output:** Imagined trajectories and frozen BC-policy
+  prior → compute returns, fit value, and improve policy → trained policy and
+  value heads.
+- **What stays from D4 — `[D4]`:** Symexp-twohot value learning,
+  TD-\(\lambda\), sign-based PMPO, reverse KL to the frozen behavioral prior,
+  and a frozen world/reward model. The paper fixes \(\gamma=0.997\),
+  PMPO \(\alpha=0.5\), and prior weight \(\beta=0.3\), but not \(\lambda\).
+  `[DESIGN]` \(G_t=r_{t+1}+\gamma c_{t+1}[(1-\lambda)v_{t+1}
+  +\lambda G_{t+1}]\). `[D4-UNKNOWN]` Equation 10 instead prints same-index
+  reward, continuation, and value; do not implement it literally before this
+  discrepancy is resolved.
+- **What JEPA changes — `[JEPA-R]` / `[JEPA-D]`:** No RL algorithm change;
+  executed control tests whether the learned representation and transition are
+  sufficient.
+- **What Mamba changes — `[MAMBA]`:** No RL objective change; policy and value
+  consume Mamba-conditioned agent readouts without gradient updates to
+  world-model parameters. Recurrent state still advances inside each rollout
+  and is discarded or reset at its boundary.
+
+## Box 8 — Real-environment execution
+
+- **Input → operation → output:** Real observation \(o_t\), previous action
+  \(a_{t-1}\), optional task, encoder state \(e_{t-1}\), dynamics memory
+  \(m_{t-1}\), and reset signal → clear \(e,m\) on an actual reset, `Observe`,
+  read \(h_t\), choose \(a_t\), and step the environment → next real
+  transition and carried states.
+- **What stays from D4 — `[D4]`:** Causal visual processing,
+  task-conditioned agent readout, and direct low-level policy actions.
+- **What JEPA changes — `[JEPA-R]` / `[JEPA-D]`:** Only the selected frozen
+  deployment function \(Z^*\) is active on real observations; training-only
+  teachers, SIGReg, transition losses, and the decoder are absent.
+- **What Mamba changes — `[MAMBA]`:** Carry and reset Mamba memory under the
+  same declared episode semantics used for training and imagination. Resetting
+  runtime state remains separate from deciding whether a time-limit transition
+  bootstraps its value target.
+
+## Global invariants
+
+1. `[DESIGN]` Each arm exports exactly one \(Z^*=C^*\!\circ E^*\), where
+   \(C^*\) fixes copy, output, normalization/bottleneck, and packing. Real
+   latents, targets, and diagnostics share this \(z\)-space; \(e_t,m_t\) do not.
+   Because the tokenizer is causal, \(z_t=Z^*(o_{\le t})\), so \(C^*\) must also
+   fix the causal mask, maximum encoder context, reset policy and prefix/burn-in
+   rule: the same frame encoded from a bare crop, from a burn-in prefix, or from
+   a whole episode yields three different latents under identical weights. Every
+   cached target, JEPA target, diagnostic and deployment latent uses that one
+   contract, and no target encoder may see frames unavailable to the deployed
+   encoder.
+   Representation arms that differ in \(C^*\)'s geometry change objective *and*
+   latent space at once; either hold geometry fixed across arms or label the
+   comparison compound.
+2. `[D4]` Agent/task state reaches the world only through the selected action.
+   `[DESIGN]` Active single-task runs instantiate no task projection; agent
+   tokens remain task-independent readouts. Optional \(q_t\) is a dormant
+   compatibility interface for a declared multitask experiment.
+3. `[DESIGN]` Policy reads the pre-action state; reward/continuation describe
+   its result. Candidate branches are read-only, one edge commits, and every
+   actual reset clears \(e_t,m_t\) regardless of bootstrap.
+4. `[DESIGN]` EMA and SIGReg share a deployed interface; Mamba changes dynamics
+   time mixing only; JEPA-R, JEPA-D, and Mamba remain separately measurable.
+   `[D4]` Concurrent losses use running-RMS normalization, with new composite
+   objectives declared explicitly.
+5. `[D4-ENTAILED]` The Transformer anchor carries a persistent dynamics KV
+   cache across accepted frames; full-prefix rescanning is not an efficiency
+   control. `[DESIGN]` Report \(e_t\) and \(m_t\) separately: Mamba fixes only
+   \(m_t\); \(e_t\) scales with encoder context. Match deployed parameters and
+   separately report training-only parameters, FLOPs, memory, throughput, and
+   state size.
+
+## Staged attribution plan
+
+Stage A uses one frozen D4-MAE encoder for a complete dynamics \(2\times2\):
+
+| Arm | Representation | Transition | Time mixer | Question |
+|---|---|---|---|---|
+| MAE-Flow-T | D4 MAE | D4 flow | Transformer | Paper-constrained anchor |
+| MAE-Flow-M | Same frozen MAE | D4 flow | Mamba | Mamba under flow |
+| MAE-Direct-T | Same frozen MAE | Direct JEPA-D | Transformer | Direct vs flow under T |
+| MAE-Direct-M | Same frozen MAE | Direct JEPA-D | Mamba | Completes the factorial |
+
+Stage A estimates Mamba under each transition family, direct versus flow under
+each mixer, and their interaction; flow versus direct moves multiple mechanisms
+and does not isolate stochasticity by itself.
+
+Before Mamba training, gate scan/step parity for outputs and states, selective
+reset parity, firewall counterfactuals, branch nonmutation, and actual recurrent
+carry in FP32 and deployment dtype.
+
+Stage B follows a preregistered branch. If `MAE-Direct-M` passes, compare it
+with `EMA-Direct-M`, then `SIGReg-Direct-M`, to estimate representation effects.
+If it fails, run the EMA viability pair `EMA-Direct-M` and `EMA-Flow-M`:
+comparison to `MAE-Flow-M` isolates JEPA-R under flow; a direct-only rescue is
+a JEPA-R × JEPA-D interaction. SIGReg follows only a passing EMA route with
+transition fixed.
+
+Stage C compares `JEPA-R-Direct-M` with `JEPA-R-Flow-M` in the dev-selected
+frozen representation whenever direct prediction is viable. It measures the
+transition-family system effect, not stochasticity alone. If direct never
+passes, the surviving model is JEPA-R + Flow + Mamba and makes no JEPA-D
+success claim.
+
+Each stage passes source-fidelity, recurrence, parameter-match, and executed-
+control gates before the next stage. Matched arms share data/splits and
+phase-reseeded construction with initialization digests. Budget every matched
+cell plus BC, actor, and executed evaluation; never start a partial factorial.
+
+## Decisions reserved for component expansion
+
+1. Retain the D4 `tanh` bottleneck or adopt a different JEPA latent geometry;
+   decide whether SIGReg acts on \(z\), an unbounded projector, or both.
+2. Fix the EMA views/masks/loss and choose whether the SIGReg arm is faithful
+   symmetric LeJEPA or a one-variable collapse-prevention ablation. Specify how
+   D4 running-RMS loss normalization treats each composite JEPA objective.
+3. Fix one timing contract per transition family: where \(a_t\) enters, what
+   emits \(\hat z_{t+1}\), how real and predicted latents are conditioned on
+   `Observe`/`Commit`, and which finalized block alone advances \(m_{t+1}\).
+   Fix JEPA-D loss and rollout schedule; V-JEPA 2-AC uses no
+   learned query, but that does not settle this integration. Settle the flow
+   cache-commit candidates and the canonical-versus-normalized latent space
+   before Stage A, since both decide whether its \(2\times2\) is
+   fixed-representation. Tabulate, per path (real `Observe`, flow training, flow
+   imagination, direct training, direct imagination), the latent supplied at
+   commit, its conditioning token, and where \(h\) is read.
+4. Define generated-prefix robustness and the go/no-go comparison between
+   deterministic direct JEPA and the same-representation/backbone flow family.
+5. Specify and validate fixed one-stream-per-D4-token-slot packing, state
+   shapes, hyperparameters, normalization, temporal position handling, burn-in,
+   reset, scan/step parity, branching, and accepted-context commit. Optimizer
+   flags and fused/reference kernel parity belong to that component gate.
+6. With result-state semantics fixed, finalize BOS/missing-action encoding,
+   storage offsets, reward-MTP lead slicing, and the D4 MTP ambiguity (`L=8`
+   text versus nine terms in Eq. 9).
+7. Resolve Equation 10's same-index notation against the next-state contract;
+   set the imagination horizon from demonstrated multi-step prediction accuracy
+   rather than inheriting one, set \(\lambda\), separate environment continuation from
+   rollout-boundary bootstrap, and define stopping and empty PMPO-set behavior.
+8. Preregister the parameter/FLOP matching rule, recurrent efficiency metrics,
+   and official executed-control metric with paired BC and random controls.
+
+## Source boundary
+
+- Dreamer 4: `third_party/papers/2509.24527v1.pdf`, Algorithm 1, Figure 2,
+  Sections 3.1–3.4, and Equations 5–11.
+- EMA representation JEPA and action-conditioned latent prediction:
+  `third_party/papers/2506.09985v1.pdf`, Sections 2.1 and 3.1, Equations 1–4;
+  `facebookresearch/vjepa2@204698b45b3712590f06245fbfba32d3be539812`.
+- SIGReg: `third_party/papers/2511.08544v2-lejepa.pdf`, Sections 4–5.1 and
+  Algorithms 1–2;
+  `rbalestr-lab/lejepa@c293d291ca87cd4fddee9d3fffe4e914c7272052`.
+- EMA momentum schedule and target-encoder-for-evaluation precedent:
+  `third_party/papers/2301.08243v3.pdf`;
+  `facebookresearch/ijepa@52c1ae95d05f743e000e8f10a1f3a79b10cff048`.
+- Mamba-2: `third_party/papers/2405.21060v1.pdf`;
+  `state-spaces/mamba@f577286d052741c35d39cd43bdc3fad27120f22c`.
+
+No official Dreamer 4 implementation is available in the audited source set.
+`nicklashansen/dreamer4@b8abafbf4da72c59b6aa09f8499ccde0d6a37fd6`
+and
+`edwhu/dreamer4-jax@8144b940d801971f12ec5633553b95001e555949`
+are corroboration only, never canonical evidence.
+`nicklashansen/mmbench2@3dda6ea5bc60382ad9e1dcd1c6c3af67d69326a9`
+corroborates one temporal stream per D4 token slot. Replacing those attention
+streams with official Mamba-2 is our integration; MMBench2 defines neither
+Mamba nor canonical Dreamer 4.
+`danijar/dreamerv3@e3f02248693a79dc8b0ebd62c93683888ddaccfe`
+is implementation precedent only for return and boundary semantics.
