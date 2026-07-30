@@ -898,6 +898,30 @@ CPU-only runtimes, not repo defects).
   entirely. And causal BC on a 16-frame window does train context length 8; the
   A7 mismatch is distributional, not categorical.
 
+## Round 3b — review response
+
+A fourth-pass review of `1e90daa` raised eight points. All eight reproduced;
+all eight are now fixed. Two were regressions I introduced in round 3.
+
+| id | finding | resolution |
+|---|---|---|
+| P7 | **My regression.** `_decay_groups` added a `base_lr` key to every group, so a transformer world's `optimizer.state_dict()` gained a key the pre-fix one never had. My "byte-identical" claim was false — it was only update-equivalent. | `base_lr` is emitted only in the branch whose warmup loop reads it, and a T world with no exempt tensor now takes the original single-argument `AdamW(trainable, ...)` path verbatim. Verified identical param-group metadata against a reconstruction of the `81d3466` optimizer, for both `encoder_learning_rate` branches. |
+| P1 | **My regression.** `verify_recorded_sources` validated only the keys present, so `{}` passed — provenance failing open. Legacy and tampered payloads were indistinguishable because both are `*_v1`. | Added `sources_schema`. A schema-2 block must cover `source_names_for(config)`; a schema-less block must be *exactly* the historical triple. Empty, truncated and unknown-schema blocks are all rejected; both archived checkpoints still load. |
+| P4 | `source_names_for` labelled every config Craftax, including `D4LiteConfig(n_actions=2)` and tokenizer checkpoints, on no evidence. | It now returns code dependencies only. The environment is passed explicitly via `save_checkpoint(environment_sources=("craftax",))` by the runner that knows it. |
+| P3 | `SOURCE_MANIFEST.md` claimed its table was "the only third-party bytes that run". False: `mamba2.py` dispatches into an unpinned operator tree, and the Craftax env factory and env classes were unpinned. | Added a whole-package `mamba_ssm` tree digest (54 files) under its own source name, and pinned `craftax_env.py` plus both env classes. Added a "Runtime closure" section stating what is still uncovered (`causal_conv1d`, the rest of the craftax package). |
+| P8 | The rewrite dropped the digests of `train_dynamics.py` and `interactive.py`, which `objectives.py` and `rollout.py` are hand-ported from. | Restored, plus `train_tokenizer.py`, under an explicit **hand-ported** label. |
+| P5 | Only rows 1/17/18 got `WD*`; rows 2, 3 and 8 also consume or report the M-JEPA world. | Rows 2, 3, 8 flagged `INIT* WD*`; the flag definition now says it marks any row that trained *or reported* an M world. |
+| P6 | "world/tokenizer writers carry full RNG" is false — the world stores RNG only when an optimizer is passed, and the tokenizer stores none. | §16 now states the actual capture rule per writer. |
+| item 2 | §13 said the M arm accumulates "no information older than 8 steps". Too strong: generated latents recursively summarize older history. | Reworded to the exact defect — loss of the **explicit** recurrent state — with the lossy-summarization caveat. |
+
+The reviewer's other observations are accurate and were already the position
+here: the archived replay and value artifacts are not migrated, and the dead
+parameters, 5-vs-8 head horizon, unbounded predicted latent, context/horizon
+pathology, absent expert lineage and implementation-hash boundary remain
+documented rather than changed. Their reading of the Mamba recurrence question
+matches F7: it can plausibly impair M's actor update, cannot explain M's higher
+BC, and `ABLATIONS.md` row 19 is still the only run that would settle it.
+
 ## Deliberately NOT changed
 
 - The `flow_x_head`, dead MAE mask token and degenerate shortcut embeddings

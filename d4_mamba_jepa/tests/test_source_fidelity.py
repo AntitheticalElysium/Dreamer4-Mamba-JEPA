@@ -10,6 +10,7 @@ import sys
 import pytest
 import torch
 
+from d4_mamba_jepa.config import D4LiteConfig
 from d4_mamba_jepa.craftax_runners import (
     VALUE_FORMAT,
     craftax_jepa_config,
@@ -20,6 +21,8 @@ from d4_mamba_jepa.imagination_actor_critic import ValueHead
 from d4_mamba_jepa.model import D4LiteWorld
 from d4_mamba_jepa.objectives import optimizer_groups, split_no_weight_decay
 from d4_mamba_jepa.source import (
+    LEGACY_SOURCE_NAMES,
+    PROVENANCE_SCHEMA,
     SourceDriftError,
     source_names_for,
     source_report,
@@ -97,6 +100,81 @@ def test_a10_mamba_marked_tensors_land_in_a_zero_weight_decay_group():
         assert not marked_ids.intersection(id(p) for p in group["params"])
 
 
+# --- P7: the A10 fix must not perturb the T arm's SERIALIZED optimizer -------
+def _pre_fix_optimizer(world, lr, enc_lr):
+    """The optimizer exactly as built at commit 81d3466, before the A10 fix."""
+    if enc_lr is None:
+        trainable = [p for p in world.parameters() if p.requires_grad]
+        return torch.optim.AdamW(trainable, lr=lr, weight_decay=1e-2)
+    encoder = list(world.encoder.parameters())
+    ids = {id(p) for p in encoder}
+    other = [
+        p for p in world.parameters() if p.requires_grad and id(p) not in ids
+    ]
+    groups = [{"params": other, "lr": lr, "base_lr": lr}]
+    if enc_lr > 0.0:
+        groups.append({"params": encoder, "lr": enc_lr, "base_lr": enc_lr})
+    return torch.optim.AdamW(groups, lr=lr, weight_decay=1e-2)
+
+
+def _group_metadata(optimizer):
+    return [
+        {k: v for k, v in group.items() if k != "params"}
+        for group in optimizer.state_dict()["param_groups"]
+    ]
+
+
+@pytest.mark.parametrize("encoder_lr", [None, 6e-6])
+def test_p7_transformer_optimizer_state_dict_is_unchanged(monkeypatch, encoder_lr):
+    """A10 must be a no-op for the T arm down to the serialized param groups.
+
+    Numerical equivalence is not enough: a stray group key changes
+    `optimizer.state_dict()`, which is written into every world checkpoint.
+    """
+    import d4_mamba_jepa.craftax_runners as runners
+
+    captured = {}
+    real_adamw = torch.optim.AdamW
+
+    def spy(params, **kwargs):
+        optimizer = real_adamw(params, **kwargs)
+        captured["live"] = optimizer
+        return optimizer
+
+    monkeypatch.setattr(torch.optim, "AdamW", spy)
+    cfg = craftax_jepa_config("transformer")
+    world = D4LiteWorld(cfg)
+    monkeypatch.setattr(runners, "D4LiteWorld", lambda _cfg: world)
+    replay = _one_episode_replay()
+    runners.train_craftax_jepa_world(
+        replay=replay, cfg=cfg, world_steps=0, batch_size=2,
+        device=torch.device("cpu"), warmup=1, encoder_learning_rate=encoder_lr,
+        log_every=0,
+    )
+    monkeypatch.setattr(torch.optim, "AdamW", real_adamw)
+    expected = _pre_fix_optimizer(world, 1e-4, encoder_lr)
+    assert _group_metadata(captured["live"]) == _group_metadata(expected)
+
+
+def _one_episode_replay():
+    import numpy as np
+
+    from d4_mamba_jepa.data import Episode, EpisodeReplay
+
+    replay = EpisodeReplay(capacity_steps=10 ** 6)
+    rng = np.random.default_rng(0)
+    length = 20
+    replay.add(Episode(
+        obs=rng.integers(0, 255, (length + 1, 3, 64, 64), dtype=np.uint8),
+        actions=rng.integers(0, 17, length).astype(np.int64),
+        rewards=np.zeros(length, np.float32),
+        continues=np.concatenate(
+            [np.ones(length - 1, np.float32), np.zeros(1, np.float32)]
+        ),
+    ))
+    return replay
+
+
 # --- A20: value checkpoints were non-atomic and unpaired ---------------------
 def test_a20_value_checkpoint_roundtrips_with_pairing(tmp_path):
     torch.manual_seed(0)
@@ -128,12 +206,14 @@ def test_a20_value_checkpoint_rejects_a_foreign_world(tmp_path):
 
 
 # --- N4: source_report was unconditional and load compared whole reports -----
-def test_n4_source_report_is_config_conditional():
+def test_n4_source_report_covers_code_dependencies_only():
+    # No environment is inferred: D4LiteConfig carries no simulator identity.
     assert source_names_for(craftax_jepa_config("transformer")) == (
-        "mmbench2_model", "craftax",
+        "mmbench2_model",
     )
+    assert source_names_for(D4LiteConfig(n_actions=2)) == ("mmbench2_model",)
     assert source_names_for(craftax_jepa_config("mamba2")) == (
-        "mmbench2_model", "craftax", "mamba2",
+        "mmbench2_model", "mamba2", "mamba_ssm_tree",
     )
     sigreg = replace(craftax_jepa_config("mamba2"), jepa_anticollapse="sigreg")
     assert "lejepa" in source_names_for(sigreg)
@@ -141,31 +221,90 @@ def test_n4_source_report_is_config_conditional():
     # require an installed byte-matching Mamba.
     report = source_report(craftax_jepa_config("transformer"))
     assert "mamba2" not in report and "gymnasium_cartpole" not in report
-    assert "craftax" in report
+
+
+def test_n4_environment_sources_are_explicit_not_inferred():
+    cfg = craftax_jepa_config("transformer")
+    assert "craftax" not in source_report(cfg)
+    assert "craftax" in source_report(cfg, environment_sources=("craftax",))
+    with pytest.raises(SourceDriftError, match="unknown source names"):
+        source_report(cfg, environment_sources=("not_a_simulator",))
 
 
 def test_n4_no_argument_report_keeps_the_legacy_triple():
-    assert set(source_report()) == {
-        "mmbench2_model", "mamba2", "gymnasium_cartpole",
-    }
+    assert set(source_report()) == set(LEGACY_SOURCE_NAMES)
 
 
-def test_n4_verify_recorded_sources_accepts_a_legacy_subset():
-    """A checkpoint written before Craftax/LeJEPA were reported must still load."""
-    legacy = source_report()  # the historical three-source block
-    verify_recorded_sources(legacy)
-    verify_recorded_sources({"mmbench2_model": legacy["mmbench2_model"]})
+# --- P1: schema-less leniency must not become fail-open provenance ----------
+def test_p1_schemaless_block_must_be_exactly_the_legacy_triple():
+    legacy = source_report()
+    verify_recorded_sources(legacy)  # a genuine pre-versioning payload
+    for bad in ({}, {"mmbench2_model": legacy["mmbench2_model"]}):
+        with pytest.raises(SourceDriftError, match="must record exactly"):
+            verify_recorded_sources(bad)
+
+
+def test_p1_schema2_block_must_cover_every_required_source():
+    cfg = craftax_jepa_config("mamba2")
+    required = source_names_for(cfg)
+    full = source_report(cfg, environment_sources=("craftax",))
+    verify_recorded_sources(full, schema=PROVENANCE_SCHEMA, required=required)
+    # dropping any single required source must fail, not pass vacuously
+    for name in required:
+        truncated = {k: v for k, v in full.items() if k != name}
+        with pytest.raises(SourceDriftError, match="omits required sources"):
+            verify_recorded_sources(
+                truncated, schema=PROVENANCE_SCHEMA, required=required
+            )
+    with pytest.raises(SourceDriftError, match="omits required sources"):
+        verify_recorded_sources({}, schema=PROVENANCE_SCHEMA, required=required)
+
+
+def test_p1_unknown_schema_is_refused():
+    with pytest.raises(SourceDriftError, match="unsupported provenance schema"):
+        verify_recorded_sources(source_report(), schema=99)
 
 
 def test_n4_verify_recorded_sources_rejects_drift_and_unknown_names():
     legacy = source_report()
-    tampered = {
-        "mmbench2_model": {**legacy["mmbench2_model"], "sha256": "0" * 64}
-    }
+    tampered = {**legacy}
+    tampered["mmbench2_model"] = {**legacy["mmbench2_model"], "sha256": "0" * 64}
     with pytest.raises(SourceDriftError, match="drifted"):
         verify_recorded_sources(tampered)
     with pytest.raises(SourceDriftError, match="unknown recorded source"):
         verify_recorded_sources({"not_a_source": {}})
+
+
+# --- P3: the digest closure must cover what actually executes ---------------
+def test_p3_craftax_digests_cover_the_env_factory_and_env_classes():
+    from d4_mamba_jepa.source import CRAFTAX_CLASSIC_DIGESTS
+
+    for name in (
+        "craftax_env.py",
+        "craftax_classic/envs/craftax_pixels_env.py",
+        "craftax_classic/envs/craftax_symbolic_env.py",
+    ):
+        assert name in CRAFTAX_CLASSIC_DIGESTS
+
+
+@requires_mamba
+def test_p3_mamba_tree_digest_covers_the_operator_modules():
+    """mamba2.py alone excludes the kernels it dispatches to."""
+    import importlib.util
+    import pathlib
+
+    from d4_mamba_jepa.source import verify_installed_mamba_tree
+
+    assert verify_installed_mamba_tree()
+    root = pathlib.Path(importlib.util.find_spec("mamba_ssm").origin).parent
+    covered = {p.relative_to(root).as_posix() for p in root.rglob("*.py")}
+    # the active use_mem_eff_path=False path and its neighbours
+    for name in (
+        "ops/triton/ssd_combined.py",
+        "ops/triton/layernorm_gated.py",
+        "ops/triton/selective_state_update.py",
+    ):
+        assert name in covered
 
 
 # --- N5: LeJEPA imported far more than it verified ---------------------------

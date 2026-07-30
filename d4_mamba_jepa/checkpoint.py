@@ -12,7 +12,12 @@ import torch
 
 from .config import D4LiteConfig
 from .model import D4LiteWorld, build_tokenizer
-from .source import source_report, verify_recorded_sources
+from .source import (
+    PROVENANCE_SCHEMA,
+    source_names_for,
+    source_report,
+    verify_recorded_sources,
+)
 from .training import WorldLossNormalizer
 
 
@@ -111,8 +116,14 @@ def save_checkpoint(
     numpy_rng=None,
     step: int,
     extra: dict | None = None,
+    environment_sources: tuple[str, ...] = (),
 ) -> str:
-    """Write to a sibling temporary file and atomically replace ``path``."""
+    """Write to a sibling temporary file and atomically replace ``path``.
+
+    ``environment_sources`` names the simulator the weights were trained
+    against, e.g. ``("craftax",)``. It is explicit because ``D4LiteConfig``
+    carries no environment identity and this module must not guess one.
+    """
     target = Path(path)
     payload = {
         "format": FORMAT,
@@ -122,10 +133,14 @@ def save_checkpoint(
         "step": int(step),
         "provenance": {
             # Config-conditional: a transformer world records no Mamba-2 source
-            # and therefore does not require an installed Mamba to be reloaded,
-            # while every world now records the Craftax environment it was
-            # trained against. See `source.source_names_for`.
-            "sources": source_report(world.cfg),
+            # and therefore does not require an installed Mamba to be reloaded.
+            "sources": source_report(
+                world.cfg, environment_sources=environment_sources
+            ),
+            # Marks this block as covering `source_names_for(config)` at
+            # minimum, so `verify_recorded_sources` can reject a truncated or
+            # emptied block instead of vacuously accepting it.
+            "sources_schema": PROVENANCE_SCHEMA,
             "implementation_sha256": implementation_sha256(),
             "torch": torch.__version__,
         },
@@ -162,7 +177,10 @@ def save_tokenizer_checkpoint(
         "tokenizer": _cpu_state_dict(tokenizer),
         "step": int(step),
         "provenance": {
+            # A tokenizer has no environment dependency at all -- it maps
+            # patches to a bottleneck -- so no `environment_sources` here.
             "sources": source_report(config),
+            "sources_schema": PROVENANCE_SCHEMA,
             "implementation_sha256": implementation_sha256(),
             "torch": torch.__version__,
         },
@@ -192,7 +210,11 @@ def load_tokenizer_checkpoint(
         raise RuntimeError("tokenizer checkpoint config drift")
     if payload["provenance"]["implementation_sha256"] != implementation_sha256():
         raise RuntimeError("tokenizer checkpoint implementation drift")
-    verify_recorded_sources(payload["provenance"]["sources"])
+    verify_recorded_sources(
+        payload["provenance"]["sources"],
+        schema=payload["provenance"].get("sources_schema"),
+        required=source_names_for(config),
+    )
     tokenizer = build_tokenizer(config, training_mask=training_mask).to(device)
     tokenizer.load_state_dict(payload["tokenizer"], strict=True)
     return tokenizer, payload
@@ -235,12 +257,15 @@ def load_checkpoint(
             "checkpoint implementation drift: "
             f"{stored_implementation} != {current_implementation}"
         )
-    # Re-verify every source this checkpoint RECORDED, before weights enter a
-    # newly constructed model. Recomputing the recorded names (rather than
-    # comparing against whatever the current code reports) keeps checkpoints
-    # written under an older source set loadable, while still hard-failing on
-    # drift in anything that was actually pinned at save time.
-    verify_recorded_sources(payload["provenance"]["sources"])
+    # Re-verify the recorded sources before weights enter a newly constructed
+    # model. Recomputing the recorded names (rather than comparing against
+    # whatever the current code reports) keeps older checkpoints loadable; the
+    # schema key stops that leniency from accepting a truncated block.
+    verify_recorded_sources(
+        payload["provenance"]["sources"],
+        schema=payload["provenance"].get("sources_schema"),
+        required=source_names_for(config),
+    )
 
     world = D4LiteWorld(config).to(device)
     normalizer = WorldLossNormalizer().to(device)

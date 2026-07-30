@@ -13,20 +13,52 @@ in our process. `read reference` means a human read it and no code was copied.
 
 ## Imported at runtime — digest-verified before execution
 
-These are the only third-party bytes that run. `source.py` verifies each digest
-and hard-fails on drift.
+`source.py` verifies each digest below and hard-fails on drift.
+
+These are the ENTRY POINTS we import, not a complete list of the third-party
+bytes that execute — see "Runtime closure" after the table for what each one
+pulls in and how far the pin now reaches.
 
 | Component | Repository | Commit | License | File | SHA-256 |
 |---|---|---|---|---|---|
 | Tokenizer, block-causal dynamics, reward MTP head, `EmaRms`, symlog/two-hot | `nicklashansen/mmbench2` | `3dda6ea5bc60382ad9e1dcd1c6c3af67d69326a9` | MIT | `src/model.py` | `40f0c763e3e2a62c1dee2786cc6faffb7b08c8145068d8cf7d853ae89c893510` |
 | Temporal selective state-space layer (M arm only) | `state-spaces/mamba` | `f577286d052741c35d39cd43bdc3fad27120f22c` | Apache-2.0 | installed `mamba_ssm/modules/mamba2.py` | `605e4439ff0baec8d8acaf4a191d9f0570eea9900065a065909124c472b08707` |
+| " — whole-package closure (M arm only) | " | " | " | installed `mamba_ssm/**/*.py`, 54 files, tree digest | `3633eb0755da1525f753684a7591285f1780010ae18f728ae2389b86c41ea830` |
 | Environment | `craftax` **1.6.1** (PyPI; no source checkout) | pinned by distribution version + file digests | MIT | `craftax_classic/game_logic.py` | `e5812a161b485a5edba6da0e34b7e3352550fe29ed7d0c8f66c8071ecac20755` |
 | " | " | " | " | `craftax_classic/constants.py` | `5b00ec29b51f7d011bb01c98aa74e5fd6b8a7cee6ab717f61dc59d6407f6baa4` |
 | " | " | " | " | `craftax_classic/renderer.py` | `e415a83a2ce6d859d960be3e2d591b2c347b77d6e91275981b22dd769390ba13` |
+| " | " | " | " | `craftax_env.py` (the factory every adapter calls) | `f74d828dbc9802984e026ace29293527dfd3901cc945d3c7792d199dc92affa3` |
+| " | " | " | " | `craftax_classic/envs/craftax_pixels_env.py` | `37afb876d3677472a02cfa722a65737b23545098fe73ba5c3ad87d160ef64223` |
+| " | " | " | " | `craftax_classic/envs/craftax_symbolic_env.py` (expert) | `ada5830c7a5af768ea1bffc7ad962300b11a6092e2943c4ecef7f1a9afbfcb65` |
 | SIGReg (`sigreg` anti-collapse only; not the default) | `rbalestr-lab/lejepa` | `c293d291ca87cd4fddee9d3fffe4e914c7272052` | see repo | `lejepa/multivariate/slicing.py` | `86c0fe3a714dc945ba3e23ab4093f6ed41966039f9681bd53c733e3ca5dff56b` |
 | " | " | " | " | `lejepa/univariate/epps_pulley.py` | `e6554ee42de27b74d62befb5f353d4d7a4f92c6c1eade25edaa6595a6b593149` |
 | " | " | " | " | `lejepa/univariate/base.py` | `08d4f115990656ea3459dacbba5991622725f9040ebc64ae8d34f4e76299eef6` |
 | CartPole (retired line; loader kept for old checkpoints) | `Farama-Foundation/Gymnasium` `v1.2.2` | `a923da5d4415a1aa5195d99341069da5e16deed7` | MIT | installed `gymnasium/envs/classic_control/cartpole.py` | `b758e3286711a2c44b0817265412c9fab1dce8b1b385e2126bc710ceedd47378` |
+
+### Runtime closure — what each entry point pulls in
+
+An entry-point digest is not a closure. Recorded honestly:
+
+- **Mamba.** `mamba2.py` imports and dispatches to a further operator tree:
+  `ops/triton/ssd_combined.py` (`mamba_chunk_scan_combined`, the active
+  `use_mem_eff_path=False` path), `ops/triton/layernorm_gated.py`,
+  `ops/triton/selective_state_update.py`, `distributed/tensor_parallel.py`,
+  `distributed/distributed_utils.py`, plus the triton kernels those import.
+  `verify_installed_mamba2` hashes one file, so drift in any of the others
+  would have changed our numerics silently. The tree digest above now covers
+  all 54 installed `*.py`; it is reported under its own source name
+  (`mamba_ssm_tree`) so pre-existing checkpoints, which pin only `mamba2.py`,
+  remain verifiable unchanged.
+- **Craftax.** The three original digests covered game logic, constants and the
+  renderer, but the adapters also execute `craftax_env.py` and the env classes
+  it returns. Those are now pinned. Still NOT covered: the rest of the
+  installed `craftax` package (world generation, JAX-level utilities). The
+  distribution version pin (`1.6.1`) is the only guard there.
+- **`causal_conv1d`** is an optional Mamba dependency; when present it replaces
+  the conv path. It is not pinned. `use_mem_eff_path=False` avoids the fused
+  kernel but `causal_conv1d_fn` may still be used if importable.
+- **MMBench2 and LeJEPA** are closed: both are executed under isolated module
+  names, and every file they import from their own package is digest-verified.
 
 Loading rules that make "digest-verified" true of what actually executes:
 
@@ -47,6 +79,9 @@ Digests recorded so a later reader can confirm they saw the same bytes.
 
 | Purpose | Repository | Commit | File | SHA-256 |
 |---|---|---|---|---|
+| **Hand-ported**, not imported: `objectives.shortcut_flow_loss`, `_sample_step_excluding_finest`, `_sample_tau` are a direct PyTorch port of `dynamics_pretrain_loss` | `nicklashansen/mmbench2` | `3dda6ea5bc60382ad9e1dcd1c6c3af67d69326a9` | `src/train_dynamics.py` | `43df2876c0ac01073968c37001ff6e0b3c9500e9c1507ab950171fb7ca055e5d` |
+| **Hand-ported**: `rollout.sample_next_packed` follows `sample_one_timestep_packed` | " | " | `src/interactive.py` | `7affa900cfb1bd80ac1ce9501af74cf5c558a85eada445cce724649002c74cf3` |
+| Tokenizer training regime we deliberately do NOT run (MAE off, no pretraining) | " | " | `src/train_tokenizer.py` | `dc97309c8c4ae8c50dab8093bebe0aba0a776904eb0590275faf03e10d013ee3` |
 | Self-prediction loss shape, `jumps`/t0 split, projector branches, EMA tau | `mila-iqia/spr` | `0b9dd4e7b9bbdfaecdf9a3713bf5931fb54ab0ca` | `src/models.py` | `8601ef69b24e89b9ecf7af9ce8377aa51fed212d4635270a5bc3276111bbf6fa` |
 | " | " | " | `src/algos.py` | `f7dd3c924ab6c943e3aa7fb089bc0b9e1e918ce10154807dd7c8390c05aa2b07` |
 | SPR shipped CLI defaults (`--local-spr`, `--classifier`, `--momentum-tau`) | " | " | `scripts/run.py` | `70f607b5bc5847ee29a5f114b671c5d95ef80e8cdf48ac3f272977e0e9ab30bc` |

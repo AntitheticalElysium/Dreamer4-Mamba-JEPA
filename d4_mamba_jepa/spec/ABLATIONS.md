@@ -13,19 +13,21 @@ differed · `1SEED` one training seed · `SUBSET` reported on a 6-target subset 
 `WD*` the M arm decayed `dt_bias`/`A_log`/`D`, which official Mamba-2 marks
 `_no_weight_decay` (`mamba2.py:130,136,140`). The T arm owns no such tensor, so
 weight decay was a second uncontrolled difference on the research axis for these
-rows. Fixed after `81d3466`; the T arm's optimizer is unchanged, so only M-arm
-numbers are affected.
+rows. Fixed after `81d3466`; the T arm's optimizer is unchanged (verified down
+to the serialized param groups), so only M-arm numbers are affected. `WD*` marks
+every row that TRAINED or REPORTED an M-JEPA world, including rows that only
+consumed the row-1 checkpoints downstream.
 
 | # | date | ablation | artifacts | commit | outcome | flags |
 |---|---|---|---|---|---|---|
 | 1 | 07-27 | Craftax baseline T-JEPA + M-JEPA, 20k/3k/500 | `outputs/craftax_expert_v1` | `74f2c71` | runs at 761 MB; BC at majority floor; T/M indistinguishable | INIT* 1SEED WD* |
-| 2 | 07-27 | BC budget ladder 0.5k-30k | `craftax_bc_budget.json` | `74f2c71` | plateaus at 0.183/0.190 vs 0.149 floor; under-training refuted | |
-| 3 | 07-27 | Representation oracle, expert probe | `craftax_oracle.json` | `74f2c71` | 0/16 preserved (T), 1/16 (M); pixels recover HUD at R2~1.0 | |
+| 2 | 07-27 | BC budget ladder 0.5k-30k | `craftax_bc_budget.json` | `74f2c71` | plateaus at 0.183/0.190 vs 0.149 floor; under-training refuted | INIT* WD* |
+| 3 | 07-27 | Representation oracle, expert probe | `craftax_oracle.json` | `74f2c71` | 0/16 preserved (T), 1/16 (M); pixels recover HUD at R2~1.0 | INIT* WD* |
 | 4 | 07-27 | `d_bottleneck` 16/32/64 | `craftax_oracle_capacity.json` | `8c0307d` | no effect on preservation; channel width is not the cause | |
 | 5 | 07-28 | `n_latents` 16/64/256 | `craftax_oracle_n_latents.json` | `a60d30e` | no effect; preserved stays 1/16 at 16x tokens | |
 | 6 | 07-28 | Random-encoder floor | `craftax_oracle_random.json` | `4306c87` | untrained encoder beats trained on all but health | |
 | 7 | 07-28 | T-BASE reconstruction control, n16 + n64 | `craftax_oracle_tbase{16,64}.json` | `8517c30`, `e3b9e78` | reconstruction retains far more; capacity helps it (+0.19) not JEPA (+0.03) | |
-| 8 | 07-28 | Latent spectrum / effective rank | `craftax_latent_rank.json` | `8517c30` | dimensional collapse refuted; rank rises 4.0 -> 12.0 -> 30.3 | |
+| 8 | 07-28 | Latent spectrum / effective rank | `craftax_latent_rank.json` | `8517c30` | dimensional collapse refuted; rank rises 4.0 -> 12.0 -> 30.3 | INIT* WD* |
 | 9 | 07-28 | Encoder time-course, 8 checkpoints | `craftax_timecourse.json` | `c26e162` | flat to step 500, then monotone decay; health rises as the rest falls | EMA* |
 | 10 | 07-28 | `jepa_weight=0` | — | `9df6b9c` | VOID: field was dead; run reproduced baseline bit-for-bit | |
 | 11 | 07-28 | Self-prediction off, heads only | `craftax_timecourse_jepaweight0.json` | `2ffdc85` | erosion persists and worsens; self-prediction is partially protective | EMA* |

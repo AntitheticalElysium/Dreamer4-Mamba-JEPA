@@ -61,7 +61,28 @@ CRAFTAX_CLASSIC_DIGESTS = {
         "5b00ec29b51f7d011bb01c98aa74e5fd6b8a7cee6ab717f61dc59d6407f6baa4",
     "craftax_classic/renderer.py":
         "e415a83a2ce6d859d960be3e2d591b2c347b77d6e91275981b22dd769390ba13",
+    # Also executed, and previously unpinned: the env factory every adapter
+    # calls, and the two env classes it can return. `game_logic` alone does not
+    # cover the observation/step wiring we actually run.
+    "craftax_env.py":
+        "f74d828dbc9802984e026ace29293527dfd3901cc945d3c7792d199dc92affa3",
+    "craftax_classic/envs/craftax_pixels_env.py":
+        "37afb876d3677472a02cfa722a65737b23545098fe73ba5c3ad87d160ef64223",
+    "craftax_classic/envs/craftax_symbolic_env.py":
+        "ada5830c7a5af768ea1bffc7ad962300b11a6092e2943c4ecef7f1a9afbfcb65",
 }
+
+# Whole-package digest of the installed `mamba_ssm`. `verify_installed_mamba2`
+# hashes only `modules/mamba2.py`, but that file imports and calls a further
+# operator tree -- `ops/triton/ssd_combined.py` (`mamba_chunk_scan_combined`,
+# the active `use_mem_eff_path=False` path), `ops/triton/layernorm_gated.py`,
+# `ops/triton/selective_state_update.py`, `distributed/*` -- none of which were
+# covered. Drift in any of them would change our numerics without failing any
+# check. Recorded under its own source name so legacy checkpoints, which pin
+# only `mamba2.py`, stay verifiable unchanged.
+MAMBA_SSM_TREE_SHA256 = (
+    "3633eb0755da1525f753684a7591285f1780010ae18f728ae2389b86c41ea830"
+)
 
 GYMNASIUM_CARTPOLE = SourceIdentity(
     name="Farama-Foundation/Gymnasium:CartPole-v1",
@@ -153,6 +174,37 @@ def verify_installed_mamba2() -> str:
     if actual != MAMBA2_SOURCE.sha256:
         raise SourceDriftError(
             f"installed Mamba2 digest drift: {actual} != {MAMBA2_SOURCE.sha256}"
+        )
+    return actual
+
+
+def _tree_sha256(root: Path, pattern: str = "*.py") -> str:
+    """Order-independent digest of every matching file under ``root``."""
+    digest = hashlib.sha256()
+    for path in sorted(root.rglob(pattern)):
+        digest.update(str(path.relative_to(root)).encode())
+        digest.update(b"\0")
+        digest.update(hashlib.sha256(path.read_bytes()).digest())
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
+def verify_installed_mamba_tree() -> str:
+    """Require the WHOLE installed ``mamba_ssm`` package to match its pin.
+
+    `verify_installed_mamba2` covers one file; the kernels it dispatches to live
+    in sibling modules that were never checked. See ``MAMBA_SSM_TREE_SHA256``.
+    """
+    import importlib.util
+
+    spec = importlib.util.find_spec("mamba_ssm")
+    if spec is None or not spec.origin:
+        raise SourceDriftError("mamba_ssm is not installed")
+    actual = _tree_sha256(Path(spec.origin).parent)
+    if actual != MAMBA_SSM_TREE_SHA256:
+        raise SourceDriftError(
+            f"installed mamba_ssm tree digest drift: "
+            f"{actual} != {MAMBA_SSM_TREE_SHA256}"
         )
     return actual
 
@@ -333,27 +385,44 @@ def _report_cartpole() -> dict[str, str]:
 _SOURCE_REPORTERS = {
     "mmbench2_model": _report_mmbench2,
     "mamba2": _report_mamba2,
+    "mamba_ssm_tree": lambda: {
+        "package": "mamba_ssm",
+        "commit": MAMBA2_SOURCE.commit,
+        "tree_sha256": verify_installed_mamba_tree(),
+        "license": MAMBA2_SOURCE.license,
+    },
     "gymnasium_cartpole": _report_cartpole,
     "craftax": craftax_source_report,
     "lejepa": lejepa_source_report,
 }
 
+# Provenance blocks written before schema versioning carried exactly these three
+# names and no schema key. They are the ONLY name set a schema-less payload may
+# present; anything else is an omitted or tampered block, not a legacy one.
+LEGACY_SOURCE_NAMES = frozenset(
+    {"mmbench2_model", "mamba2", "gymnasium_cartpole"}
+)
+PROVENANCE_SCHEMA = 2
+
 
 def source_names_for(cfg) -> tuple[str, ...]:
-    """The sources a world with this config actually depends on.
+    """The sources the CODE of a world with this config imports and executes.
 
-    Reporting is config-conditional because an unconditional report both
-    over- and under-constrains a checkpoint:
+    Deliberately excludes the environment. ``D4LiteConfig`` carries no
+    environment identity -- it has ``n_actions`` and ``image_size``, neither of
+    which names a simulator -- so inferring one here would tag `D4LiteConfig(
+    n_actions=2)` and every tokenizer checkpoint as Craftax on no evidence.
+    Callers that KNOW their environment pass it to ``source_report`` as an
+    explicit ``environment_sources`` entry.
 
-    * over: a transformer-only Craftax world could not be saved or loaded
-      without an installed, byte-matching Mamba-2 AND Gymnasium CartPole, so
-      provenance verification failed on sources the checkpoint never used;
-    * under: the Craftax environment and the LeJEPA/SIGReg implementation --
-      which the world does use -- were absent from the report entirely.
+    Reporting is config-conditional because an unconditional report
+    over-constrained checkpoints: a transformer-only world could not be saved or
+    loaded without an installed, byte-matching Mamba-2 and Gymnasium CartPole,
+    neither of which it uses.
     """
-    names = ["mmbench2_model", "craftax"]
+    names = ["mmbench2_model"]
     if getattr(cfg, "temporal_backend", None) == "mamba2":
-        names.append("mamba2")
+        names += ["mamba2", "mamba_ssm_tree"]
     if (
         getattr(cfg, "representation_objective", None) == "jepa"
         and getattr(cfg, "jepa_anticollapse", None) == "sigreg"
@@ -362,36 +431,67 @@ def source_names_for(cfg) -> tuple[str, ...]:
     return tuple(names)
 
 
-def source_report(cfg=None) -> dict[str, dict[str, str]]:
+def source_report(cfg=None, *, environment_sources=()) -> dict[str, dict]:
     """Verified provenance for the sources in scope.
 
     ``cfg=None`` keeps the historical three-source report (MMBench2, Mamba-2,
-    Gymnasium CartPole) so existing callers and checkpoints are unaffected.
-    Passing a ``D4LiteConfig`` selects the sources that config actually uses --
-    see ``source_names_for``.
+    Gymnasium CartPole) so existing callers are unaffected. Passing a
+    ``D4LiteConfig`` selects the code dependencies of that config
+    (``source_names_for``); ``environment_sources`` adds the simulator the
+    caller knows it used, e.g. ``("craftax",)``.
     """
-    names = (
-        ("mmbench2_model", "mamba2", "gymnasium_cartpole")
-        if cfg is None
-        else source_names_for(cfg)
-    )
-    return {name: _SOURCE_REPORTERS[name]() for name in names}
+    if cfg is None:
+        names: tuple[str, ...] = ("mmbench2_model", "mamba2", "gymnasium_cartpole")
+    else:
+        names = source_names_for(cfg) + tuple(environment_sources)
+    unknown = sorted(set(names) - set(_SOURCE_REPORTERS))
+    if unknown:
+        raise SourceDriftError(f"unknown source names requested: {unknown}")
+    return {name: _SOURCE_REPORTERS[name]() for name in dict.fromkeys(names)}
 
 
-def verify_recorded_sources(stored: dict[str, dict[str, str]]) -> None:
-    """Re-verify exactly the sources a checkpoint recorded.
+def verify_recorded_sources(
+    stored: dict[str, dict], *, schema: int | None = None, required=()
+) -> None:
+    """Re-verify a recorded provenance block.
 
-    Comparing a stored block against a freshly computed *whole* report makes the
-    check depend on which sources the CURRENT code happens to report, so adding
-    or removing a source name retroactively invalidates every existing
-    checkpoint. The contract that actually matters is narrower and stable: every
-    source recorded at save time must still be present and byte-identical.
+    Two failure modes have to be closed at once.
+
+    * Comparing the block against a freshly computed *whole* report makes the
+      check depend on what the CURRENT code happens to report, so adding a
+      source name retroactively invalidates every existing checkpoint.
+    * Verifying only the names present lets an EMPTY or truncated block pass --
+      provenance that fails open. A payload claiming no sources is not a payload
+      with no source drift.
+
+    The schema key separates the two populations. A schema-less block is a
+    pre-versioning checkpoint and must present exactly ``LEGACY_SOURCE_NAMES``.
+    A ``PROVENANCE_SCHEMA`` block must cover everything ``required`` (the
+    caller's ``source_names_for(config)``) and may carry more, e.g. the
+    environment. Either way every recorded name is recomputed and compared.
     """
     if not isinstance(stored, dict):
         raise SourceDriftError("recorded provenance block is not a mapping")
     unknown = sorted(set(stored) - set(_SOURCE_REPORTERS))
     if unknown:
         raise SourceDriftError(f"unknown recorded source names: {unknown}")
+
+    if schema is None:
+        if set(stored) != LEGACY_SOURCE_NAMES:
+            raise SourceDriftError(
+                "provenance block carries no schema version, so it must record "
+                f"exactly {sorted(LEGACY_SOURCE_NAMES)}; got {sorted(stored)}"
+            )
+    elif schema == PROVENANCE_SCHEMA:
+        missing = sorted(set(required) - set(stored))
+        if missing:
+            raise SourceDriftError(
+                f"provenance block omits required sources {missing}; this "
+                "config cannot be verified from what was recorded"
+            )
+    else:
+        raise SourceDriftError(f"unsupported provenance schema {schema!r}")
+
     for name, recorded in stored.items():
         current = _SOURCE_REPORTERS[name]()
         if current != recorded:

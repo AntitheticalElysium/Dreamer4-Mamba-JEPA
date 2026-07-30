@@ -194,23 +194,35 @@ def train_craftax_jepa_world(
     # difference on the single research axis. `_decay_groups` therefore splits
     # every group. A transformer world owns no such tensor, so its optimizer is
     # byte-identical to before this change.
-    def _decay_groups(params, *, lr) -> list[dict]:
+    def _decay_groups(params, *, lr, base_lr: bool) -> list[dict]:
+        # `base_lr` is read by the warmup loop, and ONLY in the
+        # encoder_learning_rate branch. Emitting it unconditionally would add a
+        # key to `optimizer.state_dict()["param_groups"]` that the pre-fix
+        # single-group optimizer never had, so a transformer world's serialized
+        # optimizer would no longer round-trip against an archived one.
+        extra = {"base_lr": lr} if base_lr else {}
         decay, no_decay = split_no_weight_decay(params)
-        groups = [{"params": decay, "lr": lr, "base_lr": lr,
-                   "weight_decay": 1e-2}]
+        groups = [{"params": decay, "lr": lr, "weight_decay": 1e-2, **extra}]
         if no_decay:
-            groups.append({"params": no_decay, "lr": lr, "base_lr": lr,
-                           "weight_decay": 0.0})
+            groups.append({"params": no_decay, "lr": lr, "weight_decay": 0.0,
+                           **extra})
         return groups
 
     if encoder_learning_rate is None:
-        # Preserve the original one-group optimizer exactly when the new
-        # intervention is not requested (transformer arm: one group, as before).
         trainable = [p for p in world.parameters() if p.requires_grad]
-        optimizer = torch.optim.AdamW(
-            _decay_groups(trainable, lr=learning_rate),
-            lr=learning_rate, weight_decay=1e-2,
-        )
+        _, exempt = split_no_weight_decay(trainable)
+        if exempt:
+            optimizer = torch.optim.AdamW(
+                _decay_groups(trainable, lr=learning_rate, base_lr=False),
+                lr=learning_rate, weight_decay=1e-2,
+            )
+        else:
+            # No source-exempt tensor (every transformer world): construct the
+            # original single-group optimizer verbatim, so its state dict is
+            # byte-identical to the pre-fix one.
+            optimizer = torch.optim.AdamW(
+                trainable, lr=learning_rate, weight_decay=1e-2
+            )
     else:
         encoder_params = list(world.encoder.parameters())
         encoder_ids = {id(p) for p in encoder_params}
@@ -221,10 +233,12 @@ def train_craftax_jepa_world(
             p for p in world.parameters()
             if p.requires_grad and id(p) not in encoder_ids
         ]
-        groups = _decay_groups(other_params, lr=learning_rate)
+        groups = _decay_groups(other_params, lr=learning_rate, base_lr=True)
         if encoder_learning_rate > 0.0:
             groups.extend(
-                _decay_groups(encoder_params, lr=encoder_learning_rate)
+                _decay_groups(
+                    encoder_params, lr=encoder_learning_rate, base_lr=True
+                )
             )
         optimizer = torch.optim.AdamW(
             groups, lr=learning_rate, weight_decay=1e-2
@@ -288,6 +302,9 @@ def train_craftax_jepa_world(
         world_sha = save_checkpoint(
             out / "world.pt", world=world, normalizer=normalizer,
             optimizer=optimizer, numpy_rng=rng, step=world_steps,
+            # This runner knows its environment; `D4LiteConfig` does not carry
+            # one, so it is recorded explicitly rather than inferred.
+            environment_sources=("craftax",),
             extra={"format": "craftax_jepa_world_v1", "seed": seed,
                    "terminal_fraction": fraction,
                    "learning_rate": learning_rate,
