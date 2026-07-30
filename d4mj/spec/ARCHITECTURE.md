@@ -90,9 +90,11 @@ the call site, not a second function. Tasks remain agent-side only.
 \(m_t\) spans **every** token slot, agent slots included: temporal mixing is
 per-slot, so agent streams carry their own recurrent summary and world streams
 can never read them. The firewall therefore needs no partition of \(m_t\) — it
-is a property of per-slot time mixing plus the spatial mask. The slot set of
-\(m_t\) changes when the agent modality is introduced in Phase 2; before that
-`Commit` returns no \(h\).
+is a property of per-slot time mixing plus the spatial mask. `[DESIGN]` Agent
+slots are present **from Phase 1B**, placed last in the layout and masked out
+both ways until Phase 2 activates them, so \(S\), the space mask shape, the
+stream count and every state shape are fixed once for all phases and no Phase-1B
+gate is invalidated later.
 
 ## Whole-system flow
 
@@ -167,17 +169,28 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   array.
 - **What stays from D4 — `[D4]`:** Offline video pretraining, optional
   action-labeled data, task/reward-labeled agent data, and alternating short and
-  long training sequences, where batch length exceeds context length so the model
-  never assumes a start frame. `[D4-ENTAILED]` Block \(t\) exposes \(a_{t-1}\), while
+  long training sequences. Appendix A gives \(C=192, T_1=64, T_2=256\) for
+  Minecraft and \(C=96, T_1=32, T_2=128\) elsewhere, so the short batch is
+  *shorter* than context; §3.4's "longer than the context length" describes the
+  long batch, which the final finetune uses alone. `[D4]` §4 treats **30% of each
+  batch as separate images**, training the dynamics to generate start frames.
+  `[D4-ENTAILED]` Block \(t\) exposes \(a_{t-1}\), while
   \(h_t\) predicts the outgoing \(a_t\); exposing \(a_t\) in the same block
   would leak the behavior-cloning target.
+- **`[DESIGN]` Windows never cross an episode boundary**, so `evaluate` needs no
+  reset mask and a reset stays a fresh state construction. `gates.alignment`
+  asserts it; if it is ever relaxed, the signature changes.
 - **What JEPA changes — `[JEPA-R]` / `[JEPA-D]`:** The same episodes also yield
   paired representation views and future-latent prediction targets; no new
   external labels are introduced.
 - **What Mamba changes — `[MAMBA]`:** The data do not change; sequence batches
-  must contain enough boundary and prefix information to initialize temporal
-  memory. A random crop is not an episode start: use a real prefix/burn-in, or
-  declare and test an explicitly bounded-memory approximation.
+  must carry enough boundary and prefix information to initialize \(m_t\).
+- **`[D4-UNKNOWN]` Encoder prefix is *not* a Mamba concern.** Because §3.1 makes
+  the tokenizer causal, \(z_t = Z^*(o_{\le t})\), so a random crop's first frames
+  are encoded with no history under **every** arm — the MAE-Flow-T anchor
+  included. Burn-in, or a declared bounded encoder context, is a representation
+  requirement that binds all four Stage-A cells equally. See the open encoder-
+  causality decision in `DECISIONS.md`.
 
 ## Box 2 — Visual representation system
 
@@ -205,9 +218,17 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
 - **What stays from D4 — `[D4]`:** All arms retain interleaved latent, action,
   and register tokens; separate space-only and time-only layers; temporal
   mixing every four layers (reproductions ship 2 and 1 — verify the anchor,
-  do not inherit it); and the one-way agent firewall. The Transformer
-  anchor retains pre-RMSNorm, RoPE, SwiGLU, QKNorm, attention-logit soft
-  capping, and dynamics GQA. Flow arms also retain the signal/step token.
+  do not inherit it), with `depth % time_every == 0` and at least two time layers
+  so the Mamba substitution is not a single module; and the one-way agent
+  firewall. Packing is D4's own arithmetic: \((N_b{=}512)\times(D_b{=}16)\)
+  reshaped to \((N_z{=}256)\times32\), i.e. \(k=2\) (Appendix A).
+  The Transformer anchor retains pre-RMSNorm, SwiGLU, RoPE and QKNorm — both
+  have executable precedent in the pinned MMBench2 attention. `[DESIGN]` **GQA
+  and attention-logit soft capping are dropped and registered**: Table 2 shows
+  GQA moving FVD 70 → 71, adopted purely for KV-cache bandwidth at 2B parameters,
+  and no pinned source implements either. The anchor is therefore
+  *paper-constrained modulo declared scale-driven omissions*, not paper-faithful.
+  Flow arms also retain the signal/step token.
 - **What JEPA changes — `[JEPA-R]` / `[JEPA-D]`:** The input latent may come
   from \(Z^*\). Direct JEPA-D removes flow noise and signal-level/step
   conditioning; causality and the task firewall are untouched. `[DESIGN]` The
@@ -235,7 +256,16 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   `[D4-UNKNOWN]` The paper calls signal
   \(\tau_{\mathrm{ctx}}=0.1\) a slight corruption despite defining
   \(\tau=0\) as noise; reproductions use roughly \(0.9\) signal. Resolve this
-  before freezing the anchor. `[D4-UNKNOWN]` D4 states four denoising forwards
+  before freezing the anchor. `[DESIGN]` Two constraints narrow it: the signal
+  level is a discrete lookup, and eq. (4)'s grid tops out at \(1-d\), so
+  \(\tau_{\mathrm{ctx}}\) **must be a trained grid bin**. That rules out the
+  literal 0.1-signal reading and rules out MMBench2's uncorrupted path, which
+  labels context with index `k_max` — a row its own sampler can never train.
+  Our signal table therefore has exactly `k_max` rows.
+  `[DESIGN]` The corruption is applied **once at commit**, not at every read:
+  re-corrupting a prefix with fresh noise changes it every frame, which would
+  invalidate any KV cache or SSM state and contradict invariant 5.
+  `[D4-UNKNOWN]` D4 states four denoising forwards
   but never says which latent condition supplies the persistent next-step prefix
   and agent readout. Rungs never write the cache, and both reproductions rescan
   the whole prefix every frame, so no source adjudicates it. Two coherent
@@ -247,8 +277,14 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   trains heads on noisy representations — and neither has any for the cache. A
   hybrid that reads \(h\) from one condition and commits \(m\) from another is
   possible but leaves them inconsistent. Both arms implement the same semantic
-  choice. This also decides whether \(\tau_{\mathrm{ctx}}\) applies at commit or
-  at read.
+  choice, fixed in `Config` rather than per call site, or the Stage-A cells can
+  silently differ in the one dimension that would invalidate the factorial.
+  `[DESIGN]` At the final rung \(\tau = 1-d\), so the Euler step
+  \(z \mathrel{+}= (\hat x_1 - z)\,d/(1-\tau)\) has coefficient exactly 1 and
+  returns \(\hat x_1\) itself: under B, \(\hat z_{t+1}\) and \(h_{t+1}\) leave the
+  *same* forward pass, which is self-consistent under rescan. The inconsistency
+  appears only once \(m_t\) persists, because the stored features then come from
+  that rung's noisy input while the stored latent is \(\hat z\).
 - **What JEPA changes — `[JEPA-D]`:** The thesis branch directly predicts the
   frozen \(Z^*\) target. Its prediction readout must see \(a_t\) without
   exposing it to \(h_t\), so V-JEPA 2-AC's same-slot readout cannot be copied
@@ -404,7 +440,10 @@ Stage A uses one frozen D4-MAE encoder for a complete dynamics \(2\times2\):
 
 Stage A estimates Mamba under each transition family, direct versus flow under
 each mixer, and their interaction; flow versus direct moves multiple mechanisms
-and does not isolate stochasticity by itself.
+and does not isolate stochasticity by itself. One of those mechanisms is the
+head-input distribution: flow heads are fit on τ-grid latents while direct heads
+see clean or generated ones, so "same frozen MAE" does not make the cells differ
+only in transition and mixer.
 
 Before Mamba training, gate scan/step parity for outputs and states, selective
 reset parity, firewall counterfactuals, branch nonmutation, and actual recurrent
