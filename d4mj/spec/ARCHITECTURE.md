@@ -60,23 +60,32 @@ real-execution state S_t^real = (e_t, z_t, m_t)
 Observe(reset_t, e_{t-1}, m_{t-1}, a_{t-1}, o_t, optional q_t)
     -> S_t^real = (e_t, z_t, m_t), h_t
 
-EvaluateCandidate(S_t, a_t, optional noise) -> candidate z_{t+1}
-Commit(S_t, a_t, accepted z_{t+1}, optional q_{t+1})
-    -> S_{t+1}, h_{t+1}
+evaluate(S_t, led_to_action, latent, conditioning)
+    -> latent_out, agent_out, S_out
 
-Advance = one or more read-only EvaluateCandidate calls + exactly one Commit
+Advance = one or more evaluate calls; the caller keeps exactly one S_out
 ```
+
+One generic call covers every path, because the occupying latent and its
+conditioning are per-call arguments rather than state:
+
+| path | `latent` | `conditioning` |
+|---|---|---|
+| real `Observe` | real \(Z^*(o_t)\) | clean |
+| flow rung *i* | current candidate \(\tilde z\) | \((\tau_i, d)\) |
+| flow commit A | accepted \(\hat z\) | clean |
+| direct | query vector | transition-family vector |
 
 `Observe` encodes and commits a real observation. \(m_t\) is the committed prefix
 **through block \(t\) inclusive**, so \(z_t\) is carried alongside only for loss,
 decoding and bookkeeping — no call may ingest it as a second temporal block.
-\(h_t\) is produced before \(a_t\) becomes visible. `EvaluateCandidate` may see
-\(a_t\) and may emit *ephemeral* world and agent outputs — a candidate block for
-\(t{+}1\) contains \(a_t\), and \(h_{t+1}\) predicts \(a_{t+1}\), so there is no
-leak — but it may not mutate the committed prefix, and rejected candidates'
-outputs are discarded. Whether the accepted candidate's state and \(h_{t+1}\) are
-committed directly or recomputed from the accepted latent is a transition-family
-decision. Tasks remain agent-side only.
+\(h_t\) is produced before \(a_t\) becomes visible. `evaluate` may see \(a_t\)
+and its outputs are *ephemeral* — a candidate block for \(t{+}1\) contains
+\(a_t\), and \(h_{t+1}\) predicts \(a_{t+1}\), so there is no leak — but it never
+mutates the prefix it was given, and rejected candidates' outputs are discarded.
+Whether the accepted candidate's `S_out` is kept as \(m_{t+1}\) or recomputed by
+one further `evaluate` on the accepted latent is a transition-family decision at
+the call site, not a second function. Tasks remain agent-side only.
 
 \(m_t\) spans **every** token slot, agent slots included: temporal mixing is
 per-slot, so agent streams carry their own recurrent summary and world streams
