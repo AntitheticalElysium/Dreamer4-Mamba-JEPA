@@ -1,0 +1,2201 @@
+{
+  "checkpoint": {
+    "path": "reviews/artifacts/lr_objective_grid/spatial_slow_s20260729.pt",
+    "sha256": "5f48cea6793cb1fb0d70bcb271561a12fd3c71d9f18546a4644bbe51f42327ed"
+  },
+  "config": {
+    "anticollapse": "ema",
+    "backend": "transformer",
+    "batch_size": 8,
+    "continuation_weight": 0.0,
+    "device": "cuda",
+    "ema_steps": 20000,
+    "encoder_lr": 6e-06,
+    "jepa_weight": 1.0,
+    "ladder": "0,1000,2500",
+    "learning_rate": 0.0001,
+    "output_dir": "reviews/artifacts/lr_objective_grid",
+    "predictor_context": "spatial_agent",
+    "reward_weight": 0.0,
+    "seed": 20260729,
+    "sigreg_lambda": 0.05,
+    "sigreg_points": 17,
+    "sigreg_slices": 1024,
+    "tag": "spatial_slow_s20260729",
+    "terminal_fraction": 0.0,
+    "world_steps": 2500
+  },
+  "curve": {
+    "0": {
+      "dev_cosine": -0.032355832401663065,
+      "full_report": {
+        "achievements": {
+          "collect_coal": {
+            "ap": 0.999735805582782,
+            "auroc": 0.9942453171744888,
+            "brier": 0.01610646121191198,
+            "positives": 1071
+          },
+          "collect_diamond": {
+            "ap": 1.0,
+            "auroc": 1.0,
+            "brier": 0.0073055269055388745,
+            "positives": 153
+          },
+          "collect_drink": {
+            "ap": 0.9997426259145145,
+            "auroc": 0.9943058146766169,
+            "brier": 0.013048068013362227,
+            "positives": 1072
+          },
+          "collect_iron": {
+            "ap": 0.9999415988539319,
+            "auroc": 0.9990656086481513,
+            "brier": 0.016970032340408465,
+            "positives": 1054
+          },
+          "collect_sapling": {
+            "ap": 0.9999975629331886,
+            "auroc": 0.9997743682310469,
+            "brier": 0.007197225126525542,
+            "positives": 1108
+          },
+          "collect_stone": {
+            "ap": 0.9999310216480217,
+            "auroc": 0.997350863422292,
+            "brier": 0.005082036008137081,
+            "positives": 1092
+          },
+          "collect_wood": {
+            "ap": 0.9999991861793726,
+            "auroc": 0.999924789410349,
+            "brier": 0.00361387947104223,
+            "positives": 1108
+          },
+          "defeat_skeleton": {
+            "ap": 0.9464407663079647,
+            "auroc": 0.7693358525445846,
+            "brier": 0.08569155611239494,
+            "positives": 968
+          },
+          "defeat_zombie": {
+            "ap": 0.9974936099243852,
+            "auroc": 0.9675510204081633,
+            "brier": 0.022319322193036957,
+            "positives": 1050
+          },
+          "eat_cow": {
+            "ap": 0.9984228729024595,
+            "auroc": 0.9765714409103669,
+            "brier": 0.010862705724127435,
+            "positives": 1077
+          },
+          "eat_plant": {
+            "ap": 0.4366055480696404,
+            "auroc": 0.6933170480735849,
+            "brier": 0.1809021747479145,
+            "positives": 287
+          },
+          "make_iron_pickaxe": {
+            "ap": 0.999975432977063,
+            "auroc": 0.9998831021353344,
+            "brier": 0.014877413342094095,
+            "positives": 926
+          },
+          "make_iron_sword": {
+            "ap": 0.999993915054156,
+            "auroc": 0.99995337995338,
+            "brier": 0.012617954578290907,
+            "positives": 990
+          },
+          "make_stone_pickaxe": {
+            "ap": 0.9999982531210176,
+            "auroc": 0.9999633155413709,
+            "brier": 0.006145067116221769,
+            "positives": 1069
+          },
+          "make_stone_sword": {
+            "ap": 0.9993754426825466,
+            "auroc": 0.9944107286107914,
+            "brier": 0.038010747360969266,
+            "positives": 1006
+          },
+          "make_wood_pickaxe": {
+            "ap": 1.0,
+            "auroc": 1.0,
+            "brier": 0.0014369655898795637,
+            "positives": 1099
+          },
+          "make_wood_sword": {
+            "ap": 0.9763887403650954,
+            "auroc": 0.8030115604336288,
+            "brier": 0.05382797093048794,
+            "positives": 1034
+          },
+          "place_furnace": {
+            "ap": 0.9935788342837009,
+            "auroc": 0.9239789838587369,
+            "brier": 0.008939657752512039,
+            "positives": 1086
+          },
+          "place_plant": {
+            "ap": 1.0,
+            "auroc": 1.0,
+            "brier": 0.006424322998013559,
+            "positives": 1106
+          },
+          "place_stone": {
+            "ap": 0.999912214281832,
+            "auroc": 0.9966313448456305,
+            "brier": 0.005668064303037812,
+            "positives": 1092
+          },
+          "place_table": {
+            "ap": 1.0,
+            "auroc": 1.0,
+            "brier": 0.0015537097283569365,
+            "positives": 1099
+          },
+          "wake_up": {
+            "ap": 0.9808519197145257,
+            "auroc": 0.8114308176100629,
+            "brier": 0.028344113166273423,
+            "positives": 1060
+          }
+        },
+        "audit": {
+          "constant_r2": -0.03707612769323173,
+          "misaligned_r2": -0.03965866011280713,
+          "pass": true,
+          "perfect_r2": 0.9999999973490413,
+          "timestep_shift_r2": -0.004289531874529555
+        },
+        "inventory": {
+          "per_target": {
+            "coal": {
+              "beats_timestep": true,
+              "constant_r2": -0.005887389724619219,
+              "latent_linear_ci": [
+                0.010364374296972668,
+                0.5291661059131425
+              ],
+              "latent_linear_r2": 0.415446912630839,
+              "latent_nonlinear_r2": 0.28877163764908775,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9965484806270742,
+              "pixel_nonlinear_r2": 0.6891657208456105,
+              "timestep_r2": 0.08613296722899244,
+              "verdict": "degraded"
+            },
+            "diamond": {
+              "beats_timestep": true,
+              "constant_r2": -0.056547584265229434,
+              "latent_linear_ci": [
+                -1.7702975738958227,
+                0.8801506119425105
+              ],
+              "latent_linear_r2": 0.7134478984227686,
+              "latent_nonlinear_r2": 0.729896016734656,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9999699532435165,
+              "pixel_nonlinear_r2": 0.9640363290114617,
+              "timestep_r2": -0.013286573690312942,
+              "verdict": "degraded"
+            },
+            "iron": {
+              "beats_timestep": true,
+              "constant_r2": -0.0041074006255352735,
+              "latent_linear_ci": [
+                0.35987147623378746,
+                0.7456837756267318
+              ],
+              "latent_linear_r2": 0.6550784950560956,
+              "latent_nonlinear_r2": 0.5570690752057395,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9881414107519251,
+              "pixel_nonlinear_r2": 0.7086881813482441,
+              "timestep_r2": 0.01394470209026999,
+              "verdict": "degraded"
+            },
+            "iron_pickaxe": {
+              "beats_timestep": true,
+              "constant_r2": -0.04798676479621933,
+              "latent_linear_ci": [
+                0.3740224996368416,
+                0.6998814305001039
+              ],
+              "latent_linear_r2": 0.5555500754651841,
+              "latent_nonlinear_r2": 0.48659401503778466,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9999265733848258,
+              "pixel_nonlinear_r2": 0.4635349278589982,
+              "timestep_r2": 0.42971492948818224,
+              "verdict": "degraded"
+            },
+            "iron_sword": {
+              "beats_timestep": true,
+              "constant_r2": -0.011054243807098185,
+              "latent_linear_ci": [
+                0.6195335623483382,
+                0.8940195087077494
+              ],
+              "latent_linear_r2": 0.8128427900320986,
+              "latent_nonlinear_r2": 0.7885644023849394,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.999977988977752,
+              "pixel_nonlinear_r2": 0.8820715399853645,
+              "timestep_r2": 0.3456618387889495,
+              "verdict": "degraded"
+            },
+            "sapling": {
+              "beats_timestep": true,
+              "constant_r2": -0.0007526281236589494,
+              "latent_linear_ci": [
+                0.19388681267007188,
+                0.7529355318179635
+              ],
+              "latent_linear_r2": 0.6488066978368188,
+              "latent_nonlinear_r2": 0.46527902402204313,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9999987801807667,
+              "pixel_nonlinear_r2": 0.7478746354880483,
+              "timestep_r2": -0.04887183783458893,
+              "verdict": "degraded"
+            },
+            "stone": {
+              "beats_timestep": true,
+              "constant_r2": -0.06480614995994038,
+              "latent_linear_ci": [
+                0.2484636549617024,
+                0.4611554507444454
+              ],
+              "latent_linear_r2": 0.37571742095521954,
+              "latent_nonlinear_r2": 0.31977053818888523,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9986419572347625,
+              "pixel_nonlinear_r2": 0.507181080757315,
+              "timestep_r2": 0.014498955046994721,
+              "verdict": "degraded"
+            },
+            "stone_pickaxe": {
+              "beats_timestep": true,
+              "constant_r2": -0.04296444647660169,
+              "latent_linear_ci": [
+                0.46569623199552457,
+                0.8513288367663265
+              ],
+              "latent_linear_r2": 0.6695887945245929,
+              "latent_nonlinear_r2": 0.5834857860197065,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.8502177461760169,
+              "pixel_nonlinear_r2": 0.742780972484359,
+              "timestep_r2": 0.2101609664137274,
+              "verdict": "degraded"
+            },
+            "stone_sword": {
+              "beats_timestep": true,
+              "constant_r2": -0.0008007310325792716,
+              "latent_linear_ci": [
+                0.397964784435409,
+                0.7109209366629251
+              ],
+              "latent_linear_r2": 0.5892290773833999,
+              "latent_nonlinear_r2": 0.5281842940722965,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.7445210593125858,
+              "pixel_nonlinear_r2": 0.4726103004848361,
+              "timestep_r2": 0.14192301334686708,
+              "verdict": "degraded"
+            },
+            "wood": {
+              "beats_timestep": true,
+              "constant_r2": -0.004841421141760227,
+              "latent_linear_ci": [
+                0.21082305212581948,
+                0.47954410041351575
+              ],
+              "latent_linear_r2": 0.40445982372577627,
+              "latent_nonlinear_r2": 0.340682488811326,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9900474481542871,
+              "pixel_nonlinear_r2": 0.7133562724158384,
+              "timestep_r2": 0.008178370259933399,
+              "verdict": "degraded"
+            },
+            "wood_pickaxe": {
+              "beats_timestep": true,
+              "constant_r2": -0.02019993089823835,
+              "latent_linear_ci": [
+                0.6833045940088115,
+                0.8728063295716355
+              ],
+              "latent_linear_r2": 0.8245600201678609,
+              "latent_nonlinear_r2": 0.8253598849909749,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9998663851632611,
+              "pixel_nonlinear_r2": 0.764037979665342,
+              "timestep_r2": 0.14360568338810553,
+              "verdict": "degraded"
+            },
+            "wood_sword": {
+              "beats_timestep": true,
+              "constant_r2": -0.05307798474256087,
+              "latent_linear_ci": [
+                0.10094337694459768,
+                0.5823601575097683
+              ],
+              "latent_linear_r2": 0.34077384471698646,
+              "latent_nonlinear_r2": 0.27054053472389983,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.825054021907977,
+              "pixel_nonlinear_r2": 0.47162705071334776,
+              "timestep_r2": 0.10302954998730174,
+              "verdict": "degraded"
+            }
+          }
+        },
+        "vitals": {
+          "per_target": {
+            "drink": {
+              "beats_timestep": true,
+              "constant_r2": -0.00899610615632751,
+              "latent_linear_ci": [
+                0.5659992985374765,
+                0.6636545023847737
+              ],
+              "latent_linear_r2": 0.619470539663628,
+              "latent_nonlinear_r2": 0.603514252306045,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9992984481994929,
+              "pixel_nonlinear_r2": 0.9705314429298778,
+              "timestep_r2": 0.1129711979608522,
+              "verdict": "degraded"
+            },
+            "energy": {
+              "beats_timestep": true,
+              "constant_r2": -0.0010369282777231703,
+              "latent_linear_ci": [
+                0.5872068691199506,
+                0.6905388250950332
+              ],
+              "latent_linear_r2": 0.6429504880819634,
+              "latent_nonlinear_r2": 0.6134306419523021,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9998313683185726,
+              "pixel_nonlinear_r2": 0.9749331456631145,
+              "timestep_r2": 0.0260851027641531,
+              "verdict": "degraded"
+            },
+            "food": {
+              "beats_timestep": true,
+              "constant_r2": -0.002130414433984429,
+              "latent_linear_ci": [
+                0.6009909513687386,
+                0.6658530412980758
+              ],
+              "latent_linear_r2": 0.6359082835724219,
+              "latent_nonlinear_r2": 0.5838838785801275,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9997015089126579,
+              "pixel_nonlinear_r2": 0.9787658861436396,
+              "timestep_r2": 0.09582146306722428,
+              "verdict": "degraded"
+            },
+            "health": {
+              "beats_timestep": true,
+              "constant_r2": -0.0024112305947296964,
+              "latent_linear_ci": [
+                0.255198308399735,
+                0.40269878439629386
+              ],
+              "latent_linear_r2": 0.33643901226215156,
+              "latent_nonlinear_r2": 0.2694731197028166,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.7964007705718719,
+              "pixel_nonlinear_r2": 0.9423364297960892,
+              "timestep_r2": -0.014039973444264442,
+              "verdict": "degraded"
+            }
+          }
+        }
+      },
+      "summary": {
+        "inventory_linear_mean": 0.5837918209098033,
+        "inventory_nonlinear_mean": 0.5153498081534449,
+        "verdicts": {
+          "degraded": 16
+        },
+        "vitals_linear_mean": 0.5586920808950413,
+        "vitals_nonlinear_mean": 0.5175754731353228
+      }
+    },
+    "1000": {
+      "dev_cosine": 0.34970086347311735,
+      "full_report": {
+        "achievements": {
+          "collect_coal": {
+            "ap": 0.9996847872990902,
+            "auroc": 0.9931401131881324,
+            "brier": 0.016679713968815825,
+            "positives": 1071
+          },
+          "collect_diamond": {
+            "ap": 1.0,
+            "auroc": 1.0,
+            "brier": 0.007825890422213993,
+            "positives": 153
+          },
+          "collect_drink": {
+            "ap": 0.9997381550732002,
+            "auroc": 0.9942280783582089,
+            "brier": 0.01305034349885519,
+            "positives": 1072
+          },
+          "collect_iron": {
+            "ap": 0.9999344432304681,
+            "auroc": 0.9989506066356161,
+            "brier": 0.01665783867178582,
+            "positives": 1054
+          },
+          "collect_sapling": {
+            "ap": 0.9999975629331886,
+            "auroc": 0.9997743682310469,
+            "brier": 0.007129650553622653,
+            "positives": 1108
+          },
+          "collect_stone": {
+            "ap": 0.9999257358147422,
+            "auroc": 0.9971546310832025,
+            "brier": 0.005139221932741421,
+            "positives": 1092
+          },
+          "collect_wood": {
+            "ap": 0.9999991861793726,
+            "auroc": 0.999924789410349,
+            "brier": 0.0036775121691772343,
+            "positives": 1108
+          },
+          "defeat_skeleton": {
+            "ap": 0.9434567588728746,
+            "auroc": 0.7635724771639844,
+            "brier": 0.08556721731120054,
+            "positives": 968
+          },
+          "defeat_zombie": {
+            "ap": 0.9975682502949149,
+            "auroc": 0.9681632653061224,
+            "brier": 0.022443141180350297,
+            "positives": 1050
+          },
+          "eat_cow": {
+            "ap": 0.998115854900447,
+            "auroc": 0.9747360238388287,
+            "brier": 0.010853958550797236,
+            "positives": 1077
+          },
+          "eat_plant": {
+            "ap": 0.4259298857504652,
+            "auroc": 0.6878918814912724,
+            "brier": 0.18072841547995191,
+            "positives": 287
+          },
+          "make_iron_pickaxe": {
+            "ap": 0.9999825242242427,
+            "auroc": 0.9999165015252388,
+            "brier": 0.01498080475144685,
+            "positives": 926
+          },
+          "make_iron_sword": {
+            "ap": 0.9999989807255196,
+            "auroc": 0.99999222999223,
+            "brier": 0.012719266940660539,
+            "positives": 990
+          },
+          "make_stone_pickaxe": {
+            "ap": 0.9999973821258534,
+            "auroc": 0.9999449733120563,
+            "brier": 0.006491715652965657,
+            "positives": 1069
+          },
+          "make_stone_sword": {
+            "ap": 0.9994330658185865,
+            "auroc": 0.9949426249520421,
+            "brier": 0.03793129192576181,
+            "positives": 1006
+          },
+          "make_wood_pickaxe": {
+            "ap": 1.0,
+            "auroc": 1.0,
+            "brier": 0.0015280634178182564,
+            "positives": 1099
+          },
+          "make_wood_sword": {
+            "ap": 0.9750735862611649,
+            "auroc": 0.792901803787504,
+            "brier": 0.05420130254027541,
+            "positives": 1034
+          },
+          "place_furnace": {
+            "ap": 0.9925009574609157,
+            "auroc": 0.918020799480013,
+            "brier": 0.009083352660466122,
+            "positives": 1086
+          },
+          "place_plant": {
+            "ap": 1.0,
+            "auroc": 1.0,
+            "brier": 0.006476045111053708,
+            "positives": 1106
+          },
+          "place_stone": {
+            "ap": 0.9999061866825166,
+            "auroc": 0.9964024071166928,
+            "brier": 0.005725462375221931,
+            "positives": 1092
+          },
+          "place_table": {
+            "ap": 1.0,
+            "auroc": 1.0,
+            "brier": 0.0016341628466064937,
+            "positives": 1099
+          },
+          "wake_up": {
+            "ap": 0.9791072269663605,
+            "auroc": 0.7995283018867925,
+            "brier": 0.028759844090538462,
+            "positives": 1060
+          }
+        },
+        "audit": {
+          "constant_r2": -0.03707612769323173,
+          "misaligned_r2": -0.03965866011280713,
+          "pass": true,
+          "perfect_r2": 0.9999999973490413,
+          "timestep_shift_r2": -0.004289531874529555
+        },
+        "inventory": {
+          "per_target": {
+            "coal": {
+              "beats_timestep": true,
+              "constant_r2": -0.005887389724619219,
+              "latent_linear_ci": [
+                0.031326406021928925,
+                0.5332562078275933
+              ],
+              "latent_linear_r2": 0.41998123844691615,
+              "latent_nonlinear_r2": 0.2715526291964574,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9965484806270742,
+              "pixel_nonlinear_r2": 0.672051258711599,
+              "timestep_r2": 0.08613296722899244,
+              "verdict": "degraded"
+            },
+            "diamond": {
+              "beats_timestep": true,
+              "constant_r2": -0.056547584265229434,
+              "latent_linear_ci": [
+                -1.7683896815156832,
+                0.8795529436187438
+              ],
+              "latent_linear_r2": 0.7041993789149128,
+              "latent_nonlinear_r2": 0.7280461123049953,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9999699532435165,
+              "pixel_nonlinear_r2": 0.9625366041221151,
+              "timestep_r2": -0.013286573690312942,
+              "verdict": "degraded"
+            },
+            "iron": {
+              "beats_timestep": true,
+              "constant_r2": -0.0041074006255352735,
+              "latent_linear_ci": [
+                0.3715057389534392,
+                0.751203716066751
+              ],
+              "latent_linear_r2": 0.6616798517003133,
+              "latent_nonlinear_r2": 0.5344109315995569,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9881414107519251,
+              "pixel_nonlinear_r2": 0.6795597678941518,
+              "timestep_r2": 0.01394470209026999,
+              "verdict": "degraded"
+            },
+            "iron_pickaxe": {
+              "beats_timestep": true,
+              "constant_r2": -0.04798676479621933,
+              "latent_linear_ci": [
+                0.3936281362152667,
+                0.7045496549970356
+              ],
+              "latent_linear_r2": 0.5681602208335492,
+              "latent_nonlinear_r2": 0.5069405466875767,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9999265733848258,
+              "pixel_nonlinear_r2": 0.4706576703625478,
+              "timestep_r2": 0.42971492948818224,
+              "verdict": "degraded"
+            },
+            "iron_sword": {
+              "beats_timestep": true,
+              "constant_r2": -0.011054243807098185,
+              "latent_linear_ci": [
+                0.6443008934783375,
+                0.9061608380974604
+              ],
+              "latent_linear_r2": 0.8300230472868398,
+              "latent_nonlinear_r2": 0.8033832529917626,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.999977988977752,
+              "pixel_nonlinear_r2": 0.8771611512268879,
+              "timestep_r2": 0.3456618387889495,
+              "verdict": "degraded"
+            },
+            "sapling": {
+              "beats_timestep": true,
+              "constant_r2": -0.0007526281236589494,
+              "latent_linear_ci": [
+                0.20114917888033312,
+                0.7592370577761942
+              ],
+              "latent_linear_r2": 0.651662169141918,
+              "latent_nonlinear_r2": 0.45383470081701494,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9999987801807667,
+              "pixel_nonlinear_r2": 0.7540285199334102,
+              "timestep_r2": -0.04887183783458893,
+              "verdict": "degraded"
+            },
+            "stone": {
+              "beats_timestep": true,
+              "constant_r2": -0.06480614995994038,
+              "latent_linear_ci": [
+                0.262680944196932,
+                0.47329307559582984
+              ],
+              "latent_linear_r2": 0.3903902331671917,
+              "latent_nonlinear_r2": 0.327252202024524,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9986419572347625,
+              "pixel_nonlinear_r2": 0.5311105733302732,
+              "timestep_r2": 0.014498955046994721,
+              "verdict": "degraded"
+            },
+            "stone_pickaxe": {
+              "beats_timestep": true,
+              "constant_r2": -0.04296444647660169,
+              "latent_linear_ci": [
+                0.42668276109897996,
+                0.8354789206945751
+              ],
+              "latent_linear_r2": 0.6461478846825932,
+              "latent_nonlinear_r2": 0.5656797853699236,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.8502177461760169,
+              "pixel_nonlinear_r2": 0.7483727752831759,
+              "timestep_r2": 0.2101609664137274,
+              "verdict": "degraded"
+            },
+            "stone_sword": {
+              "beats_timestep": true,
+              "constant_r2": -0.0008007310325792716,
+              "latent_linear_ci": [
+                0.40450716061217445,
+                0.7145384689436199
+              ],
+              "latent_linear_r2": 0.5933133839072644,
+              "latent_nonlinear_r2": 0.5135970811554709,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.7445210593125858,
+              "pixel_nonlinear_r2": 0.48151057954098087,
+              "timestep_r2": 0.14192301334686708,
+              "verdict": "degraded"
+            },
+            "wood": {
+              "beats_timestep": true,
+              "constant_r2": -0.004841421141760227,
+              "latent_linear_ci": [
+                0.25944088551013267,
+                0.5079616815139828
+              ],
+              "latent_linear_r2": 0.4355573012130213,
+              "latent_nonlinear_r2": 0.350835315222097,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9900474481542871,
+              "pixel_nonlinear_r2": 0.7086693733564886,
+              "timestep_r2": 0.008178370259933399,
+              "verdict": "degraded"
+            },
+            "wood_pickaxe": {
+              "beats_timestep": true,
+              "constant_r2": -0.02019993089823835,
+              "latent_linear_ci": [
+                0.6639729390185117,
+                0.8642634426964336
+              ],
+              "latent_linear_r2": 0.8061819040226113,
+              "latent_nonlinear_r2": 0.8318649782456805,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9998663851632611,
+              "pixel_nonlinear_r2": 0.7784307183752004,
+              "timestep_r2": 0.14360568338810553,
+              "verdict": "degraded"
+            },
+            "wood_sword": {
+              "beats_timestep": true,
+              "constant_r2": -0.05307798474256087,
+              "latent_linear_ci": [
+                0.15583176366950477,
+                0.5844862122407243
+              ],
+              "latent_linear_r2": 0.35773894136844386,
+              "latent_nonlinear_r2": 0.2820591588863155,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.825054021907977,
+              "pixel_nonlinear_r2": 0.45813722355282527,
+              "timestep_r2": 0.10302954998730174,
+              "verdict": "degraded"
+            }
+          }
+        },
+        "vitals": {
+          "per_target": {
+            "drink": {
+              "beats_timestep": true,
+              "constant_r2": -0.00899610615632751,
+              "latent_linear_ci": [
+                0.5584296756589425,
+                0.6660074949403986
+              ],
+              "latent_linear_r2": 0.6188764768299401,
+              "latent_nonlinear_r2": 0.5847330992928844,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9992984481994929,
+              "pixel_nonlinear_r2": 0.9713230408508751,
+              "timestep_r2": 0.1129711979608522,
+              "verdict": "degraded"
+            },
+            "energy": {
+              "beats_timestep": true,
+              "constant_r2": -0.0010369282777231703,
+              "latent_linear_ci": [
+                0.5809078705169161,
+                0.6897368832799019
+              ],
+              "latent_linear_r2": 0.6399917308430099,
+              "latent_nonlinear_r2": 0.6140098009764181,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9998313683185726,
+              "pixel_nonlinear_r2": 0.9712170394341363,
+              "timestep_r2": 0.0260851027641531,
+              "verdict": "degraded"
+            },
+            "food": {
+              "beats_timestep": true,
+              "constant_r2": -0.002130414433984429,
+              "latent_linear_ci": [
+                0.6299652995737014,
+                0.675707199696439
+              ],
+              "latent_linear_r2": 0.6546480106268875,
+              "latent_nonlinear_r2": 0.585070008201459,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9997015089126579,
+              "pixel_nonlinear_r2": 0.9790043119224221,
+              "timestep_r2": 0.09582146306722428,
+              "verdict": "degraded"
+            },
+            "health": {
+              "beats_timestep": true,
+              "constant_r2": -0.0024112305947296964,
+              "latent_linear_ci": [
+                0.2549194372078272,
+                0.4068716223379902
+              ],
+              "latent_linear_r2": 0.3404499944646254,
+              "latent_nonlinear_r2": 0.2232924536551898,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.7964007705718719,
+              "pixel_nonlinear_r2": 0.9445360286058604,
+              "timestep_r2": -0.014039973444264442,
+              "verdict": "degraded"
+            }
+          }
+        }
+      },
+      "summary": {
+        "inventory_linear_mean": 0.5887529628904645,
+        "inventory_nonlinear_mean": 0.514121391208448,
+        "verdicts": {
+          "degraded": 16
+        },
+        "vitals_linear_mean": 0.5634915531911158,
+        "vitals_nonlinear_mean": 0.5017763405314879
+      }
+    },
+    "2500": {
+      "dev_cosine": 0.3109469022601843,
+      "full_report": {
+        "achievements": {
+          "collect_coal": {
+            "ap": 0.9997045985114269,
+            "auroc": 0.9935783837344462,
+            "brier": 0.016908129670571218,
+            "positives": 1071
+          },
+          "collect_diamond": {
+            "ap": 1.0,
+            "auroc": 1.0,
+            "brier": 0.006677188623342783,
+            "positives": 153
+          },
+          "collect_drink": {
+            "ap": 0.9997130518069527,
+            "auroc": 0.9937227922885572,
+            "brier": 0.013285669571622463,
+            "positives": 1072
+          },
+          "collect_iron": {
+            "ap": 0.9999289096070944,
+            "auroc": 0.9988643551262147,
+            "brier": 0.01642731775497753,
+            "positives": 1054
+          },
+          "collect_sapling": {
+            "ap": 0.9999951389924103,
+            "auroc": 0.9995487364620939,
+            "brier": 0.007296614927713515,
+            "positives": 1108
+          },
+          "collect_stone": {
+            "ap": 0.9999310596157364,
+            "auroc": 0.997350863422292,
+            "brier": 0.005070040078179759,
+            "positives": 1092
+          },
+          "collect_wood": {
+            "ap": 0.9999991861793726,
+            "auroc": 0.999924789410349,
+            "brier": 0.0037181743945004556,
+            "positives": 1108
+          },
+          "defeat_skeleton": {
+            "ap": 0.942447849784406,
+            "auroc": 0.7538603740756851,
+            "brier": 0.08636510629304003,
+            "positives": 968
+          },
+          "defeat_zombie": {
+            "ap": 0.9970977576195376,
+            "auroc": 0.9631972789115646,
+            "brier": 0.022272020054921193,
+            "positives": 1050
+          },
+          "eat_cow": {
+            "ap": 0.9979927094509067,
+            "auroc": 0.9738075187320507,
+            "brier": 0.011040317873257328,
+            "positives": 1077
+          },
+          "eat_plant": {
+            "ap": 0.4295903902921451,
+            "auroc": 0.6914054820534485,
+            "brier": 0.18135572329926575,
+            "positives": 287
+          },
+          "make_iron_pickaxe": {
+            "ap": 0.999963818784759,
+            "auroc": 0.9998274364854935,
+            "brier": 0.014929758003129892,
+            "positives": 926
+          },
+          "make_iron_sword": {
+            "ap": 1.0,
+            "auroc": 1.0,
+            "brier": 0.011492466298193739,
+            "positives": 990
+          },
+          "make_stone_pickaxe": {
+            "ap": 0.9999991257442102,
+            "auroc": 0.9999816577706855,
+            "brier": 0.006172110782641035,
+            "positives": 1069
+          },
+          "make_stone_sword": {
+            "ap": 0.9994355642150938,
+            "auroc": 0.9949513445641938,
+            "brier": 0.03716447071838929,
+            "positives": 1006
+          },
+          "make_wood_pickaxe": {
+            "ap": 1.0,
+            "auroc": 1.0,
+            "brier": 0.0013912162700344549,
+            "positives": 1099
+          },
+          "make_wood_sword": {
+            "ap": 0.9724519856685291,
+            "auroc": 0.7715689802528002,
+            "brier": 0.05442485868136235,
+            "positives": 1034
+          },
+          "place_furnace": {
+            "ap": 0.9927649818608497,
+            "auroc": 0.9172354024482722,
+            "brier": 0.009068158412348705,
+            "positives": 1086
+          },
+          "place_plant": {
+            "ap": 1.0,
+            "auroc": 1.0,
+            "brier": 0.006662917825213022,
+            "positives": 1106
+          },
+          "place_stone": {
+            "ap": 0.9999140735806575,
+            "auroc": 0.996696755625327,
+            "brier": 0.005691855955214918,
+            "positives": 1092
+          },
+          "place_table": {
+            "ap": 1.0,
+            "auroc": 1.0,
+            "brier": 0.001497136005902625,
+            "positives": 1099
+          },
+          "wake_up": {
+            "ap": 0.980413938890827,
+            "auroc": 0.7982704402515723,
+            "brier": 0.02928904910881403,
+            "positives": 1060
+          }
+        },
+        "audit": {
+          "constant_r2": -0.03707612769323173,
+          "misaligned_r2": -0.03965866011280713,
+          "pass": true,
+          "perfect_r2": 0.9999999973490413,
+          "timestep_shift_r2": -0.004289531874529555
+        },
+        "inventory": {
+          "per_target": {
+            "coal": {
+              "beats_timestep": true,
+              "constant_r2": -0.005887389724619219,
+              "latent_linear_ci": [
+                0.08651125330177127,
+                0.5594191992724517
+              ],
+              "latent_linear_r2": 0.44835716744629717,
+              "latent_nonlinear_r2": 0.28497065735361893,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9965484806270742,
+              "pixel_nonlinear_r2": 0.6960523144594837,
+              "timestep_r2": 0.08613296722899244,
+              "verdict": "degraded"
+            },
+            "diamond": {
+              "beats_timestep": true,
+              "constant_r2": -0.056547584265229434,
+              "latent_linear_ci": [
+                -1.728688592643124,
+                0.8824486312553741
+              ],
+              "latent_linear_r2": 0.7150463400080067,
+              "latent_nonlinear_r2": 0.7214616884962433,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9999699532435165,
+              "pixel_nonlinear_r2": 0.9605482504610307,
+              "timestep_r2": -0.013286573690312942,
+              "verdict": "degraded"
+            },
+            "iron": {
+              "beats_timestep": true,
+              "constant_r2": -0.0041074006255352735,
+              "latent_linear_ci": [
+                0.3898500908529061,
+                0.759625440462575
+              ],
+              "latent_linear_r2": 0.6755545386713164,
+              "latent_nonlinear_r2": 0.5691983329330403,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9881414107519251,
+              "pixel_nonlinear_r2": 0.7074642275342296,
+              "timestep_r2": 0.01394470209026999,
+              "verdict": "degraded"
+            },
+            "iron_pickaxe": {
+              "beats_timestep": true,
+              "constant_r2": -0.04798676479621933,
+              "latent_linear_ci": [
+                0.31025967046454456,
+                0.7102556572485174
+              ],
+              "latent_linear_r2": 0.5490682704248944,
+              "latent_nonlinear_r2": 0.5015401476085939,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9999265733848258,
+              "pixel_nonlinear_r2": 0.4556557716550145,
+              "timestep_r2": 0.42971492948818224,
+              "verdict": "degraded"
+            },
+            "iron_sword": {
+              "beats_timestep": true,
+              "constant_r2": -0.011054243807098185,
+              "latent_linear_ci": [
+                0.6587972566183972,
+                0.9104502893231032
+              ],
+              "latent_linear_r2": 0.8373027955550779,
+              "latent_nonlinear_r2": 0.8238735383962701,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.999977988977752,
+              "pixel_nonlinear_r2": 0.8838039788223051,
+              "timestep_r2": 0.3456618387889495,
+              "verdict": "degraded"
+            },
+            "sapling": {
+              "beats_timestep": true,
+              "constant_r2": -0.0007526281236589494,
+              "latent_linear_ci": [
+                0.2393476207839831,
+                0.7673473806163628
+              ],
+              "latent_linear_r2": 0.6635663451117547,
+              "latent_nonlinear_r2": 0.5179409129737123,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9999987801807667,
+              "pixel_nonlinear_r2": 0.760449496106483,
+              "timestep_r2": -0.04887183783458893,
+              "verdict": "degraded"
+            },
+            "stone": {
+              "beats_timestep": true,
+              "constant_r2": -0.06480614995994038,
+              "latent_linear_ci": [
+                0.3083891444445532,
+                0.5044760878403943
+              ],
+              "latent_linear_r2": 0.4234437059572713,
+              "latent_nonlinear_r2": 0.3652572669222347,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9986419572347625,
+              "pixel_nonlinear_r2": 0.5035722597352333,
+              "timestep_r2": 0.014498955046994721,
+              "verdict": "degraded"
+            },
+            "stone_pickaxe": {
+              "beats_timestep": true,
+              "constant_r2": -0.04296444647660169,
+              "latent_linear_ci": [
+                0.4737026527220618,
+                0.8434974471921615
+              ],
+              "latent_linear_r2": 0.6675737907934733,
+              "latent_nonlinear_r2": 0.5978011702945578,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.8502177461760169,
+              "pixel_nonlinear_r2": 0.7492786497397944,
+              "timestep_r2": 0.2101609664137274,
+              "verdict": "degraded"
+            },
+            "stone_sword": {
+              "beats_timestep": true,
+              "constant_r2": -0.0008007310325792716,
+              "latent_linear_ci": [
+                0.4223958875681195,
+                0.702415348603046
+              ],
+              "latent_linear_r2": 0.5812685121973851,
+              "latent_nonlinear_r2": 0.5070587242528299,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.7445210593125858,
+              "pixel_nonlinear_r2": 0.46890048600746326,
+              "timestep_r2": 0.14192301334686708,
+              "verdict": "degraded"
+            },
+            "wood": {
+              "beats_timestep": true,
+              "constant_r2": -0.004841421141760227,
+              "latent_linear_ci": [
+                0.22621960951698028,
+                0.5259240389994435
+              ],
+              "latent_linear_r2": 0.43235054819947394,
+              "latent_nonlinear_r2": 0.368440754300435,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9900474481542871,
+              "pixel_nonlinear_r2": 0.690056397978545,
+              "timestep_r2": 0.008178370259933399,
+              "verdict": "degraded"
+            },
+            "wood_pickaxe": {
+              "beats_timestep": true,
+              "constant_r2": -0.02019993089823835,
+              "latent_linear_ci": [
+                0.701473072989409,
+                0.8752329099245931
+              ],
+              "latent_linear_r2": 0.8258930708465767,
+              "latent_nonlinear_r2": 0.8481706724931406,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9998663851632611,
+              "pixel_nonlinear_r2": 0.7679782001526132,
+              "timestep_r2": 0.14360568338810553,
+              "verdict": "degraded"
+            },
+            "wood_sword": {
+              "beats_timestep": true,
+              "constant_r2": -0.05307798474256087,
+              "latent_linear_ci": [
+                0.0533242850165986,
+                0.5979852630103049
+              ],
+              "latent_linear_r2": 0.359854988272877,
+              "latent_nonlinear_r2": 0.2908939649835346,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.825054021907977,
+              "pixel_nonlinear_r2": 0.4988822158824192,
+              "timestep_r2": 0.10302954998730174,
+              "verdict": "degraded"
+            }
+          }
+        },
+        "vitals": {
+          "per_target": {
+            "drink": {
+              "beats_timestep": true,
+              "constant_r2": -0.00899610615632751,
+              "latent_linear_ci": [
+                0.5373965868875045,
+                0.6639229060249067
+              ],
+              "latent_linear_r2": 0.6083240105765819,
+              "latent_nonlinear_r2": 0.5534263695792864,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9992984481994929,
+              "pixel_nonlinear_r2": 0.9673121169675492,
+              "timestep_r2": 0.1129711979608522,
+              "verdict": "degraded"
+            },
+            "energy": {
+              "beats_timestep": true,
+              "constant_r2": -0.0010369282777231703,
+              "latent_linear_ci": [
+                0.5805460222822448,
+                0.6987139479050166
+              ],
+              "latent_linear_r2": 0.644956038366671,
+              "latent_nonlinear_r2": 0.5960000131032207,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9998313683185726,
+              "pixel_nonlinear_r2": 0.9767998703566383,
+              "timestep_r2": 0.0260851027641531,
+              "verdict": "degraded"
+            },
+            "food": {
+              "beats_timestep": true,
+              "constant_r2": -0.002130414433984429,
+              "latent_linear_ci": [
+                0.6370372611268192,
+                0.6821321926337517
+              ],
+              "latent_linear_r2": 0.6612243139315405,
+              "latent_nonlinear_r2": 0.5682346156738761,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.9997015089126579,
+              "pixel_nonlinear_r2": 0.9794392674287127,
+              "timestep_r2": 0.09582146306722428,
+              "verdict": "degraded"
+            },
+            "health": {
+              "beats_timestep": true,
+              "constant_r2": -0.0024112305947296964,
+              "latent_linear_ci": [
+                0.27079010575402834,
+                0.4139131180101404
+              ],
+              "latent_linear_r2": 0.35238175968913266,
+              "latent_nonlinear_r2": 0.20116073840911386,
+              "linearly_as_extractable": false,
+              "pixel_linear_r2": 0.7964007705718719,
+              "pixel_nonlinear_r2": 0.9469596138236435,
+              "timestep_r2": -0.014039973444264442,
+              "verdict": "degraded"
+            }
+          }
+        }
+      },
+      "summary": {
+        "inventory_linear_mean": 0.5982733394570338,
+        "inventory_nonlinear_mean": 0.5330506525840176,
+        "verdicts": {
+          "degraded": 16
+        },
+        "vitals_linear_mean": 0.5667215306409815,
+        "vitals_nonlinear_mean": 0.47970543419137424
+      }
+    }
+  },
+  "format": "craftax_encoder_anchor_v2",
+  "provenance": {
+    "implementation_sha256": "b178cbf825f7f521f0776347311d12a4b231630d74bcd70448f7236d9cd996a3",
+    "probe_sha256": "bb5c7c703c0125131dcdb56cb24660ad22febf18c236cd6cf5336b8f748d1fdb",
+    "replay_sha256": "7e5cdfc8b8cc813e0b51113f0c959c2c3ddcf3877a9ff0e1777ccfd7d4e0155b",
+    "runner_sha256": "57a8228249820ef07d2592a9cc1be2e8ba485269ab9c671127fc7ffd71eba346"
+  },
+  "training_tail": [
+    {
+      "continuation": 0.6830700039863586,
+      "cosine": 0.8630629777908325,
+      "jepa": 0.27387407422065735,
+      "loss": 0.27387407422065735,
+      "online_std": 0.08312135189771652,
+      "reward": 0.011738389730453491,
+      "step": 2401
+    },
+    {
+      "continuation": 0.6815365552902222,
+      "cosine": 0.903831422328949,
+      "jepa": 0.19233731925487518,
+      "loss": 0.19233731925487518,
+      "online_std": 0.08544518053531647,
+      "reward": 0.011788264848291874,
+      "step": 2402
+    },
+    {
+      "continuation": 0.684317946434021,
+      "cosine": 0.8733744025230408,
+      "jepa": 0.25325116515159607,
+      "loss": 0.25325116515159607,
+      "online_std": 0.08472339063882828,
+      "reward": 0.26112470030784607,
+      "step": 2403
+    },
+    {
+      "continuation": 0.681961178779602,
+      "cosine": 0.861989438533783,
+      "jepa": 0.27602100372314453,
+      "loss": 0.27602100372314453,
+      "online_std": 0.08530469238758087,
+      "reward": 0.0946074053645134,
+      "step": 2404
+    },
+    {
+      "continuation": 0.6822032332420349,
+      "cosine": 0.9136509895324707,
+      "jepa": 0.17269816994667053,
+      "loss": 0.17269816994667053,
+      "online_std": 0.080884650349617,
+      "reward": 0.01177656464278698,
+      "step": 2405
+    },
+    {
+      "continuation": 0.6815037131309509,
+      "cosine": 0.9045522809028625,
+      "jepa": 0.19089531898498535,
+      "loss": 0.19089531898498535,
+      "online_std": 0.08882717788219452,
+      "reward": 0.9282430410385132,
+      "step": 2406
+    },
+    {
+      "continuation": 0.6832418441772461,
+      "cosine": 0.861176609992981,
+      "jepa": 0.27764686942100525,
+      "loss": 0.27764686942100525,
+      "online_std": 0.08853229135274887,
+      "reward": 0.26196226477622986,
+      "step": 2407
+    },
+    {
+      "continuation": 0.6848364472389221,
+      "cosine": 0.8313642740249634,
+      "jepa": 0.33727145195007324,
+      "loss": 0.33727145195007324,
+      "online_std": 0.08692913502454758,
+      "reward": 0.34462770819664,
+      "step": 2408
+    },
+    {
+      "continuation": 0.6807911992073059,
+      "cosine": 0.9227333068847656,
+      "jepa": 0.1545334905385971,
+      "loss": 0.1545334905385971,
+      "online_std": 0.08428026735782623,
+      "reward": 0.5937539935112,
+      "step": 2409
+    },
+    {
+      "continuation": 0.6802344918251038,
+      "cosine": 0.9067713022232056,
+      "jepa": 0.18645751476287842,
+      "loss": 0.18645751476287842,
+      "online_std": 0.08406513184309006,
+      "reward": 0.01174987480044365,
+      "step": 2410
+    },
+    {
+      "continuation": 0.6820119023323059,
+      "cosine": 0.9516519904136658,
+      "jepa": 0.09669607132673264,
+      "loss": 0.09669607132673264,
+      "online_std": 0.08602554351091385,
+      "reward": 0.5938058495521545,
+      "step": 2411
+    },
+    {
+      "continuation": 0.6816004514694214,
+      "cosine": 0.914646327495575,
+      "jepa": 0.1707073301076889,
+      "loss": 0.1707073301076889,
+      "online_std": 0.0886969268321991,
+      "reward": 0.42817506194114685,
+      "step": 2412
+    },
+    {
+      "continuation": 0.6821834444999695,
+      "cosine": 0.9076412320137024,
+      "jepa": 0.18471764028072357,
+      "loss": 0.18471764028072357,
+      "online_std": 0.0875372588634491,
+      "reward": 0.011723967269062996,
+      "step": 2413
+    },
+    {
+      "continuation": 0.6795384883880615,
+      "cosine": 0.9151836633682251,
+      "jepa": 0.1696326583623886,
+      "loss": 0.1696326583623886,
+      "online_std": 0.0853407010436058,
+      "reward": 0.09444405138492584,
+      "step": 2414
+    },
+    {
+      "continuation": 0.6817843914031982,
+      "cosine": 0.8434284329414368,
+      "jepa": 0.3131432831287384,
+      "loss": 0.3131432831287384,
+      "online_std": 0.08558657765388489,
+      "reward": 0.4280723035335541,
+      "step": 2415
+    },
+    {
+      "continuation": 0.6791782379150391,
+      "cosine": 0.8103429675102234,
+      "jepa": 0.3793141543865204,
+      "loss": 0.3793141543865204,
+      "online_std": 0.08398104459047318,
+      "reward": 0.5111057758331299,
+      "step": 2416
+    },
+    {
+      "continuation": 0.6779670119285583,
+      "cosine": 0.8745817542076111,
+      "jepa": 0.25083646178245544,
+      "loss": 0.25083646178245544,
+      "online_std": 0.08523039519786835,
+      "reward": 0.011793049983680248,
+      "step": 2417
+    },
+    {
+      "continuation": 0.6794773936271667,
+      "cosine": 0.8770975470542908,
+      "jepa": 0.245805025100708,
+      "loss": 0.245805025100708,
+      "online_std": 0.0848335325717926,
+      "reward": 0.01177770271897316,
+      "step": 2418
+    },
+    {
+      "continuation": 0.6812024712562561,
+      "cosine": 0.8800125122070312,
+      "jepa": 0.23997493088245392,
+      "loss": 0.23997493088245392,
+      "online_std": 0.08938735723495483,
+      "reward": 0.845004141330719,
+      "step": 2419
+    },
+    {
+      "continuation": 0.679571270942688,
+      "cosine": 0.9156894087791443,
+      "jepa": 0.16862134635448456,
+      "loss": 0.16862134635448456,
+      "online_std": 0.08744722604751587,
+      "reward": 0.011779622174799442,
+      "step": 2420
+    },
+    {
+      "continuation": 0.6805400252342224,
+      "cosine": 0.9214159250259399,
+      "jepa": 0.15716813504695892,
+      "loss": 0.15716813504695892,
+      "online_std": 0.08403542637825012,
+      "reward": 0.17842724919319153,
+      "step": 2421
+    },
+    {
+      "continuation": 0.6808221936225891,
+      "cosine": 0.913165271282196,
+      "jepa": 0.17366936802864075,
+      "loss": 0.17366936802864075,
+      "online_std": 0.08395953476428986,
+      "reward": 0.011783008463680744,
+      "step": 2422
+    },
+    {
+      "continuation": 0.6815947890281677,
+      "cosine": 0.8920989036560059,
+      "jepa": 0.21580219268798828,
+      "loss": 0.21580219268798828,
+      "online_std": 0.08295643329620361,
+      "reward": 0.26186439394950867,
+      "step": 2423
+    },
+    {
+      "continuation": 0.6814428567886353,
+      "cosine": 0.9318855404853821,
+      "jepa": 0.13622908294200897,
+      "loss": 0.13622908294200897,
+      "online_std": 0.08777939528226852,
+      "reward": 0.26098787784576416,
+      "step": 2424
+    },
+    {
+      "continuation": 0.6814651489257812,
+      "cosine": 0.8763328790664673,
+      "jepa": 0.2473343461751938,
+      "loss": 0.2473343461751938,
+      "online_std": 0.08511658757925034,
+      "reward": 0.01177949272096157,
+      "step": 2425
+    },
+    {
+      "continuation": 0.6825621128082275,
+      "cosine": 0.9054908752441406,
+      "jepa": 0.1890183538198471,
+      "loss": 0.1890183538198471,
+      "online_std": 0.08566337823867798,
+      "reward": 0.01173308864235878,
+      "step": 2426
+    },
+    {
+      "continuation": 0.6830623745918274,
+      "cosine": 0.891255795955658,
+      "jepa": 0.21748845279216766,
+      "loss": 0.21748845279216766,
+      "online_std": 0.08101452887058258,
+      "reward": 0.6772112250328064,
+      "step": 2427
+    },
+    {
+      "continuation": 0.6827208995819092,
+      "cosine": 0.9204471707344055,
+      "jepa": 0.15910561382770538,
+      "loss": 0.15910561382770538,
+      "online_std": 0.08357339352369308,
+      "reward": 0.011746353469789028,
+      "step": 2428
+    },
+    {
+      "continuation": 0.6838715672492981,
+      "cosine": 0.9310587048530579,
+      "jepa": 0.13788257539272308,
+      "loss": 0.13788257539272308,
+      "online_std": 0.07917501032352448,
+      "reward": 1.0113880634307861,
+      "step": 2429
+    },
+    {
+      "continuation": 0.6827080249786377,
+      "cosine": 0.9330655932426453,
+      "jepa": 0.1338687390089035,
+      "loss": 0.1338687390089035,
+      "online_std": 0.08741088211536407,
+      "reward": 0.8434444665908813,
+      "step": 2430
+    },
+    {
+      "continuation": 0.6845384240150452,
+      "cosine": 0.8933179974555969,
+      "jepa": 0.21336399018764496,
+      "loss": 0.21336399018764496,
+      "online_std": 0.08202876895666122,
+      "reward": 0.011723974719643593,
+      "step": 2431
+    },
+    {
+      "continuation": 0.683976411819458,
+      "cosine": 0.9039584994316101,
+      "jepa": 0.19208307564258575,
+      "loss": 0.19208307564258575,
+      "online_std": 0.08421284705400467,
+      "reward": 0.5943204164505005,
+      "step": 2432
+    },
+    {
+      "continuation": 0.6845162510871887,
+      "cosine": 0.9191005825996399,
+      "jepa": 0.16179871559143066,
+      "loss": 0.16179871559143066,
+      "online_std": 0.08399494737386703,
+      "reward": 0.011749779805541039,
+      "step": 2433
+    },
+    {
+      "continuation": 0.6813658475875854,
+      "cosine": 0.8511062860488892,
+      "jepa": 0.2977873980998993,
+      "loss": 0.2977873980998993,
+      "online_std": 0.08057968318462372,
+      "reward": 0.6777650117874146,
+      "step": 2434
+    },
+    {
+      "continuation": 0.6842806935310364,
+      "cosine": 0.8841847777366638,
+      "jepa": 0.23163063824176788,
+      "loss": 0.23163063824176788,
+      "online_std": 0.08511993288993835,
+      "reward": 0.7604531645774841,
+      "step": 2435
+    },
+    {
+      "continuation": 0.6824106574058533,
+      "cosine": 0.9185860753059387,
+      "jepa": 0.16282795369625092,
+      "loss": 0.16282795369625092,
+      "online_std": 0.08592306077480316,
+      "reward": 0.42859259247779846,
+      "step": 2436
+    },
+    {
+      "continuation": 0.6823421120643616,
+      "cosine": 0.8359997868537903,
+      "jepa": 0.3280005156993866,
+      "loss": 0.3280005156993866,
+      "online_std": 0.08040228486061096,
+      "reward": 0.6773461103439331,
+      "step": 2437
+    },
+    {
+      "continuation": 0.6808986663818359,
+      "cosine": 0.7804638743400574,
+      "jepa": 0.43907222151756287,
+      "loss": 0.43907222151756287,
+      "online_std": 0.08252927660942078,
+      "reward": 0.09441956132650375,
+      "step": 2438
+    },
+    {
+      "continuation": 0.6828690767288208,
+      "cosine": 0.9063579440116882,
+      "jepa": 0.18728426098823547,
+      "loss": 0.18728426098823547,
+      "online_std": 0.08665408939123154,
+      "reward": 0.17820067703723907,
+      "step": 2439
+    },
+    {
+      "continuation": 0.6787001490592957,
+      "cosine": 0.8379126787185669,
+      "jepa": 0.3241746425628662,
+      "loss": 0.3241746425628662,
+      "online_std": 0.08112306892871857,
+      "reward": 0.26146313548088074,
+      "step": 2440
+    },
+    {
+      "continuation": 0.6837607026100159,
+      "cosine": 0.8318983912467957,
+      "jepa": 0.3362032473087311,
+      "loss": 0.3362032473087311,
+      "online_std": 0.08198509365320206,
+      "reward": 0.6777379512786865,
+      "step": 2441
+    },
+    {
+      "continuation": 0.6804049015045166,
+      "cosine": 0.9008724093437195,
+      "jepa": 0.1982552856206894,
+      "loss": 0.1982552856206894,
+      "online_std": 0.08476029336452484,
+      "reward": 0.011733409948647022,
+      "step": 2442
+    },
+    {
+      "continuation": 0.6799219846725464,
+      "cosine": 0.933615505695343,
+      "jepa": 0.13276900351047516,
+      "loss": 0.13276900351047516,
+      "online_std": 0.0830434262752533,
+      "reward": 0.26195481419563293,
+      "step": 2443
+    },
+    {
+      "continuation": 0.6784551739692688,
+      "cosine": 0.8962656259536743,
+      "jepa": 0.2074688971042633,
+      "loss": 0.2074688971042633,
+      "online_std": 0.08478176593780518,
+      "reward": 0.3447440266609192,
+      "step": 2444
+    },
+    {
+      "continuation": 0.6778242588043213,
+      "cosine": 0.8751657605171204,
+      "jepa": 0.2496686726808548,
+      "loss": 0.2496686726808548,
+      "online_std": 0.08650453388690948,
+      "reward": 0.4277147352695465,
+      "step": 2445
+    },
+    {
+      "continuation": 0.6792232990264893,
+      "cosine": 0.9059974551200867,
+      "jepa": 0.18800507485866547,
+      "loss": 0.18800507485866547,
+      "online_std": 0.08111760020256042,
+      "reward": 0.4272037744522095,
+      "step": 2446
+    },
+    {
+      "continuation": 0.6782674789428711,
+      "cosine": 0.9266943335533142,
+      "jepa": 0.1466113179922104,
+      "loss": 0.1466113179922104,
+      "online_std": 0.08482837677001953,
+      "reward": 0.011790022253990173,
+      "step": 2447
+    },
+    {
+      "continuation": 0.6778932213783264,
+      "cosine": 0.9224201440811157,
+      "jepa": 0.15515966713428497,
+      "loss": 0.15515966713428497,
+      "online_std": 0.08276043832302094,
+      "reward": 0.7608464360237122,
+      "step": 2448
+    },
+    {
+      "continuation": 0.6800806522369385,
+      "cosine": 0.8920652270317078,
+      "jepa": 0.21586942672729492,
+      "loss": 0.21586942672729492,
+      "online_std": 0.08491148054599762,
+      "reward": 0.011744426563382149,
+      "step": 2449
+    },
+    {
+      "continuation": 0.6774953603744507,
+      "cosine": 0.9273382425308228,
+      "jepa": 0.14532355964183807,
+      "loss": 0.14532355964183807,
+      "online_std": 0.0854363664984703,
+      "reward": 0.343718945980072,
+      "step": 2450
+    },
+    {
+      "continuation": 0.6776454448699951,
+      "cosine": 0.9409406781196594,
+      "jepa": 0.11811862140893936,
+      "loss": 0.11811862140893936,
+      "online_std": 0.08220997452735901,
+      "reward": 0.011768937110900879,
+      "step": 2451
+    },
+    {
+      "continuation": 0.6799242496490479,
+      "cosine": 0.8703142404556274,
+      "jepa": 0.2593715190887451,
+      "loss": 0.2593715190887451,
+      "online_std": 0.08216123282909393,
+      "reward": 0.4267747104167938,
+      "step": 2452
+    },
+    {
+      "continuation": 0.6767796277999878,
+      "cosine": 0.8886162042617798,
+      "jepa": 0.22276775538921356,
+      "loss": 0.22276775538921356,
+      "online_std": 0.08426542580127716,
+      "reward": 0.34389111399650574,
+      "step": 2453
+    },
+    {
+      "continuation": 0.6800010204315186,
+      "cosine": 0.9110628962516785,
+      "jepa": 0.17787419259548187,
+      "loss": 0.17787419259548187,
+      "online_std": 0.08437274396419525,
+      "reward": 0.011784341186285019,
+      "step": 2454
+    },
+    {
+      "continuation": 0.6790916323661804,
+      "cosine": 0.892316460609436,
+      "jepa": 0.21536731719970703,
+      "loss": 0.21536731719970703,
+      "online_std": 0.0853680670261383,
+      "reward": 0.8443940281867981,
+      "step": 2455
+    },
+    {
+      "continuation": 0.6758434772491455,
+      "cosine": 0.9291801452636719,
+      "jepa": 0.14163973927497864,
+      "loss": 0.14163973927497864,
+      "online_std": 0.0845339298248291,
+      "reward": 0.01179234217852354,
+      "step": 2456
+    },
+    {
+      "continuation": 0.6784037351608276,
+      "cosine": 0.9163748621940613,
+      "jepa": 0.16725020110607147,
+      "loss": 0.16725020110607147,
+      "online_std": 0.08776697516441345,
+      "reward": 0.011783231049776077,
+      "step": 2457
+    },
+    {
+      "continuation": 0.6803118586540222,
+      "cosine": 0.899997889995575,
+      "jepa": 0.20000417530536652,
+      "loss": 0.20000417530536652,
+      "online_std": 0.08234305679798126,
+      "reward": 0.26165276765823364,
+      "step": 2458
+    },
+    {
+      "continuation": 0.6762261986732483,
+      "cosine": 0.8790081143379211,
+      "jepa": 0.24198369681835175,
+      "loss": 0.24198369681835175,
+      "online_std": 0.08553580194711685,
+      "reward": 1.0106356143951416,
+      "step": 2459
+    },
+    {
+      "continuation": 0.6799458861351013,
+      "cosine": 0.8569607138633728,
+      "jepa": 0.2860788404941559,
+      "loss": 0.2860788404941559,
+      "online_std": 0.08391253650188446,
+      "reward": 0.2616524398326874,
+      "step": 2460
+    },
+    {
+      "continuation": 0.6785275936126709,
+      "cosine": 0.900550365447998,
+      "jepa": 0.19889941811561584,
+      "loss": 0.19889941811561584,
+      "online_std": 0.084488645195961,
+      "reward": 0.011796265840530396,
+      "step": 2461
+    },
+    {
+      "continuation": 0.6784754395484924,
+      "cosine": 0.8819600343704224,
+      "jepa": 0.2360800802707672,
+      "loss": 0.2360800802707672,
+      "online_std": 0.08341122418642044,
+      "reward": 1.509222388267517,
+      "step": 2462
+    },
+    {
+      "continuation": 0.6778420209884644,
+      "cosine": 0.8901397585868835,
+      "jepa": 0.2197205275297165,
+      "loss": 0.2197205275297165,
+      "online_std": 0.08737480640411377,
+      "reward": 0.09485462307929993,
+      "step": 2463
+    },
+    {
+      "continuation": 0.6828281879425049,
+      "cosine": 0.9087986350059509,
+      "jepa": 0.18240275979042053,
+      "loss": 0.18240275979042053,
+      "online_std": 0.08298974484205246,
+      "reward": 0.011732353828847408,
+      "step": 2464
+    },
+    {
+      "continuation": 0.6844069957733154,
+      "cosine": 0.9336031079292297,
+      "jepa": 0.13279396295547485,
+      "loss": 0.13279396295547485,
+      "online_std": 0.08529766649007797,
+      "reward": 0.2624477744102478,
+      "step": 2465
+    },
+    {
+      "continuation": 0.679327130317688,
+      "cosine": 0.9148837327957153,
+      "jepa": 0.17023256421089172,
+      "loss": 0.17023256421089172,
+      "online_std": 0.08377471566200256,
+      "reward": 0.34355661273002625,
+      "step": 2466
+    },
+    {
+      "continuation": 0.6825281977653503,
+      "cosine": 0.9223116040229797,
+      "jepa": 0.1553768366575241,
+      "loss": 0.1553768366575241,
+      "online_std": 0.08646547049283981,
+      "reward": 0.17825010418891907,
+      "step": 2467
+    },
+    {
+      "continuation": 0.6817113161087036,
+      "cosine": 0.9273147583007812,
+      "jepa": 0.14537063241004944,
+      "loss": 0.14537063241004944,
+      "online_std": 0.081027552485466,
+      "reward": 0.8443904519081116,
+      "step": 2468
+    },
+    {
+      "continuation": 0.680467963218689,
+      "cosine": 0.9145437479019165,
+      "jepa": 0.17091266810894012,
+      "loss": 0.17091266810894012,
+      "online_std": 0.08350609242916107,
+      "reward": 0.7593947052955627,
+      "step": 2469
+    },
+    {
+      "continuation": 0.6810840368270874,
+      "cosine": 0.9022508859634399,
+      "jepa": 0.1954984813928604,
+      "loss": 0.1954984813928604,
+      "online_std": 0.08581329137086868,
+      "reward": 0.3442855477333069,
+      "step": 2470
+    },
+    {
+      "continuation": 0.6826955080032349,
+      "cosine": 0.8576242327690125,
+      "jepa": 0.28475165367126465,
+      "loss": 0.28475165367126465,
+      "online_std": 0.08988755196332932,
+      "reward": 0.17813876271247864,
+      "step": 2471
+    },
+    {
+      "continuation": 0.682023823261261,
+      "cosine": 0.9176742434501648,
+      "jepa": 0.16465161740779877,
+      "loss": 0.16465161740779877,
+      "online_std": 0.08509232103824615,
+      "reward": 0.01170341670513153,
+      "step": 2472
+    },
+    {
+      "continuation": 0.6815459132194519,
+      "cosine": 0.9260540008544922,
+      "jepa": 0.14789192378520966,
+      "loss": 0.14789192378520966,
+      "online_std": 0.08160092681646347,
+      "reward": 0.5116192102432251,
+      "step": 2473
+    },
+    {
+      "continuation": 0.6789519786834717,
+      "cosine": 0.8843070268630981,
+      "jepa": 0.23138602077960968,
+      "loss": 0.23138602077960968,
+      "online_std": 0.08648879826068878,
+      "reward": 0.011767211370170116,
+      "step": 2474
+    },
+    {
+      "continuation": 0.6810194849967957,
+      "cosine": 0.8913224339485168,
+      "jepa": 0.21735520660877228,
+      "loss": 0.21735520660877228,
+      "online_std": 0.07813175022602081,
+      "reward": 0.17819546163082123,
+      "step": 2475
+    },
+    {
+      "continuation": 0.6799496412277222,
+      "cosine": 0.911982536315918,
+      "jepa": 0.17603512108325958,
+      "loss": 0.17603512108325958,
+      "online_std": 0.0880981832742691,
+      "reward": 0.17814591526985168,
+      "step": 2476
+    },
+    {
+      "continuation": 0.6774621605873108,
+      "cosine": 0.9248538017272949,
+      "jepa": 0.1502925008535385,
+      "loss": 0.1502925008535385,
+      "online_std": 0.08915551006793976,
+      "reward": 0.17842863500118256,
+      "step": 2477
+    },
+    {
+      "continuation": 0.6808039546012878,
+      "cosine": 0.9245538711547852,
+      "jepa": 0.15089218318462372,
+      "loss": 0.15089218318462372,
+      "online_std": 0.08358126878738403,
+      "reward": 0.011754432693123817,
+      "step": 2478
+    },
+    {
+      "continuation": 0.6791585683822632,
+      "cosine": 0.8337610363960266,
+      "jepa": 0.3324778974056244,
+      "loss": 0.3324778974056244,
+      "online_std": 0.08183169364929199,
+      "reward": 0.9283992648124695,
+      "step": 2479
+    },
+    {
+      "continuation": 0.6773186922073364,
+      "cosine": 0.9446398019790649,
+      "jepa": 0.11072039604187012,
+      "loss": 0.11072039604187012,
+      "online_std": 0.08759421110153198,
+      "reward": 0.01176510564982891,
+      "step": 2480
+    },
+    {
+      "continuation": 0.6778445839881897,
+      "cosine": 0.8411306738853455,
+      "jepa": 0.3177388608455658,
+      "loss": 0.3177388608455658,
+      "online_std": 0.08317391574382782,
+      "reward": 0.34389451146125793,
+      "step": 2481
+    },
+    {
+      "continuation": 0.6786637902259827,
+      "cosine": 0.9228941202163696,
+      "jepa": 0.15421165525913239,
+      "loss": 0.15421165525913239,
+      "online_std": 0.08575789630413055,
+      "reward": 0.5117276906967163,
+      "step": 2482
+    },
+    {
+      "continuation": 0.6778934001922607,
+      "cosine": 0.9105677604675293,
+      "jepa": 0.178864523768425,
+      "loss": 0.178864523768425,
+      "online_std": 0.08517702668905258,
+      "reward": 0.011777535080909729,
+      "step": 2483
+    },
+    {
+      "continuation": 0.6793269515037537,
+      "cosine": 0.9172647595405579,
+      "jepa": 0.16547039151191711,
+      "loss": 0.16547039151191711,
+      "online_std": 0.08693602681159973,
+      "reward": 0.42830929160118103,
+      "step": 2484
+    },
+    {
+      "continuation": 0.6803895831108093,
+      "cosine": 0.8772355914115906,
+      "jepa": 0.2455289214849472,
+      "loss": 0.2455289214849472,
+      "online_std": 0.08311688899993896,
+      "reward": 0.26183849573135376,
+      "step": 2485
+    },
+    {
+      "continuation": 0.6783936619758606,
+      "cosine": 0.8595175743103027,
+      "jepa": 0.28096485137939453,
+      "loss": 0.28096485137939453,
+      "online_std": 0.07936840504407883,
+      "reward": 0.5100183486938477,
+      "step": 2486
+    },
+    {
+      "continuation": 0.6807316541671753,
+      "cosine": 0.9070793986320496,
+      "jepa": 0.18584118783473969,
+      "loss": 0.18584118783473969,
+      "online_std": 0.08202093094587326,
+      "reward": 0.4272516965866089,
+      "step": 2487
+    },
+    {
+      "continuation": 0.6810454726219177,
+      "cosine": 0.9300650954246521,
+      "jepa": 0.13986995816230774,
+      "loss": 0.13986995816230774,
+      "online_std": 0.08424531668424606,
+      "reward": 0.011748414486646652,
+      "step": 2488
+    },
+    {
+      "continuation": 0.6788997054100037,
+      "cosine": 0.8414047360420227,
+      "jepa": 0.3171904981136322,
+      "loss": 0.3171904981136322,
+      "online_std": 0.08330786228179932,
+      "reward": 0.4273282289505005,
+      "step": 2489
+    },
+    {
+      "continuation": 0.6789138317108154,
+      "cosine": 0.8940340280532837,
+      "jepa": 0.21193206310272217,
+      "loss": 0.21193206310272217,
+      "online_std": 0.08242735266685486,
+      "reward": 0.09469613432884216,
+      "step": 2490
+    },
+    {
+      "continuation": 0.6760171055793762,
+      "cosine": 0.9245996475219727,
+      "jepa": 0.15080063045024872,
+      "loss": 0.15080063045024872,
+      "online_std": 0.08212573081254959,
+      "reward": 0.5943356156349182,
+      "step": 2491
+    },
+    {
+      "continuation": 0.6816889643669128,
+      "cosine": 0.9216839075088501,
+      "jepa": 0.1566321849822998,
+      "loss": 0.1566321849822998,
+      "online_std": 0.08275237679481506,
+      "reward": 0.01174542773514986,
+      "step": 2492
+    },
+    {
+      "continuation": 0.6820367574691772,
+      "cosine": 0.9012035727500916,
+      "jepa": 0.1975928544998169,
+      "loss": 0.1975928544998169,
+      "online_std": 0.0830085277557373,
+      "reward": 0.42748281359672546,
+      "step": 2493
+    },
+    {
+      "continuation": 0.6786069869995117,
+      "cosine": 0.8981595039367676,
+      "jepa": 0.20368118584156036,
+      "loss": 0.20368118584156036,
+      "online_std": 0.08371274918317795,
+      "reward": 0.4272505044937134,
+      "step": 2494
+    },
+    {
+      "continuation": 0.6785008907318115,
+      "cosine": 0.8927835822105408,
+      "jepa": 0.21443282067775726,
+      "loss": 0.21443282067775726,
+      "online_std": 0.08230221271514893,
+      "reward": 0.0947185605764389,
+      "step": 2495
+    },
+    {
+      "continuation": 0.6807077527046204,
+      "cosine": 0.8747217059135437,
+      "jepa": 0.25055667757987976,
+      "loss": 0.25055667757987976,
+      "online_std": 0.08050429821014404,
+      "reward": 0.676056981086731,
+      "step": 2496
+    },
+    {
+      "continuation": 0.6808611154556274,
+      "cosine": 0.9305903315544128,
+      "jepa": 0.13881944119930267,
+      "loss": 0.13881944119930267,
+      "online_std": 0.08301136642694473,
+      "reward": 0.3446391224861145,
+      "step": 2497
+    },
+    {
+      "continuation": 0.6808525919914246,
+      "cosine": 0.8915917277336121,
+      "jepa": 0.21681664884090424,
+      "loss": 0.21681664884090424,
+      "online_std": 0.08405347168445587,
+      "reward": 0.4269307553768158,
+      "step": 2498
+    },
+    {
+      "continuation": 0.6788676381111145,
+      "cosine": 0.8037023544311523,
+      "jepa": 0.3925952911376953,
+      "loss": 0.3925952911376953,
+      "online_std": 0.08196781575679779,
+      "reward": 0.4272412657737732,
+      "step": 2499
+    },
+    {
+      "continuation": 0.681611955165863,
+      "cosine": 0.9179846048355103,
+      "jepa": 0.16403082013130188,
+      "loss": 0.16403082013130188,
+      "online_std": 0.08298157155513763,
+      "reward": 0.17851881682872772,
+      "step": 2500
+    }
+  ],
+  "world_config": {
+    "cdp_hidden_ratio": 1.0,
+    "cdp_weight": 1.0,
+    "channels": 3,
+    "continuation_horizon": 8,
+    "d_bottleneck": 16,
+    "dynamics_d_model": 64,
+    "dynamics_depth": 4,
+    "dynamics_heads": 4,
+    "dynamics_mlp_ratio": 4.0,
+    "dynamics_time_every": 2,
+    "encoder_lr_ratio": 0.3,
+    "image_size": 64,
+    "jepa_anticollapse": "ema",
+    "jepa_ema_tau": 0.99,
+    "jepa_ema_tau_final": 0.999,
+    "jepa_jumps": 5,
+    "jepa_predictor_context": "spatial_agent",
+    "jepa_predictor_hidden_ratio": 1.0,
+    "jepa_projection_dim": 64,
+    "jepa_sigreg_lambda": 0.05,
+    "jepa_sigreg_points": 17,
+    "jepa_sigreg_slices": 1024,
+    "jepa_terminal_fraction": 0.5,
+    "jepa_terminal_weight": 8.0,
+    "jepa_weight": 1.0,
+    "k_max": 4,
+    "mae_p_max": 0.9,
+    "mae_p_min": 0.0,
+    "mamba_d_conv": 4,
+    "mamba_d_state": 16,
+    "mamba_expand": 1,
+    "mamba_headdim": 32,
+    "n_actions": 17,
+    "n_agent": 2,
+    "n_latents": 16,
+    "n_register": 2,
+    "packing_factor": 4,
+    "patch_size": 8,
+    "reconstruction_anchor_weight": 1.0,
+    "representation_objective": "jepa",
+    "reward_bins": 255,
+    "reward_horizon": 8,
+    "reward_log_high": 10.0,
+    "reward_log_low": -10.0,
+    "sequence_length": 16,
+    "temporal_backend": "transformer",
+    "tokenizer_d_model": 64,
+    "tokenizer_depth": 4,
+    "tokenizer_heads": 4,
+    "tokenizer_mlp_ratio": 4.0,
+    "tokenizer_time_every": 2
+  }
+}

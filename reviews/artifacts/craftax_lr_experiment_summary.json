@@ -1,0 +1,2221 @@
+{
+  "created_utc": "2026-07-29T04:06:19.368072+00:00",
+  "executed": {
+    "full_m": {
+      "actor_beats_bc": false,
+      "actor_beats_random": true,
+      "actor_minus_bc": -0.6559294534540401,
+      "actor_minus_bc_ci": [
+        -1.3162504104955426,
+        0.11977045199578493
+      ],
+      "actor_minus_random": 1.3082258768702628,
+      "actor_minus_random_ci": [
+        0.7173429837018013,
+        1.8216554329618027
+      ],
+      "claim_boundary": "fresh fixed exploratory environment seeds, disjoint from replay seeds 0..319 and probe seed family 90000; official metric but not a sealed holdout or a selection-valid confirmatory tier",
+      "evaluation": {
+        "context": 8,
+        "device": "cuda",
+        "max_steps": 2500,
+        "mode": "sample",
+        "policy_seed_base": 7000000,
+        "seconds": 476.97615861199665,
+        "seeds": [
+          100000,
+          100001,
+          100002,
+          100003,
+          100004,
+          100005,
+          100006,
+          100007,
+          100008,
+          100009,
+          100010,
+          100011,
+          100012,
+          100013,
+          100014,
+          100015,
+          100016,
+          100017,
+          100018,
+          100019,
+          100020,
+          100021,
+          100022,
+          100023,
+          100024,
+          100025,
+          100026,
+          100027,
+          100028,
+          100029
+        ]
+      },
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/craftax_executed_lr/full_m.json",
+      "run": {
+        "actor_checkpoint_sha256": "321c8b93772ecf7f4df98854ca4d2bdd908f8db4c8a0ef4a4b1bb6813222b98e",
+        "arm": "m_jepa",
+        "bc_checkpoint_sha256": "1d88ba2bd38c28cbdde57510e754715e90ab0399b330c842df5baa3b841f6c6e",
+        "current_implementation_sha256": "b178cbf825f7f521f0776347311d12a4b231630d74bcd70448f7236d9cd996a3",
+        "implementation_drift_allowed": true,
+        "path": "outputs/d4_mamba_jepa/craftax_expert_v1",
+        "stored_implementation_sha256": "c513c75203f80e859bf8f262186f5e8d58cfb26d56aac34eccf563b8b268a0d9",
+        "world_checkpoint_sha256": "39b26ac1f2002a1f0a53775215f9d81c5d04a6c3610bc6f2478b95435996a5ba"
+      },
+      "sha256": "0a1c6d58665680ce40041d42d41a93b6423f9964d157ec19b7774411a36532cb",
+      "summary": {
+        "bc": {
+          "crafter_score": 3.604087977477005,
+          "mean_achievement_count": 4.166666666666667,
+          "mean_env_score": 1.5574396173159282,
+          "mean_length": 149.1,
+          "mean_return": 3.266666654497385,
+          "success_rates": {
+            "collect_coal": 0.0,
+            "collect_diamond": 0.0,
+            "collect_drink": 50.0,
+            "collect_iron": 0.0,
+            "collect_sapling": 96.66666666666667,
+            "collect_stone": 0.0,
+            "collect_wood": 83.33333333333333,
+            "defeat_skeleton": 0.0,
+            "defeat_zombie": 3.3333333333333335,
+            "eat_cow": 13.333333333333334,
+            "eat_plant": 0.0,
+            "make_iron_pickaxe": 0.0,
+            "make_iron_sword": 0.0,
+            "make_stone_pickaxe": 0.0,
+            "make_stone_sword": 0.0,
+            "make_wood_pickaxe": 10.0,
+            "make_wood_sword": 10.0,
+            "place_furnace": 0.0,
+            "place_plant": 40.0,
+            "place_stone": 0.0,
+            "place_table": 43.333333333333336,
+            "wake_up": 66.66666666666667
+          }
+        },
+        "imagination_actor": {
+          "crafter_score": 2.948158524022965,
+          "mean_achievement_count": 3.933333333333333,
+          "mean_env_score": 1.3316796898841858,
+          "mean_length": 159.6,
+          "mean_return": 3.033333319922288,
+          "success_rates": {
+            "collect_coal": 0.0,
+            "collect_diamond": 0.0,
+            "collect_drink": 23.333333333333332,
+            "collect_iron": 0.0,
+            "collect_sapling": 100.0,
+            "collect_stone": 0.0,
+            "collect_wood": 83.33333333333333,
+            "defeat_skeleton": 0.0,
+            "defeat_zombie": 10.0,
+            "eat_cow": 13.333333333333334,
+            "eat_plant": 0.0,
+            "make_iron_pickaxe": 0.0,
+            "make_iron_sword": 0.0,
+            "make_stone_pickaxe": 0.0,
+            "make_stone_sword": 0.0,
+            "make_wood_pickaxe": 0.0,
+            "make_wood_sword": 3.3333333333333335,
+            "place_furnace": 0.0,
+            "place_plant": 70.0,
+            "place_stone": 0.0,
+            "place_table": 16.666666666666668,
+            "wake_up": 73.33333333333333
+          }
+        },
+        "random": {
+          "crafter_score": 1.639932647152702,
+          "mean_achievement_count": 2.1333333333333333,
+          "mean_env_score": 0.6315092126528422,
+          "mean_length": 152.23333333333332,
+          "mean_return": 1.2333333256344001,
+          "success_rates": {
+            "collect_coal": 0.0,
+            "collect_diamond": 0.0,
+            "collect_drink": 13.333333333333334,
+            "collect_iron": 0.0,
+            "collect_sapling": 23.333333333333332,
+            "collect_stone": 0.0,
+            "collect_wood": 40.0,
+            "defeat_skeleton": 0.0,
+            "defeat_zombie": 0.0,
+            "eat_cow": 0.0,
+            "eat_plant": 0.0,
+            "make_iron_pickaxe": 0.0,
+            "make_iron_sword": 0.0,
+            "make_stone_pickaxe": 0.0,
+            "make_stone_sword": 0.0,
+            "make_wood_pickaxe": 3.3333333333333335,
+            "make_wood_sword": 0.0,
+            "place_furnace": 0.0,
+            "place_plant": 20.0,
+            "place_stone": 0.0,
+            "place_table": 13.333333333333334,
+            "wake_up": 100.0
+          }
+        }
+      }
+    },
+    "full_t": {
+      "actor_beats_bc": false,
+      "actor_beats_random": true,
+      "actor_minus_bc": -0.1244029885325153,
+      "actor_minus_bc_ci": [
+        -0.8622271635663962,
+        0.45606790424395927
+      ],
+      "actor_minus_random": 0.8412582358622647,
+      "actor_minus_random_ci": [
+        0.10682469211794586,
+        1.387981884555655
+      ],
+      "claim_boundary": "fresh fixed exploratory environment seeds, disjoint from replay seeds 0..319 and probe seed family 90000; official metric but not a sealed holdout or a selection-valid confirmatory tier",
+      "evaluation": {
+        "context": 8,
+        "device": "cuda",
+        "max_steps": 2500,
+        "mode": "sample",
+        "policy_seed_base": 7000000,
+        "seconds": 465.9056950810009,
+        "seeds": [
+          100000,
+          100001,
+          100002,
+          100003,
+          100004,
+          100005,
+          100006,
+          100007,
+          100008,
+          100009,
+          100010,
+          100011,
+          100012,
+          100013,
+          100014,
+          100015,
+          100016,
+          100017,
+          100018,
+          100019,
+          100020,
+          100021,
+          100022,
+          100023,
+          100024,
+          100025,
+          100026,
+          100027,
+          100028,
+          100029
+        ]
+      },
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/craftax_executed_lr/full_t.json",
+      "run": {
+        "actor_checkpoint_sha256": "8f8334bafb8e3da8cc65eaaf06d4a3bdfddbf664d4f8120954144c04d72164ae",
+        "arm": "t_jepa",
+        "bc_checkpoint_sha256": "dc36142d537ff016823e83fd9804175c2860a10a2fda224e462c79713432e3a4",
+        "current_implementation_sha256": "b178cbf825f7f521f0776347311d12a4b231630d74bcd70448f7236d9cd996a3",
+        "implementation_drift_allowed": true,
+        "path": "outputs/d4_mamba_jepa/craftax_expert_v1",
+        "stored_implementation_sha256": "c513c75203f80e859bf8f262186f5e8d58cfb26d56aac34eccf563b8b268a0d9",
+        "world_checkpoint_sha256": "c6742b6d24f261be7339c16a21a655ad15a782eaeeef574b0ebf2b9619fa6745"
+      },
+      "sha256": "d3618b632fc83bb7460b5025edebb23f9a3b44488605c1dd0421efc92f5f7f2b",
+      "summary": {
+        "bc": {
+          "crafter_score": 2.605593871547482,
+          "mean_achievement_count": 3.8,
+          "mean_env_score": 1.3212228020032246,
+          "mean_length": 147.7,
+          "mean_return": 2.899999987582366,
+          "success_rates": {
+            "collect_coal": 0.0,
+            "collect_diamond": 0.0,
+            "collect_drink": 50.0,
+            "collect_iron": 0.0,
+            "collect_sapling": 93.33333333333333,
+            "collect_stone": 0.0,
+            "collect_wood": 90.0,
+            "defeat_skeleton": 0.0,
+            "defeat_zombie": 0.0,
+            "eat_cow": 10.0,
+            "eat_plant": 0.0,
+            "make_iron_pickaxe": 0.0,
+            "make_iron_sword": 0.0,
+            "make_stone_pickaxe": 0.0,
+            "make_stone_sword": 0.0,
+            "make_wood_pickaxe": 0.0,
+            "make_wood_sword": 3.3333333333333335,
+            "place_furnace": 0.0,
+            "place_plant": 50.0,
+            "place_stone": 0.0,
+            "place_table": 30.0,
+            "wake_up": 53.333333333333336
+          }
+        },
+        "imagination_actor": {
+          "crafter_score": 2.4811908830149667,
+          "mean_achievement_count": 3.2333333333333334,
+          "mean_env_score": 1.0400271534919738,
+          "mean_length": 166.26666666666668,
+          "mean_return": 2.3333333221574626,
+          "success_rates": {
+            "collect_coal": 0.0,
+            "collect_diamond": 0.0,
+            "collect_drink": 6.666666666666667,
+            "collect_iron": 0.0,
+            "collect_sapling": 100.0,
+            "collect_stone": 0.0,
+            "collect_wood": 63.333333333333336,
+            "defeat_skeleton": 0.0,
+            "defeat_zombie": 16.666666666666668,
+            "eat_cow": 3.3333333333333335,
+            "eat_plant": 0.0,
+            "make_iron_pickaxe": 0.0,
+            "make_iron_sword": 0.0,
+            "make_stone_pickaxe": 0.0,
+            "make_stone_sword": 0.0,
+            "make_wood_pickaxe": 3.3333333333333335,
+            "make_wood_sword": 0.0,
+            "place_furnace": 0.0,
+            "place_plant": 63.333333333333336,
+            "place_stone": 0.0,
+            "place_table": 13.333333333333334,
+            "wake_up": 53.333333333333336
+          }
+        },
+        "random": {
+          "crafter_score": 1.639932647152702,
+          "mean_achievement_count": 2.1333333333333333,
+          "mean_env_score": 0.6315092126528422,
+          "mean_length": 152.23333333333332,
+          "mean_return": 1.2333333256344001,
+          "success_rates": {
+            "collect_coal": 0.0,
+            "collect_diamond": 0.0,
+            "collect_drink": 13.333333333333334,
+            "collect_iron": 0.0,
+            "collect_sapling": 23.333333333333332,
+            "collect_stone": 0.0,
+            "collect_wood": 40.0,
+            "defeat_skeleton": 0.0,
+            "defeat_zombie": 0.0,
+            "eat_cow": 0.0,
+            "eat_plant": 0.0,
+            "make_iron_pickaxe": 0.0,
+            "make_iron_sword": 0.0,
+            "make_stone_pickaxe": 0.0,
+            "make_stone_sword": 0.0,
+            "make_wood_pickaxe": 3.3333333333333335,
+            "make_wood_sword": 0.0,
+            "place_furnace": 0.0,
+            "place_plant": 20.0,
+            "place_stone": 0.0,
+            "place_table": 13.333333333333334,
+            "wake_up": 100.0
+          }
+        }
+      }
+    },
+    "slow_m": {
+      "actor_beats_bc": false,
+      "actor_beats_random": true,
+      "actor_minus_bc": -0.2621667728408452,
+      "actor_minus_bc_ci": [
+        -1.1766344942583242,
+        0.626441849238795
+      ],
+      "actor_minus_random": 1.6519500675736225,
+      "actor_minus_random_ci": [
+        0.6094972191331328,
+        2.3922553301409453
+      ],
+      "claim_boundary": "fresh fixed exploratory environment seeds, disjoint from replay seeds 0..319 and probe seed family 90000; official metric but not a sealed holdout or a selection-valid confirmatory tier",
+      "evaluation": {
+        "context": 8,
+        "device": "cuda",
+        "max_steps": 2500,
+        "mode": "sample",
+        "policy_seed_base": 7000000,
+        "seconds": 473.160351221999,
+        "seeds": [
+          100000,
+          100001,
+          100002,
+          100003,
+          100004,
+          100005,
+          100006,
+          100007,
+          100008,
+          100009,
+          100010,
+          100011,
+          100012,
+          100013,
+          100014,
+          100015,
+          100016,
+          100017,
+          100018,
+          100019,
+          100020,
+          100021,
+          100022,
+          100023,
+          100024,
+          100025,
+          100026,
+          100027,
+          100028,
+          100029
+        ]
+      },
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/craftax_executed_lr/slow_m.json",
+      "run": {
+        "actor_checkpoint_sha256": "d62b83aaaee35c23efa6264ef97789a52e630284d45a697d9bb0413d6ce41eae",
+        "arm": "m_jepa",
+        "bc_checkpoint_sha256": "e2b55c64313b4ce469b28663821de01cf029a2858674848591e1ab519483fadd",
+        "current_implementation_sha256": "b178cbf825f7f521f0776347311d12a4b231630d74bcd70448f7236d9cd996a3",
+        "implementation_drift_allowed": false,
+        "path": "outputs/d4_mamba_jepa/craftax_slowenc_v1",
+        "stored_implementation_sha256": "b178cbf825f7f521f0776347311d12a4b231630d74bcd70448f7236d9cd996a3",
+        "world_checkpoint_sha256": "3f73a2321b3020d9095d194b07e3d00b2cb209c02c508079d75471242a15c653"
+      },
+      "sha256": "fd9594fa14b00cf259c43eaeb03b10f820c9599221814c7968ceda1e77129f39",
+      "summary": {
+        "bc": {
+          "crafter_score": 3.5540494875671698,
+          "mean_achievement_count": 4.2,
+          "mean_env_score": 1.51971755027771,
+          "mean_length": 153.2,
+          "mean_return": 3.299999987582366,
+          "success_rates": {
+            "collect_coal": 0.0,
+            "collect_diamond": 0.0,
+            "collect_drink": 40.0,
+            "collect_iron": 0.0,
+            "collect_sapling": 96.66666666666667,
+            "collect_stone": 0.0,
+            "collect_wood": 90.0,
+            "defeat_skeleton": 0.0,
+            "defeat_zombie": 6.666666666666667,
+            "eat_cow": 10.0,
+            "eat_plant": 0.0,
+            "make_iron_pickaxe": 0.0,
+            "make_iron_sword": 0.0,
+            "make_stone_pickaxe": 0.0,
+            "make_stone_sword": 0.0,
+            "make_wood_pickaxe": 6.666666666666667,
+            "make_wood_sword": 6.666666666666667,
+            "place_furnace": 0.0,
+            "place_plant": 60.0,
+            "place_stone": 0.0,
+            "place_table": 50.0,
+            "wake_up": 53.333333333333336
+          }
+        },
+        "imagination_actor": {
+          "crafter_score": 3.2918827147263245,
+          "mean_achievement_count": 3.7,
+          "mean_env_score": 1.3229115645090739,
+          "mean_length": 143.5,
+          "mean_return": 2.799999982863665,
+          "success_rates": {
+            "collect_coal": 0.0,
+            "collect_diamond": 0.0,
+            "collect_drink": 16.666666666666668,
+            "collect_iron": 0.0,
+            "collect_sapling": 96.66666666666667,
+            "collect_stone": 0.0,
+            "collect_wood": 76.66666666666667,
+            "defeat_skeleton": 0.0,
+            "defeat_zombie": 13.333333333333334,
+            "eat_cow": 6.666666666666667,
+            "eat_plant": 0.0,
+            "make_iron_pickaxe": 0.0,
+            "make_iron_sword": 0.0,
+            "make_stone_pickaxe": 0.0,
+            "make_stone_sword": 0.0,
+            "make_wood_pickaxe": 10.0,
+            "make_wood_sword": 3.3333333333333335,
+            "place_furnace": 0.0,
+            "place_plant": 53.333333333333336,
+            "place_stone": 0.0,
+            "place_table": 36.666666666666664,
+            "wake_up": 56.666666666666664
+          }
+        },
+        "random": {
+          "crafter_score": 1.639932647152702,
+          "mean_achievement_count": 2.1333333333333333,
+          "mean_env_score": 0.6315092126528422,
+          "mean_length": 152.23333333333332,
+          "mean_return": 1.2333333256344001,
+          "success_rates": {
+            "collect_coal": 0.0,
+            "collect_diamond": 0.0,
+            "collect_drink": 13.333333333333334,
+            "collect_iron": 0.0,
+            "collect_sapling": 23.333333333333332,
+            "collect_stone": 0.0,
+            "collect_wood": 40.0,
+            "defeat_skeleton": 0.0,
+            "defeat_zombie": 0.0,
+            "eat_cow": 0.0,
+            "eat_plant": 0.0,
+            "make_iron_pickaxe": 0.0,
+            "make_iron_sword": 0.0,
+            "make_stone_pickaxe": 0.0,
+            "make_stone_sword": 0.0,
+            "make_wood_pickaxe": 3.3333333333333335,
+            "make_wood_sword": 0.0,
+            "place_furnace": 0.0,
+            "place_plant": 20.0,
+            "place_stone": 0.0,
+            "place_table": 13.333333333333334,
+            "wake_up": 100.0
+          }
+        }
+      }
+    },
+    "slow_t": {
+      "actor_beats_bc": true,
+      "actor_beats_random": true,
+      "actor_minus_bc": 2.0422234938120587,
+      "actor_minus_bc_ci": [
+        0.9597002023854967,
+        2.6225679904061967
+      ],
+      "actor_minus_random": 2.7553366362198544,
+      "actor_minus_random_ci": [
+        1.5797588837199876,
+        3.5768139773307754
+      ],
+      "claim_boundary": "fresh fixed exploratory environment seeds, disjoint from replay seeds 0..319 and probe seed family 90000; official metric but not a sealed holdout or a selection-valid confirmatory tier",
+      "evaluation": {
+        "context": 8,
+        "device": "cuda",
+        "max_steps": 2500,
+        "mode": "sample",
+        "policy_seed_base": 7000000,
+        "seconds": 459.6109757159975,
+        "seeds": [
+          100000,
+          100001,
+          100002,
+          100003,
+          100004,
+          100005,
+          100006,
+          100007,
+          100008,
+          100009,
+          100010,
+          100011,
+          100012,
+          100013,
+          100014,
+          100015,
+          100016,
+          100017,
+          100018,
+          100019,
+          100020,
+          100021,
+          100022,
+          100023,
+          100024,
+          100025,
+          100026,
+          100027,
+          100028,
+          100029
+        ]
+      },
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/craftax_executed_lr/slow_t.json",
+      "run": {
+        "actor_checkpoint_sha256": "e0e66459f29ce6ae241a85267e41ffb62f8351ac0d3110ef837d72be21154683",
+        "arm": "t_jepa",
+        "bc_checkpoint_sha256": "d1dbfafee4915fcd6602477987a4c51f67aed8ff2afb04880cfe915ae9eb2077",
+        "current_implementation_sha256": "b178cbf825f7f521f0776347311d12a4b231630d74bcd70448f7236d9cd996a3",
+        "implementation_drift_allowed": false,
+        "path": "outputs/d4_mamba_jepa/craftax_slowenc_v1",
+        "stored_implementation_sha256": "b178cbf825f7f521f0776347311d12a4b231630d74bcd70448f7236d9cd996a3",
+        "world_checkpoint_sha256": "8df2fdefe2706bda0eb072be2f2f23d24bb4868b08da40ba83e9fd30267afdf6"
+      },
+      "sha256": "62185b827669a65c83090dd36504a2964a777408778dafadfe7e871f9efd63fa",
+      "summary": {
+        "bc": {
+          "crafter_score": 2.3530457895604977,
+          "mean_achievement_count": 3.533333333333333,
+          "mean_env_score": 1.1797892451286316,
+          "mean_length": 138.3,
+          "mean_return": 2.6333333221574624,
+          "success_rates": {
+            "collect_coal": 0.0,
+            "collect_diamond": 0.0,
+            "collect_drink": 50.0,
+            "collect_iron": 0.0,
+            "collect_sapling": 83.33333333333333,
+            "collect_stone": 0.0,
+            "collect_wood": 90.0,
+            "defeat_skeleton": 0.0,
+            "defeat_zombie": 0.0,
+            "eat_cow": 20.0,
+            "eat_plant": 0.0,
+            "make_iron_pickaxe": 0.0,
+            "make_iron_sword": 0.0,
+            "make_stone_pickaxe": 0.0,
+            "make_stone_sword": 0.0,
+            "make_wood_pickaxe": 0.0,
+            "make_wood_sword": 0.0,
+            "place_furnace": 0.0,
+            "place_plant": 26.666666666666668,
+            "place_stone": 0.0,
+            "place_table": 26.666666666666668,
+            "wake_up": 56.666666666666664
+          }
+        },
+        "imagination_actor": {
+          "crafter_score": 4.395269283372556,
+          "mean_achievement_count": 4.5,
+          "mean_env_score": 1.721318487326304,
+          "mean_length": 158.16666666666666,
+          "mean_return": 3.5999999860922496,
+          "success_rates": {
+            "collect_coal": 0.0,
+            "collect_diamond": 0.0,
+            "collect_drink": 30.0,
+            "collect_iron": 0.0,
+            "collect_sapling": 90.0,
+            "collect_stone": 6.666666666666667,
+            "collect_wood": 83.33333333333333,
+            "defeat_skeleton": 0.0,
+            "defeat_zombie": 16.666666666666668,
+            "eat_cow": 13.333333333333334,
+            "eat_plant": 0.0,
+            "make_iron_pickaxe": 0.0,
+            "make_iron_sword": 0.0,
+            "make_stone_pickaxe": 0.0,
+            "make_stone_sword": 0.0,
+            "make_wood_pickaxe": 13.333333333333334,
+            "make_wood_sword": 6.666666666666667,
+            "place_furnace": 0.0,
+            "place_plant": 76.66666666666667,
+            "place_stone": 0.0,
+            "place_table": 46.666666666666664,
+            "wake_up": 66.66666666666667
+          }
+        },
+        "random": {
+          "crafter_score": 1.639932647152702,
+          "mean_achievement_count": 2.1333333333333333,
+          "mean_env_score": 0.6315092126528422,
+          "mean_length": 152.23333333333332,
+          "mean_return": 1.2333333256344001,
+          "success_rates": {
+            "collect_coal": 0.0,
+            "collect_diamond": 0.0,
+            "collect_drink": 13.333333333333334,
+            "collect_iron": 0.0,
+            "collect_sapling": 23.333333333333332,
+            "collect_stone": 0.0,
+            "collect_wood": 40.0,
+            "defeat_skeleton": 0.0,
+            "defeat_zombie": 0.0,
+            "eat_cow": 0.0,
+            "eat_plant": 0.0,
+            "make_iron_pickaxe": 0.0,
+            "make_iron_sword": 0.0,
+            "make_stone_pickaxe": 0.0,
+            "make_stone_sword": 0.0,
+            "make_wood_pickaxe": 3.3333333333333335,
+            "make_wood_sword": 0.0,
+            "place_furnace": 0.0,
+            "place_plant": 20.0,
+            "place_stone": 0.0,
+            "place_table": 13.333333333333334,
+            "wake_up": 100.0
+          }
+        }
+      }
+    }
+  },
+  "format": "craftax_lr_experiment_summary_v1",
+  "full_pipeline": {
+    "m_jepa": {
+      "full_encoder_lr": {
+        "bc": {
+          "dev_action_accuracy": 0.15572916666666667,
+          "first_loss": 2.83131742477417,
+          "last_loss": 2.377702236175537,
+          "seconds": 58.37770888600062,
+          "updates": 3000
+        },
+        "imagination": {
+          "final": {
+            "actor_loss": 0.0036888131871819496,
+            "entropy": 2.6777939796447754,
+            "gradient_norm": 0.8635387420654297,
+            "mean_advantage": -0.00016859883908182383,
+            "mean_continue": 0.843985915184021,
+            "mean_return": -0.13113705813884735,
+            "mean_reward": -0.025865526869893074,
+            "negative_count": 871,
+            "pmpo_negative_loss": -1.3457541465759277,
+            "pmpo_positive_loss": 1.3368003368377686,
+            "positive_count": 1177,
+            "prior_kl": 0.042142074555158615,
+            "prior_kl_loss": 0.01264262292534113,
+            "return_std": 0.06111326441168785,
+            "total_loss": 0.9997389912605286,
+            "value_loss": 0.9960501790046692,
+            "value_mae": 0.03586696833372116
+          },
+          "seconds": 221.63692592699954,
+          "updates": 500
+        },
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/outputs/d4_mamba_jepa/craftax_expert_v1/m_jepa/arm_report.json",
+        "sha256": "925002115a9f32b4009c3889c44ab5c2bfd3c8c07ef8270de2b2b8a38d528891",
+        "world": {
+          "checkpoint_sha256": "39b26ac1f2002a1f0a53775215f9d81c5d04a6c3610bc6f2478b95435996a5ba",
+          "dev_cosine": 0.7350448220968246,
+          "encoder_learning_rate": null,
+          "final_jepa_loss": 0.14209778606891632,
+          "learning_rate": null,
+          "online_std_last_100": 0.09782278440892696,
+          "seconds": 4556.7953779380005,
+          "train_cosine_last_100": 0.9154472416639328,
+          "updates": 20000
+        }
+      },
+      "slow_encoder_lr": {
+        "bc": {
+          "dev_action_accuracy": 0.16458333333333333,
+          "first_loss": 2.8324086666107178,
+          "last_loss": 2.300999402999878,
+          "seconds": 54.46466399400015,
+          "updates": 3000
+        },
+        "imagination": {
+          "final": {
+            "actor_loss": -0.011875232681632042,
+            "entropy": 2.6759610176086426,
+            "gradient_norm": 0.9375983476638794,
+            "mean_advantage": 0.0003623342781793326,
+            "mean_continue": 0.9908180236816406,
+            "mean_return": -0.03649824857711792,
+            "mean_reward": -7.744054892100394e-05,
+            "negative_count": 948,
+            "pmpo_negative_loss": -1.3622134923934937,
+            "pmpo_positive_loss": 1.3251837491989136,
+            "positive_count": 1100,
+            "prior_kl": 0.08384836465120316,
+            "prior_kl_loss": 0.025154510512948036,
+            "return_std": 0.012915128841996193,
+            "total_loss": 0.7076664566993713,
+            "value_loss": 0.7195416688919067,
+            "value_mae": 0.0035341319162398577
+          },
+          "seconds": 209.79718379000042,
+          "updates": 500
+        },
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/outputs/d4_mamba_jepa/craftax_slowenc_v1/m_jepa/arm_report.json",
+        "sha256": "9722a8281c1ad8b8fe777cfdce5ec9eb3cefa6fb3371ba18121f717a3e41a432",
+        "world": {
+          "checkpoint_sha256": "3f73a2321b3020d9095d194b07e3d00b2cb209c02c508079d75471242a15c653",
+          "dev_cosine": 0.497733561322093,
+          "encoder_learning_rate": 6e-06,
+          "final_jepa_loss": 0.102052703499794,
+          "learning_rate": 0.0001,
+          "online_std_last_100": 0.09382733039557933,
+          "seconds": 4317.001178434999,
+          "train_cosine_last_100": 0.9227851712703705,
+          "updates": 20000
+        }
+      },
+      "slow_minus_full_numeric": {
+        "bc": {
+          "dev_action_accuracy": 0.008854166666666663,
+          "first_loss": 0.0010912418365478516,
+          "last_loss": -0.07670283317565918,
+          "seconds": -3.913044892000471,
+          "updates": 0.0
+        },
+        "imagination": {
+          "final": {
+            "actor_loss": -0.015564045868813992,
+            "entropy": -0.0018329620361328125,
+            "gradient_norm": 0.07405960559844971,
+            "mean_advantage": 0.0005309331172611564,
+            "mean_continue": 0.14683210849761963,
+            "mean_return": 0.09463880956172943,
+            "mean_reward": 0.02578808632097207,
+            "negative_count": 77.0,
+            "pmpo_negative_loss": -0.016459345817565918,
+            "pmpo_positive_loss": -0.01161658763885498,
+            "positive_count": -77.0,
+            "prior_kl": 0.04170629009604454,
+            "prior_kl_loss": 0.012511887587606907,
+            "return_std": -0.04819813556969166,
+            "total_loss": -0.2920725345611572,
+            "value_loss": -0.27650851011276245,
+            "value_mae": -0.0323328364174813
+          },
+          "seconds": -11.83974213699912,
+          "updates": 0.0
+        },
+        "path": null,
+        "sha256": null,
+        "world": {
+          "checkpoint_sha256": null,
+          "dev_cosine": -0.23731126077473164,
+          "encoder_learning_rate": null,
+          "final_jepa_loss": -0.040045082569122314,
+          "learning_rate": null,
+          "online_std_last_100": -0.003995454013347624,
+          "seconds": -239.79419950300144,
+          "train_cosine_last_100": 0.007337929606437754,
+          "updates": 0.0
+        }
+      }
+    },
+    "t_jepa": {
+      "full_encoder_lr": {
+        "bc": {
+          "dev_action_accuracy": 0.159375,
+          "first_loss": 2.832699775695801,
+          "last_loss": 2.4102532863616943,
+          "seconds": 55.33851674199832,
+          "updates": 3000
+        },
+        "imagination": {
+          "final": {
+            "actor_loss": 0.005559086799621582,
+            "entropy": 2.732130527496338,
+            "gradient_norm": 0.27190494537353516,
+            "mean_advantage": 0.0006379196420311928,
+            "mean_continue": 0.9999976754188538,
+            "mean_return": -0.050354957580566406,
+            "mean_reward": 0.0005069849430583417,
+            "negative_count": 1018,
+            "pmpo_negative_loss": -1.370989203453064,
+            "pmpo_positive_loss": 1.3559056520462036,
+            "positive_count": 1030,
+            "prior_kl": 0.06880879402160645,
+            "prior_kl_loss": 0.020642638206481934,
+            "return_std": 0.01620294526219368,
+            "total_loss": 0.6804758906364441,
+            "value_loss": 0.6749168038368225,
+            "value_mae": 0.002472915453836322
+          },
+          "seconds": 185.63703528999758,
+          "updates": 500
+        },
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/outputs/d4_mamba_jepa/craftax_expert_v1/t_jepa/arm_report.json",
+        "sha256": "321bcb1a14d80881de08bde11d7180a02fa5e646d1e15187d1b691535800f5d4",
+        "world": {
+          "checkpoint_sha256": "c6742b6d24f261be7339c16a21a655ad15a782eaeeef574b0ebf2b9619fa6745",
+          "dev_cosine": 0.7313677333295345,
+          "encoder_learning_rate": null,
+          "final_jepa_loss": 0.18611715734004974,
+          "learning_rate": null,
+          "online_std_last_100": 0.09702891156077385,
+          "seconds": 3743.9196427120005,
+          "train_cosine_last_100": 0.9206634324789047,
+          "updates": 20000
+        }
+      },
+      "slow_encoder_lr": {
+        "bc": {
+          "dev_action_accuracy": 0.19479166666666667,
+          "first_loss": 2.8340303897857666,
+          "last_loss": 2.2717525959014893,
+          "seconds": 51.584848974000124,
+          "updates": 3000
+        },
+        "imagination": {
+          "final": {
+            "actor_loss": -0.036430977284908295,
+            "entropy": 2.718794345855713,
+            "gradient_norm": 1.5168365240097046,
+            "mean_advantage": 7.384701166301966e-05,
+            "mean_continue": 0.6395226716995239,
+            "mean_return": -0.1365673542022705,
+            "mean_reward": -0.038942545652389526,
+            "negative_count": 1128,
+            "pmpo_negative_loss": -1.3919508457183838,
+            "pmpo_positive_loss": 1.3412350416183472,
+            "positive_count": 920,
+            "prior_kl": 0.04761609062552452,
+            "prior_kl_loss": 0.014284827746450901,
+            "return_std": 0.09728851914405823,
+            "total_loss": 1.3608084917068481,
+            "value_loss": 1.3972394466400146,
+            "value_mae": 0.07177309691905975
+          },
+          "seconds": 174.9195142360004,
+          "updates": 500
+        },
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/outputs/d4_mamba_jepa/craftax_slowenc_v1/t_jepa/arm_report.json",
+        "sha256": "e5e37c1b3b4bfbc6e592be6a10dccc40f07a23cdb29bac37687be7b234e44966",
+        "world": {
+          "checkpoint_sha256": "8df2fdefe2706bda0eb072be2f2f23d24bb4868b08da40ba83e9fd30267afdf6",
+          "dev_cosine": 0.42050781659781933,
+          "encoder_learning_rate": 6e-06,
+          "final_jepa_loss": 0.10570245236158371,
+          "learning_rate": 0.0001,
+          "online_std_last_100": 0.09777608633041382,
+          "seconds": 3533.4968868950004,
+          "train_cosine_last_100": 0.9247187465429306,
+          "updates": 20000
+        }
+      },
+      "slow_minus_full_numeric": {
+        "bc": {
+          "dev_action_accuracy": 0.03541666666666668,
+          "first_loss": 0.0013306140899658203,
+          "last_loss": -0.13850069046020508,
+          "seconds": -3.753667767998195,
+          "updates": 0.0
+        },
+        "imagination": {
+          "final": {
+            "actor_loss": -0.04199006408452988,
+            "entropy": -0.013336181640625,
+            "gradient_norm": 1.2449315786361694,
+            "mean_advantage": -0.0005640726303681731,
+            "mean_continue": -0.36047500371932983,
+            "mean_return": -0.0862123966217041,
+            "mean_reward": -0.03944953059544787,
+            "negative_count": 110.0,
+            "pmpo_negative_loss": -0.020961642265319824,
+            "pmpo_positive_loss": -0.014670610427856445,
+            "positive_count": -110.0,
+            "prior_kl": -0.021192703396081924,
+            "prior_kl_loss": -0.0063578104600310326,
+            "return_std": 0.08108557388186455,
+            "total_loss": 0.680332601070404,
+            "value_loss": 0.7223226428031921,
+            "value_mae": 0.06930018146522343
+          },
+          "seconds": -10.717521053997189,
+          "updates": 0.0
+        },
+        "path": null,
+        "sha256": null,
+        "world": {
+          "checkpoint_sha256": null,
+          "dev_cosine": -0.3108599167317152,
+          "encoder_learning_rate": null,
+          "final_jepa_loss": -0.08041470497846603,
+          "learning_rate": null,
+          "online_std_last_100": 0.0007471747696399661,
+          "seconds": -210.42275581700005,
+          "train_cosine_last_100": 0.004055314064025928,
+          "updates": 0.0
+        }
+      }
+    }
+  },
+  "grid": {
+    "ema_actual_full": {
+      "cells": [
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/transfer_ema_full_s20260727.pt",
+            "sha256": "f9209608429d2b3a3a34573669e4e7f74bfc5477b35cea51b97158d289fc72f8"
+          },
+          "config": {
+            "anticollapse": "ema",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 1.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 0.0001,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "pooled_agent",
+            "reward_weight": 1.0,
+            "seed": 20260727,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "transfer_ema_full_s20260727",
+            "terminal_fraction": 0.5,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.6426142085110769,
+            "inventory_linear_mean": -0.1567913783706807,
+            "inventory_nonlinear_mean": -0.13344044176907377,
+            "vitals_linear_mean": -0.019848245191975478,
+            "vitals_nonlinear_mean": 0.0738944436032627
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.6108994670212269,
+            "inventory_linear_mean": 0.5039540717179617,
+            "inventory_nonlinear_mean": 0.46260507920870575,
+            "verdicts": {
+              "degraded": 15,
+              "preserved": 1
+            },
+            "vitals_linear_mean": 0.5599482499723804,
+            "vitals_nonlinear_mean": 0.5775192126456428
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/transfer_ema_full_s20260727.json",
+          "sha256": "33192c43421fc85425f6e998558a591b0aae501dc6fd066ac4acf8b871f4bc0d"
+        },
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/transfer_ema_full_s20260728.pt",
+            "sha256": "1059a61de1a241da1d11234f510c694a21bb2288688b6a67401e6561b9eecd20"
+          },
+          "config": {
+            "anticollapse": "ema",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 1.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 0.0001,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "pooled_agent",
+            "reward_weight": 1.0,
+            "seed": 20260728,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "transfer_ema_full_s20260728",
+            "terminal_fraction": 0.5,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.8003261964768171,
+            "inventory_linear_mean": -0.0805968847560315,
+            "inventory_nonlinear_mean": -0.0874026642785054,
+            "vitals_linear_mean": 0.16162034821655502,
+            "vitals_nonlinear_mean": 0.204056157743027
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.7659223638474941,
+            "inventory_linear_mean": 0.47440756807012535,
+            "inventory_nonlinear_mean": 0.4081308016248009,
+            "verdicts": {
+              "degraded": 15,
+              "preserved": 1
+            },
+            "vitals_linear_mean": 0.6759476202308956,
+            "vitals_nonlinear_mean": 0.6418038138470747
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/transfer_ema_full_s20260728.json",
+          "sha256": "36b5143f709fb0d6ef31bd52ff9a7a88e040e8604bb3139bc82008ad9be15000"
+        },
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/transfer_ema_full_s20260729.pt",
+            "sha256": "4a538d562e020284f863e4f678e7da630fca65b8222f2df3061ad2e41b29344b"
+          },
+          "config": {
+            "anticollapse": "ema",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 1.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 0.0001,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "pooled_agent",
+            "reward_weight": 1.0,
+            "seed": 20260729,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "transfer_ema_full_s20260729",
+            "terminal_fraction": 0.5,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.9248390477150679,
+            "inventory_linear_mean": -0.09375887633147556,
+            "inventory_nonlinear_mean": -0.06478741069244909,
+            "vitals_linear_mean": 0.11910002386331764,
+            "vitals_nonlinear_mean": 0.15409187660356238
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.7613167949020863,
+            "inventory_linear_mean": 0.49003294457832774,
+            "inventory_nonlinear_mean": 0.4505623974609958,
+            "verdicts": {
+              "degraded": 15,
+              "preserved": 1
+            },
+            "vitals_linear_mean": 0.6777921047583589,
+            "vitals_nonlinear_mean": 0.6716673497388852
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/transfer_ema_full_s20260729.json",
+          "sha256": "5f88c2be1b92c64ad36899b364e98cec58a6cc376bea2d84a7cf167c9329b5c1"
+        }
+      ],
+      "delta_aggregate": {
+        "dev_cosine": {
+          "mean": 0.789259817567654,
+          "n": 3,
+          "sample_sd": 0.14143748980574608,
+          "values": [
+            0.6426142085110769,
+            0.8003261964768171,
+            0.9248390477150679
+          ]
+        },
+        "inventory_linear_mean": {
+          "mean": -0.11038237981939591,
+          "n": 3,
+          "sample_sd": 0.040726598992033194,
+          "values": [
+            -0.1567913783706807,
+            -0.0805968847560315,
+            -0.09375887633147556
+          ]
+        },
+        "inventory_nonlinear_mean": {
+          "mean": -0.09521017224667609,
+          "n": 3,
+          "sample_sd": 0.03498610516343288,
+          "values": [
+            -0.13344044176907377,
+            -0.0874026642785054,
+            -0.06478741069244909
+          ]
+        },
+        "vitals_linear_mean": {
+          "mean": 0.08695737562929906,
+          "n": 3,
+          "sample_sd": 0.09490824503192298,
+          "values": [
+            -0.019848245191975478,
+            0.16162034821655502,
+            0.11910002386331764
+          ]
+        },
+        "vitals_nonlinear_mean": {
+          "mean": 0.14401415931661735,
+          "n": 3,
+          "sample_sd": 0.06566344680442172,
+          "values": [
+            0.0738944436032627,
+            0.204056157743027,
+            0.15409187660356238
+          ]
+        }
+      }
+    },
+    "ema_actual_slow": {
+      "cells": [
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/transfer_ema_slow_s20260727.pt",
+            "sha256": "dc835ff4b2e5312e2ce3036c15229915aae0066e036a28a804401dc52a643eb1"
+          },
+          "config": {
+            "anticollapse": "ema",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 1.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 6e-06,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "pooled_agent",
+            "reward_weight": 1.0,
+            "seed": 20260727,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "transfer_ema_slow_s20260727",
+            "terminal_fraction": 0.5,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.5409806858515367,
+            "inventory_linear_mean": 0.0030544342393343804,
+            "inventory_nonlinear_mean": 0.0026223819461629327,
+            "vitals_linear_mean": -0.002250437663121274,
+            "vitals_nonlinear_mean": 0.019885167263861914
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.5092659443616867,
+            "inventory_linear_mean": 0.6637998843279768,
+            "inventory_nonlinear_mean": 0.5986679029239425,
+            "verdicts": {
+              "degraded": 16
+            },
+            "vitals_linear_mean": 0.5775460575012346,
+            "vitals_nonlinear_mean": 0.523509936306242
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/transfer_ema_slow_s20260727.json",
+          "sha256": "5642d3d3c6d42348f4c2a4eb1474fe3dfa0098fa85c2f715649c96e196179873"
+        },
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/transfer_ema_slow_s20260728.pt",
+            "sha256": "0b9f94670663d3909c83bdd628ed104db20ac91b4081f868e9d7d93cbfe9c4af"
+          },
+          "config": {
+            "anticollapse": "ema",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 1.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 6e-06,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "pooled_agent",
+            "reward_weight": 1.0,
+            "seed": 20260728,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "transfer_ema_slow_s20260728",
+            "terminal_fraction": 0.5,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.6130297388881445,
+            "inventory_linear_mean": 0.006107807044836822,
+            "inventory_nonlinear_mean": 0.0076988465849831544,
+            "vitals_linear_mean": -0.020512953231374365,
+            "vitals_nonlinear_mean": 0.018267579180203608
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.5786259062588215,
+            "inventory_linear_mean": 0.5611122598709937,
+            "inventory_nonlinear_mean": 0.5032323124882895,
+            "verdicts": {
+              "degraded": 16
+            },
+            "vitals_linear_mean": 0.4938143187829662,
+            "vitals_nonlinear_mean": 0.45601523528425136
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/transfer_ema_slow_s20260728.json",
+          "sha256": "9b8ec1e654ba70cd006d5f8f23a73e27114b314a925a8e0c99e153907c4143ef"
+        },
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/transfer_ema_slow_s20260729.pt",
+            "sha256": "30fe486e232905595cdfe294861dd93196df905f01b8e0e73584f305b5af197b"
+          },
+          "config": {
+            "anticollapse": "ema",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 1.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 6e-06,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "pooled_agent",
+            "reward_weight": 1.0,
+            "seed": 20260729,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "transfer_ema_slow_s20260729",
+            "terminal_fraction": 0.5,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.706702196970582,
+            "inventory_linear_mean": 0.01847347321432502,
+            "inventory_nonlinear_mean": 0.011854815198004798,
+            "vitals_linear_mean": 0.03944513972858621,
+            "vitals_nonlinear_mean": 0.04661718170503326
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.5431799441576004,
+            "inventory_linear_mean": 0.6022652941241283,
+            "inventory_nonlinear_mean": 0.5272046233514497,
+            "verdicts": {
+              "degraded": 16
+            },
+            "vitals_linear_mean": 0.5981372206236275,
+            "vitals_nonlinear_mean": 0.5641926548403561
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/transfer_ema_slow_s20260729.json",
+          "sha256": "744b6882ef97dd91922747d7261f9edb983cde696a3bdb77b2e79a05c3472001"
+        }
+      ],
+      "delta_aggregate": {
+        "dev_cosine": {
+          "mean": 0.6202375405700877,
+          "n": 3,
+          "sample_sd": 0.08309554209288025,
+          "values": [
+            0.5409806858515367,
+            0.6130297388881445,
+            0.706702196970582
+          ]
+        },
+        "inventory_linear_mean": {
+          "mean": 0.009211904832832074,
+          "n": 3,
+          "sample_sd": 0.008164757071471745,
+          "values": [
+            0.0030544342393343804,
+            0.006107807044836822,
+            0.01847347321432502
+          ]
+        },
+        "inventory_nonlinear_mean": {
+          "mean": 0.007392014576383628,
+          "n": 3,
+          "sample_sd": 0.004623858275137199,
+          "values": [
+            0.0026223819461629327,
+            0.0076988465849831544,
+            0.011854815198004798
+          ]
+        },
+        "vitals_linear_mean": {
+          "mean": 0.005560582944696857,
+          "n": 3,
+          "sample_sd": 0.030732755490691654,
+          "values": [
+            -0.002250437663121274,
+            -0.020512953231374365,
+            0.03944513972858621
+          ]
+        },
+        "vitals_nonlinear_mean": {
+          "mean": 0.02825664271636626,
+          "n": 3,
+          "sample_sd": 0.01592124969240383,
+          "values": [
+            0.019885167263861914,
+            0.018267579180203608,
+            0.04661718170503326
+          ]
+        }
+      }
+    },
+    "ema_clean_spatial_slow": {
+      "cells": [
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/spatial_slow_s20260727.pt",
+            "sha256": "b0320bda5ae5875fb64a6bb22b3135c16cf749dd34ff05dd1de26801b0f4e0c9"
+          },
+          "config": {
+            "anticollapse": "ema",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 0.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 6e-06,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "spatial_agent",
+            "reward_weight": 0.0,
+            "seed": 20260727,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "spatial_slow_s20260727",
+            "terminal_fraction": 0.0,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.5324001340195537,
+            "inventory_linear_mean": -0.008661941167219078,
+            "inventory_nonlinear_mean": -0.009500629389799342,
+            "vitals_linear_mean": -0.040117585759718355,
+            "vitals_nonlinear_mean": -0.014071969786531413
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.42418416403234005,
+            "inventory_linear_mean": 0.6520835089214233,
+            "inventory_nonlinear_mean": 0.5865448915879802,
+            "verdicts": {
+              "degraded": 16
+            },
+            "vitals_linear_mean": 0.5396789094046375,
+            "vitals_nonlinear_mean": 0.48955279925584866
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/spatial_slow_s20260727.json",
+          "sha256": "4e0159189af78db811769e76b7366abf2cc059bae86730b0480e88ff4c68e349"
+        },
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/spatial_slow_s20260728.pt",
+            "sha256": "22d838ad5b8e78a737f3bdca274b90bfbb642dfadbcde55a744dab44dcbb35a1"
+          },
+          "config": {
+            "anticollapse": "ema",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 0.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 6e-06,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "spatial_agent",
+            "reward_weight": 0.0,
+            "seed": 20260728,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "spatial_slow_s20260728",
+            "terminal_fraction": 0.0,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.3383071469143033,
+            "inventory_linear_mean": -0.01335481566534824,
+            "inventory_nonlinear_mean": -0.012461627458293989,
+            "vitals_linear_mean": -0.04275595693085904,
+            "vitals_nonlinear_mean": -0.026664768312684273
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.5438091363757849,
+            "inventory_linear_mean": 0.5416496371608086,
+            "inventory_nonlinear_mean": 0.48307183844501234,
+            "verdicts": {
+              "degraded": 16
+            },
+            "vitals_linear_mean": 0.47157131508348155,
+            "vitals_nonlinear_mean": 0.4110828877913635
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/spatial_slow_s20260728.json",
+          "sha256": "f9097b5a21b92c35755ec9664ba83aec28b3fda54a033f9c640f22d8940eca5f"
+        },
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/spatial_slow_s20260729.pt",
+            "sha256": "5f48cea6793cb1fb0d70bcb271561a12fd3c71d9f18546a4644bbe51f42327ed"
+          },
+          "config": {
+            "anticollapse": "ema",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 0.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 6e-06,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "spatial_agent",
+            "reward_weight": 0.0,
+            "seed": 20260729,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "spatial_slow_s20260729",
+            "terminal_fraction": 0.0,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.34330273466184735,
+            "inventory_linear_mean": 0.014481518547230454,
+            "inventory_nonlinear_mean": 0.017700844430572737,
+            "vitals_linear_mean": 0.00802944974594022,
+            "vitals_nonlinear_mean": -0.03787003894394858
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.3109469022601843,
+            "inventory_linear_mean": 0.5982733394570338,
+            "inventory_nonlinear_mean": 0.5330506525840176,
+            "verdicts": {
+              "degraded": 16
+            },
+            "vitals_linear_mean": 0.5667215306409815,
+            "vitals_nonlinear_mean": 0.47970543419137424
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/spatial_slow_s20260729.json",
+          "sha256": "62091e1a046760154f6cc0f091cb9a54e26f547c898c5480bcab4004bc90dcc7"
+        }
+      ],
+      "delta_aggregate": {
+        "dev_cosine": {
+          "mean": 0.4046700051985681,
+          "n": 3,
+          "sample_sd": 0.11064573345007492,
+          "values": [
+            0.5324001340195537,
+            0.3383071469143033,
+            0.34330273466184735
+          ]
+        },
+        "inventory_linear_mean": {
+          "mean": -0.0025117460951122883,
+          "n": 3,
+          "sample_sd": 0.014902484697771704,
+          "values": [
+            -0.008661941167219078,
+            -0.01335481566534824,
+            0.014481518547230454
+          ]
+        },
+        "inventory_nonlinear_mean": {
+          "mean": -0.0014204708058401978,
+          "n": 3,
+          "sample_sd": 0.016625594716223397,
+          "values": [
+            -0.009500629389799342,
+            -0.012461627458293989,
+            0.017700844430572737
+          ]
+        },
+        "vitals_linear_mean": {
+          "mean": -0.024948030981545726,
+          "n": 3,
+          "sample_sd": 0.028589787109350024,
+          "values": [
+            -0.040117585759718355,
+            -0.04275595693085904,
+            0.00802944974594022
+          ]
+        },
+        "vitals_nonlinear_mean": {
+          "mean": -0.02620225901438809,
+          "n": 3,
+          "sample_sd": 0.01190577423116869,
+          "values": [
+            -0.014071969786531413,
+            -0.026664768312684273,
+            -0.03787003894394858
+          ]
+        }
+      }
+    },
+    "sigreg_actual_full": {
+      "cells": [
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/sigreg_actual_full_s20260727.pt",
+            "sha256": "ff405521c2d57ab2a0b0a524c4c63e6b96eccd180920f344bbd08630095ea6fb"
+          },
+          "config": {
+            "anticollapse": "sigreg",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 1.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 0.0001,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "pooled_agent",
+            "reward_weight": 1.0,
+            "seed": 20260727,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "sigreg_actual_full_s20260727",
+            "terminal_fraction": 0.5,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.42556239292025566,
+            "inventory_linear_mean": -0.4637740918822213,
+            "inventory_nonlinear_mean": -0.41707287780084257,
+            "vitals_linear_mean": -0.44668833203128727,
+            "vitals_nonlinear_mean": -0.39547220171314446
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.7520128674805164,
+            "inventory_linear_mean": 0.19697135820642112,
+            "inventory_nonlinear_mean": 0.17897264317693698,
+            "verdicts": {
+              "degraded": 12,
+              "lost": 4
+            },
+            "vitals_linear_mean": 0.13310816313306856,
+            "vitals_nonlinear_mean": 0.10815256732923564
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/sigreg_actual_full_s20260727.json",
+          "sha256": "0570907025f200ec941b79f74debc9b174e23832e09198ea59adf871892e80bb"
+        }
+      ],
+      "delta_aggregate": {
+        "dev_cosine": {
+          "mean": 0.42556239292025566,
+          "n": 1,
+          "sample_sd": null,
+          "values": [
+            0.42556239292025566
+          ]
+        },
+        "inventory_linear_mean": {
+          "mean": -0.4637740918822213,
+          "n": 1,
+          "sample_sd": null,
+          "values": [
+            -0.4637740918822213
+          ]
+        },
+        "inventory_nonlinear_mean": {
+          "mean": -0.41707287780084257,
+          "n": 1,
+          "sample_sd": null,
+          "values": [
+            -0.41707287780084257
+          ]
+        },
+        "vitals_linear_mean": {
+          "mean": -0.44668833203128727,
+          "n": 1,
+          "sample_sd": null,
+          "values": [
+            -0.44668833203128727
+          ]
+        },
+        "vitals_nonlinear_mean": {
+          "mean": -0.39547220171314446,
+          "n": 1,
+          "sample_sd": null,
+          "values": [
+            -0.39547220171314446
+          ]
+        }
+      }
+    },
+    "sigreg_actual_slow": {
+      "cells": [
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/sigreg_actual_slow_s20260727.pt",
+            "sha256": "8a083feba65fd0097ef00779010080e6819dcd73baccc84429b4fb7a05d7e752"
+          },
+          "config": {
+            "anticollapse": "sigreg",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 1.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 6e-06,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "pooled_agent",
+            "reward_weight": 1.0,
+            "seed": 20260727,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "sigreg_actual_slow_s20260727",
+            "terminal_fraction": 0.5,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.6090976037085056,
+            "inventory_linear_mean": -0.015137134837934996,
+            "inventory_nonlinear_mean": -0.03863573006250265,
+            "vitals_linear_mean": -0.021500675120288193,
+            "vitals_nonlinear_mean": -0.03308396628843391
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.9355480782687664,
+            "inventory_linear_mean": 0.6456083152507074,
+            "inventory_nonlinear_mean": 0.5574097909152769,
+            "verdicts": {
+              "degraded": 16
+            },
+            "vitals_linear_mean": 0.5582958200440676,
+            "vitals_nonlinear_mean": 0.47054080275394616
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/sigreg_actual_slow_s20260727.json",
+          "sha256": "e12d54ca639dcdecced69a8b72ceb1b544e77c0df14931f3ae48e642873d7a3c"
+        }
+      ],
+      "delta_aggregate": {
+        "dev_cosine": {
+          "mean": 0.6090976037085056,
+          "n": 1,
+          "sample_sd": null,
+          "values": [
+            0.6090976037085056
+          ]
+        },
+        "inventory_linear_mean": {
+          "mean": -0.015137134837934996,
+          "n": 1,
+          "sample_sd": null,
+          "values": [
+            -0.015137134837934996
+          ]
+        },
+        "inventory_nonlinear_mean": {
+          "mean": -0.03863573006250265,
+          "n": 1,
+          "sample_sd": null,
+          "values": [
+            -0.03863573006250265
+          ]
+        },
+        "vitals_linear_mean": {
+          "mean": -0.021500675120288193,
+          "n": 1,
+          "sample_sd": null,
+          "values": [
+            -0.021500675120288193
+          ]
+        },
+        "vitals_nonlinear_mean": {
+          "mean": -0.03308396628843391,
+          "n": 1,
+          "sample_sd": null,
+          "values": [
+            -0.03308396628843391
+          ]
+        }
+      }
+    },
+    "sigreg_clean_full": {
+      "cells": [
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/sigreg_clean_full_s20260727.pt",
+            "sha256": "8c73f272e60fabbca40f49038277da942d64205f098fb7633d274c91495c964f"
+          },
+          "config": {
+            "anticollapse": "sigreg",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 0.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 0.0001,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "pooled_agent",
+            "reward_weight": 0.0,
+            "seed": 20260727,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "sigreg_clean_full_s20260727",
+            "terminal_fraction": 0.0,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.6585159748792648,
+            "inventory_linear_mean": -0.4182199044999092,
+            "inventory_nonlinear_mean": -0.4007977357133312,
+            "vitals_linear_mean": -0.41004330081251744,
+            "vitals_nonlinear_mean": -0.34237133426905
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.9849664494395256,
+            "inventory_linear_mean": 0.24252554558873318,
+            "inventory_nonlinear_mean": 0.19524778526444828,
+            "verdicts": {
+              "degraded": 13,
+              "lost": 3
+            },
+            "vitals_linear_mean": 0.1697531943518384,
+            "vitals_nonlinear_mean": 0.1612534347733301
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/sigreg_clean_full_s20260727.json",
+          "sha256": "8d08631220d6f22bf0b40d97b50f822c81b8387194400afb5898d1497b1b0367"
+        },
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/sigreg_clean_full_s20260728.pt",
+            "sha256": "97606df4216995553b6c0627a83205e9f44d0e1a5b0de3071ceedde13c24f692"
+          },
+          "config": {
+            "anticollapse": "sigreg",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 0.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 0.0001,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "pooled_agent",
+            "reward_weight": 0.0,
+            "seed": 20260728,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "sigreg_clean_full_s20260728",
+            "terminal_fraction": 0.0,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.6630769707262516,
+            "inventory_linear_mean": -0.45787438594595625,
+            "inventory_nonlinear_mean": -0.3887075612622889,
+            "vitals_linear_mean": -0.4053008891789878,
+            "vitals_nonlinear_mean": -0.36522829386870254
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.9883627817034721,
+            "inventory_linear_mean": 0.09713006688020058,
+            "inventory_nonlinear_mean": 0.10682590464101742,
+            "verdicts": {
+              "degraded": 10,
+              "lost": 6
+            },
+            "vitals_linear_mean": 0.10902638283535276,
+            "vitals_nonlinear_mean": 0.07251936223534522
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/sigreg_clean_full_s20260728.json",
+          "sha256": "0c5102460332816481ac89233d03861a897626f187bd35504ce567f7e76f8400"
+        },
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/sigreg_clean_full_s20260729.pt",
+            "sha256": "b6c6dad00918d7837e3b582030a49f30bb406a95e544539c13c31f29d2f458c5"
+          },
+          "config": {
+            "anticollapse": "sigreg",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 0.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 0.0001,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "pooled_agent",
+            "reward_weight": 0.0,
+            "seed": 20260729,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "sigreg_clean_full_s20260729",
+            "terminal_fraction": 0.0,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.7916829092428088,
+            "inventory_linear_mean": -0.27257558233454,
+            "inventory_nonlinear_mean": -0.2121852521651309,
+            "vitals_linear_mean": -0.28971876231007987,
+            "vitals_nonlinear_mean": -0.2920775354271587
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.9901387020945549,
+            "inventory_linear_mean": 0.3112162385752633,
+            "inventory_nonlinear_mean": 0.303164555988314,
+            "verdicts": {
+              "degraded": 16
+            },
+            "vitals_linear_mean": 0.26897331858496143,
+            "vitals_nonlinear_mean": 0.22549793770816412
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/sigreg_clean_full_s20260729.json",
+          "sha256": "21b0316b05a04a41f9d9eaef611f4ad187d69ac9c1c7ea8f60dbbb62e102059e"
+        }
+      ],
+      "delta_aggregate": {
+        "dev_cosine": {
+          "mean": 0.7044252849494418,
+          "n": 3,
+          "sample_sd": 0.07560172232674901,
+          "values": [
+            0.6585159748792648,
+            0.6630769707262516,
+            0.7916829092428088
+          ]
+        },
+        "inventory_linear_mean": {
+          "mean": -0.3828899575934685,
+          "n": 3,
+          "sample_sd": 0.09757082307874877,
+          "values": [
+            -0.4182199044999092,
+            -0.45787438594595625,
+            -0.27257558233454
+          ]
+        },
+        "inventory_nonlinear_mean": {
+          "mean": -0.3338968497135837,
+          "n": 3,
+          "sample_sd": 0.10557853859999938,
+          "values": [
+            -0.4007977357133312,
+            -0.3887075612622889,
+            -0.2121852521651309
+          ]
+        },
+        "vitals_linear_mean": {
+          "mean": -0.3683543174338617,
+          "n": 3,
+          "sample_sd": 0.06814165770103085,
+          "values": [
+            -0.41004330081251744,
+            -0.4053008891789878,
+            -0.28971876231007987
+          ]
+        },
+        "vitals_nonlinear_mean": {
+          "mean": -0.3332257211883038,
+          "n": 3,
+          "sample_sd": 0.03742312178467093,
+          "values": [
+            -0.34237133426905,
+            -0.36522829386870254,
+            -0.2920775354271587
+          ]
+        }
+      }
+    },
+    "sigreg_clean_slow": {
+      "cells": [
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/sigreg_clean_slow_s20260727.pt",
+            "sha256": "631686b5a31119d46aa9d9895dfa0fe82e3b65fd7f46b314799097dfcaab49de"
+          },
+          "config": {
+            "anticollapse": "sigreg",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 0.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 6e-06,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "pooled_agent",
+            "reward_weight": 0.0,
+            "seed": 20260727,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "sigreg_clean_slow_s20260727",
+            "terminal_fraction": 0.0,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.6669025383889675,
+            "inventory_linear_mean": -0.09287649696164146,
+            "inventory_nonlinear_mean": -0.14093005316456364,
+            "vitals_linear_mean": -0.11257161425002027,
+            "vitals_nonlinear_mean": -0.14726196093023458
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.9933530129492283,
+            "inventory_linear_mean": 0.5678689531270009,
+            "inventory_nonlinear_mean": 0.4551154678132159,
+            "verdicts": {
+              "degraded": 16
+            },
+            "vitals_linear_mean": 0.46722488091433556,
+            "vitals_nonlinear_mean": 0.3563628081121455
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/sigreg_clean_slow_s20260727.json",
+          "sha256": "308d4a0de221bd439dfc05715db89dd6da459a63f2d48c3d0d7887eb34f0ad61"
+        },
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/sigreg_clean_slow_s20260728.pt",
+            "sha256": "e2e8505456dc25a04d305a8be1345d78b9ce9a2506a19082ff3c87f529cdc077"
+          },
+          "config": {
+            "anticollapse": "sigreg",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 0.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 6e-06,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "pooled_agent",
+            "reward_weight": 0.0,
+            "seed": 20260728,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "sigreg_clean_slow_s20260728",
+            "terminal_fraction": 0.0,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.647613350301981,
+            "inventory_linear_mean": -0.060476190263616114,
+            "inventory_nonlinear_mean": -0.08383216819365064,
+            "vitals_linear_mean": -0.09259264965916092,
+            "vitals_nonlinear_mean": -0.08539939016777054
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.9728991612792015,
+            "inventory_linear_mean": 0.49452826256254073,
+            "inventory_nonlinear_mean": 0.4117012977096557,
+            "verdicts": {
+              "degraded": 16
+            },
+            "vitals_linear_mean": 0.42173462235517967,
+            "vitals_nonlinear_mean": 0.3523482659362772
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/sigreg_clean_slow_s20260728.json",
+          "sha256": "72ed6dcaa2905289416de195337499dc38f816276a547f49e97711e4b2ba6447"
+        },
+        {
+          "checkpoint": {
+            "path": "reviews/artifacts/lr_objective_grid/sigreg_clean_slow_s20260729.pt",
+            "sha256": "6f0f0c776db30468e473d3d7fba15f12e976393f331987a5bbf3e2eab83341b6"
+          },
+          "config": {
+            "anticollapse": "sigreg",
+            "backend": "transformer",
+            "batch_size": 8,
+            "continuation_weight": 0.0,
+            "device": "cuda",
+            "ema_steps": 20000,
+            "encoder_lr": 6e-06,
+            "jepa_weight": 1.0,
+            "ladder": "0,1000,2500",
+            "learning_rate": 0.0001,
+            "output_dir": "reviews/artifacts/lr_objective_grid",
+            "predictor_context": "pooled_agent",
+            "reward_weight": 0.0,
+            "seed": 20260729,
+            "sigreg_lambda": 0.05,
+            "sigreg_points": 17,
+            "sigreg_slices": 1024,
+            "tag": "sigreg_clean_slow_s20260729",
+            "terminal_fraction": 0.0,
+            "world_steps": 2500
+          },
+          "delta": {
+            "dev_cosine": 0.7908230973407626,
+            "inventory_linear_mean": -0.0910638399413985,
+            "inventory_nonlinear_mean": -0.11177877839505856,
+            "vitals_linear_mean": -0.07656370932308398,
+            "vitals_nonlinear_mean": -0.10288724216977696
+          },
+          "final": {
+            "audit_pass": true,
+            "dev_cosine": 0.9892788901925087,
+            "inventory_linear_mean": 0.4927279809684048,
+            "inventory_nonlinear_mean": 0.4035710297583863,
+            "verdicts": {
+              "degraded": 16
+            },
+            "vitals_linear_mean": 0.4821283715719573,
+            "vitals_nonlinear_mean": 0.41468823096554586
+          },
+          "first_step": 0,
+          "last_step": 2500,
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/lr_objective_grid/sigreg_clean_slow_s20260729.json",
+          "sha256": "a58f8a410a625e160cf4b02406ea4eece097e6b096db2bf9974b366f475c442b"
+        }
+      ],
+      "delta_aggregate": {
+        "dev_cosine": {
+          "mean": 0.7017796620105704,
+          "n": 3,
+          "sample_sd": 0.07771465901498495,
+          "values": [
+            0.6669025383889675,
+            0.647613350301981,
+            0.7908230973407626
+          ]
+        },
+        "inventory_linear_mean": {
+          "mean": -0.0814721757222187,
+          "n": 3,
+          "sample_sd": 0.018205630596099854,
+          "values": [
+            -0.09287649696164146,
+            -0.060476190263616114,
+            -0.0910638399413985
+          ]
+        },
+        "inventory_nonlinear_mean": {
+          "mean": -0.11218033325109095,
+          "n": 3,
+          "sample_sd": 0.02855106043152698,
+          "values": [
+            -0.14093005316456364,
+            -0.08383216819365064,
+            -0.11177877839505856
+          ]
+        },
+        "vitals_linear_mean": {
+          "mean": -0.09390932441075506,
+          "n": 3,
+          "sample_sd": 0.018040025737452114,
+          "values": [
+            -0.11257161425002027,
+            -0.09259264965916092,
+            -0.07656370932308398
+          ]
+        },
+        "vitals_nonlinear_mean": {
+          "mean": -0.1118495310892607,
+          "n": 3,
+          "sample_sd": 0.031890223930578526,
+          "values": [
+            -0.14726196093023458,
+            -0.08539939016777054,
+            -0.10288724216977696
+          ]
+        }
+      }
+    }
+  },
+  "missing": [],
+  "oracle": {
+    "arms": {
+      "m_jepa (M-JEPA, d_bottleneck=16)": {
+        "audit_pass": true,
+        "checkpoint": {
+          "path": "outputs/d4_mamba_jepa/craftax_slowenc_v1/m_jepa/world.pt",
+          "sha256": "3f73a2321b3020d9095d194b07e3d00b2cb209c02c508079d75471242a15c653",
+          "stored_implementation_sha256": "b178cbf825f7f521f0776347311d12a4b231630d74bcd70448f7236d9cd996a3"
+        },
+        "groups": {
+          "inventory": {
+            "latent_linear_mean": 0.6073069999994622,
+            "latent_nonlinear_mean": 0.541351822328224,
+            "verdicts": {
+              "degraded": 12
+            }
+          },
+          "vitals": {
+            "latent_linear_mean": 0.5912379035072981,
+            "latent_nonlinear_mean": 0.5205891328557821,
+            "verdicts": {
+              "degraded": 4
+            }
+          }
+        }
+      },
+      "t_jepa (T-JEPA, d_bottleneck=16)": {
+        "audit_pass": true,
+        "checkpoint": {
+          "path": "outputs/d4_mamba_jepa/craftax_slowenc_v1/t_jepa/world.pt",
+          "sha256": "8df2fdefe2706bda0eb072be2f2f23d24bb4868b08da40ba83e9fd30267afdf6",
+          "stored_implementation_sha256": "b178cbf825f7f521f0776347311d12a4b231630d74bcd70448f7236d9cd996a3"
+        },
+        "groups": {
+          "inventory": {
+            "latent_linear_mean": 0.6494119272505298,
+            "latent_nonlinear_mean": 0.5818778667128737,
+            "verdicts": {
+              "degraded": 12
+            }
+          },
+          "vitals": {
+            "latent_linear_mean": 0.6522905165628471,
+            "latent_nonlinear_mean": 0.6311212889030067,
+            "verdicts": {
+              "degraded": 4
+            }
+          }
+        }
+      }
+    },
+    "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/reviews/artifacts/craftax_slowenc_oracle.json",
+    "sha256": "199effe6ce3d7457619756430f3afd45613911be47781000373c9cdf4ee2ac1c"
+  },
+  "provenance": {
+    "git_head": "0d94c24caac8c315ad00d151843426121b744ddf",
+    "implementation_sha256": "b178cbf825f7f521f0776347311d12a4b231630d74bcd70448f7236d9cd996a3",
+    "runner_sha256": "6ffbb31a4afca072b7fe5b9adc96605c64b294ba1b8ffb340e450ba043c8253a"
+  },
+  "status": "completed"
+}
