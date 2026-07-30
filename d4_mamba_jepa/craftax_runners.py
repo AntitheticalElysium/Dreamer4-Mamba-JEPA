@@ -47,6 +47,7 @@ from .imagination_actor_critic import (
     unfreeze_module,
 )
 from .model import D4LiteWorld
+from .objectives import split_no_weight_decay
 from .training import WorldLossNormalizer, world_loss
 
 
@@ -75,6 +76,59 @@ def _sample_sequences(replay, batch_size, sequence_length, device, rng):
 
 def _write_report(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+
+
+VALUE_FORMAT = "d4_mamba_jepa_craftax_value_v1"
+
+
+def save_value_checkpoint(
+    path: str | Path, value: ValueHead, *, world_checkpoint_sha256: str
+) -> str:
+    """Serialize the imagination value head with the same guarantees as the
+    policy head: atomic temp-file-and-rename, a format tag, the config needed to
+    rebuild the module, and the world checkpoint it is paired to.
+
+    Previously this was a bare ``torch.save`` of ``{"value": state_dict}``: not
+    atomic (a crash mid-write left a truncated file that would later load as a
+    valid-looking payload), untagged, and unpaired, so a value head could be
+    silently loaded against a different world than the one it was trained in.
+    """
+    payload = {
+        "format": VALUE_FORMAT,
+        "world_checkpoint_sha256": world_checkpoint_sha256,
+        "config": {
+            "d_model": value.d_model,
+            "num_bins": value.num_bins,
+            "log_low": value.log_low,
+            "log_high": value.log_high,
+        },
+        "value": {k: v.detach().cpu() for k, v in value.state_dict().items()},
+    }
+    return _atomic_torch_save(Path(path), payload)
+
+
+def load_value_checkpoint(
+    path: str | Path,
+    *,
+    expected_sha256: str,
+    expected_world_sha256: str,
+    device: torch.device,
+) -> tuple[ValueHead, dict]:
+    """Load a ``VALUE_FORMAT`` value head, verifying digest and world pairing."""
+    actual = file_sha256(Path(path))
+    if actual != expected_sha256:
+        raise RuntimeError(f"value checkpoint digest drift: {actual}")
+    payload = torch.load(path, map_location="cpu", weights_only=False)
+    if payload.get("format") != VALUE_FORMAT:
+        raise RuntimeError(
+            f"unsupported value checkpoint format {payload.get('format')!r}"
+        )
+    if payload.get("world_checkpoint_sha256") != expected_world_sha256:
+        raise RuntimeError("value/world checkpoint pairing drift")
+    value = ValueHead(**payload["config"]).to(device)
+    value.load_state_dict(payload["value"], strict=True)
+    value.eval()
+    return value, payload
 
 
 def save_policy_checkpoint(
@@ -133,12 +187,29 @@ def train_craftax_jepa_world(
         torch.cuda.manual_seed_all(seed)
     world = D4LiteWorld(cfg).to(device).train()
     normalizer = WorldLossNormalizer().to(device)
+    # Official Mamba-2 marks `dt_bias`/`A_log`/`D` weight-decay exempt
+    # (`mamba2.py:130,136,140`); they are SSM structure, not weights. A single
+    # undifferentiated AdamW group violates that upstream contract, and it does
+    # so in the M arm ONLY, which would make weight decay a hidden second
+    # difference on the single research axis. `_decay_groups` therefore splits
+    # every group. A transformer world owns no such tensor, so its optimizer is
+    # byte-identical to before this change.
+    def _decay_groups(params, *, lr) -> list[dict]:
+        decay, no_decay = split_no_weight_decay(params)
+        groups = [{"params": decay, "lr": lr, "base_lr": lr,
+                   "weight_decay": 1e-2}]
+        if no_decay:
+            groups.append({"params": no_decay, "lr": lr, "base_lr": lr,
+                           "weight_decay": 0.0})
+        return groups
+
     if encoder_learning_rate is None:
         # Preserve the original one-group optimizer exactly when the new
-        # intervention is not requested.
+        # intervention is not requested (transformer arm: one group, as before).
         trainable = [p for p in world.parameters() if p.requires_grad]
         optimizer = torch.optim.AdamW(
-            trainable, lr=learning_rate, weight_decay=1e-2
+            _decay_groups(trainable, lr=learning_rate),
+            lr=learning_rate, weight_decay=1e-2,
         )
     else:
         encoder_params = list(world.encoder.parameters())
@@ -150,17 +221,11 @@ def train_craftax_jepa_world(
             p for p in world.parameters()
             if p.requires_grad and id(p) not in encoder_ids
         ]
-        groups = [{
-            "params": other_params,
-            "lr": learning_rate,
-            "base_lr": learning_rate,
-        }]
+        groups = _decay_groups(other_params, lr=learning_rate)
         if encoder_learning_rate > 0.0:
-            groups.append({
-                "params": encoder_params,
-                "lr": encoder_learning_rate,
-                "base_lr": encoder_learning_rate,
-            })
+            groups.extend(
+                _decay_groups(encoder_params, lr=encoder_learning_rate)
+            )
         optimizer = torch.optim.AdamW(
             groups, lr=learning_rate, weight_decay=1e-2
         )
@@ -379,13 +444,14 @@ def train_craftax_imagination(
         actor_sha = save_policy_checkpoint(
             out / "actor.pt", actor, world_checkpoint_sha256=world_checkpoint_sha256
         )
-        torch.save(
-            {"value": {k: v.detach().cpu() for k, v in value.state_dict().items()}},
-            out / "value.pt",
+        value_sha = save_value_checkpoint(
+            out / "value.pt", value,
+            world_checkpoint_sha256=world_checkpoint_sha256,
         )
         _write_report(out / "imagination_report.json", {
             "actor_checkpoint": "actor.pt", "actor_checkpoint_sha256": actor_sha,
             "value_checkpoint": "value.pt",
+            "value_checkpoint_sha256": value_sha,
             "world_checkpoint_sha256": world_checkpoint_sha256,
             "final": history[-1] if history else None,
         })
@@ -452,7 +518,10 @@ def craftax_preflight(
 
 __all__ = [
     "craftax_jepa_config",
+    "VALUE_FORMAT",
     "save_policy_checkpoint",
+    "save_value_checkpoint",
+    "load_value_checkpoint",
     "train_craftax_jepa_world",
     "train_craftax_bc",
     "train_craftax_imagination",

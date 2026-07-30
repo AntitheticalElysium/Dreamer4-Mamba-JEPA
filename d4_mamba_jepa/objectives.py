@@ -264,13 +264,28 @@ def jepa_self_prediction_loss(
     trained on the predictor-generated latents they are read on at deployment
     rather than on real encoder latents.
 
-    Faithful to ``mila-iqia/spr`` (commit ``0b9dd4e7``) ``do_spr_loss`` and
-    ``spr_loss``: the deterministic action-conditioned predictor produces the
-    next embedding (the rollout primitive), which is projected+predicted online;
-    the target is the stop-gradient EMA target encoder applied to the *actual*
-    next observation, projected by the EMA target projection. The loss is the
-    L2-normalized MSE (proportional in gradient to negative cosine). There is no
-    denoising, no decoder, and no reconstruction term.
+    The scoring operator is faithful to ``mila-iqia/spr`` (commit ``0b9dd4e7``)
+    ``spr_loss`` (``src/models.py:287-293``): the deterministic
+    action-conditioned predictor produces the next embedding (the rollout
+    primitive), which is projected+predicted online; the target is the
+    stop-gradient EMA target encoder applied to the *actual* next observation,
+    projected by the EMA target projection; the loss is the L2-normalized MSE
+    (proportional in gradient to negative cosine). There is no denoising, no
+    decoder, and no reconstruction term.
+
+    REGISTERED DEVIATION -- no t0 term. SPR with ``jumps=K`` scores K+1
+    positions, not K: ``do_spr_loss`` receives ``pred_latents`` whose first
+    entry is the encoder's own latent for the current frame
+    (``src/models.py:449``, appended before the jump loop at ``:453-457``), and
+    ``src/algos.py:296-298`` splits that entry off as ``t0_spr_loss`` (weight
+    ``t0_spr_loss_weight=1.0``) from ``model_spr_loss = spr_loss[1:].mean(0)``.
+    Here ``jepa_jumps=K`` scores exactly K *transitioned* positions and no t0
+    term. SPR's t0 term is an augmentation-invariance objective -- it matches
+    two differently augmented views of the SAME frame -- and this port does not
+    carry SPR's visual augmentation, so a t0 term would degenerate to matching
+    an embedding against itself. Dropping it is forced by that omission, but it
+    removes half of SPR's anti-collapse pressure; the EMA target and asymmetric
+    predictor carry the rest alone.
 
     ``clean`` are the online-encoder packed latents (gradients flow to the
     online encoder); ``frames`` are the observations whose future is the target.
@@ -365,12 +380,17 @@ def jepa_self_prediction_loss(
     # ResNet path is the ``a_emb = g_emb`` no-projector special case. Both the
     # invariance term and SIGReg therefore act on the projector output. Two terms
     # only, no other heuristics:
-    #   * invariance/prediction: Algorithm 2's raw squared error between the
-    #     predictor's next embedding and the actual next embedding. No L2
-    #     normalization and no stop-gradient -- LeJEPA is heuristics-free.
+    #   * invariance/prediction: raw squared error, no L2 normalization and no
+    #     stop-gradient -- LeJEPA is heuristics-free. REGISTERED DEVIATION: the
+    #     reference term is a MULTI-VIEW variance-to-the-mean over V augmented
+    #     views of one image, `inv_loss = (proj.mean(0) - proj).square().mean()`
+    #     (pinned `MINIMAL.md:172`). Ours is a TEMPORAL next-step prediction
+    #     error between the predictor's output and the actual next embedding.
+    #     Same slot in the objective, different quantity.
     #   * SIGReg: the Epps-Pulley sliced-normality statistic on the projected
     #     real embeddings, imported unchanged from the pinned source.
-    # Combined with the reference convex combination (1-lambda)*sim + lambda*sigreg.
+    # The convex combination is the reference form, verified at
+    # `MINIMAL.md:174`: `lejepa_loss = sigreg_loss * lamb + inv_loss * (1-lamb)`.
     projector = world.jepa_sigreg_projector
     d_spatial = clean.shape[-1]
     lam = float(world.cfg.jepa_sigreg_lambda)
@@ -418,6 +438,36 @@ def reconstruction_anchor_loss(
     return (prediction.float() - target.float()).pow(2).mean()
 
 
+def split_no_weight_decay(parameters) -> tuple[list, list]:
+    """Partition parameters by the upstream ``_no_weight_decay`` marker.
+
+    Official Mamba-2 tags three tensors as weight-decay exempt at
+    ``state-spaces/mamba`` ``mamba_ssm/modules/mamba2.py``::
+
+        self.dt_bias._no_weight_decay = True   # :130
+        self.A_log._no_weight_decay = True     # :136
+        self.D._no_weight_decay = True         # :140
+
+    ``A = -exp(A_log)``, ``dt = softplus(dt_bias)`` and the ``D`` skip term are
+    SSM structure, not weights; decaying them drags ``A`` toward ``-1``, ``dt``
+    toward ``softplus(0)`` and the skip toward zero. Upstream's own grouping
+    honours the marker, so a single undifferentiated AdamW group silently
+    violates it.
+
+    Only the Mamba temporal modules carry the attribute, so for a transformer
+    world the second list is empty and the caller's optimizer is unchanged.
+
+    Returns ``(decay, no_decay)`` preserving input order in each list.
+    """
+    decay, no_decay = [], []
+    for parameter in parameters:
+        if getattr(parameter, "_no_weight_decay", False):
+            no_decay.append(parameter)
+        else:
+            decay.append(parameter)
+    return decay, no_decay
+
+
 def optimizer_groups(world: nn.Module, base_lr: float) -> list[dict]:
     """Disjoint optimizer groups with explicit CDP encoder LR separation."""
     if base_lr <= 0:
@@ -433,19 +483,31 @@ def optimizer_groups(world: nn.Module, base_lr: float) -> list[dict]:
         if parameter.requires_grad and id(parameter) not in encoder_ids
     ]
     groups = []
-    if encoder:
-        groups.append(
-            {
-                "name": "encoder",
-                "params": encoder,
-                "lr": base_lr * world.cfg.encoder_lr_ratio,
-            }
-        )
-    groups.append({"name": "main", "params": main, "lr": base_lr})
+    for name, params, lr in (
+        ("encoder", encoder, base_lr * world.cfg.encoder_lr_ratio),
+        ("main", main, base_lr),
+    ):
+        if not params:
+            continue
+        decay, no_decay = split_no_weight_decay(params)
+        if decay:
+            groups.append({"name": name, "params": decay, "lr": lr})
+        if no_decay:
+            # Upstream Mamba-2 marks these exempt; see split_no_weight_decay.
+            groups.append({
+                "name": f"{name}_no_weight_decay",
+                "params": no_decay,
+                "lr": lr,
+                "weight_decay": 0.0,
+            })
     all_ids = [id(parameter) for group in groups for parameter in group["params"]]
     if len(all_ids) != len(set(all_ids)):
         raise RuntimeError("optimizer parameter groups overlap")
-    decoder_ids = {id(parameter) for parameter in world.decoder.parameters()}
-    if decoder_ids.intersection(all_ids):
-        raise RuntimeError("frozen reconstruction decoder entered optimizer")
+    # The JEPA arm is non-generative and sets ``decoder=None`` (``_build_jepa``),
+    # so there is no reconstruction decoder to keep out of the optimizer. Only
+    # the CDP/base arms carry one.
+    if world.decoder is not None:
+        decoder_ids = {id(parameter) for parameter in world.decoder.parameters()}
+        if decoder_ids.intersection(all_ids):
+            raise RuntimeError("frozen reconstruction decoder entered optimizer")
     return groups

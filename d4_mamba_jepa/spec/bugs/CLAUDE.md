@@ -74,6 +74,14 @@ weights. Deployment only ever reads lead 0
 `rollout.py:294`), so this does not break inference — it makes the declared
 horizon misleading and ships 3/8 of each head's output layer as noise.
 
+**NARROWED after validation.** "Ships as noise" overstates it and I should not
+have written it that way. Leads 5-7 are rows of `out.weight`/`out.bias`, which
+receive a *dense* gradient tensor, so AdamW's decoupled weight decay does move
+them — they decay toward their initialization prior rather than staying put.
+Only parameters whose `.grad` is `None` (A1) are skipped by the optimizer
+entirely. Two further boundaries: the base/CDP arms feed all `T=16` positions
+and do train all eight leads, and deployment reads lead 0 only.
+
 ### A3 — shortcut conditioning collapses to two constant bias vectors
 
 Every JEPA code path fills the conditioning indices with constants:
@@ -88,11 +96,16 @@ dynamics.step_embed.weight   (3, 32): [0.0, 0.0, 0.132]
 dynamics.signal_embed.weight (5, 32): [0.0, 0.0, 0.0, 0.0, 0.112]
 ```
 
-Six of the eight rows (192 parameters) stay at initialization forever; the two
+Six of the eight rows (192 parameters) are functionally unreachable; the two
 live rows are concatenated and added identically at every position, i.e. they
-function as a single constant bias. `SOURCE_MANIFEST.md:64` lists "shortcut
-signal and step embeddings" among the upstream contracts that are *not* locally
+act as a constant conditioning bias. `SOURCE_MANIFEST.md` lists "shortcut signal
+and step embeddings" among the upstream contracts that are *not* locally
 reinterpreted; in this arm they are degenerate. Not recorded in `ARCHITECTURE.md`.
+
+**NARROWED after validation**, same reason as A2: "stay at initialization
+forever" is wrong. The embedding weight is a single dense tensor, so the
+unreachable rows get a zero *loss* gradient but still decay under AdamW.
+Unreachable is the accurate word; frozen is not.
 
 ### A4 — `JepaProjector` width deviates from SPR, and from SPR's default head
 
@@ -160,6 +173,14 @@ the agent token at the last position of an 8-frame window is not the token at
 the last position of a 16-frame window. §14's `diff` covers seeds and sampling
 temperature but not this context change between training and executed
 evaluation.
+
+**NARROWED after validation.** "BC was trained at 16" is false as a categorical
+statement, and the correction matters. BC's loss is `logits[:, :-1]` against
+`led_to_actions[:, 1:]` (`craftax_runners.py:294-300`), and the dynamics is
+block-causal, so one 16-frame batch trains decisions at context lengths 1
+through 15 — including 8. The real mismatch is distributional, not categorical:
+BC weights lengths 1-15 uniformly (7/15 positions see more than eight frames),
+while execution uses length 8 for every post-warm-up step.
 
 ### A8 — `implementation_sha256()` does not cover the Craftax boundary
 
@@ -257,19 +278,31 @@ sibling provenance document and is now describing a superseded environment.
 The JEPA branch returns at `:114`; the triple-quoted block at `:117-122` is a
 no-op string expression, not a docstring. `sample_next_packed` has no docstring.
 
-### B9 — the SIGReg loss form is not in the pinned source
+### B9 — RETRACTED. The SIGReg loss form IS in the pinned source.
 
-`objectives.py:373` cites "the reference convex combination
-`(1-lambda)*sim + lambda*sigreg`". The pinned `rbalestr-lab__lejepa` checkout
-contains `lejepa/multivariate/slicing.py` and `lejepa/univariate/epps_pulley.py`
-(which `source.py` correctly digest-pins) but **not** `scripts/je.py`, which is
-where that combination would live — only `scripts/launch_inet10.py` referencing
-it. Verified in range against that launcher: `bstat_lambda=0.05` ✓,
-`EppsPulley(n_points=17)` is the upstream default ✓; `num_slices=1024` vs the
-reference `1000`; `projector_dim=64` vs the reference `512`.
+I claimed the convex combination `(1-λ)*sim + λ*sigreg` could not be verified
+because `scripts/je.py` is absent from the checkout. That was wrong: I searched
+for that launcher and never looked at the tracked `MINIMAL.md`. Re-verified at
+`third_party/sources/rbalestr-lab__lejepa/MINIMAL.md:171-174`, git-tracked at
+`c293d291`:
 
-Low priority: `jepa_anticollapse` defaults to `"ema"`, and §9 only claims the
-sigreg path "exists".
+```python
+inv_loss = (proj.mean(0) - proj).square().mean()
+sigreg_loss = sigreg(proj)
+lejepa_loss = sigreg_loss * cfg.lamb + inv_loss * (1 - cfg.lamb)
+```
+
+Exactly the reference form. The claim is withdrawn.
+
+What survives is a *larger* deviation I failed to state: LeJEPA's invariance
+term is a **multi-view** variance-to-the-mean across `V` augmented views of one
+image; ours is a **temporal** next-step prediction error. Same slot in the
+objective, different quantity. Now registered in `objectives.py` and §9.
+
+`bstat_lambda=0.05` ✓ and `EppsPulley(n_points=17)` ✓ remain in range.
+`num_slices=1024` vs 1000 and `projector_dim=64` vs 512 come from an ablation
+sweep, not an authoritative default — calling them departures was also too
+strong.
 
 ---
 
@@ -810,3 +843,72 @@ every Mamba path and for all of §F).
 Highest-value disagreement to chase: **A12** (I confirmed a false claim in round
 1) and **F3** (the only finding here whose mechanism is inferred from one
 diagnostic rather than from the code alone).
+
+---
+
+# Round 3 — fixes applied
+
+Applied 2026-07-30 on top of `81d3466`, after cross-validation by
+`VALIDATION.md` and the `CODEX.md` addendum. Suite: **119 passed, 0 skipped**
+on CUDA (was 105 before the new tests; the 7 skips other audits saw were their
+CPU-only runtimes, not repo defects).
+
+## Behaviour changes
+
+| id | change | blast radius |
+|---|---|---|
+| N1 | `optimizer_groups` guards `world.decoder is None`. It crashed with `AttributeError` on every JEPA world; the CDP decoder-leak check it wraps is unchanged and still fires. | Generic API only — the Craftax runner builds its own optimizer, so no archived run is affected. |
+| N3 | `craftax_env.is_dead(state)` reads the two absorbing disjuncts of `game_logic.is_game_over` (`in_lava | player_health <= 0`) instead of inferring `done and not timeout`. Same fix, vmapped, in `expert/generate.py`, plus an assertion that a non-dead `done` really is at the native horizon. | Latent: unreachable under the 2,500-step cap, so no archived artifact changes. |
+| A10 | Parameters carrying upstream's `_no_weight_decay` go in a `weight_decay=0.0` group. | **M arm only.** Verified: T with `enc_lr=None` still builds exactly one group `(159 params, wd=0.01, lr=1e-4)` — byte-identical to before. `ABLATIONS.md` rows 1/17/18 now carry the new `WD*` flag. |
+| A20 | `value.pt` is written through `_atomic_torch_save` with `VALUE_FORMAT`, its config, and the paired world digest; `load_value_checkpoint` verifies both. | New field `value_checkpoint_sha256` in `imagination_report.json`. Old `value.pt` files predate the format and will not load. |
+| N4 | `source_report(cfg)` is config-conditional; `verify_recorded_sources` re-verifies exactly what a checkpoint recorded instead of comparing whole reports. | A T-arm world no longer needs an installed Mamba or CartPole to save/load. **Verified both archived `craftax_expert_v1` checkpoints still load.** `source_report()` with no argument is unchanged. |
+| N5 | The three LeJEPA files execute under isolated module names with synthetic parent packages. | Executed set now equals verified set; no `lejepa.*` enters `sys.modules`. Statistic unchanged. |
+| N2 | Records store `reset_key` (the uint32 JAX key the slot was actually reset with) plus `batch_seed`/`env_slot`/`record_index`/`final_timestep`. The old `env_seed` ordinal is gone. | New artifacts only. The archived replay is hash-pinned and untouched; its per-episode lineage stays unrecoverable. |
+| N6 | Manifest gains `timed_out_episodes`, disjoint from `truncated_episodes`. | New artifacts only. |
+
+## Documentation-only corrections
+
+- `model.py` — CDP is 8192-d (`configs.yaml:93`), not "4096-d (`rssm.py:140`)";
+  the SPR EMA-equivalence claim is downgraded to unverifiable (A14);
+  `JepaProjector` records both SPR deviations (A4); `ContinuationHeadMTP` is
+  marked local, with its mean-vs-attention pooling asymmetry (A11).
+- `objectives.py` — the missing t0 term is registered (A13); the LeJEPA comment
+  now cites the verified `MINIMAL.md:174` and names the real deviation
+  (multi-view invariance vs temporal prediction).
+- `config.py` — the parameter-matching comment is marked stale for the live
+  64/64 Craftax override (B2). `temporal.py` registers `use_mem_eff_path=False`
+  (A9). `rollout.py`'s unreachable docstring is now the function's (B8).
+  `checkpoint.py` states the implementation-digest coverage boundary and why
+  widening it would be worse (A8).
+- `ARCHITECTURE.md` — every validated deviation registered, plus a new `tested`
+  field separating origin / tested-on-Craftax / selected-on-Craftax (C38).
+- `SOURCE_MANIFEST.md` — rewritten: imported-and-verified vs read-reference vs
+  **cited but absent** (Craftax_Baselines, rlpyt, LeJEPA's `je.py`).
+
+## Retractions
+
+- **B9 is withdrawn** — the convex SIGReg form is in the tracked
+  `MINIMAL.md:171-174`. I searched for `scripts/je.py` and never opened the
+  markdown.
+- **A12 stands against my own round-1 §C** — Dreamer-CDP's cosine is global. I
+  confirmed the spec's "per-token" claim without following `enc_output` to its
+  definition.
+- **A2, A3, A7 narrowed** — zero *loss* gradient is not frozen: rows of a dense
+  gradient tensor still decay under AdamW. Only `grad is None` (A1) is skipped
+  entirely. And causal BC on a 16-frame window does train context length 8; the
+  A7 mismatch is distributional, not categorical.
+
+## Deliberately NOT changed
+
+- The `flow_x_head`, dead MAE mask token and degenerate shortcut embeddings
+  (A1/A3) are registered, not removed — deleting them would fork the
+  "unmodified MMBench2 `Dynamics`" claim and invalidate every checkpoint.
+- `ContinuationHeadMTP`'s mean pooling (A11) and the `JepaProjector` widths
+  (A4) are registered, not aligned — changing either invalidates head weights
+  and is an experiment, not a fix.
+- F1-F6 (the imagination pathology) are diagnosis, not defects with an obvious
+  correct value. `horizon=32` vs a 5-step trained rollout, `context=8`, and the
+  unbounded predictor output are all live design choices; changing them is an
+  ablation. **F7 still stands: nothing here licenses attributing the T/M
+  executed gap to the backend. `ABLATIONS.md` row 19 must be re-run to
+  completion, now also clearing `WD*`.**

@@ -226,6 +226,26 @@ def craftax_source_report() -> dict[str, str]:
     }
 
 
+def _load_isolated(identity: SourceIdentity, module_name: str, *, is_package=False):
+    """Execute one verified file under an isolated module name."""
+    existing = sys.modules.get(module_name)
+    if existing is not None:
+        return existing
+    spec = importlib.util.spec_from_file_location(module_name, identity.path)
+    if spec is None or spec.loader is None:
+        raise SourceDriftError(f"cannot create import spec for {identity.path}")
+    if is_package:
+        spec.submodule_search_locations = [str(identity.path.parent)]
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    try:
+        spec.loader.exec_module(module)
+    except Exception:
+        sys.modules.pop(module_name, None)
+        raise
+    return module
+
+
 @lru_cache(maxsize=1)
 def load_lejepa_sigreg():
     """Return the pinned LeJEPA ``(SlicingUnivariateTest, EppsPulley)`` classes.
@@ -233,18 +253,37 @@ def load_lejepa_sigreg():
     SIGReg is used unchanged from ``rbalestr-lab/lejepa`` commit
     ``c293d291``: the sliced random-projection multivariate test
     (``lejepa/multivariate/slicing.py``) with the Epps-Pulley univariate
-    normality test (``lejepa/univariate/epps_pulley.py``). Digests are verified
-    before import so any source drift hard-fails.
+    normality test (``lejepa/univariate/epps_pulley.py``).
+
+    The three files are executed under ISOLATED module names rather than
+    imported through ``lejepa.*`` package paths. Importing by package path first
+    executes ``lejepa/__init__.py``, ``lejepa/univariate/__init__.py`` and
+    ``lejepa/multivariate/__init__.py``, which between them pull in 17 further
+    modules (``bhep``, ``hz``, ``hv``, ``comb``, ``anderson_darling``,
+    ``shapiro_wilk``, ``watson``, ``jarque_bera``, ...). None of those are
+    digest-pinned, so the executed set was strictly larger than the verified
+    set and the "digest-pinned SIGReg" claim did not hold for what actually
+    ran. Isolated loading makes executed == verified: these three files import
+    nothing from LeJEPA except ``epps_pulley -> .base``, which is pre-registered
+    below so the relative import resolves to the verified copy.
     """
     for identity in (LEJEPA_SLICING, LEJEPA_EPPS, LEJEPA_BASE):
         verify_source(identity)
-    root = str(LEJEPA_ROOT)
-    if root not in sys.path:
-        sys.path.insert(0, root)
-    from lejepa.multivariate.slicing import SlicingUnivariateTest
-    from lejepa.univariate.epps_pulley import EppsPulley
-
-    return SlicingUnivariateTest, EppsPulley
+    root = "d4_mamba_jepa._pinned_lejepa"
+    # Synthetic parent packages: `epps_pulley` does `from .base import ...`, so
+    # `<root>.univariate` must exist in sys.modules for that relative import to
+    # resolve to our verified `base`, and to nothing else.
+    for package in (root, f"{root}.univariate", f"{root}.multivariate"):
+        if package not in sys.modules:
+            spec = importlib.util.spec_from_loader(package, loader=None,
+                                                   is_package=True)
+            module = importlib.util.module_from_spec(spec)
+            module.__path__ = []  # no filesystem search: nothing else is loadable
+            sys.modules[package] = module
+    _load_isolated(LEJEPA_BASE, f"{root}.univariate.base")
+    epps = _load_isolated(LEJEPA_EPPS, f"{root}.univariate.epps_pulley")
+    slicing = _load_isolated(LEJEPA_SLICING, f"{root}.multivariate.slicing")
+    return slicing.SlicingUnivariateTest, epps.EppsPulley
 
 
 def lejepa_source_report() -> dict[str, str]:
@@ -260,24 +299,102 @@ def lejepa_source_report() -> dict[str, str]:
     }
 
 
-def source_report() -> dict[str, dict[str, str]]:
+def _report_mmbench2() -> dict[str, str]:
     return {
-        "mmbench2_model": {
-            "path": str(MMBENCH2_MODEL.path),
-            "commit": MMBENCH2_MODEL.commit,
-            "sha256": verify_source(MMBENCH2_MODEL),
-            "license": MMBENCH2_MODEL.license,
-        },
-        "mamba2": {
-            "path": str(MAMBA2_SOURCE.path),
-            "commit": MAMBA2_SOURCE.commit,
-            "sha256": verify_installed_mamba2(),
-            "license": MAMBA2_SOURCE.license,
-        },
-        "gymnasium_cartpole": {
-            "path": str(GYMNASIUM_CARTPOLE.path),
-            "commit": GYMNASIUM_CARTPOLE.commit,
-            "sha256": verify_installed_cartpole(),
-            "license": GYMNASIUM_CARTPOLE.license,
-        },
+        "path": str(MMBENCH2_MODEL.path),
+        "commit": MMBENCH2_MODEL.commit,
+        "sha256": verify_source(MMBENCH2_MODEL),
+        "license": MMBENCH2_MODEL.license,
     }
+
+
+def _report_mamba2() -> dict[str, str]:
+    return {
+        "path": str(MAMBA2_SOURCE.path),
+        "commit": MAMBA2_SOURCE.commit,
+        "sha256": verify_installed_mamba2(),
+        "license": MAMBA2_SOURCE.license,
+    }
+
+
+def _report_cartpole() -> dict[str, str]:
+    return {
+        "path": str(GYMNASIUM_CARTPOLE.path),
+        "commit": GYMNASIUM_CARTPOLE.commit,
+        "sha256": verify_installed_cartpole(),
+        "license": GYMNASIUM_CARTPOLE.license,
+    }
+
+
+# Every source name that can appear in a recorded provenance block, and the
+# callable that recomputes+verifies it. `verify_recorded_sources` recomputes only
+# the names a checkpoint actually recorded, so this registry is also the set of
+# names a stored payload is allowed to contain.
+_SOURCE_REPORTERS = {
+    "mmbench2_model": _report_mmbench2,
+    "mamba2": _report_mamba2,
+    "gymnasium_cartpole": _report_cartpole,
+    "craftax": craftax_source_report,
+    "lejepa": lejepa_source_report,
+}
+
+
+def source_names_for(cfg) -> tuple[str, ...]:
+    """The sources a world with this config actually depends on.
+
+    Reporting is config-conditional because an unconditional report both
+    over- and under-constrains a checkpoint:
+
+    * over: a transformer-only Craftax world could not be saved or loaded
+      without an installed, byte-matching Mamba-2 AND Gymnasium CartPole, so
+      provenance verification failed on sources the checkpoint never used;
+    * under: the Craftax environment and the LeJEPA/SIGReg implementation --
+      which the world does use -- were absent from the report entirely.
+    """
+    names = ["mmbench2_model", "craftax"]
+    if getattr(cfg, "temporal_backend", None) == "mamba2":
+        names.append("mamba2")
+    if (
+        getattr(cfg, "representation_objective", None) == "jepa"
+        and getattr(cfg, "jepa_anticollapse", None) == "sigreg"
+    ):
+        names.append("lejepa")
+    return tuple(names)
+
+
+def source_report(cfg=None) -> dict[str, dict[str, str]]:
+    """Verified provenance for the sources in scope.
+
+    ``cfg=None`` keeps the historical three-source report (MMBench2, Mamba-2,
+    Gymnasium CartPole) so existing callers and checkpoints are unaffected.
+    Passing a ``D4LiteConfig`` selects the sources that config actually uses --
+    see ``source_names_for``.
+    """
+    names = (
+        ("mmbench2_model", "mamba2", "gymnasium_cartpole")
+        if cfg is None
+        else source_names_for(cfg)
+    )
+    return {name: _SOURCE_REPORTERS[name]() for name in names}
+
+
+def verify_recorded_sources(stored: dict[str, dict[str, str]]) -> None:
+    """Re-verify exactly the sources a checkpoint recorded.
+
+    Comparing a stored block against a freshly computed *whole* report makes the
+    check depend on which sources the CURRENT code happens to report, so adding
+    or removing a source name retroactively invalidates every existing
+    checkpoint. The contract that actually matters is narrower and stable: every
+    source recorded at save time must still be present and byte-identical.
+    """
+    if not isinstance(stored, dict):
+        raise SourceDriftError("recorded provenance block is not a mapping")
+    unknown = sorted(set(stored) - set(_SOURCE_REPORTERS))
+    if unknown:
+        raise SourceDriftError(f"unknown recorded source names: {unknown}")
+    for name, recorded in stored.items():
+        current = _SOURCE_REPORTERS[name]()
+        if current != recorded:
+            raise SourceDriftError(
+                f"recorded source {name!r} drifted: {current} != {recorded}"
+            )

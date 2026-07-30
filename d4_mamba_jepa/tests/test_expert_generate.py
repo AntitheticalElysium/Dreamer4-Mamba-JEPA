@@ -41,3 +41,22 @@ def test_generate_expert_replay_produces_valid_replay(tmp_path):
     for ep in replay.episodes:
         assert ep.obs.shape[1:] == (3, 64, 64) and ep.obs.dtype.name == "uint8"
         assert ep.obs.shape[0] == ep.actions.shape[0] + 1  # obs == actions + 1
+
+    # N2: the stored lineage field must be the key the slot was RESET with, not
+    # an ordinal. `seed + batch*num_envs + slot` reconstructed nothing.
+    import torch
+
+    records = torch.load(out, map_location="cpu", weights_only=False)
+    for index, record in enumerate(records):
+        assert "env_seed" not in record, "ordinal masquerading as a seed"
+        key = record["reset_key"]
+        assert tuple(key.shape) == (2,) and key.dtype is torch.uint32
+        batch, slot = divmod(index, 2)
+        expected = jax.random.split(
+            jax.random.split(jax.random.PRNGKey(100 + batch))[1], 2
+        )[slot]
+        assert (key.numpy() == jax.numpy.asarray(expected)).all()
+        assert record["batch_seed"] == 100 + batch and record["env_slot"] == slot
+
+    # N6: the two ending counters are disjoint and cover no more than the total.
+    assert manifest.truncated_episodes + manifest.timed_out_episodes <= 3

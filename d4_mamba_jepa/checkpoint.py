@@ -12,13 +12,30 @@ import torch
 
 from .config import D4LiteConfig
 from .model import D4LiteWorld, build_tokenizer
-from .source import source_report
+from .source import source_report, verify_recorded_sources
 from .training import WorldLossNormalizer
 
 
 FORMAT = "d4_mamba_jepa_world_v1"
 TOKENIZER_FORMAT = "d4_mamba_jepa_tokenizer_v1"
 PACKAGE_ROOT = Path(__file__).resolve().parent
+# COVERAGE BOUNDARY (registered in spec/ARCHITECTURE.md section 16).
+#
+# This allowlist is deliberately the code that PRODUCES WEIGHTS, and nothing
+# else. It therefore does NOT cover:
+#
+#   * data generation -- `craftax_env.py`, `craftax_data.py`, `expert/*`. What
+#     the weights were trained on is pinned separately and more precisely, by
+#     the replay's own SHA-256 (`load_episode_replay(expected_sha256=...)`);
+#   * evaluation and diagnostics -- `craftax_achievement.py`, `craftax_oracle.py`,
+#     `oracle_metrics.py`, `craftax_resolution.py`, `executed_control.py`. These
+#     read a checkpoint and cannot change it.
+#
+# Widening it to those files would be worse, not better: editing an oracle probe
+# would then invalidate every existing world checkpoint. The cost of the
+# boundary is real and must stay visible -- a world checkpoint's implementation
+# digest says nothing about which environment adapter or evaluator was used with
+# it, so runs must record the replay digest alongside (see `craftax_run.py`).
 IMPLEMENTATION_FILES = (
     "__init__.py",
     "config.py",
@@ -104,7 +121,11 @@ def save_checkpoint(
         "normalizer": _cpu_state_dict(normalizer),
         "step": int(step),
         "provenance": {
-            "sources": source_report(),
+            # Config-conditional: a transformer world records no Mamba-2 source
+            # and therefore does not require an installed Mamba to be reloaded,
+            # while every world now records the Craftax environment it was
+            # trained against. See `source.source_names_for`.
+            "sources": source_report(world.cfg),
             "implementation_sha256": implementation_sha256(),
             "torch": torch.__version__,
         },
@@ -141,7 +162,7 @@ def save_tokenizer_checkpoint(
         "tokenizer": _cpu_state_dict(tokenizer),
         "step": int(step),
         "provenance": {
-            "sources": source_report(),
+            "sources": source_report(config),
             "implementation_sha256": implementation_sha256(),
             "torch": torch.__version__,
         },
@@ -171,8 +192,7 @@ def load_tokenizer_checkpoint(
         raise RuntimeError("tokenizer checkpoint config drift")
     if payload["provenance"]["implementation_sha256"] != implementation_sha256():
         raise RuntimeError("tokenizer checkpoint implementation drift")
-    if payload["provenance"]["sources"] != source_report():
-        raise RuntimeError("tokenizer checkpoint primary-source provenance drift")
+    verify_recorded_sources(payload["provenance"]["sources"])
     tokenizer = build_tokenizer(config, training_mask=training_mask).to(device)
     tokenizer.load_state_dict(payload["tokenizer"], strict=True)
     return tokenizer, payload
@@ -215,11 +235,12 @@ def load_checkpoint(
             "checkpoint implementation drift: "
             f"{stored_implementation} != {current_implementation}"
         )
-    # Re-running source_report hard-fails primary-source drift before weights
-    # enter a newly constructed model.
-    current_sources = source_report()
-    if payload["provenance"]["sources"] != current_sources:
-        raise RuntimeError("checkpoint primary-source provenance drift")
+    # Re-verify every source this checkpoint RECORDED, before weights enter a
+    # newly constructed model. Recomputing the recorded names (rather than
+    # comparing against whatever the current code reports) keeps checkpoints
+    # written under an older source set loadable, while still hard-failing on
+    # drift in anything that was actually pinned at save time.
+    verify_recorded_sources(payload["provenance"]["sources"])
 
     world = D4LiteWorld(config).to(device)
     normalizer = WorldLossNormalizer().to(device)

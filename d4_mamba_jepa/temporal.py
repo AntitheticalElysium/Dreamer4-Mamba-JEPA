@@ -40,6 +40,14 @@ class MambaTimeMixer(nn.Module):
         from mamba_ssm.modules.mamba2 import Mamba2
 
         self.d_model = cfg.dynamics_d_model
+        # REGISTERED DEVIATION: `use_mem_eff_path=False`. Official Mamba-2
+        # defaults it to True (`mamba_ssm/modules/mamba2.py:59`). The fused
+        # memory-efficient path requires the optional `causal_conv1d` extension
+        # and takes a different kernel (and therefore different floating-point
+        # accumulation) than the chunked scan. This is still unmodified official
+        # Mamba code -- only the execution path selection is local. Kept
+        # explicit so the backend comparison runs the same kernel everywhere,
+        # including on machines without `causal_conv1d`.
         self.mamba = Mamba2(
             d_model=cfg.dynamics_d_model,
             d_state=cfg.mamba_d_state,

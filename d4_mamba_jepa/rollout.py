@@ -106,6 +106,18 @@ def sample_next_packed(
     initial_noise: Tensor | None = None,
     context_agent: Tensor | None = None,
 ) -> tuple[Tensor, Tensor]:
+    """Generate one next latent and its post-transition agent tokens.
+
+    ``past_packed`` has ``t`` clean states. ``led_to_actions`` has ``t+1``
+    slots: actions for the existing states followed by the candidate action
+    that will lead to the generated state.
+
+    The non-generative JEPA arm short-circuits to ``_sample_next_jepa`` and
+    therefore ignores ``schedule``, ``use_cache``, ``generator`` and
+    ``initial_noise``: it has no denoiser to schedule, no noise to draw, and no
+    cache to consume (see ``_sample_next_jepa``'s docstring for the agent-token
+    carry it uses instead).
+    """
     if getattr(world.cfg, "representation_objective", "base") == "jepa":
         if past_packed.ndim != 4:
             raise ValueError("past_packed must have shape [B,t,S,D]")
@@ -114,12 +126,6 @@ def sample_next_packed(
         return _sample_next_jepa(
             world, past_packed, led_to_actions, context_agent=context_agent
         )
-    """Generate one next latent and its post-transition agent tokens.
-
-    ``past_packed`` has ``t`` clean states. ``led_to_actions`` has ``t+1``
-    slots: actions for the existing states followed by the candidate action
-    that will lead to the generated state.
-    """
     if past_packed.ndim != 4:
         raise ValueError("past_packed must have shape [B,t,S,D]")
     B, time, n_spatial, d_spatial = past_packed.shape

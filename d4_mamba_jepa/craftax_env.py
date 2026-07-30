@@ -19,7 +19,10 @@ Verified facts this adapter is built on (Craftax-Classic, commit-pinned via
 
 ``continues`` follows Crafter's ``discount = 1 - dead`` convention: a timed-out
 episode is a truncation with ``continues[-1] == 1`` (bootstrap), while death /
-lava give ``continues[-1] == 0`` (absorbing).
+lava give ``continues[-1] == 0`` (absorbing). ``dead`` is read off the state by
+``is_dead`` (lava OR ``player_health <= 0``), NOT inferred as
+``done and not timeout`` -- the two disagree on the exact transition where the
+native step cap and a death coincide.
 """
 from __future__ import annotations
 
@@ -73,6 +76,33 @@ def privileged_labels(state) -> dict:
         "achievements": np.asarray(state.achievements, dtype=bool),
         "timestep": int(state.timestep),
     }
+
+
+def is_dead(state) -> bool:
+    """Crafter's ``dead`` predicate, read off the Craftax state directly.
+
+    Byte-faithful to the death half of Craftax-Classic ``game_logic.py``
+    ``is_game_over``::
+
+        done_steps = state.timestep >= params.max_timesteps
+        in_lava    = state.map[state.player_position[0],
+                               state.player_position[1]] == BlockType.LAVA.value
+        is_dead    = state.player_health <= 0
+        return done_steps | in_lava | is_dead
+
+    Deriving ``dead`` as ``done and not timeout`` is NOT equivalent: on the exact
+    transition where the native step cap is reached the timeout disjunct is
+    already true, so a simultaneous death or lava entry would be recorded as a
+    truncation with ``continues=1``. Reading the two dead disjuncts directly
+    keeps ``continues = 1 - dead`` exact at every timestep.
+    """
+    from craftax.craftax_classic.constants import BlockType
+
+    in_lava = bool(
+        state.map[state.player_position[0], state.player_position[1]]
+        == BlockType.LAVA.value
+    )
+    return in_lava or bool(state.player_health <= 0)
 
 
 def achievement_names() -> list[str]:
@@ -183,8 +213,11 @@ class CraftaxPixelEnv:
             self._split(), self._state, int(action), self.params
         )
         done = bool(done)
-        timeout = int(self._state.timestep) >= self.max_timesteps
-        terminal = done and not timeout
+        # `terminal` is the ABSORBING half of Craftax's `is_game_over`, read from
+        # the state (`is_dead`) rather than inferred as `done and not timeout`:
+        # on the exact native-cap transition both disjuncts can hold, and the
+        # inferred form would then report a death as a bootstrappable truncation.
+        terminal = done and is_dead(self._state)
         continuation = 0.0 if terminal else 1.0
         achievements = np.asarray(self._state.achievements, dtype=bool)
         return StepResult(
@@ -264,6 +297,7 @@ __all__ = [
     "N_ACHIEVEMENTS",
     "NATIVE_OBS_HW",
     "achievement_names",
+    "is_dead",
     "obs_to_chw_uint8",
     "CraftaxPixelEnv",
     "StepResult",

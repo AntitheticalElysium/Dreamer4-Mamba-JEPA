@@ -54,6 +54,12 @@ class D4LiteConfig:
     # expand=1 gives 15,014 parameters at d_model=64 versus 16,644 for the
     # upstream temporal attention module. expand=2 would confound the backend
     # comparison with a 67% larger temporal module.
+    #
+    # NOTE: that arithmetic holds for THESE defaults (d_state=16, headdim=32).
+    # `craftax_jepa_config` overrides both to 64, where the module is 21,571
+    # parameters -- 29.6% LARGER than the 16,644-parameter attention module, not
+    # smaller. The live Craftax arms are NOT parameter-matched; do not read this
+    # comment as if they were (spec/ARCHITECTURE.md section 7).
     mamba_expand: int = 1
 
     # CDP-shaped auxiliary.

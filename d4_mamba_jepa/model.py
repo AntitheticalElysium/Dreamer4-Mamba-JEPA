@@ -60,7 +60,18 @@ class DiscreteActionEncoder(nn.Module):
 
 
 class ContinuationHeadMTP(nn.Module):
-    """Multi-token continuation logits from post-transition agent tokens."""
+    """Multi-token continuation logits from post-transition agent tokens.
+
+    LOCAL head, not an MMBench2 one: the pinned ``src/model.py`` has no
+    continuation/termination head at all (it ships ``RewardHeadMTP`` and
+    ``PolicyHeadMTP`` only). Only the ``MLP`` projector is upstream.
+
+    It also pools differently from its sibling: ``RewardHeadMTP`` reads the
+    agent tokens through a learned attention pool (``pool_agent="attn"``), this
+    head takes a plain mean. Two heads, same input tokens, different poolers --
+    an unforced local asymmetry, kept because changing it would invalidate
+    every existing checkpoint's head weights.
+    """
 
     def __init__(self, d_model: int, horizon: int):
         super().__init__()
@@ -105,8 +116,13 @@ class CDPPredictor(nn.Module):
         #   concat_agent  = all agent tokens                  -> n_agent*d_model
         #   spatial_agent = spatial stream + agent tokens     -> +n_spatial*d_spatial
         # `pooled_agent` is the default and reproduces the original module
-        # exactly; Dreamer-CDP by contrast predicts from a 4096-d deterministic
-        # state (`rssm.py:140`), so the pooled 64-d channel is a local narrowing.
+        # exactly; Dreamer-CDP by contrast predicts from its 8192-d
+        # deterministic RSSM state (`dreamerv3/configs.yaml:93` `deter: 8192`,
+        # consumed at `dreamerv3/rssm.py:140` `self.predictor(feat['deter'])`),
+        # so the pooled 64-d channel is a local narrowing. The earlier "4096-d
+        # (`rssm.py:140`)" here was wrong twice over: 4096 is a smaller size
+        # PRESET at `configs.yaml:140`, not the default, and that line number
+        # belongs to a different file.
         if self.context_mode == "pooled_agent":
             context_dim = d_model
         elif self.context_mode == "concat_agent":
@@ -163,10 +179,22 @@ class CDPPredictor(nn.Module):
 class JepaProjector(nn.Module):
     """SPR/BYOL global projection or prediction MLP.
 
-    Faithful to ``mila-iqia/spr`` commit ``0b9dd4e7`` ``src/models.py``
+    Shaped after ``mila-iqia/spr`` commit ``0b9dd4e7`` ``src/models.py``
     ``global_classifier`` (``Linear -> BatchNorm1d -> ReLU -> Linear``). The
     batch-norm is the documented SPR/BYOL anti-collapse component; it is applied
     over the folded ``[B*T]`` batch, matching SPR's flattened application.
+
+    Two registered deviations from SPR (see spec/ARCHITECTURE.md section 9):
+
+    * width. SPR's MLP branches use hidden = 2x output -- ``src/models.py:210``
+      is ``Linear(pixels*hidden, 512) -> BN(512) -> ReLU -> Linear(512, 256)``
+      and ``:239`` is ``Linear(s, 2s) -> BN(2s) -> ReLU -> Linear(2s, s)``.
+      This module uses hidden = out.
+    * branch. SPR's shipped defaults are ``--classifier q_l1``
+      (``scripts/run.py:111``), a ``QL1Head`` built off the Q head, with
+      ``--final-classifier linear`` (``:112``), i.e. a single ``nn.Linear``
+      prediction head. This module copies SPR's OPTIONAL ``mlp`` branch for both
+      roles.
     """
 
     def __init__(self, in_dim: int, out_dim: int, hidden: Optional[int] = None):
@@ -536,9 +564,18 @@ class D4LiteWorld(nn.Module):
         ``target = tau*target + (1-tau)*online`` with the momentum ``tau``
         ramped toward 1 over training, following the I-JEPA (``52c1ae95``) and
         V-JEPA-2 (``204698b4``) target-encoder momentum schedule cited for the
-        target-encoder mechanics. This is the same EMA as SPR's
-        ``update_state_dict`` (rlpyt) up to the reciprocal tau naming. Buffers
-        (BatchNorm running statistics) are copied directly from the online net.
+        target-encoder mechanics. Buffers (BatchNorm running statistics) are
+        copied directly from the online net.
+
+        NOT source-verified against SPR: SPR's EMA is
+        ``rlpyt.models.utils.update_state_dict`` (imported at
+        ``mila-iqia/spr`` ``src/models.py:5``, called at ``:354-366``), and
+        ``rlpyt`` is neither vendored under ``third_party`` nor installed here.
+        The reciprocal reading of SPR's ``--momentum-tau 0.01``
+        (``scripts/run.py:82``) as our ``jepa_ema_tau=0.99`` is consistent with
+        its usage but cannot be checked against the helper's bytes, and neither
+        can its buffer-handling. Treat this as a local implementation of the
+        published I-JEPA/V-JEPA-2 schedule, not as an SPR reproduction.
         """
         if self.target_encoder is None:
             raise RuntimeError("JEPA target encoder disabled in this arm")

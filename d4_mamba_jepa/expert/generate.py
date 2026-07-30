@@ -7,8 +7,10 @@ vmapped/jitted batched render):
   * VECTORIZED rollout: N independent envs stepped together under one jitted
     ``lax.scan`` (no per-step Python/GPU-launch overhead, no CPU-GPU transfer
     inside the rollout). ONE episode per env slot -- after a slot's ``done`` we
-    keep stepping (masked) and slice each slot at its FIRST done, so episode
-    boundaries and terminal frames are exact (no auto-reset ambiguity).
+    KEEP STEPPING IT (the scan is uniform; ``done_prev`` only resets the RNN
+    carry, nothing is masked out of the compute) and then slice each slot at its
+    FIRST done, so episode boundaries and terminal frames are exact and every
+    post-done step is discarded (no auto-reset ambiguity).
   * The pixel render is VMAPPED across the N slots inside the scan (parallel,
     not the launch-bound single-env render). Rendered at 7px -> padded 64x64,
     byte-identical to ``craftax_env``.
@@ -55,7 +57,11 @@ class ExpertReplayManifest:
     deep_achievement_episodes: int
     noop_fraction: float
     mean_episode_length: float
+    # Episodes that never reached env `done` inside the local `max_steps` cap.
     truncated_episodes: int
+    # Episodes that ended on env `done` WITHOUT being dead, i.e. that reached
+    # Craftax's own `max_timesteps` horizon. Disjoint from `truncated_episodes`.
+    timed_out_episodes: int
     greedy: bool
     seed: int
     num_envs: int
@@ -79,7 +85,7 @@ def generate_expert_replay(
     import jax.numpy as jnp
     from craftax.craftax_env import make_craftax_env_from_name
     from craftax.craftax_classic.renderer import make_craftax_pixel_renderer
-    from craftax.craftax_classic.constants import BLOCK_PIXEL_SIZE_AGENT
+    from craftax.craftax_classic.constants import BLOCK_PIXEL_SIZE_AGENT, BlockType
     from .ppo_expert import ScannedRNN
 
     env = make_craftax_env_from_name(ENV_NAME, auto_reset=False)
@@ -104,14 +110,32 @@ def generate_expert_replay(
             scaled = jnp.pad(scaled, ((0, pad), (0, pad), (0, 0)))
         return jnp.transpose(scaled, (2, 0, 1))        # CHW uint8
 
+    def _dead(state):
+        """Craftax `is_game_over`'s absorbing half, per env slot.
+
+        Byte-faithful to `craftax_classic/game_logic.py:is_game_over`, minus its
+        `done_steps` disjunct: `in_lava | (player_health <= 0)`. Inferring death
+        as `timestep < max_timesteps` instead would misrecord a death that lands
+        exactly on the native horizon as a bootstrappable truncation.
+        """
+        in_lava = (
+            state.map[state.player_position[0], state.player_position[1]]
+            == BlockType.LAVA.value
+        )
+        return in_lava | (state.player_health <= 0)
+
     reset_v = jax.vmap(env.reset, in_axes=(0, None))
     step_v = jax.vmap(env.step, in_axes=(0, 0, 0, None))
     render_v = jax.vmap(_to_chw)                        # [N,...] states -> [N,3,H,W]
+    dead_v = jax.vmap(_dead)                            # [N,...] states -> [N] bool
 
     @jax.jit
     def _rollout(key):
         key, rk = jax.random.split(key)
-        obs_sym, state = reset_v(jax.random.split(rk, num_envs), env_params)
+        # The per-slot reset keys ARE the episode's environment lineage; they are
+        # returned so each record can store the key that actually generated it.
+        reset_keys = jax.random.split(rk, num_envs)
+        obs_sym, state = reset_v(reset_keys, env_params)
         hidden = ScannedRNN.initialize_carry(num_envs, layer_size)
         frame0 = render_v(state)                        # [N,3,H,W]
         ach0 = state.achievements                       # [N,22]
@@ -127,19 +151,21 @@ def generate_expert_replay(
             obs2, state2, reward, done, _ = step_v(
                 jax.random.split(sk, num_envs), state, action, env_params)
             out = (render_v(state2), action, reward, done,
-                   state2.achievements, state2.timestep)
+                   state2.achievements, state2.timestep, dead_v(state2))
             return (hidden, state2, obs2, done), out
 
         keys = jax.random.split(key, max_steps)
-        _, (frames, actions, rewards, dones, achs, ts) = jax.lax.scan(
+        _, (frames, actions, rewards, dones, achs, ts, deads) = jax.lax.scan(
             _step, (hidden, state, obs_sym, jnp.zeros(num_envs, dtype=bool)), keys)
-        return frame0, ach0, frames, actions, rewards, dones, achs, ts
+        return (frame0, ach0, frames, actions, rewards, dones, achs, ts, deads,
+                reset_keys)
 
     records: list[dict] = []
     total_transitions = 0
     total_noop = 0
     deep_episodes = 0
     truncated = 0
+    timed_out = 0
     lengths: list[int] = []
     achievement_totals = np.zeros(N_ACHIEVEMENTS, dtype=np.int64)
     names = achievement_names()
@@ -151,13 +177,15 @@ def generate_expert_replay(
     n_batches = (int(n_episodes) + num_envs - 1) // num_envs
     produced = 0
     for batch in range(n_batches):
-        frame0, ach0, frames, actions, rewards, dones, achs, ts = _rollout(
-            jax.random.PRNGKey(int(seed) + batch))
+        (frame0, ach0, frames, actions, rewards, dones, achs, ts, deads,
+         reset_keys) = _rollout(jax.random.PRNGKey(int(seed) + batch))
         # one transfer of the whole batch
         frame0 = np.asarray(frame0); ach0 = np.asarray(ach0).astype(bool)
         frames = np.asarray(frames); actions = np.asarray(actions)
         rewards = np.asarray(rewards); dones = np.asarray(dones).astype(bool)
         achs = np.asarray(achs).astype(bool); ts = np.asarray(ts).astype(np.int64)
+        deads = np.asarray(deads).astype(bool)
+        reset_keys = np.asarray(reset_keys)
         # frames [T,N,3,H,W]; slice each env slot at its first done.
         for n in range(num_envs):
             if produced >= int(n_episodes):
@@ -166,7 +194,23 @@ def generate_expert_replay(
             if done_col.any():
                 t_end = int(np.argmax(done_col))
                 L = t_end + 1
-                terminal = int(ts[t_end, n]) < max_timesteps
+                # Absorbing iff the state is DEAD (lava or health<=0), read from
+                # the state. `ts < max_timesteps` would call a death that lands
+                # on the native horizon a truncation. Craftax `done` that is not
+                # dead is exactly the native `max_timesteps` timeout.
+                terminal = bool(deads[t_end, n])
+                if not terminal:
+                    # `is_game_over = done_steps | in_lava | is_dead`. Done and
+                    # not dead therefore implies the `done_steps` disjunct fired,
+                    # so this must be the native horizon. Assert it rather than
+                    # infer terminality from it.
+                    if int(ts[t_end, n]) < max_timesteps:
+                        raise RuntimeError(
+                            f"env done at timestep {int(ts[t_end, n])} < "
+                            f"max_timesteps={max_timesteps} but the state is not "
+                            "dead; Craftax termination contract changed"
+                        )
+                    timed_out += 1
             else:
                 L = int(max_steps)
                 terminal = False
@@ -190,7 +234,20 @@ def generate_expert_replay(
                 "rewards": torch.from_numpy(rew_arr),
                 "continues": torch.from_numpy(cont),
                 "achievements": torch.from_numpy(ach_arr),
-                "env_seed": int(seed) + batch * num_envs + n,
+                # The uint32 JAX key this slot was actually reset with. The old
+                # `env_seed` field stored `seed + batch*num_envs + n`, an ordinal
+                # that reconstructs NOTHING: the real reset key comes from
+                # splitting PRNGKey(seed+batch) and then splitting again across
+                # slots, so `CraftaxPixelEnv(seed=<ordinal>)` yields a different
+                # key and a different world. Keep the ordinal, but name it for
+                # what it is.
+                "reset_key": torch.from_numpy(
+                    reset_keys[n].astype(np.uint32).copy()
+                ),
+                "record_index": int(batch) * num_envs + n,
+                "batch_seed": int(seed) + batch,
+                "env_slot": int(n),
+                "final_timestep": int(ts[L - 1, n]),
             })
             produced += 1
 
@@ -212,7 +269,8 @@ def generate_expert_replay(
         deep_achievement_episodes=deep_episodes,
         noop_fraction=float(total_noop / max(1, total_transitions)),
         mean_episode_length=float(np.mean(lengths)) if lengths else 0.0,
-        truncated_episodes=truncated, greedy=greedy, seed=int(seed),
+        truncated_episodes=truncated, timed_out_episodes=timed_out,
+        greedy=greedy, seed=int(seed),
         num_envs=int(num_envs), max_steps=int(max_steps),
         created=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
     )

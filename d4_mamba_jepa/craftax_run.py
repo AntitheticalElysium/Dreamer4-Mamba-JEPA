@@ -47,7 +47,7 @@ from .data import (
     whole_episode_splits,
 )
 from .objectives import jepa_self_prediction_loss
-from .source import source_report
+from .source import craftax_source_report, source_report
 
 FORMAT = "d4_mamba_jepa_craftax_run_v1"
 SPLIT_SEED = 20260727
@@ -348,7 +348,12 @@ def run(
         },
         "provenance": {
             "implementation_sha256": implementation_sha256(),
+            # `source_report()` (no config) keeps the historical three-source
+            # block so this report's schema is unchanged. The Craftax digests
+            # are recorded alongside because the run spans both backends and
+            # the environment is not in that legacy block.
             "sources": source_report(),
+            "craftax": craftax_source_report(),
             "python": platform.python_version(),
             "torch": torch.__version__,
             "device": str(device),
