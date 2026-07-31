@@ -287,9 +287,9 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   corruption settles it: the commit ingests a **fresh** corruption of the accepted
   \(\hat z\), whereas the final rung ingests the running Euler iterate. Those are
   different tensors even where their signal indices coincide, so the frame is
-  **4 rungs + 1 commit = 5 passes**. Direct is 1 + 1 = 2. That is a 2.5×
-  *evaluation-count* ratio; whether it is a throughput ratio is for
-  `diagnostics.cost` to measure.
+  **4 rungs + 1 commit = 5 backbone passes**. Direct is one commit plus a
+  predictor head, so 1. That is a 5x *evaluation-count* ratio; whether it is a
+  throughput ratio is for `diagnostics.cost` to measure.
   `[DESIGN]` At the final rung \(\tau = 1-d\), so the Euler step
   \(z \mathrel{+}= (\hat x_1 - z)\,d/(1-\tau)\) has coefficient exactly 1 and
   returns \(\hat x_1\) itself: under B, \(\hat z_{t+1}\) and \(h_{t+1}\) leave the

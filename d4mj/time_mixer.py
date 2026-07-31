@@ -62,9 +62,14 @@ class TimeMamba(nn.Module):
 
 
 def time_mixer(config: Config, d_model: int, context: int | None) -> nn.Module:
-    """Mamba's state is fixed-size by construction; attention needs `context` to be
-    bounded explicitly, or the deployed cache grows without limit and the two
-    backends stop being compared under the same memory."""
+    """Attention is bounded to `context` explicitly; Mamba's state is fixed in *size*
+    but summarises all history, so the two arms do not share an information horizon.
+
+    That asymmetry cannot be removed without destroying what Mamba is -- there is no
+    hard cutoff in an SSM -- so it is part of what the 2x2 measures rather than a
+    confound to eliminate. `diagnostics.cost` reports each arm's effective horizon,
+    so a Mamba win is never reported without saying how much history bought it.
+    """
     if config.time_mixer == "mamba":
         return TimeMamba(config, d_model)
     return TimeAttention(d_model, config.n_heads, context)

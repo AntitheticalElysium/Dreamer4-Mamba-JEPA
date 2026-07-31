@@ -33,7 +33,7 @@ not an implementation detail. If the plan is wrong, fix the plan.
 | S19 | Flow is **5 backbone passes/frame**, direct is **1** plus a predictor head | Flow's commit is a real extra pass: S11 puts corruption at commit, and the final rung's input is the running Euler iterate, not a fresh corruption of the accepted latent. Direct needs no candidate pass at all under S34. 5-vs-1 is an *evaluation-count* ratio; `diagnostics.cost` measures whether it is a throughput ratio |
 | S20 | Causal temporal tokenizer, as D4 §3.1 | The primary model follows Dreamer 4. Both arms share one encoder, so the T-vs-M comparison stays fair even though the encoder carries history; a frame-only encoder is a later ablation, not a fork |
 | S21 | `k_max ≥ 8`, declared in `Config` alongside `K = 4` | `round(0.9·k_max)` hits the untrained top row exactly at `k_max = 4`, and S10's clamp then drops τ_ctx to 0.75. Both failures vanish at `k_max ≥ 8` (τ_ctx = 0.875). k_max sets the training noise grid; K is the generation rung count — they are independent and neither was registered |
-| S22 | The reward and continuation caused by `a_t` are read at lead 0 of `h_{t+1}`, never `h_t` | S3 defines reward lead 0 as the reward *arriving*. `a_t` is chosen at `h_t`; its consequence arrives with `o_{t+1}`. Reading lead 0 at `h_t` returns the previous action's reward and shifts every return by one step — the predecessor's `reward_logits[:, 0, 0]` is correct only under this reading. Asserted by `gates.alignment` |
+| S22 | The reward and continuation caused by `a_t` are read at lead 0 of `h_{t+1}`, never `h_t` | S3 defines reward lead 0 as the reward *arriving*. `a_t` is chosen at `h_t`; its consequence arrives with `o_{t+1}`. Reading lead 0 at `h_t` returns the previous action's reward and shifts every return by one step — the predecessor's `reward_logits[:, 0, 0]` is correct only under this reading. Realised in `imagination.imagine`, which reads both from the readout `advance` returns; **no gate asserts it** -- doing so needs the gate to run a rollout, which it does not |
 | S23 | `Z*` is defined at MAE probability 0 | Masking is a Phase-1A training mechanism. The predecessor trained with masking silently disabled while advertising 0.9; the mirror failure is emitting cached targets under a random mask, which makes the same frame yield different `Z*` |
 | ~~S24~~ | **Superseded by S34.** With no candidate pass there is nothing for a `{candidate, commit}` table to distinguish, so direct's conditioning slot carries a single reachable embedding | |
 | S25 | Action table has `n_actions + 1` rows, the extra being BOS | Reachable at every true episode start; the predecessor shipped 18 rows undocumented. The query-shape half is void under S34, which has no query |
@@ -276,8 +276,9 @@ already contaminated.
 
 `alignment` carries the Box-1 fixtures: length invariants, no-action-leak,
 future-observation leakage (with MAE masking disabled or seeded), reward shift,
-window-start action identity, and that the reward and continuation caused by
-`a_t` are read at lead 0 of `h_{t+1}` (S22).
+window-start action identity, the separate-image fraction, that the transition
+loss is finite, and that the prediction moves when only its context does. It does
+*not* cover S22's imagination read index, which would need a rollout.
 
 **`diagnostics.py`** — `multistep_error(world, batch, config)`,
 `latent_stats(world, batch, config)`, `head_calibration(heads, agent, batch, config)`,

@@ -64,6 +64,10 @@ def _world_parity(config: Config, device: str, tolerance: float) -> None:
 
     drift = (torch.cat(stepped, dim=1) - forced).abs().max() / forced.abs().max()
     assert drift < tolerance, f"teacher-forced vs stepped world drift {drift:.2e}"
+    if config.time_mixer == "attention":
+        assert all(
+            pair[0].shape[2] <= config.dynamics_context for pair in memory
+        ), "dynamics cache exceeds the declared context"
 
 
 def _encoder_parity(config: Config, device: str, tolerance: float) -> None:
@@ -95,6 +99,12 @@ def _encoder_parity(config: Config, device: str, tolerance: float) -> None:
     assert all(pair[0].shape[2] <= config.window for pair in memory), "encoder state exceeds the window"
     influence = (bounded[:, -1] - scanned[:, -1]).abs().max()
     assert influence == 0, f"a frame beyond the receptive field moved z by {influence:.2e}"
+
+    inside = frames.clone()
+    inside[:, -2] = torch.rand_like(inside[:, -2])
+    with torch.no_grad():
+        used, _, _ = encoder(inside)
+    assert not torch.equal(used[:, -1], scanned[:, -1]), "the encoder ignores its history"
 
 
 def alignment(config: Config) -> None:
@@ -144,7 +154,8 @@ def _observation_dependence(config: Config) -> None:
     Comparing losses across two batches is not this test: changing the latents also
     changes the target, so a model-free loss returning `latents.pow(2).mean()`
     passes it. Only the prediction path is evidence that observations reach the
-    predictor at all.
+    predictor at all. The loss is separately checked to be finite, since a division
+    by a vanishing signal level surfaces as a clean-looking curve of NaNs.
     """
     from .transition import World, commit_inputs
 
@@ -152,6 +163,22 @@ def _observation_dependence(config: Config) -> None:
     world = World(config).to(device).eval()
     action = torch.zeros(2, 3, dtype=torch.long, device=device)
     shape = (2, 3, config.n_spatial, config.d_spatial)
+
+    from .data import Batch
+    from .transition import transition_loss
+
+    probe = Batch(
+        led_to_action=torch.zeros(2, 4, dtype=torch.long, device=device),
+        reward=torch.zeros(2, 4, device=device),
+        terminated=torch.zeros(2, 4, dtype=torch.bool, device=device),
+        truncated=torch.zeros(2, 4, dtype=torch.bool, device=device),
+        valid=torch.ones(2, 4, dtype=torch.bool, device=device),
+        burn_in=0,
+        latents=torch.randn(2, 4, config.n_spatial, config.d_spatial, device=device).tanh(),
+    )
+    with torch.no_grad():
+        loss = transition_loss(world, probe, torch.Generator(device=device).manual_seed(5), config)
+    assert torch.isfinite(loss), f"transition loss is {loss}"
 
     predictions = []
     for seed in (1, 2):

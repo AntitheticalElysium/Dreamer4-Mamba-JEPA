@@ -171,7 +171,14 @@ def advance(
     """One semantic transition. Flow runs its four read-only rungs then commits;
     direct predicts from the committed block's features and commits once. A
     candidate's memory is always discarded, so the prefix only ever ingests a
-    latent the model will condition on later."""
+    latent the model will condition on later.
+
+    The state must span exactly one block. `initial` over a window returns one
+    spanning T, and passing that here would broadcast a single action across every
+    block in the direct arm while raising a shape error in flow -- one type meaning
+    two things, held together by caller discipline.
+    """
+    assert state.latent.shape[1] == 1, "advance steps one block; slice the state first"
     if config.transition == "flow":
         accepted = _flow_candidate(world, state, action, rng, config)
     else:

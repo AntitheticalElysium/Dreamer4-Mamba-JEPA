@@ -76,6 +76,10 @@ def head_calibration(heads: Heads, agent: Tensor, batch: Batch, config: Config) 
 def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[str, float]:
     """Deployed against training-only parameters, and the two state sizes apart.
 
+    `effective_horizon` is how far back a perturbation still moves the prediction.
+    Attention is hard-bounded at `dynamics_context`; an SSM state has no cutoff, so
+    reporting it is what keeps a Mamba win from silently meaning "remembers more".
+
     Mamba fixes the dynamics memory only; the encoder keeps its own bounded cache,
     so a single 'state size' would overstate what the substitution buys. Timing runs
     on the configured device after warm-up, synchronised, since an unsynchronised
@@ -101,8 +105,21 @@ def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[st
             torch.cuda.synchronize()
         elapsed = time.perf_counter() - start
 
+    horizon = 0
+    with torch.no_grad():
+        base, _ = initial(world, latent, action, rng, config)
+        for step in range(1, config.dynamics_context + 4):
+            perturbed, _ = initial(world, torch.randn_like(latent).tanh(), action, rng, config)
+            for _ in range(step):
+                perturbed, _ = advance(world, perturbed, action, rng, config)
+                base, _ = advance(world, base, action, rng, config)
+            if (perturbed.latent - base.latent).abs().max() < 1e-6:
+                break
+            horizon = step
+
     encoder = modules.get("encoder")
     return {
+        "effective_horizon": horizon,
         "deployed_parameters": sum(v for k, v in counts.items() if k in deployed),
         "training_only_parameters": sum(v for k, v in counts.items() if k not in deployed),
         "dynamics_state_elements": sum(t.numel() for pair in state.memory for t in pair),

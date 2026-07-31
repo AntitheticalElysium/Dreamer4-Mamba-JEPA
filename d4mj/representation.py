@@ -129,15 +129,18 @@ def reconstruction_loss(
     running RMS and says so specifically to simplify weighing these two. Summing
     them first makes 0.2 a coefficient on raw LPIPS rather than a relative weight.
 
-    LPIPS is scored on the whole frame with the unmasked patches filled in from
-    the target, so it measures the reconstruction rather than the mask pattern.
+    MSE is scored on replaced patches only, as both reproductions do. LPIPS is
+    scored on the whole predicted frame, which is a declared deviation: MMBench2
+    composites visible patches from the target first, and measured, that makes the
+    perceptual term *identically zero with zero gradient* at p = 0 -- the very case
+    §3.1 draws p ~ U(0, 0.9) to keep in distribution, and the condition the frozen
+    encoder is deployed under. Equation 5 masks neither term.
     """
     error = (predicted - target).pow(2).mean(-1)
     weight = masked.float()
     mse = (error * weight).sum() / weight.sum().clamp(min=1.0)
 
-    filled = torch.where(masked[..., None], predicted, target)
-    frames = unpatchify(filled, config) * 2 - 1
+    frames = unpatchify(predicted, config) * 2 - 1
     truth = unpatchify(target, config) * 2 - 1
     lpips = perceptual(frames.flatten(0, 1), truth.flatten(0, 1)).mean()
     return {"mse": mse, "lpips": config.lpips_weight * lpips}

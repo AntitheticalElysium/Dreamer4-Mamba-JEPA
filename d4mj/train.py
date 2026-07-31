@@ -172,8 +172,10 @@ def train_actor(
 def _balance(losses: dict[str, torch.Tensor], state: dict[str, float], config: Config) -> torch.Tensor:
     """Dreamer 4 normalises concurrent losses by running RMS estimates, which makes
     a coefficient a relative weight rather than a scale accident. `state` is a plain
-    dict, so `checkpoint.save` can carry it -- resuming without it restarts every
-    normaliser and silently rescales every objective."""
+    dict, which `checkpoint.save` accepts alongside modules. No driver checkpoints
+    mid-phase yet, so it is currently per-call state: a resumed phase would restart
+    every normaliser and rescale every objective, and that is registered rather
+    than papered over."""
     total = 0.0
     for name, value in losses.items():
         squared = float(value.detach().pow(2))
