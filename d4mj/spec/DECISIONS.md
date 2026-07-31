@@ -27,8 +27,14 @@ design change, not an implementation detail. If the plan is wrong, fix the plan.
 | S12 | Agent slots exist from Phase 1B, last in the layout, masked both ways until Phase 2 | Fixes `S`, mask shape, stream count and state shapes once, so no Phase-1B gate is invalidated when the agent modality activates |
 | S13 | `depth % time_every == 0` and at least two time layers | At `depth = 4` the entire Mamba blast radius would be one module and parameter matching would be dominated by it |
 | S14 | Anchor drops GQA and attention-logit soft capping, keeps RoPE and QKNorm | Table 2 shows GQA at FVD 70 → 71, adopted for KV bandwidth at 2B parameters — no benefit at our scale. RoPE and QKNorm have executable precedent in pinned MMBench2 attention; GQA and capping have none anywhere. Anchor is described as paper-constrained *modulo declared omissions* |
-| S19 | Flow is 4 candidate rungs + 1 commit = **5 passes/frame**; direct is 1 + 1 = **2** | S11 puts corruption at commit, and the final rung's input sits at τ = 1−1/K (0.75 at K=4), not at τ_ctx (0.9). They coincide only if τ_ctx is *defined* as 1−1/K, which S16 rules out — so the commit is a real extra pass. This retires the A/B fork: B is unavailable once corruption is commit-time. Both arms count honestly, making the direct arm's inference advantage a measured 2.5× |
+| S19 | Flow is 4 candidate rungs + 1 commit = **5 passes/frame**; direct is 1 + 1 = **2** | S11 puts corruption at commit, so the commit is a real extra pass. Arguing from τ values alone is not enough — at `k_max = 4` the clamped τ_ctx equals the final rung's 0.75 (S21). This retires the A/B fork: the commit ingests a **fresh** corruption of the accepted `ẑ` while the final rung ingests the running Euler iterate, so they are different tensors even where their τ indices coincide. 5 vs 2 is an *evaluation-count* ratio; `diagnostics.cost` decides whether it is a throughput ratio |
 | S20 | Causal temporal tokenizer, as D4 §3.1 | The primary model follows Dreamer 4. Both arms share one encoder, so the T-vs-M comparison stays fair even though the encoder carries history; a frame-only encoder is a later ablation, not a fork |
+| S21 | `k_max ≥ 8`, declared in `Config` alongside `K = 4` | `round(0.9·k_max)` hits the untrained top row exactly at `k_max = 4`, and S10's clamp then drops τ_ctx to 0.75. Both failures vanish at `k_max ≥ 8` (τ_ctx = 0.875). k_max sets the training noise grid; K is the generation rung count — they are independent and neither was registered |
+| S22 | The reward and continuation caused by `a_t` are read at lead 0 of `h_{t+1}`, never `h_t` | S3 defines reward lead 0 as the reward *arriving*. `a_t` is chosen at `h_t`; its consequence arrives with `o_{t+1}`. Reading lead 0 at `h_t` returns the previous action's reward and shifts every return by one step — the predecessor's `reward_logits[:, 0, 0]` is correct only under this reading. Asserted by `gates.alignment` |
+| S23 | `Z*` is defined at MAE probability 0 | Masking is a Phase-1A training mechanism. The predecessor trained with masking silently disabled while advertising 0.9; the mirror failure is emitting cached targets under a random mask, which makes the same frame yield different `Z*` |
+| S24 | Direct conditioning is a two-row table `{candidate, commit}`, not one constant vector | Both rows are reachable every step, so no A3 hazard, and it parallels flow's `(τ, d)` at identical cost. A single always-applied vector is a constant bias that gives the slot no work to do. Not a proven necessity — the query's learned content already differs from a real latent — but strictly more expressive for the same code |
+| S25 | One learned query per spatial slot; action table has `n_actions + 1` rows, the extra being BOS | Per-slot queries follow the decoder's `patch_queries` pattern; a broadcast vector makes every slot's prediction start identically. BOS is reachable at every true episode start. The predecessor shipped 18 rows undocumented |
+| S26 | Committed and observed blocks carry the finest step index `d_min` | The signal bin is fixed by S16; nothing fixed `d`. MMBench2 labels context blocks with `d_min`; training samples `d` per block, so a committed block needs a declared value rather than an inherited one |
 | S15 | Windows never cross an episode boundary; `evaluate` takes no reset mask | Keeps a reset a fresh construction. Asserted by `gates.alignment`; relaxing it changes the signature |
 
 ## Open, with the functions each one constrains
@@ -40,10 +46,13 @@ config value, and each must be closed before the phase named.
 |---|---|---|
 | **SIGReg on a projector vs on `z`** — projector keeps `Z*` and gives clean attribution; on `z` forks `Z*` from the anchor and tests the stronger claim | Stage B | `representation.Projector`, `representation.representation_loss` |
 | **EMA views / masks / loss; faithful LeJEPA vs anti-collapse ablation** — is the EMA arm learning spatial invariance, temporal predictability, or both? | Stage B | `data.views`, `representation.representation_loss`, `representation.update_target` |
-| **Generated-prefix robustness and go/no-go thresholds** | Stage A exit | `diagnostics.multistep_error`; thresholds in `Config`, frozen before any arm is seen |
+| **Encoder history for a sampled window** — causality is settled (S20), but not how the encoder receives history for a window starting mid-episode: empty memory, burn-in prefix, cached whole-episode latents, or bounded preceding context. Each yields a different `z_t` for the same frame | Before target caching | `data.sample_batch`, cached `Z*` targets, EMA targets, deployment parity |
+| **Generated-prefix method and rollout length** — this is *how the direct arm trains*, not a result to judge | **Before Stage-A direct training** | `transition.transition_loss` |
+| **Go/no-go thresholds** | Before examining Stage-A results | `Config`, frozen before any arm is seen |
 | **Capacity**: `n_latents`, `d_bottleneck`, `n_spatial`, `k`, `depth`, `d_model` — needs a 6 GB probe. Invariant `n_latents = n_spatial × k` is a consequence of D4's packing, not a law | Phase 1A | `Config` fields only |
 | **Imagination horizon** — set from measured multi-step accuracy, not inherited | Phase 3 | `Config` field, gated by `diagnostics.multistep_error` |
-| **Parameter/FLOP matching rule; official executed-control metric** | Stage A exit | `diagnostics.cost`, `execution.run_episode` |
+| **Parameter/FLOP matching rule** — must precede construction, or the arms are trained first and "matched" afterward | **Before building the Stage-A models** | `diagnostics.cost`, `Config` |
+| **Executed-control metric**, including control of the flow arm's deployment-corruption draw | Stage A exit | `execution.run_episode` |
 | **Replay reuse vs regeneration** — the archived replay has no expert provenance and 58 distinct terminal windows. It can support debugging; it is weak as final evidence | Phase 1A | Whether `expert.train_expert` / `expert.collect` are populated, or the module is dead |
 
 ## Function plan
@@ -138,6 +147,11 @@ realised.
 **`imagination.py`** — `Trajectory` (Type),
 `imagine(world, heads, state, rng, config)`.
 
+The caller — `train_actor` — builds the starting state by repeated `observe`;
+`imagine` receives it complete and owns no encoder. Box 6's "encode and scan the
+context" describes the caller's work, and that boundary is where the
+predecessor's context re-slice bug lived.
+
 `Trajectory` carries **soft** `continuation` — the head's probability, not a
 boolean — because imagination has no ground-truth termination. DreamerV3 passes
 `self.con(inp, 2).prob(1)` and sets `term = 1 - con`, so the probability enters
@@ -175,9 +189,16 @@ groups are built, and the only place upstream `_no_weight_decay` is honoured.
 `reset_parity(config)`, `firewall(config)`, `branch_nonmutation(config)`,
 `recurrent_carry(config)`.
 
+`scan_step_parity` covers two things, not one: scan versus recurrent step, **and**
+teacher-forced windowed forward versus the equivalent `evaluate` reconstructed
+from the prefix. Nothing else exercises `advance`, so without the second half the
+most bug-prone function in the system ships untested until Stage-A results are
+already contaminated.
+
 `alignment` carries the Box-1 fixtures: length invariants, no-action-leak,
 future-observation leakage (with MAE masking disabled or seeded), reward shift,
-and window-start action identity.
+window-start action identity, and that the reward and continuation caused by
+`a_t` are read at lead 0 of `h_{t+1}` (S22).
 
 **`diagnostics.py`** — `multistep_error(world, batch, config)`,
 `latent_stats(world, batch, config)`, `head_calibration(world, heads, batch, config)`,

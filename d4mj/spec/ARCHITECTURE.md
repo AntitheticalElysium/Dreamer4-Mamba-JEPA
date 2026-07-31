@@ -97,7 +97,11 @@ and its outputs are *ephemeral* — a candidate block for \(t{+}1\) contains
 \(a_t\), and \(h_{t+1}\) predicts \(a_{t+1}\), so there is no leak — but it never
 mutates the prefix it was given, and rejected candidates' outputs are discarded.
 A candidate's `S_out` is **always** discarded; \(m_{t+1}\) comes from the commit
-evaluation alone, in every arm. Tasks remain agent-side only.
+evaluation alone, in every arm. The two halves of `S_out` carry different things:
+`latent` is the accepted **clean** \(\hat z\), always in \(Z^*\) space, while
+`memory` ingests whatever the commit block actually held — for flow, the
+τ_ctx-corrupted copy. Losses, decoding and diagnostics read `latent`; nothing
+reads the corrupted copy back out. Tasks remain agent-side only.
 
 \(m_t\) spans **every** token slot, agent slots included: temporal mixing is
 per-slot, so agent streams carry their own recurrent summary and world streams
@@ -267,8 +271,9 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   model and stochastic shortcut flow with four denoising evaluations.
   `[D4-UNKNOWN]` The paper calls signal
   \(\tau_{\mathrm{ctx}}=0.1\) a slight corruption despite defining
-  \(\tau=0\) as noise; reproductions use roughly \(0.9\) signal. Resolve this
-  before freezing the anchor. `[DESIGN]` Two constraints narrow it: the signal
+  \(\tau=0\) as noise. Settled at 0.1 *noise* / 0.9 signal: the source states
+  verbatim that "tau_ctx is the noise fraction". `[DESIGN]` Two constraints
+  further pin it: the signal
   level is a discrete lookup, and eq. (4)'s grid tops out at \(1-d\), so
   \(\tau_{\mathrm{ctx}}\) **must be a trained grid bin**. That rules out the
   literal 0.1-signal reading and rules out MMBench2's uncorrupted path, which
@@ -279,12 +284,12 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   invalidate any KV cache or SSM state and contradict invariant 5.
   `[DESIGN]` D4 states four denoising forwards but never says which latent
   condition supplies the persistent prefix and agent readout. Commit-time
-  corruption settles it: the final rung's input sits at \(\tau = 1-1/K\) (0.75 at
-  K=4), not at \(\tau_{\mathrm{ctx}}\), so keeping that rung's state is not an
-  option and the frame is **4 rungs + 1 commit = 5 passes**. The two coincide
-  only if \(\tau_{\mathrm{ctx}}\) is *defined* as \(1-1/K\), which the source's
-  own noise-fraction reading rules out. Both arms count every pass, so the direct
-  arm's advantage is a measured 2.5×, not an assumed one.
+  corruption settles it: the commit ingests a **fresh** corruption of the accepted
+  \(\hat z\), whereas the final rung ingests the running Euler iterate. Those are
+  different tensors even where their signal indices coincide, so the frame is
+  **4 rungs + 1 commit = 5 passes**. Direct is 1 + 1 = 2. That is a 2.5×
+  *evaluation-count* ratio; whether it is a throughput ratio is for
+  `diagnostics.cost` to measure.
   `[DESIGN]` At the final rung \(\tau = 1-d\), so the Euler step
   \(z \mathrel{+}= (\hat x_1 - z)\,d/(1-\tau)\) has coefficient exactly 1 and
   returns \(\hat x_1\) itself: under B, \(\hat z_{t+1}\) and \(h_{t+1}\) leave the
@@ -398,7 +403,12 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   task-conditioned agent readout, and direct low-level policy actions.
 - **What JEPA changes — `[JEPA-R]` / `[JEPA-D]`:** Only the selected frozen
   deployment function \(Z^*\) is active on real observations; training-only
-  teachers, SIGReg, transition losses, and the decoder are absent.
+  teachers, SIGReg, transition losses, and the decoder are absent. `[DESIGN]` One
+  training-time mechanism does survive in the flow arm: it commits
+  τ_ctx-corrupted real latents at deployment too, so executed control carries a
+  third randomness source beyond environment seed and policy sampling, and the
+  two arms deploy under different perception conditions. The executed-control
+  metric must control that draw and say so.
 - **What Mamba changes — `[MAMBA]`:** Carry and reset Mamba memory under the
   same declared episode semantics used for training and imagination. Resetting
   runtime state remains separate from deciding whether a time-limit transition
@@ -415,7 +425,9 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
    a whole episode yields three different latents under identical weights. Every
    cached target, JEPA target, diagnostic and deployment latent uses that one
    contract, and no target encoder may see frames unavailable to the deployed
-   encoder.
+   encoder. \(Z^*\) is also defined at **MAE probability 0**: masking is a
+   Phase-1A training mechanism only, so no cached target, diagnostic or deployed
+   latent is ever produced under a random mask.
    Representation arms that differ in \(C^*\)'s geometry change objective *and*
    latent space at once; either hold geometry fixed across arms or label the
    comparison compound.
@@ -486,38 +498,11 @@ control gates before the next stage. Matched arms share data/splits and
 phase-reseeded construction with initialization digests. Budget every matched
 cell plus BC, actor, and executed evaluation; never start a partial factorial.
 
-## Decisions reserved for component expansion
+## Decisions
 
-1. Retain the D4 `tanh` bottleneck or adopt a different JEPA latent geometry;
-   decide whether SIGReg acts on \(z\), an unbounded projector, or both.
-2. Fix the EMA views/masks/loss and choose whether the SIGReg arm is faithful
-   symmetric LeJEPA or a one-variable collapse-prevention ablation. Specify how
-   D4 running-RMS loss normalization treats each composite JEPA objective.
-3. Fix one timing contract per transition family: where \(a_t\) enters, what
-   emits \(\hat z_{t+1}\), how real and predicted latents are conditioned on
-   `Observe`/`Commit`, and which finalized block alone advances \(m_{t+1}\).
-   Fix JEPA-D loss and rollout schedule; V-JEPA 2-AC uses no
-   learned query, but that does not settle this integration. Settle the flow
-   cache-commit candidates and the canonical-versus-normalized latent space
-   before Stage A, since both decide whether its \(2\times2\) is
-   fixed-representation. Tabulate, per path (real `Observe`, flow training, flow
-   imagination, direct training, direct imagination), the latent supplied at
-   commit, its conditioning token, and where \(h\) is read.
-4. Define generated-prefix robustness and the go/no-go comparison between
-   deterministic direct JEPA and the same-representation/backbone flow family.
-5. Specify and validate fixed one-stream-per-D4-token-slot packing, state
-   shapes, hyperparameters, normalization, temporal position handling, burn-in,
-   reset, scan/step parity, branching, and accepted-context commit. Optimizer
-   flags and fused/reference kernel parity belong to that component gate.
-6. With result-state semantics fixed, finalize BOS/missing-action encoding,
-   storage offsets, reward-MTP lead slicing, and the D4 MTP ambiguity (`L=8`
-   text versus nine terms in Eq. 9).
-7. Resolve Equation 10's same-index notation against the next-state contract;
-   set the imagination horizon from demonstrated multi-step prediction accuracy
-   rather than inheriting one, set \(\lambda\), separate environment continuation from
-   rollout-boundary bootstrap, and define stopping and empty PMPO-set behavior.
-8. Preregister the parameter/FLOP matching rule, recurrent efficiency metrics,
-   and official executed-control metric with paired BC and random controls.
+`spec/DECISIONS.md` is the single source of truth for what is settled and what is
+open, and carries the function inventory. Nothing is reserved here; if this file
+and that one disagree, that one wins and this one is stale.
 
 ## Source boundary
 
