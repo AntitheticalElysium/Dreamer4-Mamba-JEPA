@@ -70,6 +70,7 @@ class Config:
     sequence_long: int = 64
     dynamics_context: int = 48
     long_batch_every: int = 4
+    long_only_fraction: float = 0.25
     separate_image_fraction: float = 0.3
     batch: int = 8
     rms_decay: float = 0.99
@@ -80,6 +81,7 @@ class Config:
     ema_momentum: tuple[float, float] = (0.996, 1.0)
 
     seed: int = 20260731
+    device: str = "cuda" if __import__("torch").cuda.is_available() else "cpu"
 
     def __post_init__(self) -> None:
         assert self.resolution % self.patch == 0
@@ -92,6 +94,12 @@ class Config:
         assert self.dynamics_context == 3 * self.sequence
         assert self.sequence_long == 4 * self.sequence
         assert self.sequence_long > self.dynamics_context
+        assert self.depth_encoder % self.time_every == 0
+        assert self.d_model % self.n_heads == 0 and (self.d_model // self.n_heads) % 2 == 0
+        assert self.d_model_encoder % self.n_heads_encoder == 0
+        assert (self.d_model_encoder // self.n_heads_encoder) % 2 == 0
+        assert self.rungs & (self.rungs - 1) == 0 and self.k_max % self.rungs == 0
+        assert (self.mamba_expand * self.d_model) % self.mamba_headdim == 0
 
     @property
     def n_patches(self) -> int:
@@ -111,9 +119,10 @@ class Config:
 
     @property
     def receptive_field(self) -> int:
-        """`window` bounds each time layer's state; influence still travels one
-        window per time layer, so a latent depends on this many frames."""
-        return self.window * (self.depth_encoder // self.time_every)
+        """`window` bounds each time layer's state. Stacked sliding windows overlap
+        by one position, so L layers reach 1 + L(W-1) frames, not L*W -- measured as
+        exactly zero influence at 1 + L(W-1) and nonzero one frame earlier."""
+        return 1 + (self.depth_encoder // self.time_every) * (self.window - 1)
 
     @property
     def burn_in(self) -> int:

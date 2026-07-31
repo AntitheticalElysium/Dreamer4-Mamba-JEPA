@@ -75,7 +75,7 @@ conditioning are per-call arguments rather than state:
 | flow | rung *i* | current candidate \(\tilde z\) | \((\tau_i, d)\) | no |
 | flow | commit | \(\hat z\), τ_ctx-corrupted | τ_ctx bin | yes |
 | direct | `Observe` | \(Z^*(o_t)\), clean | family vector | yes |
-| direct | predict | query vector | family vector | no |
+| direct | predict | *(no block — a head over block t's features)* | — | no |
 | direct | commit | \(\hat z\) | family vector | yes |
 
 The flow arm corrupts every committed latent because training never presents an
@@ -84,10 +84,11 @@ mechanism anywhere, so it commits clean latents and carries no signal bin — wh
 is the same deletion Box 5 records: it has no channel for "this context entry is
 imperfect", and only generated-prefix training replaces it.
 
-`Advance` = N read-only candidate evaluations + exactly one commit evaluation.
-Flow N = 4, direct N = 1. \(h\) always comes from the commit pass. A candidate's
-`S_out` is always discarded, so the committed memory only ever ingests a latent
-the model will actually condition on later — never a query token.
+`Advance` = the arm's prediction step + exactly one commit evaluation. Flow
+predicts with four read-only rungs; direct predicts with a head over the last
+committed block's features, costing no block at all. \(h\) always comes from the
+commit pass, and a candidate's `S_out` is always discarded, so the committed
+memory only ever ingests a latent the model will actually condition on later.
 
 `Observe` encodes and commits a real observation. \(m_t\) is the committed prefix
 **through block \(t\) inclusive**, so \(z_t\) is carried alongside only for loss,
@@ -249,8 +250,7 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   from \(Z^*\). Direct JEPA-D removes flow noise and signal-level/step
   conditioning; causality and the task firewall are untouched. `[DESIGN]` The
   conditioning *slot* is retained in every arm — flow puts its signal/step
-  embedding there, Direct a two-row `{candidate, commit}` table — both rows
-  reachable every step, so no unreachable-row hazard. Deleting the slot would change block
+  embedding there, Direct one reachable embedding. Deleting the slot would change block
   width, every later segment's spatial RoPE index, attention cost, stream count
   and state size at once, so slot-wise comparability and shared init across arms
   would be lost for a 1-of-\(S\) saving.
@@ -299,15 +299,14 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
 - **What JEPA changes — `[JEPA-D]`:** The thesis branch directly predicts the
   frozen \(Z^*\) target. Its prediction readout must see \(a_t\) without
   exposing it to \(h_t\), so V-JEPA 2-AC's same-slot readout cannot be copied
-  unchanged. `[DESIGN]` **Two passes per frame**: an in-block query predicts
-  \(\hat z_{t+1}\), then one commit evaluation ingests \(\hat z_{t+1}\) itself.
-  A single query pass cannot be the commit — its `S_out` would encode the query,
-  so \(m_{t+1}\) would never ingest the generated latent and rollout blocks would
-  hold queries where training blocks held latents. The rejected alternative, an
-  external predictor reading committed block \(t\)'s features, costs one pass
-  instead of two but adds a module and must read *world* features: pooling the
-  agent slot would route task state into world prediction, violating §3.3's
-  firewall — the exact defect the predecessor shipped unreported. Short generated-prefix training replaces flow's explicit
+  unchanged. `[DESIGN]` **An external predictor over committed world features**,
+  \(\hat z_{t+1} = P(f_t, a_t)\), as V-JEPA 2-AC and DINO-WM do: one backbone pass
+  per transition plus a head. The rejected in-block query cannot be trained at all
+  in one pass — a position cannot hold the real latent for later blocks to attend
+  to *and* the query to be predicted from — and filling every position with a
+  query leaves the prediction a function of the action history alone. The head
+  reads spatial and register features only; pooling the agent slot would route
+  task state into world prediction against §3.3. Short generated-prefix training replaces flow's explicit
   corruption-conditioned robustness path; two steps are source-backed
   (`auto_steps: 2`). The branch is deterministic unless stochasticity is added.
   `[DESIGN]` \(Z^*\) stays the unnormalized `tanh` bottleneck for every arm, and

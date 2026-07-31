@@ -28,6 +28,13 @@ class Episode:
     latents: Tensor | None = None
     latent_digest: str | None = None
 
+    def __post_init__(self) -> None:
+        steps = len(self.actions_taken)
+        assert len(self.observations) == steps + 1
+        assert len(self.rewards) == len(self.terminated) == len(self.truncated) == steps
+        assert (self.latents is None) == (self.latent_digest is None)
+        assert self.latents is None or len(self.latents) == steps + 1
+
     def __len__(self) -> int:
         return len(self.actions_taken)
 
@@ -78,30 +85,49 @@ def episode_splits(count: int, seed: int) -> tuple[Tensor, Tensor, Tensor]:
 
 
 def sample_batch(
-    episodes: list[Episode], rng: torch.Generator, config: Config, step: int = 0
+    episodes: list[Episode], rng: torch.Generator, config: Config, step: int = 0, total: int = 0
 ) -> Batch:
     """Dreamer 4 alternates short and long batches and finetunes on long ones. The
     long batch is the only one that exceeds the dynamics context, which is what
-    stops the model assuming every context begins at an episode start.
+    stops the model assuming every context begins at an episode start. Given
+    `total`, the last fraction of training is long-only, as the paper's final
+    finetune is.
     """
-    cached = episodes[0].latents is not None
-    burn_in = 0 if cached else config.burn_in
-    long = config.long_batch_every > 0 and (step + 1) % config.long_batch_every == 0
+    cached = [episode.latents is not None for episode in episodes]
+    assert len(set(cached)) == 1, "cache is present on some episodes and missing on others"
+    burn_in = 0 if cached[0] else config.burn_in
+    finetune = total > 0 and step >= total * (1 - config.long_only_fraction)
+    long = finetune or (config.long_batch_every > 0 and (step + 1) % config.long_batch_every == 0)
     length = burn_in + (config.sequence_long if long else config.sequence)
 
+    usable = [episode for episode in episodes if len(episode) + 1 >= length]
+    if not usable:
+        raise ValueError(f"no episode reaches the required length {length}")
+
     starts, chosen = [], []
-    while len(chosen) < config.batch:
-        index = int(torch.randint(len(episodes), (1,), generator=rng))
-        episode = episodes[index]
-        if len(episode) + 1 < length:
-            continue
+    for _ in range(config.batch):
+        episode = usable[int(torch.randint(len(usable), (1,), generator=rng))]
         chosen.append(episode)
         span = len(episode) + 1 - length
         starts.append(int(torch.randint(span + 1, (1,), generator=rng)))
 
     rows = [_window(episode, start, length, config) for episode, start in zip(chosen, starts)]
     stack = {field: torch.stack([row[field] for row in rows]) for field in rows[0]}
-    return Batch(burn_in=burn_in, **stack)
+    batch = Batch(burn_in=burn_in, **stack)
+    return _isolate_rows(batch, rng, config)
+
+
+def _isolate_rows(batch: Batch, rng: torch.Generator, config: Config) -> Batch:
+    """Dreamer 4 treats 30% of a batch as separate images, so the dynamics learns to
+    produce a start frame with no temporal prefix. Marking those rows invalid before
+    their last block makes every earlier block a boundary rather than history."""
+    rows = int(config.separate_image_fraction * batch.valid.shape[0])
+    if rows == 0:
+        return batch
+    picked = torch.randperm(batch.valid.shape[0], generator=rng)[:rows]
+    valid = batch.valid.clone()
+    valid[picked, :-1] = False
+    return Batch(**(vars(batch) | {"valid": valid}))
 
 
 def _window(episode: Episode, start: int, length: int, config: Config) -> dict[str, Tensor]:
@@ -140,7 +166,9 @@ def load_episodes(path: Path, digest: str | None = None) -> list[Episode]:
     if payload["format"] != FORMAT:
         raise ValueError(f"expected {FORMAT}, found {payload['format']}")
     episodes = [Episode(**fields) for fields in payload["episodes"]]
-    stale = [e.latent_digest for e in episodes if e.latents is not None and e.latent_digest != digest]
-    if digest is not None and stale:
+    cached = [episode for episode in episodes if episode.latents is not None]
+    if cached and digest is None:
+        raise ValueError("cached latents require the expected C* digest to load")
+    if any(episode.latent_digest != digest for episode in cached):
         raise ValueError("cached latents were produced under a different C*")
     return episodes

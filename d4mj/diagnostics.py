@@ -40,9 +40,13 @@ def multistep_error(
 def latent_stats(world: World, batch: Batch, rng: torch.Generator, config: Config) -> dict[str, float]:
     """Range *and* scale. A bounded readout fixes the range; it does nothing about
     contraction toward the conditional mean, which is the failure that looks like a
-    working model in every one-step metric."""
-    real = batch.latents
-    state, _ = initial(world, real[:, :1], batch.led_to_action[:, :1], rng, config)
+    working model in every one-step metric.
+
+    The comparison is against the matched next-state target, not the whole batch:
+    sequence-level diversity in the denominator would make a sound one-step
+    prediction look contracted."""
+    real = batch.latents[:, 1:2]
+    state, _ = initial(world, batch.latents[:, :1], batch.led_to_action[:, :1], rng, config)
     state, _ = advance(world, state, batch.led_to_action[:, 1:2], rng, config)
     predicted = state.latent
     return {
@@ -72,26 +76,39 @@ def head_calibration(heads: Heads, agent: Tensor, batch: Batch, config: Config) 
 def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[str, float]:
     """Deployed against training-only parameters, and the two state sizes apart.
 
-    Mamba fixes the dynamics memory only; the encoder cache still grows with its
-    window, so a single 'state size' would overstate what the substitution buys.
+    Mamba fixes the dynamics memory only; the encoder keeps its own bounded cache,
+    so a single 'state size' would overstate what the substitution buys. Timing runs
+    on the configured device after warm-up, synchronised, since an unsynchronised
+    CUDA timer measures queueing rather than compute.
     """
-    deployed = {"encoder", "world", "heads"}
+    device, deployed = config.device, {"encoder", "world", "heads"}
     counts = {name: sum(p.numel() for p in m.parameters()) for name, m in modules.items()}
-    latent = torch.randn(1, 1, config.n_spatial, config.d_spatial)
-    action = torch.zeros(1, 1, dtype=torch.long)
-    rng = torch.Generator().manual_seed(0)
+    latent = torch.randn(1, 1, config.n_spatial, config.d_spatial, device=device)
+    action = torch.zeros(1, 1, dtype=torch.long, device=device)
+    rng = torch.Generator(device=device).manual_seed(0)
 
     with torch.no_grad():
         state, _ = initial(world, latent, action, rng, config)
-        start = time.perf_counter()
-        for _ in range(8):
+        for _ in range(4):
             state, _ = advance(world, state, action, rng, config)
+        if device == "cuda":
+            torch.cuda.reset_peak_memory_stats()
+            torch.cuda.synchronize()
+        start = time.perf_counter()
+        for _ in range(16):
+            state, _ = advance(world, state, action, rng, config)
+        if device == "cuda":
+            torch.cuda.synchronize()
         elapsed = time.perf_counter() - start
 
+    encoder = modules.get("encoder")
     return {
         "deployed_parameters": sum(v for k, v in counts.items() if k in deployed),
         "training_only_parameters": sum(v for k, v in counts.items() if k not in deployed),
         "dynamics_state_elements": sum(t.numel() for pair in state.memory for t in pair),
-        "steps_per_second": 8.0 / elapsed,
-        "passes_per_step": config.rungs + 1 if config.transition == "flow" else 2,
+        "encoder_state_elements": config.window * config.n_latents * config.d_model_encoder
+        * (config.depth_encoder // config.time_every) * 2 if encoder is not None else 0,
+        "peak_bytes": float(torch.cuda.max_memory_allocated()) if device == "cuda" else 0.0,
+        "steps_per_second": 16.0 / elapsed,
+        "backbone_passes_per_step": config.rungs + 1 if config.transition == "flow" else 1,
     }

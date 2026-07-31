@@ -31,6 +31,9 @@ def actor_loss(trajectory: Trajectory, returns: Tensor, prior_logits: Tensor, co
     The magnitude is deliberately discarded, so nothing here reveals whether the
     advantage exceeded the critic's own error -- `diagnostics` has to report that
     separately or a coin-flip split looks like learning.
+
+    The prior enters as log-probabilities. Taking `log` of a softmax underflows to
+    -inf once the prior's logits separate, which turns the whole actor loss NaN.
     """
     advantage = (returns - trajectory.value[:, :-1]).detach()
     log_prob = F.log_softmax(trajectory.logits, dim=-1).gather(
@@ -41,8 +44,8 @@ def actor_loss(trajectory: Trajectory, returns: Tensor, prior_logits: Tensor, co
     gain = config.pmpo_alpha * _masked_mean(log_prob, positive)
     loss = (1 - config.pmpo_alpha) * _masked_mean(log_prob, negative)
 
-    prior = F.softmax(prior_logits, dim=-1)
-    kl = (F.softmax(trajectory.logits, -1) * (F.log_softmax(trajectory.logits, -1) - prior.log()))
+    log_prior = F.log_softmax(prior_logits, dim=-1)
+    kl = F.softmax(trajectory.logits, -1) * (F.log_softmax(trajectory.logits, -1) - log_prior)
     return loss - gain + config.prior_beta * kl.sum(-1).mean()
 
 

@@ -11,6 +11,7 @@ PINNED = {
     "lejepa_minimal": "sources/rbalestr-lab__lejepa/MINIMAL.md",
     "vjepa2_ac_train": "vjepa2/app/vjepa_droid/train.py",
     "dreamerv3_agent": "sources/danijar__dreamerv3/dreamerv3/agent.py",
+    "mop_jepa_paper": "papers/2607.05238v1.pdf",
 }
 """Sources whose bytes a decision in spec/DECISIONS.md rests on.
 

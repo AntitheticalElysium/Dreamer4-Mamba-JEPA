@@ -54,17 +54,18 @@ def train_representation(
         parameter.requires_grad_(False)
 
     optimiser = optimizer([encoder, decoder], config)
-    rng = torch.Generator(device=device).manual_seed(config.seed)
+    sampler, rng = _generators(config, 0)
+    balance: dict[str, float] = {}
 
     for step in range(steps):
-        batch = _to(sample_batch(episodes, _cpu(rng), config, step), device)
+        batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
         z, _, masked = encoder(batch.patches, p_mask=config.mae_p_max, rng=rng)
         predicted, _ = decoder(z)
         scored = slice(batch.burn_in, None)
-        loss = reconstruction_loss(
+        losses = reconstruction_loss(
             predicted[:, scored], batch.patches[:, scored], masked[:, scored], perceptual, config
         )
-        _update(optimiser, loss, [encoder, decoder], config, step)
+        _update(optimiser, _balance(losses, balance, config), [encoder, decoder], config, step)
 
     encoder.eval()
     return encoder, decoder.eval(), cache_latents(encoder, episodes, config)
@@ -78,7 +79,7 @@ def cache_latents(encoder: Encoder, episodes: list[Episode], config: Config) -> 
     a scan and the deployed recurrence produce the same latent, which
     `scan_step_parity` asserts, so the cheap path is also the faithful one.
     """
-    device, digest = _device(config), _cache_digest(config)
+    device, digest = _device(config), _cache_digest(encoder, config)
     cached = []
     for episode in episodes:
         frames = patchify(episode.observations[None], config.patch).to(device)
@@ -94,11 +95,13 @@ def train_dynamics(episodes: list[Episode], steps: int, config: Config) -> World
     torch.manual_seed(config.seed + 1)
     world = World(config).to(device)
     optimiser = optimizer([world], config)
-    rng = torch.Generator(device=device).manual_seed(config.seed + 1)
+    balance: dict[str, float] = {}
+    sampler, rng = _generators(config, 1)
 
     for step in range(steps):
-        batch = _to(sample_batch(episodes, _cpu(rng), config, step), device)
-        _update(optimiser, transition_loss(world, batch, rng, config), [world], config, step)
+        batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
+        loss = _balance({"dynamics": transition_loss(world, batch, rng, config)}, balance, config)
+        _update(optimiser, loss, [world], config, step)
     return world
 
 
@@ -115,14 +118,14 @@ def train_agent(episodes: list[Episode], world: World, steps: int, config: Confi
     torch.manual_seed(config.seed + 2)
     heads = Heads(config).to(device)
     optimiser = optimizer([world, heads], config)
-    rng = torch.Generator(device=device).manual_seed(config.seed + 2)
+    sampler, rng = _generators(config, 2)
     balance: dict[str, float] = {}
 
     for step in range(steps):
-        batch = _to(sample_batch(episodes, _cpu(rng), config, step), device)
+        batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
         dynamics, agent = transition_loss(world, batch, rng, config, return_agent=True)
         readout = heads(agent) | {"centers": heads.centers}
-        losses = {"dynamics": dynamics, "heads": head_loss(readout, head_targets(batch, config), config)}
+        losses = {"dynamics": dynamics} | head_loss(readout, head_targets(batch, config), config)
         _update(optimiser, _balance(losses, balance, config), [world, heads], config, step)
     return heads
 
@@ -132,17 +135,23 @@ def train_actor(
 ) -> Heads:
     """Phase 3. The world is frozen and the behaviour-cloned policy is copied and
     frozen as the prior, so the actor cannot improve by reshaping the model it is
-    being scored inside."""
+    being scored inside. The reward and continuation body is frozen with it: they
+    are the learned environment the actor is scored against, and a shared trunk
+    would let policy gradients move them."""
     device = _device(config)
     for parameter in world.parameters():
         parameter.requires_grad_(False)
     prior = copy.deepcopy(heads).eval()
+    for parameter in heads.parameters():
+        parameter.requires_grad_(False)
+    for parameter in heads.actor_parameters():
+        parameter.requires_grad_(True)
     optimiser = optimizer([heads], config)
-    rng = torch.Generator(device=device).manual_seed(config.seed + 3)
+    sampler, rng = _generators(config, 3)
     balance: dict[str, float] = {}
 
     for step in range(steps):
-        batch = _to(sample_batch(episodes, _cpu(rng), config, step), device)
+        batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
         with torch.no_grad():
             committed, conditioning = commit_inputs(batch.latents, rng, config)
             features, agent, memory = world(None, batch.led_to_action, committed, conditioning)
@@ -163,7 +172,8 @@ def train_actor(
 def _balance(losses: dict[str, torch.Tensor], state: dict[str, float], config: Config) -> torch.Tensor:
     """Dreamer 4 normalises concurrent losses by running RMS estimates, which makes
     a coefficient a relative weight rather than a scale accident. `state` is a plain
-    dict so it checkpoints with everything else."""
+    dict, so `checkpoint.save` can carry it -- resuming without it restarts every
+    normaliser and silently rescales every objective."""
     total = 0.0
     for name, value in losses.items():
         squared = float(value.detach().pow(2))
@@ -172,21 +182,40 @@ def _balance(losses: dict[str, torch.Tensor], state: dict[str, float], config: C
     return total
 
 
-def _cache_digest(config: Config) -> str:
+def _cache_digest(encoder: Encoder, config: Config) -> str:
+    """Identity of the latent cache: C* *and* the encoder weights that produced it.
+
+    A config-only digest calls a cache from one encoder valid for any other with
+    matching shapes, which is the single defect the digest exists to prevent. The
+    time mixer is excluded because the tokenizer is shared and always attention, so
+    a cache must not acquire a different identity from the arm that happened to
+    build it.
+    """
     import hashlib
 
-    parts = (config.patch, config.window, config.n_latents, config.d_bottleneck, config.packing)
-    return hashlib.sha256(repr((parts, source_digests(config))).encode()).hexdigest()[:16]
+    shape = (config.patch, config.window, config.n_latents, config.d_bottleneck, config.packing)
+    weights = hashlib.sha256()
+    for name, tensor in sorted(encoder.state_dict().items()):
+        weights.update(name.encode())
+        weights.update(tensor.detach().cpu().numpy().tobytes())
+    visual = source_digests(replace(config, time_mixer="attention"))
+    return hashlib.sha256(repr((shape, visual, weights.hexdigest())).encode()).hexdigest()[:16]
 
 
 def _device(config: Config) -> str:
-    return "cuda" if config.time_mixer == "mamba" else "cpu"
+    """One device for every arm. Whether a model uses Mamba is an architecture
+    choice; routing attention to CPU and Mamba to CUDA would make throughput,
+    memory and numerics incomparable across the only axis being measured."""
+    return config.device
 
 
-def _cpu(rng: torch.Generator) -> torch.Generator:
-    """The sampler indexes on CPU while the model draws noise on device. One seed,
-    two generators, so a paired arm is reproducible on either backend."""
-    return torch.Generator().manual_seed(int(torch.randint(2**31, (1,), generator=rng)))
+def _generators(config: Config, phase: int) -> tuple[torch.Generator, torch.Generator]:
+    """A CPU generator for the sampler and a device generator for model noise, each
+    seeded independently. Drawing one seed from the other fails outright when the
+    device generator is CUDA, and couples two streams that should be separable."""
+    sampler = torch.Generator().manual_seed(config.seed + phase)
+    model = torch.Generator(device=_device(config)).manual_seed(config.seed + 1000 + phase)
+    return sampler, model
 
 
 def _to(batch: Batch, device: str) -> Batch:

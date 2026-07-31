@@ -102,10 +102,16 @@ def alignment(config: Config) -> None:
     own index. Any shift, any window crossing a boundary, and any start-of-episode
     action leaking into a mid-episode window shows up as a mismatch rather than as
     a plausible-looking number months later.
+
+    The temporal contract is checked with separate-image isolation off, then the
+    isolation itself is checked separately -- otherwise the two mechanisms mask
+    each other and neither is really tested.
     """
+    from dataclasses import replace
+
     episodes = [_probe(index, config) for index in range(4)]
     rng = torch.Generator().manual_seed(config.seed)
-    batch = sample_batch(episodes, rng, config)
+    batch = sample_batch(episodes, rng, replace(config, separate_image_fraction=0.0))
 
     for row in range(batch.led_to_action.shape[0]):
         start = _recover_start(batch, row, config)
@@ -124,36 +130,41 @@ def alignment(config: Config) -> None:
         config.n_patches,
         config.patch_dim,
     )
+    isolated = sample_batch(episodes, rng, config)
+    rows = int(config.separate_image_fraction * config.batch)
+    starts_only = (~isolated.valid[:, :-1]).all(dim=1).sum()
+    assert starts_only == rows, f"expected {rows} separate-image rows, found {starts_only}"
     _observation_dependence(config)
 
 
 def _observation_dependence(config: Config) -> None:
-    """The transition loss must depend on the observations through the *prediction*,
-    not only through the target. A predictor fed placeholders instead of real
-    latents still produces a falling loss curve and learns nothing about the world."""
-    from .data import Batch
-    from .transition import World, transition_loss
+    """The *prediction* must move when the context moves, with the action and the
+    conditioning held fixed.
+
+    Comparing losses across two batches is not this test: changing the latents also
+    changes the target, so a model-free loss returning `latents.pow(2).mean()`
+    passes it. Only the prediction path is evidence that observations reach the
+    predictor at all.
+    """
+    from .transition import World, commit_inputs
 
     device = _device(config)
     world = World(config).to(device).eval()
+    action = torch.zeros(2, 3, dtype=torch.long, device=device)
+    shape = (2, 3, config.n_spatial, config.d_spatial)
 
-    def batch(seed: int) -> Batch:
-        generator = torch.Generator(device=device).manual_seed(seed)
-        shape = (2, 4, config.n_spatial, config.d_spatial)
-        return Batch(
-            led_to_action=torch.zeros(2, 4, dtype=torch.long, device=device),
-            reward=torch.zeros(2, 4, device=device),
-            terminated=torch.zeros(2, 4, dtype=torch.bool, device=device),
-            truncated=torch.zeros(2, 4, dtype=torch.bool, device=device),
-            valid=torch.ones(2, 4, dtype=torch.bool, device=device),
-            burn_in=0,
-            latents=torch.randn(shape, generator=generator, device=device).tanh(),
-        )
-
-    with torch.no_grad():
-        first = transition_loss(world, batch(1), torch.Generator(device=device).manual_seed(9), config)
-        second = transition_loss(world, batch(2), torch.Generator(device=device).manual_seed(9), config)
-    assert not torch.equal(first, second), "transition loss ignores the observations"
+    predictions = []
+    for seed in (1, 2):
+        context = torch.randn(
+            shape, generator=torch.Generator(device=device).manual_seed(seed), device=device
+        ).tanh()
+        with torch.no_grad():
+            committed, conditioning = commit_inputs(
+                context, torch.Generator(device=device).manual_seed(4), config
+            )
+            features, _, _ = world(None, action, committed, conditioning)
+            predictions.append(world.predict(features, action))
+    assert not torch.equal(*predictions), "the prediction ignores its context"
 
 
 def reset_parity(config: Config) -> None:

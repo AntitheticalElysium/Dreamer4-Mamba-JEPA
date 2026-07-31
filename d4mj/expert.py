@@ -18,6 +18,10 @@ def collect(policy: Callable[[torch.Tensor, int], int], count: int, config: Conf
     The archived replay stays available for smoke tests, but nothing reported comes
     from it: its expert has no byte-level provenance, and its terminal windows come
     from a 58-episode support that half of every batch would resample.
+
+    Hitting the collector's own cap marks the last transition truncated. Storing it
+    as neither terminated nor truncated would tell the continuation head that a
+    trajectory continues past data that does not exist.
     """
     episodes = []
     for index in range(count):
@@ -36,6 +40,8 @@ def collect(policy: Callable[[torch.Tensor, int], int], count: int, config: Conf
             timeouts.append(truncated)
             if terminated or truncated:
                 break
+            if offset + 1 == limit:
+                timeouts[-1] = True
 
         episodes.append(
             Episode(

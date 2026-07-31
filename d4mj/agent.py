@@ -12,8 +12,13 @@ class Heads(nn.Module):
     tokens through one output layer per multi-token distance.
 
     Every head uses the same pooling. Two heads over the same tokens with
-    different poolers is a difference nothing declares and nothing measures. The
-    value head exists from construction but enters no optimizer before Phase 3.
+    different poolers is a difference nothing declares and nothing measures.
+
+    Policy and value share one body; reward and continuation share another. A
+    single trunk would let Phase 3 move the reward model it is being scored
+    against -- measured: one policy/value step changed both reward and
+    continuation logits. Dreamer 4 freezes the world and reward model there and
+    describes the heads as small MLPs, not a mandatory common trunk.
     """
 
     def __init__(self, config: Config):
@@ -21,21 +26,27 @@ class Heads(nn.Module):
         self.config = config
         self.register_buffer("centers", _centers(config), persistent=True)
         width, leads = config.d_model, config.mtp_leads
-        self.body = SwiGLU(width, 2.0)
+        self.actor_body = SwiGLU(width, 2.0)
+        self.model_body = SwiGLU(width, 2.0)
         self.policy = nn.Linear(width, leads * config.n_actions)
         self.reward = nn.Linear(width, leads * config.bins)
         self.continuation = nn.Linear(width, leads)
         self.value = nn.Linear(width, config.bins)
 
+    def actor_parameters(self):
+        """What Phase 3 may move: policy, value and their shared body only."""
+        return [*self.actor_body.parameters(), *self.policy.parameters(), *self.value.parameters()]
+
     def forward(self, agent: Tensor) -> dict[str, Tensor]:
         b, t = agent.shape[:2]
-        h = self.body(agent.mean(dim=2))
+        pooled = agent.mean(dim=2)
+        actor, model = self.actor_body(pooled), self.model_body(pooled)
         leads, config = self.config.mtp_leads, self.config
         return {
-            "policy": self.policy(h).view(b, t, leads, config.n_actions),
-            "reward": self.reward(h).view(b, t, leads, config.bins),
-            "continuation": self.continuation(h).view(b, t, leads),
-            "value": self.value(h),
+            "policy": self.policy(actor).view(b, t, leads, config.n_actions),
+            "reward": self.reward(model).view(b, t, leads, config.bins),
+            "continuation": self.continuation(model).view(b, t, leads),
+            "value": self.value(actor),
         }
 
 
@@ -76,7 +87,12 @@ def head_targets(batch: Batch, config: Config) -> dict[str, Tensor]:
     }
 
 
-def head_loss(predictions: dict[str, Tensor], targets: dict[str, Tensor], config: Config) -> Tensor:
+def head_loss(
+    predictions: dict[str, Tensor], targets: dict[str, Tensor], config: Config
+) -> dict[str, Tensor]:
+    """Returned per head, not summed: Dreamer 4 normalises every concurrent loss by
+    its own running RMS, and merging them first lets whichever head has the largest
+    natural scale set the others' effective weight."""
     centers = predictions["centers"]
     policy = F.cross_entropy(
         predictions["policy"].flatten(0, 2), targets["action"].flatten().long(), reduction="none"
@@ -85,8 +101,12 @@ def head_loss(predictions: dict[str, Tensor], targets: dict[str, Tensor], config
     continuation = F.binary_cross_entropy_with_logits(
         predictions["continuation"], targets["continuation"], reduction="none"
     )
-    masked = policy * targets["action_valid"] + (reward + continuation) * targets["valid"]
-    return masked.sum() / targets["valid"].sum().clamp(min=1.0)
+    valid, actions = targets["valid"], targets["action_valid"]
+    return {
+        "policy": (policy * actions).sum() / actions.sum().clamp(min=1.0),
+        "reward": (reward * valid).sum() / valid.sum().clamp(min=1.0),
+        "continuation": (continuation * valid).sum() / valid.sum().clamp(min=1.0),
+    }
 
 
 def _distribution_loss(logits: Tensor, values: Tensor, centers: Tensor) -> Tensor:

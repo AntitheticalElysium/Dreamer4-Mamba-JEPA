@@ -49,20 +49,24 @@ def imagine(
     The action chosen at h_t is committed into the next block, so the reward it
     causes is read at lead 0 of the *next* readout. Reading lead 0 of the current
     one returns the previous action's reward and shifts every return by a step.
+
+    Policy sampling goes through the supplied generator. `Categorical.sample()`
+    reads the global stream, which makes a rollout irreproducible from its own seed
+    and breaks the paired comparison the whole lattice rests on.
     """
     readout = heads(agent)
-    actions, logits, rewards, continuations = [], [], [], []
+    actions, step_logits, rewards, continuations = [], [], [], []
     values = [_expect(readout["value"][:, -1], heads.centers)]
     readouts = [agent[:, -1]]
 
     for _ in range(config.horizon):
-        distribution = torch.distributions.Categorical(logits=readout["policy"][:, -1, 0])
-        action = distribution.sample()
+        logits = readout["policy"][:, -1, 0]
+        action = torch.multinomial(logits.softmax(-1), 1, generator=rng).squeeze(-1)
         state, agent = advance(world, state, action[:, None], rng, config)
         readout = heads(agent)
 
         actions.append(action)
-        logits.append(distribution.logits)
+        step_logits.append(logits)
         rewards.append(_expect(readout["reward"][:, -1, 0], heads.centers))
         continuations.append(readout["continuation"][:, -1, 0].sigmoid())
         values.append(_expect(readout["value"][:, -1], heads.centers))
@@ -70,7 +74,7 @@ def imagine(
 
     return Trajectory(
         action=torch.stack(actions, dim=1),
-        logits=torch.stack(logits, dim=1),
+        logits=torch.stack(step_logits, dim=1),
         reward=torch.stack(rewards, dim=1),
         continuation=torch.stack(continuations, dim=1),
         value=torch.stack(values, dim=1),

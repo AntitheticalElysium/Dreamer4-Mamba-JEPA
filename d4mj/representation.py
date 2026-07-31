@@ -122,8 +122,12 @@ def pack(z: Tensor, config: Config) -> Tensor:
 
 def reconstruction_loss(
     predicted: Tensor, target: Tensor, masked: Tensor, perceptual, config: Config
-) -> Tensor:
+) -> dict[str, Tensor]:
     """Dreamer 4's equation 5: masked-patch MSE plus 0.2 LPIPS.
+
+    Returned separately, because the paper normalises every loss term by its own
+    running RMS and says so specifically to simplify weighing these two. Summing
+    them first makes 0.2 a coefficient on raw LPIPS rather than a relative weight.
 
     LPIPS is scored on the whole frame with the unmasked patches filled in from
     the target, so it measures the reconstruction rather than the mask pattern.
@@ -135,7 +139,8 @@ def reconstruction_loss(
     filled = torch.where(masked[..., None], predicted, target)
     frames = unpatchify(filled, config) * 2 - 1
     truth = unpatchify(target, config) * 2 - 1
-    return mse + config.lpips_weight * perceptual(frames.flatten(0, 1), truth.flatten(0, 1)).mean()
+    lpips = perceptual(frames.flatten(0, 1), truth.flatten(0, 1)).mean()
+    return {"mse": mse, "lpips": config.lpips_weight * lpips}
 
 
 def representation_loss(

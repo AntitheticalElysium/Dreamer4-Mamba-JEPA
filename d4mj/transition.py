@@ -216,8 +216,13 @@ def commit_inputs(latent: Tensor, rng: torch.Generator, config: Config):
 
 
 def _direct_loss(world: World, batch, rng: torch.Generator, config: Config) -> Tensor:
-    """One pass over the real committed prefix, then predict each next latent from
-    that block's features and the action taken there.
+    """Teacher forcing plus a generated-prefix rollout, as V-JEPA 2-AC does.
+
+    The rollout term commits the *first prediction* through the same path
+    `advance` uses and predicts again from it, so the loss exercises the runtime
+    mechanism rather than only the one-step map. Direct has no corruption channel
+    to make it tolerate an imperfect prefix, so this is its only such training.
+    Gradient flows through one recurrent step, matching `auto_steps: 2`.
 
     The action taken at block t is `led_to_action[t + 1]` under the led-to
     convention -- the same shift the policy target uses.
@@ -226,7 +231,15 @@ def _direct_loss(world: World, batch, rng: torch.Generator, config: Config) -> T
     features, agent, _ = world(None, batch.led_to_action, committed, conditioning)
     taken = batch.led_to_action[:, 1:]
     predicted = world.predict(features[:, :-1], taken)
-    return (predicted - batch.latents[:, 1:]).pow(2).mean(), agent
+    teacher = (predicted - batch.latents[:, 1:]).pow(2).mean()
+
+    if batch.latents.shape[1] < 3:
+        return teacher, agent
+
+    generated, label = commit_inputs(predicted[:, :-1], rng, config)
+    rolled, _, _ = world(None, taken[:, :-1], generated, label)
+    second = world.predict(rolled, batch.led_to_action[:, 2:])
+    return teacher + (second - batch.latents[:, 2:]).pow(2).mean(), agent
 
 
 def _shortcut_loss(world: World, batch, rng: torch.Generator, config: Config) -> Tensor:
@@ -238,7 +251,8 @@ def _shortcut_loss(world: World, batch, rng: torch.Generator, config: Config) ->
     target = batch.latents
     conditioning = flow_conditioning(rng, target.shape[:2], config, target.device)
     tau = signal_level(conditioning, config)[..., None, None]
-    corrupted = tau * target + (1.0 - tau) * torch.randn_like(target)
+    noise = torch.randn(target.shape, generator=rng, device=target.device, dtype=target.dtype)
+    corrupted = tau * target + (1.0 - tau) * noise
     features, agent, _ = world(None, batch.led_to_action, corrupted, conditioning)
     predicted = world.predict(features)
 

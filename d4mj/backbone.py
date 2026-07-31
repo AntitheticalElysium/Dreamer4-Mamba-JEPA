@@ -191,6 +191,8 @@ class Backbone(nn.Module):
         different decode semantics on the one axis being compared.
         """
         assert memory is None or x.shape[1] == 1, "decode advances one block at a time"
+        expected = sum(block.mixes_time for block in self.blocks)
+        assert memory is None or len(memory) == expected, "memory does not match the time layers"
         carried = iter(memory if memory is not None else ())
         updated: list[tuple[Tensor, Tensor]] = []
         for block in self.blocks:
