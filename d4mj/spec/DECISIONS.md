@@ -3,8 +3,11 @@
 Companion to `ARCHITECTURE.md`. That file says what the system is; this one says
 what is settled, what is open, and exactly which functions exist.
 
-The contract: **no new files, no new functions.** Anything not listed below is a
-design change, not an implementation detail. If the plan is wrong, fix the plan.
+The contract: **no new files, and no function that is not listed here.** Private
+stateless tensor helpers are permitted and are listed like everything else — the
+defence is planning every signature in advance, not forcing arithmetic to be
+duplicated inside oversized functions. Anything absent below is a design change,
+not an implementation detail. If the plan is wrong, fix the plan.
 
 ## Settled
 
@@ -38,6 +41,10 @@ design change, not an implementation detail. If the plan is wrong, fix the plan.
 | S27 | Bounded encoder context `W`, part of `C*` — `z_t = Z*(x_{t−W+1..t})` everywhere | Phase 1A windows carry a `W−1` burn-in that is encoded but not scored; once frozen, each episode is scanned once and cached **under the same `W` limit** — an unbounded full-episode scan would produce a different `Z*` from deployment. `W` is not a capacity number: it defines the representation, so changing it changes every `z_t` and it must be frozen before the final encoder trains |
 | S28 | Match total **deployed** parameters within a declared tolerance while holding `d_model`, depth, token layout and shared interfaces fixed | Primary knob is Mamba's `d_state`, the only one that moves M-arm parameters without touching the shared backbone. Parameter counts move discretely, so `d_state` alone may not reach tolerance at a sane state size — any additional knob must be declared before training. Report the unmatched residual, FLOPs, memory, recurrent-state size and measured throughput regardless. The predecessor called arms matched in a comment while the temporal module differed by 29.6% |
 | S29 | Archived replay is for debugging and smoke tests only; regenerated replay backs every reported number | Its expert has no byte-level provenance and its terminal-window support is 58 windows. Keeping both uses named stops the old set from quietly becoming the final dataset, and keeps `expert.py` exercised |
+| S30 | The frozen latent cache lives on `Episode` as `latents` + `latent_digest`; `train_representation` writes it at the Phase-1A boundary and `load_episodes` verifies it | The digest covers exactly `C*`: encoder checkpoint, exported copy, `W`, bottleneck and packing, `p_mae = 0`, patch size. Without it a cache built under a different encoder or `W` is silently reusable, which is the one place a wrong number contaminates every downstream result at once |
+| S31 | `Batch` names its regions explicitly: `burn_in` (int prefix), `valid` (per-position target validity). The MAE mask is **not** a loader output — the encoder generates it | "masks" was ambiguous across five different things. Burn-in is always a prefix, so an integer beats a mask. Burn-in frames update encoder memory and score no loss; scored frames follow immediately under that memory. `patches` and `latents` are phase-determined: Phase 1A carries pixels, Phase 1B onward carries cached latents |
+| S32 | `Encoder.forward(patches, memory, p_mask, rng) -> (z, memory, patch_mask)` | One signature serves all four uses: Phase-1A window training, frozen episode scanning, recurrent execution, and diagnostics. The caller supplies and receives the bounded-`W` memory, so batched scanning and frame-by-frame execution are identical by construction; `p_mask = 0` on every `Z*` path per S23; burn-in is the caller slicing `z[:, burn_in:]`, which keeps it out of the encoder |
+| S33 | `scan_step_parity` also covers the encoder; `alignment` also asserts the `W` horizon and `p_mae = 0` | Batched `W`-context scan ≡ frame-by-frame recurrence ≡ the cached `Z*`; frames older than `W` cannot change `z_t`; burn-in + scored window ≡ episode caching; reset clears encoder memory. Folded into existing gates — no new function |
 | S15 | Windows never cross an episode boundary; `evaluate` takes no reset mask | Keeps a reset a fresh construction. Asserted by `gates.alignment`; relaxing it changes the signature |
 
 ## Open, with the functions each one constrains
@@ -53,9 +60,9 @@ config value, and each must be closed before the phase named.
 | **Go/no-go threshold *numbers*** — formulas exist now; scales come from the anchor or a pilot; numbers freeze **before any experimental cell is inspected**. Choosing them after all four cells train is not preregistration, whatever the intent | After the anchor, before inspecting Direct/Mamba cells | `Config` |
 | **Capacity**: `n_latents`, `d_bottleneck`, `n_spatial`, `k`, `depth`, `d_model`, `W`, `k_max`, sequence lengths — needs a 6 GB probe over the real worst cases (tokenizer training with decoder and gradients, long-sequence flow-Transformer training, Mamba training and parity, optimizer state and EMA copies), not forward inference. Invariant `n_latents = n_spatial × k` is a consequence of D4's packing, not a law | Phase 1A | `Config` fields only |
 | **Imagination horizon** — set from measured multi-step accuracy, not inherited | Phase 3 | `Config` field, gated by `diagnostics.multistep_error` |
-| **Parameter/FLOP matching rule** — must precede construction, or the arms are trained first and "matched" afterward | **Before building the Stage-A models** | `diagnostics.cost`, `Config` |
+| **Matching tolerance, final Mamba dimensions, and any declared fallback knob** — the *rule* is settled (S28); these are its numbers | **Before building the Stage-A models** | `diagnostics.cost`, `Config` |
 | **Executed-control metric definition** — primary score, seed set, episode count, paired comparison, sampled vs deterministic policy, control of the flow arm's deployment-corruption draw, BC and random controls, aggregation and intervals. Defined **before** Stage A; *run* at its exit. Defining it afterwards leaves room to pick whichever metric flatters the preferred arm | **Before Stage A** | `execution.run_episode`, `Result` |
-| **Replay reuse vs regeneration** — the archived replay has no expert provenance and 58 distinct terminal windows. It can support debugging; it is weak as final evidence | Phase 1A | Whether `expert.train_expert` / `expert.collect` are populated, or the module is dead |
+| **Expert regeneration settings, acceptance threshold and provenance record** — the *policy* is settled (S29); these are its parameters | Phase 1A | `expert.train_expert`, `expert.collect` |
 
 ## Function plan
 
