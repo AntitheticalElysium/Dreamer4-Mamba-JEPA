@@ -47,6 +47,76 @@ not an implementation detail. If the plan is wrong, fix the plan.
 | S33 | `scan_step_parity` also covers the encoder; `alignment` also asserts the `W` horizon and `p_mae = 0` | Batched `W`-context scan ≡ frame-by-frame recurrence ≡ the cached `Z*`; frames older than `W` cannot change `z_t`; burn-in + scored window ≡ episode caching; reset clears encoder memory. Folded into existing gates — no new function |
 | S15 | Windows never cross an episode boundary; `evaluate` takes no reset mask | Keeps a reset a fresh construction. Asserted by `gates.alignment`; relaxing it changes the signature |
 
+## Design decisions taken on evidence
+
+Three questions that shape the experiment rather than the code. Each was settled
+against `third_party/`, not by preference.
+
+### S34 — Direct predicts from an external head over committed world features
+
+**Rejected:** an in-block query trained in one teacher-forced pass. Position `t`
+cannot simultaneously hold the real latent, so later positions can attend to it,
+*and* hold the query, so it can be predicted from. Filling every position with a
+query resolves that by deleting the task: measured, the prediction is bitwise
+identical for two different latent sequences, so the model is asked to predict
+`z_t` from the action history alone.
+
+**Also rejected:** a two-pass teacher-forced loss (commit pass to build memory,
+query pass against it). Correct, but doubles Direct's training cost for a
+mechanism no source uses.
+
+**Taken:** `ẑ_{t+1} = P(world features of committed block t, a_t)`, one pass, the
+predictor reading spatial and register outputs. This is what V-JEPA 2-AC does --
+its predictor is a separate module over the interleaved `(a_k, s_k, z_k)`
+sequence -- and what DINO-WM does. Box 4 rejected it over the §3.3 firewall, but
+that objection only bites if the predictor pools the *agent* slot; spatial and
+register outputs are agent-free by induction over depth, which `gates.firewall`
+already asserts.
+
+Dreamer 4 can share its backbone because a corrupted latent at `τ > 0` still
+carries signal, so one block is both context and query. A query token carries
+none, so the same trick does not transfer.
+
+### S35 — Deterministic Direct is `K = 1`; the stochastic extension is best-of-K
+
+Craftax is stochastic enough for this to matter. Measured on the installed
+environment, 64 draws per `(s, a)` over 72 pairs: **83% branch**, mean 4.2
+distinct successors, and top-mode mass as low as 0.19. The distribution is
+heavy-tailed -- most states are near-deterministic, a minority are strongly
+multimodal, and those are the mob-spawn and combat states that decide episodes.
+
+MoP-JEPA (`2607.05238`, Prop. 1) proves the consequence: under squared loss the
+optimal single predictor is `E[z'|c] = Σ w_m μ_m`, error lower-bounded by the
+between-mode variance, and for separated modes the optimum lies far from *every*
+mode. Under cosine loss with normalised targets the same holds. Prop. 2 shows a
+gated weighted-sum mixture does not escape it -- it still emits one vector.
+
+The fix is Prop. 3: best-of-K regression, `L = E[min_k ‖g_k(c) − z'‖²]`, which is
+the per-context K-means distortion, so every optimum assigns a head per mode.
+Plus a router trained on the winning index and a load-balance term.
+
+**Why this settles the roadmap rather than the code:** at `K = 1` the MoP loss
+*reduces exactly to the dense loss*. So deterministic Direct is not a separate
+design -- it is the `K = 1` case of the extension. Stage A runs `K = 1`; if it
+collapses, `K > 1` is a strict generalisation of the same head, not a new arm.
+
+**Consequence for the plan:** `diagnostics.multistep_error` is a mean error, and
+the mean error is *minimised* by the collapsed predictor, so it cannot detect the
+failure it exists to detect. It needs MoP-JEPA's measurement alongside: distance
+from the prediction to the nearest true successor mode, against distance to their
+mean, at high-branching contexts.
+
+### S36 — Dynamics context `C = 3·T_short`, with `T_long = 4·T_short`
+
+Neither cache is currently bounded, and `Config` had no dynamics-context field at
+all. Appendix A gives all three of D4's configurations: Minecraft `C=192,
+T1=64, T2=256`; SOAR and Epic Kitchens `C=96, T1=32, T2=128`. Every one satisfies
+`C = 3·T_short` and `T_long = 4·T_short` -- an invariant across every
+configuration the paper reports, not a single data point.
+
+Taking `T_short = 16` gives `C = 48`, `T_long = 64`. This also satisfies §3.4's
+requirement that the long batch exceed the context.
+
 ## Open, with the functions each one constrains
 
 Nothing here blocks writing the listed signatures. Each blocks a *body* or a
@@ -238,3 +308,28 @@ plan would otherwise have shipped.
 
 `representation_loss` and `expert.train_expert` raise `NotImplementedError`
 naming their open decision rather than guessing a default.
+
+## Verified defects, in fix order
+
+Two independent audits; every entry below reproduced by execution before being
+accepted. Nothing here reopens the architecture -- these are the implementation
+failing to be what this document already says.
+
+**Before any training run:**
+
+| # | Defect | Evidence |
+|---|---|---|
+| 1 | Direct's transition loss is observation-free | Prediction bitwise identical for two different latent sequences. Fixed by S34 |
+| 2 | Flow is diffusion forcing, not shortcut forcing | Eq. (7)'s bootstrap branch and its two half-step evaluations are absent, so the step token is inert and the arm is the paper's own ablation: Table 2 puts it at FVD 875 against 329 |
+| 3 | `tanh` at inference but not in training | `_direct_candidate` squashes, `transition_loss` does not. A unit that learned 0.900 emits 0.716, decaying to 0.431 over six recursive steps toward a fixed point of 0 |
+| 4 | Encoder window not enforced | `‖z(t=19 \| 20 frames) − z(t=19 \| 4)‖ = 1.7e-2`. The declared bound is documentation only |
+| 5 | Phase 1A never writes the latent cache | `train_dynamics` fails on `batch.latents is None` |
+| 6 | Multi-block decode against a cache is non-causal | New blocks attend bidirectionally; batched-vs-sequential differs by 9.2e-2. Attention corrupts silently, Mamba crashes -- divergent failure across the compared axis |
+| 7 | Committed content and its label disagree | Mixes at 0.9 signal, labels bin 7/8 = 0.875 |
+| 8 | No gate reaches `transition_loss` or `advance` | All six gates pass on the arm defeated by defect 1 |
+
+**Immediately after:** LPIPS and `p ~ U(0, 0.9)` per-image masking; running-RMS
+loss balancing; the short/long sequence curriculum and 30% separate-image
+fraction; one device/dtype/RNG contract with seeded construction for paired
+arms; learned rather than zero agent tokens; diagnostics that commit their
+starting observation before predicting.
