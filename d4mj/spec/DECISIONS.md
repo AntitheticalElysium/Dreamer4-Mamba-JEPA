@@ -18,7 +18,7 @@ design change, not an implementation detail. If the plan is wrong, fix the plan.
 | S6 | λ-returns in next-index form, `G_t = r_{t+1} + γc_{t+1}[(1−λ)v_{t+1} + λG_{t+1}]` | Eq. (10) prints same-index reward, continuation and value, which is not self-consistent with §3.3's shared-index annotation. `dreamerv3/agent.py:487` indexes `rew[:, 1:]` and `boot[:, 1:]`, expanding to exactly this form |
 | S7 | λ = 0.95 | `[DESIGN]`. D4 is silent; DreamerV3 `lam: 0.95` is implementation precedent only |
 | S8 | Temporal state is a per-layer, per-slot pair; the conditioning slot is retained in every arm | `ARCHITECTURE.md` Boxes 3 and 4 |
-| S9 | One generic `evaluate`; the A/B commit choice is a **`Config` field**, identical across the Stage-A cells | One signature covers every path; but if cells could differ in commit semantics the factorial is invalid |
+| S9 | One generic `evaluate` covers every path | The occupying latent and its conditioning are per-call arguments, not state. The commit contract is not a per-call choice: S19 fixes it as *N candidates + 1 commit* for both arms |
 | S10 | The signal table has exactly `k_max` rows; every context index is clamped to `k_max−1` | Eq. (4)'s grid tops out at `1−d`, so τ = 1 is never trained. MMBench2 sizes `signal_embed` at `k_max+1` and labels uncorrupted context with index `k_max` — a row its own sampler cannot reach; `plan_cem.py:189,545` pass `tau_ctx=0.0`, so its planner runs entirely on that untrained row, and `round(0.9·k_max) = k_max` also fires at `k_max = 4`. Same pathology as the predecessor's unreachable shortcut rows, in the upstream source |
 | S16 | τ_ctx = **0.1 noise / 0.9 signal**, snapped to the nearest trained bin | `train_dynamics.py:576` states it verbatim: "tau_ctx is the noise fraction: 0 = fully clean, 1 = fully noisy". The paper's "signal level τ_ctx = 0.1" is a slip — 0.1 *signal* contradicts its own word "slightly". No longer open |
 | S17 | Direct arm uses **two passes per frame**: in-block query predicts `ẑ`, then one commit evaluation ingests `ẑ` | A single query pass cannot commit: its `S_out` encodes the query, so `m_{t+1}` would never ingest the generated latent and rollout blocks would hold queries where training blocks held latents. Unifies with flow as *N candidates + 1 commit* (flow N=4, direct N=1), so the arms differ only in N and conditioning. Rejected: an external predictor (1 pass) adds a module and, if it pools the agent slot, routes task state into world prediction against §3.3 |
@@ -28,6 +28,7 @@ design change, not an implementation detail. If the plan is wrong, fix the plan.
 | S13 | `depth % time_every == 0` and at least two time layers | At `depth = 4` the entire Mamba blast radius would be one module and parameter matching would be dominated by it |
 | S14 | Anchor drops GQA and attention-logit soft capping, keeps RoPE and QKNorm | Table 2 shows GQA at FVD 70 → 71, adopted for KV bandwidth at 2B parameters — no benefit at our scale. RoPE and QKNorm have executable precedent in pinned MMBench2 attention; GQA and capping have none anywhere. Anchor is described as paper-constrained *modulo declared omissions* |
 | S19 | Flow is 4 candidate rungs + 1 commit = **5 passes/frame**; direct is 1 + 1 = **2** | S11 puts corruption at commit, and the final rung's input sits at τ = 1−1/K (0.75 at K=4), not at τ_ctx (0.9). They coincide only if τ_ctx is *defined* as 1−1/K, which S16 rules out — so the commit is a real extra pass. This retires the A/B fork: B is unavailable once corruption is commit-time. Both arms count honestly, making the direct arm's inference advantage a measured 2.5× |
+| S20 | Causal temporal tokenizer, as D4 §3.1 | The primary model follows Dreamer 4. Both arms share one encoder, so the T-vs-M comparison stays fair even though the encoder carries history; a frame-only encoder is a later ablation, not a fork |
 | S15 | Windows never cross an episode boundary; `evaluate` takes no reset mask | Keeps a reset a fresh construction. Asserted by `gates.alignment`; relaxing it changes the signature |
 
 ## Open, with the functions each one constrains
@@ -39,7 +40,6 @@ config value, and each must be closed before the phase named.
 |---|---|---|
 | **SIGReg on a projector vs on `z`** — projector keeps `Z*` and gives clean attribution; on `z` forks `Z*` from the anchor and tests the stronger claim | Stage B | `representation.Projector`, `representation.representation_loss` |
 | **EMA views / masks / loss; faithful LeJEPA vs anti-collapse ablation** — is the EMA arm learning spatial invariance, temporal predictability, or both? | Stage B | `data.views`, `representation.representation_loss`, `representation.update_target` |
-| **Encoder temporal causality** — §3.1 makes the tokenizer causal, so `z_t = Z*(o_≤t)` and every arm needs burn-in or a declared bounded context. A frame-wise encoder would delete `e_t`, make `Z*` trivially cacheable and move all temporal modelling into the dynamics where the Mamba intervention lives; it is also the single largest D4 deviation in the design and removes the tokenizer's temporal compression | **Before any encoder code** | `representation.Encoder`, `state.RealState`, `data.sample_batch`, whether Phase 1B caches `Z*` targets |
 | **Generated-prefix robustness and go/no-go thresholds** | Stage A exit | `diagnostics.multistep_error`; thresholds in `Config`, frozen before any arm is seen |
 | **Capacity**: `n_latents`, `d_bottleneck`, `n_spatial`, `k`, `depth`, `d_model` — needs a 6 GB probe. Invariant `n_latents = n_spatial × k` is a consequence of D4's packing, not a law | Phase 1A | `Config` fields only |
 | **Imagination horizon** — set from measured multi-step accuracy, not inherited | Phase 3 | `Config` field, gated by `diagnostics.multistep_error` |
@@ -108,15 +108,16 @@ in place. This module is the entire Mamba blast radius.
 ### Transition — Box 4
 
 **`transition.py`** — `World` (Type), `flow_conditioning(rng, shape, config)`,
-`observe(world, encoder, state, led_to_action, frames, config)`,
+`observe(world, encoder, state, led_to_action, frames, rng, config)`,
 `advance(world, state, led_to_action, rng, config)`,
 `transition_loss(world, batch, rng, config)`.
 
 `World.forward(state, led_to_action, latent, conditioning) -> (latent_out,
 agent_out, state_out)` is the generic `evaluate`. `advance` is *N* read-only
 candidate evaluations plus exactly one commit evaluation — flow N=4, direct N=1
-per S17 — and always reads `h` from the commit pass. `observe` is the one place
-a real frame becomes `(e_t, z_t, m_t, h_t)`; it exists because training,
+per S17 — and always reads `h` from the commit pass. `observe` is the one place a real frame becomes `(e_t, z_t, m_t, h_t)`. It takes
+`rng` because the flow arm corrupts the committed latent at τ_ctx while the direct
+arm commits it clean; it exists because training,
 imagination context construction and execution would otherwise each inline
 encode-then-commit, which is the accretion this contract forbids.
 `transition_loss` covers shortcut-flow and direct feature prediction, including
@@ -137,10 +138,13 @@ realised.
 **`imagination.py`** — `Trajectory` (Type),
 `imagine(world, heads, state, rng, config)`.
 
-`Trajectory` carries `terminated` and `boundary` as **separate** masks, per
-DreamerV3 `agent.py:485-487`: a terminal zeroes the discount so no bootstrap
-crosses it, while a rollout boundary forces λ→0 so the return still bootstraps
-on value. One continuation array cannot express both.
+`Trajectory` carries **soft** `continuation` — the head's probability, not a
+boolean — because imagination has no ground-truth termination. DreamerV3 passes
+`self.con(inp, 2).prob(1)` and sets `term = 1 - con`, so the probability enters
+the discount directly (`agent.py:206,404`). It carries no boundary mask: that
+repo sets `last = jnp.zeros_like(con)` for imagination, and the horizon end is
+the recursion's initial condition `R_T = v_T`, not a mask. Hard `terminated` and
+`truncated` stay in `Batch`, where they are the continuation head's targets.
 
 **`actor_critic.py`** — `lambda_returns(trajectory, config)`,
 `actor_loss(logits, actions, returns, values, prior_logits, config)`,
@@ -176,7 +180,7 @@ future-observation leakage (with MAE masking disabled or seeded), reward shift,
 and window-start action identity.
 
 **`diagnostics.py`** — `multistep_error(world, batch, config)`,
-`latent_stats(world, batch, config)`, `head_calibration(heads, batch, config)`,
+`latent_stats(world, batch, config)`, `head_calibration(world, heads, batch, config)`,
 `cost(modules, config)`.
 
 `latent_stats` reports range *and* scale, so S2's residual — contraction toward

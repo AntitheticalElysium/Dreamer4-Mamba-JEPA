@@ -69,13 +69,20 @@ Advance = one or more evaluate calls; the caller keeps exactly one S_out
 One generic call covers every path, because the occupying latent and its
 conditioning are per-call arguments rather than state:
 
-| path | `latent` | `conditioning` | writes state |
-|---|---|---|---|
-| real `Observe` | \(Z^*(o_t)\), τ_ctx-corrupted | τ_ctx bin | yes |
-| flow rung *i* | current candidate \(\tilde z\) | \((\tau_i, d)\) | no |
-| flow commit | \(\hat z\), τ_ctx-corrupted | τ_ctx bin | yes |
-| direct predict | query vector | family vector | no |
-| direct commit | \(\hat z\) | family vector | yes |
+| arm | path | `latent` | `conditioning` | writes state |
+|---|---|---|---|---|
+| flow | `Observe` | \(Z^*(o_t)\), τ_ctx-corrupted | τ_ctx bin | yes |
+| flow | rung *i* | current candidate \(\tilde z\) | \((\tau_i, d)\) | no |
+| flow | commit | \(\hat z\), τ_ctx-corrupted | τ_ctx bin | yes |
+| direct | `Observe` | \(Z^*(o_t)\), clean | family vector | yes |
+| direct | predict | query vector | family vector | no |
+| direct | commit | \(\hat z\) | family vector | yes |
+
+The flow arm corrupts every committed latent because training never presents an
+uncorrupted one (eq. 4's grid tops out at \(1-d\)). The direct arm has no noise
+mechanism anywhere, so it commits clean latents and carries no signal bin — which
+is the same deletion Box 5 records: it has no channel for "this context entry is
+imperfect", and only generated-prefix training replaces it.
 
 `Advance` = N read-only candidate evaluations + exactly one commit evaluation.
 Flow N = 4, direct N = 1. \(h\) always comes from the commit pass. A candidate's
@@ -89,9 +96,8 @@ decoding and bookkeeping — no call may ingest it as a second temporal block.
 and its outputs are *ephemeral* — a candidate block for \(t{+}1\) contains
 \(a_t\), and \(h_{t+1}\) predicts \(a_{t+1}\), so there is no leak — but it never
 mutates the prefix it was given, and rejected candidates' outputs are discarded.
-Whether the accepted candidate's `S_out` is kept as \(m_{t+1}\) or recomputed by
-one further `evaluate` on the accepted latent is a transition-family decision at
-the call site, not a second function. Tasks remain agent-side only.
+A candidate's `S_out` is **always** discarded; \(m_{t+1}\) comes from the commit
+evaluation alone, in every arm. Tasks remain agent-side only.
 
 \(m_t\) spans **every** token slot, agent slots included: temporal mixing is
 per-slot, so agent streams carry their own recurrent summary and world streams
@@ -191,12 +197,12 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   external labels are introduced.
 - **What Mamba changes — `[MAMBA]`:** The data do not change; sequence batches
   must carry enough boundary and prefix information to initialize \(m_t\).
-- **`[D4-UNKNOWN]` Encoder prefix is *not* a Mamba concern.** Because §3.1 makes
-  the tokenizer causal, \(z_t = Z^*(o_{\le t})\), so a random crop's first frames
-  are encoded with no history under **every** arm — the MAE-Flow-T anchor
-  included. Burn-in, or a declared bounded encoder context, is a representation
-  requirement that binds all four Stage-A cells equally. See the open encoder-
-  causality decision in `DECISIONS.md`.
+- **`[D4]` Encoder prefix is *not* a Mamba concern.** §3.1 makes the tokenizer
+  causal, so \(z_t = Z^*(o_{\le t})\) and a random crop's first frames are encoded
+  with no history under **every** arm — the MAE-Flow-T anchor included. Burn-in,
+  or a declared bounded encoder context, is a representation requirement binding
+  all four Stage-A cells equally, which is why it is fair: they share one encoder.
+  A frame-only encoder is a later ablation, not a design fork.
 
 ## Box 2 — Visual representation system
 
@@ -299,16 +305,13 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   firewall — the exact defect the predecessor shipped unreported. Short generated-prefix training replaces flow's explicit
   corruption-conditioned robustness path; two steps are source-backed
   (`auto_steps: 2`). The branch is deterministic unless stochasticity is added.
-  `[D4-UNKNOWN]` Pinned V-JEPA 2-AC runs its predictor *entirely* in a
-  LayerNormed feature space — inputs, recursive outputs and targets all pass
-  `normalize_reps` — so adopting it makes normalization part of \(Z^*\), not a
-  loss detail. LayerNorm discards per-token mean and scale, so a Direct arm that
-  normalizes and a Flow arm that does not are **not** the same representation,
-  and Stage A's fixed-representation claim fails. Choose one: normalize inside
-  \(Z^*\) for every arm (changes the flow anchor's target and noise space), or
-  keep \(Z^*\) unnormalized and define the mapping from readout space back to
-  \(Z^*\) before `Commit`. Feeding an unnormalized recursive readout back with
-  no mapping has no source support either.
+  `[DESIGN]` \(Z^*\) stays the unnormalized `tanh` bottleneck for every arm, and
+  the direct readout is `tanh`-bounded so its codomain matches its target's. The
+  rejected alternative was V-JEPA 2-AC's `normalize_reps`, which runs its
+  predictor entirely in a LayerNormed space; adopting it would make normalization
+  part of \(Z^*\), and since LayerNorm discards per-token mean and scale a
+  normalizing Direct arm and a non-normalizing Flow arm would not share a
+  representation, failing Stage A's premise.
 - **What Mamba changes — `[MAMBA]` / `[DESIGN]`:** `Advance` consumes and
   returns per-layer `(conv_state, ssm_state)` and obeys the read-only
   evaluate/one-commit transaction — stricter here than for a cache, since
