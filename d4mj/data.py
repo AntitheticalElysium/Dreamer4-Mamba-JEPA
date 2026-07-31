@@ -96,17 +96,19 @@ def _window(episode: Episode, start: int, length: int, config: Config) -> dict[s
     valid = incoming >= 0
     source = incoming.clamp(min=0)
 
-    led_to = torch.where(valid, episode.actions_taken[source], torch.tensor(config.n_actions))
-    observed = episode.observations[steps]
-    frames = observed if episode.latents is not None else patchify(observed[None, ...], config.patch)[0]
-
+    cached = episode.latents is not None
+    frames = (
+        episode.latents[steps] if cached else patchify(episode.observations[steps][None], config.patch)[0]
+    )
     return {
-        "led_to_action": led_to,
+        "led_to_action": torch.where(
+            valid, episode.actions_taken[source], torch.tensor(config.n_actions)
+        ),
         "reward": torch.where(valid, episode.rewards[source], torch.zeros(())),
         "terminated": episode.terminated[source] & valid,
         "truncated": episode.truncated[source] & valid,
         "valid": valid,
-        "latents" if episode.latents is not None else "patches": frames,
+        "latents" if cached else "patches": frames,
     }
 
 

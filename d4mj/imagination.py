@@ -14,6 +14,10 @@ class Trajectory:
     """`continuation` is the head's probability, not a boolean: imagination has no
     ground-truth termination, and a hard flag would need termination sampled.
 
+    `agent` is the readout at every state including the start, so the frozen prior
+    and the critic can be evaluated where the actions were actually chosen rather
+    than at the rollout's first state alone.
+
     There is no boundary mask. The horizon end is the return recursion's initial
     condition, not a per-step signal, so a boundary field would be a column of
     zeros that nothing reads.
@@ -24,6 +28,7 @@ class Trajectory:
     reward: Tensor
     continuation: Tensor
     value: Tensor
+    agent: Tensor
 
 
 def imagine(
@@ -48,6 +53,7 @@ def imagine(
     readout = heads(agent)
     actions, logits, rewards, continuations = [], [], [], []
     values = [_expect(readout["value"][:, -1], heads.centers)]
+    readouts = [agent[:, -1]]
 
     for _ in range(config.horizon):
         distribution = torch.distributions.Categorical(logits=readout["policy"][:, -1, 0])
@@ -60,6 +66,7 @@ def imagine(
         rewards.append(_expect(readout["reward"][:, -1, 0], heads.centers))
         continuations.append(readout["continuation"][:, -1, 0].sigmoid())
         values.append(_expect(readout["value"][:, -1], heads.centers))
+        readouts.append(agent[:, -1])
 
     return Trajectory(
         action=torch.stack(actions, dim=1),
@@ -67,6 +74,7 @@ def imagine(
         reward=torch.stack(rewards, dim=1),
         continuation=torch.stack(continuations, dim=1),
         value=torch.stack(values, dim=1),
+        agent=torch.stack(readouts, dim=1),
     )
 
 
