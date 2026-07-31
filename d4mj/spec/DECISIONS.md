@@ -19,11 +19,15 @@ design change, not an implementation detail. If the plan is wrong, fix the plan.
 | S7 | λ = 0.95 | `[DESIGN]`. D4 is silent; DreamerV3 `lam: 0.95` is implementation precedent only |
 | S8 | Temporal state is a per-layer, per-slot pair; the conditioning slot is retained in every arm | `ARCHITECTURE.md` Boxes 3 and 4 |
 | S9 | One generic `evaluate`; the A/B commit choice is a **`Config` field**, identical across the Stage-A cells | One signature covers every path; but if cells could differ in commit semantics the factorial is invalid |
-| S10 | The signal table has exactly `k_max` rows, and τ_ctx must be a trained grid bin | Eq. (4)'s grid tops out at `1−d`, so τ = 1 is never trained. MMBench2 sizes `signal_embed` at `k_max+1` and labels uncorrupted context with index `k_max` — a row its own sampler cannot reach. Same pathology as the predecessor's unreachable shortcut rows, in the upstream source |
+| S10 | The signal table has exactly `k_max` rows; every context index is clamped to `k_max−1` | Eq. (4)'s grid tops out at `1−d`, so τ = 1 is never trained. MMBench2 sizes `signal_embed` at `k_max+1` and labels uncorrupted context with index `k_max` — a row its own sampler cannot reach; `plan_cem.py:189,545` pass `tau_ctx=0.0`, so its planner runs entirely on that untrained row, and `round(0.9·k_max) = k_max` also fires at `k_max = 4`. Same pathology as the predecessor's unreachable shortcut rows, in the upstream source |
+| S16 | τ_ctx = **0.1 noise / 0.9 signal**, snapped to the nearest trained bin | `train_dynamics.py:576` states it verbatim: "tau_ctx is the noise fraction: 0 = fully clean, 1 = fully noisy". The paper's "signal level τ_ctx = 0.1" is a slip — 0.1 *signal* contradicts its own word "slightly". No longer open |
+| S17 | Direct arm uses **two passes per frame**: in-block query predicts `ẑ`, then one commit evaluation ingests `ẑ` | A single query pass cannot commit: its `S_out` encodes the query, so `m_{t+1}` would never ingest the generated latent and rollout blocks would hold queries where training blocks held latents. Unifies with flow as *N candidates + 1 commit* (flow N=4, direct N=1), so the arms differ only in N and conditioning. Rejected: an external predictor (1 pass) adds a module and, if it pools the agent slot, routes task state into world prediction against §3.3 |
+| S18 | Invariant 5 is `[DESIGN]`, not `[D4-ENTAILED]` | No audited source persists dynamics state across accepted frames — MMBench2 re-draws context noise per frame (`z0_ctx = torch.randn_like(...)` inside the per-frame call) and re-prefills. Persistence is our deviation and the `[MAMBA]` efficiency hypothesis rests on it |
 | S11 | Context corruption is applied once at commit, never at read | Fresh noise per read changes the prefix every frame, invalidating any KV cache or SSM state and contradicting invariant 5 |
 | S12 | Agent slots exist from Phase 1B, last in the layout, masked both ways until Phase 2 | Fixes `S`, mask shape, stream count and state shapes once, so no Phase-1B gate is invalidated when the agent modality activates |
 | S13 | `depth % time_every == 0` and at least two time layers | At `depth = 4` the entire Mamba blast radius would be one module and parameter matching would be dominated by it |
 | S14 | Anchor drops GQA and attention-logit soft capping, keeps RoPE and QKNorm | Table 2 shows GQA at FVD 70 → 71, adopted for KV bandwidth at 2B parameters — no benefit at our scale. RoPE and QKNorm have executable precedent in pinned MMBench2 attention; GQA and capping have none anywhere. Anchor is described as paper-constrained *modulo declared omissions* |
+| S19 | Flow is 4 candidate rungs + 1 commit = **5 passes/frame**; direct is 1 + 1 = **2** | S11 puts corruption at commit, and the final rung's input sits at τ = 1−1/K (0.75 at K=4), not at τ_ctx (0.9). They coincide only if τ_ctx is *defined* as 1−1/K, which S16 rules out — so the commit is a real extra pass. This retires the A/B fork: B is unavailable once corruption is commit-time. Both arms count honestly, making the direct arm's inference advantage a measured 2.5× |
 | S15 | Windows never cross an episode boundary; `evaluate` takes no reset mask | Keeps a reset a fresh construction. Asserted by `gates.alignment`; relaxing it changes the signature |
 
 ## Open, with the functions each one constrains
@@ -35,8 +39,6 @@ config value, and each must be closed before the phase named.
 |---|---|---|
 | **SIGReg on a projector vs on `z`** — projector keeps `Z*` and gives clean attribution; on `z` forks `Z*` from the anchor and tests the stronger claim | Stage B | `representation.Projector`, `representation.representation_loss` |
 | **EMA views / masks / loss; faithful LeJEPA vs anti-collapse ablation** — is the EMA arm learning spatial invariance, temporal predictability, or both? | Stage B | `data.views`, `representation.representation_loss`, `representation.update_target` |
-| **Flow commit A vs B** — eq. (4) samples τ over a grid ending at `1 − 1/d`, so **the paper itself never trains at τ = 1**; B's final-rung read (τ = 0.75 at K = 4) is therefore inside the trained conditions and A's clean commit is outside them. Against that, real `Observe` commits clean latents regardless, so under B the imagination and observation paths commit different conditions while A keeps them identical. Genuine trade-off, not source-decidable | Phase 3 | `transition.advance`, call site only |
-| **τ_ctx value** — narrowed by S10/S11 to a trained grid bin applied at commit; which bin is still open. `1 − 1/k_max` is attractive (edwhu uses `k_max − 1` and its `k_max = 8` makes the noise fraction 0.125 ≈ 0.1) but rests on one repo's default | Phase 1B | `transition.flow_conditioning`, `transition.advance` |
 | **Encoder temporal causality** — §3.1 makes the tokenizer causal, so `z_t = Z*(o_≤t)` and every arm needs burn-in or a declared bounded context. A frame-wise encoder would delete `e_t`, make `Z*` trivially cacheable and move all temporal modelling into the dynamics where the Mamba intervention lives; it is also the single largest D4 deviation in the design and removes the tokenizer's temporal compression | **Before any encoder code** | `representation.Encoder`, `state.RealState`, `data.sample_batch`, whether Phase 1B caches `Z*` targets |
 | **Generated-prefix robustness and go/no-go thresholds** | Stage A exit | `diagnostics.multistep_error`; thresholds in `Config`, frozen before any arm is seen |
 | **Capacity**: `n_latents`, `d_bottleneck`, `n_spatial`, `k`, `depth`, `d_model` — needs a 6 GB probe. Invariant `n_latents = n_spatial × k` is a consequence of D4's packing, not a law | Phase 1A | `Config` fields only |
@@ -106,12 +108,17 @@ in place. This module is the entire Mamba blast radius.
 ### Transition — Box 4
 
 **`transition.py`** — `World` (Type), `flow_conditioning(rng, shape, config)`,
+`observe(world, encoder, state, led_to_action, frames, config)`,
 `advance(world, state, led_to_action, rng, config)`,
 `transition_loss(world, batch, rng, config)`.
 
 `World.forward(state, led_to_action, latent, conditioning) -> (latent_out,
-agent_out, state_out)` is the generic `evaluate`. `advance` is one semantic
-transition: K rungs for flow, one call for direct, and the A/B commit choice.
+agent_out, state_out)` is the generic `evaluate`. `advance` is *N* read-only
+candidate evaluations plus exactly one commit evaluation — flow N=4, direct N=1
+per S17 — and always reads `h` from the commit pass. `observe` is the one place
+a real frame becomes `(e_t, z_t, m_t, h_t)`; it exists because training,
+imagination context construction and execution would otherwise each inline
+encode-then-commit, which is the accretion this contract forbids.
 `transition_loss` covers shortcut-flow and direct feature prediction, including
 the rollout schedule, selected by `config.transition`.
 
@@ -130,7 +137,12 @@ realised.
 **`imagination.py`** — `Trajectory` (Type),
 `imagine(world, heads, state, rng, config)`.
 
-**`actor_critic.py`** — `lambda_returns(rewards, values, continues, config)`,
+`Trajectory` carries `terminated` and `boundary` as **separate** masks, per
+DreamerV3 `agent.py:485-487`: a terminal zeroes the discount so no bootstrap
+crosses it, while a rollout boundary forces λ→0 so the return still bootstraps
+on value. One continuation array cannot express both.
+
+**`actor_critic.py`** — `lambda_returns(trajectory, config)`,
 `actor_loss(logits, actions, returns, values, prior_logits, config)`,
 `critic_loss(logits, returns, centers)`.
 
@@ -138,7 +150,8 @@ realised.
 
 ### Execution — Box 8
 
-**`execution.py`** — `Result` (Type), `run_episode(world, heads, seed, config)`.
+**`execution.py`** — `Result` (Type),
+`run_episode(world, encoder, heads, seed, config)`.
 
 ### Orchestration
 
@@ -164,14 +177,15 @@ and window-start action identity.
 
 **`diagnostics.py`** — `multistep_error(world, batch, config)`,
 `latent_stats(world, batch, config)`, `head_calibration(heads, batch, config)`,
-`cost(world, config)`.
+`cost(modules, config)`.
 
 `latent_stats` reports range *and* scale, so S2's residual — contraction toward
 the conditional mean — is measured rather than assumed away. `cost` reports
 deployed parameters, training-only parameters, FLOPs, memory, throughput, and
-`e_t`/`m_t` state sizes separately, per invariant 5.
+`e_t`/`m_t` state sizes separately, per invariant 5, which is why it takes the
+whole module set rather than the world alone.
 
 ## Totals
 
-19 types, 48 functions, 20 code modules. Every entry is required by a box; none
+19 types, 49 functions, 20 code modules. Every entry is required by a box; none
 is a helper. Adding one re-opens this document.

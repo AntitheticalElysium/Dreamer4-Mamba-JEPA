@@ -69,12 +69,18 @@ Advance = one or more evaluate calls; the caller keeps exactly one S_out
 One generic call covers every path, because the occupying latent and its
 conditioning are per-call arguments rather than state:
 
-| path | `latent` | `conditioning` |
-|---|---|---|
-| real `Observe` | real \(Z^*(o_t)\) | clean |
-| flow rung *i* | current candidate \(\tilde z\) | \((\tau_i, d)\) |
-| flow commit A | accepted \(\hat z\) | clean |
-| direct | query vector | transition-family vector |
+| path | `latent` | `conditioning` | writes state |
+|---|---|---|---|
+| real `Observe` | \(Z^*(o_t)\), τ_ctx-corrupted | τ_ctx bin | yes |
+| flow rung *i* | current candidate \(\tilde z\) | \((\tau_i, d)\) | no |
+| flow commit | \(\hat z\), τ_ctx-corrupted | τ_ctx bin | yes |
+| direct predict | query vector | family vector | no |
+| direct commit | \(\hat z\) | family vector | yes |
+
+`Advance` = N read-only candidate evaluations + exactly one commit evaluation.
+Flow N = 4, direct N = 1. \(h\) always comes from the commit pass. A candidate's
+`S_out` is always discarded, so the committed memory only ever ingests a latent
+the model will actually condition on later — never a query token.
 
 `Observe` encodes and commits a real observation. \(m_t\) is the committed prefix
 **through block \(t\) inclusive**, so \(z_t\) is carried alongside only for loss,
@@ -265,20 +271,14 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   `[DESIGN]` The corruption is applied **once at commit**, not at every read:
   re-corrupting a prefix with fresh noise changes it every frame, which would
   invalidate any KV cache or SSM state and contradict invariant 5.
-  `[D4-UNKNOWN]` D4 states four denoising forwards
-  but never says which latent condition supplies the persistent next-step prefix
-  and agent readout. Rungs never write the cache, and both reproductions rescan
-  the whole prefix every frame, so no source adjudicates it. Two coherent
-  contracts: **(B)** commit the final rung's state in four forwards, so
-  \(m_{t+1}\) and \(h_{t+1}\) are conditioned on that rung's noisy input; or
-  **(A)** add a fifth accepted-latent commit, so persistent state corresponds
-  exactly to \(\hat z_{t+1}\) but the frame exceeds the stated four. B has partial
-  corroboration — the reproduction reads \(h\) from the final rung, and §3.3
-  trains heads on noisy representations — and neither has any for the cache. A
-  hybrid that reads \(h\) from one condition and commits \(m\) from another is
-  possible but leaves them inconsistent. Both arms implement the same semantic
-  choice, fixed in `Config` rather than per call site, or the Stage-A cells can
-  silently differ in the one dimension that would invalidate the factorial.
+  `[DESIGN]` D4 states four denoising forwards but never says which latent
+  condition supplies the persistent prefix and agent readout. Commit-time
+  corruption settles it: the final rung's input sits at \(\tau = 1-1/K\) (0.75 at
+  K=4), not at \(\tau_{\mathrm{ctx}}\), so keeping that rung's state is not an
+  option and the frame is **4 rungs + 1 commit = 5 passes**. The two coincide
+  only if \(\tau_{\mathrm{ctx}}\) is *defined* as \(1-1/K\), which the source's
+  own noise-fraction reading rules out. Both arms count every pass, so the direct
+  arm's advantage is a measured 2.5×, not an assumed one.
   `[DESIGN]` At the final rung \(\tau = 1-d\), so the Euler step
   \(z \mathrel{+}= (\hat x_1 - z)\,d/(1-\tau)\) has coefficient exactly 1 and
   returns \(\hat x_1\) itself: under B, \(\hat z_{t+1}\) and \(h_{t+1}\) leave the
@@ -288,8 +288,15 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
 - **What JEPA changes — `[JEPA-D]`:** The thesis branch directly predicts the
   frozen \(Z^*\) target. Its prediction readout must see \(a_t\) without
   exposing it to \(h_t\), so V-JEPA 2-AC's same-slot readout cannot be copied
-  unchanged; placeholder/query versus separate readout-plus-commit remains a
-  component decision. Short generated-prefix training replaces flow's explicit
+  unchanged. `[DESIGN]` **Two passes per frame**: an in-block query predicts
+  \(\hat z_{t+1}\), then one commit evaluation ingests \(\hat z_{t+1}\) itself.
+  A single query pass cannot be the commit — its `S_out` would encode the query,
+  so \(m_{t+1}\) would never ingest the generated latent and rollout blocks would
+  hold queries where training blocks held latents. The rejected alternative, an
+  external predictor reading committed block \(t\)'s features, costs one pass
+  instead of two but adds a module and must read *world* features: pooling the
+  agent slot would route task state into world prediction, violating §3.3's
+  firewall — the exact defect the predecessor shipped unreported. Short generated-prefix training replaces flow's explicit
   corruption-conditioned robustness path; two steps are source-backed
   (`auto_steps: 2`). The branch is deterministic unless stochasticity is added.
   `[D4-UNKNOWN]` Pinned V-JEPA 2-AC runs its predictor *entirely* in a
@@ -420,9 +427,18 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
    time mixing only; JEPA-R, JEPA-D, and Mamba remain separately measurable.
    `[D4]` Concurrent losses use running-RMS normalization, with new composite
    objectives declared explicitly.
-5. `[D4-ENTAILED]` The Transformer anchor carries a persistent dynamics KV
-   cache across accepted frames; full-prefix rescanning is not an efficiency
-   control. `[DESIGN]` Report \(e_t\) and \(m_t\) separately: Mamba fixes only
+5. `[DESIGN]` The Transformer anchor carries a persistent dynamics KV cache
+   across accepted frames; full-prefix rescanning is not an efficiency control.
+   §3.4 cites "the memory bandwidth needed to access the KV cache of a long
+   context" and Table 1 reports 21 FPS at a 192-frame context, which persistence
+   would explain — but **no audited source does it**: MMBench2 re-draws the
+   context noise every frame and re-prefills, so its cache lives inside one
+   frame. This is therefore our deviation, and it is the one the `[MAMBA]`
+   efficiency hypothesis rests on: read-time corruption re-randomises the prefix,
+   which would force an O(t) rebuild per frame in *both* backends and evaporate
+   the claim. Commit-time corruption (S11) is also the more training-faithful
+   choice, since training draws one noise realisation per frame and processes the
+   sequence once. `[DESIGN]` Report \(e_t\) and \(m_t\) separately: Mamba fixes only
    \(m_t\); \(e_t\) scales with encoder context. Match deployed parameters and
    separately report training-only parameters, FLOPs, memory, throughput, and
    state size.
