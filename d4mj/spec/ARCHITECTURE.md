@@ -249,8 +249,8 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   from \(Z^*\). Direct JEPA-D removes flow noise and signal-level/step
   conditioning; causality and the task firewall are untouched. `[DESIGN]` The
   conditioning *slot* is retained in every arm — flow puts its signal/step
-  embedding there, Direct a single learned transition-family vector (one vector,
-  not a lookup table with unreachable rows). Deleting the slot would change block
+  embedding there, Direct a two-row `{candidate, commit}` table — both rows
+  reachable every step, so no unreachable-row hazard. Deleting the slot would change block
   width, every later segment's spatial RoPE index, attention cost, stream count
   and state size at once, so slot-wise comparability and shared init across arms
   would be lost for a 1-of-\(S\) saving.
@@ -321,9 +321,8 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   returns per-layer `(conv_state, ssm_state)` and obeys the read-only
   evaluate/one-commit transaction — stricter here than for a cache, since
   `step()` mutates state in place, so rungs must snapshot and restore where a
-  cache merely declines to append. Whichever commit contract is chosen applies
-  identically to both arms; no execution count is attributed to a backend before
-  that choice is fixed. Count every execution.
+  cache merely declines to append. The commit contract is fixed and identical for
+  both backends, so no execution count is attributed to one. Count every execution.
 
 ## Box 5 — Agent adaptation and heads
 
