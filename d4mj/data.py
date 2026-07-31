@@ -60,6 +60,15 @@ def patchify(frames: Tensor, patch: int) -> Tensor:
     return tiles.reshape(b, t, grid * grid, patch * patch * c).float() / 255.0
 
 
+def unpatchify(patches: Tensor, config: Config) -> Tensor:
+    """Inverse of `patchify`, for the perceptual term. (B, T, N, D) -> (B, T, C, H, W)
+    in channels-first, which is what an LPIPS network expects."""
+    b, t = patches.shape[:2]
+    grid, p, c = config.resolution // config.patch, config.patch, config.channels
+    tiles = patches.view(b, t, grid, grid, p, p, c).permute(0, 1, 6, 2, 4, 3, 5)
+    return tiles.reshape(b, t, c, config.resolution, config.resolution)
+
+
 def episode_splits(count: int, seed: int) -> tuple[Tensor, Tensor, Tensor]:
     """Whole-episode 80/10/10. Windows never cross episodes, so splitting whole
     episodes is what keeps evaluation frames out of training entirely."""
@@ -68,10 +77,17 @@ def episode_splits(count: int, seed: int) -> tuple[Tensor, Tensor, Tensor]:
     return order[:train], order[train:dev], order[dev:]
 
 
-def sample_batch(episodes: list[Episode], rng: torch.Generator, config: Config) -> Batch:
+def sample_batch(
+    episodes: list[Episode], rng: torch.Generator, config: Config, step: int = 0
+) -> Batch:
+    """Dreamer 4 alternates short and long batches and finetunes on long ones. The
+    long batch is the only one that exceeds the dynamics context, which is what
+    stops the model assuming every context begins at an episode start.
+    """
     cached = episodes[0].latents is not None
     burn_in = 0 if cached else config.burn_in
-    length = burn_in + config.sequence
+    long = config.long_batch_every > 0 and (step + 1) % config.long_batch_every == 0
+    length = burn_in + (config.sequence_long if long else config.sequence)
 
     starts, chosen = [], []
     while len(chosen) < config.batch:

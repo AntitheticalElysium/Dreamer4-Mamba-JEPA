@@ -4,7 +4,7 @@ from .backbone import AGENT, Backbone, Layout, space_mask
 from .config import Config
 from .data import Episode, sample_batch
 from .state import WorldState
-from .transition import advance
+from .transition import advance, initial
 
 
 def scan_step_parity(config: Config, tolerance: float = 1e-3) -> None:
@@ -28,12 +28,73 @@ def scan_step_parity(config: Config, tolerance: float = 1e-3) -> None:
         scanned, scanned_memory = backbone(frames)
         stepped, memory = [], None
         for index in range(frames.shape[1]):
-            out, memory = backbone(frames[:, index : index + 1], memory)
+            out, memory = backbone(frames[:, index : index + 1], memory, index)
             stepped.append(out)
 
     drift = (torch.cat(stepped, dim=1) - scanned).abs().max() / scanned.abs().max()
     assert drift < tolerance, f"scan/step drift {drift:.2e} exceeds {tolerance:.0e}"
     assert len(memory) == len(scanned_memory) == config.depth // config.time_every
+
+    _world_parity(config, device, tolerance)
+    _encoder_parity(config, device, tolerance)
+
+
+def _world_parity(config: Config, device: str, tolerance: float) -> None:
+    """The teacher-forced pass and the runtime path must agree. Only training runs
+    the first and only imagination runs the second, so nothing else compares them --
+    and a Direct arm whose loss never saw an observation passed every other gate."""
+    from .transition import World, commit_inputs
+
+    world = World(config).to(device).eval()
+    latents = torch.randn(2, 4, config.n_spatial, config.d_spatial, device=device).tanh()
+    actions = torch.randint(config.n_actions, (2, 4), device=device)
+
+    with torch.no_grad():
+        committed, conditioning = commit_inputs(
+            latents, torch.Generator(device=device).manual_seed(1), config
+        )
+        forced, _, _ = world(None, actions, committed, conditioning)
+        stepped, memory = [], None
+        for index in range(4):
+            block = slice(index, index + 1)
+            features, _, memory = world(
+                memory, actions[:, block], committed[:, block], conditioning[:, block], index
+            )
+            stepped.append(features)
+
+    drift = (torch.cat(stepped, dim=1) - forced).abs().max() / forced.abs().max()
+    assert drift < tolerance, f"teacher-forced vs stepped world drift {drift:.2e}"
+
+
+def _encoder_parity(config: Config, device: str, tolerance: float) -> None:
+    """Batched scan, frame-by-frame recurrence and the cached Z* must agree, and
+    nothing beyond the receptive field may reach a latent.
+
+    `window` bounds each time layer's state; influence still travels one window per
+    time layer, so the reach is their product. The state bound is what makes the
+    cache and the deployed rollout produce the same latent for the same frame."""
+
+    from .representation import Encoder
+
+    encoder = Encoder(config).to(device).eval()
+    reach = config.receptive_field
+    frames = torch.rand(1, reach + 6, config.n_patches, config.patch_dim, device=device)
+
+    with torch.no_grad():
+        scanned, memory, _ = encoder(frames)
+        stepped, carried = [], None
+        for index in range(frames.shape[1]):
+            z, carried, _ = encoder(frames[:, index : index + 1], carried, offset=index)
+            stepped.append(z)
+        distant = frames.clone()
+        distant[:, : frames.shape[1] - reach] = torch.rand_like(distant[:, :-reach])
+        bounded, _, _ = encoder(distant)
+
+    drift = (torch.cat(stepped, dim=1) - scanned).abs().max() / scanned.abs().max()
+    assert drift < tolerance, f"encoder scan/step drift {drift:.2e}"
+    assert all(pair[0].shape[2] <= config.window for pair in memory), "encoder state exceeds the window"
+    influence = (bounded[:, -1] - scanned[:, -1]).abs().max()
+    assert influence == 0, f"a frame beyond the receptive field moved z by {influence:.2e}"
 
 
 def alignment(config: Config) -> None:
@@ -63,6 +124,36 @@ def alignment(config: Config) -> None:
         config.n_patches,
         config.patch_dim,
     )
+    _observation_dependence(config)
+
+
+def _observation_dependence(config: Config) -> None:
+    """The transition loss must depend on the observations through the *prediction*,
+    not only through the target. A predictor fed placeholders instead of real
+    latents still produces a falling loss curve and learns nothing about the world."""
+    from .data import Batch
+    from .transition import World, transition_loss
+
+    device = _device(config)
+    world = World(config).to(device).eval()
+
+    def batch(seed: int) -> Batch:
+        generator = torch.Generator(device=device).manual_seed(seed)
+        shape = (2, 4, config.n_spatial, config.d_spatial)
+        return Batch(
+            led_to_action=torch.zeros(2, 4, dtype=torch.long, device=device),
+            reward=torch.zeros(2, 4, device=device),
+            terminated=torch.zeros(2, 4, dtype=torch.bool, device=device),
+            truncated=torch.zeros(2, 4, dtype=torch.bool, device=device),
+            valid=torch.ones(2, 4, dtype=torch.bool, device=device),
+            burn_in=0,
+            latents=torch.randn(shape, generator=generator, device=device).tanh(),
+        )
+
+    with torch.no_grad():
+        first = transition_loss(world, batch(1), torch.Generator(device=device).manual_seed(9), config)
+        second = transition_loss(world, batch(2), torch.Generator(device=device).manual_seed(9), config)
+    assert not torch.equal(first, second), "transition loss ignores the observations"
 
 
 def reset_parity(config: Config) -> None:
@@ -76,11 +167,11 @@ def reset_parity(config: Config) -> None:
     action = torch.zeros(2, 1, dtype=torch.long, device=device)
 
     with torch.no_grad():
-        carried, _ = advance(world, WorldState(latent, None, 0), action, rng, config)
+        start, _ = initial(world, latent, action, rng, config)
+        carried, _ = advance(world, start, action, rng, config)
         follow, _ = advance(world, carried, action, torch.Generator(device=device).manual_seed(1), config)
-        fresh, _ = advance(
-            world, WorldState(carried.latent, None, 0), action, torch.Generator(device=device).manual_seed(1), config
-        )
+        blank, _ = initial(world, carried.latent, action, rng, config)
+        fresh, _ = advance(world, blank, action, torch.Generator(device=device).manual_seed(1), config)
     assert not torch.allclose(follow.latent, fresh.latent, atol=1e-6), "history had no effect"
 
 
@@ -105,9 +196,8 @@ def branch_nonmutation(config: Config) -> None:
     world = _world(config)
     rng = torch.Generator(device=device).manual_seed(0)
     latent = torch.randn(2, 1, config.n_spatial, config.d_spatial, device=device).tanh()
-    state = WorldState(latent, None, 0)
-
     with torch.no_grad():
+        state, _ = initial(world, latent, torch.zeros(2, 1, dtype=torch.long, device=device), rng, config)
         state, _ = advance(world, state, torch.zeros(2, 1, dtype=torch.long, device=device), rng, config)
         before = tuple(tuple(t.clone() for t in pair) for pair in state.memory)
         for action in range(3):
@@ -126,12 +216,11 @@ def recurrent_carry(config: Config) -> None:
     action = torch.zeros(2, 1, dtype=torch.long, device=device)
 
     with torch.no_grad():
-        deep = WorldState(latent, None, 0)
+        deep, _ = initial(world, latent, action, rng, config)
         for _ in range(4):
             deep, _ = advance(world, deep, action, torch.Generator(device=device).manual_seed(3), config)
-        shallow, _ = advance(
-            world, WorldState(deep.latent, None, 0), action, torch.Generator(device=device).manual_seed(3), config
-        )
+        blank, _ = initial(world, deep.latent, action, rng, config)
+        shallow, _ = advance(world, blank, action, torch.Generator(device=device).manual_seed(3), config)
         stepped, _ = advance(world, deep, action, torch.Generator(device=device).manual_seed(3), config)
     assert not torch.allclose(stepped.latent, shallow.latent, atol=1e-6), "memory is inert"
 

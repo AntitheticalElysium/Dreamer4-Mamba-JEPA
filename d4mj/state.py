@@ -24,6 +24,7 @@ class WorldState:
     latent: Tensor
     memory: Memory
     step: int
+    features: Tensor | None = None
 
 
 @dataclass(frozen=True)

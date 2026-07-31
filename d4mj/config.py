@@ -64,8 +64,15 @@ class Config:
     pmpo_alpha: float = 0.5
     prior_beta: float = 0.3
 
-    sequence: int = 64
+    # Dreamer 4 reports C = 3*T_short and T_long = 4*T_short in all three of its
+    # Appendix A configurations. A scaling rule it reports, not one it claims.
+    sequence: int = 16
+    sequence_long: int = 64
+    dynamics_context: int = 48
+    long_batch_every: int = 4
+    separate_image_fraction: float = 0.3
     batch: int = 8
+    rms_decay: float = 0.99
     learning_rate: float = 1e-4
     weight_decay: float = 1e-2
     grad_clip: float = 1.0
@@ -82,6 +89,9 @@ class Config:
         assert self.k_max >= 8 and self.k_max & (self.k_max - 1) == 0
         assert self.rungs <= self.k_max
         assert self.tau_ctx_index < self.k_max
+        assert self.dynamics_context == 3 * self.sequence
+        assert self.sequence_long == 4 * self.sequence
+        assert self.sequence_long > self.dynamics_context
 
     @property
     def n_patches(self) -> int:
@@ -100,8 +110,14 @@ class Config:
         return self.d_bottleneck * self.packing
 
     @property
+    def receptive_field(self) -> int:
+        """`window` bounds each time layer's state; influence still travels one
+        window per time layer, so a latent depends on this many frames."""
+        return self.window * (self.depth_encoder // self.time_every)
+
+    @property
     def burn_in(self) -> int:
-        return self.window - 1
+        return self.receptive_field - 1
 
     @property
     def n_signal_bins(self) -> int:
@@ -116,6 +132,13 @@ class Config:
     def tau_ctx_index(self) -> int:
         """Signal bin of every committed block, clamped below the untrained top row."""
         return min(round((1.0 - self.tau_ctx_noise) * self.k_max), self.k_max - 1)
+
+    @property
+    def tau_ctx_signal(self) -> float:
+        """The signal the committed tensor is actually mixed at. Derived from the bin
+        so content and label cannot disagree: mixing at 0.9 while labelling bin 7/8
+        mislabels every observation, commit and deployment prefix."""
+        return self.tau_ctx_index / self.k_max
 
     @property
     def step_index(self) -> int:

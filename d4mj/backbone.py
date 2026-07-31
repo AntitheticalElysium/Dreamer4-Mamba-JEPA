@@ -100,17 +100,37 @@ class Attention(nn.Module):
         self.out = nn.Linear(d_model, d_model)
         self.log_scale = nn.Parameter(torch.full((n_heads,), math.log(math.sqrt(self.head_dim))))
 
-    def forward(self, x, mask=None, causal=False, cache=None):
+    def forward(self, x, mask=None, causal=False, cache=None, offset=0, limit=None):
+        """`offset` is the absolute position of the first new token, supplied by the
+        caller rather than inferred from cache length -- once the cache is bounded
+        those two differ, and RoPE reading the wrong one silently re-dates history.
+        """
         n, length, _ = x.shape
         q, k, v = self.qkv(x).view(n, length, 3, self.n_heads, self.head_dim).permute(2, 0, 3, 1, 4)
-        offset = cache[0].shape[2] if cache is not None else 0
         q, k = rope(q, offset), F.normalize(rope(k, offset), dim=-1)
         if cache is not None:
             k, v = torch.cat([cache[0], k], dim=2), torch.cat([cache[1], v], dim=2)
-            mask, causal = None, False
+            mask, causal = _decode_mask(length, k.shape[2], limit, x.device), False
+        elif limit is not None and length > limit:
+            mask, causal = _decode_mask(length, length, limit, x.device), False
         q = F.normalize(q, dim=-1) * self.log_scale.exp().view(1, -1, 1, 1) * math.sqrt(self.head_dim)
         y = F.scaled_dot_product_attention(q, k, v, attn_mask=mask, is_causal=causal)
+        if limit is not None:
+            k, v = k[:, :, -limit:], v[:, :, -limit:]
         return self.out(y.transpose(1, 2).reshape(n, length, -1)), (k, v)
+
+
+def _decode_mask(new: int, total: int, limit: int | None, device) -> Tensor:
+    """Causal, and window-bounded when a limit is set.
+
+    A cache truncated to `limit` while a single scan attends over everything makes
+    the batched and stepped paths compute different latents for the same frame --
+    the bound has to hold in both or it is not part of Z*.
+    """
+    query = torch.arange(total - new, total, device=device)[:, None]
+    key = torch.arange(total, device=device)[None, :]
+    allowed = query >= key
+    return allowed if limit is None else allowed & (query - key < limit)
 
 
 class SwiGLU(nn.Module):
@@ -131,7 +151,7 @@ class Block(nn.Module):
     differ.
     """
 
-    def __init__(self, config: Config, mask: Tensor, index: int, d_model: int, n_heads: int):
+    def __init__(self, config: Config, mask: Tensor, index: int, d_model: int, n_heads: int, context: int | None):
         super().__init__()
         self.mixes_time = (index + 1) % config.time_every == 0
         self.register_buffer("mask", mask, persistent=False)
@@ -141,34 +161,40 @@ class Block(nn.Module):
         self.mlp = SwiGLU(d_model, config.mlp_ratio)
         if self.mixes_time:
             self.norm_time = nn.RMSNorm(d_model)
-            self.time = time_mixer(config, d_model)
+            self.time = time_mixer(config, d_model, context)
 
-    def forward(self, x: Tensor, memory: tuple[Tensor, Tensor] | None):
+    def forward(self, x: Tensor, memory: tuple[Tensor, Tensor] | None, offset: int = 0):
         b, t, s, d = x.shape
         spaced, _ = self.space(self.norm_space(x).reshape(b * t, s, d), mask=self.mask)
         x = x + spaced.view(b, t, s, d)
         if self.mixes_time:
             streams = self.norm_time(x).transpose(1, 2).reshape(b * s, t, d)
-            mixed, memory = self.time(streams, memory)
+            mixed, memory = self.time(streams, memory, offset)
             x = x + mixed.view(b, s, t, d).transpose(1, 2)
         return x + self.mlp(self.norm_mlp(x)), memory
 
 
 class Backbone(nn.Module):
-    def __init__(self, config: Config, layout: Layout, mode: str, d_model: int, n_heads: int, depth: int):
+    def __init__(self, config: Config, layout: Layout, mode: str, d_model: int, n_heads: int, depth: int, context: int | None = None):
         super().__init__()
         mask = space_mask(layout, mode, agent_active=True)
         self.blocks = nn.ModuleList(
-            Block(config, mask, index, d_model, n_heads) for index in range(depth)
+            Block(config, mask, index, d_model, n_heads, context) for index in range(depth)
         )
 
-    def forward(self, x: Tensor, memory: Memory | None = None) -> tuple[Tensor, Memory]:
+    def forward(self, x: Tensor, memory: Memory | None = None, offset: int = 0) -> tuple[Tensor, Memory]:
         """`memory` holds one entry per *time-mixing* block, not per block, so it is
-        consumed by an iterator rather than zipped against the full stack."""
+        consumed by an iterator rather than zipped against the full stack.
+
+        With memory present exactly one block may be supplied: Mamba-2's recurrent
+        step accepts one token, so allowing several would give the two backends
+        different decode semantics on the one axis being compared.
+        """
+        assert memory is None or x.shape[1] == 1, "decode advances one block at a time"
         carried = iter(memory if memory is not None else ())
         updated: list[tuple[Tensor, Tensor]] = []
         for block in self.blocks:
-            x, state = block(x, next(carried, None) if block.mixes_time else None)
+            x, state = block(x, next(carried, None) if block.mixes_time else None, offset)
             if block.mixes_time:
                 updated.append(state)
         return x, tuple(updated)

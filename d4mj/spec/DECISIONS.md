@@ -309,6 +309,22 @@ plan would otherwise have shipped.
 `representation_loss` and `expert.train_expert` raise `NotImplementedError`
 naming their open decision rather than guessing a default.
 
+## S37 — `window` bounds state, not receptive field
+
+Measured: with two encoder time layers at `window = 4`, perturbing frames more
+than 4 back still moves `z` by 1.8e-3, and beyond 8 back moves it by **exactly
+zero**. Influence travels one window per time layer, so the reach is their
+product while each layer's cache stays bounded to `window`.
+
+The state bound is the load-bearing half -- it is what makes the cache and the
+deployed rollout produce the same latent for the same frame. `Config.receptive_field`
+names the other half so no claim confuses them.
+
+Also settled by execution: the tokenizer always mixes time with attention, in
+every arm. Mamba's state summarises all history rather than a window, so a Mamba
+encoder cannot honour the bound that makes `Z*` well defined -- and keeping the
+encoder common is what confines the substitution to the dynamics.
+
 ## Verified defects, in fix order
 
 Two independent audits; every entry below reproduced by execution before being
@@ -328,8 +344,16 @@ failing to be what this document already says.
 | 7 | Committed content and its label disagree | Mixes at 0.9 signal, labels bin 7/8 = 0.875 |
 | 8 | No gate reaches `transition_loss` or `advance` | All six gates pass on the arm defeated by defect 1 |
 
-**Immediately after:** LPIPS and `p ~ U(0, 0.9)` per-image masking; running-RMS
-loss balancing; the short/long sequence curriculum and 30% separate-image
-fraction; one device/dtype/RNG contract with seeded construction for paired
-arms; learned rather than zero agent tokens; diagnostics that commit their
-starting observation before predicting.
+**All fixed.** Plus, from the same pass: LPIPS at weight 0.2 with `p ~ U(0, 0.9)`
+sampled per image; running-RMS loss balancing; the short/long batch curriculum;
+seeded construction and device-matched generators; learned agent tokens;
+diagnostics that commit before predicting.
+
+Two things the fixes added rather than repaired. `transition.initial` commits a
+known latent and returns the state it produces -- gates, diagnostics and Phase 3
+all needed it, and inlining it three times is how the uncommitted-start defect
+appeared in the first place. `data.unpatchify` is required by the perceptual
+term. Both are in the inventory.
+
+Still deferred, unchanged: `representation_loss` (Stage B) and
+`expert.train_expert` (regeneration settings), each raising rather than guessing.

@@ -13,14 +13,17 @@ class TimeAttention(nn.Module):
     time, which we do not.
     """
 
-    def __init__(self, d_model: int, n_heads: int):
+    def __init__(self, d_model: int, n_heads: int, context: int | None):
         super().__init__()
         from .backbone import Attention
 
         self.attention = Attention(d_model, n_heads)
+        self.context = context
 
-    def forward(self, x: Tensor, memory: State | None) -> tuple[Tensor, State]:
-        return self.attention(x, causal=memory is None, cache=memory)
+    def forward(self, x: Tensor, memory: State | None, offset: int = 0) -> tuple[Tensor, State]:
+        return self.attention(
+            x, causal=memory is None, cache=memory, offset=offset, limit=self.context
+        )
 
 
 class TimeMamba(nn.Module):
@@ -42,13 +45,14 @@ class TimeMamba(nn.Module):
             expand=config.mamba_expand,
             headdim=config.mamba_headdim,
             layer_idx=0,
+            use_mem_eff_path=False,
         )
 
-    def forward(self, x: Tensor, memory: State | None) -> tuple[Tensor, State]:
+    def forward(self, x: Tensor, memory: State | None, offset: int = 0) -> tuple[Tensor, State]:
         from mamba_ssm.utils.generation import InferenceParams
 
         params = InferenceParams(max_seqlen=x.shape[1] + 1, max_batch_size=x.shape[0])
-        params.seqlen_offset = 0 if memory is None else 1
+        params.seqlen_offset = 0 if memory is None else max(offset, 1)
         params.key_value_memory_dict[0] = (
             self.mamba.allocate_inference_cache(x.shape[0], x.shape[1], dtype=x.dtype)
             if memory is None
@@ -57,7 +61,10 @@ class TimeMamba(nn.Module):
         return self.mamba(x, inference_params=params), params.key_value_memory_dict[0]
 
 
-def time_mixer(config: Config, d_model: int) -> nn.Module:
+def time_mixer(config: Config, d_model: int, context: int | None) -> nn.Module:
+    """Mamba's state is fixed-size by construction; attention needs `context` to be
+    bounded explicitly, or the deployed cache grows without limit and the two
+    backends stop being compared under the same memory."""
     if config.time_mixer == "mamba":
         return TimeMamba(config, d_model)
-    return TimeAttention(d_model, config.n_heads)
+    return TimeAttention(d_model, config.n_heads, context)

@@ -7,24 +7,33 @@ from .agent import Heads, head_targets
 from .config import Config
 from .data import Batch
 from .state import WorldState
-from .transition import World, advance
+from .transition import World, advance, initial
 
 
 @torch.no_grad()
-def multistep_error(world: World, batch: Batch, rng: torch.Generator, config: Config) -> list[float]:
-    """Per-step prediction error under the real runtime path, from a real prefix.
+def multistep_error(
+    world: World, batch: Batch, rng: torch.Generator, config: Config, successors: Tensor | None = None
+) -> dict[str, list[float]]:
+    """Per-step error under the real runtime path, from a *committed* prefix.
 
-    This is what the imagination horizon is set from. Inheriting a horizon and
-    hoping is how a rollout ends up spending most of its steps outside anything
-    the model was trained on.
+    Mean error alone cannot adjudicate the direct arm: under squared loss the
+    optimal deterministic predictor is the conditional mean, so the collapsed
+    solution is the one that minimises exactly this number. When `successors`
+    (B, M, ...) samples of the true next latent are supplied, the nearest-mode and
+    mean distances are reported alongside -- a predictor sitting between modes
+    shows a large gap, and one on a mode shows none.
     """
-    context = batch.latents[:, :1]
-    state = WorldState(context, None, 0)
-    errors = []
+    state, _ = initial(world, batch.latents[:, :1], batch.led_to_action[:, :1], rng, config)
+    report: dict[str, list[float]] = {"mean_error": []}
     for step in range(1, batch.latents.shape[1]):
         state, _ = advance(world, state, batch.led_to_action[:, step : step + 1], rng, config)
-        errors.append(float((state.latent - batch.latents[:, step : step + 1]).pow(2).mean()))
-    return errors
+        report["mean_error"].append(float((state.latent - batch.latents[:, step : step + 1]).pow(2).mean()))
+
+    if successors is not None:
+        gap = (state.latent[:, 0, None] - successors).pow(2).flatten(2).mean(-1)
+        report["nearest_mode"] = [float(gap.min(dim=1).values.mean())]
+        report["mode_mean"] = [float((state.latent[:, 0] - successors.mean(1)).pow(2).mean())]
+    return report
 
 
 @torch.no_grad()
@@ -33,7 +42,7 @@ def latent_stats(world: World, batch: Batch, rng: torch.Generator, config: Confi
     contraction toward the conditional mean, which is the failure that looks like a
     working model in every one-step metric."""
     real = batch.latents
-    state = WorldState(real[:, :1], None, 0)
+    state, _ = initial(world, real[:, :1], batch.led_to_action[:, :1], rng, config)
     state, _ = advance(world, state, batch.led_to_action[:, 1:2], rng, config)
     predicted = state.latent
     return {
@@ -72,12 +81,12 @@ def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[st
     action = torch.zeros(1, 1, dtype=torch.long)
     rng = torch.Generator().manual_seed(0)
 
-    state = WorldState(latent, None, 0)
-    start = time.perf_counter()
     with torch.no_grad():
+        state, _ = initial(world, latent, action, rng, config)
+        start = time.perf_counter()
         for _ in range(8):
             state, _ = advance(world, state, action, rng, config)
-    elapsed = time.perf_counter() - start
+        elapsed = time.perf_counter() - start
 
     return {
         "deployed_parameters": sum(v for k, v in counts.items() if k in deployed),
