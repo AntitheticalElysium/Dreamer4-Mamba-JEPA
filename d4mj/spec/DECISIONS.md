@@ -126,7 +126,7 @@ in place. This module is the entire Mamba blast radius.
 ### Transition — Box 4
 
 **`transition.py`** — `World` (Type), `flow_conditioning(rng, shape, config)`,
-`observe(world, encoder, state, led_to_action, frames, rng, config)`,
+`observe(world, encoder, state, led_to_action, patches, rng, config)`,
 `advance(world, state, led_to_action, rng, config)`,
 `transition_loss(world, batch, rng, config)`.
 
@@ -154,7 +154,7 @@ realised.
 ### Imagination and improvement — Boxes 6, 7
 
 **`imagination.py`** — `Trajectory` (Type),
-`imagine(world, heads, state, rng, config)`.
+`imagine(world, heads, state, agent, rng, config)`.
 
 The caller — `train_actor` — builds the starting state by repeated `observe`;
 `imagine` receives it complete and owns no encoder. Box 6's "encode and scan the
@@ -221,5 +221,20 @@ whole module set rather than the world alone.
 
 ## Totals
 
-19 types, 49 functions, 20 code modules. Every entry is required by a box; none
-is a helper. Adding one re-opens this document.
+19 types, 49 public functions and 18 private helpers, across 20 modules.
+
+## Signatures corrected during implementation
+
+Each was forced by a contract already in this document, and each is a defect the
+plan would otherwise have shipped.
+
+| Signature | Why |
+|---|---|
+| `observe` takes and returns `RealState`, not `WorldState` | It has to carry the encoder's bounded-window memory, which `WorldState` does not hold. Merging them is how a rollout starts from zero memory while looking correct |
+| `imagine` takes the starting `agent` readout | Recomputing it would ingest the same latent twice, against the rule that `m_t` already covers block `t` |
+| `Trajectory` carries `agent` | The frozen prior and the critic must be evaluated where the actions were chosen, not at the first state alone |
+| `diagnostics.cost` takes the module set and the world | It cannot separate deployed from training-only parameters given the world alone |
+| `World.forward` returns memory, not a `WorldState` | `WorldState.latent` is defined as the *accepted* latent, which only a commit site can supply; a candidate has no accepted latent to put there |
+
+`representation_loss` and `expert.train_expert` raise `NotImplementedError`
+naming their open decision rather than guessing a default.
