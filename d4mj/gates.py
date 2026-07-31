@@ -1,7 +1,31 @@
 import torch
 
+from .backbone import Backbone, Layout
 from .config import Config
 from .data import Episode, sample_batch
+
+
+def scan_step_parity(config: Config, tolerance: float = 1e-4) -> None:
+    """One batched scan must equal the same frames stepped one at a time carrying
+    memory. Training runs the scan and imagination runs the steps, so a divergence
+    here is a model that is correct in every loss and wrong in every rollout.
+    """
+    device = "cuda" if config.time_mixer == "mamba" else "cpu"
+    layout = Layout.dynamics(config)
+    backbone = Backbone(config, layout, "dynamics", config.d_model, config.n_heads, config.depth)
+    backbone = backbone.to(device).eval()
+
+    frames = torch.randn(2, 6, layout.size, config.d_model, device=device)
+    with torch.no_grad():
+        scanned, scanned_memory = backbone(frames)
+        stepped, memory = [], None
+        for index in range(frames.shape[1]):
+            out, memory = backbone(frames[:, index : index + 1], memory)
+            stepped.append(out)
+
+    drift = (torch.cat(stepped, dim=1) - scanned).abs().max().item()
+    assert drift < tolerance, f"scan/step drift {drift:.2e} exceeds {tolerance:.0e}"
+    assert len(memory) == len(scanned_memory) == config.depth // config.time_every
 
 
 def alignment(config: Config) -> None:
