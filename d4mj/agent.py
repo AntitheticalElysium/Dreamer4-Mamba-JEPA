@@ -4,7 +4,7 @@ from torch import Tensor, nn
 
 from .backbone import SwiGLU
 from .config import Config
-from .data import Batch
+from .data import Batch, mixture_weight
 
 
 class Heads(nn.Module):
@@ -84,6 +84,7 @@ def head_targets(batch: Batch, config: Config) -> dict[str, Tensor]:
         "continuation": _leads((~batch.terminated).float(), leads, fill=1.0),
         "valid": _leads(batch.valid.float(), leads, fill=0.0),
         "action_valid": _leads(_shift(batch.valid.float(), fill=0.0), leads, fill=0.0),
+        "relevant": mixture_weight(batch.relevant)[:, None, None],
     }
 
 
@@ -92,7 +93,13 @@ def head_loss(
 ) -> dict[str, Tensor]:
     """Returned per head, not summed: Dreamer 4 normalises every concurrent loss by
     its own running RMS, and merging them first lets whichever head has the largest
-    natural scale set the others' effective weight."""
+    natural scale set the others' effective weight.
+
+    Behaviour cloning is scored on the relevant half of the mixture only (§4.1).
+    Reward and continuation are scored on everything: the paper restricts the BC and
+    dynamics losses by name and says the mixture amplifies signal *for* reward
+    modelling, so halving that head's data would be an addition, not a reading.
+    """
     centers = predictions["centers"]
     policy = F.cross_entropy(
         predictions["policy"].flatten(0, 2), targets["action"].flatten().long(), reduction="none"
@@ -101,7 +108,8 @@ def head_loss(
     continuation = F.binary_cross_entropy_with_logits(
         predictions["continuation"], targets["continuation"], reduction="none"
     )
-    valid, actions = targets["valid"], targets["action_valid"]
+    valid = targets["valid"]
+    actions = targets["action_valid"] * targets["relevant"]
     return {
         "policy": (policy * actions).sum() / actions.sum().clamp(min=1.0),
         "reward": (reward * valid).sum() / valid.sum().clamp(min=1.0),

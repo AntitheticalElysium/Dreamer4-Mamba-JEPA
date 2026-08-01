@@ -11,13 +11,27 @@ def train_expert(config: Config):
     raise NotImplementedError("regeneration settings and acceptance threshold are open")
 
 
-def collect(policy: Callable[[torch.Tensor, int], int], count: int, config: Config, limit: int = 2500):
+def collect(
+    policy: Callable[[torch.Tensor, int], int],
+    count: int,
+    config: Config,
+    limit: int = 2500,
+    relevant: bool = False,
+):
     """Roll a policy and store episodes unshifted, with terminated and truncated
     kept apart.
 
+    `relevant` is declared by the caller, not inferred here: Dreamer 4's mixture is
+    50% uniform sequences and 50% that "accomplish one of the tasks", and which pool
+    a rollout belongs to is a property of how it was selected, not of anything
+    visible in the trajectory. It defaults to uniform because unfiltered rollouts
+    are what this function produces; the relevant pool is the filtered one, and a
+    caller that does not filter must not be able to claim it by omission.
+
     The archived replay stays available for smoke tests, but nothing reported comes
-    from it: its expert has no byte-level provenance, and its terminal windows come
-    from a 58-episode support that half of every batch would resample.
+    from it: its expert has no byte-level provenance, its terminal windows come from
+    a 68-episode support that half of every batch would resample, and it is 100%
+    relevant, which leaves the dynamics loss with no uniform half to score.
 
     Hitting the collector's own cap marks the last transition truncated. Storing it
     as neither terminated nor truncated would tell the continuation head that a
@@ -55,6 +69,7 @@ def collect(policy: Callable[[torch.Tensor, int], int], count: int, config: Conf
                 rewards=torch.tensor(rewards, dtype=torch.float32),
                 terminated=torch.tensor(terminals),
                 truncated=torch.tensor(timeouts),
+                relevant=relevant,
             )
         )
     return episodes

@@ -22,7 +22,7 @@ def scan_step_parity(config: Config, tolerance: float = 1e-3) -> None:
     windowed branch of `_decode_mask` never executes, and a regression in the
     window arithmetic would pass everything.
     """
-    device = _device(config)
+    device = config.device
     layout = Layout.dynamics(config)
     backbone = Backbone(
         config, layout, "dynamics", config.d_model, config.n_heads, config.depth,
@@ -147,6 +147,10 @@ def alignment(config: Config) -> None:
         config.n_patches,
         config.patch_dim,
     )
+    wanted = int(config.relevant_fraction * config.batch)
+    assert int(batch.relevant.sum()) == wanted, (
+        f"mixture drew {int(batch.relevant.sum())} relevant rows, not {wanted}"
+    )
     _observation_dependence(config)
 
 
@@ -162,7 +166,7 @@ def _observation_dependence(config: Config) -> None:
     """
     from .transition import World, commit_inputs
 
-    device = _device(config)
+    device = config.device
     world = World(config).to(device).eval()
     action = torch.zeros(2, 3, dtype=torch.long, device=device)
     shape = (2, 3, config.n_spatial, config.d_spatial)
@@ -176,6 +180,7 @@ def _observation_dependence(config: Config) -> None:
         terminated=torch.zeros(2, 4, dtype=torch.bool, device=device),
         truncated=torch.zeros(2, 4, dtype=torch.bool, device=device),
         valid=torch.ones(2, 4, dtype=torch.bool, device=device),
+        relevant=torch.zeros(2, dtype=torch.bool, device=device),
         burn_in=0,
         latents=torch.randn(2, 4, config.n_spatial, config.d_spatial, device=device).tanh(),
     )
@@ -207,7 +212,7 @@ def _conditioning_coverage(config: Config) -> None:
     from .data import Batch
     from .transition import World, transition_loss
 
-    device = _device(config)
+    device = config.device
     world = World(config).to(device)
     tables = (
         [world.signal_embed, world.step_embed]
@@ -224,6 +229,7 @@ def _conditioning_coverage(config: Config) -> None:
             terminated=torch.zeros(4, 6, dtype=torch.bool, device=device),
             truncated=torch.zeros(4, 6, dtype=torch.bool, device=device),
             valid=torch.ones(4, 6, dtype=torch.bool, device=device),
+            relevant=torch.zeros(4, dtype=torch.bool, device=device),
             burn_in=0,
             latents=torch.randn(4, 6, config.n_spatial, config.d_spatial, device=device).tanh(),
         )
@@ -242,7 +248,7 @@ def reset_parity(config: Config) -> None:
     """A fresh state must not remember a previous episode. Constructing rather than
     clearing makes this true by type, so the gate exists to catch a caller that
     threads memory across a boundary anyway."""
-    device = _device(config)
+    device = config.device
     world = _world(config)
     rng = torch.Generator(device=device).manual_seed(0)
     latent = torch.randn(2, 1, config.n_spatial, config.d_spatial, device=device).tanh()
@@ -274,7 +280,7 @@ def branch_nonmutation(config: Config) -> None:
     """Candidate evaluations from one prefix must leave it untouched, so a planner
     comparing actions cannot corrupt the state it branched from. Mamba's step
     mutates in place, which is why the mixer clones rather than trusting callers."""
-    device = _device(config)
+    device = config.device
     world = _world(config)
     rng = torch.Generator(device=device).manual_seed(0)
     latent = torch.randn(2, 1, config.n_spatial, config.d_spatial, device=device).tanh()
@@ -300,7 +306,7 @@ def recurrent_carry(config: Config) -> None:
     `_observation_dependence` compares `World.predict`, which for flow reads the
     current block's own corrupted latent and would pass with all history ignored.
     """
-    device = _device(config)
+    device = config.device
     world = _world(config)
     rng = torch.Generator(device=device).manual_seed(0)
     latent = torch.randn(2, 1, config.n_spatial, config.d_spatial, device=device).tanh()
@@ -317,22 +323,22 @@ def recurrent_carry(config: Config) -> None:
     _conditioning_coverage(config)
 
 
-def _device(config: Config) -> str:
-    """The configured device, the same one training uses. A gate suite that put the
-    two arms on different hardware would validate a pairing the experiment never
-    runs."""
-    return config.device
 
 
 def _world(config: Config):
     from .transition import World
 
-    return World(config).to(_device(config)).eval()
+    return World(config).to(config.device).eval()
 
 
 def _probe(index: int, config: Config) -> Episode:
     """An episode where actions_taken[t] = t mod n_actions and rewards[t] = t, so a
-    one-step shift is not a plausible alternative reading of any array."""
+    one-step shift is not a plausible alternative reading of any array.
+
+    Relevance alternates so the probe set holds both halves of the §4.1 mixture; an
+    all-relevant probe set would take the sampler's fallback branch and never
+    exercise the pooling that routes the two losses apart.
+    """
     steps = config.burn_in + config.sequence + 8 + index
     shape = (steps + 1, config.resolution, config.resolution, config.channels)
     return Episode(
@@ -341,6 +347,7 @@ def _probe(index: int, config: Config) -> Episode:
         rewards=torch.arange(steps).float(),
         terminated=torch.zeros(steps, dtype=torch.bool),
         truncated=torch.zeros(steps, dtype=torch.bool),
+        relevant=index % 2 == 0,
     )
 
 

@@ -46,7 +46,7 @@ def train_representation(
     """
     import lpips
 
-    device = _device(config)
+    device = config.device
     torch.manual_seed(config.seed)
     encoder, decoder = Encoder(config).to(device), Decoder(config).to(device)
     perceptual = lpips.LPIPS(net="alex", verbose=False).to(device).eval()
@@ -82,7 +82,7 @@ def cache_latents(encoder: Encoder, episodes: list[Episode], config: Config) -> 
     mask makes chunked and fully recurrent encoding produce the same latent, which
     `scan_step_parity` asserts, so the cheap path is also the faithful one.
     """
-    device, digest = _device(config), _cache_digest(encoder, config)
+    device, digest = config.device, _cache_digest(encoder, config)
     cached = []
     for episode in episodes:
         frames = patchify(episode.observations[None], config.patch).to(device)
@@ -99,9 +99,9 @@ def cache_latents(encoder: Encoder, episodes: list[Episode], config: Config) -> 
 def train_dynamics(episodes: list[Episode], steps: int, config: Config) -> World:
     """Phase 1B, on the frozen cache. Agent slots are already present and masked,
     so no state shape changes at the Phase 2 boundary."""
-    device = _device(config)
+    device = config.device
     torch.manual_seed(config.seed + 1)
-    world = World(config).to(device)
+    world = _share_initialisation(World(config), config).to(device)
     optimiser = optimizer([world], config)
     balance: dict[str, float] = {}
     sampler, rng = _generators(config, 1)
@@ -122,7 +122,7 @@ def train_agent(episodes: list[Episode], world: World, steps: int, config: Confi
     setting so the heads are fitted across the sampled signal range rather than at
     one uniform condition they will never see again.
     """
-    device = _device(config)
+    device = config.device
     torch.manual_seed(config.seed + 2)
     heads = Heads(config).to(device)
     optimiser = optimizer([world, heads], config)
@@ -146,7 +146,7 @@ def train_actor(
     being scored inside. The reward and continuation body is frozen with it: they
     are the learned environment the actor is scored against, and a shared trunk
     would let policy gradients move them."""
-    device = _device(config)
+    device = config.device
     for parameter in world.parameters():
         parameter.requires_grad_(False)
     prior = copy.deepcopy(heads).eval()
@@ -176,6 +176,34 @@ def train_actor(
         }
         _update(optimiser, _balance(losses, balance, config), [heads], config, step)
     return heads
+
+
+def _share_initialisation(world: World, config: Config) -> World:
+    """Give both arms the same starting weights wherever they share a parameter.
+
+    A single `manual_seed` does not achieve this. Construction draws in order, and
+    the two time mixers consume different numbers of values, so every parameter
+    built after the first time layer -- all the space layers, the readout, the
+    registers -- lands on different numbers in the two arms. The Mamba-vs-attention
+    comparison would then also be a different-random-init comparison, on the one
+    axis the project exists to measure.
+
+    Names are the join: the arms' time layers live under disjoint attributes
+    (`attention` and `mamba`), so nothing arm-specific matches, and the shape check
+    keeps a future name collision from copying across a real difference.
+    """
+    if config.time_mixer == "attention":
+        return world
+    torch.manual_seed(config.seed + 1)
+    reference = World(replace(config, time_mixer="attention")).state_dict()
+    current = world.state_dict()
+    shared = {
+        name: tensor
+        for name, tensor in reference.items()
+        if name in current and current[name].shape == tensor.shape
+    }
+    world.load_state_dict(shared, strict=False)
+    return world
 
 
 def _balance(
@@ -224,11 +252,6 @@ def _cache_digest(encoder: Encoder, config: Config) -> str:
     return hashlib.sha256(repr((shape, visual, weights.hexdigest())).encode()).hexdigest()[:16]
 
 
-def _device(config: Config) -> str:
-    """One device for every arm. Whether a model uses Mamba is an architecture
-    choice; routing attention to CPU and Mamba to CUDA would make throughput,
-    memory and numerics incomparable across the only axis being measured."""
-    return config.device
 
 
 def _generators(config: Config, phase: int) -> tuple[torch.Generator, torch.Generator]:
@@ -236,7 +259,7 @@ def _generators(config: Config, phase: int) -> tuple[torch.Generator, torch.Gene
     seeded independently. Drawing one seed from the other fails outright when the
     device generator is CUDA, and couples two streams that should be separable."""
     sampler = torch.Generator().manual_seed(config.seed + phase)
-    model = torch.Generator(device=_device(config)).manual_seed(config.seed + 1000 + phase)
+    model = torch.Generator(device=config.device).manual_seed(config.seed + 1000 + phase)
     return sampler, model
 
 

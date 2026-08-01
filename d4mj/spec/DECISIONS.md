@@ -43,6 +43,10 @@ not an implementation detail. If the plan is wrong, fix the plan.
 | S40 | MSE on masked patches, LPIPS on the whole predicted frame | Scoring visible patches under MSE rewards copying, which masked autoencoding exists to avoid. That leaves `p = 0` images carrying perceptual signal alone, which is why LPIPS must not be composited. Eq. 5 masks neither term; both halves are declared |
 | S41 | A quarter of flow training rows carry the *rollout* prefix: every block but the last at the commit condition | Independent per-block draws make that joint prefix vanishingly rare -- measured, a 48-block prefix uniformly at the commit condition has probability 0.000000, while at rollout it is every prefix. Per block the condition is in distribution; the prefix never was. `commit_prefix_fraction` is `[DESIGN]`: it must be nonzero and small enough not to displace diffusion forcing |
 | S42 | The attention temperature is clamped, as the pinned source clamps it | S14 dropped the paper's logit soft capping alone; without the clamp too, nothing bounds the logits at all, and a runaway temperature saturates attention to one-hot with no diagnostic. The two decisions belong together |
+| S43 | Training data is a 50/50 mixture of **relevant** (task-accomplishing) and **uniform** sequences. Behaviour cloning is scored on the relevant half only; the **dynamics loss is scored on the uniform half only**. Reward and continuation are scored on everything | D4 §4.1, verbatim: "we use data mixture of 50% uniform sequences and 50% relevant sequences that accomplish one of the tasks. The behavioral cloning loss is applied only on the relevant fraction, while the dynamics loss is applied only on the uniform sequences **to avoid optimistic generations**." A dynamics model fitted only on successful play learns that things tend to go well, and imagination inherits it. Reward/continuation are not restricted because the paper restricts the other two by name and says the mixture amplifies signal *for* reward modelling; halving that head's data would be an addition, not a reading. Verified by execution: the dynamics loss is bitwise unchanged when relevant rows are perturbed and moves when uniform rows are, and BC is the exact mirror |
+| S44 | Blocks are gradient-checkpointed, and `batch` is **4** | The 6 GB probe, run per-configuration in fresh processes because in-process trials do not release memory and gave non-monotonic garbage. Phase 1A binds. Without checkpointing the declared architecture fits **only batch 1 at the short length** (2.69 GiB) and the long batch never fits -- the previous `batch: 8` was unreachable by 8x, so every phase-1A number to date would have come from a config that cannot run. With checkpointing: 3.00 GiB at batch 8 short, 3.07 GiB at batch 4 long. Batch 4 is the largest that runs *both* lengths, which D4's alternating short/long schedule requires. Checkpointing is exact -- measured bitwise-identical loss and gradients on attention, 1e-10 relative on Mamba from kernel nondeterminism -- so it moves cost, not results, and no Z*-defining field changed. Confirmed end to end: all four arms, all four phases, 3.20 GiB peak |
+| S45 | Both time mixers start from the same weights wherever they share a parameter | `manual_seed` alone does not achieve this. Construction draws in order and the two mixers consume different numbers of values, so every parameter built after the first time layer diverges. Measured: 36 of 99 shared tensors differed between the arms -- everything from block 4 onward -- so the Mamba-vs-attention comparison was also a different-random-init comparison, on the one axis the project exists to measure. Shared weights are now copied from the attention arm by name and shape; 99/99 identical |
+| S46 | The archived Craftax replay is **losslessly convertible but unusable as a training corpus on its own**, and regeneration must target the **uniform** half, not more expert data | Everything below verified by reading the artifact, not from its manifest alone. `artifacts/expert/craftax_expert_v1.pt` (8.6 GB) holds 320 episodes / 696,746 transitions at `mean_achievements` 20.62 of 22, with all 320 flagged deep-achievement. Conversion is exact: `obs` is `(2501, 3, 64, 64)` uint8 channels-first, zero-padded from 63x63 (row 63 and col 63 measured all-zero), so `[:, :, :63, :63]` then permute to HWC loses nothing. It stores only `continues`, so `terminated = continues == 0` and `truncated` is the 2500 cap. **But**: every episode is task-accomplishing, so under S43 the corpus is 100% relevant and 0% uniform -- the dynamics loss has no half to score and falls back to all-expert data, which is precisely the optimistic-generation regime §4.1 exists to prevent. Two further defects compound it: only 68 of 320 episodes terminate (252 hit the cap), so the continuation head sees almost no real terminations, and its expert has no byte-level provenance (`Craftax_Baselines@7ce36fa` is not pinned in `third_party/`). Per S29 it therefore stays a smoke-test corpus. What is missing is not more expert play -- 697k expert transitions is already ample for the relevant half -- but an equal mass of unfiltered rollouts, which also supplies the terminations |
 | S27 | Bounded encoder context `W`, part of `C*` — `z_t = Z*(x_{t−W+1..t})` everywhere | Phase 1A windows carry a `W−1` burn-in that is encoded but not scored; once frozen, each episode is scanned once and cached **under the same `W` limit** — an unbounded full-episode scan would produce a different `Z*` from deployment. `W` is not a capacity number: it defines the representation, so changing it changes every `z_t` and it must be frozen before the final encoder trains |
 | S28 | Match total **deployed** parameters within a declared tolerance while holding `d_model`, depth, token layout and shared interfaces fixed | Primary knob is Mamba's `d_state`, the only one that moves M-arm parameters without touching the shared backbone. Parameter counts move discretely, so `d_state` alone may not reach tolerance at a sane state size — any additional knob must be declared before training. Report the unmatched residual, FLOPs, memory, recurrent-state size and measured throughput regardless. The predecessor called arms matched in a comment while the temporal module differed by 29.6% |
 | S29 | Archived replay is for debugging and smoke tests only; regenerated replay backs every reported number | Its expert has no byte-level provenance and its terminal-window support is 58 windows. Keeping both uses named stops the old set from quietly becoming the final dataset, and keeps `expert.py` exercised |
@@ -133,11 +137,11 @@ config value, and each must be closed before the phase named.
 | **EMA views / masks / loss; faithful LeJEPA vs anti-collapse ablation** — is the EMA arm learning spatial invariance, temporal predictability, or both? | Stage B | `data.views`, `representation.representation_loss`, `representation.update_target` |
 | **Generated-prefix contract** — not just a length: the one-step term, the autoregressive term, rollout length, whether gradients pass the first prediction, relative weighting, whether the real predict-then-commit path is used, and how running-RMS treats the composite. Likely first version: one-step teacher-forced + two-step autoregressive, with the first prediction committed through the runtime path so the loss actually exercises `advance` | **Before Stage-A direct training** | `transition.transition_loss` |
 | **Go/no-go threshold *numbers*** — formulas exist now; scales come from the anchor or a pilot; numbers freeze **before any experimental cell is inspected**. Choosing them after all four cells train is not preregistration, whatever the intent | After the anchor, before inspecting Direct/Mamba cells | `Config` |
-| **Capacity**: `n_latents`, `d_bottleneck`, `n_spatial`, `k`, `depth`, `d_model`, `W`, `k_max`, sequence lengths — needs a 6 GB probe over the real worst cases (tokenizer training with decoder and gradients, long-sequence flow-Transformer training, Mamba training and parity, optimizer state and EMA copies), not forward inference. Invariant `n_latents = n_spatial × k` is a consequence of D4's packing, not a law | Phase 1A | `Config` fields only |
+| ~~**Capacity**~~ — **closed by S44**. The probe was run on the real worst case (Phase 1A: encoder + decoder + LPIPS + gradients + optimizer state, both sequence lengths). It did not move a single architecture field; it changed `batch` and turned on checkpointing. The remaining untested worst case is the EMA copy, which Stage B introduces | ~~Phase 1A~~ | `Config` |
 | **Imagination horizon** — set from measured multi-step accuracy, not inherited | Phase 3 | `Config` field, gated by `diagnostics.multistep_error` |
 | **Matching tolerance, final Mamba dimensions, and any declared fallback knob** — the *rule* is settled (S28); these are its numbers | **Before building the Stage-A models** | `diagnostics.cost`, `Config` |
 | **Executed-control metric definition** — primary score, seed set, episode count, paired comparison, sampled vs deterministic policy, control of the flow arm's deployment-corruption draw, BC and random controls, aggregation and intervals. Defined **before** Stage A; *run* at its exit. Defining it afterwards leaves room to pick whichever metric flatters the preferred arm | **Before Stage A** | `execution.run_episode`, `Result` |
-| **Expert regeneration settings, acceptance threshold and provenance record** — the *policy* is settled (S29); these are its parameters | Phase 1A | `expert.train_expert`, `expert.collect` |
+| **Expert regeneration settings, acceptance threshold and provenance record** — the *policy* is settled (S29) and the *target* is now settled (S46: regenerate for the uniform half, at parity with the relevant half). Still open: which policy generates the uniform half (random, early PPO checkpoints, epsilon-mixed expert, or a blend), the episode counts per half, the acceptance threshold defining "relevant" on Craftax's 22 achievements, and the provenance record | Phase 1A | `expert.train_expert`, `expert.collect` |
 
 ## Function plan
 
@@ -164,11 +168,15 @@ and `truncated` as separate raw fields; continuation is derived in `agent.py`.
 **`expert.py`** — `train_expert(config)`, `collect(params, config)`.
 
 **`data.py`** — `Episode` (Type, unshifted storage: `observations`,
-`actions_taken`, `rewards`, `terminated`, `truncated`), `Batch` (Type, block
-arrays: `patches`, `led_to_action`, targets, masks), `patchify(frames, patch)`,
-`episode_splits(n, seed)`, `sample_batch(episodes, rng, config)`,
-`save_episodes(path, episodes)`, `load_episodes(path)`,
-`views(batch, rng, config)`.
+`actions_taken`, `rewards`, `terminated`, `truncated`, `relevant`), `Batch` (Type,
+block arrays: `patches`, `led_to_action`, targets, masks, `relevant`),
+`patchify(frames, patch)`, `mixture_weight(rows)`, `episode_splits(n, seed)`,
+`sample_batch(episodes, rng, config)`, `save_episodes(path, episodes)`,
+`load_episodes(path)`, `views(batch, rng, config)`.
+
+`relevant` is the S43 mixture label and `mixture_weight` selects one half of it.
+It is public and lives here, not privately in each loss, because behaviour cloning
+and the dynamics loss select complementary halves and neither owns the rule.
 
 `Episode` and `Batch` are the two index conventions, deliberately named apart.
 
@@ -302,7 +310,14 @@ whole module set rather than the world alone.
 
 ## Totals
 
-19 types, 49 public functions and 18 private helpers, across 20 modules.
+19 types, 55 public functions and 32 private helpers, across 20 modules.
+
+The private count has grown from the planned 18. That is drift the contract exists
+to catch, and it is recorded rather than rounded away: the growth is real, most of
+it in `gates.py` and `train.py`, and it should be pushed back down before Stage B
+adds more. This sweep moved it in the right direction for the first time -- two
+`_device` copies deleted and a duplicated mixture fallback consolidated into one
+`data.mixture_weight` -- but consolidating the rest is outstanding work.
 
 ## Signatures corrected during implementation
 
@@ -369,3 +384,25 @@ term. Both are in the inventory.
 
 Still deferred, unchanged: `representation_loss` (Stage B) and
 `expert.train_expert` (regeneration settings), each raising rather than guessing.
+
+**Sweep of 2026-08-01.** Four more, each reproduced before being fixed:
+
+1. **The configured batch could not run.** Phase 1A at `batch: 8` OOMs on the 6 GB
+   card at every length; only batch 1 short fits. Every capacity claim to date came
+   from a config that cannot execute. Fixed by S44 (checkpointing, `batch: 4`), not
+   by shrinking the architecture. The first probe was itself wrong -- run in one
+   process it reported batch 2 fitting where batch 1 OOMed, because memory is not
+   released between trials; per-configuration subprocesses gave monotonic numbers.
+2. **The two arms trained from different initialisations** -- 36 of 99 shared
+   tensors, everything after the first time layer. Fixed by S45, measured 99/99.
+3. **The dynamics loss saw only expert play**, because no mixture existed. Fixed by
+   S43, verified bitwise: dynamics ignores relevant rows, BC ignores uniform rows.
+4. **`_device` was still duplicated** across `train.py` and `gates.py` -- the exact
+   duplication that caused an earlier defect when one copy was fixed and the other
+   missed. Both were by then identical passthroughs, so both are deleted and call
+   sites read `config.device`; the rationale moved onto the field itself.
+
+Not a defect, and recorded so it is not re-raised: no gate runs in a deployment
+dtype other than FP32 **because no other dtype exists** -- there is no autocast,
+bf16 or fp16 path anywhere in the system. A dtype gate would be gating a path that
+does not exist. It becomes real only if mixed precision is ever introduced.

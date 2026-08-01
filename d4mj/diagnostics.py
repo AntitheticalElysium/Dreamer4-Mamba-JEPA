@@ -2,12 +2,13 @@ import time
 
 import torch
 from torch import Tensor, nn
+from torch.utils.flop_counter import FlopCounterMode
 
 from .agent import Heads, head_targets
 from .config import Config
 from .data import Batch
 from .state import WorldState
-from .transition import World, advance, initial
+from .transition import World, advance, initial, transition_loss
 
 
 @torch.no_grad()
@@ -89,6 +90,22 @@ def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[st
     so a single 'state size' would overstate what the substitution buys. Timing runs
     on the configured device after warm-up, synchronised, since an unsynchronised
     CUDA timer measures queueing rather than compute.
+
+    Both throughputs are reported, because they answer different questions and the
+    substitution can move them in opposite directions: `steps_per_second` is one
+    imagined step at batch 1, which is what the actor pays, and
+    `train_steps_per_second` is a full forward and backward over a real sequence,
+    which is what the schedule pays. A flow arm spending `rungs + 1` backbone passes
+    per imagined step looks far worse on the first than on the second. Phase 3
+    freezes the world, so the training measurement re-enables gradients for its own
+    duration and restores the flags; otherwise a world measured after Phase 3 would
+    report no training cost at all rather than failing.
+
+    `flops_per_step` is measured, not derived from a parameter count, but it counts
+    dispatched aten operations: a fused kernel that never dispatches them is
+    invisible to it. That is why it is reported *beside* wall-clock time rather than
+    instead of it -- for the Mamba arm the two must be read together, and a FLOP
+    figure alone would silently favour whichever arm fuses more.
     """
     device, deployed = config.device, {"encoder", "world", "heads"}
     counts = {name: sum(p.numel() for p in m.parameters()) for name, m in modules.items()}
@@ -109,6 +126,41 @@ def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[st
         if device == "cuda":
             torch.cuda.synchronize()
         elapsed = time.perf_counter() - start
+    peak = float(torch.cuda.max_memory_allocated()) if device == "cuda" else 0.0
+
+    counter = FlopCounterMode(display=False)
+    with torch.no_grad(), counter:
+        advance(world, state, action, rng, config)
+    flops = counter.get_total_flops()
+
+    probe = Batch(
+        led_to_action=torch.zeros(config.batch, config.sequence, dtype=torch.long, device=device),
+        reward=torch.zeros(config.batch, config.sequence, device=device),
+        terminated=torch.zeros(config.batch, config.sequence, dtype=torch.bool, device=device),
+        truncated=torch.zeros(config.batch, config.sequence, dtype=torch.bool, device=device),
+        valid=torch.ones(config.batch, config.sequence, dtype=torch.bool, device=device),
+        relevant=torch.zeros(config.batch, dtype=torch.bool, device=device),
+        burn_in=0,
+        latents=torch.randn(
+            config.batch, config.sequence, config.n_spatial, config.d_spatial, device=device
+        ).tanh(),
+    )
+    frozen = [p for p in world.parameters() if not p.requires_grad]
+    for parameter in frozen:
+        parameter.requires_grad_(True)
+    for repeat in range(6):
+        if repeat == 2:
+            if device == "cuda":
+                torch.cuda.synchronize()
+            train_start = time.perf_counter()
+        world.zero_grad()
+        transition_loss(world, probe, rng, config).backward()
+    if device == "cuda":
+        torch.cuda.synchronize()
+    train_elapsed = time.perf_counter() - train_start
+    world.zero_grad(set_to_none=True)
+    for parameter in frozen:
+        parameter.requires_grad_(False)
 
     horizon, other, distance = 0, torch.randn_like(latent).tanh(), 1
     with torch.no_grad():
@@ -137,7 +189,9 @@ def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[st
         * 2
         if encoder is not None
         else 0,
-        "peak_bytes": float(torch.cuda.max_memory_allocated()) if device == "cuda" else 0.0,
+        "peak_bytes": peak,
         "steps_per_second": 16.0 / elapsed,
+        "train_steps_per_second": 4.0 / train_elapsed,
+        "flops_per_step": float(flops),
         "backbone_passes_per_step": config.rungs + 1 if config.transition == "flow" else 1,
     }

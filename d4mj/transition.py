@@ -4,6 +4,7 @@ from torch import Tensor, nn
 
 from .backbone import AGENT, REGISTER, SPATIAL, Backbone, Layout
 from .config import Config
+from .data import mixture_weight
 from .representation import Encoder, pack
 from .state import Memory, RealState, WorldState
 
@@ -256,11 +257,11 @@ def _direct_loss(world: World, batch, rng: torch.Generator, config: Config) -> T
     features, agent, memory = world(None, batch.led_to_action, committed, conditioning)
     taken = batch.led_to_action[:, 1:]
     predicted = world.predict(features[:, :-1], taken)
-    teacher = (predicted - batch.latents[:, 1:]).pow(2).mean()
+    teacher = (predicted - batch.latents[:, 1:]).pow(2).mean(dim=(1, 2, 3))
 
     length = batch.latents.shape[1]
     if length < 3:
-        return teacher, agent
+        return _uniform_mean(teacher, batch), agent
 
     prefix, _, memory = world(
         None, batch.led_to_action[:, :-2], committed[:, :-2], conditioning[:, :-2]
@@ -268,9 +269,9 @@ def _direct_loss(world: World, batch, rng: torch.Generator, config: Config) -> T
     state = WorldState(batch.latents[:, -3:-2], memory, length - 2, prefix[:, -1:])
     first, rolled = advance(world, state, batch.led_to_action[:, -2:-1], rng, config)
     second = world.predict(first.features, batch.led_to_action[:, -1:])
-    rollout = (first.latent - batch.latents[:, -2:-1]).pow(2).mean()
-    rollout = rollout + (second - batch.latents[:, -1:]).pow(2).mean()
-    return teacher + rollout, torch.cat([agent[:, :-1], rolled], dim=1)
+    rollout = (first.latent - batch.latents[:, -2:-1]).pow(2).mean(dim=(1, 2, 3))
+    rollout = rollout + (second - batch.latents[:, -1:]).pow(2).mean(dim=(1, 2, 3))
+    return _uniform_mean(teacher + rollout, batch), torch.cat([agent[:, :-1], rolled], dim=1)
 
 
 def _shortcut_loss(world: World, batch, rng: torch.Generator, config: Config) -> Tensor:
@@ -297,7 +298,20 @@ def _shortcut_loss(world: World, batch, rng: torch.Generator, config: Config) ->
     self_loss = ((1.0 - tau) ** 2 * (velocity - bootstrap).pow(2)).mean(dim=(2, 3))
 
     combined = weight.squeeze(-1).squeeze(-1) * torch.where(finest, flow, self_loss)
-    return combined.mean(), agent
+    return _uniform_mean(combined.mean(dim=1), batch), agent
+
+
+def _uniform_mean(per_row: Tensor, batch) -> Tensor:
+    """Average the dynamics loss over the uniform half of the mixture only.
+
+    Dreamer 4 applies it "only on the uniform sequences to avoid optimistic
+    generations" (§4.1): a dynamics model fitted on task-accomplishing play alone
+    learns that things tend to go well, and imagination inherits that. The
+    empty-half fallback lives in `mixture_weight`, shared with the mirror-image
+    selection behaviour cloning makes.
+    """
+    uniform = mixture_weight(~batch.relevant)
+    return (per_row * uniform).sum() / uniform.sum()
 
 
 def _bootstrap_target(world: World, batch, corrupted, conditioning, tau, config: Config) -> Tensor:

@@ -4,6 +4,7 @@ from dataclasses import dataclass
 import torch
 import torch.nn.functional as F
 from torch import Tensor, nn
+from torch.utils.checkpoint import checkpoint
 
 from .config import Config
 from .state import Memory
@@ -184,6 +185,7 @@ class Backbone(nn.Module):
     def __init__(self, config: Config, layout: Layout, mode: str, d_model: int, n_heads: int, depth: int, context: int | None = None):
         super().__init__()
         mask = space_mask(layout, mode, agent_active=True)
+        self.checkpointing = config.gradient_checkpointing
         self.blocks = nn.ModuleList(
             Block(config, mask, index, d_model, n_heads, context) for index in range(depth)
         )
@@ -196,6 +198,14 @@ class Backbone(nn.Module):
         step accepts one token. Attention may decode several, because `_decode_mask`
         keeps them causal against each other -- which is what lets the frozen
         encoder cache an episode in chunks rather than one dense call.
+
+        Blocks are recomputed in the backward pass rather than stored, which is what
+        makes the declared architecture fit 6 GB at all: measured, Phase 1A goes from
+        fitting only batch 1 at the short length to fitting batch 8 short and batch 4
+        long. It is exact -- the same values, computed twice -- so it changes cost,
+        not results. It is skipped whenever there is nothing to recompute for: with
+        gradients off, and on the cached/recurrent path, where `memory` is carried
+        and re-entering a block would discard the state it returned.
         """
         recurrent = any(type(b.time).__name__ == "TimeMamba" for b in self.blocks if b.mixes_time)
         assert memory is None or x.shape[1] == 1 or not recurrent, (
@@ -205,8 +215,13 @@ class Backbone(nn.Module):
         assert memory is None or len(memory) == expected, "memory does not match the time layers"
         carried = iter(memory if memory is not None else ())
         updated: list[tuple[Tensor, Tensor]] = []
+        recompute = self.checkpointing and memory is None and torch.is_grad_enabled()
         for block in self.blocks:
-            x, state = block(x, next(carried, None) if block.mixes_time else None, offset)
+            state = next(carried, None) if block.mixes_time else None
+            if recompute:
+                x, state = checkpoint(block, x, state, offset, use_reentrant=False)
+            else:
+                x, state = block(x, state, offset)
             if block.mixes_time:
                 updated.append(state)
         return x, tuple(updated)
