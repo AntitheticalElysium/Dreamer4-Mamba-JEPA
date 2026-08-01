@@ -117,6 +117,7 @@ def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[st
         terminated=torch.zeros(config.batch, config.sequence, dtype=torch.bool, device=device),
         truncated=torch.zeros(config.batch, config.sequence, dtype=torch.bool, device=device),
         valid=torch.ones(config.batch, config.sequence, dtype=torch.bool, device=device),
+        scored=torch.ones(config.batch, config.sequence, dtype=torch.bool, device=device),
         burn_in=0,
         latents=torch.randn(
             config.batch, config.sequence, config.n_spatial, config.d_spatial, device=device

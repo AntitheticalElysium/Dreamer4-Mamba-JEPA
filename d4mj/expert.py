@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Callable
 
 import torch
@@ -6,9 +7,52 @@ from .config import Config
 from .data import Episode
 from .env import reset, step
 
+ARCHIVE = "d4_mamba_jepa_craftax_expert_replay_v1"
 
-def train_expert(config: Config):
-    raise NotImplementedError("regeneration settings and acceptance threshold are open")
+
+def load_archive(path: Path, config: Config, limit: int | None = None) -> list[Episode]:
+    """The archived Craftax replay, converted to `Episode` without re-encoding.
+
+    It replaces `train_expert`: the archive already holds an expert whose weights
+    are hashed in its manifest, so there is nothing to retrain. What is missing from
+    it is the *uniform* half, which `collect` produces from any unfiltered policy
+    and needs no expert at all.
+
+    Conversion is exact and lazy. Frames are stored CHW at 64x64, zero-padded from
+    Craftax's native 63x63; the crop and the permute are both views, so an episode
+    costs nothing until a window indexes it and the 8.6 GB file is never resident.
+
+    Two fields are reconstructed rather than read, because the archive does not
+    separate them. `terminated` is `continues == 0`, which is death only: Craftax's
+    native horizon is 10000 and the archive capped at 2500, so no episode there ever
+    reached it. `truncated` therefore marks the last transition of every episode
+    that did not die -- 252 of 320 -- and that cap is ours, not the environment's.
+
+    `events` comes from the per-frame cumulative achievements the archive already
+    stores, which is what makes its windows usable by the relevant sampler.
+    """
+    payload = torch.load(path, weights_only=False, mmap=True)
+    episodes = []
+    for record in payload[:limit]:
+        steps = len(record["actions"])
+        terminated = record["continues"] == 0
+        truncated = torch.zeros(steps, dtype=torch.bool)
+        if not bool(terminated.any()):
+            truncated[-1] = True
+        unlocked = record["achievements"].sum(-1)
+        episodes.append(
+            Episode(
+                observations=record["obs"][:, :, : config.resolution, : config.resolution].permute(
+                    0, 2, 3, 1
+                ),
+                actions_taken=record["actions"],
+                rewards=record["rewards"],
+                terminated=terminated,
+                truncated=truncated,
+                events=unlocked[1:] > unlocked[:-1],
+            )
+        )
+    return episodes
 
 
 def collect(

@@ -9,6 +9,7 @@ from .agent import Heads, head_loss, head_targets
 from .config import Config
 from .data import FORMAT, Batch, Episode, patchify, sample_batch
 from .imagination import imagine
+from .checkpoint import load, save
 from .representation import Decoder, Encoder, pack, reconstruction_loss
 from .sources import source_digests
 from .state import WorldState
@@ -35,14 +36,15 @@ def optimizer(modules: list[nn.Module], config: Config) -> torch.optim.AdamW:
 
 
 def train_representation(
-    episodes: list[Episode], steps: int, config: Config
+    episodes: list[Episode], steps: int, config: Config, checkpoint=None
 ) -> tuple[Encoder, Decoder, list[Episode]]:
     """Phase 1A, returning the frozen encoder, its decoder, and the latent cache.
 
-    Windows carry a burn-in that updates encoder memory and scores nothing, so
-    every scored latent has the history it will have at deployment. The cache is
-    then written under that same bounded window -- scanning whole episodes
-    unbounded would give the same frame a different latent than deployment does.
+    `batch.scored` decides which blocks the loss uses, per row: a block counts once
+    it holds a full receptive field, and unconditionally in a window that starts at
+    the episode start, where nothing earlier is missing. The cache is written under
+    the same bounded window -- scanning whole episodes unbounded would give the same
+    frame a different latent than deployment does.
     """
     import lpips
 
@@ -56,18 +58,21 @@ def train_representation(
     optimiser = optimizer([encoder, decoder], config)
     sampler, rng = _generators(config, 0)
     balance: dict[str, float] = {}
+    bundle = [encoder, decoder, optimiser]
+    start = _checkpoint(checkpoint, config, bundle, balance, sampler, rng)
 
-    for step in range(steps):
+    for step in range(start, steps):
         batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
         z, _, masked = encoder(batch.patches, p_mask=config.mae_p_max, rng=rng)
         predicted, _ = decoder(z)
-        scored = slice(batch.burn_in, None)
         losses = reconstruction_loss(
-            predicted[:, scored], batch.patches[:, scored], masked[:, scored], perceptual, config
+            predicted, batch.patches, masked, batch.scored, perceptual, config
         )
         weights = {"lpips": config.lpips_weight}
         loss = _balance(losses, balance, config, weights)
         _update(optimiser, loss, [encoder, decoder], config, step)
+        if checkpoint is not None and (step + 1) % config.checkpoint_every == 0:
+            _checkpoint(checkpoint, config, bundle, balance, sampler, rng, step + 1)
 
     encoder.eval()
     return encoder, decoder.eval(), cache_latents(encoder, episodes, config)
@@ -96,7 +101,7 @@ def cache_latents(encoder: Encoder, episodes: list[Episode], config: Config) -> 
     return cached
 
 
-def train_dynamics(episodes: list[Episode], steps: int, config: Config) -> World:
+def train_dynamics(episodes: list[Episode], steps: int, config: Config, checkpoint=None) -> World:
     """Phase 1B, on the frozen cache. Agent slots are already present and masked,
     so no state shape changes at the Phase 2 boundary."""
     device = config.device
@@ -105,15 +110,20 @@ def train_dynamics(episodes: list[Episode], steps: int, config: Config) -> World
     optimiser = optimizer([world], config)
     balance: dict[str, float] = {}
     sampler, rng = _generators(config, 1)
+    start = _checkpoint(checkpoint, config, [world, optimiser], balance, sampler, rng)
 
-    for step in range(steps):
+    for step in range(start, steps):
         batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
         loss = _balance({"dynamics": transition_loss(world, batch, rng, config)}, balance, config)
         _update(optimiser, loss, [world], config, step)
+        if checkpoint is not None and (step + 1) % config.checkpoint_every == 0:
+            _checkpoint(checkpoint, config, [world, optimiser], balance, sampler, rng, step + 1)
     return world
 
 
-def train_agent(episodes: list[Episode], world: World, steps: int, config: Config) -> Heads:
+def train_agent(
+    episodes: list[Episode], world: World, steps: int, config: Config, checkpoint=None
+) -> Heads:
     """Phase 2. The dynamics objective continues alongside the head losses, which
     keeps the world model from drifting while the heads fit it.
 
@@ -128,18 +138,27 @@ def train_agent(episodes: list[Episode], world: World, steps: int, config: Confi
     optimiser = optimizer([world, heads], config)
     sampler, rng = _generators(config, 2)
     balance: dict[str, float] = {}
+    bundle = [world, heads, optimiser]
+    start = _checkpoint(checkpoint, config, bundle, balance, sampler, rng)
 
-    for step in range(steps):
+    for step in range(start, steps):
         batch = _to(sample_batch(episodes, sampler, config, step, steps, mixture=True), device)
         dynamics, agent = transition_loss(world, batch, rng, config, return_agent=True)
         readout = heads(agent) | {"centers": heads.centers}
         losses = {"dynamics": dynamics} | head_loss(readout, head_targets(batch, config), config)
         _update(optimiser, _balance(losses, balance, config), [world, heads], config, step)
+        if checkpoint is not None and (step + 1) % config.checkpoint_every == 0:
+            _checkpoint(checkpoint, config, bundle, balance, sampler, rng, step + 1)
     return heads
 
 
 def train_actor(
-    episodes: list[Episode], world: World, heads: Heads, steps: int, config: Config
+    episodes: list[Episode],
+    world: World,
+    heads: Heads,
+    steps: int,
+    config: Config,
+    checkpoint=None,
 ) -> Heads:
     """Phase 3. The world is frozen and the behaviour-cloned policy is copied and
     frozen as the prior, so the actor cannot improve by reshaping the model it is
@@ -158,8 +177,9 @@ def train_actor(
     sampler, rng = _generators(config, 3)
     policy_rng = torch.Generator(device=device).manual_seed(config.seed + 2**20)
     balance: dict[str, float] = {}
+    start = _checkpoint(checkpoint, config, [heads, optimiser], balance, sampler, rng)
 
-    for step in range(steps):
+    for step in range(start, steps):
         batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
         with torch.no_grad():
             committed, conditioning = commit_inputs(batch.latents, rng, config)
@@ -175,7 +195,31 @@ def train_actor(
             "critic": critic_loss(heads(trajectory.agent[:, :-1])["value"], returns, heads.centers),
         }
         _update(optimiser, _balance(losses, balance, config), [heads], config, step)
+        if checkpoint is not None and (step + 1) % config.checkpoint_every == 0:
+            _checkpoint(checkpoint, config, [heads, optimiser], balance, sampler, rng, step + 1)
     return heads
+
+
+def _checkpoint(path, config: Config, modules: list, balance: dict, sampler, rng, step=None) -> int:
+    """Both directions of a mid-phase resume: with `step` it saves, without it
+    restores and returns the step to continue from.
+
+    Optimizer state, the running-RMS normalisers and both generator streams all
+    travel. Restoring only the weights restarts every normaliser -- rescaling every
+    objective on the first step back -- and replays every window and every noise
+    draw from zero, which is not a resume.
+    """
+    named = {f"part{index}": module for index, module in enumerate(modules)}
+    if step is not None:
+        save(path, config, step=step, balance=balance,
+             generators=generator_state(sampler, rng), **named)
+        return step
+    if path is None or not path.exists():
+        return 0
+    stored = load(path, config, balance=balance, **named)["modules"]
+    sampler.set_state(stored["generators"]["sampler"])
+    rng.set_state(stored["generators"]["model"])
+    return int(stored["step"])
 
 
 def _share_initialisation(world: World, config: Config) -> World:
@@ -209,10 +253,9 @@ def _balance(
 ) -> torch.Tensor:
     """Dreamer 4 normalises concurrent losses by running RMS estimates, which makes
     a coefficient a relative weight rather than a scale accident. `state` is a plain
-    dict, which `checkpoint.save` accepts alongside modules. No driver checkpoints
-    mid-phase yet, so it is currently per-call state: a resumed phase would restart
-    every normaliser and rescale every objective, and that is registered rather
-    than papered over.
+    dict, which `checkpoint.save` accepts alongside modules, so `_checkpoint` carries
+    it through a resume -- restoring weights alone would restart every normaliser and
+    rescale every objective on the first step back.
 
     `weights` apply *after* normalisation. A coefficient folded into the loss first
     is divided straight back out by that loss's own RMS -- measured, 0.2 and 5.0

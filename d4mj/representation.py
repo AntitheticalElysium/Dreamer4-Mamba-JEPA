@@ -124,7 +124,7 @@ def pack(z: Tensor, config: Config) -> Tensor:
 
 
 def reconstruction_loss(
-    predicted: Tensor, target: Tensor, masked: Tensor, perceptual, config: Config
+    predicted: Tensor, target: Tensor, masked: Tensor, scored: Tensor, perceptual, config: Config
 ) -> dict[str, Tensor]:
     """Dreamer 4's equation 5: masked-patch MSE plus 0.2 LPIPS.
 
@@ -141,13 +141,15 @@ def reconstruction_loss(
     §3.1 draws p ~ U(0, 0.9) to keep in distribution, and the condition the frozen
     encoder is deployed under. Equation 5 masks neither term.
     """
+    rows = scored.float()[..., None]
     error = (predicted - target).pow(2).mean(-1)
-    weight = masked.float()
+    weight = masked.float() * rows
     mse = (error * weight).sum() / weight.sum().clamp(min=1.0)
 
     frames = unpatchify(predicted, config) * 2 - 1
     truth = unpatchify(target, config) * 2 - 1
-    lpips = perceptual(frames.flatten(0, 1), truth.flatten(0, 1)).mean()
+    per_frame = perceptual(frames.flatten(0, 1), truth.flatten(0, 1)).view(scored.shape)
+    lpips = (per_frame * scored.float()).sum() / scored.float().sum().clamp(min=1.0)
     return {"mse": mse, "lpips": lpips}
 
 

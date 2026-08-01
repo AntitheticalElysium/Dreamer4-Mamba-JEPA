@@ -51,9 +51,16 @@ class Batch:
     """Block arrays under the led-to convention: block `i` holds the action that
     *produced* its observation, and the reward that arrived with it.
 
-    `burn_in` leading blocks update encoder memory and score nothing. `valid` marks
-    blocks whose incoming transition exists -- false only at a true episode start.
-    Exactly one of `patches` and `latents` is populated, by phase.
+    `scored` marks blocks whose encoder history is the history they would have at
+    deployment, so the reconstruction loss may use them. It is per block and per
+    row, not one leading count (S31 withdrawn): a window starting at the episode
+    start is missing nothing, so its earliest blocks are faithful at their own
+    shorter history and must be scored. A single integer masked them out of every
+    batch, which is why the first `receptive_field - 1` states of an episode --
+    exactly the states deployment begins from -- were never supervised.
+
+    `valid` marks blocks whose incoming transition exists -- false only at a true
+    episode start. Exactly one of `patches` and `latents` is populated, by phase.
 
     `relevant` is the **sampling role** of a row, not a property of its data, and
     is `None` during pretraining, where D4 applies no mixture and every row is
@@ -66,6 +73,7 @@ class Batch:
     terminated: Tensor
     truncated: Tensor
     valid: Tensor
+    scored: Tensor
     burn_in: int
     relevant: Tensor | None = None
     patches: Tensor | None = None
@@ -76,7 +84,7 @@ def patchify(frames: Tensor, patch: int) -> Tensor:
     """(B, T, H, W, C) uint8 -> (B, T, n_patches, patch_dim) float in [0, 1]."""
     b, t, h, w, c = frames.shape
     grid = h // patch
-    tiles = frames.view(b, t, grid, patch, grid, patch, c).permute(0, 1, 2, 4, 3, 5, 6)
+    tiles = frames.reshape(b, t, grid, patch, grid, patch, c).permute(0, 1, 2, 4, 3, 5, 6)
     return tiles.reshape(b, t, grid * grid, patch * patch * c).float() / 255.0
 
 
@@ -117,6 +125,11 @@ def sample_batch(
 
     Nothing falls back to the other pool. A silent substitution would train dynamics
     on task-accomplishing play, which is the one thing the mixture exists to prevent.
+
+    A quarter of the uniformly drawn rows start at the episode start. Those are the
+    only windows whose earliest blocks are scorable at all (see `_window`), and at a
+    uniform start they arrive with probability 1/span -- about 0.5% here -- so the
+    states deployment actually begins from would be supervised essentially never.
     """
     cached = [episode.latents is not None for episode in episodes]
     assert len(set(cached)) == 1, "cache is present on some episodes and missing on others"
@@ -145,6 +158,8 @@ def sample_batch(
             event = int(events[int(torch.randint(len(events), (1,), generator=rng))])
             low, high = max(0, event - length + 1), min(span, event)
             start = low + int(torch.randint(high - low + 1, (1,), generator=rng))
+        elif row % 4 == 0:
+            start = 0
         else:
             start = int(torch.randint(span + 1, (1,), generator=rng))
         chosen.append(episode)
@@ -158,13 +173,25 @@ def sample_batch(
 
 def _window(episode: Episode, start: int, length: int, config: Config) -> dict[str, Tensor]:
     """One window in block coordinates. Block `i` covers episode step `start + i`;
-    its incoming transition is `start + i - 1`, which exists unless that is -1."""
+    its incoming transition is `start + i - 1`, which exists unless that is -1.
+
+    Block `i` sees `i + 1` frames of history from this window against the
+    `start + i + 1` it has in the episode, so it is faithful once it holds a full
+    receptive field, and unconditionally when the window starts at the episode
+    start -- there is nothing earlier to be missing.
+    """
     steps = torch.arange(start, start + length)
     incoming = steps - 1
     valid = incoming >= 0
     source = incoming.clamp(min=0)
-
     cached = episode.latents is not None
+    depth = torch.arange(length) + 1
+    scored = (
+        torch.ones(length, dtype=torch.bool)
+        if cached
+        else (depth >= config.receptive_field) | torch.tensor(start == 0)
+    )
+
     frames = (
         episode.latents[steps] if cached else patchify(episode.observations[steps][None], config.patch)[0]
     )
@@ -176,6 +203,7 @@ def _window(episode: Episode, start: int, length: int, config: Config) -> dict[s
         "terminated": episode.terminated[source] & valid,
         "truncated": episode.truncated[source] & valid,
         "valid": valid,
+        "scored": scored,
         "latents" if cached else "patches": frames,
     }
 

@@ -88,6 +88,7 @@ class Config:
     weight_decay: float = 1e-2
     grad_clip: float = 1.0
     warmup: int = 1000
+    checkpoint_every: int = 500
     ema_momentum: tuple[float, float] = (0.996, 1.0)
 
     seed: int = 20260731

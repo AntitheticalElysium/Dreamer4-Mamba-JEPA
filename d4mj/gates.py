@@ -188,6 +188,7 @@ def _observation_dependence(config: Config) -> None:
         terminated=torch.zeros(2, 4, dtype=torch.bool, device=device),
         truncated=torch.zeros(2, 4, dtype=torch.bool, device=device),
         valid=torch.ones(2, 4, dtype=torch.bool, device=device),
+        scored=torch.ones(2, 4, dtype=torch.bool, device=device),
         burn_in=0,
         latents=torch.randn(2, 4, config.n_spatial, config.d_spatial, device=device).tanh(),
     )
@@ -236,6 +237,7 @@ def _conditioning_coverage(config: Config) -> None:
             terminated=torch.zeros(4, 6, dtype=torch.bool, device=device),
             truncated=torch.zeros(4, 6, dtype=torch.bool, device=device),
             valid=torch.ones(4, 6, dtype=torch.bool, device=device),
+            scored=torch.ones(4, 6, dtype=torch.bool, device=device),
             burn_in=0,
             latents=torch.randn(4, 6, config.n_spatial, config.d_spatial, device=device).tanh(),
         )
@@ -253,20 +255,22 @@ def _conditioning_coverage(config: Config) -> None:
 def reset_parity(config: Config) -> None:
     """A fresh state must not remember a previous episode. Constructing rather than
     clearing makes this true by type, so the gate exists to catch a caller that
-    threads memory across a boundary anyway."""
+    threads memory across a boundary anyway.
+
+    The two branches are handed the *same* committed tensor and conditioning and
+    differ only in the memory passed in, so a difference cannot be a fresh
+    corruption draw. Comparing `initial` against `advance` instead confounds the
+    two: `initial` commits its own noise, and for the flow arm that alone moves the
+    output with memory entirely inert.
+    """
     device = config.device
     world = _world(config)
-    rng = torch.Generator(device=device).manual_seed(0)
-    latent = torch.randn(2, 1, config.n_spatial, config.d_spatial, device=device).tanh()
-    action = torch.zeros(2, 1, dtype=torch.long, device=device)
+    committed, conditioning, action, memory = _isolated(world, config)
 
     with torch.no_grad():
-        start, _ = initial(world, latent, action, rng, config)
-        carried, _ = advance(world, start, action, rng, config)
-        follow, _ = advance(world, carried, action, torch.Generator(device=device).manual_seed(1), config)
-        blank, _ = initial(world, carried.latent, action, rng, config)
-        fresh, _ = advance(world, blank, action, torch.Generator(device=device).manual_seed(1), config)
-    assert not torch.allclose(follow.latent, fresh.latent, atol=1e-6), "history had no effect"
+        with_history, _, _ = world(memory, action, committed, conditioning, 4)
+        without, _, _ = world(None, action, committed, conditioning, 0)
+    assert not torch.allclose(with_history, without, atol=1e-6), "history had no effect"
 
 
 def firewall(config: Config) -> None:
@@ -304,29 +308,43 @@ def recurrent_carry(config: Config) -> None:
     """The rollout must actually depend on history. A model that ignores its own
     memory passes every one-step loss and produces a constant trajectory.
 
-    Both branches re-seed the generator identically, so a difference is history
-    rather than a fresh corruption draw -- without that the flow arm's commit noise
-    alone would satisfy the assertion.
+    Deep and shallow memory are compared against one identical committed tensor, so
+    the difference is the memory and nothing else. Re-seeding the generator is not
+    enough on its own: `initial` and `advance` commit at different points in the
+    stream, and for the flow arm that draw alone moves the output.
 
     This is also the only place the flow arm's history dependence is tested:
     `_observation_dependence` compares `World.predict`, which for flow reads the
     current block's own corrupted latent and would pass with all history ignored.
     """
-    device = config.device
     world = _world(config)
+    committed, conditioning, action, memory = _isolated(world, config)
+
+    with torch.no_grad():
+        deep, _, _ = world(memory, action, committed, conditioning, 4)
+        shallow, _, _ = world(None, action, committed, conditioning, 0)
+    assert not torch.allclose(deep, shallow, atol=1e-6), "memory is inert"
+    _conditioning_coverage(config)
+
+
+def _isolated(world, config: Config):
+    """One committed block plus the memory of a four-block prefix, so a caller can
+    vary memory alone. Every history gate needs exactly this and none of them can
+    build it from `advance`, which redraws corruption at each call."""
+    from .transition import commit_inputs
+
+    device = config.device
     rng = torch.Generator(device=device).manual_seed(0)
+    prefix = torch.randn(2, 4, config.n_spatial, config.d_spatial, device=device).tanh()
     latent = torch.randn(2, 1, config.n_spatial, config.d_spatial, device=device).tanh()
+    actions = torch.zeros(2, 4, dtype=torch.long, device=device)
     action = torch.zeros(2, 1, dtype=torch.long, device=device)
 
     with torch.no_grad():
-        deep, _ = initial(world, latent, action, rng, config)
-        for _ in range(4):
-            deep, _ = advance(world, deep, action, torch.Generator(device=device).manual_seed(3), config)
-        blank, _ = initial(world, deep.latent, action, rng, config)
-        shallow, _ = advance(world, blank, action, torch.Generator(device=device).manual_seed(3), config)
-        stepped, _ = advance(world, deep, action, torch.Generator(device=device).manual_seed(3), config)
-    assert not torch.allclose(stepped.latent, shallow.latent, atol=1e-6), "memory is inert"
-    _conditioning_coverage(config)
+        history, history_conditioning = commit_inputs(prefix, rng, config)
+        _, _, memory = world(None, actions, history, history_conditioning)
+        committed, conditioning = commit_inputs(latent, rng, config)
+    return committed, conditioning, action, memory
 
 
 
