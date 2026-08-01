@@ -59,7 +59,7 @@ def train_representation(
     sampler, rng = _generators(config, 0)
     balance: dict[str, float] = {}
     bundle, streams = [encoder, decoder, optimiser], {"sampler": sampler, "model": rng}
-    resume = _checkpoint(checkpoint, config, bundle, balance, streams)
+    resume = _checkpoint(checkpoint, config, bundle, balance, streams, contract=f"1A:{steps}")
 
     for step in range(resume, steps):
         batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
@@ -72,7 +72,7 @@ def train_representation(
         loss = _balance(losses, balance, config, weights)
         _update(optimiser, loss, [encoder, decoder], config, step)
         if checkpoint is not None and (step + 1) % config.checkpoint_every == 0:
-            _checkpoint(checkpoint, config, bundle, balance, streams, step + 1)
+            _checkpoint(checkpoint, config, bundle, balance, streams, step + 1, f"1A:{steps}")
 
     encoder.eval()
     return encoder, decoder.eval(), cache_latents(encoder, episodes, config)
@@ -111,14 +111,14 @@ def train_dynamics(episodes: list[Episode], steps: int, config: Config, checkpoi
     balance: dict[str, float] = {}
     sampler, rng = _generators(config, 1)
     streams = {"sampler": sampler, "model": rng}
-    resume = _checkpoint(checkpoint, config, [world, optimiser], balance, streams)
+    resume = _checkpoint(checkpoint, config, [world, optimiser], balance, streams, contract=f"1B:{steps}")
 
     for step in range(resume, steps):
         batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
         loss = _balance({"dynamics": transition_loss(world, batch, rng, config)}, balance, config)
         _update(optimiser, loss, [world], config, step)
         if checkpoint is not None and (step + 1) % config.checkpoint_every == 0:
-            _checkpoint(checkpoint, config, [world, optimiser], balance, streams, step + 1)
+            _checkpoint(checkpoint, config, [world, optimiser], balance, streams, step + 1, f"1B:{steps}")
     return world
 
 
@@ -140,7 +140,7 @@ def train_agent(
     sampler, rng = _generators(config, 2)
     balance: dict[str, float] = {}
     bundle, streams = [world, heads, optimiser], {"sampler": sampler, "model": rng}
-    resume = _checkpoint(checkpoint, config, bundle, balance, streams)
+    resume = _checkpoint(checkpoint, config, bundle, balance, streams, contract=f"2:{steps}")
 
     for step in range(resume, steps):
         batch = _to(sample_batch(episodes, sampler, config, step, steps, mixture=True), device)
@@ -149,7 +149,7 @@ def train_agent(
         losses = {"dynamics": dynamics} | head_loss(readout, head_targets(batch, config), config)
         _update(optimiser, _balance(losses, balance, config), [world, heads], config, step)
         if checkpoint is not None and (step + 1) % config.checkpoint_every == 0:
-            _checkpoint(checkpoint, config, bundle, balance, streams, step + 1)
+            _checkpoint(checkpoint, config, bundle, balance, streams, step + 1, f"2:{steps}")
     return heads
 
 
@@ -179,8 +179,8 @@ def train_actor(
     policy_rng = torch.Generator(device=device).manual_seed(config.seed + 2**20)
     balance: dict[str, float] = {}
     streams = {"sampler": sampler, "model": rng, "policy": policy_rng}
-    frozen = _identity(world, prior)
-    resume = _checkpoint(checkpoint, config, [heads, optimiser], balance, streams, identity=frozen)
+    frozen = f"3:{steps}:{_identity(world, prior)}"
+    resume = _checkpoint(checkpoint, config, [heads, optimiser], balance, streams, contract=frozen)
 
     for step in range(resume, steps):
         batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
@@ -206,7 +206,7 @@ def train_actor(
 
 
 def _checkpoint(
-    path, config: Config, modules: list, balance: dict, streams: dict, step=None, identity: str = ""
+    path, config: Config, modules: list, balance: dict, streams: dict, step=None, contract: str = ""
 ) -> int:
     """Both directions of a mid-phase resume: with `step` it saves, without it
     restores and returns the step to continue from.
@@ -218,20 +218,25 @@ def _checkpoint(
     Phase 3 has three: a phase that quietly dropped its policy stream resumed with
     the actor sampling a different action sequence.
 
-    `identity` fixes what the phase was trained *against* -- the frozen world and
-    prior in Phase 3 -- which `Config` alone cannot distinguish. Resuming an actor
-    against a different world is a silent change of the environment it is scored in.
+    `contract` fixes everything `Config` cannot: the planned phase length, and what
+    the phase is trained *against* -- the frozen world and prior in Phase 3.
+    Resuming an actor against a different world silently changes the environment it
+    is scored in, and resuming with a different total changes the short/long
+    schedule and the long-only tail from the step after the resume onward.
     """
     named = {f"part{index}": module for index, module in enumerate(modules)}
     if step is not None:
-        save(path, config, step=step, balance=balance, identity=identity,
+        save(path, config, step=step, balance=balance, contract=contract,
              generators=generator_state(**streams), **named)
         return step
     if path is None or not path.exists():
         return 0
     stored = load(path, config, balance=balance, **named)["modules"]
-    if stored.get("identity", "") != identity:
-        raise ValueError("checkpoint was trained against a different frozen model")
+    if stored.get("contract", "") != contract:
+        raise ValueError(
+            f"checkpoint contract {stored.get('contract', '')!r} does not match {contract!r}: "
+            "the phase length or the frozen model it was trained against has changed"
+        )
     for name, generator in streams.items():
         generator.set_state(stored["generators"][name])
     return int(stored["step"])

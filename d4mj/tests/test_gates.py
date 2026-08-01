@@ -6,13 +6,11 @@ import torch
 from d4mj import backbone, gates
 
 ARMS = ("flow", "direct")
-HISTORY = ("reset_parity", "recurrent_carry")
 
 
 @pytest.mark.parametrize("transition", ARMS)
-@pytest.mark.parametrize("name", HISTORY)
-def test_history_gates_catch_inert_memory(config, transition, name):
-    """These passed for the wrong reason before: `initial` and `advance` commit at
+def test_recurrent_carry_catches_inert_memory(config, transition):
+    """This passed for the wrong reason before: `initial` and `advance` commit at
     different points in the noise stream, so for the flow arm that draw alone moved
     the output and the gate passed with memory entirely ignored."""
     arm = replace(config, transition=transition)
@@ -22,12 +20,39 @@ def test_history_gates_catch_inert_memory(config, transition, name):
         return original(self, x, None, 0)
 
     try:
-        getattr(gates, name)(arm)
+        gates.recurrent_carry(arm)
         backbone.Backbone.forward = inert
         with pytest.raises(AssertionError):
-            getattr(gates, name)(arm)
+            gates.recurrent_carry(arm)
     finally:
         backbone.Backbone.forward = original
+
+
+@pytest.mark.parametrize("transition", ARMS)
+def test_reset_parity_catches_state_crossing_a_boundary(config, transition):
+    """The complementary claim, and the reason the two gates are not duplicates:
+    `recurrent_carry` shows memory matters, this shows a reset removes it. Inert
+    memory passes here -- correctly -- so the mutation is a *leaking* reset that
+    threads the previous episode's state into the new one."""
+    arm = replace(config, transition=transition)
+    original = gates.initial
+    seen: list = []
+
+    def leaky(world, latent, action, rng, config):
+        state, agent = original(world, latent, action, rng, config)
+        seen.append(state.memory)
+        if len(seen) == 2:
+            state = type(state)(state.latent, seen[0], state.step, state.features)
+        return state, agent
+
+    try:
+        gates.reset_parity(arm)
+        gates.initial = leaky
+        with pytest.raises(AssertionError):
+            gates.reset_parity(arm)
+    finally:
+        gates.initial = original
+        seen.clear()
 
 
 @pytest.mark.parametrize("transition", ARMS)

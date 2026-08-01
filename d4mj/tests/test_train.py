@@ -98,12 +98,26 @@ def test_resume_rejects_a_different_frozen_model(config, tmp_path):
     optimiser = optimizer([world], config)
     sampler, rng = _generators(config, 3)
     streams = {"sampler": sampler, "model": rng}
-    _checkpoint(path, config, [world, optimiser], {}, streams, step=3, identity=_identity(world))
+    _checkpoint(path, config, [world, optimiser], {}, streams, step=3, contract=_identity(world))
 
     torch.manual_seed(1)
     other = World(config)
-    with pytest.raises(ValueError, match="different frozen model"):
-        _checkpoint(path, config, [world, optimiser], {}, streams, identity=_identity(other))
+    with pytest.raises(ValueError, match="does not match"):
+        _checkpoint(path, config, [world, optimiser], {}, streams, contract=_identity(other))
+
+
+def test_resume_rejects_a_different_phase_length(config, tmp_path):
+    """The planned total sets the short/long schedule and the long-only tail, so
+    resuming with a different one silently changes the data the phase sees."""
+    path = tmp_path / "phase.pt"
+    torch.manual_seed(0)
+    world = World(config)
+    optimiser = optimizer([world], config)
+    sampler, rng = _generators(config, 1)
+    streams = {"sampler": sampler, "model": rng}
+    _checkpoint(path, config, [world, optimiser], {}, streams, step=3, contract="1B:1000")
+    with pytest.raises(ValueError, match="does not match"):
+        _checkpoint(path, config, [world, optimiser], {}, streams, contract="1B:2000")
 
 
 def test_resume_from_absent_checkpoint_starts_at_zero(config, tmp_path):

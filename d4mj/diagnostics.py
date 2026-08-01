@@ -13,9 +13,19 @@ from .transition import World, advance, commit_inputs, initial, transition_loss
 
 @torch.no_grad()
 def multistep_error(
-    world: World, batch: Batch, rng: torch.Generator, config: Config, successors: Tensor | None = None
+    world: World,
+    batch: Batch,
+    rng: torch.Generator,
+    config: Config,
+    successors: Tensor | None = None,
+    context: int | None = None,
 ) -> dict[str, list[float]]:
     """Per-step error under the real runtime path, from a *committed* prefix.
+
+    The prefix is `context` real blocks -- the full dynamics context by default --
+    teacher-forced to build memory before the roll begins. Starting from one block
+    measures a model with almost no history, which is not the condition imagination
+    runs in and would select an imagination horizon for the wrong regime (S54).
 
     Mean error alone cannot adjudicate the direct arm: under squared loss the
     optimal deterministic predictor is the conditional mean, so the collapsed
@@ -24,9 +34,16 @@ def multistep_error(
     mean distances are reported alongside -- a predictor sitting between modes
     shows a large gap, and one on a mode shows none.
     """
-    state, _ = initial(world, batch.latents[:, :1], batch.led_to_action[:, :1], rng, config)
+    blocks = batch.latents.shape[1]
+    context = min(config.dynamics_context, blocks - 1) if context is None else context
+    assert 1 <= context < blocks, f"context {context} leaves nothing to roll over {blocks} blocks"
+
+    committed, conditioning = commit_inputs(batch.latents[:, :context], rng, config)
+    features, _, memory = world(None, batch.led_to_action[:, :context], committed, conditioning)
+    state = WorldState(batch.latents[:, context - 1 : context], memory, context, features[:, -1:])
+
     report: dict[str, list[float]] = {"mean_error": []}
-    for step in range(1, batch.latents.shape[1]):
+    for step in range(context, blocks):
         state, _ = advance(world, state, batch.led_to_action[:, step : step + 1], rng, config)
         report["mean_error"].append(float((state.latent - batch.latents[:, step : step + 1]).pow(2).mean()))
 
@@ -84,6 +101,11 @@ def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[st
     `memory_horizon_at_least` perturbs one *history* block with the present held
     fixed, so it measures reach rather than trajectory divergence; it doubles, so it
     is a power-of-two lower bound, and a long-memory arm reports the cap.
+
+    State size is read after the cache has *saturated*: attention grows to
+    `dynamics_context` and then stops, so measuring earlier reports a partly filled
+    cache and understates the arm whose state is bounded, which is the whole
+    quantity the Mamba substitution is meant to change.
     """
     device, deployed = config.device, {"encoder", "world", "heads"}
     counts = {name: sum(p.numel() for p in m.parameters()) for name, m in modules.items()}
@@ -93,7 +115,7 @@ def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[st
 
     with torch.no_grad():
         state, _ = initial(world, latent, action, rng, config)
-        for _ in range(4):
+        for _ in range(config.dynamics_context + 4):
             state, _ = advance(world, state, action, rng, config)
         if device == "cuda":
             torch.cuda.reset_peak_memory_stats()

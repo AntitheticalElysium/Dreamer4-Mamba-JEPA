@@ -67,7 +67,18 @@ class Config:
     bins: int = 255
     symlog_limit: float = 20.0
 
+    # `horizon` is a smoke default only, NOT a settled value (S54). The final
+    # imagination horizon is chosen from `horizon_candidates` on DEV using
+    # `diagnostics.multistep_error`, before any FINAL cell is inspected.
     horizon: int = 8
+    horizon_candidates: tuple[int, ...] = (4, 8, 16, 32)
+
+    # Evaluation (S52). The native Craftax horizon, not the collector's 2500 cap.
+    horizon_eval: int = 10000
+    eval_episodes: int = 64
+    bootstrap: int = 2000
+    parameter_tolerance: float = 0.005
+
     gamma: float = 0.997
     lam: float = 0.95
     pmpo_alpha: float = 0.5

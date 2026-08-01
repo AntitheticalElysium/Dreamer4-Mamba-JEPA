@@ -23,6 +23,7 @@ def scan_step_parity(config: Config, tolerance: float = 1e-3) -> None:
     window arithmetic would pass everything.
     """
     device = config.device
+    torch.manual_seed(config.seed)
     layout = Layout.dynamics(config)
     backbone = Backbone(
         config, layout, "dynamics", config.d_model, config.n_heads, config.depth,
@@ -46,9 +47,37 @@ def scan_step_parity(config: Config, tolerance: float = 1e-3) -> None:
         assert all(pair[0].shape[2] <= config.dynamics_context for pair in scanned_memory), (
             "the scan ignores the window the cache enforces"
         )
+    _state_parity(memory, scanned_memory)
 
     _world_parity(config, device, tolerance)
     _encoder_parity(config, device, tolerance)
+
+
+def _state_parity(stepped, scanned, tolerance: float = 5e-3) -> None:
+    """The carried state itself must match, not merely its shape and count.
+
+    Outputs agreeing while states diverge is exactly the failure that survives to
+    the first long rollout: training reads the scan and imagination reads the step,
+    so a state that drifts is a model correct in every loss and wrong in every
+    trajectory.
+
+    The tolerance is looser than the output one and separately evidenced. An SSM
+    state is a raw internal quantity the output projection contracts, so measured,
+    Mamba's state drifts 1.0e-3 against an output drift of 8e-5 while attention's
+    stays near 5e-7. Crucially the state figure is **flat in sequence length** --
+    1.04e-3 at 8 blocks, 8.99e-4 at 200 -- so it is chunked-scan-versus-step
+    numerics, not a misalignment, which would be order one and would accumulate.
+    5e-3 sits about 5x above the observed value and far below that.
+    """
+    assert len(stepped) == len(scanned), "different numbers of time-mixing states"
+    for layer, (left, right) in enumerate(zip(stepped, scanned)):
+        for slot, (one, other) in enumerate(zip(left, right)):
+            assert one.shape == other.shape, (
+                f"state {layer}.{slot} shape {tuple(one.shape)} vs {tuple(other.shape)}"
+            )
+            scale = other.abs().max().clamp(min=1e-8)
+            drift = (one - other).abs().max() / scale
+            assert drift < tolerance, f"state {layer}.{slot} drift {drift:.2e} exceeds {tolerance:.0e}"
 
 
 def _world_parity(config: Config, device: str, tolerance: float) -> None:
@@ -57,6 +86,7 @@ def _world_parity(config: Config, device: str, tolerance: float) -> None:
     and a Direct arm whose loss never saw an observation passed every other gate."""
     from .transition import World, commit_inputs
 
+    torch.manual_seed(config.seed)
     world = World(config).to(device).eval()
     latents = torch.randn(2, 4, config.n_spatial, config.d_spatial, device=device).tanh()
     actions = torch.randint(config.n_actions, (2, 4), device=device)
@@ -92,6 +122,7 @@ def _encoder_parity(config: Config, device: str, tolerance: float) -> None:
 
     from .representation import Encoder
 
+    torch.manual_seed(config.seed)
     encoder = Encoder(config).to(device).eval()
     reach = config.receptive_field
     frames = torch.rand(1, reach + 6, config.n_patches, config.patch_dim, device=device)
@@ -177,6 +208,7 @@ def _observation_dependence(config: Config) -> None:
     from .transition import World, commit_inputs
 
     device = config.device
+    torch.manual_seed(config.seed)
     world = World(config).to(device).eval()
     action = torch.zeros(2, 3, dtype=torch.long, device=device)
     shape = (2, 3, config.n_spatial, config.d_spatial)
@@ -223,6 +255,7 @@ def _conditioning_coverage(config: Config) -> None:
     from .transition import World, transition_loss
 
     device = config.device
+    torch.manual_seed(config.seed)
     world = World(config).to(device)
     tables = (
         [world.signal_embed, world.step_embed]
@@ -255,24 +288,47 @@ def _conditioning_coverage(config: Config) -> None:
 
 
 def reset_parity(config: Config) -> None:
-    """A fresh state must not remember a previous episode. Constructing rather than
-    clearing makes this true by type, so the gate exists to catch a caller that
-    threads memory across a boundary anyway.
+    """An episode boundary must erase the previous episode, asserted by *running*
+    one rather than by inspecting the type.
 
-    The two branches are handed the *same* committed tensor and conditioning and
-    differ only in the memory passed in, so a difference cannot be a fresh
-    corruption draw. Comparing `initial` against `advance` instead confounds the
-    two: `initial` commits its own noise, and for the flow arm that alone moves the
-    output with memory entirely inert.
+    `recurrent_carry` shows memory matters; this shows a reset removes it. The two
+    are different claims, and testing only the first leaves a driver free to thread
+    state across a boundary. So: roll a first episode, reset, roll a second, and
+    require it to be identical to the same second episode rolled in a fresh process
+    state -- byte-for-byte, under one seed.
+
+    `step` is asserted to restart at zero too, because it dates RoPE and the decode
+    window; a carried offset re-dates the new episode's history without changing
+    any memory tensor.
     """
     device = config.device
     world = _world(config)
-    committed, conditioning, action, memory = _isolated(world, config)
+    action = torch.zeros(2, 1, dtype=torch.long, device=device)
+
+    def episode(seed: int, after=None):
+        rng = torch.Generator(device=device).manual_seed(seed)
+        latent = torch.randn(
+            2, 1, config.n_spatial, config.d_spatial,
+            generator=torch.Generator(device=device).manual_seed(seed + 7), device=device,
+        ).tanh()
+        state, _ = initial(world, latent, action, rng, config)
+        for _ in range(3):
+            state, _ = advance(world, state, action, rng, config)
+        return state
 
     with torch.no_grad():
-        with_history, _, _ = world(memory, action, committed, conditioning, 4)
-        without, _, _ = world(None, action, committed, conditioning, 0)
-    assert not torch.allclose(with_history, without, atol=1e-6), "history had no effect"
+        first = episode(11)
+        after_reset = episode(23)
+        from_scratch = episode(23)
+
+    assert after_reset.step == from_scratch.step == 4, "the reset did not restart the step counter"
+    assert torch.equal(after_reset.latent, from_scratch.latent), (
+        "the second episode differs depending on whether one ran before it"
+    )
+    for carried, clean in zip(after_reset.memory, from_scratch.memory):
+        for left, right in zip(carried, clean):
+            assert torch.equal(left, right), "episode state survived the boundary"
+    assert not torch.equal(first.latent, from_scratch.latent), "the two episodes are not distinct"
 
 
 def firewall(config: Config) -> None:
@@ -352,8 +408,12 @@ def _isolated(world, config: Config):
 
 
 def _world(config: Config):
+    """Seeded, because a gate that draws fresh weights each run is a gate whose
+    pass or fail is a coin flip -- one that reported both on consecutive runs of
+    the same commit."""
     from .transition import World
 
+    torch.manual_seed(config.seed)
     return World(config).to(config.device).eval()
 
 
