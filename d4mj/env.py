@@ -21,13 +21,10 @@ def reset(seed: int) -> tuple[Tensor, object]:
 
 
 def step(state, action: int, seed: int) -> tuple[Tensor, object, float, bool, bool]:
-    """Returns terminated and truncated as separate raw facts.
-
-    Death and lava are absorbing; the step cap is not. Craftax folds all three into
-    `is_terminal`, so death is read from the state directly. Deriving it as
-    `is_terminal and not timed_out` discards the death when the two coincide, and
-    the critic then bootstraps through an absorbing state. Both flags may be true.
-    """
+    """Terminated and truncated as separate facts. Craftax folds death, lava and the
+    step cap into `is_terminal`, so death is read from the state directly: deriving
+    it as `is_terminal and not timed_out` drops a death that lands on the cap. Both
+    flags may be true."""
     from craftax.craftax_classic.constants import BlockType
 
     env, params = _env()
@@ -42,7 +39,5 @@ def _timed_out(state, params) -> bool:
 
 
 def _frame(observation) -> Tensor:
-    """Craftax renders float32 in [0, 1]. Stored as uint8 because an episode is
-    thousands of frames and 4x is the difference between fitting in memory and not;
-    `patchify` divides by 255 to undo it."""
+    """Craftax renders float32 in [0, 1]; stored uint8, which `patchify` undoes."""
     return torch.from_numpy(np.asarray(observation) * 255.0).round().to(torch.uint8)

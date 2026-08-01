@@ -1,0 +1,25 @@
+{
+  "format": "d4mj_support_v1",
+  "episodes": 336,
+  "transitions": 110075,
+  "terminal_episodes": 332,
+  "terminal_transitions": 332,
+  "task_events": 3810,
+  "mean_length": 327.6041666666667,
+  "epsilons": [
+    0.1,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "num_envs": 24,
+  "limit": 2500,
+  "seed": 20260731,
+  "rounds": 14,
+  "expert_params": "d4_mamba_jepa/artifacts/expert/ppo_expert_v2.msgpack",
+  "expert_sha256": "585f7e31b9f952c7fe40fb72456293d441c24e21707f0cac594123a387258638",
+  "replay_sha256": "703e1d1d739dc54920326649ed7e65674f9ec385535841186f88c4b5ccd68254",
+  "uniform_eligible": true,
+  "bc_eligible": false,
+  "seconds": 465.2341482639313
+}

@@ -37,7 +37,8 @@ def episodes(config: Config) -> list[Episode]:
     return [episode(index, config) for index in range(4)]
 
 
-def latent_batch(config: Config, rows: int, blocks: int, relevant=None, seed: int = 0) -> Batch:
+def latent_batch(config: Config, rows: int, blocks: int, relevant=None, seed: int = 0,
+                 support=None) -> Batch:
     return Batch(
         led_to_action=torch.zeros(rows, blocks, dtype=torch.long),
         reward=torch.zeros(rows, blocks),
@@ -46,6 +47,7 @@ def latent_batch(config: Config, rows: int, blocks: int, relevant=None, seed: in
         valid=torch.ones(rows, blocks, dtype=torch.bool),
         scored=torch.ones(rows, blocks, dtype=torch.bool),
         relevant=None if relevant is None else torch.tensor(relevant),
+        support=None if support is None else torch.tensor(support),
         burn_in=0,
         latents=torch.randn(
             rows,

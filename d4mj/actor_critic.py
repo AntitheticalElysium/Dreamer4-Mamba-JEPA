@@ -8,14 +8,8 @@ from .imagination import Trajectory
 
 
 def lambda_returns(trajectory: Trajectory, config: Config) -> Tensor:
-    """G_t = r_{t+1} + gamma * c_{t+1} * [(1 - lam) v_{t+1} + lam G_{t+1}], with
-    G_T = v_T.
-
-    Equation 10 prints the reward, continuation and value at the same index as the
-    return, which is not consistent with annotating a trajectory at one index per
-    step; the next-index form is what the reproductions implement. Implemented
-    literally, the printed form shifts every critic target by one step.
-    """
+    """G_t = r_{t+1} + gamma c_{t+1} [(1-lam) v_{t+1} + lam G_{t+1}], G_T = v_T.
+    Eq. 10's printed same-index form shifts every critic target by one step (S6)."""
     horizon = trajectory.reward.shape[1]
     returns = [trajectory.value[:, -1]]
     for step in reversed(range(horizon)):
@@ -27,14 +21,8 @@ def lambda_returns(trajectory: Trajectory, config: Config) -> Tensor:
 
 def actor_loss(trajectory: Trajectory, returns: Tensor, prior_logits: Tensor, config: Config) -> Tensor:
     """PMPO on the sign of the advantage, plus a reverse KL to the frozen prior.
-
-    The magnitude is deliberately discarded, so nothing here reveals whether the
-    advantage exceeded the critic's own error -- `diagnostics` has to report that
-    separately or a coin-flip split looks like learning.
-
-    The prior enters as log-probabilities. Taking `log` of a softmax underflows to
-    -inf once the prior's logits separate, which turns the whole actor loss NaN.
-    """
+    Magnitude is discarded by construction. The prior enters as log-probabilities:
+    `log` of a softmax underflows to -inf and NaNs the whole loss."""
     advantage = (returns - trajectory.value[:, :-1]).detach()
     log_prob = F.log_softmax(trajectory.logits, dim=-1).gather(
         -1, trajectory.action[..., None]

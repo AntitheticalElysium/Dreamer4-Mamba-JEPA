@@ -163,9 +163,11 @@ def train_actor(
 ) -> Heads:
     """Phase 3. The world is frozen and the behaviour-cloned policy is copied and
     frozen as the prior, so the actor cannot improve by reshaping the model it is
-    being scored inside. The reward and continuation body is frozen with it: they
-    are the learned environment the actor is scored against, and a shared trunk
-    would let policy gradients move them."""
+    being scored inside. The reward and continuation body is frozen with it.
+
+    Starting contexts use the §4.1 mixture. D4 applies it to "behavioral cloning,
+    reward modeling, and reinforcement learning", so imagining only from uniformly
+    drawn contexts starts RL away from the events that carry the sparse reward."""
     device = config.device
     for parameter in world.parameters():
         parameter.requires_grad_(False)
@@ -183,7 +185,7 @@ def train_actor(
     resume = _checkpoint(checkpoint, config, [heads, optimiser], balance, streams, contract=frozen)
 
     for step in range(resume, steps):
-        batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
+        batch = _to(sample_batch(episodes, sampler, config, step, steps, mixture=True), device)
         with torch.no_grad():
             committed, conditioning = commit_inputs(batch.latents, rng, config)
             features, agent, memory = world(None, batch.led_to_action, committed, conditioning)
@@ -211,18 +213,10 @@ def _checkpoint(
     """Both directions of a mid-phase resume: with `step` it saves, without it
     restores and returns the step to continue from.
 
-    Optimizer state, the running-RMS normalisers and *every* generator stream
-    travel. Restoring only the weights restarts each normaliser -- rescaling every
-    objective on the first step back -- and replays every window and noise draw from
-    zero, which is not a resume. Streams are named rather than positional because
-    Phase 3 has three: a phase that quietly dropped its policy stream resumed with
-    the actor sampling a different action sequence.
-
-    `contract` fixes everything `Config` cannot: the planned phase length, and what
-    the phase is trained *against* -- the frozen world and prior in Phase 3.
-    Resuming an actor against a different world silently changes the environment it
-    is scored in, and resuming with a different total changes the short/long
-    schedule and the long-only tail from the step after the resume onward.
+    Optimizer state, the running-RMS normalisers and every generator stream travel;
+    restoring weights alone is not a resume. `contract` fixes what `Config` cannot:
+    the planned phase length, which sets the short/long schedule, and the frozen
+    world and prior a phase is trained against.
     """
     named = {f"part{index}": module for index, module in enumerate(modules)}
     if step is not None:
@@ -257,14 +251,9 @@ def _identity(*modules: nn.Module) -> str:
 
 
 def _share_initialisation(world: World, config: Config) -> World:
-    """Give both arms the same starting weights wherever they share a parameter.
-
-    `manual_seed` alone does not: the two mixers consume different numbers of draws
-    at construction, so every parameter built after the first time layer differs,
-    and the comparison would also be a different-init comparison. Names are the
-    join -- the mixers live under disjoint attributes -- and the shape check keeps a
-    future collision from copying across a real difference.
-    """
+    """Same starting weights wherever the arms share a parameter (S45). `manual_seed`
+    alone does not achieve it: the mixers consume different numbers of draws, so
+    everything built after the first time layer would differ."""
     if config.time_mixer == "attention":
         return world
     torch.manual_seed(config.seed + 1)
@@ -285,16 +274,9 @@ def _balance(
     config: Config,
     weights: dict[str, float] | None = None,
 ) -> torch.Tensor:
-    """Dreamer 4 normalises concurrent losses by running RMS estimates, which makes
-    a coefficient a relative weight rather than a scale accident. `state` is a plain
-    dict, which `checkpoint.save` accepts alongside modules, so `_checkpoint` carries
-    it through a resume -- restoring weights alone would restart every normaliser and
-    rescale every objective on the first step back.
-
-    `weights` apply *after* normalisation. A coefficient folded into the loss first
-    is divided straight back out by that loss's own RMS -- measured, 0.2 and 5.0
-    produce an identical contribution -- so the paper's 0.2 on LPIPS would be void.
-    """
+    """Running-RMS normalisation, so a coefficient is a relative weight rather than
+    a scale accident. `weights` apply *after* it: folded in first they are divided
+    straight back out, and 0.2 and 5.0 measure identically."""
     total = 0.0
     for name, value in losses.items():
         squared = float(value.detach().pow(2))

@@ -126,20 +126,13 @@ def pack(z: Tensor, config: Config) -> Tensor:
 def reconstruction_loss(
     predicted: Tensor, target: Tensor, masked: Tensor, scored: Tensor, perceptual, config: Config
 ) -> dict[str, Tensor]:
-    """Dreamer 4's equation 5: masked-patch MSE plus 0.2 LPIPS.
+    """Equation 5: masked-patch MSE plus LPIPS, returned raw so `_balance` can apply
+    the 0.2 *after* RMS normalisation, where it does not cancel.
 
-    Returned raw and separately: the paper normalises every loss term by its own
-    running RMS, and a coefficient applied *before* that normalisation cancels
-    exactly. The 0.2 is applied by `_balance` afterwards.
-
-    MSE is scored on replaced patches only, as both reproductions do -- scoring
-    visible patches would reward copying, which is what masked autoencoding exists
-    to avoid, and it leaves p = 0 images carrying perceptual signal alone. LPIPS is
-    scored on the whole predicted frame, which is a declared deviation: MMBench2
-    composites visible patches from the target first, and measured, that makes the
-    perceptual term *identically zero with zero gradient* at p = 0 -- the very case
-    §3.1 draws p ~ U(0, 0.9) to keep in distribution, and the condition the frozen
-    encoder is deployed under. Equation 5 masks neither term.
+    MSE covers replaced patches only; LPIPS covers the whole predicted frame, a
+    declared deviation (S40) because compositing visible patches first makes the
+    perceptual term identically zero at p = 0. `scored` restricts both to blocks
+    whose history matches deployment.
     """
     rows = scored.float()[..., None]
     error = (predicted - target).pow(2).mean(-1)

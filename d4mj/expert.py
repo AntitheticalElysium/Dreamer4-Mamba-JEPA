@@ -11,25 +11,14 @@ ARCHIVE = "d4_mamba_jepa_craftax_expert_replay_v1"
 
 
 def load_archive(path: Path, config: Config, limit: int | None = None) -> list[Episode]:
-    """The archived Craftax replay, converted to `Episode` without re-encoding.
+    """The archived Craftax replay as `Episode`, converted exactly and lazily: the
+    crop from 64x64 back to Craftax's native 63x63 and the permute are both views,
+    so the 8.6 GB file is never resident (S49).
 
-    It replaces `train_expert`: the archive already holds an expert whose weights
-    are hashed in its manifest, so there is nothing to retrain. What is missing from
-    it is the *uniform* half, which `collect` produces from any unfiltered policy
-    and needs no expert at all.
-
-    Conversion is exact and lazy. Frames are stored CHW at 64x64, zero-padded from
-    Craftax's native 63x63; the crop and the permute are both views, so an episode
-    costs nothing until a window indexes it and the 8.6 GB file is never resident.
-
-    Two fields are reconstructed rather than read, because the archive does not
-    separate them. `terminated` is `continues == 0`, which is death only: Craftax's
-    native horizon is 10000 and the archive capped at 2500, so no episode there ever
-    reached it. `truncated` therefore marks the last transition of every episode
-    that did not die -- 252 of 320 -- and that cap is ours, not the environment's.
-
-    `events` comes from the per-frame cumulative achievements the archive already
-    stores, which is what makes its windows usable by the relevant sampler.
+    `terminated` is `continues == 0`, which is death only -- the archive capped at
+    2500 and Craftax's horizon is 10000, so no episode reached it -- and `truncated`
+    marks the last transition of every episode that did not die. `events` comes from
+    the per-frame cumulative achievements the archive already stores.
     """
     payload = torch.load(path, weights_only=False, mmap=True)
     episodes = []
@@ -61,17 +50,12 @@ def collect(
     config: Config,
     limit: int = 2500,
 ):
-    """Roll a policy and store episodes unshifted, with terminated and truncated
-    kept apart.
+    """Roll a policy and store episodes unshifted, terminated and truncated apart.
 
-    `events[t]` marks the steps at which the achievement count rises, which is what
-    "accomplish one of the tasks" means on Craftax. It is recorded per step, so the
-    relevant sampler draws windows around a task event rather than anywhere inside a
-    successful episode.
-
-    Hitting the cap marks the last transition truncated: storing it as neither would
-    tell the continuation head that the trajectory continues past data that does not
-    exist. Each episode owns a disjoint seed range.
+    `events[t]` marks the steps at which the achievement count rises. Hitting the cap
+    marks the last transition truncated, not terminal. Each episode owns a disjoint
+    seed range. `bc_eligible` is the caller's declaration: degraded or exploratory
+    rollouts belong in the world-model pool but not in behaviour cloning.
     """
     episodes = []
     for index in range(count):

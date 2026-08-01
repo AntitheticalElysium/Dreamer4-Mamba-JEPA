@@ -6,12 +6,8 @@ State = tuple[Tensor, Tensor]
 
 
 class TimeAttention(nn.Module):
-    """Causal attention over one token slot's history, with a persistent KV cache.
-
-    The cache is carried across accepted frames rather than rebuilt per frame: the
-    pinned reproduction rebuilds only because it re-corrupts its prefix at read
-    time, which we do not.
-    """
+    """Causal attention over one token slot's history, with a KV cache carried
+    across accepted frames rather than rebuilt (S11, S18)."""
 
     def __init__(self, d_model: int, n_heads: int, context: int | None):
         super().__init__()
@@ -27,12 +23,9 @@ class TimeAttention(nn.Module):
 
 
 class TimeMamba(nn.Module):
-    """Mamba-2 over one token slot's history: the whole Mamba blast radius.
-
-    State is the pair Mamba-2 actually keeps -- a convolution window and an SSM
-    state -- and both are cloned on entry, because `step` mutates in place and a
-    candidate evaluation must not disturb the prefix it was given.
-    """
+    """Mamba-2 over one token slot's history: the whole Mamba blast radius. State is
+    cloned on entry because `step` mutates in place, and a candidate evaluation must
+    not disturb the prefix it was given."""
 
     def __init__(self, config: Config, d_model: int):
         super().__init__()
@@ -62,14 +55,9 @@ class TimeMamba(nn.Module):
 
 
 def time_mixer(config: Config, d_model: int, context: int | None) -> nn.Module:
-    """Attention is bounded to `context` explicitly; Mamba's state is fixed in *size*
-    but summarises all history, so the two arms do not share an information horizon.
-
-    That asymmetry cannot be removed without destroying what Mamba is -- there is no
-    hard cutoff in an SSM -- so it is part of what the 2x2 measures rather than a
-    confound to eliminate. `diagnostics.cost` reports each arm's effective horizon,
-    so a Mamba win is never reported without saying how much history bought it.
-    """
+    """Attention is bounded to `context`; an SSM state is fixed in size but has no
+    cutoff, so the arms do not share an information horizon. That is part of what
+    the 2x2 measures -- `diagnostics.cost` reports each arm's memory horizon."""
     if config.time_mixer == "mamba":
         return TimeMamba(config, d_model)
     return TimeAttention(d_model, config.n_heads, context)

@@ -1,0 +1,182 @@
+"""Stage-A preliminary run: one shared tokenizer, then four arms through 1B, 2, 3.
+
+Phase 1A is trained *once*. The tokenizer is always attention (S20) and the cache
+digest deliberately excludes the time mixer, so one encoder and one latent cache
+serve all four arms -- which is also what makes the comparison a comparison.
+
+This is a DEV run. Evaluation here is a shortened smoke, not the preregistered FINAL
+protocol (S52): the sealed FINAL seeds are untouched and the native 10000-step
+horizon is not used, because 32 episodes at that horizon costs hours per arm.
+Nothing here may be reported as a Stage-A result.
+"""
+
+import argparse
+import json
+import time
+from dataclasses import replace
+from pathlib import Path
+
+import torch
+
+from d4mj.config import Config
+from d4mj.data import episode_splits, load_episodes
+from d4mj.diagnostics import cost, head_calibration, latent_stats, multistep_error
+from d4mj.execution import evaluate, run_episode, run_random
+from d4mj.expert import load_archive
+from d4mj.train import (
+    cache_latents,
+    train_actor,
+    train_agent,
+    train_dynamics,
+    train_representation,
+)
+from d4mj.transition import transition_loss
+
+ARCHIVE = Path("d4_mamba_jepa/artifacts/expert/craftax_expert_v1.pt")
+SUPPORT = Path("artifacts/craftax_support_v1.pt")
+
+
+def corpus(config: Config, expert: int, log) -> tuple[list, list]:
+    """Split each pool separately. A single split over the concatenation can hand DEV
+    no BC-eligible episodes at all, and the mixture then cannot form its relevant
+    half -- which is a property of the split, not of the data."""
+    pools = [load_archive(ARCHIVE, config, limit=expert)]
+    if SUPPORT.exists():
+        pools.append(load_episodes(SUPPORT))
+
+    train, dev = [], []
+    for index, pool in enumerate(pools):
+        first, second, _ = episode_splits(len(pool), config.seed + index)
+        train += [pool[i] for i in first.tolist()]
+        dev += [pool[i] for i in second.tolist()]
+
+    for name, part in (("train", train), ("dev", dev)):
+        log(
+            f"{name}: {len(part)} episodes, {sum(len(e) for e in part)} transitions, "
+            f"{sum(int(e.terminated.sum()) for e in part)} terminals, "
+            f"{sum(e.bc_eligible for e in part)} BC-eligible"
+        )
+    return train, dev
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--expert", type=int, default=96)
+    parser.add_argument("--tokenizer-steps", type=int, default=3000)
+    parser.add_argument("--dynamics-steps", type=int, default=4000)
+    parser.add_argument("--agent-steps", type=int, default=2000)
+    parser.add_argument("--actor-steps", type=int, default=800)
+    parser.add_argument("--eval-episodes", type=int, default=12)
+    parser.add_argument("--eval-limit", type=int, default=600)
+    parser.add_argument("--out", default="artifacts/stage_a")
+    args = parser.parse_args()
+
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+    started = time.time()
+
+    def log(message: str) -> None:
+        line = f"[{time.time() - started:7.0f}s] {message}"
+        print(line, flush=True)
+        (out / "run.log").open("a").write(line + "\n")
+
+    base = Config()
+    train_set, dev_set = corpus(base, args.expert, log)
+
+    log(f"phase 1A: {args.tokenizer_steps} steps, shared by every arm")
+    encoder, decoder, cached_train = train_representation(
+        train_set, args.tokenizer_steps, base, checkpoint=out / "phase1a.pt"
+    )
+    cached_dev = cache_latents(encoder, dev_set, base)
+    log(f"phase 1A done, cache digest {cached_train[0].latent_digest}")
+    torch.save({"encoder": encoder.state_dict(), "decoder": decoder.state_dict()}, out / "tokenizer.pt")
+
+    report: dict[str, dict] = {}
+    for transition in ("flow", "direct"):
+        for mixer in ("attention", "mamba"):
+            arm = f"{transition}-{mixer}"
+            config = replace(base, transition=transition, time_mixer=mixer)
+            log(f"=== {arm} ===")
+
+            world = train_dynamics(
+                cached_train, args.dynamics_steps, config, checkpoint=out / f"{arm}.1b.pt"
+            )
+            log(f"{arm}: phase 1B done")
+            heads = train_agent(
+                cached_train, world, args.agent_steps, config, checkpoint=out / f"{arm}.2.pt"
+            )
+            log(f"{arm}: phase 2 done")
+            heads = train_actor(
+                cached_train, world, heads, args.actor_steps, config, checkpoint=out / f"{arm}.3.pt"
+            )
+            log(f"{arm}: phase 3 done")
+
+            entry = {"cost": cost({"encoder": encoder, "world": world, "heads": heads}, world, config)}
+            entry["diagnostics"] = _diagnostics(world, heads, cached_dev, config)
+            scores = evaluate(
+                {
+                    "actor": lambda s: run_episode(
+                        world, encoder, heads, s, config, limit=args.eval_limit
+                    ),
+                    "random": lambda s: run_random(s, config, limit=args.eval_limit),
+                },
+                list(range(10_000, 10_000 + args.eval_episodes)),
+                config,
+            )
+            entry["evaluation"] = {
+                name: {k: v for k, v in row.items() if k != "episodes"}
+                for name, row in scores.items()
+            }
+            report[arm] = entry
+            log(
+                f"{arm}: actor {scores['actor']['score']:.2f} vs random "
+                f"{scores['random']['score']:.2f} | "
+                f"continuation separation {entry['diagnostics']['continuation_separation']:.4f} | "
+                f"contraction {entry['diagnostics']['contraction']:.3f}"
+            )
+            (out / "report.json").write_text(json.dumps(report, indent=2, default=float))
+
+    log("done")
+
+
+def _diagnostics(world, heads, dev, config: Config, batches: int = 24) -> dict:
+    """Averaged over several DEV batches, because one batch carries too few terminals
+    to say anything about continuation: the terminal-conditional probability is
+    pooled by terminal count, not averaged over batches."""
+    from d4mj.data import sample_batch
+    from d4mj.train import _to
+
+    sampler = torch.Generator().manual_seed(config.seed + 999)
+    rng = torch.Generator(device=config.device).manual_seed(config.seed + 998)
+    totals: dict[str, float] = {}
+    dead_mass = dead_count = 0.0
+
+    for step in range(batches):
+        batch = _to(sample_batch(dev, sampler, config, step, 0, mixture=True), config.device)
+        with torch.no_grad():
+            _, agent = transition_loss(world, batch, rng, config, return_agent=True)
+        row = dict(latent_stats(world, batch, rng, config)) | head_calibration(
+            heads, agent, batch, config
+        )
+        if row["terminal_targets"]:
+            dead_mass += row["continuation_on_terminal"] * row["terminal_targets"]
+            dead_count += row["terminal_targets"]
+        for key, value in row.items():
+            if key not in ("continuation_on_terminal", "continuation_separation"):
+                totals[key] = totals.get(key, 0.0) + float(value)
+
+    out = {key: value / batches for key, value in totals.items()}
+    out["terminal_targets"] = dead_count
+    out["continuation_on_terminal"] = dead_mass / dead_count if dead_count else float("nan")
+    out["continuation_separation"] = (
+        out["continuation_on_continuing"] - out["continuation_on_terminal"]
+        if dead_count
+        else float("nan")
+    )
+    batch = _to(sample_batch(dev, sampler, config, 0, 0, mixture=True), config.device)
+    out["multistep"] = multistep_error(world, batch, rng, config)["mean_error"]
+    return out
+
+
+if __name__ == "__main__":
+    main()

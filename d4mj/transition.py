@@ -10,18 +10,9 @@ from .state import Memory, RealState, WorldState
 
 class World(nn.Module):
     """The action-conditioned dynamics. `forward` evaluates one block; `predict`
-    turns its world features into a latent, and is the only thing the two arms do
-    differently.
-
-    Flow reads its clean-latent estimate off the block it corrupted. Direct reads
-    the *next* latent from the current block's features plus the action about to be
-    taken -- an external head, as in V-JEPA 2-AC and DINO-WM, because a query token
-    carries no information and so cannot also serve as context for later positions.
-
-    The head reads spatial and register features only, which are agent-free by
-    induction over depth under the dynamics mask; pooling the agent slot instead is
-    what the firewall forbids.
-    """
+    turns its features into a latent and is the only thing the arms do differently.
+    Direct uses an external head over committed features (S34), reading spatial and
+    register slots only, which the dynamics mask keeps agent-free."""
 
     def __init__(self, config: Config):
         super().__init__()
@@ -104,14 +95,10 @@ def flow_conditioning(rng: torch.Generator, shape: tuple[int, int], config: Conf
     """Diffusion forcing: an independent step size and signal level per position,
     plus the mask of positions the loss may score.
 
-    The signal grid tops out at 1 - d, so tau = 1 is never trained. A fraction of
-    rows instead carry the *rollout* prefix -- every block but the last at the
-    commit condition -- because independent draws make that joint prefix
-    vanishingly rare (measured: probability 0.000000 over 48 blocks) and the flow
-    arm would imagine in a regime training never visits. Only the last block of such
-    a row is scored: scoring the prefix too would push the finest-step share from
-    25% to 43% and silently reweight the shortcut objective.
-    """
+    `commit_prefix_fraction` of rows instead carry the rollout prefix -- every block
+    but the last at the commit condition -- which independent draws make
+    vanishingly rare (S41). Only that row's last block is scored; scoring the prefix
+    too would push the finest-step share from 25% to 43%."""
     step = torch.randint(config.n_step_bins, shape, generator=rng, device=device)
     rungs = 2**step
     index = (torch.rand(shape, generator=rng, device=device) * rungs).floor().long()
@@ -180,25 +167,10 @@ def observe(
 def advance(
     world: World, state: WorldState, action: Tensor, rng: torch.Generator, config: Config
 ) -> tuple[WorldState, Tensor]:
-    """One semantic transition. Flow runs its four read-only rungs then commits;
-    direct predicts from the committed block's features and commits once. A
-    candidate's memory is always discarded, so the prefix only ever ingests a
-    latent the model will condition on later.
-
-    The state must span exactly one block. `initial` over a window returns one
-    spanning T, and passing that here would broadcast a single action across every
-    block in the direct arm while raising a shape error in flow -- one type meaning
-    two things, held together by caller discipline.
-
-    Incoming memory is detached, which equalises the two time mixers. Official
-    Mamba-2 updates its `InferenceParams` cache in place, so its recurrent step is
-    not differentiable with respect to the state it receives: measured, an attention
-    prefix takes gradient 147.92 through carried memory and a Mamba prefix takes
-    `None`. Left alone that is a *backend-specific objective* in the one comparison
-    this project exists to make. Detaching truncates both identically and keeps the
-    gradient that the rollout is actually for -- through the accepted latent, which
-    `commit_inputs` feeds forward, matching `auto_steps: 2`.
-    """
+    """One semantic transition: flow runs its read-only rungs then commits, direct
+    predicts and commits once. Must span exactly one block. Incoming memory is
+    detached to equalise the two time mixers (S55); gradient still flows through the
+    accepted latent."""
     assert state.latent.shape[1] == 1, "advance steps one block; slice the state first"
     if config.transition == "flow":
         accepted = _flow_candidate(world, state, action, rng, config)
@@ -247,17 +219,11 @@ def commit_inputs(latent: Tensor, rng: torch.Generator, config: Config):
 
 
 def _direct_loss(world: World, batch, rng: torch.Generator, config: Config) -> Tensor:
-    """Teacher forcing plus a generated-prefix rollout, after V-JEPA 2-AC.
-
-    The rollout runs the real `advance` transaction from a real prefix, so gradient
-    flows through one recurrent step (`auto_steps: 2`). The source computes
-    `loss = jloss + sloss` with each a *mean*, so the two rollout steps are averaged;
-    its first autoregressive step is likewise teacher-forced from real context.
-    Declared deviation: the source is L1 (`loss_exp: 1.0`), this is squared, because
-    S35's conditional-mean analysis is stated for squared loss.
-
-    `rolled` is block T-2 and replaces the real readout at *that* index. Appending
-    it would train it against T-1's action, reward and continuation targets.
+    """Teacher forcing plus a two-step generated-prefix rollout, after V-JEPA 2-AC
+    (S55). Both generated states are committed through `advance`, and both readouts
+    replace the real ones at their own indices, so the heads see every state Phase 3
+    will read them at. The two rollout terms are averaged, matching the source's
+    `jloss + sloss` of two means; squared error is a declared deviation from its L1.
     """
     committed, conditioning = commit_inputs(batch.latents, rng, config)
     features, agent, memory = world(None, batch.led_to_action, committed, conditioning)
@@ -274,10 +240,10 @@ def _direct_loss(world: World, batch, rng: torch.Generator, config: Config) -> T
     )
     state = WorldState(batch.latents[:, -3:-2], memory, length - 2, prefix[:, -1:])
     first, rolled = advance(world, state, batch.led_to_action[:, -2:-1], rng, config)
-    second = world.predict(first.features, batch.led_to_action[:, -1:])
+    second, rolled_again = advance(world, first, batch.led_to_action[:, -1:], rng, config)
     rollout = (first.latent - batch.latents[:, -2:-1]).pow(2).mean(dim=(1, 2, 3))
-    rollout = rollout + (second - batch.latents[:, -1:]).pow(2).mean(dim=(1, 2, 3))
-    readout = torch.cat([agent[:, :-2], rolled, agent[:, -1:]], dim=1)
+    rollout = rollout + (second.latent - batch.latents[:, -1:]).pow(2).mean(dim=(1, 2, 3))
+    readout = torch.cat([agent[:, :-2], rolled, rolled_again], dim=1)
     return _uniform_mean(teacher + rollout / 2, batch), readout
 
 
@@ -309,18 +275,11 @@ def _shortcut_loss(world: World, batch, rng: torch.Generator, config: Config) ->
 
 
 def _uniform_mean(per_row: Tensor, batch) -> Tensor:
-    """Every row during pretraining; the uniform half during agent finetuning.
-
-    D4 pretrains the world model on the whole corpus, then restricts the *continued*
-    dynamics loss to uniform rows "to avoid optimistic generations" (§4.1). Applying
-    that restriction during pretraining would discard half the corpus; omitting it
-    during finetuning fits dynamics to task-accomplishing play. `relevant is None`
-    is the pretraining regime, set by the sampler, not inferred here.
-    """
-    if batch.relevant is None:
-        return per_row.mean()
-    uniform = (~batch.relevant).float()
-    return (per_row * uniform).sum() / uniform.sum()
+    """Every row during pretraining, the uniform half during finetuning, never a
+    support row. D4 pretrains on the whole corpus and then restricts the continued
+    dynamics loss to uniform rows "to avoid optimistic generations" (§4.1)."""
+    mask = batch.rows("dynamics").to(per_row.device).float()
+    return (per_row * mask).sum() / mask.sum().clamp(min=1.0)
 
 
 def _bootstrap_target(world: World, batch, corrupted, conditioning, tau, config: Config) -> Tensor:

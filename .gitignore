@@ -239,3 +239,8 @@ m3_hjwm_reference.zip
 third_party/sources/
 third_party/Drama/
 third_party/vjepa2/
+
+# Support corpus and run outputs: large artifacts, reproduced by artifacts/*.py
+artifacts/*.pt
+artifacts/stage_a/
+artifacts/*.log

@@ -88,14 +88,8 @@ def rope(x: Tensor, offset: int = 0, base: float = 10000.0) -> Tensor:
 
 
 class Attention(nn.Module):
-    """QKNorm as cosine attention with a learned per-head temperature.
-
-    The temperature is clamped, as the pinned source clamps it. S14 drops the
-    paper's attention-logit soft capping as a 2B-parameter stability trick, and
-    that decision was taken alone: without the clamp too, nothing at all would
-    bound the logits, and a runaway temperature saturates attention to one-hot with
-    no diagnostic. GQA is also dropped -- Table 2 adopts it for KV bandwidth at a
-    cost of one FVD point.
+    """QKNorm as cosine attention with a learned per-head temperature, clamped as
+    the pinned source clamps it (S42). GQA and logit soft capping are dropped (S14).
     """
 
     def __init__(self, d_model: int, n_heads: int):
@@ -192,16 +186,13 @@ class Backbone(nn.Module):
 
     def forward(self, x: Tensor, memory: Memory | None = None, offset: int = 0) -> tuple[Tensor, Memory]:
         """`memory` holds one entry per *time-mixing* block, so it is consumed by an
-        iterator rather than zipped against the full stack.
-
-        With Mamba memory present exactly one block may be supplied. Attention may
-        decode several, because `_decode_mask` keeps them causal against each other,
-        which is what lets the encoder cache an episode in chunks.
+        iterator rather than zipped against the full stack. Mamba decodes one block
+        at a time; attention may decode several, which is what lets the encoder
+        cache an episode in chunks.
 
         Blocks are recomputed in backward rather than stored: exact, and what makes
-        the architecture fit 6 GB (batch 1 short without it, batch 8 short with).
-        Skipped with gradients off and on the cached path, where re-entering a block
-        would discard the state it returned.
+        the architecture fit 6 GB (S44). Skipped with gradients off and on the cached
+        path, where re-entering a block would discard the state it returned.
         """
         recurrent = any(type(b.time).__name__ == "TimeMamba" for b in self.blocks if b.mixes_time)
         assert memory is None or x.shape[1] == 1 or not recurrent, (

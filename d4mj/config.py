@@ -11,16 +11,8 @@ class Config:
 
     Fields that define Z* -- patch, window, n_latents, d_bottleneck, packing --
     must be frozen before the final encoder trains: changing one changes every
-    latent.
-
-    The 6 GB probe has now been run, and Phase 1A is what binds. Measured on the
-    6 GB card, with the encoder's whole window scored: without checkpointing only
-    batch 1 at the short length fits (2.69 GiB) and the long batch never does, so
-    the previous batch of 8 was unreachable by 8x. With checkpointing the same
-    architecture takes 3.00 GiB at batch 8 short and 3.07 GiB at batch 4 long.
-    Batch 4 is therefore the largest that runs *both* lengths, which Dreamer 4's
-    alternating schedule requires it to. None of this moved a Z*-defining field:
-    checkpointing recomputes activations rather than approximating them.
+    latent. Capacity was fixed by the 6 GB probe (S44), which moved `batch` and
+    turned on checkpointing without touching any architecture field.
     """
 
     transition: Transition = "flow"
@@ -92,6 +84,8 @@ class Config:
     long_batch_every: int = 4
     long_only_fraction: float = 0.25
     commit_prefix_fraction: float = 0.25
+    episode_start_fraction: float = 0.25
+    support_every: int = 8
     batch: int = 4
     gradient_checkpointing: bool = True
     rms_decay: float = 0.99

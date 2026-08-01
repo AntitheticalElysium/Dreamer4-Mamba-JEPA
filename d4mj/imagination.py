@@ -11,17 +11,9 @@ from .transition import World, advance
 
 @dataclass(frozen=True)
 class Trajectory:
-    """`continuation` is the head's probability, not a boolean: imagination has no
-    ground-truth termination, and a hard flag would need termination sampled.
-
-    `agent` is the readout at every state including the start, so the frozen prior
-    and the critic can be evaluated where the actions were actually chosen rather
-    than at the rollout's first state alone.
-
-    There is no boundary mask. The horizon end is the return recursion's initial
-    condition, not a per-step signal, so a boundary field would be a column of
-    zeros that nothing reads.
-    """
+    """`continuation` is the head's probability, not a boolean -- imagination has no
+    ground-truth termination. `agent` covers every state including the start, so the
+    prior and critic are evaluated where the actions were chosen."""
 
     action: Tensor
     logits: Tensor
@@ -40,21 +32,12 @@ def imagine(
     policy_rng: torch.Generator,
     config: Config,
 ) -> Trajectory:
-    """One rollout per starting state, per Dreamer 4.
-
-    The caller builds `state` and its readout `agent` from dataset context through
-    `observe`; imagination encodes nothing and owns no encoder. It takes the
-    readout rather than recomputing it because the memory already covers that
-    block, and re-evaluating would ingest the same latent twice.
+    """One rollout per starting state. The caller supplies `state` and its readout;
+    imagination encodes nothing.
 
     The action chosen at h_t is committed into the next block, so the reward it
-    causes is read at lead 0 of the *next* readout. Reading lead 0 of the current
-    one returns the previous action's reward and shifts every return by a step.
-
-    Policy and world noise use *separate* generators. Flow draws for four rungs and
-    a commit where direct draws none, so one shared stream desynchronises the two
-    arms' action sequences from the same seed -- and the paired comparison is the
-    whole point of the lattice.
+    causes is read at lead 0 of the *next* readout (S22). Policy and world noise use
+    separate generators, or flow's extra draws would desynchronise the arms.
     """
     readout = heads(agent)
     actions, step_logits, rewards, continuations = [], [], [], []

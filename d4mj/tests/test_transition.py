@@ -48,9 +48,10 @@ def test_finetuning_dynamics_ignores_the_relevant_half(config, transition):
     assert not torch.equal(loss_of(world, base, config), loss_of(world, touched_uniform, config))
 
 
-def test_direct_generated_readout_sits_at_its_own_block(config):
-    """`rolled` is block T-2. Appending it trains it against T-1's action, reward
-    and continuation targets."""
+def test_direct_commits_both_generated_states(config):
+    """Both generated readouts must reach the heads at their own indices. Predicting
+    the second latent without committing it leaves the heads trained on one
+    generated state while Phase 3 reads them after every generated state."""
     config = replace(config, transition="direct")
     world = world_for(config, "direct").eval()
     blocks = 6
@@ -64,7 +65,7 @@ def test_direct_generated_readout_sits_at_its_own_block(config):
         )
         real = world(None, batch.led_to_action, committed, conditioning)[1]
     differs = [not torch.equal(readout[:, i], real[:, i]) for i in range(blocks)]
-    assert differs == [i == blocks - 2 for i in range(blocks)]
+    assert differs == [i >= blocks - 2 for i in range(blocks)]
 
 
 def test_commit_prefix_does_not_reweight_the_step_grid(config):

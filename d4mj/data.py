@@ -6,23 +6,18 @@ from torch import Tensor
 
 from .config import Config
 
-FORMAT = "d4mj_episodes_v2"
+FORMAT = "d4mj_episodes_v3"
 
 
 @dataclass(frozen=True)
 class Episode:
-    """Unshifted storage. `actions_taken[t]` is taken at `observations[t]` and
-    causes `rewards[t]`, `terminated[t]`, `truncated[t]`, arriving at
-    `observations[t + 1]`. Never reinterpret an index without renaming the array.
+    """Unshifted storage: `actions_taken[t]` is taken at `observations[t]` and causes
+    `rewards[t]`, `terminated[t]`, `truncated[t]`, arriving at `observations[t + 1]`.
 
-    `latents` is the frozen Z* cache written at the Phase-1A boundary; its digest
-    covers the whole C* declaration, so a cache from another encoder or window
-    cannot be silently reused.
-
-    `events[t]` marks a step accomplishing a task -- per step, not per episode,
-    because D4 §4.1 oversamples "relevant sequences that accomplish one of the
-    tasks" and a random window from a successful 2500-step episode mostly shows
-    walking and inventory management.
+    `events[t]` is what happened; `uniform_eligible` and `bc_eligible` are separate
+    facts about where the rollout belongs. Degraded exploratory data is
+    uniform-eligible and not BC-eligible while keeping its true events, which one
+    combined flag could not express.
     """
 
     observations: Tensor
@@ -33,6 +28,8 @@ class Episode:
     latents: Tensor | None = None
     latent_digest: str | None = None
     events: Tensor | None = None
+    uniform_eligible: bool = True
+    bc_eligible: bool = True
 
     def __post_init__(self) -> None:
         steps = len(self.actions_taken)
@@ -49,23 +46,12 @@ class Episode:
 @dataclass(frozen=True)
 class Batch:
     """Block arrays under the led-to convention: block `i` holds the action that
-    *produced* its observation, and the reward that arrived with it.
+    produced its observation and the reward that arrived with it.
 
-    `scored` marks blocks whose encoder history is the history they would have at
-    deployment, so the reconstruction loss may use them. It is per block and per
-    row, not one leading count (S31 withdrawn): a window starting at the episode
-    start is missing nothing, so its earliest blocks are faithful at their own
-    shorter history and must be scored. A single integer masked them out of every
-    batch, which is why the first `receptive_field - 1` states of an episode --
-    exactly the states deployment begins from -- were never supervised.
-
-    `valid` marks blocks whose incoming transition exists -- false only at a true
-    episode start. Exactly one of `patches` and `latents` is populated, by phase.
-
-    `relevant` is the **sampling role** of a row, not a property of its data, and
-    is `None` during pretraining, where D4 applies no mixture and every row is
-    scored by every loss. A uniformly drawn window containing a task event is still
-    a uniform row.
+    `scored` marks blocks whose encoder history matches deployment, per block and
+    per row. `valid` is false only at a true episode start. `relevant` is the row's
+    sampling role, `None` while pretraining. `support` marks auxiliary
+    terminal-exposure rows that only the continuation loss may read.
     """
 
     led_to_action: Tensor
@@ -76,8 +62,25 @@ class Batch:
     scored: Tensor
     burn_in: int
     relevant: Tensor | None = None
+    support: Tensor | None = None
     patches: Tensor | None = None
     latents: Tensor | None = None
+
+    def rows(self, role: str) -> Tensor:
+        """Which rows a loss may read. `dynamics` is the uniform half, `policy` the
+        relevant half, `reward` everything except support, `continuation` everything
+        -- support rows exist to give the continuation head terminals it would
+        otherwise almost never see, and must not reach any other objective."""
+        count = self.led_to_action.shape[0]
+        support = torch.zeros(count, dtype=torch.bool) if self.support is None else self.support
+        support = support.to(self.led_to_action.device)
+        if role == "continuation":
+            return torch.ones(count, dtype=torch.bool, device=support.device)
+        if role == "reward":
+            return ~support
+        if self.relevant is None:
+            return ~support
+        return (self.relevant if role == "policy" else ~self.relevant) & ~support
 
 
 def patchify(frames: Tensor, patch: int) -> Tensor:
@@ -89,8 +92,7 @@ def patchify(frames: Tensor, patch: int) -> Tensor:
 
 
 def unpatchify(patches: Tensor, config: Config) -> Tensor:
-    """Inverse of `patchify`, for the perceptual term. (B, T, N, D) -> (B, T, C, H, W)
-    in channels-first, which is what an LPIPS network expects."""
+    """Inverse of `patchify`, in channels-first for LPIPS."""
     b, t = patches.shape[:2]
     grid, p, c = config.resolution // config.patch, config.patch, config.channels
     tiles = patches.view(b, t, grid, grid, p, p, c).permute(0, 1, 6, 2, 4, 3, 5)
@@ -99,7 +101,7 @@ def unpatchify(patches: Tensor, config: Config) -> Tensor:
 
 def episode_splits(count: int, seed: int) -> tuple[Tensor, Tensor, Tensor]:
     """Whole-episode 80/10/10. Windows never cross episodes, so splitting whole
-    episodes is what keeps evaluation frames out of training entirely."""
+    episodes is what keeps evaluation frames out of training."""
     order = torch.randperm(count, generator=torch.Generator().manual_seed(seed))
     train, dev = int(0.8 * count), int(0.9 * count)
     return order[:train], order[train:dev], order[dev:]
@@ -113,26 +115,15 @@ def sample_batch(
     total: int = 0,
     mixture: bool = False,
 ) -> Batch:
-    """Short and long batches alternate, and the last `long_only_fraction` of
-    training is long-only, as D4's finetune is. Only the long batch exceeds the
-    dynamics context, which is what stops the model assuming every context begins
-    at an episode start.
+    """Short and long batches alternate; the last `long_only_fraction` is long-only.
+    `mixture` is the §4.1 regime, used by Phases 2 and 3.
 
-    `mixture` selects the regime. Pretraining (Phases 1A and 1B) passes False: D4
-    pretrains on the whole corpus and every row is scored by every loss. Agent
-    finetuning passes True for the §4.1 mixture -- half the rows drawn uniformly,
-    half drawn so the window contains a whole task *transition*. `events[e]` says
-    action `e` caused an achievement arriving at observation `e + 1`, so the window
-    must hold both: a start of `e - length + 1` puts observation `e` last and leaves
-    the arrival, and the BC target that depends on it, outside.
-
-    Nothing falls back to the other pool. A silent substitution would train dynamics
-    on task-accomplishing play, which is the one thing the mixture exists to prevent.
-
-    A quarter of the uniformly drawn rows start at the episode start. Those are the
-    only windows whose earliest blocks are scorable at all (see `_window`), and at a
-    uniform start they arrive with probability 1/span -- about 0.5% here -- so the
-    states deployment actually begins from would be supervised essentially never.
+    Uniform rows are drawn uniformly over eligible *(episode, start)* pairs, not by
+    picking an episode and then a start -- the latter gives a short episode's every
+    window hundreds of times the weight of a long one's. Two explicit strata sit on
+    top: `episode_start_fraction` of uniform rows begin at the episode start, and
+    every `support_every` steps one row is a terminal tail that only the
+    continuation head reads.
     """
     cached = [episode.latents is not None for episode in episodes]
     assert len(set(cached)) == 1, "cache is present on some episodes and missing on others"
@@ -141,47 +132,77 @@ def sample_batch(
     long = finetune or (config.long_batch_every > 0 and (step + 1) % config.long_batch_every == 0)
     length = burn_in + (config.sequence_long if long else config.sequence)
 
-    usable = [episode for episode in episodes if len(episode) + 1 >= length]
-    if not usable:
-        raise ValueError(f"no episode reaches the required length {length}")
-
-    eventful = [e for e in usable if e.events is not None and bool(e.events.any())]
+    usable = [e for e in episodes if len(e) + 1 >= length]
+    uniform = [e for e in usable if e.uniform_eligible]
+    eventful = [e for e in usable if e.bc_eligible and e.events is not None and bool(e.events.any())]
+    if not uniform:
+        raise ValueError(f"no eligible episode reaches the required length {length}")
     if mixture and not eventful:
-        raise ValueError("the relevant half needs episodes carrying task events")
+        raise ValueError("the relevant half needs BC-eligible episodes carrying task events")
 
-    chosen, starts, roles = [], [], []
+    starts = torch.tensor([len(e) + 1 - length + 1 for e in uniform], dtype=torch.float)
+    terminal = [e for e in uniform if bool(e.terminated.any())]
+    wanted = config.batch // 2 if mixture else 0
+    support_row = (
+        config.batch - 1
+        if mixture and terminal and config.support_every and (step + 1) % config.support_every == 0
+        else -1
+    )
+
+    chosen, offsets, roles, supports = [], [], [], []
     for row in range(config.batch):
-        relevant = mixture and row < config.batch // 2
-        episode = (eventful if relevant else usable)[
-            int(torch.randint(len(eventful if relevant else usable), (1,), generator=rng))
-        ]
-        span = len(episode) + 1 - length
-        if relevant:
-            events = episode.events.nonzero().flatten()
-            event = int(events[int(torch.randint(len(events), (1,), generator=rng))])
-            low, high = max(0, event - length + 2), min(span, event)
-            start = low + int(torch.randint(high - low + 1, (1,), generator=rng))
-        elif row % 4 == 0:
-            start = 0
+        relevant = row < wanted
+        if row == support_row:
+            episode = terminal[int(torch.randint(len(terminal), (1,), generator=rng))]
+            offset = _terminal_start(episode, length, rng)
+        elif relevant:
+            episode = eventful[int(torch.randint(len(eventful), (1,), generator=rng))]
+            offset = _event_start(episode, length, rng)
         else:
-            start = int(torch.randint(span + 1, (1,), generator=rng))
+            episode = uniform[int(torch.multinomial(starts, 1, generator=rng))]
+            span = len(episode) + 1 - length
+            at_start = float(torch.rand((), generator=rng)) < config.episode_start_fraction
+            offset = 0 if at_start else int(torch.randint(span + 1, (1,), generator=rng))
         chosen.append(episode)
-        starts.append(start)
+        offsets.append(offset)
         roles.append(relevant)
+        supports.append(row == support_row)
 
-    rows = [_window(episode, start, length, config) for episode, start in zip(chosen, starts)]
+    rows = [_window(e, offset, length, config) for e, offset in zip(chosen, offsets)]
     stack = {field: torch.stack([row[field] for row in rows]) for field in rows[0]}
-    return Batch(burn_in=burn_in, relevant=torch.tensor(roles) if mixture else None, **stack)
+    return Batch(
+        burn_in=burn_in,
+        relevant=torch.tensor(roles) if mixture else None,
+        support=torch.tensor(supports) if support_row >= 0 else None,
+        **stack,
+    )
+
+
+def _event_start(episode: Episode, length: int, rng: torch.Generator) -> int:
+    """A window holding the whole event transition. `events[e]` says action `e`
+    caused an achievement arriving at observation `e + 1`, so both must be inside:
+    a start of `e - length + 1` puts observation `e` last and leaves the arrival,
+    and the BC target that depends on it, outside."""
+    span = len(episode) + 1 - length
+    events = episode.events.nonzero().flatten()
+    event = int(events[int(torch.randint(len(events), (1,), generator=rng))])
+    low, high = max(0, event - length + 2), min(span, event)
+    return low + int(torch.randint(high - low + 1, (1,), generator=rng))
+
+
+def _terminal_start(episode: Episode, length: int, rng: torch.Generator) -> int:
+    """The tail window, so the terminal transition is inside it. A terminal is only
+    visible when the window is tail-aligned, which at a uniform start happens about
+    once in a span."""
+    return max(0, len(episode) + 1 - length)
 
 
 def _window(episode: Episode, start: int, length: int, config: Config) -> dict[str, Tensor]:
     """One window in block coordinates. Block `i` covers episode step `start + i`;
     its incoming transition is `start + i - 1`, which exists unless that is -1.
 
-    Block `i` sees `i + 1` frames of history from this window against the
-    `start + i + 1` it has in the episode, so it is faithful once it holds a full
-    receptive field, and unconditionally when the window starts at the episode
-    start -- there is nothing earlier to be missing.
+    A block is `scored` once it holds a full receptive field, and unconditionally
+    when the window starts at the episode start, where nothing earlier is missing.
     """
     steps = torch.arange(start, start + length)
     incoming = steps - 1
@@ -194,9 +215,10 @@ def _window(episode: Episode, start: int, length: int, config: Config) -> dict[s
         if cached
         else (depth >= config.receptive_field) | torch.tensor(start == 0)
     )
-
     frames = (
-        episode.latents[steps] if cached else patchify(episode.observations[steps][None], config.patch)[0]
+        episode.latents[steps]
+        if cached
+        else patchify(episode.observations[steps][None], config.patch)[0]
     )
     return {
         "led_to_action": torch.where(

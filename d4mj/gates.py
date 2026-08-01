@@ -8,20 +8,8 @@ from .transition import advance, initial
 
 
 def scan_step_parity(config: Config, tolerance: float = 1e-3) -> None:
-    """One batched scan must equal the same frames stepped one at a time carrying
-    memory. Training runs the scan and imagination runs the steps, so a divergence
-    here is a model that is correct in every loss and wrong in every rollout.
-
-    The tolerance is relative and generous because Mamba's chunked scan and its
-    sequential step are different kernels: measured drift is 2.5e-5 relative for
-    Mamba and 2.5e-7 for attention, and neither grows with sequence length. A
-    misalignment -- a stale offset, a dropped state -- is order one, not order
-    1e-5, so the gap between the two is what the gate actually tests.
-
-    The sequence runs past `dynamics_context` on purpose: at a shorter length the
-    windowed branch of `_decode_mask` never executes, and a regression in the
-    window arithmetic would pass everything.
-    """
+    """Scan must equal step-by-step, in outputs and in state. Runs past
+    `dynamics_context` so the windowed branch executes. See GATES.md."""
     device = config.device
     torch.manual_seed(config.seed)
     layout = Layout.dynamics(config)
@@ -54,21 +42,9 @@ def scan_step_parity(config: Config, tolerance: float = 1e-3) -> None:
 
 
 def _state_parity(stepped, scanned, tolerance: float = 5e-3) -> None:
-    """The carried state itself must match, not merely its shape and count.
-
-    Outputs agreeing while states diverge is exactly the failure that survives to
-    the first long rollout: training reads the scan and imagination reads the step,
-    so a state that drifts is a model correct in every loss and wrong in every
-    trajectory.
-
-    The tolerance is looser than the output one and separately evidenced. An SSM
-    state is a raw internal quantity the output projection contracts, so measured,
-    Mamba's state drifts 1.0e-3 against an output drift of 8e-5 while attention's
-    stays near 5e-7. Crucially the state figure is **flat in sequence length** --
-    1.04e-3 at 8 blocks, 8.99e-4 at 200 -- so it is chunked-scan-versus-step
-    numerics, not a misalignment, which would be order one and would accumulate.
-    5e-3 sits about 5x above the observed value and far below that.
-    """
+    """State values, not just shapes. Tolerance is looser than for outputs and
+    separately evidenced: Mamba's state drift is 1e-3 but flat in length, so it is
+    kernel numerics, not misalignment. See GATES.md."""
     assert len(stepped) == len(scanned), "different numbers of time-mixing states"
     for layer, (left, right) in enumerate(zip(stepped, scanned)):
         for slot, (one, other) in enumerate(zip(left, right)):
@@ -113,12 +89,8 @@ def _world_parity(config: Config, device: str, tolerance: float) -> None:
 
 
 def _encoder_parity(config: Config, device: str, tolerance: float) -> None:
-    """Batched scan, frame-by-frame recurrence and the cached Z* must agree, and
-    nothing beyond the receptive field may reach a latent.
-
-    `window` bounds each time layer's state; influence still travels one window per
-    time layer, so the reach is their product. The state bound is what makes the
-    cache and the deployed rollout produce the same latent for the same frame."""
+    """Scan, recurrence and the cache must agree, and nothing beyond the receptive
+    field may reach a latent."""
 
     from .representation import Encoder
 
@@ -151,12 +123,7 @@ def _encoder_parity(config: Config, device: str, tolerance: float) -> None:
 
 
 def alignment(config: Config) -> None:
-    """The temporal contract, asserted on episodes whose every value identifies its
-    own index. Any shift, any window crossing a boundary, and any start-of-episode
-    action leaking into a mid-episode window shows up as a mismatch rather than as
-    a plausible-looking number months later.
-
-"""
+    """The temporal contract, on episodes whose every value identifies its index."""
     episodes = [_probe(index, config) for index in range(4)]
     rng = torch.Generator().manual_seed(config.seed)
     batch = sample_batch(episodes, rng, config)
@@ -196,15 +163,9 @@ def alignment(config: Config) -> None:
 
 
 def _observation_dependence(config: Config) -> None:
-    """The *prediction* must move when the context moves, with the action and the
-    conditioning held fixed.
-
-    Comparing losses across two batches is not this test: changing the latents also
-    changes the target, so a model-free loss returning `latents.pow(2).mean()`
-    passes it. Only the prediction path is evidence that observations reach the
-    predictor at all. The loss is separately checked to be finite, since a division
-    by a vanishing signal level surfaces as a clean-looking curve of NaNs.
-    """
+    """The prediction must move when context moves, action and conditioning fixed.
+    Comparing losses instead would pass for a model-free loss, since changing the
+    latents also changes the target."""
     from .transition import World, commit_inputs
 
     device = config.device
@@ -245,12 +206,7 @@ def _observation_dependence(config: Config) -> None:
 
 
 def _conditioning_coverage(config: Config) -> None:
-    """Every row of the conditioning table must be reachable by training.
-
-    An unreachable row is the one defect the register spends a whole decision on
-    (S10): the pinned source sizes its signal table `k_max + 1` and labels
-    uncorrupted context with a row its own sampler can never draw.
-    """
+    """Every conditioning row must be reachable by training (S10)."""
     from .data import Batch
     from .transition import World, transition_loss
 
@@ -288,19 +244,9 @@ def _conditioning_coverage(config: Config) -> None:
 
 
 def reset_parity(config: Config) -> None:
-    """An episode boundary must erase the previous episode, asserted by *running*
-    one rather than by inspecting the type.
-
-    `recurrent_carry` shows memory matters; this shows a reset removes it. The two
-    are different claims, and testing only the first leaves a driver free to thread
-    state across a boundary. So: roll a first episode, reset, roll a second, and
-    require it to be identical to the same second episode rolled in a fresh process
-    state -- byte-for-byte, under one seed.
-
-    `step` is asserted to restart at zero too, because it dates RoPE and the decode
-    window; a carried offset re-dates the new episode's history without changing
-    any memory tensor.
-    """
+    """An episode boundary erases the previous episode, asserted by running two and
+    requiring the second to match the same episode run alone. `step` must restart
+    too: it dates RoPE and the decode window."""
     device = config.device
     world = _world(config)
     action = torch.zeros(2, 1, dtype=torch.long, device=device)
@@ -363,18 +309,9 @@ def branch_nonmutation(config: Config) -> None:
 
 
 def recurrent_carry(config: Config) -> None:
-    """The rollout must actually depend on history. A model that ignores its own
-    memory passes every one-step loss and produces a constant trajectory.
-
-    Deep and shallow memory are compared against one identical committed tensor, so
-    the difference is the memory and nothing else. Re-seeding the generator is not
-    enough on its own: `initial` and `advance` commit at different points in the
-    stream, and for the flow arm that draw alone moves the output.
-
-    This is also the only place the flow arm's history dependence is tested:
-    `_observation_dependence` compares `World.predict`, which for flow reads the
-    current block's own corrupted latent and would pass with all history ignored.
-    """
+    """The rollout must depend on history. Deep and shallow memory are compared
+    against one identical committed tensor, so the difference is memory alone --
+    reseeding is not enough, since flow's commit draw moves the output."""
     world = _world(config)
     committed, conditioning, action, memory = _isolated(world, config)
 

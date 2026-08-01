@@ -43,15 +43,9 @@ def run_episode(
     """The deployed loop, and the only place the whole system runs together.
 
     The horizon defaults to Craftax's native 10000, not the collector's 2500 cap
-    (S50): the cap is ours, and censoring a policy at a quarter of the horizon it is
-    scored against measures the cap rather than the policy.
-
-    Sampling is categorical at temperature 1 by default, greedy only as a declared
-    secondary (S52). Policy actions, flow corruption and the environment draw from
-    three separately seeded streams derived from one `seed`, so the two transition
-    arms see the same action stream even though flow consumes model noise that
-    direct does not -- without that split the arms differ by their own randomness
-    before any model difference is measured.
+    (S50). Sampling is categorical at temperature 1, greedy only as a declared
+    secondary (S52). Policy, flow corruption and environment draw from three
+    separately seeded streams, so the arms do not differ by their own randomness.
     """
     device = config.device
     world, encoder, heads = world.to(device).eval(), encoder.to(device).eval(), heads.to(device).eval()
@@ -117,17 +111,12 @@ def score(results: list[Result]) -> float:
 def evaluate(
     policies: dict[str, Callable[[int], Result]], seeds: list[int], config: Config
 ) -> dict[str, dict]:
-    """Every policy on the *same* seeds, with paired bootstrap intervals.
+    """Every policy on the same seeds, with paired bootstrap intervals. Each
+    resample redraws seeds and recomputes the official score from every policy's
+    resampled rows at once, since the score is nonlinear in the rates.
 
-    Pairing is the point: episode-to-episode variance on Craftax dwarfs the
-    differences being measured, so an unpaired comparison needs far more episodes to
-    say anything. Each resample redraws *seeds* and recomputes the official score
-    from the resampled rows of every policy at once, which is the only honest way to
-    get an interval on a statistic nonlinear in the rates.
-
-    An arm passes when the lower bound of its advantage over *both* controls clears
-    zero (S52). Beating a random policy is not evidence; beating the behaviour it
-    was cloned from is the claim.
+    An arm passes when its advantage over *both* controls has a lower bound above
+    zero (S52): beating random is not evidence, beating its own BC prior is.
     """
     rows = {name: [policy(seed) for seed in seeds] for name, policy in policies.items()}
     generator = torch.Generator().manual_seed(config.seed + 2**22)

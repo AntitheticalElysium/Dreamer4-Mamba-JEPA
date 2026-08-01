@@ -20,19 +20,13 @@ def multistep_error(
     successors: Tensor | None = None,
     context: int | None = None,
 ) -> dict[str, list[float]]:
-    """Per-step error under the real runtime path, from a *committed* prefix.
+    """Per-step error under the runtime path, from a committed prefix of `context`
+    real blocks -- the full dynamics context by default, since rolling from one
+    block would select a horizon for a regime imagination never runs in (S54).
 
-    The prefix is `context` real blocks -- the full dynamics context by default --
-    teacher-forced to build memory before the roll begins. Starting from one block
-    measures a model with almost no history, which is not the condition imagination
-    runs in and would select an imagination horizon for the wrong regime (S54).
-
-    Mean error alone cannot adjudicate the direct arm: under squared loss the
-    optimal deterministic predictor is the conditional mean, so the collapsed
-    solution is the one that minimises exactly this number. When `successors`
-    (B, M, ...) samples of the true next latent are supplied, the nearest-mode and
-    mean distances are reported alongside -- a predictor sitting between modes
-    shows a large gap, and one on a mode shows none.
+    Mean error alone cannot adjudicate the direct arm: the conditional-mean collapse
+    minimises exactly this number. `successors` adds nearest-mode and mode-mean
+    distances, which separate a predictor on a mode from one between modes.
     """
     blocks = batch.latents.shape[1]
     context = min(config.dynamics_context, blocks - 1) if context is None else context
@@ -77,17 +71,30 @@ def latent_stats(world: World, batch: Batch, rng: torch.Generator, config: Confi
 
 @torch.no_grad()
 def head_calibration(heads: Heads, agent: Tensor, batch: Batch, config: Config) -> dict[str, float]:
-    """Reward and continuation against their targets at lead 0, which is the only
-    lead deployment reads."""
+    """Reward and continuation at lead 0, the only lead deployment reads.
+
+    Continuation is split by target, not reported as one mean: terminals are ~0.01%
+    of transitions, so a constant "continue" head matches the global mean and looks
+    calibrated. `continuation_separation` is what collapses to zero when it does,
+    and `terminal_targets` says how many terminals the estimate rests on.
+    """
     readout, targets = heads(agent), head_targets(batch, config)
     valid = targets["valid"][..., 0]
     probability = readout["continuation"][..., 0].sigmoid()
+    truth = targets["continuation"][..., 0]
+    alive, dead = valid * truth, valid * (1 - truth)
+    on_alive = float((probability * alive).sum() / alive.sum().clamp(min=1.0))
+    on_dead = float((probability * dead).sum() / dead.sum().clamp(min=1.0))
     mean = (readout["reward"][..., 0, :].softmax(-1) * heads.centers).sum(-1)
     predicted = mean.sign() * torch.expm1(mean.abs())
     return {
         "reward_mae": float(((predicted - targets["reward"][..., 0]).abs() * valid).sum() / valid.sum()),
         "continuation_mean": float((probability * valid).sum() / valid.sum()),
-        "continuation_target": float((targets["continuation"][..., 0] * valid).sum() / valid.sum()),
+        "continuation_target": float((truth * valid).sum() / valid.sum()),
+        "continuation_on_continuing": on_alive,
+        "continuation_on_terminal": on_dead,
+        "continuation_separation": on_alive - on_dead if float(dead.sum()) else float("nan"),
+        "terminal_targets": float(dead.sum()),
     }
 
 
@@ -95,17 +102,11 @@ def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[st
     """Cost of the two arms: parameters, state sizes, memory and throughput.
 
     Caveats that change how the numbers read. `forward_backward_per_second` excludes
-    the optimizer, clipping and transfer, so it is not a training step rate.
-    `flops_per_step` counts dispatched aten ops, so a fused Mamba kernel is
-    invisible to it -- read it beside wall-clock time, never instead.
-    `memory_horizon_at_least` perturbs one *history* block with the present held
-    fixed, so it measures reach rather than trajectory divergence; it doubles, so it
-    is a power-of-two lower bound, and a long-memory arm reports the cap.
-
-    State size is read after the cache has *saturated*: attention grows to
-    `dynamics_context` and then stops, so measuring earlier reports a partly filled
-    cache and understates the arm whose state is bounded, which is the whole
-    quantity the Mamba substitution is meant to change.
+    the optimizer and transfer, so it is not a training step rate. `flops_per_step`
+    counts dispatched aten ops, so a fused Mamba kernel is invisible to it.
+    `memory_horizon_at_least` perturbs one history block with the present held
+    fixed, so it measures reach, not trajectory divergence, and is a power-of-two
+    lower bound. State size is read only after the cache saturates.
     """
     device, deployed = config.device, {"encoder", "world", "heads"}
     counts = {name: sum(p.numel() for p in m.parameters()) for name, m in modules.items()}

@@ -81,8 +81,9 @@ def test_round_trip_preserves_events(config, tmp_path):
 
 
 def test_format_version_is_current(config, tmp_path):
-    """Adding `events` changed what an episode means, so a v1 file must not load as
-    if the field had simply defaulted."""
+    """Each field that changed what an episode *means* -- `events`, then the split
+    of eligibility from events -- bumps the format, so an older file cannot load as
+    if the new fields had simply defaulted."""
     path = tmp_path / "episodes.pt"
     save_episodes(path, [episode(0, config, length=40)])
-    assert torch.load(path, weights_only=False)["format"] == FORMAT == "d4mj_episodes_v2"
+    assert torch.load(path, weights_only=False)["format"] == FORMAT == "d4mj_episodes_v3"

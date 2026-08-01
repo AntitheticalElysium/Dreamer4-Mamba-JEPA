@@ -8,17 +8,11 @@ from .data import Batch
 
 
 class Heads(nn.Module):
-    """Policy, reward, continuation and value, all reading the same pooled agent
-    tokens through one output layer per multi-token distance.
+    """Policy, reward, continuation and value over the same pooled agent tokens.
 
-    Every head uses the same pooling. Two heads over the same tokens with
-    different poolers is a difference nothing declares and nothing measures.
-
-    Policy and value share one body; reward and continuation share another. A
-    single trunk would let Phase 3 move the reward model it is being scored
-    against -- measured: one policy/value step changed both reward and
-    continuation logits. Dreamer 4 freezes the world and reward model there and
-    describes the heads as small MLPs, not a mandatory common trunk.
+    Policy and value share one body; reward and continuation share another. A single
+    trunk would let Phase 3 move the reward model it is scored against -- measured,
+    one policy step changed both reward and continuation logits.
     """
 
     def __init__(self, config: Config):
@@ -68,16 +62,14 @@ def twohot(values: Tensor, centers: Tensor) -> Tensor:
 def head_targets(batch: Batch, config: Config) -> dict[str, Tensor]:
     """Multi-token targets under the led-to convention.
 
-    Padding past the window uses class 0, not the BOS index: BOS is an input
-    embedding row, not a policy class. `action_valid` is what makes those entries
-    inert, so the filler only has to be in range.
-
-    Reward lead 0 at block t is the reward that *arrived* at t, so the reward
-    caused by the action chosen at t is lead 0 at t+1 -- never lead 0 at t. Policy
-    lead 0 is the outgoing action, which in led-to storage lives one block later.
+    Reward lead 0 at block t is the reward that *arrived* at t, so the reward caused
+    by the action chosen at t is lead 0 at t+1 (S22). Policy lead 0 is the outgoing
+    action, one block later in led-to storage. Padding past the window uses class 0,
+    not BOS, which is an input embedding row and not a policy class.
     """
     assert batch.relevant is not None, "behaviour cloning needs the §4.1 mixture"
     leads = config.mtp_leads
+    device = batch.led_to_action.device
     outgoing = _shift(batch.led_to_action.float(), fill=0.0)
     return {
         "action": _leads(outgoing, leads, fill=0.0),
@@ -85,7 +77,8 @@ def head_targets(batch: Batch, config: Config) -> dict[str, Tensor]:
         "continuation": _leads((~batch.terminated).float(), leads, fill=1.0),
         "valid": _leads(batch.valid.float(), leads, fill=0.0),
         "action_valid": _leads(_shift(batch.valid.float(), fill=0.0), leads, fill=0.0),
-        "relevant": batch.relevant.float()[:, None, None],
+        "policy_rows": batch.rows("policy").to(device).float()[:, None, None],
+        "reward_rows": batch.rows("reward").to(device).float()[:, None, None],
     }
 
 
@@ -96,9 +89,9 @@ def head_loss(
     its own running RMS, and merging them first lets whichever head has the largest
     natural scale set the others' effective weight.
 
-    Behaviour cloning is scored on the relevant half only (§4.1). Reward and
-    continuation are scored on everything: the paper restricts the BC and dynamics
-    losses by name and says the mixture amplifies signal *for* reward modelling.
+    Behaviour cloning reads the relevant half only (§4.1); reward reads everything
+    except support rows; continuation reads everything, since support rows exist
+    only to give it terminals.
     """
     centers = predictions["centers"]
     policy = F.cross_entropy(
@@ -109,10 +102,11 @@ def head_loss(
         predictions["continuation"], targets["continuation"], reduction="none"
     )
     valid = targets["valid"]
-    actions = targets["action_valid"] * targets["relevant"]
+    actions = targets["action_valid"] * targets["policy_rows"]
+    rewarded = valid * targets["reward_rows"]
     return {
         "policy": (policy * actions).sum() / actions.sum().clamp(min=1.0),
-        "reward": (reward * valid).sum() / valid.sum().clamp(min=1.0),
+        "reward": (reward * rewarded).sum() / rewarded.sum().clamp(min=1.0),
         "continuation": (continuation * valid).sum() / valid.sum().clamp(min=1.0),
     }
 
