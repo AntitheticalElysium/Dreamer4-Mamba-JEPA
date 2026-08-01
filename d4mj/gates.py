@@ -147,10 +147,18 @@ def alignment(config: Config) -> None:
         config.n_patches,
         config.patch_dim,
     )
-    wanted = int(config.relevant_fraction * config.batch)
-    assert int(batch.relevant.sum()) == wanted, (
-        f"mixture drew {int(batch.relevant.sum())} relevant rows, not {wanted}"
-    )
+    assert batch.relevant is None, "pretraining must not stratify the corpus"
+
+    single = [_probe(0, config)]
+    event = len(single[0]) // 2
+    mixed = sample_batch(single, torch.Generator().manual_seed(config.seed), config, mixture=True)
+    assert int(mixed.relevant.sum()) == config.batch // 2, "the mixture is not 50/50"
+    for row in range(config.batch):
+        if bool(mixed.relevant[row]):
+            start = _recover_start(mixed, row, config)
+            assert start <= event < start + mixed.led_to_action.shape[1], (
+                "a relevant row was drawn without its task event in the window"
+            )
     _observation_dependence(config)
 
 
@@ -180,7 +188,6 @@ def _observation_dependence(config: Config) -> None:
         terminated=torch.zeros(2, 4, dtype=torch.bool, device=device),
         truncated=torch.zeros(2, 4, dtype=torch.bool, device=device),
         valid=torch.ones(2, 4, dtype=torch.bool, device=device),
-        relevant=torch.zeros(2, dtype=torch.bool, device=device),
         burn_in=0,
         latents=torch.randn(2, 4, config.n_spatial, config.d_spatial, device=device).tanh(),
     )
@@ -229,7 +236,6 @@ def _conditioning_coverage(config: Config) -> None:
             terminated=torch.zeros(4, 6, dtype=torch.bool, device=device),
             truncated=torch.zeros(4, 6, dtype=torch.bool, device=device),
             valid=torch.ones(4, 6, dtype=torch.bool, device=device),
-            relevant=torch.zeros(4, dtype=torch.bool, device=device),
             burn_in=0,
             latents=torch.randn(4, 6, config.n_spatial, config.d_spatial, device=device).tanh(),
         )
@@ -333,12 +339,8 @@ def _world(config: Config):
 
 def _probe(index: int, config: Config) -> Episode:
     """An episode where actions_taken[t] = t mod n_actions and rewards[t] = t, so a
-    one-step shift is not a plausible alternative reading of any array.
-
-    Relevance alternates so the probe set holds both halves of the §4.1 mixture; an
-    all-relevant probe set would take the sampler's fallback branch and never
-    exercise the pooling that routes the two losses apart.
-    """
+    one-step shift is not a plausible alternative reading of any array. One task
+    event sits mid-episode, so the relevant sampler has something to centre on."""
     steps = config.burn_in + config.sequence + 8 + index
     shape = (steps + 1, config.resolution, config.resolution, config.channels)
     return Episode(
@@ -347,7 +349,7 @@ def _probe(index: int, config: Config) -> Episode:
         rewards=torch.arange(steps).float(),
         terminated=torch.zeros(steps, dtype=torch.bool),
         truncated=torch.zeros(steps, dtype=torch.bool),
-        relevant=index % 2 == 0,
+        events=torch.arange(steps) == steps // 2,
     )
 
 

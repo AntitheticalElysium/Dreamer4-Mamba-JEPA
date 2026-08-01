@@ -4,7 +4,6 @@ from torch import Tensor, nn
 
 from .backbone import AGENT, REGISTER, SPATIAL, Backbone, Layout
 from .config import Config
-from .data import mixture_weight
 from .representation import Encoder, pack
 from .state import Memory, RealState, WorldState
 
@@ -14,17 +13,14 @@ class World(nn.Module):
     turns its world features into a latent, and is the only thing the two arms do
     differently.
 
-    Flow reads its clean-latent estimate straight off the block it corrupted.
-    Direct reads the *next* latent from the current block's features plus the
-    action about to be taken -- a separate head, as in V-JEPA 2-AC and DINO-WM,
-    rather than an in-block query. A query token carries no information, so a
-    position holding one cannot also serve as context for later positions; filling
-    every position with a query, which is the only way to train that in one pass,
-    leaves the prediction a function of the action history alone.
+    Flow reads its clean-latent estimate off the block it corrupted. Direct reads
+    the *next* latent from the current block's features plus the action about to be
+    taken -- an external head, as in V-JEPA 2-AC and DINO-WM, because a query token
+    carries no information and so cannot also serve as context for later positions.
 
-    The head reads spatial and register features only. Those are agent-free by
-    induction over depth under the dynamics mask, so the task cannot reach world
-    prediction -- pooling the agent slot instead is what the firewall forbids.
+    The head reads spatial and register features only, which are agent-free by
+    induction over depth under the dynamics mask; pooling the agent slot instead is
+    what the firewall forbids.
     """
 
     def __init__(self, config: Config):
@@ -104,29 +100,31 @@ class World(nn.Module):
         return torch.tanh(self.readout(torch.cat([pooled, context], dim=-1)))
 
 
-def flow_conditioning(rng: torch.Generator, shape: tuple[int, int], config: Config, device) -> Tensor:
-    """Diffusion forcing: an independent step size and signal level per position.
+def flow_conditioning(rng: torch.Generator, shape: tuple[int, int], config: Config, device):
+    """Diffusion forcing: an independent step size and signal level per position,
+    plus the mask of positions the loss may score.
 
-    The signal grid tops out at 1 - d, so tau = 1 is never trained and no path may
-    ever present a fully clean latent to the flow arm.
-
-    A fraction of rows instead carry the *rollout* prefix: every block but the last
-    at the commit condition, the last one sampled. Independent per-block draws make
-    that joint prefix vanishingly rare -- measured, a 48-block prefix uniformly at
-    the commit condition has probability 0.000000, while at rollout it is every
-    prefix. Without this the flow arm imagines in a regime training never visits.
+    The signal grid tops out at 1 - d, so tau = 1 is never trained. A fraction of
+    rows instead carry the *rollout* prefix -- every block but the last at the
+    commit condition -- because independent draws make that joint prefix
+    vanishingly rare (measured: probability 0.000000 over 48 blocks) and the flow
+    arm would imagine in a regime training never visits. Only the last block of such
+    a row is scored: scoring the prefix too would push the finest-step share from
+    25% to 43% and silently reweight the shortcut objective.
     """
     step = torch.randint(config.n_step_bins, shape, generator=rng, device=device)
     rungs = 2**step
     index = (torch.rand(shape, generator=rng, device=device) * rungs).floor().long()
     conditioning = torch.stack([index * (config.k_max // rungs), step], dim=-1)
+    scored = torch.ones(shape, device=device)
 
     rows = int(config.commit_prefix_fraction * shape[0])
     if rows:
         picked = torch.randperm(shape[0], generator=rng, device=device)[:rows]
         conditioning[picked, :-1, 0] = config.tau_ctx_index
         conditioning[picked, :-1, 1] = config.step_index
-    return conditioning
+        scored[picked, :-1] = 0.0
+    return conditioning, scored
 
 
 def signal_level(conditioning: Tensor, config: Config) -> Tensor:
@@ -237,21 +235,17 @@ def commit_inputs(latent: Tensor, rng: torch.Generator, config: Config):
 
 
 def _direct_loss(world: World, batch, rng: torch.Generator, config: Config) -> Tensor:
-    """Teacher forcing plus a generated-prefix rollout, as V-JEPA 2-AC does.
+    """Teacher forcing plus a generated-prefix rollout, after V-JEPA 2-AC.
 
-    The rollout term runs the *actual* `advance` transaction from a real prefix:
-    commit, predict, commit the prediction, predict again. Stacking independently
-    teacher-forced predictions into a fresh sequence is not that -- each was
-    conditioned on a different real prefix, so they never form one trajectory, and
-    measured, that construction differs from the runtime path by 6.5e-2.
+    The rollout runs the real `advance` transaction from a real prefix, so gradient
+    flows through one recurrent step (`auto_steps: 2`). The source computes
+    `loss = jloss + sloss` with each a *mean*, so the two rollout steps are averaged;
+    its first autoregressive step is likewise teacher-forced from real context.
+    Declared deviation: the source is L1 (`loss_exp: 1.0`), this is squared, because
+    S35's conditional-mean analysis is stated for squared loss.
 
-    Direct has no corruption channel to make it tolerate an imperfect prefix, so
-    this is its only such training. Gradient flows through one recurrent step,
-    matching `auto_steps: 2`. The readout handed to the heads carries the
-    generated-prefix block, so they are fitted where imagination reads them.
-
-    The action taken at block t is `led_to_action[t + 1]` under the led-to
-    convention -- the same shift the policy target uses.
+    `rolled` is block T-2 and replaces the real readout at *that* index. Appending
+    it would train it against T-1's action, reward and continuation targets.
     """
     committed, conditioning = commit_inputs(batch.latents, rng, config)
     features, agent, memory = world(None, batch.led_to_action, committed, conditioning)
@@ -271,7 +265,8 @@ def _direct_loss(world: World, batch, rng: torch.Generator, config: Config) -> T
     second = world.predict(first.features, batch.led_to_action[:, -1:])
     rollout = (first.latent - batch.latents[:, -2:-1]).pow(2).mean(dim=(1, 2, 3))
     rollout = rollout + (second - batch.latents[:, -1:]).pow(2).mean(dim=(1, 2, 3))
-    return _uniform_mean(teacher + rollout, batch), torch.cat([agent[:, :-1], rolled], dim=1)
+    readout = torch.cat([agent[:, :-2], rolled, agent[:, -1:]], dim=1)
+    return _uniform_mean(teacher + rollout / 2, batch), readout
 
 
 def _shortcut_loss(world: World, batch, rng: torch.Generator, config: Config) -> Tensor:
@@ -281,7 +276,7 @@ def _shortcut_loss(world: World, batch, rng: torch.Generator, config: Config) ->
     work. Without it the arm is the paper's own diffusion-forcing ablation.
     """
     target = batch.latents
-    conditioning = flow_conditioning(rng, target.shape[:2], config, target.device)
+    conditioning, scored = flow_conditioning(rng, target.shape[:2], config, target.device)
     tau = signal_level(conditioning, config)[..., None, None]
     noise = torch.randn(target.shape, generator=rng, device=target.device, dtype=target.dtype)
     corrupted = tau * target + (1.0 - tau) * noise
@@ -297,20 +292,22 @@ def _shortcut_loss(world: World, batch, rng: torch.Generator, config: Config) ->
     velocity = (predicted - corrupted) / (1.0 - tau)
     self_loss = ((1.0 - tau) ** 2 * (velocity - bootstrap).pow(2)).mean(dim=(2, 3))
 
-    combined = weight.squeeze(-1).squeeze(-1) * torch.where(finest, flow, self_loss)
-    return _uniform_mean(combined.mean(dim=1), batch), agent
+    combined = weight.squeeze(-1).squeeze(-1) * torch.where(finest, flow, self_loss) * scored
+    return _uniform_mean(combined.sum(dim=1) / scored.sum(dim=1), batch), agent
 
 
 def _uniform_mean(per_row: Tensor, batch) -> Tensor:
-    """Average the dynamics loss over the uniform half of the mixture only.
+    """Every row during pretraining; the uniform half during agent finetuning.
 
-    Dreamer 4 applies it "only on the uniform sequences to avoid optimistic
-    generations" (§4.1): a dynamics model fitted on task-accomplishing play alone
-    learns that things tend to go well, and imagination inherits that. The
-    empty-half fallback lives in `mixture_weight`, shared with the mirror-image
-    selection behaviour cloning makes.
+    D4 pretrains the world model on the whole corpus, then restricts the *continued*
+    dynamics loss to uniform rows "to avoid optimistic generations" (§4.1). Applying
+    that restriction during pretraining would discard half the corpus; omitting it
+    during finetuning fits dynamics to task-accomplishing play. `relevant is None`
+    is the pretraining regime, set by the sampler, not inferred here.
     """
-    uniform = mixture_weight(~batch.relevant)
+    if batch.relevant is None:
+        return per_row.mean()
+    uniform = (~batch.relevant).float()
     return (per_row * uniform).sum() / uniform.sum()
 
 

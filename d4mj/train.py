@@ -7,7 +7,7 @@ from torch import nn
 from .actor_critic import actor_loss, critic_loss, lambda_returns
 from .agent import Heads, head_loss, head_targets
 from .config import Config
-from .data import Batch, Episode, patchify, sample_batch
+from .data import FORMAT, Batch, Episode, patchify, sample_batch
 from .imagination import imagine
 from .representation import Decoder, Encoder, pack, reconstruction_loss
 from .sources import source_digests
@@ -130,7 +130,7 @@ def train_agent(episodes: list[Episode], world: World, steps: int, config: Confi
     balance: dict[str, float] = {}
 
     for step in range(steps):
-        batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
+        batch = _to(sample_batch(episodes, sampler, config, step, steps, mixture=True), device)
         dynamics, agent = transition_loss(world, batch, rng, config, return_agent=True)
         readout = heads(agent) | {"centers": heads.centers}
         losses = {"dynamics": dynamics} | head_loss(readout, head_targets(batch, config), config)
@@ -181,16 +181,11 @@ def train_actor(
 def _share_initialisation(world: World, config: Config) -> World:
     """Give both arms the same starting weights wherever they share a parameter.
 
-    A single `manual_seed` does not achieve this. Construction draws in order, and
-    the two time mixers consume different numbers of values, so every parameter
-    built after the first time layer -- all the space layers, the readout, the
-    registers -- lands on different numbers in the two arms. The Mamba-vs-attention
-    comparison would then also be a different-random-init comparison, on the one
-    axis the project exists to measure.
-
-    Names are the join: the arms' time layers live under disjoint attributes
-    (`attention` and `mamba`), so nothing arm-specific matches, and the shape check
-    keeps a future name collision from copying across a real difference.
+    `manual_seed` alone does not: the two mixers consume different numbers of draws
+    at construction, so every parameter built after the first time layer differs,
+    and the comparison would also be a different-init comparison. Names are the
+    join -- the mixers live under disjoint attributes -- and the shape check keeps a
+    future collision from copying across a real difference.
     """
     if config.time_mixer == "attention":
         return world
@@ -233,17 +228,32 @@ def _balance(
 
 
 def _cache_digest(encoder: Encoder, config: Config) -> str:
-    """Identity of the latent cache: C* *and* the encoder weights that produced it.
+    """Identity of the latent cache: the whole latent function, not just its weights.
 
-    A config-only digest calls a cache from one encoder valid for any other with
-    matching shapes, which is the single defect the digest exists to prevent. The
-    time mixer is excluded because the tokenizer is shared and always attention, so
-    a cache must not acquire a different identity from the arm that happened to
-    build it.
+    Every field the encoder's forward pass depends on is included. Weights alone are
+    not identity -- two encoders with identical parameters but different resolution
+    and patch layout produced the same digest, and the cache from one would load
+    against the other. The time mixer is excluded because the tokenizer is shared
+    and always attention.
     """
     import hashlib
 
-    shape = (config.patch, config.window, config.n_latents, config.d_bottleneck, config.packing)
+    shape = (
+        config.patch,
+        config.resolution,
+        config.channels,
+        config.n_patches,
+        config.window,
+        config.n_latents,
+        config.d_bottleneck,
+        config.packing,
+        config.d_model_encoder,
+        config.depth_encoder,
+        config.n_heads_encoder,
+        config.time_every,
+        config.receptive_field,
+        FORMAT,
+    )
     weights = hashlib.sha256()
     for name, tensor in sorted(encoder.state_dict().items()):
         weights.update(name.encode())

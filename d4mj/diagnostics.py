@@ -8,7 +8,7 @@ from .agent import Heads, head_targets
 from .config import Config
 from .data import Batch
 from .state import WorldState
-from .transition import World, advance, initial, transition_loss
+from .transition import World, advance, commit_inputs, initial, transition_loss
 
 
 @torch.no_grad()
@@ -75,37 +75,15 @@ def head_calibration(heads: Heads, agent: Tensor, batch: Batch, config: Config) 
 
 
 def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[str, float]:
-    """Deployed against training-only parameters, and the two state sizes apart.
+    """Cost of the two arms: parameters, state sizes, memory and throughput.
 
-    `effective_horizon` is how far back a perturbation still moves the prediction.
-    Both trajectories are re-rolled from scratch at each distance under one seed, so
-    a difference is history rather than accumulated divergence or unmatched noise.
-    The ladder doubles, so the figure is a power-of-two *lower bound*, capped at
-    twice the context -- named `effective_horizon_at_least` because a truly
-    long-memory arm reports the cap and must not be read as converging there.
-    Attention is hard-bounded at `dynamics_context`; an SSM state has no cutoff, so
-    reporting it is what keeps a Mamba win from silently meaning "remembers more".
-
-    Mamba fixes the dynamics memory only; the encoder keeps its own bounded cache,
-    so a single 'state size' would overstate what the substitution buys. Timing runs
-    on the configured device after warm-up, synchronised, since an unsynchronised
-    CUDA timer measures queueing rather than compute.
-
-    Both throughputs are reported, because they answer different questions and the
-    substitution can move them in opposite directions: `steps_per_second` is one
-    imagined step at batch 1, which is what the actor pays, and
-    `train_steps_per_second` is a full forward and backward over a real sequence,
-    which is what the schedule pays. A flow arm spending `rungs + 1` backbone passes
-    per imagined step looks far worse on the first than on the second. Phase 3
-    freezes the world, so the training measurement re-enables gradients for its own
-    duration and restores the flags; otherwise a world measured after Phase 3 would
-    report no training cost at all rather than failing.
-
-    `flops_per_step` is measured, not derived from a parameter count, but it counts
-    dispatched aten operations: a fused kernel that never dispatches them is
-    invisible to it. That is why it is reported *beside* wall-clock time rather than
-    instead of it -- for the Mamba arm the two must be read together, and a FLOP
-    figure alone would silently favour whichever arm fuses more.
+    Caveats that change how the numbers read. `forward_backward_per_second` excludes
+    the optimizer, clipping and transfer, so it is not a training step rate.
+    `flops_per_step` counts dispatched aten ops, so a fused Mamba kernel is
+    invisible to it -- read it beside wall-clock time, never instead.
+    `memory_horizon_at_least` perturbs one *history* block with the present held
+    fixed, so it measures reach rather than trajectory divergence; it doubles, so it
+    is a power-of-two lower bound, and a long-memory arm reports the cap.
     """
     device, deployed = config.device, {"encoder", "world", "heads"}
     counts = {name: sum(p.numel() for p in m.parameters()) for name, m in modules.items()}
@@ -139,7 +117,6 @@ def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[st
         terminated=torch.zeros(config.batch, config.sequence, dtype=torch.bool, device=device),
         truncated=torch.zeros(config.batch, config.sequence, dtype=torch.bool, device=device),
         valid=torch.ones(config.batch, config.sequence, dtype=torch.bool, device=device),
-        relevant=torch.zeros(config.batch, dtype=torch.bool, device=device),
         burn_in=0,
         latents=torch.randn(
             config.batch, config.sequence, config.n_spatial, config.d_spatial, device=device
@@ -162,23 +139,27 @@ def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[st
     for parameter in frozen:
         parameter.requires_grad_(False)
 
-    horizon, other, distance = 0, torch.randn_like(latent).tanh(), 1
+    horizon, distance = 0, 1
     with torch.no_grad():
         while distance <= 2 * config.dynamics_context:
+            length = distance + 1
+            base = torch.randn(1, length, config.n_spatial, config.d_spatial, device=device).tanh()
+            actions = torch.zeros(1, length, dtype=torch.long, device=device)
             pair = []
-            for start in (latent, other):
-                seed = torch.Generator(device=device).manual_seed(0)
-                rolled, _ = initial(world, start, action, seed, config)
-                for _ in range(distance):
-                    rolled, _ = advance(world, rolled, action, seed, config)
-                pair.append(rolled.latent)
+            for head in (base[:, :1], torch.randn_like(base[:, :1]).tanh()):
+                sequence = torch.cat([head, base[:, 1:]], dim=1)
+                committed, conditioning = commit_inputs(
+                    sequence, torch.Generator(device=device).manual_seed(0), config
+                )
+                features, _, _ = world(None, actions, committed, conditioning)
+                pair.append(features[:, -1])
             if (pair[0] - pair[1]).abs().max() < 1e-6:
                 break
             horizon, distance = distance, distance * 2
 
     encoder = modules.get("encoder")
     return {
-        "effective_horizon_at_least": horizon,
+        "memory_horizon_at_least": horizon,
         "deployed_parameters": sum(v for k, v in counts.items() if k in deployed),
         "training_only_parameters": sum(v for k, v in counts.items() if k not in deployed),
         "dynamics_state_elements": sum(t.numel() for pair in state.memory for t in pair),
@@ -191,7 +172,7 @@ def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[st
         else 0,
         "peak_bytes": peak,
         "steps_per_second": 16.0 / elapsed,
-        "train_steps_per_second": 4.0 / train_elapsed,
+        "forward_backward_per_second": 4.0 / train_elapsed,
         "flops_per_step": float(flops),
         "backbone_passes_per_step": config.rungs + 1 if config.transition == "flow" else 1,
     }

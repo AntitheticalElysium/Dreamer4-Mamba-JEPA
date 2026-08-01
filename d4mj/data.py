@@ -6,7 +6,7 @@ from torch import Tensor
 
 from .config import Config
 
-FORMAT = "d4mj_episodes_v1"
+FORMAT = "d4mj_episodes_v2"
 
 
 @dataclass(frozen=True)
@@ -19,12 +19,10 @@ class Episode:
     covers the whole C* declaration, so a cache from another encoder or window
     cannot be silently reused.
 
-    `relevant` marks a task-accomplishing sequence. Dreamer 4 mixes 50% of these
-    with 50% uniform ones and applies behaviour cloning only to the relevant half,
-    "while the dynamics loss is applied only on the uniform sequences to avoid
-    optimistic generations" (§4.1). Training dynamics solely on successful play is
-    exactly what that sentence forbids, which is what the archived expert replay
-    would do: every one of its episodes is relevant.
+    `events[t]` marks a step accomplishing a task -- per step, not per episode,
+    because D4 §4.1 oversamples "relevant sequences that accomplish one of the
+    tasks" and a random window from a successful 2500-step episode mostly shows
+    walking and inventory management.
     """
 
     observations: Tensor
@@ -34,7 +32,7 @@ class Episode:
     truncated: Tensor
     latents: Tensor | None = None
     latent_digest: str | None = None
-    relevant: bool = True
+    events: Tensor | None = None
 
     def __post_init__(self) -> None:
         steps = len(self.actions_taken)
@@ -42,6 +40,7 @@ class Episode:
         assert len(self.rewards) == len(self.terminated) == len(self.truncated) == steps
         assert (self.latents is None) == (self.latent_digest is None)
         assert self.latents is None or len(self.latents) == steps + 1
+        assert self.events is None or len(self.events) == steps
 
     def __len__(self) -> int:
         return len(self.actions_taken)
@@ -56,9 +55,10 @@ class Batch:
     blocks whose incoming transition exists -- false only at a true episode start.
     Exactly one of `patches` and `latents` is populated, by phase.
 
-    `relevant` is per row, not per block: it labels the episode the whole window was
-    drawn from, and it is what routes behaviour cloning and the dynamics loss to
-    disjoint halves of the mixture.
+    `relevant` is the **sampling role** of a row, not a property of its data, and
+    is `None` during pretraining, where D4 applies no mixture and every row is
+    scored by every loss. A uniformly drawn window containing a task event is still
+    a uniform row.
     """
 
     led_to_action: Tensor
@@ -66,24 +66,10 @@ class Batch:
     terminated: Tensor
     truncated: Tensor
     valid: Tensor
-    relevant: Tensor
     burn_in: int
+    relevant: Tensor | None = None
     patches: Tensor | None = None
     latents: Tensor | None = None
-
-
-def mixture_weight(rows: Tensor) -> Tensor:
-    """Row weights selecting one half of the S43 mixture, falling back to every row
-    when that half is absent.
-
-    Both halves need this and neither owns it: behaviour cloning selects the
-    relevant rows and the dynamics loss selects their complement. Scoring a loss
-    over an empty half silently trains nothing -- an all-expert corpus would zero
-    the dynamics objective outright -- so the fallback is a degraded regime S46
-    registers, not a dead objective nothing reports.
-    """
-    weight = rows.float()
-    return weight if bool(rows.any()) else torch.ones_like(weight)
 
 
 def patchify(frames: Tensor, patch: int) -> Tensor:
@@ -112,18 +98,25 @@ def episode_splits(count: int, seed: int) -> tuple[Tensor, Tensor, Tensor]:
 
 
 def sample_batch(
-    episodes: list[Episode], rng: torch.Generator, config: Config, step: int = 0, total: int = 0
+    episodes: list[Episode],
+    rng: torch.Generator,
+    config: Config,
+    step: int = 0,
+    total: int = 0,
+    mixture: bool = False,
 ) -> Batch:
-    """Dreamer 4 alternates short and long batches and finetunes on long ones. The
-    long batch is the only one that exceeds the dynamics context, which is what
-    stops the model assuming every context begins at an episode start. Given
-    `total`, the last fraction of training is long-only, as the paper's final
-    finetune is.
+    """Short and long batches alternate, and the last `long_only_fraction` of
+    training is long-only, as D4's finetune is. Only the long batch exceeds the
+    dynamics context, which is what stops the model assuming every context begins
+    at an episode start.
 
-    Rows are split `relevant_fraction` task-accomplishing to uniform, per §4.1. A
-    dataset with no uniform episodes falls back to all-relevant rather than
-    resampling the same expert windows into both halves, so `relevant` never claims
-    a mixture the data cannot supply.
+    `mixture` selects the regime. Pretraining (Phases 1A and 1B) passes False: D4
+    pretrains on the whole corpus and every row is scored by every loss. Agent
+    finetuning passes True for the §4.1 mixture -- half the rows drawn uniformly,
+    half drawn so the window *contains* a task event.
+
+    Nothing falls back to the other pool. A silent substitution would train dynamics
+    on task-accomplishing play, which is the one thing the mixture exists to prevent.
     """
     cached = [episode.latents is not None for episode in episodes]
     assert len(set(cached)) == 1, "cache is present on some episodes and missing on others"
@@ -136,22 +129,31 @@ def sample_batch(
     if not usable:
         raise ValueError(f"no episode reaches the required length {length}")
 
-    pools = {True: [e for e in usable if e.relevant], False: [e for e in usable if not e.relevant]}
-    wanted = int(config.relevant_fraction * config.batch)
-    plan = [True] * wanted + [False] * (config.batch - wanted)
+    eventful = [e for e in usable if e.events is not None and bool(e.events.any())]
+    if mixture and not eventful:
+        raise ValueError("the relevant half needs episodes carrying task events")
 
-    starts, chosen = [], []
-    for want in plan:
-        pool = pools[want] or pools[not want]
-        episode = pool[int(torch.randint(len(pool), (1,), generator=rng))]
-        chosen.append(episode)
+    chosen, starts, roles = [], [], []
+    for row in range(config.batch):
+        relevant = mixture and row < config.batch // 2
+        episode = (eventful if relevant else usable)[
+            int(torch.randint(len(eventful if relevant else usable), (1,), generator=rng))
+        ]
         span = len(episode) + 1 - length
-        starts.append(int(torch.randint(span + 1, (1,), generator=rng)))
+        if relevant:
+            events = episode.events.nonzero().flatten()
+            event = int(events[int(torch.randint(len(events), (1,), generator=rng))])
+            low, high = max(0, event - length + 1), min(span, event)
+            start = low + int(torch.randint(high - low + 1, (1,), generator=rng))
+        else:
+            start = int(torch.randint(span + 1, (1,), generator=rng))
+        chosen.append(episode)
+        starts.append(start)
+        roles.append(relevant)
 
     rows = [_window(episode, start, length, config) for episode, start in zip(chosen, starts)]
     stack = {field: torch.stack([row[field] for row in rows]) for field in rows[0]}
-    relevant = torch.tensor([episode.relevant for episode in chosen])
-    return Batch(burn_in=burn_in, relevant=relevant, **stack)
+    return Batch(burn_in=burn_in, relevant=torch.tensor(roles) if mixture else None, **stack)
 
 
 def _window(episode: Episode, start: int, length: int, config: Config) -> dict[str, Tensor]:

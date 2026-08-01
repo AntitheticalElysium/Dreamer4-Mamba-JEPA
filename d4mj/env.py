@@ -23,14 +23,17 @@ def reset(seed: int) -> tuple[Tensor, object]:
 def step(state, action: int, seed: int) -> tuple[Tensor, object, float, bool, bool]:
     """Returns terminated and truncated as separate raw facts.
 
-    Death and lava are absorbing; the step cap is not. Folding them into one flag
-    is what makes a time limit look like a terminal state to the critic, so the
-    split is preserved all the way to the continuation target.
+    Death and lava are absorbing; the step cap is not. Craftax folds all three into
+    `is_terminal`, so death is read from the state directly. Deriving it as
+    `is_terminal and not timed_out` discards the death when the two coincide, and
+    the critic then bootstraps through an absorbing state. Both flags may be true.
     """
+    from craftax.craftax_classic.constants import BlockType
+
     env, params = _env()
-    key = jax.random.PRNGKey(seed)
-    observation, state, reward, done, _ = env.step(key, state, action, params)
-    terminated = bool(_env()[0].is_terminal(state, params)) and not _timed_out(state, params)
+    observation, state, reward, done, _ = env.step(jax.random.PRNGKey(seed), state, action, params)
+    lava = state.map[state.player_position[0], state.player_position[1]] == BlockType.LAVA.value
+    terminated = bool(lava) or bool(state.player_health <= 0)
     return _frame(observation), state, float(reward), terminated, _timed_out(state, params)
 
 

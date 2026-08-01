@@ -191,21 +191,17 @@ class Backbone(nn.Module):
         )
 
     def forward(self, x: Tensor, memory: Memory | None = None, offset: int = 0) -> tuple[Tensor, Memory]:
-        """`memory` holds one entry per *time-mixing* block, not per block, so it is
-        consumed by an iterator rather than zipped against the full stack.
+        """`memory` holds one entry per *time-mixing* block, so it is consumed by an
+        iterator rather than zipped against the full stack.
 
-        With Mamba memory present exactly one block may be supplied: its recurrent
-        step accepts one token. Attention may decode several, because `_decode_mask`
-        keeps them causal against each other -- which is what lets the frozen
-        encoder cache an episode in chunks rather than one dense call.
+        With Mamba memory present exactly one block may be supplied. Attention may
+        decode several, because `_decode_mask` keeps them causal against each other,
+        which is what lets the encoder cache an episode in chunks.
 
-        Blocks are recomputed in the backward pass rather than stored, which is what
-        makes the declared architecture fit 6 GB at all: measured, Phase 1A goes from
-        fitting only batch 1 at the short length to fitting batch 8 short and batch 4
-        long. It is exact -- the same values, computed twice -- so it changes cost,
-        not results. It is skipped whenever there is nothing to recompute for: with
-        gradients off, and on the cached/recurrent path, where `memory` is carried
-        and re-entering a block would discard the state it returned.
+        Blocks are recomputed in backward rather than stored: exact, and what makes
+        the architecture fit 6 GB (batch 1 short without it, batch 8 short with).
+        Skipped with gradients off and on the cached path, where re-entering a block
+        would discard the state it returned.
         """
         recurrent = any(type(b.time).__name__ == "TimeMamba" for b in self.blocks if b.mixes_time)
         assert memory is None or x.shape[1] == 1 or not recurrent, (

@@ -81,7 +81,6 @@ class Config:
     long_batch_every: int = 4
     long_only_fraction: float = 0.25
     commit_prefix_fraction: float = 0.25
-    relevant_fraction: float = 0.5
     batch: int = 4
     gradient_checkpointing: bool = True
     rms_decay: float = 0.99
@@ -116,6 +115,9 @@ class Config:
         assert (self.d_model_encoder // self.n_heads_encoder) % 2 == 0
         assert self.rungs & (self.rungs - 1) == 0 and self.k_max % self.rungs == 0
         assert (self.mamba_expand * self.d_model) % self.mamba_headdim == 0
+        assert 0.0 <= self.commit_prefix_fraction < 1.0
+        assert 0.0 <= self.long_only_fraction <= 1.0
+        assert self.batch % 2 == 0, "the 50/50 mixture needs an even batch"
 
     @property
     def n_patches(self) -> int:

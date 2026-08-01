@@ -4,7 +4,7 @@ from torch import Tensor, nn
 
 from .backbone import SwiGLU
 from .config import Config
-from .data import Batch, mixture_weight
+from .data import Batch
 
 
 class Heads(nn.Module):
@@ -76,6 +76,7 @@ def head_targets(batch: Batch, config: Config) -> dict[str, Tensor]:
     caused by the action chosen at t is lead 0 at t+1 -- never lead 0 at t. Policy
     lead 0 is the outgoing action, which in led-to storage lives one block later.
     """
+    assert batch.relevant is not None, "behaviour cloning needs the §4.1 mixture"
     leads = config.mtp_leads
     outgoing = _shift(batch.led_to_action.float(), fill=0.0)
     return {
@@ -84,7 +85,7 @@ def head_targets(batch: Batch, config: Config) -> dict[str, Tensor]:
         "continuation": _leads((~batch.terminated).float(), leads, fill=1.0),
         "valid": _leads(batch.valid.float(), leads, fill=0.0),
         "action_valid": _leads(_shift(batch.valid.float(), fill=0.0), leads, fill=0.0),
-        "relevant": mixture_weight(batch.relevant)[:, None, None],
+        "relevant": batch.relevant.float()[:, None, None],
     }
 
 
@@ -95,10 +96,9 @@ def head_loss(
     its own running RMS, and merging them first lets whichever head has the largest
     natural scale set the others' effective weight.
 
-    Behaviour cloning is scored on the relevant half of the mixture only (§4.1).
-    Reward and continuation are scored on everything: the paper restricts the BC and
-    dynamics losses by name and says the mixture amplifies signal *for* reward
-    modelling, so halving that head's data would be an addition, not a reading.
+    Behaviour cloning is scored on the relevant half only (§4.1). Reward and
+    continuation are scored on everything: the paper restricts the BC and dynamics
+    losses by name and says the mixture amplifies signal *for* reward modelling.
     """
     centers = predictions["centers"]
     policy = F.cross_entropy(
