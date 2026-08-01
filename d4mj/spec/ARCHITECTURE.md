@@ -189,8 +189,10 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   long training sequences. Appendix A gives \(C=192, T_1=64, T_2=256\) for
   Minecraft and \(C=96, T_1=32, T_2=128\) elsewhere, so the short batch is
   *shorter* than context; §3.4's "longer than the context length" describes the
-  long batch, which the final finetune uses alone. `[D4]` §4 treats **30% of each
-  batch as separate images**, training the dynamics to generate start frames.
+  long batch, which the final finetune uses alone. `[D4]` §4 treats 30% of each batch
+  as separate images to generate start frames; **not implemented** (S39), because
+  every rollout here begins from a committed dataset context and that capability
+  is never used.
   `[D4-ENTAILED]` Block \(t\) exposes \(a_{t-1}\), while
   \(h_t\) predicts the outgoing \(a_t\); exposing \(a_t\) in the same block
   would leak the behavior-cloning target.

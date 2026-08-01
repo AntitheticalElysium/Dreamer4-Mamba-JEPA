@@ -41,6 +41,8 @@ not an implementation detail. If the plan is wrong, fix the plan.
 | S38 | `long_only_fraction = 0.25` and `rms_decay = 0.99` are `[DESIGN]` | D4 specifies a final long-only finetune and running-RMS normalisation but neither number. Registered so they are not read as paper values |
 | S39 | Separate-image training is **not implemented**, and the claim is withdrawn | D4 uses it to generate start frames without context; every rollout here begins from a committed dataset context, so the mechanism it trains is never exercised. The earlier `_isolate_rows` cleared target flags without changing the temporal context at all -- measured, the loss was bit-identical with and without it, which is worse than an honest omission |
 | S40 | MSE on masked patches, LPIPS on the whole predicted frame | Scoring visible patches under MSE rewards copying, which masked autoencoding exists to avoid. That leaves `p = 0` images carrying perceptual signal alone, which is why LPIPS must not be composited. Eq. 5 masks neither term; both halves are declared |
+| S41 | A quarter of flow training rows carry the *rollout* prefix: every block but the last at the commit condition | Independent per-block draws make that joint prefix vanishingly rare -- measured, a 48-block prefix uniformly at the commit condition has probability 0.000000, while at rollout it is every prefix. Per block the condition is in distribution; the prefix never was. `commit_prefix_fraction` is `[DESIGN]`: it must be nonzero and small enough not to displace diffusion forcing |
+| S42 | The attention temperature is clamped, as the pinned source clamps it | S14 dropped the paper's logit soft capping alone; without the clamp too, nothing bounds the logits at all, and a runaway temperature saturates attention to one-hot with no diagnostic. The two decisions belong together |
 | S27 | Bounded encoder context `W`, part of `C*` — `z_t = Z*(x_{t−W+1..t})` everywhere | Phase 1A windows carry a `W−1` burn-in that is encoded but not scored; once frozen, each episode is scanned once and cached **under the same `W` limit** — an unbounded full-episode scan would produce a different `Z*` from deployment. `W` is not a capacity number: it defines the representation, so changing it changes every `z_t` and it must be frozen before the final encoder trains |
 | S28 | Match total **deployed** parameters within a declared tolerance while holding `d_model`, depth, token layout and shared interfaces fixed | Primary knob is Mamba's `d_state`, the only one that moves M-arm parameters without touching the shared backbone. Parameter counts move discretely, so `d_state` alone may not reach tolerance at a sane state size — any additional knob must be declared before training. Report the unmatched residual, FLOPs, memory, recurrent-state size and measured throughput regardless. The predecessor called arms matched in a comment while the temporal module differed by 29.6% |
 | S29 | Archived replay is for debugging and smoke tests only; regenerated replay backs every reported number | Its expert has no byte-level provenance and its terminal-window support is 58 windows. Keeping both uses named stops the old set from quietly becoming the final dataset, and keeps `expert.py` exercised |
@@ -271,9 +273,14 @@ groups are built, and the only place upstream `_no_weight_decay` is honoured.
 `reset_parity(config)`, `firewall(config)`, `branch_nonmutation(config)`,
 `recurrent_carry(config)`.
 
-`scan_step_parity` covers two things, not one: scan versus recurrent step, **and**
-teacher-forced windowed forward versus the equivalent `evaluate` reconstructed
-from the prefix. Nothing else exercises `advance`, so without the second half the
+`scan_step_parity` covers four things: scan versus recurrent step, teacher-forced
+forward versus the equivalent reconstructed `evaluate`, encoder scan versus
+recurrence, and the windowed branch -- its sequence runs past `dynamics_context`
+on purpose, since at a shorter length that branch never executes.
+`recurrent_carry` additionally asserts every conditioning row receives gradient
+(S10's pathology) and is the only place the flow arm's *history* dependence is
+tested, `_observation_dependence` being satisfiable there by the current block
+alone. Nothing else exercises `advance`, so without the second half the
 most bug-prone function in the system ships untested until Stage-A results are
 already contaminated.
 
@@ -308,6 +315,7 @@ plan would otherwise have shipped.
 | `imagine` takes the starting `agent` readout | Recomputing it would ingest the same latent twice, against the rule that `m_t` already covers block `t` |
 | `Trajectory` carries `agent` | The frozen prior and the critic must be evaluated where the actions were chosen, not at the first state alone |
 | `diagnostics.cost` takes the module set and the world | It cannot separate deployed from training-only parameters given the world alone |
+| `actor_loss(trajectory, returns, prior_logits, config)` | It needs the logits, actions and values together and they already travel as one `Trajectory`; passing them apart invites a mismatched slice |
 | `World.forward` returns memory, not a `WorldState` | `WorldState.latent` is defined as the *accepted* latent, which only a commit site can supply; a candidate has no accepted latent to put there |
 
 `representation_loss` and `expert.train_expert` raise `NotImplementedError`

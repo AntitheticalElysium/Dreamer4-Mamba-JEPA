@@ -108,11 +108,24 @@ def flow_conditioning(rng: torch.Generator, shape: tuple[int, int], config: Conf
 
     The signal grid tops out at 1 - d, so tau = 1 is never trained and no path may
     ever present a fully clean latent to the flow arm.
+
+    A fraction of rows instead carry the *rollout* prefix: every block but the last
+    at the commit condition, the last one sampled. Independent per-block draws make
+    that joint prefix vanishingly rare -- measured, a 48-block prefix uniformly at
+    the commit condition has probability 0.000000, while at rollout it is every
+    prefix. Without this the flow arm imagines in a regime training never visits.
     """
     step = torch.randint(config.n_step_bins, shape, generator=rng, device=device)
     rungs = 2**step
     index = (torch.rand(shape, generator=rng, device=device) * rungs).floor().long()
-    return torch.stack([index * (config.k_max // rungs), step], dim=-1)
+    conditioning = torch.stack([index * (config.k_max // rungs), step], dim=-1)
+
+    rows = int(config.commit_prefix_fraction * shape[0])
+    if rows:
+        picked = torch.randperm(shape[0], generator=rng, device=device)[:rows]
+        conditioning[picked, :-1, 0] = config.tau_ctx_index
+        conditioning[picked, :-1, 1] = config.step_index
+    return conditioning
 
 
 def signal_level(conditioning: Tensor, config: Config) -> Tensor:

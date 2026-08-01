@@ -77,16 +77,22 @@ def train_representation(
 def cache_latents(encoder: Encoder, episodes: list[Episode], config: Config) -> list[Episode]:
     """Scan each episode once under the declared window, at mask probability zero.
 
-    One scan per episode rather than a frame-by-frame walk: the windowed mask makes
-    a scan and the deployed recurrence produce the same latent, which
+    Chunked with memory carried, not one dense call: an episode runs to thousands
+    of frames and a single scan builds an attention problem that size. The windowed
+    mask makes chunked and fully recurrent encoding produce the same latent, which
     `scan_step_parity` asserts, so the cheap path is also the faithful one.
     """
     device, digest = _device(config), _cache_digest(encoder, config)
     cached = []
     for episode in episodes:
         frames = patchify(episode.observations[None], config.patch).to(device)
-        z, _, _ = encoder(frames)
-        cached.append(replace(episode, latents=pack(z, config)[0].cpu(), latent_digest=digest))
+        latents, memory = [], None
+        for start in range(0, frames.shape[1], config.sequence_long):
+            chunk = frames[:, start : start + config.sequence_long]
+            z, memory, _ = encoder(chunk, memory, offset=start)
+            latents.append(z)
+        packed = pack(torch.cat(latents, dim=1), config)[0].cpu()
+        cached.append(replace(episode, latents=packed, latent_digest=digest))
     return cached
 
 
@@ -232,6 +238,14 @@ def _generators(config: Config, phase: int) -> tuple[torch.Generator, torch.Gene
     sampler = torch.Generator().manual_seed(config.seed + phase)
     model = torch.Generator(device=_device(config)).manual_seed(config.seed + 1000 + phase)
     return sampler, model
+
+
+def generator_state(sampler: torch.Generator, model: torch.Generator) -> dict:
+    """The two streams that actually drive training, in a form `checkpoint.save`
+    stores. `torch.get_rng_state()` captures the global stream, which nothing here
+    draws from -- saving it and calling that resumable would replay every window
+    and every noise draw from step zero."""
+    return {"sampler": sampler.get_state(), "model": model.get_state()}
 
 
 def _to(batch: Batch, device: str) -> Batch:

@@ -17,13 +17,21 @@ def scan_step_parity(config: Config, tolerance: float = 1e-3) -> None:
     Mamba and 2.5e-7 for attention, and neither grows with sequence length. A
     misalignment -- a stale offset, a dropped state -- is order one, not order
     1e-5, so the gap between the two is what the gate actually tests.
+
+    The sequence runs past `dynamics_context` on purpose: at a shorter length the
+    windowed branch of `_decode_mask` never executes, and a regression in the
+    window arithmetic would pass everything.
     """
     device = _device(config)
     layout = Layout.dynamics(config)
-    backbone = Backbone(config, layout, "dynamics", config.d_model, config.n_heads, config.depth)
+    backbone = Backbone(
+        config, layout, "dynamics", config.d_model, config.n_heads, config.depth,
+        config.dynamics_context,
+    )
     backbone = backbone.to(device).eval()
 
-    frames = torch.randn(2, 6, layout.size, config.d_model, device=device)
+    length = config.dynamics_context + 4
+    frames = torch.randn(2, length, layout.size, config.d_model, device=device)
     with torch.no_grad():
         scanned, scanned_memory = backbone(frames)
         stepped, memory = [], None
@@ -34,6 +42,10 @@ def scan_step_parity(config: Config, tolerance: float = 1e-3) -> None:
     drift = (torch.cat(stepped, dim=1) - scanned).abs().max() / scanned.abs().max()
     assert drift < tolerance, f"scan/step drift {drift:.2e} exceeds {tolerance:.0e}"
     assert len(memory) == len(scanned_memory) == config.depth // config.time_every
+    if config.time_mixer == "attention":
+        assert all(pair[0].shape[2] <= config.dynamics_context for pair in scanned_memory), (
+            "the scan ignores the window the cache enforces"
+        )
 
     _world_parity(config, device, tolerance)
     _encoder_parity(config, device, tolerance)
@@ -185,6 +197,47 @@ def _observation_dependence(config: Config) -> None:
     assert not torch.equal(*predictions), "the prediction ignores its context"
 
 
+def _conditioning_coverage(config: Config) -> None:
+    """Every row of the conditioning table must be reachable by training.
+
+    An unreachable row is the one defect the register spends a whole decision on
+    (S10): the pinned source sizes its signal table `k_max + 1` and labels
+    uncorrupted context with a row its own sampler can never draw.
+    """
+    from .data import Batch
+    from .transition import World, transition_loss
+
+    device = _device(config)
+    world = World(config).to(device)
+    tables = (
+        [world.signal_embed, world.step_embed]
+        if config.transition == "flow"
+        else [world.condition_embed]
+    )
+    touched = [torch.zeros(t.num_embeddings, device=device) for t in tables]
+
+    for trial in range(40):
+        generator = torch.Generator(device=device).manual_seed(trial)
+        batch = Batch(
+            led_to_action=torch.zeros(4, 6, dtype=torch.long, device=device),
+            reward=torch.zeros(4, 6, device=device),
+            terminated=torch.zeros(4, 6, dtype=torch.bool, device=device),
+            truncated=torch.zeros(4, 6, dtype=torch.bool, device=device),
+            valid=torch.ones(4, 6, dtype=torch.bool, device=device),
+            burn_in=0,
+            latents=torch.randn(4, 6, config.n_spatial, config.d_spatial, device=device).tanh(),
+        )
+        world.zero_grad()
+        transition_loss(world, batch, generator, config).backward()
+        for table, seen in zip(tables, touched):
+            if table.weight.grad is not None:
+                seen += table.weight.grad.abs().sum(-1)
+
+    for table, seen in zip(tables, touched):
+        missing = int((seen == 0).sum())
+        assert missing == 0, f"{missing} of {table.num_embeddings} conditioning rows never train"
+
+
 def reset_parity(config: Config) -> None:
     """A fresh state must not remember a previous episode. Constructing rather than
     clearing makes this true by type, so the gate exists to catch a caller that
@@ -237,7 +290,16 @@ def branch_nonmutation(config: Config) -> None:
 
 def recurrent_carry(config: Config) -> None:
     """The rollout must actually depend on history. A model that ignores its own
-    memory passes every one-step loss and produces a constant trajectory."""
+    memory passes every one-step loss and produces a constant trajectory.
+
+    Both branches re-seed the generator identically, so a difference is history
+    rather than a fresh corruption draw -- without that the flow arm's commit noise
+    alone would satisfy the assertion.
+
+    This is also the only place the flow arm's history dependence is tested:
+    `_observation_dependence` compares `World.predict`, which for flow reads the
+    current block's own corrupted latent and would pass with all history ignored.
+    """
     device = _device(config)
     world = _world(config)
     rng = torch.Generator(device=device).manual_seed(0)
@@ -252,6 +314,7 @@ def recurrent_carry(config: Config) -> None:
         shallow, _ = advance(world, blank, action, torch.Generator(device=device).manual_seed(3), config)
         stepped, _ = advance(world, deep, action, torch.Generator(device=device).manual_seed(3), config)
     assert not torch.allclose(stepped.latent, shallow.latent, atol=1e-6), "memory is inert"
+    _conditioning_coverage(config)
 
 
 def _device(config: Config) -> str:

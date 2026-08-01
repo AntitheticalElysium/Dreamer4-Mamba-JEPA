@@ -22,16 +22,21 @@ def collect(policy: Callable[[torch.Tensor, int], int], count: int, config: Conf
     Hitting the collector's own cap marks the last transition truncated. Storing it
     as neither terminated nor truncated would tell the continuation head that a
     trajectory continues past data that does not exist.
+
+    Each episode owns a disjoint seed range, so one episode's reset key is never
+    another's step key -- harmless in practice, but the pattern that produced
+    correlated streams before.
     """
     episodes = []
     for index in range(count):
-        observation, env_state = reset(config.seed + index)
+        base = config.seed + index * (limit + 1)
+        observation, env_state = reset(base)
         frames, actions, rewards, terminals, timeouts = [observation], [], [], [], []
 
         for offset in range(limit):
-            action = policy(observation, config.seed + index * limit + offset)
+            action = policy(observation, base + offset + 1)
             observation, env_state, reward, terminated, truncated = step(
-                env_state, action, config.seed + index * limit + offset
+                env_state, action, base + offset + 1
             )
             frames.append(observation)
             actions.append(action)

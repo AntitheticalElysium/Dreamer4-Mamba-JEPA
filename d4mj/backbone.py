@@ -87,9 +87,14 @@ def rope(x: Tensor, offset: int = 0, base: float = 10000.0) -> Tensor:
 
 
 class Attention(nn.Module):
-    """QKNorm as cosine attention with a learned per-head temperature. GQA and
-    logit soft capping are the two paper mechanisms we drop: Table 2 adopts GQA
-    for KV bandwidth at 2B parameters at a cost of one FVD point.
+    """QKNorm as cosine attention with a learned per-head temperature.
+
+    The temperature is clamped, as the pinned source clamps it. S14 drops the
+    paper's attention-logit soft capping as a 2B-parameter stability trick, and
+    that decision was taken alone: without the clamp too, nothing at all would
+    bound the logits, and a runaway temperature saturates attention to one-hot with
+    no diagnostic. GQA is also dropped -- Table 2 adopts it for KV bandwidth at a
+    cost of one FVD point.
     """
 
     def __init__(self, d_model: int, n_heads: int):
@@ -113,7 +118,8 @@ class Attention(nn.Module):
             mask, causal = _decode_mask(length, k.shape[2], limit, x.device), False
         elif limit is not None and length > limit:
             mask, causal = _decode_mask(length, length, limit, x.device), False
-        q = F.normalize(q, dim=-1) * self.log_scale.exp().view(1, -1, 1, 1) * math.sqrt(self.head_dim)
+        scale = self.log_scale.exp().clamp(max=100.0).view(1, -1, 1, 1)
+        q = F.normalize(q, dim=-1) * scale * math.sqrt(self.head_dim)
         y = F.scaled_dot_product_attention(q, k, v, attn_mask=mask, is_causal=causal)
         if limit is not None:
             k, v = k[:, :, -limit:], v[:, :, -limit:]
@@ -186,11 +192,15 @@ class Backbone(nn.Module):
         """`memory` holds one entry per *time-mixing* block, not per block, so it is
         consumed by an iterator rather than zipped against the full stack.
 
-        With memory present exactly one block may be supplied: Mamba-2's recurrent
-        step accepts one token, so allowing several would give the two backends
-        different decode semantics on the one axis being compared.
+        With Mamba memory present exactly one block may be supplied: its recurrent
+        step accepts one token. Attention may decode several, because `_decode_mask`
+        keeps them causal against each other -- which is what lets the frozen
+        encoder cache an episode in chunks rather than one dense call.
         """
-        assert memory is None or x.shape[1] == 1, "decode advances one block at a time"
+        recurrent = any(type(b.time).__name__ == "TimeMamba" for b in self.blocks if b.mixes_time)
+        assert memory is None or x.shape[1] == 1 or not recurrent, (
+            "Mamba decodes one block at a time; attention may decode several"
+        )
         expected = sum(block.mixes_time for block in self.blocks)
         assert memory is None or len(memory) == expected, "memory does not match the time layers"
         carried = iter(memory if memory is not None else ())

@@ -79,8 +79,9 @@ def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[st
     `effective_horizon` is how far back a perturbation still moves the prediction.
     Both trajectories are re-rolled from scratch at each distance under one seed, so
     a difference is history rather than accumulated divergence or unmatched noise.
-    The ladder doubles, since sweeping every distance is quadratic in the context
-    and the quantity only needs an order of magnitude.
+    The ladder doubles, so the figure is a power-of-two *lower bound*, capped at
+    twice the context -- named `effective_horizon_at_least` because a truly
+    long-memory arm reports the cap and must not be read as converging there.
     Attention is hard-bounded at `dynamics_context`; an SSM state has no cutoff, so
     reporting it is what keeps a Mamba win from silently meaning "remembers more".
 
@@ -125,7 +126,7 @@ def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[st
 
     encoder = modules.get("encoder")
     return {
-        "effective_horizon": horizon,
+        "effective_horizon_at_least": horizon,
         "deployed_parameters": sum(v for k, v in counts.items() if k in deployed),
         "training_only_parameters": sum(v for k, v in counts.items() if k not in deployed),
         "dynamics_state_elements": sum(t.numel() for pair in state.memory for t in pair),
