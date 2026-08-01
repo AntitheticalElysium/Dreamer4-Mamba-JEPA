@@ -189,6 +189,15 @@ def advance(
     spanning T, and passing that here would broadcast a single action across every
     block in the direct arm while raising a shape error in flow -- one type meaning
     two things, held together by caller discipline.
+
+    Incoming memory is detached, which equalises the two time mixers. Official
+    Mamba-2 updates its `InferenceParams` cache in place, so its recurrent step is
+    not differentiable with respect to the state it receives: measured, an attention
+    prefix takes gradient 147.92 through carried memory and a Mamba prefix takes
+    `None`. Left alone that is a *backend-specific objective* in the one comparison
+    this project exists to make. Detaching truncates both identically and keeps the
+    gradient that the rollout is actually for -- through the accepted latent, which
+    `commit_inputs` feeds forward, matching `auto_steps: 2`.
     """
     assert state.latent.shape[1] == 1, "advance steps one block; slice the state first"
     if config.transition == "flow":
@@ -196,8 +205,11 @@ def advance(
     else:
         accepted = world.predict(state.features, action)
 
+    memory = None if state.memory is None else tuple(
+        tuple(tensor.detach() for tensor in pair) for pair in state.memory
+    )
     committed, conditioning = commit_inputs(accepted, rng, config)
-    features, agent, memory = world(state.memory, action, committed, conditioning, state.step)
+    features, agent, memory = world(memory, action, committed, conditioning, state.step)
     return WorldState(accepted, memory, state.step + 1, features), agent
 
 

@@ -58,10 +58,10 @@ def train_representation(
     optimiser = optimizer([encoder, decoder], config)
     sampler, rng = _generators(config, 0)
     balance: dict[str, float] = {}
-    bundle = [encoder, decoder, optimiser]
-    start = _checkpoint(checkpoint, config, bundle, balance, sampler, rng)
+    bundle, streams = [encoder, decoder, optimiser], {"sampler": sampler, "model": rng}
+    resume = _checkpoint(checkpoint, config, bundle, balance, streams)
 
-    for step in range(start, steps):
+    for step in range(resume, steps):
         batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
         z, _, masked = encoder(batch.patches, p_mask=config.mae_p_max, rng=rng)
         predicted, _ = decoder(z)
@@ -72,7 +72,7 @@ def train_representation(
         loss = _balance(losses, balance, config, weights)
         _update(optimiser, loss, [encoder, decoder], config, step)
         if checkpoint is not None and (step + 1) % config.checkpoint_every == 0:
-            _checkpoint(checkpoint, config, bundle, balance, sampler, rng, step + 1)
+            _checkpoint(checkpoint, config, bundle, balance, streams, step + 1)
 
     encoder.eval()
     return encoder, decoder.eval(), cache_latents(encoder, episodes, config)
@@ -110,14 +110,15 @@ def train_dynamics(episodes: list[Episode], steps: int, config: Config, checkpoi
     optimiser = optimizer([world], config)
     balance: dict[str, float] = {}
     sampler, rng = _generators(config, 1)
-    start = _checkpoint(checkpoint, config, [world, optimiser], balance, sampler, rng)
+    streams = {"sampler": sampler, "model": rng}
+    resume = _checkpoint(checkpoint, config, [world, optimiser], balance, streams)
 
-    for step in range(start, steps):
+    for step in range(resume, steps):
         batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
         loss = _balance({"dynamics": transition_loss(world, batch, rng, config)}, balance, config)
         _update(optimiser, loss, [world], config, step)
         if checkpoint is not None and (step + 1) % config.checkpoint_every == 0:
-            _checkpoint(checkpoint, config, [world, optimiser], balance, sampler, rng, step + 1)
+            _checkpoint(checkpoint, config, [world, optimiser], balance, streams, step + 1)
     return world
 
 
@@ -138,17 +139,17 @@ def train_agent(
     optimiser = optimizer([world, heads], config)
     sampler, rng = _generators(config, 2)
     balance: dict[str, float] = {}
-    bundle = [world, heads, optimiser]
-    start = _checkpoint(checkpoint, config, bundle, balance, sampler, rng)
+    bundle, streams = [world, heads, optimiser], {"sampler": sampler, "model": rng}
+    resume = _checkpoint(checkpoint, config, bundle, balance, streams)
 
-    for step in range(start, steps):
+    for step in range(resume, steps):
         batch = _to(sample_batch(episodes, sampler, config, step, steps, mixture=True), device)
         dynamics, agent = transition_loss(world, batch, rng, config, return_agent=True)
         readout = heads(agent) | {"centers": heads.centers}
         losses = {"dynamics": dynamics} | head_loss(readout, head_targets(batch, config), config)
         _update(optimiser, _balance(losses, balance, config), [world, heads], config, step)
         if checkpoint is not None and (step + 1) % config.checkpoint_every == 0:
-            _checkpoint(checkpoint, config, bundle, balance, sampler, rng, step + 1)
+            _checkpoint(checkpoint, config, bundle, balance, streams, step + 1)
     return heads
 
 
@@ -177,15 +178,17 @@ def train_actor(
     sampler, rng = _generators(config, 3)
     policy_rng = torch.Generator(device=device).manual_seed(config.seed + 2**20)
     balance: dict[str, float] = {}
-    start = _checkpoint(checkpoint, config, [heads, optimiser], balance, sampler, rng)
+    streams = {"sampler": sampler, "model": rng, "policy": policy_rng}
+    frozen = _identity(world, prior)
+    resume = _checkpoint(checkpoint, config, [heads, optimiser], balance, streams, identity=frozen)
 
-    for step in range(start, steps):
+    for step in range(resume, steps):
         batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
         with torch.no_grad():
             committed, conditioning = commit_inputs(batch.latents, rng, config)
             features, agent, memory = world(None, batch.led_to_action, committed, conditioning)
-        start = WorldState(batch.latents[:, -1:], memory, batch.latents.shape[1], features[:, -1:])
-        trajectory = imagine(world, heads, start, agent[:, -1:], rng, policy_rng, config)
+        begin = WorldState(batch.latents[:, -1:], memory, batch.latents.shape[1], features[:, -1:])
+        trajectory = imagine(world, heads, begin, agent[:, -1:], rng, policy_rng, config)
 
         returns = lambda_returns(trajectory, config)
         with torch.no_grad():
@@ -196,30 +199,56 @@ def train_actor(
         }
         _update(optimiser, _balance(losses, balance, config), [heads], config, step)
         if checkpoint is not None and (step + 1) % config.checkpoint_every == 0:
-            _checkpoint(checkpoint, config, [heads, optimiser], balance, sampler, rng, step + 1)
+            _checkpoint(
+                checkpoint, config, [heads, optimiser], balance, streams, step + 1, frozen
+            )
     return heads
 
 
-def _checkpoint(path, config: Config, modules: list, balance: dict, sampler, rng, step=None) -> int:
+def _checkpoint(
+    path, config: Config, modules: list, balance: dict, streams: dict, step=None, identity: str = ""
+) -> int:
     """Both directions of a mid-phase resume: with `step` it saves, without it
     restores and returns the step to continue from.
 
-    Optimizer state, the running-RMS normalisers and both generator streams all
-    travel. Restoring only the weights restarts every normaliser -- rescaling every
-    objective on the first step back -- and replays every window and every noise
-    draw from zero, which is not a resume.
+    Optimizer state, the running-RMS normalisers and *every* generator stream
+    travel. Restoring only the weights restarts each normaliser -- rescaling every
+    objective on the first step back -- and replays every window and noise draw from
+    zero, which is not a resume. Streams are named rather than positional because
+    Phase 3 has three: a phase that quietly dropped its policy stream resumed with
+    the actor sampling a different action sequence.
+
+    `identity` fixes what the phase was trained *against* -- the frozen world and
+    prior in Phase 3 -- which `Config` alone cannot distinguish. Resuming an actor
+    against a different world is a silent change of the environment it is scored in.
     """
     named = {f"part{index}": module for index, module in enumerate(modules)}
     if step is not None:
-        save(path, config, step=step, balance=balance,
-             generators=generator_state(sampler, rng), **named)
+        save(path, config, step=step, balance=balance, identity=identity,
+             generators=generator_state(**streams), **named)
         return step
     if path is None or not path.exists():
         return 0
     stored = load(path, config, balance=balance, **named)["modules"]
-    sampler.set_state(stored["generators"]["sampler"])
-    rng.set_state(stored["generators"]["model"])
+    if stored.get("identity", "") != identity:
+        raise ValueError("checkpoint was trained against a different frozen model")
+    for name, generator in streams.items():
+        generator.set_state(stored["generators"][name])
     return int(stored["step"])
+
+
+def _identity(*modules: nn.Module) -> str:
+    """A digest of frozen modules a phase is scored against, so a resume cannot
+    silently swap them. `Config` matching is not enough: two worlds with the same
+    config are different learned environments."""
+    import hashlib
+
+    digest = hashlib.sha256()
+    for module in modules:
+        for name, tensor in sorted(module.state_dict().items()):
+            digest.update(name.encode())
+            digest.update(tensor.detach().cpu().numpy().tobytes())
+    return digest.hexdigest()[:16]
 
 
 def _share_initialisation(world: World, config: Config) -> World:
@@ -316,12 +345,12 @@ def _generators(config: Config, phase: int) -> tuple[torch.Generator, torch.Gene
     return sampler, model
 
 
-def generator_state(sampler: torch.Generator, model: torch.Generator) -> dict:
-    """The two streams that actually drive training, in a form `checkpoint.save`
-    stores. `torch.get_rng_state()` captures the global stream, which nothing here
-    draws from -- saving it and calling that resumable would replay every window
-    and every noise draw from step zero."""
-    return {"sampler": sampler.get_state(), "model": model.get_state()}
+def generator_state(**streams: torch.Generator) -> dict:
+    """Every stream a phase draws from, in a form `checkpoint.save` stores.
+    `torch.get_rng_state()` captures the global stream, which nothing here draws
+    from -- saving it and calling that resumable would replay every window and every
+    noise draw from step zero."""
+    return {name: generator.get_state() for name, generator in streams.items()}
 
 
 def _to(batch: Batch, device: str) -> Batch:

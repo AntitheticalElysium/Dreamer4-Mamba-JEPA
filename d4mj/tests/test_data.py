@@ -11,17 +11,20 @@ def test_pretraining_does_not_stratify(config, episodes):
     assert sample_batch(episodes, torch.Generator().manual_seed(0), config).relevant is None
 
 
-def test_mixture_is_half_and_centred_on_events(config):
-    """Every relevant row must contain the task event it was drawn for. Drawing a
-    window anywhere inside a successful episode is the defect this replaces."""
+def test_mixture_is_half_and_holds_the_whole_event_transition(config):
+    """`events[e]` says action e caused an achievement arriving at observation
+    e + 1, so a relevant window must hold both. Requiring only observation e lets
+    the BC target that depends on the arrival fall outside the window."""
     one = [episode(0, config)]
     event = len(one[0]) // 2
     batch = sample_batch(one, torch.Generator().manual_seed(0), config, mixture=True)
+    blocks = batch.led_to_action.shape[1]
     assert int(batch.relevant.sum()) == config.batch // 2
     for row in range(config.batch):
         if bool(batch.relevant[row]):
             start = window_start(batch, row)
-            assert start <= event < start + batch.led_to_action.shape[1]
+            assert start <= event, "the outgoing action precedes the window"
+            assert event + 1 <= start + blocks - 1, "the achievement arrives after the window"
 
 
 def test_mixture_without_events_raises(config):

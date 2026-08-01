@@ -153,11 +153,13 @@ def alignment(config: Config) -> None:
     event = len(single[0]) // 2
     mixed = sample_batch(single, torch.Generator().manual_seed(config.seed), config, mixture=True)
     assert int(mixed.relevant.sum()) == config.batch // 2, "the mixture is not 50/50"
+    blocks = mixed.led_to_action.shape[1]
     for row in range(config.batch):
         if bool(mixed.relevant[row]):
             start = _recover_start(mixed, row, config)
-            assert start <= event < start + mixed.led_to_action.shape[1], (
-                "a relevant row was drawn without its task event in the window"
+            assert start <= event, "the event's outgoing action is before the window"
+            assert event + 1 <= start + blocks - 1, (
+                "the window ends before the achievement arrives, so the BC target is absent"
             )
     _observation_dependence(config)
 

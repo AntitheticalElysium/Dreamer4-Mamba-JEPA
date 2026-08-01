@@ -121,7 +121,10 @@ def sample_batch(
     `mixture` selects the regime. Pretraining (Phases 1A and 1B) passes False: D4
     pretrains on the whole corpus and every row is scored by every loss. Agent
     finetuning passes True for the §4.1 mixture -- half the rows drawn uniformly,
-    half drawn so the window *contains* a task event.
+    half drawn so the window contains a whole task *transition*. `events[e]` says
+    action `e` caused an achievement arriving at observation `e + 1`, so the window
+    must hold both: a start of `e - length + 1` puts observation `e` last and leaves
+    the arrival, and the BC target that depends on it, outside.
 
     Nothing falls back to the other pool. A silent substitution would train dynamics
     on task-accomplishing play, which is the one thing the mixture exists to prevent.
@@ -156,7 +159,7 @@ def sample_batch(
         if relevant:
             events = episode.events.nonzero().flatten()
             event = int(events[int(torch.randint(len(events), (1,), generator=rng))])
-            low, high = max(0, event - length + 1), min(span, event)
+            low, high = max(0, event - length + 2), min(span, event)
             start = low + int(torch.randint(high - low + 1, (1,), generator=rng))
         elif row % 4 == 0:
             start = 0
