@@ -37,6 +37,7 @@ def imagine(
     state: WorldState,
     agent: Tensor,
     rng: torch.Generator,
+    policy_rng: torch.Generator,
     config: Config,
 ) -> Trajectory:
     """One rollout per starting state, per Dreamer 4.
@@ -50,9 +51,10 @@ def imagine(
     causes is read at lead 0 of the *next* readout. Reading lead 0 of the current
     one returns the previous action's reward and shifts every return by a step.
 
-    Policy sampling goes through the supplied generator. `Categorical.sample()`
-    reads the global stream, which makes a rollout irreproducible from its own seed
-    and breaks the paired comparison the whole lattice rests on.
+    Policy and world noise use *separate* generators. Flow draws for four rungs and
+    a commit where direct draws none, so one shared stream desynchronises the two
+    arms' action sequences from the same seed -- and the paired comparison is the
+    whole point of the lattice.
     """
     readout = heads(agent)
     actions, step_logits, rewards, continuations = [], [], [], []
@@ -61,7 +63,7 @@ def imagine(
 
     for _ in range(config.horizon):
         logits = readout["policy"][:, -1, 0]
-        action = torch.multinomial(logits.softmax(-1), 1, generator=rng).squeeze(-1)
+        action = torch.multinomial(logits.softmax(-1), 1, generator=policy_rng).squeeze(-1)
         state, agent = advance(world, state, action[:, None], rng, config)
         readout = heads(agent)
 

@@ -65,7 +65,9 @@ def train_representation(
         losses = reconstruction_loss(
             predicted[:, scored], batch.patches[:, scored], masked[:, scored], perceptual, config
         )
-        _update(optimiser, _balance(losses, balance, config), [encoder, decoder], config, step)
+        weights = {"lpips": config.lpips_weight}
+        loss = _balance(losses, balance, config, weights)
+        _update(optimiser, loss, [encoder, decoder], config, step)
 
     encoder.eval()
     return encoder, decoder.eval(), cache_latents(encoder, episodes, config)
@@ -148,6 +150,7 @@ def train_actor(
         parameter.requires_grad_(True)
     optimiser = optimizer([heads], config)
     sampler, rng = _generators(config, 3)
+    policy_rng = torch.Generator(device=device).manual_seed(config.seed + 2**20)
     balance: dict[str, float] = {}
 
     for step in range(steps):
@@ -156,7 +159,7 @@ def train_actor(
             committed, conditioning = commit_inputs(batch.latents, rng, config)
             features, agent, memory = world(None, batch.led_to_action, committed, conditioning)
         start = WorldState(batch.latents[:, -1:], memory, batch.latents.shape[1], features[:, -1:])
-        trajectory = imagine(world, heads, start, agent[:, -1:], rng, config)
+        trajectory = imagine(world, heads, start, agent[:, -1:], rng, policy_rng, config)
 
         returns = lambda_returns(trajectory, config)
         with torch.no_grad():
@@ -169,18 +172,29 @@ def train_actor(
     return heads
 
 
-def _balance(losses: dict[str, torch.Tensor], state: dict[str, float], config: Config) -> torch.Tensor:
+def _balance(
+    losses: dict[str, torch.Tensor],
+    state: dict[str, float],
+    config: Config,
+    weights: dict[str, float] | None = None,
+) -> torch.Tensor:
     """Dreamer 4 normalises concurrent losses by running RMS estimates, which makes
     a coefficient a relative weight rather than a scale accident. `state` is a plain
     dict, which `checkpoint.save` accepts alongside modules. No driver checkpoints
     mid-phase yet, so it is currently per-call state: a resumed phase would restart
     every normaliser and rescale every objective, and that is registered rather
-    than papered over."""
+    than papered over.
+
+    `weights` apply *after* normalisation. A coefficient folded into the loss first
+    is divided straight back out by that loss's own RMS -- measured, 0.2 and 5.0
+    produce an identical contribution -- so the paper's 0.2 on LPIPS would be void.
+    """
     total = 0.0
     for name, value in losses.items():
         squared = float(value.detach().pow(2))
         state[name] = config.rms_decay * state.get(name, squared) + (1 - config.rms_decay) * squared
-        total = total + value / max(state[name] ** 0.5, 1e-8)
+        scale = (weights or {}).get(name, 1.0)
+        total = total + scale * value / max(state[name] ** 0.5, 1e-8)
     return total
 
 

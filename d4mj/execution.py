@@ -26,12 +26,14 @@ def run_episode(
     The flow arm corrupts its committed real latents here too, because its training
     never presents an uncorrupted one -- so executed control carries a third
     randomness source beyond environment seed and policy sampling, and any metric
-    comparing arms has to control it. Both draws go through one seeded generator
-    on the configured device, so a run is reproducible from its seed alone.
+    comparing arms has to control it. Policy and corruption draw from separate
+    seeded generators, so the two arms see the same action stream from one seed
+    even though flow consumes model noise that direct does not.
     """
     device = config.device
     world, encoder, heads = world.to(device).eval(), encoder.to(device).eval(), heads.to(device).eval()
     rng = torch.Generator(device=device).manual_seed(seed)
+    policy_rng = torch.Generator(device=device).manual_seed(seed + 2**20)
     observation, env_state = reset(seed)
     state, total = None, 0.0
     action = torch.full((1, 1), config.n_actions, dtype=torch.long, device=device)
@@ -41,7 +43,7 @@ def run_episode(
             patches = patchify(observation[None, None], config.patch).to(device)
             state, agent = observe(world, encoder, state, action, patches, rng, config)
             logits = heads(agent)["policy"][:, -1, 0]
-            choice = int(torch.multinomial(logits.softmax(-1), 1, generator=rng))
+            choice = int(torch.multinomial(logits.softmax(-1), 1, generator=policy_rng))
 
             observation, env_state, reward, terminated, truncated = step(env_state, choice, seed + index)
             total += reward

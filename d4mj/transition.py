@@ -225,28 +225,39 @@ def commit_inputs(latent: Tensor, rng: torch.Generator, config: Config):
 def _direct_loss(world: World, batch, rng: torch.Generator, config: Config) -> Tensor:
     """Teacher forcing plus a generated-prefix rollout, as V-JEPA 2-AC does.
 
-    The rollout term commits the *first prediction* through the same path
-    `advance` uses and predicts again from it, so the loss exercises the runtime
-    mechanism rather than only the one-step map. Direct has no corruption channel
-    to make it tolerate an imperfect prefix, so this is its only such training.
-    Gradient flows through one recurrent step, matching `auto_steps: 2`.
+    The rollout term runs the *actual* `advance` transaction from a real prefix:
+    commit, predict, commit the prediction, predict again. Stacking independently
+    teacher-forced predictions into a fresh sequence is not that -- each was
+    conditioned on a different real prefix, so they never form one trajectory, and
+    measured, that construction differs from the runtime path by 6.5e-2.
+
+    Direct has no corruption channel to make it tolerate an imperfect prefix, so
+    this is its only such training. Gradient flows through one recurrent step,
+    matching `auto_steps: 2`. The readout handed to the heads carries the
+    generated-prefix block, so they are fitted where imagination reads them.
 
     The action taken at block t is `led_to_action[t + 1]` under the led-to
     convention -- the same shift the policy target uses.
     """
     committed, conditioning = commit_inputs(batch.latents, rng, config)
-    features, agent, _ = world(None, batch.led_to_action, committed, conditioning)
+    features, agent, memory = world(None, batch.led_to_action, committed, conditioning)
     taken = batch.led_to_action[:, 1:]
     predicted = world.predict(features[:, :-1], taken)
     teacher = (predicted - batch.latents[:, 1:]).pow(2).mean()
 
-    if batch.latents.shape[1] < 3:
+    length = batch.latents.shape[1]
+    if length < 3:
         return teacher, agent
 
-    generated, label = commit_inputs(predicted[:, :-1], rng, config)
-    rolled, _, _ = world(None, taken[:, :-1], generated, label)
-    second = world.predict(rolled, batch.led_to_action[:, 2:])
-    return teacher + (second - batch.latents[:, 2:]).pow(2).mean(), agent
+    prefix, _, memory = world(
+        None, batch.led_to_action[:, :-2], committed[:, :-2], conditioning[:, :-2]
+    )
+    state = WorldState(batch.latents[:, -3:-2], memory, length - 2, prefix[:, -1:])
+    first, rolled = advance(world, state, batch.led_to_action[:, -2:-1], rng, config)
+    second = world.predict(first.features, batch.led_to_action[:, -1:])
+    rollout = (first.latent - batch.latents[:, -2:-1]).pow(2).mean()
+    rollout = rollout + (second - batch.latents[:, -1:]).pow(2).mean()
+    return teacher + rollout, torch.cat([agent[:, :-1], rolled], dim=1)
 
 
 def _shortcut_loss(world: World, batch, rng: torch.Generator, config: Config) -> Tensor:

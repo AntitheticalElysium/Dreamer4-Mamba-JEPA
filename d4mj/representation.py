@@ -52,9 +52,12 @@ class Encoder(nn.Module):
         for the inference the frozen encoder is used for."""
         b, t = patches.shape[:2]
         tokens = self.patch_proj(patches)
-        limit = torch.rand((b, t, 1), generator=rng, device=tokens.device) * p_mask
-        keep = torch.rand(tokens.shape[:3], generator=rng, device=tokens.device) >= limit
-        tokens = torch.where(keep[..., None], tokens, self.mask_token)
+        if p_mask > 0.0:
+            limit = torch.rand((b, t, 1), generator=rng, device=tokens.device) * p_mask
+            keep = torch.rand(tokens.shape[:3], generator=rng, device=tokens.device) >= limit
+            tokens = torch.where(keep[..., None], tokens, self.mask_token)
+        else:
+            keep = torch.ones(tokens.shape[:3], dtype=torch.bool, device=tokens.device)
         latents = self.latents.expand(b, t, -1, -1)
 
         encoded, memory = self.backbone(torch.cat([latents, tokens], dim=2), memory, offset)
@@ -125,11 +128,13 @@ def reconstruction_loss(
 ) -> dict[str, Tensor]:
     """Dreamer 4's equation 5: masked-patch MSE plus 0.2 LPIPS.
 
-    Returned separately, because the paper normalises every loss term by its own
-    running RMS and says so specifically to simplify weighing these two. Summing
-    them first makes 0.2 a coefficient on raw LPIPS rather than a relative weight.
+    Returned raw and separately: the paper normalises every loss term by its own
+    running RMS, and a coefficient applied *before* that normalisation cancels
+    exactly. The 0.2 is applied by `_balance` afterwards.
 
-    MSE is scored on replaced patches only, as both reproductions do. LPIPS is
+    MSE is scored on replaced patches only, as both reproductions do -- scoring
+    visible patches would reward copying, which is what masked autoencoding exists
+    to avoid, and it leaves p = 0 images carrying perceptual signal alone. LPIPS is
     scored on the whole predicted frame, which is a declared deviation: MMBench2
     composites visible patches from the target first, and measured, that makes the
     perceptual term *identically zero with zero gradient* at p = 0 -- the very case
@@ -143,7 +148,7 @@ def reconstruction_loss(
     frames = unpatchify(predicted, config) * 2 - 1
     truth = unpatchify(target, config) * 2 - 1
     lpips = perceptual(frames.flatten(0, 1), truth.flatten(0, 1)).mean()
-    return {"mse": mse, "lpips": config.lpips_weight * lpips}
+    return {"mse": mse, "lpips": lpips}
 
 
 def representation_loss(

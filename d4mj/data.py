@@ -113,21 +113,7 @@ def sample_batch(
 
     rows = [_window(episode, start, length, config) for episode, start in zip(chosen, starts)]
     stack = {field: torch.stack([row[field] for row in rows]) for field in rows[0]}
-    batch = Batch(burn_in=burn_in, **stack)
-    return _isolate_rows(batch, rng, config)
-
-
-def _isolate_rows(batch: Batch, rng: torch.Generator, config: Config) -> Batch:
-    """Dreamer 4 treats 30% of a batch as separate images, so the dynamics learns to
-    produce a start frame with no temporal prefix. Marking those rows invalid before
-    their last block makes every earlier block a boundary rather than history."""
-    rows = int(config.separate_image_fraction * batch.valid.shape[0])
-    if rows == 0:
-        return batch
-    picked = torch.randperm(batch.valid.shape[0], generator=rng)[:rows]
-    valid = batch.valid.clone()
-    valid[picked, :-1] = False
-    return Batch(**(vars(batch) | {"valid": valid}))
+    return Batch(burn_in=burn_in, **stack)
 
 
 def _window(episode: Episode, start: int, length: int, config: Config) -> dict[str, Tensor]:

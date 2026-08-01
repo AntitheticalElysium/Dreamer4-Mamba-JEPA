@@ -113,15 +113,10 @@ def alignment(config: Config) -> None:
     action leaking into a mid-episode window shows up as a mismatch rather than as
     a plausible-looking number months later.
 
-    The temporal contract is checked with separate-image isolation off, then the
-    isolation itself is checked separately -- otherwise the two mechanisms mask
-    each other and neither is really tested.
-    """
-    from dataclasses import replace
-
+"""
     episodes = [_probe(index, config) for index in range(4)]
     rng = torch.Generator().manual_seed(config.seed)
-    batch = sample_batch(episodes, rng, replace(config, separate_image_fraction=0.0))
+    batch = sample_batch(episodes, rng, config)
 
     for row in range(batch.led_to_action.shape[0]):
         start = _recover_start(batch, row, config)
@@ -140,10 +135,6 @@ def alignment(config: Config) -> None:
         config.n_patches,
         config.patch_dim,
     )
-    isolated = sample_batch(episodes, rng, config)
-    rows = int(config.separate_image_fraction * config.batch)
-    starts_only = (~isolated.valid[:, :-1]).all(dim=1).sum()
-    assert starts_only == rows, f"expected {rows} separate-image rows, found {starts_only}"
     _observation_dependence(config)
 
 
@@ -264,9 +255,10 @@ def recurrent_carry(config: Config) -> None:
 
 
 def _device(config: Config) -> str:
-    """Mamba-2's kernels are CUDA-only, so a gate that silently ran the M arm on
-    CPU would report a pass it never executed."""
-    return "cuda" if config.time_mixer == "mamba" else "cpu"
+    """The configured device, the same one training uses. A gate suite that put the
+    two arms on different hardware would validate a pairing the experiment never
+    runs."""
+    return config.device
 
 
 def _world(config: Config):

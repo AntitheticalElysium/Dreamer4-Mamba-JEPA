@@ -29,7 +29,9 @@ def save(path: Path, config: Config, **objects) -> None:
     temporary.rename(path)
 
 
-def load(path: Path, config: Config, **modules) -> dict:
+def load(path: Path, config: Config, **objects) -> dict:
+    """Restores modules through `load_state_dict` and plain state -- the running-RMS
+    dicts among them -- by replacing their contents in place."""
     payload = torch.load(path, weights_only=False)
     if payload["format"] != FORMAT:
         raise ValueError(f"expected {FORMAT}, found {payload['format']}")
@@ -39,6 +41,11 @@ def load(path: Path, config: Config, **modules) -> dict:
     torch.set_rng_state(payload["rng"])
     if payload.get("cuda_rng") is not None and torch.cuda.is_available():
         torch.cuda.set_rng_state_all(payload["cuda_rng"])
-    for name, module in modules.items():
-        module.load_state_dict(payload["modules"][name])
+    for name, target in objects.items():
+        stored = payload["modules"][name]
+        if hasattr(target, "load_state_dict"):
+            target.load_state_dict(stored)
+        else:
+            target.clear()
+            target.update(stored)
     return payload

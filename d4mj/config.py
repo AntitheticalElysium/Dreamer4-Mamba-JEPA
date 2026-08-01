@@ -71,7 +71,6 @@ class Config:
     dynamics_context: int = 48
     long_batch_every: int = 4
     long_only_fraction: float = 0.25
-    separate_image_fraction: float = 0.3
     batch: int = 8
     rms_decay: float = 0.99
     learning_rate: float = 1e-4
