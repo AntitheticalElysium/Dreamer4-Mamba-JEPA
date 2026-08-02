@@ -3,93 +3,110 @@
 **Not a Stage-A result.** A DEV smoke to find out whether the pipeline learns and
 whether the failure modes the register worries about appear. The preregistered
 FINAL protocol (S52) was not run: 16 seeds rather than a sealed set, an 800-step
-cap rather than Craftax's native 10000, one training seed per arm. The FINAL
-seeds are untouched.
+cap rather than Craftax's native 10000, one training seed per arm. The FINAL seeds
+are untouched.
 
-## Setup
+Setup: one tokenizer for all arms (S20), 3000 steps; per arm 5000 dynamics, 2500
+agent, 800 actor. 344 train / 44 dev episodes, 260,081 transitions, 274 terminals,
+76 BC-eligible. Phase 1A restored from checkpoint four separate times and
+reproduced the cache digest `a62705fcfbace70c` every time.
 
-One tokenizer for all four arms (S20), 3000 steps; per arm 5000 dynamics, 2500
-agent, 800 actor. Corpus: 96 archive episodes plus the support corpus -- 344
-train / 44 dev episodes, 260,081 transitions, 274 terminals, 76 BC-eligible.
-Phase 1A restored from checkpoint three separate times and reproduced the cache
-digest `a62705fcfbace70c` every time.
+## Results
 
-## The BC control changed the conclusion
+| arm | actor | BC | random | actor − BC | horizon | rollout informative | γ·growth | reward MAE | zero | contraction |
+|---|---|---|---|---|---|---|---|---|---|---|
+| flow-attention | 2.18 | 2.33 | 1.17 | −0.15 | 4 | **no** | 1.085 | 0.1019 | 0.1013 | 1.421 |
+| flow-mamba | 1.10 | 2.90 | 1.17 | −1.80 | 4 | **no** | 1.149 | 0.0878 | 0.1013 | 1.112 |
+| direct-attention | 4.72 | 3.26 | 1.17 | +1.46 | 8 | yes | 1.235 | 0.0475 | 0.1013 | 0.959 |
+| direct-mamba | 2.63 | 5.70 | 1.17 | −3.08 | 8 | yes | 1.265 | 0.0504 | 0.1013 | 0.957 |
 
-The first run compared the actor only against random, which S52 forbids. Adding
-the control the protocol requires showed the opposite of what random suggested:
+**No arm beats its own BC prior.** Three are worse than the behaviour they cloned.
+Across two runs of the same design direct-mamba moved from +0.76 to −3.08, so at
+16 seeds and one training seed these gaps are noise-dominated and no ordering
+between arms is established either.
 
-| design | actor | BC prior | random | actor − BC |
-|---|---|---|---|---|
-| shared critic trunk, batch 4, horizon fixed at 8 | 1.44 | **3.03** | 1.17 | **−1.59** |
-| split critic, actor batch 16, horizon selected | 2.68 | 2.31 | 1.17 | +0.37 |
+## The finding that explains the rest
 
-Imagination RL was destroying the cloned policy, and against a random baseline it
-still looked like progress. Three structural faults were behind it, each verified
-before being changed:
+The rolled prediction error, against the marginal predictor (the constant mean
+latent) that S63 compares to:
 
-- **The critic shared the policy's trunk.** A value-only backward put gradient
-  17654 into the body the policy reads, so the critic reshaped policy features
-  outside PMPO and outside the prior KL. After the split: `None`.
-- **Phase 3 inherited Phase 1A's batch of 4.** Phase 3 never runs the tokenizer
-  and is nowhere near that memory ceiling; PMPO's sign-of-advantage estimate is
-  over starting contexts. Now `actor_batch = 16`.
-- **The horizon was never selected.** S54 requires DEV selection from candidates;
-  the code silently used the default, and the multistep diagnostic it should have
-  used could only measure one step because it ran on a short batch with context 15.
+| arm | h=4 | h=8 | h=16 | h=32 | marginal |
+|---|---|---|---|---|---|
+| flow-attention | 1.189 | 1.302 | 1.405 | 1.507 | ~0.30 |
+| flow-mamba | 0.760 | 0.821 | 0.836 | 0.825 | ~0.30 |
+| direct-attention | 0.148 | 0.220 | 0.356 | 0.453 | ~0.30 |
+| direct-mamba | 0.151 | 0.254 | 0.361 | 0.527 | ~0.30 |
 
-## Results, fixed design
+**Both flow arms roll out worse than predicting the mean latent, at every
+horizon.** Phase 3 for those arms imagines on trajectories carrying less
+information than a constant, which is a sufficient explanation for RL not helping
+there and needs no appeal to reward quality. Direct is informative to h≈8 and
+crosses the marginal between 8 and 16, which is what S63 selects on.
 
-| arm | actor | BC | random | actor − BC | 95% CI | horizon | separation | reward MAE |
-|---|---|---|---|---|---|---|---|---|
-| flow-attention | 2.68 | 2.31 | 1.17 | +0.37 | (−0.43, 1.03) | 32 | 0.0117 | 0.098 |
-| flow-mamba | 2.58 | 2.95 | 1.17 | −0.37 | (−1.31, 0.98) | 4 | 0.0178 | 0.086 |
-| direct-attention | 3.21 | 3.87 | 1.17 | −0.66 | (−1.61, 0.43) | 4 | 0.0626 | 0.049 |
-| direct-mamba | **6.27** | 5.52 | 1.17 | +0.76 | (−1.12, 2.90) | 4 | 0.1451 | 0.043 |
+`γ·growth > 1` for **every** arm, so Lemma 1's hypothesis
+(`γ·L_f(1+L_π) < 1`, *On Training in Imagination* 2605.06732) fails throughout: no
+arm currently satisfies the condition under which imagination training has a
+return-gap guarantee, even where its rollout is informative.
 
-**No arm beats its own BC prior.** Every interval straddles zero, so at 16 seeds
-imagination training has not been shown to add anything over behaviour cloning.
-That is the honest reading, and it is the claim S52 exists to adjudicate.
+## Phase 2 damages the world model
 
-The arm *ordering* is unchanged from the uncontrolled run and both substitutions
-still help, with Direct-Mamba highest. That ordering is a property of the whole
-pipeline, not of imagination RL.
+Mean rolled error over 32 steps, same DEV batches, same world before and after
+Phase 2:
 
-## Three things to distrust in this table
+| arm | after Phase 1B | after Phase 2 |
+|---|---|---|
+| flow-attention | 0.648 | **1.347** |
+| flow-mamba | 0.683 | 0.828 |
+| direct-attention | 0.323 | 0.327 |
+| direct-mamba | 0.329 | 0.373 |
 
-**Flow's reward model carries no information.** The zero-predictor MAE on DEV is
-**0.0795**; flow-attention scores 0.098 and flow-mamba 0.086 -- both worse than
-predicting zero. PMPO in Phase 3 is therefore optimising noise for the flow arms.
-Direct is genuinely better at 0.043-0.049. Phase 3 should be gated on the reward
-model beating that baseline before it runs at all.
+Every arm gets worse; flow-attention more than doubles. Phase 2 continues the
+dynamics loss alongside three head losses, all normalised to unit RMS by
+`_balance`, so dynamics carries roughly a quarter of the weight it had in Phase 1B
+while head gradients reshape the world through the agent tokens' inputs. Joint
+training is what D4 does; this balance is ours, and it is the next thing to
+examine.
 
-**Direct's low one-step error is a warning, not a win.** 0.047 against flow's
-0.25-0.37 at contraction ~0.95 is the conditional-mean collapse signature S35
-predicts: under squared loss the collapsed solution minimises exactly that number.
-Adjudicating it needs successor samples, which this run did not supply.
+Note the flow arms are already above the marginal after Phase 1B alone (0.648,
+0.683 against ~0.30), so Phase 2 compounds a problem it did not create.
 
-**The horizon rule degenerates.** "Largest candidate within 2x the one-step error,
-else the smallest" gave 32 for flow-attention and 4 for the other three -- but for
-flow-mamba, direct-attention and direct-mamba *no* candidate met the tolerance, so
-4 is a fallback, not a selection. A tolerance relative to the one-step error is
-tighter in absolute terms for an accurate arm, which is backwards. The rule needs
-restating before it decides anything.
+## Corrections to earlier claims
 
-Continuation separation now rests on 25 terminal targets per arm rather than 3,
-and orders the arms the same way the scores do. It is still a small sample.
+**S61 is withdrawn.** I reported flow's reward models as carrying no information
+against a 0.0795 zero baseline. That baseline was measured on *uncached* DEV
+episodes with a burn-in of 30 and their own short/long mix, while the model MAE
+came from *cached* DEV batches, and it ignored `reward_rows`. On the matched
+baseline (0.1013) flow-mamba beats zero at 0.0878 and flow-attention is marginal
+at 0.1019. The baseline is now computed inside `head_calibration` on exactly the
+rows it scores, so the two cannot disagree again.
+
+**"Three quarters of updates use short windows" is false.** Training passes
+`total=steps`, so the long-only tail applies: the real split is 56.3% short,
+43.7% long. The per-window BC coverage figures reproduce (10.9% short, 21.4%
+long), but the blend is 15.5% reachable, so **84.5%** of expert behaviour can
+never be a BC target, not 78.7% (S65).
+
+**"Both substitutions help" was too strong** and is dropped. Arms now select
+different horizons, so an actor comparison no longer varies only the transition
+and the time mixer.
+
+## What changed in the code
+
+- Head output scales follow the pinned DreamerV3 config (S64): `reward` and
+  `value` at 0.0, `policy` at 0.01, `continuation` at 1.0. We had shipped PyTorch
+  defaults on all four.
+- The horizon criterion is S63 above, replacing a rule that was *tighter* for a
+  more accurate arm and degenerated to "no candidate qualified" on three arms.
+- `latent_stats` predicted from one context block; it now uses the full context.
+- `head_calibration` honours `reward_rows` and reports its own matched baseline.
+- The runner keeps raw episode rows, which S52 requires.
 
 ## Incidents
 
-Two CUDA OOMs inside Mamba's Triton autotuner, which benchmarks kernel configs
-and needs contiguous headroom: once in `diagnostics.cost`'s backward timing, once
-in Phase 2's backward. The first is now caught -- a measurement must never abort a
-run -- and the second is handled by running one process per arm
-(`artifacts/run_all_arms.sh`), since a long-lived process fragments the allocator
-across arms. `flow-attention`'s Phase 3 was also lost once to a checkpoint that
-only fired on the `checkpoint_every` modulus; phases now always save their final
-step.
-
-Phase 1A and 1B checkpoints predated two new `Config` fields
-(`actor_batch`, `horizon_tolerance`). Both are read only by Phase 3 and the
-selection rule, which was asserted field-by-field before migrating them rather
-than retraining the tokenizer.
+Two Mamba Triton OOMs (in `cost`'s backward timing and in Phase 2's backward);
+the first is caught, the second handled by one process per arm. A phase whose
+length was not a multiple of `checkpoint_every` never saved its final model. One
+run was killed by launching it and polling it inside the same shell invocation, so
+a tool timeout killed the process group -- it is now launched under `setsid`.
+Checkpoints were migrated twice for `Config` fields that provably affect only
+Phase 3, asserted field-by-field rather than retraining the tokenizer.
