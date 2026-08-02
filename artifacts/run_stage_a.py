@@ -92,11 +92,21 @@ def main() -> None:
     torch.save({"encoder": encoder.state_dict(), "decoder": decoder.state_dict()}, out / "tokenizer.pt")
 
     report: dict[str, dict] = {}
+    if (out / "report.json").exists():
+        report = json.loads((out / "report.json").read_text())
+        log(f"resuming, {sorted(report)} already complete")
+
     for transition in ("flow", "direct"):
         for mixer in ("attention", "mamba"):
             arm = f"{transition}-{mixer}"
+            if arm in report:
+                continue
             config = replace(base, transition=transition, time_mixer=mixer)
             log(f"=== {arm} ===")
+            # Mamba's Triton autotuner benchmarks several kernel configs and needs
+            # headroom the resident tokenizer was holding; it is unused until eval.
+            encoder.cpu()
+            torch.cuda.empty_cache()
 
             world = train_dynamics(
                 cached_train, args.dynamics_steps, config, checkpoint=out / f"{arm}.1b.pt"
@@ -113,6 +123,7 @@ def main() -> None:
 
             entry = {"cost": cost({"encoder": encoder, "world": world, "heads": heads}, world, config)}
             entry["diagnostics"] = _diagnostics(world, heads, cached_dev, config)
+            encoder.to(config.device)
             scores = evaluate(
                 {
                     "actor": lambda s: run_episode(
