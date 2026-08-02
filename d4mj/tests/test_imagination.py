@@ -65,10 +65,14 @@ def test_policy_stream_is_independent_of_the_world_stream(config):
 
 def test_flow_world_noise_moves_its_own_rollout(config):
     """The contrast: flow does consume model noise, so its trajectory depends on
-    the model seed even with the policy seed fixed."""
+    the model seed even with the policy seed fixed.
+
+    Compared on the agent readout, not on reward: the reward head ships
+    zero-initialised, so at initialisation it emits the same value everywhere and
+    would hide any difference in the states underneath it."""
     one, _ = rollout(config, "flow", policy_seed=5, model_seed=7)
     other, _ = rollout(config, "flow", policy_seed=5, model_seed=99)
-    assert not torch.equal(one.reward, other.reward)
+    assert not torch.equal(one.agent, other.agent)
 
 
 def test_changing_the_policy_seed_changes_the_actions(config):

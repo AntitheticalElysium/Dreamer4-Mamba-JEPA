@@ -50,17 +50,22 @@ def multistep_error(
 
 @torch.no_grad()
 def latent_stats(world: World, batch: Batch, rng: torch.Generator, config: Config) -> dict[str, float]:
-    """Range *and* scale. A bounded readout fixes the range; it does nothing about
-    contraction toward the conditional mean, which is the failure that looks like a
-    working model in every one-step metric.
+    """Range *and* scale, from a full committed context. A bounded readout fixes the
+    range; it says nothing about contraction toward the conditional mean, which is
+    the failure that looks like a working model in every one-step metric.
 
-    The comparison is against the matched next-state target, not the whole batch:
-    sequence-level diversity in the denominator would make a sound one-step
-    prediction look contracted."""
-    real = batch.latents[:, 1:2]
-    state, _ = initial(world, batch.latents[:, :1], batch.led_to_action[:, :1], rng, config)
-    state, _ = advance(world, state, batch.led_to_action[:, 1:2], rng, config)
-    predicted = state.latent
+    The denominator is the matched next-state target, not the whole batch: sequence
+    diversity there would make a sound prediction look contracted. Predicting from
+    one block instead of a full context measures a regime deployment never runs in.
+    """
+    blocks = batch.latents.shape[1]
+    context = min(config.dynamics_context, blocks - 1)
+    committed, conditioning = commit_inputs(batch.latents[:, :context], rng, config)
+    features, _, memory = world(None, batch.led_to_action[:, :context], committed, conditioning)
+    state = WorldState(batch.latents[:, context - 1 : context], memory, context, features[:, -1:])
+    state, _ = advance(world, state, batch.led_to_action[:, context : context + 1], rng, config)
+
+    real, predicted = batch.latents[:, context : context + 1], state.latent
     return {
         "real_std": float(real.std()),
         "predicted_std": float(predicted.std()),
@@ -80,6 +85,9 @@ def head_calibration(heads: Heads, agent: Tensor, batch: Batch, config: Config) 
     """
     readout, targets = heads(agent), head_targets(batch, config)
     valid = targets["valid"][..., 0]
+    # The reward head is scored on the rows its loss reads, or a support row that
+    # never trained it would count against its calibration.
+    rewarded = valid * targets["reward_rows"][..., 0]
     probability = readout["continuation"][..., 0].sigmoid()
     truth = targets["continuation"][..., 0]
     alive, dead = valid * truth, valid * (1 - truth)
@@ -88,7 +96,12 @@ def head_calibration(heads: Heads, agent: Tensor, batch: Batch, config: Config) 
     mean = (readout["reward"][..., 0, :].softmax(-1) * heads.centers).sum(-1)
     predicted = mean.sign() * torch.expm1(mean.abs())
     return {
-        "reward_mae": float(((predicted - targets["reward"][..., 0]).abs() * valid).sum() / valid.sum()),
+        "reward_mae": float(
+            ((predicted - targets["reward"][..., 0]).abs() * rewarded).sum() / rewarded.sum().clamp(min=1.0)
+        ),
+        "reward_mae_zero": float(
+            (targets["reward"][..., 0].abs() * rewarded).sum() / rewarded.sum().clamp(min=1.0)
+        ),
         "continuation_mean": float((probability * valid).sum() / valid.sum()),
         "continuation_target": float((truth * valid).sum() / valid.sum()),
         "continuation_on_continuing": on_alive,

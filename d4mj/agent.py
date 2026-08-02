@@ -32,6 +32,12 @@ class Heads(nn.Module):
         self.reward = nn.Linear(width, leads * config.bins)
         self.continuation = nn.Linear(width, leads)
         self.value = nn.Linear(width, config.bins)
+        # Output scales from the pinned DreamerV3 config: rewhead and value 0.0,
+        # policy 0.01, conhead 1.0. A value head that starts at random emits random
+        # advantages on Phase 3's first steps, and PMPO reads only their sign.
+        for head, scale in ((self.reward, 0.0), (self.value, 0.0), (self.policy, 0.01)):
+            head.weight.data.mul_(scale)
+            head.bias.data.zero_()
 
     def actor_parameters(self):
         """What Phase 3 may move: the policy and the critic, each with its own body."""

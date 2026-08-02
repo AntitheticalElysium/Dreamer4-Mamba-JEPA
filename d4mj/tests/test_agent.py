@@ -7,8 +7,15 @@ from .conftest import latent_batch
 
 
 def readout_for(config, batch):
+    """The reward and value heads ship zero-initialised, which makes their output
+    uniform -- and a uniform distribution has cross-entropy log(bins) against *any*
+    target. These tests are about which rows a loss reads, so they need a head whose
+    predictions actually vary."""
     torch.manual_seed(0)
     heads = Heads(config)
+    generator = torch.Generator().manual_seed(7)
+    for head in (heads.reward, heads.value):
+        head.weight.data.normal_(0.0, 0.02, generator=generator)
     agent = torch.randn(
         batch.led_to_action.shape[0],
         batch.led_to_action.shape[1],
@@ -74,6 +81,34 @@ def test_policy_lead_zero_is_the_outgoing_action(config):
     batch.led_to_action[:] = torch.arange(6)
     targets = head_targets(batch, config)
     assert torch.equal(targets["action"][0, :-1, 0], torch.arange(1, 6).float())
+
+
+def test_head_output_scales_match_the_pinned_config(config):
+    """DreamerV3 ships `rewhead` and `value` at outscale 0.0, `policy` at 0.01 and
+    `conhead` at 1.0. A value head starting at random emits random advantages on
+    Phase 3's first steps, and PMPO reads only their sign."""
+    torch.manual_seed(0)
+    heads = Heads(config)
+    for head in (heads.reward, heads.value):
+        assert float(head.weight.detach().abs().max()) == 0.0
+        assert float(head.bias.detach().abs().max()) == 0.0
+    policy = float(heads.policy.weight.detach().abs().max())
+    continuation = float(heads.continuation.weight.detach().abs().max())
+    assert 0.0 < policy < continuation, "policy is scaled down, continuation is not"
+
+
+def test_zero_initialised_heads_predict_a_flat_distribution(config):
+    """The consequence worth stating: a uniform reward head has cross-entropy
+    log(bins) against every target, so it starts with no preference at all."""
+    import math
+
+    torch.manual_seed(0)
+    heads = Heads(config)
+    agent = torch.randn(2, 3, config.n_agent, config.d_model, generator=torch.Generator().manual_seed(1))
+    logits = heads(agent)["reward"]
+    assert torch.allclose(logits, torch.zeros_like(logits))
+    entropy = -torch.log_softmax(logits, -1).mean()
+    assert abs(float(entropy) - math.log(config.bins)) < 1e-4
 
 
 def test_twohot_is_exact_between_centres(config):

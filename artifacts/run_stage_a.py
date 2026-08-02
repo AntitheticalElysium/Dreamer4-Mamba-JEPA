@@ -118,7 +118,8 @@ def main() -> None:
             )
             log(f"{arm}: phase 2 done")
             prior = copy.deepcopy(heads).eval()
-            config = replace(config, horizon=select_horizon(world, cached_dev, config, log))
+            horizon, horizon_report = select_horizon(world, cached_dev, config, log)
+            config = replace(config, horizon=horizon)
             heads = train_actor(
                 cached_train, world, heads, args.actor_steps, config, checkpoint=out / f"{arm}.3.pt"
             )
@@ -126,6 +127,7 @@ def main() -> None:
 
             entry = {"cost": cost({"encoder": encoder, "world": world, "heads": heads}, world, config)}
             entry["diagnostics"] = _diagnostics(world, heads, cached_dev, config)
+            entry["horizon_selection"] = horizon_report
             encoder.to(config.device)
             # The BC prior is the control S52 actually requires: beating a random
             # policy is not evidence, beating the behaviour the actor was cloned
@@ -143,9 +145,13 @@ def main() -> None:
                 list(range(10_000, 10_000 + args.eval_episodes)),
                 config,
             )
+            # S52 requires the raw rows kept: the official score is nonlinear, so a
+            # paired interval cannot be reconstructed from summaries alone.
             entry["evaluation"] = {
-                name: {k: v for k, v in row.items() if k != "episodes"}
-                for name, row in scores.items()
+                name: {k: v for k, v in row.items() if k != "episodes"} for name, row in scores.items()
+            }
+            entry["episodes"] = {
+                name: [vars(r) for r in row["episodes"]] for name, row in scores.items()
             }
             report[arm] = entry
             log(
@@ -161,38 +167,61 @@ def main() -> None:
     log("done")
 
 
-def select_horizon(world, dev, config: Config, log) -> int:
-    """S54: choose the imagination horizon on DEV, from the declared candidates,
-    before Phase 3 -- never by leaving the default in place.
+def select_horizon(world, dev, config: Config, log) -> tuple[int, dict]:
+    """S54, under the S63 criterion: the largest declared candidate at which the
+    rollout still beats the marginal predictor -- the constant mean latent.
 
-    The roll starts from a full committed context on a *long* batch, so there are
-    enough future blocks to score the largest candidate; a short batch with context
-    set to 15 can only ever measure one step, which is what the previous run did.
+    That line is not a tuned threshold. Past it the rollout carries less about the
+    future than knowing nothing does, so imagining further cannot inform the actor.
+    It is also scale-free, which the previous rule was not: a tolerance relative to
+    the one-step error is *tighter* for a more accurate arm, and it degenerated to
+    "no candidate qualified" on three arms of four.
+
+    `growth` reports Lemma 1's hypothesis from On Training in Imagination
+    (2605.06732): the return-gap bound holds only while gamma * L_f (1 + L_pi) < 1,
+    and its dynamics-error coefficient is 1 / ((1 - gamma)(1 - gamma L_f (1 + L_pi))).
+    The measured per-step error growth stands in for L_f (1 + L_pi), so `gamma_rho`
+    above 1 means the bound is vacuous at that horizon and the number is reported
+    rather than used to select.
     """
+    from d4mj.data import sample_batch
+    from d4mj.train import _to
+
     reach = max(config.horizon_candidates)
     context = config.sequence_long - reach
     sampler = torch.Generator().manual_seed(config.seed + 555)
     rng = torch.Generator(device=config.device).manual_seed(config.seed + 556)
-    from d4mj.data import sample_batch
-    from d4mj.train import _to
 
-    curves = []
+    rolled, marginal = [], []
     for repeat in range(8):
         batch = _to(sample_batch(dev, sampler, config, 4 * repeat + 3, 0, mixture=True), config.device)
-        curves.append(multistep_error(world, batch, rng, config, context=context)["mean_error"])
-    error = [sum(c[i] for c in curves) / len(curves) for i in range(len(curves[0]))]
+        rolled.append(multistep_error(world, batch, rng, config, context=context)["mean_error"])
+        future = batch.latents[:, context:]
+        mean = batch.latents.mean(dim=(0, 1), keepdim=True)
+        marginal.append([float((future[:, t] - mean[:, 0]).pow(2).mean()) for t in range(future.shape[1])])
 
-    allowed = config.horizon_tolerance * error[0]
-    chosen = config.horizon_candidates[0]
-    for candidate in config.horizon_candidates:
-        if candidate <= len(error) and error[candidate - 1] <= allowed:
-            chosen = candidate
+    error = [sum(c[i] for c in rolled) / len(rolled) for i in range(len(rolled[0]))]
+    trivial = [sum(c[i] for c in marginal) / len(marginal) for i in range(len(marginal[0]))]
+
+    informative = [c for c in config.horizon_candidates if c <= len(error) and error[c - 1] < trivial[c - 1]]
+    chosen = max(informative) if informative else min(config.horizon_candidates)
+    growth = (error[chosen - 1] / error[0]) ** (1 / max(chosen - 1, 1))
+    report = {
+        "error": error,
+        "marginal": trivial,
+        "chosen": chosen,
+        "informative": bool(informative),
+        "growth": growth,
+        "gamma_growth": config.gamma * growth,
+    }
     log(
-        f"horizon: one-step {error[0]:.4f}, allowed {allowed:.4f}, "
-        f"at candidates {[round(error[c - 1], 4) for c in config.horizon_candidates if c <= len(error)]} "
-        f"-> {chosen}"
+        f"horizon: rolled {[round(error[c - 1], 4) for c in config.horizon_candidates if c <= len(error)]} "
+        f"vs marginal {[round(trivial[c - 1], 4) for c in config.horizon_candidates if c <= len(error)]} "
+        f"-> {chosen}{'' if informative else ' (NONE informative, fell back)'}; "
+        f"growth {growth:.4f}, gamma*growth {config.gamma * growth:.4f}"
+        f"{'' if config.gamma * growth < 1 else ' -- Lemma 1 bound vacuous'}"
     )
-    return chosen
+    return chosen, report
 
 
 def _diagnostics(world, heads, dev, config: Config, batches: int = 200) -> dict:
