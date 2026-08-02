@@ -7,8 +7,8 @@ CHECKS = ("alignment", "scan_step_parity", "reset_parity", "firewall", "branch_n
 
 
 def main() -> int:
-    """Runs every gate across the Stage-A lattice. Gates come before results:
-    an arm that fails one is not a result, it is a bug wearing a number."""
+    """Every gate across the Stage-A lattice. An arm that fails one is not a
+    result."""
     arms = [
         Config(transition=transition, time_mixer=mixer)
         for transition in ("flow", "direct")

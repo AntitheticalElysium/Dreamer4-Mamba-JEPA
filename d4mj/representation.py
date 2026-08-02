@@ -117,8 +117,7 @@ def _visual(config: Config) -> Config:
 
 
 def pack(z: Tensor, config: Config) -> Tensor:
-    """(B, T, n_latents, d_bottleneck) -> (B, T, n_spatial, d_spatial), Dreamer 4's
-    own reshape: 512 x 16 becomes 256 x 32."""
+    """(B, T, n_latents, d_bottleneck) -> (B, T, n_spatial, d_spatial)."""
     b, t = z.shape[:2]
     return z.reshape(b, t, config.n_spatial, config.d_spatial)
 

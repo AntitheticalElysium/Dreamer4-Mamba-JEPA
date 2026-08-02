@@ -31,8 +31,7 @@ def save(path: Path, config: Config, **objects) -> None:
 
 
 def load(path: Path, config: Config, **objects) -> dict:
-    """Restores modules through `load_state_dict` and plain state -- the running-RMS
-    dicts among them -- by replacing their contents in place."""
+    """Restores modules and plain dicts in place."""
     payload = torch.load(path, weights_only=False)
     if payload["format"] != FORMAT:
         raise ValueError(f"expected {FORMAT}, found {payload['format']}")

@@ -77,8 +77,7 @@ def run_episode(
 
 
 def run_random(seed: int, config: Config, limit: int | None = None) -> Result:
-    """The random control, on the same seed schedule as every other policy so the
-    environment stream it sees is identical."""
+    """The random control, on the same seed schedule as every other policy."""
     policy_rng = torch.Generator().manual_seed(seed + 2**20)
     observation, env_state = reset(seed)
     total = 0.0

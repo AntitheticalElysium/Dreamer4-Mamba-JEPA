@@ -45,9 +45,8 @@ class Heads(nn.Module):
 
 
 def twohot(values: Tensor, centers: Tensor) -> Tensor:
-    """Linear interpolation between the two neighbouring bin centres, so a value
-    between them is represented exactly and bin count sets grid density rather
-    than a quantisation floor."""
+    """Linear interpolation between neighbouring centres, so bin count sets grid
+    density rather than a quantisation floor."""
     clamped = values.clamp(centers[0], centers[-1]).unsqueeze(-1)
     upper = torch.searchsorted(centers, clamped.contiguous()).clamp(1, len(centers) - 1)
     lower = upper - 1
@@ -133,7 +132,6 @@ def _shift(values: Tensor, fill: float) -> Tensor:
 
 
 def _leads(values: Tensor, leads: int, fill: float) -> Tensor:
-    """(B, T) -> (B, T, leads) where entry [b, t, n] is values[b, t + n], padded
-    past the window end with `fill`."""
+    """(B, T) -> (B, T, leads), entry [b, t, n] = values[b, t + n]."""
     padded = F.pad(values, (0, leads - 1), value=fill)
     return padded.unfold(1, leads, 1)[:, : values.shape[1]]
