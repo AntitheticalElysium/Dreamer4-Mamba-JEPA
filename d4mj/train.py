@@ -115,7 +115,8 @@ def train_dynamics(episodes: list[Episode], steps: int, config: Config, checkpoi
 
     for step in range(resume, steps):
         batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
-        loss = _balance({"dynamics": transition_loss(world, batch, rng, config)}, balance, config)
+        dynamics = transition_loss(world, batch, rng, config, step=step)
+        loss = _balance({"dynamics": dynamics}, balance, config)
         _update(optimiser, loss, [world], config, step)
         if checkpoint is not None and ((step + 1) % config.checkpoint_every == 0 or step + 1 == steps):
             _checkpoint(checkpoint, config, [world, optimiser], balance, streams, step + 1, f"1B:{steps}")
@@ -123,7 +124,12 @@ def train_dynamics(episodes: list[Episode], steps: int, config: Config, checkpoi
 
 
 def train_agent(
-    episodes: list[Episode], world: World, steps: int, config: Config, checkpoint=None
+    episodes: list[Episode],
+    world: World,
+    steps: int,
+    config: Config,
+    checkpoint=None,
+    world_steps: int = 0,
 ) -> Heads:
     """Phase 2. The dynamics objective continues alongside the head losses, which
     keeps the world model from drifting while the heads fit it.
@@ -132,6 +138,10 @@ def train_agent(
     loss uses, not a separately committed one: Dreamer 4 reuses the pretraining
     setting so the heads are fitted across the sampled signal range rather than at
     one uniform condition they will never see again.
+
+    `world_steps` is how far Phase 1B already trained the world, so the shortcut
+    bootstrap clock (S67) continues rather than restarting -- otherwise Phase 2
+    would spend its first `bootstrap_start` steps back on the supervised objective.
     """
     device = config.device
     torch.manual_seed(config.seed + 2)
@@ -144,7 +154,9 @@ def train_agent(
 
     for step in range(resume, steps):
         batch = _to(sample_batch(episodes, sampler, config, step, steps, mixture=True), device)
-        dynamics, agent = transition_loss(world, batch, rng, config, return_agent=True)
+        dynamics, agent = transition_loss(
+            world, batch, rng, config, return_agent=True, step=world_steps + step
+        )
         readout = heads(agent) | {"centers": heads.centers}
         losses = {"dynamics": dynamics} | head_loss(readout, head_targets(batch, config), config)
         _update(optimiser, _balance(losses, balance, config), [world, heads], config, step)

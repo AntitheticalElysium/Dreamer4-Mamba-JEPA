@@ -27,8 +27,27 @@ def test_mixture_is_half_and_holds_the_whole_event_transition(config):
             assert event + 1 <= start + blocks - 1, "the achievement arrives after the window"
 
 
-def test_mixture_without_events_raises(config):
+def test_mixture_without_bc_eligible_episodes_raises(config):
     """A missing pool must fail rather than silently borrow the other one."""
+    source = episode(0, config)
+    support = [
+        Episode(
+            observations=source.observations,
+            actions_taken=source.actions_taken,
+            rewards=source.rewards,
+            terminated=source.terminated,
+            truncated=source.truncated,
+            events=source.events,
+            bc_eligible=False,
+        )
+    ]
+    with pytest.raises(ValueError, match="BC-eligible"):
+        sample_batch(support, torch.Generator().manual_seed(0), config, mixture=True)
+
+
+def test_behaviour_cloning_does_not_need_events(config):
+    """S51 revised: events oversample BC windows, they no longer gate them. An
+    expert episode with no achievement at all is still behaviour worth cloning."""
     source = episode(0, config)
     plain = [
         Episode(
@@ -39,8 +58,32 @@ def test_mixture_without_events_raises(config):
             truncated=source.truncated,
         )
     ]
-    with pytest.raises(ValueError, match="task events"):
-        sample_batch(plain, torch.Generator().manual_seed(0), config, mixture=True)
+    batch = sample_batch(plain, torch.Generator().manual_seed(0), config, mixture=True)
+    assert int(batch.relevant.sum()) == config.batch // 2
+
+
+def test_behaviour_cloning_reaches_ordinary_windows(config, episodes):
+    """The defect S65 records: event-only windows left 84.5% of expert behaviour
+    unreachable. Every start must now be reachable by some BC row."""
+    starts, without_event = set(), 0
+    total = 0
+    generator = torch.Generator().manual_seed(0)
+    for step in range(200):
+        batch = sample_batch(episodes, generator, config, step, 0, mixture=True)
+        blocks = batch.led_to_action.shape[1]
+        for row in range(config.batch):
+            if not bool(batch.relevant[row]):
+                continue
+            start = window_start(batch, row)
+            starts.add(start)
+            total += 1
+            # every probe episode carries its single event at the midpoint
+            event = len(episodes[0]) // 2
+            if not start <= event <= start + blocks - 1:
+                without_event += 1
+    assert 0 in starts, "no BC window began at an episode start"
+    assert without_event > 0, "every BC window still contained a task event"
+    assert without_event / total > 0.1, f"only {without_event / total:.1%} of BC windows are ordinary"
 
 
 def test_episode_start_windows_score_every_block(config, episodes):

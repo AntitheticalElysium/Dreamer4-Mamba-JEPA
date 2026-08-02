@@ -134,13 +134,13 @@ def sample_batch(
 
     usable = [e for e in episodes if len(e) + 1 >= length]
     uniform = [e for e in usable if e.uniform_eligible]
-    eventful = [e for e in usable if e.bc_eligible and e.events is not None and bool(e.events.any())]
+    cloneable = [e for e in usable if e.bc_eligible]
+    eventful = [e for e in cloneable if e.events is not None and bool(e.events.any())]
     if not uniform:
         raise ValueError(f"no eligible episode reaches the required length {length}")
-    if mixture and not eventful:
-        raise ValueError("the relevant half needs BC-eligible episodes carrying task events")
+    if mixture and not cloneable:
+        raise ValueError("the relevant half needs BC-eligible episodes")
 
-    starts = torch.tensor([len(e) + 1 - length + 1 for e in uniform], dtype=torch.float)
     terminal = [e for e in uniform if bool(e.terminated.any())]
     wanted = config.batch // 2 if mixture else 0
     support_row = (
@@ -149,6 +149,16 @@ def sample_batch(
         else -1
     )
 
+    def draw(pool):
+        """Uniform over eligible (episode, start) pairs, so a short episode's every
+        window does not outweigh a long one's (S56)."""
+        counts = torch.tensor([len(e) + 1 - length + 1 for e in pool], dtype=torch.float)
+        return pool[int(torch.multinomial(counts, 1, generator=rng))]
+
+    def offset_for(episode, at_start: bool) -> int:
+        span = len(episode) + 1 - length
+        return 0 if at_start else int(torch.randint(span + 1, (1,), generator=rng))
+
     chosen, offsets, roles, supports = [], [], [], []
     for row in range(config.batch):
         relevant = row < wanted
@@ -156,13 +166,20 @@ def sample_batch(
             episode = terminal[int(torch.randint(len(terminal), (1,), generator=rng))]
             offset = _terminal_start(episode, length, rng)
         elif relevant:
-            episode = eventful[int(torch.randint(len(eventful), (1,), generator=rng))]
-            offset = _event_start(episode, length, rng)
+            # Behaviour cloning reads ordinary expert behaviour, with task events
+            # oversampled rather than exclusive (S51 revised): navigation, survival
+            # and positioning are all worth cloning for one aggregate policy, and
+            # event-only windows reached 15.5% of expert transitions.
+            centre = eventful and float(torch.rand((), generator=rng)) < config.event_fraction
+            episode = draw(eventful) if centre else draw(cloneable)
+            offset = (
+                _event_start(episode, length, rng)
+                if centre
+                else offset_for(episode, float(torch.rand((), generator=rng)) < config.episode_start_fraction)
+            )
         else:
-            episode = uniform[int(torch.multinomial(starts, 1, generator=rng))]
-            span = len(episode) + 1 - length
-            at_start = float(torch.rand((), generator=rng)) < config.episode_start_fraction
-            offset = 0 if at_start else int(torch.randint(span + 1, (1,), generator=rng))
+            episode = draw(uniform)
+            offset = offset_for(episode, float(torch.rand((), generator=rng)) < config.episode_start_fraction)
         chosen.append(episode)
         offsets.append(offset)
         roles.append(relevant)

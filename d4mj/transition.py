@@ -91,23 +91,37 @@ class World(nn.Module):
         return torch.tanh(self.readout(torch.cat([pooled, context], dim=-1)))
 
 
-def flow_conditioning(rng: torch.Generator, shape: tuple[int, int], config: Config, device):
-    """Diffusion forcing: an independent step size and signal level per position,
-    plus the mask of positions the loss may score.
+def flow_conditioning(
+    rng: torch.Generator, shape: tuple[int, int], config: Config, device, bootstrap: bool = False
+):
+    """Diffusion forcing conditioning, plus the mask of positions the loss may score.
+
+    Rows are partitioned as the pinned source does (S67): `self_fraction` of rows
+    bootstrap and draw *coarser* step sizes, the rest are supervised at d_min. Only
+    those self rows may take a bootstrap target, and only once `bootstrap` is true.
+    Drawing the step size per position instead leaves 75% of positions chasing an
+    untrained model's own predictions from the first update.
 
     `commit_prefix_fraction` of rows instead carry the rollout prefix -- every block
-    but the last at the commit condition -- which independent draws make
-    vanishingly rare (S41). Only that row's last block is scored; scoring the prefix
-    too would push the finest-step share from 25% to 43%."""
-    step = torch.randint(config.n_step_bins, shape, generator=rng, device=device)
+    but the last at the commit condition (S41). Only that row's last block is
+    scored."""
+    rows = shape[0]
+    self_rows = round(config.self_fraction * rows) if bootstrap else 0
+    empirical = rows - self_rows
+
+    step = torch.full(shape, config.step_index, device=device, dtype=torch.long)
+    if self_rows:
+        step[empirical:] = torch.randint(
+            config.n_step_bins - 1, (self_rows, shape[1]), generator=rng, device=device
+        )
     rungs = 2**step
     index = (torch.rand(shape, generator=rng, device=device) * rungs).floor().long()
     conditioning = torch.stack([index * (config.k_max // rungs), step], dim=-1)
     scored = torch.ones(shape, device=device)
 
-    rows = int(config.commit_prefix_fraction * shape[0])
-    if rows:
-        picked = torch.randperm(shape[0], generator=rng, device=device)[:rows]
+    prefix_rows = int(config.commit_prefix_fraction * shape[0])
+    if prefix_rows:
+        picked = torch.randperm(shape[0], generator=rng, device=device)[:prefix_rows]
         conditioning[picked, :-1, 0] = config.tau_ctx_index
         conditioning[picked, :-1, 1] = config.step_index
         scored[picked, :-1] = 0.0
@@ -186,17 +200,27 @@ def advance(
 
 
 def transition_loss(
-    world: World, batch, rng: torch.Generator, config: Config, return_agent: bool = False
+    world: World,
+    batch,
+    rng: torch.Generator,
+    config: Config,
+    return_agent: bool = False,
+    step: int = 0,
 ):
     """Teacher-forced over the window, on real committed latents in both arms.
 
     Phase 2 asks for the agent readout from this same pass rather than running a
     second one: Dreamer 4 fits the heads in the pretraining setting, so they must
     see the signal range the transition loss sampled, not a uniform condition.
+
+    `step` is the training step, which the flow arm needs: shortcut bootstrapping
+    starts only at `bootstrap_start` (S67). It defaults to 0, so a caller that does
+    not train -- a gate, a diagnostic -- gets the pre-bootstrap objective.
     """
-    loss, agent = (_direct_loss if config.transition == "direct" else _shortcut_loss)(
-        world, batch, rng, config
-    )
+    if config.transition == "direct":
+        loss, agent = _direct_loss(world, batch, rng, config)
+    else:
+        loss, agent = _shortcut_loss(world, batch, rng, config, step)
     return (loss, agent) if return_agent else loss
 
 
@@ -221,8 +245,9 @@ def commit_inputs(latent: Tensor, rng: torch.Generator, config: Config):
 def _direct_loss(world: World, batch, rng: torch.Generator, config: Config) -> Tensor:
     """Teacher forcing plus a two-step generated-prefix rollout, after V-JEPA 2-AC
     (S55). Both generated states are committed through `advance`, and both readouts
-    replace the real ones at their own indices, so the heads see every state Phase 3
-    will read them at. The two rollout terms are averaged, matching the source's
+    replace the real ones at their own indices. That is `direct_rollout` states --
+    two -- so imagination beyond it leaves the trained distribution and S68 caps the
+    horizon there. The two rollout terms are averaged, matching the source's
     `jloss + sloss` of two means; squared error is a declared deviation from its L1.
     """
     committed, conditioning = commit_inputs(batch.latents, rng, config)
@@ -247,14 +272,17 @@ def _direct_loss(world: World, batch, rng: torch.Generator, config: Config) -> T
     return _uniform_mean(teacher + rollout / 2, batch), readout
 
 
-def _shortcut_loss(world: World, batch, rng: torch.Generator, config: Config) -> Tensor:
+def _shortcut_loss(world: World, batch, rng: torch.Generator, config: Config, step: int = 0) -> Tensor:
     """Equation 7. At the finest step size the target is the clean latent; at every
     larger step it is the stop-gradient average of two half-steps, which is what
     teaches the step token to mean anything and what makes a four-rung sampler
     work. Without it the arm is the paper's own diffusion-forcing ablation.
     """
     target = batch.latents
-    conditioning, scored = flow_conditioning(rng, target.shape[:2], config, target.device)
+    bootstrap = step >= config.bootstrap_start
+    conditioning, scored = flow_conditioning(
+        rng, target.shape[:2], config, target.device, bootstrap
+    )
     tau = signal_level(conditioning, config)[..., None, None]
     noise = torch.randn(target.shape, generator=rng, device=target.device, dtype=target.dtype)
     corrupted = tau * target + (1.0 - tau) * noise

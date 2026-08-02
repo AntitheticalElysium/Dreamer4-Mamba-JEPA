@@ -55,6 +55,14 @@ class Config:
     rungs: int = 4
     tau_ctx_noise: float = 0.1
 
+    # Shortcut scheduling, from the pinned mmbench2 defaults: a `self_fraction` of
+    # *rows* bootstrap at coarser step sizes while the rest are supervised at d_min,
+    # and no row bootstraps before `bootstrap_start`. Sampling the step size per
+    # position instead inverts this -- 75% of positions chase targets produced by an
+    # untrained model from the first update.
+    self_fraction: float = 0.25
+    bootstrap_start: int = 10_000
+
     mtp_leads: int = 8
     bins: int = 255
     symlog_limit: float = 20.0
@@ -64,6 +72,10 @@ class Config:
     # predictor, decided before any FINAL cell is inspected.
     horizon: int = 8
     horizon_candidates: tuple[int, ...] = (4, 8, 16, 32)
+    # How many genuinely generated states `_direct_loss` trains. Deployment must not
+    # imagine past it, or both transition and head inputs leave their trained
+    # distribution -- S68 caps the direct arm's horizon here.
+    direct_rollout: int = 2
 
     # Evaluation (S52). The native Craftax horizon, not the collector's 2500 cap.
     horizon_eval: int = 10000
@@ -86,6 +98,12 @@ class Config:
     commit_prefix_fraction: float = 0.25
     episode_start_fraction: float = 0.25
     support_every: int = 8
+    # Share of behaviour-cloning rows centred on a task event. The rest are ordinary
+    # expert windows: D4's relevant sequences are task-conditioned, and once task
+    # conditioning is dropped for one aggregate policy (S51) an event-only rule
+    # starves BC of navigation, survival and positioning -- measured, it left 84.5%
+    # of expert behaviour unreachable as a target.
+    event_fraction: float = 0.5
     batch: int = 4
     # Phase 3 sizes its own batch. It imagines from cached latents and never runs
     # the tokenizer, so it is nowhere near Phase 1A's memory ceiling, and PMPO's

@@ -114,7 +114,12 @@ def main() -> None:
             )
             log(f"{arm}: phase 1B done")
             heads = train_agent(
-                cached_train, world, args.agent_steps, config, checkpoint=out / f"{arm}.2.pt"
+                cached_train,
+                world,
+                args.agent_steps,
+                config,
+                checkpoint=out / f"{arm}.2.pt",
+                world_steps=args.dynamics_steps,
             )
             log(f"{arm}: phase 2 done")
             prior = copy.deepcopy(heads).eval()
@@ -177,12 +182,13 @@ def select_horizon(world, dev, config: Config, log) -> tuple[int, dict]:
     the one-step error is *tighter* for a more accurate arm, and it degenerated to
     "no candidate qualified" on three arms of four.
 
-    `growth` reports Lemma 1's hypothesis from On Training in Imagination
-    (2605.06732): the return-gap bound holds only while gamma * L_f (1 + L_pi) < 1,
-    and its dynamics-error coefficient is 1 / ((1 - gamma)(1 - gamma L_f (1 + L_pi))).
-    The measured per-step error growth stands in for L_f (1 + L_pi), so `gamma_rho`
-    above 1 means the bound is vacuous at that horizon and the number is reported
-    rather than used to select.
+    `growth` is descriptive only: it is the per-step ratio of rolled MSE, which
+    measures how error *accumulates*, not the perturbation sensitivity Lemma 1's
+    hypothesis is about. The two are not the same -- an error recursion
+    `e -> 0.5 e + 1` has sensitivity 0.5 yet an MSE ratio above 1 at every horizon --
+    so this statistic cannot say whether that bound holds, and it is reported
+    without that claim. Direct's horizon is additionally capped at the rollout
+    length its loss actually trains (S68).
     """
     from d4mj.data import sample_batch
     from d4mj.train import _to
@@ -205,23 +211,24 @@ def select_horizon(world, dev, config: Config, log) -> tuple[int, dict]:
 
     informative = [c for c in config.horizon_candidates if c <= len(error) and error[c - 1] < trivial[c - 1]]
     chosen = max(informative) if informative else min(config.horizon_candidates)
+    capped = min(chosen, config.direct_rollout) if config.transition == "direct" else chosen
     growth = (error[chosen - 1] / error[0]) ** (1 / max(chosen - 1, 1))
     report = {
         "error": error,
         "marginal": trivial,
-        "chosen": chosen,
+        "informative_horizon": chosen,
+        "chosen": capped,
         "informative": bool(informative),
-        "growth": growth,
-        "gamma_growth": config.gamma * growth,
+        "accumulation": growth,
     }
     log(
         f"horizon: rolled {[round(error[c - 1], 4) for c in config.horizon_candidates if c <= len(error)]} "
         f"vs marginal {[round(trivial[c - 1], 4) for c in config.horizon_candidates if c <= len(error)]} "
-        f"-> {chosen}{'' if informative else ' (NONE informative, fell back)'}; "
-        f"growth {growth:.4f}, gamma*growth {config.gamma * growth:.4f}"
-        f"{'' if config.gamma * growth < 1 else ' -- Lemma 1 bound vacuous'}"
+        f"-> informative {chosen}{'' if informative else ' (NONE, fell back)'}, "
+        f"used {capped}{' (capped at trained rollout)' if capped != chosen else ''}; "
+        f"error accumulation {growth:.4f}/step"
     )
-    return chosen, report
+    return capped, report
 
 
 def _diagnostics(world, heads, dev, config: Config, batches: int = 200) -> dict:

@@ -206,7 +206,10 @@ def _observation_dependence(config: Config) -> None:
 
 
 def _conditioning_coverage(config: Config) -> None:
-    """Every conditioning row must be reachable by training (S10)."""
+    """Every conditioning row must be reachable by training (S10).
+
+    Scored past `bootstrap_start`: before it, only the finest step trains, which is
+    the pinned schedule's own warmup (S67) and not an unreachable row."""
     from .data import Batch
     from .transition import World, transition_loss
 
@@ -233,7 +236,7 @@ def _conditioning_coverage(config: Config) -> None:
             latents=torch.randn(4, 6, config.n_spatial, config.d_spatial, device=device).tanh(),
         )
         world.zero_grad()
-        transition_loss(world, batch, generator, config).backward()
+        transition_loss(world, batch, generator, config, step=config.bootstrap_start).backward()
         for table, seen in zip(tables, touched):
             if table.weight.grad is not None:
                 seen += table.weight.grad.abs().sum(-1)

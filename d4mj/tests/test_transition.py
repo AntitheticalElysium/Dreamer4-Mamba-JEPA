@@ -70,17 +70,31 @@ def test_direct_commits_both_generated_states(config):
 
 def test_commit_prefix_does_not_reweight_the_step_grid(config):
     """A prefix row exists to give its last block a runtime-like history. Scoring
-    the prefix too pushes the finest-step share from 25% to 43%."""
+    the prefix too would shift the supervised share away from what S67 sets."""
     config = replace(config, transition="flow")
     finest = total = 0
     for seed in range(64):
         conditioning, scored = flow_conditioning(
-            torch.Generator().manual_seed(seed), (8, 32), config, "cpu"
+            torch.Generator().manual_seed(seed), (8, 32), config, "cpu", bootstrap=True
         )
         keep = scored > 0
         total += int(keep.sum())
         finest += int(((conditioning[..., 1] == config.step_index) & keep).sum())
-    assert abs(finest / total - 1 / config.n_step_bins) < 0.02
+    assert abs(finest / total - (1 - config.self_fraction)) < 0.05
+
+
+def test_shortcut_supervises_before_bootstrap_start(config):
+    """The pinned source keeps every row supervised at d_min until `bootstrap_start`,
+    then splits `self_fraction` of *rows* onto coarser steps. Sampling the step per
+    position instead leaves 75% of positions chasing an untrained model."""
+    config = replace(config, transition="flow", commit_prefix_fraction=0.0)
+    before, _ = flow_conditioning(torch.Generator().manual_seed(0), (8, 16), config, "cpu", False)
+    after, _ = flow_conditioning(torch.Generator().manual_seed(0), (8, 16), config, "cpu", True)
+    assert (before[..., 1] == config.step_index).all(), "warmup must be fully supervised"
+
+    per_row = [(after[r, :, 1] == config.step_index).float().mean().item() for r in range(8)]
+    assert all(x in (0.0, 1.0) for x in per_row), "the partition is by row, not by position"
+    assert sum(x == 0.0 for x in per_row) == round(config.self_fraction * 8)
 
 
 def test_commit_prefix_rows_carry_the_commit_condition(config):
