@@ -64,6 +64,10 @@ class Config:
     # `diagnostics.multistep_error`, before any FINAL cell is inspected.
     horizon: int = 8
     horizon_candidates: tuple[int, ...] = (4, 8, 16, 32)
+    # The selection rule: the largest candidate whose rolled error stays within this
+    # multiple of the one-step error. Declared before the numbers are seen, so the
+    # horizon is chosen by a rule rather than by whichever value looked best.
+    horizon_tolerance: float = 2.0
 
     # Evaluation (S52). The native Craftax horizon, not the collector's 2500 cap.
     horizon_eval: int = 10000
@@ -87,6 +91,11 @@ class Config:
     episode_start_fraction: float = 0.25
     support_every: int = 8
     batch: int = 4
+    # Phase 3 sizes its own batch. It imagines from cached latents and never runs
+    # the tokenizer, so it is nowhere near Phase 1A's memory ceiling, and PMPO's
+    # sign-of-advantage estimate is over starting contexts -- inheriting 4 of them
+    # would be a memory limit from another phase deciding the actor's gradient.
+    actor_batch: int = 16
     gradient_checkpointing: bool = True
     rms_decay: float = 0.99
     learning_rate: float = 1e-4
@@ -124,6 +133,7 @@ class Config:
         assert 0.0 <= self.commit_prefix_fraction < 1.0
         assert 0.0 <= self.long_only_fraction <= 1.0
         assert self.batch % 2 == 0, "the 50/50 mixture needs an even batch"
+        assert self.actor_batch % 2 == 0, "the 50/50 mixture needs an even batch"
 
     @property
     def n_patches(self) -> int:

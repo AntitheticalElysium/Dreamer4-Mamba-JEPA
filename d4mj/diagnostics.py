@@ -146,22 +146,33 @@ def cost(modules: dict[str, nn.Module], world: World, config: Config) -> dict[st
             config.batch, config.sequence, config.n_spatial, config.d_spatial, device=device
         ).tanh(),
     )
+    # A measurement must never abort a run. Mamba's Triton autotuner benchmarks
+    # several backward kernels and has OOM'd here mid-experiment; the throughput
+    # figure is then reported as absent rather than taking the training with it.
     frozen = [p for p in world.parameters() if not p.requires_grad]
     for parameter in frozen:
         parameter.requires_grad_(True)
-    for repeat in range(6):
-        if repeat == 2:
-            if device == "cuda":
-                torch.cuda.synchronize()
-            train_start = time.perf_counter()
-        world.zero_grad()
-        transition_loss(world, probe, rng, config).backward()
-    if device == "cuda":
-        torch.cuda.synchronize()
-    train_elapsed = time.perf_counter() - train_start
+    train_elapsed = float("nan")
+    try:
+        if device == "cuda":
+            torch.cuda.empty_cache()
+        for repeat in range(6):
+            if repeat == 2:
+                if device == "cuda":
+                    torch.cuda.synchronize()
+                train_start = time.perf_counter()
+            world.zero_grad()
+            transition_loss(world, probe, rng, config).backward()
+        if device == "cuda":
+            torch.cuda.synchronize()
+        train_elapsed = time.perf_counter() - train_start
+    except (torch.OutOfMemoryError, RuntimeError):
+        pass
     world.zero_grad(set_to_none=True)
     for parameter in frozen:
         parameter.requires_grad_(False)
+    if device == "cuda":
+        torch.cuda.empty_cache()
 
     horizon, distance = 0, 1
     with torch.no_grad():

@@ -1,0 +1,474 @@
+{
+  "flow-attention": {
+    "cost": {
+      "memory_horizon_at_least": 64,
+      "deployed_parameters": 19383047,
+      "training_only_parameters": 0,
+      "dynamics_state_elements": 1179648,
+      "encoder_state_elements": 1851392,
+      "peak_bytes": 265140224.0,
+      "steps_per_second": 23.96599386040175,
+      "forward_backward_per_second": 14.320080945725147,
+      "flops_per_step": 2177089536.0,
+      "backbone_passes_per_step": 5
+    },
+    "diagnostics": {
+      "real_std": 0.7858762418230375,
+      "predicted_std": 1.1350767115751903,
+      "contraction": 1.4446335087219875,
+      "outside_unit": 0.5057576497395834,
+      "reward_mae": 0.08411046241720517,
+      "continuation_mean": 0.9996479923526446,
+      "continuation_target": 0.99951171875,
+      "continuation_on_continuing": 0.9996506571769714,
+      "terminal_targets": 3.0,
+      "continuation_on_terminal": 0.9933771292368571,
+      "continuation_separation": 0.006273527940114376,
+      "multistep": [
+        0.7966283559799194
+      ]
+    },
+    "evaluation": {
+      "actor": {
+        "score": 1.438474127308859,
+        "score_interval": [
+          0.9805008172988892,
+          1.6414657831192017
+        ],
+        "reward": 1.2249999926425517,
+        "achievements": 2.125,
+        "rates": [
+          0.6875,
+          0.4375,
+          0.0,
+          0.4375,
+          0.0625,
+          0.0,
+          0.0,
+          0.0625,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.4375,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "terminated": 1.0,
+        "length": 100.8125,
+        "versus_random": {
+          "gap": 0.2684600214420587,
+          "interval": [
+            -0.21694467961788177,
+            0.7068281769752502
+          ],
+          "beats": false
+        }
+      },
+      "random": {
+        "score": 1.1700141058668003,
+        "score_interval": [
+          0.804553210735321,
+          1.3133106231689453
+        ],
+        "reward": 1.162499996367842,
+        "achievements": 2.0625,
+        "rates": [
+          0.5,
+          0.0,
+          0.0,
+          0.25,
+          0.0625,
+          0.0,
+          0.0,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "terminated": 1.0,
+        "length": 104.9375,
+        "versus_actor": {
+          "gap": -0.2684600214420587,
+          "interval": [
+            -0.7068281769752502,
+            0.21694467961788177
+          ],
+          "beats": false
+        }
+      }
+    }
+  },
+  "flow-mamba": {
+    "cost": {
+      "memory_horizon_at_least": 64,
+      "deployed_parameters": 19321879,
+      "training_only_parameters": 0,
+      "dynamics_state_elements": 860160,
+      "encoder_state_elements": 1851392,
+      "peak_bytes": 146852864.0,
+      "steps_per_second": 24.281568301149083,
+      "forward_backward_per_second": 13.270829848093232,
+      "flops_per_step": 2149810176.0,
+      "backbone_passes_per_step": 5
+    },
+    "diagnostics": {
+      "real_std": 0.7858762418230375,
+      "predicted_std": 0.8198809077342352,
+      "contraction": 1.0433148791392644,
+      "outside_unit": 0.21824137369791666,
+      "reward_mae": 0.08010193581382434,
+      "continuation_mean": 0.9995181461175283,
+      "continuation_target": 0.99951171875,
+      "continuation_on_continuing": 0.9995314081509908,
+      "terminal_targets": 3.0,
+      "continuation_on_terminal": 0.9707749684651693,
+      "continuation_separation": 0.028756439685821533,
+      "multistep": [
+        0.26495957374572754
+      ]
+    },
+    "evaluation": {
+      "actor": {
+        "score": 1.7915185194593812,
+        "score_interval": [
+          1.0475213527679443,
+          2.0760087966918945
+        ],
+        "reward": 1.7874999861232936,
+        "achievements": 2.6875,
+        "rates": [
+          0.4375,
+          0.0,
+          0.125,
+          0.9375,
+          0.0625,
+          0.0,
+          0.0,
+          0.8125,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0625,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "terminated": 1.0,
+        "length": 143.5,
+        "versus_random": {
+          "gap": 0.6215044135925809,
+          "interval": [
+            -0.12570695579051971,
+            1.12191641330719
+          ],
+          "beats": false
+        }
+      },
+      "random": {
+        "score": 1.1700141058668003,
+        "score_interval": [
+          0.804553210735321,
+          1.3133106231689453
+        ],
+        "reward": 1.162499996367842,
+        "achievements": 2.0625,
+        "rates": [
+          0.5,
+          0.0,
+          0.0,
+          0.25,
+          0.0625,
+          0.0,
+          0.0,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "terminated": 1.0,
+        "length": 104.9375,
+        "versus_actor": {
+          "gap": -0.6215044135925809,
+          "interval": [
+            -1.12191641330719,
+            0.12570695579051971
+          ],
+          "beats": false
+        }
+      }
+    }
+  },
+  "direct-attention": {
+    "cost": {
+      "memory_horizon_at_least": 64,
+      "deployed_parameters": 19513431,
+      "training_only_parameters": 0,
+      "dynamics_state_elements": 1179648,
+      "encoder_state_elements": 1851392,
+      "peak_bytes": 147670016.0,
+      "steps_per_second": 111.156831304966,
+      "forward_backward_per_second": 8.062668331257974,
+      "flops_per_step": 439828480.0,
+      "backbone_passes_per_step": 1
+    },
+    "diagnostics": {
+      "real_std": 0.7858762418230375,
+      "predicted_std": 0.7478873108824095,
+      "contraction": 0.9519063234329224,
+      "outside_unit": 0.0,
+      "reward_mae": 0.04549332343352338,
+      "continuation_mean": 0.9995072136322657,
+      "continuation_target": 0.99951171875,
+      "continuation_on_continuing": 0.9995898927251498,
+      "terminal_targets": 3.0,
+      "continuation_on_terminal": 0.8279256820678711,
+      "continuation_separation": 0.17166421065727866,
+      "multistep": [
+        0.04103665053844452
+      ]
+    },
+    "evaluation": {
+      "actor": {
+        "score": 2.193916793386698,
+        "score_interval": [
+          1.4720982313156128,
+          2.5430150032043457
+        ],
+        "reward": 2.7874999861232936,
+        "achievements": 3.6875,
+        "rates": [
+          0.625,
+          0.5,
+          0.0625,
+          1.0,
+          0.125,
+          0.0,
+          0.0,
+          1.0,
+          0.375,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "terminated": 1.0,
+        "length": 158.4375,
+        "versus_random": {
+          "gap": 1.0239026875198975,
+          "interval": [
+            0.2770090401172638,
+            1.5803403854370117
+          ],
+          "beats": true
+        }
+      },
+      "random": {
+        "score": 1.1700141058668003,
+        "score_interval": [
+          0.804553210735321,
+          1.3133106231689453
+        ],
+        "reward": 1.162499996367842,
+        "achievements": 2.0625,
+        "rates": [
+          0.5,
+          0.0,
+          0.0,
+          0.25,
+          0.0625,
+          0.0,
+          0.0,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "terminated": 1.0,
+        "length": 104.9375,
+        "versus_actor": {
+          "gap": -1.0239026875198975,
+          "interval": [
+            -1.5803403854370117,
+            -0.2770090401172638
+          ],
+          "beats": false
+        }
+      }
+    }
+  },
+  "direct-mamba": {
+    "cost": {
+      "memory_horizon_at_least": 64,
+      "deployed_parameters": 19452263,
+      "training_only_parameters": 0,
+      "dynamics_state_elements": 860160,
+      "encoder_state_elements": 1851392,
+      "peak_bytes": 144432128.0,
+      "steps_per_second": 123.49948416222053,
+      "forward_backward_per_second": 7.4443479022215024,
+      "flops_per_step": 434372608.0,
+      "backbone_passes_per_step": 1
+    },
+    "diagnostics": {
+      "real_std": 0.7858762418230375,
+      "predicted_std": 0.7466978753606478,
+      "contraction": 0.9502362906932831,
+      "outside_unit": 0.0,
+      "reward_mae": 0.04439337675770124,
+      "continuation_mean": 0.9985746120413145,
+      "continuation_target": 0.99951171875,
+      "continuation_on_continuing": 0.9987105578184128,
+      "terminal_targets": 3.0,
+      "continuation_on_terminal": 0.7121538519859314,
+      "continuation_separation": 0.2865567058324814,
+      "multistep": [
+        0.04013188183307648
+      ]
+    },
+    "evaluation": {
+      "actor": {
+        "score": 3.1819456714793186,
+        "score_interval": [
+          2.254633665084839,
+          3.5316390991210938
+        ],
+        "reward": 3.099999987985939,
+        "achievements": 4.0,
+        "rates": [
+          0.8125,
+          0.625,
+          0.1875,
+          0.875,
+          0.3125,
+          0.0,
+          0.125,
+          0.8125,
+          0.1875,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0625,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "terminated": 1.0,
+        "length": 136.3125,
+        "versus_random": {
+          "gap": 2.0119315656125183,
+          "interval": [
+            1.204664707183838,
+            2.4014480113983154
+          ],
+          "beats": true
+        }
+      },
+      "random": {
+        "score": 1.1700141058668003,
+        "score_interval": [
+          0.804553210735321,
+          1.3133106231689453
+        ],
+        "reward": 1.162499996367842,
+        "achievements": 2.0625,
+        "rates": [
+          0.5,
+          0.0,
+          0.0,
+          0.25,
+          0.0625,
+          0.0,
+          0.0,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "terminated": 1.0,
+        "length": 104.9375,
+        "versus_actor": {
+          "gap": -2.0119315656125183,
+          "interval": [
+            -2.4014480113983154,
+            -1.204664707183838
+          ],
+          "beats": false
+        }
+      }
+    }
+  }
+}

@@ -10,9 +10,14 @@ from .data import Batch
 class Heads(nn.Module):
     """Policy, reward, continuation and value over the same pooled agent tokens.
 
-    Policy and value share one body; reward and continuation share another. A single
-    trunk would let Phase 3 move the reward model it is scored against -- measured,
-    one policy step changed both reward and continuation logits.
+    Three separate bodies. Reward and continuation are split from the actor because
+    a single trunk would let Phase 3 move the reward model it is scored against --
+    measured, one policy step changed both reward and continuation logits. The
+    *critic* is split from the policy for the same reason one step further in: with
+    a shared trunk a value-only backward put gradient 17654 into the body the policy
+    reads, so the critic reshaped policy features outside PMPO and outside the
+    prior KL that is supposed to bound how far the actor may move. D4 calls it "an
+    additional value head" and does not ask for a shared trunk.
     """
 
     def __init__(self, config: Config):
@@ -21,6 +26,7 @@ class Heads(nn.Module):
         self.register_buffer("centers", _centers(config), persistent=True)
         width, leads = config.d_model, config.mtp_leads
         self.actor_body = SwiGLU(width, 2.0)
+        self.critic_body = SwiGLU(width, 2.0)
         self.model_body = SwiGLU(width, 2.0)
         self.policy = nn.Linear(width, leads * config.n_actions)
         self.reward = nn.Linear(width, leads * config.bins)
@@ -28,19 +34,24 @@ class Heads(nn.Module):
         self.value = nn.Linear(width, config.bins)
 
     def actor_parameters(self):
-        """What Phase 3 may move: policy, value and their shared body only."""
-        return [*self.actor_body.parameters(), *self.policy.parameters(), *self.value.parameters()]
+        """What Phase 3 may move: the policy and the critic, each with its own body."""
+        return [
+            *self.actor_body.parameters(),
+            *self.policy.parameters(),
+            *self.critic_body.parameters(),
+            *self.value.parameters(),
+        ]
 
     def forward(self, agent: Tensor) -> dict[str, Tensor]:
         b, t = agent.shape[:2]
         pooled = agent.mean(dim=2)
-        actor, model = self.actor_body(pooled), self.model_body(pooled)
+        actor, critic, model = self.actor_body(pooled), self.critic_body(pooled), self.model_body(pooled)
         leads, config = self.config.mtp_leads, self.config
         return {
             "policy": self.policy(actor).view(b, t, leads, config.n_actions),
             "reward": self.reward(model).view(b, t, leads, config.bins),
             "continuation": self.continuation(model).view(b, t, leads),
-            "value": self.value(actor),
+            "value": self.value(critic),
         }
 
 

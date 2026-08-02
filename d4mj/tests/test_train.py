@@ -120,6 +120,30 @@ def test_resume_rejects_a_different_phase_length(config, tmp_path):
         _checkpoint(path, config, [world, optimiser], {}, streams, contract="1B:2000")
 
 
+def test_phase_checkpoints_its_final_step(config, tmp_path, episodes):
+    """A phase whose length is not a multiple of `checkpoint_every` must still save
+    what it trained. Firing only on the modulus loses the final model outright."""
+    from d4mj.train import train_dynamics
+
+    path = tmp_path / "phase.pt"
+    steps = replace(config, checkpoint_every=500)
+    cached = [
+        replace_episode(e, config)
+        for e in episodes
+    ]
+    train_dynamics(cached, 3, steps, checkpoint=path)
+    assert path.exists()
+    assert torch.load(path, weights_only=False)["modules"]["step"] == 3
+
+
+def replace_episode(episode, config):
+    """A cached episode, so `train_dynamics` runs without a tokenizer."""
+    from dataclasses import replace as _replace
+
+    latents = torch.zeros(len(episode) + 1, config.n_spatial, config.d_spatial)
+    return _replace(episode, latents=latents, latent_digest="test")
+
+
 def test_resume_from_absent_checkpoint_starts_at_zero(config, tmp_path):
     torch.manual_seed(0)
     world = World(config)

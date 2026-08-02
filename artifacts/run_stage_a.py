@@ -11,6 +11,7 @@ Nothing here may be reported as a Stage-A result.
 """
 
 import argparse
+import copy
 import json
 import time
 from dataclasses import replace
@@ -116,6 +117,8 @@ def main() -> None:
                 cached_train, world, args.agent_steps, config, checkpoint=out / f"{arm}.2.pt"
             )
             log(f"{arm}: phase 2 done")
+            prior = copy.deepcopy(heads).eval()
+            config = replace(config, horizon=select_horizon(world, cached_dev, config, log))
             heads = train_actor(
                 cached_train, world, heads, args.actor_steps, config, checkpoint=out / f"{arm}.3.pt"
             )
@@ -124,10 +127,16 @@ def main() -> None:
             entry = {"cost": cost({"encoder": encoder, "world": world, "heads": heads}, world, config)}
             entry["diagnostics"] = _diagnostics(world, heads, cached_dev, config)
             encoder.to(config.device)
+            # The BC prior is the control S52 actually requires: beating a random
+            # policy is not evidence, beating the behaviour the actor was cloned
+            # from is the claim.
             scores = evaluate(
                 {
                     "actor": lambda s: run_episode(
                         world, encoder, heads, s, config, limit=args.eval_limit
+                    ),
+                    "bc": lambda s: run_episode(
+                        world, encoder, prior, s, config, limit=args.eval_limit
                     ),
                     "random": lambda s: run_random(s, config, limit=args.eval_limit),
                 },
@@ -140,17 +149,53 @@ def main() -> None:
             }
             report[arm] = entry
             log(
-                f"{arm}: actor {scores['actor']['score']:.2f} vs random "
-                f"{scores['random']['score']:.2f} | "
+                f"{arm}: actor {scores['actor']['score']:.2f} bc {scores['bc']['score']:.2f} "
+                f"random {scores['random']['score']:.2f} | "
+                f"beats bc={scores['actor']['versus_bc']['beats']} "
+                f"random={scores['actor']['versus_random']['beats']} | "
                 f"continuation separation {entry['diagnostics']['continuation_separation']:.4f} | "
-                f"contraction {entry['diagnostics']['contraction']:.3f}"
+                f"contraction {entry['diagnostics']['contraction']:.3f} | horizon {config.horizon}"
             )
             (out / "report.json").write_text(json.dumps(report, indent=2, default=float))
 
     log("done")
 
 
-def _diagnostics(world, heads, dev, config: Config, batches: int = 24) -> dict:
+def select_horizon(world, dev, config: Config, log) -> int:
+    """S54: choose the imagination horizon on DEV, from the declared candidates,
+    before Phase 3 -- never by leaving the default in place.
+
+    The roll starts from a full committed context on a *long* batch, so there are
+    enough future blocks to score the largest candidate; a short batch with context
+    set to 15 can only ever measure one step, which is what the previous run did.
+    """
+    reach = max(config.horizon_candidates)
+    context = config.sequence_long - reach
+    sampler = torch.Generator().manual_seed(config.seed + 555)
+    rng = torch.Generator(device=config.device).manual_seed(config.seed + 556)
+    from d4mj.data import sample_batch
+    from d4mj.train import _to
+
+    curves = []
+    for repeat in range(8):
+        batch = _to(sample_batch(dev, sampler, config, 4 * repeat + 3, 0, mixture=True), config.device)
+        curves.append(multistep_error(world, batch, rng, config, context=context)["mean_error"])
+    error = [sum(c[i] for c in curves) / len(curves) for i in range(len(curves[0]))]
+
+    allowed = config.horizon_tolerance * error[0]
+    chosen = config.horizon_candidates[0]
+    for candidate in config.horizon_candidates:
+        if candidate <= len(error) and error[candidate - 1] <= allowed:
+            chosen = candidate
+    log(
+        f"horizon: one-step {error[0]:.4f}, allowed {allowed:.4f}, "
+        f"at candidates {[round(error[c - 1], 4) for c in config.horizon_candidates if c <= len(error)]} "
+        f"-> {chosen}"
+    )
+    return chosen
+
+
+def _diagnostics(world, heads, dev, config: Config, batches: int = 200) -> dict:
     """Averaged over several DEV batches, because one batch carries too few terminals
     to say anything about continuation: the terminal-conditional probability is
     pooled by terminal count, not averaged over batches."""
@@ -184,8 +229,12 @@ def _diagnostics(world, heads, dev, config: Config, batches: int = 24) -> dict:
         if dead_count
         else float("nan")
     )
-    batch = _to(sample_batch(dev, sampler, config, 0, 0, mixture=True), config.device)
-    out["multistep"] = multistep_error(world, batch, rng, config)["mean_error"]
+    reach = max(config.horizon_candidates)
+    batch = _to(sample_batch(dev, sampler, config, 3, 0, mixture=True), config.device)
+    out["multistep"] = multistep_error(
+        world, batch, rng, config, context=config.sequence_long - reach
+    )["mean_error"]
+    out["horizon"] = config.horizon
     return out
 
 

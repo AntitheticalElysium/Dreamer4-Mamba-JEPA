@@ -71,7 +71,7 @@ def train_representation(
         weights = {"lpips": config.lpips_weight}
         loss = _balance(losses, balance, config, weights)
         _update(optimiser, loss, [encoder, decoder], config, step)
-        if checkpoint is not None and (step + 1) % config.checkpoint_every == 0:
+        if checkpoint is not None and ((step + 1) % config.checkpoint_every == 0 or step + 1 == steps):
             _checkpoint(checkpoint, config, bundle, balance, streams, step + 1, f"1A:{steps}")
 
     encoder.eval()
@@ -117,7 +117,7 @@ def train_dynamics(episodes: list[Episode], steps: int, config: Config, checkpoi
         batch = _to(sample_batch(episodes, sampler, config, step, steps), device)
         loss = _balance({"dynamics": transition_loss(world, batch, rng, config)}, balance, config)
         _update(optimiser, loss, [world], config, step)
-        if checkpoint is not None and (step + 1) % config.checkpoint_every == 0:
+        if checkpoint is not None and ((step + 1) % config.checkpoint_every == 0 or step + 1 == steps):
             _checkpoint(checkpoint, config, [world, optimiser], balance, streams, step + 1, f"1B:{steps}")
     return world
 
@@ -148,7 +148,7 @@ def train_agent(
         readout = heads(agent) | {"centers": heads.centers}
         losses = {"dynamics": dynamics} | head_loss(readout, head_targets(batch, config), config)
         _update(optimiser, _balance(losses, balance, config), [world, heads], config, step)
-        if checkpoint is not None and (step + 1) % config.checkpoint_every == 0:
+        if checkpoint is not None and ((step + 1) % config.checkpoint_every == 0 or step + 1 == steps):
             _checkpoint(checkpoint, config, bundle, balance, streams, step + 1, f"2:{steps}")
     return heads
 
@@ -181,11 +181,12 @@ def train_actor(
     policy_rng = torch.Generator(device=device).manual_seed(config.seed + 2**20)
     balance: dict[str, float] = {}
     streams = {"sampler": sampler, "model": rng, "policy": policy_rng}
-    frozen = f"3:{steps}:{_identity(world, prior)}"
+    frozen = f"3:{steps}:{config.actor_batch}:{_identity(world, prior)}"
     resume = _checkpoint(checkpoint, config, [heads, optimiser], balance, streams, contract=frozen)
+    sampling = replace(config, batch=config.actor_batch)
 
     for step in range(resume, steps):
-        batch = _to(sample_batch(episodes, sampler, config, step, steps, mixture=True), device)
+        batch = _to(sample_batch(episodes, sampler, sampling, step, steps, mixture=True), device)
         with torch.no_grad():
             committed, conditioning = commit_inputs(batch.latents, rng, config)
             features, agent, memory = world(None, batch.led_to_action, committed, conditioning)
@@ -200,7 +201,7 @@ def train_actor(
             "critic": critic_loss(heads(trajectory.agent[:, :-1])["value"], returns, heads.centers),
         }
         _update(optimiser, _balance(losses, balance, config), [heads], config, step)
-        if checkpoint is not None and (step + 1) % config.checkpoint_every == 0:
+        if checkpoint is not None and ((step + 1) % config.checkpoint_every == 0 or step + 1 == steps):
             _checkpoint(
                 checkpoint, config, [heads, optimiser], balance, streams, step + 1, frozen
             )
