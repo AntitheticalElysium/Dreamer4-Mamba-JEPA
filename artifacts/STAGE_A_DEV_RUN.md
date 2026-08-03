@@ -1,10 +1,53 @@
-# Stage-A DEV run, 2026-08-02
+# Stage-A DEV investigations, 2026-08-02 to 2026-08-03
 
 **Not a Stage-A result.** A DEV smoke to find out whether the pipeline learns and
 whether the failure modes the register worries about appear. The preregistered
 FINAL protocol (S52) was not run: 16 seeds rather than a sealed set, an 800-step
 cap rather than Craftax's native 10000, one training seed per arm. The FINAL seeds
 are untouched.
+
+## 20k dynamics rerun, 2026-08-03
+
+Setup: the same frozen tokenizer and data split; per arm 20,000 dynamics, 2,500
+agent and 800 actor steps. This run includes the S67 row-wise shortcut schedule,
+continued bootstrap clock, S68 direct-horizon cap and S69 widened BC sampling.
+The raw report is `stage_a_olddesign/report_20k_preterminalfix.json`.
+
+| arm | actor | BC | actor − BC (95% paired interval) | chosen h | h=4 rollout | reward MAE | terminal continuation |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| flow-attention | 1.62 | 3.53 | −1.91 [−2.68, −0.50] | 16 | 0.087 | 0.065 | 0.992 |
+| flow-mamba | 1.77 | 3.31 | −1.54 [−2.07, −0.31] | 8 | 0.137 | 0.056 | 0.924 |
+| direct-attention | 4.41 | 5.46 | −1.05 [−4.32, 2.29] | 2 | 0.083 | 0.037 | 0.903 |
+| direct-mamba | 3.19 | 4.84 | −1.65 [−2.91, 0.22] | 2 | 0.084 | 0.034 | 0.940 |
+
+All actors are below their own BC prior; the two Flow failures are significant
+on these 16 DEV seeds. All actor and BC episodes terminate, with mean actor
+lengths 116–132. Longer dynamics training removes the former universal rollout
+collapse at h=4, so that result does not explain the universal policy regression.
+
+### Environment-fork localization
+
+At 36 real states from eight BC trajectories, every one of Craftax's 17 actions
+was executed from the same simulator state. The encoder preserves the resulting
+variation and each transition model predicts the matched action better than an
+off-action successor: effect cosine 0.67–0.74, matched MSE 0.075–0.081 against
+0.117–0.133 off-action MSE.
+
+The first universal failure is downstream. True immediate death probability
+under the learned actors is 13.1–14.4%, while the continuation heads predict only
+0.046–0.070% death even when given the **true encoded successor**. Reward
+correlation across counterfactual actions is 0.02/0.13/0.34/0.35 on true
+successors and degrades further on generated successors. Logged-action MAE did
+not expose either failure. Raw measurements are in
+`stage_a_olddesign/counterfactual_forks_preterminalfix.json`.
+
+This locates the common failure in Phase-2 outcome supervision: the actor can
+move away from the logged action support while its frozen reward and continuation
+models treat those alternatives as rewarding and nonterminal. Phase 3 then
+optimises the extrapolation error. Flow retains an additional shortcut-ladder
+problem, but that cannot explain both Direct arms failing.
+
+## 5k dynamics run, 2026-08-02
 
 Setup: one tokenizer for all arms (S20), 3000 steps; per arm 5000 dynamics, 2500
 agent, 800 actor. 344 train / 44 dev episodes, 260,081 transitions, 274 terminals,
@@ -43,10 +86,10 @@ information than a constant, which is a sufficient explanation for RL not helpin
 there and needs no appeal to reward quality. Direct is informative to h≈8 and
 crosses the marginal between 8 and 16, which is what S63 selects on.
 
-`γ·growth > 1` for **every** arm, so Lemma 1's hypothesis
-(`γ·L_f(1+L_π) < 1`, *On Training in Imagination* 2605.06732) fails throughout: no
-arm currently satisfies the condition under which imagination training has a
-return-gap guarantee, even where its rollout is informative.
+The former claim that `γ·growth > 1` disproves Lemma 1's Lipschitz hypothesis is
+withdrawn. Rolled-error accumulation is not a Lipschitz constant, and sampled
+Flow dynamics also violates the lemma's deterministic premise. The values remain
+descriptive only.
 
 ## Phase 2 damages the world model
 
