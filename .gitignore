@@ -243,4 +243,5 @@ third_party/vjepa2/
 # Support corpus and run outputs: large artifacts, reproduced by artifacts/*.py
 artifacts/*.pt
 artifacts/stage_a/
+artifacts/stage_a_terminalfix/
 artifacts/*.log

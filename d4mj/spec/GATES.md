@@ -55,3 +55,22 @@ is a separate instrument, run once on sealed seeds after all selection.
 
 `pytest d4mj/tests` is the companion: gates assert cross-arm contracts on the
 deployment device, tests pin semantics on CPU.
+
+## Trained outcome gate
+
+The six structural gates run before training. A separate gate runs after Phase 2
+because its claim depends on learned weights and the real simulator. On held-out
+seeds, the BC prior supplies states and Craftax executes all 17 actions from each
+identical state. Phase 3 is refused unless:
+
+- at least three states have action-dependent rewards and three have
+  action-dependent death;
+- generated-successor reward choice regret beats the best state-blind
+  action-marginal predictor on those forks; and
+- terminal BCE beats the corresponding action marginal and terminal AUC exceeds
+  0.5.
+
+The raw forks are saved per arm. After actor training, exact policy-weighted
+one-step death on those same forks may not exceed the frozen BC prior. A static
+action prior is mutation-tested and cannot pass; the pre-fix Direct-A checkpoint
+also fails (terminal BCE 3.121 versus its 0.567 action marginal).

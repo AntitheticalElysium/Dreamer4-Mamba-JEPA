@@ -3,6 +3,7 @@ from dataclasses import replace
 import pytest
 import torch
 
+import d4mj.transition as transition
 from d4mj.transition import World, commit_inputs, flow_conditioning, transition_loss
 
 from .conftest import latent_batch
@@ -83,24 +84,63 @@ def test_commit_prefix_does_not_reweight_the_step_grid(config):
     assert abs(finest / total - (1 - config.self_fraction)) < 0.05
 
 
-def test_shortcut_supervises_before_bootstrap_start(config):
-    """The pinned source keeps every row supervised at d_min until `bootstrap_start`,
-    then splits `self_fraction` of *rows* onto coarser steps. Sampling the step per
-    position instead leaves 75% of positions chasing an untrained model."""
+def test_shortcut_self_rows_wait_for_bootstrap_start(config):
     config = replace(config, transition="flow", commit_prefix_fraction=0.0)
-    before, _ = flow_conditioning(torch.Generator().manual_seed(0), (8, 16), config, "cpu", False)
-    after, _ = flow_conditioning(torch.Generator().manual_seed(0), (8, 16), config, "cpu", True)
-    assert (before[..., 1] == config.step_index).all(), "warmup must be fully supervised"
+    before, before_scored = flow_conditioning(
+        torch.Generator().manual_seed(0), (8, 16), config, "cpu", False
+    )
+    after, after_scored = flow_conditioning(
+        torch.Generator().manual_seed(0), (8, 16), config, "cpu", True
+    )
+    assert torch.equal(before, after), "warmup must not change which rows are self rows"
+    self_rows = (before[..., 1] != config.step_index).any(dim=1)
+    assert int(self_rows.sum()) == round(config.self_fraction * 8)
+    assert not before_scored[self_rows].any(), "self targets are inactive during warmup"
+    assert before_scored[~self_rows].all() and after_scored.all()
 
-    per_row = [(after[r, :, 1] == config.step_index).float().mean().item() for r in range(8)]
-    assert all(x in (0.0, 1.0) for x in per_row), "the partition is by row, not by position"
-    assert sum(x == 0.0 for x in per_row) == round(config.self_fraction * 8)
+
+def test_shortcut_partition_is_independent_of_mixture_roles(config):
+    config = replace(config, transition="flow", commit_prefix_fraction=0.0)
+    dynamics_rows = torch.tensor([False, False, True, True])
+    self_scored = total_scored = 0
+    for seed in range(256):
+        conditioning, scored = flow_conditioning(
+            torch.Generator().manual_seed(seed), (4, 8), config, "cpu", True
+        )
+        self_rows = (conditioning[..., 1] != config.step_index).any(dim=1)
+        self_scored += int((self_rows & dynamics_rows).sum())
+        total_scored += int(dynamics_rows.sum())
+        assert scored.all()
+    assert abs(self_scored / total_scored - config.self_fraction) < 0.04
+
+
+def test_shortcut_bootstrap_target_starts_at_the_exact_boundary(config, monkeypatch):
+    config = replace(config, transition="flow", commit_prefix_fraction=0.0)
+    world = world_for(config, "flow")
+    batch = latent_batch(config, 4, 6)
+    original, calls = transition._bootstrap_target, []
+
+    def counted(*args, **kwargs):
+        calls.append(True)
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(transition, "_bootstrap_target", counted)
+    loss_of(world, batch, config, seed=4)  # transition_loss defaults to step zero.
+    assert not calls
+    transition_loss(
+        world,
+        batch,
+        torch.Generator().manual_seed(4),
+        config,
+        step=config.bootstrap_start,
+    )
+    assert len(calls) == 1
 
 
 def test_commit_prefix_rows_carry_the_commit_condition(config):
     config = replace(config, transition="flow")
     conditioning, scored = flow_conditioning(
-        torch.Generator().manual_seed(0), (8, 32), config, "cpu"
+        torch.Generator().manual_seed(0), (8, 32), config, "cpu", bootstrap=True
     )
     prefix = (scored == 0).any(dim=1)
     assert prefix.any(), "no row carried the rollout prefix"

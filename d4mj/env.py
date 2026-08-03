@@ -1,5 +1,7 @@
 import functools
+import os
 
+os.environ.setdefault("JAX_PLATFORMS", "cpu")
 import jax
 import numpy as np
 import torch
@@ -10,6 +12,8 @@ from torch import Tensor
 def _env():
     from craftax.craftax_env import make_craftax_env_from_name
 
+    if jax.default_backend() != "cpu":
+        raise RuntimeError("Craftax must not reserve the PyTorch training GPU")
     env = make_craftax_env_from_name("Craftax-Classic-Pixels-v1", auto_reset=False)
     return env, env.default_params
 

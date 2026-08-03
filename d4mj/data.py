@@ -118,12 +118,8 @@ def sample_batch(
     """Short and long batches alternate; the last `long_only_fraction` is long-only.
     `mixture` is the §4.1 regime, used by Phases 2 and 3.
 
-    Uniform rows are drawn uniformly over eligible *(episode, start)* pairs, not by
-    picking an episode and then a start -- the latter gives a short episode's every
-    window hundreds of times the weight of a long one's. Two explicit strata sit on
-    top: `episode_start_fraction` of uniform rows begin at the episode start, and
-    every `support_every` steps one row is a terminal tail that only the
-    continuation head reads.
+    Uniform rows are drawn over eligible *(episode, start)* pairs. Episode-start
+    rows form an explicit stratum; terminal supervision uses a separate batch.
     """
     cached = [episode.latents is not None for episode in episodes]
     assert len(set(cached)) == 1, "cache is present on some episodes and missing on others"
@@ -141,13 +137,7 @@ def sample_batch(
     if mixture and not cloneable:
         raise ValueError("the relevant half needs BC-eligible episodes")
 
-    terminal = [e for e in uniform if bool(e.terminated.any())]
     wanted = config.batch // 2 if mixture else 0
-    support_row = (
-        config.batch - 1
-        if mixture and terminal and config.support_every and (step + 1) % config.support_every == 0
-        else -1
-    )
 
     def draw(pool):
         """Uniform over eligible (episode, start) pairs, so a short episode's every
@@ -159,13 +149,10 @@ def sample_batch(
         span = len(episode) + 1 - length
         return 0 if at_start else int(torch.randint(span + 1, (1,), generator=rng))
 
-    chosen, offsets, roles, supports = [], [], [], []
+    chosen, offsets, roles = [], [], []
     for row in range(config.batch):
         relevant = row < wanted
-        if row == support_row:
-            episode = terminal[int(torch.randint(len(terminal), (1,), generator=rng))]
-            offset = _terminal_start(episode, length, rng)
-        elif relevant:
+        if relevant:
             # Behaviour cloning reads ordinary expert behaviour, with task events
             # oversampled rather than exclusive (S51 revised): navigation, survival
             # and positioning are all worth cloning for one aggregate policy, and
@@ -183,14 +170,44 @@ def sample_batch(
         chosen.append(episode)
         offsets.append(offset)
         roles.append(relevant)
-        supports.append(row == support_row)
 
     rows = [_window(e, offset, length, config) for e, offset in zip(chosen, offsets)]
     stack = {field: torch.stack([row[field] for row in rows]) for field in rows[0]}
     return Batch(
         burn_in=burn_in,
         relevant=torch.tensor(roles) if mixture else None,
-        support=torch.tensor(supports) if support_row >= 0 else None,
+        **stack,
+    )
+
+
+def sample_terminal_batch(
+    episodes: list[Episode], rng: torch.Generator, config: Config, step: int, total: int
+) -> Batch:
+    """Tail-aligned terminal rows reserved for the continuation objective."""
+    cached = [episode.latents is not None for episode in episodes]
+    assert len(set(cached)) == 1, "cache is present on some episodes and missing on others"
+    burn_in = 0 if cached[0] else config.burn_in
+    finetune = total > 0 and step >= total * (1 - config.long_only_fraction)
+    long = finetune or (config.long_batch_every > 0 and (step + 1) % config.long_batch_every == 0)
+    length = burn_in + (config.sequence_long if long else config.sequence)
+    terminal = [
+        episode
+        for episode in episodes
+        if episode.uniform_eligible and len(episode) + 1 >= length and bool(episode.terminated.any())
+    ]
+    if not terminal:
+        raise ValueError(f"no terminal episode reaches the required length {length}")
+
+    chosen = [
+        terminal[int(torch.randint(len(terminal), (1,), generator=rng))]
+        for _ in range(config.terminal_batch)
+    ]
+    rows = [_window(episode, _terminal_start(episode, length), length, config) for episode in chosen]
+    stack = {field: torch.stack([row[field] for row in rows]) for field in rows[0]}
+    return Batch(
+        burn_in=burn_in,
+        relevant=torch.zeros(config.terminal_batch, dtype=torch.bool),
+        support=torch.ones(config.terminal_batch, dtype=torch.bool),
         **stack,
     )
 
@@ -207,7 +224,7 @@ def _event_start(episode: Episode, length: int, rng: torch.Generator) -> int:
     return low + int(torch.randint(high - low + 1, (1,), generator=rng))
 
 
-def _terminal_start(episode: Episode, length: int, rng: torch.Generator) -> int:
+def _terminal_start(episode: Episode, length: int) -> int:
     """The tail window, so the terminal transition is inside it. A terminal is only
     visible when the window is tail-aligned, which at a uniform start happens about
     once in a span."""

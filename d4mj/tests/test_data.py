@@ -1,7 +1,16 @@
+from dataclasses import replace
+
 import pytest
 import torch
 
-from d4mj.data import FORMAT, Episode, load_episodes, sample_batch, save_episodes
+from d4mj.data import (
+    FORMAT,
+    Episode,
+    load_episodes,
+    sample_batch,
+    sample_terminal_batch,
+    save_episodes,
+)
 
 from .conftest import episode, window_start
 
@@ -112,6 +121,36 @@ def test_led_to_convention_holds(config, episodes):
         assert torch.equal(batch.reward[row][exists], source[exists].float())
         assert torch.equal(batch.led_to_action[row][exists], source[exists] % config.n_actions)
         assert (batch.led_to_action[row][~exists] == config.n_actions).all()
+
+
+def test_terminal_batch_is_tail_aligned_and_continuation_only(config, episodes):
+    source = episodes[0]
+    ended = source.terminated.clone()
+    ended[-1] = True
+    terminal = replace(source, terminated=ended)
+    batch = sample_terminal_batch(
+        [terminal], torch.Generator().manual_seed(0), config, step=0, total=10
+    )
+    assert batch.terminated[:, -1].all()
+    assert batch.support.all() and not batch.relevant.any()
+    assert batch.rows("continuation").all()
+    assert not batch.rows("policy").any()
+    assert not batch.rows("reward").any()
+    assert not batch.rows("dynamics").any()
+
+
+def test_terminal_support_never_replaces_the_main_mixture(config, episodes):
+    source = episodes[0]
+    ended = source.terminated.clone()
+    ended[-1] = True
+    batch = sample_batch(
+        [replace(source, terminated=ended)],
+        torch.Generator().manual_seed(0),
+        config,
+        mixture=True,
+    )
+    assert batch.support is None
+    assert int(batch.relevant.sum()) == config.batch // 2
 
 
 def test_round_trip_preserves_events(config, tmp_path):

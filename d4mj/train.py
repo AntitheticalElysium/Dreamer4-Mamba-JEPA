@@ -5,9 +5,9 @@ import torch
 from torch import nn
 
 from .actor_critic import actor_loss, critic_loss, lambda_returns
-from .agent import Heads, head_loss, head_targets
+from .agent import Heads, head_loss, head_targets, terminal_loss
 from .config import Config
-from .data import FORMAT, Batch, Episode, patchify, sample_batch
+from .data import FORMAT, Batch, Episode, patchify, sample_batch, sample_terminal_batch
 from .imagination import imagine
 from .checkpoint import load, save
 from .representation import Decoder, Encoder, pack, reconstruction_loss
@@ -150,7 +150,8 @@ def train_agent(
     sampler, rng = _generators(config, 2)
     balance: dict[str, float] = {}
     bundle, streams = [world, heads, optimiser], {"sampler": sampler, "model": rng}
-    resume = _checkpoint(checkpoint, config, bundle, balance, streams, contract=f"2:{steps}")
+    contract = f"2:{world_steps}:{steps}"
+    resume = _checkpoint(checkpoint, config, bundle, balance, streams, contract=contract)
 
     for step in range(resume, steps):
         batch = _to(sample_batch(episodes, sampler, config, step, steps, mixture=True), device)
@@ -159,9 +160,21 @@ def train_agent(
         )
         readout = heads(agent) | {"centers": heads.centers}
         losses = {"dynamics": dynamics} | head_loss(readout, head_targets(batch, config), config)
+
+        terminal = _to(sample_terminal_batch(episodes, sampler, config, step, steps), device)
+        committed, conditioning = commit_inputs(terminal.latents, rng, config)
+        _, terminal_agent, _ = world(
+            None, terminal.led_to_action, committed, conditioning
+        )
+        terminal_readout = heads(terminal_agent) | {"centers": heads.centers}
+        losses["continuation"] = (
+            (1.0 - config.terminal_loss_mass) * losses["continuation"]
+            + config.terminal_loss_mass
+            * terminal_loss(terminal_readout, head_targets(terminal, config))
+        )
         _update(optimiser, _balance(losses, balance, config), [world, heads], config, step)
         if checkpoint is not None and ((step + 1) % config.checkpoint_every == 0 or step + 1 == steps):
-            _checkpoint(checkpoint, config, bundle, balance, streams, step + 1, f"2:{steps}")
+            _checkpoint(checkpoint, config, bundle, balance, streams, step + 1, contract)
     return heads
 
 

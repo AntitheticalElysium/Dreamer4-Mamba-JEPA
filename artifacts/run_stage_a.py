@@ -20,6 +20,11 @@ from pathlib import Path
 import torch
 
 from d4mj.config import Config
+from d4mj.counterfactual import (
+    actor_safety_metrics,
+    collect_outcome_forks,
+    outcome_metrics,
+)
 from d4mj.data import episode_splits, load_episodes
 from d4mj.diagnostics import cost, head_calibration, latent_stats, multistep_error
 from d4mj.execution import evaluate, run_episode, run_random
@@ -62,11 +67,11 @@ def corpus(config: Config, expert: int, log) -> tuple[list, list]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--expert", type=int, default=96)
+    parser.add_argument("--expert", type=int, default=320)
     parser.add_argument("--tokenizer-steps", type=int, default=3000)
-    parser.add_argument("--dynamics-steps", type=int, default=4000)
-    parser.add_argument("--agent-steps", type=int, default=2000)
-    parser.add_argument("--actor-steps", type=int, default=800)
+    parser.add_argument("--dynamics-steps", type=int, default=20000)
+    parser.add_argument("--agent-steps", type=int, default=10000)
+    parser.add_argument("--actor-steps", type=int, default=2500)
     parser.add_argument("--eval-episodes", type=int, default=12)
     parser.add_argument("--eval-limit", type=int, default=600)
     parser.add_argument("--out", default="artifacts/stage_a")
@@ -82,6 +87,15 @@ def main() -> None:
         (out / "run.log").open("a").write(line + "\n")
 
     base = Config()
+    if args.dynamics_steps <= base.bootstrap_start:
+        parser.error(
+            f"--dynamics-steps must exceed bootstrap_start={base.bootstrap_start}; "
+            "otherwise shortcut self-training never occurs in Phase 1B"
+        )
+    log(
+        f"terminal supervision: batch {base.terminal_batch} every Phase-2 step, "
+        f"{base.terminal_loss_mass:.1%} of continuation loss"
+    )
     train_set, dev_set = corpus(base, args.expert, log)
 
     log(f"phase 1A: {args.tokenizer_steps} steps, shared by every arm")
@@ -125,12 +139,46 @@ def main() -> None:
             prior = copy.deepcopy(heads).eval()
             horizon, horizon_report = select_horizon(world, cached_dev, config, log)
             config = replace(config, horizon=horizon)
+            forks = collect_outcome_forks(world, encoder, prior, config)
+            torch.save(vars(forks), out / f"{arm}.outcome_forks.pt")
+            outcome_gate = outcome_metrics(forks, prior, config)
+            log(
+                f"{arm}: outcome gate pass={outcome_gate['passed']} | "
+                f"reward regret {outcome_gate['reward_choice_regret']:.4f} "
+                f"vs {outcome_gate['reward_marginal_regret']:.4f} marginal | "
+                f"terminal BCE {outcome_gate['terminal_bce']:.4f} "
+                f"vs {outcome_gate['terminal_marginal_bce']:.4f} marginal | "
+                f"AUC {outcome_gate['terminal_auc']:.3f}"
+            )
+            if not outcome_gate["passed"]:
+                report[arm] = {
+                    "status": "outcome_gate_failed",
+                    "outcome_gate": outcome_gate,
+                    "horizon_selection": horizon_report,
+                    "diagnostics": _diagnostics(world, prior, cached_dev, config),
+                }
+                (out / "report.json").write_text(json.dumps(report, indent=2, default=float))
+                continue
+
             heads = train_actor(
                 cached_train, world, heads, args.actor_steps, config, checkpoint=out / f"{arm}.3.pt"
             )
             log(f"{arm}: phase 3 done")
+            actor_outcomes = outcome_metrics(forks, heads, config)
+            actor_gate = actor_safety_metrics(outcome_gate, actor_outcomes)
+            log(
+                f"{arm}: actor gate pass={actor_gate['passed']} | "
+                f"fork death change {actor_gate['true_death_change']:+.4f} | "
+                f"immediate reward change {actor_gate['true_reward_change']:+.4f}"
+            )
 
-            entry = {"cost": cost({"encoder": encoder, "world": world, "heads": heads}, world, config)}
+            entry = {
+                "status": "complete" if actor_gate["passed"] else "actor_gate_failed",
+                "outcome_gate": outcome_gate,
+                "actor_outcomes": actor_outcomes,
+                "actor_gate": actor_gate,
+                "cost": cost({"encoder": encoder, "world": world, "heads": heads}, world, config),
+            }
             entry["diagnostics"] = _diagnostics(world, heads, cached_dev, config)
             entry["horizon_selection"] = horizon_report
             encoder.to(config.device)
@@ -235,8 +283,9 @@ def _diagnostics(world, heads, dev, config: Config, batches: int = 200) -> dict:
     """Averaged over several DEV batches, because one batch carries too few terminals
     to say anything about continuation: the terminal-conditional probability is
     pooled by terminal count, not averaged over batches."""
-    from d4mj.data import sample_batch
+    from d4mj.data import sample_batch, sample_terminal_batch
     from d4mj.train import _to
+    from d4mj.transition import commit_inputs
 
     sampler = torch.Generator().manual_seed(config.seed + 999)
     rng = torch.Generator(device=config.device).manual_seed(config.seed + 998)
@@ -256,6 +305,15 @@ def _diagnostics(world, heads, dev, config: Config, batches: int = 200) -> dict:
         for key, value in row.items():
             if key not in ("continuation_on_terminal", "continuation_separation"):
                 totals[key] = totals.get(key, 0.0) + float(value)
+
+    for step in range(32):
+        batch = _to(sample_terminal_batch(dev, sampler, config, step, 32), config.device)
+        with torch.no_grad():
+            committed, conditioning = commit_inputs(batch.latents, rng, config)
+            _, agent, _ = world(None, batch.led_to_action, committed, conditioning)
+        row = head_calibration(heads, agent, batch, config)
+        dead_mass += row["continuation_on_terminal"] * row["terminal_targets"]
+        dead_count += row["terminal_targets"]
 
     out = {key: value / batches for key, value in totals.items()}
     out["terminal_targets"] = dead_count

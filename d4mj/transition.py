@@ -94,34 +94,30 @@ class World(nn.Module):
 def flow_conditioning(
     rng: torch.Generator, shape: tuple[int, int], config: Config, device, bootstrap: bool = False
 ):
-    """Diffusion forcing conditioning, plus the mask of positions the loss may score.
-
-    Rows are partitioned as the pinned source does (S67): `self_fraction` of rows
-    bootstrap and draw *coarser* step sizes, the rest are supervised at d_min. Only
-    those self rows may take a bootstrap target, and only once `bootstrap` is true.
-    Drawing the step size per position instead leaves 75% of positions chasing an
-    untrained model's own predictions from the first update.
-
-    `commit_prefix_fraction` of rows instead carry the rollout prefix -- every block
-    but the last at the commit condition (S41). Only that row's last block is
-    scored."""
+    """Sample empirical/self rows and return the positions active in the loss."""
     rows = shape[0]
-    self_rows = round(config.self_fraction * rows) if bootstrap else 0
-    empirical = rows - self_rows
+    self_rows = max(0, min(rows - 1, round(config.self_fraction * rows)))
+    order = torch.randperm(rows, generator=rng, device=device)
+    self_index = order[:self_rows]
 
     step = torch.full(shape, config.step_index, device=device, dtype=torch.long)
     if self_rows:
-        step[empirical:] = torch.randint(
+        step[self_index] = torch.randint(
             config.n_step_bins - 1, (self_rows, shape[1]), generator=rng, device=device
         )
     rungs = 2**step
     index = (torch.rand(shape, generator=rng, device=device) * rungs).floor().long()
     conditioning = torch.stack([index * (config.k_max // rungs), step], dim=-1)
     scored = torch.ones(shape, device=device)
+    if self_rows and not bootstrap:
+        scored[self_index] = 0.0
 
     prefix_rows = int(config.commit_prefix_fraction * shape[0])
     if prefix_rows:
-        picked = torch.randperm(shape[0], generator=rng, device=device)[:prefix_rows]
+        available = scored.any(dim=1).nonzero().flatten()
+        picked = available[
+            torch.randperm(len(available), generator=rng, device=device)[:prefix_rows]
+        ]
         conditioning[picked, :-1, 0] = config.tau_ctx_index
         conditioning[picked, :-1, 1] = config.step_index
         scored[picked, :-1] = 0.0
@@ -293,13 +289,16 @@ def _shortcut_loss(world: World, batch, rng: torch.Generator, config: Config, st
     weight = 0.9 * tau + 0.1
     flow = (predicted - target).pow(2).mean(dim=(2, 3))
 
-    with torch.no_grad():
-        bootstrap = _bootstrap_target(world, batch, corrupted, conditioning, tau, config)
-    velocity = (predicted - corrupted) / (1.0 - tau)
-    self_loss = ((1.0 - tau) ** 2 * (velocity - bootstrap).pow(2)).mean(dim=(2, 3))
+    self_loss = torch.zeros_like(flow)
+    if bootstrap:
+        with torch.no_grad():
+            target_velocity = _bootstrap_target(world, batch, corrupted, conditioning, tau, config)
+        velocity = (predicted - corrupted) / (1.0 - tau)
+        self_loss = ((1.0 - tau) ** 2 * (velocity - target_velocity).pow(2)).mean(dim=(2, 3))
 
     combined = weight.squeeze(-1).squeeze(-1) * torch.where(finest, flow, self_loss) * scored
-    return _uniform_mean(combined.sum(dim=1) / scored.sum(dim=1), batch), agent
+    per_row = combined.sum(dim=1) / scored.sum(dim=1).clamp(min=1.0)
+    return _uniform_mean(per_row, batch), agent
 
 
 def _uniform_mean(per_row: Tensor, batch) -> Tensor:

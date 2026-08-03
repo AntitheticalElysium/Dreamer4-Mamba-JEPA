@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from d4mj.agent import Heads, head_loss, head_targets, twohot
+from d4mj.agent import Heads, head_loss, head_targets, terminal_loss, twohot
 
 from .conftest import latent_batch
 
@@ -108,7 +108,42 @@ def test_zero_initialised_heads_predict_a_flat_distribution(config):
     logits = heads(agent)["reward"]
     assert torch.allclose(logits, torch.zeros_like(logits))
     entropy = -torch.log_softmax(logits, -1).mean()
-    assert abs(float(entropy) - math.log(config.bins)) < 1e-4
+    assert abs(float(entropy.detach()) - math.log(config.bins)) < 1e-4
+
+
+def test_terminal_loss_is_bce_over_the_stratified_tail(config):
+    batch = latent_batch(config, 2, 8, relevant=[False, False], support=[True, True])
+    batch.terminated[:, -1] = True
+    heads, predictions = readout_for(config, batch)
+    targets = head_targets(batch, config)
+    reference = terminal_loss(predictions, targets)
+
+    valid = targets["valid"].bool()
+    alive = targets["continuation"].bool() & valid
+    changed_alive = dict(predictions)
+    changed_alive["continuation"] = predictions["continuation"].clone()
+    changed_alive["continuation"][alive] += 20.0
+    assert not torch.equal(reference, terminal_loss(changed_alive, targets))
+
+    changed_terminal = dict(predictions)
+    changed_terminal["continuation"] = predictions["continuation"].clone()
+    changed_terminal["continuation"][~alive & valid] -= 20.0
+    assert terminal_loss(changed_terminal, targets) < reference
+
+
+def test_terminal_stratum_has_bounded_positive_mass(config):
+    fractions = []
+    for step in range(64):
+        finetune = step >= 64 * (1 - config.long_only_fraction)
+        long = finetune or (step + 1) % config.long_batch_every == 0
+        length = config.sequence_long if long else config.sequence
+        batch = latent_batch(config, 1, length, relevant=[False], support=[True])
+        batch.terminated[:, -1] = True
+        targets = head_targets(batch, config)
+        valid = targets["valid"]
+        fractions.append(float(((1 - targets["continuation"]) * valid).sum() / valid.sum()))
+    mass = config.terminal_loss_mass * sum(fractions) / len(fractions)
+    assert 0.009 < mass < 0.012
 
 
 def test_twohot_is_exact_between_centres(config):

@@ -82,6 +82,11 @@ class Config:
     eval_episodes: int = 64
     bootstrap: int = 2000
     parameter_tolerance: float = 0.005
+    outcome_gate_seeds: tuple[int, ...] = tuple(range(12_000, 12_008))
+    outcome_gate_steps: tuple[int, ...] = (0, 15, 40, 80, 110)
+    outcome_gate_limit: int = 400
+    outcome_gate_flow_samples: int = 4
+    outcome_gate_min_opportunities: int = 3
 
     gamma: float = 0.997
     lam: float = 0.95
@@ -97,7 +102,7 @@ class Config:
     long_only_fraction: float = 0.25
     commit_prefix_fraction: float = 0.25
     episode_start_fraction: float = 0.25
-    support_every: int = 8
+    terminal_batch: int = 1
     # Share of behaviour-cloning rows centred on a task event. The rest are ordinary
     # expert windows: D4's relevant sequences are task-conditioned, and once task
     # conditioning is dropped for one aggregate policy (S51) an event-only rule
@@ -146,12 +151,18 @@ class Config:
         assert (self.mamba_expand * self.d_model) % self.mamba_headdim == 0
         assert 0.0 <= self.commit_prefix_fraction < 1.0
         assert 0.0 <= self.long_only_fraction <= 1.0
+        assert self.terminal_batch > 0
         assert self.batch % 2 == 0, "the 50/50 mixture needs an even batch"
         assert self.actor_batch % 2 == 0, "the 50/50 mixture needs an even batch"
 
     @property
     def n_patches(self) -> int:
         return (self.resolution // self.patch) ** 2
+
+    @property
+    def terminal_loss_mass(self) -> float:
+        """Equal per-sequence weight across the main and terminal strata."""
+        return self.terminal_batch / (self.batch + self.terminal_batch)
 
     @property
     def patch_dim(self) -> int:

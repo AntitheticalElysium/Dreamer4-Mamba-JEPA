@@ -120,6 +120,17 @@ def test_resume_rejects_a_different_phase_length(config, tmp_path):
         _checkpoint(path, config, [world, optimiser], {}, streams, contract="1B:2000")
 
 
+def test_phase_two_resume_rejects_a_different_world_clock(config, tmp_path):
+    path = tmp_path / "phase2.pt"
+    world = World(config)
+    optimiser = optimizer([world], config)
+    sampler, rng = _generators(config, 2)
+    streams = {"sampler": sampler, "model": rng}
+    _checkpoint(path, config, [world, optimiser], {}, streams, step=3, contract="2:20000:10000")
+    with pytest.raises(ValueError, match="does not match"):
+        _checkpoint(path, config, [world, optimiser], {}, streams, contract="2:10000:10000")
+
+
 def test_phase_checkpoints_its_final_step(config, tmp_path, episodes):
     """A phase whose length is not a multiple of `checkpoint_every` must still save
     what it trained. Firing only on the modulus loses the final model outright."""

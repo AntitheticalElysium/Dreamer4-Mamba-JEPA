@@ -210,6 +210,10 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   or a declared bounded encoder context, is a representation requirement binding
   all four Stage-A cells equally, which is why it is fair: they share one encoder.
   A frame-only encoder is a later ablation, not a design fork.
+- **`[DESIGN]` Phase-2 support does not alter the §4.1 mixture.** The main batch
+  remains half ordinary and half BC-eligible sequences. A separate tail-aligned
+  terminal sequence supplies the rare positive class to continuation only; it
+  cannot displace or enter dynamics, reward, or policy losses (S72).
 
 ## Box 2 — Visual representation system
 
@@ -336,8 +340,12 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   agent tokens, continued world training, and one policy/reward head per MTP
   distance. Policy is categorical or vectorized-binary; reward is
   symexp-twohot; value starts in Phase 3. `[D4-UNKNOWN]` The source of \(c_t\)
-  is unspecified. `[DESIGN]` Add environmental nontermination: terminal=0;
-  truncation resets runtime but bootstraps. At \(h_t\), policy lead 0 is
+  is unspecified. The closest pinned precedent is Dreamer 3's ordinary binary
+  continuation likelihood. `[DESIGN]` Add environmental nontermination:
+  terminal=0; truncation resets runtime but bootstraps. The same likelihood is
+  retained on the main mixture. One tail-aligned sequence joins four main
+  sequences with equal per-sequence weight at the exact committed condition
+  used by deployment (S72). At \(h_t\), policy lead 0 is
   outgoing \(a_t\), reward lead 0 incoming \(r_t\). `[D4]` Adaptation reuses the
   pretraining setting, so flow-arm heads are deliberately trained on *noisy*
   representations across the sampled signal range — that is what makes them
@@ -384,6 +392,12 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   +\lambda G_{t+1}]\). `[D4-UNKNOWN]` Equation 10 instead prints same-index
   reward, continuation, and value; do not implement it literally before this
   discrepancy is resolved.
+- **`[DESIGN]` Phase 3 is gated on outcomes, not logged-action calibration.** On
+  held-out simulator states, all actions are executed from the same immutable
+  state. Generated-successor reward choice and death probability must beat
+  state-blind action marginals before the learned model may train an
+  actor; the actor may not increase exact one-step death against its BC prior
+  on those forks (S73).
 - **What JEPA changes — `[JEPA-R]` / `[JEPA-D]`:** No RL algorithm change;
   executed control tests whether the learned representation and transition are
   sufficient.
@@ -442,6 +456,9 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
    time mixing only; JEPA-R, JEPA-D, and Mamba remain separately measurable.
    `[D4]` Concurrent losses use running-RMS normalization, with new composite
    objectives declared explicitly.
+   Phase 3 additionally requires the trained reward/continuation model to pass
+   the real all-actions fork gate; finite losses and logged-action calibration
+   are not substitutes for counterfactual outcome support.
 5. `[DESIGN]` The Transformer anchor carries a persistent dynamics KV cache
    across accepted frames; full-prefix rescanning is not an efficiency control.
    §3.4 cites "the memory bandwidth needed to access the KV cache of a long

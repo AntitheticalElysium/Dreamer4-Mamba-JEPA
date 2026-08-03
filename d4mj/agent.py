@@ -105,9 +105,8 @@ def head_loss(
     its own running RMS, and merging them first lets whichever head has the largest
     natural scale set the others' effective weight.
 
-    Behaviour cloning reads the relevant half only (§4.1); reward reads everything
-    except support rows; continuation reads everything, since support rows exist
-    only to give it terminals.
+    Behaviour cloning reads the relevant half only (§4.1). The main batch supplies
+    reward and continuation; terminal tails use `terminal_loss` separately.
     """
     centers = predictions["centers"]
     policy = F.cross_entropy(
@@ -125,6 +124,17 @@ def head_loss(
         "reward": (reward * rewarded).sum() / rewarded.sum().clamp(min=1.0),
         "continuation": (continuation * valid).sum() / valid.sum().clamp(min=1.0),
     }
+
+
+def terminal_loss(predictions: dict[str, Tensor], targets: dict[str, Tensor]) -> Tensor:
+    """Ordinary continuation BCE on a tail known to contain a terminal."""
+    loss = F.binary_cross_entropy_with_logits(
+        predictions["continuation"], targets["continuation"], reduction="none"
+    )
+    valid = targets["valid"]
+    terminal = valid * (1.0 - targets["continuation"])
+    assert terminal.sum() > 0, "terminal batch contains no terminal target"
+    return (loss * valid).sum() / valid.sum()
 
 
 def _distribution_loss(logits: Tensor, values: Tensor, centers: Tensor) -> Tensor:
