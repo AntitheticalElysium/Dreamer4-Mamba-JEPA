@@ -30,7 +30,7 @@ class Heads(nn.Module):
         self.model_body = SwiGLU(width, 2.0)
         self.policy = nn.Linear(width, leads * config.n_actions)
         self.reward = nn.Linear(width, leads * config.bins)
-        self.continuation = nn.Linear(width, leads)
+        self.continuation = nn.Linear(width, 1)
         self.value = nn.Linear(width, config.bins)
         # Output scales from the pinned DreamerV3 config: rewhead and value 0.0,
         # policy 0.01, conhead 1.0. A value head that starts at random emits random
@@ -56,7 +56,7 @@ class Heads(nn.Module):
         return {
             "policy": self.policy(actor).view(b, t, leads, config.n_actions),
             "reward": self.reward(model).view(b, t, leads, config.bins),
-            "continuation": self.continuation(model).view(b, t, leads),
+            "continuation": self.continuation(model).view(b, t, 1),
             "value": self.value(critic),
         }
 
@@ -90,7 +90,8 @@ def head_targets(batch: Batch, config: Config) -> dict[str, Tensor]:
     return {
         "action": _leads(outgoing, leads, fill=0.0),
         "reward": _leads(batch.reward, leads, fill=0.0),
-        "continuation": _leads((~batch.terminated).float(), leads, fill=1.0),
+        "continuation": (~batch.terminated).float()[..., None],
+        "continuation_valid": batch.valid.float()[..., None],
         "valid": _leads(batch.valid.float(), leads, fill=0.0),
         "action_valid": _leads(_shift(batch.valid.float(), fill=0.0), leads, fill=0.0),
         "policy_rows": batch.rows("policy").to(device).float()[:, None, None],
@@ -117,12 +118,14 @@ def head_loss(
         predictions["continuation"], targets["continuation"], reduction="none"
     )
     valid = targets["valid"]
+    continuation_valid = targets["continuation_valid"]
     actions = targets["action_valid"] * targets["policy_rows"]
     rewarded = valid * targets["reward_rows"]
     return {
         "policy": (policy * actions).sum() / actions.sum().clamp(min=1.0),
         "reward": (reward * rewarded).sum() / rewarded.sum().clamp(min=1.0),
-        "continuation": (continuation * valid).sum() / valid.sum().clamp(min=1.0),
+        "continuation": (continuation * continuation_valid).sum()
+        / continuation_valid.sum().clamp(min=1.0),
     }
 
 
@@ -131,7 +134,7 @@ def terminal_loss(predictions: dict[str, Tensor], targets: dict[str, Tensor]) ->
     loss = F.binary_cross_entropy_with_logits(
         predictions["continuation"], targets["continuation"], reduction="none"
     )
-    valid = targets["valid"]
+    valid = targets["continuation_valid"]
     terminal = valid * (1.0 - targets["continuation"])
     assert terminal.sum() > 0, "terminal batch contains no terminal target"
     return (loss * valid).sum() / valid.sum()

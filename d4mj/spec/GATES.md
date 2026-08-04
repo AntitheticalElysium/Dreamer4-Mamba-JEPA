@@ -74,3 +74,9 @@ The raw forks are saved per arm. After actor training, exact policy-weighted
 one-step death on those same forks may not exceed the frozen BC prior. A static
 action prior is mutation-tested and cannot pass; the pre-fix Direct-A checkpoint
 also fails (terminal BCE 3.121 versus its 0.567 action marginal).
+
+The same fork now also reads every simulator-produced successor through the real
+observation path. Those observed-successor reward/death metrics do not change the
+gate; they localise a failure. If they pass while generated successors fail, the
+transition lost outcome information. If both fail, the logged-data head itself is
+unidentified. This distinction must precede any new loss or data intervention.

@@ -22,6 +22,8 @@ class OutcomeForks:
     model_death: Tensor
     seed: Tensor
     step: Tensor
+    observed_reward: Tensor | None = None
+    observed_death: Tensor | None = None
 
 
 @torch.no_grad()
@@ -31,22 +33,32 @@ def collect_outcome_forks(
     """Execute every action from matched real states on DEV seeds."""
     device = config.device
     world, encoder, prior = world.to(device).eval(), encoder.to(device).eval(), prior.to(device).eval()
-    agents, rewards, deaths, model_rewards, model_deaths, seeds, steps = [], [], [], [], [], [], []
+    agents, rewards, deaths = [], [], []
+    model_rewards, model_deaths, observed_rewards, observed_deaths = [], [], [], []
+    seeds, steps = [], []
 
     def add(seed: int, index: int, env_state, state, agent) -> None:
-        true_reward, true_death = [], []
+        true_reward, true_death, observations = [], [], []
         for action in range(config.n_actions):
-            _, _, reward, terminated, _ = env_step(env_state, action, seed + index + 1)
+            observation, _, reward, terminated, _ = env_step(
+                env_state, action, seed + index + 1
+            )
+            observations.append(observation)
             true_reward.append(reward)
             true_death.append(terminated)
         predicted_reward, predicted_death = _predict_actions(
             world, prior, state.world, seed, index, config
+        )
+        observed_reward, observed_death = _predict_observed_actions(
+            world, encoder, prior, state, observations, seed, index, config
         )
         agents.append(agent[0, -1].cpu())
         rewards.append(torch.tensor(true_reward))
         deaths.append(torch.tensor(true_death))
         model_rewards.append(predicted_reward.cpu())
         model_deaths.append(predicted_death.cpu())
+        observed_rewards.append(observed_reward.cpu())
+        observed_deaths.append(observed_death.cpu())
         seeds.append(seed)
         steps.append(index)
 
@@ -88,6 +100,8 @@ def collect_outcome_forks(
         model_death=torch.stack(model_deaths),
         seed=torch.tensor(seeds),
         step=torch.tensor(steps),
+        observed_reward=torch.stack(observed_rewards),
+        observed_death=torch.stack(observed_deaths),
     )
 
 
@@ -123,6 +137,21 @@ def outcome_metrics(forks: OutcomeForks, policy: Heads, config: Config) -> dict[
         "true_death_under_policy": float((probabilities * true_death).sum(1).mean()),
         "model_death_under_policy": float((probabilities * model_death).sum(1).mean()),
     }
+    if forks.observed_reward is not None and forks.observed_death is not None:
+        observed_death = forks.observed_death.float()
+        report.update(
+            {
+                "observed_reward_choice_regret": _choice_regret(
+                    true_reward[reward_varies], forks.observed_reward[reward_varies]
+                ),
+                "observed_terminal_bce": _binary_loss(
+                    observed_death[death_varies].flatten(), death_truth
+                ),
+                "observed_terminal_auc": _auc(
+                    observed_death[death_varies].flatten(), death_truth.bool()
+                ),
+            }
+        )
     report["passed"] = bool(
         report["reward_opportunity_states"] >= config.outcome_gate_min_opportunities
         and report["terminal_opportunity_states"] >= config.outcome_gate_min_opportunities
@@ -156,6 +185,36 @@ def _predict_actions(
                 config.seed + 2**23 + seed * 4099 + index * 17 + sample
             )
             _, agent = advance(world, state, chosen, rng, config)
+            readout = heads(agent)
+            action_rewards.append(_expect(readout["reward"][:, -1, 0], heads.centers)[0])
+            action_deaths.append(1.0 - readout["continuation"][:, -1, 0].sigmoid()[0])
+        rewards.append(torch.stack(action_rewards).mean())
+        deaths.append(torch.stack(action_deaths).mean())
+    return torch.stack(rewards), torch.stack(deaths)
+
+
+def _predict_observed_actions(
+    world: World,
+    encoder: Encoder,
+    heads: Heads,
+    state,
+    observations: list[Tensor],
+    seed: int,
+    index: int,
+    config: Config,
+) -> tuple[Tensor, Tensor]:
+    """Read each simulator successor through the deployed observation path."""
+    rewards, deaths = [], []
+    samples = config.outcome_gate_flow_samples if config.transition == "flow" else 1
+    for action, observation in enumerate(observations):
+        action_rewards, action_deaths = [], []
+        incoming = torch.tensor([[action]], device=config.device)
+        patches = patchify(observation[None, None], config.patch).to(config.device)
+        for sample in range(samples):
+            rng = torch.Generator(device=config.device).manual_seed(
+                config.seed + 2**24 + seed * 4099 + index * 17 + sample
+            )
+            _, agent = observe(world, encoder, state, incoming, patches, rng, config)
             readout = heads(agent)
             action_rewards.append(_expect(readout["reward"][:, -1, 0], heads.centers)[0])
             action_deaths.append(1.0 - readout["continuation"][:, -1, 0].sigmoid()[0])

@@ -60,6 +60,22 @@ def test_static_action_prior_does_not_pass_as_counterfactual_information(config)
     assert not outcome_metrics(static, Heads(config), config)["passed"]
 
 
+def test_observed_successor_metrics_localise_generation_failure(config):
+    config = replace(config, outcome_gate_min_opportunities=3)
+    broken = forks_for(config, False)
+    observed = forks_for(config, True)
+    localised = replace(
+        broken,
+        observed_reward=observed.model_reward,
+        observed_death=observed.model_death,
+    )
+    metrics = outcome_metrics(localised, Heads(config), config)
+    assert not metrics["passed"]
+    assert metrics["observed_reward_choice_regret"] == 0.0
+    assert metrics["observed_terminal_bce"] < metrics["terminal_bce"]
+    assert metrics["observed_terminal_auc"] == 1.0
+
+
 def test_actor_gate_rejects_increased_counterfactual_death():
     before = {"true_death_under_policy": 0.10, "true_reward_under_policy": 0.2}
     safer = {"true_death_under_policy": 0.08, "true_reward_under_policy": 0.3}

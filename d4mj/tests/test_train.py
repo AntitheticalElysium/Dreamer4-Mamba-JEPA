@@ -3,7 +3,7 @@ from dataclasses import replace
 import pytest
 import torch
 
-from d4mj.train import _checkpoint, _share_initialisation, _generators, optimizer
+from d4mj.train import _checkpoint, _generators, _share_initialisation, _terminal_agent, optimizer
 from d4mj.transition import World
 
 
@@ -22,6 +22,26 @@ def test_shared_initialisation_matches_every_common_tensor(config):
         identical = [k for k in common if torch.equal(attention[k], mamba[k])]
         assert common
         assert (len(identical) == len(common)) is expect_all
+
+
+def test_terminal_supervision_uses_the_phase_two_transition_path(config, monkeypatch):
+    from d4mj import train
+    from .conftest import latent_batch
+
+    batch = latent_batch(config, 1, 6, relevant=[False], support=[True])
+    sentinel = torch.randn(1, 6, config.n_agent, config.d_model)
+    called = {}
+
+    def transition(world, received, rng, received_config, return_agent=False, step=0):
+        called.update(batch=received, return_agent=return_agent, step=step)
+        return torch.zeros(()), sentinel
+
+    monkeypatch.setattr(train, "transition_loss", transition)
+    got = _terminal_agent(
+        World(config), batch, torch.Generator().manual_seed(0), config, step=123
+    )
+    assert got is sentinel
+    assert called == {"batch": batch, "return_agent": True, "step": 123}
 
 
 def test_resume_restores_optimizer_normalisers_and_streams(config, tmp_path):

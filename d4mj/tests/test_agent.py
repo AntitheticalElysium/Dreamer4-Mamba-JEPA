@@ -83,6 +83,16 @@ def test_policy_lead_zero_is_the_outgoing_action(config):
     assert torch.equal(targets["action"][0, :-1, 0], torch.arange(1, 6).float())
 
 
+def test_continuation_is_one_step(config):
+    batch = latent_batch(config, 2, 6, relevant=[True, False])
+    batch.terminated[0, 4] = True
+    heads, predictions = readout_for(config, batch)
+    targets = head_targets(batch, config)
+    assert predictions["continuation"].shape == (2, 6, 1)
+    assert targets["continuation"].shape == (2, 6, 1)
+    assert targets["continuation"][0, 4, 0] == 0
+
+
 def test_head_output_scales_match_the_pinned_config(config):
     """DreamerV3 ships `rewhead` and `value` at outscale 0.0, `policy` at 0.01 and
     `conhead` at 1.0. A value head starting at random emits random advantages on
@@ -118,7 +128,7 @@ def test_terminal_loss_is_bce_over_the_stratified_tail(config):
     targets = head_targets(batch, config)
     reference = terminal_loss(predictions, targets)
 
-    valid = targets["valid"].bool()
+    valid = targets["continuation_valid"].bool()
     alive = targets["continuation"].bool() & valid
     changed_alive = dict(predictions)
     changed_alive["continuation"] = predictions["continuation"].clone()
@@ -140,10 +150,10 @@ def test_terminal_stratum_has_bounded_positive_mass(config):
         batch = latent_batch(config, 1, length, relevant=[False], support=[True])
         batch.terminated[:, -1] = True
         targets = head_targets(batch, config)
-        valid = targets["valid"]
+        valid = targets["continuation_valid"]
         fractions.append(float(((1 - targets["continuation"]) * valid).sum() / valid.sum()))
     mass = config.terminal_loss_mass * sum(fractions) / len(fractions)
-    assert 0.009 < mass < 0.012
+    assert 0.008 < mass < 0.009
 
 
 def test_twohot_is_exact_between_centres(config):

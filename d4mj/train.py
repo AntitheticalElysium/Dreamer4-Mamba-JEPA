@@ -162,9 +162,8 @@ def train_agent(
         losses = {"dynamics": dynamics} | head_loss(readout, head_targets(batch, config), config)
 
         terminal = _to(sample_terminal_batch(episodes, sampler, config, step, steps), device)
-        committed, conditioning = commit_inputs(terminal.latents, rng, config)
-        _, terminal_agent, _ = world(
-            None, terminal.led_to_action, committed, conditioning
+        terminal_agent = _terminal_agent(
+            world, terminal, rng, config, world_steps + step
         )
         terminal_readout = heads(terminal_agent) | {"centers": heads.centers}
         losses["continuation"] = (
@@ -176,6 +175,14 @@ def train_agent(
         if checkpoint is not None and ((step + 1) % config.checkpoint_every == 0 or step + 1 == steps):
             _checkpoint(checkpoint, config, bundle, balance, streams, step + 1, contract)
     return heads
+
+
+def _terminal_agent(
+    world: World, batch: Batch, rng: torch.Generator, config: Config, step: int
+) -> torch.Tensor:
+    """Route terminal tails through the arm's ordinary Phase-2 transition path."""
+    _, agent = transition_loss(world, batch, rng, config, return_agent=True, step=step)
+    return agent
 
 
 def train_actor(

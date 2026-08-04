@@ -40,6 +40,11 @@ from d4mj.transition import transition_loss
 
 ARCHIVE = Path("d4_mamba_jepa/artifacts/expert/craftax_expert_v1.pt")
 SUPPORT = Path("artifacts/craftax_support_v1.pt")
+ARMS = tuple(
+    f"{transition}-{mixer}"
+    for transition in ("flow", "direct")
+    for mixer in ("attention", "mamba")
+)
 
 
 def corpus(config: Config, expert: int, log) -> tuple[list, list]:
@@ -75,6 +80,12 @@ def main() -> None:
     parser.add_argument("--eval-episodes", type=int, default=12)
     parser.add_argument("--eval-limit", type=int, default=600)
     parser.add_argument("--out", default="artifacts/stage_a")
+    parser.add_argument("--arms", nargs="+", choices=ARMS, default=list(ARMS))
+    parser.add_argument(
+        "--reuse",
+        type=Path,
+        help="verified Phase-1A and Phase-1B checkpoints to reuse",
+    )
     args = parser.parse_args()
 
     out = Path(args.out)
@@ -96,11 +107,15 @@ def main() -> None:
         f"terminal supervision: batch {base.terminal_batch} every Phase-2 step, "
         f"{base.terminal_loss_mass:.1%} of continuation loss"
     )
+    log(f"arms: {args.arms}")
+    if args.reuse:
+        log(f"reusing Phase-1 checkpoints from {args.reuse.resolve()}")
     train_set, dev_set = corpus(base, args.expert, log)
 
     log(f"phase 1A: {args.tokenizer_steps} steps, shared by every arm")
+    phase1a = args.reuse / "phase1a.pt" if args.reuse else out / "phase1a.pt"
     encoder, decoder, cached_train = train_representation(
-        train_set, args.tokenizer_steps, base, checkpoint=out / "phase1a.pt"
+        train_set, args.tokenizer_steps, base, checkpoint=phase1a
     )
     cached_dev = cache_latents(encoder, dev_set, base)
     log(f"phase 1A done, cache digest {cached_train[0].latent_digest}")
@@ -114,6 +129,8 @@ def main() -> None:
     for transition in ("flow", "direct"):
         for mixer in ("attention", "mamba"):
             arm = f"{transition}-{mixer}"
+            if arm not in args.arms:
+                continue
             if arm in report:
                 continue
             config = replace(base, transition=transition, time_mixer=mixer)
@@ -123,9 +140,8 @@ def main() -> None:
             encoder.cpu()
             torch.cuda.empty_cache()
 
-            world = train_dynamics(
-                cached_train, args.dynamics_steps, config, checkpoint=out / f"{arm}.1b.pt"
-            )
+            phase1b = args.reuse / f"{arm}.1b.pt" if args.reuse else out / f"{arm}.1b.pt"
+            world = train_dynamics(cached_train, args.dynamics_steps, config, checkpoint=phase1b)
             log(f"{arm}: phase 1B done")
             heads = train_agent(
                 cached_train,
@@ -149,6 +165,12 @@ def main() -> None:
                 f"terminal BCE {outcome_gate['terminal_bce']:.4f} "
                 f"vs {outcome_gate['terminal_marginal_bce']:.4f} marginal | "
                 f"AUC {outcome_gate['terminal_auc']:.3f}"
+            )
+            log(
+                f"{arm}: observed-successor reward regret "
+                f"{outcome_gate['observed_reward_choice_regret']:.4f} | "
+                f"terminal BCE {outcome_gate['observed_terminal_bce']:.4f} | "
+                f"AUC {outcome_gate['observed_terminal_auc']:.3f}"
             )
             if not outcome_gate["passed"]:
                 report[arm] = {

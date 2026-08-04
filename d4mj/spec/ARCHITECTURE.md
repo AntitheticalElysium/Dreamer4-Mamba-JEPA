@@ -342,10 +342,12 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   symexp-twohot; value starts in Phase 3. `[D4-UNKNOWN]` The source of \(c_t\)
   is unspecified. The closest pinned precedent is Dreamer 3's ordinary binary
   continuation likelihood. `[DESIGN]` Add environmental nontermination:
-  terminal=0; truncation resets runtime but bootstraps. The same likelihood is
-  retained on the main mixture. One tail-aligned sequence joins four main
-  sequences with equal per-sequence weight at the exact committed condition
-  used by deployment (S72). At \(h_t\), policy lead 0 is
+  terminal=0; truncation resets runtime but bootstraps. Continuation is one-step,
+  as in the pinned Dreamer 3 precedent; D4's MTP statement applies only to policy
+  and reward. The same likelihood is retained on the main mixture. One tail-aligned
+  sequence joins four main sequences with equal per-sequence weight and uses the
+  arm's ordinary Phase-2 transition path: Flow's sampled noisy pass, Direct's
+  two-step generated-prefix pass (S72/S75). At \(h_t\), policy lead 0 is
   outgoing \(a_t\), reward lead 0 incoming \(r_t\). `[D4]` Adaptation reuses the
   pretraining setting, so flow-arm heads are deliberately trained on *noisy*
   representations across the sampled signal range — that is what makes them
