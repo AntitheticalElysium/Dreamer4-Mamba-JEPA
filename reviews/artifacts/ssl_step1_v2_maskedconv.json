@@ -1,0 +1,170 @@
+{
+  "protocol": "reviews/2026-07-13-step1-protocol.md",
+  "steps": 300,
+  "train_frames": 7919,
+  "untrained": {
+    "target_element_variance": 0.10927030444145203,
+    "target_effective_rank_singular": 37.79072952270508,
+    "target_effective_rank_covariance": 11.74151611328125,
+    "target_flat_effective_rank_covariance": 11.74151611328125,
+    "target_stream_effective_rank_mean": 3.770255693150311,
+    "target_stream_effective_rank_min": 1.490388280230168,
+    "target_register_pool_effective_rank": 8.693046569824219,
+    "target_patch_pool_effective_rank": 8.71352767944336,
+    "target_register_pool_covariance_rank": 1.503997544533827,
+    "target_patch_pool_covariance_rank": 1.3954271063709989,
+    "target_fixed_stream_variance": 0.04656597599387169,
+    "target_position_variance": 0.06270432472229004,
+    "target_observation_variance_fraction": 0.4261539876461029,
+    "target_same_stream_unrelated_cosine": 0.1380842924118042,
+    "semantic_token_accuracy": 0.8921875357627869,
+    "semantic_train_accuracy": 0.9061458706855774,
+    "semantic_train_majority_accuracy": 0.7197917103767395,
+    "semantic_majority_accuracy": 0.7264583706855774,
+    "semantic_classes": 16,
+    "semantic_valid_fraction": 0.75,
+    "semantic_probe_sane": true,
+    "inventory_r2_mean_varying": 0.855405901845387,
+    "inventory_r2": {
+      "health": 0.8203391568749638,
+      "food": 0.9114403256145365,
+      "drink": 0.9110770206950681,
+      "energy": 0.7787671041969797,
+      "sapling": null,
+      "wood": null,
+      "stone": null,
+      "coal": null,
+      "iron": null,
+      "diamond": null
+    }
+  },
+  "arms": {
+    "ijepa": {
+      "minutes": 0.23,
+      "aborted": false,
+      "curve": [
+        {
+          "step": 25,
+          "loss_mean_100": 0.2431732213497162,
+          "observation_variance_fraction": 0.40428876876831055,
+          "stream_rank_mean": 3.2427518202412045
+        },
+        {
+          "step": 50,
+          "loss_mean_100": 0.17805723398923873,
+          "observation_variance_fraction": 0.4188441336154938,
+          "stream_rank_mean": 2.6846414539253574
+        },
+        {
+          "step": 75,
+          "loss_mean_100": 0.14179902399579683,
+          "observation_variance_fraction": 0.4397581219673157,
+          "stream_rank_mean": 2.1459908906131275
+        },
+        {
+          "step": 100,
+          "loss_mean_100": 0.11703683257102966,
+          "observation_variance_fraction": 0.45947006344795227,
+          "stream_rank_mean": 1.7930529814525429
+        },
+        {
+          "step": 125,
+          "loss_mean_100": 0.06379225745797157,
+          "observation_variance_fraction": 0.4770854413509369,
+          "stream_rank_mean": 1.5845982987553604
+        },
+        {
+          "step": 150,
+          "loss_mean_100": 0.041241672094911336,
+          "observation_variance_fraction": 0.49204662442207336,
+          "stream_rank_mean": 1.465408984433586
+        },
+        {
+          "step": 175,
+          "loss_mean_100": 0.028690485917031765,
+          "observation_variance_fraction": 0.5038608312606812,
+          "stream_rank_mean": 1.3971063786359537
+        },
+        {
+          "step": 200,
+          "loss_mean_100": 0.022240426978096365,
+          "observation_variance_fraction": 0.5126909613609314,
+          "stream_rank_mean": 1.359050566696285
+        },
+        {
+          "step": 225,
+          "loss_mean_100": 0.018328348910436033,
+          "observation_variance_fraction": 0.5231180191040039,
+          "stream_rank_mean": 1.337431845610438
+        },
+        {
+          "step": 250,
+          "loss_mean_100": 0.01600969148799777,
+          "observation_variance_fraction": 0.5326423048973083,
+          "stream_rank_mean": 1.3283902964840526
+        },
+        {
+          "step": 275,
+          "loss_mean_100": 0.014603820769116283,
+          "observation_variance_fraction": 0.5401220917701721,
+          "stream_rank_mean": 1.3270243809020137
+        },
+        {
+          "step": 300,
+          "loss_mean_100": 0.013340592123568059,
+          "observation_variance_fraction": 0.552524209022522,
+          "stream_rank_mean": 1.332982351844469
+        }
+      ],
+      "final": {
+        "target_element_variance": 0.4007731080055237,
+        "target_effective_rank_singular": 15.840714454650879,
+        "target_effective_rank_covariance": 2.7931978702545166,
+        "target_flat_effective_rank_covariance": 2.7931978702545166,
+        "target_stream_effective_rank_mean": 1.3701934780150518,
+        "target_stream_effective_rank_min": 1.1877248342290259,
+        "target_register_pool_effective_rank": 2.8633670806884766,
+        "target_patch_pool_effective_rank": 2.6036248207092285,
+        "target_register_pool_covariance_rank": 1.2169538684252426,
+        "target_patch_pool_covariance_rank": 1.1967147261210536,
+        "target_fixed_stream_variance": 0.2231290340423584,
+        "target_position_variance": 0.1776440590620041,
+        "target_observation_variance_fraction": 0.5567465424537659,
+        "target_same_stream_unrelated_cosine": 0.15774184465408325,
+        "semantic_token_accuracy": 0.8810417056083679,
+        "semantic_train_accuracy": 0.8851041793823242,
+        "semantic_train_majority_accuracy": 0.7197917103767395,
+        "semantic_majority_accuracy": 0.7264583706855774,
+        "semantic_classes": 16,
+        "semantic_valid_fraction": 0.75,
+        "semantic_probe_sane": true,
+        "inventory_r2_mean_varying": 0.8468258487524817,
+        "inventory_r2": {
+          "health": 0.8922322242654372,
+          "food": 0.9149223242072607,
+          "drink": 0.8988574289179264,
+          "energy": 0.6812914176193021,
+          "sapling": null,
+          "wood": null,
+          "stone": null,
+          "coal": null,
+          "iron": null,
+          "diamond": null
+        }
+      },
+      "gates": {
+        "G1a_observation_variance_fraction": true,
+        "G1b_same_stream_unrelated": true,
+        "G2a_stream_rank_mean": false,
+        "G2b_patch_pool_rank": false,
+        "G3_semantic": true,
+        "G4_inventory": true,
+        "G5_loss_decreased_30pct": true,
+        "loss_first_last_100": [
+          0.11703683257102966,
+          0.013340592123568059
+        ]
+      }
+    }
+  }
+}

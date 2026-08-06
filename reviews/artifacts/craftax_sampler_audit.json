@@ -1,0 +1,51 @@
+{
+  "amplification": {
+    "negative_reward_x": 6.514927982397752,
+    "positive_reward_x": 1.2045085367218988,
+    "reward_mean_replay": 0.009391389787197113,
+    "reward_mean_sampled": 0.0016083329683169723,
+    "terminal_after_mtp_x": 327.8593643628829,
+    "terminal_x": 318.2967995689655
+  },
+  "replay": {
+    "replay_reward_mean": 0.009391389787197113,
+    "replay_reward_negative_fraction": 0.008147953972285748,
+    "replay_reward_positive_fraction": 0.020184580896509957,
+    "replay_terminal_count": 58,
+    "replay_terminal_transition_fraction": 0.00010485496569615562,
+    "train_episodes": 256,
+    "train_transitions": 553145
+  },
+  "sampled": {
+    "0.0": {
+      "HEAD_continuation_bce_mass_on_terminals": 0.0014980338305973409,
+      "HEAD_reward_mean": 0.014306250028312206,
+      "HEAD_reward_negative_fraction": 0.0090625,
+      "HEAD_reward_positive_fraction": 0.0248125,
+      "HEAD_terminal_fraction": 0.0001875,
+      "continuation_bce_mass_on_terminals": 0.0005147894725552862,
+      "reward_mean": 0.014006251469254494,
+      "reward_negative_fraction": 0.009541666666666667,
+      "reward_positive_fraction": 0.025041666666666667,
+      "sampled_transitions": 48000,
+      "terminal_fraction_setting": 0.0,
+      "terminal_target_fraction": 6.25e-05,
+      "terminal_target_fraction_after_mtp": 6.437768240343348e-05
+    },
+    "0.5": {
+      "HEAD_continuation_bce_mass_on_terminals": 0.47093407804806353,
+      "HEAD_reward_mean": -0.012743750587105751,
+      "HEAD_reward_negative_fraction": 0.1149375,
+      "HEAD_reward_positive_fraction": 0.021,
+      "HEAD_terminal_fraction": 0.100125,
+      "continuation_bce_mass_on_terminals": 0.2216764105579963,
+      "reward_mean": 0.0016083329683169723,
+      "reward_negative_fraction": 0.05308333333333334,
+      "reward_positive_fraction": 0.0243125,
+      "sampled_transitions": 48000,
+      "terminal_fraction_setting": 0.5,
+      "terminal_target_fraction": 0.033375,
+      "terminal_target_fraction_after_mtp": 0.034377682403433474
+    }
+  }
+}

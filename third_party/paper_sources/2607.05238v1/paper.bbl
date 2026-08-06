@@ -1,0 +1,119 @@
+\begin{thebibliography}{18}
+\providecommand{\natexlab}[1]{#1}
+
+\bibitem[{Assran et~al.(2025)Assran, Bardes, Fan, Garrido, Howes
+  et~al.}]{assran2025vjepa2}
+Assran, M.; Bardes, A.; Fan, D.; Garrido, Q.; Howes, R.; et~al. 2025.
+\newblock V-JEPA 2: Self-supervised video models enable understanding,
+  prediction and planning.
+\newblock \emph{arXiv preprint arXiv:2506.09985}.
+
+\bibitem[{Assran et~al.(2023)Assran, Duval, Misra, Bojanowski, Vincent, Rabbat,
+  LeCun, and Ballas}]{assran2023ijepa}
+Assran, M.; Duval, Q.; Misra, I.; Bojanowski, P.; Vincent, P.; Rabbat, M.;
+  LeCun, Y.; and Ballas, N. 2023.
+\newblock Self-supervised learning from images with a joint-embedding
+  predictive architecture.
+\newblock In \emph{CVPR}.
+
+\bibitem[{Bardes et~al.(2024)Bardes, Garrido, Ponce, Chen, Rabbat, LeCun,
+  Assran, and Ballas}]{bardes2024vjepa}
+Bardes, A.; Garrido, Q.; Ponce, J.; Chen, X.; Rabbat, M.; LeCun, Y.; Assran,
+  M.; and Ballas, N. 2024.
+\newblock Revisiting feature prediction for learning visual representations
+  from video.
+\newblock \emph{arXiv preprint arXiv:2404.08471}.
+
+\bibitem[{Bardes, Ponce, and LeCun(2022)}]{bardes2022vicreg}
+Bardes, A.; Ponce, J.; and LeCun, Y. 2022.
+\newblock {VICReg}: Variance-invariance-covariance regularization for
+  self-supervised learning.
+\newblock In \emph{ICLR}.
+
+\bibitem[{Bishop(1994)}]{bishop1994mixture}
+Bishop, C.~M. 1994.
+\newblock Mixture density networks.
+\newblock Technical report, Aston University.
+
+\bibitem[{Eysenbach et~al.(2022)Eysenbach, Zhang, Levine, and
+  Salakhutdinov}]{eysenbach2022crl}
+Eysenbach, B.; Zhang, T.; Levine, S.; and Salakhutdinov, R. 2022.
+\newblock Contrastive learning as goal-conditioned reinforcement learning.
+\newblock In \emph{NeurIPS}.
+
+\bibitem[{Ghosh et~al.(2021)Ghosh, Gupta, Reddy, Fu, Devin, Eysenbach, and
+  Levine}]{ghosh2021gcbc}
+Ghosh, D.; Gupta, A.; Reddy, A.; Fu, J.; Devin, C.; Eysenbach, B.; and Levine,
+  S. 2021.
+\newblock Learning to reach goals via iterated supervised learning.
+\newblock In \emph{ICLR}.
+
+\bibitem[{Guzman-Rivera, Batra, and Kohli(2012)}]{guzman2012multiple}
+Guzman-Rivera, A.; Batra, D.; and Kohli, P. 2012.
+\newblock Multiple choice learning: Learning to produce multiple structured
+  outputs.
+\newblock In \emph{NeurIPS}.
+
+\bibitem[{Huang et~al.(2026)}]{huang2026varjepa}
+Huang, W.; et~al. 2026.
+\newblock {VJEPA}: Variational joint embedding predictive architectures as
+  probabilistic world models.
+\newblock \emph{arXiv preprint arXiv:2601.14354}.
+
+\bibitem[{LeCun(2022)}]{lecun2022path}
+LeCun, Y. 2022.
+\newblock A path towards autonomous machine intelligence.
+\newblock \emph{OpenReview}.
+
+\bibitem[{Lee et~al.(2016)Lee, Purushwalkam, Cogswell, Ranjan, Crandall, and
+  Batra}]{lee2016stochastic}
+Lee, S.; Purushwalkam, S.; Cogswell, M.; Ranjan, V.; Crandall, D.; and Batra,
+  D. 2016.
+\newblock Stochastic multiple choice learning for training diverse deep
+  ensembles.
+\newblock In \emph{NeurIPS}.
+
+\bibitem[{Lei et~al.(2024)Lei, Cheng, Qin, Wang, Fan, Huang, Gu, Wu, Jiang,
+  Chen, and Ji}]{lei2024m3jepa}
+Lei, H.; Cheng, X.; Qin, Q.; Wang, D.; Fan, K.; Huang, H.; Gu, Q.; Wu, Y.;
+  Jiang, Z.; Chen, Y.; and Ji, L. 2024.
+\newblock {M3-JEPA}: Multimodal alignment via multi-gate {MoE} based on the
+  joint-embedding predictive architecture.
+\newblock \emph{arXiv preprint arXiv:2409.05929}.
+
+\bibitem[{Lloyd(1982)}]{lloyd1982least}
+Lloyd, S. 1982.
+\newblock Least squares quantization in {PCM}.
+\newblock \emph{IEEE Transactions on Information Theory}, 28(2): 129--137.
+
+\bibitem[{Park et~al.(2025)Park, Frans, Eysenbach, and
+  Levine}]{park2025ogbench}
+Park, S.; Frans, K.; Eysenbach, B.; and Levine, S. 2025.
+\newblock {OGBench}: Benchmarking offline goal-conditioned {RL}.
+\newblock In \emph{ICLR}.
+
+\bibitem[{Park et~al.(2023)Park, Ghosh, Eysenbach, and Levine}]{park2023hiql}
+Park, S.; Ghosh, D.; Eysenbach, B.; and Levine, S. 2023.
+\newblock {HIQL}: Offline goal-conditioned {RL} with latent states as actions.
+\newblock In \emph{NeurIPS}.
+
+\bibitem[{Pellegrini et~al.(2009)Pellegrini, Ess, Schindler, and
+  Van~Gool}]{pellegrini2009eth}
+Pellegrini, S.; Ess, A.; Schindler, K.; and Van~Gool, L. 2009.
+\newblock You'll never walk alone: Modeling social behavior for multi-target
+  tracking.
+\newblock In \emph{ICCV}.
+
+\bibitem[{Wang et~al.(2023)Wang, Torralba, Isola, and Zhang}]{wang2023qrl}
+Wang, T.; Torralba, A.; Isola, P.; and Zhang, A. 2023.
+\newblock Optimal goal-reaching reinforcement learning via quasimetric
+  learning.
+\newblock In \emph{ICML}.
+
+\bibitem[{Zhou et~al.(2024)Zhou, Pan, LeCun, and Pinto}]{zhou2024dinowm}
+Zhou, G.; Pan, H.; LeCun, Y.; and Pinto, L. 2024.
+\newblock DINO-WM: World models on pre-trained visual features enable zero-shot
+  planning.
+\newblock \emph{arXiv preprint arXiv:2411.04983}.
+
+\end{thebibliography}

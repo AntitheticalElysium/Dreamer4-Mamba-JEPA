@@ -1,0 +1,70 @@
+{
+  "dev": {
+    "natural": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/data/stage2_dev_natural.pt",
+      "seeds": [
+        960,
+        975
+      ],
+      "sha256": "5335cf6133ab16aa1f0ec3f6bd6c3a506c706424985ad694d002026a22ea175e"
+    },
+    "terminal": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/data/stage2_dev_terminal.pt",
+      "seeds": [
+        932,
+        947
+      ],
+      "sha256": "14732eb37f475d38d2aa91834bd64b5ce04598398d28a348452922b303018ccf"
+    },
+    "bundle": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/data/stage2_dev_bundle.pt",
+      "seeds": [
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150
+      ],
+      "anchors": 48,
+      "sha256": "d570ae8d82592e9153d1db3025ce3f4bdbd125e370c838f58cb882ab33bafdb8"
+    }
+  },
+  "final": {
+    "natural": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/data/stage2_final_natural.pt",
+      "seeds": [
+        976,
+        991
+      ],
+      "sha256": "c4bd133c16b69f5e3858d87fb84c7055c9e0fef478db43fd288ee634400786fa"
+    },
+    "terminal": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/data/stage2_final_terminal.pt",
+      "seeds": [
+        948,
+        963
+      ],
+      "sha256": "f075f442c9520566fdbbbe0a9321d52a84bc2afca87e13950d3c6d03d07866fd"
+    },
+    "bundle": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/data/stage2_final_bundle.pt",
+      "seeds": [
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158
+      ],
+      "anchors": 48,
+      "sha256": "aa1b4eaea3ee680e6ec892cd7b486bbefeb5eb20134df6b5c4b3f8dc72758cb3"
+    }
+  },
+  "canonical": true,
+  "note": "final tier untouched until the planner-gate evaluation"
+}

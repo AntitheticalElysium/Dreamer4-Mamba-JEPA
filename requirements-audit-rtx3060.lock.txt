@@ -1,0 +1,14 @@
+# Exact environment measured during the 2026-07-12/13 RTX 3060 audit.
+# The installed mamba-ssm package is editable from the pinned local clone at
+# third_party/sources/state-spaces__mamba (SOURCES.lock commit f577286d...).
+
+torch==2.12.1
+torchvision==0.27.1
+triton==3.7.1
+mamba-ssm @ git+https://github.com/state-spaces/mamba.git@f577286d052741c35d39cd43bdc3fad27120f22c
+apache-tvm-ffi==0.1.10
+tilelang==0.1.8
+quack-kernels==0.6.1
+numpy==2.1.0
+crafter==1.8.3
+gym==0.26.2

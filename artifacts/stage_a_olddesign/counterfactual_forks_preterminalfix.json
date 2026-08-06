@@ -1,0 +1,57 @@
+{
+  "status": "DEV diagnostic, not a Stage-A result",
+  "source_report_sha256": "26d4ac55c0b21fd759f2a25e58ea511718fdda6b62a526fa157d1f04477b132d",
+  "states": 36,
+  "actions_per_state": 17,
+  "seeds": [10000, 10001, 10002, 10003, 10004, 10005, 10006, 10007],
+  "state_policy": "Direct-attention BC trajectory; scheduled states plus final pre-death states",
+  "flow_samples_per_action": 4,
+  "shared": {
+    "pixel_action_effect_rms": 0.0566629146757535,
+    "encoded_true_action_effect_rms": 0.1807830801281979,
+    "reward_opportunity_states": 10,
+    "terminal_varying_states": 3
+  },
+  "arms": {
+    "flow-attention": {
+      "transition_effect_cosine": 0.7430122956633568,
+      "transition_matched_mse": 0.0752582131471071,
+      "transition_off_action_mse": 0.1330991190754705,
+      "generated_reward_correlation": 0.013962504547089338,
+      "true_successor_reward_correlation": 0.023355362564325334,
+      "true_death_probability_under_actor": 0.1314590664373504,
+      "predicted_death_on_generated_successor": 0.0000856941993182166,
+      "predicted_death_on_true_successor": 0.0007027591819021634
+    },
+    "flow-mamba": {
+      "transition_effect_cosine": 0.7149019489685694,
+      "transition_matched_mse": 0.0811515506874356,
+      "transition_off_action_mse": 0.12650690569231907,
+      "generated_reward_correlation": 0.13893640637397767,
+      "true_successor_reward_correlation": 0.131997050344944,
+      "true_death_probability_under_actor": 0.14419414930873448,
+      "predicted_death_on_generated_successor": 0.0002976864601325562,
+      "predicted_death_on_true_successor": 0.0005055170943630097
+    },
+    "direct-attention": {
+      "transition_effect_cosine": 0.6741180678208669,
+      "transition_matched_mse": 0.07532536706680225,
+      "transition_off_action_mse": 0.11650411259486443,
+      "generated_reward_correlation": 0.1085894163697958,
+      "true_successor_reward_correlation": 0.34294197824783623,
+      "true_death_probability_under_actor": 0.14009461303551993,
+      "predicted_death_on_generated_successor": 0.0048601589666438915,
+      "predicted_death_on_true_successor": 0.0006468430293002027
+    },
+    "direct-mamba": {
+      "transition_effect_cosine": 0.6789869884649913,
+      "transition_matched_mse": 0.08138202257557875,
+      "transition_off_action_mse": 0.12315421491964823,
+      "generated_reward_correlation": -0.21472013369202614,
+      "true_successor_reward_correlation": 0.3501888938248158,
+      "true_death_probability_under_actor": 0.13873780104849073,
+      "predicted_death_on_generated_successor": 0.010446164120661712,
+      "predicted_death_on_true_successor": 0.00046193075366830115
+    }
+  }
+}

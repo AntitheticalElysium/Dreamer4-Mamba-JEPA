@@ -1,0 +1,40 @@
+# Install into a Python 3.12 venv (uv):
+#   uv venv --python 3.12 .venv && source .venv/bin/activate
+#   uv pip install -r requirements.txt
+#
+# Notes for this machine (RTX 3060 6GB, system Python 3.14 / CUDA 13.3 — too new):
+#  - Torch's PyPI Linux wheel is a real CUDA-13 build (2.12.1+cu130) and works;
+#    its bundled CUDA runtime is independent of the system CUDA toolkit.
+#  - Do NOT need the compiled causal_conv1d / selective_scan_cuda kernels.
+#    Construct Mamba-2 with use_mem_eff_path=False -> pure-PyTorch conv fallback;
+#    the SSM chunk-scan and step are pure Triton (bundled with torch) and run fine.
+
+# --- Core ---
+torch
+torchvision
+
+# --- DRAMA world-model stack (vendored in third_party/Drama) ---
+einops>=0.8.0
+numpy==2.1.0
+pandas==2.3.3
+kornia>=0.7.5
+opencv-python-headless>=4.10.0
+yacs==0.1.8
+colorama>=0.4.6
+tqdm>=4.67.0
+pytorch_warmup>=0.1.1
+line_profiler==4.2.0
+tensorboardX==2.6.2.2
+# transitive imports pulled by the vendored mamba_ssm:
+huggingface_hub
+torchtune
+torchao
+transformers
+
+# --- RL environments (real-data sources for the probe) ---
+gymnasium[atari,classic-control,accept-rom-license]==1.2.2
+Pillow==11.3.0
+
+# --- Probe / analysis ---
+scipy            # Spearman rho, ROC
+matplotlib       # signal-vs-error plots

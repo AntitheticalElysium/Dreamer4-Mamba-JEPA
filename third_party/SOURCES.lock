@@ -1,0 +1,34 @@
+# Pinned third-party source commits (see third_party/sources/)
+# Regenerate: git -C <dir> rev-parse HEAD
+
+corl-team__nedreamer  https://github.com/corl-team/nedreamer.git  11cd3a978b83743f795cbfa81c2e095344912c17  
+danijar__dreamerv3  https://github.com/danijar/dreamerv3.git  e3f02248693a79dc8b0ebd62c93683888ddaccfe
+danijar__crafter  https://github.com/danijar/crafter.git  e04542a2159f1aad3d4c5ad52e8185717380ee3a  
+edwhu__dreamer4-jax  https://github.com/edwhu/dreamer4-jax.git  8144b940d801971f12ec5633553b95001e555949  
+Farama-Foundation__Gymnasium  https://github.com/Farama-Foundation/Gymnasium.git  a923da5d4415a1aa5195d99341069da5e16deed7
+facebookresearch__ijepa  https://github.com/facebookresearch/ijepa.git  52c1ae95d05f743e000e8f10a1f3a79b10cff048  
+facebookresearch__vicreg  https://github.com/facebookresearch/vicreg.git  4e12602fd495af83efd1631fbe82523e6db092e0
+facebookresearch__vjepa2  https://github.com/facebookresearch/vjepa2.git  204698b45b3712590f06245fbfba32d3be539812  
+fmi-basel__Dreamer-CDP  https://github.com/fmi-basel/Dreamer-CDP.git  a851fa3e3d70b624b094ee1810ad4bb602346092  
+kaland313__CNN-JEPA  https://github.com/kaland313/CNN-JEPA  b7b246c27e2f073b2596da501a6d64c004f67062  
+leor-c__horizon-imagination  https://github.com/leor-c/horizon-imagination.git  c79ec5e2450be22711c7d717e49326edf77061f2  
+lucas-maes__le-wm  https://github.com/lucas-maes/le-wm.git  8edfeb336732b5f3ce7b8b210d0ba370a09e2cac  
+nicklashansen__dreamer4  https://github.com/nicklashansen/dreamer4.git  b8abafbf4da72c59b6aa09f8499ccde0d6a37fd6  
+nicklashansen__mmbench2  https://github.com/nicklashansen/mmbench2.git  3dda6ea5bc60382ad9e1dcd1c6c3af67d69326a9  
+NM512__r2dreamer  https://github.com/NM512/r2dreamer.git  546e4fab8146ea4b14e1d7726bbc1a8a1d50322f  
+realwenlongwang__Drama  https://github.com/realwenlongwang/Drama.git  a50bd54c34e77d1d13e988a031733a47817098e2  
+state-spaces__mamba  https://github.com/state-spaces/mamba.git  f577286d052741c35d39cd43bdc3fad27120f22c  
+rbalestr-lab__lejepa  https://github.com/rbalestr-lab/lejepa  c293d291ca87cd4fddee9d3fffe4e914c7272052  
+
+vjepa2 (third_party/vjepa2): shallow clone, LOCALLY MODIFIED — treat as vendored snapshot
+Drama (third_party/Drama): vendored snapshot, no git metadata
+# Control-centric corpus sources (pinned 2026-07-16 at the commits inspected
+# during the companion ground-truth check)
+mila-iqia__spr  https://github.com/mila-iqia/spr.git  0b9dd4e7b9bbdfaecdf9a3713bf5931fb54ab0ca  
+FrankZheng2022__TACO  https://github.com/FrankZheng2022/TACO.git  84c38e34f4f9dfd2b059fb6d1356757e8d40712e  
+facebookresearch__deep_bisim4control  https://github.com/facebookresearch/deep_bisim4control.git  5967b6d0ccfc1032837cbe542f7bc5a96dc02cbb  
+# Subspace SIGReg source (pinned 2026-07-23). Sub-JEPA is a 73-line patch plus a
+# 171-line module on top of lucas-maes/le-wm (already vendored above): SIGReg is
+# applied inside frozen orthogonal subspaces (MultiSubspaceSIGReg) instead of the
+# full ambient space. Apache-2.0. The le-wm submodule is NOT initialised.
+intcomp__Sub-JEPA  https://github.com/intcomp/Sub-JEPA.git  c21fe3cad03565e077e928d548b66e6ab706c262  

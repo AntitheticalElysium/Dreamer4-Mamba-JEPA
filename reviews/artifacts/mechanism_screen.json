@@ -1,0 +1,415 @@
+{
+  "protocol": "reviews/2026-07-17-mechanism-screen-protocol.md",
+  "arms": {
+    "MS-PC_s505": {
+      "trainable_params": 3247730,
+      "temporal_params": 3037231,
+      "train_minutes": 19.5,
+      "temporal_class": "ProjectedGlobalGRUTemporal",
+      "predictor_class": "FuturePredictor",
+      "shared_state_digest": "2cf13e594cafc9fb435dff135decffd3d80b81a73da58c9bba44d684724022b3",
+      "replay_stream_digest": "304e1b3e687adbb30e435333b022fbd0691b96e98c37ec4df2c3b1a9455271c0",
+      "peak_vram_reserved_mib": 160.0,
+      "checkpoint_sha256": "3478040ab5d05b10aaa4f703a967d38296597064f6721df6386c6f8caef8452a",
+      "loss_last500": 0.01633581958338618,
+      "peak_vram_allocated_mib": 132.9
+    },
+    "MS-PC_s606": {
+      "trainable_params": 3247730,
+      "temporal_params": 3037231,
+      "train_minutes": 19.3,
+      "temporal_class": "ProjectedGlobalGRUTemporal",
+      "predictor_class": "FuturePredictor",
+      "shared_state_digest": "4d7ce65cf5091ae4df23ba5eb64464f4b8eeae3b2a252b4727cb19b8ed3b822f",
+      "replay_stream_digest": "dce7af04a1433ae05f34d383432e868d6de15141a52c2983854505f6b188ac69",
+      "peak_vram_reserved_mib": 160.0,
+      "checkpoint_sha256": "e78f0976be1548ad22c5b3be5b37f13defb7081c7d53c21459bf25ca9b37d458",
+      "loss_last500": 0.016019928082823754,
+      "peak_vram_allocated_mib": 132.9
+    },
+    "MS-FB_s505": {
+      "trainable_params": 3242062,
+      "temporal_params": 3031563,
+      "train_minutes": 18.8,
+      "temporal_class": "BypassFlattenedGRUTemporal",
+      "predictor_class": "FuturePredictor",
+      "shared_state_digest": "2cf13e594cafc9fb435dff135decffd3d80b81a73da58c9bba44d684724022b3",
+      "replay_stream_digest": "304e1b3e687adbb30e435333b022fbd0691b96e98c37ec4df2c3b1a9455271c0",
+      "peak_vram_reserved_mib": 172.0,
+      "checkpoint_sha256": "06b0e729ec1473aa18b4589b2a861b3a519173e38367d907d4173f3496a2b0dc",
+      "loss_last500": 0.01783209705539048,
+      "peak_vram_allocated_mib": 129.9
+    },
+    "MS-FB_s606": {
+      "trainable_params": 3242062,
+      "temporal_params": 3031563,
+      "train_minutes": 18.8,
+      "temporal_class": "BypassFlattenedGRUTemporal",
+      "predictor_class": "FuturePredictor",
+      "shared_state_digest": "4d7ce65cf5091ae4df23ba5eb64464f4b8eeae3b2a252b4727cb19b8ed3b822f",
+      "replay_stream_digest": "dce7af04a1433ae05f34d383432e868d6de15141a52c2983854505f6b188ac69",
+      "peak_vram_reserved_mib": 172.0,
+      "checkpoint_sha256": "ba24aa2e1d5da4838c2d39a7c5a18396657286e07342d863fa4edc402896e940",
+      "loss_last500": 0.017397872243076564,
+      "peak_vram_allocated_mib": 129.9
+    },
+    "MS-FF_s505": {
+      "trainable_params": 3242895,
+      "temporal_params": 3032396,
+      "train_minutes": 7.3,
+      "temporal_class": "FullGridFeedforward",
+      "predictor_class": "FuturePredictor",
+      "shared_state_digest": "2cf13e594cafc9fb435dff135decffd3d80b81a73da58c9bba44d684724022b3",
+      "replay_stream_digest": "304e1b3e687adbb30e435333b022fbd0691b96e98c37ec4df2c3b1a9455271c0",
+      "peak_vram_reserved_mib": 160.0,
+      "checkpoint_sha256": "ddde56dcff6653f95e2297b4cf44b772b7987dd8238c73bb0ec2c764df353aac",
+      "loss_last500": 0.017580479558557273,
+      "peak_vram_allocated_mib": 125.9
+    },
+    "MS-FF_s606": {
+      "trainable_params": 3242895,
+      "temporal_params": 3032396,
+      "train_minutes": 7.3,
+      "temporal_class": "FullGridFeedforward",
+      "predictor_class": "FuturePredictor",
+      "shared_state_digest": "4d7ce65cf5091ae4df23ba5eb64464f4b8eeae3b2a252b4727cb19b8ed3b822f",
+      "replay_stream_digest": "dce7af04a1433ae05f34d383432e868d6de15141a52c2983854505f6b188ac69",
+      "peak_vram_reserved_mib": 160.0,
+      "checkpoint_sha256": "fd19c9a40e88a512a19d423be9a6be7f06b96fc7e9d05b6b6b8ed61eeb98d627",
+      "loss_last500": 0.017253846956416966,
+      "peak_vram_allocated_mib": 125.9
+    }
+  },
+  "evaluation": {
+    "MS-PC_s505": {
+      "retrieval_all": {
+        "mean": 0.3125,
+        "ci95": [
+          0.2742264884049711,
+          0.3507735115950289
+        ]
+      },
+      "retrieval_changed": {
+        "mean": 0.3020833333333333,
+        "ci95": [
+          0.23861389464831942,
+          0.36555277201834724
+        ]
+      },
+      "separation_all": {
+        "mean": 0.006387981767248777,
+        "ci95": [
+          -0.0022608478443212057,
+          0.015036811378818758
+        ]
+      }
+    },
+    "MS-PC_s606": {
+      "retrieval_all": {
+        "mean": 0.34374999999999994,
+        "ci95": [
+          0.31060416666666657,
+          0.3768958333333333
+        ]
+      },
+      "retrieval_changed": {
+        "mean": 0.32291666666666663,
+        "ci95": [
+          0.2897708333333333,
+          0.35606249999999995
+        ]
+      },
+      "separation_all": {
+        "mean": 0.008008595116229521,
+        "ci95": [
+          -0.002568487635926117,
+          0.018585677868385157
+        ]
+      }
+    },
+    "MS-FB_s505": {
+      "retrieval_all": {
+        "mean": 0.28125000000000006,
+        "ci95": [
+          0.2481041666666667,
+          0.31439583333333343
+        ]
+      },
+      "retrieval_changed": {
+        "mean": 0.23958333333333334,
+        "ci95": [
+          0.17611389464831945,
+          0.30305277201834724
+        ]
+      },
+      "separation_all": {
+        "mean": 0.004659017864873429,
+        "ci95": [
+          -0.0012099705102211382,
+          0.010528006239967996
+        ]
+      }
+    },
+    "MS-FB_s606": {
+      "retrieval_all": {
+        "mean": 0.34375,
+        "ci95": [
+          0.23053542591221027,
+          0.45696457408778973
+        ]
+      },
+      "retrieval_changed": {
+        "mean": 0.3541666666666667,
+        "ci95": [
+          0.26858449300255555,
+          0.4397488403307778
+        ]
+      },
+      "separation_all": {
+        "mean": 0.007399244453861481,
+        "ci95": [
+          -6.315357767983348e-05,
+          0.014861642485402796
+        ]
+      }
+    },
+    "MS-FF_s505": {
+      "retrieval_all": {
+        "mean": 0.2916666666666667,
+        "ci95": [
+          0.23753974748933288,
+          0.3457935858440005
+        ]
+      },
+      "retrieval_changed": {
+        "mean": 0.2916666666666667,
+        "ci95": [
+          0.19791609259435028,
+          0.3854172407389831
+        ]
+      },
+      "separation_all": {
+        "mean": 0.00686070199460826,
+        "ci95": [
+          -0.0004653672140836401,
+          0.014186771203300159
+        ]
+      }
+    },
+    "MS-FF_s606": {
+      "retrieval_all": {
+        "mean": 0.3125,
+        "ci95": [
+          0.2269178263358889,
+          0.39808217366411114
+        ]
+      },
+      "retrieval_changed": {
+        "mean": 0.3020833333333333,
+        "ci95": [
+          0.23861389464831942,
+          0.36555277201834724
+        ]
+      },
+      "separation_all": {
+        "mean": 0.007522186911147502,
+        "ci95": [
+          -0.0010654214034891219,
+          0.016109795225784127
+        ]
+      }
+    }
+  },
+  "strata": {
+    "MS-PC_s505": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.328125,
+        "separation_all": 0.008630984278473385
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.28125,
+        "separation_all": 0.0019019767447995628
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.31521739130434784,
+        "separation_all": 0.006665720104955247
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.3076923076923077,
+        "separation_all": 0.006412702003637188
+      }
+    },
+    "MS-PC_s606": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.375,
+        "separation_all": 0.01037711168949803
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.28125,
+        "separation_all": 0.0032715619696925095
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.34782608695652173,
+        "separation_all": 0.008356794903891674
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.34615384615384615,
+        "separation_all": 0.010103879890476283
+      }
+    },
+    "MS-FB_s505": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.28125,
+        "separation_all": 0.005981428005422158
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.28125,
+        "separation_all": 0.0020141975837759682
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.2826086956521739,
+        "separation_all": 0.00486158385899836
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.2692307692307692,
+        "separation_all": 0.00654852549091746
+      }
+    },
+    "MS-FB_s606": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.359375,
+        "separation_all": 0.010020078489712128
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.3125,
+        "separation_all": 0.0021575763821601876
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.34782608695652173,
+        "separation_all": 0.007720950734464153
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.38461538461538464,
+        "separation_all": 0.009675120600523092
+      }
+    },
+    "MS-FF_s505": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.328125,
+        "separation_all": 0.008259189780801535
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.21875,
+        "separation_all": 0.004063726422221709
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.29347826086956524,
+        "separation_all": 0.007158993385678184
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.25,
+        "separation_all": 0.007116247087908096
+      }
+    },
+    "MS-FF_s606": {
+      "day": {
+        "n": 16,
+        "retrieval_all": 0.359375,
+        "separation_all": 0.010629134039239338
+      },
+      "night": {
+        "n": 8,
+        "retrieval_all": 0.21875,
+        "separation_all": 0.0013082926549638305
+      },
+      "pixel_effective": {
+        "n": 23,
+        "retrieval_all": 0.31521739130434784,
+        "separation_all": 0.007849238515980003
+      },
+      "task_effective": {
+        "n": 13,
+        "retrieval_all": 0.2692307692307692,
+        "separation_all": 0.009480444475626333
+      }
+    }
+  },
+  "tie_aware_retrieval": {
+    "MS-PC_s505": 0.3125,
+    "MS-PC_s606": 0.34375,
+    "MS-FB_s505": 0.28125,
+    "MS-FB_s606": 0.3541666666666667,
+    "MS-FF_s505": 0.2847222222222222,
+    "MS-FF_s606": 0.3055555555555556
+  },
+  "head": "65b41949fe3e9f6c331666b1c14cc47a92b048bf",
+  "source_digest": "f83788bd968ef8b26f52273a11f0277a379f3b898348e6ff3f9709c16d3c9e3b",
+  "versions": {
+    "python": "3.12.12",
+    "torch": "2.12.1+cu130",
+    "cuda": "13.0",
+    "numpy": "2.1.0",
+    "mamba_ssm": "2.3.2.post1",
+    "crafter": "1.8.3",
+    "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+    "nvidia_driver": "610.43.03",
+    "gpu_total_mib": 5795,
+    "mamba_source_sha256": {
+      "mamba2.py": "605e4439ff0baec8d8acaf4a191d9f0570eea9900065a065909124c472b08707",
+      "ssd_combined.py": "0b7c4cfa9e994278860e7254c27baa31ca32019a808a423ed24b80eabcbe919d"
+    }
+  },
+  "hashes": {
+    "encoder": "0b37a2466c8915c6c700e6dca0cf000aa319eaca10ced970dc1beff8439e567f",
+    "replay_file": "c55257feb2f903d32806b2694dd35e049fcd48397d3525b505c9dd715c455dad",
+    "bundle": "3b45ac6b7360fd1f4cd3310d15ff517ccfc6f3f0bbdf2df62c151d980ccf4138"
+  },
+  "readout": {
+    "anchors": {
+      "fullgrid_mean_separation": 0.010055017116731808,
+      "pooled64_mean_separation": 0.003980723444665609
+    },
+    "R1_capacity": {
+      "mean": 0.007198288441739149,
+      "low_anchor": 0.003980723444665609,
+      "high_anchor": 0.010055017116731808,
+      "gap_fraction": 0.5297,
+      "call": "unresolved"
+    },
+    "R2_bypass": {
+      "mean": 0.006029131159367455,
+      "low_anchor": 0.003980723444665609,
+      "high_anchor": 0.010055017116731808,
+      "gap_fraction": 0.3372,
+      "call": "unresolved"
+    },
+    "R3_recurrence": {
+      "mean": 0.007191444452877881,
+      "low_anchor": 0.003980723444665609,
+      "high_anchor": 0.010055017116731808,
+      "gap_fraction": 0.5286,
+      "call": "unresolved"
+    },
+    "note": "EXPLORATORY factor isolation on spent seeds; primary metric = separation_all (the H-T effect); tie-aware retrieval + strata recorded per arm; GRU-only (backend at parity in both topologies). Confirmation stays HELD until the surviving factor is identified."
+  }
+}

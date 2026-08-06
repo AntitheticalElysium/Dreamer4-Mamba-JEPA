@@ -1,3 +1,17 @@
+# --- Project-specific ---
+data/
+probe_logs/
+outputs/
+runs/
+ckpt/
+wandb/
+
+# --- Old repo ---
+probe/
+
+*.pt
+*.ckpt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -216,3 +230,18 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- Draft archives (content captured in git history) ---
+m3_hjwm_compact.zip
+m3_hjwm_reference.zip
+
+# --- Third-party clones: pinned via third_party/SOURCES.lock, not vendored ---
+third_party/sources/
+third_party/Drama/
+third_party/vjepa2/
+
+# Support corpus and run outputs: large artifacts, reproduced by artifacts/*.py
+artifacts/*.pt
+artifacts/stage_a/
+artifacts/stage_a_terminalfix/
+artifacts/*.log

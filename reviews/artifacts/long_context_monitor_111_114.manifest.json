@@ -1,0 +1,19 @@
+{
+  "protocol": "reviews/2026-07-16-long-context-scale-protocol.md",
+  "bundle": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/data/long_context_monitor_111_114.pt",
+  "sha256": "7e33efb705c00232fadf76d27c5d28db143766c7a7b7e20853f11a16aca36195",
+  "anchors": 24,
+  "night": 8,
+  "seeds": [
+    111,
+    112,
+    113,
+    114
+  ],
+  "prefix": 128,
+  "suffix": 8,
+  "branches": 3,
+  "canonical_collector": true,
+  "live_env_canonical": true,
+  "verify_repeat": true
+}

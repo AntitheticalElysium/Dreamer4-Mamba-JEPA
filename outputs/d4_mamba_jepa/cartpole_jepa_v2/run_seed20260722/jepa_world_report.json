@@ -1,0 +1,126 @@
+{
+  "arm_id": "T-JEPA",
+  "config": {
+    "cdp_hidden_ratio": 1.0,
+    "cdp_weight": 1.0,
+    "channels": 3,
+    "continuation_horizon": 8,
+    "d_bottleneck": 16,
+    "dynamics_d_model": 64,
+    "dynamics_depth": 4,
+    "dynamics_heads": 4,
+    "dynamics_mlp_ratio": 4.0,
+    "dynamics_time_every": 2,
+    "encoder_lr_ratio": 0.3,
+    "image_size": 64,
+    "jepa_ema_tau": 0.99,
+    "jepa_ema_tau_final": 0.999,
+    "jepa_jumps": 5,
+    "jepa_predictor_hidden_ratio": 1.0,
+    "jepa_projection_dim": 64,
+    "jepa_terminal_fraction": 0.5,
+    "jepa_terminal_weight": 8.0,
+    "jepa_weight": 1.0,
+    "k_max": 4,
+    "mae_p_max": 0.9,
+    "mae_p_min": 0.0,
+    "mamba_d_conv": 4,
+    "mamba_d_state": 16,
+    "mamba_expand": 1,
+    "mamba_headdim": 32,
+    "n_actions": 2,
+    "n_agent": 2,
+    "n_latents": 16,
+    "n_register": 2,
+    "packing_factor": 4,
+    "patch_size": 8,
+    "reconstruction_anchor_weight": 1.0,
+    "representation_objective": "jepa",
+    "reward_bins": 255,
+    "reward_horizon": 8,
+    "reward_log_high": 10.0,
+    "reward_log_low": -10.0,
+    "sequence_length": 12,
+    "temporal_backend": "transformer",
+    "tokenizer_d_model": 64,
+    "tokenizer_depth": 4,
+    "tokenizer_heads": 4,
+    "tokenizer_mlp_ratio": 4.0,
+    "tokenizer_time_every": 2
+  },
+  "format": "d4_lite_cartpole_control_v1",
+  "metrics": {
+    "dev_cosine_after": 0.6483303904533386,
+    "dev_cosine_before": -0.08825847040861845,
+    "final_jepa": 0.3734511137008667,
+    "final_online_std": 0.09781736135482788
+  },
+  "optimization": {
+    "batch_size": 8,
+    "learning_rate": 0.0003,
+    "seed": 20260722,
+    "sequence_length": 12,
+    "terminal_fraction": 0.5,
+    "warmup": {
+      "world": 1000
+    },
+    "world_steps": 20000
+  },
+  "provenance": {
+    "dev_replay": {
+      "episodes": 70,
+      "path": "outputs/d4_mamba_jepa/cartpole_baseline_v3/dev_replay.pt",
+      "sha256": "1ecaa877829913f48bbfb24d5a2c9e53a64261cfac80e11d3aa2aa3589d44747"
+    },
+    "implementation_sha256": "b77d164516357518caf002803f2dc2ab146dbd84bbd0b4ec29be469898466ee4",
+    "sources": {
+      "crafter_canonicalizer": {
+        "commit": "d1ccfa1",
+        "license": "workspace-local",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/m3_hjwm_compact/verification/crafter_canonical.py",
+        "sha256": "a10083a7eb990f65b53955b7e79f5c2491572be8c3961d4717b3a66b309bc2ea"
+      },
+      "gymnasium_cartpole": {
+        "commit": "a923da5d4415a1aa5195d99341069da5e16deed7",
+        "license": "MIT",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/third_party/sources/Farama-Foundation__Gymnasium/gymnasium/envs/classic_control/cartpole.py",
+        "sha256": "b758e3286711a2c44b0817265412c9fab1dce8b1b385e2126bc710ceedd47378"
+      },
+      "local_replay_adapter": {
+        "commit": "d1ccfa1",
+        "license": "workspace-local",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/m3_hjwm_compact/data.py",
+        "sha256": "861cf76325cc9e5473e6fac837c1206657afc02bc4e32121e6d552055fb51929"
+      },
+      "mamba2": {
+        "commit": "f577286d052741c35d39cd43bdc3fad27120f22c",
+        "license": "Apache-2.0",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/third_party/sources/state-spaces__mamba/mamba_ssm/modules/mamba2.py",
+        "sha256": "605e4439ff0baec8d8acaf4a191d9f0570eea9900065a065909124c472b08707"
+      },
+      "mmbench2_model": {
+        "commit": "3dda6ea5bc60382ad9e1dcd1c6c3af67d69326a9",
+        "license": "MIT",
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/third_party/sources/nicklashansen__mmbench2/src/model.py",
+        "sha256": "40f0c763e3e2a62c1dee2786cc6faffb7b08c8145068d8cf7d853ae89c893510"
+      }
+    },
+    "train_replay": {
+      "episodes": 260,
+      "path": "outputs/d4_mamba_jepa/cartpole_baseline_v3/train_replay.pt",
+      "sha256": "75177c4f28f54378eb6a0d26ef47292ffcae2fa700c417c0ace54d7bb8e005ff"
+    }
+  },
+  "runtime": {
+    "device": "cuda",
+    "peak_vram_bytes": 274467840,
+    "python": "3.12.12",
+    "torch": "2.12.1+cu130",
+    "world_seconds": 2457.955626228002
+  },
+  "status": "trained",
+  "world_checkpoint": {
+    "path": "outputs/d4_mamba_jepa/cartpole_jepa_v2/run_seed20260722/world.pt",
+    "sha256": "39b9fc4b2c8d242cdbf94af4286b52efb4bdc5aa190b095786e63f72b8ba323a"
+  }
+}

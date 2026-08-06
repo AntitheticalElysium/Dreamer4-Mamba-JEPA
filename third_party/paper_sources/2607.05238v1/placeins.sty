@@ -1,0 +1,6 @@
+% minimal local placeins.sty (draft-local): provides \FloatBarrier
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{placeins}[2005/04/18 v2.2 minimal local]
+\def\FloatBarrier{\par\begingroup\let\@elt\relax\edef\@tempa{\@deferlist}\endgroup
+  \clearpage}
+\endinput
