@@ -1,0 +1,35 @@
+{
+  "examples_per_class": 32,
+  "generated_fit": {
+    "fitted_path": {
+      "bce": 7.254308229676099e-07,
+      "death_auc": 1.0,
+      "accuracy": 1.0,
+      "continuation_on_alive": 0.9999992847442627,
+      "continuation_on_dead": 7.765809755255759e-07
+    },
+    "cross_path": {
+      "bce": 20.87779426574707,
+      "death_auc": 0.73779296875,
+      "accuracy": 0.71875,
+      "continuation_on_alive": 0.993614137172699,
+      "continuation_on_dead": 0.5897316336631775
+    }
+  },
+  "observed_fit": {
+    "fitted_path": {
+      "bce": 4.302534080125042e-07,
+      "death_auc": 1.0,
+      "accuracy": 1.0,
+      "continuation_on_alive": 0.9999995827674866,
+      "continuation_on_dead": 4.2092167973351025e-07
+    },
+    "cross_path": {
+      "bce": 21.69236946105957,
+      "death_auc": 0.662109375,
+      "accuracy": 0.6875,
+      "continuation_on_alive": 0.936640739440918,
+      "continuation_on_dead": 0.5554440021514893
+    }
+  }
+}

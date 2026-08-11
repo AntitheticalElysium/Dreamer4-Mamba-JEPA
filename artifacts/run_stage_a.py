@@ -79,6 +79,17 @@ def main() -> None:
     parser.add_argument("--actor-steps", type=int, default=2500)
     parser.add_argument("--eval-episodes", type=int, default=12)
     parser.add_argument("--eval-limit", type=int, default=600)
+    parser.add_argument(
+        "--terminal-dynamics-mass",
+        type=float,
+        default=0.0,
+        help="Phase-2 dynamics mass assigned to tail-aligned terminal rows",
+    )
+    parser.add_argument(
+        "--phase2-only",
+        action="store_true",
+        help="stop each arm after Phase-2 diagnostics and the outcome gate",
+    )
     parser.add_argument("--out", default="artifacts/stage_a")
     parser.add_argument("--arms", nargs="+", choices=ARMS, default=list(ARMS))
     parser.add_argument(
@@ -98,6 +109,8 @@ def main() -> None:
         (out / "run.log").open("a").write(line + "\n")
 
     base = Config()
+    if not 0.0 <= args.terminal_dynamics_mass < 1.0:
+        parser.error("--terminal-dynamics-mass must be in [0, 1)")
     if args.dynamics_steps <= base.bootstrap_start:
         parser.error(
             f"--dynamics-steps must exceed bootstrap_start={base.bootstrap_start}; "
@@ -105,7 +118,8 @@ def main() -> None:
         )
     log(
         f"terminal supervision: batch {base.terminal_batch} every Phase-2 step, "
-        f"{base.terminal_loss_mass:.1%} of continuation loss"
+        f"{base.terminal_loss_mass:.1%} of continuation loss; "
+        f"{args.terminal_dynamics_mass:.1%} of dynamics loss"
     )
     log(f"arms: {args.arms}")
     if args.reuse:
@@ -134,7 +148,13 @@ def main() -> None:
             if arm in report:
                 continue
             config = replace(base, transition=transition, time_mixer=mixer)
+            continuation_objective = (
+                "paired-observed-generated-alive-dead-v1"
+                if transition == "direct"
+                else "ordinary-tail-likelihood-v1"
+            )
             log(f"=== {arm} ===")
+            log(f"{arm}: continuation objective {continuation_objective}")
             # Mamba's Triton autotuner benchmarks several kernel configs and needs
             # headroom the resident tokenizer was holding; it is unused until eval.
             encoder.cpu()
@@ -150,6 +170,7 @@ def main() -> None:
                 config,
                 checkpoint=out / f"{arm}.2.pt",
                 world_steps=args.dynamics_steps,
+                terminal_dynamics_mass=args.terminal_dynamics_mass,
             )
             log(f"{arm}: phase 2 done")
             prior = copy.deepcopy(heads).eval()
@@ -172,9 +193,16 @@ def main() -> None:
                 f"terminal BCE {outcome_gate['observed_terminal_bce']:.4f} | "
                 f"AUC {outcome_gate['observed_terminal_auc']:.3f}"
             )
-            if not outcome_gate["passed"]:
+            if args.phase2_only or not outcome_gate["passed"]:
                 report[arm] = {
-                    "status": "outcome_gate_failed",
+                    "status": (
+                        "phase2_only"
+                        if args.phase2_only
+                        else "outcome_gate_failed"
+                    ),
+                    "terminal_dynamics_mass": args.terminal_dynamics_mass,
+                    "continuation_objective": continuation_objective,
+                    "terminal_loss_mass": config.terminal_loss_mass,
                     "outcome_gate": outcome_gate,
                     "horizon_selection": horizon_report,
                     "diagnostics": _diagnostics(world, prior, cached_dev, config),
@@ -196,6 +224,9 @@ def main() -> None:
 
             entry = {
                 "status": "complete" if actor_gate["passed"] else "actor_gate_failed",
+                "continuation_objective": continuation_objective,
+                "terminal_loss_mass": config.terminal_loss_mass,
+                "terminal_dynamics_mass": args.terminal_dynamics_mass,
                 "outcome_gate": outcome_gate,
                 "actor_outcomes": actor_outcomes,
                 "actor_gate": actor_gate,

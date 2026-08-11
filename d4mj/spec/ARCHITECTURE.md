@@ -213,7 +213,8 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
 - **`[DESIGN]` Phase-2 support does not alter the §4.1 mixture.** The main batch
   remains half ordinary and half BC-eligible sequences. A separate tail-aligned
   terminal sequence supplies the rare positive class to continuation only; it
-  cannot displace or enter dynamics, reward, or policy losses (S72).
+  cannot displace or enter dynamics, reward, or policy losses. Direct pairs its
+  final alive/terminal labels across observed and generated readouts (S72/S76).
 
 ## Box 2 — Visual representation system
 
@@ -345,9 +346,10 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   terminal=0; truncation resets runtime but bootstraps. Continuation is one-step,
   as in the pinned Dreamer 3 precedent; D4's MTP statement applies only to policy
   and reward. The same likelihood is retained on the main mixture. One tail-aligned
-  sequence joins four main sequences with equal per-sequence weight and uses the
-  arm's ordinary Phase-2 transition path: Flow's sampled noisy pass, Direct's
-  two-step generated-prefix pass (S72/S75). At \(h_t\), policy lead 0 is
+  sequence joins four main sequences with equal per-sequence weight. Flow uses
+  its ordinary sampled noisy pass. Direct scores the final alive and terminal
+  positions on both teacher-forced and generated-prefix readouts, removing a
+  path/label confound without entering the dynamics objective (S72/S75/S76). At \(h_t\), policy lead 0 is
   outgoing \(a_t\), reward lead 0 incoming \(r_t\). `[D4]` Adaptation reuses the
   pretraining setting, so flow-arm heads are deliberately trained on *noisy*
   representations across the sampled signal range — that is what makes them

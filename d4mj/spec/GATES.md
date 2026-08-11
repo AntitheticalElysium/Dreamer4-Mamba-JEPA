@@ -80,3 +80,9 @@ observation path. Those observed-successor reward/death metrics do not change th
 gate; they localise a failure. If they pass while generated successors fail, the
 transition lost outcome information. If both fail, the logged-data head itself is
 unidentified. This distinction must precede any new loss or data intervention.
+
+For Direct, a matched rerun also localises observed and generated readouts on the
+same saved states after S76. Separately, the S35 diagnostic holds `(state, action)`
+fixed while varying only simulator RNG and compares Direct-to-mean,
+Direct-to-nearest-mode, and Flow precision/coverage. It is diagnostic evidence,
+not an automatic gate that enables `K > 1`.

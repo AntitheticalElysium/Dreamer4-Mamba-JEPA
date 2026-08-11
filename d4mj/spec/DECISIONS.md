@@ -14,7 +14,7 @@ not an implementation detail. If the plan is wrong, fix the plan.
 | # | Decision | Basis |
 |---|---|---|
 | S1 | Patch size 7, no resize, 81 tokens — one token per rendered tile | Craftax-Classic obs is 63×63 with `BLOCK_PIXEL_SIZE_AGENT = 7`; 63 = 9×7. Divisors of 63 are {1,3,7,9,21,63}, of which only {7,21} are tile-aligned and non-degenerate. 7 is the finest. `[R0-CHOICE]` — no genericity claim is made |
-| S2 | `Z*` = D4 `tanh` bottleneck, **unnormalized**; direct readout is `tanh`-bounded | Keeps the flow anchor paper-faithful and Stage A genuinely fixed-representation. Matches the readout's codomain to its target's, which is the principle behind V-JEPA's `normalize_reps` for unbounded features. Bounds range only — **does not** address the scale contraction toward the conditional mean, which S35 shows is a proven consequence of determinism rather than an open question |
+| S2 | `Z*` = D4 `tanh` bottleneck, **unnormalized**; direct readout is `tanh`-bounded | Keeps the flow anchor paper-faithful and Stage A genuinely fixed-representation. Matches the readout's codomain to its target's, which is the principle behind V-JEPA's `normalize_reps` for unbounded features. Bounds range only -- it cannot prevent conditional-mean collapse when the fixed-context target is genuinely multimodal (S35) |
 | S3 | Policy/reward MTP `L = 8`, leads `n = 0..7`; policy lead 0 = outgoing `a_t`, reward lead 0 = incoming `r_t` | §3.3 states `L = 8` for policy and reward only. Module defaults agree in both reproductions, but edwhu's eval script runs `L: int = 2` and `nicklashansen/dreamer4` has no MTP heads at all, so the paper is the basis and the reproductions only fail to contradict it. Eq. (9)'s inclusive `Σ_{n=0}^{L}` reads as nine terms and is recorded as ambiguous. Continuation is separate under S75 |
 | S4 | Reward and value: 255 bins, symlog support ±20 | D4 §3.3 "Following Dreamer 3"; D3 `rewhead`/`value` `bins: 255` with centres `symexp(linspace(-20,0))` mirrored. Two-hot is linear interpolation between neighbouring centres, so bin count sets grid density, not a quantization floor; the wide support is miscalibration headroom, not wasted resolution |
 | S5 | `time_every = 4` | D4 §3.4. Reproductions ship 2 and 1 — not inherited |
@@ -71,10 +71,11 @@ not an implementation detail. If the plan is wrong, fix the plan.
 | S69 | **S51 revised.** Behaviour cloning reads ordinary expert behaviour, with task events *oversampled* rather than exclusive | D4's relevant sequences are task-conditioned. S51 dropped task conditioning for one aggregate Craftax policy but kept an event-local relevance rule, and the two are incompatible: for an aggregate imitation policy, navigation, survival, recovery and positioning are all expert behaviour worth cloning. Measured, event-only windows made **84.5%** of expert transitions unreachable as a BC target *at any training length*, and only **3.44%** of BC windows began at an episode start, because `episode_start_fraction` applied to the uniform half that BC never reads. `event_fraction` of BC rows are now event-centred and the rest are ordinary windows drawn uniformly over eligible starts, with the episode-start stratum applying to both. On the same 2500-step schedule, coverage goes 15.5% -> 41.8% and episode starts 3.44% -> 13.78%, and what remains uncovered is merely unsampled rather than unreachable |
 | S70 | **Phase-2 outcome supervision is the first universal collapse in the 20k DEV run** | An environment fork executed all 17 actions at 36 identical real states. Encoded action effects remain nonzero and matched-action successor MSE beats off-action MSE in every arm, but true death risk under the actors is 13.1–14.4% while the continuation heads predict only 0.046–0.070% death even on true encoded successors. Logged-action calibration therefore gated the wrong distribution. Raw measurements are preserved in `artifacts/stage_a_olddesign/counterfactual_forks_preterminalfix.json`; S72 and S73 implement the response |
 | S71 | **Shortcut warmup and mixture routing now match the pinned objective** | The source reserves `self_fraction` rows at coarser steps from the start but gives them zero loss until step 10,000; ours incorrectly turned them into additional finest-step empirical rows. It also always put the self row last, while our mixture always put dynamics rows last, so 46.7% rather than 25% of Phase-2 dynamics rows bootstrapped. Self rows are now randomly assigned independently of semantic roles, inactive before the exact boundary, and active afterwards. The Phase-2 checkpoint contract includes the inherited world-step clock, and the runner refuses a Phase 1B that never crosses the boundary |
-| S72 | **Terminal supervision is a stratified Bernoulli likelihood, not a positive-class weight; corrected by S75** | D4 names nonterminal `c_t` but does not specify its estimator. The closest pinned implementation is Dreamer 3's ordinary binary continuation likelihood. We retain it on the main mixture and add one tail-aligned terminal sequence per Phase-2 update. BCE covers the tail's terminal **and nonterminal** targets; with four main rows plus one tail, equal per-sequence weighting gives the stratum 20% of continuation loss and about 0.84% actual terminal-target mass under the short/long schedule, versus 61.5% in the predecessor's failed ablation. It never displaces BC or dynamics rows and cannot enter their losses. Tail stratification is a declared Craftax adaptation, not attributed to D4. The original implementation's claim that a separate real-latent pass matched deployment was false; S75 repairs the route |
+| S72 | **Terminal supervision is a stratified Bernoulli likelihood, not a positive-class weight; corrected by S75/S76** | D4 names nonterminal `c_t` but does not specify its estimator. The closest pinned implementation is Dreamer 3's ordinary binary continuation likelihood. We retain it on the main mixture and add one tail-aligned terminal sequence per Phase-2 update. It never displaces BC or dynamics rows and cannot enter their losses. Tail stratification is a declared Craftax adaptation, not attributed to D4. S75 repaired the path; S76 repairs the Direct path/label confound found by the matched-fork diagnostic |
 | S73 | **Phase 3 is conditional on a real all-actions outcome gate** | On separate DEV environment seeds 12000–12007, the BC prior visits scheduled and final pre-death states and the simulator executes all 17 actions from each identical state. Generated-successor reward choice regret and terminal BCE must beat the best state-blind **action marginals** on those forks, terminal AUC must exceed 0.5, and each outcome needs at least three varying states. This rejects a model that only learns globally safe or rewarding actions without reading state. Raw forks are saved. After Phase 3, the actor is marked failed if its exact policy-weighted one-step death exceeds its BC prior. Craftax is pinned to CPU so JAX cannot reserve the PyTorch training GPU. The known-bad Direct-A checkpoint is rejected under this gate; S70 preserves its raw measurements |
 | S74 | **Corrected DEV budget: all 320 expert episodes; 20k world, 10k agent, 2.5k actor updates per arm** | A 4k world run never reached the source's 10k shortcut bootstrap; the 20k run then showed that 2.5k head updates left outcomes unidentified. The earlier `--expert 96` also discarded 224 available expert episodes and left only 76 in training. The restarted run uses the full archive, refuses `dynamics_steps <= bootstrap_start`, and writes a fresh directory, so no incompatible checkpoint is migrated |
-| S75 | **Continuation is one-step and terminal tails use the ordinary arm-specific Phase-2 path** | D4 specifies MTP only for policy and reward; extending it to continuation was an unsourced local choice, while the pinned Dreamer 3 continuation likelihood is one binary prediction per state. More importantly, the S72 branch called `world` directly on real latents: it bypassed Flow's normal sampled corruption and Direct's generated-prefix readouts, repeating the predecessor's D043 real-versus-imagined head mismatch. The tail now obtains its readout from `transition_loss(..., return_agent=True)`. Its returned dynamics loss remains masked out by the support role, so this changes neither the §4.1 mixture nor the dynamics objective. No class weighting, terminal-dynamics weight, or generated-successor auxiliary loss is added |
+| S75 | **Continuation is one-step and terminal tails use the ordinary arm-specific Phase-2 path; Direct corrected by S76** | D4 specifies MTP only for policy and reward; extending it to continuation was an unsourced local choice, while the pinned Dreamer 3 continuation likelihood is one binary prediction per state. More importantly, the S72 branch called `world` directly on real latents: it bypassed Flow's normal sampled corruption and Direct's generated-prefix readouts, repeating the predecessor's D043 real-versus-imagined head mismatch. The tail therefore obtains its readout from `transition_loss`. Its dynamics loss remains masked out by the support role, so this changes neither the §4.1 mixture nor the dynamics objective. S76 supersedes only the Direct continuation objective |
+| S76 | **Terminal tails pair path and label: observed/generated x alive/dead, in both arms** | The ordinary tail has many observed nonterminal states but its only terminal is one of Direct's two generated-prefix states. It therefore confounded representation domain with the label: observed supplied no death example, and generated supplied only one alive example beside the death. Both arms now score exactly the final alive and terminal state, Direct in both its teacher-forced and generated-prefix readouts and Flow in the single readout it has, passed as both arguments so the average is that readout's own score. This is a balanced auxiliary likelihood; at `terminal_loss_mass=0.2` terminal labels carry 10% of continuation loss, far below the predecessor's failed 61.5% positive mass. **Applying it to Direct alone was itself a defect** -- the tail-wide average it replaced gives a dead-class share of `1/T`, so the arms would have been penalised 8x (T=16) to 31x (T=64) differently for missing a death, confounding the one comparison the project exists to make; measured, `terminal_loss` on an all-alive head scored 0.3775 and 0.0962 against the paired rule's 3.0025. D4 leaves continuation estimation unspecified, so this is a declared Craftax repair, not a paper claim. The main mixture likelihood, BC routing, reward loss, and dynamics routing are unchanged |
 | S46 | The archived Craftax replay is **losslessly convertible and usable for both §4.1 sampling roles**; what it lacks is behavioural breadth, not a "uniform half" | Everything below verified by reading the artifact, not from its manifest alone. `artifacts/expert/craftax_expert_v1.pt` (8.6 GB) holds 320 episodes / 696,746 transitions at `mean_achievements` 20.62 of 22, with all 320 flagged deep-achievement. Conversion is exact: `obs` is `(2501, 3, 64, 64)` uint8 channels-first, zero-padded from 63x63 (row 63 and col 63 measured all-zero), so `[:, :, :63, :63]` then permute to HWC loses nothing. It stores only `continues`, so `terminated = continues == 0` and `truncated` is the 2500 cap. **Correction, 2026-08-01**: the claim that this makes the corpus "100% relevant and 0% uniform" was wrong and is withdrawn. S43 defines `relevant` as a *sampling role*, not a property of an episode, and §4.1's language is sequence-level: a 2500-step successful episode contains many ordinary windows holding no achievement event, so this corpus supplies both roles. The generator also never acceptance-filtered by achievement -- it records every completed rollout and counts achievements afterwards -- so it is already unfiltered *within one PPO policy's behaviour distribution*. The fallback that sentence described no longer exists in the code either. What remains true is narrower and is the actual limitation: one strong policy over 320 episodes is far less diverse than 2541 hours of contractor play, its failure support is tiny (S50), and its expert lacks vendored source lineage. Two further defects compound it: only 68 of 320 episodes terminate (252 hit the cap), so the continuation head sees almost no real terminations, and its expert has no byte-level provenance (`Craftax_Baselines@7ce36fa` is not pinned in `third_party/`). Per S29 it therefore stays a smoke-test corpus. What is missing is not more expert play -- 697k expert transitions is already ample for the relevant half -- but an equal mass of unfiltered rollouts, which also supplies the terminations |
 | S27 | Bounded encoder context `W`, part of `C*` — `z_t = Z*(x_{t−W+1..t})` everywhere | Phase 1A windows carry a `W−1` burn-in that is encoded but not scored; once frozen, each episode is scanned once and cached **under the same `W` limit** — an unbounded full-episode scan would produce a different `Z*` from deployment. `W` is not a capacity number: it defines the representation, so changing it changes every `z_t` and it must be frozen before the final encoder trains |
 | S28 | Match total **deployed** parameters within a declared tolerance while holding `d_model`, depth, token layout and shared interfaces fixed | Primary knob is Mamba's `d_state`, the only one that moves M-arm parameters without touching the shared backbone. Parameter counts move discretely, so `d_state` alone may not reach tolerance at a sane state size — any additional knob must be declared before training. Report the unmatched residual, FLOPs, memory, recurrent-state size and measured throughput regardless. The predecessor called arms matched in a comment while the temporal module differed by 29.6% |
@@ -115,13 +116,15 @@ Dreamer 4 can share its backbone because a corrupted latent at `τ > 0` still
 carries signal, so one block is both context and query. A query token carries
 none, so the same trick does not transfer.
 
-### S35 — Deterministic Direct is `K = 1`; the stochastic extension is best-of-K
+### S35 — Test fixed-pair multimodality before enabling `K > 1`
 
-Craftax is stochastic enough for this to matter. Measured on the installed
-environment, 64 draws per `(s, a)` over 72 pairs: **83% branch**, mean 4.2
-distinct successors, and top-mode mass as low as 0.19. The distribution is
-heavy-tailed -- most states are near-deterministic, a minority are strongly
-multimodal, and those are the mob-spawn and combat states that decide episodes.
+Craftax is stochastic, but action-dependent death under one simulator draw does
+not prove that a fixed `(state, action)` has multiple successor modes, and low
+one-target MSE does not prove Direct lies between them. Those were previously
+conflated. The diagnostic must hold both state and action fixed, vary only the
+environment RNG, encode every realized successor under identical encoder history,
+and compare Direct with the empirical mean and nearest realized mode. Flow is
+evaluated on the same contexts by sample-to-mode precision and mode coverage.
 
 MoP-JEPA (`2607.05238`, Prop. 1) proves the consequence: under squared loss the
 optimal single predictor is `E[z'|c] = Σ w_m μ_m`, error lower-bounded by the
@@ -133,16 +136,60 @@ The fix is Prop. 3: best-of-K regression, `L = E[min_k ‖g_k(c) − z'‖²]`, 
 the per-context K-means distortion, so every optimum assigns a head per mode.
 Plus a router trained on the winning index and a load-balance term.
 
-**Why this settles the roadmap rather than the code:** at `K = 1` the MoP loss
-*reduces exactly to the dense loss*. So deterministic Direct is not a separate
-design -- it is the `K = 1` case of the extension. Stage A runs `K = 1`; if it
-collapses, `K > 1` is a strict generalisation of the same head, not a new arm.
+At `K = 1` the MoP loss reduces exactly to dense regression, but `K > 1` still
+changes parameters, routing and rollout semantics and remains an ablation. It is
+eligible only if terminal-critical fixed pairs are demonstrably multimodal,
+their empirical mean lies away from realized modes, Direct lies nearer that mean
+than every mode, and Flow handles the same modes materially better.
 
-**Consequence for the plan:** `diagnostics.multistep_error` is a mean error, and
-the mean error is *minimised* by the collapsed predictor, so it cannot detect the
-failure it exists to detect. It needs MoP-JEPA's measurement alongside: distance
-from the prediction to the nearest true successor mode, against distance to their
-mean, at high-branching contexts.
+`diagnostics.multistep_error` remains useful but cannot answer this question:
+squared error is minimized by the conditional mean. The fixed-pair probe reports
+the needed geometry and raw rows, but makes no automatic MoP decision.
+
+**Measured 2026-08-11 — `K > 1` is not eligible for the terminal-prediction
+failure.** `artifacts/diagnose_s35_multimodality.py` on the 100 saved
+terminal-opportunity states: 1700 `(state, action)` pairs, 64 draws each, state
+and action held fixed and only simulator RNG varied, successors encoded under
+identical encoder history, Phase-1B worlds so no head is involved. Raw rows in
+`artifacts/stage_a_s76_paired/s35_multimodality.json`.
+
+Of the four conditions above, one holds and three fail:
+
+| Condition | Verdict | Measurement |
+|---|---|---|
+| Fixed pairs are multimodal | **holds** | 48.1 distinct successors per pair; 1610 of 1700 branch |
+| Their mean lies away from realized modes | **fails** | mean-to-nearest-mode MSE 0.00032 (median 0.000145) against an inter-mode spread of 0.00126 — the mean sits *inside* the cloud, beside a real mode |
+| Direct lies nearer that mean than every mode | **fails** | closer-to-mean on 25.8% of pairs; mean advantage −0.00026, i.e. the nearest mode is usually the closer of the two |
+| Flow handles the same modes materially better | **fails** | Flow sample-to-mode precision 0.0268 against Direct's 0.0232; coverage 0.0169 |
+
+Prop. 1's harm needs *separated* modes. These are not separated on the scale that
+matters: Direct's distance to the nearest realized mode is 0.0232, **18× the
+entire spread of the successor cloud** and 73× the mean's own distance to a mode.
+The prediction is not sitting between modes; it is outside a tight cluster.
+Assigning a head per mode cannot recover a distinction that is not there.
+
+Death is also near-deterministic here, which is the more direct reason: it varies
+with RNG in **16 of 1700 pairs (0.94%)**, and reference-fatal pairs die on 99.1%
+of draws. Fatality is a function of `(state, action)` at these states, so there is
+no fatal/safe bimodality for `K > 1` to separate.
+
+**Scope — this retires the lever for one failure, not in general.** It says
+nothing about reward prediction, long-horizon rollout drift, or Stage B, and it
+does not contradict MoP-JEPA; it finds its hypothesis unmet here. Condition 1
+*holds*, so the environment-level branching S35 was built on stands and is
+confirmed. Two further limits are recorded rather than smoothed over: where death
+genuinely is stochastic, those 16 pairs show a closer-to-mean fraction of 0.75 --
+the mechanism does appear exactly where multimodality is real, on under 1% of
+pairs and still with inter-mode spread 4× below the prediction error (0.00485
+against 0.01963, on the same pairwise measure used above) -- and only the two
+attention arms at one DEV seed were measured, with no Mamba arm. Reopen this if a
+failure appears where fixed-pair modes are separated at the scale of the
+prediction error.
+
+The residual gap is accuracy, not distributional structure: prediction error is
+0.152 RMS against the DEV latent std of 0.785 (19%), while the successors it must
+distinguish span 0.036 RMS (4.5%). That is a different question with different
+levers, and it is not S35's.
 
 ### S36 — Dynamics context `C = 3·T_short`, with `T_long = 4·T_short`
 
@@ -257,7 +304,8 @@ the rollout schedule, selected by `config.transition`.
 
 **`agent.py`** — `Heads` (Type: policy, reward, continuation, value),
 `twohot(values, centers)`, `head_targets(batch, config)`,
-`head_loss(predictions, targets, config)`, `terminal_loss(predictions, targets)`.
+`head_loss(predictions, targets, config)`,
+`paired_terminal_loss(generated, observed, targets)`.
 
 `value` exists from construction but enters no optimizer before Phase 3.
 `head_targets` is where MTP lead alignment and the terminal/truncation split are

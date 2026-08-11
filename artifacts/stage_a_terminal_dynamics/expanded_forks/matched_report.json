@@ -1,0 +1,325 @@
+{
+  "contract": {
+    "trajectory_policy": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/stage_a_s76_terminal_only/direct-attention.2.pt",
+    "evaluated_model": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/stage_a_terminal_dynamics/direct-attention.2.pt",
+    "saved_forks": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/action_conditioning_diagnostics/expanded_forks/direct-attention.outcome_forks.pt",
+    "trajectory_phase2_sha256": "94bf488063121630b30e89b9b2c66143c798b3e3bb4a8a9169e5ac61f403146e",
+    "eval_phase2_sha256": "96bc7c3e4a2bc9a08cd064cb0550d6f8a1c5dc76e1aaf484cc030792c37d847b",
+    "saved_forks_sha256": "f6043ad891ceab5e2a787c354a2084eca6d5bbc9aeca09151b2777acf476c0ae",
+    "truth_replayed_exactly": true,
+    "states": 751,
+    "terminal_opportunity_states": 100
+  },
+  "metrics": {
+    "states": 751,
+    "reward_opportunity_states": 254,
+    "terminal_opportunity_states": 100,
+    "reward_choice_regret": 0.33622047305107117,
+    "reward_marginal_regret": 0.37401577830314636,
+    "terminal_bce": 4.0957183837890625,
+    "terminal_marginal_bce": 0.46235641837120056,
+    "terminal_auc": 0.5809950232505798,
+    "true_reward_under_policy": 0.045940328389406204,
+    "model_reward_under_policy": 0.09424727410078049,
+    "true_death_under_policy": 0.1281745433807373,
+    "model_death_under_policy": 0.0490010567009449,
+    "observed_reward_choice_regret": 0.2933070659637451,
+    "observed_terminal_bce": 7.386744499206543,
+    "observed_terminal_auc": 0.39222878217697144,
+    "passed": false
+  },
+  "same_action_interaction": {
+    "generated": {
+      "varying_actions": 17,
+      "same_action_pairs": 24952,
+      "macro_auc": 0.5968204736709595,
+      "pooled_pair_auc": 0.5703350305557251,
+      "min_action_auc": 0.43720000982284546,
+      "max_action_auc": 0.6825817823410034,
+      "per_action": {
+        "0": {
+          "auc": 0.6534040570259094,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.3816099464893341,
+          "mean_safe_score": 0.0893111601471901
+        },
+        "1": {
+          "auc": 0.47930195927619934,
+          "dead_states": 44,
+          "safe_states": 56,
+          "pairs": 2464,
+          "mean_dead_score": 0.20085343718528748,
+          "mean_safe_score": 0.21116675436496735
+        },
+        "2": {
+          "auc": 0.43720000982284546,
+          "dead_states": 50,
+          "safe_states": 50,
+          "pairs": 2500,
+          "mean_dead_score": 0.19535671174526215,
+          "mean_safe_score": 0.15590406954288483
+        },
+        "3": {
+          "auc": 0.4453781545162201,
+          "dead_states": 51,
+          "safe_states": 49,
+          "pairs": 2499,
+          "mean_dead_score": 0.2625696063041687,
+          "mean_safe_score": 0.3263612389564514
+        },
+        "4": {
+          "auc": 0.5339999794960022,
+          "dead_states": 50,
+          "safe_states": 50,
+          "pairs": 2500,
+          "mean_dead_score": 0.3079339563846588,
+          "mean_safe_score": 0.20393015444278717
+        },
+        "5": {
+          "auc": 0.49335548281669617,
+          "dead_states": 86,
+          "safe_states": 14,
+          "pairs": 1204,
+          "mean_dead_score": 0.1704430878162384,
+          "mean_safe_score": 0.0027268019039183855
+        },
+        "6": {
+          "auc": 0.6674107313156128,
+          "dead_states": 84,
+          "safe_states": 16,
+          "pairs": 1344,
+          "mean_dead_score": 0.2516222298145294,
+          "mean_safe_score": 0.017760995775461197
+        },
+        "7": {
+          "auc": 0.598585307598114,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.3303503394126892,
+          "mean_safe_score": 0.040465809404850006
+        },
+        "8": {
+          "auc": 0.6021220088005066,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.14364545047283173,
+          "mean_safe_score": 0.0005649190861731768
+        },
+        "9": {
+          "auc": 0.6489831805229187,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.3809256851673126,
+          "mean_safe_score": 0.10877181589603424
+        },
+        "10": {
+          "auc": 0.6719716787338257,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.35892823338508606,
+          "mean_safe_score": 0.07801949232816696
+        },
+        "11": {
+          "auc": 0.6613616347312927,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.43110525608062744,
+          "mean_safe_score": 0.12417364120483398
+        },
+        "12": {
+          "auc": 0.6648983359336853,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.42004403471946716,
+          "mean_safe_score": 0.11774838715791702
+        },
+        "13": {
+          "auc": 0.6542882323265076,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.27524954080581665,
+          "mean_safe_score": 0.0037396918050944805
+        },
+        "14": {
+          "auc": 0.6348364353179932,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.32990074157714844,
+          "mean_safe_score": 0.12960654497146606
+        },
+        "15": {
+          "auc": 0.6825817823410034,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.4717143177986145,
+          "mean_safe_score": 0.15410496294498444
+        },
+        "16": {
+          "auc": 0.6162688136100769,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.34961390495300293,
+          "mean_safe_score": 0.056025005877017975
+        }
+      }
+    },
+    "observed": {
+      "varying_actions": 17,
+      "same_action_pairs": 24952,
+      "macro_auc": 0.33306965231895447,
+      "pooled_pair_auc": 0.3428182005882263,
+      "min_action_auc": 0.21927498281002045,
+      "max_action_auc": 0.397599995136261,
+      "per_action": {
+        "0": {
+          "auc": 0.30990272760391235,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.026476576924324036,
+          "mean_safe_score": 0.008034522645175457
+        },
+        "1": {
+          "auc": 0.3841314911842346,
+          "dead_states": 44,
+          "safe_states": 56,
+          "pairs": 2464,
+          "mean_dead_score": 0.00010199032112723216,
+          "mean_safe_score": 0.0008875333587639034
+        },
+        "2": {
+          "auc": 0.35839998722076416,
+          "dead_states": 50,
+          "safe_states": 50,
+          "pairs": 2500,
+          "mean_dead_score": 0.003159836633130908,
+          "mean_safe_score": 0.006036790553480387
+        },
+        "3": {
+          "auc": 0.36974790692329407,
+          "dead_states": 51,
+          "safe_states": 49,
+          "pairs": 2499,
+          "mean_dead_score": 0.006356836762279272,
+          "mean_safe_score": 0.005859704688191414
+        },
+        "4": {
+          "auc": 0.397599995136261,
+          "dead_states": 50,
+          "safe_states": 50,
+          "pairs": 2500,
+          "mean_dead_score": 0.0006833064835518599,
+          "mean_safe_score": 0.015151169151067734
+        },
+        "5": {
+          "auc": 0.22923588752746582,
+          "dead_states": 86,
+          "safe_states": 14,
+          "pairs": 1204,
+          "mean_dead_score": 0.0017020979430526495,
+          "mean_safe_score": 0.000784043746534735
+        },
+        "6": {
+          "auc": 0.3779761791229248,
+          "dead_states": 84,
+          "safe_states": 16,
+          "pairs": 1344,
+          "mean_dead_score": 0.0015646929387003183,
+          "mean_safe_score": 0.0017727240920066833
+        },
+        "7": {
+          "auc": 0.21927498281002045,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.0002715957525651902,
+          "mean_safe_score": 0.007542816456407309
+        },
+        "8": {
+          "auc": 0.3315649926662445,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 3.819218909484334e-05,
+          "mean_safe_score": 0.00011643079778878018
+        },
+        "9": {
+          "auc": 0.3801945149898529,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.012029903009533882,
+          "mean_safe_score": 0.06565182656049728
+        },
+        "10": {
+          "auc": 0.31343942880630493,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.009685494005680084,
+          "mean_safe_score": 0.004488036967813969
+        },
+        "11": {
+          "auc": 0.33598583936691284,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.0017240486340597272,
+          "mean_safe_score": 0.0023196523543447256
+        },
+        "12": {
+          "auc": 0.38107869029045105,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.024708667770028114,
+          "mean_safe_score": 0.0016499069752171636
+        },
+        "13": {
+          "auc": 0.3412908911705017,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.00011681962496368214,
+          "mean_safe_score": 0.00017550817574374378
+        },
+        "14": {
+          "auc": 0.2723253667354584,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.009467264637351036,
+          "mean_safe_score": 0.0771123468875885
+        },
+        "15": {
+          "auc": 0.3629531264305115,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.02799905836582184,
+          "mean_safe_score": 0.030913544818758965
+        },
+        "16": {
+          "auc": 0.29708221554756165,
+          "dead_states": 87,
+          "safe_states": 13,
+          "pairs": 1131,
+          "mean_dead_score": 0.01140492781996727,
+          "mean_safe_score": 0.024206193163990974
+        }
+      }
+    }
+  }
+}

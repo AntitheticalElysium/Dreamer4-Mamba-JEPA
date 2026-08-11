@@ -1,0 +1,18 @@
+{
+  "states": 751,
+  "reward_opportunity_states": 254,
+  "terminal_opportunity_states": 100,
+  "reward_choice_regret": 0.35826772451400757,
+  "reward_marginal_regret": 0.37401577830314636,
+  "terminal_bce": 5.046964645385742,
+  "terminal_marginal_bce": 0.46235641837120056,
+  "terminal_auc": 0.6495129466056824,
+  "true_reward_under_policy": 0.046327222138643265,
+  "model_reward_under_policy": 0.08497500419616699,
+  "true_death_under_policy": 0.12936212122440338,
+  "model_death_under_policy": 0.02394273690879345,
+  "observed_reward_choice_regret": 0.27086615562438965,
+  "observed_terminal_bce": 10.324535369873047,
+  "observed_terminal_auc": 0.12315195053815842,
+  "passed": false
+}
