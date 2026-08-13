@@ -245,3 +245,6 @@ artifacts/*.pt
 artifacts/stage_a/
 artifacts/stage_a_terminalfix/
 artifacts/*.log
+
+# Matplotlib font cache written by diagnostic runners
+matplotlib-cache/
