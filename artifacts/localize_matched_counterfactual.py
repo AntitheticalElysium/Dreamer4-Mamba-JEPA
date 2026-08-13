@@ -66,6 +66,8 @@ def extract_matched_forks(
     labels, actions, groups = [], [], []
     production_generated, production_observed = [], []
     reproduced = set()
+    trajectory_action_by_group = {}
+    saved_predictions = "model_death" in saved and "observed_death" in saved
     generated_max_error = observed_max_error = 0.0
 
     for seed in sorted(by_seed):
@@ -150,14 +152,15 @@ def extract_matched_forks(
                         - heads(observed_agent)["continuation"][:, -1, 0].sigmoid()[0]
                     )
 
-                    generated_max_error = max(
-                        generated_max_error,
-                        abs(generated_death - float(saved["model_death"][row, action])),
-                    )
-                    observed_max_error = max(
-                        observed_max_error,
-                        abs(observed_death - float(saved["observed_death"][row, action])),
-                    )
+                    if saved_predictions:
+                        generated_max_error = max(
+                            generated_max_error,
+                            abs(generated_death - float(saved["model_death"][row, action])),
+                        )
+                        observed_max_error = max(
+                            observed_max_error,
+                            abs(observed_death - float(saved["observed_death"][row, action])),
+                        )
                     observed_latent.append(observed_state.world.latent[0, -1].cpu())
                     observed_readout.append(observed_agent[0, -1].cpu())
                     generated_latent.append(generated_state.latent[0, -1].cpu())
@@ -173,6 +176,9 @@ def extract_matched_forks(
             action = int(
                 torch.multinomial(logits.softmax(-1), 1, generator=policy_rng)
             )
+            if key in key_to_row:
+                group = row_to_group[key_to_row[key]]
+                trajectory_action_by_group[group] = action
             observation, env_state, _, terminated, truncated = env_step(
                 env_state, action, seed + index + 1
             )
@@ -188,6 +194,10 @@ def extract_matched_forks(
     missing = sorted(set(key_to_row) - reproduced)
     if missing:
         raise RuntimeError(f"failed to reproduce terminal-opportunity states: {missing}")
+    if set(trajectory_action_by_group) != set(range(len(selected))):
+        raise RuntimeError("failed to reproduce the trajectory action for every fork state")
+    if verify_saved_predictions and not saved_predictions:
+        raise ValueError("saved prediction verification requested without saved predictions")
     if verify_saved_predictions and (
         generated_max_error > 1e-5 or observed_max_error > 1e-5
     ):
@@ -214,6 +224,13 @@ def extract_matched_forks(
         "generated_prediction_max_abs_error_vs_saved": generated_max_error,
         "observed_prediction_max_abs_error_vs_saved": observed_max_error,
         "saved_prediction_equality_required": verify_saved_predictions,
+        "saved_predictions_available": saved_predictions,
+        "trajectory_action_by_group": [
+            trajectory_action_by_group[group] for group in range(len(selected))
+        ],
+        "trajectory_action_definition": (
+            "action sampled by the fixed trajectory policy and executed from this state"
+        ),
     }
     return data, replay
 

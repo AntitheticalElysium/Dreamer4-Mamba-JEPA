@@ -1,0 +1,60 @@
+{
+  "contract": {
+    "version": "direct-phase1b-consequence-gradient-v1",
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "data": {
+      "expert_manifest": "0e3c9869cccd67a4f7e83141ab966edc11d76a23ba2f4a0d9f7c5cd7ba58550c",
+      "support_manifest": "2599f3e4cfce32df67507447e25fa5ad1948fb0150b10d3581cc0a99de68358d"
+    },
+    "implementation": {
+      "artifacts/run_stage_a.py": "a12da564490a004f4622124dfe1386fd19310c7c3c88e765cea306946253610b",
+      "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+      "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+      "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+      "d4mj/data.py": "d2161ba078fdf822e07d355663fd938d2158c9e747e5ac2ff0ab8224ed201e98",
+      "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+      "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+      "d4mj/train.py": "55ee22c5f055e004124140e7ca07c5ddfee0c709f6ec1b21006ab85022cd7c91",
+      "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+      "artifacts/phase1b_diagnostic_common.py": "e784c0adfd203fb968cd3017afa0944aefdd2d9024ff9260c4290db1f401b087",
+      "artifacts/ablate_phase1b_consequence_gradient.py": "c5988a36e46f116076d98fff5d26b3ac439281acb9db2118ba35b23eca6c2b22"
+    },
+    "steps": 20000,
+    "ordinary_dynamics": "identical Phase-1B batches and objective",
+    "terminal_auxiliary": "balanced generated final-alive/final-dead BCE on TRAIN terminal tails",
+    "variants": {
+      "world_gradient": "terminal BCE trains head and world",
+      "stopped_world_gradient": "terminal BCE trains head after agent.detach"
+    },
+    "optimizers": "separate world and head AdamW with separate clipping"
+  },
+  "resumed_from": 0,
+  "initial_world_sha256": "a4483e78b6e54accb09384d9c165f8f19a563c61b6212c9e5f4b914223215b2f",
+  "initial_head_sha256": "ddc1873c002089969d84af9ec8cb199bcfb04d3c11e27c6b59aeb972e682dec7",
+  "gradient_preflight": {
+    "allowed": 2.3468808863658595,
+    "stopped": 0.0
+  },
+  "final": {
+    "world_gradient": {
+      "world": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/phase1b_causal_diagnostics/consequence_gradient/world_gradient.world.pt",
+      "model": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/phase1b_causal_diagnostics/consequence_gradient/world_gradient.model.pt",
+      "world_sha256": "158d3f9dd8eb76e50976b518158eee112085ed95bb79d1a3815bbc7971a124c5",
+      "head_sha256": "c687a4106cdfb6c9251ec4bd42e4532eec185d00005c357bf898fddb75fb454f",
+      "rms": {
+        "dynamics": 0.05143356715046266,
+        "terminal": 2.8494223909408225
+      }
+    },
+    "stopped_world_gradient": {
+      "world": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/phase1b_causal_diagnostics/consequence_gradient/stopped_world_gradient.world.pt",
+      "model": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/phase1b_causal_diagnostics/consequence_gradient/stopped_world_gradient.model.pt",
+      "world_sha256": "aa9949276837a3a00096bef039b9d21b06257eb97620df2455de9b669e74601d",
+      "head_sha256": "a1c6426050d97a0dd3f70d4bbd3100994cc3fdc3b42a89ad5a216a58d8db9364",
+      "rms": {
+        "dynamics": 0.04955978619767828,
+        "terminal": 1.098564993542359
+      }
+    }
+  }
+}
