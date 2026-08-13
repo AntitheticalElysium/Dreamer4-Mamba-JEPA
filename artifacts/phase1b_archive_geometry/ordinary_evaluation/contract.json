@@ -1,0 +1,34 @@
+{
+  "version": "phase1b-archive-geometry-evaluation-v1",
+  "inputs": {
+    "prepared": "7e703c4b08f996ac10e75e1265152090c8aea3673586afdf8d88e540d7e80bae",
+    "worlds": {
+      "step_005k": "d6375c52027acd126afc3e7e7279f342ee76aa6f8719015a3b6d81025de31f8b",
+      "step_020k": "b46f7eb1bcbd438cec9364b3b2f99dac958ebccdfe9bb51781e25cefdce30c3a",
+      "step_080k": "8365b221968183f6a85a72a965505dfb40fe60389fdeccfa46a855cec5a5be81"
+    }
+  },
+  "implementation": {
+    "artifacts/run_stage_a.py": "a12da564490a004f4622124dfe1386fd19310c7c3c88e765cea306946253610b",
+    "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+    "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+    "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+    "d4mj/data.py": "d2161ba078fdf822e07d355663fd938d2158c9e747e5ac2ff0ab8224ed201e98",
+    "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+    "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+    "d4mj/train.py": "55ee22c5f055e004124140e7ca07c5ddfee0c709f6ec1b21006ab85022cd7c91",
+    "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+    "artifacts/phase1b_diagnostic_common.py": "e784c0adfd203fb968cd3017afa0944aefdd2d9024ff9260c4290db1f401b087",
+    "artifacts/evaluate_phase1b_archive_geometry.py": "b610990915edc502fed1e3474c7c69d507ea3f129354830bddb09f420c0d2187",
+    "artifacts/phase1b_geometry_common.py": "aaf5553f3aaebd1620f63c72940f88fd912b004d7ec47abcfe4edfb0e9040453"
+  },
+  "paths": [
+    "reset16",
+    "reset64",
+    "recurrent"
+  ],
+  "bootstraps": 2000,
+  "probe_direction": "one fixed TRAIN real-successor direction for every world",
+  "generated_probe": "fit independently per checkpoint on TRAIN logged transitions; evaluate only on whole held-out DEV episodes",
+  "evaluation": "whole held-out episodes; expert and epsilon support reported separately"
+}

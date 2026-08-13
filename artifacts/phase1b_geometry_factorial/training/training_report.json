@@ -1,0 +1,19 @@
+{
+  "version": "phase1b-geometry-factorial-training-v1",
+  "cells": [
+    "whitened_ordinary",
+    "ordinary_terminal",
+    "whitened_terminal"
+  ],
+  "invariants": {
+    "same_initialization": true,
+    "same_ordinary_streams": true,
+    "same_terminal_streams": true,
+    "ordinary_streams_match_reference": true
+  },
+  "reports": {
+    "whitened_ordinary": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/phase1b_geometry_factorial/training/whitened_ordinary/training_report.json",
+    "ordinary_terminal": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/phase1b_geometry_factorial/training/ordinary_terminal/training_report.json",
+    "whitened_terminal": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/phase1b_geometry_factorial/training/whitened_terminal/training_report.json"
+  }
+}

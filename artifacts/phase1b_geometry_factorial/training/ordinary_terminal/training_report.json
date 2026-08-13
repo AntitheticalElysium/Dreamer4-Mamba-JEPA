@@ -1,0 +1,315 @@
+{
+  "contract": {
+    "version": "phase1b-geometry-factorial-v1",
+    "cell": {
+      "metric": "ordinary",
+      "sampling": "terminal"
+    },
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "reference_phase1b": "b251c611524a2295e0b07a4835e040ceedf6c7a8e56b78e159cb3833bc9b4802",
+    "prepared": "7e703c4b08f996ac10e75e1265152090c8aea3673586afdf8d88e540d7e80bae",
+    "data": {
+      "expert_manifest": "0e3c9869cccd67a4f7e83141ab966edc11d76a23ba2f4a0d9f7c5cd7ba58550c",
+      "support_manifest": "2599f3e4cfce32df67507447e25fa5ad1948fb0150b10d3581cc0a99de68358d"
+    },
+    "implementation": {
+      "artifacts/run_stage_a.py": "a12da564490a004f4622124dfe1386fd19310c7c3c88e765cea306946253610b",
+      "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+      "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+      "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+      "d4mj/data.py": "d2161ba078fdf822e07d355663fd938d2158c9e747e5ac2ff0ab8224ed201e98",
+      "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+      "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+      "d4mj/train.py": "55ee22c5f055e004124140e7ca07c5ddfee0c709f6ec1b21006ab85022cd7c91",
+      "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+      "artifacts/phase1b_diagnostic_common.py": "e784c0adfd203fb968cd3017afa0944aefdd2d9024ff9260c4290db1f401b087",
+      "artifacts/train_phase1b_geometry_factorial.py": "6f84971016098636f324b2050d569af6fd3b2daee3bd600a6ff057d307027fea",
+      "artifacts/phase1b_geometry_common.py": "e4aadf5caab0a4a5e56354aa44ffb3712b44c44daad2d4cc90cc1bcf3753aa5f"
+    },
+    "steps": 20000,
+    "milestones": [
+      5000,
+      20000
+    ],
+    "precision": {
+      "width": 512,
+      "shrinkage": 0.01,
+      "trace": 169.51625208556652,
+      "mean_variance": 0.3310864298546221,
+      "minimum_eigenvalue": 0.000682698172277099,
+      "maximum_eigenvalue": 36.36505365210467,
+      "regularized_condition": 9031.126865154834,
+      "effective_rank": 45.804276229134246,
+      "mean_precision_eigenvalue": 1.0
+    },
+    "condition_limit": 10000.0,
+    "terminal_seed": 20266832,
+    "invariants": "same initialization, ordinary sampler/model streams, optimizer, schedule and Phase-1A cache; terminal tails use independent fixed streams; terminal mass 1/5 gives each of four ordinary rows and one tail row equal sequence weight",
+    "terminal_mass": 0.2,
+    "terminal_successor_raw_coefficient": {
+      "short": 0.11333333333333334,
+      "long": 0.10317460317460317
+    }
+  },
+  "resumed_from": 0,
+  "initial_world_sha256": "a4483e78b6e54accb09384d9c165f8f19a563c61b6212c9e5f4b914223215b2f",
+  "milestone_world_sha256": {
+    "5000": "a885bddb99427a47c5143b07505ef063afbef745bac0805d04d12c71deab312f",
+    "20000": "959acdcd931c31e49820fbbf2f8c402ec925fbe2ff6dcaeb96353de4af2a84fb"
+  },
+  "stream_sha256": {
+    "sampler": "eb80ae949c917b5e688a6201803a1ef1427e790384d21952a455c55f58cc11ed",
+    "model": "76f8353d21a4fd506daf087b9d4f91878a826be7bb79efdc7ea843502b8653cd",
+    "terminal_sampler": "1b01636a539ac75d51977bd6f54517f2566fa1cb16a9047789818d5fd93e119e",
+    "terminal_model": "a0aec4f63eb2ba70bb31e71d2e2d4d81fee7e0fc2ab059279fd78269f4537005"
+  },
+  "reference": {
+    "world_sha256": "381600be45c3c2c0bdadd726c32a6d8d0fba0c212c2e59d5a2bff1c6d4e34df2",
+    "sampler_sha256": "eb80ae949c917b5e688a6201803a1ef1427e790384d21952a455c55f58cc11ed",
+    "model_sha256": "76f8353d21a4fd506daf087b9d4f91878a826be7bb79efdc7ea843502b8653cd"
+  },
+  "ordinary_streams_match_reference": true,
+  "terminal_rows_scored": 20000,
+  "training_curve": [
+    {
+      "step": 500,
+      "main_raw_mean": 0.6853216060101986,
+      "terminal_raw_mean": 0.6956817226409913,
+      "dynamics_rms": 0.4591271416291614
+    },
+    {
+      "step": 1000,
+      "main_raw_mean": 0.3097223927974701,
+      "terminal_raw_mean": 0.33880180662870407,
+      "dynamics_rms": 0.2894917257309622
+    },
+    {
+      "step": 1500,
+      "main_raw_mean": 0.22994333380460738,
+      "terminal_raw_mean": 0.2483445147573948,
+      "dynamics_rms": 0.217412722209671
+    },
+    {
+      "step": 2000,
+      "main_raw_mean": 0.17726099909842014,
+      "terminal_raw_mean": 0.1964652950167656,
+      "dynamics_rms": 0.17317119827517563
+    },
+    {
+      "step": 2500,
+      "main_raw_mean": 0.14667909356951714,
+      "terminal_raw_mean": 0.16210476986318828,
+      "dynamics_rms": 0.14570938948201984
+    },
+    {
+      "step": 3000,
+      "main_raw_mean": 0.12439213626086712,
+      "terminal_raw_mean": 0.13854495818540455,
+      "dynamics_rms": 0.1265176988527033
+    },
+    {
+      "step": 3500,
+      "main_raw_mean": 0.1118183218240738,
+      "terminal_raw_mean": 0.12302260500565171,
+      "dynamics_rms": 0.11482606113505694
+    },
+    {
+      "step": 4000,
+      "main_raw_mean": 0.104825752787292,
+      "terminal_raw_mean": 0.11408017167076469,
+      "dynamics_rms": 0.11266207286185509
+    },
+    {
+      "step": 4500,
+      "main_raw_mean": 0.09891484897956251,
+      "terminal_raw_mean": 0.10712516660615802,
+      "dynamics_rms": 0.09942714308649873
+    },
+    {
+      "step": 5000,
+      "main_raw_mean": 0.09202793152630329,
+      "terminal_raw_mean": 0.10229077450744807,
+      "dynamics_rms": 0.09609026704702135
+    },
+    {
+      "step": 5500,
+      "main_raw_mean": 0.08994946294650435,
+      "terminal_raw_mean": 0.09616779346577824,
+      "dynamics_rms": 0.09256458456407497
+    },
+    {
+      "step": 6000,
+      "main_raw_mean": 0.08311674819141626,
+      "terminal_raw_mean": 0.09369091708026826,
+      "dynamics_rms": 0.0859306849586765
+    },
+    {
+      "step": 6500,
+      "main_raw_mean": 0.08004520727321505,
+      "terminal_raw_mean": 0.08855300776287914,
+      "dynamics_rms": 0.08480853830859138
+    },
+    {
+      "step": 7000,
+      "main_raw_mean": 0.07998132549971342,
+      "terminal_raw_mean": 0.08126312894932926,
+      "dynamics_rms": 0.08300723520927022
+    },
+    {
+      "step": 7500,
+      "main_raw_mean": 0.08066969477012753,
+      "terminal_raw_mean": 0.08075181949883699,
+      "dynamics_rms": 0.08271253818624559
+    },
+    {
+      "step": 8000,
+      "main_raw_mean": 0.07443065265566111,
+      "terminal_raw_mean": 0.07295403376221657,
+      "dynamics_rms": 0.07540263583659
+    },
+    {
+      "step": 8500,
+      "main_raw_mean": 0.07605243198387325,
+      "terminal_raw_mean": 0.07729204554855823,
+      "dynamics_rms": 0.07862092182584518
+    },
+    {
+      "step": 9000,
+      "main_raw_mean": 0.06961684638634325,
+      "terminal_raw_mean": 0.07369581371173263,
+      "dynamics_rms": 0.07206840263105098
+    },
+    {
+      "step": 9500,
+      "main_raw_mean": 0.06995059431716799,
+      "terminal_raw_mean": 0.06903547937609256,
+      "dynamics_rms": 0.07439968186518757
+    },
+    {
+      "step": 10000,
+      "main_raw_mean": 0.06665752427652478,
+      "terminal_raw_mean": 0.06557874732650816,
+      "dynamics_rms": 0.06923412849638752
+    },
+    {
+      "step": 10500,
+      "main_raw_mean": 0.0643247131742537,
+      "terminal_raw_mean": 0.06574706014618277,
+      "dynamics_rms": 0.06554250133893878
+    },
+    {
+      "step": 11000,
+      "main_raw_mean": 0.06510457377880811,
+      "terminal_raw_mean": 0.06314937505312264,
+      "dynamics_rms": 0.06937353686046771
+    },
+    {
+      "step": 11500,
+      "main_raw_mean": 0.06050097298063338,
+      "terminal_raw_mean": 0.058458388086408374,
+      "dynamics_rms": 0.0628074530306434
+    },
+    {
+      "step": 12000,
+      "main_raw_mean": 0.06128906264156103,
+      "terminal_raw_mean": 0.06275217909365892,
+      "dynamics_rms": 0.0648599875094209
+    },
+    {
+      "step": 12500,
+      "main_raw_mean": 0.06033061439171433,
+      "terminal_raw_mean": 0.058673204820603134,
+      "dynamics_rms": 0.06156335589810803
+    },
+    {
+      "step": 13000,
+      "main_raw_mean": 0.060261252120137214,
+      "terminal_raw_mean": 0.058408863223157824,
+      "dynamics_rms": 0.0655139409856637
+    },
+    {
+      "step": 13500,
+      "main_raw_mean": 0.0569879977889359,
+      "terminal_raw_mean": 0.056084114629775285,
+      "dynamics_rms": 0.05861530143248691
+    },
+    {
+      "step": 14000,
+      "main_raw_mean": 0.05650793698616326,
+      "terminal_raw_mean": 0.0539729986442253,
+      "dynamics_rms": 0.0591640191682359
+    },
+    {
+      "step": 14500,
+      "main_raw_mean": 0.05666427356936037,
+      "terminal_raw_mean": 0.052327911149710415,
+      "dynamics_rms": 0.06024605248407089
+    },
+    {
+      "step": 15000,
+      "main_raw_mean": 0.05717765964753926,
+      "terminal_raw_mean": 0.04945426601171494,
+      "dynamics_rms": 0.058598755338849416
+    },
+    {
+      "step": 15500,
+      "main_raw_mean": 0.05819486798718572,
+      "terminal_raw_mean": 0.04378155958745628,
+      "dynamics_rms": 0.057432373709598236
+    },
+    {
+      "step": 16000,
+      "main_raw_mean": 0.05562823161110282,
+      "terminal_raw_mean": 0.042234356405213475,
+      "dynamics_rms": 0.054247767357499296
+    },
+    {
+      "step": 16500,
+      "main_raw_mean": 0.05596759923174977,
+      "terminal_raw_mean": 0.04128068688698113,
+      "dynamics_rms": 0.05888019885388339
+    },
+    {
+      "step": 17000,
+      "main_raw_mean": 0.05293454736098647,
+      "terminal_raw_mean": 0.04016298407129943,
+      "dynamics_rms": 0.05117238461090103
+    },
+    {
+      "step": 17500,
+      "main_raw_mean": 0.05365122259780765,
+      "terminal_raw_mean": 0.04146968537569046,
+      "dynamics_rms": 0.05149632992278299
+    },
+    {
+      "step": 18000,
+      "main_raw_mean": 0.05282146767526865,
+      "terminal_raw_mean": 0.04101214162539691,
+      "dynamics_rms": 0.053931051588986506
+    },
+    {
+      "step": 18500,
+      "main_raw_mean": 0.051867318022996184,
+      "terminal_raw_mean": 0.037544342903420326,
+      "dynamics_rms": 0.048287896265212925
+    },
+    {
+      "step": 19000,
+      "main_raw_mean": 0.05047074679285288,
+      "terminal_raw_mean": 0.03935924924910068,
+      "dynamics_rms": 0.052536451375839795
+    },
+    {
+      "step": 19500,
+      "main_raw_mean": 0.049856006894260646,
+      "terminal_raw_mean": 0.03716308567207307,
+      "dynamics_rms": 0.048410123229845
+    },
+    {
+      "step": 20000,
+      "main_raw_mean": 0.04755359752476215,
+      "terminal_raw_mean": 0.03506012084335089,
+      "dynamics_rms": 0.04720290406785604
+    }
+  ]
+}

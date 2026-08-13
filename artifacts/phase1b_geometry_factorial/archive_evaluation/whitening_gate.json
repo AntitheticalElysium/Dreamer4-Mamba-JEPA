@@ -1,0 +1,4 @@
+{
+  "eligible": false,
+  "reason": "missing required worlds: ['step_005k', 'step_020k', 'step_080k']"
+}

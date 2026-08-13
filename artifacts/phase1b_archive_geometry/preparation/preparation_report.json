@@ -1,0 +1,164 @@
+{
+  "contract": {
+    "version": "phase1b-archive-geometry-preparation-v1",
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "data": {
+      "expert_manifest": "0e3c9869cccd67a4f7e83141ab966edc11d76a23ba2f4a0d9f7c5cd7ba58550c",
+      "support_manifest": "2599f3e4cfce32df67507447e25fa5ad1948fb0150b10d3581cc0a99de68358d"
+    },
+    "implementation": {
+      "artifacts/run_stage_a.py": "a12da564490a004f4622124dfe1386fd19310c7c3c88e765cea306946253610b",
+      "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+      "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+      "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+      "d4mj/data.py": "d2161ba078fdf822e07d355663fd938d2158c9e747e5ac2ff0ab8224ed201e98",
+      "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+      "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+      "d4mj/train.py": "55ee22c5f055e004124140e7ca07c5ddfee0c709f6ec1b21006ab85022cd7c91",
+      "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+      "artifacts/phase1b_diagnostic_common.py": "e784c0adfd203fb968cd3017afa0944aefdd2d9024ff9260c4290db1f401b087",
+      "artifacts/prepare_phase1b_archive_geometry.py": "b536a5fb8d8de12d32935eac0789a4230f6f4e18ce497373c1f944a3b18a6983",
+      "artifacts/phase1b_geometry_common.py": "aaf5553f3aaebd1620f63c72940f88fd912b004d7ec47abcfe4edfb0e9040453"
+    },
+    "expert": 320,
+    "covariance_samples": 8192,
+    "shrinkage": 0.1,
+    "probe_seeds": 5,
+    "probe_steps": 800,
+    "exposure_steps": 80000,
+    "schedule_cycle": 20000,
+    "split": "the production whole-episode split, expert and support separately"
+  },
+  "cache_digest": "51950bb8b3b38a2a",
+  "train": {
+    "expert": {
+      "episodes": 256,
+      "transitions": 552998,
+      "terminal_episodes": 56,
+      "terminal_transitions": 56,
+      "truncated_episodes": 200
+    },
+    "support": {
+      "episodes": 268,
+      "transitions": 89516,
+      "terminal_episodes": 264,
+      "terminal_transitions": 264,
+      "truncated_episodes": 4
+    }
+  },
+  "dev": {
+    "expert": {
+      "episodes": 32,
+      "transitions": 74082,
+      "terminal_episodes": 3,
+      "terminal_transitions": 3,
+      "truncated_episodes": 29
+    },
+    "support": {
+      "episodes": 34,
+      "transitions": 8299,
+      "terminal_episodes": 34,
+      "terminal_transitions": 34,
+      "truncated_episodes": 0
+    }
+  },
+  "evaluation": {
+    "expert": {
+      "pairs": 3,
+      "examples": 6,
+      "same_action_safe_pairs": 3,
+      "group_offset": 0
+    },
+    "support": {
+      "pairs": 34,
+      "examples": 68,
+      "same_action_safe_pairs": 34,
+      "group_offset": 3
+    }
+  },
+  "training_geometry": {
+    "fatal_direction": {
+      "examples": 640,
+      "terminal_examples": 320,
+      "groups": 320,
+      "fit_groups": 256,
+      "validation_groups": 64,
+      "seed_validation_auc": [
+        0.8310546875,
+        0.8095703125,
+        0.816650390625,
+        0.814208984375,
+        0.822509765625
+      ],
+      "ensemble_validation_auc": 0.820068359375,
+      "same_action_safe_pairs": 317,
+      "direction_norm": 1.0000001192092896
+    },
+    "covariance": {
+      "samples": 8192,
+      "width": 512,
+      "shrinkage": 0.1,
+      "trace": 169.51625197953925,
+      "mean_variance": 0.3310864296475376,
+      "minimum_eigenvalue": 0.0006826950907021754,
+      "maximum_eigenvalue": 36.36505366262727,
+      "regularized_condition": 971.490980847902,
+      "effective_rank": 45.80427603655718,
+      "mean_precision_eigenvalue": 1.0
+    },
+    "direction_variance": 0.060414835810661316,
+    "direction_variance_share": 0.00035639554079998077,
+    "direction_variance_relative_to_isotropic": 0.18247451688959015
+  },
+  "sampler_exposure": {
+    "step": 80000,
+    "terminal_batches": 122,
+    "teacher_targets": 11520000,
+    "teacher_terminal_targets": 122,
+    "rollout_targets": 640000,
+    "rollout_terminal_targets": 122,
+    "effective_target_mass": 160000.0,
+    "effective_terminal_mass": 16.597619047619062,
+    "short_batches": 45000,
+    "long_batches": 35000,
+    "milestones": {
+      "5000": {
+        "terminal_batches": 10,
+        "teacher_targets": 540000,
+        "teacher_terminal_targets": 10,
+        "rollout_targets": 40000,
+        "rollout_terminal_targets": 10,
+        "effective_target_mass": 10000.0,
+        "effective_terminal_mass": 1.3404761904761902,
+        "short_batches": 3750,
+        "long_batches": 1250,
+        "effective_terminal_fraction": 0.000134047619047619
+      },
+      "20000": {
+        "terminal_batches": 36,
+        "teacher_targets": 2880000,
+        "teacher_terminal_targets": 36,
+        "rollout_targets": 160000,
+        "rollout_terminal_targets": 36,
+        "effective_target_mass": 40000.0,
+        "effective_terminal_mass": 4.846031746031745,
+        "short_batches": 11250,
+        "long_batches": 8750,
+        "effective_terminal_fraction": 0.00012115079365079362
+      },
+      "80000": {
+        "terminal_batches": 122,
+        "teacher_targets": 11520000,
+        "teacher_terminal_targets": 122,
+        "rollout_targets": 640000,
+        "rollout_terminal_targets": 122,
+        "effective_target_mass": 160000.0,
+        "effective_terminal_mass": 16.597619047619062,
+        "short_batches": 45000,
+        "long_batches": 35000,
+        "effective_terminal_fraction": 0.00010373511904761914
+      }
+    },
+    "effective_terminal_fraction": 0.00010373511904761914
+  }
+}
