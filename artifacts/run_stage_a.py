@@ -149,9 +149,9 @@ def main() -> None:
                 continue
             config = replace(base, transition=transition, time_mixer=mixer)
             continuation_objective = (
-                "paired-observed-generated-alive-dead-v1"
+                "paired-observed-generated-alive-dead-v2"
                 if transition == "direct"
-                else "ordinary-tail-likelihood-v1"
+                else "paired-single-readout-alive-dead-v2"
             )
             log(f"=== {arm} ===")
             log(f"{arm}: continuation objective {continuation_objective}")

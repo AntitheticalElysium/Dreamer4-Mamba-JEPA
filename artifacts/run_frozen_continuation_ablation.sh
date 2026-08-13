@@ -32,4 +32,9 @@ done
   --checkpoint "$out/training.pt" \
   --out "$out/report.json"
 
-echo "complete: $out/report.json"
+echo "frozen Direct heads complete: $out/report.json"
+
+bash artifacts/run_equalized_flow_continuation.sh
+bash artifacts/run_direct_transition_stages.sh
+
+echo "all continuation experiments complete"

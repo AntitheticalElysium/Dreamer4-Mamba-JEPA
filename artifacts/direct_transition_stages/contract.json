@@ -1,0 +1,43 @@
+{
+  "version": "direct-transition-stages-v1",
+  "inputs": {
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "trajectory_phase2": "94bf488063121630b30e89b9b2c66143c798b3e3bb4a8a9169e5ac61f403146e",
+    "forks": "f6043ad891ceab5e2a787c354a2084eca6d5bbc9aeca09151b2777acf476c0ae",
+    "reference_features": "fb3046690a215a11204ab5e775caa89927d1a7d94feeb153c48886cf735dd5eb",
+    "stages": {
+      "phase1b": {
+        "sha256": "b251c611524a2295e0b07a4835e040ceedf6c7a8e56b78e159cb3833bc9b4802",
+        "world_only": true
+      },
+      "terminal_only": {
+        "sha256": "94bf488063121630b30e89b9b2c66143c798b3e3bb4a8a9169e5ac61f403146e",
+        "world_only": false
+      },
+      "paired": {
+        "sha256": "910a4df06b0e64842a53c3a11a8a59840c183196f475a33510f06718c9022282",
+        "world_only": false
+      },
+      "terminal_dynamics": {
+        "sha256": "96bc7c3e4a2bc9a08cd064cb0550d6f8a1c5dc76e1aaf484cc030792c37d847b",
+        "world_only": false
+      }
+    }
+  },
+  "implementation": {
+    "artifacts/localize_direct_transition_stages.py": "c0983b314c3f706492cbd83e5e6a3075ff6179a684daa3fdd7674d1df2fc2e9a",
+    "artifacts/localize_counterfactual.py": "0313e2a49ce6de96e2764bb76e6f7fb0609525b68027f0941e8ae049c3e49fe4",
+    "artifacts/localize_counterfactual_interaction.py": "f00266beed817ccc93c26fa85acee6440a445bc4deee0f98c54143d05fe6253b",
+    "artifacts/localize_matched_counterfactual.py": "663e01f1c4aeb717f84d9e6cecb7eaf00da6f23f755cd61123e4848a8393d384",
+    "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+    "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+    "d4mj/env.py": "e8f821d1d29affa4020bd407f00330ce3eb0790b9343b2c9351472e74dd1d960",
+    "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+    "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777"
+  },
+  "evaluation": "same 100 terminal-opportunity states and all 17 actions",
+  "probe": "action-centered leave-one-pre-action-state-out linear",
+  "seeds": 5,
+  "linear_steps": 600,
+  "permutations": 5000
+}
