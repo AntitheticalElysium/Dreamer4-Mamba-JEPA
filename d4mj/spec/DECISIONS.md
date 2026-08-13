@@ -186,10 +186,12 @@ attention arms at one DEV seed were measured, with no Mamba arm. Reopen this if 
 failure appears where fixed-pair modes are separated at the scale of the
 prediction error.
 
-The residual gap is accuracy, not distributional structure: prediction error is
-0.152 RMS against the DEV latent std of 0.785 (19%), while the successors it must
-distinguish span 0.036 RMS (4.5%). That is a different question with different
-levers, and it is not S35's.
+The residual gap is not distributional structure: prediction error is 0.152 RMS
+against the DEV latent std of 0.785 (19%), while the successors it must distinguish
+span 0.036 RMS (4.5%). **Calling that gap "accuracy" is withdrawn** -- training four
+times longer improved aggregate accuracy and made fatality discrimination worse. The
+question is a different one with different levers, and it is not S35's; it is
+recorded under "Phase-1B consequence investigation" below.
 
 ### S36 — Dynamics context `C = 3·T_short`, with `T_long = 4·T_short`
 
@@ -217,7 +219,7 @@ config value, and each must be closed before the phase named.
 | ~~**Imagination horizon**~~ — **closed by S54.** The selection *rule* is now fixed: DEV only, from `horizon_candidates`, via `multistep_error` under a full committed context. The resulting number is not yet chosen, and choosing it is a run, not a decision | ~~Phase 3~~ | `Config.horizon` |
 | ~~**Matching tolerance and final Mamba dimensions**~~ — **closed by S53.** 0.5% deployed residual, shared dimensions fixed; `d_state = 64` measured at -0.316% and passes | ~~Before building the Stage-A models~~ | `diagnostics.cost`, `Config` |
 | ~~**Executed-control metric definition**~~ — **closed by S51 and S52**, and implemented in `execution`: aggregate task, official geometric-mean score, native horizon, sampled primary, BC and random controls, paired seeds, paired bootstrap, and a two-sided pass rule | ~~Before Stage A~~ | `execution.run_episode`, `evaluate`, `score` |
-| **Behavioural support of the corpus** — the only data question left open, and deliberately. The archive serves both §4.1 roles (S46), so this is not about a "uniform half": it is whether one PPO policy over 320 episodes, with 68 terminals in 696,746 transitions (S50), is broad enough to attribute a world-model result to. Open: whether to collect more, from what policy mixture, how much, and whether reported runs treat the archive as a hash-pinned artifact whose behavioural lineage cannot be reproduced | Before reported Stage-A training | `expert.collect` |
+| **Behavioural support of the corpus** — the only data question left open, and deliberately. The archive serves both §4.1 roles (S46), so this is not about a "uniform half": it is whether one PPO policy over 320 episodes, with 68 terminals in 696,746 transitions (S50), is broad enough to attribute a world-model result to. Open: whether to collect more, from what policy mixture, how much, and whether reported runs treat the archive as a hash-pinned artifact whose behavioural lineage cannot be reproduced. **Sharpened, not answered, by the Phase-1B consequence investigation**: terminal breadth is already good -- support deaths span 0-22 achievements at a median of 12, with only 15.7% inside 100 steps -- so the open quantity is the *count* of unique terminal episodes (400 in 753k transitions), not their variety. Any new corpus must be a new versioned artifact: every result to date is digest-bound to `craftax_support_v1.pt` | Before reported Stage-A training | `expert.collect` |
 
 ## Function plan
 
@@ -435,6 +437,67 @@ Also settled by execution: the tokenizer always mixes time with attention, in
 every arm. Mamba's state summarises all history rather than a window, so a Mamba
 encoder cannot honour the bound that makes `Z*` well defined -- and keeping the
 encoder common is what confines the substitution to the dynamics.
+
+## Phase-1B consequence investigation — measurements only, nothing decided
+
+**No decision is recorded here and no remedy is adopted.** This section states what
+was measured between 2026-08-10 and 2026-08-13, so the next choice is made against
+evidence rather than memory. Every figure is on the same 100 matched
+terminal-opportunity DEV states unless stated, dead-vs-safe compared within the
+same action, with `action_identity_only` at exactly 0.500 as the control. AUCs are
+pooled-pair unless named macro; the two differ by about 0.02 and the register was
+previously quoting both without saying which.
+
+**The failure.** A linear probe reads fatality from the real encoded successor at
+**0.923**. From the model's generated successor it reads **0.646** (Direct) and
+**0.649 / 0.680** (Flow, one sample / eight averaged). Imagination therefore
+presents an actor with a world where death is nearly invisible: modelled death
+under policy 0.0009-0.0019 against a true 0.12-0.13.
+
+**Where it is not.** Each of these was a live hypothesis, and each is closed by
+measurement rather than argument:
+
+| Hypothesis | Verdict | Evidence |
+|---|---|---|
+| The encoder | no | observed-latent probe pinned at 0.916 macro across every stage and arm; death transitions move 4.40x in pixels and 3.30x in latents (compression 0.749), and 7.91x along the fatality direction |
+| Action conditioning | no | shuffling the outgoing action raises MSE 2.44x |
+| The continuation head | no | frozen world, 10k steps, trained *only* on generated states, caps at 0.527 |
+| Terminal data volume in Phase 2 | no | terminal-dynamics mass 1/3 moved the generated latent 0.686 -> 0.676 macro |
+| Multimodality / MoP-JEPA `K > 1` | no | S35, measured: modes unseparated, death RNG-stochastic in 16 of 1700 pairs |
+| Undertraining | **inverted** | 20k -> 80k: latent error 0.0242 -> 0.0186 while fatality AUC 0.666 -> 0.572 macro, fatal/safe error ratio 0.843 -> 1.079 |
+| The deterministic JEPA substitution | no | Flow loses the same at matched accuracy (0.0241 vs 0.0242 latent error) |
+| Outcome gradients into the world | no, harmful | 0.604 with, 0.644 with the gradient stopped, matched 20k |
+| Offline action coverage | no | logged-action fatality 0.497-0.502 across four worlds on 52 paired trajectories |
+| Loss reweighting (whitening) | no | best cell 1.062 direction error at 20k, still worse than a constant; 0.895 at 5k decays away |
+
+**What the failure is.** Under-dispersion, not a sign error and not silence. On
+fatal transitions the true latent moves **+0.456** along the fitted direction; the
+model predicts **+0.033 to +0.148**, 7% to 32%, with the sign right 66-85% of the
+time. `fatal_failure_mode` is `tracks_true_direction` in 14 of 16 cells. An earlier
+reading of the prediction as *inverted* is withdrawn: that was the starting-state
+offset, since fatal states begin lower on this axis and the model barely moves.
+
+The geometry is consistent with rarity rather than compression. The direction holds
+0.000356 of latent variance (0.182x isotropic) in a latent of effective rank 45.8
+of 512 -- but deaths excite it 7.91x, so the small variance share follows from 400
+terminal events in 753k transitions, not from the encoder discarding it.
+
+**Registered as method, not as a decision.** A scaling experiment on this quantity
+must score conditional fatal-vs-safe predicted movement, or slope, and keep AUC
+secondary: on the same eight cells the delta statistic has 95% intervals 0.040-0.093
+wide and separates cells with disjoint intervals, while predicted-delta AUC
+intervals are 0.227-0.284 wide and all eight overlap. Early checkpoints must be kept,
+because the signal attenuates with training in three of four factorial cells.
+
+**Open.** Whether more unique terminal episodes recover the magnitude. 320 TRAIN
+terminals repeated about 62x at 20k exposure is the memorisation regime, and
+terminal-enriched sampling is the one intervention with a clean positive effect
+(0.069 [0.048, 0.093] against 0.033 [0.012, 0.056] at 20k). A larger corpus is
+under discussion and **not decided**; host RAM, not disk, is the binding constraint
+at roughly 23 GB available. Also open, and untouched by all of the above: no Mamba
+arm has been through any of this, the variance-weighting explanation is inferred
+rather than demonstrated, and no experiment has shown that repairing fatality
+prediction would lift an actor above its BC prior.
 
 ## Verified defects, in fix order
 
