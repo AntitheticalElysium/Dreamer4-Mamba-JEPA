@@ -12,7 +12,7 @@ from artifacts.run_stage_a import ARCHIVE, SUPPORT, corpus
 from d4mj.checkpoint import load
 from d4mj.config import Config
 from d4mj.representation import Encoder
-from d4mj.train import cache_latents
+from d4mj.train import cache_latents, cache_latents_to_store
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -61,8 +61,12 @@ def implementation_digests(*paths: Path) -> dict[str, str]:
     }
 
 
-def data_digests() -> dict[str, str | None]:
-    support_manifest = Path(f"{SUPPORT}.manifest.json")
+def data_digests(support: Path = SUPPORT) -> dict[str, str | None]:
+    support_manifest = (
+        support / "manifest.json"
+        if support.is_dir()
+        else Path(f"{support}.manifest.json")
+    )
     return {
         "expert_manifest": file_digest(Path(f"{ARCHIVE}.manifest.json")),
         "support_manifest": (
@@ -72,13 +76,32 @@ def data_digests() -> dict[str, str | None]:
 
 
 def cached_train(
-    phase1a: Path, base: Config, expert: int, log=print
+    phase1a: Path,
+    base: Config,
+    expert: int,
+    log=print,
+    *,
+    support: Path = SUPPORT,
+    cache: Path | None = None,
 ) -> tuple[Encoder, list]:
-    train, _ = corpus(base, expert, log)
+    train, _ = corpus(base, expert, log, support=support)
     encoder = Encoder(base).to(base.device)
     load(phase1a, base, part0=encoder)
     encoder.eval()
-    cached = cache_latents(encoder, train, base)
+    if cache is None:
+        cached = cache_latents(encoder, train, base)
+    else:
+        cached = cache_latents_to_store(
+            encoder,
+            train,
+            base,
+            cache,
+            source_contract={
+                "data": data_digests(support),
+                "expert": expert,
+                "split": "production whole-episode TRAIN",
+            },
+        )
     return encoder, cached
 
 
