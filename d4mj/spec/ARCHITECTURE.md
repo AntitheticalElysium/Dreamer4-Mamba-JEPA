@@ -215,6 +215,13 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   terminal sequence supplies the rare positive class to continuation only; it
   cannot displace or enter dynamics, reward, or policy losses. Direct pairs its
   final alive/terminal labels across observed and generated readouts (S72/S76).
+- **`[DESIGN]` Rare-outcome support is a versioned, sharded episode store.**
+  Shards are memory-mapped and independently hashed; latent caches omit pixels
+  and bind themselves to (C^*), the source manifest, and the cache code. Each
+  rollout records its collection epsilon and a stable episode-level split.
+  Support remains uniform-eligible and BC-ineligible. S77/S78 vary unique
+  terminal trajectories at fixed tail exposure before this corpus can justify a
+  production-data change.
 
 ## Box 2 — Visual representation system
 
