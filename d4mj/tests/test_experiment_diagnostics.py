@@ -1,3 +1,4 @@
+import json
 from dataclasses import replace
 
 import torch
@@ -9,6 +10,15 @@ from artifacts.ablate_frozen_continuation_heads import (
 from artifacts.ablate_phase1b_consequence_gradient import gradient_preflight
 from artifacts.diagnose_s35_multimodality import geometry_metrics
 from artifacts.evaluate_matched_counterfactual import ARMS, _interaction_auc, arm_config
+from artifacts.prepare_terminal_diversity_evaluation import (
+    BROKEN_RESUME_DIGEST,
+    SELF_PATH,
+    _resume_compatible,
+)
+from artifacts.diagnose_fork_representation_identifiability import (
+    fold_assignment,
+    score_report as fork_representation_score,
+)
 from artifacts.evaluate_fatality_direction_delta import (
     classify_fatal_delta,
     delta_metrics,
@@ -16,7 +26,7 @@ from artifacts.evaluate_fatality_direction_delta import (
 from artifacts.localize_flow_phase1b import _conditioned_agent, _summary
 from artifacts.measure_encoder_fatality_fidelity import summarize as fidelity_summary
 from artifacts.localize_direct_transition_stages import _resumable_linear_probe
-from artifacts.phase1b_diagnostic_common import state_digest, stored_state_digest
+from artifacts.phase1b_diagnostic_common import file_digest, state_digest, stored_state_digest
 from artifacts.phase1b_geometry_common import (
     direct_metric_loss,
     geometry_metrics as phase1b_geometry_metrics,
@@ -35,6 +45,7 @@ from artifacts.train_terminal_diversity_scaling import (
     terminal_metadata,
     terminal_tail_batch,
 )
+from artifacts.run_terminal_diversity_v2 import completed_evaluation, fork_start_cache
 from d4mj.config import Config
 
 
@@ -77,6 +88,71 @@ def test_matched_interaction_is_explicitly_undefined_without_both_labels():
     target = torch.tensor([[False, True]])
     actions = torch.tensor([[0, 1]])
     assert _interaction_auc(score, target, actions) is None
+
+
+def test_fork_representation_split_keeps_paired_states_together():
+    pair = torch.tensor([0, 0, 1, 1, 2, 2, 3, 3])
+    assignment = fold_assignment(pair, folds=3, seed=4)
+    for value in pair.unique():
+        assert len(assignment[pair == value].unique()) == 1
+
+
+def test_fork_representation_primary_score_requires_state_action_ordering():
+    target = torch.tensor([[False, True, False], [True, False, False]])
+    correct = target.float()
+    action_prior = target.float().mean(0)[None].expand_as(target)
+    assert fork_representation_score(correct, target)["within_state_auc"] == 1.0
+    assert fork_representation_score(action_prior, target)["within_state_auc"] < 1.0
+
+
+def test_preparation_resume_migrates_only_the_known_broken_self_digest():
+    current = {
+        "data": "fixed",
+        "implementation": {SELF_PATH: "new", "d4mj/data.py": "same"},
+    }
+    saved = {
+        "data": "fixed",
+        "implementation": {
+            SELF_PATH: BROKEN_RESUME_DIGEST,
+            "d4mj/data.py": "same",
+        },
+    }
+    assert _resume_compatible(saved, current)
+    assert not _resume_compatible(saved | {"data": "changed"}, current)
+    changed_code = {
+        **saved,
+        "implementation": saved["implementation"] | {"d4mj/data.py": "changed"},
+    }
+    assert not _resume_compatible(changed_code, current)
+
+
+def test_terminal_diversity_fork_starts_are_experiment_local(tmp_path):
+    assert fork_start_cache(tmp_path) == (
+        tmp_path / "delta_evaluation" / "fork_start_latents.pt"
+    )
+
+
+def test_completed_evaluation_requires_current_inputs_code_and_features(tmp_path):
+    output = tmp_path / "evaluation"
+    features = output / "features"
+    features.mkdir(parents=True)
+    source = tmp_path / "source.py"
+    source.write_text("current\n")
+    inputs = {"worlds": {"world": "checkpoint"}}
+    contract = {
+        "inputs": inputs,
+        "implementation": {str(source): file_digest(source)},
+    }
+    (output / "contract.json").write_text(json.dumps(contract))
+    (output / "report.json").write_text(
+        json.dumps({"contract": contract, "worlds": {"world": {}}})
+    )
+    (features / "world.pt").touch()
+
+    assert completed_evaluation(output, inputs, ["world"])
+    assert not completed_evaluation(output, {"worlds": {}}, ["world"])
+    source.write_text("changed\n")
+    assert not completed_evaluation(output, inputs, ["world"])
 
 
 def test_frozen_head_variants_change_only_the_terminal_domain():
@@ -382,11 +458,16 @@ def test_fatality_delta_distinguishes_status_quo_and_wrong_direction():
 
     assert stationary["true_delta"]["fatal"]["mean"] == 1.0
     assert stationary["predicted_delta"]["fatal"]["mean"] == 0.0
+    assert stationary["conditional_consequence"]["true_fatal_minus_safe"] == 1.0
+    assert stationary["conditional_consequence"]["predicted_fatal_minus_safe"] == 0.0
+    assert stationary["conditional_consequence"]["within_group_predicted_vs_true_slope"] == 0.0
     assert (
         stationary["fatal_failure_mode"]
         == "predicted_change_not_resolved_from_status_quo"
     )
     assert wrong["fatal_failure_mode"] == "wrong_direction"
+    assert wrong["conditional_consequence"]["predicted_fatal_minus_safe"] == -1.0
+    assert wrong["conditional_consequence"]["within_group_predicted_vs_true_slope"] == -1.0
     assert classify_fatal_delta(1.0, 0.2, [0.8, 1.2], [0.1, 0.3]) == "tracks_true_direction"
 
 

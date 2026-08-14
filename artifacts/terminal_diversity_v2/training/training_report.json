@@ -1,0 +1,59 @@
+{
+  "version": "terminal-diversity-scaling-training-v1",
+  "common": {
+    "version": "terminal-diversity-scaling-v1",
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "reference_phase1b": "b251c611524a2295e0b07a4835e040ceedf6c7a8e56b78e159cb3833bc9b4802",
+    "reference_world_sha256": "381600be45c3c2c0bdadd726c32a6d8d0fba0c212c2e59d5a2bff1c6d4e34df2",
+    "data": {
+      "expert_manifest": "0e3c9869cccd67a4f7e83141ab966edc11d76a23ba2f4a0d9f7c5cd7ba58550c",
+      "support_manifest": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574"
+    },
+    "implementation": {
+      "artifacts/run_stage_a.py": "d632395dda571d2f5f7e2cd68f3133a3e2dd9a80f0ccc8721956f95e1dde5d03",
+      "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+      "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+      "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+      "d4mj/data.py": "55cd78faafae33f111298304b63f325c4e257790feeca6e2f256da52b8dc529c",
+      "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+      "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+      "d4mj/train.py": "7a7e3f7bd75e1c642a070fcc6e24235b6d5bf2f7ea3f5b365486115430bf0336",
+      "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+      "artifacts/phase1b_diagnostic_common.py": "eeb675e1545ba81db7bbf7b69e68745541f4ec31d2411a06af4eb66a5d1e4c0b",
+      "artifacts/train_terminal_diversity_scaling.py": "8bebe759d46cb7ec8ce073a5d28258f8f18a27e83a985d64f2f9b339deff1d96",
+      "artifacts/train_phase1b_geometry_factorial.py": "6f84971016098636f324b2050d569af6fd3b2daee3bd600a6ff057d307027fea"
+    },
+    "steps": 20000,
+    "milestones": [
+      5000,
+      10000,
+      20000
+    ],
+    "terminal_mass": 0.2,
+    "terminal_draws": 20000,
+    "candidate_universe": 7501,
+    "candidate_rule": "TRAIN uniform-eligible episode with one final terminal and at least 64 observations; the same universe is usable at every schedule step",
+    "scope": "the subset controls only explicit tail-aligned terminal exposure; the ordinary production sampler retains the complete TRAIN corpus",
+    "ranking": "nested proportional source-by-epsilon-by-fatal-action deficit ordering",
+    "schedule": "randomized balanced cycles; exposure differs by at most one draw"
+  },
+  "cells": [
+    "k0300_r0",
+    "k0900_r0",
+    "k3800_r0",
+    "k7501_r0"
+  ],
+  "invariants": {
+    "same_initialization": true,
+    "same_ordinary_streams": true,
+    "ordinary_streams_match_anchor": true,
+    "fixed_terminal_draws": true,
+    "nested_within_replicate": true
+  },
+  "reports": {
+    "k0300_r0": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/terminal_diversity_v2/training/k0300_r0/training_report.json",
+    "k0900_r0": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/terminal_diversity_v2/training/k0900_r0/training_report.json",
+    "k3800_r0": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/terminal_diversity_v2/training/k3800_r0/training_report.json",
+    "k7501_r0": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/terminal_diversity_v2/training/k7501_r0/training_report.json"
+  }
+}

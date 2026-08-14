@@ -52,7 +52,9 @@ def terminal_metadata(episodes: list, config: Config) -> dict[int, dict]:
         metadata[index] = {
             "episode_index": index,
             "pool": "expert" if episode.bc_eligible else "support",
+            "epsilon": episode.epsilon,
             "fatal_action": int(episode.actions_taken[terminal]),
+            "achievements": int(episode.events.sum()) if episode.events is not None else 0,
             "steps": len(episode),
         }
     if not metadata:
@@ -63,10 +65,10 @@ def terminal_metadata(episodes: list, config: Config) -> dict[int, dict]:
 def stratified_terminal_ranking(
     metadata: dict[int, dict], seed: int
 ) -> list[int]:
-    """A nested proportional ordering over pool-by-fatal-action strata."""
-    groups: dict[tuple[str, int], list[int]] = defaultdict(list)
+    """A nested proportional ordering over source, epsilon and fatal action."""
+    groups: dict[tuple[str, float | None, int], list[int]] = defaultdict(list)
     for index, row in metadata.items():
-        groups[(row["pool"], row["fatal_action"])].append(index)
+        groups[(row["pool"], row["epsilon"], row["fatal_action"])].append(index)
     rng = torch.Generator().manual_seed(seed)
     tie = {key: float(torch.rand((), generator=rng)) for key in groups}
     for key, values in groups.items():
@@ -141,7 +143,7 @@ def train_cell(
     *,
     steps: int,
     milestones: tuple[int, ...],
-    reference: dict,
+    stream_anchor: dict[str, str] | None,
     checkpoint: Path,
     out: Path,
     contract: dict,
@@ -272,19 +274,19 @@ def train_cell(
     stream_digests = {
         name: tensor_digest(value) for name, value in final_streams.items()
     }
-    ordinary_match = (
-        stream_digests["sampler"] == reference["sampler_sha256"]
-        and stream_digests["model"] == reference["model_sha256"]
+    ordinary_match = stream_anchor is None or (
+        stream_digests["sampler"] == stream_anchor["sampler"]
+        and stream_digests["model"] == stream_anchor["model"]
     )
     if not ordinary_match:
-        raise AssertionError("ordinary Phase-1B streams diverged from production")
+        raise AssertionError("ordinary Phase-1B streams diverged across diversity cells")
     return {
         "contract": contract,
         "resumed_from": resume,
         "initial_world_sha256": initial_digest,
         "milestone_world_sha256": milestone_digests,
         "stream_sha256": stream_digests,
-        "ordinary_streams_match_reference": ordinary_match,
+        "ordinary_streams_match_anchor": ordinary_match,
         "terminal_rows_scored": terminal_rows,
         "training_curve": curve,
     }
@@ -292,13 +294,18 @@ def train_cell(
 
 def stratum_counts(selected: list[int], metadata: dict[int, dict]) -> dict:
     counts = Counter(
-        (metadata[index]["pool"], metadata[index]["fatal_action"])
+        (
+            metadata[index]["pool"],
+            metadata[index]["epsilon"],
+            metadata[index]["fatal_action"],
+        )
         for index in selected
     )
     return {
-        f"{pool}:action_{action}": counts[pool, action]
-        for pool in ("expert", "support")
-        for action in range(Config().n_actions)
+        f"{pool}:epsilon_{epsilon}:action_{action}": count
+        for (pool, epsilon, action), count in sorted(
+            counts.items(), key=lambda row: (row[0][0], str(row[0][1]), row[0][2])
+        )
     }
 
 
@@ -307,12 +314,16 @@ def main() -> None:
     parser.add_argument("--phase1a", type=Path, required=True)
     parser.add_argument("--reference-phase1b", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--support", type=Path, required=True)
+    parser.add_argument("--cache", type=Path, required=True)
     parser.add_argument("--expert", type=int, default=320)
     parser.add_argument("--steps", type=int, default=20_000)
     parser.add_argument(
         "--milestones", type=int, nargs="+", default=(5_000, 10_000, 20_000)
     )
-    parser.add_argument("--sizes", type=int, nargs="+", default=(32, 96, 192, 300))
+    parser.add_argument(
+        "--sizes", type=int, nargs="+", default=(32, 96, 300, 900, 1700, 3800)
+    )
     parser.add_argument("--replicates", type=int, default=2)
     args = parser.parse_args()
 
@@ -323,22 +334,33 @@ def main() -> None:
     if args.replicates < 1:
         parser.error("at least one subset replicate is required")
     config = Config(transition="direct", time_mixer="attention")
-    reference = reference_contract(args.reference_phase1b, config, args.steps)
-    encoder, episodes = cached_train(args.phase1a, Config(), args.expert)
+    # This validates the production configuration and seed lineage, but its final
+    # sampler state cannot anchor a run whose eligible episode pools have changed.
+    production_reference = reference_contract(
+        args.reference_phase1b, config, args.steps
+    )
+    encoder, episodes = cached_train(
+        args.phase1a,
+        Config(),
+        args.expert,
+        support=args.support,
+        cache=args.cache,
+    )
     encoder.cpu()
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
     metadata = terminal_metadata(episodes, config)
-    if sizes[-1] != len(metadata) or sizes[0] < 2:
-        parser.error(
-            f"sizes must end at the common terminal universe {len(metadata)}"
-        )
+    if sizes[0] < 2 or sizes[-1] > len(metadata):
+        parser.error(f"sizes must lie inside the terminal universe {len(metadata)}")
+    if sizes[-1] != len(metadata):
+        sizes += (len(metadata),)
 
     common = {
         "version": "terminal-diversity-scaling-v1",
         "phase1a": file_digest(args.phase1a),
         "reference_phase1b": file_digest(args.reference_phase1b),
-        "data": data_digests(),
+        "reference_world_sha256": production_reference["world_sha256"],
+        "data": data_digests(args.support),
         "implementation": implementation_digests(
             Path(__file__), Path("artifacts/train_phase1b_geometry_factorial.py")
         ),
@@ -355,10 +377,11 @@ def main() -> None:
             "the subset controls only explicit tail-aligned terminal exposure; "
             "the ordinary production sampler retains the complete TRAIN corpus"
         ),
-        "ranking": "nested proportional pool-by-fatal-action deficit ordering",
+        "ranking": "nested proportional source-by-epsilon-by-fatal-action deficit ordering",
         "schedule": "randomized balanced cycles; exposure differs by at most one draw",
     }
     reports, selections = {}, {}
+    stream_anchor: dict[str, str] | None = None
     for replicate in range(args.replicates):
         ranking_seed = config.seed + 6200 + replicate
         schedule_seed = config.seed + 6300 + replicate
@@ -395,13 +418,18 @@ def main() -> None:
                 config,
                 steps=args.steps,
                 milestones=milestones,
-                reference=reference,
+                stream_anchor=stream_anchor,
                 checkpoint=cell_out / "train.pt",
                 out=cell_out,
                 contract=contract,
             )
             atomic_json(cell_out / "training_report.json", report)
             reports[name], selections[name] = report, selected
+            if stream_anchor is None:
+                stream_anchor = {
+                    "sampler": report["stream_sha256"]["sampler"],
+                    "model": report["stream_sha256"]["model"],
+                }
             gc.collect()
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
@@ -419,8 +447,8 @@ def main() -> None:
     invariants = {
         "same_initialization": len(initial) == 1,
         "same_ordinary_streams": len(ordinary) == 1,
-        "ordinary_streams_match_reference": all(
-            report["ordinary_streams_match_reference"] for report in reports.values()
+        "ordinary_streams_match_anchor": all(
+            report["ordinary_streams_match_anchor"] for report in reports.values()
         ),
         "fixed_terminal_draws": all(
             report["terminal_rows_scored"] == args.steps for report in reports.values()

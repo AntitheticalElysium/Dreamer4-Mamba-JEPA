@@ -1,0 +1,43 @@
+{
+  "version": "phase1b-archive-geometry-evaluation-v1",
+  "inputs": {
+    "prepared": "5cdc2d6d6651d381cc564cb9e7810a5fad7fd3b7d59898f8e57638300a6607bd",
+    "worlds": {
+      "k0300_r0_005k": "c22e8bd1b615271504bffd053f09b291cf5bd5356218f99b76f7f9e71bb09a5d",
+      "k0300_r0_010k": "061e8caa30a794c87bd233f10bf1f3ab7dedc796f98152a4d4c7d8654aca49c6",
+      "k0300_r0_020k": "4f61b1d8c8b9ab5a5d2b9fb62be2aec7cc7c94a689e5d565b1afe5f96efb6990",
+      "k0900_r0_005k": "0436b6d47184b4e3a5e22953a889c062b55fbc802d65a3e38e1e89a844b1fad8",
+      "k0900_r0_010k": "5717c36f004aeaa7f617f9d91f3d831b182a3a20d55d1c669aa8080382f768cc",
+      "k0900_r0_020k": "11526434bfdf83a0cc6ff68548bed323bcfbacb45aa497b113b0500a3f7e0c64",
+      "k3800_r0_005k": "99c46710c3ce9e1ca72b45e964d6b0d25afd4c9b5ff0dca8f7e4ecb75d2e6b6d",
+      "k3800_r0_010k": "bee68f3861a90804b9ddde03d92f5fa2b0a83c8db0a6f6cd17caf59a89412ea7",
+      "k3800_r0_020k": "b219e95b979247eb22edb3ba3c134521a839a2895399aa6c87e00a2397ef6ec5",
+      "k7501_r0_005k": "25fd06b4fb28a7f8a26ec6765b448fc1825a2d699014a1b297bd79154b18934d",
+      "k7501_r0_010k": "a9844e7ecfa525095145c341875dafae32c8cfac5e933a350757879a656259af",
+      "k7501_r0_020k": "c7c122674aeabc4bedb49a10823274aa148d1ce4e1164113e31e4aa5b5bf0e8a"
+    }
+  },
+  "implementation": {
+    "artifacts/run_stage_a.py": "d632395dda571d2f5f7e2cd68f3133a3e2dd9a80f0ccc8721956f95e1dde5d03",
+    "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+    "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+    "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+    "d4mj/data.py": "55cd78faafae33f111298304b63f325c4e257790feeca6e2f256da52b8dc529c",
+    "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+    "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+    "d4mj/train.py": "7a7e3f7bd75e1c642a070fcc6e24235b6d5bf2f7ea3f5b365486115430bf0336",
+    "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+    "artifacts/phase1b_diagnostic_common.py": "eeb675e1545ba81db7bbf7b69e68745541f4ec31d2411a06af4eb66a5d1e4c0b",
+    "artifacts/evaluate_phase1b_archive_geometry.py": "b610990915edc502fed1e3474c7c69d507ea3f129354830bddb09f420c0d2187",
+    "artifacts/phase1b_geometry_common.py": "e4aadf5caab0a4a5e56354aa44ffb3712b44c44daad2d4cc90cc1bcf3753aa5f"
+  },
+  "paths": [
+    "reset16",
+    "reset64",
+    "recurrent"
+  ],
+  "bootstraps": 2000,
+  "probe_direction": "one fixed TRAIN real-successor direction for every world",
+  "generated_probe": "fit independently per checkpoint on TRAIN logged transitions; evaluate only on whole held-out DEV episodes",
+  "evaluation": "whole held-out episodes; expert and epsilon support reported separately"
+}

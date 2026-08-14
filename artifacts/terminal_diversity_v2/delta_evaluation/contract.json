@@ -1,0 +1,71 @@
+{
+  "version": "fatality-direction-delta-v1",
+  "inputs": {
+    "prepared": "5cdc2d6d6651d381cc564cb9e7810a5fad7fd3b7d59898f8e57638300a6607bd",
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "trajectory_phase2": "94bf488063121630b30e89b9b2c66143c798b3e3bb4a8a9169e5ac61f403146e",
+    "forks": "392e8e33895d48aea888d22e043e57a81ce4d55fb2f83fdf67d19451353e9dad",
+    "archive_features": {
+      "k0300_r0_005k": "e042206815c15b3944ab6c08dc7b35598656ff44175815a5a9ae1ba9e0542db0",
+      "k0300_r0_010k": "a3e43e734c00ff178d065f2f591ea64e4ab5856d6a4588d1e1c0a917a031621a",
+      "k0300_r0_020k": "eae419c7c9492b33a723f471fd3d161aaca6a32f69bd3ff9838186d7eb6790cf",
+      "k0900_r0_005k": "cc7b0fc583a61b138578d3db43f83eede1facbda4460a7a1c49dfd19cb2df660",
+      "k0900_r0_010k": "6293b552f9c5c128f73c36c4e1632106ec10d638c144cf3b402ce628e78312ec",
+      "k0900_r0_020k": "3ddc3cd8c4f7231150c47b03185e5fd7fcf221d6919f0dc1b5f4171261d3f5a2",
+      "k3800_r0_005k": "e26298b7cc82db2574fd31c367052a1ed47bc0798039ee75f5201e718be8cb72",
+      "k3800_r0_010k": "a0b87e56a3d80b5df043fc6106dc83877369738bcec0178cd7f4d92f53732f4e",
+      "k3800_r0_020k": "d83b8f13b00c635194c2321be74e5db99a9d98f0010b544657635c5425fd1c9b",
+      "k7501_r0_005k": "505e14eae046f54d5fcb5f70c0ae95c12a58208fe8a7700a27c4fe7e7ac54465",
+      "k7501_r0_010k": "72f5545177681a25e559c4a555c7e79304eda9de1adb0aea9ff225bbb4040244",
+      "k7501_r0_020k": "c07e2e7bbf76ff843fb9d91331f5c21d502d95fac968984762ed21467708fe26"
+    },
+    "policy_features": {
+      "k0300_r0_020k": "660c66f1e2a86208d00f9b34c3e7e48656688983f1339987ca6ec70fe2a85f9e",
+      "k0900_r0_020k": "1a78749580f76d57fe3545f054a208203d5f5c1fc1cb4cecb1537f642157008c",
+      "k3800_r0_020k": "a9b503c8621dafcea366046c981c02579df41a418e52747004b85823ff26a470",
+      "k7501_r0_020k": "85f92dcc6ffa0434a7dd11d304f009a1989a048be4ae2f382fbde56a8d0e0722"
+    }
+  },
+  "implementation": {
+    "artifacts/run_stage_a.py": "d632395dda571d2f5f7e2cd68f3133a3e2dd9a80f0ccc8721956f95e1dde5d03",
+    "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+    "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+    "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+    "d4mj/data.py": "55cd78faafae33f111298304b63f325c4e257790feeca6e2f256da52b8dc529c",
+    "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+    "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+    "d4mj/train.py": "7a7e3f7bd75e1c642a070fcc6e24235b6d5bf2f7ea3f5b365486115430bf0336",
+    "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+    "artifacts/phase1b_diagnostic_common.py": "eeb675e1545ba81db7bbf7b69e68745541f4ec31d2411a06af4eb66a5d1e4c0b",
+    "artifacts/evaluate_fatality_direction_delta.py": "006236d19026dcb887f91940c9764852953a0ee1fe0eefcc3ad5e6f152dba094"
+  },
+  "archive_worlds": [
+    "k0300_r0_005k",
+    "k0300_r0_010k",
+    "k0300_r0_020k",
+    "k0900_r0_005k",
+    "k0900_r0_010k",
+    "k0900_r0_020k",
+    "k3800_r0_005k",
+    "k3800_r0_010k",
+    "k3800_r0_020k",
+    "k7501_r0_005k",
+    "k7501_r0_010k",
+    "k7501_r0_020k"
+  ],
+  "policy_worlds": [
+    "k0300_r0_020k",
+    "k0900_r0_020k",
+    "k3800_r0_020k",
+    "k7501_r0_020k"
+  ],
+  "archive_path": "reset16",
+  "pools": [
+    "combined",
+    "support"
+  ],
+  "bootstraps": 1000,
+  "direction": "fixed TRAIN observed-successor fatality direction; never refit",
+  "centering": "fixed TRAIN action mean applied to start and both successors; cancels in deltas",
+  "uncertainty": "whole archive episode or whole policy trajectory seed bootstrap"
+}

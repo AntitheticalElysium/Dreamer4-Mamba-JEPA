@@ -98,6 +98,64 @@ def classify_fatal_delta(
     return "tracks_true_direction"
 
 
+def conditional_metrics(
+    true_delta: torch.Tensor,
+    predicted_delta: torch.Tensor,
+    label: torch.Tensor,
+    group: torch.Tensor,
+    *,
+    samples: int,
+    seed: int,
+) -> dict | None:
+    """Within-state/pair consequence contrast and slope, with group bootstrap."""
+    rows = []
+    for value in group.unique():
+        selected = group == value
+        target = label[selected]
+        if not bool(target.any()) or not bool((~target).any()):
+            continue
+        truth, estimate = true_delta[selected], predicted_delta[selected]
+        x = truth - truth.mean()
+        y = estimate - estimate.mean()
+        rows.append(
+            (
+                truth[target].mean() - truth[~target].mean(),
+                estimate[target].mean() - estimate[~target].mean(),
+                (x * y).sum(),
+                x.square().sum(),
+            )
+        )
+    if not rows:
+        return None
+    values = torch.tensor(rows, dtype=torch.float)
+    true_contrast = float(values[:, 0].mean())
+    predicted_contrast = float(values[:, 1].mean())
+    slope = float(values[:, 2].sum() / values[:, 3].sum().clamp(min=1e-12))
+    rng = torch.Generator().manual_seed(seed)
+    contrasts, slopes = [], []
+    for _ in range(samples):
+        chosen = torch.randint(len(values), (len(values),), generator=rng)
+        sample = values[chosen]
+        contrasts.append(sample[:, 1].mean())
+        slopes.append(sample[:, 2].sum() / sample[:, 3].sum().clamp(min=1e-12))
+    contrasts, slopes = torch.stack(contrasts), torch.stack(slopes)
+    return {
+        "groups": len(values),
+        "true_fatal_minus_safe": true_contrast,
+        "predicted_fatal_minus_safe": predicted_contrast,
+        "recovered_fraction": predicted_contrast / max(abs(true_contrast), 1e-12),
+        "within_group_predicted_vs_true_slope": slope,
+        "predicted_contrast_ci95": [
+            float(contrasts.quantile(0.025)),
+            float(contrasts.quantile(0.975)),
+        ],
+        "slope_ci95": [
+            float(slopes.quantile(0.025)),
+            float(slopes.quantile(0.975)),
+        ],
+    }
+
+
 def delta_metrics(
     current: torch.Tensor,
     target: torch.Tensor,
@@ -110,11 +168,15 @@ def delta_metrics(
     *,
     bootstraps: int,
     seed: int,
+    conditional_group: torch.Tensor | None = None,
 ) -> dict:
     current = current.flatten(1).float().cpu()
     target = target.flatten(1).float().cpu()
     predicted = predicted.flatten(1).float().cpu()
     label, action, group = label.bool().cpu(), action.long().cpu(), group.long().cpu()
+    conditional_group = (
+        group if conditional_group is None else conditional_group.long().cpu()
+    )
     direction, means = direction.float().cpu(), means.float().cpu()
     center = means[action]
     start = (current - center) @ direction
@@ -195,6 +257,14 @@ def delta_metrics(
             predicted_sep["fatal"]["mean"],
             true_fatal_ci,
             predicted_fatal_ci,
+        ),
+        "conditional_consequence": conditional_metrics(
+            true_delta,
+            predicted_delta,
+            label,
+            conditional_group,
+            samples=bootstraps,
+            seed=seed + 4,
         ),
     }
 
@@ -467,6 +537,7 @@ def main() -> None:
                     policy_payload["action"][mask], policy_group[mask], direction, means,
                     bootstraps=args.bootstraps,
                     seed=Config().seed + 9800 + world_index * 10 + split_index,
+                    conditional_group=group[mask],
                 )
             plot_delta(
                 args.out / "plots" / f"policy_forks_{name}.png",

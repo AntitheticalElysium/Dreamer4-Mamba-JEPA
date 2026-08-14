@@ -97,6 +97,22 @@ def aggregate(cells: dict[str, dict]) -> dict:
             "predicted_fatal_delta": [
                 row["delta"]["predicted_delta"]["fatal"]["mean"] for row in rows
             ],
+            "heldout_conditional_contrast": [
+                row["delta"]["conditional_consequence"][
+                    "predicted_fatal_minus_safe"
+                ]
+                for row in rows
+            ],
+            "heldout_conditional_slope": [
+                row["delta"]["conditional_consequence"][
+                    "within_group_predicted_vs_true_slope"
+                ]
+                for row in rows
+            ],
+            "heldout_recovered_fraction": [
+                row["delta"]["conditional_consequence"]["recovered_fraction"]
+                for row in rows
+            ],
         }
         if all("policy_forks" in row for row in rows):
             metrics |= {
@@ -130,7 +146,7 @@ def endpoint_log_slope(aggregate_rows: dict) -> dict:
         points.append(
             (
                 math.log(size),
-                row["metrics"]["heldout_fixed_auc"]["mean"],
+                row["metrics"]["heldout_conditional_contrast"]["mean"],
             )
         )
     x = torch.tensor([value[0] for value in points])
@@ -141,12 +157,117 @@ def endpoint_log_slope(aggregate_rows: dict) -> dict:
         / centered.square().sum().clamp(min=1e-12)
     )
     return {
-        "heldout_fixed_auc_per_log_unique_episode": slope,
+        "heldout_conditional_contrast_per_log_unique_episode": slope,
         "descriptive_only": True,
         "rule": (
-            "A positive descriptive slope motivates new unique death collection; "
-            "a flat curve with a persistent TRAIN-DEV gap favors objective or model repair."
+            "The primary trend is conditional fatal-minus-matched-safe movement; "
+            "AUC is deliberately secondary."
         ),
+    }
+
+
+def contrast_vector(features: Path, prepared: dict) -> torch.Tensor:
+    payload = torch.load(features, weights_only=False, map_location="cpu")["paths"]["reset16"]
+    support = torch.tensor([value == "support" for value in payload["pool"]])
+    start = torch.cat([
+        record["latents"][record["transitions"]] for record in prepared["records"]
+    ]).flatten(1).float()[support]
+    predicted = payload["predicted"].flatten(1).float()[support]
+    label = payload["label"].bool()[support]
+    group = payload["group"].long()[support]
+    direction = prepared["direction"].flatten().float()
+    delta = (predicted - start) @ direction
+    contrast = []
+    for value in group.unique():
+        rows = group == value
+        contrast.append(delta[rows][label[rows]].mean() - delta[rows][~label[rows]].mean())
+    return torch.stack(contrast)
+
+
+def saturation_verdict(
+    training_summary: dict,
+    archive_features: Path,
+    prepared: dict,
+    *,
+    samples: int = 2000,
+) -> dict:
+    sizes = sorted({
+        report["contract"]["cell"]["unique_terminal_episodes"]
+        for report in (
+            json.loads(Path(path).read_text())
+            for path in training_summary["reports"].values()
+        )
+        if report["contract"]["cell"]["replicate"] == 0
+    })
+    vectors = {
+        size: contrast_vector(
+            archive_features / f"k{size:04d}_r0_020k.pt", prepared
+        )
+        for size in sizes
+    }
+    true_groups = defaultdict(lambda: {"score": [], "label": []})
+    direction = prepared["direction"].flatten().float()
+    for record in prepared["records"]:
+        steps = record["transitions"]
+        delta = (
+            record["latents"][steps + 1].flatten(1)
+            - record["latents"][steps].flatten(1)
+        ) @ direction
+        group = int(record.get("group", record["episode_index"]))
+        true_groups[group]["score"].append(delta)
+        true_groups[group]["label"].append(record["labels"].bool())
+    true_values = []
+    for value in true_groups.values():
+        score = torch.cat(value["score"])
+        label = torch.cat(value["label"])
+        true_values.append(score[label].mean() - score[~label].mean())
+    minimum_effect = 0.05 * abs(float(torch.stack(true_values).mean()))
+    rng = torch.Generator().manual_seed(Config().seed + 10_400)
+    increments = []
+    for smaller, larger in zip(sizes, sizes[1:]):
+        difference = vectors[larger] - vectors[smaller]
+        estimates = []
+        for _ in range(samples):
+            chosen = torch.randint(len(difference), (len(difference),), generator=rng)
+            estimates.append(difference[chosen].mean())
+        distribution = torch.stack(estimates)
+        increments.append({
+            "from": smaller,
+            "to": larger,
+            "mean": float(difference.mean()),
+            "ci95": [
+                float(distribution.quantile(0.025)),
+                float(distribution.quantile(0.975)),
+            ],
+        })
+    top = increments[-2:]
+    equivalent = lambda row: (
+        row["ci95"][0] > -minimum_effect
+        and row["ci95"][1] < minimum_effect
+    )
+    changed = lambda row: (
+        row["ci95"][0] > minimum_effect
+        or row["ci95"][1] < -minimum_effect
+    )
+    if len(top) == 2 and all(equivalent(row) for row in top):
+        verdict = "saturated"
+        approximate = top[0]["from"]
+    elif top and changed(top[-1]):
+        verdict = "not_saturated"
+        approximate = None
+    else:
+        verdict = "inconclusive"
+        approximate = None
+    return {
+        "verdict": verdict,
+        "approximately_saturated_by_unique_episodes": approximate,
+        "minimum_meaningful_increment": minimum_effect,
+        "minimum_effect_rule": "5% of the held-out true fatal-minus-matched-safe delta",
+        "criterion": (
+            "saturated only when each of the final two paired 95% intervals lies "
+            "inside the two-sided practical-equivalence band"
+        ),
+        "increments": increments,
     }
 
 
@@ -167,21 +288,23 @@ def plot_scaling(aggregate_rows: dict, path: Path) -> None:
         rows.sort()
         sizes = [item[0] for item in rows]
         for axis, metric, label in (
-            (axes[0], "train_fixed_auc", "TRAIN"),
-            (axes[0], "heldout_fixed_auc", "DEV fixed"),
-            (axes[1], "heldout_fresh_auc", "DEV fresh probe"),
+            (axes[0], "heldout_conditional_contrast", "DEV conditional delta"),
+            (axes[1], "heldout_fixed_auc", "DEV fixed AUC"),
+            (axes[1], "heldout_fresh_auc", "DEV fresh-probe AUC"),
         ):
             means = [item[1]["metrics"][metric]["mean"] for item in rows]
             low = [item[1]["metrics"][metric]["minimum"] for item in rows]
             high = [item[1]["metrics"][metric]["maximum"] for item in rows]
             axis.plot(sizes, means, linestyle=style, marker="o", label=f"{label} {step}k")
             axis.fill_between(sizes, low, high, alpha=0.12)
+    axes[0].axhline(0.0, color="black", linewidth=0.7)
+    axes[1].axhline(0.5, color="black", linewidth=0.7)
     for axis in axes:
-        axis.axhline(0.5, color="black", linewidth=0.7)
         axis.set_xscale("log")
         axis.set_xlabel("unique terminal episodes")
-        axis.set_ylabel("fatality AUC")
         axis.legend(fontsize=7)
+    axes[0].set_ylabel("fatal minus matched-safe predicted delta")
+    axes[1].set_ylabel("fatality AUC (secondary)")
     figure.tight_layout()
     path.parent.mkdir(parents=True, exist_ok=True)
     figure.savefig(path, dpi=150)
@@ -247,6 +370,9 @@ def main() -> None:
         "cells": cells,
         "aggregate": aggregated,
         "endpoint_trend": endpoint_log_slope(aggregated),
+        "saturation": saturation_verdict(
+            training_summary, args.archive_features, prepared
+        ),
     }
     atomic_json(args.out, output)
     plot_scaling(aggregated, args.out.parent / "terminal_diversity_curve.png")
