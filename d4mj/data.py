@@ -1,5 +1,9 @@
+from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import dataclass
+import hashlib
+import json
 from pathlib import Path
+from typing import Literal
 
 import torch
 from torch import Tensor
@@ -7,6 +11,8 @@ from torch import Tensor
 from .config import Config
 
 FORMAT = "d4mj_episodes_v3"
+SHARD_FORMAT = "d4mj_episode_shard_v1"
+STORE_FORMAT = "d4mj_episode_store_v1"
 
 
 @dataclass(frozen=True)
@@ -20,7 +26,7 @@ class Episode:
     combined flag could not express.
     """
 
-    observations: Tensor
+    observations: Tensor | None
     actions_taken: Tensor
     rewards: Tensor
     terminated: Tensor
@@ -30,17 +36,102 @@ class Episode:
     events: Tensor | None = None
     uniform_eligible: bool = True
     bc_eligible: bool = True
+    epsilon: float | None = None
+    split: Literal["train", "dev", "final"] | None = None
+    episode_id: str | None = None
+    terminal_cause: str | None = None
 
     def __post_init__(self) -> None:
         steps = len(self.actions_taken)
-        assert len(self.observations) == steps + 1
+        assert self.observations is None or len(self.observations) == steps + 1
         assert len(self.rewards) == len(self.terminated) == len(self.truncated) == steps
         assert (self.latents is None) == (self.latent_digest is None)
         assert self.latents is None or len(self.latents) == steps + 1
+        assert self.observations is not None or self.latents is not None
         assert self.events is None or len(self.events) == steps
+        assert self.split in (None, "train", "dev", "final")
 
     def __len__(self) -> int:
         return len(self.actions_taken)
+
+
+class EpisodeCorpus(Sequence[Episode]):
+    """An indexed episode collection whose tensor storage may be memory mapped.
+
+    The small Python records stay resident; observations or cached latents remain
+    page-backed by their shard files. Sampling pools are indexed once per required
+    length instead of rescanning a large corpus at every optimizer step.
+    """
+
+    def __init__(self, episodes: Iterable[Episode], *, source: Path | None = None):
+        self._episodes = tuple(episodes)
+        self.source = source
+        self._profiles: dict[tuple[int, bool], dict[str, tuple[int, ...]]] = {}
+        self._draw_tables: dict[tuple[int, str], Tensor] = {}
+
+    def __len__(self) -> int:
+        return len(self._episodes)
+
+    def __getitem__(self, index):
+        if isinstance(index, slice):
+            return EpisodeCorpus(self._episodes[index], source=self.source)
+        return self._episodes[index]
+
+    def __iter__(self) -> Iterator[Episode]:
+        return iter(self._episodes)
+
+    def subset(self, indices: Iterable[int]) -> "EpisodeCorpus":
+        return EpisodeCorpus((self._episodes[index] for index in indices), source=self.source)
+
+    def pools(self, length: int) -> dict[str, tuple[int, ...]]:
+        if not self._episodes:
+            raise ValueError("episode corpus is empty")
+        cached = self._episodes[0].latents is not None
+        key = (length, cached)
+        if key not in self._profiles:
+            if any((episode.latents is not None) != cached for episode in self._episodes):
+                raise AssertionError("cache is present on some episodes and missing on others")
+            usable = tuple(
+                index
+                for index, episode in enumerate(self._episodes)
+                if len(episode) + 1 >= length
+            )
+            uniform = tuple(index for index in usable if self._episodes[index].uniform_eligible)
+            cloneable = tuple(index for index in usable if self._episodes[index].bc_eligible)
+            eventful = tuple(
+                index
+                for index in cloneable
+                if self._episodes[index].events is not None
+                and bool(self._episodes[index].events.any())
+            )
+            terminal = tuple(
+                index
+                for index in uniform
+                if bool(self._episodes[index].terminated.any())
+            )
+            self._profiles[key] = {
+                "usable": usable,
+                "uniform": uniform,
+                "cloneable": cloneable,
+                "eventful": eventful,
+                "terminal": terminal,
+            }
+        return self._profiles[key]
+
+    def draw_window_episode(
+        self, pool: str, length: int, rng: torch.Generator
+    ) -> Episode:
+        indices = self.pools(length)[pool]
+        if not indices:
+            raise ValueError(f"episode pool {pool!r} is empty at length {length}")
+        key = (length, pool)
+        if key not in self._draw_tables:
+            self._draw_tables[key] = torch.tensor(
+                [len(self._episodes[index]) + 2 - length for index in indices],
+                dtype=torch.float,
+            )
+        position = int(torch.multinomial(self._draw_tables[key], 1, generator=rng))
+        return self._episodes[indices[position]]
 
 
 @dataclass(frozen=True)
@@ -108,7 +199,7 @@ def episode_splits(count: int, seed: int) -> tuple[Tensor, Tensor, Tensor]:
 
 
 def sample_batch(
-    episodes: list[Episode],
+    episodes: Sequence[Episode],
     rng: torch.Generator,
     config: Config,
     step: int = 0,
@@ -121,17 +212,27 @@ def sample_batch(
     Uniform rows are drawn over eligible *(episode, start)* pairs. Episode-start
     rows form an explicit stratum; terminal supervision uses a separate batch.
     """
-    cached = [episode.latents is not None for episode in episodes]
-    assert len(set(cached)) == 1, "cache is present on some episodes and missing on others"
-    burn_in = 0 if cached[0] else config.burn_in
+    if not episodes:
+        raise ValueError("episode corpus is empty")
+    cached = episodes[0].latents is not None
+    burn_in = 0 if cached else config.burn_in
     finetune = total > 0 and step >= total * (1 - config.long_only_fraction)
     long = finetune or (config.long_batch_every > 0 and (step + 1) % config.long_batch_every == 0)
     length = burn_in + (config.sequence_long if long else config.sequence)
 
-    usable = [e for e in episodes if len(e) + 1 >= length]
-    uniform = [e for e in usable if e.uniform_eligible]
-    cloneable = [e for e in usable if e.bc_eligible]
-    eventful = [e for e in cloneable if e.events is not None and bool(e.events.any())]
+    corpus = episodes if isinstance(episodes, EpisodeCorpus) else None
+    if corpus is not None:
+        pools = corpus.pools(length)
+        uniform = pools["uniform"]
+        cloneable = pools["cloneable"]
+        eventful = pools["eventful"]
+    else:
+        flags = [episode.latents is not None for episode in episodes]
+        assert len(set(flags)) == 1, "cache is present on some episodes and missing on others"
+        usable = [e for e in episodes if len(e) + 1 >= length]
+        uniform = [e for e in usable if e.uniform_eligible]
+        cloneable = [e for e in usable if e.bc_eligible]
+        eventful = [e for e in cloneable if e.events is not None and bool(e.events.any())]
     if not uniform:
         raise ValueError(f"no eligible episode reaches the required length {length}")
     if mixture and not cloneable:
@@ -139,9 +240,11 @@ def sample_batch(
 
     wanted = config.batch // 2 if mixture else 0
 
-    def draw(pool):
+    def draw(pool, name: str):
         """Uniform over eligible (episode, start) pairs, so a short episode's every
         window does not outweigh a long one's (S56)."""
+        if corpus is not None:
+            return corpus.draw_window_episode(name, length, rng)
         counts = torch.tensor([len(e) + 1 - length + 1 for e in pool], dtype=torch.float)
         return pool[int(torch.multinomial(counts, 1, generator=rng))]
 
@@ -158,14 +261,14 @@ def sample_batch(
             # and positioning are all worth cloning for one aggregate policy, and
             # event-only windows reached 15.5% of expert transitions.
             centre = eventful and float(torch.rand((), generator=rng)) < config.event_fraction
-            episode = draw(eventful) if centre else draw(cloneable)
+            episode = draw(eventful, "eventful") if centre else draw(cloneable, "cloneable")
             offset = (
                 _event_start(episode, length, rng)
                 if centre
                 else offset_for(episode, float(torch.rand((), generator=rng)) < config.episode_start_fraction)
             )
         else:
-            episode = draw(uniform)
+            episode = draw(uniform, "uniform")
             offset = offset_for(episode, float(torch.rand((), generator=rng)) < config.episode_start_fraction)
         chosen.append(episode)
         offsets.append(offset)
@@ -181,27 +284,35 @@ def sample_batch(
 
 
 def sample_terminal_batch(
-    episodes: list[Episode], rng: torch.Generator, config: Config, step: int, total: int
+    episodes: Sequence[Episode], rng: torch.Generator, config: Config, step: int, total: int
 ) -> Batch:
     """Tail-aligned terminal rows reserved for the continuation objective."""
-    cached = [episode.latents is not None for episode in episodes]
-    assert len(set(cached)) == 1, "cache is present on some episodes and missing on others"
-    burn_in = 0 if cached[0] else config.burn_in
+    if not episodes:
+        raise ValueError("episode corpus is empty")
+    cached = episodes[0].latents is not None
+    burn_in = 0 if cached else config.burn_in
     finetune = total > 0 and step >= total * (1 - config.long_only_fraction)
     long = finetune or (config.long_batch_every > 0 and (step + 1) % config.long_batch_every == 0)
     length = burn_in + (config.sequence_long if long else config.sequence)
-    terminal = [
-        episode
-        for episode in episodes
-        if episode.uniform_eligible and len(episode) + 1 >= length and bool(episode.terminated.any())
-    ]
+    if isinstance(episodes, EpisodeCorpus):
+        terminal = episodes.pools(length)["terminal"]
+    else:
+        flags = [episode.latents is not None for episode in episodes]
+        assert len(set(flags)) == 1, "cache is present on some episodes and missing on others"
+        terminal = [
+            episode
+            for episode in episodes
+            if episode.uniform_eligible
+            and len(episode) + 1 >= length
+            and bool(episode.terminated.any())
+        ]
     if not terminal:
         raise ValueError(f"no terminal episode reaches the required length {length}")
 
-    chosen = [
-        terminal[int(torch.randint(len(terminal), (1,), generator=rng))]
-        for _ in range(config.terminal_batch)
-    ]
+    chosen = []
+    for _ in range(config.terminal_batch):
+        selected = int(torch.randint(len(terminal), (1,), generator=rng))
+        chosen.append(episodes[terminal[selected]] if isinstance(episodes, EpisodeCorpus) else terminal[selected])
     rows = [_window(episode, _terminal_start(episode, length), length, config) for episode in chosen]
     stack = {field: torch.stack([row[field] for row in rows]) for field in rows[0]}
     return Batch(
@@ -274,8 +385,86 @@ def save_episodes(path: Path, episodes: list[Episode]) -> None:
     temporary.rename(path)
 
 
-def load_episodes(path: Path, digest: str | None = None) -> list[Episode]:
-    payload = torch.load(path, weights_only=False)
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def atomic_manifest(path: Path, payload: dict) -> None:
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(payload, indent=2) + "\n")
+    temporary.replace(path)
+
+
+def save_episode_shard(path: Path, episodes: Sequence[Episode]) -> dict:
+    """Write one independently recoverable, mmap-compatible episode shard."""
+    if not episodes:
+        raise ValueError("cannot write an empty episode shard")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    torch.save(
+        {"format": SHARD_FORMAT, "episodes": [vars(episode) for episode in episodes]},
+        temporary,
+    )
+    temporary.replace(path)
+    return {
+        "file": path.name,
+        "sha256": _sha256(path),
+        "episodes": len(episodes),
+        "transitions": sum(len(episode) for episode in episodes),
+        "terminal_episodes": sum(bool(episode.terminated.any()) for episode in episodes),
+    }
+
+
+def load_episode_store(
+    path: Path,
+    digest: str | None = None,
+    *,
+    verify: bool = True,
+    allow_incomplete: bool = False,
+) -> EpisodeCorpus:
+    manifest_path = path / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    if manifest.get("format") != STORE_FORMAT:
+        raise ValueError(f"expected {STORE_FORMAT}, found {manifest.get('format')}")
+    if not allow_incomplete and not manifest.get("complete", False):
+        raise ValueError(f"episode store is incomplete: {path}")
+    episodes: list[Episode] = []
+    for record in manifest["shards"]:
+        shard_path = path / record["file"]
+        if verify and _sha256(shard_path) != record["sha256"]:
+            raise ValueError(f"episode shard digest mismatch: {shard_path}")
+        payload = torch.load(shard_path, weights_only=False, mmap=True)
+        if payload.get("format") != SHARD_FORMAT:
+            raise ValueError(f"expected {SHARD_FORMAT}, found {payload.get('format')}")
+        if len(payload["episodes"]) != record["episodes"]:
+            raise ValueError(f"episode shard count mismatch: {shard_path}")
+        episodes.extend(Episode(**fields) for fields in payload["episodes"])
+    if len(episodes) != manifest["episodes"]:
+        raise ValueError("episode-store manifest count does not match its shards")
+    cached = [episode for episode in episodes if episode.latents is not None]
+    if cached and digest is None:
+        raise ValueError("cached latents require the expected C* digest to load")
+    if any(episode.latent_digest != digest for episode in cached):
+        raise ValueError("cached latents were produced under a different C*")
+    return EpisodeCorpus(episodes, source=path)
+
+
+def load_episodes(
+    path: Path,
+    digest: str | None = None,
+    *,
+    verify: bool = True,
+    allow_incomplete: bool = False,
+) -> EpisodeCorpus:
+    if path.is_dir():
+        return load_episode_store(
+            path, digest, verify=verify, allow_incomplete=allow_incomplete
+        )
+    payload = torch.load(path, weights_only=False, mmap=True)
     if payload["format"] != FORMAT:
         raise ValueError(f"expected {FORMAT}, found {payload['format']}")
     episodes = [Episode(**fields) for fields in payload["episodes"]]
@@ -284,4 +473,4 @@ def load_episodes(path: Path, digest: str | None = None) -> list[Episode]:
         raise ValueError("cached latents require the expected C* digest to load")
     if any(episode.latent_digest != digest for episode in cached):
         raise ValueError("cached latents were produced under a different C*")
-    return episodes
+    return EpisodeCorpus(episodes, source=path)

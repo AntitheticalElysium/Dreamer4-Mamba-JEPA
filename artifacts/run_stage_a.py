@@ -25,7 +25,7 @@ from d4mj.counterfactual import (
     collect_outcome_forks,
     outcome_metrics,
 )
-from d4mj.data import episode_splits, load_episodes
+from d4mj.data import EpisodeCorpus, episode_splits, load_episodes
 from d4mj.diagnostics import cost, head_calibration, latent_stats, multistep_error
 from d4mj.execution import evaluate, run_episode, run_random
 from d4mj.expert import load_archive
@@ -47,19 +47,32 @@ ARMS = tuple(
 )
 
 
-def corpus(config: Config, expert: int, log) -> tuple[list, list]:
+def corpus(
+    config: Config,
+    expert: int,
+    log,
+    *,
+    support: Path = SUPPORT,
+) -> tuple[EpisodeCorpus, EpisodeCorpus]:
     """Split each pool separately. A single split over the concatenation can hand DEV
     no BC-eligible episodes at all, and the mixture then cannot form its relevant
     half -- which is a property of the split, not of the data."""
     pools = [load_archive(ARCHIVE, config, limit=expert)]
-    if SUPPORT.exists():
-        pools.append(load_episodes(SUPPORT))
+    if support.exists():
+        pools.append(load_episodes(support))
 
     train, dev = [], []
     for index, pool in enumerate(pools):
-        first, second, _ = episode_splits(len(pool), config.seed + index)
-        train += [pool[i] for i in first.tolist()]
-        dev += [pool[i] for i in second.tolist()]
+        declared = [episode.split for episode in pool]
+        if any(value is not None for value in declared):
+            if any(value is None for value in declared):
+                raise ValueError("an episode store mixes declared and undeclared splits")
+            train += [episode for episode in pool if episode.split == "train"]
+            dev += [episode for episode in pool if episode.split == "dev"]
+        else:
+            first, second, _ = episode_splits(len(pool), config.seed + index)
+            train += [pool[i] for i in first.tolist()]
+            dev += [pool[i] for i in second.tolist()]
 
     for name, part in (("train", train), ("dev", dev)):
         log(
@@ -67,7 +80,7 @@ def corpus(config: Config, expert: int, log) -> tuple[list, list]:
             f"{sum(int(e.terminated.sum()) for e in part)} terminals, "
             f"{sum(e.bc_eligible for e in part)} BC-eligible"
         )
-    return train, dev
+    return EpisodeCorpus(train), EpisodeCorpus(dev)
 
 
 def main() -> None:

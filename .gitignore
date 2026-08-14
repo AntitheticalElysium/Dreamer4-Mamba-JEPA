@@ -5,6 +5,7 @@ outputs/
 runs/
 ckpt/
 wandb/
+*_mplcache/
 
 # --- Old repo ---
 probe/

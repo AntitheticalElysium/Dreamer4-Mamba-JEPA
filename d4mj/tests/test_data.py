@@ -5,10 +5,14 @@ import torch
 
 from d4mj.data import (
     FORMAT,
+    STORE_FORMAT,
     Episode,
+    EpisodeCorpus,
+    atomic_manifest,
     load_episodes,
     sample_batch,
     sample_terminal_batch,
+    save_episode_shard,
     save_episodes,
 )
 
@@ -169,3 +173,57 @@ def test_format_version_is_current(config, tmp_path):
     path = tmp_path / "episodes.pt"
     save_episodes(path, [episode(0, config, length=40)])
     assert torch.load(path, weights_only=False)["format"] == FORMAT == "d4mj_episodes_v3"
+
+
+def test_sharded_store_is_mmap_loaded_and_preserves_episode_metadata(config, tmp_path):
+    root = tmp_path / "store"
+    source = replace(
+        episode(0, config, length=40),
+        epsilon=0.25,
+        split="dev",
+        episode_id="probe:0",
+    )
+    record = save_episode_shard(root / "shard-000000.pt", [source])
+    atomic_manifest(
+        root / "manifest.json",
+        {
+            "format": STORE_FORMAT,
+            "kind": "test",
+            "complete": True,
+            "episodes": 1,
+            "shards": [record],
+        },
+    )
+    restored = load_episodes(root)
+    assert isinstance(restored, EpisodeCorpus)
+    assert restored[0].epsilon == 0.25
+    assert restored[0].split == "dev"
+    assert restored[0].episode_id == "probe:0"
+    assert torch.equal(restored[0].observations, source.observations)
+
+
+def test_sharded_store_refuses_incomplete_or_modified_data(config, tmp_path):
+    root = tmp_path / "store"
+    record = save_episode_shard(root / "shard-000000.pt", [episode(0, config, length=40)])
+    manifest = {
+        "format": STORE_FORMAT,
+        "kind": "test",
+        "complete": False,
+        "episodes": 1,
+        "shards": [record],
+    }
+    atomic_manifest(root / "manifest.json", manifest)
+    with pytest.raises(ValueError, match="incomplete"):
+        load_episodes(root)
+    manifest["complete"] = True
+    manifest["shards"][0]["sha256"] = "0" * 64
+    atomic_manifest(root / "manifest.json", manifest)
+    with pytest.raises(ValueError, match="digest mismatch"):
+        load_episodes(root)
+
+
+def test_indexed_corpus_sampling_matches_list_sampling(config, episodes):
+    first = sample_batch(episodes, torch.Generator().manual_seed(44), config)
+    second = sample_batch(EpisodeCorpus(episodes), torch.Generator().manual_seed(44), config)
+    for name in ("led_to_action", "reward", "valid", "scored", "patches"):
+        assert torch.equal(getattr(first, name), getattr(second, name))
