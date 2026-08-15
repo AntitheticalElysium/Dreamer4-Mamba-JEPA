@@ -1,0 +1,184 @@
+{
+  "contract": {
+    "version": "oracle-phase3-v1",
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "phase2": "910a4df06b0e64842a53c3a11a8a59840c183196f475a33510f06718c9022282",
+    "implementation": "1a0de5b5579cde1b177d8507aa35d71d15fdf7d0be9f9e1c6ebe0d449e2dcb46",
+    "steps": 2,
+    "horizon": 2,
+    "actor_batch": 16,
+    "train_seed_base": 20000,
+    "oracle": "simulator successor pixels plus simulator reward and continuation",
+    "world_advance_calls": 0,
+    "eval_seed_base": 30000,
+    "eval_episodes": 1,
+    "eval_limit": 10,
+    "split": "fresh DEV positive-control seeds; FINAL untouched"
+  },
+  "evaluation": {
+    "actor": {
+      "score": 0.8763616626513666,
+      "score_interval": [
+        0.8763616681098938,
+        0.8763616681098938
+      ],
+      "reward": 3.0,
+      "achievements": 3.0,
+      "rates": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "terminated": 0.0,
+      "length": 10.0,
+      "versus_bc": {
+        "gap": 0.0,
+        "interval": [
+          0.0,
+          0.0
+        ],
+        "beats": false
+      }
+    },
+    "bc": {
+      "score": 0.8763616626513666,
+      "score_interval": [
+        0.8763616681098938,
+        0.8763616681098938
+      ],
+      "reward": 3.0,
+      "achievements": 3.0,
+      "rates": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "terminated": 0.0,
+      "length": 10.0,
+      "versus_actor": {
+        "gap": 0.0,
+        "interval": [
+          0.0,
+          0.0
+        ],
+        "beats": false
+      }
+    }
+  },
+  "episodes": {
+    "actor": [
+      {
+        "seed": 30000,
+        "steps": 10,
+        "reward": 3.0,
+        "terminated": false,
+        "truncated": true,
+        "achievements": [
+          true,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      }
+    ],
+    "bc": [
+      {
+        "seed": 30000,
+        "steps": 10,
+        "reward": 3.0,
+        "terminated": false,
+        "truncated": true,
+        "achievements": [
+          true,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      }
+    ]
+  },
+  "gate": {
+    "criterion": "paired 95% lower bound of official-score actor-minus-BC > 0",
+    "passed": false,
+    "gap": 0.0,
+    "interval": [
+      0.0,
+      0.0
+    ],
+    "decision": "oracle_phase3_did_not_beat_bc"
+  }
+}

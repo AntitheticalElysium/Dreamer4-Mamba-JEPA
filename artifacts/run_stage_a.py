@@ -264,8 +264,7 @@ def main() -> None:
                 list(range(10_000, 10_000 + args.eval_episodes)),
                 config,
             )
-            # S52 requires the raw rows kept: the official score is nonlinear, so a
-            # paired interval cannot be reconstructed from summaries alone.
+            # Raw rows preserve every paired metric and future reanalysis.
             entry["evaluation"] = {
                 name: {k: v for k, v in row.items() if k != "episodes"} for name, row in scores.items()
             }
@@ -274,10 +273,12 @@ def main() -> None:
             }
             report[arm] = entry
             log(
-                f"{arm}: actor {scores['actor']['score']:.2f} bc {scores['bc']['score']:.2f} "
-                f"random {scores['random']['score']:.2f} | "
-                f"beats bc={scores['actor']['versus_bc']['beats']} "
-                f"random={scores['actor']['versus_random']['beats']} | "
+                f"{arm}: achievements actor={scores['actor']['achievements']:.2f} "
+                f"bc={scores['bc']['achievements']:.2f} random={scores['random']['achievements']:.2f} "
+                f"beats bc={scores['actor']['versus_bc']['achievements_beats']} "
+                f"random={scores['actor']['versus_random']['achievements_beats']} | "
+                f"geometric actor={scores['actor']['score']:.2f} "
+                f"bc={scores['bc']['score']:.2f} random={scores['random']['score']:.2f} | "
                 f"continuation separation {entry['diagnostics']['continuation_separation']:.4f} | "
                 f"contraction {entry['diagnostics']['contraction']:.3f} | horizon {config.horizon}"
             )

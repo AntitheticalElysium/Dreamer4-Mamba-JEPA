@@ -110,13 +110,7 @@ def score(results: list[Result]) -> float:
 def evaluate(
     policies: dict[str, Callable[[int], Result]], seeds: list[int], config: Config
 ) -> dict[str, dict]:
-    """Every policy on the same seeds, with paired bootstrap intervals. Each
-    resample redraws seeds and recomputes the official score from every policy's
-    resampled rows at once, since the score is nonlinear in the rates.
-
-    An arm passes when its advantage over *both* controls has a lower bound above
-    zero (S52): beating random is not evidence, beating its own BC prior is.
-    """
+    """Execute policies on paired seeds and bootstrap all reported metrics."""
     rows = {name: [policy(seed) for seed in seeds] for name, policy in policies.items()}
     generator = torch.Generator().manual_seed(config.seed + 2**22)
     draws = torch.randint(len(seeds), (config.bootstrap, len(seeds)), generator=generator).tolist()
@@ -124,11 +118,19 @@ def evaluate(
     report: dict[str, dict] = {}
     for name, results in rows.items():
         samples = torch.tensor([score([results[i] for i in draw]) for draw in draws])
+        reward_samples = torch.tensor([
+            sum(results[i].reward for i in draw) / len(draw) for draw in draws
+        ])
+        achievement_samples = torch.tensor([
+            sum(results[i].unlocked for i in draw) / len(draw) for draw in draws
+        ])
         report[name] = {
             "score": score(results),
             "score_interval": _interval(samples),
             "reward": sum(r.reward for r in results) / len(results),
+            "reward_interval": _interval(reward_samples),
             "achievements": sum(r.unlocked for r in results) / len(results),
+            "achievements_interval": _interval(achievement_samples),
             "rates": [float(sum(r.achievements[i] for r in results)) / len(results)
                       for i in range(len(results[0].achievements))],
             "terminated": sum(r.terminated for r in results) / len(results),
@@ -143,17 +145,36 @@ def evaluate(
                     for draw in draws
                 ])
                 low, high = _interval(gaps)
+                reward_gaps = torch.tensor([
+                    sum(rows[name][i].reward - rows[control][i].reward for i in draw)
+                    / len(draw)
+                    for draw in draws
+                ])
+                reward_low, reward_high = _interval(reward_gaps)
+                achievement_gaps = torch.tensor([
+                    sum(rows[name][i].unlocked - rows[control][i].unlocked for i in draw)
+                    / len(draw)
+                    for draw in draws
+                ])
+                achievement_low, achievement_high = _interval(achievement_gaps)
                 report[name][f"versus_{control}"] = {
                     "gap": report[name]["score"] - report[control]["score"],
                     "interval": (low, high),
                     "beats": low > 0.0,
+                    "reward_gap": report[name]["reward"] - report[control]["reward"],
+                    "reward_interval": (reward_low, reward_high),
+                    "reward_beats": reward_low > 0.0,
+                    "achievements_gap": (
+                        report[name]["achievements"] - report[control]["achievements"]
+                    ),
+                    "achievements_interval": (achievement_low, achievement_high),
+                    "achievements_beats": achievement_low > 0.0,
                 }
     return report
 
 
 def _interval(samples: torch.Tensor, level: float = 0.95) -> tuple[float, float]:
-    """Percentile interval, not a standard error: the official score is a bounded
-    nonlinear statistic whose sampling distribution is not symmetric."""
+    """Percentile interval, not a standard error or a Gaussian approximation."""
     tail = (1.0 - level) / 2
     ordered = samples.sort().values
     return (

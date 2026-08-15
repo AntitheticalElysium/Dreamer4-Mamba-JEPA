@@ -49,6 +49,7 @@ def test_paired_bootstrap_detects_a_real_gap(config):
     report = evaluate({"actor": strong, "bc": weak}, list(range(16)), cfg)
     assert report["actor"]["score"] > report["bc"]["score"]
     assert report["actor"]["versus_bc"]["beats"]
+    assert report["actor"]["versus_bc"]["achievements_beats"]
     assert not report["bc"]["versus_actor"]["beats"]
 
 
@@ -59,8 +60,29 @@ def test_identical_policies_do_not_beat_each_other(config):
     same = lambda seed: episode(seed, 6)
     report = evaluate({"a": same, "b": same}, list(range(16)), cfg)
     assert not report["a"]["versus_b"]["beats"]
+    assert not report["a"]["versus_b"]["achievements_beats"]
     low, high = report["a"]["versus_b"]["interval"]
     assert low <= 0.0 <= high
+    low, high = report["a"]["versus_b"]["achievements_interval"]
+    assert low <= 0.0 <= high
+
+
+def test_achievement_gate_is_independent_of_geometric_breadth(config):
+    """Count and geometric-score gates remain independent."""
+    cfg = replace(config, bootstrap=200)
+
+    def narrow(seed):
+        return Result(seed, 100, 8.0, True, False, tuple(index < 8 for index in range(22)))
+
+    def broad(seed):
+        flags = tuple((index + 6 * seed) % 22 < 6 for index in range(22))
+        return Result(seed, 100, 6.0, True, False, flags)
+
+    report = evaluate({"actor": narrow, "bc": broad}, list(range(22)), cfg)
+    comparison = report["actor"]["versus_bc"]
+    assert comparison["achievements_beats"]
+    assert comparison["achievements_gap"] == 2.0
+    assert comparison["gap"] < 0.0 and not comparison["beats"]
 
 
 def test_report_carries_secondary_metrics_and_raw_rows(config):
@@ -70,6 +92,8 @@ def test_report_carries_secondary_metrics_and_raw_rows(config):
     entry = report["actor"]
     assert entry["length"] == 77 and entry["reward"] == 2.0 and entry["terminated"] == 1.0
     assert entry["achievements"] == 3
+    assert entry["reward_interval"] == (2.0, 2.0)
+    assert entry["achievements_interval"] == (3.0, 3.0)
     assert len(entry["rates"]) == 22 and entry["rates"][0] == 1.0 and entry["rates"][21] == 0.0
     assert len(entry["episodes"]) == 8
 
