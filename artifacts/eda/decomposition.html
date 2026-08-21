@@ -1,0 +1,222 @@
+<title>Where The Signal Is Lost</title>
+<style>
+:root{
+  --ground:#ECEEF1; --surface:#FBFCFD; --surface-2:#F1F3F6; --rule:#D2D8DF; --rule-2:#B8C0CA;
+  --ink:#111519; --ink-2:#39414B; --muted:#636D79;
+  --accent:#3A5A8C; --accent-soft:#E4EAF3;
+  --ok:#2B6B45; --warn:#8A6210; --bad:#9B3524;
+  --ok-soft:#E2EFE7; --warn-soft:#F5ECD8; --bad-soft:#F6E3DE;
+  --sans:ui-sans-serif,system-ui,"Segoe UI",Helvetica,Arial,sans-serif;
+  --serif:"Iowan Old Style","Charter",Georgia,"Times New Roman",serif;
+  --mono:ui-monospace,"SF Mono","JetBrains Mono","DejaVu Sans Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#0E1215; --surface:#161B21; --surface-2:#1C222A; --rule:#272F38; --rule-2:#36404B;
+  --ink:#E5EAEF; --ink-2:#BFC8D2; --muted:#8D97A3;
+  --accent:#89ABDD; --accent-soft:#17202E;
+  --ok:#61B084; --warn:#D2A345; --bad:#DF7A64;
+  --ok-soft:#13251B; --warn-soft:#2A2413; --bad-soft:#2C1A16;
+}}
+:root[data-theme="dark"]{
+  --ground:#0E1215; --surface:#161B21; --surface-2:#1C222A; --rule:#272F38; --rule-2:#36404B;
+  --ink:#E5EAEF; --ink-2:#BFC8D2; --muted:#8D97A3;
+  --accent:#89ABDD; --accent-soft:#17202E;
+  --ok:#61B084; --warn:#D2A345; --bad:#DF7A64;
+  --ok-soft:#13251B; --warn-soft:#2A2413; --bad-soft:#2C1A16;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--serif);font-size:16.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.page{display:grid;gap:0 2rem;padding:0 1.25rem 6rem;grid-template-columns:[full-start] minmax(0,1fr) [wide-start] minmax(0,3rem) [text-start] minmax(0,66ch) [text-end] minmax(0,3rem) [wide-end] minmax(0,1fr) [full-end]}
+.page>*{grid-column:text}
+.wide{grid-column:wide}
+h1,h2,h3{font-family:var(--sans);font-weight:700;letter-spacing:-.018em;text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,4.2vw,2.9rem);line-height:1.06;letter-spacing:-.032em;font-weight:800}
+h2{font-size:1.5rem;line-height:1.2}
+h3{font-size:1.05rem;margin:1.8rem 0 .1rem}
+h4{font-family:var(--sans);font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:1.5rem 0 .3rem;font-weight:700}
+p{margin:.85rem 0}
+strong{font-weight:600;color:var(--ink)}
+code{font-family:var(--mono);font-size:.85em;background:var(--surface-2);border:1px solid var(--rule);border-radius:3px;padding:.05em .32em}
+header{padding:4rem 0 0}
+.eyebrow{font-family:var(--mono);font-size:.73rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 .9rem}
+.standfirst{font-size:1.15rem;line-height:1.55;color:var(--ink-2);margin:1.1rem 0 0;max-width:58ch}
+.meta{font-family:var(--mono);font-size:.75rem;color:var(--muted);margin-top:1.5rem;padding-top:.9rem;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:.4rem 1.5rem}
+.qmark{display:flex;align-items:baseline;gap:.75rem;margin:3.2rem 0 .2rem;border-top:2px solid var(--ink);padding-top:.7rem}
+.qmark .n{font-family:var(--mono);font-size:.78rem;color:var(--accent);letter-spacing:.08em;white-space:nowrap}
+.tablewrap{overflow-x:auto;margin:1.3rem 0;border:1px solid var(--rule);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:.78rem;font-variant-numeric:tabular-nums;line-height:1.45}
+caption{caption-side:top;text-align:left;font-family:var(--sans);font-size:.81rem;font-weight:700;padding:.7rem .9rem .1rem;color:var(--ink)}
+caption span{display:block;font-weight:400;color:var(--muted);font-size:.77rem;margin-top:.15rem}
+th,td{padding:.34rem .7rem;text-align:right;border-bottom:1px solid var(--rule);white-space:nowrap}
+th{font-weight:600;color:var(--muted);font-size:.71rem;letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid var(--rule-2)}
+th:first-child,td:first-child{text-align:left}
+tbody tr:last-child td{border-bottom:none}
+tr.hi td{background:var(--accent-soft)}
+td.bad{color:var(--bad);font-weight:600}
+td.ok{color:var(--ok);font-weight:600}
+.keynote{border-left:3px solid var(--accent);background:var(--surface);padding:1rem 1.2rem;margin:1.6rem 0}
+.keynote .lead{font-family:var(--sans);font-weight:700;font-size:.95rem;margin:.1rem 0 .4rem}
+.verdict{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.04em;padding:.26rem .5rem;border-radius:2px;text-transform:uppercase;display:inline-block}
+.v-ok{background:var(--ok-soft);color:var(--ok);box-shadow:inset 2px 0 0 var(--ok)}
+.v-warn{background:var(--warn-soft);color:var(--warn);box-shadow:inset 2px 0 0 var(--warn)}
+.v-bad{background:var(--bad-soft);color:var(--bad);box-shadow:inset 2px 0 0 var(--bad)}
+.note{background:var(--warn-soft);border:1px solid var(--rule);padding:.85rem 1.05rem;margin:1.4rem 0;font-size:.92rem}
+.note b{font-family:var(--sans)}
+ul,ol{margin:.85rem 0;padding-left:1.3rem}
+li{margin:.35rem 0}
+li::marker{color:var(--muted)}
+hr{border:none;border-top:1px solid var(--rule);margin:2.8rem 0}
+.footnote{font-size:.84rem;color:var(--muted)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+<div class="page">
+<header>
+  <p class="eyebrow">Pre-H2 decomposition · three levers, then an ablation</p>
+  <h1>Where the signal is lost</h1>
+  <p class="standfirst">More optimization, an adaptable pretrained encoder, and eight times more paired intervention states — run as three controlled arms against the same held-out sets. Each answers one candidate explanation for why <code>(history, action)</code> cannot predict a consequence that <code>z<sub>t+1</sub></code> plainly contains.</p>
+  <p class="meta"><span>7 training runs</span><span>67,365 states rescored</span><span>~12 h compute</span><span>2026-08-19</span></p>
+</header>
+
+<div class="keynote">
+  <p class="lead">Where this lands</p>
+  <p>Optimization contributes weakly (4× compute buys +0.025 AUC). Adapting the pretrained encoder makes it <strong>slightly worse</strong>, paired −0.0256 [−0.0447, −0.0078]. Eight times more paired roots leaves held-out prediction at <strong>exactly chance</strong> while the model memorises its training roots instead (0.9998 at the smallest rung, 0.7653 at the largest). That is your fourth branch: the shortfall is not budget, not fixed by adapting the encoder this way, and not fixed by paired coverage at this scale. <strong>Do not run full H2.</strong> A fifth measurement, added after these three, then locates where the signal is actually lost.</p>
+</div>
+
+<div class="qmark"><span class="n">CURVE 1</span><h2>Does more optimization solve it?</h2></div>
+
+<p>The frozen-Z* factual classifier retrained to 80,000 steps, milestones inside one run so the short/long schedule is identical across them.</p>
+
+<div class="tablewrap wide"><table>
+<caption>Frozen classifier, within-state AUC by budget<span>392,901 positive targets seen; training loss 1.077 → 0.898, so the model was still learning throughout.</span></caption>
+<thead><tr><th>evaluation set</th><th>20k</th><th>40k</th><th>80k</th><th>95% CI at 80k</th><th>Δ 20k→80k</th></tr></thead>
+<tbody>
+<tr><td>hazard forks (damage, 677)</td><td>0.5540</td><td>0.5498</td><td>0.5792</td><td>[0.5502, 0.6079]</td><td>+0.025</td></tr>
+<tr><td>branched roots (death, 965)</td><td>0.5794</td><td>0.5870</td><td>0.5958</td><td>[0.5737, 0.6197]</td><td>+0.016</td></tr>
+<tr><td>policy forks (death, 104)</td><td>0.5783</td><td>0.5878</td><td>0.6332</td><td>[0.5647, 0.6974]</td><td>+0.055</td></tr>
+</tbody></table></div>
+
+<p><span class="verdict v-warn">weak contributor</span> It had not plateaued — you were right to insist — but the slope is shallow: quadrupling compute bought <strong>+0.025</strong> on the primary damage metric, and the 40k point is flat or slightly down. A linear reading of that slope would put another 4× near 0.60 against a ceiling of 1.0, though nothing requires the curve to stay linear — it is illustrative, not a prediction. Part of the 20k gap was budget; most of it is not.</p>
+
+<div class="qmark"><span class="n">CURVE 2</span><h2>Does adapting the pretrained representation solve it?</h2></div>
+
+<p>Mini-H2: the Phase-1A encoder loaded and left trainable, same balanced factual damage objective, same 20,000 steps, same 98,392 positive targets as the frozen arm.</p>
+
+<div class="tablewrap wide"><table>
+<caption>Encoder treatments at 20k, same objective and budget<span>The last row is paired over the 677 hazard roots both arms score, not a difference of independent intervals.</span></caption>
+<thead><tr><th>encoder</th><th>hazard forks</th><th>branched</th><th>policy forks</th><th>final loss</th></tr></thead>
+<tbody>
+<tr class="hi"><td>frozen Phase-1A</td><td class="ok">0.5540</td><td>0.5914</td><td>0.6027</td><td>1.077</td></tr>
+<tr><td>Phase-1A unfrozen (mini-H2)</td><td>0.5283</td><td>0.5802</td><td>0.5935</td><td>1.221</td></tr>
+<tr><td>trainable from scratch (pixels)</td><td>0.5374</td><td>0.5863</td><td>0.5907</td><td>1.221</td></tr>
+<tr><td colspan="4"><strong>paired mini-H2 minus frozen, 677 roots</strong></td><td class="bad"><strong>−0.0256 [−0.0447, −0.0078]</strong></td></tr>
+<tr><td colspan="4">paired from-scratch minus frozen, 148 common roots</td><td>−0.0148 [−0.0553, +0.0266]</td></tr>
+<tr><td colspan="4">paired Phase-1A init minus from scratch, 677 roots</td><td>−0.0090 [−0.0227, +0.0049]</td></tr>
+</tbody></table></div>
+
+<p><span class="verdict v-bad">no — slightly harmful</span> Unfreezing does not help and the paired interval excludes zero on the wrong side. Paired against the from-scratch encoder on the same 677 roots, Phase-1A initialization is <em>indistinguishable</em> from random initialization: −0.0090 [−0.0227, +0.0049]. Equal final loss alone would not have supported that, so it is stated from the paired test rather than from the loss. This is the clean encoder test the from-scratch arm could not perform, and it comes back negative — for this recipe: damage BCE driving the pretrained encoder, which is not the co-adaptation full H2 was designed around.</p>
+
+<div class="qmark"><span class="n">CURVE 3</span><h2>Does more distinct paired supervision solve it?</h2></div>
+
+<p>The 67,365-state S82 collection rescored for health — <code>true_death</code> verified identical at every state — giving 54,139 damaging pairs and 5,402 hazard-choice roots, 3,152 of them in the fit split after whole-seed splitting and removal of the 965 reserved evaluation roots. Four nested rungs at a fixed 20,000-step budget.</p>
+
+<div class="tablewrap wide"><table>
+<caption>Realised balance, logged rather than intended<span>The correction the previous all-action run needed: it ran at 13.8% positive loss weight with 72.4% of steps carrying no positive at all.</span></caption>
+<thead><tr><th>rung</th><th>damaging pairs</th><th>positive presentations</th><th>steps with a positive</th><th>positive loss fraction</th><th>repeats / root</th><th>final loss</th></tr></thead>
+<tbody>
+<tr><td>394</td><td>3,445</td><td>378,065</td><td>100.0%</td><td class="ok">0.5000</td><td>21.5</td><td>0.148</td></tr>
+<tr><td>788</td><td>6,842</td><td>372,914</td><td>100.0%</td><td class="ok">0.5000</td><td>19.8</td><td>0.217</td></tr>
+<tr><td>1,576</td><td>14,103</td><td>386,260</td><td>100.0%</td><td class="ok">0.5000</td><td>17.2</td><td>0.376</td></tr>
+<tr><td>3,152</td><td>28,076</td><td>384,915</td><td>100.0%</td><td class="ok">0.5000</td><td>13.6</td><td>0.760</td></tr>
+</tbody></table></div>
+
+<div class="tablewrap wide"><table>
+<caption>The scaling curve, interpolation and transfer reported apart<span>Interpolation is hazard roots from held-out S82 seeds — same distribution as the training data. Transfer sets never entered training by seed or by root.</span></caption>
+<thead><tr><th>evaluation</th><th>394</th><th>788</th><th>1,576</th><th>3,152</th></tr></thead>
+<tbody>
+<tr class="hi"><td>interpolation — held-out S82 seeds (1,069)</td><td>0.4828</td><td>0.5135</td><td>0.4812</td><td>0.4992</td></tr>
+<tr><td>transfer — 677 hazard forks, test split (148)</td><td>0.4615</td><td>0.5011</td><td>0.4827</td><td>0.4922</td></tr>
+<tr><td>transfer — opportunity roots, held-out seeds (198)</td><td>0.4866</td><td>0.5442</td><td>0.4964</td><td>0.5184</td></tr>
+<tr><td>transfer — 104 policy forks</td><td>0.4316</td><td>0.4876</td><td>0.4821</td><td>0.4586</td></tr>
+</tbody></table></div>
+
+<p><span class="verdict v-bad">no — flat at chance</span> Every cell is at chance, including interpolation onto held-out seeds from the very distribution the paired data come from. This is not the distribution-specific outcome you sketched; it is the "neither improves" one.</p>
+
+<h3>What the model did instead: lookup</h3>
+
+<div class="tablewrap wide"><table>
+<caption>Memorisation signature<span>Same model, three root populations, 250 roots each.</span></caption>
+<thead><tr><th>rung</th><th>its own anchored roots</th><th>hazard roots seen ~once via the uniform half</th><th>held-out seeds</th></tr></thead>
+<tbody>
+<tr><td>394</td><td class="bad">0.9998 [0.9992, 1.0000]</td><td>0.6001 [0.5542, 0.6494]</td><td>0.4960 [0.4458, 0.5448]</td></tr>
+<tr><td>3,152</td><td class="bad">0.7653 [0.7192, 0.8072]</td><td>—</td><td>0.4999 [0.4474, 0.5519]</td></tr>
+</tbody></table></div>
+
+<p>A near-perfect 0.9998 on roots it trained on, 0.60 on roots it glimpsed roughly once, and chance on roots it never saw. That gradient is a lookup table, not a rule. Eight times more paired roots moved held-out performance from 0.4960 to 0.4999 — it only made the table harder to memorise, which is why final loss <em>rose</em> from 0.148 to 0.760 across the rungs.</p>
+
+<div class="note">
+<b>Two limits on this arm, stated rather than buried.</b> First, the scaling axis is partly compressed: the uniform half of each batch draws from all 46,079 fit roots, so hazard roots leak in regardless of rung — <code>hazard_roots_drawn</code> is 1,990 at rung 394 against 3,152 at the top, so the total-touched axis spans 1.6× where the anchored axis spans 8×. The memorisation table shows the anchored axis is what drives fitting, and held-out sits at chance at both ends, so the conclusion survives; the phrase "8× scaling" does not. Second, the paired design scores only the final block, so it sees roughly 80k distinct prediction contexts over the run against the factual arm's ~2.9M. A fixed step budget is not a fixed gradient-diversity budget, and the paired arm is the disadvantaged one on that axis.
+</div>
+
+<div class="qmark"><span class="n">CURVE 4</span><h2>Is the precursor observable at all?</h2></div>
+
+<p>Three of the four branches were negative, which left one fork: is the information that decides damage absent from the rendered frame, or present but lost on the way through our stack? Five representations of the same 5,402 hazard roots, one probe topology (the repo's 512&rarr;64&rarr;17 GELU all-action probe), whole-seed splits, selection on tune only. The split between visible and hidden is by what the renderer draws.</p>
+
+<p>One field decides the design. Craftax-Classic's <code>Mobs</code> carries <strong><code>attack_cooldown</code></strong>, and it is never drawn — so "the zombie is visible but whether its blow lands this step is not" is a named variable that can be added and removed, not a hypothesis about something unspecified.</p>
+
+<div class="tablewrap wide"><table>
+<caption>Damage prediction from the state before the action, 1,069 held-out roots<span>Identical roots, labels and probe for every row. Visible = the four vital digits, sleep overlay, light, direction, inventory bar, the 9&times;7 rendered tile window, and mob geometry only for mobs inside that window. Hidden = the four continuous counters, per-mob <code>attack_cooldown</code> and health, absolute position, timestep.</span></caption>
+<thead><tr><th>representation</th><th>within-state AUC</th><th>95% CI</th><th>above action-only</th><th>share of available signal</th></tr></thead>
+<tbody>
+<tr><td>action only (control)</td><td>0.5647</td><td>[0.5389, 0.5895]</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr class="hi"><td>trained world model &mdash; frozen Z*, history, action</td><td class="bad">0.5731</td><td>[0.5495, 0.5971]</td><td>+0.008</td><td class="bad">5%</td></tr>
+<tr><td>frozen Z* at the root, direct probe</td><td>0.6040</td><td>[0.5792, 0.6273]</td><td>+0.039</td><td>23%</td></tr>
+<tr class="hi"><td><strong>visible state only</strong></td><td class="ok"><strong>0.7331</strong></td><td>[0.7101, 0.7548]</td><td>+0.168</td><td>100%</td></tr>
+<tr><td>visible + timing/counters (adds <code>attack_cooldown</code>)</td><td>0.7355</td><td>[0.7133, 0.7570]</td><td>+0.171</td><td>102%</td></tr>
+<tr><td>full simulator state, as encoded</td><td>0.7345</td><td>[0.7120, 0.7568]</td><td>+0.170</td><td>101%</td></tr>
+</tbody></table></div>
+
+<div class="keynote">
+<p class="lead">Partial observability is refuted; the loss is in our stack</p>
+<p>Adding every hidden field — <code>attack_cooldown</code> included — moves the number by <strong>+0.002</strong>. The precursor is on screen. But a hand-written readout of what is on screen reaches 0.733, the frozen latent at the same root reaches 0.604, and the trained world model with 64 steps of history reaches <strong>0.573</strong>, barely above the action-marginal control. The frozen encoder discards roughly <strong>77%</strong> of the extractable signal, and the predictor built on top gives back most of what survives.</p>
+</div>
+
+<p>The last row of that comparison is the uncomfortable one: <strong>a two-layer MLP reading the single root latent beats the full trained backbone reading sixty-four of them.</strong> Whatever the world model is doing with history and action conditioning, it is not accumulating evidence about this mechanic — it is losing it.</p>
+
+<h3>This reopens two things I had wrongly closed</h3>
+<ul>
+<li><strong>The representation is implicated after all.</strong> I wrote "the encoder is exonerated twice over" and that was wrong. Frozen Z* keeps 23% of what a task-specific readout of the same frame provides. What mini-H2 shows is narrower than exoneration: <em>this adaptation recipe</em> — damage BCE driving the encoder through the same predictor — does not recover it, which is unsurprising if the predictor is the tighter bottleneck.</li>
+<li><strong>Predictor formulation is back in scope.</strong> A model that memorises individual roots at 0.9998, never learns the invariant rule, and is beaten by a small probe on a single frame looks like an inductive-bias problem, not a labelling one. And every earlier verdict that closed predictor topology was scored on movement along <code>d</code>, which the Δz probe has since shown to be at chance for within-state damage — so those verdicts are downgraded, not deleted.</li>
+</ul>
+
+<div class="note">
+<b>Limits of this ablation.</b> The visible features are hand-engineered for this task and name mob geometry explicitly; the encoder was trained for masked reconstruction and never asked to preserve it, so "77% lost" is measured against a task-specific readout rather than against an information-theoretic bound. And 0.733 sits well below the 1.0000 that S35-for-damage established for an oracle knowing exact <em>p</em>(damage | s, a), so these features are incomplete too — which is why the controlled contrast is visible-versus-hidden <em>within one encoding</em>, and only that contrast supports the observability conclusion. The probe also sees a single state where the world model sees sixty-four, which makes the world model's deficit harder to explain away, not easier.</div>
+
+<div class="qmark"><span class="n">—</span><h2>Your decision tree, resolved</h2></div>
+
+<div class="tablewrap wide"><table>
+<caption>All four branches, evaluated</caption>
+<thead><tr><th>branch</th><th>prediction</th><th>observed</th><th>fires?</th></tr></thead>
+<tbody>
+<tr><td>80k factual improves a lot</td><td>optimization/exposure matters</td><td>+0.025 over 4× compute</td><td>partial</td></tr>
+<tr><td>mini-H2 improves substantially</td><td>frozen representation matters</td><td>−0.0256 [−0.0447, −0.0078]</td><td>no</td></tr>
+<tr><td>paired scaling improves with roots</td><td>observational coverage is the bottleneck</td><td>0.4828 → 0.4992, flat</td><td>no</td></tr>
+<tr class="hi"><td><strong>none improve</strong></td><td><strong>history/state representation or predictor formulation is missing something more fundamental</strong></td><td>—</td><td class="bad"><strong>yes</strong></td></tr>
+</tbody></table></div>
+
+<h3>What is now pinned down</h3>
+<ul>
+<li><strong>The target is deterministic.</strong> 97.67% of 11,509 fixed (state, action) pairs are near-deterministic under 64 matched RNG draws; an oracle knowing the exact simulator state but not the RNG scores within-state AUC <strong>1.0000 [1.0000, 1.0000]</strong>.</li>
+<li><strong>The precursor is visible.</strong> Every hidden field, <code>attack_cooldown</code> included, adds +0.002 over a visible-only readout.</li>
+<li><strong>The successor encodes the outcome.</strong> An MLP on <code>&Delta;z</code> reaches 0.6919 held out, 0.6922 with deaths removed, and a linear probe reaches 0.7222 on mob damage alone.</li>
+<li><strong>The stack loses it in two stages.</strong> Visible readout 0.733 &rarr; frozen Z* 0.604 &rarr; trained world model 0.573, against an action-only floor of 0.565.</li>
+</ul>
+
+<h3>What I would do next, and what I would not</h3>
+<p>Not full H2, not more data, not a bigger model. The measurement that now discriminates is on the predictor, and it is cheap because the endpoint already exists: keep the frozen representation fixed and vary only how the predictor consumes it &mdash; the single-frame probe already beats the backbone, so the question is which part of the path from <code>(z<sub>&le;t</sub>, a<sub>t</sub>)</code> to a logit destroys the margin. Action conditioning by broadcast-concatenation after pooling is the first suspect, since pooling happens before the action is ever seen. A second, equally cheap check is whether a probe on the frozen latent <em>history</em> beats the probe on the single root latent; if history helps a probe but not the backbone, the deficit is architectural rather than informational.</p>
+<p>Both are probes with simulator-truth labels, not training runs, and neither needs a new episode. Nothing has been started.</p>
+
+<hr>
+<h4>Provenance and reproducibility</h4>
+<p class="footnote">All six runs share the registered initialization, optimizer, batch, short/long schedule and 20k budget except where the table says otherwise. The S82 rescore verified <code>true_death</code> against the stored artifact at all 67,365 states. Paired comparisons bootstrap over roots on identical root sets, never differences of independent intervals. Everything now lives in <code>artifacts/eda/</code> with atomic 500-step resume checkpoints; the overnight interrupt resumed to a bit-identical training trajectory (loss 1.3006 and 5,405 positives at step 1,250, matching the pre-interrupt run exactly). No production configuration, loss weight or architecture was changed; no new episodes were collected; H2 was not started.</p>
+</div>
