@@ -1,0 +1,58 @@
+{
+  "selection": {
+    "linear": {
+      "tune_within_auc": 0.601327497129736,
+      "selected_epoch": 9
+    },
+    "small": {
+      "tune_within_auc": 0.7365155677655677,
+      "selected_epoch": 109
+    }
+  },
+  "held_out": {
+    "fixed_direction_d": {
+      "within_auc": 0.5207798114048114,
+      "within_auc_ci": [
+        0.4541427906271657,
+        0.5876372156840907
+      ],
+      "within_contrast": 0.2320006638765335,
+      "within_contrast_ci": [
+        -0.04712099954485893,
+        0.503286600112915
+      ],
+      "pooled_auc": 0.49735837176281045,
+      "roots": 148
+    },
+    "probe_linear": {
+      "within_auc": 0.5371556652806653,
+      "within_auc_ci": [
+        0.4681552027645778,
+        0.6076724767349763
+      ],
+      "within_contrast": 0.1845286786556244,
+      "within_contrast_ci": [
+        -0.1731078028678894,
+        0.5122458934783936
+      ],
+      "pooled_auc": 0.5608281902839065,
+      "roots": 148
+    },
+    "probe_small": {
+      "within_auc": 0.6918959137709138,
+      "within_auc_ci": [
+        0.6296183236808236,
+        0.7531195704633203
+      ],
+      "within_contrast": 0.9532579779624939,
+      "within_contrast_ci": [
+        0.6517130732536316,
+        1.252977728843689
+      ],
+      "pooled_auc": 0.7193348067819424,
+      "roots": 148
+    }
+  },
+  "usable_roots": 677,
+  "records": 9146
+}
