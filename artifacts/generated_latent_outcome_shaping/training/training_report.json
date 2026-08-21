@@ -1,0 +1,767 @@
+{
+  "contract": {
+    "version": "generated-latent-outcome-shaping-training-v1",
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "reference_phase1b": "b251c611524a2295e0b07a4835e040ceedf6c7a8e56b78e159cb3833bc9b4802",
+    "control": {
+      "report": "dd121a7202a6e34225f5e1c857ca0b6106f8d57aa256aa69ad196988ff3b9623",
+      "milestones": {
+        "5000": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/terminal_diversity_v2/training/k7501_r0/world_005000.pt",
+        "10000": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/terminal_diversity_v2/training/k7501_r0/world_010000.pt",
+        "20000": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/terminal_diversity_v2/training/k7501_r0/world_020000.pt"
+      }
+    },
+    "data": {
+      "expert_manifest": "0e3c9869cccd67a4f7e83141ab966edc11d76a23ba2f4a0d9f7c5cd7ba58550c",
+      "support_manifest": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574"
+    },
+    "implementation": {
+      "artifacts/run_stage_a.py": "37132c25192790ebe2d0253db5e120e8e8305b9c5b3c89a1c3b8f8c8cad93f5a",
+      "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+      "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+      "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+      "d4mj/data.py": "55cd78faafae33f111298304b63f325c4e257790feeca6e2f256da52b8dc529c",
+      "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+      "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+      "d4mj/train.py": "7a7e3f7bd75e1c642a070fcc6e24235b6d5bf2f7ea3f5b365486115430bf0336",
+      "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+      "artifacts/phase1b_diagnostic_common.py": "eeb675e1545ba81db7bbf7b69e68745541f4ec31d2411a06af4eb66a5d1e4c0b",
+      "artifacts/train_generated_latent_outcome_shaping.py": "ab86491cae7d452c963d4885560ec140a647ac70fd29c9a07b464697fbc8017f",
+      "artifacts/train_terminal_diversity_scaling.py": "8bebe759d46cb7ec8ce073a5d28258f8f18a27e83a985d64f2f9b339deff1d96",
+      "artifacts/train_phase1b_geometry_factorial.py": "6f84971016098636f324b2050d569af6fd3b2daee3bd600a6ff057d307027fea"
+    },
+    "source_papers": {
+      "third_party/papers/2509.24527v1.pdf": "8655cce4bf12ce6210f6694f83c1a723c7acd7579214ca3ebc57c4394d0b1aeb",
+      "third_party/papers/2410.08893v4.pdf": "99ec210196690ae8b0c89fbe128fb7606e16110cdb8fa5cd1712c1cc65a81893",
+      "third_party/papers/2603.02765v1.pdf": "b302af4b4e824a2896fb57b8e19e3355db36ebfba15f52c8f37e80c506e69ad3",
+      "third_party/papers/2603.07083v2.pdf": "7f346a7acae13b36c8b8bea67b5e79681b0c79c476df99ed5444fa3dde3b0bd3",
+      "third_party/papers/2506.09985v1.pdf": "9cfcfde5fb0d9730637da5b9e7317825c3f3d09e91f3553e22eeba42c74d2226",
+      "third_party/papers/2606.27326v1.pdf": "2f10358cff583fc00df6a434c31a01872748bd9ed767c5874ff23eaecf823beb"
+    },
+    "steps": 20000,
+    "milestones": [
+      5000,
+      10000,
+      20000
+    ],
+    "terminal_candidates": 7501,
+    "ranking_seed": 20266931,
+    "schedule_seed": 20267031,
+    "schedule_sha256": "fb6c73d54d58558c18dbe3c0fe61758fed4738a853f9484e5ff4ea9cd5a134cf",
+    "dynamics": "S78 ordinary Phase-1B plus full-diversity terminal-tail MSE at mass 0.2",
+    "outcome": "shared 512->256->1 continuation head on matching observed and recursively generated final-alive/final-dead successor latents",
+    "variants": {
+      "allowed": "generated continuation BCE updates head and Direct world",
+      "stopped": "same BCE after generated.detach; world receives MSE only"
+    },
+    "optimization": "separate AdamW optimizers and clipping; dynamics and outcome each running-RMS normalized before the shared backward",
+    "scope": "experimental Direct boundary; not attributed to Dreamer 4 and no production architecture is changed"
+  },
+  "resumed_from": 15000,
+  "initial_world_sha256": "a4483e78b6e54accb09384d9c165f8f19a563c61b6212c9e5f4b914223215b2f",
+  "initial_head_sha256": "5c7253e98a80f41a249b126d2449525d31cbdb57ccda8e380447e779887bccc4",
+  "gradient_preflight": {
+    "allowed": {
+      "world_gradient_norm": 24.717253516808263,
+      "generated_latent_gradient_norm": 0.7086294293403625
+    },
+    "stopped": {
+      "world_gradient_norm": 0.0,
+      "generated_latent_gradient_norm": 0.0
+    }
+  },
+  "milestones": {
+    "allowed": {
+      "5000": {
+        "world": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/generated_latent_outcome_shaping/training/allowed/world_005000.pt",
+        "model": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/generated_latent_outcome_shaping/training/allowed/model_005000.pt",
+        "world_sha256": "4f703727f8eb7c9e475e938f298a60c9b67c6927487e41617669e4282f62d3b5",
+        "head_sha256": "71bfbfe104af8ff7779c288e36d0231084a1b3dde1d6fab7a084fa48ab811d9d"
+      },
+      "10000": {
+        "world": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/generated_latent_outcome_shaping/training/allowed/world_010000.pt",
+        "model": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/generated_latent_outcome_shaping/training/allowed/model_010000.pt",
+        "world_sha256": "09446b1f7bcbc60831b78b3d00c4b1c9d655dd57cdafcf088fa6e97447583033",
+        "head_sha256": "55bc7c718b60039bd862c22a3dae612cf658fe411a9ca633cbdf20e0eee0ad53"
+      },
+      "20000": {
+        "world": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/generated_latent_outcome_shaping/training/allowed/world_020000.pt",
+        "model": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/generated_latent_outcome_shaping/training/allowed/model_020000.pt",
+        "world_sha256": "fa2d0e95418636f20190517b20728a23da0690c87f6003248cf0b37f68eb38a2",
+        "head_sha256": "db6e8bc70e123602e053593e788203c5be0159398a782cd9f948faeb9c62627a"
+      }
+    },
+    "stopped": {
+      "5000": {
+        "world": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/generated_latent_outcome_shaping/training/stopped/world_005000.pt",
+        "model": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/generated_latent_outcome_shaping/training/stopped/model_005000.pt",
+        "world_sha256": "84f3ceff9b335dd1be3ca3a03425c9a1b264e37803cd49c9310bf8f4ab86d4dc",
+        "head_sha256": "294e50c66ae4326641d725ecfaaeb590379d803cb00539c672659aa1703f60d4"
+      },
+      "10000": {
+        "world": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/generated_latent_outcome_shaping/training/stopped/world_010000.pt",
+        "model": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/generated_latent_outcome_shaping/training/stopped/model_010000.pt",
+        "world_sha256": "3672d80d00b2f836b8515d183fb213f2193a4a473cc35702d2703e67260f298c",
+        "head_sha256": "139dc517845cf661919c09b62203d329a7f00cf8fb0f34eecbafcb4b072c3314"
+      },
+      "20000": {
+        "world": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/generated_latent_outcome_shaping/training/stopped/world_020000.pt",
+        "model": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/generated_latent_outcome_shaping/training/stopped/model_020000.pt",
+        "world_sha256": "f0e3de9effb69df4388902a6b3085d63e8a76b63eeb4948e6afb9ceeccea1b8a",
+        "head_sha256": "8f7053b467021e6e541d6ffe6926d28f1beebbfee0714e93ef27719edd9558af"
+      }
+    }
+  },
+  "control_matches": {
+    "5000": true,
+    "10000": true,
+    "20000": true
+  },
+  "worlds_differ": true,
+  "training_curves": {
+    "allowed": [
+      {
+        "step": 500,
+        "main_raw_mean": 0.7756955829262734,
+        "tail_raw_mean": 0.7730957131981849,
+        "outcome_raw_mean": 0.47982784575223925,
+        "dynamics_rms": 0.5721695828767626,
+        "outcome_rms": 0.38733438453230307
+      },
+      {
+        "step": 1000,
+        "main_raw_mean": 0.39786508679389954,
+        "tail_raw_mean": 0.38678895571827887,
+        "outcome_raw_mean": 0.3154311354123056,
+        "dynamics_rms": 0.35794280504103476,
+        "outcome_rms": 0.4240974839279274
+      },
+      {
+        "step": 1500,
+        "main_raw_mean": 0.3032596478164196,
+        "tail_raw_mean": 0.2855290711373091,
+        "outcome_raw_mean": 0.23221995638404042,
+        "dynamics_rms": 0.28044752539461865,
+        "outcome_rms": 0.36620960014346826
+      },
+      {
+        "step": 2000,
+        "main_raw_mean": 0.23480546656250953,
+        "tail_raw_mean": 0.23431764145195483,
+        "outcome_raw_mean": 0.17407151058572345,
+        "dynamics_rms": 0.22503208325817783,
+        "outcome_rms": 0.3122059192340209
+      },
+      {
+        "step": 2500,
+        "main_raw_mean": 0.18855762097239495,
+        "tail_raw_mean": 0.19216642423719169,
+        "outcome_raw_mean": 0.12816637212288334,
+        "dynamics_rms": 0.18307454846653987,
+        "outcome_rms": 0.24973025875818067
+      },
+      {
+        "step": 3000,
+        "main_raw_mean": 0.16942856867611408,
+        "tail_raw_mean": 0.17209085208177566,
+        "outcome_raw_mean": 0.11789827289638924,
+        "dynamics_rms": 0.1696679278363348,
+        "outcome_rms": 0.2761853518932017
+      },
+      {
+        "step": 3500,
+        "main_raw_mean": 0.14754874667525292,
+        "tail_raw_mean": 0.16118810275942086,
+        "outcome_raw_mean": 0.13461711725861097,
+        "dynamics_rms": 0.14906817056644503,
+        "outcome_rms": 0.3270556419014607
+      },
+      {
+        "step": 4000,
+        "main_raw_mean": 0.13277161979675292,
+        "tail_raw_mean": 0.13959162851050497,
+        "outcome_raw_mean": 0.10770143537356125,
+        "dynamics_rms": 0.14054461157013953,
+        "outcome_rms": 0.33149649578571144
+      },
+      {
+        "step": 4500,
+        "main_raw_mean": 0.12758718161284924,
+        "tail_raw_mean": 0.136984111007303,
+        "outcome_raw_mean": 0.1151440263359691,
+        "dynamics_rms": 0.13088155649424565,
+        "outcome_rms": 0.3288308720121219
+      },
+      {
+        "step": 5000,
+        "main_raw_mean": 0.12045893090963364,
+        "tail_raw_mean": 0.12320116747915745,
+        "outcome_raw_mean": 0.09917303451318639,
+        "dynamics_rms": 0.12391113929483875,
+        "outcome_rms": 0.3278382308664689
+      },
+      {
+        "step": 5500,
+        "main_raw_mean": 0.11410933049023152,
+        "tail_raw_mean": 0.12016668455675245,
+        "outcome_raw_mean": 0.11478286741309966,
+        "dynamics_rms": 0.11826890373711225,
+        "outcome_rms": 0.508493371130007
+      },
+      {
+        "step": 6000,
+        "main_raw_mean": 0.1114695763066411,
+        "tail_raw_mean": 0.11842513345181942,
+        "outcome_raw_mean": 0.07492857303070537,
+        "dynamics_rms": 0.11794192170759653,
+        "outcome_rms": 0.27082316010698126
+      },
+      {
+        "step": 6500,
+        "main_raw_mean": 0.10955346659570932,
+        "tail_raw_mean": 0.11261657172441483,
+        "outcome_raw_mean": 0.08153138026647638,
+        "dynamics_rms": 0.11326280621877252,
+        "outcome_rms": 0.18316458902625618
+      },
+      {
+        "step": 7000,
+        "main_raw_mean": 0.10543589723110199,
+        "tail_raw_mean": 0.11416210085898638,
+        "outcome_raw_mean": 0.11355186686095407,
+        "dynamics_rms": 0.11068045738482056,
+        "outcome_rms": 0.31155554338884633
+      },
+      {
+        "step": 7500,
+        "main_raw_mean": 0.100460412889719,
+        "tail_raw_mean": 0.11112629188597202,
+        "outcome_raw_mean": 0.1122971215753546,
+        "dynamics_rms": 0.10590243865844508,
+        "outcome_rms": 0.3047379264601309
+      },
+      {
+        "step": 8000,
+        "main_raw_mean": 0.09936205617338419,
+        "tail_raw_mean": 0.10789322093501687,
+        "outcome_raw_mean": 0.07964955175870858,
+        "dynamics_rms": 0.10405650983159435,
+        "outcome_rms": 0.30955685065941496
+      },
+      {
+        "step": 8500,
+        "main_raw_mean": 0.0968383098244667,
+        "tail_raw_mean": 0.10796597187593579,
+        "outcome_raw_mean": 0.11670592260471847,
+        "dynamics_rms": 0.10347265501079309,
+        "outcome_rms": 0.4070348452645106
+      },
+      {
+        "step": 9000,
+        "main_raw_mean": 0.09517285101115704,
+        "tail_raw_mean": 0.10587604337744415,
+        "outcome_raw_mean": 0.12962014656642792,
+        "dynamics_rms": 0.10119575914776416,
+        "outcome_rms": 0.48998200871151343
+      },
+      {
+        "step": 9500,
+        "main_raw_mean": 0.09174316164851189,
+        "tail_raw_mean": 0.10130413456261159,
+        "outcome_raw_mean": 0.08926361083472918,
+        "dynamics_rms": 0.09660114927982637,
+        "outcome_rms": 0.33894275894925163
+      },
+      {
+        "step": 10000,
+        "main_raw_mean": 0.08943392790108919,
+        "tail_raw_mean": 0.09711867366358638,
+        "outcome_raw_mean": 0.09139107779805025,
+        "dynamics_rms": 0.0978775299963877,
+        "outcome_rms": 0.3227364048859874
+      },
+      {
+        "step": 10500,
+        "main_raw_mean": 0.08911081675067543,
+        "tail_raw_mean": 0.10313318344205617,
+        "outcome_raw_mean": 0.07985931286934074,
+        "dynamics_rms": 0.0953119957881507,
+        "outcome_rms": 0.25681940998475855
+      },
+      {
+        "step": 11000,
+        "main_raw_mean": 0.08492485393583775,
+        "tail_raw_mean": 0.09676126283407212,
+        "outcome_raw_mean": 0.12490960378952506,
+        "dynamics_rms": 0.09132941673467161,
+        "outcome_rms": 0.4837070459337307
+      },
+      {
+        "step": 11500,
+        "main_raw_mean": 0.0820690581202507,
+        "tail_raw_mean": 0.09248861925303936,
+        "outcome_raw_mean": 0.0984589371838105,
+        "dynamics_rms": 0.08854670596157699,
+        "outcome_rms": 0.3556372881788069
+      },
+      {
+        "step": 12000,
+        "main_raw_mean": 0.08267967705056072,
+        "tail_raw_mean": 0.10089522108063102,
+        "outcome_raw_mean": 0.10528946410586709,
+        "dynamics_rms": 0.08616107205615828,
+        "outcome_rms": 0.35847587229985434
+      },
+      {
+        "step": 12500,
+        "main_raw_mean": 0.07931298549473285,
+        "tail_raw_mean": 0.09584913419187069,
+        "outcome_raw_mean": 0.13598462524435684,
+        "dynamics_rms": 0.0845554946827228,
+        "outcome_rms": 0.4659358484422426
+      },
+      {
+        "step": 13000,
+        "main_raw_mean": 0.07884960412606597,
+        "tail_raw_mean": 0.09470264541357756,
+        "outcome_raw_mean": 0.09456259726393765,
+        "dynamics_rms": 0.08414073358526795,
+        "outcome_rms": 0.4039673422501907
+      },
+      {
+        "step": 13500,
+        "main_raw_mean": 0.07889516927674413,
+        "tail_raw_mean": 0.09034050901606679,
+        "outcome_raw_mean": 0.10917308679044938,
+        "dynamics_rms": 0.08689255653662013,
+        "outcome_rms": 0.37191808171655816
+      },
+      {
+        "step": 14000,
+        "main_raw_mean": 0.07825889297574759,
+        "tail_raw_mean": 0.08905216728895902,
+        "outcome_raw_mean": 0.12364497340214388,
+        "dynamics_rms": 0.084678991517532,
+        "outcome_rms": 0.406277172312655
+      },
+      {
+        "step": 14500,
+        "main_raw_mean": 0.0779244427345693,
+        "tail_raw_mean": 0.08681718758493662,
+        "outcome_raw_mean": 0.07525814969397716,
+        "dynamics_rms": 0.0841997895799037,
+        "outcome_rms": 0.3004352162148901
+      },
+      {
+        "step": 15000,
+        "main_raw_mean": 0.07656339731439948,
+        "tail_raw_mean": 0.08714166637137533,
+        "outcome_raw_mean": 0.0994566495901184,
+        "dynamics_rms": 0.07912397703498171,
+        "outcome_rms": 0.35563099247296776
+      },
+      {
+        "step": 15500,
+        "main_raw_mean": 0.07844306348264217,
+        "tail_raw_mean": 0.08033370589464903,
+        "outcome_raw_mean": 0.10520110836911357,
+        "dynamics_rms": 0.07911238175251502,
+        "outcome_rms": 0.2981133511394197
+      },
+      {
+        "step": 16000,
+        "main_raw_mean": 0.07646587016806007,
+        "tail_raw_mean": 0.08025809671357274,
+        "outcome_raw_mean": 0.10123809188953335,
+        "dynamics_rms": 0.08087195911112197,
+        "outcome_rms": 0.35405366198725813
+      },
+      {
+        "step": 16500,
+        "main_raw_mean": 0.07718886421620846,
+        "tail_raw_mean": 0.07864912213385106,
+        "outcome_raw_mean": 0.11685309331238748,
+        "dynamics_rms": 0.0790055371140092,
+        "outcome_rms": 0.46382080868819237
+      },
+      {
+        "step": 17000,
+        "main_raw_mean": 0.07385350609943271,
+        "tail_raw_mean": 0.08034404354728758,
+        "outcome_raw_mean": 0.09769913704177051,
+        "dynamics_rms": 0.07906791993223122,
+        "outcome_rms": 0.4414199162070338
+      },
+      {
+        "step": 17500,
+        "main_raw_mean": 0.07494273568689823,
+        "tail_raw_mean": 0.07971687183901667,
+        "outcome_raw_mean": 0.07253844814643837,
+        "dynamics_rms": 0.07872955943945657,
+        "outcome_rms": 0.2856188888443011
+      },
+      {
+        "step": 18000,
+        "main_raw_mean": 0.07265362281352282,
+        "tail_raw_mean": 0.07873143398016691,
+        "outcome_raw_mean": 0.07656622707046283,
+        "dynamics_rms": 0.07578561070339199,
+        "outcome_rms": 0.38496759901216465
+      },
+      {
+        "step": 18500,
+        "main_raw_mean": 0.06990463630110025,
+        "tail_raw_mean": 0.07253006018698216,
+        "outcome_raw_mean": 0.08395384146333335,
+        "dynamics_rms": 0.07353730168233444,
+        "outcome_rms": 0.291424207634781
+      },
+      {
+        "step": 19000,
+        "main_raw_mean": 0.07075714223831892,
+        "tail_raw_mean": 0.07010236109420658,
+        "outcome_raw_mean": 0.07856391729133244,
+        "dynamics_rms": 0.07262034022057327,
+        "outcome_rms": 0.38005534259926305
+      },
+      {
+        "step": 19500,
+        "main_raw_mean": 0.06911282655596733,
+        "tail_raw_mean": 0.07246481926552951,
+        "outcome_raw_mean": 0.09696721511503549,
+        "dynamics_rms": 0.0714571310791175,
+        "outcome_rms": 0.46962802757598426
+      },
+      {
+        "step": 20000,
+        "main_raw_mean": 0.06970836225152016,
+        "tail_raw_mean": 0.07061546359211207,
+        "outcome_raw_mean": 0.0990793000937794,
+        "dynamics_rms": 0.0707216004780581,
+        "outcome_rms": 0.47584833174349295
+      }
+    ],
+    "stopped": [
+      {
+        "step": 500,
+        "main_raw_mean": 0.6824021580219268,
+        "tail_raw_mean": 0.6771936221420765,
+        "outcome_raw_mean": 0.6381228942275047,
+        "dynamics_rms": 0.4613341616257867,
+        "outcome_rms": 0.61636682896097
+      },
+      {
+        "step": 1000,
+        "main_raw_mean": 0.30867289611697196,
+        "tail_raw_mean": 0.3079944631904364,
+        "outcome_raw_mean": 0.6003798498511315,
+        "dynamics_rms": 0.2847280106930243,
+        "outcome_rms": 0.6312271062404388
+      },
+      {
+        "step": 1500,
+        "main_raw_mean": 0.23768410156667233,
+        "tail_raw_mean": 0.23796964006125926,
+        "outcome_raw_mean": 0.5391740308403968,
+        "dynamics_rms": 0.22060060057556835,
+        "outcome_rms": 0.5667107891445289
+      },
+      {
+        "step": 2000,
+        "main_raw_mean": 0.1864759279936552,
+        "tail_raw_mean": 0.1989348385334015,
+        "outcome_raw_mean": 0.5053663514778018,
+        "dynamics_rms": 0.18380914740294277,
+        "outcome_rms": 0.5674044891797303
+      },
+      {
+        "step": 2500,
+        "main_raw_mean": 0.15675777435302735,
+        "tail_raw_mean": 0.1715409185513854,
+        "outcome_raw_mean": 0.46521162005141375,
+        "dynamics_rms": 0.15688648058506882,
+        "outcome_rms": 0.594809476907964
+      },
+      {
+        "step": 3000,
+        "main_raw_mean": 0.141516322016716,
+        "tail_raw_mean": 0.1553046327382326,
+        "outcome_raw_mean": 0.4239867147132754,
+        "dynamics_rms": 0.14401938879327567,
+        "outcome_rms": 0.5460948967780814
+      },
+      {
+        "step": 3500,
+        "main_raw_mean": 0.12542888271063565,
+        "tail_raw_mean": 0.14578628320991993,
+        "outcome_raw_mean": 0.42631413915986194,
+        "dynamics_rms": 0.12975773921428607,
+        "outcome_rms": 0.5580409050853521
+      },
+      {
+        "step": 4000,
+        "main_raw_mean": 0.11610906947404147,
+        "tail_raw_mean": 0.13230792093276977,
+        "outcome_raw_mean": 0.41412354836962184,
+        "dynamics_rms": 0.12527824334021084,
+        "outcome_rms": 0.5351036509181548
+      },
+      {
+        "step": 4500,
+        "main_raw_mean": 0.11215490245819092,
+        "tail_raw_mean": 0.12904460107907653,
+        "outcome_raw_mean": 0.3786007129239151,
+        "dynamics_rms": 0.11673222112466361,
+        "outcome_rms": 0.535198420015071
+      },
+      {
+        "step": 5000,
+        "main_raw_mean": 0.1068625718280673,
+        "tail_raw_mean": 0.11769260412827134,
+        "outcome_raw_mean": 0.372469549307134,
+        "dynamics_rms": 0.11256884406306678,
+        "outcome_rms": 0.6039226481547979
+      },
+      {
+        "step": 5500,
+        "main_raw_mean": 0.10229682580381631,
+        "tail_raw_mean": 0.11530604012683034,
+        "outcome_raw_mean": 0.3822261621580692,
+        "dynamics_rms": 0.10637861016543693,
+        "outcome_rms": 0.6030796894522823
+      },
+      {
+        "step": 6000,
+        "main_raw_mean": 0.0996300056129694,
+        "tail_raw_mean": 0.1134991905670613,
+        "outcome_raw_mean": 0.3502106739652809,
+        "dynamics_rms": 0.10730732894645913,
+        "outcome_rms": 0.6011752015466407
+      },
+      {
+        "step": 6500,
+        "main_raw_mean": 0.09665840336680412,
+        "tail_raw_mean": 0.10751379839330912,
+        "outcome_raw_mean": 0.3254273119104473,
+        "dynamics_rms": 0.10167824858993016,
+        "outcome_rms": 0.5148351384226156
+      },
+      {
+        "step": 7000,
+        "main_raw_mean": 0.09271003703027964,
+        "tail_raw_mean": 0.10879717608913779,
+        "outcome_raw_mean": 0.374480256232142,
+        "dynamics_rms": 0.0995307498411036,
+        "outcome_rms": 0.5622944037635316
+      },
+      {
+        "step": 7500,
+        "main_raw_mean": 0.08850080621987581,
+        "tail_raw_mean": 0.10471066700294614,
+        "outcome_raw_mean": 0.3601011550113326,
+        "dynamics_rms": 0.09603878644656665,
+        "outcome_rms": 0.5462108737395925
+      },
+      {
+        "step": 8000,
+        "main_raw_mean": 0.08727937925234437,
+        "tail_raw_mean": 0.10304654463380575,
+        "outcome_raw_mean": 0.3520747364505078,
+        "dynamics_rms": 0.0933902043076631,
+        "outcome_rms": 0.5378124477479663
+      },
+      {
+        "step": 8500,
+        "main_raw_mean": 0.08511262267455459,
+        "tail_raw_mean": 0.10078850427269935,
+        "outcome_raw_mean": 0.34876682391239594,
+        "dynamics_rms": 0.09242879804812829,
+        "outcome_rms": 0.5963278994403256
+      },
+      {
+        "step": 9000,
+        "main_raw_mean": 0.08478678625077009,
+        "tail_raw_mean": 0.10023936045914889,
+        "outcome_raw_mean": 0.35892299718310094,
+        "dynamics_rms": 0.09229594110708368,
+        "outcome_rms": 0.5460622782822995
+      },
+      {
+        "step": 9500,
+        "main_raw_mean": 0.08231508630886673,
+        "tail_raw_mean": 0.09612151691317558,
+        "outcome_raw_mean": 0.3368096532267082,
+        "dynamics_rms": 0.08834713773069039,
+        "outcome_rms": 0.5979968821461686
+      },
+      {
+        "step": 10000,
+        "main_raw_mean": 0.08029277419671416,
+        "tail_raw_mean": 0.0911348400376737,
+        "outcome_raw_mean": 0.31461972907643576,
+        "dynamics_rms": 0.08951633054970502,
+        "outcome_rms": 0.5559018949352967
+      },
+      {
+        "step": 10500,
+        "main_raw_mean": 0.08000949544087052,
+        "tail_raw_mean": 0.09961598781123758,
+        "outcome_raw_mean": 0.33783503259642383,
+        "dynamics_rms": 0.08822170617174349,
+        "outcome_rms": 0.542418488385324
+      },
+      {
+        "step": 11000,
+        "main_raw_mean": 0.07689350643008948,
+        "tail_raw_mean": 0.0927036532536149,
+        "outcome_raw_mean": 0.3667878392726925,
+        "dynamics_rms": 0.08381832929168784,
+        "outcome_rms": 0.6927024282734119
+      },
+      {
+        "step": 11500,
+        "main_raw_mean": 0.07366020692884923,
+        "tail_raw_mean": 0.0869672296717763,
+        "outcome_raw_mean": 0.35672322524552874,
+        "dynamics_rms": 0.08064652123278897,
+        "outcome_rms": 0.601236497436451
+      },
+      {
+        "step": 12000,
+        "main_raw_mean": 0.07448234981670976,
+        "tail_raw_mean": 0.09533837162330747,
+        "outcome_raw_mean": 0.3627820323109845,
+        "dynamics_rms": 0.07973582676469015,
+        "outcome_rms": 0.668708858282253
+      },
+      {
+        "step": 12500,
+        "main_raw_mean": 0.07140089682489634,
+        "tail_raw_mean": 0.08832822605967522,
+        "outcome_raw_mean": 0.3099700062529155,
+        "dynamics_rms": 0.07827416701080588,
+        "outcome_rms": 0.539530927067057
+      },
+      {
+        "step": 13000,
+        "main_raw_mean": 0.07116930584982037,
+        "tail_raw_mean": 0.08843239722773433,
+        "outcome_raw_mean": 0.344686311417041,
+        "dynamics_rms": 0.07650719428075027,
+        "outcome_rms": 0.566557001134084
+      },
+      {
+        "step": 13500,
+        "main_raw_mean": 0.07093272447958589,
+        "tail_raw_mean": 0.0882521742619574,
+        "outcome_raw_mean": 0.3533788377074088,
+        "dynamics_rms": 0.07931436980668187,
+        "outcome_rms": 0.5743586149225925
+      },
+      {
+        "step": 14000,
+        "main_raw_mean": 0.07121602110564709,
+        "tail_raw_mean": 0.08396177590079605,
+        "outcome_raw_mean": 0.33245170387003237,
+        "dynamics_rms": 0.07847169047248342,
+        "outcome_rms": 0.583075036276174
+      },
+      {
+        "step": 14500,
+        "main_raw_mean": 0.0697808103300631,
+        "tail_raw_mean": 0.08435443390160799,
+        "outcome_raw_mean": 0.3097365312339771,
+        "dynamics_rms": 0.07733465933340458,
+        "outcome_rms": 0.4791043150877239
+      },
+      {
+        "step": 15000,
+        "main_raw_mean": 0.06976077270507812,
+        "tail_raw_mean": 0.08534068210050463,
+        "outcome_raw_mean": 0.3362477071876701,
+        "dynamics_rms": 0.07397679443598182,
+        "outcome_rms": 0.6481488422124045
+      },
+      {
+        "step": 15500,
+        "main_raw_mean": 0.07078035535663366,
+        "tail_raw_mean": 0.07552623318135739,
+        "outcome_raw_mean": 0.3380741397958891,
+        "dynamics_rms": 0.07204187427969959,
+        "outcome_rms": 0.6901953330860178
+      },
+      {
+        "step": 16000,
+        "main_raw_mean": 0.06802707383781671,
+        "tail_raw_mean": 0.07682603534124792,
+        "outcome_raw_mean": 0.3810958541719574,
+        "dynamics_rms": 0.07251934045423979,
+        "outcome_rms": 0.6752330705339414
+      },
+      {
+        "step": 16500,
+        "main_raw_mean": 0.0685583721101284,
+        "tail_raw_mean": 0.07494282278046012,
+        "outcome_raw_mean": 0.3471396719799741,
+        "dynamics_rms": 0.0719831517292362,
+        "outcome_rms": 0.6372132579926995
+      },
+      {
+        "step": 17000,
+        "main_raw_mean": 0.06568291070312261,
+        "tail_raw_mean": 0.07737954115122557,
+        "outcome_raw_mean": 0.3823310244985096,
+        "dynamics_rms": 0.07200766614615856,
+        "outcome_rms": 0.6889609725548324
+      },
+      {
+        "step": 17500,
+        "main_raw_mean": 0.06658458322659135,
+        "tail_raw_mean": 0.07302682392671704,
+        "outcome_raw_mean": 0.3309251649153193,
+        "dynamics_rms": 0.07171170465234296,
+        "outcome_rms": 0.5647268241316902
+      },
+      {
+        "step": 18000,
+        "main_raw_mean": 0.06501852675899863,
+        "tail_raw_mean": 0.07533680207654833,
+        "outcome_raw_mean": 0.3224449479874472,
+        "dynamics_rms": 0.06882758705039317,
+        "outcome_rms": 0.5563713156272333
+      },
+      {
+        "step": 18500,
+        "main_raw_mean": 0.06265945355221629,
+        "tail_raw_mean": 0.07001255117915571,
+        "outcome_raw_mean": 0.30484396598844615,
+        "dynamics_rms": 0.06716384348590011,
+        "outcome_rms": 0.5808054957754234
+      },
+      {
+        "step": 19000,
+        "main_raw_mean": 0.06234635626152158,
+        "tail_raw_mean": 0.06824922313541174,
+        "outcome_raw_mean": 0.37092920494662124,
+        "dynamics_rms": 0.06457658817507761,
+        "outcome_rms": 0.6656315948670574
+      },
+      {
+        "step": 19500,
+        "main_raw_mean": 0.062252078406512736,
+        "tail_raw_mean": 0.06902334615960717,
+        "outcome_raw_mean": 0.344297902745453,
+        "dynamics_rms": 0.0656843539221462,
+        "outcome_rms": 0.5293021393611872
+      },
+      {
+        "step": 20000,
+        "main_raw_mean": 0.06266520703583955,
+        "tail_raw_mean": 0.06882987933419644,
+        "outcome_raw_mean": 0.3440788909700586,
+        "dynamics_rms": 0.0633773413053333,
+        "outcome_rms": 0.7261373364632672
+      }
+    ]
+  }
+}

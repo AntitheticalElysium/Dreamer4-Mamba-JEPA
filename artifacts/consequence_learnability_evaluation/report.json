@@ -1,0 +1,144 @@
+{
+  "contract": {
+    "version": "consequence-learnability-evaluation-v1",
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "trajectory_phase2": "94bf488063121630b30e89b9b2c66143c798b3e3bb4a8a9169e5ac61f403146e",
+    "prepared": "5cdc2d6d6651d381cc564cb9e7810a5fad7fd3b7d59898f8e57638300a6607bd",
+    "model": "eb4d38e080f6aca1f3d6d4375395fead58fccf111eda6e81396c564b6d0cd05f",
+    "implementation": {
+      "artifacts/run_stage_a.py": "37132c25192790ebe2d0253db5e120e8e8305b9c5b3c89a1c3b8f8c8cad93f5a",
+      "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+      "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+      "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+      "d4mj/data.py": "55cd78faafae33f111298304b63f325c4e257790feeca6e2f256da52b8dc529c",
+      "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+      "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+      "d4mj/train.py": "7a7e3f7bd75e1c642a070fcc6e24235b6d5bf2f7ea3f5b365486115430bf0336",
+      "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+      "artifacts/phase1b_diagnostic_common.py": "eeb675e1545ba81db7bbf7b69e68745541f4ec31d2411a06af4eb66a5d1e4c0b",
+      "artifacts/evaluate_consequence_learnability.py": "ef703007670866ce2ef0e9051b8dd5463df6e16207edac3802df7ef5a6ff986b"
+    },
+    "target": "d^T(z_{t+1} - z_t) from real encoded successors",
+    "primary": "teacher -- benchmark predicts from the real observed fork state",
+    "secondary": "generated -- transfer to the recursive gate's own condition"
+  },
+  "sets": {
+    "policy_forks_104": {
+      "states": 104,
+      "examples": 1768,
+      "forks": "392e8e33895d48aea888d22e043e57a81ce4d55fb2f83fdf67d19451353e9dad",
+      "teacher": {
+        "groups": 104,
+        "true_fatal_minus_safe": 0.3254093527793884,
+        "predicted_fatal_minus_safe": -0.010201619006693363,
+        "recovered_fraction": -0.03135011000624054,
+        "predicted_contrast_ci95": [
+          -0.025735629722476006,
+          0.005706872791051865
+        ],
+        "recovered_fraction_ci95": [
+          -0.07908693701028824,
+          0.017537519335746765
+        ]
+      },
+      "teacher_regression": {
+        "examples": 1768,
+        "mse": 0.07124050706624985,
+        "correlation": 0.3639248013496399,
+        "true_std": 0.20587942004203796,
+        "predicted_std": 0.085689976811409
+      },
+      "generated": {
+        "groups": 104,
+        "true_fatal_minus_safe": 0.3254093527793884,
+        "predicted_fatal_minus_safe": -0.0009317923686467111,
+        "recovered_fraction": -0.0028634467961294913,
+        "predicted_contrast_ci95": [
+          -0.008408339694142342,
+          0.006309681572020054
+        ],
+        "recovered_fraction_ci95": [
+          -0.025839269161224365,
+          0.019389981403946877
+        ]
+      },
+      "generated_regression": {
+        "examples": 1768,
+        "mse": 0.07384955883026123,
+        "correlation": 0.008662971667945385,
+        "true_std": 0.20587942004203796,
+        "predicted_std": 0.06638213247060776
+      }
+    },
+    "branched_forks_965": {
+      "states": 965,
+      "examples": 16405,
+      "forks": "61f172d14d8c4820df987929075a1f87b3d7ecec973822e15950b6f949bbfc72",
+      "teacher": {
+        "groups": 965,
+        "true_fatal_minus_safe": 0.3039569854736328,
+        "predicted_fatal_minus_safe": -0.006995605304837227,
+        "recovered_fraction": -0.023015116082746093,
+        "predicted_contrast_ci95": [
+          -0.013501458801329136,
+          -0.00016777246491983533
+        ],
+        "recovered_fraction_ci95": [
+          -0.044418979436159134,
+          -0.0005519611877389252
+        ]
+      },
+      "teacher_regression": {
+        "examples": 16405,
+        "mse": 0.058747198432683945,
+        "correlation": 0.44994238018989563,
+        "true_std": 0.2063366174697876,
+        "predicted_std": 0.10711073875427246
+      },
+      "generated": {
+        "groups": 965,
+        "true_fatal_minus_safe": 0.3039569854736328,
+        "predicted_fatal_minus_safe": -0.0014440241502597928,
+        "recovered_fraction": -0.00475075164997337,
+        "predicted_contrast_ci95": [
+          -0.0037884877528995275,
+          0.0008154542301781476
+        ],
+        "recovered_fraction_ci95": [
+          -0.012463894672691822,
+          0.0026827948167920113
+        ]
+      },
+      "generated_regression": {
+        "examples": 16405,
+        "mse": 0.06751377880573273,
+        "correlation": 0.09627806395292282,
+        "true_std": 0.2063366174697876,
+        "predicted_std": 0.06852424889802933
+      }
+    }
+  },
+  "dev_transitions": {
+    "contrast": {
+      "groups": 1004,
+      "true_fatal_minus_safe": 0.4501076936721802,
+      "predicted_fatal_minus_safe": 0.009709170088171959,
+      "recovered_fraction": 0.02157077122801479,
+      "predicted_contrast_ci95": [
+        0.003000128548592329,
+        0.016595758497714996
+      ],
+      "recovered_fraction_ci95": [
+        0.006665357388556004,
+        0.03687063977122307
+      ]
+    },
+    "regression": {
+      "examples": 2008,
+      "mse": 0.11924765259027481,
+      "correlation": 0.37048619985580444,
+      "true_std": 0.28820523619651794,
+      "predicted_std": 0.08572472631931305
+    }
+  }
+}

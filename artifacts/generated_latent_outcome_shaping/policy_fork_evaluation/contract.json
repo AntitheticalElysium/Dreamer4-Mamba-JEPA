@@ -1,0 +1,67 @@
+{
+  "version": "predictor-flow-policy-fork-evaluation-v1",
+  "inputs": {
+    "prepared": "5cdc2d6d6651d381cc564cb9e7810a5fad7fd3b7d59898f8e57638300a6607bd",
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "trajectory_phase2": "94bf488063121630b30e89b9b2c66143c798b3e3bb4a8a9169e5ac61f403146e",
+    "forks": "392e8e33895d48aea888d22e043e57a81ce4d55fb2f83fdf67d19451353e9dad",
+    "worlds": {
+      "allowed_005k": "28595bf5bc84c89457ce6b4bcae57627ac3cb5958ae1bcbeef6d07b398b056b9",
+      "stopped_005k": "bf34bee503fc482815deb6954b4ad8381e875ca30ff23ea6d04317f304d940c1",
+      "allowed_010k": "476b13e81bbaffe789e2d8e1930ed5b890f413b8954d8e3a10745c575c8c797f",
+      "stopped_010k": "8fb2e6c09c758e6c0dee275fc6034a5399dc4873780a54d5f575cee1e3b3854e",
+      "allowed_020k": "160ac9b61d8931d301f079ce62ba9fd7bae607c43a8d3f1dd7df788990d3bfb0",
+      "stopped_020k": "5b62bff02a182b607fd6f28ca3ad9263eb904ec30d1df4652c3ea6150ca52987"
+    }
+  },
+  "specs": {
+    "allowed_005k": {
+      "transition": "direct",
+      "predictor": "current"
+    },
+    "stopped_005k": {
+      "transition": "direct",
+      "predictor": "current"
+    },
+    "allowed_010k": {
+      "transition": "direct",
+      "predictor": "current"
+    },
+    "stopped_010k": {
+      "transition": "direct",
+      "predictor": "current"
+    },
+    "allowed_020k": {
+      "transition": "direct",
+      "predictor": "current"
+    },
+    "stopped_020k": {
+      "transition": "direct",
+      "predictor": "current"
+    }
+  },
+  "implementation": {
+    "artifacts/run_stage_a.py": "37132c25192790ebe2d0253db5e120e8e8305b9c5b3c89a1c3b8f8c8cad93f5a",
+    "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+    "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+    "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+    "d4mj/data.py": "55cd78faafae33f111298304b63f325c4e257790feeca6e2f256da52b8dc529c",
+    "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+    "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+    "d4mj/train.py": "7a7e3f7bd75e1c642a070fcc6e24235b6d5bf2f7ea3f5b365486115430bf0336",
+    "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+    "artifacts/phase1b_diagnostic_common.py": "eeb675e1545ba81db7bbf7b69e68745541f4ec31d2411a06af4eb66a5d1e4c0b",
+    "artifacts/evaluate_predictor_flow_forks.py": "f7c7fd096f6e5af8156a5da7d33fb68332509175ba4a1355c5e1e13685373b86",
+    "artifacts/predictor_flow_attribution_common.py": "c5fd5049cbd75e511c375f92d58815bdbaa372800c61f5a907ca64787a389fbb",
+    "artifacts/localize_matched_counterfactual.py": "3bf4f56f2f8181d9599e395133425b4306c0092377ef8f73a75b0492983ee58d",
+    "artifacts/localize_flow_phase1b.py": "6814ed382cc7fe54ef47c4cdfe0bd94f715fdf0071560e5faf239894b3bb89a3",
+    "artifacts/evaluate_fatality_direction_delta.py": "006236d19026dcb887f91940c9764852953a0ee1fe0eefcc3ad5e6f152dba094"
+  },
+  "flow_samples": 4,
+  "flow_randomness": "common sample seeds for every Flow world",
+  "probe": "action-centered, whole trajectory seed held out",
+  "folds": 10,
+  "probe_seeds": 5,
+  "probe_steps": 600,
+  "bootstraps": 1000
+}

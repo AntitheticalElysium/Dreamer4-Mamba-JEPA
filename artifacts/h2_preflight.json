@@ -1,0 +1,103 @@
+{
+ "latent_parity": [
+  {
+   "step": 0,
+   "terminal": false,
+   "length": 16,
+   "max_abs": 1.430511474609375e-06,
+   "rms": 1.8775283194827352e-07,
+   "cached_rms": 0.7993084788322449
+  },
+  {
+   "step": 0,
+   "terminal": true,
+   "length": 16,
+   "max_abs": 1.4230608940124512e-06,
+   "rms": 1.9559770692012535e-07,
+   "cached_rms": 0.7834669947624207
+  },
+  {
+   "step": 1,
+   "terminal": false,
+   "length": 16,
+   "max_abs": 3.255903720855713e-06,
+   "rms": 2.4091460204545e-07,
+   "cached_rms": 0.7747513651847839
+  },
+  {
+   "step": 1,
+   "terminal": true,
+   "length": 16,
+   "max_abs": 2.2649765014648438e-06,
+   "rms": 2.5633059408392e-07,
+   "cached_rms": 0.7397319674491882
+  },
+  {
+   "step": 3,
+   "terminal": false,
+   "length": 64,
+   "max_abs": 2.9802322387695312e-06,
+   "rms": 1.8918021282843256e-07,
+   "cached_rms": 0.7895184755325317
+  },
+  {
+   "step": 3,
+   "terminal": true,
+   "length": 64,
+   "max_abs": 1.4007091522216797e-06,
+   "rms": 1.4655782365480263e-07,
+   "cached_rms": 0.78769850730896
+  },
+  {
+   "step": 7,
+   "terminal": false,
+   "length": 64,
+   "max_abs": 1.3113021850585938e-06,
+   "rms": 1.1746891459551989e-07,
+   "cached_rms": 0.7906659245491028
+  },
+  {
+   "step": 7,
+   "terminal": true,
+   "length": 64,
+   "max_abs": 1.6093254089355469e-06,
+   "rms": 1.5191891122867673e-07,
+   "cached_rms": 0.7956374287605286
+  }
+ ],
+ "encoder_grad_mae": 5.228916647414095,
+ "encoder_grad_main_phase2": 17.745866215288753,
+ "encoder_grad_terminal": 8.842061501823581,
+ "realised_lr": {
+  "0": {
+   "world": 1.0000000000000001e-07,
+   "heads": 1.0000000000000001e-07,
+   "encoder": 6e-09
+  },
+  "999": {
+   "world": 0.0001,
+   "heads": 0.0001,
+   "encoder": 6e-06
+  },
+  "2000": {
+   "world": 0.0001,
+   "heads": 0.0001,
+   "encoder": 6e-06
+  }
+ },
+ "seconds_per_step_joint": 1.7512288987636566,
+ "peak_vram_gib": 2.891157627105713,
+ "step_report": {
+  "mae": 2.5173466205596924,
+  "phase2": 4.074499130249023,
+  "dynamics": 0.048654817044734955,
+  "terminal": 0.6978940367698669,
+  "lr": {
+   "world": 1.1e-06,
+   "heads": 1.1e-06,
+   "encoder": 6.6e-08
+  },
+  "cache_parity": 0.0024026334285736084
+ },
+ "peak_host_rss_gb": 8.259636
+}
