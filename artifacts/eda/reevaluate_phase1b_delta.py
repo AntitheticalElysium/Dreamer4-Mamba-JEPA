@@ -151,6 +151,52 @@ def combine(args) -> None:
         json.dumps(out, indent=2))
 
 
+def trajectory(args) -> None:
+    """Is R_delta still climbing, or has Direct plateaued?
+
+    Registered before any milestone was inspected: an arm is *still climbing* iff the
+    paired 10k->20k increment in R_delta has a bootstrap CI excluding zero, and
+    *plateaued* iff that CI includes zero. Direct64 is extended only if both tokenizer
+    seeds are still climbing.
+    """
+    miles = tuple(args.milestones)
+    arms = {}
+    for m in miles:
+        arms[m] = json.loads(
+            (HERE / f"phase1b_delta_{args.suffix}_n{args.n_latents}_{m:06d}.json").read_text())
+    keys = arms[miles[0]]["root_keys"]
+    for m in miles[1:]:
+        assert arms[m]["root_keys"] == keys, f"milestone {m} scored different roots"
+    n_roots = len(keys)
+
+    pred = {m: np.array(arms[m]["none"]["pred_values"]) for m in miles}
+    true = {m: np.array(arms[m]["none"]["true_values"]) for m in miles}
+    ratio = lambda p, t: (p.mean() - 0.5) / (t.mean() - 0.5)
+    point = {m: ratio(pred[m], true[m]) for m in miles}
+
+    generator = np.random.default_rng(20260822)
+    draws = np.array([[ratio(pred[m][idx], true[m][idx]) for m in miles]
+                      for idx in (generator.integers(0, n_roots, n_roots) for _ in range(BOOT))])
+    band = lambda v: [float(np.quantile(v, 0.025)), float(np.quantile(v, 0.975))]
+    early, late = draws[:, 1] - draws[:, 0], draws[:, 2] - draws[:, 1]
+    climbing = band(late)[0] > 0
+
+    out = {"suffix": args.suffix, "n_latents": args.n_latents, "roots": n_roots,
+           "R_delta": {str(m): point[m] for m in miles},
+           "increment_5k_10k": point[10_000] - point[5_000], "increment_5k_10k_ci": band(early),
+           "increment_10k_20k": point[20_000] - point[10_000], "increment_10k_20k_ci": band(late),
+           "still_climbing": bool(climbing)}
+    print(f"\n{args.suffix} {args.n_latents}x16 trajectory, {n_roots} roots")
+    print("  R_delta  " + "  ".join(f"{m//1000}k {point[m]:.3f}" for m in miles))
+    print(f"  5k->10k  {out['increment_5k_10k']:+.3f} "
+          f"[{out['increment_5k_10k_ci'][0]:+.3f}, {out['increment_5k_10k_ci'][1]:+.3f}]")
+    print(f"  10k->20k {out['increment_10k_20k']:+.3f} "
+          f"[{out['increment_10k_20k_ci'][0]:+.3f}, {out['increment_10k_20k_ci'][1]:+.3f}]"
+          f"   -> {'STILL CLIMBING' if climbing else 'PLATEAUED'}")
+    (HERE / f"phase1b_trajectory_{args.suffix}_n{args.n_latents}.json").write_text(
+        json.dumps(out, indent=2))
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--n-latents", type=int)
@@ -158,10 +204,18 @@ def main() -> None:
     parser.add_argument("--milestone", type=int, default=20000)
     parser.add_argument("--combine", action="store_true",
                         help="no model: read both arms' results and bootstrap 64 minus 32")
+    parser.add_argument("--milestones", type=int, nargs="+",
+                        default=(5_000, 10_000, 20_000),
+                        help="trajectory only: the checkpoints to compare, in order")
+    parser.add_argument("--trajectory", action="store_true",
+                        help="no model: bootstrap one arm's R_delta increments across milestones")
     args = parser.parse_args()
 
     if args.combine:
         combine(args)
+        return
+    if args.trajectory:
+        trajectory(args)
         return
 
     folder = HERE / f"forkset_{args.suffix}_n{args.n_latents}"
