@@ -1,10 +1,24 @@
-"""Are the two Phase-1B loss terms comparably normalised, and what is lambda?
+"""Is lambda = 2.3761 still the right weight under the corrected protocol?
 
-Both terms must be means over target scalars, not sums, or the fork term's weight
-would depend on how many successors a root has and on the latent width -- which
-differs between the two geometries and would silently make lambda geometry-dependent.
-Reports the per-scalar normalisation and the lambda=1 gradient ratio for both arms so
-a single fixed lambda can be chosen once and applied to both.
+The original calibration is not reusable. It fed null action histories, measured on
+`load_forkset(folder)[:8]` -- the first eight rows in shard order, not restricted to
+the fit split -- and built its world under the *tokenizer's* seed (20260732) rather
+than the seed the diagnostic trainer actually uses for world initialisation
+(Config().seed = 20260731).
+
+This mirrors `train_phase1b_fork` exactly instead: real causal action histories, the
+same config, the same world initialisation and RNG streams, and batches drawn from
+the trainer's own numpy stream over the fit split at the training batch size.
+
+Registered before the result. The statistic is
+
+    rho = lambda * |g_fork| / |g_ordinary|      at lambda = 2.3761
+
+averaged over BATCHES matched fit batches. Lambda is EQUIVALENT iff mean rho lies in
+[0.67, 1.50] -- within 1.5x of parity either way -- and is additionally flagged
+UNSTABLE, not a clean pass, if the mean is inside the band while more than 25% of
+batches fall outside [0.5, 2.0]. The point estimate is not chased: the question is
+whether the existing weight still balances the two terms, not what its optimum is.
 """
 
 from __future__ import annotations
@@ -21,39 +35,17 @@ ROOT = Path("/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA")
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(ROOT))
+from train_phase1b_fork import fork_actions, load_forkset, seed_split
+
 from d4mj.config import Config
 from d4mj.train import _share_initialisation
 from d4mj.transition import World, commit_inputs
 
 DEVICE = "cuda"
-
-
-def losses_for(arm_dir: Path, rows, config):
-    """Ordinary teacher-forced dynamics loss and the all-17 fork loss, both as means
-    over target scalars so they are on one scale regardless of geometry."""
-    torch.manual_seed(config.seed + 1)
-    world = _share_initialisation(World(config), config).to(DEVICE)
-    rng = torch.Generator(device=DEVICE).manual_seed(config.seed + 1001)
-    spatial, d = config.n_spatial, config.d_spatial
-
-    history = torch.stack([r["z_history"] for r in rows]).to(DEVICE)
-    branch = torch.stack([r["z_branch"] for r in rows]).to(DEVICE)
-    steps = history.shape[1]
-    led = torch.full((len(rows), steps), config.n_actions, dtype=torch.long, device=DEVICE)
-    committed, conditioning = commit_inputs(history.view(len(rows), steps, spatial, d),
-                                            rng, config)
-    features, _, _ = world(None, led, committed, conditioning)
-
-    # ordinary: predict z_{t+1} from block t, teacher forced across the window
-    ordinary_pred = world.predict(features[:, :-1], led[:, 1:]).flatten(2)
-    ordinary = (ordinary_pred - history[:, 1:]).pow(2).mean()
-
-    # fork: predict all 17 successors from the final block
-    last = features[:, -1:]
-    actions = torch.arange(17, device=DEVICE)[None].expand(len(rows), -1)
-    fork_pred = world.predict(last.expand(len(rows), 17, *last.shape[2:]), actions).flatten(2)
-    fork = (fork_pred - branch).pow(2).mean()
-    return world, ordinary, fork
+LAMBDA = 2.3761
+BATCHES = 16
+BAND = (0.67, 1.50)
+WIDE = (0.5, 2.0)
 
 
 def grad_norm(world, loss):
@@ -65,35 +57,78 @@ def grad_norm(world, loss):
 
 
 def main() -> None:
-    print(f"{'arm':<8}{'z dim':>7}{'ordinary':>12}{'fork':>12}"
-          f"{'|g_ord|':>12}{'|g_fork|':>12}{'ratio':>9}")
-    summary = {}
-    for n_latents in (32, 64):
-        folder = HERE / f"forkset_s1_n{n_latents}"
-        manifest = json.loads((folder / "manifest.json").read_text())
-        from train_phase1b_fork import load_forkset
+    suffix, n_latents = "s1fix", 64
+    rows = load_forkset(HERE / f"forkset_{suffix}_n{n_latents}")
+    splits = np.array([seed_split(r["seed"]) for r in rows])
+    fit = np.where(splits == "fit")[0]
+    history = torch.stack([r["z_history"] for r in rows])
+    branch = torch.stack([r["z_branch"] for r in rows])
+    led_history = fork_actions(rows)
 
-        rows = load_forkset(folder)[:8]
-        report = json.loads((HERE / "capacity6k" /
-                             f"n{n_latents}d16_s1" / "training_report.json").read_text())
-        config = replace(Config(transition="direct", time_mixer="attention"),
-                         n_latents=n_latents, d_bottleneck=16, seed=report["seed"])
-        torch.cuda.empty_cache()
-        world, ordinary, fork = losses_for(folder, rows, config)
+    # identical to the trainer: config, world initialisation, both RNG streams
+    config = replace(Config(transition="direct", time_mixer="attention"),
+                     n_latents=n_latents, d_bottleneck=16, batch=4, seed=Config().seed)
+    torch.manual_seed(config.seed + 1)
+    world = _share_initialisation(World(config), config).to(DEVICE)
+    milestone = int(sys.argv[1]) if len(sys.argv) > 1 else 0
+    if milestone:   # supplementary only: does the imbalance persist after training?
+        from d4mj.checkpoint import load
+        load(HERE / f"phase1b_{suffix}_n{n_latents}" / f"world_{milestone:06d}.pt",
+             config, part0=world)
+    rng = torch.Generator(device=DEVICE).manual_seed(config.seed + 1001)
+    draw = np.random.default_rng(config.seed + 91)
+    actions = torch.arange(17, device=DEVICE)
+    spatial, d = config.n_spatial, config.d_spatial
+    steps = history.shape[1]
+
+    print(f"arm {n_latents}x16 {suffix}: world seed {config.seed + 1}, "
+          f"{len(fit)} fit roots, batch {config.batch}, {BATCHES} batches", flush=True)
+    print(f"{'batch':>6}{'ordinary':>12}{'fork':>12}{'|g_ord|':>12}{'|g_fork|':>12}"
+          f"{'ratio':>9}{'rho':>9}")
+
+    records = []
+    for index in range(BATCHES):
+        chosen = draw.choice(fit, config.batch, replace=False)
+        z = history[chosen].to(DEVICE)
+        target = branch[chosen].to(DEVICE)
+        led = led_history[chosen].to(DEVICE)
+        committed, conditioning = commit_inputs(
+            z.view(config.batch, steps, spatial, d), rng, config)
+        features, _, _ = world(None, led, committed, conditioning)
+
+        ordinary = (world.predict(features[:, :-1], led[:, 1:]).flatten(2)
+                    - z[:, 1:]).pow(2).mean()
+        last = features[:, -1:]
+        fork = (world.predict(last.expand(config.batch, 17, *last.shape[2:]),
+                              actions[None].expand(config.batch, -1)).flatten(2)
+                - target).pow(2).mean()
         g_ord, g_fork = grad_norm(world, ordinary), grad_norm(world, fork)
-        print(f"{f'{n_latents}x16':<8}{manifest['z_dim']:>7}{float(ordinary):>12.5f}"
-              f"{float(fork):>12.5f}{g_ord:>12.5f}{g_fork:>12.5f}{g_ord/g_fork:>9.3f}")
-        summary[f"{n_latents}x16"] = {"ordinary": float(ordinary), "fork": float(fork),
-                                      "grad_ordinary": g_ord, "grad_fork": g_fork,
-                                      "ratio": g_ord / g_fork, "z_dim": manifest["z_dim"]}
-        del world
-        torch.cuda.empty_cache()
-    print("\nboth losses are means over target scalars, so neither depends on latent")
-    print("width or successor count; the ratio below is what lambda must offset.")
-    ratios = [v["ratio"] for v in summary.values()]
-    print(f"lambda = {sum(ratios)/len(ratios):.3f} equalises gradient magnitude on average "
-          f"(per-arm {ratios[0]:.3f}, {ratios[1]:.3f})")
-    (HERE / "lambda_preflight.json").write_text(json.dumps(summary, indent=2))
+        rho = LAMBDA * g_fork / g_ord
+        records.append({"ordinary": float(ordinary), "fork": float(fork),
+                        "g_ordinary": g_ord, "g_fork": g_fork,
+                        "ratio": g_ord / g_fork, "rho": rho})
+        print(f"{index:>6}{float(ordinary):12.5f}{float(fork):12.5f}"
+              f"{g_ord:12.5f}{g_fork:12.5f}{g_ord / g_fork:9.3f}{rho:9.3f}", flush=True)
+
+    rho = np.array([r["rho"] for r in records])
+    outside = float(np.mean((rho < WIDE[0]) | (rho > WIDE[1])))
+    equivalent = BAND[0] <= rho.mean() <= BAND[1]
+    unstable = equivalent and outside > 0.25
+    verdict = "EQUIVALENT" if equivalent and not unstable else (
+        "UNSTABLE" if unstable else "NOT EQUIVALENT")
+    print(f"\n  mean rho {rho.mean():.3f}  (median {np.median(rho):.3f}, "
+          f"min {rho.min():.3f}, max {rho.max():.3f})")
+    print(f"  band {BAND}, {outside:.1%} of batches outside {WIDE}  ->  {verdict}")
+    print(f"  implied lambda at parity: {LAMBDA / rho.mean():.4f}")
+    name = f"lambda_preflight_corrected{f'_{milestone:06d}' if milestone else ''}.json"
+    (HERE / name).write_text(json.dumps({
+        "milestone": milestone,
+        "suffix": suffix, "n_latents": n_latents, "lambda": LAMBDA, "batches": BATCHES,
+        "band": list(BAND), "wide": list(WIDE), "mean_rho": float(rho.mean()),
+        "median_rho": float(np.median(rho)), "fraction_outside_wide": outside,
+        "equivalent": bool(equivalent), "unstable": bool(unstable), "verdict": verdict,
+        "implied_lambda_at_parity": float(LAMBDA / rho.mean()),
+        "records": records}, indent=2))
 
 
 if __name__ == "__main__":
