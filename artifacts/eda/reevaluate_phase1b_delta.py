@@ -178,21 +178,25 @@ def trajectory(args) -> None:
     draws = np.array([[ratio(pred[m][idx], true[m][idx]) for m in miles]
                       for idx in (generator.integers(0, n_roots, n_roots) for _ in range(BOOT))])
     band = lambda v: [float(np.quantile(v, 0.025)), float(np.quantile(v, 0.975))]
-    early, late = draws[:, 1] - draws[:, 0], draws[:, 2] - draws[:, 1]
-    climbing = band(late)[0] > 0
+    steps = {}
+    for i in range(1, len(miles)):
+        delta = draws[:, i] - draws[:, i - 1]
+        steps[f"{miles[i-1]//1000}k_{miles[i]//1000}k"] = {
+            "increment": point[miles[i]] - point[miles[i - 1]], "ci": band(delta)}
+    final = list(steps)[-1]
+    climbing = steps[final]["ci"][0] > 0
 
     out = {"suffix": args.suffix, "n_latents": args.n_latents, "roots": n_roots,
-           "R_delta": {str(m): point[m] for m in miles},
-           "increment_5k_10k": point[10_000] - point[5_000], "increment_5k_10k_ci": band(early),
-           "increment_10k_20k": point[20_000] - point[10_000], "increment_10k_20k_ci": band(late),
-           "still_climbing": bool(climbing)}
+           "R_delta": {str(m): point[m] for m in miles}, "increments": steps,
+           "final_increment": final, "still_climbing": bool(climbing)}
     print(f"\n{args.suffix} {args.n_latents}x16 trajectory, {n_roots} roots")
     print("  R_delta  " + "  ".join(f"{m//1000}k {point[m]:.3f}" for m in miles))
-    print(f"  5k->10k  {out['increment_5k_10k']:+.3f} "
-          f"[{out['increment_5k_10k_ci'][0]:+.3f}, {out['increment_5k_10k_ci'][1]:+.3f}]")
-    print(f"  10k->20k {out['increment_10k_20k']:+.3f} "
-          f"[{out['increment_10k_20k_ci'][0]:+.3f}, {out['increment_10k_20k_ci'][1]:+.3f}]"
-          f"   -> {'STILL CLIMBING' if climbing else 'PLATEAUED'}")
+    for name, row in steps.items():
+        mark = ""
+        if name == final:
+            mark = f"   -> {'STILL CLIMBING' if climbing else 'PLATEAUED'}"
+        print(f"  {name.replace('_', '->'):<10} {row['increment']:+.3f} "
+              f"[{row['ci'][0]:+.3f}, {row['ci'][1]:+.3f}]{mark}")
     (HERE / f"phase1b_trajectory_{args.suffix}_n{args.n_latents}.json").write_text(
         json.dumps(out, indent=2))
 
