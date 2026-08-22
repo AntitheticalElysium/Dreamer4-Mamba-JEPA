@@ -37,7 +37,7 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(ROOT))
 from evaluate_damage_classifier import auc, interval
 from evaluate_phase1b_fork import Readout, predict_branches
-from train_phase1b_fork import load_forkset, seed_split
+from train_phase1b_fork import fork_actions, load_forkset, seed_split
 
 from d4mj.checkpoint import load
 from d4mj.config import Config
@@ -238,7 +238,8 @@ def main() -> None:
     world.eval()
 
     fit, tune, test = (splits == s for s in ("fit", "tune", "test"))
-    predicted_test = predict_branches(world, config, history[test])
+    predicted_test = predict_branches(world, config, history[test],
+                                      fork_actions(rows)[torch.from_numpy(test)])
 
     true_delta = branch - root[:, None]
     pred_delta_test = predicted_test - root[test][:, None]

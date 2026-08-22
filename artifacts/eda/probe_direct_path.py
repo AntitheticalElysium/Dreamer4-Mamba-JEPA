@@ -60,7 +60,7 @@ from evaluate_damage_classifier import auc, interval
 from evaluate_phase1b_fork import Readout
 from probe_observability import Probe
 from reevaluate_phase1b_delta import within_state
-from train_phase1b_fork import load_forkset, seed_split
+from train_phase1b_fork import fork_actions, load_forkset, seed_split
 
 from d4mj.checkpoint import load
 from d4mj.config import Config
@@ -71,7 +71,7 @@ SHARED = ("z_t", "f_t", "pooled")
 
 
 @torch.no_grad()
-def collect(world, config, history, batch=8):
+def collect(world, config, history, led_history, batch=8):
     """Every depth of predict(), recomputed from the module's own submodules.
 
     The final tensor is checked against world.predict itself, so the reconstruction
@@ -84,7 +84,7 @@ def collect(world, config, history, batch=8):
     for lo in range(0, len(history), batch):
         z = history[lo : lo + batch].to(DEVICE)
         n, steps = z.shape[0], z.shape[1]
-        led = torch.full((n, steps), config.n_actions, dtype=torch.long, device=DEVICE)
+        led = led_history[lo : lo + batch].to(DEVICE)
         committed, conditioning = commit_inputs(z.view(n, steps, spatial, d), rng, config)
         features, _, _ = world(None, led, committed, conditioning)
 
@@ -201,7 +201,7 @@ def main() -> None:
     world.eval()
     print(f"arm {args.n_latents}x16 {args.suffix} @ {args.milestone}: {len(rows)} roots", flush=True)
 
-    depths = collect(world, config, history)
+    depths = collect(world, config, history, fork_actions(rows))
     depths["pred_dz"] = depths.pop("post_tanh") - root[:, None]
     depths["true_dz"] = branch - root[:, None]
 
@@ -233,7 +233,9 @@ def main() -> None:
         """Between-root against within-root (action) variance of the successor."""
         per_root = x.mean(1, keepdim=True)
         within = (x - per_root).pow(2).mean().item()
-        between = (per_root - x.mean()).pow(2).mean().item()
+        # per coordinate, not around one global scalar -- a scalar grand mean folds the
+        # spread of the per-coordinate means into `between` and understates the action share
+        between = (per_root - x.mean(dim=(0, 1), keepdim=True)).pow(2).mean().item()
         return {"between_root": between, "within_root_action": within,
                 "action_fraction": within / (within + between)}
 

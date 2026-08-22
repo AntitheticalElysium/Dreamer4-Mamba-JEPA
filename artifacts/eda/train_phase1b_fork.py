@@ -54,6 +54,18 @@ def seed_split(seed: int) -> str:
 FULL_HISTORY = 32
 
 
+def fork_actions(rows):
+    """The real causal action history per root, under the a_{t-1} convention.
+
+    Earlier runs fed `torch.full(..., n_actions)` -- the BOS/null token -- at every
+    history block, so the backbone never saw the actions that produced the trajectory
+    and the ordinary term conditioned its readout on a token the fork term never uses.
+    Built by `build_fork_actions.py` from the same fixed rollout the roots come from.
+    """
+    table = torch.load(Path(__file__).resolve().parent / "fork_actions.pt", weights_only=False)
+    return torch.stack([table[(int(r["seed"]), int(r["step"]))] for r in rows])
+
+
 def load_forkset(folder: Path, full_only: bool = True):
     """Roots with the complete causal history.
 
@@ -92,6 +104,7 @@ def main() -> None:
     rows = load_forkset(folder)
     splits = np.array([seed_split(r["seed"]) for r in rows])
     fit = np.where(splits == "fit")[0]
+    led_history = fork_actions(rows)
     print(f"arm {args.n_latents}x16 {args.suffix}: z dim {manifest['z_dim']}, "
           f"{len(rows)} roots, fit {len(fit)}, lambda {args.lam}", flush=True)
 
@@ -120,8 +133,7 @@ def main() -> None:
         chosen = draw.choice(fit, args.batch, replace=False)
         z = history[chosen].to(DEVICE)
         target = branch[chosen].to(DEVICE)
-        led = torch.full((args.batch, steps_per_root), config.n_actions,
-                         dtype=torch.long, device=DEVICE)
+        led = led_history[chosen].to(DEVICE)
         committed, conditioning = commit_inputs(
             z.view(args.batch, steps_per_root, spatial, d), rng, config)
         features, _, _ = world(None, led, committed, conditioning)

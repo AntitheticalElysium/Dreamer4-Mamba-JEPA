@@ -65,7 +65,7 @@ def fit_readout(x, y, seed, epochs=60):
 
 
 @torch.no_grad()
-def predict_branches(world, config, history, batch=8):
+def predict_branches(world, config, history, led_history, batch=8):
     out = []
     rng = torch.Generator(device=DEVICE).manual_seed(config.seed + 4242)
     actions = torch.arange(17, device=DEVICE)
@@ -73,7 +73,7 @@ def predict_branches(world, config, history, batch=8):
     for lo in range(0, len(history), batch):
         z = history[lo : lo + batch].to(DEVICE)
         n, steps = z.shape[0], z.shape[1]
-        led = torch.full((n, steps), config.n_actions, dtype=torch.long, device=DEVICE)
+        led = led_history[lo : lo + batch].to(DEVICE)
         committed, conditioning = commit_inputs(z.view(n, steps, spatial, d), rng, config)
         features, _, _ = world(None, led, committed, conditioning)
         last = features[:, -1:]
@@ -116,7 +116,7 @@ def main() -> None:
         y_fit = labels[fit].reshape(-1).to(DEVICE)
         readout = fit_readout(x_fit, y_fit, seed=11)
 
-        predicted = predict_branches(world, config, history[test])
+        predicted = predict_branches(world, config, history[test], led_history[test])
         truth = labels[test].numpy()
         mse = float((predicted - branch[test]).pow(2).mean())
         with torch.no_grad():
