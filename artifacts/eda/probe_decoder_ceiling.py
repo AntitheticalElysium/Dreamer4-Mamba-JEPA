@@ -60,8 +60,17 @@ class Decoder(nn.Module):
     def __init__(self, config, tokens: int, depth: int = 4, heads: int = 8):
         super().__init__()
         d = config.d_model
+        self.depth = depth
         self.n_spatial = config.n_spatial
         self.action = nn.Embedding(17, d)
+        if depth == 0:
+            # production's own head shape, trained on the pure all-17 objective from
+            # cached features: per-token MLP over [feature; action], no cross-token
+            # interaction at all. Separates "the head lacks the mixing" from "the head
+            # was trained on a different objective".
+            self.readout = nn.Sequential(nn.Linear(2 * d, d), nn.SiLU(),
+                                         nn.Linear(d, config.d_spatial))
+            return
         self.position = nn.Parameter(torch.randn(tokens + 1, d) * 0.02)
         layer = nn.TransformerEncoderLayer(d, heads, 4 * d, dropout=0.0,
                                            batch_first=True, norm_first=True)
@@ -70,6 +79,10 @@ class Decoder(nn.Module):
         self.out = nn.Linear(d, config.d_spatial)
 
     def forward(self, features, action):
+        if self.depth == 0:
+            spatial = features[:, : self.n_spatial]
+            context = self.action(action)[:, None].expand_as(spatial)
+            return torch.tanh(self.readout(torch.cat([spatial, context], dim=-1))).flatten(1)
         x = torch.cat([self.action(action)[:, None], features], dim=1) + self.position
         x = self.norm(self.blocks(x))[:, 1 : 1 + self.n_spatial]
         return torch.tanh(self.out(x)).flatten(1)
@@ -114,6 +127,9 @@ def main() -> None:
     parser.add_argument("--batch", type=int, default=8)
     parser.add_argument("--depth", type=int, default=4)
     parser.add_argument("--no-tanh", action="store_true")
+    parser.add_argument("--fit-roots", type=int, default=0,
+                        help="subsample the fit split but still score held-out, so the "
+                             "ceiling can be read as a function of paired-root count")
     parser.add_argument("--memorise", type=int, default=0,
                         help="optimisation control: fit this many roots and report train error")
     args = parser.parse_args()
@@ -136,6 +152,8 @@ def main() -> None:
           flush=True)
 
     fit = np.where(splits == "fit")[0]
+    if args.fit_roots:
+        fit = np.random.default_rng(20260823).permutation(fit)[: args.fit_roots]
     if args.memorise:
         fit = fit[: args.memorise]
     test = torch.from_numpy(splits == "test")
@@ -179,6 +197,7 @@ def main() -> None:
     pred = torch.cat(pred)
     truth, r0 = branch[scored], root[scored]
     result = {"arm": args.suffix, "tap": args.tap, "steps": args.steps,
+              "depth": args.depth, "fit_roots": len(fit),
               "memorise": args.memorise, "roots": len(scored),
               "error": decompose(pred, truth, r0), "train_tail": sum(curve[-200:]) / 200}
     e = result["error"]
@@ -228,7 +247,9 @@ def main() -> None:
         print(f"  retrieval {result['retrieval']:.4f}   geometry {result['geometry_correlation']:.4f}"
               f"   R_delta {result['R_delta']:.3f} (pred dz AUC {auc_pred:.4f})")
 
-    tag = f"mem{args.memorise}" if args.memorise else "heldout"
+    tag = (f"mem{args.memorise}" if args.memorise
+           else (f"fit{args.fit_roots}" if args.fit_roots else "heldout"))
+    tag = f"{tag}_d{args.depth}" if args.depth != 4 else tag
     (HERE / f"decoder_ceiling_{args.suffix}_{args.tap}_{tag}.json").write_text(
         json.dumps(result, indent=2))
 
