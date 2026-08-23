@@ -60,7 +60,8 @@ from evaluate_damage_classifier import auc, interval
 from evaluate_phase1b_fork import Readout
 from probe_observability import Probe
 from reevaluate_phase1b_delta import within_state
-from train_phase1b_fork import fork_actions, load_forkset, seed_split
+from train_phase1b_fork import (FULL_HISTORY, NoTanhWorld, fork_actions, load_forkset,
+                                seed_split)
 
 from d4mj.checkpoint import load
 from d4mj.config import Config
@@ -71,7 +72,7 @@ SHARED = ("z_t", "f_t", "pooled")
 
 
 @torch.no_grad()
-def collect(world, config, history, led_history, batch=8):
+def collect(world, config, history, led_history, squash, batch=8):
     """Every depth of predict(), recomputed from the module's own submodules.
 
     The final tensor is checked against world.predict itself, so the reconstruction
@@ -99,7 +100,7 @@ def collect(world, config, history, led_history, batch=8):
         joined = torch.cat([wide_pool, context], dim=-1)
         hidden = world.readout[1](world.readout[0](joined))
         pre = world.readout[2](hidden)
-        post = torch.tanh(pre)
+        post = torch.tanh(pre) if squash else pre
         assert torch.allclose(post, world.predict(wide, act), atol=1e-5), "predict mismatch"
 
         out["z_t"].append(z[:, -1].cpu())
@@ -109,6 +110,50 @@ def collect(world, config, history, led_history, batch=8):
         out["pre_tanh"].append(pre.flatten(2).half().cpu())
         out["post_tanh"].append(post.flatten(2).cpu())
     return {name: torch.cat(chunks) for name, chunks in out.items()}
+
+
+@torch.no_grad()
+def recursive_drift(world, config, history, led_history, steps=6, batch=8, action=0):
+    """Safety gate: does the predictor stay in the encoder's codomain when fed itself?
+
+    The squash exists so training and rollout share one codomain -- production records
+    that squashing only at rollout decays a correct 0.900 to 0.431 over six recursive
+    steps. Removing it is therefore the change most likely to diverge under recursion,
+    and the fork objective never trains a recursive step at all, so this is measured
+    rather than assumed.
+
+    Each root is rolled `steps` blocks forward on its own predictions under a fixed
+    NOOP action, keeping the trailing 32 blocks so the context stays the length the
+    backbone was trained on. Z* is tanh-bounded by the encoder, so a coordinate beyond
+    |1| is outside the range any true latent can occupy.
+    """
+    spatial, d = config.n_spatial, config.d_spatial
+    rows = [[] for _ in range(steps)]
+    for lo in range(0, len(history), batch):
+        z = history[lo : lo + batch].to(DEVICE)
+        led = led_history[lo : lo + batch].to(DEVICE)
+        n = z.shape[0]
+        root = z[:, -1].clone()
+        rng = torch.Generator(device=DEVICE).manual_seed(config.seed + 4242)
+        for k in range(steps):
+            t = z.shape[1]
+            committed, conditioning = commit_inputs(z.view(n, t, spatial, d), rng, config)
+            features, _, _ = world(None, led, committed, conditioning)
+            act = torch.full((n, 1), action, dtype=torch.long, device=DEVICE)
+            nxt = world.predict(features[:, -1:], act).flatten(2)
+            rows[k].append(torch.stack([
+                nxt[:, 0].abs().mean(1),
+                (nxt[:, 0].abs() > 1.0).float().mean(1),
+                (nxt[:, 0] - root).pow(2).sum(1).sqrt()], dim=1).cpu())
+            z = torch.cat([z, nxt], dim=1)[:, -FULL_HISTORY:]
+            led = torch.cat([led, act], dim=1)[:, -FULL_HISTORY:]
+    out = []
+    for k in range(steps):
+        v = torch.cat(rows[k]).float()
+        out.append({"step": k + 1, "mean_abs": float(v[:, 0].mean()),
+                    "fraction_outside_unit": float(v[:, 1].mean()),
+                    "distance_from_root": float(v[:, 2].mean())})
+    return out
 
 
 def standardise(x, fit_mask):
@@ -183,6 +228,8 @@ def main() -> None:
     parser.add_argument("--n-latents", type=int, default=64)
     parser.add_argument("--suffix", type=str, default="s1")
     parser.add_argument("--milestone", type=int, default=20000)
+    parser.add_argument("--no-tanh", action="store_true",
+                        help="the checkpoint has no output squash; P5 is then the identity")
     args = parser.parse_args()
 
     folder = HERE / f"forkset_{args.suffix}_n{args.n_latents}"
@@ -195,13 +242,13 @@ def main() -> None:
 
     config = replace(Config(transition="direct", time_mixer="attention"),
                      n_latents=args.n_latents, d_bottleneck=16, seed=Config().seed)
-    world = World(config).to(DEVICE)
+    world = (NoTanhWorld if args.no_tanh else World)(config).to(DEVICE)
     load(HERE / f"phase1b_{args.suffix}_n{args.n_latents}" /
          f"world_{args.milestone:06d}.pt", config, part0=world)
     world.eval()
     print(f"arm {args.n_latents}x16 {args.suffix} @ {args.milestone}: {len(rows)} roots", flush=True)
 
-    depths = collect(world, config, history, fork_actions(rows))
+    depths = collect(world, config, history, fork_actions(rows), squash=not args.no_tanh)
     depths["pred_dz"] = depths.pop("post_tanh") - root[:, None]
     depths["true_dz"] = branch - root[:, None]
 
@@ -262,6 +309,15 @@ def main() -> None:
           f"pre-tanh {m['pre_tanh_effect']:.4f}")
     print(f"  pre-tanh |x|: mean {s['mean_abs_pre_tanh']:.4f}, "
           f">1 {s['fraction_above_1']:.2%}, >2 {s['fraction_above_2']:.2%}")
+
+    drift = recursive_drift(world, config, history[test_m], fork_actions(rows)[test_m])
+    result["recursive_drift"] = drift
+    print(f"\n  recursive drift under NOOP "
+          f"(true root latents mean |z| {float(root[test_m].abs().mean()):.4f}):")
+    for row in drift:
+        print(f"    step {row['step']}  mean|z| {row['mean_abs']:.4f}  "
+              f"outside unit {row['fraction_outside_unit']:.2%}  "
+              f"distance from root {row['distance_from_root']:.4f}")
 
     (HERE / f"direct_path_{args.suffix}_n{args.n_latents}_{args.milestone:06d}.json").write_text(
         json.dumps(result, indent=2))

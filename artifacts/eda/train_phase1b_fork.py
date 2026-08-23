@@ -54,6 +54,38 @@ def seed_split(seed: int) -> str:
 FULL_HISTORY = 32
 
 
+class NoTanhWorld(World):
+    """Direct with the output squash removed, and nothing else changed.
+
+    The four lines are duplicated from `World.predict` rather than delegated because
+    tanh cannot be inverted safely at the saturation this head operates in (77% of
+    pre-activations past |x| = 1). `assert_faithful` checks the duplication against
+    production on shared weights, so drift is caught rather than assumed absent.
+    """
+
+    def predict(self, features, action=None):
+        world = torch.cat([features[:, :, self.spatial], features[:, :, self.register]], dim=2)
+        pooled = self.pool(world.transpose(2, 3)).transpose(2, 3)
+        context = self.action_embed(action)[:, :, None].expand_as(pooled)
+        return self.readout(torch.cat([pooled, context], dim=-1))
+
+
+@torch.no_grad()
+def assert_faithful(config):
+    """tanh(no-tanh predict) must equal production predict on identical weights."""
+    torch.manual_seed(config.seed + 1)
+    plain = _share_initialisation(World(config), config).to(DEVICE)
+    torch.manual_seed(config.seed + 1)
+    bare = _share_initialisation(NoTanhWorld(config), config).to(DEVICE)
+    bare.load_state_dict(plain.state_dict())
+    shape = (2, 3, config.n_spatial + config.n_register + 8, config.d_model)
+    features = torch.randn(shape, generator=torch.Generator(device=DEVICE).manual_seed(7),
+                           device=DEVICE)
+    action = torch.randint(0, 17, (2, 3), device=DEVICE)
+    assert torch.allclose(torch.tanh(bare.predict(features, action)),
+                          plain.predict(features, action), atol=1e-6), "no-tanh arm diverged"
+
+
 def fork_actions(rows):
     """The real causal action history per root, under the a_{t-1} convention.
 
@@ -91,6 +123,12 @@ def main() -> None:
     parser.add_argument("--batch", type=int, default=4)
     parser.add_argument("--milestones", type=int, nargs="+", default=(5_000, 10_000, 20_000))
     parser.add_argument("--resume-every", type=int, default=500)
+    parser.add_argument("--no-tanh", action="store_true",
+                        help="ablate the output squash; everything else identical")
+    parser.add_argument("--world-seed", type=int, default=0,
+                        help="offsets world initialisation and the commit stream only; "
+                             "the batch draw stream is held fixed so paired arms see "
+                             "identical batches")
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
 
@@ -106,7 +144,8 @@ def main() -> None:
     fit = np.where(splits == "fit")[0]
     led_history = fork_actions(rows)
     print(f"arm {args.n_latents}x16 {args.suffix}: z dim {manifest['z_dim']}, "
-          f"{len(rows)} roots, fit {len(fit)}, lambda {args.lam}", flush=True)
+          f"{len(rows)} roots, fit {len(fit)}, lambda {args.lam}, "
+          f"{'no-tanh' if args.no_tanh else 'tanh'}, world seed +{args.world_seed}", flush=True)
 
     history = torch.stack([r["z_history"] for r in rows])
     branch = torch.stack([r["z_branch"] for r in rows])
@@ -114,10 +153,13 @@ def main() -> None:
     spatial, d = config.n_spatial, config.d_spatial
 
     # world initialization is seeded identically for both geometries
-    torch.manual_seed(config.seed + 1)
-    world = _share_initialisation(World(config), config).to(DEVICE)
+    if args.no_tanh:
+        assert_faithful(config)
+    torch.manual_seed(config.seed + 1 + args.world_seed)
+    builder = NoTanhWorld if args.no_tanh else World
+    world = _share_initialisation(builder(config), config).to(DEVICE)
     opt = optimizer([world], config)
-    rng = torch.Generator(device=DEVICE).manual_seed(config.seed + 1001)
+    rng = torch.Generator(device=DEVICE).manual_seed(config.seed + 1001 + args.world_seed)
     draw = np.random.default_rng(config.seed + 91)
     actions = torch.arange(17, device=DEVICE)
 
@@ -163,6 +205,7 @@ def main() -> None:
 
     (args.out / "training_report.json").write_text(json.dumps({
         "n_latents": args.n_latents, "suffix": args.suffix, "lambda": args.lam,
+        "no_tanh": bool(args.no_tanh), "world_seed": args.world_seed,
         "steps": args.steps, "roots": len(rows), "fit_roots": int(len(fit)),
         "z_dim": manifest["z_dim"], "seconds": time.time() - started,
         "curve_tail": curve[-500:]}, indent=2))

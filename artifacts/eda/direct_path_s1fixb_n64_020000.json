@@ -135,5 +135,43 @@
     "mean_abs_pre_tanh": 1.7267167568206787,
     "fraction_above_1": 0.771438479423523,
     "fraction_above_2": 0.362480103969574
-  }
+  },
+  "recursive_drift": [
+    {
+      "step": 1,
+      "mean_abs": 0.8311489224433899,
+      "fraction_outside_unit": 0.0,
+      "distance_from_root": 5.8050312995910645
+    },
+    {
+      "step": 2,
+      "mean_abs": 0.8298054337501526,
+      "fraction_outside_unit": 0.0,
+      "distance_from_root": 7.53763484954834
+    },
+    {
+      "step": 3,
+      "mean_abs": 0.8291504383087158,
+      "fraction_outside_unit": 0.0,
+      "distance_from_root": 8.741434097290039
+    },
+    {
+      "step": 4,
+      "mean_abs": 0.8288245797157288,
+      "fraction_outside_unit": 0.0,
+      "distance_from_root": 9.699921607971191
+    },
+    {
+      "step": 5,
+      "mean_abs": 0.8286769390106201,
+      "fraction_outside_unit": 0.0,
+      "distance_from_root": 10.521971702575684
+    },
+    {
+      "step": 6,
+      "mean_abs": 0.8285430073738098,
+      "fraction_outside_unit": 0.0,
+      "distance_from_root": 11.225003242492676
+    }
+  ]
 }
