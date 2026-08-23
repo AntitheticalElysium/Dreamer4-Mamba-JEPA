@@ -50,6 +50,7 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(ROOT))
 from evaluate_damage_classifier import interval
 from evaluate_phase1b_fork import predict_branches
+from reevaluate_phase1b_delta import fit_probe, within_state
 from train_phase1b_fork import NoTanhWorld, fork_actions, load_forkset, seed_split
 
 from d4mj.checkpoint import load
@@ -135,6 +136,13 @@ def main() -> None:
         if distinct.any():
             diff_pred.append(float(pred_gram[i][distinct].mean()))
 
+    per_root = []
+    for i in range(len(cross)):
+        label = classes_of(true_gram[i])
+        best = cross[i].argmin(1)
+        per_root.append(float(np.mean([label[best[a]] == label[a] for a in range(17)])))
+    per_root = np.array(per_root)
+
     hits = np.array(hits, dtype=float)
     retrieval, (lo, hi) = interval(hits, 11)
     result = {
@@ -167,6 +175,8 @@ def main() -> None:
     print("  weakest actions " + ", ".join(f"{a}:{v:.2f}" for a, v in worst))
     print("  strongest actions " + ", ".join(f"{a}:{v:.2f}" for a, v in best))
 
+    result["per_root_retrieval"] = per_root.tolist()
+
     # ---- where the residual sits, relative to the damage-discriminative direction
     fit = torch.from_numpy(splits == "fit")
     train_eff = branch[fit].float() - branch[fit].float().mean(1, keepdim=True)
@@ -192,6 +202,48 @@ def main() -> None:
     print(f"  that linear axis alone scores {b['linear_axis_auc_true']:.4f} on true effects "
           f"and {b['linear_axis_auc_pred']:.4f} on predicted -- the damage signal the "
           f"nonlinear probe uses is not this axis")
+
+    # ---- does restoring the missing detail restore the mechanic?
+    #
+    # The subspace split above shows only that the linear damaging-minus-safe axis is
+    # cheap to reproduce and worth little. It does NOT localise the nonlinear mechanic
+    # and does not show the residual is what costs us R_delta. This does: add known
+    # fractions of the true residual back and watch the frozen probe respond.
+    root = history[:, -1]
+    delta_true = branch.float() - root.float()[:, None]
+    y_all = torch.stack([r["label"] for r in rows]).numpy()
+    tune = torch.from_numpy(splits == "tune")
+    width = delta_true.shape[-1]
+    probe, _ = fit_probe(delta_true[fit].reshape(-1, width).to(DEVICE),
+                         torch.from_numpy(y_all[fit.numpy()].reshape(-1)).float().to(DEVICE),
+                         delta_true[tune].reshape(-1, width).to(DEVICE),
+                         torch.from_numpy(y_all[tune.numpy()].reshape(-1)).float().to(DEVICE),
+                         seed=11)
+    dt = delta_true[test]
+    dp = predicted - root.float()[test][:, None]
+
+    def read(mix):
+        with torch.no_grad():
+            score = torch.cat([probe(mix[lo : lo + 128].reshape(-1, width).to(DEVICE)).cpu()
+                               for lo in range(0, len(mix), 128)]).numpy().reshape(-1, 17)
+        return float(np.mean(within_state(score, labels_test)))
+
+    auc_true = read(dt)
+    curve = [{"alpha": a, "auc": (v := read(dp + a * (dt - dp))),
+              "R_delta": (v - 0.5) / (auc_true - 0.5)}
+             for a in (0.0, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 0.9, 1.0)]
+    result["restoration"] = {
+        "auc_true": auc_true, "curve": curve,
+        "true_axis_pred_complement": read(dp + ((dt @ axis) - (dp @ axis))[..., None] * axis),
+        "pred_axis_true_complement": read(dt + ((dp @ axis) - (dt @ axis))[..., None] * axis),
+    }
+    print(f"\n  residual restoration, frozen probe on true dz (true AUC {auc_true:.4f}):")
+    for row in curve:
+        print(f"    alpha {row['alpha']:.2f}  AUC {row['auc']:.4f}  R_delta {row['R_delta']:.3f}")
+    print(f"    true axis + predicted complement  AUC "
+          f"{result['restoration']['true_axis_pred_complement']:.4f}")
+    print(f"    predicted axis + true complement  AUC "
+          f"{result['restoration']['pred_axis_true_complement']:.4f}")
 
     (HERE / f"action_matching_{args.suffix}_{args.milestone:06d}.json").write_text(
         json.dumps(result, indent=2))
