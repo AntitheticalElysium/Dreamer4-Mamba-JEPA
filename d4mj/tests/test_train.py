@@ -3,7 +3,13 @@ from dataclasses import replace
 import pytest
 import torch
 
-from d4mj.train import _checkpoint, _generators, _share_initialisation, _terminal_agent, optimizer
+from d4mj.train import (
+    _checkpoint,
+    _generators,
+    _share_initialisation,
+    _terminal_path,
+    optimizer,
+)
 from d4mj.transition import World
 
 
@@ -32,16 +38,87 @@ def test_terminal_supervision_uses_the_phase_two_transition_path(config, monkeyp
     sentinel = torch.randn(1, 6, config.n_agent, config.d_model)
     called = {}
 
-    def transition(world, received, rng, received_config, return_agent=False, step=0):
-        called.update(batch=received, return_agent=return_agent, step=step)
-        return torch.zeros(()), sentinel
+    def transition(
+        world,
+        received,
+        rng,
+        received_config,
+        return_agent=False,
+        return_observed=False,
+        step=0,
+    ):
+        called.update(
+            batch=received,
+            return_agent=return_agent,
+            return_observed=return_observed,
+            step=step,
+        )
+        return torch.zeros(()), sentinel, sentinel
 
     monkeypatch.setattr(train, "transition_loss", transition)
-    got = _terminal_agent(
-        World(config), batch, torch.Generator().manual_seed(0), config, step=123
+    _, got, _ = _terminal_path(
+        World(config),
+        batch,
+        torch.Generator().manual_seed(0),
+        config,
+        step=123,
+        score_dynamics=False,
+        return_observed=True,
     )
     assert got is sentinel
-    assert called == {"batch": batch, "return_agent": True, "step": 123}
+    assert called == {
+        "batch": batch,
+        "return_agent": True,
+        "return_observed": True,
+        "step": 123,
+    }
+
+
+def test_terminal_dynamics_removes_only_the_support_mask(config, monkeypatch):
+    from d4mj import train
+    from .conftest import latent_batch
+
+    batch = latent_batch(config, 1, 6, relevant=[False], support=[True])
+    sentinel_loss = torch.tensor(3.0)
+    sentinel_agent = torch.randn(1, 6, config.n_agent, config.d_model)
+    called = {}
+
+    def transition(
+        world,
+        received,
+        rng,
+        received_config,
+        return_agent=False,
+        return_observed=False,
+        step=0,
+    ):
+        called.update(
+            batch=received,
+            return_agent=return_agent,
+            return_observed=return_observed,
+            step=step,
+        )
+        return sentinel_loss, sentinel_agent
+
+    monkeypatch.setattr(train, "transition_loss", transition)
+    loss, agent = _terminal_path(
+        World(config),
+        batch,
+        torch.Generator().manual_seed(0),
+        config,
+        step=321,
+        score_dynamics=True,
+    )
+
+    assert loss is sentinel_loss and agent is sentinel_agent
+    assert called["batch"].support is None
+    assert torch.equal(called["batch"].relevant, batch.relevant)
+    assert torch.equal(called["batch"].led_to_action, batch.led_to_action)
+    assert called["batch"].rows("dynamics").all()
+    assert not called["batch"].rows("policy").any()
+    assert called["return_agent"] is True
+    assert called["return_observed"] is False
+    assert called["step"] == 321
 
 
 def test_resume_restores_optimizer_normalisers_and_streams(config, tmp_path):

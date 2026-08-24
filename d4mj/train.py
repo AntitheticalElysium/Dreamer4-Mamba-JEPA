@@ -1,13 +1,27 @@
 import copy
+import json
 from dataclasses import replace
+from pathlib import Path
 
 import torch
 from torch import nn
 
 from .actor_critic import actor_loss, critic_loss, lambda_returns
-from .agent import Heads, head_loss, head_targets, terminal_loss
+from .agent import Heads, head_loss, head_targets, paired_terminal_loss
 from .config import Config
-from .data import FORMAT, Batch, Episode, patchify, sample_batch, sample_terminal_batch
+from .data import (
+    FORMAT,
+    STORE_FORMAT,
+    Batch,
+    Episode,
+    EpisodeCorpus,
+    atomic_manifest,
+    load_episodes,
+    patchify,
+    sample_batch,
+    sample_terminal_batch,
+    save_episode_shard,
+)
 from .imagination import imagine
 from .checkpoint import load, save
 from .representation import Decoder, Encoder, pack, reconstruction_loss
@@ -79,7 +93,27 @@ def train_representation(
 
 
 @torch.no_grad()
-def cache_latents(encoder: Encoder, episodes: list[Episode], config: Config) -> list[Episode]:
+def _cache_episode(
+    encoder: Encoder, episode: Episode, config: Config, digest: str
+) -> Episode:
+    if episode.observations is None:
+        raise ValueError("raw observations are required to build a latent cache")
+    frames = patchify(episode.observations[None], config.patch).to(config.device)
+    latents, memory = [], None
+    for start in range(0, frames.shape[1], config.sequence_long):
+        chunk = frames[:, start : start + config.sequence_long]
+        z, memory, _ = encoder(chunk, memory, offset=start)
+        latents.append(z)
+    packed = pack(torch.cat(latents, dim=1), config)[0].cpu()
+    return replace(episode, latents=packed, latent_digest=digest)
+
+
+@torch.no_grad()
+def cache_latents(
+    encoder: Encoder,
+    episodes: list[Episode] | EpisodeCorpus,
+    config: Config,
+) -> list[Episode] | EpisodeCorpus:
     """Scan each episode once under the declared window, at mask probability zero.
 
     Chunked with memory carried, not one dense call: an episode runs to thousands
@@ -87,18 +121,75 @@ def cache_latents(encoder: Encoder, episodes: list[Episode], config: Config) -> 
     mask makes chunked and fully recurrent encoding produce the same latent, which
     `scan_step_parity` asserts, so the cheap path is also the faithful one.
     """
-    device, digest = config.device, _cache_digest(encoder, config)
-    cached = []
-    for episode in episodes:
-        frames = patchify(episode.observations[None], config.patch).to(device)
-        latents, memory = [], None
-        for start in range(0, frames.shape[1], config.sequence_long):
-            chunk = frames[:, start : start + config.sequence_long]
-            z, memory, _ = encoder(chunk, memory, offset=start)
-            latents.append(z)
-        packed = pack(torch.cat(latents, dim=1), config)[0].cpu()
-        cached.append(replace(episode, latents=packed, latent_digest=digest))
+    digest = _cache_digest(encoder, config)
+    cached = [_cache_episode(encoder, episode, config, digest) for episode in episodes]
+    if isinstance(episodes, EpisodeCorpus):
+        return EpisodeCorpus(cached, source=episodes.source)
     return cached
+
+
+@torch.no_grad()
+def cache_latents_to_store(
+    encoder: Encoder,
+    episodes: list[Episode] | EpisodeCorpus,
+    config: Config,
+    out: Path,
+    *,
+    source_contract: dict,
+    shard_episodes: int = 32,
+) -> EpisodeCorpus:
+    """Write a resumable mmap latent cache without retaining raw observations."""
+    if shard_episodes < 1:
+        raise ValueError("shard_episodes must be positive")
+    digest = _cache_digest(encoder, config)
+    manifest_path = out / "manifest.json"
+    contract = {
+        "format": STORE_FORMAT,
+        "kind": "d4mj_latent_cache_v1",
+        "cache_digest": digest,
+        "source": source_contract,
+        "planned_episodes": len(episodes),
+        "shard_episodes": shard_episodes,
+    }
+    if manifest_path.exists():
+        manifest = json.loads(manifest_path.read_text())
+        if {key: manifest.get(key) for key in contract} != contract:
+            raise ValueError("latent-cache contract changed")
+        if manifest.get("complete"):
+            return load_episodes(out, digest=digest)
+    else:
+        out.mkdir(parents=True, exist_ok=True)
+        manifest = contract | {
+            "complete": False,
+            "episodes": 0,
+            "transitions": 0,
+            "terminal_episodes": 0,
+            "shards": [],
+        }
+        atomic_manifest(manifest_path, manifest)
+
+    start = int(manifest["episodes"])
+    if start > len(episodes):
+        raise ValueError("latent cache contains more episodes than its source")
+    for first in range(start, len(episodes), shard_episodes):
+        last = min(first + shard_episodes, len(episodes))
+        cached = []
+        for episode in episodes[first:last]:
+            value = _cache_episode(encoder, episode, config, digest)
+            cached.append(replace(value, observations=None))
+        shard_path = out / f"shard-{len(manifest['shards']):06d}.pt"
+        if shard_path.exists():
+            raise FileExistsError(f"unregistered latent-cache shard exists: {shard_path}")
+        record = save_episode_shard(shard_path, cached)
+        manifest["shards"].append(record)
+        manifest["episodes"] += record["episodes"]
+        manifest["transitions"] += record["transitions"]
+        manifest["terminal_episodes"] += record["terminal_episodes"]
+        atomic_manifest(manifest_path, manifest)
+        print(f"latent cache: {manifest['episodes']}/{len(episodes)} episodes", flush=True)
+    manifest["complete"] = True
+    atomic_manifest(manifest_path, manifest)
+    return load_episodes(out, digest=digest)
 
 
 def train_dynamics(episodes: list[Episode], steps: int, config: Config, checkpoint=None) -> World:
@@ -130,6 +221,7 @@ def train_agent(
     config: Config,
     checkpoint=None,
     world_steps: int = 0,
+    terminal_dynamics_mass: float = 0.0,
 ) -> Heads:
     """Phase 2. The dynamics objective continues alongside the head losses, which
     keeps the world model from drifting while the heads fit it.
@@ -142,7 +234,13 @@ def train_agent(
     `world_steps` is how far Phase 1B already trained the world, so the shortcut
     bootstrap clock (S67) continues rather than restarting -- otherwise Phase 2
     would spend its first `bootstrap_start` steps back on the supervised objective.
+
+    `terminal_dynamics_mass` is an explicit ablation. At zero, terminal tails only
+    supervise continuation as before. Above zero, the same ordinary dynamics loss
+    also scores those realized tail transitions; BC remains excluded.
     """
+    if not 0.0 <= terminal_dynamics_mass < 1.0:
+        raise ValueError("terminal_dynamics_mass must be in [0, 1)")
     device = config.device
     torch.manual_seed(config.seed + 2)
     heads = Heads(config).to(device)
@@ -151,6 +249,9 @@ def train_agent(
     balance: dict[str, float] = {}
     bundle, streams = [world, heads, optimiser], {"sampler": sampler, "model": rng}
     contract = f"2:{world_steps}:{steps}"
+    contract += ":continuation=paired-v2"
+    if terminal_dynamics_mass:
+        contract += f":terminal_dynamics={terminal_dynamics_mass:.17g}"
     resume = _checkpoint(checkpoint, config, bundle, balance, streams, contract=contract)
 
     for step in range(resume, steps):
@@ -162,14 +263,33 @@ def train_agent(
         losses = {"dynamics": dynamics} | head_loss(readout, head_targets(batch, config), config)
 
         terminal = _to(sample_terminal_batch(episodes, sampler, config, step, steps), device)
-        terminal_agent = _terminal_agent(
-            world, terminal, rng, config, world_steps + step
+        terminal_dynamics, terminal_agent, terminal_observed = _terminal_path(
+            world,
+            terminal,
+            rng,
+            config,
+            world_steps + step,
+            score_dynamics=bool(terminal_dynamics_mass),
+            return_observed=True,
         )
+        if terminal_dynamics_mass:
+            losses["dynamics"] = (
+                (1.0 - terminal_dynamics_mass) * losses["dynamics"]
+                + terminal_dynamics_mass * terminal_dynamics
+            )
         terminal_readout = heads(terminal_agent) | {"centers": heads.centers}
+        observed_readout = (
+            heads(terminal_observed) | {"centers": heads.centers}
+            if terminal_observed is not terminal_agent
+            else terminal_readout
+        )
+        terminal_objective = paired_terminal_loss(
+            terminal_readout, observed_readout, head_targets(terminal, config)
+        )
         losses["continuation"] = (
             (1.0 - config.terminal_loss_mass) * losses["continuation"]
             + config.terminal_loss_mass
-            * terminal_loss(terminal_readout, head_targets(terminal, config))
+            * terminal_objective
         )
         _update(optimiser, _balance(losses, balance, config), [world, heads], config, step)
         if checkpoint is not None and ((step + 1) % config.checkpoint_every == 0 or step + 1 == steps):
@@ -177,12 +297,27 @@ def train_agent(
     return heads
 
 
-def _terminal_agent(
-    world: World, batch: Batch, rng: torch.Generator, config: Config, step: int
-) -> torch.Tensor:
-    """Route terminal tails through the arm's ordinary Phase-2 transition path."""
-    _, agent = transition_loss(world, batch, rng, config, return_agent=True, step=step)
-    return agent
+def _terminal_path(
+    world: World,
+    batch: Batch,
+    rng: torch.Generator,
+    config: Config,
+    step: int,
+    *,
+    score_dynamics: bool,
+    return_observed: bool = False,
+):
+    """Evaluate a tail once; optionally admit it to the dynamics stratum."""
+    routed = replace(batch, support=None) if score_dynamics else batch
+    return transition_loss(
+        world,
+        routed,
+        rng,
+        config,
+        return_agent=True,
+        return_observed=return_observed,
+        step=step,
+    )
 
 
 def train_actor(

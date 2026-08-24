@@ -1,0 +1,1606 @@
+{
+  "format": "d4mj_episode_store_v1",
+  "kind": "d4mj_latent_cache_v1",
+  "cache_digest": "51950bb8b3b38a2a",
+  "source": {
+    "support_manifest": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+    "selection": "fit"
+  },
+  "planned_episodes": 7244,
+  "shard_episodes": 32,
+  "complete": true,
+  "episodes": 7244,
+  "transitions": 2190262,
+  "terminal_episodes": 7244,
+  "shards": [
+    {
+      "file": "shard-000000.pt",
+      "sha256": "d89b6b52524e388700b511ea76b118af6e97daf31ddd097c1451eb8de3f51672",
+      "episodes": 32,
+      "transitions": 12936,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000001.pt",
+      "sha256": "6b40a11ebadea2e44be0bfc725dc011472e39c0f4be05c821709f424a9ce5561",
+      "episodes": 32,
+      "transitions": 4482,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000002.pt",
+      "sha256": "3ecb1710cbd55429c3b841a856c556c54223953c52d7206cebbd6b29ed647b0b",
+      "episodes": 32,
+      "transitions": 20643,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000003.pt",
+      "sha256": "6c2ce71e575d5589303982506db703662e02f691867651b3f1640caea1c3eb5d",
+      "episodes": 32,
+      "transitions": 5899,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000004.pt",
+      "sha256": "c4f6962bc69c31e5a5fdde8cdd998196f308b5839b28a03ed16b35830ca4fe89",
+      "episodes": 32,
+      "transitions": 12929,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000005.pt",
+      "sha256": "54813d5dab0395b362a30bcf9a10c2efb22e109d7f6d76ad7d0c928ece8123ba",
+      "episodes": 32,
+      "transitions": 6303,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000006.pt",
+      "sha256": "987f58fe7205fb620c1227c375e1bef56c3c770fed1bf4e74132290f9a83adc5",
+      "episodes": 32,
+      "transitions": 12716,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000007.pt",
+      "sha256": "bd257d65a407093ee2d7c87942b9d07561257e1da708170905977088f8cc7b22",
+      "episodes": 32,
+      "transitions": 7990,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000008.pt",
+      "sha256": "4197d3d37c0df97ddb4e2e3491c32714d58234ec259e36bfb0c6d0ae892ec936",
+      "episodes": 32,
+      "transitions": 6343,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000009.pt",
+      "sha256": "a235478a9d04a699b22082bb594950c1d2adc79b175363b6470eb7ce58f49e48",
+      "episodes": 32,
+      "transitions": 9469,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000010.pt",
+      "sha256": "85716f9b11a8d625d7eb7a6b99c94237de9d12e6245c24afb536130f8289ea09",
+      "episodes": 32,
+      "transitions": 7916,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000011.pt",
+      "sha256": "1e7cb1410ca895e4013afa65aa16ac22da002eaa4b3e8196eb885891e1e49996",
+      "episodes": 32,
+      "transitions": 16752,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000012.pt",
+      "sha256": "f13ee1a52a2c1cea7bb5d1487171e60f4f2309474aee323975674ce7e7f50c14",
+      "episodes": 32,
+      "transitions": 5645,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000013.pt",
+      "sha256": "bd347d8593c0111843849a49914a12c395f113de4f671187778b22638c86d815",
+      "episodes": 32,
+      "transitions": 13783,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000014.pt",
+      "sha256": "49e321d3f4b9580ea03b6df4e94a3f72d6934e60641c67fdd4021066b3d2ad6d",
+      "episodes": 32,
+      "transitions": 5980,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000015.pt",
+      "sha256": "758bb8655449995bda6127be75f264b584d2ee3611118067f04075a9a2cd8023",
+      "episodes": 32,
+      "transitions": 11475,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000016.pt",
+      "sha256": "4ae2965438c56c6787350cea030be618041973367ee69f43e30be9e137069d23",
+      "episodes": 32,
+      "transitions": 6251,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000017.pt",
+      "sha256": "45a07551e26106de9fa824023f6a69c7ab9ee73a3bf6b15ea46e638862674212",
+      "episodes": 32,
+      "transitions": 9404,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000018.pt",
+      "sha256": "77df519367080301bcc14e3852b1e75dfa5e18551c741d02196ec49b801df514",
+      "episodes": 32,
+      "transitions": 8121,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000019.pt",
+      "sha256": "dea5d659fb35902640d13a7d8f9d060b268200d190caaa8947e32a40280bdfcf",
+      "episodes": 32,
+      "transitions": 11704,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000020.pt",
+      "sha256": "c088197c266513c29eeb6f15d929893b48d21e1af8f5bb270efe77afbc64a0ad",
+      "episodes": 32,
+      "transitions": 9715,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000021.pt",
+      "sha256": "8ec40984eb6932565122a617703ed30ee6e50e25375a50bc7d7543adb5cb5274",
+      "episodes": 32,
+      "transitions": 7270,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000022.pt",
+      "sha256": "5629c443b79846ffd8a309619b483911a15972585e3c89f1c8b04341a7dfe760",
+      "episodes": 32,
+      "transitions": 10093,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000023.pt",
+      "sha256": "df7ba8ec48c4c78bde9c155cae2f89cc2a3310d8df903eea9a8e582ef4e8df21",
+      "episodes": 32,
+      "transitions": 7092,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000024.pt",
+      "sha256": "ef8b980f85700ca01c0ba16ef831aac7a8b60d3c71b08cc3b9d7a7522a7d89c1",
+      "episodes": 32,
+      "transitions": 18192,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000025.pt",
+      "sha256": "335cb8f00329006ff29315753703b6aae987d8c1b6b853c26a0ef7a7c1315078",
+      "episodes": 32,
+      "transitions": 5786,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000026.pt",
+      "sha256": "cdf88859d9c04367cf0575b9b1195f628bd84a220b38212a0d492c0727e816c1",
+      "episodes": 32,
+      "transitions": 15088,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000027.pt",
+      "sha256": "90d1bf5f24360c642dfade12531e2b0d469469325f699c021d9c03100351bb35",
+      "episodes": 32,
+      "transitions": 6094,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000028.pt",
+      "sha256": "2630c56e44016b465b2070594149e3f5c2225be166626160e77ad1ab10a488cf",
+      "episodes": 32,
+      "transitions": 16794,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000029.pt",
+      "sha256": "4e6c67d4c46e4222cd6d9e62df2d2623a467f228d4a92c58e9d0e2d7710ed15d",
+      "episodes": 32,
+      "transitions": 5983,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000030.pt",
+      "sha256": "4ba6c8ef6dd1e8c2a3aab164e43033e0536782ca844184e1bf5caa6824de3fcd",
+      "episodes": 32,
+      "transitions": 12639,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000031.pt",
+      "sha256": "a42363558d4a10b6d3f273ba05f6fce7ac47b3444aab1eb9d85643fdfa3a0cb4",
+      "episodes": 32,
+      "transitions": 7906,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000032.pt",
+      "sha256": "0781efb81b453a057b238566bcd4654efb92c49b629931cb001aeb7fed573e68",
+      "episodes": 32,
+      "transitions": 11343,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000033.pt",
+      "sha256": "63e8a820d26ebdeabfbe378b70842db1962d959120bd5ee3c7093ad403dd0c8e",
+      "episodes": 32,
+      "transitions": 10881,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000034.pt",
+      "sha256": "cd7a5e754ada8bdb071973e0cbe5269e04eff204e2666710e20ff470e3ba1d4f",
+      "episodes": 32,
+      "transitions": 11399,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000035.pt",
+      "sha256": "2c59094c5f3170580da522bbca72da1008fb240d1172c448aebe7587afbe6080",
+      "episodes": 32,
+      "transitions": 9272,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000036.pt",
+      "sha256": "07c23828b824efa768329a3bf9b6670ab3cb81c3fbd1f8c1d048f5a3fd689b7e",
+      "episodes": 32,
+      "transitions": 9864,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000037.pt",
+      "sha256": "53811387b5247bd4ee4f158a5190d536d2a6322781a209c2358074807e1e7c95",
+      "episodes": 32,
+      "transitions": 13443,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000038.pt",
+      "sha256": "d61bfd0b782458da661270f614e770a767b26b2c67cc74105e78726f2c898eec",
+      "episodes": 32,
+      "transitions": 4246,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000039.pt",
+      "sha256": "cf65bcda132aac4452d165dfd41f86b95870b9ea47273e75d9e8c13e67c37f7b",
+      "episodes": 32,
+      "transitions": 18053,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000040.pt",
+      "sha256": "7f1da957574ad7cfa33ef77e7094a4b8cffb72fe87aa498e603e88965d62295c",
+      "episodes": 32,
+      "transitions": 5936,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000041.pt",
+      "sha256": "e51ca318d859f7f7568ed444a1072b9142eb4e5f2e1c34d2bc2fff5744a569b1",
+      "episodes": 32,
+      "transitions": 10993,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000042.pt",
+      "sha256": "24df5552276b8abbebf10c45e413a32989b3dadff1368eed155ed283b93ce2cf",
+      "episodes": 32,
+      "transitions": 7609,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000043.pt",
+      "sha256": "28224e35f1056a7e5c05aabf3dcdd7457c2e1912d62772476c65fcf57faaf2d8",
+      "episodes": 32,
+      "transitions": 13109,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000044.pt",
+      "sha256": "aa07c0b049652f15eeeca891424c8abb7d8736642d79a147fdbc233d52061e39",
+      "episodes": 32,
+      "transitions": 6820,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000045.pt",
+      "sha256": "6c1c8fc37f54ce16634417c5e39e06afdf19e9ab59ef8cf95caa27734dc56eb4",
+      "episodes": 32,
+      "transitions": 13654,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000046.pt",
+      "sha256": "c21372e280ad2822c5ca38480dc12695ffb6f93403fdb892359dec205eef5d6e",
+      "episodes": 32,
+      "transitions": 5918,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000047.pt",
+      "sha256": "16ac77f07cd7a1ecf2e420e34b16874f997cf019f627a9bd0c23087e25338dc2",
+      "episodes": 32,
+      "transitions": 16545,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000048.pt",
+      "sha256": "e9155757d7c29ce1e0d2dba2151cd7d5f203370c7a420bc3bf4d1f62fcd2a5ab",
+      "episodes": 32,
+      "transitions": 6080,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000049.pt",
+      "sha256": "20e6b13e91a859144dfbcbc63f3f18b0e5f6ec0fb2327629be523a17fcbe2ab8",
+      "episodes": 32,
+      "transitions": 12584,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000050.pt",
+      "sha256": "9f501ee3f5e3a5af4866b453e7d21987e471c720d2333e2dac0885790dcb4b2d",
+      "episodes": 32,
+      "transitions": 7366,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000051.pt",
+      "sha256": "ee81888b7a63e563a27b854e4b9fa82c23e74a2593cce2d913ad5f4c9af12dfc",
+      "episodes": 32,
+      "transitions": 12784,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000052.pt",
+      "sha256": "d8d708de744991e0d41814cf893d21af888448b0ba4078f922a1a224b3bfd370",
+      "episodes": 32,
+      "transitions": 9224,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000053.pt",
+      "sha256": "a748b9f2ccb5ac991736c743ee969ce3cebf73a02784b4070bf9b96a55ebc158",
+      "episodes": 32,
+      "transitions": 9223,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000054.pt",
+      "sha256": "272414e6f63f24b8fe669d18e33808224008a95dad7277a215010ec738267b51",
+      "episodes": 32,
+      "transitions": 8918,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000055.pt",
+      "sha256": "92c00bc9fd21d023cbe4cd77721ae5a86b9aad90b99e4552ad5e27228a5fc6a5",
+      "episodes": 32,
+      "transitions": 7005,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000056.pt",
+      "sha256": "114641f595b2829b3abbd3c5ff38f866035b7e8c20a12d8d23b1e55869ca0e1b",
+      "episodes": 32,
+      "transitions": 14540,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000057.pt",
+      "sha256": "a41e7be632a2353ff0acd697a55f7659d7f2e59702859de2f53a6087d9b13d30",
+      "episodes": 32,
+      "transitions": 4994,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000058.pt",
+      "sha256": "65fac21643ff2d59bc1c9a8c3332123b2df6b74e82ea150fd986933b0cefa5fc",
+      "episodes": 32,
+      "transitions": 13106,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000059.pt",
+      "sha256": "86a0d1f13b8c6dbbceb5501c561686e33619ca0d91963feb31307b05f632e8d7",
+      "episodes": 32,
+      "transitions": 5785,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000060.pt",
+      "sha256": "18e1d908da8b3bdcfb26b0dda1da6df9296a87506511d948c83484596c6f9216",
+      "episodes": 32,
+      "transitions": 9807,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000061.pt",
+      "sha256": "b0d5c31fae3d8aa3fc77e50d264aee6941d8476f50fd4cf2ef4014531833d8fe",
+      "episodes": 32,
+      "transitions": 5646,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000062.pt",
+      "sha256": "1be3752a479fefb323d5733f0cf6569ce3a67d7a6191d6edaaba3b087a301240",
+      "episodes": 32,
+      "transitions": 13856,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000063.pt",
+      "sha256": "eade77939670b76ea34d7d1032b821ff49d3f44907cd91e7c1119ada096ba789",
+      "episodes": 32,
+      "transitions": 5633,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000064.pt",
+      "sha256": "aa55bbe1c2f42fda3ed694ae19b8d9b32188e7fd46fcb5bfe6358c5c2339b95e",
+      "episodes": 32,
+      "transitions": 11852,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000065.pt",
+      "sha256": "448c5ea487bb1ac558210613201833a77aadc6a0228f9be3a21e8d7c4a28e4a0",
+      "episodes": 32,
+      "transitions": 5684,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000066.pt",
+      "sha256": "cc5a2fc0e210302a26f0a15fbbfd8e7f0ec07e1e0bfbddeda54d4a834223b2a9",
+      "episodes": 32,
+      "transitions": 11379,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000067.pt",
+      "sha256": "1e53c14a5b65c04e9103c02295d3db982be147f245fdc031abdfaaa744786f1a",
+      "episodes": 32,
+      "transitions": 5388,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000068.pt",
+      "sha256": "6796362130afbb1a5fe56a31a39cbde28c19559a3e51b210277856d725c90e94",
+      "episodes": 32,
+      "transitions": 11366,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000069.pt",
+      "sha256": "cd90acd443a9de619a8cad416c7ab86ee1d32df87b37c3b88ec4bc63ad3c4aa2",
+      "episodes": 32,
+      "transitions": 5720,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000070.pt",
+      "sha256": "f8bd3056dbccdccdb4f6fcb7f1d2632e82286882c43a627ae1a092c96d0d7c62",
+      "episodes": 32,
+      "transitions": 14675,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000071.pt",
+      "sha256": "71f708fe42259a88d7e858498114ed4dd6db0635daa61f9eeaafb66ea44ef9c5",
+      "episodes": 32,
+      "transitions": 7658,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000072.pt",
+      "sha256": "b6668abc09751cab97d5d61bf64d87f910597ecebfbe668dba8f9c628cb735fa",
+      "episodes": 32,
+      "transitions": 13832,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000073.pt",
+      "sha256": "97a9698e93081bbe2ee6a3585ab36ea66d2b67a37abbbc40fab281d11925169d",
+      "episodes": 32,
+      "transitions": 9100,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000074.pt",
+      "sha256": "91898752b94762ea4a0a5099be5a5164d7f904bed3f9a28f84674d1a45b83ff6",
+      "episodes": 32,
+      "transitions": 6340,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000075.pt",
+      "sha256": "a05ddf3dfbab8dab8e0e21c710a4c83b987b3a0775ed4146560fd7f29da7488b",
+      "episodes": 32,
+      "transitions": 8665,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000076.pt",
+      "sha256": "8661d6f4a8c2978d9dc9164444dc837a58bbda5cd66c093985a11ab26e30e5fb",
+      "episodes": 32,
+      "transitions": 4501,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000077.pt",
+      "sha256": "eca56dbec49829dc9d78b355e6eae7da410e27eef0fc5bfb5ebdebd57c39be40",
+      "episodes": 32,
+      "transitions": 12791,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000078.pt",
+      "sha256": "7200ae340d640a88de9549757ec4ab0dbd84c799f14a6692bdd93dec9c92b3e8",
+      "episodes": 32,
+      "transitions": 5340,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000079.pt",
+      "sha256": "589ad6ac5e13cecf2b834ee83dac96863fd26f2d127e24786f67b7c023f3e3cd",
+      "episodes": 32,
+      "transitions": 12707,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000080.pt",
+      "sha256": "3d5a542327fcb3734205df3b926bad15104724750225ca3f816759858d43958a",
+      "episodes": 32,
+      "transitions": 6197,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000081.pt",
+      "sha256": "274428c8d4fd878e045d6ccf0d0c916ed9d1434f818d80adb9fc7aa0f0a5144c",
+      "episodes": 32,
+      "transitions": 14266,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000082.pt",
+      "sha256": "81a2927418506b0027d23963297a0bdf0e72cf178075f9081b4387fb82ab76a6",
+      "episodes": 32,
+      "transitions": 6429,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000083.pt",
+      "sha256": "f6cebddaad349a287cf2337e8c51bba36333fd686cedcae4fb9cdcf1f44ff3e5",
+      "episodes": 32,
+      "transitions": 14435,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000084.pt",
+      "sha256": "30bb07e27a9ba52011a50b627b0de0c7eaa79708eb7ebf1d17231b644e13cf6d",
+      "episodes": 32,
+      "transitions": 6481,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000085.pt",
+      "sha256": "905d0c5b11276257c37a0cf7b22e9ad746f0cdf297e5434e9301981eea8a5e62",
+      "episodes": 32,
+      "transitions": 12788,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000086.pt",
+      "sha256": "8321fdb46127862b5f23196109116191e89fa78142eb73ee30d9e19dc1765514",
+      "episodes": 32,
+      "transitions": 6817,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000087.pt",
+      "sha256": "1237c98f6b200f40d56377f747fe9469ff8d594f087d2c7310e24fea0ff90d68",
+      "episodes": 32,
+      "transitions": 8630,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000088.pt",
+      "sha256": "fbbd607b3b75ffced87d4099f565cc5cf3b6366930a43a92afe3e98a0f294cb0",
+      "episodes": 32,
+      "transitions": 12060,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000089.pt",
+      "sha256": "897f3af47ac2803d03b778a0f32a6d1f47a808283dcb0c374ffc2254d3287053",
+      "episodes": 32,
+      "transitions": 7544,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000090.pt",
+      "sha256": "25160bed25d697b99aefe5e4d18c5a74603f787ba5c9467a197e1b9bea2228da",
+      "episodes": 32,
+      "transitions": 10878,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000091.pt",
+      "sha256": "088b9e8c021a91c91f4c1f05f4d64bf24bd8504814cf6664459f1d8e30c811c4",
+      "episodes": 32,
+      "transitions": 13102,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000092.pt",
+      "sha256": "9bc3c73b8b5c2277439e5c18a5c60e543ff1834145a487a2e2e5f0fd52929d68",
+      "episodes": 32,
+      "transitions": 6631,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000093.pt",
+      "sha256": "3d3461465345907f633fcc17fbfe63d62e26c9cfe0828d0e6fe5fc3d60b48b8a",
+      "episodes": 32,
+      "transitions": 12862,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000094.pt",
+      "sha256": "66ade94494a9b8c53f96637de3816eb7b9d2a6127a28713b054cab8cbffed7c1",
+      "episodes": 32,
+      "transitions": 7833,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000095.pt",
+      "sha256": "20d50ee723819d54f226d1717deda8efb5ca97d8c7395f83a2c15cd4e296453f",
+      "episodes": 32,
+      "transitions": 7978,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000096.pt",
+      "sha256": "e8fbe866afc3c83e54ffbdb450e52a0eaa42902b4975fb33132199f01554f4ab",
+      "episodes": 32,
+      "transitions": 11397,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000097.pt",
+      "sha256": "2e169a4e3fed992e646e10cfe43d190d2ef505363e31b7c7ca5b7edb33b4f13c",
+      "episodes": 32,
+      "transitions": 7283,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000098.pt",
+      "sha256": "6ce72032406a476de1f9c0a1f9341e461eda064f55fb16613d549efc1e66d82c",
+      "episodes": 32,
+      "transitions": 16164,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000099.pt",
+      "sha256": "4346e2cb9d2e4e15e5ca0900e261ed918aeaacff7ec2940f35e319086733a8fc",
+      "episodes": 32,
+      "transitions": 5084,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000100.pt",
+      "sha256": "086c33d01da4e92cc7fee442db23c58d8675eec5799147d632b3d6e906b2c850",
+      "episodes": 32,
+      "transitions": 14785,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000101.pt",
+      "sha256": "40df47969c4eb3bea48a5fee8a1fc482e16109cdcddcede3c42b1664898a729e",
+      "episodes": 32,
+      "transitions": 7316,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000102.pt",
+      "sha256": "ecfc58b32196d5b908b2ad91a345318a6daafe5f54cc43854afa8880ac0212cb",
+      "episodes": 32,
+      "transitions": 16216,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000103.pt",
+      "sha256": "bdd7293d037a14a689bacbd6bd645e4433de18c4121626733e5e263f31453baa",
+      "episodes": 32,
+      "transitions": 8548,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000104.pt",
+      "sha256": "592775b8558fd1d514773b6500df0562ab3ec4531bf7310229e5c956dbed1204",
+      "episodes": 32,
+      "transitions": 11384,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000105.pt",
+      "sha256": "706abdf8fccb901711a4d6d47484a6bcf4229dc3cb09640b46c37a5adea93152",
+      "episodes": 32,
+      "transitions": 11102,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000106.pt",
+      "sha256": "c47885ddd7a50bdae61edc7cbbbf77571b16c653f459781ab2c07e24fee07d9a",
+      "episodes": 32,
+      "transitions": 9662,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000107.pt",
+      "sha256": "99d317560ba2adf68df2003b1bc6bd9565d6173e87e31bc31c9c8bddd8260144",
+      "episodes": 32,
+      "transitions": 14595,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000108.pt",
+      "sha256": "2c72a9f923bb286088ec989fd258d5be9e81cd8a9bb0125d857b18400a0d81d8",
+      "episodes": 32,
+      "transitions": 5052,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000109.pt",
+      "sha256": "17b606ee755eccec51c039f0f2d3cbe7fe348ed53043fa9a975903081d70cb22",
+      "episodes": 32,
+      "transitions": 18734,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000110.pt",
+      "sha256": "df4c0f990a1a8f4f6e127342b0b854a69d8ba0a557ce9ced075e1b44006f55a2",
+      "episodes": 32,
+      "transitions": 5189,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000111.pt",
+      "sha256": "6739d456e4f47a300b4ee5f2f4ecadb47e83aada7f8424ca06715514c68c6ca2",
+      "episodes": 32,
+      "transitions": 13218,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000112.pt",
+      "sha256": "548253d03a0aef42afdc936629d36980191d18a81c5fae9b2d1586d92668a851",
+      "episodes": 32,
+      "transitions": 5436,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000113.pt",
+      "sha256": "1251fe4542b224d4fd90095c38e15faa4f6890526d3dcf4a8264037927d8b850",
+      "episodes": 32,
+      "transitions": 16558,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000114.pt",
+      "sha256": "685d9705a980a311a011b349ca68a67fe7c555e5a8324ccfd85c025b1eb2a274",
+      "episodes": 32,
+      "transitions": 7286,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000115.pt",
+      "sha256": "894ff85dc87cbcaababb7094a561137abc8a7bcb45500be9922f0a3c53a65d0f",
+      "episodes": 32,
+      "transitions": 13161,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000116.pt",
+      "sha256": "1fdc8aad637d4f2a9c0685dfe03f8e445e552268204b793728e38759ea11f353",
+      "episodes": 32,
+      "transitions": 8266,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000117.pt",
+      "sha256": "3ef221cc948299e7e25488adf0e81cd580cb37c22af62d363231aca72d76b495",
+      "episodes": 32,
+      "transitions": 8600,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000118.pt",
+      "sha256": "6ee6de437caf9d63f8516fd1508a18203b81ba1c2076541bc8f5d49156999eb1",
+      "episodes": 32,
+      "transitions": 8073,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000119.pt",
+      "sha256": "9c24e44c5c6cc43ac5ba9816307427e94941d4f11097daa8e2b283dada3a371f",
+      "episodes": 32,
+      "transitions": 11860,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000120.pt",
+      "sha256": "bc0573f9ccfb8dd2331352c6801b877f989c94ab02790168c4c92c0d1afcf8d7",
+      "episodes": 32,
+      "transitions": 7813,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000121.pt",
+      "sha256": "2005891e9164407e6c5b40ddb6c83f97bec89d790a513ee9d462a4b70c0050d5",
+      "episodes": 32,
+      "transitions": 6969,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000122.pt",
+      "sha256": "4079215ec234d4988145e197d058fc334462e163acd921d29a738bbe05b118f1",
+      "episodes": 32,
+      "transitions": 12200,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000123.pt",
+      "sha256": "107bb76192be6f85c057464571217886b7a4e312aa77468cfeb86eb484cd0a2d",
+      "episodes": 32,
+      "transitions": 5056,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000124.pt",
+      "sha256": "069144fe4d5373aca52b22ca6a7aef13fe52fd306e498ac403907cfb5be331b2",
+      "episodes": 32,
+      "transitions": 11435,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000125.pt",
+      "sha256": "0e454efbe20152f594bc6f726a3acfea4b763709308a5810db63553b2ac75e0c",
+      "episodes": 32,
+      "transitions": 5498,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000126.pt",
+      "sha256": "ffab59090e152ce4e1574409c5e64990481181e056938ca16099c492c48ce887",
+      "episodes": 32,
+      "transitions": 13979,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000127.pt",
+      "sha256": "977c4817384eaa008280bb17c875b0c14aa03fe3fc0798369a0c4bddfc2c963b",
+      "episodes": 32,
+      "transitions": 6199,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000128.pt",
+      "sha256": "3483a9cebed109e3feb0b01ca05b5eda17ccf83136751e4b1170b76fd254dcab",
+      "episodes": 32,
+      "transitions": 13252,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000129.pt",
+      "sha256": "82941a079116e9655b20f4c31d5946d50b86d2bc197a960321e6dc48b4b171cb",
+      "episodes": 32,
+      "transitions": 5995,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000130.pt",
+      "sha256": "8d231d275273f9141c50c9ffa5ada4b93b49c599ed4d045ab6b5bd946209c210",
+      "episodes": 32,
+      "transitions": 12154,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000131.pt",
+      "sha256": "83441926c8227f090912bd87d9fbdcad2551cf44b8f1385193e2996b6a9bf4eb",
+      "episodes": 32,
+      "transitions": 6341,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000132.pt",
+      "sha256": "4a728e583f4aebfe2dfee6ed07e4fdfd3263fb870ea37e9e99f7e7740b753bd9",
+      "episodes": 32,
+      "transitions": 9736,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000133.pt",
+      "sha256": "aa00eb60d04006216487fee2790fc65caaffa806a83d5c47adf78efdcf263161",
+      "episodes": 32,
+      "transitions": 8606,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000134.pt",
+      "sha256": "8d6cfb79fcd3b2a740df6dac9aa51c74828383fcadd6fd0778cdb7238e7f1339",
+      "episodes": 32,
+      "transitions": 5863,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000135.pt",
+      "sha256": "5f2ee263359e6ae76b0498ce9463bfdbfa8fdae263dda6ef664166ff46393b01",
+      "episodes": 32,
+      "transitions": 13244,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000136.pt",
+      "sha256": "5fe7adc7a8c8733ca016db69739b1967dba76f6d275d38edf4d04f23dfaeef8c",
+      "episodes": 32,
+      "transitions": 5430,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000137.pt",
+      "sha256": "5edfcbf54ba5878b1ab283a12a66c833fc8f811051bfad84ea17fb2dc6489fd6",
+      "episodes": 32,
+      "transitions": 12956,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000138.pt",
+      "sha256": "00d0ee893b52ec713c17feb673afb54b970358589c116c01451ddb1a7038d2e6",
+      "episodes": 32,
+      "transitions": 7706,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000139.pt",
+      "sha256": "34ec79df40e7ab07b78a592d134eb718f16cf312b3c4c930276b3422aca62d8d",
+      "episodes": 32,
+      "transitions": 13541,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000140.pt",
+      "sha256": "688d25228cde8e4e325d045e4bce00ceb47eb4695a006073fb7e721d659d842b",
+      "episodes": 32,
+      "transitions": 5167,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000141.pt",
+      "sha256": "0661a921ed88d50993f2f1bcbdd09fa019aee5a24cdedbaca2b1f72944cbf74e",
+      "episodes": 32,
+      "transitions": 22042,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000142.pt",
+      "sha256": "d857d6584b36cc6ba0634265d6e1d39c7c25496c862303d782ae94df9ae1cd27",
+      "episodes": 32,
+      "transitions": 6216,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000143.pt",
+      "sha256": "63f6dd1b86b1bfe0a8b3d67b21ff9410d7e0c4124c6798486263ed513c98ec07",
+      "episodes": 32,
+      "transitions": 11767,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000144.pt",
+      "sha256": "553b98f518228585d96e0fc04421362091d3de30bd89e1eff377972f1a990b43",
+      "episodes": 32,
+      "transitions": 6704,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000145.pt",
+      "sha256": "b72cf44ee55a31b25a90e504443ae8cc1554b2685bbe7f4b38dbdaf0aff337ea",
+      "episodes": 32,
+      "transitions": 13937,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000146.pt",
+      "sha256": "ee520c204642949bc886a9aa06266546a56d7f42947adc07eec11ee155462069",
+      "episodes": 32,
+      "transitions": 6513,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000147.pt",
+      "sha256": "007e2631520b4707853a8cd4c59484377e919411e1b5a7061b5cdea5984d0a1d",
+      "episodes": 32,
+      "transitions": 9408,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000148.pt",
+      "sha256": "b1a6d232ab8c6a4e58c77dc189f6455fb55e61256e290314e31759aabe638ccc",
+      "episodes": 32,
+      "transitions": 8107,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000149.pt",
+      "sha256": "0d61278218f713c4b5e2cdcc445a50ab9a4fc6cf4ca4ebefa10f562cbf6105fa",
+      "episodes": 32,
+      "transitions": 8657,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000150.pt",
+      "sha256": "63384dc85c1edac8a9ffecbf3c29e8e1be823a31d24fefef8c9a1b76f0c9d7e4",
+      "episodes": 32,
+      "transitions": 11112,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000151.pt",
+      "sha256": "4233ebbb3f8c6521d6f1e647712cd0375717304300d503b28a187153bbc71037",
+      "episodes": 32,
+      "transitions": 4196,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000152.pt",
+      "sha256": "e43fd745be3a31e27fddeb3bed74b253544d323bf5369a94032a7d43c648b78e",
+      "episodes": 32,
+      "transitions": 14803,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000153.pt",
+      "sha256": "9b28806ffb85bd874d2b01951f1127064b84f9cab94006f04e37ce8d5d7b6381",
+      "episodes": 32,
+      "transitions": 6360,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000154.pt",
+      "sha256": "f1d36d02afe8ea61d90353b8689857a184e5978f922b01544944cc90b7c341e1",
+      "episodes": 32,
+      "transitions": 12601,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000155.pt",
+      "sha256": "e4ea4a680684b201cebee5ac08652350b72756d588a50dcd268417a40a21d209",
+      "episodes": 32,
+      "transitions": 8175,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000156.pt",
+      "sha256": "2fbadeee07b1727e53b507907b6f03700426e22b5634e24e1d2dcfd8852b2e29",
+      "episodes": 32,
+      "transitions": 11064,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000157.pt",
+      "sha256": "d135dbe7a075afeb5d74c26c1fff89a1e60e2cfa30165bcd757cd85cba94eb4d",
+      "episodes": 32,
+      "transitions": 12149,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000158.pt",
+      "sha256": "e2b4ebefbf1e1853700eeab7c97a8a52c02abb3161432793e2eda3125659a6d1",
+      "episodes": 32,
+      "transitions": 4503,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000159.pt",
+      "sha256": "a01c315a9fb360eeb2b37ff993edd48a0dd639cd8d3ae8431916f77719997a02",
+      "episodes": 32,
+      "transitions": 11934,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000160.pt",
+      "sha256": "d72a43c950e15268bff23267de0ff3b8fcf863ba4b2f3f1938cc2e7a2aa3fb1c",
+      "episodes": 32,
+      "transitions": 5249,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000161.pt",
+      "sha256": "fe5dd52c3fec838ab83a0f7832b1027ce7b40bb61d96e5270caaaf969b67f0fd",
+      "episodes": 32,
+      "transitions": 18380,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000162.pt",
+      "sha256": "a048eafd09ffa43e4b4df2fe97b76771be50a2bc42ac5ac97c333605cbaf46db",
+      "episodes": 32,
+      "transitions": 5781,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000163.pt",
+      "sha256": "147ffe54ce564e98de0579e02acf6acffde86f0c687883c9bd831e019fc129b4",
+      "episodes": 32,
+      "transitions": 13226,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000164.pt",
+      "sha256": "56b080f954645dd615b42b2b5efa9fe7f24ab0106e326368f6dae3b863ee41db",
+      "episodes": 32,
+      "transitions": 6856,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000165.pt",
+      "sha256": "786d228bac5e831c34d8722c3bff50bebd9328cca8962c9d49cc284b19dc8808",
+      "episodes": 32,
+      "transitions": 10981,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000166.pt",
+      "sha256": "e849bb884a84fb3dd7d33aa039f79ed56f1a2bb06665054c3207179f4f2eefee",
+      "episodes": 32,
+      "transitions": 11514,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000167.pt",
+      "sha256": "0c090b14e4a29bf7280d656de32076a6f8fd8b4093587e272607d28eef8d45ad",
+      "episodes": 32,
+      "transitions": 8156,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000168.pt",
+      "sha256": "0f6a9aeb0e34af0cf5f7932fc8e01878dc8694ffb48a45691278c410a158ce58",
+      "episodes": 32,
+      "transitions": 13900,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000169.pt",
+      "sha256": "2dd9c11e178c514ee19ba3be006e98a16b2be4caf56f3f61bdebd48811e149ff",
+      "episodes": 32,
+      "transitions": 7732,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000170.pt",
+      "sha256": "c0cbf54d55062e6d0e178598a245f834532e6b0f428c5e3e779c49144cf5c894",
+      "episodes": 32,
+      "transitions": 9908,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000171.pt",
+      "sha256": "b2e7e0bb7e6e1c5c60cfd9ebaafb4348946c44a177542081e566c827093755c4",
+      "episodes": 32,
+      "transitions": 7138,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000172.pt",
+      "sha256": "e98d45940896c22ff7c161780d0271b3e7ac16c79ede56a483cfb2ed37cc805f",
+      "episodes": 32,
+      "transitions": 15342,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000173.pt",
+      "sha256": "e73cece87d36343c7455859cfff0cd2955de3951119a1bca239bb537a4e98778",
+      "episodes": 32,
+      "transitions": 6324,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000174.pt",
+      "sha256": "aecf1a6b3f524629dc6bab6f5052f612f33563b23594028dc6ef51f3935de395",
+      "episodes": 32,
+      "transitions": 11582,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000175.pt",
+      "sha256": "286be6d9c260e73a3a1cb58b34f3af0c9220e292328c060982c43f305fb043f6",
+      "episodes": 32,
+      "transitions": 7686,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000176.pt",
+      "sha256": "625eb6b86b43b43979d7740d2a087e3a274a1198fd81e304efba529a4580a228",
+      "episodes": 32,
+      "transitions": 12811,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000177.pt",
+      "sha256": "d41e8b6fa080ff20b653748666434ba484d4780bdf7f345b8baed6494bd19f59",
+      "episodes": 32,
+      "transitions": 7274,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000178.pt",
+      "sha256": "f5a0ae162060c5331ecc50f0b7ef8e65e8f8bfe5d3380ceafa5abe02496982bf",
+      "episodes": 32,
+      "transitions": 9396,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000179.pt",
+      "sha256": "95dd1e3a610f760c8eecd0b6146df2d3801b3602db546a90f00b561cd236e5a7",
+      "episodes": 32,
+      "transitions": 9080,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000180.pt",
+      "sha256": "15aab0c7f0eab24bf27d4e11d3363aaeebc3915611383e857a913f16f46de8b6",
+      "episodes": 32,
+      "transitions": 8565,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000181.pt",
+      "sha256": "2f2660d920c0b2f96f8c696ac4204314d3cd125260f4a493a43b195353ea15e7",
+      "episodes": 32,
+      "transitions": 9380,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000182.pt",
+      "sha256": "3caf9e3ee3ad92f374c036f3faa6a326f19220520f24857d54684e533bb4b28d",
+      "episodes": 32,
+      "transitions": 6353,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000183.pt",
+      "sha256": "fd6e2789fa6ca205588c74c6d5c9af2bcf22e3c0672bbcfe83bd21c40f4cdac3",
+      "episodes": 32,
+      "transitions": 14769,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000184.pt",
+      "sha256": "3b3be556535a9c7d755398ccb810e83c1a1de4f777aaa66d3a15f2c7c89fab06",
+      "episodes": 32,
+      "transitions": 5804,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000185.pt",
+      "sha256": "4f06d949ac945ebcda5b3f2d2a6ee845b4144e89d8d00959924f9ba78982dbd9",
+      "episodes": 32,
+      "transitions": 14853,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000186.pt",
+      "sha256": "4a4faf795a803c60b3f6e56a40300166a05ea73b27dcc7d8d1aec54fb12ffe2d",
+      "episodes": 32,
+      "transitions": 6507,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000187.pt",
+      "sha256": "ea11b3b6ddf623eb75cf85ea67a1ac57f8551d433060899b3660cf54c58de1a3",
+      "episodes": 32,
+      "transitions": 11639,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000188.pt",
+      "sha256": "67bb4c451d126eea5c14783adb817a5c9150bb338447791d14798e4bf158fa39",
+      "episodes": 32,
+      "transitions": 6931,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000189.pt",
+      "sha256": "5a9a4deca0f94f1f2a0807ebda18add3d4915bd1a0e03dcbf2cbc83efc0d096e",
+      "episodes": 32,
+      "transitions": 8852,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000190.pt",
+      "sha256": "25d493eda5a442f71d5d420da5318bc52f2b28e2d0ce2ba3f78a88ab744bd183",
+      "episodes": 32,
+      "transitions": 7038,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000191.pt",
+      "sha256": "0c211a9aeb70ff30d2013cd16d84ddb17e5d63eeb40477b542220b124be75b24",
+      "episodes": 32,
+      "transitions": 7950,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000192.pt",
+      "sha256": "1aab336cb153e08c142cba7c3a01dd933e5f232060fa12bda6b4fc1b6670d7f2",
+      "episodes": 32,
+      "transitions": 7526,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000193.pt",
+      "sha256": "b18b8e3590ed7c402ed1d2100e458b2d86de87b69bdbefb04d927885072dfedb",
+      "episodes": 32,
+      "transitions": 9810,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000194.pt",
+      "sha256": "7eeba53df5d713804679cd51cb57a363a30a61c05586cc7762abc61d0d7d4c43",
+      "episodes": 32,
+      "transitions": 11365,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000195.pt",
+      "sha256": "9980f4ab1dba4846659ccdf4224d3b22ee0bf177c3bcab61eadbf03b75682fcf",
+      "episodes": 32,
+      "transitions": 5402,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000196.pt",
+      "sha256": "8bbdc92df77bca783aa152589b6f185a681431cc7529c603d7a8278841b0cf36",
+      "episodes": 32,
+      "transitions": 11917,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000197.pt",
+      "sha256": "a6eb04b6b83fdc677b245c80b8f95674aba613353a7a154a1159f08d363de951",
+      "episodes": 32,
+      "transitions": 5037,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000198.pt",
+      "sha256": "f45d2ee0b393fdeed4bc1983629281cfe9e19494e755ba2ebfc5907f701f5b3e",
+      "episodes": 32,
+      "transitions": 13950,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000199.pt",
+      "sha256": "08207b4b1c432454ea21bf5aed1226597c886dccf964f624618558388665b54e",
+      "episodes": 32,
+      "transitions": 6058,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000200.pt",
+      "sha256": "fae625a32d3c8ad9efbe79766a8c1fcda44382bb60ec630a6e2c5ea912dfef91",
+      "episodes": 32,
+      "transitions": 14335,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000201.pt",
+      "sha256": "6ad3a77e5a9a5001c43a2bbaad47139d77c4510782ec8637d80c04f0a43dee70",
+      "episodes": 32,
+      "transitions": 7246,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000202.pt",
+      "sha256": "09edf115a9caddda01632df82ac2a5db5f2117f038406a74ae1210e27be3ab24",
+      "episodes": 32,
+      "transitions": 10787,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000203.pt",
+      "sha256": "9d791b78ad0375a96b3296b12e8367d33950e428003dfcfb36c887305e79ebea",
+      "episodes": 32,
+      "transitions": 6346,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000204.pt",
+      "sha256": "845c22144ef22db64dd690e8926da7f11be4cd92a0535b9180752cec0c694371",
+      "episodes": 32,
+      "transitions": 11894,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000205.pt",
+      "sha256": "078796e88f26c8879fb69b52e628876984fa7af5f2e2aa11381f4601b18641d5",
+      "episodes": 32,
+      "transitions": 7207,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000206.pt",
+      "sha256": "eea733904221174c5639a9e540c37e2331261e032313e68dd90e4d2793ae2c5b",
+      "episodes": 32,
+      "transitions": 11256,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000207.pt",
+      "sha256": "7d916b0f06490369107a91bff392b8b296296589cc40afd7bd72d6212ca638e1",
+      "episodes": 32,
+      "transitions": 11425,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000208.pt",
+      "sha256": "d8a3e96fd8030743c130a04e1841b284c46e78eeb42b8d752a4fe2ae0bb5cd4a",
+      "episodes": 32,
+      "transitions": 7917,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000209.pt",
+      "sha256": "649075818783bdb007be14fccb2ba627a9e08daf4fdca46f01c170851771e363",
+      "episodes": 32,
+      "transitions": 11035,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000210.pt",
+      "sha256": "9788e0f865edb98601c548a8d47d9d2d0e3ce7fc270697b9cef184970b334239",
+      "episodes": 32,
+      "transitions": 5050,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000211.pt",
+      "sha256": "f6a9449de1a3849cb409a7721671473d51d56338b4df0726df83e15be01cf89a",
+      "episodes": 32,
+      "transitions": 9051,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000212.pt",
+      "sha256": "02b114ba20a5305addedbb6f2bfdeccc4dc4fc4296680d36aea6ab7407cf9d0d",
+      "episodes": 32,
+      "transitions": 6728,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000213.pt",
+      "sha256": "b464777ff38e8f2280e5abe28a9ab244fc544a5b2a86b3b0608b3fc2a74fd371",
+      "episodes": 32,
+      "transitions": 12234,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000214.pt",
+      "sha256": "4e3a1c8c736974767c8687e1c11389d277d194094e23b7b949bdaa3f9f20a0f3",
+      "episodes": 32,
+      "transitions": 5529,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000215.pt",
+      "sha256": "df7954989ad011cc534ca22736f669b84228e14c7aa93d0247edc2ab4143a697",
+      "episodes": 32,
+      "transitions": 17946,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000216.pt",
+      "sha256": "9ba461f9caae1f2b8d1bad4c2993ae8a6ebcf7d5b368b10e69baeb50a26e00be",
+      "episodes": 32,
+      "transitions": 6479,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000217.pt",
+      "sha256": "e6d000382faaf9d44ccd793bd408c3f8613a74e32abf98f709daf0c1e8459ea4",
+      "episodes": 32,
+      "transitions": 10281,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000218.pt",
+      "sha256": "55c07d3c8c7c785f9a79501cb9f4a4d7ea6505cde91e772132c87ea4be2cc00a",
+      "episodes": 32,
+      "transitions": 7185,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000219.pt",
+      "sha256": "5d12978cccea97d428813fbb01f29e77655d653d3fd14771001211813f442ff0",
+      "episodes": 32,
+      "transitions": 8569,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000220.pt",
+      "sha256": "2912cd98ee506053ec9a1daad4a403a13309ff8709e3671830749b24f888e26f",
+      "episodes": 32,
+      "transitions": 10404,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000221.pt",
+      "sha256": "d4b03fd9aecc31b10862b68960bab72a04238669fc0dc358ba6b5f9694de7767",
+      "episodes": 32,
+      "transitions": 8487,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000222.pt",
+      "sha256": "b48bdd5d7f8b38bc75874400c6b05b799eaddbb80bd87c237e22ae1f05dea59a",
+      "episodes": 32,
+      "transitions": 11261,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000223.pt",
+      "sha256": "1d18c9ea007a0607e01defa4b12004196604ae6ec02c9960cc7003e1932ef9e0",
+      "episodes": 32,
+      "transitions": 5070,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000224.pt",
+      "sha256": "979e909a052f6db6dd08e8782d13299f58bce517b61b55426f166ad0ee937fb7",
+      "episodes": 32,
+      "transitions": 10819,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000225.pt",
+      "sha256": "58dc34e11b8fab6db5401b011f42b6677d3bf5e1a25166bb3ca432ef0a65394e",
+      "episodes": 32,
+      "transitions": 4781,
+      "terminal_episodes": 32
+    },
+    {
+      "file": "shard-000226.pt",
+      "sha256": "323cff408a10e0b5a2679ad4e2b5d4b03f07c4852084d0ec88ca5aba3ec20b13",
+      "episodes": 12,
+      "transitions": 1603,
+      "terminal_episodes": 12
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "32x16": {
+    "scalars_per_frame": 512,
+    "n_spatial": 16,
+    "peak_vram_gib": 3.1990370750427246,
+    "s_per_step_short": 1.1248287558555603,
+    "s_per_step_long": 2.161946256955465,
+    "hours_for_3000_steps": 1.1534234426087804
+  },
+  "64x16": {
+    "peak_vram_gib": null,
+    "oom": true
+  },
+  "32x32": {
+    "peak_vram_gib": null,
+    "oom": true
+  },
+  "128x16": {
+    "peak_vram_gib": null,
+    "oom": true
+  },
+  "256x16": {
+    "peak_vram_gib": null,
+    "oom": true
+  }
+}

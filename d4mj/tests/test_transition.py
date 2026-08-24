@@ -4,6 +4,7 @@ import pytest
 import torch
 
 import d4mj.transition as transition
+from d4mj.agent import Heads, head_targets, paired_terminal_loss
 from d4mj.transition import World, commit_inputs, flow_conditioning, transition_loss
 
 from .conftest import latent_batch
@@ -58,15 +59,55 @@ def test_direct_commits_both_generated_states(config):
     blocks = 6
     batch = latent_batch(config, 2, blocks)
     with torch.no_grad():
-        _, readout = transition_loss(
-            world, batch, torch.Generator().manual_seed(3), config, return_agent=True
+        _, readout, observed = transition_loss(
+            world,
+            batch,
+            torch.Generator().manual_seed(3),
+            config,
+            return_agent=True,
+            return_observed=True,
         )
         committed, conditioning = commit_inputs(
             batch.latents, torch.Generator().manual_seed(3), config
         )
         real = world(None, batch.led_to_action, committed, conditioning)[1]
+    assert torch.equal(observed, real)
     differs = [not torch.equal(readout[:, i], real[:, i]) for i in range(blocks)]
     assert differs == [i >= blocks - 2 for i in range(blocks)]
+
+
+def test_direct_paired_terminal_gradient_reaches_predictor(config):
+    config = replace(config, transition="direct", gradient_checkpointing=False)
+    world = world_for(config, "direct")
+    heads = Heads(config)
+    batch = latent_batch(config, 1, 4, relevant=[False], support=[True])
+    batch.terminated[:, -1] = True
+
+    _, generated, observed = transition_loss(
+        world,
+        batch,
+        torch.Generator().manual_seed(3),
+        config,
+        return_agent=True,
+        return_observed=True,
+    )
+    loss = paired_terminal_loss(
+        heads(generated), heads(observed), head_targets(batch, config)
+    )
+    gradient = torch.autograd.grad(loss, world.readout[0].weight)[0]
+    assert float(gradient.abs().sum()) > 0.0
+
+
+def test_observed_readout_requires_agent_return(config):
+    config = replace(config, transition="direct")
+    with pytest.raises(ValueError, match="requires return_agent"):
+        transition_loss(
+            world_for(config, "direct"),
+            latent_batch(config, 1, 4),
+            torch.Generator().manual_seed(3),
+            config,
+            return_observed=True,
+        )
 
 
 def test_commit_prefix_does_not_reweight_the_step_grid(config):

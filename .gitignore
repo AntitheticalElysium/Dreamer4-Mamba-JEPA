@@ -5,6 +5,7 @@ outputs/
 runs/
 ckpt/
 wandb/
+*_mplcache/
 
 # --- Old repo ---
 probe/
@@ -245,3 +246,15 @@ artifacts/*.pt
 artifacts/stage_a/
 artifacts/stage_a_terminalfix/
 artifacts/*.log
+
+# Matplotlib font cache written by diagnostic runners
+matplotlib-cache/
+
+# Corpus-audit EDA: scripts and small result JSONs are tracked, run outputs are not
+# (12 GB of latents, fork sets, root frames and checkpoints, all reproducible from
+# the scripts beside them).
+artifacts/eda/*/
+artifacts/eda/damage_labels.npz
+
+# Draft archive, content captured in git history
+d4mj_archive.zip

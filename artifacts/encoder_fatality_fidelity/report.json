@@ -1,0 +1,177 @@
+{
+  "contract": {
+    "version": "encoder-fatality-fidelity-v1",
+    "evaluation": "realized death transitions against action-matched ordinary transitions",
+    "statistic": "latent(death/ordinary) divided by pixel(death/ordinary)",
+    "world_model_used": false,
+    "minimum_ordinary_per_action": 20,
+    "requested_episodes": 80,
+    "terminal_episodes_available": 332,
+    "terminal_episodes_used": 80,
+    "cache_digest": "51950bb8b3b38a2a",
+    "direction_source": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/phase1b_archive_geometry/preparation/prepared.pt",
+    "inputs": {
+      "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+      "support": "703e1d1d739dc54920326649ed7e65674f9ec385535841186f88c4b5ccd68254",
+      "prepared": "7e703c4b08f996ac10e75e1265152090c8aea3673586afdf8d88e540d7e80bae"
+    },
+    "data": {
+      "expert_manifest": "0e3c9869cccd67a4f7e83141ab966edc11d76a23ba2f4a0d9f7c5cd7ba58550c",
+      "support_manifest": "2599f3e4cfce32df67507447e25fa5ad1948fb0150b10d3581cc0a99de68358d"
+    },
+    "implementation": {
+      "artifacts/run_stage_a.py": "a12da564490a004f4622124dfe1386fd19310c7c3c88e765cea306946253610b",
+      "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+      "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+      "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+      "d4mj/data.py": "d2161ba078fdf822e07d355663fd938d2158c9e747e5ac2ff0ab8224ed201e98",
+      "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+      "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+      "d4mj/train.py": "55ee22c5f055e004124140e7ca07c5ddfee0c709f6ec1b21006ab85022cd7c91",
+      "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+      "artifacts/phase1b_diagnostic_common.py": "e784c0adfd203fb968cd3017afa0944aefdd2d9024ff9260c4290db1f401b087",
+      "artifacts/measure_encoder_fatality_fidelity.py": "b1ec98be7af30d97354280e872b13b0845cc11c17519d6ff8ac5e5529f4b1e7e"
+    }
+  },
+  "summary": {
+    "actions_compared": 16,
+    "death_examples": 80,
+    "weighted_pixel_ratio": 4.401913045125953,
+    "weighted_latent_ratio": 3.296804970128106,
+    "weighted_direction_ratio": 7.914914754338254,
+    "weighted_compression": 0.7489482269029633,
+    "macro_compression": 0.8195689682468315,
+    "compression_min": 0.3324264687143878,
+    "compression_max": 1.202164916375951,
+    "per_action": {
+      "0": {
+        "death_examples": 4,
+        "ordinary_examples": 675,
+        "pixel_ratio": 5.215252483996847,
+        "latent_ratio": 6.26959356630354,
+        "direction_ratio": 15.500226941952088,
+        "compression": 1.202164916375951
+      },
+      "1": {
+        "death_examples": 9,
+        "ordinary_examples": 2968,
+        "pixel_ratio": 2.667293092018924,
+        "latent_ratio": 2.3111625512440788,
+        "direction_ratio": 5.138947306721532,
+        "compression": 0.8664824117602752
+      },
+      "2": {
+        "death_examples": 6,
+        "ordinary_examples": 2833,
+        "pixel_ratio": 3.1305084952533604,
+        "latent_ratio": 2.3638161160706286,
+        "direction_ratio": 4.575880453497485,
+        "compression": 0.7550901457877432
+      },
+      "3": {
+        "death_examples": 16,
+        "ordinary_examples": 2877,
+        "pixel_ratio": 2.2385143476934144,
+        "latent_ratio": 1.9632339513223422,
+        "direction_ratio": 4.2369076042482146,
+        "compression": 0.8770254045256741
+      },
+      "4": {
+        "death_examples": 8,
+        "ordinary_examples": 3004,
+        "pixel_ratio": 3.0641284000480487,
+        "latent_ratio": 2.1497642808646673,
+        "direction_ratio": 4.559882032826618,
+        "compression": 0.7015907952261259
+      },
+      "5": {
+        "death_examples": 5,
+        "ordinary_examples": 4345,
+        "pixel_ratio": 7.401537628389407,
+        "latent_ratio": 3.2635821406260437,
+        "direction_ratio": 7.745455069265934,
+        "compression": 0.44093299318079765
+      },
+      "6": {
+        "death_examples": 2,
+        "ordinary_examples": 563,
+        "pixel_ratio": 0.8478768587624415,
+        "latent_ratio": 1.0137996744972912,
+        "direction_ratio": 0.6560924043756445,
+        "compression": 1.1956921149812134
+      },
+      "7": {
+        "death_examples": 1,
+        "ordinary_examples": 812,
+        "pixel_ratio": 3.9155445962584827,
+        "latent_ratio": 1.3016306632279107,
+        "direction_ratio": 9.71923872336179,
+        "compression": 0.3324264687143878
+      },
+      "8": {
+        "death_examples": 3,
+        "ordinary_examples": 719,
+        "pixel_ratio": 4.584418792967596,
+        "latent_ratio": 4.378879446656849,
+        "direction_ratio": 10.155130735040375,
+        "compression": 0.9551656697189096
+      },
+      "9": {
+        "death_examples": 4,
+        "ordinary_examples": 630,
+        "pixel_ratio": 5.099993033627982,
+        "latent_ratio": 5.245011556018903,
+        "direction_ratio": 11.896447934265606,
+        "compression": 1.0284350432313747
+      },
+      "11": {
+        "death_examples": 5,
+        "ordinary_examples": 620,
+        "pixel_ratio": 7.348262099759674,
+        "latent_ratio": 3.8672227126040606,
+        "direction_ratio": 10.42746537328959,
+        "compression": 0.5262771877353882
+      },
+      "12": {
+        "death_examples": 6,
+        "ordinary_examples": 615,
+        "pixel_ratio": 9.221757654224884,
+        "latent_ratio": 5.132609553823359,
+        "direction_ratio": 12.507305797682484,
+        "compression": 0.5565760613403118
+      },
+      "13": {
+        "death_examples": 1,
+        "ordinary_examples": 622,
+        "pixel_ratio": 11.955391593318334,
+        "latent_ratio": 10.47814640722623,
+        "direction_ratio": 18.027864764227083,
+        "compression": 0.8764369050932878
+      },
+      "14": {
+        "death_examples": 4,
+        "ordinary_examples": 604,
+        "pixel_ratio": 1.442053390974244,
+        "latent_ratio": 1.3765727252441324,
+        "direction_ratio": 8.091762000499353,
+        "compression": 0.9545920656336635
+      },
+      "15": {
+        "death_examples": 3,
+        "ordinary_examples": 666,
+        "pixel_ratio": 1.8495135629879027,
+        "latent_ratio": 1.897790778043225,
+        "direction_ratio": 8.27033638613694,
+        "compression": 1.026102655325939
+      },
+      "16": {
+        "death_examples": 3,
+        "ordinary_examples": 771,
+        "pixel_ratio": 12.019290290482537,
+        "latent_ratio": 9.833133470549082,
+        "direction_ratio": 21.006639923128148,
+        "compression": 0.8181126533182611
+      }
+    }
+  }
+}

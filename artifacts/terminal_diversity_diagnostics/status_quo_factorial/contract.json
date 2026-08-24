@@ -1,0 +1,71 @@
+{
+  "version": "fatality-direction-delta-v1",
+  "inputs": {
+    "prepared": "7e703c4b08f996ac10e75e1265152090c8aea3673586afdf8d88e540d7e80bae",
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "trajectory_phase2": "94bf488063121630b30e89b9b2c66143c798b3e3bb4a8a9169e5ac61f403146e",
+    "forks": "392e8e33895d48aea888d22e043e57a81ce4d55fb2f83fdf67d19451353e9dad",
+    "archive_features": {
+      "ordinary_ordinary_005k": "09f406a3111171835158a7eadeb3437321f39c9ef0a6ee3b3ac49c4def394514",
+      "ordinary_ordinary_020k": "632737645cc83609d997386f5ef31976a7e9accda6d19b6063bd1a254deb722c",
+      "whitened_ordinary_005k": "a8c510097c9026844fa1454e3e1b12ca3e1c9fe5eba828303d7ad7f2d6e3d35b",
+      "whitened_ordinary_020k": "1f779ff19ad15e51405c87a258a73a0756a5cbdea957310513496b9898feed64",
+      "ordinary_terminal_005k": "8d7f275f7f56e4b28d6c3309ac74c7ba61376cf7edb2c2f8b3ba7f9204185bc0",
+      "ordinary_terminal_020k": "2f3935f5a675ea51f563953fe0d8e66c12451c4152920e4ddb642c74391934c1",
+      "whitened_terminal_005k": "7e4a43d6cb5bf4fec276881b1390df831f97e1023f0a1b05c9eadb6c3cea8c8d",
+      "whitened_terminal_020k": "6764cb94f86667589817e53387b6c9b7714cf84c0dcbbf8f59d8ef52b7304fff"
+    },
+    "policy_features": {
+      "ordinary_ordinary_005k": "c1bc6b1f10b5b681456632cf946d2b26f8cf0611e22e30a8837808855e294ba8",
+      "ordinary_ordinary_020k": "da12aa7d0aaee9328f2bd46b47338be604f427a61cd758d6576cefacc66615be",
+      "whitened_ordinary_005k": "f3b45b047d2c5ef56958ab960fc9ac92fd1556780ec7310293f3c51d39e3ad60",
+      "whitened_ordinary_020k": "992a8b24ddcc8a5297031887d917515fbc6082ff98e2abf6eac759f79afd5244",
+      "ordinary_terminal_005k": "399ad692525b2ace63fe925b358feffc2ca7d6ce5583d4be567ccd174e5c13d8",
+      "ordinary_terminal_020k": "fc7a3aa2611fa62a2f1864bfc9325dee891d66d410d50431dea1389fd9a523a3",
+      "whitened_terminal_005k": "45494af96eb78cbec6e235c703ba2342b39a88b52a7e34b95fa1c14d43cc7de0",
+      "whitened_terminal_020k": "974fd74214a4f15de6c3d441dc64ebfc387fce8169296de1f32a7c8fa258f78c"
+    }
+  },
+  "implementation": {
+    "artifacts/run_stage_a.py": "a12da564490a004f4622124dfe1386fd19310c7c3c88e765cea306946253610b",
+    "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+    "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+    "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+    "d4mj/data.py": "d2161ba078fdf822e07d355663fd938d2158c9e747e5ac2ff0ab8224ed201e98",
+    "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+    "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+    "d4mj/train.py": "55ee22c5f055e004124140e7ca07c5ddfee0c709f6ec1b21006ab85022cd7c91",
+    "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+    "artifacts/phase1b_diagnostic_common.py": "e784c0adfd203fb968cd3017afa0944aefdd2d9024ff9260c4290db1f401b087",
+    "artifacts/evaluate_fatality_direction_delta.py": "240e7aee05a307a9fe1dfd35cd80238f853386c4187f46e989d488c9f3b59353"
+  },
+  "archive_worlds": [
+    "ordinary_ordinary_005k",
+    "ordinary_ordinary_020k",
+    "whitened_ordinary_005k",
+    "whitened_ordinary_020k",
+    "ordinary_terminal_005k",
+    "ordinary_terminal_020k",
+    "whitened_terminal_005k",
+    "whitened_terminal_020k"
+  ],
+  "policy_worlds": [
+    "ordinary_ordinary_005k",
+    "ordinary_ordinary_020k",
+    "whitened_ordinary_005k",
+    "whitened_ordinary_020k",
+    "ordinary_terminal_005k",
+    "ordinary_terminal_020k",
+    "whitened_terminal_005k",
+    "whitened_terminal_020k"
+  ],
+  "archive_path": "reset16",
+  "pools": [
+    "combined",
+    "support"
+  ],
+  "bootstraps": 1000,
+  "direction": "fixed TRAIN observed-successor fatality direction; never refit",
+  "centering": "fixed TRAIN action mean applied to start and both successors; cancels in deltas",
+  "uncertainty": "whole archive episode or whole policy trajectory seed bootstrap"
+}

@@ -14,7 +14,7 @@ not an implementation detail. If the plan is wrong, fix the plan.
 | # | Decision | Basis |
 |---|---|---|
 | S1 | Patch size 7, no resize, 81 tokens — one token per rendered tile | Craftax-Classic obs is 63×63 with `BLOCK_PIXEL_SIZE_AGENT = 7`; 63 = 9×7. Divisors of 63 are {1,3,7,9,21,63}, of which only {7,21} are tile-aligned and non-degenerate. 7 is the finest. `[R0-CHOICE]` — no genericity claim is made |
-| S2 | `Z*` = D4 `tanh` bottleneck, **unnormalized**; direct readout is `tanh`-bounded | Keeps the flow anchor paper-faithful and Stage A genuinely fixed-representation. Matches the readout's codomain to its target's, which is the principle behind V-JEPA's `normalize_reps` for unbounded features. Bounds range only — **does not** address the scale contraction toward the conditional mean, which S35 shows is a proven consequence of determinism rather than an open question |
+| S2 | `Z*` = D4 `tanh` bottleneck, **unnormalized**; direct readout is `tanh`-bounded | Keeps the flow anchor paper-faithful and Stage A genuinely fixed-representation. Matches the readout's codomain to its target's, which is the principle behind V-JEPA's `normalize_reps` for unbounded features. Bounds range only -- it cannot prevent conditional-mean collapse when the fixed-context target is genuinely multimodal (S35) |
 | S3 | Policy/reward MTP `L = 8`, leads `n = 0..7`; policy lead 0 = outgoing `a_t`, reward lead 0 = incoming `r_t` | §3.3 states `L = 8` for policy and reward only. Module defaults agree in both reproductions, but edwhu's eval script runs `L: int = 2` and `nicklashansen/dreamer4` has no MTP heads at all, so the paper is the basis and the reproductions only fail to contradict it. Eq. (9)'s inclusive `Σ_{n=0}^{L}` reads as nine terms and is recorded as ambiguous. Continuation is separate under S75 |
 | S4 | Reward and value: 255 bins, symlog support ±20 | D4 §3.3 "Following Dreamer 3"; D3 `rewhead`/`value` `bins: 255` with centres `symexp(linspace(-20,0))` mirrored. Two-hot is linear interpolation between neighbouring centres, so bin count sets grid density, not a quantization floor; the wide support is miscalibration headroom, not wasted resolution |
 | S5 | `time_every = 4` | D4 §3.4. Reproductions ship 2 and 1 — not inherited |
@@ -50,8 +50,8 @@ not an implementation detail. If the plan is wrong, fix the plan.
 | S48 | `Batch.scored` is per block and per row; **S31's single burn-in integer is withdrawn** | A block is faithful once it holds a full receptive field, and unconditionally in a window starting at the episode start, where nothing earlier is missing. One integer masked the first `receptive_field - 1` blocks out of *every* row -- so the states deployment actually begins from were never supervised, while still costing full activation memory. Measured: 65% of encoder memory was spent on blocks producing no loss term; the scored fraction rises from 34.8% to 51.1%. A quarter of uniform rows are drawn at the episode start, because at a uniform start those windows arrive with probability 1/span (~0.5%) and the fix would be inert |
 | S49 | The archived replay is loaded, not regenerated, and `train_expert` is withdrawn in favour of `expert.load_archive` | There is no expert to retrain: the archive's manifest carries `params_sha256` and `replay_sha256`, and the corpus supplies both §4.1 sampling roles (S46), so nothing is "missing" in the mixture sense. Broader collection is a *support-coverage* decision -- terminal exposure (S50) and behavioural diversity -- not a requirement the paper imposes. Conversion is exact and lazy -- crop and permute are views, so 320 episodes cost 0.86 GiB RSS against an 8.6 GiB file, and the 696,746 transitions match the manifest. `events` is reconstructed from the per-frame cumulative achievements the archive already stores. The previous pipeline was right where this one had regressed: its `_dead` reads `in_lava | (player_health <= 0)` directly, exactly the fix applied to `env.step` this session |
 | S50 | The archive's 2500 cap is **ours, not the environment's**, and its cost is terminal scarcity rather than truncated windows | Craftax's native horizon is 10000 and no archived episode reaches it, so all 252 of 320 cap endings are our own truncation and only 68 episodes died. Against this architecture the cap is harmless for window sampling -- the mean episode is 2177 steps, 34x `sequence_long` and 45x `dynamics_context`, and only 3 episodes are too short for a long window. What it does cost is terminations: 68 terminal transitions in 696,746 is 0.0098%. The per-step figure must be computed under the *actual* sampler -- episode-uniform, then start-uniform -- not by multiplying the global frequency by the block count, which assumes block-uniform sampling and is optimistic. Measured over the real archive: **0.00209 terminal blocks per short batch (one every 479 steps)** and 0.00563 per long batch (one every 178). An earlier figure of "one every 160" used the block-uniform shortcut and is corrected here. Task events are not scarce by comparison (0.95%, 0.61 per step). Terminal exposure is therefore a collection problem for the uniform half, not an argument about the cap, and raising the cap would make it worse by lengthening the surviving episodes |
-| S51 | **Revised (see S69).** **Active task**: one aggregate Craftax-Classic task. Primary performance is the official 22-achievement geometric-mean score; "any first achievement" is the relevance event | No task tokens exist in this architecture (a declared D4 omission), so there is nothing to condition a per-task policy on. Under one aggregate task the relevance criterion already implemented -- the step at which the achievement count rises -- is coherent rather than arbitrary. If the intended goal were specifically diamond acquisition, the task and reward interface would be insufficient and would have to change *first*; this decision forecloses that reading deliberately |
-| S52 | **Evaluation protocol**, frozen before any cell is inspected | Native **10000**-step horizon, not the collector's 2500 cap (S50): scoring at a quarter of the horizon measures the cap. Categorical sampling at temperature 1 is primary, greedy secondary. Primary metric is the official geometric-mean achievement score; secondary are raw return, achievement count, per-achievement rates, termination rate and length -- all reported, none promoted afterwards. Controls are the actor's own frozen BC prior and a random policy. Every policy runs the *same* preregistered seeds, with environment, policy and flow-corruption streams separately derived and recorded, so the arms do not differ by their own randomness. Intervals are 95% percentile from a **paired** bootstrap over seeds that recomputes the nonlinear score from resampled rows; raw episode rows are retained. An arm passes only when the lower bound of its advantage over **both** controls exceeds zero. DEV and FINAL seed sets are disjoint; FINAL is opened once, after all selection |
+| S51 | **Revised by S69 and S80. Active task:** one aggregate Craftax-Classic task; "any first achievement" is the relevance event | No task tokens exist in the active architecture, so the policy and value optimize the environment's aggregate reward. Mean unique-achievement count is therefore the objective-aligned executed metric under S80; the official geometric score remains mandatory because it measures breadth that the aggregate reward does not. A task-conditioned successor is deferred, not silently approximated |
+| S52 | **Evaluation protocol; metric gate revised by S80** | Native **10000**-step horizon, categorical sampling at temperature 1, paired seeds and retained raw rows remain unchanged. Controls are the actor's own frozen BC prior and random. Mean achievement count, official geometric score, raw return, per-achievement rates, termination and length are all reported. Count, reward and geometric gaps each receive their own paired percentile interval; no metric substitutes for another. Under the active aggregate task, an arm passes the causal actor gate only when the lower bound of its mean-count advantage over both controls exceeds zero. DEV and FINAL remain disjoint and FINAL is opened once |
 | S53 | **Parameter matching**: at most **0.5%** deployed-parameter residual, shared dimensions held fixed | `d_state` is the single matching knob (S28). The measured residual at `d_state = 64` is -0.316%, which passes, so 64 is settled by a declared rule rather than by being the value that happened to be there. Tolerance and rule are fixed before any result is read; a later arm that misses it must move `d_state`, not the tolerance |
 | S54 | **Imagination horizon is not settled at 8.** `horizon` is a smoke default; the final value is selected on DEV from `horizon_candidates` | Blessing a default because it ran is how an arbitrary constant becomes a result. Selection uses `diagnostics.multistep_error` under a *full* committed context, which is why that diagnostic was corrected from its one-block start -- choosing a horizon from a model with almost no history selects for the wrong regime. Selection happens on DEV, never against executed-control FINAL numbers |
 | S55 | **Generated-prefix contract**, closing the open register row | One-step teacher forcing plus a two-step autoregressive rollout through the real `advance` path; the two rollout terms **averaged**, following the pinned V-JEPA 2-AC source, which computes `jloss + sloss` with each a mean. Squared error rather than the source's L1 (`loss_exp: 1.0`), because S35's conditional-mean analysis is stated for squared loss -- a declared deviation. **Incoming recurrent memory is detached in both arms.** Official Mamba-2 mutates its `InferenceParams` cache in place, so its step is not differentiable in the state it receives while attention's is: measured, an attention prefix took gradient 147.92 through carried memory and a Mamba prefix took `None`. Truncating both is a *matching* choice, and it is registered here rather than only explained at the call site because it changes the objective both arms optimise |
@@ -71,10 +71,19 @@ not an implementation detail. If the plan is wrong, fix the plan.
 | S69 | **S51 revised.** Behaviour cloning reads ordinary expert behaviour, with task events *oversampled* rather than exclusive | D4's relevant sequences are task-conditioned. S51 dropped task conditioning for one aggregate Craftax policy but kept an event-local relevance rule, and the two are incompatible: for an aggregate imitation policy, navigation, survival, recovery and positioning are all expert behaviour worth cloning. Measured, event-only windows made **84.5%** of expert transitions unreachable as a BC target *at any training length*, and only **3.44%** of BC windows began at an episode start, because `episode_start_fraction` applied to the uniform half that BC never reads. `event_fraction` of BC rows are now event-centred and the rest are ordinary windows drawn uniformly over eligible starts, with the episode-start stratum applying to both. On the same 2500-step schedule, coverage goes 15.5% -> 41.8% and episode starts 3.44% -> 13.78%, and what remains uncovered is merely unsampled rather than unreachable |
 | S70 | **Phase-2 outcome supervision is the first universal collapse in the 20k DEV run** | An environment fork executed all 17 actions at 36 identical real states. Encoded action effects remain nonzero and matched-action successor MSE beats off-action MSE in every arm, but true death risk under the actors is 13.1–14.4% while the continuation heads predict only 0.046–0.070% death even on true encoded successors. Logged-action calibration therefore gated the wrong distribution. Raw measurements are preserved in `artifacts/stage_a_olddesign/counterfactual_forks_preterminalfix.json`; S72 and S73 implement the response |
 | S71 | **Shortcut warmup and mixture routing now match the pinned objective** | The source reserves `self_fraction` rows at coarser steps from the start but gives them zero loss until step 10,000; ours incorrectly turned them into additional finest-step empirical rows. It also always put the self row last, while our mixture always put dynamics rows last, so 46.7% rather than 25% of Phase-2 dynamics rows bootstrapped. Self rows are now randomly assigned independently of semantic roles, inactive before the exact boundary, and active afterwards. The Phase-2 checkpoint contract includes the inherited world-step clock, and the runner refuses a Phase 1B that never crosses the boundary |
-| S72 | **Terminal supervision is a stratified Bernoulli likelihood, not a positive-class weight; corrected by S75** | D4 names nonterminal `c_t` but does not specify its estimator. The closest pinned implementation is Dreamer 3's ordinary binary continuation likelihood. We retain it on the main mixture and add one tail-aligned terminal sequence per Phase-2 update. BCE covers the tail's terminal **and nonterminal** targets; with four main rows plus one tail, equal per-sequence weighting gives the stratum 20% of continuation loss and about 0.84% actual terminal-target mass under the short/long schedule, versus 61.5% in the predecessor's failed ablation. It never displaces BC or dynamics rows and cannot enter their losses. Tail stratification is a declared Craftax adaptation, not attributed to D4. The original implementation's claim that a separate real-latent pass matched deployment was false; S75 repairs the route |
+| S72 | **Terminal supervision is a stratified Bernoulli likelihood, not a positive-class weight; corrected by S75/S76** | D4 names nonterminal `c_t` but does not specify its estimator. The closest pinned implementation is Dreamer 3's ordinary binary continuation likelihood. We retain it on the main mixture and add one tail-aligned terminal sequence per Phase-2 update. It never displaces BC or dynamics rows and cannot enter their losses. Tail stratification is a declared Craftax adaptation, not attributed to D4. S75 repaired the path; S76 repairs the Direct path/label confound found by the matched-fork diagnostic |
 | S73 | **Phase 3 is conditional on a real all-actions outcome gate** | On separate DEV environment seeds 12000–12007, the BC prior visits scheduled and final pre-death states and the simulator executes all 17 actions from each identical state. Generated-successor reward choice regret and terminal BCE must beat the best state-blind **action marginals** on those forks, terminal AUC must exceed 0.5, and each outcome needs at least three varying states. This rejects a model that only learns globally safe or rewarding actions without reading state. Raw forks are saved. After Phase 3, the actor is marked failed if its exact policy-weighted one-step death exceeds its BC prior. Craftax is pinned to CPU so JAX cannot reserve the PyTorch training GPU. The known-bad Direct-A checkpoint is rejected under this gate; S70 preserves its raw measurements |
 | S74 | **Corrected DEV budget: all 320 expert episodes; 20k world, 10k agent, 2.5k actor updates per arm** | A 4k world run never reached the source's 10k shortcut bootstrap; the 20k run then showed that 2.5k head updates left outcomes unidentified. The earlier `--expert 96` also discarded 224 available expert episodes and left only 76 in training. The restarted run uses the full archive, refuses `dynamics_steps <= bootstrap_start`, and writes a fresh directory, so no incompatible checkpoint is migrated |
-| S75 | **Continuation is one-step and terminal tails use the ordinary arm-specific Phase-2 path** | D4 specifies MTP only for policy and reward; extending it to continuation was an unsourced local choice, while the pinned Dreamer 3 continuation likelihood is one binary prediction per state. More importantly, the S72 branch called `world` directly on real latents: it bypassed Flow's normal sampled corruption and Direct's generated-prefix readouts, repeating the predecessor's D043 real-versus-imagined head mismatch. The tail now obtains its readout from `transition_loss(..., return_agent=True)`. Its returned dynamics loss remains masked out by the support role, so this changes neither the §4.1 mixture nor the dynamics objective. No class weighting, terminal-dynamics weight, or generated-successor auxiliary loss is added |
+| S75 | **Continuation is one-step and terminal tails use the ordinary arm-specific Phase-2 path; Direct corrected by S76** | D4 specifies MTP only for policy and reward; extending it to continuation was an unsourced local choice, while the pinned Dreamer 3 continuation likelihood is one binary prediction per state. More importantly, the S72 branch called `world` directly on real latents: it bypassed Flow's normal sampled corruption and Direct's generated-prefix readouts, repeating the predecessor's D043 real-versus-imagined head mismatch. The tail therefore obtains its readout from `transition_loss`. Its dynamics loss remains masked out by the support role, so this changes neither the §4.1 mixture nor the dynamics objective. S76 supersedes only the Direct continuation objective |
+| S76 | **Terminal tails pair path and label: observed/generated x alive/dead, in both arms** | The ordinary tail has many observed nonterminal states but its only terminal is one of Direct's two generated-prefix states. It therefore confounded representation domain with the label: observed supplied no death example, and generated supplied only one alive example beside the death. Both arms now score exactly the final alive and terminal state, Direct in both its teacher-forced and generated-prefix readouts and Flow in the single readout it has, passed as both arguments so the average is that readout's own score. This is a balanced auxiliary likelihood; at `terminal_loss_mass=0.2` terminal labels carry 10% of continuation loss, far below the predecessor's failed 61.5% positive mass. **Applying it to Direct alone was itself a defect** -- the tail-wide average it replaced gives a dead-class share of `1/T`, so the arms would have been penalised 8x (T=16) to 31x (T=64) differently for missing a death, confounding the one comparison the project exists to make; measured, `terminal_loss` on an all-alive head scored 0.3775 and 0.0962 against the paired rule's 3.0025. D4 leaves continuation estimation unspecified, so this is a declared Craftax repair, not a paper claim. The main mixture likelihood, BC routing, reward loss, and dynamics routing are unchanged |
+| S77 | **Support-v2 targets 10,000 genuine terminal trajectories without changing the competence ladder** | Collection retains every rollout from the same PPO expert with epsilon in `{0.1, 0.25, 0.5, 1.0}` cycled by complete environment batch; support remains `uniform_eligible=True`, `bc_eligible=False`. Each episode records epsilon, immutable identity and a hash-assigned 80/10/10 TRAIN/DEV/FINAL split. The new artifact is sharded and hash-manifested; raw frames and the encoder-digest-bound latent cache are independently mmap-backed, so neither corpus scale nor caching requires resident observations. `craftax_support_v1.pt` remains untouched and every earlier result remains bound to its digest |
+| S78 | **Terminal-diversity scaling holds exposure fixed and must return a saturation verdict on conditional consequence learning** | Nested subsets are stratified by source, epsilon and fatal action, with exactly 20k tail draws per cell. S79's cheap gate made the lower rungs unnecessary, so the launched ladder is 300/900/3800/full TRAIN, with two subset replicates and one full endpoint. Primary endpoints are held-out fatal-minus-matched-safe predicted movement and within-state predicted-vs-true slope at 5k/10k/20k; AUC is secondary. Saturation is declared only if both final paired 95% intervals lie inside a two-sided practical-equivalence band of +/-5% of the true held-out conditional movement; otherwise the result is `not_saturated` or `inconclusive`, never an open-ended "more helped" claim | **Answered 2026-08-14: saturated by 900 unique episodes.** Paired increments on the primary endpoint are 300->900 -0.0076 [-0.0114, -0.0037], 900->3800 -0.0008 [-0.0045, 0.0029], 3800->7501 -0.0009 [-0.0041, 0.0022], against a minimum meaningful increment of 0.0225; the final two intervals lie inside the equivalence band and the whole-ladder trend is -0.0026 per log unique episode. Held-out fresh-probe AUC (0.642-0.649) and MSE (0.116-0.127) are flat across all twelve cells. The null is decisive rather than underpowered, which is what the corpus bought |
+| S79 | **Supervised identifiability gates S78 before world-model training** | The v1 logged-data probe learned state risk but correct action pairing did not beat the shuffled-action control on fixed forks (0.521 versus 0.518 within-state AUC). Support-v2 must therefore first be tested at increasing unique-episode rungs with fixed optimizer exposure and fixed DEV/fork evaluation. A separate fork-trained ladder holds complete trajectory pairs out while comparing simulator state, current pixels, the encoder's pre-bottleneck tokens and frozen z, each through an action-indexed outcome probe. This separates missing logged conditional coverage from information lost before Direct. The expensive S78 ladder remains stopped until these two reports are interpreted | **Answered 2026-08-13, and it corrects the v1 reading.** With a per-action output head rather than a concatenated action, within-state-centered AUC is 0.611 for raw observation, 0.592 for frozen z and 0.568 pre-bottleneck, with the action-only control at its expected 0.493: the stack loses little, the ordering is non-monotone, and the bottleneck is cleared. The simulator-state row returns 0.515 -- at chance and below the observation rendered from it, which is impossible as a statement about information and is recorded as a featurisation defect, not a finding. Scaling over support-v2 at fixed exposure, state discrimination climbs 0.739->0.882 and flattens by ~3800 while the fork pairing margin over the shuffled control grows 0.002->0.058; the gap between 0.882 on the collection distribution and 0.608 on policy-fork states exceeds both, and 0.608 is near what raw pixels support |
+| S80 | **Aggregate-task actor gate: mean achievement count primary, official geometric score mandatory beside it** | Phase 3 maximizes scalar discounted environment reward, not the nonlinear population-level geometric score. On 512 paired DEV episodes, the h=2 fully-oracle actor improves mean achievements by **+0.826 [0.537, 1.119]** yet changes geometric score by only **+0.092 [-1.011, 1.143]**; all actor and BC episodes terminate. The old learned-imagination run also fails under count, so this correction does not rehabilitate it: every arm is below its BC prior, with flow-attention at -1.125 [-2.125, -0.188] and direct-mamba at -0.812 [-1.500, -0.125]. The oracle result establishes a live but weak local actor path, not satisfactory control. The next positive control changes only oracle horizon 2->16 to test delayed survival credit; learned-world horizon results cannot answer that question. If longer truthful rollouts improve survival without broader achievements, the next architecture step is Dreamer 4-style task conditioning of policy, reward and value, with a fixed prompt schedule; ad-hoc reward weighting is not adopted |
+| S81 | **Before the h=16 actor control, attribute Direct predictor topology and transfer S78's diversity test to Flow** | Dreamer 4 constrains action/latent interleaving inside its generative backbone but publishes no standalone deterministic Direct head. The pinned V-JEPA 2-AC paper and source instead project feature and action inputs separately, insert action before a deep token transformer, and predict feature tokens; official DINO-WM independently inserts encoded actions before its transformer predictor. They do **not** source our exact `pool -> concatenate broadcast action -> 2-layer MLP` head. The Direct test therefore holds the frozen representation, world backbone, squared loss, two-step rollout, data, terminal exposure, optimizer, streams and every shared initial tensor fixed while comparing: the current 0.140M head; a 3.372M deeper pooled MLP capacity control; and a 3.299M four-block token transformer with separate feature/action projections and action present before attention. The latter is source-shaped, not called a V-JEPA reproduction: its per-block interface deliberately preserves S34 because D4 world features already contain causal history. Separately, S78 answered diversity only for Direct. Flow-Attention now receives the same nested 300-versus-7501 terminal subsets with 20k tail draws, common random numbers and otherwise identical Phase-1B training. Both questions use the fixed support DEV pairs and fixed policy forks; fatal-minus-safe movement along the fixed TRAIN direction is primary, ordinary latent MSE and fatality AUC are secondary. A rescue requires a paired lower 95% bound above 5% of the true contrast on both distributions; equivalence requires the full interval inside that two-sided band. No actor or Phase-2 change is mixed into either test | **Answered 2026-08-15: both questions null, and the evaluation split them apart.** Topology is not the cause -- the source-shaped token transformer is equivalent to the current 0.140M head on both distributions (archive -0.0012 [-0.0059, 0.0037], forks -0.0046 [-0.0161, 0.0066]). The 3.372M capacity control gains +0.0183 [+0.0128, +0.0238] on archive, below the 0.0225 materiality threshold, and is equivalent on forks; it also *beats* the source-shaped head on archive (-0.0195 [-0.0258, -0.0134]), so what little moves is parameters, not interleaving. Flow does not respond to terminal diversity: 300 -> 7501 unique episodes moves recovered fraction +0.0023 to +0.0038 on archive and -0.0016 to -0.0036 on forks, every interval inside the band, replicating S78's Direct-only saturation on the other arm. The two-rung Flow ladder establishes no effect between the endpoints and cannot locate a saturation point, which S78's four rungs could. What the grid actually exposed is registered as S82 |
+| S82 | **The policy-fork collapse is real, but matched branch coverage is not its demonstrated cause** | S81's grid separated two distributions that every earlier measurement had averaged over. On held-out logged DEV transitions the worlds recover **5-9%** of the true fatal contrast (direct_current 0.053, deep_mlp 0.094, token_transformer 0.050, flow 0.076-0.081) at fresh-probe AUC 0.61-0.65. On the 104 policy forks **every cell recovers zero or less** (-0.006 to -0.037) at probe AUC 0.507-0.579, while a supervised readout can extract consequence information from the same starting latents. Data volume (S78), Flow diversity (S81), predictor capacity (S81), predictor topology (S81), whitening, training length and outcome gradients all failed to repair that fork result. A plausible remaining data hypothesis was the missing joint of off-policy action at a competent-policy state: support-v2 contains 2520 epsilon=1.0 episodes, but random actions are not necessarily paired with states reached by competent behavior. **Tested with a gate before world training:** all 17 one-step outcomes were collected at every state reached by the frozen BC policy on 512 TRAIN seeds disjoint from both fixed fork sets. The resulting immutable collection has 67,365 states and 965 action-dependent survival roots; 781 roots fit the probe and 184 whole-seed-held-out roots tuned it. The positive control used oracle-selected opportunity roots, both a linear per-action probe and the existing small 512->64->17 fork-probe topology, and selected the small probe from TRAIN tune only. On the unchanged 104 DEV forks, branched state+action reaches mean per-state AUC **0.635** and beats its outcome-preserving shuffled-action control by **+0.066 [+0.015, +0.122]**, so the collection contains genuine conditional signal. But it does not establish the proposed rescue: its gain over action-only is **+0.039 [-0.037, +0.116]**, and against the same probe trained for the same 2000 updates on existing logged support it is **-0.023 [-0.079, +0.034]**; logged support reaches **0.658**. Therefore the claim that the corpus lacks the necessary joint is not supported, and Phase-1B branch-window training is not authorized. The existing `collect_paired_trajectory_forks.py` remains evaluation-only; no oracle-filtered data entered production replay. This result restores priority to the deferred objective test: consequence labels must shape the generated latent itself, with a stopped-head control, because a head-only shortcut would not repair imagination. It does not guarantee that objective will work, and the earlier harmful outcome-gradient result remains a required control. **The h=16 oracle is a separate Phase-3 question and is not evidence about the world model.** |
+| S83 | **Generated-latent terminal shaping is the final preregistered objective test, not a claimed Dreamer 4 component** | Dreamer 4 jointly continues its video objective while reward gradients enter the shared agent-token transformer, but publishes neither a deterministic Direct predictor nor a continuation estimator. Dreamer 3, DRAMA, NE-Dreamer and Dreamer-CDP jointly let reward/continuation likelihoods shape their world features; V-JEPA 2-AC and DINO-WM instead fit frozen targets with latent prediction alone. Attaching a continuation likelihood directly to Direct's predicted packed latent is therefore a source-motivated test at an unsourced boundary, not paper fidelity. Two Direct-Attention cells retain S78's full 7,501-terminal schedule, ordinary/terminal MSE mixture, initialization, batches, optimizer, streams and 5k/10k/20k endpoints. A shared small latent head sees the same final alive/dead labels on the matching observed and recursively generated successors. The only intervention is whether the generated-latent path is attached or stopped; observed targets never update the frozen tokenizer. The stopped world's update must reproduce S78's full-diversity checkpoint bitwise at every milestone. Head AUC is a validity check, never the endpoint: the primary outcome is paired fatal-minus-safe movement of the generated latent along the fixed TRAIN direction on both unchanged logged DEV transitions and the 104 policy forks, with fresh frozen-probe AUC and MSE secondary. At 20k, a rescue requires the allowed-minus-stopped lower paired 95% bound to exceed 5% of the true contrast on both distributions; equivalence requires both intervals inside the corresponding two-sided bands. The earlier agent-readout consequence gradient, which worsened Direct, and MMBench2's reported reward-gradient null remain adverse controls. A negative result closes this particular terminal-shaping mechanism, not every possible world model. |
+| S84 | **S83's original evaluator tested transfer across rollout paths, not the path it trained** | The 20k run and its causal controls are valid: identical initialization, batches and streams; nonzero gradient only in the attached cell; and the stopped world reproduces S78 bitwise at 5k, 10k and 20k. But a post-run function-level audit found a material endpoint mismatch. `terminal_objective` labels death only on the *second recursive* successor, after the penultimate state has itself been generated; both archive `reset16` and the fixed policy forks instead score one step from an *observed* predecessor. Their null is a valid transfer result, not a test of whether the supervised recursive path improved. The exact held-out archive path check changes the picture: at 20k, stopped recursion recovers **31.5%** of the true fatal-safe movement (0.142 [0.124, 0.159]) and attached recursion recovers **44.5%** (0.200 [0.183, 0.216]), while attached one-step remains at 3.46%. Before inspecting the still-unseen recursive fork result, its correction is fixed: reconstruct the preceding frozen-policy state, generate the fork state with the actually executed incoming action, then apply each of the same 17 fork actions; compare attached minus stopped at 20k with the existing paired whole-state bootstrap and 5%-of-true threshold. This is a post-hoc alignment correction, not a new training result or a production change. It will decide whether the recursive archive gain transfers to policy states; it cannot establish Dreamer 4 fidelity or repair reward prediction by itself. |
 | S46 | The archived Craftax replay is **losslessly convertible and usable for both §4.1 sampling roles**; what it lacks is behavioural breadth, not a "uniform half" | Everything below verified by reading the artifact, not from its manifest alone. `artifacts/expert/craftax_expert_v1.pt` (8.6 GB) holds 320 episodes / 696,746 transitions at `mean_achievements` 20.62 of 22, with all 320 flagged deep-achievement. Conversion is exact: `obs` is `(2501, 3, 64, 64)` uint8 channels-first, zero-padded from 63x63 (row 63 and col 63 measured all-zero), so `[:, :, :63, :63]` then permute to HWC loses nothing. It stores only `continues`, so `terminated = continues == 0` and `truncated` is the 2500 cap. **Correction, 2026-08-01**: the claim that this makes the corpus "100% relevant and 0% uniform" was wrong and is withdrawn. S43 defines `relevant` as a *sampling role*, not a property of an episode, and §4.1's language is sequence-level: a 2500-step successful episode contains many ordinary windows holding no achievement event, so this corpus supplies both roles. The generator also never acceptance-filtered by achievement -- it records every completed rollout and counts achievements afterwards -- so it is already unfiltered *within one PPO policy's behaviour distribution*. The fallback that sentence described no longer exists in the code either. What remains true is narrower and is the actual limitation: one strong policy over 320 episodes is far less diverse than 2541 hours of contractor play, its failure support is tiny (S50), and its expert lacks vendored source lineage. Two further defects compound it: only 68 of 320 episodes terminate (252 hit the cap), so the continuation head sees almost no real terminations, and its expert has no byte-level provenance (`Craftax_Baselines@7ce36fa` is not pinned in `third_party/`). Per S29 it therefore stays a smoke-test corpus. What is missing is not more expert play -- 697k expert transitions is already ample for the relevant half -- but an equal mass of unfiltered rollouts, which also supplies the terminations |
 | S27 | Bounded encoder context `W`, part of `C*` — `z_t = Z*(x_{t−W+1..t})` everywhere | Phase 1A windows carry a `W−1` burn-in that is encoded but not scored; once frozen, each episode is scanned once and cached **under the same `W` limit** — an unbounded full-episode scan would produce a different `Z*` from deployment. `W` is not a capacity number: it defines the representation, so changing it changes every `z_t` and it must be frozen before the final encoder trains |
 | S28 | Match total **deployed** parameters within a declared tolerance while holding `d_model`, depth, token layout and shared interfaces fixed | Primary knob is Mamba's `d_state`, the only one that moves M-arm parameters without touching the shared backbone. Parameter counts move discretely, so `d_state` alone may not reach tolerance at a sane state size — any additional knob must be declared before training. Report the unmatched residual, FLOPs, memory, recurrent-state size and measured throughput regardless. The predecessor called arms matched in a comment while the temporal module differed by 29.6% |
@@ -115,13 +124,15 @@ Dreamer 4 can share its backbone because a corrupted latent at `τ > 0` still
 carries signal, so one block is both context and query. A query token carries
 none, so the same trick does not transfer.
 
-### S35 — Deterministic Direct is `K = 1`; the stochastic extension is best-of-K
+### S35 — Test fixed-pair multimodality before enabling `K > 1`
 
-Craftax is stochastic enough for this to matter. Measured on the installed
-environment, 64 draws per `(s, a)` over 72 pairs: **83% branch**, mean 4.2
-distinct successors, and top-mode mass as low as 0.19. The distribution is
-heavy-tailed -- most states are near-deterministic, a minority are strongly
-multimodal, and those are the mob-spawn and combat states that decide episodes.
+Craftax is stochastic, but action-dependent death under one simulator draw does
+not prove that a fixed `(state, action)` has multiple successor modes, and low
+one-target MSE does not prove Direct lies between them. Those were previously
+conflated. The diagnostic must hold both state and action fixed, vary only the
+environment RNG, encode every realized successor under identical encoder history,
+and compare Direct with the empirical mean and nearest realized mode. Flow is
+evaluated on the same contexts by sample-to-mode precision and mode coverage.
 
 MoP-JEPA (`2607.05238`, Prop. 1) proves the consequence: under squared loss the
 optimal single predictor is `E[z'|c] = Σ w_m μ_m`, error lower-bounded by the
@@ -133,16 +144,62 @@ The fix is Prop. 3: best-of-K regression, `L = E[min_k ‖g_k(c) − z'‖²]`, 
 the per-context K-means distortion, so every optimum assigns a head per mode.
 Plus a router trained on the winning index and a load-balance term.
 
-**Why this settles the roadmap rather than the code:** at `K = 1` the MoP loss
-*reduces exactly to the dense loss*. So deterministic Direct is not a separate
-design -- it is the `K = 1` case of the extension. Stage A runs `K = 1`; if it
-collapses, `K > 1` is a strict generalisation of the same head, not a new arm.
+At `K = 1` the MoP loss reduces exactly to dense regression, but `K > 1` still
+changes parameters, routing and rollout semantics and remains an ablation. It is
+eligible only if terminal-critical fixed pairs are demonstrably multimodal,
+their empirical mean lies away from realized modes, Direct lies nearer that mean
+than every mode, and Flow handles the same modes materially better.
 
-**Consequence for the plan:** `diagnostics.multistep_error` is a mean error, and
-the mean error is *minimised* by the collapsed predictor, so it cannot detect the
-failure it exists to detect. It needs MoP-JEPA's measurement alongside: distance
-from the prediction to the nearest true successor mode, against distance to their
-mean, at high-branching contexts.
+`diagnostics.multistep_error` remains useful but cannot answer this question:
+squared error is minimized by the conditional mean. The fixed-pair probe reports
+the needed geometry and raw rows, but makes no automatic MoP decision.
+
+**Measured 2026-08-11 — `K > 1` is not eligible for the terminal-prediction
+failure.** `artifacts/diagnose_s35_multimodality.py` on the 100 saved
+terminal-opportunity states: 1700 `(state, action)` pairs, 64 draws each, state
+and action held fixed and only simulator RNG varied, successors encoded under
+identical encoder history, Phase-1B worlds so no head is involved. Raw rows in
+`artifacts/stage_a_s76_paired/s35_multimodality.json`.
+
+Of the four conditions above, one holds and three fail:
+
+| Condition | Verdict | Measurement |
+|---|---|---|
+| Fixed pairs are multimodal | **holds** | 48.1 distinct successors per pair; 1610 of 1700 branch |
+| Their mean lies away from realized modes | **fails** | mean-to-nearest-mode MSE 0.00032 (median 0.000145) against an inter-mode spread of 0.00126 — the mean sits *inside* the cloud, beside a real mode |
+| Direct lies nearer that mean than every mode | **fails** | closer-to-mean on 25.8% of pairs; mean advantage −0.00026, i.e. the nearest mode is usually the closer of the two |
+| Flow handles the same modes materially better | **fails** | Flow sample-to-mode precision 0.0268 against Direct's 0.0232; coverage 0.0169 |
+
+Prop. 1's harm needs *separated* modes. These are not separated on the scale that
+matters: Direct's distance to the nearest realized mode is 0.0232, **18× the
+entire spread of the successor cloud** and 73× the mean's own distance to a mode.
+The prediction is not sitting between modes; it is outside a tight cluster.
+Assigning a head per mode cannot recover a distinction that is not there.
+
+Death is also near-deterministic here, which is the more direct reason: it varies
+with RNG in **16 of 1700 pairs (0.94%)**, and reference-fatal pairs die on 99.1%
+of draws. Fatality is a function of `(state, action)` at these states, so there is
+no fatal/safe bimodality for `K > 1` to separate.
+
+**Scope — this retires the lever for one failure, not in general.** It says
+nothing about reward prediction, long-horizon rollout drift, or Stage B, and it
+does not contradict MoP-JEPA; it finds its hypothesis unmet here. Condition 1
+*holds*, so the environment-level branching S35 was built on stands and is
+confirmed. Two further limits are recorded rather than smoothed over: where death
+genuinely is stochastic, those 16 pairs show a closer-to-mean fraction of 0.75 --
+the mechanism does appear exactly where multimodality is real, on under 1% of
+pairs and still with inter-mode spread 4× below the prediction error (0.00485
+against 0.01963, on the same pairwise measure used above) -- and only the two
+attention arms at one DEV seed were measured, with no Mamba arm. Reopen this if a
+failure appears where fixed-pair modes are separated at the scale of the
+prediction error.
+
+The residual gap is not distributional structure: prediction error is 0.152 RMS
+against the DEV latent std of 0.785 (19%), while the successors it must distinguish
+span 0.036 RMS (4.5%). **Calling that gap "accuracy" is withdrawn** -- training four
+times longer improved aggregate accuracy and made fatality discrimination worse. The
+question is a different one with different levers, and it is not S35's; it is
+recorded under "Phase-1B consequence investigation" below.
 
 ### S36 — Dynamics context `C = 3·T_short`, with `T_long = 4·T_short`
 
@@ -169,8 +226,8 @@ config value, and each must be closed before the phase named.
 | ~~**Capacity**~~ — **closed by S44**. The probe was run on the real worst case (Phase 1A: encoder + decoder + LPIPS + gradients + optimizer state, both sequence lengths). It did not move a single architecture field; it changed `batch` and turned on checkpointing. The remaining untested worst case is the EMA copy, which Stage B introduces | ~~Phase 1A~~ | `Config` |
 | ~~**Imagination horizon**~~ — **closed by S54.** The selection *rule* is now fixed: DEV only, from `horizon_candidates`, via `multistep_error` under a full committed context. The resulting number is not yet chosen, and choosing it is a run, not a decision | ~~Phase 3~~ | `Config.horizon` |
 | ~~**Matching tolerance and final Mamba dimensions**~~ — **closed by S53.** 0.5% deployed residual, shared dimensions fixed; `d_state = 64` measured at -0.316% and passes | ~~Before building the Stage-A models~~ | `diagnostics.cost`, `Config` |
-| ~~**Executed-control metric definition**~~ — **closed by S51 and S52**, and implemented in `execution`: aggregate task, official geometric-mean score, native horizon, sampled primary, BC and random controls, paired seeds, paired bootstrap, and a two-sided pass rule | ~~Before Stage A~~ | `execution.run_episode`, `evaluate`, `score` |
-| **Behavioural support of the corpus** — the only data question left open, and deliberately. The archive serves both §4.1 roles (S46), so this is not about a "uniform half": it is whether one PPO policy over 320 episodes, with 68 terminals in 696,746 transitions (S50), is broad enough to attribute a world-model result to. Open: whether to collect more, from what policy mixture, how much, and whether reported runs treat the archive as a hash-pinned artifact whose behavioural lineage cannot be reproduced | Before reported Stage-A training | `expert.collect` |
+| ~~**Executed-control metric definition**~~ — **revised by S80** after the oracle positive control exposed objective/evaluation disagreement. Aggregate-task mean achievement count is the causal gate; official geometric score is mandatory beside it. Both use paired intervals against BC and random, with native horizon and raw rows retained | ~~Before Stage A~~ | `execution.run_episode`, `evaluate`, `score` |
+| **Behavioural support of the corpus** — closed operationally by S77, with causal adequacy still gated by S78. The archive serves both §4.1 roles (S46), so this is not about a "uniform half". V1 deaths are broad under coarse checks -- 0-22 achievements at a median of 12, only 15.7% inside 100 steps -- but those checks do not establish state-by-action consequence coverage. S77 preserves that policy/epsilon ladder and raises unique terminal count without relabelling support as expert data | Before reported Stage-A training | `expert.collect` |
 
 ## Function plan
 
@@ -197,12 +254,13 @@ and `truncated` as separate raw fields; continuation is derived in `agent.py`.
 **`expert.py`** — `load_archive(path, config, limit)`, `collect(policy, count, config, limit)`.
 
 **`data.py`** — `Episode` (Type, unshifted storage: `observations`,
-`actions_taken`, `rewards`, `terminated`, `truncated`, `events`, eligibility),
+`actions_taken`, `rewards`, `terminated`, `truncated`, `events`, eligibility,
+epsilon and declared split), `EpisodeCorpus` (Type, mmap-backed indexed sequence),
 `Batch` (Type, block arrays plus sampling/support roles),
 `patchify(frames, patch)`, `unpatchify(patches, config)`, `episode_splits(n, seed)`,
 `sample_batch(episodes, rng, config)`, `sample_terminal_batch(episodes, rng, config)`,
-`save_episodes(path, episodes)`,
-`load_episodes(path)`.
+`save_episodes(path, episodes)`, `save_episode_shard(path, episodes)`,
+`load_episode_store(path)`, `load_episodes(path)`.
 
 `relevant` is the S43 sampling role. `Batch.rows` is public because behaviour
 cloning and dynamics select complementary halves and neither owns the rule.
@@ -257,7 +315,8 @@ the rollout schedule, selected by `config.transition`.
 
 **`agent.py`** — `Heads` (Type: policy, reward, continuation, value),
 `twohot(values, centers)`, `head_targets(batch, config)`,
-`head_loss(predictions, targets, config)`, `terminal_loss(predictions, targets)`.
+`head_loss(predictions, targets, config)`,
+`paired_terminal_loss(generated, observed, targets)`.
 
 `value` exists from construction but enters no optimizer before Phase 3.
 `head_targets` is where MTP lead alignment and the terminal/truncation split are
@@ -302,6 +361,8 @@ against action-only marginals, and gates both entry to and exit from Phase 3.
 ### Orchestration
 
 **`train.py`** — `optimizer(modules, config)`, `train_representation(config)`,
+`cache_latents(encoder, episodes, config)`,
+`cache_latents_to_store(encoder, episodes, config, out)`,
 `train_dynamics(config)`, `train_agent(config)`, `train_actor(config)`.
 
 One driver per phase, in phase order. `optimizer` is the only place parameter
@@ -346,7 +407,7 @@ whole module set rather than the world alone.
 
 ## Totals
 
-19 types, 57 public functions and 38 private helpers, across 20 modules.
+21 types, 66 public functions and 51 private helpers, across 20 modules.
 
 The private count has grown from the planned 18. That is drift the contract exists
 to catch, and it is recorded rather than rounded away: the growth is real, most of
@@ -387,6 +448,85 @@ Also settled by execution: the tokenizer always mixes time with attention, in
 every arm. Mamba's state summarises all history rather than a window, so a Mamba
 encoder cannot honour the bound that makes `Z*` well defined -- and keeping the
 encoder common is what confines the substitution to the dynamics.
+
+## Phase-1B consequence investigation — measurements only, nothing decided
+
+**No decision is recorded here and no remedy is adopted.** This section states what
+was measured between 2026-08-10 and 2026-08-13, so the next choice is made against
+evidence rather than memory. Every figure is on the same 100 matched
+terminal-opportunity DEV states unless stated, dead-vs-safe compared within the
+same action, with `action_identity_only` at exactly 0.500 as the control. AUCs are
+pooled-pair unless named macro; the two differ by about 0.02 and the register was
+previously quoting both without saying which.
+
+**The failure.** A linear probe reads fatality from the real encoded successor at
+**0.923**. From the model's generated successor it reads **0.646** (Direct) and
+**0.649 / 0.680** (Flow, one sample / eight averaged). Imagination therefore
+presents an actor with a world where death is nearly invisible: modelled death
+under policy 0.0009-0.0019 against a true 0.12-0.13.
+
+**Where it is not.** Each of these was a live hypothesis, and each is closed by
+measurement rather than argument:
+
+| Hypothesis | Verdict | Evidence |
+|---|---|---|
+| The encoder | no | observed-latent probe pinned at 0.916 macro across every stage and arm; death transitions move 4.40x in pixels and 3.30x in latents (compression 0.749), and 7.91x along the fatality direction |
+| Action conditioning | no | shuffling the outgoing action raises MSE 2.44x |
+| The continuation head | no | frozen world, 10k steps, trained *only* on generated states, caps at 0.527 |
+| Terminal data volume in Phase 2 | no | terminal-dynamics mass 1/3 moved the generated latent 0.686 -> 0.676 macro |
+| Multimodality / MoP-JEPA `K > 1` | no | S35, measured: modes unseparated, death RNG-stochastic in 16 of 1700 pairs |
+| Undertraining | **inverted** | 20k -> 80k: latent error 0.0242 -> 0.0186 while fatality AUC 0.666 -> 0.572 macro, fatal/safe error ratio 0.843 -> 1.079 |
+| The deterministic JEPA substitution | no | Flow loses the same at matched accuracy (0.0241 vs 0.0242 latent error) |
+| Outcome gradients into the world | no, harmful | 0.604 with, 0.644 with the gradient stopped, matched 20k |
+| Offline action coverage | no | logged-action fatality 0.497-0.502 across four worlds on 52 paired trajectories |
+| Loss reweighting (whitening) | no | best cell 1.062 direction error at 20k, still worse than a constant; 0.895 at 5k decays away |
+
+**What the failure is.** Under-dispersion, not a sign error and not silence. On
+fatal transitions the true latent moves **+0.456** along the fitted direction; the
+model predicts **+0.033 to +0.148**, 7% to 32%, with the sign right 66-85% of the
+time. `fatal_failure_mode` is `tracks_true_direction` in 14 of 16 cells. An earlier
+reading of the prediction as *inverted* is withdrawn: that was the starting-state
+offset, since fatal states begin lower on this axis and the model barely moves.
+
+The geometry is consistent with rarity rather than compression. The direction holds
+0.000356 of latent variance (0.182x isotropic) in a latent of effective rank 45.8
+of 512 -- but deaths excite it 7.91x, so the small variance share follows from 400
+terminal events in 753k transitions, not from the encoder discarding it.
+
+**Registered as method, not as a decision.** A scaling experiment on this quantity
+must score conditional fatal-vs-safe predicted movement, or slope, and keep AUC
+secondary: on the same eight cells the delta statistic has 95% intervals 0.040-0.093
+wide and separates cells with disjoint intervals, while predicted-delta AUC
+intervals are 0.227-0.284 wide and all eight overlap. Early checkpoints must be kept,
+because the signal attenuates with training in three of four factorial cells.
+
+**Closed 2026-08-14: it is not the data.** The question below was answered by S77
+and S78. Support-v2 supplies 10,011 terminal episodes against v1's 400, and varying
+unique terminals from 300 to 7,501 at fixed exposure leaves conditional fatal
+movement flat-to-worse, saturating by 900. Over the same range a supervised probe
+on the same corpus improves its action-conditional margin from 0.002 to 0.058. So
+diversity makes consequence *more extractable* and the unsupervised latent
+objective extracts none of it; the model still moves about 6-7% of the true fatal
+delta. Data volume and coverage are no longer candidate explanations.
+
+**Open, as originally posed.** Whether more unique terminal episodes recover the
+magnitude. 320 TRAIN
+terminals repeated about 62x at 20k exposure is the memorisation regime, and
+terminal-enriched sampling is the one intervention with a clean positive effect
+(0.069 [0.048, 0.093] against 0.033 [0.012, 0.056] at 20k). S77 removes RAM as a
+constraint and S78 fixes the stopping rule before the larger result exists.
+
+The cheap supervised identifiability control strengthens the coverage hypothesis
+without proving it. A state+action MLP trained on whole-episode TRAIN logged data
+scores 0.920 natural DEV AUC, but only 0.510 on executed policy actions and 0.521
+within-state AUC across all-action forks. State-only is 0.489 within-state and the
+state+within-label-shuffled-action control is 0.518: correct pairing adds no robust
+conditional signal on the fork distribution. An action-only model trained on the
+logged corpus is 0.510 on forks; the historical 0.927 action-only result was a
+cross-validated oracle fitted on the fork label distribution itself, not evidence
+that the offline corpus learned that marginal. Also open, and untouched by all of
+the above: no Mamba arm has been through any of this, and no experiment has shown
+that repairing fatality prediction would lift an actor above its BC prior.
 
 ## Verified defects, in fix order
 

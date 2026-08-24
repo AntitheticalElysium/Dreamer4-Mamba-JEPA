@@ -1,0 +1,577 @@
+{
+  "contract": {
+    "version": "generated-latent-outcome-head-evaluation-v1",
+    "inputs": {
+      "models": {
+        "allowed_005k": "125dec8ca72184a4d3bf5a0e2b394e7de98388ee05cad46886d285d207c1d966",
+        "stopped_005k": "90e57caf4fd2de44783cc744553cf1e07e55138825b2c45660ce06a605cfc2a6",
+        "allowed_010k": "c9f6add7f7c95bd2ed274658b310c6d746f1bce0473b8a7f8b1b1619b3cffa03",
+        "stopped_010k": "a0a2a2c3e5bcab63afbcebfb7151dade6e867c334c9eb72cd5f274424e7ead1a",
+        "allowed_020k": "4649ce60e7b3e85980418a2c63517bd4fe45205f2bd4b47deb2c96512086430f",
+        "stopped_020k": "d3b78971e814c8d527d6d977d6ae490200653a49f514da73ba595fbf843c74af"
+      },
+      "archive_features": {
+        "allowed_005k": "14ac677469b379e5ca863d4c418298576ba665fcc31186f7d8b0f6b651377739",
+        "stopped_005k": "f1561318bd08ab2d7a51313a1c79de94079b037085e2dde1f84f18ab2628dd01",
+        "allowed_010k": "b4319296af3bf075f3c3c5b343e9cd1148c0057250ab762a64fbc6ebfee72435",
+        "stopped_010k": "c6fc580daa792ac241aa8191f624952e7999c4f218a9ccdd9ef9c703bef306ca",
+        "allowed_020k": "6c18b589ab7e06534bc98f9545b115855e4cbf973c46fb2916a90ebc12f71d63",
+        "stopped_020k": "eee3138e745c7422906f6270cb45d050d3e2631403c44849a01d658f71678687"
+      },
+      "fork_features": {
+        "allowed_005k": "29f43e61499cd2ce77e98032f4118562ecb90233ecad161708786b5c7ed43a37",
+        "stopped_005k": "37771c2bef67f124cdb159e7e3bd10f6f32f30722fe429c3da7313ea046e2d39",
+        "allowed_010k": "daa7995c2b85bed30ab89520a77a0ed638371c10b8d42761d4c82d4dbe0349c7",
+        "stopped_010k": "68b144c75c8f626fd918419e0a5a14ef519a0e9ff33be76dbd1e2a95506ddc6b",
+        "allowed_020k": "dc45f1b553e9ea677970ec23749ad4e9e47f8b45789c3dc30ecab03d9a421dd1",
+        "stopped_020k": "6db6ff64499fde01b9eb6de202fd52bec0c2fc432149f48169b9daf19e652664"
+      }
+    },
+    "implementation": {
+      "artifacts/run_stage_a.py": "37132c25192790ebe2d0253db5e120e8e8305b9c5b3c89a1c3b8f8c8cad93f5a",
+      "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+      "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+      "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+      "d4mj/data.py": "55cd78faafae33f111298304b63f325c4e257790feeca6e2f256da52b8dc529c",
+      "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+      "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+      "d4mj/train.py": "7a7e3f7bd75e1c642a070fcc6e24235b6d5bf2f7ea3f5b365486115430bf0336",
+      "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+      "artifacts/phase1b_diagnostic_common.py": "eeb675e1545ba81db7bbf7b69e68745541f4ec31d2411a06af4eb66a5d1e4c0b",
+      "artifacts/evaluate_generated_latent_outcome_heads.py": "13b17f75a295072a3bb83da2c4cacc97bee61cd192f87845f18750a8e48ef5f8",
+      "artifacts/train_generated_latent_outcome_shaping.py": "ab86491cae7d452c963d4885560ec140a647ac70fd29c9a07b464697fbc8017f"
+    },
+    "role": "validity check only; trained-head performance cannot establish that the generated representation improved",
+    "bootstraps": 1000
+  },
+  "models": {
+    "allowed_005k": {
+      "archive": {
+        "combined": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9437747001647949,
+            "death_auc_ci95": [
+              0.9336116909980774,
+              0.9528049230575562
+            ],
+            "bce": 0.867098331451416,
+            "accuracy": 0.787350594997406,
+            "continuation_on_fatal": 0.010914542712271214,
+            "continuation_on_safe": 0.5730689167976379
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.30125513672828674,
+            "death_auc_ci95": [
+              0.2832624912261963,
+              0.3189060091972351
+            ],
+            "bce": 3.9131317138671875,
+            "accuracy": 0.3904382586479187,
+            "continuation_on_fatal": 0.9092532396316528,
+            "continuation_on_safe": 0.6998390555381775
+          }
+        },
+        "support": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9437747001647949,
+            "death_auc_ci95": [
+              0.934245765209198,
+              0.9534051418304443
+            ],
+            "bce": 0.867098331451416,
+            "accuracy": 0.787350594997406,
+            "continuation_on_fatal": 0.010914542712271214,
+            "continuation_on_safe": 0.5730689167976379
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.30125513672828674,
+            "death_auc_ci95": [
+              0.28341397643089294,
+              0.3177923560142517
+            ],
+            "bce": 3.9131317138671875,
+            "accuracy": 0.3904382586479187,
+            "continuation_on_fatal": 0.9092532396316528,
+            "continuation_on_safe": 0.6998390555381775
+          }
+        }
+      },
+      "policy_forks": {
+        "observed": {
+          "examples": 1768,
+          "fatal_examples": 981,
+          "death_auc": 0.9921209216117859,
+          "death_auc_ci95": [
+            0.9850295186042786,
+            0.9972047209739685
+          ],
+          "bce": 0.2070675641298294,
+          "accuracy": 0.9106335043907166,
+          "continuation_on_fatal": 0.01764587312936783,
+          "continuation_on_safe": 0.8140268325805664
+        },
+        "predicted": {
+          "examples": 1768,
+          "fatal_examples": 981,
+          "death_auc": 0.4256450831890106,
+          "death_auc_ci95": [
+            0.34465354681015015,
+            0.5082071423530579
+          ],
+          "bce": 3.8378353118896484,
+          "accuracy": 0.4587104022502899,
+          "continuation_on_fatal": 0.8480105996131897,
+          "continuation_on_safe": 0.8277100324630737
+        }
+      }
+    },
+    "stopped_005k": {
+      "archive": {
+        "combined": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9376547336578369,
+            "death_auc_ci95": [
+              0.9271196722984314,
+              0.9474127292633057
+            ],
+            "bce": 0.7641944289207458,
+            "accuracy": 0.7430278658866882,
+            "continuation_on_fatal": 0.026267489418387413,
+            "continuation_on_safe": 0.5012351870536804
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.2968207001686096,
+            "death_auc_ci95": [
+              0.2778172194957733,
+              0.31681162118911743
+            ],
+            "bce": 2.3165335655212402,
+            "accuracy": 0.35109561681747437,
+            "continuation_on_fatal": 0.6980156302452087,
+            "continuation_on_safe": 0.43381980061531067
+          }
+        },
+        "support": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9376547336578369,
+            "death_auc_ci95": [
+              0.9275417327880859,
+              0.9476637244224548
+            ],
+            "bce": 0.7641944289207458,
+            "accuracy": 0.7430278658866882,
+            "continuation_on_fatal": 0.026267489418387413,
+            "continuation_on_safe": 0.5012351870536804
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.2968207001686096,
+            "death_auc_ci95": [
+              0.27818894386291504,
+              0.3143301010131836
+            ],
+            "bce": 2.3165335655212402,
+            "accuracy": 0.35109561681747437,
+            "continuation_on_fatal": 0.6980156302452087,
+            "continuation_on_safe": 0.43381980061531067
+          }
+        }
+      },
+      "policy_forks": {
+        "observed": {
+          "examples": 1768,
+          "fatal_examples": 981,
+          "death_auc": 0.9720897674560547,
+          "death_auc_ci95": [
+            0.9596753120422363,
+            0.9821520447731018
+          ],
+          "bce": 0.36083632707595825,
+          "accuracy": 0.8325791954994202,
+          "continuation_on_fatal": 0.03881685435771942,
+          "continuation_on_safe": 0.6418883204460144
+        },
+        "predicted": {
+          "examples": 1768,
+          "fatal_examples": 981,
+          "death_auc": 0.5306114554405212,
+          "death_auc_ci95": [
+            0.4562637209892273,
+            0.6137280464172363
+          ],
+          "bce": 0.9850418567657471,
+          "accuracy": 0.5384615659713745,
+          "continuation_on_fatal": 0.4304782748222351,
+          "continuation_on_safe": 0.4655304253101349
+        }
+      }
+    },
+    "allowed_010k": {
+      "archive": {
+        "combined": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9581058025360107,
+            "death_auc_ci95": [
+              0.9488869309425354,
+              0.9656528234481812
+            ],
+            "bce": 0.6898128390312195,
+            "accuracy": 0.8436254858970642,
+            "continuation_on_fatal": 0.007976657710969448,
+            "continuation_on_safe": 0.6931636333465576
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.3134007751941681,
+            "death_auc_ci95": [
+              0.295989453792572,
+              0.33155494928359985
+            ],
+            "bce": 7.014190673828125,
+            "accuracy": 0.46115538477897644,
+            "continuation_on_fatal": 0.977623462677002,
+            "continuation_on_safe": 0.895334005355835
+          }
+        },
+        "support": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9581058025360107,
+            "death_auc_ci95": [
+              0.9495956897735596,
+              0.9661678075790405
+            ],
+            "bce": 0.6898128390312195,
+            "accuracy": 0.8436254858970642,
+            "continuation_on_fatal": 0.007976657710969448,
+            "continuation_on_safe": 0.6931636333465576
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.3134007751941681,
+            "death_auc_ci95": [
+              0.29603374004364014,
+              0.33113014698028564
+            ],
+            "bce": 7.014190673828125,
+            "accuracy": 0.46115538477897644,
+            "continuation_on_fatal": 0.977623462677002,
+            "continuation_on_safe": 0.895334005355835
+          }
+        }
+      },
+      "policy_forks": {
+        "observed": {
+          "examples": 1768,
+          "fatal_examples": 981,
+          "death_auc": 0.9917090535163879,
+          "death_auc_ci95": [
+            0.9803231954574585,
+            0.9988511800765991
+          ],
+          "bce": 0.1919439136981964,
+          "accuracy": 0.9490950107574463,
+          "continuation_on_fatal": 0.012411379255354404,
+          "continuation_on_safe": 0.8822178244590759
+        },
+        "predicted": {
+          "examples": 1768,
+          "fatal_examples": 981,
+          "death_auc": 0.47116562724113464,
+          "death_auc_ci95": [
+            0.38580572605133057,
+            0.5510404109954834
+          ],
+          "bce": 5.188996315002441,
+          "accuracy": 0.4609728455543518,
+          "continuation_on_fatal": 0.943053662776947,
+          "continuation_on_safe": 0.9594597816467285
+        }
+      }
+    },
+    "stopped_010k": {
+      "archive": {
+        "combined": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9502140879631042,
+            "death_auc_ci95": [
+              0.94145268201828,
+              0.9585109353065491
+            ],
+            "bce": 0.6831783652305603,
+            "accuracy": 0.7933266758918762,
+            "continuation_on_fatal": 0.02200271375477314,
+            "continuation_on_safe": 0.592180609703064
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.28467801213264465,
+            "death_auc_ci95": [
+              0.264911413192749,
+              0.3040565550327301
+            ],
+            "bce": 3.0661234855651855,
+            "accuracy": 0.3500995934009552,
+            "continuation_on_fatal": 0.7442443370819092,
+            "continuation_on_safe": 0.4617528021335602
+          }
+        },
+        "support": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9502140879631042,
+            "death_auc_ci95": [
+              0.9412501454353333,
+              0.9585645198822021
+            ],
+            "bce": 0.6831783652305603,
+            "accuracy": 0.7933266758918762,
+            "continuation_on_fatal": 0.02200271375477314,
+            "continuation_on_safe": 0.592180609703064
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.28467801213264465,
+            "death_auc_ci95": [
+              0.26668092608451843,
+              0.3035585582256317
+            ],
+            "bce": 3.0661234855651855,
+            "accuracy": 0.3500995934009552,
+            "continuation_on_fatal": 0.7442443370819092,
+            "continuation_on_safe": 0.4617528021335602
+          }
+        }
+      },
+      "policy_forks": {
+        "observed": {
+          "examples": 1768,
+          "fatal_examples": 981,
+          "death_auc": 0.9731946587562561,
+          "death_auc_ci95": [
+            0.951682448387146,
+            0.9890292286872864
+          ],
+          "bce": 0.34274378418922424,
+          "accuracy": 0.8998869061470032,
+          "continuation_on_fatal": 0.02861870266497135,
+          "continuation_on_safe": 0.7472613453865051
+        },
+        "predicted": {
+          "examples": 1768,
+          "fatal_examples": 981,
+          "death_auc": 0.4672319293022156,
+          "death_auc_ci95": [
+            0.3904055058956146,
+            0.5488315224647522
+          ],
+          "bce": 1.2285046577453613,
+          "accuracy": 0.49660632014274597,
+          "continuation_on_fatal": 0.4915623366832733,
+          "continuation_on_safe": 0.4653119146823883
+        }
+      }
+    },
+    "allowed_020k": {
+      "archive": {
+        "combined": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9619777798652649,
+            "death_auc_ci95": [
+              0.9537261128425598,
+              0.9697292447090149
+            ],
+            "bce": 0.6575648188591003,
+            "accuracy": 0.870517909526825,
+            "continuation_on_fatal": 0.007860524579882622,
+            "continuation_on_safe": 0.7432098984718323
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.28564029932022095,
+            "death_auc_ci95": [
+              0.26759982109069824,
+              0.3048863410949707
+            ],
+            "bce": 8.68842601776123,
+            "accuracy": 0.41782867908477783,
+            "continuation_on_fatal": 0.9798606038093567,
+            "continuation_on_safe": 0.8171290159225464
+          }
+        },
+        "support": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9619777798652649,
+            "death_auc_ci95": [
+              0.9536061882972717,
+              0.9694631099700928
+            ],
+            "bce": 0.6575648188591003,
+            "accuracy": 0.870517909526825,
+            "continuation_on_fatal": 0.007860524579882622,
+            "continuation_on_safe": 0.7432098984718323
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.28564029932022095,
+            "death_auc_ci95": [
+              0.2661915421485901,
+              0.3045022487640381
+            ],
+            "bce": 8.68842601776123,
+            "accuracy": 0.41782867908477783,
+            "continuation_on_fatal": 0.9798606038093567,
+            "continuation_on_safe": 0.8171290159225464
+          }
+        }
+      },
+      "policy_forks": {
+        "observed": {
+          "examples": 1768,
+          "fatal_examples": 981,
+          "death_auc": 0.9927387833595276,
+          "death_auc_ci95": [
+            0.9779284000396729,
+            0.9997292160987854
+          ],
+          "bce": 0.12682689726352692,
+          "accuracy": 0.9683257937431335,
+          "continuation_on_fatal": 0.011606171727180481,
+          "continuation_on_safe": 0.9318644404411316
+        },
+        "predicted": {
+          "examples": 1768,
+          "fatal_examples": 981,
+          "death_auc": 0.4552766978740692,
+          "death_auc_ci95": [
+            0.37416598200798035,
+            0.5360100269317627
+          ],
+          "bce": 8.175819396972656,
+          "accuracy": 0.44400453567504883,
+          "continuation_on_fatal": 0.9737017750740051,
+          "continuation_on_safe": 0.9578465223312378
+        }
+      }
+    },
+    "stopped_020k": {
+      "archive": {
+        "combined": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9530860781669617,
+            "death_auc_ci95": [
+              0.9451785683631897,
+              0.9614081382751465
+            ],
+            "bce": 0.652445375919342,
+            "accuracy": 0.8291832804679871,
+            "continuation_on_fatal": 0.01734275370836258,
+            "continuation_on_safe": 0.644476592540741
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.2869795858860016,
+            "death_auc_ci95": [
+              0.2692996561527252,
+              0.30697473883628845
+            ],
+            "bce": 3.2257580757141113,
+            "accuracy": 0.36055776476860046,
+            "continuation_on_fatal": 0.8595337867736816,
+            "continuation_on_safe": 0.5930971503257751
+          }
+        },
+        "support": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9530860781669617,
+            "death_auc_ci95": [
+              0.9448590874671936,
+              0.9613254070281982
+            ],
+            "bce": 0.652445375919342,
+            "accuracy": 0.8291832804679871,
+            "continuation_on_fatal": 0.01734275370836258,
+            "continuation_on_safe": 0.644476592540741
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.2869795858860016,
+            "death_auc_ci95": [
+              0.26903945207595825,
+              0.3054019510746002
+            ],
+            "bce": 3.2257580757141113,
+            "accuracy": 0.36055776476860046,
+            "continuation_on_fatal": 0.8595337867736816,
+            "continuation_on_safe": 0.5930971503257751
+          }
+        }
+      },
+      "policy_forks": {
+        "observed": {
+          "examples": 1768,
+          "fatal_examples": 981,
+          "death_auc": 0.9815166592597961,
+          "death_auc_ci95": [
+            0.9605222344398499,
+            0.9953328371047974
+          ],
+          "bce": 0.25725746154785156,
+          "accuracy": 0.9304298758506775,
+          "continuation_on_fatal": 0.020934004336595535,
+          "continuation_on_safe": 0.826388418674469
+        },
+        "predicted": {
+          "examples": 1768,
+          "fatal_examples": 981,
+          "death_auc": 0.46239542961120605,
+          "death_auc_ci95": [
+            0.3904360234737396,
+            0.5440926551818848
+          ],
+          "bce": 1.7090470790863037,
+          "accuracy": 0.4406108558177948,
+          "continuation_on_fatal": 0.7770200371742249,
+          "continuation_on_safe": 0.7257517576217651
+        }
+      }
+    }
+  }
+}

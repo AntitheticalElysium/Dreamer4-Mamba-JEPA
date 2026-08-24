@@ -107,7 +107,7 @@ def head_loss(
     natural scale set the others' effective weight.
 
     Behaviour cloning reads the relevant half only (§4.1). The main batch supplies
-    reward and continuation; terminal tails use `terminal_loss` separately.
+    reward and continuation; terminal tails use `paired_terminal_loss` separately.
     """
     centers = predictions["centers"]
     policy = F.cross_entropy(
@@ -129,15 +129,35 @@ def head_loss(
     }
 
 
-def terminal_loss(predictions: dict[str, Tensor], targets: dict[str, Tensor]) -> Tensor:
-    """Ordinary continuation BCE on a tail known to contain a terminal."""
-    loss = F.binary_cross_entropy_with_logits(
-        predictions["continuation"], targets["continuation"], reduction="none"
-    )
+def paired_terminal_loss(
+    generated: dict[str, Tensor], observed: dict[str, Tensor], targets: dict[str, Tensor]
+) -> Tensor:
+    """Balanced alive/dead BCE on matching generated and observed tail states.
+
+    Both arms use this, which is what makes their outcome numbers comparable. An
+    arm with one readout path passes it as both arguments; the average is then that
+    path's own score, and only the paths an arm actually has are supervised.
+    Averaging over the whole tail instead would hand each arm a different
+    dead-class share -- 1/16 to 1/64 against this rule's 1/2 -- so the arm with
+    longer windows would be penalised 8x to 31x less for missing a death.
+    """
     valid = targets["continuation_valid"]
-    terminal = valid * (1.0 - targets["continuation"])
-    assert terminal.sum() > 0, "terminal batch contains no terminal target"
-    return (loss * valid).sum() / valid.sum()
+    continuation = targets["continuation"]
+    assert valid.shape[1] >= 2, "terminal pairing needs an alive predecessor"
+    assert bool((valid[:, -2:, 0] > 0).all())
+    assert bool((continuation[:, -2, 0] == 1).all())
+    assert bool((continuation[:, -1, 0] == 0).all())
+
+    selected = torch.zeros_like(valid)
+    selected[:, -2:] = valid[:, -2:]
+
+    def score(predictions: dict[str, Tensor]) -> Tensor:
+        loss = F.binary_cross_entropy_with_logits(
+            predictions["continuation"], continuation, reduction="none"
+        )
+        return (loss * selected).sum() / selected.sum().clamp(min=1.0)
+
+    return (score(generated) + score(observed)) / 2
 
 
 def _distribution_loss(logits: Tensor, values: Tensor, centers: Tensor) -> Tensor:

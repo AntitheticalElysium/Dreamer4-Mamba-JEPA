@@ -1,0 +1,38 @@
+{
+  "contract": {
+    "version": "paired-trajectory-forks-v1",
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "trajectory_phase2": "94bf488063121630b30e89b9b2c66143c798b3e3bb4a8a9169e5ac61f403146e",
+    "reference_forks": "f6043ad891ceab5e2a787c354a2084eca6d5bbc9aeca09151b2777acf476c0ae",
+    "implementation": {
+      "artifacts/run_stage_a.py": "a12da564490a004f4622124dfe1386fd19310c7c3c88e765cea306946253610b",
+      "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+      "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+      "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+      "d4mj/data.py": "d2161ba078fdf822e07d355663fd938d2158c9e747e5ac2ff0ab8224ed201e98",
+      "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+      "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+      "d4mj/train.py": "55ee22c5f055e004124140e7ca07c5ddfee0c709f6ec1b21006ab85022cd7c91",
+      "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+      "artifacts/phase1b_diagnostic_common.py": "e784c0adfd203fb968cd3017afa0944aefdd2d9024ff9260c4290db1f401b087",
+      "artifacts/collect_paired_trajectory_forks.py": "a566bc5e0e1dcd65fed50dce7071e1cd78d4a9520c41d8e3a5f5f0c7af46d667"
+    },
+    "seed_start": 13000,
+    "seed_count": 128,
+    "limit": 400,
+    "evaluation_only": true
+  },
+  "fork_path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/phase1b_causal_diagnostics/paired_trajectory_actions/paired_trajectory_forks.pt",
+  "fork_sha256": "392e8e33895d48aea888d22e043e57a81ce4d55fb2f83fdf67d19451353e9dad",
+  "collection": {
+    "candidate_opportunity_states": 235,
+    "candidate_safe_trajectory_actions": 135,
+    "candidate_fatal_trajectory_actions": 100,
+    "paired_trajectories": 52,
+    "selected_states": 104,
+    "selected_safe_trajectory_actions": 52,
+    "selected_fatal_trajectory_actions": 52,
+    "safe_selection": "nearest preceding terminal-opportunity state in the same trajectory",
+    "saved_reference_truth_reproduced_exactly": true
+  }
+}

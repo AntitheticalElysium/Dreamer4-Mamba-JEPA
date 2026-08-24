@@ -201,6 +201,7 @@ def transition_loss(
     rng: torch.Generator,
     config: Config,
     return_agent: bool = False,
+    return_observed: bool = False,
     step: int = 0,
 ):
     """Teacher-forced over the window, on real committed latents in both arms.
@@ -213,10 +214,15 @@ def transition_loss(
     starts only at `bootstrap_start` (S67). It defaults to 0, so a caller that does
     not train -- a gate, a diagnostic -- gets the pre-bootstrap objective.
     """
+    if return_observed and not return_agent:
+        raise ValueError("return_observed requires return_agent")
     if config.transition == "direct":
-        loss, agent = _direct_loss(world, batch, rng, config)
+        loss, agent, observed = _direct_loss(world, batch, rng, config)
     else:
         loss, agent = _shortcut_loss(world, batch, rng, config, step)
+        observed = agent
+    if return_observed:
+        return loss, agent, observed
     return (loss, agent) if return_agent else loss
 
 
@@ -238,7 +244,7 @@ def commit_inputs(latent: Tensor, rng: torch.Generator, config: Config):
     return signal * latent + (1.0 - signal) * noise, label
 
 
-def _direct_loss(world: World, batch, rng: torch.Generator, config: Config) -> Tensor:
+def _direct_loss(world: World, batch, rng: torch.Generator, config: Config):
     """Teacher forcing plus a two-step generated-prefix rollout, after V-JEPA 2-AC
     (S55). Both generated states are committed through `advance`, and both readouts
     replace the real ones at their own indices. That is `direct_rollout` states --
@@ -254,7 +260,7 @@ def _direct_loss(world: World, batch, rng: torch.Generator, config: Config) -> T
 
     length = batch.latents.shape[1]
     if length < 3:
-        return _uniform_mean(teacher, batch), agent
+        return _uniform_mean(teacher, batch), agent, agent
 
     prefix, _, memory = world(
         None, batch.led_to_action[:, :-2], committed[:, :-2], conditioning[:, :-2]
@@ -265,7 +271,7 @@ def _direct_loss(world: World, batch, rng: torch.Generator, config: Config) -> T
     rollout = (first.latent - batch.latents[:, -2:-1]).pow(2).mean(dim=(1, 2, 3))
     rollout = rollout + (second.latent - batch.latents[:, -1:]).pow(2).mean(dim=(1, 2, 3))
     readout = torch.cat([agent[:, :-2], rolled, rolled_again], dim=1)
-    return _uniform_mean(teacher + rollout / 2, batch), readout
+    return _uniform_mean(teacher + rollout / 2, batch), readout, agent
 
 
 def _shortcut_loss(world: World, batch, rng: torch.Generator, config: Config, step: int = 0) -> Tensor:

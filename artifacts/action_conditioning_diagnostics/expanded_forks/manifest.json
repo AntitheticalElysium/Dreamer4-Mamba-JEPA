@@ -1,0 +1,22 @@
+{
+  "format": "d4mj_expanded_counterfactual_v1",
+  "evaluation_only": true,
+  "arm": "direct-attention",
+  "seed_start": 13000,
+  "seed_count": 128,
+  "scheduled_steps": [
+    0,
+    15,
+    40,
+    80,
+    110
+  ],
+  "limit": 400,
+  "phase1a": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/stage_a_terminalfix/phase1a.pt",
+  "phase2": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/stage_a_s76_terminal_only/direct-attention.2.pt",
+  "phase1a_sha256": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+  "phase2_sha256": "94bf488063121630b30e89b9b2c66143c798b3e3bb4a8a9169e5ac61f403146e",
+  "fork_sha256": "f6043ad891ceab5e2a787c354a2084eca6d5bbc9aeca09151b2777acf476c0ae",
+  "rows": 751,
+  "terminal_opportunity_states": 100
+}

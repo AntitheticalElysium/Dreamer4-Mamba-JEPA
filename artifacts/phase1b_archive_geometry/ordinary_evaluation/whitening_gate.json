@@ -1,0 +1,32 @@
+{
+  "eligible": false,
+  "observed_direction_decodable": true,
+  "observed_auc_ci95": [
+    0.8590211868286133,
+    0.9707815647125244
+  ],
+  "low_variance_direction": true,
+  "direction_variance_relative_to_isotropic": 0.18247451688959015,
+  "qualifying_reset_paths": [],
+  "path_checks": {
+    "reset16": {
+      "archive_generated_below_observed": true,
+      "fresh_generated_probe_below_observed": true,
+      "total_mse_improves": true,
+      "orthogonal_mse_improves": true,
+      "directional_error_stagnates": true,
+      "directional_correlation_stagnates": false,
+      "geometry_signature": false
+    },
+    "reset64": {
+      "archive_generated_below_observed": true,
+      "fresh_generated_probe_below_observed": true,
+      "total_mse_improves": true,
+      "orthogonal_mse_improves": true,
+      "directional_error_stagnates": true,
+      "directional_correlation_stagnates": false,
+      "geometry_signature": false
+    }
+  },
+  "rule": "launch only when the held-out observed direction is decodable, its TRAIN variance is below the isotropic average, and at least one production reset stratum has both fixed-direction and fresh-probe gaps, then shows lower total/orthogonal error but non-improving directional error and correlation from 5k to 80k"
+}

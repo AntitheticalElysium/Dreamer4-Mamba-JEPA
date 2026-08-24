@@ -1,0 +1,10 @@
+{
+  "64x16": {
+    "scalars_per_frame": 1024,
+    "n_spatial": 32,
+    "peak_vram_gib": 2.1458425521850586,
+    "s_per_step_short": 0.7698306441307068,
+    "s_per_step_long": 1.4449870387713115,
+    "hours_for_3000_steps": 0.7821831189923816
+  }
+}

@@ -1,7 +1,13 @@
 import pytest
 import torch
 
-from d4mj.agent import Heads, head_loss, head_targets, terminal_loss, twohot
+from d4mj.agent import (
+    Heads,
+    head_loss,
+    head_targets,
+    paired_terminal_loss,
+    twohot,
+)
 
 from .conftest import latent_batch
 
@@ -121,39 +127,68 @@ def test_zero_initialised_heads_predict_a_flat_distribution(config):
     assert abs(float(entropy.detach()) - math.log(config.bins)) < 1e-4
 
 
-def test_terminal_loss_is_bce_over_the_stratified_tail(config):
-    batch = latent_batch(config, 2, 8, relevant=[False, False], support=[True, True])
-    batch.terminated[:, -1] = True
-    heads, predictions = readout_for(config, batch)
-    targets = head_targets(batch, config)
-    reference = terminal_loss(predictions, targets)
-
-    valid = targets["continuation_valid"].bool()
-    alive = targets["continuation"].bool() & valid
-    changed_alive = dict(predictions)
-    changed_alive["continuation"] = predictions["continuation"].clone()
-    changed_alive["continuation"][alive] += 20.0
-    assert not torch.equal(reference, terminal_loss(changed_alive, targets))
-
-    changed_terminal = dict(predictions)
-    changed_terminal["continuation"] = predictions["continuation"].clone()
-    changed_terminal["continuation"][~alive & valid] -= 20.0
-    assert terminal_loss(changed_terminal, targets) < reference
-
-
-def test_terminal_stratum_has_bounded_positive_mass(config):
-    fractions = []
-    for step in range(64):
-        finetune = step >= 64 * (1 - config.long_only_fraction)
-        long = finetune or (step + 1) % config.long_batch_every == 0
-        length = config.sequence_long if long else config.sequence
+def test_terminal_pair_gives_both_arms_the_same_dead_class_share(config):
+    """A tail-wide average would hand each arm a dead-class share of 1/T, so the arm
+    training on longer windows is penalised far less for missing a death. Both arms
+    use the paired rule, so the share is 1/2 at every window length."""
+    for length in (config.sequence, config.sequence_long):
         batch = latent_batch(config, 1, length, relevant=[False], support=[True])
         batch.terminated[:, -1] = True
         targets = head_targets(batch, config)
         valid = targets["continuation_valid"]
-        fractions.append(float(((1 - targets["continuation"]) * valid).sum() / valid.sum()))
-    mass = config.terminal_loss_mass * sum(fractions) / len(fractions)
-    assert 0.008 < mass < 0.009
+        tail_share = float(((1 - targets["continuation"]) * valid).sum() / valid.sum())
+        assert tail_share == pytest.approx(1.0 / length)
+
+        selected = torch.zeros_like(valid)
+        selected[:, -2:] = valid[:, -2:]
+        paired_share = float(((1 - targets["continuation"]) * selected).sum() / selected.sum())
+        assert paired_share == pytest.approx(0.5)
+    assert config.terminal_loss_mass / 2 == pytest.approx(0.1)
+
+
+def test_single_path_arm_scores_its_one_readout_once(config):
+    """Flow has no generated-prefix readout, so it passes its single readout as both
+    arguments. The average must then be that readout's own score, not a doubling."""
+    batch = latent_batch(config, 2, 8, relevant=[False, False], support=[True, True])
+    batch.terminated[:, -1] = True
+    targets = head_targets(batch, config)
+    only = {"continuation": torch.randn(targets["continuation"].shape)}
+    other = {"continuation": torch.randn(targets["continuation"].shape)}
+
+    alone = paired_terminal_loss(only, only, targets)
+    assert torch.allclose(
+        paired_terminal_loss(only, other, targets),
+        (alone + paired_terminal_loss(other, other, targets)) / 2,
+    )
+
+
+def test_direct_terminal_pair_balances_path_and_label(config):
+    batch = latent_batch(config, 2, 8, relevant=[False, False], support=[True, True])
+    batch.terminated[:, -1] = True
+    targets = head_targets(batch, config)
+    shape = targets["continuation"].shape
+    generated = {"continuation": torch.zeros(shape)}
+    observed = {"continuation": torch.zeros(shape)}
+
+    reference = paired_terminal_loss(generated, observed, targets)
+    assert torch.allclose(reference, torch.tensor(2.0).log())
+    assert config.terminal_loss_mass / 2 == pytest.approx(0.1)
+
+    correct_generated = {"continuation": generated["continuation"].clone()}
+    correct_observed = {"continuation": observed["continuation"].clone()}
+    for predictions in (correct_generated, correct_observed):
+        predictions["continuation"][:, -2] = 20.0
+        predictions["continuation"][:, -1] = -20.0
+    assert paired_terminal_loss(correct_generated, correct_observed, targets) < 1e-7
+
+    ignored = {"continuation": generated["continuation"].clone()}
+    ignored["continuation"][:, :-2] = 100.0
+    assert torch.equal(reference, paired_terminal_loss(ignored, observed, targets))
+
+    generated_only = paired_terminal_loss(correct_generated, observed, targets)
+    observed_only = paired_terminal_loss(generated, correct_observed, targets)
+    assert torch.allclose(generated_only, observed_only)
+    assert generated_only < reference
 
 
 def test_twohot_is_exact_between_centres(config):

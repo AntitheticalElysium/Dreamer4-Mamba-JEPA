@@ -1,0 +1,5155 @@
+{
+  "contract": {
+    "version": "branched-policy-states-v1",
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "trajectory_phase2": "94bf488063121630b30e89b9b2c66143c798b3e3bb4a8a9169e5ac61f403146e",
+    "seed_start": 14000,
+    "seed_count": 512,
+    "limit": 400,
+    "policy": "frozen Direct-Attention Phase-2 BC policy, categorical temperature 1",
+    "branches": "all 17 actions from every reached state with one common environment key",
+    "split": "TRAIN collection seeds disjoint from fixed 12000 and 13000-series DEV forks",
+    "implementation": {
+      "artifacts/run_stage_a.py": "37132c25192790ebe2d0253db5e120e8e8305b9c5b3c89a1c3b8f8c8cad93f5a",
+      "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+      "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+      "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+      "d4mj/data.py": "55cd78faafae33f111298304b63f325c4e257790feeca6e2f256da52b8dc529c",
+      "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+      "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+      "d4mj/train.py": "7a7e3f7bd75e1c642a070fcc6e24235b6d5bf2f7ea3f5b365486115430bf0336",
+      "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+      "artifacts/phase1b_diagnostic_common.py": "eeb675e1545ba81db7bbf7b69e68745541f4ec31d2411a06af4eb66a5d1e4c0b",
+      "artifacts/collect_branched_policy_states.py": "c690f60ae4c5991b5d7e1aa2536ad97e846a1006295dc2d6731609315787ef7b"
+    }
+  },
+  "complete": true,
+  "seeds_complete": [
+    14000,
+    14001,
+    14002,
+    14003,
+    14004,
+    14005,
+    14006,
+    14007,
+    14008,
+    14009,
+    14010,
+    14011,
+    14012,
+    14013,
+    14014,
+    14015,
+    14016,
+    14017,
+    14018,
+    14019,
+    14020,
+    14021,
+    14022,
+    14023,
+    14024,
+    14025,
+    14026,
+    14027,
+    14028,
+    14029,
+    14030,
+    14031,
+    14032,
+    14033,
+    14034,
+    14035,
+    14036,
+    14037,
+    14038,
+    14039,
+    14040,
+    14041,
+    14042,
+    14043,
+    14044,
+    14045,
+    14046,
+    14047,
+    14048,
+    14049,
+    14050,
+    14051,
+    14052,
+    14053,
+    14054,
+    14055,
+    14056,
+    14057,
+    14058,
+    14059,
+    14060,
+    14061,
+    14062,
+    14063,
+    14064,
+    14065,
+    14066,
+    14067,
+    14068,
+    14069,
+    14070,
+    14071,
+    14072,
+    14073,
+    14074,
+    14075,
+    14076,
+    14077,
+    14078,
+    14079,
+    14080,
+    14081,
+    14082,
+    14083,
+    14084,
+    14085,
+    14086,
+    14087,
+    14088,
+    14089,
+    14090,
+    14091,
+    14092,
+    14093,
+    14094,
+    14095,
+    14096,
+    14097,
+    14098,
+    14099,
+    14100,
+    14101,
+    14102,
+    14103,
+    14104,
+    14105,
+    14106,
+    14107,
+    14108,
+    14109,
+    14110,
+    14111,
+    14112,
+    14113,
+    14114,
+    14115,
+    14116,
+    14117,
+    14118,
+    14119,
+    14120,
+    14121,
+    14122,
+    14123,
+    14124,
+    14125,
+    14126,
+    14127,
+    14128,
+    14129,
+    14130,
+    14131,
+    14132,
+    14133,
+    14134,
+    14135,
+    14136,
+    14137,
+    14138,
+    14139,
+    14140,
+    14141,
+    14142,
+    14143,
+    14144,
+    14145,
+    14146,
+    14147,
+    14148,
+    14149,
+    14150,
+    14151,
+    14152,
+    14153,
+    14154,
+    14155,
+    14156,
+    14157,
+    14158,
+    14159,
+    14160,
+    14161,
+    14162,
+    14163,
+    14164,
+    14165,
+    14166,
+    14167,
+    14168,
+    14169,
+    14170,
+    14171,
+    14172,
+    14173,
+    14174,
+    14175,
+    14176,
+    14177,
+    14178,
+    14179,
+    14180,
+    14181,
+    14182,
+    14183,
+    14184,
+    14185,
+    14186,
+    14187,
+    14188,
+    14189,
+    14190,
+    14191,
+    14192,
+    14193,
+    14194,
+    14195,
+    14196,
+    14197,
+    14198,
+    14199,
+    14200,
+    14201,
+    14202,
+    14203,
+    14204,
+    14205,
+    14206,
+    14207,
+    14208,
+    14209,
+    14210,
+    14211,
+    14212,
+    14213,
+    14214,
+    14215,
+    14216,
+    14217,
+    14218,
+    14219,
+    14220,
+    14221,
+    14222,
+    14223,
+    14224,
+    14225,
+    14226,
+    14227,
+    14228,
+    14229,
+    14230,
+    14231,
+    14232,
+    14233,
+    14234,
+    14235,
+    14236,
+    14237,
+    14238,
+    14239,
+    14240,
+    14241,
+    14242,
+    14243,
+    14244,
+    14245,
+    14246,
+    14247,
+    14248,
+    14249,
+    14250,
+    14251,
+    14252,
+    14253,
+    14254,
+    14255,
+    14256,
+    14257,
+    14258,
+    14259,
+    14260,
+    14261,
+    14262,
+    14263,
+    14264,
+    14265,
+    14266,
+    14267,
+    14268,
+    14269,
+    14270,
+    14271,
+    14272,
+    14273,
+    14274,
+    14275,
+    14276,
+    14277,
+    14278,
+    14279,
+    14280,
+    14281,
+    14282,
+    14283,
+    14284,
+    14285,
+    14286,
+    14287,
+    14288,
+    14289,
+    14290,
+    14291,
+    14292,
+    14293,
+    14294,
+    14295,
+    14296,
+    14297,
+    14298,
+    14299,
+    14300,
+    14301,
+    14302,
+    14303,
+    14304,
+    14305,
+    14306,
+    14307,
+    14308,
+    14309,
+    14310,
+    14311,
+    14312,
+    14313,
+    14314,
+    14315,
+    14316,
+    14317,
+    14318,
+    14319,
+    14320,
+    14321,
+    14322,
+    14323,
+    14324,
+    14325,
+    14326,
+    14327,
+    14328,
+    14329,
+    14330,
+    14331,
+    14332,
+    14333,
+    14334,
+    14335,
+    14336,
+    14337,
+    14338,
+    14339,
+    14340,
+    14341,
+    14342,
+    14343,
+    14344,
+    14345,
+    14346,
+    14347,
+    14348,
+    14349,
+    14350,
+    14351,
+    14352,
+    14353,
+    14354,
+    14355,
+    14356,
+    14357,
+    14358,
+    14359,
+    14360,
+    14361,
+    14362,
+    14363,
+    14364,
+    14365,
+    14366,
+    14367,
+    14368,
+    14369,
+    14370,
+    14371,
+    14372,
+    14373,
+    14374,
+    14375,
+    14376,
+    14377,
+    14378,
+    14379,
+    14380,
+    14381,
+    14382,
+    14383,
+    14384,
+    14385,
+    14386,
+    14387,
+    14388,
+    14389,
+    14390,
+    14391,
+    14392,
+    14393,
+    14394,
+    14395,
+    14396,
+    14397,
+    14398,
+    14399,
+    14400,
+    14401,
+    14402,
+    14403,
+    14404,
+    14405,
+    14406,
+    14407,
+    14408,
+    14409,
+    14410,
+    14411,
+    14412,
+    14413,
+    14414,
+    14415,
+    14416,
+    14417,
+    14418,
+    14419,
+    14420,
+    14421,
+    14422,
+    14423,
+    14424,
+    14425,
+    14426,
+    14427,
+    14428,
+    14429,
+    14430,
+    14431,
+    14432,
+    14433,
+    14434,
+    14435,
+    14436,
+    14437,
+    14438,
+    14439,
+    14440,
+    14441,
+    14442,
+    14443,
+    14444,
+    14445,
+    14446,
+    14447,
+    14448,
+    14449,
+    14450,
+    14451,
+    14452,
+    14453,
+    14454,
+    14455,
+    14456,
+    14457,
+    14458,
+    14459,
+    14460,
+    14461,
+    14462,
+    14463,
+    14464,
+    14465,
+    14466,
+    14467,
+    14468,
+    14469,
+    14470,
+    14471,
+    14472,
+    14473,
+    14474,
+    14475,
+    14476,
+    14477,
+    14478,
+    14479,
+    14480,
+    14481,
+    14482,
+    14483,
+    14484,
+    14485,
+    14486,
+    14487,
+    14488,
+    14489,
+    14490,
+    14491,
+    14492,
+    14493,
+    14494,
+    14495,
+    14496,
+    14497,
+    14498,
+    14499,
+    14500,
+    14501,
+    14502,
+    14503,
+    14504,
+    14505,
+    14506,
+    14507,
+    14508,
+    14509,
+    14510,
+    14511
+  ],
+  "shards": [
+    {
+      "file": "seed-014000.pt",
+      "sha256": "deabc702863adf901437f6af5ec0395617f10bd0c9579992035985c724c82531",
+      "seed": 14000,
+      "states": 69,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014001.pt",
+      "sha256": "c7f5e6228236ba1d0a8df4488ea829c3ed6f304d686ec5de190fa2b568d3bba7",
+      "seed": 14001,
+      "states": 199,
+      "opportunity_states": 4,
+      "fatal_actions": 32,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014002.pt",
+      "sha256": "683f1c745c1b1f89435dd253f033e217f65bd0d748f6d84911c79732fb08857b",
+      "seed": 14002,
+      "states": 64,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014003.pt",
+      "sha256": "b8e6533f57b3e968a134df09ef87222cfa4bfe09a976ea70489894f2d1cd6d79",
+      "seed": 14003,
+      "states": 206,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014004.pt",
+      "sha256": "7c55e9aff255ca7ac2474d2f741d75e6a510d5816d6fc1df8469bc08a6ec434d",
+      "seed": 14004,
+      "states": 45,
+      "opportunity_states": 1,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014005.pt",
+      "sha256": "66c319e91ecc8853e9f6cae312e6eacd2ff4e9ad6e009934fb5e67abfbfb7767",
+      "seed": 14005,
+      "states": 112,
+      "opportunity_states": 3,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014006.pt",
+      "sha256": "a8773869eb3205b47cc98db9a8133c2c0f9dd3753e8c1e4af2ea288e36f8c285",
+      "seed": 14006,
+      "states": 109,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014007.pt",
+      "sha256": "617e5d97a3f69b5883db8143749d6ca47ecb31a1b64be8d4ab835dea59b97393",
+      "seed": 14007,
+      "states": 60,
+      "opportunity_states": 2,
+      "fatal_actions": 29,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014008.pt",
+      "sha256": "ecdae24d2405e662f03321c166435794a25d6cda63cfc84bfff23492537f6caa",
+      "seed": 14008,
+      "states": 61,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014009.pt",
+      "sha256": "1a571da54088bff42d73a9b1a80de323fa478ffe4baf3021251822aee6f0ef67",
+      "seed": 14009,
+      "states": 58,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014010.pt",
+      "sha256": "a30e35d9cd29e76d58b675aa4df31d9d62ba9e0b903ead5fa366c225f24813c3",
+      "seed": 14010,
+      "states": 242,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014011.pt",
+      "sha256": "ca42eb2185183c182e79d9f18bd864eb0ef611e13011180865c94cdfb2daa3e5",
+      "seed": 14011,
+      "states": 40,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014012.pt",
+      "sha256": "78feb4e08b3ce0bb1fc519955d7d595cbc23fe17592896040a74e9d506acafeb",
+      "seed": 14012,
+      "states": 77,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014013.pt",
+      "sha256": "36e1a6e767d3aa458fd810600f40de53c70c4fca8ec6840d5f72fc52464b3d3b",
+      "seed": 14013,
+      "states": 71,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014014.pt",
+      "sha256": "63b1b7bd4651d966279625001d186e741b6250eb7302991412f3675a71e14b1d",
+      "seed": 14014,
+      "states": 39,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014015.pt",
+      "sha256": "bf55c990292b1e48786bd726a76795af609de925e7b879f2813370acb7ca6b84",
+      "seed": 14015,
+      "states": 76,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014016.pt",
+      "sha256": "6a432d46bca690397febc8cc232652114509eb96877ba592a20350463e6c03e8",
+      "seed": 14016,
+      "states": 212,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014017.pt",
+      "sha256": "53ecdbc1cc1a7d524cf7e2a52673273c55e366bfcbf12a1c28ac278e19666198",
+      "seed": 14017,
+      "states": 76,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014018.pt",
+      "sha256": "f84af909b565ff33bba9e040c71342215faa34a2abb4a942c02e9d0bdc3f1612",
+      "seed": 14018,
+      "states": 119,
+      "opportunity_states": 2,
+      "fatal_actions": 19,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014019.pt",
+      "sha256": "2781ffce9156a6d47752b999d66cc8c876b97ebc230325888621d05f930cfa74",
+      "seed": 14019,
+      "states": 99,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014020.pt",
+      "sha256": "294e80f6aadaf2779f1a56eb0ed665a9dd97b03cfc6fd0a0fef1c0496279228e",
+      "seed": 14020,
+      "states": 46,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014021.pt",
+      "sha256": "ab9c97600000f4565b8453c9e84217e363e82c8cf3de2c82430278892c5f3cad",
+      "seed": 14021,
+      "states": 136,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014022.pt",
+      "sha256": "2f24ea2f985dd2c8e9f7ba69ce6bdd24a971019de94ebc53a133d0314df8cce7",
+      "seed": 14022,
+      "states": 146,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014023.pt",
+      "sha256": "eec92bf5949bcb1f8fa8357311fafc98fcac3125acc58ef84dfb058d7c8665d6",
+      "seed": 14023,
+      "states": 149,
+      "opportunity_states": 4,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014024.pt",
+      "sha256": "6e7b0b04f17f81ae354eae02065a0c0b778dae8754182cc061ed5f3882b00f5a",
+      "seed": 14024,
+      "states": 28,
+      "opportunity_states": 1,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014025.pt",
+      "sha256": "cd496cf2b5fcb82670079cdf43bf2b02107e81bc40ff617d5255338704f54f53",
+      "seed": 14025,
+      "states": 110,
+      "opportunity_states": 4,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014026.pt",
+      "sha256": "ffd1e78bcc7137b0ea5fbd48cdee124d0daac2e52fc6c9513ae1bde91f996abb",
+      "seed": 14026,
+      "states": 156,
+      "opportunity_states": 8,
+      "fatal_actions": 80,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014027.pt",
+      "sha256": "b4d66dd2c340357003733e21859c722f3e2b6349c2397589c96cf6b0a8681eed",
+      "seed": 14027,
+      "states": 48,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014028.pt",
+      "sha256": "50f4299bfef5130e0711c1e12a7b1fe789af187df3b9495672acf68d3b5a79c6",
+      "seed": 14028,
+      "states": 197,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014029.pt",
+      "sha256": "b0f033c904ed7c93dab06b159af4ad830e599f58e666425281f410700f2350c5",
+      "seed": 14029,
+      "states": 184,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014030.pt",
+      "sha256": "780c3c3fa67120eaf981a1ec00f6ddcb9a60c5450ce9b7fef8d2338248f63589",
+      "seed": 14030,
+      "states": 48,
+      "opportunity_states": 2,
+      "fatal_actions": 30,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014031.pt",
+      "sha256": "0f4a6baa6e0bf180888fa3f74b340069d3b84a0356171b9b9645f54c25e85748",
+      "seed": 14031,
+      "states": 53,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014032.pt",
+      "sha256": "90a1fe947c226a632b3468e8bb317714f96cf6ec374cacc798873c74fa514a11",
+      "seed": 14032,
+      "states": 186,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014033.pt",
+      "sha256": "63e39c11708140c0e0acdb181c32b30ee42a63c888d21fcf8d2e2e6cd0ab19d0",
+      "seed": 14033,
+      "states": 74,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014034.pt",
+      "sha256": "ed6132186c1ee55b8ae2263cfd9d73b9f928cc38069d898ea01c783e0d9b2f0b",
+      "seed": 14034,
+      "states": 250,
+      "opportunity_states": 8,
+      "fatal_actions": 106,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014035.pt",
+      "sha256": "280498dfcfbe9e757c2a3995c85b8a7cab4b264febf352f33b6b495879215574",
+      "seed": 14035,
+      "states": 55,
+      "opportunity_states": 1,
+      "fatal_actions": 1,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014036.pt",
+      "sha256": "6cdc5a2f208154ba51529d49b7cf47e88b88bf704d0ad3f071660af5a3dde2b9",
+      "seed": 14036,
+      "states": 41,
+      "opportunity_states": 2,
+      "fatal_actions": 2,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014037.pt",
+      "sha256": "fea774b2fc5440c37f6b94e2171f4933a4d6989afa8b8fe43924c0ec06f6eafc",
+      "seed": 14037,
+      "states": 195,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014038.pt",
+      "sha256": "0a5cef4428262fb59d1e4b4693b8646e8baf7fa5cf5a001312c8bdf787736c21",
+      "seed": 14038,
+      "states": 254,
+      "opportunity_states": 3,
+      "fatal_actions": 32,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014039.pt",
+      "sha256": "181e418308985386eaf8cd031d3ad59f42d971b813cf2d9ad104c2a41b910720",
+      "seed": 14039,
+      "states": 216,
+      "opportunity_states": 3,
+      "fatal_actions": 20,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014040.pt",
+      "sha256": "12e42ee8edc06bd4b2d65ad8eb96bbad3b25633db15ba26c8efeb03579e9ccb5",
+      "seed": 14040,
+      "states": 204,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014041.pt",
+      "sha256": "0508262f67e33509ae5937bedd015cc0c48af2152a21faa997269c24f8f31822",
+      "seed": 14041,
+      "states": 242,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014042.pt",
+      "sha256": "563db9cc0743275d9e70d680ba882833bff8fb48573883be547ae26e633a90d9",
+      "seed": 14042,
+      "states": 162,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014043.pt",
+      "sha256": "791a4343d323c1aee9b3255af5fae819629c22ba5ee24be9532719070d50ff6c",
+      "seed": 14043,
+      "states": 252,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014044.pt",
+      "sha256": "b8efeb5215cab0e575a02d57d702f4d68cd85f0e734fc84f8859b73b659fdbac",
+      "seed": 14044,
+      "states": 173,
+      "opportunity_states": 4,
+      "fatal_actions": 34,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014045.pt",
+      "sha256": "b71cac82d4a7267311d3b426815685ef10f6c7963c908baa853d13ac260f3ca1",
+      "seed": 14045,
+      "states": 342,
+      "opportunity_states": 1,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014046.pt",
+      "sha256": "979cfc7797e958f62e350625547ee2a020ad6bc05542a1df534a500990caaa9e",
+      "seed": 14046,
+      "states": 225,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014047.pt",
+      "sha256": "b16599a6410e3a6142d4eeeb8af1bb25ff73df97f1006e712d23dea227c29161",
+      "seed": 14047,
+      "states": 170,
+      "opportunity_states": 2,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014048.pt",
+      "sha256": "8382b5493fed3ceea66f5cc31d14667332a08f32837f1f3f4da667843c903336",
+      "seed": 14048,
+      "states": 137,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014049.pt",
+      "sha256": "de661c43aad135c291a3f9d07c1df4e2f22c217eead200ce861ee2f7392fdb85",
+      "seed": 14049,
+      "states": 205,
+      "opportunity_states": 5,
+      "fatal_actions": 37,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014050.pt",
+      "sha256": "0e4f88bebfaea3681138546e13cf6093f06cf81b0499201aae1479cae379a2be",
+      "seed": 14050,
+      "states": 242,
+      "opportunity_states": 7,
+      "fatal_actions": 91,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014051.pt",
+      "sha256": "3cbc01158980506d019b9b39ec92a68e8f111504db57830634bfc5db82fbf798",
+      "seed": 14051,
+      "states": 157,
+      "opportunity_states": 4,
+      "fatal_actions": 4,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014052.pt",
+      "sha256": "412d252a89f059bcd38b5bacfe03d08fece913be4d5c7ff8af5f8e570f2f3b91",
+      "seed": 14052,
+      "states": 143,
+      "opportunity_states": 1,
+      "fatal_actions": 13,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014053.pt",
+      "sha256": "710ab9c4d469c61f2698d017acec9917cb2e83db1157673f46c67a36d14b4966",
+      "seed": 14053,
+      "states": 174,
+      "opportunity_states": 8,
+      "fatal_actions": 74,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014054.pt",
+      "sha256": "92d668abf0c551f3fc4f2bdcdd03975759563c024e6e1929dcdae78cf94bf8db",
+      "seed": 14054,
+      "states": 215,
+      "opportunity_states": 3,
+      "fatal_actions": 3,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014055.pt",
+      "sha256": "f4356fa5f18d0e4ae16d9b650204df5dff1935f88b41dad00ff84244052cf24e",
+      "seed": 14055,
+      "states": 176,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014056.pt",
+      "sha256": "5da55a47e897486b00b2b8150b24152b80ed404389ff50f473b354dfc1956f3f",
+      "seed": 14056,
+      "states": 241,
+      "opportunity_states": 2,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014057.pt",
+      "sha256": "8702d1e9829c7bdba502de75b755c1ce8689a34a7e10d907f142a29d64d7ea03",
+      "seed": 14057,
+      "states": 193,
+      "opportunity_states": 1,
+      "fatal_actions": 2,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014058.pt",
+      "sha256": "9c1de2c4970a1e9694613e92e462880b2e3b892e15fcf1819a23739656518758",
+      "seed": 14058,
+      "states": 288,
+      "opportunity_states": 4,
+      "fatal_actions": 61,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014059.pt",
+      "sha256": "1c3a6e3629863c215b2c41500c1bac93a2b2fd5dc7c45f1f789d0f76821d2ab9",
+      "seed": 14059,
+      "states": 189,
+      "opportunity_states": 4,
+      "fatal_actions": 32,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014060.pt",
+      "sha256": "270563c0624e9abe017739b6a73a7ff860af06f9a6be03b0dc538f00b7b87e42",
+      "seed": 14060,
+      "states": 207,
+      "opportunity_states": 3,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014061.pt",
+      "sha256": "8d0a05f7cefc0854e3660cd43b0cc30529190fc9da483e472a755a4f556ed863",
+      "seed": 14061,
+      "states": 128,
+      "opportunity_states": 1,
+      "fatal_actions": 1,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014062.pt",
+      "sha256": "1822a5e88a3d3049817e4ae5fd7f1451859067fab975b179fd0d638f0357ccca",
+      "seed": 14062,
+      "states": 154,
+      "opportunity_states": 3,
+      "fatal_actions": 43,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014063.pt",
+      "sha256": "0d275765ffc236926553531209984da7631e2d9aec7ff81e183eddd67048cb81",
+      "seed": 14063,
+      "states": 120,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014064.pt",
+      "sha256": "eae4a98aa6e746936937e769ae542c194ea7df05a7010f0cb3d884f6ae0657e7",
+      "seed": 14064,
+      "states": 128,
+      "opportunity_states": 1,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014065.pt",
+      "sha256": "012ab9116924b21f3c692242ffd6c88a19bde37aced8bf429c5451d69461ac71",
+      "seed": 14065,
+      "states": 123,
+      "opportunity_states": 1,
+      "fatal_actions": 13,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014066.pt",
+      "sha256": "d6c22502b87c3d6fe192f9091c83d72860236c9d5d19e1dab4dfa33ef68cc44c",
+      "seed": 14066,
+      "states": 192,
+      "opportunity_states": 1,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014067.pt",
+      "sha256": "11b063d18fc4cc1268cbb5386f1a909fb584751bb6b750ee2d158865800b5fcb",
+      "seed": 14067,
+      "states": 164,
+      "opportunity_states": 4,
+      "fatal_actions": 45,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014068.pt",
+      "sha256": "6c3945d7d9e8471eacf7b37d57621461564d9792d3d5c8f34b4610ec3dadcf16",
+      "seed": 14068,
+      "states": 133,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014069.pt",
+      "sha256": "995766558da2f69876a80c905e3ba52b3f3ef12ad7ae0b5aa428558ce3e839de",
+      "seed": 14069,
+      "states": 243,
+      "opportunity_states": 2,
+      "fatal_actions": 19,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014070.pt",
+      "sha256": "7e5c04a9cd16dc27e6b5e791e96cf6fe8a8167e417718fa9f9d8fd6277db7690",
+      "seed": 14070,
+      "states": 261,
+      "opportunity_states": 5,
+      "fatal_actions": 34,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014071.pt",
+      "sha256": "edbe6d73022964dee3625490560c2e25c125f72732efcd78418d848a13be3518",
+      "seed": 14071,
+      "states": 44,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014072.pt",
+      "sha256": "019655672e3b16bd04abd6917d3168252210bb3b4690f587a4190e5522b29fbd",
+      "seed": 14072,
+      "states": 124,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014073.pt",
+      "sha256": "e78635c0185915f34ef365769da46aecb24ed85ab105fa0f92be202fac8c95bb",
+      "seed": 14073,
+      "states": 73,
+      "opportunity_states": 4,
+      "fatal_actions": 34,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014074.pt",
+      "sha256": "1cf69932c7b73223e8bff3867438485d4c571607547cddf33eb299bf3ea776ac",
+      "seed": 14074,
+      "states": 85,
+      "opportunity_states": 2,
+      "fatal_actions": 2,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014075.pt",
+      "sha256": "6b530b50b290f2be2ca4d8bff6652b9b63ffda183ab201c50f68258d7a8dcecb",
+      "seed": 14075,
+      "states": 63,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014076.pt",
+      "sha256": "8bfa93cceff7216b55b543c0acb1f52e85c13016a2c2064ef7e85275f09cab06",
+      "seed": 14076,
+      "states": 200,
+      "opportunity_states": 5,
+      "fatal_actions": 33,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014077.pt",
+      "sha256": "fb784afd0a565bb6f36531bf223e4c6352e299f0fba8b961e14b6e1d873729ab",
+      "seed": 14077,
+      "states": 115,
+      "opportunity_states": 8,
+      "fatal_actions": 39,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014078.pt",
+      "sha256": "3e0bc5ee488f979bbd7df9ce7ed59b5c8e429b63a2947538da89a9cf4c2bade4",
+      "seed": 14078,
+      "states": 166,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014079.pt",
+      "sha256": "93ddb96946d970852a54178a3ae964476013fb2f8a6afdbcc9bf525411e25f9e",
+      "seed": 14079,
+      "states": 198,
+      "opportunity_states": 2,
+      "fatal_actions": 34,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014080.pt",
+      "sha256": "219ab8e2527492d88cc0cdc3fa909edb6195c84921492c2c205f662103934718",
+      "seed": 14080,
+      "states": 198,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014081.pt",
+      "sha256": "977512415fd933336395c927af8d9f634883b05dbde3627941707d493049dd4d",
+      "seed": 14081,
+      "states": 284,
+      "opportunity_states": 4,
+      "fatal_actions": 31,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014082.pt",
+      "sha256": "0b194f5131a5ff2f7484176ff9497d5cc458dae54648f36c48cba105abd5670e",
+      "seed": 14082,
+      "states": 139,
+      "opportunity_states": 7,
+      "fatal_actions": 73,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014083.pt",
+      "sha256": "b48a69e7d8affc3129b6c82c25cbfe049a2af6ad16c7943e96ef46cdcf7e81c5",
+      "seed": 14083,
+      "states": 109,
+      "opportunity_states": 9,
+      "fatal_actions": 115,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014084.pt",
+      "sha256": "4fa976498ef0c0fdc86ff6b75854b29b84703b6d58994c42bd0b9a535dbb1e23",
+      "seed": 14084,
+      "states": 131,
+      "opportunity_states": 2,
+      "fatal_actions": 29,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014085.pt",
+      "sha256": "fb8c4c43ecfa07ef82db73e389821ef1a85c3083bf352c6d2aa88da5f90fab34",
+      "seed": 14085,
+      "states": 215,
+      "opportunity_states": 1,
+      "fatal_actions": 32,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014086.pt",
+      "sha256": "f2c7b79c9cbe22e0d2a04691eb3b44496420b404c55257df70ffb4a99ca7738e",
+      "seed": 14086,
+      "states": 152,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014087.pt",
+      "sha256": "4d4082d9c9f1bc99bc16320b33a0474214f2a3e0269619a3ec100b923f817a4d",
+      "seed": 14087,
+      "states": 176,
+      "opportunity_states": 2,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014088.pt",
+      "sha256": "285ab3e4eb30bf49fadd807ebde082119dc6b0fa29eb33779a6b5db778c75489",
+      "seed": 14088,
+      "states": 240,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014089.pt",
+      "sha256": "a5def9363431716295872f50c0ddec24cb73ce788c0f88f7adb2d94412637274",
+      "seed": 14089,
+      "states": 108,
+      "opportunity_states": 1,
+      "fatal_actions": 2,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014090.pt",
+      "sha256": "c54b82519591d28e7e591f811b1f75cd7f67992247632508de5c7e7e0677bfd8",
+      "seed": 14090,
+      "states": 158,
+      "opportunity_states": 2,
+      "fatal_actions": 30,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014091.pt",
+      "sha256": "7d60f3ffa09cbe29970098581c95e30d9b3f56f63da855ed8bf5f127619e5974",
+      "seed": 14091,
+      "states": 217,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014092.pt",
+      "sha256": "5df4462ed7c84ade705ba835e94a5f569191c24e95c020472097c77ab4ddd0eb",
+      "seed": 14092,
+      "states": 190,
+      "opportunity_states": 1,
+      "fatal_actions": 2,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014093.pt",
+      "sha256": "f79c0449665db390fb737df8afbcd9d791d13d4359bf7be9c14df82be0e385af",
+      "seed": 14093,
+      "states": 209,
+      "opportunity_states": 1,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014094.pt",
+      "sha256": "e45f902102e52b6731d522281eda4aa00f30b8162e762578f4fb4dc66a31f6b7",
+      "seed": 14094,
+      "states": 103,
+      "opportunity_states": 6,
+      "fatal_actions": 22,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014095.pt",
+      "sha256": "d76dfc0f3d8a1fe6d2f31854d5812659df2c8c14fee4ff6718232edacc7de962",
+      "seed": 14095,
+      "states": 247,
+      "opportunity_states": 1,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014096.pt",
+      "sha256": "43f1e21bb7ab16e56caf6e15c0a4aba59dcd8c142f078cee15407c2f21aef8f5",
+      "seed": 14096,
+      "states": 116,
+      "opportunity_states": 1,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014097.pt",
+      "sha256": "8e3efa7990e00624cb6b265b1677b762e166052ae97ebe41c698c7c7c25c5ca3",
+      "seed": 14097,
+      "states": 138,
+      "opportunity_states": 3,
+      "fatal_actions": 44,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014098.pt",
+      "sha256": "4640f75179fbb0fbd62c700e7f8e6d2201855f0c6b7789aa1ec62b4a08d9abb4",
+      "seed": 14098,
+      "states": 138,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014099.pt",
+      "sha256": "42106a60e8fa73d474bcd2112819e3c87accc4f97e085c74b12b142ba394cbb1",
+      "seed": 14099,
+      "states": 139,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014100.pt",
+      "sha256": "a060da24bd9609f007fb4709832c9933aa631d2259798eb9ccd19382d935eed4",
+      "seed": 14100,
+      "states": 103,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014101.pt",
+      "sha256": "9b0346701486ecf7d00b25a10c956c5c66f1226d75efe4218ac75b8bc02a527d",
+      "seed": 14101,
+      "states": 98,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014102.pt",
+      "sha256": "93a1c0c2f7b478502c112e28dbf4c5ae3ab44cc57301f1d1b49cac815716bb1e",
+      "seed": 14102,
+      "states": 200,
+      "opportunity_states": 13,
+      "fatal_actions": 40,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014103.pt",
+      "sha256": "899a39f2336f3ef0829dd0b78a39be85a509b517919a8d023e62f941515eefe3",
+      "seed": 14103,
+      "states": 222,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014104.pt",
+      "sha256": "5720ff50f7b1d0a34c8994b1cf068b77758eed37b9923abf550ff7d80a8234a4",
+      "seed": 14104,
+      "states": 84,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014105.pt",
+      "sha256": "44c16e1520d9747ae85bf9246bb164884f93e969e5fbe2774ebe9903b5dc767d",
+      "seed": 14105,
+      "states": 160,
+      "opportunity_states": 4,
+      "fatal_actions": 35,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014106.pt",
+      "sha256": "e87723bcc7b8185a7deb51ca5eefa53b4252461c326dadd048f5a547d0590ed2",
+      "seed": 14106,
+      "states": 107,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014107.pt",
+      "sha256": "7979ffe4092f8721293b2ff1e8a23593578c66d7c888fcaf13d6c3a5ccb76fda",
+      "seed": 14107,
+      "states": 195,
+      "opportunity_states": 10,
+      "fatal_actions": 10,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014108.pt",
+      "sha256": "e87b12462f914990826992c221c114830f0e69d7a4a8ecec57f4dd377cf66dc7",
+      "seed": 14108,
+      "states": 159,
+      "opportunity_states": 5,
+      "fatal_actions": 49,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014109.pt",
+      "sha256": "916ce45dabf2c8bc582c7ffd898eb367e8bf826b3eb301a509f91bf766576b6f",
+      "seed": 14109,
+      "states": 134,
+      "opportunity_states": 3,
+      "fatal_actions": 47,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014110.pt",
+      "sha256": "e95855f65e8d9d545eae4b977e52ba77d04f73eac045ca1dbb53d89f28224d8c",
+      "seed": 14110,
+      "states": 85,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014111.pt",
+      "sha256": "6f39c50c8f0c8a5c0c70739f3eff318b3e85f2b09418baa1e35b23203ef8eb41",
+      "seed": 14111,
+      "states": 93,
+      "opportunity_states": 1,
+      "fatal_actions": 2,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014112.pt",
+      "sha256": "346d16fe823a8871300ec0ba1670af4fc3f88dc10e1813b6bc5f43a8d9b9e8bd",
+      "seed": 14112,
+      "states": 194,
+      "opportunity_states": 6,
+      "fatal_actions": 6,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014113.pt",
+      "sha256": "6696ae992c0776bf805ecfd95d9ea73b8a0455704731fd539e5b9689981af8a5",
+      "seed": 14113,
+      "states": 77,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014114.pt",
+      "sha256": "d42cf9f98dc426bca047304f5ada559dc7b61a721c98a0c8ccac0e3802e511f5",
+      "seed": 14114,
+      "states": 201,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014115.pt",
+      "sha256": "b6b0892932795d49178ad0cede2fa90cc09667c4e409999cc6bcef6259b79fff",
+      "seed": 14115,
+      "states": 89,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014116.pt",
+      "sha256": "ebd9bb461b2a88a42b3f67e511e9cee676dd1f2686c9ca73c965c9dec340e391",
+      "seed": 14116,
+      "states": 109,
+      "opportunity_states": 1,
+      "fatal_actions": 33,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014117.pt",
+      "sha256": "36921a782e7db169ba23baa70a02d0a53a882add14fb70460359bd1292b16ad3",
+      "seed": 14117,
+      "states": 124,
+      "opportunity_states": 4,
+      "fatal_actions": 44,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014118.pt",
+      "sha256": "dcd6084c52a50b9893ce79d9347f1ec5a98d0b53c9eba5a7bec28ea9c1c6c60e",
+      "seed": 14118,
+      "states": 167,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014119.pt",
+      "sha256": "85778fd43e234e1a6d31049fe166c3710f533c4f8547aa828c630d9a61a89047",
+      "seed": 14119,
+      "states": 64,
+      "opportunity_states": 3,
+      "fatal_actions": 31,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014120.pt",
+      "sha256": "0febcdfbfc7bbac14ebd0ad6276117608f7759ea5b7ebb3d6616344ec419759b",
+      "seed": 14120,
+      "states": 76,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014121.pt",
+      "sha256": "6c20865a03f6795bfffbf934b360785bc9fb691d445249bc735a0635526032bd",
+      "seed": 14121,
+      "states": 95,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014122.pt",
+      "sha256": "c4dc30f105490e7de1210d1cdc97dd4e477c3335d1ac8da5e45a46a8df19d7f0",
+      "seed": 14122,
+      "states": 88,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014123.pt",
+      "sha256": "b7abc0c2e39161dfa15642489aa5122cb15fb15b2e1d2773a034f3c1e32fb497",
+      "seed": 14123,
+      "states": 109,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014124.pt",
+      "sha256": "0aed29303c649e700999fc557e16d2baeaebd763ce0d3942ad83b4fe1ff3734a",
+      "seed": 14124,
+      "states": 74,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014125.pt",
+      "sha256": "4ef46040cf2b28903f6c67c12d737af82df7d28e1828e9ed52c6fde45f59cae8",
+      "seed": 14125,
+      "states": 112,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014126.pt",
+      "sha256": "3039468c3c89de1407d382115db68cf51c7b33f1eb13a6a2bc999d7f501e2cdb",
+      "seed": 14126,
+      "states": 66,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014127.pt",
+      "sha256": "c387efbddd8059e84ac58839fe368c03daae8fd6024532e43a5601de2598dfbe",
+      "seed": 14127,
+      "states": 111,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014128.pt",
+      "sha256": "950f92b7b4c95dd83fe11b48576c9d6eb5570a3a476a9e756f158d5cfc55178c",
+      "seed": 14128,
+      "states": 125,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014129.pt",
+      "sha256": "1c3ada5a264e07d4163b270187bf913e7db22459cb100ae0b0101ba65a18ed79",
+      "seed": 14129,
+      "states": 73,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014130.pt",
+      "sha256": "2edfc537141c3125cbd08be053dd3837399974fa27402bef326f607ebc22d7b8",
+      "seed": 14130,
+      "states": 50,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014131.pt",
+      "sha256": "42dd46e4a227841e42e847e1f5e4c0574f522bd64f92706f0bbcaefe4ae8857a",
+      "seed": 14131,
+      "states": 57,
+      "opportunity_states": 4,
+      "fatal_actions": 47,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014132.pt",
+      "sha256": "a7fa0b5d418c339c4817da146ff61e82277c46eddd815ba4c3a33d8b73a13137",
+      "seed": 14132,
+      "states": 243,
+      "opportunity_states": 10,
+      "fatal_actions": 52,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014133.pt",
+      "sha256": "4d1fda9ebd50933920ede0d53f7a8967b9cb49c3dbb420c30c4928eb75dd0582",
+      "seed": 14133,
+      "states": 102,
+      "opportunity_states": 3,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014134.pt",
+      "sha256": "e34e0cd9c311e291994d308d2733fd066b5f748fb902a0434dbecf44ed079c4e",
+      "seed": 14134,
+      "states": 61,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014135.pt",
+      "sha256": "8d1efe380a0f296d32f11472442c0c8a46712c2bac46d0cef39eec59d9a1722b",
+      "seed": 14135,
+      "states": 85,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014136.pt",
+      "sha256": "48d933bc8d949d721783862024a447af90daf65e019d41133cf047667ff4e3ea",
+      "seed": 14136,
+      "states": 52,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014137.pt",
+      "sha256": "777e04f4c916a087327b97d044a6c3cd7978e2cd34cf2e2079c5e968ad74f70b",
+      "seed": 14137,
+      "states": 71,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014138.pt",
+      "sha256": "78e8a8c9df7582486f97e3799074a9338b6c24edef7bcc5f2e863dfdc134d47a",
+      "seed": 14138,
+      "states": 73,
+      "opportunity_states": 7,
+      "fatal_actions": 33,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014139.pt",
+      "sha256": "5cb013161d913f0b917527c60d321b14152e5977903db7d15c2349a845be8573",
+      "seed": 14139,
+      "states": 65,
+      "opportunity_states": 1,
+      "fatal_actions": 1,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014140.pt",
+      "sha256": "92abcba1d791a81078657dc90eed2da61290989ed0f57db41141dabdcbef80bb",
+      "seed": 14140,
+      "states": 73,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014141.pt",
+      "sha256": "7d84bd62e1774172eaf92f1b677b5db1da484e779d73ba47142be74e32f23126",
+      "seed": 14141,
+      "states": 52,
+      "opportunity_states": 1,
+      "fatal_actions": 1,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014142.pt",
+      "sha256": "33cbc36299d1023238f0748d164dbfa489df1784f0494c29572039a21cb07649",
+      "seed": 14142,
+      "states": 81,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014143.pt",
+      "sha256": "73a73c856c38290fa041e4d37eb0b922bc065c8b6eae1c3c65d2059837880b76",
+      "seed": 14143,
+      "states": 101,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014144.pt",
+      "sha256": "1c372a1bfe2016ca23e44674468d6b3f95aa399662b1d92ffe1ce5a7046393d1",
+      "seed": 14144,
+      "states": 193,
+      "opportunity_states": 2,
+      "fatal_actions": 30,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014145.pt",
+      "sha256": "9d14889818d148c3b359ea379cd9673eb1ad8e803db9dfdc2e3c72a6bf74dad1",
+      "seed": 14145,
+      "states": 246,
+      "opportunity_states": 1,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014146.pt",
+      "sha256": "040483da8f3d1cddf91b7f0eec77f0d4b1826f2ca17601b584be534fc1f6ee4f",
+      "seed": 14146,
+      "states": 159,
+      "opportunity_states": 2,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014147.pt",
+      "sha256": "10344f0687cf3754370c08cc6017c1a99d555520a367e6862e8bfb27ae45bbe5",
+      "seed": 14147,
+      "states": 178,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014148.pt",
+      "sha256": "2ce044f7870fa7c61186dc413ff1c53454b4a6b6d8e1b55aa64a858eb7f4583d",
+      "seed": 14148,
+      "states": 68,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014149.pt",
+      "sha256": "dabf14069b0c10fa8242afab504d254217d6711cfe66315a01e6565ff22a8cca",
+      "seed": 14149,
+      "states": 218,
+      "opportunity_states": 1,
+      "fatal_actions": 2,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014150.pt",
+      "sha256": "ee41d2d22b0d9e91ec53acaf1b6e27610f35f7ac60efcda142bac8dfa572e425",
+      "seed": 14150,
+      "states": 65,
+      "opportunity_states": 4,
+      "fatal_actions": 32,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014151.pt",
+      "sha256": "0c407ca241fd3d39a76513de0cdd10ebe0a78774d8fab84a28cb8b370bd0128f",
+      "seed": 14151,
+      "states": 61,
+      "opportunity_states": 3,
+      "fatal_actions": 5,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014152.pt",
+      "sha256": "2c4cb6f4aa45e4da83e7e593039babe91e3fabdab5de6b5577a23ab35f86f0b8",
+      "seed": 14152,
+      "states": 96,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014153.pt",
+      "sha256": "8abc441437e070b4732264e7def7ba3abfe9c4dca46396a90b26d36572ccfec1",
+      "seed": 14153,
+      "states": 44,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014154.pt",
+      "sha256": "d578907bc6c8db66d183fc71ed49bb54bbb2c281208dd7813217a1c63b91eb47",
+      "seed": 14154,
+      "states": 140,
+      "opportunity_states": 2,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014155.pt",
+      "sha256": "c6a8dcab5be82847a29e6b7c15fd645488ac5d188fd0f1c118f1edc4a440cae3",
+      "seed": 14155,
+      "states": 141,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014156.pt",
+      "sha256": "3e89f3764ef8bff1e4ce9e2defed05e11c393ff78e4773f43e86897ce9912fa8",
+      "seed": 14156,
+      "states": 264,
+      "opportunity_states": 2,
+      "fatal_actions": 3,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014157.pt",
+      "sha256": "49bc6d204572a0b0d87f11eabc7569c85b0f24e363cb79ec9948e68a880d428f",
+      "seed": 14157,
+      "states": 128,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014158.pt",
+      "sha256": "db7f256d423cfc12996c95a7c2c80295b2fc473d5cc32dbbf5fb5db56c207a98",
+      "seed": 14158,
+      "states": 94,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014159.pt",
+      "sha256": "a70bf16802232c2ada4c3681092e9608dcc6f311dd53efd7cedfa9da843a3a7e",
+      "seed": 14159,
+      "states": 70,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014160.pt",
+      "sha256": "5257fbd8117d795dec41ec52dcce91bb0713b2192ad7546384411d3472271f2e",
+      "seed": 14160,
+      "states": 219,
+      "opportunity_states": 10,
+      "fatal_actions": 125,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014161.pt",
+      "sha256": "7e9cd5d888d5864f4e17675fae2964496c46657eba7e361cd0a2a82b3498d31d",
+      "seed": 14161,
+      "states": 193,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014162.pt",
+      "sha256": "2a81ccdba466eb7e0f1b58a9532c76a625cfe4c85608ee42d485688441bb2f32",
+      "seed": 14162,
+      "states": 126,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014163.pt",
+      "sha256": "673e1476ef20c0d3c11d8613162932062b635d041e6942df0ef1fe2ba7279d15",
+      "seed": 14163,
+      "states": 101,
+      "opportunity_states": 2,
+      "fatal_actions": 30,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014164.pt",
+      "sha256": "7732c1873a5e73f6916b613c7c7db14edac56e8942092bd5234bb603798aa8c2",
+      "seed": 14164,
+      "states": 97,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014165.pt",
+      "sha256": "c329d9a04695a2092f75cb61161aad1e16c788dc10cd22f02ba610c4480feccf",
+      "seed": 14165,
+      "states": 171,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014166.pt",
+      "sha256": "d523ac404fb93fbe5a2e612cb9a4b1d77c979f3ba9fd378f67fb32645362b9e4",
+      "seed": 14166,
+      "states": 100,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014167.pt",
+      "sha256": "4a472976c7d4458218e5574d9601f1f7b033af0c33a88e00482061ad386f0f75",
+      "seed": 14167,
+      "states": 93,
+      "opportunity_states": 2,
+      "fatal_actions": 31,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014168.pt",
+      "sha256": "63cba10eaf3854d41e26db468627025130ff447e4f49a571b7d71d17b3ab9ec8",
+      "seed": 14168,
+      "states": 90,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014169.pt",
+      "sha256": "f3d9e3d49b1c1e55b1dfbe4130021059ea2ef2432f5751d8012e288d57ae9e6a",
+      "seed": 14169,
+      "states": 116,
+      "opportunity_states": 2,
+      "fatal_actions": 29,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014170.pt",
+      "sha256": "fdbb070c5a2c9ac08f3bb5120b651dcba3fcf9f30d5b15086babf781e6797a43",
+      "seed": 14170,
+      "states": 103,
+      "opportunity_states": 4,
+      "fatal_actions": 19,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014171.pt",
+      "sha256": "cdf2d977d841ca67c37c815913a99fcfecba139658d5fd6648e79508258b82f5",
+      "seed": 14171,
+      "states": 79,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014172.pt",
+      "sha256": "62568012d6514e6f791a5236c80533875d3b5a48cc632528a6163b1aba55795e",
+      "seed": 14172,
+      "states": 98,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014173.pt",
+      "sha256": "d0e5f81f3e9d7196e8c4a58e3d607458e6b4dba5d42c56e5c9bce3f856a22d49",
+      "seed": 14173,
+      "states": 125,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014174.pt",
+      "sha256": "a7bc510ad41cbb08dd7b085d7f332bf89cfc6426951654563e45a4b64b28222b",
+      "seed": 14174,
+      "states": 242,
+      "opportunity_states": 4,
+      "fatal_actions": 74,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014175.pt",
+      "sha256": "335d566d368415c66c3590c1e2343abc459641b9371bef90225b2969bf496f39",
+      "seed": 14175,
+      "states": 166,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014176.pt",
+      "sha256": "9be34dd94045f39270d6d94396d506998fc501c679271a7ccf3cdbe74c223ac9",
+      "seed": 14176,
+      "states": 126,
+      "opportunity_states": 2,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014177.pt",
+      "sha256": "cb8ce2ae7da13097e4d725f8d4b88d0641f633b4e9687834b34a36ea282996bf",
+      "seed": 14177,
+      "states": 287,
+      "opportunity_states": 3,
+      "fatal_actions": 19,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014178.pt",
+      "sha256": "0dcdae4c500ffee59958057981287fa970d6092cf4c0759083c9b24cb6b1d9de",
+      "seed": 14178,
+      "states": 60,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014179.pt",
+      "sha256": "c64dd1ae5e86e43f7a1830054c6da5e6c40693e23ed718f5ea5a948d7d43e3d2",
+      "seed": 14179,
+      "states": 73,
+      "opportunity_states": 3,
+      "fatal_actions": 43,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014180.pt",
+      "sha256": "3399993290ba08460108c48450fe81eb9f52cb15b0a3045b9f0b67ad8d8d3faf",
+      "seed": 14180,
+      "states": 85,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014181.pt",
+      "sha256": "c295284f80c1d3154d83aedf0efe6bf64463ccb50975bb566bd38e350cbfb721",
+      "seed": 14181,
+      "states": 49,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014182.pt",
+      "sha256": "f6c72652c202fdb5a29e5e82d0113550cb24a023fc8160d49e139a36d6cfe020",
+      "seed": 14182,
+      "states": 189,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014183.pt",
+      "sha256": "b8389d1ffc009178ac11318d86020e1729debd58d2e018efbfba973c9064c695",
+      "seed": 14183,
+      "states": 215,
+      "opportunity_states": 2,
+      "fatal_actions": 30,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014184.pt",
+      "sha256": "038d15bcf1782b8a2d122f642d976fe94cd28b93b309290c50aee83775d3da94",
+      "seed": 14184,
+      "states": 66,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014185.pt",
+      "sha256": "81229b8435d52b5c86d7c5e7ae60e3393b7f9a17b57f06a91fb6307e1bcf7006",
+      "seed": 14185,
+      "states": 149,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014186.pt",
+      "sha256": "224dac95ebb6f89cf0622dca2b9f97e0dc1df01d3ac0e11c68973bd8be061abd",
+      "seed": 14186,
+      "states": 345,
+      "opportunity_states": 7,
+      "fatal_actions": 23,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014187.pt",
+      "sha256": "7e708196c2d0710e6a7ac1e56375adc957cd2f81bcd42881543af93747d42fd2",
+      "seed": 14187,
+      "states": 41,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014188.pt",
+      "sha256": "dd8e3ccb0294a90e927abe3259167b25cfa793f201daa4d5dde5fed481e7b20d",
+      "seed": 14188,
+      "states": 61,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014189.pt",
+      "sha256": "581e06c5e57305ee971ccda4ec62e7c3ab8a46128f07407f32c1cdcfa022e79c",
+      "seed": 14189,
+      "states": 83,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014190.pt",
+      "sha256": "414507c503e638516e9625f370a92878350f4b449f6708ed587842d8cc6ade69",
+      "seed": 14190,
+      "states": 80,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014191.pt",
+      "sha256": "3c3d700c186108da5fa400705d1eae5d86f19f7792776c2d152c7070cecf1c00",
+      "seed": 14191,
+      "states": 179,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014192.pt",
+      "sha256": "f1c22c95a1ff378bc7c48c4edb14f613029110dfdfd8f3ef323022753b31e260",
+      "seed": 14192,
+      "states": 70,
+      "opportunity_states": 4,
+      "fatal_actions": 31,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014193.pt",
+      "sha256": "838f23a7ff51320abe68710cc5e7aadd36b996d84a1fc3ef12cd43d747d00567",
+      "seed": 14193,
+      "states": 205,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014194.pt",
+      "sha256": "9b44338bdcde98663a7c97daf9162a19f2eabd437071d80d1cfd5aa2c6afd376",
+      "seed": 14194,
+      "states": 99,
+      "opportunity_states": 4,
+      "fatal_actions": 33,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014195.pt",
+      "sha256": "3a8aac61c350429d0f46dc4617a37e3a7b7512d48219b2a4a284c25270a489bd",
+      "seed": 14195,
+      "states": 122,
+      "opportunity_states": 1,
+      "fatal_actions": 32,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014196.pt",
+      "sha256": "40fc116bde7173145b9755b5fbb590c9538d99364b8dae9aa78d823f5dca4041",
+      "seed": 14196,
+      "states": 119,
+      "opportunity_states": 1,
+      "fatal_actions": 1,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014197.pt",
+      "sha256": "e088bdd4191a640f6dad1d35b84afdf833e40c35df5367beb5a6a5186b6a91ca",
+      "seed": 14197,
+      "states": 62,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014198.pt",
+      "sha256": "30e0a6cc4c2d6f9c1a57fa9ab6dd3f64ee196201d040225847614bd45679040f",
+      "seed": 14198,
+      "states": 128,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014199.pt",
+      "sha256": "8b81612a105db94b6b5f53727ecb9e07b437e8210b71f9bf0e1de3ccaf9465a2",
+      "seed": 14199,
+      "states": 85,
+      "opportunity_states": 3,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014200.pt",
+      "sha256": "e4dfd5a717893a7e3308bfdecf7e95901b1d9d3735dea07e81942c0edb492c89",
+      "seed": 14200,
+      "states": 126,
+      "opportunity_states": 3,
+      "fatal_actions": 19,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014201.pt",
+      "sha256": "43f0105651e7b0786d68280df11b1a3926f76c1178af76ca48561da0283d08b0",
+      "seed": 14201,
+      "states": 88,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014202.pt",
+      "sha256": "66244ea8b25e9e0bd111b460d54ecf406f169aa11a6d1cd01d77fe7b9b736f2d",
+      "seed": 14202,
+      "states": 171,
+      "opportunity_states": 3,
+      "fatal_actions": 42,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014203.pt",
+      "sha256": "fb9b5b216d7a864e57b517bc8d98eed385e923d7e3426baced58a179f00335f3",
+      "seed": 14203,
+      "states": 188,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014204.pt",
+      "sha256": "75d9cf97625a7b0ef822d06803b3a38c1e4e62c084553c0978d974bb2468e78e",
+      "seed": 14204,
+      "states": 184,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014205.pt",
+      "sha256": "99fe4a9d25b9f8416523e0ba9b5628be19f06acb22ae736c26e6016cb8fdadaf",
+      "seed": 14205,
+      "states": 186,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014206.pt",
+      "sha256": "0d9a2905dbc5f997abc90b83093149370e409ae357a78ce1b60bb4d4c99a65e5",
+      "seed": 14206,
+      "states": 112,
+      "opportunity_states": 9,
+      "fatal_actions": 104,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014207.pt",
+      "sha256": "bae62a8c390c25fa2826c3fe324f5ee8d3e68d1651a59ce8c7111249ed629380",
+      "seed": 14207,
+      "states": 91,
+      "opportunity_states": 2,
+      "fatal_actions": 27,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014208.pt",
+      "sha256": "2152951313ee6489f486f9284cba5559c8c1bbd8136a9757f7d747e5812c399a",
+      "seed": 14208,
+      "states": 47,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014209.pt",
+      "sha256": "f6027d2cc1b713b52e921f7b14bba0703ad30a5c82280c88a01ddee35a7af0de",
+      "seed": 14209,
+      "states": 149,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014210.pt",
+      "sha256": "111e6e59b2a41be5dd7f626a5bc9c9c44664ecaa9ddd9ba5677f2dd657144bc2",
+      "seed": 14210,
+      "states": 226,
+      "opportunity_states": 1,
+      "fatal_actions": 1,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014211.pt",
+      "sha256": "78b21cc9521f50c38920f297507b6f211ff1e594a986a94bf6d135bad00b4799",
+      "seed": 14211,
+      "states": 51,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014212.pt",
+      "sha256": "5d4f63004f06789031e8529049df28d565e7fcd84fa5505d9b3762abef85cd3c",
+      "seed": 14212,
+      "states": 182,
+      "opportunity_states": 2,
+      "fatal_actions": 20,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014213.pt",
+      "sha256": "52f12953be2aeb4446d2cab77eee24c810bd46f31a0674384de93745dd305d3b",
+      "seed": 14213,
+      "states": 278,
+      "opportunity_states": 4,
+      "fatal_actions": 20,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014214.pt",
+      "sha256": "dd6cc3835ddb02de08656699a1d5e348c886fc392b610fd07a6d0655054a53e9",
+      "seed": 14214,
+      "states": 56,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014215.pt",
+      "sha256": "7f51062ce09ab37b8b55acab476c5560cddffca955f5748d9463fcac1957f8c0",
+      "seed": 14215,
+      "states": 48,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014216.pt",
+      "sha256": "b9d3e974a2ad52ecfb1c41d19290a717212ec3e3ba3a75cf9527f37c69c307f1",
+      "seed": 14216,
+      "states": 60,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014217.pt",
+      "sha256": "1bb091214de4dba4c1f88a970a0a7bede3d87f91bc014f01242e4a55071f90e7",
+      "seed": 14217,
+      "states": 135,
+      "opportunity_states": 2,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014218.pt",
+      "sha256": "9631d8d6ff2c131dc48afa4e539d79a8afacbcb506bcc137d2a8198a67ddcfdb",
+      "seed": 14218,
+      "states": 168,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014219.pt",
+      "sha256": "9438fa83b516a75ad0da75777d748de25ac2524be3ed32bb0361948024d4f94e",
+      "seed": 14219,
+      "states": 103,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014220.pt",
+      "sha256": "b012c30d8717c8b05edc4792d2a4fbc9db3f5d8fc4738df4d75e30cf0e1a54ab",
+      "seed": 14220,
+      "states": 76,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014221.pt",
+      "sha256": "29d4afe692a4fda151b41268044d7d0c892df28f595fb4001f335dbc93390911",
+      "seed": 14221,
+      "states": 36,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014222.pt",
+      "sha256": "d6f1a3a8ff4b9ebc196d9dff2440669f48d7e073f5a38000628e8a7e8d00b972",
+      "seed": 14222,
+      "states": 202,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014223.pt",
+      "sha256": "a47b6e948c1a5e59d8b47acbf5ba4aa710f4141809b85519ee9ea1b636556b1c",
+      "seed": 14223,
+      "states": 107,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014224.pt",
+      "sha256": "c695104c13b6f4febac4af50193622e3cb9b0af184cd2cb69dc5e032d987c5cd",
+      "seed": 14224,
+      "states": 74,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014225.pt",
+      "sha256": "63043add0f18fdb539756c0e1b98f127e4d43c6c42cd2c454818262a28a9d73f",
+      "seed": 14225,
+      "states": 158,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014226.pt",
+      "sha256": "ad1ee81e65ada848ccc12772c6d52561cc1b49933c175cd3f09b927e54defc8d",
+      "seed": 14226,
+      "states": 97,
+      "opportunity_states": 2,
+      "fatal_actions": 28,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014227.pt",
+      "sha256": "80dfccdfe65c45bc8b90941106b6eda304db06af2a3a7c7f922bc31728287372",
+      "seed": 14227,
+      "states": 118,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014228.pt",
+      "sha256": "1f142c2867d760ff503b0cff099600951e95d212f5304363775919737dcee917",
+      "seed": 14228,
+      "states": 72,
+      "opportunity_states": 2,
+      "fatal_actions": 28,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014229.pt",
+      "sha256": "f97806d4e5e3256d66d77cdd051f08cda25b1fb84f87c9cb8ca563adae4db262",
+      "seed": 14229,
+      "states": 138,
+      "opportunity_states": 4,
+      "fatal_actions": 29,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014230.pt",
+      "sha256": "21a5c315ae0e2f724b84f4cf218054219ee306f8b3d4ed7f5dd8f17d6a1fe453",
+      "seed": 14230,
+      "states": 188,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014231.pt",
+      "sha256": "0194e1c15f2f3c52df00fb733f756e8ff6bab80627445054875decd9b96e5369",
+      "seed": 14231,
+      "states": 96,
+      "opportunity_states": 4,
+      "fatal_actions": 19,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014232.pt",
+      "sha256": "7c8d48a0d7f3a6d3d2d0a47e1ce768c65da3cb732edcd3c38bb76c5f632e6231",
+      "seed": 14232,
+      "states": 76,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014233.pt",
+      "sha256": "8ea14a63733a719d27b022c9ffa90d124643d4f58d83017f1df0485b35c1b224",
+      "seed": 14233,
+      "states": 149,
+      "opportunity_states": 7,
+      "fatal_actions": 54,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014234.pt",
+      "sha256": "db8b74573c1af3cc372558c88c48e9cc8271197321ab4a5d816d678cddb4c899",
+      "seed": 14234,
+      "states": 109,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014235.pt",
+      "sha256": "eed34588427ec75ee3321058ac74f6773d3a16cce31fd6c1c04d230bcb2ed766",
+      "seed": 14235,
+      "states": 105,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014236.pt",
+      "sha256": "4ecd7084a6586a578245b9efed47cf7046cb030e223ae3b62d22b0f85ae55035",
+      "seed": 14236,
+      "states": 58,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014237.pt",
+      "sha256": "685d769b21fc46141105923223811127272c38630701a87a7be47e185d318d1f",
+      "seed": 14237,
+      "states": 199,
+      "opportunity_states": 4,
+      "fatal_actions": 57,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014238.pt",
+      "sha256": "e6111e2819edb9051918477823b935eaf93672264d68c9592f404291c299fe30",
+      "seed": 14238,
+      "states": 223,
+      "opportunity_states": 2,
+      "fatal_actions": 29,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014239.pt",
+      "sha256": "3d635c7a3df0a5d16aaa0fcdeca64d7b12a520ed4041a10c151e9537fecf275b",
+      "seed": 14239,
+      "states": 112,
+      "opportunity_states": 1,
+      "fatal_actions": 2,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014240.pt",
+      "sha256": "8db2385a167b40f4a29e44b8bee2ada53c51f0d351f6a87ff89bc0d96360fbda",
+      "seed": 14240,
+      "states": 147,
+      "opportunity_states": 1,
+      "fatal_actions": 1,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014241.pt",
+      "sha256": "6183bd9372c54fce1d195355b2ed7a4f9f1c7f6eb8ac0426b9b5bee8992cf61b",
+      "seed": 14241,
+      "states": 127,
+      "opportunity_states": 1,
+      "fatal_actions": 1,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014242.pt",
+      "sha256": "52794bfa7106565059b1e3bde5e9aa56d813d66268f0ceb61ac85b4bf16da186",
+      "seed": 14242,
+      "states": 151,
+      "opportunity_states": 4,
+      "fatal_actions": 58,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014243.pt",
+      "sha256": "2da7911ed93f4a3b697b0e8efa2e9d0abcdb9aef9e6a9aa2fe3f3b5cbe8e9d85",
+      "seed": 14243,
+      "states": 113,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014244.pt",
+      "sha256": "540b908d613ab2b847a0d1440c9dd4452008d797aeb2667fb58099d26e2e2148",
+      "seed": 14244,
+      "states": 61,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014245.pt",
+      "sha256": "ada9a8eaaad47d96c72568c1cd34088cf608bc43802b8dda40c0e4fae4365bb0",
+      "seed": 14245,
+      "states": 229,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014246.pt",
+      "sha256": "fcc12f2656cb628fac5be523c6cdade3f48c2f961344b25b09f7466db9628bf5",
+      "seed": 14246,
+      "states": 122,
+      "opportunity_states": 3,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014247.pt",
+      "sha256": "f745cea266262d4c3246c89d28d16184528feb5e6c681c2e546e3a40087b420b",
+      "seed": 14247,
+      "states": 78,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014248.pt",
+      "sha256": "3ec8885ef6bd85e724fea3369b98a7d70edbbc40eee7506e5628ffbd32dfea3c",
+      "seed": 14248,
+      "states": 63,
+      "opportunity_states": 3,
+      "fatal_actions": 32,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014249.pt",
+      "sha256": "c3868ccb396b348b1988e01c6eb63a83de7a3ebf1f2ecf238e59e1163c1d9491",
+      "seed": 14249,
+      "states": 126,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014250.pt",
+      "sha256": "cd62036222449d12ecc456ecbb4cb9c083ab2580b7593e4cc7b3cc032261455b",
+      "seed": 14250,
+      "states": 186,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014251.pt",
+      "sha256": "5cde0653df519e3b5600f731379fca18cfdfeec17d066d854d0aedcb0a00c4be",
+      "seed": 14251,
+      "states": 73,
+      "opportunity_states": 2,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014252.pt",
+      "sha256": "f8731e9af800649b084d32f8f9d5cf33c39bc58f0fc1d0bb8153c71d2c3eacd3",
+      "seed": 14252,
+      "states": 146,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014253.pt",
+      "sha256": "d0afa7f9f6837406462e550964dd5f33ee36965d198556dfecfcd4daca896b13",
+      "seed": 14253,
+      "states": 119,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014254.pt",
+      "sha256": "a91d8689d00a1afa5bdae3aea7197f1e1e16e530e321d8f1cfdc26a6f813c1af",
+      "seed": 14254,
+      "states": 192,
+      "opportunity_states": 3,
+      "fatal_actions": 35,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014255.pt",
+      "sha256": "a118a73899d024e855670f717bc3e9498882070f93f17d1fcf3a2cd4c33201bf",
+      "seed": 14255,
+      "states": 89,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014256.pt",
+      "sha256": "a33467c32312e4284f8d5b1c1c6c57aeefdc98035ea7b29392a410af60e62857",
+      "seed": 14256,
+      "states": 233,
+      "opportunity_states": 8,
+      "fatal_actions": 41,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014257.pt",
+      "sha256": "69868aafcc56a10da15d2d9884146debf720394c566acce89258f48b15f1eb03",
+      "seed": 14257,
+      "states": 210,
+      "opportunity_states": 2,
+      "fatal_actions": 28,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014258.pt",
+      "sha256": "13b03c8ec41f263e9b21a49ba2e1e22c2f1096c6a5ed4766705a27df20bd7c6b",
+      "seed": 14258,
+      "states": 63,
+      "opportunity_states": 1,
+      "fatal_actions": 1,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014259.pt",
+      "sha256": "fe75a91baaee90b8ee7ad433d07824ce6ac3c1597d577c66b2e8ae320e729972",
+      "seed": 14259,
+      "states": 118,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014260.pt",
+      "sha256": "020fdb3a75ec65caaf9e6573d85904146101a6ef481f228365657a8cec5f7d8d",
+      "seed": 14260,
+      "states": 148,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014261.pt",
+      "sha256": "7b63811e8729fa3d47dc21dd2fd77717cd7de4a35255cdf191081edb97a9495c",
+      "seed": 14261,
+      "states": 100,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014262.pt",
+      "sha256": "1c9ccb52a6ebef5646be184e3fafbbb772bc28f5a02c4165f043a0b2030496a7",
+      "seed": 14262,
+      "states": 112,
+      "opportunity_states": 1,
+      "fatal_actions": 1,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014263.pt",
+      "sha256": "fd7d6d000a4b4a6ee51b07cc1dc312dd9211fdc33c7f9f7f10f71970b529c72d",
+      "seed": 14263,
+      "states": 157,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014264.pt",
+      "sha256": "2df3abe503b7d976f29445b441f263299bc5c2963aa6654792a56e88a8d37dad",
+      "seed": 14264,
+      "states": 106,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014265.pt",
+      "sha256": "1358c9217a4ef9b545de49bff586823e9686ae78b0cd992ef74e811b3d578a60",
+      "seed": 14265,
+      "states": 123,
+      "opportunity_states": 3,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014266.pt",
+      "sha256": "7ab3b691bbd5058df94dc7ec594b6fe045c6ffab9383276d62f9b1b2fc359e4e",
+      "seed": 14266,
+      "states": 115,
+      "opportunity_states": 2,
+      "fatal_actions": 30,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014267.pt",
+      "sha256": "69b1578cc47935e436a74994f88ccede29e47e5f261ad54fd57961352806c1b5",
+      "seed": 14267,
+      "states": 98,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014268.pt",
+      "sha256": "c449dd24bafa2644052c0cbe5e049052b7c2bdffc2dae4fe774368b20c96224a",
+      "seed": 14268,
+      "states": 145,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014269.pt",
+      "sha256": "d06f04536d8e3dd508d57685b0cefba26221d1754089333084defdbbf5ccb029",
+      "seed": 14269,
+      "states": 177,
+      "opportunity_states": 3,
+      "fatal_actions": 31,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014270.pt",
+      "sha256": "3066b298bc4cf99a8e74dc5f818040beac9246787dadd307196cdbf22ada1d3f",
+      "seed": 14270,
+      "states": 133,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014271.pt",
+      "sha256": "d0ad94615a3dd129a9397b7566d3e27f8af4c05d5466fc96be3e4b47b28ef583",
+      "seed": 14271,
+      "states": 200,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014272.pt",
+      "sha256": "2c5c4d2f6a50c01926110880073d1ca67c5bfcdb5de0f18518bd95efb39f8f72",
+      "seed": 14272,
+      "states": 100,
+      "opportunity_states": 3,
+      "fatal_actions": 31,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014273.pt",
+      "sha256": "31aca50e746f38878f124afe9f5bd50a16f1db7184d8f23a06d69239e1a6d24e",
+      "seed": 14273,
+      "states": 66,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014274.pt",
+      "sha256": "47d20064f1c964520f177400ca7b67db4e15003d71fff364f766a3a391b0137b",
+      "seed": 14274,
+      "states": 149,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014275.pt",
+      "sha256": "d9daa979ee2d464e8ba7d17676500053e75c53cf131f0d357358afde96e51998",
+      "seed": 14275,
+      "states": 145,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014276.pt",
+      "sha256": "2a136f1953ebf4954d7134c4696878e9ac488e2e5d50e2e21be25ed68d81fd83",
+      "seed": 14276,
+      "states": 58,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014277.pt",
+      "sha256": "4e92624dfa6f73607dd3635b91f2ae74c4b8793d42d17abfda878f1db6ea4ee7",
+      "seed": 14277,
+      "states": 94,
+      "opportunity_states": 2,
+      "fatal_actions": 30,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014278.pt",
+      "sha256": "3707e9a9d0f3dc2dd6ccb08173d5533bfda73fc0c2ebb802a6bbbaa12fa9f161",
+      "seed": 14278,
+      "states": 233,
+      "opportunity_states": 14,
+      "fatal_actions": 55,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014279.pt",
+      "sha256": "f6ebfc8989cf295fa849fbfd458bf5dd8a62aa1f605cea600e4bd46bb3b72484",
+      "seed": 14279,
+      "states": 47,
+      "opportunity_states": 1,
+      "fatal_actions": 2,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014280.pt",
+      "sha256": "239d0131179cdc20537a1d79f80dd363e6914c9000f362a664087b2f72938d94",
+      "seed": 14280,
+      "states": 98,
+      "opportunity_states": 3,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014281.pt",
+      "sha256": "acc6ed5f8b98593b915af4540637810d579592b27dc5ed7697e0834c2407101c",
+      "seed": 14281,
+      "states": 283,
+      "opportunity_states": 3,
+      "fatal_actions": 31,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014282.pt",
+      "sha256": "f891bcd5aac8b7e57682a5ff54b29633798d5e99b3dd13263cc989c394751ef8",
+      "seed": 14282,
+      "states": 92,
+      "opportunity_states": 3,
+      "fatal_actions": 19,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014283.pt",
+      "sha256": "c96e020210b00196b8a4d22dab352ba7e499479efdf4866bfbb7ff585836aa45",
+      "seed": 14283,
+      "states": 99,
+      "opportunity_states": 4,
+      "fatal_actions": 19,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014284.pt",
+      "sha256": "929fbbfdf35e9b42d53ed14b7386517583400feb3beb86d22f00fd6ab638a038",
+      "seed": 14284,
+      "states": 110,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014285.pt",
+      "sha256": "5bbe1b8e4f42b6cf48b5b0ad6448ff06fda389dade2079b1eda62cba80fbb739",
+      "seed": 14285,
+      "states": 169,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014286.pt",
+      "sha256": "2aa284a726794973154d8edbbf17b3ae6914a96e79d018b88bf6a5ba88a7d231",
+      "seed": 14286,
+      "states": 96,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014287.pt",
+      "sha256": "461fe61eed77f543bfe7d124e3092cdc4d379ae96b9d0938c50efa43520c5a8c",
+      "seed": 14287,
+      "states": 400,
+      "opportunity_states": 0,
+      "fatal_actions": 0,
+      "trajectory_deaths": 0
+    },
+    {
+      "file": "seed-014288.pt",
+      "sha256": "b3c72a461d123c1bddf2b3e62e886c9a1462e66b6436c8295b028fb92356c582",
+      "seed": 14288,
+      "states": 142,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014289.pt",
+      "sha256": "739631e2e55c39c1095cbbf0dcac14ebe38398ee4ae0ba752318569e6c53e5f9",
+      "seed": 14289,
+      "states": 173,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014290.pt",
+      "sha256": "0b992304dc067ce16100119ac746a2eb920b8804f29cfa608ead93757ec58825",
+      "seed": 14290,
+      "states": 69,
+      "opportunity_states": 2,
+      "fatal_actions": 29,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014291.pt",
+      "sha256": "4a9ed15a9511b3e9b2c6eeabba54f672893e0aec4beaa3001369e3c68969d4dc",
+      "seed": 14291,
+      "states": 67,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014292.pt",
+      "sha256": "7bd7c2b1320ec55a5565e42d4a6d9420492bea2c2f983b234a638bfb9612bb29",
+      "seed": 14292,
+      "states": 60,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014293.pt",
+      "sha256": "d3e4012495e985078b239589202981b542e50b13bbe93a20ed86b9a5a2e89092",
+      "seed": 14293,
+      "states": 87,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014294.pt",
+      "sha256": "816739e19c4d8bc17f6c388b9ccd2b799b3a9c706f5f9e534005739a55cb6314",
+      "seed": 14294,
+      "states": 349,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014295.pt",
+      "sha256": "d3624120a8038cda01054973c10ad6b5cccad7575dd8cdef28851b4e7e3f6449",
+      "seed": 14295,
+      "states": 103,
+      "opportunity_states": 4,
+      "fatal_actions": 58,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014296.pt",
+      "sha256": "a659d069d76a07c3ae7da95a8f4171c85d6f419b84fc42c1a473767a93b56927",
+      "seed": 14296,
+      "states": 110,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014297.pt",
+      "sha256": "68eb37074d2ce5c9e1dca2680195bfc392d06013b197eef1bc94abf19f755d32",
+      "seed": 14297,
+      "states": 109,
+      "opportunity_states": 3,
+      "fatal_actions": 44,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014298.pt",
+      "sha256": "9aeaed94b16316915a010e8874ec08ca767383dd8433143b7ab8f6d0e3d27e77",
+      "seed": 14298,
+      "states": 84,
+      "opportunity_states": 2,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014299.pt",
+      "sha256": "5a00bc53553cd33250400d10ad1fbd89f09b0ac5b870f6666095fe078b34bf8f",
+      "seed": 14299,
+      "states": 53,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014300.pt",
+      "sha256": "ba2247cddb1b5d1d3e2780a56cfd7f8e69f08832643cfdf6dd4db59ab8b39468",
+      "seed": 14300,
+      "states": 69,
+      "opportunity_states": 6,
+      "fatal_actions": 21,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014301.pt",
+      "sha256": "7b5c12de3f2bc55f7859db489e957fe9d1b779a7b76689f42efc970ac320f516",
+      "seed": 14301,
+      "states": 57,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014302.pt",
+      "sha256": "70bd6fd090501f1dbfe309dd6760a4f3bee1553ff57c2248803f5abf461dd4ac",
+      "seed": 14302,
+      "states": 249,
+      "opportunity_states": 1,
+      "fatal_actions": 1,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014303.pt",
+      "sha256": "a56aab1090a91757d18e2af11007c1ce10afbabfd42f492da69b0e30ac49f3fc",
+      "seed": 14303,
+      "states": 179,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014304.pt",
+      "sha256": "e8da41f804c7080defdaeb48b7136323b2ff74947ef71a2e96354768f2693558",
+      "seed": 14304,
+      "states": 85,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014305.pt",
+      "sha256": "103e80513039b78add9debd426b7fbea0e383c6ce8f190ede0ecf6505e35baee",
+      "seed": 14305,
+      "states": 69,
+      "opportunity_states": 2,
+      "fatal_actions": 30,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014306.pt",
+      "sha256": "31c212cfdde32f35a1ba8809d269898819b8a9dfe5fd73636856e5a2a011f4ba",
+      "seed": 14306,
+      "states": 177,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014307.pt",
+      "sha256": "0b311305cab91f9c00fa8c63b7b52fa1abeeed5a1d276cc012bc47df6f423eff",
+      "seed": 14307,
+      "states": 67,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014308.pt",
+      "sha256": "d5b8111a1d8e3b0a312ca54f7858bd6a20edfd03da3c0cf7eb5e57804ca6d486",
+      "seed": 14308,
+      "states": 82,
+      "opportunity_states": 3,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014309.pt",
+      "sha256": "78e48a5c39b642c767ee2d191794c471b6bba9683e0faa98809742a0c0250b31",
+      "seed": 14309,
+      "states": 84,
+      "opportunity_states": 3,
+      "fatal_actions": 43,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014310.pt",
+      "sha256": "8709682ea027d1cb2b63e73e1567c00170ad2c4e8800c4136f36096e63099578",
+      "seed": 14310,
+      "states": 151,
+      "opportunity_states": 2,
+      "fatal_actions": 28,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014311.pt",
+      "sha256": "277ba2e6c5f5349dae17a6866f4f3f84993b3342589ffc4aac8ced0c767fa025",
+      "seed": 14311,
+      "states": 74,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014312.pt",
+      "sha256": "fff7cea1d9d2f9f4821f0009d898ccbfd685b30405da67db99361e4750e9a85a",
+      "seed": 14312,
+      "states": 99,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014313.pt",
+      "sha256": "222983d0c4f8dc2287ff62509507e8121b4869aec63c29226f78720f11997ccb",
+      "seed": 14313,
+      "states": 153,
+      "opportunity_states": 7,
+      "fatal_actions": 36,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014314.pt",
+      "sha256": "61cda35a9f2bd93d7d00c69a5871014affc34920b995bd283e0454d53c76b84b",
+      "seed": 14314,
+      "states": 110,
+      "opportunity_states": 3,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014315.pt",
+      "sha256": "b169befc6f696a5bf5a993ca2e9e99d88db931ecb9413c5248f927a965a6e447",
+      "seed": 14315,
+      "states": 77,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014316.pt",
+      "sha256": "658a46d8ad381b510cf28c0233a347484c2df952288468749c55e95fdf39e3d1",
+      "seed": 14316,
+      "states": 98,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014317.pt",
+      "sha256": "02e2ca5c991d6bd3293000813d3ed236a70aba4c6758713832c18f6eaf974197",
+      "seed": 14317,
+      "states": 211,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014318.pt",
+      "sha256": "53b8b84b545cd3e9fdf8a5875bf89e302c8b532355b637f3224ebe3770d00e03",
+      "seed": 14318,
+      "states": 170,
+      "opportunity_states": 1,
+      "fatal_actions": 2,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014319.pt",
+      "sha256": "e773ecce0874a333b64fd8439ddd55e87ead0becf2b245522efb860ad04052a0",
+      "seed": 14319,
+      "states": 208,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014320.pt",
+      "sha256": "81db9b4a27abf4f16ed0004db1b883670752aff132f1fb0aa769a74fcaa7ec76",
+      "seed": 14320,
+      "states": 75,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014321.pt",
+      "sha256": "5a5987d1e347f206811a495db20b0c3ac59873ba12b42f1408cfcb4530f924a9",
+      "seed": 14321,
+      "states": 63,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014322.pt",
+      "sha256": "c3436ff02712fa52d84996cbea673515e201f19e768ee5f6ba0272c47fca5068",
+      "seed": 14322,
+      "states": 73,
+      "opportunity_states": 2,
+      "fatal_actions": 2,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014323.pt",
+      "sha256": "9d17159c2fe49b6f3e66263d6eb705675cb1152e9f38d3a651cd057748afb037",
+      "seed": 14323,
+      "states": 125,
+      "opportunity_states": 2,
+      "fatal_actions": 32,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014324.pt",
+      "sha256": "3a03c27560c3087f273d843e7c605c949ea8a22fd3168659d8996c2dd9dc5639",
+      "seed": 14324,
+      "states": 85,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014325.pt",
+      "sha256": "d9d48da0fa7b08de179c853fb491aeaa9c7ce3eaf7b046e2ccd3a25643ccc147",
+      "seed": 14325,
+      "states": 118,
+      "opportunity_states": 2,
+      "fatal_actions": 3,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014326.pt",
+      "sha256": "d854297848e4d3f94d8dee0854caeda2ad2e50849ead3165efc259d3631d4500",
+      "seed": 14326,
+      "states": 78,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014327.pt",
+      "sha256": "3c2a773e3d2158b89b6932724041f74348f6a1e38a1e488a4c4cd6ddcc687897",
+      "seed": 14327,
+      "states": 159,
+      "opportunity_states": 2,
+      "fatal_actions": 28,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014328.pt",
+      "sha256": "0259ded7732842980df12abd1695a29184fa85bc3d2b75b7a9815a849c678c9b",
+      "seed": 14328,
+      "states": 57,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014329.pt",
+      "sha256": "0fba27579f8496de46cc4aca94b4a22cfb361faee9efa3d7b34df8c50425acd1",
+      "seed": 14329,
+      "states": 54,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014330.pt",
+      "sha256": "6de1b5b4f469cd88cfe66d5fa99395949b9b4d99a077eb39cafedb9609a79eda",
+      "seed": 14330,
+      "states": 68,
+      "opportunity_states": 2,
+      "fatal_actions": 32,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014331.pt",
+      "sha256": "4323fcc2384bc44fe07720c165da54fb1b860239bdc61ea4d108a1a365497b98",
+      "seed": 14331,
+      "states": 59,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014332.pt",
+      "sha256": "7453b60ddc6f3a0c3ffa49e58c69459ebf7bbdaadf107fb9cf5fb016d8890ff6",
+      "seed": 14332,
+      "states": 380,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014333.pt",
+      "sha256": "d94b0eba0fa647bf784de9e28e4815b534b65f98640fc77882aaa74ef84d01e3",
+      "seed": 14333,
+      "states": 65,
+      "opportunity_states": 6,
+      "fatal_actions": 50,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014334.pt",
+      "sha256": "a90d356d204b71a8daba6f217b8cca04201a44af7663e6aa813c0eaa5569b0cc",
+      "seed": 14334,
+      "states": 86,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014335.pt",
+      "sha256": "a4affd60fd9febc3fc3fca81713599ea5db5b552c54584ef0c9762428051e7e6",
+      "seed": 14335,
+      "states": 45,
+      "opportunity_states": 2,
+      "fatal_actions": 30,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014336.pt",
+      "sha256": "c532fe51dd5095d2b6c4dce71adadadd8d293bc49ffbc631d4b40e33bf1ecbb5",
+      "seed": 14336,
+      "states": 40,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014337.pt",
+      "sha256": "049d5ebe243b0343d78e5aad7007d47bd72ce5ea9409d5e6d4d222da623916fc",
+      "seed": 14337,
+      "states": 218,
+      "opportunity_states": 3,
+      "fatal_actions": 31,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014338.pt",
+      "sha256": "6a32d4348c11f03c16e3974720543571cae8d30423c39da529a65aa5b4de345a",
+      "seed": 14338,
+      "states": 69,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014339.pt",
+      "sha256": "5d84ebe6958b98045c469d64b57c67158332acf6b661f0ac7bfcce6ce2a1ca6e",
+      "seed": 14339,
+      "states": 189,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014340.pt",
+      "sha256": "8c90859c98264b81e45638116d1b5dc70cb9045f29e5f990b8fd3140ef42e527",
+      "seed": 14340,
+      "states": 54,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014341.pt",
+      "sha256": "d09ebff528a71ceb61f247d54be1c7d984aa9f5de23d291284bf6ddef654b230",
+      "seed": 14341,
+      "states": 140,
+      "opportunity_states": 2,
+      "fatal_actions": 34,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014342.pt",
+      "sha256": "7c7f5611f240c536a0a1943ea451c04f8579456b2c65957dba3d569e89abf34f",
+      "seed": 14342,
+      "states": 62,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014343.pt",
+      "sha256": "126feba73f6121e17c0760d255e8f089dfad0f620fa9a5af54a30ff4af5e81f7",
+      "seed": 14343,
+      "states": 92,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014344.pt",
+      "sha256": "3e885dec8db2b281282cb4da2ef18cc4407a6beccd51483fff3e66ade8e91b4a",
+      "seed": 14344,
+      "states": 92,
+      "opportunity_states": 3,
+      "fatal_actions": 47,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014345.pt",
+      "sha256": "6cf47fd6916a67cfcc098e4900264955336e07b56a7f9338fa417ac491b486f8",
+      "seed": 14345,
+      "states": 39,
+      "opportunity_states": 3,
+      "fatal_actions": 32,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014346.pt",
+      "sha256": "711b9f0c068ae536decfe47a42977084a92521c12fbbe20cd5a3d32e6f11ad72",
+      "seed": 14346,
+      "states": 50,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014347.pt",
+      "sha256": "fea05ab8121f27687d11d0cadc8bb76dda72d6be93090f01b0451287a8110951",
+      "seed": 14347,
+      "states": 61,
+      "opportunity_states": 5,
+      "fatal_actions": 21,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014348.pt",
+      "sha256": "c79bb43573b64b72a76a352f68317d4789e35a7b7dea55edf4c013d253633311",
+      "seed": 14348,
+      "states": 156,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014349.pt",
+      "sha256": "4b46a14dee3947645a114bb351f19f952c121e36b974be2c7d6c679dab8b97e1",
+      "seed": 14349,
+      "states": 141,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014350.pt",
+      "sha256": "60f590e56fb633832188c2cc05ac9a179c8cd757b963e69a17c58dd635600086",
+      "seed": 14350,
+      "states": 118,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014351.pt",
+      "sha256": "05f6dea705228b3466e28e06cd17df0ae57d8677346f334e36c186bb04b682c8",
+      "seed": 14351,
+      "states": 186,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014352.pt",
+      "sha256": "6076c79ee2604ddaf5ca67bd2703bdd6b49a5745858bccc8deb45ad749d9959a",
+      "seed": 14352,
+      "states": 88,
+      "opportunity_states": 3,
+      "fatal_actions": 6,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014353.pt",
+      "sha256": "8b54210406b729dfb9d6fa15ae72c476b5083c5727bc7aaaccfb3976865f1763",
+      "seed": 14353,
+      "states": 221,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014354.pt",
+      "sha256": "69b6dcfc7bd259a40121d87fd159b7a752852b8f9299b827a8262e6e1d881436",
+      "seed": 14354,
+      "states": 110,
+      "opportunity_states": 2,
+      "fatal_actions": 31,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014355.pt",
+      "sha256": "82d00a0d5ad1b29cfee45c47960b59122560bb7bf08311ca2905926f2afdf778",
+      "seed": 14355,
+      "states": 150,
+      "opportunity_states": 2,
+      "fatal_actions": 31,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014356.pt",
+      "sha256": "3ae12128f1ba33c64c51059ea1dd62f1ca6a8987257fa9a9a55491d43d5541cf",
+      "seed": 14356,
+      "states": 128,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014357.pt",
+      "sha256": "7e34ab82cf6faa9b04b831f04fb48e10f1cb0d86f5e18a61cc2a9f4754515f4d",
+      "seed": 14357,
+      "states": 229,
+      "opportunity_states": 6,
+      "fatal_actions": 46,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014358.pt",
+      "sha256": "05da9b4fda00735ae5d3c91bbf7acf54ca86a9499110884900e47061adb5cb64",
+      "seed": 14358,
+      "states": 91,
+      "opportunity_states": 3,
+      "fatal_actions": 42,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014359.pt",
+      "sha256": "c23dc6a2e9bcfc8c3fd0a84c993c9a17fcdfa8ce896084d042136a2329e09d3f",
+      "seed": 14359,
+      "states": 95,
+      "opportunity_states": 3,
+      "fatal_actions": 30,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014360.pt",
+      "sha256": "0e6e45f855f20d96b2fd3202e5e8688e3a907e28b19ad763fefbda915db72194",
+      "seed": 14360,
+      "states": 185,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014361.pt",
+      "sha256": "82b7bb4ebb60823f37b0b7d035b2c49b23539dbf695909fcbe4676224679c6e4",
+      "seed": 14361,
+      "states": 67,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014362.pt",
+      "sha256": "8e931cbd2586ef261a31b156f893bb363bbd0b364f0f352ea53c4d4c0439025d",
+      "seed": 14362,
+      "states": 198,
+      "opportunity_states": 5,
+      "fatal_actions": 71,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014363.pt",
+      "sha256": "b1ecfe8c584045ef4fe8e822a0707223c720a5eab33fe777aa8065872689dee6",
+      "seed": 14363,
+      "states": 57,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014364.pt",
+      "sha256": "d6d854c6926ee4343c781102bd12bcaae0cdb9f7c6bd2a2ef892888c97e83304",
+      "seed": 14364,
+      "states": 127,
+      "opportunity_states": 1,
+      "fatal_actions": 31,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014365.pt",
+      "sha256": "ab3813efe26e0be16c5dbbeb9aff016219e4539c624b735530e1c7a896618c1b",
+      "seed": 14365,
+      "states": 163,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014366.pt",
+      "sha256": "998beb16440fc0af7d0e1305f801a3936e09fd7315ee9626db6ee82908e73403",
+      "seed": 14366,
+      "states": 135,
+      "opportunity_states": 6,
+      "fatal_actions": 85,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014367.pt",
+      "sha256": "058a183787857c7ecf5d0c58d4226744fd8dc31a2416f02062e9e4f9e943cdbc",
+      "seed": 14367,
+      "states": 206,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014368.pt",
+      "sha256": "8ec2e277e6235c4fd32d426ae919941bec09faba7acf90bd0e8148fb6e22f9f1",
+      "seed": 14368,
+      "states": 286,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014369.pt",
+      "sha256": "26a8ab79c580bf642957930c2a624e046332eeb61c9f4375b1016ac1061e4770",
+      "seed": 14369,
+      "states": 107,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014370.pt",
+      "sha256": "087022bd842b9d586edeb16d9bb97983b57292492c9f9ae7e3519b171fca6988",
+      "seed": 14370,
+      "states": 202,
+      "opportunity_states": 2,
+      "fatal_actions": 29,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014371.pt",
+      "sha256": "98f149c33856eaf186859bf0d08d177adccfc17cc3319cf7b56b9c0c43eabe60",
+      "seed": 14371,
+      "states": 169,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014372.pt",
+      "sha256": "aa1720562103f5b1282c68b70e98b2308bf014639c93bb2fc74e02c6ecbc4cc3",
+      "seed": 14372,
+      "states": 162,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014373.pt",
+      "sha256": "be7795d7683f87334c824ad70bf5a19075f0924d02738a0d844123257ad8bbcb",
+      "seed": 14373,
+      "states": 99,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014374.pt",
+      "sha256": "f94c3cb06a8e69fe7e44cf92733d26202f0e59b7877c27bffe011645d77fc073",
+      "seed": 14374,
+      "states": 188,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014375.pt",
+      "sha256": "1a76dbae155ab611d11f8bdf262ff21a3557c5b9060383a176b80bbfc3b6726f",
+      "seed": 14375,
+      "states": 111,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014376.pt",
+      "sha256": "e47cbcae8f694968a3e891b7728bcc015a5fce9c9e2245e397bd32a0ab7d9459",
+      "seed": 14376,
+      "states": 175,
+      "opportunity_states": 3,
+      "fatal_actions": 19,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014377.pt",
+      "sha256": "8c070fdfbfb105f785fab126739251a870d37444ee1164de65cc4ff6676cc496",
+      "seed": 14377,
+      "states": 132,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014378.pt",
+      "sha256": "9c19099e77af5a712fd9aed31129113b456681515dfa2b6f0340ebdacec69db8",
+      "seed": 14378,
+      "states": 114,
+      "opportunity_states": 1,
+      "fatal_actions": 2,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014379.pt",
+      "sha256": "a73e796757a18f632515a89bdf886e70be86720c2a14dfecea3455b938f4d7f2",
+      "seed": 14379,
+      "states": 152,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014380.pt",
+      "sha256": "d7ceda626f2283d05400f45b7470bbf0e45c52a743c8fe2f46712429620d6f82",
+      "seed": 14380,
+      "states": 127,
+      "opportunity_states": 3,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014381.pt",
+      "sha256": "11f77d6cb1db4f68cedfb3cbb535493fb56c74a975474971dea5b3f66e451600",
+      "seed": 14381,
+      "states": 80,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014382.pt",
+      "sha256": "1ce88a93a1451f2f21d91bed94f326331239ec155b15343fd48ee5d0ce537c2e",
+      "seed": 14382,
+      "states": 166,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014383.pt",
+      "sha256": "6e8bfb7883feaee8a122d7064fe84677ceede67038bf7a82d6014d66e9fa3c3c",
+      "seed": 14383,
+      "states": 118,
+      "opportunity_states": 5,
+      "fatal_actions": 46,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014384.pt",
+      "sha256": "c9862d88a9fa53b4348c46e9dd00cc3290711901588420751e5eb41e712626a6",
+      "seed": 14384,
+      "states": 154,
+      "opportunity_states": 2,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014385.pt",
+      "sha256": "3cdacec5d843fd6353818ad906c78f3c9b3225bbe8c5f16448581579f9147a37",
+      "seed": 14385,
+      "states": 178,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014386.pt",
+      "sha256": "c3f279df8d3c2214353d18233b58028221edc27a553be810b6bbcb0880c079d5",
+      "seed": 14386,
+      "states": 165,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014387.pt",
+      "sha256": "e63436aff0b93197a00c9081dde54e74ca5d0c164acdf50e05c57804c30dba65",
+      "seed": 14387,
+      "states": 120,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014388.pt",
+      "sha256": "7deee9d504634c18b4f429672931f6b044d9cabbe5177dfddef592fb1ac125e2",
+      "seed": 14388,
+      "states": 101,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014389.pt",
+      "sha256": "782ea17a3d328de45c7411ca9020285f669883f02a61a8eee0ba7b01567e403d",
+      "seed": 14389,
+      "states": 213,
+      "opportunity_states": 5,
+      "fatal_actions": 59,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014390.pt",
+      "sha256": "ab7bf874b14e94d7b70db0d488616d00d52689ad8a7eeb80c9036496ca3971d7",
+      "seed": 14390,
+      "states": 97,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014391.pt",
+      "sha256": "b48a1155e4ea38d0efcf6a50d9b5d69d6b8c8c47525bf32b307bd287dddd713b",
+      "seed": 14391,
+      "states": 48,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014392.pt",
+      "sha256": "f40e58739dab874403418b02b651ffc7f8c24f5b92c0d5d19f7f60f4a4478191",
+      "seed": 14392,
+      "states": 239,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014393.pt",
+      "sha256": "08f884e0990128ed07ae8bf9c517daaf3a20d50b87fb3edda5c208a91268c64a",
+      "seed": 14393,
+      "states": 75,
+      "opportunity_states": 5,
+      "fatal_actions": 46,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014394.pt",
+      "sha256": "34d90506e5c807f46896d8c5943fc279c163d2eb7bfdf577194ec960648280c2",
+      "seed": 14394,
+      "states": 104,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014395.pt",
+      "sha256": "ed3d2f5516fe2eb4efc1b550169c618aed8957861e54277196749a7c45b02010",
+      "seed": 14395,
+      "states": 136,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014396.pt",
+      "sha256": "78c14a67b0a89232f3d0866c69a6dfc82b7c1297cd8ea72634223d76454c0822",
+      "seed": 14396,
+      "states": 76,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014397.pt",
+      "sha256": "a908cdc907bca4eb4875788a7de1128fb0d43bd2c73b46b2f3bdf33b541113da",
+      "seed": 14397,
+      "states": 96,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014398.pt",
+      "sha256": "2d2409b21ac6255ce978d680efbb491a007e90ffb7405831e145ba502beddd27",
+      "seed": 14398,
+      "states": 246,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014399.pt",
+      "sha256": "007b7ce3ee4d48a1114683467ae3616b378d167b23b7612fe333335b2cc58444",
+      "seed": 14399,
+      "states": 70,
+      "opportunity_states": 2,
+      "fatal_actions": 47,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014400.pt",
+      "sha256": "a868d853495fbdad3d5629396f5d4f70c4b02529943611806ab10adfae25a04b",
+      "seed": 14400,
+      "states": 204,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014401.pt",
+      "sha256": "c944a35decacce5b59ad182ed52c3fc5e733b1f88ff00ce6f41f71e5d7b35ce4",
+      "seed": 14401,
+      "states": 400,
+      "opportunity_states": 0,
+      "fatal_actions": 0,
+      "trajectory_deaths": 0
+    },
+    {
+      "file": "seed-014402.pt",
+      "sha256": "2c19e038b9c99fa33ed6139b6a73e4838f0b2b84e6e92d41eaf91ed14736e5b9",
+      "seed": 14402,
+      "states": 91,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014403.pt",
+      "sha256": "a745eae66a161cf522133b105ce054960df983da624932f487bc9d4a38af24b6",
+      "seed": 14403,
+      "states": 72,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014404.pt",
+      "sha256": "34d4a1676ec8fec5e8cabfa54f6f7c41553787c46c5abd564a0fa075d760f5b1",
+      "seed": 14404,
+      "states": 78,
+      "opportunity_states": 1,
+      "fatal_actions": 2,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014405.pt",
+      "sha256": "b24870ac6cc2f57c8cd2bba3e8372853806836f60327d5a27ba61e24cfc45568",
+      "seed": 14405,
+      "states": 56,
+      "opportunity_states": 5,
+      "fatal_actions": 8,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014406.pt",
+      "sha256": "1c16203dc1ed64ee00a9f1fcf5fbbc15ab8617cd36e5b15c1d04e7b9d1d63689",
+      "seed": 14406,
+      "states": 236,
+      "opportunity_states": 1,
+      "fatal_actions": 2,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014407.pt",
+      "sha256": "b25efe721dd6c1493a9c0bce2d9376f47cc918e696d11459e242f6c14d578007",
+      "seed": 14407,
+      "states": 61,
+      "opportunity_states": 1,
+      "fatal_actions": 13,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014408.pt",
+      "sha256": "0043ee288eee963fec3a7806ca5a8ef5230ed2bf28b24e522b8211103973ce84",
+      "seed": 14408,
+      "states": 50,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014409.pt",
+      "sha256": "f7ccc790a9b9921dbe88e3125dba92353c819d1ec7eaae6433ff405cb755eb38",
+      "seed": 14409,
+      "states": 67,
+      "opportunity_states": 4,
+      "fatal_actions": 57,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014410.pt",
+      "sha256": "551b92b234ad8ed6ce84a285426056a09f435994d8de385979230870775b3183",
+      "seed": 14410,
+      "states": 103,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014411.pt",
+      "sha256": "21f7a187feef8e65995e391f716639059c081d3b9fd4396120f364a36b5186fa",
+      "seed": 14411,
+      "states": 71,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014412.pt",
+      "sha256": "9cce78c976b8ca47bfc821fda3615f04bd06270cd9317092522bde316ba79e2d",
+      "seed": 14412,
+      "states": 200,
+      "opportunity_states": 2,
+      "fatal_actions": 30,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014413.pt",
+      "sha256": "b09406602c6cbd5fdaf0880487e22ddfe3a4c84ae981efd8d410b86ce23a917e",
+      "seed": 14413,
+      "states": 189,
+      "opportunity_states": 4,
+      "fatal_actions": 19,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014414.pt",
+      "sha256": "ff4c6cfe59a7aec04ab2a44754cb5ba4e09ea5242c6d59d43faeb9a207952674",
+      "seed": 14414,
+      "states": 76,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014415.pt",
+      "sha256": "e79aebe54c673e3a286494a52209b9b08b9d6a951bcc76a414bf22953373fd3b",
+      "seed": 14415,
+      "states": 88,
+      "opportunity_states": 3,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014416.pt",
+      "sha256": "8215301be8cbbeb83f2f353b87a6d8b458f3ca8fd74890e0473b1fd369f3ba50",
+      "seed": 14416,
+      "states": 224,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014417.pt",
+      "sha256": "f4247a0238d7cd4459cdc43169e387cbc9844e5aa73ffe8a572d41057430d9ef",
+      "seed": 14417,
+      "states": 238,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014418.pt",
+      "sha256": "9ff3c7e2de863b1eee000984a74cf5497eb46c0c47623950f3a84774794d8b82",
+      "seed": 14418,
+      "states": 131,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014419.pt",
+      "sha256": "6497d7060169d5bdee7af29355b91ce16d8bfb4ea94973958b7e6c831e06bb04",
+      "seed": 14419,
+      "states": 94,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014420.pt",
+      "sha256": "4717376e35366495fd5fc91dbc23c7aa23ceb925608ce8bc35db483a8fa763dd",
+      "seed": 14420,
+      "states": 202,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014421.pt",
+      "sha256": "13f2e989e12360d64884396dc5076580abb5bf8aba8ecad3de811755df664e9b",
+      "seed": 14421,
+      "states": 142,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014422.pt",
+      "sha256": "d7e111b4a3290a46e34bc80f77e934cf5c0f690d945c11a792e7b8a484a49bf7",
+      "seed": 14422,
+      "states": 66,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014423.pt",
+      "sha256": "9b32fe5af724aa8463b3728f99bb680a1f6ba8c16404369efb27362c3ec0b4f5",
+      "seed": 14423,
+      "states": 101,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014424.pt",
+      "sha256": "fad7872050dfa3c025bc7e55130a3be6965982e8cf95587f72bf006c4a398887",
+      "seed": 14424,
+      "states": 203,
+      "opportunity_states": 11,
+      "fatal_actions": 11,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014425.pt",
+      "sha256": "36634e433937079191eddab25d592179f3082d54f011b16f6ec33499466250a1",
+      "seed": 14425,
+      "states": 66,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014426.pt",
+      "sha256": "63279c9358ca08e2e6198d109f8958857b7916d6905bdd52a3198a4e938ff9c8",
+      "seed": 14426,
+      "states": 142,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014427.pt",
+      "sha256": "16239d0dc49a90c5ffd7f73091768c0d1556b0a782cbe5f7d2685601153295f4",
+      "seed": 14427,
+      "states": 87,
+      "opportunity_states": 1,
+      "fatal_actions": 2,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014428.pt",
+      "sha256": "7a42f20be710fedee2a1c45ce432328da20e662914b608ab977bec26aea9bab8",
+      "seed": 14428,
+      "states": 125,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014429.pt",
+      "sha256": "f65473abcbc00ba558867d07aa0f22620589b4aadfa8e2de5cb8ee31a2e85ab2",
+      "seed": 14429,
+      "states": 93,
+      "opportunity_states": 3,
+      "fatal_actions": 30,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014430.pt",
+      "sha256": "3c16c911b01fd206789ce67f96a32b432b516e946aaceaad56bfaa00c0eb64ab",
+      "seed": 14430,
+      "states": 131,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014431.pt",
+      "sha256": "b85c14e313c94167d97cf292772ab24ec5e927020d920e3cdee9055ecebd2040",
+      "seed": 14431,
+      "states": 190,
+      "opportunity_states": 2,
+      "fatal_actions": 32,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014432.pt",
+      "sha256": "2b033c831a67f01a8b11a9322eeb77dd1c9ef3d11b61b0a74963a59bcec015ed",
+      "seed": 14432,
+      "states": 82,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014433.pt",
+      "sha256": "bd840df74f887f3e9b659a3e46010390cdf2925c7abdb74b8064a70ffba9165a",
+      "seed": 14433,
+      "states": 95,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014434.pt",
+      "sha256": "b87405dbe99fe55e17f3852951dcd9c854ebdd63fda3e59d4cedca78693991eb",
+      "seed": 14434,
+      "states": 208,
+      "opportunity_states": 1,
+      "fatal_actions": 4,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014435.pt",
+      "sha256": "14cf745d4acc4f3ffd4d49f880757d458403cc372c000f4815f153fa545783f2",
+      "seed": 14435,
+      "states": 148,
+      "opportunity_states": 4,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014436.pt",
+      "sha256": "e835fcf94512b40b858897d3eef8455d29fd1fdbb985b7409c54de4a9e9be541",
+      "seed": 14436,
+      "states": 48,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014437.pt",
+      "sha256": "533683024eba873ac9c4225617ae3f3e1d079616fb63f7ada6542a368c935d22",
+      "seed": 14437,
+      "states": 195,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014438.pt",
+      "sha256": "207450891d778beea99db02bccc0776d8fdc0d9cd288165a8c06768574b60c5a",
+      "seed": 14438,
+      "states": 69,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014439.pt",
+      "sha256": "31f83e19cbde0916254727d472864a69684bbc1c4256d378e0054ce0c1971fbb",
+      "seed": 14439,
+      "states": 122,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014440.pt",
+      "sha256": "a71fabb075d2083266b65506bb1f906c285521790391c87e4f82f517f13a896e",
+      "seed": 14440,
+      "states": 400,
+      "opportunity_states": 0,
+      "fatal_actions": 0,
+      "trajectory_deaths": 0
+    },
+    {
+      "file": "seed-014441.pt",
+      "sha256": "fd795d3c5ae6a2ba18bfc81a28cacecd85db3553a49f148f46de751e70c6f35e",
+      "seed": 14441,
+      "states": 94,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014442.pt",
+      "sha256": "78083f25e9625aefb00464537488d33be633c082725117468a9a43502dc61e49",
+      "seed": 14442,
+      "states": 200,
+      "opportunity_states": 3,
+      "fatal_actions": 3,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014443.pt",
+      "sha256": "01f677a4b3028b3b49e6a19687f5473e8e5b45140ac221299ed83bc9cb9edef2",
+      "seed": 14443,
+      "states": 193,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014444.pt",
+      "sha256": "b594e880a3c6e2de56d71f900e106687d6a03f86f5f5de6bc463e614c42ad7ef",
+      "seed": 14444,
+      "states": 71,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014445.pt",
+      "sha256": "43a0903f334eb08d9587fb406eb075862b5459f847ca9b538722f3879d2fd05c",
+      "seed": 14445,
+      "states": 101,
+      "opportunity_states": 2,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014446.pt",
+      "sha256": "bbb21dd0600c9f350b520480b3aa9aa308bc1723abc2dc1247e4fe4460be65cf",
+      "seed": 14446,
+      "states": 174,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014447.pt",
+      "sha256": "9d4405b9fe92eb31ac4376e90ac0cb4258c05c7542fa9f96993b422087f872de",
+      "seed": 14447,
+      "states": 82,
+      "opportunity_states": 2,
+      "fatal_actions": 30,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014448.pt",
+      "sha256": "4c8e5a1a456c5fa4ca2093c8f613b09e74e6867bc7865fe12a0d1b3e6027deb0",
+      "seed": 14448,
+      "states": 43,
+      "opportunity_states": 2,
+      "fatal_actions": 29,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014449.pt",
+      "sha256": "1b49400380cfa99c5ab2cf16922541d578976049562b4ef9953f400e99b707bc",
+      "seed": 14449,
+      "states": 95,
+      "opportunity_states": 1,
+      "fatal_actions": 19,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014450.pt",
+      "sha256": "d76cb45fdf70fe9356c904299681c2129005fc30b496615af807678eedeadd70",
+      "seed": 14450,
+      "states": 130,
+      "opportunity_states": 2,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014451.pt",
+      "sha256": "bca7f372d8f2f5f126eb64fb58b87cff587aceeede35310b3749a5c018cafaaa",
+      "seed": 14451,
+      "states": 62,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014452.pt",
+      "sha256": "2441429df300c3d4a0b6f066e394ccaa660b0bc7c083485bac5bbd430dc27954",
+      "seed": 14452,
+      "states": 49,
+      "opportunity_states": 2,
+      "fatal_actions": 19,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014453.pt",
+      "sha256": "26a364c445487748e38be86d22ab7dbac9f09a74ba9aa8f0b78813928e7d730e",
+      "seed": 14453,
+      "states": 159,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014454.pt",
+      "sha256": "afe5125fff043a0b8cf6c39161095f01c35e73cd5a52aeab8acf85578ec832fd",
+      "seed": 14454,
+      "states": 146,
+      "opportunity_states": 4,
+      "fatal_actions": 44,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014455.pt",
+      "sha256": "9c6d9a27bcd67d23abe41908694908f86a834085af250a44d022d5f5665eae26",
+      "seed": 14455,
+      "states": 111,
+      "opportunity_states": 3,
+      "fatal_actions": 5,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014456.pt",
+      "sha256": "e4c6e72d673f42f674247d8c7f744952ee7425aaf565f19eeb2533b9233e73c2",
+      "seed": 14456,
+      "states": 37,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014457.pt",
+      "sha256": "84dfb607f4348b3e1cf9740a069d882fb6487cb48c23723a7efcff99248e9975",
+      "seed": 14457,
+      "states": 133,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014458.pt",
+      "sha256": "724651ed2a66ea1975548bd57c268e8839a307ed6110c2dd735022cfc0a15d75",
+      "seed": 14458,
+      "states": 235,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014459.pt",
+      "sha256": "7cadbd3c3c1e40279f2dc1030666dad9f8ab3db437f2cdeb412d2b4250ff6f9b",
+      "seed": 14459,
+      "states": 47,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014460.pt",
+      "sha256": "e82bdba6beba2a14e915b344e146ff2741baa17e89d70c0e59b38a2b0c349b02",
+      "seed": 14460,
+      "states": 50,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014461.pt",
+      "sha256": "e873a8a61867f2cb7bc4519dae558bf61cebc8ee4ee53b072336e036737a1584",
+      "seed": 14461,
+      "states": 73,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014462.pt",
+      "sha256": "2e4c51c41dc0028aed825a7fa5b171a63d34f75da98e2a02e517c9574ac18a66",
+      "seed": 14462,
+      "states": 152,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014463.pt",
+      "sha256": "df7f10f24e688892eca3ad8e31e39d24160940aa8396d6629170d279e675d017",
+      "seed": 14463,
+      "states": 102,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014464.pt",
+      "sha256": "31e8787f45c4340ea0d9edf2dbc340edb959fa333ed9bc37a919e3e6b38298bb",
+      "seed": 14464,
+      "states": 172,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014465.pt",
+      "sha256": "cbf5b2022eafe29ecd674179810b004d6e6b60301647022ec3740fbb7d0abc1c",
+      "seed": 14465,
+      "states": 148,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014466.pt",
+      "sha256": "a7a0b0798db8a94a83faf67b86f3c8570530d1f3b310dfa16f4ed2149b0c7722",
+      "seed": 14466,
+      "states": 106,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014467.pt",
+      "sha256": "1c7b93541d3832d1d2c81cb00b959cd6dc3d5e62a016384b6ea8170857d4458f",
+      "seed": 14467,
+      "states": 81,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014468.pt",
+      "sha256": "34a4758fc2b3fd44eaa5c44ce7e1bb378b1d6b0f1d28ba560ebe77c0e96a6bf8",
+      "seed": 14468,
+      "states": 148,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014469.pt",
+      "sha256": "e9172a77e5762051d3c8268eae6a72e6b09f762a5838ac50711a755a4459bfee",
+      "seed": 14469,
+      "states": 186,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014470.pt",
+      "sha256": "07d33b5d0d83bb563998c7ba576002d873d66058ad371ab643c7b280ee71b2bd",
+      "seed": 14470,
+      "states": 105,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014471.pt",
+      "sha256": "463d79f75f0693ae12e8d6a769729f34865fee0abc2e8eefc22bacaa5a1d6f5b",
+      "seed": 14471,
+      "states": 142,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014472.pt",
+      "sha256": "cf8320ac314d44ae94ea4dacbe4d964fec8e79462fa3b1627783f64ac4e9c2ee",
+      "seed": 14472,
+      "states": 88,
+      "opportunity_states": 8,
+      "fatal_actions": 113,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014473.pt",
+      "sha256": "48fb3387c9760d30ea255d4fe7bf08129f7cd5850b8b6203a0023af6e4d1b7d7",
+      "seed": 14473,
+      "states": 142,
+      "opportunity_states": 1,
+      "fatal_actions": 2,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014474.pt",
+      "sha256": "6d3d99bc0abf7b04c0915eda1dc080f7623ec1cc24adcc4fede490168fb3a8d3",
+      "seed": 14474,
+      "states": 137,
+      "opportunity_states": 3,
+      "fatal_actions": 32,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014475.pt",
+      "sha256": "39dd492a76b8f9b5e091b4b294fe267ec5db92c4548b1bf4a8972e97e3e7382e",
+      "seed": 14475,
+      "states": 109,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014476.pt",
+      "sha256": "2e663aaa4cc19cc9dffdb1e08919a747dfc99f1e698df13e196687ce814b59d3",
+      "seed": 14476,
+      "states": 167,
+      "opportunity_states": 4,
+      "fatal_actions": 46,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014477.pt",
+      "sha256": "7b9a83972187578dd6cc8ab8ef11828fb9d52552b79a9d4c3d20eaff4ac1b533",
+      "seed": 14477,
+      "states": 85,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014478.pt",
+      "sha256": "29407f5a6e5c6f0375f344149f1c59c0d3e18fb0b861ad7d8cc7e509e08c8aef",
+      "seed": 14478,
+      "states": 148,
+      "opportunity_states": 1,
+      "fatal_actions": 1,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014479.pt",
+      "sha256": "0776481a05d999691c322b5cd16e4f08d01ababd8c74a2fa569be15b418223ad",
+      "seed": 14479,
+      "states": 95,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014480.pt",
+      "sha256": "492c32f3fbee38cddc22f48b804b46b72bf2c9dbe7eaa9705ef64daf03dd76ea",
+      "seed": 14480,
+      "states": 88,
+      "opportunity_states": 2,
+      "fatal_actions": 31,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014481.pt",
+      "sha256": "7954fdef121dc91cada141013664e81e46159bd5a31afe48d5e93f03a2d20887",
+      "seed": 14481,
+      "states": 83,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014482.pt",
+      "sha256": "470fff15069e6d846a6fa22f73edb9d4fcaadfdda6948beea96dd9943a12aa44",
+      "seed": 14482,
+      "states": 222,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014483.pt",
+      "sha256": "a4f8891c0b0c7b745604360c9f52d20a20e3b1e1658f1cdb2533e41bd8d5ffe7",
+      "seed": 14483,
+      "states": 134,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014484.pt",
+      "sha256": "a78f4c9e3bc96dc7abcb8beaae154641283145ca900c1290a38ab68d83c0f872",
+      "seed": 14484,
+      "states": 94,
+      "opportunity_states": 1,
+      "fatal_actions": 1,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014485.pt",
+      "sha256": "a312fc625de619df1bf06ed42e0514c56965079873a76067f5c1c6ac27d5ab71",
+      "seed": 14485,
+      "states": 163,
+      "opportunity_states": 7,
+      "fatal_actions": 28,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014486.pt",
+      "sha256": "6a95dcccaea899039cf6cf9419ab6a4f94b433ca23fc93a75763b3d795db1fca",
+      "seed": 14486,
+      "states": 165,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014487.pt",
+      "sha256": "6659715d7ad07b2eb5a24487b0ef4692cd5e7a648e22e3509e2dbbc5ef1c23ef",
+      "seed": 14487,
+      "states": 72,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014488.pt",
+      "sha256": "d6efca17370fe9161057782d7fb70111e28599a235760998045ea87651d8630b",
+      "seed": 14488,
+      "states": 112,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014489.pt",
+      "sha256": "794b41fd60718a5e74d9e531f1f2d9dae2a7821d5f59d3cd76ead94e08a44b39",
+      "seed": 14489,
+      "states": 243,
+      "opportunity_states": 3,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014490.pt",
+      "sha256": "3909fd4db555533472c24c220518692638a195615d4fe032cc3b8e14e89846e9",
+      "seed": 14490,
+      "states": 159,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014491.pt",
+      "sha256": "5405fedd5f2b11c89cf5509c2aa3f80640f8b3e59d3d0f556ceb069257cd94c2",
+      "seed": 14491,
+      "states": 266,
+      "opportunity_states": 2,
+      "fatal_actions": 4,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014492.pt",
+      "sha256": "6cb3b1371ebdf7a394c068d1fcd69cd91fae6c17758473fdfbe24d3473b44006",
+      "seed": 14492,
+      "states": 92,
+      "opportunity_states": 2,
+      "fatal_actions": 29,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014493.pt",
+      "sha256": "d8d0dcd73d02787e0911d2bb2c53a25f856db27312e6b966dc2becd20a6ebabc",
+      "seed": 14493,
+      "states": 97,
+      "opportunity_states": 2,
+      "fatal_actions": 19,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014494.pt",
+      "sha256": "70b7486e8a4b4ecca128920e3810a49696578c2d8d20d0332dae5262a7dea194",
+      "seed": 14494,
+      "states": 277,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014495.pt",
+      "sha256": "30e33b52cb7f142cbffa3939cdc2f4841d5577393356de90da0f1dad56f6dd49",
+      "seed": 14495,
+      "states": 150,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014496.pt",
+      "sha256": "d5a52ea547b5486ee4aa628ea6bb404352f8bafd99744e1ebaaa57ba149831ab",
+      "seed": 14496,
+      "states": 89,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014497.pt",
+      "sha256": "0c098a119782a1c6f6094eaf8d2ab704efa54d3ef5c9223b5849cedb011adc12",
+      "seed": 14497,
+      "states": 63,
+      "opportunity_states": 4,
+      "fatal_actions": 58,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014498.pt",
+      "sha256": "04947921eececf58746ebe48f9dfafcb9907cf0026fabcda247b04e920d3334f",
+      "seed": 14498,
+      "states": 51,
+      "opportunity_states": 1,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014499.pt",
+      "sha256": "1fbe76d1eb9b34cc7f430f891caa72806aef9d036d2f1e1d7d90b3b4565ac42f",
+      "seed": 14499,
+      "states": 69,
+      "opportunity_states": 1,
+      "fatal_actions": 15,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014500.pt",
+      "sha256": "8f396e53db40c232103c49eb9509f2ea275e1b79e9b169c931a0d2bdc33717e1",
+      "seed": 14500,
+      "states": 96,
+      "opportunity_states": 1,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014501.pt",
+      "sha256": "650edfe7e339e55f2a798df225443674b96aeb9c2aaf9c508a33c218afe63018",
+      "seed": 14501,
+      "states": 84,
+      "opportunity_states": 3,
+      "fatal_actions": 19,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014502.pt",
+      "sha256": "1df2dcd523608a84c254a3524d2744b1571b592210886d1967c8480f473c9940",
+      "seed": 14502,
+      "states": 198,
+      "opportunity_states": 2,
+      "fatal_actions": 14,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014503.pt",
+      "sha256": "11f3099c047f6649b3e53dfe7d962f04b823c41bfb39df436ad72cfd9c3a1685",
+      "seed": 14503,
+      "states": 302,
+      "opportunity_states": 2,
+      "fatal_actions": 19,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014504.pt",
+      "sha256": "f4c68cdbe78de23cb86d79fce1464a6b44479535850f3e8ae7e92768b807d5aa",
+      "seed": 14504,
+      "states": 41,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014505.pt",
+      "sha256": "3d78fe0df7b08916c62d279213756196055b6e12f2532c8686dd6630cba03c61",
+      "seed": 14505,
+      "states": 266,
+      "opportunity_states": 4,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014506.pt",
+      "sha256": "a489139e82a3af6319c6de4f08f717740affc29fee1b5927716a22662c251ba0",
+      "seed": 14506,
+      "states": 122,
+      "opportunity_states": 2,
+      "fatal_actions": 16,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014507.pt",
+      "sha256": "96b56863a17daad9966ee2c7f1c17644a3b629a3fbdbfe0e97630a3b0e952e27",
+      "seed": 14507,
+      "states": 139,
+      "opportunity_states": 5,
+      "fatal_actions": 35,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014508.pt",
+      "sha256": "09e3170374ec358aba2fb2d6fb23fdcac16b727991907dac23ecb28e8cdc0d55",
+      "seed": 14508,
+      "states": 90,
+      "opportunity_states": 2,
+      "fatal_actions": 18,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014509.pt",
+      "sha256": "9f5087c46492e300b6504292112e0c225607dd2337c368efca1c2004cf208e16",
+      "seed": 14509,
+      "states": 93,
+      "opportunity_states": 3,
+      "fatal_actions": 43,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014510.pt",
+      "sha256": "9318fc9d55d2481f639aa5ff1938447d46133cffdd80cebce3943e3b8735f191",
+      "seed": 14510,
+      "states": 324,
+      "opportunity_states": 0,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    },
+    {
+      "file": "seed-014511.pt",
+      "sha256": "a309f798d7a536e91aef24736e6b507df7c88940a223538877c1cef3e28bcfbb",
+      "seed": 14511,
+      "states": 124,
+      "opportunity_states": 2,
+      "fatal_actions": 17,
+      "trajectory_deaths": 1
+    }
+  ],
+  "states": 67365,
+  "opportunity_states": 965,
+  "fatal_actions": 10673,
+  "trajectory_deaths": 509
+}

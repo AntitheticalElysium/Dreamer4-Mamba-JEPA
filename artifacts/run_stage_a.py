@@ -25,7 +25,7 @@ from d4mj.counterfactual import (
     collect_outcome_forks,
     outcome_metrics,
 )
-from d4mj.data import episode_splits, load_episodes
+from d4mj.data import EpisodeCorpus, episode_splits, load_episodes
 from d4mj.diagnostics import cost, head_calibration, latent_stats, multistep_error
 from d4mj.execution import evaluate, run_episode, run_random
 from d4mj.expert import load_archive
@@ -47,19 +47,32 @@ ARMS = tuple(
 )
 
 
-def corpus(config: Config, expert: int, log) -> tuple[list, list]:
+def corpus(
+    config: Config,
+    expert: int,
+    log,
+    *,
+    support: Path = SUPPORT,
+) -> tuple[EpisodeCorpus, EpisodeCorpus]:
     """Split each pool separately. A single split over the concatenation can hand DEV
     no BC-eligible episodes at all, and the mixture then cannot form its relevant
     half -- which is a property of the split, not of the data."""
     pools = [load_archive(ARCHIVE, config, limit=expert)]
-    if SUPPORT.exists():
-        pools.append(load_episodes(SUPPORT))
+    if support.exists():
+        pools.append(load_episodes(support))
 
     train, dev = [], []
     for index, pool in enumerate(pools):
-        first, second, _ = episode_splits(len(pool), config.seed + index)
-        train += [pool[i] for i in first.tolist()]
-        dev += [pool[i] for i in second.tolist()]
+        declared = [episode.split for episode in pool]
+        if any(value is not None for value in declared):
+            if any(value is None for value in declared):
+                raise ValueError("an episode store mixes declared and undeclared splits")
+            train += [episode for episode in pool if episode.split == "train"]
+            dev += [episode for episode in pool if episode.split == "dev"]
+        else:
+            first, second, _ = episode_splits(len(pool), config.seed + index)
+            train += [pool[i] for i in first.tolist()]
+            dev += [pool[i] for i in second.tolist()]
 
     for name, part in (("train", train), ("dev", dev)):
         log(
@@ -67,7 +80,7 @@ def corpus(config: Config, expert: int, log) -> tuple[list, list]:
             f"{sum(int(e.terminated.sum()) for e in part)} terminals, "
             f"{sum(e.bc_eligible for e in part)} BC-eligible"
         )
-    return train, dev
+    return EpisodeCorpus(train), EpisodeCorpus(dev)
 
 
 def main() -> None:
@@ -79,6 +92,17 @@ def main() -> None:
     parser.add_argument("--actor-steps", type=int, default=2500)
     parser.add_argument("--eval-episodes", type=int, default=12)
     parser.add_argument("--eval-limit", type=int, default=600)
+    parser.add_argument(
+        "--terminal-dynamics-mass",
+        type=float,
+        default=0.0,
+        help="Phase-2 dynamics mass assigned to tail-aligned terminal rows",
+    )
+    parser.add_argument(
+        "--phase2-only",
+        action="store_true",
+        help="stop each arm after Phase-2 diagnostics and the outcome gate",
+    )
     parser.add_argument("--out", default="artifacts/stage_a")
     parser.add_argument("--arms", nargs="+", choices=ARMS, default=list(ARMS))
     parser.add_argument(
@@ -98,6 +122,8 @@ def main() -> None:
         (out / "run.log").open("a").write(line + "\n")
 
     base = Config()
+    if not 0.0 <= args.terminal_dynamics_mass < 1.0:
+        parser.error("--terminal-dynamics-mass must be in [0, 1)")
     if args.dynamics_steps <= base.bootstrap_start:
         parser.error(
             f"--dynamics-steps must exceed bootstrap_start={base.bootstrap_start}; "
@@ -105,7 +131,8 @@ def main() -> None:
         )
     log(
         f"terminal supervision: batch {base.terminal_batch} every Phase-2 step, "
-        f"{base.terminal_loss_mass:.1%} of continuation loss"
+        f"{base.terminal_loss_mass:.1%} of continuation loss; "
+        f"{args.terminal_dynamics_mass:.1%} of dynamics loss"
     )
     log(f"arms: {args.arms}")
     if args.reuse:
@@ -134,7 +161,13 @@ def main() -> None:
             if arm in report:
                 continue
             config = replace(base, transition=transition, time_mixer=mixer)
+            continuation_objective = (
+                "paired-observed-generated-alive-dead-v2"
+                if transition == "direct"
+                else "paired-single-readout-alive-dead-v2"
+            )
             log(f"=== {arm} ===")
+            log(f"{arm}: continuation objective {continuation_objective}")
             # Mamba's Triton autotuner benchmarks several kernel configs and needs
             # headroom the resident tokenizer was holding; it is unused until eval.
             encoder.cpu()
@@ -150,6 +183,7 @@ def main() -> None:
                 config,
                 checkpoint=out / f"{arm}.2.pt",
                 world_steps=args.dynamics_steps,
+                terminal_dynamics_mass=args.terminal_dynamics_mass,
             )
             log(f"{arm}: phase 2 done")
             prior = copy.deepcopy(heads).eval()
@@ -172,9 +206,16 @@ def main() -> None:
                 f"terminal BCE {outcome_gate['observed_terminal_bce']:.4f} | "
                 f"AUC {outcome_gate['observed_terminal_auc']:.3f}"
             )
-            if not outcome_gate["passed"]:
+            if args.phase2_only or not outcome_gate["passed"]:
                 report[arm] = {
-                    "status": "outcome_gate_failed",
+                    "status": (
+                        "phase2_only"
+                        if args.phase2_only
+                        else "outcome_gate_failed"
+                    ),
+                    "terminal_dynamics_mass": args.terminal_dynamics_mass,
+                    "continuation_objective": continuation_objective,
+                    "terminal_loss_mass": config.terminal_loss_mass,
                     "outcome_gate": outcome_gate,
                     "horizon_selection": horizon_report,
                     "diagnostics": _diagnostics(world, prior, cached_dev, config),
@@ -196,6 +237,9 @@ def main() -> None:
 
             entry = {
                 "status": "complete" if actor_gate["passed"] else "actor_gate_failed",
+                "continuation_objective": continuation_objective,
+                "terminal_loss_mass": config.terminal_loss_mass,
+                "terminal_dynamics_mass": args.terminal_dynamics_mass,
                 "outcome_gate": outcome_gate,
                 "actor_outcomes": actor_outcomes,
                 "actor_gate": actor_gate,
@@ -220,8 +264,7 @@ def main() -> None:
                 list(range(10_000, 10_000 + args.eval_episodes)),
                 config,
             )
-            # S52 requires the raw rows kept: the official score is nonlinear, so a
-            # paired interval cannot be reconstructed from summaries alone.
+            # Raw rows preserve every paired metric and future reanalysis.
             entry["evaluation"] = {
                 name: {k: v for k, v in row.items() if k != "episodes"} for name, row in scores.items()
             }
@@ -230,10 +273,12 @@ def main() -> None:
             }
             report[arm] = entry
             log(
-                f"{arm}: actor {scores['actor']['score']:.2f} bc {scores['bc']['score']:.2f} "
-                f"random {scores['random']['score']:.2f} | "
-                f"beats bc={scores['actor']['versus_bc']['beats']} "
-                f"random={scores['actor']['versus_random']['beats']} | "
+                f"{arm}: achievements actor={scores['actor']['achievements']:.2f} "
+                f"bc={scores['bc']['achievements']:.2f} random={scores['random']['achievements']:.2f} "
+                f"beats bc={scores['actor']['versus_bc']['achievements_beats']} "
+                f"random={scores['actor']['versus_random']['achievements_beats']} | "
+                f"geometric actor={scores['actor']['score']:.2f} "
+                f"bc={scores['bc']['score']:.2f} random={scores['random']['score']:.2f} | "
                 f"continuation separation {entry['diagnostics']['continuation_separation']:.4f} | "
                 f"contraction {entry['diagnostics']['contraction']:.3f} | horizon {config.horizon}"
             )

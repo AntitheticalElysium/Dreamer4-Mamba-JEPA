@@ -1,0 +1,195 @@
+{
+  "contract": {
+    "version": "fork-representation-identifiability-v1",
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "trajectory_phase2": "94bf488063121630b30e89b9b2c66143c798b3e3bb4a8a9169e5ac61f403146e",
+    "forks": "392e8e33895d48aea888d22e043e57a81ce4d55fb2f83fdf67d19451353e9dad",
+    "fixed_z": "ac7bb4640eded3b5beaf544b0ad3069ddd5be9f5ee93740e9d9107ed5216434f",
+    "folds": 5,
+    "seeds": 3,
+    "steps": 600,
+    "split": "outer folds hold out complete safe/fatal trajectory pairs; every fork state's 17 actions remain together",
+    "action_conditioning": "one output logit per action; the correct action selects its outcome",
+    "implementation": {
+      "artifacts/run_stage_a.py": "d632395dda571d2f5f7e2cd68f3133a3e2dd9a80f0ccc8721956f95e1dde5d03",
+      "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+      "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+      "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+      "d4mj/data.py": "55cd78faafae33f111298304b63f325c4e257790feeca6e2f256da52b8dc529c",
+      "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+      "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+      "d4mj/train.py": "7a7e3f7bd75e1c642a070fcc6e24235b6d5bf2f7ea3f5b365486115430bf0336",
+      "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+      "artifacts/phase1b_diagnostic_common.py": "eeb675e1545ba81db7bbf7b69e68745541f4ec31d2411a06af4eb66a5d1e4c0b",
+      "artifacts/diagnose_fork_representation_identifiability.py": "641e1c9477fba4f55fac4edf702f82c4283bca789b755415ce3c6b48e5a830cd"
+    }
+  },
+  "replay": {
+    "states": 104,
+    "truth_replayed_exactly": true,
+    "frozen_z_max_abs_error": 0.0
+  },
+  "representations": {
+    "simulator_state": {
+      "global_auc": 0.5202455520629883,
+      "within_state_auc": 0.5065744519233704,
+      "within_state_centered_auc": 0.5145509243011475,
+      "same_action_auc": 0.508405327796936,
+      "examples": 1768,
+      "states": 104,
+      "groups": 104,
+      "seed_reports": [
+        {
+          "global_auc": 0.49759599566459656,
+          "within_state_auc": 0.4645615816116333,
+          "within_state_centered_auc": 0.48332613706588745,
+          "same_action_auc": 0.4955209195613861,
+          "examples": 1768,
+          "states": 104,
+          "groups": 104
+        },
+        {
+          "global_auc": 0.5228282809257507,
+          "within_state_auc": 0.5372320413589478,
+          "within_state_centered_auc": 0.5158481001853943,
+          "same_action_auc": 0.5090709924697876,
+          "examples": 1768,
+          "states": 104,
+          "groups": 104
+        },
+        {
+          "global_auc": 0.5247601270675659,
+          "within_state_auc": 0.5276928544044495,
+          "within_state_centered_auc": 0.5134149789810181,
+          "same_action_auc": 0.5124782919883728,
+          "examples": 1768,
+          "states": 104,
+          "groups": 104
+        }
+      ]
+    },
+    "raw_observation": {
+      "global_auc": 0.6812182664871216,
+      "within_state_auc": 0.6762731075286865,
+      "within_state_centered_auc": 0.6112069487571716,
+      "same_action_auc": 0.6601529717445374,
+      "examples": 1768,
+      "states": 104,
+      "groups": 104,
+      "seed_reports": [
+        {
+          "global_auc": 0.6482856869697571,
+          "within_state_auc": 0.6644512414932251,
+          "within_state_centered_auc": 0.5935674905776978,
+          "same_action_auc": 0.629758358001709,
+          "examples": 1768,
+          "states": 104,
+          "groups": 104
+        },
+        {
+          "global_auc": 0.6458660960197449,
+          "within_state_auc": 0.6227286458015442,
+          "within_state_centered_auc": 0.5858982801437378,
+          "same_action_auc": 0.6328045725822449,
+          "examples": 1768,
+          "states": 104,
+          "groups": 104
+        },
+        {
+          "global_auc": 0.6459490060806274,
+          "within_state_auc": 0.6732715368270874,
+          "within_state_centered_auc": 0.6047455668449402,
+          "same_action_auc": 0.6353882551193237,
+          "examples": 1768,
+          "states": 104,
+          "groups": 104
+        }
+      ]
+    },
+    "pre_bottleneck": {
+      "global_auc": 0.6091902256011963,
+      "within_state_auc": 0.6180380582809448,
+      "within_state_centered_auc": 0.5680781006813049,
+      "same_action_auc": 0.5903490781784058,
+      "examples": 1768,
+      "states": 104,
+      "groups": 104,
+      "seed_reports": [
+        {
+          "global_auc": 0.5774706602096558,
+          "within_state_auc": 0.5989521741867065,
+          "within_state_centered_auc": 0.5707502365112305,
+          "same_action_auc": 0.5556445717811584,
+          "examples": 1768,
+          "states": 104,
+          "groups": 104
+        },
+        {
+          "global_auc": 0.6058782935142517,
+          "within_state_auc": 0.5974873900413513,
+          "within_state_centered_auc": 0.550094723701477,
+          "same_action_auc": 0.5926506519317627,
+          "examples": 1768,
+          "states": 104,
+          "groups": 104
+        },
+        {
+          "global_auc": 0.5780185461044312,
+          "within_state_auc": 0.5746279358863831,
+          "within_state_centered_auc": 0.5395416617393494,
+          "same_action_auc": 0.5709885358810425,
+          "examples": 1768,
+          "states": 104,
+          "groups": 104
+        }
+      ]
+    },
+    "frozen_z": {
+      "global_auc": 0.6179494261741638,
+      "within_state_auc": 0.601319432258606,
+      "within_state_centered_auc": 0.5918098092079163,
+      "same_action_auc": 0.6015298962593079,
+      "examples": 1768,
+      "states": 104,
+      "groups": 104,
+      "seed_reports": [
+        {
+          "global_auc": 0.589795708656311,
+          "within_state_auc": 0.5692351460456848,
+          "within_state_centered_auc": 0.5847020745277405,
+          "same_action_auc": 0.575219452381134,
+          "examples": 1768,
+          "states": 104,
+          "groups": 104
+        },
+        {
+          "global_auc": 0.6028985381126404,
+          "within_state_auc": 0.5685078501701355,
+          "within_state_centered_auc": 0.5649332404136658,
+          "same_action_auc": 0.5933389067649841,
+          "examples": 1768,
+          "states": 104,
+          "groups": 104
+        },
+        {
+          "global_auc": 0.5945978760719299,
+          "within_state_auc": 0.5737426280975342,
+          "within_state_centered_auc": 0.5790515542030334,
+          "same_action_auc": 0.5855540633201599,
+          "examples": 1768,
+          "states": 104,
+          "groups": 104
+        }
+      ]
+    }
+  },
+  "action_only_control": {
+    "global_auc": 0.4825153052806854,
+    "within_state_auc": 0.5926885008811951,
+    "within_state_centered_auc": 0.49297064542770386,
+    "same_action_auc": 0.3645666539669037,
+    "examples": 1768,
+    "states": 104,
+    "groups": 104
+  }
+}

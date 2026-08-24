@@ -1,0 +1,118 @@
+{
+  "contract": {
+    "arm": "direct-attention",
+    "split": "ordinary DEV windows",
+    "history_and_target_fixed": true,
+    "only_outgoing_action_shuffled": true,
+    "shuffle_preserves_empirical_action_marginal": true,
+    "batches": 512,
+    "shuffles_per_batch": 8
+  },
+  "checkpoint": {
+    "phase1a": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/stage_a_terminalfix/phase1a.pt",
+    "phase2": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/stage_a_terminal_dynamics/direct-attention.2.pt",
+    "phase1a_sha256": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "phase2_sha256": "96bc7c3e4a2bc9a08cd064cb0550d6f8a1c5dc76e1aaf484cc030792c37d847b"
+  },
+  "transitions": 73728,
+  "shuffled_transitions": 589824,
+  "changed_fraction": 0.8732147216796875,
+  "correct_mse": 0.02282737762895219,
+  "shuffled_mse": 0.05627144326308553,
+  "shuffled_over_correct": 2.4650857482515165,
+  "shuffled_excess_mse": 0.03344406563413334,
+  "prediction_sensitivity_mse": 0.03403580279357104,
+  "changed_only": {
+    "examples": 515043,
+    "correct_mse": 0.022918219370469457,
+    "shuffled_mse": 0.06121815259007894,
+    "shuffled_over_correct": 2.671156585094898
+  },
+  "per_realized_action": {
+    "0": {
+      "examples": 2217,
+      "correct_mse": 0.009390429938247744,
+      "shuffled_mse": 0.022542560051144547
+    },
+    "1": {
+      "examples": 8083,
+      "correct_mse": 0.03505351834504569,
+      "shuffled_mse": 0.08753523841841132
+    },
+    "2": {
+      "examples": 7567,
+      "correct_mse": 0.03833565069368675,
+      "shuffled_mse": 0.09312799281546144
+    },
+    "3": {
+      "examples": 7821,
+      "correct_mse": 0.038331141747447825,
+      "shuffled_mse": 0.08921324859631734
+    },
+    "4": {
+      "examples": 8298,
+      "correct_mse": 0.04074742459352776,
+      "shuffled_mse": 0.08721160893082343
+    },
+    "5": {
+      "examples": 16384,
+      "correct_mse": 0.01065781461041837,
+      "shuffled_mse": 0.030926942251592315
+    },
+    "6": {
+      "examples": 1616,
+      "correct_mse": 0.0414545059502776,
+      "shuffled_mse": 0.14277783929807839
+    },
+    "7": {
+      "examples": 2891,
+      "correct_mse": 0.010377189573791266,
+      "shuffled_mse": 0.027348056236765894
+    },
+    "8": {
+      "examples": 1844,
+      "correct_mse": 0.01266980919071045,
+      "shuffled_mse": 0.026203626794539484
+    },
+    "9": {
+      "examples": 1741,
+      "correct_mse": 0.01006942421614071,
+      "shuffled_mse": 0.02263583440488335
+    },
+    "10": {
+      "examples": 2717,
+      "correct_mse": 0.00838618831850251,
+      "shuffled_mse": 0.02226502600039503
+    },
+    "11": {
+      "examples": 2224,
+      "correct_mse": 0.010194064769663566,
+      "shuffled_mse": 0.026127145153295978
+    },
+    "12": {
+      "examples": 1991,
+      "correct_mse": 0.009531538806926311,
+      "shuffled_mse": 0.023943706283464282
+    },
+    "13": {
+      "examples": 2009,
+      "correct_mse": 0.008781537426113638,
+      "shuffled_mse": 0.023023072875369314
+    },
+    "14": {
+      "examples": 2253,
+      "correct_mse": 0.00900178981080562,
+      "shuffled_mse": 0.02378048175288284
+    },
+    "15": {
+      "examples": 1970,
+      "correct_mse": 0.009286693262461062,
+      "shuffled_mse": 0.02427049047713402
+    },
+    "16": {
+      "examples": 2102,
+      "correct_mse": 0.008425408837022827,
+      "shuffled_mse": 0.02235698455737566
+    }
+  }
+}

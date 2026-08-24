@@ -1,0 +1,739 @@
+{
+  "contract": {
+    "version": "generated-latent-outcome-shaping-summary-v1",
+    "inputs": {
+      "training": "029a45eef05394fee0c714e229609e733dcfd914d6719ef485244a98ecd971d7",
+      "prepared": "5cdc2d6d6651d381cc564cb9e7810a5fad7fd3b7d59898f8e57638300a6607bd",
+      "archive": "d59c67f98536e15bd563d38443f6c79a1abef51fe6e9f6b592ea7efcf076ae3d",
+      "forks": "5013985f696010fce15064d8d3cf1357a59a8b09c0d0726ace2f38f83f78c9f2",
+      "heads": "d66b7a8585b162f1d101897fc982c57e7a47f1d8f7489a79579ae1f8d751dfbb",
+      "old_gradient_training": "7fbda49f4d6ceb8114237408ed393a85484cf9e16a2e24c27028264b4cbe5018",
+      "old_gradient_probe": "bf0ee4a9788e7b395f1dd8efff737b86f363793f3042c28266a8662534d21948"
+    },
+    "implementation": {
+      "artifacts/run_stage_a.py": "37132c25192790ebe2d0253db5e120e8e8305b9c5b3c89a1c3b8f8c8cad93f5a",
+      "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+      "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+      "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+      "d4mj/data.py": "55cd78faafae33f111298304b63f325c4e257790feeca6e2f256da52b8dc529c",
+      "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+      "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+      "d4mj/train.py": "7a7e3f7bd75e1c642a070fcc6e24235b6d5bf2f7ea3f5b365486115430bf0336",
+      "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+      "artifacts/phase1b_diagnostic_common.py": "eeb675e1545ba81db7bbf7b69e68745541f4ec31d2411a06af4eb66a5d1e4c0b",
+      "artifacts/summarize_generated_latent_outcome_shaping.py": "d59b8c30a8b29e29534dcf14909e3d0a31c6f72ac3e771661b9619ded3da9399",
+      "artifacts/summarize_predictor_flow_attribution.py": "66bdfe3d46de6cd43c74f2eabc559ec1511cffd42613e1e0664970415867826c"
+    },
+    "primary": "allowed-minus-stopped fatal-minus-safe generated-latent movement along the fixed TRAIN fatality direction",
+    "primary_endpoint": 20000,
+    "supporting_endpoints": [
+      5000,
+      10000
+    ],
+    "uncertainty": "paired whole DEV episode or policy-fork-state bootstrap",
+    "minimum_effect": "5% of the corresponding true held-out contrast",
+    "rescue_rule": "at the final endpoint the lower paired 95% bound exceeds the minimum effect on both archive support and policy forks, after the trained-head validity check passes",
+    "equivalence_rule": "both paired intervals lie wholly inside their corresponding two-sided minimum-effect bands",
+    "trained_head_role": "validity check only, never a rescue endpoint"
+  },
+  "matching": {
+    "shared_initial_world": true,
+    "shared_initial_head": true,
+    "stopped_matches_s78_at_every_milestone": true,
+    "allowed_and_stopped_worlds_differ": true,
+    "gradient_preflight": {
+      "allowed": {
+        "world_gradient_norm": 24.717253516808263,
+        "generated_latent_gradient_norm": 0.7086294293403625
+      },
+      "stopped": {
+        "world_gradient_norm": 0.0,
+        "generated_latent_gradient_norm": 0.0
+      }
+    }
+  },
+  "head_validity": {
+    "rule": "each final trained head's observed-latent death-AUC lower clustered 95% bound exceeds chance on archive support and policy forks",
+    "checks": {
+      "allowed_020k": {
+        "archive_observed_auc_ci_above_chance": true,
+        "fork_observed_auc_ci_above_chance": true
+      },
+      "stopped_020k": {
+        "archive_observed_auc_ci_above_chance": true,
+        "fork_observed_auc_ci_above_chance": true
+      }
+    },
+    "passed": true
+  },
+  "cells": {
+    "allowed_005k": {
+      "archive_support": {
+        "mse": 0.13731060922145844,
+        "fixed_direction_auc": 0.3680586516857147,
+        "fresh_probe_auc": 0.6752214431762695,
+        "conditional_consequence": {
+          "groups": 1004,
+          "true_fatal_minus_safe": 0.45010772347450256,
+          "predicted_fatal_minus_safe": 0.035412631928920746,
+          "recovered_fraction": 0.07867590374935386,
+          "within_group_predicted_vs_true_slope": 0.12421301752328873,
+          "predicted_contrast_ci95": [
+            0.022927649319171906,
+            0.04721022769808769
+          ],
+          "slope_ci95": [
+            0.10151307284832001,
+            0.14960694313049316
+          ]
+        },
+        "trained_head": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9437747001647949,
+            "death_auc_ci95": [
+              0.934245765209198,
+              0.9534051418304443
+            ],
+            "bce": 0.867098331451416,
+            "accuracy": 0.787350594997406,
+            "continuation_on_fatal": 0.010914542712271214,
+            "continuation_on_safe": 0.5730689167976379
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.30125513672828674,
+            "death_auc_ci95": [
+              0.28341397643089294,
+              0.3177923560142517
+            ],
+            "bce": 3.9131317138671875,
+            "accuracy": 0.3904382586479187,
+            "continuation_on_fatal": 0.9092532396316528,
+            "continuation_on_safe": 0.6998390555381775
+          }
+        }
+      },
+      "policy_forks": {
+        "mse": 0.035981059074401855,
+        "fresh_probe_auc": 0.6202278137207031,
+        "conditional_consequence": {
+          "groups": 104,
+          "true_fatal_minus_safe": 0.3254093527793884,
+          "predicted_fatal_minus_safe": -0.0028392078820616007,
+          "recovered_fraction": -0.008725034661147076,
+          "within_group_predicted_vs_true_slope": 0.10272122919559479,
+          "predicted_contrast_ci95": [
+            -0.010037020780146122,
+            0.004195966757833958
+          ],
+          "slope_ci95": [
+            0.07877813279628754,
+            0.12445297837257385
+          ]
+        },
+        "trained_head": {
+          "observed": {
+            "examples": 1768,
+            "fatal_examples": 981,
+            "death_auc": 0.9921209216117859,
+            "death_auc_ci95": [
+              0.9850295186042786,
+              0.9972047209739685
+            ],
+            "bce": 0.2070675641298294,
+            "accuracy": 0.9106335043907166,
+            "continuation_on_fatal": 0.01764587312936783,
+            "continuation_on_safe": 0.8140268325805664
+          },
+          "predicted": {
+            "examples": 1768,
+            "fatal_examples": 981,
+            "death_auc": 0.4256450831890106,
+            "death_auc_ci95": [
+              0.34465354681015015,
+              0.5082071423530579
+            ],
+            "bce": 3.8378353118896484,
+            "accuracy": 0.4587104022502899,
+            "continuation_on_fatal": 0.8480105996131897,
+            "continuation_on_safe": 0.8277100324630737
+          }
+        }
+      }
+    },
+    "stopped_005k": {
+      "archive_support": {
+        "mse": 0.127425879240036,
+        "fixed_direction_auc": 0.3535251319408417,
+        "fresh_probe_auc": 0.6567683219909668,
+        "conditional_consequence": {
+          "groups": 1004,
+          "true_fatal_minus_safe": 0.45010772347450256,
+          "predicted_fatal_minus_safe": 0.028101768344640732,
+          "recovered_fraction": 0.06243342844178639,
+          "within_group_predicted_vs_true_slope": 0.07744088768959045,
+          "predicted_contrast_ci95": [
+            0.019791588187217712,
+            0.03615991026163101
+          ],
+          "slope_ci95": [
+            0.06177549064159393,
+            0.09101552516222
+          ]
+        },
+        "trained_head": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9376547336578369,
+            "death_auc_ci95": [
+              0.9275417327880859,
+              0.9476637244224548
+            ],
+            "bce": 0.7641944289207458,
+            "accuracy": 0.7430278658866882,
+            "continuation_on_fatal": 0.026267489418387413,
+            "continuation_on_safe": 0.5012351870536804
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.2968207001686096,
+            "death_auc_ci95": [
+              0.27818894386291504,
+              0.3143301010131836
+            ],
+            "bce": 2.3165335655212402,
+            "accuracy": 0.35109561681747437,
+            "continuation_on_fatal": 0.6980156302452087,
+            "continuation_on_safe": 0.43381980061531067
+          }
+        }
+      },
+      "policy_forks": {
+        "mse": 0.029689067974686623,
+        "fresh_probe_auc": 0.6063555479049683,
+        "conditional_consequence": {
+          "groups": 104,
+          "true_fatal_minus_safe": 0.3254093527793884,
+          "predicted_fatal_minus_safe": 0.003890666179358959,
+          "recovered_fraction": 0.011956221129257585,
+          "within_group_predicted_vs_true_slope": 0.18017496168613434,
+          "predicted_contrast_ci95": [
+            -0.004653166979551315,
+            0.01330315601080656
+          ],
+          "slope_ci95": [
+            0.14947190880775452,
+            0.21116489171981812
+          ]
+        },
+        "trained_head": {
+          "observed": {
+            "examples": 1768,
+            "fatal_examples": 981,
+            "death_auc": 0.9720897674560547,
+            "death_auc_ci95": [
+              0.9596753120422363,
+              0.9821520447731018
+            ],
+            "bce": 0.36083632707595825,
+            "accuracy": 0.8325791954994202,
+            "continuation_on_fatal": 0.03881685435771942,
+            "continuation_on_safe": 0.6418883204460144
+          },
+          "predicted": {
+            "examples": 1768,
+            "fatal_examples": 981,
+            "death_auc": 0.5306114554405212,
+            "death_auc_ci95": [
+              0.4562637209892273,
+              0.6137280464172363
+            ],
+            "bce": 0.9850418567657471,
+            "accuracy": 0.5384615659713745,
+            "continuation_on_fatal": 0.4304782748222351,
+            "continuation_on_safe": 0.4655304253101349
+          }
+        }
+      }
+    },
+    "allowed_010k": {
+      "archive_support": {
+        "mse": 0.1254236102104187,
+        "fixed_direction_auc": 0.3614635169506073,
+        "fresh_probe_auc": 0.6615787744522095,
+        "conditional_consequence": {
+          "groups": 1004,
+          "true_fatal_minus_safe": 0.45010772347450256,
+          "predicted_fatal_minus_safe": 0.032200269401073456,
+          "recovered_fraction": 0.07153902881850353,
+          "within_group_predicted_vs_true_slope": 0.09201841801404953,
+          "predicted_contrast_ci95": [
+            0.02235349453985691,
+            0.04178459569811821
+          ],
+          "slope_ci95": [
+            0.07171189039945602,
+            0.1107296347618103
+          ]
+        },
+        "trained_head": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9581058025360107,
+            "death_auc_ci95": [
+              0.9495956897735596,
+              0.9661678075790405
+            ],
+            "bce": 0.6898128390312195,
+            "accuracy": 0.8436254858970642,
+            "continuation_on_fatal": 0.007976657710969448,
+            "continuation_on_safe": 0.6931636333465576
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.3134007751941681,
+            "death_auc_ci95": [
+              0.29603374004364014,
+              0.33113014698028564
+            ],
+            "bce": 7.014190673828125,
+            "accuracy": 0.46115538477897644,
+            "continuation_on_fatal": 0.977623462677002,
+            "continuation_on_safe": 0.895334005355835
+          }
+        }
+      },
+      "policy_forks": {
+        "mse": 0.028827739879488945,
+        "fresh_probe_auc": 0.5636379718780518,
+        "conditional_consequence": {
+          "groups": 104,
+          "true_fatal_minus_safe": 0.3254093527793884,
+          "predicted_fatal_minus_safe": 0.00023588910698890686,
+          "recovered_fraction": 0.000724899591773037,
+          "within_group_predicted_vs_true_slope": 0.2236921191215515,
+          "predicted_contrast_ci95": [
+            -0.012843349017202854,
+            0.013060387223958969
+          ],
+          "slope_ci95": [
+            0.18648001551628113,
+            0.2596631646156311
+          ]
+        },
+        "trained_head": {
+          "observed": {
+            "examples": 1768,
+            "fatal_examples": 981,
+            "death_auc": 0.9917090535163879,
+            "death_auc_ci95": [
+              0.9803231954574585,
+              0.9988511800765991
+            ],
+            "bce": 0.1919439136981964,
+            "accuracy": 0.9490950107574463,
+            "continuation_on_fatal": 0.012411379255354404,
+            "continuation_on_safe": 0.8822178244590759
+          },
+          "predicted": {
+            "examples": 1768,
+            "fatal_examples": 981,
+            "death_auc": 0.47116562724113464,
+            "death_auc_ci95": [
+              0.38580572605133057,
+              0.5510404109954834
+            ],
+            "bce": 5.188996315002441,
+            "accuracy": 0.4609728455543518,
+            "continuation_on_fatal": 0.943053662776947,
+            "continuation_on_safe": 0.9594597816467285
+          }
+        }
+      }
+    },
+    "stopped_010k": {
+      "archive_support": {
+        "mse": 0.11977878212928772,
+        "fixed_direction_auc": 0.3477752208709717,
+        "fresh_probe_auc": 0.6544796824455261,
+        "conditional_consequence": {
+          "groups": 1004,
+          "true_fatal_minus_safe": 0.45010772347450256,
+          "predicted_fatal_minus_safe": 0.01813572458922863,
+          "recovered_fraction": 0.04029196488617012,
+          "within_group_predicted_vs_true_slope": 0.057999588549137115,
+          "predicted_contrast_ci95": [
+            0.0107926856726408,
+            0.025614937767386436
+          ],
+          "slope_ci95": [
+            0.04329974576830864,
+            0.072242371737957
+          ]
+        },
+        "trained_head": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9502140879631042,
+            "death_auc_ci95": [
+              0.9412501454353333,
+              0.9585645198822021
+            ],
+            "bce": 0.6831783652305603,
+            "accuracy": 0.7933266758918762,
+            "continuation_on_fatal": 0.02200271375477314,
+            "continuation_on_safe": 0.592180609703064
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.28467801213264465,
+            "death_auc_ci95": [
+              0.26668092608451843,
+              0.3035585582256317
+            ],
+            "bce": 3.0661234855651855,
+            "accuracy": 0.3500995934009552,
+            "continuation_on_fatal": 0.7442443370819092,
+            "continuation_on_safe": 0.4617528021335602
+          }
+        }
+      },
+      "policy_forks": {
+        "mse": 0.02394982799887657,
+        "fresh_probe_auc": 0.5786791443824768,
+        "conditional_consequence": {
+          "groups": 104,
+          "true_fatal_minus_safe": 0.3254093527793884,
+          "predicted_fatal_minus_safe": -0.004316349048167467,
+          "recovered_fraction": -0.013264366900645723,
+          "within_group_predicted_vs_true_slope": 0.205083966255188,
+          "predicted_contrast_ci95": [
+            -0.016826676204800606,
+            0.00811170693486929
+          ],
+          "slope_ci95": [
+            0.16584311425685883,
+            0.2422455996274948
+          ]
+        },
+        "trained_head": {
+          "observed": {
+            "examples": 1768,
+            "fatal_examples": 981,
+            "death_auc": 0.9731946587562561,
+            "death_auc_ci95": [
+              0.951682448387146,
+              0.9890292286872864
+            ],
+            "bce": 0.34274378418922424,
+            "accuracy": 0.8998869061470032,
+            "continuation_on_fatal": 0.02861870266497135,
+            "continuation_on_safe": 0.7472613453865051
+          },
+          "predicted": {
+            "examples": 1768,
+            "fatal_examples": 981,
+            "death_auc": 0.4672319293022156,
+            "death_auc_ci95": [
+              0.3904055058956146,
+              0.5488315224647522
+            ],
+            "bce": 1.2285046577453613,
+            "accuracy": 0.49660632014274597,
+            "continuation_on_fatal": 0.4915623366832733,
+            "continuation_on_safe": 0.4653119146823883
+          }
+        }
+      }
+    },
+    "allowed_020k": {
+      "archive_support": {
+        "mse": 0.12776687741279602,
+        "fixed_direction_auc": 0.3439379930496216,
+        "fresh_probe_auc": 0.671245276927948,
+        "conditional_consequence": {
+          "groups": 1004,
+          "true_fatal_minus_safe": 0.45010772347450256,
+          "predicted_fatal_minus_safe": 0.015578684397041798,
+          "recovered_fraction": 0.03461101328541031,
+          "within_group_predicted_vs_true_slope": 0.06713209301233292,
+          "predicted_contrast_ci95": [
+            0.00730150006711483,
+            0.02391590178012848
+          ],
+          "slope_ci95": [
+            0.05077524483203888,
+            0.08290984481573105
+          ]
+        },
+        "trained_head": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9619777798652649,
+            "death_auc_ci95": [
+              0.9536061882972717,
+              0.9694631099700928
+            ],
+            "bce": 0.6575648188591003,
+            "accuracy": 0.870517909526825,
+            "continuation_on_fatal": 0.007860524579882622,
+            "continuation_on_safe": 0.7432098984718323
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.28564029932022095,
+            "death_auc_ci95": [
+              0.2661915421485901,
+              0.3045022487640381
+            ],
+            "bce": 8.68842601776123,
+            "accuracy": 0.41782867908477783,
+            "continuation_on_fatal": 0.9798606038093567,
+            "continuation_on_safe": 0.8171290159225464
+          }
+        }
+      },
+      "policy_forks": {
+        "mse": 0.02021690271794796,
+        "fresh_probe_auc": 0.5614787936210632,
+        "conditional_consequence": {
+          "groups": 104,
+          "true_fatal_minus_safe": 0.3254093527793884,
+          "predicted_fatal_minus_safe": 0.006491759791970253,
+          "recovered_fraction": 0.019949518157738225,
+          "within_group_predicted_vs_true_slope": 0.2854465842247009,
+          "predicted_contrast_ci95": [
+            -0.00722437584772706,
+            0.019614528864622116
+          ],
+          "slope_ci95": [
+            0.2501401901245117,
+            0.32120609283447266
+          ]
+        },
+        "trained_head": {
+          "observed": {
+            "examples": 1768,
+            "fatal_examples": 981,
+            "death_auc": 0.9927387833595276,
+            "death_auc_ci95": [
+              0.9779284000396729,
+              0.9997292160987854
+            ],
+            "bce": 0.12682689726352692,
+            "accuracy": 0.9683257937431335,
+            "continuation_on_fatal": 0.011606171727180481,
+            "continuation_on_safe": 0.9318644404411316
+          },
+          "predicted": {
+            "examples": 1768,
+            "fatal_examples": 981,
+            "death_auc": 0.4552766978740692,
+            "death_auc_ci95": [
+              0.37416598200798035,
+              0.5360100269317627
+            ],
+            "bce": 8.175819396972656,
+            "accuracy": 0.44400453567504883,
+            "continuation_on_fatal": 0.9737017750740051,
+            "continuation_on_safe": 0.9578465223312378
+          }
+        }
+      }
+    },
+    "stopped_020k": {
+      "archive_support": {
+        "mse": 0.11928784847259521,
+        "fixed_direction_auc": 0.3561272919178009,
+        "fresh_probe_auc": 0.6484857201576233,
+        "conditional_consequence": {
+          "groups": 1004,
+          "true_fatal_minus_safe": 0.45010772347450256,
+          "predicted_fatal_minus_safe": 0.023805173113942146,
+          "recovered_fraction": 0.052887724143419745,
+          "within_group_predicted_vs_true_slope": 0.07933610677719116,
+          "predicted_contrast_ci95": [
+            0.016404669731855392,
+            0.031363241374492645
+          ],
+          "slope_ci95": [
+            0.0646669864654541,
+            0.09397105872631073
+          ]
+        },
+        "trained_head": {
+          "target": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.9530860781669617,
+            "death_auc_ci95": [
+              0.9448590874671936,
+              0.9613254070281982
+            ],
+            "bce": 0.652445375919342,
+            "accuracy": 0.8291832804679871,
+            "continuation_on_fatal": 0.01734275370836258,
+            "continuation_on_safe": 0.644476592540741
+          },
+          "predicted": {
+            "examples": 2008,
+            "fatal_examples": 1004,
+            "death_auc": 0.2869795858860016,
+            "death_auc_ci95": [
+              0.26903945207595825,
+              0.3054019510746002
+            ],
+            "bce": 3.2257580757141113,
+            "accuracy": 0.36055776476860046,
+            "continuation_on_fatal": 0.8595337867736816,
+            "continuation_on_safe": 0.5930971503257751
+          }
+        }
+      },
+      "policy_forks": {
+        "mse": 0.0171648021787405,
+        "fresh_probe_auc": 0.5359013080596924,
+        "conditional_consequence": {
+          "groups": 104,
+          "true_fatal_minus_safe": 0.3254093527793884,
+          "predicted_fatal_minus_safe": -0.0020465387497097254,
+          "recovered_fraction": -0.0062891208633981035,
+          "within_group_predicted_vs_true_slope": 0.2996700704097748,
+          "predicted_contrast_ci95": [
+            -0.015008661895990372,
+            0.011424385011196136
+          ],
+          "slope_ci95": [
+            0.2605344355106354,
+            0.34224680066108704
+          ]
+        },
+        "trained_head": {
+          "observed": {
+            "examples": 1768,
+            "fatal_examples": 981,
+            "death_auc": 0.9815166592597961,
+            "death_auc_ci95": [
+              0.9605222344398499,
+              0.9953328371047974
+            ],
+            "bce": 0.25725746154785156,
+            "accuracy": 0.9304298758506775,
+            "continuation_on_fatal": 0.020934004336595535,
+            "continuation_on_safe": 0.826388418674469
+          },
+          "predicted": {
+            "examples": 1768,
+            "fatal_examples": 981,
+            "death_auc": 0.46239542961120605,
+            "death_auc_ci95": [
+              0.3904360234737396,
+              0.5440926551818848
+            ],
+            "bce": 1.7090470790863037,
+            "accuracy": 0.4406108558177948,
+            "continuation_on_fatal": 0.7770200371742249,
+            "continuation_on_safe": 0.7257517576217651
+          }
+        }
+      }
+    }
+  },
+  "comparisons": {
+    "5000": {
+      "archive_support": {
+        "groups": 1004,
+        "mean": 0.007310869172215462,
+        "ci95": [
+          -0.0013369244989007711,
+          0.016041748225688934
+        ],
+        "minimum_meaningful_effect": 0.02250538617372513,
+        "material_improvement": false,
+        "practically_equivalent": true
+      },
+      "policy_forks": {
+        "groups": 104,
+        "mean": -0.006729853339493275,
+        "ci95": [
+          -0.013056499883532524,
+          -0.0005077935638837516
+        ],
+        "minimum_meaningful_effect": 0.016270467638969423,
+        "material_improvement": false,
+        "practically_equivalent": true
+      }
+    },
+    "10000": {
+      "archive_support": {
+        "groups": 1004,
+        "mean": 0.014064544811844826,
+        "ci95": [
+          0.006693093106150627,
+          0.021589042618870735
+        ],
+        "minimum_meaningful_effect": 0.02250538617372513,
+        "material_improvement": false,
+        "practically_equivalent": true
+      },
+      "policy_forks": {
+        "groups": 104,
+        "mean": 0.004552262835204601,
+        "ci95": [
+          -0.004252627491950989,
+          0.012129146605730057
+        ],
+        "minimum_meaningful_effect": 0.016270467638969423,
+        "material_improvement": false,
+        "practically_equivalent": true
+      }
+    },
+    "20000": {
+      "archive_support": {
+        "groups": 1004,
+        "mean": -0.008226495236158371,
+        "ci95": [
+          -0.01350420992821455,
+          -0.00287948758341372
+        ],
+        "minimum_meaningful_effect": 0.02250538617372513,
+        "material_improvement": false,
+        "practically_equivalent": true
+      },
+      "policy_forks": {
+        "groups": 104,
+        "mean": 0.008538298308849335,
+        "ci95": [
+          -0.0016926188254728913,
+          0.018875496461987495
+        ],
+        "minimum_meaningful_effect": 0.016270467638969423,
+        "material_improvement": false,
+        "practically_equivalent": false
+      }
+    }
+  },
+  "adverse_control": {
+    "description": "earlier terminal BCE attached after Direct's generated agent-token path; it was not a direct generated-latent objective",
+    "gradient_preflight": {
+      "allowed": 2.3468808863658595,
+      "stopped": 0.0
+    },
+    "allowed_same_action_auc": 0.6044806241989136,
+    "stopped_same_action_auc": 0.6440766453742981,
+    "allowed_mse": 0.02510802075266838,
+    "stopped_mse": 0.02376234158873558
+  },
+  "verdict": "mixed_or_inconclusive"
+}

@@ -1,0 +1,139 @@
+{
+  "arm": "32x16",
+  "suffix": "s1",
+  "milestone": 20000,
+  "depths": {
+    "z_t": {
+      "within_auc": 0.6232158089790183,
+      "within_auc_ci": [
+        0.5989871902396364,
+        0.6475275442105187
+      ],
+      "roots": 1022,
+      "input": "shared",
+      "tune_auc": 0.6066653307932378
+    },
+    "f_t": {
+      "within_auc": 0.6232674655742171,
+      "within_auc_ci": [
+        0.5988590870357626,
+        0.6458153263281076
+      ],
+      "roots": 1022,
+      "input": "shared",
+      "tune_auc": 0.6141554182251857
+    },
+    "pooled": {
+      "within_auc": 0.621424225643893,
+      "within_auc_ci": [
+        0.5976289029178583,
+        0.6447447400324725
+      ],
+      "roots": 1022,
+      "input": "shared",
+      "tune_auc": 0.6079871678708888
+    },
+    "hidden": {
+      "within_auc": 0.6019862028056744,
+      "within_auc_ci": [
+        0.5767502636592046,
+        0.6249833874540333
+      ],
+      "roots": 1022,
+      "input": "per-action",
+      "tune_auc": 0.620353290120732
+    },
+    "hidden_centred": {
+      "within_auc": 0.5896513426234562,
+      "within_auc_ci": [
+        0.5652633982333714,
+        0.6125554333956975
+      ],
+      "roots": 1022,
+      "input": "per-action",
+      "tune_auc": 0.5996162751976705
+    },
+    "pre_tanh": {
+      "within_auc": 0.5934041293018788,
+      "within_auc_ci": [
+        0.5667381985064838,
+        0.6185915020644718
+      ],
+      "roots": 1022,
+      "input": "per-action",
+      "tune_auc": 0.6139430337104756
+    },
+    "pre_tanh_centred": {
+      "within_auc": 0.5900927757825997,
+      "within_auc_ci": [
+        0.5643636527977892,
+        0.6135796754818892
+      ],
+      "roots": 1022,
+      "input": "per-action",
+      "tune_auc": 0.6048347969859598
+    },
+    "pred_dz": {
+      "within_auc": 0.5738334032243034,
+      "within_auc_ci": [
+        0.5505366192841732,
+        0.5964914677014114
+      ],
+      "roots": 1022,
+      "input": "per-action",
+      "tune_auc": 0.5728885455629642
+    },
+    "pred_dz_centred": {
+      "within_auc": 0.5814272363318351,
+      "within_auc_ci": [
+        0.5579860961771432,
+        0.6048183081188219
+      ],
+      "roots": 1022,
+      "input": "per-action",
+      "tune_auc": 0.6095222606850514
+    },
+    "true_dz": {
+      "within_auc": 0.9463258854648288,
+      "within_auc_ci": [
+        0.9331145264349153,
+        0.958491053955829
+      ],
+      "roots": 1022,
+      "input": "per-action",
+      "tune_auc": 0.9451965669988925
+    },
+    "true_dz_centred": {
+      "within_auc": 0.7027604693089037,
+      "within_auc_ci": [
+        0.6795240637746142,
+        0.726202153806728
+      ],
+      "roots": 1022,
+      "input": "per-action",
+      "tune_auc": 0.7056629417094533
+    }
+  },
+  "variance": {
+    "true": {
+      "between_root": 0.5067598819732666,
+      "within_root_action": 0.06108252704143524,
+      "action_fraction": 0.10756950532705593
+    },
+    "pred": {
+      "between_root": 0.49803027510643005,
+      "within_root_action": 0.04124511405825615,
+      "action_fraction": 0.07648247052798574
+    }
+  },
+  "magnitude": {
+    "true_effect": 3.7302753925323486,
+    "pred_effect": 3.095052719116211,
+    "pre_tanh_effect": 5.536198616027832
+  },
+  "saturation": {
+    "mean_abs_pre_tanh": 1.140366792678833,
+    "fraction_above_1": 0.545412003993988,
+    "fraction_above_2": 0.11966954171657562
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "train_terminal_episodes": 320,
+  "dev_terminal_episodes": 37,
+  "generated_fit": {
+    "train_generated": {
+      "examples": 640,
+      "alive": 320,
+      "dead": 320,
+      "bce": 0.7010421752929688,
+      "death_auc": 0.6782568097114563,
+      "accuracy": 0.6000000238418579,
+      "continuation_on_alive": 0.5537548661231995,
+      "continuation_on_dead": 0.40370631217956543
+    },
+    "dev_generated": {
+      "examples": 74,
+      "alive": 37,
+      "dead": 37,
+      "bce": 1.9722962379455566,
+      "death_auc": 0.485025554895401,
+      "accuracy": 0.4864864945411682,
+      "continuation_on_alive": 0.44438934326171875,
+      "continuation_on_dead": 0.45128679275512695
+    },
+    "train_observed": {
+      "examples": 640,
+      "alive": 320,
+      "dead": 320,
+      "bce": 1.3255990743637085,
+      "death_auc": 0.5690234303474426,
+      "accuracy": 0.651562511920929,
+      "continuation_on_alive": 0.5894989967346191,
+      "continuation_on_dead": 0.49033284187316895
+    },
+    "dev_observed": {
+      "examples": 74,
+      "alive": 37,
+      "dead": 37,
+      "bce": 2.3370707035064697,
+      "death_auc": 0.5241051912307739,
+      "accuracy": 0.6351351141929626,
+      "continuation_on_alive": 0.4422997236251831,
+      "continuation_on_dead": 0.42086565494537354
+    }
+  },
+  "observed_fit": {
+    "train_observed": {
+      "examples": 640,
+      "alive": 320,
+      "dead": 320,
+      "bce": 0.0635572224855423,
+      "death_auc": 0.997265636920929,
+      "accuracy": 0.971875011920929,
+      "continuation_on_alive": 0.9551846385002136,
+      "continuation_on_dead": 0.04021773114800453
+    },
+    "dev_observed": {
+      "examples": 74,
+      "alive": 37,
+      "dead": 37,
+      "bce": 2.039531707763672,
+      "death_auc": 0.8188458681106567,
+      "accuracy": 0.837837815284729,
+      "continuation_on_alive": 0.7207720279693604,
+      "continuation_on_dead": 0.09608448296785355
+    },
+    "train_generated": {
+      "examples": 640,
+      "alive": 320,
+      "dead": 320,
+      "bce": 4.188488960266113,
+      "death_auc": 0.5805370807647705,
+      "accuracy": 0.5765625238418579,
+      "continuation_on_alive": 0.857456386089325,
+      "continuation_on_dead": 0.7040278911590576
+    },
+    "dev_generated": {
+      "examples": 74,
+      "alive": 37,
+      "dead": 37,
+      "bce": 5.756340980529785,
+      "death_auc": 0.5584368109703064,
+      "accuracy": 0.5405405163764954,
+      "continuation_on_alive": 0.735417902469635,
+      "continuation_on_dead": 0.6377658843994141
+    }
+  }
+}

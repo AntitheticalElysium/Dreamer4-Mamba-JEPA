@@ -1,0 +1,43 @@
+{
+  "version": "recursive-generated-latent-outcome-evaluation-v1",
+  "inputs": {
+    "prepared": "5cdc2d6d6651d381cc564cb9e7810a5fad7fd3b7d59898f8e57638300a6607bd",
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "trajectory_phase2": "94bf488063121630b30e89b9b2c66143c798b3e3bb4a8a9169e5ac61f403146e",
+    "forks": "61f172d14d8c4820df987929075a1f87b3d7ecec973822e15950b6f949bbfc72",
+    "original_report": "b2f042ffe18b79bfc301f2d76db33446c21014b56bec657c053365c752b98f39",
+    "worlds": {
+      "allowed_020k": {
+        "world": "160ac9b61d8931d301f079ce62ba9fd7bae607c43a8d3f1dd7df788990d3bfb0",
+        "model": "4649ce60e7b3e85980418a2c63517bd4fe45205f2bd4b47deb2c96512086430f"
+      },
+      "stopped_020k": {
+        "world": "5b62bff02a182b607fd6f28ca3ad9263eb904ec30d1df4652c3ea6150ca52987",
+        "model": "d3b78971e814c8d527d6d977d6ae490200653a49f514da73ba595fbf843c74af"
+      }
+    }
+  },
+  "implementation": {
+    "artifacts/run_stage_a.py": "37132c25192790ebe2d0253db5e120e8e8305b9c5b3c89a1c3b8f8c8cad93f5a",
+    "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+    "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+    "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+    "d4mj/data.py": "55cd78faafae33f111298304b63f325c4e257790feeca6e2f256da52b8dc529c",
+    "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+    "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+    "d4mj/train.py": "7a7e3f7bd75e1c642a070fcc6e24235b6d5bf2f7ea3f5b365486115430bf0336",
+    "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+    "artifacts/phase1b_diagnostic_common.py": "eeb675e1545ba81db7bbf7b69e68745541f4ec31d2411a06af4eb66a5d1e4c0b",
+    "artifacts/evaluate_recursive_generated_latent_outcome.py": "84b974c55a304686f071d778e1099d23cd7665ad073241c3a74e45b46134bd3c",
+    "artifacts/train_generated_latent_outcome_shaping.py": "ab86491cae7d452c963d4885560ec140a647ac70fd29c9a07b464697fbc8017f",
+    "artifacts/localize_matched_counterfactual.py": "3bf4f56f2f8181d9599e395133425b4306c0092377ef8f73a75b0492983ee58d",
+    "artifacts/evaluate_fatality_direction_delta.py": "006236d19026dcb887f91940c9764852953a0ee1fe0eefcc3ad5e6f152dba094"
+  },
+  "status": "post-hoc path-alignment correction; archive path was inspected before this contract, recursive policy-fork results were not",
+  "path": "two recursive Direct advances from an observed predecessor; the first uses the logged incoming action and the second uses the evaluated action",
+  "endpoint": 20000,
+  "primary": "allowed-minus-stopped fatal-minus-safe recursive successor movement along the fixed TRAIN fatality direction",
+  "uncertainty": "paired whole DEV episode or whole policy-fork-state bootstrap",
+  "minimum_effect": "5% of the corresponding true held-out contrast",
+  "bootstraps": 2000
+}

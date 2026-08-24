@@ -1,0 +1,92 @@
+{
+  "contract": {
+    "version": "terminal-diversity-evaluation-v2",
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "base_prepared": "7e703c4b08f996ac10e75e1265152090c8aea3673586afdf8d88e540d7e80bae",
+    "data": {
+      "expert_manifest": "0e3c9869cccd67a4f7e83141ab966edc11d76a23ba2f4a0d9f7c5cd7ba58550c",
+      "support_manifest": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574"
+    },
+    "split": "support-v2 declared DEV episodes only; FINAL untouched",
+    "implementation": {
+      "artifacts/run_stage_a.py": "d632395dda571d2f5f7e2cd68f3133a3e2dd9a80f0ccc8721956f95e1dde5d03",
+      "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+      "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+      "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+      "d4mj/data.py": "55cd78faafae33f111298304b63f325c4e257790feeca6e2f256da52b8dc529c",
+      "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+      "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+      "d4mj/train.py": "7a7e3f7bd75e1c642a070fcc6e24235b6d5bf2f7ea3f5b365486115430bf0336",
+      "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+      "artifacts/phase1b_diagnostic_common.py": "eeb675e1545ba81db7bbf7b69e68745541f4ec31d2411a06af4eb66a5d1e4c0b",
+      "artifacts/prepare_terminal_diversity_evaluation.py": "7654bb867cb04bd266d766e7b645fd4a78fd1afc5e47ad0e38f2555c071fce8d"
+    }
+  },
+  "cache_digest": "51950bb8b3b38a2a",
+  "train": {
+    "expert": {
+      "episodes": 256,
+      "transitions": 552998,
+      "terminal_episodes": 56,
+      "terminal_transitions": 56,
+      "truncated_episodes": 200
+    },
+    "support": {
+      "episodes": 268,
+      "transitions": 89516,
+      "terminal_episodes": 264,
+      "terminal_transitions": 264,
+      "truncated_episodes": 4
+    }
+  },
+  "dev": {
+    "support_v2": {
+      "episodes": 1004,
+      "terminal_episodes": 1004,
+      "examples": 2008,
+      "same_action_safe_pairs": 995
+    }
+  },
+  "evaluation": {
+    "support_v2": {
+      "pairs": 1004,
+      "examples": 2008,
+      "same_action_safe_pairs": 995,
+      "group_offset": 0
+    }
+  },
+  "training_geometry": {
+    "fatal_direction": {
+      "examples": 640,
+      "terminal_examples": 320,
+      "groups": 320,
+      "fit_groups": 256,
+      "validation_groups": 64,
+      "seed_validation_auc": [
+        0.8310546875,
+        0.8095703125,
+        0.816650390625,
+        0.814208984375,
+        0.822509765625
+      ],
+      "ensemble_validation_auc": 0.820068359375,
+      "same_action_safe_pairs": 317,
+      "direction_norm": 1.0000001192092896
+    },
+    "covariance": {
+      "samples": 8192,
+      "width": 512,
+      "shrinkage": 0.1,
+      "trace": 169.51625197953925,
+      "mean_variance": 0.3310864296475376,
+      "minimum_eigenvalue": 0.0006826950907021754,
+      "maximum_eigenvalue": 36.36505366262727,
+      "regularized_condition": 971.490980847902,
+      "effective_rank": 45.80427603655718,
+      "mean_precision_eigenvalue": 1.0
+    },
+    "direction_variance": 0.060414835810661316,
+    "direction_variance_share": 0.00035639554079998077,
+    "direction_variance_relative_to_isotropic": 0.18247451688959015
+  }
+}

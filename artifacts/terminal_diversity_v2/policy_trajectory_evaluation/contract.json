@@ -1,0 +1,36 @@
+{
+  "version": "paired-trajectory-action-probe-v1",
+  "inputs": {
+    "phase1a": "bde8b8f7232de152b551a3be98c25c50b8a1dcac13cd255a29b09737b369ccd9",
+    "trajectory_phase2": "94bf488063121630b30e89b9b2c66143c798b3e3bb4a8a9169e5ac61f403146e",
+    "forks": "392e8e33895d48aea888d22e043e57a81ce4d55fb2f83fdf67d19451353e9dad",
+    "worlds": {
+      "k0300_r0_020k": "4f61b1d8c8b9ab5a5d2b9fb62be2aec7cc7c94a689e5d565b1afe5f96efb6990",
+      "k0900_r0_020k": "11526434bfdf83a0cc6ff68548bed323bcfbacb45aa497b113b0500a3f7e0c64",
+      "k3800_r0_020k": "b219e95b979247eb22edb3ba3c134521a839a2895399aa6c87e00a2397ef6ec5",
+      "k7501_r0_020k": "c7c122674aeabc4bedb49a10823274aa148d1ce4e1164113e31e4aa5b5bf0e8a"
+    }
+  },
+  "implementation": {
+    "artifacts/run_stage_a.py": "d632395dda571d2f5f7e2cd68f3133a3e2dd9a80f0ccc8721956f95e1dde5d03",
+    "d4mj/agent.py": "639bf8cc9f5c8f856aa63f1a62350b8058c38c83d1294a944ee8c68aef11e876",
+    "d4mj/checkpoint.py": "fc0c46b408320e9afd60dff1f345f995f9f1229f721d4e9aaaa753bdc816d2c8",
+    "d4mj/config.py": "c2800d87417b2a3ccabde246e8d9ff7957ec23092df3ab9f0667b00c6c6f4947",
+    "d4mj/data.py": "55cd78faafae33f111298304b63f325c4e257790feeca6e2f256da52b8dc529c",
+    "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+    "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+    "d4mj/train.py": "7a7e3f7bd75e1c642a070fcc6e24235b6d5bf2f7ea3f5b365486115430bf0336",
+    "d4mj/transition.py": "ac4178a5fc6ed53e776f1754e06a3c9fc4aa005e79626c98dbf5cda103a60777",
+    "artifacts/phase1b_diagnostic_common.py": "eeb675e1545ba81db7bbf7b69e68745541f4ec31d2411a06af4eb66a5d1e4c0b",
+    "artifacts/probe_paired_trajectory_forks.py": "28e49a9d8e4941991c3d3406efab5957fefba8d2d6973f75f004e9c349bac799",
+    "artifacts/localize_matched_counterfactual.py": "3bf4f56f2f8181d9599e395133425b4306c0092377ef8f73a75b0492983ee58d",
+    "artifacts/localize_counterfactual.py": "0313e2a49ce6de96e2764bb76e6f7fb0609525b68027f0941e8ae049c3e49fe4",
+    "artifacts/localize_counterfactual_interaction.py": "f00266beed817ccc93c26fa85acee6440a445bc4deee0f98c54143d05fe6253b"
+  },
+  "evaluation": "paired safe/fatal trajectory-executed actions and all 16 alternatives on the same fixed DEV opportunity states",
+  "split": "whole trajectory seed held out",
+  "folds": 10,
+  "probe_seeds": 5,
+  "linear_steps": 600,
+  "permutations": 5000
+}
