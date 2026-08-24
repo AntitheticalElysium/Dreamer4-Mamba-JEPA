@@ -176,7 +176,7 @@ def main() -> None:
     # reference: the trained head itself
     with torch.no_grad():
         existing = torch.cat([
-            torch.tanh(world.readout[2](world.mix_norm(hidden[test][lo:lo+16].to(DEVICE).float())))
+            torch.tanh(world.readout(world.mix_norm(hidden[test][lo:lo+16].to(DEVICE).float())))
             .flatten(2).cpu() for lo in range(0, len(test), 16)])
     predictions = {"existing": existing}
     results["existing"] = score(existing, truth, r0, labels_test, splits, branch, rows, "existing")

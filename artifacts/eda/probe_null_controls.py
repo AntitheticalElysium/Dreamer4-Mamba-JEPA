@@ -22,7 +22,7 @@ raw = cache_hidden(world, config, history, fork_actions(rows))
 with torch.no_grad():
     hidden = torch.cat([world.mix_norm(raw[lo:lo+64].to(DEVICE).float()).half().cpu() for lo in range(0,len(raw),64)])
 del raw
-_, v_null = row_null_bases(world.readout[2].weight.detach().cpu())
+_, v_null = row_null_bases(world.readout.weight.detach().cpu())
 hc = hidden.float() - hidden.float().mean(1, keepdim=True)
 null = (hc @ v_null).reshape(*hc.shape[:2], -1).half()
 g = torch.Generator().manual_seed(4)

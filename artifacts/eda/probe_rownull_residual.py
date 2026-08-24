@@ -93,7 +93,7 @@ def main() -> None:
     print(f"hidden {tuple(hidden.shape)}  predicted {tuple(predicted.shape)}", flush=True)
 
     hc = (hidden.float() - hidden.float().mean(1, keepdim=True))          # centred tokens
-    v_row, v_null = row_null_bases(world.readout[2].weight.detach().cpu())
+    v_row, v_null = row_null_bases(world.readout.weight.detach().cpu())
     views = {
         "full": (hc.reshape(*hc.shape[:2], -1).half() @ ortho(hc.shape[2] * hc.shape[3], 1)),
         "row": (hc @ v_row).reshape(*hc.shape[:2], -1).half(),

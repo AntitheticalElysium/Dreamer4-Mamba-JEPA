@@ -72,30 +72,22 @@ class NoTanhWorld(World):
 
 
 class MixerWorld(World):
-    """Direct with one action-token interaction block after the pool.
+    """Production World under the names the diagnostics were written against.
 
-        pooled 32 tokens -> prepend candidate-action token -> one pre-norm
-        self-attention block -> drop the action token -> LayerNorm -> the existing
-        Linear(256, 32) -> tanh
-
-    Source-shaped: MMBench/D4 and V-JEPA2-AC both place action and representation
-    tokens together inside the mixing rather than broadcasting the action over
-    already-pooled features, which is what production does.
-
-    The pool, the action embedding, the terminal projection `readout[2]` and the tanh
-    are all reused, so candidate-action mixing is the only substantive change.
-    `readout[0:2]` is left constructed but unused: dropping it would shift the RNG
-    draws and break init parity with the abt0 control, which is the comparison this
-    arm depends on. `super().__init__` runs first for the same reason -- every
-    baseline module then draws exactly what the baseline drew.
+    797b448 promoted this repair into production as `direct_mixer` / `direct_norm`
+    with a plain Linear `readout`; the computation is identical to what the
+    diagnostic arms trained. Their checkpoints were written under `mixer` /
+    `mix_norm` / `readout.2`, so `load_promoted` remaps them and the properties below
+    keep the existing probes working without touching production code.
     """
 
-    def __init__(self, config: Config):
-        super().__init__(config)
-        d = config.d_model
-        self.mixer = nn.TransformerEncoderLayer(d, config.n_heads, 4 * d, dropout=0.0,
-                                                 batch_first=True, norm_first=True)
-        self.mix_norm = nn.LayerNorm(d)
+    @property
+    def mixer(self):
+        return self.direct_mixer
+
+    @property
+    def mix_norm(self):
+        return self.direct_norm
 
     def mixed(self, features, action):
         """Per-action features after the block, before the terminal projection."""
@@ -103,11 +95,34 @@ class MixerWorld(World):
         pooled = self.pool(world.transpose(2, 3)).transpose(2, 3)
         b, t, s, d = pooled.shape
         token = torch.cat([self.action_embed(action)[:, :, None], pooled], dim=2)
-        token = self.mixer(token.reshape(b * t, s + 1, d)).view(b, t, s + 1, d)
-        return self.mix_norm(token[:, :, 1:])
+        token = self.direct_mixer(token.reshape(b * t, s + 1, d)).view(b, t, s + 1, d)
+        return self.direct_norm(token[:, :, 1:])
 
-    def predict(self, features, action=None):
-        return torch.tanh(self.readout[2](self.mixed(features, action)))
+
+RENAME = {"mixer.": "direct_mixer.", "mix_norm.": "direct_norm.", "readout.2.": "readout."}
+
+
+def load_promoted(path, world):
+    """Load a pre-promotion diagnostic checkpoint into the production World.
+
+    `readout.0` was the old two-layer readout's first Linear, left constructed but
+    unused by the diagnostic arms so their init would stay bit-identical to the
+    controls; it has no counterpart in production and is dropped.
+    """
+    payload = torch.load(path, weights_only=False)
+    state = payload["modules"]["part0"]
+    out = {}
+    for key, value in state.items():
+        if key.startswith("readout.0."):
+            continue
+        for old, new in RENAME.items():
+            if key.startswith(old):
+                key = new + key[len(old):]
+                break
+        out[key] = value
+    missing, unexpected = world.load_state_dict(out, strict=False)
+    assert not missing and not unexpected, f"missing {missing}, unexpected {unexpected}"
+    return world
 
 
 @torch.no_grad()

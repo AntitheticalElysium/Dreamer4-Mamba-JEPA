@@ -105,7 +105,7 @@ def collect(world, config, history, led_history, squash, mixer=False, batch=8):
             context = world.action_embed(act)[:, :, None].expand_as(wide_pool)
             joined = torch.cat([wide_pool, context], dim=-1)
             hidden = world.readout[1](world.readout[0](joined))
-        pre = world.readout[2](hidden)
+        pre = world.readout(hidden)
         post = torch.tanh(pre) if squash else pre
         assert torch.allclose(post, world.predict(wide, act), atol=1e-5), "predict mismatch"
 
