@@ -197,3 +197,58 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+# ---------------------------------------------------------------------------------
+# Part 2/3: where the action-specific structure lives, and whether it can correct the
+# successor. Split every centred hidden token by the SVD of the trained terminal
+# projection W (32 x 256): 32 directions W can see, 224 it discards.
+# ---------------------------------------------------------------------------------
+
+
+def row_null_bases(weight):
+    """Orthonormal bases for W's row space and its null space, from the SVD."""
+    _, _, vh = torch.linalg.svd(weight.float(), full_matrices=True)   # vh is 256 x 256
+    rank = weight.shape[0]
+    return vh[:rank].T.contiguous(), vh[rank:].T.contiguous()         # 256x32, 256x224
+
+
+class Residual(nn.Module):
+    """Diagnostic extractor of the action-conditioned successor error, per token."""
+
+    def __init__(self, width: int, out: int, hidden: int = 256):
+        super().__init__()
+        self.net = nn.Sequential(nn.Linear(width, hidden), nn.GELU(), nn.Linear(hidden, out))
+
+    def forward(self, x):
+        return self.net(x)
+
+
+def fit_residual(x, target, masks, seed, epochs=30, batch=64):
+    """Predict e from a hidden view; return the held-out prediction."""
+    fit_m, tune_m, test_m = masks
+    torch.manual_seed(seed)
+    model = Residual(x.shape[-1], target.shape[-1]).to(DEVICE)
+    opt = torch.optim.AdamW(model.parameters(), lr=3e-4, weight_decay=1e-2)
+    xf, tf = x[fit_m], target[fit_m]
+    best = {"loss": float("inf"), "state": None}
+
+    def run(mask):
+        model.eval()
+        with torch.no_grad():
+            return torch.cat([model(x[mask][lo:lo+batch].to(DEVICE).float()).cpu()
+                              for lo in range(0, int(mask.sum()), batch)])
+
+    for epoch in range(epochs):
+        model.train()
+        order = np.random.default_rng(seed + epoch).permutation(int(fit_m.sum()))
+        for lo in range(0, len(order), batch):
+            pick = torch.from_numpy(order[lo:lo+batch])
+            opt.zero_grad()
+            (model(xf[pick].to(DEVICE).float()) - tf[pick].to(DEVICE).float()).pow(2).mean().backward()
+            opt.step()
+        value = float((run(tune_m) - target[tune_m].float()).pow(2).mean())
+        if value < best["loss"]:
+            best = {"loss": value, "state": {k: v.clone() for k, v in model.state_dict().items()}}
+    model.load_state_dict(best["state"])
+    return run(test_m), best["loss"]
