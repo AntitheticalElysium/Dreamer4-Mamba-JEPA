@@ -1,0 +1,177 @@
+{
+  "arm": "64x16",
+  "suffix": "abm1",
+  "milestone": 20000,
+  "depths": {
+    "z_t": {
+      "within_auc": 0.8031924940682279,
+      "within_auc_ci": [
+        0.7818519852619655,
+        0.8234097407403425
+      ],
+      "roots": 1022,
+      "input": "shared",
+      "tune_auc": 0.8355802143592842
+    },
+    "f_t": {
+      "within_auc": 0.8738395858870418,
+      "within_auc_ci": [
+        0.8565453946330903,
+        0.8913079467825066
+      ],
+      "roots": 1022,
+      "input": "shared",
+      "tune_auc": 0.8829378954378955
+    },
+    "pooled": {
+      "within_auc": 0.8788537253679132,
+      "within_auc_ci": [
+        0.8613708844971076,
+        0.8950877725299815
+      ],
+      "roots": 1022,
+      "input": "shared",
+      "tune_auc": 0.888159030891589
+    },
+    "hidden": {
+      "within_auc": 0.8566409414134463,
+      "within_auc_ci": [
+        0.8379459883927227,
+        0.875731770777331
+      ],
+      "roots": 1022,
+      "input": "per-action",
+      "tune_auc": 0.8634403387310364
+    },
+    "hidden_centred": {
+      "within_auc": 0.8315411227715533,
+      "within_auc_ci": [
+        0.8107781788294874,
+        0.8509950346049905
+      ],
+      "roots": 1022,
+      "input": "per-action",
+      "tune_auc": 0.8308053380727799
+    },
+    "pre_tanh": {
+      "within_auc": 0.7386425829552052,
+      "within_auc_ci": [
+        0.7139338938947549,
+        0.7624525559038157
+      ],
+      "roots": 1022,
+      "input": "per-action",
+      "tune_auc": 0.7001933144375007
+    },
+    "pre_tanh_centred": {
+      "within_auc": 0.739093110900841,
+      "within_auc_ci": [
+        0.7157547642344608,
+        0.7616317794240984
+      ],
+      "roots": 1022,
+      "input": "per-action",
+      "tune_auc": 0.7201268692547763
+    },
+    "pred_dz": {
+      "within_auc": 0.7025854282703599,
+      "within_auc_ci": [
+        0.6783809756779424,
+        0.7273332383532971
+      ],
+      "roots": 1022,
+      "input": "per-action",
+      "tune_auc": 0.684318878795623
+    },
+    "pred_dz_centred": {
+      "within_auc": 0.6851622814563127,
+      "within_auc_ci": [
+        0.6607433856709174,
+        0.7092001023275485
+      ],
+      "roots": 1022,
+      "input": "per-action",
+      "tune_auc": 0.6747582843513076
+    },
+    "true_dz": {
+      "within_auc": 0.9311685053368028,
+      "within_auc_ci": [
+        0.9172348533723289,
+        0.9451106024601623
+      ],
+      "roots": 1022,
+      "input": "per-action",
+      "tune_auc": 0.9109240565635914
+    },
+    "true_dz_centred": {
+      "within_auc": 0.7404548199680294,
+      "within_auc_ci": [
+        0.7173902823774398,
+        0.7626809011275743
+      ],
+      "roots": 1022,
+      "input": "per-action",
+      "tune_auc": 0.7649904359206686
+    }
+  },
+  "variance": {
+    "true": {
+      "between_root": 0.3316841125488281,
+      "within_root_action": 0.07888703793287277,
+      "action_fraction": 0.19213974932315356
+    },
+    "pred": {
+      "between_root": 0.3265346586704254,
+      "within_root_action": 0.07068738341331482,
+      "action_fraction": 0.1779543326510891
+    }
+  },
+  "magnitude": {
+    "true_effect": 6.075228214263916,
+    "pred_effect": 5.665952682495117,
+    "pre_tanh_effect": 12.230172157287598
+  },
+  "saturation": {
+    "mean_abs_pre_tanh": 1.6588066816329956,
+    "fraction_above_1": 0.7813007235527039,
+    "fraction_above_2": 0.33781784772872925
+  },
+  "recursive_drift": [
+    {
+      "step": 1,
+      "mean_abs": 0.8307202458381653,
+      "fraction_outside_unit": 0.0,
+      "distance_from_root": 5.371531009674072
+    },
+    {
+      "step": 2,
+      "mean_abs": 0.8298949003219604,
+      "fraction_outside_unit": 0.0,
+      "distance_from_root": 6.86428165435791
+    },
+    {
+      "step": 3,
+      "mean_abs": 0.8299040794372559,
+      "fraction_outside_unit": 0.0,
+      "distance_from_root": 7.811152458190918
+    },
+    {
+      "step": 4,
+      "mean_abs": 0.8299112915992737,
+      "fraction_outside_unit": 0.0,
+      "distance_from_root": 8.508484840393066
+    },
+    {
+      "step": 5,
+      "mean_abs": 0.8298604488372803,
+      "fraction_outside_unit": 0.0,
+      "distance_from_root": 9.106193542480469
+    },
+    {
+      "step": 6,
+      "mean_abs": 0.8297938704490662,
+      "fraction_outside_unit": 0.0,
+      "distance_from_root": 9.611357688903809
+    }
+  ]
+}

@@ -94,8 +94,37 @@ def test_direct_paired_terminal_gradient_reaches_predictor(config):
     loss = paired_terminal_loss(
         heads(generated), heads(observed), head_targets(batch, config)
     )
-    gradient = torch.autograd.grad(loss, world.readout[0].weight)[0]
-    assert float(gradient.abs().sum()) > 0.0
+    gradients = torch.autograd.grad(
+        loss, [world.readout.weight, world.direct_mixer.self_attn.in_proj_weight]
+    )
+    assert all(float(gradient.abs().sum()) > 0.0 for gradient in gradients)
+
+
+def test_direct_mixes_the_candidate_action_as_a_token(config):
+    """The repaired Direct head must expose the candidate action before token
+    interaction, not broadcast it after the spatial features have been mixed."""
+    config = replace(config, transition="direct")
+    world = world_for(config, "direct").eval()
+    features = torch.randn(2, 3, world.layout.size, config.d_model)
+    actions = torch.randint(config.n_actions, (2, 3))
+    captured = []
+
+    handle = world.direct_mixer.register_forward_pre_hook(
+        lambda _module, arguments: captured.append(arguments[0].detach().clone())
+    )
+    with torch.no_grad():
+        predicted = world.predict(features, actions)
+    handle.remove()
+
+    tokens = captured[0].view(2, 3, config.n_spatial + 1, config.d_model)
+    spatial_and_register = torch.cat(
+        [features[:, :, world.spatial], features[:, :, world.register]], dim=2
+    )
+    pooled = world.pool(spatial_and_register.transpose(2, 3)).transpose(2, 3)
+    assert torch.equal(tokens[:, :, 0], world.action_embed(actions))
+    assert torch.equal(tokens[:, :, 1:], pooled)
+    assert predicted.shape == (2, 3, config.n_spatial, config.d_spatial)
+    assert (predicted.abs() <= 1).all()
 
 
 def test_observed_readout_requires_agent_return(config):

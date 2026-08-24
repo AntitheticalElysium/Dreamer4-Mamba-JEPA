@@ -315,7 +315,11 @@ real observation ─► Z* ─► update S_t^real ─► agent policy ─► env
   exposing it to \(h_t\), so V-JEPA 2-AC's same-slot readout cannot be copied
   unchanged. `[DESIGN]` **An external predictor over committed world features**,
   \(\hat z_{t+1} = P(f_t, a_t)\), as V-JEPA 2-AC and DINO-WM do: one backbone pass
-  per transition plus a head. The rejected in-block query cannot be trained at all
+  per transition plus a head. `[DESIGN]` The validated Direct head pools spatial
+  and register features to the latent grid, prepends the candidate action as a
+  token, applies one pre-norm self-attention block, then projects each spatial
+  token through `LayerNorm -> Linear -> tanh`. This is source-shaped action-token
+  interaction, not a Dreamer 4 component or reproduction. The rejected in-block query cannot be trained at all
   in one pass — a position cannot hold the real latent for later blocks to attend
   to *and* the query to be predicted from — and filling every position with a
   query leaves the prediction a function of the action history alone. The head
