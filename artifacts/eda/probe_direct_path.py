@@ -60,8 +60,8 @@ from evaluate_damage_classifier import auc, interval
 from evaluate_phase1b_fork import Readout
 from probe_observability import Probe
 from reevaluate_phase1b_delta import within_state
-from train_phase1b_fork import (FULL_HISTORY, NoTanhWorld, fork_actions, load_forkset,
-                                seed_split)
+from train_phase1b_fork import (FULL_HISTORY, MixerWorld, NoTanhWorld, fork_actions,
+                                load_forkset, seed_split)
 
 from d4mj.checkpoint import load
 from d4mj.config import Config
@@ -72,7 +72,7 @@ SHARED = ("z_t", "f_t", "pooled")
 
 
 @torch.no_grad()
-def collect(world, config, history, led_history, squash, batch=8):
+def collect(world, config, history, led_history, squash, mixer=False, batch=8):
     """Every depth of predict(), recomputed from the module's own submodules.
 
     The final tensor is checked against world.predict itself, so the reconstruction
@@ -95,10 +95,16 @@ def collect(world, config, history, led_history, squash, batch=8):
 
         block = torch.cat([last[:, :, world.spatial], last[:, :, world.register]], dim=2)
         pooled = world.pool(block.transpose(2, 3)).transpose(2, 3)          # (n, 1, spatial, d_model)
-        wide_pool = pooled.expand(n, 17, *pooled.shape[2:])
-        context = world.action_embed(act)[:, :, None].expand_as(wide_pool)
-        joined = torch.cat([wide_pool, context], dim=-1)
-        hidden = world.readout[1](world.readout[0](joined))
+        if mixer:
+            # the mixer arm has no [pooled; action] MLP stage; `hidden` is instead the
+            # per-action features after the interaction block, which occupies the same
+            # position in the path and stays directly comparable to the baseline depth
+            hidden = world.mixed(wide, act)
+        else:
+            wide_pool = pooled.expand(n, 17, *pooled.shape[2:])
+            context = world.action_embed(act)[:, :, None].expand_as(wide_pool)
+            joined = torch.cat([wide_pool, context], dim=-1)
+            hidden = world.readout[1](world.readout[0](joined))
         pre = world.readout[2](hidden)
         post = torch.tanh(pre) if squash else pre
         assert torch.allclose(post, world.predict(wide, act), atol=1e-5), "predict mismatch"
@@ -230,6 +236,8 @@ def main() -> None:
     parser.add_argument("--milestone", type=int, default=20000)
     parser.add_argument("--no-tanh", action="store_true",
                         help="the checkpoint has no output squash; P5 is then the identity")
+    parser.add_argument("--mixer", action="store_true",
+                        help="the checkpoint has the one-block action-token mixer")
     args = parser.parse_args()
 
     folder = HERE / f"forkset_{args.suffix}_n{args.n_latents}"
@@ -242,13 +250,14 @@ def main() -> None:
 
     config = replace(Config(transition="direct", time_mixer="attention"),
                      n_latents=args.n_latents, d_bottleneck=16, seed=Config().seed)
-    world = (NoTanhWorld if args.no_tanh else World)(config).to(DEVICE)
+    world = (MixerWorld if args.mixer else NoTanhWorld if args.no_tanh else World)(config).to(DEVICE)
     load(HERE / f"phase1b_{args.suffix}_n{args.n_latents}" /
          f"world_{args.milestone:06d}.pt", config, part0=world)
     world.eval()
     print(f"arm {args.n_latents}x16 {args.suffix} @ {args.milestone}: {len(rows)} roots", flush=True)
 
-    depths = collect(world, config, history, fork_actions(rows), squash=not args.no_tanh)
+    depths = collect(world, config, history, fork_actions(rows), squash=not args.no_tanh,
+                     mixer=args.mixer)
     depths["pred_dz"] = depths.pop("post_tanh") - root[:, None]
     depths["true_dz"] = branch - root[:, None]
 

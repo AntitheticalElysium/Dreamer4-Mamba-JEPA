@@ -30,6 +30,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from torch import nn
 
 ROOT = Path("/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA")
 HERE = Path(__file__).resolve().parent
@@ -68,6 +69,45 @@ class NoTanhWorld(World):
         pooled = self.pool(world.transpose(2, 3)).transpose(2, 3)
         context = self.action_embed(action)[:, :, None].expand_as(pooled)
         return self.readout(torch.cat([pooled, context], dim=-1))
+
+
+class MixerWorld(World):
+    """Direct with one action-token interaction block after the pool.
+
+        pooled 32 tokens -> prepend candidate-action token -> one pre-norm
+        self-attention block -> drop the action token -> LayerNorm -> the existing
+        Linear(256, 32) -> tanh
+
+    Source-shaped: MMBench/D4 and V-JEPA2-AC both place action and representation
+    tokens together inside the mixing rather than broadcasting the action over
+    already-pooled features, which is what production does.
+
+    The pool, the action embedding, the terminal projection `readout[2]` and the tanh
+    are all reused, so candidate-action mixing is the only substantive change.
+    `readout[0:2]` is left constructed but unused: dropping it would shift the RNG
+    draws and break init parity with the abt0 control, which is the comparison this
+    arm depends on. `super().__init__` runs first for the same reason -- every
+    baseline module then draws exactly what the baseline drew.
+    """
+
+    def __init__(self, config: Config):
+        super().__init__(config)
+        d = config.d_model
+        self.mixer = nn.TransformerEncoderLayer(d, config.n_heads, 4 * d, dropout=0.0,
+                                                 batch_first=True, norm_first=True)
+        self.mix_norm = nn.LayerNorm(d)
+
+    def mixed(self, features, action):
+        """Per-action features after the block, before the terminal projection."""
+        world = torch.cat([features[:, :, self.spatial], features[:, :, self.register]], dim=2)
+        pooled = self.pool(world.transpose(2, 3)).transpose(2, 3)
+        b, t, s, d = pooled.shape
+        token = torch.cat([self.action_embed(action)[:, :, None], pooled], dim=2)
+        token = self.mixer(token.reshape(b * t, s + 1, d)).view(b, t, s + 1, d)
+        return self.mix_norm(token[:, :, 1:])
+
+    def predict(self, features, action=None):
+        return torch.tanh(self.readout[2](self.mixed(features, action)))
 
 
 @torch.no_grad()
@@ -125,6 +165,8 @@ def main() -> None:
     parser.add_argument("--resume-every", type=int, default=500)
     parser.add_argument("--no-tanh", action="store_true",
                         help="ablate the output squash; everything else identical")
+    parser.add_argument("--mixer", action="store_true",
+                        help="one action-token interaction block after the pool")
     parser.add_argument("--world-seed", type=int, default=0,
                         help="offsets world initialisation and the commit stream only; "
                              "the batch draw stream is held fixed so paired arms see "
@@ -145,7 +187,8 @@ def main() -> None:
     led_history = fork_actions(rows)
     print(f"arm {args.n_latents}x16 {args.suffix}: z dim {manifest['z_dim']}, "
           f"{len(rows)} roots, fit {len(fit)}, lambda {args.lam}, "
-          f"{'no-tanh' if args.no_tanh else 'tanh'}, world seed +{args.world_seed}", flush=True)
+          f"{'mixer' if args.mixer else 'no-tanh' if args.no_tanh else 'tanh'}, "
+          f"world seed +{args.world_seed}", flush=True)
 
     history = torch.stack([r["z_history"] for r in rows])
     branch = torch.stack([r["z_branch"] for r in rows])
@@ -156,7 +199,7 @@ def main() -> None:
     if args.no_tanh:
         assert_faithful(config)
     torch.manual_seed(config.seed + 1 + args.world_seed)
-    builder = NoTanhWorld if args.no_tanh else World
+    builder = MixerWorld if args.mixer else (NoTanhWorld if args.no_tanh else World)
     world = _share_initialisation(builder(config), config).to(DEVICE)
     opt = optimizer([world], config)
     rng = torch.Generator(device=DEVICE).manual_seed(config.seed + 1001 + args.world_seed)
@@ -205,7 +248,8 @@ def main() -> None:
 
     (args.out / "training_report.json").write_text(json.dumps({
         "n_latents": args.n_latents, "suffix": args.suffix, "lambda": args.lam,
-        "no_tanh": bool(args.no_tanh), "world_seed": args.world_seed,
+        "no_tanh": bool(args.no_tanh), "mixer": bool(args.mixer),
+        "world_seed": args.world_seed,
         "steps": args.steps, "roots": len(rows), "fit_roots": int(len(fit)),
         "z_dim": manifest["z_dim"], "seconds": time.time() - started,
         "curve_tail": curve[-500:]}, indent=2))

@@ -51,7 +51,7 @@ sys.path.insert(0, str(ROOT))
 from evaluate_damage_classifier import interval
 from evaluate_phase1b_fork import predict_branches
 from reevaluate_phase1b_delta import fit_probe, within_state
-from train_phase1b_fork import NoTanhWorld, fork_actions, load_forkset, seed_split
+from train_phase1b_fork import MixerWorld, NoTanhWorld, fork_actions, load_forkset, seed_split
 
 from d4mj.checkpoint import load
 from d4mj.config import Config
@@ -79,6 +79,7 @@ def main() -> None:
     parser.add_argument("--suffix", type=str, default="abt0")
     parser.add_argument("--milestone", type=int, default=20000)
     parser.add_argument("--no-tanh", action="store_true")
+    parser.add_argument("--mixer", action="store_true")
     args = parser.parse_args()
 
     rows = load_forkset(HERE / f"forkset_{args.suffix}_n{args.n_latents}")
@@ -89,7 +90,7 @@ def main() -> None:
 
     config = replace(Config(transition="direct", time_mixer="attention"),
                      n_latents=args.n_latents, d_bottleneck=16, seed=Config().seed)
-    world = (NoTanhWorld if args.no_tanh else World)(config).to(DEVICE)
+    world = (MixerWorld if args.mixer else NoTanhWorld if args.no_tanh else World)(config).to(DEVICE)
     load(HERE / f"phase1b_{args.suffix}_n{args.n_latents}" /
          f"world_{args.milestone:06d}.pt", config, part0=world)
     world.eval()

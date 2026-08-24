@@ -37,7 +37,7 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(ROOT))
 from evaluate_damage_classifier import auc, interval
 from evaluate_phase1b_fork import Readout, predict_branches
-from train_phase1b_fork import NoTanhWorld, fork_actions, load_forkset, seed_split
+from train_phase1b_fork import MixerWorld, NoTanhWorld, fork_actions, load_forkset, seed_split
 
 from d4mj.checkpoint import load
 from d4mj.config import Config
@@ -213,6 +213,8 @@ def main() -> None:
                         help="trajectory only: the checkpoints to compare, in order")
     parser.add_argument("--no-tanh", action="store_true",
                         help="load the checkpoint as the no-squash variant")
+    parser.add_argument("--mixer", action="store_true",
+                        help="load the checkpoint as the one-block mixer variant")
     parser.add_argument("--trajectory", action="store_true",
                         help="no model: bootstrap one arm's R_delta increments across milestones")
     args = parser.parse_args()
@@ -234,7 +236,7 @@ def main() -> None:
 
     config = replace(Config(transition="direct", time_mixer="attention"),
                      n_latents=args.n_latents, d_bottleneck=16, seed=Config().seed)
-    world = (NoTanhWorld if args.no_tanh else World)(config).to(DEVICE)
+    world = (MixerWorld if args.mixer else NoTanhWorld if args.no_tanh else World)(config).to(DEVICE)
     load(HERE / f"phase1b_{args.suffix}_n{args.n_latents}" /
          f"world_{args.milestone:06d}.pt", config, part0=world)
     world.eval()
