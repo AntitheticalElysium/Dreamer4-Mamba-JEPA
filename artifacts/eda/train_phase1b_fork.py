@@ -75,10 +75,10 @@ class MixerWorld(World):
     """Production World under the names the diagnostics were written against.
 
     797b448 promoted this repair into production as `direct_mixer` / `direct_norm`
-    with a plain Linear `readout`; the computation is identical to what the
-    diagnostic arms trained. Their checkpoints were written under `mixer` /
-    `mix_norm` / `readout.2`, so `load_promoted` remaps them and the properties below
-    keep the existing probes working without touching production code.
+    with a plain Linear `readout`, so this is the production head with aliases -- use
+    it to TRAIN new arms. To LOAD an archived pre-promotion checkpoint use
+    `legacy.open_checkpoint`, which is the single entry point for those shapes; the
+    ordinary strict loader raises on all of them.
     """
 
     @property
@@ -97,32 +97,6 @@ class MixerWorld(World):
         token = torch.cat([self.action_embed(action)[:, :, None], pooled], dim=2)
         token = self.direct_mixer(token.reshape(b * t, s + 1, d)).view(b, t, s + 1, d)
         return self.direct_norm(token[:, :, 1:])
-
-
-RENAME = {"mixer.": "direct_mixer.", "mix_norm.": "direct_norm.", "readout.2.": "readout."}
-
-
-def load_promoted(path, world):
-    """Load a pre-promotion diagnostic checkpoint into the production World.
-
-    `readout.0` was the old two-layer readout's first Linear, left constructed but
-    unused by the diagnostic arms so their init would stay bit-identical to the
-    controls; it has no counterpart in production and is dropped.
-    """
-    payload = torch.load(path, weights_only=False)
-    state = payload["modules"]["part0"]
-    out = {}
-    for key, value in state.items():
-        if key.startswith("readout.0."):
-            continue
-        for old, new in RENAME.items():
-            if key.startswith(old):
-                key = new + key[len(old):]
-                break
-        out[key] = value
-    missing, unexpected = world.load_state_dict(out, strict=False)
-    assert not missing and not unexpected, f"missing {missing}, unexpected {unexpected}"
-    return world
 
 
 @torch.no_grad()
@@ -182,6 +156,10 @@ def main() -> None:
                         help="ablate the output squash; everything else identical")
     parser.add_argument("--mixer", action="store_true",
                         help="one action-token interaction block after the pool")
+    parser.add_argument("--fit-subset", type=str, default="",
+                        help="key into coverage_subsets.json; trains on that subset of "
+                             "fit roots instead of all of them, holding volume fixed so "
+                             "coverage can be varied on its own")
     parser.add_argument("--world-seed", type=int, default=0,
                         help="offsets world initialisation and the commit stream only; "
                              "the batch draw stream is held fixed so paired arms see "
@@ -200,6 +178,10 @@ def main() -> None:
     splits = np.array([seed_split(r["seed"]) for r in rows])
     fit = np.where(splits == "fit")[0]
     led_history = fork_actions(rows)
+    if args.fit_subset:
+        chosen = json.loads((HERE / "coverage_subsets.json").read_text())[args.fit_subset]
+        fit = np.array(sorted(chosen))
+        print(f"fit subset '{args.fit_subset}': {len(fit)} roots", flush=True)
     print(f"arm {args.n_latents}x16 {args.suffix}: z dim {manifest['z_dim']}, "
           f"{len(rows)} roots, fit {len(fit)}, lambda {args.lam}, "
           f"{'mixer' if args.mixer else 'no-tanh' if args.no_tanh else 'tanh'}, "

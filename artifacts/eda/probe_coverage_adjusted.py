@@ -34,8 +34,8 @@ from evaluate_phase1b_fork import predict_branches
 from probe_action_matching import classes_of
 from probe_decoder_ceiling import cache as cache_backbone
 from probe_hidden_ceiling import cache_hidden
-from train_phase1b_fork import (MixerWorld, fork_actions, load_forkset,
-                                load_promoted, seed_split)
+from legacy import open_checkpoint
+from train_phase1b_fork import fork_actions, load_forkset, seed_split
 
 from d4mj.config import Config
 
@@ -62,11 +62,8 @@ def main() -> None:
 
     config = replace(Config(transition="direct", time_mixer="attention"),
                      n_latents=64, d_bottleneck=16, seed=Config().seed)
-    world = MixerWorld(config).to(DEVICE)
-    load_promoted(HERE / f"phase1b_{SUFFIX}_n64" / "world_020000.pt", world)
-    world.eval()
-    for p in world.parameters():
-        p.requires_grad_(False)
+    world = open_checkpoint(HERE / f"phase1b_{SUFFIX}_n64" / "world_020000.pt",
+                            config, "promoted")
     led = fork_actions(rows)
 
     predicted = predict_branches(world, config, history, led).float()
