@@ -15,27 +15,52 @@ Craftax. The project asks a practical question:
 > Can JEPA-style latent prediction and Mamba-2 memory preserve the mechanics an
 > agent needs, without relying on a frontier-scale video model?
 
-## The system
+### Why JEPA?
 
-```text
-63×63 RGB observations
-        ↓
-causal tokenizer → frozen latent state Z*
-        ↓
-spatial world backbone + temporal memory
-        │                    │
-        │              Attention | Mamba-2
-        ↓
-next-state model: Shortcut Flow | Direct latent prediction
-        ↓
-policy, reward, continuation, and value heads
-        ↓
-offline behavior cloning + reinforcement learning in imagination
+Dreamer 4 generates future latents by repeatedly restoring corrupted candidates.
+JEPA suggests a leaner alternative: learn the action-conditioned structure of the
+next latent directly, without reconstructing pixels or running a denoising chain.
+D4MJ tests whether that efficiency preserves the small interaction details control
+depends on—not merely whether its average prediction loss is low.
+
+### Why Mamba?
+
+Imagination repeatedly extends long temporal state. Transformer attention makes
+that history explicit in a growing cache; Mamba-2 compresses it into fixed-size
+recurrent state with linear sequence processing. D4MJ tests whether that state is
+a practical long-context memory for world models while preserving exact recurrent
+execution semantics.
+
+## The architecture
+
+```mermaid
+flowchart LR
+    V["Offline video + actions"] --> E["Causal tokenizer"]
+    E --> Z["Frozen latent state Z*"]
+    Z --> B["Spatial world backbone"]
+    B --> T{"Temporal memory"}
+    T -->|Transformer| N{"Next-state objective"}
+    T -->|Mamba-2| N
+    A["Candidate action"] --> N
+    N -->|Shortcut Flow| F["Four-step latent generation"]
+    N -->|Direct JEPA| D["One-pass latent prediction"]
+    F --> I["Imagined futures"]
+    D --> I
+    I --> H["Policy · Reward · Continuation · Value"]
 ```
 
 The same data, tokenizer, token layout, recurrent-state contract, and evaluation
 path are shared across the Flow/Direct × Attention/Mamba experiment. That makes
 architecture comparisons causal rather than four loosely related implementations.
+
+```mermaid
+flowchart LR
+    P1A["Phase 1A<br/>learn representation"] --> FREEZE["freeze Z*"]
+    FREEZE --> P1B["Phase 1B<br/>learn world dynamics"]
+    P1B --> P2["Phase 2<br/>fit policy and task heads"]
+    P2 --> P3["Phase 3<br/>reinforcement learning in imagination"]
+    P3 --> EXEC["execute in Craftax"]
+```
 
 ## What the investigation found
 
