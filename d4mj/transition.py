@@ -11,8 +11,8 @@ from .state import Memory, RealState, WorldState
 class World(nn.Module):
     """The action-conditioned dynamics. `forward` evaluates one block; `predict`
     turns its features into a latent and is the only thing the arms do differently.
-    Direct uses an external head over committed features (S34), reading spatial and
-    register slots only, which the dynamics mask keeps agent-free."""
+    Direct uses an external action-token mixer over committed features (S34/S85),
+    reading spatial and register slots only, which the dynamics mask keeps agent-free."""
 
     def __init__(self, config: Config):
         super().__init__()
@@ -43,12 +43,17 @@ class World(nn.Module):
         else:
             self.condition_embed = nn.Embedding(1, config.d_model)
             width = config.n_spatial + config.n_register
-            self.readout = nn.Sequential(
-                nn.Linear(config.d_model * 2, config.d_model),
-                nn.SiLU(),
-                nn.Linear(config.d_model, config.d_spatial),
-            )
             self.pool = nn.Linear(width, config.n_spatial)
+            self.direct_mixer = nn.TransformerEncoderLayer(
+                config.d_model,
+                config.n_heads,
+                4 * config.d_model,
+                dropout=0.0,
+                batch_first=True,
+                norm_first=True,
+            )
+            self.direct_norm = nn.LayerNorm(config.d_model)
+            self.readout = nn.Linear(config.d_model, config.d_spatial)
 
     def condition(self, indices: Tensor) -> Tensor:
         if self.config.transition == "flow":
@@ -87,8 +92,10 @@ class World(nn.Module):
             return self.readout(features[:, :, self.spatial])
         world = torch.cat([features[:, :, self.spatial], features[:, :, self.register]], dim=2)
         pooled = self.pool(world.transpose(2, 3)).transpose(2, 3)
-        context = self.action_embed(action)[:, :, None].expand_as(pooled)
-        return torch.tanh(self.readout(torch.cat([pooled, context], dim=-1)))
+        b, t, s, d = pooled.shape
+        tokens = torch.cat([self.action_embed(action)[:, :, None], pooled], dim=2)
+        mixed = self.direct_mixer(tokens.reshape(b * t, s + 1, d)).view(b, t, s + 1, d)
+        return torch.tanh(self.readout(self.direct_norm(mixed[:, :, 1:])))
 
 
 def flow_conditioning(

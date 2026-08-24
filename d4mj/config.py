@@ -26,7 +26,10 @@ class Config:
 
     # Z*. window is the bounded causal context: z_t = Z*(x_{t-window+1..t}).
     window: int = 16
-    n_latents: int = 32
+    # The original 32-slot export discarded task-relevant encoder structure.
+    # Sixty-four slots closed that export loss at both frozen-tokenizer seeds and
+    # improved Direct successor fidelity at both seeds downstream (S84).
+    n_latents: int = 64
     d_bottleneck: int = 16
     packing: int = 2
     mae_p_max: float = 0.9
