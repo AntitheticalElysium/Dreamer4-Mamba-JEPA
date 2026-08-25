@@ -10,7 +10,10 @@ and the first census got it wrong by inventing a key.
 
 Written per root:
 
-  history       the 32 frames ending at the pre-terminal state, for encoding
+  history       the 32 stored observations ending at the pre-terminal state
+  render_drift  max pixel difference between the replayed pre-terminal state and the
+                stored final observation; must be 0 or the branches are not this
+                trajectory's
   successors    all 17 successor frames under the original key
   terminated    which of them end the episode
   lethal_action the action the policy actually took, which was fatal
@@ -63,12 +66,18 @@ def main() -> None:
         _, env_keys = replay._slot_keys(shard_index, slot)
         key = env_keys[steps - 1]
 
-        # the causal window ending at the pre-terminal state
-        start = max(0, steps - 1 - (HISTORY - 1))
-        history = []
-        for t in range(start, steps):
-            history.append(np.asarray(frame(replay.advance_to(shard_index, slot, t))))
+        # the causal window is already on disk as rendered observations, so it costs
+        # nothing; replaying it frame by frame would be 32 full scans per root
+        fields = replay.episode_fields(shard_index, slot)
+        observations = fields["observations"]
+        start = max(0, steps - HISTORY)
+        history = observations[start:steps]
         state = replay.advance_to(shard_index, slot, steps - 1)
+
+        # the replayed pre-terminal state must render to the stored final observation,
+        # or the branch successors do not belong to this trajectory
+        drift = int(np.abs(np.asarray(frame(state)).astype(np.int32)
+                           - observations[steps - 1].numpy().astype(np.int32)).max())
 
         successors, terminated = [], []
         for action in range(17):
@@ -77,7 +86,8 @@ def main() -> None:
             terminated.append(bool(done_flag) or replay.is_dead(nxt))
         rows.append({
             "shard": shard_index, "slot": slot, "steps": steps,
-            "history": torch.from_numpy(np.stack(history)),
+            "history": history.clone(),
+            "render_drift": drift,
             "successors": torch.from_numpy(np.stack(successors)),
             "terminated": torch.tensor(terminated),
             "lethal_action": root["lethal_action"],
