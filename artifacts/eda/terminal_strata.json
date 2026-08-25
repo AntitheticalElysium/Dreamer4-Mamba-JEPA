@@ -1,8 +1,8 @@
 {
  "counts": {
-  "total": 8069,
-  "actionable": 3181,
-  "unavoidable": 4806,
+  "total": 8015,
+  "actionable": 3200,
+  "unavoidable": 4815,
   "shards": 420
  },
  "unavoidable": [
@@ -8103,6 +8103,11 @@
   },
   {
    "shard": 140,
+   "slot": 17,
+   "steps": 172
+  },
+  {
+   "shard": 140,
    "slot": 19,
    "steps": 275
   },
@@ -10528,6 +10533,11 @@
   },
   {
    "shard": 184,
+   "slot": 15,
+   "steps": 372
+  },
+  {
+   "shard": 184,
    "slot": 16,
    "steps": 527
   },
@@ -11473,6 +11483,11 @@
   },
   {
    "shard": 201,
+   "slot": 21,
+   "steps": 223
+  },
+  {
+   "shard": 201,
    "slot": 22,
    "steps": 312
   },
@@ -11480,6 +11495,11 @@
    "shard": 202,
    "slot": 1,
    "steps": 216
+  },
+  {
+   "shard": 202,
+   "slot": 3,
+   "steps": 106
   },
   {
    "shard": 202,
@@ -13170,6 +13190,11 @@
    "shard": 233,
    "slot": 4,
    "steps": 246
+  },
+  {
+   "shard": 233,
+   "slot": 6,
+   "steps": 431
   },
   {
    "shard": 233,
@@ -15913,11 +15938,6 @@
   },
   {
    "shard": 280,
-   "slot": 6,
-   "steps": 362
-  },
-  {
-   "shard": 280,
    "slot": 7,
    "steps": 1845
   },
@@ -16285,6 +16305,11 @@
    "shard": 285,
    "slot": 14,
    "steps": 163
+  },
+  {
+   "shard": 285,
+   "slot": 15,
+   "steps": 209
   },
   {
    "shard": 285,
@@ -18568,6 +18593,11 @@
   },
   {
    "shard": 324,
+   "slot": 19,
+   "steps": 390
+  },
+  {
+   "shard": 324,
    "slot": 21,
    "steps": 1436
   },
@@ -20125,6 +20155,11 @@
    "shard": 351,
    "slot": 2,
    "steps": 42
+  },
+  {
+   "shard": 351,
+   "slot": 4,
+   "steps": 198
   },
   {
    "shard": 351,
@@ -23203,6 +23238,11 @@
   },
   {
    "shard": 404,
+   "slot": 12,
+   "steps": 148
+  },
+  {
+   "shard": 404,
    "slot": 13,
    "steps": 213
   },
@@ -23860,6 +23900,11 @@
    "shard": 416,
    "slot": 18,
    "steps": 371
+  },
+  {
+   "shard": 416,
+   "slot": 19,
+   "steps": 315
   },
   {
    "shard": 416,
@@ -25605,6 +25650,20 @@
   },
   {
    "shard": 13,
+   "slot": 10,
+   "steps": 251,
+   "lethal_action": 12,
+   "safe_actions": [
+    1,
+    4
+   ],
+   "n_lethal": 15,
+   "epsilon": 0.25,
+   "health": 2.0,
+   "light": 0.23758701980113983
+  },
+  {
+   "shard": 13,
    "slot": 12,
    "steps": 297,
    "lethal_action": 9,
@@ -25803,7 +25862,6 @@
     0,
     2,
     3,
-    4,
     5,
     6,
     7,
@@ -25817,7 +25875,7 @@
     15,
     16
    ],
-   "n_lethal": 1,
+   "n_lethal": 2,
    "epsilon": 1.0,
    "health": 1.0,
    "light": 0.06413529813289642
@@ -26279,6 +26337,34 @@
    "epsilon": 0.5,
    "health": 2.0,
    "light": 1.0
+  },
+  {
+   "shard": 18,
+   "slot": 23,
+   "steps": 131,
+   "lethal_action": 4,
+   "safe_actions": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "n_lethal": 1,
+   "epsilon": 0.5,
+   "health": 2.0,
+   "light": 0.7004061937332153
   },
   {
    "shard": 19,
@@ -27341,6 +27427,19 @@
   },
   {
    "shard": 29,
+   "slot": 18,
+   "steps": 367,
+   "lethal_action": 3,
+   "safe_actions": [
+    2
+   ],
+   "n_lethal": 16,
+   "epsilon": 0.25,
+   "health": 1.0,
+   "light": 0.9997524619102478
+  },
+  {
+   "shard": 29,
    "slot": 21,
    "steps": 163,
    "lethal_action": 13,
@@ -28304,9 +28403,10 @@
    "lethal_action": 10,
    "safe_actions": [
     1,
-    2
+    2,
+    4
    ],
-   "n_lethal": 15,
+   "n_lethal": 14,
    "epsilon": 0.25,
    "health": 1.0,
    "light": 0.03648205101490021
@@ -29597,10 +29697,9 @@
    "lethal_action": 5,
    "safe_actions": [
     1,
-    2,
-    4
+    2
    ],
-   "n_lethal": 14,
+   "n_lethal": 15,
    "epsilon": 0.5,
    "health": 1.0,
    "light": 0.36229655146598816
@@ -32367,6 +32466,34 @@
   },
   {
    "shard": 69,
+   "slot": 20,
+   "steps": 282,
+   "lethal_action": 2,
+   "safe_actions": [
+    0,
+    1,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "n_lethal": 1,
+   "epsilon": 0.25,
+   "health": 2.0,
+   "light": 0.6011540293693542
+  },
+  {
+   "shard": 69,
    "slot": 22,
    "steps": 218,
    "lethal_action": 7,
@@ -32743,10 +32870,9 @@
    "steps": 514,
    "lethal_action": 1,
    "safe_actions": [
-    2,
-    3
+    2
    ],
-   "n_lethal": 15,
+   "n_lethal": 16,
    "epsilon": 0.1,
    "health": 1.0,
    "light": 0.0014796752948313951
@@ -33685,6 +33811,20 @@
   },
   {
    "shard": 80,
+   "slot": 11,
+   "steps": 849,
+   "lethal_action": 10,
+   "safe_actions": [
+    4,
+    5
+   ],
+   "n_lethal": 15,
+   "epsilon": 0.1,
+   "health": 4.0,
+   "light": 0.2165718525648117
+  },
+  {
+   "shard": 80,
    "slot": 16,
    "steps": 881,
    "lethal_action": 4,
@@ -34468,6 +34608,19 @@
    "light": 0.7004061937332153
   },
   {
+   "shard": 87,
+   "slot": 19,
+   "steps": 153,
+   "lethal_action": 0,
+   "safe_actions": [
+    4
+   ],
+   "n_lethal": 16,
+   "epsilon": 1.0,
+   "health": 2.0,
+   "light": 0.44631052017211914
+  },
+  {
    "shard": 88,
    "slot": 5,
    "steps": 409,
@@ -34564,6 +34717,34 @@
    "epsilon": 0.1,
    "health": 9.0,
    "light": 0.6574944853782654
+  },
+  {
+   "shard": 89,
+   "slot": 0,
+   "steps": 809,
+   "lethal_action": 4,
+   "safe_actions": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "n_lethal": 1,
+   "epsilon": 0.25,
+   "health": 1.0,
+   "light": 0.0006577007006853819
   },
   {
    "shard": 89,
@@ -34964,6 +35145,19 @@
    "epsilon": 1.0,
    "health": 2.0,
    "light": 0.988092839717865
+  },
+  {
+   "shard": 91,
+   "slot": 13,
+   "steps": 178,
+   "lethal_action": 0,
+   "safe_actions": [
+    3
+   ],
+   "n_lethal": 16,
+   "epsilon": 1.0,
+   "health": 2.0,
+   "light": 0.1670788675546646
   },
   {
    "shard": 91,
@@ -35900,7 +36094,6 @@
    "safe_actions": [
     0,
     1,
-    2,
     3,
     5,
     6,
@@ -35915,7 +36108,7 @@
     15,
     16
    ],
-   "n_lethal": 1,
+   "n_lethal": 2,
    "epsilon": 0.5,
    "health": 2.0,
    "light": 0.9846193194389343
@@ -38527,6 +38720,19 @@
    "epsilon": 0.1,
    "health": 2.0,
    "light": 0.996171772480011
+  },
+  {
+   "shard": 120,
+   "slot": 6,
+   "steps": 64,
+   "lethal_action": 5,
+   "safe_actions": [
+    4
+   ],
+   "n_lethal": 16,
+   "epsilon": 0.1,
+   "health": 2.0,
+   "light": 0.9999690055847168
   },
   {
    "shard": 120,
@@ -42586,6 +42792,20 @@
   },
   {
    "shard": 155,
+   "slot": 18,
+   "steps": 149,
+   "lethal_action": 2,
+   "safe_actions": [
+    1,
+    3
+   ],
+   "n_lethal": 15,
+   "epsilon": 1.0,
+   "health": 1.0,
+   "light": 0.4946335554122925
+  },
+  {
+   "shard": 155,
    "slot": 20,
    "steps": 103,
    "lethal_action": 13,
@@ -44660,6 +44880,19 @@
   },
   {
    "shard": 172,
+   "slot": 3,
+   "steps": 378,
+   "lethal_action": 5,
+   "safe_actions": [
+    3
+   ],
+   "n_lethal": 16,
+   "epsilon": 0.1,
+   "health": 1.0,
+   "light": 0.9944468140602112
+  },
+  {
+   "shard": 172,
    "slot": 10,
    "steps": 553,
    "lethal_action": 5,
@@ -45480,6 +45713,20 @@
    "epsilon": 0.1,
    "health": 1.0,
    "light": 0.7507613897323608
+  },
+  {
+   "shard": 180,
+   "slot": 9,
+   "steps": 175,
+   "lethal_action": 4,
+   "safe_actions": [
+    1,
+    2
+   ],
+   "n_lethal": 15,
+   "epsilon": 0.1,
+   "health": 1.0,
+   "light": 0.19622264802455902
   },
   {
    "shard": 180,
@@ -46543,6 +46790,21 @@
    "epsilon": 0.1,
    "health": 1.0,
    "light": 0.058026526123285294
+  },
+  {
+   "shard": 188,
+   "slot": 8,
+   "steps": 604,
+   "lethal_action": 13,
+   "safe_actions": [
+    1,
+    4,
+    5
+   ],
+   "n_lethal": 14,
+   "epsilon": 0.1,
+   "health": 1.0,
+   "light": 0.8224166631698608
   },
   {
    "shard": 188,
@@ -50098,9 +50360,10 @@
    "steps": 205,
    "lethal_action": 9,
    "safe_actions": [
-    2
+    2,
+    4
    ],
-   "n_lethal": 16,
+   "n_lethal": 15,
    "epsilon": 0.25,
    "health": 2.0,
    "light": 0.005908160004764795
@@ -50393,6 +50656,20 @@
    "epsilon": 0.1,
    "health": 3.0,
    "light": 0.43422579765319824
+  },
+  {
+   "shard": 220,
+   "slot": 12,
+   "steps": 113,
+   "lethal_action": 5,
+   "safe_actions": [
+    1,
+    3
+   ],
+   "n_lethal": 15,
+   "epsilon": 0.1,
+   "health": 1.0,
+   "light": 0.8609864115715027
   },
   {
    "shard": 220,
@@ -52065,19 +52342,6 @@
    "epsilon": 0.25,
    "health": 1.0,
    "light": 0.3980877101421356
-  },
-  {
-   "shard": 233,
-   "slot": 6,
-   "steps": 431,
-   "lethal_action": 12,
-   "safe_actions": [
-    4
-   ],
-   "n_lethal": 16,
-   "epsilon": 0.25,
-   "health": 2.0,
-   "light": 0.7004059553146362
   },
   {
    "shard": 233,
@@ -57389,11 +57653,10 @@
    "steps": 267,
    "lethal_action": 5,
    "safe_actions": [
-    1,
     2,
     3
    ],
-   "n_lethal": 14,
+   "n_lethal": 15,
    "epsilon": 0.25,
    "health": 1.0,
    "light": 0.4221547245979309
@@ -57752,6 +58015,19 @@
    "epsilon": 1.0,
    "health": 1.0,
    "light": 0.6240078806877136
+  },
+  {
+   "shard": 280,
+   "slot": 6,
+   "steps": 362,
+   "lethal_action": 9,
+   "safe_actions": [
+    2
+   ],
+   "n_lethal": 16,
+   "epsilon": 0.1,
+   "health": 1.0,
+   "light": 0.9999988675117493
   },
   {
    "shard": 280,
@@ -60308,6 +60584,21 @@
   },
   {
    "shard": 302,
+   "slot": 2,
+   "steps": 358,
+   "lethal_action": 0,
+   "safe_actions": [
+    1,
+    2,
+    4
+   ],
+   "n_lethal": 14,
+   "epsilon": 0.5,
+   "health": 2.0,
+   "light": 0.9999690055847168
+  },
+  {
+   "shard": 302,
    "slot": 3,
    "steps": 193,
    "lethal_action": 11,
@@ -62289,10 +62580,9 @@
    "lethal_action": 11,
    "safe_actions": [
     2,
-    3,
-    4
+    3
    ],
-   "n_lethal": 14,
+   "n_lethal": 15,
    "epsilon": 0.5,
    "health": 2.0,
    "light": 0.03648205101490021
@@ -63676,6 +63966,33 @@
    "epsilon": 0.25,
    "health": 9.0,
    "light": 0.9994140863418579
+  },
+  {
+   "shard": 329,
+   "slot": 8,
+   "steps": 275,
+   "lethal_action": 1,
+   "safe_actions": [
+    0,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "n_lethal": 2,
+   "epsilon": 0.25,
+   "health": 2.0,
+   "light": 0.5186750292778015
   },
   {
    "shard": 329,
@@ -66525,6 +66842,21 @@
   },
   {
    "shard": 354,
+   "slot": 16,
+   "steps": 108,
+   "lethal_action": 2,
+   "safe_actions": [
+    1,
+    3,
+    4
+   ],
+   "n_lethal": 14,
+   "epsilon": 0.5,
+   "health": 1.0,
+   "light": 0.894477367401123
+  },
+  {
+   "shard": 354,
    "slot": 17,
    "steps": 230,
    "lethal_action": 5,
@@ -68274,6 +68606,20 @@
   },
   {
    "shard": 370,
+   "slot": 21,
+   "steps": 176,
+   "lethal_action": 13,
+   "safe_actions": [
+    3,
+    4
+   ],
+   "n_lethal": 15,
+   "epsilon": 0.5,
+   "health": 4.0,
+   "light": 0.1863168478012085
+  },
+  {
+   "shard": 370,
    "slot": 22,
    "steps": 108,
    "lethal_action": 3,
@@ -68527,6 +68873,20 @@
    "epsilon": 0.1,
    "health": 2.0,
    "light": 0.9228112697601318
+  },
+  {
+   "shard": 372,
+   "slot": 17,
+   "steps": 121,
+   "lethal_action": 5,
+   "safe_actions": [
+    2,
+    4
+   ],
+   "n_lethal": 15,
+   "epsilon": 0.1,
+   "health": 2.0,
+   "light": 0.7969250082969666
   },
   {
    "shard": 372,

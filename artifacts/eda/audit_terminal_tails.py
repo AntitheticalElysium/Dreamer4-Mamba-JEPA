@@ -13,6 +13,21 @@ whether the example contains a decision at all.
 This is the census that lets those be separated. For every TRAIN terminal episode it
 replays to the pre-terminal state and executes all 17 actions, recording:
 
+Two corrections over a first pass, both of which invalidated its index.
+
+  terminal only     the first pass audited every TRAIN episode, including 54
+                    truncations, rather than the 8,015 that actually terminate. It now
+                    requires `terminated[-1]`.
+  original key      the first pass forked with a freshly invented PRNGKey, so it varied
+                    environment randomness alongside the action -- which is precisely
+                    what a counterfactual must hold fixed. It now uses the episode's own
+                    final-step key, `_slot_keys(shard, slot)[1][steps - 1]`, so the only
+                    thing that differs between the 17 branches is the action. Replaying
+                    the 28 genuine terminals whose deaths failed to reproduce under the
+                    substituted key makes all 28 lethal again, and the wrong key may
+                    equally have flipped survivors at any other root, so the whole census
+                    is rerun rather than patched.
+
   actionable        does any action survive where the taken one died
   safe_actions      how many, and which
   taken_action      what the policy did, and whether it was among the lethal ones
@@ -75,6 +90,8 @@ def main() -> None:
             fields = episodes[slot]
             if fields.get("split") not in (None, "train"):
                 continue
+            if not bool(fields["terminated"][-1]):
+                continue                      # truncations are not terminal tails
             actions = fields["actions_taken"].numpy()
             n = len(actions)
             if n < 2:
@@ -82,7 +99,8 @@ def main() -> None:
             state = replay.advance_to(shard_index, slot, n - 1)
             if replay.is_dead(state):
                 continue                      # already terminal before the last action
-            key = jax.random.PRNGKey(replay.SUPPORT_SEED + shard_index + n)
+            _, env_keys = replay._slot_keys(shard_index, slot)
+            key = env_keys[n - 1]             # the episode's own final-step key
             lethal = []
             for action in range(17):
                 _, nxt, _, done, _ = step(key, state, action)
