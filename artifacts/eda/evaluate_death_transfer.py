@@ -1,0 +1,184 @@
+"""Does Direct preserve the death mechanic in the encoder's own coordinates?
+
+The previous death evaluation was an own-probe reading: the classifier was fitted on
+predicted successors, so it measured whether death is *recoverable* from a prediction
+with a freshly fitted decoder, not whether the prediction lands where the true successor
+lands. It also lacked an action-only control, so part of its 0.711 was the global action
+prior rather than state-conditional structure.
+
+Both are fixable, and the claim that true successor latents were unrecoverable was
+simply wrong: `fork_successors/` holds exact successor frames for 961 of the 965
+branched roots, with termination labels matching the stored `true_death`.
+
+So this is the transfer test, on the same footing as R_delta:
+
+  1. encode the real successor frames with the repaired tokenizer, each appended to its
+     own causal history exactly as `encode_fork_dataset` does
+  2. fit the death probe on REAL successors from fit roots only
+  3. apply that identical frozen probe to real and predicted successors on held-out roots
+  4. report true AUC, predicted AUC, R_death, an action-only floor, and paired
+     root-bootstrap uncertainty
+
+The 104 policy forks are excluded: they come from a different collection and have no
+stored successor frames.
+"""
+
+from __future__ import annotations
+
+import glob
+import json
+import sys
+from dataclasses import replace
+from pathlib import Path
+
+import numpy as np
+import torch
+
+ROOT = Path("/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA")
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(HERE))
+from evaluate_damage_classifier import interval
+from evaluate_phase1b_fork import Readout
+from reevaluate_phase1b_delta import fit_probe, within_state
+
+from d4mj.checkpoint import load
+from d4mj.config import Config
+from d4mj.data import patchify
+from d4mj.representation import Encoder, pack
+from d4mj.transition import World, commit_inputs
+
+DEVICE = "cuda"
+ENCODER = HERE / "capacity6k" / "n64d16_s1" / "encoder_006000.pt"
+REPORT = HERE / "capacity6k" / "n64d16_s1" / "training_report.json"
+
+
+@torch.no_grad()
+def encode_root(encoder, config, history, successors):
+    """History latents, and each successor appended to that same history."""
+    z, _, _ = encoder(patchify(history[None], config.patch).to(DEVICE))
+    z_history = pack(z, config)[0]
+    # chunked: these histories run to 64 frames, so all 17 successors at once is
+    # ~17x65 frames and does not fit in 6 GB (encode_fork_dataset had 32-frame windows)
+    out = []
+    for lo in range(0, 17, 4):
+        stacked = torch.stack([torch.cat([history, successors[a][None]])
+                               for a in range(lo, min(lo + 4, 17))])
+        z, _, _ = encoder(patchify(stacked, config.patch).to(DEVICE))
+        out.append(pack(z, config)[:, -1].flatten(1).cpu())
+    return z_history.cpu(), torch.cat(out)
+
+
+@torch.no_grad()
+def predict_root(world, config, history, led):
+    rng = torch.Generator(device=DEVICE).manual_seed(config.seed + 4242)
+    z = history[None].to(DEVICE)
+    committed, conditioning = commit_inputs(z, rng, config)
+    features, _, _ = world(None, led[None].to(DEVICE), committed, conditioning)
+    last = features[:, -1:]
+    actions = torch.arange(17, device=DEVICE)[None]
+    return world.predict(last.expand(1, 17, *last.shape[2:]), actions).flatten(2)[0].cpu()
+
+
+def main() -> None:
+    base = replace(Config(), n_latents=64, d_bottleneck=16)
+    config = replace(base, transition="direct", time_mixer="attention")
+
+    stored = json.loads(REPORT.read_text())
+    encoder = Encoder(base).to(DEVICE)
+    load(ENCODER, replace(base, batch=stored["batch"], seed=stored["seed"]), part0=encoder)
+    encoder.eval()
+    world = World(config).to(DEVICE)
+    world.load_state_dict(torch.load(HERE / "production_1b" / "world.pt",
+                                     weights_only=False)["world"])
+    world.eval()
+
+    successors = {}
+    for path in sorted(glob.glob(str(HERE / "fork_successors" / "shard-*.pt"))):
+        for row in torch.load(path, weights_only=False):
+            successors[(int(row["seed"]), int(row["step"]))] = row
+
+    rows = torch.load(HERE / "fork_histories" / "branched_965.pt", weights_only=False)
+    rows = [r for r in rows if (int(r["seed"]), int(r["step"])) in successors]
+    print(f"{len(rows)} branched roots with exact successor frames", flush=True)
+
+    true_z, pred_z, death = [], [], []
+    for row in rows:
+        key = (int(row["seed"]), int(row["step"]))
+        history, branch = encode_root(encoder, base, row["frames"],
+                                      successors[key]["successors"])
+        true_z.append(branch)
+        pred_z.append(predict_root(world, config, history, row["led_to_action"].long()))
+        death.append(successors[key]["terminated"].float())
+    true_z = torch.stack(true_z).float()
+    pred_z = torch.stack(pred_z).float()
+    death = torch.stack(death).numpy()
+    print(f"encoded {tuple(true_z.shape)}; death rate {death.mean():.3f}", flush=True)
+
+    rng = np.random.default_rng(11)
+    order = rng.permutation(len(rows))
+    n = len(rows)
+    fit = torch.zeros(n, dtype=torch.bool); fit[order[: int(0.6 * n)]] = True
+    tune = torch.zeros(n, dtype=torch.bool); tune[order[int(0.6 * n): int(0.8 * n)]] = True
+    test = ~(fit | tune)
+    width = true_z.shape[-1]
+
+    # the probe never sees a prediction during fitting
+    probe, _ = fit_probe(true_z[fit].reshape(-1, width).to(DEVICE),
+                         torch.from_numpy(death[fit.numpy()].reshape(-1)).float().to(DEVICE),
+                         true_z[tune].reshape(-1, width).to(DEVICE),
+                         torch.from_numpy(death[tune.numpy()].reshape(-1)).float().to(DEVICE),
+                         seed=11)
+
+    def read(x):
+        with torch.no_grad():
+            s = torch.cat([probe(x[lo:lo+64].reshape(-1, width).to(DEVICE)).cpu()
+                           for lo in range(0, len(x), 64)]).numpy().reshape(-1, 17)
+        return within_state(s, death[test.numpy()])
+
+    v_true, v_pred = read(true_z[test]), read(pred_z[test])
+
+    # action-only floor, same split and probe family
+    onehot = torch.eye(17).expand(n, 17, 17).contiguous()
+    floor, _ = fit_probe(onehot[fit].reshape(-1, 17).to(DEVICE),
+                         torch.from_numpy(death[fit.numpy()].reshape(-1)).float().to(DEVICE),
+                         onehot[tune].reshape(-1, 17).to(DEVICE),
+                         torch.from_numpy(death[tune.numpy()].reshape(-1)).float().to(DEVICE),
+                         seed=11)
+    with torch.no_grad():
+        s = floor(onehot[test].reshape(-1, 17).to(DEVICE)).cpu().numpy().reshape(-1, 17)
+    v_floor = within_state(s, death[test.numpy()])
+
+    a_true, _ = interval(v_true, 17)
+    a_pred, (plo, phi) = interval(v_pred, 17)
+    a_floor, (flo, fhi) = interval(v_floor, 17)
+
+    generator = np.random.default_rng(20260825)
+    k = len(v_true)
+    draws = np.array([[(v_pred[i].mean() - 0.5) / (v_true[i].mean() - 0.5),
+                       v_pred[i].mean() - v_floor[i].mean()]
+                      for i in (generator.integers(0, k, k) for _ in range(10000))])
+    band = lambda v: [float(np.quantile(v, 0.025)), float(np.quantile(v, 0.975))]
+
+    result = {"roots": n, "test_roots": int(test.sum()), "scored_roots": int(k),
+              "death_rate": float(death.mean()),
+              "auc_true": a_true, "auc_pred": a_pred, "auc_pred_ci": [plo, phi],
+              "auc_action_only": a_floor, "auc_action_only_ci": [flo, fhi],
+              "R_death": (a_pred - 0.5) / (a_true - 0.5),
+              "R_death_ci": band(draws[:, 0]),
+              "pred_minus_action_only": a_pred - a_floor,
+              "pred_minus_action_only_ci": band(draws[:, 1])}
+    print(f"\ndeath transfer, probe fitted on TRUE successors only, {k} scored roots")
+    print(f"  true successors    {a_true:.4f}")
+    print(f"  predicted          {a_pred:.4f} [{plo:.4f}, {phi:.4f}]")
+    print(f"  action-only floor  {a_floor:.4f} [{flo:.4f}, {fhi:.4f}]")
+    print(f"  R_death            {result['R_death']:.3f} "
+          f"[{result['R_death_ci'][0]:.3f}, {result['R_death_ci'][1]:.3f}]")
+    print(f"  predicted - floor  {result['pred_minus_action_only']:+.4f} "
+          f"[{result['pred_minus_action_only_ci'][0]:+.4f}, "
+          f"{result['pred_minus_action_only_ci'][1]:+.4f}]")
+    (HERE / "death_transfer_production.json").write_text(json.dumps(result, indent=2))
+
+
+if __name__ == "__main__":
+    main()
