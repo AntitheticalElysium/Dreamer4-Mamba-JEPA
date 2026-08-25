@@ -21,6 +21,15 @@ So this is the transfer test, on the same footing as R_delta:
 
 The 104 policy forks are excluded: they come from a different collection and have no
 stored successor frames.
+
+Splitting matters here. These 965 death roots are a subset of the 5,402 damage roots
+the fork arm trained on, so scoring `abm0` on an arbitrary split would score it on its
+own training data. Both arms therefore use `seed_split` -- the whole-seed split abm0 was
+trained under -- which is honest for abm0 and equally valid for the production world,
+which saw none of these roots. Identical held-out roots for both.
+
+The true-successor encoding does not depend on the world, so it is cached once and
+reused across arms.
 """
 
 from __future__ import annotations
@@ -41,12 +50,14 @@ sys.path.insert(0, str(HERE))
 from evaluate_damage_classifier import interval
 from evaluate_phase1b_fork import Readout
 from reevaluate_phase1b_delta import fit_probe, within_state
+from train_phase1b_fork import seed_split
 
 from d4mj.checkpoint import load
 from d4mj.config import Config
 from d4mj.data import patchify
 from d4mj.representation import Encoder, pack
 from d4mj.transition import World, commit_inputs
+from legacy import open_checkpoint
 
 DEVICE = "cuda"
 ENCODER = HERE / "capacity6k" / "n64d16_s1" / "encoder_006000.pt"
@@ -81,6 +92,11 @@ def predict_root(world, config, history, led):
 
 
 def main() -> None:
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--arm", default="production",
+                        choices=("production", "abm0", "abm1"))
+    args = parser.parse_args()
     base = replace(Config(), n_latents=64, d_bottleneck=16)
     config = replace(base, transition="direct", time_mixer="attention")
 
@@ -88,10 +104,14 @@ def main() -> None:
     encoder = Encoder(base).to(DEVICE)
     load(ENCODER, replace(base, batch=stored["batch"], seed=stored["seed"]), part0=encoder)
     encoder.eval()
-    world = World(config).to(DEVICE)
-    world.load_state_dict(torch.load(HERE / "production_1b" / "world.pt",
-                                     weights_only=False)["world"])
-    world.eval()
+    if args.arm == "production":
+        world = World(config).to(DEVICE)
+        world.load_state_dict(torch.load(HERE / "production_1b" / "world.pt",
+                                         weights_only=False)["world"])
+        world.eval()
+    else:
+        world = open_checkpoint(HERE / f"phase1b_{args.arm}_n64" / "world_020000.pt",
+                                config, "promoted")
 
     successors = {}
     for path in sorted(glob.glob(str(HERE / "fork_successors" / "shard-*.pt"))):
@@ -102,25 +122,35 @@ def main() -> None:
     rows = [r for r in rows if (int(r["seed"]), int(r["step"])) in successors]
     print(f"{len(rows)} branched roots with exact successor frames", flush=True)
 
-    true_z, pred_z, death = [], [], []
-    for row in rows:
-        key = (int(row["seed"]), int(row["step"]))
-        history, branch = encode_root(encoder, base, row["frames"],
-                                      successors[key]["successors"])
-        true_z.append(branch)
-        pred_z.append(predict_root(world, config, history, row["led_to_action"].long()))
-        death.append(successors[key]["terminated"].float())
-    true_z = torch.stack(true_z).float()
-    pred_z = torch.stack(pred_z).float()
-    death = torch.stack(death).numpy()
+    cache = HERE / "death_transfer_true.pt"
+    if cache.exists():
+        blob = torch.load(cache, weights_only=False)
+        true_z, histories, death = blob["true_z"], blob["histories"], blob["death"]
+        print("reused the cached true-successor encoding", flush=True)
+    else:
+        true_z, histories, death = [], [], []
+        for row in rows:
+            key = (int(row["seed"]), int(row["step"]))
+            history, branch = encode_root(encoder, base, row["frames"],
+                                          successors[key]["successors"])
+            true_z.append(branch)
+            histories.append(history)
+            death.append(successors[key]["terminated"].float())
+        true_z = torch.stack(true_z).float()
+        death = torch.stack(death).numpy()
+        torch.save({"true_z": true_z, "histories": histories, "death": death}, cache)
+    pred_z = torch.stack([predict_root(world, config, h, r["led_to_action"].long())
+                          for h, r in zip(histories, rows)]).float()
     print(f"encoded {tuple(true_z.shape)}; death rate {death.mean():.3f}", flush=True)
 
-    rng = np.random.default_rng(11)
-    order = rng.permutation(len(rows))
+    # the split abm0 was trained under, so it is not scored on its own fit roots
     n = len(rows)
-    fit = torch.zeros(n, dtype=torch.bool); fit[order[: int(0.6 * n)]] = True
-    tune = torch.zeros(n, dtype=torch.bool); tune[order[int(0.6 * n): int(0.8 * n)]] = True
-    test = ~(fit | tune)
+    splits = np.array([seed_split(int(r["seed"])) for r in rows])
+    fit = torch.from_numpy(splits == "fit")
+    tune = torch.from_numpy(splits == "tune")
+    test = torch.from_numpy(splits == "test")
+    print(f"seed_split: fit {int(fit.sum())}, tune {int(tune.sum())}, "
+          f"test {int(test.sum())}", flush=True)
     width = true_z.shape[-1]
 
     # the probe never sees a prediction during fitting
@@ -160,7 +190,7 @@ def main() -> None:
                       for i in (generator.integers(0, k, k) for _ in range(10000))])
     band = lambda v: [float(np.quantile(v, 0.025)), float(np.quantile(v, 0.975))]
 
-    result = {"roots": n, "test_roots": int(test.sum()), "scored_roots": int(k),
+    result = {"arm": args.arm, "roots": n, "test_roots": int(test.sum()), "scored_roots": int(k),
               "death_rate": float(death.mean()),
               "auc_true": a_true, "auc_pred": a_pred, "auc_pred_ci": [plo, phi],
               "auc_action_only": a_floor, "auc_action_only_ci": [flo, fhi],
@@ -168,7 +198,7 @@ def main() -> None:
               "R_death_ci": band(draws[:, 0]),
               "pred_minus_action_only": a_pred - a_floor,
               "pred_minus_action_only_ci": band(draws[:, 1])}
-    print(f"\ndeath transfer, probe fitted on TRUE successors only, {k} scored roots")
+    print(f"\n{args.arm}: death transfer, probe on TRUE successors only, {k} scored roots")
     print(f"  true successors    {a_true:.4f}")
     print(f"  predicted          {a_pred:.4f} [{plo:.4f}, {phi:.4f}]")
     print(f"  action-only floor  {a_floor:.4f} [{flo:.4f}, {fhi:.4f}]")
@@ -177,7 +207,7 @@ def main() -> None:
     print(f"  predicted - floor  {result['pred_minus_action_only']:+.4f} "
           f"[{result['pred_minus_action_only_ci'][0]:+.4f}, "
           f"{result['pred_minus_action_only_ci'][1]:+.4f}]")
-    (HERE / "death_transfer_production.json").write_text(json.dumps(result, indent=2))
+    (HERE / f"death_transfer_{args.arm}.json").write_text(json.dumps(result, indent=2))
 
 
 if __name__ == "__main__":
