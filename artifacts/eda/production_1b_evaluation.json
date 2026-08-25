@@ -1,0 +1,23 @@
+{
+  "world": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/production_1b/world.pt",
+  "dev": {
+    "teacher_forced": 0.02725179973640479,
+    "generated_first": 0.025036947074113414,
+    "generated_second": 0.04411990111111663,
+    "compounding": 1.7621917313047228
+  },
+  "dev_fork_trained": {
+    "teacher_forced": 0.056656972563359886,
+    "generated_first": 0.054675969935487956,
+    "generated_second": 0.10723982565104961,
+    "compounding": 1.961370338332939
+  },
+  "fork": {
+    "action_mse": 0.013401187025010586,
+    "nse": 0.41480904817581177,
+    "cosine": 0.8632135987281799,
+    "retrieval": 0.8777483596178198,
+    "geometry": 0.9885486437376554,
+    "R_delta": 0.28556537292372014
+  }
+}
