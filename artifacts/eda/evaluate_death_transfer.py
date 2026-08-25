@@ -95,7 +95,11 @@ def main() -> None:
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("--arm", default="production",
-                        choices=("production", "abm0", "abm1"))
+                        choices=("production", "abm0", "abm1", "factual", "counterfactual"))
+    parser.add_argument("--milestone", type=int, default=0,
+                        help="for the terminal arms: score world_XXXXXX.pt instead of the "
+                             "final world.pt, so the first complete pass at 13,592 can be "
+                             "read separately")
     args = parser.parse_args()
     base = replace(Config(), n_latents=64, d_bottleneck=16)
     config = replace(base, transition="direct", time_mixer="attention")
@@ -104,7 +108,19 @@ def main() -> None:
     encoder = Encoder(base).to(DEVICE)
     load(ENCODER, replace(base, batch=stored["batch"], seed=stored["seed"]), part0=encoder)
     encoder.eval()
-    if args.arm == "production":
+    if args.arm in ("factual", "counterfactual"):
+        folder = HERE / f"terminal_{args.arm}"
+        if args.milestone:
+            world = open_checkpoint(folder / f"world_{args.milestone:06d}.pt",
+                                    config, "promoted")
+        else:
+            world = World(config).to(DEVICE)
+            world.load_state_dict(torch.load(folder / "world.pt",
+                                             weights_only=False)["world"])
+            world.eval()
+            for parameter in world.parameters():
+                parameter.requires_grad_(False)
+    elif args.arm == "production":
         world = World(config).to(DEVICE)
         world.load_state_dict(torch.load(HERE / "production_1b" / "world.pt",
                                          weights_only=False)["world"])
@@ -207,7 +223,7 @@ def main() -> None:
     print(f"  predicted - floor  {result['pred_minus_action_only']:+.4f} "
           f"[{result['pred_minus_action_only_ci'][0]:+.4f}, "
           f"{result['pred_minus_action_only_ci'][1]:+.4f}]")
-    (HERE / f"death_transfer_{args.arm}.json").write_text(json.dumps(result, indent=2))
+    (HERE / f"death_transfer_{args.arm}{'_%06d' % args.milestone if args.milestone else ''}.json").write_text(json.dumps(result, indent=2))
 
 
 if __name__ == "__main__":

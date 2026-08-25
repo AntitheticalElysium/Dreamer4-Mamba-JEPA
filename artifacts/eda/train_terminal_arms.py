@@ -68,17 +68,44 @@ CACHE = HERE / "latent_cache_64"
 N_ACTIONS = 17
 
 
+EXPECTED_ROOTS = 3198
+
+
 def load_roots():
+    """Every completeness check that a partial cache would otherwise slip past.
+
+    A first version loaded whatever shards happened to exist, so an interrupted encode
+    would have silently run the whole experiment on a fraction of the roots.
+    """
+    manifest_path = HERE / "actionable_latents" / "manifest.json"
+    assert manifest_path.exists(), "actionable_latents/manifest.json missing: encode first"
+    manifest = json.loads(manifest_path.read_text())
+    assert manifest.get("z_history_source"), (
+        "z_history has not been aligned to the production cache; run "
+        "align_actionable_latents.py")
+
+    shards = sorted(glob.glob(str(HERE / "actionable_latents" / "shard-*.pt")))
+    assert len(shards) == manifest["shards"], (
+        f"{len(shards)} shards on disk, manifest declares {manifest['shards']}")
     rows = []
-    for path in sorted(glob.glob(str(HERE / "actionable_latents" / "shard-*.pt"))):
+    for path in shards:
         rows += torch.load(path, weights_only=False)
-    table = torch.load(HERE / "actionable_actions.pt", weights_only=False)
+    assert len(rows) == EXPECTED_ROOTS == manifest["roots"], (
+        f"{len(rows)} roots loaded, expected {EXPECTED_ROOTS}, "
+        f"manifest declares {manifest['roots']}")
+
+    table_path = HERE / "actionable_actions.pt"
+    assert table_path.exists(), "actionable_actions.pt missing: run build_actionable_actions.py"
+    table = torch.load(table_path, weights_only=False)
     keys = [(int(r["shard"]), int(r["slot"])) for r in rows]
+    assert len(set(keys)) == len(keys), "duplicate roots in the latent shards"
     missing = [k for k in keys if k not in table]
     assert not missing, f"{len(missing)} roots without an action history"
-    return (torch.stack([r["z_history"] for r in rows]),
-            torch.stack([r["z_branch"] for r in rows]),
-            torch.stack([table[k] for k in keys]),
+
+    history = torch.stack([r["z_history"] for r in rows])
+    branch = torch.stack([r["z_branch"] for r in rows])
+    assert torch.isfinite(history).all() and torch.isfinite(branch).all(), "non-finite latents"
+    return (history, branch, torch.stack([table[k] for k in keys]),
             torch.tensor([r["lethal_action"] for r in rows]))
 
 
@@ -86,7 +113,12 @@ def schedule(n_roots: int, seed: int):
     """A deterministic shuffled pass over every (root, action) pair."""
     pairs = np.stack(np.meshgrid(np.arange(n_roots), np.arange(N_ACTIONS),
                                  indexing="ij"), axis=-1).reshape(-1, 2)
-    return pairs[np.random.default_rng(seed).permutation(len(pairs))]
+    pairs = pairs[np.random.default_rng(seed).permutation(len(pairs))]
+    assert len(pairs) == n_roots * N_ACTIONS
+    assert len({tuple(x) for x in pairs}) == len(pairs), "schedule repeats a pair"
+    counts = np.bincount(pairs[:, 0], minlength=n_roots)
+    assert (counts == N_ACTIONS).all(), "some root does not receive all 17 actions"
+    return pairs
 
 
 def main() -> None:
@@ -108,7 +140,7 @@ def main() -> None:
     episodes = load_episodes(CACHE, digest, verify=False)
     history, branch, led_history, lethal = load_roots()
     pairs = schedule(len(history), config.seed + 7)
-    per_pass = len(pairs) // args.terminal_batch
+    per_pass = -(-len(pairs) // args.terminal_batch)   # ceil: 54,366/4 is 13,592
     print(f"{args.arm}: {len(episodes)} cached episodes, {len(history)} roots, "
           f"{len(pairs):,} (root, action) pairs, one pass = {per_pass:,} steps", flush=True)
 
