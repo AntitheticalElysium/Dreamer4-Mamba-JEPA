@@ -61,6 +61,13 @@ def main() -> None:
     parser.add_argument("--cache", type=Path, default=HERE / "latent_cache_64")
     parser.add_argument("--support", type=Path,
                         default=ROOT / "artifacts/craftax_support_v2")
+    parser.add_argument("--seed", type=int, default=None,
+                        help="the training seed only -- initialisation, sampler and "
+                             "model noise. The corpus split stays on the default seed: "
+                             "`episode_splits` keys off `config.seed`, so moving it "
+                             "would reshuffle train/dev and put evaluation episodes into "
+                             "training, which is not what a training-seed replication "
+                             "asks. It also keeps the latent cache reusable.")
     parser.add_argument("--smoke", type=int, default=0,
                         help="episodes per split for a shape/plumbing check; skips the "
                              "bootstrap-start guard since it is not a real run")
@@ -75,6 +82,8 @@ def main() -> None:
 
     base = replace(Config(), n_latents=64, d_bottleneck=16)
     config = replace(base, transition="direct", time_mixer="attention")
+    if args.seed is not None:            # `base` keeps the default: split and cache
+        config = replace(config, seed=args.seed)
     if not args.smoke and args.steps <= base.bootstrap_start:
         raise SystemExit(f"--steps must exceed bootstrap_start={base.bootstrap_start}")
 
@@ -108,7 +117,7 @@ def main() -> None:
     log(f"phase 1B done, {args.steps} steps under the production objective")
     torch.save({"world": world.state_dict()}, args.out / "world.pt")
     (args.out / "done.json").write_text(json.dumps(
-        {"steps": args.steps, "seconds": time.time() - started,
+        {"steps": args.steps, "seed": config.seed, "seconds": time.time() - started,
          "train_episodes": len(cached_train), "dev_episodes": len(cached_dev),
          "encoder": str(ENCODER)}, indent=2))
 
