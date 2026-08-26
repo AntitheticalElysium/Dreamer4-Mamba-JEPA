@@ -209,6 +209,10 @@ def main() -> None:
     result = {"arm": args.arm, "milestone": args.milestone,
               "per_root_pred": v_pred.tolist(), "per_root_true": v_true.tolist(),
               "per_root_floor": v_floor.tolist(),
+              # how many of each test root's seventeen successors are fatal, so the
+              # escape-rich and trap-heavy strata can be read off the saved values
+              # without re-encoding; the training roots are bimodal on this axis
+              "per_root_lethal": death[test.numpy()].sum(1).astype(int).tolist(),
               "roots": n, "test_roots": int(test.sum()), "scored_roots": int(k),
               "death_rate": float(death.mean()),
               "auc_true": a_true, "auc_pred": a_pred, "auc_pred_ci": [plo, phi],

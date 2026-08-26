@@ -39,28 +39,51 @@ actionable, so the factual arm tests whether informative tails suffice, and is n
 sampling rule anyone could deploy.
 
 
-Exposure, and why one arm is slower than the other
---------------------------------------------------
+Exposure, and the two arms that separate coverage from balance
+---------------------------------------------------------------
 
 The paired analysis found the factual arm gaining across its first pass and stopping,
 while the counterfactual arm was flat to 13,592 and then gained on its partial second
-pass. The exposure arithmetic is the obvious candidate. At four targets per step,
-20,000 steps is 80,000 presentations. The counterfactual arm spreads those over 54,366
-distinct (root, action) pairs -- 1.47 sightings each -- while the factual arm spends all
-80,000 on 3,198 distinct transitions, about 25 sightings each. The counterfactual arm's
-first 13,592 steps see every target exactly once.
+pass. The exposure arithmetic is the obvious candidate. At four targets per step, 20,000
+steps is 80,000 presentations. The counterfactual arm spreads those over 54,366 distinct
+(root, action) pairs -- 1.47 sightings each -- while the factual arm spends all 80,000 on
+3,198 distinct transitions, about 25 each.
 
-`--terminal-actions 17` tests that directly. One selected root supplies seventeen
-action-conditioned targets from a single encoder forward, since the history and the
-backbone pass are what cost anything and `predict` is a pool, a one-block mixer and a
-readout. At one root per step this is *cheaper* than the original four-root arm and
-covers a full pass over all 54,366 pairs every 3,198 steps -- 6.25 passes inside the
-same 20,000-step budget, at unchanged terminal loss mass.
+`--terminal-actions 17` reads seventeen action-conditioned targets off one root's
+features. The history and the backbone pass are what cost anything and `predict` is a
+pool, a one-block mixer and a readout, so at four roots per step this measures 0.392
+s/step against the one-action arm's 0.390 -- seventeen times the targets for nothing.
+Four roots, not one: the root order is the same column of the same shuffled pass either
+way, so both arms present 25 roots per root over 20,000 steps and differ only in how
+many of each root's successors are supervised. Taking a fresh root permutation for the
+17-action form would have cut root presentations fourfold while raising throughput, and
+no result could then be attributed to either.
 
-This is an additional intervention, not a replication. Changing the sampler and the
-seed at once would answer neither question, so the matrix is: the original sampler at a
-new seed to ask whether the trajectory reproduces, and the accelerated sampler beside it
-at that same seed to ask whether repetition is the remedy.
+  arm 2  factual        4 roots x 1 action    25 presentations/root   1 lethal target
+  arm 3  counterfactual 4 roots x 1 action    25 presentations/root   1.47 passes
+  arm 4  full-action    4 roots x 17 actions  25 presentations/root   25 passes
+  arm 5  balanced       arm 4, reweighted     25 presentations/root   25 passes
+
+Arm 4 is not a clean repetition test. Against arm 3 it changes both how often a target is
+seen and whether all seventeen are averaged inside one update, so it establishes that
+full-action exposure-efficient supervision helps, not that repetition alone caused the
+delayed gain. Extending arm 3 to two complete passes at 27,184 steps remains the cleaner
+repetition test, and this trainer can now do it.
+
+Arm 4 against arm 5 is the clean one. Uniform all-action supervision is 77.9% deaths --
+13.25 lethal successors per root, measured, not assumed -- so `--balance-outcomes` gives
+each root's lethal and surviving halves half its loss each:
+
+    L_root = 0.5 * mean(L over lethal actions) + 0.5 * mean(L over safe actions)
+
+Identical roots, successors, predictions, target count, compute and terminal mass; only
+the weighting differs. It is transparently class-weighted successor MSE, not a new loss
+and not a death classifier. The weights are uncapped and reported instead: they span
+0.0312 to 0.5000 against 0.0588 uniform, because 239 roots have a single lethal action
+and 497 have a single safe one, and a cap is a knob that invites tuning the arm until it
+wins. Because that population is bimodal -- 87.8% of roots carry 13 or more lethal
+successors, 10.6% carry two or fewer -- read the escape-rich and trap-heavy strata
+alongside the aggregate.
 
 
 Extendable, not merely resumable
@@ -154,38 +177,45 @@ def load_roots():
     history = torch.stack([r["z_history"] for r in rows])
     branch = torch.stack([r["z_branch"] for r in rows])
     assert torch.isfinite(history).all() and torch.isfinite(branch).all(), "non-finite latents"
-    return (history, branch, torch.stack([table[k] for k in keys]),
-            torch.tensor([r["lethal_action"] for r in rows]))
+    terminated = torch.stack([r["terminated"] for r in rows]).bool()
+    lethal = torch.tensor([r["lethal_action"] for r in rows])
+    # actionability is defined as at least one surviving alternative, and the logged
+    # action is fatal by construction, so neither half of the 50/50 split is ever empty
+    assert terminated[torch.arange(len(rows)), lethal].all(), "a logged action survived"
+    assert (terminated.sum(1) < N_ACTIONS).all(), "a root offers no safe action"
+    return (history, branch, torch.stack([table[k] for k in keys]), lethal, terminated)
 
 
 def schedule(n_roots: int, seed: int, actions: int):
     """A deterministic shuffled pass over every (root, action) pair.
 
-    Returns a root order and, beside it, the actions that root carries at each
-    presentation. `actions == 1` is the original per-pair schedule: 54,366 rows, one
-    action apiece. `actions == 17` is the exposure-efficient form: 3,198 rows, each a
-    root carrying all seventeen at once, so one encoder forward supplies seventeen
-    targets. Widths between the two are refused -- 17 is prime, so every other chunk
-    size leaves a ragged final group, which either repeats pairs inside a pass or makes
-    the batch shape depend on the step.
+    Both forms walk the *same root order* -- the root column of the one shuffled pass
+    over all 54,366 pairs -- so the arms are step-for-step root-identical and differ
+    only in how many of that root's successors are supervised when it comes up.
+    `actions == 1` takes the action the pair schedule paired it with; `actions == 17`
+    reads all seventeen off the one encoder forward. Deriving the 17-action form from
+    its own root permutation instead would have moved root presentations as well as
+    target throughput, and no result could then be attributed to either.
 
-    Either way the invariant that mattered still holds and is still asserted: one pass
-    gives every root all seventeen of its actions exactly once.
+    Widths between 1 and 17 are refused: 17 is prime, so every other chunk size leaves
+    a ragged final group, which either repeats pairs inside a pass or makes the batch
+    shape depend on the step.
     """
-    generator = np.random.default_rng(seed)
+    pairs = np.stack(np.meshgrid(np.arange(n_roots), np.arange(N_ACTIONS),
+                                 indexing="ij"), axis=-1).reshape(-1, 2)
+    pairs = pairs[np.random.default_rng(seed).permutation(len(pairs))]
+    assert len(pairs) == n_roots * N_ACTIONS
+    assert len({tuple(x) for x in pairs}) == len(pairs), "schedule repeats a pair"
+    order = pairs[:, 0]
     if actions == 1:
-        pairs = np.stack(np.meshgrid(np.arange(n_roots), np.arange(N_ACTIONS),
-                                     indexing="ij"), axis=-1).reshape(-1, 2)
-        pairs = pairs[generator.permutation(len(pairs))]
-        assert len(pairs) == n_roots * N_ACTIONS
-        assert len({tuple(x) for x in pairs}) == len(pairs), "schedule repeats a pair"
-        order, choice = pairs[:, 0], pairs[:, 1:2]
+        choice = pairs[:, 1:2]
     else:
         assert actions == N_ACTIONS, "1 or 17 actions per root only; 17 is prime"
-        order = generator.permutation(n_roots)
-        choice = np.tile(np.arange(N_ACTIONS), (n_roots, 1))
-    counts = np.bincount(np.repeat(order, choice.shape[1]), minlength=n_roots)
-    assert (counts == N_ACTIONS).all(), "some root does not receive all 17 actions"
+        choice = np.tile(np.arange(N_ACTIONS), (len(order), 1))
+    assert (np.bincount(order, minlength=n_roots) == N_ACTIONS).all(), (
+        "some root is not presented seventeen times per traversal")
+    assert (np.bincount(choice.reshape(-1), minlength=N_ACTIONS)
+            == choice.size // N_ACTIONS).all(), "actions are not uniform over the pass"
     return order, choice
 
 
@@ -216,6 +246,9 @@ def main() -> None:
     parser.add_argument("--terminal-actions", type=int, default=1, choices=(1, N_ACTIONS),
                         help="action-conditioned targets read off each root's features")
     parser.add_argument("--terminal-mass", type=float, default=0.2)
+    parser.add_argument("--balance-outcomes", action="store_true",
+                        help="weight each root's seventeen successors so the lethal and "
+                             "surviving halves carry half the root's loss each")
     parser.add_argument("--milestones", type=int, nargs="+",
                         default=(5000, 10000, 13592, 20000))
     parser.add_argument("--out", type=Path, default=None)
@@ -233,6 +266,9 @@ def main() -> None:
     assert args.arm == "counterfactual" or args.terminal_actions == 1, (
         "the factual arm has one successor per root; --terminal-actions 17 would "
         "average seventeen copies of it")
+    assert not args.balance_outcomes or args.terminal_actions == N_ACTIONS, (
+        "balancing reweights the seventeen successors against each other and is "
+        "undefined when only one of them is supervised per presentation")
 
     base = replace(Config(), n_latents=64, d_bottleneck=16)
     config = replace(base, transition="direct", time_mixer="attention")
@@ -240,14 +276,28 @@ def main() -> None:
         config = replace(config, seed=args.seed)
     digest = json.loads((CACHE / "manifest.json").read_text())["cache_digest"]
     episodes = load_episodes(CACHE, digest, verify=False)
-    history, branch, led_history, lethal = load_roots()
+    history, branch, led_history, lethal, terminated = load_roots()
     order, choice = schedule(len(history), config.seed + 7, args.terminal_actions)
     targets = args.terminal_roots * args.terminal_actions
-    per_pass = -(-len(order) // args.terminal_roots)
+    n_pairs = len(history) * N_ACTIONS
+    passes = args.steps * targets / n_pairs
+    per_root = args.steps * args.terminal_roots / len(history)
+
+    # 0.5/n on each side, so a root with one lethal action puts half its loss on that
+    # one target. Reported rather than capped: a cap is a knob, and a knob invites
+    # tuning the arm until it wins.
+    dead = terminated.sum(1)
+    weights = torch.where(terminated, 0.5 / dead[:, None].float(),
+                          0.5 / (N_ACTIONS - dead)[:, None].float())
     print(f"{args.arm}: {len(episodes)} cached episodes, {len(history)} roots, seed "
-          f"{config.seed}, {targets} targets/step over {len(order):,} presentations, "
-          f"one pass = {per_pass:,} steps ({args.steps / per_pass:.2f} passes in "
-          f"{args.steps:,})", flush=True)
+          f"{config.seed}, {targets} targets/step, {per_root:.1f} presentations per root, "
+          f"{passes:.2f} passes over {n_pairs:,} pairs in {args.steps:,} steps", flush=True)
+    print(f"  lethal successors per root {dead.float().mean():.2f}/17, "
+          f"{terminated.float().mean():.3f} of all pairs", flush=True)
+    if args.balance_outcomes:
+        print(f"  balanced weights span {weights.min():.4f} to {weights.max():.4f} "
+              f"against {1/N_ACTIONS:.4f} uniform "
+              f"({weights.max()*N_ACTIONS:.1f}x at the extreme)", flush=True)
 
     # identical to train_dynamics: same seed, same construction, same streams
     torch.manual_seed(config.seed + 1)
@@ -267,7 +317,9 @@ def main() -> None:
     streams = {"sampler": sampler, "model": rng, "terminal": terminal_rng}
     contract = ":".join(["terminal", args.arm, f"seed{config.seed}",
                          f"roots{args.terminal_roots}", f"actions{args.terminal_actions}",
-                         f"mass{args.terminal_mass:g}", f"horizon{args.horizon}",
+                         f"mass{args.terminal_mass:g}",
+                         "balanced" if args.balance_outcomes else "uniform",
+                         f"horizon{args.horizon}",
                          data_identity(), "smoke" if args.smoke else "run"])
     begin = _checkpoint(resume_path if resume_path.exists() else None, config,
                         [world, opt], balance, streams, contract=contract)
@@ -301,8 +353,15 @@ def main() -> None:
         a = action.shape[1]
         flat = action.reshape(-1, 1)
         target = branch[roots.repeat_interleave(a), flat[:, 0]].to(DEVICE)
-        terminal = (world.predict(features[:, -1:].repeat_interleave(a, dim=0),
-                                  flat.to(DEVICE)).flatten(2)[:, 0] - target).pow(2).mean()
+        error = (world.predict(features[:, -1:].repeat_interleave(a, dim=0),
+                               flat.to(DEVICE)).flatten(2)[:, 0] - target).pow(2)
+        if args.balance_outcomes:
+            # half the root's loss on its lethal successors, half on its survivors,
+            # then the mean across roots -- the same targets, reweighted
+            share = weights[roots].reshape(-1).to(DEVICE)
+            terminal = (share * error.mean(-1)).sum() / len(roots)
+        else:
+            terminal = error.mean()   # the unbalanced path is left exactly as it was
 
         blended = (1.0 - args.terminal_mass) * dynamics + args.terminal_mass * terminal
         _update(opt, _balance({"dynamics": blended}, balance, config), [world], config, step)
@@ -323,11 +382,14 @@ def main() -> None:
     torch.save({"world": world.state_dict()}, out / "world.pt")
     (out / "training_report.json").write_text(json.dumps(
         {"arm": args.arm, "steps": args.steps, "horizon": args.horizon,
-         "seed": config.seed, "roots": len(history), "pairs": len(history) * N_ACTIONS,
-         "presentations": len(order), "steps_per_pass": per_pass,
-         "passes": args.steps / per_pass, "terminal_roots": args.terminal_roots,
+         "seed": config.seed, "roots": len(history), "pairs": n_pairs,
+         "passes": passes, "presentations_per_root": per_root,
+         "terminal_roots": args.terminal_roots,
          "terminal_actions": args.terminal_actions, "targets_per_step": targets,
-         "terminal_mass": args.terminal_mass, "contract": contract,
+         "terminal_mass": args.terminal_mass, "balance_outcomes": args.balance_outcomes,
+         "lethal_fraction": float(terminated.float().mean()),
+         "weight_min": float(weights.min()), "weight_max": float(weights.max()),
+         "weight_uniform": 1 / N_ACTIONS, "contract": contract,
          "resumed_from": begin, "seconds": time.time() - started,
          "curve_tail": curve[-500:]}, indent=2))
     print(f"done in {time.time()-started:.0f}s", flush=True)
