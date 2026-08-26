@@ -227,7 +227,10 @@ def main() -> None:
               "R_death_ci": band(draws[:, 0]),
               "pred_minus_action_only": a_pred - a_floor,
               "pred_minus_action_only_ci": band(draws[:, 1])}
-    print(f"\n{args.arm}: death transfer, probe on TRUE successors only, {k} scored roots")
+    # `--arm` still reads "production" when a folder was named, which would mislabel
+    # every seed-2 reading in the logs
+    print(f"\n{args.tag or args.arm}: death transfer, probe on TRUE successors only, "
+          f"{k} scored roots")
     print(f"  true successors    {a_true:.4f}")
     print(f"  predicted          {a_pred:.4f} [{plo:.4f}, {phi:.4f}]")
     print(f"  action-only floor  {a_floor:.4f} [{flo:.4f}, {fhi:.4f}]")
