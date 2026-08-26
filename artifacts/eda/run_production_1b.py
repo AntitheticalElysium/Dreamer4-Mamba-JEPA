@@ -72,6 +72,9 @@ def main() -> None:
                         help="episodes per split for a shape/plumbing check; skips the "
                              "bootstrap-start guard since it is not a real run")
     args = parser.parse_args()
+    # `main` chdirs to ROOT so `run_stage_a` can resolve its repo-relative corpora, which
+    # silently invalidates any relative path taken from the command line afterwards
+    args.out, args.cache = args.out.resolve(), args.cache.resolve()
     args.out.mkdir(parents=True, exist_ok=True)
     started = time.time()
 
