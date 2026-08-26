@@ -60,7 +60,8 @@ sys.path.insert(0, str(HERE))
 from d4mj.checkpoint import save
 from d4mj.config import Config
 from d4mj.data import load_episodes, sample_batch
-from d4mj.train import _balance, _generators, _share_initialisation, _to, _update, optimizer
+from d4mj.train import (_balance, _checkpoint, _generators, _share_initialisation, _to,
+                        _update, optimizer)
 from d4mj.transition import World, commit_inputs, transition_loss
 
 DEVICE = "cuda"
@@ -130,6 +131,7 @@ def main() -> None:
     parser.add_argument("--milestones", type=int, nargs="+",
                         default=(5000, 10000, 13592, 20000))
     parser.add_argument("--out", type=Path, default=None)
+    parser.add_argument("--resume-every", type=int, default=500)
     args = parser.parse_args()
     out = args.out or HERE / f"terminal_{args.arm}"
     out.mkdir(parents=True, exist_ok=True)
@@ -153,8 +155,21 @@ def main() -> None:
     terminal_rng = torch.Generator(device=DEVICE).manual_seed(config.seed + 4242)
     spatial, d = config.n_spatial, config.d_spatial
 
+    # A resume needs optimizer moments, the running-RMS balance and every stream, not
+    # weights. The contract carries the arm and the declared length: `sample_batch`
+    # schedules short and long batches as a function of TOTAL steps, so a 40k run has a
+    # different curriculum from a 20k one at every step. Resuming across a changed
+    # length would silently splice two schedules, and is refused.
+    resume_path = args.out / "resume.pt"
+    streams = {"sampler": sampler, "model": rng, "terminal": terminal_rng}
+    contract = f"terminal:{args.arm}:{args.steps}"
+    begin = _checkpoint(resume_path if resume_path.exists() else None, config,
+                        [world, opt], balance, streams, contract=contract)
+    if begin:
+        print(f"resumed from step {begin}", flush=True)
+
     started, curve = time.time(), []
-    for step in range(args.steps):
+    for step in range(begin, args.steps):
         batch = _to(sample_batch(episodes, sampler, config, step, args.steps), DEVICE)
         dynamics = transition_loss(world, batch, rng, config, step=step)
 
@@ -184,6 +199,9 @@ def main() -> None:
                   f"[{time.time()-started:.0f}s]", flush=True)
         if (step + 1) in tuple(args.milestones):
             save(out / f"world_{step+1:06d}.pt", config, part0=world)
+        if (step + 1) % args.resume_every == 0 or step + 1 == args.steps:
+            _checkpoint(resume_path, config, [world, opt], balance, streams,
+                        step + 1, contract)
 
     torch.save({"world": world.state_dict()}, out / "world.pt")
     (out / "training_report.json").write_text(json.dumps(

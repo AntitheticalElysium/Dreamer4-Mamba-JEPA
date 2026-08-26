@@ -206,7 +206,10 @@ def main() -> None:
                       for i in (generator.integers(0, k, k) for _ in range(10000))])
     band = lambda v: [float(np.quantile(v, 0.025)), float(np.quantile(v, 0.975))]
 
-    result = {"arm": args.arm, "roots": n, "test_roots": int(test.sum()), "scored_roots": int(k),
+    result = {"arm": args.arm, "milestone": args.milestone,
+              "per_root_pred": v_pred.tolist(), "per_root_true": v_true.tolist(),
+              "per_root_floor": v_floor.tolist(),
+              "roots": n, "test_roots": int(test.sum()), "scored_roots": int(k),
               "death_rate": float(death.mean()),
               "auc_true": a_true, "auc_pred": a_pred, "auc_pred_ci": [plo, phi],
               "auc_action_only": a_floor, "auc_action_only_ci": [flo, fhi],
