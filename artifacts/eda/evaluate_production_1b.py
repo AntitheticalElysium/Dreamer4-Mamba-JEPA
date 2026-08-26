@@ -85,6 +85,9 @@ def main() -> None:
     parser.add_argument("--world", type=Path, default=HERE / "production_1b" / "world.pt")
     parser.add_argument("--expert", type=int, default=320)
     parser.add_argument("--batches", type=int, default=64)
+    parser.add_argument("--tag", default="production",
+                        help="names the output file, so scoring an arm never overwrites "
+                             "another arm's report")
     args = parser.parse_args()
 
     base = replace(Config(), n_latents=64, d_bottleneck=16)
@@ -176,7 +179,7 @@ def main() -> None:
     print(f"\n  reference, abm0 trained ON these roots: action MSE 0.01414  NSE 0.2858  "
           f"cosine 0.8768  retrieval 0.8936  geometry 0.9901  R_delta 0.364", flush=True)
 
-    (HERE / "production_1b_evaluation.json").write_text(json.dumps(result, indent=2))
+    (HERE / f"production_1b_evaluation_{args.tag}.json").write_text(json.dumps(result, indent=2))
 
 
 if __name__ == "__main__":

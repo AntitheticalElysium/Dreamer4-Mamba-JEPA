@@ -1,0 +1,23 @@
+{
+  "world": "terminal_factual/world.pt",
+  "dev": {
+    "teacher_forced": 0.027091190902865492,
+    "generated_first": 0.025133223498414736,
+    "generated_second": 0.04322312309523113,
+    "compounding": 1.7197604238054622
+  },
+  "dev_fork_trained": {
+    "teacher_forced": 0.056656972563359886,
+    "generated_first": 0.054675969935487956,
+    "generated_second": 0.10723982565104961,
+    "compounding": 1.961370338332939
+  },
+  "fork": {
+    "action_mse": 0.012811891734600067,
+    "nse": 0.35655081272125244,
+    "cosine": 0.8727985620498657,
+    "retrieval": 0.887993553585818,
+    "geometry": 0.9879523411887967,
+    "R_delta": 0.25245187687030507
+  }
+}

@@ -5,10 +5,11 @@ positions in that window no preceding encoder context of their own, so they are 
 latents the world model is trained against. The production cache already holds the exact
 ones, computed with memory carried across the whole episode.
 
-The cache does not preserve `episode_id`, but `cache_latents_to_store` writes episodes in
-corpus order and support ids encode shard and slot, so the mapping is recovered
-positionally from the corpus and then verified: the final history latent must agree with
-the locally encoded one, which is the position that had full context either way.
+The cache *does* preserve `episode_id` -- an earlier note here said otherwise, from
+checking index 0, which is an archive episode carrying none. The mapping is recovered
+positionally from the corpus and then confirmed two ways: the final history latent agrees
+with the locally encoded one, the position that had full context either way, and an
+id-keyed lookup returns bit-identical windows.
 
 Only `z_history` is replaced. The 17 branch targets keep their fresh encoding, since each
 was produced by appending a successor to the same 32-frame window and reading the final
