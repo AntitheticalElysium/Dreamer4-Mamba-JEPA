@@ -13,9 +13,13 @@ set -u
 cd "$(dirname "$0")"
 SEED=20260732
 STEPS=20000
+# the project venv, not whatever `python` resolves to: the system interpreter carries
+# torch but not jax, and `run_stage_a` reaches the Craftax env through it
+PY=../../.venv/bin/python
+[ -x "$PY" ] || { echo "no interpreter at $PY"; exit 2; }
 
 finished() {   # $1 report file, $2 key that must read $STEPS
-  [ -f "$1" ] && python -c "import json,sys;print(json.load(open(sys.argv[1]))['$2'])" "$1" \
+  [ -f "$1" ] && "$PY" -c "import json,sys;print(json.load(open(sys.argv[1]))['$2'])" "$1" \
       2>/dev/null | grep -qx "$STEPS"
 }
 
@@ -23,7 +27,7 @@ arm() {        # $1 out dir, rest: extra flags
   local out=$1; shift
   if finished "$out/training_report.json" steps; then echo "== $out already at $STEPS"; return; fi
   echo "== $out"
-  python train_terminal_arms.py --seed "$SEED" --steps "$STEPS" --out "$out" "$@" || return 1
+  "$PY" train_terminal_arms.py --seed "$SEED" --steps "$STEPS" --out "$out" "$@" || return 1
 }
 
 case "${1:?lane a or b}" in
@@ -32,14 +36,19 @@ a)
     echo "== production_1b_s2 already at $STEPS"
   else
     echo "== production_1b_s2"
-    python run_production_1b.py --seed "$SEED" --steps "$STEPS" --out production_1b_s2 || exit 1
+    "$PY" run_production_1b.py --seed "$SEED" --steps "$STEPS" --out production_1b_s2 || exit 1
   fi
   arm terminal_factual_s2        --arm factual        --terminal-roots 4 --terminal-actions 1  || exit 1
   arm terminal_counterfactual_s2 --arm counterfactual --terminal-roots 4 --terminal-actions 1  || exit 1
   ;;
 b)
-  while [ ! -f production_1b_s2/done.json ] \
-     && ! grep -q "dev latents cached" production_1b_s2/run.log 2>/dev/null; do sleep 30; done
+  # wait for lane a to get its encoder off the GPU, but never wait on a lane that died
+  for _ in $(seq 240); do
+    [ -f production_1b_s2/done.json ] && break
+    grep -q "dev latents cached" production_1b_s2/run.log 2>/dev/null && break
+    grep -qE "Traceback|Error" lane_a.log 2>/dev/null && { echo "lane a failed; not starting"; exit 1; }
+    sleep 30
+  done
   arm terminal_full17_s2   --arm counterfactual --terminal-roots 4 --terminal-actions 17 || exit 1
   arm terminal_balanced_s2 --arm counterfactual --terminal-roots 4 --terminal-actions 17 \
                            --balance-outcomes || exit 1
