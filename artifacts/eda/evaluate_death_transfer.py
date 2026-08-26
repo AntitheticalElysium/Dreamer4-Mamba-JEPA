@@ -96,6 +96,12 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--arm", default="production",
                         choices=("production", "abm0", "abm1", "factual", "counterfactual"))
+    parser.add_argument("--folder", type=Path, default=None,
+                        help="checkpoint directory, for arms outside the seed-0 set; the "
+                             "world is loaded exactly as the named arms are")
+    parser.add_argument("--tag", default=None,
+                        help="output name, defaulting to --arm, so a second seed's arms "
+                             "do not overwrite the first's readings")
     parser.add_argument("--milestone", type=int, default=0,
                         help="for the terminal arms: score world_XXXXXX.pt instead of the "
                              "final world.pt, so the first complete pass at 13,592 can be "
@@ -108,8 +114,8 @@ def main() -> None:
     encoder = Encoder(base).to(DEVICE)
     load(ENCODER, replace(base, batch=stored["batch"], seed=stored["seed"]), part0=encoder)
     encoder.eval()
-    if args.arm in ("factual", "counterfactual"):
-        folder = HERE / f"terminal_{args.arm}"
+    if args.folder is not None or args.arm in ("factual", "counterfactual"):
+        folder = args.folder or HERE / f"terminal_{args.arm}"
         if args.milestone:
             world = open_checkpoint(folder / f"world_{args.milestone:06d}.pt",
                                     config, "promoted")
@@ -230,7 +236,9 @@ def main() -> None:
     print(f"  predicted - floor  {result['pred_minus_action_only']:+.4f} "
           f"[{result['pred_minus_action_only_ci'][0]:+.4f}, "
           f"{result['pred_minus_action_only_ci'][1]:+.4f}]")
-    (HERE / f"death_transfer_{args.arm}{'_%06d' % args.milestone if args.milestone else ''}.json").write_text(json.dumps(result, indent=2))
+    name = f"death_transfer_{args.tag or args.arm}"
+    (HERE / f"{name}{'_%06d' % args.milestone if args.milestone else ''}.json").write_text(
+        json.dumps(result, indent=2))
 
 
 if __name__ == "__main__":
