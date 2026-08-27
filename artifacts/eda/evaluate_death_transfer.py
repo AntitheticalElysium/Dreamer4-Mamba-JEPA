@@ -182,13 +182,19 @@ def main() -> None:
                          torch.from_numpy(death[tune.numpy()].reshape(-1)).float().to(DEVICE),
                          seed=11)
 
-    def read(x):
+    # the raw (root, action) scores are kept, not just the per-root AUC they collapse
+    # into, so how much of a reading is explained by action identity alone can be
+    # measured rather than asserted
+    surface = {}
+
+    def read(x, key):
         with torch.no_grad():
             s = torch.cat([probe(x[lo:lo+64].reshape(-1, width).to(DEVICE)).cpu()
                            for lo in range(0, len(x), 64)]).numpy().reshape(-1, 17)
+        surface[key] = s
         return within_state(s, death[test.numpy()])
 
-    v_true, v_pred = read(true_z[test]), read(pred_z[test])
+    v_true, v_pred = read(true_z[test], "true"), read(pred_z[test], "pred")
 
     # action-only floor, same split and probe family
     onehot = torch.eye(17).expand(n, 17, 17).contiguous()
@@ -219,6 +225,8 @@ def main() -> None:
               # escape-rich and trap-heavy strata can be read off the saved values
               # without re-encoding; the training roots are bimodal on this axis
               "per_root_lethal": death[test.numpy()].sum(1).astype(int).tolist(),
+              "scores_true": surface["true"].tolist(),
+              "scores_pred": surface["pred"].tolist(),
               "roots": n, "test_roots": int(test.sum()), "scored_roots": int(k),
               "death_rate": float(death.mean()),
               "auc_true": a_true, "auc_pred": a_pred, "auc_pred_ci": [plo, phi],
