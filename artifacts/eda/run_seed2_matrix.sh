@@ -30,7 +30,7 @@ arm() {        # $1 out dir, rest: extra flags
   "$PY" train_terminal_arms.py --seed "$SEED" --steps "$STEPS" --out "$out" "$@" || return 1
 }
 
-case "${1:?lane a, b or score}" in
+case "${1:?lane a, b, score, gate or queue}" in
 a)
   if finished production_1b_s2/done.json steps; then
     echo "== production_1b_s2 already at $STEPS"
@@ -86,6 +86,69 @@ score)
   analyse "new comparison: arms 1, 4, 5" death_paired_s2_comparison.json \
           full17_s2 balanced_s2
   ;;
-*) echo "lane must be a, b or score"; exit 2;;
+gate)
+  # PREREGISTERED, written before balanced's 20k reading existed. Balanced earns a
+  # replication only if it beats full-action on the stratum balancing targets AND has
+  # genuinely recovered from its own 13,592 value. Both need a paired interval clear of
+  # zero; either failing stops all terminal-data arms.
+  "$PY" - <<'EOF'
+import json, sys
+import numpy as np
+g = np.random.default_rng(20260826)
+def v(t, m=0):
+    f = f"death_transfer_{t}" + (f"_{m:06d}" if m else "") + ".json"
+    return np.array(json.load(open(f))["per_root_pred"])
+try:
+    b20, b13, f20 = v("balanced_s2"), v("balanced_s2", 13592), v("full17_s2")
+except FileNotFoundError as e:
+    sys.exit(f"gate cannot run: {e.filename} missing")
+lethal = np.array(json.load(open("death_transfer_production_s2.json"))["per_root_lethal"])
+e = np.where(lethal <= 2)[0]
+draws = e[g.integers(0, len(e), (10000, len(e)))]
+def band(d):
+    lo, hi = np.quantile(d[draws].mean(1), [0.025, 0.975]); return d[e].mean(), lo, hi
+tests = {"balanced(20k) - full-action(20k), escape-rich": band(b20 - f20),
+         "balanced(20k) - balanced(13,592), escape-rich": band(b20 - b13)}
+passed = True
+for name, (mean, lo, hi) in tests.items():
+    ok = lo > 0
+    passed &= ok
+    print(f"  {name:<48}{mean:+.4f} [{lo:+.4f}, {hi:+.4f}]  {'PASS' if ok else 'FAIL'}")
+print()
+print("VERDICT: replicate balanced and full-action once more" if passed else
+      "VERDICT: stop all terminal-data arms. Do not extend to 27,184 -- the full-action "
+      "arm already saw every (root, action) pair about 25 times, so insufficient "
+      "repetition is not a credible explanation.")
+EOF
+  ;;
+queue)
+  # everything that runs once both lanes are done, in dependency order
+  while pgrep -f "[r]un_seed2_matrix.sh [ab]" > /dev/null; do sleep 60; done
+  echo "both lanes finished; scoring"; echo
+  bash "$0" score
+  echo; echo "########## preregistered continuation gate ##########"; echo
+  bash "$0" gate
+  echo; echo "########## root x action decomposition ##########"; echo
+  for arm in "production_1b_s2 production_s2" "terminal_factual_s2 factual_s2" \
+             "terminal_counterfactual_s2 counterfactual_s2" \
+             "terminal_full17_s2 full17_s2" "terminal_balanced_s2 balanced_s2"; do
+    set -- $arm
+    [ -f "$1/world.pt" ] || { echo "-- $2 unfinished, skipped"; continue; }
+    [ -f "action_interaction_$2.json" ] && { echo "-- $2 already decomposed"; continue; }
+    echo "### $2 ###"; "$PY" probe_action_interaction.py --folder "$1" --tag "$2" || exit 1
+  done
+  echo; echo "########## regression gates, per-root ##########"; echo
+  for arm in "production_1b_s2 production_s2" "terminal_factual_s2 factual_s2" \
+             "terminal_counterfactual_s2 counterfactual_s2" \
+             "terminal_full17_s2 full17_s2" "terminal_balanced_s2 balanced_s2"; do
+    set -- $arm
+    [ -f "$1/world.pt" ] || { echo "-- $2 unfinished, skipped"; continue; }
+    [ -f "production_1b_evaluation_$2.json" ] && { echo "-- $2 already gated"; continue; }
+    echo "### $2 ###"; "$PY" evaluate_production_1b.py --world "$1/world.pt" --tag "$2" \
+        2>&1 | tail -12
+  done
+  echo; echo "queue complete"
+  ;;
+*) echo "lane must be a, b, score, gate or queue"; exit 2;;
 esac
 echo "lane $1 complete"

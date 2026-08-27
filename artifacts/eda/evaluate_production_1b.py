@@ -149,9 +149,12 @@ def main() -> None:
 
     pred = predict_branches(world, config, history[test], led[test]).float()
     m = measures(pred, branch[test])
+    # per-root values travel, not only their means: every arm-minus-control difference
+    # needs a paired interval, and a scalar cannot be bootstrapped against another arm
     result["fork"] = {"action_mse": float(m["action_mse"].mean()),
                       "nse": float(m["nse"].mean()), "cosine": float(m["cosine"].mean()),
-                      "retrieval": m["retrieval"], "geometry": m["geometry"]}
+                      "retrieval": m["retrieval"], "geometry": m["geometry"],
+                      "per_root": {k: m[k].tolist() for k in ("action_mse", "nse", "cosine")}}
 
     width = branch.shape[-1]
     delta_true = branch - root[:, None]
@@ -166,11 +169,13 @@ def main() -> None:
         with torch.no_grad():
             s = torch.cat([probe(mix[lo:lo+128].reshape(-1, width).to(DEVICE)).cpu()
                            for lo in range(0, len(mix), 128)]).numpy().reshape(-1, 17)
-        return float(np.mean(within_state(s, labels[test.numpy()])))
+        return within_state(s, labels[test.numpy()])
 
-    auc_true = read(delta_true[test])
-    auc_pred = read(pred - root[test][:, None])
+    v_true, v_pred = read(delta_true[test]), read(pred - root[test][:, None])
+    auc_true, auc_pred = float(v_true.mean()), float(v_pred.mean())
     result["fork"]["R_delta"] = (auc_pred - 0.5) / (auc_true - 0.5)
+    result["fork"]["per_root"]["damage_true"] = v_true.tolist()
+    result["fork"]["per_root"]["damage_pred"] = v_pred.tolist()
     f = result["fork"]
     print(f"\nheld-out all-17 forks (never seen by this world)")
     print(f"  action MSE {f['action_mse']:.5f}  NSE {f['nse']:.4f}  cosine {f['cosine']:.4f}")
