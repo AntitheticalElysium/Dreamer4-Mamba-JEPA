@@ -32,6 +32,12 @@
   "action_norm_ratio": 0.9928916207650899,
   "interaction_cosine": 0.8856480201844493,
   "interaction_norm_ratio": 0.901163361252623,
+  "error_shares": {
+    "root": 0.47908754429582445,
+    "action": 0.013480167747338472,
+    "interaction": 0.507432287956837
+  },
+  "error_norm_ratio": 0.17735016872070045,
   "auc": {
     "as predicted": {
       "overall": 0.598563851546085,
