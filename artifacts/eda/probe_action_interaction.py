@@ -213,15 +213,37 @@ def main() -> None:
                            for lo in range(0, len(x), 64)]).numpy().reshape(-1, N_ACTIONS)
         return within_state(s, death[test.numpy()])
 
+    # Removing the action marginal moves the input off the distribution the raw probe was
+    # fitted on, so reading residualised latents with it is not interpretable. A residual
+    # test needs a probe fitted on equivalently residualised TRUE fit/tune successors.
+    def residualise(z):
+        return z - (z.mean(0, keepdim=True) - z.mean((0, 1), keepdim=True))
+
+    r_probe, _ = fit_probe(
+        residualise(true_z[fit]).reshape(-1, width).to(DEVICE),
+        torch.from_numpy(death[fit.numpy()].reshape(-1)).float().to(DEVICE),
+        residualise(true_z[tune]).reshape(-1, width).to(DEVICE),
+        torch.from_numpy(death[tune.numpy()].reshape(-1)).float().to(DEVICE), seed=11)
+
+    def read_with(p, x):
+        with torch.no_grad():
+            s = torch.cat([p(x[lo:lo + 64].reshape(-1, width).to(DEVICE)).cpu()
+                           for lo in range(0, len(x), 64)]).numpy().reshape(-1, N_ACTIONS)
+        return within_state(s, death[test.numpy()])
+
     pred = depth["final"][test]
-    variants = {"as predicted": pred,
-                "action marginal removed": pred - final["action"].float(),
-                "true marginal grafted": pred - final["action"].float() + truth["action"].float(),
-                "TRUE successors": true_z[test]}
+    variants = {"as predicted": (probe, pred),
+                # both rows below are read by the residual-fitted probe, and the
+                # residualised truth is the only valid ceiling for them
+                "action marginal removed": (r_probe, residualise(pred)),
+                "residualised TRUE (ceiling)": (r_probe, residualise(true_z[test])),
+                "true marginal grafted": (probe, pred - final["action"].float()
+                                          + truth["action"].float()),
+                "TRUE successors": (probe, true_z[test])}
     print(f"{'death AUC on held-out roots':<30}{'overall':>9}{'escape-rich':>13}{'trap-heavy':>12}")
     report["auc"] = {}
-    for label, x in variants.items():
-        v = read(x)
+    for label, (which, x) in variants.items():
+        v = read_with(which, x)
         report["auc"][label] = {"overall": float(v.mean()),
                                 "escape_rich": float(v[escape].mean()),
                                 "trap_heavy": float(v[trap].mean()),
