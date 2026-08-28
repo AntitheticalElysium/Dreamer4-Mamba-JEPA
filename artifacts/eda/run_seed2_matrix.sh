@@ -30,7 +30,7 @@ arm() {        # $1 out dir, rest: extra flags
   "$PY" train_terminal_arms.py --seed "$SEED" --steps "$STEPS" --out "$out" "$@" || return 1
 }
 
-case "${1:?lane a, b, score, gate or queue}" in
+case "${1:?lane a, b, c, d, score, gate or queue}" in
 a)
   if finished production_1b_s2/done.json steps; then
     echo "== production_1b_s2 already at $STEPS"
@@ -149,6 +149,16 @@ queue)
   done
   echo; echo "queue complete"
   ;;
-*) echo "lane must be a, b, score, gate or queue"; exit 2;;
+c)
+  # the two data-composition arms. Everything except root sampling matches the existing
+  # full-17 terminal arm, which is the terminal-only control.
+  arm broad_uniform_s2   --arm counterfactual --roots broad \
+                         --terminal-roots 4 --terminal-actions 17 || exit 1
+  ;;
+d)
+  arm broad_regime_s2    --arm counterfactual --roots broad --regime-balance \
+                         --terminal-roots 4 --terminal-actions 17 || exit 1
+  ;;
+*) echo "lane must be a, b, c, d, score, gate or queue"; exit 2;;
 esac
 echo "lane $1 complete"

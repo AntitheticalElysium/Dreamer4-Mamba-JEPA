@@ -216,13 +216,19 @@ def main() -> None:
     # Removing the action marginal moves the input off the distribution the raw probe was
     # fitted on, so reading residualised latents with it is not interpretable. A residual
     # test needs a probe fitted on equivalently residualised TRUE fit/tune successors.
-    def residualise(z):
-        return z - (z.mean(0, keepdim=True) - z.mean((0, 1), keepdim=True))
+    # The marginals are FROZEN on the fit roots and applied unchanged to tune and test.
+    # Recomputing them within each split is a valid transductive decomposition but not a
+    # generalisation metric: the test transform would then depend on the test set.
+    def marginal(z):
+        return z.mean(0, keepdim=True) - z.mean((0, 1), keepdim=True)
+
+    alpha_true, alpha_pred = marginal(true_z[fit]), marginal(depth["final"][fit])
+    report["frozen_marginal_cosine"] = cosine(alpha_pred, alpha_true)
 
     r_probe, _ = fit_probe(
-        residualise(true_z[fit]).reshape(-1, width).to(DEVICE),
+        (true_z[fit] - alpha_true).reshape(-1, width).to(DEVICE),
         torch.from_numpy(death[fit.numpy()].reshape(-1)).float().to(DEVICE),
-        residualise(true_z[tune]).reshape(-1, width).to(DEVICE),
+        (true_z[tune] - alpha_true).reshape(-1, width).to(DEVICE),
         torch.from_numpy(death[tune.numpy()].reshape(-1)).float().to(DEVICE), seed=11)
 
     def read_with(p, x):
@@ -235,8 +241,8 @@ def main() -> None:
     variants = {"as predicted": (probe, pred),
                 # both rows below are read by the residual-fitted probe, and the
                 # residualised truth is the only valid ceiling for them
-                "action marginal removed": (r_probe, residualise(pred)),
-                "residualised TRUE (ceiling)": (r_probe, residualise(true_z[test])),
+                "action marginal removed": (r_probe, pred - alpha_pred),
+                "residualised TRUE (ceiling)": (r_probe, true_z[test] - alpha_true),
                 "true marginal grafted": (probe, pred - final["action"].float()
                                           + truth["action"].float()),
                 "TRUE successors": (probe, true_z[test])}

@@ -141,6 +141,7 @@ N_ACTIONS = 17
 
 
 EXPECTED_ROOTS = 3198
+EXPECTED_BROAD = 3651
 
 
 def load_roots():
@@ -184,6 +185,67 @@ def load_roots():
     assert terminated[torch.arange(len(rows)), lethal].all(), "a logged action survived"
     assert (terminated.sum(1) < N_ACTIONS).all(), "a root offers no safe action"
     return (history, branch, torch.stack([table[k] for k in keys]), lethal, terminated)
+
+
+def broad_roots():
+    """The wider all-action fit population -- nearly the inverse of the terminal tails.
+
+    The terminal corpus is 87.8% trap-heavy and holds no all-safe root at all, because
+    every one of its roots is a recorded terminal tail; 77.9% of its (root, action) pairs
+    are fatal. This population is 81.7% all-safe and 10.0% fatal overall. It is the fit
+    split of the same forkset the evaluator scores against, so the whole-seed split that
+    holds out evaluation roots is respected unchanged.
+    """
+    from train_phase1b_fork import fork_actions, load_forkset, seed_split
+
+    rows = [r for r in load_forkset(HERE / "forkset_s1_n64")
+            if seed_split(int(r["seed"])) == "fit"]
+    assert len(rows) == EXPECTED_BROAD, f"{len(rows)} fit roots, expected {EXPECTED_BROAD}"
+    history = torch.stack([r["z_history"] for r in rows]).float()
+    branch = torch.stack([r["z_branch"] for r in rows]).float()
+    terminated = torch.stack([r["terminated"] for r in rows]).bool()
+    assert torch.isfinite(history).all() and torch.isfinite(branch).all(), "non-finite latents"
+    # `lethal` is only read by the factual arm, which is terminal-only by construction:
+    # a root with no fatal action has no logged fatal transition to supervise
+    return history, branch, fork_actions(rows), terminated.float().argmax(1), terminated
+
+
+def regimes(terminated: torch.Tensor):
+    """all-safe, escape-rich and trap-heavy, on the cut the evaluation uses."""
+    n = terminated.sum(1).numpy()
+    return {"all-safe": np.where(n == 0)[0], "escape-rich": np.where((n >= 1) & (n <= 2))[0],
+            "trap-heavy": np.where(n >= 14)[0], "middle": np.where((n >= 3) & (n <= 13))[0]}
+
+
+def regime_schedule(terminated: torch.Tensor, seed: int, presentations: int):
+    """Equal long-run mass across the three regimes, each cycling its own shuffled order.
+
+    The middle band is excluded rather than folded into a neighbour: it holds 11 of 3,651
+    roots, too few to carry a third of the mass and too ambiguous to assign.
+
+    Equal mass is not equal repetition, and the difference is the whole point of naming
+    it. The three groups are 2,983 / 273 / 384 roots, so an equal third of the
+    presentations repeats an escape-rich root about eleven times more often than an
+    all-safe one. That is the intended intervention, and it is printed at startup so
+    "balanced" cannot again hide what exposure actually means.
+    """
+    generator = np.random.default_rng(seed)
+    groups = regimes(terminated)
+    names = ("all-safe", "escape-rich", "trap-heavy")
+    cycles = [groups[k][generator.permutation(len(groups[k]))] for k in names]
+    position = [0, 0, 0]
+    order = np.empty(presentations, dtype=np.int64)
+    for i in range(presentations):
+        k = i % 3
+        if position[k] == len(cycles[k]):
+            cycles[k] = cycles[k][generator.permutation(len(cycles[k]))]
+            position[k] = 0
+        order[i] = cycles[k][position[k]]
+        position[k] += 1
+    share = np.array([(order[i::3].size) for i in range(3)])
+    assert share.max() - share.min() <= 1, "regimes did not receive equal mass"
+    assert not np.isin(order, groups["middle"]).any(), "a middle root entered the schedule"
+    return order, np.tile(np.arange(N_ACTIONS), (presentations, 1))
 
 
 def schedule(n_roots: int, seed: int, actions: int):
@@ -246,6 +308,11 @@ def main() -> None:
     parser.add_argument("--terminal-actions", type=int, default=1, choices=(1, N_ACTIONS),
                         help="action-conditioned targets read off each root's features")
     parser.add_argument("--terminal-mass", type=float, default=0.2)
+    parser.add_argument("--roots", choices=("terminal", "broad"), default="terminal",
+                        help="terminal tails, or the wider all-action fit population")
+    parser.add_argument("--regime-balance", action="store_true",
+                        help="equal long-run mass across all-safe, escape-rich and "
+                             "trap-heavy roots, rather than uniform over roots")
     parser.add_argument("--balance-outcomes", action="store_true",
                         help="weight each root's seventeen successors so the lethal and "
                              "surviving halves carry half the root's loss each")
@@ -266,6 +333,14 @@ def main() -> None:
     assert args.arm == "counterfactual" or args.terminal_actions == 1, (
         "the factual arm has one successor per root; --terminal-actions 17 would "
         "average seventeen copies of it")
+    assert args.roots == "terminal" or args.arm == "counterfactual", (
+        "the factual arm supervises a root's logged fatal transition, which a root with "
+        "no fatal action does not have")
+    assert args.roots == "terminal" or args.terminal_actions == N_ACTIONS, (
+        "the broader population is an all-action corpus")
+    assert not args.regime_balance or args.roots == "broad", (
+        "regime balancing needs the wider population; the terminal tails hold no "
+        "all-safe root at all")
     assert not args.balance_outcomes or args.terminal_actions == N_ACTIONS, (
         "balancing reweights the seventeen successors against each other and is "
         "undefined when only one of them is supervised per presentation")
@@ -276,8 +351,13 @@ def main() -> None:
         config = replace(config, seed=args.seed)
     digest = json.loads((CACHE / "manifest.json").read_text())["cache_digest"]
     episodes = load_episodes(CACHE, digest, verify=False)
-    history, branch, led_history, lethal, terminated = load_roots()
-    order, choice = schedule(len(history), config.seed + 7, args.terminal_actions)
+    history, branch, led_history, lethal, terminated = (
+        broad_roots() if args.roots == "broad" else load_roots())
+    if args.regime_balance:
+        order, choice = regime_schedule(terminated, config.seed + 7,
+                                        args.steps * args.terminal_roots)
+    else:
+        order, choice = schedule(len(history), config.seed + 7, args.terminal_actions)
     targets = args.terminal_roots * args.terminal_actions
     n_pairs = len(history) * N_ACTIONS
     passes = args.steps * targets / n_pairs
@@ -294,6 +374,18 @@ def main() -> None:
           f"{passes:.2f} passes over {n_pairs:,} pairs in {args.steps:,} steps", flush=True)
     print(f"  lethal successors per root {dead.float().mean():.2f}/17, "
           f"{terminated.float().mean():.3f} of all pairs", flush=True)
+    groups = regimes(terminated)
+    # count what the run actually consumes, not what the schedule array holds: the
+    # uniform schedule is 62,067 long and a 20,000-step run walks 80,000 presentations
+    # through it, so the array's own bincount understates exposure by the wrap factor
+    consumed = order[np.arange(args.steps * args.terminal_roots) % len(order)]
+    seen = np.bincount(consumed, minlength=len(history))
+    for name in ("all-safe", "escape-rich", "middle", "trap-heavy"):
+        index = groups[name]
+        mass = seen[index].sum() / max(seen.sum(), 1)
+        each = seen[index].mean() if len(index) else 0.0
+        print(f"  {name:<12}{len(index):>6} roots{mass:>8.1%} of presentations"
+              f"{each:>8.1f} each", flush=True)
     if args.balance_outcomes:
         print(f"  balanced weights span {weights.min():.4f} to {weights.max():.4f} "
               f"against {1/N_ACTIONS:.4f} uniform "
@@ -317,7 +409,8 @@ def main() -> None:
     streams = {"sampler": sampler, "model": rng, "terminal": terminal_rng}
     contract = ":".join(["terminal", args.arm, f"seed{config.seed}",
                          f"roots{args.terminal_roots}", f"actions{args.terminal_actions}",
-                         f"mass{args.terminal_mass:g}",
+                         f"mass{args.terminal_mass:g}", args.roots,
+                         "regime" if args.regime_balance else "flat",
                          "balanced" if args.balance_outcomes else "uniform",
                          f"horizon{args.horizon}",
                          data_identity(), "smoke" if args.smoke else "run"])
@@ -387,6 +480,10 @@ def main() -> None:
          "terminal_roots": args.terminal_roots,
          "terminal_actions": args.terminal_actions, "targets_per_step": targets,
          "terminal_mass": args.terminal_mass, "balance_outcomes": args.balance_outcomes,
+         "root_source": args.roots, "regime_balance": args.regime_balance,
+         "regime_presentations": {k: int(seen[v].sum()) for k, v in groups.items()},
+         "regime_repeats_per_root": {k: (float(seen[v].mean()) if len(v) else 0.0)
+                                     for k, v in groups.items()},
          "lethal_fraction": float(terminated.float().mean()),
          "weight_min": float(weights.min()), "weight_max": float(weights.max()),
          "weight_uniform": 1 / N_ACTIONS, "contract": contract,
