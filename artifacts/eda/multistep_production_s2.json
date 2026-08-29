@@ -1,0 +1,39 @@
+{
+  "tag": "production_s2",
+  "depth": 4,
+  "roots": 197,
+  "per_depth": [
+    {
+      "depth": 1,
+      "mse": 0.02996857464313507,
+      "cosine": 0.9798843860626221,
+      "contrast_nse": 0.21661653547420115,
+      "true_effect_norm": 5.743751525878906,
+      "pred_effect_norm": 5.396446704864502
+    },
+    {
+      "depth": 2,
+      "mse": 0.046755217015743256,
+      "cosine": 0.9684739112854004,
+      "contrast_nse": 0.6531890981315356,
+      "true_effect_norm": 5.075068950653076,
+      "pred_effect_norm": 5.1251983642578125
+    },
+    {
+      "depth": 3,
+      "mse": 0.0564596988260746,
+      "cosine": 0.9619564414024353,
+      "contrast_nse": 0.8341505552835876,
+      "true_effect_norm": 4.923934459686279,
+      "pred_effect_norm": 5.139482498168945
+    },
+    {
+      "depth": 4,
+      "mse": 0.0656784176826477,
+      "cosine": 0.955790638923645,
+      "contrast_nse": 0.9271190298087706,
+      "true_effect_norm": 4.8223395347595215,
+      "pred_effect_norm": 5.173166275024414
+    }
+  ]
+}
