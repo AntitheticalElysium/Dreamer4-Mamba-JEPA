@@ -30,7 +30,7 @@ arm() {        # $1 out dir, rest: extra flags
   "$PY" train_terminal_arms.py --seed "$SEED" --steps "$STEPS" --out "$out" "$@" || return 1
 }
 
-case "${1:?lane a, b, c, d, score, gate or queue}" in
+case "${1:?lane a, b, c, d, e, score, gate or queue}" in
 a)
   if finished production_1b_s2/done.json steps; then
     echo "== production_1b_s2 already at $STEPS"
@@ -159,6 +159,18 @@ d)
   arm broad_regime_s2    --arm counterfactual --roots broad --regime-balance \
                          --terminal-roots 4 --terminal-actions 17 || exit 1
   ;;
-*) echo "lane must be a, b, c, d, score, gate or queue"; exit 2;;
+e)
+  # broad-uniform only, at the DEFAULT world seed, against the existing production_1b
+  # control trained at that same seed. Regime balancing is not replicated: it did not
+  # move the primary death endpoint despite 4.4x the escape-root repetition.
+  if finished broad_uniform_s0/training_report.json steps; then
+    echo "== broad_uniform_s0 already at $STEPS"
+  else
+    echo "== broad_uniform_s0"
+    "$PY" train_terminal_arms.py --steps "$STEPS" --out broad_uniform_s0 \
+        --arm counterfactual --roots broad --terminal-roots 4 --terminal-actions 17 || exit 1
+  fi
+  ;;
+*) echo "lane must be a, b, c, d, e, score, gate or queue"; exit 2;;
 esac
 echo "lane $1 complete"

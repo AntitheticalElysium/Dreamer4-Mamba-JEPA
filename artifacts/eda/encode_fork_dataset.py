@@ -98,8 +98,12 @@ def main() -> None:
     if rows:
         torch.save(rows, args.out / f"shard-{shard:03d}.pt")
         shard += 1
+    written = sum(len(torch.load(f, weights_only=False))
+                  for f in sorted(args.out.glob("shard-*.pt")))
     (args.out / "manifest.json").write_text(json.dumps({
-        "shards": shard, "roots": len(keys), "n_latents": args.n_latents,
+        # every root the shards hold, not len(keys): on a resumed run that is only the
+        # post-resume slice, which is how this manifest came to under-report by 400
+        "shards": shard, "roots": written, "n_latents": args.n_latents,
         "d_bottleneck": args.d_bottleneck, "suffix": args.suffix,
         "milestone": args.milestone, "z_dim": config.n_spatial * config.d_spatial}, indent=2))
     print(f"wrote {shard} shards", flush=True)

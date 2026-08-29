@@ -281,13 +281,21 @@ def schedule(n_roots: int, seed: int, actions: int):
     return order, choice
 
 
-def data_identity() -> str:
+def data_identity(source: str) -> str:
     """What the arms are trained on, folded into the resume contract. `Config` cannot
     see it: the roots, their aligned histories and their action tables all live on
-    disk, and a resume across a re-encoded cache would splice two datasets."""
+    disk, and a resume across a re-encoded cache would splice two datasets.
+
+    It must follow the source in use. Hashing only the terminal-tail files, as this did,
+    left a broad-data run able to resume across a changed forkset without failing --
+    exactly the splice the digest exists to prevent.
+    """
     digest = hashlib.sha256()
-    for path in (HERE / "actionable_latents" / "manifest.json",
-                 CACHE / "manifest.json", HERE / "actionable_actions.pt"):
+    paths = [CACHE / "manifest.json"]
+    paths += ([HERE / "forkset_s1_n64" / "manifest.json", HERE / "fork_actions.pt"]
+              if source == "broad" else
+              [HERE / "actionable_latents" / "manifest.json", HERE / "actionable_actions.pt"])
+    for path in paths:
         digest.update(path.read_bytes())
     return digest.hexdigest()[:12]
 
@@ -413,7 +421,8 @@ def main() -> None:
                          "regime" if args.regime_balance else "flat",
                          "balanced" if args.balance_outcomes else "uniform",
                          f"horizon{args.horizon}",
-                         data_identity(), "smoke" if args.smoke else "run"])
+                         data_identity(args.roots),
+                         "smoke" if args.smoke else "run"])
     begin = _checkpoint(resume_path if resume_path.exists() else None, config,
                         [world, opt], balance, streams, contract=contract)
     if begin:
