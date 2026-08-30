@@ -38,6 +38,7 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent.parent))
 
 from evaluate_death_transfer import DEVICE, ENCODER, REPORT, encode_root
+from evaluate_coverage_ab import classes_of
 from train_phase1b_fork import seed_split
 
 from d4mj.checkpoint import load
@@ -89,6 +90,22 @@ def roll(world, config, history_z, led, depth):
             row.append(state.latent.flatten(1)[0].cpu())
         out.append(torch.stack(row))
     return torch.stack(out)                          # (17, depth, width)
+
+
+def classes_at(distance: np.ndarray) -> np.ndarray:
+    """`classes_of` for an arbitrary number of branches -- it hardcodes 17, and the
+    alive-only mask hands it fewer. Same rule, same TAU, same greedy sweep."""
+    from probe_action_matching import TAU
+
+    n = len(distance)
+    label = -np.ones(n, dtype=int)
+    nxt = 0
+    for a in range(n):
+        if label[a] >= 0:
+            continue
+        label[(distance[a] <= TAU) & (label < 0)] = nxt
+        nxt += 1
+    return label
 
 
 def nse(pred, true):
@@ -163,30 +180,51 @@ def main() -> None:
     splits = np.array([seed_split(int(r["seed"])) for r in rollouts])
     print(f"  all {len(rollouts)} roots are test-split: {(splits == 'test').all()}\n", flush=True)
 
-    print(f"{'depth':<8}{'MSE':>10}{'cosine':>9}{'contrast NSE':>14}{'true |effect|':>15}"
-          f"{'pred |effect|':>15}")
+    # A branch that has already terminated is held at its terminal frame while the model
+    # keeps rolling, so scoring it measures whether Direct reproduces a frozen frame, not
+    # counterfactual propagation. Only branches alive GOING INTO transition k are scored,
+    # and a contrast needs at least two of them.
+    at = np.stack([r["terminated_at"].numpy() for r in rollouts])
     report = {"tag": args.tag, "depth": depth, "roots": len(rollouts),
               "root_seeds": [k[0] for k in roots], "per_depth": []}
+    print(f"{'depth':<7}{'roots':>7}{'alive':>7}{'NSE mean':>10}{'median':>9}"
+          f"{'energy-wt':>11}{'cosine':>9}{'retrieval':>11}")
     for k in range(depth):
-        p, t = pred[:, :, k], true[:, :, k]
-        mse = float((p - t).pow(2).mean())
-        cos = float(torch.nn.functional.cosine_similarity(
-            p.reshape(-1, p.shape[-1]), t.reshape(-1, t.shape[-1]), dim=-1).mean())
-        per_root = np.array([nse(p[i], t[i]) for i in range(len(p))])
-        contrast = float(per_root.mean())
-        # the size of the between-action difference itself, true and predicted: a
-        # contrast NSE near 1.0 with a collapsing predicted effect means the model has
-        # stopped distinguishing the actions rather than distinguishing them wrongly
-        effect_t = float((t - t.mean(1, keepdim=True)).norm(dim=-1).mean())
-        effect_p = float((p - p.mean(1, keepdim=True)).norm(dim=-1).mean())
-        beyond = "   <- beyond the trained horizon" if k >= 2 else ""
-        print(f"  {k+1:<6}{mse:>10.5f}{cos:>9.4f}{contrast:>14.4f}{effect_t:>15.4f}"
-              f"{effect_p:>15.4f}{beyond}")
-        report["per_depth"].append({"depth": k + 1, "mse": mse, "cosine": cos,
-                                    "contrast_nse": contrast,
-                                    "true_effect_norm": effect_t,
-                                    "pred_effect_norm": effect_p,
-                                    "per_root_contrast": per_root.tolist()})
+        alive = (at < 0) | (at >= k)
+        rows, energies, coss, hits = [], [], [], []
+        for i in range(len(pred)):
+            keep = np.where(alive[i])[0]
+            if len(keep) < 2:
+                continue
+            pc = pred[i, keep, k] - pred[i, keep, k].mean(0, keepdim=True)
+            tc = true[i, keep, k] - true[i, keep, k].mean(0, keepdim=True)
+            e = float(tc.pow(2).sum())
+            if e <= 0:
+                continue
+            rows.append(float((pc - tc).pow(2).sum()) / e)
+            energies.append(e)
+            coss.append(float(torch.nn.functional.cosine_similarity(pc, tc, dim=-1).mean()))
+            gram = torch.cdist(tc, tc).pow(2).numpy()
+            label = classes_at(gram)
+            if label.max() >= 1:
+                best = torch.cdist(pc, tc).pow(2).numpy().argmin(1)
+                hits.append(np.mean([label[best[a]] == label[a] for a in range(len(keep))]))
+        rows, energies = np.array(rows), np.array(energies)
+        weighted = float((rows * energies).sum() / energies.sum())
+        print(f"  {k+1:<5}{len(rows):>7}{alive.mean():>7.1%}{rows.mean():>10.3f}"
+              f"{np.median(rows):>9.3f}{weighted:>11.3f}{np.mean(coss):>9.3f}"
+              f"{(np.mean(hits) if hits else float('nan')):>11.3f}")
+        report["per_depth"].append({
+            "depth": k + 1, "scored_roots": len(rows),
+            "alive_fraction": float(alive.mean()),
+            "contrast_nse": float(rows.mean()), "median_nse": float(np.median(rows)),
+            "energy_weighted_nse": weighted, "effect_cosine": float(np.mean(coss)),
+            "retrieval": float(np.mean(hits)) if hits else None,
+            "per_root_contrast": rows.tolist(), "per_root_energy": energies.tolist(),
+            "scored_seeds": [roots[i][0] for i in range(len(pred))
+                             if len(np.where(alive[i])[0]) >= 2
+                             and float((true[i, np.where(alive[i])[0], k]
+                                        - true[i, np.where(alive[i])[0], k].mean(0)).pow(2).sum()) > 0]})
     (HERE / f"multistep_{args.tag}.json").write_text(json.dumps(report, indent=2))
 
 
