@@ -126,14 +126,27 @@ def main() -> None:
     histories = {k: r["frames"] for k, r in saved.items()}
     actions = {k: r["led_to_action"] for k, r in saved.items()}
     depth = int(rollouts[0]["depth"])
+    zs = []
     print(f"{args.tag}: {len(rollouts)} sealed roots, depth {depth}", flush=True)
 
-    true, pred, death = [], [], []
+    # the true latents depend only on the encoder and the rollouts, never on the world,
+    # so they are computed once and reused by every arm. Re-encoding them per arm was
+    # most of the runtime and none of the information.
+    cache = HERE / "multistep_forks" / "true_latents.pt"
+    stash = torch.load(cache, weights_only=False) if cache.exists() else None
+    if stash is not None:
+        assert stash["depth"] == depth and len(stash["true"]) == len(rollouts), "stale cache"
+
+    true, pred, death, roots = [], [], [], []
     for n, row in enumerate(rollouts):
         key = (int(row["seed"]), int(row["step"]))
         history = histories[key]
-        true.append(encode_depths(encoder, base, history, row["successors"], depth))
-        z, _ = encode_root(encoder, base, history, row["successors"][:, 0])
+        true.append(stash["true"][n] if stash is not None
+                    else encode_depths(encoder, base, history, row["successors"], depth))
+        z = (stash["z"][n] if stash is not None
+             else encode_root(encoder, base, history, row["successors"][:, 0])[0])
+        roots.append(key)
+        zs.append(z)
         assert len(actions[key]) == z.shape[0], (
             f"{len(actions[key])} actions against {z.shape[0]} history blocks")
         pred.append(roll(world, config, z, actions[key].long(), depth))
@@ -142,6 +155,9 @@ def main() -> None:
         if (n + 1) % 40 == 0:
             print(f"  {n+1}/{len(rollouts)}", flush=True)
     true, pred = torch.stack(true).float(), torch.stack(pred).float()
+    if stash is None:
+        torch.save({"true": list(true), "z": zs, "depth": depth}, cache)
+        print(f"  cached true latents to {cache.name}", flush=True)
     death = np.stack(death)                            # (roots, 17, depth)
 
     splits = np.array([seed_split(int(r["seed"])) for r in rollouts])
@@ -149,13 +165,15 @@ def main() -> None:
 
     print(f"{'depth':<8}{'MSE':>10}{'cosine':>9}{'contrast NSE':>14}{'true |effect|':>15}"
           f"{'pred |effect|':>15}")
-    report = {"tag": args.tag, "depth": depth, "roots": len(rollouts), "per_depth": []}
+    report = {"tag": args.tag, "depth": depth, "roots": len(rollouts),
+              "root_seeds": [k[0] for k in roots], "per_depth": []}
     for k in range(depth):
         p, t = pred[:, :, k], true[:, :, k]
         mse = float((p - t).pow(2).mean())
         cos = float(torch.nn.functional.cosine_similarity(
             p.reshape(-1, p.shape[-1]), t.reshape(-1, t.shape[-1]), dim=-1).mean())
-        contrast = float(np.mean([nse(p[i], t[i]) for i in range(len(p))]))
+        per_root = np.array([nse(p[i], t[i]) for i in range(len(p))])
+        contrast = float(per_root.mean())
         # the size of the between-action difference itself, true and predicted: a
         # contrast NSE near 1.0 with a collapsing predicted effect means the model has
         # stopped distinguishing the actions rather than distinguishing them wrongly
@@ -167,7 +185,8 @@ def main() -> None:
         report["per_depth"].append({"depth": k + 1, "mse": mse, "cosine": cos,
                                     "contrast_nse": contrast,
                                     "true_effect_norm": effect_t,
-                                    "pred_effect_norm": effect_p})
+                                    "pred_effect_norm": effect_p,
+                                    "per_root_contrast": per_root.tolist()})
     (HERE / f"multistep_{args.tag}.json").write_text(json.dumps(report, indent=2))
 
 
