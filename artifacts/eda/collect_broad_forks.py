@@ -22,6 +22,10 @@ Everything the original did is preserved because the BC trajectory must be ident
 `seed + index + 2`, matching `collect_multistep_forks`.
 
 Raw and tokenizer-independent, so any Direct/Flow/Mamba variant can re-encode it.
+
+Every root collected here is training data. The evaluation roots live on seeds 14000-14511
+and are already sealed, so applying the usual whole-seed 80/10/10 to this corpus as well
+would discard a fifth of it for no gain.
 """
 
 from __future__ import annotations
@@ -122,9 +126,8 @@ def frames_of(observation) -> torch.Tensor:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed-start", type=int, default=15_000)
-    parser.add_argument("--seeds", type=int, default=64)
+    parser.add_argument("--seeds", type=int, default=2000)
     parser.add_argument("--limit", type=int, default=400, help="states examined per seed")
-    parser.add_argument("--shard", type=int, default=200, help="roots per shard file")
     parser.add_argument("--out", type=Path, default=HERE / "broad_forks_v2")
     parser.add_argument("--target", type=int, default=0, help="stop once this many roots")
     args = parser.parse_args()
@@ -139,14 +142,20 @@ def main() -> None:
     encoder, world, heads = load_policy(base)
     fork = make_fork()
 
-    done_seeds = {int(p.stem.split("-")[1]) for p in args.out.glob("seen-*.json")}
-    rows, shard, examined, retained, started = [], 0, 0, 0, time.time()
-    while (args.out / f"shard-{shard:03d}.pt").exists():
-        shard += 1
+    # One file per seed, written atomically, and the file is its own resume marker --
+    # a buffered shard plus a separate marker can mark a seed done and then lose its
+    # rows. The root count lives in the name so resuming does not have to load 11 GiB
+    # to find out how much it already has.
+    done = {int(f.stem.split("-")[1]): int(f.stem.split("-r")[1]) for f in
+            args.out.glob("seed-*-r*.pt")}
+    examined, retained, started = 0, sum(done.values()), time.time()
+    if done:
+        print(f"resuming: {len(done)} seeds already collected, {retained:,} roots",
+              flush=True)
 
     with torch.no_grad():
         for order, seed in enumerate(range(args.seed_start, args.seed_start + args.seeds)):
-            if seed in done_seeds:
+            if seed in done:
                 continue
             observation, env_state = reset(seed)
             state = None
@@ -154,7 +163,7 @@ def main() -> None:
                                   device=config.device)
             world_rng = torch.Generator(device=config.device).manual_seed(seed + 2**21)
             policy_rng = torch.Generator(device=config.device).manual_seed(seed + 2**20)
-            frames, led, seed_roots = [], [config.n_actions], 0
+            frames, led, rows = [], [config.n_actions], []
 
             for index in range(args.limit):
                 frames.append(observation.clone())
@@ -210,8 +219,7 @@ def main() -> None:
                         "second_terminated": torch.from_numpy(s_dead),
                         "second_truncated": torch.from_numpy(s_trunc),
                     })
-                    retained += 1
-                    seed_roots += 1
+
 
                 observation, env_state, _, terminated, truncated = env_step(
                     env_state, chosen, seed + index + 1)
@@ -229,24 +237,22 @@ def main() -> None:
                 if terminated or truncated:
                     break
 
-            (args.out / f"seen-{seed:06d}.json").write_text(json.dumps(
-                {"seed": seed, "roots": seed_roots, "states": index + 1}))
-            while len(rows) >= args.shard:
-                torch.save(rows[: args.shard], args.out / f"shard-{shard:03d}.pt")
-                rows, shard = rows[args.shard:], shard + 1
+            target_file = args.out / f"seed-{seed:06d}-r{len(rows):04d}.pt"
+            temporary = target_file.with_suffix(".tmp")
+            torch.save(rows, temporary)
+            temporary.replace(target_file)
+            retained += len(rows)
+            rows = []
             if (order + 1) % 10 == 0:
                 rate = (order + 1) / (time.time() - started)
                 print(f"  seed {order+1}/{args.seeds}  examined {examined:,}  "
-                      f"retained {retained:,}  [{time.time()-started:.0f}s, "
+                      f"stored {retained:,}  [{time.time()-started:.0f}s, "
                       f"{(args.seeds-order-1)/rate:.0f}s left]", flush=True)
             if args.target and retained >= args.target:
-                print(f"reached target {args.target}", flush=True)
+                print(f"reached target {args.target:,} roots", flush=True)
                 break
 
-    if rows:
-        torch.save(rows, args.out / f"shard-{shard:03d}.pt")
-        shard += 1
-    print(f"examined {examined:,} states, retained {retained:,} roots in "
+    print(f"examined {examined:,} states, {retained:,} roots stored in "
           f"{time.time()-started:.0f}s", flush=True)
 
 
