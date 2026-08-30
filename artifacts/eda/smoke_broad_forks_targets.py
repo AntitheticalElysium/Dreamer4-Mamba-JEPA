@@ -41,7 +41,8 @@ def main() -> None:
     encoder.eval()
     world = World(config).to(DEVICE)
 
-    rows = torch.load(sorted(glob.glob(str(HERE / "broad_forks_v2" / "shard-*.pt")))[0],
+    # one atomic file per seed since the resume fix; `shard-*.pt` no longer exists
+    rows = torch.load(sorted(glob.glob(str(HERE / "broad_forks_v2" / "seed-*-r*.pt")))[0],
                       weights_only=False)[:ROOTS]
     rng = torch.Generator(device=DEVICE).manual_seed(config.seed)
 

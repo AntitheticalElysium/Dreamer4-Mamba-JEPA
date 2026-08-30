@@ -133,6 +133,7 @@ from d4mj.config import Config
 from d4mj.data import load_episodes, sample_batch
 from d4mj.train import (_balance, _checkpoint, _generators, _share_initialisation, _to,
                         _update, optimizer)
+from d4mj.state import WorldState
 from d4mj.transition import World, commit_inputs, transition_loss
 
 DEVICE = "cuda"
@@ -185,6 +186,27 @@ def load_roots():
     assert terminated[torch.arange(len(rows)), lethal].all(), "a logged action survived"
     assert (terminated.sum(1) < N_ACTIONS).all(), "a root offers no safe action"
     return (history, branch, torch.stack([table[k] for k in keys]), lethal, terminated)
+
+
+def v2_roots():
+    """The v2 corpus: all 17 first successors and a second NOOP successor wherever the
+    first left the branch alive. `second_valid` travels with it and gates the loss, so a
+    zeroed post-terminal slot can never be trained on."""
+    import glob as _glob
+
+    rows = []
+    for path in sorted(_glob.glob(str(HERE / "broad_latents_v2" / "shard-*.pt"))):
+        rows += torch.load(path, weights_only=False)
+    assert rows, "no v2 latents; run encode_broad_forks.py"
+    history = torch.stack([r["z_history"] for r in rows]).float()
+    branch = torch.stack([r["z_branch"] for r in rows]).float()
+    second = torch.stack([r["z_second"] for r in rows]).float()
+    valid = torch.stack([r["second_valid"] for r in rows]).bool()
+    terminated = torch.stack([r["terminated"] for r in rows]).bool()
+    led = torch.stack([r["led_to_action"] for r in rows]).long()
+    assert (second[~valid].abs().sum() == 0), "an invalid second target is not zero"
+    assert torch.isfinite(history).all() and torch.isfinite(branch).all()
+    return history, branch, led, terminated.float().argmax(1), terminated, second, valid
 
 
 def broad_roots():
@@ -316,8 +338,16 @@ def main() -> None:
     parser.add_argument("--terminal-actions", type=int, default=1, choices=(1, N_ACTIONS),
                         help="action-conditioned targets read off each root's features")
     parser.add_argument("--terminal-mass", type=float, default=0.2)
-    parser.add_argument("--roots", choices=("terminal", "broad"), default="terminal",
-                        help="terminal tails, or the wider all-action fit population")
+    parser.add_argument("--roots", choices=("terminal", "broad", "v2"), default="terminal",
+                        help="terminal tails, the 3,651-root fit population, or the v2 "
+                             "corpus with second-step targets")
+    parser.add_argument("--time-mixer", choices=("attention", "mamba"), default="attention",
+                        help="the Stage-A T-versus-M arm; `_share_initialisation` gives "
+                             "both the same starting weights wherever they share a "
+                             "parameter, which manual_seed alone does not")
+    parser.add_argument("--second-weight", type=float, default=0.5,
+                        help="weight on the second generated state, matching "
+                             "`_direct_loss`, which averages its two rollout terms")
     parser.add_argument("--regime-balance", action="store_true",
                         help="equal long-run mass across all-safe, escape-rich and "
                              "trap-heavy roots, rather than uniform over roots")
@@ -341,6 +371,8 @@ def main() -> None:
     assert args.arm == "counterfactual" or args.terminal_actions == 1, (
         "the factual arm has one successor per root; --terminal-actions 17 would "
         "average seventeen copies of it")
+    assert args.roots != "v2" or args.terminal_actions == N_ACTIONS, (
+        "the v2 corpus is an all-action corpus")
     assert args.roots == "terminal" or args.arm == "counterfactual", (
         "the factual arm supervises a root's logged fatal transition, which a root with "
         "no fatal action does not have")
@@ -354,13 +386,18 @@ def main() -> None:
         "undefined when only one of them is supervised per presentation")
 
     base = replace(Config(), n_latents=64, d_bottleneck=16)
-    config = replace(base, transition="direct", time_mixer="attention")
+    config = replace(base, transition="direct", time_mixer=args.time_mixer)
     if args.seed is not None:
         config = replace(config, seed=args.seed)
     digest = json.loads((CACHE / "manifest.json").read_text())["cache_digest"]
     episodes = load_episodes(CACHE, digest, verify=False)
-    history, branch, led_history, lethal, terminated = (
-        broad_roots() if args.roots == "broad" else load_roots())
+    second = valid = None
+    if args.roots == "v2":
+        history, branch, led_history, lethal, terminated, second, valid = v2_roots()
+    elif args.roots == "broad":
+        history, branch, led_history, lethal, terminated = broad_roots()
+    else:
+        history, branch, led_history, lethal, terminated = load_roots()
     if args.regime_balance:
         order, choice = regime_schedule(terminated, config.seed + 7,
                                         args.steps * args.terminal_roots)
@@ -418,6 +455,7 @@ def main() -> None:
     contract = ":".join(["terminal", args.arm, f"seed{config.seed}",
                          f"roots{args.terminal_roots}", f"actions{args.terminal_actions}",
                          f"mass{args.terminal_mass:g}", args.roots,
+                         f"second{args.second_weight:g}", args.time_mixer,
                          "regime" if args.regime_balance else "flat",
                          "balanced" if args.balance_outcomes else "uniform",
                          f"horizon{args.horizon}",
@@ -457,6 +495,24 @@ def main() -> None:
         target = branch[roots.repeat_interleave(a), flat[:, 0]].to(DEVICE)
         error = (world.predict(features[:, -1:].repeat_interleave(a, dim=0),
                                flat.to(DEVICE)).flatten(2)[:, 0] - target).pow(2)
+        if second is not None:
+            # the second generated state, reached through `advance` exactly as
+            # `_direct_loss` does, and scored only where the branch survived
+            keep = valid[roots].reshape(-1).to(DEVICE)
+            if bool(keep.any()):
+                state = WorldState(z[:, -1:].view(n, 1, spatial, d).repeat_interleave(a, 0),
+                                   None, t, features[:, -1:].repeat_interleave(a, dim=0))
+                first_state = WorldState(
+                    world.predict(state.features, flat.to(DEVICE)), None, t + 1, None)
+                committed2, conditioning2 = commit_inputs(first_state.latent, terminal_rng,
+                                                          config)
+                f2, _, _ = world(None, flat.to(DEVICE), committed2, conditioning2)
+                noop = torch.zeros_like(flat).to(DEVICE)
+                predicted2 = world.predict(f2[:, -1:], noop).flatten(2)[:, 0]
+                target2 = second[roots.repeat_interleave(a), flat[:, 0]].to(DEVICE)
+                error2 = (predicted2 - target2).pow(2).mean(-1)
+                terminal = terminal + args.second_weight * (error2 * keep).sum() / keep.sum()
+
         if args.balance_outcomes:
             # half the root's loss on its lethal successors, half on its survivors,
             # then the mean across roots -- the same targets, reweighted
@@ -490,6 +546,7 @@ def main() -> None:
          "terminal_actions": args.terminal_actions, "targets_per_step": targets,
          "terminal_mass": args.terminal_mass, "balance_outcomes": args.balance_outcomes,
          "root_source": args.roots, "regime_balance": args.regime_balance,
+         "time_mixer": args.time_mixer, "second_weight": args.second_weight,
          "regime_presentations": {k: int(seen[v].sum()) for k, v in groups.items()},
          "regime_repeats_per_root": {k: (float(seen[v].mean()) if len(v) else 0.0)
                                      for k, v in groups.items()},

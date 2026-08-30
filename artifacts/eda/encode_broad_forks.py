@@ -103,6 +103,9 @@ def main() -> None:
                     "health_delta": row["health_delta"],
                     "achievement_delta": row["achievement_delta"],
                     "second_terminated": row["second_terminated"],
+                    "second_truncated": row["second_truncated"],
+                    "second_reward": row["second_reward"],
+                    "second_health_delta": row["second_health_delta"],
                 })
                 if len(rows) >= PER_SHARD:
                     target = args.out / f"shard-{shard:04d}.pt"
