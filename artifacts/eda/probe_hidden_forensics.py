@@ -149,7 +149,7 @@ def main() -> None:
     with torch.no_grad():
         hidden = torch.cat([world.mix_norm(raw[lo : lo + 64].to(DEVICE).float()).half().cpu()
                             for lo in range(0, len(raw), 64)])
-        pre = torch.cat([world.readout[2](hidden[lo : lo + 64].to(DEVICE).float()).half().cpu()
+        pre = torch.cat([world.readout(hidden[lo : lo + 64].to(DEVICE).float()).half().cpu()
                          for lo in range(0, len(hidden), 64)])
     depths = {"hidden": hidden.flatten(2), "pre_tanh": pre.flatten(2)}
     print(f"{args.suffix} @ {args.milestone}: " +

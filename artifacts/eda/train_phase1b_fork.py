@@ -72,30 +72,22 @@ class NoTanhWorld(World):
 
 
 class MixerWorld(World):
-    """Direct with one action-token interaction block after the pool.
+    """Production World under the names the diagnostics were written against.
 
-        pooled 32 tokens -> prepend candidate-action token -> one pre-norm
-        self-attention block -> drop the action token -> LayerNorm -> the existing
-        Linear(256, 32) -> tanh
-
-    Source-shaped: MMBench/D4 and V-JEPA2-AC both place action and representation
-    tokens together inside the mixing rather than broadcasting the action over
-    already-pooled features, which is what production does.
-
-    The pool, the action embedding, the terminal projection `readout[2]` and the tanh
-    are all reused, so candidate-action mixing is the only substantive change.
-    `readout[0:2]` is left constructed but unused: dropping it would shift the RNG
-    draws and break init parity with the abt0 control, which is the comparison this
-    arm depends on. `super().__init__` runs first for the same reason -- every
-    baseline module then draws exactly what the baseline drew.
+    797b448 promoted this repair into production as `direct_mixer` / `direct_norm`
+    with a plain Linear `readout`, so this is the production head with aliases -- use
+    it to TRAIN new arms. To LOAD an archived pre-promotion checkpoint use
+    `legacy.open_checkpoint`, which is the single entry point for those shapes; the
+    ordinary strict loader raises on all of them.
     """
 
-    def __init__(self, config: Config):
-        super().__init__(config)
-        d = config.d_model
-        self.mixer = nn.TransformerEncoderLayer(d, config.n_heads, 4 * d, dropout=0.0,
-                                                 batch_first=True, norm_first=True)
-        self.mix_norm = nn.LayerNorm(d)
+    @property
+    def mixer(self):
+        return self.direct_mixer
+
+    @property
+    def mix_norm(self):
+        return self.direct_norm
 
     def mixed(self, features, action):
         """Per-action features after the block, before the terminal projection."""
@@ -103,11 +95,8 @@ class MixerWorld(World):
         pooled = self.pool(world.transpose(2, 3)).transpose(2, 3)
         b, t, s, d = pooled.shape
         token = torch.cat([self.action_embed(action)[:, :, None], pooled], dim=2)
-        token = self.mixer(token.reshape(b * t, s + 1, d)).view(b, t, s + 1, d)
-        return self.mix_norm(token[:, :, 1:])
-
-    def predict(self, features, action=None):
-        return torch.tanh(self.readout[2](self.mixed(features, action)))
+        token = self.direct_mixer(token.reshape(b * t, s + 1, d)).view(b, t, s + 1, d)
+        return self.direct_norm(token[:, :, 1:])
 
 
 @torch.no_grad()
@@ -167,6 +156,10 @@ def main() -> None:
                         help="ablate the output squash; everything else identical")
     parser.add_argument("--mixer", action="store_true",
                         help="one action-token interaction block after the pool")
+    parser.add_argument("--fit-subset", type=str, default="",
+                        help="key into coverage_subsets.json; trains on that subset of "
+                             "fit roots instead of all of them, holding volume fixed so "
+                             "coverage can be varied on its own")
     parser.add_argument("--world-seed", type=int, default=0,
                         help="offsets world initialisation and the commit stream only; "
                              "the batch draw stream is held fixed so paired arms see "
@@ -185,6 +178,10 @@ def main() -> None:
     splits = np.array([seed_split(r["seed"]) for r in rows])
     fit = np.where(splits == "fit")[0]
     led_history = fork_actions(rows)
+    if args.fit_subset:
+        chosen = json.loads((HERE / "coverage_subsets.json").read_text())[args.fit_subset]
+        fit = np.array(sorted(chosen))
+        print(f"fit subset '{args.fit_subset}': {len(fit)} roots", flush=True)
     print(f"arm {args.n_latents}x16 {args.suffix}: z dim {manifest['z_dim']}, "
           f"{len(rows)} roots, fit {len(fit)}, lambda {args.lam}, "
           f"{'mixer' if args.mixer else 'no-tanh' if args.no_tanh else 'tanh'}, "

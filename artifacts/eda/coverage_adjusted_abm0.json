@@ -1,0 +1,33 @@
+{
+  "arm": "abm0",
+  "observations": 17374,
+  "roots": 1022,
+  "pooled": {
+    "beta_unadjusted": 0.3842568099498749,
+    "beta_unadjusted_ci": [
+      0.34103181287646295,
+      0.4299777805805206
+    ],
+    "beta_adjusted": 0.21615755695942274,
+    "beta_adjusted_ci": [
+      0.18348382711300262,
+      0.25120690697057274
+    ],
+    "attenuation": 0.4374659046703172,
+    "partial_r2_of_distance": 0.07210881173118944
+  },
+  "hidden": {
+    "beta_unadjusted": 0.37529876828193665,
+    "beta_unadjusted_ci": [
+      0.33762832880020144,
+      0.419920764118433
+    ],
+    "beta_adjusted": 0.22980773540855137,
+    "beta_adjusted_ci": [
+      0.19704279512132875,
+      0.26714649987219274
+    ],
+    "attenuation": 0.3876672272052001,
+    "partial_r2_of_distance": 0.07207030290933036
+  }
+}

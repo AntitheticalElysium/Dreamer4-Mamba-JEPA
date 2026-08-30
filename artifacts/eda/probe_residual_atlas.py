@@ -188,7 +188,7 @@ def main() -> None:
               ", ".join(f"dim{j}:{corr[j]:+.3f}" for j in top[:6]), flush=True)
 
     # ---------------------------------------------------------------- Part D: null content
-    v_row, v_null = row_null_bases(world.readout[2].weight.detach().cpu())
+    v_row, v_null = row_null_bases(world.readout.weight.detach().cpu())
     hc = hidden.float() - hidden.float().mean(1, keepdim=True)
     null = (hc @ v_null).reshape(*hc.shape[:2], -1).half()
     generator = torch.Generator().manual_seed(4)

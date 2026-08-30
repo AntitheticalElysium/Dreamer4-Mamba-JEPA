@@ -1,0 +1,11 @@
+{
+  "roots": 1069,
+  "test_roots": 214,
+  "within_auc_predicted": 0.7108563554825237,
+  "ci": [
+    0.6594411137927493,
+    0.7629363563811579
+  ],
+  "death_rate": 0.5383810997009277,
+  "reading": "own-probe on predicted successors, not a transfer test"
+}
