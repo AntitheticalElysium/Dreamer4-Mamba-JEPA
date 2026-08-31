@@ -25,6 +25,13 @@ $PY smoke_broad_forks_targets.py || { say "SMOKE FAILED"; exit 1; }
 for mixer in attention mamba; do
   out=v2_direct_${mixer}
   if [ -f "$out/world.pt" ]; then say "$out already trained"; continue; fi
+  # twelve real steps through the actual trainer first. The earlier target smoke
+  # exercised a separate script, so an ordering bug in the trainer's own loss survived
+  # it and killed the run twenty seconds in.
+  say "trainer smoke, $mixer"
+  rm -rf "/tmp/v2smoke_${mixer}"
+  $PY train_terminal_arms.py --arm counterfactual --roots v2 --terminal-roots 4       --terminal-actions 17 --steps 12 --horizon 12 --milestones 999999 --smoke       --time-mixer "$mixer" --out "/tmp/v2smoke_${mixer}" > /dev/null 2>&1       || { say "TRAINER SMOKE $mixer FAILED"; exit 1; }
+  rm -rf "/tmp/v2smoke_${mixer}"
   say "training $out"
   $PY train_terminal_arms.py --arm counterfactual --roots v2 \
       --terminal-roots 4 --terminal-actions 17 --steps 20000 \

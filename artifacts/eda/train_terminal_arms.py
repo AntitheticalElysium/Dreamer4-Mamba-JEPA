@@ -495,6 +495,14 @@ def main() -> None:
         target = branch[roots.repeat_interleave(a), flat[:, 0]].to(DEVICE)
         error = (world.predict(features[:, -1:].repeat_interleave(a, dim=0),
                                flat.to(DEVICE)).flatten(2)[:, 0] - target).pow(2)
+        if args.balance_outcomes:
+            # half the root's loss on its lethal successors, half on its survivors,
+            # then the mean across roots -- the same targets, reweighted
+            share = weights[roots].reshape(-1).to(DEVICE)
+            terminal = (share * error.mean(-1)).sum() / len(roots)
+        else:
+            terminal = error.mean()   # the unbalanced path is left exactly as it was
+
         if second is not None:
             # the second generated state, reached through `advance` exactly as
             # `_direct_loss` does, and scored only where the branch survived
@@ -512,14 +520,6 @@ def main() -> None:
                 target2 = second[roots.repeat_interleave(a), flat[:, 0]].to(DEVICE)
                 error2 = (predicted2 - target2).pow(2).mean(-1)
                 terminal = terminal + args.second_weight * (error2 * keep).sum() / keep.sum()
-
-        if args.balance_outcomes:
-            # half the root's loss on its lethal successors, half on its survivors,
-            # then the mean across roots -- the same targets, reweighted
-            share = weights[roots].reshape(-1).to(DEVICE)
-            terminal = (share * error.mean(-1)).sum() / len(roots)
-        else:
-            terminal = error.mean()   # the unbalanced path is left exactly as it was
 
         blended = (1.0 - args.terminal_mass) * dynamics + args.terminal_mass * terminal
         _update(opt, _balance({"dynamics": blended}, balance, config), [world], config, step)
