@@ -6,6 +6,9 @@ cd "$(dirname "$0")"
 R=../..
 PY=$R/.venv/bin/python
 export PYTHONPATH=$R
+# the second-step rollout allocates and frees large memory tensors every step; without
+# this the 6 GB card fragments and eventually hard-OOMs mid-run
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 say() { echo "[$(date +%H:%M:%S)] == $*"; }
 
@@ -28,6 +31,9 @@ for mixer in attention mamba; do
   # twelve real steps through the actual trainer first. The earlier target smoke
   # exercised a separate script, so an ordering bug in the trainer's own loss survived
   # it and killed the run twenty seconds in.
+  say "recurrence equivalence, $mixer"
+  $PY check_v2_recurrence.py > /dev/null 2>&1 \
+      || { say "RECURRENCE CHECK FAILED"; exit 1; }
   say "trainer smoke, $mixer"
   rm -rf "/tmp/v2smoke_${mixer}"
   $PY train_terminal_arms.py --arm counterfactual --roots v2 --terminal-roots 4       --terminal-actions 17 --steps 12 --horizon 12 --milestones 999999 --smoke       --time-mixer "$mixer" --out "/tmp/v2smoke_${mixer}" > /dev/null 2>&1       || { say "TRAINER SMOKE $mixer FAILED"; exit 1; }
