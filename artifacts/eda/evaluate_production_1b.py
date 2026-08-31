@@ -124,9 +124,12 @@ def main() -> None:
     # path during training, so the gap is what production training buys on its own path
     sys.path.insert(0, str(HERE))
     from legacy import open_checkpoint
+    # the abm0 reference is an attention checkpoint whatever the arm under test is, so
+    # it needs its own config -- reusing the arm's mamba one fails to load it
+    attention = replace(config, time_mixer="attention")
     reference = open_checkpoint(HERE / "phase1b_abm0_n64" / "world_020000.pt",
-                                config, "promoted")
-    result["dev_fork_trained"] = rollout_errors(reference, cached_dev, config,
+                                attention, "promoted")
+    result["dev_fork_trained"] = rollout_errors(reference, cached_dev, attention,
                                                 batches=args.batches)
     del reference
     torch.cuda.empty_cache()
