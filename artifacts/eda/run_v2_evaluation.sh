@@ -42,8 +42,12 @@ D = json.load(open("death_transfer_production_s2.json"))
 lethal = np.array(D["per_root_lethal"])
 print(f'{"":<26}{"overall":>9}{"escape":>8}{"trap":>7}{"d1 NSE":>9}{"d2 NSE":>9}'
       f'{"actMSE":>9}{"fork NSE":>10}{"cosine":>8}')
-for tag, name in (("production_s2", "production (seed 2)"), ("broad_uniform_s2", "broad-uniform"),
-                  ("v2_attention", "v2 Direct-T"), ("v2_mamba", "v2 Direct-M")):
+# both v2 arms train at seed 20260731, so the seed-0 controls are the matched ones;
+# the seed-2 rows are kept only as context and are not the comparison
+for tag, name in (("production", "production (seed 0)"),
+                  ("broad_uniform_s0", "broad-uniform (seed 0)"),
+                  ("v2_attention", "v2 Direct-T"), ("v2_mamba", "v2 Direct-M"),
+                  ("production_s2", "  production (seed 2, context)")):
     d = get(f"death_transfer_{tag}.json"); m = get(f"multistep_{tag}.json")
     r = get(f"production_1b_evaluation_{tag}.json")
     if d is None: continue
