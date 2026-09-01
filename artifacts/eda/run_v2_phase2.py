@@ -110,6 +110,12 @@ def main() -> None:
                         counterfactual_mass=args.mass)
     save(out / "phase2_final.pt", config, part0=world, part1=heads)
     torch.save({"world": world.state_dict()}, out / "world.pt")
+    # the evaluators read the mixer from here; without it they default to attention and
+    # cannot load a mamba world
+    (out / "training_report.json").write_text(json.dumps(
+        {"phase": 2, "arm": args.arm, "time_mixer": args.arm, "steps": args.steps,
+         "counterfactual_roots": args.roots, "counterfactual_mass": args.mass,
+         "source": str(source), "seed": config.seed}, indent=2))
     print(f"phase 2 {args.arm} complete", flush=True)
 
 
