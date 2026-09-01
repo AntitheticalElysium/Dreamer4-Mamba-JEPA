@@ -5,9 +5,10 @@ from pathlib import Path
 
 import torch
 from torch import nn
+from torch.nn import functional as F
 
 from .actor_critic import actor_loss, critic_loss, lambda_returns
-from .agent import Heads, head_loss, head_targets, paired_terminal_loss
+from .agent import Heads, _distribution_loss, head_loss, head_targets, paired_terminal_loss
 from .config import Config
 from .data import (
     FORMAT,
@@ -27,7 +28,7 @@ from .checkpoint import load, save
 from .representation import Decoder, Encoder, pack, reconstruction_loss
 from .sources import source_digests
 from .state import WorldState
-from .transition import World, commit_inputs, transition_loss
+from .transition import advance, World, commit_inputs, transition_loss
 
 
 def optimizer(modules: list[nn.Module], config: Config) -> torch.optim.AdamW:
@@ -214,6 +215,74 @@ def train_dynamics(episodes: list[Episode], steps: int, config: Config, checkpoi
     return world
 
 
+def _repeat_memory(memory, roots: int, actions: int):
+    """Each root's memory repeated across its actions.
+
+    Memory is (roots x tokens, ...) -- token-major -- so repeating dim 0 scrambles
+    history without erroring. Unflatten first.
+    """
+    out = []
+    for pair in memory:
+        widened = []
+        for tensor in pair:
+            rest = tensor.shape[1:]
+            widened.append(tensor.view(roots, -1, *rest)
+                           .repeat_interleave(actions, dim=0).reshape(-1, *rest))
+        out.append(tuple(widened))
+    return tuple(out)
+
+
+def _counterfactual_path(world: World, heads: Heads, batch: dict, rng, config: Config):
+    """All 17 actions from one state, plus one further step where the branch survived.
+
+    Dynamics on both generated latents, and reward/continuation heads on the readouts
+    those generations produce -- supervising dynamics alone would leave the outcome heads
+    on logged trajectories, the coverage that made death prediction fail. No policy loss:
+    these actions were never chosen by a policy.
+    """
+    spatial, d = config.n_spatial, config.d_spatial
+    z, actions = batch["history"], batch["actions"]
+    n, t = z.shape[0], z.shape[1]
+    committed, conditioning = commit_inputs(z.view(n, t, spatial, d), rng, config)
+    features, _, memory = world(None, batch["led"], committed, conditioning)
+
+    a = actions.shape[1]
+    flat = actions.reshape(-1, 1)
+    state = WorldState(z[:, -1:].view(n, 1, spatial, d).repeat_interleave(a, 0),
+                       _repeat_memory(memory, n, a), t,
+                       features[:, -1:].repeat_interleave(a, dim=0))
+    first, agent = advance(world, state, flat, rng, config)
+    dynamics = (first.latent.flatten(2)[:, 0] - batch["branch"]).pow(2).mean()
+
+    readout = heads(agent)
+    centers = heads.centers
+    reward = _distribution_loss(readout["reward"][:, :, 0], batch["reward"][:, None],
+                                centers).mean()
+    continuation = F.binary_cross_entropy_with_logits(
+        readout["continuation"][:, 0], batch["continuation"][:, None]).mean()
+
+    keep = batch["valid"]
+    if bool(keep.any()):
+        noop = torch.zeros_like(flat)
+        step_two, agent_two = advance(world, first, noop, rng, config)
+        error = (step_two.latent.flatten(2)[:, 0] - batch["second"]).pow(2).mean(-1)
+        # `_direct_loss` averages its two rollout terms; the second is scored only where
+        # the first action left the branch alive, and the invalid targets are zeros that
+        # must never enter the loss
+        dynamics = dynamics + 0.5 * (error * keep).sum() / keep.sum()
+        second_readout = heads(agent_two)
+        reward = reward + 0.5 * (
+            _distribution_loss(second_readout["reward"][:, :, 0],
+                               batch["second_reward"][:, None], centers)[:, 0] * keep
+        ).sum() / keep.sum()
+        continuation = continuation + 0.5 * (
+            F.binary_cross_entropy_with_logits(
+                second_readout["continuation"][:, 0, 0],
+                batch["second_continuation"], reduction="none") * keep
+        ).sum() / keep.sum()
+    return {"dynamics": dynamics, "reward": reward, "continuation": continuation}
+
+
 def train_agent(
     episodes: list[Episode],
     world: World,
@@ -222,6 +291,8 @@ def train_agent(
     checkpoint=None,
     world_steps: int = 0,
     terminal_dynamics_mass: float = 0.0,
+    counterfactual=None,
+    counterfactual_mass: float = 0.0,
 ) -> Heads:
     """Phase 2. The dynamics objective continues alongside the head losses, which
     keeps the world model from drifting while the heads fit it.
@@ -241,6 +312,10 @@ def train_agent(
     """
     if not 0.0 <= terminal_dynamics_mass < 1.0:
         raise ValueError("terminal_dynamics_mass must be in [0, 1)")
+    if not 0.0 <= counterfactual_mass < 1.0:
+        raise ValueError("counterfactual_mass must be in [0, 1)")
+    if counterfactual is not None and counterfactual_mass == 0.0:
+        raise ValueError("a counterfactual corpus with zero mass would never be read")
     device = config.device
     torch.manual_seed(config.seed + 2)
     heads = Heads(config).to(device)
@@ -250,6 +325,8 @@ def train_agent(
     bundle, streams = [world, heads, optimiser], {"sampler": sampler, "model": rng}
     contract = f"2:{world_steps}:{steps}"
     contract += ":continuation=paired-v2"
+    if counterfactual is not None:
+        contract += f":counterfactual={counterfactual_mass:.17g}"
     if terminal_dynamics_mass:
         contract += f":terminal_dynamics={terminal_dynamics_mass:.17g}"
     resume = _checkpoint(checkpoint, config, bundle, balance, streams, contract=contract)
@@ -291,6 +368,14 @@ def train_agent(
             + config.terminal_loss_mass
             * terminal_objective
         )
+        if counterfactual is not None:
+            # blended before `_balance`, the way `terminal_dynamics_mass` is: a hand-rolled
+            # weighted sum would bypass the running-RMS normalisation and leave the arms
+            # unmatched
+            extra = _counterfactual_path(world, heads, counterfactual(step), rng, config)
+            for name, value in extra.items():
+                losses[name] = ((1.0 - counterfactual_mass) * losses[name]
+                                + counterfactual_mass * value)
         _update(optimiser, _balance(losses, balance, config), [world, heads], config, step)
         if checkpoint is not None and ((step + 1) % config.checkpoint_every == 0 or step + 1 == steps):
             _checkpoint(checkpoint, config, bundle, balance, streams, step + 1, contract)
