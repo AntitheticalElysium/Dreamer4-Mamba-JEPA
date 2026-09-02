@@ -280,6 +280,12 @@ def main() -> None:
         "--out", type=Path, default=Path("artifacts/oracle_phase3_h2_bccontexts")
     )
     parser.add_argument("--steps", type=int, default=2500)
+    # The pinned oracle checkpoints are 32-slot. `Config.n_latents` moved to 64 with the
+    # v2 tokenizer, so the width has to be stated rather than inherited from the default.
+    parser.add_argument("--latents", type=int, default=32)
+    # The v2 encoder was saved under its own batch and seed, which are part of the
+    # checkpoint's config and so have to be restored to load it.
+    parser.add_argument("--encoder-report", type=Path, default=None)
     parser.add_argument("--horizon", type=int, default=2)
     parser.add_argument("--train-seed-base", type=int, default=20_000)
     parser.add_argument("--eval-seed-base", type=int, default=30_000)
@@ -298,7 +304,7 @@ def main() -> None:
         with (args.out / "run.log").open("a") as stream:
             stream.write(line + "\n")
 
-    base = Config()
+    base = replace(Config(), n_latents=args.latents)
     checkpoint_config = replace(base, transition="direct", time_mixer="attention")
     config = replace(checkpoint_config, horizon=args.horizon)
     if config.device != "cuda":
@@ -307,7 +313,11 @@ def main() -> None:
     encoder = Encoder(base).to(config.device)
     world = World(checkpoint_config).to(config.device)
     heads = Heads(checkpoint_config).to(config.device)
-    load(args.phase1a, base, part0=encoder)
+    encoder_config = base
+    if args.encoder_report is not None:
+        saved = json.loads(args.encoder_report.read_text())
+        encoder_config = replace(base, batch=saved["batch"], seed=saved["seed"])
+    load(args.phase1a, encoder_config, part0=encoder)
     load(args.phase2, checkpoint_config, part0=world, part1=heads)
     encoder.eval()
     world.eval()

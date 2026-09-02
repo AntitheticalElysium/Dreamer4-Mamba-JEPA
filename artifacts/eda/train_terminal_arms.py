@@ -134,7 +134,7 @@ from d4mj.data import load_episodes, sample_batch
 from d4mj.train import (_balance, _checkpoint, _generators, _share_initialisation, _to,
                         _update, optimizer)
 from d4mj.state import WorldState
-from d4mj.transition import World, commit_inputs, transition_loss
+from d4mj.transition import World, advance, commit_inputs, transition_loss
 
 DEVICE = "cuda"
 CACHE = HERE / "latent_cache_64"
@@ -186,6 +186,25 @@ def load_roots():
     assert terminated[torch.arange(len(rows)), lethal].all(), "a logged action survived"
     assert (terminated.sum(1) < N_ACTIONS).all(), "a root offers no safe action"
     return (history, branch, torch.stack([table[k] for k in keys]), lethal, terminated)
+
+
+def repeat_memory(memory, roots: int, actions: int):
+    """Repeat each root's memory across the actions it carries.
+
+    The world's memory is laid out (roots x tokens, heads, time, dim) -- token-major, not
+    batch-major -- so `repeat_interleave(dim=0)` on it interleaves token positions and
+    silently produces a memory that belongs to no root. It has to be unflattened to
+    (roots, tokens, ...) first.
+    """
+    out = []
+    for pair in memory:
+        widened = []
+        for tensor in pair:
+            rest = tensor.shape[1:]
+            widened.append(tensor.view(roots, -1, *rest)
+                           .repeat_interleave(actions, dim=0).reshape(-1, *rest))
+        out.append(tuple(widened))
+    return tuple(out)
 
 
 def v2_roots():
@@ -485,7 +504,11 @@ def main() -> None:
         n, t = z.shape[0], z.shape[1]
         committed, conditioning = commit_inputs(z.view(n, t, spatial, d),
                                                 terminal_rng, config)
-        features, _, _ = world(None, led_history[roots].to(DEVICE), committed, conditioning)
+        # the memory is kept: the second generated state has to continue this history
+        # through `advance`, and a state built with memory=None trains a history-free
+        # transition that is not the production recurrence at all
+        features, _, memory = world(None, led_history[roots].to(DEVICE), committed,
+                                    conditioning)
 
         # the history and the backbone pass are what cost anything, so every action a
         # root carries reads off the same features; `predict` is a pool, a one-block
@@ -495,24 +518,6 @@ def main() -> None:
         target = branch[roots.repeat_interleave(a), flat[:, 0]].to(DEVICE)
         error = (world.predict(features[:, -1:].repeat_interleave(a, dim=0),
                                flat.to(DEVICE)).flatten(2)[:, 0] - target).pow(2)
-        if second is not None:
-            # the second generated state, reached through `advance` exactly as
-            # `_direct_loss` does, and scored only where the branch survived
-            keep = valid[roots].reshape(-1).to(DEVICE)
-            if bool(keep.any()):
-                state = WorldState(z[:, -1:].view(n, 1, spatial, d).repeat_interleave(a, 0),
-                                   None, t, features[:, -1:].repeat_interleave(a, dim=0))
-                first_state = WorldState(
-                    world.predict(state.features, flat.to(DEVICE)), None, t + 1, None)
-                committed2, conditioning2 = commit_inputs(first_state.latent, terminal_rng,
-                                                          config)
-                f2, _, _ = world(None, flat.to(DEVICE), committed2, conditioning2)
-                noop = torch.zeros_like(flat).to(DEVICE)
-                predicted2 = world.predict(f2[:, -1:], noop).flatten(2)[:, 0]
-                target2 = second[roots.repeat_interleave(a), flat[:, 0]].to(DEVICE)
-                error2 = (predicted2 - target2).pow(2).mean(-1)
-                terminal = terminal + args.second_weight * (error2 * keep).sum() / keep.sum()
-
         if args.balance_outcomes:
             # half the root's loss on its lethal successors, half on its survivors,
             # then the mean across roots -- the same targets, reweighted
@@ -520,6 +525,22 @@ def main() -> None:
             terminal = (share * error.mean(-1)).sum() / len(roots)
         else:
             terminal = error.mean()   # the unbalanced path is left exactly as it was
+
+        if second is not None:
+            # Both generated states through `advance`, exactly as `_direct_loss` rolls
+            # them: the carried memory, the step offset, and the first accepted latent
+            # feeding the second. Scored only where the branch survived its first action.
+            keep = valid[roots].reshape(-1).to(DEVICE)
+            if bool(keep.any()):
+                carried = repeat_memory(memory, n, a)
+                state = WorldState(z[:, -1:].view(n, 1, spatial, d).repeat_interleave(a, 0),
+                                   carried, t, features[:, -1:].repeat_interleave(a, dim=0))
+                first, _ = advance(world, state, flat.to(DEVICE), terminal_rng, config)
+                noop = torch.zeros_like(flat).to(DEVICE)
+                secondly, _ = advance(world, first, noop, terminal_rng, config)
+                target2 = second[roots.repeat_interleave(a), flat[:, 0]].to(DEVICE)
+                error2 = (secondly.latent.flatten(2)[:, 0] - target2).pow(2).mean(-1)
+                terminal = terminal + args.second_weight * (error2 * keep).sum() / keep.sum()
 
         blended = (1.0 - args.terminal_mass) * dynamics + args.terminal_mass * terminal
         _update(opt, _balance({"dynamics": blended}, balance, config), [world], config, step)

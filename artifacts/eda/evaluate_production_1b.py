@@ -91,7 +91,13 @@ def main() -> None:
     args = parser.parse_args()
 
     base = replace(Config(), n_latents=64, d_bottleneck=16)
-    config = replace(base, transition="direct", time_mixer="attention")
+    # the arm records the mixer it trained with; hardcoding attention here silently
+    # fails to load a mamba checkpoint, and the T-versus-M comparison cannot be run at all
+    mixer = "attention"
+    report_path = args.world.parent / "training_report.json"
+    if report_path is not None and report_path.exists():
+        mixer = json.loads(report_path.read_text()).get("time_mixer", "attention")
+    config = replace(base, transition="direct", time_mixer=mixer)
     world = World(config).to(DEVICE)
     world.load_state_dict(torch.load(args.world, weights_only=False)["world"])
     world.eval()
@@ -118,9 +124,12 @@ def main() -> None:
     # path during training, so the gap is what production training buys on its own path
     sys.path.insert(0, str(HERE))
     from legacy import open_checkpoint
+    # the abm0 reference is an attention checkpoint whatever the arm under test is, so
+    # it needs its own config -- reusing the arm's mamba one fails to load it
+    attention = replace(config, time_mixer="attention")
     reference = open_checkpoint(HERE / "phase1b_abm0_n64" / "world_020000.pt",
-                                config, "promoted")
-    result["dev_fork_trained"] = rollout_errors(reference, cached_dev, config,
+                                attention, "promoted")
+    result["dev_fork_trained"] = rollout_errors(reference, cached_dev, attention,
                                                 batches=args.batches)
     del reference
     torch.cuda.empty_cache()

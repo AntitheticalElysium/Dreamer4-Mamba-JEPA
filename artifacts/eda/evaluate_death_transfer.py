@@ -108,7 +108,13 @@ def main() -> None:
                              "read separately")
     args = parser.parse_args()
     base = replace(Config(), n_latents=64, d_bottleneck=16)
-    config = replace(base, transition="direct", time_mixer="attention")
+    # the arm records the mixer it trained with; hardcoding attention here silently
+    # fails to load a mamba checkpoint, and the T-versus-M comparison cannot be run at all
+    mixer = "attention"
+    report_path = (args.folder / "training_report.json") if args.folder else None
+    if report_path is not None and report_path.exists():
+        mixer = json.loads(report_path.read_text()).get("time_mixer", "attention")
+    config = replace(base, transition="direct", time_mixer=mixer)
 
     stored = json.loads(REPORT.read_text())
     encoder = Encoder(base).to(DEVICE)
