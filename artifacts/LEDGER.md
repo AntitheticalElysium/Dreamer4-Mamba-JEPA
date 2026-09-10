@@ -30,7 +30,7 @@ Specifications live in [`d4mj/spec/`](../d4mj/spec/); results live here.
 | 2026-09-06 | [lewm_paired](experiments/20260906_lewm_paired/) | Raw vs TC SIGReg, 10k joint updates, one seed | Complete. Budget finished; TC projection concern unresolved |
 | 2026-09-09 | [m03_capability](experiments/20260909_m03_capability/) | Did the new architecture resolve the prior semantic failures? | Complete. `insufficient_coverage`; TC positive mechanism, negative recipe |
 | 2026-09-10 | [feature_ladder](experiments/20260910_feature_ladder/) | Where in patch → CLS → z is the state information lost? | Complete. Pooling/export bottleneck; probe width ruled out; patch tokens recover +0.10 successor AUC |
-| 2026-09-11 | [predictability_bridge](experiments/20260911_predictability_bridge/) | Can the frozen world predict a spatial stream from `h` or `[z,h]`? | Ready to run |
+| 2026-09-11 | [predictability_bridge](experiments/20260911_predictability_bridge/) | Can the frozen world predict a spatial stream from `h` or `[z,h]`? | Complete. Effect R² 0.71 from `h` alone, but only +0.02 semantic AUC over persistence; contract not viable as-is |
 
 ## Historical campaigns
 
