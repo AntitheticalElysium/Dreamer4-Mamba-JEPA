@@ -1,6 +1,8 @@
 # Patch-token BC: does token-preserving cross-attention beat pooled export?
 
-Status: ready to run. Structural smoke passed on CUDA; no result recorded.
+Status: **complete**, 2026-09-16. Verdict: token-preserving cross-attention beats pooled
+export decisively in both arms, and TC beats Raw at every condition. Result in
+[`evidence/policy.json`](evidence/policy.json).
 
 ## Question
 
@@ -69,6 +71,78 @@ patch-only control.
 Every condition predicts the same DEV frames, so differences are reported as **paired
 episode-bootstrap intervals**, not as two separate per-condition intervals:
 `cls_patch16 − cls_patch16_mean`, `patch16 − patch16_mean`, `cls − z`, `cls_patch16 − cls`.
+
+## Outcome
+
+250 TRAIN / 32 DEV expert episodes (six were shorter than `frames + PREFIX`), 64,000
+TRAIN and 8,192 DEV frames. Majority-action floor **0.1467** [0.1329, 0.1621]. Direct's
+TRAIN encodings were reused for all 250 episodes, each validated against a fresh
+contextual encode at max-abs 3.8e-05.
+
+Top-1 expert-action accuracy, DEV:
+
+| arm | condition | tokens | top-1 | 95% interval |
+|---|---|---:|---:|---|
+| raw | z | 1 | 0.1625 | [0.1473, 0.1780] |
+| raw | cls | 1 | 0.1678 | [0.1500, 0.1859] |
+| raw | **patch16** | 16 | **0.2419** | [0.2180, 0.2690] |
+| raw | cls_patch16 | 17 | 0.2406 | [0.2135, 0.2658] |
+| raw | patch16_mean | 1 | 0.1729 | [0.1523, 0.1952] |
+| raw | cls_patch16_mean | 1 | 0.1747 | [0.1554, 0.1975] |
+| tc | z | 1 | 0.2009 | [0.1749, 0.2272] |
+| tc | cls | 1 | 0.2173 | [0.1910, 0.2439] |
+| tc | **patch16** | 16 | **0.2610** | [0.2308, 0.2938] |
+| tc | cls_patch16 | 17 | 0.2593 | [0.2272, 0.2902] |
+| tc | patch16_mean | 1 | 0.2175 | [0.1904, 0.2418] |
+| tc | cls_patch16_mean | 1 | 0.2234 | [0.1987, 0.2496] |
+| direct (anchor) | direct | 32 | 0.2275 | [0.2019, 0.2567] |
+
+Paired episode-bootstrap differences on the same DEV frames:
+
+| arm | contrast | difference | 95% interval |
+|---|---|---:|---|
+| raw | **cls_patch16 − cls_patch16_mean** | **+0.0659** | [+0.0497, +0.0820] |
+| raw | patch16 − patch16_mean | +0.0691 | [+0.0519, +0.0883] |
+| raw | cls_patch16 − cls | +0.0728 | [+0.0539, +0.0922] |
+| raw | cls − z | +0.0054 | [−0.0032, +0.0148] |
+| tc | **cls_patch16 − cls_patch16_mean** | **+0.0359** | [+0.0266, +0.0455] |
+| tc | patch16 − patch16_mean | +0.0435 | [+0.0333, +0.0544] |
+| tc | cls_patch16 − cls | +0.0420 | [+0.0305, +0.0536] |
+| tc | cls − z | +0.0164 | [+0.0094, +0.0228] |
+
+**1. Keeping the tokens is worth more than anything else measured here.** The decisive
+contrast — identical features, tokens versus pooled — is **+0.066** (raw) and **+0.036**
+(tc), both intervals well clear of zero. The patch-only control agrees (+0.069, +0.044).
+Pooling the 4×4 grid to one vector throws away most of what the grid carries: every
+pooled condition sits within noise of `cls`, while the token conditions are 4–7 points
+above it. Our `agent.py` mean-pools, so this is the interface we are currently using.
+
+**2. TC beats Raw at every single condition.** z 0.2009 vs 0.1625, cls 0.2173 vs 0.1678,
+patch16 0.2610 vs 0.2419. That reverses every prior result in this project — and it is
+mechanistically consistent rather than surprising. The ladder measured TC's
+action+interaction share at 0.29–0.38 against Raw's 0.02–0.04; predicting *which action
+the expert took* is exactly the task that variation serves. TC's centering is not
+destroying information so much as re-allocating it toward action-relevant structure, which
+costs absolute state and pays for action inference.
+
+**3. The projector costs TC but not measurably Raw.** `cls − z` is +0.0164 [+0.0094,
++0.0228] for TC and +0.0054 [−0.0032, +0.0148] for Raw. The CLS→z bottleneck the ladder
+found in Raw's *state* retention does not show up in Raw's *action* prediction.
+
+**4. Direct, the flagged anchor, is beaten by TC's patch grid.** 0.2275 against TC's
+0.2610 and above Raw's `z`. It is not a matched comparison — Direct trained on this
+archive, carries 1.46× the encoder parameters, and reads a 64-frame context against
+LeWM's single frame — but it is no longer the ceiling it was on state retention.
+
+### What this does and does not establish
+
+It establishes that the frozen encoders support substantially better
+current-observation action prediction than our CLS-only export delivers, and that the
+paper's token-preserving interface is what unlocks it. It says nothing about imagined
+rollouts: the paper never transitions patch tokens, and the
+[bridge](../20260911_predictability_bridge/README.md) showed our world cannot. Absolute
+accuracies are low because the target is a 17-way expert action under a 10%-random
+collector; the contrasts, not the levels, are the result. One seed, one archive.
 
 ## How we differ from TC-LeWM
 
