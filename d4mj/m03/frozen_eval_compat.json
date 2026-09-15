@@ -13,7 +13,7 @@
     }
   },
   "reference_manifest_digest": "60ccb055c9216092bd36bf4cfcb9491b576e10b7b3e50d180008ac96f2ab7a3a",
-  "current_manifest_digest": "58a90791b3f68e248d6a961da76faa58742f088f987168fb3bf998210b354fe9",
+  "current_manifest_digest": "a86dbca8ec97c39ce6d0526b0291cd89e7f648f2b50c39e54c7f5312b4bc5640",
   "changed_runtime_files": {
     "d4mj/lewm_config.py": {
       "reference": "8862263e076b8bb62a8fedfe7743dab916cd60d72472e8deeb72f78db14020ef",
@@ -30,20 +30,26 @@
     "d4mj/data.py": {
       "reference": "85fbbe508e85f8dbd2d2a9bedd3ad0857ef605c11a2036e71ba8ec8168703145",
       "current": "51d1346d9a0a6e6946a289bd24172a7c2945d5eb2e5245a66c14fc058a55601f"
+    },
+    "d4mj/lewm_diagnostics.py": {
+      "reference": "f977ddd685a7a2465cf42980390fb8e637312f4848b06cd56d5abc02014494b4",
+      "current": "2e143a3b58690146a171dd5eacda5a28f3e334eacf14bd5a0e40461350c1f8e4"
     }
   },
   "surface": [
     "advance_history",
     "advance_latent",
     "cls",
+    "patch16",
+    "patch_grid",
     "prefill_history",
     "prefill_latent",
     "z"
   ],
   "parity": {
     "tolerance": 1e-05,
-    "within_tree_max_abs": 5.960464477539062e-07,
-    "cross_tree_max_abs": 5.960464477539062e-07,
+    "within_tree_max_abs": 0.0,
+    "cross_tree_max_abs": 0.0,
     "cross_tree_min_abs": 0.0,
     "runs": {
       "reference": 2,

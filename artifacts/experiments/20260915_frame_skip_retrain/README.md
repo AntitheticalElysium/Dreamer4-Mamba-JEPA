@@ -80,6 +80,12 @@ frozen-evaluation proof in [`d4mj/m03/`](../../../d4mj/m03/README.md): stride-1 
 across the delta agrees to 5.96e-07, equal to the kernel's own within-tree run-to-run
 envelope, with some runs bitwise identical. Training resume stays strict.
 
+The gate path is stride-aware too, which unit tests over the new code did not catch:
+`recurrence_audit` built its own scalar actions and `screen_retention` one-hot encoded a
+flattened action tensor, so `paired-run` would have died in preflight before training
+began. Both now take the stack, and a regression test runs the LeWM gates on a stride-4
+bundle rather than only the sampler and the world.
+
 G1 samples the same span and aggregates each retained transition's label over its four
 native steps (total reward, any event or termination) — `screen_windows` and
 `audit_episodes` both count span. Regression tests pin span, stacking and label

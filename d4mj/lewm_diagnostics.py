@@ -140,7 +140,10 @@ def recurrence_audit(bundle: ModelBundle) -> dict:
             quantity = "ssm" if i >= 3 and i % 2 else "conv" if i >= 2 else "output"
             errors.append(numerical_check(a,b,profile,quantity))
     z = torch.randn(2, 18, 1, c.encoder.latent_dim, device=device, generator=rng)
-    a = torch.randint(c.dynamics.n_actions, (2, 17), device=device, generator=rng)
+    # Stacked frame-gap actions when the recipe strides; (2,17) at stride 1.
+    stack = c.joint.stride
+    a = torch.randint(c.dynamics.n_actions, (2, 17) if stack == 1 else (2, 17, stack),
+                      device=device, generator=rng)
     with torch.no_grad():
         full = w.teacher(z, a)
         state = bundle.start(z[:, :1])
@@ -382,9 +385,15 @@ def screen_retention(train_features, dev_features, train_windows, dev_windows, s
     for hidden, family in ((False,"linear"),(True,"mlp")):
         predictions = {}
         for name in ("cls","projected"):
-            fit_x, dev_x = [torch.cat((features[name][:,:-1].flatten(0,1),
-                          torch.nn.functional.one_hot(windows["actions"].flatten(), n_actions).float()), -1).to(device)
-                          for features,windows in ((train_features,train_windows),(dev_features,dev_windows))]
+            # One row per retained transition; a stacked window contributes each
+            # of its frame-gap actions as its own one-hot block.
+            def conditioned(features, windows):
+                actions = windows["actions"]
+                actions = actions.reshape(-1, actions.shape[-1]) if actions.ndim == 3 else actions.reshape(-1, 1)
+                encoded = torch.nn.functional.one_hot(actions, n_actions).float().flatten(1)
+                return torch.cat((features[name][:, :-1].flatten(0, 1), encoded), -1).to(device)
+            fit_x, dev_x = [conditioned(features, windows)
+                            for features, windows in ((train_features, train_windows), (dev_features, dev_windows))]
             predictions[name] = fit_outcome_probe(fit_x, fit_truth.float().to(device), fit_valid.float().to(device),
                                                   dev_x, settings, hidden=hidden)
         outputs[family] = predictions

@@ -98,3 +98,24 @@ def test_cuda_source_and_differentiable_carry():
     c=small_config()
     c=replace(c,dynamics=replace(c.dynamics,backend='triton'),runtime=replace(c.runtime,device='cuda'))
     assert recurrence_audit(ModelBundle.create(c))['cuda_kernels_checked']
+
+
+def test_lewm_gates_run_on_a_strided_recipe():
+    """The gate path must accept stacked actions, not just the sampler and world.
+
+    Unit tests over the new code passed while `paired-run` would still have died
+    in preflight, because the audits built scalar actions of their own.
+    """
+    from dataclasses import replace
+    from d4mj.lewm_diagnostics import normalization_audit, objective_audit, screen_retention
+    base = small_config()
+    strided = replace(base, schema="d4mj_lewm_recipe_v2", joint=replace(base.joint, stride=4))
+    bundle = ModelBundle.create(strided)
+    assert recurrence_audit(bundle)["numerical_profile"]
+    assert normalization_audit(bundle)
+    assert objective_audit(strided)
+    # screen_retention conditions its probe on the outgoing actions of each
+    # retained transition; a stacked window must still give one row per transition.
+    actions = torch.randint(strided.dynamics.n_actions, (2, strided.joint.frames - 1, 4))
+    one_hot = torch.nn.functional.one_hot(actions.reshape(-1, 4), strided.dynamics.n_actions).float().flatten(1)
+    assert one_hot.shape == (2 * (strided.joint.frames - 1), 4 * strided.dynamics.n_actions)

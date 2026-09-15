@@ -166,7 +166,10 @@ already raised, and it never widens them. Training resume is untouched: nothing 
 `checkpoint.py` knows the proof exists.
 
 The proof is produced by comparing two trees on the frozen-evaluation surface -- projected
-`z`, CLS, prefill latent/history, and one advanced pair -- each tree run more than once,
+`z`, CLS, the raw ViT patch grid, the 4x4 pooled grid, prefill latent/history and one
+advanced pair; the patch entries are there because the patch-token experiments read them
+through a hook on this backbone, and a proof covering only CLS would not cover what they
+consume -- each tree run more than once,
 because `advance` is not reproducible on a cold Triton autotune state and a cross-tree gap
 means nothing until the within-tree spread is measured. `frozen_eval_parity` writes one
 tree's dump (with `allow_drift` to bypass the guard it is measuring); `frozen_eval_proof`

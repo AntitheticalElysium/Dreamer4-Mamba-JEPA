@@ -746,13 +746,27 @@ def frozen_eval_parity(checkpoints: dict[str, Path], device: str, allow_drift: b
             del stored
             bundle, payload, _ = load_m03_bundle(Path(checkpoint), device=device, dataset_sha256=dataset)
             del payload
+            # The patch grid is part of the frozen-evaluation surface too: the
+            # patch-token experiments read it through a hook on this backbone,
+            # so a proof that covered only CLS would not cover what they consume.
+            captured: dict[str, Tensor] = {}
+            handle = bundle.encoder.backbone.register_forward_hook(
+                lambda module, args, output: captured.__setitem__("h", output.last_hidden_state))
+            try:
+                with torch.inference_mode():
+                    z, cls = bundle.encoder.projected_and_cls(frames.to(device))
+                    grid = captured["h"][:, 1:]
+                    side = int(round(grid.shape[1] ** 0.5))
+                    pooled = nn.functional.adaptive_avg_pool2d(
+                        grid.transpose(1, 2).reshape(len(grid), -1, side, side), 4).flatten(2).transpose(1, 2)
+            finally:
+                handle.remove()
             with torch.inference_mode():
-                z, cls = bundle.encoder.projected_and_cls(frames.to(device))
                 state = bundle.prefill(z, actions.to(device))
                 advanced, _ = bundle.advance(state, candidate.to(device))
-                tensors = {"z": z, "cls": cls, "prefill_latent": state.latent,
-                           "prefill_history": state.history, "advance_latent": advanced.latent,
-                           "advance_history": advanced.history}
+                tensors = {"z": z, "cls": cls, "patch_grid": grid, "patch16": pooled,
+                           "prefill_latent": state.latent, "prefill_history": state.history,
+                           "advance_latent": advanced.latent, "advance_history": advanced.history}
             out["arms"][arm] = {"checkpoint_sha256": _sha256(Path(checkpoint)),
                                 "recorded_sources_digest": recorded,
                                 "tensors": {k: v.float().cpu() for k, v in tensors.items()}}

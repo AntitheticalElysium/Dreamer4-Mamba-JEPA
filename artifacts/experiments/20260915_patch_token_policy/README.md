@@ -53,7 +53,9 @@ Direct's TRAIN encodings are indexed from `artifacts/eda/latent_cache_64` rather
 recomputed: its `cache_digest` equals the anchor's `encoder_digest`
 (`665c0df7757fbc91`), and cache episode *i* is expert TRAIN slot `train[i]` with
 byte-identical actions. That reuses 256 of 288 episodes. Reuse is never on trust — each
-span is checked against a fresh contextual encode and fails closed beyond 1e-4.
+span is checked against a fresh contextual encode of the prefix plus the two checked
+positions (the receptive field is 31, so they carry full context), which keeps the saving
+instead of re-encoding the span it was meant to avoid. Fails closed beyond 1e-4.
 
 Head: one learned action query, 4-head cross-attention at width 128, LayerNorm + MLP,
 linear to 17 logits, cross-entropy. Fixed recipe and seed across every condition.

@@ -169,7 +169,10 @@ def _tokens(bundle, episodes: list[dict], *, direct: bool, batch: int) -> dict[s
                 if cached is not None:
                     # Reuse the production cache, but never on trust: one fresh
                     # contextual encode must reproduce it before it is accepted.
-                    check = bundle.encode(observations[None].to(bundle.device))[0, PREFIX:PREFIX + 2]
+                    # Encode only the prefix plus the two checked positions -- the
+                    # receptive field is 31, so they carry full context, and
+                    # re-encoding the whole span would forfeit the entire saving.
+                    check = bundle.encode(observations[:PREFIX + 2][None].to(bundle.device))[0, PREFIX:]
                     gap = float((check.cpu() - cached[:2]).abs().max())
                     if gap > CACHE_TOLERANCE:
                         raise ValueError(f"patch_policy: cached Direct latents disagree by {gap:.3e}")
