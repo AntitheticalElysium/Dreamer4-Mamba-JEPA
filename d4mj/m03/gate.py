@@ -712,8 +712,126 @@ def _current_source_with_ieee_delta(recorded: dict) -> tuple[dict, dict]:
     return current, {"triton_f32_default": {"recorded": before, "evaluation": after}}
 
 
-def load_m03_bundle(path: Path, *, device: str, dataset_sha256: str) -> tuple[ModelBundle, dict, dict]:
-    """Load a frozen joint bundle under the explicitly recorded IEEE evaluation delta."""
+FROZEN_EVAL_SCHEMA = "lewm_frozen_eval_compatibility_v1"
+# The runtime closure in ``sources.py`` covers ``d4mj/*.py`` -- the sampler in
+# ``data.py`` defines the objective, so training resume must keep exact equality.
+# Frozen evaluation never calls the sampler, so a source delta there is
+# admissible *if measured*.  This code lives under ``d4mj/m03/`` precisely
+# because that package is outside the closure: putting it in ``sources.py``
+# would perturb the manifest it exists to verify on every edit.
+
+
+def frozen_eval_parity(checkpoints: dict[str, Path], device: str, allow_drift: bool) -> dict:
+    """Dump the frozen-evaluation surface for one tree, for later comparison."""
+
+    from ..sources import lewm_source_manifest
+
+    os.environ["TRITON_F32_DEFAULT"] = "ieee"
+    global _current_source_with_ieee_delta
+    original = _current_source_with_ieee_delta
+    if allow_drift:
+        # Deliberate, local, and the whole point: the guard is what is measured.
+        _current_source_with_ieee_delta = lambda recorded: (lewm_source_manifest(), {"measured": True})
+    try:
+        out = {"schema": "lewm_frozen_eval_parity_v1", "device": device,
+               "manifest_digest": _sha(lewm_source_manifest()),
+               "runtime": lewm_source_manifest()["runtime"], "arms": {}}
+        generator = torch.Generator().manual_seed(20260916)
+        frames = torch.randint(256, (2, 4, 63, 63, 3), generator=generator, dtype=torch.uint8)
+        actions = torch.randint(17, (2, 3), generator=generator)
+        candidate = torch.tensor([[3], [11]])
+        for arm, checkpoint in checkpoints.items():
+            stored = torch.load(Path(checkpoint), map_location="cpu", weights_only=False, mmap=True)
+            recorded, dataset = _sha(stored["sources"]), stored["dataset"]["sha256"]
+            del stored
+            bundle, payload, _ = load_m03_bundle(Path(checkpoint), device=device, dataset_sha256=dataset)
+            del payload
+            with torch.inference_mode():
+                z, cls = bundle.encoder.projected_and_cls(frames.to(device))
+                state = bundle.prefill(z, actions.to(device))
+                advanced, _ = bundle.advance(state, candidate.to(device))
+                tensors = {"z": z, "cls": cls, "prefill_latent": state.latent,
+                           "prefill_history": state.history, "advance_latent": advanced.latent,
+                           "advance_history": advanced.history}
+            out["arms"][arm] = {"checkpoint_sha256": _sha256(Path(checkpoint)),
+                                "recorded_sources_digest": recorded,
+                                "tensors": {k: v.float().cpu() for k, v in tensors.items()}}
+            del bundle
+            if device == "cuda":
+                torch.cuda.empty_cache()
+        return out
+    finally:
+        _current_source_with_ieee_delta = original
+
+
+def frozen_eval_proof(reference: list[Path], candidate: list[Path], tolerance: float) -> dict:
+    """Compare two trees' dumps, each repeated, into a hash-pinned proof.
+
+    The repeats are not ceremony: ``advance`` is not reproducible run to run, so
+    a nonzero cross-tree gap is meaningless until the within-tree spread of both
+    trees is measured on the same surface.
+    """
+
+    left = [torch.load(p, weights_only=False) for p in reference]
+    right = [torch.load(p, weights_only=False) for p in candidate]
+    def gap(a, b):
+        return max(float((a["arms"][arm]["tensors"][key] - b["arms"][arm]["tensors"][key]).abs().max())
+                   for arm in a["arms"] for key in a["arms"][arm]["tensors"])
+    within = max([gap(g[i], g[j]) for g in (left, right) for i in range(len(g)) for j in range(i + 1, len(g))]
+                 or [0.0])
+    cross = [gap(a, b) for a in left for b in right]
+    arms = {arm: {"checkpoint_sha256": left[0]["arms"][arm]["checkpoint_sha256"],
+                  "recorded_sources_digest": left[0]["arms"][arm]["recorded_sources_digest"]}
+            for arm in left[0]["arms"]}
+    changed = [k for k in left[0]["runtime"] if left[0]["runtime"][k] != right[0]["runtime"].get(k)]
+    admissible = max(cross) <= max(tolerance, within)
+    return {
+        "schema": FROZEN_EVAL_SCHEMA,
+        "status": "pass" if admissible else "fail",
+        "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+        "arms": arms,
+        "reference_manifest_digest": left[0]["manifest_digest"],
+        "current_manifest_digest": right[0]["manifest_digest"],
+        "changed_runtime_files": {k: {"reference": left[0]["runtime"][k], "current": right[0]["runtime"][k]}
+                                  for k in changed},
+        "surface": sorted(next(iter(left[0]["arms"].values()))["tensors"]),
+        "parity": {"tolerance": tolerance, "within_tree_max_abs": within,
+                   "cross_tree_max_abs": max(cross), "cross_tree_min_abs": min(cross),
+                   "runs": {"reference": len(left), "current": len(right)}},
+    }
+
+
+def _frozen_eval_delta(recorded: dict, proof: Path) -> tuple[dict, dict]:
+    """Admit a measured frozen-evaluation source delta, or refuse it."""
+
+    from ..sources import lewm_source_manifest
+
+    document = json.loads(Path(proof).read_text())
+    current = lewm_source_manifest()
+    if document.get("schema") != FROZEN_EVAL_SCHEMA or document.get("status") != "pass":
+        raise ValueError("m03_frozen_eval: proof is absent, malformed, or not passing")
+    # The checkpoint stores ``triton_f32_default: unset`` while both trees run
+    # under ``ieee``, so the comparison is against the recorded sources the proof
+    # read out of the checkpoints, not against either tree's live manifest.
+    if _sha(recorded) not in {arm["recorded_sources_digest"] for arm in document["arms"].values()}:
+        raise ValueError("m03_frozen_eval: proof does not describe this checkpoint's recorded sources")
+    if document.get("current_manifest_digest") != _sha(current):
+        raise ValueError("m03_frozen_eval: proof does not describe the current tree")
+    parity = document["parity"]
+    if parity["cross_tree_max_abs"] > max(parity["tolerance"], parity["within_tree_max_abs"]):
+        raise ValueError("m03_frozen_eval: measured parity exceeds its declared tolerance")
+    return current, {"frozen_eval_proof": {"path": str(Path(proof).resolve()), "sha256": _sha256(Path(proof)),
+                                           "parity": parity,
+                                           "changed": sorted(document["changed_runtime_files"])}}
+
+
+def load_m03_bundle(path: Path, *, device: str, dataset_sha256: str,
+                    frozen_eval_proof: Path | None = None) -> tuple[ModelBundle, dict, dict]:
+    """Load a frozen joint bundle under the explicitly recorded IEEE evaluation delta.
+
+    ``frozen_eval_proof`` admits a *measured* source delta for evaluation only.
+    It is consulted after every other identity check and never widens them.
+    """
 
     payload = torch.load(path, map_location="cpu", weights_only=False)
     if payload.get("format") != "d4mj_lewm_bundle_v2" or payload.get("phase") != "joint":
@@ -727,7 +845,15 @@ def load_m03_bundle(path: Path, *, device: str, dataset_sha256: str) -> tuple[Mo
         raise ValueError("m03_checkpoint: requires a completed M0-M3-only checkpoint")
     if payload.get("dataset", {}).get("sha256") != dataset_sha256:
         raise ValueError("m03_checkpoint: checkpoint and exact-replay manifest bytes differ")
-    current_source, source_delta = _current_source_with_ieee_delta(payload["sources"])
+    try:
+        current_source, source_delta = _current_source_with_ieee_delta(payload["sources"])
+    except ValueError:
+        if frozen_eval_proof is None:
+            raise
+        if _sha256(Path(path)) not in {a["checkpoint_sha256"]
+                                       for a in json.loads(Path(frozen_eval_proof).read_text())["arms"].values()}:
+            raise ValueError("m03_frozen_eval: proof does not cover this checkpoint")
+        current_source, source_delta = _frozen_eval_delta(payload["sources"], frozen_eval_proof)
     config = replace(config, runtime=replace(config.runtime, device=device),
                      dynamics=replace(config.dynamics, backend="triton" if device == "cuda" else "reference"))
     bundle = ModelBundle.create(config)

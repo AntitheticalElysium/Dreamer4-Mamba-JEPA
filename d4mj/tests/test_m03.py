@@ -573,3 +573,58 @@ def test_imported_stage_verifies_its_string_origin_path(tmp_path):
     with use_cache(cache), pytest.raises(ValueError, match='stage bytes changed'):
         _load_or_compute_stage(second, name, {'anchor': 1}, lambda: {})
     cache.close()
+
+
+STORED_SOURCES = {"execution": {"triton_f32_default": "unset"}}
+
+
+def _frozen_proof(tmp_path, **overrides):
+    """The committed proof, re-pointed at a stand-in checkpoint payload."""
+    import json
+    from d4mj.m03.gate import ROOT, _sha
+    document = json.loads((ROOT / "d4mj/m03/frozen_eval_compat.json").read_text())
+    document["arms"] = {"raw": {"checkpoint_sha256": "a" * 64,
+                                "recorded_sources_digest": _sha(STORED_SOURCES)}}
+    document.update(overrides)
+    path = tmp_path / "proof.json"
+    path.write_text(json.dumps(document))
+    return path
+
+
+def test_frozen_eval_proof_admits_only_a_measured_delta(tmp_path, monkeypatch):
+    """The unmodified proof, pointed at its own recorded payload, is admitted.
+
+    The proof binds the whole live manifest, execution block included, so it is
+    only valid under the IEEE evaluation environment it was measured in.
+    """
+    monkeypatch.setenv("TRITON_F32_DEFAULT", "ieee")
+    from d4mj.m03.gate import _frozen_eval_delta
+    _, delta = _frozen_eval_delta(STORED_SOURCES, _frozen_proof(tmp_path))
+    assert delta["frozen_eval_proof"]["parity"]["cross_tree_max_abs"] == 0.0
+    assert delta["frozen_eval_proof"]["changed"] == ["d4mj/config.py", "d4mj/data.py", "d4mj/lewm_config.py"]
+
+
+@pytest.mark.parametrize("overrides,match", [
+    ({"status": "fail"}, "not passing"),
+    ({"schema": "something_else"}, "not passing"),
+    ({"current_manifest_digest": "0" * 64}, "current tree"),
+    ({"arms": {"raw": {"checkpoint_sha256": "a" * 64, "recorded_sources_digest": "0" * 64}}}, "recorded sources"),
+    ({"parity": {"tolerance": 1e-9, "within_tree_max_abs": 0.0,
+                 "cross_tree_max_abs": 1.0, "cross_tree_min_abs": 1.0, "runs": {}}}, "declared tolerance"),
+])
+def test_frozen_eval_proof_fails_closed(tmp_path, monkeypatch, overrides, match):
+    """A frozen-evaluation delta is admitted only when the proof actually covers it."""
+    monkeypatch.setenv("TRITON_F32_DEFAULT", "ieee")
+    from d4mj.m03.gate import _frozen_eval_delta
+    with pytest.raises(ValueError, match=match):
+        _frozen_eval_delta(STORED_SOURCES, _frozen_proof(tmp_path, **overrides))
+
+
+def test_frozen_eval_never_relaxes_training_resume():
+    """The delta is evaluation-only: the strict source check keeps its contract."""
+    import inspect
+    from d4mj import checkpoint
+    from d4mj.m03 import gate
+    source = inspect.getsource(gate.load_m03_bundle)
+    assert source.index("_current_source_with_ieee_delta") < source.index("frozen_eval_proof is None")
+    assert "frozen_eval" not in inspect.getsource(checkpoint)

@@ -152,6 +152,41 @@ those require M4's separately authorized bridge/outcome-head and actor work.
 
 
 
+## Frozen-evaluation source compatibility
+
+`load_m03_bundle` refuses a checkpoint whose recorded source manifest differs from the
+tree. That is right for training resume: the runtime closure in `sources.py` covers
+`d4mj/*.py`, and the sampler in `data.py` defines the objective, so a tree that samples
+differently must not resume an old run. It is too strong for *frozen evaluation*, which
+never calls the sampler.
+
+`--frozen-eval-proof` admits a **measured** delta, evaluation only. It is consulted after
+the recipe, capability, dataset and checkpoint checks, only once the strict check has
+already raised, and it never widens them. Training resume is untouched: nothing in
+`checkpoint.py` knows the proof exists.
+
+The proof is produced by comparing two trees on the frozen-evaluation surface -- projected
+`z`, CLS, prefill latent/history, and one advanced pair -- each tree run more than once,
+because `advance` is not reproducible on a cold Triton autotune state and a cross-tree gap
+means nothing until the within-tree spread is measured. `frozen_eval_parity` writes one
+tree's dump (with `allow_drift` to bypass the guard it is measuring); `frozen_eval_proof`
+turns the dumps into the hash-pinned record. It pins the changed file hashes, both trees'
+manifest digests, the checkpoints' hashes and recorded-source digests, the surface, the
+tolerance and the measured parity, and it binds the whole live manifest including the
+execution block, so it is valid only under the IEEE environment it was measured in.
+
+This code lives here rather than in `sources.py` because `d4mj/m03/` is deliberately
+outside that runtime closure: a verifier in `sources.py` would perturb the manifest it
+exists to verify on every edit. Verified empirically -- copying this module into a
+pre-stride worktree leaves that tree's manifest unchanged.
+
+The committed record is `d4mj/m03/frozen_eval_compat.json`: the
+`joint.stride` delta across `data.py`, `config.py` and `lewm_config.py`, measured
+**bitwise identical** (within-tree and cross-tree max-abs 0.0, two runs per tree) against a
+declared 1e-5 tolerance. Regenerate it after any further change to those files; a stale
+proof fails closed rather than silently admitting new drift.
+
+
 ## Mamba-state supplement
 
 The frozen world is tested at its intended readout inputs: projected encoder

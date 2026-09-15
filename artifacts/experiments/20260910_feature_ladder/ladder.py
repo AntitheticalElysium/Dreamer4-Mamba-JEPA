@@ -124,7 +124,8 @@ def _score(train_x, dev_x, train, dev, settings, device):
     return report
 
 
-def run(source: Path, device: str, batch: int, limit: int = 0) -> dict:
+def run(source: Path, device: str, batch: int, limit: int = 0,
+        frozen_eval_proof: Path | None = None) -> dict:
     from d4mj.data import _sha256
     from d4mj.m03.cache import resolve_payload
     from d4mj.m03.gate import M03Settings, load_m03_bundle
@@ -152,7 +153,8 @@ def run(source: Path, device: str, batch: int, limit: int = 0) -> dict:
 
     for arm in ("raw", "tc"):
         bundle, payload, _ = load_m03_bundle(Path(contract[f"{arm}_checkpoint"]["path"]),
-                                             device=device, dataset_sha256=sidecar["dataset_sha256"])
+                                             device=device, dataset_sha256=sidecar["dataset_sha256"],
+                                             frozen_eval_proof=frozen_eval_proof)
         del payload
         raw_rungs, cached = {}, {}
         for split, values in splits.items():
@@ -234,6 +236,8 @@ def main(argv=None) -> int:
     parser.add_argument("--device", choices=("cpu", "cuda"),
                         default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--batch", type=int, default=64)
+    parser.add_argument("--frozen-eval-proof", type=Path, default=ROOT / "d4mj/m03/frozen_eval_compat.json",
+                        help="measured source-delta proof; evaluation only, never training resume")
     parser.add_argument("--limit", type=int, default=0,
                         help="structural smoke over the first N roots per split; never a result")
     args = parser.parse_args(argv)
@@ -244,7 +248,7 @@ def main(argv=None) -> int:
     destination = args.out / ("ladder.smoke.json" if args.limit else "ladder.json")
     if destination.exists():
         raise FileExistsError(f"ladder: refusing to replace {destination}")
-    report = run(args.source, args.device, args.batch, args.limit)
+    report = run(args.source, args.device, args.batch, args.limit, args.frozen_eval_proof)
     if args.limit:
         report["mode"] = "structural_smoke_not_a_result"
     destination.write_text(json.dumps(report, indent=2) + "\n")

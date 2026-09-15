@@ -189,7 +189,8 @@ def _accuracy(prediction, truth, roots, draws, seed) -> dict:
             "status": "measured" if interval is not None else "insufficient_coverage"}
 
 
-def run(device: str, episodes: int, frames: int, batch: int, settings: dict) -> dict:
+def run(device: str, episodes: int, frames: int, batch: int, settings: dict,
+        frozen_eval_proof: Path | None = None) -> dict:
     from d4mj.data import _sha256
     from d4mj.m03.gate import _legacy_anchor, load_m03_bundle
 
@@ -205,7 +206,11 @@ def run(device: str, episodes: int, frames: int, batch: int, settings: dict) -> 
     majority = int(torch.bincount(labels["train"], minlength=N_ACTIONS).argmax())
 
     report = {"schema": SCHEMA, "device": device,
-              "data": {"archive": str(ARCHIVE), "kind": "bc_eligible PPO expert, lossless 64->63 crop"},
+              "data": {"archive": str(ARCHIVE), "archive_sha256": _sha256(ARCHIVE),
+                       "kind": "bc_eligible PPO expert, lossless 64->63 crop"},
+              "frozen_eval_proof": ({"path": str(frozen_eval_proof), "sha256": _sha256(Path(frozen_eval_proof))}
+                                    if frozen_eval_proof else None),
+              "script_sha256": _sha256(Path(__file__)),
               "target": "expert action; behaviour cloning on whole-episode 80/10/10 splits",
               "episodes": {s: len(rows) for s, rows in splits.items()},
               "frames_per_episode": frames, "samples": {s: len(v) for s, v in labels.items()},
@@ -224,7 +229,8 @@ def run(device: str, episodes: int, frames: int, batch: int, settings: dict) -> 
             bundle, identity = _legacy_anchor(arm, device=device)
         else:
             bundle, payload, _ = load_m03_bundle(Path(contract[f"{arm}_checkpoint"]["path"]),
-                                                 device=device, dataset_sha256=dataset_sha256)
+                                                 device=device, dataset_sha256=dataset_sha256,
+                                                 frozen_eval_proof=frozen_eval_proof)
             identity = {"checkpoint": _sha256(Path(contract[f"{arm}_checkpoint"]["path"]))}
             del payload
         features = {s: _tokens(bundle, splits[s], direct=direct, batch=batch) for s in splits}
@@ -251,6 +257,9 @@ def main(argv=None) -> int:
     parser.add_argument("--frames", type=int, default=256, help="consecutive frames sampled per episode")
     parser.add_argument("--batch", type=int, default=64)
     parser.add_argument("--limit", action="store_true", help="tiny structural smoke; never a result")
+    parser.add_argument("--frozen-eval-proof", type=Path,
+                        default=ROOT / "d4mj/m03/frozen_eval_compat.json",
+                        help="measured source-delta proof; evaluation only, never training resume")
     args = parser.parse_args(argv)
 
     import sys
@@ -265,7 +274,7 @@ def main(argv=None) -> int:
     destination = args.out / ("policy.smoke.json" if args.limit else "policy.json")
     if destination.exists():
         raise FileExistsError(f"patch_policy: refusing to replace {destination}")
-    report = run(args.device, episodes, frames, args.batch, settings)
+    report = run(args.device, episodes, frames, args.batch, settings, args.frozen_eval_proof)
     if args.limit:
         report["mode"] = "structural_smoke_not_a_result"
     destination.write_text(json.dumps(report, indent=2) + "\n")
