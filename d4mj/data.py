@@ -585,7 +585,11 @@ class JointSampler:
             # of a retained transition is the first of the `stride` actions inside it.
             span = (j.frames - 1) * j.stride + 1
             frames.append(episode.observations[start:start+span:j.stride])
-            actions.append(episode.actions_taken[start:start+span-1:j.stride])
+            # Every native action inside each retained transition, stacked, as
+            # TC-LeWM's predictor takes them.  At stride 1 this is the 1-D vector
+            # the v1 recipe has always produced.
+            inner = episode.actions_taken[start:start+span-1]
+            actions.append(inner if j.stride == 1 else inner.reshape(j.frames - 1, j.stride))
             ids.append(episode.episode_id)
             starts.append(start)
         self.draws += j.batch
@@ -630,7 +634,8 @@ def screen_windows(episodes, config: LeWMConfig, screen, split: str) -> dict:
             if episode.events is None:
                 mask[:, 2] = False
             frames.append(episode.observations[start:end+1:stride])
-            actions.append(episode.actions_taken[start:end:stride])
+            inner = episode.actions_taken[start:end]
+            actions.append(inner if stride == 1 else inner.reshape(length - 1, stride))
             labels.append(truth); valid.append(mask); ids.append(episode.episode_id)
             starts.append(start); clusters.append(cluster)
     return {"frames": torch.stack(frames), "actions": torch.stack(actions),

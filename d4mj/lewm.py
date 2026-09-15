@@ -132,7 +132,10 @@ class LeWMWorld(nn.Module):
         self.config = config
         e, d = config.encoder, config.dynamics
         self.action_embedding = nn.Embedding(d.n_actions, d.action_dim)
-        self.pair_projection = nn.Linear(e.latent_dim + d.action_dim, d.width)
+        # TC-LeWM stacks the frame-gap actions into one predictor input
+        # ("Stacked actions, frame_gap x 7", v2 Table 4).  At stride 1 the stack
+        # is one action and every shape here is byte-identical to the v1 recipe.
+        self.pair_projection = nn.Linear(e.latent_dim + config.joint.stride * d.action_dim, d.width)
         self.layers = nn.ModuleList([_MambaBlock(config) for _ in range(d.depth)])
         self.final_norm = nn.RMSNorm(d.width, eps=d.norm_eps)
         self.predictor_projector = LeWMProjector(d.width, e)
@@ -146,8 +149,11 @@ class LeWMWorld(nn.Module):
             raise ValueError("world latent must be B,T,1,latent_dim with T>=1")
 
     def _actions(self, a: Tensor, shape):
-        if a.dtype != torch.long or a.shape != shape:
-            raise ValueError("outgoing actions must be int64 B,T matching completed pairs")
+        stack = self.config.joint.stride
+        expected = shape if stack == 1 else (*shape, stack)
+        if a.dtype != torch.long or a.shape != expected:
+            raise ValueError("outgoing actions must be int64 B,T (B,T,stride when stacked) "
+                             "matching completed pairs")
         if a.numel() and (bool((a < 0).any()) or bool((a >= self.config.dynamics.n_actions).any())):
             raise ValueError("BOS/padding is not an outgoing policy action")
 
@@ -179,7 +185,10 @@ class LeWMWorld(nn.Module):
         self._actions(actions, z.shape[:2])
         if memory is not None and len(memory) != len(self.layers):
             raise ValueError("recurrence layer count mismatch")
-        x = self.pair_projection(torch.cat((z[:, :, 0], self.action_embedding(actions)), -1))
+        embedded = self.action_embedding(actions)
+        if embedded.ndim == 4:                      # stacked frame-gap actions
+            embedded = embedded.flatten(-2)
+        x = self.pair_projection(torch.cat((z[:, :, 0], embedded), -1))
         carried = []
         for i, layer in enumerate(self.layers):
             x, m = layer(x, None if memory is None else memory[i], backend=backend)

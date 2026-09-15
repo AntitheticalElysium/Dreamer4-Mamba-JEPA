@@ -57,7 +57,13 @@ from torch import nn
 ROOT = Path(__file__).resolve().parents[3]
 SCHEMA = "d4mj_patch_token_policy"
 ARCHIVE = ROOT / "d4_mamba_jepa/artifacts/expert/craftax_expert_v1.pt"
-CONDITIONS = ("z", "cls", "patch16", "cls_patch16", "patch16_mean", "direct")
+CONDITIONS = ("z", "cls", "patch16", "cls_patch16", "patch16_mean", "cls_patch16_mean", "direct")
+LATENT_CACHE = ROOT / "artifacts/eda/latent_cache_64"
+CACHE_TOLERANCE = 1e-4
+# Same features, tokens kept versus pooled. The CLS-bearing pair is primary
+# because it is the paper-shaped condition; the patch-only pair is its control.
+CONTRASTS = (("cls_patch16", "cls_patch16_mean"), ("patch16", "patch16_mean"),
+             ("cls", "z"), ("cls_patch16", "cls"))
 TOKEN_WIDTH = 192
 N_ACTIONS = 17
 PREFIX = 63  # Direct's native contextual prefix; LeWM is framewise and ignores it
@@ -112,11 +118,36 @@ def _episodes(count: int | None, frames: int, seed: int) -> dict[str, list[dict]
             start = int(rng.integers(PREFIX, usable - frames))
             rows.append({"observations": episode.observations[start - PREFIX:start + frames].clone(),
                          "actions": episode.actions_taken[start:start + frames].clone(),
-                         "episode": number, "slot": int(slot)})
+                         "episode": number, "slot": int(slot), "start": start})
         if len(rows) < 2:
             raise RuntimeError(f"patch_policy: {name} has {len(rows)} usable expert episodes")
         out[name] = rows
+    _attach_direct_cache(out["train"], frames)
     return out
+
+
+def _attach_direct_cache(rows: list[dict], frames: int) -> None:
+    """Index the production Direct latent cache instead of re-encoding TRAIN.
+
+    ``artifacts/eda/latent_cache_64`` holds every frame's 32x32 Direct latent for
+    the expert TRAIN episodes, in ``episode_splits`` permutation order and under
+    the same encoder (its ``cache_digest`` equals the anchor's ``encoder_digest``).
+    Each reused span is still checked against a fresh contextual encode.
+    """
+    manifest = json.loads((LATENT_CACHE / "manifest.json").read_text())
+    wanted = {row["episode"]: row for row in rows}
+    seen, ceiling = 0, max(wanted) + 1 if wanted else 0
+    for shard in manifest["shards"]:
+        if seen >= ceiling:
+            break
+        payload = torch.load(LATENT_CACHE / shard["file"], weights_only=False, mmap=True)
+        for episode in payload["episodes"]:
+            row = wanted.get(seen)
+            if row is not None:
+                start = row["start"]
+                row["direct_latents"] = episode["latents"][start:start + frames].clone().float()
+            seen += 1
+        del payload
 
 
 @torch.inference_mode()
@@ -124,6 +155,7 @@ def _tokens(bundle, episodes: list[dict], *, direct: bool, batch: int) -> dict[s
     """Frozen visual tokens for every sampled frame, padded to a common width."""
     captured: dict[str, torch.Tensor] = {}
     rows: dict[str, list[torch.Tensor]] = {name: [] for name in CONDITIONS if (name == "direct") == direct}
+    reused: list[float] = []
     handle = None
     if not direct:
         handle = bundle.encoder.backbone.register_forward_hook(
@@ -133,9 +165,20 @@ def _tokens(bundle, episodes: list[dict], *, direct: bool, batch: int) -> dict[s
             observations = record["observations"]
             target = observations[63:]
             if direct:
+                cached = record.get("direct_latents")
+                if cached is not None:
+                    # Reuse the production cache, but never on trust: one fresh
+                    # contextual encode must reproduce it before it is accepted.
+                    check = bundle.encode(observations[None].to(bundle.device))[0, PREFIX:PREFIX + 2]
+                    gap = float((check.cpu() - cached[:2]).abs().max())
+                    if gap > CACHE_TOLERANCE:
+                        raise ValueError(f"patch_policy: cached Direct latents disagree by {gap:.3e}")
+                    reused.append(gap)
+                    rows["direct"].append(cached)
+                    continue
                 # Native contextual encoding: one causal pass, then the positions
                 # that carry a full prefix.  Never a single-frame MAE call.
-                latents = bundle.encode(observations[None].to(bundle.device))[0, 63:]
+                latents = bundle.encode(observations[None].to(bundle.device))[0, PREFIX:]
                 rows["direct"].append(latents.flatten(1, -2).cpu() if latents.ndim > 3 else latents.cpu())
                 continue
             for start in range(0, len(target), batch):
@@ -151,10 +194,12 @@ def _tokens(bundle, episodes: list[dict], *, direct: bool, batch: int) -> dict[s
                 rows["patch16"].append(pooled.cpu())
                 rows["cls_patch16"].append(torch.cat((cls[:, 0, None], pooled), 1).cpu())
                 rows["patch16_mean"].append(pooled.mean(1, keepdim=True).cpu())
+                rows["cls_patch16_mean"].append(
+                    torch.cat((cls[:, 0, None], pooled), 1).mean(1, keepdim=True).cpu())
     finally:
         if handle is not None:
             handle.remove()
-    out = {}
+    out = {"_reused": reused} if direct else {}
     for name, values in rows.items():
         stacked = torch.cat(values).float()
         if stacked.shape[-1] < TOKEN_WIDTH:
@@ -180,12 +225,26 @@ def _train_head(train_x, train_y, dev_x, settings, device) -> torch.Tensor:
                           for start in range(0, len(dev_x), 1024)])
 
 
-def _accuracy(prediction, truth, roots, draws, seed) -> dict:
+def _accuracy(correct, roots, draws, seed) -> dict:
     from d4mj.m03.gate import _root_bootstrap
-    correct = (prediction == truth).float()
     point, interval = _root_bootstrap(correct, roots, lambda rows: float(correct[rows].mean()),
                                       draws=draws, seed=seed)
     return {"top1": point, "interval": interval,
+            "status": "measured" if interval is not None else "insufficient_coverage"}
+
+
+def _paired(left, right, roots, draws, seed) -> dict:
+    """Episode-bootstrap difference on the same DEV frames.
+
+    Every condition predicts identical rows, so the paired difference is the
+    statistic that answers "does keeping the tokens help" - a pair of separate
+    per-condition intervals does not.
+    """
+    from d4mj.m03.gate import _root_bootstrap
+    delta = left - right
+    point, interval = _root_bootstrap(delta, roots, lambda rows: float(delta[rows].mean()),
+                                      draws=draws, seed=seed)
+    return {"top1_difference": point, "interval": interval, "bootstrap_unit": "expert_episode",
             "status": "measured" if interval is not None else "insufficient_coverage"}
 
 
@@ -219,7 +278,9 @@ def run(device: str, episodes: int, frames: int, batch: int, settings: dict,
                   "tclewm_encoder_vit_tiny_p14_224": "same ViT-Tiny family; 256 patch tokens vs our 81",
                   "tclewm_predictor_arpredictor_d6_h16": 9456384,
                   "note": "their predictor is ~3.8x ours; their encoder sees 3.2x the patch tokens"},
-              "majority_action_floor": _accuracy(torch.full_like(labels["dev"], majority), labels["dev"],
+              "episodes_sampled": {s: [{"slot": r["slot"], "start": r["start"], "episode": r["episode"]}
+                                       for r in rows] for s, rows in splits.items()},
+              "majority_action_floor": _accuracy((torch.full_like(labels["dev"], majority) == labels["dev"]).float(),
                                                  roots["dev"], settings["draws"], settings["seed"] + 9),
               "arms": {}, "m4_authorized": False}
 
@@ -234,16 +295,25 @@ def run(device: str, episodes: int, frames: int, batch: int, settings: dict,
             identity = {"checkpoint": _sha256(Path(contract[f"{arm}_checkpoint"]["path"]))}
             del payload
         features = {s: _tokens(bundle, splits[s], direct=direct, batch=batch) for s in splits}
+        reuse = {s: features[s].pop("_reused", []) for s in features}
         del bundle
         if device == "cuda":
             torch.cuda.empty_cache()
-        arm_report = {"identity": identity, "conditions": {}}
+        arm_report = {"identity": identity, "conditions": {},
+                      "reused_direct_spans": {s: len(v) for s, v in reuse.items()},
+                      "reuse_max_abs": max((max(v) for v in reuse.values() if v), default=None)}
+        correct = {}
         for name, values in features["train"].items():
             prediction = _train_head(values, labels["train"], features["dev"][name], settings, device)
+            correct[name] = (prediction == labels["dev"]).float()
             arm_report["conditions"][name] = {
                 "tokens": int(values.shape[1]),
-                **_accuracy(prediction, labels["dev"], roots["dev"], settings["draws"],
+                **_accuracy(correct[name], roots["dev"], settings["draws"],
                             settings["seed"] + 20 + CONDITIONS.index(name))}
+        arm_report["paired"] = {
+            f"{a}_minus_{b}": _paired(correct[a], correct[b], roots["dev"], settings["draws"],
+                                      settings["seed"] + 40 + i)
+            for i, (a, b) in enumerate(CONTRASTS) if a in correct and b in correct}
         report["arms"][arm] = arm_report
     return report
 

@@ -45,15 +45,28 @@ to width 192 so even the input projection is shared.
 | `cls` | 1 | the projector's cost |
 | `patch16` | 16 | the 4×4 grid alone |
 | `cls_patch16` | 17 | the paper-shaped condition |
-| `patch16_mean` | 1 | the 16 tokens averaged — separates cross-attention over tokens from the information in them; this is what `agent.py` does today |
+| `patch16_mean` | 1 | the 16 tokens averaged — patch-only pooling control |
+| `cls_patch16_mean` | 1 | the same 17 tokens averaged — the paper-shaped pooling control |
 | `direct` | 32 | Direct's native 32×32 spatial latent (64×16 bottleneck repacked at `packing=2`), at its native 64-frame context |
+
+Direct's TRAIN encodings are indexed from `artifacts/eda/latent_cache_64` rather than
+recomputed: its `cache_digest` equals the anchor's `encoder_digest`
+(`665c0df7757fbc91`), and cache episode *i* is expert TRAIN slot `train[i]` with
+byte-identical actions. That reuses 256 of 288 episodes. Reuse is never on trust — each
+span is checked against a fresh contextual encode and fails closed beyond 1e-4.
 
 Head: one learned action query, 4-head cross-attention at width 128, LayerNorm + MLP,
 linear to 17 logits, cross-entropy. Fixed recipe and seed across every condition.
 Uncertainty bootstraps episodes; a majority-action floor is reported.
 
-`cls_patch16` − `patch16_mean` is the decisive contrast: same features, tokens kept
-versus pooled.
+**`cls_patch16` − `cls_patch16_mean` is the decisive contrast**: identical features,
+tokens kept versus pooled. `cls_patch16` − `patch16_mean` would *not* be — it also adds
+CLS, confounding token structure with CLS presence. `patch16` − `patch16_mean` is the
+patch-only control.
+
+Every condition predicts the same DEV frames, so differences are reported as **paired
+episode-bootstrap intervals**, not as two separate per-condition intervals:
+`cls_patch16 − cls_patch16_mean`, `patch16 − patch16_mean`, `cls − z`, `cls_patch16 − cls`.
 
 ## How we differ from TC-LeWM
 
@@ -97,4 +110,10 @@ TRITON_F32_DEFAULT=ieee JAX_PLATFORMS=cpu .venv/bin/python \
   artifacts/experiments/20260915_patch_token_policy/patch_policy.py --device cuda
 ```
 
+The report pins the archive SHA256, the script SHA256, the frozen-evaluation proof, the
+per-arm checkpoint identities, and every sampled episode's slot and start index.
+
 Immutable output at `evidence/policy.json`. `--limit` writes `policy.smoke.json`.
+
+Requires `--frozen-eval-proof` (defaulted to `d4mj/m03/frozen_eval_compat.json`) because
+the stride work moved the source manifest; see [`d4mj/m03/README.md`](../../../d4mj/m03/README.md).

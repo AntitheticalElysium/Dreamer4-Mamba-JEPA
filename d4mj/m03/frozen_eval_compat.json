@@ -13,11 +13,15 @@
     }
   },
   "reference_manifest_digest": "60ccb055c9216092bd36bf4cfcb9491b576e10b7b3e50d180008ac96f2ab7a3a",
-  "current_manifest_digest": "87a2b07a6750d0b20829e2d913069d3cb2b6b67cce33cfa91a43b4cb9b4d4b03",
+  "current_manifest_digest": "58a90791b3f68e248d6a961da76faa58742f088f987168fb3bf998210b354fe9",
   "changed_runtime_files": {
     "d4mj/lewm_config.py": {
       "reference": "8862263e076b8bb62a8fedfe7743dab916cd60d72472e8deeb72f78db14020ef",
       "current": "c3e887ec90b96a5509c7eeafcd63b34fe5b08c52c8a789b37f388ea9a8f82530"
+    },
+    "d4mj/lewm.py": {
+      "reference": "b87644febd0851434ba2ac019a86f5c029e8af0ea318343da006c23aacd922f9",
+      "current": "aaa3ab993684818afd447a3b9dd41d428fa2e737dd4d5777f728f06966eff2c2"
     },
     "d4mj/config.py": {
       "reference": "c1835e1e6e0fae9ca6a40e479f4036fcdc6f8c0c1fa446022aecf7502b5710b0",
@@ -25,7 +29,7 @@
     },
     "d4mj/data.py": {
       "reference": "85fbbe508e85f8dbd2d2a9bedd3ad0857ef605c11a2036e71ba8ec8168703145",
-      "current": "c8a1000b06c12c4dc966a67c407acec49cfa361ee23247c1fe7b781556bca304"
+      "current": "51d1346d9a0a6e6946a289bd24172a7c2945d5eb2e5245a66c14fc058a55601f"
     }
   },
   "surface": [
@@ -38,8 +42,8 @@
   ],
   "parity": {
     "tolerance": 1e-05,
-    "within_tree_max_abs": 0.0,
-    "cross_tree_max_abs": 0.0,
+    "within_tree_max_abs": 5.960464477539062e-07,
+    "cross_tree_max_abs": 5.960464477539062e-07,
     "cross_tree_min_abs": 0.0,
     "runs": {
       "reference": 2,

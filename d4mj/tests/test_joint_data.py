@@ -121,8 +121,8 @@ def test_v1_recipe_digests_survive_the_strided_schema():
     assert recipe_digest(v2) != recipe_digest(v1)
 
 
-def test_strided_windows_keep_the_objective_shape_and_first_inner_action():
-    """Stride changes only the span: frame count, action count and batch are fixed."""
+def test_strided_windows_span_and_stack_every_inner_action():
+    """Stride changes the span and stacks the frame-gap actions, as TC-LeWM does."""
     c = small_config()
     frames = (torch.arange(40, dtype=torch.uint8))[:, None, None, None]
     episodes = [Episode(observations=frames.expand(40, 14, 14, 3).clone(),
@@ -135,9 +135,34 @@ def test_strided_windows_keep_the_objective_shape_and_first_inner_action():
     strided = replace(c, schema="d4mj_lewm_recipe_v2", joint=replace(c.joint, stride=4))
     skipped = JointSampler(episodes, strided, torch.Generator().manual_seed(5)).sample()
     assert plain.frames.shape == skipped.frames.shape
-    assert plain.actions.shape == skipped.actions.shape
     index = lambda b: b.frames[:, :, 0, 0, 0].int()
     assert (index(plain).diff(dim=1) == 1).all()
     assert (index(skipped).diff(dim=1) == 4).all()
-    # The retained outgoing action is the first of the four inside its transition.
-    assert torch.equal(skipped.actions[:, 0], index(skipped)[:, 0] % 17)
+    # Stride 1 keeps the original 1-D action vector; stride 4 stacks all four
+    # native actions of each retained transition, losing none of them.
+    assert plain.actions.shape == (c.joint.batch, c.joint.frames - 1)
+    assert skipped.actions.shape == (c.joint.batch, c.joint.frames - 1, 4)
+    first = index(skipped)[:, 0]
+    for k in range(4):
+        assert torch.equal(skipped.actions[:, 0, k], (first + k) % 17)
+
+
+def test_stacked_actions_widen_only_the_pair_projection():
+    """C: the predictor consumes every frame-gap action; stride 1 is unchanged."""
+    from d4mj.lewm import LeWMWorld
+    c = small_config()
+    e, d = c.encoder, c.dynamics
+    plain = LeWMWorld(c)
+    assert plain.pair_projection.in_features == e.latent_dim + d.action_dim
+    strided = replace(c, schema="d4mj_lewm_recipe_v2", joint=replace(c.joint, stride=4))
+    world = LeWMWorld(strided)
+    assert world.pair_projection.in_features == e.latent_dim + 4 * d.action_dim
+    # Every other parameter shape is untouched, so stride only widens that one layer.
+    plain_shapes = {k: v.shape for k, v in plain.state_dict().items() if "pair_projection" not in k}
+    assert plain_shapes == {k: v.shape for k, v in world.state_dict().items() if "pair_projection" not in k}
+    # A stacked teacher pass runs and predicts one latent per completed pair.
+    z = torch.randn(2, c.joint.frames, 1, e.latent_dim)
+    actions = torch.randint(d.n_actions, (2, c.joint.frames - 1, 4))
+    assert world.teacher(z, actions).predicted.shape == (2, c.joint.frames - 1, 1, e.latent_dim)
+    with pytest.raises(ValueError, match="stacked"):
+        world.teacher(z, actions[..., 0])

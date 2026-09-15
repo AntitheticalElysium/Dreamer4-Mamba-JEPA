@@ -155,8 +155,8 @@ def test_screen_windows_stride_spans_and_aggregates_labels():
     strided = screen_windows(episodes, replace(c, schema="d4mj_lewm_recipe_v2",
                                                joint=replace(c.joint, stride=4)), s, "train")
     assert plain["frames"].shape == strided["frames"].shape
-    assert plain["actions"].shape == strided["actions"].shape
     assert plain["labels"].shape == strided["labels"].shape
+    assert strided["actions"].shape == (*plain["actions"].shape, 4)
     index = lambda d: d["frames"][:, :, 0, 0, 0].int()
     assert (index(plain).diff(dim=1) == 1).all()
     assert (index(strided).diff(dim=1) == 4).all()
