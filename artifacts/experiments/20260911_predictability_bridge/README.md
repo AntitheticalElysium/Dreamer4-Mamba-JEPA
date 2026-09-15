@@ -139,6 +139,13 @@ Closest to the "predictable but semantics fail" branch. A two-component state co
 predicting it is worth ~0.02 AUC over assuming it does not change. Adding a spatial
 readout to the current frozen world would not recover the ladder's observation headroom.
 
+**Scope correction (2026-09-15).** This does not bear on TC-LeWM's own patch pathway.
+The paper freezes the encoder for policy learning and never regularizes or predicts patch
+tokens — its policy reads *observed* tokens. So a negative result here forecloses bolting
+an *imagined* spatial stream onto the trained world; it says nothing about whether a
+policy benefits from observed patch tokens. That is tested separately in
+[patch_token_policy](../20260915_patch_token_policy/README.md).
+
 That is a result about *this* frozen world, not about the design. Phase-1 never trained
 anything to carry a spatial stream, so the honest next question is whether an objective
 that supervises one produces a transitionable stream — not whether this one already does.
