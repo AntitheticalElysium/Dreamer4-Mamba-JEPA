@@ -137,3 +137,28 @@ def test_research_continuation_without_screen_stops_before_new_updates(tmp_path)
     with pytest.raises(ComponentGateError,match='joint_resource'):
         train_joint(episodes,c,tmp_path/'run',dataset_contract=data,gate_report=report,stop_at=4)
     assert not (tmp_path/'run').exists()
+
+
+def test_screen_windows_stride_spans_and_aggregates_labels():
+    """G1 must sample the same span as training, with per-transition labels."""
+    from d4mj.data import Episode
+    c = small_config(); s = settings()
+    frames = torch.arange(40, dtype=torch.uint8)[:, None, None, None]
+    episodes = [Episode(observations=frames.expand(40, 14, 14, 3).clone(),
+                        actions_taken=torch.arange(39) % 17,
+                        rewards=torch.ones(39), terminated=torch.zeros(39, dtype=torch.bool),
+                        truncated=torch.zeros(39, dtype=torch.bool),
+                        events=torch.zeros(39, dtype=torch.bool),
+                        episode_id=f"e{i}", split="train", uniform_eligible=True,
+                        bc_eligible=False) for i in range(2)]
+    plain = screen_windows(episodes, c, s, "train")
+    strided = screen_windows(episodes, replace(c, schema="d4mj_lewm_recipe_v2",
+                                               joint=replace(c.joint, stride=4)), s, "train")
+    assert plain["frames"].shape == strided["frames"].shape
+    assert plain["actions"].shape == strided["actions"].shape
+    assert plain["labels"].shape == strided["labels"].shape
+    index = lambda d: d["frames"][:, :, 0, 0, 0].int()
+    assert (index(plain).diff(dim=1) == 1).all()
+    assert (index(strided).diff(dim=1) == 4).all()
+    # Reward is summed over each retained transition's four native steps.
+    assert plain["labels"][..., 0].all() and strided["labels"][..., 0].all()

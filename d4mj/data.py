@@ -534,7 +534,8 @@ def audit_episodes(episodes, config: LeWMConfig) -> dict:
                      "epsilon": episode.epsilon, "terminal_cause": episode.terminal_cause,
                      "terminals": int(episode.terminated.sum()), "timeouts": int(episode.truncated.sum()),
                      "events": None if episode.events is None else int(episode.events.sum())})
-    if not any(r["split"] == "train" and r["uniform"] and r["steps"] >= config.joint.frames-1 for r in rows):
+    span = (config.joint.frames - 1) * config.joint.stride + 1
+    if not any(r["split"] == "train" and r["uniform"] and r["steps"] >= span-1 for r in rows):
         raise ValueError("joint_data: no eligible TRAIN windows")
     return {"episodes": rows, "split_counts": split_counts,
             "split_digest": hashlib.sha256(canonical_json(rows).encode()).hexdigest(),
@@ -603,26 +604,33 @@ def screen_windows(episodes, config: LeWMConfig, screen, split: str) -> dict:
     if split not in ("train", "dev"):
         raise ValueError("joint screen never selects FINAL")
     wanted = screen.train_episodes if split == "train" else screen.dev_episodes
-    length = config.joint.frames
+    length, stride = config.joint.frames, config.joint.stride
+    # A strided window occupies `span` native steps; `stride == 1` is the original.
+    span = (length - 1) * stride + 1
     def order(e):
         return hashlib.sha256(f"{screen.seed}:{e.episode_id}".encode()).digest()
     pool = sorted((e for e in episodes if e.split == split and e.uniform_eligible
-                   and len(e)+2-length >= screen.windows_per_episode), key=order)
+                   and len(e)+2-span >= screen.windows_per_episode), key=order)
     if len(pool) < wanted:
         raise ValueError(f"screen_coverage: {split} has {len(pool)} eligible episodes, needs {wanted}")
     frames, actions, labels, valid, ids, starts, clusters = [], [], [], [], [], [], []
     for cluster, episode in enumerate(pool[:wanted]):
         rng = torch.Generator().manual_seed(int.from_bytes(order(episode)[:8], "little") % (2**63-1))
-        positions = torch.randperm(len(episode)+2-length, generator=rng)[:screen.windows_per_episode]
+        positions = torch.randperm(len(episode)+2-span, generator=rng)[:screen.windows_per_episode]
         for start in positions.tolist():
-            end = start+length-1
-            reward = episode.rewards[start:end]
-            event = torch.zeros_like(reward, dtype=torch.bool) if episode.events is None else episode.events[start:end]
-            truth = torch.stack((reward > 0, reward < 0, event, episode.terminated[start:end]), -1)
+            end = start+span-1
+            # Each retained transition covers `stride` native steps, so its label
+            # aggregates over them: total reward, and any event or termination.
+            inner = lambda t: t[start:start+(length-1)*stride].reshape(length-1, stride)
+            reward = inner(episode.rewards).sum(-1)
+            event = (torch.zeros_like(reward, dtype=torch.bool) if episode.events is None
+                     else inner(episode.events).any(-1))
+            truth = torch.stack((reward > 0, reward < 0, event, inner(episode.terminated).any(-1)), -1)
             mask = torch.ones_like(truth)
             if episode.events is None:
                 mask[:, 2] = False
-            frames.append(episode.observations[start:end+1]); actions.append(episode.actions_taken[start:end])
+            frames.append(episode.observations[start:end+1:stride])
+            actions.append(episode.actions_taken[start:end:stride])
             labels.append(truth); valid.append(mask); ids.append(episode.episode_id)
             starts.append(start); clusters.append(cluster)
     return {"frames": torch.stack(frames), "actions": torch.stack(actions),
