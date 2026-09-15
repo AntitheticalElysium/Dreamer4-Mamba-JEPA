@@ -75,26 +75,13 @@ Direct is a flagged anchor, not a matched comparison: it trained on this archive
 LeWM arms did not, it keeps its native 64-frame context while LeWM sees one frame, and it
 carries 1.46× the encoder and 3.90× the world parameters.
 
-## The frame-skip retrain, specified but not implemented
+## The frame-skip retrain
 
-The paper trains at frame skip 4, so a four-frame window spans 16 environment steps;
-`joint.frames = 4` samples consecutive Craftax steps. Measured on support_v2, consecutive
-frames differ in **19.0%** of pixels against **45.0%** at lag 4 — our centering window
-carries roughly a third of the within-window variation TC's regularizer was designed
-around. That is a candidate mechanism for TC's rank collapse (39.2 → 5.7) and it is a
-recipe gap, not an architecture one.
-
-Implementing it requires care, and the hazard is concrete: `recipe_digest` is
-`sha256(canonical_json(asdict(config)))`, and `load_m03_bundle` rejects a mismatch. Adding
-a `skip` field to `LeWMConfig` changes the digest for **every** config, so the existing
-raw/TC checkpoints would stop loading and M03, the ladder, the bridge and this experiment
-would all break. A frame-skip run therefore needs a versioned recipe schema that keeps
-old digests intact, not a new field on the current dataclass.
-
-Two further decisions a Craftax frame-skip recipe must settle, neither of which LIBERO
-faces: with skip 4 there are four actions between retained frames, so the predictor's
-single outgoing action is only the first of them, and the remaining three are unobserved
-causes of the transition. And `window_weights` counts windows by frame count, not span.
+Implemented and recorded separately in
+[frame_skip_retrain](../20260915_frame_skip_retrain/README.md): `joint.stride` under a
+versioned recipe schema that keeps every existing v1 checkpoint digest bit-identical,
+with stride-4 recipes for both arms. The v2/v3 paper discrepancy over stacked actions,
+predictor context and window size is resolved there in favour of the pinned v3.
 
 ## What this cannot establish
 

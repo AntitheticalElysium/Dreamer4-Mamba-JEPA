@@ -119,9 +119,14 @@ class EpisodeCorpus(Sequence[Episode]):
             }
         return self._profiles[key]
 
-    def window_weights(self, indices, length: int, *, dtype=torch.float) -> Tensor:
-        """Number of valid windows per episode; callers retain their RNG draw order."""
-        counts = [len(self._episodes[index]) + 2 - length for index in indices]
+    def window_weights(self, indices, length: int, *, dtype=torch.float, stride: int = 1) -> Tensor:
+        """Number of valid windows per episode; callers retain their RNG draw order.
+
+        A strided window occupies `(length-1)*stride + 1` native steps, so the
+        pool must be counted by span.  `stride=1` is the original expression.
+        """
+        span = (length - 1) * stride + 1
+        counts = [len(self._episodes[index]) + 2 - span for index in indices]
         if any(count < 1 for count in counts):
             raise ValueError("window pool contains an episode shorter than the requested length")
         return torch.tensor(counts, dtype=dtype)
@@ -561,9 +566,11 @@ class JointSampler:
     def __init__(self, episodes, config: LeWMConfig, generator: torch.Generator):
         audit_episodes(episodes, config)
         self.config, self.generator = config, generator
+        span = (config.joint.frames - 1) * config.joint.stride + 1
         self.episodes = EpisodeCorpus(e for e in episodes if e.split == "train" and e.uniform_eligible
-                              and len(e)+1 >= config.joint.frames)
-        self.counts = self.episodes.window_weights(range(len(self.episodes)), config.joint.frames, dtype=torch.float64)
+                              and len(e)+1 >= span)
+        self.counts = self.episodes.window_weights(range(len(self.episodes)), config.joint.frames,
+                                                   dtype=torch.float64, stride=config.joint.stride)
         self.draws = 0
 
     def sample(self) -> JointBatch:
@@ -573,8 +580,11 @@ class JointSampler:
         for index in selected.tolist():
             episode = self.episodes[index]
             start = int(torch.randint(int(self.counts[index]), (), generator=self.generator))
-            frames.append(episode.observations[start:start+j.frames])
-            actions.append(episode.actions_taken[start:start+j.frames-1])
+            # Retained frames are `stride` native steps apart; the outgoing action
+            # of a retained transition is the first of the `stride` actions inside it.
+            span = (j.frames - 1) * j.stride + 1
+            frames.append(episode.observations[start:start+span:j.stride])
+            actions.append(episode.actions_taken[start:start+span-1:j.stride])
             ids.append(episode.episode_id)
             starts.append(start)
         self.draws += j.batch

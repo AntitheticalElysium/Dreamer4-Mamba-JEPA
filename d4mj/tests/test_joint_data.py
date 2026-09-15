@@ -102,3 +102,42 @@ def test_cache_rejects_wrong_contract(tmp_path,key,value):
     path=tmp_path/"manifest.json"; manifest=json.loads(path.read_text())
     manifest["cache"][key]=value; path.write_text(json.dumps(manifest))
     with pytest.raises(ValueError,match="cache_family|cache_identity"): load_latent_cache(tmp_path,b.encoder)
+
+
+def test_v1_recipe_digests_survive_the_strided_schema():
+    """`joint.stride` postdates v1: adding it must not invalidate any checkpoint."""
+    from d4mj.config import recipe_digest, recipe_dict
+    from d4mj.lewm_config import LeWMConfig
+
+    v1 = LeWMConfig()
+    assert v1.joint.stride == 1
+    # The digested dict must not carry the field at its default under v1.
+    assert "stride" not in recipe_dict(v1)["joint"]
+    # A v1 recipe cannot smuggle in a stride, so no v1 digest can ever mean stride!=1.
+    with pytest.raises(ValueError, match="requires recipe schema v2"):
+        replace(v1, joint=replace(v1.joint, stride=4))
+    v2 = replace(v1, schema="d4mj_lewm_recipe_v2", joint=replace(v1.joint, stride=4))
+    assert "stride" in recipe_dict(v2)["joint"]
+    assert recipe_digest(v2) != recipe_digest(v1)
+
+
+def test_strided_windows_keep_the_objective_shape_and_first_inner_action():
+    """Stride changes only the span: frame count, action count and batch are fixed."""
+    c = small_config()
+    frames = (torch.arange(40, dtype=torch.uint8))[:, None, None, None]
+    episodes = [Episode(observations=frames.expand(40, 14, 14, 3).clone(),
+                        actions_taken=torch.arange(39) % 17, rewards=torch.zeros(39),
+                        terminated=torch.zeros(39, dtype=torch.bool),
+                        truncated=torch.zeros(39, dtype=torch.bool),
+                        episode_id=f"e{i}", split="train", uniform_eligible=True,
+                        bc_eligible=False) for i in range(3)]
+    plain = JointSampler(episodes, c, torch.Generator().manual_seed(5)).sample()
+    strided = replace(c, schema="d4mj_lewm_recipe_v2", joint=replace(c.joint, stride=4))
+    skipped = JointSampler(episodes, strided, torch.Generator().manual_seed(5)).sample()
+    assert plain.frames.shape == skipped.frames.shape
+    assert plain.actions.shape == skipped.actions.shape
+    index = lambda b: b.frames[:, :, 0, 0, 0].int()
+    assert (index(plain).diff(dim=1) == 1).all()
+    assert (index(skipped).diff(dim=1) == 4).all()
+    # The retained outgoing action is the first of the four inside its transition.
+    assert torch.equal(skipped.actions[:, 0], index(skipped)[:, 0] % 17)

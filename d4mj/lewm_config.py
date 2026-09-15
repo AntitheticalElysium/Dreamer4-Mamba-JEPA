@@ -55,6 +55,10 @@ class DynamicsSettings:
 @dataclass(frozen=True)
 class JointSettings:
     frames: int = 4
+    # Native environment steps between retained frames.  1 reproduces the v1
+    # recipe exactly; 4 is TC-LeWM's frame skip, which makes a four-frame
+    # centering window span 13 native steps instead of 4.
+    stride: int = 1
     batch: int = 128
     sigreg_weight: float = 0.09
     projections: int = 1024
@@ -141,8 +145,12 @@ class ScreenConfig:
 
 
 def validate_recipe(c: LeWMConfig) -> None:
-    if c.schema != "d4mj_lewm_recipe_v1" or c.family != "lewm_mamba":
+    if c.schema not in ("d4mj_lewm_recipe_v1", "d4mj_lewm_recipe_v2") or c.family != "lewm_mamba":
         raise ValueError("unsupported LeWM recipe schema/family")
+    if type(c.joint.stride) is not int or c.joint.stride < 1:
+        raise ValueError("joint stride must be a positive integer")
+    if c.joint.stride != 1 and c.schema != "d4mj_lewm_recipe_v2":
+        raise ValueError("a strided joint window requires recipe schema v2")
     if c.variant not in ("raw", "tc"):
         raise ValueError("regularizer target must be raw or tc")
     e, d, j, r = c.encoder, c.dynamics, c.joint, c.runtime

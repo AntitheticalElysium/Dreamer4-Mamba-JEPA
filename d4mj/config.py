@@ -242,7 +242,15 @@ def canonical_json(value) -> str:
 
 
 def recipe_dict(config) -> dict:
-    return json.loads(canonical_json(asdict(config)))
+    values = json.loads(canonical_json(asdict(config)))
+    # `joint.stride` postdates the v1 recipe, and recipe_id is the digest of this
+    # dict: omitting it at its default keeps every existing v1 checkpoint loadable.
+    # v2 recipes retain it, so a strided run can never collide with a v1 digest.
+    joint = values.get("joint")
+    if (values.get("schema") == "d4mj_lewm_recipe_v1" and isinstance(joint, dict)
+            and joint.get("stride") == 1):
+        joint.pop("stride")
+    return values
 
 
 def recipe_digest(config) -> str:
