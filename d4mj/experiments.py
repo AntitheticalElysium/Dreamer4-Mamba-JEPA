@@ -50,24 +50,13 @@ def run_joint_pair(configs, settings, dataset, output, *, screen_only=False):
         raise ValueError("paired-run requires two model recipes and a screen recipe")
     if set(configs) != {"raw","tc"}:
         raise ComponentGateError("pair_recipe", "paired recipes are keyed raw and tc")
-    def leaves(value, prefix=""):
-        flat = {}
-        for key, item in value.items():
-            if isinstance(item, dict):
-                flat.update(leaves(item, prefix+key+"."))
-            else:
-                flat[prefix+key] = item
-        return flat
-    left, right = (leaves(recipe_dict(c)) for c in configs.values())
-    axis = {key for key in set(left) | set(right) if left.get(key) != right.get(key)}
-    # A pair isolates one variable. Either the regularizer target (raw vs TC) or,
-    # for the window ablation, the centering index set with both arms on TC.
-    if axis not in ({"variant"}, {"joint.centering"}):
-        raise ComponentGateError("pair_recipe",
-                                 "a pair differs in exactly one declared axis: variant or joint.centering")
-    if axis == {"variant"} and any(c.variant != v for v,c in configs.items()):
+    from .lewm_config import pair_axis as declared_axis
+    try:
+        pair_axis = declared_axis(*(recipe_dict(c) for c in configs.values()))
+    except ValueError as error:
+        raise ComponentGateError("pair_recipe", str(error)) from error
+    if pair_axis == "variant" and any(c.variant != v for v,c in configs.items()):
         raise ComponentGateError("pair_recipe", "a variant pair must name its arms raw and tc")
-    pair_axis = next(iter(axis))
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     def status(stage, **detail):

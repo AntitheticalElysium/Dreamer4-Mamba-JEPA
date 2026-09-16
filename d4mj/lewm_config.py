@@ -83,6 +83,28 @@ class JointSettings:
     checkpoint_every: int = 500
 
 
+def pair_axis(left: dict, right: dict) -> str:
+    """The single declared axis on which a paired run's two arms may differ.
+
+    A pair isolates one variable: the regularizer target (raw vs TC), or the
+    centering index set for the window ablation, where both arms are TC and the
+    arm directories keep their raw/tc names for tooling.
+    """
+    def leaves(value, prefix=""):
+        flat = {}
+        for key, item in value.items():
+            if isinstance(item, dict):
+                flat.update(leaves(item, prefix + key + "."))
+            else:
+                flat[prefix + key] = item
+        return flat
+    a, b = leaves(left), leaves(right)
+    axis = {key for key in set(a) | set(b) if a.get(key) != b.get(key)}
+    if axis not in ({"variant"}, {"joint.centering"}):
+        raise ValueError("a paired run differs in exactly one declared axis: variant or joint.centering")
+    return next(iter(axis))
+
+
 def window_layout(j: JointSettings) -> tuple[tuple[int, ...], tuple[int, ...], tuple[int, ...]]:
     """Native offsets of the encoded frames, and positions of the prediction and
     centering sets *within that window* -- not native offsets themselves.

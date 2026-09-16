@@ -441,7 +441,7 @@ def screen_joint_pair(runs, episodes, dataset_contract, settings, output):
             checkpoint = run/"joint"/f"step-{config.joint.screen_step:06d}.pt"
             payloads[variant] = p = read_lewm_bundle(checkpoint)
             initial = read_lewm_bundle(run/"joint/step-000000.pt")
-            if (p["config"] != recipe_dict(config) or config.variant != variant or p["step"] != config.joint.screen_step
+            if (p["config"] != recipe_dict(config) or p["step"] != config.joint.screen_step
                     or p["dataset"] != dataset_contract or initial["step"] != 0
                     or initial["config"] != p["config"] or initial["dataset"] != dataset_contract
                     or initial["initial_identity"] != p["initial_identity"]):
@@ -452,9 +452,17 @@ def screen_joint_pair(runs, episodes, dataset_contract, settings, output):
             report["arms"][variant] = {"checkpoint": str(checkpoint.resolve()), "checkpoint_sha256": _sha256(checkpoint),
                                       "recipe_id": p["recipe_id"], "initial_identity": p["initial_identity"]}
         raw, tc = payloads["raw"], payloads["tc"]
-        if ({k:v for k,v in raw["config"].items() if k != "variant"} !=
-                {k:v for k,v in tc["config"].items() if k != "variant"}
-                or raw["initial_identity"] != tc["initial_identity"]
+        from .lewm_config import pair_axis
+        try:
+            axis = pair_axis(raw["config"], tc["config"])
+        except ValueError as error:
+            raise ComponentGateError("pair_identity", str(error)) from error
+        report["pair_axis"] = axis
+        # A variant pair must sit in the slot that names it; a centering pair is
+        # TC in both slots, so only the axis itself identifies the arms.
+        if axis == "variant" and any(payloads[v]["config"]["variant"] != v for v in ("raw", "tc")):
+            raise ComponentGateError("pair_identity", "a variant pair must name its arms raw and tc")
+        if (raw["initial_identity"] != tc["initial_identity"]
                 or not torch.equal(raw["sampler"]["generator"],tc["sampler"]["generator"])
                 or not torch.equal(raw["projection_rng"],tc["projection_rng"])):
             raise ComponentGateError("pair_identity", "raw/TC differ beyond the declared objective")

@@ -96,6 +96,25 @@ def test_paired_pipeline_saves_initialization_and_runs_component_screen(tmp_path
     with pytest.raises(ComponentGateError,match='joint_screen'):require_joint_screen(None,c,data,parent)
 
 
+def test_a_centering_pair_is_two_tc_arms_and_declares_its_own_axis(tmp_path):
+    # The window ablation puts TC in both slots; only the centering index set differs.
+    c=small_config(schema='d4mj_lewm_recipe_v2',
+                   joint=replace(small_config().joint,centering_stride=2))
+    configs={'raw':replace(c,joint=replace(c.joint,centering='consecutive')),
+             'tc':replace(c,joint=replace(c.joint,centering='strided'))}
+    dataset=tmp_path/'raw.pt';save_episodes(dataset,corpus());out=tmp_path/'pair'
+    run_joint_pair(configs,settings(),dataset,out,screen_only=True)
+    assert json.loads((out/'pair_axis.json').read_text())['axis']=='joint.centering'
+    report=json.loads((out/'G1/screen.json').read_text())
+    assert report['pair_axis']=='joint.centering'
+    assert report['components']['pair_identity']['status']=='pass',report['components']['pair_identity']
+    # Two arms that differ on nothing, or on two axes at once, are not a pair.
+    for broken in ({'raw':configs['raw'],'tc':configs['raw']},
+                   {'raw':configs['raw'],'tc':replace(configs['tc'],variant='raw')}):
+        with pytest.raises(ComponentGateError,match='exactly one declared axis'):
+            run_joint_pair(broken,settings(),dataset,tmp_path/str(id(broken)),screen_only=True)
+
+
 def test_continuation_verifies_parent_evidence_and_records_screen_lineage(tmp_path):
     """Synthetic passing diagnostics exercise authorization, not scientific success."""
     from d4mj.gates import contract_digest
