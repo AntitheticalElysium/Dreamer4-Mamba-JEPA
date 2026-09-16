@@ -1,7 +1,7 @@
 # Frame-skip retrain: is TC's centering window physically too short?
 
-Status: recipes ready, not yet trained. Schema and sampler implemented and tested;
-existing checkpoints verified still loadable.
+Status: **training in progress**, launched 2026-09-16. G1 passed at update 2,000
+(`continue_joint_budget`); the 10,000-update budget is running. Interim G1 findings below.
 
 ## The finding that motivates it
 
@@ -90,6 +90,60 @@ G1 samples the same span and aggregates each retained transition's label over it
 native steps (total reward, any event or termination) — `screen_windows` and
 `audit_episodes` both count span. Regression tests pin span, stacking and label
 aggregation against the unstrided case.
+
+## Interim: G1 at update 2,000
+
+Paired stride-4 run `artifacts/lewm_gates_20260916/paired_stride4`, against the sealed
+stride-1 screen from [20260906_lewm_paired](../20260906_lewm_paired/evidence/g1_screen.json).
+Same screen recipe, same 256 TRAIN / 128 DEV episodes, same fixed windows.
+
+| metric | raw s1 | raw s4 | tc s1 | tc s4 |
+|---|---:|---:|---:|---:|
+| DEV effective rank | 23.10 | 20.48 | **3.08** | **7.82** |
+| coordinate variance | 0.818 | 0.722 | 2.623 | 0.652 |
+| mean norm | 1.921 | 2.008 | 4.105 | 3.168 |
+| normalized prediction MSE | 0.0653 | 0.0745 | 0.0646 | 0.6125 |
+
+**1. TC's rank collapse is partly a timescale artifact — but only partly.** Effective rank
+rises **3.08 → 7.82**, a 2.5× recovery, which is direct support for "our centering window
+was physically too short". It remains 2.6× below Raw's 20.48, so the longer window
+mitigates rather than cures it.
+
+**2. TC's scale inflation looks *mostly* like a timescale artifact.** Coordinate variance
+falls 2.62 → 0.65 and is now comparable to Raw's 0.72, where at stride 1 it was 3.2×
+Raw's. The inflated energy M03 and the ladder both measured (TC total energy 4.8–6.5×
+Raw's) is substantially a consequence of centering over four native steps, not something
+intrinsic to centering.
+
+**3. Raw's prediction beats persistence for the first time.** At stride 1 it was
+*unresolved* — −0.0015 [−0.0072, +0.0043], straddling zero. At stride 4 it is
+−0.0191 [−0.0244, −0.0144]. A four-step physical horizon makes persistence a much weaker
+baseline, and the model clears it cleanly.
+
+**4. But TC's prediction task got much harder**: normalized MSE 0.0646 → 0.6125, against
+Raw's 0.0653 → 0.0745. Predicting four native steps ahead costs TC an order of magnitude
+where it costs Raw almost nothing.
+
+### A normalization caution
+
+`prediction_minus_persistence` and `prediction_minus_permuted_actions` are raw-MSE
+differences, and the two arms' latent scales differ by ~4× *and changed between strides*,
+so those numbers are not comparable across arms or across strides as reported. Dividing by
+each arm's own coordinate variance — a derived quantity, not one the evaluator computes:
+
+| contrast, ÷ own variance | raw s1 | raw s4 | tc s1 | tc s4 |
+|---|---:|---:|---:|---:|
+| prediction − persistence | −0.002 | −0.027 | −1.109 | −1.382 |
+| prediction − permuted actions | −0.027 | −0.040 | −1.759 | −0.631 |
+
+Read that way TC's margin over persistence *improves* (−1.11 → −1.38) while its margin
+over permuted actions *degrades sharply* (−1.76 → −0.63). With four stacked actions per
+transition, action identity is more diffuse and shuffling costs the model less. That is
+worth watching at 10,000 updates; it is the one reading here that points against the
+stride change.
+
+These are update-2,000 screen numbers on one seed, not the completed budget, and G1 is a
+screen rather than a capability result.
 
 ## What this cannot establish
 
