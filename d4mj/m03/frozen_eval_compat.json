@@ -13,11 +13,11 @@
     }
   },
   "reference_manifest_digest": "60ccb055c9216092bd36bf4cfcb9491b576e10b7b3e50d180008ac96f2ab7a3a",
-  "current_manifest_digest": "3ef3866f652518fd7c6b3c90136ff9b69b05fcf19f2c553c885ee2b5df502fca",
+  "current_manifest_digest": "78318c8356ade25dec068a47537bb5f6d8ca1d30324087f0a0679de025f3a795",
   "changed_runtime_files": {
     "d4mj/lewm_config.py": {
       "reference": "8862263e076b8bb62a8fedfe7743dab916cd60d72472e8deeb72f78db14020ef",
-      "current": "8d33338e4f65bc5534b619dfd27ba45d021c4fad7d6e231d8e9c208273ee02ff"
+      "current": "75fad37ec47bf9f8633ab9154839e8f5d67adc9d8b33fd05c9d2fbf5a6e6f665"
     },
     "d4mj/lewm.py": {
       "reference": "b87644febd0851434ba2ac019a86f5c029e8af0ea318343da006c23aacd922f9",
@@ -31,13 +31,17 @@
       "reference": "85fbbe508e85f8dbd2d2a9bedd3ad0857ef605c11a2036e71ba8ec8168703145",
       "current": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea"
     },
+    "d4mj/gates.py": {
+      "reference": "89696e961a3bea8a548c6f4772187a4b105761f1348a3504f3db86b9827c7d39",
+      "current": "737a159717604bba6a27eed5c55452880f63ceb855d33891f0fc82658f0b8f69"
+    },
     "d4mj/lewm_diagnostics.py": {
       "reference": "f977ddd685a7a2465cf42980390fb8e637312f4848b06cd56d5abc02014494b4",
-      "current": "2e143a3b58690146a171dd5eacda5a28f3e334eacf14bd5a0e40461350c1f8e4"
+      "current": "79b4e5365f2a5967baac960824a464aaeb5a7a927313d9a5cda4aef074220099"
     },
     "d4mj/experiments.py": {
       "reference": "ec5e8a5c9163cbf608c31e5852df77668fcafb14a8823d6684802ceb6849549a",
-      "current": "5e04d0d76729545da1caf5b1f244ced6a8d12b2d6e972873a56d94968822877d"
+      "current": "9084f0f2de3e67ab3f87e953b65329c2b1392d8d6e6345ec44166b545c2d9ef3"
     }
   },
   "surface": [

@@ -107,7 +107,31 @@ def test_a_centering_pair_is_two_tc_arms_and_declares_its_own_axis(tmp_path):
     assert json.loads((out/'pair_axis.json').read_text())['axis']=='joint.centering'
     report=json.loads((out/'G1/screen.json').read_text())
     assert report['pair_axis']=='joint.centering'
-    assert report['components']['pair_identity']['status']=='pass',report['components']['pair_identity']
+    # The whole screen must execute, not just the pair check: a widened centering
+    # window encodes 6 frames but rolls out 4, and every reading is on the 4.
+    assert report.get('blocked_component') is None,report['components']
+    assert all(v['status']=='pass' for v in report['components'].values()),report['components']
+    for slot in ('raw','tc'):
+        assert len(report['arms'][slot]['temporal_power'])==c.joint.frames//2+1
+    rows=torch.load(out/'G1/raw_rows.pt',weights_only=False)['features']['dev']
+    assert rows['projected'].shape[1]==c.joint.frames
+    assert rows['prediction'].shape[1]==c.joint.frames-1
+    # Continuation must resolve each arm by its sealed recipe, not by the declared
+    # variant: both arms say `tc`, so the variant names no arm at all.
+    from d4mj.gates import contract_digest
+    report['decision']='continue_joint_budget'
+    for item in report['arms'].values():
+        item['learning_progress']=True
+        item['prediction']['normalized_prediction_mse']=.5
+        item['initial_prediction']['normalized_prediction_mse']=1.
+        item['retention']['projection_stop']=False
+    report['report_id']=contract_digest({k:v for k,v in report.items() if k!='report_id'})
+    _,data=load_joint_corpus(dataset,c)
+    for slot in ('raw','tc'):
+        require_joint_screen(report,configs[slot],data,out/slot/'joint/step-000002.pt')
+    for slot,other in (('raw','tc'),('tc','raw')):
+        with pytest.raises(ComponentGateError,match='parent'):
+            require_joint_screen(report,configs[slot],data,out/other/'joint/step-000002.pt')
     # Two arms that differ on nothing, or on two axes at once, are not a pair.
     for broken in ({'raw':configs['raw'],'tc':configs['raw']},
                    {'raw':configs['raw'],'tc':replace(configs['tc'],variant='raw')}):

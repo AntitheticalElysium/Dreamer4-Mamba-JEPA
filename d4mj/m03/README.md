@@ -183,11 +183,17 @@ outside that runtime closure: a verifier in `sources.py` would perturb the manif
 exists to verify on every edit. Verified empirically -- copying this module into a
 pre-stride worktree leaves that tree's manifest unchanged.
 
-The committed record is `d4mj/m03/frozen_eval_compat.json`: the
-`joint.stride` delta across `data.py`, `config.py` and `lewm_config.py`, measured
-**bitwise identical** (within-tree and cross-tree max-abs 0.0, two runs per tree) against a
-declared 1e-5 tolerance. Regenerate it after any further change to those files; a stale
-proof fails closed rather than silently admitting new drift.
+The committed record is `d4mj/m03/frozen_eval_compat.json`. It now covers the
+`joint.stride` and centering-window deltas across seven runtime files -- `config.py`,
+`data.py`, `experiments.py`, `gates.py`, `lewm.py`, `lewm_config.py` and
+`lewm_diagnostics.py` -- measured at cross-tree max-abs 5.96e-7 against a within-tree
+spread of 5.96e-7 and a declared 1e-5 tolerance, two runs per tree. The two trees are
+therefore indistinguishable at the kernel's own reproducibility floor: the criterion is
+met by the within-tree bound, not only by the tolerance. (An earlier revision of this
+record measured 0.0 on both; `advance` is not reproducible on a cold Triton autotune
+state, which is exactly why the within-tree spread is measured rather than assumed.)
+Regenerate it after any further change to those files; a stale proof fails closed rather
+than silently admitting new drift.
 
 
 ## Mamba-state supplement

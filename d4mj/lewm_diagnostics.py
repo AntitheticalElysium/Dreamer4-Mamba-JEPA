@@ -322,16 +322,25 @@ def covariance_summary(values):
 @torch.no_grad()
 def screen_features(bundle, windows, settings):
     """Frozen exported/CLS features and teacher predictions on one fixed sample."""
+    from .lewm_config import window_layout
+
     bundle.eval()
     before = tensor_state_digest(bundle.encoder.state_dict())
     z_rows, cls_rows, prediction, marginal = [], [], [], []
     actions = windows["actions"]
     permuted = actions.roll(1, 0)
+    predicted_at = window_layout(bundle.config.joint)[1]
     for start in range(0, len(actions), settings.encode_batch):
         end = start+settings.encode_batch
         frames = windows["frames"][start:end].to(bundle.device)
         with torch.autocast(device_type=bundle.device.type, enabled=False):
             z, cls = bundle.encoder.projected_and_cls(frames)
+            # A widened centering window encodes frames the rollout never predicts.
+            # Keep the prediction frames alone, exactly as `joint_loss` does: the
+            # outgoing actions, the labels and every downstream reading are indexed
+            # on the prediction transitions, not on the encoded window.
+            if predicted_at != tuple(range(z.shape[1])):
+                z, cls = z[:, list(predicted_at)], cls[:, list(predicted_at)]
             predicted = bundle.world.teacher(z, actions[start:end].to(bundle.device)).predicted
             shuffled = bundle.world.teacher(z, permuted[start:end].to(bundle.device)).predicted
         z_rows.append(z[:, :, 0].cpu()); cls_rows.append(cls.cpu())

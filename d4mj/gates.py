@@ -500,8 +500,11 @@ def require_joint_screen(report, config, dataset_contract, resume):
         if (not 0 <= now < initial or not bool(torch.isfinite(torch.tensor([now,initial])).all())
                 or item["recipe_id"] != pair["recipes"][variant]):
             raise ComponentGateError("joint_screen", "reported learning progress is inconsistent")
-    arm = report.get("arms",{}).get(config.variant,{})
-    if arm.get("recipe_id") != recipe_digest(config) or resume is None:
+    # The arm is the one running this exact recipe. A centering pair declares `tc` in
+    # both slots, so the variant does not name an arm; the recipe digest does, and the
+    # loop above has already bound every slot to its sealed recipe.
+    arm = next((a for a in report.get("arms",{}).values() if a.get("recipe_id") == recipe_digest(config)), {})
+    if not arm or resume is None:
         raise ComponentGateError("joint_screen_parent", "resume the screened recipe and checkpoint")
     parent = read_lewm_bundle(resume)
     if parent["dataset"] != dataset_contract or parent["recipe_id"] != recipe_digest(config):
