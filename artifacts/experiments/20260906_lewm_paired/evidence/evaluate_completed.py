@@ -18,6 +18,7 @@ from d4mj.config import load_recipe, recipe_digest
 from d4mj.data import _sha256, atomic_manifest, load_joint_corpus, screen_windows
 from d4mj.diagnostics import paired_auc_interval
 from d4mj.gates import ComponentGateError, contract_digest, require_joint_screen
+from d4mj.lewm_config import pair_axis
 from d4mj.lewm_diagnostics import (
     covariance_summary, normalization_audit, recurrence_audit, screen_features,
     screen_prediction_report, screen_retention,
@@ -112,8 +113,12 @@ def main():
                 "capabilities": payload["capabilities"], "initial_identity": payload["initial_identity"],
             }
         raw, tc = payloads["raw"], payloads["tc"]
-        require({k:v for k,v in raw["config"].items() if k != "variant"} ==
-                {k:v for k,v in tc["config"].items() if k != "variant"}, component, "paired recipes differ")
+        # One declared axis, from the same helper the screen uses: `variant` for the
+        # raw/TC pairs, `joint.centering` for the window ablation's two TC arms.
+        try:
+            report["pair_axis"] = pair_axis(raw["config"], tc["config"])
+        except ValueError as error:
+            raise ComponentGateError(component, str(error)) from error
         require(raw["dataset"] == tc["dataset"] and raw["initial_identity"] == tc["initial_identity"], component, "paired identities differ")
         for stream in ("projection_rng", "cpu_rng"):
             require(torch.equal(raw[stream], tc[stream]), component, f"final {stream} differs")
