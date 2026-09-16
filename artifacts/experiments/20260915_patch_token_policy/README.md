@@ -141,8 +141,13 @@ current-observation action prediction than our CLS-only export delivers, and tha
 paper's token-preserving interface is what unlocks it. It says nothing about imagined
 rollouts: the paper never transitions patch tokens, and the
 [bridge](../20260911_predictability_bridge/README.md) showed our world cannot. Absolute
-accuracies are low because the target is a 17-way expert action under a 10%-random
-collector; the contrasts, not the levels, are the result. One seed, one archive.
+accuracies are low because the target is a 17-way action from a **stochastic** recurrent
+PPO expert — the manifest records `greedy: false`, and these episodes carry no epsilon at
+all — so even a perfect model cannot match a sampled policy exactly. The contrasts, not
+the levels, are the result. One seed, one archive.
+
+This probes the **stride-1** frozen encoders. The stride-4 retrain postdates it, and its
+checkpoints have not been run through this experiment.
 
 ## How we differ from TC-LeWM
 

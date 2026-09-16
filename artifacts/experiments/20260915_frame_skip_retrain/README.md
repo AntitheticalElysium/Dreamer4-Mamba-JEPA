@@ -2,8 +2,8 @@
 
 Status: **complete**, 2026-09-16. Both arms finished the 10,000-update budget in 2h52m.
 G1 passed; the completed-budget audit passed all eight components. Verdict: the longer
-centering window recovers most of TC's rank collapse and all of its scale inflation,
-without curing either fully. Result in [`evidence/completed/`](evidence/completed/).
+window recovers most of TC's rank collapse and more than halves its scale inflation, but
+TC still retains less proxy information than Raw. Result in [`evidence/completed/`](evidence/completed/).
 
 ## The finding that motivates it
 
@@ -167,29 +167,48 @@ centering — moves almost identically (5.74 → 16.32). The persistent spectrum
 (5.47 → 9.00), which is coherent: centering never constrained the time-constant component,
 so a longer window helps it least. Raw loses some rank throughout (39.23 → 34.09).
 
-**Scale inflation is gone, and slightly reversed.** TC's coordinate variance falls
-2.76 → 0.553, now *below* Raw's 0.755, where at stride 1 it was 3.2× above. The inflated
-energy M03 and the ladder both measured was an artifact of centering over four native
-steps, not a property of the objective.
+**Scale inflation is much reduced, but not eliminated.** Coordinate variance by spectrum:
+
+| spectrum | raw s1 | raw s4 | tc s1 | tc s4 | TC/Raw s1 | TC/Raw s4 |
+|---|---:|---:|---:|---:|---:|---:|
+| full latent | 0.897 | 0.822 | 4.576 | 1.894 | **5.10×** | **2.30×** |
+| residual | 0.026 | 0.068 | 1.821 | 1.342 | 70.5× | 19.8× |
+| persistent | 0.872 | 0.755 | 2.760 | 0.553 | 3.16× | 0.73× |
+
+The full-latent ratio — the right denominator for a claim about scale — falls from 5.10×
+to 2.30×: substantial improvement, not elimination. Only the *persistent* component drops
+below Raw. An earlier version of this record claimed inflation was "gone and slightly
+reversed" by quoting the persistent row alone; that was wrong.
 
 **Prediction, stride-4 only.** Both arms clear persistence and permuted actions:
 
-| arm | normalized MSE | pred − persistence | pred − permuted actions | permuted ÷ own variance |
+| arm | normalized MSE | pred − persistence | pred − permuted actions | permuted ÷ full-latent variance |
 |---|---:|---:|---:|---:|
-| raw | 0.0342 | −0.0527 [−0.0599, −0.0458] | −0.0246 [−0.0299, −0.0198] | −0.033 |
-| tc | 0.0988 | −3.1091 [−3.3770, −2.8489] | −0.2572 [−0.3084, −0.2121] | −0.465 |
+| raw | 0.0342 | −0.0527 [−0.0599, −0.0458] | −0.0246 [−0.0299, −0.0198] | −0.030 |
+| tc | 0.0988 | −3.1091 [−3.3770, −2.8489] | −0.2572 [−0.3084, −0.2121] | −0.136 |
 
 There is no stride-1 counterpart: that audit **stopped** its prediction diagnostics at the
 failed TF32 recurrence gate, so this comparison exists only at G1. Normalized by each arm's
-own variance, TC remains an order of magnitude more action-sensitive than Raw (−0.465 vs
-−0.033), though it continued the degradation seen at G1 (−1.76 at s1 → −0.63 at s4/G1 →
-−0.465 at s4/10k). Stacking four actions per transition makes action identity more
-diffuse, and that cost grows through training.
+full-latent variance, TC remains about **4.5×** more action-sensitive than Raw (−0.136 vs
+−0.030). An earlier version divided by the persistent variance instead and claimed an
+order of magnitude; that denominator was wrong.
 
-**Retention is unchanged.** `projection_stop` is False for both arms in both runs and
-`critical_semantic_retention` remains `not_evaluated` — the two-probe destruction rule did
-not fire at stride 4 any more than at stride 1. The longer window did not change the
-projection-boundary verdict either way.
+**Retention improves but still favours Raw.** `projection_stop` is False for both arms in
+both runs, but that only means the two-probe *destruction threshold* did not fire — it is
+not a statement that retention is fine. The matched paired proxy comparison, TC minus Raw
+on projected features:
+
+| probe | stride 1 | stride 4 |
+|---|---|---|
+| linear | −0.0545 [−0.1123, +0.0047] | −0.0262 [−0.0573, +0.0047] |
+| MLP | **−0.0672 [−0.1104, −0.0180]** | **−0.0345 [−0.0597, −0.0069]** |
+
+TC's deficit against Raw roughly halves, but the MLP interval still excludes zero, so Raw
+retains more proxy information at stride 4 as it did at stride 1. TC's own projector also
+still loses against its CLS (−0.0280 [−0.0426, −0.0146]), against Raw's −0.0203 [−0.0370,
+−0.0050]. Termination remains unsupported with six DEV positives. An earlier version of
+this record called retention "unchanged" on the strength of `projection_stop` alone; that
+read the flag and not the probes.
 
 **One incidental improvement:** the stride-4 checkpoints pass `tc_recurrence` and
 `raw_recurrence` natively. The stride-1 pair failed the full-stack SSM tolerance under its
@@ -198,11 +217,13 @@ IEEE throughout, so its recurrence contract holds without an after-the-fact reme
 
 ### Reading
 
-The timescale hypothesis is **substantially confirmed and partially insufficient**. Our
-four-native-step centering window was the dominant cause of TC's scale inflation and a
-majority of its rank collapse. It was not the whole story: at 16.73 against Raw's 34.09,
-TC's representation is still markedly lower-rank, so something beyond window length is
-compressing it.
+The timescale hypothesis is **substantially supported and not isolated**. A longer window
+moves TC's geometry a long way: rank 5.68 → 16.73 and the full-latent variance ratio
+5.10× → 2.30×. But it is neither a cure — TC stays lower-rank than Raw and still loses the
+matched proxy comparison by −0.0345 — nor an attribution, because this retrain changed
+three things at once: the centering timescale, the prediction horizon (1 → 4 native steps)
+and the action conditioning (1 → 4 stacked actions). Only a SIGReg-stride-only arm, which
+holds one-step dynamics fixed and strides the centering alone, would separate them.
 
 What this does **not** establish is that the stride-4 arms are better *for control*. Rank
 and prediction are representation diagnostics; the semantic panels that would settle it —
