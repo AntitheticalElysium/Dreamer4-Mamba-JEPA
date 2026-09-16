@@ -1,7 +1,9 @@
 # Frame-skip retrain: is TC's centering window physically too short?
 
-Status: **training in progress**, launched 2026-09-16. G1 passed at update 2,000
-(`continue_joint_budget`); the 10,000-update budget is running. Interim G1 findings below.
+Status: **complete**, 2026-09-16. Both arms finished the 10,000-update budget in 2h52m.
+G1 passed; the completed-budget audit passed all eight components. Verdict: the longer
+centering window recovers most of TC's rank collapse and all of its scale inflation,
+without curing either fully. Result in [`evidence/completed/`](evidence/completed/).
 
 ## The finding that motivates it
 
@@ -91,7 +93,7 @@ native steps (total reward, any event or termination) — `screen_windows` and
 `audit_episodes` both count span. Regression tests pin span, stacking and label
 aggregation against the unstrided case.
 
-## Interim: G1 at update 2,000
+## G1 at update 2,000
 
 Paired stride-4 run `artifacts/lewm_gates_20260916/paired_stride4`, against the sealed
 stride-1 screen from [20260906_lewm_paired](../20260906_lewm_paired/evidence/g1_screen.json).
@@ -144,6 +146,68 @@ stride change.
 
 These are update-2,000 screen numbers on one seed, not the completed budget, and G1 is a
 screen rather than a capability result.
+
+## Completed budget (update 10,000)
+
+Run `artifacts/lewm_gates_20260916/paired_stride4`, audited by the same read-only driver
+used for the stride-1 pair. All eight components pass: pair identity, dataset and windows,
+and normalization / recurrence / projection-retention for both arms.
+
+**Effective rank — the number this experiment was built to move:**
+
+| spectrum | raw s1 | raw s4 | tc s1 | tc s4 |
+|---|---:|---:|---:|---:|
+| raw | 39.231 | 34.088 | **5.684** | **16.729** |
+| residual | 25.951 | 19.283 | 5.735 | 16.315 |
+| persistent | 38.942 | 33.845 | 5.474 | 9.002 |
+
+TC's raw-latent rank recovers **5.68 → 16.73, a 2.9× gain**, and the raw/TC gap narrows
+from 6.9× to 2.04×. The residual spectrum — the one SIGReg actually regularizes under
+centering — moves almost identically (5.74 → 16.32). The persistent spectrum gains least
+(5.47 → 9.00), which is coherent: centering never constrained the time-constant component,
+so a longer window helps it least. Raw loses some rank throughout (39.23 → 34.09).
+
+**Scale inflation is gone, and slightly reversed.** TC's coordinate variance falls
+2.76 → 0.553, now *below* Raw's 0.755, where at stride 1 it was 3.2× above. The inflated
+energy M03 and the ladder both measured was an artifact of centering over four native
+steps, not a property of the objective.
+
+**Prediction, stride-4 only.** Both arms clear persistence and permuted actions:
+
+| arm | normalized MSE | pred − persistence | pred − permuted actions | permuted ÷ own variance |
+|---|---:|---:|---:|---:|
+| raw | 0.0342 | −0.0527 [−0.0599, −0.0458] | −0.0246 [−0.0299, −0.0198] | −0.033 |
+| tc | 0.0988 | −3.1091 [−3.3770, −2.8489] | −0.2572 [−0.3084, −0.2121] | −0.465 |
+
+There is no stride-1 counterpart: that audit **stopped** its prediction diagnostics at the
+failed TF32 recurrence gate, so this comparison exists only at G1. Normalized by each arm's
+own variance, TC remains an order of magnitude more action-sensitive than Raw (−0.465 vs
+−0.033), though it continued the degradation seen at G1 (−1.76 at s1 → −0.63 at s4/G1 →
+−0.465 at s4/10k). Stacking four actions per transition makes action identity more
+diffuse, and that cost grows through training.
+
+**Retention is unchanged.** `projection_stop` is False for both arms in both runs and
+`critical_semantic_retention` remains `not_evaluated` — the two-probe destruction rule did
+not fire at stride 4 any more than at stride 1. The longer window did not change the
+projection-boundary verdict either way.
+
+**One incidental improvement:** the stride-4 checkpoints pass `tc_recurrence` and
+`raw_recurrence` natively. The stride-1 pair failed the full-stack SSM tolerance under its
+original TF32 environment and needed the separate IEEE diagnostic; this run used explicit
+IEEE throughout, so its recurrence contract holds without an after-the-fact remedy.
+
+### Reading
+
+The timescale hypothesis is **substantially confirmed and partially insufficient**. Our
+four-native-step centering window was the dominant cause of TC's scale inflation and a
+majority of its rank collapse. It was not the whole story: at 16.73 against Raw's 34.09,
+TC's representation is still markedly lower-rank, so something beyond window length is
+compressing it.
+
+What this does **not** establish is that the stride-4 arms are better *for control*. Rank
+and prediction are representation diagnostics; the semantic panels that would settle it —
+M03's all-action forks — are ill-posed against a stacked-action world until the macro-fork
+convention is chosen. That remains the gating question, deferred deliberately.
 
 ## What this cannot establish
 

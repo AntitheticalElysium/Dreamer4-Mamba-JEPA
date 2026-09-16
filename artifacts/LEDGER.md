@@ -32,7 +32,7 @@ Specifications live in [`d4mj/spec/`](../d4mj/spec/); results live here.
 | 2026-09-10 | [feature_ladder](experiments/20260910_feature_ladder/) | Where in patch → CLS → z is the state information lost? | Complete. Pooling/export bottleneck; probe width ruled out; patch tokens recover +0.10 successor AUC |
 | 2026-09-11 | [predictability_bridge](experiments/20260911_predictability_bridge/) | Can the frozen world predict a spatial stream from `h` or `[z,h]`? | Complete. Effect R² 0.71 from `h` alone, but only +0.02 semantic AUC over persistence; contract not viable as-is |
 | 2026-09-15 | [patch_token_policy](experiments/20260915_patch_token_policy/) | Does token-preserving cross-attention over 4×4 patch tokens beat pooled export, under real expert BC? | Complete. Tokens beat pooling by +0.066 (raw) / +0.036 (tc) paired; TC beats Raw at every condition |
-| 2026-09-15 | [frame_skip_retrain](experiments/20260915_frame_skip_retrain/) | Is TC's centering window physically too short? (paper trains at frame skip 4; we used stride 1) | Training. G1 passed; TC effective rank 3.08 -> 7.82 and its scale inflation largely gone |
+| 2026-09-15 | [frame_skip_retrain](experiments/20260915_frame_skip_retrain/) | Is TC's centering window physically too short? (paper trains at frame skip 4; we used stride 1) | Complete. TC rank 5.68 -> 16.73 at 10k and scale inflation gone; not cured (raw 34.09). Semantic panels blocked on the macro-fork |
 
 ## Historical campaigns
 
