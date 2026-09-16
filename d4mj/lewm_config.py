@@ -84,8 +84,13 @@ class JointSettings:
 
 
 def window_layout(j: JointSettings) -> tuple[tuple[int, ...], tuple[int, ...], tuple[int, ...]]:
-    """Native offsets of the encoded frames, and indices of the prediction and
-    centering sets within them.
+    """Native offsets of the encoded frames, and positions of the prediction and
+    centering sets *within that window* -- not native offsets themselves.
+
+    At ``frames=4, centering_stride=4`` the window holds native offsets
+    (0,1,2,3,4,8,12); the strided centering set is native (0,4,8,12), which is
+    positions (0,4,5,6) in the window. Callers index tensors, so positions are
+    what is returned.
 
     The encoded window is the union of the two sets, so a `consecutive` and a
     `strided` recipe with the same `centering_stride` encode exactly the same

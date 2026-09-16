@@ -17,10 +17,18 @@ outgoing action; only the index set entering SIGReg changes.
 Both arms **encode identical frames**. The window is the union of the prediction frames and
 the centering frames, so at `centering_stride = 4`:
 
-| | encoded native offsets | prediction indices | centering indices |
-|---|---|---|---|
-| `consecutive` (control) | 0,1,2,3,4,8,12 | 0,1,2,3 | **0,1,2,3** |
-| `strided` (treatment) | 0,1,2,3,4,8,12 | 0,1,2,3 | **0,4,5,6** |
+Two index spaces are in play, and they must not be confused: **native offsets** are frame
+positions in the episode, while **tensor positions** index the encoded window, whose frames
+are the sorted union of both sets.
+
+| | encoded window (native offsets) | prediction (native) | centering (native) | centering (tensor positions) |
+|---|---|---|---|---|
+| `consecutive` (control) | 0,1,2,3,4,8,12 | 0,1,2,3 | **0,1,2,3** | 0,1,2,3 |
+| `strided` (treatment) | 0,1,2,3,4,8,12 | 0,1,2,3 | **0,4,8,12** | 0,4,5,6 |
+
+The strided arm centers over frames four native steps apart — offsets 0, 4, 8, 12, spanning
+13 steps. Those sit at tensor positions 0, 4, 5, 6 because native 8 and 12 are the sixth and
+seventh frames of the seven-frame window; there is no native offset 5 or 6.
 
 Seven frames, span 13, in both. That controls the two confounds that would otherwise ruin
 the comparison:
