@@ -1,6 +1,6 @@
 # Centering-window ablation: was it the window, or the horizon?
 
-Status: **ready to run**. Implemented and tested; not yet trained.
+Status: **running** since 2026-09-17 09:06. Implemented and tested.
 
 ## Question
 
@@ -74,6 +74,24 @@ Both arms are TC. The directory names are an artifact of the pair keys, not the 
 read `pair_axis.json`.
 
 ## Readings
+
+### On what basis the spectra are read
+
+The screen and the audit encode seven frames but roll out four, and every reading --
+the outgoing actions, the labels, the prediction target, the retention probes -- is
+indexed on the three prediction transitions. So the headline spectra are read on the
+four prediction frames, native offsets 0-3, in **both** arms.
+
+That makes the within-ablation contrast clean, and exactly matches the basis the
+stride-1 run used. It does **not** match the stride-4 run, which read its spectra across
+frames 4 native steps apart, spanning 13. Comparing a number from this ablation directly
+against TC s4's 16.73 therefore compares two different measurement bases, and the
+comparison is indicative rather than decisive.
+
+For a matched cross-reference the completed audit also records `window_spectra`: the same
+three spectra over all seven encoded frames, which span the same 13 native steps as the
+stride-4 window and are still measured identically in both arms. Read the primary table
+for the treatment effect and `window_spectra` for the comparison to stride-4.
 
 | outcome | conclusion |
 |---|---|

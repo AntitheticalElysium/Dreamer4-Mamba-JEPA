@@ -18,7 +18,7 @@ from d4mj.config import load_recipe, recipe_digest
 from d4mj.data import _sha256, atomic_manifest, load_joint_corpus, screen_windows
 from d4mj.diagnostics import paired_auc_interval
 from d4mj.gates import ComponentGateError, contract_digest, require_joint_screen
-from d4mj.lewm_config import pair_axis
+from d4mj.lewm_config import pair_axis, window_layout
 from d4mj.lewm_diagnostics import (
     covariance_summary, normalization_audit, recurrence_audit, screen_features,
     screen_prediction_report, screen_retention,
@@ -206,6 +206,21 @@ def main():
             entry["spectra"] = {"raw": covariance_summary(z), "residual": covariance_summary(z-z.mean(1,keepdim=True)),
                                 "persistent": covariance_summary(z.mean(1))}
             entry["temporal_power"] = torch.fft.rfft(z.double(), dim=1).abs().square().mean((0,2)).tolist()
+            # Those spectra are read on the prediction frames, the only basis on which both
+            # arms are comparable to each other and to the stride-1 run. A widened centering
+            # window also encodes frames the rollout never predicts, spanning many more
+            # native steps, so record the same three spectra over the whole encoded window:
+            # still matched between arms, and the fairer cross-reference to the stride-4
+            # figures, which were themselves read across a 13-step span.
+            offsets = window_layout(configs[variant].joint)[0]
+            if len(offsets) != configs[variant].joint.frames:
+                full = {split: encoder_features(bundle, w, settings) for split, w in windows.items()}
+                fz = full["dev"]["projected"]
+                entry["window_spectra"] = {
+                    "native_offsets": list(offsets),
+                    "raw": covariance_summary(fz), "residual": covariance_summary(fz-fz.mean(1,keepdim=True)),
+                    "persistent": covariance_summary(fz.mean(1))}
+                del full, fz
             variance = covariance_summary(features["train"]["projected"])["coordinate_variance"]
             require(variance >= settings.variance_floor, component, "numerical latent collapse")
             if recurrence_passed:
