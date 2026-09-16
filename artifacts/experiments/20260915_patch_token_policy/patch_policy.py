@@ -252,7 +252,7 @@ def _paired(left, right, roots, draws, seed) -> dict:
 
 
 def run(device: str, episodes: int, frames: int, batch: int, settings: dict,
-        frozen_eval_proof: Path | None = None) -> dict:
+        frozen_eval_proof: Path | None = None, checkpoints: dict[str, Path] | None = None) -> dict:
     from d4mj.data import _sha256
     from d4mj.m03.gate import _legacy_anchor, load_m03_bundle
 
@@ -287,15 +287,16 @@ def run(device: str, episodes: int, frames: int, batch: int, settings: dict,
                                                  roots["dev"], settings["draws"], settings["seed"] + 9),
               "arms": {}, "m4_authorized": False}
 
-    arms = [("raw", False), ("tc", False), ("direct_attention", True)]
+    lewm = checkpoints or {a: Path(contract[f"{a}_checkpoint"]["path"]) for a in ("raw", "tc")}
+    arms = [(name, False) for name in lewm] + [("direct_attention", True)]
     for arm, direct in arms:
         if direct:
             bundle, identity = _legacy_anchor(arm, device=device)
         else:
-            bundle, payload, _ = load_m03_bundle(Path(contract[f"{arm}_checkpoint"]["path"]),
-                                                 device=device, dataset_sha256=dataset_sha256,
+            bundle, payload, _ = load_m03_bundle(lewm[arm], device=device,
+                                                 dataset_sha256=dataset_sha256,
                                                  frozen_eval_proof=frozen_eval_proof)
-            identity = {"checkpoint": _sha256(Path(contract[f"{arm}_checkpoint"]["path"]))}
+            identity = {"checkpoint": str(lewm[arm]), "sha256": _sha256(lewm[arm])}
             del payload
         features = {s: _tokens(bundle, splits[s], direct=direct, batch=batch) for s in splits}
         reuse = {s: features[s].pop("_reused", []) for s in features}
@@ -330,6 +331,8 @@ def main(argv=None) -> int:
     parser.add_argument("--frames", type=int, default=256, help="consecutive frames sampled per episode")
     parser.add_argument("--batch", type=int, default=64)
     parser.add_argument("--limit", action="store_true", help="tiny structural smoke; never a result")
+    parser.add_argument("--checkpoint", action="append", default=[], metavar="NAME=PATH",
+                        help="evaluate these arms instead of the source run's raw/tc pair")
     parser.add_argument("--frozen-eval-proof", type=Path,
                         default=ROOT / "d4mj/m03/frozen_eval_compat.json",
                         help="measured source-delta proof; evaluation only, never training resume")
@@ -347,7 +350,8 @@ def main(argv=None) -> int:
     destination = args.out / ("policy.smoke.json" if args.limit else "policy.json")
     if destination.exists():
         raise FileExistsError(f"patch_policy: refusing to replace {destination}")
-    report = run(args.device, episodes, frames, args.batch, settings, args.frozen_eval_proof)
+    chosen = {pair.split("=", 1)[0]: Path(pair.split("=", 1)[1]) for pair in args.checkpoint} or None
+    report = run(args.device, episodes, frames, args.batch, settings, args.frozen_eval_proof, chosen)
     if args.limit:
         report["mode"] = "structural_smoke_not_a_result"
     destination.write_text(json.dumps(report, indent=2) + "\n")

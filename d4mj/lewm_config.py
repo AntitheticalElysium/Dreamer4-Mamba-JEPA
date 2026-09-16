@@ -59,6 +59,14 @@ class JointSettings:
     # recipe exactly; 4 is TC-LeWM's frame skip, which makes a four-frame
     # centering window span 13 native steps instead of 4.
     stride: int = 1
+    # Spacing of the SIGReg centering set, independent of the prediction pairs.
+    # >1 widens the centering window in physical time while dynamics stay
+    # one-step, which is the window-only ablation.  The encoded window is then
+    # the union of the prediction frames and the centering frames, so both
+    # `centering` settings see identical encoder inputs and identical projector
+    # BatchNorm batches: only the index set entering SIGReg differs.
+    centering_stride: int = 1
+    centering: str = "consecutive"
     batch: int = 128
     sigreg_weight: float = 0.09
     projections: int = 1024
@@ -73,6 +81,23 @@ class JointSettings:
     grad_clip: float = 1.0
     warmup: int = 500
     checkpoint_every: int = 500
+
+
+def window_layout(j: JointSettings) -> tuple[tuple[int, ...], tuple[int, ...], tuple[int, ...]]:
+    """Native offsets of the encoded frames, and indices of the prediction and
+    centering sets within them.
+
+    The encoded window is the union of the two sets, so a `consecutive` and a
+    `strided` recipe with the same `centering_stride` encode exactly the same
+    frames and differ only in which latents SIGReg centers over.  At the
+    defaults this is the four consecutive frames of the v1 recipe.
+    """
+    base = [k * j.stride for k in range(j.frames)]
+    centre = [k * j.centering_stride * j.stride for k in range(j.frames)]
+    offsets = sorted(set(base) | set(centre))
+    index = {offset: position for position, offset in enumerate(offsets)}
+    selected = centre if j.centering == "strided" else base
+    return tuple(offsets), tuple(index[o] for o in base), tuple(index[o] for o in selected)
 
 
 @dataclass(frozen=True)
@@ -151,6 +176,17 @@ def validate_recipe(c: LeWMConfig) -> None:
         raise ValueError("joint stride must be a positive integer")
     if c.joint.stride != 1 and c.schema != "d4mj_lewm_recipe_v2":
         raise ValueError("a strided joint window requires recipe schema v2")
+    if type(c.joint.centering_stride) is not int or c.joint.centering_stride < 1:
+        raise ValueError("centering stride must be a positive integer")
+    if c.joint.centering not in ("consecutive", "strided"):
+        raise ValueError("centering selects the consecutive or the strided index set")
+    if c.joint.centering_stride != 1:
+        if c.schema != "d4mj_lewm_recipe_v2":
+            raise ValueError("a widened centering window requires recipe schema v2")
+        if c.joint.stride != 1:
+            raise ValueError("the centering ablation holds dynamics one-step: stride must be 1")
+    elif c.joint.centering != "consecutive":
+        raise ValueError("a strided centering set needs centering_stride > 1")
     if c.variant not in ("raw", "tc"):
         raise ValueError("regularizer target must be raw or tc")
     e, d, j, r = c.encoder, c.dynamics, c.joint, c.runtime

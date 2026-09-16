@@ -48,11 +48,26 @@ def run_joint_pair(configs, settings, dataset, output, *, screen_only=False):
 
     if not isinstance(settings,ScreenConfig) or not all(isinstance(c,LeWMConfig) for c in configs.values()):
         raise ValueError("paired-run requires two model recipes and a screen recipe")
-    if set(configs) != {"raw","tc"} or any(c.variant != v for v,c in configs.items()):
-        raise ComponentGateError("pair_recipe", "paired recipes must name raw and tc")
-    identity = [{k:v for k,v in recipe_dict(c).items() if k != "variant"} for c in configs.values()]
-    if identity[0] != identity[1]:
-        raise ComponentGateError("pair_recipe", "recipes may differ only in centering")
+    if set(configs) != {"raw","tc"}:
+        raise ComponentGateError("pair_recipe", "paired recipes are keyed raw and tc")
+    def leaves(value, prefix=""):
+        flat = {}
+        for key, item in value.items():
+            if isinstance(item, dict):
+                flat.update(leaves(item, prefix+key+"."))
+            else:
+                flat[prefix+key] = item
+        return flat
+    left, right = (leaves(recipe_dict(c)) for c in configs.values())
+    axis = {key for key in set(left) | set(right) if left.get(key) != right.get(key)}
+    # A pair isolates one variable. Either the regularizer target (raw vs TC) or,
+    # for the window ablation, the centering index set with both arms on TC.
+    if axis not in ({"variant"}, {"joint.centering"}):
+        raise ComponentGateError("pair_recipe",
+                                 "a pair differs in exactly one declared axis: variant or joint.centering")
+    if axis == {"variant"} and any(c.variant != v for v,c in configs.items()):
+        raise ComponentGateError("pair_recipe", "a variant pair must name its arms raw and tc")
+    pair_axis = next(iter(axis))
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     def status(stage, **detail):
@@ -60,6 +75,12 @@ def run_joint_pair(configs, settings, dataset, output, *, screen_only=False):
         atomic_manifest(output/"status.json",row)
         print(json.dumps(row),flush=True)
     atomic_manifest(output/"screen_recipe.json",recipe_dict(settings))
+    # The arm directories stay raw/tc for tooling; this records what they hold.
+    atomic_manifest(output/"pair_axis.json",
+                    {"axis":pair_axis, "arms":{k:{"variant":c.variant,
+                                                  "centering":c.joint.centering,
+                                                  "centering_stride":c.joint.centering_stride}
+                                               for k,c in configs.items()}})
     for variant,c in configs.items():
         atomic_manifest(output/f"{variant}_recipe.json",recipe_dict(c))
     status("dataset_validation")

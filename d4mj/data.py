@@ -119,13 +119,12 @@ class EpisodeCorpus(Sequence[Episode]):
             }
         return self._profiles[key]
 
-    def window_weights(self, indices, length: int, *, dtype=torch.float, stride: int = 1) -> Tensor:
+    def window_weights(self, indices, span: int, *, dtype=torch.float) -> Tensor:
         """Number of valid windows per episode; callers retain their RNG draw order.
 
-        A strided window occupies `(length-1)*stride + 1` native steps, so the
-        pool must be counted by span.  `stride=1` is the original expression.
+        `span` is the native extent a window occupies, which equals the frame
+        count only for an unstrided, unwidened recipe.
         """
-        span = (length - 1) * stride + 1
         counts = [len(self._episodes[index]) + 2 - span for index in indices]
         if any(count < 1 for count in counts):
             raise ValueError("window pool contains an episode shorter than the requested length")
@@ -567,11 +566,12 @@ class JointSampler:
     def __init__(self, episodes, config: LeWMConfig, generator: torch.Generator):
         audit_episodes(episodes, config)
         self.config, self.generator = config, generator
-        span = (config.joint.frames - 1) * config.joint.stride + 1
+        from .lewm_config import window_layout
+        self.offsets = window_layout(config.joint)[0]
+        span = self.offsets[-1] + 1
         self.episodes = EpisodeCorpus(e for e in episodes if e.split == "train" and e.uniform_eligible
                               and len(e)+1 >= span)
-        self.counts = self.episodes.window_weights(range(len(self.episodes)), config.joint.frames,
-                                                   dtype=torch.float64, stride=config.joint.stride)
+        self.counts = self.episodes.window_weights(range(len(self.episodes)), span, dtype=torch.float64)
         self.draws = 0
 
     def sample(self) -> JointBatch:
@@ -581,10 +581,10 @@ class JointSampler:
         for index in selected.tolist():
             episode = self.episodes[index]
             start = int(torch.randint(int(self.counts[index]), (), generator=self.generator))
-            # Retained frames are `stride` native steps apart; the outgoing action
-            # of a retained transition is the first of the `stride` actions inside it.
-            span = (j.frames - 1) * j.stride + 1
-            frames.append(episode.observations[start:start+span:j.stride])
+            # Encoded frames sit at the layout's native offsets: the prediction
+            # frames plus any extra frames a widened centering window needs.
+            span = self.offsets[-1] + 1
+            frames.append(episode.observations[[start + o for o in self.offsets]])
             # Every native action inside each retained transition, stacked, as
             # TC-LeWM's predictor takes them.  At stride 1 this is the 1-D vector
             # the v1 recipe has always produced.
@@ -608,9 +608,12 @@ def screen_windows(episodes, config: LeWMConfig, screen, split: str) -> dict:
     if split not in ("train", "dev"):
         raise ValueError("joint screen never selects FINAL")
     wanted = screen.train_episodes if split == "train" else screen.dev_episodes
+    from .lewm_config import window_layout
     length, stride = config.joint.frames, config.joint.stride
-    # A strided window occupies `span` native steps; `stride == 1` is the original.
-    span = (length - 1) * stride + 1
+    # The screen samples the same window shape training does, so a widened
+    # centering window is screened on the frames it actually encodes.
+    offsets = window_layout(config.joint)[0]
+    span = offsets[-1] + 1
     def order(e):
         return hashlib.sha256(f"{screen.seed}:{e.episode_id}".encode()).digest()
     pool = sorted((e for e in episodes if e.split == split and e.uniform_eligible
@@ -633,7 +636,7 @@ def screen_windows(episodes, config: LeWMConfig, screen, split: str) -> dict:
             mask = torch.ones_like(truth)
             if episode.events is None:
                 mask[:, 2] = False
-            frames.append(episode.observations[start:end+1:stride])
+            frames.append(episode.observations[[start + o for o in offsets]])
             inner = episode.actions_taken[start:end]
             actions.append(inner if stride == 1 else inner.reshape(length - 1, stride))
             labels.append(truth); valid.append(mask); ids.append(episode.episode_id)

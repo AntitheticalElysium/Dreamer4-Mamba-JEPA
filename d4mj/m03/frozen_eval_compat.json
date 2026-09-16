@@ -13,27 +13,31 @@
     }
   },
   "reference_manifest_digest": "60ccb055c9216092bd36bf4cfcb9491b576e10b7b3e50d180008ac96f2ab7a3a",
-  "current_manifest_digest": "a86dbca8ec97c39ce6d0526b0291cd89e7f648f2b50c39e54c7f5312b4bc5640",
+  "current_manifest_digest": "03bf0fc2fc94138a886c83ffbc8d02203e0a70e1c278210e43d427979b334fde",
   "changed_runtime_files": {
     "d4mj/lewm_config.py": {
       "reference": "8862263e076b8bb62a8fedfe7743dab916cd60d72472e8deeb72f78db14020ef",
-      "current": "c3e887ec90b96a5509c7eeafcd63b34fe5b08c52c8a789b37f388ea9a8f82530"
+      "current": "097a3c01ff9b996a15f8da1ab6a5f8a300915bf3d70e89255d1c7fe405fab961"
     },
     "d4mj/lewm.py": {
       "reference": "b87644febd0851434ba2ac019a86f5c029e8af0ea318343da006c23aacd922f9",
-      "current": "aaa3ab993684818afd447a3b9dd41d428fa2e737dd4d5777f728f06966eff2c2"
+      "current": "682117426d0fd84e6babe2185002e0bf50d7fbcdeeb4d458eb06efe893b91256"
     },
     "d4mj/config.py": {
       "reference": "c1835e1e6e0fae9ca6a40e479f4036fcdc6f8c0c1fa446022aecf7502b5710b0",
-      "current": "fb47e2b82870f59f21dc8915d612cc553f5be54f9ae7bfdc248d8cc39977801f"
+      "current": "da108b335c75b368a3cb9d0eb1abeacb1d9eaff73f807b6cd17c64551401ddb2"
     },
     "d4mj/data.py": {
       "reference": "85fbbe508e85f8dbd2d2a9bedd3ad0857ef605c11a2036e71ba8ec8168703145",
-      "current": "51d1346d9a0a6e6946a289bd24172a7c2945d5eb2e5245a66c14fc058a55601f"
+      "current": "b272e3da773f874bd41b0cff21778857707dc077e7d0e80cee7032804c1a1b81"
     },
     "d4mj/lewm_diagnostics.py": {
       "reference": "f977ddd685a7a2465cf42980390fb8e637312f4848b06cd56d5abc02014494b4",
       "current": "2e143a3b58690146a171dd5eacda5a28f3e334eacf14bd5a0e40461350c1f8e4"
+    },
+    "d4mj/experiments.py": {
+      "reference": "ec5e8a5c9163cbf608c31e5852df77668fcafb14a8823d6684802ceb6849549a",
+      "current": "5e04d0d76729545da1caf5b1f244ced6a8d12b2d6e972873a56d94968822877d"
     }
   },
   "surface": [
@@ -49,8 +53,8 @@
   "parity": {
     "tolerance": 1e-05,
     "within_tree_max_abs": 0.0,
-    "cross_tree_max_abs": 0.0,
-    "cross_tree_min_abs": 0.0,
+    "cross_tree_max_abs": 5.960464477539062e-07,
+    "cross_tree_min_abs": 5.960464477539062e-07,
     "runs": {
       "reference": 2,
       "current": 2

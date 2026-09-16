@@ -166,3 +166,50 @@ def test_stacked_actions_widen_only_the_pair_projection():
     assert world.teacher(z, actions).predicted.shape == (2, c.joint.frames - 1, 1, e.latent_dim)
     with pytest.raises(ValueError, match="stacked"):
         world.teacher(z, actions[..., 0])
+
+
+def _window_pair():
+    from dataclasses import replace
+    base = small_config()
+    v2 = lambda **kw: replace(base, schema="d4mj_lewm_recipe_v2", variant="tc",
+                              joint=replace(base.joint, centering_stride=4, **kw))
+    return v2(), v2(centering="strided")
+
+
+def test_window_ablation_changes_only_the_centering_index_set():
+    """Both arms must encode identical frames, so BN and sampling are controlled."""
+    from d4mj.lewm_config import window_layout
+    consecutive, strided = _window_pair()
+    offsets_c, pred_c, centre_c = window_layout(consecutive.joint)
+    offsets_s, pred_s, centre_s = window_layout(strided.joint)
+    assert offsets_c == offsets_s and pred_c == pred_s      # identical encoder inputs
+    assert centre_c != centre_s                             # the only difference
+    assert len(centre_c) == len(centre_s) == consecutive.joint.frames
+    episodes = raw_episodes(resolution=14)
+    long = [replace(e, observations=e.observations.repeat(3, 1, 1, 1)[:25],
+                    actions_taken=torch.arange(24) % 17, rewards=torch.zeros(24),
+                    terminated=torch.zeros(24, dtype=torch.bool),
+                    truncated=torch.zeros(24, dtype=torch.bool),
+                    events=torch.zeros(24, dtype=torch.bool)) for e in episodes]
+    a = JointSampler(long, consecutive, torch.Generator().manual_seed(3)).sample()
+    b = JointSampler(long, strided, torch.Generator().manual_seed(3)).sample()
+    assert torch.equal(a.frames, b.frames) and torch.equal(a.actions, b.actions)
+    assert a.frames.shape[1] == len(offsets_c) == 7
+
+
+def test_window_ablation_leaves_the_prediction_loss_identical():
+    """Window-only means window-only: same weights and batch, same prediction term."""
+    from d4mj.lewm import SIGReg, joint_loss
+    from d4mj.world_api import ModelBundle
+    consecutive, strided = _window_pair()
+    bundle = ModelBundle.create(consecutive).eval()
+    frames = torch.randint(256, (consecutive.joint.batch, 7, 14, 14, 3), dtype=torch.uint8)
+    actions = torch.randint(consecutive.dynamics.n_actions, (consecutive.joint.batch, 3))
+    regularizer = SIGReg(consecutive.joint.knots, consecutive.joint.projections)
+    out = {}
+    for name, config in (("consecutive", consecutive), ("strided", strided)):
+        with torch.no_grad():
+            out[name] = joint_loss(bundle.encoder, bundle.world, frames, actions, regularizer,
+                                   torch.Generator().manual_seed(11), config)
+    torch.testing.assert_close(out["consecutive"].prediction, out["strided"].prediction, atol=0, rtol=0)
+    assert not torch.equal(out["consecutive"].regularization, out["strided"].regularization)

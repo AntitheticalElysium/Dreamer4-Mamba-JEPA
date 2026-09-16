@@ -247,9 +247,10 @@ def recipe_dict(config) -> dict:
     # dict: omitting it at its default keeps every existing v1 checkpoint loadable.
     # v2 recipes retain it, so a strided run can never collide with a v1 digest.
     joint = values.get("joint")
-    if (values.get("schema") == "d4mj_lewm_recipe_v1" and isinstance(joint, dict)
-            and joint.get("stride") == 1):
-        joint.pop("stride")
+    if values.get("schema") == "d4mj_lewm_recipe_v1" and isinstance(joint, dict):
+        for field, default in (("stride", 1), ("centering_stride", 1), ("centering", "consecutive")):
+            if joint.get(field) == default:
+                joint.pop(field)
     return values
 
 

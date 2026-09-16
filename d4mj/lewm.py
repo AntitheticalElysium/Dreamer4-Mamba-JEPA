@@ -53,16 +53,40 @@ class LeWMEncoder(nn.Module):
         self.eval()
         return self
 
-    def projected_and_cls(self, frames: Tensor) -> tuple[Tensor, Tensor]:
+    def _hidden(self, frames: Tensor):
+        """One frozen pass: projected z, CLS and the patch tokens beside them."""
         e = self.settings
         if frames.dtype != torch.uint8 or frames.ndim != 5 or tuple(frames.shape[2:]) != (e.resolution, e.resolution, 3):
             raise ValueError("encoder expects native uint8 B,T,H,W,3; preprocessing is internal")
         b, t = frames.shape[:2]
         pixels = frames.flatten(0, 1).permute(0, 3, 1, 2).contiguous().float() / 255.0
         pixels = (pixels - self.pixel_mean) / self.pixel_std
-        cls = self.backbone(pixels, interpolate_pos_encoding=True).last_hidden_state[:, 0]
-        z = self.projector(cls)
+        hidden = self.backbone(pixels, interpolate_pos_encoding=True).last_hidden_state
+        cls = hidden[:, 0]
+        return self.projector(cls), cls, hidden[:, 1:], b, t
+
+    def projected_and_cls(self, frames: Tensor) -> tuple[Tensor, Tensor]:
+        e = self.settings
+        z, cls, _, b, t = self._hidden(frames)
         return z.reshape(b, t, 1, e.latent_dim), cls.reshape(b, t, e.width)
+
+    def export(self, frames: Tensor, grid: int = 4) -> tuple[Tensor, Tensor, Tensor]:
+        """Projected z, unprojected CLS, and the spatially pooled patch grid.
+
+        TC-LeWM's policy reads CLS together with a 4x4 pooled patch grid, while
+        the world transitions z alone.  Patch tokens are never regularized by
+        SIGReg and never predicted; they exist for the observation and policy
+        interface only, so exposing them here adds no training objective.
+        """
+        e = self.settings
+        z, cls, tokens, b, t = self._hidden(frames)
+        side = int(round(tokens.shape[1] ** 0.5))
+        if side * side != tokens.shape[1]:
+            raise ValueError("patch grid is not square; pooling would misalign it")
+        pooled = nn.functional.adaptive_avg_pool2d(
+            tokens.transpose(1, 2).reshape(tokens.shape[0], e.width, side, side), grid)
+        return (z.reshape(b, t, 1, e.latent_dim), cls.reshape(b, t, e.width),
+                pooled.flatten(2).transpose(1, 2).reshape(b, t, grid * grid, e.width))
 
     def forward(self, frames: Tensor) -> Tensor:
         return self.projected_and_cls(frames)[0]
@@ -246,13 +270,19 @@ class JointLoss:
 
 def joint_loss(encoder: LeWMEncoder, world: LeWMWorld, frames: Tensor, actions: Tensor,
                regularizer: SIGReg, generator: torch.Generator, config: LeWMConfig) -> JointLoss:
-    if frames.shape[:2] != (config.joint.batch, config.joint.frames):
+    from .lewm_config import window_layout
+
+    offsets, predicted_at, centred_at = window_layout(config.joint)
+    if frames.shape[:2] != (config.joint.batch, len(offsets)):
         raise ValueError("statistical_batch: use the entire declared B,T, not accumulated microbatches")
     z = encoder(frames)
-    prediction = world.teacher(z, actions).predicted
+    # Prediction always runs on the prediction frames alone; a widened centering
+    # window adds encoded frames without lengthening the dynamics rollout.
+    pairs = z if predicted_at == tuple(range(z.shape[1])) else z[:, list(predicted_at)]
+    prediction = world.teacher(pairs, actions).predicted
     with torch.autocast(device_type=z.device.type, enabled=False):
-        pred_loss = (prediction.float() - z[:, 1:].float()).square().mean()
-        values = z[:, :, 0].float()
+        pred_loss = (prediction.float() - pairs[:, 1:].float()).square().mean()
+        values = (z if centred_at == tuple(range(z.shape[1])) else z[:, list(centred_at)])[:, :, 0].float()
         if config.variant == "tc":
             values = values - values.mean(1, keepdim=True)
         reg_loss = regularizer(values.transpose(0, 1), generator)
