@@ -109,11 +109,24 @@ def test_lewm_gates_run_on_a_strided_recipe():
     from dataclasses import replace
     from d4mj.lewm_diagnostics import normalization_audit, objective_audit, screen_retention
     base = small_config()
+    for recipe in (replace(base, schema="d4mj_lewm_recipe_v2", joint=replace(base.joint, stride=4)),
+                   replace(base, schema="d4mj_lewm_recipe_v2", variant="tc",
+                           joint=replace(base.joint, centering_stride=4, centering="strided"))):
+        bundle = ModelBundle.create(recipe)
+        assert recurrence_audit(bundle)["numerical_profile"]
+        assert normalization_audit(bundle)
+        assert objective_audit(recipe)
+        # The resource gate builds a real batch through the sampler and takes an
+        # optimizer step, which is where a batch-shape regression actually bites.
+        from d4mj.lewm_diagnostics import resource_preflight
+        from d4mj.tests.test_joint_data import raw_episodes
+        episodes = [replace(e, observations=e.observations.repeat(4, 1, 1, 1)[:33],
+                            actions_taken=torch.arange(32) % 17, rewards=torch.zeros(32),
+                            terminated=torch.zeros(32, dtype=torch.bool),
+                            truncated=torch.zeros(32, dtype=torch.bool),
+                            events=torch.zeros(32, dtype=torch.bool)) for e in raw_episodes(14)]
+        assert resource_preflight(ModelBundle.create(recipe), episodes)
     strided = replace(base, schema="d4mj_lewm_recipe_v2", joint=replace(base.joint, stride=4))
-    bundle = ModelBundle.create(strided)
-    assert recurrence_audit(bundle)["numerical_profile"]
-    assert normalization_audit(bundle)
-    assert objective_audit(strided)
     # screen_retention conditions its probe on the outgoing actions of each
     # retained transition; a stacked window must still give one row per transition.
     actions = torch.randint(strided.dynamics.n_actions, (2, strided.joint.frames - 1, 4))

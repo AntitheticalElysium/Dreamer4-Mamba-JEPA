@@ -195,6 +195,9 @@ def test_window_ablation_changes_only_the_centering_index_set():
     b = JointSampler(long, strided, torch.Generator().manual_seed(3)).sample()
     assert torch.equal(a.frames, b.frames) and torch.equal(a.actions, b.actions)
     assert a.frames.shape[1] == len(offsets_c) == 7
+    # Actions follow the prediction pairs, not the widened encoded window: a
+    # seven-frame window still predicts only three consecutive transitions.
+    assert a.actions.shape == (consecutive.joint.batch, consecutive.joint.frames - 1)
 
 
 def test_window_ablation_leaves_the_prediction_loss_identical():

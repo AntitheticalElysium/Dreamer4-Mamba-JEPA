@@ -583,12 +583,11 @@ class JointSampler:
             start = int(torch.randint(int(self.counts[index]), (), generator=self.generator))
             # Encoded frames sit at the layout's native offsets: the prediction
             # frames plus any extra frames a widened centering window needs.
-            span = self.offsets[-1] + 1
             frames.append(episode.observations[[start + o for o in self.offsets]])
-            # Every native action inside each retained transition, stacked, as
-            # TC-LeWM's predictor takes them.  At stride 1 this is the 1-D vector
-            # the v1 recipe has always produced.
-            inner = episode.actions_taken[start:start+span-1]
+            # Actions belong to the prediction pairs, which span (frames-1)*stride
+            # native steps -- not the whole encoded window, which a widened
+            # centering set makes longer without adding transitions to predict.
+            inner = episode.actions_taken[start:start + (j.frames - 1) * j.stride]
             actions.append(inner if j.stride == 1 else inner.reshape(j.frames - 1, j.stride))
             ids.append(episode.episode_id)
             starts.append(start)
@@ -637,8 +636,8 @@ def screen_windows(episodes, config: LeWMConfig, screen, split: str) -> dict:
             if episode.events is None:
                 mask[:, 2] = False
             frames.append(episode.observations[[start + o for o in offsets]])
-            inner = episode.actions_taken[start:end]
-            actions.append(inner if stride == 1 else inner.reshape(length - 1, stride))
+            outgoing = episode.actions_taken[start:start + (length - 1) * stride]
+            actions.append(outgoing if stride == 1 else outgoing.reshape(length - 1, stride))
             labels.append(truth); valid.append(mask); ids.append(episode.episode_id)
             starts.append(start); clusters.append(cluster)
     return {"frames": torch.stack(frames), "actions": torch.stack(actions),
