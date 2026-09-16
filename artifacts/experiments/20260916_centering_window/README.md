@@ -102,6 +102,30 @@ for the treatment effect and `window_spectra` for the comparison to stride-4.
 The matched proxy comparison (TC-minus-Raw MLP AUC) is not available here, since both arms
 are TC. Against Raw the references are the existing stride-1 and stride-4 runs.
 
+## What had to be fixed first
+
+A TC/TC pair broke four places that had quietly assumed either that the arm slot names
+the declared variant, or that the encoded window is the prediction window. The first
+cost a 2,000-update run; the rest were found by reading ahead of the job.
+
+| where | assumption | consequence |
+|---|---|---|
+| `screen_joint_pair` | the `tc/` arm declares `variant: tc` | G1 stopped on `pair_identity` after 44 min |
+| `screen_features` | encoded window == prediction window | would have failed G1: 7 frames, 3 actions |
+| `require_joint_screen` | `arms[config.variant]` names one arm | would have refused each arm its own parent |
+| `evaluate_completed` | slot == variant; one log per campaign | would have failed after the full 10,000 updates |
+
+All four now go through one definition. `pair_axis()` returns the single declared axis a
+pair differs on, and the screen, the launcher and the audit all call it; arms are
+resolved by sealed recipe digest rather than by the variant label; the log is run-local.
+
+Verified before relaunching, rather than by running into them: the centering-pair case
+now drives the whole G1 screen to a decision and both arms through continuation in
+`d4mj/tests/test_joint_screen.py`, and a toy centering pair was driven end to end through
+the completed-budget audit -- all eight components, both heartbeat slots, `window_spectra`
+recorded. Each fix was also checked to fail on the code it replaced, so the new assertions
+are known to bite rather than assumed to.
+
 ## Run
 
 ```bash
