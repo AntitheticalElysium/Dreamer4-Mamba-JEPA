@@ -128,16 +128,28 @@ def main():
         first = [histories[v][0] for v in ("raw", "tc")]
         require(abs(first[0]["prediction"]-first[1]["prediction"]) <= 1e-6 and
                 abs(first[0]["regularization"]-first[1]["regularization"]) > 1e-6, component, "objective contrast absent")
-        heartbeats = []
-        for line in (args.pair.parent / "research.log").read_text().splitlines():
+        # A run-local driver log belongs to this run alone; the campaign-level one is
+        # the older convention, and is only correct while a campaign holds one run.
+        log = args.pair / "research.log"
+        if not log.exists():
+            log = args.pair.parent / "research.log"
+        report["driver_log"] = str(log.resolve())
+        report["driver_log_sha256"] = _sha256(log)
+        heartbeats, slot = [], None
+        for line in log.read_text().splitlines():
             try:
                 row = json.loads(line)
             except ValueError:
                 continue
-            if {"variant", "update", "loss", "prediction"} <= row.keys():
-                actual = histories[row["variant"]][row["update"]-1]
+            # The heartbeat carries the *declared* variant, which is `tc` in both arms of a
+            # centering pair. Only the stage rows carry the arm slot, so track it from them.
+            if row.get("stage") in ("joint_to_screen", "joint_to_budget"):
+                slot = row["variant"]
+            elif {"variant", "update", "loss", "prediction"} <= row.keys():
+                require(slot is not None, component, "heartbeat precedes any stage row")
+                actual = histories[slot][row["update"]-1]
                 require(all(row[k] == actual[k] for k in ("loss", "prediction")), component, "original heartbeat differs from retained history")
-                heartbeats.append({k: row[k] for k in ("variant", "update", "loss", "prediction")})
+                heartbeats.append({"slot": slot, **{k: row[k] for k in ("variant", "update", "loss", "prediction")}})
         atomic_manifest(args.out / "original_heartbeats.json", heartbeats)
         report["components"][component] = {"status": "pass", "original_heartbeats_verified": len(heartbeats)}
         component = "dataset_and_windows"
