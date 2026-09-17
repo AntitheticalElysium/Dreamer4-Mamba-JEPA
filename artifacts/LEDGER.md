@@ -34,6 +34,7 @@ Specifications live in [`d4mj/spec/`](../d4mj/spec/); results live here.
 | 2026-09-15 | [patch_token_policy](experiments/20260915_patch_token_policy/) | Does token-preserving cross-attention over 4×4 patch tokens beat pooled export, under real expert BC? | Complete. Tokens beat pooling by +0.066 (raw) / +0.036 (tc) paired; TC beats Raw at every condition |
 | 2026-09-15 | [frame_skip_retrain](experiments/20260915_frame_skip_retrain/) | Is TC's centering window physically too short? (paper trains at frame skip 4; we used stride 1) | Complete. TC rank 5.68 -> 16.73 at 10k and scale inflation gone; not cured (raw 34.09). Semantic panels blocked on the macro-fork |
 | 2026-09-16 | [centering_window](experiments/20260916_centering_window/) | Was TC's recovery the centering window, or the 4-step horizon and stacked actions? | Complete. The window, entirely: rank 5.14 -> 19.16 (+14.02) vs +11.04 for the whole stride-4 change. M03: no capability gain. BC: projected z falls to the action prior (0.204 -> 0.142, floor 0.147) while patch tokens hold. Higher rank, unusable projection |
+| 2026-09-17 | [generated_readout](experiments/20260917_generated_readout/) | Is usable information absent from generated latents, or is the observed-fit decoder failing on them? | Complete. Decoder failing: refit recovers +0.12-0.15 AUC in every arm, death/damage from below 0.5 to 0.68-0.79. But the refit readout never separates from the root+action floor |
 
 ## Historical campaigns
 
