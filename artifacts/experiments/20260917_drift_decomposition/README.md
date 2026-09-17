@@ -16,7 +16,10 @@ and reported as if they were one thing.
 
 **Termination was never tested.** That sampler requested one frame and one action it never
 used, which excluded every episode-ending transition, so `termination` had no positives and
-was silently dropped from the label set. Fixed here: it is scored, with 7 DEV positives.
+was silently dropped from the label set. Sampling is fixed here — episode-ending transitions
+are now drawn — but **termination is still not tested**: 7 DEV positives is below the probe's
+coverage floor, so it reports `insufficient_coverage` at every depth and contributes to no
+reported average. The fix makes the gap visible; it does not close it.
 
 ## The factorial
 
@@ -76,30 +79,44 @@ This is a **measurement mismatch, not a representation verdict**: the world trai
 MSE, where `u`'s minor coordinates are worth 6.9% of the objective, while the probe
 standardizes every coordinate and weights all 192 equally. The world did what it was asked.
 
-## Decoding does not separate the conditions
+## Decoding is mixed, and the instrument is weak
 
-Native readouts, probe fitted on each condition's own latents, mean AUC over the four labels:
+Native readouts, probe fitted on each condition's own latents. Each cell is a mean over the
+labels **measured at that depth**, which is 2 or 3 of the 4 — `termination` never qualifies,
+and `negative_reward` qualifies only at some depths. **The label set therefore changes between
+columns, so these numbers are not comparable across depth.** They are only comparable within a
+column, between a world and its own persistence baseline.
 
-| cell | d1 | d2 | d4 | d6 | d8 |
+| cell | d1 (n=2) | d2 (n=3) | d4 (n=2) | d6 (n=2) | d8 (n=3) |
 |---|---|---|---|---|---|
 | `z` persistence | 0.7919 | 0.6706 | 0.7129 | 0.8499 | 0.7123 |
-| `z` generated, trained-length | 0.8105 | 0.6518 | 0.7486 | 0.8381 | 0.6864 |
+| `z` generated, trained-length | **0.8105** | 0.6518 | **0.7486** | 0.8381 | 0.6864 |
 | `u` persistence | 0.7371 | 0.6783 | 0.6841 | 0.7657 | 0.6843 |
-| `u` generated, trained-length | 0.7910 | 0.7056 | 0.6728 | 0.7795 | 0.6828 |
+| `u` generated, trained-length | **0.7910** | **0.7056** | 0.6728 | **0.7795** | 0.6828 |
 
-**Neither world's predictions decode better than holding the last observed latent still**, at
-any depth, in either space. Reward and achievement are strongly action-driven, so this label
-family is a weak instrument — but on it, the fidelity gains do not convert.
+Counting all eight depths, the generated latent decodes better than persistence at **3 of 8**
+for `z` and **4 of 8** for `u`. So the result is **mixed**, and no paired test was run, so no
+consistent advantage is established in either direction.
+
+An earlier revision of this file claimed neither world beats persistence "at any depth". That
+is numerically wrong — `u` reaches 0.7910 against 0.7371 at depth 1 — and is withdrawn.
+
+Reward and achievement are strongly action-driven, and two of four labels are unusable, so
+this label family is a weak instrument either way. The richer M03 successor-state panel is
+the one that would settle it, and it was not used here.
 
 ## What this establishes, and what it does not
 
 Established: the closed-loop inversion was an evaluation artifact; `u`'s local dynamics are
-learned well; `u`'s failure under feedback is concentrated in exactly the coordinates its
-training objective de-weights; and on these labels neither arm's predictions beat persistence
-for decoding.
+learned well; and `u`'s degradation under feedback is concentrated in exactly the coordinates
+its training objective de-weights, rising from 0.220 teacher-fed to 0.949 generated while the
+top ten go 0.060 to 0.327.
 
-Not established: that standardizing the world's loss would fix it — that is the obvious next
-test and has not been run. Nor does this isolate CLS, pooling, projection, predictor capacity
+Not established: that standardizing the world's loss would fix it — that is an untested
+intervention, not a conclusion. Nor that all 182 coordinates were "abandoned": 0.949 is a
+mean over them, and the split reported here is two buckets, not a per-coordinate profile.
+Nor anything about semantics — the decoding above is mixed and its instrument is weak. Nor does this isolate CLS, pooling, projection, predictor capacity
 or action conditioning; there is still no `CLS→CLS` world here, and the arms differ in both
 representation and trained world. One seed, 4,000-step worlds, frozen encoder, 512 DEV
-windows, and `termination` carries only 7 DEV positives, so its per-label numbers are thin.
+windows, and `termination` is below the coverage floor throughout, so the label set is
+effectively three at best.
