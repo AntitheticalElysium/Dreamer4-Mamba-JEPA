@@ -269,7 +269,7 @@ def config_from_dict(values: dict):
     if values.get("schema") == "d4mj_joint_screen_v1":
         from .lewm_config import ScreenConfig, _settings
         return _settings(ScreenConfig, values)
-    if values.get("family") == "lewm_mamba":
+    if values.get("family") in ("lewm_mamba", "lewm_transformer"):
         from .lewm_config import config_from_dict as parse_joint
         return parse_joint(values)
     unknown = set(values) - {field.name for field in fields(Config)}

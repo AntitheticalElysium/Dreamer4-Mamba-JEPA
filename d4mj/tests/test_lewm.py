@@ -250,3 +250,98 @@ def test_the_source_action_and_attention_gates_start_at_zero_by_design():
     gate = predictor.transformer.layers[0].adaLN_modulation[-1]
     assert gate.weight.grad is not None and gate.weight.grad.abs().sum() > 0, \
         "AdaLN itself must still learn from step one"
+
+
+def transformer_config(**overrides):
+    from dataclasses import replace
+    from d4mj.lewm_config import LeWMTransformerConfig, RuntimeSettings, JointSettings
+    c = LeWMTransformerConfig(
+        runtime=RuntimeSettings(device="cpu", precision="fp32", purpose="verification", cache_chunk=3),
+        joint=replace(JointSettings(), batch=4, projections=8, knots=5, steps=4,
+                      screen_step=2, warmup=1, checkpoint_every=2))
+    return replace(c, **overrides)
+
+
+def wake_adaln(world, seed=3):
+    """AdaLN-Zero makes the predictor the identity at init, so a window test there is
+    vacuous. Give the gates real values before asserting anything about mixing."""
+    generator = torch.Generator().manual_seed(seed)
+    for block in world.predictor.transformer.layers:
+        gate = block.adaLN_modulation[-1]
+        with torch.no_grad():
+            gate.weight.copy_(torch.randn(gate.weight.shape, generator=generator) * 0.05)
+            gate.bias.copy_(torch.randn(gate.bias.shape, generator=generator) * 0.05)
+    return world
+
+
+def test_the_source_window_forgets_evicted_pairs_and_uses_active_ones():
+    """With live AdaLN gates: a pair inside the window moves the prediction, one that has
+    slid out does not. That is the finite-window contract a KV cache would break."""
+    from d4mj.world_api import ModelBundle
+    bundle = ModelBundle.create(transformer_config())
+    wake_adaln(bundle.world)
+    bundle.eval()
+    torch.manual_seed(0)
+    z, actions = torch.randn(2, 6, 1, 192), torch.randint(17, (2, 5))
+    step = torch.randint(17, (2, 1))
+    base, _ = bundle.advance(bundle.prefill(z, actions), step)
+
+    evicted = z.clone(); evicted[:, 0] += 10.0            # slid out of the final window
+    moved, _ = bundle.advance(bundle.prefill(evicted, actions), step)
+    torch.testing.assert_close(base.latent, moved.latent, atol=0, rtol=0)
+
+    for index in (-3, -2, -1):                            # still inside the window
+        active = z.clone(); active[:, index] += 10.0
+        changed, _ = bundle.advance(bundle.prefill(active, actions), step)
+        assert not torch.equal(base.latent, changed.latent), f"frame {index} should matter"
+
+    older = actions.clone(); older[:, 0] = (older[:, 0] + 1) % 17   # evicted action
+    torch.testing.assert_close(
+        base.latent, bundle.advance(bundle.prefill(z, older), step)[0].latent, atol=0, rtol=0)
+
+
+def test_streaming_advance_reproduces_the_rolling_teacher_scan():
+    """One source call per step must equal the parallel scan over the same pairs."""
+    from d4mj.world_api import ModelBundle
+    bundle = ModelBundle.create(transformer_config())
+    wake_adaln(bundle.world)
+    bundle.eval()
+    torch.manual_seed(1)
+    z, actions = torch.randn(2, 7, 1, 192), torch.randint(17, (2, 6))
+    scanned = bundle.world.teacher(z, actions)
+    state = bundle.world.start(z[:, :1])
+    for step in range(actions.shape[1]):
+        state, _ = bundle.world.observe_latent(state, actions[:, step:step + 1], z[:, step + 1:step + 2])
+        torch.testing.assert_close(state.history, scanned.features[:, step:step + 1], atol=0, rtol=0)
+    torch.testing.assert_close(state.latent, scanned.state.latent, atol=0, rtol=0)
+    torch.testing.assert_close(state.past_latents, scanned.state.past_latents, atol=0, rtol=0)
+    assert state.step == scanned.state.step == actions.shape[1]
+
+
+def test_bounded_prefill_equals_a_full_scan_and_generation_is_repeatable():
+    """Only the final window can reach the next prediction, so truncating is exact."""
+    from d4mj.world_api import ModelBundle
+    bundle = ModelBundle.create(transformer_config())
+    wake_adaln(bundle.world)
+    bundle.eval()
+    torch.manual_seed(2)
+    z, actions = torch.randn(2, 9, 1, 192), torch.randint(17, (2, 8))
+    bounded = bundle.prefill(z, actions)
+    full = bundle.world.teacher(z, actions).state
+    for a, b in ((bounded.latent, full.latent), (bounded.past_latents, full.past_latents),
+                 (bounded.history, full.history)):
+        torch.testing.assert_close(a, b, atol=0, rtol=0)
+    assert torch.equal(bounded.past_actions, full.past_actions)
+
+    # Repeated generation from one root: siblings never mutate the parent, and depth grows.
+    root = bundle.repeat_state(bounded, 17)
+    before = tuple(t.clone() for t in bundle.state_tensors(bounded))
+    state, seen = root, []
+    for depth in range(4):
+        state, _ = bundle.advance(state, torch.arange(17).repeat(2)[:, None])
+        seen.append(state.latent.clone())
+        assert state.step == bounded.step + depth + 1
+    for old, now in zip(before, bundle.state_tensors(bounded)):
+        torch.testing.assert_close(old, now, atol=0, rtol=0)
+    again, _ = bundle.advance(root, torch.arange(17).repeat(2)[:, None])
+    torch.testing.assert_close(again.latent, seen[0], atol=0, rtol=0)

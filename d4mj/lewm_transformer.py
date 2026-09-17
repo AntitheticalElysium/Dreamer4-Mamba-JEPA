@@ -13,7 +13,13 @@ commit. Reimplementing them would defeat the point of the control.
 import hashlib
 import importlib.util
 import sys
+from dataclasses import dataclass
 from pathlib import Path
+
+import torch
+from torch import nn
+
+from .state import WindowPredictiveState
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / "third_party/sources/lucas-maes__le-wm"
@@ -76,3 +82,151 @@ def build_package(*, width=192, depth=6, heads=16, head_dim=64, mlp_dim=2048, co
     projector = source.MLP(input_dim=width, hidden_dim=mlp_dim, output_dim=width,
                            norm_fn=torch.nn.BatchNorm1d)
     return predictor, action_encoder, projector
+
+
+class LeWMTransformerWorld(nn.Module):
+    """The pinned predictor package as a world, with the source's finite-window semantics.
+
+    The source keeps no carry: `JEPA.rollout` recomputes the last `context` pairs and resets
+    positions to `0:len` on every call. So this world buffers inputs rather than a recurrent
+    memory, and every transition is a fresh bounded forward. A persistent KV cache would not
+    be equivalent -- when the window slides the positions change, and the retained keys carry
+    indirect dependencies on the evicted token.
+    """
+
+    def __init__(self, config):
+        super().__init__()
+        self.config = config
+        d = config.dynamics
+        self.predictor, self.action_encoder, self.predictor_projector = build_package(
+            width=d.width, depth=d.depth, heads=d.heads, head_dim=d.head_dim,
+            mlp_dim=d.mlp_dim, context=d.context, n_actions=d.n_actions,
+            dropout=d.dropout, embedding_dropout=d.embedding_dropout,
+            action_smoothed_dim=d.action_smoothed_dim, action_mlp_scale=d.action_mlp_scale)
+        # Kept only so existing tooling that asks a world for agent features still works.
+        # It is not part of the source predictor, never feeds prediction, and never trains.
+        # The source predictor's hidden width is the latent width, not Mamba's 256, so the
+        # shim reads latent + native h and still emits the 256-wide feature tooling expects.
+        self.agent_readout = nn.Sequential(
+            nn.Linear(config.encoder.latent_dim + d.width, d.readout_width),
+            nn.LayerNorm(d.readout_width, eps=1e-6), nn.GELU())
+        self.agent_readout.requires_grad_(False)
+
+    @property
+    def context(self) -> int:
+        return self.config.dynamics.context
+
+    def _latents(self, z):
+        if z.ndim != 4 or tuple(z.shape[2:]) != (1, self.config.encoder.latent_dim) or z.shape[1] < 1:
+            raise ValueError("world latent must be B,T,1,latent_dim with T>=1")
+
+    def _actions(self, a, shape):
+        if a.dtype != torch.long or tuple(a.shape) != tuple(shape):
+            raise ValueError("outgoing actions must be int64 B,T matching completed pairs")
+        if bool(((a < 0) | (a >= self.config.dynamics.n_actions)).any()):
+            raise ValueError("outgoing action out of range")
+
+    def validate_state(self, state):
+        if not isinstance(state, WindowPredictiveState):
+            raise ValueError("transformer world requires a WindowPredictiveState")
+        self._latents(state.latent)
+        keep = self.context - 1
+        if state.past_latents.ndim != 3 or state.past_latents.shape[1] > keep:
+            raise ValueError(f"window state buffers at most {keep} completed pairs")
+        if state.past_actions.shape != state.past_latents.shape[:2]:
+            raise ValueError("buffered latents and actions disagree")
+        if state.past_actions.numel():
+            self._actions(state.past_actions, state.past_actions.shape)
+        if state.history.shape != (state.latent.shape[0], 1, self.config.dynamics.width):
+            raise ValueError("history must be B,1,width")
+
+    def start(self, z):
+        self._latents(z)
+        if z.shape[1] != 1:
+            raise ValueError("start takes exactly one initial frame")
+        batch, device, dtype = z.shape[0], z.device, z.dtype
+        return WindowPredictiveState(
+            z.clone(), z.new_zeros(batch, 0, self.config.encoder.latent_dim),
+            torch.zeros(batch, 0, dtype=torch.long, device=device),
+            z.new_zeros(batch, 1, self.config.dynamics.width), 0)
+
+    def readout(self, z, history):
+        return self.agent_readout(torch.cat((z[:, :, 0], history), -1))
+
+    def features(self, state):
+        return self.readout(state.latent, state.history)
+
+    def _window(self, latents, actions):
+        """One source call on a bounded window, positions reset to 0:len as `rollout` does."""
+        if latents.shape[1] > self.context:
+            raise ValueError("source window exceeds its position table")
+        one_hot = nn.functional.one_hot(actions, self.config.dynamics.n_actions).to(latents.dtype)
+        hidden = self.predictor(latents, self.action_encoder(one_hot))
+        flat = self.predictor_projector(hidden.flatten(0, 1))
+        return flat.reshape(hidden.shape[0], hidden.shape[1], -1), hidden
+
+    def teacher(self, z, actions, *, state=None, backend=None):
+        """Aligned next-latent prediction over every completed pair.
+
+        At the training length the whole window is one parallel call. Longer eval scans roll
+        the window instead of extrapolating the three learned positions.
+        """
+        self._latents(z)
+        pairs = z.shape[1] - 1
+        self._actions(actions, (z.shape[0], pairs))
+        if state is not None:
+            self.validate_state(state)
+            if not torch.equal(state.latent, z[:, :1]):
+                raise ValueError("continuing teacher scan must begin at the state's current latent")
+        if pairs == 0:
+            return TransformerTeacherOutput(z[:, :0], z.new_zeros(z.shape[0], 0, self.config.dynamics.width),
+                                            state if state is not None else self.start(z[:, :1]))
+        inputs, predicted, hidden = z[:, :-1, 0], [], []
+        for end in range(1, pairs + 1):
+            start = max(0, end - self.context)
+            step_predicted, step_hidden = self._window(inputs[:, start:end], actions[:, start:end])
+            predicted.append(step_predicted[:, -1:])
+            hidden.append(step_hidden[:, -1:])
+        predicted, hidden = torch.cat(predicted, 1), torch.cat(hidden, 1)
+        keep = self.context - 1
+        final = WindowPredictiveState(z[:, -1:], inputs[:, -keep:].clone() if keep else inputs[:, :0],
+                                      actions[:, -keep:].clone() if keep else actions[:, :0],
+                                      hidden[:, -1:].clone(), (0 if state is None else state.step) + pairs)
+        return TransformerTeacherOutput(predicted.unsqueeze(2), hidden, final)
+
+    def _transition(self, state, action):
+        self.validate_state(state)
+        self._actions(action, (state.latent.shape[0], 1))
+        latents = torch.cat((state.past_latents, state.latent[:, :, 0]), 1)
+        actions = torch.cat((state.past_actions, action), 1)
+        predicted, hidden = self._window(latents, actions)
+        keep = self.context - 1
+        return (predicted[:, -1:].unsqueeze(2), hidden[:, -1:],
+                latents[:, -keep:] if keep else latents[:, :0],
+                actions[:, -keep:] if keep else actions[:, :0])
+
+    def advance(self, state, action):
+        latent, history, past_latents, past_actions = self._transition(state, action)
+        result = WindowPredictiveState(latent, past_latents.clone(), past_actions.clone(),
+                                       history.clone(), state.step + 1)
+        return result, self.features(result)
+
+    def observe_latent(self, state, action, z_next):
+        """The same transition; only the accepted successor is replaced by truth.
+
+        Observed and generated branches therefore share exactly the same predictor output.
+        """
+        self._latents(z_next)
+        if z_next.shape != state.latent.shape:
+            raise ValueError("observed successor must match one current latent")
+        _, history, past_latents, past_actions = self._transition(state, action)
+        result = WindowPredictiveState(z_next.clone(), past_latents.clone(), past_actions.clone(),
+                                       history.clone(), state.step + 1)
+        return result, self.features(result)
+
+
+@dataclass(frozen=True)
+class TransformerTeacherOutput:
+    predicted: "torch.Tensor"
+    features: "torch.Tensor"
+    state: "WindowPredictiveState"

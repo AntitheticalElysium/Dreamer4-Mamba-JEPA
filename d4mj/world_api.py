@@ -11,13 +11,13 @@ import torch
 from torch import Tensor, nn
 
 from .config import Config
-from .lewm_config import LeWMConfig
+from .lewm_config import LeWMConfig, LeWMTransformerConfig
 from .lewm import LeWMEncoder, LeWMWorld
 from .representation import Encoder, pack
 from .transition import World
 from .data import patchify
 from .mamba_recurrence import clone_carry, detach_carry, repeat_carry
-from .state import PredictiveState, WorldState, RealState, repeat_memory
+from .state import PredictiveState, WindowPredictiveState, WorldState, RealState, repeat_memory
 
 
 @runtime_checkable
@@ -46,7 +46,13 @@ class ModelBundle:
         devices = list(range(torch.cuda.device_count())) if torch.cuda.is_available() else []
         with torch.random.fork_rng(devices=devices):
             torch.manual_seed(config.seed)
-            if isinstance(config, LeWMConfig):
+            if isinstance(config, LeWMTransformerConfig):
+                from .lewm_transformer import LeWMTransformerWorld
+                # Encoder first, so a same-seed Transformer run starts from the same encoder
+                # weights as its Mamba counterpart.
+                encoder = LeWMEncoder(config)
+                world = LeWMTransformerWorld(config)
+            elif isinstance(config, LeWMConfig):
                 encoder, world = LeWMEncoder(config), LeWMWorld(config)
             else:
                 encoder, world = Encoder(config), World(config)
@@ -62,6 +68,11 @@ class ModelBundle:
             return world
         if world.config != config:
             raise ValueError("world recipe differs from bundle recipe")
+        if isinstance(config, LeWMTransformerConfig):
+            from .lewm_transformer import LeWMTransformerWorld
+            if not isinstance(world, LeWMTransformerWorld) or not isinstance(encoder, LeWMEncoder):
+                raise TypeError("source-exact bundle requires its encoder and transformer world")
+            return LeWMTransformerWorldAdapter(config, encoder, world)
         if isinstance(config, LeWMConfig):
             if not isinstance(world, LeWMWorld) or not isinstance(encoder, LeWMEncoder):
                 raise TypeError("LeWM bundle requires its encoder and world")
@@ -262,6 +273,74 @@ class LeWMWorldAdapter(ModelBundle):
     def state_tensors(self, state: PredictiveState) -> tuple[Tensor, ...]:
         self.world.validate_state(state)
         return (state.latent, state.history, *(v for m in state.memory for v in (m.conv, m.ssm)))
+
+
+class LeWMTransformerWorldAdapter(ModelBundle):
+    """The pinned source predictor's bounded window, in place of Mamba's carry.
+
+    Same WorldAPI contract; the state buffers the inputs of the last `context - 1` completed
+    pairs rather than a recurrent memory, because the source recomputes its window.
+    """
+
+    def encode(self, frames: Tensor) -> Tensor:
+        if self.encoder.training:
+            raise RuntimeError("observation_normalization: runtime encoding requires encoder.eval()")
+        return self.encoder(frames)
+
+    def start(self, z0: Tensor, generator=None, *, first_action=None):
+        if first_action is not None:
+            raise ValueError("LeWM start consumes no incoming action")
+        return self.world.start(z0)
+
+    def prefill(self, z_context: Tensor, actions: Tensor, generator=None, *, first_action=None):
+        if first_action is not None:
+            raise ValueError("LeWM prefill consumes completed outgoing pairs only")
+        if self.world.training:
+            raise RuntimeError("streaming prefill is evaluation-only; dropout and BN must be fixed")
+        # Only the final window can affect the resulting state, so a long context is
+        # truncated rather than scanned -- and never run through the 3-slot position table.
+        # `teacher` consumes z[:, :-1] as inputs, so a window of `context` *pairs* needs
+        # `context + 1` latents; taking `context` would silently score one pair short.
+        keep = min(z_context.shape[1], self.world.context + 1)
+        return self.world.teacher(z_context[:, -keep:], actions[:, -(keep - 1):] if keep > 1
+                                  else actions[:, :0]).state
+
+    def observe(self, state, action: Tensor | None, frame: Tensor, generator=None):
+        if state is None:
+            if action is not None:
+                raise ValueError("initial observation takes no outgoing action")
+            state = self.start(self.encode(frame))
+            return state, self.features(state)
+        return self.world.observe_latent(state, action, self.encode(frame))
+
+    def advance(self, state, action: Tensor, generator=None):
+        return self.world.advance(state, action)
+
+    def features(self, state) -> Tensor:
+        return self.world.features(state)
+
+    def fork(self, state):
+        self.world.validate_state(state)
+        return WindowPredictiveState(state.latent.clone(), state.past_latents.clone(),
+                                     state.past_actions.clone(), state.history.clone(), state.step)
+
+    def detach_state(self, state):
+        self.world.validate_state(state)
+        return WindowPredictiveState(state.latent.detach().clone(), state.past_latents.detach().clone(),
+                                     state.past_actions.clone(), state.history.detach().clone(), state.step)
+
+    def repeat_state(self, state, count: int):
+        self.world.validate_state(state)
+        if count < 1:
+            raise ValueError("repeat count must be positive")
+        return WindowPredictiveState(state.latent.repeat_interleave(count, 0),
+                                     state.past_latents.repeat_interleave(count, 0),
+                                     state.past_actions.repeat_interleave(count, 0),
+                                     state.history.repeat_interleave(count, 0), state.step)
+
+    def state_tensors(self, state) -> tuple[Tensor, ...]:
+        self.world.validate_state(state)
+        return (state.latent, state.history, state.past_latents)
 
 
 def load_bundle(path, *, device: str | None = None, backend: str | None = None):

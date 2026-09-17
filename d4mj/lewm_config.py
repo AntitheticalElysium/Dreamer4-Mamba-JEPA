@@ -53,6 +53,30 @@ class DynamicsSettings:
 
 
 @dataclass(frozen=True)
+class TransformerDynamicsSettings:
+    """Constructor arguments of the pinned base-LeWM predictor package.
+
+    These are the source's own values from `config/train/model/lewm.yaml`; the comparison
+    is only a control if they are sealed rather than tuned. `readout_width` belongs to the
+    local compatibility readout, not to the source predictor.
+    """
+
+    width: int = 192
+    depth: int = 6
+    n_actions: int = 17
+    context: int = 3
+    heads: int = 16
+    head_dim: int = 64
+    mlp_dim: int = 2048
+    dropout: float = 0.1
+    embedding_dropout: float = 0.0
+    action_smoothed_dim: int = 10
+    action_mlp_scale: int = 4
+    backend: str = "sdpa"
+    readout_width: int = 256
+
+
+@dataclass(frozen=True)
 class JointSettings:
     frames: int = 4
     # Native environment steps between retained frames.  1 reproduces the v1
@@ -154,6 +178,19 @@ class LeWMConfig:
 
 
 @dataclass(frozen=True)
+class LeWMTransformerConfig(LeWMConfig):
+    """The same experiment with the pinned upstream predictor in place of Mamba.
+
+    Comparison backend only. Everything outside `dynamics` -- encoder, objective, schedule,
+    seed -- is deliberately the Mamba recipe's, so the predictor package is the difference.
+    """
+
+    schema: str = "d4mj_lewm_recipe_v3"
+    family: str = "lewm_transformer"
+    dynamics: TransformerDynamicsSettings = field(default_factory=TransformerDynamicsSettings)
+
+
+@dataclass(frozen=True)
 class ScreenConfig:
     """Evaluation-only G1 choices, sealed separately from the model recipe."""
 
@@ -197,7 +234,11 @@ class ScreenConfig:
 
 
 def validate_recipe(c: LeWMConfig) -> None:
-    if c.schema not in ("d4mj_lewm_recipe_v1", "d4mj_lewm_recipe_v2") or c.family != "lewm_mamba":
+    transformer = c.family == "lewm_transformer"
+    if transformer:
+        if c.schema != "d4mj_lewm_recipe_v3":
+            raise ValueError("the source-exact predictor family is recipe schema v3")
+    elif c.schema not in ("d4mj_lewm_recipe_v1", "d4mj_lewm_recipe_v2") or c.family != "lewm_mamba":
         raise ValueError("unsupported LeWM recipe schema/family")
     if type(c.joint.stride) is not int or c.joint.stride < 1:
         raise ValueError("joint stride must be a positive integer")
@@ -221,25 +262,49 @@ def validate_recipe(c: LeWMConfig) -> None:
         for name, value in asdict(group).items():
             if isinstance(value, float) and not math.isfinite(value):
                 raise ValueError(f"nonfinite recipe field {name}")
-    for value in (e.resolution, e.patch, e.width, e.depth, e.heads, e.mlp_ratio,
-                  e.latent_dim, e.projector_hidden, d.width, d.depth, d.n_actions,
-                  d.action_dim, d.d_state, d.headdim, d.expand, d.d_conv, d.chunk_size):
+    shared = (e.resolution, e.patch, e.width, e.depth, e.heads, e.mlp_ratio,
+              e.latent_dim, e.projector_hidden, d.width, d.depth, d.n_actions)
+    backend_dims = ((d.context, d.heads, d.head_dim, d.mlp_dim, d.action_smoothed_dim,
+                     d.action_mlp_scale, d.readout_width) if transformer else
+                    (d.action_dim, d.d_state, d.headdim, d.expand, d.d_conv, d.chunk_size))
+    for value in shared + backend_dims:
         if type(value) is not int or value <= 0:
             raise ValueError("model dimensions must be positive integers")
-    if e.resolution % e.patch or e.width % e.heads or d.width * d.expand % d.headdim:
+    if e.resolution % e.patch or e.width % e.heads:
+        raise ValueError("incompatible patch/head geometry")
+    if not transformer and d.width * d.expand % d.headdim:
         raise ValueError("incompatible patch/head geometry")
     if e.channels != 3 or len(e.pixel_mean) != 3 or len(e.pixel_std) != 3 or min(e.pixel_std) <= 0:
         raise ValueError("encoder requires an explicit RGB normalization")
     if e.dropout != 0 or e.attention_backend not in ("sdpa", "eager"):
         raise ValueError("M0-M3 supports the declared dropout-free ViT recipe")
-    if min(e.layer_norm_eps, e.bn_eps, d.norm_eps) <= 0 or not 0 < e.bn_momentum <= 1:
+    # The source predictor fixes its own LayerNorm eps internally, so it has no norm_eps.
+    norms = (e.layer_norm_eps, e.bn_eps) + (() if transformer else (d.norm_eps,))
+    if min(norms) <= 0 or not 0 < e.bn_momentum <= 1:
         raise ValueError("invalid normalization settings")
-    if d.backend not in ("reference", "triton") or d.ngroups != 1:
-        raise ValueError("supported recurrence: reference/triton, ngroups=1")
-    if tuple(d.dt_limit) != (0.0, "inf") or d.norm_before_gate:
-        raise ValueError("this source-audited path requires unbounded dt and gate before norm")
-    if not 0 < d.dt_min <= d.dt_max or d.A_init_range[0] <= 0 or d.A_init_range[1] < d.A_init_range[0]:
-        raise ValueError("invalid Mamba initialization")
+    if transformer:
+        # Seal the source constructor: a "source-exact" control that has been retuned is not
+        # one. The research purpose also fixes the task to one native step.
+        source = {"width": 192, "depth": 6, "n_actions": 17, "context": 3, "heads": 16,
+                  "head_dim": 64, "mlp_dim": 2048, "dropout": 0.1, "embedding_dropout": 0.0,
+                  "action_smoothed_dim": 10, "action_mlp_scale": 4}
+        if r.purpose == "research" and any(getattr(d, k) != v for k, v in source.items()):
+            raise ValueError("research runs use the pinned source constructor values")
+        if d.backend != "sdpa":
+            raise ValueError("the source attention path is scaled_dot_product_attention")
+        if d.width != e.latent_dim:
+            raise ValueError("the source predictor reads and writes the encoder latent width")
+        if d.heads * d.head_dim <= 0 or not 0 <= d.dropout < 1 or not 0 <= d.embedding_dropout < 1:
+            raise ValueError("invalid source predictor settings")
+        if r.purpose == "research" and j.stride != 1:
+            raise ValueError("the source comparison holds dynamics one-step: stride must be 1")
+    else:
+        if d.backend not in ("reference", "triton") or d.ngroups != 1:
+            raise ValueError("supported recurrence: reference/triton, ngroups=1")
+        if tuple(d.dt_limit) != (0.0, "inf") or d.norm_before_gate:
+            raise ValueError("this source-audited path requires unbounded dt and gate before norm")
+        if not 0 < d.dt_min <= d.dt_max or d.A_init_range[0] <= 0 or d.A_init_range[1] < d.A_init_range[0]:
+            raise ValueError("invalid Mamba initialization")
     if j.frames != 4 or j.batch < 2 or j.projections < 1 or j.knots < 2:
         raise ValueError("joint loss needs four frames, B>=2 and valid SIGReg dimensions")
     if j.sigreg_weight <= 0 or not 0 < j.min_learning_rate <= j.learning_rate:
@@ -279,8 +344,13 @@ def _settings(cls, values):
 
 def config_from_dict(values: dict) -> LeWMConfig:
     values = dict(values)
-    for name, cls in (("encoder", EncoderSettings), ("dynamics", DynamicsSettings),
+    # The backend decides which dynamics dataclass parses, so Mamba fields can never be
+    # silently accepted into a Transformer recipe or the reverse.
+    transformer = values.get("family") == "lewm_transformer"
+    dynamics = TransformerDynamicsSettings if transformer else DynamicsSettings
+    top = LeWMTransformerConfig if transformer else LeWMConfig
+    for name, cls in (("encoder", EncoderSettings), ("dynamics", dynamics),
                       ("joint", JointSettings), ("runtime", RuntimeSettings)):
         if name in values:
             values[name] = _settings(cls, values[name])
-    return _settings(LeWMConfig, values)
+    return _settings(top, values)
