@@ -339,16 +339,34 @@ mlp:
 | `h` consecutive | 0.7155 | 0.7155 | **+0.053** | **+0.053** |
 | `h` strided | 0.7023 | 0.7023 | **+0.040** | **+0.040** |
 
-In domain, `[z,h]` beats action-only by about +0.09 in **both** arms, and the strided arm is
-marginally the better of the two. `h` alone beats it by +0.04 to +0.05 and carries **no
-transfer penalty at all**: its observed and generated scores are identical, because `h` is
-built from context that does not differ between the conditions.
+On the primary root set `[z,h]` beats action-only by about +0.09 in both arms in domain,
+while the generated column falls below it. **That pattern does not replicate.** Across the
+three historical root sets the two conditions agree closely, and neither readout clears the
+floor -- whose own level is much higher there:
 
-The deficit is therefore specific to **generated `z`**, which drags the joint readout below
-the floor. Whether that is missing information or a decoder fitted in the wrong subspace is
-not settled by this panel: the generated-condition numbers come from an observed-fit decoder,
-so they confound the two. `h` is the built-in control -- a deficit that appears for `z` and
-the joint but not for `h` is localised to the successor latent, not to the readout.
+| panel | action floor | consec. joint obs / gen | strided joint obs / gen | consec. h | strided h |
+|---|---|---|---|---|---|
+| primary | 0.663 | +0.092 / −0.063 | +0.099 / −0.138 | +0.053 | +0.040 |
+| exact961 | 0.726 | −0.036 / −0.034 | −0.117 / −0.122 | −0.014 | −0.096 |
+| policy104 | 0.735 | −0.041 / −0.043 | −0.115 / −0.115 | −0.023 | −0.086 |
+| hazard5402 | 0.714 | −0.003 / −0.005 | −0.092 / −0.094 | −0.003 | −0.058 |
+
+Two things follow, and the first corrects a correction. The large observed-versus-generated
+gap is **specific to the primary panel**; on the three historical sets observed and generated
+sit within 0.005 of each other, so the transfer handicap is not a general explanation for the
+generated deficit. And on the highest-powered panel, `hazard5402` at 18,173 samples per
+target, the consecutive arm merely matches the action-only floor while the strided arm sits
+0.06 to 0.09 below it.
+
+What *is* robust is the arm contrast. Paired within root, strided minus consecutive on
+outcomes is negative in every panel and every condition -- `h` −0.013/−0.082/−0.063/−0.056
+and joint −0.075/−0.088/−0.072/−0.089 -- with between two and five significant negatives per
+cell and **zero significant positives across all twelve**. The widened window measurably
+degrades the Mamba-state readout, and that replicates at 8x the sample size.
+
+Whether TC memory clears the action prior at all is root-set dependent and remains open. `h`
+is the built-in control for the readout question, since its observed and generated scores are
+identical by construction.
 
 The paired generated-condition differences are still recorded in
 [`evidence/m03/memory_primary.json`](evidence/m03/memory_primary.json), and remain valid as
