@@ -166,6 +166,26 @@
       "targets": 7
     }
   },
-  "reading": "h beats z by about 0.20 AUC on generated outcomes in every arm, replicating the older asymmetry, and again fails to rescue successor state. But no arm's [z,h] readout ever significantly beats the action-only baseline, and the widened window is the worst: 6 of 7 targets significantly below it, mean -0.138 against -0.048 for the original TC. The h advantage over z is therefore substantially action information rather than recovered world memory.",
-  "measured_unix": 1789619034.197963
+  "reading": "CORRECTED. These probes are fitted once on train_observed_successor and applied to observed, generated and reset latents alike (gate.py:1784), while the action-only baseline is fitted natively, so generated-condition comparisons against it are transfer-handicapped. In domain, [z,h] beats action-only by about +0.09 in both arms and the strided arm is marginally better (+0.099 vs +0.092). h alone beats it by +0.04 to +0.05 with no transfer penalty, its observed and generated scores being identical. The deficit is specific to generated z, which drags the joint readout below the floor; whether that is missing information or a decoder fitted in the wrong subspace is not settled here. The earlier reading -- that no arm beats action-only and that h's advantage is merely action information -- was drawn from the generated column alone and is withdrawn.",
+  "measured_unix": 1789619034.197963,
+  "action_only_floor_c4_mlp": 0.6626,
+  "in_domain_vs_generated_c4_mlp": {
+    "[z,h] consecutive": {
+      "observed": 0.7551,
+      "generated": 0.5995
+    },
+    "[z,h] strided": {
+      "observed": 0.7615,
+      "generated": 0.525
+    },
+    "h consecutive": {
+      "observed": 0.7155,
+      "generated": 0.7155
+    },
+    "h strided": {
+      "observed": 0.7023,
+      "generated": 0.7023
+    }
+  },
+  "generated_minus_action_only_c4_mlp_note": "valid as a transfer comparison; not a statement that memory fails to beat the action prior"
 }

@@ -325,21 +325,35 @@ and the joint readout collapses: 0.600 → **0.525**, far below `h` alone. In th
 concatenating `z` with `h` drags a 0.70 readout most of the way to chance, which is the
 memory-side signature of the same `z` degradation the BC probe found.
 
-**And the control changes the interpretation of `h` itself.** Against the action-only
-baseline, generated outcomes, c4, mlp, over 7 targets:
+**The action-only control, read correctly.** These probes are fitted once on
+`train_observed_successor` and then applied to observed, generated and reset latents alike
+(`gate.py:1784`). The action-only baseline is fitted natively. So a generated-condition
+comparison against it pits a transfer-handicapped score against an in-domain one, and the
+two conditions must be reported separately. Action-only floor 0.6626; primary panel, c4,
+mlp:
 
-| arm | mean ΔAUC vs action-only | significant + | significant − |
-|---|---|---|---|
-| TC consecutive | −0.063 | 0 | 3 |
-| **TC strided** | **−0.138** | **0** | **6** |
-| Raw stride-1 | −0.091 | 0 | 3 |
-| TC stride-1 | −0.048 | 0 | 1 |
+| readout | observed | generated | obs − action | gen − action |
+|---|---|---|---|---|
+| `[z,h]` consecutive | 0.7551 | 0.5995 | **+0.092** | −0.063 |
+| `[z,h]` strided | 0.7615 | 0.5250 | **+0.099** | −0.138 |
+| `h` consecutive | 0.7155 | 0.7155 | **+0.053** | **+0.053** |
+| `h` strided | 0.7023 | 0.7023 | **+0.040** | **+0.040** |
 
-No arm's `[z,h]` readout ever significantly beats action-only, in any arm, on any target.
-The widened window is the worst of the four, with six of seven targets significantly below
-it. So the `h` advantage over `z` is substantially **action information rather than recovered
-world memory**, and quoting `h` against `z` alone flatters it. This is why the readout must
-be scored against the action-only floor rather than against `z`.
+In domain, `[z,h]` beats action-only by about +0.09 in **both** arms, and the strided arm is
+marginally the better of the two. `h` alone beats it by +0.04 to +0.05 and carries **no
+transfer penalty at all**: its observed and generated scores are identical, because `h` is
+built from context that does not differ between the conditions.
+
+The deficit is therefore specific to **generated `z`**, which drags the joint readout below
+the floor. Whether that is missing information or a decoder fitted in the wrong subspace is
+not settled by this panel: the generated-condition numbers come from an observed-fit decoder,
+so they confound the two. `h` is the built-in control -- a deficit that appears for `z` and
+the joint but not for `h` is localised to the successor latent, not to the readout.
+
+The paired generated-condition differences are still recorded in
+[`evidence/m03/memory_primary.json`](evidence/m03/memory_primary.json), and remain valid as
+what they are: a transfer comparison, not a statement that memory fails to beat the action
+prior.
 
 ### What this does not establish
 
