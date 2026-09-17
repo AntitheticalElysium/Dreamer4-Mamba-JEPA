@@ -154,3 +154,99 @@ def test_lewm_gates_run_on_a_strided_recipe():
     actions = torch.randint(strided.dynamics.n_actions, (2, strided.joint.frames - 1, 4))
     one_hot = torch.nn.functional.one_hot(actions.reshape(-1, 4), strided.dynamics.n_actions).float().flatten(1)
     assert one_hot.shape == (2 * (strided.joint.frames - 1), 4 * strided.dynamics.n_actions)
+
+
+def test_pinned_transformer_package_is_constructed_exactly_as_the_source_declares():
+    """The comparison backend must be the vendored predictor, not a lookalike."""
+    from d4mj.lewm_transformer import build_package, source_digests, PINNED
+    predictor, action_encoder, projector = build_package()
+    assert source_digests() == PINNED, "vendored bytes differ from the audited pins"
+    blocks = predictor.transformer.layers
+    assert len(blocks) == 6 and type(blocks[0]).__name__ == "ConditionalBlock"
+    qkv = [m for n, m in blocks[0].named_modules() if n.endswith("to_qkv")][0]
+    # 16 heads x 64 = inner width 1024, so qkv projects 192 -> 3 * 1024.
+    assert tuple(qkv.weight.shape) == (3072, 192)
+    assert tuple(predictor.pos_embedding.shape) == (1, 3, 192)
+    for block in blocks:
+        gate = block.adaLN_modulation[-1]
+        assert torch.equal(gate.weight, torch.zeros_like(gate.weight))
+        assert torch.equal(gate.bias, torch.zeros_like(gate.bias))
+    count = lambda m: sum(p.numel() for p in m.parameters() if p.requires_grad)
+    assert (count(predictor), count(action_encoder), count(projector)) == (10791360, 156276, 792768)
+
+
+def test_our_package_matches_an_independent_instantiation_of_the_pinned_classes():
+    """Oracle: same weights in, same outputs, gradients, BN buffers and update out.
+
+    This is what makes the comparison a control. If our call convention diverges from the
+    source's, every downstream number is measuring our wrapper rather than the paper.
+    """
+    import copy
+    from d4mj.lewm_transformer import build_package, source_module
+    source = source_module()
+    ours = build_package()
+    theirs = (source.ARPredictor(num_frames=3, depth=6, heads=16, mlp_dim=2048, input_dim=192,
+                                 hidden_dim=192, output_dim=192, dim_head=64, dropout=0.1,
+                                 emb_dropout=0.0),
+              source.Embedder(input_dim=17, smoothed_dim=10, emb_dim=192, mlp_scale=4),
+              source.MLP(input_dim=192, hidden_dim=2048, output_dim=192, norm_fn=torch.nn.BatchNorm1d))
+    for mine, other in zip(ours, theirs):
+        other.load_state_dict(copy.deepcopy(mine.state_dict()))
+
+    generator = torch.Generator().manual_seed(4)
+    latents = torch.randn(2, 3, 192, generator=generator)
+    actions = torch.nn.functional.one_hot(
+        torch.randint(17, (2, 3), generator=generator), 17).float()
+
+    def run(package, latents, actions):
+        predictor, action_encoder, projector = package
+        for module in package:
+            module.train()
+        torch.manual_seed(11)  # dropout is 0.1; the streams must match to compare
+        conditioning = action_encoder(actions)
+        hidden = predictor(latents, conditioning)
+        predicted = projector(hidden.flatten(0, 1)).reshape(hidden.shape)
+        loss = predicted.square().mean()
+        loss.backward()
+        grads = [p.grad.clone() if p.grad is not None else None
+                 for module in package for p in module.parameters()]
+        buffers = [b.clone() for module in package for b in module.buffers()]
+        return predicted, hidden, loss, grads, buffers
+
+    a = run(ours, latents.clone(), actions.clone())
+    b = run(theirs, latents.clone(), actions.clone())
+    torch.testing.assert_close(a[0], b[0], atol=0, rtol=0)
+    torch.testing.assert_close(a[1], b[1], atol=0, rtol=0)
+    torch.testing.assert_close(a[2], b[2], atol=0, rtol=0)
+    for mine, other in zip(a[3], b[3]):
+        assert (mine is None) == (other is None)
+        if mine is not None:
+            torch.testing.assert_close(mine, other, atol=0, rtol=0)
+    for mine, other in zip(a[4], b[4]):
+        torch.testing.assert_close(mine, other, atol=0, rtol=0)
+
+    # One optimizer step must land in the same place too.
+    for package in (ours, theirs):
+        optimizer = torch.optim.AdamW([p for m in package for p in m.parameters()], lr=1e-3)
+        optimizer.step()
+    for mine, other in zip((p for m in ours for p in m.parameters()),
+                           (p for m in theirs for p in m.parameters())):
+        torch.testing.assert_close(mine, other, atol=0, rtol=0)
+
+
+def test_the_source_action_and_attention_gates_start_at_zero_by_design():
+    """AdaLN-Zero means no action or attention gradient at init. That is the source's
+    intent, not a broken graph, so the backend must not 'fix' it."""
+    from d4mj.lewm_transformer import build_package
+    predictor, action_encoder, projector = build_package()
+    latents = torch.randn(2, 3, 192, generator=torch.Generator().manual_seed(5))
+    actions = torch.nn.functional.one_hot(torch.zeros(2, 3, dtype=torch.long), 17).float()
+    for module in (predictor, action_encoder, projector):
+        module.eval()
+    hidden = predictor(latents, action_encoder(actions))
+    projector(hidden.flatten(0, 1)).square().mean().backward()
+    assert all(p.grad is None or torch.equal(p.grad, torch.zeros_like(p.grad))
+               for p in action_encoder.parameters()), "action path should be gated off at init"
+    gate = predictor.transformer.layers[0].adaLN_modulation[-1]
+    assert gate.weight.grad is not None and gate.weight.grad.abs().sum() > 0, \
+        "AdaLN itself must still learn from step one"
