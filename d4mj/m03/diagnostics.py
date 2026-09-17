@@ -422,10 +422,16 @@ def encode_memory(bundle, values, settings):
                                      c.ssm.float().flatten(1).square().mean(1).sqrt()], -1)
                         for c in state.memory], 1).cpu()
                 else:
+                    # Short BOS prefixes buffer fewer pairs than long ones, and every
+                    # length group is concatenated, so this summary must have a fixed
+                    # width. Pad the unused slots and carry the true count beside them --
+                    # padding a *summary* is safe, padding a predictor input never is.
                     buffered = state.past_latents.float()
-                    row[f'{case}_window_rms'] = (buffered.square().mean(-1).sqrt().cpu()
-                                                 if buffered.shape[1] else
-                                                 buffered.new_zeros(count, 0).cpu())
+                    width = bundle.world.context - 1
+                    padded = buffered.new_zeros(len(buffered), width)
+                    if buffered.shape[1]:
+                        padded[:, :buffered.shape[1]] = buffered.square().mean(-1).sqrt()
+                    row[f'{case}_window_rms'] = padded.cpu()
                     row[f'{case}_window_pairs'] = torch.full((count,), buffered.shape[1])
             if not all(torch.isfinite(v).all() for v in row.values()):
                 raise ValueError('m03_memory: nonfinite state in context sweep')
@@ -575,10 +581,12 @@ def memory_report(train, dev, features, settings, *, device, progress=None):
         if f'{case}_carry_rms' in rows:
             values = rows[f'{case}_carry_rms']
             return {'mean_per_layer_conv_ssm': values.mean(0).tolist(), 'max': float(values.max())}
-        values = rows[f'{case}_window_rms']
-        return {'backend': 'finite_window', 'buffered_pairs': int(rows[f'{case}_window_pairs'][0]),
+        values, counts = rows[f'{case}_window_rms'], rows[f'{case}_window_pairs']
+        return {'backend': 'finite_window',
+                'buffered_pairs': {'min': int(counts.min()), 'max': int(counts.max())},
                 'mean_buffered_latent_rms': values.mean(0).tolist() if values.numel() else [],
-                'max': float(values.max()) if values.numel() else 0.0}
+                'max': float(values.max()) if values.numel() else 0.0,
+                'note': 'unused window slots are zero-padded; buffered_pairs gives the real count'}
 
     report['carry_rms'] = {arm: {case: _carry(rows['dev'], case) for case in MEMORY_CASES}
                            for arm, rows in features.items()}

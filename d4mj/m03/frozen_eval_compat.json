@@ -2,42 +2,181 @@
   "schema": "lewm_frozen_eval_compatibility_v1",
   "status": "pass",
   "scope": "frozen evaluation only; training resume keeps exact full-source equality",
-  "arms": {
-    "raw": {
-      "checkpoint_sha256": "7bc9c14d7d7d10bd4cabeb22cd7f2af19e39ff8cb1d9b3758a14086e2a1f2789",
-      "recorded_sources_digest": "78318c8356ade25dec068a47537bb5f6d8ca1d30324087f0a0679de025f3a795"
+  "note": "one proof per reference tree -- checkpoints sealed against different trees need their own measurement, and each is verified in full and on its own",
+  "proofs": [
+    {
+      "schema": "lewm_frozen_eval_compatibility_v1",
+      "status": "pass",
+      "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+      "arms": {
+        "raw": {
+          "checkpoint_sha256": "7bc9c14d7d7d10bd4cabeb22cd7f2af19e39ff8cb1d9b3758a14086e2a1f2789",
+          "recorded_sources_digest": "78318c8356ade25dec068a47537bb5f6d8ca1d30324087f0a0679de025f3a795"
+        },
+        "tc": {
+          "checkpoint_sha256": "3b2be39fd116a4ff8ffddddf6526ad197cdd7f12da3247fe2988171ffd05e674",
+          "recorded_sources_digest": "78318c8356ade25dec068a47537bb5f6d8ca1d30324087f0a0679de025f3a795"
+        }
+      },
+      "reference_manifest_digest": "78318c8356ade25dec068a47537bb5f6d8ca1d30324087f0a0679de025f3a795",
+      "current_manifest_digest": "76cb58267aabe986a94f6d34e2aaf823cba92d0fb737f908fe245fb85da82a09",
+      "changed_runtime_files": {
+        "d4mj/lewm_config.py": {
+          "reference": "75fad37ec47bf9f8633ab9154839e8f5d67adc9d8b33fd05c9d2fbf5a6e6f665",
+          "current": "97f6a6da9065e00c491fcb4d3874749138f39becfc373853bd0221fd0c69e48c"
+        },
+        "d4mj/world_api.py": {
+          "reference": "fcf2de2c77b1b261fb3633f30273130a7604d6bec547a3d953b7b0e3755d021c",
+          "current": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b"
+        },
+        "d4mj/state.py": {
+          "reference": "20c2fead5ec7a795b40d4a1d6db241f8d8d1432535e0bfd4f2378a139d21b118",
+          "current": "dcda26ce33cdefb76163c8067954646399e3315a3a01ac85a0d474b2f76cf594"
+        },
+        "d4mj/config.py": {
+          "reference": "da108b335c75b368a3cb9d0eb1abeacb1d9eaff73f807b6cd17c64551401ddb2",
+          "current": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f"
+        },
+        "d4mj/cache.py": {
+          "reference": "31aea1bc2b79c2cbbb479304dd81472d4b05c61fc179fe404d254b47f3f2ef90",
+          "current": "a8b1cd9a5a0bf1476c26915ed2cc46b5b616a536e256bfc8f9f5aab4c71bc282"
+        },
+        "d4mj/train.py": {
+          "reference": "105e9d205639f164253b388c520c6ea6b1fcf6c2d397a2b74e694672755d6339",
+          "current": "28982607d430a68712417f9d89f9e6a913a64fbe2618843f43e8081c7dcddd10"
+        },
+        "d4mj/checkpoint.py": {
+          "reference": "310f9fa7a54d588961888c5e1de31b2629360368f59562bc73b0e473e1acafbb",
+          "current": "01f102f1741675d4fb45795dd3658b774d4c9fad9581172461b43b4a06d3dfcb"
+        },
+        "d4mj/sources.py": {
+          "reference": "b9360c687073e6da566424a985a2dcba5dce424af597a025599c923055e0dcee",
+          "current": "ef8ac3e2b4229afb5305bd7d4e171bec92d2a2a1fe987252c691bed9637f16ea"
+        },
+        "d4mj/gates.py": {
+          "reference": "737a159717604bba6a27eed5c55452880f63ceb855d33891f0fc82658f0b8f69",
+          "current": "7a0d7ebbab8e03ada6918c81273f8804ac8cade95f78151516c1e0e4009df5c5"
+        },
+        "d4mj/lewm_diagnostics.py": {
+          "reference": "79b4e5365f2a5967baac960824a464aaeb5a7a927313d9a5cda4aef074220099",
+          "current": "27d75ab046c672909394a8fa8f0a32acd096f043e5193185acc352f8682cc18b"
+        },
+        "d4mj/experiments.py": {
+          "reference": "9084f0f2de3e67ab3f87e953b65329c2b1392d8d6e6345ec44166b545c2d9ef3",
+          "current": "16806f18316d88a4e243f2a41a4ed5ab83ca0bab555ae88999799297d267906b"
+        }
+      },
+      "surface": [
+        "advance_history",
+        "advance_latent",
+        "cls",
+        "patch16",
+        "patch_grid",
+        "prefill_history",
+        "prefill_latent",
+        "z"
+      ],
+      "parity": {
+        "tolerance": 1e-05,
+        "within_tree_max_abs": 9.5367431640625e-07,
+        "cross_tree_max_abs": 9.5367431640625e-07,
+        "cross_tree_min_abs": 0.0,
+        "runs": {
+          "reference": 2,
+          "current": 2
+        }
+      }
     },
-    "tc": {
-      "checkpoint_sha256": "3b2be39fd116a4ff8ffddddf6526ad197cdd7f12da3247fe2988171ffd05e674",
-      "recorded_sources_digest": "78318c8356ade25dec068a47537bb5f6d8ca1d30324087f0a0679de025f3a795"
+    {
+      "schema": "lewm_frozen_eval_compatibility_v1",
+      "status": "pass",
+      "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+      "arms": {
+        "raw": {
+          "checkpoint_sha256": "707f6240a3e4e52d6aca7526d541a69112ad7c18c5898c0f1f0ec36f663937ef",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        },
+        "tc": {
+          "checkpoint_sha256": "98effee1085223b5780f30b09ba68b44a8b407acbb07fde5134a8bd708997dc5",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        }
+      },
+      "reference_manifest_digest": "60ccb055c9216092bd36bf4cfcb9491b576e10b7b3e50d180008ac96f2ab7a3a",
+      "current_manifest_digest": "76cb58267aabe986a94f6d34e2aaf823cba92d0fb737f908fe245fb85da82a09",
+      "changed_runtime_files": {
+        "d4mj/lewm_config.py": {
+          "reference": "8862263e076b8bb62a8fedfe7743dab916cd60d72472e8deeb72f78db14020ef",
+          "current": "97f6a6da9065e00c491fcb4d3874749138f39becfc373853bd0221fd0c69e48c"
+        },
+        "d4mj/lewm.py": {
+          "reference": "b87644febd0851434ba2ac019a86f5c029e8af0ea318343da006c23aacd922f9",
+          "current": "682117426d0fd84e6babe2185002e0bf50d7fbcdeeb4d458eb06efe893b91256"
+        },
+        "d4mj/world_api.py": {
+          "reference": "fcf2de2c77b1b261fb3633f30273130a7604d6bec547a3d953b7b0e3755d021c",
+          "current": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b"
+        },
+        "d4mj/state.py": {
+          "reference": "20c2fead5ec7a795b40d4a1d6db241f8d8d1432535e0bfd4f2378a139d21b118",
+          "current": "dcda26ce33cdefb76163c8067954646399e3315a3a01ac85a0d474b2f76cf594"
+        },
+        "d4mj/config.py": {
+          "reference": "c1835e1e6e0fae9ca6a40e479f4036fcdc6f8c0c1fa446022aecf7502b5710b0",
+          "current": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f"
+        },
+        "d4mj/cache.py": {
+          "reference": "31aea1bc2b79c2cbbb479304dd81472d4b05c61fc179fe404d254b47f3f2ef90",
+          "current": "a8b1cd9a5a0bf1476c26915ed2cc46b5b616a536e256bfc8f9f5aab4c71bc282"
+        },
+        "d4mj/train.py": {
+          "reference": "105e9d205639f164253b388c520c6ea6b1fcf6c2d397a2b74e694672755d6339",
+          "current": "28982607d430a68712417f9d89f9e6a913a64fbe2618843f43e8081c7dcddd10"
+        },
+        "d4mj/checkpoint.py": {
+          "reference": "310f9fa7a54d588961888c5e1de31b2629360368f59562bc73b0e473e1acafbb",
+          "current": "01f102f1741675d4fb45795dd3658b774d4c9fad9581172461b43b4a06d3dfcb"
+        },
+        "d4mj/data.py": {
+          "reference": "85fbbe508e85f8dbd2d2a9bedd3ad0857ef605c11a2036e71ba8ec8168703145",
+          "current": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea"
+        },
+        "d4mj/sources.py": {
+          "reference": "b9360c687073e6da566424a985a2dcba5dce424af597a025599c923055e0dcee",
+          "current": "ef8ac3e2b4229afb5305bd7d4e171bec92d2a2a1fe987252c691bed9637f16ea"
+        },
+        "d4mj/gates.py": {
+          "reference": "89696e961a3bea8a548c6f4772187a4b105761f1348a3504f3db86b9827c7d39",
+          "current": "7a0d7ebbab8e03ada6918c81273f8804ac8cade95f78151516c1e0e4009df5c5"
+        },
+        "d4mj/lewm_diagnostics.py": {
+          "reference": "f977ddd685a7a2465cf42980390fb8e637312f4848b06cd56d5abc02014494b4",
+          "current": "27d75ab046c672909394a8fa8f0a32acd096f043e5193185acc352f8682cc18b"
+        },
+        "d4mj/experiments.py": {
+          "reference": "ec5e8a5c9163cbf608c31e5852df77668fcafb14a8823d6684802ceb6849549a",
+          "current": "16806f18316d88a4e243f2a41a4ed5ab83ca0bab555ae88999799297d267906b"
+        }
+      },
+      "surface": [
+        "advance_history",
+        "advance_latent",
+        "cls",
+        "patch16",
+        "patch_grid",
+        "prefill_history",
+        "prefill_latent",
+        "z"
+      ],
+      "parity": {
+        "tolerance": 1e-05,
+        "within_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_min_abs": 0.0,
+        "runs": {
+          "reference": 2,
+          "current": 2
+        }
+      }
     }
-  },
-  "reference_manifest_digest": "78318c8356ade25dec068a47537bb5f6d8ca1d30324087f0a0679de025f3a795",
-  "current_manifest_digest": "ce89638cc1b943d30d94c55c0a67b30e9a017fa7669629c3e37a5204a0e8e388",
-  "changed_runtime_files": {
-    "d4mj/config.py": {
-      "reference": "da108b335c75b368a3cb9d0eb1abeacb1d9eaff73f807b6cd17c64551401ddb2",
-      "current": "ca32d8157a746a2e2be1e0ce423b39f46e07aaa0afa467ebc105bd2af9657c89"
-    }
-  },
-  "surface": [
-    "advance_history",
-    "advance_latent",
-    "cls",
-    "patch16",
-    "patch_grid",
-    "prefill_history",
-    "prefill_latent",
-    "z"
-  ],
-  "parity": {
-    "tolerance": 1e-05,
-    "within_tree_max_abs": 9.5367431640625e-07,
-    "cross_tree_max_abs": 9.5367431640625e-07,
-    "cross_tree_min_abs": 0.0,
-    "runs": {
-      "reference": 2,
-      "current": 2
-    }
-  }
+  ]
 }

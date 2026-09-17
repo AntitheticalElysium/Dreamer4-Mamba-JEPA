@@ -214,8 +214,13 @@ def load_latent_cache(path: str | Path, encoder, config=None):
         return load_episodes(path, digest=encoder_digest(encoder,config), verify=True)
     manifest = json.loads((path / "manifest.json").read_text())
     cache = manifest.get("cache", {})
-    if cache.get("schema") != "d4mj_lewm_cache_v1" or cache.get("family") != "lewm_mamba":
+    # The writer already stamps the recipe's own family. Match it when a config is given;
+    # without one, still refuse anything that is not a LeWM export.
+    family = getattr(config, "family", None)
+    if cache.get("schema") != "d4mj_lewm_cache_v1" or not str(cache.get("family", "")).startswith("lewm_"):
         raise ValueError("cache_family: this is not a LeWM export")
+    if family is not None and cache.get("family") != family:
+        raise ValueError("cache_family: this LeWM export belongs to a different backend")
     digest = encoder_digest(encoder,config)
     if cache.get("latent_digest") != digest or cache.get("dtype") != "float32" or cache.get("shape") != [1,encoder.settings.latent_dim]:
         raise ValueError("cache_identity: encoder geometry, buffers, preprocessing or dtype changed")

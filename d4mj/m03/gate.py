@@ -207,9 +207,15 @@ def _run_contract(*, raw_checkpoint: Path, tc_checkpoint: Path, dataset: Path, s
         "diagnostics_source": _input_identity(ROOT / "d4mj/m03/diagnostics.py"),
         "historical_source": _input_identity(ROOT / "d4mj/m03/history.py"),
         "environment_source": _input_identity(ROOT / "d4mj/env.py"),
+        # The files that define the world being evaluated belong in the seal. Without them
+        # a backend edit leaves the contract digest unchanged, and a completed report is
+        # returned before any checkpoint source is re-validated. Feature-cache identities
+        # are separate dependency keys, so replay and Direct stay reusable.
         "evaluation_sources": [_input_identity(ROOT / p) for p in (
             "d4mj/m03/diagnostics.py", "d4mj/diagnostics.py", "d4mj/data.py", "d4mj/config.py",
-            "d4mj/representation.py", "d4mj/transition.py", "d4mj/world_api.py", "artifacts/eda/legacy.py")],
+            "d4mj/representation.py", "d4mj/transition.py", "d4mj/world_api.py",
+            "d4mj/lewm.py", "d4mj/lewm_config.py", "d4mj/state.py", "d4mj/lewm_transformer.py",
+            "artifacts/eda/legacy.py")],
         "historical_panels_included": include_history,
         "simulator_sources": [_input_identity(p) for p in sorted(craftax_root.rglob("*.py"))],
         "settings": asdict(settings),
@@ -739,7 +745,17 @@ def frozen_eval_parity(checkpoints: dict[str, Path], device: str, allow_drift: b
     original = _current_source_with_ieee_delta
     if allow_drift:
         # Deliberate, local, and the whole point: the guard is what is measured.
-        _current_source_with_ieee_delta = lambda recorded: (lewm_source_manifest(), {"measured": True})
+        def _measured(recorded, config=None):
+            # This module is copied into a reference worktree to measure a delta, so it
+            # must run against that tree's own `sources.py`, which may predate the
+            # backend-aware signature. Copying sources.py instead would move the very
+            # manifest being measured.
+            try:
+                return lewm_source_manifest(config), {"measured": True}
+            except TypeError:
+                return lewm_source_manifest(), {"measured": True}
+
+        _current_source_with_ieee_delta = _measured
     try:
         out = {"schema": "lewm_frozen_eval_parity_v1", "device": device,
                "manifest_digest": _sha(lewm_source_manifest()),
@@ -823,12 +839,26 @@ def frozen_eval_proof(reference: list[Path], candidate: list[Path], tolerance: f
     }
 
 
-def _frozen_eval_delta(recorded: dict, proof: Path) -> tuple[dict, dict]:
+def frozen_eval_records(proof: Path) -> list[dict]:
+    """Every proof in a record. One document is a single-proof record.
+
+    Checkpoints sealed against different trees need different reference measurements, so a
+    record has to be able to hold more than one. Each is still checked in full and on its
+    own; this only lets several coexist.
+    """
+    document = json.loads(Path(proof).read_text())
+    return list(document["proofs"]) if isinstance(document.get("proofs"), list) else [document]
+
+
+def _frozen_eval_delta(recorded: dict, proof: Path, document: dict | None = None) -> tuple[dict, dict]:
     """Admit a measured frozen-evaluation source delta, or refuse it."""
 
     from ..sources import lewm_source_manifest
 
-    document = json.loads(Path(proof).read_text())
+    if document is None:
+        candidates = [d for d in frozen_eval_records(proof)
+                      if _sha(recorded) in {a["recorded_sources_digest"] for a in d.get("arms", {}).values()}]
+        document = candidates[0] if candidates else json.loads(Path(proof).read_text())
     current = lewm_source_manifest()
     if document.get("schema") != FROZEN_EVAL_SCHEMA or document.get("status") != "pass":
         raise ValueError("m03_frozen_eval: proof is absent, malformed, or not passing")
@@ -874,10 +904,13 @@ def load_m03_bundle(path: Path, *, device: str, dataset_sha256: str,
             frozen_eval_proof = FROZEN_EVAL_RECORD
         if frozen_eval_proof is None:
             raise
-        if _sha256(Path(path)) not in {a["checkpoint_sha256"]
-                                       for a in json.loads(Path(frozen_eval_proof).read_text())["arms"].values()}:
+        digest = _sha256(Path(path))
+        covering = [d for d in frozen_eval_records(frozen_eval_proof)
+                    if digest in {a["checkpoint_sha256"] for a in d.get("arms", {}).values()}]
+        if not covering:
             raise ValueError("m03_frozen_eval: proof does not cover this checkpoint")
-        current_source, source_delta = _frozen_eval_delta(payload["sources"], frozen_eval_proof)
+        current_source, source_delta = _frozen_eval_delta(payload["sources"], frozen_eval_proof,
+                                                          document=covering[0])
     # Device is an evaluation choice; the sequence-mixer backend is not. Only the Mamba
     # world has a kernel to select, and forcing "triton"/"reference" onto the source
     # predictor would both be meaningless and change its sealed recipe.

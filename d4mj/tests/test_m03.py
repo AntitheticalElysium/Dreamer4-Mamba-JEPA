@@ -585,7 +585,9 @@ def _frozen_proof(tmp_path, **overrides):
     """The committed proof, re-pointed at a stand-in checkpoint payload."""
     import json
     from d4mj.m03.gate import ROOT, _sha
-    document = json.loads((ROOT / "d4mj/m03/frozen_eval_compat.json").read_text())
+    # The record now holds one proof per reference tree; the fixture exercises one of them.
+    from d4mj.m03.gate import frozen_eval_records
+    document = frozen_eval_records(ROOT / "d4mj/m03/frozen_eval_compat.json")[0]
     document["arms"] = {"raw": {"checkpoint_sha256": "a" * 64,
                                 "recorded_sources_digest": _sha(STORED_SOURCES)}}
     document.update(overrides)
@@ -683,3 +685,33 @@ def test_frozen_eval_never_relaxes_training_resume():
     source = inspect.getsource(gate.load_m03_bundle)
     assert source.index("_current_source_with_ieee_delta") < source.index("frozen_eval_proof is None")
     assert "frozen_eval" not in inspect.getsource(checkpoint)
+
+
+def test_window_summaries_survive_mixed_prefix_lengths():
+    """Historical panels mix one-frame and long prefixes; a variable-width summary would
+    make every group unconcatenable and take the short BOS paths down with it."""
+    import torch
+    from d4mj.lewm_config import (LeWMTransformerConfig, TransformerDynamicsSettings,
+                                  EncoderSettings, RuntimeSettings, JointSettings)
+    from d4mj.world_api import ModelBundle
+    from d4mj.m03.gate import M03Settings
+    from d4mj.m03.diagnostics import encode_memory
+    config = LeWMTransformerConfig(
+        encoder=EncoderSettings(resolution=63, width=24, depth=1, heads=3, latent_dim=12,
+                                projector_hidden=32, checkpoint_blocks=False),
+        dynamics=TransformerDynamicsSettings(width=12, depth=2, heads=2, head_dim=6,
+                                             mlp_dim=16, context=3, readout_width=16),
+        joint=JointSettings(batch=4, projections=8, knots=5, steps=4, screen_step=2,
+                            warmup=1, checkpoint_every=2),
+        runtime=RuntimeSettings(device="cpu", precision="fp32", purpose="verification", cache_chunk=3))
+    bundle = ModelBundle.create(config)
+    bundle.eval()
+    rows, length = 6, 8
+    values = {"context": torch.randint(256, (rows, length, 63, 63, 3), dtype=torch.uint8),
+              "past_actions": torch.randint(17, (rows, length - 1)),
+              "successors": torch.randint(256, (rows, 17, 63, 63, 3), dtype=torch.uint8),
+              "episode": torch.arange(rows), "time": torch.arange(rows) + 5,
+              "context_length": torch.tensor([1, 1, 4, 4, 8, 8])}
+    features = encode_memory(bundle, values, M03Settings())
+    assert features["c4_window_rms"].shape == (rows, config.dynamics.context - 1)
+    assert features["c4_window_pairs"].tolist() == [0, 0, 2, 2, 2, 2]

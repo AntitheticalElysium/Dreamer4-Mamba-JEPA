@@ -181,16 +181,36 @@ class LeWMTransformerWorld(nn.Module):
         if pairs == 0:
             return TransformerTeacherOutput(z[:, :0], z.new_zeros(z.shape[0], 0, self.config.dynamics.width),
                                             state if state is not None else self.start(z[:, :1]))
-        inputs, predicted, hidden = z[:, :-1, 0], [], []
-        for end in range(1, pairs + 1):
-            start = max(0, end - self.context)
-            step_predicted, step_hidden = self._window(inputs[:, start:end], actions[:, start:end])
-            predicted.append(step_predicted[:, -1:])
-            hidden.append(step_hidden[:, -1:])
-        predicted, hidden = torch.cat(predicted, 1), torch.cat(hidden, 1)
+        inputs = z[:, :-1, 0]
+        # A continuation resumes from the buffered pairs; dropping them would restart the
+        # window and make chunked evaluation disagree with an uninterrupted scan.
+        prior_latents = state.past_latents if state is not None else inputs[:, :0]
+        prior_actions = state.past_actions if state is not None else actions[:, :0]
+        offset = prior_latents.shape[1]
+        full_inputs = torch.cat((prior_latents, inputs), 1)
+        full_actions = torch.cat((prior_actions, actions), 1)
+        if offset + pairs <= self.context:
+            # What upstream does: one parallel causal pass over the whole window. Splitting
+            # it into per-step windows would be a different objective, not an optimization --
+            # the prediction BatchNorm would see several smaller batches and update several
+            # times, and dropout would be drawn once per call.
+            step_predicted, step_hidden = self._window(full_inputs, full_actions)
+            predicted, hidden = step_predicted[:, offset:], step_hidden[:, offset:]
+        else:
+            # Past the position table the source slides its window and resets positions,
+            # so a long evaluation scan must roll rather than extrapolate.
+            rolled_predicted, rolled_hidden = [], []
+            for end in range(offset + 1, offset + pairs + 1):
+                start = max(0, end - self.context)
+                step_predicted, step_hidden = self._window(full_inputs[:, start:end],
+                                                           full_actions[:, start:end])
+                rolled_predicted.append(step_predicted[:, -1:])
+                rolled_hidden.append(step_hidden[:, -1:])
+            predicted, hidden = torch.cat(rolled_predicted, 1), torch.cat(rolled_hidden, 1)
         keep = self.context - 1
-        final = WindowPredictiveState(z[:, -1:], inputs[:, -keep:].clone() if keep else inputs[:, :0],
-                                      actions[:, -keep:].clone() if keep else actions[:, :0],
+        final = WindowPredictiveState(z[:, -1:],
+                                      full_inputs[:, -keep:].clone() if keep else full_inputs[:, :0],
+                                      full_actions[:, -keep:].clone() if keep else full_actions[:, :0],
                                       hidden[:, -1:].clone(), (0 if state is None else state.step) + pairs)
         return TransformerTeacherOutput(predicted.unsqueeze(2), hidden, final)
 
@@ -205,7 +225,18 @@ class LeWMTransformerWorld(nn.Module):
                 latents[:, -keep:] if keep else latents[:, :0],
                 actions[:, -keep:] if keep else actions[:, :0])
 
+    def _streaming_mode(self):
+        """One step at a time is evaluation. Training mode would let this update the
+        prediction BatchNorm from a single row and keep dropout live, so a rollout would
+        silently modify the model and stop being reproducible."""
+        if any(isinstance(m, nn.BatchNorm1d) and m.training
+               for m in self.predictor_projector.modules()):
+            raise RuntimeError("predictor_normalization: streaming requires fixed BN statistics (eval mode)")
+        if self.predictor.training or self.action_encoder.training:
+            raise RuntimeError("predictor_dropout: streaming requires eval mode")
+
     def advance(self, state, action):
+        self._streaming_mode()
         latent, history, past_latents, past_actions = self._transition(state, action)
         result = WindowPredictiveState(latent, past_latents.clone(), past_actions.clone(),
                                        history.clone(), state.step + 1)
@@ -216,6 +247,7 @@ class LeWMTransformerWorld(nn.Module):
 
         Observed and generated branches therefore share exactly the same predictor output.
         """
+        self._streaming_mode()
         self._latents(z_next)
         if z_next.shape != state.latent.shape:
             raise ValueError("observed successor must match one current latent")

@@ -3,6 +3,8 @@ from dataclasses import replace
 import logging
 
 import pytest
+from pathlib import Path
+
 import torch
 from transformers import ViTConfig, ViTModel
 
@@ -345,3 +347,107 @@ def test_bounded_prefill_equals_a_full_scan_and_generation_is_repeatable():
         torch.testing.assert_close(old, now, atol=0, rtol=0)
     again, _ = bundle.advance(root, torch.arange(17).repeat(2)[:, None])
     torch.testing.assert_close(again.latent, seen[0], atol=0, rtol=0)
+
+
+def test_training_teacher_is_one_upstream_call_not_a_window_per_step():
+    """The training objective must be the source's, including its BatchNorm batch.
+
+    Rolling a window per step looks equivalent and is not: the prediction BatchNorm sees
+    several smaller batches instead of one B*context batch, updates its statistics once per
+    call, and dropout is drawn per call. The oracle test compares the modules; this compares
+    the *world*, which is where that divergence lives.
+    """
+    from d4mj.world_api import ModelBundle
+    bundle = ModelBundle.create(transformer_config())
+    world = bundle.world
+    world.train()
+    torch.manual_seed(0)
+    z = torch.randn(4, 4, 1, world.config.encoder.latent_dim)
+    actions = torch.randint(17, (4, 3))
+    norm = world.predictor_projector.net[1]
+    mean, tracked = norm.running_mean.clone(), norm.num_batches_tracked.clone()
+
+    torch.manual_seed(5)
+    one_hot = torch.nn.functional.one_hot(actions, 17).float()
+    hidden = world.predictor(z[:, :-1, 0], world.action_encoder(one_hot))
+    upstream = world.predictor_projector(hidden.flatten(0, 1)).reshape(hidden.shape).detach()
+    upstream_updates = int(norm.num_batches_tracked) - int(tracked)
+    upstream_mean = norm.running_mean.clone()
+
+    norm.running_mean.copy_(mean); norm.num_batches_tracked.copy_(tracked)
+    torch.manual_seed(5)
+    ours = world.teacher(z, actions).predicted[:, :, 0].detach()
+    torch.testing.assert_close(ours, upstream, atol=0, rtol=0)
+    assert int(norm.num_batches_tracked) - int(tracked) == upstream_updates == 1
+    torch.testing.assert_close(norm.running_mean, upstream_mean, atol=0, rtol=0)
+
+
+def test_chunked_evaluation_continues_the_window_instead_of_restarting_it():
+    """A continuation carries its buffered pairs; dropping them restarts the window."""
+    from d4mj.world_api import ModelBundle
+    bundle = ModelBundle.create(transformer_config())
+    wake_adaln(bundle.world)
+    bundle.eval()
+    torch.manual_seed(1)
+    z, actions = torch.randn(2, 9, 1, 192), torch.randint(17, (2, 8))
+    whole = bundle.world.teacher(z, actions)
+    first = bundle.world.teacher(z[:, :4], actions[:, :3])
+    second = bundle.world.teacher(z[:, 3:], actions[:, 3:], state=first.state)
+    joined = torch.cat((first.predicted, second.predicted), 1)
+    torch.testing.assert_close(joined, whole.predicted, atol=1e-5, rtol=1e-5)
+    assert first.state.step == 3 and second.state.step == 8 == whole.state.step
+
+
+def test_bounded_prefill_reports_the_transitions_that_actually_happened():
+    """Truncating the scan is exact for the state's contents, never for its clock."""
+    from d4mj.world_api import ModelBundle
+    bundle = ModelBundle.create(transformer_config())
+    bundle.eval()
+    torch.manual_seed(2)
+    z, actions = torch.randn(2, 9, 1, 192), torch.randint(17, (2, 8))
+    assert bundle.prefill(z, actions).step == actions.shape[1] == 8
+    assert bundle.prefill(z[:, :2], actions[:, :1]).step == 1
+
+
+def test_streaming_refuses_training_mode_for_the_source_predictor():
+    """One step at a time is evaluation. Training mode would update the prediction
+    BatchNorm from a single row and keep dropout live, silently modifying the model
+    mid-rollout -- the same guard Mamba already has."""
+    import pytest
+    from d4mj.world_api import ModelBundle
+    bundle = ModelBundle.create(transformer_config())
+    bundle.eval()
+    torch.manual_seed(0)
+    z, actions = torch.randn(2, 4, 1, 192), torch.randint(17, (2, 3))
+    state = bundle.prefill(z, actions)
+    step = torch.randint(17, (2, 1))
+    bundle.advance(state, step)                      # eval: fine
+    bundle.world.train()
+    for call in (lambda: bundle.advance(state, step),
+                 lambda: bundle.world.observe_latent(state, step, z[:, :1])):
+        with pytest.raises(RuntimeError, match="predictor_normalization|predictor_dropout"):
+            call()
+    bundle.world.predictor_projector.eval()          # BN fixed but dropout still live
+    with pytest.raises(RuntimeError, match="predictor_dropout"):
+        bundle.advance(state, step)
+
+
+def test_the_run_seal_covers_the_world_that_produced_it():
+    """A backend edit must change the M03 run contract, or a completed report is returned
+    before any checkpoint source is revalidated."""
+    from d4mj.m03.gate import _run_contract, _sha, M03Settings
+    source = Path(__file__).resolve().parent.parent / "lewm_transformer.py"
+    original = source.read_text()
+
+    def digest():
+        return _sha(_run_contract(
+            raw_checkpoint=source, tc_checkpoint=source, dataset=source, settings=M03Settings(),
+            device="cpu", include_direct=False, structural_smoke=True, include_history=False))
+
+    before = digest()
+    try:
+        source.write_text(original + "\n# seal probe\n")
+        assert digest() != before
+    finally:
+        source.write_text(original)
+    assert digest() == before

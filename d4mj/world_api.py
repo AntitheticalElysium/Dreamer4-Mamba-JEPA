@@ -302,8 +302,11 @@ class LeWMTransformerWorldAdapter(ModelBundle):
         # `teacher` consumes z[:, :-1] as inputs, so a window of `context` *pairs* needs
         # `context + 1` latents; taking `context` would silently score one pair short.
         keep = min(z_context.shape[1], self.world.context + 1)
-        return self.world.teacher(z_context[:, -keep:], actions[:, -(keep - 1):] if keep > 1
-                                  else actions[:, :0]).state
+        state = self.world.teacher(z_context[:, -keep:], actions[:, -(keep - 1):] if keep > 1
+                                   else actions[:, :0]).state
+        # Truncating is exact for the state's contents but not for its clock: the prefix
+        # really did complete `actions.shape[1]` transitions.
+        return replace(state, step=actions.shape[1])
 
     def observe(self, state, action: Tensor | None, frame: Tensor, generator=None):
         if state is None:

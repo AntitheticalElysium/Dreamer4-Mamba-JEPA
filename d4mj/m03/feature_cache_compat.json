@@ -11,11 +11,19 @@
   "runtime": {
     "config.py": {
       "prior": "c1835e1e6e0fae9ca6a40e479f4036fcdc6f8c0c1fa446022aecf7502b5710b0",
-      "current": "ca32d8157a746a2e2be1e0ce423b39f46e07aaa0afa467ebc105bd2af9657c89"
+      "current": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f"
     },
     "data.py": {
       "prior": "85fbbe508e85f8dbd2d2a9bedd3ad0857ef605c11a2036e71ba8ec8168703145",
       "current": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea"
+    },
+    "state.py": {
+      "prior": "20c2fead5ec7a795b40d4a1d6db241f8d8d1432535e0bfd4f2378a139d21b118",
+      "current": "dcda26ce33cdefb76163c8067954646399e3315a3a01ac85a0d474b2f76cf594"
+    },
+    "world_api.py": {
+      "prior": "fcf2de2c77b1b261fb3633f30273130a7604d6bec547a3d953b7b0e3755d021c",
+      "current": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b"
     }
   },
   "changed_definitions": {
@@ -34,6 +42,8 @@
     "substitution": "runtime hashes only; the current `functions` digest is kept, so a hit requires every encode function and its transitive project-function closure to be byte-identical to the run that filled the cache",
     "reachability": "the changed definitions are referenced only from d4mj/{cache,train,lewm_diagnostics,experiments}.py; d4mj/m03 imports none of them, and takes only atomic_manifest, patchify and _sha256 from data.py, all three byte-identical to the reference commit",
     "recipe_dict": "the one changed config.py definition is reachable, and was checked behaviourally instead: all 18 stored resolved recipes round-trip byte for byte and all six paired checkpoints resolve their recorded recipe_id",
-    "measured_unix": 1789615804.214713
+    "measured_unix": 1789615804.214713,
+    "regenerated_unix": 1789686424.712919,
+    "backend_note": "config/state/world_api also carry the source-exact comparison backend now. The bridged arms are replay and Direct, whose encode functions are unchanged; the substitution swaps runtime hashes only and keeps the current `functions` digest, so a hit still requires every encode function and its transitive closure to be byte-identical."
   }
 }
