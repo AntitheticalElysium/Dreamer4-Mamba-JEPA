@@ -27,6 +27,28 @@ def small_config(**overrides):
     return replace(c, **overrides)
 
 
+def test_a_field_added_after_a_run_is_omitted_wherever_that_run_omitted_it():
+    """recipe_id is the digest of recipe_dict, so a later field must not appear in
+    an earlier run's dict -- that silently unloads its sealed checkpoints."""
+    from dataclasses import replace
+    base = small_config()
+    # v1 predates all three fields.
+    v1 = recipe_dict(base)["joint"]
+    assert not {"stride", "centering_stride", "centering"} & set(v1)
+    # v2 was sealed with `stride` but before the centering pair existed.
+    v2 = recipe_dict(replace(base, schema="d4mj_lewm_recipe_v2",
+                             joint=replace(base.joint, stride=4)))["joint"]
+    assert v2["stride"] == 4 and not {"centering_stride", "centering"} & set(v2)
+    # A recipe that customizes either centering field was written with both, so both
+    # are kept -- including `centering` sitting at its default, as the ablation's
+    # consecutive arm has it.
+    for joint in (replace(base.joint, centering_stride=4),
+                  replace(base.joint, centering_stride=4, centering="strided")):
+        kept = recipe_dict(replace(base, schema="d4mj_lewm_recipe_v2", joint=joint))["joint"]
+        assert kept["centering_stride"] == 4 and "centering" in kept
+    assert config_from_dict(recipe_dict(base)) == base
+
+
 def test_config_roundtrip_and_actual_statistical_batch():
     c = small_config()
     assert config_from_dict(recipe_dict(c)) == c

@@ -243,14 +243,18 @@ def canonical_json(value) -> str:
 
 def recipe_dict(config) -> dict:
     values = json.loads(canonical_json(asdict(config)))
-    # `joint.stride` postdates the v1 recipe, and recipe_id is the digest of this
-    # dict: omitting it at its default keeps every existing v1 checkpoint loadable.
-    # v2 recipes retain it, so a strided run can never collide with a v1 digest.
+    # recipe_id is the digest of this dict, so a field added after a run was sealed
+    # must be omitted wherever it was absent, or that run's checkpoints stop loading.
+    # `stride` postdates v1 only: every v2 recipe was written with it. The centering
+    # pair postdates v2 as well, and the two move together -- a recipe that customizes
+    # neither predates them, while one that customizes either was written with both.
     joint = values.get("joint")
-    if values.get("schema") == "d4mj_lewm_recipe_v1" and isinstance(joint, dict):
-        for field, default in (("stride", 1), ("centering_stride", 1), ("centering", "consecutive")):
-            if joint.get(field) == default:
-                joint.pop(field)
+    if isinstance(joint, dict) and str(values.get("schema", "")).startswith("d4mj_lewm_recipe_v"):
+        if values["schema"] == "d4mj_lewm_recipe_v1" and joint.get("stride") == 1:
+            joint.pop("stride", None)
+        if joint.get("centering_stride") == 1 and joint.get("centering") == "consecutive":
+            joint.pop("centering_stride", None)
+            joint.pop("centering", None)
     return values
 
 
