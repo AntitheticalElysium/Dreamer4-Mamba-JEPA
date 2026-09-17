@@ -78,6 +78,46 @@ Nor does better global risk decoding imply better action selection. After refitt
 within-root death-ranking AUC is 0.813 / 0.818 for the TC arms against 0.847 for action-only,
 over just 36 informative roots.
 
+## Completing the readout checks: the artifact is confined to outcomes
+
+Extended to the Mamba-state readouts and to continuous targets, on the same rows.
+
+**Mamba state** (mlp, c4, outcomes). The joint carries the same artifact as `z`, and
+refitting recovers it. `h` needs no refit -- the memory panel already fits it on TRAIN `h`,
+which is why its observed and generated scores are identical -- so it is a control, not a
+condition:
+
+| arm | z obs-fit | z gen-fit | joint obs-fit | joint gen-fit | h (native) | root+action |
+|---|---|---|---|---|---|---|
+| TC consecutive | 0.6375 | 0.7549 | 0.6468 | 0.7498 | 0.7538 | 0.7882 |
+| TC strided | 0.6098 | 0.7462 | 0.6064 | 0.7451 | 0.7735 | 0.7350 |
+
+(These `h` numbers use this experiment's probe, with actions concatenated; they are **not**
+protocol-identical to the memory panel's zero-padded equal-parameter inputs and do not
+overturn its `h` comparison.)
+
+**Successor state does not recover, and that is the point.** Binary targets, mlp:
+
+| arm | obs-fit | gen-fit |
+|---|---|---|
+| TC consecutive | 0.6353 | 0.6293 |
+| TC strided | 0.6305 | 0.6268 |
+| Direct-Mamba | 0.7518 | **0.7935** |
+| Direct-Attention | 0.7509 | **0.7941** |
+
+Continuous targets, mean R² -- starker still:
+
+| arm | obs-fit | gen-fit |
+|---|---|---|
+| TC consecutive | 0.005 | −0.006 |
+| TC strided | −0.144 | −0.220 |
+| Direct-Mamba | 0.075 | **0.183** |
+| Direct-Attention | 0.089 | **0.173** |
+
+Refitting rescues Direct's state decoding and does nothing for either TC arm. So the
+decoder artifact is **confined to outcome decoding**; the state-representation weakness is
+upstream of the decoder, and it is specific to LeWM rather than general to the setup.
+
 ## What this changes
 
 The generated-condition deficits reported across M03 and the memory supplement are
