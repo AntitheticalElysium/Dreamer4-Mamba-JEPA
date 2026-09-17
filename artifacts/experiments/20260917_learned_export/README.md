@@ -53,8 +53,10 @@ unseeded initialization the audit found.
 current export's 0.618. Whatever is missing is not capacity.
 
 **It is not merely supervision.** On the consecutive arm the *unsupervised* patch PCA alone
-reaches 0.7173, +0.099 over the current export with no labels at all. The information is
-genuinely present in the patch tokens and linearly accessible.
+reaches 0.7173 mlp and 0.6781 linear, against the current export's 0.6183 and 0.6190 -- so
+the gain survives without labels under both probe families. But it is **not uniformly better
+state**: continuous R² gets *worse*, −0.086 → −0.177. The evidence supports testing this
+representation, not adopting it.
 
 **But the two arms differ sharply, and that is new.** On the strided arm `patch_pca` gains
 only +0.011 (0.6377 against 0.6266), so most of that arm's learned gain is supervision. The
@@ -62,9 +64,12 @@ widened centering window appears to have made the patch information **less linea
 accessible**, which no earlier panel showed.
 
 **Relearning from CLS barely helps, and an unsupervised CLS basis is worse than the current
-export** (0.600 and 0.565 against 0.618 and 0.627). So the joint-trained projector is not
-badly fitted -- CLS is the lossy step, and the projector is making reasonable use of what
-reaches it.
+export** (0.600 and 0.565 against 0.618 and 0.627). Under *these* mappings -- a trained
+linear map and a principal basis, both read by linear and mlp probes -- nothing recovers from
+CLS what the patch route reaches. That is evidence about the mappings tested, **not** that
+CLS has irreversibly destroyed the information, and not a clean bill of health for the
+projector: a stronger nonlinear CLS readout remains an untested control and is worth running
+before concluding anything about CLS itself.
 
 **It matches Direct rather than beating it.** The right comparison is Direct's
 current-state-plus-action score, **0.7571** -- not the 0.8476 quoted in an earlier revision
