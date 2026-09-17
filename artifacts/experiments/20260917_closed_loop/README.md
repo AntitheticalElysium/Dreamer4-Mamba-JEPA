@@ -1,6 +1,15 @@
 # Does the richer-state gain survive repeated prediction?
 
-Status: **complete**, 2026-09-17. **No.** Frozen encoder, the worlds trained by
+Status: **superseded**, 2026-09-17. Its headline conclusion is **withdrawn** — see
+[`20260917_drift_decomposition`](../20260917_drift_decomposition/). This run evaluated at
+memory lengths the worlds were never trained on (three action-pairs trained, up to eleven
+carried), so feedback drift and history extrapolation were measured as one quantity. Matched
+to its training length, `u->u` **does** beat persistence (skill 0.586, not 1.19). Its sampler
+also excluded episode-ending transitions, so `termination` was silently dropped.
+
+The original text follows unchanged.
+
+Status: complete, 2026-09-17. **No.** Frozen encoder, the worlds trained by
 [`20260917_state_transition`](../20260917_state_transition/), rolled closed-loop — every
 step consumes the previous *prediction*, never a fresh image. Runner:
 [`closed_loop.py`](closed_loop.py), evidence in
