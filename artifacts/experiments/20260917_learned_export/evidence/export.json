@@ -1,0 +1,5330 @@
+{
+  "schema": "d4mj_learned_export_v1",
+  "question": "is 192-D from this frozen backbone too few, or did joint training choose a poor mapping into it?",
+  "scope": "positive control; frozen ViT, matched 192-D width, learned mapping only",
+  "asymmetry": "learned exports hold extra trainable parameters in the mapping; that is what makes this an upper bound rather than a matched comparison",
+  "sidecar_sha256": "ead287f0f9a1aac03d20db701100bd76f387fbac1ec4a03eab661fc82e2be3c0",
+  "script_sha256": "a9a8c10dd9b6385098e39661b2dfbaacd5a193af527682c0ee758d95c0b57fee",
+  "settings": {
+    "steps": 3000,
+    "head_width": 128,
+    "latent": 192
+  },
+  "arms": {
+    "consecutive": {
+      "checkpoint_sha256": "7bc9c14d7d7d10bd4cabeb22cd7f2af19e39ff8cb1d9b3758a14086e2a1f2789",
+      "exports": {
+        "cls_learned": {
+          "linear": {
+            "successor_binary": {
+              "targets": {
+                "front_lava": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "front_water": {
+                  "status": "measured",
+                  "positive": 78,
+                  "negative": 2098,
+                  "positive_seed_clusters": 10,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.5307313436484076,
+                  "interval": [
+                    0.3610040843486786,
+                    0.7320647835731506
+                  ]
+                },
+                "front_tree": {
+                  "status": "measured",
+                  "positive": 151,
+                  "negative": 2025,
+                  "positive_seed_clusters": 31,
+                  "negative_seed_clusters": 127,
+                  "auc": 0.5104766576731257,
+                  "interval": [
+                    0.3688814342021942,
+                    0.667746365070343
+                  ]
+                },
+                "front_resource": {
+                  "status": "measured",
+                  "positive": 241,
+                  "negative": 1935,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.7096786644793979,
+                  "interval": [
+                    0.5855052471160889,
+                    0.8185964226722717
+                  ]
+                },
+                "front_ripe_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "near_table": {
+                  "status": "measured",
+                  "positive": 149,
+                  "negative": 2027,
+                  "positive_seed_clusters": 24,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.7386192442297441,
+                  "interval": [
+                    0.6233041286468506,
+                    0.857702910900116
+                  ]
+                },
+                "near_furnace": {
+                  "status": "measured",
+                  "positive": 204,
+                  "negative": 1972,
+                  "positive_seed_clusters": 36,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.45603895716501613,
+                  "interval": [
+                    0.341464102268219,
+                    0.5742929577827454
+                  ]
+                },
+                "adjacent_mob": {
+                  "status": "measured",
+                  "positive": 400,
+                  "negative": 1776,
+                  "positive_seed_clusters": 62,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.6674901463963964,
+                  "interval": [
+                    0.5453697443008423,
+                    0.7850618362426758
+                  ]
+                },
+                "sleeping": {
+                  "status": "measured",
+                  "positive": 253,
+                  "negative": 1923,
+                  "positive_seed_clusters": 77,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.8901831172061112,
+                  "interval": [
+                    0.8215140700340271,
+                    0.9325827360153198
+                  ]
+                },
+                "move_left": {
+                  "status": "measured",
+                  "positive": 1157,
+                  "negative": 1019,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 102,
+                  "auc": 0.6434240358003466,
+                  "interval": [
+                    0.5488436818122864,
+                    0.7264848351478577
+                  ]
+                },
+                "move_right": {
+                  "status": "measured",
+                  "positive": 1156,
+                  "negative": 1020,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6360277155845037,
+                  "interval": [
+                    0.5524680614471436,
+                    0.7188085913658142
+                  ]
+                },
+                "move_up": {
+                  "status": "measured",
+                  "positive": 1152,
+                  "negative": 1024,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 103,
+                  "auc": 0.5438308715820312,
+                  "interval": [
+                    0.4465748965740204,
+                    0.6334232687950134
+                  ]
+                },
+                "move_down": {
+                  "status": "measured",
+                  "positive": 1222,
+                  "negative": 954,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6455590553342461,
+                  "interval": [
+                    0.5612943172454834,
+                    0.7269502878189087
+                  ]
+                },
+                "do": {
+                  "status": "measured",
+                  "positive": 1463,
+                  "negative": 713,
+                  "positive_seed_clusters": 111,
+                  "negative_seed_clusters": 95,
+                  "auc": 0.6983086301754642,
+                  "interval": [
+                    0.6181035041809082,
+                    0.7755758166313171
+                  ]
+                },
+                "sleep": {
+                  "status": "measured",
+                  "positive": 1549,
+                  "negative": 627,
+                  "positive_seed_clusters": 95,
+                  "negative_seed_clusters": 99,
+                  "auc": 0.9236560501553196,
+                  "interval": [
+                    0.8860287070274353,
+                    0.9513406753540039
+                  ]
+                },
+                "place_stone": {
+                  "status": "measured",
+                  "positive": 608,
+                  "negative": 1568,
+                  "positive_seed_clusters": 55,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.7401693407626209,
+                  "interval": [
+                    0.6579307913780212,
+                    0.8121253848075867
+                  ]
+                },
+                "place_table": {
+                  "status": "measured",
+                  "positive": 255,
+                  "negative": 1921,
+                  "positive_seed_clusters": 30,
+                  "negative_seed_clusters": 125,
+                  "auc": 0.5137091588327158,
+                  "interval": [
+                    0.3799782693386078,
+                    0.6709386110305786
+                  ]
+                },
+                "place_furnace": {
+                  "status": "measured",
+                  "positive": 550,
+                  "negative": 1626,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.7405959968690596,
+                  "interval": [
+                    0.658976674079895,
+                    0.8249984979629517
+                  ]
+                },
+                "place_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 79,
+                  "negative": 2097,
+                  "positive_seed_clusters": 8,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_pickaxe": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.6392716361294523,
+                  "interval": [
+                    0.44107547402381897,
+                    0.848330557346344
+                  ]
+                },
+                "make_stone_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_sword": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.6362072992080847,
+                  "interval": [
+                    0.45221441984176636,
+                    0.8589308857917786
+                  ]
+                },
+                "make_stone_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                }
+              },
+              "macro_auc": 0.6591098845128913,
+              "supported_targets": 18,
+              "total_targets": 25
+            },
+            "successor_continuous": {
+              "targets": {
+                "health": {
+                  "r2": -0.36322450637817383,
+                  "interval": [
+                    -0.6057702898979187,
+                    -0.16891227662563324
+                  ],
+                  "mae": 3.4798762798309326,
+                  "variance": 15.917303085327148,
+                  "status": "measured"
+                },
+                "food": {
+                  "r2": -5.780665874481201,
+                  "interval": [
+                    -7.583178520202637,
+                    -4.460918426513672
+                  ],
+                  "mae": 5.251263618469238,
+                  "variance": 4.77734375,
+                  "status": "measured"
+                },
+                "drink": {
+                  "r2": -1.8975918292999268,
+                  "interval": [
+                    -2.5797109603881836,
+                    -1.4069868326187134
+                  ],
+                  "mae": 3.0865015983581543,
+                  "variance": 4.524741172790527,
+                  "status": "measured"
+                },
+                "energy": {
+                  "r2": -13.825315475463867,
+                  "interval": [
+                    -21.38943099975586,
+                    -9.151960372924805
+                  ],
+                  "mae": 6.746977806091309,
+                  "variance": 3.18178391456604,
+                  "status": "measured"
+                },
+                "wood": {
+                  "r2": -0.5320982933044434,
+                  "interval": [
+                    -0.86913001537323,
+                    -0.28390830755233765
+                  ],
+                  "mae": 1.113173007965088,
+                  "variance": 1.7555011510849,
+                  "status": "measured"
+                },
+                "stone": {
+                  "r2": -0.45776355266571045,
+                  "interval": [
+                    -0.6797019243240356,
+                    -0.28235724568367004
+                  ],
+                  "mae": 2.9208226203918457,
+                  "variance": 10.743562698364258,
+                  "status": "measured"
+                },
+                "coal": {
+                  "r2": -0.12409079074859619,
+                  "interval": [
+                    -0.30600064992904663,
+                    0.023158587515354156
+                  ],
+                  "mae": 0.850766658782959,
+                  "variance": 1.55859375,
+                  "status": "measured"
+                },
+                "iron": {
+                  "r2": 0.03350025415420532,
+                  "interval": [
+                    -0.09924685209989548,
+                    0.14654091000556946
+                  ],
+                  "mae": 0.4541687071323395,
+                  "variance": 0.5956346988677979,
+                  "status": "measured"
+                },
+                "diamond": {
+                  "r2": -0.08894181251525879,
+                  "interval": [
+                    -9741122142208.0,
+                    0.08883339911699295
+                  ],
+                  "mae": 0.06439083814620972,
+                  "variance": 0.015380859375,
+                  "status": "measured"
+                },
+                "sapling": {
+                  "r2": -0.14588654041290283,
+                  "interval": [
+                    -0.59785395860672,
+                    -0.0029823912773281336
+                  ],
+                  "mae": 0.19728443026542664,
+                  "variance": 0.09265157580375671,
+                  "status": "measured"
+                },
+                "wood_pickaxe": {
+                  "r2": -0.9660869836807251,
+                  "interval": [
+                    -1.4205808639526367,
+                    -0.6190733313560486
+                  ],
+                  "mae": 0.8076648116111755,
+                  "variance": 0.5515785217285156,
+                  "status": "measured"
+                },
+                "stone_pickaxe": {
+                  "r2": -0.10697638988494873,
+                  "interval": [
+                    -0.2839128077030182,
+                    0.07471702247858047
+                  ],
+                  "mae": 0.46183279156684875,
+                  "variance": 0.3857455551624298,
+                  "status": "measured"
+                },
+                "iron_pickaxe": {
+                  "r2": -0.09215652942657471,
+                  "interval": [
+                    -0.5657617449760437,
+                    0.09233462810516357
+                  ],
+                  "mae": 0.2480286955833435,
+                  "variance": 0.113037109375,
+                  "status": "measured"
+                },
+                "wood_sword": {
+                  "r2": -0.5446631908416748,
+                  "interval": [
+                    -0.8469566106796265,
+                    -0.29355841875076294
+                  ],
+                  "mae": 0.6367672085762024,
+                  "variance": 0.4827882945537567,
+                  "status": "measured"
+                },
+                "stone_sword": {
+                  "r2": -0.012879252433776855,
+                  "interval": [
+                    -0.18765857815742493,
+                    0.13443370163440704
+                  ],
+                  "mae": 0.46900397539138794,
+                  "variance": 0.38459306955337524,
+                  "status": "measured"
+                },
+                "iron_sword": {
+                  "r2": -0.049695730209350586,
+                  "interval": [
+                    -0.33728620409965515,
+                    0.1020842120051384
+                  ],
+                  "mae": 0.2513482868671417,
+                  "variance": 0.171875,
+                  "status": "measured"
+                }
+              },
+              "mean_r2": -1.5596585310995579,
+              "supported_targets": 16,
+              "total_targets": 16
+            }
+          },
+          "mlp": {
+            "successor_binary": {
+              "targets": {
+                "front_lava": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "front_water": {
+                  "status": "measured",
+                  "positive": 78,
+                  "negative": 2098,
+                  "positive_seed_clusters": 10,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.34346508274058324,
+                  "interval": [
+                    0.1820625215768814,
+                    0.5769475698471069
+                  ]
+                },
+                "front_tree": {
+                  "status": "measured",
+                  "positive": 151,
+                  "negative": 2025,
+                  "positive_seed_clusters": 31,
+                  "negative_seed_clusters": 127,
+                  "auc": 0.473102771645818,
+                  "interval": [
+                    0.32157382369041443,
+                    0.652016282081604
+                  ]
+                },
+                "front_resource": {
+                  "status": "measured",
+                  "positive": 241,
+                  "negative": 1935,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.7012340913720823,
+                  "interval": [
+                    0.6001256108283997,
+                    0.7971392869949341
+                  ]
+                },
+                "front_ripe_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "near_table": {
+                  "status": "measured",
+                  "positive": 149,
+                  "negative": 2027,
+                  "positive_seed_clusters": 24,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.7302854418372111,
+                  "interval": [
+                    0.5785009264945984,
+                    0.86489337682724
+                  ]
+                },
+                "near_furnace": {
+                  "status": "measured",
+                  "positive": 204,
+                  "negative": 1972,
+                  "positive_seed_clusters": 36,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.4768623473730263,
+                  "interval": [
+                    0.3595127761363983,
+                    0.6171736717224121
+                  ]
+                },
+                "adjacent_mob": {
+                  "status": "measured",
+                  "positive": 400,
+                  "negative": 1776,
+                  "positive_seed_clusters": 62,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.5050760135135135,
+                  "interval": [
+                    0.389228492975235,
+                    0.6168902516365051
+                  ]
+                },
+                "sleeping": {
+                  "status": "measured",
+                  "positive": 253,
+                  "negative": 1923,
+                  "positive_seed_clusters": 77,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.9320807614913292,
+                  "interval": [
+                    0.8777984380722046,
+                    0.9713495969772339
+                  ]
+                },
+                "move_left": {
+                  "status": "measured",
+                  "positive": 1157,
+                  "negative": 1019,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 102,
+                  "auc": 0.6798367745760541,
+                  "interval": [
+                    0.5946863293647766,
+                    0.7620354294776917
+                  ]
+                },
+                "move_right": {
+                  "status": "measured",
+                  "positive": 1156,
+                  "negative": 1020,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6368512110726644,
+                  "interval": [
+                    0.5514561533927917,
+                    0.726281464099884
+                  ]
+                },
+                "move_up": {
+                  "status": "measured",
+                  "positive": 1152,
+                  "negative": 1024,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 103,
+                  "auc": 0.5317764282226562,
+                  "interval": [
+                    0.43872255086898804,
+                    0.6192671060562134
+                  ]
+                },
+                "move_down": {
+                  "status": "measured",
+                  "positive": 1222,
+                  "negative": 954,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6662171852858324,
+                  "interval": [
+                    0.5843033194541931,
+                    0.751616895198822
+                  ]
+                },
+                "do": {
+                  "status": "measured",
+                  "positive": 1463,
+                  "negative": 713,
+                  "positive_seed_clusters": 111,
+                  "negative_seed_clusters": 95,
+                  "auc": 0.6640431245140775,
+                  "interval": [
+                    0.5805115699768066,
+                    0.7478269934654236
+                  ]
+                },
+                "sleep": {
+                  "status": "measured",
+                  "positive": 1549,
+                  "negative": 627,
+                  "positive_seed_clusters": 95,
+                  "negative_seed_clusters": 99,
+                  "auc": 0.9433219765182661,
+                  "interval": [
+                    0.9048538208007812,
+                    0.970969021320343
+                  ]
+                },
+                "place_stone": {
+                  "status": "measured",
+                  "positive": 608,
+                  "negative": 1568,
+                  "positive_seed_clusters": 55,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.6860912745032224,
+                  "interval": [
+                    0.5967428684234619,
+                    0.7641733288764954
+                  ]
+                },
+                "place_table": {
+                  "status": "measured",
+                  "positive": 255,
+                  "negative": 1921,
+                  "positive_seed_clusters": 30,
+                  "negative_seed_clusters": 125,
+                  "auc": 0.5454859090955487,
+                  "interval": [
+                    0.41176557540893555,
+                    0.6809875965118408
+                  ]
+                },
+                "place_furnace": {
+                  "status": "measured",
+                  "positive": 550,
+                  "negative": 1626,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.7080163256178016,
+                  "interval": [
+                    0.6237537264823914,
+                    0.7906643748283386
+                  ]
+                },
+                "place_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 79,
+                  "negative": 2097,
+                  "positive_seed_clusters": 8,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_pickaxe": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.671613483082454,
+                  "interval": [
+                    0.49675625562667847,
+                    0.853979766368866
+                  ]
+                },
+                "make_stone_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_sword": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.6442679914793034,
+                  "interval": [
+                    0.4766760468482971,
+                    0.8476812839508057
+                  ]
+                },
+                "make_stone_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                }
+              },
+              "macro_auc": 0.6410904552189691,
+              "supported_targets": 18,
+              "total_targets": 25
+            },
+            "successor_continuous": {
+              "targets": {
+                "health": {
+                  "r2": 0.27783507108688354,
+                  "interval": [
+                    0.13443531095981598,
+                    0.3972766399383545
+                  ],
+                  "mae": 2.86879825592041,
+                  "variance": 15.917303085327148,
+                  "status": "measured"
+                },
+                "food": {
+                  "r2": -0.2599271535873413,
+                  "interval": [
+                    -0.45708203315734863,
+                    -0.10447434335947037
+                  ],
+                  "mae": 1.987933874130249,
+                  "variance": 4.77734375,
+                  "status": "measured"
+                },
+                "drink": {
+                  "r2": 0.2231971025466919,
+                  "interval": [
+                    0.02814403921365738,
+                    0.3471594452857971
+                  ],
+                  "mae": 1.516645073890686,
+                  "variance": 4.524741172790527,
+                  "status": "measured"
+                },
+                "energy": {
+                  "r2": 0.4644768238067627,
+                  "interval": [
+                    0.27030572295188904,
+                    0.6528469920158386
+                  ],
+                  "mae": 0.8208516240119934,
+                  "variance": 3.18178391456604,
+                  "status": "measured"
+                },
+                "wood": {
+                  "r2": -0.1971430778503418,
+                  "interval": [
+                    -0.49740687012672424,
+                    0.013126241974532604
+                  ],
+                  "mae": 1.0550638437271118,
+                  "variance": 1.7555011510849,
+                  "status": "measured"
+                },
+                "stone": {
+                  "r2": 0.2573660612106323,
+                  "interval": [
+                    0.09965887665748596,
+                    0.38045448064804077
+                  ],
+                  "mae": 2.23224139213562,
+                  "variance": 10.743562698364258,
+                  "status": "measured"
+                },
+                "coal": {
+                  "r2": 0.08082699775695801,
+                  "interval": [
+                    -0.23532544076442719,
+                    0.24956244230270386
+                  ],
+                  "mae": 0.8393090963363647,
+                  "variance": 1.55859375,
+                  "status": "measured"
+                },
+                "iron": {
+                  "r2": -0.05576908588409424,
+                  "interval": [
+                    -0.5180482864379883,
+                    0.13350394368171692
+                  ],
+                  "mae": 0.5089549422264099,
+                  "variance": 0.5956346988677979,
+                  "status": "measured"
+                },
+                "diamond": {
+                  "r2": -0.5988872051239014,
+                  "interval": [
+                    -31740030615552.0,
+                    -0.053352534770965576
+                  ],
+                  "mae": 0.09877733141183853,
+                  "variance": 0.015380859375,
+                  "status": "measured"
+                },
+                "sapling": {
+                  "r2": -0.3154938220977783,
+                  "interval": [
+                    -1.054855227470398,
+                    -0.13919542729854584
+                  ],
+                  "mae": 0.22273576259613037,
+                  "variance": 0.09265157580375671,
+                  "status": "measured"
+                },
+                "wood_pickaxe": {
+                  "r2": -0.05860424041748047,
+                  "interval": [
+                    -0.3459257483482361,
+                    0.17129425704479218
+                  ],
+                  "mae": 0.5757551789283752,
+                  "variance": 0.5515785217285156,
+                  "status": "measured"
+                },
+                "stone_pickaxe": {
+                  "r2": 0.14514565467834473,
+                  "interval": [
+                    -0.04821408540010452,
+                    0.33046749234199524
+                  ],
+                  "mae": 0.4011603593826294,
+                  "variance": 0.3857455551624298,
+                  "status": "measured"
+                },
+                "iron_pickaxe": {
+                  "r2": -0.424153208732605,
+                  "interval": [
+                    -1.1105866432189941,
+                    -0.13230302929878235
+                  ],
+                  "mae": 0.2714827060699463,
+                  "variance": 0.113037109375,
+                  "status": "measured"
+                },
+                "wood_sword": {
+                  "r2": 0.014643609523773193,
+                  "interval": [
+                    -0.15418627858161926,
+                    0.16871358454227448
+                  ],
+                  "mae": 0.5293292999267578,
+                  "variance": 0.4827882945537567,
+                  "status": "measured"
+                },
+                "stone_sword": {
+                  "r2": 0.23578721284866333,
+                  "interval": [
+                    0.030372032895684242,
+                    0.38038524985313416
+                  ],
+                  "mae": 0.4313775300979614,
+                  "variance": 0.38459306955337524,
+                  "status": "measured"
+                },
+                "iron_sword": {
+                  "r2": -0.044416069984436035,
+                  "interval": [
+                    -0.618911623954773,
+                    0.14191190898418427
+                  ],
+                  "mae": 0.2784223258495331,
+                  "variance": 0.171875,
+                  "status": "measured"
+                }
+              },
+              "mean_r2": -0.0159447081387043,
+              "supported_targets": 16,
+              "total_targets": 16
+            }
+          }
+        },
+        "patch_learned": {
+          "linear": {
+            "successor_binary": {
+              "targets": {
+                "front_lava": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "front_water": {
+                  "status": "measured",
+                  "positive": 78,
+                  "negative": 2098,
+                  "positive_seed_clusters": 10,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.8695766419789299,
+                  "interval": [
+                    0.7956828474998474,
+                    0.9451580047607422
+                  ]
+                },
+                "front_tree": {
+                  "status": "measured",
+                  "positive": 151,
+                  "negative": 2025,
+                  "positive_seed_clusters": 31,
+                  "negative_seed_clusters": 127,
+                  "auc": 0.7247714822990761,
+                  "interval": [
+                    0.6096449494361877,
+                    0.822582483291626
+                  ]
+                },
+                "front_resource": {
+                  "status": "measured",
+                  "positive": 241,
+                  "negative": 1935,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.8183730579947891,
+                  "interval": [
+                    0.7197616100311279,
+                    0.8961079120635986
+                  ]
+                },
+                "front_ripe_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "near_table": {
+                  "status": "measured",
+                  "positive": 149,
+                  "negative": 2027,
+                  "positive_seed_clusters": 24,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.5524347483469801,
+                  "interval": [
+                    0.35039621591567993,
+                    0.7644194960594177
+                  ]
+                },
+                "near_furnace": {
+                  "status": "measured",
+                  "positive": 204,
+                  "negative": 1972,
+                  "positive_seed_clusters": 36,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.6964662132601519,
+                  "interval": [
+                    0.5573807954788208,
+                    0.8339313268661499
+                  ]
+                },
+                "adjacent_mob": {
+                  "status": "measured",
+                  "positive": 400,
+                  "negative": 1776,
+                  "positive_seed_clusters": 62,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.6366328828828829,
+                  "interval": [
+                    0.5220993757247925,
+                    0.7485334873199463
+                  ]
+                },
+                "sleeping": {
+                  "status": "measured",
+                  "positive": 253,
+                  "negative": 1923,
+                  "positive_seed_clusters": 77,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.9082831297441621,
+                  "interval": [
+                    0.850824236869812,
+                    0.9459019303321838
+                  ]
+                },
+                "move_left": {
+                  "status": "measured",
+                  "positive": 1157,
+                  "negative": 1019,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 102,
+                  "auc": 0.699325605203807,
+                  "interval": [
+                    0.6197285056114197,
+                    0.7779324650764465
+                  ]
+                },
+                "move_right": {
+                  "status": "measured",
+                  "positive": 1156,
+                  "negative": 1020,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6884659746251441,
+                  "interval": [
+                    0.603340208530426,
+                    0.7665846347808838
+                  ]
+                },
+                "move_up": {
+                  "status": "measured",
+                  "positive": 1152,
+                  "negative": 1024,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 103,
+                  "auc": 0.7080290052625868,
+                  "interval": [
+                    0.6320202946662903,
+                    0.7855252623558044
+                  ]
+                },
+                "move_down": {
+                  "status": "measured",
+                  "positive": 1222,
+                  "negative": 954,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.7603131958812408,
+                  "interval": [
+                    0.6883234977722168,
+                    0.825760543346405
+                  ]
+                },
+                "do": {
+                  "status": "measured",
+                  "positive": 1463,
+                  "negative": 713,
+                  "positive_seed_clusters": 111,
+                  "negative_seed_clusters": 95,
+                  "auc": 0.7390911295834895,
+                  "interval": [
+                    0.6660237312316895,
+                    0.8056547045707703
+                  ]
+                },
+                "sleep": {
+                  "status": "measured",
+                  "positive": 1549,
+                  "negative": 627,
+                  "positive_seed_clusters": 95,
+                  "negative_seed_clusters": 99,
+                  "auc": 0.9347420726238979,
+                  "interval": [
+                    0.9041866660118103,
+                    0.9568225741386414
+                  ]
+                },
+                "place_stone": {
+                  "status": "measured",
+                  "positive": 608,
+                  "negative": 1568,
+                  "positive_seed_clusters": 55,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.8446363537191193,
+                  "interval": [
+                    0.7900004386901855,
+                    0.8927536606788635
+                  ]
+                },
+                "place_table": {
+                  "status": "measured",
+                  "positive": 255,
+                  "negative": 1921,
+                  "positive_seed_clusters": 30,
+                  "negative_seed_clusters": 125,
+                  "auc": 0.7178022067754743,
+                  "interval": [
+                    0.5972082018852234,
+                    0.8241822123527527
+                  ]
+                },
+                "place_furnace": {
+                  "status": "measured",
+                  "positive": 550,
+                  "negative": 1626,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.8387744604718774,
+                  "interval": [
+                    0.7866163849830627,
+                    0.8900609016418457
+                  ]
+                },
+                "place_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 79,
+                  "negative": 2097,
+                  "positive_seed_clusters": 8,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_pickaxe": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.6717974848375476,
+                  "interval": [
+                    0.41437068581581116,
+                    0.9399886131286621
+                  ]
+                },
+                "make_stone_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_sword": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.6901905833563335,
+                  "interval": [
+                    0.4778594374656677,
+                    0.9271615743637085
+                  ]
+                },
+                "make_stone_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                }
+              },
+              "macro_auc": 0.7499836793804161,
+              "supported_targets": 18,
+              "total_targets": 25
+            },
+            "successor_continuous": {
+              "targets": {
+                "health": {
+                  "r2": -0.3145385980606079,
+                  "interval": [
+                    -0.5483155846595764,
+                    -0.13405956327915192
+                  ],
+                  "mae": 3.5134105682373047,
+                  "variance": 15.917303085327148,
+                  "status": "measured"
+                },
+                "food": {
+                  "r2": -5.938179969787598,
+                  "interval": [
+                    -7.909790992736816,
+                    -4.610811233520508
+                  ],
+                  "mae": 5.379453659057617,
+                  "variance": 4.77734375,
+                  "status": "measured"
+                },
+                "drink": {
+                  "r2": -1.7697582244873047,
+                  "interval": [
+                    -2.492431640625,
+                    -1.3111499547958374
+                  ],
+                  "mae": 3.1167562007904053,
+                  "variance": 4.524741172790527,
+                  "status": "measured"
+                },
+                "energy": {
+                  "r2": -13.498441696166992,
+                  "interval": [
+                    -20.782865524291992,
+                    -8.966464042663574
+                  ],
+                  "mae": 6.681856632232666,
+                  "variance": 3.18178391456604,
+                  "status": "measured"
+                },
+                "wood": {
+                  "r2": -0.4300271272659302,
+                  "interval": [
+                    -0.7609821557998657,
+                    -0.19353964924812317
+                  ],
+                  "mae": 1.116654396057129,
+                  "variance": 1.7555011510849,
+                  "status": "measured"
+                },
+                "stone": {
+                  "r2": -0.30802130699157715,
+                  "interval": [
+                    -0.4905534088611603,
+                    -0.15911613404750824
+                  ],
+                  "mae": 3.1371583938598633,
+                  "variance": 10.743562698364258,
+                  "status": "measured"
+                },
+                "coal": {
+                  "r2": -0.01079094409942627,
+                  "interval": [
+                    -0.27239999175071716,
+                    0.11260975897312164
+                  ],
+                  "mae": 0.8976818323135376,
+                  "variance": 1.55859375,
+                  "status": "measured"
+                },
+                "iron": {
+                  "r2": 0.057158470153808594,
+                  "interval": [
+                    -0.2889426052570343,
+                    0.22381478548049927
+                  ],
+                  "mae": 0.4906206727027893,
+                  "variance": 0.5956346988677979,
+                  "status": "measured"
+                },
+                "diamond": {
+                  "r2": -0.18117928504943848,
+                  "interval": [
+                    -18610265260032.0,
+                    0.16212522983551025
+                  ],
+                  "mae": 0.07444054633378983,
+                  "variance": 0.015380859375,
+                  "status": "measured"
+                },
+                "sapling": {
+                  "r2": 0.08538854122161865,
+                  "interval": [
+                    -0.6103993654251099,
+                    0.2771974802017212
+                  ],
+                  "mae": 0.2048705369234085,
+                  "variance": 0.09265157580375671,
+                  "status": "measured"
+                },
+                "wood_pickaxe": {
+                  "r2": -0.8537627458572388,
+                  "interval": [
+                    -1.2673146724700928,
+                    -0.5778270363807678
+                  ],
+                  "mae": 0.793807864189148,
+                  "variance": 0.5515785217285156,
+                  "status": "measured"
+                },
+                "stone_pickaxe": {
+                  "r2": 0.2029622197151184,
+                  "interval": [
+                    0.07644317299127579,
+                    0.3255126476287842
+                  ],
+                  "mae": 0.42299914360046387,
+                  "variance": 0.3857455551624298,
+                  "status": "measured"
+                },
+                "iron_pickaxe": {
+                  "r2": 0.2673998475074768,
+                  "interval": [
+                    -0.11432712525129318,
+                    0.43972891569137573
+                  ],
+                  "mae": 0.1969584971666336,
+                  "variance": 0.113037109375,
+                  "status": "measured"
+                },
+                "wood_sword": {
+                  "r2": -0.20039260387420654,
+                  "interval": [
+                    -0.426562637090683,
+                    -0.009138978086411953
+                  ],
+                  "mae": 0.5727165341377258,
+                  "variance": 0.4827882945537567,
+                  "status": "measured"
+                },
+                "stone_sword": {
+                  "r2": 0.022798478603363037,
+                  "interval": [
+                    -0.21676510572433472,
+                    0.1869671642780304
+                  ],
+                  "mae": 0.49095261096954346,
+                  "variance": 0.38459306955337524,
+                  "status": "measured"
+                },
+                "iron_sword": {
+                  "r2": 0.28732192516326904,
+                  "interval": [
+                    -0.22445987164974213,
+                    0.4486510157585144
+                  ],
+                  "mae": 0.2687433958053589,
+                  "variance": 0.171875,
+                  "status": "measured"
+                }
+              },
+              "mean_r2": -1.411378938704729,
+              "supported_targets": 16,
+              "total_targets": 16
+            }
+          },
+          "mlp": {
+            "successor_binary": {
+              "targets": {
+                "front_lava": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "front_water": {
+                  "status": "measured",
+                  "positive": 78,
+                  "negative": 2098,
+                  "positive_seed_clusters": 10,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.8835704333797756,
+                  "interval": [
+                    0.79945307970047,
+                    0.9611997008323669
+                  ]
+                },
+                "front_tree": {
+                  "status": "measured",
+                  "positive": 151,
+                  "negative": 2025,
+                  "positive_seed_clusters": 31,
+                  "negative_seed_clusters": 127,
+                  "auc": 0.74180688414684,
+                  "interval": [
+                    0.6241044998168945,
+                    0.8398470282554626
+                  ]
+                },
+                "front_resource": {
+                  "status": "measured",
+                  "positive": 241,
+                  "negative": 1935,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.8145860808217269,
+                  "interval": [
+                    0.7023516297340393,
+                    0.9005916118621826
+                  ]
+                },
+                "front_ripe_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "near_table": {
+                  "status": "measured",
+                  "positive": 149,
+                  "negative": 2027,
+                  "positive_seed_clusters": 24,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.5361743973141119,
+                  "interval": [
+                    0.3547990620136261,
+                    0.7432867884635925
+                  ]
+                },
+                "near_furnace": {
+                  "status": "measured",
+                  "positive": 204,
+                  "negative": 1972,
+                  "positive_seed_clusters": 36,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.7464279322276578,
+                  "interval": [
+                    0.6108116507530212,
+                    0.8573665022850037
+                  ]
+                },
+                "adjacent_mob": {
+                  "status": "measured",
+                  "positive": 400,
+                  "negative": 1776,
+                  "positive_seed_clusters": 62,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.6415287162162162,
+                  "interval": [
+                    0.5350322127342224,
+                    0.7432698011398315
+                  ]
+                },
+                "sleeping": {
+                  "status": "measured",
+                  "positive": 253,
+                  "negative": 1923,
+                  "positive_seed_clusters": 77,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.9541395094538959,
+                  "interval": [
+                    0.9160982370376587,
+                    0.9835052490234375
+                  ]
+                },
+                "move_left": {
+                  "status": "measured",
+                  "positive": 1157,
+                  "negative": 1019,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 102,
+                  "auc": 0.7189654134113893,
+                  "interval": [
+                    0.6409911513328552,
+                    0.79448401927948
+                  ]
+                },
+                "move_right": {
+                  "status": "measured",
+                  "positive": 1156,
+                  "negative": 1020,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6882132437750187,
+                  "interval": [
+                    0.6020562052726746,
+                    0.7619649767875671
+                  ]
+                },
+                "move_up": {
+                  "status": "measured",
+                  "positive": 1152,
+                  "negative": 1024,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 103,
+                  "auc": 0.6697938707139757,
+                  "interval": [
+                    0.5884236693382263,
+                    0.7489206790924072
+                  ]
+                },
+                "move_down": {
+                  "status": "measured",
+                  "positive": 1222,
+                  "negative": 954,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.7738087885618997,
+                  "interval": [
+                    0.6998192667961121,
+                    0.8365996479988098
+                  ]
+                },
+                "do": {
+                  "status": "measured",
+                  "positive": 1463,
+                  "negative": 713,
+                  "positive_seed_clusters": 111,
+                  "negative_seed_clusters": 95,
+                  "auc": 0.7587791996886262,
+                  "interval": [
+                    0.6888200044631958,
+                    0.8256767988204956
+                  ]
+                },
+                "sleep": {
+                  "status": "measured",
+                  "positive": 1549,
+                  "negative": 627,
+                  "positive_seed_clusters": 95,
+                  "negative_seed_clusters": 99,
+                  "auc": 0.9578068064697809,
+                  "interval": [
+                    0.9281554818153381,
+                    0.9809390306472778
+                  ]
+                },
+                "place_stone": {
+                  "status": "measured",
+                  "positive": 608,
+                  "negative": 1568,
+                  "positive_seed_clusters": 55,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.8559051087540279,
+                  "interval": [
+                    0.8021828532218933,
+                    0.9034009575843811
+                  ]
+                },
+                "place_table": {
+                  "status": "measured",
+                  "positive": 255,
+                  "negative": 1921,
+                  "positive_seed_clusters": 30,
+                  "negative_seed_clusters": 125,
+                  "auc": 0.7307366465586755,
+                  "interval": [
+                    0.6061282157897949,
+                    0.8334687948226929
+                  ]
+                },
+                "place_furnace": {
+                  "status": "measured",
+                  "positive": 550,
+                  "negative": 1626,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.8395292407469529,
+                  "interval": [
+                    0.7828415036201477,
+                    0.8895775675773621
+                  ]
+                },
+                "place_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 79,
+                  "negative": 2097,
+                  "positive_seed_clusters": 8,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_pickaxe": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.7084492190540894,
+                  "interval": [
+                    0.509570300579071,
+                    0.9240067601203918
+                  ]
+                },
+                "make_stone_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_sword": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.7229145878006836,
+                  "interval": [
+                    0.532808780670166,
+                    0.9301799535751343
+                  ]
+                },
+                "make_stone_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                }
+              },
+              "macro_auc": 0.7635075599497413,
+              "supported_targets": 18,
+              "total_targets": 25
+            },
+            "successor_continuous": {
+              "targets": {
+                "health": {
+                  "r2": 0.3021667003631592,
+                  "interval": [
+                    0.09244363754987717,
+                    0.4781220555305481
+                  ],
+                  "mae": 2.629465341567993,
+                  "variance": 15.917303085327148,
+                  "status": "measured"
+                },
+                "food": {
+                  "r2": 0.03311282396316528,
+                  "interval": [
+                    -0.186134934425354,
+                    0.19320468604564667
+                  ],
+                  "mae": 1.6514805555343628,
+                  "variance": 4.77734375,
+                  "status": "measured"
+                },
+                "drink": {
+                  "r2": 0.2446264624595642,
+                  "interval": [
+                    0.062401000410318375,
+                    0.4165036678314209
+                  ],
+                  "mae": 1.4008857011795044,
+                  "variance": 4.524741172790527,
+                  "status": "measured"
+                },
+                "energy": {
+                  "r2": 0.5091257691383362,
+                  "interval": [
+                    0.36074140667915344,
+                    0.647484540939331
+                  ],
+                  "mae": 0.7975545525550842,
+                  "variance": 3.18178391456604,
+                  "status": "measured"
+                },
+                "wood": {
+                  "r2": -0.1310807466506958,
+                  "interval": [
+                    -0.5011574029922485,
+                    0.12320996075868607
+                  ],
+                  "mae": 0.9828575253486633,
+                  "variance": 1.7555011510849,
+                  "status": "measured"
+                },
+                "stone": {
+                  "r2": 0.5933224558830261,
+                  "interval": [
+                    0.4441291391849518,
+                    0.7028933167457581
+                  ],
+                  "mae": 1.3887463808059692,
+                  "variance": 10.743562698364258,
+                  "status": "measured"
+                },
+                "coal": {
+                  "r2": 0.1964026689529419,
+                  "interval": [
+                    -0.17104294896125793,
+                    0.3929068148136139
+                  ],
+                  "mae": 0.7381286025047302,
+                  "variance": 1.55859375,
+                  "status": "measured"
+                },
+                "iron": {
+                  "r2": 0.21044081449508667,
+                  "interval": [
+                    -0.3555218577384949,
+                    0.3917616307735443
+                  ],
+                  "mae": 0.44837766885757446,
+                  "variance": 0.5956346988677979,
+                  "status": "measured"
+                },
+                "diamond": {
+                  "r2": -0.6291149854660034,
+                  "interval": [
+                    -31692043583488.0,
+                    -0.04104560613632202
+                  ],
+                  "mae": 0.09914248436689377,
+                  "variance": 0.015380859375,
+                  "status": "measured"
+                },
+                "sapling": {
+                  "r2": -0.08215939998626709,
+                  "interval": [
+                    -1.1416752338409424,
+                    0.1609388291835785
+                  ],
+                  "mae": 0.2353084832429886,
+                  "variance": 0.09265157580375671,
+                  "status": "measured"
+                },
+                "wood_pickaxe": {
+                  "r2": 0.3590409755706787,
+                  "interval": [
+                    0.24347010254859924,
+                    0.4453990161418915
+                  ],
+                  "mae": 0.4720681607723236,
+                  "variance": 0.5515785217285156,
+                  "status": "measured"
+                },
+                "stone_pickaxe": {
+                  "r2": 0.5551661849021912,
+                  "interval": [
+                    0.44287344813346863,
+                    0.6585234999656677
+                  ],
+                  "mae": 0.27920183539390564,
+                  "variance": 0.3857455551624298,
+                  "status": "measured"
+                },
+                "iron_pickaxe": {
+                  "r2": 0.1309325098991394,
+                  "interval": [
+                    -0.2092505842447281,
+                    0.44291797280311584
+                  ],
+                  "mae": 0.1856045424938202,
+                  "variance": 0.113037109375,
+                  "status": "measured"
+                },
+                "wood_sword": {
+                  "r2": 0.38542646169662476,
+                  "interval": [
+                    0.27323684096336365,
+                    0.4806879758834839
+                  ],
+                  "mae": 0.40462952852249146,
+                  "variance": 0.4827882945537567,
+                  "status": "measured"
+                },
+                "stone_sword": {
+                  "r2": 0.13849812746047974,
+                  "interval": [
+                    -0.2137630730867386,
+                    0.38931360840797424
+                  ],
+                  "mae": 0.41287875175476074,
+                  "variance": 0.38459306955337524,
+                  "status": "measured"
+                },
+                "iron_sword": {
+                  "r2": 0.4261859059333801,
+                  "interval": [
+                    -0.04109309986233711,
+                    0.6301310062408447
+                  ],
+                  "mae": 0.20212885737419128,
+                  "variance": 0.171875,
+                  "status": "measured"
+                }
+              },
+              "mean_r2": 0.20263079553842545,
+              "supported_targets": 16,
+              "total_targets": 16
+            }
+          }
+        },
+        "current": {
+          "linear": {
+            "successor_binary": {
+              "targets": {
+                "front_lava": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "front_water": {
+                  "status": "measured",
+                  "positive": 78,
+                  "negative": 2098,
+                  "positive_seed_clusters": 10,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.6248869497201242,
+                  "interval": [
+                    0.4438050091266632,
+                    0.7890074253082275
+                  ]
+                },
+                "front_tree": {
+                  "status": "measured",
+                  "positive": 151,
+                  "negative": 2025,
+                  "positive_seed_clusters": 31,
+                  "negative_seed_clusters": 127,
+                  "auc": 0.4840356471261549,
+                  "interval": [
+                    0.3409867286682129,
+                    0.6370874643325806
+                  ]
+                },
+                "front_resource": {
+                  "status": "measured",
+                  "positive": 241,
+                  "negative": 1935,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.5258301435663203,
+                  "interval": [
+                    0.40891048312187195,
+                    0.6761301755905151
+                  ]
+                },
+                "front_ripe_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "near_table": {
+                  "status": "measured",
+                  "positive": 149,
+                  "negative": 2027,
+                  "positive_seed_clusters": 24,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.795462597219417,
+                  "interval": [
+                    0.6773063540458679,
+                    0.8889055252075195
+                  ]
+                },
+                "near_furnace": {
+                  "status": "measured",
+                  "positive": 204,
+                  "negative": 1972,
+                  "positive_seed_clusters": 36,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.40921678001829537,
+                  "interval": [
+                    0.31291109323501587,
+                    0.5157124400138855
+                  ]
+                },
+                "adjacent_mob": {
+                  "status": "measured",
+                  "positive": 400,
+                  "negative": 1776,
+                  "positive_seed_clusters": 62,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.5120199887387388,
+                  "interval": [
+                    0.39449602365493774,
+                    0.6298707723617554
+                  ]
+                },
+                "sleeping": {
+                  "status": "measured",
+                  "positive": 253,
+                  "negative": 1923,
+                  "positive_seed_clusters": 77,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.8222268811701084,
+                  "interval": [
+                    0.7479785084724426,
+                    0.8752334713935852
+                  ]
+                },
+                "move_left": {
+                  "status": "measured",
+                  "positive": 1157,
+                  "negative": 1019,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 102,
+                  "auc": 0.600677872369661,
+                  "interval": [
+                    0.5120641589164734,
+                    0.686953604221344
+                  ]
+                },
+                "move_right": {
+                  "status": "measured",
+                  "positive": 1156,
+                  "negative": 1020,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.5970952914037587,
+                  "interval": [
+                    0.5138154029846191,
+                    0.6838628053665161
+                  ]
+                },
+                "move_up": {
+                  "status": "measured",
+                  "positive": 1152,
+                  "negative": 1024,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 103,
+                  "auc": 0.5075556437174479,
+                  "interval": [
+                    0.4150145947933197,
+                    0.5962319374084473
+                  ]
+                },
+                "move_down": {
+                  "status": "measured",
+                  "positive": 1222,
+                  "negative": 954,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6005367185114274,
+                  "interval": [
+                    0.5141965746879578,
+                    0.6857434511184692
+                  ]
+                },
+                "do": {
+                  "status": "measured",
+                  "positive": 1463,
+                  "negative": 713,
+                  "positive_seed_clusters": 111,
+                  "negative_seed_clusters": 95,
+                  "auc": 0.5768450195998731,
+                  "interval": [
+                    0.497952938079834,
+                    0.6554835438728333
+                  ]
+                },
+                "sleep": {
+                  "status": "measured",
+                  "positive": 1549,
+                  "negative": 627,
+                  "positive_seed_clusters": 95,
+                  "negative_seed_clusters": 99,
+                  "auc": 0.8181241589212777,
+                  "interval": [
+                    0.7514438629150391,
+                    0.8760747909545898
+                  ]
+                },
+                "place_stone": {
+                  "status": "measured",
+                  "positive": 608,
+                  "negative": 1568,
+                  "positive_seed_clusters": 55,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.6803095210123523,
+                  "interval": [
+                    0.6014028787612915,
+                    0.7554439306259155
+                  ]
+                },
+                "place_table": {
+                  "status": "measured",
+                  "positive": 255,
+                  "negative": 1921,
+                  "positive_seed_clusters": 30,
+                  "negative_seed_clusters": 125,
+                  "auc": 0.5557705851731635,
+                  "interval": [
+                    0.43321457505226135,
+                    0.6931355595588684
+                  ]
+                },
+                "place_furnace": {
+                  "status": "measured",
+                  "positive": 550,
+                  "negative": 1626,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.6705289052890528,
+                  "interval": [
+                    0.5858474373817444,
+                    0.7570077180862427
+                  ]
+                },
+                "place_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 79,
+                  "negative": 2097,
+                  "positive_seed_clusters": 8,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_pickaxe": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.6721867193194766,
+                  "interval": [
+                    0.48313578963279724,
+                    0.8808751702308655
+                  ]
+                },
+                "make_stone_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_sword": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.6892422666185432,
+                  "interval": [
+                    0.5326521992683411,
+                    0.8965818881988525
+                  ]
+                },
+                "make_stone_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                }
+              },
+              "macro_auc": 0.6190306494163996,
+              "supported_targets": 18,
+              "total_targets": 25
+            },
+            "successor_continuous": {
+              "targets": {
+                "health": {
+                  "r2": -0.6953080892562866,
+                  "interval": [
+                    -1.0049482583999634,
+                    -0.47661834955215454
+                  ],
+                  "mae": 3.707595109939575,
+                  "variance": 15.917303085327148,
+                  "status": "measured"
+                },
+                "food": {
+                  "r2": -5.770267009735107,
+                  "interval": [
+                    -7.630683898925781,
+                    -4.40471887588501
+                  ],
+                  "mae": 5.216152191162109,
+                  "variance": 4.77734375,
+                  "status": "measured"
+                },
+                "drink": {
+                  "r2": -2.2837729454040527,
+                  "interval": [
+                    -3.073450803756714,
+                    -1.7387731075286865
+                  ],
+                  "mae": 3.2012619972229004,
+                  "variance": 4.524741172790527,
+                  "status": "measured"
+                },
+                "energy": {
+                  "r2": -14.874370574951172,
+                  "interval": [
+                    -22.916227340698242,
+                    -9.985536575317383
+                  ],
+                  "mae": 6.906099319458008,
+                  "variance": 3.18178391456604,
+                  "status": "measured"
+                },
+                "wood": {
+                  "r2": -0.5306288003921509,
+                  "interval": [
+                    -0.822677731513977,
+                    -0.3021569848060608
+                  ],
+                  "mae": 1.0752755403518677,
+                  "variance": 1.7555011510849,
+                  "status": "measured"
+                },
+                "stone": {
+                  "r2": -0.49956202507019043,
+                  "interval": [
+                    -0.7129673957824707,
+                    -0.33832645416259766
+                  ],
+                  "mae": 2.6946985721588135,
+                  "variance": 10.743562698364258,
+                  "status": "measured"
+                },
+                "coal": {
+                  "r2": -0.19164752960205078,
+                  "interval": [
+                    -0.35815951228141785,
+                    -0.07130995392799377
+                  ],
+                  "mae": 0.8237576484680176,
+                  "variance": 1.55859375,
+                  "status": "measured"
+                },
+                "iron": {
+                  "r2": -0.0698479413986206,
+                  "interval": [
+                    -0.18987423181533813,
+                    0.04502587020397186
+                  ],
+                  "mae": 0.4165917932987213,
+                  "variance": 0.5956346988677979,
+                  "status": "measured"
+                },
+                "diamond": {
+                  "r2": -0.28247082233428955,
+                  "interval": [
+                    -13346673786880.0,
+                    -0.05747493356466293
+                  ],
+                  "mae": 0.07131405174732208,
+                  "variance": 0.015380859375,
+                  "status": "measured"
+                },
+                "sapling": {
+                  "r2": -0.030053019523620605,
+                  "interval": [
+                    -0.35292816162109375,
+                    0.057045117020606995
+                  ],
+                  "mae": 0.17894047498703003,
+                  "variance": 0.09265157580375671,
+                  "status": "measured"
+                },
+                "wood_pickaxe": {
+                  "r2": -0.9251230955123901,
+                  "interval": [
+                    -1.3165223598480225,
+                    -0.6464737057685852
+                  ],
+                  "mae": 0.8142703771591187,
+                  "variance": 0.5515785217285156,
+                  "status": "measured"
+                },
+                "stone_pickaxe": {
+                  "r2": -0.17870569229125977,
+                  "interval": [
+                    -0.355874240398407,
+                    -0.013677260838449001
+                  ],
+                  "mae": 0.4515758156776428,
+                  "variance": 0.3857455551624298,
+                  "status": "measured"
+                },
+                "iron_pickaxe": {
+                  "r2": -0.1021416187286377,
+                  "interval": [
+                    -0.3691283166408539,
+                    -0.001027698628604412
+                  ],
+                  "mae": 0.2311311811208725,
+                  "variance": 0.113037109375,
+                  "status": "measured"
+                },
+                "wood_sword": {
+                  "r2": -0.5159220695495605,
+                  "interval": [
+                    -0.7848514318466187,
+                    -0.3063604533672333
+                  ],
+                  "mae": 0.6250110864639282,
+                  "variance": 0.4827882945537567,
+                  "status": "measured"
+                },
+                "stone_sword": {
+                  "r2": -0.13277876377105713,
+                  "interval": [
+                    -0.33643579483032227,
+                    0.03194355592131615
+                  ],
+                  "mae": 0.48588988184928894,
+                  "variance": 0.38459306955337524,
+                  "status": "measured"
+                },
+                "iron_sword": {
+                  "r2": -0.1401461362838745,
+                  "interval": [
+                    -0.39908942580223083,
+                    0.06165110692381859
+                  ],
+                  "mae": 0.24104954302310944,
+                  "variance": 0.171875,
+                  "status": "measured"
+                }
+              },
+              "mean_r2": -1.70142163336277,
+              "supported_targets": 16,
+              "total_targets": 16
+            }
+          },
+          "mlp": {
+            "successor_binary": {
+              "targets": {
+                "front_lava": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "front_water": {
+                  "status": "measured",
+                  "positive": 78,
+                  "negative": 2098,
+                  "positive_seed_clusters": 10,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.4331781183544768,
+                  "interval": [
+                    0.28683629631996155,
+                    0.6007605791091919
+                  ]
+                },
+                "front_tree": {
+                  "status": "measured",
+                  "positive": 151,
+                  "negative": 2025,
+                  "positive_seed_clusters": 31,
+                  "negative_seed_clusters": 127,
+                  "auc": 0.4033979233096231,
+                  "interval": [
+                    0.24505048990249634,
+                    0.613241970539093
+                  ]
+                },
+                "front_resource": {
+                  "status": "measured",
+                  "positive": 241,
+                  "negative": 1935,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.5622546023781188,
+                  "interval": [
+                    0.4478200674057007,
+                    0.6936882138252258
+                  ]
+                },
+                "front_ripe_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "near_table": {
+                  "status": "measured",
+                  "positive": 149,
+                  "negative": 2027,
+                  "positive_seed_clusters": 24,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.7422944610178694,
+                  "interval": [
+                    0.5985250473022461,
+                    0.8603404760360718
+                  ]
+                },
+                "near_furnace": {
+                  "status": "measured",
+                  "positive": 204,
+                  "negative": 1972,
+                  "positive_seed_clusters": 36,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.4784631905500537,
+                  "interval": [
+                    0.37443774938583374,
+                    0.599312424659729
+                  ]
+                },
+                "adjacent_mob": {
+                  "status": "measured",
+                  "positive": 400,
+                  "negative": 1776,
+                  "positive_seed_clusters": 62,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.485830518018018,
+                  "interval": [
+                    0.3748597502708435,
+                    0.5949509143829346
+                  ]
+                },
+                "sleeping": {
+                  "status": "measured",
+                  "positive": 253,
+                  "negative": 1923,
+                  "positive_seed_clusters": 77,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.8749319142726183,
+                  "interval": [
+                    0.8191989064216614,
+                    0.9254999756813049
+                  ]
+                },
+                "move_left": {
+                  "status": "measured",
+                  "positive": 1157,
+                  "negative": 1019,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 102,
+                  "auc": 0.637017666921406,
+                  "interval": [
+                    0.5483182072639465,
+                    0.7251668572425842
+                  ]
+                },
+                "move_right": {
+                  "status": "measured",
+                  "positive": 1156,
+                  "negative": 1020,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6161145600108555,
+                  "interval": [
+                    0.5298067331314087,
+                    0.6973565816879272
+                  ]
+                },
+                "move_up": {
+                  "status": "measured",
+                  "positive": 1152,
+                  "negative": 1024,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 103,
+                  "auc": 0.5487645467122396,
+                  "interval": [
+                    0.453970342874527,
+                    0.6352102160453796
+                  ]
+                },
+                "move_down": {
+                  "status": "measured",
+                  "positive": 1222,
+                  "negative": 954,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6566862928765779,
+                  "interval": [
+                    0.5760593414306641,
+                    0.7366180419921875
+                  ]
+                },
+                "do": {
+                  "status": "measured",
+                  "positive": 1463,
+                  "negative": 713,
+                  "positive_seed_clusters": 111,
+                  "negative_seed_clusters": 95,
+                  "auc": 0.5865907916546435,
+                  "interval": [
+                    0.5000617504119873,
+                    0.6684597730636597
+                  ]
+                },
+                "sleep": {
+                  "status": "measured",
+                  "positive": 1549,
+                  "negative": 627,
+                  "positive_seed_clusters": 95,
+                  "negative_seed_clusters": 99,
+                  "auc": 0.9084216498167774,
+                  "interval": [
+                    0.8634616732597351,
+                    0.9431769847869873
+                  ]
+                },
+                "place_stone": {
+                  "status": "measured",
+                  "positive": 608,
+                  "negative": 1568,
+                  "positive_seed_clusters": 55,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.6697414574382384,
+                  "interval": [
+                    0.5846293568611145,
+                    0.7482069134712219
+                  ]
+                },
+                "place_table": {
+                  "status": "measured",
+                  "positive": 255,
+                  "negative": 1921,
+                  "positive_seed_clusters": 30,
+                  "negative_seed_clusters": 125,
+                  "auc": 0.5651162078574272,
+                  "interval": [
+                    0.44009074568748474,
+                    0.69936603307724
+                  ]
+                },
+                "place_furnace": {
+                  "status": "measured",
+                  "positive": 550,
+                  "negative": 1626,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.6658436766185843,
+                  "interval": [
+                    0.5833622217178345,
+                    0.7481211423873901
+                  ]
+                },
+                "place_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 79,
+                  "negative": 2097,
+                  "positive_seed_clusters": 8,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_pickaxe": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.6503258954162332,
+                  "interval": [
+                    0.48015856742858887,
+                    0.8332917094230652
+                  ]
+                },
+                "make_stone_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_sword": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.6439742963702115,
+                  "interval": [
+                    0.4575539529323578,
+                    0.8462797999382019
+                  ]
+                },
+                "make_stone_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                }
+              },
+              "macro_auc": 0.618274876088554,
+              "supported_targets": 18,
+              "total_targets": 25
+            },
+            "successor_continuous": {
+              "targets": {
+                "health": {
+                  "r2": 0.030343294143676758,
+                  "interval": [
+                    -0.11217634379863739,
+                    0.1597394049167633
+                  ],
+                  "mae": 3.4567229747772217,
+                  "variance": 15.917303085327148,
+                  "status": "measured"
+                },
+                "food": {
+                  "r2": -0.19870209693908691,
+                  "interval": [
+                    -0.37512490153312683,
+                    -0.06893078237771988
+                  ],
+                  "mae": 1.959578514099121,
+                  "variance": 4.77734375,
+                  "status": "measured"
+                },
+                "drink": {
+                  "r2": 0.04368269443511963,
+                  "interval": [
+                    -0.11286014318466187,
+                    0.1600801795721054
+                  ],
+                  "mae": 1.7334703207015991,
+                  "variance": 4.524741172790527,
+                  "status": "measured"
+                },
+                "energy": {
+                  "r2": 0.438292920589447,
+                  "interval": [
+                    0.2609596252441406,
+                    0.619450569152832
+                  ],
+                  "mae": 0.8790850043296814,
+                  "variance": 3.18178391456604,
+                  "status": "measured"
+                },
+                "wood": {
+                  "r2": -0.15688037872314453,
+                  "interval": [
+                    -0.4100879728794098,
+                    0.025775495916604996
+                  ],
+                  "mae": 1.0252046585083008,
+                  "variance": 1.7555011510849,
+                  "status": "measured"
+                },
+                "stone": {
+                  "r2": 0.15567952394485474,
+                  "interval": [
+                    0.01628692075610161,
+                    0.2615496516227722
+                  ],
+                  "mae": 2.447336196899414,
+                  "variance": 10.743562698364258,
+                  "status": "measured"
+                },
+                "coal": {
+                  "r2": -0.09923040866851807,
+                  "interval": [
+                    -0.4801243841648102,
+                    0.08247271925210953
+                  ],
+                  "mae": 0.9210044145584106,
+                  "variance": 1.55859375,
+                  "status": "measured"
+                },
+                "iron": {
+                  "r2": -0.10971426963806152,
+                  "interval": [
+                    -0.5432109236717224,
+                    0.14102721214294434
+                  ],
+                  "mae": 0.5323646664619446,
+                  "variance": 0.5956346988677979,
+                  "status": "measured"
+                },
+                "diamond": {
+                  "r2": -0.6799402236938477,
+                  "interval": [
+                    -20645347852288.0,
+                    -0.33338311314582825
+                  ],
+                  "mae": 0.0882464051246643,
+                  "variance": 0.015380859375,
+                  "status": "measured"
+                },
+                "sapling": {
+                  "r2": -0.30570733547210693,
+                  "interval": [
+                    -0.754069447517395,
+                    -0.11646658927202225
+                  ],
+                  "mae": 0.2081451714038849,
+                  "variance": 0.09265157580375671,
+                  "status": "measured"
+                },
+                "wood_pickaxe": {
+                  "r2": -0.20007085800170898,
+                  "interval": [
+                    -0.47222182154655457,
+                    0.01782754436135292
+                  ],
+                  "mae": 0.6232425570487976,
+                  "variance": 0.5515785217285156,
+                  "status": "measured"
+                },
+                "stone_pickaxe": {
+                  "r2": -0.023340344429016113,
+                  "interval": [
+                    -0.21884989738464355,
+                    0.15435731410980225
+                  ],
+                  "mae": 0.47856736183166504,
+                  "variance": 0.3857455551624298,
+                  "status": "measured"
+                },
+                "iron_pickaxe": {
+                  "r2": -0.16793227195739746,
+                  "interval": [
+                    -0.5502486228942871,
+                    -0.011350145563483238
+                  ],
+                  "mae": 0.25077083706855774,
+                  "variance": 0.113037109375,
+                  "status": "measured"
+                },
+                "wood_sword": {
+                  "r2": -0.05527901649475098,
+                  "interval": [
+                    -0.2548999786376953,
+                    0.08579345792531967
+                  ],
+                  "mae": 0.5925920009613037,
+                  "variance": 0.4827882945537567,
+                  "status": "measured"
+                },
+                "stone_sword": {
+                  "r2": -0.016307711601257324,
+                  "interval": [
+                    -0.30145224928855896,
+                    0.16118240356445312
+                  ],
+                  "mae": 0.5142555832862854,
+                  "variance": 0.38459306955337524,
+                  "status": "measured"
+                },
+                "iron_sword": {
+                  "r2": -0.03709757328033447,
+                  "interval": [
+                    -0.49018537998199463,
+                    0.1583925038576126
+                  ],
+                  "mae": 0.26780128479003906,
+                  "variance": 0.171875,
+                  "status": "measured"
+                }
+              },
+              "mean_r2": -0.0863877534866333,
+              "supported_targets": 16,
+              "total_targets": 16
+            }
+          }
+        }
+      }
+    },
+    "strided": {
+      "checkpoint_sha256": "3b2be39fd116a4ff8ffddddf6526ad197cdd7f12da3247fe2988171ffd05e674",
+      "exports": {
+        "cls_learned": {
+          "linear": {
+            "successor_binary": {
+              "targets": {
+                "front_lava": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "front_water": {
+                  "status": "measured",
+                  "positive": 78,
+                  "negative": 2098,
+                  "positive_seed_clusters": 10,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.6734007968517025,
+                  "interval": [
+                    0.3904843032360077,
+                    0.896126925945282
+                  ]
+                },
+                "front_tree": {
+                  "status": "measured",
+                  "positive": 151,
+                  "negative": 2025,
+                  "positive_seed_clusters": 31,
+                  "negative_seed_clusters": 127,
+                  "auc": 0.6414912926171205,
+                  "interval": [
+                    0.46536925435066223,
+                    0.7846559882164001
+                  ]
+                },
+                "front_resource": {
+                  "status": "measured",
+                  "positive": 241,
+                  "negative": 1935,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.6967480459326449,
+                  "interval": [
+                    0.6134229302406311,
+                    0.7860514521598816
+                  ]
+                },
+                "front_ripe_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "near_table": {
+                  "status": "measured",
+                  "positive": 149,
+                  "negative": 2027,
+                  "positive_seed_clusters": 24,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.5119742536164464,
+                  "interval": [
+                    0.3875729441642761,
+                    0.6289151310920715
+                  ]
+                },
+                "near_furnace": {
+                  "status": "measured",
+                  "positive": 204,
+                  "negative": 1972,
+                  "positive_seed_clusters": 36,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.5048497593763672,
+                  "interval": [
+                    0.34921151399612427,
+                    0.6700694561004639
+                  ]
+                },
+                "adjacent_mob": {
+                  "status": "measured",
+                  "positive": 400,
+                  "negative": 1776,
+                  "positive_seed_clusters": 62,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.6278758445945946,
+                  "interval": [
+                    0.5234079957008362,
+                    0.7242352962493896
+                  ]
+                },
+                "sleeping": {
+                  "status": "measured",
+                  "positive": 253,
+                  "negative": 1923,
+                  "positive_seed_clusters": 77,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.8614750914147238,
+                  "interval": [
+                    0.7915855050086975,
+                    0.9077625274658203
+                  ]
+                },
+                "move_left": {
+                  "status": "measured",
+                  "positive": 1157,
+                  "negative": 1019,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 102,
+                  "auc": 0.6175585228964285,
+                  "interval": [
+                    0.5342555642127991,
+                    0.7045320272445679
+                  ]
+                },
+                "move_right": {
+                  "status": "measured",
+                  "positive": 1156,
+                  "negative": 1020,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6659941312165004,
+                  "interval": [
+                    0.5868903994560242,
+                    0.74334716796875
+                  ]
+                },
+                "move_up": {
+                  "status": "measured",
+                  "positive": 1152,
+                  "negative": 1024,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 103,
+                  "auc": 0.5631671481662326,
+                  "interval": [
+                    0.4757695496082306,
+                    0.6480957865715027
+                  ]
+                },
+                "move_down": {
+                  "status": "measured",
+                  "positive": 1222,
+                  "negative": 954,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6287292372198032,
+                  "interval": [
+                    0.5395805835723877,
+                    0.7097809910774231
+                  ]
+                },
+                "do": {
+                  "status": "measured",
+                  "positive": 1463,
+                  "negative": 713,
+                  "positive_seed_clusters": 111,
+                  "negative_seed_clusters": 95,
+                  "auc": 0.681969171302603,
+                  "interval": [
+                    0.6001485586166382,
+                    0.7566655874252319
+                  ]
+                },
+                "sleep": {
+                  "status": "measured",
+                  "positive": 1549,
+                  "negative": 627,
+                  "positive_seed_clusters": 95,
+                  "negative_seed_clusters": 99,
+                  "auc": 0.7652104614491214,
+                  "interval": [
+                    0.6837384700775146,
+                    0.8426114320755005
+                  ]
+                },
+                "place_stone": {
+                  "status": "measured",
+                  "positive": 608,
+                  "negative": 1568,
+                  "positive_seed_clusters": 55,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.726615995904941,
+                  "interval": [
+                    0.6507646441459656,
+                    0.7949969172477722
+                  ]
+                },
+                "place_table": {
+                  "status": "measured",
+                  "positive": 255,
+                  "negative": 1921,
+                  "positive_seed_clusters": 30,
+                  "negative_seed_clusters": 125,
+                  "auc": 0.5784058547937655,
+                  "interval": [
+                    0.4693199694156647,
+                    0.698036789894104
+                  ]
+                },
+                "place_furnace": {
+                  "status": "measured",
+                  "positive": 550,
+                  "negative": 1626,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.710830817399083,
+                  "interval": [
+                    0.6422303318977356,
+                    0.7853962182998657
+                  ]
+                },
+                "place_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 79,
+                  "negative": 2097,
+                  "positive_seed_clusters": 8,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_pickaxe": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.6365965336900137,
+                  "interval": [
+                    0.32433149218559265,
+                    0.8501890301704407
+                  ]
+                },
+                "make_stone_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_sword": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.644168913611176,
+                  "interval": [
+                    0.3873191177845001,
+                    0.8362111449241638
+                  ]
+                },
+                "make_stone_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                }
+              },
+              "macro_auc": 0.6520589928918483,
+              "supported_targets": 18,
+              "total_targets": 25
+            },
+            "successor_continuous": {
+              "targets": {
+                "health": {
+                  "r2": -0.619430661201477,
+                  "interval": [
+                    -0.9053433537483215,
+                    -0.39649564027786255
+                  ],
+                  "mae": 3.693894863128662,
+                  "variance": 15.917303085327148,
+                  "status": "measured"
+                },
+                "food": {
+                  "r2": -5.830805778503418,
+                  "interval": [
+                    -7.65995979309082,
+                    -4.513407230377197
+                  ],
+                  "mae": 5.297451019287109,
+                  "variance": 4.77734375,
+                  "status": "measured"
+                },
+                "drink": {
+                  "r2": -1.860856294631958,
+                  "interval": [
+                    -2.6193645000457764,
+                    -1.3571112155914307
+                  ],
+                  "mae": 3.0950710773468018,
+                  "variance": 4.524741172790527,
+                  "status": "measured"
+                },
+                "energy": {
+                  "r2": -14.419631004333496,
+                  "interval": [
+                    -22.4813175201416,
+                    -9.753722190856934
+                  ],
+                  "mae": 6.80399227142334,
+                  "variance": 3.18178391456604,
+                  "status": "measured"
+                },
+                "wood": {
+                  "r2": -0.5503430366516113,
+                  "interval": [
+                    -0.8212734460830688,
+                    -0.3698040843009949
+                  ],
+                  "mae": 1.134982705116272,
+                  "variance": 1.7555011510849,
+                  "status": "measured"
+                },
+                "stone": {
+                  "r2": -0.6329585313796997,
+                  "interval": [
+                    -0.863014817237854,
+                    -0.45571503043174744
+                  ],
+                  "mae": 3.0526225566864014,
+                  "variance": 10.743562698364258,
+                  "status": "measured"
+                },
+                "coal": {
+                  "r2": -0.29930639266967773,
+                  "interval": [
+                    -0.599704921245575,
+                    -0.13999459147453308
+                  ],
+                  "mae": 0.9472437500953674,
+                  "variance": 1.55859375,
+                  "status": "measured"
+                },
+                "iron": {
+                  "r2": 0.07161259651184082,
+                  "interval": [
+                    -0.3293398320674896,
+                    0.2838868498802185
+                  ],
+                  "mae": 0.4581519663333893,
+                  "variance": 0.5956346988677979,
+                  "status": "measured"
+                },
+                "diamond": {
+                  "r2": -0.24231600761413574,
+                  "interval": [
+                    -12813421510656.0,
+                    -0.024159852415323257
+                  ],
+                  "mae": 0.07126381248235703,
+                  "variance": 0.015380859375,
+                  "status": "measured"
+                },
+                "sapling": {
+                  "r2": -0.4044036865234375,
+                  "interval": [
+                    -1.3990988731384277,
+                    -0.1340995877981186
+                  ],
+                  "mae": 0.221922367811203,
+                  "variance": 0.09265157580375671,
+                  "status": "measured"
+                },
+                "wood_pickaxe": {
+                  "r2": -1.0851163864135742,
+                  "interval": [
+                    -1.5714880228042603,
+                    -0.7747830748558044
+                  ],
+                  "mae": 0.8364480137825012,
+                  "variance": 0.5515785217285156,
+                  "status": "measured"
+                },
+                "stone_pickaxe": {
+                  "r2": -0.06721639633178711,
+                  "interval": [
+                    -0.22494648396968842,
+                    0.057338085025548935
+                  ],
+                  "mae": 0.4456637501716614,
+                  "variance": 0.3857455551624298,
+                  "status": "measured"
+                },
+                "iron_pickaxe": {
+                  "r2": 0.004199206829071045,
+                  "interval": [
+                    -0.3280497193336487,
+                    0.18672175705432892
+                  ],
+                  "mae": 0.22448945045471191,
+                  "variance": 0.113037109375,
+                  "status": "measured"
+                },
+                "wood_sword": {
+                  "r2": -0.5166914463043213,
+                  "interval": [
+                    -0.7797786593437195,
+                    -0.29934632778167725
+                  ],
+                  "mae": 0.6490311622619629,
+                  "variance": 0.4827882945537567,
+                  "status": "measured"
+                },
+                "stone_sword": {
+                  "r2": -0.18530690670013428,
+                  "interval": [
+                    -0.3627668023109436,
+                    -0.018100230023264885
+                  ],
+                  "mae": 0.499075710773468,
+                  "variance": 0.38459306955337524,
+                  "status": "measured"
+                },
+                "iron_sword": {
+                  "r2": 0.11173349618911743,
+                  "interval": [
+                    -0.16588318347930908,
+                    0.24683627486228943
+                  ],
+                  "mae": 0.22094684839248657,
+                  "variance": 0.171875,
+                  "status": "measured"
+                }
+              },
+              "mean_r2": -1.6579273268580437,
+              "supported_targets": 16,
+              "total_targets": 16
+            }
+          },
+          "mlp": {
+            "successor_binary": {
+              "targets": {
+                "front_lava": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "front_water": {
+                  "status": "measured",
+                  "positive": 78,
+                  "negative": 2098,
+                  "positive_seed_clusters": 10,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.5864926303439173,
+                  "interval": [
+                    0.36196163296699524,
+                    0.8276411890983582
+                  ]
+                },
+                "front_tree": {
+                  "status": "measured",
+                  "positive": 151,
+                  "negative": 2025,
+                  "positive_seed_clusters": 31,
+                  "negative_seed_clusters": 127,
+                  "auc": 0.5531191235385496,
+                  "interval": [
+                    0.38461965322494507,
+                    0.7179394364356995
+                  ]
+                },
+                "front_resource": {
+                  "status": "measured",
+                  "positive": 241,
+                  "negative": 1935,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.7200553250345781,
+                  "interval": [
+                    0.6393261551856995,
+                    0.7901692390441895
+                  ]
+                },
+                "front_ripe_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "near_table": {
+                  "status": "measured",
+                  "positive": 149,
+                  "negative": 2027,
+                  "positive_seed_clusters": 24,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.4301294934491744,
+                  "interval": [
+                    0.2940109670162201,
+                    0.5659158229827881
+                  ]
+                },
+                "near_furnace": {
+                  "status": "measured",
+                  "positive": 204,
+                  "negative": 1972,
+                  "positive_seed_clusters": 36,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.5206941295788092,
+                  "interval": [
+                    0.38551998138427734,
+                    0.65398108959198
+                  ]
+                },
+                "adjacent_mob": {
+                  "status": "measured",
+                  "positive": 400,
+                  "negative": 1776,
+                  "positive_seed_clusters": 62,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.6126365427927928,
+                  "interval": [
+                    0.503210186958313,
+                    0.7103747129440308
+                  ]
+                },
+                "sleeping": {
+                  "status": "measured",
+                  "positive": 253,
+                  "negative": 1923,
+                  "positive_seed_clusters": 77,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.8893095644774408,
+                  "interval": [
+                    0.8287257552146912,
+                    0.9317930340766907
+                  ]
+                },
+                "move_left": {
+                  "status": "measured",
+                  "positive": 1157,
+                  "negative": 1019,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 102,
+                  "auc": 0.6173159409423207,
+                  "interval": [
+                    0.5344065427780151,
+                    0.7007295489311218
+                  ]
+                },
+                "move_right": {
+                  "status": "measured",
+                  "positive": 1156,
+                  "negative": 1020,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6499270642513061,
+                  "interval": [
+                    0.5739011764526367,
+                    0.7297186851501465
+                  ]
+                },
+                "move_up": {
+                  "status": "measured",
+                  "positive": 1152,
+                  "negative": 1024,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 103,
+                  "auc": 0.5657357109917535,
+                  "interval": [
+                    0.4810220003128052,
+                    0.6514078378677368
+                  ]
+                },
+                "move_down": {
+                  "status": "measured",
+                  "positive": 1222,
+                  "negative": 954,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6397526823058738,
+                  "interval": [
+                    0.5487155914306641,
+                    0.7192469835281372
+                  ]
+                },
+                "do": {
+                  "status": "measured",
+                  "positive": 1463,
+                  "negative": 713,
+                  "positive_seed_clusters": 111,
+                  "negative_seed_clusters": 95,
+                  "auc": 0.6869887328291403,
+                  "interval": [
+                    0.6054674983024597,
+                    0.7615998983383179
+                  ]
+                },
+                "sleep": {
+                  "status": "measured",
+                  "positive": 1549,
+                  "negative": 627,
+                  "positive_seed_clusters": 95,
+                  "negative_seed_clusters": 99,
+                  "auc": 0.7959263732428083,
+                  "interval": [
+                    0.7149220108985901,
+                    0.8696498870849609
+                  ]
+                },
+                "place_stone": {
+                  "status": "measured",
+                  "positive": 608,
+                  "negative": 1568,
+                  "positive_seed_clusters": 55,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.7676693827201934,
+                  "interval": [
+                    0.6803036332130432,
+                    0.8377048969268799
+                  ]
+                },
+                "place_table": {
+                  "status": "measured",
+                  "positive": 255,
+                  "negative": 1921,
+                  "positive_seed_clusters": 30,
+                  "negative_seed_clusters": 125,
+                  "auc": 0.6697145073542171,
+                  "interval": [
+                    0.5702410936355591,
+                    0.7703925967216492
+                  ]
+                },
+                "place_furnace": {
+                  "status": "measured",
+                  "positive": 550,
+                  "negative": 1626,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.7523940512132394,
+                  "interval": [
+                    0.6745070219039917,
+                    0.8274195790290833
+                  ]
+                },
+                "place_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 79,
+                  "negative": 2097,
+                  "positive_seed_clusters": 8,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_pickaxe": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.5304558289632917,
+                  "interval": [
+                    0.3144874572753906,
+                    0.7545091509819031
+                  ]
+                },
+                "make_stone_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_sword": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.5191184900532897,
+                  "interval": [
+                    0.30689698457717896,
+                    0.7483329772949219
+                  ]
+                },
+                "make_stone_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                }
+              },
+              "macro_auc": 0.6393019763379276,
+              "supported_targets": 18,
+              "total_targets": 25
+            },
+            "successor_continuous": {
+              "targets": {
+                "health": {
+                  "r2": 0.12399965524673462,
+                  "interval": [
+                    -0.04928836226463318,
+                    0.25583362579345703
+                  ],
+                  "mae": 3.224766492843628,
+                  "variance": 15.917303085327148,
+                  "status": "measured"
+                },
+                "food": {
+                  "r2": -0.15217506885528564,
+                  "interval": [
+                    -0.4682775139808655,
+                    0.07173783332109451
+                  ],
+                  "mae": 1.7605326175689697,
+                  "variance": 4.77734375,
+                  "status": "measured"
+                },
+                "drink": {
+                  "r2": 0.3311992287635803,
+                  "interval": [
+                    0.19145652651786804,
+                    0.44528064131736755
+                  ],
+                  "mae": 1.351670265197754,
+                  "variance": 4.524741172790527,
+                  "status": "measured"
+                },
+                "energy": {
+                  "r2": 0.23136818408966064,
+                  "interval": [
+                    -0.03868117183446884,
+                    0.4195273518562317
+                  ],
+                  "mae": 1.140379786491394,
+                  "variance": 3.18178391456604,
+                  "status": "measured"
+                },
+                "wood": {
+                  "r2": -0.10963702201843262,
+                  "interval": [
+                    -0.34276705980300903,
+                    0.049427397549152374
+                  ],
+                  "mae": 1.0256166458129883,
+                  "variance": 1.7555011510849,
+                  "status": "measured"
+                },
+                "stone": {
+                  "r2": 0.3441088795661926,
+                  "interval": [
+                    0.2234208732843399,
+                    0.4470401108264923
+                  ],
+                  "mae": 2.0380332469940186,
+                  "variance": 10.743562698364258,
+                  "status": "measured"
+                },
+                "coal": {
+                  "r2": 0.10463762283325195,
+                  "interval": [
+                    -0.1981225162744522,
+                    0.29352498054504395
+                  ],
+                  "mae": 0.8290817141532898,
+                  "variance": 1.55859375,
+                  "status": "measured"
+                },
+                "iron": {
+                  "r2": 0.11907273530960083,
+                  "interval": [
+                    -0.5779537558555603,
+                    0.4155203700065613
+                  ],
+                  "mae": 0.5026662349700928,
+                  "variance": 0.5956346988677979,
+                  "status": "measured"
+                },
+                "diamond": {
+                  "r2": -0.602925181388855,
+                  "interval": [
+                    -33200365633536.0,
+                    -0.030001070350408554
+                  ],
+                  "mae": 0.10091687738895416,
+                  "variance": 0.015380859375,
+                  "status": "measured"
+                },
+                "sapling": {
+                  "r2": -0.7927290201187134,
+                  "interval": [
+                    -2.3439533710479736,
+                    -0.37044280767440796
+                  ],
+                  "mae": 0.2553529441356659,
+                  "variance": 0.09265157580375671,
+                  "status": "measured"
+                },
+                "wood_pickaxe": {
+                  "r2": 0.12694686651229858,
+                  "interval": [
+                    -0.03866450861096382,
+                    0.26525038480758667
+                  ],
+                  "mae": 0.5246431231498718,
+                  "variance": 0.5515785217285156,
+                  "status": "measured"
+                },
+                "stone_pickaxe": {
+                  "r2": 0.21193575859069824,
+                  "interval": [
+                    0.047060269862413406,
+                    0.34774094820022583
+                  ],
+                  "mae": 0.4201817810535431,
+                  "variance": 0.3857455551624298,
+                  "status": "measured"
+                },
+                "iron_pickaxe": {
+                  "r2": -0.0004239082336425781,
+                  "interval": [
+                    -0.5396240949630737,
+                    0.2875501215457916
+                  ],
+                  "mae": 0.22792422771453857,
+                  "variance": 0.113037109375,
+                  "status": "measured"
+                },
+                "wood_sword": {
+                  "r2": 0.10233807563781738,
+                  "interval": [
+                    -0.06701909005641937,
+                    0.26196542382240295
+                  ],
+                  "mae": 0.5057011842727661,
+                  "variance": 0.4827882945537567,
+                  "status": "measured"
+                },
+                "stone_sword": {
+                  "r2": 0.027447402477264404,
+                  "interval": [
+                    -0.30193617939949036,
+                    0.2792481780052185
+                  ],
+                  "mae": 0.4465041160583496,
+                  "variance": 0.38459306955337524,
+                  "status": "measured"
+                },
+                "iron_sword": {
+                  "r2": 0.031764447689056396,
+                  "interval": [
+                    -0.8274549841880798,
+                    0.27598515152931213
+                  ],
+                  "mae": 0.3006480932235718,
+                  "variance": 0.171875,
+                  "status": "measured"
+                }
+              },
+              "mean_r2": 0.006058041006326675,
+              "supported_targets": 16,
+              "total_targets": 16
+            }
+          }
+        },
+        "patch_learned": {
+          "linear": {
+            "successor_binary": {
+              "targets": {
+                "front_lava": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "front_water": {
+                  "status": "measured",
+                  "positive": 78,
+                  "negative": 2098,
+                  "positive_seed_clusters": 10,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.8734997922319181,
+                  "interval": [
+                    0.7987701296806335,
+                    0.947636604309082
+                  ]
+                },
+                "front_tree": {
+                  "status": "measured",
+                  "positive": 151,
+                  "negative": 2025,
+                  "positive_seed_clusters": 31,
+                  "negative_seed_clusters": 127,
+                  "auc": 0.5729114545008585,
+                  "interval": [
+                    0.42093151807785034,
+                    0.7413132190704346
+                  ]
+                },
+                "front_resource": {
+                  "status": "measured",
+                  "positive": 241,
+                  "negative": 1935,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.7406907051797528,
+                  "interval": [
+                    0.6568754315376282,
+                    0.8269370198249817
+                  ]
+                },
+                "front_ripe_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "near_table": {
+                  "status": "measured",
+                  "positive": 149,
+                  "negative": 2027,
+                  "positive_seed_clusters": 24,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.48406909407561677,
+                  "interval": [
+                    0.348146915435791,
+                    0.6509808897972107
+                  ]
+                },
+                "near_furnace": {
+                  "status": "measured",
+                  "positive": 204,
+                  "negative": 1972,
+                  "positive_seed_clusters": 36,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.644197689217675,
+                  "interval": [
+                    0.4911152422428131,
+                    0.8021259903907776
+                  ]
+                },
+                "adjacent_mob": {
+                  "status": "measured",
+                  "positive": 400,
+                  "negative": 1776,
+                  "positive_seed_clusters": 62,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.6481432995495495,
+                  "interval": [
+                    0.5433294177055359,
+                    0.7535839676856995
+                  ]
+                },
+                "sleeping": {
+                  "status": "measured",
+                  "positive": 253,
+                  "negative": 1923,
+                  "positive_seed_clusters": 77,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.8566530803524631,
+                  "interval": [
+                    0.780815601348877,
+                    0.907041072845459
+                  ]
+                },
+                "move_left": {
+                  "status": "measured",
+                  "positive": 1157,
+                  "negative": 1019,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 102,
+                  "auc": 0.6733837553213236,
+                  "interval": [
+                    0.590277910232544,
+                    0.750407338142395
+                  ]
+                },
+                "move_right": {
+                  "status": "measured",
+                  "positive": 1156,
+                  "negative": 1020,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6298722776307755,
+                  "interval": [
+                    0.5504859685897827,
+                    0.7175710797309875
+                  ]
+                },
+                "move_up": {
+                  "status": "measured",
+                  "positive": 1152,
+                  "negative": 1024,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 103,
+                  "auc": 0.6392491658528646,
+                  "interval": [
+                    0.5573495626449585,
+                    0.7185705900192261
+                  ]
+                },
+                "move_down": {
+                  "status": "measured",
+                  "positive": 1222,
+                  "negative": 954,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6619788503570118,
+                  "interval": [
+                    0.5713755488395691,
+                    0.7349062561988831
+                  ]
+                },
+                "do": {
+                  "status": "measured",
+                  "positive": 1463,
+                  "negative": 713,
+                  "positive_seed_clusters": 111,
+                  "negative_seed_clusters": 95,
+                  "auc": 0.7335701871023345,
+                  "interval": [
+                    0.6665276288986206,
+                    0.8002085089683533
+                  ]
+                },
+                "sleep": {
+                  "status": "measured",
+                  "positive": 1549,
+                  "negative": 627,
+                  "positive_seed_clusters": 95,
+                  "negative_seed_clusters": 99,
+                  "auc": 0.8388042704919467,
+                  "interval": [
+                    0.7709908485412598,
+                    0.8962621688842773
+                  ]
+                },
+                "place_stone": {
+                  "status": "measured",
+                  "positive": 608,
+                  "negative": 1568,
+                  "positive_seed_clusters": 55,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.8305889584452202,
+                  "interval": [
+                    0.7679774761199951,
+                    0.8870693445205688
+                  ]
+                },
+                "place_table": {
+                  "status": "measured",
+                  "positive": 255,
+                  "negative": 1921,
+                  "positive_seed_clusters": 30,
+                  "negative_seed_clusters": 125,
+                  "auc": 0.6903308121791142,
+                  "interval": [
+                    0.5630737543106079,
+                    0.7927398085594177
+                  ]
+                },
+                "place_furnace": {
+                  "status": "measured",
+                  "positive": 550,
+                  "negative": 1626,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.8052722799955272,
+                  "interval": [
+                    0.741020679473877,
+                    0.8604127168655396
+                  ]
+                },
+                "place_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 79,
+                  "negative": 2097,
+                  "positive_seed_clusters": 8,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_pickaxe": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.5778008959470075,
+                  "interval": [
+                    0.38499489426612854,
+                    0.7640106081962585
+                  ]
+                },
+                "make_stone_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_sword": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.5273419531078604,
+                  "interval": [
+                    0.3528884947299957,
+                    0.7896497249603271
+                  ]
+                },
+                "make_stone_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                }
+              },
+              "macro_auc": 0.6904643623077121,
+              "supported_targets": 18,
+              "total_targets": 25
+            },
+            "successor_continuous": {
+              "targets": {
+                "health": {
+                  "r2": -0.2617861032485962,
+                  "interval": [
+                    -0.5192511677742004,
+                    -0.058370571583509445
+                  ],
+                  "mae": 3.4716811180114746,
+                  "variance": 15.917303085327148,
+                  "status": "measured"
+                },
+                "food": {
+                  "r2": -5.613513469696045,
+                  "interval": [
+                    -7.382050514221191,
+                    -4.392716407775879
+                  ],
+                  "mae": 5.276242256164551,
+                  "variance": 4.77734375,
+                  "status": "measured"
+                },
+                "drink": {
+                  "r2": -1.668821096420288,
+                  "interval": [
+                    -2.323533535003662,
+                    -1.2141199111938477
+                  ],
+                  "mae": 3.033487558364868,
+                  "variance": 4.524741172790527,
+                  "status": "measured"
+                },
+                "energy": {
+                  "r2": -13.844267845153809,
+                  "interval": [
+                    -21.406408309936523,
+                    -9.272316932678223
+                  ],
+                  "mae": 6.7233500480651855,
+                  "variance": 3.18178391456604,
+                  "status": "measured"
+                },
+                "wood": {
+                  "r2": -0.3806356191635132,
+                  "interval": [
+                    -0.7702659368515015,
+                    -0.14769157767295837
+                  ],
+                  "mae": 1.1360101699829102,
+                  "variance": 1.7555011510849,
+                  "status": "measured"
+                },
+                "stone": {
+                  "r2": -0.26761043071746826,
+                  "interval": [
+                    -0.48955073952674866,
+                    -0.08005673438310623
+                  ],
+                  "mae": 2.9580698013305664,
+                  "variance": 10.743562698364258,
+                  "status": "measured"
+                },
+                "coal": {
+                  "r2": 0.09300148487091064,
+                  "interval": [
+                    -0.16106869280338287,
+                    0.20658595860004425
+                  ],
+                  "mae": 0.8456587791442871,
+                  "variance": 1.55859375,
+                  "status": "measured"
+                },
+                "iron": {
+                  "r2": 0.2805343270301819,
+                  "interval": [
+                    -0.07016800343990326,
+                    0.42961329221725464
+                  ],
+                  "mae": 0.44844239950180054,
+                  "variance": 0.5956346988677979,
+                  "status": "measured"
+                },
+                "diamond": {
+                  "r2": -0.20693159103393555,
+                  "interval": [
+                    -22228269793280.0,
+                    0.14504842460155487
+                  ],
+                  "mae": 0.08397195488214493,
+                  "variance": 0.015380859375,
+                  "status": "measured"
+                },
+                "sapling": {
+                  "r2": -0.19380414485931396,
+                  "interval": [
+                    -1.2343827486038208,
+                    0.08122413605451584
+                  ],
+                  "mae": 0.22023515403270721,
+                  "variance": 0.09265157580375671,
+                  "status": "measured"
+                },
+                "wood_pickaxe": {
+                  "r2": -0.9428163766860962,
+                  "interval": [
+                    -1.3664007186889648,
+                    -0.6632679104804993
+                  ],
+                  "mae": 0.8522003293037415,
+                  "variance": 0.5515785217285156,
+                  "status": "measured"
+                },
+                "stone_pickaxe": {
+                  "r2": 0.08771800994873047,
+                  "interval": [
+                    -0.10262739658355713,
+                    0.26938265562057495
+                  ],
+                  "mae": 0.4376699924468994,
+                  "variance": 0.3857455551624298,
+                  "status": "measured"
+                },
+                "iron_pickaxe": {
+                  "r2": -0.02105879783630371,
+                  "interval": [
+                    -0.721505343914032,
+                    0.24075660109519958
+                  ],
+                  "mae": 0.23566977679729462,
+                  "variance": 0.113037109375,
+                  "status": "measured"
+                },
+                "wood_sword": {
+                  "r2": -0.29561305046081543,
+                  "interval": [
+                    -0.5434030294418335,
+                    -0.09383458644151688
+                  ],
+                  "mae": 0.6071591377258301,
+                  "variance": 0.4827882945537567,
+                  "status": "measured"
+                },
+                "stone_sword": {
+                  "r2": -0.17347311973571777,
+                  "interval": [
+                    -0.49457982182502747,
+                    0.06121407449245453
+                  ],
+                  "mae": 0.5241614580154419,
+                  "variance": 0.38459306955337524,
+                  "status": "measured"
+                },
+                "iron_sword": {
+                  "r2": 0.20831477642059326,
+                  "interval": [
+                    -0.5034263730049133,
+                    0.4187926650047302
+                  ],
+                  "mae": 0.2789307236671448,
+                  "variance": 0.171875,
+                  "status": "measured"
+                }
+              },
+              "mean_r2": -1.4500476904213428,
+              "supported_targets": 16,
+              "total_targets": 16
+            }
+          },
+          "mlp": {
+            "successor_binary": {
+              "targets": {
+                "front_lava": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "front_water": {
+                  "status": "measured",
+                  "positive": 78,
+                  "negative": 2098,
+                  "positive_seed_clusters": 10,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.7999132262716628,
+                  "interval": [
+                    0.7309263348579407,
+                    0.8737253546714783
+                  ]
+                },
+                "front_tree": {
+                  "status": "measured",
+                  "positive": 151,
+                  "negative": 2025,
+                  "positive_seed_clusters": 31,
+                  "negative_seed_clusters": 127,
+                  "auc": 0.634476330635271,
+                  "interval": [
+                    0.45714038610458374,
+                    0.8080695271492004
+                  ]
+                },
+                "front_resource": {
+                  "status": "measured",
+                  "positive": 241,
+                  "negative": 1935,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.774661991915683,
+                  "interval": [
+                    0.6958224773406982,
+                    0.8568338751792908
+                  ]
+                },
+                "front_ripe_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "near_table": {
+                  "status": "measured",
+                  "positive": 149,
+                  "negative": 2027,
+                  "positive_seed_clusters": 24,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.5705724398472964,
+                  "interval": [
+                    0.40391701459884644,
+                    0.754092276096344
+                  ]
+                },
+                "near_furnace": {
+                  "status": "measured",
+                  "positive": 204,
+                  "negative": 1972,
+                  "positive_seed_clusters": 36,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.6726151413912421,
+                  "interval": [
+                    0.5453808307647705,
+                    0.8042418956756592
+                  ]
+                },
+                "adjacent_mob": {
+                  "status": "measured",
+                  "positive": 400,
+                  "negative": 1776,
+                  "positive_seed_clusters": 62,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.6594847972972973,
+                  "interval": [
+                    0.5483947992324829,
+                    0.7495800852775574
+                  ]
+                },
+                "sleeping": {
+                  "status": "measured",
+                  "positive": 253,
+                  "negative": 1923,
+                  "positive_seed_clusters": 77,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.9336901539302679,
+                  "interval": [
+                    0.8876026272773743,
+                    0.9724977016448975
+                  ]
+                },
+                "move_left": {
+                  "status": "measured",
+                  "positive": 1157,
+                  "negative": 1019,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 102,
+                  "auc": 0.7000050043130392,
+                  "interval": [
+                    0.6158486604690552,
+                    0.7753016352653503
+                  ]
+                },
+                "move_right": {
+                  "status": "measured",
+                  "positive": 1156,
+                  "negative": 1020,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6463201370513604,
+                  "interval": [
+                    0.5643478035926819,
+                    0.730440616607666
+                  ]
+                },
+                "move_up": {
+                  "status": "measured",
+                  "positive": 1152,
+                  "negative": 1024,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 103,
+                  "auc": 0.6554412841796875,
+                  "interval": [
+                    0.5727632641792297,
+                    0.7365846037864685
+                  ]
+                },
+                "move_down": {
+                  "status": "measured",
+                  "positive": 1222,
+                  "negative": 954,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6674961485278627,
+                  "interval": [
+                    0.5744925737380981,
+                    0.7422448396682739
+                  ]
+                },
+                "do": {
+                  "status": "measured",
+                  "positive": 1463,
+                  "negative": 713,
+                  "positive_seed_clusters": 111,
+                  "negative_seed_clusters": 95,
+                  "auc": 0.7538209926192505,
+                  "interval": [
+                    0.6859180331230164,
+                    0.8158973455429077
+                  ]
+                },
+                "sleep": {
+                  "status": "measured",
+                  "positive": 1549,
+                  "negative": 627,
+                  "positive_seed_clusters": 95,
+                  "negative_seed_clusters": 99,
+                  "auc": 0.8695912267316569,
+                  "interval": [
+                    0.7944868803024292,
+                    0.9318457841873169
+                  ]
+                },
+                "place_stone": {
+                  "status": "measured",
+                  "positive": 608,
+                  "negative": 1568,
+                  "positive_seed_clusters": 55,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.8069836281552094,
+                  "interval": [
+                    0.73609858751297,
+                    0.8683609962463379
+                  ]
+                },
+                "place_table": {
+                  "status": "measured",
+                  "positive": 255,
+                  "negative": 1921,
+                  "positive_seed_clusters": 30,
+                  "negative_seed_clusters": 125,
+                  "auc": 0.7178675322289249,
+                  "interval": [
+                    0.6099810600280762,
+                    0.8080098628997803
+                  ]
+                },
+                "place_furnace": {
+                  "status": "measured",
+                  "positive": 550,
+                  "negative": 1626,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.7978016325617802,
+                  "interval": [
+                    0.7271150350570679,
+                    0.8608417510986328
+                  ]
+                },
+                "place_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 79,
+                  "negative": 2097,
+                  "positive_seed_clusters": 8,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_pickaxe": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.7064251997480592,
+                  "interval": [
+                    0.5595313310623169,
+                    0.8311033844947815
+                  ]
+                },
+                "make_stone_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_sword": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.7020516195692944,
+                  "interval": [
+                    0.5910507440567017,
+                    0.8071104884147644
+                  ]
+                },
+                "make_stone_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                }
+              },
+              "macro_auc": 0.7260676937208248,
+              "supported_targets": 18,
+              "total_targets": 25
+            },
+            "successor_continuous": {
+              "targets": {
+                "health": {
+                  "r2": 0.2689463496208191,
+                  "interval": [
+                    0.05714650824666023,
+                    0.4378865659236908
+                  ],
+                  "mae": 2.7140614986419678,
+                  "variance": 15.917303085327148,
+                  "status": "measured"
+                },
+                "food": {
+                  "r2": 0.029144585132598877,
+                  "interval": [
+                    -0.18175731599330902,
+                    0.19560393691062927
+                  ],
+                  "mae": 1.684277057647705,
+                  "variance": 4.77734375,
+                  "status": "measured"
+                },
+                "drink": {
+                  "r2": 0.38044095039367676,
+                  "interval": [
+                    0.22609417140483856,
+                    0.5182812213897705
+                  ],
+                  "mae": 1.3026083707809448,
+                  "variance": 4.524741172790527,
+                  "status": "measured"
+                },
+                "energy": {
+                  "r2": -0.06301319599151611,
+                  "interval": [
+                    -0.3470982015132904,
+                    0.15882189571857452
+                  ],
+                  "mae": 1.3279894590377808,
+                  "variance": 3.18178391456604,
+                  "status": "measured"
+                },
+                "wood": {
+                  "r2": 0.03985470533370972,
+                  "interval": [
+                    -0.3051491975784302,
+                    0.24728424847126007
+                  ],
+                  "mae": 0.9388168454170227,
+                  "variance": 1.7555011510849,
+                  "status": "measured"
+                },
+                "stone": {
+                  "r2": 0.5136432647705078,
+                  "interval": [
+                    0.3900938928127289,
+                    0.6212600469589233
+                  ],
+                  "mae": 1.5835001468658447,
+                  "variance": 10.743562698364258,
+                  "status": "measured"
+                },
+                "coal": {
+                  "r2": 0.3003760576248169,
+                  "interval": [
+                    -0.13516242802143097,
+                    0.5193912386894226
+                  ],
+                  "mae": 0.692432701587677,
+                  "variance": 1.55859375,
+                  "status": "measured"
+                },
+                "iron": {
+                  "r2": 0.4342465400695801,
+                  "interval": [
+                    -0.12232550978660583,
+                    0.6054937243461609
+                  ],
+                  "mae": 0.4265216290950775,
+                  "variance": 0.5956346988677979,
+                  "status": "measured"
+                },
+                "diamond": {
+                  "r2": -0.928180456161499,
+                  "interval": [
+                    -44535056957440.0,
+                    -0.20655392110347748
+                  ],
+                  "mae": 0.11787498742341995,
+                  "variance": 0.015380859375,
+                  "status": "measured"
+                },
+                "sapling": {
+                  "r2": -0.4274787902832031,
+                  "interval": [
+                    -1.6869351863861084,
+                    -0.11117875576019287
+                  ],
+                  "mae": 0.24529021978378296,
+                  "variance": 0.09265157580375671,
+                  "status": "measured"
+                },
+                "wood_pickaxe": {
+                  "r2": 0.2945444583892822,
+                  "interval": [
+                    0.08995269984006882,
+                    0.4455985426902771
+                  ],
+                  "mae": 0.46673741936683655,
+                  "variance": 0.5515785217285156,
+                  "status": "measured"
+                },
+                "stone_pickaxe": {
+                  "r2": 0.4648011326789856,
+                  "interval": [
+                    0.33086708188056946,
+                    0.573125422000885
+                  ],
+                  "mae": 0.3393073081970215,
+                  "variance": 0.3857455551624298,
+                  "status": "measured"
+                },
+                "iron_pickaxe": {
+                  "r2": 0.17233681678771973,
+                  "interval": [
+                    -0.2823776304721832,
+                    0.36634543538093567
+                  ],
+                  "mae": 0.21097752451896667,
+                  "variance": 0.113037109375,
+                  "status": "measured"
+                },
+                "wood_sword": {
+                  "r2": 0.27448856830596924,
+                  "interval": [
+                    0.09569471329450607,
+                    0.4062528908252716
+                  ],
+                  "mae": 0.44852644205093384,
+                  "variance": 0.4827882945537567,
+                  "status": "measured"
+                },
+                "stone_sword": {
+                  "r2": 0.1242985725402832,
+                  "interval": [
+                    -0.29003244638442993,
+                    0.39345160126686096
+                  ],
+                  "mae": 0.43025240302085876,
+                  "variance": 0.38459306955337524,
+                  "status": "measured"
+                },
+                "iron_sword": {
+                  "r2": 0.24235719442367554,
+                  "interval": [
+                    -0.555393636226654,
+                    0.495980829000473
+                  ],
+                  "mae": 0.25128763914108276,
+                  "variance": 0.171875,
+                  "status": "measured"
+                }
+              },
+              "mean_r2": 0.1325504221022129,
+              "supported_targets": 16,
+              "total_targets": 16
+            }
+          }
+        },
+        "current": {
+          "linear": {
+            "successor_binary": {
+              "targets": {
+                "front_lava": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "front_water": {
+                  "status": "measured",
+                  "positive": 78,
+                  "negative": 2098,
+                  "positive_seed_clusters": 10,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.4830241255408081,
+                  "interval": [
+                    0.2965922951698303,
+                    0.6351854801177979
+                  ]
+                },
+                "front_tree": {
+                  "status": "measured",
+                  "positive": 151,
+                  "negative": 2025,
+                  "positive_seed_clusters": 31,
+                  "negative_seed_clusters": 127,
+                  "auc": 0.531832229580574,
+                  "interval": [
+                    0.36530739068984985,
+                    0.6908518671989441
+                  ]
+                },
+                "front_resource": {
+                  "status": "measured",
+                  "positive": 241,
+                  "negative": 1935,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.6247397257336464,
+                  "interval": [
+                    0.5513253808021545,
+                    0.7092294096946716
+                  ]
+                },
+                "front_ripe_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "near_table": {
+                  "status": "measured",
+                  "positive": 149,
+                  "negative": 2027,
+                  "positive_seed_clusters": 24,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.45744529390145783,
+                  "interval": [
+                    0.28561097383499146,
+                    0.6196615099906921
+                  ]
+                },
+                "near_furnace": {
+                  "status": "measured",
+                  "positive": 204,
+                  "negative": 1972,
+                  "positive_seed_clusters": 36,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.48613679751819594,
+                  "interval": [
+                    0.33958137035369873,
+                    0.6425420641899109
+                  ]
+                },
+                "adjacent_mob": {
+                  "status": "measured",
+                  "positive": 400,
+                  "negative": 1776,
+                  "positive_seed_clusters": 62,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.5986303490990991,
+                  "interval": [
+                    0.4955439269542694,
+                    0.6928533315658569
+                  ]
+                },
+                "sleeping": {
+                  "status": "measured",
+                  "positive": 253,
+                  "negative": 1923,
+                  "positive_seed_clusters": 77,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.8462464980812672,
+                  "interval": [
+                    0.7821786403656006,
+                    0.891450822353363
+                  ]
+                },
+                "move_left": {
+                  "status": "measured",
+                  "positive": 1157,
+                  "negative": 1019,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 102,
+                  "auc": 0.588041557851131,
+                  "interval": [
+                    0.4994031488895416,
+                    0.6774314045906067
+                  ]
+                },
+                "move_right": {
+                  "status": "measured",
+                  "positive": 1156,
+                  "negative": 1020,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.643607944908067,
+                  "interval": [
+                    0.56952303647995,
+                    0.7227687835693359
+                  ]
+                },
+                "move_up": {
+                  "status": "measured",
+                  "positive": 1152,
+                  "negative": 1024,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 103,
+                  "auc": 0.565604739718967,
+                  "interval": [
+                    0.48037222027778625,
+                    0.6485385298728943
+                  ]
+                },
+                "move_down": {
+                  "status": "measured",
+                  "positive": 1222,
+                  "negative": 954,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6358514584126788,
+                  "interval": [
+                    0.5514351725578308,
+                    0.7167126536369324
+                  ]
+                },
+                "do": {
+                  "status": "measured",
+                  "positive": 1463,
+                  "negative": 713,
+                  "positive_seed_clusters": 111,
+                  "negative_seed_clusters": 95,
+                  "auc": 0.6525583370641317,
+                  "interval": [
+                    0.5778642892837524,
+                    0.7195121645927429
+                  ]
+                },
+                "sleep": {
+                  "status": "measured",
+                  "positive": 1549,
+                  "negative": 627,
+                  "positive_seed_clusters": 95,
+                  "negative_seed_clusters": 99,
+                  "auc": 0.6149339544059397,
+                  "interval": [
+                    0.520413339138031,
+                    0.7064686417579651
+                  ]
+                },
+                "place_stone": {
+                  "status": "measured",
+                  "positive": 608,
+                  "negative": 1568,
+                  "positive_seed_clusters": 55,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.6246895139634802,
+                  "interval": [
+                    0.5416750311851501,
+                    0.7002902030944824
+                  ]
+                },
+                "place_table": {
+                  "status": "measured",
+                  "positive": 255,
+                  "negative": 1921,
+                  "positive_seed_clusters": 30,
+                  "negative_seed_clusters": 125,
+                  "auc": 0.5734043747639608,
+                  "interval": [
+                    0.4640498459339142,
+                    0.6789507269859314
+                  ]
+                },
+                "place_furnace": {
+                  "status": "measured",
+                  "positive": 550,
+                  "negative": 1626,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.634770211338477,
+                  "interval": [
+                    0.5517869591712952,
+                    0.715175986289978
+                  ]
+                },
+                "place_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 79,
+                  "negative": 2097,
+                  "positive_seed_clusters": 8,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_pickaxe": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.65513117202041,
+                  "interval": [
+                    0.3467087745666504,
+                    0.8602306246757507
+                  ]
+                },
+                "make_stone_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_sword": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.6410125758122616,
+                  "interval": [
+                    0.3732116222381592,
+                    0.8474991917610168
+                  ]
+                },
+                "make_stone_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                }
+              },
+              "macro_auc": 0.603203381095253,
+              "supported_targets": 18,
+              "total_targets": 25
+            },
+            "successor_continuous": {
+              "targets": {
+                "health": {
+                  "r2": -0.6339435577392578,
+                  "interval": [
+                    -0.9180712699890137,
+                    -0.4104454517364502
+                  ],
+                  "mae": 3.766777515411377,
+                  "variance": 15.917303085327148,
+                  "status": "measured"
+                },
+                "food": {
+                  "r2": -5.695335388183594,
+                  "interval": [
+                    -7.56721305847168,
+                    -4.414164066314697
+                  ],
+                  "mae": 5.229211807250977,
+                  "variance": 4.77734375,
+                  "status": "measured"
+                },
+                "drink": {
+                  "r2": -2.0798356533050537,
+                  "interval": [
+                    -2.848583698272705,
+                    -1.5392643213272095
+                  ],
+                  "mae": 3.2087366580963135,
+                  "variance": 4.524741172790527,
+                  "status": "measured"
+                },
+                "energy": {
+                  "r2": -15.05325698852539,
+                  "interval": [
+                    -23.25149154663086,
+                    -10.174944877624512
+                  ],
+                  "mae": 6.924012184143066,
+                  "variance": 3.18178391456604,
+                  "status": "measured"
+                },
+                "wood": {
+                  "r2": -0.4750068187713623,
+                  "interval": [
+                    -0.7309019565582275,
+                    -0.2942003309726715
+                  ],
+                  "mae": 1.103267788887024,
+                  "variance": 1.7555011510849,
+                  "status": "measured"
+                },
+                "stone": {
+                  "r2": -0.6879754066467285,
+                  "interval": [
+                    -0.9431998133659363,
+                    -0.4646776616573334
+                  ],
+                  "mae": 3.013354778289795,
+                  "variance": 10.743562698364258,
+                  "status": "measured"
+                },
+                "coal": {
+                  "r2": -0.5217698812484741,
+                  "interval": [
+                    -0.8615793585777283,
+                    -0.3411538600921631
+                  ],
+                  "mae": 1.0320807695388794,
+                  "variance": 1.55859375,
+                  "status": "measured"
+                },
+                "iron": {
+                  "r2": -0.16689085960388184,
+                  "interval": [
+                    -0.6569644212722778,
+                    0.04573136568069458
+                  ],
+                  "mae": 0.5054611563682556,
+                  "variance": 0.5956346988677979,
+                  "status": "measured"
+                },
+                "diamond": {
+                  "r2": -0.5386552810668945,
+                  "interval": [
+                    -19421655465984.0,
+                    -0.22009174525737762
+                  ],
+                  "mae": 0.07638084143400192,
+                  "variance": 0.015380859375,
+                  "status": "measured"
+                },
+                "sapling": {
+                  "r2": -0.6999630928039551,
+                  "interval": [
+                    -2.271573066711426,
+                    -0.26335668563842773
+                  ],
+                  "mae": 0.24972686171531677,
+                  "variance": 0.09265157580375671,
+                  "status": "measured"
+                },
+                "wood_pickaxe": {
+                  "r2": -1.0288431644439697,
+                  "interval": [
+                    -1.4375672340393066,
+                    -0.7263971567153931
+                  ],
+                  "mae": 0.8190407752990723,
+                  "variance": 0.5515785217285156,
+                  "status": "measured"
+                },
+                "stone_pickaxe": {
+                  "r2": -0.3511298894882202,
+                  "interval": [
+                    -0.5673216581344604,
+                    -0.15692618489265442
+                  ],
+                  "mae": 0.5060619115829468,
+                  "variance": 0.3857455551624298,
+                  "status": "measured"
+                },
+                "iron_pickaxe": {
+                  "r2": -0.15862441062927246,
+                  "interval": [
+                    -0.518817663192749,
+                    -0.031386848539114
+                  ],
+                  "mae": 0.2524424195289612,
+                  "variance": 0.113037109375,
+                  "status": "measured"
+                },
+                "wood_sword": {
+                  "r2": -0.6323219537734985,
+                  "interval": [
+                    -0.8994289040565491,
+                    -0.4300147294998169
+                  ],
+                  "mae": 0.666028618812561,
+                  "variance": 0.4827882945537567,
+                  "status": "measured"
+                },
+                "stone_sword": {
+                  "r2": -0.45798158645629883,
+                  "interval": [
+                    -0.6945074200630188,
+                    -0.27411535382270813
+                  ],
+                  "mae": 0.5557156801223755,
+                  "variance": 0.38459306955337524,
+                  "status": "measured"
+                },
+                "iron_sword": {
+                  "r2": -0.305635929107666,
+                  "interval": [
+                    -0.7677288055419922,
+                    -0.10149835050106049
+                  ],
+                  "mae": 0.2753680348396301,
+                  "variance": 0.171875,
+                  "status": "measured"
+                }
+              },
+              "mean_r2": -1.8429481163620949,
+              "supported_targets": 16,
+              "total_targets": 16
+            }
+          },
+          "mlp": {
+            "successor_binary": {
+              "targets": {
+                "front_lava": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "front_water": {
+                  "status": "measured",
+                  "positive": 78,
+                  "negative": 2098,
+                  "positive_seed_clusters": 10,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.46424555742954215,
+                  "interval": [
+                    0.2596971094608307,
+                    0.6666185259819031
+                  ]
+                },
+                "front_tree": {
+                  "status": "measured",
+                  "positive": 151,
+                  "negative": 2025,
+                  "positive_seed_clusters": 31,
+                  "negative_seed_clusters": 127,
+                  "auc": 0.49792167443381574,
+                  "interval": [
+                    0.33137425780296326,
+                    0.6631640195846558
+                  ]
+                },
+                "front_resource": {
+                  "status": "measured",
+                  "positive": 241,
+                  "negative": 1935,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.6605680465759594,
+                  "interval": [
+                    0.5874159336090088,
+                    0.7274958491325378
+                  ]
+                },
+                "front_ripe_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 0,
+                  "negative": 2176,
+                  "positive_seed_clusters": 0,
+                  "negative_seed_clusters": 128
+                },
+                "near_table": {
+                  "status": "measured",
+                  "positive": 149,
+                  "negative": 2027,
+                  "positive_seed_clusters": 24,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.4815560404340067,
+                  "interval": [
+                    0.3567781150341034,
+                    0.6004582643508911
+                  ]
+                },
+                "near_furnace": {
+                  "status": "measured",
+                  "positive": 204,
+                  "negative": 1972,
+                  "positive_seed_clusters": 36,
+                  "negative_seed_clusters": 123,
+                  "auc": 0.5393026886210874,
+                  "interval": [
+                    0.4005752205848694,
+                    0.6913082003593445
+                  ]
+                },
+                "adjacent_mob": {
+                  "status": "measured",
+                  "positive": 400,
+                  "negative": 1776,
+                  "positive_seed_clusters": 62,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.5997156531531531,
+                  "interval": [
+                    0.4937027394771576,
+                    0.6937400698661804
+                  ]
+                },
+                "sleeping": {
+                  "status": "measured",
+                  "positive": 253,
+                  "negative": 1923,
+                  "positive_seed_clusters": 77,
+                  "negative_seed_clusters": 117,
+                  "auc": 0.8878851596751617,
+                  "interval": [
+                    0.8380832076072693,
+                    0.9235487580299377
+                  ]
+                },
+                "move_left": {
+                  "status": "measured",
+                  "positive": 1157,
+                  "negative": 1019,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 102,
+                  "auc": 0.620004698965125,
+                  "interval": [
+                    0.5406317710876465,
+                    0.7068411111831665
+                  ]
+                },
+                "move_right": {
+                  "status": "measured",
+                  "positive": 1156,
+                  "negative": 1020,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.634937071714499,
+                  "interval": [
+                    0.558055579662323,
+                    0.7115795016288757
+                  ]
+                },
+                "move_up": {
+                  "status": "measured",
+                  "positive": 1152,
+                  "negative": 1024,
+                  "positive_seed_clusters": 94,
+                  "negative_seed_clusters": 103,
+                  "auc": 0.5554131401909722,
+                  "interval": [
+                    0.46639856696128845,
+                    0.642817497253418
+                  ]
+                },
+                "move_down": {
+                  "status": "measured",
+                  "positive": 1222,
+                  "negative": 954,
+                  "positive_seed_clusters": 93,
+                  "negative_seed_clusters": 106,
+                  "auc": 0.6367830171523468,
+                  "interval": [
+                    0.5426862835884094,
+                    0.718504786491394
+                  ]
+                },
+                "do": {
+                  "status": "measured",
+                  "positive": 1463,
+                  "negative": 713,
+                  "positive_seed_clusters": 111,
+                  "negative_seed_clusters": 95,
+                  "auc": 0.663671163117535,
+                  "interval": [
+                    0.5844020247459412,
+                    0.7355347871780396
+                  ]
+                },
+                "sleep": {
+                  "status": "measured",
+                  "positive": 1549,
+                  "negative": 627,
+                  "positive_seed_clusters": 95,
+                  "negative_seed_clusters": 99,
+                  "auc": 0.6938715413452935,
+                  "interval": [
+                    0.6129670739173889,
+                    0.7747411727905273
+                  ]
+                },
+                "place_stone": {
+                  "status": "measured",
+                  "positive": 608,
+                  "negative": 1568,
+                  "positive_seed_clusters": 55,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.6421144938238453,
+                  "interval": [
+                    0.5520864725112915,
+                    0.7220937609672546
+                  ]
+                },
+                "place_table": {
+                  "status": "measured",
+                  "positive": 255,
+                  "negative": 1921,
+                  "positive_seed_clusters": 30,
+                  "negative_seed_clusters": 125,
+                  "auc": 0.661783589021241,
+                  "interval": [
+                    0.5592026114463806,
+                    0.7506086826324463
+                  ]
+                },
+                "place_furnace": {
+                  "status": "measured",
+                  "positive": 550,
+                  "negative": 1626,
+                  "positive_seed_clusters": 54,
+                  "negative_seed_clusters": 121,
+                  "auc": 0.6398859443139886,
+                  "interval": [
+                    0.5592549443244934,
+                    0.7179356813430786
+                  ]
+                },
+                "place_plant": {
+                  "status": "insufficient_coverage",
+                  "positive": 79,
+                  "negative": 2097,
+                  "positive_seed_clusters": 8,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_pickaxe": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.6805234142233356,
+                  "interval": [
+                    0.4529552459716797,
+                    0.8572152256965637
+                  ]
+                },
+                "make_stone_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_pickaxe": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                },
+                "make_wood_sword": {
+                  "status": "measured",
+                  "positive": 67,
+                  "negative": 2109,
+                  "positive_seed_clusters": 16,
+                  "negative_seed_clusters": 128,
+                  "auc": 0.7186613164617878,
+                  "interval": [
+                    0.48396530747413635,
+                    0.8767009377479553
+                  ]
+                },
+                "make_stone_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 20,
+                  "negative": 2156,
+                  "positive_seed_clusters": 9,
+                  "negative_seed_clusters": 128
+                },
+                "make_iron_sword": {
+                  "status": "insufficient_coverage",
+                  "positive": 1,
+                  "negative": 2175,
+                  "positive_seed_clusters": 1,
+                  "negative_seed_clusters": 128
+                }
+              },
+              "macro_auc": 0.626602456147372,
+              "supported_targets": 18,
+              "total_targets": 25
+            },
+            "successor_continuous": {
+              "targets": {
+                "health": {
+                  "r2": -0.03938865661621094,
+                  "interval": [
+                    -0.2412080317735672,
+                    0.1335308700799942
+                  ],
+                  "mae": 3.5339417457580566,
+                  "variance": 15.917303085327148,
+                  "status": "measured"
+                },
+                "food": {
+                  "r2": -0.1201786994934082,
+                  "interval": [
+                    -0.33513766527175903,
+                    0.055658627301454544
+                  ],
+                  "mae": 1.828367829322815,
+                  "variance": 4.77734375,
+                  "status": "measured"
+                },
+                "drink": {
+                  "r2": 0.2551462650299072,
+                  "interval": [
+                    0.12348070740699768,
+                    0.36648038029670715
+                  ],
+                  "mae": 1.441849708557129,
+                  "variance": 4.524741172790527,
+                  "status": "measured"
+                },
+                "energy": {
+                  "r2": 0.12674939632415771,
+                  "interval": [
+                    -0.18374651670455933,
+                    0.3558342754840851
+                  ],
+                  "mae": 1.3171426057815552,
+                  "variance": 3.18178391456604,
+                  "status": "measured"
+                },
+                "wood": {
+                  "r2": -0.259745717048645,
+                  "interval": [
+                    -0.6300672888755798,
+                    -0.03132599592208862
+                  ],
+                  "mae": 1.1281383037567139,
+                  "variance": 1.7555011510849,
+                  "status": "measured"
+                },
+                "stone": {
+                  "r2": 0.009662508964538574,
+                  "interval": [
+                    -0.19814205169677734,
+                    0.15927283465862274
+                  ],
+                  "mae": 2.693964719772339,
+                  "variance": 10.743562698364258,
+                  "status": "measured"
+                },
+                "coal": {
+                  "r2": -0.5106359720230103,
+                  "interval": [
+                    -1.24830961227417,
+                    -0.15182404220104218
+                  ],
+                  "mae": 1.086063027381897,
+                  "variance": 1.55859375,
+                  "status": "measured"
+                },
+                "iron": {
+                  "r2": -0.08413565158843994,
+                  "interval": [
+                    -1.153937816619873,
+                    0.3093768060207367
+                  ],
+                  "mae": 0.6027507781982422,
+                  "variance": 0.5956346988677979,
+                  "status": "measured"
+                },
+                "diamond": {
+                  "r2": -0.7589565515518188,
+                  "interval": [
+                    -32902314196992.0,
+                    -0.24216969311237335
+                  ],
+                  "mae": 0.09541315585374832,
+                  "variance": 0.015380859375,
+                  "status": "measured"
+                },
+                "sapling": {
+                  "r2": -1.0327599048614502,
+                  "interval": [
+                    -3.4135842323303223,
+                    -0.3530622124671936
+                  ],
+                  "mae": 0.26039421558380127,
+                  "variance": 0.09265157580375671,
+                  "status": "measured"
+                },
+                "wood_pickaxe": {
+                  "r2": -0.16314053535461426,
+                  "interval": [
+                    -0.45396003127098083,
+                    0.06818095594644547
+                  ],
+                  "mae": 0.5771292448043823,
+                  "variance": 0.5515785217285156,
+                  "status": "measured"
+                },
+                "stone_pickaxe": {
+                  "r2": -0.14992594718933105,
+                  "interval": [
+                    -0.4553965926170349,
+                    0.07590711861848831
+                  ],
+                  "mae": 0.5292596817016602,
+                  "variance": 0.3857455551624298,
+                  "status": "measured"
+                },
+                "iron_pickaxe": {
+                  "r2": -0.3143972158432007,
+                  "interval": [
+                    -0.9900722503662109,
+                    -0.04709861800074577
+                  ],
+                  "mae": 0.28206947445869446,
+                  "variance": 0.113037109375,
+                  "status": "measured"
+                },
+                "wood_sword": {
+                  "r2": -0.10432159900665283,
+                  "interval": [
+                    -0.3670029938220978,
+                    0.05526827275753021
+                  ],
+                  "mae": 0.598818302154541,
+                  "variance": 0.4827882945537567,
+                  "status": "measured"
+                },
+                "stone_sword": {
+                  "r2": -0.6579697132110596,
+                  "interval": [
+                    -1.2746211290359497,
+                    -0.277564138174057
+                  ],
+                  "mae": 0.6433852910995483,
+                  "variance": 0.38459306955337524,
+                  "status": "measured"
+                },
+                "iron_sword": {
+                  "r2": -0.62086021900177,
+                  "interval": [
+                    -2.0272750854492188,
+                    -0.1559087187051773
+                  ],
+                  "mae": 0.3894858658313751,
+                  "variance": 0.171875,
+                  "status": "measured"
+                }
+              },
+              "mean_r2": -0.276553638279438,
+              "supported_targets": 16,
+              "total_targets": 16
+            }
+          }
+        }
+      }
+    }
+  },
+  "m4_authorized": false
+}
