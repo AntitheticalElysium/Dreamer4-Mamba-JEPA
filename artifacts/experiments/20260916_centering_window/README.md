@@ -217,8 +217,14 @@ after the two informative panels. Evidence in [`evidence/m03/`](evidence/m03/).
 gated by `critical_coverage`, which counts positive/negative label support and seed
 clusters in the corpus; no model output enters it. Computed from this run's own stages it
 reports `insufficient_coverage` over a missing set of 116 entries that is *identical* to
-the 20260906 run's. Running the remaining historical phase would have restated that
-verdict for the same 116 reasons, which is why it was stopped rather than finished.
+the 20260906 run's.
+
+That settles the formal **status** and nothing else. It was first used here as a reason to
+stop the run, which was a mistake: predetermined coverage predicts the gate verdict, not
+the metric values, and certainly not hidden-state retention. Gate eligibility is not
+diagnosis. The run was stopped during `historical_encoding`, before the Mamba-state memory
+supplement, which is the only panel that probes `h` at all; it was measured afterwards by
+`--baseline` over this run's published replay.
 
 Static retention, mean AUC over the 13 binary targets with adequate support:
 
@@ -236,11 +242,16 @@ difference on any target.** Three significant negatives -- `inventory_changed` â
 
 So a 3.7x change in effective rank (5.14 â†’ 19.16) bought about +0.02 static-retention AUC,
 left the arm below Raw stride-1 and far below the Direct anchor, and slightly *hurt*
-outcome prediction. The window fixes the geometry and not the capability. That agrees with
-this experiment's own retention probes, which moved by less than 0.02 in either direction,
-and it is the substantive result: **effective rank is not a proxy for what the
-representation can support.** A recipe change can be a large, real, reproducible win on the
-geometry TC-LeWM is designed around and still be worth nothing downstream.
+outcome prediction on this panel.
+
+The supported claim is narrower than "the window fixes geometry, not capability". Every
+number above, and every number in the BC probe below, reads the **observed encoder
+pathway** -- projected `z`, CLS, patch tokens. None of them reads the Mamba hidden state,
+and the older TC checkpoint showed that `h` is exactly where the asymmetry lives:
+generated-outcome AUC `z` 0.502 against `h` 0.695, while generated successor state stayed
+flat at `z` 0.610 against `h` 0.611. So observed-feature panels agreeing with each other is
+not three independent confirmations; it is one pathway measured three ways. What rank
+recovery does to `h` is a separate question, answered by the memory supplement below.
 
 The Direct-Mamba anchor scores 0.8299 / 0.8484 in both runs, to every printed digit. That
 is an independent check that the bridged feature cache returned the same bytes, since those
@@ -278,11 +289,17 @@ Tokens beat pooled patches in both arms, and by more in the strided one -- `patc
 significant. `cls` minus `z` is positive in both, +0.032 and +0.024: the projection discards
 what its own CLS retains, which the M03 static panel showed too.
 
-This sharpens the rank result rather than merely agreeing with it. Effective rank rose 3.7x
-on the axis TC-LeWM is built around, and the projection simultaneously became useless for
-predicting the expert's next action. **A higher-rank latent is not a better latent**, and on
-this evidence the centering objective can raise rank by spreading the representation in
-directions that carry nothing a policy can use.
+This sharpens the picture for the observed-encoder pathway. Effective rank rose 3.7x on the
+axis TC-LeWM is built around, and the projection simultaneously became useless for
+predicting the expert's next action. On this pathway a higher-rank latent is not a better
+latent, and the centering objective can raise rank by spreading the representation in
+directions carrying nothing a policy can use.
+
+Two limits on that reading. This probe consumes **observed** encoder features, so it says
+nothing about the Mamba state or about imagined successors -- the pathway where the older
+checkpoint's `h` beat `z` by 0.19 AUC on generated outcomes. And a widened window weakening
+BC through `z` and CLS is not evidence that widening it improves BC anywhere; the honest
+downstream win here is the patch interface, not the window.
 
 Direct-attention reused 250 cached spans, agreeing with recomputation to 3.8e-5.
 
