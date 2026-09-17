@@ -68,8 +68,46 @@ def encode_roots(bundle, context, batch):
     return (torch.cat(z_rows), torch.cat(cls_rows), torch.cat(patch_rows))
 
 
+def unsupervised_export(source_train, source_dev, *, components=LATENT):
+    """A 192-D summary with no label supervision: the TRAIN principal subspace.
+
+    The learned maps below are trained on the evaluation task's label family, so a gain
+    could be information the backbone holds *or* supervision leaking in. This carries no
+    labels at all, so if it also beats the current export the information is really there.
+    """
+    mean = source_train.mean(0, keepdim=True)
+    centred = (source_train - mean).double()
+    # Economy SVD on the TRAIN rows only; DEV is projected through, never fitted.
+    _, singular, v = torch.linalg.svd(centred, full_matrices=False)
+    basis = v[:components].T
+    # Whiten. An unwhitened principal basis hands the ridge a null tail with almost no
+    # variance, which it then amplifies -- the same defect that produced nonsense R^2 in
+    # the predictability bridge. Scaling by the singular values keeps the directions and
+    # removes the pathological conditioning.
+    scale = singular[:components] / max(len(centred) - 1, 1) ** 0.5
+    # Drop the null tail rather than rescaling it. `_fit_probe_many` standardizes every
+    # input dimension with a clamp_min, so a near-zero principal direction is stretched to
+    # unit variance and injects pure noise -- the defect that produced R^2 of -164 here and
+    # nonsense R^2 in the predictability bridge. Zero-filled columns survive that
+    # standardization as exact zeros, so the export keeps its declared 192-D width.
+    keep = int((scale > scale[0] * 1e-3).sum())
+    basis = basis[:, :keep].float()
+    mean = mean.float()
+    def project(x):
+        out = torch.zeros(len(x), components)
+        out[:, :keep] = (x - mean) @ basis
+        return out
+    return {"train": project(source_train), "dev": project(source_dev), "rank": keep}
+
+
 def train_export(source_train, action_train, truth_train, settings, device, *, steps, width, seed):
-    model = Export(source_train.shape[1], truth_train.shape[1], width).to(device)
+    # Seed initialization as well as batching: leaving init to the ambient RNG made every
+    # export and arm start from a different draw, which is not a reproducible measurement.
+    with torch.random.fork_rng(devices=list(range(torch.cuda.device_count())) if device == "cuda" else []):
+        torch.manual_seed(seed)
+        if device == "cuda":
+            torch.cuda.manual_seed_all(seed)
+        model = Export(source_train.shape[1], truth_train.shape[1], width).to(device)
     generator = torch.Generator(device="cpu").manual_seed(seed)
     optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4, weight_decay=1e-4)
     loss_fn = nn.BCEWithLogitsLoss()
@@ -92,6 +130,9 @@ def main(argv=None) -> int:
     parser.add_argument("--steps", type=int, default=3000)
     parser.add_argument("--width", type=int, default=128)
     parser.add_argument("--encode-batch", type=int, default=32)
+    parser.add_argument("--seeds", default="0,1,2", help="repeats of every learned export")
+    parser.add_argument("--save-tensors", action="store_true", default=True,
+                        help="persist exports and probe logits for independent re-scoring")
     parser.add_argument("--limit", action="store_true", help="tiny structural smoke; never a result")
     args = parser.parse_args(argv)
     if args.limit:
@@ -120,6 +161,7 @@ def main(argv=None) -> int:
     truth = {s: splits[s]["next_binary"].flatten(0, 1).float().to(device) for s in ("train", "dev")}
     continuous = {s: splits[s]["next_continuous"].flatten(0, 1).float() for s in ("train", "dev")}
 
+    keep: dict = {}
     for arm, slot in (("consecutive", "raw"), ("strided", "tc")):
         checkpoint = ROOT / f"artifacts/lewm_gates_20260916/paired_window/{slot}/joint/step-010000.pt"
         stored = torch.load(checkpoint, map_location="cpu", weights_only=False, mmap=True)
@@ -135,20 +177,29 @@ def main(argv=None) -> int:
             torch.cuda.empty_cache()
         print(json.dumps({"stage": "encoded", "arm": arm}), flush=True)
 
-        exports = {}
+        exports = {"current": {s: sources[s]["current"] for s in ("train", "dev")}}
+        ranks: dict = {}
+        # No labels touch these two; they bound how much of the gain is supervision.
+        for name, field in (("cls_pca", "cls"), ("patch_pca", "patch")):
+            built = unsupervised_export(sources["train"][field].float(), sources["dev"][field].float())
+            ranks[name] = built.pop("rank")
+            exports[name] = built
+            print(json.dumps({"stage": "unsupervised_export", "arm": arm, "export": name,
+                              "retained_components": ranks[name]}), flush=True)
         for name, field in (("cls_learned", "cls"), ("patch_learned", "patch")):
-            # Trained on the root-plus-action task, then frozen before any probe is fitted.
             src_train = sources["train"][field].to(device).repeat_interleave(17, 0)
-            model = train_export(src_train, action["train"], truth["train"], settings, device,
-                                 steps=args.steps, width=args.width, seed=settings.seed)
-            with torch.no_grad():
-                exports[name] = {s: model.project(sources[s][field].to(device)).cpu()
-                                 for s in ("train", "dev")}
-            del model, src_train
-            print(json.dumps({"stage": "export_trained", "arm": arm, "export": name}), flush=True)
-        exports["current"] = {s: sources[s]["current"] for s in ("train", "dev")}
+            for seed_index, seed in enumerate(int(x) for x in args.seeds.split(",")):
+                model = train_export(src_train, action["train"], truth["train"], settings, device,
+                                     steps=args.steps, width=args.width, seed=settings.seed + seed)
+                with torch.no_grad():
+                    exports[f"{name}:seed{seed_index}"] = {
+                        s: model.project(sources[s][field].to(device)).cpu() for s in ("train", "dev")}
+                del model
+                print(json.dumps({"stage": "export_trained", "arm": arm, "export": name,
+                                  "seed": seed}), flush=True)
+            del src_train
 
-        entry = {"checkpoint_sha256": _sha256(checkpoint), "exports": {}}
+        entry = {"checkpoint_sha256": _sha256(checkpoint), "retained_components": ranks, "exports": {}}
         for name, tensors in exports.items():
             train_x = torch.cat((tensors["train"].to(device).float().repeat_interleave(17, 0),
                                  action["train"]), 1)
@@ -168,11 +219,19 @@ def main(argv=None) -> int:
                     "successor_continuous": _regression_metrics(regress["dev"], continuous["dev"],
                                                                 fork, STATIC_CONTINUOUS, settings)}
             entry["exports"][name] = block
+            if args.save_tensors:
+                keep.setdefault(arm, {})[name] = {
+                    "export_dev": tensors["dev"].cpu(),
+                    "logits_dev_binary_mlp": binary["dev"].detach().cpu()}
             print(json.dumps({"stage": "probed", "arm": arm, "export": name}), flush=True)
         report["arms"][arm] = entry
 
     if args.limit:
         report["mode"] = "structural_smoke_not_a_result"
+    if args.save_tensors and keep:
+        tensor_path = args.out / ("export.smoke.tensors.pt" if args.limit else "export.tensors.pt")
+        torch.save(keep, tensor_path)
+        report["tensors"] = {"path": str(tensor_path.resolve()), "sha256": _sha256(tensor_path)}
     atomic_manifest(destination, report)
     print(json.dumps({"status": "complete", "report": str(destination)}))
     return 0

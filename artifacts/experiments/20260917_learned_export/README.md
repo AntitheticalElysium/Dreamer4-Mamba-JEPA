@@ -28,32 +28,58 @@ metrics run on it unchanged -- so these numbers sit on the same scale as the rea
 
 ## Result: the width is not the bottleneck; CLS is
 
-mlp probes, successor-state targets:
+mlp probes, successor-state targets. `*_pca` are **unsupervised** -- no labels touch them --
+and bound how much of the learned gain is supervision. Learned exports are the mean over
+three seeds, with half-spread:
 
 | arm | export | binary AUC | continuous R² |
 |---|---|---|---|
 | consecutive | current | 0.6183 | −0.086 |
-| consecutive | cls_learned | 0.6411 | −0.016 |
-| consecutive | **patch_learned** | **0.7635** | **+0.203** |
+| consecutive | cls_pca *(unsup.)* | 0.6001 | unreliable |
+| consecutive | **patch_pca** *(unsup.)* | **0.7173** | −0.177 |
+| consecutive | cls_learned | 0.6443 ±0.0024 | −0.041 ±0.004 |
+| consecutive | **patch_learned** | **0.7631 ±0.0054** | **+0.152 ±0.015** |
 | strided | current | 0.6266 | −0.277 |
-| strided | cls_learned | 0.6393 | +0.006 |
-| strided | **patch_learned** | **0.7261** | **+0.133** |
-| *Direct-Mamba (reference)* | *its own export* | *0.8476* | *+0.075* |
-| *Direct-Attention (reference)* | *its own export* | *0.8476* | *+0.089* |
+| strided | cls_pca *(unsup.)* | 0.5651 | unreliable |
+| strided | patch_pca *(unsup.)* | 0.6377 | −0.796 |
+| strided | cls_learned | 0.6379 ±0.0049 | +0.007 ±0.014 |
+| strided | **patch_learned** | **0.7204 ±0.0055** | **+0.105 ±0.010** |
+| *Direct, current-state+action* | *(comparable baseline)* | *0.7571* | — |
 
-Three things follow.
+Seed spread is ±0.005 AUC, so the gains are stable and were not an artifact of the
+unseeded initialization the audit found.
 
-**192 dimensions are enough.** At identical width, a learned patch summary reaches 0.7635
-against the current export's 0.6183, and turns a negative continuous R² into +0.203. Whatever
-is missing is not capacity in the export.
+**192 dimensions are enough.** At identical width the patch route reaches 0.763 against the
+current export's 0.618. Whatever is missing is not capacity.
 
-**Relearning from CLS barely helps** -- 0.6183 → 0.6411, and 0.6266 → 0.6393. So joint
-training did not merely pick a poor map *out of CLS*; CLS is itself the lossy step.
+**It is not merely supervision.** On the consecutive arm the *unsupervised* patch PCA alone
+reaches 0.7173, +0.099 over the current export with no labels at all. The information is
+genuinely present in the patch tokens and linearly accessible.
 
-**The information is in the patch tokens.** `patch_learned` beats `cls_learned` by +0.12
-binary AUC in both arms, and on continuous state it exceeds both Direct anchors. The current
-export cannot reach it by construction: `z` is the projection of CLS, and the patch tokens
-are never regularized by SIGReg nor predicted by the world.
+**But the two arms differ sharply, and that is new.** On the strided arm `patch_pca` gains
+only +0.011 (0.6377 against 0.6266), so most of that arm's learned gain is supervision. The
+widened centering window appears to have made the patch information **less linearly
+accessible**, which no earlier panel showed.
+
+**Relearning from CLS barely helps, and an unsupervised CLS basis is worse than the current
+export** (0.600 and 0.565 against 0.618 and 0.627). So the joint-trained projector is not
+badly fitted -- CLS is the lossy step, and the projector is making reasonable use of what
+reaches it.
+
+**It matches Direct rather than beating it.** The right comparison is Direct's
+current-state-plus-action score, **0.7571** -- not the 0.8476 quoted in an earlier revision
+of this file, which is Direct decoding the *actual observed successor* and so answers a
+different question. The consecutive patch export reaches 0.763 against that 0.757: level,
+with extra task supervision, not ahead.
+
+### A measurement caveat on the PCA controls
+
+`cls_pca`'s continuous R² is **not trustworthy** and is omitted above. `_fit_probe_many`
+standardizes every input dimension with a `clamp_min`, which stretches a near-zero principal
+direction to unit variance and injects noise; truncating the null tail (187 and 164 of 192
+components retained) moved R² from −164 to −9.4 but did not repair it. The binary AUC, which
+carries the argument, is unaffected. `patch_pca` compresses 3072 dimensions into 192 and has
+no comparable null tail.
 
 ## What it does not establish
 
