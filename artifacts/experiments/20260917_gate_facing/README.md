@@ -37,26 +37,33 @@ arms, `u` most of all.
 **Uniform is the wrong baseline.** It is what `_choice_summary` reports, but no system would
 be compared to it. Measured on these same roots:
 
-| selector | safe choices / 36 | rate |
-|---|---|---|
-| uniform over actions | 8 | 0.222 |
-| `z→z`, observed-fit | 7 | 0.194 |
-| `u→u`, observed-fit | 12 | 0.333 |
-| `u→u`, generated-fit | 21 | 0.583 |
-| **best fixed action chosen on TRAIN** | **22** | **0.611** |
-| current `u` + action, no transition | 23 | 0.639 |
-| **Direct-Mamba** | **31–33** | **0.861–0.917** |
+Safe choices out of 36, mlp decoders. A constant action picked on TRAIN, never looking at
+the observation, scores **22**:
 
-A single constant action, picked on TRAIN and never looking at the observation, scores
-**0.611**. **Every arm we trained falls below it**, including `u→u` after the decoder is
-refitted. "Beats uniform" was never the relevant bar, and clearing it establishes nothing.
+| what the decoder receives | `z` world | `u` world | Direct |
+|---|---|---|---|
+| actual successor (observed-fit) | 8 | **33** | 36 |
+| predicted, observed-fit decoder | 9 | 12 | 32 |
+| predicted, **generated-fit** decoder | **24** | 21 | **33** |
+| current state + action, no world at all | **26** | 23 | 22 |
+| *constant action, no observation* | *22* | *22* | *22* |
 
-Direct is the only system here that clears the constant-action baseline.
+Three things follow, and the second reverses the emphasis above.
 
-A further caution on the row below it: "current `u` + action" reaches 0.639, and the best
-*fixed* action's DEV rate is also 0.639 (action 2). That coincidence is consistent with that
-readout having learned a near-constant action preference rather than using the state, and it
-was not separated here.
+**The observed-state gap is real and large.** From the *actual* successor, `u` selects 33
+safe actions against `z`'s 8, with death AUC 0.927 against 0.705. The patch route fixes
+something genuinely measured.
+
+**Once the decoder is refitted, `u` does not beat `z` on this row — it loses.** 21 against
+24. The `u` advantage that survives correction lives in the *observed* state, not in anything
+downstream of the transition. An earlier revision of this file said "every arm we trained
+falls below" the constant action; that is wrong for `z`, whose 24 and 26 clear it. `u`'s 21
+does not.
+
+**Neither of our worlds beats its own current-state-plus-action readout.** Paired, the
+transition contributes **−0.056 for both `z` and `u`**, while **Direct contributes +0.306**.
+That is the cleanest statement of the gap: Direct's transition does real work on safe-action
+choice and ours do not, whichever state we hand them.
 
 `reward_ranking` separates nothing: `z→z` and `u→u` both 0.3077, Direct 0.2308, uniform
 0.0679, all intervals wide and overlapping, identical across memory conditions.
