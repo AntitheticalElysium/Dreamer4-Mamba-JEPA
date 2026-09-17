@@ -303,6 +303,44 @@ downstream win here is the patch interface, not the window.
 
 Direct-attention reused 250 cached spans, agreeing with recomputation to 3.8e-5.
 
+### The Mamba state: h survives, but loses to knowing the action
+
+The supplement the first pass never reached, run by `--baseline` over this run's published
+replay. Evidence in [`evidence/m03/memory_primary.json`](evidence/m03/memory_primary.json).
+Primary panel, context 4, generated successors, mlp probes.
+
+| arm | outcomes z | outcomes h | outcomes [z,h] | successor z | successor h |
+|---|---|---|---|---|---|
+| TC consecutive | 0.524 | **0.715** | 0.600 | 0.612 | 0.644 |
+| TC strided | 0.499 | **0.702** | **0.525** | 0.607 | 0.622 |
+| TC stride-1 | 0.502 | 0.695 | 0.614 | 0.610 | 0.611 |
+| Raw stride-1 | 0.558 | 0.636 | 0.571 | 0.664 | **0.702** |
+
+Two facts replicate on the new checkpoints. `h` beats `z` by about 0.20 AUC on generated
+outcomes in every TC arm, and `h` does **not** rescue successor state, where it sits within
+0.02 of `z`. Raw stride-1 still leads on successor state outright.
+
+The widened window does not help the hidden state. `h` drifts down slightly, 0.715 → 0.702,
+and the joint readout collapses: 0.600 → **0.525**, far below `h` alone. In the strided arm,
+concatenating `z` with `h` drags a 0.70 readout most of the way to chance, which is the
+memory-side signature of the same `z` degradation the BC probe found.
+
+**And the control changes the interpretation of `h` itself.** Against the action-only
+baseline, generated outcomes, c4, mlp, over 7 targets:
+
+| arm | mean ΔAUC vs action-only | significant + | significant − |
+|---|---|---|---|
+| TC consecutive | −0.063 | 0 | 3 |
+| **TC strided** | **−0.138** | **0** | **6** |
+| Raw stride-1 | −0.091 | 0 | 3 |
+| TC stride-1 | −0.048 | 0 | 1 |
+
+No arm's `[z,h]` readout ever significantly beats action-only, in any arm, on any target.
+The widened window is the worst of the four, with six of seven targets significantly below
+it. So the `h` advantage over `z` is substantially **action information rather than recovered
+world memory**, and quoting `h` against `z` alone flatters it. This is why the readout must
+be scored against the action-only floor rather than against `z`.
+
 ### What this does not establish
 
 One seed, one dataset, no Raw arm. The cross-run comparisons to stride-1 and stride-4
