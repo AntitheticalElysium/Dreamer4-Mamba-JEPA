@@ -23,12 +23,40 @@ action-pairs: `standard` (4 pairs), `trained_length` (3), `reset` (1).
 | standard | `u→u` | 0.3889 | +0.167 | [0.222, 0.552] |
 | reset | `u→u` | 0.3611 | +0.139 | [0.212, 0.531] |
 
-**`u→u` is better than `z→z` at every memory length, and its interval still contains the
-uniform baseline.** With 36 roots it does not significantly beat picking at random. `z→z` is
-at or below uniform.
+**Two corrections make this table weaker than it looks, and both point the same way.**
 
-**Direct-Mamba reaches 0.8611**, an interval nowhere near either arm. Whatever `u` fixed
-upstream, this is not it.
+**The ranking decoder is observed-fit.** `_outcome_report` feeds `_choice_summary` the
+`transfer["generated"]` logits — a decoder fitted on observed successors and applied to
+generated ones (`gate.py:1806`). Every ranking number above therefore carries the transfer
+artifact established in
+[`20260917_generated_readout`](../20260917_generated_readout/README.md), and it is not a
+constant offset: refitting on generated TRAIN successors raises `u`'s safe choices from 12
+to 21 of 36, a paired bootstrap interval of +3 to +44 points. These numbers understate the
+arms, `u` most of all.
+
+**Uniform is the wrong baseline.** It is what `_choice_summary` reports, but no system would
+be compared to it. Measured on these same roots:
+
+| selector | safe choices / 36 | rate |
+|---|---|---|
+| uniform over actions | 8 | 0.222 |
+| `z→z`, observed-fit | 7 | 0.194 |
+| `u→u`, observed-fit | 12 | 0.333 |
+| `u→u`, generated-fit | 21 | 0.583 |
+| **best fixed action chosen on TRAIN** | **22** | **0.611** |
+| current `u` + action, no transition | 23 | 0.639 |
+| **Direct-Mamba** | **31–33** | **0.861–0.917** |
+
+A single constant action, picked on TRAIN and never looking at the observation, scores
+**0.611**. **Every arm we trained falls below it**, including `u→u` after the decoder is
+refitted. "Beats uniform" was never the relevant bar, and clearing it establishes nothing.
+
+Direct is the only system here that clears the constant-action baseline.
+
+A further caution on the row below it: "current `u` + action" reaches 0.639, and the best
+*fixed* action's DEV rate is also 0.639 (action 2). That coincidence is consistent with that
+readout having learned a near-constant action preference rather than using the state, and it
+was not separated here.
 
 `reward_ranking` separates nothing: `z→z` and `u→u` both 0.3077, Direct 0.2308, uniform
 0.0679, all intervals wide and overlapping, identical across memory conditions.
@@ -56,9 +84,9 @@ general.
 ## What this settles
 
 The one-step successor-state win was real and it does **not** propagate to the gate-facing
-rows. On action ranking `u→u` improves on `z→z` without clearing uniform; on coarse outcomes
-neither arm clears action-only; and Direct's fatal-safe advantage is untouched by anything
-tested here.
+rows. On action ranking `u→u` improves on `z→z` at every memory length and still falls below
+a constant action, before *and* after the decoder is refitted; on coarse outcomes neither arm
+clears action-only; and Direct's fatal-safe advantage is untouched by anything tested here.
 
 Memory length is not the explanation: `u→u` leads `z→z` at all three lengths, and the
 ranking numbers barely move between them.
