@@ -1,0 +1,132 @@
+{
+  "schema": "d4mj_m03_stage_cache",
+  "metadata_sha256": "5b58b386d2f8ad86cf817a14188ad4c95a0fe6339856ff814c1790d761985925",
+  "metadata": {
+    "sidecar_sha256": "ead287f0f9a1aac03d20db701100bd76f387fbac1ec4a03eab661fc82e2be3c0",
+    "anchor": {
+      "name": "direct_attention",
+      "encoder": {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/capacity6k/n64d16_s1/encoder_006000.pt",
+        "sha256": "4647c1fbea0cfd16b5262c169c88c8db4334f456d17867b6444315429642907d"
+      },
+      "world": {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/v2_direct_attention/world_020000.pt",
+        "sha256": "b466f9265d88439abddadb41acf3e7718f501a27579f4c0b2742c534f3219900"
+      },
+      "archived_config": {
+        "transition": "direct",
+        "time_mixer": "attention",
+        "resolution": 63,
+        "channels": 3,
+        "patch": 7,
+        "n_actions": 17,
+        "window": 16,
+        "n_latents": 64,
+        "d_bottleneck": 16,
+        "packing": 2,
+        "mae_p_max": 0.9,
+        "lpips_weight": 0.2,
+        "d_model_encoder": 256,
+        "depth_encoder": 8,
+        "n_heads_encoder": 4,
+        "d_model": 256,
+        "depth": 8,
+        "n_heads": 4,
+        "mlp_ratio": 4.0,
+        "time_every": 4,
+        "n_register": 4,
+        "n_agent": 2,
+        "mamba_d_state": 64,
+        "mamba_headdim": 64,
+        "mamba_expand": 1,
+        "mamba_d_conv": 4,
+        "k_max": 8,
+        "rungs": 4,
+        "tau_ctx_noise": 0.1,
+        "self_fraction": 0.25,
+        "bootstrap_start": 10000,
+        "mtp_leads": 8,
+        "bins": 255,
+        "symlog_limit": 20.0,
+        "horizon": 8,
+        "horizon_candidates": [
+          4,
+          8,
+          16,
+          32
+        ],
+        "direct_rollout": 2,
+        "align_weight": 0.0,
+        "horizon_eval": 10000,
+        "eval_episodes": 64,
+        "bootstrap": 2000,
+        "parameter_tolerance": 0.005,
+        "outcome_gate_seeds": [
+          12000,
+          12001,
+          12002,
+          12003,
+          12004,
+          12005,
+          12006,
+          12007
+        ],
+        "outcome_gate_steps": [
+          0,
+          15,
+          40,
+          80,
+          110
+        ],
+        "outcome_gate_limit": 400,
+        "outcome_gate_flow_samples": 4,
+        "outcome_gate_min_opportunities": 3,
+        "gamma": 0.997,
+        "lam": 0.95,
+        "pmpo_alpha": 0.5,
+        "prior_beta": 0.3,
+        "sequence": 16,
+        "sequence_long": 64,
+        "dynamics_context": 48,
+        "long_batch_every": 4,
+        "long_only_fraction": 0.25,
+        "commit_prefix_fraction": 0.25,
+        "episode_start_fraction": 0.25,
+        "terminal_batch": 1,
+        "event_fraction": 0.5,
+        "batch": 4,
+        "actor_batch": 16,
+        "gradient_checkpointing": true,
+        "rms_decay": 0.99,
+        "learning_rate": 0.0001,
+        "weight_decay": 0.01,
+        "grad_clip": 1.0,
+        "warmup": 1000,
+        "checkpoint_every": 500,
+        "ema_momentum": [
+          0.996,
+          1.0
+        ],
+        "seed": 20260731,
+        "device": "cuda"
+      },
+      "evaluation_device": "cuda"
+    },
+    "protocol": "native_prefix64_with_first_incoming_action_v1",
+    "tolerance": 1e-06
+  },
+  "result": {
+    "status": "pass",
+    "protocol": "native_prefix64_with_first_incoming_action_v1",
+    "reference": "archived_direct_full_prefix_encoder_commit_world_v1",
+    "row": 0,
+    "tolerance": 1e-06,
+    "max_abs": {
+      "projected": 0.0,
+      "observed_successor": 0.0,
+      "generated_successor": 0.0
+    },
+    "maximum_max_abs": 0.0
+  },
+  "imported_from": null
+}

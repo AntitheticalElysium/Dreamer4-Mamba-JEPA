@@ -40,6 +40,7 @@ Specifications live in [`d4mj/spec/`](../d4mj/spec/); results live here.
 | 2026-09-17 | [closed_loop](experiments/20260917_closed_loop/) | Does the richer-state gain survive repeated prediction? | Superseded by drift_decomposition: evaluated beyond the trained memory length, so its "u loses to persistence" conclusion is withdrawn |
 | 2026-09-17 | [drift_decomposition](experiments/20260917_drift_decomposition/) | Local prediction vs feedback drift vs history extrapolation vs decoder mismatch? | Complete. Overturns closed_loop: matched to its 3-pair training length u->u beats persistence (0.586). Local prediction is better for u than z. The real failure is u's 182 low-variance coordinates reaching 0.949 error -- raw MSE de-weights them to 6.9% |
 | 2026-09-17 | [gate_facing](experiments/20260917_gate_facing/) | Do the 2x2 worlds move the rows the gate fails on? | Complete. **No.** u->u beats z->z on fatal-safe ranking at every memory length but its interval still contains uniform; Direct reaches 0.861 against their 0.19-0.39. Neither arm clears action-only on coarse outcomes |
+| 2026-09-18 | [matched_10k](experiments/20260918_matched_10k/) | Does the richer-state gain hold at full budget on the gate's own rows? | Complete (primary only). State rows move a lot: generated successor 0.620 -> 0.708 vs Direct 0.752, memory [z,h] 0.620 -> 0.744. Capability rows do not move at all: fatal-safe 0.3333 for both arms, neither clears the action-only floor |
 
 ## Historical campaigns
 
