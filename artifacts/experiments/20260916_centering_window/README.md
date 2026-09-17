@@ -208,6 +208,44 @@ threefold change in latent rank moved these short-future semantic proxies very l
 either direction — which is itself worth knowing, because it means rank recovery is not
 by itself evidence of recovered semantics.
 
+### Did the recovered rank buy any capability? No.
+
+Run through [`d4mj/m03/`](../../../d4mj/m03/) against the shared 20260906 cache, stopped
+after the two informative panels. Evidence in [`evidence/m03/`](evidence/m03/).
+
+**The M03 verdict could not have depended on these checkpoints.** `m03_capability` is
+gated by `critical_coverage`, which counts positive/negative label support and seed
+clusters in the corpus; no model output enters it. Computed from this run's own stages it
+reports `insufficient_coverage` over a missing set of 116 entries that is *identical* to
+the 20260906 run's. Running the remaining historical phase would have restated that
+verdict for the same 116 reasons, which is why it was stopped rather than finished.
+
+Static retention, mean AUC over the 13 binary targets with adequate support:
+
+| source | linear | mlp |
+|---|---|---|
+| TC consecutive (control) | 0.7268 | 0.7433 |
+| **TC strided (treatment)** | **0.7516** | **0.7616** |
+| TC stride-1 | 0.7305 | 0.7522 |
+| Raw stride-1 | 0.7880 | 0.7882 |
+| Direct-Mamba anchor | 0.8299 | 0.8484 |
+
+All-action one-step outcomes, strided minus consecutive: **no significant positive
+difference on any target.** Three significant negatives -- `inventory_changed` −0.031
+(linear), `achievement_event` −0.079 and `inventory_changed` −0.040 (mlp).
+
+So a 3.7x change in effective rank (5.14 → 19.16) bought about +0.02 static-retention AUC,
+left the arm below Raw stride-1 and far below the Direct anchor, and slightly *hurt*
+outcome prediction. The window fixes the geometry and not the capability. That agrees with
+this experiment's own retention probes, which moved by less than 0.02 in either direction,
+and it is the substantive result: **effective rank is not a proxy for what the
+representation can support.** A recipe change can be a large, real, reproducible win on the
+geometry TC-LeWM is designed around and still be worth nothing downstream.
+
+The Direct-Mamba anchor scores 0.8299 / 0.8484 in both runs, to every printed digit. That
+is an independent check that the bridged feature cache returned the same bytes, since those
+encodings were reused rather than recomputed.
+
 ### What this does not establish
 
 One seed, one dataset, no Raw arm. The cross-run comparisons to stride-1 and stride-4

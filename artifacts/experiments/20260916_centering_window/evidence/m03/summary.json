@@ -1,0 +1,96 @@
+{
+  "schema": "d4mj_centering_window_m03_partial_v1",
+  "status": "partial: stopped after the informative panels; historical regression not run",
+  "scope": "two completed M03 panels on the centering-window arms; not a sealed gate",
+  "run": {
+    "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_gates_20260916/m03_window",
+    "stages_completed": [
+      "all_action_one_step",
+      "corrected_eda",
+      "native_direct_parity_direct_attention",
+      "native_direct_parity_direct_mamba",
+      "observability",
+      "static_retention"
+    ],
+    "stopped_at_stage": "historical_encoding",
+    "resumable": true
+  },
+  "arms": {
+    "raw_slot": "TC consecutive (control)",
+    "tc_slot": "TC strided (treatment)"
+  },
+  "checkpoints": {
+    "raw": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_gates_20260916/paired_window/raw/joint/step-010000.pt",
+      "sha256": "7bc9c14d7d7d10bd4cabeb22cd7f2af19e39ff8cb1d9b3758a14086e2a1f2789"
+    },
+    "tc": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_gates_20260916/paired_window/tc/joint/step-010000.pt",
+      "sha256": "3b2be39fd116a4ff8ffddddf6526ad197cdd7f12da3247fe2988171ffd05e674"
+    }
+  },
+  "verdict_is_predetermined": {
+    "finding": "critical_coverage counts positive/negative label support in the corpus and its seed clusters; no model output enters it, so the m03_capability verdict cannot depend on the checkpoint",
+    "window_missing": 116,
+    "reference_missing": 116,
+    "identical_missing_set": true,
+    "status": "insufficient_coverage",
+    "reference_report_sha256": "2cd02650256ac6db1cfcafbbb8a9abe7075c1fb673c6edb55f3875be647808f0"
+  },
+  "static_retention_mean_binary_auc": {
+    "linear": {
+      "window_consecutive": {
+        "n": 13,
+        "mean_auc": 0.7267520663504007
+      },
+      "window_strided": {
+        "n": 13,
+        "mean_auc": 0.7515570088056465
+      },
+      "reference_raw_s1": {
+        "n": 13,
+        "mean_auc": 0.7880284411283606
+      },
+      "reference_tc_s1": {
+        "n": 13,
+        "mean_auc": 0.730487336848867
+      },
+      "direct_mamba_anchor": {
+        "n": 13,
+        "mean_auc": 0.8298823333191918
+      },
+      "direct_mamba_anchor_reference": {
+        "n": 13,
+        "mean_auc": 0.8298823333191918
+      }
+    },
+    "mlp": {
+      "window_consecutive": {
+        "n": 13,
+        "mean_auc": 0.7433389976804846
+      },
+      "window_strided": {
+        "n": 13,
+        "mean_auc": 0.7616257499077006
+      },
+      "reference_raw_s1": {
+        "n": 13,
+        "mean_auc": 0.788167331450909
+      },
+      "reference_tc_s1": {
+        "n": 13,
+        "mean_auc": 0.7521667237569528
+      },
+      "direct_mamba_anchor": {
+        "n": 13,
+        "mean_auc": 0.8484308799066403
+      },
+      "direct_mamba_anchor_reference": {
+        "n": 13,
+        "mean_auc": 0.8484308799066403
+      }
+    }
+  },
+  "cache_reuse_validation": "the Direct-Mamba anchor AUCs equal the reference run's to all printed digits, which independently confirms the bridged cache returned the same feature bytes",
+  "measured_unix": 1789616614.5454314
+}
