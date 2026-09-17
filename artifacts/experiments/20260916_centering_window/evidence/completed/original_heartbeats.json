@@ -1,0 +1,1402 @@
+[
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 100,
+    "loss": 4.301165580749512,
+    "prediction": 0.21088692545890808
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 200,
+    "loss": 3.554710865020752,
+    "prediction": 0.4189641773700714
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 300,
+    "loss": 3.0480592250823975,
+    "prediction": 0.709646999835968
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 400,
+    "loss": 2.948700189590454,
+    "prediction": 0.8867843747138977
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 500,
+    "loss": 2.843325138092041,
+    "prediction": 0.5957287549972534
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 600,
+    "loss": 2.495506763458252,
+    "prediction": 0.9687995910644531
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 700,
+    "loss": 2.1578423976898193,
+    "prediction": 1.0171974897384644
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 800,
+    "loss": 2.083855628967285,
+    "prediction": 0.9691446423530579
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 900,
+    "loss": 2.081298351287842,
+    "prediction": 0.9372475147247314
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 1000,
+    "loss": 2.2540745735168457,
+    "prediction": 0.8874069452285767
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 1100,
+    "loss": 1.9677627086639404,
+    "prediction": 0.9604828953742981
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 1200,
+    "loss": 1.8258583545684814,
+    "prediction": 1.067935824394226
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 1300,
+    "loss": 1.8581115007400513,
+    "prediction": 1.0053473711013794
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 1400,
+    "loss": 1.770895004272461,
+    "prediction": 0.9937191009521484
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 1500,
+    "loss": 1.7682363986968994,
+    "prediction": 0.8635125160217285
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 1600,
+    "loss": 1.5006849765777588,
+    "prediction": 0.6755049824714661
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 1700,
+    "loss": 1.3908648490905762,
+    "prediction": 0.547072172164917
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 1800,
+    "loss": 1.3357959985733032,
+    "prediction": 0.6113907694816589
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 1900,
+    "loss": 1.1670877933502197,
+    "prediction": 0.4079563021659851
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 2000,
+    "loss": 1.1188421249389648,
+    "prediction": 0.32483360171318054
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 100,
+    "loss": 3.409299612045288,
+    "prediction": 0.35783711075782776
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 200,
+    "loss": 2.181791067123413,
+    "prediction": 0.35343116521835327
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 300,
+    "loss": 1.6376845836639404,
+    "prediction": 0.5633667707443237
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 400,
+    "loss": 1.3026375770568848,
+    "prediction": 0.5270055532455444
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 500,
+    "loss": 1.2849493026733398,
+    "prediction": 0.44941282272338867
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 600,
+    "loss": 1.1987290382385254,
+    "prediction": 0.5066097378730774
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 700,
+    "loss": 1.1244581937789917,
+    "prediction": 0.39063647389411926
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 800,
+    "loss": 0.9206728935241699,
+    "prediction": 0.33399006724357605
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 900,
+    "loss": 1.0963687896728516,
+    "prediction": 0.5014073848724365
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 1000,
+    "loss": 1.0670675039291382,
+    "prediction": 0.3436721861362457
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 1100,
+    "loss": 0.9024535417556763,
+    "prediction": 0.2530464231967926
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 1200,
+    "loss": 0.9509060382843018,
+    "prediction": 0.3904390037059784
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 1300,
+    "loss": 0.7893818020820618,
+    "prediction": 0.2555310130119324
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 1400,
+    "loss": 0.8567506074905396,
+    "prediction": 0.30567482113838196
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 1500,
+    "loss": 0.7389532327651978,
+    "prediction": 0.2148420810699463
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 1600,
+    "loss": 0.805396318435669,
+    "prediction": 0.2655751407146454
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 1700,
+    "loss": 0.7046298980712891,
+    "prediction": 0.22590883076190948
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 1800,
+    "loss": 0.7127979397773743,
+    "prediction": 0.19136716425418854
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 1900,
+    "loss": 0.6191246509552002,
+    "prediction": 0.22969108819961548
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 2000,
+    "loss": 0.6556910872459412,
+    "prediction": 0.19176746904850006
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 2100,
+    "loss": 1.1901018619537354,
+    "prediction": 0.32246077060699463
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 2200,
+    "loss": 1.2073720693588257,
+    "prediction": 0.38049787282943726
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 2300,
+    "loss": 1.0860768556594849,
+    "prediction": 0.3418217897415161
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 2400,
+    "loss": 1.1768476963043213,
+    "prediction": 0.3555546998977661
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 2500,
+    "loss": 1.0997916460037231,
+    "prediction": 0.3802225887775421
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 2600,
+    "loss": 1.0905420780181885,
+    "prediction": 0.33076971769332886
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 2700,
+    "loss": 1.155311107635498,
+    "prediction": 0.39987632632255554
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 2800,
+    "loss": 1.0546141862869263,
+    "prediction": 0.302485853433609
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 2900,
+    "loss": 1.1783785820007324,
+    "prediction": 0.4295772910118103
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 3000,
+    "loss": 1.0826098918914795,
+    "prediction": 0.39187806844711304
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 3100,
+    "loss": 1.1965144872665405,
+    "prediction": 0.43984392285346985
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 3200,
+    "loss": 1.1350483894348145,
+    "prediction": 0.3279307186603546
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 3300,
+    "loss": 1.0215191841125488,
+    "prediction": 0.3106226325035095
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 3400,
+    "loss": 1.1172329187393188,
+    "prediction": 0.3434520661830902
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 3500,
+    "loss": 1.2626163959503174,
+    "prediction": 0.3400135040283203
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 3600,
+    "loss": 1.132577657699585,
+    "prediction": 0.33161661028862
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 3700,
+    "loss": 1.0605851411819458,
+    "prediction": 0.31514760851860046
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 3800,
+    "loss": 1.0818220376968384,
+    "prediction": 0.3398880362510681
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 3900,
+    "loss": 0.9739930629730225,
+    "prediction": 0.3569510877132416
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 4000,
+    "loss": 1.019748568534851,
+    "prediction": 0.31681543588638306
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 4100,
+    "loss": 1.0898616313934326,
+    "prediction": 0.3313670754432678
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 4200,
+    "loss": 1.0762673616409302,
+    "prediction": 0.38744840025901794
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 4300,
+    "loss": 0.9823712110519409,
+    "prediction": 0.32467514276504517
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 4400,
+    "loss": 1.0555893182754517,
+    "prediction": 0.3602227568626404
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 4500,
+    "loss": 1.073509931564331,
+    "prediction": 0.327951043844223
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 4600,
+    "loss": 0.9826457500457764,
+    "prediction": 0.33604517579078674
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 4700,
+    "loss": 1.123246431350708,
+    "prediction": 0.33523163199424744
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 4800,
+    "loss": 1.0056101083755493,
+    "prediction": 0.37725821137428284
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 4900,
+    "loss": 1.037234902381897,
+    "prediction": 0.3472404479980469
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 5000,
+    "loss": 1.026496410369873,
+    "prediction": 0.35071098804473877
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 5100,
+    "loss": 0.969089150428772,
+    "prediction": 0.3644990026950836
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 5200,
+    "loss": 0.9843507409095764,
+    "prediction": 0.3243882656097412
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 5300,
+    "loss": 1.1029284000396729,
+    "prediction": 0.3502851128578186
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 5400,
+    "loss": 0.9398548603057861,
+    "prediction": 0.2751128375530243
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 5500,
+    "loss": 0.9890259504318237,
+    "prediction": 0.35616472363471985
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 5600,
+    "loss": 0.9966456890106201,
+    "prediction": 0.35165584087371826
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 5700,
+    "loss": 0.8901878595352173,
+    "prediction": 0.31107500195503235
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 5800,
+    "loss": 0.9485662579536438,
+    "prediction": 0.26258426904678345
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 5900,
+    "loss": 0.9318650364875793,
+    "prediction": 0.23942041397094727
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 6000,
+    "loss": 0.8941285610198975,
+    "prediction": 0.2769642174243927
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 6100,
+    "loss": 0.9290856122970581,
+    "prediction": 0.31170907616615295
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 6200,
+    "loss": 0.8661043643951416,
+    "prediction": 0.30084362626075745
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 6300,
+    "loss": 0.8860921859741211,
+    "prediction": 0.3390268385410309
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 6400,
+    "loss": 0.8241236209869385,
+    "prediction": 0.27079811692237854
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 6500,
+    "loss": 0.887932538986206,
+    "prediction": 0.30107489228248596
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 6600,
+    "loss": 0.8543434143066406,
+    "prediction": 0.2843819558620453
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 6700,
+    "loss": 0.8652702569961548,
+    "prediction": 0.2965856194496155
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 6800,
+    "loss": 0.9092674255371094,
+    "prediction": 0.3534063398838043
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 6900,
+    "loss": 0.9071266055107117,
+    "prediction": 0.2947043776512146
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 7000,
+    "loss": 0.9261791706085205,
+    "prediction": 0.31573280692100525
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 7100,
+    "loss": 0.9552255868911743,
+    "prediction": 0.2702771723270416
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 7200,
+    "loss": 0.8295108675956726,
+    "prediction": 0.2951139807701111
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 7300,
+    "loss": 0.866198718547821,
+    "prediction": 0.2692456841468811
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 7400,
+    "loss": 0.8679159879684448,
+    "prediction": 0.30215543508529663
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 7500,
+    "loss": 0.8923110961914062,
+    "prediction": 0.33525916934013367
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 7600,
+    "loss": 0.8581596612930298,
+    "prediction": 0.30264002084732056
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 7700,
+    "loss": 0.82972651720047,
+    "prediction": 0.2922220230102539
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 7800,
+    "loss": 0.8286550045013428,
+    "prediction": 0.2552103102207184
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 7900,
+    "loss": 0.837526798248291,
+    "prediction": 0.30522385239601135
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 8000,
+    "loss": 0.8928053379058838,
+    "prediction": 0.25883278250694275
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 8100,
+    "loss": 0.9292168617248535,
+    "prediction": 0.27111873030662537
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 8200,
+    "loss": 0.8348974585533142,
+    "prediction": 0.3259419798851013
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 8300,
+    "loss": 0.8833166360855103,
+    "prediction": 0.27997952699661255
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 8400,
+    "loss": 0.820978045463562,
+    "prediction": 0.26573458313941956
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 8500,
+    "loss": 0.8435712456703186,
+    "prediction": 0.24957378208637238
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 8600,
+    "loss": 0.853602945804596,
+    "prediction": 0.23085777461528778
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 8700,
+    "loss": 0.9231278896331787,
+    "prediction": 0.3490242063999176
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 8800,
+    "loss": 0.8374747633934021,
+    "prediction": 0.27981990575790405
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 8900,
+    "loss": 0.8388056755065918,
+    "prediction": 0.2841585874557495
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 9000,
+    "loss": 0.9926940202713013,
+    "prediction": 0.2851544916629791
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 9100,
+    "loss": 0.8939937353134155,
+    "prediction": 0.298616886138916
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 9200,
+    "loss": 0.8239948749542236,
+    "prediction": 0.27766409516334534
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 9300,
+    "loss": 0.9199157953262329,
+    "prediction": 0.25223347544670105
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 9400,
+    "loss": 0.8272725343704224,
+    "prediction": 0.2613435983657837
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 9500,
+    "loss": 0.8402683734893799,
+    "prediction": 0.27304187417030334
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 9600,
+    "loss": 0.872909665107727,
+    "prediction": 0.2833648920059204
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 9700,
+    "loss": 0.7865885496139526,
+    "prediction": 0.28842177987098694
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 9800,
+    "loss": 0.8075453639030457,
+    "prediction": 0.2750515937805176
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 9900,
+    "loss": 0.821304202079773,
+    "prediction": 0.30510976910591125
+  },
+  {
+    "slot": "raw",
+    "variant": "tc",
+    "update": 10000,
+    "loss": 0.8502639532089233,
+    "prediction": 0.3001931607723236
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 2100,
+    "loss": 0.6644476056098938,
+    "prediction": 0.1847466379404068
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 2200,
+    "loss": 0.6162739992141724,
+    "prediction": 0.17716264724731445
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 2300,
+    "loss": 0.576035737991333,
+    "prediction": 0.14926569163799286
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 2400,
+    "loss": 0.659411609172821,
+    "prediction": 0.1745961457490921
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 2500,
+    "loss": 0.5751377940177917,
+    "prediction": 0.15064890682697296
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 2600,
+    "loss": 0.5491334199905396,
+    "prediction": 0.12414880841970444
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 2700,
+    "loss": 0.6721251010894775,
+    "prediction": 0.20124025642871857
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 2800,
+    "loss": 0.5113885998725891,
+    "prediction": 0.12789011001586914
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 2900,
+    "loss": 0.5964593887329102,
+    "prediction": 0.19166414439678192
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 3000,
+    "loss": 0.5419394373893738,
+    "prediction": 0.1356993466615677
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 3100,
+    "loss": 0.5096917152404785,
+    "prediction": 0.16365186870098114
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 3200,
+    "loss": 0.5010083913803101,
+    "prediction": 0.15011043846607208
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 3300,
+    "loss": 0.5233204364776611,
+    "prediction": 0.13232772052288055
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 3400,
+    "loss": 0.4599696397781372,
+    "prediction": 0.1219068393111229
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 3500,
+    "loss": 0.4240853786468506,
+    "prediction": 0.12412897497415543
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 3600,
+    "loss": 0.47652679681777954,
+    "prediction": 0.11386643350124359
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 3700,
+    "loss": 0.5032725930213928,
+    "prediction": 0.12104691565036774
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 3800,
+    "loss": 0.4833213686943054,
+    "prediction": 0.12321434915065765
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 3900,
+    "loss": 0.41033104062080383,
+    "prediction": 0.09944384545087814
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 4000,
+    "loss": 0.4179519712924957,
+    "prediction": 0.12196920067071915
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 4100,
+    "loss": 0.4024255871772766,
+    "prediction": 0.113935686647892
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 4200,
+    "loss": 0.44713491201400757,
+    "prediction": 0.14277422428131104
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 4300,
+    "loss": 0.4394347667694092,
+    "prediction": 0.1314583122730255
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 4400,
+    "loss": 0.4245823323726654,
+    "prediction": 0.12459278106689453
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 4500,
+    "loss": 0.4756433069705963,
+    "prediction": 0.14729061722755432
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 4600,
+    "loss": 0.3872578740119934,
+    "prediction": 0.10617028176784515
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 4700,
+    "loss": 0.42892491817474365,
+    "prediction": 0.11596599966287613
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 4800,
+    "loss": 0.40027642250061035,
+    "prediction": 0.10571432113647461
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 4900,
+    "loss": 0.42753633856773376,
+    "prediction": 0.13882902264595032
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 5000,
+    "loss": 0.3996950387954712,
+    "prediction": 0.1124272346496582
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 5100,
+    "loss": 0.4211423397064209,
+    "prediction": 0.12087687104940414
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 5200,
+    "loss": 0.4377354383468628,
+    "prediction": 0.14378458261489868
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 5300,
+    "loss": 0.38490957021713257,
+    "prediction": 0.10343387722969055
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 5400,
+    "loss": 0.34557950496673584,
+    "prediction": 0.09448520094156265
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 5500,
+    "loss": 0.38207483291625977,
+    "prediction": 0.08681271970272064
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 5600,
+    "loss": 0.4142308831214905,
+    "prediction": 0.1334546059370041
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 5700,
+    "loss": 0.3390745222568512,
+    "prediction": 0.0687311664223671
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 5800,
+    "loss": 0.395219624042511,
+    "prediction": 0.09907208383083344
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 5900,
+    "loss": 0.38600748777389526,
+    "prediction": 0.09624107927083969
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 6000,
+    "loss": 0.37698987126350403,
+    "prediction": 0.08808831125497818
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 6100,
+    "loss": 0.39120006561279297,
+    "prediction": 0.1046009510755539
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 6200,
+    "loss": 0.3661044239997864,
+    "prediction": 0.09066593647003174
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 6300,
+    "loss": 0.3809422254562378,
+    "prediction": 0.09839298576116562
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 6400,
+    "loss": 0.4281005263328552,
+    "prediction": 0.10090246051549911
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 6500,
+    "loss": 0.38862770795822144,
+    "prediction": 0.0960969552397728
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 6600,
+    "loss": 0.3958823084831238,
+    "prediction": 0.10783926397562027
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 6700,
+    "loss": 0.3874123692512512,
+    "prediction": 0.10722105205059052
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 6800,
+    "loss": 0.38717949390411377,
+    "prediction": 0.11715875566005707
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 6900,
+    "loss": 0.39934810996055603,
+    "prediction": 0.09895232319831848
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 7000,
+    "loss": 0.40143710374832153,
+    "prediction": 0.10250590741634369
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 7100,
+    "loss": 0.35972118377685547,
+    "prediction": 0.09070099890232086
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 7200,
+    "loss": 0.39337158203125,
+    "prediction": 0.10171796381473541
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 7300,
+    "loss": 0.3300875127315521,
+    "prediction": 0.08432681858539581
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 7400,
+    "loss": 0.3457503318786621,
+    "prediction": 0.1043098121881485
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 7500,
+    "loss": 0.3790283501148224,
+    "prediction": 0.12389934062957764
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 7600,
+    "loss": 0.3379896879196167,
+    "prediction": 0.09523648768663406
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 7700,
+    "loss": 0.3734867572784424,
+    "prediction": 0.09996072202920914
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 7800,
+    "loss": 0.3224932551383972,
+    "prediction": 0.07558459788560867
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 7900,
+    "loss": 0.34667468070983887,
+    "prediction": 0.07893149554729462
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 8000,
+    "loss": 0.3753860592842102,
+    "prediction": 0.09680645167827606
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 8100,
+    "loss": 0.34043604135513306,
+    "prediction": 0.09252152591943741
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 8200,
+    "loss": 0.39820048213005066,
+    "prediction": 0.10752344131469727
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 8300,
+    "loss": 0.3215177059173584,
+    "prediction": 0.0734303891658783
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 8400,
+    "loss": 0.3414418697357178,
+    "prediction": 0.08600662648677826
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 8500,
+    "loss": 0.3159821629524231,
+    "prediction": 0.07502001523971558
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 8600,
+    "loss": 0.3558081388473511,
+    "prediction": 0.07083724439144135
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 8700,
+    "loss": 0.37031033635139465,
+    "prediction": 0.09248444437980652
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 8800,
+    "loss": 0.41650891304016113,
+    "prediction": 0.10316169261932373
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 8900,
+    "loss": 0.36102810502052307,
+    "prediction": 0.10069084167480469
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 9000,
+    "loss": 0.3515477478504181,
+    "prediction": 0.07814375311136246
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 9100,
+    "loss": 0.3055042028427124,
+    "prediction": 0.08511728048324585
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 9200,
+    "loss": 0.33266234397888184,
+    "prediction": 0.08745834976434708
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 9300,
+    "loss": 0.37474656105041504,
+    "prediction": 0.075436070561409
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 9400,
+    "loss": 0.34909939765930176,
+    "prediction": 0.06741932034492493
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 9500,
+    "loss": 0.37378036975860596,
+    "prediction": 0.10669813305139542
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 9600,
+    "loss": 0.3251858353614807,
+    "prediction": 0.07700515538454056
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 9700,
+    "loss": 0.35897278785705566,
+    "prediction": 0.0848618894815445
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 9800,
+    "loss": 0.33127790689468384,
+    "prediction": 0.09110210835933685
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 9900,
+    "loss": 0.35829561948776245,
+    "prediction": 0.10547851026058197
+  },
+  {
+    "slot": "tc",
+    "variant": "tc",
+    "update": 10000,
+    "loss": 0.3596492409706116,
+    "prediction": 0.08624924719333649
+  }
+]

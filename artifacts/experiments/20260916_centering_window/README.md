@@ -1,6 +1,8 @@
 # Centering-window ablation: was it the window, or the horizon?
 
-Status: **running** since 2026-09-17 09:06. Implemented and tested.
+Status: **complete**, 2026-09-17. Both arms reached 10,000 updates; the completed-budget
+audit passed all eight components. **The centering window accounts for the whole stride-4
+rank recovery.**
 
 ## Question
 
@@ -138,6 +140,82 @@ TRITON_F32_DEFAULT=ieee .venv/bin/python -m d4mj paired-run \
 
 Seven encoded frames rather than four, so expect ~1.75× the encoder cost per update against
 the stride-4 run's ~0.5 s/update.
+
+## Result
+
+Completed budget, 10,000 updates per arm, one seed. Audit decision
+`joint_budget_audited_m4_blocked`, all eight components pass, 200 heartbeats verified,
+`pair_axis: joint.centering`. M4 remains blocked.
+
+Spectra on the four prediction frames (native offsets 0-3), identical basis in both arms:
+
+| arm | rank_raw | rank_residual | rank_persistent | coord_var | mean_norm | norm_pred_mse |
+|---|---|---|---|---|---|---|
+| TC consecutive (control) | 5.1445 | 5.6881 | 4.5931 | 3.8623 | 3.6738 | 0.0728 |
+| TC strided (treatment) | **19.1643** | **18.4537** | **18.2254** | 1.8579 | 5.4527 | 0.0421 |
+| effect | **+14.02** | +12.77 | +13.63 | −2.00 | +1.78 | −0.031 |
+
+Matched-span cross-reference, spectra over all seven encoded frames (offsets
+0,1,2,3,4,8,12, spanning the same 13 native steps as the stride-4 window):
+**5.1908 → 19.4573, +14.27**. The two bases agree, so the effect is not an artifact of
+which frames are measured.
+
+### The window was the cause
+
+| run | TC rank_raw | basis |
+|---|---|---|
+| stride-1 TC | 5.6842 | offsets 0-3 |
+| **this control (consecutive)** | **5.1445** | offsets 0-3 |
+| stride-4 TC | 16.7285 | offsets 0,4,8,12 |
+| **this treatment (strided)** | **19.1643** | offsets 0-3 |
+
+Two things follow. The control reproduces the stride-1 collapse (5.14 against 5.68)
+*while encoding the same seven frames as the treatment*, so the seven-frame window and
+the BatchNorm batch are not what moves rank. And the treatment, which changes only which
+index set SIGReg centers, clears the stride-4 figure outright (19.16 against 16.73).
+
+The stride-4 retrain moved TC rank by +11.04 (5.68 → 16.73) while changing three things at
+once. Changing the centering window **alone** moves it +14.02. So the window is not merely
+the dominant term — it is the whole effect, and the 4-step horizon and the stacked actions
+contributed nothing positive to the rank recovery. This answers the question the experiment
+was built to ask, in the first row of the Readings table.
+
+### Scale inflation is only half addressed
+
+Coordinate variance falls 3.86 → 1.86, essentially onto the stride-4 value (1.89). But the
+mean norm *rises*, 3.67 → 5.45, against 3.03 at stride-4 and 3.39 at stride-1. Whatever the
+widened window fixes about the spread of the latent, it does not fix the offset, and on that
+axis it is worse than either earlier run. "Scale inflation gone" would be wrong here.
+
+### Semantic retention did not follow the rank
+
+`projection_stop` is false in both arms, so neither is blocked. The two probe families
+disagree about which arm loses more in the projection, and each is significant in only one
+arm:
+
+| probe | TC consecutive | TC strided |
+|---|---|---|
+| linear | −0.0193, CI [−0.0434, +0.0054] | −0.0461, CI [−0.0812, −0.0097] |
+| MLP | −0.0367, CI [−0.0593, −0.0141] | −0.0101, CI [−0.0384, +0.0159] |
+
+(projected AUC − CLS AUC; negative means the projection discards what CLS retains.)
+
+Because they point opposite ways, **this run does not support a claim that the widened
+window trades retention for rank, nor that it improves retention.** The absolute MLP
+projected AUCs are within about 0.02 of each other across arms (reward 0.720/0.723,
+negative reward 0.525/0.532, achievement 0.793/0.772). The honest reading is that a
+threefold change in latent rank moved these short-future semantic proxies very little in
+either direction — which is itself worth knowing, because it means rank recovery is not
+by itself evidence of recovered semantics.
+
+### What this does not establish
+
+One seed, one dataset, no Raw arm. The cross-run comparisons to stride-1 and stride-4
+involve different recipes and, between those two, different measurement bases; only the
+within-ablation contrast is fully controlled. Nothing here is an M03 capability result:
+the semantic panels still depend on the deferred macro-fork convention, and prediction MSE
+is not comparable across arms, since each arm predicts its own encoder's latents and the
+persistence baselines differ by an order of magnitude (3.37 against 0.31).
 
 ## Also built
 
