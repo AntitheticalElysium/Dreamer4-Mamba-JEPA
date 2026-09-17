@@ -575,6 +575,9 @@ def test_imported_stage_verifies_its_string_origin_path(tmp_path):
     cache.close()
 
 
+from d4mj.sources import lewm_source_manifest
+
+
 STORED_SOURCES = {"execution": {"triton_f32_default": "unset"}}
 
 
@@ -604,7 +607,10 @@ def test_frozen_eval_proof_admits_only_a_measured_delta(tmp_path, monkeypatch):
     # The contract is the criterion, not a fixed number: the cross-tree spread
     # must not exceed the kernel's own within-tree spread or the declared bound.
     assert parity["cross_tree_max_abs"] <= max(parity["tolerance"], parity["within_tree_max_abs"])
-    assert "d4mj/data.py" in delta["frozen_eval_proof"]["changed"]
+    # Which files changed depends on the tree; that every one is a real runtime
+    # entry, and that the proof is not vacuous, does not.
+    changed = delta["frozen_eval_proof"]["changed"]
+    assert changed and set(changed) <= set(lewm_source_manifest()["runtime"])
 
 
 @pytest.mark.parametrize("overrides,match", [
@@ -621,6 +627,52 @@ def test_frozen_eval_proof_fails_closed(tmp_path, monkeypatch, overrides, match)
     from d4mj.m03.gate import _frozen_eval_delta
     with pytest.raises(ValueError, match=match):
         _frozen_eval_delta(STORED_SOURCES, _frozen_proof(tmp_path, **overrides))
+
+
+def test_matching_precision_needs_no_approval_but_real_drift_still_fails(monkeypatch):
+    """A run already trained under the evaluation precision has no delta to approve."""
+    import json
+    monkeypatch.setenv("TRITON_F32_DEFAULT", "ieee")
+    from d4mj.m03.gate import _current_source_with_ieee_delta
+    live = lewm_source_manifest()
+    current, delta = _current_source_with_ieee_delta(live)
+    assert current == live and delta == {}
+    historical = json.loads(json.dumps(live))
+    historical["execution"]["triton_f32_default"] = "unset"
+    assert _current_source_with_ieee_delta(historical)[1]["triton_f32_default"]["recorded"] == "unset"
+    for broken, match in (({"execution": {"triton_f32_default": "tf32"}}, "m03_precision"),
+                          ({"runtime": {"d4mj/lewm.py": "0"*64}}, "m03_source_identity")):
+        drifted = json.loads(json.dumps(live))
+        for section, entries in broken.items():
+            drifted[section].update(entries)
+        with pytest.raises(ValueError, match=match):
+            _current_source_with_ieee_delta(drifted)
+
+
+def test_the_feature_bridge_swaps_runtime_only_and_fails_closed(tmp_path, monkeypatch):
+    """Replay and Direct encodings survive an edit to a file no encoder reaches."""
+    import json
+    from d4mj.m03 import gate
+    document = json.loads(gate.FEATURE_COMPAT_RECORD.read_text())
+    assert gate._feature_compatibility()["status"] == "pass"
+    deps = {"identity": {"a": 1}, "data": "d", "functions": ["f0", "f1"],
+            "execution": {"device": "cpu"},
+            "runtime": {name: entry["current"] for name, entry in document["runtime"].items()}}
+    swapped, = gate._feature_compatible("replay", deps)
+    # Only `runtime` moves: keeping the current `functions` is what makes a hit mean
+    # the encoders are byte-identical, rather than merely declared compatible.
+    assert swapped["functions"] == deps["functions"] and swapped["identity"] == deps["identity"]
+    assert swapped["runtime"] == {n: e["prior"] for n, e in document["runtime"].items()}
+    # The LeWM arms are never bridged; they must re-encode for a new checkpoint.
+    assert gate._feature_compatible("raw", deps) == []
+    assert gate._feature_compatible("tc", deps) == []
+    # A record that no longer describes the tree is refused, not ignored.
+    stale = tmp_path / "stale.json"
+    document["runtime"][next(iter(document["runtime"]))]["current"] = "0" * 64
+    stale.write_text(json.dumps(document))
+    monkeypatch.setattr(gate, "FEATURE_COMPAT_RECORD", stale)
+    with pytest.raises(ValueError, match="does not describe the current"):
+        gate._feature_compatibility()
 
 
 def test_frozen_eval_never_relaxes_training_resume():

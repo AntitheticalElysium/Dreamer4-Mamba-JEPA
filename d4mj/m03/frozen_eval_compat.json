@@ -4,44 +4,20 @@
   "scope": "frozen evaluation only; training resume keeps exact full-source equality",
   "arms": {
     "raw": {
-      "checkpoint_sha256": "707f6240a3e4e52d6aca7526d541a69112ad7c18c5898c0f1f0ec36f663937ef",
-      "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+      "checkpoint_sha256": "7bc9c14d7d7d10bd4cabeb22cd7f2af19e39ff8cb1d9b3758a14086e2a1f2789",
+      "recorded_sources_digest": "78318c8356ade25dec068a47537bb5f6d8ca1d30324087f0a0679de025f3a795"
     },
     "tc": {
-      "checkpoint_sha256": "98effee1085223b5780f30b09ba68b44a8b407acbb07fde5134a8bd708997dc5",
-      "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+      "checkpoint_sha256": "3b2be39fd116a4ff8ffddddf6526ad197cdd7f12da3247fe2988171ffd05e674",
+      "recorded_sources_digest": "78318c8356ade25dec068a47537bb5f6d8ca1d30324087f0a0679de025f3a795"
     }
   },
-  "reference_manifest_digest": "60ccb055c9216092bd36bf4cfcb9491b576e10b7b3e50d180008ac96f2ab7a3a",
+  "reference_manifest_digest": "78318c8356ade25dec068a47537bb5f6d8ca1d30324087f0a0679de025f3a795",
   "current_manifest_digest": "ce89638cc1b943d30d94c55c0a67b30e9a017fa7669629c3e37a5204a0e8e388",
   "changed_runtime_files": {
-    "d4mj/lewm_config.py": {
-      "reference": "8862263e076b8bb62a8fedfe7743dab916cd60d72472e8deeb72f78db14020ef",
-      "current": "75fad37ec47bf9f8633ab9154839e8f5d67adc9d8b33fd05c9d2fbf5a6e6f665"
-    },
-    "d4mj/lewm.py": {
-      "reference": "b87644febd0851434ba2ac019a86f5c029e8af0ea318343da006c23aacd922f9",
-      "current": "682117426d0fd84e6babe2185002e0bf50d7fbcdeeb4d458eb06efe893b91256"
-    },
     "d4mj/config.py": {
-      "reference": "c1835e1e6e0fae9ca6a40e479f4036fcdc6f8c0c1fa446022aecf7502b5710b0",
+      "reference": "da108b335c75b368a3cb9d0eb1abeacb1d9eaff73f807b6cd17c64551401ddb2",
       "current": "ca32d8157a746a2e2be1e0ce423b39f46e07aaa0afa467ebc105bd2af9657c89"
-    },
-    "d4mj/data.py": {
-      "reference": "85fbbe508e85f8dbd2d2a9bedd3ad0857ef605c11a2036e71ba8ec8168703145",
-      "current": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea"
-    },
-    "d4mj/gates.py": {
-      "reference": "89696e961a3bea8a548c6f4772187a4b105761f1348a3504f3db86b9827c7d39",
-      "current": "737a159717604bba6a27eed5c55452880f63ceb855d33891f0fc82658f0b8f69"
-    },
-    "d4mj/lewm_diagnostics.py": {
-      "reference": "f977ddd685a7a2465cf42980390fb8e637312f4848b06cd56d5abc02014494b4",
-      "current": "79b4e5365f2a5967baac960824a464aaeb5a7a927313d9a5cda4aef074220099"
-    },
-    "d4mj/experiments.py": {
-      "reference": "ec5e8a5c9163cbf608c31e5852df77668fcafb14a8823d6684802ceb6849549a",
-      "current": "9084f0f2de3e67ab3f87e953b65329c2b1392d8d6e6345ec44166b545c2d9ef3"
     }
   },
   "surface": [
@@ -56,8 +32,8 @@
   ],
   "parity": {
     "tolerance": 1e-05,
-    "within_tree_max_abs": 5.960464477539062e-07,
-    "cross_tree_max_abs": 5.960464477539062e-07,
+    "within_tree_max_abs": 9.5367431640625e-07,
+    "cross_tree_max_abs": 9.5367431640625e-07,
     "cross_tree_min_abs": 0.0,
     "runs": {
       "reference": 2,

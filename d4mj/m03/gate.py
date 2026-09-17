@@ -703,16 +703,24 @@ def _current_source_with_ieee_delta(recorded: dict) -> tuple[dict, dict]:
     adjusted = json.loads(json.dumps(recorded))
     before = adjusted.get("execution", {}).get("triton_f32_default")
     after = current.get("execution", {}).get("triton_f32_default")
-    if before != "unset" or after != "ieee":
+    if before == after:
+        # A run already trained under the evaluation precision has no delta to
+        # approve. Refusing it would reject the one case that needs no approval.
+        delta: dict = {}
+    elif before == "unset" and after == "ieee":
+        adjusted["execution"]["triton_f32_default"] = after
+        delta = {"triton_f32_default": {"recorded": before, "evaluation": after}}
+    else:
         raise ValueError(f"m03_precision: expected recorded unset -> evaluation ieee, found {before!r} -> {after!r}")
-    adjusted["execution"]["triton_f32_default"] = after
     if adjusted != current:
         changed = [key for key in current if adjusted.get(key) != current[key]]
         raise ValueError(f"m03_source_identity: unapproved LeWM source/environment drift in {changed}")
-    return current, {"triton_f32_default": {"recorded": before, "evaluation": after}}
+    return current, delta
 
 
 FROZEN_EVAL_SCHEMA = "lewm_frozen_eval_compatibility_v1"
+# The committed record, consulted automatically once the strict check has raised.
+FROZEN_EVAL_RECORD = Path(__file__).parent / "frozen_eval_compat.json"
 # The runtime closure in ``sources.py`` covers ``d4mj/*.py`` -- the sampler in
 # ``data.py`` defines the objective, so training resume must keep exact equality.
 # Frozen evaluation never calls the sampler, so a source delta there is
@@ -862,6 +870,8 @@ def load_m03_bundle(path: Path, *, device: str, dataset_sha256: str,
     try:
         current_source, source_delta = _current_source_with_ieee_delta(payload["sources"])
     except ValueError:
+        if frozen_eval_proof is None and FROZEN_EVAL_RECORD.is_file():
+            frozen_eval_proof = FROZEN_EVAL_RECORD
         if frozen_eval_proof is None:
             raise
         if _sha256(Path(path)) not in {a["checkpoint_sha256"]
@@ -974,7 +984,8 @@ def _load_or_encode_features(output: Path, *, arm: str, split: str, identity: di
     if cache is not None:
         dependencies = _feature_dependencies(arm, split, identity, sidecar_sha256, cache)
         external = cache.imports.get('features', {}).get((arm, split))
-        features, dependency_key = cache.get('features:'+arm+':'+split, dependencies, encode, external=external)
+        features, dependency_key = cache.get('features:'+arm+':'+split, dependencies, encode, external=external,
+                                             compatible=_feature_compatible(arm, dependencies))
     else:
         features = encode()
     if not features or not all(isinstance(value, Tensor) and value.device.type == "cpu" for value in features.values()):
@@ -989,6 +1000,47 @@ def _load_or_encode_features(output: Path, *, arm: str, split: str, identity: di
     if dependency_key: manifest['dependency_key'] = dependency_key
     _atomic_json_save(manifest_path, manifest)
     return features, dependency_key or _sha256(manifest_path)
+
+
+FEATURE_COMPAT_SCHEMA = "m03_feature_dependency_compatibility_v1"
+FEATURE_COMPAT_RECORD = Path(__file__).parent / "feature_cache_compat.json"
+
+
+def _feature_compatibility() -> dict:
+    """Prior runtime-file hashes that may stand in for the current ones.
+
+    Feature keys pin whole-file hashes of the runtime, which is right: a change
+    there may alter an encoding through a class method or an attribute call, and
+    neither is covered by the transitive function digest.  But a file can also
+    change in a part no encoder reaches, and then 1,918 cached replay and Direct
+    encodings would be recomputed for nothing.
+
+    This admits exactly the declared prior hashes, for the declared arms.  It is
+    not a blanket waiver: the substitution swaps ``runtime`` alone and keeps the
+    current ``functions``, so a hit still requires every encode function, and its
+    transitive project-function closure, to be byte-identical to the cached run.
+    A further edit to a bridged file leaves the record stale and fails closed.
+    """
+    if not FEATURE_COMPAT_RECORD.is_file():
+        return {}
+    document = json.loads(FEATURE_COMPAT_RECORD.read_text())
+    if document.get("schema") != FEATURE_COMPAT_SCHEMA or document.get("status") != "pass":
+        raise ValueError("m03_feature_compat: record is not a passing proof")
+    for name, entry in document.get("runtime", {}).items():
+        if _sha256(ROOT / "d4mj" / name) != entry["current"]:
+            raise ValueError(f"m03_feature_compat: proof does not describe the current {name}")
+    return document
+
+
+def _feature_compatible(arm: str, dependencies: dict) -> list[dict]:
+    document = _feature_compatibility()
+    if not document or arm not in document.get("arms", []):
+        return []
+    prior = dict(dependencies["runtime"])
+    for name, entry in document["runtime"].items():
+        if prior.get(name) == entry["current"]:
+            prior[name] = entry["prior"]
+    return [dict(dependencies, runtime=prior)] if prior != dependencies["runtime"] else []
 
 
 def _feature_dependencies(arm, split, identity, sidecar, cache):
