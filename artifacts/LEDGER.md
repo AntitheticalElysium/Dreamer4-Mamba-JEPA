@@ -33,7 +33,7 @@ Specifications live in [`d4mj/spec/`](../d4mj/spec/); results live here.
 | 2026-09-11 | [predictability_bridge](experiments/20260911_predictability_bridge/) | Can the frozen world predict a spatial stream from `h` or `[z,h]`? | Complete. Effect R² 0.71 from `h` alone, but only +0.02 semantic AUC over persistence; contract not viable as-is |
 | 2026-09-15 | [patch_token_policy](experiments/20260915_patch_token_policy/) | Does token-preserving cross-attention over 4×4 patch tokens beat pooled export, under real expert BC? | Complete. Tokens beat pooling by +0.066 (raw) / +0.036 (tc) paired; TC beats Raw at every condition |
 | 2026-09-15 | [frame_skip_retrain](experiments/20260915_frame_skip_retrain/) | Is TC's centering window physically too short? (paper trains at frame skip 4; we used stride 1) | Complete. TC rank 5.68 -> 16.73 at 10k and scale inflation gone; not cured (raw 34.09). Semantic panels blocked on the macro-fork |
-| 2026-09-16 | [centering_window](experiments/20260916_centering_window/) | Was TC's recovery the centering window, or the 4-step horizon and stacked actions? | Complete. The window, entirely: rank 5.14 -> 19.16 (+14.02) vs +11.04 for the whole stride-4 change. M03: no capability gain, three small regressions; rank is not a proxy for capability |
+| 2026-09-16 | [centering_window](experiments/20260916_centering_window/) | Was TC's recovery the centering window, or the 4-step horizon and stacked actions? | Complete. The window, entirely: rank 5.14 -> 19.16 (+14.02) vs +11.04 for the whole stride-4 change. M03: no capability gain. BC: projected z falls to the action prior (0.204 -> 0.142, floor 0.147) while patch tokens hold. Higher rank, unusable projection |
 
 ## Historical campaigns
 

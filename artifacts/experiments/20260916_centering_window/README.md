@@ -246,6 +246,46 @@ The Direct-Mamba anchor scores 0.8299 / 0.8484 in both runs, to every printed di
 is an independent check that the bridged feature cache returned the same bytes, since those
 encodings were reused rather than recomputed.
 
+### The projection collapses to the action prior
+
+Expert behaviour cloning over both arms, via the
+[patch-token probe](../20260915_patch_token_policy/patch_policy.py); evidence in
+[`evidence/patch_policy/`](evidence/patch_policy/). 250 train / 32 dev episodes,
+64,000 samples, top-1 accuracy, episode-clustered intervals.
+
+Majority-action floor **0.1467**, interval [0.1329, 0.1621].
+
+| interface | TC consecutive | TC strided |
+|---|---|---|
+| projected `z` | 0.2039 [0.1804, 0.2290] | **0.1420 [0.1268, 0.1597]** |
+| `cls` | 0.2356 [0.2107, 0.2611] | 0.1663 [0.1489, 0.1865] |
+| `patch16` | 0.2584 [0.2296, 0.2896] | 0.2476 [0.2212, 0.2747] |
+| `cls_patch16` | 0.2543 [0.2222, 0.2848] | 0.2499 [0.2204, 0.2797] |
+| Direct-attention | 0.2275 [0.2019, 0.2567] | -- |
+
+The strided arm's projected `z` is **not distinguishable from the majority-action floor**:
+0.1420 against 0.1467, with intervals that overlap almost entirely. The consecutive arm's
+`z`, at 0.2039, is clearly above it. So widening the centering window drove the projection
+from carrying real action-relevant structure to carrying approximately none, while tripling
+its effective rank.
+
+The patch tokens, which SIGReg never regularizes and the world never predicts, barely move:
+0.2584 against 0.2476, intervals overlapping. The damage is confined to exactly the pathway
+the treatment acts on.
+
+Tokens beat pooled patches in both arms, and by more in the strided one -- `patch16` minus
+`patch16_mean` is +0.058 [0.045, 0.072] consecutive and +0.076 [0.061, 0.093] strided, both
+significant. `cls` minus `z` is positive in both, +0.032 and +0.024: the projection discards
+what its own CLS retains, which the M03 static panel showed too.
+
+This sharpens the rank result rather than merely agreeing with it. Effective rank rose 3.7x
+on the axis TC-LeWM is built around, and the projection simultaneously became useless for
+predicting the expert's next action. **A higher-rank latent is not a better latent**, and on
+this evidence the centering objective can raise rank by spreading the representation in
+directions that carry nothing a policy can use.
+
+Direct-attention reused 250 cached spans, agreeing with recomputation to 3.8e-5.
+
 ### What this does not establish
 
 One seed, one dataset, no Raw arm. The cross-run comparisons to stride-1 and stride-4
