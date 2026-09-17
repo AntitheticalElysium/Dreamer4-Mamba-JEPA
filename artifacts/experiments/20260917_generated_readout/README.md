@@ -46,14 +46,19 @@ scored **below 0.5** on every one -- it was anti-correlated on generated latents
 mis-decoding, not absent information. `inventory_changed` and `tile_changed` were already
 0.83-0.95 and barely move; `reward_positive` and `achievement_event` stay low either way.
 
-Neither fit transfers to the other distribution: gen-fit read on observed drops to 0.60-0.66.
-The two latent families each carry the information, in **different representations**, so the
-failure is symmetric and is a property of the measurement, not of one distribution.
+Neither fit transfers to the other distribution: gen-fit read on observed drops to 0.60-0.66,
+so the failure is symmetric rather than a property of one distribution. It does **not** follow
+that this is "the same information, merely rotated": refitting moves the TRAIN-derived
+normalization and the decoder weights together, so a rotation and a genuinely different
+encoding are not separated here.
 
-## But it buys nothing over persistence
+## But it shows no advantage over a trained root+action predictor
 
-The honest counterweight. Against a root-latent-plus-action floor -- what is knowable from
-the present state and the chosen action, with no world-model prediction at all:
+The honest counterweight, stated carefully. The comparison baseline is **not** persistence
+or copying the current state: it is a *separately trained* predictor of the same future
+labels from the current `z` plus the action, which can learn one-step consequences on its
+own. Matching it means no demonstrated advantage on these probes -- not that the world model
+is useless.
 
 | arm | target | root+action | gen-fit | Δ | separated |
 |---|---|---|---|---|---|
@@ -64,9 +69,14 @@ the present state and the chosen action, with no world-model prediction at all:
 | Direct-Mamba | death | 0.787 | 0.788 | +0.001 | no |
 | Direct-Mamba | damage | 0.775 | 0.767 | −0.008 | no |
 
-**Not one comparison separates.** Once measured fairly, the one-step generated successor
-carries about what the current state and the action already carry, and no more -- in every
-arm, TC and Direct alike.
+**Not one comparison separates**, and the intervals are wide: TC-short death is +0.013 with
+a 95% interval of [−0.040, +0.056]. That is uncertainty, not demonstrated equivalence. Once
+measured fairly, the one-step generated successor shows **no advantage** over a trained
+root+action predictor on these probes, in any arm; it does not show that it carries nothing.
+
+Nor does better global risk decoding imply better action selection. After refitting,
+within-root death-ranking AUC is 0.813 / 0.818 for the TC arms against 0.847 for action-only,
+over just 36 informative roots.
 
 ## What this changes
 
@@ -75,10 +85,15 @@ The generated-condition deficits reported across M03 and the memory supplement a
 read as a decoder failing, not as a world model failing. Conclusions drawn from them need
 re-reading, this experiment's own floors included.
 
-What survives is narrower and better grounded: the one-step world model adds nothing over
-persistence on consequence decoding. That is a statement about the *setup* -- one-step
-horizon, deterministic MSE target, frozen encoder -- and it holds for Direct too, so it is
-not a TC-LeWM verdict.
+What survives is narrower: on these probes the one-step generated successor shows no
+advantage over a trained root+action predictor, in any arm including Direct.
+
+A separate weakness is **not** explained by any of this, and is the more important finding
+here. Refitting does not rescue LeWM's successor *state* decoding: it stays near 0.63 against
+Direct's 0.79. And the gap is already present on **observed** successor `z` -- 0.658 and 0.681
+for the TC arms against 0.848 for Direct -- so it is an upstream export/representation
+weakness, upstream of any decoder question. This experiment does not isolate its cause among
+CLS pooling, the projection, the joint objective or capacity.
 
 ## What it does not establish
 
