@@ -97,3 +97,56 @@ def test_cli_preflight_and_export_have_separate_artifact_contracts(tmp_path):
     assert manifest["cache"]["diagnostic_only"] and manifest["cache"]["joint_step"]==2
     assert manifest["cache"]["parent_checkpoint_path"]==str(checkpoint.resolve())
     assert manifest["cache"]["parent_checkpoint"]==_sha256(checkpoint)
+
+
+def transformer_ready(tmp_path):
+    from d4mj.tests.test_lewm import transformer_config
+    from d4mj.lewm_config import TransformerDynamicsSettings, EncoderSettings
+    c = transformer_config(
+        encoder=EncoderSettings(resolution=14, width=24, depth=1, heads=3, latent_dim=12,
+                                projector_hidden=32, checkpoint_blocks=False),
+        dynamics=TransformerDynamicsSettings(width=12, depth=2, heads=2, head_dim=6,
+                                             mlp_dim=16, context=3, readout_width=16))
+    path = tmp_path / "raw.pt"; save_episodes(path, raw_episodes())
+    episodes, data = load_joint_corpus(path, c)
+    gates = preflight(c, episodes, data)
+    assert all(v["status"] == "pass" for v in gates["components"].values()), gates
+    return c, episodes, data, gates
+
+
+def test_dropout_bearing_resume_reproduces_the_full_run(tmp_path):
+    """The source predictor trains with dropout, so resume must restore its RNG too.
+
+    A backend whose forward draws randomness turns pause/resume into a real contract: the
+    split run has to land on the same weights, optimizer state, sampled windows and metrics
+    as the unbroken one, not merely close ones.
+    """
+    c, episodes, data, gates = transformer_ready(tmp_path)
+    initial = ModelBundle.create(c)
+    full, full_rows = train_joint(episodes, c, tmp_path / "full", dataset_contract=data, gate_report=gates)
+    _, first = train_joint(episodes, c, tmp_path / "split", dataset_contract=data, gate_report=gates, stop_at=2)
+    resumed, second = train_joint(episodes, c, tmp_path / "split", dataset_contract=data,
+                                  gate_report=gates, stop_at=4, resume=tmp_path / "split/latest.pt")
+    assert full_rows == first + second, "dropout made the resumed trajectory diverge"
+    for name in ("encoder", "world"):
+        expected = tensor_state_digest(getattr(full, name).state_dict())
+        assert expected == tensor_state_digest(getattr(resumed, name).state_dict())
+        assert expected != tensor_state_digest(getattr(initial, name).state_dict())
+
+
+def test_raw_and_tc_transformer_arms_start_identically_regardless_of_ambient_rng(tmp_path):
+    """The pair is only single-variable if its dropout stream does not depend on order."""
+    c, episodes, data, gates = transformer_ready(tmp_path)
+    rows = {}
+    for index, variant in enumerate(("raw", "tc", "raw")):
+        torch.manual_seed(1234 + index * 77)          # different ambient RNG each time
+        arm = replace(c, variant=variant)
+        report = preflight(arm, episodes, data)
+        _, history = train_joint(episodes, arm, tmp_path / f"arm{index}", dataset_contract=data,
+                                 gate_report=report, stop_at=2)
+        rows[index] = history
+    # Same variant, different ambient RNG: identical. Different variant: same prediction at
+    # step one, since only the regularizer differs before any update has landed.
+    assert rows[0] == rows[2]
+    assert abs(rows[0][0]["prediction"] - rows[1][0]["prediction"]) < 1e-9
+    assert abs(rows[0][0]["regularization"] - rows[1][0]["regularization"]) > 1e-9

@@ -28,7 +28,14 @@ def source_digests(config: Config) -> dict[str, str]:
     return {name: _digest(ROOT / PINNED[name]) for name in names}
 
 
-def verify_sources(recorded: dict[str, str], config: Config) -> None:
+def verify_sources(recorded: dict[str, str], config) -> None:
+    from .lewm_config import LeWMConfig
+    if isinstance(config, LeWMConfig):
+        expected = lewm_source_manifest(config)
+        if recorded != expected:
+            changed = [key for key in expected if recorded.get(key) != expected[key]]
+            raise ValueError(f"checkpoint source drift in {changed}")
+        return
     expected = source_digests(config)
     missing = set(expected) - set(recorded)
     if missing:
@@ -42,12 +49,18 @@ def _digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def lewm_source_manifest() -> dict:
+def lewm_source_manifest(config=None) -> dict:
     """Actual imported files plus pinned analogues; separate from the legacy closure.
 
     Verify all imported Mamba Triton helpers against the pinned checkout. A version
     string alone cannot detect an edited installed operator.
+
+    `config` selects the backend closure. Omitting it keeps the Mamba manifest byte for
+    byte, so every existing caller and every recorded manifest is unaffected. A
+    Transformer world pins the vendored predictor it actually imports instead, and does
+    not require Mamba kernels it never calls.
     """
+    transformer = getattr(config, "family", "lewm_mamba") == "lewm_transformer"
     import importlib.metadata
     import importlib.util
     import inspect
@@ -84,12 +97,22 @@ def lewm_source_manifest() -> dict:
     for name in ("train.py", "module.py", "jepa.py", "utils.py", "config/train/lewm.yaml",
                  "config/train/model/lewm.yaml"):
         references[f"lewm/{name}"] = lewm / name
-    paths = [Path("modules/mamba2.py"), *[p.relative_to(mamba) for p in sorted((mamba / "ops/triton").rglob("*.py"))]]
-    for relative in paths:
-        wanted, actual = mamba / relative, installed / relative
-        if not actual.exists() or _digest(wanted) != _digest(actual):
-            raise ValueError(f"source_mamba: installed operator differs from pin: {relative}")
-        references[f"mamba/{relative}"] = wanted
+    if not transformer:
+        paths = [Path("modules/mamba2.py"), *[p.relative_to(mamba) for p in sorted((mamba / "ops/triton").rglob("*.py"))]]
+        for relative in paths:
+            wanted, actual = mamba / relative, installed / relative
+            if not actual.exists() or _digest(wanted) != _digest(actual):
+                raise ValueError(f"source_mamba: installed operator differs from pin: {relative}")
+            references[f"mamba/{relative}"] = wanted
+    else:
+        # The comparison backend imports these bytes directly, so pin the files rather
+        # than the checkout: a vendor edit at the same commit must still be caught.
+        from .lewm_transformer import PINNED, SOURCE, source_digests
+        measured = source_digests()
+        for name, expected in PINNED.items():
+            if measured[name] != expected:
+                raise ValueError(f"source_lewm: vendored {name} differs from the audited bytes")
+            references[f"lewm_source/{name}"] = SOURCE / name
     import transformers.modeling_utils
     import transformers.integrations.sdpa_attention
     runtime = {"transformers_vit": Path(inspect.getfile(ViTModel)),
@@ -97,10 +120,11 @@ def lewm_source_manifest() -> dict:
                "transformers_sdpa": Path(inspect.getfile(transformers.integrations.sdpa_attention)),
                "transformers_config": Path(inspect.getfile(ViTConfig))}
     # Runtime closure includes the functions actually controlling loss, state and resume.
-    for name in ("lewm_config.py", "lewm.py", "mamba_recurrence.py", "world_api.py", "state.py",
-                 "config.py", "cache.py", "train.py", "checkpoint.py", "data.py", "sources.py",
-                 "gates.py", "lewm_diagnostics.py", "experiments.py", "__main__.py",
-                 "execution.py", "imagination.py", "diagnostics.py"):
+    closure = ("lewm_config.py", "lewm.py", "mamba_recurrence.py", "world_api.py", "state.py",
+               "config.py", "cache.py", "train.py", "checkpoint.py", "data.py", "sources.py",
+               "gates.py", "lewm_diagnostics.py", "experiments.py", "__main__.py",
+               "execution.py", "imagination.py", "diagnostics.py")
+    for name in closure + (("lewm_transformer.py",) if transformer else ()):
         runtime[f"d4mj/{name}"] = Path(__file__).parent / name
     versions = {name: importlib.metadata.version(name) for name in
                 ("torch", "transformers", "mamba-ssm", "triton", "einops", "numpy", "safetensors")}
@@ -118,8 +142,8 @@ def lewm_source_manifest() -> dict:
                           "triton_f32_default": os.environ.get("TRITON_F32_DEFAULT", "unset")}}
 
 
-def verify_lewm_sources(recorded: dict) -> None:
-    current = lewm_source_manifest()
+def verify_lewm_sources(recorded: dict, config=None) -> None:
+    current = lewm_source_manifest(config)
     if recorded != current:
         changed = [section for section in current if recorded.get(section) != current[section]]
         raise ValueError(f"source_identity: LeWM source/dependency drift in {changed}")

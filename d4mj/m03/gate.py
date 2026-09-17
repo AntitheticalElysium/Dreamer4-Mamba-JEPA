@@ -696,10 +696,10 @@ def _load_or_build_sidecar(dataset: Path, output: Path, settings: M03Settings) -
     return payload, manifest
 
 
-def _current_source_with_ieee_delta(recorded: dict) -> tuple[dict, dict]:
+def _current_source_with_ieee_delta(recorded: dict, config=None) -> tuple[dict, dict]:
     """Allow precisely the declared execution delta; reject every other drift."""
 
-    current = lewm_source_manifest()
+    current = lewm_source_manifest(config)
     adjusted = json.loads(json.dumps(recorded))
     before = adjusted.get("execution", {}).get("triton_f32_default")
     after = current.get("execution", {}).get("triton_f32_default")
@@ -868,7 +868,7 @@ def load_m03_bundle(path: Path, *, device: str, dataset_sha256: str,
     if payload.get("dataset", {}).get("sha256") != dataset_sha256:
         raise ValueError("m03_checkpoint: checkpoint and exact-replay manifest bytes differ")
     try:
-        current_source, source_delta = _current_source_with_ieee_delta(payload["sources"])
+        current_source, source_delta = _current_source_with_ieee_delta(payload["sources"], config)
     except ValueError:
         if frozen_eval_proof is None and FROZEN_EVAL_RECORD.is_file():
             frozen_eval_proof = FROZEN_EVAL_RECORD
@@ -878,8 +878,13 @@ def load_m03_bundle(path: Path, *, device: str, dataset_sha256: str,
                                        for a in json.loads(Path(frozen_eval_proof).read_text())["arms"].values()}:
             raise ValueError("m03_frozen_eval: proof does not cover this checkpoint")
         current_source, source_delta = _frozen_eval_delta(payload["sources"], frozen_eval_proof)
-    config = replace(config, runtime=replace(config.runtime, device=device),
-                     dynamics=replace(config.dynamics, backend="triton" if device == "cuda" else "reference"))
+    # Device is an evaluation choice; the sequence-mixer backend is not. Only the Mamba
+    # world has a kernel to select, and forcing "triton"/"reference" onto the source
+    # predictor would both be meaningless and change its sealed recipe.
+    config = replace(config, runtime=replace(config.runtime, device=device))
+    if getattr(config, "family", "lewm_mamba") != "lewm_transformer":
+        config = replace(config, dynamics=replace(config.dynamics,
+                                                  backend="triton" if device == "cuda" else "reference"))
     bundle = ModelBundle.create(config)
     bundle.encoder.load_state_dict(payload["modules"]["encoder"], strict=True)
     bundle.world.load_state_dict(payload["modules"]["world"], strict=True)
@@ -1060,8 +1065,13 @@ def _feature_dependencies(arm, split, identity, sidecar, cache):
         functions = (_encode_legacy, _legacy_native_parity_preflight)
         fields = ('direct_context','direct_encode_batch','direct_successor_batch')
     # API/runtime changes invalidate their encodings; an unrelated probe edit does not.
+    # A LeWM arm pins the wrapper only when its own recorded manifest imported it, so
+    # adding the comparison backend does not change any existing Mamba feature key.
+    recorded = (identity or {}).get('source', {}).get('current', {}).get('runtime', {})
+    lewm_files = ('lewm.py','lewm_config.py','mamba_recurrence.py') + (
+        ('lewm_transformer.py',) if 'd4mj/lewm_transformer.py' in recorded else ())
     runtime = ('world_api.py','state.py','data.py','config.py') + (
-        ('lewm.py','lewm_config.py','mamba_recurrence.py') if arm in ('raw','tc') else
+        lewm_files if arm in ('raw','tc') else
         ('representation.py','transition.py','time_mixer.py'))
     return {'identity': identity, 'data': sidecar, 'functions':[cache.code(f) for f in functions],
             'execution':dict({k:getattr(settings,k) for k in fields},device=cache.device if arm != 'replay' else 'cpu'),

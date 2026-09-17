@@ -444,7 +444,7 @@ def require_joint_gates(report: dict, config, dataset_contract: dict):
         if record.get("status") != "pass":
             raise ComponentGateError(name, record.get("reason", "gate has not run"))
     try:
-        sources = lewm_source_manifest()
+        sources = lewm_source_manifest(config)
     except Exception as error:
         raise ComponentGateError("source_identity", str(error)) from error
     if report.get("sources") != sources:
@@ -472,7 +472,7 @@ def require_joint_screen(report, config, dataset_contract, resume):
         raise ComponentGateError("joint_screen_identity", "screen report bytes changed")
     if (report.get("decision") != "continue_joint_budget" or report.get("m4_authorized") is not False
             or report.get("dataset_id") != contract_digest(dataset_contract)
-            or report.get("sources") != lewm_source_manifest()
+            or report.get("sources") != lewm_source_manifest(config)
             or any(v.get("status") != "pass" for v in report.get("components",{}).values())):
         raise ComponentGateError("joint_screen", "screen did not authorize this source/data contract")
     required = {"pair_identity","objective_contrast","raw_normalization","raw_recurrence","tc_normalization","tc_recurrence"}

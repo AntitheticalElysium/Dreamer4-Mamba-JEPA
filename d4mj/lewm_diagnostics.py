@@ -127,8 +127,65 @@ def objective_audit(config: LeWMConfig) -> dict:
             "centering_offset_error": float((a-b).detach().abs())}
 
 
+def window_audit(bundle: ModelBundle) -> dict:
+    """The source predictor's mechanics: bounded window, causality, streaming parity.
+
+    The Mamba audit asserts on conv/SSM carries that this backend does not have. What it
+    must establish instead is the finite-window contract: one step equals the rolling scan,
+    an evicted pair cannot reach the prediction, and a future action cannot reach the past.
+    AdaLN-Zero leaves the predictor an identity at initialization, so the gate temporarily
+    wakes a *copy* of the gates -- the audited weights are never touched.
+    """
+    import copy
+
+    bundle.eval()
+    c, w = bundle.config, bundle.world
+    device = next(w.parameters()).device
+    context = w.context
+    probe = copy.deepcopy(w).to(device).eval()
+    generator = torch.Generator(device="cpu").manual_seed(509)
+    for block in probe.predictor.transformer.layers:
+        gate = block.adaLN_modulation[-1]
+        with torch.no_grad():
+            gate.weight.copy_(torch.randn(gate.weight.shape, generator=generator).to(device) * 0.05)
+            gate.bias.copy_(torch.randn(gate.bias.shape, generator=generator).to(device) * 0.05)
+
+    length = context + 4
+    z = torch.randn(2, length + 1, 1, c.encoder.latent_dim, device=device,
+                    generator=torch.Generator(device=device).manual_seed(510))
+    actions = torch.randint(c.dynamics.n_actions, (2, length), device=device,
+                            generator=torch.Generator(device=device).manual_seed(511))
+    with torch.no_grad():
+        scanned = probe.teacher(z, actions)
+        state = probe.start(z[:, :1])
+        for index in range(actions.shape[1]):
+            state, _ = probe.observe_latent(state, actions[:, index:index + 1], z[:, index + 1:index + 2])
+        _assert_close(state.history, scanned.features[:, -1:])
+        _assert_close(state.latent, scanned.state.latent)
+
+        step = actions[:, :1]
+        base, _ = probe.advance(probe.teacher(z[:, :context + 1], actions[:, :context]).state, step)
+        evicted = z.clone(); evicted[:, 0] += 7.0
+        moved, _ = probe.advance(probe.teacher(evicted[:, :context + 1], actions[:, :context]).state, step)
+        if not torch.equal(base.latent, moved.latent):
+            raise ValueError("window_audit: an evicted pair still reached the prediction")
+        active = z.clone(); active[:, context] += 7.0
+        changed, _ = probe.advance(probe.teacher(active[:, :context + 1], actions[:, :context]).state, step)
+        if torch.equal(base.latent, changed.latent):
+            raise ValueError("window_audit: an active pair did not reach the prediction")
+        later = actions.clone(); later[:, -1] = (later[:, -1] + 1) % c.dynamics.n_actions
+        _assert_close(probe.teacher(z, later).predicted[:, :-1], scanned.predicted[:, :-1])
+    return {"backend": "sdpa", "context_pairs": context, "window_forgets_evicted_pairs": True,
+            "streaming_matches_scan": True, "causal": True,
+            "predictor_parameters": sum(p.numel() for p in w.predictor.parameters()),
+            "package_parameters": sum(p.numel() for p in w.parameters() if p.requires_grad),
+            "numerical_profile": "sdpa_fp32"}
+
+
 def recurrence_audit(bundle: ModelBundle) -> dict:
     """Longer-than-training context, incoming carry gradients, source and chunk checks."""
+    if getattr(bundle.config, "family", "lewm_mamba") == "lewm_transformer":
+        return window_audit(bundle)
     bundle.eval()
     c, w = bundle.config, bundle.world
     device = next(w.parameters()).device
@@ -252,7 +309,13 @@ def resource_preflight(bundle, episodes) -> dict:
             loss = joint_loss(bundle.encoder, bundle.world, batch.frames, batch.actions, regularizer, rng, c)
         loss.total.backward()
         encoder_gradient.append(float(bundle.encoder.projector[0].weight.grad.norm()))
-        predictor_gradient.append(float(bundle.world.pair_projection.weight.grad.norm()))
+        # The first trainable weight the prediction path reaches. For the source predictor
+        # that cannot be an attention or action weight: AdaLN-Zero gates both to exactly
+        # zero at initialization by design, so a zero there is correct, not a dead graph.
+        probe = (bundle.world.predictor_projector.net[0]
+                 if getattr(c, "family", "lewm_mamba") == "lewm_transformer"
+                 else bundle.world.pair_projection)
+        predictor_gradient.append(float(probe.weight.grad.norm()))
         parameters = [p for g in optimizer.param_groups for p in g["params"]]
         torch.nn.utils.clip_grad_norm_(parameters, c.joint.grad_clip, error_if_nonfinite=True)
         optimizer.step()
@@ -281,7 +344,7 @@ def joint_checks(config: LeWMConfig, episodes, report: dict):
 
     bundle = None
     def sources():
-        report["sources"] = lewm_source_manifest()
+        report["sources"] = lewm_source_manifest(config)
         return {"versions": report["sources"]["versions"]}
     def device():
         if config.runtime.device == "cuda" and not torch.cuda.is_available():
@@ -436,7 +499,9 @@ def screen_joint_pair(runs, episodes, dataset_contract, settings, output):
         raise ValueError("screen_output: refusing to replace a sealed report")
     report = {"schema": "d4mj_joint_screen_report_v1", "settings": recipe_dict(settings),
               "settings_id": recipe_digest(settings), "dataset_id": contract_digest(dataset_contract),
-              "sources": lewm_source_manifest(), "arms": {}, "components": {}, "decision": "stop_component",
+              "sources": lewm_source_manifest(config_from_dict(json.loads(
+                  (Path(runs["raw"])/"resolved_recipe.json").read_text()))),
+              "arms": {}, "components": {}, "decision": "stop_component",
               "architecture_verdict": "not_evaluated", "m4_authorized": False}
     payloads = {}
     try:

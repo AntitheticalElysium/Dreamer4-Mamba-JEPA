@@ -65,6 +65,13 @@ def run_joint_pair(configs, settings, dataset, output, *, screen_only=False):
         print(json.dumps(row),flush=True)
     atomic_manifest(output/"screen_recipe.json",recipe_dict(settings))
     # The arm directories stay raw/tc for tooling; this records what they hold.
+    families = {c.family for c in configs.values()}
+    atomic_manifest(output/"backend_scope.json",
+                    {"families": sorted(families), "comparison_only": True,
+                     "thesis_architecture": "lewm_mamba",
+                     "note": "a source-exact predictor package is a control; its ~4.9x parameter "
+                             "count means a win implicates capacity, conditioning and mixer together",
+                     "m4_authorized": False})
     atomic_manifest(output/"pair_axis.json",
                     {"axis":pair_axis, "arms":{k:{"variant":c.variant,
                                                   "centering":c.joint.centering,
@@ -123,7 +130,7 @@ def main(argv=None) -> int:
     p.add_argument("--dataset", type=Path)
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--device", choices=("cpu", "cuda"))
-    p.add_argument("--backend", choices=("reference", "triton"))
+    p.add_argument("--backend", choices=("reference", "triton", "sdpa"))
     p.add_argument("--verification", action="store_true", help="non-research contract, does not certify GPU fit")
     p = sub.add_parser("joint")
     p.add_argument("--run", type=Path, required=True)
@@ -177,6 +184,12 @@ def main(argv=None) -> int:
                 return 0
             if args.dataset is None:
                 raise ValueError("joint preflight requires --dataset")
+            if args.backend:
+                # A backend belongs to one family; selecting the other family's kernel
+                # would build a recipe that cannot run.
+                allowed = ("sdpa",) if config.family == "lewm_transformer" else ("reference", "triton")
+                if args.backend not in allowed:
+                    raise ValueError(f"{config.family} supports backends {allowed}")
             config = replace(config,
                              runtime=replace(config.runtime, device=args.device or config.runtime.device,
                                              purpose="verification" if args.verification else config.runtime.purpose),

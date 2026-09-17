@@ -413,10 +413,20 @@ def encode_memory(bundle, values, settings):
                 row[f'{case}_generated_z'] = predicted.latent[:, 0, 0].reshape(count, 17, -1).cpu()
                 # Summaries expose internal carry growth without fitting an arbitrary
                 # flattened SSM-state decoder or treating a norm as semantic success.
-                row[f'{case}_carry_rms'] = torch.stack([
-                    torch.stack([c.conv.float().flatten(1).square().mean(1).sqrt(),
-                                 c.ssm.float().flatten(1).square().mean(1).sqrt()], -1)
-                    for c in state.memory], 1).cpu()
+                # The source predictor has no carry at all: it buffers the pairs it will
+                # recompute. Report those buffer norms under their own name rather than
+                # inventing conv/ssm values it never had.
+                if hasattr(state, 'memory'):
+                    row[f'{case}_carry_rms'] = torch.stack([
+                        torch.stack([c.conv.float().flatten(1).square().mean(1).sqrt(),
+                                     c.ssm.float().flatten(1).square().mean(1).sqrt()], -1)
+                        for c in state.memory], 1).cpu()
+                else:
+                    buffered = state.past_latents.float()
+                    row[f'{case}_window_rms'] = (buffered.square().mean(-1).sqrt().cpu()
+                                                 if buffered.shape[1] else
+                                                 buffered.new_zeros(count, 0).cpu())
+                    row[f'{case}_window_pairs'] = torch.full((count,), buffered.shape[1])
             if not all(torch.isfinite(v).all() for v in row.values()):
                 raise ValueError('m03_memory: nonfinite state in context sweep')
             pieces.append(row); positions.append(ix)
@@ -424,10 +434,18 @@ def encode_memory(bundle, values, settings):
     return {key: torch.cat([p[key] for p in pieces])[order] for key in pieces[0]}
 
 
+MEMORY_WIDTH = 256
+
+
 def memory_view(features, case, representation, state):
     """Equal parameter count: z/h ablations occupy fixed slots in [z,h]."""
     z = features['root_z'] if state == 'root' else (features['observed_z'] if state == 'observed' else features[f'{case}_generated_z'])
     h = features[f'{case}_root_h' if state == 'root' else f'{case}_next_h']
+    # The source predictor's h is the latent width, not Mamba's 256. Zero-pad the probe
+    # input so [z,h] keeps the same slots and parameter count across backends; this never
+    # touches the native h that the report and the world itself use.
+    if h.shape[-1] < MEMORY_WIDTH:
+        h = torch.cat((h, h.new_zeros(*h.shape[:-1], MEMORY_WIDTH - h.shape[-1])), -1)
     if representation not in ('z', 'h', 'joint'):
         raise ValueError('m03_memory: unknown representation')
     return torch.cat((z if representation != 'h' else torch.zeros_like(z),
@@ -553,7 +571,15 @@ def memory_report(train, dev, features, settings, *, device, progress=None):
     report['prefix_coverage'] = {arm: {split: {str(c): {'available': int((f['length'] >= c).sum()),
                                                                    'short_bos': int((f['length'] < c).sum())}
                                               for c in MEMORY_CONTEXTS} for split, f in rows.items()} for arm, rows in features.items()}
-    report['carry_rms'] = {arm: {case: {'mean_per_layer_conv_ssm': rows['dev'][f'{case}_carry_rms'].mean(0).tolist(),
-                                     'max': float(rows['dev'][f'{case}_carry_rms'].max())} for case in MEMORY_CASES}
+    def _carry(rows, case):
+        if f'{case}_carry_rms' in rows:
+            values = rows[f'{case}_carry_rms']
+            return {'mean_per_layer_conv_ssm': values.mean(0).tolist(), 'max': float(values.max())}
+        values = rows[f'{case}_window_rms']
+        return {'backend': 'finite_window', 'buffered_pairs': int(rows[f'{case}_window_pairs'][0]),
+                'mean_buffered_latent_rms': values.mean(0).tolist() if values.numel() else [],
+                'max': float(values.max()) if values.numel() else 0.0}
+
+    report['carry_rms'] = {arm: {case: _carry(rows['dev'], case) for case in MEMORY_CASES}
                            for arm, rows in features.items()}
     return report

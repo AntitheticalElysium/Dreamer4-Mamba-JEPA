@@ -556,7 +556,23 @@ def autocast_context(config: LeWMConfig):
             if config.runtime.precision == "bf16" else nullcontext())
 
 
+def _seed_dropout_stream(config) -> None:
+    """Fix the global streams a dropout-bearing world will draw from.
+
+    The Mamba world has no dropout, so its trajectory never depended on ambient RNG and
+    this must not touch it. The source predictor does: without an explicit reset, a Raw and
+    a TC run would see different dropout masks purely because preflight ran in a different
+    order, and the pair would stop being a single-variable comparison.
+    """
+    if getattr(config, "family", "lewm_mamba") != "lewm_transformer":
+        return
+    torch.manual_seed(config.seed + 5003)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(config.seed + 5003)
+
+
 def _joint_components(episodes, config, bundle=None):
+    _seed_dropout_stream(config)
     bundle = ModelBundle.create(config) if bundle is None else bundle
     if bundle.config != config:
         raise ValueError("bundle recipe differs from training recipe")

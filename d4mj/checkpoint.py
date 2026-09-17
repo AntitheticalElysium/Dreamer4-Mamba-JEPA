@@ -80,7 +80,7 @@ def save_lewm_bundle(path, bundle, *, step: int, dataset_contract: dict, initial
     payload = {
         "format": LEWM_FORMAT, "phase": "joint", "step": step,
         "config": recipe_dict(bundle.config), "recipe_id": recipe_digest(bundle.config),
-        "sources": lewm_source_manifest(), "dataset": dataset_contract,
+        "sources": lewm_source_manifest(bundle.config), "dataset": dataset_contract,
         "initial_identity": initial_identity, "gates": gate_report,
         "modules": {k: v.state_dict() for k, v in modules.items()},
         "modes": {k: {n: m.training for n, m in v.named_modules()} for k, v in modules.items()},
@@ -148,7 +148,7 @@ def read_lewm_bundle(path) -> dict:
                     "readout_trained": False, "m4_authorized": False}
     if payload.get("capabilities") != capabilities:
         raise ValueError("checkpoint_phase: unsupported capabilities in an M0-M3 bundle")
-    verify_lewm_sources(payload["sources"])
+    verify_lewm_sources(payload["sources"], config)
     return payload
 
 
