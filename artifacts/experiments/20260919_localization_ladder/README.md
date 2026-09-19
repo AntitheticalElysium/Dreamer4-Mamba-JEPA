@@ -158,33 +158,69 @@ tokens still reach 0.833 / 34.7, so it is not *exclusively* HUD.
 **Scope caveat.** 34/36 DEV roots are terminal-tail with root health 1–2, so this decision largely
 reduces to "which action takes health to zero". It may not transfer to non-threshold decisions.
 
-## Phase 5 — where inside the predictor does the action's influence die?
+## Phase 5 — RETRACTED headline, and what the data actually shows
 
-It does not die at a stage. **The consequence is never constructed.**
+Phase 5 was published as "the consequence is never constructed." **That is withdrawn.** Its own
+AUC column contradicted it, and an audit was right to reject it.
 
-Forward hooks on the gate's own 17-action branch fan; the hooked generated z reproduces the
-published tensor exactly (max_abs 0.0, both arms).
+| tap | raw safe | raw AUC | tc safe | tc AUC |
+|---|---:|---:|---:|---:|
+| pair_projection | 17 | .750 | 26 | .834 |
+| block 5 | 19 | **.812** | 21 | .834 |
+| final h | 18 | .804 | 21 | .831 |
+| projector GELU | 19 | .771 | 20 | .815 |
+| **generated z** | 14 | .773 | 18 | **.664** |
+| root+action control | 19 | .794 | 23.7 | .833 |
 
-| tap | mamba_raw (control 19.0) | mamba_tc (control 23.7) |
+- **Raw's within-root AUC rises through the blocks**, .750 → .812, *above* its control's .794.
+  The stack does construct some consequence-related ordering; it just never yields reliable top-1.
+- **TC holds ~.83 through the whole stack and collapses at the final 2048→192 linear** (.815 →
+  .664). That is a localized output-projection problem, not an absence.
+
+Phase 5 also used one probe seed, 36 exploratory roots, no paired intervals, no frozen-head
+permutation, and never instrumented the u world it called the cheapest next experiment.
+
+**Corrected conclusion:** there is no single stage where top-1 capability catastrophically
+disappears. Raw gains average ordering without reliable action choice; TC retains ordering
+internally and loses much of it at the final latent projection.
+
+## Phase 6 — the causal HUD test and the u-world internals
+
+### Masking actual pixels (not subsetting contextualized tokens)
+
+Phase 4 subset final ViT tokens by original patch position. Those are post-self-attention, so
+they cannot establish that HUD *pixels* matter. Re-encoding genuinely masked images:
+
+| mask | cls | patch_mean |
 |---|---:|---:|
-| pair_projection | 17.0 | **26.0** |
-| mamba_block_0…5 | 17–21 | 24 → 21 |
-| final_norm (h) | 18.0 | 21.0 |
-| projector Linear→BN→GELU | 18–19 | 20 → 18 → 20 |
-| **projector final Linear = generated z** | **14.0** | **18.0** |
+| intact | 31.3 / AUC .926 | 34.7 / .980 |
+| **map only** (HUD zeroed) | 25.3 / **.587** | 23.0 / **.532** |
+| **HUD only** (map zeroed) | **36.0 / 1.000** | **36.0 / 1.000** |
 
-For **mamba_raw, no tap exceeds its root+action control at any depth** — every stage sits at
-14–21 with a *negative* action cost, from the first projection onward. For **mamba_tc**, only the
-`pair_projection` is marginally above control (26.0, cost +2.62), and that margin decays
-monotonically with depth. Two different internal profiles, the same endpoint.
+This **confirms the HUD reading causally, and more strongly than the token version**. On this
+panel the decision is almost entirely "read the health bar."
 
-Secondary: the final 192-d output projection is additionally lossy — raw drops 19.0 (GELU) →
-14.0 (final Linear), the worst tap on the path.
+### u→u world internals (parity 3.3e-05)
 
-**What this means for the repair.** This is not a "find the broken stage" problem. The predictor
-carries a representation of (root, action) through and never computes the successor consequence
-that distinguishes the fatal branch. Deepening, widening or re-exporting does not address that —
-the training signal that would demand it is what is missing.
+The encoder trap bit again: `matched_10k`'s `ENCODER` is `paired_window/**raw**`, which is the
+`variant=tc, centering=consecutive` arm. Two attempts failed parity (53.9, 52.5) until the hash
+was asserted against the state cache. The stage now refuses to report non-parity taps.
+
+| tap | safe | AUC | frozen-head AUC cost |
+|---|---:|---:|---:|
+| pair_projection | 21.7 | .837 | .299 |
+| blocks 0–5 | 22–26 | .814–.836 | .300–.319 |
+| final h | 26.3 | .817 | .314 |
+| **generated u** | 23.0 | **.794** | **.303** |
+| **REFERENCE real u** | **36.0** | **.9998** | **.609** |
+
+**Answer to the question phase 5 skipped:** weak *throughout*, established at the input
+projection, neither amplified nor destroyed by depth. AUC holds .79–.84 end to end and the final
+projection costs only .019 — the u world does **not** discard the consequence at export. The
+frozen-head permutation costs ~.30 AUC at *every* stage including the output, so its generated
+states genuinely carry action-specific structure. But real u scores AUC .9998 with a frozen cost
+of .609, roughly double. **The world retains about half the action-conditional structure and
+~.20 AUC less, and it is already at that level at the first projection.**
 
 ## Controls
 

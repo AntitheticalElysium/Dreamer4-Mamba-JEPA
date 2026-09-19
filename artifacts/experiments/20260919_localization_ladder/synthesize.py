@@ -36,6 +36,10 @@ OPTIONAL = {
     "u_memory": "phase4/u_world_memory.json",
     "confirmation": "phase4/confirmation_panel.json",
     "paired": "phase4/paired_intervals.json",
+    "phase5_raw": "phase5/mamba_raw.json",
+    "phase5_tc": "phase5/mamba_tc.json",
+    "phase6_masked": "phase6/masked_reencode.json",
+    "phase6_u": "phase6/u_world_internals.json",
 }
 
 
@@ -145,6 +149,10 @@ def main(argv=None):
             "23.0 -> 15.0 under derangement, so it is not action-blind.",
             "'192 dimensions rule out capacity' -- SCOPED to post-hoc representation width on this panel.",
             "'three separable causes' -- restated as three SYMPTOMS."],
+        "phase5_internals": {a: loaded.get(f"phase5_{k}", {}).get("rows")
+                             for a, k in (("mamba_raw", "raw"), ("mamba_tc", "tc"))},
+        "phase6_masked_reencode": loaded.get("phase6_masked", {}).get("rows"),
+        "phase6_u_internals": loaded.get("phase6_u", {}).get("rows"),
         "not_established": [
             "that SIGReg or joint training CAUSED the export degradation",
             "which stage of the predictor fails: pair/action projection, Mamba blocks, prediction "

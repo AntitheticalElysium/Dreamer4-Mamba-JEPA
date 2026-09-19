@@ -1,6 +1,32 @@
 {
   "death_equals_health_le_0": 1.0,
   "choice_by_true_health": {
+    "safe_choice": 36,
+    "opportunity_roots": 36,
+    "safe_choice_rate": 1.0,
+    "within_root_auc": 1.0,
+    "argmin_ties": 29,
+    "selected_actions": [
+      4,
+      18,
+      10,
+      3,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "choice_by_true_health_inverted_anti_oracle": {
     "safe_choice": 0,
     "opportunity_roots": 36,
     "safe_choice_rate": 0.0,

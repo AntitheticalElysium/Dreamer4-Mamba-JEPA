@@ -1,0 +1,306 @@
+{
+  "schema": "d4mj_phase6_u_internals_v2",
+  "generated_u_parity_max_abs": 3.337860107421875e-05,
+  "role": "u->u is a DIAGNOSTIC for Raw/TC, not a canonical architecture",
+  "question": "is u consequence information weak throughout the transition, or specifically discarded by the final export?",
+  "rows": [
+    {
+      "tap": "pair_projection",
+      "parameters": 33670,
+      "dim": 256,
+      "safe": [
+        21,
+        21,
+        23
+      ],
+      "mean_safe": 21.67,
+      "auc": [
+        0.8345,
+        0.8332,
+        0.8417
+      ],
+      "mean_auc": 0.8365,
+      "frozen_permuted_mean_safe": 7.67,
+      "frozen_permuted_mean_auc": 0.5374,
+      "refit_permuted_mean_safe": 21.33,
+      "frozen_auc_cost": 0.2991
+    },
+    {
+      "tap": "mamba_block_0",
+      "parameters": 33670,
+      "dim": 256,
+      "safe": [
+        23,
+        21,
+        22
+      ],
+      "mean_safe": 22.0,
+      "auc": [
+        0.8318,
+        0.8312,
+        0.8291
+      ],
+      "mean_auc": 0.8307,
+      "frozen_permuted_mean_safe": 6.0,
+      "frozen_permuted_mean_auc": 0.5308,
+      "refit_permuted_mean_safe": 21.67,
+      "frozen_auc_cost": 0.2999
+    },
+    {
+      "tap": "mamba_block_1",
+      "parameters": 33670,
+      "dim": 256,
+      "safe": [
+        24,
+        22,
+        26
+      ],
+      "mean_safe": 24.0,
+      "auc": [
+        0.8292,
+        0.8067,
+        0.8063
+      ],
+      "mean_auc": 0.8141,
+      "frozen_permuted_mean_safe": 6.33,
+      "frozen_permuted_mean_auc": 0.5057,
+      "refit_permuted_mean_safe": 22.67,
+      "frozen_auc_cost": 0.3084
+    },
+    {
+      "tap": "mamba_block_2",
+      "parameters": 33670,
+      "dim": 256,
+      "safe": [
+        26,
+        25,
+        26
+      ],
+      "mean_safe": 25.67,
+      "auc": [
+        0.8388,
+        0.8271,
+        0.8176
+      ],
+      "mean_auc": 0.8278,
+      "frozen_permuted_mean_safe": 5.0,
+      "frozen_permuted_mean_auc": 0.5089,
+      "refit_permuted_mean_safe": 23.0,
+      "frozen_auc_cost": 0.3189
+    },
+    {
+      "tap": "mamba_block_3",
+      "parameters": 33670,
+      "dim": 256,
+      "safe": [
+        24,
+        25,
+        26
+      ],
+      "mean_safe": 25.0,
+      "auc": [
+        0.8278,
+        0.8362,
+        0.8322
+      ],
+      "mean_auc": 0.8321,
+      "frozen_permuted_mean_safe": 5.67,
+      "frozen_permuted_mean_auc": 0.5191,
+      "refit_permuted_mean_safe": 22.67,
+      "frozen_auc_cost": 0.313
+    },
+    {
+      "tap": "mamba_block_4",
+      "parameters": 33670,
+      "dim": 256,
+      "safe": [
+        25,
+        27,
+        23
+      ],
+      "mean_safe": 25.0,
+      "auc": [
+        0.8409,
+        0.8294,
+        0.8381
+      ],
+      "mean_auc": 0.8361,
+      "frozen_permuted_mean_safe": 4.33,
+      "frozen_permuted_mean_auc": 0.5237,
+      "refit_permuted_mean_safe": 24.33,
+      "frozen_auc_cost": 0.3124
+    },
+    {
+      "tap": "mamba_block_5",
+      "parameters": 33670,
+      "dim": 256,
+      "safe": [
+        26,
+        26,
+        26
+      ],
+      "mean_safe": 26.0,
+      "auc": [
+        0.8083,
+        0.8215,
+        0.8327
+      ],
+      "mean_auc": 0.8208,
+      "frozen_permuted_mean_safe": 4.67,
+      "frozen_permuted_mean_auc": 0.52,
+      "refit_permuted_mean_safe": 24.0,
+      "frozen_auc_cost": 0.3008
+    },
+    {
+      "tap": "final_norm_h",
+      "parameters": 33670,
+      "dim": 256,
+      "safe": [
+        26,
+        26,
+        27
+      ],
+      "mean_safe": 26.33,
+      "auc": [
+        0.808,
+        0.8136,
+        0.8303
+      ],
+      "mean_auc": 0.8173,
+      "frozen_permuted_mean_safe": 4.33,
+      "frozen_permuted_mean_auc": 0.5032,
+      "refit_permuted_mean_safe": 23.33,
+      "frozen_auc_cost": 0.3141
+    },
+    {
+      "tap": "projector_0_Linear",
+      "parameters": 263046,
+      "dim": 2048,
+      "safe": [
+        25,
+        24,
+        26
+      ],
+      "mean_safe": 25.0,
+      "auc": [
+        0.8333,
+        0.8033,
+        0.8207
+      ],
+      "mean_auc": 0.8191,
+      "frozen_permuted_mean_safe": 3.33,
+      "frozen_permuted_mean_auc": 0.5009,
+      "refit_permuted_mean_safe": 21.0,
+      "frozen_auc_cost": 0.3182
+    },
+    {
+      "tap": "projector_1_BatchNorm1d",
+      "parameters": 263046,
+      "dim": 2048,
+      "safe": [
+        25,
+        24,
+        26
+      ],
+      "mean_safe": 25.0,
+      "auc": [
+        0.8333,
+        0.8033,
+        0.8207
+      ],
+      "mean_auc": 0.8191,
+      "frozen_permuted_mean_safe": 3.33,
+      "frozen_permuted_mean_auc": 0.5009,
+      "refit_permuted_mean_safe": 21.0,
+      "frozen_auc_cost": 0.3182
+    },
+    {
+      "tap": "projector_2_GELU",
+      "parameters": 263046,
+      "dim": 2048,
+      "safe": [
+        25,
+        25,
+        25
+      ],
+      "mean_safe": 25.0,
+      "auc": [
+        0.813,
+        0.8105,
+        0.8131
+      ],
+      "mean_auc": 0.8122,
+      "frozen_permuted_mean_safe": 4.33,
+      "frozen_permuted_mean_auc": 0.5165,
+      "refit_permuted_mean_safe": 24.67,
+      "frozen_auc_cost": 0.2957
+    },
+    {
+      "tap": "projector_3_Linear",
+      "parameters": 25478,
+      "dim": 192,
+      "safe": [
+        23,
+        24,
+        22
+      ],
+      "mean_safe": 23.0,
+      "auc": [
+        0.7877,
+        0.8033,
+        0.7915
+      ],
+      "mean_auc": 0.7942,
+      "frozen_permuted_mean_safe": 9.0,
+      "frozen_permuted_mean_auc": 0.4916,
+      "refit_permuted_mean_safe": 22.33,
+      "frozen_auc_cost": 0.3026
+    },
+    {
+      "tap": "generated_u",
+      "parameters": 25478,
+      "dim": 192,
+      "safe": [
+        23,
+        24,
+        22
+      ],
+      "mean_safe": 23.0,
+      "auc": [
+        0.7877,
+        0.8033,
+        0.7915
+      ],
+      "mean_auc": 0.7942,
+      "frozen_permuted_mean_safe": 9.0,
+      "frozen_permuted_mean_auc": 0.4916,
+      "refit_permuted_mean_safe": 22.33,
+      "frozen_auc_cost": 0.3026
+    },
+    {
+      "tap": "REFERENCE_real_u",
+      "parameters": 25478,
+      "dim": 192,
+      "safe": [
+        36,
+        36,
+        36
+      ],
+      "mean_safe": 36.0,
+      "auc": [
+        1.0,
+        0.9993,
+        1.0
+      ],
+      "mean_auc": 0.9998,
+      "frozen_permuted_mean_safe": 4.67,
+      "frozen_permuted_mean_auc": 0.3907,
+      "refit_permuted_mean_safe": 19.67,
+      "frozen_auc_cost": 0.6091
+    }
+  ],
+  "_inputs": {
+    "world": "4e1c3739283e3c4b",
+    "path": "gate_encode_lewm_v2"
+  }
+}

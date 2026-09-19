@@ -575,8 +575,7 @@
   "CONFIRMED": [
     "SYMPTOM 1 (readout objective) CONFIRMED on an untouched 100-root historical panel: real z rank 93.0 vs bce 74.7, paired episode-cluster intervals exclude zero for all three seeds (+0.16/+0.22/+0.17).",
     "SYMPTOM 2 (export) confirmed on DEV with paired intervals excluding zero for all seeds (+0.176). NOT testable on the confirmation panel: historical shards publish z only, no patch taps.",
-    "SYMPTOM 3 (generated utility) CONFIRMED on the untouched panel: generated z 51.3 vs root+action 55.7; no seed's interval excludes zero in the favourable direction.",
-    "PHASE 5: the predictor never constructs the consequence. No mamba_raw tap beats its root+action control at any depth; mamba_tc's only positive margin is at the input projection and decays with depth. Replicated across both arms, with exact generated-z parity."
+    "SYMPTOM 3 (generated utility) CONFIRMED on the untouched panel: generated z 51.3 vs root+action 55.7; no seed's interval excludes zero in the favourable direction."
   ],
   "phase4_corrections_to_my_own_claims": [
     "MY SINGLE-DRAW DERANGEMENT WAS NOISE. Over 20 draws mamba_raw scores 14.0 intact vs 17.9 deranged (cost -3.9): its generated successors carry NO usable action information, and my reported 'cost 0.0' was one lucky draw. Ordering: mamba_raw -3.9 < mamba_tc 0.95 < world_u_u 2.8 < transformer_raw 7.2 < direct 16.05.",
@@ -787,5 +786,124 @@
     "ANSWER": "The action's influence does not die at a stage -- the consequence is never constructed. For mamba_raw NO tap exceeds its root+action control (19.0) at any depth: every stage sits at 14-21 with a NEGATIVE action cost, from the first pair_projection onward. For mamba_tc the pair_projection alone is marginally above control (26.0, cost +2.62) and that margin is eroded monotonically with depth to 18.0 at the output. Two different internal profiles, the same endpoint.",
     "secondary": "the final 192-d output projection is additionally lossy: mamba_raw 19.0 (GELU) -> 14.0 (final Linear), a 5-point drop at the last layer, replicated as the worst tap of the path.",
     "consequence_for_repair": "this is NOT a 'where did it get lost' problem with a stage to fix. The predictor passes a representation of (root, action) through and never computes the successor consequence that distinguishes the fatal branch. Deepening, widening or re-exporting does not address that; the training signal that would require it does."
+  },
+  "phase6_corrections": {
+    "MASKED_REENCODE_causal_HUD_test": {
+      "why": "phase 4 subset final ViT tokens by original patch position. Those are post-self-attention and may carry whole-image information, so they cannot establish that HUD PIXELS matter.",
+      "rows": {
+        "intact|cls": {
+          "safe": 31.33,
+          "auc": 0.9259
+        },
+        "intact|patch_mean": {
+          "safe": 34.67,
+          "auc": 0.9796
+        },
+        "map_only|cls": {
+          "safe": 25.33,
+          "auc": 0.5869
+        },
+        "map_only|patch_mean": {
+          "safe": 23.0,
+          "auc": 0.5324
+        },
+        "hud_only|cls": {
+          "safe": 36.0,
+          "auc": 1.0
+        },
+        "hud_only|patch_mean": {
+          "safe": 36.0,
+          "auc": 1.0
+        }
+      },
+      "result": "re-encoding ACTUAL masked images CONFIRMS the HUD reading causally and more strongly: HUD-only pixels give 36.0/36 at AUC 1.000 for both cls and patch_mean, while map-only (HUD zeroed) collapses to 23-25/36 at AUC 0.53-0.59. On this panel the decision is almost entirely 'read the health bar'."
+    },
+    "U_WORLD_INTERNALS": {
+      "parity": 3.337860107421875e-05,
+      "encoder_trap": "matched_10k's ENCODER is paired_window/RAW, which is the variant=tc, centering=consecutive arm. My first two attempts failed parity (53.9, 52.5) until the hash was asserted against the state cache.",
+      "rows": {
+        "pair_projection": {
+          "safe": 21.67,
+          "auc": 0.8365,
+          "frozen_auc_cost": 0.2991
+        },
+        "mamba_block_0": {
+          "safe": 22.0,
+          "auc": 0.8307,
+          "frozen_auc_cost": 0.2999
+        },
+        "mamba_block_1": {
+          "safe": 24.0,
+          "auc": 0.8141,
+          "frozen_auc_cost": 0.3084
+        },
+        "mamba_block_2": {
+          "safe": 25.67,
+          "auc": 0.8278,
+          "frozen_auc_cost": 0.3189
+        },
+        "mamba_block_3": {
+          "safe": 25.0,
+          "auc": 0.8321,
+          "frozen_auc_cost": 0.313
+        },
+        "mamba_block_4": {
+          "safe": 25.0,
+          "auc": 0.8361,
+          "frozen_auc_cost": 0.3124
+        },
+        "mamba_block_5": {
+          "safe": 26.0,
+          "auc": 0.8208,
+          "frozen_auc_cost": 0.3008
+        },
+        "final_norm_h": {
+          "safe": 26.33,
+          "auc": 0.8173,
+          "frozen_auc_cost": 0.3141
+        },
+        "projector_0_Linear": {
+          "safe": 25.0,
+          "auc": 0.8191,
+          "frozen_auc_cost": 0.3182
+        },
+        "projector_1_BatchNorm1d": {
+          "safe": 25.0,
+          "auc": 0.8191,
+          "frozen_auc_cost": 0.3182
+        },
+        "projector_2_GELU": {
+          "safe": 25.0,
+          "auc": 0.8122,
+          "frozen_auc_cost": 0.2957
+        },
+        "projector_3_Linear": {
+          "safe": 23.0,
+          "auc": 0.7942,
+          "frozen_auc_cost": 0.3026
+        },
+        "generated_u": {
+          "safe": 23.0,
+          "auc": 0.7942,
+          "frozen_auc_cost": 0.3026
+        },
+        "REFERENCE_real_u": {
+          "safe": 36.0,
+          "auc": 0.9998,
+          "frozen_auc_cost": 0.6091
+        }
+      },
+      "ANSWER": "Weak THROUGHOUT, established at the input projection, neither amplified nor destroyed by depth. AUC holds .79-.84 from pair_projection to generated_u; the final projection costs only .019. So the u world does NOT discard the consequence at export. The frozen-head permutation costs ~.30 AUC at EVERY stage including the output, so its generated states DO carry real action-specific structure. But real u scores AUC .9998 with a frozen cost of .609 -- roughly double. The world retains about half the action-conditional structure and ~.20 AUC less, already at the first projection."
+    }
+  },
+  "RETRACTED_phase5_headline": {
+    "was": "'the consequence is never constructed' (commit e7a07af4)",
+    "why_wrong": [
+      "phase 5's own AUC column contradicted it: mamba_raw within-root AUC RISES through the blocks .750 -> .812, above its root+action control's .794. The stack does construct some ordering.",
+      "mamba_tc holds ~.83 through the entire stack and then collapses at the final 2048->192 linear (.815 -> .664) -- a localized output-projection problem, not an absence.",
+      "phase 5 used ONE probe seed, 36 exploratory roots, no paired intervals, no frozen-head permutation, and never instrumented the u world it called the cheapest next experiment.",
+      "the frozen-head test in phase 6 shows the u world carries ~.30 AUC of action structure at every stage, so a refit-based null was not evidence of absence."
+    ],
+    "corrected": "There is no single stage where top-1 capability catastrophically disappears. Raw gains average ordering through its blocks without reliable action choice; TC retains ordering internally and loses much of it at the final latent projection; the u world is uniformly weak from the input projection onward while remaining genuinely action-conditional."
   }
 }

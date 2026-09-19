@@ -6,8 +6,10 @@ tests the claims an audit found overstated.
 
   transformer   the Transformer arms through the SAME rank / dynamics / derangement protocol,
                 because "the sequence mixer is exonerated" was never tested by this ladder
-  derangement   a distribution over 20 derangements, not one draw, plus the frozen published
-                head evaluated on permuted DEV actions
+  derangement   a distribution over 20 derangements, not one draw. NOTE: this REFITS a head on
+                permuted TRAIN and DEV, so a null result shows the representation lacks robust
+                root-specific action correspondence UNDER REFITTING -- it is not evidence that no
+                action information exists. The stricter frozen-head test is in phase6.score_both.
   health        binary dead/alive readout (scalar R^2 does not test a dead/alive boundary),
                 HUD-only and map-only patch rungs, and a structured-state control.  Health
                 occupies pixel rows 49-62, measured: patch rows 7-8 are HUD, 0-6 are map
@@ -176,7 +178,7 @@ def stage_transformer(side, y, spec, out, device):
 
 
 def stage_derangement(side, y, spec, out, device, draws=20):
-    """A distribution over derangements, plus the frozen published head on permuted DEV actions."""
+    """A distribution over derangements (refit-based; the frozen-head test lives in phase 6)."""
     inputs = {"draws": draws, "eval": sha(f"{EVAL}/features/raw.dev.pt")}
     got = cached(out / "derangement_distribution.json", inputs)
     if got:
