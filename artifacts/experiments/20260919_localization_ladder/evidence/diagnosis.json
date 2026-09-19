@@ -931,6 +931,18 @@
     "second_difference_worth_noting": "Direct's encoder was trained with RECONSTRUCTION losses -- its training_report curve records mse and lpips, and its config carries mae_p_max/lpips_weight. A reconstruction objective must preserve HUD pixels; SIGReg has no such pressure. That independently explains the phase-6 HUD result.",
     "status": "STRUCTURAL EXPLANATION, NOT YET AN EXPERIMENT. It is read from the training code, not demonstrated by a controlled run.",
     "decisive_test": "one matched frozen-encoder LeWM arm trained WITH counterfactual branch targets against an otherwise identical arm trained WITHOUT -- same encoder, sampler, optimizer, schedule, updates and seed. Everything else in this ladder is consistent with the hypothesis but cannot discriminate it from the alternatives.",
-    "prior_art_in_this_project": "matches 'Terminal supervision verdict -- broad hazard-choice sampling is the fix' and 'Craftax corpus audit -- consequence density and exposure are the deficits'"
+    "prior_art_in_this_project": "matches 'Terminal supervision verdict -- broad hazard-choice sampling is the fix' and 'Craftax corpus audit -- consequence density and exposure are the deficits'",
+    "CORRECTION_same_corpus_was_WRONG": {
+      "what_I_said": "'corpus is NOT the confound; both draw from craftax_support_v2'",
+      "why_wrong": "Direct's counterfactual targets come from artifacts/eda/broad_forks_v2 -- a SEPARATE, purpose-collected corpus. collect_broad_forks.py rolls out fresh episodes through d4mj.env at seeds 15000-16504 (1,505 shard files, ~15.5k roots), keeping all 17 successors per root plus a second successor for every branch that survives.",
+      "selection_rule": "damage-CHOICE, not terminal tails: damaging[a] = (health_delta[a] <= -1) or terminated[a]; keep iff damaging.any() and not damaging.all(). Roots where SOME actions harm and SOME do not -- precisely the discrimination the gate tests. Its own docstring says the terminal-tail corpus was 87.8% traps and taught an action-marginal shortcut; this one is 10% fatal.",
+      "so_there_are_TWO_entangled_differences": [
+        "DATA: a ~15.5k-root hazard-choice fork corpus that LeWM has never seen, deliberately built to contain same-root action contrast",
+        "SUPERVISION: all-17 branch MSE targets drawn from those roots"
+      ],
+      "leakage_check": "fork seeds are 15000-16504; the sealed evaluation roots are 14000-14511 and the confirmation panel used 13000-14xxx. No overlap.",
+      "also_corrected": "the Direct world M03 loads (v2_direct_mamba/world_020000.pt) was branch-trained for all 20k steps by run_v2_pipeline.sh -> train_terminal_arms.py --arm counterfactual --terminal-actions 17. I had cited run_v2_phase2.py, which runs AFTER and emits phase2_final.pt. The substance is unchanged and stronger.",
+      "consequence_for_the_experiment": "'more data' and 'sibling contrast' are separable and BOTH need testing. A treatment that simply adds the fork corpus changes distribution, volume and target structure at once."
+    }
   }
 }
