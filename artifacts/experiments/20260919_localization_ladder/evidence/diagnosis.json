@@ -905,5 +905,32 @@
       "the frozen-head test in phase 6 shows the u world carries ~.30 AUC of action structure at every stage, so a refit-based null was not evidence of absence."
     ],
     "corrected": "There is no single stage where top-1 capability catastrophically disappears. Raw gains average ordering through its blocks without reliable action choice; TC retains ordering internally and loses much of it at the final latent projection; the u world is uniformly weak from the input projection onward while remaining genuinely action-conditional."
+  },
+  "SUSPECT_training_target_not_corpus": {
+    "question": "is Direct trained on the same corpus as the LeWM arms?",
+    "answer": "YES, the same corpus -- but the TRAINING TARGET differs, and that is the suspect.",
+    "corpus": {
+      "only_craftax_corpus": "artifacts/craftax_support_v2 (10,080 episodes, seed 20270731)",
+      "lewm": "joint runs train on artifacts/craftax_support_v2 (recorded dataset contract a87ae28635e111fc...)",
+      "direct": "artifacts/eda/replay.py pins STORE = artifacts/craftax_support_v2; cache_actionable_roots.py imports it and emits 'all 17 successor frames under the original key'. Its latent_cache_64 records 8,325 episodes (a subset).",
+      "so": "corpus is NOT the confound"
+    },
+    "the_actual_difference": {
+      "direct": "artifacts/eda/run_v2_phase2.py trains the world with counterfactual=sampler(pack,...) and prints 'roots x 17 counterfactual targets/step'. encode_broad_forks.py:88 builds z_branch = encode_last(... for a in range(N_ACTIONS)) -- the successor for EVERY action from the SAME root. Direct is explicitly supervised on same-state action contrast.",
+      "lewm": "d4mj/lewm.py joint_loss: prediction = world.teacher(pairs, actions).predicted with the LOGGED actions, target pairs[:, 1:] -- the actual next latent. ONE action per state, the factual one. It has never seen two different actions from the same state.",
+      "consequence": "the gate asks exactly the counterfactual question Direct was trained on and LeWM never was"
+    },
+    "explains": [
+      "Direct beats its root+action control -- it was trained for precisely that discrimination",
+      "all four LeWM arms fail to -- they share the factual-only objective",
+      "the sequence backend barely matters (Mamba vs Transformer): this is not architectural",
+      "the richer u export does not help: input richness cannot create counterfactual supervision",
+      "phase 5/6 internals are flat and weak from the pair projection onward -- nothing ever trained them to separate branches from a shared root",
+      "TC's CLS->z export damage is a SEPARATE, additive problem, not this one"
+    ],
+    "second_difference_worth_noting": "Direct's encoder was trained with RECONSTRUCTION losses -- its training_report curve records mse and lpips, and its config carries mae_p_max/lpips_weight. A reconstruction objective must preserve HUD pixels; SIGReg has no such pressure. That independently explains the phase-6 HUD result.",
+    "status": "STRUCTURAL EXPLANATION, NOT YET AN EXPERIMENT. It is read from the training code, not demonstrated by a controlled run.",
+    "decisive_test": "one matched frozen-encoder LeWM arm trained WITH counterfactual branch targets against an otherwise identical arm trained WITHOUT -- same encoder, sampler, optimizer, schedule, updates and seed. Everything else in this ladder is consistent with the hypothesis but cannot discriminate it from the alternatives.",
+    "prior_art_in_this_project": "matches 'Terminal supervision verdict -- broad hazard-choice sampling is the fix' and 'Craftax corpus audit -- consequence density and exposure are the deficits'"
   }
 }
