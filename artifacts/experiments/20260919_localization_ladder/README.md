@@ -7,11 +7,11 @@ record: [evidence/diagnosis.json](evidence/diagnosis.json).
 Primary metric is **safe-action choice on the 36 DEV roots that offer both a fatal and a safe
 action**, three probe seeds. `death` is exactly `successor health <= 0` (100% agreement).
 
-> **Status.** This package establishes three measured **symptoms**. Only the TC CLS→z
-> degradation is tightly component-localized. The objective and head were selected on the same
-> 36-root DEV panel the headline is reported on, so these results are **exploratory** until the
-> phase-4 confirmation panel lands. Section "Withdrawn claims" lists what an earlier draft of
-> this README overstated.
+> **Status.** Three measured **symptoms**. Symptoms 1 and 3 are now **confirmed on an untouched
+> 100-root historical panel** with paired episode-cluster intervals (phase 4). Symptom 2 is
+> confirmed on DEV but could not be scored on the confirmation panel, which publishes z only.
+> Section "Withdrawn claims" lists what earlier drafts overstated — including several claims
+> phase 4 forced me to correct again.
 
 ## Symptom 1 — the gate's readout objective understated real LeWM states
 
@@ -74,10 +74,10 @@ information, redundancy, or other globally distributed features.
 
 Memory does not rescue it: Raw `h` ≈ 19.3, `[z,h]` ≈ 21.3 against a history control of 19.7.
 
-Action derangement (same magnitudes, permuted action→effect map): Raw ≈ 0.0 cost, TC 1.3,
-`[z,h]` 4.0, **generated u 23.0 → 15.0 (8.0)**, Direct 31.7 → 19.3 (12.4). So the LeWM
-predictors are **not action-blind** — u→u carries appreciable action correspondence — but not
-enough to beat the current-state/action control.
+Action derangement was measured properly in phase 4 over **20 draws**; the single-draw numbers
+that first appeared here were noise. See "Derangement distribution" below — the corrected
+ordering is mamba_raw −3.9 (no action information at all) < mamba_tc 0.9 < u→u 2.8 <
+transformer_raw 7.2 < direct 16.1.
 
 ## The u→u negative result
 
@@ -97,12 +97,66 @@ An earlier draft of this README asserted each of these. They are withdrawn:
 | claim | why it fails |
 |---|---|
 | "Spatial layout is the missing representation" | `patch_mean` is position-free and nearly solves the panel |
-| "The sequence mixer is exonerated" | Transformer arms were never run through this rank/dynamics/derangement ladder |
-| "Health is not the explanation" | Direct's poor *scalar* R² does not exclude a sharp dead/alive boundary; binary/HUD controls not run |
-| "The predictor is not action-conditional" | it is architecturally conditioned; generated u loses 8.0 to derangement |
+| "The sequence mixer is exonerated" | **REFUTED in phase 4**: Transformer action-conditioning cost 7.2 vs Mamba −3.9 |
+| "Health is not the explanation" | **REFUTED in phase 4**: HUD tokens alone give dead/alive AUC 1.0000 and 36/36 |
+| "The predictor is not action-conditional" | arm-dependent: Mamba −3.9 (none), Transformer 7.2, u→u 2.8 over 20 draws |
 | "192 dimensions rule out capacity" | only *post-hoc* width, on this panel |
 | "Three separable causes" | better described as three symptoms |
 | "Train Mamba on the spatial export" | the u→u world already ran that and its generated states fail |
+
+## Phase 4 — confirmation and self-correction
+
+### Untouched confirmation panel (100 opportunity roots, 68 historical seeds, fit on unchanged TRAIN)
+
+| condition | /100 |
+|---|---:|
+| mamba_raw real z, **rank** | **93.0** |
+| mamba_raw real z, BCE | 74.7 |
+| mamba_raw generated z | 51.3 |
+| mamba_raw root+action control | 55.7 |
+
+Predeclared contrasts, paired episode-cluster bootstrap, all three seeds:
+
+| contrast | DEV | confirmation panel |
+|---|---|---|
+| C1 rank > BCE | +0.333, all seeds exclude 0 | +0.16/+0.22/+0.17, **all exclude 0** |
+| C2 pooled-PCA > z at matched width | +0.176, all seeds exclude 0 | not scorable (no patch taps in shards) |
+| C3 generated > root+action | −0.102, does not exclude 0 | −0.02/−0.06/−0.05, does not exclude 0 |
+
+### Derangement distribution (20 draws, not one)
+
+| arm | intact | deranged | cost |
+|---|---:|---:|---:|
+| mamba_raw | 14.0 | 17.9 | **−3.9** |
+| mamba_tc | 18.0 | 17.1 | 0.9 |
+| world_u_u | 23.0 | 20.2 | 2.8 |
+| **transformer_raw** | 22.0 | 14.8 | **7.2** |
+| direct | 32.0 | 16.0 | **16.1** |
+
+**My single-draw result was noise.** I reported mamba_raw "cost 0.0"; over 20 draws it is −3.9.
+
+**The sequence mixer is not neutral.** The Transformer predictor is substantially more
+action-conditional than Mamba's (7.2 vs −3.9) — yet its intact score (22.0) still only matches
+its own root+action control (21.3). Action-conditioning improved; decision utility did not.
+
+### Health controls — the audit was right, I was wrong
+
+| mamba_raw rung | dead/alive AUC | safe choice |
+|---|---:|---:|
+| z | 0.765 | 29.7 |
+| CLS | 0.780 | 31.3 |
+| patch_mean | 0.898 | 34.7 |
+| **hud_tokens_mean** | **1.0000** | **36.0** |
+| map_tokens_mean (HUD removed) | 0.833 | 34.7 |
+| structured state (16 sim fields) | — | 36.0 |
+
+Health is drawn in pixel rows 49–62 (measured: max r=0.379 at row 50; rows 0–48 mean |r|=0.018),
+so patch tokens 63–80 are HUD. **HUD tokens alone are a perfect dead/alive readout and a perfect
+36/36.** The patch advantage over CLS is substantially a retained HUD health readout. Map-only
+tokens still reach 0.833 / 34.7, so it is not *exclusively* HUD.
+
+**Scope caveat.** 34/36 DEV roots are terminal-tail with root health 1–2, so this decision largely
+reduces to "which action takes health to zero". It may not transfer to non-threshold decisions.
 
 ## Controls
 

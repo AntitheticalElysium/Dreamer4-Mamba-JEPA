@@ -1,0 +1,225 @@
+{
+  "schema": "d4mj_phase4_umem_v1",
+  "role": "u->u is a DIAGNOSTIC for Raw/TC, not a canonical architecture",
+  "rows": [
+    {
+      "world": "world_z_z",
+      "condition": "generated",
+      "dim": 192,
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 25478,
+      "safe_choice": [
+        17,
+        18,
+        20
+      ],
+      "mean_safe": 18.33,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.6874,
+        0.6748,
+        0.7095
+      ]
+    },
+    {
+      "world": "world_z_z",
+      "condition": "generated__action_permuted",
+      "dim": 192,
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 25478,
+      "safe_choice": [
+        15
+      ],
+      "mean_safe": 15.0,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.7404
+      ]
+    },
+    {
+      "world": "world_z_z",
+      "condition": "next_h",
+      "dim": 256,
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 33670,
+      "safe_choice": [
+        21,
+        24,
+        24
+      ],
+      "mean_safe": 23.0,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.8084,
+        0.8089,
+        0.8034
+      ]
+    },
+    {
+      "world": "world_z_z",
+      "condition": "next_h__action_permuted",
+      "dim": 256,
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 33670,
+      "safe_choice": [
+        16
+      ],
+      "mean_safe": 16.0,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.7735
+      ]
+    },
+    {
+      "world": "world_z_z",
+      "condition": "generated_and_h",
+      "dim": 448,
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 58246,
+      "safe_choice": [
+        24,
+        23,
+        22
+      ],
+      "mean_safe": 23.0,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.8169,
+        0.8127,
+        0.823
+      ]
+    },
+    {
+      "world": "world_z_z",
+      "condition": "generated_and_h__action_permuted",
+      "dim": 448,
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 58246,
+      "safe_choice": [
+        16
+      ],
+      "mean_safe": 16.0,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.7656
+      ]
+    },
+    {
+      "world": "world_u_u",
+      "condition": "generated",
+      "dim": 192,
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 25478,
+      "safe_choice": [
+        23,
+        24,
+        22
+      ],
+      "mean_safe": 23.0,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.7877,
+        0.8033,
+        0.7915
+      ]
+    },
+    {
+      "world": "world_u_u",
+      "condition": "generated__action_permuted",
+      "dim": 192,
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 25478,
+      "safe_choice": [
+        15
+      ],
+      "mean_safe": 15.0,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.8205
+      ]
+    },
+    {
+      "world": "world_u_u",
+      "condition": "next_h",
+      "dim": 256,
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 33670,
+      "safe_choice": [
+        26,
+        26,
+        27
+      ],
+      "mean_safe": 26.33,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.808,
+        0.8136,
+        0.8303
+      ]
+    },
+    {
+      "world": "world_u_u",
+      "condition": "next_h__action_permuted",
+      "dim": 256,
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 33670,
+      "safe_choice": [
+        21
+      ],
+      "mean_safe": 21.0,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.8425
+      ]
+    },
+    {
+      "world": "world_u_u",
+      "condition": "generated_and_h",
+      "dim": 448,
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 58246,
+      "safe_choice": [
+        24,
+        24,
+        24
+      ],
+      "mean_safe": 24.0,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.8152,
+        0.8178,
+        0.8184
+      ]
+    },
+    {
+      "world": "world_u_u",
+      "condition": "generated_and_h__action_permuted",
+      "dim": 448,
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 58246,
+      "safe_choice": [
+        19
+      ],
+      "mean_safe": 19.0,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.8469
+      ]
+    }
+  ],
+  "_inputs": {
+    "matched": "132a6eb6c7adf430"
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "schema": "d4mj_phase4_paired_v1",
+  "unit": "fraction of the 36 opportunity roots",
+  "scores_file": "dev_scores.mamba_raw.pt",
+  "contrasts": [
+    {
+      "id": "C1_objective",
+      "claim": "within-root ranking beats six-target BCE on real Mamba Raw z",
+      "a": "mamba_raw real z, rank",
+      "b": "mamba_raw real z, bce_death",
+      "direction": "a>b",
+      "per_seed": [
+        {
+          "a": 0.8333,
+          "b": 0.5,
+          "difference": 0.3333,
+          "interval": [
+            0.1706,
+            0.5152
+          ],
+          "excludes_zero": true
+        },
+        {
+          "a": 0.8333,
+          "b": 0.4444,
+          "difference": 0.3889,
+          "interval": [
+            0.2256,
+            0.5715
+          ],
+          "excludes_zero": true
+        },
+        {
+          "a": 0.8056,
+          "b": 0.5278,
+          "difference": 0.2778,
+          "interval": [
+            0.1176,
+            0.45
+          ],
+          "excludes_zero": true
+        }
+      ],
+      "mean_difference": 0.3333,
+      "all_seeds_exclude_zero": true
+    },
+    {
+      "id": "C2_export",
+      "claim": "a pooled-patch PCA-192 rung beats z at matched width on real successors",
+      "a": "mamba_raw pooled4_pca192",
+      "b": "mamba_raw z",
+      "direction": "a>b",
+      "per_seed": [
+        {
+          "a": 1.0,
+          "b": 0.8333,
+          "difference": 0.1667,
+          "interval": [
+            0.0556,
+            0.2903
+          ],
+          "excludes_zero": true
+        },
+        {
+          "a": 1.0,
+          "b": 0.8333,
+          "difference": 0.1667,
+          "interval": [
+            0.0556,
+            0.2903
+          ],
+          "excludes_zero": true
+        },
+        {
+          "a": 1.0,
+          "b": 0.8056,
+          "difference": 0.1944,
+          "interval": [
+            0.075,
+            0.3335
+          ],
+          "excludes_zero": true
+        }
+      ],
+      "mean_difference": 0.1759,
+      "all_seeds_exclude_zero": true
+    },
+    {
+      "id": "C3_generated",
+      "claim": "generated Mamba Raw z beats its own root+action control",
+      "a": "mamba_raw generated z",
+      "b": "mamba_raw root+action",
+      "direction": "a>b",
+      "per_seed": [
+        {
+          "a": 0.3889,
+          "b": 0.5,
+          "difference": -0.1111,
+          "interval": [
+            -0.325,
+            0.1034
+          ],
+          "excludes_zero": false
+        },
+        {
+          "a": 0.4722,
+          "b": 0.5556,
+          "difference": -0.0833,
+          "interval": [
+            -0.2927,
+            0.1026
+          ],
+          "excludes_zero": false
+        },
+        {
+          "a": 0.4167,
+          "b": 0.5278,
+          "difference": -0.1111,
+          "interval": [
+            -0.2821,
+            0.0625
+          ],
+          "excludes_zero": false
+        }
+      ],
+      "mean_difference": -0.1018,
+      "all_seeds_exclude_zero": false
+    }
+  ],
+  "_inputs": {
+    "eval": "999d21841b09943e",
+    "contrasts": 3
+  }
+}

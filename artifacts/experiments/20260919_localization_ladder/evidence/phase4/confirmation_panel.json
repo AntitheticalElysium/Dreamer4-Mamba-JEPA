@@ -1,0 +1,224 @@
+{
+  "schema": "d4mj_phase4_confirmation_v1",
+  "panel": {
+    "source": "historical replay shards, ascending seed order",
+    "seeds": [
+      13000,
+      13001,
+      13002,
+      13003,
+      13004,
+      13005,
+      13006,
+      13007,
+      13008,
+      13009,
+      13010,
+      13011,
+      13012,
+      13013,
+      13014,
+      13015,
+      13016,
+      13017,
+      13018,
+      13019,
+      13020,
+      13021,
+      13022,
+      13023,
+      13024,
+      13029,
+      13031,
+      13033,
+      13034,
+      13035,
+      13036,
+      13037,
+      13038,
+      13039,
+      13040,
+      13041,
+      13042,
+      13043,
+      13044,
+      13045,
+      13046,
+      13047,
+      13051,
+      13052,
+      13053,
+      13054,
+      13055,
+      13057,
+      13059,
+      13061,
+      13062,
+      13063,
+      13064,
+      13065,
+      13067,
+      13068,
+      13069,
+      13071,
+      13072,
+      13073,
+      13075,
+      13076,
+      13079,
+      13080,
+      13081,
+      13084,
+      13085,
+      13086
+    ],
+    "opportunity_roots": 100,
+    "grouping": "historical TEST population; NOT relabelled as support-v2 TRAIN/DEV",
+    "fit_on": "support-v2 primary TRAIN (unchanged)"
+  },
+  "note": "C2_export is not evaluated here: the historical shards publish z only, no patch taps, so the export contrast cannot be scored on this panel without re-encoding it.",
+  "rows": [
+    {
+      "condition": "mamba_raw_real_z_rank",
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 25478,
+      "safe_choice": [
+        94,
+        93,
+        92
+      ],
+      "mean_safe": 93.0,
+      "opportunity_roots": 100,
+      "within_root_auc": [
+        0.9204,
+        0.925,
+        0.9123
+      ]
+    },
+    {
+      "condition": "mamba_raw_real_z_bce",
+      "family": "mlp128",
+      "objective": "bce_death",
+      "parameters": 25478,
+      "safe_choice": [
+        78,
+        71,
+        75
+      ],
+      "mean_safe": 74.67,
+      "opportunity_roots": 100,
+      "within_root_auc": [
+        0.8489,
+        0.853,
+        0.8587
+      ]
+    },
+    {
+      "condition": "mamba_raw_generated_z_rank",
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 25478,
+      "safe_choice": [
+        54,
+        51,
+        49
+      ],
+      "mean_safe": 51.33,
+      "opportunity_roots": 100,
+      "within_root_auc": [
+        0.6653,
+        0.655,
+        0.65
+      ]
+    },
+    {
+      "condition": "mamba_raw_root_action_rank",
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 27654,
+      "safe_choice": [
+        56,
+        57,
+        54
+      ],
+      "mean_safe": 55.67,
+      "opportunity_roots": 100,
+      "within_root_auc": [
+        0.703,
+        0.6874,
+        0.6872
+      ]
+    }
+  ],
+  "intervals": {
+    "C1_objective": [
+      {
+        "a": 0.94,
+        "b": 0.78,
+        "difference": 0.16,
+        "interval": [
+          0.0582,
+          0.2673
+        ],
+        "excludes_zero": true
+      },
+      {
+        "a": 0.93,
+        "b": 0.71,
+        "difference": 0.22,
+        "interval": [
+          0.1053,
+          0.3398
+        ],
+        "excludes_zero": true
+      },
+      {
+        "a": 0.92,
+        "b": 0.75,
+        "difference": 0.17,
+        "interval": [
+          0.0728,
+          0.2816
+        ],
+        "excludes_zero": true
+      }
+    ],
+    "C3_generated": [
+      {
+        "a": 0.54,
+        "b": 0.56,
+        "difference": -0.02,
+        "interval": [
+          -0.1184,
+          0.0734
+        ],
+        "excludes_zero": false
+      },
+      {
+        "a": 0.51,
+        "b": 0.57,
+        "difference": -0.06,
+        "interval": [
+          -0.1635,
+          0.0404
+        ],
+        "excludes_zero": false
+      },
+      {
+        "a": 0.49,
+        "b": 0.54,
+        "difference": -0.05,
+        "interval": [
+          -0.1414,
+          0.043
+        ],
+        "excludes_zero": false
+      }
+    ]
+  },
+  "_inputs": {
+    "minimum": 100,
+    "rule": "ascending seed order, roots with both fatal and safe"
+  }
+}

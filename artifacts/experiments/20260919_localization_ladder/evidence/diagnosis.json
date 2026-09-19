@@ -10,7 +10,13 @@
     "phase2/ladder.json": "78a42d5d2dce7c0ab35b4d4495c9fa9cfe9c03836f0cee21d9e8e741e2915d7e",
     "phase2/memorization.json": "f581a8403814bf98d293759cc0df72f9d9704ae4a69b8c0005825847273547cb",
     "phase3/dynamics.json": "b91c52839aaf72f1768316fc438b27b57abae833d9b64d1a859a4117e5387a15",
-    "phase3/memory_and_u.json": "8e702c54a1573534a72f57f4115353addb5809c880ac58032e6faaa5c55c1036"
+    "phase3/memory_and_u.json": "8e702c54a1573534a72f57f4115353addb5809c880ac58032e6faaa5c55c1036",
+    "phase4/transformer_dynamics.json": "6431f0fac8db5b82a3a1192676c4e2719c7164fe3f67fcf34d6eb17d18bb8543",
+    "phase4/derangement_distribution.json": "16b2897da8f7ba8bed8bb7c5b57cc9570c5b99eb5f2fe7e1fc5cf0f8f3d26c77",
+    "phase4/health_controls.json": "4a14110de4bf06608e599d4e6c6d55ab9e86ff35b082391a6b9738139e7ca13d",
+    "phase4/u_world_memory.json": "ac30f9a6bfad9fffbb31fe6dc46e98a06a063e13451917820f688fd95d2ccfe1",
+    "phase4/confirmation_panel.json": "40893b70c6298f2899f2a6d083c0dfe715cec8acadc05d3c0dacf2c1c0db4eb2",
+    "phase4/paired_intervals.json": "7f574c6e6ab7b837eb7b1fd01d4b1bd1f92e0480b8bf45572a1dfdae92b3aebb"
   },
   "status_of_claims": "three measured SYMPTOMS; only the TC CLS->z degradation is tightly component-localized. See `overstatements_withdrawn`.",
   "protocol": {
@@ -380,5 +386,207 @@
     "anything about multistep rollout, achievements or closed-loop control",
     "generalization beyond this 36-root DEV panel"
   ],
-  "m4_authorized": false
+  "m4_authorized": false,
+  "phase4": {
+    "confirmation_panel": {
+      "roots": 100,
+      "seeds": 68,
+      "rows": {
+        "mamba_raw_real_z_rank": 93.0,
+        "mamba_raw_real_z_bce": 74.67,
+        "mamba_raw_generated_z_rank": 51.33,
+        "mamba_raw_root_action_rank": 55.67
+      },
+      "intervals": {
+        "C1_objective": [
+          {
+            "diff": 0.16,
+            "interval": [
+              0.0582,
+              0.2673
+            ],
+            "excludes_zero": true
+          },
+          {
+            "diff": 0.22,
+            "interval": [
+              0.1053,
+              0.3398
+            ],
+            "excludes_zero": true
+          },
+          {
+            "diff": 0.17,
+            "interval": [
+              0.0728,
+              0.2816
+            ],
+            "excludes_zero": true
+          }
+        ],
+        "C3_generated": [
+          {
+            "diff": -0.02,
+            "interval": [
+              -0.1184,
+              0.0734
+            ],
+            "excludes_zero": false
+          },
+          {
+            "diff": -0.06,
+            "interval": [
+              -0.1635,
+              0.0404
+            ],
+            "excludes_zero": false
+          },
+          {
+            "diff": -0.05,
+            "interval": [
+              -0.1414,
+              0.043
+            ],
+            "excludes_zero": false
+          }
+        ]
+      },
+      "note": "C2_export is not evaluated here: the historical shards publish z only, no patch taps, so the export contrast cannot be scored on this panel without re-encoding it."
+    },
+    "predeclared_contrasts": {
+      "C1_objective": {
+        "claim": "within-root ranking beats six-target BCE on real Mamba Raw z",
+        "mean_difference": 0.3333,
+        "all_seeds_exclude_zero": true
+      },
+      "C2_export": {
+        "claim": "a pooled-patch PCA-192 rung beats z at matched width on real successors",
+        "mean_difference": 0.1759,
+        "all_seeds_exclude_zero": true
+      },
+      "C3_generated": {
+        "claim": "generated Mamba Raw z beats its own root+action control",
+        "mean_difference": -0.1018,
+        "all_seeds_exclude_zero": false
+      }
+    },
+    "derangement_distribution_20_draws": {
+      "mamba_raw": {
+        "intact": 14.0,
+        "deranged_mean": 17.9,
+        "cost": -3.9
+      },
+      "mamba_tc": {
+        "intact": 18.0,
+        "deranged_mean": 17.05,
+        "cost": 0.95
+      },
+      "direct": {
+        "intact": 32.0,
+        "deranged_mean": 15.95,
+        "cost": 16.05
+      },
+      "world_u_u": {
+        "intact": 23.0,
+        "deranged_mean": 20.2,
+        "cost": 2.8
+      },
+      "transformer_raw": {
+        "intact": 22.0,
+        "deranged_mean": 14.8,
+        "cost": 7.2
+      }
+    },
+    "health_controls": {
+      "mamba_raw|z": {
+        "dead_alive_auc": 0.7654,
+        "safe": 29.67
+      },
+      "mamba_raw|cls": {
+        "dead_alive_auc": 0.7801,
+        "safe": 31.33
+      },
+      "mamba_raw|patch_mean": {
+        "dead_alive_auc": 0.8983,
+        "safe": 34.67
+      },
+      "mamba_raw|hud_tokens_mean": {
+        "dead_alive_auc": 1.0,
+        "safe": 36.0
+      },
+      "mamba_raw|map_tokens_mean": {
+        "dead_alive_auc": 0.8331,
+        "safe": 34.67
+      },
+      "mamba_tc|z": {
+        "dead_alive_auc": 0.7183,
+        "safe": 21.0
+      },
+      "mamba_tc|cls": {
+        "dead_alive_auc": 0.871,
+        "safe": 33.0
+      },
+      "mamba_tc|patch_mean": {
+        "dead_alive_auc": 0.903,
+        "safe": 32.67
+      },
+      "mamba_tc|hud_tokens_mean": {
+        "dead_alive_auc": 0.9992,
+        "safe": 35.33
+      },
+      "mamba_tc|map_tokens_mean": {
+        "dead_alive_auc": 0.8553,
+        "safe": 33.0
+      },
+      "structured_state_control|next_continuous": {
+        "dead_alive_auc": null,
+        "safe": 36.0
+      }
+    },
+    "u_world_memory": {
+      "world_z_z|generated": 18.33,
+      "world_z_z|generated__action_permuted": 15.0,
+      "world_z_z|next_h": 23.0,
+      "world_z_z|next_h__action_permuted": 16.0,
+      "world_z_z|generated_and_h": 23.0,
+      "world_z_z|generated_and_h__action_permuted": 16.0,
+      "world_u_u|generated": 23.0,
+      "world_u_u|generated__action_permuted": 15.0,
+      "world_u_u|next_h": 26.33,
+      "world_u_u|next_h__action_permuted": 21.0,
+      "world_u_u|generated_and_h": 24.0,
+      "world_u_u|generated_and_h__action_permuted": 19.0
+    },
+    "transformer": {
+      "transformer_raw|real_fit_real": 31.0,
+      "transformer_raw|gen_fit_gen": 19.33,
+      "transformer_raw|gen_fit_gen_action_permuted": 13.33,
+      "transformer_raw|root_action": 21.33,
+      "transformer_raw|real_bce_death": 21.33,
+      "transformer_raw|real_rank": 31.0,
+      "transformer_tc|real_fit_real": 17.67,
+      "transformer_tc|gen_fit_gen": 15.0,
+      "transformer_tc|gen_fit_gen_action_permuted": 19.33,
+      "transformer_tc|root_action": 20.33,
+      "transformer_tc|real_bce_death": 14.0,
+      "transformer_tc|real_rank": 17.67
+    }
+  },
+  "CONFIRMED": [
+    "SYMPTOM 1 (readout objective) CONFIRMED on an untouched 100-root historical panel: real z rank 93.0 vs bce 74.7, paired episode-cluster intervals exclude zero for all three seeds (+0.16/+0.22/+0.17).",
+    "SYMPTOM 2 (export) confirmed on DEV with paired intervals excluding zero for all seeds (+0.176). NOT testable on the confirmation panel: historical shards publish z only, no patch taps.",
+    "SYMPTOM 3 (generated utility) CONFIRMED on the untouched panel: generated z 51.3 vs root+action 55.7; no seed's interval excludes zero in the favourable direction."
+  ],
+  "phase4_corrections_to_my_own_claims": [
+    "MY SINGLE-DRAW DERANGEMENT WAS NOISE. Over 20 draws mamba_raw scores 14.0 intact vs 17.9 deranged (cost -3.9): its generated successors carry NO usable action information, and my reported 'cost 0.0' was one lucky draw. Ordering: mamba_raw -3.9 < mamba_tc 0.95 < world_u_u 2.8 < transformer_raw 7.2 < direct 16.05.",
+    "THE SEQUENCE MIXER IS NOT EXONERATED AND NOT NEUTRAL. The Transformer predictor is substantially MORE action-conditional than Mamba's (7.2 vs -3.9) -- but its intact score (22.0) still only matches its own root+action control (21.3). Action-conditioning improved; decision utility did not.",
+    "HEALTH IS LARGELY THE EXPLANATION, and my dismissal was wrong. HUD patch tokens alone give a PERFECT dead/alive AUC (1.0000 raw, 0.9992 tc) and 36/36 safe choice, while z gives 0.765/0.718. The patch advantage over CLS is substantially a retained HUD health readout. Map-only tokens still reach 0.833 and 34.7, so it is not exclusively HUD.",
+    "SCOPE: this panel is 34/36 terminal-tail with root health 1-2, so the decision largely reduces to 'which action takes health to zero'. The finding may not transfer to decisions that are not health-threshold decisions."
+  ],
+  "indicated_next_intervention": {
+    "not_an_export_change": "u->u already trained on a spatial export; generated u 23.0 vs control 24.3",
+    "not_a_backend_swap": "the Transformer improves action-conditioning 7.2 vs -3.9 without improving decision utility over its control",
+    "the_open_question": "why action-conditional generated states still fail to beat root+action. Candidates the ladder did NOT separate: the MSE objective favouring predictable persistent coordinates, the pair/action projection, successive Mamba blocks, the prediction projector, training horizon. The ladder stops at final h and generated output.",
+    "cheapest_next": "instrument the predictor internals on the EXISTING u world -- pair/action projection, per-block state, prediction-projector stages -- since real u is 36/36 and generated u is 23.0 on one lineage, which brackets the loss tightly."
+  }
 }
