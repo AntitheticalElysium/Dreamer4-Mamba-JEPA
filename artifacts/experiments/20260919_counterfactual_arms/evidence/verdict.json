@@ -1,0 +1,110 @@
+{
+  "schema": "d4mj_cf_arms_verdict_v1",
+  "commit": "e9b26d1d328bb3bf90d2804470fc190bade7f579",
+  "question": "does same-root counterfactual supervision close the generated-state gap?",
+  "design": {
+    "parent": "Raw-10k (paired/raw/step-010000.pt), encoder FROZEN, world continued 10k updates",
+    "A_control": "factual windows only",
+    "Ap_data": "factual + fork roots' FACTUAL transition, 68 INDEPENDENT roots/update",
+    "B_sibling": "factual + all 17 SAME-ROOT successors, 4 roots x 17 = 68 targets/update",
+    "budget": "A' and B receive an IDENTICAL number of extra gradient targets (68/update); they differ only in whether those targets are independent roots or siblings of one root",
+    "pinned": "same frozen encoder and pre-encoded latents, same init, optimizer, LR, schedule, updates, RNG, factual batches, MSE, context, and a root+action control computed from the frozen encoder so it is identical across arms",
+    "batchnorm": "predictor-projector BN running stats frozen in ALL arms, so branch batches cannot move them in A'/B but not A"
+  },
+  "VERDICT": "NULL, and trending negative. No arm beats its own root+action control on either panel, and none approaches the predeclared +10 point threshold.",
+  "confirmation100": {
+    "A_control": {
+      "generated": 53.0,
+      "control": 55.67,
+      "paired": {
+        "difference": -0.03,
+        "interval": [
+          -0.1291,
+          0.0654
+        ],
+        "excludes_zero": false
+      },
+      "frozen_auc_cost": 0.1614
+    },
+    "Ap_data": {
+      "generated": 50.0,
+      "control": 55.67,
+      "paired": {
+        "difference": -0.05,
+        "interval": [
+          -0.1474,
+          0.0404
+        ],
+        "excludes_zero": false
+      },
+      "frozen_auc_cost": 0.1469
+    },
+    "B_sibling": {
+      "generated": 48.67,
+      "control": 55.67,
+      "paired": {
+        "difference": -0.08,
+        "interval": [
+          -0.1683,
+          0.0099
+        ],
+        "excludes_zero": false
+      },
+      "frozen_auc_cost": 0.1143
+    }
+  },
+  "dev36": {
+    "A_control": {
+      "generated": 16.67,
+      "control": 19.0
+    },
+    "Ap_data": {
+      "generated": 15.0,
+      "control": 19.0
+    },
+    "B_sibling": {
+      "generated": 16.0,
+      "control": 19.0
+    }
+  },
+  "factual_heldout_mse": {
+    "A_control": 0.015648,
+    "Ap_data": 0.015456,
+    "B_sibling": 0.0157
+  },
+  "findings": [
+    "B (sibling counterfactual supervision) does NOT help: 48.67/100 against a 55.67 control, paired -0.08 [-0.168, +0.010]. The interval does not exclude zero but the point estimate is negative.",
+    "A' (the same data volume, factual only) also does not help: 50.0/100.",
+    "Ordering is A_control 53.0 > A'_data 50.0 > B_sibling 48.67. Adding the fork corpus slightly hurt; adding sibling structure hurt slightly more.",
+    "Factual held-out MSE is flat across arms (0.01565 / 0.01546 / 0.01570), so nothing was traded away to buy the null -- the arms did not abandon the factual objective.",
+    "Both A' and B fit their EXTRA targets to the same degree (final extra loss 0.0130 vs 0.0129), so the null is not one arm failing to learn its targets.",
+    "ACTION SENSITIVITY WENT DOWN, not up: frozen-head derangement AUC cost fell 0.161 (A) -> 0.147 (A') -> 0.114 (B). Training explicitly on 17 branches made the generated states LESS action-discriminative."
+  ],
+  "mechanism_suggested_not_established": {
+    "hypothesis": "averaging MSE over 17 branch targets rewards predicting their centroid, which contracts the branches and reduces discriminability",
+    "evidence": {
+      "generated branch spread / |z|": {
+        "A_control": 0.0822,
+        "Ap_data": 0.0778,
+        "B_sibling": 0.0765
+      },
+      "distance to branch mean": {
+        "A_control": 0.8502,
+        "Ap_data": 0.8075,
+        "B_sibling": 0.8098
+      }
+    },
+    "assessment": "directionally consistent but MODEST -- spread contracted ~7% while the action-AUC cost fell ~29%. Suggestive, not established. Do not report this as the mechanism."
+  },
+  "what_this_rules_out": "'just add counterfactual data and supervise it with MSE' is NOT the fix. Both the data (A') and the sibling structure (B) were tested at matched budget and neither helped.",
+  "what_it_points_at": "the LOSS FORM rather than the data or the supervision structure. An action-centred / delta / contrastive objective is the next candidate -- which is exactly the fallback anticipated before this ran.",
+  "TC_not_run": "the instruction was to extend to TC only if Raw came back positive. It did not, so TC was not run. TC also still carries its independent CLS->z export defect, which this treatment does not address.",
+  "limits": [
+    "one model seed per arm (three probe seeds)",
+    "10k continuation updates from Raw-10k, not a fresh joint retrain",
+    "one point in the hyperparameter space: mass 0.2, 4 fork roots/update",
+    "frozen encoder throughout; a jointly adapted encoder may behave differently",
+    "intervals are wide -- 'null' means no detectable improvement, NOT proven equivalence"
+  ],
+  "m4_authorized": false
+}

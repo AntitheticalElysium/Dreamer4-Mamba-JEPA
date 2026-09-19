@@ -1,0 +1,9 @@
+{
+  "schema": "d4mj_cf_arms_pool_v1",
+  "encoder": "artifacts/lewm_gates_20260906/paired/raw/joint/step-010000.pt",
+  "encoder_sha256": "707f6240a3e4e52d6aca7526d541a69112ad7c18c5898c0f1f0ec36f663937ef",
+  "recipe": "d4mj/recipes/lewm_mamba_raw.json",
+  "lewm_context": 4,
+  "fork_sha256": "a7b702c686a00ed5cb0a958ab43d9715eb94a316f035f1a365ec7875b8d796c2",
+  "factual_sha256": "179f05c8ca51acc233e08a2872bd2d2727161eb1b52da8d9fb61d7575753e4e7"
+}

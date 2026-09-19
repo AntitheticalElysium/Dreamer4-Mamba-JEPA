@@ -1,0 +1,227 @@
+{
+  "schema": "d4mj_cf_arms_eval_v1",
+  "step": 10000,
+  "predeclared": {
+    "primary": "generated safe choice on the 100-root confirmation panel, paired vs the arm's OWN root+action control",
+    "meaningful": "+10 points",
+    "readout": "rank / mlp128 / 3 seeds"
+  },
+  "arms": {
+    "A_control": {
+      "checkpoint_sha256": "ae6e8c443dc1190152e3be3f4ccc3da64de3072da10df86056473948183861e7",
+      "dev36": {
+        "generated": {
+          "safe": [
+            18,
+            16,
+            16
+          ],
+          "mean_safe": 16.67,
+          "opportunity_roots": 36,
+          "mean_auc": 0.7409,
+          "frozen_permuted_mean_auc": 0.4734,
+          "frozen_auc_cost": 0.2675
+        },
+        "root_action_control": {
+          "safe": [
+            18,
+            20,
+            19
+          ],
+          "mean_safe": 19.0,
+          "opportunity_roots": 36,
+          "mean_auc": 0.7824,
+          "frozen_permuted_mean_auc": 0.5086,
+          "frozen_auc_cost": 0.2739
+        },
+        "paired_generated_minus_control": {
+          "difference": 0.0,
+          "interval": [
+            -0.174,
+            0.1819
+          ],
+          "excludes_zero": false
+        }
+      },
+      "confirmation100": {
+        "generated": {
+          "safe": [
+            53,
+            51,
+            55
+          ],
+          "mean_safe": 53.0,
+          "opportunity_roots": 100,
+          "mean_auc": 0.6585,
+          "frozen_permuted_mean_auc": 0.4972,
+          "frozen_auc_cost": 0.1614
+        },
+        "root_action_control": {
+          "safe": [
+            56,
+            57,
+            54
+          ],
+          "mean_safe": 55.67,
+          "opportunity_roots": 100,
+          "mean_auc": 0.6925,
+          "frozen_permuted_mean_auc": 0.4935,
+          "frozen_auc_cost": 0.199
+        },
+        "paired_generated_minus_control": {
+          "difference": -0.03,
+          "interval": [
+            -0.1291,
+            0.0654
+          ],
+          "excludes_zero": false
+        }
+      },
+      "factual_heldout_mse": 0.015647598542273045
+    },
+    "Ap_data": {
+      "checkpoint_sha256": "fe7e49e4adebfa0af8c3fba2e904d8b1a7d1469fd69066a4ab8daf69aa6156bf",
+      "dev36": {
+        "generated": {
+          "safe": [
+            16,
+            15,
+            14
+          ],
+          "mean_safe": 15.0,
+          "opportunity_roots": 36,
+          "mean_auc": 0.7349,
+          "frozen_permuted_mean_auc": 0.525,
+          "frozen_auc_cost": 0.21
+        },
+        "root_action_control": {
+          "safe": [
+            18,
+            20,
+            19
+          ],
+          "mean_safe": 19.0,
+          "opportunity_roots": 36,
+          "mean_auc": 0.7824,
+          "frozen_permuted_mean_auc": 0.5086,
+          "frozen_auc_cost": 0.2739
+        },
+        "paired_generated_minus_control": {
+          "difference": -0.0556,
+          "interval": [
+            -0.2648,
+            0.1579
+          ],
+          "excludes_zero": false
+        }
+      },
+      "confirmation100": {
+        "generated": {
+          "safe": [
+            51,
+            52,
+            47
+          ],
+          "mean_safe": 50.0,
+          "opportunity_roots": 100,
+          "mean_auc": 0.6573,
+          "frozen_permuted_mean_auc": 0.5105,
+          "frozen_auc_cost": 0.1469
+        },
+        "root_action_control": {
+          "safe": [
+            56,
+            57,
+            54
+          ],
+          "mean_safe": 55.67,
+          "opportunity_roots": 100,
+          "mean_auc": 0.6925,
+          "frozen_permuted_mean_auc": 0.4935,
+          "frozen_auc_cost": 0.199
+        },
+        "paired_generated_minus_control": {
+          "difference": -0.05,
+          "interval": [
+            -0.1474,
+            0.0404
+          ],
+          "excludes_zero": false
+        }
+      },
+      "factual_heldout_mse": 0.015455547720193863
+    },
+    "B_sibling": {
+      "checkpoint_sha256": "29444364ae249d3a3f03aebcdd8b463f46744c862fe1860698bf40b05cd00ad6",
+      "dev36": {
+        "generated": {
+          "safe": [
+            16,
+            18,
+            14
+          ],
+          "mean_safe": 16.0,
+          "opportunity_roots": 36,
+          "mean_auc": 0.7744,
+          "frozen_permuted_mean_auc": 0.5202,
+          "frozen_auc_cost": 0.2542
+        },
+        "root_action_control": {
+          "safe": [
+            18,
+            20,
+            19
+          ],
+          "mean_safe": 19.0,
+          "opportunity_roots": 36,
+          "mean_auc": 0.7824,
+          "frozen_permuted_mean_auc": 0.5086,
+          "frozen_auc_cost": 0.2739
+        },
+        "paired_generated_minus_control": {
+          "difference": -0.0556,
+          "interval": [
+            -0.2703,
+            0.1668
+          ],
+          "excludes_zero": false
+        }
+      },
+      "confirmation100": {
+        "generated": {
+          "safe": [
+            48,
+            46,
+            52
+          ],
+          "mean_safe": 48.67,
+          "opportunity_roots": 100,
+          "mean_auc": 0.6587,
+          "frozen_permuted_mean_auc": 0.5444,
+          "frozen_auc_cost": 0.1143
+        },
+        "root_action_control": {
+          "safe": [
+            56,
+            57,
+            54
+          ],
+          "mean_safe": 55.67,
+          "opportunity_roots": 100,
+          "mean_auc": 0.6925,
+          "frozen_permuted_mean_auc": 0.4935,
+          "frozen_auc_cost": 0.199
+        },
+        "paired_generated_minus_control": {
+          "difference": -0.08,
+          "interval": [
+            -0.1683,
+            0.0099
+          ],
+          "excludes_zero": false
+        }
+      },
+      "factual_heldout_mse": 0.015700415999162942
+    }
+  }
+}
