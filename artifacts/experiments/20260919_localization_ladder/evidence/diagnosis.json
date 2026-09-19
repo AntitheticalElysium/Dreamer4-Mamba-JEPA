@@ -1,0 +1,384 @@
+{
+  "schema": "d4mj_localization_diagnosis_v2",
+  "status": "complete",
+  "inputs_consumed": {
+    "phase1/ladder.json": "8b4360afccf12bf05bb97c5960dd11a662cb58e71886cf5b3441954fa1f47b8d",
+    "phase1/controls.json": "0fe070917ef3b20e69933289989866a22d6ad23038a36504944280701bfb94ff",
+    "phase1/health.json": "060f6c683a43f9fe76e2aa69697e6546b3d5e7db1b3dd0dfc9da1f1d1f9a961a",
+    "phase1/anchors.json": "879d0ecf93027625e074302f672cb4572e47bbc149d2a24195d7bf4e7c8f2ce8",
+    "phase1/label_sanity.json": "76b19fc160b28faad85dbcc057ac8ca0e259becef163fedb259083763779065a",
+    "phase2/ladder.json": "78a42d5d2dce7c0ab35b4d4495c9fa9cfe9c03836f0cee21d9e8e741e2915d7e",
+    "phase2/memorization.json": "f581a8403814bf98d293759cc0df72f9d9704ae4a69b8c0005825847273547cb",
+    "phase3/dynamics.json": "b91c52839aaf72f1768316fc438b27b57abae833d9b64d1a859a4117e5387a15",
+    "phase3/memory_and_u.json": "8e702c54a1573534a72f57f4115353addb5809c880ac58032e6faaa5c55c1036"
+  },
+  "status_of_claims": "three measured SYMPTOMS; only the TC CLS->z degradation is tightly component-localized. See `overstatements_withdrawn`.",
+  "protocol": {
+    "primary_metric": "safe-action choice on the 36 DEV roots offering both a fatal and a safe action",
+    "supervision": "within-root pair ranking softplus(score_safe - score_fatal)",
+    "seeds": 3,
+    "family_for_rungs": "mlp128",
+    "EXPLORATORY": "the objective and head were selected on the same 36-root DEV panel the headline is reported on. Grouped inner-TRAIN selection and an untouched confirmation panel are in phase 4; until those land these are exploratory.",
+    "patch_cache_dtype": "float16 for patches/pooled taps; z and cls are float32"
+  },
+  "symptom_1_readout_objective": {
+    "by_arm_family": {
+      "mamba_raw|logistic": {
+        "bce_death": 7.0,
+        "rank": 27.0
+      },
+      "mamba_raw|mlp128": {
+        "bce_death": 17.7,
+        "rank": 29.7
+      },
+      "mamba_raw|mlp512x2": {
+        "bce_death": 18.0,
+        "rank": 29.7
+      },
+      "mamba_tc|logistic": {
+        "bce_death": 7.0,
+        "rank": 21.0
+      },
+      "mamba_tc|mlp128": {
+        "bce_death": 10.7,
+        "rank": 21.0
+      },
+      "mamba_tc|mlp512x2": {
+        "bce_death": 16.3,
+        "rank": 21.7
+      },
+      "direct|logistic": {
+        "bce_death": 34.7,
+        "rank": 35.3
+      },
+      "direct|mlp128": {
+        "bce_death": 34.0,
+        "rank": 35.7
+      },
+      "direct|mlp512x2": {
+        "bce_death": 35.0,
+        "rank": 36.0
+      }
+    },
+    "conclusion": "a large part of the reported deficit was decision-objective mismatch in the MEASUREMENT. BCE and ranking test different capabilities; this does not make the BCE numbers meaningless."
+  },
+  "symptom_2_export_degradation": {
+    "rungs": {
+      "mamba_raw": {
+        "z": {
+          "dim": 192,
+          "mean_safe": 29.7,
+          "auc": 0.8821,
+          "health_r2": 0.165
+        },
+        "cls": {
+          "dim": 192,
+          "mean_safe": 31.3,
+          "auc": 0.9259,
+          "health_r2": 0.206
+        },
+        "patch_mean": {
+          "dim": 192,
+          "mean_safe": 34.7,
+          "auc": 0.9796,
+          "health_r2": 0.264
+        },
+        "pooled4": {
+          "dim": 3072,
+          "mean_safe": 36.0,
+          "auc": 0.9843,
+          "health_r2": 0.712
+        },
+        "pooled4_pca192": {
+          "dim": 192,
+          "mean_safe": 36.0,
+          "auc": 0.998,
+          "health_r2": 0.567
+        },
+        "pooled2": {
+          "dim": 768,
+          "mean_safe": 36.0,
+          "auc": 0.9808,
+          "health_r2": 0.646
+        },
+        "pooled2_pca192": {
+          "dim": 192,
+          "mean_safe": 36.0,
+          "auc": 0.9995,
+          "health_r2": 0.6
+        },
+        "patches": {
+          "dim": 15552,
+          "mean_safe": 35.7,
+          "auc": 0.9746,
+          "health_r2": 0.924
+        },
+        "patches_pca192": {
+          "dim": 192,
+          "mean_safe": 36.0,
+          "auc": 1.0,
+          "health_r2": 0.866
+        }
+      },
+      "mamba_tc": {
+        "z": {
+          "dim": 192,
+          "mean_safe": 21.0,
+          "auc": 0.5618,
+          "health_r2": 0.207
+        },
+        "cls": {
+          "dim": 192,
+          "mean_safe": 33.0,
+          "auc": 0.8417,
+          "health_r2": 0.523
+        },
+        "patch_mean": {
+          "dim": 192,
+          "mean_safe": 32.7,
+          "auc": 0.9904,
+          "health_r2": 0.424
+        },
+        "pooled4": {
+          "dim": 3072,
+          "mean_safe": 34.7,
+          "auc": 0.923,
+          "health_r2": 0.651
+        },
+        "pooled4_pca192": {
+          "dim": 192,
+          "mean_safe": 36.0,
+          "auc": 0.9994,
+          "health_r2": 0.569
+        },
+        "pooled2": {
+          "dim": 768,
+          "mean_safe": 36.0,
+          "auc": 0.9801,
+          "health_r2": 0.634
+        },
+        "pooled2_pca192": {
+          "dim": 192,
+          "mean_safe": 36.0,
+          "auc": 1.0,
+          "health_r2": 0.521
+        },
+        "patches": {
+          "dim": 15552,
+          "mean_safe": 32.0,
+          "auc": 0.86,
+          "health_r2": 0.839
+        },
+        "patches_pca192": {
+          "dim": 192,
+          "mean_safe": 35.7,
+          "auc": 0.9821,
+          "health_r2": 0.686
+        }
+      }
+    },
+    "memorization_control": [
+      {
+        "rung": "pooled4_pca192",
+        "permuted_labels": false,
+        "parameters": 25478,
+        "train_safe": [
+          56,
+          56,
+          56
+        ],
+        "train_opportunity": 56,
+        "dev_safe": [
+          36,
+          36,
+          36
+        ],
+        "dev_opportunity": 36
+      },
+      {
+        "rung": "pooled4_pca192",
+        "permuted_labels": true,
+        "parameters": 25478,
+        "train_safe": [
+          20,
+          15,
+          18
+        ],
+        "train_opportunity": 56,
+        "dev_safe": [
+          8,
+          8,
+          10
+        ],
+        "dev_opportunity": 36
+      },
+      {
+        "rung": "pooled2_pca192",
+        "permuted_labels": false,
+        "parameters": 25478,
+        "train_safe": [
+          56,
+          56,
+          56
+        ],
+        "train_opportunity": 56,
+        "dev_safe": [
+          36,
+          36,
+          36
+        ],
+        "dev_opportunity": 36
+      },
+      {
+        "rung": "pooled2_pca192",
+        "permuted_labels": true,
+        "parameters": 25478,
+        "train_safe": [
+          19,
+          16,
+          20
+        ],
+        "train_opportunity": 56,
+        "dev_safe": [
+          8,
+          4,
+          4
+        ],
+        "dev_opportunity": 36
+      }
+    ],
+    "tightly_localized": "TC loses most of its signal between CLS (33.0) and z (21.0). That is the one component-exact localization in this package.",
+    "raw_is_gentler": "raw declines patches 36.0 -> cls 31.3 -> z 29.7, spread across the path",
+    "width_claim_scope": "192 post-hoc dimensions suffice ON THIS PANEL. This does NOT show an end-to-end trained 192-d latent has adequate capacity."
+  },
+  "symptom_3_generated_state_utility": {
+    "by_arm": {
+      "mamba_raw": {
+        "real_fit_real": 29.7,
+        "real_fit_gen": 5.3,
+        "gen_fit_gen": 15.3,
+        "gen_fit_real": 22.3,
+        "root_action": 19.0,
+        "gen_fit_gen_action_permuted": 15.3,
+        "real_fit_gen_affine_aligned": 7.7
+      },
+      "mamba_tc": {
+        "real_fit_real": 21.0,
+        "real_fit_gen": 18.0,
+        "gen_fit_gen": 16.3,
+        "gen_fit_real": 17.7,
+        "root_action": 23.7,
+        "gen_fit_gen_action_permuted": 15.0,
+        "real_fit_gen_affine_aligned": 11.7
+      },
+      "direct": {
+        "real_fit_real": 35.7,
+        "real_fit_gen": 32.0,
+        "gen_fit_gen": 31.7,
+        "gen_fit_real": 32.0,
+        "root_action": 23.7,
+        "gen_fit_gen_action_permuted": 19.3,
+        "real_fit_gen_affine_aligned": 28.0
+      }
+    },
+    "memory_interface_c4": {
+      "raw": {
+        "real_z": 29.7,
+        "generated_z": 15.3,
+        "next_h": 19.3,
+        "generated_z_and_h": 21.3,
+        "generated_z__action_permuted": 15.3,
+        "next_h__action_permuted": 18.3,
+        "generated_z_and_h__action_permuted": 17.3
+      },
+      "tc": {
+        "real_z": 21.0,
+        "generated_z": 16.3,
+        "next_h": 21.7,
+        "generated_z_and_h": 21.7,
+        "generated_z__action_permuted": 15.0,
+        "next_h__action_permuted": 21.3,
+        "generated_z_and_h__action_permuted": 21.0
+      }
+    },
+    "conclusion": "generated LeWM states show no demonstrated incremental safe-death ordering beyond the root/history+action control. Direct's do."
+  },
+  "u_world_negative_result": {
+    "by_world": {
+      "world_z_z": {
+        "real_native_fit": 18.7,
+        "generated_native_fit": 18.3,
+        "generated_transfer_fit": 15.3,
+        "generated__action_permuted": 15.3,
+        "root_action_control": 21.3
+      },
+      "world_u_u": {
+        "real_native_fit": 36.0,
+        "generated_native_fit": 23.0,
+        "generated_transfer_fit": 12.7,
+        "generated__action_permuted": 15.0,
+        "root_action_control": 24.3
+      }
+    },
+    "provenance": "artifacts/lewm_gates_20260918/m03_matched -- UNSEALED diagnostic. Its arms are NOT Raw/TC: 'raw' is world_z_z and 'tc' is world_u_u, both on one frozen consecutive-TC encoder with MSE-only worlds. Its 'u' is TRAIN-fitted PCA-192 of the 4x4 pooled patch grid.",
+    "role": "DIAGNOSTIC for Raw/TC, not a canonical architecture",
+    "conclusion": "observed u is perfectly readable (36/36) while generated u does not beat its control (23.0 vs 24.3). Replacing z with this existing pooled/PCA export does not by itself solve the gate. It does NOT rule out every patch-derived world: frozen TC encoder, one pooled representation, MSE-only, one seed, no joint adaptation, no propagated token grid."
+  },
+  "controls": {
+    "analytic": {
+      "uniform_over_17": 0.2222222238779068,
+      "best_constant_action": {
+        "action": 4,
+        "train_safe_rate": 0.6785714030265808,
+        "dev_safe_rate": 0.6111111044883728,
+        "dev_safe": 22,
+        "opportunity_roots": 36
+      },
+      "per_action_dev_safe_rate": [
+        0.1111111119389534,
+        0.5277777910232544,
+        0.6388888955116272,
+        0.5,
+        0.6111111044883728,
+        0.1111111119389534,
+        0.1666666716337204,
+        0.1111111119389534,
+        0.1111111119389534,
+        0.1111111119389534,
+        0.1111111119389534,
+        0.1111111119389534,
+        0.1111111119389534,
+        0.1111111119389534,
+        0.1111111119389534,
+        0.1111111119389534,
+        0.1111111119389534
+      ]
+    },
+    "fitted_mean": {
+      "action_only": 21.0,
+      "mamba_raw:root_action": 19.0,
+      "mamba_raw:history_action": 19.7,
+      "mamba_raw:shuffled_successor": 10.3,
+      "mamba_tc:root_action": 23.7,
+      "mamba_tc:history_action": 23.3,
+      "mamba_tc:shuffled_successor": 9.7,
+      "direct:root_action": 23.7,
+      "direct:shuffled_successor": 13.0
+    }
+  },
+  "overstatements_withdrawn": [
+    "'spatial layout is the missing representation' -- WITHDRAWN. patch_mean discards token position and still reaches 34.7 (raw) / 32.7 (tc), so these data do not support a spatial arrangement requirement. The supported claim is narrower: final patch-token outputs carry a readable signal the learned CLS/projector export does not preserve equally.",
+    "'the sequence mixer is exonerated' -- WITHDRAWN for this package. The Transformer arms were never run through the rank/dynamics/derangement ladder; the prior exoneration came from a different protocol.",
+    "'health is not the explanation' -- WITHDRAWN. Direct's poor scalar health R^2 does not settle it: a representation can encode the dead/alive boundary sharply while regressing magnitude poorly. Binary health, HUD-crop and masked-HUD controls are required.",
+    "'the predictor is not action-conditional' -- SOFTENED. It is architecturally action-conditioned. The evidence says its output adds no demonstrated safe-death ordering; generated u does lose 23.0 -> 15.0 under derangement, so it is not action-blind.",
+    "'192 dimensions rule out capacity' -- SCOPED to post-hoc representation width on this panel.",
+    "'three separable causes' -- restated as three SYMPTOMS."
+  ],
+  "not_established": [
+    "that SIGReg or joint training CAUSED the export degradation",
+    "which stage of the predictor fails: pair/action projection, Mamba blocks, prediction projector, or the loss. The ladder stops at final h and generated output.",
+    "anything about multistep rollout, achievements or closed-loop control",
+    "generalization beyond this 36-root DEV panel"
+  ],
+  "m4_authorized": false
+}

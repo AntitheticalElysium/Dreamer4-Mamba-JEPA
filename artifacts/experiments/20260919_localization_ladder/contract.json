@@ -1,0 +1,48 @@
+{
+  "schema": "d4mj_localization_contract_v1",
+  "plan": {
+    "path": "artifacts/experiments/20260919_counterfactual_localization/PLAN.md",
+    "sha256": "2244a7ef6315c145bc28bd451fb529633be0235f8c822c09d65aa03b8e26cc8e"
+  },
+  "commit": "cfceeb8cc865e09f832b91c0b5050ed7be69acf1",
+  "branch": "craftax-clean-baseline",
+  "git_status_d4mj": "clean",
+  "sidecar": {
+    "path": "artifacts/lewm_gates_20260906/m03_bootstrap/evaluation_v2/sidecar/sidecar.probe_only.pt",
+    "sha256": "ead287f0f9a1aac03d20db701100bd76f387fbac1ec4a03eab661fc82e2be3c0"
+  },
+  "checkpoints": {
+    "mamba_raw": {
+      "path": "artifacts/lewm_gates_20260906/paired/raw/joint/step-010000.pt",
+      "sha256": "707f6240a3e4e52d6aca7526d541a69112ad7c18c5898c0f1f0ec36f663937ef"
+    },
+    "mamba_tc": {
+      "path": "artifacts/lewm_gates_20260906/paired/tc/joint/step-010000.pt",
+      "sha256": "98effee1085223b5780f30b09ba68b44a8b407acbb07fde5134a8bd708997dc5"
+    },
+    "transformer_raw": {
+      "path": "artifacts/lewm_transformer_comparison/paired/raw/joint/step-010000.pt",
+      "sha256": "ead024db0276478c01a5b92ce1eceebfd8e992af8e4ddaf00780c2c0de990113"
+    },
+    "transformer_tc": {
+      "path": "artifacts/lewm_transformer_comparison/paired/tc/joint/step-010000.pt",
+      "sha256": "2d33369bf58bda6190760bef88783fff106786f198aa57627fe054b6ad825128"
+    }
+  },
+  "panel": {
+    "source": "evaluation_v2 primary panel",
+    "train_roots": 256,
+    "dev_roots": 128,
+    "train_opportunity_roots": 56,
+    "dev_opportunity_roots": 36,
+    "note": "36 DEV safety opportunities; the 129-address rare-label panel is kept SEPARATE"
+  },
+  "encoder_fact": "LeWM encoder is framewise: _hidden flattens (b,t) and runs the ViT per frame, so a root encoding depends only on its own frame. Calling it on 64 images adds no temporal processing.",
+  "known_confounds_to_respect": [
+    "Direct's real-successor score uses _encode_legacy, which appends each successor to the native 64-frame prefix; _encode_lewm encodes single frames. Direct differs in CONTEXT as well as spatial structure, width and objective. A short-prefix Direct is a labelled ablation, not a replacement.",
+    "0/36 DEV opportunity roots have front_lava true; 34/36 are terminal_tail; 34/36 have root health 1-2.",
+    "Raw's published MLP selects SLEEP on 24/36 roots; SLEEP is safe on only 6/36.",
+    "Uniform over 17 actions = 0.222; uniform over 4 movement actions = 0.569."
+  ],
+  "m4_authorized": false
+}

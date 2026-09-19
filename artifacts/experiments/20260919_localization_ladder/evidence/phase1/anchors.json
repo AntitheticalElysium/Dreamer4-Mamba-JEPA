@@ -1,0 +1,419 @@
+{
+  "protocol": "published: 200 steps, six-target BCE, successor+action",
+  "rows": [
+    {
+      "arm": "mamba_raw",
+      "family": "logistic",
+      "objective": "bce6",
+      "seed": 0,
+      "parameters": 1260,
+      "train": {
+        "safe_choice": 13,
+        "opportunity_roots": 56,
+        "safe_choice_rate": 0.2321428507566452,
+        "within_root_auc": 0.7928358796717865,
+        "argmin_ties": 0,
+        "selected_actions": [
+          0,
+          0,
+          3,
+          0,
+          12,
+          0,
+          41,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "dev": {
+        "safe_choice": 10,
+        "opportunity_roots": 36,
+        "safe_choice_rate": 0.2777777910232544,
+        "within_root_auc": 0.8003802850014634,
+        "argmin_ties": 0,
+        "selected_actions": [
+          0,
+          1,
+          3,
+          0,
+          4,
+          0,
+          28,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "curve": [
+        {
+          "step": 100,
+          "loss": 0.601791501045227
+        },
+        {
+          "step": 200,
+          "loss": 0.5817408561706543
+        }
+      ]
+    },
+    {
+      "arm": "mamba_raw",
+      "family": "mlp128",
+      "objective": "bce6",
+      "seed": 0,
+      "parameters": 27654,
+      "train": {
+        "safe_choice": 34,
+        "opportunity_roots": 56,
+        "safe_choice_rate": 0.6071428656578064,
+        "within_root_auc": 0.8408588397183588,
+        "argmin_ties": 0,
+        "selected_actions": [
+          0,
+          11,
+          8,
+          2,
+          13,
+          0,
+          22,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "dev": {
+        "safe_choice": 16,
+        "opportunity_roots": 36,
+        "safe_choice_rate": 0.4444444477558136,
+        "within_root_auc": 0.762814152157969,
+        "argmin_ties": 0,
+        "selected_actions": [
+          0,
+          3,
+          11,
+          1,
+          6,
+          0,
+          15,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "curve": [
+        {
+          "step": 100,
+          "loss": 0.16500535607337952
+        },
+        {
+          "step": 200,
+          "loss": 0.1106482520699501
+        }
+      ]
+    },
+    {
+      "arm": "mamba_tc",
+      "family": "logistic",
+      "objective": "bce6",
+      "seed": 0,
+      "parameters": 1260,
+      "train": {
+        "safe_choice": 12,
+        "opportunity_roots": 56,
+        "safe_choice_rate": 0.2142857164144516,
+        "within_root_auc": 0.7230016961693764,
+        "argmin_ties": 0,
+        "selected_actions": [
+          0,
+          1,
+          0,
+          1,
+          4,
+          0,
+          50,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "dev": {
+        "safe_choice": 7,
+        "opportunity_roots": 36,
+        "safe_choice_rate": 0.1944444477558136,
+        "within_root_auc": 0.7650297592497535,
+        "argmin_ties": 0,
+        "selected_actions": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          34,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "curve": [
+        {
+          "step": 100,
+          "loss": 0.643197774887085
+        },
+        {
+          "step": 200,
+          "loss": 0.6117867827415466
+        }
+      ]
+    },
+    {
+      "arm": "mamba_tc",
+      "family": "mlp128",
+      "objective": "bce6",
+      "seed": 0,
+      "parameters": 27654,
+      "train": {
+        "safe_choice": 21,
+        "opportunity_roots": 56,
+        "safe_choice_rate": 0.375,
+        "within_root_auc": 0.7975340082443186,
+        "argmin_ties": 0,
+        "selected_actions": [
+          0,
+          4,
+          6,
+          10,
+          4,
+          0,
+          32,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "dev": {
+        "safe_choice": 17,
+        "opportunity_roots": 36,
+        "safe_choice_rate": 0.4722222089767456,
+        "within_root_auc": 0.8217261890984244,
+        "argmin_ties": 0,
+        "selected_actions": [
+          0,
+          2,
+          4,
+          11,
+          1,
+          0,
+          18,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "curve": [
+        {
+          "step": 100,
+          "loss": 0.24499866366386414
+        },
+        {
+          "step": 200,
+          "loss": 0.2438211739063263
+        }
+      ]
+    },
+    {
+      "arm": "direct",
+      "family": "logistic",
+      "objective": "bce6",
+      "seed": 0,
+      "parameters": 6252,
+      "train": {
+        "safe_choice": 53,
+        "opportunity_roots": 56,
+        "safe_choice_rate": 0.9464285969734192,
+        "within_root_auc": 0.9446322236742292,
+        "argmin_ties": 0,
+        "selected_actions": [
+          0,
+          15,
+          14,
+          9,
+          11,
+          0,
+          7,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "dev": {
+        "safe_choice": 30,
+        "opportunity_roots": 36,
+        "safe_choice_rate": 0.8333333134651184,
+        "within_root_auc": 0.9607638882266151,
+        "argmin_ties": 0,
+        "selected_actions": [
+          0,
+          9,
+          6,
+          5,
+          8,
+          0,
+          8,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "curve": [
+        {
+          "step": 100,
+          "loss": 0.5155031085014343
+        },
+        {
+          "step": 200,
+          "loss": 0.46201395988464355
+        }
+      ]
+    },
+    {
+      "arm": "direct",
+      "family": "mlp128",
+      "objective": "bce6",
+      "seed": 0,
+      "parameters": 134150,
+      "train": {
+        "safe_choice": 56,
+        "opportunity_roots": 56,
+        "safe_choice_rate": 1.0,
+        "within_root_auc": 1.0,
+        "argmin_ties": 0,
+        "selected_actions": [
+          0,
+          13,
+          11,
+          12,
+          16,
+          2,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "dev": {
+        "safe_choice": 35,
+        "opportunity_roots": 36,
+        "safe_choice_rate": 0.9722222089767456,
+        "within_root_auc": 0.9598214278618494,
+        "argmin_ties": 0,
+        "selected_actions": [
+          0,
+          6,
+          11,
+          8,
+          9,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "curve": [
+        {
+          "step": 100,
+          "loss": 0.04706403613090515
+        },
+        {
+          "step": 200,
+          "loss": 0.021502630785107613
+        }
+      ]
+    }
+  ]
+}

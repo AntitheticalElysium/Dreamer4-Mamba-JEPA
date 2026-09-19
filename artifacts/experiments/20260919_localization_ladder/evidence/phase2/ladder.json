@@ -1,0 +1,733 @@
+{
+  "schema": "d4mj_phase2_ladder_v1",
+  "width": 192,
+  "steps": 2000,
+  "pca_contract": {
+    "mamba_raw": {
+      "pooled4_pca192": {
+        "source": "pooled4",
+        "components": 192,
+        "retained_variance": 0.9976879525279607,
+        "source_dim": 3072
+      },
+      "pooled2_pca192": {
+        "source": "pooled2",
+        "components": 192,
+        "retained_variance": 0.9997249715228325,
+        "source_dim": 768
+      },
+      "patches_pca192": {
+        "source": "patches",
+        "components": 192,
+        "retained_variance": 0.970312086574619,
+        "source_dim": 15552
+      }
+    },
+    "mamba_tc": {
+      "pooled4_pca192": {
+        "source": "pooled4",
+        "components": 192,
+        "retained_variance": 0.9986982168035651,
+        "source_dim": 3072
+      },
+      "pooled2_pca192": {
+        "source": "pooled2",
+        "components": 192,
+        "retained_variance": 0.9998357186267148,
+        "source_dim": 768
+      },
+      "patches_pca192": {
+        "source": "patches",
+        "components": 192,
+        "retained_variance": 0.978003173639442,
+        "source_dim": 15552
+      }
+    }
+  },
+  "rows": [
+    {
+      "arm": "mamba_raw",
+      "rung": "z",
+      "dim": 192,
+      "health_r2_linear": 0.16457200050354004,
+      "health_parameters": 193,
+      "choice_parameters": 25478,
+      "safe_choice": [
+        30,
+        30,
+        29
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.8973,
+        0.89,
+        0.8591
+      ],
+      "selected_actions_seed0": [
+        1,
+        7,
+        6,
+        5,
+        8,
+        1,
+        7,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_raw",
+      "rung": "cls",
+      "dim": 192,
+      "health_r2_linear": 0.20587241649627686,
+      "health_parameters": 193,
+      "choice_parameters": 25478,
+      "safe_choice": [
+        31,
+        32,
+        31
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.937,
+        0.921,
+        0.9198
+      ],
+      "selected_actions_seed0": [
+        0,
+        6,
+        6,
+        8,
+        9,
+        2,
+        5,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_raw",
+      "rung": "patch_mean",
+      "dim": 192,
+      "health_r2_linear": 0.26434242725372314,
+      "health_parameters": 193,
+      "choice_parameters": 25478,
+      "safe_choice": [
+        35,
+        34,
+        35
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.9819,
+        0.9775,
+        0.9793
+      ],
+      "selected_actions_seed0": [
+        0,
+        8,
+        8,
+        6,
+        10,
+        1,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_raw",
+      "rung": "pooled4",
+      "dim": 3072,
+      "health_r2_linear": 0.7120532989501953,
+      "health_parameters": 3073,
+      "choice_parameters": 394118,
+      "safe_choice": [
+        36,
+        36,
+        36
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.9843,
+        0.9843,
+        0.9843
+      ],
+      "selected_actions_seed0": [
+        0,
+        6,
+        16,
+        5,
+        9,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_raw",
+      "rung": "pooled4_pca192",
+      "dim": 192,
+      "health_r2_linear": 0.5673404932022095,
+      "health_parameters": 193,
+      "choice_parameters": 25478,
+      "safe_choice": [
+        36,
+        36,
+        36
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.9973,
+        0.9983,
+        0.9983
+      ],
+      "selected_actions_seed0": [
+        0,
+        7,
+        13,
+        4,
+        10,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_raw",
+      "rung": "pooled2",
+      "dim": 768,
+      "health_r2_linear": 0.6464690566062927,
+      "health_parameters": 769,
+      "choice_parameters": 99206,
+      "safe_choice": [
+        36,
+        36,
+        36
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.9808,
+        0.9808,
+        0.9808
+      ],
+      "selected_actions_seed0": [
+        1,
+        8,
+        10,
+        4,
+        11,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_raw",
+      "rung": "pooled2_pca192",
+      "dim": 192,
+      "health_r2_linear": 0.600387454032898,
+      "health_parameters": 193,
+      "choice_parameters": 25478,
+      "safe_choice": [
+        36,
+        36,
+        36
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.9993,
+        0.9993,
+        1.0
+      ],
+      "selected_actions_seed0": [
+        0,
+        9,
+        12,
+        6,
+        9,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_raw",
+      "rung": "patches",
+      "dim": 15552,
+      "health_r2_linear": 0.9235103726387024,
+      "health_parameters": 15553,
+      "choice_parameters": 1991558,
+      "safe_choice": [
+        36,
+        36,
+        35
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.9726,
+        0.9786,
+        0.9725
+      ],
+      "selected_actions_seed0": [
+        0,
+        11,
+        9,
+        8,
+        7,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_raw",
+      "rung": "patches_pca192",
+      "dim": 192,
+      "health_r2_linear": 0.8661066293716431,
+      "health_parameters": 193,
+      "choice_parameters": 25478,
+      "safe_choice": [
+        36,
+        36,
+        36
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "selected_actions_seed0": [
+        1,
+        9,
+        7,
+        11,
+        7,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_tc",
+      "rung": "z",
+      "dim": 192,
+      "health_r2_linear": 0.2068374752998352,
+      "health_parameters": 193,
+      "choice_parameters": 25478,
+      "safe_choice": [
+        21,
+        21,
+        21
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.5581,
+        0.5648,
+        0.5626
+      ],
+      "selected_actions_seed0": [
+        4,
+        5,
+        13,
+        4,
+        7,
+        0,
+        2,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_tc",
+      "rung": "cls",
+      "dim": 192,
+      "health_r2_linear": 0.5231627225875854,
+      "health_parameters": 193,
+      "choice_parameters": 25478,
+      "safe_choice": [
+        33,
+        33,
+        33
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.8453,
+        0.8377,
+        0.8421
+      ],
+      "selected_actions_seed0": [
+        1,
+        12,
+        10,
+        4,
+        8,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_tc",
+      "rung": "patch_mean",
+      "dim": 192,
+      "health_r2_linear": 0.42448586225509644,
+      "health_parameters": 193,
+      "choice_parameters": 25478,
+      "safe_choice": [
+        32,
+        33,
+        33
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.9899,
+        0.9906,
+        0.9906
+      ],
+      "selected_actions_seed0": [
+        0,
+        7,
+        8,
+        4,
+        9,
+        1,
+        7,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_tc",
+      "rung": "pooled4",
+      "dim": 3072,
+      "health_r2_linear": 0.6513347029685974,
+      "health_parameters": 3073,
+      "choice_parameters": 394118,
+      "safe_choice": [
+        34,
+        35,
+        35
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.9318,
+        0.9186,
+        0.9186
+      ],
+      "selected_actions_seed0": [
+        0,
+        9,
+        12,
+        4,
+        9,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_tc",
+      "rung": "pooled4_pca192",
+      "dim": 192,
+      "health_r2_linear": 0.5694063901901245,
+      "health_parameters": 193,
+      "choice_parameters": 25478,
+      "safe_choice": [
+        36,
+        36,
+        36
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        1.0,
+        1.0,
+        0.9983
+      ],
+      "selected_actions_seed0": [
+        1,
+        7,
+        14,
+        4,
+        10,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_tc",
+      "rung": "pooled2",
+      "dim": 768,
+      "health_r2_linear": 0.6344153881072998,
+      "health_parameters": 769,
+      "choice_parameters": 99206,
+      "safe_choice": [
+        36,
+        36,
+        36
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.9779,
+        0.9819,
+        0.9805
+      ],
+      "selected_actions_seed0": [
+        0,
+        7,
+        10,
+        5,
+        12,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_tc",
+      "rung": "pooled2_pca192",
+      "dim": 192,
+      "health_r2_linear": 0.5213108062744141,
+      "health_parameters": 193,
+      "choice_parameters": 25478,
+      "safe_choice": [
+        36,
+        36,
+        36
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "selected_actions_seed0": [
+        0,
+        12,
+        11,
+        2,
+        8,
+        1,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_tc",
+      "rung": "patches",
+      "dim": 15552,
+      "health_r2_linear": 0.8389471769332886,
+      "health_parameters": 15553,
+      "choice_parameters": 1991558,
+      "safe_choice": [
+        32,
+        33,
+        31
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.8751,
+        0.8735,
+        0.8314
+      ],
+      "selected_actions_seed0": [
+        2,
+        7,
+        11,
+        5,
+        10,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "mamba_tc",
+      "rung": "patches_pca192",
+      "dim": 192,
+      "health_r2_linear": 0.6861491203308105,
+      "health_parameters": 193,
+      "choice_parameters": 25478,
+      "safe_choice": [
+        35,
+        36,
+        36
+      ],
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.9741,
+        0.9853,
+        0.987
+      ],
+      "selected_actions_seed0": [
+        1,
+        6,
+        10,
+        9,
+        10,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

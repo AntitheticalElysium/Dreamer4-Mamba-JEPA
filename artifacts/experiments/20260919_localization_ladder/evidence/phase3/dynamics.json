@@ -1,0 +1,355 @@
+{
+  "schema": "d4mj_phase3_dynamics_v1",
+  "steps": 2000,
+  "note": "the LeWM world transitions z only; generated states exist in z-space alone",
+  "arms": {
+    "mamba_raw": {
+      "rows": [
+        {
+          "condition": "real_fit_real",
+          "parameters": 25478,
+          "safe_choice": [
+            30,
+            30,
+            29
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.8973,
+            0.89,
+            0.8591
+          ],
+          "mean_safe": 29.666666666666668
+        },
+        {
+          "condition": "real_fit_gen",
+          "parameters": 25478,
+          "safe_choice": [
+            6,
+            5,
+            5
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.5415,
+            0.533,
+            0.5387
+          ],
+          "mean_safe": 5.333333333333333
+        },
+        {
+          "condition": "gen_fit_gen",
+          "parameters": 25478,
+          "safe_choice": [
+            14,
+            17,
+            15
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.7735,
+            0.7793,
+            0.7667
+          ],
+          "mean_safe": 15.333333333333334
+        },
+        {
+          "condition": "gen_fit_real",
+          "parameters": 25478,
+          "safe_choice": [
+            24,
+            21,
+            22
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.5554,
+            0.5157,
+            0.5881
+          ],
+          "mean_safe": 22.333333333333332
+        },
+        {
+          "condition": "root_action",
+          "parameters": 27654,
+          "safe_choice": [
+            18,
+            20,
+            19
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.7942,
+            0.772,
+            0.7811
+          ],
+          "mean_safe": 19.0
+        },
+        {
+          "condition": "gen_fit_gen_action_permuted",
+          "parameters": 25478,
+          "safe_choice": [
+            13,
+            16,
+            17
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.7769,
+            0.7753,
+            0.7696
+          ],
+          "mean_safe": 15.333333333333334
+        },
+        {
+          "condition": "real_fit_gen_affine_aligned",
+          "parameters": 25478,
+          "safe_choice": [
+            7,
+            8,
+            8
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.5831,
+            0.5907,
+            0.6048
+          ],
+          "mean_safe": 7.666666666666667
+        }
+      ]
+    },
+    "mamba_tc": {
+      "rows": [
+        {
+          "condition": "real_fit_real",
+          "parameters": 25478,
+          "safe_choice": [
+            21,
+            21,
+            21
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.5581,
+            0.5648,
+            0.5626
+          ],
+          "mean_safe": 21.0
+        },
+        {
+          "condition": "real_fit_gen",
+          "parameters": 25478,
+          "safe_choice": [
+            18,
+            18,
+            18
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.637,
+            0.6038,
+            0.6097
+          ],
+          "mean_safe": 18.0
+        },
+        {
+          "condition": "gen_fit_gen",
+          "parameters": 25478,
+          "safe_choice": [
+            18,
+            14,
+            17
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.6644,
+            0.6418,
+            0.6654
+          ],
+          "mean_safe": 16.333333333333332
+        },
+        {
+          "condition": "gen_fit_real",
+          "parameters": 25478,
+          "safe_choice": [
+            17,
+            18,
+            18
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.5361,
+            0.5708,
+            0.5957
+          ],
+          "mean_safe": 17.666666666666668
+        },
+        {
+          "condition": "root_action",
+          "parameters": 27654,
+          "safe_choice": [
+            24,
+            23,
+            24
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.8364,
+            0.8375,
+            0.826
+          ],
+          "mean_safe": 23.666666666666668
+        },
+        {
+          "condition": "gen_fit_gen_action_permuted",
+          "parameters": 25478,
+          "safe_choice": [
+            14,
+            16,
+            15
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.7143,
+            0.7059,
+            0.7054
+          ],
+          "mean_safe": 15.0
+        },
+        {
+          "condition": "real_fit_gen_affine_aligned",
+          "parameters": 25478,
+          "safe_choice": [
+            11,
+            11,
+            13
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.575,
+            0.5327,
+            0.5261
+          ],
+          "mean_safe": 11.666666666666666
+        }
+      ]
+    },
+    "direct": {
+      "rows": [
+        {
+          "condition": "real_fit_real",
+          "parameters": 131974,
+          "safe_choice": [
+            36,
+            36,
+            35
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.9003,
+            0.9021,
+            0.8986
+          ],
+          "mean_safe": 35.666666666666664
+        },
+        {
+          "condition": "real_fit_gen",
+          "parameters": 131974,
+          "safe_choice": [
+            32,
+            32,
+            32
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.8726,
+            0.8741,
+            0.8708
+          ],
+          "mean_safe": 32.0
+        },
+        {
+          "condition": "gen_fit_gen",
+          "parameters": 131974,
+          "safe_choice": [
+            32,
+            31,
+            32
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.8794,
+            0.8781,
+            0.8912
+          ],
+          "mean_safe": 31.666666666666668
+        },
+        {
+          "condition": "gen_fit_real",
+          "parameters": 131974,
+          "safe_choice": [
+            32,
+            32,
+            32
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.8662,
+            0.8651,
+            0.8668
+          ],
+          "mean_safe": 32.0
+        },
+        {
+          "condition": "root_action",
+          "parameters": 134150,
+          "safe_choice": [
+            25,
+            23,
+            23
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.8025,
+            0.8285,
+            0.8241
+          ],
+          "mean_safe": 23.666666666666668
+        },
+        {
+          "condition": "gen_fit_gen_action_permuted",
+          "parameters": 131974,
+          "safe_choice": [
+            21,
+            18,
+            19
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.7838,
+            0.7892,
+            0.7898
+          ],
+          "mean_safe": 19.333333333333332
+        },
+        {
+          "condition": "real_fit_gen_affine_aligned",
+          "parameters": 131974,
+          "safe_choice": [
+            28,
+            28,
+            28
+          ],
+          "opportunity_roots": 36,
+          "within_root_auc": [
+            0.6826,
+            0.6819,
+            0.6928
+          ],
+          "mean_safe": 28.0
+        }
+      ]
+    }
+  }
+}

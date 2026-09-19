@@ -1,0 +1,8 @@
+{
+  "seconds_per_fit_at_steps": 2000,
+  "by_family": {
+    "logistic": 3.46,
+    "mlp128": 3.63,
+    "mlp512x2": 4.37
+  }
+}

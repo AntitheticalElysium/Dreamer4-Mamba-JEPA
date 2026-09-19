@@ -1,0 +1,73 @@
+{
+  "schema": "d4mj_memorization_v1",
+  "rows": [
+    {
+      "rung": "pooled4_pca192",
+      "permuted_labels": false,
+      "parameters": 25478,
+      "train_safe": [
+        56,
+        56,
+        56
+      ],
+      "train_opportunity": 56,
+      "dev_safe": [
+        36,
+        36,
+        36
+      ],
+      "dev_opportunity": 36
+    },
+    {
+      "rung": "pooled4_pca192",
+      "permuted_labels": true,
+      "parameters": 25478,
+      "train_safe": [
+        20,
+        15,
+        18
+      ],
+      "train_opportunity": 56,
+      "dev_safe": [
+        8,
+        8,
+        10
+      ],
+      "dev_opportunity": 36
+    },
+    {
+      "rung": "pooled2_pca192",
+      "permuted_labels": false,
+      "parameters": 25478,
+      "train_safe": [
+        56,
+        56,
+        56
+      ],
+      "train_opportunity": 56,
+      "dev_safe": [
+        36,
+        36,
+        36
+      ],
+      "dev_opportunity": 36
+    },
+    {
+      "rung": "pooled2_pca192",
+      "permuted_labels": true,
+      "parameters": 25478,
+      "train_safe": [
+        19,
+        16,
+        20
+      ],
+      "train_opportunity": 56,
+      "dev_safe": [
+        8,
+        4,
+        4
+      ],
+      "dev_opportunity": 36
+    }
+  ]
+}

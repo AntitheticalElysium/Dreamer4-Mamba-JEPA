@@ -1,0 +1,2584 @@
+{
+  "method": "read-only cache; tensor input hashes and payload checksums; no probe refit",
+  "script_sha256": "a016feef697eded3b47e6e14ec9cce78554297381aa9024341b35c532a2faef7",
+  "runs": {
+    "mamba": {
+      "sidecar_sha256": "ead287f0f9a1aac03d20db701100bd76f387fbac1ec4a03eab661fc82e2be3c0",
+      "dev_roots": 128,
+      "opportunity_roots": 36,
+      "opportunity_episodes": 36,
+      "uniform_safe_rate": 0.2222222238779068,
+      "arms": {
+        "raw": {
+          "identity": {
+            "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_gates_20260906/paired/raw/joint/step-010000.pt",
+            "sha256": "707f6240a3e4e52d6aca7526d541a69112ad7c18c5898c0f1f0ec36f663937ef",
+            "step": 10000,
+            "recipe_id": "3edb1419b5f3288f89ce4f1e2c01c04b63b9e398ce18c530353960d400a15925",
+            "source_evaluation": {
+              "current": {
+                "schema": "d4mj_lewm_sources_v1",
+                "pins": {
+                  "lucas-maes__le-wm": {
+                    "url": "https://github.com/lucas-maes/le-wm.git",
+                    "commit": "8edfeb336732b5f3ce7b8b210d0ba370a09e2cac"
+                  },
+                  "galilai-group__stable-pretraining": {
+                    "url": "https://github.com/galilai-group/stable-pretraining.git",
+                    "commit": "9aa93f8b6153eebb73f57d4853ccf8a13d848310"
+                  },
+                  "state-spaces__mamba": {
+                    "url": "https://github.com/state-spaces/mamba.git",
+                    "commit": "f577286d052741c35d39cd43bdc3fad27120f22c"
+                  }
+                },
+                "references": {
+                  "sources_lock": "e28af969bd86f10f274f1b47dc55bf1f0d6a5208ba1ba535897d964d8b04afdd",
+                  "papers_lock": "ba63f70189769007dc90af89efe9a29b5a7fee276ff1e52140ed2f5f49898343",
+                  "dependencies_lock": "3a3e19a6b333c6dc466b1f6e8941fd8210ab7eda164416a562dd784ce2034709",
+                  "tc_paper": "b15777f14c11b8196a32665a037822425e0016dc7682852ff11c79b4e52b9ef3",
+                  "vit_helper": "4254967db78d759b6238c6b9a5ef8219e643b1a5d165d63d5da69d740c4ec6de",
+                  "pixel_statistics": "b5063768d173792bbb38a25acf9ea2a599e3adcbea077cf9507ee0c5ca258302",
+                  "lucas-maes__le-wm/LICENSE": "4882021920cbd61e050e4dc2e02440e9bd36ea4cbc5803e738a2ee3d63502e07",
+                  "galilai-group__stable-pretraining/LICENSE": "8fa02eaa4e67a5455e8ab9268b29e0c283d4b4a5ae239f88282c00392f373bfd",
+                  "state-spaces__mamba/LICENSE": "760939b000194d04548ede6a857bbe735d1695d8422ec85955c8e2bd7f4b95c5",
+                  "lewm/train.py": "5d5666a785148635f8bcb50b49f98dd4527c5aba8a02d90206eb5d46406079d2",
+                  "lewm/module.py": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620",
+                  "lewm/jepa.py": "41bad7fd21e0f14aea4c9c3d39a9c87037e787746d953ab62cdc0677e938ce96",
+                  "lewm/utils.py": "b3e5cfce6d0eecd9510f06a7adc178edde86074e1474b899ff739ed8a5355b08",
+                  "lewm/config/train/lewm.yaml": "a90ec80bc30a6b33228047222d6b897d4df14b57b4879727b9d8284a00a9d7a3",
+                  "lewm/config/train/model/lewm.yaml": "7be97eaa2c83f809b9ea7a6da5a7d3f3c70502c27537383f54db32335e21e42b",
+                  "mamba/modules/mamba2.py": "605e4439ff0baec8d8acaf4a191d9f0570eea9900065a065909124c472b08707",
+                  "mamba/ops/triton/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "mamba/ops/triton/k_activations.py": "ede8d75600b1b01fd867df00eae4a727df9a34ef8091baf965522c36b3dfdf7b",
+                  "mamba/ops/triton/layer_norm.py": "0cecae69ed780c07454fe067f9738608a53ebb17ae6046988d13bbbd84ca128b",
+                  "mamba/ops/triton/layernorm_gated.py": "eb6252e247b90f1c8a75946efbc1a221e0c4da701b6757ddae49f3495cf7a42f",
+                  "mamba/ops/triton/mamba3/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "mamba/ops/triton/mamba3/angle_dt.py": "7d99f8cff37371cfbfe9d4dd36f17a16135fb07f2c6e14add3ad4dd5c0034e2e",
+                  "mamba/ops/triton/mamba3/grouped_head_reduction.py": "d461ec57ef42e2f04ceb611daba02705a06347793a44cd40f68b5dc45d3a2d2d",
+                  "mamba/ops/triton/mamba3/mamba3_mimo_rotary_step.py": "e117b5da3d2ddfcfa66673a88dfd88a6d688100291d3b6a1b0b3c24c82ef79d6",
+                  "mamba/ops/triton/mamba3/mamba3_mimo_utils.py": "efbdd750f53c67fd882ffe7a3af3d51ac4aaa341e764e0efa92ce8ea51c27b7c",
+                  "mamba/ops/triton/mamba3/mamba3_siso_bwd.py": "270639817bf8070c6b3f1fac229826c89344e38e8375e73e95249bf3087355de",
+                  "mamba/ops/triton/mamba3/mamba3_siso_combined.py": "410ad57555b5841fba7bd76fdafdc3ddf82741176489c3e3493f5c6f3c0c6012",
+                  "mamba/ops/triton/mamba3/mamba3_siso_fwd.py": "34100060eef7316e2a16ede09636a517f10733cc856980869651e21208ad05b0",
+                  "mamba/ops/triton/mamba3/mamba3_siso_step.py": "66d2471245e47de4207eb633deb3e8415034f9e718b38d0955f62a6262a3ae61",
+                  "mamba/ops/triton/mamba3/utils.py": "9d93fd772c7f256f517e75445261773e469cfeddb8bb76c1f8f16e9feabb3c13",
+                  "mamba/ops/triton/selective_state_update.py": "4bc67389730c9fd0ad40569b9ee48de88c699bc9612fbc4607eb5d38c1b4a9b9",
+                  "mamba/ops/triton/softplus.py": "addcf96f306dd2c9bf1c9ef9feda42381a6e55ad906dd92e220598fcfec7b508",
+                  "mamba/ops/triton/ssd_bmm.py": "5059b16f8fa269cd84e8159ee3c6880e4ccf90e4bedf9c2d733e6bc2baff9587",
+                  "mamba/ops/triton/ssd_chunk_scan.py": "055b5ce4cb0f30c84c3e031d775f218227fa0b793359254a2465777097b224f9",
+                  "mamba/ops/triton/ssd_chunk_state.py": "6d82771b2f62a7bf84c381c8ef8e4b579a95e0352021d117507a1072e4d71dcd",
+                  "mamba/ops/triton/ssd_combined.py": "0b7c4cfa9e994278860e7254c27baa31ca32019a808a423ed24b80eabcbe919d",
+                  "mamba/ops/triton/ssd_state_passing.py": "ae1fab6c680cb5312ef746862a2cf8e74157033c80878490cc64fa1f24f88b70"
+                },
+                "runtime": {
+                  "transformers_vit": "d6e8e18d0d7c32beaac672b5701f1e83d72df62781e79f8508ca7f3dc0db9de2",
+                  "transformers_modeling_utils": "b440b5e30a7b9cd58beeaafa32d0d8da3aef6a6f88fe7f9999bb1065f722a9dc",
+                  "transformers_sdpa": "fdf62fb0eb9b5dc0a6796a7e526015865267f271a0d5ac8377968ad05d1454b8",
+                  "transformers_config": "0ec851794e2692154466915ecd7344ab77f42b8c1ca7832078bfe9e5af5e506c",
+                  "d4mj/lewm_config.py": "8862263e076b8bb62a8fedfe7743dab916cd60d72472e8deeb72f78db14020ef",
+                  "d4mj/lewm.py": "b87644febd0851434ba2ac019a86f5c029e8af0ea318343da006c23aacd922f9",
+                  "d4mj/mamba_recurrence.py": "8de9df2578d7bf45c9d98acaf51c99d03ca9185c641f8b09ae107370133bf4c0",
+                  "d4mj/world_api.py": "fcf2de2c77b1b261fb3633f30273130a7604d6bec547a3d953b7b0e3755d021c",
+                  "d4mj/state.py": "20c2fead5ec7a795b40d4a1d6db241f8d8d1432535e0bfd4f2378a139d21b118",
+                  "d4mj/config.py": "c1835e1e6e0fae9ca6a40e479f4036fcdc6f8c0c1fa446022aecf7502b5710b0",
+                  "d4mj/cache.py": "31aea1bc2b79c2cbbb479304dd81472d4b05c61fc179fe404d254b47f3f2ef90",
+                  "d4mj/train.py": "105e9d205639f164253b388c520c6ea6b1fcf6c2d397a2b74e694672755d6339",
+                  "d4mj/checkpoint.py": "310f9fa7a54d588961888c5e1de31b2629360368f59562bc73b0e473e1acafbb",
+                  "d4mj/data.py": "85fbbe508e85f8dbd2d2a9bedd3ad0857ef605c11a2036e71ba8ec8168703145",
+                  "d4mj/sources.py": "b9360c687073e6da566424a985a2dcba5dce424af597a025599c923055e0dcee",
+                  "d4mj/gates.py": "89696e961a3bea8a548c6f4772187a4b105761f1348a3504f3db86b9827c7d39",
+                  "d4mj/lewm_diagnostics.py": "f977ddd685a7a2465cf42980390fb8e637312f4848b06cd56d5abc02014494b4",
+                  "d4mj/experiments.py": "ec5e8a5c9163cbf608c31e5852df77668fcafb14a8823d6684802ceb6849549a",
+                  "d4mj/__main__.py": "1399bc986938f34578fa54eb2d0fef80f35b73507d3b5e4024854f7cdb781577",
+                  "d4mj/execution.py": "178f31609813e11f07403306bbbfff8faf613a34e511ac651b62c19c122914b4",
+                  "d4mj/imagination.py": "f0d110aa70e73fed3669ac0e2a30cf3d13012ed6319dbd9b7967bbf17f9edd91",
+                  "d4mj/diagnostics.py": "506a1d47b8a66bae745e78a85db8c80c2392898e86546430091e777292121db9"
+                },
+                "versions": {
+                  "torch": "2.13.0",
+                  "transformers": "5.13.0",
+                  "mamba-ssm": "2.3.2.post1",
+                  "triton": "3.7.1",
+                  "einops": "0.8.2",
+                  "numpy": "2.1.0",
+                  "safetensors": "0.8.0"
+                },
+                "execution": {
+                  "float32_matmul_precision": "highest",
+                  "cuda_matmul_tf32": false,
+                  "cudnn_tf32": true,
+                  "cudnn_benchmark": false,
+                  "cudnn_deterministic": false,
+                  "deterministic_algorithms": false,
+                  "triton_f32_default": "ieee"
+                }
+              },
+              "allowed_delta": {
+                "triton_f32_default": {
+                  "recorded": "unset",
+                  "evaluation": "ieee"
+                }
+              }
+            }
+          },
+          "feature_dimension": 192,
+          "observed_fit_on_observed": {
+            "linear": [
+              {
+                "cache_key": "083b5a12b6af820419acac6457c713900096103c678b6bc3aee76922c47e84f4",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 8,
+                "rate": 0.2222222238779068,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.7977182865142822,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 23,
+                  "rate_on_original_opportunities": 0.6388888955116272,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.49074071645736694,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  0,
+                  2,
+                  1,
+                  3,
+                  0,
+                  30,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "cf858e4ac4f16c6cb6b88df89a2ee8eb7dd332dd5897eabe82e4c9e906c68199",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 8,
+                "rate": 0.2222222238779068,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.7977182865142822,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 23,
+                  "rate_on_original_opportunities": 0.6388888955116272,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.49074071645736694,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  0,
+                  2,
+                  1,
+                  3,
+                  0,
+                  30,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ],
+            "mlp": [
+              {
+                "cache_key": "d5eb2aaf06f25ffee7a9d776a78ed2b2f56a7d34a33bf2dae9555232f44dc19b",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 14,
+                "rate": 0.3888888955116272,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.755919337272644,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 26,
+                  "rate_on_original_opportunities": 0.7222222089767456,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.5671296119689941,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  0,
+                  8,
+                  1,
+                  3,
+                  0,
+                  24,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "b9b4786a95c6ce231c32bcd5b4f4e042882edbbda8051b56c57ddca61584c293",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 14,
+                "rate": 0.3888888955116272,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.755919337272644,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 26,
+                  "rate_on_original_opportunities": 0.7222222089767456,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.5671296119689941,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  0,
+                  8,
+                  1,
+                  3,
+                  0,
+                  24,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "34ef0ffd8181e808836505a78d4102e5f70a96bce5a7f8a071d85b19234ed3c9",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 14,
+                "rate": 0.3888888955116272,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.755919337272644,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 26,
+                  "rate_on_original_opportunities": 0.7222222089767456,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.5671296119689941,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  0,
+                  8,
+                  1,
+                  3,
+                  0,
+                  24,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ]
+          }
+        },
+        "tc": {
+          "identity": {
+            "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_gates_20260906/paired/tc/joint/step-010000.pt",
+            "sha256": "98effee1085223b5780f30b09ba68b44a8b407acbb07fde5134a8bd708997dc5",
+            "step": 10000,
+            "recipe_id": "b6e02c7122c2c31d9830907159e0b47a70265e9d392669dbaf3c04379efd4161",
+            "source_evaluation": {
+              "current": {
+                "schema": "d4mj_lewm_sources_v1",
+                "pins": {
+                  "lucas-maes__le-wm": {
+                    "url": "https://github.com/lucas-maes/le-wm.git",
+                    "commit": "8edfeb336732b5f3ce7b8b210d0ba370a09e2cac"
+                  },
+                  "galilai-group__stable-pretraining": {
+                    "url": "https://github.com/galilai-group/stable-pretraining.git",
+                    "commit": "9aa93f8b6153eebb73f57d4853ccf8a13d848310"
+                  },
+                  "state-spaces__mamba": {
+                    "url": "https://github.com/state-spaces/mamba.git",
+                    "commit": "f577286d052741c35d39cd43bdc3fad27120f22c"
+                  }
+                },
+                "references": {
+                  "sources_lock": "e28af969bd86f10f274f1b47dc55bf1f0d6a5208ba1ba535897d964d8b04afdd",
+                  "papers_lock": "ba63f70189769007dc90af89efe9a29b5a7fee276ff1e52140ed2f5f49898343",
+                  "dependencies_lock": "3a3e19a6b333c6dc466b1f6e8941fd8210ab7eda164416a562dd784ce2034709",
+                  "tc_paper": "b15777f14c11b8196a32665a037822425e0016dc7682852ff11c79b4e52b9ef3",
+                  "vit_helper": "4254967db78d759b6238c6b9a5ef8219e643b1a5d165d63d5da69d740c4ec6de",
+                  "pixel_statistics": "b5063768d173792bbb38a25acf9ea2a599e3adcbea077cf9507ee0c5ca258302",
+                  "lucas-maes__le-wm/LICENSE": "4882021920cbd61e050e4dc2e02440e9bd36ea4cbc5803e738a2ee3d63502e07",
+                  "galilai-group__stable-pretraining/LICENSE": "8fa02eaa4e67a5455e8ab9268b29e0c283d4b4a5ae239f88282c00392f373bfd",
+                  "state-spaces__mamba/LICENSE": "760939b000194d04548ede6a857bbe735d1695d8422ec85955c8e2bd7f4b95c5",
+                  "lewm/train.py": "5d5666a785148635f8bcb50b49f98dd4527c5aba8a02d90206eb5d46406079d2",
+                  "lewm/module.py": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620",
+                  "lewm/jepa.py": "41bad7fd21e0f14aea4c9c3d39a9c87037e787746d953ab62cdc0677e938ce96",
+                  "lewm/utils.py": "b3e5cfce6d0eecd9510f06a7adc178edde86074e1474b899ff739ed8a5355b08",
+                  "lewm/config/train/lewm.yaml": "a90ec80bc30a6b33228047222d6b897d4df14b57b4879727b9d8284a00a9d7a3",
+                  "lewm/config/train/model/lewm.yaml": "7be97eaa2c83f809b9ea7a6da5a7d3f3c70502c27537383f54db32335e21e42b",
+                  "mamba/modules/mamba2.py": "605e4439ff0baec8d8acaf4a191d9f0570eea9900065a065909124c472b08707",
+                  "mamba/ops/triton/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "mamba/ops/triton/k_activations.py": "ede8d75600b1b01fd867df00eae4a727df9a34ef8091baf965522c36b3dfdf7b",
+                  "mamba/ops/triton/layer_norm.py": "0cecae69ed780c07454fe067f9738608a53ebb17ae6046988d13bbbd84ca128b",
+                  "mamba/ops/triton/layernorm_gated.py": "eb6252e247b90f1c8a75946efbc1a221e0c4da701b6757ddae49f3495cf7a42f",
+                  "mamba/ops/triton/mamba3/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "mamba/ops/triton/mamba3/angle_dt.py": "7d99f8cff37371cfbfe9d4dd36f17a16135fb07f2c6e14add3ad4dd5c0034e2e",
+                  "mamba/ops/triton/mamba3/grouped_head_reduction.py": "d461ec57ef42e2f04ceb611daba02705a06347793a44cd40f68b5dc45d3a2d2d",
+                  "mamba/ops/triton/mamba3/mamba3_mimo_rotary_step.py": "e117b5da3d2ddfcfa66673a88dfd88a6d688100291d3b6a1b0b3c24c82ef79d6",
+                  "mamba/ops/triton/mamba3/mamba3_mimo_utils.py": "efbdd750f53c67fd882ffe7a3af3d51ac4aaa341e764e0efa92ce8ea51c27b7c",
+                  "mamba/ops/triton/mamba3/mamba3_siso_bwd.py": "270639817bf8070c6b3f1fac229826c89344e38e8375e73e95249bf3087355de",
+                  "mamba/ops/triton/mamba3/mamba3_siso_combined.py": "410ad57555b5841fba7bd76fdafdc3ddf82741176489c3e3493f5c6f3c0c6012",
+                  "mamba/ops/triton/mamba3/mamba3_siso_fwd.py": "34100060eef7316e2a16ede09636a517f10733cc856980869651e21208ad05b0",
+                  "mamba/ops/triton/mamba3/mamba3_siso_step.py": "66d2471245e47de4207eb633deb3e8415034f9e718b38d0955f62a6262a3ae61",
+                  "mamba/ops/triton/mamba3/utils.py": "9d93fd772c7f256f517e75445261773e469cfeddb8bb76c1f8f16e9feabb3c13",
+                  "mamba/ops/triton/selective_state_update.py": "4bc67389730c9fd0ad40569b9ee48de88c699bc9612fbc4607eb5d38c1b4a9b9",
+                  "mamba/ops/triton/softplus.py": "addcf96f306dd2c9bf1c9ef9feda42381a6e55ad906dd92e220598fcfec7b508",
+                  "mamba/ops/triton/ssd_bmm.py": "5059b16f8fa269cd84e8159ee3c6880e4ccf90e4bedf9c2d733e6bc2baff9587",
+                  "mamba/ops/triton/ssd_chunk_scan.py": "055b5ce4cb0f30c84c3e031d775f218227fa0b793359254a2465777097b224f9",
+                  "mamba/ops/triton/ssd_chunk_state.py": "6d82771b2f62a7bf84c381c8ef8e4b579a95e0352021d117507a1072e4d71dcd",
+                  "mamba/ops/triton/ssd_combined.py": "0b7c4cfa9e994278860e7254c27baa31ca32019a808a423ed24b80eabcbe919d",
+                  "mamba/ops/triton/ssd_state_passing.py": "ae1fab6c680cb5312ef746862a2cf8e74157033c80878490cc64fa1f24f88b70"
+                },
+                "runtime": {
+                  "transformers_vit": "d6e8e18d0d7c32beaac672b5701f1e83d72df62781e79f8508ca7f3dc0db9de2",
+                  "transformers_modeling_utils": "b440b5e30a7b9cd58beeaafa32d0d8da3aef6a6f88fe7f9999bb1065f722a9dc",
+                  "transformers_sdpa": "fdf62fb0eb9b5dc0a6796a7e526015865267f271a0d5ac8377968ad05d1454b8",
+                  "transformers_config": "0ec851794e2692154466915ecd7344ab77f42b8c1ca7832078bfe9e5af5e506c",
+                  "d4mj/lewm_config.py": "8862263e076b8bb62a8fedfe7743dab916cd60d72472e8deeb72f78db14020ef",
+                  "d4mj/lewm.py": "b87644febd0851434ba2ac019a86f5c029e8af0ea318343da006c23aacd922f9",
+                  "d4mj/mamba_recurrence.py": "8de9df2578d7bf45c9d98acaf51c99d03ca9185c641f8b09ae107370133bf4c0",
+                  "d4mj/world_api.py": "fcf2de2c77b1b261fb3633f30273130a7604d6bec547a3d953b7b0e3755d021c",
+                  "d4mj/state.py": "20c2fead5ec7a795b40d4a1d6db241f8d8d1432535e0bfd4f2378a139d21b118",
+                  "d4mj/config.py": "c1835e1e6e0fae9ca6a40e479f4036fcdc6f8c0c1fa446022aecf7502b5710b0",
+                  "d4mj/cache.py": "31aea1bc2b79c2cbbb479304dd81472d4b05c61fc179fe404d254b47f3f2ef90",
+                  "d4mj/train.py": "105e9d205639f164253b388c520c6ea6b1fcf6c2d397a2b74e694672755d6339",
+                  "d4mj/checkpoint.py": "310f9fa7a54d588961888c5e1de31b2629360368f59562bc73b0e473e1acafbb",
+                  "d4mj/data.py": "85fbbe508e85f8dbd2d2a9bedd3ad0857ef605c11a2036e71ba8ec8168703145",
+                  "d4mj/sources.py": "b9360c687073e6da566424a985a2dcba5dce424af597a025599c923055e0dcee",
+                  "d4mj/gates.py": "89696e961a3bea8a548c6f4772187a4b105761f1348a3504f3db86b9827c7d39",
+                  "d4mj/lewm_diagnostics.py": "f977ddd685a7a2465cf42980390fb8e637312f4848b06cd56d5abc02014494b4",
+                  "d4mj/experiments.py": "ec5e8a5c9163cbf608c31e5852df77668fcafb14a8823d6684802ceb6849549a",
+                  "d4mj/__main__.py": "1399bc986938f34578fa54eb2d0fef80f35b73507d3b5e4024854f7cdb781577",
+                  "d4mj/execution.py": "178f31609813e11f07403306bbbfff8faf613a34e511ac651b62c19c122914b4",
+                  "d4mj/imagination.py": "f0d110aa70e73fed3669ac0e2a30cf3d13012ed6319dbd9b7967bbf17f9edd91",
+                  "d4mj/diagnostics.py": "506a1d47b8a66bae745e78a85db8c80c2392898e86546430091e777292121db9"
+                },
+                "versions": {
+                  "torch": "2.13.0",
+                  "transformers": "5.13.0",
+                  "mamba-ssm": "2.3.2.post1",
+                  "triton": "3.7.1",
+                  "einops": "0.8.2",
+                  "numpy": "2.1.0",
+                  "safetensors": "0.8.0"
+                },
+                "execution": {
+                  "float32_matmul_precision": "highest",
+                  "cuda_matmul_tf32": false,
+                  "cudnn_tf32": true,
+                  "cudnn_benchmark": false,
+                  "cudnn_deterministic": false,
+                  "deterministic_algorithms": false,
+                  "triton_f32_default": "ieee"
+                }
+              },
+              "allowed_delta": {
+                "triton_f32_default": {
+                  "recorded": "unset",
+                  "evaluation": "ieee"
+                }
+              }
+            }
+          },
+          "feature_dimension": 192,
+          "observed_fit_on_observed": {
+            "linear": [
+              {
+                "cache_key": "c9cbca5668797658aff219f02b12202dbb129237d75042640905375c985a2581",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 7,
+                "rate": 0.1944444477558136,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.7695601582527161,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 21,
+                  "rate_on_original_opportunities": 0.5833333134651184,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.5092592835426331,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  0,
+                  0,
+                  1,
+                  1,
+                  0,
+                  34,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "861fd9da20792ad2ea9c7b3062b8d1d5d0e8e9096005611a70d216915472d007",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 7,
+                "rate": 0.1944444477558136,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.7695601582527161,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 21,
+                  "rate_on_original_opportunities": 0.5833333134651184,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.5092592835426331,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  0,
+                  0,
+                  1,
+                  1,
+                  0,
+                  34,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ],
+            "mlp": [
+              {
+                "cache_key": "4ddb42b0628ecce2e13efecb6fc3f7066e5902d0aa270f655906bccd4a170b6a",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 8,
+                "rate": 0.2222222238779068,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.7231977581977844,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 21,
+                  "rate_on_original_opportunities": 0.5833333134651184,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.4861111044883728,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  1,
+                  1,
+                  4,
+                  0,
+                  0,
+                  30,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "2142b11e1d4af3be7cf5f8297ac59c975e4456afaa1f726fe3727e3fadb1b46e",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 8,
+                "rate": 0.2222222238779068,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.7231977581977844,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 21,
+                  "rate_on_original_opportunities": 0.5833333134651184,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.4861111044883728,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  1,
+                  1,
+                  4,
+                  0,
+                  0,
+                  30,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "be5fb58d8f59563570c5db11e052aaf7026b6b7b8f6dc3de45f63463749e5562",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 8,
+                "rate": 0.2222222238779068,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.7231977581977844,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 21,
+                  "rate_on_original_opportunities": 0.5833333134651184,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.4861111044883728,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  1,
+                  1,
+                  4,
+                  0,
+                  0,
+                  30,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ]
+          }
+        },
+        "direct_mamba": {
+          "identity": {
+            "name": "direct_mamba",
+            "encoder": {
+              "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/capacity6k/n64d16_s1/encoder_006000.pt",
+              "sha256": "4647c1fbea0cfd16b5262c169c88c8db4334f456d17867b6444315429642907d"
+            },
+            "world": {
+              "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/v2_direct_mamba/world_020000.pt",
+              "sha256": "e74ef7c8e197e752965e214b062af2a43269f065d3d560ccfa67cc182ccabfa5"
+            },
+            "archived_config": {
+              "transition": "direct",
+              "time_mixer": "mamba",
+              "resolution": 63,
+              "channels": 3,
+              "patch": 7,
+              "n_actions": 17,
+              "window": 16,
+              "n_latents": 64,
+              "d_bottleneck": 16,
+              "packing": 2,
+              "mae_p_max": 0.9,
+              "lpips_weight": 0.2,
+              "d_model_encoder": 256,
+              "depth_encoder": 8,
+              "n_heads_encoder": 4,
+              "d_model": 256,
+              "depth": 8,
+              "n_heads": 4,
+              "mlp_ratio": 4.0,
+              "time_every": 4,
+              "n_register": 4,
+              "n_agent": 2,
+              "mamba_d_state": 64,
+              "mamba_headdim": 64,
+              "mamba_expand": 1,
+              "mamba_d_conv": 4,
+              "k_max": 8,
+              "rungs": 4,
+              "tau_ctx_noise": 0.1,
+              "self_fraction": 0.25,
+              "bootstrap_start": 10000,
+              "mtp_leads": 8,
+              "bins": 255,
+              "symlog_limit": 20.0,
+              "horizon": 8,
+              "horizon_candidates": [
+                4,
+                8,
+                16,
+                32
+              ],
+              "direct_rollout": 2,
+              "align_weight": 0.0,
+              "horizon_eval": 10000,
+              "eval_episodes": 64,
+              "bootstrap": 2000,
+              "parameter_tolerance": 0.005,
+              "outcome_gate_seeds": [
+                12000,
+                12001,
+                12002,
+                12003,
+                12004,
+                12005,
+                12006,
+                12007
+              ],
+              "outcome_gate_steps": [
+                0,
+                15,
+                40,
+                80,
+                110
+              ],
+              "outcome_gate_limit": 400,
+              "outcome_gate_flow_samples": 4,
+              "outcome_gate_min_opportunities": 3,
+              "gamma": 0.997,
+              "lam": 0.95,
+              "pmpo_alpha": 0.5,
+              "prior_beta": 0.3,
+              "sequence": 16,
+              "sequence_long": 64,
+              "dynamics_context": 48,
+              "long_batch_every": 4,
+              "long_only_fraction": 0.25,
+              "commit_prefix_fraction": 0.25,
+              "episode_start_fraction": 0.25,
+              "terminal_batch": 1,
+              "event_fraction": 0.5,
+              "batch": 4,
+              "actor_batch": 16,
+              "gradient_checkpointing": true,
+              "rms_decay": 0.99,
+              "learning_rate": 0.0001,
+              "weight_decay": 0.01,
+              "grad_clip": 1.0,
+              "warmup": 1000,
+              "checkpoint_every": 500,
+              "ema_momentum": [
+                0.996,
+                1.0
+              ],
+              "seed": 20260731,
+              "device": "cuda"
+            },
+            "evaluation_device": "cuda"
+          },
+          "feature_dimension": 1024,
+          "observed_fit_on_observed": {
+            "linear": [
+              {
+                "cache_key": "b5897b7ec562cd72b88299c0520e9146f33d0ecc2531a285174a37fe962303e8",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 31,
+                "rate": 0.8611111044883728,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.9616733193397522,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 34,
+                  "rate_on_original_opportunities": 0.9444444179534912,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.953703761100769,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  9,
+                  5,
+                  5,
+                  10,
+                  0,
+                  7,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "38b970aacf0d50f143ebae5b07147b056594a1251a2a62b7cac4955b0878eadc",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 31,
+                "rate": 0.8611111044883728,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.9616733193397522,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 34,
+                  "rate_on_original_opportunities": 0.9444444179534912,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.953703761100769,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  9,
+                  5,
+                  5,
+                  10,
+                  0,
+                  7,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "cf0efa23980ae1ebd7426c12ee656be5ea4acdd534512e835d9b83804e0824e8",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 31,
+                "rate": 0.8611111044883728,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.9616733193397522,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 34,
+                  "rate_on_original_opportunities": 0.9444444179534912,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.953703761100769,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  9,
+                  5,
+                  5,
+                  10,
+                  0,
+                  7,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ],
+            "mlp": [
+              {
+                "cache_key": "c3d6004b86234cc8ba763520d2aa65e8ea3176aae28577957cc72f39661d2666",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 36,
+                "rate": 1.0,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.9581019282341003,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 36,
+                  "rate_on_original_opportunities": 1.0,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.9745371341705322,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  8,
+                  9,
+                  8,
+                  11,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "1777a8ebddbd661ff47a70d8260b7d88b086cc8e050c378900d258b943daef0c",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 36,
+                "rate": 1.0,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.9581019282341003,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 36,
+                  "rate_on_original_opportunities": 1.0,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.9745371341705322,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  8,
+                  9,
+                  8,
+                  11,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "38f528945e7f921f8082687048bc2ed9862feddec3ec50301ec729c51e184b27",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 36,
+                "rate": 1.0,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.9581019282341003,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 36,
+                  "rate_on_original_opportunities": 1.0,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.9745371341705322,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  8,
+                  9,
+                  8,
+                  11,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "216d8f2746082bacde6e866fdf0ddc3a95006a0f6624bb17334deb71c096080e",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 36,
+                "rate": 1.0,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.9581019282341003,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 36,
+                  "rate_on_original_opportunities": 1.0,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.9745371341705322,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  8,
+                  9,
+                  8,
+                  11,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "opportunity_panel": {
+        "train": {
+          "roots": 56,
+          "episodes": 56,
+          "terminal_tail_roots": 52,
+          "root_health_counts": {
+            "1.0": 19,
+            "2.0": 32,
+            "3.0": 1,
+            "7.0": 1,
+            "9.0": 3
+          },
+          "front_lava_roots": 1,
+          "sleeping_roots": 0,
+          "safe_per_action": [
+            7,
+            34,
+            35,
+            29,
+            38,
+            8,
+            9,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7
+          ],
+          "safe_count_histogram": [
+            0,
+            6,
+            16,
+            27,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            6,
+            0
+          ]
+        },
+        "dev": {
+          "roots": 36,
+          "episodes": 36,
+          "terminal_tail_roots": 34,
+          "root_health_counts": {
+            "1.0": 13,
+            "2.0": 21,
+            "3.0": 1,
+            "9.0": 1
+          },
+          "front_lava_roots": 0,
+          "sleeping_roots": 0,
+          "safe_per_action": [
+            4,
+            19,
+            23,
+            18,
+            22,
+            4,
+            6,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ],
+          "safe_count_histogram": [
+            0,
+            6,
+            11,
+            15,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            3,
+            0
+          ]
+        }
+      }
+    },
+    "transformer": {
+      "sidecar_sha256": "ead287f0f9a1aac03d20db701100bd76f387fbac1ec4a03eab661fc82e2be3c0",
+      "dev_roots": 128,
+      "opportunity_roots": 36,
+      "opportunity_episodes": 36,
+      "uniform_safe_rate": 0.2222222238779068,
+      "arms": {
+        "raw": {
+          "identity": {
+            "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_transformer_comparison/paired/raw/joint/step-010000.pt",
+            "sha256": "ead024db0276478c01a5b92ce1eceebfd8e992af8e4ddaf00780c2c0de990113",
+            "step": 10000,
+            "recipe_id": "a83f36e627fad5422b33f5b855e979cb4465ab29cee43c4f7bab06129e5f4630",
+            "source_evaluation": {
+              "current": {
+                "schema": "d4mj_lewm_sources_v1",
+                "pins": {
+                  "lucas-maes__le-wm": {
+                    "url": "https://github.com/lucas-maes/le-wm.git",
+                    "commit": "8edfeb336732b5f3ce7b8b210d0ba370a09e2cac"
+                  },
+                  "galilai-group__stable-pretraining": {
+                    "url": "https://github.com/galilai-group/stable-pretraining.git",
+                    "commit": "9aa93f8b6153eebb73f57d4853ccf8a13d848310"
+                  },
+                  "state-spaces__mamba": {
+                    "url": "https://github.com/state-spaces/mamba.git",
+                    "commit": "f577286d052741c35d39cd43bdc3fad27120f22c"
+                  }
+                },
+                "references": {
+                  "sources_lock": "e28af969bd86f10f274f1b47dc55bf1f0d6a5208ba1ba535897d964d8b04afdd",
+                  "papers_lock": "ba63f70189769007dc90af89efe9a29b5a7fee276ff1e52140ed2f5f49898343",
+                  "dependencies_lock": "3a3e19a6b333c6dc466b1f6e8941fd8210ab7eda164416a562dd784ce2034709",
+                  "tc_paper": "b15777f14c11b8196a32665a037822425e0016dc7682852ff11c79b4e52b9ef3",
+                  "vit_helper": "4254967db78d759b6238c6b9a5ef8219e643b1a5d165d63d5da69d740c4ec6de",
+                  "pixel_statistics": "b5063768d173792bbb38a25acf9ea2a599e3adcbea077cf9507ee0c5ca258302",
+                  "lucas-maes__le-wm/LICENSE": "4882021920cbd61e050e4dc2e02440e9bd36ea4cbc5803e738a2ee3d63502e07",
+                  "galilai-group__stable-pretraining/LICENSE": "8fa02eaa4e67a5455e8ab9268b29e0c283d4b4a5ae239f88282c00392f373bfd",
+                  "state-spaces__mamba/LICENSE": "760939b000194d04548ede6a857bbe735d1695d8422ec85955c8e2bd7f4b95c5",
+                  "lewm/train.py": "5d5666a785148635f8bcb50b49f98dd4527c5aba8a02d90206eb5d46406079d2",
+                  "lewm/module.py": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620",
+                  "lewm/jepa.py": "41bad7fd21e0f14aea4c9c3d39a9c87037e787746d953ab62cdc0677e938ce96",
+                  "lewm/utils.py": "b3e5cfce6d0eecd9510f06a7adc178edde86074e1474b899ff739ed8a5355b08",
+                  "lewm/config/train/lewm.yaml": "a90ec80bc30a6b33228047222d6b897d4df14b57b4879727b9d8284a00a9d7a3",
+                  "lewm/config/train/model/lewm.yaml": "7be97eaa2c83f809b9ea7a6da5a7d3f3c70502c27537383f54db32335e21e42b",
+                  "lewm_source/module.py": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620",
+                  "lewm_source/jepa.py": "41bad7fd21e0f14aea4c9c3d39a9c87037e787746d953ab62cdc0677e938ce96",
+                  "lewm_source/config/train/model/lewm.yaml": "7be97eaa2c83f809b9ea7a6da5a7d3f3c70502c27537383f54db32335e21e42b"
+                },
+                "runtime": {
+                  "transformers_vit": "d6e8e18d0d7c32beaac672b5701f1e83d72df62781e79f8508ca7f3dc0db9de2",
+                  "transformers_modeling_utils": "b440b5e30a7b9cd58beeaafa32d0d8da3aef6a6f88fe7f9999bb1065f722a9dc",
+                  "transformers_sdpa": "fdf62fb0eb9b5dc0a6796a7e526015865267f271a0d5ac8377968ad05d1454b8",
+                  "transformers_config": "0ec851794e2692154466915ecd7344ab77f42b8c1ca7832078bfe9e5af5e506c",
+                  "d4mj/lewm_config.py": "97f6a6da9065e00c491fcb4d3874749138f39becfc373853bd0221fd0c69e48c",
+                  "d4mj/lewm.py": "682117426d0fd84e6babe2185002e0bf50d7fbcdeeb4d458eb06efe893b91256",
+                  "d4mj/mamba_recurrence.py": "8de9df2578d7bf45c9d98acaf51c99d03ca9185c641f8b09ae107370133bf4c0",
+                  "d4mj/world_api.py": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b",
+                  "d4mj/state.py": "dcda26ce33cdefb76163c8067954646399e3315a3a01ac85a0d474b2f76cf594",
+                  "d4mj/config.py": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f",
+                  "d4mj/cache.py": "a8b1cd9a5a0bf1476c26915ed2cc46b5b616a536e256bfc8f9f5aab4c71bc282",
+                  "d4mj/train.py": "28982607d430a68712417f9d89f9e6a913a64fbe2618843f43e8081c7dcddd10",
+                  "d4mj/checkpoint.py": "01f102f1741675d4fb45795dd3658b774d4c9fad9581172461b43b4a06d3dfcb",
+                  "d4mj/data.py": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea",
+                  "d4mj/sources.py": "ef8ac3e2b4229afb5305bd7d4e171bec92d2a2a1fe987252c691bed9637f16ea",
+                  "d4mj/gates.py": "7a0d7ebbab8e03ada6918c81273f8804ac8cade95f78151516c1e0e4009df5c5",
+                  "d4mj/lewm_diagnostics.py": "27d75ab046c672909394a8fa8f0a32acd096f043e5193185acc352f8682cc18b",
+                  "d4mj/experiments.py": "16806f18316d88a4e243f2a41a4ed5ab83ca0bab555ae88999799297d267906b",
+                  "d4mj/__main__.py": "1399bc986938f34578fa54eb2d0fef80f35b73507d3b5e4024854f7cdb781577",
+                  "d4mj/execution.py": "178f31609813e11f07403306bbbfff8faf613a34e511ac651b62c19c122914b4",
+                  "d4mj/imagination.py": "f0d110aa70e73fed3669ac0e2a30cf3d13012ed6319dbd9b7967bbf17f9edd91",
+                  "d4mj/diagnostics.py": "506a1d47b8a66bae745e78a85db8c80c2392898e86546430091e777292121db9",
+                  "d4mj/lewm_transformer.py": "ffd215fea3945e5d62419e5ac2375060ecde596c43e53135f02f930bfaf5519e"
+                },
+                "versions": {
+                  "torch": "2.13.0",
+                  "transformers": "5.13.0",
+                  "mamba-ssm": "2.3.2.post1",
+                  "triton": "3.7.1",
+                  "einops": "0.8.2",
+                  "numpy": "2.1.0",
+                  "safetensors": "0.8.0"
+                },
+                "execution": {
+                  "float32_matmul_precision": "highest",
+                  "cuda_matmul_tf32": false,
+                  "cudnn_tf32": true,
+                  "cudnn_benchmark": false,
+                  "cudnn_deterministic": false,
+                  "deterministic_algorithms": false,
+                  "triton_f32_default": "ieee"
+                }
+              },
+              "allowed_delta": {}
+            }
+          },
+          "feature_dimension": 192,
+          "observed_fit_on_observed": {
+            "linear": [
+              {
+                "cache_key": "811297a47d87271a2a3d31c84144dc7f39a70534ce471293746f8ab521755533",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 15,
+                "rate": 0.4166666567325592,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.8093419671058655,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 19,
+                  "rate_on_original_opportunities": 0.5277777910232544,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.4699074327945709,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  1,
+                  7,
+                  0,
+                  5,
+                  0,
+                  23,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "3a0e4775a804e7e76c19e03c2266bd7aedb143b4b484696adecd7d72c13d2fb8",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 15,
+                "rate": 0.4166666567325592,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.8093419671058655,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 19,
+                  "rate_on_original_opportunities": 0.5277777910232544,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.4699074327945709,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  1,
+                  7,
+                  0,
+                  5,
+                  0,
+                  23,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "135cb47efc789abc6867c8091ae6ffbe414c581469cff181226002138d06657d",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 15,
+                "rate": 0.4166666567325592,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.8093419671058655,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 19,
+                  "rate_on_original_opportunities": 0.5277777910232544,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.4699074327945709,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  1,
+                  7,
+                  0,
+                  5,
+                  0,
+                  23,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ],
+            "mlp": [
+              {
+                "cache_key": "f1d3ecdf6772cc24951b0ff9a466f5b283132c4345e1d178d6cb5ab3b4692413",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 14,
+                "rate": 0.3888888955116272,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.7781745791435242,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 21,
+                  "rate_on_original_opportunities": 0.5833333134651184,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.47453704476356506,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  2,
+                  4,
+                  1,
+                  4,
+                  2,
+                  23,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "d0c6f6c2cf159ac95752d47933aaade252c68a41f4f8006610c012373884efbe",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 14,
+                "rate": 0.3888888955116272,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.7781745791435242,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 21,
+                  "rate_on_original_opportunities": 0.5833333134651184,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.47453704476356506,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  2,
+                  4,
+                  1,
+                  4,
+                  2,
+                  23,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "2a4c9264802ef25aa7086ccef35da2eeca260b6ba4554562ee4e10bdabdd1c66",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 14,
+                "rate": 0.3888888955116272,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.7781745791435242,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 21,
+                  "rate_on_original_opportunities": 0.5833333134651184,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.47453704476356506,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  2,
+                  4,
+                  1,
+                  4,
+                  2,
+                  23,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "3d0e0d605da5acfa36be40818270a518ebd8bc665495a08605ee9b3df34c96f4",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 14,
+                "rate": 0.3888888955116272,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.7781745791435242,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 21,
+                  "rate_on_original_opportunities": 0.5833333134651184,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.47453704476356506,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  2,
+                  4,
+                  1,
+                  4,
+                  2,
+                  23,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ]
+          }
+        },
+        "tc": {
+          "identity": {
+            "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_transformer_comparison/paired/tc/joint/step-010000.pt",
+            "sha256": "2d33369bf58bda6190760bef88783fff106786f198aa57627fe054b6ad825128",
+            "step": 10000,
+            "recipe_id": "201dee70236c16af0a1844f0f5fc0af1be950d73d236cb519d8758e066c74af0",
+            "source_evaluation": {
+              "current": {
+                "schema": "d4mj_lewm_sources_v1",
+                "pins": {
+                  "lucas-maes__le-wm": {
+                    "url": "https://github.com/lucas-maes/le-wm.git",
+                    "commit": "8edfeb336732b5f3ce7b8b210d0ba370a09e2cac"
+                  },
+                  "galilai-group__stable-pretraining": {
+                    "url": "https://github.com/galilai-group/stable-pretraining.git",
+                    "commit": "9aa93f8b6153eebb73f57d4853ccf8a13d848310"
+                  },
+                  "state-spaces__mamba": {
+                    "url": "https://github.com/state-spaces/mamba.git",
+                    "commit": "f577286d052741c35d39cd43bdc3fad27120f22c"
+                  }
+                },
+                "references": {
+                  "sources_lock": "e28af969bd86f10f274f1b47dc55bf1f0d6a5208ba1ba535897d964d8b04afdd",
+                  "papers_lock": "ba63f70189769007dc90af89efe9a29b5a7fee276ff1e52140ed2f5f49898343",
+                  "dependencies_lock": "3a3e19a6b333c6dc466b1f6e8941fd8210ab7eda164416a562dd784ce2034709",
+                  "tc_paper": "b15777f14c11b8196a32665a037822425e0016dc7682852ff11c79b4e52b9ef3",
+                  "vit_helper": "4254967db78d759b6238c6b9a5ef8219e643b1a5d165d63d5da69d740c4ec6de",
+                  "pixel_statistics": "b5063768d173792bbb38a25acf9ea2a599e3adcbea077cf9507ee0c5ca258302",
+                  "lucas-maes__le-wm/LICENSE": "4882021920cbd61e050e4dc2e02440e9bd36ea4cbc5803e738a2ee3d63502e07",
+                  "galilai-group__stable-pretraining/LICENSE": "8fa02eaa4e67a5455e8ab9268b29e0c283d4b4a5ae239f88282c00392f373bfd",
+                  "state-spaces__mamba/LICENSE": "760939b000194d04548ede6a857bbe735d1695d8422ec85955c8e2bd7f4b95c5",
+                  "lewm/train.py": "5d5666a785148635f8bcb50b49f98dd4527c5aba8a02d90206eb5d46406079d2",
+                  "lewm/module.py": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620",
+                  "lewm/jepa.py": "41bad7fd21e0f14aea4c9c3d39a9c87037e787746d953ab62cdc0677e938ce96",
+                  "lewm/utils.py": "b3e5cfce6d0eecd9510f06a7adc178edde86074e1474b899ff739ed8a5355b08",
+                  "lewm/config/train/lewm.yaml": "a90ec80bc30a6b33228047222d6b897d4df14b57b4879727b9d8284a00a9d7a3",
+                  "lewm/config/train/model/lewm.yaml": "7be97eaa2c83f809b9ea7a6da5a7d3f3c70502c27537383f54db32335e21e42b",
+                  "lewm_source/module.py": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620",
+                  "lewm_source/jepa.py": "41bad7fd21e0f14aea4c9c3d39a9c87037e787746d953ab62cdc0677e938ce96",
+                  "lewm_source/config/train/model/lewm.yaml": "7be97eaa2c83f809b9ea7a6da5a7d3f3c70502c27537383f54db32335e21e42b"
+                },
+                "runtime": {
+                  "transformers_vit": "d6e8e18d0d7c32beaac672b5701f1e83d72df62781e79f8508ca7f3dc0db9de2",
+                  "transformers_modeling_utils": "b440b5e30a7b9cd58beeaafa32d0d8da3aef6a6f88fe7f9999bb1065f722a9dc",
+                  "transformers_sdpa": "fdf62fb0eb9b5dc0a6796a7e526015865267f271a0d5ac8377968ad05d1454b8",
+                  "transformers_config": "0ec851794e2692154466915ecd7344ab77f42b8c1ca7832078bfe9e5af5e506c",
+                  "d4mj/lewm_config.py": "97f6a6da9065e00c491fcb4d3874749138f39becfc373853bd0221fd0c69e48c",
+                  "d4mj/lewm.py": "682117426d0fd84e6babe2185002e0bf50d7fbcdeeb4d458eb06efe893b91256",
+                  "d4mj/mamba_recurrence.py": "8de9df2578d7bf45c9d98acaf51c99d03ca9185c641f8b09ae107370133bf4c0",
+                  "d4mj/world_api.py": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b",
+                  "d4mj/state.py": "dcda26ce33cdefb76163c8067954646399e3315a3a01ac85a0d474b2f76cf594",
+                  "d4mj/config.py": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f",
+                  "d4mj/cache.py": "a8b1cd9a5a0bf1476c26915ed2cc46b5b616a536e256bfc8f9f5aab4c71bc282",
+                  "d4mj/train.py": "28982607d430a68712417f9d89f9e6a913a64fbe2618843f43e8081c7dcddd10",
+                  "d4mj/checkpoint.py": "01f102f1741675d4fb45795dd3658b774d4c9fad9581172461b43b4a06d3dfcb",
+                  "d4mj/data.py": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea",
+                  "d4mj/sources.py": "ef8ac3e2b4229afb5305bd7d4e171bec92d2a2a1fe987252c691bed9637f16ea",
+                  "d4mj/gates.py": "7a0d7ebbab8e03ada6918c81273f8804ac8cade95f78151516c1e0e4009df5c5",
+                  "d4mj/lewm_diagnostics.py": "27d75ab046c672909394a8fa8f0a32acd096f043e5193185acc352f8682cc18b",
+                  "d4mj/experiments.py": "16806f18316d88a4e243f2a41a4ed5ab83ca0bab555ae88999799297d267906b",
+                  "d4mj/__main__.py": "1399bc986938f34578fa54eb2d0fef80f35b73507d3b5e4024854f7cdb781577",
+                  "d4mj/execution.py": "178f31609813e11f07403306bbbfff8faf613a34e511ac651b62c19c122914b4",
+                  "d4mj/imagination.py": "f0d110aa70e73fed3669ac0e2a30cf3d13012ed6319dbd9b7967bbf17f9edd91",
+                  "d4mj/diagnostics.py": "506a1d47b8a66bae745e78a85db8c80c2392898e86546430091e777292121db9",
+                  "d4mj/lewm_transformer.py": "ffd215fea3945e5d62419e5ac2375060ecde596c43e53135f02f930bfaf5519e"
+                },
+                "versions": {
+                  "torch": "2.13.0",
+                  "transformers": "5.13.0",
+                  "mamba-ssm": "2.3.2.post1",
+                  "triton": "3.7.1",
+                  "einops": "0.8.2",
+                  "numpy": "2.1.0",
+                  "safetensors": "0.8.0"
+                },
+                "execution": {
+                  "float32_matmul_precision": "highest",
+                  "cuda_matmul_tf32": false,
+                  "cudnn_tf32": true,
+                  "cudnn_benchmark": false,
+                  "cudnn_deterministic": false,
+                  "deterministic_algorithms": false,
+                  "triton_f32_default": "ieee"
+                }
+              },
+              "allowed_delta": {}
+            }
+          },
+          "feature_dimension": 192,
+          "observed_fit_on_observed": {
+            "linear": [
+              {
+                "cache_key": "5b8734f557627e1a12523bb9adfbdb1acbaa815de64a52c5ee387b1a1ea9db8a",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 9,
+                "rate": 0.25,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.6190807223320007,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 23,
+                  "rate_on_original_opportunities": 0.6388888955116272,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.49537038803100586,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  0,
+                  2,
+                  1,
+                  5,
+                  0,
+                  25,
+                  1,
+                  1,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "486ecbc2221ed2c350e6313d0519de9900c6a8a5d17e0afc52b49fd148ebfb24",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 9,
+                "rate": 0.25,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.6190807223320007,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 23,
+                  "rate_on_original_opportunities": 0.6388888955116272,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.49537038803100586,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  0,
+                  2,
+                  1,
+                  5,
+                  0,
+                  25,
+                  1,
+                  1,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "726dda9472c08a732e520613f5da0adf022cdf104b69f4cfbabf13c9bc3565cd",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 9,
+                "rate": 0.25,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.6190807223320007,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 23,
+                  "rate_on_original_opportunities": 0.6388888955116272,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.49537038803100586,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  0,
+                  2,
+                  1,
+                  5,
+                  0,
+                  25,
+                  1,
+                  1,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ],
+            "mlp": [
+              {
+                "cache_key": "7b6af87800956fd1ff54185462355321282ffb893b2efb06ae6d2d518ffe18ad",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 6,
+                "rate": 0.1666666716337204,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.5342427492141724,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 16,
+                  "rate_on_original_opportunities": 0.4444444477558136,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.4560185670852661,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  0,
+                  3,
+                  1,
+                  6,
+                  0,
+                  20,
+                  2,
+                  0,
+                  3,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "0d23637f77a0de4ee8ba787228984ba37aac40f9a81f532d767cf6f3062cd2c2",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 6,
+                "rate": 0.1666666716337204,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.5342427492141724,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 16,
+                  "rate_on_original_opportunities": 0.4444444477558136,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.4560185670852661,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  0,
+                  3,
+                  1,
+                  6,
+                  0,
+                  20,
+                  2,
+                  0,
+                  3,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "bd811f093a69496acb532a2f2c659f0b58591f726c70ecfc52a023ae1e4807ff",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 6,
+                "rate": 0.1666666716337204,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.5342427492141724,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 16,
+                  "rate_on_original_opportunities": 0.4444444477558136,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.4560185670852661,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  0,
+                  3,
+                  1,
+                  6,
+                  0,
+                  20,
+                  2,
+                  0,
+                  3,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "a51f20663955a987a676808479bbeaf74dee48fb7b6bae548e1e16550ea2f6a9",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 6,
+                "rate": 0.1666666716337204,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.5342427492141724,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 16,
+                  "rate_on_original_opportunities": 0.4444444477558136,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.4560185670852661,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  0,
+                  3,
+                  1,
+                  6,
+                  0,
+                  20,
+                  2,
+                  0,
+                  3,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0
+                ]
+              }
+            ]
+          }
+        },
+        "direct_mamba": {
+          "identity": {
+            "name": "direct_mamba",
+            "encoder": {
+              "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/capacity6k/n64d16_s1/encoder_006000.pt",
+              "sha256": "4647c1fbea0cfd16b5262c169c88c8db4334f456d17867b6444315429642907d"
+            },
+            "world": {
+              "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/v2_direct_mamba/world_020000.pt",
+              "sha256": "e74ef7c8e197e752965e214b062af2a43269f065d3d560ccfa67cc182ccabfa5"
+            },
+            "archived_config": {
+              "transition": "direct",
+              "time_mixer": "mamba",
+              "resolution": 63,
+              "channels": 3,
+              "patch": 7,
+              "n_actions": 17,
+              "window": 16,
+              "n_latents": 64,
+              "d_bottleneck": 16,
+              "packing": 2,
+              "mae_p_max": 0.9,
+              "lpips_weight": 0.2,
+              "d_model_encoder": 256,
+              "depth_encoder": 8,
+              "n_heads_encoder": 4,
+              "d_model": 256,
+              "depth": 8,
+              "n_heads": 4,
+              "mlp_ratio": 4.0,
+              "time_every": 4,
+              "n_register": 4,
+              "n_agent": 2,
+              "mamba_d_state": 64,
+              "mamba_headdim": 64,
+              "mamba_expand": 1,
+              "mamba_d_conv": 4,
+              "k_max": 8,
+              "rungs": 4,
+              "tau_ctx_noise": 0.1,
+              "self_fraction": 0.25,
+              "bootstrap_start": 10000,
+              "mtp_leads": 8,
+              "bins": 255,
+              "symlog_limit": 20.0,
+              "horizon": 8,
+              "horizon_candidates": [
+                4,
+                8,
+                16,
+                32
+              ],
+              "direct_rollout": 2,
+              "align_weight": 0.0,
+              "horizon_eval": 10000,
+              "eval_episodes": 64,
+              "bootstrap": 2000,
+              "parameter_tolerance": 0.005,
+              "outcome_gate_seeds": [
+                12000,
+                12001,
+                12002,
+                12003,
+                12004,
+                12005,
+                12006,
+                12007
+              ],
+              "outcome_gate_steps": [
+                0,
+                15,
+                40,
+                80,
+                110
+              ],
+              "outcome_gate_limit": 400,
+              "outcome_gate_flow_samples": 4,
+              "outcome_gate_min_opportunities": 3,
+              "gamma": 0.997,
+              "lam": 0.95,
+              "pmpo_alpha": 0.5,
+              "prior_beta": 0.3,
+              "sequence": 16,
+              "sequence_long": 64,
+              "dynamics_context": 48,
+              "long_batch_every": 4,
+              "long_only_fraction": 0.25,
+              "commit_prefix_fraction": 0.25,
+              "episode_start_fraction": 0.25,
+              "terminal_batch": 1,
+              "event_fraction": 0.5,
+              "batch": 4,
+              "actor_batch": 16,
+              "gradient_checkpointing": true,
+              "rms_decay": 0.99,
+              "learning_rate": 0.0001,
+              "weight_decay": 0.01,
+              "grad_clip": 1.0,
+              "warmup": 1000,
+              "checkpoint_every": 500,
+              "ema_momentum": [
+                0.996,
+                1.0
+              ],
+              "seed": 20260731,
+              "device": "cuda"
+            },
+            "evaluation_device": "cuda"
+          },
+          "feature_dimension": 1024,
+          "observed_fit_on_observed": {
+            "linear": [
+              {
+                "cache_key": "b5897b7ec562cd72b88299c0520e9146f33d0ecc2531a285174a37fe962303e8",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 31,
+                "rate": 0.8611111044883728,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.9616733193397522,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 34,
+                  "rate_on_original_opportunities": 0.9444444179534912,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.953703761100769,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  9,
+                  5,
+                  5,
+                  10,
+                  0,
+                  7,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "38b970aacf0d50f143ebae5b07147b056594a1251a2a62b7cac4955b0878eadc",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 31,
+                "rate": 0.8611111044883728,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.9616733193397522,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 34,
+                  "rate_on_original_opportunities": 0.9444444179534912,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.953703761100769,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  9,
+                  5,
+                  5,
+                  10,
+                  0,
+                  7,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "cf0efa23980ae1ebd7426c12ee656be5ea4acdd534512e835d9b83804e0824e8",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 31,
+                "rate": 0.8611111044883728,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.9616733193397522,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 34,
+                  "rate_on_original_opportunities": 0.9444444179534912,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.953703761100769,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  9,
+                  5,
+                  5,
+                  10,
+                  0,
+                  7,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ],
+            "mlp": [
+              {
+                "cache_key": "c3d6004b86234cc8ba763520d2aa65e8ea3176aae28577957cc72f39661d2666",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 36,
+                "rate": 1.0,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.9581019282341003,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 36,
+                  "rate_on_original_opportunities": 1.0,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.9745371341705322,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  8,
+                  9,
+                  8,
+                  11,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "1777a8ebddbd661ff47a70d8260b7d88b086cc8e050c378900d258b943daef0c",
+                "evaluation_key": "observed",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 36,
+                "rate": 1.0,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.9581019282341003,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 36,
+                  "rate_on_original_opportunities": 1.0,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.9745371341705322,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  8,
+                  9,
+                  8,
+                  11,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "38f528945e7f921f8082687048bc2ed9862feddec3ec50301ec729c51e184b27",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 36,
+                "rate": 1.0,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.9581019282341003,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 36,
+                  "rate_on_original_opportunities": 1.0,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.9745371341705322,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  8,
+                  9,
+                  8,
+                  11,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "cache_key": "216d8f2746082bacde6e866fdf0ddc3a95006a0f6624bb17334deb71c096080e",
+                "evaluation_key": "obs",
+                "implementation": "86da9dc6f9a628f343d20e40217a674f23be8774379598c74b98ab934b749640",
+                "settings": {
+                  "probe_batch": 256,
+                  "probe_hidden": 128,
+                  "probe_learning_rate": 0.001,
+                  "probe_steps": 200,
+                  "probe_weight_decay": 0.0001,
+                  "seed": 20260907
+                },
+                "correct": 36,
+                "rate": 1.0,
+                "tied_minimum_roots": 0,
+                "macro_within_root_auc": 0.9581019282341003,
+                "movement_diagnostic": {
+                  "warning": "restricted action set; diagnostic only; does not repair the 17-action gate",
+                  "correct_on_original_opportunities": 36,
+                  "rate_on_original_opportunities": 1.0,
+                  "movement_opportunity_roots": 36,
+                  "within_movement_auc": 0.9745371341705322,
+                  "uniform_on_original_opportunities": 0.5694444179534912
+                },
+                "selected_action_histogram": [
+                  0,
+                  8,
+                  9,
+                  8,
+                  11,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "opportunity_panel": {
+        "train": {
+          "roots": 56,
+          "episodes": 56,
+          "terminal_tail_roots": 52,
+          "root_health_counts": {
+            "1.0": 19,
+            "2.0": 32,
+            "3.0": 1,
+            "7.0": 1,
+            "9.0": 3
+          },
+          "front_lava_roots": 1,
+          "sleeping_roots": 0,
+          "safe_per_action": [
+            7,
+            34,
+            35,
+            29,
+            38,
+            8,
+            9,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7
+          ],
+          "safe_count_histogram": [
+            0,
+            6,
+            16,
+            27,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            6,
+            0
+          ]
+        },
+        "dev": {
+          "roots": 36,
+          "episodes": 36,
+          "terminal_tail_roots": 34,
+          "root_health_counts": {
+            "1.0": 13,
+            "2.0": 21,
+            "3.0": 1,
+            "9.0": 1
+          },
+          "front_lava_roots": 0,
+          "sleeping_roots": 0,
+          "safe_per_action": [
+            4,
+            19,
+            23,
+            18,
+            22,
+            4,
+            6,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ],
+          "safe_count_histogram": [
+            0,
+            6,
+            11,
+            15,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            3,
+            0
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "mamba_raw":       {"checkpoint":"artifacts/lewm_gates_20260906/paired/raw/joint/step-010000.pt","family":"lewm"},
+  "mamba_tc":        {"checkpoint":"artifacts/lewm_gates_20260906/paired/tc/joint/step-010000.pt","family":"lewm"},
+  "transformer_raw": {"checkpoint":"artifacts/lewm_transformer_comparison/paired/raw/joint/step-010000.pt","family":"lewm"},
+  "transformer_tc":  {"checkpoint":"artifacts/lewm_transformer_comparison/paired/tc/joint/step-010000.pt","family":"lewm"}
+}

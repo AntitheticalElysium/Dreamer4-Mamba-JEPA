@@ -1,0 +1,56 @@
+{
+  "death_equals_health_le_0": 1.0,
+  "choice_by_true_health": {
+    "safe_choice": 0,
+    "opportunity_roots": 36,
+    "safe_choice_rate": 0.0,
+    "within_root_auc": 0.0,
+    "argmin_ties": 33,
+    "selected_actions": [
+      32,
+      3,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "choice_by_true_label": {
+    "safe_choice": 36,
+    "opportunity_roots": 36,
+    "safe_choice_rate": 1.0,
+    "within_root_auc": 1.0,
+    "argmin_ties": 30,
+    "selected_actions": [
+      4,
+      18,
+      10,
+      3,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "note": "replay/label sanity, NOT a learned-representation score"
+}
