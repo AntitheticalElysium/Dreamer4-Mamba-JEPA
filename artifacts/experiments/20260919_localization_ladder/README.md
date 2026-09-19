@@ -158,6 +158,34 @@ tokens still reach 0.833 / 34.7, so it is not *exclusively* HUD.
 **Scope caveat.** 34/36 DEV roots are terminal-tail with root health 1–2, so this decision largely
 reduces to "which action takes health to zero". It may not transfer to non-threshold decisions.
 
+## Phase 5 — where inside the predictor does the action's influence die?
+
+It does not die at a stage. **The consequence is never constructed.**
+
+Forward hooks on the gate's own 17-action branch fan; the hooked generated z reproduces the
+published tensor exactly (max_abs 0.0, both arms).
+
+| tap | mamba_raw (control 19.0) | mamba_tc (control 23.7) |
+|---|---:|---:|
+| pair_projection | 17.0 | **26.0** |
+| mamba_block_0…5 | 17–21 | 24 → 21 |
+| final_norm (h) | 18.0 | 21.0 |
+| projector Linear→BN→GELU | 18–19 | 20 → 18 → 20 |
+| **projector final Linear = generated z** | **14.0** | **18.0** |
+
+For **mamba_raw, no tap exceeds its root+action control at any depth** — every stage sits at
+14–21 with a *negative* action cost, from the first projection onward. For **mamba_tc**, only the
+`pair_projection` is marginally above control (26.0, cost +2.62), and that margin decays
+monotonically with depth. Two different internal profiles, the same endpoint.
+
+Secondary: the final 192-d output projection is additionally lossy — raw drops 19.0 (GELU) →
+14.0 (final Linear), the worst tap on the path.
+
+**What this means for the repair.** This is not a "find the broken stage" problem. The predictor
+carries a representation of (root, action) through and never computes the successor consequence
+that distinguishes the fatal branch. Deepening, widening or re-exporting does not address that —
+the training signal that would demand it is what is missing.
+
 ## Controls
 
 | control | mean /36 |

@@ -575,7 +575,8 @@
   "CONFIRMED": [
     "SYMPTOM 1 (readout objective) CONFIRMED on an untouched 100-root historical panel: real z rank 93.0 vs bce 74.7, paired episode-cluster intervals exclude zero for all three seeds (+0.16/+0.22/+0.17).",
     "SYMPTOM 2 (export) confirmed on DEV with paired intervals excluding zero for all seeds (+0.176). NOT testable on the confirmation panel: historical shards publish z only, no patch taps.",
-    "SYMPTOM 3 (generated utility) CONFIRMED on the untouched panel: generated z 51.3 vs root+action 55.7; no seed's interval excludes zero in the favourable direction."
+    "SYMPTOM 3 (generated utility) CONFIRMED on the untouched panel: generated z 51.3 vs root+action 55.7; no seed's interval excludes zero in the favourable direction.",
+    "PHASE 5: the predictor never constructs the consequence. No mamba_raw tap beats its root+action control at any depth; mamba_tc's only positive margin is at the input projection and decays with depth. Replicated across both arms, with exact generated-z parity."
   ],
   "phase4_corrections_to_my_own_claims": [
     "MY SINGLE-DRAW DERANGEMENT WAS NOISE. Over 20 draws mamba_raw scores 14.0 intact vs 17.9 deranged (cost -3.9): its generated successors carry NO usable action information, and my reported 'cost 0.0' was one lucky draw. Ordering: mamba_raw -3.9 < mamba_tc 0.95 < world_u_u 2.8 < transformer_raw 7.2 < direct 16.05.",
@@ -588,5 +589,203 @@
     "not_a_backend_swap": "the Transformer improves action-conditioning 7.2 vs -3.9 without improving decision utility over its control",
     "the_open_question": "why action-conditional generated states still fail to beat root+action. Candidates the ladder did NOT separate: the MSE objective favouring predictable persistent coordinates, the pair/action projection, successive Mamba blocks, the prediction projector, training horizon. The ladder stops at final h and generated output.",
     "cheapest_next": "instrument the predictor internals on the EXISTING u world -- pair/action projection, per-block state, prediction-projector stages -- since real u is 36/36 and generated u is 23.0 on one lineage, which brackets the loss tightly."
+  },
+  "phase5_predictor_internals": {
+    "method": "forward hooks on the gate's own 17-action branch fan: pair_projection, every Mamba block, final_norm (h), each predictor_projector stage, and generated z. Parity asserted: the hooked generated z reproduces the published tensor exactly (max_abs 0.0 both arms).",
+    "controls": {
+      "mamba_raw_root_action": 19.0,
+      "mamba_tc_root_action": 23.7
+    },
+    "taps": {
+      "mamba_raw": [
+        {
+          "tap": "pair_projection",
+          "dim": 256,
+          "intact": 17.0,
+          "deranged_mean": 19.62,
+          "action_cost": -2.62
+        },
+        {
+          "tap": "mamba_block_0",
+          "dim": 256,
+          "intact": 17.0,
+          "deranged_mean": 20.75,
+          "action_cost": -3.75
+        },
+        {
+          "tap": "mamba_block_1",
+          "dim": 256,
+          "intact": 20.0,
+          "deranged_mean": 21.62,
+          "action_cost": -1.62
+        },
+        {
+          "tap": "mamba_block_2",
+          "dim": 256,
+          "intact": 19.0,
+          "deranged_mean": 21.12,
+          "action_cost": -2.12
+        },
+        {
+          "tap": "mamba_block_3",
+          "dim": 256,
+          "intact": 21.0,
+          "deranged_mean": 21.5,
+          "action_cost": -0.5
+        },
+        {
+          "tap": "mamba_block_4",
+          "dim": 256,
+          "intact": 19.0,
+          "deranged_mean": 22.12,
+          "action_cost": -3.12
+        },
+        {
+          "tap": "mamba_block_5",
+          "dim": 256,
+          "intact": 19.0,
+          "deranged_mean": 21.25,
+          "action_cost": -2.25
+        },
+        {
+          "tap": "final_norm_h",
+          "dim": 256,
+          "intact": 18.0,
+          "deranged_mean": 20.88,
+          "action_cost": -2.88
+        },
+        {
+          "tap": "projector_0_Linear",
+          "dim": 2048,
+          "intact": 18.0,
+          "deranged_mean": 20.0,
+          "action_cost": -2.0
+        },
+        {
+          "tap": "projector_1_BatchNorm1d",
+          "dim": 2048,
+          "intact": 18.0,
+          "deranged_mean": 20.12,
+          "action_cost": -2.12
+        },
+        {
+          "tap": "projector_2_GELU",
+          "dim": 2048,
+          "intact": 19.0,
+          "deranged_mean": 20.5,
+          "action_cost": -1.5
+        },
+        {
+          "tap": "projector_3_Linear",
+          "dim": 192,
+          "intact": 14.0,
+          "deranged_mean": 19.5,
+          "action_cost": -5.5
+        },
+        {
+          "tap": "generated_z",
+          "dim": 192,
+          "intact": 14.0,
+          "deranged_mean": 19.5,
+          "action_cost": -5.5
+        }
+      ],
+      "mamba_tc": [
+        {
+          "tap": "pair_projection",
+          "dim": 256,
+          "intact": 26.0,
+          "deranged_mean": 23.38,
+          "action_cost": 2.62
+        },
+        {
+          "tap": "mamba_block_0",
+          "dim": 256,
+          "intact": 24.0,
+          "deranged_mean": 24.88,
+          "action_cost": -0.88
+        },
+        {
+          "tap": "mamba_block_1",
+          "dim": 256,
+          "intact": 22.0,
+          "deranged_mean": 23.88,
+          "action_cost": -1.88
+        },
+        {
+          "tap": "mamba_block_2",
+          "dim": 256,
+          "intact": 23.0,
+          "deranged_mean": 21.88,
+          "action_cost": 1.12
+        },
+        {
+          "tap": "mamba_block_3",
+          "dim": 256,
+          "intact": 20.0,
+          "deranged_mean": 21.88,
+          "action_cost": -1.88
+        },
+        {
+          "tap": "mamba_block_4",
+          "dim": 256,
+          "intact": 22.0,
+          "deranged_mean": 21.62,
+          "action_cost": 0.38
+        },
+        {
+          "tap": "mamba_block_5",
+          "dim": 256,
+          "intact": 21.0,
+          "deranged_mean": 21.12,
+          "action_cost": -0.12
+        },
+        {
+          "tap": "final_norm_h",
+          "dim": 256,
+          "intact": 21.0,
+          "deranged_mean": 21.62,
+          "action_cost": -0.62
+        },
+        {
+          "tap": "projector_0_Linear",
+          "dim": 2048,
+          "intact": 20.0,
+          "deranged_mean": 21.88,
+          "action_cost": -1.88
+        },
+        {
+          "tap": "projector_1_BatchNorm1d",
+          "dim": 2048,
+          "intact": 18.0,
+          "deranged_mean": 21.75,
+          "action_cost": -3.75
+        },
+        {
+          "tap": "projector_2_GELU",
+          "dim": 2048,
+          "intact": 20.0,
+          "deranged_mean": 22.38,
+          "action_cost": -2.38
+        },
+        {
+          "tap": "projector_3_Linear",
+          "dim": 192,
+          "intact": 18.0,
+          "deranged_mean": 17.88,
+          "action_cost": 0.12
+        },
+        {
+          "tap": "generated_z",
+          "dim": 192,
+          "intact": 18.0,
+          "deranged_mean": 17.88,
+          "action_cost": 0.12
+        }
+      ]
+    },
+    "ANSWER": "The action's influence does not die at a stage -- the consequence is never constructed. For mamba_raw NO tap exceeds its root+action control (19.0) at any depth: every stage sits at 14-21 with a NEGATIVE action cost, from the first pair_projection onward. For mamba_tc the pair_projection alone is marginally above control (26.0, cost +2.62) and that margin is eroded monotonically with depth to 18.0 at the output. Two different internal profiles, the same endpoint.",
+    "secondary": "the final 192-d output projection is additionally lossy: mamba_raw 19.0 (GELU) -> 14.0 (final Linear), a 5-point drop at the last layer, replicated as the worst tap of the path.",
+    "consequence_for_repair": "this is NOT a 'where did it get lost' problem with a stage to fix. The predictor passes a representation of (root, action) through and never computes the successor consequence that distinguishes the fatal branch. Deepening, widening or re-exporting does not address that; the training signal that would require it does."
   }
 }
