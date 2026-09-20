@@ -59,12 +59,37 @@ Declared now so it cannot be rationalized later:
 - A DEV or FINAL episode reaching joint training.
 - The actor imagining past the depth the bridge trained (`horizon <= trained depth`, checked in code).
 
-## Scope, stated before the result
+## The fork condition, declared
 
-This is **not** paper-minimal LeWM. All-action counterfactual branches contribute to world training
-through a separately declared term at Direct's mass. It is our LeWM-Mamba candidate under the
-project's corrected Direct data contract. Whether the fork component was necessary is a later
-ablation, not a claim this run can make.
+**FLATTENED.** Each `broad_forks_v2` (root, action) counterfactual is one ordinary episode in the
+corpus, drawn through the normal `JointSampler` minibatch path at the same batch size. `fork_mass`
+is **0.0**: there is no separate branch term and no extra per-update computation. The world
+therefore never sees two actions from the same root in one batch.
+
+This is deliberately *not* the grouped alternative (Direct's branch contract: 4 roots x 17 actions
++ surviving second steps at 20% loss mass, ~136 extra differentiable transitions per update). The
+two answer different questions, and the one declared here is the purer of them:
+
+> can **native** LeWM work when simply exposed to the same examples?
+
+rather than
+
+> can LeWM work when given **Direct-style counterfactual supervision**?
+
+Consequences, stated before any number:
+
+- Fork exposure is **~12.1% of draws**, a share set by `JointSampler`'s window weighting (S56), not
+  tuned. It is a property of the flattening rule; it was not chosen to hit a target.
+- The flattened corpus reaches **joint world training only**. Its history transitions carry
+  fabricated zero rewards — those rewards were never collected — and a counterfactual branch is not
+  logged behaviour, so it is `bc_eligible: False` and is excluded from the bridge's reward,
+  continuation and BC heads by construction, not by convention.
+- This is still **not paper-minimal LeWM**: counterfactual transitions are in the training
+  distribution. It is closer to canonical LeWM than the grouped form, because nothing about the
+  objective or the per-update computation changes.
+- Whether the *supervision structure* matters beyond the *examples* is the grouped-vs-flattened
+  ablation, and this run does not answer it. The 2026-09-19 A' arm does not answer it either: that
+  arm trained on the **logged action only**, one per root.
 
 Only the archive is BC-eligible: the world sees 8,325 TRAIN episodes, BC sees 256 of them
 (552,998 transitions). The primary comparison is internally consistent — actor versus *its own* BC,

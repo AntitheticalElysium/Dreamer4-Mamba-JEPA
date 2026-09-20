@@ -113,39 +113,45 @@ def main(argv=None):
         raise SystemExit("flattening assumes a consecutive encoded window (stride 1)")
 
     paths = sorted(glob.glob(str(FORKS / "seed-*.pt")))[:args.limit]
-    rows = []
-    for path in paths:
-        rows += torch.load(path, map_location="cpu", weights_only=False)
-    seeds = sorted({int(r["seed"]) for r in rows})
+    # Seeds come from the FILENAMES, so the split can be decided without holding the corpus in
+    # memory. Loading all 1,505 root files first peaked at 12 GB RSS; this streams one file at a
+    # time and stays in the hundreds of megabytes.
+    seeds = sorted({int(Path(f).stem.split("-")[1]) for f in paths})
     if any(s in EVAL_SEEDS for s in seeds):
         raise RuntimeError("a fork root sits on a sealed evaluation seed")
     order = torch.randperm(len(seeds), generator=torch.Generator().manual_seed(args.seed))
     held = {seeds[i] for i in order[: int(round(args.holdout * len(seeds)))].tolist()}
 
-    built, shards, counts = [], [], {"train": 0, "dev": 0}
+    built, shards, counts, roots = [], [], {"train": 0, "dev": 0}, 0
     def flush():
         if not built:
             return
         path = args.out / f"shard-{len(shards):04d}.pt"
         shards.append(save_episode_shard(path, built))
-        print(json.dumps({"stage": "shard", "index": len(shards),
-                          "episodes": shards[-1]["episodes"]}), flush=True)
         built.clear()
 
-    for row in rows:
-        split = "dev" if int(row["seed"]) in held else "train"
-        made = episodes_of(row, span, split)
-        counts[split] += len(made)
-        built.extend(made)
-        if len(built) >= args.per_shard:
-            flush()
+    for position, path in enumerate(paths):
+        for row in torch.load(path, map_location="cpu", weights_only=False):
+            seed = int(row["seed"])
+            if seed in EVAL_SEEDS:
+                raise RuntimeError("a fork root sits on a sealed evaluation seed")
+            split = "dev" if seed in held else "train"
+            made = episodes_of(row, span, split)
+            counts[split] += len(made)
+            roots += 1
+            built.extend(made)
+            if len(built) >= args.per_shard:
+                flush()
+        if position % 150 == 0:
+            print(json.dumps({"stage": "flatten", "file": position, "of": len(paths),
+                              "roots": roots, "shards": len(shards)}), flush=True)
     flush()
 
     manifest = {"format": STORE_FORMAT, "kind": "d4mj_forks_flat_v1", "complete": True,
                 "episodes": sum(s["episodes"] for s in shards), "shards": shards,
                 "transitions": sum(s["transitions"] for s in shards),
                 "terminal_episodes": sum(s["terminal_episodes"] for s in shards),
-                "split_episode_counts": counts, "roots": len(rows), "actions": N_ACTIONS,
+                "split_episode_counts": counts, "roots": roots, "actions": N_ACTIONS,
                 "holdout_by": "whole seed", "holdout": args.holdout, "seed": args.seed,
                 "bc_eligible": False, "uniform_eligible": True,
                 "rewards": "counterfactual and second steps carry true rewards; history "

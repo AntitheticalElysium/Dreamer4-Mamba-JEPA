@@ -97,8 +97,8 @@ world sees both. State this in the result; do not let it become an unexamined as
 | | GROUPED (`train_joint_pair.py`, fork_mass 0.2) | FLATTENED (`flatten_forks.py`, extra corpus source) |
 |---|---|---|
 | structure | Direct's branch contract: 4 roots x 17 actions + second steps, as a weighted term | each (root, action) is one ordinary episode drawn by `JointSampler` |
-| per update | **+152 differentiable encoder frames, +136 world transitions** | **none** — same batch, same work |
-| cost | 0.59 s/update | 0.32 s/update |
+| per update | **+152 differentiable encoder frames, +136 world transitions** | **none** — same batch, same FLOPs |
+| cost, **measured** | 0.59 s/update | **0.52 s/update** (0.74 cold, warms) |
 | exposure | pinned at a declared 20% loss mass | ~12.1% of draws, set by window count, not tuned |
 | answers | can LeWM work given *Direct-style counterfactual supervision*? | can *native* LeWM work when simply exposed to the same examples? |
 
@@ -147,21 +147,35 @@ The 2026-09-19 A' arm does **not** already cover the flattened question — it t
 
 ## Budget, measured
 
-Not estimated — timed on this machine at the real recipe (B128, 6 GB card), 60 updates per arm,
-both arms, then again with the fork term switched off to price it:
+Timed on this machine at the real recipe (B128, 6 GB card), both arms, steady state:
 
-| stage | rate | per arm | both arms |
-|---|---|---:|---:|
-| joint, with fork mix | 0.59 s/update steady (1.03 incl. first-arm Triton autotune) | ~1.7–2.9 h | **~3.3–5.8 h** |
-| joint, fork mix off | 0.32 s/update | ~0.9 h | ~1.8 h |
-| bridge (8k observed + 6k recursive) | 0.15 s / 0.70 s per step | ~1.5 h | ~3.0 h |
-| actor (4k steps) | ~0.15 s/step | ~0.2 h | ~0.4 h |
-| evaluation (3 policies x 512 seeds, native cap) | Direct: 7 policies in 167.8 min | ~1.2 h | ~2.4 h |
+| condition | s/update | joint, both arms |
+|---|---:|---:|
+| merged corpus, no forks | 0.32 | ~1.8 h |
+| **flattened forks (selected)** | **0.52** | **~2.9 h** |
+| grouped forks (Direct's contract) | 0.59 | ~3.3 h |
 
-**Whole campaign, end to end: roughly 9–12 hours.** The fork term roughly doubles the joint phase
-(0.59 vs 0.32 s/update) and costs about 1.5–4 h of the total; that is the price of matching
-Direct's data contract, and it is a knob (`fork_mass: 0.0`) rather than a rebuild if it is not
-wanted.
+**Correction to an earlier claim in this file and to the user.** Flattening was described as
+roughly halving the joint phase because it adds no per-update computation. The FLOP argument holds
+— `loss == joint_loss` exactly, no branch term runs — but the wall clock does not follow it.
+Flattening grows the corpus from 45 GB / 10,400 episodes to 60 GB / 265,672 episodes, and
+`JointSampler`'s random window reads then fault against a 31 GB machine. Measured warm, flattened
+is **0.52 s/update against grouped's 0.59** — essentially the same. The cost is I/O, not
+arithmetic, and it warms up (0.74 s/update over the first 40 updates, 0.55 by update 300, 0.52 by
+update 400).
 
-Peak GPU memory measured at **2,087 MiB of 6,144** with the fork term active, so the 6 GB card is
-not the binding constraint.
+**So the reason to prefer the flattened arm is scientific, not economic.** It answers the purer
+question and preserves canonical LeWM training; it does not save meaningful time.
+
+Startup, also measured and also larger with three sources: **~175 s** dataset validation (hashing
+60 GB of shards) plus **~115 s** preflight per arm — about 7 minutes before the first update.
+
+| stage | per arm | both arms |
+|---|---:|---:|
+| joint, flattened | ~1.5 h | ~2.9 h |
+| bridge (8k observed + 6k recursive) | ~1.5 h | ~3.0 h |
+| actor (4k steps) | ~0.2 h | ~0.4 h |
+| evaluation (3 policies x 512 seeds, native cap) | ~1.2 h | ~2.4 h |
+
+**Whole campaign, end to end: roughly 9 hours.** Peak GPU 2,087 MiB of 6,144, so the card is not
+the binding constraint; host RAM and disk throughput are.
