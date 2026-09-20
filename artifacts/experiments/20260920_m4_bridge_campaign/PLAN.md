@@ -18,18 +18,37 @@ objective.
 
 ## Blocking findings from the pre-flight audit
 
-**B1 — Source closure orphans every sealed LeWM checkpoint.**
-`sources.py:lewm_source_manifest` hashes an 18-file runtime closure; `checkpoint.py:56` calls
-`verify_sources`, which **raises** `checkpoint source drift` for LeWM on any mismatch.
-M4 requires editing at least `world_api.py` (`require_control`) and `experiments.py` (the CLI phase
-gate) — both in closure. Editing them makes Raw-10k, TC-10k, every m03 gate and every arms parent
-unloadable on the working tree.
-*In closure:* `__main__ cache checkpoint config data diagnostics execution experiments gates
-imagination lewm lewm_config mamba_recurrence sources state train world_api`
-*Out of closure (free to edit):* `actor_critic agent backbone counterfactual env expert
-lewm_transformer representation time_mixer`
-→ **Resolution: tag the tree before the first in-closure edit.** Historical checkpoints stay
-verifiable at the tag; the fresh run seals under the new manifest. Reversible, cheap, recorded.
+**B1 — Source closure does NOT orphan sealed checkpoints. There is a designed re-seal path.**
+*(Corrected 2026-09-20 after measuring the actual failure rather than predicting it.)*
+
+Appending one comment to `world_api.py` and reloading Raw-10k gives, not the `verify_sources` drift
+error I expected, but an earlier and more informative guard:
+
+```
+ValueError: m03_frozen_eval: proof does not describe the current tree
+```
+
+`load_m03_bundle` tries exact source equality first, and **on failure falls back to a measured
+parity proof** (`d4mj/m03/frozen_eval_compat.json`). That file already holds **two** proofs from
+previous tree changes, and proof[1] already covers **13 changed runtime files including
+`d4mj/world_api.py`** — so this path is not theoretical, it has been walked twice.
+
+The proof is a real measurement, not a bypass. `frozen_eval_parity` (gate.py:738) dumps an 8-tap
+surface — `z, cls, patch_grid, patch16, prefill_latent, prefill_history, advance_latent,
+advance_history` — from fixed seeded inputs; `frozen_eval_proof` (gate.py:805) compares two trees
+and passes only when `cross_tree_max_abs <= max(tolerance, within_tree_max_abs)`. The repeats
+matter because `advance` is not run-to-run reproducible, so a cross-tree gap is meaningless until
+each tree's own spread is measured. The standing proof sits at **5.96e-07 against a 1e-05
+tolerance**.
+
+Crucially `scope: "frozen evaluation only; training resume keeps exact full-source equality"`, and
+`test_frozen_eval_never_relaxes_training_resume` enforces that ordering in source. Training resume
+from an old checkpoint stays hard-blocked — which is correct, and irrelevant here because Stage 4
+trains from zero.
+
+→ **Resolution:** tag the pre-M4 tree (done: `lewm-closure-m3`), and after the in-closure edits
+re-measure parity from a worktree at that tag and append a third proof. M03 diagnostics on sealed
+checkpoints keep working. `d4mj/m03/*` is itself outside the closure, so the tooling is free to use.
 
 **B2 — M4 is mostly wiring, not construction.**
 `agent.py`, `imagination.py`, `actor_critic.py`, `execution.py` already exist from the Direct line.
@@ -54,10 +73,17 @@ world sees both. State this in the result; do not let it become an unexamined as
 ## Checklist
 
 ### Stage 0 — seal the past, unblock the future
-- [ ] `0.1` Tag current tree `lewm-closure-m3` + record the manifest digest; note which artifacts
-      remain verifiable only at that tag.
-- [ ] `0.2` Verify a sealed checkpoint (Raw-10k) loads at the tag, and record the exact failure it
-      will give afterwards — so the break is demonstrated, not assumed.
+- [x] `0.1` Tag the pre-M4 tree — `lewm-closure-m3`. Manifest digest
+      `76cb5826…` (18 closure files); `world_api.py` at `032b2a0d…`.
+- [x] `0.2` Break demonstrated, not assumed. Raw-10k loads clean at the tag (2,503,496 world
+      params). One appended comment in `world_api.py` →
+      `m03_frozen_eval: proof does not describe the current tree`. Reverted. **Finding: this is
+      recoverable by re-measuring the parity proof — see B1.**
+- [ ] `0.2b` After the Stage-2 in-closure edits: worktree at `lewm-closure-m3`, run
+      `frozen_eval_parity(..., allow_drift=True)` **twice in each tree**, then `frozen_eval_proof`
+      at tolerance 1e-5, and append the result to `frozen_eval_compat.json`. Must pass on its own
+      measurement — if parity fails, the edit changed frozen-evaluation numerics and the design is
+      wrong, not the guard.
 - [ ] `0.3` Plan every signature before writing (code contract): name each function, module, inputs
       and outputs for the readout + head surface; check against the architecture draft. **No new
       files, no new functions** without re-opening the design here first.
