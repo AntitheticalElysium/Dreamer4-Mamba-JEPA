@@ -106,5 +106,18 @@
     "frozen encoder throughout; a jointly adapted encoder may behave differently",
     "intervals are wide -- 'null' means no detectable improvement, NOT proven equivalence"
   ],
-  "m4_authorized": false
+  "m4_authorized": false,
+  "RETRACTIONS_after_audit": {
+    "verified_defects_in_my_own_code": [
+      "SHARED RNG: one generator fed both the factual and fork draws, so A consumed 1 draw/step and A'/B consumed 2. Factual batches diverged from step 1. My claim of identical RNG streams and factual batch order was FALSE.",
+      "'HELD-OUT' MSE WAS NOT HELD OUT: training sampled randint over all 40,960 rows including the last 4,096 the evaluator called held out. Those numbers are in-sample retention.",
+      "ONE DERANGEMENT: the evaluator used a single draw although phase 4 of the ladder had ALREADY shown a single draw is noise. I repeated my own known error.",
+      "A' vs B IS NOT SINGLE-AXIS: A' used the BC/factual action (skewed marginal), B used all 17 uniformly, so sibling structure was confounded with action distribution."
+    ],
+    "withdrawn_claims": [
+      "'trending negative' -- overstated. The AUCs are near-identical and the top-1 ordering is within the control arm's own milestone swing.",
+      "'action sensitivity went down (.161 -> .114)' -- REFUTED by my own 20-draw measurement: A .2554, A' .2420, B .2826. B is if anything the MOST action-sensitive.",
+      "'centroid collapse' -- REFUTED. Effect fidelity IMPROVED substantially; the branches did not collapse toward their mean."
+    ]
+  }
 }

@@ -1,0 +1,138 @@
+{
+  "schema": "d4mj_cf_decompose_v1",
+  "in_sample_warning": "A' and B trained on the ENTIRE fork pool, so effect metrics are in-sample for them and out-of-sample for A. Not generalization.",
+  "arms": {
+    "A_control": {
+      "effect": {
+        "roots": 4096,
+        "branch_mse": 0.027030817958909797,
+        "effect_r2": 0.5180680155754089,
+        "effect_cosine": 0.18055589497089386,
+        "action_retrieval": 0.11770450367647059
+      },
+      "semantic_realfit_to_generated": {
+        "death": {
+          "real_auc": 0.7523,
+          "generated_auc": 0.7147
+        },
+        "damage": {
+          "real_auc": 0.7294,
+          "generated_auc": 0.686
+        },
+        "reward_positive": {
+          "real_auc": 0.4903,
+          "generated_auc": 0.3634
+        },
+        "achievement_event": {
+          "real_auc": 0.7981,
+          "generated_auc": 0.3865
+        },
+        "inventory_changed": {
+          "real_auc": 0.5456,
+          "generated_auc": 0.6411
+        },
+        "tile_changed": {
+          "real_auc": 0.5221,
+          "generated_auc": 0.6274
+        }
+      },
+      "derangement_20": {
+        "intact_auc": 0.7409,
+        "permuted_auc": 0.4855,
+        "frozen_auc_cost": 0.2554
+      }
+    },
+    "Ap_data": {
+      "effect": {
+        "roots": 4096,
+        "branch_mse": 0.013138838530079845,
+        "effect_r2": 0.7657478451728821,
+        "effect_cosine": 0.4432751536369324,
+        "action_retrieval": 0.11972943474264706
+      },
+      "semantic_realfit_to_generated": {
+        "death": {
+          "real_auc": 0.7523,
+          "generated_auc": 0.7118
+        },
+        "damage": {
+          "real_auc": 0.7294,
+          "generated_auc": 0.6827
+        },
+        "reward_positive": {
+          "real_auc": 0.4903,
+          "generated_auc": 0.3875
+        },
+        "achievement_event": {
+          "real_auc": 0.7981,
+          "generated_auc": 0.3704
+        },
+        "inventory_changed": {
+          "real_auc": 0.5456,
+          "generated_auc": 0.6314
+        },
+        "tile_changed": {
+          "real_auc": 0.5221,
+          "generated_auc": 0.6176
+        }
+      },
+      "derangement_20": {
+        "intact_auc": 0.7349,
+        "permuted_auc": 0.4929,
+        "frozen_auc_cost": 0.242
+      }
+    },
+    "B_sibling": {
+      "effect": {
+        "roots": 4096,
+        "branch_mse": 0.012359969557591659,
+        "effect_r2": 0.7796343564987183,
+        "effect_cosine": 0.4119102954864502,
+        "action_retrieval": 0.11761833639705882
+      },
+      "semantic_realfit_to_generated": {
+        "death": {
+          "real_auc": 0.7523,
+          "generated_auc": 0.7138
+        },
+        "damage": {
+          "real_auc": 0.7294,
+          "generated_auc": 0.6818
+        },
+        "reward_positive": {
+          "real_auc": 0.4903,
+          "generated_auc": 0.3828
+        },
+        "achievement_event": {
+          "real_auc": 0.7981,
+          "generated_auc": 0.3858
+        },
+        "inventory_changed": {
+          "real_auc": 0.5456,
+          "generated_auc": 0.6267
+        },
+        "tile_changed": {
+          "real_auc": 0.5221,
+          "generated_auc": 0.6123
+        }
+      },
+      "derangement_20": {
+        "intact_auc": 0.7744,
+        "permuted_auc": 0.4918,
+        "frozen_auc_cost": 0.2826
+      }
+    }
+  },
+  "VERIFIED_INDEPENDENTLY": {
+    "audit_direction_confirmed": "yes. On 4,096 fork roots: branch MSE .0270 -> .0131 (A'), .0124 (B); effect R^2 .518 -> .766, .780; effect cosine .181 -> .443, .412. The counterfactual latent objective was genuinely learned.",
+    "note_on_absolute_values": "my R^2 is computed on the EFFECT (successor minus root), the audit's on the branch latent, so the absolute numbers differ while the direction agrees.",
+    "THE_KEY_RESULT": {
+      "effect_fidelity": "improved ~50% in R^2 and ~128% in cosine",
+      "action_retrieval": "FLAT: .1177 (A), .1197 (A'), .1176 (B), against a 1/17 = .0588 chance floor",
+      "every_semantic_direction": "FLAT. Real-fit decoders applied to generated states move by <=0.02 on all six outcomes: death .715/.712/.714, damage .686/.683/.682, reward .363/.388/.383, achievement .387/.370/.386, inventory .641/.631/.627, tile .627/.618/.612",
+      "reading": "better action-effect MSE does NOT buy consequence semantics. This is the outcome predicted as the strongest diagnostic case, and it now holds under proper measurement."
+    },
+    "NEW_finding_not_in_the_audit": "A' matches B on EVERY effect metric (R^2 .766 vs .780, cosine .443 vs .412, MSE .0131 vs .0124). So the effect-fidelity gain comes from training on the fork DISTRIBUTION at all, not from sibling structure. Same-root contrast specifically adds close to nothing -- which weakens the case that sibling-supervision-from-init is the key variable.",
+    "semantic_ceiling_context": "the real-successor ceiling is itself low on several targets (reward .490, inventory .546, tile .522), so those rows cannot discriminate much either way. death .752 and achievement .798 are the informative ceilings, and achievement collapses to .37-.39 generated in every arm."
+  }
+}
