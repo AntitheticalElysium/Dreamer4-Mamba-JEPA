@@ -130,7 +130,23 @@ world sees both. State this in the result; do not let it become an unexamined as
 
 ---
 
-## Budget note
-6 GB card. The original paired run was 10k updates per arm on support-v2 alone. Merged corpus is
-larger and M4 adds head fitting, H2→H16 and actor rollouts on top of two arms. Stage 4 is to be
-scoped against measured step time before launch, not assumed.
+## Budget, measured
+
+Not estimated — timed on this machine at the real recipe (B128, 6 GB card), 60 updates per arm,
+both arms, then again with the fork term switched off to price it:
+
+| stage | rate | per arm | both arms |
+|---|---|---:|---:|
+| joint, with fork mix | 0.59 s/update steady (1.03 incl. first-arm Triton autotune) | ~1.7–2.9 h | **~3.3–5.8 h** |
+| joint, fork mix off | 0.32 s/update | ~0.9 h | ~1.8 h |
+| bridge (8k observed + 6k recursive) | 0.15 s / 0.70 s per step | ~1.5 h | ~3.0 h |
+| actor (4k steps) | ~0.15 s/step | ~0.2 h | ~0.4 h |
+| evaluation (3 policies x 512 seeds, native cap) | Direct: 7 policies in 167.8 min | ~1.2 h | ~2.4 h |
+
+**Whole campaign, end to end: roughly 9–12 hours.** The fork term roughly doubles the joint phase
+(0.59 vs 0.32 s/update) and costs about 1.5–4 h of the total; that is the price of matching
+Direct's data contract, and it is a knob (`fork_mass: 0.0`) rather than a rebuild if it is not
+wanted.
+
+Peak GPU memory measured at **2,087 MiB of 6,144** with the fork term active, so the 6 GB card is
+not the binding constraint.
