@@ -64,6 +64,12 @@ def main(argv=None):
     if not args.worktree.exists():
         subprocess.run(["git", "-C", str(ROOT), "worktree", "add", "--detach",
                         str(args.worktree), TAG], check=True)
+    # An existing worktree may sit at some other commit; reusing it would measure parity against a
+    # tree that is not the sealed one and call the result a proof.
+    head = subprocess.check_output(["git", "-C", str(args.worktree), "rev-parse", "HEAD"], text=True).strip()
+    want = subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", TAG + "^{commit}"], text=True).strip()
+    if head != want:
+        raise SystemExit(f"reference worktree is at {head[:12]}, not {TAG} ({want[:12]})")
     # m03/ is outside the runtime closure, so carrying the measurement code into the reference
     # tree leaves that tree's manifest untouched -- the property this whole approach rests on.
     subprocess.run(["rsync", "-a", "--delete", str(ROOT / "d4mj/m03") + "/",
@@ -80,10 +86,24 @@ def main(argv=None):
     if lock.exists() and not (args.worktree / lock.name).exists():
         (args.worktree / lock.name).symlink_to(lock)
 
+    # Dumps are keyed by the manifest digest of the tree that produced them. A dump left over from
+    # a previous edit would otherwise be silently reused and the "measured" parity would describe a
+    # tree that no longer exists.
+    sys.path.insert(0, str(ROOT))
+    from d4mj.m03.gate import _sha
+    from d4mj.sources import lewm_source_manifest
+    os.environ["TRITON_F32_DEFAULT"] = "ieee"
+    keys = {"current": _sha(lewm_source_manifest())[:16],
+            "reference": subprocess.check_output(
+                [str(ROOT / ".venv/bin/python"), "-c",
+                 "import sys;sys.path.insert(0,%r);from d4mj.sources import lewm_source_manifest;"
+                 "from d4mj.m03.gate import _sha;print(_sha(lewm_source_manifest()))" % str(args.worktree)],
+                text=True, cwd=str(args.worktree),
+                env=dict(os.environ, PYTHONPATH=str(args.worktree))).strip().splitlines()[-1][:16]}
     paths = {"reference": [], "current": []}
     for label, tree in (("reference", args.worktree), ("current", ROOT)):
         for run in range(args.runs):
-            out = args.dumps / f"{label}-{run}.pt"
+            out = args.dumps / f"{label}-{keys[label]}-{run}.pt"
             if not out.exists():
                 print(json.dumps({"stage": "dump", "tree": label, "run": run}), flush=True)
                 dump(tree, out, args.device)

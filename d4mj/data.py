@@ -552,7 +552,7 @@ def load_joint_corpus(path: str | Path | Sequence[str | Path], config: LeWMConfi
     paths = [path] if isinstance(path, (str, Path)) else list(path)
     if not paths:
         raise ValueError("joint_data: a corpus needs at least one source")
-    episodes, sources = [], []
+    parts, sources = [], []
     for entry in paths:
         entry = Path(entry)
         if entry.name == "manifest.json":
@@ -565,12 +565,15 @@ def load_joint_corpus(path: str | Path | Sequence[str | Path], config: LeWMConfi
         else:
             sidecar = entry.with_suffix(entry.suffix + ".manifest.json")
             provenance = json.loads(sidecar.read_text()) if sidecar.exists() else {}
-        episodes.extend(part)
+        parts.append(part)
         # Unknown upstream training access remains explicit, never relabeled as zero.
         sources.append({"path": str(entry), "sha256": _sha256(source_file), "episodes": len(part),
                         "provenance": provenance,
                         "collector_training_access": provenance.get("collector_training_access", "unknown")})
-    episodes = EpisodeCorpus(episodes) if len(paths) > 1 else episodes
+    # A single source returns the very object `load_episodes` built, so its `source` path and its
+    # cached window pools survive. Rebuilding it as a plain list silently disabled
+    # `EpisodeCorpus.pools` for every existing caller, which is a regression, not a refactor.
+    episodes = parts[0] if len(parts) == 1 else EpisodeCorpus(e for part in parts for e in part)
     audit = audit_episodes(episodes, config)
     contract = {"schema": "d4mj_lewm_dataset_v1", "sha256": sources[0]["sha256"],
                 "audit": audit, "provenance": sources[0]["provenance"],

@@ -38,6 +38,7 @@ sys.path.insert(0, str(ROOT))
 from d4mj.config import load_recipe, recipe_dict, recipe_digest
 from d4mj.data import atomic_manifest, load_joint_corpus, screen_windows
 from d4mj.gates import ComponentGateError, contract_digest, preflight, require_joint_gates
+from d4mj.lewm_diagnostics import screen_joint_pair
 from d4mj.lewm_config import LeWMConfig, ScreenConfig, pair_axis as declared_axis
 from d4mj.train import initialize_joint, train_joint
 
@@ -63,6 +64,9 @@ class Forks:
             raise SystemExit("fork pool has no training roots")
         self.weights, self.generator = counts, generator
         self.roots = int(counts.sum())
+
+    def reseed(self, seed: int):
+        self.generator.manual_seed(int(seed))
 
     def sample(self, count: int):
         shard = int(torch.multinomial(self.weights, 1, generator=self.generator))
@@ -143,11 +147,18 @@ def _branch(bundle, frames, past, first, second, keep, n, actions, second_weight
     return loss
 
 
-def supplement(bundle_forks, mass: float, second_weight: float, roots: int):
-    """Build the `train_joint` callback that blends the declared fork term into the objective."""
+def supplement(bundle_forks, mass: float, second_weight: float, roots: int, seed: int):
+    """Build the `train_joint` callback that blends the declared fork term into the objective.
+
+    The fork stream is reseeded FROM THE UPDATE INDEX rather than carried, so a resume after the
+    G1 stop draws exactly the roots it would have drawn had the run never paused. `train_joint`'s
+    checkpoint does not know about this supplementary sampler, and a stream that only advanced
+    forward would silently restart at every resume.
+    """
     def extra(bundle, update, total):
         if mass <= 0:
             return total, {}
+        bundle_forks.reseed(seed + update)
         term = branch_term(bundle, bundle_forks.sample(roots), second_weight)
         return (1 - mass) * total + mass * term, {"fork": float(term.detach())}
     return extra
@@ -205,6 +216,10 @@ def main(argv=None):
                           "`extra` hook and declared here, so this is our LeWM-Mamba candidate "
                           "under the corrected Direct data contract, not paper-minimal LeWM",
         "dataset_id": contract_digest(contract),
+        "g1_scope": "screen_windows requires len(episode) + 2 - span >= windows_per_episode, i.e. "
+                    "at least 6 steps. Flattened fork episodes carry 3 or 4, so G1 screens the "
+                    "expert and support sources only. Recorded, not silent: G1 is a normalization "
+                    "and recurrence screen, and it does not certify the fork exposure.",
         "recipes": {v: recipe_digest(c) for v, c in configs.items()}})
 
     runs = {v: args.out / v for v in configs}
@@ -213,6 +228,9 @@ def main(argv=None):
         status("preflight", variant=variant)
         runs[variant].mkdir(exist_ok=True)
         atomic_manifest(runs[variant] / "resolved_recipe.json", recipe_dict(c))
+        atomic_manifest(runs[variant] / "dataset.json",
+                        {"sources": [str(Path(p).resolve()) for p in args.corpus],
+                         "contract": contract})
         report = preflight(c, episodes, contract)
         atomic_manifest(runs[variant] / "gates.json", report)
         require_joint_gates(report, c, contract)
@@ -222,24 +240,60 @@ def main(argv=None):
         gc.collect(); torch.cuda.empty_cache()
     if initial["raw"] != initial["tc"]:
         raise ComponentGateError("initial_identity", "paired initial weights differ")
-    atomic_manifest(args.out / "pair.json", {"initial_identity": initial, "axis": axis})
+
+    # The CANONICAL pre-training seal. `require_joint_screen` reads `dataset_id` and
+    # `screen_settings_id` out of this file and refuses a G1 report that disagrees with it, so an
+    # incomplete manifest makes the whole 10k budget unreachable.
+    atomic_manifest(args.out / "pair.json",
+                    {"schema": "d4mj_joint_pair_v1", "dataset_id": contract_digest(contract),
+                     "initial_identity": initial,
+                     "screen_settings_id": recipe_digest(settings),
+                     "recipes": {v: recipe_digest(c) for v, c in configs.items()},
+                     "m4_authorized": False})
     status("paired_initialization", identity=initial["raw"])
 
     screen_step = configs["raw"].joint.screen_step
-    target = args.smoke or args.stop_at or screen_step
+    budget = args.stop_at or configs["raw"].joint.steps
+    first = min(args.smoke or screen_step, budget)
     for variant, c in configs.items():
-        # Each arm draws its fork roots from its OWN stream, seeded identically, so the two arms
-        # see the same roots in the same order and differ only on the declared axis.
-        forks = Forks(args.forks, torch.Generator().manual_seed(c.seed + 991))
-        status("joint_to_screen", variant=variant, target_update=target, fork_roots=forks.roots)
+        forks = Forks(args.forks, torch.Generator().manual_seed(c.seed + 991)) if c.agent.fork_mass > 0 else None
+        status("joint_to_screen", variant=variant, target_update=first,
+               fork_roots=None if forks is None else forks.roots)
         bundle, _ = train_joint(episodes, c, runs[variant] / "joint", dataset_contract=contract,
-                                gate_report=reports[variant], stop_at=target,
+                                gate_report=reports[variant], stop_at=first,
                                 resume=runs[variant] / "joint/step-000000.pt",
-                                extra=supplement(forks, c.agent.fork_mass,
-                                                 c.agent.fork_second_weight, c.agent.fork_roots))
+                                extra=None if forks is None else supplement(
+                                    forks, c.agent.fork_mass, c.agent.fork_second_weight,
+                                    c.agent.fork_roots, c.seed + 991))
         del bundle, forks
         gc.collect(); torch.cuda.empty_cache()
-    status("screen_budget_complete", target=target)
+    if args.smoke or first < screen_step:
+        status("smoke_complete", target=first)
+        return 0
+
+    status("G1")
+    report = screen_joint_pair(runs, episodes, contract, settings, args.out / "G1")
+    status("G1_complete", decision=report["decision"], component=report.get("blocked_component"))
+    if report["decision"] != "continue_joint_budget":
+        return 1
+    if args.screen_only:
+        return 0
+
+    for variant, c in configs.items():
+        if budget <= screen_step:
+            continue
+        forks = Forks(args.forks, torch.Generator().manual_seed(c.seed + 991)) if c.agent.fork_mass > 0 else None
+        status("joint_to_budget", variant=variant, target_update=budget)
+        bundle, _ = train_joint(episodes, c, runs[variant] / "joint", dataset_contract=contract,
+                                gate_report=reports[variant], stop_at=budget,
+                                resume=runs[variant] / "joint" / f"step-{screen_step:06d}.pt",
+                                screen_report=report,
+                                extra=None if forks is None else supplement(
+                                    forks, c.agent.fork_mass, c.agent.fork_second_weight,
+                                    c.agent.fork_roots, c.seed + 991))
+        del bundle, forks
+        gc.collect(); torch.cuda.empty_cache()
+    status("joint_budget_complete", target=budget)
     return 0
 
 

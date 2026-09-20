@@ -91,8 +91,19 @@ Consequences, stated before any number:
   ablation, and this run does not answer it. The 2026-09-19 A' arm does not answer it either: that
   arm trained on the **logged action only**, one per root.
 
-Only the archive is BC-eligible: the world sees 8,325 TRAIN episodes, BC sees 256 of them
-(552,998 transitions). The primary comparison is internally consistent — actor versus *its own* BC,
+Corpus figures, for the FLAT condition actually declared (the earlier numbers here were the
+two-source ones and understated the world's exposure by more than an order of magnitude):
+
+| | episodes | note |
+|---|---:|---|
+| world sees (TRAIN) | **236,924** | archive 256 + support 8,069 + flattened forks 228,599 |
+| bridge/actor see (TRAIN) | **8,325** | forks excluded: fabricated zero rewards, not logged behaviour |
+| BC-eligible (TRAIN) | **256** | archive only, 552,998 transitions |
+
+Merged three-source audit: 265,672 episodes, 4,872,668 transitions, TRAIN/DEV/FINAL
+236,924 / 27,714 / 1,034. Joint-window draw shares: support 72.01%, expert 15.65%, forks **12.35%**.
+
+The primary comparison is internally consistent — actor versus *its own* BC,
 both reading the same heads — but the BC's data support is narrower than the world's, and that is a
 property of the corpus, not of either arm.
 

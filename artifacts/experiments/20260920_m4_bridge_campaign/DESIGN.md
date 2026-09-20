@@ -73,16 +73,39 @@ immutable and lineage-explicit instead of a 45 GB physical copy.
 library directly). `joint_loss` is **not** touched — per the instruction, branch supervision stays
 separately declared in the driver and never becomes the LeWM objective.
 
-## Campaign drivers — this directory
+## Campaign drivers — this directory, as built
 
-| file | function | in → out |
+> **Superseded in part.** This section originally named functions that were never written
+> (`fit_readout`, `fit_heads`, `recursive`, `run`, `train_actor`) and predated the flattened fork
+> condition. It now describes the code that exists.
+
+| file | key functions | in → out |
 |---|---|---|
-| `build_corpus.py` | `merge()` | archive + support-v2 → immutable merged store manifest, split/eligibility preserved |
-| `fork_pool.py` | `windows()` | `broad_forks_v2/seed-*.pt` → root windows, 17 successors, second successors + `second_valid` |
-| `train_joint.py` | `branch_term()`, `run()` | fresh Raw/TC from step 0; `joint_loss` + separately-declared fork term at Direct's mass |
-| `bridge.py` | `fit_readout()`, `fit_heads()`, `recursive()` | joint world → trained `agent_readout` + `Heads`, H2→H16 |
-| `actor.py` | `train_actor()` | heads + world → actor/critic by PMPO over imagined rollouts |
-| `evaluate.py` | `main()` | actor and its own BC → real Craftax, paired seeds, bootstrap interval |
+| `build_corpus.py` | `merge` | expert archive → episode store; declares the merged corpus |
+| `flatten_forks.py` | `episodes_of` | `broad_forks_v2` → 255,272 ordinary episodes (**the selected condition**) |
+| `fork_pool.py` | `windows` | `broad_forks_v2` → grouped root windows (grouped condition only) |
+| `train_joint_pair.py` | `Forks`, `branch_term`, `_branch`, `supplement` | paired Raw/TC from update 0; **2k → canonical pair seal → G1 → budget** |
+| `bridge.py` | `agent_config`, `rollout`, `dynamics_loss`, `head_group`, `dev_gate` | Phase 2 to spec: teacher+recursive MSE, 0.5/0.5 strata, group RMS, H2 → DEV gate → H16 |
+| `actor.py` | `load_bridge` | PMPO actor with `_balance`/`_update`; horizon bounded by the recorded validated depth |
+| `evaluate.py` | `policies_from` | actor vs its own frozen BC prior on real Craftax, identity-bound episode cache |
+| `reseal.py` | `dump` | re-measures frozen-evaluation parity after in-closure edits |
+| `test_campaign.py` | — | the contracts above, which the shared suite does not cover |
+
+## Phase 2, as specified
+
+`spec/lewm/ARCHITECTURE.md` §5 and `DECISIONS.md` define this bridge in detail, and the first
+implementation did not follow them — it trained no dynamics loss at all. The objective is:
+
+- `L_dyn = mean(teacher SE) + mean(recursive SE)`, each over its own valid positions
+- heads `0.5 * prefix + 0.5 * (0.5 * observed suffix + 0.5 * generated suffix)`
+- continuation `0.8 * main + 0.2 * paired_terminal`, before balancing
+- independent running-RMS over dynamics / policy / reward / continuation, decay 0.99
+- batch 16 main + 4 terminal, 32 frames with 128 every fourth update, true-start 0.25
+- 2,000 updates at H=2, a DEV gate, then 8,000 at H=16; AdamW 1e-4, warmup 1,000 then constant
+
+The DEV gate applies the repo's own horizon rule (S63): a generated rollout must beat the
+persistence (marginal) predictor on held-out DEV rows. `validated_recursive_depth` is written from
+that measurement and from nothing else, because a configured horizon is not validation.
 
 ## Verified facts this rests on
 

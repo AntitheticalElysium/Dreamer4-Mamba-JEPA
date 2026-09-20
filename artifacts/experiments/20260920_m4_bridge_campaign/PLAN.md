@@ -114,13 +114,18 @@ The 2026-09-19 A' arm does **not** already cover the flattened question — it t
 - [x] `1.3` **DONE** — splits preserved per source; `JointSampler` draws only `split=='train'`. Confirm no DEV/FINAL episode from either source can enter joint training.
 - [x] `1.4` **DONE** — 256 BC-eligible TRAIN episodes / 552,998 transitions, vs 0 before. Record episode/transition counts and the BC-eligible subset size.
 
-### Stage 2 — M4 bridge (out-of-closure first, in-closure last)
-- [x] `2.1` **DONE** — bridge.py, observed phase. `z+h` readout + BC head, trained on observed paths.
-- [x] `2.2` **DONE** — heads fitted; fork coverage separately declared in train_joint_pair.py. Reward + continuation heads, with counterfactual branch coverage **separately declared**.
-- [x] `2.3` **DONE** — depth schedule verified ramping 2 -> 9 -> 16 on the same world. H2 → H16 recursive generated-prefix training, continuing the **same** jointly trained
-      world — no Mamba restart.
-- [x] `2.4` **DONE** — `require_control` passes only on a recipe declaring `agent`; no bypass flag. Unblock `require_control` / the CLI phase gate under a real authorization condition
-      (trained readout + heads + validated horizon), not a bypass flag.
+### Stage 2 — M4 bridge  *(rebuilt 2026-09-20 after audit; see AUDIT_RESPONSE.md)*
+- [x] `2.1` Phase-2 objective **to spec**: teacher MSE + recursive MSE, 0.5/0.5 prefix/suffix with
+      0.5/0.5 observed/generated inside the suffix, continuation 0.8/0.2, independent group RMS
+      0.99. The first implementation trained **no dynamics loss at all**.
+- [x] `2.2` Batch 16 main + 4 terminal, 32 frames with 128 every fourth update, true-start 0.25,
+      AdamW 1e-4 with 1,000 warmup then constant.
+- [x] `2.3` 2,000 updates at H=2, **DEV gate**, then 8,000 at H=16. The gate applies S63: a
+      generated rollout must beat the persistence predictor on DEV, and a failure stops the recipe.
+- [x] `2.4` Control authorized by a **recorded capability**, never by recipe intent. An untrained
+      M4-configured bundle previously passed `require_control`.
+- [x] `2.5` Paired head seeding, exact resume state (optimizer, RNG, RMS), refusal to overwrite
+      numbered snapshots, and parent/dataset identity on every checkpoint.
 
 ### Stage 3 — predeclaration (before any fresh training)
 - [x] `3.1` **DONE** — PREDECLARATION.md. Predeclare the primary comparison: panel (real Craftax DEV episodes), episode count,

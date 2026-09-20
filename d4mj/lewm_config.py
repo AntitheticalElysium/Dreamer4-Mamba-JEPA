@@ -189,24 +189,29 @@ class AgentSettings:
     lam: float = 0.95
     pmpo_alpha: float = 0.5
     prior_beta: float = 0.3
-    batch: int = 4
-    # 32, not the legacy 16. Direct asserts `direct_rollout < sequence` against the SHORT length
-    # deliberately: checking it against `sequence_long` would let three rows in four train teacher
-    # forcing alone while the recipe claimed a depth it never reached. H16 therefore needs a short
-    # length above 16, and `Config` derives sequence_long = 4x and dynamics_context = 3x from it.
+    # DECISIONS.md "Phase 2 batch / terminal": 16 main rows + 4 terminal, preserving the 1:4 ratio.
+    batch: int = 16
+    terminal_batch: int = 4
+    # "Phase 2 lengths / prefix": 32 main frames, 128 every fourth update, burn-in up to 96,
+    # true-start fraction 0.25. `Config` derives sequence_long = 4x and dynamics_context = 3x.
     sequence: int = 32
-    actor_batch: int = 16
+    true_start_fraction: float = 0.25
     event_fraction: float = 0.5
-    terminal_batch: int = 1
-    head_steps: int = 8000          # observed-path phase: readout, BC, reward, continuation
-    recursive_steps: int = 6000     # generated-prefix phase: H2 raised to H16
-    actor_steps: int = 4000
-    learning_rate: float = 1e-4
-    eval_episodes: int = 512
-    # Generated-prefix depth. H2 is `Config.direct_rollout`; the schedule raises it to H16.
+    # "Phase 2 horizon / steps": 2,000 H2 updates, gate, then 8,000 H16. Total 10,000.
+    h2_steps: int = 2000
+    h16_steps: int = 8000
     recursive_depth: int = 2
     recursive_depth_final: int = 16
-    # Direct's counterfactual contract, matched rather than reinvented.
+    # "Phase 3 batch / budget": 16 starting contexts, screen 500, target 5,000 total.
+    actor_batch: int = 16
+    actor_screen_steps: int = 500
+    actor_steps: int = 5000
+    # "Phase 2/3 optimizer": AdamW 1e-4, decay .01, warmup 1,000 then CONSTANT; group RMS .99.
+    learning_rate: float = 1e-4
+    warmup: int = 1000
+    rms_decay: float = 0.99
+    eval_episodes: int = 512
+    # Direct's counterfactual contract, matched rather than reinvented. Grouped mode only.
     fork_mass: float = 0.2
     fork_roots: int = 4
     fork_second_weight: float = 0.5
@@ -403,8 +408,9 @@ def validate_recipe(c: LeWMConfig) -> None:
 def validate_agent(a: AgentSettings) -> None:
     """Checked only when M4 is declared, so an M0-M3 recipe never runs this."""
     counts = (a.horizon, a.horizon_eval, a.bootstrap, a.bins, a.mtp_leads, a.batch, a.sequence,
-              a.actor_batch, a.terminal_batch, a.recursive_steps, a.head_steps, a.actor_steps,
-              a.eval_episodes, a.recursive_depth, a.recursive_depth_final, a.fork_roots)
+              a.actor_batch, a.terminal_batch, a.h2_steps, a.h16_steps, a.actor_steps,
+              a.actor_screen_steps, a.warmup, a.eval_episodes, a.recursive_depth,
+              a.recursive_depth_final, a.fork_roots)
     if any(type(v) is not int or v < 1 for v in counts):
         raise ValueError("agent counts must be positive integers")
     if a.batch % 2 or a.actor_batch % 2:
@@ -419,8 +425,14 @@ def validate_agent(a: AgentSettings) -> None:
     for name in ("symlog_limit", "learning_rate"):
         if not math.isfinite(getattr(a, name)) or getattr(a, name) <= 0:
             raise ValueError(f"agent {name} must be positive and finite")
+    if a.actor_screen_steps > a.actor_steps:
+        raise ValueError("the actor screen must fall inside its total budget")
+    if a.horizon > a.recursive_depth_final:
+        raise ValueError("an actor may not imagine past the depth the bridge trains (S68)")
+    if not 0 < a.rms_decay < 1:
+        raise ValueError("running-RMS decay must lie strictly inside (0, 1)")
     for name in ("gamma", "lam", "pmpo_alpha", "prior_beta", "event_fraction", "fork_mass",
-                 "fork_second_weight"):
+                 "fork_second_weight", "true_start_fraction"):
         value = getattr(a, name)
         if not math.isfinite(value) or not 0 <= value <= 1:
             raise ValueError(f"agent {name} must lie in [0, 1]")

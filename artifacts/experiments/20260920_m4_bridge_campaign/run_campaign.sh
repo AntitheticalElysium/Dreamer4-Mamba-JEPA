@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
-# The full campaign, in order. Each stage is resumable and refuses to clobber existing output.
+# The full campaign, in order.
+#
+# Stage 1 runs 2,000 paired updates, seals the canonical pair manifest, runs the G1 screen, and
+# only then continues both accepted arms to the full budget -- `train_joint` refuses any research
+# run past `screen_step` without a sealed passing G1 report.
+#
+# Resume: stages 1 and 4 resume by themselves. Stages 2 and 3 refuse to start over existing output
+# and take an explicit --resume pointing at their own last state checkpoint.
 #
 #   1 joint     fresh Raw and TC from update zero on the merged corpus, with the declared fork term
 #   2 bridge    readout, BC, reward/continuation heads, then H2 -> H16 on the same world
@@ -16,6 +23,10 @@ D=artifacts/experiments/20260920_m4_bridge_campaign
 # MODE=grouped to run Direct's branch contract instead (fork_mass 0.2, ~136 extra differentiable
 # transitions per update). The two answer different questions; see PLAN.md.
 MODE=${MODE:-flat}
+case "$MODE" in
+  flat|grouped) ;;
+  *) echo "MODE must be exactly 'flat' or 'grouped'; got '$MODE'" >&2; exit 2 ;;
+esac
 OUT=${OUT:-artifacts/lewm_m4_paired_$MODE}
 if [ "$MODE" = "flat" ]; then
   RECIPES=(--raw-recipe "$D/recipes/lewm_mamba_raw_m4_flat.json"

@@ -40,6 +40,9 @@ class ModelBundle:
     config: Config | LeWMConfig
     encoder: nn.Module | None
     world: nn.Module
+    # What a checkpoint RECORDED about this model, never what a recipe intends. `require_control`
+    # reads it, so a freshly constructed bundle -- which has no record -- cannot be authorized.
+    capabilities: dict | None = None
 
     @classmethod
     def create(cls, config):
@@ -96,11 +99,32 @@ class ModelBundle:
         return self
 
     def require_control(self):
-        # M4 authorization is carried by the recipe: a bridge recipe declares `agent`, an M0-M3
-        # recipe does not. Every sealed M0-M3 checkpoint has `agent=None` and stays refused by
-        # construction, with no flag able to bypass it.
-        if isinstance(self.config, LeWMConfig) and self.config.agent is None:
+        """Authorize control only from a VERIFIED capability record.
+
+        Declaring `agent` in a recipe states an intention to reach M4; it does not establish that
+        the readout was fitted or that any recursive depth was validated. A freshly constructed,
+        completely untrained bundle carries an M4 recipe just as a finished one does, so recipe
+        presence alone authorized an untrained model -- which it must not.
+
+        The capability record is what `checkpoint.py` already writes beside every bundle:
+        `readout_trained`, `trained_recursive_depth`, `validated_recursive_depth`. A bridge or
+        actor checkpoint carries it forward; a joint checkpoint's record says M0-M3 and is refused.
+        """
+        if not isinstance(self.config, LeWMConfig):
+            return
+        if self.config.agent is None:
             raise RuntimeError("phase_gate: LeWM M0-M3 has no trained heads/readout or validated actor horizon")
+        record = self.capabilities
+        if not isinstance(record, dict):
+            raise RuntimeError("phase_gate: control requires a checkpoint capability record; this "
+                               "bundle carries none, so nothing establishes it was ever trained")
+        if not record.get("readout_trained"):
+            raise RuntimeError("phase_gate: the agent readout is not recorded as trained")
+        horizon = self.config.agent.horizon
+        validated = record.get("validated_recursive_depth", 0)
+        if not isinstance(validated, int) or validated < horizon:
+            raise RuntimeError(f"phase_gate: actor horizon {horizon} exceeds the validated "
+                               f"recursive depth {validated}; a configured horizon is not validation")
 
     def world_state(self, state):
         # Validation happens through each adapter before unwrapping observation state.

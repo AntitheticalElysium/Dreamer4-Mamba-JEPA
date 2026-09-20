@@ -39,6 +39,7 @@ HERE = Path(__file__).parent
 sys.path.insert(0, str(ROOT))
 
 from d4mj.config import load_recipe
+from d4mj.data import _sha256
 from d4mj.lewm_config import window_layout
 
 FORKS = ROOT / "artifacts/eda/broad_forks_v2"
@@ -133,7 +134,8 @@ def main(argv=None):
         stop = min(total, position + args.per_shard)
         path = args.out / f"fork-{position // args.per_shard:04d}.pt"
         torch.save({k: v[position:stop].clone() for k, v in pool.items()}, path)
-        shards.append({"file": path.name, "roots": stop - position})
+        # Hash every shard: an unhashed store cannot be shown to be the one a run consumed.
+        shards.append({"file": path.name, "roots": stop - position, "sha256": _sha256(path)})
         print(json.dumps({"stage": "fork_shard", "index": len(shards), "roots": stop - position}),
               flush=True)
     (args.out / "manifest.json").write_text(json.dumps(
