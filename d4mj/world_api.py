@@ -96,7 +96,10 @@ class ModelBundle:
         return self
 
     def require_control(self):
-        if isinstance(self.config, LeWMConfig):
+        # M4 authorization is carried by the recipe: a bridge recipe declares `agent`, an M0-M3
+        # recipe does not. Every sealed M0-M3 checkpoint has `agent=None` and stays refused by
+        # construction, with no flag able to bypass it.
+        if isinstance(self.config, LeWMConfig) and self.config.agent is None:
             raise RuntimeError("phase_gate: LeWM M0-M3 has no trained heads/readout or validated actor horizon")
 
     def world_state(self, state):

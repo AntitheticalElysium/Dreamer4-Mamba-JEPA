@@ -598,7 +598,17 @@ def initialize_joint(episodes, config, output, *, dataset_contract, gate_report)
 
 def train_joint(episodes, config: LeWMConfig, output: str | Path, *, dataset_contract: dict,
                 gate_report: dict, stop_at: int | None = None, resume: str | Path | None = None,
-                bundle: ModelBundle | None = None, screen_report: dict | None = None):
+                bundle: ModelBundle | None = None, screen_report: dict | None = None,
+                extra=None):
+    """`extra(bundle, update, total) -> (total, fields)` adds a SEPARATELY DECLARED term.
+
+    It exists so a campaign can supervise something beside the LeWM objective -- counterfactual
+    branches, for one -- without that term becoming part of `joint_loss`. The distinction is not
+    cosmetic: `joint_loss` is what "LeWM" means in this repository, and a caller that blends its
+    own term keeps the blend, its mass and its logging on its own side of the boundary. A run that
+    passes `extra` is not a paper-minimal LeWM run, and its metrics say so by carrying the extra
+    fields the callback returns.
+    """
     from .gates import require_joint_gates, require_joint_screen, ComponentGateError
 
     require_joint_gates(gate_report, config, dataset_contract)
@@ -640,14 +650,20 @@ def train_joint(episodes, config: LeWMConfig, output: str | Path, *, dataset_con
                               regularizer, projection_rng, config)
         if not bool(torch.isfinite(loss.total)):
             raise RuntimeError(f"joint_objective: nonfinite loss at update {update}; stop this component")
+        total, supplement = loss.total, {}
+        if extra is not None:
+            total, supplement = extra(bundle, update, loss.total)
+            if not bool(torch.isfinite(total)):
+                raise RuntimeError(f"joint_objective: nonfinite supplemented loss at update {update}")
         lr = learning_rate(config, update)
-        norm = optimizer_step(optimizer, loss.total, parameters, learning_rate=lr,
+        norm = optimizer_step(optimizer, total, parameters, learning_rate=lr,
                               grad_clip=config.joint.grad_clip, strict=True, zero_grad=False)
         with torch.no_grad():
             z = loss.latent.float()[:, :, 0]
             residual = z-z.mean(1, keepdim=True)
             row = {"update": update+1, "prediction": float(loss.prediction),
-                   "regularization": float(loss.regularization), "loss": float(loss.total),
+                   "regularization": float(loss.regularization), "loss": float(total),
+                   "joint_loss": float(loss.total), **supplement,
                    "gradient_norm": float(norm), "learning_rate": lr,
                    "latent_mean": float(z.mean()), "latent_std": float(z.std()),
                    "residual_std": float(residual.std()), "actual_batch": len(batch.episode_ids),

@@ -162,6 +162,52 @@ class RuntimeSettings:
     memory_budget_bytes: int = 6 * 1024**3
 
 
+_AGENT_SURFACE = ("horizon", "horizon_eval", "bootstrap", "bins", "symlog_limit", "mtp_leads",
+                  "gamma", "lam", "pmpo_alpha", "prior_beta")
+"""Agent-surface names forwarded to `AgentSettings`; the rest are read through `config.agent`."""
+
+
+@dataclass(frozen=True)
+class AgentSettings:
+    """M4 constants: the agent surface the joint world is carried into.
+
+    Its PRESENCE authorizes M4. `LeWMConfig.agent` defaults to None, so every M0-M3 recipe is
+    byte-identical to the one it was sealed with and `require_control` keeps refusing it.
+
+    Values are the legacy `Config`'s, which the Direct line ran, except the three fork fields,
+    which are `train_terminal_arms.py`'s declared counterfactual contract (`--terminal-mass 0.2`,
+    `--terminal-roots 4`, `--second-weight 0.5`). Nothing here is invented.
+    """
+
+    horizon: int = 8
+    horizon_eval: int = 10000
+    bootstrap: int = 2000
+    bins: int = 255
+    symlog_limit: float = 20.0
+    mtp_leads: int = 8
+    gamma: float = 0.997
+    lam: float = 0.95
+    pmpo_alpha: float = 0.5
+    prior_beta: float = 0.3
+    batch: int = 4
+    sequence: int = 16
+    actor_batch: int = 16
+    event_fraction: float = 0.5
+    terminal_batch: int = 1
+    readout_steps: int = 4000
+    head_steps: int = 8000
+    actor_steps: int = 4000
+    learning_rate: float = 1e-4
+    eval_episodes: int = 512
+    # Generated-prefix depth. H2 is `Config.direct_rollout`; the schedule raises it to H16.
+    recursive_depth: int = 2
+    recursive_depth_final: int = 16
+    # Direct's counterfactual contract, matched rather than reinvented.
+    fork_mass: float = 0.2
+    fork_roots: int = 4
+    fork_second_weight: float = 0.5
+
+
 @dataclass(frozen=True)
 class LeWMConfig:
     schema: str = "d4mj_lewm_recipe_v1"
@@ -172,9 +218,34 @@ class LeWMConfig:
     dynamics: DynamicsSettings = field(default_factory=DynamicsSettings)
     joint: JointSettings = field(default_factory=JointSettings)
     runtime: RuntimeSettings = field(default_factory=RuntimeSettings)
+    # None until M4. Its presence is the authorization; see AgentSettings.
+    agent: AgentSettings | None = None
 
     def __post_init__(self):
         validate_recipe(self)
+
+    # The agent surface reads a legacy `Config`. These properties supply exactly the fifteen
+    # attributes agent.py, imagination.py, actor_critic.py and execution.py touch, so those four
+    # modules are reused unchanged. Properties are not dataclass fields: `asdict`, `recipe_dict`
+    # and `recipe_digest` are unaffected, and no sealed recipe's identity moves.
+    @property
+    def device(self) -> str:
+        return self.runtime.device
+
+    @property
+    def n_actions(self) -> int:
+        return self.dynamics.n_actions
+
+    @property
+    def d_model(self) -> int:
+        return self.dynamics.width
+
+    def __getattr__(self, name: str):
+        if name in _AGENT_SURFACE:
+            if self.agent is None:
+                raise AttributeError(f"phase_gate: {name} is an M4 setting; this recipe declares no agent")
+            return getattr(self.agent, name)
+        raise AttributeError(name)
 
 
 @dataclass(frozen=True)
@@ -321,6 +392,33 @@ def validate_recipe(c: LeWMConfig) -> None:
         raise ValueError("invalid runtime/cache contract")
     if r.purpose == "research" and (j.batch != 128 or j.projections != 1024 or j.knots != 17):
         raise ValueError("research recipe requires actual B128 / J1024 / 17 knots; no microbatch substitute")
+    if c.agent is not None:
+        validate_agent(c.agent)
+
+
+def validate_agent(a: AgentSettings) -> None:
+    """Checked only when M4 is declared, so an M0-M3 recipe never runs this."""
+    counts = (a.horizon, a.horizon_eval, a.bootstrap, a.bins, a.mtp_leads, a.batch, a.sequence,
+              a.actor_batch, a.terminal_batch, a.readout_steps, a.head_steps, a.actor_steps,
+              a.eval_episodes, a.recursive_depth, a.recursive_depth_final, a.fork_roots)
+    if any(type(v) is not int or v < 1 for v in counts):
+        raise ValueError("agent counts must be positive integers")
+    if a.batch % 2 or a.actor_batch % 2:
+        raise ValueError("the 50/50 relevant/uniform mixture needs an even batch")
+    if a.recursive_depth >= a.sequence or a.recursive_depth_final >= a.sequence * 4:
+        raise ValueError("a generated prefix must leave observed blocks to start from")
+    if a.recursive_depth > a.recursive_depth_final:
+        raise ValueError("the recursive schedule may not descend")
+    if a.bins % 2 == 0:
+        raise ValueError("a symmetric two-hot grid needs an odd bin count")
+    for name in ("symlog_limit", "learning_rate"):
+        if not math.isfinite(getattr(a, name)) or getattr(a, name) <= 0:
+            raise ValueError(f"agent {name} must be positive and finite")
+    for name in ("gamma", "lam", "pmpo_alpha", "prior_beta", "event_fraction", "fork_mass",
+                 "fork_second_weight"):
+        value = getattr(a, name)
+        if not math.isfinite(value) or not 0 <= value <= 1:
+            raise ValueError(f"agent {name} must lie in [0, 1]")
 
 
 
@@ -350,7 +448,8 @@ def config_from_dict(values: dict) -> LeWMConfig:
     dynamics = TransformerDynamicsSettings if transformer else DynamicsSettings
     top = LeWMTransformerConfig if transformer else LeWMConfig
     for name, cls in (("encoder", EncoderSettings), ("dynamics", dynamics),
-                      ("joint", JointSettings), ("runtime", RuntimeSettings)):
-        if name in values:
+                      ("joint", JointSettings), ("runtime", RuntimeSettings),
+                      ("agent", AgentSettings)):
+        if values.get(name) is not None:
             values[name] = _settings(cls, values[name])
     return _settings(top, values)

@@ -11,11 +11,11 @@
   "runtime": {
     "config.py": {
       "prior": "c1835e1e6e0fae9ca6a40e479f4036fcdc6f8c0c1fa446022aecf7502b5710b0",
-      "current": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f"
+      "current": "4cf956c9a587deb12730597643f51971711b1c33b0b027b59bebf89f4ecbde1d"
     },
     "data.py": {
       "prior": "85fbbe508e85f8dbd2d2a9bedd3ad0857ef605c11a2036e71ba8ec8168703145",
-      "current": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea"
+      "current": "6bc043e463e04e7155cc10131cc85889ec4da4c745882e4b25a988d8afe0320a"
     },
     "state.py": {
       "prior": "20c2fead5ec7a795b40d4a1d6db241f8d8d1432535e0bfd4f2378a139d21b118",
@@ -23,7 +23,7 @@
     },
     "world_api.py": {
       "prior": "fcf2de2c77b1b261fb3633f30273130a7604d6bec547a3d953b7b0e3755d021c",
-      "current": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b"
+      "current": "ef92ee7e911ae22a51036f3121193a1b42c786cf55d6a261ed70620497de24f3"
     }
   },
   "changed_definitions": {
@@ -35,15 +35,20 @@
       "JointSampler.__init__",
       "JointSampler.sample",
       "audit_episodes",
+      "load_joint_corpus",
       "screen_windows"
+    ],
+    "world_api.py": [
+      "ModelBundle.require_control"
     ]
   },
   "evidence": {
     "substitution": "runtime hashes only; the current `functions` digest is kept, so a hit requires every encode function and its transitive project-function closure to be byte-identical to the run that filled the cache",
-    "reachability": "the changed definitions are referenced only from d4mj/{cache,train,lewm_diagnostics,experiments}.py; d4mj/m03 imports none of them, and takes only atomic_manifest, patchify and _sha256 from data.py, all three byte-identical to the reference commit",
-    "recipe_dict": "the one changed config.py definition is reachable, and was checked behaviourally instead: all 18 stored resolved recipes round-trip byte for byte and all six paired checkpoints resolve their recorded recipe_id",
+    "reachability": "the changed definitions are referenced only from d4mj/{cache,train,lewm_diagnostics,experiments}.py and the M4 campaign drivers; d4mj/m03 imports none of them, and takes only atomic_manifest, patchify and _sha256 from data.py, all three verified byte-identical to the reference commit. Re-verified 2026-09-20 mechanically: load_joint_corpus and ModelBundle.require_control appear nowhere under d4mj/m03/, and exactly one definition changed in each of config.py, data.py and world_api.py.",
+    "recipe_dict": "the one changed config.py definition is reachable through recipe_digest, and is checked behaviourally: re-verified 2026-09-20 that all 9 stored recipes round-trip byte for byte and all 50 discoverable sealed checkpoints resolve their recorded recipe_id. The 2026-09-20 edit omits `agent` when absent precisely so M0-M3 recipe identities cannot move.",
     "measured_unix": 1789615804.214713,
-    "regenerated_unix": 1789686424.712919,
-    "backend_note": "config/state/world_api also carry the source-exact comparison backend now. The bridged arms are replay and Direct, whose encode functions are unchanged; the substitution swaps runtime hashes only and keeps the current `functions` digest, so a hit still requires every encode function and its transitive closure to be byte-identical."
+    "regenerated_unix": 1789875810.0550275,
+    "backend_note": "config/state/world_api also carry the source-exact comparison backend now. The bridged arms are replay and Direct, whose encode functions are unchanged; the substitution swaps runtime hashes only and keeps the current `functions` digest, so a hit still requires every encode function and its transitive closure to be byte-identical.",
+    "m4_note": "The M4 bridge added AgentSettings to lewm_config.py (not pinned here; LeWM arms always recompute) and widened load_joint_corpus for the merged corpus. Neither reaches a replay or Direct encode function, which is what this record bridges."
   }
 }

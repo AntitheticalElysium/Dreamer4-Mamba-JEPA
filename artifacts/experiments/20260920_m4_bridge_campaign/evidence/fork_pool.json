@@ -1,0 +1,15 @@
+{
+  "schema": "d4mj_m4_forkpool_v1",
+  "roots": 15016,
+  "seeds": 1486,
+  "held_out_roots": 1550,
+  "held_out_seeds": 149,
+  "window_frames": 4,
+  "actions": 17,
+  "second_valid_share": 0.9051,
+  "fatal_pair_share": 0.0949,
+  "roots_all_safe": 12344,
+  "roots_all_fatal": 0,
+  "rewarding_pair_share": 0.0327,
+  "eval_seed_collisions": 0
+}

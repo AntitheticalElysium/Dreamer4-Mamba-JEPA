@@ -541,24 +541,45 @@ def audit_episodes(episodes, config: LeWMConfig) -> dict:
             "transitions": sum(r["steps"] for r in rows)}
 
 
-def load_joint_corpus(path: str | Path, config: LeWMConfig):
-    """Validate bytes and full episode metadata. Never invent collector/split lineage."""
-    path = Path(path)
-    if path.name == "manifest.json":
-        path = path.parent
-    episodes = load_episodes(path, verify=True)
+def load_joint_corpus(path: str | Path | Sequence[str | Path], config: LeWMConfig):
+    """Validate bytes and full episode metadata. Never invent collector/split lineage.
+
+    Several paths compose one corpus whose sources keep their own splits, eligibility flags and
+    provenance. The corpus is immutable by reference rather than by copy: each source is pinned by
+    the digest of its own manifest, so a merged corpus is auditable without duplicating tens of
+    gigabytes of observations, and a single source keeps its original contract byte for byte.
+    """
+    paths = [path] if isinstance(path, (str, Path)) else list(path)
+    if not paths:
+        raise ValueError("joint_data: a corpus needs at least one source")
+    episodes, sources = [], []
+    for entry in paths:
+        entry = Path(entry)
+        if entry.name == "manifest.json":
+            entry = entry.parent
+        part = load_episodes(entry, verify=True)
+        source_file = entry / "manifest.json" if entry.is_dir() else entry
+        if entry.is_dir():
+            manifest = json.loads(source_file.read_text())
+            provenance = {k: v for k, v in manifest.items() if k != "shards"}
+        else:
+            sidecar = entry.with_suffix(entry.suffix + ".manifest.json")
+            provenance = json.loads(sidecar.read_text()) if sidecar.exists() else {}
+        episodes.extend(part)
+        # Unknown upstream training access remains explicit, never relabeled as zero.
+        sources.append({"path": str(entry), "sha256": _sha256(source_file), "episodes": len(part),
+                        "provenance": provenance,
+                        "collector_training_access": provenance.get("collector_training_access", "unknown")})
+    episodes = EpisodeCorpus(episodes) if len(paths) > 1 else episodes
     audit = audit_episodes(episodes, config)
-    source_file = path / "manifest.json" if path.is_dir() else path
-    if path.is_dir():
-        manifest = json.loads(source_file.read_text())
-        provenance = {k: v for k, v in manifest.items() if k != "shards"}
-    else:
-        sidecar = path.with_suffix(path.suffix + ".manifest.json")
-        provenance = json.loads(sidecar.read_text()) if sidecar.exists() else {}
-    # Unknown upstream training access remains explicit, never relabeled as zero.
-    contract = {"schema": "d4mj_lewm_dataset_v1", "sha256": _sha256(source_file),
-                "audit": audit, "provenance": provenance,
-                "collector_training_access": provenance.get("collector_training_access", "unknown")}
+    contract = {"schema": "d4mj_lewm_dataset_v1", "sha256": sources[0]["sha256"],
+                "audit": audit, "provenance": sources[0]["provenance"],
+                "collector_training_access": sources[0]["collector_training_access"]}
+    if len(sources) > 1:
+        # A merged corpus is a different dataset and must not be mistakable for its first source.
+        contract["sha256"] = hashlib.sha256(
+            canonical_json([s["sha256"] for s in sources]).encode()).hexdigest()
+        contract["sources"] = sources
     return episodes, contract
 
 

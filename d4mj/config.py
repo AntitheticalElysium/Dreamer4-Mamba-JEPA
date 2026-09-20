@@ -248,6 +248,11 @@ def recipe_dict(config) -> dict:
     # `stride` postdates v1 only: every v2 recipe was written with it. The centering
     # pair postdates v2 as well, and the two move together -- a recipe that customizes
     # neither predates them, while one that customizes either was written with both.
+    # `agent` postdates every M0-M3 recipe. Omitting it when absent keeps their digests, and so
+    # their `recipe_id`, exactly as sealed -- which matters more than source drift does, because
+    # the recipe check runs BEFORE the frozen-eval parity fallback and nothing can recover it.
+    if values.get("agent", "absent") is None:
+        values.pop("agent")
     joint = values.get("joint")
     if isinstance(joint, dict) and str(values.get("schema", "")).startswith("d4mj_lewm_recipe_v"):
         if values["schema"] == "d4mj_lewm_recipe_v1" and joint.get("stride") == 1:
