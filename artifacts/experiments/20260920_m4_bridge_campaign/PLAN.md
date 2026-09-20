@@ -91,6 +91,21 @@ world sees both. State this in the result; do not let it become an unexamined as
       files, no new functions** without re-opening the design here first.
 
 ### Stage 1 — corpus
+
+**Two fork modes exist, and they answer different questions.** Chosen per run, not both at once:
+
+| | GROUPED (`train_joint_pair.py`, fork_mass 0.2) | FLATTENED (`flatten_forks.py`, extra corpus source) |
+|---|---|---|
+| structure | Direct's branch contract: 4 roots x 17 actions + second steps, as a weighted term | each (root, action) is one ordinary episode drawn by `JointSampler` |
+| per update | **+152 differentiable encoder frames, +136 world transitions** | **none** — same batch, same work |
+| cost | 0.59 s/update | 0.32 s/update |
+| exposure | pinned at a declared 20% loss mass | ~12.1% of draws, set by window count, not tuned |
+| answers | can LeWM work given *Direct-style counterfactual supervision*? | can *native* LeWM work when simply exposed to the same examples? |
+
+`fork_mass` weights the loss, not the compute: all 136 transitions are computed to obtain it.
+The 2026-09-19 A' arm does **not** already cover the flattened question — it trained on the
+**logged action only**, one per root. All 17 counterfactuals as ordinary examples is untested.
+
 - [x] `1.1` **DONE** — 10,400 episodes, 8,325 TRAIN, 3,875,808 transitions. Build the merged corpus contract: archive TRAIN + support TRAIN, separate split
       provenance, `bc_eligible` carried per episode.
 - [x] `1.2` **DONE** — `validate_episode` ran on all 10,400: dtype, 63x63x3 geometry and the

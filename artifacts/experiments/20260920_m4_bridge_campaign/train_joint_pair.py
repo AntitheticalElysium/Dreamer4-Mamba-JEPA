@@ -107,10 +107,21 @@ def branch_term(bundle, batch, second_weight: float):
 
 
 def _branch(bundle, frames, past, first, second, keep, n, actions, second_weight):
+    """Index latents as [:, 0, 0], never [:, 0].
+
+    `PredictiveState.latent` is B,T,1,D, so `latent[:, 0]` keeps a trailing singleton and every
+    downstream reduction carries a (B, 1) shape. Multiplying such a tensor by a (B,) mask
+    broadcasts to (B, B) instead of masking -- silently inflating the term and discarding the mask.
+    That bug was here and is what this indexing prevents.
+    """
     encoder, world, device = bundle.encoder, bundle.world, bundle.device
     z_context = encoder(frames)
-    z_first = encoder(first.flatten(0, 1).unsqueeze(1))[:, 0]
-    z_second = encoder(second.flatten(0, 1).unsqueeze(1))[:, 0]
+    z_first = encoder(first.flatten(0, 1).unsqueeze(1))[:, 0, 0]
+    # Only the surviving branches. `second` is exactly zero where the first step ended the
+    # episode, so encoding all 17 ran the ViT on ~6.5 all-zero images per update.
+    alive = keep.reshape(-1).nonzero().squeeze(-1)
+    z_second = (encoder(second.flatten(0, 1)[alive].unsqueeze(1))[:, 0, 0]
+                if len(alive) else None)
 
     state = world.start(z_context[:, :1])
     if z_context.shape[1] > 1:
@@ -118,15 +129,17 @@ def _branch(bundle, frames, past, first, second, keep, n, actions, second_weight
     flat = torch.arange(actions, device=device).repeat(n)[:, None]
     branches = bundle.repeat_state(state, actions)
     advanced, _ = bundle.advance(branches, flat)
-    error = (advanced.latent[:, 0].float() - z_first.float()).square().mean(-1)
+    error = (advanced.latent[:, 0, 0].float() - z_first.float()).square().mean(-1)
     loss = error.reshape(n, actions).mean(1).mean()
 
-    if bool(keep.any()):
+    if z_second is not None:
+        # The advance still runs on every branch: the second step must continue the SAME carried
+        # memory, and subsetting a recurrent carry mid-rollout would change the computation rather
+        # than skip part of it. Only the targets and the scored rows are subset.
         noop = torch.zeros_like(flat)
         onward, _ = bundle.advance(advanced, noop)
-        second_error = (onward.latent[:, 0].float() - z_second.float()).square().mean(-1)
-        mask = keep.reshape(-1).float()
-        loss = loss + second_weight * (second_error * mask).sum() / mask.sum().clamp(min=1.0)
+        second_error = (onward.latent[:, 0, 0][alive].float() - z_second.float()).square().mean(-1)
+        loss = loss + second_weight * second_error.mean()
     return loss
 
 
