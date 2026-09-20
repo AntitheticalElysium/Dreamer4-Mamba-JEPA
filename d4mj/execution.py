@@ -177,6 +177,108 @@ def evaluate(
     return report
 
 
+def evaluate_lewm_actor(actor_path, output, *, episodes: int | None = None,
+                        seed_base: int = 30_000, limit: int | None = None) -> dict:
+    """Execute a self-contained canonical actor against its immutable own-BC prior.
+
+    Episode cache identity includes every model byte and protocol choice and is atomically
+    replaced, so interruption loses at most the current 16-episode block and never corrupts the
+    reusable prefix.
+    """
+    from dataclasses import asdict
+    from pathlib import Path
+    import tempfile
+    from .checkpoint import read_lewm_actor
+    from .config import config_from_dict
+    from .data import _sha256, atomic_manifest
+
+    actor_path, output = Path(actor_path), Path(output)
+    output.mkdir(parents=True, exist_ok=True)
+    payload = read_lewm_actor(actor_path)
+    config = config_from_dict(payload["config"])
+    settings = config.agent
+    if not payload["capabilities"].get("actor_trained"):
+        raise ValueError("phase_gate: primary execution requires the completed actor budget")
+    if config.runtime.purpose == "research" and (
+        episodes not in (None, settings.eval_episodes) or limit not in (None, settings.horizon_eval)
+    ):
+        raise ValueError("evaluation_protocol: research runs use the sealed episode count and native cap")
+    count = settings.eval_episodes if episodes is None else episodes
+    horizon = settings.horizon_eval if limit is None else limit
+    if count < 1 or horizon < 1:
+        raise ValueError("evaluation_protocol: episodes and horizon must be positive")
+
+    bundle = ModelBundle.create(config)
+    bundle.encoder.load_state_dict(payload["modules"]["encoder"], strict=True)
+    bundle.world.load_state_dict(payload["modules"]["world"], strict=True)
+    bundle.capabilities = dict(payload["capabilities"])
+    bundle.eval().world.requires_grad_(False)
+    bundle.encoder.freeze()
+    policies = {}
+    for name, key in (("actor", "heads"), ("bc", "prior")):
+        head = Heads(config).to(config.runtime.device)
+        head.load_state_dict(payload["modules"][key], strict=True)
+        policies[name] = head.eval().requires_grad_(False)
+    seeds = list(range(seed_base, seed_base + count))
+    identity = {
+        "schema": "d4mj_lewm_execution_identity_v1", "actor_sha256": _sha256(actor_path),
+        "recipe_id": payload["recipe_id"], "seed_base": seed_base, "episodes": count,
+        "limit": horizon, "protocol": "categorical-temperature-1-own-bc-paired-v1",
+    }
+    cache_path = output / "episodes.pt"
+    cached_payload = torch.load(cache_path, map_location="cpu", weights_only=False) if cache_path.exists() else {}
+    if cached_payload and cached_payload.get("identity") != identity:
+        raise ValueError("execution_cache: output contains a different actor/protocol")
+    rows = cached_payload.get("rows", {})
+
+    def save_cache():
+        with tempfile.NamedTemporaryFile(dir=output, suffix=".tmp", delete=False) as stream:
+            temporary = Path(stream.name)
+        try:
+            torch.save({"identity": identity, "rows": rows}, temporary)
+            temporary.replace(cache_path)
+        finally:
+            temporary.unlink(missing_ok=True)
+
+    def cached(name, function):
+        completed = rows.setdefault(name, {})
+
+        def run(seed):
+            if seed not in completed:
+                completed[seed] = asdict(function(seed))
+                if len(completed) % 16 == 0:
+                    save_cache()
+            return Result(**completed[seed])
+        return run
+
+    runners = {
+        name: cached(name, lambda seed, head=head: run_episode(
+            bundle, None, head, seed, config, limit=horizon
+        ))
+        for name, head in policies.items()
+    }
+    runners["random"] = cached("random", lambda seed: run_random(seed, config, limit=horizon))
+    measured = evaluate(runners, seeds, config)
+    save_cache()
+    summary = {}
+    for name, entry in measured.items():
+        entry = dict(entry)
+        entry.pop("episodes", None)
+        summary[name] = entry
+    comparison = summary["actor"]["versus_bc"]
+    report = {
+        "schema": "d4mj_lewm_execution_v1", "identity": identity,
+        "primary": {
+            "achievements_gap": comparison["achievements_gap"],
+            "achievements_interval": comparison["achievements_interval"],
+            "actor_beats_own_bc": comparison["achievements_beats"],
+        },
+        "policies": summary,
+    }
+    atomic_manifest(output / "evaluation.json", report)
+    return report
+
+
 def _interval(samples: torch.Tensor, level: float = 0.95) -> tuple[float, float]:
     """Percentile interval, not a standard error or a Gaussian approximation."""
     tail = (1.0 - level) / 2

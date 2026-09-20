@@ -94,8 +94,11 @@ def test_cli_preflight_and_export_have_separate_artifact_contracts(tmp_path):
     assert json.loads((run/"failure.json").read_text())["component"]=="joint_completion"
     assert main(export+["--diagnostic"])==0
     manifest=json.loads((tmp_path/"cache/manifest.json").read_text())
-    assert manifest["cache"]["diagnostic_only"] and manifest["cache"]["joint_step"]==2
-    assert manifest["cache"]["parent_checkpoint_path"]==str(checkpoint.resolve())
+    # Export annotations are deliberately outside the writer's cache contract.  This
+    # keeps an interrupted or repeated export resumable under the exact same encoder/data
+    # identity instead of making our own annotation look like contract drift.
+    assert manifest["export"]["diagnostic_only"] and manifest["export"]["joint_step"]==2
+    assert manifest["export"]["parent_checkpoint_path"]==str(checkpoint.resolve())
     assert manifest["cache"]["parent_checkpoint"]==_sha256(checkpoint)
 
 

@@ -1,6 +1,6 @@
 # Implementation plan and code-change map
 
-Status: M0–M3 runtime is implemented. [Actual files, validation and remaining boundaries](STATUS.md) are authoritative for implementation status; this document retains the end-state M0–M8 map. M4–M8 and their associated tests/CLI commands remain future work. History baseline: `162efd1`.
+Status: M0–M4 runtime mechanics are implemented. [Actual files, validation and remaining boundaries](STATUS.md) are authoritative. Empirical G2–G4 reports still decide whether H16/actor continuation is allowed; renderer/play (M6+) remain future work. History baseline: `162efd1`.
 
 ## 1. Implementation boundaries
 
@@ -26,7 +26,7 @@ M1 and the renderer's standalone shape implementation can be developed independe
 
 ## 3. Runtime files and public functions
 
-This table describes the end state; the [integration decision](INTEGRATION.md) consolidates infrastructure in the existing modules. M4 and later methods listed here remain deferred. The [implemented M0–M3 function map](STATUS.md#implemented-file-and-api-map) resolves renamed/split helpers and explicitly identifies deferred methods. It is the approved scope update for the current implementation.
+This table describes the end state; the [integration decision](INTEGRATION.md) consolidates infrastructure in the existing modules. The [implemented function map](STATUS.md#implemented-file-and-api-map) resolves actual names and remaining deferred methods.
 
 | Path | Types/functions and responsibilities |
 |---|---|
@@ -132,19 +132,22 @@ TC-30 supersedes the provisional uniform FP32/BF16 tolerances with measured back
 
 M0–M3 includes `d4mj/recipes/lewm_mamba_raw.json` and `d4mj/recipes/lewm_mamba_tc.json`. A sealed `evaluation_seeds.json` is still required before control evaluation; schema/validation lives in `lewm_config.py`. Store all resolved nested values, not an undocumented pile of CLI overrides. M0–M3 records `requirements-lewm-rtx3060.lock.txt` after source/environment preflight and optional `requirements-play.txt` for the viewer; keep the existing requirements and audited legacy lock usable. Update `third_party/SOURCES.lock` only for newly vendored source actually used, preserving existing pins/licenses. The TC v3 PDF is already local and recorded in `third_party/PAPERS.lock`; an unavailable canonical TC repository is not invented.
 
-End-state CLI below mixes implemented and future commands. Use the [M0–M3 commands](STATUS.md) for the implemented surface; `evaluate`, bridge, actor and renderer commands here are not available research stages:
+Implemented M0–M4 CLI (gate reports are produced by the declared evaluation protocol and are checked against exact checkpoint/cache identities):
 
 ```text
 python -m d4mj preflight --recipe <recipe.json> --dataset <manifest.json>
 python -m d4mj joint --run <resolved-run-dir> --stop-at 2000
-python -m d4mj evaluate --run <resolved-run-dir> --stage joint-screen --split dev
+# `paired-run` invokes the sealed joint-screen evaluator at update 2,000.
 python -m d4mj joint --run <resolved-run-dir> --resume <checkpoint>
 python -m d4mj export --run <resolved-run-dir> --checkpoint <joint-checkpoint>
-python -m d4mj bridge --run <resolved-run-dir> --stop-after-stage h2
-python -m d4mj evaluate --run <resolved-run-dir> --stage bridge-h2 --split dev
-python -m d4mj bridge --run <resolved-run-dir> --resume <bridge-checkpoint>
-python -m d4mj actor --run <resolved-run-dir> --stop-at 500
-python -m d4mj evaluate --run <resolved-run-dir> --stage actor-screen --split dev
+python -m d4mj bridge --run <resolved-run-dir> --stop-after h2
+python -m d4mj bridge --run <resolved-run-dir> --stop-after h16 \
+  --resume <h2-checkpoint> --gate <h2-gate.json>
+python -m d4mj actor --run <resolved-run-dir> --bridge-gate <h16-gate.json> \
+  --stop-after screen
+python -m d4mj actor --run <resolved-run-dir> --bridge-gate <h16-gate.json> \
+  --stop-after budget --resume <actor-screen-checkpoint> --actor-gate <actor-gate.json>
+python -m d4mj evaluate --run <resolved-run-dir>
 python -m d4mj render-fit --run <resolved-run-dir>
 python -m d4mj play --bundle <inference-bundle> --context <seed-context>
 python -m d4mj report --manifest <comparison-manifest>

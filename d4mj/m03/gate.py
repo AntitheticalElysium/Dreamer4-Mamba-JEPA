@@ -821,7 +821,12 @@ def frozen_eval_proof(reference: list[Path], candidate: list[Path], tolerance: f
     arms = {arm: {"checkpoint_sha256": left[0]["arms"][arm]["checkpoint_sha256"],
                   "recorded_sources_digest": left[0]["arms"][arm]["recorded_sources_digest"]}
             for arm in left[0]["arms"]}
-    changed = [k for k in left[0]["runtime"] if left[0]["runtime"][k] != right[0]["runtime"].get(k)]
+    # A closure may grow as a later phase moves into the shared runtime.  Comparing only
+    # reference keys made newly imported files invisible in the human-readable delta even
+    # though the manifest digest changed.  Use the union so the proof says exactly what moved.
+    runtime_keys = set(left[0]["runtime"]) | set(right[0]["runtime"])
+    changed = sorted(k for k in runtime_keys
+                     if left[0]["runtime"].get(k) != right[0]["runtime"].get(k))
     admissible = max(cross) <= max(tolerance, within)
     return {
         "schema": FROZEN_EVAL_SCHEMA,
@@ -830,7 +835,8 @@ def frozen_eval_proof(reference: list[Path], candidate: list[Path], tolerance: f
         "arms": arms,
         "reference_manifest_digest": left[0]["manifest_digest"],
         "current_manifest_digest": right[0]["manifest_digest"],
-        "changed_runtime_files": {k: {"reference": left[0]["runtime"][k], "current": right[0]["runtime"][k]}
+        "changed_runtime_files": {k: {"reference": left[0]["runtime"].get(k),
+                                       "current": right[0]["runtime"].get(k)}
                                   for k in changed},
         "surface": sorted(next(iter(left[0]["arms"].values()))["tensors"]),
         "parity": {"tolerance": tolerance, "within_tree_max_abs": within,

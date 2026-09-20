@@ -15,7 +15,7 @@
     },
     "data.py": {
       "prior": "85fbbe508e85f8dbd2d2a9bedd3ad0857ef605c11a2036e71ba8ec8168703145",
-      "current": "cf973b0c2c118d7d15653310973101f8b06791b929430bef2d27325f8801b3e6"
+      "current": "1c624aa9676a4005a586dd6ab1a5c2b69f0060ad932b578397cf8dcb247166c9"
     },
     "state.py": {
       "prior": "20c2fead5ec7a795b40d4a1d6db241f8d8d1432535e0bfd4f2378a139d21b118",
@@ -54,6 +54,6 @@
     "measured_unix": 1789615804.214713,
     "regenerated_unix": 1789885093.354126,
     "backend_note": "config/state/world_api also carry the source-exact comparison backend now. The bridged arms are replay and Direct, whose encode functions are unchanged; the substitution swaps runtime hashes only and keeps the current `functions` digest, so a hit still requires every encode function and its transitive closure to be byte-identical.",
-    "m4_note": "The M4 bridge added AgentSettings to lewm_config.py (not pinned here; LeWM arms always recompute) and widened load_joint_corpus for the merged corpus. Neither reaches a replay or Direct encode function, which is what this record bridges."
+    "m4_note": "Re-verified after moving canonical M4 into d4mj. The data.py additions are BridgeBatch, cached-latent bridge samplers and an M4-only rejection of fork-training manifests in load_joint_corpus. m03 still imports only atomic_manifest, patchify and _sha256 from data.py; those definitions are unchanged. LeWM arms always recompute, while this record admits only replay and Direct encodings."
   }
 }

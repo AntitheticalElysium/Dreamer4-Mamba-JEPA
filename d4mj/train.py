@@ -16,17 +16,24 @@ from .lewm_config import LeWMConfig
 from .cache import cache_latents, cache_latents_to_store, _cache_digest
 from .data import (
     Batch,
+    BridgeBatch,
     JointSampler,
     Episode,
     EpisodeCorpus,
     sample_batch,
+    sample_bridge_batch,
+    sample_bridge_terminals,
     sample_terminal_batch,
+    to_head_batch,
 )
 from .imagination import imagine
-from .checkpoint import load, save, restore_lewm_bundle, save_lewm_bundle, publish_lewm_latest
+from .checkpoint import (load, save, restore_lewm_bundle, save_lewm_bundle,
+                         publish_lewm_latest, save_lewm_bridge, restore_lewm_bridge,
+                         save_lewm_actor, restore_lewm_actor)
 from .representation import Decoder, Encoder, reconstruction_loss
 from .sources import tensor_state_digest
-from .state import WorldState, repeat_memory as _repeat_memory
+from .state import PredictiveState, WorldState, repeat_memory as _repeat_memory
+from .mamba_recurrence import MambaCarry
 from .lewm import SIGReg, joint_loss
 from .world_api import ModelBundle
 from .transition import advance, World, commit_inputs, transition_loss
@@ -532,8 +539,23 @@ def set_phase_mode(bundle: ModelBundle, phase: str):
     elif phase == "export":
         bundle.encoder.freeze()
         bundle.world.eval()
+    elif phase == "bridge":
+        if bundle.config.agent is None:
+            raise ValueError("phase_gate: bridge requires an M4 recipe")
+        bundle.encoder.freeze()
+        bundle.world.train().requires_grad_(True)
+        bundle.world.agent_readout.requires_grad_(True)
+        # TC-15: affine parameters keep gradients, running statistics do not move.
+        for module in bundle.world.predictor_projector.modules():
+            if isinstance(module, nn.BatchNorm1d):
+                module.eval()
+    elif phase == "actor":
+        if bundle.config.agent is None:
+            raise ValueError("phase_gate: actor requires an M4 recipe")
+        bundle.encoder.freeze()
+        bundle.world.eval().requires_grad_(False)
     else:
-        raise ValueError(f"phase_gate: {phase} is outside implemented M0-M3")
+        raise ValueError(f"phase_gate: unknown LeWM phase {phase}")
 
 
 def joint_optimizer(bundle: ModelBundle):
@@ -598,17 +620,8 @@ def initialize_joint(episodes, config, output, *, dataset_contract, gate_report)
 
 def train_joint(episodes, config: LeWMConfig, output: str | Path, *, dataset_contract: dict,
                 gate_report: dict, stop_at: int | None = None, resume: str | Path | None = None,
-                bundle: ModelBundle | None = None, screen_report: dict | None = None,
-                extra=None):
-    """`extra(bundle, update, total) -> (total, fields)` adds a SEPARATELY DECLARED term.
-
-    It exists so a campaign can supervise something beside the LeWM objective -- counterfactual
-    branches, for one -- without that term becoming part of `joint_loss`. The distinction is not
-    cosmetic: `joint_loss` is what "LeWM" means in this repository, and a caller that blends its
-    own term keeps the blend, its mass and its logging on its own side of the boundary. A run that
-    passes `extra` is not a paper-minimal LeWM run, and its metrics say so by carrying the extra
-    fields the callback returns.
-    """
+                bundle: ModelBundle | None = None, screen_report: dict | None = None):
+    """Canonical joint LeWM objective; TC-17 keeps counterfactual forks evaluation-only."""
     from .gates import require_joint_gates, require_joint_screen, ComponentGateError
 
     require_joint_gates(gate_report, config, dataset_contract)
@@ -651,10 +664,6 @@ def train_joint(episodes, config: LeWMConfig, output: str | Path, *, dataset_con
         if not bool(torch.isfinite(loss.total)):
             raise RuntimeError(f"joint_objective: nonfinite loss at update {update}; stop this component")
         total, supplement = loss.total, {}
-        if extra is not None:
-            total, supplement = extra(bundle, update, loss.total)
-            if not bool(torch.isfinite(total)):
-                raise RuntimeError(f"joint_objective: nonfinite supplemented loss at update {update}")
         lr = learning_rate(config, update)
         norm = optimizer_step(optimizer, total, parameters, learning_rate=lr,
                               grad_clip=config.joint.grad_clip, strict=True, zero_grad=False)
@@ -689,3 +698,418 @@ def train_joint(episodes, config: LeWMConfig, output: str | Path, *, dataset_con
 def freeze_encoder(bundle: ModelBundle):
     set_phase_mode(bundle, "export")
     return bundle.encoder
+
+
+# ---- Canonical LeWM M4 ---------------------------------------------------------------
+
+_BRIDGE_GROUPS = ("dynamics", "policy", "reward", "continuation")
+
+
+def phase_optimizer(modules: list[nn.Module], config: LeWMConfig) -> torch.optim.AdamW:
+    """Fresh Phase-2/3 AdamW, retaining upstream parameter no-decay annotations."""
+    if config.agent is None:
+        raise ValueError("phase_gate: an M4 optimizer requires agent settings")
+    return optimizer(modules, config.agent, exclude_vectors=False)
+
+
+def _phase_lr(config: LeWMConfig, update: int) -> float:
+    settings = config.agent
+    if settings is None:
+        raise ValueError("phase_gate: an M4 schedule requires agent settings")
+    return settings.learning_rate * min(1.0, (update + 1) / settings.warmup)
+
+
+def _phase_balance(losses: dict[str, torch.Tensor], state: dict[str, float], decay: float):
+    total = 0.0
+    for name, value in losses.items():
+        squared = float(value.detach().float().square())
+        state[name] = decay * state.get(name, squared) + (1.0 - decay) * squared
+        total = total + value / max(state[name] ** 0.5, 1e-8)
+    return total
+
+
+def _outgoing_actions(batch: Batch, n_actions: int) -> torch.Tensor:
+    actions = batch.led_to_action[:, 1:]
+    if actions.dtype != torch.long or bool(((actions < 0) | (actions >= n_actions)).any()):
+        raise ValueError("bridge_data: BOS/padding reached an outgoing action")
+    return actions
+
+
+@torch.no_grad()
+def _bridge_initial_state(bundle: ModelBundle, batch: BridgeBatch) -> PredictiveState:
+    """Consume each ragged prefix and detach exactly once at the main-window boundary."""
+    if bundle.config.family != "lewm_mamba":
+        raise ValueError("phase_gate: the canonical M4 bridge is the Mamba thesis architecture")
+    rows = []
+    for latents, actions in zip(batch.burn_latents, batch.burn_actions):
+        state = bundle.world.teacher(latents.unsqueeze(0), actions.unsqueeze(0)).state
+        state = bundle.detach_state(state)
+        # The main window supplies a new relative clock; absolute archive positions are metadata.
+        rows.append(replace(state, step=0))
+    return PredictiveState(
+        latent=torch.cat([state.latent for state in rows], 0),
+        memory=tuple(
+            MambaCarry(
+                torch.cat([state.memory[layer].conv for state in rows], 0),
+                torch.cat([state.memory[layer].ssm for state in rows], 0),
+            )
+            for layer in range(len(rows[0].memory))
+        ),
+        history=torch.cat([state.history for state in rows], 0),
+        step=0,
+    )
+
+
+def bridge_rollout(bundle: ModelBundle, z: torch.Tensor, actions: torch.Tensor, depth: int,
+                   initial: PredictiveState):
+    """Teacher path plus exactly ``depth`` recursively generated factual successors."""
+    teacher = bundle.world.teacher(z, actions, state=initial)
+    blocks = z.shape[1]
+    if not 0 < depth < blocks:
+        raise ValueError("bridge_depth: generated suffix must leave an observed anchor")
+    anchor = blocks - 1 - depth
+    prefix = bundle.world.teacher(z[:, :anchor + 1], actions[:, :anchor], state=initial).state
+    generated, features = [], []
+    for offset in range(depth):
+        prefix, feature = bundle.advance(prefix, actions[:, anchor + offset:anchor + offset + 1])
+        generated.append(prefix.latent)
+        features.append(feature)
+    return teacher, torch.cat(generated, 1), torch.cat(features, 1), anchor
+
+
+def _bridge_dynamics_loss(teacher, generated, z, rows, anchor):
+    mask = rows.to(z.dtype).view(-1, 1, 1, 1)
+
+    def mean_squared(prediction, target):
+        error = (prediction.float() - target.float()).square() * mask
+        return error.sum() / mask.expand_as(error).sum().clamp(min=1.0)
+
+    return (mean_squared(teacher.predicted, z[:, 1:])
+            + mean_squared(generated, z[:, anchor + 1:anchor + 1 + generated.shape[1]]))
+
+
+def _bridge_head_losses(heads: Heads, observed: torch.Tensor, generated: torch.Tensor,
+                        targets: dict, config: LeWMConfig, anchor: int):
+    blocks = observed.shape[1]
+    prefix = torch.arange(blocks, device=observed.device) <= anchor
+    suffix = ~prefix
+    observed_readout = heads(observed) | {"centers": heads.centers}
+    prefix_losses = head_loss(observed_readout, targets, config, prefix)
+    observed_suffix = head_loss(observed_readout, targets, config, suffix)
+    merged = torch.cat((observed[:, :anchor + 1], generated), 1)
+    generated_suffix = head_loss(heads(merged) | {"centers": heads.centers}, targets,
+                                 config, suffix)
+    return {
+        name: 0.5 * prefix_losses[name]
+              + 0.25 * observed_suffix[name]
+              + 0.25 * generated_suffix[name]
+        for name in prefix_losses
+    }
+
+
+def bridge_losses(bundle: ModelBundle, heads: Heads, main: BridgeBatch,
+                  terminal: BridgeBatch, depth: int) -> dict[str, torch.Tensor]:
+    """TC-16/17 objective with fixed observed/generated and terminal strata."""
+    batch = to_head_batch(main)
+    initial = _bridge_initial_state(bundle, main)
+    actions = _outgoing_actions(batch, bundle.n_actions)
+    teacher, generated, generated_features, anchor = bridge_rollout(
+        bundle, batch.latents, actions, depth, initial
+    )
+    targets = head_targets(batch, bundle.config)
+    losses = _bridge_head_losses(heads, teacher.features, generated_features, targets,
+                                 bundle.config, anchor)
+    losses["dynamics"] = _bridge_dynamics_loss(
+        teacher, generated, batch.latents, batch.rows("dynamics").to(batch.latents.device), anchor
+    )
+
+    support = to_head_batch(terminal)
+    support_initial = _bridge_initial_state(bundle, terminal)
+    support_teacher, _, support_features, support_anchor = bridge_rollout(
+        bundle, support.latents, _outgoing_actions(support, bundle.n_actions), depth, support_initial
+    )
+    support_targets = head_targets(support, bundle.config)
+    observed = heads(support_teacher.features) | {"centers": heads.centers}
+    combined = torch.cat((support_teacher.features[:, :support_anchor + 1], support_features), 1)
+    recursive = heads(combined) | {"centers": heads.centers}
+    losses["continuation"] = (
+        0.8 * losses["continuation"]
+        + 0.2 * paired_terminal_loss(recursive, observed, support_targets)
+    )
+    return losses
+
+
+def train_bridge(cache: EpisodeCorpus, bundle: ModelBundle, parent: dict, output: str | Path,
+                 *, parent_path: str | Path, cache_contract: dict, stop_after: str = "h2",
+                 resume: str | Path | None = None, gate_report: dict | None = None):
+    """Canonical Phase 2: H2 pause, external gate, then H16 on the same world.
+
+    Research budgets can be paused only at declared stage boundaries.  Small plumbing runs use a
+    verification recipe with small budgets; command-line step overrides cannot mint research
+    checkpoints that look complete.
+    """
+    from .gates import require_bridge_gate
+
+    config, settings = bundle.config, bundle.config.agent
+    if settings is None or not parent.get("capabilities", {}).get("joint_complete"):
+        raise ValueError("phase_gate: bridge requires a completed joint M4 parent")
+    if stop_after not in ("h2", "h16"):
+        raise ValueError("bridge_schedule: stop_after must be h2 or h16")
+    output = Path(output)
+    output.mkdir(parents=True, exist_ok=True)
+    set_phase_mode(bundle, "bridge")
+    torch.manual_seed(config.seed + 2)
+    heads = Heads(config).to(config.runtime.device)
+    head_initial_identity = tensor_state_digest(heads.state_dict())
+    optimiser = phase_optimizer([bundle.world, heads], config)
+    sampler = torch.Generator().manual_seed(config.seed + 31)
+    balance: dict[str, float] = {}
+    begin = 0
+    gate_identity = None
+    if resume is not None:
+        restored = restore_lewm_bridge(
+            resume, bundle, heads, optimizer=optimiser, sampler=sampler,
+            parent_path=parent_path, cache_contract=cache_contract, balance=balance,
+        )
+        if restored.get("head_initial_identity") != head_initial_identity:
+            raise ValueError("checkpoint_initialization: bridge heads do not share the seeded start")
+        begin = restored["step"]
+    elif (output / "metrics.jsonl").exists() or (output / "latest.pt").exists():
+        raise ValueError("run_output: existing bridge output requires explicit resume")
+
+    h2, total = settings.h2_steps, settings.h2_steps + settings.h16_steps
+    end = h2 if stop_after == "h2" else total
+    if begin < h2 < end:
+        raise ValueError("bridge_gate: stop at H2; H16 requires the identity-bound H2 gate")
+    if begin == h2 and end > begin:
+        gate_identity = require_bridge_gate(
+            gate_report, checkpoint=Path(resume), config=config, cache_contract=cache_contract,
+            stage="h2", minimum_depth=settings.recursive_depth,
+        )
+    elif begin > h2 and end > begin:
+        # The accepted H2 report is bound to the H2 checkpoint, not to a later H16
+        # recovery snapshot.  Requiring it against the latter makes an interrupted H16
+        # run impossible to resume.  The immutable intermediate carries that already
+        # verified identity and full report forward.
+        gate_identity = restored.get("gate_identity")
+        recorded_report = restored.get("gate")
+        if (not isinstance(gate_identity, dict) or not isinstance(recorded_report, dict)
+                or recorded_report.get("report_id") != gate_identity.get("report_id")):
+            raise ValueError("checkpoint_gate: resumed H16 state lacks accepted H2 lineage")
+        if gate_report is not None and gate_report.get("report_id") != gate_identity.get("report_id"):
+            raise ValueError("checkpoint_gate: bridge resume changed its accepted H2 report")
+        gate_report = recorded_report
+    if end <= begin:
+        raise ValueError("bridge_schedule: target stage is not after the restored update")
+    _check_resume_history(output, begin, "update")
+
+    train = cache.subset(i for i, episode in enumerate(cache) if episode.split == "train")
+    if not train:
+        raise ValueError("bridge_data: latent cache has no TRAIN episodes")
+    bn_start = tensor_state_digest({
+        name: tensor for name, tensor in bundle.world.predictor_projector.state_dict().items()
+        if "running_" in name or "num_batches_tracked" in name
+    })
+    started = __import__("time").time()
+    for update in range(begin, end):
+        depth = settings.recursive_depth if update < h2 else settings.recursive_depth_final
+        main = sample_bridge_batch(train, sampler, config, update).to(config.runtime.device)
+        terminal = sample_bridge_terminals(train, sampler, config, update).to(config.runtime.device)
+        optimiser.zero_grad(set_to_none=True)
+        with autocast_context(config):
+            losses = bridge_losses(bundle, heads, main, terminal, depth)
+            objective = _phase_balance(
+                {name: losses[name] for name in _BRIDGE_GROUPS}, balance, settings.rms_decay
+            )
+        if not bool(torch.isfinite(objective)):
+            raise RuntimeError(f"bridge_objective: nonfinite loss at update {update}")
+        parameters = [parameter for group in optimiser.param_groups for parameter in group["params"]]
+        norm = optimizer_step(optimiser, objective, parameters,
+                              learning_rate=_phase_lr(config, update),
+                              grad_clip=settings.grad_clip, strict=True, zero_grad=False)
+        row = {
+            "update": update + 1, "stage": "h2" if update < h2 else "h16", "depth": depth,
+            "frames": main.main.latents.shape[1], "burn_lengths": main.burn_lengths.cpu().tolist(),
+            "episode_ids": list(main.episode_ids), "starts": main.starts.cpu().tolist(),
+            "loss": float(objective.detach()), "gradient_norm": float(norm),
+            "learning_rate": _phase_lr(config, update),
+            "seconds": round(__import__("time").time() - started, 2),
+            **{name: float(value.detach()) for name, value in losses.items()},
+        }
+        with (output / "metrics.jsonl").open("a") as stream:
+            stream.write(json.dumps(row, allow_nan=False) + "\n")
+        if (update + 1) % 100 == 0:
+            print(json.dumps(row), flush=True)
+        if (update + 1) % settings.checkpoint_every == 0 or update + 1 == end:
+            current_bn = tensor_state_digest({
+                name: tensor for name, tensor in bundle.world.predictor_projector.state_dict().items()
+                if "running_" in name or "num_batches_tracked" in name
+            })
+            if current_bn != bn_start:
+                raise RuntimeError("predictor_normalization: Phase 2 changed frozen BN buffers")
+            snapshot = output / f"step-{update + 1:06d}.pt"
+            save_lewm_bridge(
+                snapshot, bundle, heads, step=update + 1, parent_path=parent_path,
+                cache_contract=cache_contract, optimizer=optimiser, sampler=sampler,
+                balance=balance, bn_identity=bn_start, gate_report=gate_report,
+                gate_identity=gate_identity, head_initial_identity=head_initial_identity,
+            )
+            publish_lewm_latest(snapshot)
+    return bundle, heads
+
+
+def _check_resume_history(output: Path, begin: int, key: str) -> None:
+    log = output / "metrics.jsonl"
+    if log.exists():
+        rows = [json.loads(line) for line in log.read_text().splitlines() if line.strip()]
+        if rows and rows[-1][key] != begin:
+            raise ValueError("resume_history: resume at the last logged update or use a fresh output")
+    if any(int(path.stem.split("-")[-1]) > begin for path in output.glob("step-*.pt")):
+        raise ValueError("resume_history: newer immutable snapshots exist; use a fresh output")
+
+
+def train_actor_lewm(cache: EpisodeCorpus, bundle: ModelBundle, heads: Heads, bridge: dict,
+                     output: str | Path, *, bridge_path: str | Path, cache_contract: dict,
+                     bridge_gate: dict, stop_after: str = "screen", resume: str | Path | None = None,
+                     actor_gate: dict | None = None):
+    """Canonical Phase 3 with immutable BC prior and a real 500-update stop."""
+    from .gates import require_actor_gate, require_bridge_gate
+
+    config, settings = bundle.config, bundle.config.agent
+    if settings is None:
+        raise ValueError("phase_gate: actor requires an M4 recipe")
+    if settings.actor_batch != settings.batch:
+        raise ValueError("actor_data: canonical Phase 3 and bridge batches are both 16")
+    if (bridge.get("cache") != cache_contract
+            or bridge.get("step") != settings.h2_steps + settings.h16_steps):
+        raise ValueError("checkpoint_parent: actor requires the completed bridge and its exact cache")
+    accepted_bridge_gate = require_bridge_gate(
+        bridge_gate, checkpoint=Path(bridge_path), config=config, cache_contract=cache_contract,
+        stage="h16", minimum_depth=settings.horizon,
+    )
+    if stop_after not in ("screen", "budget"):
+        raise ValueError("actor_schedule: stop_after must be screen or budget")
+    output = Path(output)
+    output.mkdir(parents=True, exist_ok=True)
+    set_phase_mode(bundle, "actor")
+    for parameter in heads.parameters():
+        parameter.requires_grad_(False)
+    for parameter in heads.actor_parameters():
+        parameter.requires_grad_(True)
+    prior = copy.deepcopy(heads).eval().requires_grad_(False)
+    optimiser = phase_optimizer([heads], config)
+    sampler = torch.Generator().manual_seed(config.seed + 3)
+    policy_rng = torch.Generator(device=config.runtime.device).manual_seed(config.seed + 2**20)
+    balance: dict[str, float] = {}
+    begin = 0
+    actor_gate_identity = None
+    if resume is not None:
+        restored = restore_lewm_actor(
+            resume, bundle, heads, prior, optimizer=optimiser, sampler=sampler,
+            policy_rng=policy_rng, bridge_path=bridge_path, cache_contract=cache_contract,
+            balance=balance,
+        )
+        begin = restored["step"]
+    elif (output / "metrics.jsonl").exists() or (output / "latest.pt").exists():
+        raise ValueError("run_output: existing actor output requires explicit resume")
+    screen, total = settings.actor_screen_steps, settings.actor_steps
+    end = screen if stop_after == "screen" else total
+    if begin < screen < end:
+        raise ValueError("actor_gate: stop at 500 updates before the full actor budget")
+    if begin == screen and end > begin:
+        actor_gate_identity = require_actor_gate(
+            actor_gate, checkpoint=Path(resume), config=config, cache_contract=cache_contract
+        )
+    elif begin > screen and end > begin:
+        actor_gate_identity = restored.get("actor_gate_identity")
+        recorded_report = restored.get("actor_gate")
+        if (not isinstance(actor_gate_identity, dict) or not isinstance(recorded_report, dict)
+                or recorded_report.get("report_id") != actor_gate_identity.get("report_id")):
+            raise ValueError("checkpoint_gate: resumed actor lacks accepted screen lineage")
+        if actor_gate is not None and actor_gate.get("report_id") != actor_gate_identity.get("report_id"):
+            raise ValueError("checkpoint_gate: actor resume changed its accepted screen report")
+        actor_gate = recorded_report
+    if resume is not None:
+        recorded_bridge = restored.get("bridge_gate", {})
+        if recorded_bridge.get("report_id") != accepted_bridge_gate["report_id"]:
+            raise ValueError("checkpoint_gate: actor resume changed its accepted H16 report")
+    if end <= begin:
+        raise ValueError("actor_schedule: target stage is not after the restored update")
+    _check_resume_history(output, begin, "update")
+
+    train = cache.subset(i for i, episode in enumerate(cache) if episode.split == "train")
+    bundle.capabilities = {
+        "readout_trained": True,
+        "trained_recursive_depth": settings.recursive_depth_final,
+        "validated_recursive_depth": settings.recursive_depth_final,
+        "m4_authorized": False,
+    }
+    frozen = {
+        "encoder": tensor_state_digest(bundle.encoder.state_dict()),
+        "world": tensor_state_digest(bundle.world.state_dict()),
+        "prior": tensor_state_digest(prior.state_dict()),
+        "model_heads": tensor_state_digest({
+            **{f"model_body.{k}": v for k, v in heads.model_body.state_dict().items()},
+            **{f"reward.{k}": v for k, v in heads.reward.state_dict().items()},
+            **{f"continuation.{k}": v for k, v in heads.continuation.state_dict().items()},
+        }),
+    }
+    started = __import__("time").time()
+    for update in range(begin, end):
+        batch = sample_bridge_batch(train, sampler, config, update).to(config.runtime.device)
+        main = batch.main
+        with torch.no_grad():
+            initial = _bridge_initial_state(bundle, batch)
+            observed = bundle.world.teacher(
+                main.latents, _outgoing_actions(main, bundle.n_actions), state=initial
+            )
+        trajectory = imagine(bundle, heads, observed.state, observed.features[:, -1:],
+                             None, policy_rng, config)
+        returns = lambda_returns(trajectory, config)
+        with torch.no_grad():
+            reference = prior(trajectory.agent[:, :-1])["policy"][:, :, 0]
+        losses = {
+            "actor": actor_loss(trajectory, returns, reference, config),
+            "critic": critic_loss(heads(trajectory.agent[:, :-1])["value"], returns, heads.centers),
+        }
+        objective = _phase_balance(losses, balance, settings.rms_decay)
+        parameters = [parameter for group in optimiser.param_groups for parameter in group["params"]]
+        norm = optimizer_step(optimiser, objective, parameters,
+                              learning_rate=_phase_lr(config, update),
+                              grad_clip=settings.grad_clip, strict=True)
+        row = {
+            "update": update + 1, "horizon": settings.horizon,
+            "actor": float(losses["actor"].detach()), "critic": float(losses["critic"].detach()),
+            "loss": float(objective.detach()), "gradient_norm": float(norm),
+            "learning_rate": _phase_lr(config, update),
+            "imagined_reward": float(trajectory.reward.mean()),
+            "imagined_continuation": float(trajectory.continuation.mean()),
+            "seconds": round(__import__("time").time() - started, 2),
+        }
+        with (output / "metrics.jsonl").open("a") as stream:
+            stream.write(json.dumps(row, allow_nan=False) + "\n")
+        if (update + 1) % 100 == 0:
+            print(json.dumps(row), flush=True)
+        if (update + 1) % settings.checkpoint_every == 0 or update + 1 == end:
+            now = {
+                "encoder": tensor_state_digest(bundle.encoder.state_dict()),
+                "world": tensor_state_digest(bundle.world.state_dict()),
+                "prior": tensor_state_digest(prior.state_dict()),
+                "model_heads": tensor_state_digest({
+                    **{f"model_body.{k}": v for k, v in heads.model_body.state_dict().items()},
+                    **{f"reward.{k}": v for k, v in heads.reward.state_dict().items()},
+                    **{f"continuation.{k}": v for k, v in heads.continuation.state_dict().items()},
+                }),
+            }
+            if now != frozen:
+                raise RuntimeError("actor_freeze: Phase 3 changed its world, prior, encoder or model heads")
+            snapshot = output / f"step-{update + 1:06d}.pt"
+            save_lewm_actor(
+                snapshot, bundle, heads, prior, step=update + 1, bridge_path=bridge_path,
+                cache_contract=cache_contract, optimizer=optimiser, sampler=sampler,
+                policy_rng=policy_rng, balance=balance, frozen_identity=frozen,
+                bridge_gate=bridge_gate, actor_gate=actor_gate,
+                actor_gate_identity=actor_gate_identity,
+            )
+            publish_lewm_latest(snapshot)
+    return heads, prior

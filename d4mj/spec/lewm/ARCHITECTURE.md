@@ -1,6 +1,8 @@
 # Proposed architecture and executable contracts
 
-Implementation boundary: M0–M3 now use the actual persistent state API. See [status and source resolutions](STATUS.md); actor, recursive bridge and renderer sections below remain planned.
+Implementation boundary: M0–M4 now use the actual persistent state API and canonical shared
+training/runtime files. See [status and source resolutions](STATUS.md). Empirical bridge/actor
+reports still gate continuation; renderer and interactive play remain planned.
 
 Read the [scope](README.md) and [decision ledger](DECISIONS.md) with this document. Everything below describes the new family unless explicitly marked legacy. Numerical choices are proposed; interface invariants are requirements for a valid implementation.
 

@@ -89,8 +89,13 @@ def test_cache_roundtrip_online_parity_and_encoder_only_identity(tmp_path):
         assert exported.latents.dtype == torch.float32 and exported.episode_id == raw.episode_id
         assert torch.equal(exported.actions_taken, raw.actions_taken)
         torch.testing.assert_close(exported.latents, bundle.encode(raw.observations[None])[0], atol=1e-5,rtol=1e-4)
-    with pytest.raises(ValueError,match="nonempty"):
-        cache_latents_to_store(bundle.encoder, episodes, c, tmp_path / "cache", source_contract={}, parent_checkpoint="x")
+    # An interrupted/exported cache is reusable only under its exact immutable contract.
+    again = cache_latents_to_store(bundle.encoder, episodes, c, tmp_path / "cache",
+                                   source_contract={"test": "fixture"}, parent_checkpoint="parent-sha")
+    assert len(again) == len(cached)
+    with pytest.raises(ValueError,match="contract"):
+        cache_latents_to_store(bundle.encoder, episodes, c, tmp_path / "cache",
+                               source_contract={}, parent_checkpoint="x")
     with torch.no_grad(): bundle.encoder.projector[1].running_mean.add_(.1)
     with pytest.raises(ValueError,match="cache_identity"): load_latent_cache(tmp_path / "cache",bundle.encoder)
 

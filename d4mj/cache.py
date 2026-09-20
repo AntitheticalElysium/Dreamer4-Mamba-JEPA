@@ -173,9 +173,9 @@ def cache_latents_to_store(encoder, episodes, config, out: Path, *, source_contr
                             shard_episodes: int | None = None, parent_checkpoint: str | None = None):
     """Shared export entry point; each family keeps its own latent/identity contract.
 
-    MAE retains resumable exports and its existing manifest schema. Joint exports
-    require a fresh directory and a checkpoint parent; their float32 cache cannot
-    be mistaken for a MAE cache. Returns a verified EpisodeCorpus in both cases.
+    Both families resume only from verified published shards. Joint exports additionally require
+    an immutable checkpoint parent; their float32 cache cannot be mistaken for a MAE cache.
+    Returns a verified EpisodeCorpus in both cases.
     """
     out = Path(out)
     joint = isinstance(config, LeWMConfig)
@@ -185,8 +185,6 @@ def cache_latents_to_store(encoder, episodes, config, out: Path, *, source_contr
     if joint:
         if not parent_checkpoint:
             raise ValueError("cache_parent: joint export requires its checkpoint hash")
-        if out.exists() and any(out.iterdir()):
-            raise ValueError("cache_output: refusing to overwrite a nonempty export directory")
     digest = _prepare_encoder(encoder, episodes, config)
     before = tensor_state_digest(encoder.state_dict())
     if joint:

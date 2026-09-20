@@ -169,17 +169,14 @@ _AGENT_SURFACE = ("horizon", "horizon_eval", "bootstrap", "bins", "symlog_limit"
 
 @dataclass(frozen=True)
 class AgentSettings:
-    """M4 constants: the agent surface the joint world is carried into.
+    """Canonical M4 bridge, heads, actor and evaluation settings.
 
-    Its PRESENCE authorizes M4. `LeWMConfig.agent` defaults to None, so every M0-M3 recipe is
-    byte-identical to the one it was sealed with and `require_control` keeps refusing it.
-
-    Values are the legacy `Config`'s, which the Direct line ran, except the three fork fields,
-    which are `train_terminal_arms.py`'s declared counterfactual contract (`--terminal-mass 0.2`,
-    `--terminal-roots 4`, `--second-weight 0.5`). Nothing here is invented.
+    Presence declares an intent to run M4; it never authorizes control.  Authorization is carried
+    only by phase checkpoints and their identity-bound empirical gates.  Counterfactual fork
+    supervision is deliberately absent: TC-17 keeps it evaluation-only in the first architecture.
     """
 
-    horizon: int = 8
+    horizon: int = 16
     horizon_eval: int = 10000
     bootstrap: int = 2000
     bins: int = 255
@@ -195,6 +192,9 @@ class AgentSettings:
     # "Phase 2 lengths / prefix": 32 main frames, 128 every fourth update, burn-in up to 96,
     # true-start fraction 0.25. `Config` derives sequence_long = 4x and dynamics_context = 3x.
     sequence: int = 32
+    sequence_long: int = 128
+    long_every: int = 4
+    burn_in: int = 96
     true_start_fraction: float = 0.25
     event_fraction: float = 0.5
     # "Phase 2 horizon / steps": 2,000 H2 updates, gate, then 8,000 H16. Total 10,000.
@@ -208,13 +208,14 @@ class AgentSettings:
     actor_steps: int = 5000
     # "Phase 2/3 optimizer": AdamW 1e-4, decay .01, warmup 1,000 then CONSTANT; group RMS .99.
     learning_rate: float = 1e-4
+    weight_decay: float = 1e-2
+    betas: tuple[float, float] = (0.9, 0.999)
+    optimizer_eps: float = 1e-8
+    grad_clip: float = 1.0
     warmup: int = 1000
     rms_decay: float = 0.99
+    checkpoint_every: int = 500
     eval_episodes: int = 512
-    # Direct's counterfactual contract, matched rather than reinvented. Grouped mode only.
-    fork_mass: float = 0.2
-    fork_roots: int = 4
-    fork_second_weight: float = 0.5
 
 
 @dataclass(frozen=True)
@@ -227,7 +228,7 @@ class LeWMConfig:
     dynamics: DynamicsSettings = field(default_factory=DynamicsSettings)
     joint: JointSettings = field(default_factory=JointSettings)
     runtime: RuntimeSettings = field(default_factory=RuntimeSettings)
-    # None until M4. Its presence is the authorization; see AgentSettings.
+    # None until an M4 recipe. Presence is configuration, never empirical authorization.
     agent: AgentSettings | None = None
 
     def __post_init__(self):
@@ -408,9 +409,10 @@ def validate_recipe(c: LeWMConfig) -> None:
 def validate_agent(a: AgentSettings) -> None:
     """Checked only when M4 is declared, so an M0-M3 recipe never runs this."""
     counts = (a.horizon, a.horizon_eval, a.bootstrap, a.bins, a.mtp_leads, a.batch, a.sequence,
+              a.sequence_long, a.long_every, a.burn_in, a.checkpoint_every,
               a.actor_batch, a.terminal_batch, a.h2_steps, a.h16_steps, a.actor_steps,
               a.actor_screen_steps, a.warmup, a.eval_episodes, a.recursive_depth,
-              a.recursive_depth_final, a.fork_roots)
+              a.recursive_depth_final)
     if any(type(v) is not int or v < 1 for v in counts):
         raise ValueError("agent counts must be positive integers")
     if a.batch % 2 or a.actor_batch % 2:
@@ -420,19 +422,25 @@ def validate_agent(a: AgentSettings) -> None:
                          "batch, short ones included -- Direct's rule, checked the same way")
     if a.recursive_depth > a.recursive_depth_final:
         raise ValueError("the recursive schedule may not descend")
+    if a.sequence_long != 4 * a.sequence or a.burn_in != 3 * a.sequence:
+        raise ValueError("Phase 2 requires 32/128 frames and an up-to-96-frame burn-in ratio")
     if a.bins % 2 == 0:
         raise ValueError("a symmetric two-hot grid needs an odd bin count")
-    for name in ("symlog_limit", "learning_rate"):
+    for name in ("symlog_limit", "learning_rate", "optimizer_eps", "grad_clip"):
         if not math.isfinite(getattr(a, name)) or getattr(a, name) <= 0:
             raise ValueError(f"agent {name} must be positive and finite")
+    if not math.isfinite(a.weight_decay) or a.weight_decay < 0:
+        raise ValueError("agent weight_decay must be nonnegative and finite")
+    if len(a.betas) != 2 or not all(0 <= value < 1 for value in a.betas):
+        raise ValueError("agent AdamW betas must lie in [0, 1)")
     if a.actor_screen_steps > a.actor_steps:
         raise ValueError("the actor screen must fall inside its total budget")
     if a.horizon > a.recursive_depth_final:
         raise ValueError("an actor may not imagine past the depth the bridge trains (S68)")
     if not 0 < a.rms_decay < 1:
         raise ValueError("running-RMS decay must lie strictly inside (0, 1)")
-    for name in ("gamma", "lam", "pmpo_alpha", "prior_beta", "event_fraction", "fork_mass",
-                 "fork_second_weight", "true_start_fraction"):
+    for name in ("gamma", "lam", "pmpo_alpha", "prior_beta", "event_fraction",
+                 "true_start_fraction"):
         value = getattr(a, name)
         if not math.isfinite(value) or not 0 <= value <= 1:
             raise ValueError(f"agent {name} must lie in [0, 1]")

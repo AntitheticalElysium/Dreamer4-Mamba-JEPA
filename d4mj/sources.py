@@ -123,7 +123,8 @@ def lewm_source_manifest(config=None) -> dict:
     closure = ("lewm_config.py", "lewm.py", "mamba_recurrence.py", "world_api.py", "state.py",
                "config.py", "cache.py", "train.py", "checkpoint.py", "data.py", "sources.py",
                "gates.py", "lewm_diagnostics.py", "experiments.py", "__main__.py",
-               "execution.py", "imagination.py", "diagnostics.py")
+               "agent.py", "actor_critic.py", "execution.py", "imagination.py", "env.py",
+               "diagnostics.py")
     for name in closure + (("lewm_transformer.py",) if transformer else ()):
         runtime[f"d4mj/{name}"] = Path(__file__).parent / name
     versions = {name: importlib.metadata.version(name) for name in
