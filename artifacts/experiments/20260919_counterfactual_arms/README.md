@@ -59,17 +59,78 @@ Averaging MSE over 17 branch targets may reward predicting their centroid:
 Directionally consistent but **modest** — spread contracted ~7% while the action-AUC cost fell
 ~29%. Suggestive only.
 
+## Where the improvement went — the allocation test
+
+Effect fidelity improved a lot (R² .518 → .780) while every semantic AUC stayed flat. Two
+explanations survive that, and they imply different next experiments:
+
+- **ALLOCATION** — the semantic directions occupy a tiny share of δz variance, so coordinate-uniform
+  MSE spends its capacity elsewhere. The gain landed *outside* the semantic subspace, and no
+  exposure regime fixes it.
+- **DOWNSTREAM** — the gain landed inside the semantic subspace too, and the failure is somewhere
+  after δz geometry entirely.
+
+`allocation.py` separates them. Fit one linear direction per outcome on the **real** effect
+(`successor z − root z`) on TRAIN, take their span as the semantic subspace S, and decompose each
+arm's *predicted* effect on DEV into S and its complement.
+
+**Control first** — a subspace that predicted nothing would also show a world failing inside it,
+which would make the whole decomposition unfalsifiable. On held-out real effects those directions
+are genuinely predictive:
+
+| direction | held-out AUC | positives / 2176 |
+|---|---:|---:|
+| death | **0.881** | 986 |
+| damage | **0.876** | 1011 |
+| reward_positive | **0.843** | 83 |
+| achievement_event | **0.820** | 31 |
+| inventory_changed | 0.691 | 103 |
+| tile_changed | 0.693 | 91 |
+
+*(An earlier control run reported nonsense — death AUC 0.119. That was my bug, not a finding:
+`semantic_directions` returns a QR-orthonormalized basis whose column i is a Gram-Schmidt residual,
+not the i-th outcome's direction. The per-outcome control must use the raw directions. The R²
+decomposition below is unaffected — projection onto a span is basis-invariant.)*
+
+**Variance share.** Those six directions hold **0.179%** of true δz variance. Isotropic expectation
+for six of 192 dimensions is 3.125%. The semantic subspace is **~17× under-represented** in the
+quantity MSE optimizes.
+
+**Decomposition.**
+
+| arm | R²_total | R²_inside S | R²_outside S |
+|---|---:|---:|---:|
+| A_control | 0.064 | **−0.579** | 0.065 |
+| Ap_data | 0.138 | **−0.050** | 0.139 |
+| B_sibling | 0.166 | **−0.091** | 0.167 |
+| **B − A** | **+0.103** | (+0.488, still negative) | **+0.102** |
+
+Every point of improvement landed outside S: `ΔR²_out` +0.102 against `ΔR²_total` +0.103. And in S
+*no arm beats a constant predictor* — all three R² are **negative** after 10k updates, including
+the two trained directly on counterfactual branch targets.
+
+**ALLOCATION is confirmed.** MSE over 192 equally-weighted coordinates spends ~99.8% of its
+capacity on directions that carry no outcome semantics, and the 0.18% that does carry them is
+never fit at all. This is the mechanism behind the flat semantic AUCs — not a data deficit, not a
+supervision-structure deficit.
+
 ## What this rules out, and what it points at
 
-**Rules out:** "just add counterfactual data and supervise it with MSE." Both the data (A′) and
-the sibling structure (B) were tested at matched budget; neither helped.
+**Rules out:** "just add counterfactual data and supervise it with MSE." Both the data (A′) and the
+sibling structure (B) were tested at matched budget; neither helped, and the allocation test says
+why — their gains could not have reached the semantic directions.
 
-**Points at:** the **loss form**, not the data or the supervision structure. An action-centred /
-delta / contrastive objective is the next candidate — the fallback anticipated before this ran.
+**Rules out (newly):** a from-scratch paired retrain under the same MSE objective. It would buy more
+of the same out-of-subspace fidelity. The user's conditional was to proceed to from-scratch *if the
+allocation result was negative*; it is positive, so from-scratch is **not** launched.
 
-**TC was not run.** The instruction was to extend to TC only if Raw came back positive. It did
-not. TC also still carries its independent CLS→z export defect, which this treatment does not
-address.
+**Points at:** the **loss form**. Any objective that reweights toward the directions that carry
+outcomes — an action-centred / delta / contrastive loss, a whitened or semantically-weighted target
+metric — is now the indicated next move, with a concrete target to aim at: R²_inside S, currently
+negative for every arm.
+
+**TC was not run.** The instruction was to extend to TC only if Raw came back positive. It did not.
+TC also still carries its independent CLS→z export defect, which this treatment does not address.
 
 ## Limits
 
@@ -83,4 +144,6 @@ Intervals are wide — "null" here means **no detectable improvement**, not prov
 python encode_pool.py      # frozen-encoder factual + fork pools
 python train_arms.py --arm {A_control,Ap_data,B_sibling}
 python evaluate_arms.py    # evidence/arms_eval.json, evidence/verdict.json
+python decompose.py        # evidence/decompose.json -- effect fidelity, 20-draw derangement, semantics
+python allocation.py       # evidence/allocation.json -- control + in/out-of-subspace decomposition
 ```

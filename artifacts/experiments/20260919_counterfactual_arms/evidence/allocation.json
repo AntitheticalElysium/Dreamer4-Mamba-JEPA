@@ -1,0 +1,77 @@
+{
+  "schema": "d4mj_cf_allocation_v1",
+  "semantic_targets": [
+    "death",
+    "damage",
+    "reward_positive",
+    "achievement_event",
+    "inventory_changed",
+    "tile_changed"
+  ],
+  "control_heldout_auc": {
+    "death": {
+      "heldout_auc": 0.8807,
+      "positives": 986,
+      "rows": 2176
+    },
+    "damage": {
+      "heldout_auc": 0.8755,
+      "positives": 1011,
+      "rows": 2176
+    },
+    "reward_positive": {
+      "heldout_auc": 0.8432,
+      "positives": 83,
+      "rows": 2176
+    },
+    "achievement_event": {
+      "heldout_auc": 0.8202,
+      "positives": 31,
+      "rows": 2176
+    },
+    "inventory_changed": {
+      "heldout_auc": 0.6913,
+      "positives": 103,
+      "rows": 2176
+    },
+    "tile_changed": {
+      "heldout_auc": 0.6927,
+      "positives": 91,
+      "rows": 2176
+    }
+  },
+  "what": "semantic directions fitted on the REAL effect; each arm's predicted effect decomposed inside vs outside that subspace",
+  "arms": {
+    "A_control": {
+      "r2_total": 0.0637,
+      "r2_in_semantic": -0.5789,
+      "r2_out_semantic": 0.0648,
+      "semantic_variance_share": 0.00179,
+      "semantic_dims": 6,
+      "total_dims": 192
+    },
+    "Ap_data": {
+      "r2_total": 0.1384,
+      "r2_in_semantic": -0.0504,
+      "r2_out_semantic": 0.1388,
+      "semantic_variance_share": 0.00179,
+      "semantic_dims": 6,
+      "total_dims": 192
+    },
+    "B_sibling": {
+      "r2_total": 0.1663,
+      "r2_in_semantic": -0.0911,
+      "r2_out_semantic": 0.1668,
+      "semantic_variance_share": 0.00179,
+      "semantic_dims": 6,
+      "total_dims": 192
+    }
+  },
+  "verdict": {
+    "delta_r2_total": 0.1026,
+    "delta_r2_in_semantic": 0.4878,
+    "delta_r2_out_semantic": 0.102,
+    "semantic_variance_share": 0.00179,
+    "reading": "ALLOCATION CONFIRMED if the out-of-subspace R^2 improved while the in-subspace R^2 did not; DOWNSTREAM if the in-subspace R^2 improved too."
+  }
+}
