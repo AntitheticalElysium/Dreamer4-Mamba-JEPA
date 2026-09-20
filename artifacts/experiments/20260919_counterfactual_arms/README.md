@@ -120,14 +120,15 @@ supervision-structure deficit.
 sibling structure (B) were tested at matched budget; neither helped, and the allocation test says
 why — their gains could not have reached the semantic directions.
 
-**Rules out (newly):** a from-scratch paired retrain under the same MSE objective. It would buy more
-of the same out-of-subspace fidelity. The user's conditional was to proceed to from-scratch *if the
-allocation result was negative*; it is positive, so from-scratch is **not** launched.
+**Does NOT rule out:** a from-scratch joint run. These arms froze the encoder and continued an
+existing world; only from-zero training can reorganize the latent geometry, and that is exactly the
+degree of freedom this test could not exercise. The from-scratch paired run is the indicated next
+move.
 
-**Points at:** the **loss form**. Any objective that reweights toward the directions that carry
-outcomes — an action-centred / delta / contrastive loss, a whitened or semantically-weighted target
-metric — is now the indicated next move, with a concrete target to aim at: R²_inside S, currently
-negative for every arm.
+**Does NOT justify** replacing MSE or SIGReg. Nothing here is downstream evidence, and the Direct
+line is the standing warning against selecting on proxies: it reached fork retrieval 0.878 and
+geometry 0.989, and its imagination actor still lost to its own BC by ~0.6–1.5 achievements on 512
+real DEV episodes. Good fork geometry and good semantic probes are not sufficient selectors.
 
 **TC was not run.** The instruction was to extend to TC only if Raw came back positive. It did not.
 TC also still carries its independent CLS→z export defect, which this treatment does not address.
