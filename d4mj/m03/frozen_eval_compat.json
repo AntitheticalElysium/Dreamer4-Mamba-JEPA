@@ -10,6 +10,65 @@
       "scope": "frozen evaluation only; training resume keeps exact full-source equality",
       "arms": {
         "raw": {
+          "checkpoint_sha256": "707f6240a3e4e52d6aca7526d541a69112ad7c18c5898c0f1f0ec36f663937ef",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        },
+        "tc": {
+          "checkpoint_sha256": "98effee1085223b5780f30b09ba68b44a8b407acbb07fde5134a8bd708997dc5",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        }
+      },
+      "reference_manifest_digest": "76cb58267aabe986a94f6d34e2aaf823cba92d0fb737f908fe245fb85da82a09",
+      "current_manifest_digest": "aaf3592edb19022a0c4e5ab10af25efdf776b400cce67831715416c9d255892f",
+      "changed_runtime_files": {
+        "d4mj/lewm_config.py": {
+          "reference": "97f6a6da9065e00c491fcb4d3874749138f39becfc373853bd0221fd0c69e48c",
+          "current": "e17a10cc92c54b91a6fc553f2ad2b572dea0ba85e5f8a4ee281f65f97e11d8eb"
+        },
+        "d4mj/world_api.py": {
+          "reference": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b",
+          "current": "e46792a29bc9e18ccac2e367b2f056244cb1d65c8f6396a979e8b5c40a9df392"
+        },
+        "d4mj/config.py": {
+          "reference": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f",
+          "current": "4cf956c9a587deb12730597643f51971711b1c33b0b027b59bebf89f4ecbde1d"
+        },
+        "d4mj/train.py": {
+          "reference": "28982607d430a68712417f9d89f9e6a913a64fbe2618843f43e8081c7dcddd10",
+          "current": "e5f16c8d69a86f20688733061084c1ffa6cd9ff5d416779b2ed8adda7ea6996d"
+        },
+        "d4mj/data.py": {
+          "reference": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea",
+          "current": "6bc043e463e04e7155cc10131cc85889ec4da4c745882e4b25a988d8afe0320a"
+        }
+      },
+      "surface": [
+        "advance_history",
+        "advance_latent",
+        "cls",
+        "patch16",
+        "patch_grid",
+        "prefill_history",
+        "prefill_latent",
+        "z"
+      ],
+      "parity": {
+        "tolerance": 1e-05,
+        "within_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_min_abs": 0.0,
+        "runs": {
+          "reference": 2,
+          "current": 2
+        }
+      }
+    },
+    {
+      "schema": "lewm_frozen_eval_compatibility_v1",
+      "status": "pass",
+      "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+      "arms": {
+        "raw": {
           "checkpoint_sha256": "7bc9c14d7d7d10bd4cabeb22cd7f2af19e39ff8cb1d9b3758a14086e2a1f2789",
           "recorded_sources_digest": "78318c8356ade25dec068a47537bb5f6d8ca1d30324087f0a0679de025f3a795"
         },
@@ -178,5 +237,6 @@
         }
       }
     }
-  ]
+  ],
+  "regenerated_unix": 1789878364.0624306
 }

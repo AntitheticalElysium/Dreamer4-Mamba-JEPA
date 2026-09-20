@@ -190,12 +190,16 @@ class AgentSettings:
     pmpo_alpha: float = 0.5
     prior_beta: float = 0.3
     batch: int = 4
-    sequence: int = 16
+    # 32, not the legacy 16. Direct asserts `direct_rollout < sequence` against the SHORT length
+    # deliberately: checking it against `sequence_long` would let three rows in four train teacher
+    # forcing alone while the recipe claimed a depth it never reached. H16 therefore needs a short
+    # length above 16, and `Config` derives sequence_long = 4x and dynamics_context = 3x from it.
+    sequence: int = 32
     actor_batch: int = 16
     event_fraction: float = 0.5
     terminal_batch: int = 1
-    readout_steps: int = 4000
-    head_steps: int = 8000
+    head_steps: int = 8000          # observed-path phase: readout, BC, reward, continuation
+    recursive_steps: int = 6000     # generated-prefix phase: H2 raised to H16
     actor_steps: int = 4000
     learning_rate: float = 1e-4
     eval_episodes: int = 512
@@ -399,14 +403,15 @@ def validate_recipe(c: LeWMConfig) -> None:
 def validate_agent(a: AgentSettings) -> None:
     """Checked only when M4 is declared, so an M0-M3 recipe never runs this."""
     counts = (a.horizon, a.horizon_eval, a.bootstrap, a.bins, a.mtp_leads, a.batch, a.sequence,
-              a.actor_batch, a.terminal_batch, a.readout_steps, a.head_steps, a.actor_steps,
+              a.actor_batch, a.terminal_batch, a.recursive_steps, a.head_steps, a.actor_steps,
               a.eval_episodes, a.recursive_depth, a.recursive_depth_final, a.fork_roots)
     if any(type(v) is not int or v < 1 for v in counts):
         raise ValueError("agent counts must be positive integers")
     if a.batch % 2 or a.actor_batch % 2:
         raise ValueError("the 50/50 relevant/uniform mixture needs an even batch")
-    if a.recursive_depth >= a.sequence or a.recursive_depth_final >= a.sequence * 4:
-        raise ValueError("a generated prefix must leave observed blocks to start from")
+    if a.recursive_depth >= a.sequence or a.recursive_depth_final >= a.sequence:
+        raise ValueError("a generated prefix must leave observed blocks to start from in EVERY "
+                         "batch, short ones included -- Direct's rule, checked the same way")
     if a.recursive_depth > a.recursive_depth_final:
         raise ValueError("the recursive schedule may not descend")
     if a.bins % 2 == 0:

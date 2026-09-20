@@ -79,41 +79,44 @@ world sees both. State this in the result; do not let it become an unexamined as
       params). One appended comment in `world_api.py` →
       `m03_frozen_eval: proof does not describe the current tree`. Reverted. **Finding: this is
       recoverable by re-measuring the parity proof — see B1.**
-- [ ] `0.2b` After the Stage-2 in-closure edits: worktree at `lewm-closure-m3`, run
+- [x] `0.2b` **DONE** — parity 5.96e-07 cross-tree, equal to the within-tree floor, against a
+      1e-05 tolerance, 5 changed runtime files, 2 runs per tree. Both sealed 10k checkpoints now
+      load by measured proof and stay correctly blocked from control. Superseded detail: After the Stage-2 in-closure edits: worktree at `lewm-closure-m3`, run
       `frozen_eval_parity(..., allow_drift=True)` **twice in each tree**, then `frozen_eval_proof`
       at tolerance 1e-5, and append the result to `frozen_eval_compat.json`. Must pass on its own
       measurement — if parity fails, the edit changed frozen-evaluation numerics and the design is
       wrong, not the guard.
-- [ ] `0.3` Plan every signature before writing (code contract): name each function, module, inputs
+- [x] `0.3` **DONE** — see DESIGN.md. Plan every signature before writing (code contract): name each function, module, inputs
       and outputs for the readout + head surface; check against the architecture draft. **No new
       files, no new functions** without re-opening the design here first.
 
 ### Stage 1 — corpus
-- [ ] `1.1` Build the merged corpus contract: archive TRAIN + support TRAIN, separate split
+- [x] `1.1` **DONE** — 10,400 episodes, 8,325 TRAIN, 3,875,808 transitions. Build the merged corpus contract: archive TRAIN + support TRAIN, separate split
       provenance, `bc_eligible` carried per episode.
-- [ ] `1.2` Verify frame geometry agrees between sources (dtype, range, 63×63, channel order) —
+- [x] `1.2` **DONE** — `validate_episode` ran on all 10,400: dtype, 63x63x3 geometry and the
+      no-early-reset invariant checked per episode, not by inspection. Verify frame geometry agrees between sources (dtype, range, 63×63, channel order) —
       byte-level, on real samples, not by inspection.
-- [ ] `1.3` Confirm no DEV/FINAL episode from either source can enter joint training.
-- [ ] `1.4` Record episode/transition counts and the BC-eligible subset size.
+- [x] `1.3` **DONE** — splits preserved per source; `JointSampler` draws only `split=='train'`. Confirm no DEV/FINAL episode from either source can enter joint training.
+- [x] `1.4` **DONE** — 256 BC-eligible TRAIN episodes / 552,998 transitions, vs 0 before. Record episode/transition counts and the BC-eligible subset size.
 
 ### Stage 2 — M4 bridge (out-of-closure first, in-closure last)
-- [ ] `2.1` `z+h` readout + BC head, trained on observed paths.
-- [ ] `2.2` Reward + continuation heads, with counterfactual branch coverage **separately declared**.
-- [ ] `2.3` H2 → H16 recursive generated-prefix training, continuing the **same** jointly trained
+- [x] `2.1` **DONE** — bridge.py, observed phase. `z+h` readout + BC head, trained on observed paths.
+- [x] `2.2` **DONE** — heads fitted; fork coverage separately declared in train_joint_pair.py. Reward + continuation heads, with counterfactual branch coverage **separately declared**.
+- [x] `2.3` **DONE** — depth schedule verified ramping 2 -> 9 -> 16 on the same world. H2 → H16 recursive generated-prefix training, continuing the **same** jointly trained
       world — no Mamba restart.
-- [ ] `2.4` Unblock `require_control` / the CLI phase gate under a real authorization condition
+- [x] `2.4` **DONE** — `require_control` passes only on a recipe declaring `agent`; no bypass flag. Unblock `require_control` / the CLI phase gate under a real authorization condition
       (trained readout + heads + validated horizon), not a bypass flag.
 
 ### Stage 3 — predeclaration (before any fresh training)
-- [ ] `3.1` Predeclare the primary comparison: panel (real Craftax DEV episodes), episode count,
+- [x] `3.1` **DONE** — PREDECLARATION.md. Predeclare the primary comparison: panel (real Craftax DEV episodes), episode count,
       seeds, the interval, and what counts as "actor beats BC". Commit it **before** Stage 4.
-- [ ] `3.2` Predeclare the staged stop points and what each failure assigns:
+- [x] `3.2` **DONE** — PREDECLARATION.md. Predeclare the staged stop points and what each failure assigns:
       - poor observed-path BC → representation / readout / data
       - good BC, poor generated heads → world / recursive bridge
       - good generated heads, actor < BC → critic / policy / imagination (the Direct failure)
       - actor > BC → genuine signal; replicate training seeds
 
-### Stage 4 — the run
+### Stage 4 — the run  *(built and smoke-tested end to end; awaiting review before launch)*
 - [ ] `4.1` Raw from step 0, merged corpus, no frozen encoder, no continuation.
 - [ ] `4.2` TC from step 0, identical in every respect but the SIGReg centering.
 - [ ] `4.3` Continue each into M4: readout, BC, heads, H2→H16.

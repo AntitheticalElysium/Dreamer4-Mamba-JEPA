@@ -68,6 +68,17 @@ def main(argv=None):
     # tree leaves that tree's manifest untouched -- the property this whole approach rests on.
     subprocess.run(["rsync", "-a", "--delete", str(ROOT / "d4mj/m03") + "/",
                     str(args.worktree / "d4mj/m03") + "/"], check=True)
+    # `third_party/sources/` and the vendored checkouts are gitignored, so a fresh worktree has
+    # none of the bytes `lewm_source_manifest` hashes or the repositories it runs rev-parse on.
+    # Link them rather than copy: the manifest must read the SAME bytes in both trees, and the
+    # measurement is meaningless if the reference tree pins a different checkout.
+    for entry in sorted((ROOT / "third_party").iterdir()):
+        link = args.worktree / "third_party" / entry.name
+        if not link.exists():
+            link.symlink_to(entry)
+    lock = ROOT / "requirements-lewm-rtx3060.lock.txt"
+    if lock.exists() and not (args.worktree / lock.name).exists():
+        (args.worktree / lock.name).symlink_to(lock)
 
     paths = {"reference": [], "current": []}
     for label, tree in (("reference", args.worktree), ("current", ROOT)):
@@ -91,7 +102,10 @@ def main(argv=None):
     document = json.loads(record.read_text())
     proofs = list(document["proofs"]) if isinstance(document.get("proofs"), list) else [document]
     digest = proof["current_manifest_digest"]
-    proofs = [p for p in proofs if p.get("current_manifest_digest") != digest] + [proof]
+    # The proof describing the CURRENT tree goes first. `_frozen_eval_delta` and
+    # `load_m03_bundle` both take the first covering record, and the test fixture exercises
+    # `records[0]`, so a stale tree's proof sitting in front of the live one fails everything.
+    proofs = [proof] + [p for p in proofs if p.get("current_manifest_digest") != digest]
     document["proofs"] = proofs
     document["note"] = ("one proof per reference tree -- checkpoints sealed against different "
                         "trees need their own measurement, and each is verified in full and on "

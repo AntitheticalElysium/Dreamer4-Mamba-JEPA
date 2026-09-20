@@ -227,7 +227,10 @@ class LeWMWorldAdapter(ModelBundle):
     def encode(self, frames: Tensor) -> Tensor:
         if self.encoder.training:
             raise RuntimeError("observation_normalization: runtime encoding requires encoder.eval()")
-        return self.encoder(frames)
+        # The deployment loop hands over a frame straight from the environment, which is on the
+        # host. `LegacyWorldAdapter.encode` has always moved it; this path never did, because
+        # M0-M3 refused control and nothing ever executed an episode through it.
+        return self.encoder(frames.to(self.device))
 
     def start(self, z0: Tensor, generator=None, *, first_action=None) -> PredictiveState:
         if first_action is not None:
@@ -288,7 +291,10 @@ class LeWMTransformerWorldAdapter(ModelBundle):
     def encode(self, frames: Tensor) -> Tensor:
         if self.encoder.training:
             raise RuntimeError("observation_normalization: runtime encoding requires encoder.eval()")
-        return self.encoder(frames)
+        # The deployment loop hands over a frame straight from the environment, which is on the
+        # host. `LegacyWorldAdapter.encode` has always moved it; this path never did, because
+        # M0-M3 refused control and nothing ever executed an episode through it.
+        return self.encoder(frames.to(self.device))
 
     def start(self, z0: Tensor, generator=None, *, first_action=None):
         if first_action is not None:

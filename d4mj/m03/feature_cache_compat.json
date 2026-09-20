@@ -23,7 +23,7 @@
     },
     "world_api.py": {
       "prior": "fcf2de2c77b1b261fb3633f30273130a7604d6bec547a3d953b7b0e3755d021c",
-      "current": "ef92ee7e911ae22a51036f3121193a1b42c786cf55d6a261ed70620497de24f3"
+      "current": "e46792a29bc9e18ccac2e367b2f056244cb1d65c8f6396a979e8b5c40a9df392"
     }
   },
   "changed_definitions": {
@@ -39,15 +39,19 @@
       "screen_windows"
     ],
     "world_api.py": [
+      "LeWMWorldAdapter.encode",
       "ModelBundle.require_control"
+    ],
+    "train.py": [
+      "train_joint"
     ]
   },
   "evidence": {
     "substitution": "runtime hashes only; the current `functions` digest is kept, so a hit requires every encode function and its transitive project-function closure to be byte-identical to the run that filled the cache",
-    "reachability": "the changed definitions are referenced only from d4mj/{cache,train,lewm_diagnostics,experiments}.py and the M4 campaign drivers; d4mj/m03 imports none of them, and takes only atomic_manifest, patchify and _sha256 from data.py, all three verified byte-identical to the reference commit. Re-verified 2026-09-20 mechanically: load_joint_corpus and ModelBundle.require_control appear nowhere under d4mj/m03/, and exactly one definition changed in each of config.py, data.py and world_api.py.",
+    "reachability": "Re-verified 2026-09-20. load_joint_corpus, ModelBundle.require_control and train_joint appear nowhere under d4mj/m03/. LeWMWorldAdapter.encode is the one newly changed definition that is named in m03, and it is not reached: both bundle.encode call sites (gate.py:1202 in _encode_legacy and gate.py:1257 in _legacy_native_parity_preflight) run the LEGACY adapter, whose encode is byte-identical to the reference commit, and both already move the frame to the device before calling, so the added .to(self.device) is a no-op even on the LeWM path. This record's scope excludes LeWM arms in any case: they always recompute. m03 still takes only atomic_manifest, patchify and _sha256 from data.py, all three byte-identical.",
     "recipe_dict": "the one changed config.py definition is reachable through recipe_digest, and is checked behaviourally: re-verified 2026-09-20 that all 9 stored recipes round-trip byte for byte and all 50 discoverable sealed checkpoints resolve their recorded recipe_id. The 2026-09-20 edit omits `agent` when absent precisely so M0-M3 recipe identities cannot move.",
     "measured_unix": 1789615804.214713,
-    "regenerated_unix": 1789875810.0550275,
+    "regenerated_unix": 1789878259.4290447,
     "backend_note": "config/state/world_api also carry the source-exact comparison backend now. The bridged arms are replay and Direct, whose encode functions are unchanged; the substitution swaps runtime hashes only and keeps the current `functions` digest, so a hit still requires every encode function and its transitive closure to be byte-identical.",
     "m4_note": "The M4 bridge added AgentSettings to lewm_config.py (not pinned here; LeWM arms always recompute) and widened load_joint_corpus for the merged corpus. Neither reaches a replay or Direct encode function, which is what this record bridges."
   }

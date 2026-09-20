@@ -100,11 +100,10 @@
     "pmpo_alpha": 0.5,
     "prior_beta": 0.3,
     "batch": 4,
-    "sequence": 16,
+    "sequence": 32,
     "actor_batch": 16,
     "event_fraction": 0.5,
     "terminal_batch": 1,
-    "readout_steps": 4000,
     "head_steps": 8000,
     "actor_steps": 4000,
     "learning_rate": 0.0001,
@@ -113,6 +112,7 @@
     "recursive_depth_final": 16,
     "fork_mass": 0.2,
     "fork_roots": 4,
-    "fork_second_weight": 0.5
+    "fork_second_weight": 0.5,
+    "recursive_steps": 6000
   }
 }
