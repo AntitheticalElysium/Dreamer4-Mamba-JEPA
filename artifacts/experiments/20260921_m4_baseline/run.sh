@@ -59,16 +59,24 @@ done
 if [ -z "$exported" ]; then say "NEITHER arm exported a cache; stopping"; exit 5; fi
 say "arms with a frozen cache:$exported"
 
+H2_STEPS=${H2_STEPS:-2000}
 for arm in $exported; do
   say "stage 2: bridge H2, arm $arm"
-  latest=$(ls -1 "$OUT/$arm/bridge"/step-*.pt 2>/dev/null | sort | tail -1)
-  if [ -n "$latest" ]; then
-    say "  resuming from $(basename "$latest")"
-    $PY -m d4mj bridge --run "$OUT/$arm" --stop-after h2 --resume "$latest"
+  # A completed H2 stage is skipped: resuming it asks the trainer to stop at an update it has
+  # already passed, which it rightly refuses ("target stage is not after the restored update").
+  if [ -f "$OUT/$arm/bridge/step-$(printf '%06d' "$H2_STEPS").pt" ]; then
+    say "  H2 already complete for $arm"
+    rc=0
   else
-    $PY -m d4mj bridge --run "$OUT/$arm" --stop-after h2
+    latest=$(ls -1 "$OUT/$arm/bridge"/step-*.pt 2>/dev/null | sort | tail -1)
+    if [ -n "$latest" ]; then
+      say "  resuming from $(basename "$latest")"
+      $PY -m d4mj bridge --run "$OUT/$arm" --stop-after h2 --resume "$latest"
+    else
+      $PY -m d4mj bridge --run "$OUT/$arm" --stop-after h2
+    fi
+    rc=$?
   fi
-  rc=$?
   say "  bridge H2 $arm rc=$rc"
   [ $rc -ne 0 ] && { say "bridge H2 $arm failed; stopping"; exit $rc; }
 done
