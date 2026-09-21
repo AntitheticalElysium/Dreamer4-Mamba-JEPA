@@ -92,8 +92,7 @@ for arm in $exported; do
   # would orphan every joint and bridge checkpoint and cost a full ~4 hour re-run. The branch is
   # guarded by is_file(), so a non-existent path skips it and the gate runs with reference=None:
   # retention then compares projected z against its own CLS only. Recorded as a known gap.
-  $PY -m d4mj gate --run "$OUT/$arm" --stage h2 --dataset "${DATA[@]}" \
-      --reference /nonexistent/preselected-reference-unavailable
+  $PY "$LOG/gate_runner.py" --run "$OUT/$arm" --stage h2 --dataset "${DATA[@]}"
   rc=$?
   say "  gate h2 $arm rc=$rc"
   [ $rc -eq 0 ] && cleared="$cleared $arm"
@@ -112,8 +111,7 @@ for arm in $cleared; do
   rc=$?; say "  bridge H16 $arm rc=$rc"
   [ $rc -ne 0 ] && exit $rc
   say "stage 5: gate at H16, arm $arm"
-  $PY -m d4mj gate --run "$OUT/$arm" --stage h16 --dataset "${DATA[@]}" \
-      --reference /nonexistent/preselected-reference-unavailable
+  $PY "$LOG/gate_runner.py" --run "$OUT/$arm" --stage h16 --dataset "${DATA[@]}"
   rc=$?; say "  gate h16 $arm rc=$rc"
   [ $rc -ne 0 ] && { say "H16 gate refused the actor for $arm"; exit $rc; }
 done
@@ -123,7 +121,7 @@ for arm in $cleared; do
   $PY -m d4mj actor --run "$OUT/$arm" --stop-after screen       --bridge-gate "$OUT/$arm/gates/h16/bridge_gate_h16.json"
   rc=$?; say "  actor screen $arm rc=$rc"
   [ $rc -ne 0 ] && exit $rc
-  $PY -m d4mj gate --run "$OUT/$arm" --stage actor
+  $PY "$LOG/gate_runner.py" --run "$OUT/$arm" --stage actor
   rc=$?; say "  gate actor $arm rc=$rc"
   [ $rc -ne 0 ] && { say "actor screen gate refused the full budget for $arm"; exit $rc; }
   latest=$(ls -1 "$OUT/$arm/actor"/step-*.pt 2>/dev/null | sort | tail -1)
