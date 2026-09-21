@@ -74,8 +74,10 @@ recorded, refutes it:
 | **real successor** | **0.2879** | **55.9%** |
 | action-marginal control | 0.2277 | 65.7% |
 
-The reward head is **no better when handed the real successor** — that failure sits in the outcome
-readout and ranking path, not in the transition. Safety *does* improve with real successors
+The reward head is **no better when handed the real successor** — that failure sits in the common
+readout/ranking path, not in the transition. That path is not the final linear head alone: a real
+successor still traverses `observe_latent`, the world's agent readout, pooling and `model_body`
+before reaching the output head, and the failure is somewhere in that shared route. Safety *does* improve with real successors
 (+10.8 points) but still loses to the action-marginal control, so transition error contributes
 there without explaining it. And the positive latent action-effect results show the transition
 model does respond to actions.
@@ -95,13 +97,20 @@ outcome, looks competent globally and incompetent per-state.
 
 That is precisely what the second audit predicted global baselines would hide, and precisely why
 the all-action fork gate was made binding. Without it this run would have shown a mixed but
-arguable picture; with it, the finding is unambiguous: **this world does not carry
-state-conditioned action consequences, while its aggregate latent and reward metrics look
-reasonable.**
+arguable picture.
+
+What the evidence supports is stated in the correction above: **the complete H2 system cannot use
+its successor representations to select actions reliably.** The true-successor substitution
+localizes the reward failure to the readout/ranking path and shows transition error contributing
+to, but not explaining, the safety failure.
 
 ## Declared limitations
 
-- **One arm.** No raw-versus-TC architecture verdict is available.
+- **One arm.** No raw-versus-TC architecture verdict is available; see `TC_EXPORT_FINDING.md` for
+  TC's low-rank/scale pathology.
+- The bridge heads received only **25% of their supervision from generated suffixes** (50% prefix,
+  25% observed suffix), all from logged actions rather than all-action counterfactual roots.
+  Distribution and action-coverage mismatch remain live hypotheses for the readout failure.
 - **One seed.** No training-robustness claim.
 - **Retention compares against CLS only** — the preselected old-export reference could not be
   loaded, see the gate-runner note.

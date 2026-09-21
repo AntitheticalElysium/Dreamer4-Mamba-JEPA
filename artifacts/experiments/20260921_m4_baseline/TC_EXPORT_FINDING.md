@@ -1,117 +1,82 @@
-# TC cannot produce a TC-14 compliant latent cache
+# TC: a low-rank / scale training pathology, and a failed cache export
 
-> **CORRECTED 2026-09-21.** The explanation below — that TC's temporal centering leaves near-zero
-> coordinates raw lacks — is **WRONG and withdrawn**. Measured on 256 DEV frames, TC has *fewer*
-> near-zero coordinates than raw (0.04% vs 0.08% below 1e-3) and *larger* magnitudes
-> (|z| mean 1.538 vs 0.665). The real cause is **representational collapse**, and the export
-> failure is a symptom of it. See "What actually happened" at the end.
+**Raw-only baseline.** TC never produced a TC-14 compliant latent cache, so this run yields **no
+Raw-versus-TC H2 architecture comparison**.
 
-**Measured 2026-09-21, both arms, same frozen encoders, same execution settings.**
+## The pathology
 
-## What happened
+Effective rank and scale on the **sealed G1 DEV window ledger** — the same 512 windows G1 screened,
+2,048 frames, reproduced by `rank_trajectory.py`; the 2,000-update raw value reproduces the sealed
+screen's own `23.44675` exactly.
 
-`export` writes the frozen post-joint latent cache the bridge trains on. It verifies
-**batch invariance**: a frame encoded alone must match that frame encoded inside a chunk, because
-the deployed actor encodes one frame at a time while the cache is built in chunks of 128.
+| update | raw rank | tc rank | raw mean \|z\| | tc mean \|z\| |
+|---:|---:|---:|---:|---:|
+| 2,000 | **23.45** | 9.87 | 0.731 | 0.959 |
+| 4,000 | **31.50** | 3.93 | 0.740 | 1.568 |
+| 6,000 | **34.68** | 3.69 | 0.739 | 1.604 |
+| 8,000 | **38.09** | 3.79 | 0.746 | 1.577 |
+| 10,000 | **38.32** | 3.94 | 0.742 | 1.596 |
 
-```python
-z = encoder(frames)                       # chunk
-single = encoder(frames[:, t:t+1])        # alone
-torch.testing.assert_close(single, z[:, t:t+1], atol=1e-5, rtol=1e-4)
-```
+**TC was already 2.4× behind raw at G1** (9.87 against 23.45, with normalized prediction MSE 0.681
+against 0.059), and fell to 3.93 by update 4,000 while raw rose to 38.3. Scale inflates as rank
+falls: TC's mean |z| goes 0.959 → 1.568 over the same interval while raw's holds near 0.74.
 
-Raw passed and wrote a 2.9 GB cache in 42 minutes. **TC failed in 2 minutes.**
+This is a **training pathology of the TC arm** — low rank with inflated scale — not a gate defect.
 
-## The measurement
+## Why G1 passed it
 
-Six DEV episodes, 60 checks per arm, 11,520 coordinates:
+G1's criteria are learning progress against each arm's own initialization and a limited
+proxy-retention rule. TC improved over its initialization and did not trip that rule, so it passed
+**as written**. Two gaps are exposed:
 
-| arm | worst absolute (tol 1e-5) | worst relative (tol 1e-4) | coordinates failing `\|Δ\| ≤ atol + rtol·\|z\|` |
-|---|---:|---:|---:|
-| raw | 2.50e-06 | 4.15e-03 | **0 / 11,520** |
-| tc | 3.32e-05 | 2.26e-03 | **14 / 11,520** |
+- **Criterion gap.** G1 records the covariance spectra but does not gate on rank or scale, so a
+  representation 2.4× poorer than its pair advanced on equal footing.
+- **Schedule gap.** G1 screens at 2,000 and the next representational check is the export at
+  10,000. TC's collapse lands at 4,000, in the unobserved interval.
 
-At 0.12% of coordinates failing per check and roughly 60,000 checks in a full export, TC fails
-essentially every chunk. This is systematic, not an unlucky frame.
+## The export failure: correlated, not causal
 
-## Why TC and not raw
+The export's batch-invariance check compares a frame encoded alone against the same frame encoded
+in a chunk, at `atol=1e-5, rtol=1e-4`. TC fails it; raw does not.
 
-The reported failure landed on a coordinate with `|z| ≈ 1.7e-3` — near zero. `assert_close` allows
-`atol + rtol·|z|`, so on a near-zero coordinate the allowance collapses to `atol` alone and a
-~3e-5 absolute perturbation fails.
+A matched 60-frame check across checkpoints shows the failure is **sample- and batch-dependent**:
 
-**TC centers its latents temporally.** Its residual therefore carries near-zero coordinates that
-raw's representation does not, and those coordinates are where a fixed absolute tolerance bites.
-The non-determinism itself is shared: `cuda_matmul_tf32` is false but **`cudnn_tf32` is true**, so
-the ViT's patch-embedding convolution selects different cuDNN algorithms for different batch
-shapes. Raw is exposed to the same effect (its worst *relative* error is in fact larger, 4.2e-03)
-but has no near-zero coordinates for it to land on.
+| checkpoint | failing coordinates (matched 60-frame sample) |
+|---:|---:|
+| 2,000 | 0 |
+| 4,000 | 73 |
+| 6,000 | 4 |
+| 8,000 | 8 |
+| 10,000 | 0 |
 
-## Why the tolerance was not loosened
+while the full exporter found 14 failures at 10,000 on different frames. Scale inflation makes an
+absolute-tolerance breach more likely — larger activations carry larger absolute error from the
+same relative precision — but **collapse does not mechanically cause export failure**. The honest
+statement is that export failure is a numerical-contract failure *associated with* the pathological
+representation, on a batch- and sample-dependent basis.
 
-The perturbation is physically negligible: 3e-5 absolute contributes ~9e-10 to a squared error,
-against TC's own prediction MSE of 0.327. It would have been easy to widen `atol` and proceed.
+An earlier version of this file claimed the cause was near-zero coordinates left by temporal
+centering. That was wrong — TC has *fewer* near-zero coordinates than raw — and it is removed
+rather than annotated.
 
-That would have been manufacturing a pass. The guard encodes a real requirement — the cache the
-bridge trains on must equal what the deployed actor produces — and TC does not satisfy it at the
-declared tolerance. Every knob that would legitimately fix it is sealed:
+## Rank is a symptom, not a target
 
-- `cudnn_tf32`, `cudnn_deterministic` are in the checkpoint's `sources.execution` manifest;
-  changing them invalidates the joint checkpoints that export must load.
-- `runtime.cache_chunk = 1` would make the cache batch-invariant by construction, but
-  `cache_chunk` is inside `recipe_digest`, and export refuses a checkpoint whose `recipe_id`
-  disagrees.
+Raising rank does not restore capability. The 2026-09-16 centering-window experiment lifted TC's
+rank from **5.14 to 19.16**, and the projected-`z` behaviour cloning nonetheless *"collapsed to the
+action prior"*, with all-action outcomes showing no significant improvement. Any TC follow-up that
+selects on rank is selecting on the wrong quantity.
 
-Both are closure changes belonging to a new sealed recipe, not to a live run.
+## What a TC follow-up needs
 
-## Consequence
+1. Measure critical retention and an action-relevant capability proxy at 2k / 4k / 10k, alongside
+   prediction-versus-SIGReg gradient norms and their cosine — is the regularizer overwhelming the
+   prediction term as rank falls?
+2. **Do not** rerun the same recipe, and **do not** select widened centering because it restores
+   rank.
+3. Add a sealed **4,000-update review** carrying normalized prediction, rank and scale, critical
+   retention, and an action-relevant proxy. Rank alone must never authorize continuation.
 
-**Raw proceeds** through bridge, gates, actor and real evaluation. **TC stops here**, and this is
-recorded as a result about the TC arm rather than a reason to abandon the run.
+## Evidence
 
-The honest scope of the campaign is now narrower than planned: a **one-arm** M4 baseline. The
-raw-versus-TC comparison this run was built to make cannot be completed from these checkpoints,
-and the joint-phase numbers (raw 0.019 vs TC 0.327 prediction MSE) are what the comparison
-delivers instead.
-
-## What a follow-up would need
-
-A new sealed recipe declaring `cache_chunk = 1`, or `cudnn_tf32 = false` in the execution block,
-retrained from scratch — because both change the manifest the existing checkpoints are bound to.
-Whether TC's near-zero coordinates are also a problem for the bridge's own objective is a separate
-question this finding does not answer.
-
-
-## What actually happened — TC collapsed during training
-
-Effective rank (entropy of the coordinate-covariance spectrum) on identical DEV frames:
-
-| arm | update 2,000 | update 6,000 | update 10,000 |
-|---|---:|---:|---:|
-| raw | 7.44 | 8.61 | **9.48** |
-| tc | **9.66** | **2.38** | **2.58** |
-
-**At G1, TC was healthier than raw** — effective rank 9.66 against 7.44. G1 passed it on the
-evidence available at update 2,000, correctly. Between updates 2,000 and 6,000 TC collapsed from
-9.66 to 2.38 effective dimensions out of 192, and its prediction MSE plateaued at ~0.3 over the
-same interval. The plateau *is* the collapse.
-
-### Why that breaks the export
-
-Collapse concentrates the representation's energy into a few directions, which raises coordinate
-magnitudes: TC's mean |z| goes 0.972 → 1.538 across the collapse while raw's stays at ~0.665. The
-batch-invariance check uses an **absolute** tolerance of 1e-5. Larger activations carry larger
-absolute numerical error from the same relative precision — TC's worst absolute deviation is
-3.32e-05 against raw's 2.50e-06, a 13× gap that tracks the magnitude and dynamic-range increase.
-On a coordinate that happens to be near zero the `rtol·|z|` allowance adds nothing, and the check
-fails.
-
-So the export guard is not mis-specified and it is not the problem. It is a **numerical symptom of
-a representational failure**, and it fired in the right direction.
-
-### Gate or training?
-
-**Training.** And there is a real gap in the schedule alongside it: G1 screens at update 2,000 and
-the next representational check is the export at 10,000. Nothing looks at the representation in
-between, which is exactly where TC collapsed. A mid-budget rank or retention probe would have
-caught this at ~4,000 and saved the remaining 6,000 updates.
+`evidence/rank_trajectory.json` — every checkpoint hash, the ledger hash, the script hash, and the
+raw measurements. Script: `rank_trajectory.py`.
