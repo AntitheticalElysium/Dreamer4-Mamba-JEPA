@@ -78,7 +78,14 @@ done
 cleared=""
 for arm in $exported; do
   say "stage 3: G2/G3 gate at H2, arm $arm"
-  $PY -m d4mj gate --run "$OUT/$arm" --stage h2 --dataset "${DATA[@]}"
+  # --reference is deliberately unset: the handler that loads the preselected export calls
+  # torch.load in a scope where torch is not imported (experiments.py imports it only inside
+  # run_joint_pair). Fixing that one line edits a file inside the sealed source closure, which
+  # would orphan every joint and bridge checkpoint and cost a full ~4 hour re-run. The branch is
+  # guarded by is_file(), so a non-existent path skips it and the gate runs with reference=None:
+  # retention then compares projected z against its own CLS only. Recorded as a known gap.
+  $PY -m d4mj gate --run "$OUT/$arm" --stage h2 --dataset "${DATA[@]}" \
+      --reference /nonexistent/preselected-reference-unavailable
   rc=$?
   say "  gate h2 $arm rc=$rc"
   [ $rc -eq 0 ] && cleared="$cleared $arm"
@@ -97,7 +104,8 @@ for arm in $cleared; do
   rc=$?; say "  bridge H16 $arm rc=$rc"
   [ $rc -ne 0 ] && exit $rc
   say "stage 5: gate at H16, arm $arm"
-  $PY -m d4mj gate --run "$OUT/$arm" --stage h16 --dataset "${DATA[@]}"
+  $PY -m d4mj gate --run "$OUT/$arm" --stage h16 --dataset "${DATA[@]}" \
+      --reference /nonexistent/preselected-reference-unavailable
   rc=$?; say "  gate h16 $arm rc=$rc"
   [ $rc -ne 0 ] && { say "H16 gate refused the actor for $arm"; exit $rc; }
 done
