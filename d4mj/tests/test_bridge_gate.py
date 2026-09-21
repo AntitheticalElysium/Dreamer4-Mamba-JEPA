@@ -244,3 +244,43 @@ def test_noninferiority_uses_the_lower_bound(tmp_path, monkeypatch, interval, ex
     component = diag._semantic_retention(bundle, object(), sealed_screen(), tmp_path / "n")
     assert (component["status"] == "pass") is expected
     assert component["metrics"]["noninferior_to_cls"] is expected
+
+
+def test_all_action_forks_are_disjoint_from_training_and_within_root(tmp_path):
+    """The fork gate decides WITHIN each root over all actions, on seeds never trained on."""
+    from d4mj.lewm_diagnostics import fork_population
+    config = m4_config()
+    forks = fork_population(config, roots=6, seed=1)
+    assert forks["roots"] == 6
+    assert forks["successors"].shape[1] == 17, "all actions must be present"
+    assert forks["reward"].shape[1] == 17 and forks["terminated"].shape[1] == 17
+    seeds = set(forks["seed"].tolist())
+    assert seeds and min(seeds) >= 15000, "fork seeds must lie outside the training ranges"
+    assert not (seeds & set(range(13000, 14512))), "a sealed M03 evaluation seed reached the gate"
+
+
+def test_within_root_regret_beats_nothing_when_the_score_is_uninformative():
+    """A model that ranks actions at random must not beat the action-marginal choice."""
+    from d4mj.lewm_diagnostics import _regret
+    torch.manual_seed(0)
+    truth = torch.rand(400, 17)
+    marginal = truth.mean(0, keepdim=True).expand_as(truth)
+    noise = torch.rand(400, 17)
+    blind = _regret(truth, marginal, maximize=True).mean()
+    random_choice = _regret(truth, noise, maximize=True).mean()
+    oracle = _regret(truth, truth, maximize=True).mean()
+    assert float(oracle) == pytest.approx(0.0, abs=1e-6), "the oracle has no regret"
+    # a random ranker is no better than the marginal choice, within noise
+    assert float(random_choice) >= float(blind) - 0.05
+
+
+def test_the_gate_refuses_when_no_fork_population_is_supplied(tmp_path):
+    """State-conditioned consequences cannot be established by global baselines alone."""
+    from d4mj.lewm_diagnostics import _action_effects
+    from d4mj.lewm_diagnostics import _gate_traces
+    config, bundle, heads, checkpoint, cache, payload = _fixture(tmp_path)
+    traces, _ = _gate_traces(bundle, mixed_corpus(), config, batches=2, seed=5)
+    component = _action_effects(bundle, traces, 1, draws=40, seed=7, output=tmp_path / "ae",
+                                heads=heads, prior=None, forks=None)
+    assert component["status"] != "pass"
+    assert component["metrics"]["all_action"]["status"] == "insufficient_coverage"

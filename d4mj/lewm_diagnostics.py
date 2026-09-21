@@ -2,6 +2,8 @@
 
 import copy
 import hashlib
+
+import numpy as np
 import importlib.util
 from pathlib import Path
 import time
@@ -659,6 +661,22 @@ def _component(status: str, metrics: dict, evidence: list, criterion: dict | Non
     return {"status": status, "metrics": metrics, "evidence": evidence, "criterion": criterion}
 
 
+def _raw_rows(output, name: str, rows: dict) -> dict:
+    """The per-row inputs a result was computed from, so it can be recomputed rather than trusted.
+
+    A run of this cost should not leave only aggregates behind: an interval that cannot be
+    recomputed is an assertion about a number nobody can check.
+    """
+    from .data import _sha256
+    output = Path(output)
+    output.mkdir(parents=True, exist_ok=True)
+    path = output / f"{name}.rows.pt"
+    torch.save({key: (value.cpu() if torch.is_tensor(value) else value)
+                for key, value in rows.items()}, path)
+    return {"path": str(path), "sha256": _sha256(path),
+            "rows": int(next((len(v) for v in rows.values() if torch.is_tensor(v)), 0))}
+
+
 def _evidence(output, name: str, payload: dict) -> list:
     """Write one immutable evidence file and bind it by bytes."""
     from .data import _sha256, atomic_manifest
@@ -834,7 +852,8 @@ def _recursive_dynamics(bundle, traces, depths, *, draws: int, seed: int, output
                        "value": float(len(depths) - cleared), "threshold": 0.5, "direction": "less"})
 
 
-def _action_effects(bundle, traces, depth: int, *, draws: int, seed: int, output):
+def _action_effects(bundle, traces, depth: int, *, draws: int, seed: int, output,
+                    heads=None, prior=None, forks=None):
     """TC-16: does the predicted CHANGE track the real one, and does re-labelling the action cost?"""
     roll = _rollouts(bundle, traces, depth, seed=seed)
     if roll is None:
@@ -850,6 +869,8 @@ def _action_effects(bundle, traces, depth: int, *, draws: int, seed: int, output
     blind = _paired_mean_interval(roll["marginal"], roll["generated"], roll["clusters"],
                                   draws=draws, seed=seed + 12)
     metrics = {"depth": depth, "rows": int(len(cosine)),
+               "scope": "latent effects on DEV windows; state-conditioned consequences are "
+                        "measured on held-out all-action forks under `all_action`",
                "effect_r2": float(1 - residual / total.clamp(min=1e-12)),
                "effect_cosine": float(cosine.mean()),
                "action_sensitivity_vs_deranged": sensitivity,
@@ -862,6 +883,17 @@ def _action_effects(bundle, traces, depth: int, *, draws: int, seed: int, output
     # state/time evolution alone, so the action-blind control gates too.
     failed = sum(0 if value else 1 for value in
                  (metrics["uses_the_action"], metrics["beats_action_blind"], metrics["effect_r2"] > 0))
+    if forks is not None:
+        # The decisive part: within-root decisions over all 17 actions from the same state.
+        # Global trivial baselines cannot establish these, so they gate here.
+        outcomes = _action_outcomes(bundle, heads, prior, forks, draws=draws,
+                                    seed=seed + 300, output=output)
+        metrics["all_action"] = outcomes["metrics"]
+        failed += int(outcomes["metrics"]["failed_checks"])
+    else:
+        metrics["all_action"] = {"status": "insufficient_coverage",
+                                 "reason": "no all-action fork population supplied"}
+        failed += 1
     metrics["failed_checks"] = failed
     return _component("pass" if not failed else "fail", metrics,
                       _evidence(output, "action_effects", metrics),
@@ -1150,7 +1182,8 @@ def _paired_uncertainty(components, settings, output):
 
 
 def bridge_gate(bundle, heads, payload, episodes, cache_contract, settings, output, *,
-                stage: str, checkpoint, raw_episodes=None, batches: int = 24):
+                stage: str, checkpoint, raw_episodes=None, batches: int = 24,
+                forks=None, prior=None, panel=None, reference=None):
     """The sealed G2/G3 report that `require_bridge_gate` will accept or refuse.
 
     Pass rule, from EVALUATION.md G3: permit the longer bridge only when source contracts,
@@ -1173,11 +1206,14 @@ def bridge_gate(bundle, heads, payload, episodes, cache_contract, settings, outp
 
     components = {
         "source_contract": _source_contract(bundle, payload, cache_contract, checkpoint, output),
-        "semantic_retention": _semantic_retention(bundle, raw_episodes, settings, output),
+        "semantic_retention": _critical_retention(bundle, reference, panel, settings, output)
+                              if panel is not None else
+                              _semantic_retention(bundle, raw_episodes, settings, output),
         "recursive_dynamics": _recursive_dynamics(bundle, traces, depths, draws=settings.bootstrap_draws,
                                                   seed=seed, output=output),
-        "action_effects": _action_effects(bundle, traces, max(depths), draws=settings.bootstrap_draws,
-                                          seed=seed + 20, output=output),
+        "action_effects": _action_effects(bundle, traces, max(depths),
+                                          draws=settings.bootstrap_draws, seed=seed + 20,
+                                          output=output, heads=heads, prior=prior, forks=forks),
         "outcome_calibration": _outcome_calibration(bundle, heads, traces, max(depths),
                                                     draws=settings.bootstrap_draws,
                                                     seed=seed + 40, output=output),
@@ -1270,7 +1306,7 @@ def _actor_diagnostics(bundle, heads, prior, traces, horizon: int):
 
 
 def actor_gate(bundle, heads, prior, payload, episodes, cache_contract, settings, output, *,
-               checkpoint, batches: int = 16):
+               checkpoint, batches: int = 16, forks=None):
     """The sealed G4 screen report: continue to the 5,000 budget, or stop.
 
     G4 asks whether "the learned environment remains valid and the critic/action diagnostic does
@@ -1365,6 +1401,17 @@ def actor_gate(bundle, heads, prior, payload, episodes, cache_contract, settings
                                   {"quantity": "collapsed", "value": 1.0 if metrics["collapsed"] else 0.0,
                                    "threshold": 0.5, "direction": "less"})
 
+    if forks is not None:
+        # G4's safety question: does the ACTOR die more than its own immutable BC would, weighted
+        # by each policy's own action distribution over real one-step outcomes?
+        safety = _action_outcomes(bundle, heads, prior, forks, draws=settings.bootstrap_draws,
+                                  seed=seed + 400, output=output)
+        weighted = safety["metrics"].get("policy_weighted_true_death", {})
+        distribution["metrics"]["policy_weighted_true_death"] = weighted
+        if not weighted.get("no_safety_regression", False):
+            distribution["metrics"]["failed_checks"] = \
+                int(distribution["metrics"].get("failed_checks", 0)) + 1
+            distribution["status"] = "fail"
     components = {"model_validity": validity, "critic_direction": critic,
                   "action_distribution": distribution}
     components["paired_uncertainty"] = _paired_uncertainty(components, settings, output)
@@ -1382,3 +1429,363 @@ def actor_gate(bundle, heads, prior, payload, episodes, cache_contract, settings
     report = _seal(body)
     atomic_manifest(output / "actor_gate.json", report)
     return report
+
+
+# --- all-action DEV forks: state-conditioned consequences, not global baselines ---------------
+#
+# Beating a global trivial baseline permits state-INDEPENDENT action knowledge: observed policy
+# agreement 80%, generated 10% and a most-frequent baseline of 5% passes both paths while generated
+# transfer has collapsed. The gate therefore needs within-root decisions over all 17 actions from
+# the same state, which is what `broad_forks_v2` records. TC-17 keeps fork corpora out of TRAINING;
+# EVALUATION.md keeps simulator forks evaluation-only, which is exactly this use. The fork seeds
+# (15000-16504) are disjoint from the expert archive (0-319), support-v2 (20270731+) and the sealed
+# M03 evaluation seeds, so no root here was ever trained on.
+
+FORK_STORE = ROOT.parent / "artifacts/eda/broad_forks_v2"
+
+
+def fork_population(config, *, roots: int, seed: int, store=None):
+    """Held-out all-action roots: the window, every true successor, and the real outcomes."""
+    import glob as _glob
+    from .lewm_config import window_layout
+    store = Path(store or FORK_STORE)
+    offsets = window_layout(config.joint)[0]
+    span = offsets[-1] + 1
+    if offsets != tuple(range(span)):
+        raise ComponentGateError("fork_window", "fork windows assume a consecutive encoded window")
+    paths = sorted(_glob.glob(str(store / "seed-*.pt")))
+    if not paths:
+        raise ComponentGateError("fork_corpus", f"no all-action fork roots under {store}")
+    generator = torch.Generator().manual_seed(seed)
+    order = torch.randperm(len(paths), generator=generator).tolist()
+    rows = []
+    for index in order:
+        for row in torch.load(paths[index], map_location="cpu", weights_only=False):
+            if len(row["frames"]) < span:
+                continue
+            rows.append(row)
+            if len(rows) >= roots:
+                break
+        if len(rows) >= roots:
+            break
+    pack = lambda key: torch.stack([row[key] for row in rows])
+    return {"frames": torch.stack([row["frames"][-span:] for row in rows]),
+            "past_actions": torch.stack([row["led_to_action"][-span + 1:] for row in rows]),
+            "successors": pack("successors"), "reward": pack("reward").float(),
+            "terminated": pack("terminated").bool(), "health_delta": pack("health_delta").float(),
+            "achievement_delta": pack("achievement_delta").long(),
+            "bc_action": torch.tensor([int(row["bc_action"]) for row in rows]),
+            "seed": torch.tensor([int(row["seed"]) for row in rows]),
+            "roots": len(rows)}
+
+
+@torch.no_grad()
+def _fork_readouts(bundle, heads, forks, *, batch: int = 8):
+    """Generated and TRUE-SUCCESSOR head readouts for all 17 actions from each root."""
+    device, count = bundle.device, bundle.n_actions
+    out = {key: [] for key in ("generated_reward", "generated_death", "true_reward", "true_death",
+                               "policy", "prior_policy", "effect_generated", "effect_true")}
+    centers = heads.centers
+    for start in range(0, forks["roots"], batch):
+        stop = min(forks["roots"], start + batch)
+        rows = stop - start
+        frames = forks["frames"][start:stop].to(device)
+        past = forks["past_actions"][start:stop].to(device)
+        successors = forks["successors"][start:stop].to(device)
+        z = bundle.encoder(frames)
+        state = bundle.world.teacher(z, past).state
+        actions = torch.arange(count, device=device).repeat(rows)[:, None]
+        fan = bundle.repeat_state(state, count)
+        advanced, features = bundle.advance(fan, actions)
+
+        def read(head_features):
+            readout = heads(head_features)
+            probability = readout["reward"][:, -1, 0].softmax(-1)
+            mean = (probability * centers).sum(-1)
+            reward = mean.sign() * torch.expm1(mean.abs())
+            death = 1.0 - readout["continuation"][:, -1, 0].sigmoid()
+            return reward.reshape(rows, count), death.reshape(rows, count), readout
+
+        generated_reward, generated_death, readout = read(features)
+        # The TRUE-SUCCESSOR substitution: the same heads reading the real next state, which
+        # separates a transition error from an outcome-head error.
+        z_true = bundle.encoder(successors.flatten(0, 1).unsqueeze(1))
+        true_state, true_features = bundle.world.observe_latent(fan, actions, z_true)
+        true_reward, true_death, _ = read(true_features)
+        out["generated_reward"].append(generated_reward.cpu())
+        out["generated_death"].append(generated_death.cpu())
+        out["true_reward"].append(true_reward.cpu())
+        out["true_death"].append(true_death.cpu())
+        out["policy"].append(heads(bundle.world.features(state))["policy"][:, -1, 0]
+                             .softmax(-1).cpu())
+        anchor = z[:, -1:, 0]
+        out["effect_generated"].append((advanced.latent[:, 0, 0].reshape(rows, count, -1)
+                                        - anchor).cpu())
+        out["effect_true"].append((z_true[:, 0, 0].reshape(rows, count, -1) - anchor).cpu())
+    return {key: torch.cat(value) for key, value in out.items() if value}
+
+
+def _regret(truth, score, *, maximize: bool):
+    """Within-root decision cost: what the chosen action gave up against the best available."""
+    chosen = (score.argmax(1) if maximize else score.argmin(1))[:, None]
+    best = truth.amax(1, keepdim=True) if maximize else truth.amin(1, keepdim=True)
+    return (best - truth.gather(1, chosen)).squeeze(1).abs()
+
+
+def _action_outcomes(bundle, heads, prior, forks, *, draws: int, seed: int, output):
+    """G3: state-conditioned action consequences, decided WITHIN each root over all 17 actions.
+
+    Every contrast is within-root, so a model that has learned only which actions are good on
+    average cannot pass: the action-marginal control makes exactly that choice and is the
+    reference. Terminal ranking, reward regret and policy-weighted death are reported against
+    both the generated path and the true-successor substitution, which separates a transition
+    error from an outcome-head error.
+    """
+    from .diagnostics import binary_auc
+    read = _fork_readouts(bundle, heads, forks)
+    true_reward, true_death = forks["reward"], forks["terminated"].float()
+    clusters = forks["seed"]
+    reward_varies = true_reward.amax(1) > true_reward.amin(1)
+    death_varies = true_death.amax(1) > true_death.amin(1)
+    metrics = {"roots": forks["roots"], "actions": bundle.n_actions,
+               "reward_opportunity_roots": int(reward_varies.sum()),
+               "terminal_opportunity_roots": int(death_varies.sum()),
+               "minimum_opportunity_roots": settings_minimum(draws)}
+    failed = 0
+
+    # --- reward: within-root regret against the action-marginal choice -----------------------
+    if int(reward_varies.sum()) < metrics["minimum_opportunity_roots"]:
+        metrics["reward"] = {"status": "insufficient_coverage"}
+        failed += 1
+    else:
+        truth = true_reward[reward_varies]
+        marginal = truth.mean(0, keepdim=True).expand_as(truth)
+        model = _regret(truth, read["generated_reward"][reward_varies], maximize=True)
+        blind = _regret(truth, marginal, maximize=True)
+        oracle = _regret(truth, read["true_reward"][reward_varies], maximize=True)
+        contrast = _paired_mean_interval(blind, model, clusters[reward_varies],
+                                         draws=draws, seed=seed + 1)
+        metrics["reward"] = {"generated_regret": float(model.mean()),
+                             "action_marginal_regret": float(blind.mean()),
+                             "true_successor_regret": float(oracle.mean()),
+                             "vs_action_marginal": contrast,
+                             "beats_marginal": bool((contrast.get("difference") or 0) > 0
+                                                    and contrast.get("excludes_zero"))}
+        failed += 0 if metrics["reward"]["beats_marginal"] else 1
+
+    # --- terminal: within-root safe choice and ranking ---------------------------------------
+    if int(death_varies.sum()) < metrics["minimum_opportunity_roots"]:
+        metrics["terminal"] = {"status": "insufficient_coverage"}
+        failed += 1
+    else:
+        truth = true_death[death_varies]
+        marginal = truth.mean(0, keepdim=True).expand_as(truth)
+        safe = 1.0 - _regret(truth, read["generated_death"][death_varies], maximize=False)
+        blind_safe = 1.0 - _regret(truth, marginal, maximize=False)
+        oracle_safe = 1.0 - _regret(truth, read["true_death"][death_varies], maximize=False)
+        contrast = _paired_mean_interval(safe, blind_safe, clusters[death_varies],
+                                         draws=draws, seed=seed + 2)
+        flat_truth = truth.flatten().bool()
+        auc = binary_auc(read["generated_death"][death_varies].flatten(), flat_truth)
+        metrics["terminal"] = {"generated_safe_choice": float(safe.mean()),
+                               "action_marginal_safe_choice": float(blind_safe.mean()),
+                               "true_successor_safe_choice": float(oracle_safe.mean()),
+                               "generated_death_auc": auc,
+                               "vs_action_marginal": contrast,
+                               "beats_marginal": bool((contrast.get("difference") or 0) > 0
+                                                      and contrast.get("excludes_zero"))}
+        failed += 0 if metrics["terminal"]["beats_marginal"] else 1
+
+    # --- policy-weighted true death: the actor against its own immutable BC ------------------
+    with torch.no_grad():
+        policy = read["policy"]
+        reference = prior_policy(bundle, heads, prior, forks) if prior is not None else None
+    weighted = (policy * true_death).sum(1)
+    metrics["policy_weighted_true_death"] = {"actor": float(weighted.mean())}
+    if reference is not None:
+        bc_weighted = (reference * true_death).sum(1)
+        contrast = _paired_mean_interval(bc_weighted, weighted, clusters, draws=draws, seed=seed + 3)
+        metrics["policy_weighted_true_death"].update({
+            "bc": float(bc_weighted.mean()), "bc_minus_actor": contrast,
+            "no_safety_regression": bool((contrast.get("difference") or 0) >= 0
+                                         or not contrast.get("excludes_zero"))})
+        failed += 0 if metrics["policy_weighted_true_death"]["no_safety_regression"] else 1
+
+    # --- effect-equivalence: actions whose real successors coincide -------------------------
+    true_effect, generated_effect = read["effect_true"], read["effect_generated"]
+    pairwise = torch.cdist(true_effect, true_effect)
+    equivalent = pairwise < pairwise.amax(dim=(1, 2), keepdim=True).clamp_min(1e-9) * 0.02
+    off = ~torch.eye(bundle.n_actions, dtype=torch.bool).expand_as(equivalent)
+    share = float((equivalent & off).float().mean())
+    generated_gap = torch.cdist(generated_effect, generated_effect)
+    metrics["effect_equivalence"] = {
+        "equivalent_pair_share": share,
+        "mean_generated_gap_on_equivalent_pairs":
+            float(generated_gap[equivalent & off].mean()) if bool((equivalent & off).any()) else None,
+        "mean_generated_gap_overall": float(generated_gap[off].mean()),
+        "note": "actions with coincident real successors should not be driven apart"}
+    metrics["failed_checks"] = failed
+    metrics["raw_rows"] = _raw_rows(output, "action_outcomes", {
+        "seed": clusters, "bc_action": forks["bc_action"],
+        "true_reward": true_reward, "true_terminated": forks["terminated"],
+        "health_delta": forks["health_delta"], "achievement_delta": forks["achievement_delta"],
+        "generated_reward": read["generated_reward"], "generated_death": read["generated_death"],
+        "true_successor_reward": read["true_reward"], "true_successor_death": read["true_death"],
+        "policy": read["policy"]})
+    return _component("pass" if not failed else "fail", metrics,
+                      _evidence(output, "action_outcomes", metrics))
+
+
+def settings_minimum(draws: int) -> int:
+    """Opportunity floor: a decision measured on a handful of roots is not a measurement."""
+    return 24
+
+
+@torch.no_grad()
+def prior_policy(bundle, heads, prior, forks, *, batch: int = 8):
+    """The immutable BC prior's action distribution at the same roots."""
+    device = bundle.device
+    out = []
+    for start in range(0, forks["roots"], batch):
+        stop = min(forks["roots"], start + batch)
+        z = bundle.encoder(forks["frames"][start:stop].to(device))
+        state = bundle.world.teacher(z, forks["past_actions"][start:stop].to(device)).state
+        out.append(prior(bundle.world.features(state))["policy"][:, -1, 0].softmax(-1).cpu())
+    return torch.cat(out)
+
+
+# --- critical retention panel ------------------------------------------------------------------
+#
+# The four labels the joint screen carries (reward sign, event, termination) are not the critical
+# suite. G2 asks for health, inventory/resources, local tiles and action prerequisites, against
+# CLS *and* a preselected reference. The 2026-09-18 coverage audit already located and verified
+# 129 exact addresses with zero pixel mismatch; the labels it recorded are reused, while every
+# representation is re-encoded from the new checkpoints. Prior scores are never reused as results.
+
+ADDRESS_BOOK = (ROOT.parent /
+                "artifacts/experiments/20260918_m03_probe_coverage_audit/evidence/"
+                "verified_root_index.json")
+SUPPORT_STORE = ROOT.parent / "artifacts/craftax_support_v2"
+
+
+def retention_addresses(path=None, store=None):
+    """Verified (frame, labels, split, episode) rows for the critical suite."""
+    import json as _json
+    from .m03.gate import STATIC_BINARY
+    path = Path(path or ADDRESS_BOOK)
+    store = Path(store or SUPPORT_STORE)
+    if not path.is_file():
+        raise ComponentGateError("retention_panel", f"no verified address book at {path}")
+    book = _json.loads(path.read_text())
+    manifest = _json.loads((store / "manifest.json").read_text())
+    frames, labels, splits, episodes, cache = [], [], [], [], {}
+    for row in book:
+        shard = row["shard"]
+        if shard not in cache:
+            cache[shard] = torch.load(store / manifest["shards"][shard]["file"],
+                                      weights_only=False, mmap=True)
+        episode = cache[shard]["episodes"][row["slot"]]
+        if episode["split"] != row["split"]:
+            raise ComponentGateError("retention_panel", "address split disagrees with the store")
+        frames.append(episode["observations"][row["t"]].clone())
+        positive = set(row["positive_labels"])
+        labels.append(torch.tensor([name in positive for name in STATIC_BINARY]))
+        splits.append(row["split"])
+        episodes.append(row["episode_id"])
+    return {"frames": torch.stack(frames), "labels": torch.stack(labels),
+            "split": splits, "episode_id": episodes, "names": list(STATIC_BINARY)}
+
+
+@torch.no_grad()
+def _encode_panel(bundle, frames, *, batch: int = 32):
+    """Projected z and unprojected CLS for one encoder, on identical frames."""
+    projected, cls = [], []
+    for start in range(0, len(frames), batch):
+        chunk = frames[start:start + batch].unsqueeze(1).to(bundle.device)
+        z, c = bundle.encoder.projected_and_cls(chunk)
+        projected.append(z[:, 0, 0].float().cpu())
+        cls.append(c[:, 0].float().cpu())
+    return torch.cat(projected), torch.cat(cls)
+
+
+def _critical_retention(bundle, reference, panel, settings, output):
+    """G2: projected `z` noninferior to its own CLS AND to the preselected reference.
+
+    Noninferiority is a LOWER-bound statement on every probe family, over the critical labels that
+    have real support. A label without support is recorded and excluded rather than counted as a
+    pass, and a panel with too few supported labels fails closed.
+    """
+    from .diagnostics import binary_auc, fit_outcome_probe, paired_auc_interval
+    if panel is None:
+        return _component("insufficient_coverage",
+                          {"reason": "no critical retention panel supplied", "failed_checks": 1},
+                          _evidence(output, "semantic_retention", {"reason": "no panel"}))
+    labels, names = panel["labels"], panel["names"]
+    is_train = torch.tensor([s == "train" for s in panel["split"]])
+    is_dev = torch.tensor([s == "dev" for s in panel["split"]])
+    support = []
+    for column, name in enumerate(names):
+        counts = {split: {"positive": int((labels[mask, column]).sum()),
+                          "negative": int((~labels[mask, column]).sum())}
+                  for split, mask in (("train", is_train), ("dev", is_dev))}
+        ok = all(v["positive"] >= settings.minimum_positive // 2
+                 and v["negative"] >= settings.minimum_negative // 2 for v in counts.values())
+        support.append({"label": name, "counts": counts, "supported": ok})
+    selected = torch.tensor([row["supported"] for row in support])
+    report = {"panel": "verified critical addresses, re-encoded from this checkpoint",
+              "labels": len(names), "supported_labels": int(selected.sum()),
+              "coverage": support, "auc_margin": settings.auc_margin,
+              "probes": {}, "macro_auc": {}}
+    if int(selected.sum()) < 8:
+        report["failed_checks"] = 1
+        report["reason"] = "too few critical labels have support on this panel"
+        return _component("insufficient_coverage", report,
+                          _evidence(output, "semantic_retention", report))
+
+    features = {}
+    z, cls = _encode_panel(bundle, panel["frames"])
+    features["projected"], features["cls"] = z, cls
+    if reference is not None:
+        features["reference"], _ = _encode_panel(reference, panel["frames"])
+    truth_train = labels[is_train][:, selected].float()
+    truth_dev = labels[is_dev][:, selected]
+    valid_train = torch.ones_like(truth_train)
+    valid_dev = torch.ones_like(truth_dev, dtype=torch.bool)
+    clusters = torch.tensor([abs(int.from_bytes(hashlib.sha256(name.encode()).digest()[:4],
+                                                "little")) for name in panel["episode_id"]])[is_dev]
+    device = bundle.config.runtime.device
+    failed = 0
+    for hidden, family in ((False, "linear"), (True, "mlp")):
+        scores = {}
+        for name, value in features.items():
+            scores[name] = fit_outcome_probe(value[is_train].to(device), truth_train.to(device),
+                                             valid_train.to(device), value[is_dev].to(device),
+                                             settings, hidden=hidden)
+        report["macro_auc"][family] = {
+            name: float(np.mean([a for a in
+                                 (binary_auc(s[:, i], truth_dev[:, i]) for i in range(truth_dev.shape[1]))
+                                 if a is not None]))
+            for name, s in scores.items()}
+        comparisons = {}
+        for against in ("cls", "reference"):
+            if against not in scores:
+                continue
+            comparisons[against] = paired_auc_interval(
+                scores["projected"], scores[against], truth_dev, valid_dev, clusters,
+                draws=settings.bootstrap_draws, seed=settings.seed + 900)
+        report["probes"][family] = comparisons
+        for against, row in comparisons.items():
+            low = (row.get("interval") or [None])[0]
+            if low is None or low <= -settings.auc_margin:
+                failed += 1
+    report["failed_checks"] = failed
+    report["rule"] = ("projected z must be noninferior to CLS and to the preselected reference: "
+                      "every probe family's lower 95% bound above -auc_margin")
+    report["raw_rows"] = _raw_rows(output, "semantic_retention", {
+        "labels": labels, "supported": selected, "split": [s for s in panel["split"]],
+        "episode_id": list(panel["episode_id"]), "names": names,
+        **{f"features_{name}": value for name, value in features.items()}})
+    return _component("pass" if not failed else "fail", report,
+                      _evidence(output, "semantic_retention", report),
+                      {"quantity": "failed_checks", "value": float(failed),
+                       "threshold": 0.5, "direction": "less"})

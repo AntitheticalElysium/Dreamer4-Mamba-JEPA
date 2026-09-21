@@ -272,6 +272,10 @@ def evaluate_lewm_actor(actor_path, output, *, episodes: int | None = None,
     # read as a success.
     score_change = summary["actor"]["score"] - summary["bc"]["score"]
     terminal_change = summary["actor"]["terminated"] - summary["bc"]["terminated"]
+    # An aggregate termination rate is NOT a safety statement: when both policies eventually die
+    # it is automatically neutral. The binding safety comparison is the actor gate's
+    # policy-weighted true one-step death on held-out all-action forks, which is recorded there
+    # and referenced here rather than re-derived from episode ends.
     conditions = {
         "achievement_lower_bound_positive": bool(comparison["achievements_interval"][0] > 0),
         "no_score_decrease": bool(score_change >= 0),
@@ -292,6 +296,9 @@ def evaluate_lewm_actor(actor_path, output, *, episodes: int | None = None,
             "rule": "G4: positive achievement lower bound AND no official-score point decrease "
                     "AND no terminal-safety collapse; score uncertainty is reported separately "
                     "and a score-improvement claim needs its own support",
+            "safety_caveat": "no_terminal_collapse here is an aggregate episode-end rate and goes "
+                             "neutral when both policies eventually die. The binding safety test "
+                             "is policy_weighted_true_death in the actor gate report.",
         },
         "policies": summary,
     }

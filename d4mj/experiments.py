@@ -302,6 +302,12 @@ def main(argv=None) -> int:
     p.add_argument("--checkpoint", type=Path)
     p.add_argument("--cache", type=Path)
     p.add_argument("--out", type=Path)
+    p.add_argument("--fork-roots", type=int, default=512,
+                   help="held-out all-action roots for the state-conditioned outcome gate")
+    p.add_argument("--fork-store", type=Path)
+    p.add_argument("--reference", type=Path,
+                   default=Path("artifacts/lewm_gates_20260906/paired/raw/joint/step-010000.pt"),
+                   help="preselected old-export encoder for the G2 retention comparison")
     p = sub.add_parser("evaluate", help="real Craftax actor versus its immutable own BC")
     p.add_argument("--run", type=Path, required=True)
     p.add_argument("--actor", type=Path)
@@ -409,20 +415,35 @@ def main(argv=None) -> int:
             raw = None
             if args.dataset:
                 raw, _ = load_joint_corpus(args.dataset, arm_recipe)
+            from .lewm_diagnostics import fork_population, retention_addresses
+            panel = retention_addresses()
+            reference = None
+            if args.reference and Path(args.reference).is_file():
+                # The frozen preselected export, loaded under its OWN recipe: it predates M4 and
+                # its encoder is the fixed comparison point, never retrained here.
+                stored = torch.load(args.reference, map_location="cpu", weights_only=False)
+                reference = ModelBundle.create(config_from_dict(stored["config"]))
+                reference.encoder.load_state_dict(stored["modules"]["encoder"], strict=True)
+                reference.encoder.freeze()
             if args.stage == "actor":
                 checkpoint = args.checkpoint or args.run / "actor" / f"step-{settings.actor_screen_steps:06d}.pt"
                 bundle, heads, prior, payload = _load_actor_parent(checkpoint)
                 episodes, cache_contract = _cache_from_contract(cache_path, bundle, payload["cache"])
+                forks = fork_population(arm_recipe, roots=args.fork_roots,
+                                        seed=arm_recipe.seed + 51, store=args.fork_store)
                 report = actor_gate(bundle, heads, prior, payload, episodes, cache_contract,
-                                    screen, output, checkpoint=checkpoint)
+                                    screen, output, checkpoint=checkpoint, forks=forks)
             else:
                 steps = settings.h2_steps if args.stage == "h2" else settings.h2_steps + settings.h16_steps
                 checkpoint = args.checkpoint or args.run / "bridge" / f"step-{steps:06d}.pt"
                 bundle, heads, payload = _load_bridge_parent(checkpoint)
                 episodes, cache_contract = _cache_from_contract(cache_path, bundle, payload["cache"])
+                forks = fork_population(arm_recipe, roots=args.fork_roots,
+                                        seed=arm_recipe.seed + 51, store=args.fork_store)
                 report = bridge_gate(bundle, heads, payload, episodes, cache_contract, screen,
                                      output, stage=args.stage, checkpoint=checkpoint,
-                                     raw_episodes=raw)
+                                     raw_episodes=raw, forks=forks, panel=panel,
+                                     reference=reference)
             failed = [n for n, c in report["components"].items() if c["status"] != "pass"]
             print(json.dumps({"stage": args.stage, "decision": report["decision"],
                               "validated_recursive_depth": report["validated_recursive_depth"],
