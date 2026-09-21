@@ -93,3 +93,30 @@ def test_a_doctored_report_is_refused(tmp_path, tamper):
     with pytest.raises(ComponentGateError):
         require_bridge_gate(sealed, checkpoint=checkpoint, config=config,
                             cache_contract=cache_contract, stage="h2", minimum_depth=2)
+
+
+def test_retention_without_coverage_does_not_pass(tmp_path, monkeypatch):
+    """`projection_stop` alone fails open: absent intervals must not read as noninferiority."""
+    import d4mj.data as data
+    import d4mj.lewm_diagnostics as diag
+    from d4mj.lewm_config import ScreenConfig
+
+    unresolved = {"probes": {"linear": {"interval": None}, "mlp": {"interval": None}},
+                  "projection_stop": False}
+    monkeypatch.setattr(data, "screen_windows", lambda *a, **k: {})
+    monkeypatch.setattr(diag, "screen_features", lambda *a, **k: {})
+    monkeypatch.setattr(diag, "screen_retention", lambda *a, **k: (dict(unresolved), None))
+    config, bundle, heads, checkpoint, cache, payload = _fixture(tmp_path)
+    component = diag._semantic_retention(bundle, object(), ScreenConfig(), tmp_path / "r")
+    # `not projection_stop` would have called this a pass
+    assert not unresolved["projection_stop"]
+    assert component["status"] == "insufficient_coverage"
+    assert component["metrics"]["noninferior_to_cls"] is None
+
+
+def test_no_raw_corpus_does_not_pass(tmp_path):
+    from d4mj.lewm_config import ScreenConfig
+    from d4mj.lewm_diagnostics import _semantic_retention
+    config, bundle, heads, checkpoint, cache, payload = _fixture(tmp_path)
+    component = _semantic_retention(bundle, None, ScreenConfig(), tmp_path / "r2")
+    assert component["status"] == "insufficient_coverage"

@@ -646,7 +646,9 @@ def _component(status: str, metrics: dict, evidence: list) -> dict:
 def _evidence(output, name: str, payload: dict) -> list:
     """Write one immutable evidence file and bind it by bytes."""
     from .data import _sha256, atomic_manifest
-    path = Path(output) / f"{name}.json"
+    output = Path(output)
+    output.mkdir(parents=True, exist_ok=True)
+    path = output / f"{name}.json"
     atomic_manifest(path, payload)
     return [{"path": str(path), "sha256": _sha256(path)}]
 
@@ -928,11 +930,24 @@ def _semantic_retention(bundle, raw_episodes, settings, output):
     features = {split: screen_features(bundle, windows[split], settings) for split in windows}
     report, _ = screen_retention(features["train"], features["dev"], windows["train"], windows["dev"],
                                  settings, device, bundle.n_actions)
-    # `projection_stop` is True exactly when projected is inferior to CLS beyond the margin.
-    ok = not report["projection_stop"]
+    # `projection_stop` alone FAILS OPEN: it is `all(interval is not None and ...)`, so when no
+    # label has support every interval is None, the `all` is False, and "not projection_stop"
+    # would read as a pass. Noninferiority has to be positively established, not inferred from an
+    # absent measurement, so every probe family must resolve an interval and none may show
+    # confident inferiority beyond the margin.
+    probes = report["probes"]
+    resolved = [row for row in probes.values() if row.get("interval") is not None]
     report["auc_margin"] = settings.auc_margin
-    report["noninferior_to_cls"] = bool(ok)
-    return _component("pass" if ok else "fail", report, _evidence(output, "semantic_retention", report))
+    report["resolved_probe_families"] = len(resolved)
+    report["probe_families"] = len(probes)
+    if len(resolved) != len(probes) or not resolved:
+        report["noninferior_to_cls"] = None
+        return _component("insufficient_coverage", report,
+                          _evidence(output, "semantic_retention", report))
+    inferior = any(row["interval"][1] < -settings.auc_margin for row in resolved)
+    report["noninferior_to_cls"] = bool(not inferior)
+    return _component("pass" if not inferior else "fail", report,
+                      _evidence(output, "semantic_retention", report))
 
 
 def _paired_uncertainty(components, settings, output):
