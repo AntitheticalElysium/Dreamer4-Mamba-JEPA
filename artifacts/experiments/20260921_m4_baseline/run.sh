@@ -37,9 +37,14 @@ say "stage 1 rc=$rc"
 
 # The bridge LOADS a frozen cache; it does not build one. TC-14 requires the cache to be written
 # only after joint training, from the completed checkpoint, so it is its own stage.
+# Both arms are attempted and the survivors recorded. One arm failing must not silence the other:
+# an arm that cannot produce a TC-14 compliant cache is a RESULT about that arm, not a reason to
+# abandon the arm that can.
+exported=""
 for arm in raw tc; do
-  if [ -f "$OUT/$arm/cache/manifest.json" ]; then
+  if [ -f "$OUT/$arm/cache/manifest.json" ] && [ -n "$(ls "$OUT/$arm/cache"/*.pt 2>/dev/null | head -1)" ]; then
     say "stage 1b: cache already exported for $arm"
+    exported="$exported $arm"
     continue
   fi
   say "stage 1b: export frozen latent cache, arm $arm"
@@ -48,10 +53,13 @@ for arm in raw tc; do
       --out "$OUT/$arm/cache"
   rc=$?
   say "  export $arm rc=$rc"
-  [ $rc -ne 0 ] && { say "export failed for $arm; stopping"; exit $rc; }
+  if [ $rc -eq 0 ]; then exported="$exported $arm"
+  else say "  $arm cannot produce a compliant cache; recorded and excluded from later stages"; fi
 done
+if [ -z "$exported" ]; then say "NEITHER arm exported a cache; stopping"; exit 5; fi
+say "arms with a frozen cache:$exported"
 
-for arm in raw tc; do
+for arm in $exported; do
   say "stage 2: bridge H2, arm $arm"
   latest=$(ls -1 "$OUT/$arm/bridge"/step-*.pt 2>/dev/null | sort | tail -1)
   if [ -n "$latest" ]; then
@@ -68,7 +76,7 @@ done
 # BOTH arms are gated before deciding which may continue: stopping at the first failure would
 # leave the other arm ungated and its report unwritten, which is the comparison we are running.
 cleared=""
-for arm in raw tc; do
+for arm in $exported; do
   say "stage 3: G2/G3 gate at H2, arm $arm"
   $PY -m d4mj gate --run "$OUT/$arm" --stage h2 --dataset "${DATA[@]}"
   rc=$?
