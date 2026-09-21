@@ -49,11 +49,18 @@ def _fixture(tmp_path):
     return config, bundle, heads, checkpoint, cache_contract, payload
 
 
+def sealed_screen():
+    """The tests exercise the real contract: the boundary accepts only this recipe."""
+    from d4mj.config import load_recipe
+    from pathlib import Path as _Path
+    import d4mj
+    return load_recipe(_Path(d4mj.__file__).parent / "recipes" / "joint_screen.json")
+
+
 def _report(tmp_path):
-    from d4mj.lewm_config import ScreenConfig
     config, bundle, heads, checkpoint, cache_contract, payload = _fixture(tmp_path)
     report = bridge_gate(bundle, heads, payload, mixed_corpus(), cache_contract,
-                         ScreenConfig(bootstrap_draws=40), tmp_path / "gate",
+                         sealed_screen(), tmp_path / "gate",
                          stage="h2", checkpoint=checkpoint, batches=3)
     return config, checkpoint, cache_contract, report
 
@@ -84,12 +91,11 @@ def test_an_untrained_world_does_not_pass(tmp_path):
 
 
 def _passing(report):
-    """A report that passes because its own criteria say so, not because a string was edited."""
+    """A report that passes because its own MEASUREMENTS say so."""
     body = {k: v for k, v in report.items() if k != "report_id"}
     for component in body["components"].values():
         component["status"] = "pass"
-        component["criterion"] = {"quantity": "failed_checks", "value": 0.0,
-                                  "threshold": 0.5, "direction": "less"}
+        component["metrics"]["failed_checks"] = 0
     body["validated_recursive_depth"] = 2
     return dict(body, report_id=contract_digest(body))
 
@@ -102,24 +108,51 @@ def test_the_boundary_accepts_a_genuinely_passing_report(tmp_path):
 
 
 def test_a_status_string_cannot_override_its_own_measurements(tmp_path):
-    """The hole the audit found: flipping every status to pass and re-digesting was accepted."""
     config, checkpoint, cache_contract, report = _report(tmp_path)
     body = {k: v for k, v in report.items() if k != "report_id"}
     for component in body["components"].values():
-        component["status"] = "pass"          # criterion left showing failure
+        component["status"] = "pass"          # measurements left showing failure
+        component["metrics"]["failed_checks"] = 2
     body["validated_recursive_depth"] = 2
     sealed = dict(body, report_id=contract_digest(body))
-    with pytest.raises(ComponentGateError, match="contradicts its own criterion"):
+    with pytest.raises(ComponentGateError, match="contradicts its own measurements"):
         require_bridge_gate(sealed, checkpoint=checkpoint, config=config,
                             cache_contract=cache_contract, stage="h2", minimum_depth=2)
 
 
-def test_a_component_without_a_criterion_is_refused(tmp_path):
+def test_a_forged_criterion_no_longer_authorizes(tmp_path):
+    """Editing status AND criterion together used to pass: the threshold now lives in code."""
+    config, checkpoint, cache_contract, report = _report(tmp_path)
+    body = {k: v for k, v in report.items() if k != "report_id"}
+    for component in body["components"].values():
+        component["status"] = "pass"
+        component["metrics"]["failed_checks"] = 3          # honest measurement: it failed
+        component["criterion"] = {"quantity": "anything", "value": 1.0,
+                                  "threshold": 0.0, "direction": "greater"}   # forged
+    body["validated_recursive_depth"] = 2
+    sealed = dict(body, report_id=contract_digest(body))
+    with pytest.raises(ComponentGateError, match="contradicts its own measurements"):
+        require_bridge_gate(sealed, checkpoint=checkpoint, config=config,
+                            cache_contract=cache_contract, stage="h2", minimum_depth=2)
+
+
+def test_a_component_without_measurements_is_refused(tmp_path):
     config, checkpoint, cache_contract, report = _report(tmp_path)
     sealed = _passing(report)
     body = {k: v for k, v in sealed.items() if k != "report_id"}
-    body["components"]["source_contract"].pop("criterion")
-    with pytest.raises(ComponentGateError, match="declares no decision criterion"):
+    body["components"]["source_contract"]["metrics"].pop("failed_checks")
+    with pytest.raises(ComponentGateError, match="records no integer failed_checks"):
+        require_bridge_gate(dict(body, report_id=contract_digest(body)), checkpoint=checkpoint,
+                            config=config, cache_contract=cache_contract, stage="h2",
+                            minimum_depth=2)
+
+
+def test_a_custom_evaluation_recipe_cannot_authorize(tmp_path):
+    config, checkpoint, cache_contract, report = _report(tmp_path)
+    sealed = _passing(report)
+    body = {k: v for k, v in sealed.items() if k != "report_id"}
+    body["evaluation"] = dict(body["evaluation"], screen_settings_id="0" * 64)
+    with pytest.raises(ComponentGateError, match="evaluation recipe"):
         require_bridge_gate(dict(body, report_id=contract_digest(body)), checkpoint=checkpoint,
                             config=config, cache_contract=cache_contract, stage="h2",
                             minimum_depth=2)
@@ -155,7 +188,7 @@ def test_retention_without_coverage_does_not_pass(tmp_path, monkeypatch):
     monkeypatch.setattr(diag, "screen_features", lambda *a, **k: {})
     monkeypatch.setattr(diag, "screen_retention", lambda *a, **k: (dict(unresolved), None))
     config, bundle, heads, checkpoint, cache, payload = _fixture(tmp_path)
-    component = diag._semantic_retention(bundle, object(), ScreenConfig(), tmp_path / "r")
+    component = diag._semantic_retention(bundle, object(), sealed_screen(), tmp_path / "r")
     # `not projection_stop` would have called this a pass
     assert not unresolved["projection_stop"]
     assert component["status"] == "insufficient_coverage"
@@ -163,16 +196,14 @@ def test_retention_without_coverage_does_not_pass(tmp_path, monkeypatch):
 
 
 def test_no_raw_corpus_does_not_pass(tmp_path):
-    from d4mj.lewm_config import ScreenConfig
     from d4mj.lewm_diagnostics import _semantic_retention
     config, bundle, heads, checkpoint, cache, payload = _fixture(tmp_path)
-    component = _semantic_retention(bundle, None, ScreenConfig(), tmp_path / "r2")
+    component = _semantic_retention(bundle, None, sealed_screen(), tmp_path / "r2")
     assert component["status"] == "insufficient_coverage"
 
 
 def test_the_gate_samples_dev_only_and_never_final(tmp_path):
     """The gate previously sampled the whole cache: its own training data, and FINAL."""
-    from d4mj.lewm_config import ScreenConfig
     from d4mj.lewm_diagnostics import _gate_traces
     config, bundle, heads, checkpoint, cache, payload = _fixture(tmp_path)
     corpus = mixed_corpus()
@@ -203,7 +234,6 @@ def test_noninferiority_uses_the_lower_bound(tmp_path, monkeypatch, interval, ex
     """Testing the UPPER bound only asks 'could it be fine?'; noninferiority bounds the loss."""
     import d4mj.data as data
     import d4mj.lewm_diagnostics as diag
-    from d4mj.lewm_config import ScreenConfig
     resolved = {"probes": {"linear": {"interval": list(interval)},
                            "mlp": {"interval": list(interval)}},
                 "projection_stop": False}
@@ -211,6 +241,6 @@ def test_noninferiority_uses_the_lower_bound(tmp_path, monkeypatch, interval, ex
     monkeypatch.setattr(diag, "screen_features", lambda *a, **k: {})
     monkeypatch.setattr(diag, "screen_retention", lambda *a, **k: (dict(resolved), None))
     config, bundle, heads, checkpoint, cache, payload = _fixture(tmp_path)
-    component = diag._semantic_retention(bundle, object(), ScreenConfig(), tmp_path / "n")
+    component = diag._semantic_retention(bundle, object(), sealed_screen(), tmp_path / "n")
     assert (component["status"] == "pass") is expected
     assert component["metrics"]["noninferior_to_cls"] is expected

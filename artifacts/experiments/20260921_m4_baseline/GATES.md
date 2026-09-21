@@ -1,76 +1,60 @@
-# The three gates, for validation before relaunch
+# The three gates — current contract
 
-Code: `d4mj/lewm_diagnostics.py` (`bridge_gate`, `actor_gate`). Boundary: `d4mj/gates.py`
-(`require_bridge_gate`, `require_actor_gate`) — it owns identity and the stop decision and refuses
-to compute evidence, which is why the measurements live separately.
+> Superseded twice by audit. This reflects `d4mj/lewm_diagnostics.py` as of the gate-contract
+> repairs, not the original design. **The gate is not yet approved for launch** — see "Still
+> missing" below.
 
-Invoke: `python -m d4mj gate --run <arm> --stage h2|h16|actor --dataset <stores>`
+Code: `d4mj/lewm_diagnostics.py` (`bridge_gate`, `actor_gate`). Boundary: `d4mj/gates.py`.
+Invoke: `python -m d4mj gate --run <arm> --stage h2|h16|actor --dataset <stores>`.
+The evaluation recipe is **pinned in code** (`d4mj/recipes/joint_screen.json`); the CLI no longer
+accepts a custom one, and the boundary refuses a report measured with anything else.
 
-## Bridge gate (H2→H16, and H16→actor) — 7 components
+## Sampling
 
-| component | measures | **passes iff** |
-|---|---|---|
-| `source_contract` | frozen encoder, predictor BN buffers in eval, cache/parent binding | all three hold |
-| `semantic_retention` | projected `z` vs its own CLS, paired AUC, both probe families | every family resolves an interval **and** none is confidently inferior beyond `.03` |
-| `recursive_dynamics` | rollout MSE at each depth vs persistence and marginal-action | beats **both**, each interval excluding zero, at **every** evaluated depth |
-| `action_effects` | predicted change vs real change; derangement cost | `effect_R² > 0` **and** re-labelling the action costs error with the interval excluding zero |
-| `outcome_calibration` | reward vs zero/marginal; continuation BCE/Brier | reward beats **both**; balanced terminal BCE `< log(2)` **classwise and aggregate** |
-| `observed_bc` | top-1 agreement on the relevant half vs most-frequent action | **reported, not margin-gated** — see below |
-| `paired_uncertainty` | every decision-bearing contrast with its interval | at least one contrast resolves |
+DEV only. `_gate_traces` builds a DEV subset, asserts every drawn episode is in it, raises if a
+FINAL episode appears, and seals the exact episode/start ledger into the report. Cluster identities
+are SHA-derived, not `hash()`, so bootstrap groups are stable across processes.
 
-Depths: H2 evaluates `(1, 2)`; H16 evaluates `(1, 2, 4, 8, 16)`.
-`validated_recursive_depth` = the largest depth beating both baselines. The H16 gate therefore
-needs depth **16** to clear both, since `require_bridge_gate` is called with
-`minimum_depth=horizon`.
-
-## Actor gate (screen→budget) — 4 components
+## Bridge gate — 7 components
 
 | component | passes iff |
 |---|---|
-| `model_validity` | the frozen world still beats persistence at the horizon, interval excluding zero |
-| `critic_direction` | value–return correlation `> 0` |
-| `action_distribution` | no single action takes `> 95%` of choices |
-| `paired_uncertainty` | at least one contrast resolves |
+| `source_contract` | frozen encoder, predictor BN buffers in eval, cache/parent bound |
+| `semantic_retention` | every probe family resolves an interval **and** every **lower** bound exceeds `-0.03` |
+| `recursive_dynamics` | beats persistence **and** the action-blind mean at **every** evaluated depth, intervals excluding zero |
+| `action_effects` | `R² > 0` **and** beats the action-blind mean **and** re-labelling the action costs error |
+| `outcome_calibration` | **on generated states**: reward beats zero and marginal; balanced terminal BCE `< log(2)` classwise and aggregate |
+| `observed_bc` | observed **and** generated top-1 both beat the most-frequent action |
+| `paired_uncertainty` | **every** decision-bearing contrast resolves an interval |
 
-## Four judgment calls you should check
+Depths: H2 `(1,2)`, H16 `(1,2,4,8,16)`. `validated_recursive_depth` = largest depth clearing both
+baselines.
 
-**1. The marginal-action baseline is a fixed derangement, not an average over actions.** I roll out
-with each row's actions re-labelled by a derangement, which doubles as the sensitivity test. But a
-true marginal is `E_a[f(z,a)]`, the conditional mean, which is the *best* action-blind predictor —
-whereas one specific wrong action is noisier and therefore **easier to beat**. So this gate is
-**more lenient than the spec's "marginal-action baseline"**. Fixing it costs 17× rollouts at gate
-time only (not training). I'd take the fix; flagging it rather than quietly shipping the weaker one.
+## Actor gate — 4 components
 
-**2. `critic_direction` passes on correlation > 0.** That is very weak — it only asks that the
-critic is not anti-correlated with its own returns. G4's real concern is exploitation, which this
-does not detect. A stronger rule would require a margin, or compare against true-successor
-substitutions as §G4 describes.
+`model_validity` (still beats persistence, world frozen), `critic_direction` (start value vs that
+row's **own recorded** discounted return — the λ-return correlation is retained but labelled
+self-consistent), `action_distribution` (no action above 95% share **and** at least `n_actions // 4`
+distinct actions used), `paired_uncertainty`.
 
-**3. `action_distribution` fails only above 95% single-action share.** Near-total collapse is
-caught; a policy that degenerates to two or three actions passes. Entropy and KL-to-prior are
-recorded but not gated.
+## Forgery resistance
 
-**4. `observed_bc` returns `pass` whenever it is measurable.** I read §G2's `.5`-achievement
-noninferiority as belonging to G4, against a real-game BC, not to the bridge. If you want it
-binding here it needs a declared margin and a reference.
+The boundary computes each verdict from `metrics["failed_checks"]` with the threshold **in code**.
+A report-supplied `criterion` is descriptive only. Editing status, or status and criterion
+together, is refused. Tests cover: flipped status, forged criterion, missing measurements, custom
+evaluation recipe, re-digested tampering, moved evidence bytes, and shallow sealed depth.
 
-## Not evaluated, and recorded as such
+## Still missing — why this is not yet approved
 
-§G3 also asks for stochastic successor mode fidelity over repeated simulator seeds,
-persistent-memory utility under varied earlier context, and decoded-tile comparisons. Those need a
-fork harness and a renderer. The report carries them under `not_evaluated` so nothing claims
-coverage it lacks.
-
-## A fail-open I found while writing this up
-
-`semantic_retention` first used `not projection_stop`. That expression is
-`all(interval is not None and ...)`, so with **no label support** every interval is `None`, the
-`all` is `False`, and absent measurement read as a **pass**. Noninferiority now has to be positively
-established: every probe family must resolve an interval. Test:
-`test_retention_without_coverage_does_not_pass`.
-
-## Test evidence
-
-`d4mj/tests/test_bridge_gate.py`, 8 tests: an untrained world does **not** pass; the boundary
-accepts a genuinely passing report; and a report doctored after sealing, sealed with too shallow a
-depth, or whose evidence bytes moved is refused in all three cases.
+- **No all-action DEV fork gate.** Global trivial baselines permit state-independent action
+  knowledge: observed agreement 80%, generated 10%, marginal 5% would pass both. Needs
+  within-root regret, opportunity strata, equivalence classes, and BC-relative policy-weighted
+  death. `d4mj/counterfactual.py` has this machinery for the legacy world types.
+- **No critical retention panel.** Still projected `z` vs its own CLS on four labels; no
+  preselected reference, no health/inventory/tiles/prerequisites. Addresses exist in
+  `artifacts/experiments/20260918_m03_probe_coverage_audit/`.
+- **Evidence holds aggregates, not raw rows.**
+- **Terminal-safety in the G4 verdict is an aggregate rate**, which is neutral when both policies
+  eventually die. Needs the policy-weighted death comparison above.
+- The recursive action-blind reference averages recurrent state at each step. It is a named
+  diagnostic, **not** the exact conditional mean over action sequences.

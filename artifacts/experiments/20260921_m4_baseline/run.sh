@@ -48,19 +48,24 @@ for arm in raw tc; do
   [ $rc -ne 0 ] && { say "bridge H2 $arm failed; stopping"; exit $rc; }
 done
 
+# BOTH arms are gated before deciding which may continue: stopping at the first failure would
+# leave the other arm ungated and its report unwritten, which is the comparison we are running.
+cleared=""
 for arm in raw tc; do
   say "stage 3: G2/G3 gate at H2, arm $arm"
   $PY -m d4mj gate --run "$OUT/$arm" --stage h2 --dataset "${DATA[@]}"
   rc=$?
   say "  gate h2 $arm rc=$rc"
-  if [ $rc -ne 0 ]; then
-    say "GATE FAILED for $arm. This is a result, not a bug: H16 is refused because a component"
-    say "did not beat its declared baseline. Read $OUT/$arm/gates/h2/bridge_gate_h2.json."
-    exit $rc
-  fi
+  [ $rc -eq 0 ] && cleared="$cleared $arm"
 done
+if [ -z "$cleared" ]; then
+  say "NEITHER arm cleared the H2 gate. That is a result: read each"
+  say "$OUT/<arm>/gates/h2/bridge_gate_h2.json for the component that did not beat its baseline."
+  exit 4
+fi
+say "arms cleared at H2:$cleared"
 
-for arm in raw tc; do
+for arm in $cleared; do
   say "stage 4: bridge H16, arm $arm"
   latest=$(ls -1 "$OUT/$arm/bridge"/step-*.pt 2>/dev/null | sort | tail -1)
   $PY -m d4mj bridge --run "$OUT/$arm" --stop-after h16 --resume "$latest"       --gate "$OUT/$arm/gates/h2/bridge_gate_h2.json"
@@ -72,7 +77,7 @@ for arm in raw tc; do
   [ $rc -ne 0 ] && { say "H16 gate refused the actor for $arm"; exit $rc; }
 done
 
-for arm in raw tc; do
+for arm in $cleared; do
   say "stage 6: actor screen, arm $arm"
   $PY -m d4mj actor --run "$OUT/$arm" --stop-after screen       --bridge-gate "$OUT/$arm/gates/h16/bridge_gate_h16.json"
   rc=$?; say "  actor screen $arm rc=$rc"
@@ -87,10 +92,15 @@ for arm in raw tc; do
 done
 
 verdicts=0
-for arm in raw tc; do
+for arm in $cleared; do
   say "stage 7: real Craftax, actor versus its own BC, arm $arm"
   $PY -m d4mj evaluate --run "$OUT/$arm"
-  say "  evaluate $arm rc=$?"
+  rc=$?
+  say "  evaluate $arm rc=$rc"
+  if [ $rc -ne 0 ]; then
+    say "EVALUATION FAILED for $arm; a completed other arm must not be read as a finished run."
+    exit $rc
+  fi
   passed=$($PY -c "
 import json,sys
 d=json.load(open('$OUT/$arm/evaluation/evaluation.json'))

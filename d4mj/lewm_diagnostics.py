@@ -1,6 +1,7 @@
 """Component-scoped M0-M3 gates. Failures never imply a verdict on the architecture."""
 
 import copy
+import hashlib
 import importlib.util
 from pathlib import Path
 import time
@@ -639,6 +640,13 @@ def _paired_mean_interval(left, right, clusters, *, draws: int, seed: int):
             "interval": [low, high], "excludes_zero": bool(low > 0 or high < 0)}
 
 
+def _cluster_ids(names, device):
+    """Stable across processes. Python's `hash` for strings is salted by PYTHONHASHSEED, so using
+    it moved bootstrap group membership between runs and could shift finite-draw intervals."""
+    return torch.tensor([int.from_bytes(hashlib.sha256(name.encode()).digest()[:8], "little")
+                         % (2**31) for name in names], device=device)
+
+
 def _component(status: str, metrics: dict, evidence: list, criterion: dict | None = None) -> dict:
     """A component states the quantity it was decided on, so the boundary can recompute it.
 
@@ -780,8 +788,7 @@ def _rollouts(bundle, traces, depth: int, *, seed: int):
         rows["persistence"].append(per_row(base))
         rows["effect_true"].append((truth - base).flatten(1))
         rows["effect_pred"].append((generated.float() - base).flatten(1))
-        rows["clusters"].append(torch.tensor(
-            [abs(hash(name)) % (2**31) for name in main.episode_ids], device=z.device))
+        rows["clusters"].append(_cluster_ids(main.episode_ids, z.device))
     if not rows["clusters"]:
         return None
     return {key: torch.cat(value).cpu() for key, value in rows.items()}
@@ -820,6 +827,7 @@ def _recursive_dynamics(bundle, traces, depths, *, draws: int, seed: int, output
     cleared = sum(1 for d in depths if measured.get(f"depth_{d}", {}).get("beats_both_baselines"))
     measured["depths_cleared"] = cleared
     measured["depths_required"] = len(depths)
+    measured["failed_checks"] = len(depths) - cleared
     return _component("pass" if passing else "fail", measured,
                       _evidence(output, "recursive_dynamics", measured),
                       {"quantity": "depths_not_cleared",
@@ -830,7 +838,8 @@ def _action_effects(bundle, traces, depth: int, *, draws: int, seed: int, output
     """TC-16: does the predicted CHANGE track the real one, and does re-labelling the action cost?"""
     roll = _rollouts(bundle, traces, depth, seed=seed)
     if roll is None:
-        return _component("insufficient_coverage", {"reason": "no row reached this depth"},
+        return _component("insufficient_coverage",
+                          {"reason": "no row reached this depth", "failed_checks": 1},
                           _evidence(output, "action_effects", {"reason": "no coverage"}))
     true_effect, predicted = roll["effect_true"], roll["effect_pred"]
     residual = (predicted - true_effect).square().sum()
@@ -914,9 +923,7 @@ def _head_readouts(bundle, heads, traces, depth: int):
         rows["policy_action"].append(truth.flatten())
         rows["policy_mask"].append((targets["action_valid"][:, suffix, 0]
                                     * targets["policy_rows"][:, :, 0]).flatten())
-        rows["clusters"].append(torch.tensor(
-            [abs(hash(name)) % (2**31) for name in main.episode_ids],
-            device=z.device).repeat_interleave(depth))
+        rows["clusters"].append(_cluster_ids(main.episode_ids, z.device).repeat_interleave(depth))
     if not rows["clusters"]:
         return None
     return {key: torch.cat(value).cpu() for key, value in rows.items()}
@@ -932,7 +939,7 @@ def _outcome_calibration(bundle, heads, traces, depth, *, draws: int, seed: int,
     import math
     read = _head_readouts(bundle, heads, traces, depth)
     if read is None:
-        return _component("insufficient_coverage", {"reason": "no readouts"},
+        return _component("insufficient_coverage", {"reason": "no readouts", "failed_checks": 1},
                           _evidence(output, "outcome_calibration", {"reason": "no coverage"}))
     # Gated on the GENERATED path. Observed numbers are reported beside them, because a gate that
     # only ever sees observed states cannot detect the observed-to-generated transfer failure.
@@ -1008,11 +1015,12 @@ def _observed_bc(bundle, heads, traces, depth, *, draws: int, seed: int, output)
     """
     read = _head_readouts(bundle, heads, traces, depth)
     if read is None:
-        return _component("insufficient_coverage", {"reason": "no readouts"},
+        return _component("insufficient_coverage", {"reason": "no readouts", "failed_checks": 1},
                           _evidence(output, "observed_bc", {"reason": "no coverage"}))
     mask = read["policy_mask"] > 0
     if int(mask.sum()) < 2:
-        return _component("insufficient_coverage", {"relevant_rows": int(mask.sum())},
+        return _component("insufficient_coverage",
+                          {"relevant_rows": int(mask.sum()), "failed_checks": 1},
                           _evidence(output, "observed_bc", {"relevant_rows": int(mask.sum())}))
     hit, truth, clusters = read["policy_hit"][mask], read["policy_action"][mask], read["clusters"][mask]
     generated_hit = read["gen_policy_hit"][mask]
@@ -1077,7 +1085,8 @@ def _semantic_retention(bundle, raw_episodes, settings, output):
     """
     from .data import screen_windows
     if raw_episodes is None:
-        return _component("insufficient_coverage", {"reason": "retention needs the raw corpus"},
+        return _component("insufficient_coverage",
+                          {"reason": "retention needs the raw corpus", "failed_checks": 1},
                           _evidence(output, "semantic_retention", {"reason": "no corpus supplied"}))
     device = bundle.config.runtime.device
     windows = {split: screen_windows(raw_episodes, bundle.config, settings, split)
@@ -1097,6 +1106,7 @@ def _semantic_retention(bundle, raw_episodes, settings, output):
     report["probe_families"] = len(probes)
     if len(resolved) != len(probes) or not resolved:
         report["noninferior_to_cls"] = None
+        report["failed_checks"] = 1
         return _component("insufficient_coverage", report,
                           _evidence(output, "semantic_retention", report))
     # Noninferiority is a statement about the LOWER bound: the loss we cannot rule out must be
@@ -1105,6 +1115,7 @@ def _semantic_retention(bundle, raw_episodes, settings, output):
     bounds = [row["interval"][0] for row in resolved]
     established = all(low > -settings.auc_margin for low in bounds)
     report["lower_bounds"] = bounds
+    report["failed_checks"] = sum(1 for low in bounds if low <= -settings.auc_margin)
     report["rule"] = "noninferior iff every lower 95% bound exceeds -auc_margin"
     report["noninferior_to_cls"] = bool(established)
     return _component("pass" if established else "fail", report,
@@ -1128,6 +1139,7 @@ def _paired_uncertainty(components, settings, output):
     metrics = {"draws": settings.bootstrap_draws, "clustering": "whole held-out episode",
                "contrasts": gathered, "resolved": len(gathered) - len(unresolved),
                "unresolved": unresolved,
+               "failed_checks": len(unresolved) if gathered else 1,
                "rule": "every decision-bearing contrast must carry an interval; one resolved "
                        "contrast out of many is not paired uncertainty"}
     status = "pass" if gathered and not unresolved else "insufficient_coverage"
@@ -1212,6 +1224,7 @@ def _actor_diagnostics(bundle, heads, prior, traces, horizon: int):
     from .train import _bridge_initial_state, _outgoing_actions
     from .data import to_head_batch
     values, returns, entropies, priors, chosen, realized = [], [], [], [], [], []
+    start_value = []
     policy_rng = torch.Generator(device=bundle.device).manual_seed(bundle.config.seed + 909)
     for main, _ in traces:
         batch = to_head_batch(main)
@@ -1223,18 +1236,21 @@ def _actor_diagnostics(bundle, heads, prior, traces, horizon: int):
         target = lambda_returns(trajectory, bundle.config)
         values.append(trajectory.value[:, :-1].flatten().cpu())
         returns.append(target.flatten().cpu())
-        # The REAL discounted return recorded on this DEV trajectory, which the critic never saw
-        # and cannot influence. Correlating value against lambda returns alone is circular:
-        # `lambda_returns` bootstraps from `trajectory.value`, so it measures self-consistency.
+        # The recorded return from the SAME position the rollout starts at, over the same
+        # horizon. The previous version reversed the accumulation and then took [:, -1], which is
+        # the last recorded REWARD, and compared B*H imagined values against B recorded ones by
+        # truncating to the shorter -- so the two arrays shared neither position nor root. One
+        # value per row, paired with that row's own recorded return.
         targets_real = head_targets(batch, bundle.config)
         reward = targets_real["reward"][..., 0]
         alive = targets_real["continuation"][..., 0]
+        anchor = reward.shape[1] - 1
         gamma, running = bundle.config.gamma, torch.zeros_like(reward[:, 0])
-        discounted = []
-        for step in reversed(range(reward.shape[1])):
-            running = reward[:, step] + gamma * alive[:, step] * running
-            discounted.append(running.clone())
-        realized.append(torch.stack(discounted[::-1], 1)[:, -1].flatten().cpu())
+        for step in range(min(horizon, anchor)):
+            index = anchor - step
+            running = reward[:, index] + gamma * alive[:, index] * running
+        realized.append(running.cpu())
+        start_value.append(trajectory.value[:, 0].flatten().cpu())
         distribution = trajectory.logits.softmax(-1)
         entropies.append((-(distribution * distribution.clamp_min(1e-9).log()).sum(-1)).flatten().cpu())
         reference = prior(trajectory.agent[:, :-1])["policy"][:, :, 0].softmax(-1)
@@ -1247,6 +1263,9 @@ def _actor_diagnostics(bundle, heads, prior, traces, horizon: int):
               (("value", values), ("returns", returns), ("entropy", entropies),
                ("kl_to_prior", priors), ("action", chosen))}
     packed["realized_return"] = torch.cat(realized)
+    packed["start_value"] = torch.cat(start_value)
+    packed["clusters"] = torch.cat([_cluster_ids(main.episode_ids, torch.device("cpu"))
+                                    for main, _ in traces])
     return packed
 
 
@@ -1275,7 +1294,8 @@ def actor_gate(bundle, heads, prior, payload, episodes, cache_contract, settings
     frozen = _source_contract(bundle, payload, cache_contract, checkpoint, output)
     roll = _rollouts(bundle, traces, min(horizon, config.agent.sequence - 1), seed=seed)
     if roll is None:
-        validity = _component("insufficient_coverage", {"reason": "no row reached the horizon"},
+        validity = _component("insufficient_coverage",
+                              {"reason": "no row reached the horizon", "failed_checks": 1},
                               _evidence(output, "model_validity", {"reason": "no coverage"}))
     else:
         contrast = _paired_mean_interval(roll["persistence"], roll["generated"], roll["clusters"],
@@ -1295,27 +1315,33 @@ def actor_gate(bundle, heads, prior, payload, episodes, cache_contract, settings
 
     diagnostics = _actor_diagnostics(bundle, heads, prior, traces, horizon)
     if diagnostics is None:
-        critic = _component("insufficient_coverage", {"reason": "no imagined rollout"},
+        critic = _component("insufficient_coverage",
+                            {"reason": "no imagined rollout", "failed_checks": 1},
                             _evidence(output, "critic_direction", {"reason": "no coverage"}))
         distribution = critic
     else:
         value, target = diagnostics["value"], diagnostics["returns"]
-        real = diagnostics["realized_return"]
+        real, start = diagnostics["realized_return"], diagnostics["start_value"]
         centred = lambda x: x - x.mean()
         def correlate(left, right):
             return float((centred(left) * centred(right)).mean()
                          / (left.std().clamp_min(1e-9) * right.std().clamp_min(1e-9)))
-        rows = min(len(value), len(real))
-        against_real = correlate(value[:rows], real[:rows])
+        if len(start) != len(real):
+            raise ComponentGateError("critic_direction",
+                                     "value and recorded-return rows are not paired")
+        against_real = correlate(start, real)
         metrics = {"value_vs_real_return_correlation": against_real,
                    "value_vs_lambda_return_correlation": correlate(value, target),
                    "circularity_note": "lambda returns bootstrap from the critic, so only the "
                                        "correlation against the REAL recorded return is external",
-                   "mean_value": float(value.mean()),
+                   "mean_start_value": float(start.mean()),
                    "mean_real_return": float(real.mean()),
-                   "value_bias_vs_real": float(value[:rows].mean() - real[:rows].mean()),
-                   "rows": rows,
-                   "tracks_real_returns": bool(against_real > 0)}
+                   "value_bias_vs_real": float((start - real).mean()),
+                   "rows": int(len(start)),
+                   "pairing": "one imagined start value per row against that row's own recorded "
+                              "discounted return over the same horizon",
+                   "tracks_real_returns": bool(against_real > 0),
+                   "failed_checks": 0 if against_real > 0 else 1}
         critic = _component("pass" if metrics["tracks_real_returns"] else "fail", metrics,
                             _evidence(output, "critic_direction", metrics),
                             {"quantity": "value_vs_real_return_correlation",
@@ -1333,6 +1359,7 @@ def actor_gate(bundle, heads, prior, payload, episodes, cache_contract, settings
         metrics["min_actions_required"] = max(2, bundle.n_actions // 4)
         metrics["collapsed"] = bool(metrics["max_action_share"] > 0.95
                                     or metrics["actions_used"] < metrics["min_actions_required"])
+        metrics["failed_checks"] = 1 if metrics["collapsed"] else 0
         distribution = _component("fail" if metrics["collapsed"] else "pass", metrics,
                                   _evidence(output, "action_distribution", metrics),
                                   {"quantity": "collapsed", "value": 1.0 if metrics["collapsed"] else 0.0,

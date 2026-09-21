@@ -302,7 +302,6 @@ def main(argv=None) -> int:
     p.add_argument("--checkpoint", type=Path)
     p.add_argument("--cache", type=Path)
     p.add_argument("--out", type=Path)
-    p.add_argument("--screen-recipe", type=Path, default=recipes/"joint_screen.json")
     p = sub.add_parser("evaluate", help="real Craftax actor versus its immutable own BC")
     p.add_argument("--run", type=Path, required=True)
     p.add_argument("--actor", type=Path)
@@ -401,7 +400,9 @@ def main(argv=None) -> int:
             settings = arm_recipe.agent
             if settings is None:
                 raise ComponentGateError("phase_gate", "run recipe has no M4 settings")
-            screen = load_recipe(args.screen_recipe)
+            # The sealed evaluation recipe, not a caller-supplied one: it fixes the margin,
+            # coverage minimum, bootstrap draws and probe budget that decide continuation.
+            screen = load_recipe(Path(__file__).with_name("recipes") / "joint_screen.json")
             cache_path = args.cache or args.run / "cache"
             output = args.out or args.run / "gates" / args.stage
             destination = output

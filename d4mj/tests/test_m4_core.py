@@ -88,17 +88,22 @@ def _report(schema, checkpoint, config, cache, stage, decision, depth, component
     for name in components:
         evidence = checkpoint.parent / f"{stage}-{name}.json"
         evidence.write_text(json.dumps({"stage": stage, "component": name}) + "\n")
-        measured[name] = {"status": "pass", "metrics": {"fixture": 1.0},
-                          # The boundary recomputes status from this, so a fixture has to declare
-                          # a criterion its own numbers satisfy.
-                          "criterion": {"quantity": "failed_checks", "value": 0.0,
-                                        "threshold": 0.5, "direction": "less"},
+        measured[name] = {"status": "pass",
+                          # The boundary recomputes status from failed_checks, so a passing
+                          # fixture has to record measurements that actually pass.
+                          "metrics": {"fixture": 1.0, "failed_checks": 0},
                           "evidence": [{"path": str(evidence.resolve()),
                                         "sha256": _sha256(evidence)}]}
+    from d4mj.config import load_recipe
+    from pathlib import Path as _Path
+    import d4mj as _pkg
+    screen = load_recipe(_Path(_pkg.__file__).parent / "recipes" / "joint_screen.json")
     report = {
         "schema": schema, "checkpoint_sha256": _sha256(checkpoint),
         "recipe_id": recipe_digest(config), "cache_id": contract_digest(cache),
         "stage": stage, "decision": decision, "validated_recursive_depth": depth,
+        "evaluation": {"screen_settings_id": recipe_digest(screen), "batches": 1,
+                       "seed": 0, "sample": {"split": "dev"}},
         "components": measured,
     }
     report["report_id"] = contract_digest(report)
