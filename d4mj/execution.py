@@ -266,12 +266,32 @@ def evaluate_lewm_actor(actor_path, output, *, episodes: int | None = None,
         entry.pop("episodes", None)
         summary[name] = entry
     comparison = summary["actor"]["versus_bc"]
+    # G4's declared success is a COMBINATION, not the achievement field alone: a positive
+    # achievement lower bound, no point decrease in official score, and no terminal-safety
+    # collapse. Reporting only the first would let a run that lost score or died more often be
+    # read as a success.
+    score_change = summary["actor"]["score"] - summary["bc"]["score"]
+    terminal_change = summary["actor"]["terminated"] - summary["bc"]["terminated"]
+    conditions = {
+        "achievement_lower_bound_positive": bool(comparison["achievements_interval"][0] > 0),
+        "no_score_decrease": bool(score_change >= 0),
+        "no_terminal_collapse": bool(terminal_change <= 0),
+    }
     report = {
-        "schema": "d4mj_lewm_execution_v1", "identity": identity,
+        "schema": "d4mj_lewm_execution_v2", "identity": identity,
         "primary": {
             "achievements_gap": comparison["achievements_gap"],
             "achievements_interval": comparison["achievements_interval"],
             "actor_beats_own_bc": comparison["achievements_beats"],
+        },
+        "verdict": {
+            "conditions": conditions,
+            "score_change": score_change,
+            "terminated_change": terminal_change,
+            "passed": bool(all(conditions.values())),
+            "rule": "G4: positive achievement lower bound AND no official-score point decrease "
+                    "AND no terminal-safety collapse; score uncertainty is reported separately "
+                    "and a score-improvement claim needs its own support",
         },
         "policies": summary,
     }

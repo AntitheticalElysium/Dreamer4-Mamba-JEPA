@@ -89,6 +89,10 @@ def _report(schema, checkpoint, config, cache, stage, decision, depth, component
         evidence = checkpoint.parent / f"{stage}-{name}.json"
         evidence.write_text(json.dumps({"stage": stage, "component": name}) + "\n")
         measured[name] = {"status": "pass", "metrics": {"fixture": 1.0},
+                          # The boundary recomputes status from this, so a fixture has to declare
+                          # a criterion its own numbers satisfy.
+                          "criterion": {"quantity": "failed_checks", "value": 0.0,
+                                        "threshold": 0.5, "direction": "less"},
                           "evidence": [{"path": str(evidence.resolve()),
                                         "sha256": _sha256(evidence)}]}
     report = {

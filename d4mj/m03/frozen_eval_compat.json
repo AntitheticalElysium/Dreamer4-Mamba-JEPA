@@ -19,6 +19,105 @@
         }
       },
       "reference_manifest_digest": "76cb58267aabe986a94f6d34e2aaf823cba92d0fb737f908fe245fb85da82a09",
+      "current_manifest_digest": "ed27ccd598055931f6e9a961a626702c5743f7e65e8517b064b5b396bee4f38d",
+      "changed_runtime_files": {
+        "d4mj/actor_critic.py": {
+          "reference": null,
+          "current": "5f4430485244b0d821a4ce8227a70571d87c7da37c273e628099f3fe6970a321"
+        },
+        "d4mj/agent.py": {
+          "reference": null,
+          "current": "ede81c4e0e0caafbbb996f9f18e115ab987d76def7e5e1ac022de0172ae4ba22"
+        },
+        "d4mj/cache.py": {
+          "reference": "a8b1cd9a5a0bf1476c26915ed2cc46b5b616a536e256bfc8f9f5aab4c71bc282",
+          "current": "53f20d962184f55563faaa3b158368c6a62b60519e4f4a2ef12c1bd6a91881d5"
+        },
+        "d4mj/checkpoint.py": {
+          "reference": "01f102f1741675d4fb45795dd3658b774d4c9fad9581172461b43b4a06d3dfcb",
+          "current": "0484d7da0dabcd17bc1d3ea58989d7f3814d385490e7f8d4b8cad1d2a17b780d"
+        },
+        "d4mj/config.py": {
+          "reference": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f",
+          "current": "4cf956c9a587deb12730597643f51971711b1c33b0b027b59bebf89f4ecbde1d"
+        },
+        "d4mj/data.py": {
+          "reference": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea",
+          "current": "1c624aa9676a4005a586dd6ab1a5c2b69f0060ad932b578397cf8dcb247166c9"
+        },
+        "d4mj/env.py": {
+          "reference": null,
+          "current": "e8f821d1d29affa4020bd407f00330ce3eb0790b9343b2c9351472e74dd1d960"
+        },
+        "d4mj/execution.py": {
+          "reference": "178f31609813e11f07403306bbbfff8faf613a34e511ac651b62c19c122914b4",
+          "current": "8f341cefa4785df469b6e0e3bedbb904bef71d38e8cd3e527e72ca2c60709e42"
+        },
+        "d4mj/experiments.py": {
+          "reference": "16806f18316d88a4e243f2a41a4ed5ab83ca0bab555ae88999799297d267906b",
+          "current": "fad2ef92b3d7c009a83e939e2b941be1aaa3006c7f72162ff803e7ac82c55e5c"
+        },
+        "d4mj/gates.py": {
+          "reference": "7a0d7ebbab8e03ada6918c81273f8804ac8cade95f78151516c1e0e4009df5c5",
+          "current": "ce5e8d37f49082637ed4056af78fd9e9a5e44bae3b409e4aba2af40279f620f9"
+        },
+        "d4mj/lewm_config.py": {
+          "reference": "97f6a6da9065e00c491fcb4d3874749138f39becfc373853bd0221fd0c69e48c",
+          "current": "92ae1920be5ea7222b6d2e80e21a93250152927440ae56c128ab5fd504c8da38"
+        },
+        "d4mj/lewm_diagnostics.py": {
+          "reference": "27d75ab046c672909394a8fa8f0a32acd096f043e5193185acc352f8682cc18b",
+          "current": "326b8a4435656d4576242ff3a099b311ad6785e88b7d9fd9307d086d94947e65"
+        },
+        "d4mj/sources.py": {
+          "reference": "ef8ac3e2b4229afb5305bd7d4e171bec92d2a2a1fe987252c691bed9637f16ea",
+          "current": "3e0ec80b742a8302c265d43e7abe7f62c2099ac425d19915a6c52ff23a5b40b5"
+        },
+        "d4mj/train.py": {
+          "reference": "28982607d430a68712417f9d89f9e6a913a64fbe2618843f43e8081c7dcddd10",
+          "current": "95af8574bb7621813c122cb775e214fac3d629690e286561338fef485b2f5234"
+        },
+        "d4mj/world_api.py": {
+          "reference": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b",
+          "current": "f8dfcbe26ea1b1ded73c023d19e9de31962039e4845afabacecef59567dc878c"
+        }
+      },
+      "surface": [
+        "advance_history",
+        "advance_latent",
+        "cls",
+        "patch16",
+        "patch_grid",
+        "prefill_history",
+        "prefill_latent",
+        "z"
+      ],
+      "parity": {
+        "tolerance": 1e-05,
+        "within_tree_max_abs": 0.0,
+        "cross_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_min_abs": 5.960464477539062e-07,
+        "runs": {
+          "reference": 2,
+          "current": 2
+        }
+      }
+    },
+    {
+      "schema": "lewm_frozen_eval_compatibility_v1",
+      "status": "pass",
+      "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+      "arms": {
+        "raw": {
+          "checkpoint_sha256": "707f6240a3e4e52d6aca7526d541a69112ad7c18c5898c0f1f0ec36f663937ef",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        },
+        "tc": {
+          "checkpoint_sha256": "98effee1085223b5780f30b09ba68b44a8b407acbb07fde5134a8bd708997dc5",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        }
+      },
+      "reference_manifest_digest": "76cb58267aabe986a94f6d34e2aaf823cba92d0fb737f908fe245fb85da82a09",
       "current_manifest_digest": "f87fcac7d2ff52151b59d16c713de7f70481d98b9fb5241da956c819798f334d",
       "changed_runtime_files": {
         "d4mj/actor_critic.py": {
@@ -586,5 +685,5 @@
       }
     }
   ],
-  "regenerated_unix": 1789949671.5399911
+  "regenerated_unix": 1789951362.0761144
 }

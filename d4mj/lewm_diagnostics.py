@@ -639,8 +639,16 @@ def _paired_mean_interval(left, right, clusters, *, draws: int, seed: int):
             "interval": [low, high], "excludes_zero": bool(low > 0 or high < 0)}
 
 
-def _component(status: str, metrics: dict, evidence: list) -> dict:
-    return {"status": status, "metrics": metrics, "evidence": evidence}
+def _component(status: str, metrics: dict, evidence: list, criterion: dict | None = None) -> dict:
+    """A component states the quantity it was decided on, so the boundary can recompute it.
+
+    `require_bridge_gate` recomputes `status` from `criterion`, so the two cannot disagree and a
+    hand-edited status is refused even when the content digest is recomputed over the edit.
+    """
+    if criterion is None:
+        # A component with nothing to decide on must not read as a pass.
+        criterion = {"quantity": "unmeasured", "value": 0.0, "threshold": 1.0, "direction": "greater"}
+    return {"status": status, "metrics": metrics, "evidence": evidence, "criterion": criterion}
 
 
 def _evidence(output, name: str, payload: dict) -> list:
@@ -659,14 +667,38 @@ def _seal(body: dict) -> dict:
 
 
 def _gate_traces(bundle, episodes, config, *, batches: int, seed: int):
-    """A fixed held-out sample drawn exactly as Phase 2 draws, reused by every component."""
+    """A DEV-only sample drawn exactly as Phase 2 draws, reused by every component.
+
+    This previously received the whole latent cache and sampled it unfiltered, while training
+    subsets to ``split == "train"`` (train.py). The gate was therefore scoring the model partly on
+    its own training data and partly on FINAL, which no pre-final gate may open. The DEV subset is
+    built here, membership is asserted rather than assumed, and the exact episode/start ledger is
+    returned so the selection can be recomputed and audited.
+    """
     from .data import sample_bridge_batch, sample_bridge_terminals
+    dev = episodes.subset(index for index, episode in enumerate(episodes)
+                          if episode.split == "dev")
+    if not len(dev):
+        raise ComponentGateError("gate_split", "no DEV episode reached the gate corpus")
+    allowed = {episode.episode_id for episode in dev}
+    forbidden = {episode.episode_id for episode in episodes if episode.split == "final"}
     rng = torch.Generator().manual_seed(seed)
-    traces = []
+    traces, ledger = [], []
     for update in range(batches):
-        traces.append((sample_bridge_batch(episodes, rng, config, update).to(bundle.device),
-                       sample_bridge_terminals(episodes, rng, config, update).to(bundle.device)))
-    return traces
+        main = sample_bridge_batch(dev, rng, config, update)
+        terminal = sample_bridge_terminals(dev, rng, config, update)
+        for batch in (main, terminal):
+            selected = set(batch.episode_ids)
+            if selected & forbidden:
+                raise ComponentGateError("gate_split", "a FINAL episode reached a pre-final gate")
+            if not selected <= allowed:
+                raise ComponentGateError("gate_split", "a non-DEV episode reached the gate sample")
+        ledger.append({"update": update,
+                       "main": list(zip(main.episode_ids, main.starts.tolist())),
+                       "terminal": list(zip(terminal.episode_ids, terminal.starts.tolist()))})
+        traces.append((main.to(bundle.device), terminal.to(bundle.device)))
+    return traces, {"split": "dev", "dev_episodes": len(dev), "batches": batches,
+                    "seed": seed, "selection": ledger}
 
 
 def _derangement(count: int, generator) -> torch.Tensor:
@@ -678,17 +710,54 @@ def _derangement(count: int, generator) -> torch.Tensor:
 
 
 @torch.no_grad()
+def _action_blind_rollout(bundle, prefix, rows: int, depth: int):
+    """The conditional mean over actions at every generated step, from the observed anchor state.
+
+    At each step all ``n_actions`` successors are predicted from the SAME state and averaged, and
+    that average is accepted as the next latent. This is the control the spec means by
+    "marginal-action": the best prediction available to a model that ignores which action was
+    taken. A rollout told one specific wrong action is noisier, and therefore a weaker reference.
+
+    ``prefix`` is the anchor state from the real teacher-forced prefix, so this differs from the
+    true rollout only in the generated suffix -- the one thing under test.
+    """
+    count = bundle.n_actions
+    device = prefix.latent.device
+    actions = torch.arange(count, device=device).repeat(rows)[:, None]
+    state, predicted = prefix, []
+    for _ in range(depth):
+        advanced, _ = bundle.advance(bundle.repeat_state(state, count), actions)
+        latent = advanced.latent.reshape(rows, count, *advanced.latent.shape[1:]).mean(1)
+        predicted.append(latent)
+        # Carry the fan's own averaged recurrent state forward, so every later step is action-blind
+        # too rather than only the first.
+        state = type(advanced)(latent,
+                               tuple(type(m)(*(v.reshape(rows, count, *v.shape[1:]).mean(1)
+                                               for v in (m.conv, m.ssm)))
+                                     for m in advanced.memory),
+                               advanced.history.reshape(rows, count, *advanced.history.shape[1:]).mean(1),
+                               advanced.step)
+    return torch.cat(predicted, 1)
+
+
+@torch.no_grad()
 def _rollouts(bundle, traces, depth: int, *, seed: int):
     """Generated, persistence and marginal-action rollouts on one shared sample.
 
-    The marginal-action baseline re-labels each row's actions with a fixed derangement: it asks
-    what the rollout predicts when it is told the wrong action, which is the prediction available
-    to a world that ignores the action. The same quantity is the action-sensitivity test, so it is
-    computed once and read twice rather than approximated separately.
+    Two distinct controls, which an earlier version conflated:
+
+    ``marginal``  the ACTION-BLIND prediction: at each generated step the successor is the mean
+                  over all actions of what the world predicts, which is the conditional mean and
+                  therefore the best predictor available to a model that ignores the action. A
+                  single deranged action is noisier than this and so is an easier baseline; using
+                  it made the gate weaker than the specification asks.
+    ``deranged``  the SENSITIVITY probe: the rollout told a wrong action. Beating this shows only
+                  that actions are distinguished, not that they are used well, so it is reported
+                  separately and never substitutes for the marginal control.
     """
     from .train import _bridge_initial_state, _outgoing_actions, bridge_rollout
     generator = torch.Generator().manual_seed(seed)
-    rows = {"generated": [], "persistence": [], "marginal": [], "clusters": [],
+    rows = {"generated": [], "persistence": [], "marginal": [], "deranged": [], "clusters": [],
             "effect_true": [], "effect_pred": []}
     for main, _ in traces:
         batch = main.main
@@ -700,11 +769,14 @@ def _rollouts(bundle, traces, depth: int, *, seed: int):
         _, generated, _, anchor = bridge_rollout(bundle, z, actions, depth, initial)
         order = _derangement(len(z), generator).to(z.device)
         _, deranged, _, _ = bridge_rollout(bundle, z, actions[order], depth, initial)
+        prefix = bundle.world.teacher(z[:, :anchor + 1], actions[:, :anchor], state=initial).state
+        marginal = _action_blind_rollout(bundle, prefix, len(z), depth)
         truth = z[:, anchor + 1:anchor + 1 + depth].float()
         base = z[:, anchor:anchor + 1].float().expand_as(truth)
         per_row = lambda x: (x.float() - truth).square().mean(dim=tuple(range(1, truth.ndim)))
         rows["generated"].append(per_row(generated))
-        rows["marginal"].append(per_row(deranged))
+        rows["marginal"].append(per_row(marginal))
+        rows["deranged"].append(per_row(deranged))
         rows["persistence"].append(per_row(base))
         rows["effect_true"].append((truth - base).flatten(1))
         rows["effect_pred"].append((generated.float() - base).flatten(1))
@@ -729,6 +801,8 @@ def _recursive_dynamics(bundle, traces, depths, *, draws: int, seed: int, output
                                                roll["clusters"], draws=draws, seed=seed + depth)
         vs_marginal = _paired_mean_interval(roll["marginal"], roll["generated"],
                                             roll["clusters"], draws=draws, seed=seed + 97 + depth)
+        vs_deranged = _paired_mean_interval(roll["deranged"], roll["generated"],
+                                            roll["clusters"], draws=draws, seed=seed + 61 + depth)
         beat = (vs_persistence.get("difference") or 0) > 0 and vs_persistence.get("excludes_zero") \
             and (vs_marginal.get("difference") or 0) > 0 and vs_marginal.get("excludes_zero")
         measured[f"depth_{depth}"] = {
@@ -736,11 +810,20 @@ def _recursive_dynamics(bundle, traces, depths, *, draws: int, seed: int, output
             "generated_mse": float(roll["generated"].mean()),
             "persistence_mse": float(roll["persistence"].mean()),
             "marginal_action_mse": float(roll["marginal"].mean()),
+            "deranged_action_mse": float(roll["deranged"].mean()),
             "vs_persistence": vs_persistence, "vs_marginal_action": vs_marginal,
+            "vs_deranged_action": vs_deranged,
+            "baselines": "marginal = conditional mean over all actions (the gating control); "
+                         "deranged = one wrong action (sensitivity only, never substitutes)",
             "beats_both_baselines": bool(beat)}
         passing = passing and bool(beat)
+    cleared = sum(1 for d in depths if measured.get(f"depth_{d}", {}).get("beats_both_baselines"))
+    measured["depths_cleared"] = cleared
+    measured["depths_required"] = len(depths)
     return _component("pass" if passing else "fail", measured,
-                      _evidence(output, "recursive_dynamics", measured))
+                      _evidence(output, "recursive_dynamics", measured),
+                      {"quantity": "depths_not_cleared",
+                       "value": float(len(depths) - cleared), "threshold": 0.5, "direction": "less"})
 
 
 def _action_effects(bundle, traces, depth: int, *, draws: int, seed: int, output):
@@ -753,58 +836,93 @@ def _action_effects(bundle, traces, depth: int, *, draws: int, seed: int, output
     residual = (predicted - true_effect).square().sum()
     total = (true_effect - true_effect.mean(0, keepdim=True)).square().sum()
     cosine = torch.nn.functional.cosine_similarity(predicted, true_effect, dim=-1)
-    sensitivity = _paired_mean_interval(roll["marginal"], roll["generated"], roll["clusters"],
+    sensitivity = _paired_mean_interval(roll["deranged"], roll["generated"], roll["clusters"],
                                         draws=draws, seed=seed + 11)
+    blind = _paired_mean_interval(roll["marginal"], roll["generated"], roll["clusters"],
+                                  draws=draws, seed=seed + 12)
     metrics = {"depth": depth, "rows": int(len(cosine)),
                "effect_r2": float(1 - residual / total.clamp(min=1e-12)),
                "effect_cosine": float(cosine.mean()),
-               "action_sensitivity": sensitivity,
+               "action_sensitivity_vs_deranged": sensitivity,
+               "vs_action_blind_mean": blind,
                "uses_the_action": bool((sensitivity.get("difference") or 0) > 0
-                                       and sensitivity.get("excludes_zero"))}
-    status = "pass" if metrics["uses_the_action"] and metrics["effect_r2"] > 0 else "fail"
-    return _component(status, metrics, _evidence(output, "action_effects", metrics))
+                                       and sensitivity.get("excludes_zero")),
+               "beats_action_blind": bool((blind.get("difference") or 0) > 0
+                                          and blind.get("excludes_zero"))}
+    # Distinguishing actions is not using them well: a positive effect R^2 can come from shared
+    # state/time evolution alone, so the action-blind control gates too.
+    failed = sum(0 if value else 1 for value in
+                 (metrics["uses_the_action"], metrics["beats_action_blind"], metrics["effect_r2"] > 0))
+    metrics["failed_checks"] = failed
+    return _component("pass" if not failed else "fail", metrics,
+                      _evidence(output, "action_effects", metrics),
+                      {"quantity": "failed_checks", "value": float(failed),
+                       "threshold": 0.5, "direction": "less"})
 
 
 @torch.no_grad()
-def _head_readouts(bundle, heads, traces):
-    """Observed-path head outputs and their targets, on the shared held-out sample."""
+def _head_readouts(bundle, heads, traces, depth: int):
+    """Head outputs on OBSERVED and on GENERATED states, at the same positions and offsets.
+
+    The earlier version read teacher-forced observed latents only. That is exactly the blind spot
+    M03 found: reward, continuation and policy can all work on observed states while the same
+    heads fail on generated ones, and aggregate latent MSE does not detect it. Both paths are
+    measured here, at identical positions, so the comparison is like for like.
+    """
     from .agent import head_targets
     from .data import to_head_batch
-    from .train import _bridge_initial_state, _outgoing_actions
-    rows = {"reward_pred": [], "reward_true": [], "reward_mask": [],
-            "continue_prob": [], "continue_true": [], "continue_mask": [],
-            "policy_hit": [], "policy_action": [], "policy_mask": [], "clusters": []}
+    from .train import _bridge_initial_state, _outgoing_actions, bridge_rollout
+    keys = ("reward_pred", "reward_true", "reward_mask", "continue_prob", "continue_true",
+            "continue_mask", "policy_hit", "policy_action", "policy_mask", "clusters",
+            "gen_reward_pred", "gen_continue_prob", "gen_policy_hit", "gen_policy_kl")
+    rows = {key: [] for key in keys}
     centers = heads.centers
     for main, _ in traces:
         batch = to_head_batch(main)
+        z = batch.latents
+        if depth >= z.shape[1]:
+            continue
         actions = _outgoing_actions(batch, bundle.n_actions)
-        teacher = bundle.world.teacher(batch.latents, actions,
-                                       state=_bridge_initial_state(bundle, main))
-        read = heads(teacher.features)
+        initial = _bridge_initial_state(bundle, main)
+        teacher, _, generated_features, anchor = bridge_rollout(bundle, z, actions, depth, initial)
         targets = head_targets(batch, bundle.config)
-        probabilities = read["reward"][:, :, 0].softmax(-1)
-        mean = (probabilities * centers).sum(-1)
-        rows["reward_pred"].append((mean.sign() * torch.expm1(mean.abs())).flatten())
-        rows["reward_true"].append(targets["reward"][..., 0].flatten())
-        rows["reward_mask"].append((targets["valid"][..., 0] * targets["reward_rows"][:, :, 0]).flatten())
-        rows["continue_prob"].append(read["continuation"][..., 0].sigmoid().flatten())
-        rows["continue_true"].append(targets["continuation"][..., 0].flatten())
-        rows["continue_mask"].append(targets["continuation_valid"][..., 0].flatten())
-        choice = read["policy"][:, :, 0].argmax(-1)
-        truth = targets["action"][..., 0].long()
-        rows["policy_hit"].append((choice == truth).float().flatten())
+        suffix = slice(anchor + 1, anchor + 1 + depth)
+
+        def expectation(logits):
+            probability = logits.softmax(-1)
+            mean = (probability * centers).sum(-1)
+            return mean.sign() * torch.expm1(mean.abs())
+
+        observed = heads(teacher.features)
+        # The generated readouts cover the suffix; the observed ones are sliced to match exactly.
+        produced = heads(generated_features)
+        rows["reward_pred"].append(expectation(observed["reward"][:, suffix, 0]).flatten())
+        rows["gen_reward_pred"].append(expectation(produced["reward"][:, :, 0]).flatten())
+        rows["reward_true"].append(targets["reward"][:, suffix, 0].flatten())
+        rows["reward_mask"].append((targets["valid"][:, suffix, 0]
+                                    * targets["reward_rows"][:, :, 0]).flatten())
+        rows["continue_prob"].append(observed["continuation"][:, suffix, 0].sigmoid().flatten())
+        rows["gen_continue_prob"].append(produced["continuation"][..., 0].sigmoid().flatten())
+        rows["continue_true"].append(targets["continuation"][:, suffix, 0].flatten())
+        rows["continue_mask"].append(targets["continuation_valid"][:, suffix, 0].flatten())
+        truth = targets["action"][:, suffix, 0].long()
+        rows["policy_hit"].append((observed["policy"][:, suffix, 0].argmax(-1) == truth).float().flatten())
+        rows["gen_policy_hit"].append((produced["policy"][:, :, 0].argmax(-1) == truth).float().flatten())
+        left = observed["policy"][:, suffix, 0].log_softmax(-1)
+        right = produced["policy"][:, :, 0].log_softmax(-1)
+        rows["gen_policy_kl"].append((left.exp() * (left - right)).sum(-1).flatten())
         rows["policy_action"].append(truth.flatten())
-        rows["policy_mask"].append((targets["action_valid"][..., 0] * targets["policy_rows"][:, :, 0]).flatten())
-        blocks = batch.latents.shape[1]
+        rows["policy_mask"].append((targets["action_valid"][:, suffix, 0]
+                                    * targets["policy_rows"][:, :, 0]).flatten())
         rows["clusters"].append(torch.tensor(
             [abs(hash(name)) % (2**31) for name in main.episode_ids],
-            device=batch.latents.device).repeat_interleave(blocks))
+            device=z.device).repeat_interleave(depth))
     if not rows["clusters"]:
         return None
     return {key: torch.cat(value).cpu() for key, value in rows.items()}
 
 
-def _outcome_calibration(bundle, heads, traces, *, draws: int, seed: int, output):
+def _outcome_calibration(bundle, heads, traces, depth, *, draws: int, seed: int, output):
     """TC-17: reward must beat zero AND marginal; balanced terminal BCE must beat log(2).
 
     The balanced reference is the spec's: a constant 0.5 predictor scores log(2) on a balanced
@@ -812,11 +930,13 @@ def _outcome_calibration(bundle, heads, traces, *, draws: int, seed: int, output
     the classwise comparison however good its aggregate looks.
     """
     import math
-    read = _head_readouts(bundle, heads, traces)
+    read = _head_readouts(bundle, heads, traces, depth)
     if read is None:
         return _component("insufficient_coverage", {"reason": "no readouts"},
                           _evidence(output, "outcome_calibration", {"reason": "no coverage"}))
-    metrics = {"balanced_reference_bce": math.log(2)}
+    # Gated on the GENERATED path. Observed numbers are reported beside them, because a gate that
+    # only ever sees observed states cannot detect the observed-to-generated transfer failure.
+    metrics = {"balanced_reference_bce": math.log(2), "gated_on": "generated states"}
     ok = True
 
     mask = read["reward_mask"] > 0
@@ -824,7 +944,8 @@ def _outcome_calibration(bundle, heads, traces, *, draws: int, seed: int, output
         metrics["reward"] = {"status": "insufficient_coverage"}
         ok = False
     else:
-        truth, predicted = read["reward_true"][mask], read["reward_pred"][mask]
+        truth = read["reward_true"][mask]
+        predicted, observed_reward = read["gen_reward_pred"][mask], read["reward_pred"][mask]
         clusters = read["clusters"][mask]
         zero = torch.zeros_like(truth)
         marginal = torch.full_like(truth, float(truth.mean()))
@@ -835,7 +956,8 @@ def _outcome_calibration(bundle, heads, traces, *, draws: int, seed: int, output
                                            draws=draws, seed=seed + 2)
         beat = all((c.get("difference") or 0) > 0 and c.get("excludes_zero")
                    for c in (vs_zero, vs_marginal))
-        metrics["reward"] = {"mse": float(square(predicted).mean()),
+        metrics["reward"] = {"generated_mse": float(square(predicted).mean()),
+                             "observed_mse": float(square(observed_reward).mean()),
                              "zero_mse": float(square(zero).mean()),
                              "marginal_mse": float(square(marginal).mean()),
                              "vs_zero": vs_zero, "vs_marginal": vs_marginal,
@@ -843,7 +965,9 @@ def _outcome_calibration(bundle, heads, traces, *, draws: int, seed: int, output
         ok = ok and beat
 
     mask = read["continue_mask"] > 0
-    truth, probability = read["continue_true"][mask], read["continue_prob"][mask].clamp(1e-6, 1 - 1e-6)
+    truth = read["continue_true"][mask]
+    probability = read["gen_continue_prob"][mask].clamp(1e-6, 1 - 1e-6)
+    observed_probability = read["continue_prob"][mask].clamp(1e-6, 1 - 1e-6)
     alive, dead = truth > 0.5, truth <= 0.5
     if int(alive.sum()) < 2 or int(dead.sum()) < 2:
         metrics["continuation"] = {"status": "insufficient_coverage",
@@ -853,8 +977,12 @@ def _outcome_calibration(bundle, heads, traces, *, draws: int, seed: int, output
         bce = -(truth * probability.log() + (1 - truth) * (1 - probability).log())
         classwise = {"alive": float(bce[alive].mean()), "dead": float(bce[dead].mean())}
         balanced = (classwise["alive"] + classwise["dead"]) / 2
+        observed_bce = -(truth * observed_probability.log()
+                         + (1 - truth) * (1 - observed_probability).log())
         metrics["continuation"] = {
             "balanced_bce": balanced, "aggregate_bce": float(bce.mean()),
+            "observed_balanced_bce": float((observed_bce[alive].mean()
+                                            + observed_bce[dead].mean()) / 2),
             "classwise_bce": classwise,
             "brier": float((probability - truth).square().mean()),
             "mean_probability": {"alive": float(probability[alive].mean()),
@@ -863,17 +991,22 @@ def _outcome_calibration(bundle, heads, traces, *, draws: int, seed: int, output
                                              and max(classwise.values()) < math.log(2)
                                              and float(bce.mean()) < math.log(2))}
         ok = ok and metrics["continuation"]["beats_balanced_reference"]
+    failed = 0 if ok else 1
+    metrics["failed_checks"] = failed
     return _component("pass" if ok else "fail", metrics,
-                      _evidence(output, "outcome_calibration", metrics))
+                      _evidence(output, "outcome_calibration", metrics),
+                      {"quantity": "failed_checks", "value": float(failed),
+                       "threshold": 0.5, "direction": "less"})
 
 
-def _observed_bc(bundle, heads, traces, *, draws: int, seed: int, output):
-    """TC-17: observed-path BC on the relevant half, with its own complete recurrent state.
+def _observed_bc(bundle, heads, traces, depth, *, draws: int, seed: int, output):
+    """TC-17: observed-path BC on the relevant half, and the same policy on generated states.
 
-    Reported rather than margin-gated here: EVALUATION.md puts the `.5`-achievement noninferiority
-    comparison in G4, against a real-game BC, not at the bridge.
+    Binding, not merely reported: a BC that cannot beat "always take the most frequent action" has
+    not established observed control, and the generated-state agreement and KL are gated too --
+    that divergence is the failure M03 localized.
     """
-    read = _head_readouts(bundle, heads, traces)
+    read = _head_readouts(bundle, heads, traces, depth)
     if read is None:
         return _component("insufficient_coverage", {"reason": "no readouts"},
                           _evidence(output, "observed_bc", {"reason": "no coverage"}))
@@ -882,15 +1015,31 @@ def _observed_bc(bundle, heads, traces, *, draws: int, seed: int, output):
         return _component("insufficient_coverage", {"relevant_rows": int(mask.sum())},
                           _evidence(output, "observed_bc", {"relevant_rows": int(mask.sum())}))
     hit, truth, clusters = read["policy_hit"][mask], read["policy_action"][mask], read["clusters"][mask]
+    generated_hit = read["gen_policy_hit"][mask]
     counts = torch.bincount(truth.long(), minlength=bundle.n_actions)
     marginal = (truth == int(counts.argmax())).float()
     contrast = _paired_mean_interval(hit, marginal, clusters, draws=draws, seed=seed + 3)
+    generated_contrast = _paired_mean_interval(generated_hit, marginal, clusters,
+                                               draws=draws, seed=seed + 4)
+    transfer = _paired_mean_interval(hit, generated_hit, clusters, draws=draws, seed=seed + 5)
     metrics = {"rows": int(mask.sum()), "top1_agreement": float(hit.mean()),
+               "generated_top1_agreement": float(generated_hit.mean()),
+               "generated_policy_kl": float(read["gen_policy_kl"][mask].mean()),
                "most_frequent_action_rate": float(marginal.mean()),
                "vs_most_frequent": contrast,
+               "generated_vs_most_frequent": generated_contrast,
+               "observed_minus_generated": transfer,
                "beats_marginal": bool((contrast.get("difference") or 0) > 0
-                                      and contrast.get("excludes_zero"))}
-    return _component("pass", metrics, _evidence(output, "observed_bc", metrics))
+                                      and contrast.get("excludes_zero")),
+               "generated_beats_marginal": bool((generated_contrast.get("difference") or 0) > 0
+                                                and generated_contrast.get("excludes_zero"))}
+    failed = sum(0 if value else 1 for value in
+                 (metrics["beats_marginal"], metrics["generated_beats_marginal"]))
+    metrics["failed_checks"] = failed
+    return _component("pass" if not failed else "fail", metrics,
+                      _evidence(output, "observed_bc", metrics),
+                      {"quantity": "failed_checks", "value": float(failed),
+                       "threshold": 0.5, "direction": "less"})
 
 
 GATE_DEPTHS = {"h2": (1, 2), "h16": (1, 2, 4, 8, 16)}
@@ -910,8 +1059,14 @@ def _source_contract(bundle, payload, cache_contract, checkpoint, output):
                "predictor_bn_modules": len(predictor_bn),
                "predictor_bn_in_eval": all(not m.training for m in predictor_bn),
                "capabilities": dict(payload.get("capabilities", {}))}
-    ok = metrics["encoder_frozen"] and metrics["predictor_bn_in_eval"] and bool(metrics["cache_manifest_sha256"])
-    return _component("pass" if ok else "fail", metrics, _evidence(output, "source_contract", metrics))
+    failed = sum(0 if value else 1 for value in
+                 (metrics["encoder_frozen"], metrics["predictor_bn_in_eval"],
+                  bool(metrics["cache_manifest_sha256"])))
+    metrics["failed_checks"] = failed
+    return _component("pass" if not failed else "fail", metrics,
+                      _evidence(output, "source_contract", metrics),
+                      {"quantity": "failed_checks", "value": float(failed),
+                       "threshold": 0.5, "direction": "less"})
 
 
 def _semantic_retention(bundle, raw_episodes, settings, output):
@@ -944,10 +1099,18 @@ def _semantic_retention(bundle, raw_episodes, settings, output):
         report["noninferior_to_cls"] = None
         return _component("insufficient_coverage", report,
                           _evidence(output, "semantic_retention", report))
-    inferior = any(row["interval"][1] < -settings.auc_margin for row in resolved)
-    report["noninferior_to_cls"] = bool(not inferior)
-    return _component("pass" if not inferior else "fail", report,
-                      _evidence(output, "semantic_retention", report))
+    # Noninferiority is a statement about the LOWER bound: the loss we cannot rule out must be
+    # smaller than the margin. Testing the upper bound instead asks only "could it be fine?", so
+    # an interval like [-0.20, +0.01] -- which permits a 0.20 AUC loss -- read as noninferior.
+    bounds = [row["interval"][0] for row in resolved]
+    established = all(low > -settings.auc_margin for low in bounds)
+    report["lower_bounds"] = bounds
+    report["rule"] = "noninferior iff every lower 95% bound exceeds -auc_margin"
+    report["noninferior_to_cls"] = bool(established)
+    return _component("pass" if established else "fail", report,
+                      _evidence(output, "semantic_retention", report),
+                      {"quantity": "min_lower_bound", "value": float(min(bounds)),
+                       "threshold": -settings.auc_margin, "direction": "greater"})
 
 
 def _paired_uncertainty(components, settings, output):
@@ -961,10 +1124,17 @@ def _paired_uncertainty(components, settings, output):
                 walk(f"{prefix}.{key}" if prefix else key, value)
     for name, component in components.items():
         walk(name, component.get("metrics", {}))
+    unresolved = sorted(name for name, row in gathered.items() if not row["interval"])
     metrics = {"draws": settings.bootstrap_draws, "clustering": "whole held-out episode",
-               "contrasts": gathered, "resolved": sum(1 for v in gathered.values() if v["interval"])}
-    status = "pass" if metrics["resolved"] else "insufficient_coverage"
-    return _component(status, metrics, _evidence(output, "paired_uncertainty", metrics))
+               "contrasts": gathered, "resolved": len(gathered) - len(unresolved),
+               "unresolved": unresolved,
+               "rule": "every decision-bearing contrast must carry an interval; one resolved "
+                       "contrast out of many is not paired uncertainty"}
+    status = "pass" if gathered and not unresolved else "insufficient_coverage"
+    return _component(status, metrics, _evidence(output, "paired_uncertainty", metrics),
+                      {"quantity": "unresolved_contrasts",
+                       "value": float(len(unresolved) if gathered else 1),
+                       "threshold": 0.5, "direction": "less"})
 
 
 def bridge_gate(bundle, heads, payload, episodes, cache_contract, settings, output, *,
@@ -979,11 +1149,15 @@ def bridge_gate(bundle, heads, payload, episodes, cache_contract, settings, outp
     from .config import recipe_digest
     from .gates import contract_digest
     output = Path(output)
+    if any(output.glob('*.json')):
+        # Evidence is immutable per attempt: atomic_manifest replaces files, so reusing a
+        # directory would silently overwrite a failed attempt's rows with a retry's.
+        raise ComponentGateError('gate_output', f'{output} already holds evidence; each attempt writes a fresh directory')
     output.mkdir(parents=True, exist_ok=True)
     config = bundle.config
     depths = tuple(d for d in GATE_DEPTHS[stage] if d < config.agent.sequence)
     seed = config.seed + (700 if stage == "h2" else 800)
-    traces = _gate_traces(bundle, episodes, config, batches=batches, seed=seed)
+    traces, ledger = _gate_traces(bundle, episodes, config, batches=batches, seed=seed)
 
     components = {
         "source_contract": _source_contract(bundle, payload, cache_contract, checkpoint, output),
@@ -992,10 +1166,11 @@ def bridge_gate(bundle, heads, payload, episodes, cache_contract, settings, outp
                                                   seed=seed, output=output),
         "action_effects": _action_effects(bundle, traces, max(depths), draws=settings.bootstrap_draws,
                                           seed=seed + 20, output=output),
-        "outcome_calibration": _outcome_calibration(bundle, heads, traces, draws=settings.bootstrap_draws,
+        "outcome_calibration": _outcome_calibration(bundle, heads, traces, max(depths),
+                                                    draws=settings.bootstrap_draws,
                                                     seed=seed + 40, output=output),
-        "observed_bc": _observed_bc(bundle, heads, traces, draws=settings.bootstrap_draws,
-                                    seed=seed + 60, output=output),
+        "observed_bc": _observed_bc(bundle, heads, traces, max(depths),
+                                    draws=settings.bootstrap_draws, seed=seed + 60, output=output),
     }
     components["paired_uncertainty"] = _paired_uncertainty(components, settings, output)
 
@@ -1013,6 +1188,8 @@ def bridge_gate(bundle, heads, payload, episodes, cache_contract, settings, outp
             "decision": "continue_h16" if stage == "h2" else "authorize_actor",
             "validated_recursive_depth": int(validated),
             "evaluated_depths": list(depths),
+            "evaluation": {"screen_settings_id": recipe_digest(settings), "batches": batches,
+                           "seed": seed, "sample": ledger},
             "not_evaluated": dict(GATE_NOT_EVALUATED),
             "components": components}
     report = _seal(body)
@@ -1030,10 +1207,11 @@ def _source_contract_digest(path):
 def _actor_diagnostics(bundle, heads, prior, traces, horizon: int):
     """One imagined rollout per starting context, with the quantities G4 asks for."""
     from .actor_critic import lambda_returns
+    from .agent import head_targets
     from .imagination import imagine
     from .train import _bridge_initial_state, _outgoing_actions
     from .data import to_head_batch
-    values, returns, entropies, priors, chosen = [], [], [], [], []
+    values, returns, entropies, priors, chosen, realized = [], [], [], [], [], []
     policy_rng = torch.Generator(device=bundle.device).manual_seed(bundle.config.seed + 909)
     for main, _ in traces:
         batch = to_head_batch(main)
@@ -1045,6 +1223,18 @@ def _actor_diagnostics(bundle, heads, prior, traces, horizon: int):
         target = lambda_returns(trajectory, bundle.config)
         values.append(trajectory.value[:, :-1].flatten().cpu())
         returns.append(target.flatten().cpu())
+        # The REAL discounted return recorded on this DEV trajectory, which the critic never saw
+        # and cannot influence. Correlating value against lambda returns alone is circular:
+        # `lambda_returns` bootstraps from `trajectory.value`, so it measures self-consistency.
+        targets_real = head_targets(batch, bundle.config)
+        reward = targets_real["reward"][..., 0]
+        alive = targets_real["continuation"][..., 0]
+        gamma, running = bundle.config.gamma, torch.zeros_like(reward[:, 0])
+        discounted = []
+        for step in reversed(range(reward.shape[1])):
+            running = reward[:, step] + gamma * alive[:, step] * running
+            discounted.append(running.clone())
+        realized.append(torch.stack(discounted[::-1], 1)[:, -1].flatten().cpu())
         distribution = trajectory.logits.softmax(-1)
         entropies.append((-(distribution * distribution.clamp_min(1e-9).log()).sum(-1)).flatten().cpu())
         reference = prior(trajectory.agent[:, :-1])["policy"][:, :, 0].softmax(-1)
@@ -1053,9 +1243,11 @@ def _actor_diagnostics(bundle, heads, prior, traces, horizon: int):
         chosen.append(trajectory.action.flatten().cpu())
     if not values:
         return None
-    return {k: torch.cat(v) for k, v in
-            (("value", values), ("returns", returns), ("entropy", entropies),
-             ("kl_to_prior", priors), ("action", chosen))}
+    packed = {k: torch.cat(v) for k, v in
+              (("value", values), ("returns", returns), ("entropy", entropies),
+               ("kl_to_prior", priors), ("action", chosen))}
+    packed["realized_return"] = torch.cat(realized)
+    return packed
 
 
 def actor_gate(bundle, heads, prior, payload, episodes, cache_contract, settings, output, *,
@@ -1070,11 +1262,15 @@ def actor_gate(bundle, heads, prior, payload, episodes, cache_contract, settings
     from .data import atomic_manifest
     from .gates import contract_digest
     output = Path(output)
+    if any(output.glob('*.json')):
+        # Evidence is immutable per attempt: atomic_manifest replaces files, so reusing a
+        # directory would silently overwrite a failed attempt's rows with a retry's.
+        raise ComponentGateError('gate_output', f'{output} already holds evidence; each attempt writes a fresh directory')
     output.mkdir(parents=True, exist_ok=True)
     config = bundle.config
     horizon = config.agent.horizon
     seed = config.seed + 900
-    traces = _gate_traces(bundle, episodes, config, batches=batches, seed=seed)
+    traces, ledger = _gate_traces(bundle, episodes, config, batches=batches, seed=seed)
 
     frozen = _source_contract(bundle, payload, cache_contract, checkpoint, output)
     roll = _rollouts(bundle, traces, min(horizon, config.agent.sequence - 1), seed=seed)
@@ -1090,8 +1286,12 @@ def actor_gate(bundle, heads, prior, payload, episodes, cache_contract, settings
                    "frozen_world": frozen["metrics"]["predictor_bn_in_eval"],
                    "still_beats_persistence": bool((contrast.get("difference") or 0) > 0
                                                    and contrast.get("excludes_zero"))}
-        validity = _component("pass" if metrics["still_beats_persistence"] and metrics["frozen_world"]
-                              else "fail", metrics, _evidence(output, "model_validity", metrics))
+        failed = sum(0 if v else 1 for v in (metrics["still_beats_persistence"], metrics["frozen_world"]))
+        metrics["failed_checks"] = failed
+        validity = _component("pass" if not failed else "fail", metrics,
+                              _evidence(output, "model_validity", metrics),
+                              {"quantity": "failed_checks", "value": float(failed),
+                               "threshold": 0.5, "direction": "less"})
 
     diagnostics = _actor_diagnostics(bundle, heads, prior, traces, horizon)
     if diagnostics is None:
@@ -1100,15 +1300,26 @@ def actor_gate(bundle, heads, prior, payload, episodes, cache_contract, settings
         distribution = critic
     else:
         value, target = diagnostics["value"], diagnostics["returns"]
+        real = diagnostics["realized_return"]
         centred = lambda x: x - x.mean()
-        correlation = float((centred(value) * centred(target)).mean()
-                            / (value.std().clamp_min(1e-9) * target.std().clamp_min(1e-9)))
-        metrics = {"value_return_correlation": correlation,
-                   "mean_value": float(value.mean()), "mean_return": float(target.mean()),
-                   "value_bias": float((value - target).mean()),
-                   "tracks_returns": bool(correlation > 0)}
-        critic = _component("pass" if metrics["tracks_returns"] else "fail", metrics,
-                            _evidence(output, "critic_direction", metrics))
+        def correlate(left, right):
+            return float((centred(left) * centred(right)).mean()
+                         / (left.std().clamp_min(1e-9) * right.std().clamp_min(1e-9)))
+        rows = min(len(value), len(real))
+        against_real = correlate(value[:rows], real[:rows])
+        metrics = {"value_vs_real_return_correlation": against_real,
+                   "value_vs_lambda_return_correlation": correlate(value, target),
+                   "circularity_note": "lambda returns bootstrap from the critic, so only the "
+                                       "correlation against the REAL recorded return is external",
+                   "mean_value": float(value.mean()),
+                   "mean_real_return": float(real.mean()),
+                   "value_bias_vs_real": float(value[:rows].mean() - real[:rows].mean()),
+                   "rows": rows,
+                   "tracks_real_returns": bool(against_real > 0)}
+        critic = _component("pass" if metrics["tracks_real_returns"] else "fail", metrics,
+                            _evidence(output, "critic_direction", metrics),
+                            {"quantity": "value_vs_real_return_correlation",
+                             "value": against_real, "threshold": 0.0, "direction": "greater"})
         counts = torch.bincount(diagnostics["action"].long(), minlength=bundle.n_actions).float()
         share = counts / counts.sum().clamp_min(1)
         metrics = {"mean_entropy": float(diagnostics["entropy"].mean()),
@@ -1117,8 +1328,15 @@ def actor_gate(bundle, heads, prior, payload, episodes, cache_contract, settings
                    "actions_used": int((counts > 0).sum()), "n_actions": bundle.n_actions,
                    "max_action_share": float(share.max()),
                    "collapsed": bool(float(share.max()) > 0.95)}
+        # Collapse onto a handful of actions is collapse too, so the share threshold is joined by
+        # an explicit coverage requirement rather than left at "not 95% one action".
+        metrics["min_actions_required"] = max(2, bundle.n_actions // 4)
+        metrics["collapsed"] = bool(metrics["max_action_share"] > 0.95
+                                    or metrics["actions_used"] < metrics["min_actions_required"])
         distribution = _component("fail" if metrics["collapsed"] else "pass", metrics,
-                                  _evidence(output, "action_distribution", metrics))
+                                  _evidence(output, "action_distribution", metrics),
+                                  {"quantity": "collapsed", "value": 1.0 if metrics["collapsed"] else 0.0,
+                                   "threshold": 0.5, "direction": "less"})
 
     components = {"model_validity": validity, "critic_direction": critic,
                   "action_distribution": distribution}
@@ -1128,6 +1346,8 @@ def actor_gate(bundle, heads, prior, payload, episodes, cache_contract, settings
             "recipe_id": recipe_digest(config),
             "cache_id": contract_digest(cache_contract),
             "stage": "actor_screen", "decision": "continue_actor",
+            "evaluation": {"screen_settings_id": recipe_digest(settings), "batches": batches,
+                           "seed": seed, "sample": ledger},
             "validated_recursive_depth": int(payload.get("capabilities", {})
                                              .get("validated_recursive_depth", 0)),
             "not_evaluated": dict(GATE_NOT_EVALUATED),

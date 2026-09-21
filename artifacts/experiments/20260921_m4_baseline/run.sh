@@ -86,9 +86,21 @@ for arm in raw tc; do
   [ $rc -ne 0 ] && exit $rc
 done
 
+verdicts=0
 for arm in raw tc; do
   say "stage 7: real Craftax, actor versus its own BC, arm $arm"
   $PY -m d4mj evaluate --run "$OUT/$arm"
   say "  evaluate $arm rc=$?"
+  passed=$($PY -c "
+import json,sys
+d=json.load(open('$OUT/$arm/evaluation/evaluation.json'))
+v=d['verdict']; print('PASS' if v['passed'] else 'FAIL', json.dumps(v['conditions']))" 2>/dev/null)
+  say "  G4 verdict $arm: $passed"
+  case "$passed" in PASS*) verdicts=$((verdicts+1));; esac
 done
-say "BASELINE COMPLETE, END TO END."
+if [ "$verdicts" -eq 0 ]; then
+  say "NEITHER ARM PASSED THE G4 VERDICT. The budget is spent either way, but this is a"
+  say "NEGATIVE result, not a completed success: read each evaluation.json verdict block."
+  exit 3
+fi
+say "BASELINE COMPLETE, END TO END. G4 verdict passed for $verdicts of 2 arms."

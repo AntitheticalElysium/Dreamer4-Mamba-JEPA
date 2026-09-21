@@ -8,7 +8,28 @@ import torch
 from d4mj.agent import Heads
 from d4mj.gates import ComponentGateError, contract_digest, require_bridge_gate
 from d4mj.lewm_diagnostics import bridge_gate
+from d4mj.data import Episode, EpisodeCorpus
 from d4mj.tests.test_m4_core import latent_corpus, m4_config
+
+
+def mixed_corpus(splits=("train", "train", "dev", "dev", "dev", "dev", "final", "final")):
+    """A corpus whose splits differ, so split handling is exercised rather than assumed."""
+    episodes, steps = [], 40
+    for index, split in enumerate(splits):
+        # Half of each split dies, so the terminal support stratum and the dead class both exist.
+        terminated = torch.zeros(steps, dtype=torch.bool)
+        if index % 2 == 0:
+            terminated[-1] = True
+        episodes.append(Episode(
+            observations=None, actions_taken=torch.arange(steps) % 17,
+            rewards=torch.arange(steps).float(),
+            terminated=terminated,
+            truncated=torch.zeros(steps, dtype=torch.bool),
+            latents=torch.randn(steps + 1, 1, 12,
+                                generator=torch.Generator().manual_seed(100 + index)),
+            latent_digest="fixture", events=torch.zeros(steps, dtype=torch.bool),
+            split=split, episode_id=f"{split}-{index}"))
+    return EpisodeCorpus(episodes)
 from d4mj.world_api import ModelBundle
 
 
@@ -31,7 +52,7 @@ def _fixture(tmp_path):
 def _report(tmp_path):
     from d4mj.lewm_config import ScreenConfig
     config, bundle, heads, checkpoint, cache_contract, payload = _fixture(tmp_path)
-    report = bridge_gate(bundle, heads, payload, latent_corpus(), cache_contract,
+    report = bridge_gate(bundle, heads, payload, mixed_corpus(), cache_contract,
                          ScreenConfig(bootstrap_draws=40), tmp_path / "gate",
                          stage="h2", checkpoint=checkpoint, batches=3)
     return config, checkpoint, cache_contract, report
@@ -62,26 +83,53 @@ def test_an_untrained_world_does_not_pass(tmp_path):
                             cache_contract=cache_contract, stage="h2", minimum_depth=1)
 
 
-def test_the_boundary_accepts_a_genuinely_passing_report(tmp_path):
-    config, checkpoint, cache_contract, report = _report(tmp_path)
+def _passing(report):
+    """A report that passes because its own criteria say so, not because a string was edited."""
     body = {k: v for k, v in report.items() if k != "report_id"}
     for component in body["components"].values():
         component["status"] = "pass"
+        component["criterion"] = {"quantity": "failed_checks", "value": 0.0,
+                                  "threshold": 0.5, "direction": "less"}
     body["validated_recursive_depth"] = 2
-    sealed = dict(body, report_id=contract_digest(body))
-    accepted = require_bridge_gate(sealed, checkpoint=checkpoint, config=config,
+    return dict(body, report_id=contract_digest(body))
+
+
+def test_the_boundary_accepts_a_genuinely_passing_report(tmp_path):
+    config, checkpoint, cache_contract, report = _report(tmp_path)
+    accepted = require_bridge_gate(_passing(report), checkpoint=checkpoint, config=config,
                                    cache_contract=cache_contract, stage="h2", minimum_depth=2)
     assert accepted["validated_recursive_depth"] == 2
+
+
+def test_a_status_string_cannot_override_its_own_measurements(tmp_path):
+    """The hole the audit found: flipping every status to pass and re-digesting was accepted."""
+    config, checkpoint, cache_contract, report = _report(tmp_path)
+    body = {k: v for k, v in report.items() if k != "report_id"}
+    for component in body["components"].values():
+        component["status"] = "pass"          # criterion left showing failure
+    body["validated_recursive_depth"] = 2
+    sealed = dict(body, report_id=contract_digest(body))
+    with pytest.raises(ComponentGateError, match="contradicts its own criterion"):
+        require_bridge_gate(sealed, checkpoint=checkpoint, config=config,
+                            cache_contract=cache_contract, stage="h2", minimum_depth=2)
+
+
+def test_a_component_without_a_criterion_is_refused(tmp_path):
+    config, checkpoint, cache_contract, report = _report(tmp_path)
+    sealed = _passing(report)
+    body = {k: v for k, v in sealed.items() if k != "report_id"}
+    body["components"]["source_contract"].pop("criterion")
+    with pytest.raises(ComponentGateError, match="declares no decision criterion"):
+        require_bridge_gate(dict(body, report_id=contract_digest(body)), checkpoint=checkpoint,
+                            config=config, cache_contract=cache_contract, stage="h2",
+                            minimum_depth=2)
 
 
 @pytest.mark.parametrize("tamper", ["report_id", "depth", "evidence"])
 def test_a_doctored_report_is_refused(tmp_path, tamper):
     config, checkpoint, cache_contract, report = _report(tmp_path)
-    body = {k: v for k, v in report.items() if k != "report_id"}
-    for component in body["components"].values():
-        component["status"] = "pass"
-    body["validated_recursive_depth"] = 2
-    sealed = dict(body, report_id=contract_digest(body))
+    sealed = _passing(report)
+    body = {k: v for k, v in sealed.items() if k != "report_id"}
     if tamper == "report_id":
         sealed["validated_recursive_depth"] = 16          # changed after sealing
     elif tamper == "depth":
@@ -120,3 +168,49 @@ def test_no_raw_corpus_does_not_pass(tmp_path):
     config, bundle, heads, checkpoint, cache, payload = _fixture(tmp_path)
     component = _semantic_retention(bundle, None, ScreenConfig(), tmp_path / "r2")
     assert component["status"] == "insufficient_coverage"
+
+
+def test_the_gate_samples_dev_only_and_never_final(tmp_path):
+    """The gate previously sampled the whole cache: its own training data, and FINAL."""
+    from d4mj.lewm_config import ScreenConfig
+    from d4mj.lewm_diagnostics import _gate_traces
+    config, bundle, heads, checkpoint, cache, payload = _fixture(tmp_path)
+    corpus = mixed_corpus()
+    _, ledger = _gate_traces(bundle, corpus, config, batches=6, seed=3)
+    assert ledger["split"] == "dev"
+    chosen = {name for row in ledger["selection"]
+              for name, _ in row["main"] + row["terminal"]}
+    assert chosen, "the ledger recorded no selection"
+    assert all(name.startswith("dev-") for name in chosen), sorted(chosen)
+    # and the ledger is exact enough to recompute the selection
+    assert all({"update", "main", "terminal"} <= set(row) for row in ledger["selection"])
+
+
+def test_a_corpus_without_dev_is_refused(tmp_path):
+    from d4mj.gates import ComponentGateError
+    from d4mj.lewm_diagnostics import _gate_traces
+    config, bundle, heads, checkpoint, cache, payload = _fixture(tmp_path)
+    with pytest.raises(ComponentGateError, match="no DEV episode"):
+        _gate_traces(bundle, mixed_corpus(("train", "train", "final")), config, batches=2, seed=3)
+
+
+@pytest.mark.parametrize("interval,expected", [
+    ([-0.20, +0.01], False),   # permits a 0.20 AUC loss
+    ([-0.10, +0.02], False),
+    ([-0.01, +0.05], True),    # loss bounded inside the margin
+])
+def test_noninferiority_uses_the_lower_bound(tmp_path, monkeypatch, interval, expected):
+    """Testing the UPPER bound only asks 'could it be fine?'; noninferiority bounds the loss."""
+    import d4mj.data as data
+    import d4mj.lewm_diagnostics as diag
+    from d4mj.lewm_config import ScreenConfig
+    resolved = {"probes": {"linear": {"interval": list(interval)},
+                           "mlp": {"interval": list(interval)}},
+                "projection_stop": False}
+    monkeypatch.setattr(data, "screen_windows", lambda *a, **k: {})
+    monkeypatch.setattr(diag, "screen_features", lambda *a, **k: {})
+    monkeypatch.setattr(diag, "screen_retention", lambda *a, **k: (dict(resolved), None))
+    config, bundle, heads, checkpoint, cache, payload = _fixture(tmp_path)
+    component = diag._semantic_retention(bundle, object(), ScreenConfig(), tmp_path / "n")
+    assert (component["status"] == "pass") is expected
+    assert component["metrics"]["noninferior_to_cls"] is expected

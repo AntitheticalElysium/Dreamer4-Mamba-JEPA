@@ -561,6 +561,25 @@ def _sealed_phase_report(report: dict | None, *, schema: str, checkpoint, config
         item = measured[name]
         if not isinstance(item.get("metrics"), dict) or not item["metrics"]:
             raise ComponentGateError(stage, f"{name} has no recorded measurements")
+        # A status string is an assertion, not evidence. Each component declares the quantity it
+        # was decided on, and the status is RECOMPUTED here: a hand-edited "pass" whose own
+        # numbers fail is refused, which a content digest alone cannot catch because the digest
+        # is recomputed over the edited body.
+        criterion = item.get("criterion")
+        if not isinstance(criterion, dict):
+            raise ComponentGateError(stage, f"{name} declares no decision criterion")
+        try:
+            value, threshold = float(criterion["value"]), float(criterion["threshold"])
+            direction = criterion["direction"]
+        except (KeyError, TypeError, ValueError) as error:
+            raise ComponentGateError(stage, f"{name} criterion is malformed") from error
+        if direction not in ("greater", "less"):
+            raise ComponentGateError(stage, f"{name} criterion direction is not greater/less")
+        satisfied = value > threshold if direction == "greater" else value < threshold
+        if satisfied != (item.get("status") == "pass"):
+            raise ComponentGateError(
+                stage, f"{name} status '{item.get('status')}' contradicts its own criterion "
+                       f"({criterion.get('quantity')} = {value} vs {threshold})")
         evidence = item.get("evidence")
         if not isinstance(evidence, list) or not evidence:
             raise ComponentGateError(stage, f"{name} has no byte-bound evidence")
