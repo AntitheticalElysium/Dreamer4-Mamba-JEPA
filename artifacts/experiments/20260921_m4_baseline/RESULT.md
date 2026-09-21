@@ -20,7 +20,7 @@ descending — a 17× gap on the shared objective from the same weights, seeds a
 | component | verdict |
 |---|---|
 | `source_contract` | **pass** |
-| `paired_uncertainty` | **pass** — 17 contrasts resolved, none unresolved |
+| `paired_uncertainty` | **pass** — 17 intervals computed, none unresolved. "Resolved" means an interval exists, **not** that it excludes zero; several cross zero |
 | `recursive_dynamics` | fail |
 | `action_effects` | fail |
 | `outcome_calibration` | fail |
@@ -62,6 +62,31 @@ Choosing by the *global* action average beats consulting this world about *this*
 (MLP), on 21 supported critical labels. At least one family's lower bound falls past the −0.03
 margin.
 
+## CORRECTION — the causal claim below overreached
+
+An earlier version of this file concluded that the world "does not carry state-conditioned action
+consequences." **That is withdrawn.** The true-successor substitution, which this run already
+recorded, refutes it:
+
+| successor supplied to the outcome heads | reward regret ↓ | safe choice ↑ |
+|---|---:|---:|
+| generated | 0.2781 | 45.1% |
+| **real successor** | **0.2879** | **55.9%** |
+| action-marginal control | 0.2277 | 65.7% |
+
+The reward head is **no better when handed the real successor** — that failure sits in the outcome
+readout and ranking path, not in the transition. Safety *does* improve with real successors
+(+10.8 points) but still loses to the action-marginal control, so transition error contributes
+there without explaining it. And the positive latent action-effect results show the transition
+model does respond to actions.
+
+What the evidence supports is narrower and more useful: **the complete H2 system cannot use its
+successor representations to select actions reliably**, with the reward failure localized to the
+readout and the safety failure shared between readout and transition.
+
+The true-successor substitution is a localization diagnostic using learned heads, not a simulator
+oracle, and should be read as such.
+
 ## Why this matters
 
 `outcome_calibration`'s reward component **passed** against zero and marginal baselines, while the
@@ -80,7 +105,13 @@ reasonable.**
 - **One seed.** No training-robustness claim.
 - **Retention compares against CLS only** — the preselected old-export reference could not be
   loaded, see the gate-runner note.
-- `continuation` reported `insufficient_coverage`: too few dead examples in the DEV suffix sample.
+- `continuation` reported `insufficient_coverage` on **767 alive against 1 dead** example. Reward
+  calibration itself passed; `outcome_calibration` failed only on that coverage.
+- Retention was **inconclusive** under the noninferiority margin, not a demonstrated collapse.
+- Observed and generated BC were similarly weak (0.1771 vs 0.1667), so there is **no** evidence of
+  an observed-to-generated transfer collapse here.
+- `decision: "continue_h16"` in the JSON is a stage label. The boundary independently rejects:
+  `ComponentGateError: h2: gate did not validate the required recursive depth`.
 - Stochastic multimodal fidelity, persistent-memory utility and decoded tiles remain
   `not_evaluated`.
 

@@ -1,5 +1,11 @@
 # TC cannot produce a TC-14 compliant latent cache
 
+> **CORRECTED 2026-09-21.** The explanation below — that TC's temporal centering leaves near-zero
+> coordinates raw lacks — is **WRONG and withdrawn**. Measured on 256 DEV frames, TC has *fewer*
+> near-zero coordinates than raw (0.04% vs 0.08% below 1e-3) and *larger* magnitudes
+> (|z| mean 1.538 vs 0.665). The real cause is **representational collapse**, and the export
+> failure is a symptom of it. See "What actually happened" at the end.
+
 **Measured 2026-09-21, both arms, same frozen encoders, same execution settings.**
 
 ## What happened
@@ -74,3 +80,38 @@ A new sealed recipe declaring `cache_chunk = 1`, or `cudnn_tf32 = false` in the 
 retrained from scratch — because both change the manifest the existing checkpoints are bound to.
 Whether TC's near-zero coordinates are also a problem for the bridge's own objective is a separate
 question this finding does not answer.
+
+
+## What actually happened — TC collapsed during training
+
+Effective rank (entropy of the coordinate-covariance spectrum) on identical DEV frames:
+
+| arm | update 2,000 | update 6,000 | update 10,000 |
+|---|---:|---:|---:|
+| raw | 7.44 | 8.61 | **9.48** |
+| tc | **9.66** | **2.38** | **2.58** |
+
+**At G1, TC was healthier than raw** — effective rank 9.66 against 7.44. G1 passed it on the
+evidence available at update 2,000, correctly. Between updates 2,000 and 6,000 TC collapsed from
+9.66 to 2.38 effective dimensions out of 192, and its prediction MSE plateaued at ~0.3 over the
+same interval. The plateau *is* the collapse.
+
+### Why that breaks the export
+
+Collapse concentrates the representation's energy into a few directions, which raises coordinate
+magnitudes: TC's mean |z| goes 0.972 → 1.538 across the collapse while raw's stays at ~0.665. The
+batch-invariance check uses an **absolute** tolerance of 1e-5. Larger activations carry larger
+absolute numerical error from the same relative precision — TC's worst absolute deviation is
+3.32e-05 against raw's 2.50e-06, a 13× gap that tracks the magnitude and dynamic-range increase.
+On a coordinate that happens to be near zero the `rtol·|z|` allowance adds nothing, and the check
+fails.
+
+So the export guard is not mis-specified and it is not the problem. It is a **numerical symptom of
+a representational failure**, and it fired in the right direction.
+
+### Gate or training?
+
+**Training.** And there is a real gap in the schedule alongside it: G1 screens at update 2,000 and
+the next representational check is the export at 10,000. Nothing looks at the representation in
+between, which is exactly where TC collapsed. A mid-budget rank or retention probe would have
+caught this at ~4,000 and saved the remaining 6,000 updates.
