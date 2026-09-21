@@ -221,6 +221,24 @@ def _load_bridge_parent(checkpoint: Path):
     return bundle, heads, payload
 
 
+def _load_actor_parent(checkpoint: Path):
+    """The actor screen snapshot: frozen world, trained heads, and the immutable BC prior."""
+    from .checkpoint import read_lewm_actor
+    payload = read_lewm_actor(checkpoint)
+    config = config_from_dict(payload["config"])
+    bundle = ModelBundle.create(config)
+    bundle.encoder.load_state_dict(payload["modules"]["encoder"], strict=True)
+    bundle.world.load_state_dict(payload["modules"]["world"], strict=True)
+    bundle.capabilities = dict(payload["capabilities"])
+    bundle.encoder.freeze()
+    bundle.world.eval()
+    heads = Heads(config).to(config.runtime.device)
+    heads.load_state_dict(payload["modules"]["heads"], strict=True)
+    prior = Heads(config).to(config.runtime.device)
+    prior.load_state_dict(payload["modules"]["prior"], strict=True)
+    return bundle, heads.eval(), prior.eval(), payload
+
+
 def _cache_from_contract(cache_path: Path, bundle: ModelBundle, expected: dict):
     manifest_path = cache_path / "manifest.json"
     if (str(cache_path.resolve()) != expected.get("path")
@@ -275,6 +293,16 @@ def main(argv=None) -> int:
     p.add_argument("--stop-after", choices=("screen", "budget"), default="screen")
     p.add_argument("--resume", type=Path)
     p.add_argument("--actor-gate", type=Path, help="identity-bound screen report for full budget")
+    p = sub.add_parser("gate", help="measure a sealed G2/G3/G4 phase report")
+    p.add_argument("--run", type=Path, required=True)
+    p.add_argument("--stage", choices=("h2", "h16", "actor"), required=True)
+    p.add_argument("--dataset", type=Path, nargs="+",
+                   help="raw corpus; semantic retention compares projected z against CLS and "
+                        "cannot read that from the projected-only latent cache")
+    p.add_argument("--checkpoint", type=Path)
+    p.add_argument("--cache", type=Path)
+    p.add_argument("--out", type=Path)
+    p.add_argument("--screen-recipe", type=Path, default=recipes/"joint_screen.json")
     p = sub.add_parser("evaluate", help="real Craftax actor versus its immutable own BC")
     p.add_argument("--run", type=Path, required=True)
     p.add_argument("--actor", type=Path)
@@ -367,6 +395,40 @@ def main(argv=None) -> int:
                 actor_gate=_read_json(args.actor_gate),
             )
             return 0
+        if args.command == "gate":
+            from .lewm_diagnostics import actor_gate, bridge_gate
+            arm_recipe = config_from_dict(json.loads((args.run / "resolved_recipe.json").read_text()))
+            settings = arm_recipe.agent
+            if settings is None:
+                raise ComponentGateError("phase_gate", "run recipe has no M4 settings")
+            screen = load_recipe(args.screen_recipe)
+            cache_path = args.cache or args.run / "cache"
+            output = args.out or args.run / "gates" / args.stage
+            destination = output
+            raw = None
+            if args.dataset:
+                raw, _ = load_joint_corpus(args.dataset, arm_recipe)
+            if args.stage == "actor":
+                checkpoint = args.checkpoint or args.run / "actor" / f"step-{settings.actor_screen_steps:06d}.pt"
+                bundle, heads, prior, payload = _load_actor_parent(checkpoint)
+                episodes, cache_contract = _cache_from_contract(cache_path, bundle, payload["cache"])
+                report = actor_gate(bundle, heads, prior, payload, episodes, cache_contract,
+                                    screen, output, checkpoint=checkpoint)
+            else:
+                steps = settings.h2_steps if args.stage == "h2" else settings.h2_steps + settings.h16_steps
+                checkpoint = args.checkpoint or args.run / "bridge" / f"step-{steps:06d}.pt"
+                bundle, heads, payload = _load_bridge_parent(checkpoint)
+                episodes, cache_contract = _cache_from_contract(cache_path, bundle, payload["cache"])
+                report = bridge_gate(bundle, heads, payload, episodes, cache_contract, screen,
+                                     output, stage=args.stage, checkpoint=checkpoint,
+                                     raw_episodes=raw)
+            failed = [n for n, c in report["components"].items() if c["status"] != "pass"]
+            print(json.dumps({"stage": args.stage, "decision": report["decision"],
+                              "validated_recursive_depth": report["validated_recursive_depth"],
+                              "failed_components": sorted(failed),
+                              "report": str(output / (f"bridge_gate_{args.stage}.json"
+                                                      if args.stage != "actor" else "actor_gate.json"))}))
+            return 0 if not failed else 1
         if args.command == "evaluate":
             from .execution import evaluate_lewm_actor
             arm_recipe = config_from_dict(json.loads((args.run / "resolved_recipe.json").read_text()))

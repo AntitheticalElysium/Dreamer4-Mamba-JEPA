@@ -602,3 +602,521 @@ def screen_joint_pair(runs, episodes, dataset_contract, settings, output):
     report["report_id"] = contract_digest(report)
     atomic_manifest(report_path,report)
     return report
+
+
+# --- G2/G3/G4 phase gates -------------------------------------------------------------------
+#
+# `gates.require_bridge_gate` and `require_actor_gate` own identity and the stop decision; they
+# deliberately refuse to compute evidence, so this is where the measurements live.  Three sealed
+# reports are needed, not one: H2 -> H16, H16 -> actor, and the actor screen -> actor budget.
+#
+# Every component fails closed.  A stratum without support reports `insufficient_coverage` and
+# does not pass, because an absent label set must never authorize thousands of further updates.
+
+GATE_NOT_EVALUATED = {
+    "stochastic_successor_modes": "needs repeated-simulator-seed forks; not a gate component",
+    "persistent_memory_utility": "needs varied earlier context with the observation held fixed",
+    "decoded_tiles": "needs the M6 renderer",
+}
+
+
+def _paired_mean_interval(left, right, clusters, *, draws: int, seed: int):
+    """Episode-clustered bootstrap of mean(left) - mean(right). Lower is better for errors."""
+    import torch
+    left, right, clusters = left.flatten(), right.flatten(), clusters.flatten()
+    groups = [torch.where(clusters == key)[0] for key in clusters.unique(sorted=True)]
+    if len(groups) < 2:
+        return {"difference": None, "interval": None, "excludes_zero": False,
+                "status": "insufficient_coverage"}
+    generator = torch.Generator().manual_seed(seed)
+    samples = []
+    for _ in range(draws):
+        pick = torch.cat([groups[i] for i in
+                          torch.randint(len(groups), (len(groups),), generator=generator)])
+        samples.append(float(left[pick].mean() - right[pick].mean()))
+    low, high = torch.tensor(samples).quantile(torch.tensor([.025, .975])).tolist()
+    return {"difference": float(left.mean() - right.mean()),
+            "interval": [low, high], "excludes_zero": bool(low > 0 or high < 0)}
+
+
+def _component(status: str, metrics: dict, evidence: list) -> dict:
+    return {"status": status, "metrics": metrics, "evidence": evidence}
+
+
+def _evidence(output, name: str, payload: dict) -> list:
+    """Write one immutable evidence file and bind it by bytes."""
+    from .data import _sha256, atomic_manifest
+    path = Path(output) / f"{name}.json"
+    atomic_manifest(path, payload)
+    return [{"path": str(path), "sha256": _sha256(path)}]
+
+
+def _seal(body: dict) -> dict:
+    from .gates import contract_digest
+    return dict(body, report_id=contract_digest(body))
+
+
+def _gate_traces(bundle, episodes, config, *, batches: int, seed: int):
+    """A fixed held-out sample drawn exactly as Phase 2 draws, reused by every component."""
+    from .data import sample_bridge_batch, sample_bridge_terminals
+    rng = torch.Generator().manual_seed(seed)
+    traces = []
+    for update in range(batches):
+        traces.append((sample_bridge_batch(episodes, rng, config, update).to(bundle.device),
+                       sample_bridge_terminals(episodes, rng, config, update).to(bundle.device)))
+    return traces
+
+
+def _derangement(count: int, generator) -> torch.Tensor:
+    """A permutation with no fixed point, so every row really is re-labelled."""
+    while True:
+        order = torch.randperm(count, generator=generator)
+        if count < 2 or bool((order != torch.arange(count)).all()):
+            return order
+
+
+@torch.no_grad()
+def _rollouts(bundle, traces, depth: int, *, seed: int):
+    """Generated, persistence and marginal-action rollouts on one shared sample.
+
+    The marginal-action baseline re-labels each row's actions with a fixed derangement: it asks
+    what the rollout predicts when it is told the wrong action, which is the prediction available
+    to a world that ignores the action. The same quantity is the action-sensitivity test, so it is
+    computed once and read twice rather than approximated separately.
+    """
+    from .train import _bridge_initial_state, _outgoing_actions, bridge_rollout
+    generator = torch.Generator().manual_seed(seed)
+    rows = {"generated": [], "persistence": [], "marginal": [], "clusters": [],
+            "effect_true": [], "effect_pred": []}
+    for main, _ in traces:
+        batch = main.main
+        z = batch.latents
+        if depth >= z.shape[1]:
+            continue
+        actions = _outgoing_actions(batch, bundle.n_actions)
+        initial = _bridge_initial_state(bundle, main)
+        _, generated, _, anchor = bridge_rollout(bundle, z, actions, depth, initial)
+        order = _derangement(len(z), generator).to(z.device)
+        _, deranged, _, _ = bridge_rollout(bundle, z, actions[order], depth, initial)
+        truth = z[:, anchor + 1:anchor + 1 + depth].float()
+        base = z[:, anchor:anchor + 1].float().expand_as(truth)
+        per_row = lambda x: (x.float() - truth).square().mean(dim=tuple(range(1, truth.ndim)))
+        rows["generated"].append(per_row(generated))
+        rows["marginal"].append(per_row(deranged))
+        rows["persistence"].append(per_row(base))
+        rows["effect_true"].append((truth - base).flatten(1))
+        rows["effect_pred"].append((generated.float() - base).flatten(1))
+        rows["clusters"].append(torch.tensor(
+            [abs(hash(name)) % (2**31) for name in main.episode_ids], device=z.device))
+    if not rows["clusters"]:
+        return None
+    return {key: torch.cat(value).cpu() for key, value in rows.items()}
+
+
+def _recursive_dynamics(bundle, traces, depths, *, draws: int, seed: int, output):
+    """TC-16: the rollout must beat persistence AND the marginal-action baseline at each depth."""
+    measured, passing = {}, True
+    for depth in depths:
+        roll = _rollouts(bundle, traces, depth, seed=seed + depth)
+        if roll is None:
+            measured[f"depth_{depth}"] = {"status": "insufficient_coverage"}
+            passing = False
+            continue
+        # Errors: the rollout is better when its error is LOWER, so the contrast is baseline-minus.
+        vs_persistence = _paired_mean_interval(roll["persistence"], roll["generated"],
+                                               roll["clusters"], draws=draws, seed=seed + depth)
+        vs_marginal = _paired_mean_interval(roll["marginal"], roll["generated"],
+                                            roll["clusters"], draws=draws, seed=seed + 97 + depth)
+        beat = (vs_persistence.get("difference") or 0) > 0 and vs_persistence.get("excludes_zero") \
+            and (vs_marginal.get("difference") or 0) > 0 and vs_marginal.get("excludes_zero")
+        measured[f"depth_{depth}"] = {
+            "rows": int(len(roll["generated"])),
+            "generated_mse": float(roll["generated"].mean()),
+            "persistence_mse": float(roll["persistence"].mean()),
+            "marginal_action_mse": float(roll["marginal"].mean()),
+            "vs_persistence": vs_persistence, "vs_marginal_action": vs_marginal,
+            "beats_both_baselines": bool(beat)}
+        passing = passing and bool(beat)
+    return _component("pass" if passing else "fail", measured,
+                      _evidence(output, "recursive_dynamics", measured))
+
+
+def _action_effects(bundle, traces, depth: int, *, draws: int, seed: int, output):
+    """TC-16: does the predicted CHANGE track the real one, and does re-labelling the action cost?"""
+    roll = _rollouts(bundle, traces, depth, seed=seed)
+    if roll is None:
+        return _component("insufficient_coverage", {"reason": "no row reached this depth"},
+                          _evidence(output, "action_effects", {"reason": "no coverage"}))
+    true_effect, predicted = roll["effect_true"], roll["effect_pred"]
+    residual = (predicted - true_effect).square().sum()
+    total = (true_effect - true_effect.mean(0, keepdim=True)).square().sum()
+    cosine = torch.nn.functional.cosine_similarity(predicted, true_effect, dim=-1)
+    sensitivity = _paired_mean_interval(roll["marginal"], roll["generated"], roll["clusters"],
+                                        draws=draws, seed=seed + 11)
+    metrics = {"depth": depth, "rows": int(len(cosine)),
+               "effect_r2": float(1 - residual / total.clamp(min=1e-12)),
+               "effect_cosine": float(cosine.mean()),
+               "action_sensitivity": sensitivity,
+               "uses_the_action": bool((sensitivity.get("difference") or 0) > 0
+                                       and sensitivity.get("excludes_zero"))}
+    status = "pass" if metrics["uses_the_action"] and metrics["effect_r2"] > 0 else "fail"
+    return _component(status, metrics, _evidence(output, "action_effects", metrics))
+
+
+@torch.no_grad()
+def _head_readouts(bundle, heads, traces):
+    """Observed-path head outputs and their targets, on the shared held-out sample."""
+    from .agent import head_targets
+    from .data import to_head_batch
+    from .train import _bridge_initial_state, _outgoing_actions
+    rows = {"reward_pred": [], "reward_true": [], "reward_mask": [],
+            "continue_prob": [], "continue_true": [], "continue_mask": [],
+            "policy_hit": [], "policy_action": [], "policy_mask": [], "clusters": []}
+    centers = heads.centers
+    for main, _ in traces:
+        batch = to_head_batch(main)
+        actions = _outgoing_actions(batch, bundle.n_actions)
+        teacher = bundle.world.teacher(batch.latents, actions,
+                                       state=_bridge_initial_state(bundle, main))
+        read = heads(teacher.features)
+        targets = head_targets(batch, bundle.config)
+        probabilities = read["reward"][:, :, 0].softmax(-1)
+        mean = (probabilities * centers).sum(-1)
+        rows["reward_pred"].append((mean.sign() * torch.expm1(mean.abs())).flatten())
+        rows["reward_true"].append(targets["reward"][..., 0].flatten())
+        rows["reward_mask"].append((targets["valid"][..., 0] * targets["reward_rows"][:, :, 0]).flatten())
+        rows["continue_prob"].append(read["continuation"][..., 0].sigmoid().flatten())
+        rows["continue_true"].append(targets["continuation"][..., 0].flatten())
+        rows["continue_mask"].append(targets["continuation_valid"][..., 0].flatten())
+        choice = read["policy"][:, :, 0].argmax(-1)
+        truth = targets["action"][..., 0].long()
+        rows["policy_hit"].append((choice == truth).float().flatten())
+        rows["policy_action"].append(truth.flatten())
+        rows["policy_mask"].append((targets["action_valid"][..., 0] * targets["policy_rows"][:, :, 0]).flatten())
+        blocks = batch.latents.shape[1]
+        rows["clusters"].append(torch.tensor(
+            [abs(hash(name)) % (2**31) for name in main.episode_ids],
+            device=batch.latents.device).repeat_interleave(blocks))
+    if not rows["clusters"]:
+        return None
+    return {key: torch.cat(value).cpu() for key, value in rows.items()}
+
+
+def _outcome_calibration(bundle, heads, traces, *, draws: int, seed: int, output):
+    """TC-17: reward must beat zero AND marginal; balanced terminal BCE must beat log(2).
+
+    The balanced reference is the spec's: a constant 0.5 predictor scores log(2) on a balanced
+    pair, so an always-continue head -- which is otherwise flattered by mostly-alive data -- fails
+    the classwise comparison however good its aggregate looks.
+    """
+    import math
+    read = _head_readouts(bundle, heads, traces)
+    if read is None:
+        return _component("insufficient_coverage", {"reason": "no readouts"},
+                          _evidence(output, "outcome_calibration", {"reason": "no coverage"}))
+    metrics = {"balanced_reference_bce": math.log(2)}
+    ok = True
+
+    mask = read["reward_mask"] > 0
+    if int(mask.sum()) < 2:
+        metrics["reward"] = {"status": "insufficient_coverage"}
+        ok = False
+    else:
+        truth, predicted = read["reward_true"][mask], read["reward_pred"][mask]
+        clusters = read["clusters"][mask]
+        zero = torch.zeros_like(truth)
+        marginal = torch.full_like(truth, float(truth.mean()))
+        square = lambda x: (x - truth).square()
+        vs_zero = _paired_mean_interval(square(zero), square(predicted), clusters,
+                                        draws=draws, seed=seed + 1)
+        vs_marginal = _paired_mean_interval(square(marginal), square(predicted), clusters,
+                                           draws=draws, seed=seed + 2)
+        beat = all((c.get("difference") or 0) > 0 and c.get("excludes_zero")
+                   for c in (vs_zero, vs_marginal))
+        metrics["reward"] = {"mse": float(square(predicted).mean()),
+                             "zero_mse": float(square(zero).mean()),
+                             "marginal_mse": float(square(marginal).mean()),
+                             "vs_zero": vs_zero, "vs_marginal": vs_marginal,
+                             "beats_both": bool(beat)}
+        ok = ok and beat
+
+    mask = read["continue_mask"] > 0
+    truth, probability = read["continue_true"][mask], read["continue_prob"][mask].clamp(1e-6, 1 - 1e-6)
+    alive, dead = truth > 0.5, truth <= 0.5
+    if int(alive.sum()) < 2 or int(dead.sum()) < 2:
+        metrics["continuation"] = {"status": "insufficient_coverage",
+                                   "alive": int(alive.sum()), "dead": int(dead.sum())}
+        ok = False
+    else:
+        bce = -(truth * probability.log() + (1 - truth) * (1 - probability).log())
+        classwise = {"alive": float(bce[alive].mean()), "dead": float(bce[dead].mean())}
+        balanced = (classwise["alive"] + classwise["dead"]) / 2
+        metrics["continuation"] = {
+            "balanced_bce": balanced, "aggregate_bce": float(bce.mean()),
+            "classwise_bce": classwise,
+            "brier": float((probability - truth).square().mean()),
+            "mean_probability": {"alive": float(probability[alive].mean()),
+                                 "dead": float(probability[dead].mean())},
+            "beats_balanced_reference": bool(balanced < math.log(2)
+                                             and max(classwise.values()) < math.log(2)
+                                             and float(bce.mean()) < math.log(2))}
+        ok = ok and metrics["continuation"]["beats_balanced_reference"]
+    return _component("pass" if ok else "fail", metrics,
+                      _evidence(output, "outcome_calibration", metrics))
+
+
+def _observed_bc(bundle, heads, traces, *, draws: int, seed: int, output):
+    """TC-17: observed-path BC on the relevant half, with its own complete recurrent state.
+
+    Reported rather than margin-gated here: EVALUATION.md puts the `.5`-achievement noninferiority
+    comparison in G4, against a real-game BC, not at the bridge.
+    """
+    read = _head_readouts(bundle, heads, traces)
+    if read is None:
+        return _component("insufficient_coverage", {"reason": "no readouts"},
+                          _evidence(output, "observed_bc", {"reason": "no coverage"}))
+    mask = read["policy_mask"] > 0
+    if int(mask.sum()) < 2:
+        return _component("insufficient_coverage", {"relevant_rows": int(mask.sum())},
+                          _evidence(output, "observed_bc", {"relevant_rows": int(mask.sum())}))
+    hit, truth, clusters = read["policy_hit"][mask], read["policy_action"][mask], read["clusters"][mask]
+    counts = torch.bincount(truth.long(), minlength=bundle.n_actions)
+    marginal = (truth == int(counts.argmax())).float()
+    contrast = _paired_mean_interval(hit, marginal, clusters, draws=draws, seed=seed + 3)
+    metrics = {"rows": int(mask.sum()), "top1_agreement": float(hit.mean()),
+               "most_frequent_action_rate": float(marginal.mean()),
+               "vs_most_frequent": contrast,
+               "beats_marginal": bool((contrast.get("difference") or 0) > 0
+                                      and contrast.get("excludes_zero"))}
+    return _component("pass", metrics, _evidence(output, "observed_bc", metrics))
+
+
+GATE_DEPTHS = {"h2": (1, 2), "h16": (1, 2, 4, 8, 16)}
+
+
+def _source_contract(bundle, payload, cache_contract, checkpoint, output):
+    """Identity the loaders already established, recorded as measurements rather than re-derived."""
+    from .data import _sha256
+    predictor_bn = [m for m in bundle.world.predictor_projector.modules()
+                    if isinstance(m, torch.nn.BatchNorm1d)]
+    metrics = {"checkpoint_sha256": _sha256(Path(checkpoint)),
+               "parent_checkpoint": payload.get("parent", {}).get("checkpoint")
+                                    if isinstance(payload.get("parent"), dict) else payload.get("parent"),
+               "cache_path": cache_contract.get("path"),
+               "cache_manifest_sha256": cache_contract.get("manifest_sha256"),
+               "encoder_frozen": bool(getattr(bundle.encoder, "_frozen", False)),
+               "predictor_bn_modules": len(predictor_bn),
+               "predictor_bn_in_eval": all(not m.training for m in predictor_bn),
+               "capabilities": dict(payload.get("capabilities", {}))}
+    ok = metrics["encoder_frozen"] and metrics["predictor_bn_in_eval"] and bool(metrics["cache_manifest_sha256"])
+    return _component("pass" if ok else "fail", metrics, _evidence(output, "source_contract", metrics))
+
+
+def _semantic_retention(bundle, raw_episodes, settings, output):
+    """G2 retention: projected `z` must be noninferior to its own CLS within the .03 AUC margin.
+
+    This needs raw frames, not the Phase-2 latent cache, because the cache stores projected `z`
+    only and the comparison is precisely projected-versus-CLS. Without the corpus it fails closed.
+    """
+    from .data import screen_windows
+    if raw_episodes is None:
+        return _component("insufficient_coverage", {"reason": "retention needs the raw corpus"},
+                          _evidence(output, "semantic_retention", {"reason": "no corpus supplied"}))
+    device = bundle.config.runtime.device
+    windows = {split: screen_windows(raw_episodes, bundle.config, settings, split)
+               for split in ("train", "dev")}
+    features = {split: screen_features(bundle, windows[split], settings) for split in windows}
+    report, _ = screen_retention(features["train"], features["dev"], windows["train"], windows["dev"],
+                                 settings, device, bundle.n_actions)
+    # `projection_stop` is True exactly when projected is inferior to CLS beyond the margin.
+    ok = not report["projection_stop"]
+    report["auc_margin"] = settings.auc_margin
+    report["noninferior_to_cls"] = bool(ok)
+    return _component("pass" if ok else "fail", report, _evidence(output, "semantic_retention", report))
+
+
+def _paired_uncertainty(components, settings, output):
+    """Every decision-bearing contrast, with its episode-clustered interval, in one place."""
+    gathered = {}
+    def walk(prefix, node):
+        if isinstance(node, dict):
+            if "interval" in node and "difference" in node:
+                gathered[prefix] = {k: node.get(k) for k in ("difference", "interval", "excludes_zero")}
+            for key, value in node.items():
+                walk(f"{prefix}.{key}" if prefix else key, value)
+    for name, component in components.items():
+        walk(name, component.get("metrics", {}))
+    metrics = {"draws": settings.bootstrap_draws, "clustering": "whole held-out episode",
+               "contrasts": gathered, "resolved": sum(1 for v in gathered.values() if v["interval"])}
+    status = "pass" if metrics["resolved"] else "insufficient_coverage"
+    return _component(status, metrics, _evidence(output, "paired_uncertainty", metrics))
+
+
+def bridge_gate(bundle, heads, payload, episodes, cache_contract, settings, output, *,
+                stage: str, checkpoint, raw_episodes=None, batches: int = 24):
+    """The sealed G2/G3 report that `require_bridge_gate` will accept or refuse.
+
+    Pass rule, from EVALUATION.md G3: permit the longer bridge only when source contracts,
+    retention, action-effect improvement over persistence AND marginal controls, and outcome
+    calibration beyond the trivial baselines all hold, with paired uncertainty. Every component
+    fails closed, so missing support blocks rather than authorizes.
+    """
+    from .config import recipe_digest
+    from .gates import contract_digest
+    output = Path(output)
+    output.mkdir(parents=True, exist_ok=True)
+    config = bundle.config
+    depths = tuple(d for d in GATE_DEPTHS[stage] if d < config.agent.sequence)
+    seed = config.seed + (700 if stage == "h2" else 800)
+    traces = _gate_traces(bundle, episodes, config, batches=batches, seed=seed)
+
+    components = {
+        "source_contract": _source_contract(bundle, payload, cache_contract, checkpoint, output),
+        "semantic_retention": _semantic_retention(bundle, raw_episodes, settings, output),
+        "recursive_dynamics": _recursive_dynamics(bundle, traces, depths, draws=settings.bootstrap_draws,
+                                                  seed=seed, output=output),
+        "action_effects": _action_effects(bundle, traces, max(depths), draws=settings.bootstrap_draws,
+                                          seed=seed + 20, output=output),
+        "outcome_calibration": _outcome_calibration(bundle, heads, traces, draws=settings.bootstrap_draws,
+                                                    seed=seed + 40, output=output),
+        "observed_bc": _observed_bc(bundle, heads, traces, draws=settings.bootstrap_draws,
+                                    seed=seed + 60, output=output),
+    }
+    components["paired_uncertainty"] = _paired_uncertainty(components, settings, output)
+
+    measured = components["recursive_dynamics"]["metrics"]
+    validated = 0
+    for depth in depths:
+        entry = measured.get(f"depth_{depth}", {})
+        if entry.get("beats_both_baselines"):
+            validated = max(validated, depth)
+    body = {"schema": "d4mj_lewm_bridge_gate_v1",
+            "checkpoint_sha256": _source_contract_digest(checkpoint),
+            "recipe_id": recipe_digest(config),
+            "cache_id": contract_digest(cache_contract),
+            "stage": stage,
+            "decision": "continue_h16" if stage == "h2" else "authorize_actor",
+            "validated_recursive_depth": int(validated),
+            "evaluated_depths": list(depths),
+            "not_evaluated": dict(GATE_NOT_EVALUATED),
+            "components": components}
+    report = _seal(body)
+    from .data import atomic_manifest
+    atomic_manifest(output / f"bridge_gate_{stage}.json", report)
+    return report
+
+
+def _source_contract_digest(path):
+    from .data import _sha256
+    return _sha256(Path(path))
+
+
+@torch.no_grad()
+def _actor_diagnostics(bundle, heads, prior, traces, horizon: int):
+    """One imagined rollout per starting context, with the quantities G4 asks for."""
+    from .actor_critic import lambda_returns
+    from .imagination import imagine
+    from .train import _bridge_initial_state, _outgoing_actions
+    from .data import to_head_batch
+    values, returns, entropies, priors, chosen = [], [], [], [], []
+    policy_rng = torch.Generator(device=bundle.device).manual_seed(bundle.config.seed + 909)
+    for main, _ in traces:
+        batch = to_head_batch(main)
+        actions = _outgoing_actions(batch, bundle.n_actions)
+        observed = bundle.world.teacher(batch.latents, actions,
+                                        state=_bridge_initial_state(bundle, main))
+        trajectory = imagine(bundle, heads, observed.state, observed.features[:, -1:],
+                             None, policy_rng, bundle.config)
+        target = lambda_returns(trajectory, bundle.config)
+        values.append(trajectory.value[:, :-1].flatten().cpu())
+        returns.append(target.flatten().cpu())
+        distribution = trajectory.logits.softmax(-1)
+        entropies.append((-(distribution * distribution.clamp_min(1e-9).log()).sum(-1)).flatten().cpu())
+        reference = prior(trajectory.agent[:, :-1])["policy"][:, :, 0].softmax(-1)
+        priors.append((distribution * (distribution.clamp_min(1e-9).log()
+                                       - reference.clamp_min(1e-9).log())).sum(-1).flatten().cpu())
+        chosen.append(trajectory.action.flatten().cpu())
+    if not values:
+        return None
+    return {k: torch.cat(v) for k, v in
+            (("value", values), ("returns", returns), ("entropy", entropies),
+             ("kl_to_prior", priors), ("action", chosen))}
+
+
+def actor_gate(bundle, heads, prior, payload, episodes, cache_contract, settings, output, *,
+               checkpoint, batches: int = 16):
+    """The sealed G4 screen report: continue to the 5,000 budget, or stop.
+
+    G4 asks whether "the learned environment remains valid and the critic/action diagnostic does
+    not reveal exploitation or a broken treatment". Each of those is measured, and each fails
+    closed.
+    """
+    from .config import recipe_digest
+    from .data import atomic_manifest
+    from .gates import contract_digest
+    output = Path(output)
+    output.mkdir(parents=True, exist_ok=True)
+    config = bundle.config
+    horizon = config.agent.horizon
+    seed = config.seed + 900
+    traces = _gate_traces(bundle, episodes, config, batches=batches, seed=seed)
+
+    frozen = _source_contract(bundle, payload, cache_contract, checkpoint, output)
+    roll = _rollouts(bundle, traces, min(horizon, config.agent.sequence - 1), seed=seed)
+    if roll is None:
+        validity = _component("insufficient_coverage", {"reason": "no row reached the horizon"},
+                              _evidence(output, "model_validity", {"reason": "no coverage"}))
+    else:
+        contrast = _paired_mean_interval(roll["persistence"], roll["generated"], roll["clusters"],
+                                         draws=settings.bootstrap_draws, seed=seed + 1)
+        metrics = {"horizon": horizon, "generated_mse": float(roll["generated"].mean()),
+                   "persistence_mse": float(roll["persistence"].mean()),
+                   "vs_persistence": contrast,
+                   "frozen_world": frozen["metrics"]["predictor_bn_in_eval"],
+                   "still_beats_persistence": bool((contrast.get("difference") or 0) > 0
+                                                   and contrast.get("excludes_zero"))}
+        validity = _component("pass" if metrics["still_beats_persistence"] and metrics["frozen_world"]
+                              else "fail", metrics, _evidence(output, "model_validity", metrics))
+
+    diagnostics = _actor_diagnostics(bundle, heads, prior, traces, horizon)
+    if diagnostics is None:
+        critic = _component("insufficient_coverage", {"reason": "no imagined rollout"},
+                            _evidence(output, "critic_direction", {"reason": "no coverage"}))
+        distribution = critic
+    else:
+        value, target = diagnostics["value"], diagnostics["returns"]
+        centred = lambda x: x - x.mean()
+        correlation = float((centred(value) * centred(target)).mean()
+                            / (value.std().clamp_min(1e-9) * target.std().clamp_min(1e-9)))
+        metrics = {"value_return_correlation": correlation,
+                   "mean_value": float(value.mean()), "mean_return": float(target.mean()),
+                   "value_bias": float((value - target).mean()),
+                   "tracks_returns": bool(correlation > 0)}
+        critic = _component("pass" if metrics["tracks_returns"] else "fail", metrics,
+                            _evidence(output, "critic_direction", metrics))
+        counts = torch.bincount(diagnostics["action"].long(), minlength=bundle.n_actions).float()
+        share = counts / counts.sum().clamp_min(1)
+        metrics = {"mean_entropy": float(diagnostics["entropy"].mean()),
+                   "uniform_entropy": float(torch.tensor(float(bundle.n_actions)).log()),
+                   "mean_kl_to_prior": float(diagnostics["kl_to_prior"].mean()),
+                   "actions_used": int((counts > 0).sum()), "n_actions": bundle.n_actions,
+                   "max_action_share": float(share.max()),
+                   "collapsed": bool(float(share.max()) > 0.95)}
+        distribution = _component("fail" if metrics["collapsed"] else "pass", metrics,
+                                  _evidence(output, "action_distribution", metrics))
+
+    components = {"model_validity": validity, "critic_direction": critic,
+                  "action_distribution": distribution}
+    components["paired_uncertainty"] = _paired_uncertainty(components, settings, output)
+    body = {"schema": "d4mj_lewm_actor_gate_v1",
+            "checkpoint_sha256": _source_contract_digest(checkpoint),
+            "recipe_id": recipe_digest(config),
+            "cache_id": contract_digest(cache_contract),
+            "stage": "actor_screen", "decision": "continue_actor",
+            "validated_recursive_depth": int(payload.get("capabilities", {})
+                                             .get("validated_recursive_depth", 0)),
+            "not_evaluated": dict(GATE_NOT_EVALUATED),
+            "components": components}
+    report = _seal(body)
+    atomic_manifest(output / "actor_gate.json", report)
+    return report
