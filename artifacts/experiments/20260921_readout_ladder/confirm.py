@@ -48,6 +48,9 @@ FAMILIES = ("context_action", "successor_cls", "successor_z", "generated_z",
             "real_features", "generated_features")
 # Only these are `width`-dimensional, so only these can go through the deployed head unmodified.
 EXACT_OK = ("real_features", "generated_features")
+# Families computed from the generated successor, contrasted against the trained head's generated
+# reading; every other family is contrasted against its real-successor reading.
+GENERATED = ("generated_z", "generated_features")
 CROSS = {name: (name,) for name in FAMILIES}
 CROSS["real_features"] = ("real_features", "generated_features")
 CROSS["generated_features"] = ("generated_features", "real_features")
@@ -212,6 +215,8 @@ def main(argv=None):
     trained_vectors = {key: value for key, value in trained["real"]["_vectors"].items()}
     trained_generated = {key: value for key, value in trained["generated"]["_vectors"].items()}
 
+    kept = {k: read[k].reshape(-1).clone() for k in
+            ("true_reward", "true_death", "generated_reward", "generated_death")}
     del bundle, heads, payload, read, judged
     torch.cuda.empty_cache()
 
@@ -222,6 +227,11 @@ def main(argv=None):
           [: max(1, int(round(0.15 * fit_roots)))]] = True
     holdout = inner.repeat_interleave(count)
 
+    # Per-row predictions on the judgement roots, so any later contrast is a recomputation rather
+    # than a rerun. The paired interval this run had to be repeated for was lost exactly that way.
+    rows_out = {"trained:real": {"reward": kept["true_reward"], "death": kept["true_death"]},
+                "trained:generated": {"reward": kept["generated_reward"],
+                                      "death": kept["generated_death"]}}
     control, matrix = {}, {name: {} for name in FAMILIES}
     for variant, make in (("adapter", Readout), ("exact", Exact)):
         for family in FAMILIES:
@@ -237,6 +247,8 @@ def main(argv=None):
                 for split in ("fit", "judge"):
                     data = splits[split]
                     pr, pd = predict(model, data[target], centers, device)
+                    if split == "judge":
+                        rows_out[f"{variant}:{family}->{target}"] = {"reward": pr, "death": pd}
                     cell[split] = decisions(data["reward"], data["terminated"], pr, pd,
                                             data["seed"], count, draws=args.draws,
                                             seed=args.seed + 7)
@@ -250,10 +262,12 @@ def main(argv=None):
                             continue
                         against = [("vs_context_action", control.get((split, key)))]
                         if split == "judge":
-                            # The trained head read the REAL successor for real-feature targets and
-                            # the generated one for generated-feature targets; contrast like with like.
-                            reference = (trained_vectors if target != "generated_features"
-                                         else trained_generated).get(key)
+                            # Like with like: a generated rung against the trained head's generated
+                            # reading, everything else against its real reading. This used to test
+                            # `target != "generated_features"`, which sent `generated_z` to the REAL
+                            # reading and reported 0.434 - 0.700 as a like-with-like contrast.
+                            reference = (trained_generated if target in GENERATED
+                                         else trained_vectors).get(key)
                             against.append(("vs_trained_head", reference))
                         for name, theirs in against:
                             if theirs is None or (name == "vs_context_action"
@@ -299,6 +313,15 @@ def main(argv=None):
               "matrix_layout": "matrix[evaluated_on]['<variant>:<fitted_on>'][split]",
               "trained_bridge_head": trained,
               "matrix": matrix}
+    rows_path = args.out / "confirm_rows.pt"
+    torch.save({"truth": {"reward": splits["judge"]["reward"],
+                          "terminated": splits["judge"]["terminated"],
+                          "seed": splits["judge"]["seed"]},
+                "count": count, "predictions": rows_out}, rows_path)
+    report["judge_rows"] = {"path": rows_path.name, "sha256": _sha256(rows_path),
+                            "layout": "predictions['<variant>:<fitted_on>-><evaluated_on>' | "
+                                      "'trained:real' | 'trained:generated']['reward'|'death'], "
+                                      "root-major, 17 actions per root"}
     (args.out / "confirm.json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps({"status": "confirm_complete", "seconds": round(time.time() - started, 1)}),
           flush=True)

@@ -4,7 +4,8 @@
 #
 #   ./run.sh ladder    the four-rung ladder      -> evidence/ladder.json   (RESULT.md)
 #   ./run.sh confirm   trained head + exact refit -> evidence/confirm.json (CONFIRM.md)
-#   ./run.sh all       both
+#   ./run.sh transition  rungs inside advance()  -> evidence/transition.json (TRANSITION.md)
+#   ./run.sh all       all three, in order (transition checks itself against confirm.json)
 #
 # TRITON_F32_DEFAULT=ieee is NOT optional: sources.py records the numeric execution flags in
 # every checkpoint and verify_lewm_sources is strict, so loading the bridge parent without it
@@ -41,6 +42,17 @@ if [ "$STAGE" = "confirm" ] || [ "$STAGE" = "all" ]; then
       --checkpoint artifacts/lewm_m4_canonical/raw/bridge/step-002000.pt \
       --fit-roots 8000 --judge-roots 8000 --steps 6000 --draws 1000 \
       --out "$HERE/evidence" 2>&1 | grep -v "KernelPreference\|ScaleCalculationMode" | tee -a "$HERE/confirm.log"
+  rc=${PIPESTATUS[0]}
+  [ "$rc" -ne 0 ] && exit "$rc"
+fi
+
+if [ "$STAGE" = "transition" ] || [ "$STAGE" = "all" ]; then
+  # Same fit and judgement roots as confirm; reads confirm.json to check the shared rungs reproduce.
+  .venv/bin/python "$HERE/transition.py" \
+      --run artifacts/lewm_m4_canonical/raw \
+      --checkpoint artifacts/lewm_m4_canonical/raw/bridge/step-002000.pt \
+      --fit-roots 8000 --judge-roots 8000 --steps 6000 --draws 1000 \
+      --out "$HERE/evidence" 2>&1 | grep -v "KernelPreference\|ScaleCalculationMode" | tee -a "$HERE/transition.log"
   rc=${PIPESTATUS[0]}
 fi
 exit "$rc"
