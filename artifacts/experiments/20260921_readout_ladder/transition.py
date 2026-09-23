@@ -40,6 +40,22 @@ Declared rules, fixed and committed before launch:
   any rung with no terminal test at all               -> insufficient_coverage
   anything else                                       -> mixed
 
+Post-hoc root-side controls, added AFTER the declared run returned `dynamics_never_construct_it`
+and committed before they were run. They never feed `verdict`. That call presumes the stack's
+INPUT holds the information; even root+action sat below the marginal, so it was not established
+that anything observable at the root predicts which action kills. Three rungs, adapter probe:
+
+  root_z_action            the 4 root z + action: exactly what the transition consumes
+  root_cls_action          the 4 root CLS + action: the encoder before the projector
+  root_cls_patches_action  + the last root frame's 4x4 pooled patch grid (TC-LeWM's policy input)
+
+  root_z_action beats root+action              -> input_carries_it: the stack fails to compute
+                                                  it; training the transition is well-posed
+  only the CLS/patch rungs beat root+action    -> projector_drops_it: lost before the transition
+                                                  sees it; training on z cannot recover it
+  none beats root+action                       -> not_predictable_from_root: the real successor's
+                                                  edge is realized outcome, incl. step randomness
+
 Capture checks fail the RUN, not the verdict: the `final_norm` capture must equal
 `advanced.history` and the predictor output must equal `advanced.latent`, exactly; and the three
 rungs shared with confirm (generated_z, generated_features, context_action) are checked against
@@ -71,6 +87,7 @@ BLOCKS = tuple(f"block_{i}" for i in range(1, 7))
 STACK = ("pair_projection", *BLOCKS, "u")
 RUNGS = (*STACK, "predictor_hidden", "generated_z", "generated_features")
 CONTROL = "context_action"
+ROOT_CONTROLS = ("root_z_action", "root_cls_action", "root_cls_patches_action")
 WIDE = (*STACK, "generated_features")          # 256 wide: the deployed head takes them unmodified
 
 
@@ -92,7 +109,7 @@ def materialize(bundle, rows, span, batch=16):
     handles += [world.final_norm.register_forward_hook(grab("u")),
                 world.predictor_projector[2].register_forward_hook(grab("predictor_hidden")),
                 world.predictor_projector.register_forward_hook(grab("predictor_out"))]
-    packs = {name: [] for name in (CONTROL, *RUNGS)}
+    packs = {name: [] for name in (CONTROL, *ROOT_CONTROLS, *RUNGS)}
     reward, terminated, seeds, identity = [], [], [], hashlib.sha256()
     try:
         for start in range(0, len(rows), batch):
@@ -102,7 +119,10 @@ def materialize(bundle, rows, span, batch=16):
                 identity.update(repr((int(row["seed"]), int(row["step"]))).encode())
             frames = torch.stack([r["frames"][-span:] for r in chunk]).to(device)
             past = torch.stack([r["led_to_action"][-span + 1:] for r in chunk]).to(device)
-            state = world.teacher(bundle.encoder(frames), past).state
+            # `export` returns the same z `encoder(frames)` does, plus CLS and the pooled patch
+            # grid, from one pass; the shared-rung reproduction check verifies z is unchanged.
+            z_root, cls_root, grid_root = bundle.encoder.export(frames)
+            state = world.teacher(z_root, past).state
             root_features = world.features(state)[:, -1, 0]
             actions = torch.arange(count, device=device).repeat(n)[:, None]
             fan = bundle.repeat_state(state, count)
@@ -118,6 +138,11 @@ def materialize(bundle, rows, span, batch=16):
             onehot = nn.functional.one_hot(actions[:, 0], count).float()
             packs[CONTROL].append(
                 torch.cat((root_features.repeat_interleave(count, 0), onehot), -1).cpu())
+            fanned = lambda x: torch.cat((x.flatten(1).repeat_interleave(count, 0), onehot), -1).cpu()
+            packs["root_z_action"].append(fanned(z_root))
+            packs["root_cls_action"].append(fanned(cls_root))
+            packs["root_cls_patches_action"].append(
+                fanned(torch.cat((cls_root.flatten(1), grid_root[:, -1].flatten(1)), -1)))
             for name in STACK:
                 packs[name].append(captured[name][:, 0].cpu())
             packs["predictor_hidden"].append(captured["predictor_hidden"].cpu())
@@ -186,6 +211,8 @@ def main(argv=None):
     parser.add_argument("--steps", type=int, default=6000)
     parser.add_argument("--draws", type=int, default=1000)
     parser.add_argument("--seed", type=int, default=20260921)
+    parser.add_argument("--name", default="transition",
+                        help="evidence file stem; the declared run is `transition`")
     args = parser.parse_args(argv)
     args.out.mkdir(parents=True, exist_ok=True)
     started = time.time()
@@ -224,8 +251,9 @@ def main(argv=None):
           [: max(1, int(round(0.15 * fit_roots)))]] = True
     holdout = inner.repeat_interleave(count)
 
-    control, matrix, rows_out = {}, {name: {} for name in (CONTROL, *RUNGS)}, {}
-    plan = [("adapter", Readout, CONTROL)] + [("adapter", Readout, r) for r in RUNGS] \
+    control, matrix, rows_out = {}, {name: {} for name in (CONTROL, *ROOT_CONTROLS, *RUNGS)}, {}
+    plan = [("adapter", Readout, CONTROL)] + [("adapter", Readout, r) for r in ROOT_CONTROLS] \
+        + [("adapter", Readout, r) for r in RUNGS] \
         + [("exact", Exact, r) for r in WIDE]
     for variant, make, rung in plan:
         model = fit(splits["fit"][rung], splits["fit"]["reward"], ~splits["fit"]["terminated"],
@@ -275,7 +303,7 @@ def main(argv=None):
         reproduction[name] = {"confirm": then, "transition": now,
                               "abs_diff": None if None in (then, now) else abs(then - now)}
 
-    rows_path = args.out / "transition_rows.pt"
+    rows_path = args.out / f"{args.name}_rows.pt"
     torch.save({"truth": {k: splits["judge"][k] for k in ("reward", "terminated", "seed")},
                 "count": count, "predictions": rows_out}, rows_path)
     report = {"schema": "d4mj_transition_ladder_v1",
@@ -293,7 +321,20 @@ def main(argv=None):
               "matrix_layout": "matrix[rung][variant][split]",
               "matrix": matrix}
     report["verdict"] = verdict(matrix)
-    (args.out / "transition.json").write_text(json.dumps(report, indent=2) + "\n")
+    tests = {r: matrix[r]["adapter"]["judge"]["terminal"].get("vs_context_action")
+             for r in ROOT_CONTROLS}
+    beats = {r: None if not t else bool(t["difference"] > 0 and t["excludes_zero"])
+             for r, t in tests.items()}
+    report["post_hoc_root"] = {
+        "beats_root_action": beats,
+        "call": ("insufficient_coverage" if None in beats.values() else
+                 "input_carries_it" if beats["root_z_action"] else
+                 "projector_drops_it" if beats["root_cls_action"] or beats["root_cls_patches_action"]
+                 else "not_predictable_from_root"),
+        "note": "post hoc; added after the declared call and never read by `verdict`. "
+                "not_predictable_from_root is a statement about this probe family, not a proof "
+                "that no function of the root observation predicts termination"}
+    (args.out / f"{args.name}.json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps({"status": "transition_complete", "seconds": round(time.time() - started, 1),
                       **report["verdict"]}), flush=True)
     return 0
