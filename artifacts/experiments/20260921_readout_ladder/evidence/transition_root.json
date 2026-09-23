@@ -1,0 +1,2786 @@
+{
+  "schema": "d4mj_transition_ladder_v1",
+  "checkpoint": "artifacts/lewm_m4_canonical/raw/bridge/step-002000.pt",
+  "checkpoint_sha256": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e",
+  "partition_sha256": "aab9f3e483bf6d2c01afb4d844275a05fb99ee0f6fd9735ea3e3324ab2bfea00",
+  "script_sha256": "1a6d7120157902ae5f7ae1b0b864cd3f62c65c4df83d9adc27062fde30bb23b6",
+  "ladder_sha256": "aeac1b1630163f7f1248b6cc5d25c5a4e43ed6481347afbc3aba36340dfa5a1e",
+  "confirm_script_sha256": "2f3d4fb69123fd09b3b3ad6a6b7855b84b2f291893a822307379dcdb16312d33",
+  "row_identity": {
+    "fit": "bbfe6bf3cfcf6cdb0ddd2079bf91935d72ad88f2882da4d7fdaea8690afac490",
+    "judge": "a06d7caa484e5fadcbaa8d948ec51e7b2a0c264b662d8e1f456189591a9d0fe6"
+  },
+  "roots": {
+    "fit": 7085,
+    "judge": 4047
+  },
+  "steps": 6000,
+  "draws": 1000,
+  "seed": 20260921,
+  "reproduces_confirm": {
+    "adapter:generated_z": {
+      "confirm": 0.4343283474445343,
+      "transition": 0.4343283474445343,
+      "abs_diff": 0.0
+    },
+    "adapter:generated_features": {
+      "confirm": 0.4507462680339813,
+      "transition": 0.4507462680339813,
+      "abs_diff": 0.0
+    },
+    "exact:generated_features": {
+      "confirm": 0.4641790986061096,
+      "transition": 0.4641790986061096,
+      "abs_diff": 0.0
+    },
+    "adapter:context_action": {
+      "confirm": 0.5447761416435242,
+      "transition": 0.5447761416435242,
+      "abs_diff": 0.0
+    }
+  },
+  "judge_rows": {
+    "path": "transition_root_rows.pt",
+    "sha256": "c04a9c4f6a62422520c524240a9dd6e4a44d7a4017b2cb84699e8d10c023550e",
+    "layout": "predictions['<variant>:<rung>']['reward'|'death'], root-major, 17 actions per root"
+  },
+  "matrix_layout": "matrix[rung][variant][split]",
+  "matrix": {
+    "context_action": {
+      "adapter": {
+        "variant": "adapter",
+        "rung": "context_action",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.1546647846698761,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.46746885776519775,
+            "vs_marginal": {
+              "difference": 0.08251234889030457,
+              "interval": [
+                0.06823097914457321,
+                0.0996989756822586
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true
+          },
+          "terminal": {
+            "safe_choice": 0.6365079283714294,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.2989080548286438,
+            "vs_marginal": {
+              "difference": 0.013492047786712646,
+              "interval": [
+                -0.026669640094041824,
+                0.05503201112151146
+              ],
+              "excludes_zero": false
+            },
+            "beats_marginal": false
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.16370150446891785,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.39762067794799805,
+            "vs_marginal": {
+              "difference": 0.1027674674987793,
+              "interval": [
+                0.0793602392077446,
+                0.12838342785835266
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true
+          },
+          "terminal": {
+            "safe_choice": 0.5447761416435242,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.18432138860225677,
+            "vs_marginal": {
+              "difference": -0.06417906284332275,
+              "interval": [
+                -0.1458347886800766,
+                0.010556994006037712
+              ],
+              "excludes_zero": false
+            },
+            "beats_marginal": false
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.009036719799041748,
+          "terminal": 0.09173178672790527
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 1000,
+          "selection_loss": 1.287345174820618,
+          "fit_first_100": 1.7737032747268677,
+          "fit_last_100": 0.6784548753499985
+        }
+      }
+    },
+    "root_z_action": {
+      "adapter": {
+        "variant": "adapter",
+        "rung": "root_z_action",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.16152437031269073,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.4256281554698944,
+            "vs_marginal": {
+              "difference": 0.07565276324748993,
+              "interval": [
+                0.06152881681919098,
+                0.09131775796413422
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.006859585642814636,
+              "interval": [
+                -0.01392108853906393,
+                -0.0005919770337641239
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.629365086555481,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.27834728360176086,
+            "vs_marginal": {
+              "difference": 0.00634920597076416,
+              "interval": [
+                -0.04215528443455696,
+                0.051572125405073166
+              ],
+              "excludes_zero": false
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.007142841815948486,
+              "interval": [
+                -0.037729986011981964,
+                0.02168196812272072
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.19253769516944885,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.32278764247894287,
+            "vs_marginal": {
+              "difference": 0.07393127679824829,
+              "interval": [
+                0.04508678987622261,
+                0.10368141531944275
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.028836190700531006,
+              "interval": [
+                -0.04273509234189987,
+                -0.015908902511000633
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5208955407142639,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.13929471373558044,
+            "vs_marginal": {
+              "difference": -0.08805966377258301,
+              "interval": [
+                -0.1509479433298111,
+                -0.028141813352704048
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.023880600929260254,
+              "interval": [
+                -0.07163132727146149,
+                0.02371671423316002
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.031013324856758118,
+          "terminal": 0.10846954584121704
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 600,
+          "selection_loss": 1.3323072950707138,
+          "fit_first_100": 1.7566034865379334,
+          "fit_last_100": 0.6430497610569
+        }
+      }
+    },
+    "root_cls_action": {
+      "adapter": {
+        "variant": "adapter",
+        "rung": "root_cls_action",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.16333098709583282,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.408432275056839,
+            "vs_marginal": {
+              "difference": 0.07384614646434784,
+              "interval": [
+                0.05982089787721634,
+                0.08966454118490219
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.008666202425956726,
+              "interval": [
+                -0.015097362920641899,
+                -0.002800912130624056
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.6603174805641174,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.31229910254478455,
+            "vs_marginal": {
+              "difference": 0.037301599979400635,
+              "interval": [
+                0.005632791202515364,
+                0.07311838120222092
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": 0.02380955219268799,
+              "interval": [
+                -0.007155492901802063,
+                0.05665280669927597
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.195552259683609,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.33287855982780457,
+            "vs_marginal": {
+              "difference": 0.07091671228408813,
+              "interval": [
+                0.04581480845808983,
+                0.09656974673271179
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.03185075521469116,
+              "interval": [
+                -0.04647715017199516,
+                -0.01938616670668125
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5313432812690735,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.19715642929077148,
+            "vs_marginal": {
+              "difference": -0.07761192321777344,
+              "interval": [
+                -0.15386177599430084,
+                -0.0058990223333239555
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.013432860374450684,
+              "interval": [
+                -0.05956196039915085,
+                0.03502228483557701
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.032221272587776184,
+          "terminal": 0.12897419929504395
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 800,
+          "selection_loss": 1.309952234293045,
+          "fit_first_100": 1.686636564731598,
+          "fit_last_100": 0.6860496068000793
+        }
+      }
+    },
+    "root_cls_patches_action": {
+      "adapter": {
+        "variant": "adapter",
+        "rung": "root_cls_patches_action",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.16797460615634918,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.4073416590690613,
+            "vs_marginal": {
+              "difference": 0.06920252740383148,
+              "interval": [
+                0.05915050953626633,
+                0.08049260824918747
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.013309821486473083,
+              "interval": [
+                -0.023384755477309227,
+                -0.004051713272929192
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.7095237970352173,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.45493534207344055,
+            "vs_marginal": {
+              "difference": 0.08650791645050049,
+              "interval": [
+                0.04327001795172691,
+                0.13062627613544464
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": 0.07301586866378784,
+              "interval": [
+                0.037569813430309296,
+                0.10971703380346298
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.2306399792432785,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.2953838109970093,
+            "vs_marginal": {
+              "difference": 0.03582899272441864,
+              "interval": [
+                0.0036728864070028067,
+                0.06813853234052658
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.06693847477436066,
+              "interval": [
+                -0.08744104206562042,
+                -0.047344811260700226
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5582089424133301,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.2969920039176941,
+            "vs_marginal": {
+              "difference": -0.050746262073516846,
+              "interval": [
+                -0.1176886036992073,
+                0.011730683036148548
+              ],
+              "excludes_zero": false
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": 0.013432800769805908,
+              "interval": [
+                -0.03918800875544548,
+                0.06241406127810478
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.06266537308692932,
+          "terminal": 0.1513148546218872
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 1700,
+          "selection_loss": 1.2071910428853088,
+          "fit_first_100": 1.6567221915721893,
+          "fit_last_100": 0.5974670994281769
+        }
+      }
+    },
+    "pair_projection": {
+      "adapter": {
+        "variant": "adapter",
+        "rung": "pair_projection",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.1564008593559265,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.45059067010879517,
+            "vs_marginal": {
+              "difference": 0.08077627420425415,
+              "interval": [
+                0.06656644493341446,
+                0.09721077978610992
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.001736074686050415,
+              "interval": [
+                -0.006509869359433651,
+                0.002574552781879902
+              ],
+              "excludes_zero": false
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.6119047403335571,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.2548006772994995,
+            "vs_marginal": {
+              "difference": -0.011111140251159668,
+              "interval": [
+                -0.05582946538925171,
+                0.034154728055000305
+              ],
+              "excludes_zero": false
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.024603188037872314,
+              "interval": [
+                -0.05310444533824921,
+                0.007797238416969776
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.17232519388198853,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.35442617535591125,
+            "vs_marginal": {
+              "difference": 0.09414377808570862,
+              "interval": [
+                0.0685557872056961,
+                0.12018101662397385
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.008623689413070679,
+              "interval": [
+                -0.019891399890184402,
+                0.0010962975211441517
+              ],
+              "excludes_zero": false
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5268656611442566,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.14263390004634857,
+            "vs_marginal": {
+              "difference": -0.08208954334259033,
+              "interval": [
+                -0.15686427056789398,
+                -0.008342788554728031
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.017910480499267578,
+              "interval": [
+                -0.06811105459928513,
+                0.03220856189727783
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.01592433452606201,
+          "terminal": 0.08503907918930054
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 500,
+          "selection_loss": 1.2900008300866532,
+          "fit_first_100": 1.874746745824814,
+          "fit_last_100": 0.8221063351631165
+        }
+      },
+      "exact": {
+        "variant": "exact",
+        "rung": "pair_projection",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.1528158038854599,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.45077040791511536,
+            "vs_marginal": {
+              "difference": 0.08436132967472076,
+              "interval": [
+                0.06904024630784988,
+                0.10176246613264084
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": 0.0018489807844161987,
+              "interval": [
+                -0.006503692828118801,
+                0.010112816467881203
+              ],
+              "excludes_zero": false
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.6436507701873779,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.2657155692577362,
+            "vs_marginal": {
+              "difference": 0.020634889602661133,
+              "interval": [
+                -0.021994218230247498,
+                0.061859238892793655
+              ],
+              "excludes_zero": false
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": 0.007142841815948486,
+              "interval": [
+                -0.029281076043844223,
+                0.04198148846626282
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.18265382945537567,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.3694574236869812,
+            "vs_marginal": {
+              "difference": 0.08381514251232147,
+              "interval": [
+                0.05193166062235832,
+                0.11445563286542892
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.018952324986457825,
+              "interval": [
+                -0.03773918002843857,
+                -0.00035728616057895124
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.483582079410553,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.1579216569662094,
+            "vs_marginal": {
+              "difference": -0.12537312507629395,
+              "interval": [
+                -0.19628237187862396,
+                -0.059725306928157806
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.06119406223297119,
+              "interval": [
+                -0.1169234961271286,
+                -0.004120298195630312
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.02983802556991577,
+          "terminal": 0.16006869077682495
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 600,
+          "selection_loss": 1.2896641622864937,
+          "fit_first_100": 1.9182191073894501,
+          "fit_last_100": 0.9203749626874924
+        }
+      }
+    },
+    "block_1": {
+      "adapter": {
+        "variant": "adapter",
+        "rung": "block_1",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.1566125750541687,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.45068052411079407,
+            "vs_marginal": {
+              "difference": 0.08056455850601196,
+              "interval": [
+                0.06646167486906052,
+                0.09819326549768448
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.0019477903842926025,
+              "interval": [
+                -0.010821802541613579,
+                0.0060788108967244625
+              ],
+              "excludes_zero": false
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5595238208770752,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.2217932939529419,
+            "vs_marginal": {
+              "difference": -0.0634920597076416,
+              "interval": [
+                -0.10459744185209274,
+                -0.020971257239580154
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.07698410749435425,
+              "interval": [
+                -0.11291782557964325,
+                -0.04318373277783394
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.18050409853458405,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.3620973825454712,
+            "vs_marginal": {
+              "difference": 0.0859648734331131,
+              "interval": [
+                0.056449905037879944,
+                0.11628729850053787
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.0168025940656662,
+              "interval": [
+                -0.03418269380927086,
+                -0.0005622136523015797
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.42835819721221924,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.10015624016523361,
+            "vs_marginal": {
+              "difference": -0.18059700727462769,
+              "interval": [
+                -0.24506624042987823,
+                -0.1160973459482193
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.11641794443130493,
+              "interval": [
+                -0.17482346296310425,
+                -0.06081145256757736
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.023891523480415344,
+          "terminal": 0.13116562366485596
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 600,
+          "selection_loss": 1.2912494989286112,
+          "fit_first_100": 1.7482734894752503,
+          "fit_last_100": 0.736358899474144
+        }
+      },
+      "exact": {
+        "variant": "exact",
+        "rung": "block_1",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.15915314853191376,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.43948978185653687,
+            "vs_marginal": {
+              "difference": 0.0780239850282669,
+              "interval": [
+                0.062300775200128555,
+                0.09534750133752823
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.004488363862037659,
+              "interval": [
+                -0.010396867990493774,
+                0.0009822210995480418
+              ],
+              "excludes_zero": false
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5888888835906982,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.21471275389194489,
+            "vs_marginal": {
+              "difference": -0.034126996994018555,
+              "interval": [
+                -0.07641617208719254,
+                0.008688337169587612
+              ],
+              "excludes_zero": false
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.0476190447807312,
+              "interval": [
+                -0.08594368398189545,
+                -0.009586493484675884
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.16978007555007935,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.3595043420791626,
+            "vs_marginal": {
+              "difference": 0.0966888964176178,
+              "interval": [
+                0.07196051627397537,
+                0.12190306931734085
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.006078571081161499,
+              "interval": [
+                -0.016856558620929718,
+                0.004291206132620573
+              ],
+              "excludes_zero": false
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.483582079410553,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.16392309963703156,
+            "vs_marginal": {
+              "difference": -0.12537312507629395,
+              "interval": [
+                -0.19368000328540802,
+                -0.05805862322449684
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.06119406223297119,
+              "interval": [
+                -0.1244930624961853,
+                0.0
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.010626927018165588,
+          "terminal": 0.10530680418014526
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 400,
+          "selection_loss": 1.2942161249485113,
+          "fit_first_100": 1.757419457435608,
+          "fit_last_100": 0.8802601248025894
+        }
+      }
+    },
+    "block_2": {
+      "adapter": {
+        "variant": "adapter",
+        "rung": "block_2",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.1592801809310913,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.4282863438129425,
+            "vs_marginal": {
+              "difference": 0.07789695262908936,
+              "interval": [
+                0.06374053657054901,
+                0.09436310827732086
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.00461539626121521,
+              "interval": [
+                -0.00804143026471138,
+                -0.0014463283587247133
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5809524059295654,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.26290464401245117,
+            "vs_marginal": {
+              "difference": -0.04206347465515137,
+              "interval": [
+                -0.09795579314231873,
+                0.010581559501588345
+              ],
+              "excludes_zero": false
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.055555522441864014,
+              "interval": [
+                -0.1007528305053711,
+                -0.010212747380137444
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.16740795969963074,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.3639141917228699,
+            "vs_marginal": {
+              "difference": 0.0990610122680664,
+              "interval": [
+                0.07477951049804688,
+                0.12495215237140656
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.0037064552307128906,
+              "interval": [
+                -0.010296953842043877,
+                0.0026889541186392307
+              ],
+              "excludes_zero": false
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.483582079410553,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.16628706455230713,
+            "vs_marginal": {
+              "difference": -0.12537312507629395,
+              "interval": [
+                -0.20341579616069794,
+                -0.043082643300294876
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.06119406223297119,
+              "interval": [
+                -0.13063660264015198,
+                0.005822420120239258
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.008127778768539429,
+          "terminal": 0.09737032651901245
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 500,
+          "selection_loss": 1.2958153409663935,
+          "fit_first_100": 1.6870161080360413,
+          "fit_last_100": 0.7760100865364075
+        }
+      },
+      "exact": {
+        "variant": "exact",
+        "rung": "block_2",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.16259703040122986,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.41868072748184204,
+            "vs_marginal": {
+              "difference": 0.0745801031589508,
+              "interval": [
+                0.060546621680259705,
+                0.09101880341768265
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.00793224573135376,
+              "interval": [
+                -0.017348267138004303,
+                0.0007273472147062421
+              ],
+              "excludes_zero": false
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5285714268684387,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.21766075491905212,
+            "vs_marginal": {
+              "difference": -0.09444445371627808,
+              "interval": [
+                -0.13597328960895538,
+                -0.05295606330037117
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.10793650150299072,
+              "interval": [
+                -0.1442895233631134,
+                -0.06974908709526062
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.18863356113433838,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.35943514108657837,
+            "vs_marginal": {
+              "difference": 0.07783541083335876,
+              "interval": [
+                0.047696955502033234,
+                0.10881483554840088
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.024932056665420532,
+              "interval": [
+                -0.04354618489742279,
+                -0.007102400064468384
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.437313437461853,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.13278767466545105,
+            "vs_marginal": {
+              "difference": -0.1716417670249939,
+              "interval": [
+                -0.24677526950836182,
+                -0.10297096520662308
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.10746270418167114,
+              "interval": [
+                -0.16297507286071777,
+                -0.052695032209157944
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.02603653073310852,
+          "terminal": 0.0912579894065857
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 600,
+          "selection_loss": 1.2975207415358518,
+          "fit_first_100": 1.6803425252437592,
+          "fit_last_100": 0.9176505786180497
+        }
+      }
+    },
+    "block_3": {
+      "adapter": {
+        "variant": "adapter",
+        "rung": "block_3",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.16224417090415955,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.42821410298347473,
+            "vs_marginal": {
+              "difference": 0.07493296265602112,
+              "interval": [
+                0.06039046496152878,
+                0.09127666801214218
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.007579386234283447,
+              "interval": [
+                -0.012508196756243706,
+                -0.003222022671252489
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.591269850730896,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.2335759401321411,
+            "vs_marginal": {
+              "difference": -0.0317460298538208,
+              "interval": [
+                -0.08234308660030365,
+                0.019673585891723633
+              ],
+              "excludes_zero": false
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.04523807764053345,
+              "interval": [
+                -0.0821695327758789,
+                -0.005053505767136812
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.1751668006181717,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.35740968585014343,
+            "vs_marginal": {
+              "difference": 0.09130217134952545,
+              "interval": [
+                0.0664604976773262,
+                0.11760137975215912
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.011465296149253845,
+              "interval": [
+                -0.021312478929758072,
+                -0.0022393628023564816
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5194029808044434,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.12877264618873596,
+            "vs_marginal": {
+              "difference": -0.08955222368240356,
+              "interval": [
+                -0.16564147174358368,
+                -0.011853020638227463
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.02537316083908081,
+              "interval": [
+                -0.08490990847349167,
+                0.031315043568611145
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.012922629714012146,
+          "terminal": 0.07186686992645264
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 500,
+          "selection_loss": 1.2968275045413158,
+          "fit_first_100": 1.6292861211299896,
+          "fit_last_100": 0.7818697613477706
+        }
+      },
+      "exact": {
+        "variant": "exact",
+        "rung": "block_3",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.15486237406730652,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.44484013319015503,
+            "vs_marginal": {
+              "difference": 0.08231475949287415,
+              "interval": [
+                0.06719744205474854,
+                0.099946029484272
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.00019758939743041992,
+              "interval": [
+                -0.005929038859903812,
+                0.005197949707508087
+              ],
+              "excludes_zero": false
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5317460298538208,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.2263832837343216,
+            "vs_marginal": {
+              "difference": -0.091269850730896,
+              "interval": [
+                -0.14002229273319244,
+                -0.045055825263261795
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.10476189851760864,
+              "interval": [
+                -0.14433158934116364,
+                -0.0690447986125946
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.18369163572788239,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.36462560296058655,
+            "vs_marginal": {
+              "difference": 0.08277733623981476,
+              "interval": [
+                0.05473898723721504,
+                0.11019334942102432
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.01999013125896454,
+              "interval": [
+                -0.035891152918338776,
+                -0.006987915374338627
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.447761207818985,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.13167160749435425,
+            "vs_marginal": {
+              "difference": -0.16119399666786194,
+              "interval": [
+                -0.2353004813194275,
+                -0.09374198317527771
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.09701493382453918,
+              "interval": [
+                -0.15736818313598633,
+                -0.03803015127778053
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.028829261660575867,
+          "terminal": 0.08398482203483582
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 700,
+          "selection_loss": 1.3043327538613945,
+          "fit_first_100": 1.651191895008087,
+          "fit_last_100": 0.9487244987487793
+        }
+      }
+    },
+    "block_4": {
+      "adapter": {
+        "variant": "adapter",
+        "rung": "block_4",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.18503879010677338,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.3713722229003906,
+            "vs_marginal": {
+              "difference": 0.05213834345340729,
+              "interval": [
+                0.04208926483988762,
+                0.06382716447114944
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.030374005436897278,
+              "interval": [
+                -0.04116387665271759,
+                -0.02034742198884487
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.4952380955219269,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.20099280774593353,
+            "vs_marginal": {
+              "difference": -0.12777778506278992,
+              "interval": [
+                -0.1741262823343277,
+                -0.08516169339418411
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.14126983284950256,
+              "interval": [
+                -0.17985759675502777,
+                -0.10378734022378922
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.2208796739578247,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.31040728092193604,
+            "vs_marginal": {
+              "difference": 0.045589298009872437,
+              "interval": [
+                0.014310477301478386,
+                0.0777546614408493
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.05717816948890686,
+              "interval": [
+                -0.07556474953889847,
+                -0.03766459599137306
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.41492536664009094,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.09752565622329712,
+            "vs_marginal": {
+              "difference": -0.19402983784675598,
+              "interval": [
+                -0.26316213607788086,
+                -0.1269845962524414
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.12985077500343323,
+              "interval": [
+                -0.1831664890050888,
+                -0.074923574924469
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.03584088385105133,
+          "terminal": 0.08031272888183594
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 600,
+          "selection_loss": 1.3016766704221892,
+          "fit_first_100": 1.712382402420044,
+          "fit_last_100": 0.8079156994819641
+        }
+      },
+      "exact": {
+        "variant": "exact",
+        "rung": "block_4",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.1533803939819336,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.4453975260257721,
+            "vs_marginal": {
+              "difference": 0.08379673957824707,
+              "interval": [
+                0.06890960037708282,
+                0.10071037709712982
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": 0.0012843906879425049,
+              "interval": [
+                -0.003946744371205568,
+                0.0063050235621631145
+              ],
+              "excludes_zero": false
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5611110925674438,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.22144244611263275,
+            "vs_marginal": {
+              "difference": -0.06190478801727295,
+              "interval": [
+                -0.10995236784219742,
+                -0.015229239128530025
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.0753968358039856,
+              "interval": [
+                -0.11111319065093994,
+                -0.041169311851263046
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.18381518125534058,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.35215166211128235,
+            "vs_marginal": {
+              "difference": 0.08265379071235657,
+              "interval": [
+                0.05434126779437065,
+                0.11089253425598145
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.02011367678642273,
+              "interval": [
+                -0.036337897181510925,
+                -0.005737653002142906
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.4910447895526886,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.1420043557882309,
+            "vs_marginal": {
+              "difference": -0.11791041493415833,
+              "interval": [
+                -0.1896388977766037,
+                -0.049562253057956696
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.05373135209083557,
+              "interval": [
+                -0.113945372402668,
+                0.004528617952018976
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.030434787273406982,
+          "terminal": 0.07006630301475525
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 700,
+          "selection_loss": 1.298918818973636,
+          "fit_first_100": 1.6222824144363404,
+          "fit_last_100": 0.9769141864776612
+        }
+      }
+    },
+    "block_5": {
+      "adapter": {
+        "variant": "adapter",
+        "rung": "block_5",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.15981651842594147,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.4208582937717438,
+            "vs_marginal": {
+              "difference": 0.0773606151342392,
+              "interval": [
+                0.0633561760187149,
+                0.09369545429944992
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.005151733756065369,
+              "interval": [
+                -0.011459266766905785,
+                0.0003131410339847207
+              ],
+              "excludes_zero": false
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5420634746551514,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.21954134106636047,
+            "vs_marginal": {
+              "difference": -0.08095240592956543,
+              "interval": [
+                -0.1261768341064453,
+                -0.03330421447753906
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.09444445371627808,
+              "interval": [
+                -0.13627669215202332,
+                -0.05741192772984505
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.1919199377298355,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.3291752338409424,
+            "vs_marginal": {
+              "difference": 0.07454903423786163,
+              "interval": [
+                0.04711725562810898,
+                0.10184113681316376
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.028218433260917664,
+              "interval": [
+                -0.04294190555810928,
+                -0.015053370967507362
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.4686567187309265,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.12095419317483902,
+            "vs_marginal": {
+              "difference": -0.1402984857559204,
+              "interval": [
+                -0.21246349811553955,
+                -0.07136563956737518
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.07611942291259766,
+              "interval": [
+                -0.13732129335403442,
+                -0.015903666615486145
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.03210341930389404,
+          "terminal": 0.07340675592422485
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 800,
+          "selection_loss": 1.3062757449239537,
+          "fit_first_100": 1.6055247569084168,
+          "fit_last_100": 0.8164937537908554
+        }
+      },
+      "exact": {
+        "variant": "exact",
+        "rung": "block_5",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.1554269641637802,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.43916240334510803,
+            "vs_marginal": {
+              "difference": 0.08175016939640045,
+              "interval": [
+                0.06759066134691238,
+                0.0976957455277443
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.0007621794939041138,
+              "interval": [
+                -0.005905004218220711,
+                0.0038308638613671064
+              ],
+              "excludes_zero": false
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.561904788017273,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.17147818207740784,
+            "vs_marginal": {
+              "difference": -0.06111109256744385,
+              "interval": [
+                -0.10526630282402039,
+                -0.01891418918967247
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.0746031403541565,
+              "interval": [
+                -0.11092851310968399,
+                -0.037983860820531845
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.16834694147109985,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.35763806104660034,
+            "vs_marginal": {
+              "difference": 0.09812203049659729,
+              "interval": [
+                0.0738971084356308,
+                0.12463174760341644
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.004645437002182007,
+              "interval": [
+                -0.014090853743255138,
+                0.004886719398200512
+              ],
+              "excludes_zero": false
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.48059701919555664,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.0907866358757019,
+            "vs_marginal": {
+              "difference": -0.12835818529129028,
+              "interval": [
+                -0.2045496255159378,
+                -0.05699293687939644
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.06417912244796753,
+              "interval": [
+                -0.10594262927770615,
+                -0.024477574974298477
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.012919977307319641,
+          "terminal": 0.08130776882171631
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 800,
+          "selection_loss": 1.3067191367816677,
+          "fit_first_100": 1.6073535752296448,
+          "fit_last_100": 1.0002954626083373
+        }
+      }
+    },
+    "block_6": {
+      "adapter": {
+        "variant": "adapter",
+        "rung": "block_6",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.1670430451631546,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.4059656858444214,
+            "vs_marginal": {
+              "difference": 0.07013408839702606,
+              "interval": [
+                0.056978583335876465,
+                0.08500605076551437
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.012378260493278503,
+              "interval": [
+                -0.01942398026585579,
+                -0.006015729624778032
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5563492178916931,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.1963382214307785,
+            "vs_marginal": {
+              "difference": -0.06666666269302368,
+              "interval": [
+                -0.11564129590988159,
+                -0.020430605858564377
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.08015871047973633,
+              "interval": [
+                -0.122484490275383,
+                -0.04031511768698692
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.19167284667491913,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.32134827971458435,
+            "vs_marginal": {
+              "difference": 0.07479612529277802,
+              "interval": [
+                0.04641685634851456,
+                0.10337352007627487
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.027971342206001282,
+              "interval": [
+                -0.04160935431718826,
+                -0.014866992831230164
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.4507462680339813,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.10440833121538162,
+            "vs_marginal": {
+              "difference": -0.1582089364528656,
+              "interval": [
+                -0.22576220333576202,
+                -0.09281286597251892
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.09402987360954285,
+              "interval": [
+                -0.1536216288805008,
+                -0.03526753559708595
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.024629801511764526,
+          "terminal": 0.10560294985771179
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 800,
+          "selection_loss": 1.3150972490470045,
+          "fit_first_100": 1.5959441661834717,
+          "fit_last_100": 0.8268338346481323
+        }
+      },
+      "exact": {
+        "variant": "exact",
+        "rung": "block_6",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.1593366265296936,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.4195992350578308,
+            "vs_marginal": {
+              "difference": 0.07784050703048706,
+              "interval": [
+                0.06330360472202301,
+                0.0944042056798935
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.004671841859817505,
+              "interval": [
+                -0.010534669272601604,
+                0.0008378051570616663
+              ],
+              "excludes_zero": false
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5801587104797363,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.19595040380954742,
+            "vs_marginal": {
+              "difference": -0.04285717010498047,
+              "interval": [
+                -0.08709140121936798,
+                0.0024472596123814583
+              ],
+              "excludes_zero": false
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.056349217891693115,
+              "interval": [
+                -0.09528151899576187,
+                -0.0172601155936718
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.18159130215644836,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.3293493986129761,
+            "vs_marginal": {
+              "difference": 0.08487766981124878,
+              "interval": [
+                0.057618699967861176,
+                0.11227081716060638
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.017889797687530518,
+              "interval": [
+                -0.03153175860643387,
+                -0.004645536653697491
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.49850746989250183,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.12030836194753647,
+            "vs_marginal": {
+              "difference": -0.11044773459434509,
+              "interval": [
+                -0.18612989783287048,
+                -0.036845311522483826
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.04626867175102234,
+              "interval": [
+                -0.10090909898281097,
+                0.009292696602642536
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.02225467562675476,
+          "terminal": 0.0816512405872345
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 800,
+          "selection_loss": 1.3085855865879596,
+          "fit_first_100": 1.6380283629894257,
+          "fit_last_100": 1.0165124535560608
+        }
+      }
+    },
+    "u": {
+      "adapter": {
+        "variant": "adapter",
+        "rung": "u",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.18901905417442322,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.38040637969970703,
+            "vs_marginal": {
+              "difference": 0.048158079385757446,
+              "interval": [
+                0.03765609860420227,
+                0.059889327734708786
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.03435426950454712,
+              "interval": [
+                -0.047054991126060486,
+                -0.024261701852083206
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5642856955528259,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.25647270679473877,
+            "vs_marginal": {
+              "difference": -0.05873018503189087,
+              "interval": [
+                -0.11317896097898483,
+                -0.00651065306738019
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.07222223281860352,
+              "interval": [
+                -0.11362453550100327,
+                -0.032318152487277985
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.22881147265434265,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.3205595910549164,
+            "vs_marginal": {
+              "difference": 0.03765749931335449,
+              "interval": [
+                0.0065559218637645245,
+                0.06986040621995926
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.0651099681854248,
+              "interval": [
+                -0.08531960844993591,
+                -0.044187918305397034
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5179104208946228,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.18671298027038574,
+            "vs_marginal": {
+              "difference": -0.09104478359222412,
+              "interval": [
+                -0.16956713795661926,
+                -0.017252955585718155
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.026865720748901367,
+              "interval": [
+                -0.08937089890241623,
+                0.03104599006474018
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.039792418479919434,
+          "terminal": 0.046375274658203125
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 900,
+          "selection_loss": 1.2950487639312824,
+          "fit_first_100": 1.734283721446991,
+          "fit_last_100": 0.8841192942857742
+        }
+      },
+      "exact": {
+        "variant": "exact",
+        "rung": "u",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.16613975167274475,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.4126504361629486,
+            "vs_marginal": {
+              "difference": 0.07103738188743591,
+              "interval": [
+                0.056900620460510254,
+                0.08741219341754913
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.011474967002868652,
+              "interval": [
+                -0.019752200692892075,
+                -0.004189005121588707
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5682539939880371,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.23377291858196259,
+            "vs_marginal": {
+              "difference": -0.05476188659667969,
+              "interval": [
+                -0.10936731100082397,
+                -0.0015419950941577554
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.06825393438339233,
+              "interval": [
+                -0.1070631667971611,
+                -0.029189232736825943
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.19540399312973022,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.34405598044395447,
+            "vs_marginal": {
+              "difference": 0.07106497883796692,
+              "interval": [
+                0.039114054292440414,
+                0.10279545187950134
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.03170248866081238,
+              "interval": [
+                -0.051056329160928726,
+                -0.014830942265689373
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5194029808044434,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.1666710078716278,
+            "vs_marginal": {
+              "difference": -0.08955222368240356,
+              "interval": [
+                -0.16439999639987946,
+                -0.01722761057317257
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.02537316083908081,
+              "interval": [
+                -0.08334271609783173,
+                0.03314726799726486
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.029264241456985474,
+          "terminal": 0.04885101318359375
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 700,
+          "selection_loss": 1.2988873024874998,
+          "fit_first_100": 1.734950966835022,
+          "fit_last_100": 1.0343172538280487
+        }
+      }
+    },
+    "predictor_hidden": {
+      "adapter": {
+        "variant": "adapter",
+        "rung": "predictor_hidden",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.20348623394966125,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.34632954001426697,
+            "vs_marginal": {
+              "difference": 0.03369089961051941,
+              "interval": [
+                0.023712048307061195,
+                0.045498721301555634
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.048821449279785156,
+              "interval": [
+                -0.06157026067376137,
+                -0.03639320656657219
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.550000011920929,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.21414093673229218,
+            "vs_marginal": {
+              "difference": -0.07301586866378784,
+              "interval": [
+                -0.11806780099868774,
+                -0.03154503181576729
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.08650791645050049,
+              "interval": [
+                -0.12419095635414124,
+                -0.04719996452331543
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.25045713782310486,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.2768074870109558,
+            "vs_marginal": {
+              "difference": 0.016011834144592285,
+              "interval": [
+                -0.022788461297750473,
+                0.0545431450009346
+              ],
+              "excludes_zero": false
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.08675563335418701,
+              "interval": [
+                -0.11076395213603973,
+                -0.061386629939079285
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5208955407142639,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.14082735776901245,
+            "vs_marginal": {
+              "difference": -0.08805966377258301,
+              "interval": [
+                -0.16226863861083984,
+                -0.014609492383897305
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.023880600929260254,
+              "interval": [
+                -0.07999998331069946,
+                0.03202800452709198
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.046970903873443604,
+          "terminal": 0.02910447120666504
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 600,
+          "selection_loss": 1.3034830658194778,
+          "fit_first_100": 1.7338442230224609,
+          "fit_last_100": 0.7415935671329499
+        }
+      }
+    },
+    "generated_z": {
+      "adapter": {
+        "variant": "adapter",
+        "rung": "generated_z",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.32646435499191284,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.03817376866936684,
+            "vs_marginal": {
+              "difference": -0.08928722143173218,
+              "interval": [
+                -0.11011739075183868,
+                -0.06930996477603912
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.17179957032203674,
+              "interval": [
+                -0.19621360301971436,
+                -0.1485438197851181
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.4928571283817291,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.03211808577179909,
+            "vs_marginal": {
+              "difference": -0.13015875220298767,
+              "interval": [
+                -0.17035755515098572,
+                -0.08925823867321014
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.14365079998970032,
+              "interval": [
+                -0.18415653705596924,
+                -0.10586319118738174
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.35470718145370483,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.03596143424510956,
+            "vs_marginal": {
+              "difference": -0.08823820948600769,
+              "interval": [
+                -0.11868439614772797,
+                -0.05963379144668579
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.191005676984787,
+              "interval": [
+                -0.22529703378677368,
+                -0.15990668535232544
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.4343283474445343,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.03394654020667076,
+            "vs_marginal": {
+              "difference": -0.17462685704231262,
+              "interval": [
+                -0.23942209780216217,
+                -0.10813898593187332
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.11044779419898987,
+              "interval": [
+                -0.1752185970544815,
+                -0.05174218490719795
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.028242826461791992,
+          "terminal": 0.058528780937194824
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 300,
+          "selection_loss": 1.3479557015650314,
+          "fit_first_100": 1.876476185321808,
+          "fit_last_100": 0.93508096575737
+        }
+      }
+    },
+    "generated_features": {
+      "adapter": {
+        "variant": "adapter",
+        "rung": "generated_features",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.22095976769924164,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.34390613436698914,
+            "vs_marginal": {
+              "difference": 0.016217365860939026,
+              "interval": [
+                0.011210707947611809,
+                0.021434245631098747
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": true,
+            "vs_context_action": {
+              "difference": -0.06629498302936554,
+              "interval": [
+                -0.08275961875915527,
+                -0.051014166325330734
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5373015999794006,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.2137325406074524,
+            "vs_marginal": {
+              "difference": -0.08571428060531616,
+              "interval": [
+                -0.13077899813652039,
+                -0.04292895644903183
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.09920632839202881,
+              "interval": [
+                -0.13836629688739777,
+                -0.05942394956946373
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.26622188091278076,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.26471149921417236,
+            "vs_marginal": {
+              "difference": 0.00024709105491638184,
+              "interval": [
+                -0.036826711148023605,
+                0.03785746917128563
+              ],
+              "excludes_zero": false
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.10252037644386292,
+              "interval": [
+                -0.1288325935602188,
+                -0.07785986363887787
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.4507462680339813,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.14832165837287903,
+            "vs_marginal": {
+              "difference": -0.1582089364528656,
+              "interval": [
+                -0.22594720125198364,
+                -0.09585437923669815
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.09402987360954285,
+              "interval": [
+                -0.15705285966396332,
+                -0.03298264741897583
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.045262113213539124,
+          "terminal": 0.08655533194541931
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 1200,
+          "selection_loss": 1.3100471825362452,
+          "fit_first_100": 1.7769915854930878,
+          "fit_last_100": 0.9248618704080581
+        }
+      },
+      "exact": {
+        "variant": "exact",
+        "rung": "generated_features",
+        "fit": {
+          "roots": 7085,
+          "reward_opportunity_roots": 7085,
+          "terminal_opportunity_roots": 1260,
+          "reward": {
+            "regret": 0.2345377504825592,
+            "marginal_regret": 0.23717713356018066,
+            "within_root_association": 0.3099807798862457,
+            "vs_marginal": {
+              "difference": 0.00263938307762146,
+              "interval": [
+                -0.0028637759387493134,
+                0.0073042865842580795
+              ],
+              "excludes_zero": false
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.0798729658126831,
+              "interval": [
+                -0.09757469594478607,
+                -0.06385990232229233
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.5190476179122925,
+            "marginal_safe_choice": 0.6230158805847168,
+            "within_root_association": 0.18813930451869965,
+            "vs_marginal": {
+              "difference": -0.10396826267242432,
+              "interval": [
+                -0.1587352454662323,
+                -0.0531744584441185
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.11746031045913696,
+              "interval": [
+                -0.15652307868003845,
+                -0.07664407789707184
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "judge": {
+          "roots": 4047,
+          "reward_opportunity_roots": 4047,
+          "terminal_opportunity_roots": 670,
+          "reward": {
+            "regret": 0.2813936471939087,
+            "marginal_regret": 0.26646897196769714,
+            "within_root_association": 0.24467229843139648,
+            "vs_marginal": {
+              "difference": -0.014924675226211548,
+              "interval": [
+                -0.054464079439640045,
+                0.02354554273188114
+              ],
+              "excludes_zero": false
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.11769214272499084,
+              "interval": [
+                -0.14491808414459229,
+                -0.09024002403020859
+              ],
+              "excludes_zero": true
+            }
+          },
+          "terminal": {
+            "safe_choice": 0.4641790986061096,
+            "marginal_safe_choice": 0.6089552044868469,
+            "within_root_association": 0.12461844086647034,
+            "vs_marginal": {
+              "difference": -0.1447761058807373,
+              "interval": [
+                -0.21334190666675568,
+                -0.07795022428035736
+              ],
+              "excludes_zero": true
+            },
+            "beats_marginal": false,
+            "vs_context_action": {
+              "difference": -0.08059704303741455,
+              "interval": [
+                -0.1326902210712433,
+                -0.0275567714124918
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "fit_judge_gap": {
+          "reward": -0.04685589671134949,
+          "terminal": 0.05486851930618286
+        },
+        "fit_trace": {
+          "steps": 6000,
+          "selected_step": 700,
+          "selection_loss": 1.305059009263013,
+          "fit_first_100": 1.8036233365535737,
+          "fit_last_100": 1.0255299371480942
+        }
+      }
+    }
+  },
+  "verdict": {
+    "call": "dynamics_never_construct_it",
+    "reading": {
+      "pair_projection": false,
+      "block_1": false,
+      "block_2": false,
+      "block_3": false,
+      "block_4": false,
+      "block_5": false,
+      "block_6": false,
+      "u": false,
+      "predictor_hidden": false,
+      "generated_z": false,
+      "generated_features": false
+    },
+    "first_rung_after_last_carry": null
+  },
+  "post_hoc_root": {
+    "beats_root_action": {
+      "root_z_action": false,
+      "root_cls_action": false,
+      "root_cls_patches_action": false
+    },
+    "call": "not_predictable_from_root",
+    "note": "post hoc; added after the declared call and never read by `verdict`. not_predictable_from_root is a statement about this probe family, not a proof that no function of the root observation predicts termination"
+  }
+}
