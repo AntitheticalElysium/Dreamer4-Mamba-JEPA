@@ -121,7 +121,7 @@ class Readout(nn.Module):
 
 
 def fit(features, reward, alive, centers, *, steps, seed, device, width, bins, holdout,
-        batch=512, check_every=100):
+        batch=512, check_every=100, make=None):
     """Fit with model selection on an inner slice of the FIT roots -- never on the judgement roots.
 
     Without this the ladder cannot answer its own question. At 600 roots every family, including
@@ -133,7 +133,9 @@ def fit(features, reward, alive, centers, *, steps, seed, device, width, bins, h
     straddle it, and it comes out of the fit partition, so the judgement roots stay untouched.
     """
     torch.manual_seed(seed)
-    model = Readout(features.shape[-1], width, bins).to(device)
+    # `make` lets the confirmation run substitute the exact deployed outcome head. Defaulting to
+    # `Readout` keeps this function byte-identical in behaviour to the run recorded in RESULT.md.
+    model = (make or Readout)(features.shape[-1], width, bins).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-2)
     generator = torch.Generator().manual_seed(seed + 1)
     target = twohot(_symlog(reward), centers.cpu()).to(device)

@@ -74,16 +74,21 @@ transitions.
 `observe_latent(root, a, z_true)` — is +0.244, because it recombines z with the root state. So the
 world's own readout is not the bottleneck. **Declared rule 3 is refuted by its own measurement.**
 
-**4. The trained bridge head fails to read termination that is present in its own features.**
-This is the finding the declared rules could not see, because they only compare fresh heads to
-each other. The H2 gate ran the same true-successor substitution through the *trained* bridge head
-and got safe-choice **0.559 against a 0.657 marginal** — below it. A fresh, selected head on the
-same feature family reaches **0.836 against a 0.620 marginal**. Same features, different head,
-opposite side of the control.
+**4. The trained bridge head reads less termination than a fresh head does from the same features.**
 
-Caveat: the gate's 512 roots come from a different seed set than the ladder's 3,369, which is why
-the two marginals differ (0.657 vs 0.620); these are not the same population and the numbers are
-not directly subtractable. The direction, though, is not a close call.
+> **CORRECTED 2026-09-23, and the correction matters.** This section originally claimed the
+> trained bridge head *fails* to read termination present in its own features, resting on the H2
+> gate's true-successor safe-choice of 0.559 against a 0.657 marginal — below the control. The
+> confirmation run (`CONFIRM.md`) scored that same trained head on 4,047 roots from the 405
+> unallocated seeds and got **0.700 against a 0.609 marginal, +0.091 [+0.030,+0.158]** — *above*
+> the control, resolved. The trained head does **not** fail. The original claim relied on the
+> gate's 512-root, 102-terminal-opportunity population, and the sign flips on a larger matched one.
+>
+> What survives is weaker and specific: on identical roots, an exact-capacity fresh head reaches
+> **0.848** where the trained head reaches **0.700**. See `CONFIRM.md` for the direct paired test.
+
+The reason the declared rules could not see this at all is that they only compare fresh heads to
+each other; nothing in the ladder scored the trained head.
 
 ## What this does and does not establish
 
@@ -95,7 +100,9 @@ train/DEV gaps:
 - The real-successor route carries termination; the generated route is worse than ignoring the
   successor.
 - The projector loses most of CLS's termination information; `observe_latent` is not the bottleneck.
-- Fresh heads read termination from real features that the trained bridge head does not.
+- Fresh heads read termination from real features better than the trained bridge head does
+  (see the correction in section 4: the trained head does beat the marginal, it just extracts
+  less).
 
 **Not** established, and not to be claimed:
 
