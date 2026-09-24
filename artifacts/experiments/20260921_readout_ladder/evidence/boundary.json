@@ -1,0 +1,1043 @@
+{
+  "schema": "d4mj_boundary_v1",
+  "status": "SEALED: new seed block, rules committed before collection",
+  "script_sha256": "7c8bbab8b8b05b5d0ffe05b7ed1f40387205dbc80beeeb75815af44a53e239f2",
+  "frozen_ladder_sha256": "d41cb6b8286adc8426f6f7e0d993ea8a517c277d4d74fbe010406fecaf8047ed",
+  "checkpoint_sha256": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e",
+  "judge_store": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/observe_fresh_v2",
+  "judge_manifest": "bd29869f92e8ce84fbe5278a3a8444f9e4ce01d4df9183feb3558d474f93e374",
+  "judge_seeds": [
+    51000,
+    51001,
+    51002,
+    51003,
+    51004,
+    51005,
+    51006,
+    51007,
+    51008,
+    51009,
+    51010,
+    51011,
+    51012,
+    51013,
+    51014,
+    51015,
+    51016,
+    51018,
+    51019,
+    51020,
+    51021,
+    51022,
+    51023,
+    51024,
+    51025,
+    51026,
+    51027,
+    51028,
+    51029,
+    51030,
+    51031,
+    51032,
+    51033,
+    51034,
+    51035,
+    51036,
+    51037,
+    51038,
+    51039,
+    51040,
+    51041,
+    51042,
+    51043,
+    51044,
+    51045,
+    51046,
+    51047,
+    51048,
+    51049,
+    51050,
+    51051,
+    51052,
+    51053,
+    51054,
+    51055,
+    51056,
+    51057,
+    51058,
+    51059,
+    51060,
+    51061,
+    51062,
+    51063,
+    51064,
+    51065,
+    51066,
+    51067,
+    51068,
+    51069,
+    51070,
+    51071,
+    51072,
+    51073,
+    51074,
+    51075,
+    51076,
+    51077,
+    51078,
+    51079,
+    51080,
+    51081,
+    51082,
+    51083,
+    51084,
+    51085,
+    51086,
+    51087,
+    51089,
+    51090,
+    51091,
+    51092,
+    51093,
+    51094,
+    51095,
+    51096,
+    51097,
+    51098,
+    51099,
+    51100,
+    51101,
+    51102,
+    51103,
+    51104,
+    51105,
+    51106,
+    51107,
+    51108,
+    51109,
+    51110,
+    51111,
+    51112,
+    51113,
+    51114,
+    51115,
+    51116,
+    51117,
+    51118,
+    51119,
+    51121,
+    51122,
+    51123,
+    51124,
+    51125,
+    51126,
+    51127,
+    51128,
+    51129,
+    51130,
+    51131,
+    51132,
+    51133,
+    51134,
+    51135,
+    51136,
+    51137,
+    51138,
+    51139,
+    51140,
+    51141,
+    51142,
+    51143,
+    51144,
+    51145,
+    51146,
+    51147,
+    51148,
+    51150,
+    51151,
+    51152,
+    51153,
+    51154,
+    51155,
+    51156,
+    51157,
+    51158,
+    51159,
+    51160,
+    51161,
+    51162,
+    51163,
+    51164,
+    51165,
+    51166,
+    51167,
+    51168,
+    51169,
+    51170,
+    51171,
+    51172,
+    51173,
+    51174,
+    51175,
+    51176,
+    51177,
+    51178,
+    51179,
+    51180,
+    51181,
+    51182,
+    51183,
+    51184,
+    51185,
+    51186,
+    51187,
+    51188,
+    51189,
+    51190,
+    51191,
+    51192,
+    51193,
+    51194,
+    51195,
+    51196,
+    51197,
+    51198,
+    51199,
+    51200,
+    51201,
+    51202,
+    51203,
+    51204,
+    51205,
+    51206,
+    51207,
+    51208,
+    51209,
+    51210,
+    51211,
+    51212,
+    51213,
+    51214,
+    51215,
+    51216,
+    51217,
+    51218,
+    51219,
+    51220,
+    51221,
+    51222,
+    51223,
+    51224,
+    51225,
+    51226,
+    51227,
+    51228,
+    51229,
+    51230,
+    51231,
+    51232,
+    51233,
+    51234,
+    51235,
+    51236,
+    51237,
+    51238,
+    51239,
+    51240,
+    51241,
+    51242,
+    51243,
+    51244,
+    51245,
+    51246,
+    51247,
+    51248,
+    51249,
+    51250,
+    51252,
+    51253,
+    51254,
+    51255,
+    51256,
+    51257,
+    51258,
+    51259,
+    51260,
+    51261,
+    51262,
+    51263,
+    51264,
+    51265,
+    51266,
+    51267,
+    51268,
+    51269,
+    51270,
+    51271,
+    51272,
+    51273,
+    51274,
+    51275,
+    51276,
+    51277,
+    51278,
+    51279,
+    51280,
+    51281,
+    51282,
+    51283,
+    51284,
+    51285,
+    51286,
+    51287,
+    51288,
+    51289,
+    51290,
+    51291,
+    51292,
+    51293,
+    51294,
+    51295,
+    51296,
+    51297,
+    51298,
+    51299,
+    51300,
+    51301,
+    51302,
+    51303,
+    51304,
+    51305,
+    51306,
+    51307,
+    51308,
+    51309,
+    51310,
+    51311,
+    51312,
+    51313,
+    51314,
+    51315,
+    51316,
+    51317,
+    51318,
+    51319,
+    51320,
+    51321,
+    51322,
+    51323,
+    51324,
+    51325,
+    51326,
+    51327,
+    51328,
+    51329,
+    51330,
+    51331,
+    51332,
+    51333,
+    51334,
+    51335,
+    51336,
+    51337,
+    51338,
+    51339,
+    51340,
+    51341,
+    51342,
+    51343,
+    51344,
+    51345,
+    51346,
+    51347,
+    51348,
+    51349,
+    51350,
+    51351,
+    51352,
+    51353,
+    51354,
+    51355,
+    51356,
+    51357,
+    51358,
+    51359,
+    51361,
+    51362,
+    51363,
+    51364,
+    51365,
+    51366,
+    51367,
+    51368,
+    51369,
+    51370,
+    51371,
+    51372,
+    51373,
+    51374,
+    51375,
+    51376,
+    51377,
+    51378,
+    51379,
+    51380,
+    51381,
+    51382,
+    51383,
+    51384,
+    51385,
+    51386,
+    51387,
+    51388,
+    51389,
+    51390,
+    51391,
+    51392,
+    51393,
+    51394,
+    51395,
+    51396,
+    51397,
+    51398,
+    51399,
+    51400,
+    51401,
+    51402,
+    51403,
+    51404,
+    51405,
+    51406,
+    51407,
+    51408,
+    51409,
+    51410,
+    51411,
+    51412,
+    51413,
+    51414,
+    51415,
+    51416,
+    51417,
+    51418,
+    51419,
+    51420,
+    51421,
+    51422
+  ],
+  "roots": {
+    "fit": 7085,
+    "judge": 4265
+  },
+  "holds": {
+    "R0_pixels1_vs_prior": true,
+    "R1_tokens_attn_vs_cls": true,
+    "R2_tokens_attn_vs_cls_wide": true,
+    "R3_tokens_attn_vs_cls_wide_zombie": true
+  },
+  "reading": "patch_over_cls_confirmed",
+  "outcomes": {
+    "death1": {
+      "judge_opportunity_roots": 800,
+      "prior_action": 4,
+      "prior_expected_safe": 0.6714843511581421,
+      "strata_opportunity": {
+        "day": 274,
+        "night": 526,
+        "lava_adjacent": 141,
+        "zombie_adjacent": 474,
+        "arrow_or_skeleton": 197,
+        "none_of_these": 146
+      },
+      "prior_by_stratum": {
+        "day": 0.6423357725143433,
+        "night": 0.6866682767868042,
+        "lava_adjacent": 0.8368794322013855,
+        "zombie_adjacent": 0.5671809315681458,
+        "arrow_or_skeleton": 0.7522208094596863,
+        "none_of_these": 0.801369845867157
+      },
+      "arms": {
+        "pixels1": {
+          "runs": [
+            {
+              "selected_step": 2100,
+              "inner_safe": 0.8904761672019958,
+              "parameters": 609457,
+              "judge_expected_safe": 0.8515234589576721,
+              "fit_expected_safe": 0.9980952143669128
+            },
+            {
+              "selected_step": 2800,
+              "inner_safe": 0.9428571462631226,
+              "parameters": 609457,
+              "judge_expected_safe": 0.8999999761581421,
+              "fit_expected_safe": 1.0
+            },
+            {
+              "selected_step": 1700,
+              "inner_safe": 0.938095211982727,
+              "parameters": 609457,
+              "judge_expected_safe": 0.8907031416893005,
+              "fit_expected_safe": 0.9846131205558777
+            }
+          ],
+          "judge_expected_safe": 0.8807421922683716,
+          "vs_prior": {
+            "difference": 0.2092578411102295,
+            "interval": [
+              0.16505679488182068,
+              0.25728410482406616
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.914993941783905,
+            "night": 0.8629000782966614,
+            "lava_adjacent": 0.9881797432899475,
+            "zombie_adjacent": 0.8339266777038574,
+            "arrow_or_skeleton": 0.8558058142662048,
+            "none_of_these": 0.9452054500579834
+          }
+        },
+        "tokens_attn": {
+          "runs": [
+            {
+              "selected_step": 2600,
+              "inner_safe": 0.8190476298332214,
+              "parameters": 115218,
+              "judge_expected_safe": 0.7660156488418579,
+              "fit_expected_safe": 0.9580952525138855
+            },
+            {
+              "selected_step": 1400,
+              "inner_safe": 0.7142857313156128,
+              "parameters": 115218,
+              "judge_expected_safe": 0.6945703029632568,
+              "fit_expected_safe": 0.8295238018035889
+            },
+            {
+              "selected_step": 1300,
+              "inner_safe": 0.776190459728241,
+              "parameters": 115218,
+              "judge_expected_safe": 0.7347656488418579,
+              "fit_expected_safe": 0.8920238018035889
+            }
+          ],
+          "judge_expected_safe": 0.7317838072776794,
+          "vs_prior": {
+            "difference": 0.060299456119537354,
+            "interval": [
+              0.018701937049627304,
+              0.10395331680774689
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.7571852207183838,
+            "night": 0.7185519337654114,
+            "lava_adjacent": 0.9739953279495239,
+            "zombie_adjacent": 0.6230221390724182,
+            "arrow_or_skeleton": 0.7331324815750122,
+            "none_of_these": 0.8447489142417908
+          }
+        },
+        "cls": {
+          "runs": [
+            {
+              "selected_step": 2000,
+              "inner_safe": 0.6952381134033203,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6414843797683716,
+              "fit_expected_safe": 0.8171428442001343
+            },
+            {
+              "selected_step": 100,
+              "inner_safe": 0.6714285612106323,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6648828387260437,
+              "fit_expected_safe": 0.6957440376281738
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6904761791229248,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6504296660423279,
+              "fit_expected_safe": 0.7049106955528259
+            }
+          ],
+          "judge_expected_safe": 0.6522656083106995,
+          "vs_prior": {
+            "difference": -0.019218742847442627,
+            "interval": [
+              -0.05660068243741989,
+              0.01973850466310978
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6990191340446472,
+            "night": 0.6279110908508301,
+            "lava_adjacent": 0.9125295877456665,
+            "zombie_adjacent": 0.544303834438324,
+            "arrow_or_skeleton": 0.7469332218170166,
+            "none_of_these": 0.7283105850219727
+          }
+        },
+        "cls_wide": {
+          "runs": [
+            {
+              "selected_step": 500,
+              "inner_safe": 0.6857143044471741,
+              "parameters": 4626449,
+              "judge_expected_safe": 0.609179675579071,
+              "fit_expected_safe": 0.7774404883384705
+            },
+            {
+              "selected_step": 1200,
+              "inner_safe": 0.7142857313156128,
+              "parameters": 4626449,
+              "judge_expected_safe": 0.6441797018051147,
+              "fit_expected_safe": 0.8573511838912964
+            },
+            {
+              "selected_step": 1000,
+              "inner_safe": 0.6380952596664429,
+              "parameters": 4626449,
+              "judge_expected_safe": 0.6348828077316284,
+              "fit_expected_safe": 0.8580952286720276
+            }
+          ],
+          "judge_expected_safe": 0.6294140815734863,
+          "vs_prior": {
+            "difference": -0.04207026958465576,
+            "interval": [
+              -0.0931544303894043,
+              0.012499714270234108
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6734337210655212,
+            "night": 0.6064836382865906,
+            "lava_adjacent": 0.7825058698654175,
+            "zombie_adjacent": 0.5481935739517212,
+            "arrow_or_skeleton": 0.713356614112854,
+            "none_of_these": 0.7214611768722534
+          }
+        },
+        "z": {
+          "runs": [
+            {
+              "selected_step": 100,
+              "inner_safe": 0.6714285612106323,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6454296708106995,
+              "fit_expected_safe": 0.725565493106842
+            },
+            {
+              "selected_step": 700,
+              "inner_safe": 0.6714285612106323,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6592187285423279,
+              "fit_expected_safe": 0.808571457862854
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6761904954910278,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6585156321525574,
+              "fit_expected_safe": 0.7504464387893677
+            }
+          ],
+          "judge_expected_safe": 0.6543881297111511,
+          "vs_prior": {
+            "difference": -0.017096221446990967,
+            "interval": [
+              -0.058389291167259216,
+              0.0271134153008461
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6940389275550842,
+            "night": 0.6337333917617798,
+            "lava_adjacent": 0.9432623982429504,
+            "zombie_adjacent": 0.5418205261230469,
+            "arrow_or_skeleton": 0.7606281638145447,
+            "none_of_these": 0.710045576095581
+          }
+        }
+      },
+      "rules": {
+        "R0_pixels1_vs_prior": {
+          "difference": 0.2092578411102295,
+          "interval": [
+            0.16953560709953308,
+            0.2584846019744873
+          ],
+          "excludes_zero": true
+        },
+        "R1_tokens_attn_vs_cls": {
+          "difference": 0.07951819896697998,
+          "interval": [
+            0.04952108487486839,
+            0.10857198387384415
+          ],
+          "excludes_zero": true
+        },
+        "R2_tokens_attn_vs_cls_wide": {
+          "difference": 0.10236972570419312,
+          "interval": [
+            0.0603858157992363,
+            0.142207533121109
+          ],
+          "excludes_zero": true
+        },
+        "R3_tokens_attn_vs_cls_wide_zombie": {
+          "difference": 0.07482856512069702,
+          "interval": [
+            0.030912324786186218,
+            0.12035717815160751
+          ],
+          "excludes_zero": true
+        }
+      },
+      "reported": {
+        "cls_wide_vs_cls": {
+          "difference": -0.022851526737213135,
+          "interval": [
+            -0.055960170924663544,
+            0.01127229630947113
+          ],
+          "excludes_zero": false
+        },
+        "z_vs_cls": {
+          "difference": 0.00212252140045166,
+          "interval": [
+            -0.020388858392834663,
+            0.022227708250284195
+          ],
+          "excludes_zero": false
+        },
+        "tokens_attn_vs_prior": {
+          "difference": 0.060299456119537354,
+          "interval": [
+            0.017617497593164444,
+            0.1030360758304596
+          ],
+          "excludes_zero": true
+        },
+        "cls_wide_vs_prior": {
+          "difference": -0.04207026958465576,
+          "interval": [
+            -0.09076927602291107,
+            0.010504739359021187
+          ],
+          "excludes_zero": false
+        }
+      }
+    },
+    "death2": {
+      "judge_opportunity_roots": 1539,
+      "prior_action": 4,
+      "prior_expected_safe": 0.6734486818313599,
+      "strata_opportunity": {
+        "day": 486,
+        "night": 1053,
+        "lava_adjacent": 141,
+        "zombie_adjacent": 665,
+        "arrow_or_skeleton": 345,
+        "none_of_these": 581
+      },
+      "prior_by_stratum": {
+        "day": 0.6598508358001709,
+        "night": 0.6797245740890503,
+        "lava_adjacent": 0.8346630930900574,
+        "zombie_adjacent": 0.39144736528396606,
+        "arrow_or_skeleton": 0.7230072617530823,
+        "none_of_these": 0.8909746408462524
+      },
+      "arms": {
+        "pixels1": {
+          "runs": [
+            {
+              "selected_step": 1900,
+              "inner_safe": 0.7219681739807129,
+              "parameters": 609457,
+              "judge_expected_safe": 0.717694103717804,
+              "fit_expected_safe": 0.7763291001319885
+            },
+            {
+              "selected_step": 2500,
+              "inner_safe": 0.7470359206199646,
+              "parameters": 609457,
+              "judge_expected_safe": 0.7219379544258118,
+              "fit_expected_safe": 0.7827069163322449
+            },
+            {
+              "selected_step": 2600,
+              "inner_safe": 0.723238468170166,
+              "parameters": 609457,
+              "judge_expected_safe": 0.7126177549362183,
+              "fit_expected_safe": 0.7824541926383972
+            }
+          ],
+          "judge_expected_safe": 0.7174165844917297,
+          "vs_prior": {
+            "difference": 0.04396790266036987,
+            "interval": [
+              0.025184134021401405,
+              0.06324873864650726
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.7328318357467651,
+            "night": 0.7103018760681152,
+            "lava_adjacent": 0.989435613155365,
+            "zombie_adjacent": 0.439677357673645,
+            "arrow_or_skeleton": 0.7289553284645081,
+            "none_of_these": 0.9231389760971069
+          }
+        },
+        "tokens_attn": {
+          "runs": [
+            {
+              "selected_step": 2200,
+              "inner_safe": 0.6937669515609741,
+              "parameters": 115218,
+              "judge_expected_safe": 0.6972059607505798,
+              "fit_expected_safe": 0.7535085678100586
+            },
+            {
+              "selected_step": 3000,
+              "inner_safe": 0.6793699264526367,
+              "parameters": 115218,
+              "judge_expected_safe": 0.6641284823417664,
+              "fit_expected_safe": 0.7439938187599182
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6572662591934204,
+              "parameters": 115218,
+              "judge_expected_safe": 0.6821190714836121,
+              "fit_expected_safe": 0.6747740507125854
+            }
+          ],
+          "judge_expected_safe": 0.6811512112617493,
+          "vs_prior": {
+            "difference": 0.007702529430389404,
+            "interval": [
+              -0.008589321747422218,
+              0.02616361901164055
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6886574029922485,
+            "night": 0.6776868104934692,
+            "lava_adjacent": 0.9606974720954895,
+            "zombie_adjacent": 0.39197999238967896,
+            "arrow_or_skeleton": 0.7260567545890808,
+            "none_of_these": 0.886779248714447
+          }
+        },
+        "cls": {
+          "runs": [
+            {
+              "selected_step": 200,
+              "inner_safe": 0.6551490426063538,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6624837517738342,
+              "fit_expected_safe": 0.6806018352508545
+            },
+            {
+              "selected_step": 100,
+              "inner_safe": 0.6525236964225769,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6593161225318909,
+              "fit_expected_safe": 0.6767513155937195
+            },
+            {
+              "selected_step": 200,
+              "inner_safe": 0.6515074372291565,
+              "parameters": 107537,
+              "judge_expected_safe": 0.666890025138855,
+              "fit_expected_safe": 0.6753984093666077
+            }
+          ],
+          "judge_expected_safe": 0.6628966331481934,
+          "vs_prior": {
+            "difference": -0.010552048683166504,
+            "interval": [
+              -0.02549310028553009,
+              0.005425129551440477
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6768046617507935,
+            "night": 0.6564775109291077,
+            "lava_adjacent": 0.9385343790054321,
+            "zombie_adjacent": 0.38187655806541443,
+            "arrow_or_skeleton": 0.7018719911575317,
+            "none_of_these": 0.8672367930412292
+          }
+        },
+        "cls_wide": {
+          "runs": [
+            {
+              "selected_step": 2400,
+              "inner_safe": 0.6648035049438477,
+              "parameters": 4626449,
+              "judge_expected_safe": 0.639132559299469,
+              "fit_expected_safe": 0.7576266527175903
+            },
+            {
+              "selected_step": 100,
+              "inner_safe": 0.6665819883346558,
+              "parameters": 4626449,
+              "judge_expected_safe": 0.6515594720840454,
+              "fit_expected_safe": 0.6793381571769714
+            },
+            {
+              "selected_step": 1600,
+              "inner_safe": 0.6558265686035156,
+              "parameters": 4626449,
+              "judge_expected_safe": 0.6658341288566589,
+              "fit_expected_safe": 0.7426706552505493
+            }
+          ],
+          "judge_expected_safe": 0.6521754264831543,
+          "vs_prior": {
+            "difference": -0.021273255348205566,
+            "interval": [
+              -0.04251788556575775,
+              0.00020160294661764055
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6728180646896362,
+            "night": 0.6426479816436768,
+            "lava_adjacent": 0.8708629012107849,
+            "zombie_adjacent": 0.3772556483745575,
+            "arrow_or_skeleton": 0.6637681722640991,
+            "none_of_these": 0.8660535216331482
+          }
+        },
+        "z": {
+          "runs": [
+            {
+              "selected_step": 500,
+              "inner_safe": 0.651761531829834,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6747075915336609,
+              "fit_expected_safe": 0.6963011622428894
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6483739614486694,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6616918444633484,
+              "fit_expected_safe": 0.6921384334564209
+            },
+            {
+              "selected_step": 1100,
+              "inner_safe": 0.6456639766693115,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6746873259544373,
+              "fit_expected_safe": 0.7166537642478943
+            }
+          ],
+          "judge_expected_safe": 0.6703622341156006,
+          "vs_prior": {
+            "difference": -0.0030864477157592773,
+            "interval": [
+              -0.022756053134799004,
+              0.017784014344215393
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6891717910766602,
+            "night": 0.6616809368133545,
+            "lava_adjacent": 0.9763592481613159,
+            "zombie_adjacent": 0.383834570646286,
+            "arrow_or_skeleton": 0.7242451310157776,
+            "none_of_these": 0.8654439449310303
+          }
+        }
+      },
+      "rules": {
+        "R0_pixels1_vs_prior": {
+          "difference": 0.04396790266036987,
+          "interval": [
+            0.025988835841417313,
+            0.06347379088401794
+          ],
+          "excludes_zero": true
+        },
+        "R1_tokens_attn_vs_cls": {
+          "difference": 0.018254578113555908,
+          "interval": [
+            0.005111001431941986,
+            0.030715689063072205
+          ],
+          "excludes_zero": true
+        },
+        "R2_tokens_attn_vs_cls_wide": {
+          "difference": 0.02897578477859497,
+          "interval": [
+            0.014931218698620796,
+            0.042820002883672714
+          ],
+          "excludes_zero": true
+        },
+        "R3_tokens_attn_vs_cls_wide_zombie": {
+          "difference": 0.01472434401512146,
+          "interval": [
+            2.8975342502235435e-05,
+            0.02927890606224537
+          ],
+          "excludes_zero": true
+        }
+      },
+      "reported": {
+        "cls_wide_vs_cls": {
+          "difference": -0.010721206665039062,
+          "interval": [
+            -0.02399362251162529,
+            0.0015659694327041507
+          ],
+          "excludes_zero": false
+        },
+        "z_vs_cls": {
+          "difference": 0.0074656009674072266,
+          "interval": [
+            -0.0031627968419343233,
+            0.01788366585969925
+          ],
+          "excludes_zero": false
+        },
+        "tokens_attn_vs_prior": {
+          "difference": 0.007702529430389404,
+          "interval": [
+            -0.008096707053482533,
+            0.024578755721449852
+          ],
+          "excludes_zero": false
+        },
+        "cls_wide_vs_prior": {
+          "difference": -0.021273255348205566,
+          "interval": [
+            -0.040701162070035934,
+            -0.0009076531860046089
+          ],
+          "excludes_zero": true
+        }
+      }
+    }
+  }
+}
