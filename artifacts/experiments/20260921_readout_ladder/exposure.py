@@ -199,7 +199,7 @@ def main(argv=None):
     ids, starts, acts = [], [], []
     for _ in range(len(cache["actions"]) // config.joint.batch):
         b = sampler.sample()
-        acts.append(b.actions); ids += list(b[2]); starts += b[3].tolist()
+        acts.append(b.actions); ids += list(b.episode_ids); starts += b.starts.tolist()
     if not torch.equal(torch.cat(acts), cache["actions"]):
         raise SystemExit("the reconstructed pool does not reproduce the cached actions")
     by_id = {e.episode_id: e for e in episodes}
