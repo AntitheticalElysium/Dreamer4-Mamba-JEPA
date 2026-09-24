@@ -1,4 +1,14 @@
-# Observability test — the deciding state is on screen
+# Observability test — the current observation carries much of what decides death
+
+> **CORRECTED 2026-09-24, after review.** The first version was titled "the deciding state is on
+> screen" and overclaimed in four places, all corrected below: (1) +0.022 is what hidden fields add
+> *to this fitted probe*, not a bound on their value — even the full-state probe leaves 0.106 to the
+> oracle; (2) the pixel arms also receive the last k actions, with no actions-only control, so their
+> gain is not all pixels; (3) "history does not help" was broader than the evidence, which is one
+> overfit CNN and one hand-picked history trace; (4) the "visible" arm reads exact simulator tiles and
+> mobs *through night darkness* the renderer draws over them — see the day/night table. And the
+> proposed next step, "the first rung that falls is where the loss is", is withdrawn: these rungs are
+> not a nested information chain, so a falling score is a place to look, not a verdict.
 
 Run 2026-09-24. Data: `observe.py` (`13891572`); probes: `observability.py` (`3de6a3fd`), both
 committed before any fresh-seed result was read. Evidence: `evidence/observability.json`, per-seed
@@ -61,19 +71,38 @@ Full − visible is +0.009 [+0.001, +0.016]; visible closes about half of the pr
 
 ## Declared reading: `drawn_state_suffices`, both outcomes
 
-- **Hidden state is a small part of the problem.** The full-state oracle is perfect one-step; what is
-  drawn on screen *now* reaches 0.872, and adding every hidden field — cooldowns, mob health, the
-  player's accumulators — adds only **+0.022**. Partial observability exists, and is resolved, but it
-  is not what separates the models from the target.
-- **It is learnable from raw pixels.** A from-scratch DQN CNN on the last four frames reaches 0.768,
-  +0.140 over the prior, on sealed fresh seeds. Everything the ranking probes in `RANKPROBE.md`
+- **The current observation is highly informative.** The structured visible state reaches 0.872 with
+  no action history at all. Adding every hidden field adds **+0.022 to this probe** — but the
+  full-state probe itself reaches only 0.894 against an oracle of 1.000, so the hidden fields' value
+  to a better predictor is not bounded by this.
+- **A from-scratch image model gets a useful share of it.** A DQN CNN on the last four frames reaches
+  0.768, +0.140 over the prior, on sealed fresh seeds — but it also receives the last four actions,
+  and there is no actions-only control, so not all of the gain can be credited to pixels. Everything the ranking probes in `RANKPROBE.md`
   tried on the model's own representations — CLS + pooled patches, root features, `u`, generated
   `z` — sat at or below the prior.
-- **History does not help here**, in structured form (−0.015, unresolved) or as more frames: 32 raw
-  frames do *worse* than 4 (−0.119, resolved). The 32-frame CNN has 8× the input channels and the
+- **These particular history inputs did not help**: the hand-picked structured trace (−0.015,
+  unresolved), and 32 raw frames, which do *worse* than 4 (−0.119, resolved). The 32-frame CNN has 8× the input channels and the
   same 7,085 roots, reaches 1.000 on fit roots and 0.722 on inner roots — overfitting, not evidence
   that history hurts. Handing it the hidden vector rescues it (+0.150), because a short vector is a
   far easier route than 96 channels of pixels.
+
+## Night: the "visible" arm sees through darkness the pixels cannot
+
+281 of the 500 one-step opportunity roots are at night (light level < 0.5), where the renderer
+darkens the view and overlays random static. The structured arm is built from exact simulator tiles
+and mobs, so night costs it nothing; the pixel model loses about 5 points:
+
+| one-step expected safe | day (219) | night (281) |
+|---|---|---|
+| prior (DOWN) | 0.637 | 0.621 |
+| structured visible | 0.874 | 0.870 |
+| full state | 0.895 | 0.893 |
+| raw pixels, 4 frames | 0.795 | 0.746 |
+| raw pixels, 32 frames + hidden | 0.791 | 0.805 |
+
+So "visible" here means *what the renderer draws before night obscures it* — an overestimate of
+what is actually on screen for most of these roots. Any further ladder should stratify by light.
+No opportunity root had the player asleep.
 
 ## What this does not establish, and the confound that blocks the next claim
 
@@ -87,6 +116,7 @@ Full − visible is +0.009 [+0.001, +0.016]; visible closes about half of the pr
   against realized outcomes. "Raw pixels reach 0.768 and the model's representations do not beat
   the prior" is therefore suggestive, not a localization. The reviewer's branch — *visual history
   clears the prior → localize the loss through encoder, projector and transition* — needs those
-  representations scored **in this harness, on these sealed roots**: encoder patch tokens unpooled,
-  CLS + pooled grid, projected `z`, world root features, `u`, generated `z`. The first rung that
-  falls from the pixel level to the prior is where the loss is.
+  representations scored **in this harness, on these roots**: encoder patch tokens unpooled,
+  CLS + pooled grid, projected `z`, world root features, `u`, generated `z`. These roots have now
+  been inspected, so that ladder is exploratory; any repair it motivates is judged on a new seed
+  block.
