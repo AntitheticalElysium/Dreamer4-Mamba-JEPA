@@ -109,6 +109,10 @@ class Head(nn.Module):
         self.kind = kind
         if kind == "vector":
             self.net = nn.Sequential(nn.Linear(shape[-1], 512), nn.ReLU(), nn.Linear(512, N))
+        elif kind == "wide":
+            # CLS capacity control (boundary.py): ~40x the parameters of the patch-attention head.
+            self.net = nn.Sequential(nn.Linear(shape[-1], 2048), nn.ReLU(), nn.Linear(2048, 2048), nn.ReLU(),
+                                     nn.Linear(2048, N))
         elif kind == "branch":
             self.net = nn.Sequential(nn.Linear(shape[-1], 512), nn.ReLU(), nn.Linear(512, 1))
         elif kind == "tokens_flat":
