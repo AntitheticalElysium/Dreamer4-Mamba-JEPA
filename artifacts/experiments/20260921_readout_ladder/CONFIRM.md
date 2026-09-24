@@ -105,9 +105,22 @@ where sleeping kills and `RIGHT` survives, it rates sleep safer than right on **
 head reading the real successor makes that reversal on 66; a fresh exact head on real features, on
 27.
 
-This is an action-consequence failure, not a weak aggregate. In Craftax a zombie hit does 7 damage
-to a sleeping player against 2 to an awake one, so sleeping beside a threat is exactly the lethal
-choice, and the head systematically prefers it.
+This is an action-consequence failure, not a weak aggregate. **But it is not about sleeping.**
+
+> **CORRECTED 2026-09-24.** An earlier version of this paragraph said the 7-versus-2 zombie damage
+> rule made "sleeping beside a threat exactly the lethal choice". That is wrong for one step. In
+> `craftax_step`, `update_mobs` resolves attacks using the sleep flag from *before* this step's
+> action, and `update_player_intrinsics` sets the flag afterwards, and only when energy < 9
+> (`game_logic.py:1655-1686`, `:1237`). A SLEEP chosen now is hit as an awake player.
+
+What the one-step panel actually measures is **staying put versus moving away**. On all 226 roots
+where SLEEP kills and RIGHT survives, NOOP kills too. Across the 670 roots, SLEEP and NOOP disagree
+on one-step death only 17 times, all in SLEEP's favour.
+
+The sleep penalty is real, but it arrives a step later. The fork rows already carry a NOOP second
+step after every surviving first action: on the 3,638 judgement roots where both SLEEP and NOOP
+survive step one, step two kills **609 after SLEEP against 181 after NOOP**. A one-step panel
+cannot see that hazard at all, so it is the wrong instrument for any claim about SLEEP.
 
 ## Reward, unchanged
 

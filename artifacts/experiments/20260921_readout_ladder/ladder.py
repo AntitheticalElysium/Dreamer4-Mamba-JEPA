@@ -282,20 +282,21 @@ def verdict(matrix):
     ctx_r, ctx_t = ok("context_action", "real", "dev")
     real_any, gen_any, z_any = real_r or real_t, gen_r or gen_t, z_r or z_t
     if real_any and gen_any:
-        call = "bridge_head_data_or_objective"
+        call = "real_and_generated_beat_marginal"
         why = ("fresh heads on all-action data succeed from BOTH real and generated features, so "
                "the features carry the information and the bridge heads' data/objective is the "
                "problem -- consistent with only 25% of their supervision coming from generated "
                "suffixes, all on logged actions")
     elif real_any and not gen_any:
-        call = "transition_or_generated_feature"
-        why = "real-successor features succeed where generated ones fail: the generated path is at fault"
+        call = "real_beats_marginal_generated_does_not"
+        why = ("real-successor features beat the action-marginal and generated ones do not, under a "
+               "reward-CE + continuation-BCE probe; a probe failing is not an absence of information")
     elif not real_any and z_any:
-        call = "observe_latent_or_agent_readout_bottleneck"
+        call = "successor_z_beats_marginal_real_features_do_not"
         why = ("the encoded successor z carries the information but the world's own readout of it "
                "does not: the bottleneck is observe_latent / the agent readout")
     elif not (real_any or gen_any or z_any or ctx_r or ctx_t):
-        call = "representation_or_context_deficiency"
+        call = "no_family_beats_marginal"
         why = "no latent route succeeds; the representation or the context is deficient"
     else:
         call = "mixed"

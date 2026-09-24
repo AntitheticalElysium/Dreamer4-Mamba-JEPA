@@ -24,7 +24,13 @@ movement (75% chase, otherwise random) and mob spawns from the step RNG, so z_tr
 outcome randomness no function of (state, action) can. A rung beating root+action has COMPUTED the
 consequence into a probe-accessible form; one that does not, has not.
 
-Declared rules, fixed and committed before launch:
+Declared rules, fixed and committed before launch. Outcome names were changed on 2026-09-24 from
+causal labels (`dynamics_never_construct_it`, ...) to what each actually measures, after they
+repeated a headline this project had already retracted: every rung is read by a probe trained on
+reward CE + continuation BCE and judged on within-root choice, a known understatement. Evidence
+written under the old names is read through `evidence/supersessions.json`.
+
+Rules:
 
   A rung CARRIES safety when its terminal safe-choice on the judgement roots beats the
   `context_action` control with a paired, episode-seed-clustered 95% interval above zero, read in
@@ -33,14 +39,14 @@ Declared rules, fixed and committed before launch:
   rung is `probe_dependent` and counts as evidence for neither side. (Exact-vs-adapter-control is
   conservative: the control has the extra adapter layer.)
 
-  u carries and generated_z does not                  -> predictor_projector_bottleneck
-  every stack rung through u is a clean non-carry     -> dynamics_never_construct_it
-  a block carries and u does not                      -> built_then_lost_inside_the_stack
-  u and generated_z carry, generated_features does not -> agent_readout_combination
+  u carries and generated_z does not                  -> u_beats_root_action_generated_z_does_not
+  every stack rung through u is a clean non-carry     -> no_stack_rung_beats_root_action
+  a block carries and u does not                      -> a_block_beats_root_action_u_does_not
+  u and generated_z carry, generated_features does not -> u_and_generated_z_beat_root_action_features_do_not
   any rung with no terminal test at all               -> insufficient_coverage
   anything else                                       -> mixed
 
-Post-hoc root-side controls, added AFTER the declared run returned `dynamics_never_construct_it`
+Post-hoc root-side controls, added AFTER the declared run returned `no_stack_rung_beats_root_action`
 and committed before they were run. They never feed `verdict`. That call presumes the stack's
 INPUT holds the information; even root+action sat below the marginal, so it was not established
 that anything observable at the root predicts which action kills. Three rungs, adapter probe:
@@ -49,11 +55,11 @@ that anything observable at the root predicts which action kills. Three rungs, a
   root_cls_action          the 4 root CLS + action: the encoder before the projector
   root_cls_patches_action  + the last root frame's 4x4 pooled patch grid (TC-LeWM's policy input)
 
-  root_z_action beats root+action              -> input_carries_it: the stack fails to compute
+  root_z_action beats root+action              -> root_z_beats_root_action: the stack fails to compute
                                                   it; training the transition is well-posed
-  only the CLS/patch rungs beat root+action    -> projector_drops_it: lost before the transition
+  only the CLS/patch rungs beat root+action    -> only_pre_projector_root_beats_root_action: lost before the transition
                                                   sees it; training on z cannot recover it
-  none beats root+action                       -> not_predictable_from_root: the real successor's
+  none beats root+action                       -> no_root_rung_beats_root_action: the real successor's
                                                   edge is realized outcome, incl. step randomness
 
 Capture checks fail the RUN, not the verdict: the `final_norm` capture must equal
@@ -165,7 +171,7 @@ def verdict(matrix):
     def carries(cell):
         # None when there is no test at all -- too few terminal-opportunity roots. A missing test
         # is not a failed one: reading it as False let a smoke run with no terminal coverage
-        # return `dynamics_never_construct_it`, a verdict made from no data.
+        # return `no_stack_rung_beats_root_action`, a verdict made from no data.
         test = (cell or {}).get("judge", {}).get("terminal", {}).get("vs_context_action")
         if not test or test.get("difference") is None:
             return None
@@ -183,13 +189,13 @@ def verdict(matrix):
     if any(value is None for value in reading.values()):
         call = "insufficient_coverage"
     elif u is True and gz is False:
-        call = "predictor_projector_bottleneck"
+        call = "u_beats_root_action_generated_z_does_not"
     elif all(reading[r] is False for r in STACK):
-        call = "dynamics_never_construct_it"
+        call = "no_stack_rung_beats_root_action"
     elif any(reading[r] is True for r in BLOCKS) and u is False:
-        call = "built_then_lost_inside_the_stack"
+        call = "a_block_beats_root_action_u_does_not"
     elif u is True and gz is True and gf is False:
-        call = "agent_readout_combination"
+        call = "u_and_generated_z_beat_root_action_features_do_not"
     else:
         call = "mixed"
     lost = None
@@ -328,11 +334,11 @@ def main(argv=None):
     report["post_hoc_root"] = {
         "beats_root_action": beats,
         "call": ("insufficient_coverage" if None in beats.values() else
-                 "input_carries_it" if beats["root_z_action"] else
-                 "projector_drops_it" if beats["root_cls_action"] or beats["root_cls_patches_action"]
-                 else "not_predictable_from_root"),
+                 "root_z_beats_root_action" if beats["root_z_action"] else
+                 "only_pre_projector_root_beats_root_action" if beats["root_cls_action"] or beats["root_cls_patches_action"]
+                 else "no_root_rung_beats_root_action"),
         "note": "post hoc; added after the declared call and never read by `verdict`. "
-                "not_predictable_from_root is a statement about this probe family, not a proof "
+                "no_root_rung_beats_root_action is a statement about this probe family, not a proof "
                 "that no function of the root observation predicts termination"}
     (args.out / f"{args.name}.json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps({"status": "transition_complete", "seconds": round(time.time() - started, 1),
