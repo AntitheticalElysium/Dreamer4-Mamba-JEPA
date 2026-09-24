@@ -76,18 +76,25 @@ CLS + pooled 0.710 (+0.025*), and CLS 0.683, z 0.674, root features 0.675, u 0.6
 2. **The frozen encoder keeps much of it — in its patch tokens.** Flattened patch tokens reach 0.778;
    they lose 0.106 against raw pixels, most of it at night (0.715 vs 0.862 for pixels) and on zombie
    roots (0.691 vs 0.816).
-3. **The CLS token keeps none of it.** CLS alone is at the prior (0.627), on every hazard, at 1 or 4
-   frames; the largest single step down the chain is CLS + pooled → CLS (−0.095). The projector then
-   loses nothing further (z − CLS −0.001), because there is nothing left for it to lose.
+3. **No head here generalizes a safe-action ranking from root CLS.** CLS alone scores 0.627 against a
+   0.628 prior (probe seeds 0.565–0.673), on every hazard, at 1 or 4 frames; the largest step down
+   the chain is CLS + pooled → CLS (−0.095). The gap is not a capacity artefact: the patch-attention
+   head, about the size of the CLS head (115k vs 108k parameters), beats CLS by **+0.105 [+0.067,
+   +0.149]**. But a stronger CLS readout has not been tried, so this shows a usable-information gap,
+   not an irreversible loss. And because CLS already sits at the decision floor, a further loss in the
+   projector would be invisible here (z − CLS −0.001): CLS is the *first observed weak interface*, not
+   an acquittal of what follows — u → generated z still falls 0.043, resolved.
 4. **Everything the world model sees comes from CLS** — it transitions `z = projector(CLS)` and never
    receives the patch tokens (`lewm.py:LeWMEncoder.export`: "the world transitions z alone. Patch
    tokens are never regularized by SIGReg and never predicted"). World root features sit at the prior
    (0.627), as its input does.
 5. **The dynamics learned terrain, not mobs.** Next to lava, u reaches 0.968 and generated z 0.986 —
    well above what z itself gives (0.822). Next to a zombie, the largest hazard class, every rung
-   from CLS on is at or below the prior (0.50 → u 0.456), and generated z falls well below it (0.362) while choosing
-   SLEEP on 686 of 1,500 choices — the SLEEP preference CONFIRM found in the trained head,
-   reproduced by a fresh head on the predicted latent.
+   from CLS on is at or below the prior (0.50 → u 0.456), and generated z falls well below it (0.362,
+   −0.147 [−0.217, −0.071] against the prior). Generated z also chooses SLEEP on 686 of 1,500
+   choices — but on 222 of 330 near lava too, where staying put is safe. The SLEEP preference is a
+   general symptom of the predicted latent, not a zombie-specific rule; the finding is poor
+   zombie-conditioned action ranking.
 
 ## How far this goes
 
@@ -112,7 +119,13 @@ CLS + pooled 0.710 (+0.025*), and CLS 0.683, z 0.674, root features 0.675, u 0.6
 
 The review's branches were "patches fail → check whether they decode the visible scene; patches pass
 and z fails → the projector". Patches pass, but z fails *because CLS already fails*: the projector is
-not where it goes. The place to look is the architecture's choice to route only CLS into the world —
-the concern raised earlier in this campaign about removing the patch tokens, given TC-LeWM keeps them
-and z had already shown missing information. The decodability check on patch tokens is not triggered, since
-they did not fail.
+not where it goes. The place to look is the interface: only `z = projector(CLS)` enters the world. This needs one
+correction to how it was first framed. **TC-LeWM's world predictor also transitions projected CLS**; it
+is TC-LeWM's *downstream policy on real observations* that reads CLS plus pooled patch tokens, and our
+specification already records using the projected latent for the policy as "a major deviation"
+(DECISIONS.md TC-07). TC-03 lists "loss of … spatial relations" as a stop signal. So feeding real patch
+tokens to the policy would follow the source more closely but would not fix imagination: future real
+patches do not exist inside a rollout. A repair has to carry a patch-aware state **through the
+prediction itself**, and through the outcome readout of the predicted state — a new world-model design,
+not something TC-LeWM validated. The decodability check on patch tokens is not triggered, since they did
+not fail.
