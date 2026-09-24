@@ -3,12 +3,28 @@
 Written 2026-09-25. Everything cited was read (paper text or code) before being cited; the numbers
 from this repo are from the committed evidence files named beside them.
 
+> **Corrected the same day, after review.** Four statements below were wrong or overstated and are fixed
+> in place:
+> 1. **Shared heads are not new.** H2 already trains its reward and continuation heads on *generated*
+>    readouts, with gradients into the world (`d4mj/train.py:_bridge_head_losses`), and those shared heads
+>    did not transfer. What is new here is a health-change target read only from the states, and the
+>    per-tile state.
+> 2. **The 11× compared two different encoders** (Raw H2 tokens against the old TC encoder's `u`). Within
+>    the Raw encoder the ratios are 2.2× against z and 4.8× against the pooled grid. They are *squared*
+>    distances, not the per-token L1 loss proposed.
+> 3. **The one-step opportunity is stay versus move.** A SLEEP chosen now is hit as an awake player
+>    (CONFIRM.md correction); the 7-damage sleep penalty arrives a step later.
+> 4. **§7 is superseded.** The test that runs is the revised 2×2 in `spatial.py`: H2-style heads in
+>    every arm, crossed with the added health head. It is judged on the *trained* head against shortcut
+>    controls.
+
 ## 1. The problem, stated precisely
 
 The H2 gate needs a head that reads the world's **imagined** successor to choose the action that
 does not kill the agent. On Craftax-Classic the deciding case is a zombie next to the player:
-staying put (NOOP, SLEEP, DO, …) costs 2 health (7 asleep; `game_logic.py:830`), moving away costs
-nothing, and at low health that is death. In the frame the agent sees, the consequence is a change to
+staying put costs 2 health and moving away costs nothing, so the one-step opportunity is stay versus
+move; at low health that is death. A SLEEP chosen now is hit as an awake player: attacks read the
+sleep flag from before the action (CONFIRM.md). The 7-damage sleep penalty arrives a step later. In the frame the agent sees, the consequence is a change to
 **one tile**: the health counter, HUD row 7 column 0, token 63 of the encoder's 9×9 grid
 (`craftax_classic/renderer.py:498-507`, texture swapped at health 0; measured in §6: 94% of the fatal
 direction in token space sits on that tile). It is caused by a local interaction between three things: the player's tile, the zombie's tile and the action.
@@ -82,16 +98,18 @@ reconstruction-free rule stay as they are.
 2. **Predictor and loss: per tile.** The predictor attends across the 81 tiles within a step and runs
    over time, as V-JEPA 2-AC's block-causal transformer and Dedieu et al.'s transformer do; Mamba can
    still carry time. The target is each tile's layer-normalized token under L1, V-JEPA 2-AC's shipped
-   recipe. §6 measured what this buys: getting only the health counter wrong costs 0.25 of a typical
-   action effect, with 91% of that on the health tile itself. The u→u world's state charged 0.022,
-   so the weight rises 11×.
+   recipe. §6 measured, in squared distance, what a per-tile state charges for getting only the health
+   counter wrong: 0.25 of a typical action effect, with 91% of that on the health tile itself. Against
+   the same Raw encoder that is 2.2× z and 4.8× the pooled grid. The 11× over the u→u world's state
+   crosses encoders. None of these is a measurement of the L1 loss.
 3. **Continuation and health-change heads, inside the world loss.** They are trained on encoded tokens
    and applied to predicted tokens, with gradients into the predictor. This is the reward-prediction
-   (RP) condition of Ni et al. and TD-MPC2's heads on rolled-out latents. It is now the lever for the
-   objective, because §6 shows that no geometry makes the consequence large: even per tile it is a
-   quarter of an action effect, and the scroll still dominates about 4 to 1. A head's gradient does
-   not depend on the consequence's share of the energy. One head reads real and imagined states, so
-   they agree by construction; today heads do not transfer in either direction.
+   (RP) condition of Ni et al. and TD-MPC2's heads on rolled-out latents. **H2 already does this for
+   reward and continuation** (`_bridge_head_losses`), and its shared heads still do not transfer
+   between real and generated states: sharing does *not* make them agree. H2's heads also read the
+   predictor's history, which can bypass the generated latent. The new part is a **health-change**
+   head that reads only (s_t, s_{t+1}), so its gradient reaches the predictor only through the
+   generated state (verified in `spatial.py`'s unit test).
 
 **Dropped:** per-tile categorical targets built on these tokens. Their large cost (1.03) is 89% *other*
 tiles' codes flipping, because the ViT's tokens are contextual. Dedieu et al.'s codes are
