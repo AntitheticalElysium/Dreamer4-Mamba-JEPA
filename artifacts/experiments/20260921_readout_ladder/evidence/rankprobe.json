@@ -1,0 +1,6292 @@
+{
+  "schema": "d4mj_rankprobe_v1",
+  "status": "EXPLORATORY: judged on previously examined roots",
+  "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_m4_canonical/raw/bridge/step-002000.pt",
+  "checkpoint_sha256": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e",
+  "partition_sha256": "aab9f3e483bf6d2c01afb4d844275a05fb99ee0f6fd9735ea3e3324ab2bfea00",
+  "script_sha256": "4301bfe10738c288a1e57da6b969cefe9add71417fb390c4759b7e6c17417c66",
+  "readout_sha256": "d51337070357534354b13315549c455acd0ee617c0b0c67a9da7fce1b2430dde",
+  "row_identity": {
+    "fit": "a0e09373b2ed0ee368f3bcdd77c948f54fe800ec39e6d63211ef93eb5d220eac",
+    "judge": "be6382ebd252a8f53b23fc1cd4b72fa5ab5fa089777b87a93f89018d3370a015"
+  },
+  "roots": {
+    "fit": 7085,
+    "judge": 4047
+  },
+  "unscored_second_step": {
+    "fit": 0,
+    "judge": 0
+  },
+  "probe": {
+    "family": "mlp128",
+    "steps": 2000,
+    "batch_roots": 128,
+    "lr": 0.001,
+    "seeds": 3
+  },
+  "judge_rows": {
+    "path": "rankprobe_rows.pt",
+    "sha256": "bcab66d5b3da36235aa644c46ec978536dcfaee30174df8a4af034dc80190ed8"
+  },
+  "outcomes": {
+    "death1": {
+      "fit_prior_action": 4,
+      "fit_prior_rates": [
+        0.4396825432777405,
+        0.5992063283920288,
+        0.5888888835906982,
+        0.5896825194358826,
+        0.6230158805847168,
+        0.4515872895717621,
+        0.45396825671195984,
+        0.4396825432777405,
+        0.4396825432777405,
+        0.4396825432777405,
+        0.4396825432777405,
+        0.4396825432777405,
+        0.4396825432777405,
+        0.4396825432777405,
+        0.4396825432777405,
+        0.4396825432777405,
+        0.4396825432777405
+      ],
+      "fit_prior_judge_safe": 0.5910447835922241,
+      "judge_opportunity_roots": 670,
+      "fit_opportunity_roots": 1260,
+      "cells": {
+        "action_only@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 396,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5910447835922241,
+              "within_root_auc": 0.600283332419262,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                0,
+                0,
+                0,
+                670,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 396,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5910447835922241,
+              "within_root_auc": 0.5954388053503944,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                0,
+                0,
+                0,
+                670,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 396,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5910447835922241,
+              "within_root_auc": 0.6015756352901903,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                0,
+                0,
+                0,
+                670,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.6230158805847168,
+            0.6230158805847168,
+            0.6230158805847168
+          ],
+          "judge_safe_rate_mean": 0.5910447835922241,
+          "parameters": 2433,
+          "vs_fit_prior": {
+            "difference": 0.0,
+            "interval": [
+              0.0,
+              0.0
+            ],
+            "excludes_zero": false
+          }
+        },
+        "action_only@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 396,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5910447835922241,
+              "within_root_auc": 0.6080118599278268,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                0,
+                0,
+                0,
+                670,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 396,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5910447835922241,
+              "within_root_auc": 0.6067195585247741,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                0,
+                0,
+                0,
+                670,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 396,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5910447835922241,
+              "within_root_auc": 0.601318473363323,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                0,
+                0,
+                0,
+                670,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.6230158805847168,
+            0.6230158805847168,
+            0.6230158805847168
+          ],
+          "judge_safe_rate_mean": 0.5910447835922241,
+          "parameters": 2433,
+          "vs_fit_prior": {
+            "difference": 0.0,
+            "interval": [
+              0.0,
+              0.0
+            ],
+            "excludes_zero": false
+          }
+        },
+        "root_features@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 387,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5776119232177734,
+              "within_root_auc": 0.5692394476328323,
+              "argmin_ties": 0,
+              "selected_actions": [
+                2,
+                151,
+                161,
+                130,
+                144,
+                44,
+                20,
+                1,
+                1,
+                3,
+                0,
+                7,
+                5,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 374,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5582089424133301,
+              "within_root_auc": 0.5512817093852296,
+              "argmin_ties": 0,
+              "selected_actions": [
+                4,
+                119,
+                139,
+                210,
+                117,
+                58,
+                13,
+                3,
+                0,
+                0,
+                0,
+                0,
+                3,
+                1,
+                0,
+                0,
+                3
+              ]
+            },
+            {
+              "safe_choice": 373,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5567164421081543,
+              "within_root_auc": 0.5689669091727084,
+              "argmin_ties": 0,
+              "selected_actions": [
+                4,
+                140,
+                151,
+                171,
+                121,
+                43,
+                24,
+                0,
+                5,
+                2,
+                5,
+                2,
+                0,
+                0,
+                0,
+                1,
+                1
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.9103174805641174,
+            0.89682537317276,
+            0.894444465637207
+          ],
+          "judge_safe_rate_mean": 0.5641791224479675,
+          "parameters": 35201,
+          "vs_fit_prior": {
+            "difference": -0.026865661144256592,
+            "interval": [
+              -0.09707332402467728,
+              0.04894541576504707
+            ],
+            "excludes_zero": false
+          }
+        },
+        "root_features@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 355,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5298507213592529,
+              "within_root_auc": 0.5885541360880902,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                95,
+                78,
+                179,
+                215,
+                60,
+                40,
+                0,
+                0,
+                0,
+                0,
+                0,
+                2,
+                0,
+                0,
+                1,
+                0
+              ]
+            },
+            {
+              "safe_choice": 378,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5641791224479675,
+              "within_root_auc": 0.5912975633794915,
+              "argmin_ties": 0,
+              "selected_actions": [
+                1,
+                87,
+                176,
+                163,
+                147,
+                47,
+                45,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                1,
+                0,
+                1,
+                1
+              ]
+            },
+            {
+              "safe_choice": 361,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5388059616088867,
+              "within_root_auc": 0.5746659539389743,
+              "argmin_ties": 0,
+              "selected_actions": [
+                1,
+                97,
+                85,
+                182,
+                235,
+                57,
+                12,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.7634920477867126,
+            0.7603174448013306,
+            0.761904776096344
+          ],
+          "judge_safe_rate_mean": 0.5442785620689392,
+          "parameters": 35201,
+          "vs_fit_prior": {
+            "difference": -0.04676622152328491,
+            "interval": [
+              -0.11209379881620407,
+              0.02269466035068035
+            ],
+            "excludes_zero": false
+          }
+        },
+        "root_features@32:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 367,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5477612018585205,
+              "within_root_auc": 0.5604669645678864,
+              "argmin_ties": 0,
+              "selected_actions": [
+                1,
+                138,
+                135,
+                141,
+                160,
+                36,
+                40,
+                0,
+                0,
+                0,
+                1,
+                8,
+                6,
+                1,
+                2,
+                1,
+                0
+              ]
+            },
+            {
+              "safe_choice": 375,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5597015023231506,
+              "within_root_auc": 0.5585088296028883,
+              "argmin_ties": 0,
+              "selected_actions": [
+                3,
+                110,
+                165,
+                203,
+                120,
+                42,
+                11,
+                5,
+                1,
+                0,
+                3,
+                1,
+                2,
+                1,
+                2,
+                0,
+                1
+              ]
+            },
+            {
+              "safe_choice": 372,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5552238821983337,
+              "within_root_auc": 0.5699519566468784,
+              "argmin_ties": 0,
+              "selected_actions": [
+                3,
+                132,
+                150,
+                167,
+                146,
+                34,
+                20,
+                1,
+                5,
+                1,
+                0,
+                4,
+                0,
+                0,
+                3,
+                1,
+                3
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.894444465637207,
+            0.8960317373275757,
+            0.8849206566810608
+          ],
+          "judge_safe_rate_mean": 0.5542288422584534,
+          "parameters": 35201,
+          "vs_fit_prior": {
+            "difference": -0.03681594133377075,
+            "interval": [
+              -0.10301429778337479,
+              0.03194168955087662
+            ],
+            "excludes_zero": false
+          }
+        },
+        "root_features@32:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 370,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5522388219833374,
+              "within_root_auc": 0.5894355127643516,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                92,
+                80,
+                172,
+                221,
+                65,
+                38,
+                0,
+                0,
+                0,
+                0,
+                0,
+                2,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 383,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5716418027877808,
+              "within_root_auc": 0.5903815393516821,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                114,
+                127,
+                177,
+                152,
+                43,
+                54,
+                1,
+                1,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 371,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5537313222885132,
+              "within_root_auc": 0.5848534092084685,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                84,
+                87,
+                172,
+                259,
+                57,
+                8,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                2,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.7634920477867126,
+            0.7666666507720947,
+            0.761904776096344
+          ],
+          "judge_safe_rate_mean": 0.5592039823532104,
+          "parameters": 35201,
+          "vs_fit_prior": {
+            "difference": -0.03184080123901367,
+            "interval": [
+              -0.09203233569860458,
+              0.03613013029098511
+            ],
+            "excludes_zero": false
+          }
+        },
+        "root_pixels@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 403,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.6014925241470337,
+              "within_root_auc": 0.6402549729891011,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                79,
+                49,
+                107,
+                301,
+                114,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                0,
+                17,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 388,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.579104483127594,
+              "within_root_auc": 0.6070475903353585,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                123,
+                13,
+                154,
+                229,
+                134,
+                10,
+                3,
+                0,
+                0,
+                3,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 403,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.6014925241470337,
+              "within_root_auc": 0.6273611319821273,
+              "argmin_ties": 0,
+              "selected_actions": [
+                1,
+                149,
+                37,
+                144,
+                213,
+                61,
+                63,
+                0,
+                0,
+                0,
+                0,
+                0,
+                2,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.7452380657196045,
+            0.7388888597488403,
+            0.7571428418159485
+          ],
+          "judge_safe_rate_mean": 0.5940298438072205,
+          "parameters": 420225,
+          "vs_fit_prior": {
+            "difference": 0.002985060214996338,
+            "interval": [
+              -0.04837007820606232,
+              0.05854639410972595
+            ],
+            "excludes_zero": false
+          },
+          "vs_root_features": {
+            "difference": 0.02985072135925293,
+            "interval": [
+              -0.015326549299061298,
+              0.07408702373504639
+            ],
+            "excludes_zero": false
+          }
+        },
+        "root_pixels@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 418,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.6238806247711182,
+              "within_root_auc": 0.6603242001871564,
+              "argmin_ties": 0,
+              "selected_actions": [
+                4,
+                159,
+                89,
+                40,
+                263,
+                72,
+                27,
+                3,
+                2,
+                0,
+                3,
+                2,
+                0,
+                2,
+                2,
+                0,
+                2
+              ]
+            },
+            {
+              "safe_choice": 406,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.6059701442718506,
+              "within_root_auc": 0.6351621667201172,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                194,
+                96,
+                57,
+                206,
+                87,
+                19,
+                0,
+                1,
+                2,
+                0,
+                0,
+                0,
+                2,
+                3,
+                3,
+                0
+              ]
+            },
+            {
+              "safe_choice": 406,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.6059701442718506,
+              "within_root_auc": 0.6464238527745231,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                166,
+                155,
+                49,
+                172,
+                56,
+                50,
+                5,
+                1,
+                3,
+                1,
+                0,
+                5,
+                2,
+                2,
+                2,
+                1
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.7198412418365479,
+            0.7198412418365479,
+            0.7134920358657837
+          ],
+          "judge_safe_rate_mean": 0.611940324306488,
+          "parameters": 420225,
+          "vs_fit_prior": {
+            "difference": 0.020895540714263916,
+            "interval": [
+              -0.030875904485583305,
+              0.0760853961110115
+            ],
+            "excludes_zero": false
+          },
+          "vs_root_features": {
+            "difference": 0.06766176223754883,
+            "interval": [
+              0.025123149156570435,
+              0.10875296592712402
+            ],
+            "excludes_zero": true
+          }
+        },
+        "u@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 329,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.4910447895526886,
+              "within_root_auc": 0.5627823776996402,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                98,
+                42,
+                110,
+                211,
+                24,
+                139,
+                2,
+                12,
+                4,
+                3,
+                0,
+                21,
+                1,
+                0,
+                0,
+                3
+              ]
+            },
+            {
+              "safe_choice": 353,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5268656611442566,
+              "within_root_auc": 0.6096718996096013,
+              "argmin_ties": 0,
+              "selected_actions": [
+                2,
+                83,
+                70,
+                142,
+                160,
+                16,
+                122,
+                0,
+                28,
+                5,
+                4,
+                0,
+                24,
+                2,
+                3,
+                0,
+                9
+              ]
+            },
+            {
+              "safe_choice": 319,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.47611939907073975,
+              "within_root_auc": 0.5819639429005224,
+              "argmin_ties": 0,
+              "selected_actions": [
+                2,
+                65,
+                30,
+                100,
+                145,
+                8,
+                251,
+                5,
+                10,
+                3,
+                5,
+                1,
+                28,
+                3,
+                6,
+                0,
+                8
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.7515873312950134,
+            0.7634920477867126,
+            0.7174603343009949
+          ],
+          "judge_safe_rate_mean": 0.49800994992256165,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": -0.09303483366966248,
+            "interval": [
+              -0.15137341618537903,
+              -0.03353526443243027
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": -0.06616917252540588,
+            "interval": [
+              -0.10900697857141495,
+              -0.02433009445667267
+            ],
+            "excludes_zero": true
+          }
+        },
+        "u@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 398,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5940298438072205,
+              "within_root_auc": 0.6038924167516516,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                115,
+                0,
+                16,
+                424,
+                12,
+                92,
+                7,
+                0,
+                2,
+                0,
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 372,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5552238821983337,
+              "within_root_auc": 0.596037392657417,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                125,
+                0,
+                17,
+                387,
+                11,
+                120,
+                6,
+                1,
+                2,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 365,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5447761416435242,
+              "within_root_auc": 0.5952899621104571,
+              "argmin_ties": 0,
+              "selected_actions": [
+                1,
+                133,
+                0,
+                14,
+                342,
+                11,
+                159,
+                1,
+                0,
+                5,
+                1,
+                1,
+                0,
+                0,
+                2,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.5952380895614624,
+            0.5841270089149475,
+            0.5626984238624573
+          ],
+          "judge_safe_rate_mean": 0.5646765828132629,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": -0.02636820077896118,
+            "interval": [
+              -0.06412804126739502,
+              0.011283334344625473
+            ],
+            "excludes_zero": false
+          },
+          "vs_root_features": {
+            "difference": 0.02039802074432373,
+            "interval": [
+              -0.03587641566991806,
+              0.07050339132547379
+            ],
+            "excludes_zero": false
+          }
+        },
+        "u@32:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 344,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5134328603744507,
+              "within_root_auc": 0.5763947416791942,
+              "argmin_ties": 0,
+              "selected_actions": [
+                5,
+                94,
+                32,
+                121,
+                242,
+                28,
+                93,
+                0,
+                10,
+                5,
+                0,
+                2,
+                34,
+                2,
+                1,
+                0,
+                1
+              ]
+            },
+            {
+              "safe_choice": 331,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.49402984976768494,
+              "within_root_auc": 0.5914399141807165,
+              "argmin_ties": 0,
+              "selected_actions": [
+                1,
+                71,
+                67,
+                140,
+                167,
+                23,
+                135,
+                1,
+                18,
+                4,
+                1,
+                1,
+                25,
+                1,
+                7,
+                0,
+                8
+              ]
+            },
+            {
+              "safe_choice": 317,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.4731343388557434,
+              "within_root_auc": 0.5703206478159374,
+              "argmin_ties": 0,
+              "selected_actions": [
+                1,
+                72,
+                25,
+                137,
+                151,
+                14,
+                192,
+                6,
+                8,
+                9,
+                1,
+                0,
+                32,
+                11,
+                3,
+                1,
+                7
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.7547619342803955,
+            0.7507936358451843,
+            0.738095223903656
+          ],
+          "judge_safe_rate_mean": 0.49353235960006714,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": -0.09751242399215698,
+            "interval": [
+              -0.15854959189891815,
+              -0.03735277056694031
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": -0.06069648265838623,
+            "interval": [
+              -0.10117894411087036,
+              -0.02437588945031166
+            ],
+            "excludes_zero": true
+          }
+        },
+        "u@32:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 397,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5925372838973999,
+              "within_root_auc": 0.6023854602684281,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                83,
+                0,
+                21,
+                460,
+                13,
+                65,
+                11,
+                1,
+                7,
+                5,
+                0,
+                1,
+                0,
+                1,
+                0,
+                2
+              ]
+            },
+            {
+              "safe_choice": 379,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5656716227531433,
+              "within_root_auc": 0.5997201470074369,
+              "argmin_ties": 0,
+              "selected_actions": [
+                2,
+                150,
+                0,
+                28,
+                356,
+                3,
+                121,
+                6,
+                1,
+                0,
+                0,
+                0,
+                2,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 365,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5447761416435242,
+              "within_root_auc": 0.5937154853688692,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                132,
+                0,
+                9,
+                327,
+                7,
+                183,
+                1,
+                0,
+                3,
+                1,
+                0,
+                2,
+                0,
+                2,
+                2,
+                1
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.6111111044883728,
+            0.5865079164505005,
+            0.5555555820465088
+          ],
+          "judge_safe_rate_mean": 0.5676616430282593,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": -0.023383140563964844,
+            "interval": [
+              -0.057743582874536514,
+              0.013412542641162872
+            ],
+            "excludes_zero": false
+          },
+          "vs_root_features": {
+            "difference": 0.008457660675048828,
+            "interval": [
+              -0.04069887101650238,
+              0.05627751722931862
+            ],
+            "excludes_zero": false
+          }
+        },
+        "generated_z@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 332,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.4955223798751831,
+              "within_root_auc": 0.5787105659356535,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                33,
+                37,
+                71,
+                245,
+                43,
+                154,
+                0,
+                20,
+                6,
+                0,
+                11,
+                13,
+                30,
+                4,
+                2,
+                1
+              ]
+            },
+            {
+              "safe_choice": 341,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5089552402496338,
+              "within_root_auc": 0.581506272238582,
+              "argmin_ties": 0,
+              "selected_actions": [
+                1,
+                34,
+                22,
+                39,
+                278,
+                20,
+                173,
+                0,
+                18,
+                12,
+                0,
+                10,
+                17,
+                35,
+                1,
+                3,
+                7
+              ]
+            },
+            {
+              "safe_choice": 324,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.483582079410553,
+              "within_root_auc": 0.5702109633903227,
+              "argmin_ties": 0,
+              "selected_actions": [
+                3,
+                35,
+                55,
+                40,
+                162,
+                27,
+                258,
+                7,
+                14,
+                13,
+                0,
+                6,
+                17,
+                31,
+                1,
+                0,
+                1
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.708730161190033,
+            0.7174603343009949,
+            0.6746031641960144
+          ],
+          "judge_safe_rate_mean": 0.4960199296474457,
+          "parameters": 24833,
+          "vs_fit_prior": {
+            "difference": -0.09502485394477844,
+            "interval": [
+              -0.15465998649597168,
+              -0.029978429898619652
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": -0.06815919280052185,
+            "interval": [
+              -0.11494515091180801,
+              -0.023441100493073463
+            ],
+            "excludes_zero": true
+          }
+        },
+        "generated_z@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 340,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5074626803398132,
+              "within_root_auc": 0.5833394828850209,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                148,
+                4,
+                5,
+                152,
+                79,
+                225,
+                12,
+                1,
+                14,
+                20,
+                8,
+                0,
+                0,
+                2,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 334,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.49850746989250183,
+              "within_root_auc": 0.5858676390027378,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                137,
+                7,
+                1,
+                166,
+                147,
+                161,
+                7,
+                8,
+                12,
+                17,
+                5,
+                0,
+                0,
+                2,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 342,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5104477405548096,
+              "within_root_auc": 0.5893955354425889,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                92,
+                18,
+                13,
+                184,
+                136,
+                179,
+                14,
+                3,
+                5,
+                7,
+                18,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.511904776096344,
+            0.5285714268684387,
+            0.5111111402511597
+          ],
+          "judge_safe_rate_mean": 0.5054726004600525,
+          "parameters": 24833,
+          "vs_fit_prior": {
+            "difference": -0.08557218313217163,
+            "interval": [
+              -0.14096081256866455,
+              -0.030654512345790863
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": -0.03880596160888672,
+            "interval": [
+              -0.08716442435979843,
+              0.0066224499605596066
+            ],
+            "excludes_zero": false
+          }
+        },
+        "generated_z@32:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 347,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5179104208946228,
+              "within_root_auc": 0.5802610562224664,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                21,
+                38,
+                64,
+                231,
+                31,
+                187,
+                0,
+                18,
+                4,
+                1,
+                9,
+                15,
+                43,
+                3,
+                3,
+                2
+              ]
+            },
+            {
+              "safe_choice": 362,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5402985215187073,
+              "within_root_auc": 0.5816885345073334,
+              "argmin_ties": 0,
+              "selected_actions": [
+                4,
+                19,
+                22,
+                50,
+                270,
+                15,
+                193,
+                0,
+                16,
+                11,
+                0,
+                13,
+                5,
+                37,
+                6,
+                0,
+                9
+              ]
+            },
+            {
+              "safe_choice": 333,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.49701493978500366,
+              "within_root_auc": 0.572505534359657,
+              "argmin_ties": 0,
+              "selected_actions": [
+                8,
+                19,
+                34,
+                57,
+                194,
+                25,
+                243,
+                6,
+                18,
+                8,
+                0,
+                3,
+                15,
+                33,
+                2,
+                2,
+                3
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.6857143044471741,
+            0.6992063522338867,
+            0.6682539582252502
+          ],
+          "judge_safe_rate_mean": 0.5184080004692078,
+          "parameters": 24833,
+          "vs_fit_prior": {
+            "difference": -0.07263678312301636,
+            "interval": [
+              -0.13746821880340576,
+              -0.005895078182220459
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": -0.035820841789245605,
+            "interval": [
+              -0.0793449655175209,
+              0.004697510041296482
+            ],
+            "excludes_zero": false
+          }
+        },
+        "generated_z@32:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 324,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.483582079410553,
+              "within_root_auc": 0.5818755115368472,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                130,
+                1,
+                5,
+                143,
+                106,
+                224,
+                16,
+                1,
+                13,
+                18,
+                9,
+                0,
+                0,
+                2,
+                2,
+                0
+              ]
+            },
+            {
+              "safe_choice": 324,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.483582079410553,
+              "within_root_auc": 0.583130842286037,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                129,
+                5,
+                1,
+                135,
+                167,
+                177,
+                11,
+                10,
+                11,
+                12,
+                10,
+                0,
+                0,
+                2,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 327,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.4880596995353699,
+              "within_root_auc": 0.5861428415597375,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                81,
+                13,
+                17,
+                183,
+                150,
+                171,
+                10,
+                4,
+                9,
+                8,
+                23,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.5031746029853821,
+            0.5277777910232544,
+            0.5166666507720947
+          ],
+          "judge_safe_rate_mean": 0.48507463932037354,
+          "parameters": 24833,
+          "vs_fit_prior": {
+            "difference": -0.10597014427185059,
+            "interval": [
+              -0.1602502465248108,
+              -0.04857587814331055
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": -0.07412934303283691,
+            "interval": [
+              -0.11661893129348755,
+              -0.03070695511996746
+            ],
+            "excludes_zero": true
+          }
+        },
+        "generated_features@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 329,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.4910447895526886,
+              "within_root_auc": 0.5599434131728624,
+              "argmin_ties": 0,
+              "selected_actions": [
+                13,
+                30,
+                35,
+                165,
+                182,
+                27,
+                114,
+                4,
+                27,
+                12,
+                6,
+                2,
+                24,
+                21,
+                0,
+                2,
+                6
+              ]
+            },
+            {
+              "safe_choice": 356,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5313432812690735,
+              "within_root_auc": 0.5754635457644489,
+              "argmin_ties": 0,
+              "selected_actions": [
+                12,
+                65,
+                64,
+                177,
+                135,
+                29,
+                112,
+                1,
+                19,
+                3,
+                4,
+                5,
+                18,
+                13,
+                1,
+                1,
+                11
+              ]
+            },
+            {
+              "safe_choice": 340,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5074626803398132,
+              "within_root_auc": 0.5703277554307411,
+              "argmin_ties": 0,
+              "selected_actions": [
+                5,
+                61,
+                32,
+                138,
+                116,
+                15,
+                159,
+                5,
+                29,
+                16,
+                3,
+                15,
+                16,
+                39,
+                9,
+                2,
+                10
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.7388888597488403,
+            0.7603174448013306,
+            0.7126984000205994
+          ],
+          "judge_safe_rate_mean": 0.5099502801895142,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": -0.08109450340270996,
+            "interval": [
+              -0.14968959987163544,
+              -0.013048913329839706
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": -0.05422884225845337,
+            "interval": [
+              -0.09356550872325897,
+              -0.013323760591447353
+            ],
+            "excludes_zero": true
+          }
+        },
+        "generated_features@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 327,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.4880596995353699,
+              "within_root_auc": 0.5632669745207722,
+              "argmin_ties": 0,
+              "selected_actions": [
+                10,
+                49,
+                4,
+                101,
+                172,
+                115,
+                160,
+                13,
+                11,
+                5,
+                10,
+                1,
+                9,
+                4,
+                0,
+                3,
+                3
+              ]
+            },
+            {
+              "safe_choice": 332,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.4955223798751831,
+              "within_root_auc": 0.5678194865751177,
+              "argmin_ties": 0,
+              "selected_actions": [
+                12,
+                60,
+                17,
+                112,
+                154,
+                84,
+                164,
+                7,
+                25,
+                2,
+                4,
+                2,
+                7,
+                18,
+                2,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 324,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.483582079410553,
+              "within_root_auc": 0.5610477140896134,
+              "argmin_ties": 0,
+              "selected_actions": [
+                16,
+                70,
+                3,
+                54,
+                167,
+                97,
+                167,
+                7,
+                21,
+                13,
+                17,
+                2,
+                16,
+                14,
+                2,
+                2,
+                2
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.5753968358039856,
+            0.5888888835906982,
+            0.5571428537368774
+          ],
+          "judge_safe_rate_mean": 0.48905470967292786,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": -0.10199007391929626,
+            "interval": [
+              -0.15862375497817993,
+              -0.03782010078430176
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": -0.05522385239601135,
+            "interval": [
+              -0.09774566441774368,
+              -0.01684882491827011
+            ],
+            "excludes_zero": true
+          }
+        },
+        "generated_features@32:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 338,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5044776201248169,
+              "within_root_auc": 0.5650226866020196,
+              "argmin_ties": 0,
+              "selected_actions": [
+                8,
+                41,
+                39,
+                149,
+                202,
+                21,
+                125,
+                3,
+                25,
+                6,
+                3,
+                7,
+                21,
+                5,
+                0,
+                1,
+                14
+              ]
+            },
+            {
+              "safe_choice": 354,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5283582210540771,
+              "within_root_auc": 0.5688058311898094,
+              "argmin_ties": 0,
+              "selected_actions": [
+                11,
+                64,
+                57,
+                180,
+                141,
+                20,
+                101,
+                1,
+                20,
+                9,
+                14,
+                3,
+                11,
+                18,
+                2,
+                1,
+                17
+              ]
+            },
+            {
+              "safe_choice": 349,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5208955407142639,
+              "within_root_auc": 0.5707511877029467,
+              "argmin_ties": 0,
+              "selected_actions": [
+                25,
+                48,
+                38,
+                146,
+                171,
+                12,
+                114,
+                3,
+                34,
+                11,
+                10,
+                7,
+                18,
+                22,
+                3,
+                2,
+                6
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.7444444298744202,
+            0.7507936358451843,
+            0.7333333492279053
+          ],
+          "judge_safe_rate_mean": 0.5179104208946228,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": -0.07313436269760132,
+            "interval": [
+              -0.13843904435634613,
+              -0.00496572395786643
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": -0.036318421363830566,
+            "interval": [
+              -0.07700943946838379,
+              0.003124239854514599
+            ],
+            "excludes_zero": false
+          }
+        },
+        "generated_features@32:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 336,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5014925599098206,
+              "within_root_auc": 0.5719606624054375,
+              "argmin_ties": 0,
+              "selected_actions": [
+                6,
+                48,
+                6,
+                107,
+                156,
+                102,
+                162,
+                10,
+                27,
+                6,
+                18,
+                1,
+                9,
+                8,
+                0,
+                4,
+                0
+              ]
+            },
+            {
+              "safe_choice": 335,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.5,
+              "within_root_auc": 0.5711017701274423,
+              "argmin_ties": 0,
+              "selected_actions": [
+                7,
+                85,
+                19,
+                81,
+                127,
+                63,
+                203,
+                6,
+                41,
+                1,
+                7,
+                2,
+                7,
+                16,
+                3,
+                2,
+                0
+              ]
+            },
+            {
+              "safe_choice": 332,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.4955223798751831,
+              "within_root_auc": 0.5606342589204658,
+              "argmin_ties": 0,
+              "selected_actions": [
+                12,
+                113,
+                11,
+                36,
+                123,
+                92,
+                179,
+                5,
+                33,
+                4,
+                24,
+                3,
+                13,
+                14,
+                2,
+                4,
+                2
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.5698412656784058,
+            0.5579364895820618,
+            0.5611110925674438
+          ],
+          "judge_safe_rate_mean": 0.499004989862442,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": -0.0920397937297821,
+            "interval": [
+              -0.15172912180423737,
+              -0.02452239580452442
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": -0.06019899249076843,
+            "interval": [
+              -0.10127443820238113,
+              -0.018383434042334557
+            ],
+            "excludes_zero": true
+          }
+        },
+        "real_features@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 617,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.920895516872406,
+              "within_root_auc": 0.9505959203216567,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                98,
+                113,
+                93,
+                150,
+                38,
+                52,
+                18,
+                83,
+                2,
+                1,
+                14,
+                3,
+                3,
+                2,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 574,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.8567163944244385,
+              "within_root_auc": 0.9570628981314488,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                74,
+                94,
+                83,
+                116,
+                33,
+                134,
+                12,
+                95,
+                4,
+                2,
+                12,
+                5,
+                4,
+                2,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 600,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.89552241563797,
+              "within_root_auc": 0.958240047708821,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                96,
+                96,
+                86,
+                124,
+                37,
+                73,
+                14,
+                112,
+                2,
+                4,
+                11,
+                6,
+                4,
+                4,
+                0,
+                1
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.9928571581840515,
+            0.9642857313156128,
+            0.9801587462425232
+          ],
+          "judge_safe_rate_mean": 0.8910447955131531,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": 0.30000001192092896,
+            "interval": [
+              0.2372385412454605,
+              0.3615507483482361
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": 0.32686567306518555,
+            "interval": [
+              0.2806173861026764,
+              0.37197020649909973
+            ],
+            "excludes_zero": true
+          }
+        },
+        "real_features@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 569,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.8492537140846252,
+              "within_root_auc": 0.9326810976017766,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                78,
+                76,
+                91,
+                118,
+                53,
+                37,
+                3,
+                157,
+                7,
+                5,
+                21,
+                1,
+                1,
+                19,
+                0,
+                3
+              ]
+            },
+            {
+              "safe_choice": 553,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.825373113155365,
+              "within_root_auc": 0.9325805697423308,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                75,
+                77,
+                91,
+                111,
+                56,
+                47,
+                0,
+                153,
+                8,
+                4,
+                22,
+                2,
+                1,
+                19,
+                0,
+                4
+              ]
+            },
+            {
+              "safe_choice": 574,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.8567163944244385,
+              "within_root_auc": 0.9341403535497722,
+              "argmin_ties": 0,
+              "selected_actions": [
+                1,
+                78,
+                79,
+                87,
+                120,
+                52,
+                54,
+                1,
+                125,
+                4,
+                7,
+                21,
+                0,
+                6,
+                25,
+                0,
+                10
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.89682537317276,
+            0.8896825313568115,
+            0.9079365134239197
+          ],
+          "judge_safe_rate_mean": 0.843781054019928,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": 0.25273627042770386,
+            "interval": [
+              0.19073833525180817,
+              0.31514930725097656
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": 0.29950249195098877,
+            "interval": [
+              0.2520890235900879,
+              0.3462907075881958
+            ],
+            "excludes_zero": true
+          }
+        },
+        "real_features@32:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 611,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.9119402766227722,
+              "within_root_auc": 0.9508592329363325,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                103,
+                109,
+                89,
+                145,
+                39,
+                68,
+                18,
+                75,
+                2,
+                2,
+                13,
+                3,
+                2,
+                2,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 564,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.841791033744812,
+              "within_root_auc": 0.9549272171040969,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                80,
+                89,
+                80,
+                109,
+                33,
+                159,
+                13,
+                77,
+                3,
+                1,
+                11,
+                5,
+                6,
+                3,
+                0,
+                1
+              ]
+            },
+            {
+              "safe_choice": 596,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.8895522356033325,
+              "within_root_auc": 0.9551061297808565,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                92,
+                97,
+                82,
+                126,
+                36,
+                80,
+                15,
+                111,
+                1,
+                4,
+                11,
+                6,
+                5,
+                3,
+                0,
+                1
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.9944444298744202,
+            0.9547619223594666,
+            0.9817460179328918
+          ],
+          "judge_safe_rate_mean": 0.8810945153236389,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": 0.2900497317314148,
+            "interval": [
+              0.22883380949497223,
+              0.34765103459358215
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": 0.32686567306518555,
+            "interval": [
+              0.28034281730651855,
+              0.37102892994880676
+            ],
+            "excludes_zero": true
+          }
+        },
+        "real_features@32:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 564,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.841791033744812,
+              "within_root_auc": 0.929875277916887,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                78,
+                71,
+                91,
+                124,
+                50,
+                37,
+                3,
+                165,
+                7,
+                5,
+                22,
+                1,
+                1,
+                10,
+                0,
+                5
+              ]
+            },
+            {
+              "safe_choice": 562,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.8388059735298157,
+              "within_root_auc": 0.9293158493046441,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                76,
+                77,
+                92,
+                119,
+                54,
+                44,
+                1,
+                154,
+                5,
+                8,
+                22,
+                1,
+                1,
+                10,
+                0,
+                6
+              ]
+            },
+            {
+              "safe_choice": 572,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.8537313342094421,
+              "within_root_auc": 0.9288708219554886,
+              "argmin_ties": 0,
+              "selected_actions": [
+                1,
+                77,
+                76,
+                88,
+                122,
+                54,
+                49,
+                0,
+                138,
+                4,
+                8,
+                22,
+                0,
+                5,
+                17,
+                0,
+                9
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.9007936716079712,
+            0.8904761672019958,
+            0.8976190686225891
+          ],
+          "judge_safe_rate_mean": 0.8447760939598083,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": 0.25373131036758423,
+            "interval": [
+              0.19383257627487183,
+              0.3132261633872986
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": 0.2855721116065979,
+            "interval": [
+              0.23983515799045563,
+              0.3323739469051361
+            ],
+            "excludes_zero": true
+          }
+        },
+        "real_z@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 604,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.9014925360679626,
+              "within_root_auc": 0.9648305169682004,
+              "argmin_ties": 26,
+              "selected_actions": [
+                26,
+                119,
+                126,
+                105,
+                109,
+                62,
+                91,
+                3,
+                1,
+                9,
+                2,
+                13,
+                3,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 598,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.8925372958183289,
+              "within_root_auc": 0.9647534980257946,
+              "argmin_ties": 25,
+              "selected_actions": [
+                25,
+                116,
+                112,
+                104,
+                112,
+                57,
+                112,
+                4,
+                1,
+                9,
+                2,
+                12,
+                3,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 579,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.8641790747642517,
+              "within_root_auc": 0.9651074285827466,
+              "argmin_ties": 21,
+              "selected_actions": [
+                21,
+                110,
+                106,
+                103,
+                99,
+                53,
+                148,
+                3,
+                1,
+                9,
+                1,
+                12,
+                3,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.976190447807312,
+            0.9746031761169434,
+            0.9674603343009949
+          ],
+          "judge_safe_rate_mean": 0.886069655418396,
+          "parameters": 24833,
+          "vs_fit_prior": {
+            "difference": 0.2950248718261719,
+            "interval": [
+              0.22941352427005768,
+              0.3592817783355713
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": 0.32189053297042847,
+            "interval": [
+              0.2744493782520294,
+              0.3711845278739929
+            ],
+            "excludes_zero": true
+          }
+        },
+        "real_z@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 504,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.7522388100624084,
+              "within_root_auc": 0.8823832057249635,
+              "argmin_ties": 16,
+              "selected_actions": [
+                16,
+                84,
+                95,
+                77,
+                86,
+                36,
+                241,
+                11,
+                3,
+                1,
+                1,
+                6,
+                0,
+                0,
+                13,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 520,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.7761194109916687,
+              "within_root_auc": 0.8896440179935142,
+              "argmin_ties": 17,
+              "selected_actions": [
+                17,
+                100,
+                98,
+                90,
+                82,
+                33,
+                218,
+                12,
+                2,
+                1,
+                3,
+                11,
+                0,
+                0,
+                3,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 525,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 0.7835820913314819,
+              "within_root_auc": 0.8738682259207786,
+              "argmin_ties": 26,
+              "selected_actions": [
+                26,
+                106,
+                95,
+                85,
+                93,
+                37,
+                192,
+                14,
+                2,
+                0,
+                2,
+                9,
+                0,
+                0,
+                9,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.711904764175415,
+            0.7452380657196045,
+            0.7349206209182739
+          ],
+          "judge_safe_rate_mean": 0.7706467509269714,
+          "parameters": 24833,
+          "vs_fit_prior": {
+            "difference": 0.17960196733474731,
+            "interval": [
+              0.11717895418405533,
+              0.24609294533729553
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": 0.22636818885803223,
+            "interval": [
+              0.18012487888336182,
+              0.27087411284446716
+            ],
+            "excludes_zero": true
+          }
+        },
+        "successor_pixels@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 670,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 1.0,
+              "within_root_auc": 0.9998711797728468,
+              "argmin_ties": 34,
+              "selected_actions": [
+                34,
+                151,
+                130,
+                118,
+                146,
+                27,
+                50,
+                5,
+                4,
+                1,
+                1,
+                2,
+                1,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 670,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 1.0,
+              "within_root_auc": 0.9999067164179104,
+              "argmin_ties": 33,
+              "selected_actions": [
+                33,
+                137,
+                136,
+                125,
+                132,
+                26,
+                58,
+                10,
+                6,
+                2,
+                2,
+                2,
+                1,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 670,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 1.0,
+              "within_root_auc": 0.9999067164179104,
+              "argmin_ties": 33,
+              "selected_actions": [
+                33,
+                150,
+                125,
+                121,
+                143,
+                24,
+                57,
+                7,
+                2,
+                3,
+                2,
+                2,
+                1,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "judge_safe_rate_mean": 1.0,
+          "parameters": 418049,
+          "vs_fit_prior": {
+            "difference": 0.4089552164077759,
+            "interval": [
+              0.35457032918930054,
+              0.4644479751586914
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": 0.43582087755203247,
+            "interval": [
+              0.3942125141620636,
+              0.47735536098480225
+            ],
+            "excludes_zero": true
+          }
+        },
+        "successor_pixels@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 670,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 1.0,
+              "within_root_auc": 1.0,
+              "argmin_ties": 18,
+              "selected_actions": [
+                18,
+                141,
+                152,
+                108,
+                116,
+                19,
+                75,
+                32,
+                0,
+                0,
+                6,
+                0,
+                0,
+                0,
+                3,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 670,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 1.0,
+              "within_root_auc": 1.0,
+              "argmin_ties": 20,
+              "selected_actions": [
+                20,
+                150,
+                132,
+                107,
+                137,
+                16,
+                63,
+                34,
+                2,
+                0,
+                6,
+                0,
+                0,
+                0,
+                3,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 670,
+              "opportunity_roots": 670,
+              "safe_choice_rate": 1.0,
+              "within_root_auc": 1.0,
+              "argmin_ties": 26,
+              "selected_actions": [
+                26,
+                139,
+                142,
+                102,
+                127,
+                13,
+                85,
+                27,
+                2,
+                0,
+                4,
+                0,
+                0,
+                0,
+                3,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "judge_safe_rate_mean": 1.0,
+          "parameters": 418049,
+          "vs_fit_prior": {
+            "difference": 0.4089552164077759,
+            "interval": [
+              0.35457032918930054,
+              0.4644479751586914
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": 0.4557214379310608,
+            "interval": [
+              0.4133894145488739,
+              0.49822643399238586
+            ],
+            "excludes_zero": true
+          }
+        }
+      }
+    },
+    "death2": {
+      "fit_prior_action": 4,
+      "fit_prior_rates": [
+        0.7255520224571228,
+        0.7539432048797607,
+        0.774132490158081,
+        0.767823338508606,
+        0.7817034721374512,
+        0.7287065982818604,
+        0.242271289229393,
+        0.7305993437767029,
+        0.7375394105911255,
+        0.7305993437767029,
+        0.7375394105911255,
+        0.7255520224571228,
+        0.7255520224571228,
+        0.7255520224571228,
+        0.7255520224571228,
+        0.7255520224571228,
+        0.7255520224571228
+      ],
+      "fit_prior_judge_safe": 0.7564705610275269,
+      "judge_opportunity_roots": 850,
+      "fit_opportunity_roots": 1585,
+      "cells": {
+        "action_only@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 643,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7564705610275269,
+              "within_root_auc": 0.7383248411820216,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                0,
+                0,
+                0,
+                850,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 566,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.6658823490142822,
+              "within_root_auc": 0.7592105160741245,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                850,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 566,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.6658823490142822,
+              "within_root_auc": 0.7643980292888248,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                850,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.7817034721374512,
+            0.7375394105911255,
+            0.7375394105911255
+          ],
+          "judge_safe_rate_mean": 0.696078360080719,
+          "parameters": 2433,
+          "vs_fit_prior": {
+            "difference": -0.06039220094680786,
+            "interval": [
+              -0.08826062828302383,
+              -0.0303889699280262
+            ],
+            "excludes_zero": true
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8587480187416077,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.04815405607223511,
+              "interval": [
+                -0.06537222117185593,
+                -0.028688061982393265
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "action_only@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 643,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7564705610275269,
+              "within_root_auc": 0.8131898646582575,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                0,
+                0,
+                0,
+                850,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 643,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7564705610275269,
+              "within_root_auc": 0.817311838674633,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                0,
+                0,
+                0,
+                850,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 643,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7564705610275269,
+              "within_root_auc": 0.8112769873790882,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                0,
+                0,
+                0,
+                850,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.7817034721374512,
+            0.7817034721374512,
+            0.7817034721374512
+          ],
+          "judge_safe_rate_mean": 0.7564705610275269,
+          "parameters": 2433,
+          "vs_fit_prior": {
+            "difference": 0.0,
+            "interval": [
+              0.0,
+              0.0
+            ],
+            "excludes_zero": false
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.9069020748138428,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": 0.0,
+              "interval": [
+                0.0,
+                0.0
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "root_features@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 633,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.744705855846405,
+              "within_root_auc": 0.8041367518923739,
+              "argmin_ties": 0,
+              "selected_actions": [
+                2,
+                199,
+                191,
+                161,
+                199,
+                55,
+                2,
+                4,
+                2,
+                7,
+                13,
+                6,
+                0,
+                0,
+                6,
+                3,
+                0
+              ]
+            },
+            {
+              "safe_choice": 636,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.748235285282135,
+              "within_root_auc": 0.8064465453234666,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                169,
+                227,
+                167,
+                165,
+                36,
+                0,
+                14,
+                19,
+                27,
+                24,
+                1,
+                1,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 627,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7376470565795898,
+              "within_root_auc": 0.8127352579288623,
+              "argmin_ties": 0,
+              "selected_actions": [
+                4,
+                113,
+                261,
+                135,
+                238,
+                30,
+                0,
+                13,
+                7,
+                19,
+                13,
+                5,
+                0,
+                1,
+                3,
+                3,
+                5
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.9495267868041992,
+            0.9438486099243164,
+            0.9495267868041992
+          ],
+          "judge_safe_rate_mean": 0.7435294389724731,
+          "parameters": 35201,
+          "vs_fit_prior": {
+            "difference": -0.012941122055053711,
+            "interval": [
+              -0.052221495658159256,
+              0.028499580919742584
+            ],
+            "excludes_zero": false
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8774745464324951,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.029427528381347656,
+              "interval": [
+                -0.05951026827096939,
+                0.0005617809947580099
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "root_features@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 647,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7611764669418335,
+              "within_root_auc": 0.8030194642920705,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                271,
+                104,
+                117,
+                147,
+                92,
+                0,
+                8,
+                93,
+                13,
+                0,
+                0,
+                4,
+                0,
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "safe_choice": 626,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7364705801010132,
+              "within_root_auc": 0.8080242942273617,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                134,
+                248,
+                149,
+                74,
+                10,
+                0,
+                43,
+                40,
+                8,
+                144,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 642,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.755294144153595,
+              "within_root_auc": 0.8162329593563781,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                101,
+                249,
+                122,
+                279,
+                45,
+                0,
+                13,
+                13,
+                10,
+                8,
+                3,
+                1,
+                0,
+                0,
+                1,
+                5
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.8536277413368225,
+            0.850473165512085,
+            0.8649842143058777
+          ],
+          "judge_safe_rate_mean": 0.7509803771972656,
+          "parameters": 35201,
+          "vs_fit_prior": {
+            "difference": -0.0054901838302612305,
+            "interval": [
+              -0.04026501625776291,
+              0.0350453220307827
+            ],
+            "excludes_zero": false
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8753343820571899,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.03156769275665283,
+              "interval": [
+                -0.060521092265844345,
+                0.0004987072898074985
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "root_features@32:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 647,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7611764669418335,
+              "within_root_auc": 0.808093442537767,
+              "argmin_ties": 0,
+              "selected_actions": [
+                5,
+                193,
+                200,
+                151,
+                208,
+                47,
+                2,
+                11,
+                6,
+                11,
+                5,
+                0,
+                0,
+                0,
+                3,
+                6,
+                2
+              ]
+            },
+            {
+              "safe_choice": 644,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7576470375061035,
+              "within_root_auc": 0.804783631528125,
+              "argmin_ties": 0,
+              "selected_actions": [
+                1,
+                152,
+                214,
+                179,
+                180,
+                42,
+                0,
+                21,
+                24,
+                13,
+                23,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 640,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7529411911964417,
+              "within_root_auc": 0.8184529014501501,
+              "argmin_ties": 0,
+              "selected_actions": [
+                3,
+                132,
+                248,
+                135,
+                217,
+                28,
+                0,
+                18,
+                9,
+                13,
+                19,
+                2,
+                1,
+                2,
+                7,
+                9,
+                7
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.9495267868041992,
+            0.9533122777938843,
+            0.9501577019691467
+          ],
+          "judge_safe_rate_mean": 0.7572548985481262,
+          "parameters": 35201,
+          "vs_fit_prior": {
+            "difference": 0.0007843375205993652,
+            "interval": [
+              -0.037143558263778687,
+              0.04035726189613342
+            ],
+            "excludes_zero": false
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8806849122047424,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.026217162609100342,
+              "interval": [
+                -0.05876389890909195,
+                0.004849117714911699
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "root_features@32:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 628,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7388235330581665,
+              "within_root_auc": 0.8040591646161149,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                287,
+                110,
+                90,
+                134,
+                91,
+                0,
+                10,
+                110,
+                6,
+                5,
+                0,
+                0,
+                4,
+                0,
+                2,
+                1
+              ]
+            },
+            {
+              "safe_choice": 640,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7529411911964417,
+              "within_root_auc": 0.8054005606034222,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                177,
+                218,
+                169,
+                77,
+                5,
+                0,
+                41,
+                36,
+                16,
+                111,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 648,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7623529434204102,
+              "within_root_auc": 0.8203567655472195,
+              "argmin_ties": 0,
+              "selected_actions": [
+                1,
+                86,
+                214,
+                158,
+                304,
+                26,
+                0,
+                17,
+                11,
+                9,
+                6,
+                3,
+                0,
+                0,
+                1,
+                1,
+                13
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.8586750626564026,
+            0.8485804200172424,
+            0.8643532991409302
+          ],
+          "judge_safe_rate_mean": 0.7513725161552429,
+          "parameters": 35201,
+          "vs_fit_prior": {
+            "difference": -0.0050980448722839355,
+            "interval": [
+              -0.041338466107845306,
+              0.03558100759983063
+            ],
+            "excludes_zero": false
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8726593255996704,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.03424274921417236,
+              "interval": [
+                -0.06476049870252609,
+                -0.0005300648044794798
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "root_pixels@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 652,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7670588493347168,
+              "within_root_auc": 0.8498436035128201,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                77,
+                153,
+                161,
+                292,
+                79,
+                0,
+                20,
+                45,
+                17,
+                3,
+                2,
+                0,
+                1,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 651,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7658823728561401,
+              "within_root_auc": 0.8319177613012931,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                181,
+                106,
+                78,
+                290,
+                64,
+                0,
+                34,
+                72,
+                14,
+                10,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "safe_choice": 666,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7835294008255005,
+              "within_root_auc": 0.851526430115542,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                78,
+                145,
+                111,
+                313,
+                141,
+                0,
+                21,
+                22,
+                17,
+                1,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.8574132323265076,
+            0.8479495048522949,
+            0.8561514019966125
+          ],
+          "judge_safe_rate_mean": 0.7721568942070007,
+          "parameters": 420225,
+          "vs_fit_prior": {
+            "difference": 0.015686333179473877,
+            "interval": [
+              -0.01707390882074833,
+              0.050867658108472824
+            ],
+            "excludes_zero": false
+          },
+          "vs_root_features": {
+            "difference": 0.028627455234527588,
+            "interval": [
+              0.0024799914099276066,
+              0.05625799670815468
+            ],
+            "excludes_zero": true
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.9122524857521057,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": 0.0053504109382629395,
+              "interval": [
+                -0.018823707476258278,
+                0.033387213945388794
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "root_pixels@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 648,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7623529434204102,
+              "within_root_auc": 0.8457738985296558,
+              "argmin_ties": 1,
+              "selected_actions": [
+                1,
+                46,
+                177,
+                103,
+                235,
+                48,
+                0,
+                55,
+                100,
+                58,
+                14,
+                4,
+                1,
+                0,
+                2,
+                1,
+                5
+              ]
+            },
+            {
+              "safe_choice": 669,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7870588302612305,
+              "within_root_auc": 0.8482482754263808,
+              "argmin_ties": 0,
+              "selected_actions": [
+                3,
+                85,
+                125,
+                68,
+                262,
+                58,
+                0,
+                35,
+                97,
+                46,
+                58,
+                1,
+                6,
+                3,
+                1,
+                0,
+                2
+              ]
+            },
+            {
+              "safe_choice": 669,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7870588302612305,
+              "within_root_auc": 0.853901816413683,
+              "argmin_ties": 0,
+              "selected_actions": [
+                2,
+                39,
+                289,
+                56,
+                238,
+                25,
+                0,
+                36,
+                79,
+                48,
+                19,
+                3,
+                1,
+                4,
+                2,
+                7,
+                2
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.8422712683677673,
+            0.8422712683677673,
+            0.8397476077079773
+          ],
+          "judge_safe_rate_mean": 0.7788235545158386,
+          "parameters": 420225,
+          "vs_fit_prior": {
+            "difference": 0.022352993488311768,
+            "interval": [
+              -0.0094930874183774,
+              0.05926663056015968
+            ],
+            "excludes_zero": false
+          },
+          "vs_root_features": {
+            "difference": 0.027843177318572998,
+            "interval": [
+              0.007737113628536463,
+              0.04886588454246521
+            ],
+            "excludes_zero": true
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.903691828250885,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.0032102465629577637,
+              "interval": [
+                -0.02947869896888733,
+                0.02676079235970974
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "u@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 635,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7470588088035583,
+              "within_root_auc": 0.8140533647291801,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                120,
+                120,
+                43,
+                293,
+                53,
+                2,
+                3,
+                93,
+                17,
+                42,
+                0,
+                55,
+                4,
+                0,
+                0,
+                5
+              ]
+            },
+            {
+              "safe_choice": 639,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.751764714717865,
+              "within_root_auc": 0.821262389623067,
+              "argmin_ties": 0,
+              "selected_actions": [
+                3,
+                159,
+                160,
+                59,
+                199,
+                42,
+                4,
+                0,
+                114,
+                28,
+                25,
+                1,
+                47,
+                2,
+                0,
+                0,
+                7
+              ]
+            },
+            {
+              "safe_choice": 609,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7164705991744995,
+              "within_root_auc": 0.8140316739634555,
+              "argmin_ties": 0,
+              "selected_actions": [
+                3,
+                184,
+                118,
+                65,
+                187,
+                33,
+                19,
+                0,
+                128,
+                22,
+                52,
+                0,
+                32,
+                0,
+                0,
+                1,
+                6
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.8429021835327148,
+            0.8441640138626099,
+            0.8441640138626099
+          ],
+          "judge_safe_rate_mean": 0.7384313941001892,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": -0.018039166927337646,
+            "interval": [
+              -0.05322569981217384,
+              0.022608604282140732
+            ],
+            "excludes_zero": false
+          },
+          "vs_root_features": {
+            "difference": -0.0050980448722839355,
+            "interval": [
+              -0.031767748296260834,
+              0.02015460841357708
+            ],
+            "excludes_zero": false
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8833601474761963,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.023541927337646484,
+              "interval": [
+                -0.05614860728383064,
+                0.012237812392413616
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "u@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 613,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7211764454841614,
+              "within_root_auc": 0.7960794549873647,
+              "argmin_ties": 0,
+              "selected_actions": [
+                11,
+                82,
+                6,
+                26,
+                307,
+                255,
+                12,
+                80,
+                21,
+                14,
+                10,
+                13,
+                6,
+                0,
+                3,
+                0,
+                4
+              ]
+            },
+            {
+              "safe_choice": 589,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.6929411888122559,
+              "within_root_auc": 0.74972796800382,
+              "argmin_ties": 0,
+              "selected_actions": [
+                18,
+                72,
+                3,
+                20,
+                232,
+                274,
+                57,
+                49,
+                56,
+                20,
+                12,
+                8,
+                11,
+                8,
+                5,
+                1,
+                4
+              ]
+            },
+            {
+              "safe_choice": 596,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7011764645576477,
+              "within_root_auc": 0.7493779901371282,
+              "argmin_ties": 0,
+              "selected_actions": [
+                15,
+                92,
+                12,
+                18,
+                287,
+                240,
+                43,
+                42,
+                17,
+                16,
+                7,
+                19,
+                10,
+                1,
+                5,
+                18,
+                8
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.7817034721374512,
+            0.770346999168396,
+            0.771608829498291
+          ],
+          "judge_safe_rate_mean": 0.7050979137420654,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": -0.051372647285461426,
+            "interval": [
+              -0.08751407265663147,
+              -0.013586532324552536
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": -0.045882463455200195,
+            "interval": [
+              -0.07251795381307602,
+              -0.019128337502479553
+            ],
+            "excludes_zero": true
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8453719019889832,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.06153017282485962,
+              "interval": [
+                -0.0908661037683487,
+                -0.030051441863179207
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "u@32:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 624,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7341176271438599,
+              "within_root_auc": 0.8214914167628569,
+              "argmin_ties": 0,
+              "selected_actions": [
+                9,
+                149,
+                121,
+                70,
+                241,
+                61,
+                4,
+                4,
+                94,
+                17,
+                37,
+                0,
+                36,
+                2,
+                0,
+                1,
+                4
+              ]
+            },
+            {
+              "safe_choice": 633,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.744705855846405,
+              "within_root_auc": 0.8203638761446757,
+              "argmin_ties": 0,
+              "selected_actions": [
+                4,
+                170,
+                149,
+                80,
+                179,
+                45,
+                13,
+                1,
+                97,
+                35,
+                27,
+                0,
+                42,
+                1,
+                0,
+                2,
+                5
+              ]
+            },
+            {
+              "safe_choice": 606,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7129411697387695,
+              "within_root_auc": 0.8132137649462503,
+              "argmin_ties": 0,
+              "selected_actions": [
+                9,
+                204,
+                115,
+                75,
+                159,
+                32,
+                17,
+                0,
+                116,
+                31,
+                63,
+                1,
+                17,
+                2,
+                0,
+                2,
+                7
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.8353312015533447,
+            0.8498422503471375,
+            0.85425865650177
+          ],
+          "judge_safe_rate_mean": 0.7305882573127747,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": -0.025882303714752197,
+            "interval": [
+              -0.06212376803159714,
+              0.016633830964565277
+            ],
+            "excludes_zero": false
+          },
+          "vs_root_features": {
+            "difference": -0.026666641235351562,
+            "interval": [
+              -0.05307306349277496,
+              -0.000379245902877301
+            ],
+            "excludes_zero": true
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8887105584144592,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.018191516399383545,
+              "interval": [
+                -0.04889347776770592,
+                0.014710621908307076
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "u@32:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 604,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7105882167816162,
+              "within_root_auc": 0.7913867706542506,
+              "argmin_ties": 0,
+              "selected_actions": [
+                15,
+                49,
+                16,
+                19,
+                373,
+                154,
+                17,
+                69,
+                55,
+                32,
+                14,
+                14,
+                3,
+                1,
+                4,
+                7,
+                8
+              ]
+            },
+            {
+              "safe_choice": 612,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7200000286102295,
+              "within_root_auc": 0.7512784958937588,
+              "argmin_ties": 0,
+              "selected_actions": [
+                18,
+                85,
+                5,
+                30,
+                307,
+                145,
+                69,
+                49,
+                61,
+                23,
+                7,
+                13,
+                9,
+                3,
+                6,
+                18,
+                2
+              ]
+            },
+            {
+              "safe_choice": 608,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7152941226959229,
+              "within_root_auc": 0.751873985864222,
+              "argmin_ties": 0,
+              "selected_actions": [
+                21,
+                66,
+                30,
+                22,
+                331,
+                132,
+                55,
+                52,
+                21,
+                18,
+                18,
+                26,
+                9,
+                4,
+                6,
+                21,
+                18
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.7917981147766113,
+            0.7747634053230286,
+            0.7804416418075562
+          ],
+          "judge_safe_rate_mean": 0.7152941226959229,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": -0.041176438331604004,
+            "interval": [
+              -0.07363554835319519,
+              -0.007164320908486843
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": -0.03607839345932007,
+            "interval": [
+              -0.059769824147224426,
+              -0.01016916148364544
+            ],
+            "excludes_zero": true
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8507223129272461,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.05617976188659668,
+              "interval": [
+                -0.08756095170974731,
+                -0.023769551888108253
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "generated_z@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 617,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.725882351398468,
+              "within_root_auc": 0.8153332972219761,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                130,
+                24,
+                52,
+                288,
+                88,
+                34,
+                0,
+                72,
+                57,
+                6,
+                18,
+                45,
+                33,
+                1,
+                0,
+                2
+              ]
+            },
+            {
+              "safe_choice": 630,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7411764860153198,
+              "within_root_auc": 0.815914978494539,
+              "argmin_ties": 0,
+              "selected_actions": [
+                2,
+                145,
+                54,
+                56,
+                285,
+                64,
+                26,
+                7,
+                71,
+                51,
+                8,
+                10,
+                21,
+                45,
+                2,
+                2,
+                1
+              ]
+            },
+            {
+              "safe_choice": 619,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7282353043556213,
+              "within_root_auc": 0.8221583172854255,
+              "argmin_ties": 0,
+              "selected_actions": [
+                3,
+                164,
+                40,
+                63,
+                253,
+                87,
+                25,
+                0,
+                76,
+                46,
+                8,
+                22,
+                23,
+                33,
+                2,
+                1,
+                4
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.8182965517044067,
+            0.8227129578590393,
+            0.8201892971992493
+          ],
+          "judge_safe_rate_mean": 0.7317647337913513,
+          "parameters": 24833,
+          "vs_fit_prior": {
+            "difference": -0.024705827236175537,
+            "interval": [
+              -0.059372518211603165,
+              0.015782877802848816
+            ],
+            "excludes_zero": false
+          },
+          "vs_root_features": {
+            "difference": -0.011764705181121826,
+            "interval": [
+              -0.04333852231502533,
+              0.020550517365336418
+            ],
+            "excludes_zero": false
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8828250169754028,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.02407705783843994,
+              "interval": [
+                -0.061756789684295654,
+                0.013389579020440578
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "generated_z@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 572,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.6729411482810974,
+              "within_root_auc": 0.7113877216419753,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                103,
+                3,
+                14,
+                216,
+                200,
+                96,
+                40,
+                33,
+                39,
+                76,
+                12,
+                2,
+                1,
+                7,
+                8,
+                0
+              ]
+            },
+            {
+              "safe_choice": 594,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.6988235116004944,
+              "within_root_auc": 0.7546430191660629,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                137,
+                8,
+                4,
+                203,
+                272,
+                60,
+                56,
+                17,
+                26,
+                41,
+                17,
+                0,
+                0,
+                5,
+                4,
+                0
+              ]
+            },
+            {
+              "safe_choice": 589,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.6929411888122559,
+              "within_root_auc": 0.7594783987236373,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                90,
+                5,
+                3,
+                181,
+                355,
+                50,
+                33,
+                25,
+                29,
+                35,
+                34,
+                0,
+                0,
+                9,
+                1,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.7350157499313354,
+            0.7596214413642883,
+            0.7507886290550232
+          ],
+          "judge_safe_rate_mean": 0.6882352828979492,
+          "parameters": 24833,
+          "vs_fit_prior": {
+            "difference": -0.06823527812957764,
+            "interval": [
+              -0.1040928065776825,
+              -0.029270630329847336
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": -0.0627450942993164,
+            "interval": [
+              -0.08865170925855637,
+              -0.034720227122306824
+            ],
+            "excludes_zero": true
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8373461961746216,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.06955587863922119,
+              "interval": [
+                -0.09760353714227676,
+                -0.04016602784395218
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "generated_z@32:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 620,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.729411780834198,
+              "within_root_auc": 0.8172221499769127,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                121,
+                12,
+                41,
+                312,
+                89,
+                34,
+                2,
+                93,
+                52,
+                5,
+                13,
+                43,
+                29,
+                2,
+                1,
+                1
+              ]
+            },
+            {
+              "safe_choice": 631,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7423529624938965,
+              "within_root_auc": 0.8123557419965373,
+              "argmin_ties": 0,
+              "selected_actions": [
+                1,
+                123,
+                32,
+                48,
+                325,
+                68,
+                25,
+                2,
+                84,
+                52,
+                10,
+                6,
+                29,
+                42,
+                2,
+                0,
+                1
+              ]
+            },
+            {
+              "safe_choice": 615,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7235293984413147,
+              "within_root_auc": 0.8115493963527329,
+              "argmin_ties": 0,
+              "selected_actions": [
+                7,
+                136,
+                22,
+                55,
+                283,
+                85,
+                32,
+                2,
+                67,
+                62,
+                9,
+                17,
+                37,
+                34,
+                2,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.8126183152198792,
+            0.8264984488487244,
+            0.8176656365394592
+          ],
+          "judge_safe_rate_mean": 0.7317647337913513,
+          "parameters": 24833,
+          "vs_fit_prior": {
+            "difference": -0.024705827236175537,
+            "interval": [
+              -0.058686766773462296,
+              0.01551244780421257
+            ],
+            "excludes_zero": false
+          },
+          "vs_root_features": {
+            "difference": -0.025490164756774902,
+            "interval": [
+              -0.05489758402109146,
+              0.006551849190145731
+            ],
+            "excludes_zero": false
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8796148896217346,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.027287185192108154,
+              "interval": [
+                -0.06373947858810425,
+                0.009637448005378246
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "generated_z@32:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 583,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.6858823299407959,
+              "within_root_auc": 0.7164155891143223,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                82,
+                1,
+                8,
+                196,
+                260,
+                92,
+                43,
+                41,
+                33,
+                62,
+                18,
+                1,
+                1,
+                5,
+                7,
+                0
+              ]
+            },
+            {
+              "safe_choice": 590,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.6941176652908325,
+              "within_root_auc": 0.7499655251336448,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                85,
+                13,
+                3,
+                176,
+                339,
+                63,
+                57,
+                29,
+                23,
+                34,
+                20,
+                0,
+                0,
+                5,
+                3,
+                0
+              ]
+            },
+            {
+              "safe_choice": 587,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.6905882358551025,
+              "within_root_auc": 0.7500381199621102,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                57,
+                5,
+                1,
+                164,
+                440,
+                49,
+                26,
+                29,
+                23,
+                21,
+                29,
+                0,
+                0,
+                4,
+                2,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.738170325756073,
+            0.7526813745498657,
+            0.7425867319107056
+          ],
+          "judge_safe_rate_mean": 0.6901960968971252,
+          "parameters": 24833,
+          "vs_fit_prior": {
+            "difference": -0.06627446413040161,
+            "interval": [
+              -0.10269224643707275,
+              -0.026870209723711014
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": -0.061176419258117676,
+            "interval": [
+              -0.08824943751096725,
+              -0.03488460183143616
+            ],
+            "excludes_zero": true
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8373463153839111,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.06955575942993164,
+              "interval": [
+                -0.09922546148300171,
+                -0.03894979879260063
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "generated_features@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 627,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7376470565795898,
+              "within_root_auc": 0.801915211752057,
+              "argmin_ties": 0,
+              "selected_actions": [
+                25,
+                118,
+                113,
+                107,
+                194,
+                45,
+                13,
+                9,
+                98,
+                21,
+                61,
+                3,
+                17,
+                14,
+                4,
+                1,
+                7
+              ]
+            },
+            {
+              "safe_choice": 641,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7541176676750183,
+              "within_root_auc": 0.811666037742706,
+              "argmin_ties": 0,
+              "selected_actions": [
+                22,
+                103,
+                115,
+                113,
+                218,
+                57,
+                28,
+                10,
+                73,
+                17,
+                44,
+                2,
+                18,
+                13,
+                6,
+                2,
+                9
+              ]
+            },
+            {
+              "safe_choice": 634,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7458823323249817,
+              "within_root_auc": 0.7912885869053357,
+              "argmin_ties": 0,
+              "selected_actions": [
+                13,
+                125,
+                107,
+                129,
+                165,
+                50,
+                29,
+                5,
+                101,
+                23,
+                56,
+                4,
+                14,
+                10,
+                2,
+                3,
+                14
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.8485804200172424,
+            0.8536277413368225,
+            0.8536277413368225
+          ],
+          "judge_safe_rate_mean": 0.7458824515342712,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": -0.010588109493255615,
+            "interval": [
+              -0.04852169752120972,
+              0.030971944332122803
+            ],
+            "excludes_zero": false
+          },
+          "vs_root_features": {
+            "difference": 0.0023530125617980957,
+            "interval": [
+              -0.026631660759449005,
+              0.029353372752666473
+            ],
+            "excludes_zero": false
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8651685118675232,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.04173356294631958,
+              "interval": [
+                -0.07996262609958649,
+                -0.003773357719182968
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "generated_features@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 575,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.6764705777168274,
+              "within_root_auc": 0.7236410260551116,
+              "argmin_ties": 0,
+              "selected_actions": [
+                36,
+                10,
+                6,
+                44,
+                87,
+                394,
+                60,
+                12,
+                104,
+                12,
+                43,
+                5,
+                8,
+                3,
+                7,
+                2,
+                17
+              ]
+            },
+            {
+              "safe_choice": 572,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.6729411482810974,
+              "within_root_auc": 0.7254238673650166,
+              "argmin_ties": 0,
+              "selected_actions": [
+                28,
+                45,
+                19,
+                73,
+                88,
+                324,
+                68,
+                12,
+                94,
+                15,
+                30,
+                9,
+                8,
+                18,
+                10,
+                1,
+                8
+              ]
+            },
+            {
+              "safe_choice": 560,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.658823549747467,
+              "within_root_auc": 0.6692570569278563,
+              "argmin_ties": 0,
+              "selected_actions": [
+                32,
+                46,
+                13,
+                9,
+                105,
+                302,
+                125,
+                4,
+                76,
+                10,
+                68,
+                7,
+                8,
+                19,
+                16,
+                7,
+                3
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.7501577138900757,
+            0.7577286958694458,
+            0.7425867319107056
+          ],
+          "judge_safe_rate_mean": 0.6694117784500122,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": -0.08705878257751465,
+            "interval": [
+              -0.12689419090747833,
+              -0.04230770468711853
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": -0.08156859874725342,
+            "interval": [
+              -0.10821057111024857,
+              -0.05369666963815689
+            ],
+            "excludes_zero": true
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.7763510346412659,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.1305510401725769,
+              "interval": [
+                -0.1719537377357483,
+                -0.08763837069272995
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "generated_features@32:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 628,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7388235330581665,
+              "within_root_auc": 0.8059697437593165,
+              "argmin_ties": 0,
+              "selected_actions": [
+                22,
+                110,
+                115,
+                112,
+                198,
+                62,
+                13,
+                6,
+                87,
+                13,
+                70,
+                1,
+                15,
+                10,
+                0,
+                1,
+                15
+              ]
+            },
+            {
+              "safe_choice": 629,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7400000095367432,
+              "within_root_auc": 0.8025358213878729,
+              "argmin_ties": 0,
+              "selected_actions": [
+                12,
+                112,
+                131,
+                113,
+                193,
+                53,
+                35,
+                7,
+                78,
+                9,
+                51,
+                4,
+                17,
+                15,
+                5,
+                3,
+                12
+              ]
+            },
+            {
+              "safe_choice": 611,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7188235521316528,
+              "within_root_auc": 0.7872943685685887,
+              "argmin_ties": 0,
+              "selected_actions": [
+                16,
+                123,
+                100,
+                120,
+                155,
+                57,
+                30,
+                7,
+                114,
+                18,
+                57,
+                5,
+                19,
+                12,
+                0,
+                2,
+                15
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.8492113351821899,
+            0.8498422503471375,
+            0.8567823171615601
+          ],
+          "judge_safe_rate_mean": 0.7325490713119507,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": -0.023921489715576172,
+            "interval": [
+              -0.06434281170368195,
+              0.020083371549844742
+            ],
+            "excludes_zero": false
+          },
+          "vs_root_features": {
+            "difference": -0.024705827236175537,
+            "interval": [
+              -0.05107630789279938,
+              0.0004036347381770611
+            ],
+            "excludes_zero": false
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8635634183883667,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.043338656425476074,
+              "interval": [
+                -0.08095946907997131,
+                -0.007302921265363693
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "generated_features@32:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 570,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.6705882549285889,
+              "within_root_auc": 0.7307748876029955,
+              "argmin_ties": 0,
+              "selected_actions": [
+                22,
+                18,
+                11,
+                51,
+                69,
+                384,
+                65,
+                11,
+                129,
+                10,
+                39,
+                8,
+                8,
+                9,
+                10,
+                6,
+                0
+              ]
+            },
+            {
+              "safe_choice": 574,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.6752941012382507,
+              "within_root_auc": 0.7367652448924149,
+              "argmin_ties": 0,
+              "selected_actions": [
+                26,
+                35,
+                32,
+                70,
+                56,
+                305,
+                54,
+                7,
+                133,
+                10,
+                52,
+                6,
+                6,
+                25,
+                29,
+                4,
+                0
+              ]
+            },
+            {
+              "safe_choice": 555,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.6529411673545837,
+              "within_root_auc": 0.6872368208231295,
+              "argmin_ties": 0,
+              "selected_actions": [
+                24,
+                44,
+                18,
+                22,
+                93,
+                239,
+                110,
+                18,
+                122,
+                6,
+                91,
+                12,
+                10,
+                21,
+                11,
+                3,
+                6
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.7514195442199707,
+            0.7539432048797607,
+            0.7451103925704956
+          ],
+          "judge_safe_rate_mean": 0.6662744879722595,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": -0.09019607305526733,
+            "interval": [
+              -0.12996315956115723,
+              -0.042341187596321106
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": -0.0850980281829834,
+            "interval": [
+              -0.11366400122642517,
+              -0.05918310955166817
+            ],
+            "excludes_zero": true
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.795612633228302,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.11128944158554077,
+              "interval": [
+                -0.15082013607025146,
+                -0.06849054247140884
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "real_features@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 713,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.8388235569000244,
+              "within_root_auc": 0.8876346866874134,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                120,
+                134,
+                102,
+                170,
+                37,
+                11,
+                18,
+                184,
+                2,
+                30,
+                20,
+                3,
+                7,
+                11,
+                0,
+                1
+              ]
+            },
+            {
+              "safe_choice": 712,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.8376470804214478,
+              "within_root_auc": 0.8850780359436484,
+              "argmin_ties": 0,
+              "selected_actions": [
+                1,
+                120,
+                152,
+                132,
+                147,
+                34,
+                25,
+                21,
+                151,
+                6,
+                17,
+                20,
+                0,
+                13,
+                7,
+                0,
+                4
+              ]
+            },
+            {
+              "safe_choice": 708,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.8329411745071411,
+              "within_root_auc": 0.8683787435205543,
+              "argmin_ties": 0,
+              "selected_actions": [
+                2,
+                125,
+                123,
+                105,
+                135,
+                45,
+                17,
+                27,
+                195,
+                9,
+                15,
+                23,
+                12,
+                5,
+                7,
+                0,
+                5
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.9318612217903137,
+            0.9369085431098938,
+            0.9324921369552612
+          ],
+          "judge_safe_rate_mean": 0.8364706039428711,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": 0.08000004291534424,
+            "interval": [
+              0.04160839691758156,
+              0.12230745702981949
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": 0.09294116497039795,
+            "interval": [
+              0.06084078177809715,
+              0.1248079240322113
+            ],
+            "excludes_zero": true
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.9154627919197083,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": 0.008560717105865479,
+              "interval": [
+                -0.02403007447719574,
+                0.04179595410823822
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "real_features@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 651,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7658823728561401,
+              "within_root_auc": 0.8186186883204124,
+              "argmin_ties": 0,
+              "selected_actions": [
+                8,
+                30,
+                41,
+                65,
+                72,
+                122,
+                25,
+                12,
+                343,
+                13,
+                22,
+                23,
+                1,
+                12,
+                45,
+                0,
+                16
+              ]
+            },
+            {
+              "safe_choice": 653,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7682352662086487,
+              "within_root_auc": 0.8207093113485504,
+              "argmin_ties": 0,
+              "selected_actions": [
+                27,
+                38,
+                35,
+                71,
+                78,
+                115,
+                27,
+                5,
+                316,
+                15,
+                15,
+                20,
+                10,
+                22,
+                30,
+                0,
+                26
+              ]
+            },
+            {
+              "safe_choice": 642,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.755294144153595,
+              "within_root_auc": 0.790934353015002,
+              "argmin_ties": 0,
+              "selected_actions": [
+                14,
+                46,
+                57,
+                74,
+                76,
+                104,
+                59,
+                1,
+                259,
+                11,
+                28,
+                22,
+                1,
+                32,
+                50,
+                0,
+                16
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.8151419758796692,
+            0.8195583820343018,
+            0.8239747881889343
+          ],
+          "judge_safe_rate_mean": 0.7631372809410095,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": 0.006666719913482666,
+            "interval": [
+              -0.03212946280837059,
+              0.04911867156624794
+            ],
+            "excludes_zero": false
+          },
+          "vs_root_features": {
+            "difference": 0.012156903743743896,
+            "interval": [
+              -0.013228215277194977,
+              0.03792329877614975
+            ],
+            "excludes_zero": false
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8394863605499268,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.06741571426391602,
+              "interval": [
+                -0.11227013170719147,
+                -0.022045958787202835
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "real_features@32:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 719,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.8458823561668396,
+              "within_root_auc": 0.8918643786276088,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                129,
+                134,
+                109,
+                159,
+                42,
+                9,
+                12,
+                184,
+                8,
+                22,
+                22,
+                1,
+                7,
+                10,
+                0,
+                2
+              ]
+            },
+            {
+              "safe_choice": 706,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.8305882215499878,
+              "within_root_auc": 0.8837204440726953,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                123,
+                160,
+                126,
+                149,
+                40,
+                21,
+                12,
+                145,
+                4,
+                22,
+                22,
+                4,
+                13,
+                7,
+                0,
+                2
+              ]
+            },
+            {
+              "safe_choice": 705,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.8294117450714111,
+              "within_root_auc": 0.8715436322724118,
+              "argmin_ties": 0,
+              "selected_actions": [
+                3,
+                130,
+                132,
+                108,
+                132,
+                45,
+                17,
+                25,
+                178,
+                9,
+                20,
+                24,
+                5,
+                13,
+                7,
+                0,
+                2
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.9350157976150513,
+            0.9419558644294739,
+            0.9362776279449463
+          ],
+          "judge_safe_rate_mean": 0.8352941274642944,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": 0.07882356643676758,
+            "interval": [
+              0.04140012338757515,
+              0.11987714469432831
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": 0.07803922891616821,
+            "interval": [
+              0.04760465770959854,
+              0.10813070833683014
+            ],
+            "excludes_zero": true
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.9213482141494751,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": 0.014446139335632324,
+              "interval": [
+                -0.016630833968520164,
+                0.04806746542453766
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "real_features@32:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 654,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7694117426872253,
+              "within_root_auc": 0.8209005963802337,
+              "argmin_ties": 0,
+              "selected_actions": [
+                0,
+                34,
+                42,
+                67,
+                79,
+                113,
+                20,
+                9,
+                349,
+                18,
+                26,
+                24,
+                4,
+                10,
+                35,
+                0,
+                20
+              ]
+            },
+            {
+              "safe_choice": 655,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.770588219165802,
+              "within_root_auc": 0.8180667056581553,
+              "argmin_ties": 0,
+              "selected_actions": [
+                7,
+                40,
+                37,
+                72,
+                73,
+                106,
+                24,
+                3,
+                333,
+                15,
+                30,
+                22,
+                8,
+                19,
+                35,
+                0,
+                26
+              ]
+            },
+            {
+              "safe_choice": 648,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7623529434204102,
+              "within_root_auc": 0.7926473461792749,
+              "argmin_ties": 0,
+              "selected_actions": [
+                7,
+                48,
+                49,
+                76,
+                67,
+                101,
+                52,
+                1,
+                280,
+                14,
+                39,
+                20,
+                3,
+                21,
+                44,
+                0,
+                28
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.8239747881889343,
+            0.8220820426940918,
+            0.8214511275291443
+          ],
+          "judge_safe_rate_mean": 0.7674510478973389,
+          "parameters": 33025,
+          "vs_fit_prior": {
+            "difference": 0.010980486869812012,
+            "interval": [
+              -0.025955073535442352,
+              0.05139283835887909
+            ],
+            "excludes_zero": false
+          },
+          "vs_root_features": {
+            "difference": 0.016078531742095947,
+            "interval": [
+              -0.006642794702202082,
+              0.0385778471827507
+            ],
+            "excludes_zero": false
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.843231737613678,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.0636703372001648,
+              "interval": [
+                -0.10473401844501495,
+                -0.015294455923140049
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "real_z@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 718,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.8447058796882629,
+              "within_root_auc": 0.8650291607528925,
+              "argmin_ties": 70,
+              "selected_actions": [
+                70,
+                163,
+                131,
+                170,
+                140,
+                97,
+                24,
+                4,
+                11,
+                6,
+                9,
+                19,
+                2,
+                0,
+                4,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 718,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.8447058796882629,
+              "within_root_auc": 0.8677589242861551,
+              "argmin_ties": 63,
+              "selected_actions": [
+                63,
+                155,
+                145,
+                164,
+                151,
+                95,
+                17,
+                5,
+                13,
+                6,
+                11,
+                15,
+                3,
+                0,
+                7,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 723,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.8505882620811462,
+              "within_root_auc": 0.8664381782096975,
+              "argmin_ties": 66,
+              "selected_actions": [
+                66,
+                163,
+                121,
+                163,
+                163,
+                93,
+                17,
+                4,
+                16,
+                8,
+                11,
+                17,
+                2,
+                0,
+                6,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.9331230521202087,
+            0.9337539672851562,
+            0.9331230521202087
+          ],
+          "judge_safe_rate_mean": 0.8466666340827942,
+          "parameters": 24833,
+          "vs_fit_prior": {
+            "difference": 0.09019607305526733,
+            "interval": [
+              0.05402063578367233,
+              0.12771101295948029
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": 0.10313719511032104,
+            "interval": [
+              0.07075230777263641,
+              0.13527746498584747
+            ],
+            "excludes_zero": true
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.8951311111450195,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.011770963668823242,
+              "interval": [
+                -0.04869720712304115,
+                0.026942048221826553
+              ],
+              "excludes_zero": false
+            }
+          }
+        },
+        "real_z@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 647,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7611764669418335,
+              "within_root_auc": 0.7675587700219715,
+              "argmin_ties": 51,
+              "selected_actions": [
+                51,
+                131,
+                135,
+                126,
+                147,
+                70,
+                117,
+                26,
+                8,
+                6,
+                14,
+                8,
+                0,
+                0,
+                11,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 661,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.777647078037262,
+              "within_root_auc": 0.7795814126905273,
+              "argmin_ties": 56,
+              "selected_actions": [
+                56,
+                142,
+                132,
+                138,
+                150,
+                55,
+                92,
+                34,
+                11,
+                5,
+                16,
+                10,
+                0,
+                0,
+                9,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 671,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.7894117832183838,
+              "within_root_auc": 0.7943552578196806,
+              "argmin_ties": 65,
+              "selected_actions": [
+                65,
+                154,
+                133,
+                131,
+                149,
+                63,
+                80,
+                24,
+                12,
+                7,
+                13,
+                14,
+                0,
+                0,
+                5,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.7911671996116638,
+            0.8233438730239868,
+            0.8347002863883972
+          ],
+          "judge_safe_rate_mean": 0.776078462600708,
+          "parameters": 24833,
+          "vs_fit_prior": {
+            "difference": 0.019607901573181152,
+            "interval": [
+              -0.01930798962712288,
+              0.06412182748317719
+            ],
+            "excludes_zero": false
+          },
+          "vs_root_features": {
+            "difference": 0.025098085403442383,
+            "interval": [
+              -0.009089420549571514,
+              0.05712443217635155
+            ],
+            "excludes_zero": false
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.7875869274139404,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.11931514739990234,
+              "interval": [
+                -0.16305594146251678,
+                -0.07185210287570953
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "successor_pixels@4:rank": {
+          "per_seed": [
+            {
+              "safe_choice": 777,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.9141176342964172,
+              "within_root_auc": 0.9244920273914057,
+              "argmin_ties": 51,
+              "selected_actions": [
+                51,
+                166,
+                163,
+                157,
+                197,
+                13,
+                15,
+                28,
+                7,
+                18,
+                23,
+                8,
+                2,
+                0,
+                2,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 789,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.9282352924346924,
+              "within_root_auc": 0.9344460245353334,
+              "argmin_ties": 40,
+              "selected_actions": [
+                40,
+                192,
+                168,
+                142,
+                178,
+                11,
+                22,
+                32,
+                9,
+                22,
+                21,
+                9,
+                2,
+                0,
+                2,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 787,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.9258823394775391,
+              "within_root_auc": 0.9262322954044623,
+              "argmin_ties": 44,
+              "selected_actions": [
+                44,
+                156,
+                166,
+                140,
+                217,
+                16,
+                22,
+                30,
+                10,
+                8,
+                28,
+                9,
+                2,
+                0,
+                2,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.9892744421958923,
+            0.9886435270309448,
+            0.9798107147216797
+          ],
+          "judge_safe_rate_mean": 0.9227451682090759,
+          "parameters": 418049,
+          "vs_fit_prior": {
+            "difference": 0.16627460718154907,
+            "interval": [
+              0.13136963546276093,
+              0.20469118654727936
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": 0.17921572923660278,
+            "interval": [
+              0.14734278619289398,
+              0.2113151252269745
+            ],
+            "excludes_zero": true
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.945425271987915,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": 0.038523197174072266,
+              "interval": [
+                0.009166067466139793,
+                0.07329181581735611
+              ],
+              "excludes_zero": true
+            }
+          }
+        },
+        "successor_pixels@4:bce_death": {
+          "per_seed": [
+            {
+              "safe_choice": 781,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.9188235402107239,
+              "within_root_auc": 0.9098187889684649,
+              "argmin_ties": 54,
+              "selected_actions": [
+                54,
+                156,
+                133,
+                178,
+                196,
+                23,
+                29,
+                21,
+                13,
+                29,
+                11,
+                1,
+                0,
+                0,
+                6,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 773,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.9094117879867554,
+              "within_root_auc": 0.9010586798410205,
+              "argmin_ties": 52,
+              "selected_actions": [
+                52,
+                172,
+                147,
+                158,
+                199,
+                20,
+                30,
+                18,
+                10,
+                21,
+                16,
+                3,
+                0,
+                0,
+                4,
+                0,
+                0
+              ]
+            },
+            {
+              "safe_choice": 784,
+              "opportunity_roots": 850,
+              "safe_choice_rate": 0.9223529696464539,
+              "within_root_auc": 0.9131168570785838,
+              "argmin_ties": 54,
+              "selected_actions": [
+                54,
+                165,
+                138,
+                171,
+                200,
+                24,
+                17,
+                21,
+                14,
+                24,
+                14,
+                2,
+                0,
+                0,
+                6,
+                0,
+                0
+              ]
+            }
+          ],
+          "fit_safe_rate": [
+            0.9312303066253662,
+            0.9369085431098938,
+            0.9381703734397888
+          ],
+          "judge_safe_rate_mean": 0.9168627858161926,
+          "parameters": 418049,
+          "vs_fit_prior": {
+            "difference": 0.16039222478866577,
+            "interval": [
+              0.12473075836896896,
+              0.20144502818584442
+            ],
+            "excludes_zero": true
+          },
+          "vs_root_features": {
+            "difference": 0.165882408618927,
+            "interval": [
+              0.13787682354450226,
+              0.19402949512004852
+            ],
+            "excludes_zero": true
+          },
+          "noop_right_sleep": {
+            "roots": 623,
+            "success": 0.9047619104385376,
+            "always_right": 0.9069020748138428,
+            "fit_best_of_three": 2,
+            "fit_best_of_three_success": 0.9069020748138428,
+            "vs_always_right": {
+              "difference": -0.0021401643753051758,
+              "interval": [
+                -0.04153362661600113,
+                0.035466864705085754
+              ],
+              "excludes_zero": false
+            }
+          }
+        }
+      }
+    }
+  }
+}
