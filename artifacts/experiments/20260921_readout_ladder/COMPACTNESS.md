@@ -12,7 +12,11 @@ TRAIN-fitted label-free PCA of the 4x4 pooled patch grid (3,072 → 192). Genera
 without moving fatal-safe ranking. Did that fail because the 192-D compression loses the signal, or
 despite a representation that carries it?
 
-**Old encoder.** The 2026-09-16 checkpoint no longer passes the gated loader (training, gate and
+**Old encoder — TC, not Raw.** Despite its `paired_window/raw` path, the checkpoint's own stored
+config is `variant: tc, centering: consecutive`: the frozen consecutive-TC encoder the 09-19 scorer
+already flagged (`../20260919_localization_ladder/phase6.py`, "Note the trap"). This document first
+called it "the 2026-09-16 Raw joint checkpoint", from the path; that was wrong, and a review had it
+right. It no longer passes the gated loader (training, gate and
 data code have drifted since). Only its encoder was loaded, after asserting `d4mj/lewm.py` and every
 `transformers` file in its source manifest byte-identical to what it recorded, pins, versions and
 execution flags unchanged, the stored encoder settings rebuilt exactly, and the weights loaded
@@ -48,7 +52,8 @@ Two-step: the same ordering, smaller (old `u` 0.736 vs prior 0.685, +0.051*; old
   192-D PCA of the patch grid reaches 0.783 where the equally sized CLS reaches 0.627, with the same
   head. Compression even *helps* the probe (+0.046 over the uncompressed grid), consistent with the
   3,072-D input overfitting at this data size.
-- **The old encoder's grid carries more than Raw H2's** (+0.069), at the root. Why is not measured.
+- **The old (TC) encoder's grid carries more than Raw H2's** (+0.069), at the root. Why is not
+  measured; TC centering versus Raw, and a different training run, are both confounded here.
 
 ## Limits
 
@@ -57,6 +62,7 @@ Two-step: the same ordering, smaller (old `u` 0.736 vs prior 0.685, +0.051*; old
   panel with a different evaluator. Scoring the persisted `world_u_u.pt` generated successors in this
   harness would join the two on one population.
 - Exploratory roots, already inspected.
-- Different encoder checkpoints: the old grid is from the 2026-09-16 Raw joint checkpoint, not Raw H2.
+- Different encoder checkpoints: the old grid is from the 2026-09-16 **TC-consecutive** joint
+  checkpoint, not Raw H2.
 - The old `u`'s scale on these hazard-root frames (std 3.7 on a sample) differs from its original
   corpus pool (2.8); the probe standardizes inputs, but the PCA was fit on a different distribution.
