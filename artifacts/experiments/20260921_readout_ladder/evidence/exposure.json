@@ -1,0 +1,142 @@
+{
+  "schema": "d4mj_exposure_v1",
+  "script_sha256": "3871664443673c7190944caa979756372d1711974be1e48d172901248e71164b",
+  "diagnose_sha256": "d4bfd723a6cdd171dc4107995550b5dbcc3a35518d9f83173d1584f7f8153f2e",
+  "world_sha256": "4e1c3739283e3c4b7e5aa9e9af6c59869f2a0943f5fa82d0409daf5312eb4506",
+  "classifier_validation": {
+    "day": {
+      "frames": 1566,
+      "tile_precision": 1.0,
+      "tile_recall": 1.0,
+      "adjacent_precision": 1.0,
+      "adjacent_recall": 1.0,
+      "adjacent_truth_rate": 0.4987228512763977
+    },
+    "night": {
+      "frames": 1290,
+      "tile_precision": 0.6284492809949476,
+      "tile_recall": 0.9883863080684596,
+      "adjacent_precision": 0.998639455782313,
+      "adjacent_recall": 1.0,
+      "adjacent_truth_rate": 0.5689922571182251
+    },
+    "all": {
+      "frames": 2856,
+      "tile_precision": 0.7649373002212934,
+      "tile_recall": 0.9939297124600639,
+      "adjacent_precision": 0.9993403693931399,
+      "adjacent_recall": 1.0,
+      "adjacent_truth_rate": 0.5304622054100037
+    },
+    "night_accuracy": 0.982492983341217
+  },
+  "pool": {
+    "transitions": 75547,
+    "near_zombie": 5747,
+    "near_zombie_episodes": 1904,
+    "near_zombie_night": 3354,
+    "near_zombie_stay": 2624,
+    "near_zombie_stay_damage2": 516,
+    "near_zombie_stay_dead": 0,
+    "near_zombie_stay_damage2_rate": 0.19664634764194489,
+    "near_zombie_move": 3123,
+    "near_zombie_move_damage2": 178,
+    "near_zombie_move_dead": 0,
+    "near_zombie_move_damage2_rate": 0.05699647590517998,
+    "near_zombie_damaged": 694,
+    "damage2_anywhere": 894,
+    "dead_anywhere": 0,
+    "unique_transitions_of": 76800
+  },
+  "sparse_exposure": false,
+  "thresholds": {
+    "stay": 200,
+    "move": 200,
+    "damaged": 50
+  },
+  "pool_prediction_error": {
+    "all": {
+      "transitions": 76800,
+      "normalized_error_all": 0.022093860432505608,
+      "normalized_error_w": 0.1256202906370163
+    },
+    "not_near_zombie": {
+      "transitions": 70945,
+      "normalized_error_all": 0.021386276930570602,
+      "normalized_error_w": 0.12460604310035706
+    },
+    "near_zombie": {
+      "transitions": 5855,
+      "normalized_error_all": 0.030667660757899284,
+      "normalized_error_w": 0.13790981471538544
+    },
+    "near_zombie_stay": {
+      "transitions": 2673,
+      "normalized_error_all": 0.0255357064306736,
+      "normalized_error_w": 0.12718549370765686
+    },
+    "near_zombie_move": {
+      "transitions": 3182,
+      "normalized_error_all": 0.03497869521379471,
+      "normalized_error_w": 0.1469186395406723
+    },
+    "near_zombie_damage2": {
+      "transitions": 707,
+      "normalized_error_all": 0.07839743793010712,
+      "normalized_error_w": 0.20667430758476257
+    },
+    "near_zombie_no_damage": {
+      "transitions": 5114,
+      "normalized_error_all": 0.02405111864209175,
+      "normalized_error_w": 0.1276167780160904
+    },
+    "night": {
+      "transitions": 36673,
+      "normalized_error_all": 0.02381463162600994,
+      "normalized_error_w": 0.13526545464992523
+    },
+    "day": {
+      "transitions": 40127,
+      "normalized_error_all": 0.02052120678126812,
+      "normalized_error_w": 0.11680532246828079
+    }
+  },
+  "m4_corpus": {
+    "expert_v1": {
+      "transitions": 552998,
+      "near_zombie": 43559,
+      "near_zombie_episodes": 256,
+      "near_zombie_night": 23288,
+      "near_zombie_stay": 7974,
+      "near_zombie_stay_damage2": 576,
+      "near_zombie_stay_dead": 14,
+      "near_zombie_stay_damage2_rate": 0.07223476469516754,
+      "near_zombie_move": 35585,
+      "near_zombie_move_damage2": 676,
+      "near_zombie_move_dead": 11,
+      "near_zombie_move_damage2_rate": 0.018996767699718475,
+      "near_zombie_damaged": 1252,
+      "damage2_anywhere": 1899,
+      "dead_anywhere": 56,
+      "episodes": 256
+    },
+    "support_v2": {
+      "transitions": 2558440,
+      "near_zombie": 235863,
+      "near_zombie_episodes": 8001,
+      "near_zombie_night": 140431,
+      "near_zombie_stay": 110485,
+      "near_zombie_stay_damage2": 24195,
+      "near_zombie_stay_dead": 4696,
+      "near_zombie_stay_damage2_rate": 0.21898899972438812,
+      "near_zombie_move": 125378,
+      "near_zombie_move_damage2": 8920,
+      "near_zombie_move_dead": 2543,
+      "near_zombie_move_damage2_rate": 0.07114485651254654,
+      "near_zombie_damaged": 33115,
+      "damage2_anywhere": 40387,
+      "dead_anywhere": 8015,
+      "episodes": 8069
+    }
+  }
+}
