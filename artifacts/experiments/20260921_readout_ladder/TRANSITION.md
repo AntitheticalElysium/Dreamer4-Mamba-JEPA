@@ -55,12 +55,40 @@ Action-marginal **0.6090**; root+action **0.5448**. `*` = interval excludes zero
 
 Fit-minus-judge terminal gaps +0.03 to +0.16; selected steps 300–1,200.
 
-## Declared verdict: `dynamics_never_construct_it`
+> **CORRECTED 2026-09-24 — read this before the verdict below.** The declared rule returns
+> `dynamics_never_construct_it`, and that label must not be read as its words say. Three reasons,
+> all raised by a review and verified against this run's saved rows:
+>
+> 1. **The probes are trained on the wrong objective for the question.** They fit and select on
+>    reward cross-entropy plus continuation BCE, then are judged on *within-root* action choice.
+>    This project already measured that mismatch on 2026-09-19
+>    (`../20260919_localization_ladder/README.md`): on identical real-z rows, switching only the
+>    supervision from BCE to within-root ranking moved Raw from 7.0–17.7/36 to 27.0–29.7/36. A rung
+>    failing to "carry" under these probes is not evidence it holds nothing. That audit also
+>    **retracted a headline of the same form** — "the consequence is never constructed" — and this
+>    label repeats it.
+> 2. **The predictor does lose probe-accessible safety.** Post hoc, paired and seed-clustered, `u`
+>    beats `generated_z` by **+0.084 [+0.021, +0.146]**; their within-root death associations are
+>    0.187 versus 0.034. The sentence below saying there is "nothing for the predictor to drop" is
+>    withdrawn, and so is "the ladder is flat": the blocks are within noise, the `u` → `ẑ` step is
+>    not. The pair was chosen after the fact, so this is a lead, not a declared result — but it
+>    rules out the opposite claim as firmly as it supports this one.
+> 3. **Every probe here reads a four-frame root context** (the gate's `window_layout` span); each
+>    fork stores 32. The reviewer measured the frozen trained head at 32 frames: 0.419 versus 0.428
+>    at four, interval [−0.026, +0.009] — no rescue for that head. A fresh, ranking-trained probe on
+>    32 frames is untested.
+>
+> What survives: no rung, under a BCE-style probe on a four-frame context, beats root+action on
+> within-root terminal safe-choice. Nothing more.
+
+## Declared verdict (as returned by the rule): `dynamics_never_construct_it`
 
 Every rung is a clean non-carry — none unresolved, none probe-dependent. **No rung beats
 root+action**, and the rung your first outcome hinged on, `u`, is indistinguishable from it under
-both probes (−0.027 and −0.025, intervals straddling zero). It is not the case that `u` carries
-the consequence and the predictor drops it: there is nothing for the predictor to drop.
+both probes (−0.027 and −0.025, intervals straddling zero), so the declared
+predictor-bottleneck branch does not fire. ~~It is not the case that `u` carries the consequence
+and the predictor drops it: there is nothing for the predictor to drop.~~ *Withdrawn — see the
+correction above: `u` beats `generated_z` by +0.084 [+0.021, +0.146].*
 
 The ladder had the power to see a signal. Its intervals against root+action are about ±0.06 wide;
 the real successor beats root+action by +0.30 (`CONFIRM.md`). A `u` carrying a fifth of that would
@@ -68,10 +96,10 @@ have resolved.
 
 Read this with two limits:
 
-- **The ladder is flat, not declining.** Every rung sits at or below root+action; nothing rises and
-  then falls. Rung-to-rung differences are within probe noise: the same features give 0.428 under
-  one probe and 0.484 under the other at `block_1`, and 0.415 vs 0.491 at `block_4`. Do not read a
-  shape into the blocks.
+- **The blocks are within probe noise; the predictor step is not.** The same features give 0.428
+  under one probe and 0.484 under the other at `block_1`, and 0.415 vs 0.491 at `block_4`, so do
+  not read a shape into the blocks. But `u` → `generated_z` is a resolved drop (+0.084, see the
+  correction above). ~~The ladder is flat, not declining.~~
 - **This is an absence claim about these probes.** It says no readout tried here extracts
   within-root safety from any rung beyond what it extracts from root+action. It does not show the
   rungs contain nothing.
@@ -102,6 +130,12 @@ declared cell, shared rungs matching `CONFIRM.md` to 0.0), so the switch to `enc
 | root_z_action — what the transition consumes | 0.521 | −0.088 [−0.151,−0.028]* | −0.024 [−0.072,+0.024] | 0.629 |
 | root_cls_action — before the projector | 0.531 | −0.078 [−0.154,−0.006]* | −0.013 [−0.060,+0.035] | 0.660 |
 | root_cls_patches_action — + pooled patch grid | 0.558 | −0.051 [−0.118,+0.012] | +0.013 [−0.039,+0.062] | 0.710 |
+
+> **CORRECTED 2026-09-24.** This call carries the same objective mismatch as the declared one,
+> and reads the same four-frame context. Root CLS + patches also *raises* within-root death
+> association over root+action, 0.297 versus 0.184, even though its safe-choice does not resolve —
+> the ordering signal is there to be trained for. Read the label below as "these BCE-style probes on
+> four frames did not beat root+action", not as a statement about what the root holds.
 
 **Post-hoc call: `not_predictable_from_root`, for this probe family.** No representation of the
 root observation — the `z` the transition consumes, the CLS before the projector, or CLS with

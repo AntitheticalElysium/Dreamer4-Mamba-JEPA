@@ -95,6 +95,20 @@ to find where the generated consequence goes missing.
 
 Heads still fail to transfer: an exact head fitted on real features scores 0.434 on generated ones.
 
+## What the trained head actually gets wrong: SLEEP
+
+Added 2026-09-24, found by a review and recomputed from `evidence/confirm_rows.pt`.
+
+On the 670 roots where death depends on the action, the trained head reading the **generated**
+successor picks `SLEEP` (action 6) as the safest action on **513**. On the **226** of those roots
+where sleeping kills and `RIGHT` survives, it rates sleep safer than right on **189**. The same
+head reading the real successor makes that reversal on 66; a fresh exact head on real features, on
+27.
+
+This is an action-consequence failure, not a weak aggregate. In Craftax a zombie hit does 7 damage
+to a sleeping player against 2 to an awake one, so sleeping beside a threat is exactly the lethal
+choice, and the head systematically prefers it.
+
 ## Reward, unchanged
 
 `context_action` remains the best reward rung (regret 0.1637, +0.103 over the marginal).
