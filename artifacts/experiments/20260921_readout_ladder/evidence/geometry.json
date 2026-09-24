@@ -1,0 +1,361 @@
+{
+  "schema": "d4mj_geometry_premise_v1",
+  "status": "EXPLORATORY: observability roots",
+  "script_sha256": "79ccc6355822994c50f249d5a334e8453faa9b51591ead95c5e309e5039e593a",
+  "identity": {
+    "fit": "5f1e9a00c3103610d720bce2e834ca481099e6122cf400fb087e60fe14e02c8d",
+    "judge": "8ed62edd825409b9820be8ea93e0c790a934f9968cad4f10d33a7aa8472da6aa"
+  },
+  "checkpoint_sha256": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e",
+  "codebook": {
+    "K": 512,
+    "used": 512,
+    "relative_residual": {
+      "fit": 0.0482984334230423,
+      "judge": 0.059989143162965775
+    }
+  },
+  "reading": "per_tile_premise_fails",
+  "result": {
+    "fatal": {
+      "z": {
+        "judge_within_root_auc": 0.9230746932131282,
+        "share": 0.027323911692030356,
+        "roots": {
+          "fit": 1253,
+          "judge": 493
+        }
+      },
+      "grid_pca": {
+        "judge_within_root_auc": 0.9499555126165038,
+        "share": 0.06392049824282027,
+        "roots": {
+          "fit": 1253,
+          "judge": 493
+        }
+      },
+      "u_old": {
+        "judge_within_root_auc": 0.9488711002874084,
+        "share": 0.28001096819146615,
+        "roots": {
+          "fit": 1253,
+          "judge": 493
+        }
+      },
+      "tokens": {
+        "judge_within_root_auc": 0.9979716024340771,
+        "share": 0.021493494737702287,
+        "roots": {
+          "fit": 1253,
+          "judge": 493
+        },
+        "locality_tiles_for_half": 1,
+        "top_tiles": [
+          {
+            "tile": 63,
+            "row": 7,
+            "col": 0,
+            "share_of_direction": 0.9410181641578674
+          },
+          {
+            "tile": 31,
+            "row": 3,
+            "col": 4,
+            "share_of_direction": 0.0031316999811679125
+          },
+          {
+            "tile": 30,
+            "row": 3,
+            "col": 3,
+            "share_of_direction": 0.0023133400827646255
+          },
+          {
+            "tile": 50,
+            "row": 5,
+            "col": 5,
+            "share_of_direction": 0.002240375615656376
+          },
+          {
+            "tile": 22,
+            "row": 2,
+            "col": 4,
+            "share_of_direction": 0.0018347061704844236
+          },
+          {
+            "tile": 38,
+            "row": 4,
+            "col": 2,
+            "share_of_direction": 0.0015636226162314415
+          }
+        ],
+        "effect_energy_hud_share": 0.07627254724502563
+      },
+      "tokens_ln": {
+        "judge_within_root_auc": 0.9979716024340771,
+        "share": 0.021506680641356583,
+        "roots": {
+          "fit": 1253,
+          "judge": 493
+        },
+        "locality_tiles_for_half": 1,
+        "top_tiles": [
+          {
+            "tile": 63,
+            "row": 7,
+            "col": 0,
+            "share_of_direction": 0.9410868883132935
+          },
+          {
+            "tile": 31,
+            "row": 3,
+            "col": 4,
+            "share_of_direction": 0.003127581439912319
+          },
+          {
+            "tile": 30,
+            "row": 3,
+            "col": 3,
+            "share_of_direction": 0.0023104483261704445
+          },
+          {
+            "tile": 50,
+            "row": 5,
+            "col": 5,
+            "share_of_direction": 0.0022371914237737656
+          },
+          {
+            "tile": 22,
+            "row": 2,
+            "col": 4,
+            "share_of_direction": 0.0018325679702684283
+          },
+          {
+            "tile": 38,
+            "row": 4,
+            "col": 2,
+            "share_of_direction": 0.0015618187608197331
+          }
+        ],
+        "effect_energy_hud_share": 0.07633946090936661
+      },
+      "codes": {
+        "judge_within_root_auc": 0.9955459770276145,
+        "share": 0.0017831287118033193,
+        "roots": {
+          "fit": 1253,
+          "judge": 493
+        },
+        "locality_tiles_for_half": 1,
+        "top_tiles": [
+          {
+            "tile": 63,
+            "row": 7,
+            "col": 0,
+            "share_of_direction": 0.8227797150611877
+          },
+          {
+            "tile": 31,
+            "row": 3,
+            "col": 4,
+            "share_of_direction": 0.006021798588335514
+          },
+          {
+            "tile": 22,
+            "row": 2,
+            "col": 4,
+            "share_of_direction": 0.004972314927726984
+          },
+          {
+            "tile": 50,
+            "row": 5,
+            "col": 5,
+            "share_of_direction": 0.004189027938991785
+          },
+          {
+            "tile": 32,
+            "row": 3,
+            "col": 5,
+            "share_of_direction": 0.0038610559422522783
+          },
+          {
+            "tile": 30,
+            "row": 3,
+            "col": 3,
+            "share_of_direction": 0.003792557865381241
+          }
+        ],
+        "effect_energy_hud_share": 0.1582866609096527
+      }
+    },
+    "damage": {
+      "z": {
+        "judge_within_root_auc": 0.6909217727871536,
+        "share": 0.023258512525225955,
+        "roots": {
+          "fit": 5635,
+          "judge": 2268
+        }
+      },
+      "grid_pca": {
+        "judge_within_root_auc": 0.6001019347565844,
+        "share": 0.03600729655410049,
+        "roots": {
+          "fit": 5635,
+          "judge": 2268
+        }
+      },
+      "u_old": {
+        "judge_within_root_auc": 0.694077902173745,
+        "share": 0.06324332052627178,
+        "roots": {
+          "fit": 5635,
+          "judge": 2268
+        }
+      },
+      "tokens": {
+        "judge_within_root_auc": 0.7620775157970096,
+        "share": 0.006274377017992364,
+        "roots": {
+          "fit": 5635,
+          "judge": 2268
+        },
+        "locality_tiles_for_half": 1,
+        "top_tiles": [
+          {
+            "tile": 63,
+            "row": 7,
+            "col": 0,
+            "share_of_direction": 0.7352460026741028
+          },
+          {
+            "tile": 22,
+            "row": 2,
+            "col": 4,
+            "share_of_direction": 0.024569615721702576
+          },
+          {
+            "tile": 40,
+            "row": 4,
+            "col": 4,
+            "share_of_direction": 0.02325434982776642
+          },
+          {
+            "tile": 32,
+            "row": 3,
+            "col": 5,
+            "share_of_direction": 0.02139285020530224
+          },
+          {
+            "tile": 30,
+            "row": 3,
+            "col": 3,
+            "share_of_direction": 0.019851624965667725
+          },
+          {
+            "tile": 29,
+            "row": 3,
+            "col": 2,
+            "share_of_direction": 0.00996637623757124
+          }
+        ],
+        "effect_energy_hud_share": 0.05993249639868736
+      },
+      "tokens_ln": {
+        "judge_within_root_auc": 0.7620775157970096,
+        "share": 0.006275713762455871,
+        "roots": {
+          "fit": 5635,
+          "judge": 2268
+        },
+        "locality_tiles_for_half": 1,
+        "top_tiles": [
+          {
+            "tile": 63,
+            "row": 7,
+            "col": 0,
+            "share_of_direction": 0.735306978225708
+          },
+          {
+            "tile": 22,
+            "row": 2,
+            "col": 4,
+            "share_of_direction": 0.024558518081903458
+          },
+          {
+            "tile": 40,
+            "row": 4,
+            "col": 4,
+            "share_of_direction": 0.02324240654706955
+          },
+          {
+            "tile": 32,
+            "row": 3,
+            "col": 5,
+            "share_of_direction": 0.021382633596658707
+          },
+          {
+            "tile": 30,
+            "row": 3,
+            "col": 3,
+            "share_of_direction": 0.01984119974076748
+          },
+          {
+            "tile": 29,
+            "row": 3,
+            "col": 2,
+            "share_of_direction": 0.00996252428740263
+          }
+        ],
+        "effect_energy_hud_share": 0.059983525425195694
+      },
+      "codes": {
+        "judge_within_root_auc": 0.6925685081057698,
+        "share": 0.0030493547546859216,
+        "roots": {
+          "fit": 5635,
+          "judge": 2268
+        },
+        "locality_tiles_for_half": 1,
+        "top_tiles": [
+          {
+            "tile": 63,
+            "row": 7,
+            "col": 0,
+            "share_of_direction": 0.8846143484115601
+          },
+          {
+            "tile": 22,
+            "row": 2,
+            "col": 4,
+            "share_of_direction": 0.008187848143279552
+          },
+          {
+            "tile": 40,
+            "row": 4,
+            "col": 4,
+            "share_of_direction": 0.00817629974335432
+          },
+          {
+            "tile": 32,
+            "row": 3,
+            "col": 5,
+            "share_of_direction": 0.007837086915969849
+          },
+          {
+            "tile": 31,
+            "row": 3,
+            "col": 4,
+            "share_of_direction": 0.0053711747750639915
+          },
+          {
+            "tile": 30,
+            "row": 3,
+            "col": 3,
+            "share_of_direction": 0.004638402257114649
+          }
+        ],
+        "effect_energy_hud_share": 0.15127810835838318
+      }
+    }
+  }
+}
