@@ -64,7 +64,7 @@ sys.path.insert(0, str(HERE))
 from d4mj.data import _sha256
 from d4mj.lewm_diagnostics import FORK_STORE
 
-from compactness import OLD, apply_pca, fit_pca, old_encoder  # noqa: E402
+from compactness import OLD, apply_pca, old_encoder  # noqa: E402
 from confirm import seeds_for  # noqa: E402
 from damage_direction import health_deltas  # noqa: E402
 from diagnose import within_auc  # noqa: E402
@@ -201,7 +201,21 @@ def main(argv=None):
     torch.cuda.empty_cache()
     log(stage="encoded")
 
-    pca = fit_pca(feats["fit"]["grid"].flatten(0, 1))
+    # `compactness.fit_pca` computed through the covariance: its SVD of the 100k x 3072 sample matrix
+    # was OOM-killed twice. Same basis up to sign (no share or AUC depends on sign), same rank rule.
+    x = feats["fit"]["grid"].flatten(0, 1)
+    mean = x.mean(0, keepdim=True)
+    cov = torch.zeros(x.shape[1], x.shape[1], dtype=torch.float64, device=device)
+    for j in range(0, len(x), 8192):
+        c = (x[j:j + 8192] - mean).to(device).double()
+        cov += c.T @ c
+    values, vectors = torch.linalg.eigh(cov / (len(x) - 1))
+    order = values.argsort(descending=True)[:WIDTH]
+    scale = values[order].clamp_min(0).sqrt()
+    rank = int((scale > scale[0] * 1e-3).sum())
+    pca = {"mean": mean.float(), "basis": vectors[:, order][:, :rank].float().cpu(), "rank": rank,
+           "components": WIDTH}
+    del x, cov, vectors
     for s in feats:
         feats[s]["grid_pca"] = apply_pca(pca, feats[s].pop("grid"))
     sample = feats["fit"]["tokens"].flatten(0, 2)
