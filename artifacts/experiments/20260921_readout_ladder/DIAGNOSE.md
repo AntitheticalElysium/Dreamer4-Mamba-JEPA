@@ -1,5 +1,9 @@
 # Why the u→u world's prediction loses mob consequences — the one-day diagnostic queue
 
+> **Headline, amended 2026-09-24 after review:** the queue **prioritizes a loss intervention, with
+> terminal exposure unresolved**. It does not identify the loss as the cause. The first version said
+> the declared reading "points at the prediction loss"; that is what the rule returns, not a finding.
+
 Run 2026-09-24. Rules for parts 1–3 committed before either ran (`diagnose.py`, `e86e33e1`); the
 post-hoc damage test committed before it ran (`f44e16ca`). All on the observability roots,
 **exploratory**. Evidence: `evidence/diagnose_critical.json`, `evidence/exposure.json`,
@@ -25,8 +29,15 @@ The fatal-versus-safe direction `w`, fit on within-root-centred real successor `
 | correlation of generated and real effect along `w` | **0.02** | |
 | share of the within-root action effect lying along `w` | 0.04% | |
 
-The world reproduces 95.5% of the within-root action effect overall, and nothing along the direction
-that decides death: its error there is *worse* than predicting no effect at all. The same holds by
+The world reproduces 95.5% of the within-root action effect overall, and not the action effect along
+this direction: its error there is *worse* than predicting no effect at all.
+
+Two limits, from review. **This is an alignment test, not an information ceiling.** `w` was fit on
+*real* successors and transferred unchanged; a head fit on generated `u` itself still chose safely at
+0.727, above the 0.628 prior (U_WORLD.md) — so 0.495 means the generated states do not put the
+fatal-versus-safe difference where real ones do, not that they hold none. **And the direction may
+chiefly recognize a successor that is already dead** — easy to read in hindsight, while the predictor
+has to forecast it from the root, and (Part 1) this world was never given a terminal target. The same holds by
 zombie (ratio 29.7), lava (16.2), night (33.2) and day (18.2).
 
 ## Part 1 — training exposure: not sparse by the declared thresholds, but **no deaths at all**
@@ -57,10 +68,13 @@ final window only.
 The world's one-step error on the logged pool transitions, normalized by the variance of next `u`:
 along `w` it is 0.125 elsewhere and 0.207 on damaging transitions beside a zombie.
 
-## Declared reading: adequate exposure + concentrated error → **the prediction loss**
+## Declared reading: adequate exposure + concentrated error → prioritizes a loss intervention
 
 **Part 3, the averaged-successor test, did not run.** Its declared condition — adequate exposure with
-error *not* concentrated, or an invalid direction — was not met.
+error *not* concentrated, or an invalid direction — was not met. That is a branch of the rule, not a
+scientific exclusion of averaging: one-step death outcomes are rarely stochastic on this panel (15 of
+500 roots), but random mob imagery can still shape a latent MSE target. It is lower priority than the
+known terminal-target exclusion, not ruled out.
 
 ## Post hoc — the damage direction: **void** by its declared gate, and descriptively the same failure
 
@@ -91,7 +105,20 @@ shown a death" does not look like the whole story. It does not settle it either.
   pattern the September 19 report once read as "the loss under-allocates" and had to retract. And the
   world is not zeroing the direction: along damage its effect has 78% of the true RMS magnitude,
   uncorrelated with the truth (0.087). Its error there is misalignment, not silence.
-- **The next discriminating step is an intervention, not another probe:** a matched retrain that
-  changes only the loss's treatment of small directions (for example a normalized or cosine
-  next-embedding target) on a window layout that reaches terminal transitions, judged on a new seed
-  block (52,000+). Both are declared method changes from LeWM's raw next-latent MSE.
+- **The next discriminating step is an intervention, not another probe** — and not one that changes
+  two things at once. The first version of this line proposed a new loss *and* a terminal-reaching
+  window together; that confounds them. Three arms separate them: the existing world (old window, MSE);
+  a terminal-inclusive window with MSE (what repaired exposure buys); and exactly those windows and
+  batches with a predeclared weighted MSE (what the loss adds beyond exposure). Judged together on a
+  new seed block (52,000+), with generated-fitted readouts as well as real-fitted alignment.
+
+## Where the fatal direction sits in `u`'s spectrum (added before choosing a loss)
+
+`u`'s coordinates are PCA components; their variance on the training pool runs from 794.6 (largest)
+through a median of 0.20 to 0.058 (smallest). The fatal direction `w` puts **0.6%** of its squared norm
+in the 20 largest-variance components, 12% in the top 50, 54% in the top 100 and **46% in the lowest
+92**; its largest weights sit at variance ranks 53–96. Plain MSE on `u` is dominated by a handful of
+components this direction barely touches. Weighting each component by its inverse TRAIN variance would
+raise the direction's share of the loss about **50×**. That makes a bounded, train-statistics-weighted
+MSE the more direct first intervention; a cosine target normalizes the vector as a whole and need not
+reach these components at all.
