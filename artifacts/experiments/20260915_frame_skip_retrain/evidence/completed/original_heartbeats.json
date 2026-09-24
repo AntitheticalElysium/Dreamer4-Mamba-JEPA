@@ -1,0 +1,1202 @@
+[
+  {
+    "variant": "raw",
+    "update": 100,
+    "loss": 1.7304826974868774,
+    "prediction": 0.39861515164375305
+  },
+  {
+    "variant": "raw",
+    "update": 200,
+    "loss": 0.9405834674835205,
+    "prediction": 0.2761673033237457
+  },
+  {
+    "variant": "raw",
+    "update": 300,
+    "loss": 0.7764793038368225,
+    "prediction": 0.220803365111351
+  },
+  {
+    "variant": "raw",
+    "update": 400,
+    "loss": 0.6935697197914124,
+    "prediction": 0.21073447167873383
+  },
+  {
+    "variant": "raw",
+    "update": 500,
+    "loss": 0.5931079387664795,
+    "prediction": 0.15814097225666046
+  },
+  {
+    "variant": "raw",
+    "update": 600,
+    "loss": 0.5280701518058777,
+    "prediction": 0.15708467364311218
+  },
+  {
+    "variant": "raw",
+    "update": 700,
+    "loss": 0.46238744258880615,
+    "prediction": 0.1348779946565628
+  },
+  {
+    "variant": "raw",
+    "update": 800,
+    "loss": 0.42257431149482727,
+    "prediction": 0.11851325631141663
+  },
+  {
+    "variant": "raw",
+    "update": 900,
+    "loss": 0.4286739230155945,
+    "prediction": 0.1309409886598587
+  },
+  {
+    "variant": "raw",
+    "update": 1000,
+    "loss": 0.4019215703010559,
+    "prediction": 0.12057341635227203
+  },
+  {
+    "variant": "raw",
+    "update": 1100,
+    "loss": 0.3938641846179962,
+    "prediction": 0.11223284155130386
+  },
+  {
+    "variant": "raw",
+    "update": 1200,
+    "loss": 0.3643667697906494,
+    "prediction": 0.09725885838270187
+  },
+  {
+    "variant": "raw",
+    "update": 1300,
+    "loss": 0.3233374059200287,
+    "prediction": 0.08240064978599548
+  },
+  {
+    "variant": "raw",
+    "update": 1400,
+    "loss": 0.3297775685787201,
+    "prediction": 0.08591656386852264
+  },
+  {
+    "variant": "raw",
+    "update": 1500,
+    "loss": 0.2966229021549225,
+    "prediction": 0.0655234158039093
+  },
+  {
+    "variant": "raw",
+    "update": 1600,
+    "loss": 0.30963608622550964,
+    "prediction": 0.08025867491960526
+  },
+  {
+    "variant": "raw",
+    "update": 1700,
+    "loss": 0.2874411344528198,
+    "prediction": 0.07056615501642227
+  },
+  {
+    "variant": "raw",
+    "update": 1800,
+    "loss": 0.28375715017318726,
+    "prediction": 0.06421821564435959
+  },
+  {
+    "variant": "raw",
+    "update": 1900,
+    "loss": 0.278449684381485,
+    "prediction": 0.07634613662958145
+  },
+  {
+    "variant": "raw",
+    "update": 2000,
+    "loss": 0.24025696516036987,
+    "prediction": 0.050262365490198135
+  },
+  {
+    "variant": "tc",
+    "update": 100,
+    "loss": 3.464304208755493,
+    "prediction": 0.453928679227829
+  },
+  {
+    "variant": "tc",
+    "update": 200,
+    "loss": 2.571113348007202,
+    "prediction": 0.6795857548713684
+  },
+  {
+    "variant": "tc",
+    "update": 300,
+    "loss": 2.237387180328369,
+    "prediction": 0.901743471622467
+  },
+  {
+    "variant": "tc",
+    "update": 400,
+    "loss": 1.9890167713165283,
+    "prediction": 0.8557161688804626
+  },
+  {
+    "variant": "tc",
+    "update": 500,
+    "loss": 2.0332233905792236,
+    "prediction": 0.8775691390037537
+  },
+  {
+    "variant": "tc",
+    "update": 600,
+    "loss": 1.7433998584747314,
+    "prediction": 0.8898215889930725
+  },
+  {
+    "variant": "tc",
+    "update": 700,
+    "loss": 1.7362911701202393,
+    "prediction": 0.9730454683303833
+  },
+  {
+    "variant": "tc",
+    "update": 800,
+    "loss": 1.6134555339813232,
+    "prediction": 0.8818014860153198
+  },
+  {
+    "variant": "tc",
+    "update": 900,
+    "loss": 1.66707444190979,
+    "prediction": 0.953465461730957
+  },
+  {
+    "variant": "tc",
+    "update": 1000,
+    "loss": 1.7376118898391724,
+    "prediction": 0.90614914894104
+  },
+  {
+    "variant": "tc",
+    "update": 1100,
+    "loss": 1.688279390335083,
+    "prediction": 0.8789251446723938
+  },
+  {
+    "variant": "tc",
+    "update": 1200,
+    "loss": 1.5908122062683105,
+    "prediction": 0.8954955339431763
+  },
+  {
+    "variant": "tc",
+    "update": 1300,
+    "loss": 1.4635851383209229,
+    "prediction": 0.9386584162712097
+  },
+  {
+    "variant": "tc",
+    "update": 1400,
+    "loss": 1.4998550415039062,
+    "prediction": 0.8872194290161133
+  },
+  {
+    "variant": "tc",
+    "update": 1500,
+    "loss": 1.522264003753662,
+    "prediction": 0.9024119973182678
+  },
+  {
+    "variant": "tc",
+    "update": 1600,
+    "loss": 1.533413290977478,
+    "prediction": 0.9288933277130127
+  },
+  {
+    "variant": "tc",
+    "update": 1700,
+    "loss": 1.391999363899231,
+    "prediction": 0.9185183048248291
+  },
+  {
+    "variant": "tc",
+    "update": 1800,
+    "loss": 1.3835245370864868,
+    "prediction": 0.8838762640953064
+  },
+  {
+    "variant": "tc",
+    "update": 1900,
+    "loss": 1.405327558517456,
+    "prediction": 0.8674643039703369
+  },
+  {
+    "variant": "tc",
+    "update": 2000,
+    "loss": 1.4519917964935303,
+    "prediction": 0.791975200176239
+  },
+  {
+    "variant": "raw",
+    "update": 2100,
+    "loss": 0.25010019540786743,
+    "prediction": 0.05277520790696144
+  },
+  {
+    "variant": "raw",
+    "update": 2200,
+    "loss": 0.23010364174842834,
+    "prediction": 0.04626636952161789
+  },
+  {
+    "variant": "raw",
+    "update": 2300,
+    "loss": 0.25183817744255066,
+    "prediction": 0.048029813915491104
+  },
+  {
+    "variant": "raw",
+    "update": 2400,
+    "loss": 0.23882634937763214,
+    "prediction": 0.050791263580322266
+  },
+  {
+    "variant": "raw",
+    "update": 2500,
+    "loss": 0.24199910461902618,
+    "prediction": 0.05358685553073883
+  },
+  {
+    "variant": "raw",
+    "update": 2600,
+    "loss": 0.22162596881389618,
+    "prediction": 0.0422033816576004
+  },
+  {
+    "variant": "raw",
+    "update": 2700,
+    "loss": 0.23321326076984406,
+    "prediction": 0.055890534073114395
+  },
+  {
+    "variant": "raw",
+    "update": 2800,
+    "loss": 0.2347000390291214,
+    "prediction": 0.05023123696446419
+  },
+  {
+    "variant": "raw",
+    "update": 2900,
+    "loss": 0.20995351672172546,
+    "prediction": 0.0420718714594841
+  },
+  {
+    "variant": "raw",
+    "update": 3000,
+    "loss": 0.22118517756462097,
+    "prediction": 0.05196438357234001
+  },
+  {
+    "variant": "raw",
+    "update": 3100,
+    "loss": 0.2163340151309967,
+    "prediction": 0.05049864575266838
+  },
+  {
+    "variant": "raw",
+    "update": 3200,
+    "loss": 0.21490244567394257,
+    "prediction": 0.04834577068686485
+  },
+  {
+    "variant": "raw",
+    "update": 3300,
+    "loss": 0.19991189241409302,
+    "prediction": 0.03551388531923294
+  },
+  {
+    "variant": "raw",
+    "update": 3400,
+    "loss": 0.21344736218452454,
+    "prediction": 0.04883582144975662
+  },
+  {
+    "variant": "raw",
+    "update": 3500,
+    "loss": 0.18917958438396454,
+    "prediction": 0.038448963314294815
+  },
+  {
+    "variant": "raw",
+    "update": 3600,
+    "loss": 0.20313623547554016,
+    "prediction": 0.04571475461125374
+  },
+  {
+    "variant": "raw",
+    "update": 3700,
+    "loss": 0.19341599941253662,
+    "prediction": 0.0398189052939415
+  },
+  {
+    "variant": "raw",
+    "update": 3800,
+    "loss": 0.20041528344154358,
+    "prediction": 0.04246668890118599
+  },
+  {
+    "variant": "raw",
+    "update": 3900,
+    "loss": 0.1940736174583435,
+    "prediction": 0.03714410960674286
+  },
+  {
+    "variant": "raw",
+    "update": 4000,
+    "loss": 0.18878865242004395,
+    "prediction": 0.03692346811294556
+  },
+  {
+    "variant": "raw",
+    "update": 4100,
+    "loss": 0.21614821255207062,
+    "prediction": 0.04143643379211426
+  },
+  {
+    "variant": "raw",
+    "update": 4200,
+    "loss": 0.17773783206939697,
+    "prediction": 0.03745631128549576
+  },
+  {
+    "variant": "raw",
+    "update": 4300,
+    "loss": 0.18740570545196533,
+    "prediction": 0.03577250987291336
+  },
+  {
+    "variant": "raw",
+    "update": 4400,
+    "loss": 0.19296106696128845,
+    "prediction": 0.04240740090608597
+  },
+  {
+    "variant": "raw",
+    "update": 4500,
+    "loss": 0.17149300873279572,
+    "prediction": 0.03137592971324921
+  },
+  {
+    "variant": "raw",
+    "update": 4600,
+    "loss": 0.19269315898418427,
+    "prediction": 0.040905822068452835
+  },
+  {
+    "variant": "raw",
+    "update": 4700,
+    "loss": 0.18600121140480042,
+    "prediction": 0.03146738186478615
+  },
+  {
+    "variant": "raw",
+    "update": 4800,
+    "loss": 0.19998829066753387,
+    "prediction": 0.04102616012096405
+  },
+  {
+    "variant": "raw",
+    "update": 4900,
+    "loss": 0.17741407454013824,
+    "prediction": 0.042828675359487534
+  },
+  {
+    "variant": "raw",
+    "update": 5000,
+    "loss": 0.17241191864013672,
+    "prediction": 0.03463270887732506
+  },
+  {
+    "variant": "raw",
+    "update": 5100,
+    "loss": 0.19175057113170624,
+    "prediction": 0.043610308319330215
+  },
+  {
+    "variant": "raw",
+    "update": 5200,
+    "loss": 0.17881321907043457,
+    "prediction": 0.03300761058926582
+  },
+  {
+    "variant": "raw",
+    "update": 5300,
+    "loss": 0.17786934971809387,
+    "prediction": 0.02919919602572918
+  },
+  {
+    "variant": "raw",
+    "update": 5400,
+    "loss": 0.17232471704483032,
+    "prediction": 0.0321444533765316
+  },
+  {
+    "variant": "raw",
+    "update": 5500,
+    "loss": 0.1688576191663742,
+    "prediction": 0.03450988233089447
+  },
+  {
+    "variant": "raw",
+    "update": 5600,
+    "loss": 0.16641642153263092,
+    "prediction": 0.027543017640709877
+  },
+  {
+    "variant": "raw",
+    "update": 5700,
+    "loss": 0.1733063906431198,
+    "prediction": 0.0275100227445364
+  },
+  {
+    "variant": "raw",
+    "update": 5800,
+    "loss": 0.1783277690410614,
+    "prediction": 0.032777972519397736
+  },
+  {
+    "variant": "raw",
+    "update": 5900,
+    "loss": 0.16466137766838074,
+    "prediction": 0.03357366472482681
+  },
+  {
+    "variant": "raw",
+    "update": 6000,
+    "loss": 0.1691659539937973,
+    "prediction": 0.03208987042307854
+  },
+  {
+    "variant": "raw",
+    "update": 6100,
+    "loss": 0.18758831918239594,
+    "prediction": 0.04886443540453911
+  },
+  {
+    "variant": "raw",
+    "update": 6200,
+    "loss": 0.1742246448993683,
+    "prediction": 0.03526521101593971
+  },
+  {
+    "variant": "raw",
+    "update": 6300,
+    "loss": 0.16619305312633514,
+    "prediction": 0.027897099032998085
+  },
+  {
+    "variant": "raw",
+    "update": 6400,
+    "loss": 0.1759231984615326,
+    "prediction": 0.037820447236299515
+  },
+  {
+    "variant": "raw",
+    "update": 6500,
+    "loss": 0.15445218980312347,
+    "prediction": 0.024255145341157913
+  },
+  {
+    "variant": "raw",
+    "update": 6600,
+    "loss": 0.17296794056892395,
+    "prediction": 0.030995944514870644
+  },
+  {
+    "variant": "raw",
+    "update": 6700,
+    "loss": 0.15661996603012085,
+    "prediction": 0.028998732566833496
+  },
+  {
+    "variant": "raw",
+    "update": 6800,
+    "loss": 0.16324612498283386,
+    "prediction": 0.02440936118364334
+  },
+  {
+    "variant": "raw",
+    "update": 6900,
+    "loss": 0.16677314043045044,
+    "prediction": 0.03138264641165733
+  },
+  {
+    "variant": "raw",
+    "update": 7000,
+    "loss": 0.1599186360836029,
+    "prediction": 0.027618590742349625
+  },
+  {
+    "variant": "raw",
+    "update": 7100,
+    "loss": 0.15588024258613586,
+    "prediction": 0.02545691654086113
+  },
+  {
+    "variant": "raw",
+    "update": 7200,
+    "loss": 0.16186359524726868,
+    "prediction": 0.02497030980885029
+  },
+  {
+    "variant": "raw",
+    "update": 7300,
+    "loss": 0.16088490188121796,
+    "prediction": 0.02708461880683899
+  },
+  {
+    "variant": "raw",
+    "update": 7400,
+    "loss": 0.16370664536952972,
+    "prediction": 0.027494460344314575
+  },
+  {
+    "variant": "raw",
+    "update": 7500,
+    "loss": 0.1592789739370346,
+    "prediction": 0.026420000940561295
+  },
+  {
+    "variant": "raw",
+    "update": 7600,
+    "loss": 0.18813081085681915,
+    "prediction": 0.02862071990966797
+  },
+  {
+    "variant": "raw",
+    "update": 7700,
+    "loss": 0.17234447598457336,
+    "prediction": 0.028388725593686104
+  },
+  {
+    "variant": "raw",
+    "update": 7800,
+    "loss": 0.14945189654827118,
+    "prediction": 0.0238178763538599
+  },
+  {
+    "variant": "raw",
+    "update": 7900,
+    "loss": 0.1520383059978485,
+    "prediction": 0.022012850269675255
+  },
+  {
+    "variant": "raw",
+    "update": 8000,
+    "loss": 0.16833500564098358,
+    "prediction": 0.027212997898459435
+  },
+  {
+    "variant": "raw",
+    "update": 8100,
+    "loss": 0.14602185785770416,
+    "prediction": 0.026541832834482193
+  },
+  {
+    "variant": "raw",
+    "update": 8200,
+    "loss": 0.16580870747566223,
+    "prediction": 0.03534673899412155
+  },
+  {
+    "variant": "raw",
+    "update": 8300,
+    "loss": 0.17330177128314972,
+    "prediction": 0.027986833825707436
+  },
+  {
+    "variant": "raw",
+    "update": 8400,
+    "loss": 0.15858939290046692,
+    "prediction": 0.019178519025444984
+  },
+  {
+    "variant": "raw",
+    "update": 8500,
+    "loss": 0.15225914120674133,
+    "prediction": 0.024929756298661232
+  },
+  {
+    "variant": "raw",
+    "update": 8600,
+    "loss": 0.1567012220621109,
+    "prediction": 0.024979621171951294
+  },
+  {
+    "variant": "raw",
+    "update": 8700,
+    "loss": 0.14582155644893646,
+    "prediction": 0.02373293973505497
+  },
+  {
+    "variant": "raw",
+    "update": 8800,
+    "loss": 0.16090728342533112,
+    "prediction": 0.021031012758612633
+  },
+  {
+    "variant": "raw",
+    "update": 8900,
+    "loss": 0.1541149616241455,
+    "prediction": 0.02440299652516842
+  },
+  {
+    "variant": "raw",
+    "update": 9000,
+    "loss": 0.16072723269462585,
+    "prediction": 0.028775222599506378
+  },
+  {
+    "variant": "raw",
+    "update": 9100,
+    "loss": 0.15607473254203796,
+    "prediction": 0.026345588266849518
+  },
+  {
+    "variant": "raw",
+    "update": 9200,
+    "loss": 0.16056008636951447,
+    "prediction": 0.026232318952679634
+  },
+  {
+    "variant": "raw",
+    "update": 9300,
+    "loss": 0.1603911817073822,
+    "prediction": 0.022984350100159645
+  },
+  {
+    "variant": "raw",
+    "update": 9400,
+    "loss": 0.15695533156394958,
+    "prediction": 0.025710437446832657
+  },
+  {
+    "variant": "raw",
+    "update": 9500,
+    "loss": 0.1616741269826889,
+    "prediction": 0.02511019818484783
+  },
+  {
+    "variant": "raw",
+    "update": 9600,
+    "loss": 0.15738190710544586,
+    "prediction": 0.023952888324856758
+  },
+  {
+    "variant": "raw",
+    "update": 9700,
+    "loss": 0.14855653047561646,
+    "prediction": 0.0254532340914011
+  },
+  {
+    "variant": "raw",
+    "update": 9800,
+    "loss": 0.15547052025794983,
+    "prediction": 0.025877054780721664
+  },
+  {
+    "variant": "raw",
+    "update": 9900,
+    "loss": 0.1614130139350891,
+    "prediction": 0.026356708258390427
+  },
+  {
+    "variant": "raw",
+    "update": 10000,
+    "loss": 0.1600223034620285,
+    "prediction": 0.02795472741127014
+  },
+  {
+    "variant": "tc",
+    "update": 2100,
+    "loss": 1.3873114585876465,
+    "prediction": 0.8542940616607666
+  },
+  {
+    "variant": "tc",
+    "update": 2200,
+    "loss": 1.3817307949066162,
+    "prediction": 0.8459153175354004
+  },
+  {
+    "variant": "tc",
+    "update": 2300,
+    "loss": 1.3723422288894653,
+    "prediction": 0.8832234144210815
+  },
+  {
+    "variant": "tc",
+    "update": 2400,
+    "loss": 1.3547413349151611,
+    "prediction": 0.8176993131637573
+  },
+  {
+    "variant": "tc",
+    "update": 2500,
+    "loss": 1.3246996402740479,
+    "prediction": 0.8530308604240417
+  },
+  {
+    "variant": "tc",
+    "update": 2600,
+    "loss": 1.29525625705719,
+    "prediction": 0.7323839664459229
+  },
+  {
+    "variant": "tc",
+    "update": 2700,
+    "loss": 1.3223146200180054,
+    "prediction": 0.8307666182518005
+  },
+  {
+    "variant": "tc",
+    "update": 2800,
+    "loss": 1.2359285354614258,
+    "prediction": 0.7752667665481567
+  },
+  {
+    "variant": "tc",
+    "update": 2900,
+    "loss": 1.2357521057128906,
+    "prediction": 0.7336206436157227
+  },
+  {
+    "variant": "tc",
+    "update": 3000,
+    "loss": 1.1220966577529907,
+    "prediction": 0.6764271855354309
+  },
+  {
+    "variant": "tc",
+    "update": 3100,
+    "loss": 1.085707664489746,
+    "prediction": 0.653797447681427
+  },
+  {
+    "variant": "tc",
+    "update": 3200,
+    "loss": 0.9649912118911743,
+    "prediction": 0.5489010214805603
+  },
+  {
+    "variant": "tc",
+    "update": 3300,
+    "loss": 0.9645014405250549,
+    "prediction": 0.5278381705284119
+  },
+  {
+    "variant": "tc",
+    "update": 3400,
+    "loss": 0.9050208330154419,
+    "prediction": 0.5419763922691345
+  },
+  {
+    "variant": "tc",
+    "update": 3500,
+    "loss": 0.8372395038604736,
+    "prediction": 0.4458629786968231
+  },
+  {
+    "variant": "tc",
+    "update": 3600,
+    "loss": 0.7697761058807373,
+    "prediction": 0.39045968651771545
+  },
+  {
+    "variant": "tc",
+    "update": 3700,
+    "loss": 0.8749940395355225,
+    "prediction": 0.44410237669944763
+  },
+  {
+    "variant": "tc",
+    "update": 3800,
+    "loss": 0.809945285320282,
+    "prediction": 0.4166005253791809
+  },
+  {
+    "variant": "tc",
+    "update": 3900,
+    "loss": 0.7429721355438232,
+    "prediction": 0.3760698139667511
+  },
+  {
+    "variant": "tc",
+    "update": 4000,
+    "loss": 0.7929996252059937,
+    "prediction": 0.4226364195346832
+  },
+  {
+    "variant": "tc",
+    "update": 4100,
+    "loss": 0.694688081741333,
+    "prediction": 0.35266923904418945
+  },
+  {
+    "variant": "tc",
+    "update": 4200,
+    "loss": 0.7028836011886597,
+    "prediction": 0.35704243183135986
+  },
+  {
+    "variant": "tc",
+    "update": 4300,
+    "loss": 0.6799942851066589,
+    "prediction": 0.34966376423835754
+  },
+  {
+    "variant": "tc",
+    "update": 4400,
+    "loss": 0.6527513265609741,
+    "prediction": 0.3324691355228424
+  },
+  {
+    "variant": "tc",
+    "update": 4500,
+    "loss": 0.8103777170181274,
+    "prediction": 0.4316336214542389
+  },
+  {
+    "variant": "tc",
+    "update": 4600,
+    "loss": 0.6352354288101196,
+    "prediction": 0.3331910967826843
+  },
+  {
+    "variant": "tc",
+    "update": 4700,
+    "loss": 0.6789060235023499,
+    "prediction": 0.3314023017883301
+  },
+  {
+    "variant": "tc",
+    "update": 4800,
+    "loss": 0.6397846937179565,
+    "prediction": 0.29668447375297546
+  },
+  {
+    "variant": "tc",
+    "update": 4900,
+    "loss": 0.6151959896087646,
+    "prediction": 0.28916800022125244
+  },
+  {
+    "variant": "tc",
+    "update": 5000,
+    "loss": 0.6234915256500244,
+    "prediction": 0.3117891848087311
+  },
+  {
+    "variant": "tc",
+    "update": 5100,
+    "loss": 0.61962890625,
+    "prediction": 0.29387345910072327
+  },
+  {
+    "variant": "tc",
+    "update": 5200,
+    "loss": 0.6863083839416504,
+    "prediction": 0.3473992943763733
+  },
+  {
+    "variant": "tc",
+    "update": 5300,
+    "loss": 0.5788833498954773,
+    "prediction": 0.27507057785987854
+  },
+  {
+    "variant": "tc",
+    "update": 5400,
+    "loss": 0.5794159173965454,
+    "prediction": 0.27858224511146545
+  },
+  {
+    "variant": "tc",
+    "update": 5500,
+    "loss": 0.5989090800285339,
+    "prediction": 0.293960303068161
+  },
+  {
+    "variant": "tc",
+    "update": 5600,
+    "loss": 0.5749374628067017,
+    "prediction": 0.24552981555461884
+  },
+  {
+    "variant": "tc",
+    "update": 5700,
+    "loss": 0.5505289435386658,
+    "prediction": 0.22436629235744476
+  },
+  {
+    "variant": "tc",
+    "update": 5800,
+    "loss": 0.5854508280754089,
+    "prediction": 0.26419076323509216
+  },
+  {
+    "variant": "tc",
+    "update": 5900,
+    "loss": 0.5769017934799194,
+    "prediction": 0.26774147152900696
+  },
+  {
+    "variant": "tc",
+    "update": 6000,
+    "loss": 0.5366199016571045,
+    "prediction": 0.19677209854125977
+  },
+  {
+    "variant": "tc",
+    "update": 6100,
+    "loss": 0.5612835884094238,
+    "prediction": 0.23854465782642365
+  },
+  {
+    "variant": "tc",
+    "update": 6200,
+    "loss": 0.5669118762016296,
+    "prediction": 0.2528303861618042
+  },
+  {
+    "variant": "tc",
+    "update": 6300,
+    "loss": 0.5842077136039734,
+    "prediction": 0.24619467556476593
+  },
+  {
+    "variant": "tc",
+    "update": 6400,
+    "loss": 0.6270235180854797,
+    "prediction": 0.25923866033554077
+  },
+  {
+    "variant": "tc",
+    "update": 6500,
+    "loss": 0.605692982673645,
+    "prediction": 0.238176167011261
+  },
+  {
+    "variant": "tc",
+    "update": 6600,
+    "loss": 0.5317310690879822,
+    "prediction": 0.22331900894641876
+  },
+  {
+    "variant": "tc",
+    "update": 6700,
+    "loss": 0.5407007932662964,
+    "prediction": 0.20943588018417358
+  },
+  {
+    "variant": "tc",
+    "update": 6800,
+    "loss": 0.63764488697052,
+    "prediction": 0.28258317708969116
+  },
+  {
+    "variant": "tc",
+    "update": 6900,
+    "loss": 0.5923812389373779,
+    "prediction": 0.25594574213027954
+  },
+  {
+    "variant": "tc",
+    "update": 7000,
+    "loss": 0.5254008769989014,
+    "prediction": 0.21024365723133087
+  },
+  {
+    "variant": "tc",
+    "update": 7100,
+    "loss": 0.5566813349723816,
+    "prediction": 0.2409559041261673
+  },
+  {
+    "variant": "tc",
+    "update": 7200,
+    "loss": 0.5932756662368774,
+    "prediction": 0.2557315528392792
+  },
+  {
+    "variant": "tc",
+    "update": 7300,
+    "loss": 0.5118410587310791,
+    "prediction": 0.2164347767829895
+  },
+  {
+    "variant": "tc",
+    "update": 7400,
+    "loss": 0.521019458770752,
+    "prediction": 0.21660205721855164
+  },
+  {
+    "variant": "tc",
+    "update": 7500,
+    "loss": 0.5080729126930237,
+    "prediction": 0.19901521503925323
+  },
+  {
+    "variant": "tc",
+    "update": 7600,
+    "loss": 0.4751966595649719,
+    "prediction": 0.20023216307163239
+  },
+  {
+    "variant": "tc",
+    "update": 7700,
+    "loss": 0.49515408277511597,
+    "prediction": 0.19608552753925323
+  },
+  {
+    "variant": "tc",
+    "update": 7800,
+    "loss": 0.4871736168861389,
+    "prediction": 0.1847197562456131
+  },
+  {
+    "variant": "tc",
+    "update": 7900,
+    "loss": 0.5058280229568481,
+    "prediction": 0.17554081976413727
+  },
+  {
+    "variant": "tc",
+    "update": 8000,
+    "loss": 0.5291681289672852,
+    "prediction": 0.20851892232894897
+  },
+  {
+    "variant": "tc",
+    "update": 8100,
+    "loss": 0.512190580368042,
+    "prediction": 0.21004855632781982
+  },
+  {
+    "variant": "tc",
+    "update": 8200,
+    "loss": 0.5504027605056763,
+    "prediction": 0.2067493498325348
+  },
+  {
+    "variant": "tc",
+    "update": 8300,
+    "loss": 0.45574015378952026,
+    "prediction": 0.16600161790847778
+  },
+  {
+    "variant": "tc",
+    "update": 8400,
+    "loss": 0.5046946406364441,
+    "prediction": 0.2085997313261032
+  },
+  {
+    "variant": "tc",
+    "update": 8500,
+    "loss": 0.473732590675354,
+    "prediction": 0.18144388496875763
+  },
+  {
+    "variant": "tc",
+    "update": 8600,
+    "loss": 0.49422770738601685,
+    "prediction": 0.15405146777629852
+  },
+  {
+    "variant": "tc",
+    "update": 8700,
+    "loss": 0.49173226952552795,
+    "prediction": 0.1793721616268158
+  },
+  {
+    "variant": "tc",
+    "update": 8800,
+    "loss": 0.6088032722473145,
+    "prediction": 0.26148539781570435
+  },
+  {
+    "variant": "tc",
+    "update": 8900,
+    "loss": 0.48575127124786377,
+    "prediction": 0.18884830176830292
+  },
+  {
+    "variant": "tc",
+    "update": 9000,
+    "loss": 0.5026358366012573,
+    "prediction": 0.19882012903690338
+  },
+  {
+    "variant": "tc",
+    "update": 9100,
+    "loss": 0.47078365087509155,
+    "prediction": 0.1946759670972824
+  },
+  {
+    "variant": "tc",
+    "update": 9200,
+    "loss": 0.44104570150375366,
+    "prediction": 0.16857190430164337
+  },
+  {
+    "variant": "tc",
+    "update": 9300,
+    "loss": 0.5033364295959473,
+    "prediction": 0.1836557686328888
+  },
+  {
+    "variant": "tc",
+    "update": 9400,
+    "loss": 0.46450644731521606,
+    "prediction": 0.1794559508562088
+  },
+  {
+    "variant": "tc",
+    "update": 9500,
+    "loss": 0.5446458458900452,
+    "prediction": 0.22092458605766296
+  },
+  {
+    "variant": "tc",
+    "update": 9600,
+    "loss": 0.4450618624687195,
+    "prediction": 0.15210266411304474
+  },
+  {
+    "variant": "tc",
+    "update": 9700,
+    "loss": 0.5254920721054077,
+    "prediction": 0.20371535420417786
+  },
+  {
+    "variant": "tc",
+    "update": 9800,
+    "loss": 0.44290947914123535,
+    "prediction": 0.19563502073287964
+  },
+  {
+    "variant": "tc",
+    "update": 9900,
+    "loss": 0.5113630294799805,
+    "prediction": 0.20515044033527374
+  },
+  {
+    "variant": "tc",
+    "update": 10000,
+    "loss": 0.5447881817817688,
+    "prediction": 0.2209412306547165
+  }
+]

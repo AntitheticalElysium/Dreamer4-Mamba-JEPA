@@ -242,7 +242,25 @@ def canonical_json(value) -> str:
 
 
 def recipe_dict(config) -> dict:
-    return json.loads(canonical_json(asdict(config)))
+    values = json.loads(canonical_json(asdict(config)))
+    # recipe_id is the digest of this dict, so a field added after a run was sealed
+    # must be omitted wherever it was absent, or that run's checkpoints stop loading.
+    # `stride` postdates v1 only: every v2 recipe was written with it. The centering
+    # pair postdates v2 as well, and the two move together -- a recipe that customizes
+    # neither predates them, while one that customizes either was written with both.
+    # `agent` postdates every M0-M3 recipe. Omitting it when absent keeps their digests, and so
+    # their `recipe_id`, exactly as sealed -- which matters more than source drift does, because
+    # the recipe check runs BEFORE the frozen-eval parity fallback and nothing can recover it.
+    if values.get("agent", "absent") is None:
+        values.pop("agent")
+    joint = values.get("joint")
+    if isinstance(joint, dict) and str(values.get("schema", "")).startswith("d4mj_lewm_recipe_v"):
+        if values["schema"] == "d4mj_lewm_recipe_v1" and joint.get("stride") == 1:
+            joint.pop("stride", None)
+        if joint.get("centering_stride") == 1 and joint.get("centering") == "consecutive":
+            joint.pop("centering_stride", None)
+            joint.pop("centering", None)
+    return values
 
 
 def recipe_digest(config) -> str:
@@ -256,7 +274,7 @@ def config_from_dict(values: dict):
     if values.get("schema") == "d4mj_joint_screen_v1":
         from .lewm_config import ScreenConfig, _settings
         return _settings(ScreenConfig, values)
-    if values.get("family") == "lewm_mamba":
+    if values.get("family") in ("lewm_mamba", "lewm_transformer"):
         from .lewm_config import config_from_dict as parse_joint
         return parse_joint(values)
     unknown = set(values) - {field.name for field in fields(Config)}

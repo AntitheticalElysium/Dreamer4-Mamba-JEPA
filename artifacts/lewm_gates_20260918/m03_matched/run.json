@@ -1,0 +1,413 @@
+{
+  "schema": "d4mj_m03_run",
+  "contract": {
+    "schema": "d4mj_m03_run",
+    "evaluator_source": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/m03/gate.py",
+      "sha256": "0911293911a6203a82e738dd4c5c9565f740d5e3a735e7e8210607579d87f3ee"
+    },
+    "cache_source": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/m03/cache.py",
+      "sha256": "d38e38e39974034150a155494ca1725792ff1e682bb0a6f2d1febb0ccb71ae96"
+    },
+    "cache_compatibility": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_gates_20260906/m03_bootstrap/compatibility.json",
+      "sha256": "4616525359a4febac0a1777412c396513f95ee148d03dac8fbd5b2f3b5fecf4a"
+    },
+    "replay_source": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/replay.py",
+      "sha256": "bf60aa7b9d21255cf18929f92b23a47cef7678681018880c77f96e89ef9386e0"
+    },
+    "diagnostics_source": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/m03/diagnostics.py",
+      "sha256": "4c2abc831c1747e3fa635b27a620661f98cb3b196b64d6c7017eb92c34ad7a24"
+    },
+    "historical_source": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/m03/history.py",
+      "sha256": "882a2d58c06d3c97f5c6fda482fa87a68a354fc725a753545d2e44058cd472eb"
+    },
+    "environment_source": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/env.py",
+      "sha256": "e8f821d1d29affa4020bd407f00330ce3eb0790b9343b2c9351472e74dd1d960"
+    },
+    "evaluation_sources": [
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/m03/diagnostics.py",
+        "sha256": "4c2abc831c1747e3fa635b27a620661f98cb3b196b64d6c7017eb92c34ad7a24"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/diagnostics.py",
+        "sha256": "506a1d47b8a66bae745e78a85db8c80c2392898e86546430091e777292121db9"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/data.py",
+        "sha256": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/config.py",
+        "sha256": "ca32d8157a746a2e2be1e0ce423b39f46e07aaa0afa467ebc105bd2af9657c89"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/representation.py",
+        "sha256": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/transition.py",
+        "sha256": "87cf8cbe96cf216e4639ffca1a2f933e473a25e749367a3ac6d1a8b110d658b2"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/world_api.py",
+        "sha256": "fcf2de2c77b1b261fb3633f30273130a7604d6bec547a3d953b7b0e3755d021c"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/legacy.py",
+        "sha256": "a3865c24982103e219a0d00a7189bc019fed18aa812a15f7d42828b304777afb"
+      }
+    ],
+    "historical_panels_included": false,
+    "simulator_sources": [
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/constants.py",
+        "sha256": "2048f0d5fc77239ca0468c2732fcd8422094daf440a86491073e881fb3b3f66c"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/craftax_state.py",
+        "sha256": "1970e1b6fd073a696e654c4881975f2dcb2a39148d7c47da7ee43e4f9c53f6b5"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/envs/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/envs/common.py",
+        "sha256": "d95df21f7970975f01801745fd51c444fb62efe9defea74f995d4b38045ad085"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/envs/craftax_pixels_env.py",
+        "sha256": "b2277254497a6ae371db177373890368606cba160525437cff561b0a1e37991f"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/envs/craftax_symbolic_env.py",
+        "sha256": "a7df63fe5625d9ee37f0181648497b21286ed849841b98b9faa83750bd9d20c7"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/game_logic.py",
+        "sha256": "a33eecd4092163bc565f57735e3812380620b354c19f1444c597c4885d1074ed"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/play_craftax.py",
+        "sha256": "5c372ede6fcfb34b0be1aa62afcf813f8e2ab2c5acd467c555617d5bbac5283d"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/renderer.py",
+        "sha256": "e1f8c52f10b66e0033dbd2b1f8687d871cd7c34a2a3cdd5d81de62272b4204b9"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/util/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/util/game_logic_utils.py",
+        "sha256": "f403bdb4b71830ce9c9c52f5c894b7e62c5e17fac04c5b6cc4c6ed51fa165c7b"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/util/maths_utils.py",
+        "sha256": "98350b1b95e0e4cb41b45b7e18afa4a87778aa3d5e15db283cd91c64e4486ab4"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/util/noise.py",
+        "sha256": "9c83261182f648472cabe7881d89cf968445e198a55ed6aabedd8317ba76d2fb"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/world_gen/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/world_gen/world_gen.py",
+        "sha256": "9cebe9388f095df5cbc4191af23b64c4b73a9c86e4db09cb24b036a9b3d01a77"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax/world_gen/world_gen_configs.py",
+        "sha256": "97a7fc812ac54f38a8b7d164a2f1fdc082351d53a7f1942632def01616d71275"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax_classic/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax_classic/constants.py",
+        "sha256": "5b00ec29b51f7d011bb01c98aa74e5fd6b8a7cee6ab717f61dc59d6407f6baa4"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax_classic/envs/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax_classic/envs/common.py",
+        "sha256": "51f89ae914892e5b316695d93dec86319ad39c528ca3c1c40f7c80ebd40f8f20"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax_classic/envs/craftax_pixels_env.py",
+        "sha256": "37afb876d3677472a02cfa722a65737b23545098fe73ba5c3ad87d160ef64223"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax_classic/envs/craftax_state.py",
+        "sha256": "cee0dfe2d0be17803125e366180967dac9485e02d8fdbf10a10856e3cc6e082c"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax_classic/envs/craftax_symbolic_env.py",
+        "sha256": "ada5830c7a5af768ea1bffc7ad962300b11a6092e2943c4ecef7f1a9afbfcb65"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax_classic/game_logic.py",
+        "sha256": "e5812a161b485a5edba6da0e34b7e3352550fe29ed7d0c8f66c8071ecac20755"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax_classic/play_craftax_classic.py",
+        "sha256": "673eed4283739d3487ab0a8e5633020119c7f48152f5d3252b494f209cf94e29"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax_classic/renderer.py",
+        "sha256": "e415a83a2ce6d859d960be3e2d591b2c347b77d6e91275981b22dd769390ba13"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax_classic/util/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax_classic/util/noise.py",
+        "sha256": "0e69666560f599d0cd21e5604ef357c0a90c2d4113bb7fce3c7c88e295523112"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax_classic/world_gen.py",
+        "sha256": "22850ffbc91c9e6fa3b5883968dc36239cad992ac469edc0dd665ee90d80db8f"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/craftax_env.py",
+        "sha256": "f74d828dbc9802984e026ace29293527dfd3901cc945d3c7792d199dc92affa3"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/environment_base/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/environment_base/environment_bases.py",
+        "sha256": "98701ae34d079d6b11ce9a7e6554208371bf110caddeab3deddadd044e944f7a"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/environment_base/spaces.py",
+        "sha256": "39a90b3f15791624d98aaceb1bb17f820f14a5219d5fb932c69d0bc29e8f1e68"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/craftax/environment_base/util.py",
+        "sha256": "5cc2681d866b9dfb3053eda8d50840884adc843a467f11aeb9071ffa86c953d8"
+      }
+    ],
+    "settings": {
+      "schema": "d4mj_m03_capability_gate",
+      "seed": 20260907,
+      "train_roots": 256,
+      "dev_roots": 128,
+      "terminal_tail_fraction": 0.5,
+      "direct_context": 64,
+      "lewm_context": 4,
+      "replay_checks": 4,
+      "mode_samples": 4,
+      "encode_batch": 16,
+      "direct_encode_batch": 1,
+      "direct_successor_batch": 4,
+      "probe_hidden": 128,
+      "probe_steps": 200,
+      "probe_batch": 256,
+      "probe_learning_rate": 0.001,
+      "probe_weight_decay": 0.0001,
+      "bootstrap_draws": 1000,
+      "minimum_positive": 10,
+      "minimum_negative": 10,
+      "ridge": 1.0
+    },
+    "dataset": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/craftax_support_v2/manifest.json",
+      "sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574"
+    },
+    "raw_checkpoint": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260918_matched_10k/evidence/world_z_z.pt",
+      "sha256": "70a83d0804144a845b27a677a534a01ee74d2c790fc0c904562885ce0b9ded70"
+    },
+    "tc_checkpoint": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260918_matched_10k/evidence/world_u_u.pt",
+      "sha256": "4e1c3739283e3c4b7e5aa9e9af6c59869f2a0943f5fa82d0409daf5312eb4506"
+    },
+    "execution": {
+      "device": "cuda",
+      "structural_smoke": false,
+      "direct_anchors_included": true
+    },
+    "direct_anchors": {
+      "encoder": {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/capacity6k/n64d16_s1/encoder_006000.pt",
+        "sha256": "4647c1fbea0cfd16b5262c169c88c8db4334f456d17867b6444315429642907d"
+      },
+      "encoder_report": {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/capacity6k/n64d16_s1/training_report.json",
+        "sha256": "50f8f610c90f7fbff845a9c7b92479f0794d20dd659d985ffae24e66f703e63c"
+      },
+      "attention": {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/v2_direct_attention/world_020000.pt",
+        "sha256": "b466f9265d88439abddadb41acf3e7718f501a27579f4c0b2742c534f3219900"
+      },
+      "mamba": {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/v2_direct_mamba/world_020000.pt",
+        "sha256": "e74ef7c8e197e752965e214b062af2a43269f065d3d560ccfa67cc182ccabfa5"
+      }
+    },
+    "replay_dependencies": {
+      "dataset": {
+        "sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574"
+      },
+      "historical_inputs": [],
+      "replay_source": {
+        "sha256": "bf60aa7b9d21255cf18929f92b23a47cef7678681018880c77f96e89ef9386e0"
+      },
+      "environment": {
+        "sha256": "e8f821d1d29affa4020bd407f00330ce3eb0790b9343b2c9351472e74dd1d960"
+      },
+      "simulator": [
+        {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "sha256": "2048f0d5fc77239ca0468c2732fcd8422094daf440a86491073e881fb3b3f66c"
+        },
+        {
+          "sha256": "1970e1b6fd073a696e654c4881975f2dcb2a39148d7c47da7ee43e4f9c53f6b5"
+        },
+        {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "sha256": "d95df21f7970975f01801745fd51c444fb62efe9defea74f995d4b38045ad085"
+        },
+        {
+          "sha256": "b2277254497a6ae371db177373890368606cba160525437cff561b0a1e37991f"
+        },
+        {
+          "sha256": "a7df63fe5625d9ee37f0181648497b21286ed849841b98b9faa83750bd9d20c7"
+        },
+        {
+          "sha256": "a33eecd4092163bc565f57735e3812380620b354c19f1444c597c4885d1074ed"
+        },
+        {
+          "sha256": "5c372ede6fcfb34b0be1aa62afcf813f8e2ab2c5acd467c555617d5bbac5283d"
+        },
+        {
+          "sha256": "e1f8c52f10b66e0033dbd2b1f8687d871cd7c34a2a3cdd5d81de62272b4204b9"
+        },
+        {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "sha256": "f403bdb4b71830ce9c9c52f5c894b7e62c5e17fac04c5b6cc4c6ed51fa165c7b"
+        },
+        {
+          "sha256": "98350b1b95e0e4cb41b45b7e18afa4a87778aa3d5e15db283cd91c64e4486ab4"
+        },
+        {
+          "sha256": "9c83261182f648472cabe7881d89cf968445e198a55ed6aabedd8317ba76d2fb"
+        },
+        {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "sha256": "9cebe9388f095df5cbc4191af23b64c4b73a9c86e4db09cb24b036a9b3d01a77"
+        },
+        {
+          "sha256": "97a7fc812ac54f38a8b7d164a2f1fdc082351d53a7f1942632def01616d71275"
+        },
+        {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "sha256": "5b00ec29b51f7d011bb01c98aa74e5fd6b8a7cee6ab717f61dc59d6407f6baa4"
+        },
+        {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "sha256": "51f89ae914892e5b316695d93dec86319ad39c528ca3c1c40f7c80ebd40f8f20"
+        },
+        {
+          "sha256": "37afb876d3677472a02cfa722a65737b23545098fe73ba5c3ad87d160ef64223"
+        },
+        {
+          "sha256": "cee0dfe2d0be17803125e366180967dac9485e02d8fdbf10a10856e3cc6e082c"
+        },
+        {
+          "sha256": "ada5830c7a5af768ea1bffc7ad962300b11a6092e2943c4ecef7f1a9afbfcb65"
+        },
+        {
+          "sha256": "e5812a161b485a5edba6da0e34b7e3352550fe29ed7d0c8f66c8071ecac20755"
+        },
+        {
+          "sha256": "673eed4283739d3487ab0a8e5633020119c7f48152f5d3252b494f209cf94e29"
+        },
+        {
+          "sha256": "e415a83a2ce6d859d960be3e2d591b2c347b77d6e91275981b22dd769390ba13"
+        },
+        {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "sha256": "0e69666560f599d0cd21e5604ef357c0a90c2d4113bb7fce3c7c88e295523112"
+        },
+        {
+          "sha256": "22850ffbc91c9e6fa3b5883968dc36239cad992ac469edc0dd665ee90d80db8f"
+        },
+        {
+          "sha256": "f74d828dbc9802984e026ace29293527dfd3901cc945d3c7792d199dc92affa3"
+        },
+        {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "sha256": "98701ae34d079d6b11ce9a7e6554208371bf110caddeab3deddadd044e944f7a"
+        },
+        {
+          "sha256": "39a90b3f15791624d98aaceb1bb17f820f14a5219d5fb932c69d0bc29e8f1e68"
+        },
+        {
+          "sha256": "5cc2681d866b9dfb3053eda8d50840884adc843a467f11aeb9071ffa86c953d8"
+        }
+      ],
+      "settings": {
+        "seed": 20260907,
+        "train_roots": 256,
+        "dev_roots": 128,
+        "terminal_tail_fraction": 0.5,
+        "direct_context": 64,
+        "replay_checks": 4,
+        "mode_samples": 4
+      },
+      "code": [
+        "b0455a6fb55114e678f604e44abab1b86b9bc1813e38235b785e961d85e268cd",
+        "d3d3b8f5c02a3e9ef35bc73dad4600abe043b2955ff967a3210d3a97882ff6d3",
+        "2df644722faebf9e43217844a3bd3a5d53597dbdd66772e6d1aee58f35bfb886",
+        "a0113c49155447a5a8c2c91a6dd99b77213ae98746293a722dc52e566d3d7b78",
+        "8ba456ecc5b81a2f0d82e8c345b20c29a46c1d92b6df1acb45cdddaae22ceffd",
+        "b2d54fe0cf02ae386fcf75fe70d9befef27c250ef1f0267d27e2e870019c1b2e"
+      ]
+    }
+  },
+  "contract_sha256": "e8df8a7baf1a02f2f813645bd37b7ac92ba550a77a8e8e9ba02cb5b90abb59a1"
+}

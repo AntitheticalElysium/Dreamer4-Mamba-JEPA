@@ -1,0 +1,101 @@
+{
+  "schema": "d4mj_phase4_health_v1",
+  "hud_tokens": [
+    63,
+    64,
+    "..."
+  ],
+  "hud_evidence": "health correlates with pixel rows 49-62 (max r=0.379 at row 50); rows 0-48 mean |r|=0.018",
+  "rows": [
+    {
+      "arm": "mamba_raw",
+      "rung": "z",
+      "dim": 192,
+      "dead_alive_auc": 0.7654,
+      "parameters": 24833,
+      "safe_choice_mean": 29.67
+    },
+    {
+      "arm": "mamba_raw",
+      "rung": "cls",
+      "dim": 192,
+      "dead_alive_auc": 0.7801,
+      "parameters": 24833,
+      "safe_choice_mean": 31.33
+    },
+    {
+      "arm": "mamba_raw",
+      "rung": "patch_mean",
+      "dim": 192,
+      "dead_alive_auc": 0.8983,
+      "parameters": 24833,
+      "safe_choice_mean": 34.67
+    },
+    {
+      "arm": "mamba_raw",
+      "rung": "hud_tokens_mean",
+      "dim": 192,
+      "dead_alive_auc": 1.0,
+      "parameters": 24833,
+      "safe_choice_mean": 36.0
+    },
+    {
+      "arm": "mamba_raw",
+      "rung": "map_tokens_mean",
+      "dim": 192,
+      "dead_alive_auc": 0.8331,
+      "parameters": 24833,
+      "safe_choice_mean": 34.67
+    },
+    {
+      "arm": "mamba_tc",
+      "rung": "z",
+      "dim": 192,
+      "dead_alive_auc": 0.7183,
+      "parameters": 24833,
+      "safe_choice_mean": 21.0
+    },
+    {
+      "arm": "mamba_tc",
+      "rung": "cls",
+      "dim": 192,
+      "dead_alive_auc": 0.871,
+      "parameters": 24833,
+      "safe_choice_mean": 33.0
+    },
+    {
+      "arm": "mamba_tc",
+      "rung": "patch_mean",
+      "dim": 192,
+      "dead_alive_auc": 0.903,
+      "parameters": 24833,
+      "safe_choice_mean": 32.67
+    },
+    {
+      "arm": "mamba_tc",
+      "rung": "hud_tokens_mean",
+      "dim": 192,
+      "dead_alive_auc": 0.9992,
+      "parameters": 24833,
+      "safe_choice_mean": 35.33
+    },
+    {
+      "arm": "mamba_tc",
+      "rung": "map_tokens_mean",
+      "dim": 192,
+      "dead_alive_auc": 0.8553,
+      "parameters": 24833,
+      "safe_choice_mean": 33.0
+    },
+    {
+      "arm": "structured_state_control",
+      "rung": "next_continuous",
+      "dim": 16,
+      "dead_alive_auc": null,
+      "safe_choice_mean": 36.0
+    }
+  ],
+  "_inputs": {
+    "taps": "41881de36831ca1c"
+  }
+}

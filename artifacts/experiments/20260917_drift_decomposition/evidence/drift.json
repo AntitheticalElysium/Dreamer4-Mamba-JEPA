@@ -1,0 +1,4658 @@
+{
+  "schema": "d4mj_drift_decomposition_v1",
+  "question": "separate local prediction, feedback drift, history extrapolation and decoder mismatch",
+  "trained_pairs": 3,
+  "context": 4,
+  "depth": 8,
+  "scored_labels": [
+    "positive_reward",
+    "negative_reward",
+    "achievement_event",
+    "termination"
+  ],
+  "dev_label_positives": {
+    "positive_reward": 240,
+    "negative_reward": 80,
+    "achievement_event": 174,
+    "termination": 7
+  },
+  "variance_share_top10": {
+    "z": 0.12942778766445748,
+    "u": 0.9312275115912142
+  },
+  "checkpoint_sha256": "7bc9c14d7d7d10bd4cabeb22cd7f2af19e39ff8cb1d9b3758a14086e2a1f2789",
+  "script_sha256": "0fa7cf533109b16cdfee51f2f98a24e6457dfdd77ccce071bdc2a50a94d29069",
+  "cells": {
+    "z:persistence": {
+      "errors": [
+        {
+          "depth": 1,
+          "all": 0.871793520074662,
+          "top10": 0.8127416776810454,
+          "rest": 0.8805425209266564
+        },
+        {
+          "depth": 2,
+          "all": 1.1307122894217887,
+          "top10": 1.0844087400693352,
+          "rest": 1.1375915844793785
+        },
+        {
+          "depth": 3,
+          "all": 1.3640529684181375,
+          "top10": 1.3398323994566652,
+          "rest": 1.36766876779584
+        },
+        {
+          "depth": 4,
+          "all": 1.5157776648728583,
+          "top10": 1.5195040807717204,
+          "rest": 1.5152222094034757
+        },
+        {
+          "depth": 5,
+          "all": 1.6258048340620126,
+          "top10": 1.6459669923448204,
+          "rest": 1.6228323263446878
+        },
+        {
+          "depth": 6,
+          "all": 1.6887912758934884,
+          "top10": 1.7017755088469584,
+          "rest": 1.6868544699574575
+        },
+        {
+          "depth": 7,
+          "all": 1.6857729014403762,
+          "top10": 1.6883907285796025,
+          "rest": 1.6853815445160274
+        },
+        {
+          "depth": 8,
+          "all": 1.7676154165323126,
+          "top10": 1.748954018831868,
+          "rest": 1.7704651392090949
+        }
+      ],
+      "decoding": [
+        {
+          "depth": 1,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 34,
+                "negative": 478,
+                "positive_seed_clusters": 33,
+                "negative_seed_clusters": 383,
+                "auc": 0.7543686930839282,
+                "interval": [
+                  0.666172981262207,
+                  0.832321286201477
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 399
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 24,
+                "negative": 488,
+                "positive_seed_clusters": 24,
+                "negative_seed_clusters": 390,
+                "auc": 0.829405737704918,
+                "interval": [
+                  0.7628006935119629,
+                  0.8920072317123413
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7918872153944231,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 2,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 386,
+                "auc": 0.7100798068540004,
+                "interval": [
+                  0.6325705051422119,
+                  0.7861472964286804
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 12,
+                "negative": 500,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 395,
+                "auc": 0.5073333333333333,
+                "interval": [
+                  0.38883453607559204,
+                  0.6132906079292297
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 390,
+                "auc": 0.7943413729128015,
+                "interval": [
+                  0.712638258934021,
+                  0.8621971011161804
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6705848377000452,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 3,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 384,
+                "auc": 0.7112033195020747,
+                "interval": [
+                  0.6171212792396545,
+                  0.7951133251190186
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 400,
+                "auc": 0.4964143426294821,
+                "interval": [
+                  0.33728960156440735,
+                  0.662968099117279
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 390,
+                "auc": 0.738719512195122,
+                "interval": [
+                  0.6450271010398865,
+                  0.823333740234375
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6487790581088929,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 4,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 29,
+                "negative_seed_clusters": 384,
+                "auc": 0.6682572614107883,
+                "interval": [
+                  0.5726431012153625,
+                  0.7523072361946106
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 3,
+                "negative": 509,
+                "positive_seed_clusters": 3,
+                "negative_seed_clusters": 403
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 21,
+                "negative": 491,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 391,
+                "auc": 0.7575404907380467,
+                "interval": [
+                  0.6789343953132629,
+                  0.8292376399040222
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7128988760744175,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 5,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 31,
+                "negative_seed_clusters": 383,
+                "auc": 0.6760780631748373,
+                "interval": [
+                  0.5692338943481445,
+                  0.7753525972366333
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 17,
+                "negative": 495,
+                "positive_seed_clusters": 17,
+                "negative_seed_clusters": 395,
+                "auc": 0.6856803327391563,
+                "interval": [
+                  0.5479884147644043,
+                  0.7948079705238342
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 389,
+                "auc": 0.7626016260162601,
+                "interval": [
+                  0.6638067364692688,
+                  0.8476405739784241
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7081200073100846,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 6,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 23,
+                "negative": 489,
+                "positive_seed_clusters": 23,
+                "negative_seed_clusters": 386,
+                "auc": 0.8369342935894016,
+                "interval": [
+                  0.772191047668457,
+                  0.8952305912971497
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 8,
+                "negative": 504,
+                "positive_seed_clusters": 8,
+                "negative_seed_clusters": 397
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 19,
+                "negative": 493,
+                "positive_seed_clusters": 19,
+                "negative_seed_clusters": 390,
+                "auc": 0.8629230276502615,
+                "interval": [
+                  0.8183763027191162,
+                  0.9059185981750488
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.8499286606198315,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 7,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 29,
+                "negative": 483,
+                "positive_seed_clusters": 27,
+                "negative_seed_clusters": 383,
+                "auc": 0.7556935817805382,
+                "interval": [
+                  0.6850957274436951,
+                  0.8272547721862793
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 13,
+                "negative": 499,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 398,
+                "auc": 0.5726838291968552,
+                "interval": [
+                  0.38867735862731934,
+                  0.741546630859375
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 389,
+                "auc": 0.8214285714285714,
+                "interval": [
+                  0.7498952150344849,
+                  0.8871806263923645
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7166019941353218,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 8,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 32,
+                "negative": 480,
+                "positive_seed_clusters": 32,
+                "negative_seed_clusters": 386,
+                "auc": 0.6993489583333333,
+                "interval": [
+                  0.6009474396705627,
+                  0.7948468923568726
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 399,
+                "auc": 0.6792828685258964,
+                "interval": [
+                  0.5071832537651062,
+                  0.8212504982948303
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 26,
+                "negative": 486,
+                "positive_seed_clusters": 26,
+                "negative_seed_clusters": 389,
+                "auc": 0.7583887306109528,
+                "interval": [
+                  0.6866861581802368,
+                  0.8292533755302429
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 402
+              }
+            },
+            "macro_auc": 0.7123401858233942,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        }
+      ]
+    },
+    "z:teacher:training": {
+      "errors": [
+        {
+          "depth": 1,
+          "all": 0.07433504402381394,
+          "top10": 0.03708726427349714,
+          "rest": 0.07985359930610686
+        },
+        {
+          "depth": 2,
+          "all": 0.07466994562207249,
+          "top10": 0.03625389443982491,
+          "rest": 0.08037739904035211
+        },
+        {
+          "depth": 3,
+          "all": 0.08014280956283776,
+          "top10": 0.04385017412315911,
+          "rest": 0.08556080320479971
+        },
+        {
+          "depth": 4,
+          "all": 0.06842225418016244,
+          "top10": 0.034569105210226006,
+          "rest": 0.07346836745938785
+        },
+        {
+          "depth": 5,
+          "all": 0.07535818703325893,
+          "top10": 0.04029831357672383,
+          "rest": 0.08052706543189873
+        },
+        {
+          "depth": 6,
+          "all": 0.07671974223093815,
+          "top10": 0.040295230957003415,
+          "rest": 0.08215304044001845
+        },
+        {
+          "depth": 7,
+          "all": 0.08117905687774131,
+          "top10": 0.04195878355670792,
+          "rest": 0.08704236439297733
+        },
+        {
+          "depth": 8,
+          "all": 0.09053541934744978,
+          "top10": 0.05478918919586268,
+          "rest": 0.09599411243719805
+        }
+      ],
+      "decoding": [
+        {
+          "depth": 1,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 34,
+                "negative": 478,
+                "positive_seed_clusters": 33,
+                "negative_seed_clusters": 383,
+                "auc": 0.7594142259414226,
+                "interval": [
+                  0.6660889387130737,
+                  0.8488283753395081
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 399
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 24,
+                "negative": 488,
+                "positive_seed_clusters": 24,
+                "negative_seed_clusters": 390,
+                "auc": 0.8616803278688525,
+                "interval": [
+                  0.8102579116821289,
+                  0.9104371070861816
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.8105472769051376,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 2,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 386,
+                "auc": 0.7546777546777547,
+                "interval": [
+                  0.6852079629898071,
+                  0.818584680557251
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 12,
+                "negative": 500,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 395,
+                "auc": 0.41583333333333333,
+                "interval": [
+                  0.25944921374320984,
+                  0.5830144882202148
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 390,
+                "auc": 0.8239332096474954,
+                "interval": [
+                  0.7687444090843201,
+                  0.8737303614616394
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6648147658861945,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 3,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 384,
+                "auc": 0.7188105117565698,
+                "interval": [
+                  0.614617109298706,
+                  0.8150462508201599
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 400,
+                "auc": 0.5679282868525897,
+                "interval": [
+                  0.3506559729576111,
+                  0.7852411270141602
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 390,
+                "auc": 0.8170731707317073,
+                "interval": [
+                  0.7171751260757446,
+                  0.8944234848022461
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7012706564469555,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 4,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 29,
+                "negative_seed_clusters": 384,
+                "auc": 0.7015905947441217,
+                "interval": [
+                  0.6011973023414612,
+                  0.7923537492752075
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 3,
+                "negative": 509,
+                "positive_seed_clusters": 3,
+                "negative_seed_clusters": 403
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 21,
+                "negative": 491,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 391,
+                "auc": 0.7975948016681215,
+                "interval": [
+                  0.6879398822784424,
+                  0.8875400424003601
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7495926982061216,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 5,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 31,
+                "negative_seed_clusters": 383,
+                "auc": 0.6957950506337603,
+                "interval": [
+                  0.6076508164405823,
+                  0.7771580815315247
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 17,
+                "negative": 495,
+                "positive_seed_clusters": 17,
+                "negative_seed_clusters": 395,
+                "auc": 0.6129530600118835,
+                "interval": [
+                  0.5014405250549316,
+                  0.7208218574523926
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 389,
+                "auc": 0.7711382113821138,
+                "interval": [
+                  0.6827756762504578,
+                  0.8418657779693604
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6932954406759192,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 6,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 23,
+                "negative": 489,
+                "positive_seed_clusters": 23,
+                "negative_seed_clusters": 386,
+                "auc": 0.809015737530008,
+                "interval": [
+                  0.7078706622123718,
+                  0.8927061557769775
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 8,
+                "negative": 504,
+                "positive_seed_clusters": 8,
+                "negative_seed_clusters": 397
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 19,
+                "negative": 493,
+                "positive_seed_clusters": 19,
+                "negative_seed_clusters": 390,
+                "auc": 0.8917476246396925,
+                "interval": [
+                  0.8390993475914001,
+                  0.9358611106872559
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.8503816810848502,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 7,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 29,
+                "negative": 483,
+                "positive_seed_clusters": 27,
+                "negative_seed_clusters": 383,
+                "auc": 0.7684729064039408,
+                "interval": [
+                  0.6973333954811096,
+                  0.8382794260978699
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 13,
+                "negative": 499,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 398,
+                "auc": 0.49868968706644057,
+                "interval": [
+                  0.351741760969162,
+                  0.6505467295646667
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 389,
+                "auc": 0.8366419294990723,
+                "interval": [
+                  0.7518545985221863,
+                  0.9155787825584412
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7012681743231512,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 8,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 32,
+                "negative": 480,
+                "positive_seed_clusters": 32,
+                "negative_seed_clusters": 386,
+                "auc": 0.7356770833333334,
+                "interval": [
+                  0.6420589685440063,
+                  0.8190409541130066
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 399,
+                "auc": 0.5854581673306772,
+                "interval": [
+                  0.4567272365093231,
+                  0.6926470994949341
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 26,
+                "negative": 486,
+                "positive_seed_clusters": 26,
+                "negative_seed_clusters": 389,
+                "auc": 0.8113327002215891,
+                "interval": [
+                  0.7518442869186401,
+                  0.8683552145957947
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 402
+              }
+            },
+            "macro_auc": 0.7108226502951999,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        }
+      ]
+    },
+    "z:teacher:persistent": {
+      "errors": [
+        {
+          "depth": 1,
+          "all": 0.0861293990456384,
+          "top10": 0.048458673611366555,
+          "rest": 0.09171061710015452
+        },
+        {
+          "depth": 2,
+          "all": 0.08884621799778904,
+          "top10": 0.04990044526469588,
+          "rest": 0.0946323718806679
+        },
+        {
+          "depth": 3,
+          "all": 0.08926512928788434,
+          "top10": 0.0515811967766623,
+          "rest": 0.0948908245364224
+        },
+        {
+          "depth": 4,
+          "all": 0.08277286502971233,
+          "top10": 0.04906360951775156,
+          "rest": 0.0877975297078126
+        },
+        {
+          "depth": 5,
+          "all": 0.09194284694821285,
+          "top10": 0.056766426356737586,
+          "rest": 0.0971289078951286
+        },
+        {
+          "depth": 6,
+          "all": 0.09196531021141337,
+          "top10": 0.055268190950666464,
+          "rest": 0.09743927226016436
+        },
+        {
+          "depth": 7,
+          "all": 0.09656648888710788,
+          "top10": 0.05756725249724245,
+          "rest": 0.10239675207628694
+        },
+        {
+          "depth": 8,
+          "all": 0.10500519099583053,
+          "top10": 0.0679260863587995,
+          "rest": 0.11066742310808106
+        }
+      ],
+      "decoding": [
+        {
+          "depth": 1,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 34,
+                "negative": 478,
+                "positive_seed_clusters": 33,
+                "negative_seed_clusters": 383,
+                "auc": 0.776642874723111,
+                "interval": [
+                  0.6905692219734192,
+                  0.8561935424804688
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 399
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 24,
+                "negative": 488,
+                "positive_seed_clusters": 24,
+                "negative_seed_clusters": 390,
+                "auc": 0.8654371584699454,
+                "interval": [
+                  0.8190460801124573,
+                  0.9104427695274353
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.8210400165965281,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 2,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 386,
+                "auc": 0.746965327610489,
+                "interval": [
+                  0.6716780662536621,
+                  0.8174829483032227
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 12,
+                "negative": 500,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 395,
+                "auc": 0.444,
+                "interval": [
+                  0.28474822640419006,
+                  0.617260217666626
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 390,
+                "auc": 0.8196660482374768,
+                "interval": [
+                  0.7577846050262451,
+                  0.8770479559898376
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6702104586159886,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 3,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 384,
+                "auc": 0.727731673582296,
+                "interval": [
+                  0.6290837526321411,
+                  0.8173566460609436
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 400,
+                "auc": 0.5804780876494023,
+                "interval": [
+                  0.36301425099372864,
+                  0.7968630194664001
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 390,
+                "auc": 0.8251016260162601,
+                "interval": [
+                  0.7349863052368164,
+                  0.9013117551803589
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7111037957493195,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 4,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 29,
+                "negative_seed_clusters": 384,
+                "auc": 0.6949515905947441,
+                "interval": [
+                  0.5888460874557495,
+                  0.7902819514274597
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 3,
+                "negative": 509,
+                "positive_seed_clusters": 3,
+                "negative_seed_clusters": 403
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 21,
+                "negative": 491,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 391,
+                "auc": 0.7785859761419843,
+                "interval": [
+                  0.6627225279808044,
+                  0.8766458034515381
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7367687833683643,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 5,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 31,
+                "negative_seed_clusters": 383,
+                "auc": 0.6893568506471732,
+                "interval": [
+                  0.5952144265174866,
+                  0.7719169855117798
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 17,
+                "negative": 495,
+                "positive_seed_clusters": 17,
+                "negative_seed_clusters": 395,
+                "auc": 0.6108140225787284,
+                "interval": [
+                  0.4966094493865967,
+                  0.7170655727386475
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 389,
+                "auc": 0.7683943089430895,
+                "interval": [
+                  0.6779765486717224,
+                  0.8482080101966858
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6895217273896637,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 6,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 23,
+                "negative": 489,
+                "positive_seed_clusters": 23,
+                "negative_seed_clusters": 386,
+                "auc": 0.8039477193918378,
+                "interval": [
+                  0.7101156115531921,
+                  0.8848139047622681
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 8,
+                "negative": 504,
+                "positive_seed_clusters": 8,
+                "negative_seed_clusters": 397
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 19,
+                "negative": 493,
+                "positive_seed_clusters": 19,
+                "negative_seed_clusters": 390,
+                "auc": 0.8885448916408669,
+                "interval": [
+                  0.8359348177909851,
+                  0.9337712526321411
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.8462463055163524,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 7,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 29,
+                "negative": 483,
+                "positive_seed_clusters": 27,
+                "negative_seed_clusters": 383,
+                "auc": 0.7613336189048333,
+                "interval": [
+                  0.6836696863174438,
+                  0.8409581780433655
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 13,
+                "negative": 499,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 398,
+                "auc": 0.4925235085555727,
+                "interval": [
+                  0.3285386264324188,
+                  0.6464146971702576
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 389,
+                "auc": 0.8436920222634509,
+                "interval": [
+                  0.765388548374176,
+                  0.9209657907485962
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6991830499079522,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 8,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 32,
+                "negative": 480,
+                "positive_seed_clusters": 32,
+                "negative_seed_clusters": 386,
+                "auc": 0.7333984375,
+                "interval": [
+                  0.6366404294967651,
+                  0.8146010041236877
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 399,
+                "auc": 0.6239043824701195,
+                "interval": [
+                  0.47696107625961304,
+                  0.7495421767234802
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 26,
+                "negative": 486,
+                "positive_seed_clusters": 26,
+                "negative_seed_clusters": 389,
+                "auc": 0.8063469452358342,
+                "interval": [
+                  0.7476471662521362,
+                  0.8639052510261536
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 402
+              }
+            },
+            "macro_auc": 0.7212165884019845,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        }
+      ]
+    },
+    "z:generated:training": {
+      "errors": [
+        {
+          "depth": 1,
+          "all": 0.07433504402381394,
+          "top10": 0.03708726427349714,
+          "rest": 0.07985359930610686
+        },
+        {
+          "depth": 2,
+          "all": 0.09232714336576614,
+          "top10": 0.052877414642481586,
+          "rest": 0.0981881697368462
+        },
+        {
+          "depth": 3,
+          "all": 0.10901640845388082,
+          "top10": 0.06966745156311555,
+          "rest": 0.11489066904888069
+        },
+        {
+          "depth": 4,
+          "all": 0.11957896445147165,
+          "top10": 0.08256882996358436,
+          "rest": 0.12509565453164992
+        },
+        {
+          "depth": 5,
+          "all": 0.14394281632335273,
+          "top10": 0.10844164579885207,
+          "rest": 0.1491767551645186
+        },
+        {
+          "depth": 6,
+          "all": 0.17506333991875103,
+          "top10": 0.1359264767889067,
+          "rest": 0.1809012287720345
+        },
+        {
+          "depth": 7,
+          "all": 0.20854009328266732,
+          "top10": 0.1674306207678228,
+          "rest": 0.21468583013591894
+        },
+        {
+          "depth": 8,
+          "all": 0.23915078238262533,
+          "top10": 0.1962453161734882,
+          "rest": 0.2457027396356015
+        }
+      ],
+      "decoding": [
+        {
+          "depth": 1,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 34,
+                "negative": 478,
+                "positive_seed_clusters": 33,
+                "negative_seed_clusters": 383,
+                "auc": 0.7594142259414226,
+                "interval": [
+                  0.6660889387130737,
+                  0.8488283753395081
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 399
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 24,
+                "negative": 488,
+                "positive_seed_clusters": 24,
+                "negative_seed_clusters": 390,
+                "auc": 0.8616803278688525,
+                "interval": [
+                  0.8102579116821289,
+                  0.9104371070861816
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.8105472769051376,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 2,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 386,
+                "auc": 0.7282543088994702,
+                "interval": [
+                  0.655271589756012,
+                  0.7945435643196106
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 12,
+                "negative": 500,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 395,
+                "auc": 0.42333333333333334,
+                "interval": [
+                  0.2753504514694214,
+                  0.5891391634941101
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 390,
+                "auc": 0.8037105751391466,
+                "interval": [
+                  0.7338468432426453,
+                  0.8656035661697388
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6517660724573168,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 3,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 384,
+                "auc": 0.7021438450899031,
+                "interval": [
+                  0.5972582697868347,
+                  0.8020156621932983
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 400,
+                "auc": 0.5472111553784861,
+                "interval": [
+                  0.3291398286819458,
+                  0.7680348753929138
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 390,
+                "auc": 0.7802845528455284,
+                "interval": [
+                  0.6721948385238647,
+                  0.86305171251297
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6765465177713059,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 4,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 29,
+                "negative_seed_clusters": 384,
+                "auc": 0.7033195020746889,
+                "interval": [
+                  0.6069031357765198,
+                  0.7948809862136841
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 3,
+                "negative": 509,
+                "positive_seed_clusters": 3,
+                "negative_seed_clusters": 403
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 21,
+                "negative": 491,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 391,
+                "auc": 0.7939094171273398,
+                "interval": [
+                  0.6860799789428711,
+                  0.8851416110992432
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7486144596010142,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 5,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 31,
+                "negative_seed_clusters": 383,
+                "auc": 0.679967809000067,
+                "interval": [
+                  0.5870591402053833,
+                  0.7685787081718445
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 17,
+                "negative": 495,
+                "positive_seed_clusters": 17,
+                "negative_seed_clusters": 395,
+                "auc": 0.6260249554367201,
+                "interval": [
+                  0.5132470726966858,
+                  0.7287813425064087
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 389,
+                "auc": 0.7540650406504065,
+                "interval": [
+                  0.6522717475891113,
+                  0.8431161046028137
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6866859350290645,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 6,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 23,
+                "negative": 489,
+                "positive_seed_clusters": 23,
+                "negative_seed_clusters": 386,
+                "auc": 0.8100826887169912,
+                "interval": [
+                  0.7259591817855835,
+                  0.8862617015838623
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 8,
+                "negative": 504,
+                "positive_seed_clusters": 8,
+                "negative_seed_clusters": 397
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 19,
+                "negative": 493,
+                "positive_seed_clusters": 19,
+                "negative_seed_clusters": 390,
+                "auc": 0.8660190028824597,
+                "interval": [
+                  0.8161988854408264,
+                  0.9080150127410889
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.8380508457997254,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 7,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 29,
+                "negative": 483,
+                "positive_seed_clusters": 27,
+                "negative_seed_clusters": 383,
+                "auc": 0.7654030127793247,
+                "interval": [
+                  0.6996716856956482,
+                  0.832076907157898
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 13,
+                "negative": 499,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 398,
+                "auc": 0.5105595806998613,
+                "interval": [
+                  0.32110798358917236,
+                  0.7005365490913391
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 389,
+                "auc": 0.8380333951762523,
+                "interval": [
+                  0.770643949508667,
+                  0.9036195278167725
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7046653295518128,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 8,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 32,
+                "negative": 480,
+                "positive_seed_clusters": 32,
+                "negative_seed_clusters": 386,
+                "auc": 0.6997395833333333,
+                "interval": [
+                  0.6056200265884399,
+                  0.7869910597801208
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 399,
+                "auc": 0.5840637450199203,
+                "interval": [
+                  0.44078877568244934,
+                  0.7089851498603821
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 26,
+                "negative": 486,
+                "positive_seed_clusters": 26,
+                "negative_seed_clusters": 389,
+                "auc": 0.7753244697689142,
+                "interval": [
+                  0.6999896764755249,
+                  0.8494270443916321
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 402
+              }
+            },
+            "macro_auc": 0.6863759327073894,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        }
+      ]
+    },
+    "z:generated:persistent": {
+      "errors": [
+        {
+          "depth": 1,
+          "all": 0.0861293990456384,
+          "top10": 0.048458673611366555,
+          "rest": 0.09171061710015452
+        },
+        {
+          "depth": 2,
+          "all": 0.1069136420924663,
+          "top10": 0.06618623041668913,
+          "rest": 0.11296449317770266
+        },
+        {
+          "depth": 3,
+          "all": 0.13406615758178372,
+          "top10": 0.09735250086994575,
+          "rest": 0.139547003936095
+        },
+        {
+          "depth": 4,
+          "all": 0.16279581886461936,
+          "top10": 0.1267077963309674,
+          "rest": 0.1681750599476207
+        },
+        {
+          "depth": 5,
+          "all": 0.21590641751088566,
+          "top10": 0.18441161671248538,
+          "rest": 0.22054969711992742
+        },
+        {
+          "depth": 6,
+          "all": 0.2686814168331986,
+          "top10": 0.23137586024216483,
+          "rest": 0.27424613703741596
+        },
+        {
+          "depth": 7,
+          "all": 0.291360690357558,
+          "top10": 0.2509636101690653,
+          "rest": 0.29739992679846655
+        },
+        {
+          "depth": 8,
+          "all": 0.32239515374022565,
+          "top10": 0.2800161116555231,
+          "rest": 0.32886672243983156
+        }
+      ],
+      "decoding": [
+        {
+          "depth": 1,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 34,
+                "negative": 478,
+                "positive_seed_clusters": 33,
+                "negative_seed_clusters": 383,
+                "auc": 0.776642874723111,
+                "interval": [
+                  0.6905692219734192,
+                  0.8561935424804688
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 399
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 24,
+                "negative": 488,
+                "positive_seed_clusters": 24,
+                "negative_seed_clusters": 390,
+                "auc": 0.8654371584699454,
+                "interval": [
+                  0.8190460801124573,
+                  0.9104427695274353
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.8210400165965281,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 2,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 386,
+                "auc": 0.7341559922205083,
+                "interval": [
+                  0.6665984392166138,
+                  0.7963321208953857
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 12,
+                "negative": 500,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 395,
+                "auc": 0.43983333333333335,
+                "interval": [
+                  0.26933789253234863,
+                  0.6441618800163269
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 390,
+                "auc": 0.8153988868274582,
+                "interval": [
+                  0.7491564750671387,
+                  0.8748854994773865
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6631294041271,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 3,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 384,
+                "auc": 0.7075380359612725,
+                "interval": [
+                  0.6022840142250061,
+                  0.8006424903869629
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 400,
+                "auc": 0.5145418326693227,
+                "interval": [
+                  0.30208155512809753,
+                  0.7403621673583984
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 390,
+                "auc": 0.7897357723577236,
+                "interval": [
+                  0.6790842413902283,
+                  0.8751450777053833
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6706052136627729,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 4,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 29,
+                "negative_seed_clusters": 384,
+                "auc": 0.6953665283540802,
+                "interval": [
+                  0.5886552929878235,
+                  0.7910575866699219
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 3,
+                "negative": 509,
+                "positive_seed_clusters": 3,
+                "negative_seed_clusters": 403
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 21,
+                "negative": 491,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 391,
+                "auc": 0.7750945592086121,
+                "interval": [
+                  0.665801465511322,
+                  0.8717500567436218
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7352305437813462,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 5,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 31,
+                "negative_seed_clusters": 383,
+                "auc": 0.6573670444638187,
+                "interval": [
+                  0.5478470325469971,
+                  0.7632719278335571
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 17,
+                "negative": 495,
+                "positive_seed_clusters": 17,
+                "negative_seed_clusters": 395,
+                "auc": 0.617825311942959,
+                "interval": [
+                  0.5152555108070374,
+                  0.7244567275047302
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 389,
+                "auc": 0.7552845528455284,
+                "interval": [
+                  0.6416894793510437,
+                  0.8482241630554199
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6768256364174353,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 6,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 23,
+                "negative": 489,
+                "positive_seed_clusters": 23,
+                "negative_seed_clusters": 386,
+                "auc": 0.8264426069174002,
+                "interval": [
+                  0.7551531791687012,
+                  0.8865045309066772
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 8,
+                "negative": 504,
+                "positive_seed_clusters": 8,
+                "negative_seed_clusters": 397
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 19,
+                "negative": 493,
+                "positive_seed_clusters": 19,
+                "negative_seed_clusters": 390,
+                "auc": 0.874666381979289,
+                "interval": [
+                  0.828887939453125,
+                  0.914711594581604
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.8505544944483446,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 7,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 29,
+                "negative": 483,
+                "positive_seed_clusters": 27,
+                "negative_seed_clusters": 383,
+                "auc": 0.7389876490326266,
+                "interval": [
+                  0.6639121174812317,
+                  0.8123704195022583
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 13,
+                "negative": 499,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 398,
+                "auc": 0.41051333436102977,
+                "interval": [
+                  0.20653486251831055,
+                  0.6371829509735107
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 389,
+                "auc": 0.8144712430426716,
+                "interval": [
+                  0.7363542318344116,
+                  0.8881999254226685
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6546574088121093,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 8,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 32,
+                "negative": 480,
+                "positive_seed_clusters": 32,
+                "negative_seed_clusters": 386,
+                "auc": 0.73515625,
+                "interval": [
+                  0.6423092484474182,
+                  0.8175386786460876
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 399,
+                "auc": 0.5286852589641434,
+                "interval": [
+                  0.40846678614616394,
+                  0.6338761448860168
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 26,
+                "negative": 486,
+                "positive_seed_clusters": 26,
+                "negative_seed_clusters": 389,
+                "auc": 0.7989870212092435,
+                "interval": [
+                  0.7237626910209656,
+                  0.8680427670478821
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 402
+              }
+            },
+            "macro_auc": 0.6876095100577957,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        }
+      ]
+    },
+    "u:persistence": {
+      "errors": [
+        {
+          "depth": 1,
+          "all": 0.09916216002441171,
+          "top10": 0.09001184872665283,
+          "rest": 0.2193200858687095
+        },
+        {
+          "depth": 2,
+          "all": 0.20107968253623748,
+          "top10": 0.18792063225955905,
+          "rest": 0.3777177777755091
+        },
+        {
+          "depth": 3,
+          "all": 0.2720345311202678,
+          "top10": 0.25317363312121943,
+          "rest": 0.5192928256927678
+        },
+        {
+          "depth": 4,
+          "all": 0.32536494764502727,
+          "top10": 0.3028832449203461,
+          "rest": 0.6147894484213596
+        },
+        {
+          "depth": 5,
+          "all": 0.41635467961380623,
+          "top10": 0.39167162523610494,
+          "rest": 0.7269539078881465
+        },
+        {
+          "depth": 6,
+          "all": 0.4982068489551306,
+          "top10": 0.4736940840961502,
+          "rest": 0.8143136330293809
+        },
+        {
+          "depth": 7,
+          "all": 0.5878124461679086,
+          "top10": 0.5613081441379685,
+          "rest": 0.9214192540970566
+        },
+        {
+          "depth": 8,
+          "all": 0.6366241733131816,
+          "top10": 0.6101865262578228,
+          "rest": 0.9705232767027672
+        }
+      ],
+      "decoding": [
+        {
+          "depth": 1,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 34,
+                "negative": 478,
+                "positive_seed_clusters": 33,
+                "negative_seed_clusters": 383,
+                "auc": 0.6610263352202805,
+                "interval": [
+                  0.5606541633605957,
+                  0.7632251977920532
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 399
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 24,
+                "negative": 488,
+                "positive_seed_clusters": 24,
+                "negative_seed_clusters": 390,
+                "auc": 0.8131830601092896,
+                "interval": [
+                  0.7514722943305969,
+                  0.8794942498207092
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.737104697664785,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 2,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 386,
+                "auc": 0.6943196298035008,
+                "interval": [
+                  0.6091789603233337,
+                  0.7783806324005127
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 12,
+                "negative": 500,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 395,
+                "auc": 0.6305,
+                "interval": [
+                  0.4686063826084137,
+                  0.7630359530448914
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 390,
+                "auc": 0.7100185528756957,
+                "interval": [
+                  0.6147106289863586,
+                  0.806964099407196
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6782793942263988,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 3,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 384,
+                "auc": 0.6304979253112033,
+                "interval": [
+                  0.5267995595932007,
+                  0.7387505769729614
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 400,
+                "auc": 0.44143426294820715,
+                "interval": [
+                  0.2538503408432007,
+                  0.6241320371627808
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 390,
+                "auc": 0.7244918699186992,
+                "interval": [
+                  0.6377323269844055,
+                  0.8062598705291748
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.5988080193927031,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 4,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 29,
+                "negative_seed_clusters": 384,
+                "auc": 0.6188796680497926,
+                "interval": [
+                  0.514839231967926,
+                  0.7174826264381409
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 3,
+                "negative": 509,
+                "positive_seed_clusters": 3,
+                "negative_seed_clusters": 403
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 21,
+                "negative": 491,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 391,
+                "auc": 0.7492968674231404,
+                "interval": [
+                  0.6435294151306152,
+                  0.8374816179275513
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6840882677364665,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 5,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 31,
+                "negative_seed_clusters": 383,
+                "auc": 0.6234323653678492,
+                "interval": [
+                  0.523902952671051,
+                  0.719908595085144
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 17,
+                "negative": 495,
+                "positive_seed_clusters": 17,
+                "negative_seed_clusters": 395,
+                "auc": 0.7006535947712418,
+                "interval": [
+                  0.5853586792945862,
+                  0.8171601295471191
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 389,
+                "auc": 0.7046747967479675,
+                "interval": [
+                  0.5847660303115845,
+                  0.8047587275505066
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6762535856290195,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 6,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 23,
+                "negative": 489,
+                "positive_seed_clusters": 23,
+                "negative_seed_clusters": 386,
+                "auc": 0.7197474882190806,
+                "interval": [
+                  0.5871791839599609,
+                  0.8450814485549927
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 8,
+                "negative": 504,
+                "positive_seed_clusters": 8,
+                "negative_seed_clusters": 397
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 19,
+                "negative": 493,
+                "positive_seed_clusters": 19,
+                "negative_seed_clusters": 390,
+                "auc": 0.8115725419024234,
+                "interval": [
+                  0.70285564661026,
+                  0.9091460108757019
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.765660015060752,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 7,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 29,
+                "negative": 483,
+                "positive_seed_clusters": 27,
+                "negative_seed_clusters": 383,
+                "auc": 0.7107160705361605,
+                "interval": [
+                  0.5972527265548706,
+                  0.8165867924690247
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 13,
+                "negative": 499,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 398,
+                "auc": 0.6315708339756436,
+                "interval": [
+                  0.49367576837539673,
+                  0.7574885487556458
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 389,
+                "auc": 0.7832096474953618,
+                "interval": [
+                  0.6733847260475159,
+                  0.8756021857261658
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7084988506690554,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 8,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 32,
+                "negative": 480,
+                "positive_seed_clusters": 32,
+                "negative_seed_clusters": 386,
+                "auc": 0.6783203125,
+                "interval": [
+                  0.5745960474014282,
+                  0.7655121684074402
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 399,
+                "auc": 0.653784860557769,
+                "interval": [
+                  0.4693037271499634,
+                  0.8115888237953186
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 26,
+                "negative": 486,
+                "positive_seed_clusters": 26,
+                "negative_seed_clusters": 389,
+                "auc": 0.7208768597657487,
+                "interval": [
+                  0.6184382438659668,
+                  0.8223406076431274
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 402
+              }
+            },
+            "macro_auc": 0.6843273442745058,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        }
+      ]
+    },
+    "u:teacher:training": {
+      "errors": [
+        {
+          "depth": 1,
+          "all": 0.0357352443812928,
+          "top10": 0.022143772977473424,
+          "rest": 0.21421256169999536
+        },
+        {
+          "depth": 2,
+          "all": 0.0356656474799999,
+          "top10": 0.02253608402258994,
+          "rest": 0.21190793181493314
+        },
+        {
+          "depth": 3,
+          "all": 0.029402901620469574,
+          "top10": 0.015243754764593886,
+          "rest": 0.21502325248404205
+        },
+        {
+          "depth": 4,
+          "all": 0.030217028215715206,
+          "top10": 0.0167481936751031,
+          "rest": 0.20361184446671474
+        },
+        {
+          "depth": 5,
+          "all": 0.04150159759075312,
+          "top10": 0.027395990347417805,
+          "rest": 0.2189995140592628
+        },
+        {
+          "depth": 6,
+          "all": 0.0463754202637458,
+          "top10": 0.032665678101623796,
+          "rest": 0.22317075650129947
+        },
+        {
+          "depth": 7,
+          "all": 0.033595026944989795,
+          "top10": 0.019481566532184413,
+          "rest": 0.21123963995278414
+        },
+        {
+          "depth": 8,
+          "all": 0.07184464155375388,
+          "top10": 0.06007651001289651,
+          "rest": 0.22047241322477776
+        }
+      ],
+      "decoding": [
+        {
+          "depth": 1,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 34,
+                "negative": 478,
+                "positive_seed_clusters": 33,
+                "negative_seed_clusters": 383,
+                "auc": 0.6899458528181147,
+                "interval": [
+                  0.57830810546875,
+                  0.7980965971946716
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 399
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 24,
+                "negative": 488,
+                "positive_seed_clusters": 24,
+                "negative_seed_clusters": 390,
+                "auc": 0.8920765027322405,
+                "interval": [
+                  0.8422368168830872,
+                  0.9374781250953674
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7910111777751776,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 2,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 386,
+                "auc": 0.7334182818053786,
+                "interval": [
+                  0.6391701698303223,
+                  0.8193255662918091
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 12,
+                "negative": 500,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 395,
+                "auc": 0.6198333333333333,
+                "interval": [
+                  0.42540204524993896,
+                  0.7796929478645325
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 390,
+                "auc": 0.8017625231910946,
+                "interval": [
+                  0.7052633762359619,
+                  0.8970243334770203
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7183380461099356,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 3,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 384,
+                "auc": 0.7228907330567081,
+                "interval": [
+                  0.6225150227546692,
+                  0.82323157787323
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 400,
+                "auc": 0.6177290836653386,
+                "interval": [
+                  0.45566844940185547,
+                  0.7743041515350342
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 390,
+                "auc": 0.8015243902439024,
+                "interval": [
+                  0.7241486310958862,
+                  0.8684343099594116
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7140480689886498,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 4,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 29,
+                "negative_seed_clusters": 384,
+                "auc": 0.6392116182572614,
+                "interval": [
+                  0.536706805229187,
+                  0.7364976406097412
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 3,
+                "negative": 509,
+                "positive_seed_clusters": 3,
+                "negative_seed_clusters": 403
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 21,
+                "negative": 491,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 391,
+                "auc": 0.7132188924449617,
+                "interval": [
+                  0.5955422520637512,
+                  0.8164898157119751
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6762152553511116,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 5,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 31,
+                "negative_seed_clusters": 383,
+                "auc": 0.7007578297900878,
+                "interval": [
+                  0.5985901951789856,
+                  0.7873801589012146
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 17,
+                "negative": 495,
+                "positive_seed_clusters": 17,
+                "negative_seed_clusters": 395,
+                "auc": 0.742483660130719,
+                "interval": [
+                  0.6382862329483032,
+                  0.8506178855895996
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 389,
+                "auc": 0.7853658536585366,
+                "interval": [
+                  0.680105447769165,
+                  0.8723878264427185
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7428691145264478,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 6,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 23,
+                "negative": 489,
+                "positive_seed_clusters": 23,
+                "negative_seed_clusters": 386,
+                "auc": 0.7876767137903441,
+                "interval": [
+                  0.698348879814148,
+                  0.8685824275016785
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 8,
+                "negative": 504,
+                "positive_seed_clusters": 8,
+                "negative_seed_clusters": 397
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 19,
+                "negative": 493,
+                "positive_seed_clusters": 19,
+                "negative_seed_clusters": 390,
+                "auc": 0.8594000213515534,
+                "interval": [
+                  0.7645262479782104,
+                  0.939629316329956
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.8235383675709487,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 7,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 29,
+                "negative": 483,
+                "positive_seed_clusters": 27,
+                "negative_seed_clusters": 383,
+                "auc": 0.7491254372813593,
+                "interval": [
+                  0.6533658504486084,
+                  0.8454115986824036
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 13,
+                "negative": 499,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 398,
+                "auc": 0.6392785571142284,
+                "interval": [
+                  0.47874879837036133,
+                  0.8071777820587158
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 389,
+                "auc": 0.8290352504638219,
+                "interval": [
+                  0.7298474311828613,
+                  0.9065065383911133
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7391464149531366,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 8,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 32,
+                "negative": 480,
+                "positive_seed_clusters": 32,
+                "negative_seed_clusters": 386,
+                "auc": 0.6274739583333333,
+                "interval": [
+                  0.5208473205566406,
+                  0.7284639477729797
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 399,
+                "auc": 0.7055776892430279,
+                "interval": [
+                  0.5142690539360046,
+                  0.8546531796455383
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 26,
+                "negative": 486,
+                "positive_seed_clusters": 26,
+                "negative_seed_clusters": 389,
+                "auc": 0.7406616017727129,
+                "interval": [
+                  0.645745038986206,
+                  0.8321651816368103
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 402
+              }
+            },
+            "macro_auc": 0.6912377497830247,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        }
+      ]
+    },
+    "u:teacher:persistent": {
+      "errors": [
+        {
+          "depth": 1,
+          "all": 0.05444878450924431,
+          "top10": 0.02749246014548895,
+          "rest": 0.4084275638681779
+        },
+        {
+          "depth": 2,
+          "all": 0.05623664197073387,
+          "top10": 0.028327343144263533,
+          "rest": 0.4308719903065061
+        },
+        {
+          "depth": 3,
+          "all": 0.05396324300705392,
+          "top10": 0.023990477104302986,
+          "rest": 0.44689336654141204
+        },
+        {
+          "depth": 4,
+          "all": 0.057422561145157716,
+          "top10": 0.02683505167565048,
+          "rest": 0.4511994367945548
+        },
+        {
+          "depth": 5,
+          "all": 0.06419366347654239,
+          "top10": 0.03195321711066862,
+          "rest": 0.4698913379712844
+        },
+        {
+          "depth": 6,
+          "all": 0.07246351949628443,
+          "top10": 0.0415373137679771,
+          "rest": 0.4712754647270307
+        },
+        {
+          "depth": 7,
+          "all": 0.06084470313480923,
+          "top10": 0.028087265700548533,
+          "rest": 0.4731590559533731
+        },
+        {
+          "depth": 8,
+          "all": 0.09534887863398248,
+          "top10": 0.06508094535029851,
+          "rest": 0.4776232831494692
+        }
+      ],
+      "decoding": [
+        {
+          "depth": 1,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 34,
+                "negative": 478,
+                "positive_seed_clusters": 33,
+                "negative_seed_clusters": 383,
+                "auc": 0.6878538026089097,
+                "interval": [
+                  0.5711285471916199,
+                  0.8038965463638306
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 399
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 24,
+                "negative": 488,
+                "positive_seed_clusters": 24,
+                "negative_seed_clusters": 390,
+                "auc": 0.8633025956284153,
+                "interval": [
+                  0.7950975298881531,
+                  0.924347460269928
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7755781991186625,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 2,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 386,
+                "auc": 0.7426061297029038,
+                "interval": [
+                  0.6639342904090881,
+                  0.8210515975952148
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 12,
+                "negative": 500,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 395,
+                "auc": 0.6513333333333333,
+                "interval": [
+                  0.4642057716846466,
+                  0.8084934949874878
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 390,
+                "auc": 0.8208719851576994,
+                "interval": [
+                  0.7474302053451538,
+                  0.8938930034637451
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7382704827313122,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 3,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 384,
+                "auc": 0.7255186721991701,
+                "interval": [
+                  0.6377924680709839,
+                  0.8129146695137024
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 400,
+                "auc": 0.6215139442231076,
+                "interval": [
+                  0.4706658124923706,
+                  0.7925237417221069
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 390,
+                "auc": 0.8047764227642277,
+                "interval": [
+                  0.7312260866165161,
+                  0.8673515319824219
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.717269679728835,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 4,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 29,
+                "negative_seed_clusters": 384,
+                "auc": 0.7228215767634855,
+                "interval": [
+                  0.63011634349823,
+                  0.8024253249168396
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 3,
+                "negative": 509,
+                "positive_seed_clusters": 3,
+                "negative_seed_clusters": 403
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 21,
+                "negative": 491,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 391,
+                "auc": 0.7916787896421298,
+                "interval": [
+                  0.7182690501213074,
+                  0.8568614721298218
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7572501832028076,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 5,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 31,
+                "negative_seed_clusters": 383,
+                "auc": 0.7088055797733217,
+                "interval": [
+                  0.6068508625030518,
+                  0.8010655641555786
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 17,
+                "negative": 495,
+                "positive_seed_clusters": 17,
+                "negative_seed_clusters": 395,
+                "auc": 0.7256090314913844,
+                "interval": [
+                  0.5842700600624084,
+                  0.8636724948883057
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 389,
+                "auc": 0.790650406504065,
+                "interval": [
+                  0.6685694456100464,
+                  0.8880607485771179
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7416883392562571,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 6,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 23,
+                "negative": 489,
+                "positive_seed_clusters": 23,
+                "negative_seed_clusters": 386,
+                "auc": 0.7803858806792923,
+                "interval": [
+                  0.6666250824928284,
+                  0.8774415254592896
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 8,
+                "negative": 504,
+                "positive_seed_clusters": 8,
+                "negative_seed_clusters": 397
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 19,
+                "negative": 493,
+                "positive_seed_clusters": 19,
+                "negative_seed_clusters": 390,
+                "auc": 0.8421052631578947,
+                "interval": [
+                  0.7155300378799438,
+                  0.9475796222686768
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.8112455719185935,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 7,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 29,
+                "negative": 483,
+                "positive_seed_clusters": 27,
+                "negative_seed_clusters": 383,
+                "auc": 0.771400014278575,
+                "interval": [
+                  0.6898719072341919,
+                  0.8563258647918701
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 13,
+                "negative": 499,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 398,
+                "auc": 0.621704948358255,
+                "interval": [
+                  0.4643261730670929,
+                  0.7882106304168701
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 389,
+                "auc": 0.8331168831168831,
+                "interval": [
+                  0.7490829825401306,
+                  0.9108679890632629
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.742073948584571,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 8,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 32,
+                "negative": 480,
+                "positive_seed_clusters": 32,
+                "negative_seed_clusters": 386,
+                "auc": 0.6681640625,
+                "interval": [
+                  0.5697261691093445,
+                  0.7619192004203796
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 399,
+                "auc": 0.7061752988047809,
+                "interval": [
+                  0.5525637865066528,
+                  0.8292072415351868
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 26,
+                "negative": 486,
+                "positive_seed_clusters": 26,
+                "negative_seed_clusters": 389,
+                "auc": 0.7656695156695157,
+                "interval": [
+                  0.686278760433197,
+                  0.8403307795524597
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 402
+              }
+            },
+            "macro_auc": 0.7133362923247656,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        }
+      ]
+    },
+    "u:generated:training": {
+      "errors": [
+        {
+          "depth": 1,
+          "all": 0.0357352443812928,
+          "top10": 0.022143772977473424,
+          "rest": 0.21421256169999536
+        },
+        {
+          "depth": 2,
+          "all": 0.07493706055530563,
+          "top10": 0.05585881597969858,
+          "rest": 0.3310303736355584
+        },
+        {
+          "depth": 3,
+          "all": 0.1180378590837475,
+          "top10": 0.09316040813536543,
+          "rest": 0.44417058590928615
+        },
+        {
+          "depth": 4,
+          "all": 0.15230161642570894,
+          "top10": 0.12269038966060176,
+          "rest": 0.5335100430657982
+        },
+        {
+          "depth": 5,
+          "all": 0.22083380645375866,
+          "top10": 0.18706855310075982,
+          "rest": 0.6457188905057323
+        },
+        {
+          "depth": 6,
+          "all": 0.2645835787297803,
+          "top10": 0.22643862991063118,
+          "rest": 0.7564855395761341
+        },
+        {
+          "depth": 7,
+          "all": 0.3165788681321064,
+          "top10": 0.2736775309044294,
+          "rest": 0.8565734000480882
+        },
+        {
+          "depth": 8,
+          "all": 0.37306634418878165,
+          "top10": 0.3274324571218069,
+          "rest": 0.9494078750345086
+        }
+      ],
+      "decoding": [
+        {
+          "depth": 1,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 34,
+                "negative": 478,
+                "positive_seed_clusters": 33,
+                "negative_seed_clusters": 383,
+                "auc": 0.6899458528181147,
+                "interval": [
+                  0.57830810546875,
+                  0.7980965971946716
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 399
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 24,
+                "negative": 488,
+                "positive_seed_clusters": 24,
+                "negative_seed_clusters": 390,
+                "auc": 0.8920765027322405,
+                "interval": [
+                  0.8422368168830872,
+                  0.9374781250953674
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7910111777751776,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 2,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 386,
+                "auc": 0.7271142109851787,
+                "interval": [
+                  0.6325758695602417,
+                  0.8164554238319397
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 12,
+                "negative": 500,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 395,
+                "auc": 0.6016666666666667,
+                "interval": [
+                  0.42786675691604614,
+                  0.7402799725532532
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 390,
+                "auc": 0.788126159554731,
+                "interval": [
+                  0.6849059462547302,
+                  0.8876452445983887
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7056356790688588,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 3,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 384,
+                "auc": 0.6340248962655601,
+                "interval": [
+                  0.5252434015274048,
+                  0.7434098124504089
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 400,
+                "auc": 0.5924302788844622,
+                "interval": [
+                  0.3960408568382263,
+                  0.78023362159729
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 390,
+                "auc": 0.704369918699187,
+                "interval": [
+                  0.6172946691513062,
+                  0.7895001173019409
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6436083646164031,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 4,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 29,
+                "negative_seed_clusters": 384,
+                "auc": 0.6478561549100968,
+                "interval": [
+                  0.5400145053863525,
+                  0.7553375959396362
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 3,
+                "negative": 509,
+                "positive_seed_clusters": 3,
+                "negative_seed_clusters": 403
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 21,
+                "negative": 491,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 391,
+                "auc": 0.6977014838521967,
+                "interval": [
+                  0.5598870515823364,
+                  0.8130984902381897
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6727788193811468,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 5,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 31,
+                "negative_seed_clusters": 383,
+                "auc": 0.6228958487023003,
+                "interval": [
+                  0.5055574178695679,
+                  0.7317958474159241
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 17,
+                "negative": 495,
+                "positive_seed_clusters": 17,
+                "negative_seed_clusters": 395,
+                "auc": 0.5705288175876411,
+                "interval": [
+                  0.4249928891658783,
+                  0.718601405620575
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 389,
+                "auc": 0.749390243902439,
+                "interval": [
+                  0.6268909573554993,
+                  0.8538548946380615
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6476049700641268,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 6,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 23,
+                "negative": 489,
+                "positive_seed_clusters": 23,
+                "negative_seed_clusters": 386,
+                "auc": 0.7576242553569841,
+                "interval": [
+                  0.6396189332008362,
+                  0.8603618741035461
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 8,
+                "negative": 504,
+                "positive_seed_clusters": 8,
+                "negative_seed_clusters": 397
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 19,
+                "negative": 493,
+                "positive_seed_clusters": 19,
+                "negative_seed_clusters": 390,
+                "auc": 0.8014305540728088,
+                "interval": [
+                  0.6605780720710754,
+                  0.9161186218261719
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7795274047148965,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 7,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 29,
+                "negative": 483,
+                "positive_seed_clusters": 27,
+                "negative_seed_clusters": 383,
+                "auc": 0.7013636039123295,
+                "interval": [
+                  0.5953521132469177,
+                  0.7975302934646606
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 13,
+                "negative": 499,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 398,
+                "auc": 0.5934946816710344,
+                "interval": [
+                  0.4414013624191284,
+                  0.7458770871162415
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 389,
+                "auc": 0.7479591836734694,
+                "interval": [
+                  0.6394266486167908,
+                  0.8417551517486572
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6809391564189444,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 8,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 32,
+                "negative": 480,
+                "positive_seed_clusters": 32,
+                "negative_seed_clusters": 386,
+                "auc": 0.6680338541666667,
+                "interval": [
+                  0.563643217086792,
+                  0.7610094547271729
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 399,
+                "auc": 0.6681274900398406,
+                "interval": [
+                  0.4753337502479553,
+                  0.7989928722381592
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 26,
+                "negative": 486,
+                "positive_seed_clusters": 26,
+                "negative_seed_clusters": 389,
+                "auc": 0.7120924343146565,
+                "interval": [
+                  0.6086400747299194,
+                  0.8201512694358826
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 402
+              }
+            },
+            "macro_auc": 0.6827512595070546,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        }
+      ]
+    },
+    "u:generated:persistent": {
+      "errors": [
+        {
+          "depth": 1,
+          "all": 0.05444878450924431,
+          "top10": 0.02749246014548895,
+          "rest": 0.4084275638681779
+        },
+        {
+          "depth": 2,
+          "all": 0.12848242880476654,
+          "top10": 0.07098644878498908,
+          "rest": 0.9002691596912654
+        },
+        {
+          "depth": 3,
+          "all": 0.2251693194991625,
+          "top10": 0.12989075506326242,
+          "rest": 1.4742304910788737
+        },
+        {
+          "depth": 4,
+          "all": 0.33090720237059107,
+          "top10": 0.1969719907491529,
+          "rest": 2.0551596860292545
+        },
+        {
+          "depth": 5,
+          "all": 0.4687739377133691,
+          "top10": 0.298394018827779,
+          "rest": 2.6127497402832907
+        },
+        {
+          "depth": 6,
+          "all": 0.5882778229219188,
+          "top10": 0.3936419657039917,
+          "rest": 3.098223773313285
+        },
+        {
+          "depth": 7,
+          "all": 0.7265508771597846,
+          "top10": 0.5099614547129588,
+          "rest": 3.452738715348507
+        },
+        {
+          "depth": 8,
+          "all": 0.8631425712723516,
+          "top10": 0.63521168491961,
+          "rest": 3.7418374274603092
+        }
+      ],
+      "decoding": [
+        {
+          "depth": 1,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 34,
+                "negative": 478,
+                "positive_seed_clusters": 33,
+                "negative_seed_clusters": 383,
+                "auc": 0.6878538026089097,
+                "interval": [
+                  0.5711285471916199,
+                  0.8038965463638306
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 399
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 24,
+                "negative": 488,
+                "positive_seed_clusters": 24,
+                "negative_seed_clusters": 390,
+                "auc": 0.8633025956284153,
+                "interval": [
+                  0.7950975298881531,
+                  0.924347460269928
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7755781991186625,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 2,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 386,
+                "auc": 0.75199517135001,
+                "interval": [
+                  0.6630499362945557,
+                  0.8272156715393066
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 12,
+                "negative": 500,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 395,
+                "auc": 0.6105,
+                "interval": [
+                  0.4379833936691284,
+                  0.7599611878395081
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 390,
+                "auc": 0.8286641929499072,
+                "interval": [
+                  0.7546412348747253,
+                  0.8985947966575623
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7303864547666391,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 3,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 30,
+                "negative_seed_clusters": 384,
+                "auc": 0.6740663900414938,
+                "interval": [
+                  0.5804563760757446,
+                  0.760054886341095
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 400,
+                "auc": 0.6272908366533865,
+                "interval": [
+                  0.4236275553703308,
+                  0.8037331104278564
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 390,
+                "auc": 0.7643292682926829,
+                "interval": [
+                  0.7041630744934082,
+                  0.8242144584655762
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6885621649958544,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 4,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 30,
+                "negative": 482,
+                "positive_seed_clusters": 29,
+                "negative_seed_clusters": 384,
+                "auc": 0.6755878284923929,
+                "interval": [
+                  0.5826141238212585,
+                  0.7688740491867065
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 3,
+                "negative": 509,
+                "positive_seed_clusters": 3,
+                "negative_seed_clusters": 403
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 21,
+                "negative": 491,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 391,
+                "auc": 0.753467170982446,
+                "interval": [
+                  0.6427260041236877,
+                  0.8450743556022644
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.7145274997374194,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 5,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 31,
+                "negative": 481,
+                "positive_seed_clusters": 31,
+                "negative_seed_clusters": 383,
+                "auc": 0.6336261820132788,
+                "interval": [
+                  0.5236813426017761,
+                  0.7324035167694092
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 17,
+                "negative": 495,
+                "positive_seed_clusters": 17,
+                "negative_seed_clusters": 395,
+                "auc": 0.689007724301842,
+                "interval": [
+                  0.5733194947242737,
+                  0.7884705066680908
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 20,
+                "negative": 492,
+                "positive_seed_clusters": 20,
+                "negative_seed_clusters": 389,
+                "auc": 0.7572154471544715,
+                "interval": [
+                  0.6394885182380676,
+                  0.8509886860847473
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6932831178231975,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 6,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 23,
+                "negative": 489,
+                "positive_seed_clusters": 23,
+                "negative_seed_clusters": 386,
+                "auc": 0.76126967191251,
+                "interval": [
+                  0.6452058553695679,
+                  0.8635387420654297
+                ]
+              },
+              "negative_reward": {
+                "status": "insufficient_coverage",
+                "positive": 8,
+                "negative": 504,
+                "positive_seed_clusters": 8,
+                "negative_seed_clusters": 397
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 19,
+                "negative": 493,
+                "positive_seed_clusters": 19,
+                "negative_seed_clusters": 390,
+                "auc": 0.8571581082523754,
+                "interval": [
+                  0.7903413772583008,
+                  0.9135251045227051
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.8092138900824427,
+            "supported_targets": 2,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 7,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 29,
+                "negative": 483,
+                "positive_seed_clusters": 27,
+                "negative_seed_clusters": 383,
+                "auc": 0.7169986435353751,
+                "interval": [
+                  0.6328818202018738,
+                  0.7954903841018677
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 13,
+                "negative": 499,
+                "positive_seed_clusters": 12,
+                "negative_seed_clusters": 398,
+                "auc": 0.5711422845691383,
+                "interval": [
+                  0.3925320506095886,
+                  0.7239185571670532
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 22,
+                "negative": 490,
+                "positive_seed_clusters": 21,
+                "negative_seed_clusters": 389,
+                "auc": 0.7979591836734694,
+                "interval": [
+                  0.7110605835914612,
+                  0.8787642121315002
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 0,
+                "negative": 512,
+                "positive_seed_clusters": 0,
+                "negative_seed_clusters": 404
+              }
+            },
+            "macro_auc": 0.6953667039259943,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        },
+        {
+          "depth": 8,
+          "native": {
+            "targets": {
+              "positive_reward": {
+                "status": "measured",
+                "positive": 32,
+                "negative": 480,
+                "positive_seed_clusters": 32,
+                "negative_seed_clusters": 386,
+                "auc": 0.7038411458333333,
+                "interval": [
+                  0.6230918169021606,
+                  0.779796302318573
+                ]
+              },
+              "negative_reward": {
+                "status": "measured",
+                "positive": 10,
+                "negative": 502,
+                "positive_seed_clusters": 10,
+                "negative_seed_clusters": 399,
+                "auc": 0.47828685258964143,
+                "interval": [
+                  0.2837207019329071,
+                  0.702930212020874
+                ]
+              },
+              "achievement_event": {
+                "status": "measured",
+                "positive": 26,
+                "negative": 486,
+                "positive_seed_clusters": 26,
+                "negative_seed_clusters": 389,
+                "auc": 0.7689142133586578,
+                "interval": [
+                  0.6759945154190063,
+                  0.8448297381401062
+                ]
+              },
+              "termination": {
+                "status": "insufficient_coverage",
+                "positive": 7,
+                "negative": 505,
+                "positive_seed_clusters": 7,
+                "negative_seed_clusters": 402
+              }
+            },
+            "macro_auc": 0.6503474039272109,
+            "supported_targets": 3,
+            "total_targets": 4
+          }
+        }
+      ]
+    }
+  },
+  "m4_authorized": false
+}

@@ -3,6 +3,8 @@ from dataclasses import replace
 import logging
 
 import pytest
+from pathlib import Path
+
 import torch
 from transformers import ViTConfig, ViTModel
 
@@ -25,6 +27,28 @@ def small_config(**overrides):
         runtime=RuntimeSettings(device="cpu", precision="fp32", purpose="verification", cache_chunk=3),
     )
     return replace(c, **overrides)
+
+
+def test_a_field_added_after_a_run_is_omitted_wherever_that_run_omitted_it():
+    """recipe_id is the digest of recipe_dict, so a later field must not appear in
+    an earlier run's dict -- that silently unloads its sealed checkpoints."""
+    from dataclasses import replace
+    base = small_config()
+    # v1 predates all three fields.
+    v1 = recipe_dict(base)["joint"]
+    assert not {"stride", "centering_stride", "centering"} & set(v1)
+    # v2 was sealed with `stride` but before the centering pair existed.
+    v2 = recipe_dict(replace(base, schema="d4mj_lewm_recipe_v2",
+                             joint=replace(base.joint, stride=4)))["joint"]
+    assert v2["stride"] == 4 and not {"centering_stride", "centering"} & set(v2)
+    # A recipe that customizes either centering field was written with both, so both
+    # are kept -- including `centering` sitting at its default, as the ablation's
+    # consecutive arm has it.
+    for joint in (replace(base.joint, centering_stride=4),
+                  replace(base.joint, centering_stride=4, centering="strided")):
+        kept = recipe_dict(replace(base, schema="d4mj_lewm_recipe_v2", joint=joint))["joint"]
+        assert kept["centering_stride"] == 4 and "centering" in kept
+    assert config_from_dict(recipe_dict(base)) == base
 
 
 def test_config_roundtrip_and_actual_statistical_batch():
@@ -98,3 +122,332 @@ def test_cuda_source_and_differentiable_carry():
     c=small_config()
     c=replace(c,dynamics=replace(c.dynamics,backend='triton'),runtime=replace(c.runtime,device='cuda'))
     assert recurrence_audit(ModelBundle.create(c))['cuda_kernels_checked']
+
+
+def test_lewm_gates_run_on_a_strided_recipe():
+    """The gate path must accept stacked actions, not just the sampler and world.
+
+    Unit tests over the new code passed while `paired-run` would still have died
+    in preflight, because the audits built scalar actions of their own.
+    """
+    from dataclasses import replace
+    from d4mj.lewm_diagnostics import normalization_audit, objective_audit, screen_retention
+    base = small_config()
+    for recipe in (replace(base, schema="d4mj_lewm_recipe_v2", joint=replace(base.joint, stride=4)),
+                   replace(base, schema="d4mj_lewm_recipe_v2", variant="tc",
+                           joint=replace(base.joint, centering_stride=4, centering="strided"))):
+        bundle = ModelBundle.create(recipe)
+        assert recurrence_audit(bundle)["numerical_profile"]
+        assert normalization_audit(bundle)
+        assert objective_audit(recipe)
+        # The resource gate builds a real batch through the sampler and takes an
+        # optimizer step, which is where a batch-shape regression actually bites.
+        from d4mj.lewm_diagnostics import resource_preflight
+        from d4mj.tests.test_joint_data import raw_episodes
+        episodes = [replace(e, observations=e.observations.repeat(4, 1, 1, 1)[:33],
+                            actions_taken=torch.arange(32) % 17, rewards=torch.zeros(32),
+                            terminated=torch.zeros(32, dtype=torch.bool),
+                            truncated=torch.zeros(32, dtype=torch.bool),
+                            events=torch.zeros(32, dtype=torch.bool)) for e in raw_episodes(14)]
+        assert resource_preflight(ModelBundle.create(recipe), episodes)
+    strided = replace(base, schema="d4mj_lewm_recipe_v2", joint=replace(base.joint, stride=4))
+    # screen_retention conditions its probe on the outgoing actions of each
+    # retained transition; a stacked window must still give one row per transition.
+    actions = torch.randint(strided.dynamics.n_actions, (2, strided.joint.frames - 1, 4))
+    one_hot = torch.nn.functional.one_hot(actions.reshape(-1, 4), strided.dynamics.n_actions).float().flatten(1)
+    assert one_hot.shape == (2 * (strided.joint.frames - 1), 4 * strided.dynamics.n_actions)
+
+
+def test_pinned_transformer_package_is_constructed_exactly_as_the_source_declares():
+    """The comparison backend must be the vendored predictor, not a lookalike."""
+    from d4mj.lewm_transformer import build_package, source_digests, PINNED
+    predictor, action_encoder, projector = build_package()
+    assert source_digests() == PINNED, "vendored bytes differ from the audited pins"
+    blocks = predictor.transformer.layers
+    assert len(blocks) == 6 and type(blocks[0]).__name__ == "ConditionalBlock"
+    qkv = [m for n, m in blocks[0].named_modules() if n.endswith("to_qkv")][0]
+    # 16 heads x 64 = inner width 1024, so qkv projects 192 -> 3 * 1024.
+    assert tuple(qkv.weight.shape) == (3072, 192)
+    assert tuple(predictor.pos_embedding.shape) == (1, 3, 192)
+    for block in blocks:
+        gate = block.adaLN_modulation[-1]
+        assert torch.equal(gate.weight, torch.zeros_like(gate.weight))
+        assert torch.equal(gate.bias, torch.zeros_like(gate.bias))
+    count = lambda m: sum(p.numel() for p in m.parameters() if p.requires_grad)
+    assert (count(predictor), count(action_encoder), count(projector)) == (10791360, 156276, 792768)
+
+
+def test_our_package_matches_an_independent_instantiation_of_the_pinned_classes():
+    """Oracle: same weights in, same outputs, gradients, BN buffers and update out.
+
+    This is what makes the comparison a control. If our call convention diverges from the
+    source's, every downstream number is measuring our wrapper rather than the paper.
+    """
+    import copy
+    from d4mj.lewm_transformer import build_package, source_module
+    source = source_module()
+    ours = build_package()
+    theirs = (source.ARPredictor(num_frames=3, depth=6, heads=16, mlp_dim=2048, input_dim=192,
+                                 hidden_dim=192, output_dim=192, dim_head=64, dropout=0.1,
+                                 emb_dropout=0.0),
+              source.Embedder(input_dim=17, smoothed_dim=10, emb_dim=192, mlp_scale=4),
+              source.MLP(input_dim=192, hidden_dim=2048, output_dim=192, norm_fn=torch.nn.BatchNorm1d))
+    for mine, other in zip(ours, theirs):
+        other.load_state_dict(copy.deepcopy(mine.state_dict()))
+
+    generator = torch.Generator().manual_seed(4)
+    latents = torch.randn(2, 3, 192, generator=generator)
+    actions = torch.nn.functional.one_hot(
+        torch.randint(17, (2, 3), generator=generator), 17).float()
+
+    def run(package, latents, actions):
+        predictor, action_encoder, projector = package
+        for module in package:
+            module.train()
+        torch.manual_seed(11)  # dropout is 0.1; the streams must match to compare
+        conditioning = action_encoder(actions)
+        hidden = predictor(latents, conditioning)
+        predicted = projector(hidden.flatten(0, 1)).reshape(hidden.shape)
+        loss = predicted.square().mean()
+        loss.backward()
+        grads = [p.grad.clone() if p.grad is not None else None
+                 for module in package for p in module.parameters()]
+        buffers = [b.clone() for module in package for b in module.buffers()]
+        return predicted, hidden, loss, grads, buffers
+
+    a = run(ours, latents.clone(), actions.clone())
+    b = run(theirs, latents.clone(), actions.clone())
+    torch.testing.assert_close(a[0], b[0], atol=0, rtol=0)
+    torch.testing.assert_close(a[1], b[1], atol=0, rtol=0)
+    torch.testing.assert_close(a[2], b[2], atol=0, rtol=0)
+    for mine, other in zip(a[3], b[3]):
+        assert (mine is None) == (other is None)
+        if mine is not None:
+            torch.testing.assert_close(mine, other, atol=0, rtol=0)
+    for mine, other in zip(a[4], b[4]):
+        torch.testing.assert_close(mine, other, atol=0, rtol=0)
+
+    # One optimizer step must land in the same place too.
+    for package in (ours, theirs):
+        optimizer = torch.optim.AdamW([p for m in package for p in m.parameters()], lr=1e-3)
+        optimizer.step()
+    for mine, other in zip((p for m in ours for p in m.parameters()),
+                           (p for m in theirs for p in m.parameters())):
+        torch.testing.assert_close(mine, other, atol=0, rtol=0)
+
+
+def test_the_source_action_and_attention_gates_start_at_zero_by_design():
+    """AdaLN-Zero means no action or attention gradient at init. That is the source's
+    intent, not a broken graph, so the backend must not 'fix' it."""
+    from d4mj.lewm_transformer import build_package
+    predictor, action_encoder, projector = build_package()
+    latents = torch.randn(2, 3, 192, generator=torch.Generator().manual_seed(5))
+    actions = torch.nn.functional.one_hot(torch.zeros(2, 3, dtype=torch.long), 17).float()
+    for module in (predictor, action_encoder, projector):
+        module.eval()
+    hidden = predictor(latents, action_encoder(actions))
+    projector(hidden.flatten(0, 1)).square().mean().backward()
+    assert all(p.grad is None or torch.equal(p.grad, torch.zeros_like(p.grad))
+               for p in action_encoder.parameters()), "action path should be gated off at init"
+    gate = predictor.transformer.layers[0].adaLN_modulation[-1]
+    assert gate.weight.grad is not None and gate.weight.grad.abs().sum() > 0, \
+        "AdaLN itself must still learn from step one"
+
+
+def transformer_config(**overrides):
+    from dataclasses import replace
+    from d4mj.lewm_config import LeWMTransformerConfig, RuntimeSettings, JointSettings
+    c = LeWMTransformerConfig(
+        runtime=RuntimeSettings(device="cpu", precision="fp32", purpose="verification", cache_chunk=3),
+        joint=replace(JointSettings(), batch=4, projections=8, knots=5, steps=4,
+                      screen_step=2, warmup=1, checkpoint_every=2))
+    return replace(c, **overrides)
+
+
+def wake_adaln(world, seed=3):
+    """AdaLN-Zero makes the predictor the identity at init, so a window test there is
+    vacuous. Give the gates real values before asserting anything about mixing."""
+    generator = torch.Generator().manual_seed(seed)
+    for block in world.predictor.transformer.layers:
+        gate = block.adaLN_modulation[-1]
+        with torch.no_grad():
+            gate.weight.copy_(torch.randn(gate.weight.shape, generator=generator) * 0.05)
+            gate.bias.copy_(torch.randn(gate.bias.shape, generator=generator) * 0.05)
+    return world
+
+
+def test_the_source_window_forgets_evicted_pairs_and_uses_active_ones():
+    """With live AdaLN gates: a pair inside the window moves the prediction, one that has
+    slid out does not. That is the finite-window contract a KV cache would break."""
+    from d4mj.world_api import ModelBundle
+    bundle = ModelBundle.create(transformer_config())
+    wake_adaln(bundle.world)
+    bundle.eval()
+    torch.manual_seed(0)
+    z, actions = torch.randn(2, 6, 1, 192), torch.randint(17, (2, 5))
+    step = torch.randint(17, (2, 1))
+    base, _ = bundle.advance(bundle.prefill(z, actions), step)
+
+    evicted = z.clone(); evicted[:, 0] += 10.0            # slid out of the final window
+    moved, _ = bundle.advance(bundle.prefill(evicted, actions), step)
+    torch.testing.assert_close(base.latent, moved.latent, atol=0, rtol=0)
+
+    for index in (-3, -2, -1):                            # still inside the window
+        active = z.clone(); active[:, index] += 10.0
+        changed, _ = bundle.advance(bundle.prefill(active, actions), step)
+        assert not torch.equal(base.latent, changed.latent), f"frame {index} should matter"
+
+    older = actions.clone(); older[:, 0] = (older[:, 0] + 1) % 17   # evicted action
+    torch.testing.assert_close(
+        base.latent, bundle.advance(bundle.prefill(z, older), step)[0].latent, atol=0, rtol=0)
+
+
+def test_streaming_advance_reproduces_the_rolling_teacher_scan():
+    """One source call per step must equal the parallel scan over the same pairs."""
+    from d4mj.world_api import ModelBundle
+    bundle = ModelBundle.create(transformer_config())
+    wake_adaln(bundle.world)
+    bundle.eval()
+    torch.manual_seed(1)
+    z, actions = torch.randn(2, 7, 1, 192), torch.randint(17, (2, 6))
+    scanned = bundle.world.teacher(z, actions)
+    state = bundle.world.start(z[:, :1])
+    for step in range(actions.shape[1]):
+        state, _ = bundle.world.observe_latent(state, actions[:, step:step + 1], z[:, step + 1:step + 2])
+        torch.testing.assert_close(state.history, scanned.features[:, step:step + 1], atol=0, rtol=0)
+    torch.testing.assert_close(state.latent, scanned.state.latent, atol=0, rtol=0)
+    torch.testing.assert_close(state.past_latents, scanned.state.past_latents, atol=0, rtol=0)
+    assert state.step == scanned.state.step == actions.shape[1]
+
+
+def test_bounded_prefill_equals_a_full_scan_and_generation_is_repeatable():
+    """Only the final window can reach the next prediction, so truncating is exact."""
+    from d4mj.world_api import ModelBundle
+    bundle = ModelBundle.create(transformer_config())
+    wake_adaln(bundle.world)
+    bundle.eval()
+    torch.manual_seed(2)
+    z, actions = torch.randn(2, 9, 1, 192), torch.randint(17, (2, 8))
+    bounded = bundle.prefill(z, actions)
+    full = bundle.world.teacher(z, actions).state
+    for a, b in ((bounded.latent, full.latent), (bounded.past_latents, full.past_latents),
+                 (bounded.history, full.history)):
+        torch.testing.assert_close(a, b, atol=0, rtol=0)
+    assert torch.equal(bounded.past_actions, full.past_actions)
+
+    # Repeated generation from one root: siblings never mutate the parent, and depth grows.
+    root = bundle.repeat_state(bounded, 17)
+    before = tuple(t.clone() for t in bundle.state_tensors(bounded))
+    state, seen = root, []
+    for depth in range(4):
+        state, _ = bundle.advance(state, torch.arange(17).repeat(2)[:, None])
+        seen.append(state.latent.clone())
+        assert state.step == bounded.step + depth + 1
+    for old, now in zip(before, bundle.state_tensors(bounded)):
+        torch.testing.assert_close(old, now, atol=0, rtol=0)
+    again, _ = bundle.advance(root, torch.arange(17).repeat(2)[:, None])
+    torch.testing.assert_close(again.latent, seen[0], atol=0, rtol=0)
+
+
+def test_training_teacher_is_one_upstream_call_not_a_window_per_step():
+    """The training objective must be the source's, including its BatchNorm batch.
+
+    Rolling a window per step looks equivalent and is not: the prediction BatchNorm sees
+    several smaller batches instead of one B*context batch, updates its statistics once per
+    call, and dropout is drawn per call. The oracle test compares the modules; this compares
+    the *world*, which is where that divergence lives.
+    """
+    from d4mj.world_api import ModelBundle
+    bundle = ModelBundle.create(transformer_config())
+    world = bundle.world
+    world.train()
+    torch.manual_seed(0)
+    z = torch.randn(4, 4, 1, world.config.encoder.latent_dim)
+    actions = torch.randint(17, (4, 3))
+    norm = world.predictor_projector.net[1]
+    mean, tracked = norm.running_mean.clone(), norm.num_batches_tracked.clone()
+
+    torch.manual_seed(5)
+    one_hot = torch.nn.functional.one_hot(actions, 17).float()
+    hidden = world.predictor(z[:, :-1, 0], world.action_encoder(one_hot))
+    upstream = world.predictor_projector(hidden.flatten(0, 1)).reshape(hidden.shape).detach()
+    upstream_updates = int(norm.num_batches_tracked) - int(tracked)
+    upstream_mean = norm.running_mean.clone()
+
+    norm.running_mean.copy_(mean); norm.num_batches_tracked.copy_(tracked)
+    torch.manual_seed(5)
+    ours = world.teacher(z, actions).predicted[:, :, 0].detach()
+    torch.testing.assert_close(ours, upstream, atol=0, rtol=0)
+    assert int(norm.num_batches_tracked) - int(tracked) == upstream_updates == 1
+    torch.testing.assert_close(norm.running_mean, upstream_mean, atol=0, rtol=0)
+
+
+def test_chunked_evaluation_continues_the_window_instead_of_restarting_it():
+    """A continuation carries its buffered pairs; dropping them restarts the window."""
+    from d4mj.world_api import ModelBundle
+    bundle = ModelBundle.create(transformer_config())
+    wake_adaln(bundle.world)
+    bundle.eval()
+    torch.manual_seed(1)
+    z, actions = torch.randn(2, 9, 1, 192), torch.randint(17, (2, 8))
+    whole = bundle.world.teacher(z, actions)
+    first = bundle.world.teacher(z[:, :4], actions[:, :3])
+    second = bundle.world.teacher(z[:, 3:], actions[:, 3:], state=first.state)
+    joined = torch.cat((first.predicted, second.predicted), 1)
+    torch.testing.assert_close(joined, whole.predicted, atol=1e-5, rtol=1e-5)
+    assert first.state.step == 3 and second.state.step == 8 == whole.state.step
+
+
+def test_bounded_prefill_reports_the_transitions_that_actually_happened():
+    """Truncating the scan is exact for the state's contents, never for its clock."""
+    from d4mj.world_api import ModelBundle
+    bundle = ModelBundle.create(transformer_config())
+    bundle.eval()
+    torch.manual_seed(2)
+    z, actions = torch.randn(2, 9, 1, 192), torch.randint(17, (2, 8))
+    assert bundle.prefill(z, actions).step == actions.shape[1] == 8
+    assert bundle.prefill(z[:, :2], actions[:, :1]).step == 1
+
+
+def test_streaming_refuses_training_mode_for_the_source_predictor():
+    """One step at a time is evaluation. Training mode would update the prediction
+    BatchNorm from a single row and keep dropout live, silently modifying the model
+    mid-rollout -- the same guard Mamba already has."""
+    import pytest
+    from d4mj.world_api import ModelBundle
+    bundle = ModelBundle.create(transformer_config())
+    bundle.eval()
+    torch.manual_seed(0)
+    z, actions = torch.randn(2, 4, 1, 192), torch.randint(17, (2, 3))
+    state = bundle.prefill(z, actions)
+    step = torch.randint(17, (2, 1))
+    bundle.advance(state, step)                      # eval: fine
+    bundle.world.train()
+    for call in (lambda: bundle.advance(state, step),
+                 lambda: bundle.world.observe_latent(state, step, z[:, :1])):
+        with pytest.raises(RuntimeError, match="predictor_normalization|predictor_dropout"):
+            call()
+    bundle.world.predictor_projector.eval()          # BN fixed but dropout still live
+    with pytest.raises(RuntimeError, match="predictor_dropout"):
+        bundle.advance(state, step)
+
+
+def test_the_run_seal_covers_the_world_that_produced_it():
+    """A backend edit must change the M03 run contract, or a completed report is returned
+    before any checkpoint source is revalidated."""
+    from d4mj.m03.gate import _run_contract, _sha, M03Settings
+    source = Path(__file__).resolve().parent.parent / "lewm_transformer.py"
+    original = source.read_text()
+
+    def digest():
+        return _sha(_run_contract(
+            raw_checkpoint=source, tc_checkpoint=source, dataset=source, settings=M03Settings(),
+            device="cpu", include_direct=False, structural_smoke=True, include_history=False))
+
+    before = digest()
+    try:
+        source.write_text(original + "\n# seal probe\n")
+        assert digest() != before
+    finally:
+        source.write_text(original)
+    assert digest() == before

@@ -53,16 +53,40 @@ class LeWMEncoder(nn.Module):
         self.eval()
         return self
 
-    def projected_and_cls(self, frames: Tensor) -> tuple[Tensor, Tensor]:
+    def _hidden(self, frames: Tensor):
+        """One frozen pass: projected z, CLS and the patch tokens beside them."""
         e = self.settings
         if frames.dtype != torch.uint8 or frames.ndim != 5 or tuple(frames.shape[2:]) != (e.resolution, e.resolution, 3):
             raise ValueError("encoder expects native uint8 B,T,H,W,3; preprocessing is internal")
         b, t = frames.shape[:2]
         pixels = frames.flatten(0, 1).permute(0, 3, 1, 2).contiguous().float() / 255.0
         pixels = (pixels - self.pixel_mean) / self.pixel_std
-        cls = self.backbone(pixels, interpolate_pos_encoding=True).last_hidden_state[:, 0]
-        z = self.projector(cls)
+        hidden = self.backbone(pixels, interpolate_pos_encoding=True).last_hidden_state
+        cls = hidden[:, 0]
+        return self.projector(cls), cls, hidden[:, 1:], b, t
+
+    def projected_and_cls(self, frames: Tensor) -> tuple[Tensor, Tensor]:
+        e = self.settings
+        z, cls, _, b, t = self._hidden(frames)
         return z.reshape(b, t, 1, e.latent_dim), cls.reshape(b, t, e.width)
+
+    def export(self, frames: Tensor, grid: int = 4) -> tuple[Tensor, Tensor, Tensor]:
+        """Projected z, unprojected CLS, and the spatially pooled patch grid.
+
+        TC-LeWM's policy reads CLS together with a 4x4 pooled patch grid, while
+        the world transitions z alone.  Patch tokens are never regularized by
+        SIGReg and never predicted; they exist for the observation and policy
+        interface only, so exposing them here adds no training objective.
+        """
+        e = self.settings
+        z, cls, tokens, b, t = self._hidden(frames)
+        side = int(round(tokens.shape[1] ** 0.5))
+        if side * side != tokens.shape[1]:
+            raise ValueError("patch grid is not square; pooling would misalign it")
+        pooled = nn.functional.adaptive_avg_pool2d(
+            tokens.transpose(1, 2).reshape(tokens.shape[0], e.width, side, side), grid)
+        return (z.reshape(b, t, 1, e.latent_dim), cls.reshape(b, t, e.width),
+                pooled.flatten(2).transpose(1, 2).reshape(b, t, grid * grid, e.width))
 
     def forward(self, frames: Tensor) -> Tensor:
         return self.projected_and_cls(frames)[0]
@@ -132,7 +156,10 @@ class LeWMWorld(nn.Module):
         self.config = config
         e, d = config.encoder, config.dynamics
         self.action_embedding = nn.Embedding(d.n_actions, d.action_dim)
-        self.pair_projection = nn.Linear(e.latent_dim + d.action_dim, d.width)
+        # TC-LeWM stacks the frame-gap actions into one predictor input
+        # ("Stacked actions, frame_gap x 7", v2 Table 4).  At stride 1 the stack
+        # is one action and every shape here is byte-identical to the v1 recipe.
+        self.pair_projection = nn.Linear(e.latent_dim + config.joint.stride * d.action_dim, d.width)
         self.layers = nn.ModuleList([_MambaBlock(config) for _ in range(d.depth)])
         self.final_norm = nn.RMSNorm(d.width, eps=d.norm_eps)
         self.predictor_projector = LeWMProjector(d.width, e)
@@ -146,8 +173,11 @@ class LeWMWorld(nn.Module):
             raise ValueError("world latent must be B,T,1,latent_dim with T>=1")
 
     def _actions(self, a: Tensor, shape):
-        if a.dtype != torch.long or a.shape != shape:
-            raise ValueError("outgoing actions must be int64 B,T matching completed pairs")
+        stack = self.config.joint.stride
+        expected = shape if stack == 1 else (*shape, stack)
+        if a.dtype != torch.long or a.shape != expected:
+            raise ValueError("outgoing actions must be int64 B,T (B,T,stride when stacked) "
+                             "matching completed pairs")
         if a.numel() and (bool((a < 0).any()) or bool((a >= self.config.dynamics.n_actions).any())):
             raise ValueError("BOS/padding is not an outgoing policy action")
 
@@ -179,7 +209,10 @@ class LeWMWorld(nn.Module):
         self._actions(actions, z.shape[:2])
         if memory is not None and len(memory) != len(self.layers):
             raise ValueError("recurrence layer count mismatch")
-        x = self.pair_projection(torch.cat((z[:, :, 0], self.action_embedding(actions)), -1))
+        embedded = self.action_embedding(actions)
+        if embedded.ndim == 4:                      # stacked frame-gap actions
+            embedded = embedded.flatten(-2)
+        x = self.pair_projection(torch.cat((z[:, :, 0], embedded), -1))
         carried = []
         for i, layer in enumerate(self.layers):
             x, m = layer(x, None if memory is None else memory[i], backend=backend)
@@ -237,13 +270,19 @@ class JointLoss:
 
 def joint_loss(encoder: LeWMEncoder, world: LeWMWorld, frames: Tensor, actions: Tensor,
                regularizer: SIGReg, generator: torch.Generator, config: LeWMConfig) -> JointLoss:
-    if frames.shape[:2] != (config.joint.batch, config.joint.frames):
+    from .lewm_config import window_layout
+
+    offsets, predicted_at, centred_at = window_layout(config.joint)
+    if frames.shape[:2] != (config.joint.batch, len(offsets)):
         raise ValueError("statistical_batch: use the entire declared B,T, not accumulated microbatches")
     z = encoder(frames)
-    prediction = world.teacher(z, actions).predicted
+    # Prediction always runs on the prediction frames alone; a widened centering
+    # window adds encoded frames without lengthening the dynamics rollout.
+    pairs = z if predicted_at == tuple(range(z.shape[1])) else z[:, list(predicted_at)]
+    prediction = world.teacher(pairs, actions).predicted
     with torch.autocast(device_type=z.device.type, enabled=False):
-        pred_loss = (prediction.float() - z[:, 1:].float()).square().mean()
-        values = z[:, :, 0].float()
+        pred_loss = (prediction.float() - pairs[:, 1:].float()).square().mean()
+        values = (z if centred_at == tuple(range(z.shape[1])) else z[:, list(centred_at)])[:, :, 0].float()
         if config.variant == "tc":
             values = values - values.mean(1, keepdim=True)
         reg_loss = regularizer(values.transpose(0, 1), generator)

@@ -1,0 +1,236 @@
+{
+  "schema": "d4mj_phase4_transformer_v1",
+  "rows": [
+    {
+      "arm": "transformer_raw",
+      "condition": "real_fit_real",
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 25478,
+      "safe_choice": [
+        32,
+        29,
+        32
+      ],
+      "mean_safe": 31.0,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.9178,
+        0.912,
+        0.901
+      ]
+    },
+    {
+      "arm": "transformer_raw",
+      "condition": "gen_fit_gen",
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 25478,
+      "safe_choice": [
+        22,
+        18,
+        18
+      ],
+      "mean_safe": 19.33,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.7879,
+        0.7891,
+        0.7796
+      ]
+    },
+    {
+      "arm": "transformer_raw",
+      "condition": "gen_fit_gen_action_permuted",
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 25478,
+      "safe_choice": [
+        16,
+        11,
+        13
+      ],
+      "mean_safe": 13.33,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.7353,
+        0.734,
+        0.7427
+      ]
+    },
+    {
+      "arm": "transformer_raw",
+      "condition": "root_action",
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 27654,
+      "safe_choice": [
+        20,
+        23,
+        21
+      ],
+      "mean_safe": 21.33,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.7887,
+        0.8182,
+        0.8014
+      ]
+    },
+    {
+      "arm": "transformer_raw",
+      "condition": "real_bce_death",
+      "family": "mlp128",
+      "objective": "bce_death",
+      "parameters": 25478,
+      "safe_choice": [
+        23,
+        19,
+        22
+      ],
+      "mean_safe": 21.33,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.8055,
+        0.7923,
+        0.8027
+      ]
+    },
+    {
+      "arm": "transformer_raw",
+      "condition": "real_rank",
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 25478,
+      "safe_choice": [
+        32,
+        29,
+        32
+      ],
+      "mean_safe": 31.0,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.9178,
+        0.912,
+        0.901
+      ]
+    },
+    {
+      "arm": "transformer_tc",
+      "condition": "real_fit_real",
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 25478,
+      "safe_choice": [
+        18,
+        17,
+        18
+      ],
+      "mean_safe": 17.67,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.5519,
+        0.5475,
+        0.5055
+      ]
+    },
+    {
+      "arm": "transformer_tc",
+      "condition": "gen_fit_gen",
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 25478,
+      "safe_choice": [
+        15,
+        15,
+        15
+      ],
+      "mean_safe": 15.0,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.6641,
+        0.6732,
+        0.6596
+      ]
+    },
+    {
+      "arm": "transformer_tc",
+      "condition": "gen_fit_gen_action_permuted",
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 25478,
+      "safe_choice": [
+        20,
+        19,
+        19
+      ],
+      "mean_safe": 19.33,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.6066,
+        0.5881,
+        0.5554
+      ]
+    },
+    {
+      "arm": "transformer_tc",
+      "condition": "root_action",
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 27654,
+      "safe_choice": [
+        21,
+        19,
+        21
+      ],
+      "mean_safe": 20.33,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.7082,
+        0.7132,
+        0.7314
+      ]
+    },
+    {
+      "arm": "transformer_tc",
+      "condition": "real_bce_death",
+      "family": "mlp128",
+      "objective": "bce_death",
+      "parameters": 25478,
+      "safe_choice": [
+        14,
+        14,
+        14
+      ],
+      "mean_safe": 14.0,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.5191,
+        0.5128,
+        0.4609
+      ]
+    },
+    {
+      "arm": "transformer_tc",
+      "condition": "real_rank",
+      "family": "mlp128",
+      "objective": "rank",
+      "parameters": 25478,
+      "safe_choice": [
+        18,
+        17,
+        18
+      ],
+      "mean_safe": 17.67,
+      "opportunity_roots": 36,
+      "within_root_auc": [
+        0.5519,
+        0.5475,
+        0.5055
+      ]
+    }
+  ],
+  "_inputs": {
+    "tf_features": "8dbfe026b3686ccc"
+  }
+}

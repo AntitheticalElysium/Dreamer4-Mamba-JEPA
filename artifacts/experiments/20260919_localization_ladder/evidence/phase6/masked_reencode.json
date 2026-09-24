@@ -1,0 +1,121 @@
+{
+  "schema": "d4mj_phase6_masked_v1",
+  "what": "re-encodes ACTUAL masked successor images; token subsetting of contextualized ViT outputs cannot establish that HUD pixels carry the advantage",
+  "masks": {
+    "hud_only": "pixel rows 49-62 kept, 0-48 zeroed",
+    "map_only": "pixel rows 0-48 kept, 49-62 zeroed"
+  },
+  "rows": [
+    {
+      "mask": "intact",
+      "rung": "cls",
+      "parameters": 25478,
+      "dim": 192,
+      "safe": [
+        31,
+        32,
+        31
+      ],
+      "mean_safe": 31.33,
+      "auc": [
+        0.937,
+        0.921,
+        0.9198
+      ],
+      "mean_auc": 0.9259
+    },
+    {
+      "mask": "intact",
+      "rung": "patch_mean",
+      "parameters": 25478,
+      "dim": 192,
+      "safe": [
+        35,
+        34,
+        35
+      ],
+      "mean_safe": 34.67,
+      "auc": [
+        0.9819,
+        0.9775,
+        0.9793
+      ],
+      "mean_auc": 0.9796
+    },
+    {
+      "mask": "map_only",
+      "rung": "cls",
+      "parameters": 25478,
+      "dim": 192,
+      "safe": [
+        26,
+        26,
+        24
+      ],
+      "mean_safe": 25.33,
+      "auc": [
+        0.6074,
+        0.5649,
+        0.5883
+      ],
+      "mean_auc": 0.5869
+    },
+    {
+      "mask": "map_only",
+      "rung": "patch_mean",
+      "parameters": 25478,
+      "dim": 192,
+      "safe": [
+        23,
+        23,
+        23
+      ],
+      "mean_safe": 23.0,
+      "auc": [
+        0.4883,
+        0.5211,
+        0.5877
+      ],
+      "mean_auc": 0.5324
+    },
+    {
+      "mask": "hud_only",
+      "rung": "cls",
+      "parameters": 25478,
+      "dim": 192,
+      "safe": [
+        36,
+        36,
+        36
+      ],
+      "mean_safe": 36.0,
+      "auc": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mean_auc": 1.0
+    },
+    {
+      "mask": "hud_only",
+      "rung": "patch_mean",
+      "parameters": 25478,
+      "dim": 192,
+      "safe": [
+        36,
+        36,
+        36
+      ],
+      "mean_safe": 36.0,
+      "auc": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mean_auc": 1.0
+    }
+  ],
+  "_inputs": {
+    "test": "masked_reencode_v1"
+  }
+}

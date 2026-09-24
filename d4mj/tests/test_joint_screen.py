@@ -96,6 +96,49 @@ def test_paired_pipeline_saves_initialization_and_runs_component_screen(tmp_path
     with pytest.raises(ComponentGateError,match='joint_screen'):require_joint_screen(None,c,data,parent)
 
 
+def test_a_centering_pair_is_two_tc_arms_and_declares_its_own_axis(tmp_path):
+    # The window ablation puts TC in both slots; only the centering index set differs.
+    c=small_config(schema='d4mj_lewm_recipe_v2',
+                   joint=replace(small_config().joint,centering_stride=2))
+    configs={'raw':replace(c,joint=replace(c.joint,centering='consecutive')),
+             'tc':replace(c,joint=replace(c.joint,centering='strided'))}
+    dataset=tmp_path/'raw.pt';save_episodes(dataset,corpus());out=tmp_path/'pair'
+    run_joint_pair(configs,settings(),dataset,out,screen_only=True)
+    assert json.loads((out/'pair_axis.json').read_text())['axis']=='joint.centering'
+    report=json.loads((out/'G1/screen.json').read_text())
+    assert report['pair_axis']=='joint.centering'
+    # The whole screen must execute, not just the pair check: a widened centering
+    # window encodes 6 frames but rolls out 4, and every reading is on the 4.
+    assert report.get('blocked_component') is None,report['components']
+    assert all(v['status']=='pass' for v in report['components'].values()),report['components']
+    for slot in ('raw','tc'):
+        assert len(report['arms'][slot]['temporal_power'])==c.joint.frames//2+1
+    rows=torch.load(out/'G1/raw_rows.pt',weights_only=False)['features']['dev']
+    assert rows['projected'].shape[1]==c.joint.frames
+    assert rows['prediction'].shape[1]==c.joint.frames-1
+    # Continuation must resolve each arm by its sealed recipe, not by the declared
+    # variant: both arms say `tc`, so the variant names no arm at all.
+    from d4mj.gates import contract_digest
+    report['decision']='continue_joint_budget'
+    for item in report['arms'].values():
+        item['learning_progress']=True
+        item['prediction']['normalized_prediction_mse']=.5
+        item['initial_prediction']['normalized_prediction_mse']=1.
+        item['retention']['projection_stop']=False
+    report['report_id']=contract_digest({k:v for k,v in report.items() if k!='report_id'})
+    _,data=load_joint_corpus(dataset,c)
+    for slot in ('raw','tc'):
+        require_joint_screen(report,configs[slot],data,out/slot/'joint/step-000002.pt')
+    for slot,other in (('raw','tc'),('tc','raw')):
+        with pytest.raises(ComponentGateError,match='parent'):
+            require_joint_screen(report,configs[slot],data,out/other/'joint/step-000002.pt')
+    # Two arms that differ on nothing, or on two axes at once, are not a pair.
+    for broken in ({'raw':configs['raw'],'tc':configs['raw']},
+                   {'raw':configs['raw'],'tc':replace(configs['tc'],variant='raw')}):
+        with pytest.raises(ComponentGateError,match='exactly one declared axis'):
+            run_joint_pair(broken,settings(),dataset,tmp_path/str(id(broken)),screen_only=True)
+
+
 def test_continuation_verifies_parent_evidence_and_records_screen_lineage(tmp_path):
     """Synthetic passing diagnostics exercise authorization, not scientific success."""
     from d4mj.gates import contract_digest
@@ -137,3 +180,28 @@ def test_research_continuation_without_screen_stops_before_new_updates(tmp_path)
     with pytest.raises(ComponentGateError,match='joint_resource'):
         train_joint(episodes,c,tmp_path/'run',dataset_contract=data,gate_report=report,stop_at=4)
     assert not (tmp_path/'run').exists()
+
+
+def test_screen_windows_stride_spans_and_aggregates_labels():
+    """G1 must sample the same span as training, with per-transition labels."""
+    from d4mj.data import Episode
+    c = small_config(); s = settings()
+    frames = torch.arange(40, dtype=torch.uint8)[:, None, None, None]
+    episodes = [Episode(observations=frames.expand(40, 14, 14, 3).clone(),
+                        actions_taken=torch.arange(39) % 17,
+                        rewards=torch.ones(39), terminated=torch.zeros(39, dtype=torch.bool),
+                        truncated=torch.zeros(39, dtype=torch.bool),
+                        events=torch.zeros(39, dtype=torch.bool),
+                        episode_id=f"e{i}", split="train", uniform_eligible=True,
+                        bc_eligible=False) for i in range(2)]
+    plain = screen_windows(episodes, c, s, "train")
+    strided = screen_windows(episodes, replace(c, schema="d4mj_lewm_recipe_v2",
+                                               joint=replace(c.joint, stride=4)), s, "train")
+    assert plain["frames"].shape == strided["frames"].shape
+    assert plain["labels"].shape == strided["labels"].shape
+    assert strided["actions"].shape == (*plain["actions"].shape, 4)
+    index = lambda d: d["frames"][:, :, 0, 0, 0].int()
+    assert (index(plain).diff(dim=1) == 1).all()
+    assert (index(strided).diff(dim=1) == 4).all()
+    # Reward is summed over each retained transition's four native steps.
+    assert plain["labels"][..., 0].all() and strided["labels"][..., 0].all()

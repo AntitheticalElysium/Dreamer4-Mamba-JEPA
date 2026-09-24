@@ -49,6 +49,26 @@ class PredictiveState:
     step: int
 
 
+@dataclass(frozen=True)
+class WindowPredictiveState:
+    """LeWM state for the finite-window source predictor, after `step` completed pairs.
+
+    The source has no carry: it recomputes a bounded window every call, with positions reset
+    to 0:len. So the state buffers the *inputs* it will need instead of a recurrent memory.
+
+    past_latents/past_actions hold at most `context - 1` completed pairs, excluding the
+    current latent and its not-yet-chosen outgoing action. history is the previous pair's
+    predictor output and is zero at a fresh start, matching PredictiveState's contract.
+    Latent: B,1,1,D. past_latents: B,k,D. past_actions: B,k int64. History: B,1,width.
+    """
+
+    latent: Tensor
+    past_latents: Tensor
+    past_actions: Tensor
+    history: Tensor
+    step: int
+
+
 def repeat_memory(memory, roots: int, actions: int):
     """Each root's memory repeated across its actions.
 

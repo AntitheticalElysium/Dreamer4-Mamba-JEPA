@@ -1,0 +1,1806 @@
+{
+  "schema": "d4mj_patch_token_policy",
+  "device": "cuda",
+  "data": {
+    "archive": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4_mamba_jepa/artifacts/expert/craftax_expert_v1.pt",
+    "archive_sha256": "7e5cdfc8b8cc813e0b51113f0c959c2c3ddcf3877a9ff0e1777ccfd7d4e0155b",
+    "kind": "bc_eligible PPO expert, lossless 64->63 crop"
+  },
+  "frozen_eval_proof": {
+    "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/m03/frozen_eval_compat.json",
+    "sha256": "394923434019e9685c7827d41567b3c1afb437306cc898514bcd6a8e3b8295f3"
+  },
+  "script_sha256": "bb4c5b10ff458d76e3db815bd681e321481cccc67ac3046b0f214f55c2fb4f89",
+  "target": "expert action; behaviour cloning on whole-episode 80/10/10 splits",
+  "episodes": {
+    "train": 250,
+    "dev": 32
+  },
+  "frames_per_episode": 256,
+  "samples": {
+    "train": 64000,
+    "dev": 8192
+  },
+  "head": {
+    "width": 128,
+    "heads": 4,
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "batch": 256,
+    "steps": 3000,
+    "seed": 20260915,
+    "draws": 1000
+  },
+  "parameter_note": {
+    "ours_encoder_vit_tiny_p7_63": 6175872,
+    "ours_world_mamba2_w256": 2503496,
+    "tclewm_encoder_vit_tiny_p14_224": "same ViT-Tiny family; 256 patch tokens vs our 81",
+    "tclewm_predictor_arpredictor_d6_h16": 9456384,
+    "note": "their predictor is ~3.8x ours; their encoder sees 3.2x the patch tokens"
+  },
+  "episodes_sampled": {
+    "train": [
+      {
+        "slot": 174,
+        "start": 870,
+        "episode": 0
+      },
+      {
+        "slot": 127,
+        "start": 1684,
+        "episode": 1
+      },
+      {
+        "slot": 298,
+        "start": 2062,
+        "episode": 2
+      },
+      {
+        "slot": 277,
+        "start": 1349,
+        "episode": 3
+      },
+      {
+        "slot": 82,
+        "start": 467,
+        "episode": 4
+      },
+      {
+        "slot": 90,
+        "start": 481,
+        "episode": 5
+      },
+      {
+        "slot": 80,
+        "start": 1197,
+        "episode": 6
+      },
+      {
+        "slot": 314,
+        "start": 1474,
+        "episode": 7
+      },
+      {
+        "slot": 86,
+        "start": 2074,
+        "episode": 8
+      },
+      {
+        "slot": 166,
+        "start": 599,
+        "episode": 9
+      },
+      {
+        "slot": 146,
+        "start": 186,
+        "episode": 10
+      },
+      {
+        "slot": 205,
+        "start": 1382,
+        "episode": 11
+      },
+      {
+        "slot": 282,
+        "start": 112,
+        "episode": 12
+      },
+      {
+        "slot": 316,
+        "start": 955,
+        "episode": 13
+      },
+      {
+        "slot": 227,
+        "start": 2093,
+        "episode": 14
+      },
+      {
+        "slot": 5,
+        "start": 1914,
+        "episode": 15
+      },
+      {
+        "slot": 242,
+        "start": 1413,
+        "episode": 16
+      },
+      {
+        "slot": 284,
+        "start": 1547,
+        "episode": 17
+      },
+      {
+        "slot": 251,
+        "start": 1800,
+        "episode": 18
+      },
+      {
+        "slot": 34,
+        "start": 650,
+        "episode": 20
+      },
+      {
+        "slot": 171,
+        "start": 894,
+        "episode": 21
+      },
+      {
+        "slot": 255,
+        "start": 280,
+        "episode": 22
+      },
+      {
+        "slot": 131,
+        "start": 86,
+        "episode": 23
+      },
+      {
+        "slot": 4,
+        "start": 1726,
+        "episode": 24
+      },
+      {
+        "slot": 225,
+        "start": 744,
+        "episode": 25
+      },
+      {
+        "slot": 119,
+        "start": 468,
+        "episode": 26
+      },
+      {
+        "slot": 231,
+        "start": 1259,
+        "episode": 27
+      },
+      {
+        "slot": 63,
+        "start": 2014,
+        "episode": 28
+      },
+      {
+        "slot": 20,
+        "start": 1018,
+        "episode": 29
+      },
+      {
+        "slot": 142,
+        "start": 2084,
+        "episode": 30
+      },
+      {
+        "slot": 139,
+        "start": 2175,
+        "episode": 31
+      },
+      {
+        "slot": 85,
+        "start": 620,
+        "episode": 32
+      },
+      {
+        "slot": 212,
+        "start": 1954,
+        "episode": 33
+      },
+      {
+        "slot": 67,
+        "start": 1032,
+        "episode": 34
+      },
+      {
+        "slot": 134,
+        "start": 1954,
+        "episode": 35
+      },
+      {
+        "slot": 305,
+        "start": 1136,
+        "episode": 36
+      },
+      {
+        "slot": 120,
+        "start": 228,
+        "episode": 37
+      },
+      {
+        "slot": 308,
+        "start": 149,
+        "episode": 38
+      },
+      {
+        "slot": 24,
+        "start": 877,
+        "episode": 39
+      },
+      {
+        "slot": 301,
+        "start": 198,
+        "episode": 40
+      },
+      {
+        "slot": 121,
+        "start": 365,
+        "episode": 41
+      },
+      {
+        "slot": 178,
+        "start": 73,
+        "episode": 42
+      },
+      {
+        "slot": 96,
+        "start": 170,
+        "episode": 43
+      },
+      {
+        "slot": 202,
+        "start": 386,
+        "episode": 44
+      },
+      {
+        "slot": 57,
+        "start": 78,
+        "episode": 45
+      },
+      {
+        "slot": 163,
+        "start": 911,
+        "episode": 46
+      },
+      {
+        "slot": 190,
+        "start": 132,
+        "episode": 47
+      },
+      {
+        "slot": 123,
+        "start": 1102,
+        "episode": 48
+      },
+      {
+        "slot": 262,
+        "start": 1579,
+        "episode": 49
+      },
+      {
+        "slot": 112,
+        "start": 964,
+        "episode": 50
+      },
+      {
+        "slot": 313,
+        "start": 1733,
+        "episode": 51
+      },
+      {
+        "slot": 138,
+        "start": 391,
+        "episode": 52
+      },
+      {
+        "slot": 154,
+        "start": 776,
+        "episode": 54
+      },
+      {
+        "slot": 161,
+        "start": 506,
+        "episode": 55
+      },
+      {
+        "slot": 81,
+        "start": 177,
+        "episode": 56
+      },
+      {
+        "slot": 170,
+        "start": 2142,
+        "episode": 57
+      },
+      {
+        "slot": 51,
+        "start": 2003,
+        "episode": 58
+      },
+      {
+        "slot": 95,
+        "start": 1766,
+        "episode": 59
+      },
+      {
+        "slot": 237,
+        "start": 1364,
+        "episode": 60
+      },
+      {
+        "slot": 65,
+        "start": 1437,
+        "episode": 61
+      },
+      {
+        "slot": 76,
+        "start": 535,
+        "episode": 62
+      },
+      {
+        "slot": 240,
+        "start": 2079,
+        "episode": 63
+      },
+      {
+        "slot": 62,
+        "start": 247,
+        "episode": 64
+      },
+      {
+        "slot": 157,
+        "start": 108,
+        "episode": 65
+      },
+      {
+        "slot": 236,
+        "start": 819,
+        "episode": 66
+      },
+      {
+        "slot": 88,
+        "start": 864,
+        "episode": 67
+      },
+      {
+        "slot": 22,
+        "start": 122,
+        "episode": 68
+      },
+      {
+        "slot": 184,
+        "start": 1582,
+        "episode": 69
+      },
+      {
+        "slot": 288,
+        "start": 84,
+        "episode": 70
+      },
+      {
+        "slot": 53,
+        "start": 708,
+        "episode": 71
+      },
+      {
+        "slot": 19,
+        "start": 117,
+        "episode": 72
+      },
+      {
+        "slot": 114,
+        "start": 1782,
+        "episode": 73
+      },
+      {
+        "slot": 46,
+        "start": 82,
+        "episode": 74
+      },
+      {
+        "slot": 230,
+        "start": 1157,
+        "episode": 75
+      },
+      {
+        "slot": 32,
+        "start": 1653,
+        "episode": 76
+      },
+      {
+        "slot": 74,
+        "start": 972,
+        "episode": 78
+      },
+      {
+        "slot": 256,
+        "start": 783,
+        "episode": 79
+      },
+      {
+        "slot": 290,
+        "start": 216,
+        "episode": 80
+      },
+      {
+        "slot": 105,
+        "start": 955,
+        "episode": 81
+      },
+      {
+        "slot": 94,
+        "start": 785,
+        "episode": 82
+      },
+      {
+        "slot": 52,
+        "start": 928,
+        "episode": 83
+      },
+      {
+        "slot": 124,
+        "start": 1860,
+        "episode": 84
+      },
+      {
+        "slot": 153,
+        "start": 1144,
+        "episode": 85
+      },
+      {
+        "slot": 307,
+        "start": 278,
+        "episode": 86
+      },
+      {
+        "slot": 72,
+        "start": 192,
+        "episode": 87
+      },
+      {
+        "slot": 77,
+        "start": 73,
+        "episode": 88
+      },
+      {
+        "slot": 272,
+        "start": 148,
+        "episode": 89
+      },
+      {
+        "slot": 59,
+        "start": 391,
+        "episode": 90
+      },
+      {
+        "slot": 294,
+        "start": 2086,
+        "episode": 91
+      },
+      {
+        "slot": 285,
+        "start": 127,
+        "episode": 92
+      },
+      {
+        "slot": 295,
+        "start": 497,
+        "episode": 93
+      },
+      {
+        "slot": 129,
+        "start": 324,
+        "episode": 94
+      },
+      {
+        "slot": 42,
+        "start": 510,
+        "episode": 95
+      },
+      {
+        "slot": 29,
+        "start": 320,
+        "episode": 96
+      },
+      {
+        "slot": 260,
+        "start": 626,
+        "episode": 97
+      },
+      {
+        "slot": 6,
+        "start": 1335,
+        "episode": 98
+      },
+      {
+        "slot": 173,
+        "start": 409,
+        "episode": 99
+      },
+      {
+        "slot": 70,
+        "start": 1781,
+        "episode": 100
+      },
+      {
+        "slot": 302,
+        "start": 1689,
+        "episode": 101
+      },
+      {
+        "slot": 159,
+        "start": 63,
+        "episode": 102
+      },
+      {
+        "slot": 101,
+        "start": 1886,
+        "episode": 103
+      },
+      {
+        "slot": 147,
+        "start": 614,
+        "episode": 104
+      },
+      {
+        "slot": 150,
+        "start": 1719,
+        "episode": 105
+      },
+      {
+        "slot": 239,
+        "start": 451,
+        "episode": 106
+      },
+      {
+        "slot": 200,
+        "start": 1421,
+        "episode": 107
+      },
+      {
+        "slot": 61,
+        "start": 1184,
+        "episode": 108
+      },
+      {
+        "slot": 182,
+        "start": 103,
+        "episode": 109
+      },
+      {
+        "slot": 258,
+        "start": 1541,
+        "episode": 110
+      },
+      {
+        "slot": 71,
+        "start": 439,
+        "episode": 111
+      },
+      {
+        "slot": 214,
+        "start": 1041,
+        "episode": 112
+      },
+      {
+        "slot": 99,
+        "start": 1726,
+        "episode": 113
+      },
+      {
+        "slot": 220,
+        "start": 1622,
+        "episode": 114
+      },
+      {
+        "slot": 28,
+        "start": 1721,
+        "episode": 115
+      },
+      {
+        "slot": 253,
+        "start": 2210,
+        "episode": 116
+      },
+      {
+        "slot": 35,
+        "start": 1746,
+        "episode": 117
+      },
+      {
+        "slot": 265,
+        "start": 1986,
+        "episode": 118
+      },
+      {
+        "slot": 14,
+        "start": 545,
+        "episode": 119
+      },
+      {
+        "slot": 297,
+        "start": 214,
+        "episode": 120
+      },
+      {
+        "slot": 151,
+        "start": 1598,
+        "episode": 121
+      },
+      {
+        "slot": 206,
+        "start": 595,
+        "episode": 122
+      },
+      {
+        "slot": 13,
+        "start": 1956,
+        "episode": 123
+      },
+      {
+        "slot": 311,
+        "start": 205,
+        "episode": 124
+      },
+      {
+        "slot": 304,
+        "start": 2197,
+        "episode": 125
+      },
+      {
+        "slot": 30,
+        "start": 231,
+        "episode": 126
+      },
+      {
+        "slot": 122,
+        "start": 861,
+        "episode": 127
+      },
+      {
+        "slot": 176,
+        "start": 1670,
+        "episode": 128
+      },
+      {
+        "slot": 216,
+        "start": 2164,
+        "episode": 129
+      },
+      {
+        "slot": 130,
+        "start": 1320,
+        "episode": 130
+      },
+      {
+        "slot": 140,
+        "start": 341,
+        "episode": 131
+      },
+      {
+        "slot": 196,
+        "start": 181,
+        "episode": 132
+      },
+      {
+        "slot": 152,
+        "start": 1848,
+        "episode": 134
+      },
+      {
+        "slot": 97,
+        "start": 375,
+        "episode": 135
+      },
+      {
+        "slot": 15,
+        "start": 1278,
+        "episode": 136
+      },
+      {
+        "slot": 254,
+        "start": 373,
+        "episode": 137
+      },
+      {
+        "slot": 319,
+        "start": 1529,
+        "episode": 138
+      },
+      {
+        "slot": 289,
+        "start": 2220,
+        "episode": 139
+      },
+      {
+        "slot": 261,
+        "start": 522,
+        "episode": 140
+      },
+      {
+        "slot": 2,
+        "start": 1930,
+        "episode": 141
+      },
+      {
+        "slot": 169,
+        "start": 1759,
+        "episode": 142
+      },
+      {
+        "slot": 167,
+        "start": 1335,
+        "episode": 143
+      },
+      {
+        "slot": 310,
+        "start": 236,
+        "episode": 144
+      },
+      {
+        "slot": 204,
+        "start": 1070,
+        "episode": 145
+      },
+      {
+        "slot": 210,
+        "start": 1854,
+        "episode": 146
+      },
+      {
+        "slot": 33,
+        "start": 1907,
+        "episode": 147
+      },
+      {
+        "slot": 287,
+        "start": 397,
+        "episode": 148
+      },
+      {
+        "slot": 201,
+        "start": 1943,
+        "episode": 149
+      },
+      {
+        "slot": 148,
+        "start": 1529,
+        "episode": 150
+      },
+      {
+        "slot": 268,
+        "start": 1088,
+        "episode": 151
+      },
+      {
+        "slot": 11,
+        "start": 664,
+        "episode": 152
+      },
+      {
+        "slot": 317,
+        "start": 1061,
+        "episode": 153
+      },
+      {
+        "slot": 177,
+        "start": 389,
+        "episode": 154
+      },
+      {
+        "slot": 125,
+        "start": 1201,
+        "episode": 155
+      },
+      {
+        "slot": 246,
+        "start": 888,
+        "episode": 156
+      },
+      {
+        "slot": 286,
+        "start": 720,
+        "episode": 157
+      },
+      {
+        "slot": 149,
+        "start": 245,
+        "episode": 158
+      },
+      {
+        "slot": 103,
+        "start": 253,
+        "episode": 159
+      },
+      {
+        "slot": 55,
+        "start": 1693,
+        "episode": 160
+      },
+      {
+        "slot": 69,
+        "start": 394,
+        "episode": 161
+      },
+      {
+        "slot": 195,
+        "start": 719,
+        "episode": 162
+      },
+      {
+        "slot": 108,
+        "start": 289,
+        "episode": 163
+      },
+      {
+        "slot": 278,
+        "start": 1112,
+        "episode": 164
+      },
+      {
+        "slot": 78,
+        "start": 1511,
+        "episode": 165
+      },
+      {
+        "slot": 10,
+        "start": 550,
+        "episode": 166
+      },
+      {
+        "slot": 44,
+        "start": 152,
+        "episode": 167
+      },
+      {
+        "slot": 0,
+        "start": 479,
+        "episode": 168
+      },
+      {
+        "slot": 133,
+        "start": 1220,
+        "episode": 169
+      },
+      {
+        "slot": 271,
+        "start": 1047,
+        "episode": 170
+      },
+      {
+        "slot": 248,
+        "start": 538,
+        "episode": 171
+      },
+      {
+        "slot": 93,
+        "start": 250,
+        "episode": 172
+      },
+      {
+        "slot": 87,
+        "start": 150,
+        "episode": 173
+      },
+      {
+        "slot": 259,
+        "start": 439,
+        "episode": 174
+      },
+      {
+        "slot": 48,
+        "start": 469,
+        "episode": 175
+      },
+      {
+        "slot": 232,
+        "start": 1063,
+        "episode": 176
+      },
+      {
+        "slot": 228,
+        "start": 1789,
+        "episode": 177
+      },
+      {
+        "slot": 36,
+        "start": 202,
+        "episode": 178
+      },
+      {
+        "slot": 39,
+        "start": 69,
+        "episode": 179
+      },
+      {
+        "slot": 143,
+        "start": 369,
+        "episode": 180
+      },
+      {
+        "slot": 180,
+        "start": 896,
+        "episode": 181
+      },
+      {
+        "slot": 247,
+        "start": 975,
+        "episode": 182
+      },
+      {
+        "slot": 241,
+        "start": 133,
+        "episode": 183
+      },
+      {
+        "slot": 291,
+        "start": 298,
+        "episode": 184
+      },
+      {
+        "slot": 117,
+        "start": 491,
+        "episode": 185
+      },
+      {
+        "slot": 60,
+        "start": 1623,
+        "episode": 186
+      },
+      {
+        "slot": 111,
+        "start": 1414,
+        "episode": 187
+      },
+      {
+        "slot": 270,
+        "start": 1855,
+        "episode": 188
+      },
+      {
+        "slot": 145,
+        "start": 1243,
+        "episode": 189
+      },
+      {
+        "slot": 83,
+        "start": 1680,
+        "episode": 190
+      },
+      {
+        "slot": 118,
+        "start": 282,
+        "episode": 191
+      },
+      {
+        "slot": 160,
+        "start": 607,
+        "episode": 192
+      },
+      {
+        "slot": 181,
+        "start": 146,
+        "episode": 193
+      },
+      {
+        "slot": 229,
+        "start": 2239,
+        "episode": 194
+      },
+      {
+        "slot": 192,
+        "start": 309,
+        "episode": 195
+      },
+      {
+        "slot": 45,
+        "start": 1366,
+        "episode": 196
+      },
+      {
+        "slot": 211,
+        "start": 110,
+        "episode": 197
+      },
+      {
+        "slot": 296,
+        "start": 532,
+        "episode": 198
+      },
+      {
+        "slot": 92,
+        "start": 966,
+        "episode": 199
+      },
+      {
+        "slot": 292,
+        "start": 2088,
+        "episode": 200
+      },
+      {
+        "slot": 293,
+        "start": 1463,
+        "episode": 201
+      },
+      {
+        "slot": 17,
+        "start": 1126,
+        "episode": 202
+      },
+      {
+        "slot": 165,
+        "start": 609,
+        "episode": 203
+      },
+      {
+        "slot": 276,
+        "start": 1373,
+        "episode": 205
+      },
+      {
+        "slot": 40,
+        "start": 1666,
+        "episode": 206
+      },
+      {
+        "slot": 102,
+        "start": 1360,
+        "episode": 207
+      },
+      {
+        "slot": 193,
+        "start": 2115,
+        "episode": 208
+      },
+      {
+        "slot": 224,
+        "start": 1752,
+        "episode": 209
+      },
+      {
+        "slot": 186,
+        "start": 291,
+        "episode": 210
+      },
+      {
+        "slot": 194,
+        "start": 77,
+        "episode": 211
+      },
+      {
+        "slot": 243,
+        "start": 2095,
+        "episode": 213
+      },
+      {
+        "slot": 233,
+        "start": 766,
+        "episode": 214
+      },
+      {
+        "slot": 43,
+        "start": 649,
+        "episode": 215
+      },
+      {
+        "slot": 37,
+        "start": 682,
+        "episode": 216
+      },
+      {
+        "slot": 281,
+        "start": 1668,
+        "episode": 217
+      },
+      {
+        "slot": 64,
+        "start": 1641,
+        "episode": 218
+      },
+      {
+        "slot": 126,
+        "start": 1533,
+        "episode": 219
+      },
+      {
+        "slot": 203,
+        "start": 1047,
+        "episode": 220
+      },
+      {
+        "slot": 50,
+        "start": 73,
+        "episode": 221
+      },
+      {
+        "slot": 191,
+        "start": 618,
+        "episode": 222
+      },
+      {
+        "slot": 158,
+        "start": 909,
+        "episode": 223
+      },
+      {
+        "slot": 115,
+        "start": 1589,
+        "episode": 224
+      },
+      {
+        "slot": 183,
+        "start": 128,
+        "episode": 225
+      },
+      {
+        "slot": 168,
+        "start": 2127,
+        "episode": 226
+      },
+      {
+        "slot": 21,
+        "start": 897,
+        "episode": 227
+      },
+      {
+        "slot": 12,
+        "start": 731,
+        "episode": 228
+      },
+      {
+        "slot": 179,
+        "start": 1945,
+        "episode": 229
+      },
+      {
+        "slot": 207,
+        "start": 1934,
+        "episode": 230
+      },
+      {
+        "slot": 283,
+        "start": 923,
+        "episode": 231
+      },
+      {
+        "slot": 56,
+        "start": 1813,
+        "episode": 232
+      },
+      {
+        "slot": 312,
+        "start": 354,
+        "episode": 233
+      },
+      {
+        "slot": 18,
+        "start": 76,
+        "episode": 234
+      },
+      {
+        "slot": 107,
+        "start": 2018,
+        "episode": 235
+      },
+      {
+        "slot": 132,
+        "start": 1086,
+        "episode": 236
+      },
+      {
+        "slot": 198,
+        "start": 2157,
+        "episode": 237
+      },
+      {
+        "slot": 213,
+        "start": 1862,
+        "episode": 238
+      },
+      {
+        "slot": 100,
+        "start": 1092,
+        "episode": 239
+      },
+      {
+        "slot": 273,
+        "start": 613,
+        "episode": 240
+      },
+      {
+        "slot": 306,
+        "start": 1218,
+        "episode": 241
+      },
+      {
+        "slot": 54,
+        "start": 1439,
+        "episode": 242
+      },
+      {
+        "slot": 215,
+        "start": 1725,
+        "episode": 243
+      },
+      {
+        "slot": 244,
+        "start": 117,
+        "episode": 244
+      },
+      {
+        "slot": 27,
+        "start": 677,
+        "episode": 245
+      },
+      {
+        "slot": 84,
+        "start": 1720,
+        "episode": 246
+      },
+      {
+        "slot": 26,
+        "start": 1132,
+        "episode": 247
+      },
+      {
+        "slot": 185,
+        "start": 1068,
+        "episode": 248
+      },
+      {
+        "slot": 318,
+        "start": 821,
+        "episode": 249
+      },
+      {
+        "slot": 315,
+        "start": 1993,
+        "episode": 250
+      },
+      {
+        "slot": 91,
+        "start": 1732,
+        "episode": 251
+      },
+      {
+        "slot": 249,
+        "start": 399,
+        "episode": 252
+      },
+      {
+        "slot": 264,
+        "start": 103,
+        "episode": 253
+      },
+      {
+        "slot": 9,
+        "start": 424,
+        "episode": 254
+      },
+      {
+        "slot": 187,
+        "start": 1111,
+        "episode": 255
+      }
+    ],
+    "dev": [
+      {
+        "slot": 110,
+        "start": 446,
+        "episode": 0
+      },
+      {
+        "slot": 89,
+        "start": 267,
+        "episode": 1
+      },
+      {
+        "slot": 221,
+        "start": 1886,
+        "episode": 2
+      },
+      {
+        "slot": 38,
+        "start": 143,
+        "episode": 3
+      },
+      {
+        "slot": 274,
+        "start": 856,
+        "episode": 4
+      },
+      {
+        "slot": 238,
+        "start": 288,
+        "episode": 5
+      },
+      {
+        "slot": 79,
+        "start": 1215,
+        "episode": 6
+      },
+      {
+        "slot": 23,
+        "start": 238,
+        "episode": 7
+      },
+      {
+        "slot": 309,
+        "start": 153,
+        "episode": 8
+      },
+      {
+        "slot": 269,
+        "start": 1096,
+        "episode": 9
+      },
+      {
+        "slot": 188,
+        "start": 1140,
+        "episode": 10
+      },
+      {
+        "slot": 137,
+        "start": 1080,
+        "episode": 11
+      },
+      {
+        "slot": 279,
+        "start": 942,
+        "episode": 12
+      },
+      {
+        "slot": 49,
+        "start": 915,
+        "episode": 13
+      },
+      {
+        "slot": 98,
+        "start": 1658,
+        "episode": 14
+      },
+      {
+        "slot": 116,
+        "start": 1308,
+        "episode": 15
+      },
+      {
+        "slot": 162,
+        "start": 883,
+        "episode": 16
+      },
+      {
+        "slot": 47,
+        "start": 824,
+        "episode": 17
+      },
+      {
+        "slot": 189,
+        "start": 116,
+        "episode": 18
+      },
+      {
+        "slot": 66,
+        "start": 1971,
+        "episode": 19
+      },
+      {
+        "slot": 136,
+        "start": 2079,
+        "episode": 20
+      },
+      {
+        "slot": 156,
+        "start": 1580,
+        "episode": 21
+      },
+      {
+        "slot": 68,
+        "start": 163,
+        "episode": 22
+      },
+      {
+        "slot": 25,
+        "start": 1901,
+        "episode": 23
+      },
+      {
+        "slot": 113,
+        "start": 78,
+        "episode": 24
+      },
+      {
+        "slot": 219,
+        "start": 537,
+        "episode": 25
+      },
+      {
+        "slot": 263,
+        "start": 537,
+        "episode": 26
+      },
+      {
+        "slot": 141,
+        "start": 1305,
+        "episode": 27
+      },
+      {
+        "slot": 106,
+        "start": 1940,
+        "episode": 28
+      },
+      {
+        "slot": 41,
+        "start": 1269,
+        "episode": 29
+      },
+      {
+        "slot": 58,
+        "start": 1557,
+        "episode": 30
+      },
+      {
+        "slot": 250,
+        "start": 976,
+        "episode": 31
+      }
+    ]
+  },
+  "majority_action_floor": {
+    "top1": 0.146728515625,
+    "interval": [
+      0.1329345703125,
+      0.16211548447608948
+    ],
+    "status": "measured"
+  },
+  "arms": {
+    "consecutive": {
+      "identity": {
+        "checkpoint": "artifacts/lewm_gates_20260916/paired_window/raw/joint/step-010000.pt",
+        "sha256": "7bc9c14d7d7d10bd4cabeb22cd7f2af19e39ff8cb1d9b3758a14086e2a1f2789"
+      },
+      "conditions": {
+        "z": {
+          "tokens": 1,
+          "top1": 0.203857421875,
+          "interval": [
+            0.18041381239891052,
+            0.22901001572608948
+          ],
+          "status": "measured"
+        },
+        "cls": {
+          "tokens": 1,
+          "top1": 0.235595703125,
+          "interval": [
+            0.21069030463695526,
+            0.26112979650497437
+          ],
+          "status": "measured"
+        },
+        "patch16": {
+          "tokens": 16,
+          "top1": 0.2584228515625,
+          "interval": [
+            0.2295989990234375,
+            0.28955382108688354
+          ],
+          "status": "measured"
+        },
+        "cls_patch16": {
+          "tokens": 17,
+          "top1": 0.2542724609375,
+          "interval": [
+            0.22216491401195526,
+            0.2847992181777954
+          ],
+          "status": "measured"
+        },
+        "patch16_mean": {
+          "tokens": 1,
+          "top1": 0.2003173828125,
+          "interval": [
+            0.17773132026195526,
+            0.2220458984375
+          ],
+          "status": "measured"
+        },
+        "cls_patch16_mean": {
+          "tokens": 1,
+          "top1": 0.212890625,
+          "interval": [
+            0.1893310546875,
+            0.239990234375
+          ],
+          "status": "measured"
+        }
+      },
+      "reused_direct_spans": {
+        "train": 0,
+        "dev": 0
+      },
+      "reuse_max_abs": null,
+      "paired": {
+        "cls_patch16_minus_cls_patch16_mean": {
+          "top1_difference": 0.0413818359375,
+          "interval": [
+            0.0301513671875,
+            0.0518798828125
+          ],
+          "bootstrap_unit": "expert_episode",
+          "status": "measured"
+        },
+        "patch16_minus_patch16_mean": {
+          "top1_difference": 0.05810546875,
+          "interval": [
+            0.04540710523724556,
+            0.07215271890163422
+          ],
+          "bootstrap_unit": "expert_episode",
+          "status": "measured"
+        },
+        "cls_minus_z": {
+          "top1_difference": 0.03173828125,
+          "interval": [
+            0.025390625,
+            0.0380859375
+          ],
+          "bootstrap_unit": "expert_episode",
+          "status": "measured"
+        },
+        "cls_patch16_minus_cls": {
+          "top1_difference": 0.0186767578125,
+          "interval": [
+            0.008419799618422985,
+            0.02832336723804474
+          ],
+          "bootstrap_unit": "expert_episode",
+          "status": "measured"
+        }
+      }
+    },
+    "strided": {
+      "identity": {
+        "checkpoint": "artifacts/lewm_gates_20260916/paired_window/tc/joint/step-010000.pt",
+        "sha256": "3b2be39fd116a4ff8ffddddf6526ad197cdd7f12da3247fe2988171ffd05e674"
+      },
+      "conditions": {
+        "z": {
+          "tokens": 1,
+          "top1": 0.1419677734375,
+          "interval": [
+            0.1268310546875,
+            0.15967407822608948
+          ],
+          "status": "measured"
+        },
+        "cls": {
+          "tokens": 1,
+          "top1": 0.166259765625,
+          "interval": [
+            0.14891967177391052,
+            0.1865387111902237
+          ],
+          "status": "measured"
+        },
+        "patch16": {
+          "tokens": 16,
+          "top1": 0.24755859375,
+          "interval": [
+            0.22118225693702698,
+            0.2746673822402954
+          ],
+          "status": "measured"
+        },
+        "cls_patch16": {
+          "tokens": 17,
+          "top1": 0.2498779296875,
+          "interval": [
+            0.22044067084789276,
+            0.27966612577438354
+          ],
+          "status": "measured"
+        },
+        "patch16_mean": {
+          "tokens": 1,
+          "top1": 0.17138671875,
+          "interval": [
+            0.15392760932445526,
+            0.18908996880054474
+          ],
+          "status": "measured"
+        },
+        "cls_patch16_mean": {
+          "tokens": 1,
+          "top1": 0.1705322265625,
+          "interval": [
+            0.15417174994945526,
+            0.18885193765163422
+          ],
+          "status": "measured"
+        }
+      },
+      "reused_direct_spans": {
+        "train": 0,
+        "dev": 0
+      },
+      "reuse_max_abs": null,
+      "paired": {
+        "cls_patch16_minus_cls_patch16_mean": {
+          "top1_difference": 0.079345703125,
+          "interval": [
+            0.06163635104894638,
+            0.0992431640625
+          ],
+          "bootstrap_unit": "expert_episode",
+          "status": "measured"
+        },
+        "patch16_minus_patch16_mean": {
+          "top1_difference": 0.076171875,
+          "interval": [
+            0.06127624586224556,
+            0.09338989853858948
+          ],
+          "bootstrap_unit": "expert_episode",
+          "status": "measured"
+        },
+        "cls_minus_z": {
+          "top1_difference": 0.0242919921875,
+          "interval": [
+            0.0150146484375,
+            0.03283996880054474
+          ],
+          "bootstrap_unit": "expert_episode",
+          "status": "measured"
+        },
+        "cls_patch16_minus_cls": {
+          "top1_difference": 0.0836181640625,
+          "interval": [
+            0.06396178901195526,
+            0.10388794541358948
+          ],
+          "bootstrap_unit": "expert_episode",
+          "status": "measured"
+        }
+      }
+    },
+    "direct_attention": {
+      "identity": {
+        "name": "direct_attention",
+        "encoder": {
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/capacity6k/n64d16_s1/encoder_006000.pt",
+          "sha256": "4647c1fbea0cfd16b5262c169c88c8db4334f456d17867b6444315429642907d"
+        },
+        "world": {
+          "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/v2_direct_attention/world_020000.pt",
+          "sha256": "b466f9265d88439abddadb41acf3e7718f501a27579f4c0b2742c534f3219900"
+        },
+        "archived_config": {
+          "transition": "direct",
+          "time_mixer": "attention",
+          "resolution": 63,
+          "channels": 3,
+          "patch": 7,
+          "n_actions": 17,
+          "window": 16,
+          "n_latents": 64,
+          "d_bottleneck": 16,
+          "packing": 2,
+          "mae_p_max": 0.9,
+          "lpips_weight": 0.2,
+          "d_model_encoder": 256,
+          "depth_encoder": 8,
+          "n_heads_encoder": 4,
+          "d_model": 256,
+          "depth": 8,
+          "n_heads": 4,
+          "mlp_ratio": 4.0,
+          "time_every": 4,
+          "n_register": 4,
+          "n_agent": 2,
+          "mamba_d_state": 64,
+          "mamba_headdim": 64,
+          "mamba_expand": 1,
+          "mamba_d_conv": 4,
+          "k_max": 8,
+          "rungs": 4,
+          "tau_ctx_noise": 0.1,
+          "self_fraction": 0.25,
+          "bootstrap_start": 10000,
+          "mtp_leads": 8,
+          "bins": 255,
+          "symlog_limit": 20.0,
+          "horizon": 8,
+          "horizon_candidates": [
+            4,
+            8,
+            16,
+            32
+          ],
+          "direct_rollout": 2,
+          "align_weight": 0.0,
+          "horizon_eval": 10000,
+          "eval_episodes": 64,
+          "bootstrap": 2000,
+          "parameter_tolerance": 0.005,
+          "outcome_gate_seeds": [
+            12000,
+            12001,
+            12002,
+            12003,
+            12004,
+            12005,
+            12006,
+            12007
+          ],
+          "outcome_gate_steps": [
+            0,
+            15,
+            40,
+            80,
+            110
+          ],
+          "outcome_gate_limit": 400,
+          "outcome_gate_flow_samples": 4,
+          "outcome_gate_min_opportunities": 3,
+          "gamma": 0.997,
+          "lam": 0.95,
+          "pmpo_alpha": 0.5,
+          "prior_beta": 0.3,
+          "sequence": 16,
+          "sequence_long": 64,
+          "dynamics_context": 48,
+          "long_batch_every": 4,
+          "long_only_fraction": 0.25,
+          "commit_prefix_fraction": 0.25,
+          "episode_start_fraction": 0.25,
+          "terminal_batch": 1,
+          "event_fraction": 0.5,
+          "batch": 4,
+          "actor_batch": 16,
+          "gradient_checkpointing": true,
+          "rms_decay": 0.99,
+          "learning_rate": 0.0001,
+          "weight_decay": 0.01,
+          "grad_clip": 1.0,
+          "warmup": 1000,
+          "checkpoint_every": 500,
+          "ema_momentum": [
+            0.996,
+            1.0
+          ],
+          "seed": 20260731,
+          "device": "cuda"
+        },
+        "evaluation_device": "cuda"
+      },
+      "conditions": {
+        "direct": {
+          "tokens": 32,
+          "top1": 0.2275390625,
+          "interval": [
+            0.20190124213695526,
+            0.25671690702438354
+          ],
+          "status": "measured"
+        }
+      },
+      "reused_direct_spans": {
+        "train": 250,
+        "dev": 0
+      },
+      "reuse_max_abs": 3.844499588012695e-05,
+      "paired": {}
+    }
+  },
+  "m4_authorized": false
+}

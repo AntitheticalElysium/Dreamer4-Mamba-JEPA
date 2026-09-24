@@ -11,13 +11,13 @@ import torch
 from torch import Tensor, nn
 
 from .config import Config
-from .lewm_config import LeWMConfig
+from .lewm_config import LeWMConfig, LeWMTransformerConfig
 from .lewm import LeWMEncoder, LeWMWorld
 from .representation import Encoder, pack
 from .transition import World
 from .data import patchify
 from .mamba_recurrence import clone_carry, detach_carry, repeat_carry
-from .state import PredictiveState, WorldState, RealState, repeat_memory
+from .state import PredictiveState, WindowPredictiveState, WorldState, RealState, repeat_memory
 
 
 @runtime_checkable
@@ -40,13 +40,22 @@ class ModelBundle:
     config: Config | LeWMConfig
     encoder: nn.Module | None
     world: nn.Module
+    # What a checkpoint RECORDED about this model, never what a recipe intends. `require_control`
+    # reads it, so a freshly constructed bundle -- which has no record -- cannot be authorized.
+    capabilities: dict | None = None
 
     @classmethod
     def create(cls, config):
         devices = list(range(torch.cuda.device_count())) if torch.cuda.is_available() else []
         with torch.random.fork_rng(devices=devices):
             torch.manual_seed(config.seed)
-            if isinstance(config, LeWMConfig):
+            if isinstance(config, LeWMTransformerConfig):
+                from .lewm_transformer import LeWMTransformerWorld
+                # Encoder first, so a same-seed Transformer run starts from the same encoder
+                # weights as its Mamba counterpart.
+                encoder = LeWMEncoder(config)
+                world = LeWMTransformerWorld(config)
+            elif isinstance(config, LeWMConfig):
                 encoder, world = LeWMEncoder(config), LeWMWorld(config)
             else:
                 encoder, world = Encoder(config), World(config)
@@ -62,6 +71,11 @@ class ModelBundle:
             return world
         if world.config != config:
             raise ValueError("world recipe differs from bundle recipe")
+        if isinstance(config, LeWMTransformerConfig):
+            from .lewm_transformer import LeWMTransformerWorld
+            if not isinstance(world, LeWMTransformerWorld) or not isinstance(encoder, LeWMEncoder):
+                raise TypeError("source-exact bundle requires its encoder and transformer world")
+            return LeWMTransformerWorldAdapter(config, encoder, world)
         if isinstance(config, LeWMConfig):
             if not isinstance(world, LeWMWorld) or not isinstance(encoder, LeWMEncoder):
                 raise TypeError("LeWM bundle requires its encoder and world")
@@ -85,8 +99,32 @@ class ModelBundle:
         return self
 
     def require_control(self):
-        if isinstance(self.config, LeWMConfig):
+        """Authorize control only from a VERIFIED capability record.
+
+        Declaring `agent` in a recipe states an intention to reach M4; it does not establish that
+        the readout was fitted or that any recursive depth was validated. A freshly constructed,
+        completely untrained bundle carries an M4 recipe just as a finished one does, so recipe
+        presence alone authorized an untrained model -- which it must not.
+
+        The capability record is what `checkpoint.py` already writes beside every bundle:
+        `readout_trained`, `trained_recursive_depth`, `validated_recursive_depth`. A bridge or
+        actor checkpoint carries it forward; a joint checkpoint's record says M0-M3 and is refused.
+        """
+        if not isinstance(self.config, LeWMConfig):
+            return
+        if self.config.agent is None:
             raise RuntimeError("phase_gate: LeWM M0-M3 has no trained heads/readout or validated actor horizon")
+        record = self.capabilities
+        if not isinstance(record, dict):
+            raise RuntimeError("phase_gate: control requires a checkpoint capability record; this "
+                               "bundle carries none, so nothing establishes it was ever trained")
+        if not record.get("readout_trained"):
+            raise RuntimeError("phase_gate: the agent readout is not recorded as trained")
+        horizon = self.config.agent.horizon
+        validated = record.get("validated_recursive_depth", 0)
+        if not isinstance(validated, int) or validated < horizon:
+            raise RuntimeError(f"phase_gate: actor horizon {horizon} exceeds the validated "
+                               f"recursive depth {validated}; a configured horizon is not validation")
 
     def world_state(self, state):
         # Validation happens through each adapter before unwrapping observation state.
@@ -213,7 +251,10 @@ class LeWMWorldAdapter(ModelBundle):
     def encode(self, frames: Tensor) -> Tensor:
         if self.encoder.training:
             raise RuntimeError("observation_normalization: runtime encoding requires encoder.eval()")
-        return self.encoder(frames)
+        # The deployment loop hands over a frame straight from the environment, which is on the
+        # host. `LegacyWorldAdapter.encode` has always moved it; this path never did, because
+        # M0-M3 refused control and nothing ever executed an episode through it.
+        return self.encoder(frames.to(self.device))
 
     def start(self, z0: Tensor, generator=None, *, first_action=None) -> PredictiveState:
         if first_action is not None:
@@ -262,6 +303,80 @@ class LeWMWorldAdapter(ModelBundle):
     def state_tensors(self, state: PredictiveState) -> tuple[Tensor, ...]:
         self.world.validate_state(state)
         return (state.latent, state.history, *(v for m in state.memory for v in (m.conv, m.ssm)))
+
+
+class LeWMTransformerWorldAdapter(ModelBundle):
+    """The pinned source predictor's bounded window, in place of Mamba's carry.
+
+    Same WorldAPI contract; the state buffers the inputs of the last `context - 1` completed
+    pairs rather than a recurrent memory, because the source recomputes its window.
+    """
+
+    def encode(self, frames: Tensor) -> Tensor:
+        if self.encoder.training:
+            raise RuntimeError("observation_normalization: runtime encoding requires encoder.eval()")
+        # The deployment loop hands over a frame straight from the environment, which is on the
+        # host. `LegacyWorldAdapter.encode` has always moved it; this path never did, because
+        # M0-M3 refused control and nothing ever executed an episode through it.
+        return self.encoder(frames.to(self.device))
+
+    def start(self, z0: Tensor, generator=None, *, first_action=None):
+        if first_action is not None:
+            raise ValueError("LeWM start consumes no incoming action")
+        return self.world.start(z0)
+
+    def prefill(self, z_context: Tensor, actions: Tensor, generator=None, *, first_action=None):
+        if first_action is not None:
+            raise ValueError("LeWM prefill consumes completed outgoing pairs only")
+        if self.world.training:
+            raise RuntimeError("streaming prefill is evaluation-only; dropout and BN must be fixed")
+        # Only the final window can affect the resulting state, so a long context is
+        # truncated rather than scanned -- and never run through the 3-slot position table.
+        # `teacher` consumes z[:, :-1] as inputs, so a window of `context` *pairs* needs
+        # `context + 1` latents; taking `context` would silently score one pair short.
+        keep = min(z_context.shape[1], self.world.context + 1)
+        state = self.world.teacher(z_context[:, -keep:], actions[:, -(keep - 1):] if keep > 1
+                                   else actions[:, :0]).state
+        # Truncating is exact for the state's contents but not for its clock: the prefix
+        # really did complete `actions.shape[1]` transitions.
+        return replace(state, step=actions.shape[1])
+
+    def observe(self, state, action: Tensor | None, frame: Tensor, generator=None):
+        if state is None:
+            if action is not None:
+                raise ValueError("initial observation takes no outgoing action")
+            state = self.start(self.encode(frame))
+            return state, self.features(state)
+        return self.world.observe_latent(state, action, self.encode(frame))
+
+    def advance(self, state, action: Tensor, generator=None):
+        return self.world.advance(state, action)
+
+    def features(self, state) -> Tensor:
+        return self.world.features(state)
+
+    def fork(self, state):
+        self.world.validate_state(state)
+        return WindowPredictiveState(state.latent.clone(), state.past_latents.clone(),
+                                     state.past_actions.clone(), state.history.clone(), state.step)
+
+    def detach_state(self, state):
+        self.world.validate_state(state)
+        return WindowPredictiveState(state.latent.detach().clone(), state.past_latents.detach().clone(),
+                                     state.past_actions.clone(), state.history.detach().clone(), state.step)
+
+    def repeat_state(self, state, count: int):
+        self.world.validate_state(state)
+        if count < 1:
+            raise ValueError("repeat count must be positive")
+        return WindowPredictiveState(state.latent.repeat_interleave(count, 0),
+                                     state.past_latents.repeat_interleave(count, 0),
+                                     state.past_actions.repeat_interleave(count, 0),
+                                     state.history.repeat_interleave(count, 0), state.step)
+
+    def state_tensors(self, state) -> tuple[Tensor, ...]:
+        self.world.validate_state(state)
+        return (state.latent, state.history, state.past_latents)
 
 
 def load_bundle(path, *, device: str | None = None, backend: str | None = None):

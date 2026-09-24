@@ -1,0 +1,116 @@
+{
+  "schema": "d4mj_phase5_internals_v1",
+  "arm": "mamba_raw",
+  "generated_z_parity_max_abs": 0.0,
+  "question": "the first tap whose action_cost collapses is where the action stops carrying decision-relevant information",
+  "rows": [
+    {
+      "tap": "pair_projection",
+      "dim": 256,
+      "intact": 17.0,
+      "deranged_mean": 19.62,
+      "action_cost": -2.62,
+      "within_root_auc": 0.7503
+    },
+    {
+      "tap": "mamba_block_0",
+      "dim": 256,
+      "intact": 17.0,
+      "deranged_mean": 20.75,
+      "action_cost": -3.75,
+      "within_root_auc": 0.7312
+    },
+    {
+      "tap": "mamba_block_1",
+      "dim": 256,
+      "intact": 20.0,
+      "deranged_mean": 21.62,
+      "action_cost": -1.62,
+      "within_root_auc": 0.7949
+    },
+    {
+      "tap": "mamba_block_2",
+      "dim": 256,
+      "intact": 19.0,
+      "deranged_mean": 21.12,
+      "action_cost": -2.12,
+      "within_root_auc": 0.7958
+    },
+    {
+      "tap": "mamba_block_3",
+      "dim": 256,
+      "intact": 21.0,
+      "deranged_mean": 21.5,
+      "action_cost": -0.5,
+      "within_root_auc": 0.7992
+    },
+    {
+      "tap": "mamba_block_4",
+      "dim": 256,
+      "intact": 19.0,
+      "deranged_mean": 22.12,
+      "action_cost": -3.12,
+      "within_root_auc": 0.8068
+    },
+    {
+      "tap": "mamba_block_5",
+      "dim": 256,
+      "intact": 19.0,
+      "deranged_mean": 21.25,
+      "action_cost": -2.25,
+      "within_root_auc": 0.8119
+    },
+    {
+      "tap": "final_norm_h",
+      "dim": 256,
+      "intact": 18.0,
+      "deranged_mean": 20.88,
+      "action_cost": -2.88,
+      "within_root_auc": 0.8037
+    },
+    {
+      "tap": "projector_0_Linear",
+      "dim": 2048,
+      "intact": 18.0,
+      "deranged_mean": 20.0,
+      "action_cost": -2.0,
+      "within_root_auc": 0.7887
+    },
+    {
+      "tap": "projector_1_BatchNorm1d",
+      "dim": 2048,
+      "intact": 18.0,
+      "deranged_mean": 20.12,
+      "action_cost": -2.12,
+      "within_root_auc": 0.7858
+    },
+    {
+      "tap": "projector_2_GELU",
+      "dim": 2048,
+      "intact": 19.0,
+      "deranged_mean": 20.5,
+      "action_cost": -1.5,
+      "within_root_auc": 0.7715
+    },
+    {
+      "tap": "projector_3_Linear",
+      "dim": 192,
+      "intact": 14.0,
+      "deranged_mean": 19.5,
+      "action_cost": -5.5,
+      "within_root_auc": 0.7735
+    },
+    {
+      "tap": "generated_z",
+      "dim": 192,
+      "intact": 14.0,
+      "deranged_mean": 19.5,
+      "action_cost": -5.5,
+      "within_root_auc": 0.7735
+    }
+  ],
+  "_inputs": {
+    "checkpoint": "707f6240a3e4e52d",
+    "draws": 8
+  }
+}

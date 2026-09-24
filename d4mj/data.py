@@ -119,9 +119,13 @@ class EpisodeCorpus(Sequence[Episode]):
             }
         return self._profiles[key]
 
-    def window_weights(self, indices, length: int, *, dtype=torch.float) -> Tensor:
-        """Number of valid windows per episode; callers retain their RNG draw order."""
-        counts = [len(self._episodes[index]) + 2 - length for index in indices]
+    def window_weights(self, indices, span: int, *, dtype=torch.float) -> Tensor:
+        """Number of valid windows per episode; callers retain their RNG draw order.
+
+        `span` is the native extent a window occupies, which equals the frame
+        count only for an unstrided, unwidened recipe.
+        """
+        counts = [len(self._episodes[index]) + 2 - span for index in indices]
         if any(count < 1 for count in counts):
             raise ValueError("window pool contains an episode shorter than the requested length")
         return torch.tensor(counts, dtype=dtype)
@@ -177,6 +181,38 @@ class Batch:
         if self.relevant is None:
             return ~support
         return (self.relevant if role == "policy" else ~self.relevant) & ~support
+
+
+@dataclass(frozen=True)
+class BridgeBatch:
+    """A Phase-2/3 main window plus its separate no-loss recurrent prefix.
+
+    Every prefix ends at the first latent in ``main`` and contains exactly the recorded outgoing
+    actions between its latents.  Prefixes remain ragged because padding observations would invent
+    history.  ``burn_lengths`` counts completed prefix pairs (zero at a true episode start).
+    Absolute episode/frame metadata remains outside recurrent state, as TC-14/TC-16 require.
+    """
+
+    main: Batch
+    burn_latents: tuple[Tensor, ...]
+    burn_actions: tuple[Tensor, ...]
+    burn_lengths: Tensor
+    episode_ids: tuple[str, ...]
+    starts: Tensor
+
+    def to(self, device: str) -> "BridgeBatch":
+        moved = {
+            name: value.to(device) if isinstance(value, Tensor) else value
+            for name, value in vars(self.main).items()
+        }
+        return replace(
+            self,
+            main=Batch(**moved),
+            burn_latents=tuple(value.to(device) for value in self.burn_latents),
+            burn_actions=tuple(value.to(device) for value in self.burn_actions),
+            burn_lengths=self.burn_lengths.to(device),
+            starts=self.starts.to(device),
+        )
 
 
 def patchify(frames: Tensor, patch: int) -> Tensor:
@@ -326,6 +362,187 @@ def sample_terminal_batch(
         support=torch.ones(config.terminal_batch, dtype=torch.bool),
         **stack,
     )
+
+
+def _bridge_length(config: LeWMConfig, update: int) -> int:
+    settings = config.agent
+    if settings is None:
+        raise ValueError("phase_gate: bridge sampling requires an M4 recipe")
+    return settings.sequence_long if (update + 1) % settings.long_every == 0 else settings.sequence
+
+
+def _weighted_episode(pool: Sequence[Episode], length: int, rng: torch.Generator,
+                      *, nonstart: bool = False) -> Episode:
+    """Draw uniformly over eligible windows, optionally excluding offset zero."""
+    eligible = [episode for episode in pool if len(episode) + 1 >= length + int(nonstart)]
+    if not eligible:
+        kind = "non-start " if nonstart else ""
+        raise ValueError(f"bridge_data: no {kind}episode reaches {length} frames")
+    counts = torch.tensor(
+        [len(episode) + 2 - length - int(nonstart) for episode in eligible], dtype=torch.float64
+    )
+    return eligible[int(torch.multinomial(counts, 1, generator=rng))]
+
+
+def _bridge_event_start(episode: Episode, length: int, rng: torch.Generator) -> int | None:
+    """A nonzero start containing an event action and its factual successor."""
+    if episode.events is None:
+        return None
+    span = len(episode) + 1 - length
+    candidates = []
+    for event in episode.events.nonzero().flatten().tolist():
+        low, high = max(1, event - length + 2), min(span, event)
+        if low <= high:
+            candidates.append((low, high))
+    if not candidates:
+        return None
+    low, high = candidates[int(torch.randint(len(candidates), (), generator=rng))]
+    return low + int(torch.randint(high - low + 1, (), generator=rng))
+
+
+def _bridge_batch(episodes: Sequence[Episode], rng: torch.Generator, config: LeWMConfig,
+                  update: int, *, terminal: bool) -> BridgeBatch:
+    """Canonical cached-latent sampler for TC-14 through TC-17.
+
+    Main rows are 32 frames, 128 every fourth update.  Main batches are exactly 50/50
+    relevant/uniform and exactly 25% true starts within each half; terminal rows are tail aligned.
+    Counterfactual forks are not a training source here.
+    """
+    settings = config.agent
+    if settings is None:
+        raise ValueError("phase_gate: bridge sampling requires an M4 recipe")
+    if not episodes or any(episode.latents is None for episode in episodes):
+        raise ValueError("bridge_data: Phase 2/3 requires the frozen post-joint latent cache")
+    if any(episode.observations is not None for episode in episodes):
+        raise ValueError("bridge_data: cached bridge inputs must not retain a pixel side channel")
+    length = _bridge_length(config, update)
+    count = settings.terminal_batch if terminal else settings.batch
+    usable = [episode for episode in episodes if len(episode) + 1 >= length]
+    uniform = [episode for episode in usable if episode.uniform_eligible]
+    cloneable = [episode for episode in usable if episode.bc_eligible]
+    eventful = [episode for episode in cloneable if _has_nonstart_event(episode, length)]
+    terminal_pool = [episode for episode in uniform if bool(episode.terminated.any())]
+    if not uniform or (not terminal and not cloneable):
+        raise ValueError("bridge_data: required uniform/BC sampling pools are empty")
+    if terminal and not terminal_pool:
+        raise ValueError("bridge_data: no terminal support episode reaches the scheduled length")
+
+    chosen: list[Episode] = []
+    starts: list[int] = []
+    roles: list[bool] = []
+    if terminal:
+        for _ in range(count):
+            episode = terminal_pool[int(torch.randint(len(terminal_pool), (), generator=rng))]
+            chosen.append(episode)
+            starts.append(_terminal_start(episode, length))
+            roles.append(False)
+    else:
+        relevant_count = count // 2
+        # The start stratum is exact in each half, rather than merely true in expectation.
+        start_per_half = int(round(relevant_count * settings.true_start_fraction))
+        if 2 * start_per_half != int(round(count * settings.true_start_fraction)):
+            raise ValueError("bridge_data: true-start fraction must divide both mixture halves")
+        start_positions = set()
+        for first in (0, relevant_count):
+            order = torch.randperm(relevant_count, generator=rng)[:start_per_half].tolist()
+            start_positions.update(first + item for item in order)
+        for row in range(count):
+            relevant = row < relevant_count
+            pool = cloneable if relevant else uniform
+            if row in start_positions:
+                episode, start = _weighted_episode(pool, length, rng), 0
+            else:
+                centre = relevant and eventful and float(torch.rand((), generator=rng)) < settings.event_fraction
+                if centre:
+                    episode = _weighted_episode(eventful, length, rng, nonstart=True)
+                    start = _bridge_event_start(episode, length, rng)
+                    if start is None:  # Defensive: ``eventful`` was filtered by this condition.
+                        raise AssertionError("bridge event pool contains no non-start event window")
+                else:
+                    episode = _weighted_episode(pool, length, rng, nonstart=True)
+                    span = len(episode) + 1 - length
+                    start = 1 + int(torch.randint(span, (), generator=rng))
+            chosen.append(episode)
+            starts.append(start)
+            roles.append(relevant)
+
+    rows = [_window(episode, start, length, config) for episode, start in zip(chosen, starts)]
+    stack = {field: torch.stack([row[field] for row in rows]) for field in rows[0]}
+    main = Batch(
+        burn_in=0,
+        relevant=torch.tensor(roles, dtype=torch.bool),
+        support=(torch.ones(count, dtype=torch.bool) if terminal else None),
+        **stack,
+    )
+    prefixes, actions, burn_lengths = [], [], []
+    for episode, start in zip(chosen, starts):
+        first = max(0, start - settings.burn_in)
+        # Include z[start] so prefill ends on exactly main[:,0].
+        prefixes.append(episode.latents[first:start + 1])
+        actions.append(episode.actions_taken[first:start])
+        burn_lengths.append(start - first)
+    batch = BridgeBatch(
+        main=main,
+        burn_latents=tuple(prefixes),
+        burn_actions=tuple(actions),
+        burn_lengths=torch.tensor(burn_lengths, dtype=torch.long),
+        episode_ids=tuple(str(episode.episode_id) for episode in chosen),
+        starts=torch.tensor(starts, dtype=torch.long),
+    )
+    validate_bridge_batch(batch, config, terminal=terminal)
+    return batch
+
+
+def _has_nonstart_event(episode: Episode, length: int) -> bool:
+    if episode.events is None:
+        return False
+    span = len(episode) + 1 - length
+    return any(max(1, int(event) - length + 2) <= min(span, int(event))
+               for event in episode.events.nonzero().flatten())
+
+
+def sample_bridge_batch(episodes: Sequence[Episode], rng: torch.Generator,
+                        config: LeWMConfig, update: int) -> BridgeBatch:
+    return _bridge_batch(episodes, rng, config, update, terminal=False)
+
+
+def sample_bridge_terminals(episodes: Sequence[Episode], rng: torch.Generator,
+                            config: LeWMConfig, update: int) -> BridgeBatch:
+    return _bridge_batch(episodes, rng, config, update, terminal=True)
+
+
+def to_head_batch(batch: BridgeBatch) -> Batch:
+    """The single adapter from explicit bridge metadata to legacy led-to head targets."""
+    return batch.main
+
+
+def validate_bridge_batch(batch: BridgeBatch, config: LeWMConfig, *, terminal: bool = False) -> None:
+    settings = config.agent
+    if settings is None:
+        raise ValueError("phase_gate: bridge validation requires an M4 recipe")
+    main, count = batch.main, settings.terminal_batch if terminal else settings.batch
+    if main.latents is None or main.patches is not None or main.latents.shape[0] != count:
+        raise ValueError("bridge_data: wrong cached batch geometry or a pixel side channel is present")
+    if tuple(main.latents.shape[2:]) != (1, config.encoder.latent_dim):
+        raise ValueError("bridge_data: cached latent shape differs from the exported contract")
+    if len(batch.burn_latents) != count or len(batch.burn_actions) != count:
+        raise ValueError("bridge_data: ragged prefix metadata does not match the batch")
+    for row, (latents, actions, length) in enumerate(
+        zip(batch.burn_latents, batch.burn_actions, batch.burn_lengths.tolist())
+    ):
+        if latents.shape[0] != length + 1 or actions.shape != (length,):
+            raise ValueError("bridge_data: a burn-in must contain T+1 latents and T actions")
+        if length > settings.burn_in or not torch.equal(latents[-1], main.latents[row, 0]):
+            raise ValueError("bridge_data: prefix does not end at the main-window boundary")
+    if terminal:
+        if main.support is None or not bool(main.support.all()):
+            raise ValueError("bridge_data: terminal rows must be continuation-only support")
+    else:
+        if int(main.relevant.sum()) != count // 2:
+            raise ValueError("bridge_data: main rows must be exactly 50/50 relevant/uniform")
+        expected = int(round(count * settings.true_start_fraction))
+        if int((batch.starts == 0).sum()) != expected:
+            raise ValueError("bridge_data: main rows do not satisfy the declared true-start stratum")
 
 
 def _event_start(episode: Episode, length: int, rng: torch.Generator) -> int:
@@ -529,31 +746,59 @@ def audit_episodes(episodes, config: LeWMConfig) -> dict:
                      "epsilon": episode.epsilon, "terminal_cause": episode.terminal_cause,
                      "terminals": int(episode.terminated.sum()), "timeouts": int(episode.truncated.sum()),
                      "events": None if episode.events is None else int(episode.events.sum())})
-    if not any(r["split"] == "train" and r["uniform"] and r["steps"] >= config.joint.frames-1 for r in rows):
+    span = (config.joint.frames - 1) * config.joint.stride + 1
+    if not any(r["split"] == "train" and r["uniform"] and r["steps"] >= span-1 for r in rows):
         raise ValueError("joint_data: no eligible TRAIN windows")
     return {"episodes": rows, "split_counts": split_counts,
             "split_digest": hashlib.sha256(canonical_json(rows).encode()).hexdigest(),
             "transitions": sum(r["steps"] for r in rows)}
 
 
-def load_joint_corpus(path: str | Path, config: LeWMConfig):
-    """Validate bytes and full episode metadata. Never invent collector/split lineage."""
-    path = Path(path)
-    if path.name == "manifest.json":
-        path = path.parent
-    episodes = load_episodes(path, verify=True)
+def load_joint_corpus(path: str | Path | Sequence[str | Path], config: LeWMConfig):
+    """Validate bytes and full episode metadata. Never invent collector/split lineage.
+
+    Several paths compose one corpus whose sources keep their own splits, eligibility flags and
+    provenance. The corpus is immutable by reference rather than by copy: each source is pinned by
+    the digest of its own manifest, so a merged corpus is auditable without duplicating tens of
+    gigabytes of observations, and a single source keeps its original contract byte for byte.
+    """
+    paths = [path] if isinstance(path, (str, Path)) else list(path)
+    if not paths:
+        raise ValueError("joint_data: a corpus needs at least one source")
+    parts, sources = [], []
+    for entry in paths:
+        entry = Path(entry)
+        if entry.name == "manifest.json":
+            entry = entry.parent
+        part = load_episodes(entry, verify=True)
+        source_file = entry / "manifest.json" if entry.is_dir() else entry
+        if entry.is_dir():
+            manifest = json.loads(source_file.read_text())
+            provenance = {k: v for k, v in manifest.items() if k != "shards"}
+        else:
+            sidecar = entry.with_suffix(entry.suffix + ".manifest.json")
+            provenance = json.loads(sidecar.read_text()) if sidecar.exists() else {}
+        if (config.agent is not None and config.runtime.purpose == "research"
+                and provenance.get("kind") in {"d4mj_forks_flat_v1", "d4mj_m4_forkpool_v1"}):
+            raise ValueError("joint_data: TC-17 keeps counterfactual fork corpora evaluation-only")
+        parts.append(part)
+        # Unknown upstream training access remains explicit, never relabeled as zero.
+        sources.append({"path": str(entry), "sha256": _sha256(source_file), "episodes": len(part),
+                        "provenance": provenance,
+                        "collector_training_access": provenance.get("collector_training_access", "unknown")})
+    # A single source returns the very object `load_episodes` built, so its `source` path and its
+    # cached window pools survive. Rebuilding it as a plain list silently disabled
+    # `EpisodeCorpus.pools` for every existing caller, which is a regression, not a refactor.
+    episodes = parts[0] if len(parts) == 1 else EpisodeCorpus(e for part in parts for e in part)
     audit = audit_episodes(episodes, config)
-    source_file = path / "manifest.json" if path.is_dir() else path
-    if path.is_dir():
-        manifest = json.loads(source_file.read_text())
-        provenance = {k: v for k, v in manifest.items() if k != "shards"}
-    else:
-        sidecar = path.with_suffix(path.suffix + ".manifest.json")
-        provenance = json.loads(sidecar.read_text()) if sidecar.exists() else {}
-    # Unknown upstream training access remains explicit, never relabeled as zero.
-    contract = {"schema": "d4mj_lewm_dataset_v1", "sha256": _sha256(source_file),
-                "audit": audit, "provenance": provenance,
-                "collector_training_access": provenance.get("collector_training_access", "unknown")}
+    contract = {"schema": "d4mj_lewm_dataset_v1", "sha256": sources[0]["sha256"],
+                "audit": audit, "provenance": sources[0]["provenance"],
+                "collector_training_access": sources[0]["collector_training_access"]}
+    if len(sources) > 1:
+        # A merged corpus is a different dataset and must not be mistakable for its first source.
+        contract["sha256"] = hashlib.sha256(
+            canonical_json([s["sha256"] for s in sources]).encode()).hexdigest()
+        contract["sources"] = sources
     return episodes, contract
 
 
@@ -561,9 +806,12 @@ class JointSampler:
     def __init__(self, episodes, config: LeWMConfig, generator: torch.Generator):
         audit_episodes(episodes, config)
         self.config, self.generator = config, generator
+        from .lewm_config import window_layout
+        self.offsets = window_layout(config.joint)[0]
+        span = self.offsets[-1] + 1
         self.episodes = EpisodeCorpus(e for e in episodes if e.split == "train" and e.uniform_eligible
-                              and len(e)+1 >= config.joint.frames)
-        self.counts = self.episodes.window_weights(range(len(self.episodes)), config.joint.frames, dtype=torch.float64)
+                              and len(e)+1 >= span)
+        self.counts = self.episodes.window_weights(range(len(self.episodes)), span, dtype=torch.float64)
         self.draws = 0
 
     def sample(self) -> JointBatch:
@@ -573,8 +821,14 @@ class JointSampler:
         for index in selected.tolist():
             episode = self.episodes[index]
             start = int(torch.randint(int(self.counts[index]), (), generator=self.generator))
-            frames.append(episode.observations[start:start+j.frames])
-            actions.append(episode.actions_taken[start:start+j.frames-1])
+            # Encoded frames sit at the layout's native offsets: the prediction
+            # frames plus any extra frames a widened centering window needs.
+            frames.append(episode.observations[[start + o for o in self.offsets]])
+            # Actions belong to the prediction pairs, which span (frames-1)*stride
+            # native steps -- not the whole encoded window, which a widened
+            # centering set makes longer without adding transitions to predict.
+            inner = episode.actions_taken[start:start + (j.frames - 1) * j.stride]
+            actions.append(inner if j.stride == 1 else inner.reshape(j.frames - 1, j.stride))
             ids.append(episode.episode_id)
             starts.append(start)
         self.draws += j.batch
@@ -593,26 +847,37 @@ def screen_windows(episodes, config: LeWMConfig, screen, split: str) -> dict:
     if split not in ("train", "dev"):
         raise ValueError("joint screen never selects FINAL")
     wanted = screen.train_episodes if split == "train" else screen.dev_episodes
-    length = config.joint.frames
+    from .lewm_config import window_layout
+    length, stride = config.joint.frames, config.joint.stride
+    # The screen samples the same window shape training does, so a widened
+    # centering window is screened on the frames it actually encodes.
+    offsets = window_layout(config.joint)[0]
+    span = offsets[-1] + 1
     def order(e):
         return hashlib.sha256(f"{screen.seed}:{e.episode_id}".encode()).digest()
     pool = sorted((e for e in episodes if e.split == split and e.uniform_eligible
-                   and len(e)+2-length >= screen.windows_per_episode), key=order)
+                   and len(e)+2-span >= screen.windows_per_episode), key=order)
     if len(pool) < wanted:
         raise ValueError(f"screen_coverage: {split} has {len(pool)} eligible episodes, needs {wanted}")
     frames, actions, labels, valid, ids, starts, clusters = [], [], [], [], [], [], []
     for cluster, episode in enumerate(pool[:wanted]):
         rng = torch.Generator().manual_seed(int.from_bytes(order(episode)[:8], "little") % (2**63-1))
-        positions = torch.randperm(len(episode)+2-length, generator=rng)[:screen.windows_per_episode]
+        positions = torch.randperm(len(episode)+2-span, generator=rng)[:screen.windows_per_episode]
         for start in positions.tolist():
-            end = start+length-1
-            reward = episode.rewards[start:end]
-            event = torch.zeros_like(reward, dtype=torch.bool) if episode.events is None else episode.events[start:end]
-            truth = torch.stack((reward > 0, reward < 0, event, episode.terminated[start:end]), -1)
+            end = start+span-1
+            # Each retained transition covers `stride` native steps, so its label
+            # aggregates over them: total reward, and any event or termination.
+            inner = lambda t: t[start:start+(length-1)*stride].reshape(length-1, stride)
+            reward = inner(episode.rewards).sum(-1)
+            event = (torch.zeros_like(reward, dtype=torch.bool) if episode.events is None
+                     else inner(episode.events).any(-1))
+            truth = torch.stack((reward > 0, reward < 0, event, inner(episode.terminated).any(-1)), -1)
             mask = torch.ones_like(truth)
             if episode.events is None:
                 mask[:, 2] = False
-            frames.append(episode.observations[start:end+1]); actions.append(episode.actions_taken[start:end])
+            frames.append(episode.observations[[start + o for o in offsets]])
+            outgoing = episode.actions_taken[start:start + (length - 1) * stride]
+            actions.append(outgoing if stride == 1 else outgoing.reshape(length - 1, stride))
             labels.append(truth); valid.append(mask); ids.append(episode.episode_id)
             starts.append(start); clusters.append(cluster)
     return {"frames": torch.stack(frames), "actions": torch.stack(actions),

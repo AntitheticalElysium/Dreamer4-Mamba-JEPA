@@ -1,0 +1,191 @@
+{
+  "schema": "d4mj_centering_window_memory_primary_v1",
+  "status": "primary panel only; historical panels still scoring at time of writing",
+  "scope": "Mamba-state supplement over the partial run's published replay: z, h and [z,h]",
+  "source": {
+    "panel": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_gates_20260916/m03_window_memory/stages/memory_primary.json",
+    "sha256": "16e565422b509973258dae9f5718382f57d196ccef038b55f0f990b6f2e38db2",
+    "reference": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_gates_20260906/m03_bootstrap/evaluation_v2/memory/report.json",
+    "reference_sha256": "d98f37603590870d39429caa9062abe30041d85b78a13a08dede4c0444d5a8de"
+  },
+  "arms": {
+    "raw": "TC consecutive (control)",
+    "tc": "TC strided (treatment)"
+  },
+  "generated_c4_mean_auc": {
+    "linear": {
+      "TC consecutive (control)": {
+        "outcomes": {
+          "z": 0.508400748053203,
+          "h": 0.7308913758196168,
+          "joint": 0.6317135336508733
+        },
+        "successor_binary": {
+          "z": 0.6047988430543776,
+          "h": 0.6453739377419591,
+          "joint": 0.64540708066661
+        }
+      },
+      "TC strided (treatment)": {
+        "outcomes": {
+          "z": 0.4827512009511361,
+          "h": 0.6800655763560596,
+          "joint": 0.5336338328824047
+        },
+        "successor_binary": {
+          "z": 0.6005934333088911,
+          "h": 0.610192081572471,
+          "joint": 0.6237045008136551
+        }
+      },
+      "Raw stride-1": {
+        "outcomes": {
+          "z": 0.5584013275481959,
+          "h": 0.6732164695856022,
+          "joint": 0.6055587976128461
+        },
+        "successor_binary": {
+          "z": 0.6630911304850641,
+          "h": 0.701900577905531,
+          "joint": 0.6798582667262294
+        }
+      },
+      "TC stride-1": {
+        "outcomes": {
+          "z": 0.49005536323522064,
+          "h": 0.6679007574187567,
+          "joint": 0.6192116435541095
+        },
+        "successor_binary": {
+          "z": 0.6141340054115773,
+          "h": 0.6223163718494833,
+          "joint": 0.6314931502417597
+        }
+      }
+    },
+    "mlp": {
+      "TC consecutive (control)": {
+        "outcomes": {
+          "z": 0.524480950359485,
+          "h": 0.7154790301848285,
+          "joint": 0.5995292789624934
+        },
+        "successor_binary": {
+          "z": 0.6115819372590788,
+          "h": 0.6437810654051606,
+          "joint": 0.6357836678559443
+        }
+      },
+      "TC strided (treatment)": {
+        "outcomes": {
+          "z": 0.498804549266135,
+          "h": 0.702278911276431,
+          "joint": 0.524991039762328
+        },
+        "successor_binary": {
+          "z": 0.6070324754723722,
+          "h": 0.6221895198332158,
+          "joint": 0.6185826833092385
+        }
+      },
+      "Raw stride-1": {
+        "outcomes": {
+          "z": 0.5575445124383656,
+          "h": 0.6360760794776689,
+          "joint": 0.5713773600672336
+        },
+        "successor_binary": {
+          "z": 0.663576417283808,
+          "h": 0.7015629879636125,
+          "joint": 0.6910037600357248
+        }
+      },
+      "TC stride-1": {
+        "outcomes": {
+          "z": 0.5015186571871801,
+          "h": 0.6945982511903719,
+          "joint": 0.6141974697737745
+        },
+        "successor_binary": {
+          "z": 0.6097488754837187,
+          "h": 0.6109293607434174,
+          "joint": 0.6158698050305037
+        }
+      }
+    }
+  },
+  "generated_minus_action_only_c4_mlp": {
+    "TC consecutive (control)": {
+      "mean_difference": -0.06311528649389347,
+      "significant_positive": 0,
+      "significant_negative": 3,
+      "targets": 7
+    },
+    "TC strided (treatment)": {
+      "mean_difference": -0.13765352569405886,
+      "significant_positive": 0,
+      "significant_negative": 6,
+      "targets": 7
+    },
+    "Raw stride-1": {
+      "mean_difference": -0.09126720538915323,
+      "significant_positive": 0,
+      "significant_negative": 3,
+      "targets": 7
+    },
+    "TC stride-1": {
+      "mean_difference": -0.04844709568261231,
+      "significant_positive": 0,
+      "significant_negative": 1,
+      "targets": 7
+    }
+  },
+  "joint_minus_z_c4_mlp": {
+    "TC consecutive (control)": {
+      "mean_difference": 0.07504832860300836,
+      "significant_positive": 3,
+      "significant_negative": 0,
+      "targets": 7
+    },
+    "TC strided (treatment)": {
+      "mean_difference": 0.026186490496193007,
+      "significant_positive": 2,
+      "significant_negative": 0,
+      "targets": 7
+    },
+    "Raw stride-1": {
+      "mean_difference": 0.013832847628868026,
+      "significant_positive": 2,
+      "significant_negative": 0,
+      "targets": 7
+    },
+    "TC stride-1": {
+      "mean_difference": 0.11267881258659436,
+      "significant_positive": 5,
+      "significant_negative": 0,
+      "targets": 7
+    }
+  },
+  "reading": "CORRECTED. These probes are fitted once on train_observed_successor and applied to observed, generated and reset latents alike (gate.py:1784), while the action-only baseline is fitted natively, so generated-condition comparisons against it are transfer-handicapped. In domain, [z,h] beats action-only by about +0.09 in both arms and the strided arm is marginally better (+0.099 vs +0.092). h alone beats it by +0.04 to +0.05 with no transfer penalty, its observed and generated scores being identical. The deficit is specific to generated z, which drags the joint readout below the floor; whether that is missing information or a decoder fitted in the wrong subspace is not settled here. The earlier reading -- that no arm beats action-only and that h's advantage is merely action information -- was drawn from the generated column alone and is withdrawn.",
+  "measured_unix": 1789619034.197963,
+  "action_only_floor_c4_mlp": 0.6626,
+  "in_domain_vs_generated_c4_mlp": {
+    "[z,h] consecutive": {
+      "observed": 0.7551,
+      "generated": 0.5995
+    },
+    "[z,h] strided": {
+      "observed": 0.7615,
+      "generated": 0.525
+    },
+    "h consecutive": {
+      "observed": 0.7155,
+      "generated": 0.7155
+    },
+    "h strided": {
+      "observed": 0.7023,
+      "generated": 0.7023
+    }
+  },
+  "generated_minus_action_only_c4_mlp_note": "valid as a transfer comparison; not a statement that memory fails to beat the action prior"
+}

@@ -1,0 +1,107 @@
+{
+  "schema": "d4mj_m03_probe_sidecar",
+  "probe_only": true,
+  "sidecar": {
+    "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_gates_20260906/m03_full/.sidecar.building-a32ada97fd8746739c0ced441f359b19/sidecar.probe_only.pt",
+    "sha256": "ead287f0f9a1aac03d20db701100bd76f387fbac1ec4a03eab661fc82e2be3c0"
+  },
+  "dataset": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/craftax_support_v2/manifest.json",
+  "dataset_sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+  "settings": {
+    "schema": "d4mj_m03_capability_gate",
+    "seed": 20260907,
+    "train_roots": 256,
+    "dev_roots": 128,
+    "terminal_tail_fraction": 0.5,
+    "direct_context": 64,
+    "lewm_context": 4,
+    "replay_checks": 4,
+    "mode_samples": 4,
+    "encode_batch": 16,
+    "direct_encode_batch": 1,
+    "direct_successor_batch": 4,
+    "probe_hidden": 128,
+    "probe_steps": 200,
+    "probe_batch": 256,
+    "probe_learning_rate": 0.001,
+    "probe_weight_decay": 0.0001,
+    "bootstrap_draws": 1000,
+    "minimum_positive": 10,
+    "minimum_negative": 10,
+    "ridge": 1.0
+  },
+  "direct_input_protocol": "native_prefix64_with_first_incoming_action_v1",
+  "replay": {
+    "root_pixel_max_abs": 0,
+    "root_pixel_nonzero_elements": 0,
+    "root_pixel_tolerance": 1,
+    "status": "pass",
+    "checked_roots": 384,
+    "trajectory_check_max_abs": 0.0,
+    "trajectory_checked_episodes": 8
+  },
+  "fork": {
+    "primary_protocol": "recorded_step_key_v1",
+    "mode_protocol": "derived_common_rng_v1",
+    "factual_pixel_max_abs": 0,
+    "factual_pixel_nonzero_elements": 0,
+    "factual_pixel_tolerance": 1,
+    "factual_roots_checked": 384,
+    "status": "pass"
+  },
+  "coverage": {
+    "train": {
+      "death": {
+        "positive": 2014,
+        "negative": 2338
+      },
+      "damage": {
+        "positive": 2135,
+        "negative": 2217
+      },
+      "reward_positive": {
+        "positive": 112,
+        "negative": 4240
+      },
+      "achievement_event": {
+        "positive": 57,
+        "negative": 4295
+      },
+      "inventory_changed": {
+        "positive": 223,
+        "negative": 4129
+      },
+      "tile_changed": {
+        "positive": 217,
+        "negative": 4135
+      }
+    },
+    "dev": {
+      "death": {
+        "positive": 986,
+        "negative": 1190
+      },
+      "damage": {
+        "positive": 1011,
+        "negative": 1165
+      },
+      "reward_positive": {
+        "positive": 83,
+        "negative": 2093
+      },
+      "achievement_event": {
+        "positive": 31,
+        "negative": 2145
+      },
+      "inventory_changed": {
+        "positive": 103,
+        "negative": 2073
+      },
+      "tile_changed": {
+        "positive": 91,
+        "negative": 2085
+      }
+    }
+  },
+  "seconds": 166.82567048072815
+}

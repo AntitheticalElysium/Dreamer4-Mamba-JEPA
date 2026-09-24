@@ -1,0 +1,887 @@
+{
+  "schema": "lewm_frozen_eval_compatibility_v1",
+  "status": "pass",
+  "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+  "note": "one proof per reference tree -- checkpoints sealed against different trees need their own measurement, and each is verified in full and on its own",
+  "proofs": [
+    {
+      "schema": "lewm_frozen_eval_compatibility_v1",
+      "status": "pass",
+      "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+      "arms": {
+        "raw": {
+          "checkpoint_sha256": "707f6240a3e4e52d6aca7526d541a69112ad7c18c5898c0f1f0ec36f663937ef",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        },
+        "tc": {
+          "checkpoint_sha256": "98effee1085223b5780f30b09ba68b44a8b407acbb07fde5134a8bd708997dc5",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        }
+      },
+      "reference_manifest_digest": "76cb58267aabe986a94f6d34e2aaf823cba92d0fb737f908fe245fb85da82a09",
+      "current_manifest_digest": "6d7b7323da03f07d278ef474f4de495c03ad2015c62ee9c49e588dcb70e1fd49",
+      "changed_runtime_files": {
+        "d4mj/actor_critic.py": {
+          "reference": null,
+          "current": "5f4430485244b0d821a4ce8227a70571d87c7da37c273e628099f3fe6970a321"
+        },
+        "d4mj/agent.py": {
+          "reference": null,
+          "current": "ede81c4e0e0caafbbb996f9f18e115ab987d76def7e5e1ac022de0172ae4ba22"
+        },
+        "d4mj/cache.py": {
+          "reference": "a8b1cd9a5a0bf1476c26915ed2cc46b5b616a536e256bfc8f9f5aab4c71bc282",
+          "current": "53f20d962184f55563faaa3b158368c6a62b60519e4f4a2ef12c1bd6a91881d5"
+        },
+        "d4mj/checkpoint.py": {
+          "reference": "01f102f1741675d4fb45795dd3658b774d4c9fad9581172461b43b4a06d3dfcb",
+          "current": "0484d7da0dabcd17bc1d3ea58989d7f3814d385490e7f8d4b8cad1d2a17b780d"
+        },
+        "d4mj/config.py": {
+          "reference": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f",
+          "current": "4cf956c9a587deb12730597643f51971711b1c33b0b027b59bebf89f4ecbde1d"
+        },
+        "d4mj/data.py": {
+          "reference": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea",
+          "current": "1c624aa9676a4005a586dd6ab1a5c2b69f0060ad932b578397cf8dcb247166c9"
+        },
+        "d4mj/env.py": {
+          "reference": null,
+          "current": "e8f821d1d29affa4020bd407f00330ce3eb0790b9343b2c9351472e74dd1d960"
+        },
+        "d4mj/execution.py": {
+          "reference": "178f31609813e11f07403306bbbfff8faf613a34e511ac651b62c19c122914b4",
+          "current": "7d77bbbbd34a77793943e1aa1a1d2809c19bc35605d4a736ce3ff47290aada7d"
+        },
+        "d4mj/experiments.py": {
+          "reference": "16806f18316d88a4e243f2a41a4ed5ab83ca0bab555ae88999799297d267906b",
+          "current": "2e1c0baa61ae5dddc5c4c1bedba4685fb8f04717129080f012d28a1e81a650a2"
+        },
+        "d4mj/gates.py": {
+          "reference": "7a0d7ebbab8e03ada6918c81273f8804ac8cade95f78151516c1e0e4009df5c5",
+          "current": "79118ab725feb22eb26a69389ec932f9a29ead03c4b2b602fe2e9bcabd2f8653"
+        },
+        "d4mj/lewm_config.py": {
+          "reference": "97f6a6da9065e00c491fcb4d3874749138f39becfc373853bd0221fd0c69e48c",
+          "current": "92ae1920be5ea7222b6d2e80e21a93250152927440ae56c128ab5fd504c8da38"
+        },
+        "d4mj/lewm_diagnostics.py": {
+          "reference": "27d75ab046c672909394a8fa8f0a32acd096f043e5193185acc352f8682cc18b",
+          "current": "04f7ba980bec419b6a9e6c4f3fa75a6553fd64257d29721367c7c64bcd96f0fc"
+        },
+        "d4mj/sources.py": {
+          "reference": "ef8ac3e2b4229afb5305bd7d4e171bec92d2a2a1fe987252c691bed9637f16ea",
+          "current": "3e0ec80b742a8302c265d43e7abe7f62c2099ac425d19915a6c52ff23a5b40b5"
+        },
+        "d4mj/train.py": {
+          "reference": "28982607d430a68712417f9d89f9e6a913a64fbe2618843f43e8081c7dcddd10",
+          "current": "95af8574bb7621813c122cb775e214fac3d629690e286561338fef485b2f5234"
+        },
+        "d4mj/world_api.py": {
+          "reference": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b",
+          "current": "f8dfcbe26ea1b1ded73c023d19e9de31962039e4845afabacecef59567dc878c"
+        }
+      },
+      "surface": [
+        "advance_history",
+        "advance_latent",
+        "cls",
+        "patch16",
+        "patch_grid",
+        "prefill_history",
+        "prefill_latent",
+        "z"
+      ],
+      "parity": {
+        "tolerance": 1e-05,
+        "within_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_min_abs": 0.0,
+        "runs": {
+          "reference": 2,
+          "current": 2
+        }
+      }
+    },
+    {
+      "schema": "lewm_frozen_eval_compatibility_v1",
+      "status": "pass",
+      "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+      "arms": {
+        "raw": {
+          "checkpoint_sha256": "707f6240a3e4e52d6aca7526d541a69112ad7c18c5898c0f1f0ec36f663937ef",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        },
+        "tc": {
+          "checkpoint_sha256": "98effee1085223b5780f30b09ba68b44a8b407acbb07fde5134a8bd708997dc5",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        }
+      },
+      "reference_manifest_digest": "76cb58267aabe986a94f6d34e2aaf823cba92d0fb737f908fe245fb85da82a09",
+      "current_manifest_digest": "2353ec88d8cf8eee606d84652a1c2baba59b90c00be4f0892532b74b8abc8687",
+      "changed_runtime_files": {
+        "d4mj/actor_critic.py": {
+          "reference": null,
+          "current": "5f4430485244b0d821a4ce8227a70571d87c7da37c273e628099f3fe6970a321"
+        },
+        "d4mj/agent.py": {
+          "reference": null,
+          "current": "ede81c4e0e0caafbbb996f9f18e115ab987d76def7e5e1ac022de0172ae4ba22"
+        },
+        "d4mj/cache.py": {
+          "reference": "a8b1cd9a5a0bf1476c26915ed2cc46b5b616a536e256bfc8f9f5aab4c71bc282",
+          "current": "53f20d962184f55563faaa3b158368c6a62b60519e4f4a2ef12c1bd6a91881d5"
+        },
+        "d4mj/checkpoint.py": {
+          "reference": "01f102f1741675d4fb45795dd3658b774d4c9fad9581172461b43b4a06d3dfcb",
+          "current": "0484d7da0dabcd17bc1d3ea58989d7f3814d385490e7f8d4b8cad1d2a17b780d"
+        },
+        "d4mj/config.py": {
+          "reference": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f",
+          "current": "4cf956c9a587deb12730597643f51971711b1c33b0b027b59bebf89f4ecbde1d"
+        },
+        "d4mj/data.py": {
+          "reference": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea",
+          "current": "1c624aa9676a4005a586dd6ab1a5c2b69f0060ad932b578397cf8dcb247166c9"
+        },
+        "d4mj/env.py": {
+          "reference": null,
+          "current": "e8f821d1d29affa4020bd407f00330ce3eb0790b9343b2c9351472e74dd1d960"
+        },
+        "d4mj/execution.py": {
+          "reference": "178f31609813e11f07403306bbbfff8faf613a34e511ac651b62c19c122914b4",
+          "current": "8f341cefa4785df469b6e0e3bedbb904bef71d38e8cd3e527e72ca2c60709e42"
+        },
+        "d4mj/experiments.py": {
+          "reference": "16806f18316d88a4e243f2a41a4ed5ab83ca0bab555ae88999799297d267906b",
+          "current": "fbb8b060d75668dd220fb1fc22dfbab84e7d985d6ff42ebc10a6351c94009643"
+        },
+        "d4mj/gates.py": {
+          "reference": "7a0d7ebbab8e03ada6918c81273f8804ac8cade95f78151516c1e0e4009df5c5",
+          "current": "79118ab725feb22eb26a69389ec932f9a29ead03c4b2b602fe2e9bcabd2f8653"
+        },
+        "d4mj/lewm_config.py": {
+          "reference": "97f6a6da9065e00c491fcb4d3874749138f39becfc373853bd0221fd0c69e48c",
+          "current": "92ae1920be5ea7222b6d2e80e21a93250152927440ae56c128ab5fd504c8da38"
+        },
+        "d4mj/lewm_diagnostics.py": {
+          "reference": "27d75ab046c672909394a8fa8f0a32acd096f043e5193185acc352f8682cc18b",
+          "current": "b0dd31e18f8c4c298da426bbebe981e6218eb8fd57b46ff37ee85ebace854cde"
+        },
+        "d4mj/sources.py": {
+          "reference": "ef8ac3e2b4229afb5305bd7d4e171bec92d2a2a1fe987252c691bed9637f16ea",
+          "current": "3e0ec80b742a8302c265d43e7abe7f62c2099ac425d19915a6c52ff23a5b40b5"
+        },
+        "d4mj/train.py": {
+          "reference": "28982607d430a68712417f9d89f9e6a913a64fbe2618843f43e8081c7dcddd10",
+          "current": "95af8574bb7621813c122cb775e214fac3d629690e286561338fef485b2f5234"
+        },
+        "d4mj/world_api.py": {
+          "reference": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b",
+          "current": "f8dfcbe26ea1b1ded73c023d19e9de31962039e4845afabacecef59567dc878c"
+        }
+      },
+      "surface": [
+        "advance_history",
+        "advance_latent",
+        "cls",
+        "patch16",
+        "patch_grid",
+        "prefill_history",
+        "prefill_latent",
+        "z"
+      ],
+      "parity": {
+        "tolerance": 1e-05,
+        "within_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_min_abs": 0.0,
+        "runs": {
+          "reference": 2,
+          "current": 2
+        }
+      }
+    },
+    {
+      "schema": "lewm_frozen_eval_compatibility_v1",
+      "status": "pass",
+      "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+      "arms": {
+        "raw": {
+          "checkpoint_sha256": "707f6240a3e4e52d6aca7526d541a69112ad7c18c5898c0f1f0ec36f663937ef",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        },
+        "tc": {
+          "checkpoint_sha256": "98effee1085223b5780f30b09ba68b44a8b407acbb07fde5134a8bd708997dc5",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        }
+      },
+      "reference_manifest_digest": "76cb58267aabe986a94f6d34e2aaf823cba92d0fb737f908fe245fb85da82a09",
+      "current_manifest_digest": "ed27ccd598055931f6e9a961a626702c5743f7e65e8517b064b5b396bee4f38d",
+      "changed_runtime_files": {
+        "d4mj/actor_critic.py": {
+          "reference": null,
+          "current": "5f4430485244b0d821a4ce8227a70571d87c7da37c273e628099f3fe6970a321"
+        },
+        "d4mj/agent.py": {
+          "reference": null,
+          "current": "ede81c4e0e0caafbbb996f9f18e115ab987d76def7e5e1ac022de0172ae4ba22"
+        },
+        "d4mj/cache.py": {
+          "reference": "a8b1cd9a5a0bf1476c26915ed2cc46b5b616a536e256bfc8f9f5aab4c71bc282",
+          "current": "53f20d962184f55563faaa3b158368c6a62b60519e4f4a2ef12c1bd6a91881d5"
+        },
+        "d4mj/checkpoint.py": {
+          "reference": "01f102f1741675d4fb45795dd3658b774d4c9fad9581172461b43b4a06d3dfcb",
+          "current": "0484d7da0dabcd17bc1d3ea58989d7f3814d385490e7f8d4b8cad1d2a17b780d"
+        },
+        "d4mj/config.py": {
+          "reference": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f",
+          "current": "4cf956c9a587deb12730597643f51971711b1c33b0b027b59bebf89f4ecbde1d"
+        },
+        "d4mj/data.py": {
+          "reference": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea",
+          "current": "1c624aa9676a4005a586dd6ab1a5c2b69f0060ad932b578397cf8dcb247166c9"
+        },
+        "d4mj/env.py": {
+          "reference": null,
+          "current": "e8f821d1d29affa4020bd407f00330ce3eb0790b9343b2c9351472e74dd1d960"
+        },
+        "d4mj/execution.py": {
+          "reference": "178f31609813e11f07403306bbbfff8faf613a34e511ac651b62c19c122914b4",
+          "current": "8f341cefa4785df469b6e0e3bedbb904bef71d38e8cd3e527e72ca2c60709e42"
+        },
+        "d4mj/experiments.py": {
+          "reference": "16806f18316d88a4e243f2a41a4ed5ab83ca0bab555ae88999799297d267906b",
+          "current": "fad2ef92b3d7c009a83e939e2b941be1aaa3006c7f72162ff803e7ac82c55e5c"
+        },
+        "d4mj/gates.py": {
+          "reference": "7a0d7ebbab8e03ada6918c81273f8804ac8cade95f78151516c1e0e4009df5c5",
+          "current": "ce5e8d37f49082637ed4056af78fd9e9a5e44bae3b409e4aba2af40279f620f9"
+        },
+        "d4mj/lewm_config.py": {
+          "reference": "97f6a6da9065e00c491fcb4d3874749138f39becfc373853bd0221fd0c69e48c",
+          "current": "92ae1920be5ea7222b6d2e80e21a93250152927440ae56c128ab5fd504c8da38"
+        },
+        "d4mj/lewm_diagnostics.py": {
+          "reference": "27d75ab046c672909394a8fa8f0a32acd096f043e5193185acc352f8682cc18b",
+          "current": "326b8a4435656d4576242ff3a099b311ad6785e88b7d9fd9307d086d94947e65"
+        },
+        "d4mj/sources.py": {
+          "reference": "ef8ac3e2b4229afb5305bd7d4e171bec92d2a2a1fe987252c691bed9637f16ea",
+          "current": "3e0ec80b742a8302c265d43e7abe7f62c2099ac425d19915a6c52ff23a5b40b5"
+        },
+        "d4mj/train.py": {
+          "reference": "28982607d430a68712417f9d89f9e6a913a64fbe2618843f43e8081c7dcddd10",
+          "current": "95af8574bb7621813c122cb775e214fac3d629690e286561338fef485b2f5234"
+        },
+        "d4mj/world_api.py": {
+          "reference": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b",
+          "current": "f8dfcbe26ea1b1ded73c023d19e9de31962039e4845afabacecef59567dc878c"
+        }
+      },
+      "surface": [
+        "advance_history",
+        "advance_latent",
+        "cls",
+        "patch16",
+        "patch_grid",
+        "prefill_history",
+        "prefill_latent",
+        "z"
+      ],
+      "parity": {
+        "tolerance": 1e-05,
+        "within_tree_max_abs": 0.0,
+        "cross_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_min_abs": 5.960464477539062e-07,
+        "runs": {
+          "reference": 2,
+          "current": 2
+        }
+      }
+    },
+    {
+      "schema": "lewm_frozen_eval_compatibility_v1",
+      "status": "pass",
+      "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+      "arms": {
+        "raw": {
+          "checkpoint_sha256": "707f6240a3e4e52d6aca7526d541a69112ad7c18c5898c0f1f0ec36f663937ef",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        },
+        "tc": {
+          "checkpoint_sha256": "98effee1085223b5780f30b09ba68b44a8b407acbb07fde5134a8bd708997dc5",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        }
+      },
+      "reference_manifest_digest": "76cb58267aabe986a94f6d34e2aaf823cba92d0fb737f908fe245fb85da82a09",
+      "current_manifest_digest": "f87fcac7d2ff52151b59d16c713de7f70481d98b9fb5241da956c819798f334d",
+      "changed_runtime_files": {
+        "d4mj/actor_critic.py": {
+          "reference": null,
+          "current": "5f4430485244b0d821a4ce8227a70571d87c7da37c273e628099f3fe6970a321"
+        },
+        "d4mj/agent.py": {
+          "reference": null,
+          "current": "ede81c4e0e0caafbbb996f9f18e115ab987d76def7e5e1ac022de0172ae4ba22"
+        },
+        "d4mj/cache.py": {
+          "reference": "a8b1cd9a5a0bf1476c26915ed2cc46b5b616a536e256bfc8f9f5aab4c71bc282",
+          "current": "53f20d962184f55563faaa3b158368c6a62b60519e4f4a2ef12c1bd6a91881d5"
+        },
+        "d4mj/checkpoint.py": {
+          "reference": "01f102f1741675d4fb45795dd3658b774d4c9fad9581172461b43b4a06d3dfcb",
+          "current": "0484d7da0dabcd17bc1d3ea58989d7f3814d385490e7f8d4b8cad1d2a17b780d"
+        },
+        "d4mj/config.py": {
+          "reference": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f",
+          "current": "4cf956c9a587deb12730597643f51971711b1c33b0b027b59bebf89f4ecbde1d"
+        },
+        "d4mj/data.py": {
+          "reference": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea",
+          "current": "1c624aa9676a4005a586dd6ab1a5c2b69f0060ad932b578397cf8dcb247166c9"
+        },
+        "d4mj/env.py": {
+          "reference": null,
+          "current": "e8f821d1d29affa4020bd407f00330ce3eb0790b9343b2c9351472e74dd1d960"
+        },
+        "d4mj/execution.py": {
+          "reference": "178f31609813e11f07403306bbbfff8faf613a34e511ac651b62c19c122914b4",
+          "current": "2bf03321b72b839b6b321a9363b81781da86fbe4f99e585947d181f9cea95345"
+        },
+        "d4mj/experiments.py": {
+          "reference": "16806f18316d88a4e243f2a41a4ed5ab83ca0bab555ae88999799297d267906b",
+          "current": "fad2ef92b3d7c009a83e939e2b941be1aaa3006c7f72162ff803e7ac82c55e5c"
+        },
+        "d4mj/gates.py": {
+          "reference": "7a0d7ebbab8e03ada6918c81273f8804ac8cade95f78151516c1e0e4009df5c5",
+          "current": "93f5cb7d5639e93bc266141af5950695ac547c2a74c3a4032d9b3e4d4015f2c5"
+        },
+        "d4mj/lewm_config.py": {
+          "reference": "97f6a6da9065e00c491fcb4d3874749138f39becfc373853bd0221fd0c69e48c",
+          "current": "92ae1920be5ea7222b6d2e80e21a93250152927440ae56c128ab5fd504c8da38"
+        },
+        "d4mj/lewm_diagnostics.py": {
+          "reference": "27d75ab046c672909394a8fa8f0a32acd096f043e5193185acc352f8682cc18b",
+          "current": "3968ca994a4ef35cde59fb029e057b0cf52d0c25fb53e2eb0093040a5ea0d40a"
+        },
+        "d4mj/sources.py": {
+          "reference": "ef8ac3e2b4229afb5305bd7d4e171bec92d2a2a1fe987252c691bed9637f16ea",
+          "current": "3e0ec80b742a8302c265d43e7abe7f62c2099ac425d19915a6c52ff23a5b40b5"
+        },
+        "d4mj/train.py": {
+          "reference": "28982607d430a68712417f9d89f9e6a913a64fbe2618843f43e8081c7dcddd10",
+          "current": "95af8574bb7621813c122cb775e214fac3d629690e286561338fef485b2f5234"
+        },
+        "d4mj/world_api.py": {
+          "reference": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b",
+          "current": "f8dfcbe26ea1b1ded73c023d19e9de31962039e4845afabacecef59567dc878c"
+        }
+      },
+      "surface": [
+        "advance_history",
+        "advance_latent",
+        "cls",
+        "patch16",
+        "patch_grid",
+        "prefill_history",
+        "prefill_latent",
+        "z"
+      ],
+      "parity": {
+        "tolerance": 1e-05,
+        "within_tree_max_abs": 0.0,
+        "cross_tree_max_abs": 0.0,
+        "cross_tree_min_abs": 0.0,
+        "runs": {
+          "reference": 2,
+          "current": 2
+        }
+      }
+    },
+    {
+      "schema": "lewm_frozen_eval_compatibility_v1",
+      "status": "pass",
+      "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+      "arms": {
+        "raw": {
+          "checkpoint_sha256": "707f6240a3e4e52d6aca7526d541a69112ad7c18c5898c0f1f0ec36f663937ef",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        },
+        "tc": {
+          "checkpoint_sha256": "98effee1085223b5780f30b09ba68b44a8b407acbb07fde5134a8bd708997dc5",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        }
+      },
+      "reference_manifest_digest": "76cb58267aabe986a94f6d34e2aaf823cba92d0fb737f908fe245fb85da82a09",
+      "current_manifest_digest": "7044e7a3088bd8ca5d6db84a93d867d204ed58cffd4d6753769ccccc457e29b3",
+      "changed_runtime_files": {
+        "d4mj/actor_critic.py": {
+          "reference": null,
+          "current": "5f4430485244b0d821a4ce8227a70571d87c7da37c273e628099f3fe6970a321"
+        },
+        "d4mj/agent.py": {
+          "reference": null,
+          "current": "ede81c4e0e0caafbbb996f9f18e115ab987d76def7e5e1ac022de0172ae4ba22"
+        },
+        "d4mj/cache.py": {
+          "reference": "a8b1cd9a5a0bf1476c26915ed2cc46b5b616a536e256bfc8f9f5aab4c71bc282",
+          "current": "53f20d962184f55563faaa3b158368c6a62b60519e4f4a2ef12c1bd6a91881d5"
+        },
+        "d4mj/checkpoint.py": {
+          "reference": "01f102f1741675d4fb45795dd3658b774d4c9fad9581172461b43b4a06d3dfcb",
+          "current": "0484d7da0dabcd17bc1d3ea58989d7f3814d385490e7f8d4b8cad1d2a17b780d"
+        },
+        "d4mj/config.py": {
+          "reference": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f",
+          "current": "4cf956c9a587deb12730597643f51971711b1c33b0b027b59bebf89f4ecbde1d"
+        },
+        "d4mj/data.py": {
+          "reference": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea",
+          "current": "1c624aa9676a4005a586dd6ab1a5c2b69f0060ad932b578397cf8dcb247166c9"
+        },
+        "d4mj/env.py": {
+          "reference": null,
+          "current": "e8f821d1d29affa4020bd407f00330ce3eb0790b9343b2c9351472e74dd1d960"
+        },
+        "d4mj/execution.py": {
+          "reference": "178f31609813e11f07403306bbbfff8faf613a34e511ac651b62c19c122914b4",
+          "current": "2bf03321b72b839b6b321a9363b81781da86fbe4f99e585947d181f9cea95345"
+        },
+        "d4mj/experiments.py": {
+          "reference": "16806f18316d88a4e243f2a41a4ed5ab83ca0bab555ae88999799297d267906b",
+          "current": "7401dd2b06320942bab9d4a490da3ab57e5849278dba85caf7810a2aaea20ba0"
+        },
+        "d4mj/gates.py": {
+          "reference": "7a0d7ebbab8e03ada6918c81273f8804ac8cade95f78151516c1e0e4009df5c5",
+          "current": "93f5cb7d5639e93bc266141af5950695ac547c2a74c3a4032d9b3e4d4015f2c5"
+        },
+        "d4mj/lewm_config.py": {
+          "reference": "97f6a6da9065e00c491fcb4d3874749138f39becfc373853bd0221fd0c69e48c",
+          "current": "92ae1920be5ea7222b6d2e80e21a93250152927440ae56c128ab5fd504c8da38"
+        },
+        "d4mj/sources.py": {
+          "reference": "ef8ac3e2b4229afb5305bd7d4e171bec92d2a2a1fe987252c691bed9637f16ea",
+          "current": "3e0ec80b742a8302c265d43e7abe7f62c2099ac425d19915a6c52ff23a5b40b5"
+        },
+        "d4mj/train.py": {
+          "reference": "28982607d430a68712417f9d89f9e6a913a64fbe2618843f43e8081c7dcddd10",
+          "current": "95af8574bb7621813c122cb775e214fac3d629690e286561338fef485b2f5234"
+        },
+        "d4mj/world_api.py": {
+          "reference": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b",
+          "current": "f8dfcbe26ea1b1ded73c023d19e9de31962039e4845afabacecef59567dc878c"
+        }
+      },
+      "surface": [
+        "advance_history",
+        "advance_latent",
+        "cls",
+        "patch16",
+        "patch_grid",
+        "prefill_history",
+        "prefill_latent",
+        "z"
+      ],
+      "parity": {
+        "tolerance": 1e-05,
+        "within_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_min_abs": 0.0,
+        "runs": {
+          "reference": 2,
+          "current": 2
+        }
+      }
+    },
+    {
+      "schema": "lewm_frozen_eval_compatibility_v1",
+      "status": "pass",
+      "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+      "arms": {
+        "raw": {
+          "checkpoint_sha256": "707f6240a3e4e52d6aca7526d541a69112ad7c18c5898c0f1f0ec36f663937ef",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        },
+        "tc": {
+          "checkpoint_sha256": "98effee1085223b5780f30b09ba68b44a8b407acbb07fde5134a8bd708997dc5",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        }
+      },
+      "reference_manifest_digest": "76cb58267aabe986a94f6d34e2aaf823cba92d0fb737f908fe245fb85da82a09",
+      "current_manifest_digest": "0bc40b8b831e966391c36ff79a8b18c0e77f75666784da0c714a5ecfc5ed6126",
+      "changed_runtime_files": {
+        "d4mj/actor_critic.py": {
+          "reference": null,
+          "current": "5f4430485244b0d821a4ce8227a70571d87c7da37c273e628099f3fe6970a321"
+        },
+        "d4mj/agent.py": {
+          "reference": null,
+          "current": "ede81c4e0e0caafbbb996f9f18e115ab987d76def7e5e1ac022de0172ae4ba22"
+        },
+        "d4mj/cache.py": {
+          "reference": "a8b1cd9a5a0bf1476c26915ed2cc46b5b616a536e256bfc8f9f5aab4c71bc282",
+          "current": "53f20d962184f55563faaa3b158368c6a62b60519e4f4a2ef12c1bd6a91881d5"
+        },
+        "d4mj/checkpoint.py": {
+          "reference": "01f102f1741675d4fb45795dd3658b774d4c9fad9581172461b43b4a06d3dfcb",
+          "current": "0484d7da0dabcd17bc1d3ea58989d7f3814d385490e7f8d4b8cad1d2a17b780d"
+        },
+        "d4mj/config.py": {
+          "reference": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f",
+          "current": "4cf956c9a587deb12730597643f51971711b1c33b0b027b59bebf89f4ecbde1d"
+        },
+        "d4mj/data.py": {
+          "reference": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea",
+          "current": "1c624aa9676a4005a586dd6ab1a5c2b69f0060ad932b578397cf8dcb247166c9"
+        },
+        "d4mj/env.py": {
+          "reference": null,
+          "current": "e8f821d1d29affa4020bd407f00330ce3eb0790b9343b2c9351472e74dd1d960"
+        },
+        "d4mj/execution.py": {
+          "reference": "178f31609813e11f07403306bbbfff8faf613a34e511ac651b62c19c122914b4",
+          "current": "2bf03321b72b839b6b321a9363b81781da86fbe4f99e585947d181f9cea95345"
+        },
+        "d4mj/experiments.py": {
+          "reference": "16806f18316d88a4e243f2a41a4ed5ab83ca0bab555ae88999799297d267906b",
+          "current": "7401dd2b06320942bab9d4a490da3ab57e5849278dba85caf7810a2aaea20ba0"
+        },
+        "d4mj/gates.py": {
+          "reference": "7a0d7ebbab8e03ada6918c81273f8804ac8cade95f78151516c1e0e4009df5c5",
+          "current": "910ff6cc5cf632b1e48206bda1b147f6044ccd58c0343b391c59915359db2830"
+        },
+        "d4mj/lewm_config.py": {
+          "reference": "97f6a6da9065e00c491fcb4d3874749138f39becfc373853bd0221fd0c69e48c",
+          "current": "92ae1920be5ea7222b6d2e80e21a93250152927440ae56c128ab5fd504c8da38"
+        },
+        "d4mj/sources.py": {
+          "reference": "ef8ac3e2b4229afb5305bd7d4e171bec92d2a2a1fe987252c691bed9637f16ea",
+          "current": "3e0ec80b742a8302c265d43e7abe7f62c2099ac425d19915a6c52ff23a5b40b5"
+        },
+        "d4mj/train.py": {
+          "reference": "28982607d430a68712417f9d89f9e6a913a64fbe2618843f43e8081c7dcddd10",
+          "current": "95af8574bb7621813c122cb775e214fac3d629690e286561338fef485b2f5234"
+        },
+        "d4mj/world_api.py": {
+          "reference": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b",
+          "current": "f8dfcbe26ea1b1ded73c023d19e9de31962039e4845afabacecef59567dc878c"
+        }
+      },
+      "surface": [
+        "advance_history",
+        "advance_latent",
+        "cls",
+        "patch16",
+        "patch_grid",
+        "prefill_history",
+        "prefill_latent",
+        "z"
+      ],
+      "parity": {
+        "tolerance": 1e-05,
+        "within_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_min_abs": 0.0,
+        "runs": {
+          "reference": 2,
+          "current": 2
+        }
+      }
+    },
+    {
+      "schema": "lewm_frozen_eval_compatibility_v1",
+      "status": "pass",
+      "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+      "arms": {
+        "raw": {
+          "checkpoint_sha256": "707f6240a3e4e52d6aca7526d541a69112ad7c18c5898c0f1f0ec36f663937ef",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        },
+        "tc": {
+          "checkpoint_sha256": "98effee1085223b5780f30b09ba68b44a8b407acbb07fde5134a8bd708997dc5",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        }
+      },
+      "reference_manifest_digest": "76cb58267aabe986a94f6d34e2aaf823cba92d0fb737f908fe245fb85da82a09",
+      "current_manifest_digest": "aabeb3ce2a8d3838c9a3a27697953bbe69db7c1f35418d7b641bd1b49158dbff",
+      "changed_runtime_files": {
+        "d4mj/lewm_config.py": {
+          "reference": "97f6a6da9065e00c491fcb4d3874749138f39becfc373853bd0221fd0c69e48c",
+          "current": "227ec3a31a4904dd92a85a0d9202be7b25f929d096fafc1821d95aab31cb6067"
+        },
+        "d4mj/world_api.py": {
+          "reference": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b",
+          "current": "f8dfcbe26ea1b1ded73c023d19e9de31962039e4845afabacecef59567dc878c"
+        },
+        "d4mj/config.py": {
+          "reference": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f",
+          "current": "4cf956c9a587deb12730597643f51971711b1c33b0b027b59bebf89f4ecbde1d"
+        },
+        "d4mj/train.py": {
+          "reference": "28982607d430a68712417f9d89f9e6a913a64fbe2618843f43e8081c7dcddd10",
+          "current": "e5f16c8d69a86f20688733061084c1ffa6cd9ff5d416779b2ed8adda7ea6996d"
+        },
+        "d4mj/data.py": {
+          "reference": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea",
+          "current": "cf973b0c2c118d7d15653310973101f8b06791b929430bef2d27325f8801b3e6"
+        }
+      },
+      "surface": [
+        "advance_history",
+        "advance_latent",
+        "cls",
+        "patch16",
+        "patch_grid",
+        "prefill_history",
+        "prefill_latent",
+        "z"
+      ],
+      "parity": {
+        "tolerance": 1e-05,
+        "within_tree_max_abs": 0.0,
+        "cross_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_min_abs": 5.960464477539062e-07,
+        "runs": {
+          "reference": 2,
+          "current": 2
+        }
+      }
+    },
+    {
+      "schema": "lewm_frozen_eval_compatibility_v1",
+      "status": "pass",
+      "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+      "arms": {
+        "raw": {
+          "checkpoint_sha256": "707f6240a3e4e52d6aca7526d541a69112ad7c18c5898c0f1f0ec36f663937ef",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        },
+        "tc": {
+          "checkpoint_sha256": "98effee1085223b5780f30b09ba68b44a8b407acbb07fde5134a8bd708997dc5",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        }
+      },
+      "reference_manifest_digest": "76cb58267aabe986a94f6d34e2aaf823cba92d0fb737f908fe245fb85da82a09",
+      "current_manifest_digest": "aaf3592edb19022a0c4e5ab10af25efdf776b400cce67831715416c9d255892f",
+      "changed_runtime_files": {
+        "d4mj/lewm_config.py": {
+          "reference": "97f6a6da9065e00c491fcb4d3874749138f39becfc373853bd0221fd0c69e48c",
+          "current": "e17a10cc92c54b91a6fc553f2ad2b572dea0ba85e5f8a4ee281f65f97e11d8eb"
+        },
+        "d4mj/world_api.py": {
+          "reference": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b",
+          "current": "e46792a29bc9e18ccac2e367b2f056244cb1d65c8f6396a979e8b5c40a9df392"
+        },
+        "d4mj/config.py": {
+          "reference": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f",
+          "current": "4cf956c9a587deb12730597643f51971711b1c33b0b027b59bebf89f4ecbde1d"
+        },
+        "d4mj/train.py": {
+          "reference": "28982607d430a68712417f9d89f9e6a913a64fbe2618843f43e8081c7dcddd10",
+          "current": "e5f16c8d69a86f20688733061084c1ffa6cd9ff5d416779b2ed8adda7ea6996d"
+        },
+        "d4mj/data.py": {
+          "reference": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea",
+          "current": "6bc043e463e04e7155cc10131cc85889ec4da4c745882e4b25a988d8afe0320a"
+        }
+      },
+      "surface": [
+        "advance_history",
+        "advance_latent",
+        "cls",
+        "patch16",
+        "patch_grid",
+        "prefill_history",
+        "prefill_latent",
+        "z"
+      ],
+      "parity": {
+        "tolerance": 1e-05,
+        "within_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_min_abs": 0.0,
+        "runs": {
+          "reference": 2,
+          "current": 2
+        }
+      }
+    },
+    {
+      "schema": "lewm_frozen_eval_compatibility_v1",
+      "status": "pass",
+      "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+      "arms": {
+        "raw": {
+          "checkpoint_sha256": "7bc9c14d7d7d10bd4cabeb22cd7f2af19e39ff8cb1d9b3758a14086e2a1f2789",
+          "recorded_sources_digest": "78318c8356ade25dec068a47537bb5f6d8ca1d30324087f0a0679de025f3a795"
+        },
+        "tc": {
+          "checkpoint_sha256": "3b2be39fd116a4ff8ffddddf6526ad197cdd7f12da3247fe2988171ffd05e674",
+          "recorded_sources_digest": "78318c8356ade25dec068a47537bb5f6d8ca1d30324087f0a0679de025f3a795"
+        }
+      },
+      "reference_manifest_digest": "78318c8356ade25dec068a47537bb5f6d8ca1d30324087f0a0679de025f3a795",
+      "current_manifest_digest": "76cb58267aabe986a94f6d34e2aaf823cba92d0fb737f908fe245fb85da82a09",
+      "changed_runtime_files": {
+        "d4mj/lewm_config.py": {
+          "reference": "75fad37ec47bf9f8633ab9154839e8f5d67adc9d8b33fd05c9d2fbf5a6e6f665",
+          "current": "97f6a6da9065e00c491fcb4d3874749138f39becfc373853bd0221fd0c69e48c"
+        },
+        "d4mj/world_api.py": {
+          "reference": "fcf2de2c77b1b261fb3633f30273130a7604d6bec547a3d953b7b0e3755d021c",
+          "current": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b"
+        },
+        "d4mj/state.py": {
+          "reference": "20c2fead5ec7a795b40d4a1d6db241f8d8d1432535e0bfd4f2378a139d21b118",
+          "current": "dcda26ce33cdefb76163c8067954646399e3315a3a01ac85a0d474b2f76cf594"
+        },
+        "d4mj/config.py": {
+          "reference": "da108b335c75b368a3cb9d0eb1abeacb1d9eaff73f807b6cd17c64551401ddb2",
+          "current": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f"
+        },
+        "d4mj/cache.py": {
+          "reference": "31aea1bc2b79c2cbbb479304dd81472d4b05c61fc179fe404d254b47f3f2ef90",
+          "current": "a8b1cd9a5a0bf1476c26915ed2cc46b5b616a536e256bfc8f9f5aab4c71bc282"
+        },
+        "d4mj/train.py": {
+          "reference": "105e9d205639f164253b388c520c6ea6b1fcf6c2d397a2b74e694672755d6339",
+          "current": "28982607d430a68712417f9d89f9e6a913a64fbe2618843f43e8081c7dcddd10"
+        },
+        "d4mj/checkpoint.py": {
+          "reference": "310f9fa7a54d588961888c5e1de31b2629360368f59562bc73b0e473e1acafbb",
+          "current": "01f102f1741675d4fb45795dd3658b774d4c9fad9581172461b43b4a06d3dfcb"
+        },
+        "d4mj/sources.py": {
+          "reference": "b9360c687073e6da566424a985a2dcba5dce424af597a025599c923055e0dcee",
+          "current": "ef8ac3e2b4229afb5305bd7d4e171bec92d2a2a1fe987252c691bed9637f16ea"
+        },
+        "d4mj/gates.py": {
+          "reference": "737a159717604bba6a27eed5c55452880f63ceb855d33891f0fc82658f0b8f69",
+          "current": "7a0d7ebbab8e03ada6918c81273f8804ac8cade95f78151516c1e0e4009df5c5"
+        },
+        "d4mj/lewm_diagnostics.py": {
+          "reference": "79b4e5365f2a5967baac960824a464aaeb5a7a927313d9a5cda4aef074220099",
+          "current": "27d75ab046c672909394a8fa8f0a32acd096f043e5193185acc352f8682cc18b"
+        },
+        "d4mj/experiments.py": {
+          "reference": "9084f0f2de3e67ab3f87e953b65329c2b1392d8d6e6345ec44166b545c2d9ef3",
+          "current": "16806f18316d88a4e243f2a41a4ed5ab83ca0bab555ae88999799297d267906b"
+        }
+      },
+      "surface": [
+        "advance_history",
+        "advance_latent",
+        "cls",
+        "patch16",
+        "patch_grid",
+        "prefill_history",
+        "prefill_latent",
+        "z"
+      ],
+      "parity": {
+        "tolerance": 1e-05,
+        "within_tree_max_abs": 9.5367431640625e-07,
+        "cross_tree_max_abs": 9.5367431640625e-07,
+        "cross_tree_min_abs": 0.0,
+        "runs": {
+          "reference": 2,
+          "current": 2
+        }
+      }
+    },
+    {
+      "schema": "lewm_frozen_eval_compatibility_v1",
+      "status": "pass",
+      "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+      "arms": {
+        "raw": {
+          "checkpoint_sha256": "707f6240a3e4e52d6aca7526d541a69112ad7c18c5898c0f1f0ec36f663937ef",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        },
+        "tc": {
+          "checkpoint_sha256": "98effee1085223b5780f30b09ba68b44a8b407acbb07fde5134a8bd708997dc5",
+          "recorded_sources_digest": "32e9f0ab713470c2e5c6aebf31347b9cce1be9bfea9727f2b720728bdc8084fe"
+        }
+      },
+      "reference_manifest_digest": "60ccb055c9216092bd36bf4cfcb9491b576e10b7b3e50d180008ac96f2ab7a3a",
+      "current_manifest_digest": "76cb58267aabe986a94f6d34e2aaf823cba92d0fb737f908fe245fb85da82a09",
+      "changed_runtime_files": {
+        "d4mj/lewm_config.py": {
+          "reference": "8862263e076b8bb62a8fedfe7743dab916cd60d72472e8deeb72f78db14020ef",
+          "current": "97f6a6da9065e00c491fcb4d3874749138f39becfc373853bd0221fd0c69e48c"
+        },
+        "d4mj/lewm.py": {
+          "reference": "b87644febd0851434ba2ac019a86f5c029e8af0ea318343da006c23aacd922f9",
+          "current": "682117426d0fd84e6babe2185002e0bf50d7fbcdeeb4d458eb06efe893b91256"
+        },
+        "d4mj/world_api.py": {
+          "reference": "fcf2de2c77b1b261fb3633f30273130a7604d6bec547a3d953b7b0e3755d021c",
+          "current": "032b2a0d309a9099ffd0bb67317ad0719e7420a73fcbb329c205d538f65c280b"
+        },
+        "d4mj/state.py": {
+          "reference": "20c2fead5ec7a795b40d4a1d6db241f8d8d1432535e0bfd4f2378a139d21b118",
+          "current": "dcda26ce33cdefb76163c8067954646399e3315a3a01ac85a0d474b2f76cf594"
+        },
+        "d4mj/config.py": {
+          "reference": "c1835e1e6e0fae9ca6a40e479f4036fcdc6f8c0c1fa446022aecf7502b5710b0",
+          "current": "fede14da132955dd949272fff40cddbe88a29c880369009f81899bda9519136f"
+        },
+        "d4mj/cache.py": {
+          "reference": "31aea1bc2b79c2cbbb479304dd81472d4b05c61fc179fe404d254b47f3f2ef90",
+          "current": "a8b1cd9a5a0bf1476c26915ed2cc46b5b616a536e256bfc8f9f5aab4c71bc282"
+        },
+        "d4mj/train.py": {
+          "reference": "105e9d205639f164253b388c520c6ea6b1fcf6c2d397a2b74e694672755d6339",
+          "current": "28982607d430a68712417f9d89f9e6a913a64fbe2618843f43e8081c7dcddd10"
+        },
+        "d4mj/checkpoint.py": {
+          "reference": "310f9fa7a54d588961888c5e1de31b2629360368f59562bc73b0e473e1acafbb",
+          "current": "01f102f1741675d4fb45795dd3658b774d4c9fad9581172461b43b4a06d3dfcb"
+        },
+        "d4mj/data.py": {
+          "reference": "85fbbe508e85f8dbd2d2a9bedd3ad0857ef605c11a2036e71ba8ec8168703145",
+          "current": "fad51ccc013503d344aeb1b8401844b98d5719e2a0960791ffe6588f8bb467ea"
+        },
+        "d4mj/sources.py": {
+          "reference": "b9360c687073e6da566424a985a2dcba5dce424af597a025599c923055e0dcee",
+          "current": "ef8ac3e2b4229afb5305bd7d4e171bec92d2a2a1fe987252c691bed9637f16ea"
+        },
+        "d4mj/gates.py": {
+          "reference": "89696e961a3bea8a548c6f4772187a4b105761f1348a3504f3db86b9827c7d39",
+          "current": "7a0d7ebbab8e03ada6918c81273f8804ac8cade95f78151516c1e0e4009df5c5"
+        },
+        "d4mj/lewm_diagnostics.py": {
+          "reference": "f977ddd685a7a2465cf42980390fb8e637312f4848b06cd56d5abc02014494b4",
+          "current": "27d75ab046c672909394a8fa8f0a32acd096f043e5193185acc352f8682cc18b"
+        },
+        "d4mj/experiments.py": {
+          "reference": "ec5e8a5c9163cbf608c31e5852df77668fcafb14a8823d6684802ceb6849549a",
+          "current": "16806f18316d88a4e243f2a41a4ed5ab83ca0bab555ae88999799297d267906b"
+        }
+      },
+      "surface": [
+        "advance_history",
+        "advance_latent",
+        "cls",
+        "patch16",
+        "patch_grid",
+        "prefill_history",
+        "prefill_latent",
+        "z"
+      ],
+      "parity": {
+        "tolerance": 1e-05,
+        "within_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_max_abs": 5.960464477539062e-07,
+        "cross_tree_min_abs": 0.0,
+        "runs": {
+          "reference": 2,
+          "current": 2
+        }
+      }
+    }
+  ],
+  "regenerated_unix": 1789954309.3777142
+}

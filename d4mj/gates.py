@@ -444,7 +444,7 @@ def require_joint_gates(report: dict, config, dataset_contract: dict):
         if record.get("status") != "pass":
             raise ComponentGateError(name, record.get("reason", "gate has not run"))
     try:
-        sources = lewm_source_manifest()
+        sources = lewm_source_manifest(config)
     except Exception as error:
         raise ComponentGateError("source_identity", str(error)) from error
     if report.get("sources") != sources:
@@ -472,7 +472,7 @@ def require_joint_screen(report, config, dataset_contract, resume):
         raise ComponentGateError("joint_screen_identity", "screen report bytes changed")
     if (report.get("decision") != "continue_joint_budget" or report.get("m4_authorized") is not False
             or report.get("dataset_id") != contract_digest(dataset_contract)
-            or report.get("sources") != lewm_source_manifest()
+            or report.get("sources") != lewm_source_manifest(config)
             or any(v.get("status") != "pass" for v in report.get("components",{}).values())):
         raise ComponentGateError("joint_screen", "screen did not authorize this source/data contract")
     required = {"pair_identity","objective_contrast","raw_normalization","raw_recurrence","tc_normalization","tc_recurrence"}
@@ -500,8 +500,11 @@ def require_joint_screen(report, config, dataset_contract, resume):
         if (not 0 <= now < initial or not bool(torch.isfinite(torch.tensor([now,initial])).all())
                 or item["recipe_id"] != pair["recipes"][variant]):
             raise ComponentGateError("joint_screen", "reported learning progress is inconsistent")
-    arm = report.get("arms",{}).get(config.variant,{})
-    if arm.get("recipe_id") != recipe_digest(config) or resume is None:
+    # The arm is the one running this exact recipe. A centering pair declares `tc` in
+    # both slots, so the variant does not name an arm; the recipe digest does, and the
+    # loop above has already bound every slot to its sealed recipe.
+    arm = next((a for a in report.get("arms",{}).values() if a.get("recipe_id") == recipe_digest(config)), {})
+    if not arm or resume is None:
         raise ComponentGateError("joint_screen_parent", "resume the screened recipe and checkpoint")
     parent = read_lewm_bundle(resume)
     if parent["dataset"] != dataset_contract or parent["recipe_id"] != recipe_digest(config):
@@ -514,3 +517,102 @@ def require_joint_screen(report, config, dataset_contract, resume):
             raise ComponentGateError("joint_screen_parent", "later checkpoint lacks the accepted screen lineage")
     else:
         raise ComponentGateError("joint_screen_parent", "resume checkpoint precedes G1")
+
+
+def _sealed_phase_report(report: dict | None, *, schema: str, checkpoint, config,
+                         cache_contract: dict, stage: str, decision: str,
+                         components: set[str], minimum_depth: int) -> dict:
+    """Validate an empirical gate without pretending the trainer computed the evidence.
+
+    MSE, a configured horizon, or a log message cannot stand in for semantic retention,
+    controllable action effects, outcome calibration and paired uncertainty.  The evaluator owns
+    those measurements; this boundary owns immutable identity and the stop decision.
+    """
+    from pathlib import Path
+    from .data import _sha256
+
+    if not isinstance(report, dict) or report.get("schema") != schema:
+        raise ComponentGateError(stage, f"a sealed {schema} report is required")
+    body = {key: value for key, value in report.items() if key != "report_id"}
+    if report.get("report_id") != contract_digest(body):
+        raise ComponentGateError(f"{stage}_identity", "gate report bytes changed")
+    expected = {
+        "checkpoint_sha256": _sha256(Path(checkpoint)),
+        "recipe_id": recipe_digest(config),
+        "cache_id": contract_digest(cache_contract),
+        "stage": stage,
+        "decision": decision,
+    }
+    if any(report.get(key) != value for key, value in expected.items()):
+        raise ComponentGateError(f"{stage}_identity", "gate does not describe this model/cache/stage")
+    # The evaluation recipe fixes the margin, coverage minimum, bootstrap draws and probe budget.
+    # Recording its digest is not enough: a custom recipe could otherwise authorize continuation.
+    from .config import load_recipe
+    expected_screen = recipe_digest(load_recipe(Path(__file__).with_name("recipes") / "joint_screen.json"))
+    if report.get("evaluation", {}).get("screen_settings_id") != expected_screen:
+        raise ComponentGateError(f"{stage}_identity",
+                                 "gate used an evaluation recipe other than the sealed one")
+    if type(report.get("validated_recursive_depth")) is not int or report["validated_recursive_depth"] < minimum_depth:
+        raise ComponentGateError(stage, "gate did not validate the required recursive depth")
+    measured = report.get("components", {})
+    if not components.issubset(measured):
+        raise ComponentGateError(stage, f"gate components are incomplete: {sorted(components-set(measured))}")
+    failed = [name for name in components if measured[name].get("status") != "pass"]
+    if failed:
+        raise ComponentGateError(stage, f"empirical components did not pass: {sorted(failed)}")
+    # A list of green labels is not empirical evidence.  Each component must name the
+    # measurements it used and bind at least one immutable artifact by bytes.  This keeps
+    # the trainer agnostic to the evaluator while preventing a hand-written status-only JSON
+    # from authorizing another several thousand updates.
+    for name in components:
+        item = measured[name]
+        if not isinstance(item.get("metrics"), dict) or not item["metrics"]:
+            raise ComponentGateError(stage, f"{name} has no recorded measurements")
+        # A status string is an assertion, and so is a report-supplied threshold: editing both
+        # together passed the previous check. The deciding field and its threshold now live HERE,
+        # in code, and the report only supplies the measurement. `criterion` remains for
+        # description but is never authoritative.
+        failed = item["metrics"].get("failed_checks")
+        if type(failed) is bool or not isinstance(failed, (int, float)):
+            raise ComponentGateError(stage, f"{name} records no integer failed_checks")
+        if float(failed) < 0:
+            raise ComponentGateError(stage, f"{name} reports a negative failed_checks")
+        if (float(failed) == 0.0) != (item.get("status") == "pass"):
+            raise ComponentGateError(
+                stage, f"{name} status '{item.get('status')}' contradicts its own measurements "
+                       f"(failed_checks = {failed})")
+        evidence = item.get("evidence")
+        if not isinstance(evidence, list) or not evidence:
+            raise ComponentGateError(stage, f"{name} has no byte-bound evidence")
+        for record in evidence:
+            path = Path(record.get("path", "")) if isinstance(record, dict) else Path("")
+            if not path.is_file() or _sha256(path) != record.get("sha256"):
+                raise ComponentGateError(f"{stage}_identity",
+                                         f"{name} evidence is missing or changed")
+    return {"schema": schema, "report_id": report["report_id"],
+            "checkpoint_sha256": expected["checkpoint_sha256"], "stage": stage,
+            "validated_recursive_depth": report["validated_recursive_depth"]}
+
+
+def require_bridge_gate(report: dict | None, *, checkpoint, config, cache_contract: dict,
+                        stage: str, minimum_depth: int) -> dict:
+    if stage not in ("h2", "h16"):
+        raise ValueError("bridge gate stage must be h2 or h16")
+    required = {"source_contract", "recursive_dynamics", "semantic_retention",
+                "action_effects", "outcome_calibration", "observed_bc",
+                "paired_uncertainty"}
+    return _sealed_phase_report(
+        report, schema="d4mj_lewm_bridge_gate_v1", checkpoint=checkpoint, config=config,
+        cache_contract=cache_contract, stage=stage,
+        decision="continue_h16" if stage == "h2" else "authorize_actor",
+        components=required, minimum_depth=minimum_depth,
+    )
+
+
+def require_actor_gate(report: dict | None, *, checkpoint, config, cache_contract: dict) -> dict:
+    return _sealed_phase_report(
+        report, schema="d4mj_lewm_actor_gate_v1", checkpoint=checkpoint, config=config,
+        cache_contract=cache_contract, stage="actor_screen", decision="continue_actor",
+        components={"model_validity", "critic_direction", "action_distribution",
+                    "paired_uncertainty"}, minimum_depth=config.agent.horizon,
+    )

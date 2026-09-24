@@ -1,0 +1,50 @@
+{
+  "schema": "d4mj_damage_direction_v1",
+  "status": "POST HOC, EXPLORATORY: observability roots",
+  "script_sha256": "baab7c35e3ac8fcab285cb4ef63524f44be9ad7e000663e321c9deccb4a118df",
+  "world_sha256": "4e1c3739283e3c4b7e5aa9e9af6c59869f2a0943f5fa82d0409daf5312eb4506",
+  "identity": {
+    "fit": "5f1e9a00c3103610d720bce2e834ca481099e6122cf400fb087e60fe14e02c8d",
+    "judge": "8ed62edd825409b9820be8ea93e0c790a934f9968cad4f10d33a7aa8472da6aa"
+  },
+  "reading": "void",
+  "result": {
+    "damage_opportunity_roots": {
+      "fit": 4806,
+      "judge": 2268
+    },
+    "all": {
+      "roots": 2268,
+      "real_within_root_auc": 0.8967684846136529,
+      "generated_within_root_auc": 0.49996447100877317,
+      "energy_share_of_w": 8.47733099362813e-05,
+      "normalized_error_all": 0.041852936148643494,
+      "normalized_error_w": 1.4721479415893555,
+      "ratio_w_to_all": 35.17430500839711,
+      "effect_ratio_w": 0.7795993089675903,
+      "effect_correlation_w": 0.086985282599926
+    },
+    "zombie_adjacent": {
+      "roots": 1210,
+      "real_within_root_auc": 0.8834314539920816,
+      "generated_within_root_auc": 0.4515734683830014,
+      "energy_share_of_w": 7.57526868255809e-05,
+      "normalized_error_all": 0.03940163925290108,
+      "normalized_error_w": 1.5818082094192505,
+      "ratio_w_to_all": 40.14574620274928,
+      "effect_ratio_w": 0.8215168714523315,
+      "effect_correlation_w": 0.056652434170246124
+    },
+    "night": {
+      "roots": 988,
+      "real_within_root_auc": 0.9229384470120193,
+      "generated_within_root_auc": 0.47643271755231054,
+      "energy_share_of_w": 5.960358612355776e-05,
+      "normalized_error_all": 0.03243869170546532,
+      "normalized_error_w": 1.4508644342422485,
+      "ratio_w_to_all": 44.726354793088184,
+      "effect_ratio_w": 0.7930919528007507,
+      "effect_correlation_w": 0.1123010441660881
+    }
+  }
+}

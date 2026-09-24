@@ -1,0 +1,1069 @@
+{
+  "schema": "d4mj_m03_stage_cache",
+  "metadata_sha256": "7a84782480a3ff7d11789a3df837813331f4130d064ed2472aff890eda3ac8e9",
+  "metadata": {
+    "sidecar_sha256": "ead287f0f9a1aac03d20db701100bd76f387fbac1ec4a03eab661fc82e2be3c0",
+    "feature_manifests": {
+      "raw:train": "6b93abc8bdd260bfbd34918057dd48fece33b10b9ed68de5153efaeb03002686",
+      "raw:dev": "06e65dec4b76b5294d73b61128fb9572dfc7acbda9ebe3ec8b6d366addb34a90",
+      "tc:train": "69b50b24b1ce29ed80db3830e913c9fbae4f0838e070fd62bd31d93531315519",
+      "tc:dev": "80221897b9315996c3cc8cf8d0c8cf8d56dc8199b58c1562231a0e1c71fbe7bd",
+      "direct_attention:train": "4c8e2100d3a458fc0bfe552d53ff976eaebf96f134929586b94f2869baddaab4",
+      "direct_attention:dev": "416265b75b092960dd502772bf4e593f14cdd501ba0e3625745e42b19e4ed1ac",
+      "direct_mamba:train": "9a94e5d81a13d38923b629feeb1aba96de221ad239f0ce941d13ee36e363bd8b",
+      "direct_mamba:dev": "27179f96c62f69e7da821055146ce743796306fdd82afde66a80bd0b1d8a5131"
+    },
+    "arms": [
+      "raw",
+      "tc",
+      "direct_attention",
+      "direct_mamba"
+    ]
+  },
+  "result": {
+    "scope": "privileged_pre_state_controls_only",
+    "sources": {
+      "pixels": {
+        "linear": {
+          "targets": {
+            "death": {
+              "status": "measured",
+              "positive": 986,
+              "negative": 1190,
+              "positive_seed_clusters": 66,
+              "negative_seed_clusters": 98,
+              "auc": 0.8244498610803348,
+              "interval": [
+                0.7553888559341431,
+                0.8895432949066162
+              ]
+            },
+            "damage": {
+              "status": "measured",
+              "positive": 1011,
+              "negative": 1165,
+              "positive_seed_clusters": 71,
+              "negative_seed_clusters": 97,
+              "auc": 0.8448550918437955,
+              "interval": [
+                0.77984619140625,
+                0.9035282135009766
+              ]
+            },
+            "reward_positive": {
+              "status": "measured",
+              "positive": 83,
+              "negative": 2093,
+              "positive_seed_clusters": 17,
+              "negative_seed_clusters": 124,
+              "auc": 0.46305815713882764,
+              "interval": [
+                0.1976839154958725,
+                0.7936215400695801
+              ]
+            },
+            "achievement_event": {
+              "status": "measured",
+              "positive": 31,
+              "negative": 2145,
+              "positive_seed_clusters": 13,
+              "negative_seed_clusters": 127,
+              "auc": 0.3707947966012482,
+              "interval": [
+                0.19803012907505035,
+                0.852205216884613
+              ]
+            },
+            "inventory_changed": {
+              "status": "measured",
+              "positive": 103,
+              "negative": 2073,
+              "positive_seed_clusters": 57,
+              "negative_seed_clusters": 128,
+              "auc": 0.8018162318107522,
+              "interval": [
+                0.7371110320091248,
+                0.8570979237556458
+              ]
+            },
+            "tile_changed": {
+              "status": "measured",
+              "positive": 91,
+              "negative": 2085,
+              "positive_seed_clusters": 53,
+              "negative_seed_clusters": 128,
+              "auc": 0.8333992146941788,
+              "interval": [
+                0.7752349376678467,
+                0.8870533108711243
+              ]
+            }
+          },
+          "macro_auc": 0.6897288921948562,
+          "supported_targets": 6,
+          "total_targets": 6,
+          "within_root": {
+            "death": {
+              "auc": 0.8485780954360962,
+              "interval": [
+                0.7555732131004333,
+                0.9293111562728882
+              ],
+              "opportunity_roots": 36
+            },
+            "damage": {
+              "auc": 0.7766815423965454,
+              "interval": [
+                0.6602325439453125,
+                0.8818984627723694
+              ],
+              "opportunity_roots": 40
+            },
+            "reward_positive": {
+              "auc": 0.817078709602356,
+              "interval": [
+                0.6781010627746582,
+                0.9296875
+              ],
+              "opportunity_roots": 13
+            },
+            "achievement_event": {
+              "auc": 0.860615074634552,
+              "interval": [
+                0.7537099123001099,
+                0.9431818127632141
+              ],
+              "opportunity_roots": 12
+            },
+            "inventory_changed": {
+              "auc": 0.9216085076332092,
+              "interval": [
+                0.8945730328559875,
+                0.9469498991966248
+              ],
+              "opportunity_roots": 57
+            },
+            "tile_changed": {
+              "auc": 0.9354525208473206,
+              "interval": [
+                0.9110369682312012,
+                0.958256185054779
+              ],
+              "opportunity_roots": 53
+            }
+          }
+        },
+        "mlp": {
+          "targets": {
+            "death": {
+              "status": "measured",
+              "positive": 986,
+              "negative": 1190,
+              "positive_seed_clusters": 66,
+              "negative_seed_clusters": 98,
+              "auc": 0.8461963284299521,
+              "interval": [
+                0.7788537740707397,
+                0.9044552445411682
+              ]
+            },
+            "damage": {
+              "status": "measured",
+              "positive": 1011,
+              "negative": 1165,
+              "positive_seed_clusters": 71,
+              "negative_seed_clusters": 97,
+              "auc": 0.7710022371934472,
+              "interval": [
+                0.6971543431282043,
+                0.844490110874176
+              ]
+            },
+            "reward_positive": {
+              "status": "measured",
+              "positive": 83,
+              "negative": 2093,
+              "positive_seed_clusters": 17,
+              "negative_seed_clusters": 124,
+              "auc": 0.281736597608782,
+              "interval": [
+                0.19883930683135986,
+                0.5201376080513
+              ]
+            },
+            "achievement_event": {
+              "status": "measured",
+              "positive": 31,
+              "negative": 2145,
+              "positive_seed_clusters": 13,
+              "negative_seed_clusters": 127,
+              "auc": 0.39162343033310776,
+              "interval": [
+                0.23211629688739777,
+                0.8056701421737671
+              ]
+            },
+            "inventory_changed": {
+              "status": "measured",
+              "positive": 103,
+              "negative": 2073,
+              "positive_seed_clusters": 57,
+              "negative_seed_clusters": 128,
+              "auc": 0.7404165437267878,
+              "interval": [
+                0.6846325397491455,
+                0.7937589883804321
+              ]
+            },
+            "tile_changed": {
+              "status": "measured",
+              "positive": 91,
+              "negative": 2085,
+              "positive_seed_clusters": 53,
+              "negative_seed_clusters": 128,
+              "auc": 0.7874140248240967,
+              "interval": [
+                0.7330014109611511,
+                0.8426018953323364
+              ]
+            }
+          },
+          "macro_auc": 0.6363981936860289,
+          "supported_targets": 6,
+          "total_targets": 6,
+          "within_root": {
+            "death": {
+              "auc": 0.8376322388648987,
+              "interval": [
+                0.7417673468589783,
+                0.9254080057144165
+              ],
+              "opportunity_roots": 36
+            },
+            "damage": {
+              "auc": 0.7753571271896362,
+              "interval": [
+                0.6592206954956055,
+                0.8761106133460999
+              ],
+              "opportunity_roots": 40
+            },
+            "reward_positive": {
+              "auc": 0.7985348105430603,
+              "interval": [
+                0.6577008962631226,
+                0.9140625
+              ],
+              "opportunity_roots": 13
+            },
+            "achievement_event": {
+              "auc": 0.8710317611694336,
+              "interval": [
+                0.7779216766357422,
+                0.9444444179534912
+              ],
+              "opportunity_roots": 12
+            },
+            "inventory_changed": {
+              "auc": 0.9221828579902649,
+              "interval": [
+                0.892969012260437,
+                0.9485899806022644
+              ],
+              "opportunity_roots": 57
+            },
+            "tile_changed": {
+              "auc": 0.9374853372573853,
+              "interval": [
+                0.9157998561859131,
+                0.9579833745956421
+              ],
+              "opportunity_roots": 53
+            }
+          }
+        }
+      },
+      "visible": {
+        "linear": {
+          "targets": {
+            "death": {
+              "status": "measured",
+              "positive": 986,
+              "negative": 1190,
+              "positive_seed_clusters": 66,
+              "negative_seed_clusters": 98,
+              "auc": 0.5414057306492577,
+              "interval": [
+                0.45441165566444397,
+                0.6293091177940369
+              ]
+            },
+            "damage": {
+              "status": "measured",
+              "positive": 1011,
+              "negative": 1165,
+              "positive_seed_clusters": 71,
+              "negative_seed_clusters": 97,
+              "auc": 0.5731001897581539,
+              "interval": [
+                0.4811500012874603,
+                0.6644566059112549
+              ]
+            },
+            "reward_positive": {
+              "status": "measured",
+              "positive": 83,
+              "negative": 2093,
+              "positive_seed_clusters": 17,
+              "negative_seed_clusters": 124,
+              "auc": 0.5121834687052078,
+              "interval": [
+                0.21376220881938934,
+                0.8342487215995789
+              ]
+            },
+            "achievement_event": {
+              "status": "measured",
+              "positive": 31,
+              "negative": 2145,
+              "positive_seed_clusters": 13,
+              "negative_seed_clusters": 127,
+              "auc": 0.5418753289721032,
+              "interval": [
+                0.442643940448761,
+                0.7503461241722107
+              ]
+            },
+            "inventory_changed": {
+              "status": "measured",
+              "positive": 103,
+              "negative": 2073,
+              "positive_seed_clusters": 57,
+              "negative_seed_clusters": 128,
+              "auc": 0.6395683756480688,
+              "interval": [
+                0.559123158454895,
+                0.7251147627830505
+              ]
+            },
+            "tile_changed": {
+              "status": "measured",
+              "positive": 91,
+              "negative": 2085,
+              "positive_seed_clusters": 53,
+              "negative_seed_clusters": 128,
+              "auc": 0.629794186628719,
+              "interval": [
+                0.5489770770072937,
+                0.7182329297065735
+              ]
+            }
+          },
+          "macro_auc": 0.5729878800602517,
+          "supported_targets": 6,
+          "total_targets": 6,
+          "within_root": {
+            "death": {
+              "auc": 0.8467427492141724,
+              "interval": [
+                0.7587753534317017,
+                0.9242583513259888
+              ],
+              "opportunity_roots": 36
+            },
+            "damage": {
+              "auc": 0.776532769203186,
+              "interval": [
+                0.6582480072975159,
+                0.8792046904563904
+              ],
+              "opportunity_roots": 40
+            },
+            "reward_positive": {
+              "auc": 0.8200549483299255,
+              "interval": [
+                0.6688802242279053,
+                0.9375
+              ],
+              "opportunity_roots": 13
+            },
+            "achievement_event": {
+              "auc": 0.8834325671195984,
+              "interval": [
+                0.7837302088737488,
+                0.9479404091835022
+              ],
+              "opportunity_roots": 12
+            },
+            "inventory_changed": {
+              "auc": 0.9195621609687805,
+              "interval": [
+                0.8923042416572571,
+                0.9453113079071045
+              ],
+              "opportunity_roots": 57
+            },
+            "tile_changed": {
+              "auc": 0.9392900466918945,
+              "interval": [
+                0.9176787734031677,
+                0.9602144956588745
+              ],
+              "opportunity_roots": 53
+            }
+          }
+        },
+        "mlp": {
+          "targets": {
+            "death": {
+              "status": "measured",
+              "positive": 986,
+              "negative": 1190,
+              "positive_seed_clusters": 66,
+              "negative_seed_clusters": 98,
+              "auc": 0.5368976596723882,
+              "interval": [
+                0.4453539550304413,
+                0.6297481656074524
+              ]
+            },
+            "damage": {
+              "status": "measured",
+              "positive": 1011,
+              "negative": 1165,
+              "positive_seed_clusters": 71,
+              "negative_seed_clusters": 97,
+              "auc": 0.5079660218285554,
+              "interval": [
+                0.4143231511116028,
+                0.6052493453025818
+              ]
+            },
+            "reward_positive": {
+              "status": "measured",
+              "positive": 83,
+              "negative": 2093,
+              "positive_seed_clusters": 17,
+              "negative_seed_clusters": 124,
+              "auc": 0.3541639083807758,
+              "interval": [
+                0.151707723736763,
+                0.6995558738708496
+              ]
+            },
+            "achievement_event": {
+              "status": "measured",
+              "positive": 31,
+              "negative": 2145,
+              "positive_seed_clusters": 13,
+              "negative_seed_clusters": 127,
+              "auc": 0.569937589292428,
+              "interval": [
+                0.43118715286254883,
+                0.885286271572113
+              ]
+            },
+            "inventory_changed": {
+              "status": "measured",
+              "positive": 103,
+              "negative": 2073,
+              "positive_seed_clusters": 57,
+              "negative_seed_clusters": 128,
+              "auc": 0.6280190521686595,
+              "interval": [
+                0.5302278399467468,
+                0.7241125106811523
+              ]
+            },
+            "tile_changed": {
+              "status": "measured",
+              "positive": 91,
+              "negative": 2085,
+              "positive_seed_clusters": 53,
+              "negative_seed_clusters": 128,
+              "auc": 0.621034600890716,
+              "interval": [
+                0.5273328423500061,
+                0.7194424271583557
+              ]
+            }
+          },
+          "macro_auc": 0.5363364720389205,
+          "supported_targets": 6,
+          "total_targets": 6,
+          "within_root": {
+            "death": {
+              "auc": 0.8420469760894775,
+              "interval": [
+                0.7519471049308777,
+                0.921100378036499
+              ],
+              "opportunity_roots": 36
+            },
+            "damage": {
+              "auc": 0.7931845188140869,
+              "interval": [
+                0.6830427050590515,
+                0.8893171548843384
+              ],
+              "opportunity_roots": 40
+            },
+            "reward_positive": {
+              "auc": 0.8106685280799866,
+              "interval": [
+                0.6596819162368774,
+                0.9292014241218567
+              ],
+              "opportunity_roots": 13
+            },
+            "achievement_event": {
+              "auc": 0.8566468358039856,
+              "interval": [
+                0.7445312142372131,
+                0.9464457631111145
+              ],
+              "opportunity_roots": 12
+            },
+            "inventory_changed": {
+              "auc": 0.9183014035224915,
+              "interval": [
+                0.8888257145881653,
+                0.9450010657310486
+              ],
+              "opportunity_roots": 57
+            },
+            "tile_changed": {
+              "auc": 0.9366317391395569,
+              "interval": [
+                0.9125525951385498,
+                0.9587826132774353
+              ],
+              "opportunity_roots": 53
+            }
+          }
+        }
+      },
+      "visible_timing": {
+        "linear": {
+          "targets": {
+            "death": {
+              "status": "measured",
+              "positive": 986,
+              "negative": 1190,
+              "positive_seed_clusters": 66,
+              "negative_seed_clusters": 98,
+              "auc": 0.549290060851927,
+              "interval": [
+                0.4627206027507782,
+                0.6378163695335388
+              ]
+            },
+            "damage": {
+              "status": "measured",
+              "positive": 1011,
+              "negative": 1165,
+              "positive_seed_clusters": 71,
+              "negative_seed_clusters": 97,
+              "auc": 0.5468770562439772,
+              "interval": [
+                0.44815361499786377,
+                0.6407048106193542
+              ]
+            },
+            "reward_positive": {
+              "status": "measured",
+              "positive": 83,
+              "negative": 2093,
+              "positive_seed_clusters": 17,
+              "negative_seed_clusters": 124,
+              "auc": 0.45495311393687504,
+              "interval": [
+                0.23063135147094727,
+                0.8045297861099243
+              ]
+            },
+            "achievement_event": {
+              "status": "measured",
+              "positive": 31,
+              "negative": 2145,
+              "positive_seed_clusters": 13,
+              "negative_seed_clusters": 127,
+              "auc": 0.44631927212572375,
+              "interval": [
+                0.3140696585178375,
+                0.7393813133239746
+              ]
+            },
+            "inventory_changed": {
+              "status": "measured",
+              "positive": 103,
+              "negative": 2073,
+              "positive_seed_clusters": 57,
+              "negative_seed_clusters": 128,
+              "auc": 0.656096178794393,
+              "interval": [
+                0.5812848806381226,
+                0.7334029078483582
+              ]
+            },
+            "tile_changed": {
+              "status": "measured",
+              "positive": 91,
+              "negative": 2085,
+              "positive_seed_clusters": 53,
+              "negative_seed_clusters": 128,
+              "auc": 0.6256937307297019,
+              "interval": [
+                0.5335870981216431,
+                0.7108816504478455
+              ]
+            }
+          },
+          "macro_auc": 0.5465382354470996,
+          "supported_targets": 6,
+          "total_targets": 6,
+          "within_root": {
+            "death": {
+              "auc": 0.8485780954360962,
+              "interval": [
+                0.7555732131004333,
+                0.9293111562728882
+              ],
+              "opportunity_roots": 36
+            },
+            "damage": {
+              "auc": 0.7806399464607239,
+              "interval": [
+                0.6659691333770752,
+                0.8798353672027588
+              ],
+              "opportunity_roots": 40
+            },
+            "reward_positive": {
+              "auc": 0.7930402755737305,
+              "interval": [
+                0.6162421107292175,
+                0.9296875
+              ],
+              "opportunity_roots": 13
+            },
+            "achievement_event": {
+              "auc": 0.8730158805847168,
+              "interval": [
+                0.7753943800926208,
+                0.9375
+              ],
+              "opportunity_roots": 12
+            },
+            "inventory_changed": {
+              "auc": 0.9118790030479431,
+              "interval": [
+                0.88267982006073,
+                0.9384706020355225
+              ],
+              "opportunity_roots": 57
+            },
+            "tile_changed": {
+              "auc": 0.9354525208473206,
+              "interval": [
+                0.9110369682312012,
+                0.958256185054779
+              ],
+              "opportunity_roots": 53
+            }
+          }
+        },
+        "mlp": {
+          "targets": {
+            "death": {
+              "status": "measured",
+              "positive": 986,
+              "negative": 1190,
+              "positive_seed_clusters": 66,
+              "negative_seed_clusters": 98,
+              "auc": 0.5686625360083182,
+              "interval": [
+                0.47413355112075806,
+                0.6663928031921387
+              ]
+            },
+            "damage": {
+              "status": "measured",
+              "positive": 1011,
+              "negative": 1165,
+              "positive_seed_clusters": 71,
+              "negative_seed_clusters": 97,
+              "auc": 0.64510343305188,
+              "interval": [
+                0.5606498122215271,
+                0.727932333946228
+              ]
+            },
+            "reward_positive": {
+              "status": "measured",
+              "positive": 83,
+              "negative": 2093,
+              "positive_seed_clusters": 17,
+              "negative_seed_clusters": 124,
+              "auc": 0.4088211421893978,
+              "interval": [
+                0.24937303364276886,
+                0.6852316856384277
+              ]
+            },
+            "achievement_event": {
+              "status": "measured",
+              "positive": 31,
+              "negative": 2145,
+              "positive_seed_clusters": 13,
+              "negative_seed_clusters": 127,
+              "auc": 0.5598466050078953,
+              "interval": [
+                0.42357590794563293,
+                0.8851190209388733
+              ]
+            },
+            "inventory_changed": {
+              "status": "measured",
+              "positive": 103,
+              "negative": 2073,
+              "positive_seed_clusters": 57,
+              "negative_seed_clusters": 128,
+              "auc": 0.574941808457327,
+              "interval": [
+                0.4842031002044678,
+                0.6665191650390625
+              ]
+            },
+            "tile_changed": {
+              "status": "measured",
+              "positive": 91,
+              "negative": 2085,
+              "positive_seed_clusters": 53,
+              "negative_seed_clusters": 128,
+              "auc": 0.6490789785753814,
+              "interval": [
+                0.5506746172904968,
+                0.7504805326461792
+              ]
+            }
+          },
+          "macro_auc": 0.5677424172150333,
+          "supported_targets": 6,
+          "total_targets": 6,
+          "within_root": {
+            "death": {
+              "auc": 0.8464368581771851,
+              "interval": [
+                0.7549872994422913,
+                0.9275208711624146
+              ],
+              "opportunity_roots": 36
+            },
+            "damage": {
+              "auc": 0.8045238256454468,
+              "interval": [
+                0.692440927028656,
+                0.9011708498001099
+              ],
+              "opportunity_roots": 40
+            },
+            "reward_positive": {
+              "auc": 0.7937271595001221,
+              "interval": [
+                0.6297416090965271,
+                0.9236111044883728
+              ],
+              "opportunity_roots": 13
+            },
+            "achievement_event": {
+              "auc": 0.8514385223388672,
+              "interval": [
+                0.7405892610549927,
+                0.9432134032249451
+              ],
+              "opportunity_roots": 12
+            },
+            "inventory_changed": {
+              "auc": 0.9193111062049866,
+              "interval": [
+                0.8893980979919434,
+                0.9461451768875122
+              ],
+              "opportunity_roots": 57
+            },
+            "tile_changed": {
+              "auc": 0.9369125366210938,
+              "interval": [
+                0.912767231464386,
+                0.9589176177978516
+              ],
+              "opportunity_roots": 53
+            }
+          }
+        }
+      },
+      "full_simulator": {
+        "linear": {
+          "targets": {
+            "death": {
+              "status": "measured",
+              "positive": 986,
+              "negative": 1190,
+              "positive_seed_clusters": 66,
+              "negative_seed_clusters": 98,
+              "auc": 0.6131044709973239,
+              "interval": [
+                0.5212495923042297,
+                0.7021729350090027
+              ]
+            },
+            "damage": {
+              "status": "measured",
+              "positive": 1011,
+              "negative": 1165,
+              "positive_seed_clusters": 71,
+              "negative_seed_clusters": 97,
+              "auc": 0.6058888704932438,
+              "interval": [
+                0.5183165073394775,
+                0.6999232172966003
+              ]
+            },
+            "reward_positive": {
+              "status": "measured",
+              "positive": 83,
+              "negative": 2093,
+              "positive_seed_clusters": 17,
+              "negative_seed_clusters": 124,
+              "auc": 0.5415757631577433,
+              "interval": [
+                0.22557461261749268,
+                0.7590013742446899
+              ]
+            },
+            "achievement_event": {
+              "status": "measured",
+              "positive": 31,
+              "negative": 2145,
+              "positive_seed_clusters": 13,
+              "negative_seed_clusters": 127,
+              "auc": 0.6240318820963983,
+              "interval": [
+                0.33159139752388,
+                0.7592182159423828
+              ]
+            },
+            "inventory_changed": {
+              "status": "measured",
+              "positive": 103,
+              "negative": 2073,
+              "positive_seed_clusters": 57,
+              "negative_seed_clusters": 128,
+              "auc": 0.5008219409045565,
+              "interval": [
+                0.4364539086818695,
+                0.5758875012397766
+              ]
+            },
+            "tile_changed": {
+              "status": "measured",
+              "positive": 91,
+              "negative": 2085,
+              "positive_seed_clusters": 53,
+              "negative_seed_clusters": 128,
+              "auc": 0.5447229029962843,
+              "interval": [
+                0.47591811418533325,
+                0.6148853898048401
+              ]
+            }
+          },
+          "macro_auc": 0.5716909717742582,
+          "supported_targets": 6,
+          "total_targets": 6,
+          "within_root": {
+            "death": {
+              "auc": 0.8518518805503845,
+              "interval": [
+                0.7566994428634644,
+                0.9334279894828796
+              ],
+              "opportunity_roots": 36
+            },
+            "damage": {
+              "auc": 0.782202422618866,
+              "interval": [
+                0.6689788699150085,
+                0.8798813819885254
+              ],
+              "opportunity_roots": 40
+            },
+            "reward_positive": {
+              "auc": 0.8189103007316589,
+              "interval": [
+                0.6582487225532532,
+                0.943477213382721
+              ],
+              "opportunity_roots": 13
+            },
+            "achievement_event": {
+              "auc": 0.8886408805847168,
+              "interval": [
+                0.794609785079956,
+                0.956738293170929
+              ],
+              "opportunity_roots": 12
+            },
+            "inventory_changed": {
+              "auc": 0.9118790030479431,
+              "interval": [
+                0.88267982006073,
+                0.9384706020355225
+              ],
+              "opportunity_roots": 57
+            },
+            "tile_changed": {
+              "auc": 0.9354525208473206,
+              "interval": [
+                0.9110369682312012,
+                0.958256185054779
+              ],
+              "opportunity_roots": 53
+            }
+          }
+        },
+        "mlp": {
+          "targets": {
+            "death": {
+              "status": "measured",
+              "positive": 986,
+              "negative": 1190,
+              "positive_seed_clusters": 66,
+              "negative_seed_clusters": 98,
+              "auc": 0.47667385412582886,
+              "interval": [
+                0.3772839605808258,
+                0.5755401253700256
+              ]
+            },
+            "damage": {
+              "status": "measured",
+              "positive": 1011,
+              "negative": 1165,
+              "positive_seed_clusters": 71,
+              "negative_seed_clusters": 97,
+              "auc": 0.48141770991199806,
+              "interval": [
+                0.3910810649394989,
+                0.5712984800338745
+              ]
+            },
+            "reward_positive": {
+              "status": "measured",
+              "positive": 83,
+              "negative": 2093,
+              "positive_seed_clusters": 17,
+              "negative_seed_clusters": 124,
+              "auc": 0.4728383193548201,
+              "interval": [
+                0.18216413259506226,
+                0.7966358661651611
+              ]
+            },
+            "achievement_event": {
+              "status": "measured",
+              "positive": 31,
+              "negative": 2145,
+              "positive_seed_clusters": 13,
+              "negative_seed_clusters": 127,
+              "auc": 0.5197834423640876,
+              "interval": [
+                0.24895358085632324,
+                0.651095449924469
+              ]
+            },
+            "inventory_changed": {
+              "status": "measured",
+              "positive": 103,
+              "negative": 2073,
+              "positive_seed_clusters": 57,
+              "negative_seed_clusters": 128,
+              "auc": 0.4844721078686206,
+              "interval": [
+                0.4195028245449066,
+                0.5542157292366028
+              ]
+            },
+            "tile_changed": {
+              "status": "measured",
+              "positive": 91,
+              "negative": 2085,
+              "positive_seed_clusters": 53,
+              "negative_seed_clusters": 128,
+              "auc": 0.5415368803858013,
+              "interval": [
+                0.472738116979599,
+                0.6167188286781311
+              ]
+            }
+          },
+          "macro_auc": 0.49612038566852606,
+          "supported_targets": 6,
+          "total_targets": 6,
+          "within_root": {
+            "death": {
+              "auc": 0.8265211582183838,
+              "interval": [
+                0.72779381275177,
+                0.9174747467041016
+              ],
+              "opportunity_roots": 36
+            },
+            "damage": {
+              "auc": 0.7777827382087708,
+              "interval": [
+                0.6602785587310791,
+                0.8848651647567749
+              ],
+              "opportunity_roots": 40
+            },
+            "reward_positive": {
+              "auc": 0.8104395270347595,
+              "interval": [
+                0.639859676361084,
+                0.9437500238418579
+              ],
+              "opportunity_roots": 13
+            },
+            "achievement_event": {
+              "auc": 0.8311011791229248,
+              "interval": [
+                0.6731656193733215,
+                0.9583333134651184
+              ],
+              "opportunity_roots": 12
+            },
+            "inventory_changed": {
+              "auc": 0.9110564589500427,
+              "interval": [
+                0.8786194920539856,
+                0.9402388334274292
+              ],
+              "opportunity_roots": 57
+            },
+            "tile_changed": {
+              "auc": 0.9325831532478333,
+              "interval": [
+                0.9101705551147461,
+                0.9541698098182678
+              ],
+              "opportunity_roots": 53
+            }
+          }
+        }
+      }
+    }
+  },
+  "imported_from": null
+}

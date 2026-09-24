@@ -1,0 +1,23 @@
+{
+  "schema": "d4mj_m03_capability_gate",
+  "seed": 20260907,
+  "train_roots": 256,
+  "dev_roots": 128,
+  "terminal_tail_fraction": 0.5,
+  "direct_context": 64,
+  "lewm_context": 4,
+  "replay_checks": 4,
+  "mode_samples": 4,
+  "encode_batch": 16,
+  "direct_encode_batch": 1,
+  "direct_successor_batch": 4,
+  "probe_hidden": 128,
+  "probe_steps": 200,
+  "probe_batch": 256,
+  "probe_learning_rate": 0.001,
+  "probe_weight_decay": 0.0001,
+  "bootstrap_draws": 1000,
+  "minimum_positive": 10,
+  "minimum_negative": 10,
+  "ridge": 1.0
+}

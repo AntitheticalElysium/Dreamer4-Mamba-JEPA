@@ -1,0 +1,38 @@
+{
+  "schema": "d4mj_supersessions_v1",
+  "rule": "evidence files are NOT edited; read their verdict fields through this record. A file whose sha256 no longer matches is not covered and must be re-examined.",
+  "entries": [
+    {
+      "file": "ladder.json",
+      "sha256": "1cc8a21a69e1a1be2d4598525a054397f600fcff2e5d15cee802a9e899a08d4d",
+      "field": "verdict.call",
+      "original": "transition_or_generated_feature",
+      "superseded_by": "real_beats_marginal_generated_does_not",
+      "reason": "every probe is fit and selected on reward cross-entropy plus continuation BCE and judged on within-root action choice; the 2026-09-19 localization ladder measured that mismatch understating Raw (7.0-17.7/36 under BCE vs 27.0-29.7/36 under within-root ranking on identical rows) and retracted a headline of this form. A probe failing is not an absence of information. Also: 'real succeeds' is realized-outcome hindsight, not a prediction ceiling."
+    },
+    {
+      "file": "transition.json",
+      "sha256": "2692abee25c6394c80216dd7d0a4daa37a8a5c234baa644b8ed9036367fcf0d4",
+      "field": "verdict.call",
+      "original": "dynamics_never_construct_it",
+      "superseded_by": "no_stack_rung_beats_root_action",
+      "reason": "every probe is fit and selected on reward cross-entropy plus continuation BCE and judged on within-root action choice; the 2026-09-19 localization ladder measured that mismatch understating Raw (7.0-17.7/36 under BCE vs 27.0-29.7/36 under within-root ranking on identical rows) and retracted a headline of this form. A probe failing is not an absence of information. And post hoc, paired, u beats generated_z by +0.084 [+0.021,+0.146], so 'nothing for the predictor to drop' does not hold. Probes read a 4-frame context; forks store 32."
+    },
+    {
+      "file": "transition_root.json",
+      "sha256": "ee90ca6306e58c6cf305bfa1ae0c9ea78a526566a2af6a6a6eeac3b19702968a",
+      "field": "verdict.call",
+      "original": "dynamics_never_construct_it",
+      "superseded_by": "no_stack_rung_beats_root_action",
+      "reason": "replicates transition.json; same objection"
+    },
+    {
+      "file": "transition_root.json",
+      "sha256": "ee90ca6306e58c6cf305bfa1ae0c9ea78a526566a2af6a6a6eeac3b19702968a",
+      "field": "post_hoc_root.call",
+      "original": "not_predictable_from_root",
+      "superseded_by": "no_root_rung_beats_root_action",
+      "reason": "every probe is fit and selected on reward cross-entropy plus continuation BCE and judged on within-root action choice; the 2026-09-19 localization ladder measured that mismatch understating Raw (7.0-17.7/36 under BCE vs 27.0-29.7/36 under within-root ranking on identical rows) and retracted a headline of this form. A probe failing is not an absence of information. Root CLS+patches raises within-root death association over root+action (0.297 vs 0.184) though its safe-choice does not resolve."
+    }
+  ]
+}

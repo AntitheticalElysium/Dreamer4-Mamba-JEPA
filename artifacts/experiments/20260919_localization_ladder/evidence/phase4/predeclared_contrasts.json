@@ -1,0 +1,27 @@
+{
+  "schema": "d4mj_phase4_predeclaration_v1",
+  "written_before_scoring": true,
+  "contrasts": [
+    {
+      "id": "C1_objective",
+      "claim": "within-root ranking beats six-target BCE on real Mamba Raw z",
+      "a": "mamba_raw real z, rank",
+      "b": "mamba_raw real z, bce_death",
+      "direction": "a>b"
+    },
+    {
+      "id": "C2_export",
+      "claim": "a pooled-patch PCA-192 rung beats z at matched width on real successors",
+      "a": "mamba_raw pooled4_pca192",
+      "b": "mamba_raw z",
+      "direction": "a>b"
+    },
+    {
+      "id": "C3_generated",
+      "claim": "generated Mamba Raw z beats its own root+action control",
+      "a": "mamba_raw generated z",
+      "b": "mamba_raw root+action",
+      "direction": "a>b"
+    }
+  ]
+}

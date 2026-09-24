@@ -1,0 +1,433 @@
+{
+  "schema": "d4mj_m4_corpus_v1",
+  "archive_store": {
+    "format": "d4mj_episode_store_v1",
+    "kind": "d4mj_expert_archive_v1",
+    "complete": true,
+    "episodes": 320,
+    "shards": [
+      {
+        "file": "shard-0000.pt",
+        "sha256": "ae3eac358c2998b7a7db41768dd2f481ce8f596f0f50c540019ec6cfe5e7e59f",
+        "episodes": 8,
+        "transitions": 15552,
+        "terminal_episodes": 2
+      },
+      {
+        "file": "shard-0001.pt",
+        "sha256": "3e1d85d46489b00522e7cbb8e6f8efb46d6294b4e499df07abbc6d0093d30b4d",
+        "episodes": 8,
+        "transitions": 20000,
+        "terminal_episodes": 0
+      },
+      {
+        "file": "shard-0002.pt",
+        "sha256": "463fb77e3a1df9cb5d6e232f359b86b1329cbbf923cb77c32d1cb63adbbe6624",
+        "episodes": 8,
+        "transitions": 11491,
+        "terminal_episodes": 4
+      },
+      {
+        "file": "shard-0003.pt",
+        "sha256": "35f9f14d05738d2d01c6205ff881ea85ede7d4a2ea6058d33ee2c29c293f8039",
+        "episodes": 8,
+        "transitions": 20000,
+        "terminal_episodes": 0
+      },
+      {
+        "file": "shard-0004.pt",
+        "sha256": "dc70adb69ef9174b7451d636427cd56e00e7c438d8e00ee5513063aa4a000c89",
+        "episodes": 8,
+        "transitions": 17855,
+        "terminal_episodes": 1
+      },
+      {
+        "file": "shard-0005.pt",
+        "sha256": "6f92aecb9322c36488625ca8d1af9173fd7235ecc38a00bfcaddc9780af067aa",
+        "episodes": 8,
+        "transitions": 16187,
+        "terminal_episodes": 2
+      },
+      {
+        "file": "shard-0006.pt",
+        "sha256": "c5fd2a888b2690f8930d06841f16e05f0fb3574372fa930f2c0cd289018371f8",
+        "episodes": 8,
+        "transitions": 20000,
+        "terminal_episodes": 0
+      },
+      {
+        "file": "shard-0007.pt",
+        "sha256": "1f80cc482a4bf7eb89588242164413245f60fb4f662d1aa7753eae0dd7357ae8",
+        "episodes": 8,
+        "transitions": 20000,
+        "terminal_episodes": 0
+      },
+      {
+        "file": "shard-0008.pt",
+        "sha256": "de02371f431b8b5c3aa44ca252636e3e87d5084b64e2025b07318807a3cb8388",
+        "episodes": 8,
+        "transitions": 20000,
+        "terminal_episodes": 0
+      },
+      {
+        "file": "shard-0009.pt",
+        "sha256": "506daab7c7cdf1f2f9f9a65c489830b1a608248787a09e80db43af07490d6baa",
+        "episodes": 8,
+        "transitions": 20000,
+        "terminal_episodes": 0
+      },
+      {
+        "file": "shard-0010.pt",
+        "sha256": "2558aeb17219d2139f37e9a8d15ecdfe30c332b0294291b41c39587c20ec8f8c",
+        "episodes": 8,
+        "transitions": 16299,
+        "terminal_episodes": 2
+      },
+      {
+        "file": "shard-0011.pt",
+        "sha256": "e7f8f3d905fa44311db4d1c4c1be6e8fc364444b9b86895d7dfc7cd25014a8bb",
+        "episodes": 8,
+        "transitions": 16919,
+        "terminal_episodes": 2
+      },
+      {
+        "file": "shard-0012.pt",
+        "sha256": "7ccc688737628dbe0b429ee8ca0d63b818a162c3332e3c1865216957dac1789c",
+        "episodes": 8,
+        "transitions": 18051,
+        "terminal_episodes": 1
+      },
+      {
+        "file": "shard-0013.pt",
+        "sha256": "a2373687daab2e08e097ae99b39e0b4fc8aa6d8b5ff7a89bbef48b39ad309323",
+        "episodes": 8,
+        "transitions": 20000,
+        "terminal_episodes": 0
+      },
+      {
+        "file": "shard-0014.pt",
+        "sha256": "fba35158ccff9f4a8f717d133a2bda32e5124747d18fa4849dc2abc2cc2e385d",
+        "episodes": 8,
+        "transitions": 16601,
+        "terminal_episodes": 2
+      },
+      {
+        "file": "shard-0015.pt",
+        "sha256": "afe1c8aa5387bba4b436786deccd6308b56e7cb381a98164367fe17ad191a515",
+        "episodes": 8,
+        "transitions": 17589,
+        "terminal_episodes": 2
+      },
+      {
+        "file": "shard-0016.pt",
+        "sha256": "61b0ddb78aa1227459ae948d7772dfdc26ba1c956e30facf02cb310e594647b0",
+        "episodes": 8,
+        "transitions": 15326,
+        "terminal_episodes": 3
+      },
+      {
+        "file": "shard-0017.pt",
+        "sha256": "e93673d9ae369e87bc5a236cf8b4ec8ed5ecb04fa6e13864c3014b2e0a4201ce",
+        "episodes": 8,
+        "transitions": 18292,
+        "terminal_episodes": 1
+      },
+      {
+        "file": "shard-0018.pt",
+        "sha256": "29fea5419f5c7af8571cea7e2fc7690d512f0038a65581996895a4d0cf5e50c5",
+        "episodes": 8,
+        "transitions": 17916,
+        "terminal_episodes": 3
+      },
+      {
+        "file": "shard-0019.pt",
+        "sha256": "80f11d9e01b134c37f6ed3c7be5b372a921405cf08cd43eea17293fc0e0e04d4",
+        "episodes": 8,
+        "transitions": 14661,
+        "terminal_episodes": 3
+      },
+      {
+        "file": "shard-0020.pt",
+        "sha256": "93f87cb02481c7bcbb41c2854d1fecfeef316f2b3dba71f3b65d77522276514b",
+        "episodes": 8,
+        "transitions": 13083,
+        "terminal_episodes": 4
+      },
+      {
+        "file": "shard-0021.pt",
+        "sha256": "b47465a97675a74f02bba2f826ed1eaf88032405ecc4b09db2480f43f753e109",
+        "episodes": 8,
+        "transitions": 15018,
+        "terminal_episodes": 4
+      },
+      {
+        "file": "shard-0022.pt",
+        "sha256": "575d60910f4569b12ba0fc49434208225e5a681a7a53609a2a8bd5a2d4fbd695",
+        "episodes": 8,
+        "transitions": 14220,
+        "terminal_episodes": 4
+      },
+      {
+        "file": "shard-0023.pt",
+        "sha256": "a3c952580bdb524c924519ccc5de23ab528bb7279645aa82c96dd941d08e4776",
+        "episodes": 8,
+        "transitions": 19286,
+        "terminal_episodes": 1
+      },
+      {
+        "file": "shard-0024.pt",
+        "sha256": "f8cbea1e5e0c68495a77701820c094a70afd483622ab2d7b3a1704502dfd1c93",
+        "episodes": 8,
+        "transitions": 13509,
+        "terminal_episodes": 3
+      },
+      {
+        "file": "shard-0025.pt",
+        "sha256": "ed688d698c9b364f9eb2a9fced8f0b9c390b369437cc7f49aa4488a3b864bcd9",
+        "episodes": 8,
+        "transitions": 19325,
+        "terminal_episodes": 1
+      },
+      {
+        "file": "shard-0026.pt",
+        "sha256": "ef1dd9a5f64c162b77a2992dde89ec67a8bb30476e998e58d531e1eeefdd980f",
+        "episodes": 8,
+        "transitions": 16426,
+        "terminal_episodes": 2
+      },
+      {
+        "file": "shard-0027.pt",
+        "sha256": "01e7ae1b4b5d228c8cfe4055ecf1f5004199f8c4bff9b08e8374b2a5258f4f15",
+        "episodes": 8,
+        "transitions": 19867,
+        "terminal_episodes": 1
+      },
+      {
+        "file": "shard-0028.pt",
+        "sha256": "811eb76041fef2764b23b5d0ccb0b515805e22fb002f7b88a3e85580b38354aa",
+        "episodes": 8,
+        "transitions": 20000,
+        "terminal_episodes": 0
+      },
+      {
+        "file": "shard-0029.pt",
+        "sha256": "ff7f1ca0257d96fc0c66328cfd0effa169eafc0d9feef95336b15920c64b5410",
+        "episodes": 8,
+        "transitions": 20000,
+        "terminal_episodes": 0
+      },
+      {
+        "file": "shard-0030.pt",
+        "sha256": "b6d0332d80848402c4f6ebbc5fd398d5bbdbf9f01ecb943c3ba4b748d737afc9",
+        "episodes": 8,
+        "transitions": 16853,
+        "terminal_episodes": 2
+      },
+      {
+        "file": "shard-0031.pt",
+        "sha256": "9fcee7a7d4d37fe5501d93bdf53cfaf531d6c35675fa63949f1b70e7580af3f5",
+        "episodes": 8,
+        "transitions": 18681,
+        "terminal_episodes": 1
+      },
+      {
+        "file": "shard-0032.pt",
+        "sha256": "06c19b30da4f1e8cf3cbd2fc42a904d10d086682cf6298b4eda7fa611279d0d2",
+        "episodes": 8,
+        "transitions": 17948,
+        "terminal_episodes": 2
+      },
+      {
+        "file": "shard-0033.pt",
+        "sha256": "38385e01affa49af8cad5af4caa4738a65efc32bac98fed5170f837de53a1778",
+        "episodes": 8,
+        "transitions": 18219,
+        "terminal_episodes": 1
+      },
+      {
+        "file": "shard-0034.pt",
+        "sha256": "a449bcad5e33737373d2566cd3854f2bc8399b5f8c45c5b0b1d15bb0c9c273fe",
+        "episodes": 8,
+        "transitions": 19262,
+        "terminal_episodes": 1
+      },
+      {
+        "file": "shard-0035.pt",
+        "sha256": "5d0b8eee309ba1e1d10dd7d0926d70a23d69dfa258ea5c8900e4e8d73bc8a3d7",
+        "episodes": 8,
+        "transitions": 16413,
+        "terminal_episodes": 3
+      },
+      {
+        "file": "shard-0036.pt",
+        "sha256": "19a40a565e37d568922c80140777bd200262e63377d29cf818f73c6e9459495e",
+        "episodes": 8,
+        "transitions": 17278,
+        "terminal_episodes": 3
+      },
+      {
+        "file": "shard-0037.pt",
+        "sha256": "3859e4d3b9933ca2abbba14d795e7c5f964ab8aa642667587c4af326400dac0d",
+        "episodes": 8,
+        "transitions": 14352,
+        "terminal_episodes": 3
+      },
+      {
+        "file": "shard-0038.pt",
+        "sha256": "0653194cd550901188d0aecbbbb0e691f3974f0cf5e0fd07db80f2eca3aa1c98",
+        "episodes": 8,
+        "transitions": 14267,
+        "terminal_episodes": 4
+      },
+      {
+        "file": "shard-0039.pt",
+        "sha256": "5dfb937a55bcfd2cf0f8fa8a2e9f94b4169a64eed9dd52f614e09b9a53860ac9",
+        "episodes": 8,
+        "transitions": 20000,
+        "terminal_episodes": 0
+      }
+    ],
+    "transitions": 696746,
+    "terminal_episodes": 68,
+    "split_episode_counts": {
+      "train": 256,
+      "dev": 32,
+      "final": 32
+    },
+    "split_rule": "episode_splits(len(archive), Config().seed) -- eda/corpus.py's rule, unchanged",
+    "bc_eligible": true,
+    "uniform_eligible": true,
+    "source": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4_mamba_jepa/artifacts/expert/craftax_expert_v1.pt",
+    "source_sha256_note": "8.6 GB; digest omitted deliberately",
+    "collector_training_access": "unknown"
+  },
+  "sources": [
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/craftax_expert_store_v1",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/craftax_support_v2"
+  ],
+  "contract": {
+    "schema": "d4mj_lewm_dataset_v1",
+    "sha256": "f1c8583ae0c68935c2db27c727f01183ed88b3691164fa267c8ba38537bce366",
+    "provenance": {
+      "format": "d4mj_episode_store_v1",
+      "kind": "d4mj_expert_archive_v1",
+      "complete": true,
+      "episodes": 320,
+      "transitions": 696746,
+      "terminal_episodes": 68,
+      "split_episode_counts": {
+        "train": 256,
+        "dev": 32,
+        "final": 32
+      },
+      "split_rule": "episode_splits(len(archive), Config().seed) -- eda/corpus.py's rule, unchanged",
+      "bc_eligible": true,
+      "uniform_eligible": true,
+      "source": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4_mamba_jepa/artifacts/expert/craftax_expert_v1.pt",
+      "source_sha256_note": "8.6 GB; digest omitted deliberately",
+      "collector_training_access": "unknown"
+    },
+    "collector_training_access": "unknown",
+    "sources": [
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/craftax_expert_store_v1",
+        "sha256": "647bcab68454e5da7b1325986971eaae5641d2d188266c82025d436dac654b1b",
+        "episodes": 320,
+        "provenance": {
+          "format": "d4mj_episode_store_v1",
+          "kind": "d4mj_expert_archive_v1",
+          "complete": true,
+          "episodes": 320,
+          "transitions": 696746,
+          "terminal_episodes": 68,
+          "split_episode_counts": {
+            "train": 256,
+            "dev": 32,
+            "final": 32
+          },
+          "split_rule": "episode_splits(len(archive), Config().seed) -- eda/corpus.py's rule, unchanged",
+          "bc_eligible": true,
+          "uniform_eligible": true,
+          "source": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4_mamba_jepa/artifacts/expert/craftax_expert_v1.pt",
+          "source_sha256_note": "8.6 GB; digest omitted deliberately",
+          "collector_training_access": "unknown"
+        },
+        "collector_training_access": "unknown"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/craftax_support_v2",
+        "sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+        "episodes": 10080,
+        "provenance": {
+          "format": "d4mj_episode_store_v1",
+          "kind": "d4mj_support_v2",
+          "complete": true,
+          "target_terminal_episodes": 10000,
+          "episodes": 10080,
+          "transitions": 3179062,
+          "terminal_episodes": 10011,
+          "terminal_transitions": 10011,
+          "task_events": 106616,
+          "rounds": 420,
+          "epsilons": [
+            0.1,
+            0.25,
+            0.5,
+            1.0
+          ],
+          "epsilon_episode_counts": {
+            "0.1": 2520,
+            "0.25": 2520,
+            "0.5": 2520,
+            "1.0": 2520
+          },
+          "epsilon_terminal_counts": {
+            "0.1": 2451,
+            "0.25": 2520,
+            "0.5": 2520,
+            "1.0": 2520
+          },
+          "split_episode_counts": {
+            "train": 8069,
+            "dev": 1009,
+            "final": 1002
+          },
+          "split_terminal_counts": {
+            "train": 8015,
+            "dev": 1004,
+            "final": 992
+          },
+          "num_envs": 24,
+          "limit": 2500,
+          "seed": 20270731,
+          "expert_params": "d4_mamba_jepa/artifacts/expert/ppo_expert_v2.msgpack",
+          "expert_sha256": "585f7e31b9f952c7fe40fb72456293d441c24e21707f0cac594123a387258638",
+          "collector_sha256": "42922b3a4213bec3844713d8d47813f110a996fecd59e225cae39515cb2e1fbc",
+          "uniform_eligible": true,
+          "bc_eligible": false,
+          "split_rule": "sha256(seed:round:slot), 80/10/10 train/dev/final",
+          "retention": "every rollout retained; stopping occurs after a complete env batch",
+          "started_unix": 1786600297.474415,
+          "seconds": 6120.310659408569,
+          "completed_unix": 1786606421.9110293,
+          "mean_length": 315.3831349206349
+        },
+        "collector_training_access": "unknown"
+      }
+    ]
+  },
+  "audit": {
+    "episodes": 10400,
+    "transitions": 3875808,
+    "split_counts": {
+      "train": 8325,
+      "dev": 1041,
+      "final": 1034
+    },
+    "split_digest": "33e0c21b7d3476c2a6756b47c27598da70f99540b0f21cae4d0a01b881ad2bad",
+    "bc_eligible_episodes": 320,
+    "bc_eligible_train_episodes": 256,
+    "bc_eligible_train_transitions": 552998,
+    "uniform_train_episodes": 8325
+  }
+}

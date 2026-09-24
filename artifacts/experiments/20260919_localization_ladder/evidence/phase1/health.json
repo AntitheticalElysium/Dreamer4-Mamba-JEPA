@@ -1,0 +1,166 @@
+{
+  "rows": [
+    {
+      "arm": "mamba_raw",
+      "tap": "z",
+      "family": "logistic",
+      "dim": 192,
+      "r2": 0.16457200050354004,
+      "rmse": 3.6466095447540283,
+      "parameters": 193
+    },
+    {
+      "arm": "mamba_raw",
+      "tap": "z",
+      "family": "mlp128",
+      "dim": 192,
+      "r2": -0.08505666255950928,
+      "rmse": 4.155860424041748,
+      "parameters": 24833
+    },
+    {
+      "arm": "mamba_raw",
+      "tap": "cls",
+      "family": "logistic",
+      "dim": 192,
+      "r2": 0.20587241649627686,
+      "rmse": 3.5553297996520996,
+      "parameters": 193
+    },
+    {
+      "arm": "mamba_raw",
+      "tap": "cls",
+      "family": "mlp128",
+      "dim": 192,
+      "r2": 0.2874213457107544,
+      "rmse": 3.367837429046631,
+      "parameters": 24833
+    },
+    {
+      "arm": "mamba_raw",
+      "tap": "pooled4",
+      "family": "logistic",
+      "dim": 3072,
+      "r2": 0.7120532989501953,
+      "rmse": 2.1408724784851074,
+      "parameters": 3073
+    },
+    {
+      "arm": "mamba_raw",
+      "tap": "pooled4",
+      "family": "mlp128",
+      "dim": 3072,
+      "r2": 0.5549663305282593,
+      "rmse": 2.661529064178467,
+      "parameters": 393473
+    },
+    {
+      "arm": "mamba_raw",
+      "tap": "patches",
+      "family": "logistic",
+      "dim": 15552,
+      "r2": 0.9235103726387024,
+      "rmse": 1.1034077405929565,
+      "parameters": 15553
+    },
+    {
+      "arm": "mamba_raw",
+      "tap": "patches",
+      "family": "mlp128",
+      "dim": 15552,
+      "r2": 0.7658067941665649,
+      "rmse": 1.9307315349578857,
+      "parameters": 1990913
+    },
+    {
+      "arm": "mamba_tc",
+      "tap": "z",
+      "family": "logistic",
+      "dim": 192,
+      "r2": 0.2068374752998352,
+      "rmse": 3.553168773651123,
+      "parameters": 193
+    },
+    {
+      "arm": "mamba_tc",
+      "tap": "z",
+      "family": "mlp128",
+      "dim": 192,
+      "r2": 0.19314110279083252,
+      "rmse": 3.5837154388427734,
+      "parameters": 24833
+    },
+    {
+      "arm": "mamba_tc",
+      "tap": "cls",
+      "family": "logistic",
+      "dim": 192,
+      "r2": 0.5231627225875854,
+      "rmse": 2.7549889087677,
+      "parameters": 193
+    },
+    {
+      "arm": "mamba_tc",
+      "tap": "cls",
+      "family": "mlp128",
+      "dim": 192,
+      "r2": 0.3591727018356323,
+      "rmse": 3.193781614303589,
+      "parameters": 24833
+    },
+    {
+      "arm": "mamba_tc",
+      "tap": "pooled4",
+      "family": "logistic",
+      "dim": 3072,
+      "r2": 0.6513347029685974,
+      "rmse": 2.3558037281036377,
+      "parameters": 3073
+    },
+    {
+      "arm": "mamba_tc",
+      "tap": "pooled4",
+      "family": "mlp128",
+      "dim": 3072,
+      "r2": 0.6454169750213623,
+      "rmse": 2.375711441040039,
+      "parameters": 393473
+    },
+    {
+      "arm": "mamba_tc",
+      "tap": "patches",
+      "family": "logistic",
+      "dim": 15552,
+      "r2": 0.8389471769332886,
+      "rmse": 1.6011017560958862,
+      "parameters": 15553
+    },
+    {
+      "arm": "mamba_tc",
+      "tap": "patches",
+      "family": "mlp128",
+      "dim": 15552,
+      "r2": 0.7335313558578491,
+      "rmse": 2.059481143951416,
+      "parameters": 1990913
+    },
+    {
+      "arm": "direct",
+      "tap": "z",
+      "family": "logistic",
+      "dim": 1024,
+      "r2": -0.20396208763122559,
+      "rmse": 4.377651214599609,
+      "parameters": 1025
+    },
+    {
+      "arm": "direct",
+      "tap": "z",
+      "family": "mlp128",
+      "dim": 1024,
+      "r2": 0.028629422187805176,
+      "rmse": 3.932124137878418,
+      "parameters": 131329
+    }
+  ]
+}

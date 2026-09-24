@@ -573,3 +573,145 @@ def test_imported_stage_verifies_its_string_origin_path(tmp_path):
     with use_cache(cache), pytest.raises(ValueError, match='stage bytes changed'):
         _load_or_compute_stage(second, name, {'anchor': 1}, lambda: {})
     cache.close()
+
+
+from d4mj.sources import lewm_source_manifest
+
+
+STORED_SOURCES = {"execution": {"triton_f32_default": "unset"}}
+
+
+def _frozen_proof(tmp_path, **overrides):
+    """The committed proof, re-pointed at a stand-in checkpoint payload."""
+    import json
+    from d4mj.m03.gate import ROOT, _sha
+    # The record now holds one proof per reference tree; the fixture exercises one of them.
+    from d4mj.m03.gate import frozen_eval_records
+    document = frozen_eval_records(ROOT / "d4mj/m03/frozen_eval_compat.json")[0]
+    document["arms"] = {"raw": {"checkpoint_sha256": "a" * 64,
+                                "recorded_sources_digest": _sha(STORED_SOURCES)}}
+    document.update(overrides)
+    path = tmp_path / "proof.json"
+    path.write_text(json.dumps(document))
+    return path
+
+
+def test_frozen_eval_proof_admits_only_a_measured_delta(tmp_path, monkeypatch):
+    """The unmodified proof, pointed at its own recorded payload, is admitted.
+
+    The proof binds the whole live manifest, execution block included, so it is
+    only valid under the IEEE evaluation environment it was measured in.
+    """
+    monkeypatch.setenv("TRITON_F32_DEFAULT", "ieee")
+    from d4mj.m03.gate import _frozen_eval_delta
+    _, delta = _frozen_eval_delta(STORED_SOURCES, _frozen_proof(tmp_path))
+    parity = delta["frozen_eval_proof"]["parity"]
+    # The contract is the criterion, not a fixed number: the cross-tree spread
+    # must not exceed the kernel's own within-tree spread or the declared bound.
+    assert parity["cross_tree_max_abs"] <= max(parity["tolerance"], parity["within_tree_max_abs"])
+    # Which files changed depends on the tree; that every one is a real runtime
+    # entry, and that the proof is not vacuous, does not.
+    changed = delta["frozen_eval_proof"]["changed"]
+    assert changed and set(changed) <= set(lewm_source_manifest()["runtime"])
+
+
+@pytest.mark.parametrize("overrides,match", [
+    ({"status": "fail"}, "not passing"),
+    ({"schema": "something_else"}, "not passing"),
+    ({"current_manifest_digest": "0" * 64}, "current tree"),
+    ({"arms": {"raw": {"checkpoint_sha256": "a" * 64, "recorded_sources_digest": "0" * 64}}}, "recorded sources"),
+    ({"parity": {"tolerance": 1e-9, "within_tree_max_abs": 0.0,
+                 "cross_tree_max_abs": 1.0, "cross_tree_min_abs": 1.0, "runs": {}}}, "declared tolerance"),
+])
+def test_frozen_eval_proof_fails_closed(tmp_path, monkeypatch, overrides, match):
+    """A frozen-evaluation delta is admitted only when the proof actually covers it."""
+    monkeypatch.setenv("TRITON_F32_DEFAULT", "ieee")
+    from d4mj.m03.gate import _frozen_eval_delta
+    with pytest.raises(ValueError, match=match):
+        _frozen_eval_delta(STORED_SOURCES, _frozen_proof(tmp_path, **overrides))
+
+
+def test_matching_precision_needs_no_approval_but_real_drift_still_fails(monkeypatch):
+    """A run already trained under the evaluation precision has no delta to approve."""
+    import json
+    monkeypatch.setenv("TRITON_F32_DEFAULT", "ieee")
+    from d4mj.m03.gate import _current_source_with_ieee_delta
+    live = lewm_source_manifest()
+    current, delta = _current_source_with_ieee_delta(live)
+    assert current == live and delta == {}
+    historical = json.loads(json.dumps(live))
+    historical["execution"]["triton_f32_default"] = "unset"
+    assert _current_source_with_ieee_delta(historical)[1]["triton_f32_default"]["recorded"] == "unset"
+    for broken, match in (({"execution": {"triton_f32_default": "tf32"}}, "m03_precision"),
+                          ({"runtime": {"d4mj/lewm.py": "0"*64}}, "m03_source_identity")):
+        drifted = json.loads(json.dumps(live))
+        for section, entries in broken.items():
+            drifted[section].update(entries)
+        with pytest.raises(ValueError, match=match):
+            _current_source_with_ieee_delta(drifted)
+
+
+def test_the_feature_bridge_swaps_runtime_only_and_fails_closed(tmp_path, monkeypatch):
+    """Replay and Direct encodings survive an edit to a file no encoder reaches."""
+    import json
+    from d4mj.m03 import gate
+    document = json.loads(gate.FEATURE_COMPAT_RECORD.read_text())
+    assert gate._feature_compatibility()["status"] == "pass"
+    deps = {"identity": {"a": 1}, "data": "d", "functions": ["f0", "f1"],
+            "execution": {"device": "cpu"},
+            "runtime": {name: entry["current"] for name, entry in document["runtime"].items()}}
+    swapped, = gate._feature_compatible("replay", deps)
+    # Only `runtime` moves: keeping the current `functions` is what makes a hit mean
+    # the encoders are byte-identical, rather than merely declared compatible.
+    assert swapped["functions"] == deps["functions"] and swapped["identity"] == deps["identity"]
+    assert swapped["runtime"] == {n: e["prior"] for n, e in document["runtime"].items()}
+    # The LeWM arms are never bridged; they must re-encode for a new checkpoint.
+    assert gate._feature_compatible("raw", deps) == []
+    assert gate._feature_compatible("tc", deps) == []
+    # A record that no longer describes the tree is refused, not ignored.
+    stale = tmp_path / "stale.json"
+    document["runtime"][next(iter(document["runtime"]))]["current"] = "0" * 64
+    stale.write_text(json.dumps(document))
+    monkeypatch.setattr(gate, "FEATURE_COMPAT_RECORD", stale)
+    with pytest.raises(ValueError, match="does not describe the current"):
+        gate._feature_compatibility()
+
+
+def test_frozen_eval_never_relaxes_training_resume():
+    """The delta is evaluation-only: the strict source check keeps its contract."""
+    import inspect
+    from d4mj import checkpoint
+    from d4mj.m03 import gate
+    source = inspect.getsource(gate.load_m03_bundle)
+    assert source.index("_current_source_with_ieee_delta") < source.index("frozen_eval_proof is None")
+    assert "frozen_eval" not in inspect.getsource(checkpoint)
+
+
+def test_window_summaries_survive_mixed_prefix_lengths():
+    """Historical panels mix one-frame and long prefixes; a variable-width summary would
+    make every group unconcatenable and take the short BOS paths down with it."""
+    import torch
+    from d4mj.lewm_config import (LeWMTransformerConfig, TransformerDynamicsSettings,
+                                  EncoderSettings, RuntimeSettings, JointSettings)
+    from d4mj.world_api import ModelBundle
+    from d4mj.m03.gate import M03Settings
+    from d4mj.m03.diagnostics import encode_memory
+    config = LeWMTransformerConfig(
+        encoder=EncoderSettings(resolution=63, width=24, depth=1, heads=3, latent_dim=12,
+                                projector_hidden=32, checkpoint_blocks=False),
+        dynamics=TransformerDynamicsSettings(width=12, depth=2, heads=2, head_dim=6,
+                                             mlp_dim=16, context=3, readout_width=16),
+        joint=JointSettings(batch=4, projections=8, knots=5, steps=4, screen_step=2,
+                            warmup=1, checkpoint_every=2),
+        runtime=RuntimeSettings(device="cpu", precision="fp32", purpose="verification", cache_chunk=3))
+    bundle = ModelBundle.create(config)
+    bundle.eval()
+    rows, length = 6, 8
+    values = {"context": torch.randint(256, (rows, length, 63, 63, 3), dtype=torch.uint8),
+              "past_actions": torch.randint(17, (rows, length - 1)),
+              "successors": torch.randint(256, (rows, 17, 63, 63, 3), dtype=torch.uint8),
+              "episode": torch.arange(rows), "time": torch.arange(rows) + 5,
+              "context_length": torch.tensor([1, 1, 4, 4, 8, 8])}
+    features = encode_memory(bundle, values, M03Settings())
+    assert features["c4_window_rms"].shape == (rows, config.dynamics.context - 1)
+    assert features["c4_window_pairs"].tolist() == [0, 0, 2, 2, 2, 2]

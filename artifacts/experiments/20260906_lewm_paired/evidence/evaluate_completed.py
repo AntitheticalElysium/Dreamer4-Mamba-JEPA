@@ -18,6 +18,7 @@ from d4mj.config import load_recipe, recipe_digest
 from d4mj.data import _sha256, atomic_manifest, load_joint_corpus, screen_windows
 from d4mj.diagnostics import paired_auc_interval
 from d4mj.gates import ComponentGateError, contract_digest, require_joint_screen
+from d4mj.lewm_config import pair_axis, window_layout
 from d4mj.lewm_diagnostics import (
     covariance_summary, normalization_audit, recurrence_audit, screen_features,
     screen_prediction_report, screen_retention,
@@ -112,8 +113,12 @@ def main():
                 "capabilities": payload["capabilities"], "initial_identity": payload["initial_identity"],
             }
         raw, tc = payloads["raw"], payloads["tc"]
-        require({k:v for k,v in raw["config"].items() if k != "variant"} ==
-                {k:v for k,v in tc["config"].items() if k != "variant"}, component, "paired recipes differ")
+        # One declared axis, from the same helper the screen uses: `variant` for the
+        # raw/TC pairs, `joint.centering` for the window ablation's two TC arms.
+        try:
+            report["pair_axis"] = pair_axis(raw["config"], tc["config"])
+        except ValueError as error:
+            raise ComponentGateError(component, str(error)) from error
         require(raw["dataset"] == tc["dataset"] and raw["initial_identity"] == tc["initial_identity"], component, "paired identities differ")
         for stream in ("projection_rng", "cpu_rng"):
             require(torch.equal(raw[stream], tc[stream]), component, f"final {stream} differs")
@@ -123,16 +128,28 @@ def main():
         first = [histories[v][0] for v in ("raw", "tc")]
         require(abs(first[0]["prediction"]-first[1]["prediction"]) <= 1e-6 and
                 abs(first[0]["regularization"]-first[1]["regularization"]) > 1e-6, component, "objective contrast absent")
-        heartbeats = []
-        for line in (args.pair.parent / "research.log").read_text().splitlines():
+        # A run-local driver log belongs to this run alone; the campaign-level one is
+        # the older convention, and is only correct while a campaign holds one run.
+        log = args.pair / "research.log"
+        if not log.exists():
+            log = args.pair.parent / "research.log"
+        report["driver_log"] = str(log.resolve())
+        report["driver_log_sha256"] = _sha256(log)
+        heartbeats, slot = [], None
+        for line in log.read_text().splitlines():
             try:
                 row = json.loads(line)
             except ValueError:
                 continue
-            if {"variant", "update", "loss", "prediction"} <= row.keys():
-                actual = histories[row["variant"]][row["update"]-1]
+            # The heartbeat carries the *declared* variant, which is `tc` in both arms of a
+            # centering pair. Only the stage rows carry the arm slot, so track it from them.
+            if row.get("stage") in ("joint_to_screen", "joint_to_budget"):
+                slot = row["variant"]
+            elif {"variant", "update", "loss", "prediction"} <= row.keys():
+                require(slot is not None, component, "heartbeat precedes any stage row")
+                actual = histories[slot][row["update"]-1]
                 require(all(row[k] == actual[k] for k in ("loss", "prediction")), component, "original heartbeat differs from retained history")
-                heartbeats.append({k: row[k] for k in ("variant", "update", "loss", "prediction")})
+                heartbeats.append({"slot": slot, **{k: row[k] for k in ("variant", "update", "loss", "prediction")}})
         atomic_manifest(args.out / "original_heartbeats.json", heartbeats)
         report["components"][component] = {"status": "pass", "original_heartbeats_verified": len(heartbeats)}
         component = "dataset_and_windows"
@@ -189,6 +206,21 @@ def main():
             entry["spectra"] = {"raw": covariance_summary(z), "residual": covariance_summary(z-z.mean(1,keepdim=True)),
                                 "persistent": covariance_summary(z.mean(1))}
             entry["temporal_power"] = torch.fft.rfft(z.double(), dim=1).abs().square().mean((0,2)).tolist()
+            # Those spectra are read on the prediction frames, the only basis on which both
+            # arms are comparable to each other and to the stride-1 run. A widened centering
+            # window also encodes frames the rollout never predicts, spanning many more
+            # native steps, so record the same three spectra over the whole encoded window:
+            # still matched between arms, and the fairer cross-reference to the stride-4
+            # figures, which were themselves read across a 13-step span.
+            offsets = window_layout(configs[variant].joint)[0]
+            if len(offsets) != configs[variant].joint.frames:
+                full = {split: encoder_features(bundle, w, settings) for split, w in windows.items()}
+                fz = full["dev"]["projected"]
+                entry["window_spectra"] = {
+                    "native_offsets": list(offsets),
+                    "raw": covariance_summary(fz), "residual": covariance_summary(fz-fz.mean(1,keepdim=True)),
+                    "persistent": covariance_summary(fz.mean(1))}
+                del full, fz
             variance = covariance_summary(features["train"]["projected"])["coordinate_variance"]
             require(variance >= settings.variance_floor, component, "numerical latent collapse")
             if recurrence_passed:

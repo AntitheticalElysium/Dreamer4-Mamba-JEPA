@@ -1,8 +1,8 @@
-# M0–M3 implementation and validation
+# M0–M4 implementation and validation
 
 Implemented in the working tree against `162efd1` on `craftax-clean-baseline`, 2026-09-05; integrated into shared infrastructure on 2026-09-06. See the [integration record](INTEGRATION.md). This is the actual TC-LeWM–Mamba architecture and persistent state API. Small test fixtures instantiate these same classes with reduced dimensions; there is no disposable alternate world model.
 
-The first research pair subsequently passed G1 and completed 10,000 joint updates per arm. See the [paired research record](../../../artifacts/experiments/20260906_lewm_paired/README.md) for final checkpoint audits and the remaining M4 boundary. These results are separate from the technical fixtures described below.
+The first research pair subsequently passed G1 and completed 10,000 joint updates per arm. See the [paired research record](../../../artifacts/experiments/20260906_lewm_paired/README.md). The canonical M4 runtime is now in `d4mj`; the 2026-09-20 campaign directory is retained only as historical experiment evidence.
 
 ## Active architecture
 
@@ -10,9 +10,17 @@ Native uint8 `63×63` RGB → source ImageNet preprocessing → HF ViT-Tiny (pat
 
 `PredictiveState` contains current latent `z_t`, constant-size conv/FP32 SSM carry for each layer, previous completed-pair output `u_(t-1)`, and an explicit step count. Its memory has consumed only pairs through `(z_(t-1),a_(t-1))`; `z_t` is unconsumed. `advance` consumes one new pair and keeps that resulting carry. `observe` performs the identical update and substitutes the observed successor latent. `prefill` follows those same semantics. `fork`, `repeat_state` and explicit `detach_state` own their tensor storage. No prefix is stored or replayed by a step. Both training and inference call the functional source chunk scan; streaming supplies T=1. Gradients reach incoming conv and SSM states unless explicitly detached.
 
-Features are `GELU(LayerNorm(Linear(concat(z_t,u_(t-1)))))`, `[B,1,1,256]`. This readout is initialized with the bundle but frozen and untrained through M3. It never feeds the predictor. Its presence establishes the API, not policy competence. Runtime observation/streaming requires fixed BN statistics; full joint teacher training retains source flattened-batch BN behavior.
+Features are `GELU(LayerNorm(Linear(concat(z_t,u_(t-1)))))`, `[B,1,1,256]`. This readout is initialized with the bundle, frozen through M3 and trained in M4. It never feeds the predictor. Runtime observation/streaming requires fixed BN statistics; full joint teacher training retains source flattened-batch BN behavior.
 
-Joint training uses actual B128, four frames/three outgoing actions, both-sided next-latent MSE plus `0.09 × SIGReg`, 1,024 directions and 17 knots. The raw and TC arms change only temporal centering across the four frames. Initialization, sampler and projection RNG seeds are paired. The optimizer and 10,000-update scheduler are explicit in the two [recipes](../../recipes/). Research execution pauses at update2,000 for the [sealed G1 evaluator](G1_PROTOCOL.md); resumption does not shorten or restart the declared scheduler. No EMA, target stop-gradient, reconstruction loss or head fitting is active.
+Encoder patch tokens remain diagnostic-only in this recipe. They do not enter Mamba, the policy,
+or the renderer: TC-07 deliberately defines the actor state from projected `z` plus completed-pair
+history, and TC-19 forbids a real-patch bypass in imagined play. The TC-LeWM paper's downstream
+CLS-plus-patch-grid policy is therefore still a declared source deviation, not a feature silently
+smuggled in from the historical patch control.
+
+Joint training uses actual B128, four frames/three outgoing actions, both-sided next-latent MSE plus `0.09 × SIGReg`, 1,024 directions and 17 knots. The raw and TC arms change only temporal centering across the four frames. Initialization, sampler and projection RNG seeds are paired. Research execution pauses at update2,000 for the [sealed G1 evaluator](G1_PROTOCOL.md); resumption does not shorten or restart the declared scheduler. TC-17 is enforced: counterfactual fork corpora and extra joint-loss callbacks are excluded from the canonical research path.
+
+M4 uses the frozen post-joint cache. Main batches are 16 rows, exactly 50/50 relevant/uniform and 25% true starts, with 32 frames and 128 every fourth update; four tail-aligned terminal rows are separate support. Mid-episode rows consume up to 96 real cached prefix frames, then detach recurrence once. The same world continues for 2,000 H2 updates, pauses for the complete G2/G3 report, then runs 8,000 H16 updates. Phase2 trains teacher plus recursive dynamics and observed/generated heads while predictor BN statistics remain fixed. Phase3 snapshots BC, freezes encoder/world/outcome heads and buffers, pauses after 500 actor updates, and reaches 5,000 only after its actor diagnostic. Real evaluation is actor versus that exact immutable BC on paired seeds.
 
 ## Implemented file and API map
 
@@ -22,16 +30,16 @@ Joint training uses actual B128, four frames/three outgoing actions, both-sided 
 | [lewm.py](../../lewm.py) | `LeWMProjector`; `LeWMEncoder` construction, `train/freeze/projected_and_cls/forward`; `SIGReg`; `_MambaBlock`; `TeacherOutput`, `JointLoss`, `joint_loss`; `LeWMWorld` shape/action/state validation, `start/readout/features/scan_pairs/teacher/advance/observe_latent` and fixed-BN streaming guard. |
 | [mamba_recurrence.py](../../mamba_recurrence.py) | `MambaCarry`; clone/detach/repeat helpers; `FunctionalMamba2` source construction, initial state, validation, functional `scan`, FP32 `_reference_ssm`, `step`, `step_reference`. No new CUDA kernel or mutating source inference cache. |
 | [state.py](../../state.py), [world_api.py](../../world_api.py) | Additive `PredictiveState` and shared legacy `repeat_memory`; `WorldAPI`, `ModelBundle.create/from_models/eval/require_control`; concrete `LegacyWorldAdapter` and `LeWMWorldAdapter` implement encoding, start/prefill, observe/advance, features, fork/detach/repeat, tensor enumeration and world-state extraction. v2 `load_bundle` is inference-only; v1 loading retains its existing phase-specific contracts. |
-| [data.py](../../data.py) | Both `Batch` and `JointBatch`; `EpisodeCorpus.window_weights`; joint validation/audit/corpus loading and `JointSampler` with exact sampler resume. Existing role routing and joint TRAIN-only outgoing-action sampling remain distinct. |
+| [data.py](../../data.py) | `Batch`, `JointBatch` and explicit ragged-prefix `BridgeBatch`; joint and M4 samplers, exact 50/50/true-start routing, terminal support, absolute episode/start metadata and prefix validation. |
 | [cache.py](../../cache.py) | Shared `encoder_digest`, `cache_latents`, `cache_latents_to_store`, `load_latent_cache` and one verified store writer. MAE carries temporal encoder memory and retains its old digest/schema; LeWM exports fixed-BN float32 latents with parent-checkpoint identity. Old `train.cache_latents*` names are imports of these functions. |
-| [train.py](../../train.py) | Existing phase trainers plus `train_joint`, `set_phase_mode`, `joint_optimizer`, fixed joint `learning_rate`, `autocast_context`, `freeze_encoder`. Shared `optimizer` grouping and `optimizer_step`; explicit legacy versus joint decay policies and schedules. Research screen and resume guards remain active. |
-| [checkpoint.py](../../checkpoint.py) | Additive v2 `save_lewm_bundle`, `publish_lewm_latest`, `read_lewm_bundle`, `restore_lewm_bundle`. Full model/BN/optimizer/sampler/projection/global RNG state, module modes and gradient ownership; recipe/source/data/schedule/capability rejection. Immutable numbered snapshots, movable latest link and SHA256 index. v1 functions remain intact. |
+| [train.py](../../train.py) | Existing phase trainers plus canonical `train_joint`, `train_bridge`, `train_actor_lewm`, `phase_optimizer` and phase modes. H2/H16 and actor-screen boundaries are real stops; recursive burn-in, fixed BN, frozen Phase3 state and full resume are asserted. |
+| [checkpoint.py](../../checkpoint.py) | Distinct immutable joint, bridge and actor formats. Each pins recipe/source/cache/parent/gates, complete module modes and gradient ownership, optimizers, RMS and RNG streams. Actor bundles are self-contained for execution. |
 | [sources.py](../../sources.py) | `lewm_source_manifest`, `verify_lewm_sources`, `tensor_state_digest`. Canonical pins/licenses, installed Mamba byte parity, HF runtime code, dependency versions, math settings and shared runtime closure. Legacy source/cache contract is unchanged. |
-| [gates.py](../../gates.py), [lewm_diagnostics.py](../../lewm_diagnostics.py) | One `Gate` dependency runner, `preflight`, `ComponentGateError`, `contract_digest`, `require_joint_gates`; six legacy gates remain available. LeWM diagnostics supply source/objective/recurrence/normalization/resource probes and sealed numerical tolerances. Failures name their component, with `architecture_verdict=not_evaluated`. |
-| [execution.py](../../execution.py), [imagination.py](../../imagination.py), [diagnostics.py](../../diagnostics.py) | Existing execution and imagination use the adapters. Both reject LeWM control before touching the environment or policy. Shared `rollout_predictions` drives legacy multistep diagnostics and supports LeWM mechanical rollouts. Other legacy diagnostics and training targets retain their explicit family scope. |
-| [__main__.py](../../__main__.py), [experiments.py](../../experiments.py) | Unified `python -m d4mj` CLI. No arguments or `gates` retains the four-arm lattice; recipe preflight dispatches by family; joint/resume/export uses shared modules. Later LeWM stages remain blocked. |
+| [gates.py](../../gates.py), [lewm_diagnostics.py](../../lewm_diagnostics.py) | Joint gates plus identity-bound bridge/actor gate contracts. H2/H16 reports must cover source/recursion, semantic retention, action effects, outcomes, observed BC and paired uncertainty; the actor screen must cover world validity, critic direction and action distribution. Every passing component records metrics and hash-bound evidence bytes; status-only JSON cannot authorize continuation. |
+| [execution.py](../../execution.py), [imagination.py](../../imagination.py), [diagnostics.py](../../diagnostics.py) | Shared adapters, imagination and self-contained real Craftax evaluation. Episode caches are actor/protocol-bound and atomically resumable; actor and own-BC use the same paired seeds. |
+| [__main__.py](../../__main__.py), [experiments.py](../../experiments.py) | Unified preflight, resumable paired joint run, export, bridge, actor and real evaluation CLI. Gate-dependent commands verify exact parent/checkpoint/cache identities. Renderer/play remain closed. |
 
-The original M0–M8 map included future adapters and methods. The adapters and existing execution/imagination callers are now integrated. The new family's bridge/heads/actor/renderer settings, critical semantic screening and control aggregation remain M4+ work. Legacy callers keep their existing interfaces; the new family never masquerades as a legacy `WorldState` or v1 checkpoint.
+The original M0–M8 map included future adapters and methods. M4 training/execution mechanics are integrated; producing the empirical G2–G4 evidence remains a separate evaluation job and renderer/play remain M6+. Legacy callers keep their existing interfaces; the new family never masquerades as a legacy `WorldState` or v1 checkpoint.
 
 ## Audit findings and resolutions
 
@@ -54,6 +62,13 @@ The sealed `rtx3060_mamba_f577286d_v2` profile keeps reference FP32 output/SSM a
 
 GPU execution requires access outside this sandbox; CPU skips do not certify CUDA. The full architecture's BF16 preflight used the RTX3060 Laptop GPU (6,076,104,704 device bytes), B128/F4/J1024, and three real optimizer updates. One recorded pass used 952,169,984 peak allocated bytes (~0.887GiB), 1,193,279,488 reserved bytes (~1.111GiB), and about 0.302 seconds per warm TC step (0.348 seconds for raw). This measures local resource feasibility, not convergence or total research runtime.
 
+The canonical M4 migration received a separate full-width CUDA smoke on 2026-09-21: one BF16
+batch-16, 128-frame, H16 bridge backward/update used 1,026,917,376 peak allocated bytes and kept
+predictor BN buffers exact; one batch-16 H16 actor rollout/backward used 157,592,576 bytes. Both
+were finite. [Machine-readable record](../../../artifacts/experiments/20260921_m4_core_validation/gpu_smoke.json).
+The inputs were synthetic cached latents, so this establishes execution and local memory fit only,
+not learning quality or a phase-gate pass.
+
 The resource fixture is the first intact, hash-verified shard of `artifacts/craftax_support_v2`: 24 whole episodes, with 18 TRAIN / 3 DEV / 3 FINAL. Only TRAIN windows enter optimization. The parent manifest, shard, collector and expert checkpoint hashes are retained. Collector training access remains **unknown**, and the recorded collector episode limit is2500. This is a technical fixture, not a selected research corpus or matched D3 protocol. Those initial validation records contain no full-budget, G1 or control result; current paired-run status is recorded separately under `artifacts/lewm_gates_20260906`.
 
 The pre-integration CPU regression suite reported **187 passed, 5 skipped**. Both **raw and TC full-architecture GPU preflights passed** in that initial snapshot. Fresh post-integration results and source manifests are in [the integration record](INTEGRATION.md) and [its evidence](../../../artifacts/experiments/20260905_m0_m3_validation/evidence/integration/). [Machine-readable summary](../../../artifacts/experiments/20260905_m0_m3_validation/evidence/m0_m3/summary.json), validation logs, final gate/source/data records and the full-architecture GPU pause/resume result are retained under [evidence/m0_m3](../../../artifacts/experiments/20260905_m0_m3_validation/evidence/m0_m3/). An uninterrupted four-update GPU run and a two-plus-two resumed run produced identical model parameters, BN buffers and metrics; the update2 immutable file retained its hash. Verification checkpoints remain local test artifacts, not research results.
@@ -63,19 +78,27 @@ The pre-integration CPU regression suite reported **187 passed, 5 skipped**. Bot
 For a **new** run, from the repository root, use the measured environment in [requirements-lewm-rtx3060.lock.txt](../../../requirements-lewm-rtx3060.lock.txt) with explicit IEEE precision (TC-35):
 
 ```bash
-TRITON_F32_DEFAULT=ieee .venv/bin/python -m d4mj preflight \
-  --recipe d4mj/recipes/lewm_mamba_tc.json \
-  --dataset <verified-raw-store-directory-or-manifest.json> --out <fresh-run-directory>
-TRITON_F32_DEFAULT=ieee .venv/bin/python -m d4mj joint --run <run-directory> --stop-at 2000
-TRITON_F32_DEFAULT=ieee .venv/bin/python -m d4mj export --run <run-directory> \
-  --checkpoint <run-directory>/joint/step-002000.pt --out <fresh-cache-directory> --diagnostic
+TRITON_F32_DEFAULT=ieee .venv/bin/python -m d4mj paired-run \
+  --dataset <expert-store> <support-store> --out <pair-directory>
+TRITON_F32_DEFAULT=ieee .venv/bin/python -m d4mj export --run <pair-directory>/raw \
+  --checkpoint <pair-directory>/raw/joint/step-010000.pt --out <pair-directory>/raw/cache
+TRITON_F32_DEFAULT=ieee .venv/bin/python -m d4mj bridge --run <pair-directory>/raw --stop-after h2
+# After an identity-bound passing H2 report:
+TRITON_F32_DEFAULT=ieee .venv/bin/python -m d4mj bridge --run <pair-directory>/raw \
+  --stop-after h16 --resume <pair-directory>/raw/bridge/step-002000.pt --gate <h2-gate.json>
 ```
 
-Create a separate raw run with the raw recipe and the same data/seed. Source or backend-setting edits invalidate preflight; data changes invalidate the dataset identity. Ordinary joint research calls default to the screen checkpoint. The implemented G1 evaluator must pass before continuation beyond it. `paired-run` performs that sequence; manual continuation takes `--screen-report <G1/screen.json>`. `--verification` labels technical tests and cannot be reported as a research result. Partial exports require `--diagnostic` and remain explicitly incomplete.
+`paired-run` creates both Raw and TC arms from the same initial weights, data and seed; do not
+launch a second ad-hoc Raw run. Source or backend-setting edits invalidate preflight; data changes
+invalidate the dataset identity. Ordinary joint research calls default to the screen checkpoint.
+The implemented G1 evaluator must pass before continuation beyond it. `paired-run` performs that
+sequence; manual continuation takes `--screen-report <G1/screen.json>`. `--verification` labels
+technical tests and cannot be reported as a research result. Partial exports require
+`--diagnostic` and remain explicitly incomplete.
 
 The completed first pair used `TRITON_F32_DEFAULT` unset. Its checkpoints retain that execution identity and must not be silently resumed under the new one. Its [separate IEEE diagnostic](../../../artifacts/experiments/20260906_lewm_paired/README.md) validates inference precision without changing the original checkpoints or granting another training budget.
 
-M4/H16/actor/renderer remain blocked. Checkpoint capabilities record `trained_recursive_depth=0`, `validated_recursive_depth=0`, `readout_trained=false` and `m4_authorized=false`. Persistent software recurrence and a passed numerical gate do not confer a learned recursive horizon.
+H16 and actor continuation remain empirically gated; renderer/play remain unimplemented. A joint checkpoint still records zero learned recursive depth. Bridge and actor checkpoints record trained and validated depth separately, and no smoke/shortened budget can set authorization in a research recipe.
 
 ## Source recovery
 

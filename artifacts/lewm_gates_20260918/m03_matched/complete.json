@@ -1,0 +1,16 @@
+{
+  "baseline": {
+    "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_gates_20260918/m03_matched/report.json",
+    "sha256": "890c437db76e822fb9640495ca30134c02bef31d6134b4de2d02cb5fb037ac47"
+  },
+  "memory": {
+    "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_gates_20260918/m03_matched/memory/report.json",
+    "sha256": "475a785ebdb074c9170ebe50971f92efdac13a03816e9b93d5e31e5dc0a7d547"
+  },
+  "decision": {
+    "m4_authorized": false,
+    "status": "measured_pending_capability_review",
+    "suite_complete": false,
+    "promotion": "requires_review_of_coverage_and_semantic_results; no automatic scalar pass"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "d4mj_gate_smoke_v1",
+  "device": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "recipe": "lewm_mamba_raw_m4",
+  "fork_roots": 512,
+  "panel_rows": 129,
+  "stages": [
+    {
+      "stage": "action_blind_H16_b16x128",
+      "seconds": 5.8,
+      "peak_mib": 1647
+    },
+    {
+      "stage": "all_action_forks_512_roots",
+      "seconds": 8.2,
+      "peak_mib": 335
+    },
+    {
+      "stage": "critical_retention_panel",
+      "seconds": 34.4,
+      "peak_mib": 82
+    }
+  ],
+  "budget_mib": 6144
+}

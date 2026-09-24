@@ -1,0 +1,83 @@
+{
+  "schema": "d4mj_m03_run",
+  "contract": {
+    "schema": "d4mj_m03_memory_run",
+    "baseline": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_gates_20260918/m03_matched/run.json",
+      "sha256": "9f3b65dbecd8410b629f1b2c0e8d951938fc81a5b39f3af4ec5e7370dc6c671a"
+    },
+    "baseline_report": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_gates_20260918/m03_matched/report.json",
+      "sha256": "890c437db76e822fb9640495ca30134c02bef31d6134b4de2d02cb5fb037ac47"
+    },
+    "primary_manifest": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_gates_20260918/m03_matched/sidecar/manifest.json",
+      "sha256": "160d9188665c920c1816745dcc649dda91b9539967b6c8fd10fe51188272a7ff"
+    },
+    "historical_replay_manifests": [],
+    "sources": [
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/m03/history.py",
+        "sha256": "882a2d58c06d3c97f5c6fda482fa87a68a354fc725a753545d2e44058cd472eb"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/m03/diagnostics.py",
+        "sha256": "4c2abc831c1747e3fa635b27a620661f98cb3b196b64d6c7017eb92c34ad7a24"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/m03/gate.py",
+        "sha256": "0911293911a6203a82e738dd4c5c9565f740d5e3a735e7e8210607579d87f3ee"
+      },
+      {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/m03/cache.py",
+        "sha256": "d38e38e39974034150a155494ca1725792ff1e682bb0a6f2d1febb0ccb71ae96"
+      }
+    ],
+    "checkpoints": {
+      "raw": {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260918_matched_10k/evidence/world_z_z.pt",
+        "sha256": "70a83d0804144a845b27a677a534a01ee74d2c790fc0c904562885ce0b9ded70"
+      },
+      "tc": {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260918_matched_10k/evidence/world_u_u.pt",
+        "sha256": "4e1c3739283e3c4b7e5aa9e9af6c59869f2a0943f5fa82d0409daf5312eb4506"
+      }
+    },
+    "cache_compatibility": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_gates_20260906/m03_bootstrap/compatibility.json",
+      "sha256": "4616525359a4febac0a1777412c396513f95ee148d03dac8fbd5b2f3b5fecf4a"
+    },
+    "settings": {
+      "schema": "d4mj_m03_capability_gate",
+      "seed": 20260907,
+      "train_roots": 256,
+      "dev_roots": 128,
+      "terminal_tail_fraction": 0.5,
+      "direct_context": 64,
+      "lewm_context": 4,
+      "replay_checks": 4,
+      "mode_samples": 4,
+      "encode_batch": 16,
+      "direct_encode_batch": 1,
+      "direct_successor_batch": 4,
+      "probe_hidden": 128,
+      "probe_steps": 200,
+      "probe_batch": 256,
+      "probe_learning_rate": 0.001,
+      "probe_weight_decay": 0.0001,
+      "bootstrap_draws": 1000,
+      "minimum_positive": 10,
+      "minimum_negative": 10,
+      "ridge": 1.0
+    },
+    "contexts": [
+      1,
+      4,
+      16,
+      64
+    ],
+    "device": "cuda",
+    "smoke": false
+  },
+  "contract_sha256": "6a6d784d1ba942eb37af9115250990767cec95853398d48ca95c1ba1c649b58d"
+}

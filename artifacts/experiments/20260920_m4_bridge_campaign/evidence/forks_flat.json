@@ -1,0 +1,22 @@
+{
+  "format": "d4mj_episode_store_v1",
+  "kind": "d4mj_forks_flat_v1",
+  "complete": true,
+  "episodes": 255272,
+  "transitions": 996860,
+  "terminal_episodes": 37676,
+  "split_episode_counts": {
+    "train": 228599,
+    "dev": 26673
+  },
+  "roots": 15016,
+  "actions": 17,
+  "holdout_by": "whole seed",
+  "holdout": 0.1,
+  "seed": 20260920,
+  "bc_eligible": false,
+  "uniform_eligible": true,
+  "rewards": "counterfactual and second steps carry true rewards; history transitions were never collected and are zero -- WORLD TRAINING ONLY, never the bridge's reward head",
+  "source": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/broad_forks_v2",
+  "collector_training_access": "unknown"
+}

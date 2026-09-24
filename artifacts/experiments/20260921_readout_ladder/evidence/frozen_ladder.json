@@ -1,0 +1,2121 @@
+{
+  "schema": "d4mj_frozen_ladder_v1",
+  "status": "EXPLORATORY: judgement roots already inspected",
+  "script_sha256": "296021ed20e0a56b57e5290461802e000ab5ead4b2bdd3dcb04ba0b7f0f0877b",
+  "observability_sha256": "00d30023d8eecd63b942bddac5f50bbb8d0e15bffdf434212bfd64273c011464",
+  "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_m4_canonical/raw/bridge/step-002000.pt",
+  "checkpoint_sha256": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e",
+  "identity": {
+    "fit": "5f1e9a00c3103610d720bce2e834ca481099e6122cf400fb087e60fe14e02c8d",
+    "judge": "8ed62edd825409b9820be8ea93e0c790a934f9968cad4f10d33a7aa8472da6aa"
+  },
+  "shard_manifests": {
+    "fresh": "f27380830c02a32a0cd0040be056d7f7562c19ec162771e86b4bd71445cfca20",
+    "fit_state": "5101405a6ba0313fe897bf7aeafedd28bfd87ad70741f05b17e891eb5e391317"
+  },
+  "roots": {
+    "fit": 7085,
+    "judge": 2856
+  },
+  "smoke": false,
+  "reproduction": {
+    "observability_pixels4_death1": 0.7676458358764648,
+    "here_pixels4_actions_death1": 0.7437083125114441
+  },
+  "rows": {
+    "path": "frozen_ladder_rows.pt",
+    "sha256": "ef636c84b3abee72a933d831598e01a0d73da94a5b114a31f0e558e028b8414e"
+  },
+  "outcomes": {
+    "death1": {
+      "judge_opportunity_roots": 500,
+      "prior_action": 4,
+      "prior_expected_safe": 0.6280624866485596,
+      "oracle_expected_safe": 1.0,
+      "strata_opportunity": {
+        "day": 219,
+        "night": 281,
+        "lava_adjacent": 110,
+        "zombie_adjacent": 265,
+        "arrow_or_skeleton": 151,
+        "none_of_these": 85
+      },
+      "prior_by_stratum": {
+        "day": 0.6369863152503967,
+        "night": 0.6211076378822327,
+        "lava_adjacent": 0.7644886374473572,
+        "zombie_adjacent": 0.5084905624389648,
+        "arrow_or_skeleton": 0.6889486908912659,
+        "none_of_these": 0.7411764860153198
+      },
+      "arms": {
+        "actions_only": {
+          "runs": [
+            {
+              "selected_step": 900,
+              "inner_safe": 0.6619047522544861,
+              "parameters": 46097,
+              "judge_expected_safe": 0.6428124904632568,
+              "fit_expected_safe": 0.8153274059295654
+            },
+            {
+              "selected_step": 800,
+              "inner_safe": 0.6809523701667786,
+              "parameters": 46097,
+              "judge_expected_safe": 0.6552500128746033,
+              "fit_expected_safe": 0.8048809766769409
+            },
+            {
+              "selected_step": 1600,
+              "inner_safe": 0.6714285612106323,
+              "parameters": 46097,
+              "judge_expected_safe": 0.660812497138977,
+              "fit_expected_safe": 0.8382142782211304
+            }
+          ],
+          "judge_expected_safe": 0.652958333492279,
+          "vs_prior": {
+            "difference": 0.024895846843719482,
+            "interval": [
+              -0.03935560956597328,
+              0.0904623493552208
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6394596695899963,
+            "night": 0.663478672504425,
+            "lava_adjacent": 0.7666667103767395,
+            "zombie_adjacent": 0.5667452812194824,
+            "arrow_or_skeleton": 0.7228200435638428,
+            "none_of_these": 0.7098039388656616
+          },
+          "chosen_actions": [
+            5,
+            278,
+            320,
+            304,
+            443,
+            64,
+            14,
+            8,
+            6,
+            7,
+            13,
+            7,
+            3,
+            15,
+            5,
+            1,
+            7
+          ]
+        },
+        "pixels1": {
+          "runs": [
+            {
+              "selected_step": 1900,
+              "inner_safe": 0.8904761672019958,
+              "parameters": 609457,
+              "judge_expected_safe": 0.8345000147819519,
+              "fit_expected_safe": 0.99979168176651
+            },
+            {
+              "selected_step": 1700,
+              "inner_safe": 0.9285714030265808,
+              "parameters": 609457,
+              "judge_expected_safe": 0.9005625247955322,
+              "fit_expected_safe": 0.995327353477478
+            },
+            {
+              "selected_step": 2900,
+              "inner_safe": 0.9428571462631226,
+              "parameters": 609457,
+              "judge_expected_safe": 0.9180625081062317,
+              "fit_expected_safe": 1.0
+            }
+          ],
+          "judge_expected_safe": 0.8843749761581421,
+          "vs_prior": {
+            "difference": 0.2563124895095825,
+            "interval": [
+              0.1934984028339386,
+              0.3264496922492981
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.9127663969993591,
+            "night": 0.862247884273529,
+            "lava_adjacent": 0.9887310862541199,
+            "zombie_adjacent": 0.8157232999801636,
+            "arrow_or_skeleton": 0.8952814340591431,
+            "none_of_these": 0.9647058844566345
+          },
+          "chosen_actions": [
+            57,
+            293,
+            301,
+            291,
+            112,
+            155,
+            61,
+            16,
+            41,
+            19,
+            14,
+            44,
+            6,
+            8,
+            30,
+            36,
+            16
+          ]
+        },
+        "pixels4": {
+          "runs": [
+            {
+              "selected_step": 1000,
+              "inner_safe": 0.7142857313156128,
+              "parameters": 627889,
+              "judge_expected_safe": 0.7008125185966492,
+              "fit_expected_safe": 0.8713988065719604
+            },
+            {
+              "selected_step": 2900,
+              "inner_safe": 0.800000011920929,
+              "parameters": 627889,
+              "judge_expected_safe": 0.7388749718666077,
+              "fit_expected_safe": 0.9937499761581421
+            },
+            {
+              "selected_step": 1600,
+              "inner_safe": 0.7476190328598022,
+              "parameters": 627889,
+              "judge_expected_safe": 0.6675000190734863,
+              "fit_expected_safe": 0.9707738161087036
+            }
+          ],
+          "judge_expected_safe": 0.7023958563804626,
+          "vs_prior": {
+            "difference": 0.07433336973190308,
+            "interval": [
+              0.006169033236801624,
+              0.14467407763004303
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.7210331559181213,
+            "night": 0.6878706812858582,
+            "lava_adjacent": 0.9545453786849976,
+            "zombie_adjacent": 0.5704402923583984,
+            "arrow_or_skeleton": 0.7915977239608765,
+            "none_of_these": 0.729411780834198
+          },
+          "chosen_actions": [
+            1,
+            437,
+            360,
+            266,
+            237,
+            67,
+            74,
+            11,
+            0,
+            15,
+            4,
+            8,
+            3,
+            8,
+            0,
+            8,
+            1
+          ]
+        },
+        "pixels4_actions": {
+          "runs": [
+            {
+              "selected_step": 2000,
+              "inner_safe": 0.7809523940086365,
+              "parameters": 664753,
+              "judge_expected_safe": 0.745437502861023,
+              "fit_expected_safe": 0.99979168176651
+            },
+            {
+              "selected_step": 2100,
+              "inner_safe": 0.776190459728241,
+              "parameters": 664753,
+              "judge_expected_safe": 0.7125625014305115,
+              "fit_expected_safe": 0.99979168176651
+            },
+            {
+              "selected_step": 1700,
+              "inner_safe": 0.8238095045089722,
+              "parameters": 664753,
+              "judge_expected_safe": 0.7731249928474426,
+              "fit_expected_safe": 0.9809523820877075
+            }
+          ],
+          "judge_expected_safe": 0.7437083125114441,
+          "vs_prior": {
+            "difference": 0.11564582586288452,
+            "interval": [
+              0.05683678761124611,
+              0.18542632460594177
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.7729262113571167,
+            "night": 0.7209371328353882,
+            "lava_adjacent": 0.9523674249649048,
+            "zombie_adjacent": 0.6424528360366821,
+            "arrow_or_skeleton": 0.8069812655448914,
+            "none_of_these": 0.760784387588501
+          },
+          "chosen_actions": [
+            4,
+            341,
+            353,
+            325,
+            280,
+            115,
+            38,
+            16,
+            1,
+            1,
+            1,
+            5,
+            3,
+            1,
+            11,
+            4,
+            1
+          ]
+        },
+        "tokens1_flat": {
+          "runs": [
+            {
+              "selected_step": 3000,
+              "inner_safe": 0.8142856955528259,
+              "parameters": 7971857,
+              "judge_expected_safe": 0.7726874947547913,
+              "fit_expected_safe": 1.0
+            },
+            {
+              "selected_step": 2900,
+              "inner_safe": 0.8047618865966797,
+              "parameters": 7971857,
+              "judge_expected_safe": 0.7789375185966492,
+              "fit_expected_safe": 1.0
+            },
+            {
+              "selected_step": 2700,
+              "inner_safe": 0.8047618865966797,
+              "parameters": 7971857,
+              "judge_expected_safe": 0.7826874852180481,
+              "fit_expected_safe": 1.0
+            }
+          ],
+          "judge_expected_safe": 0.7781041860580444,
+          "vs_prior": {
+            "difference": 0.15004169940948486,
+            "interval": [
+              0.08247276395559311,
+              0.2229730486869812
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.8590182662010193,
+            "night": 0.7150430083274841,
+            "lava_adjacent": 0.8696969747543335,
+            "zombie_adjacent": 0.691195011138916,
+            "arrow_or_skeleton": 0.8149144649505615,
+            "none_of_these": 0.8901961445808411
+          },
+          "chosen_actions": [
+            3,
+            275,
+            343,
+            370,
+            190,
+            217,
+            49,
+            3,
+            1,
+            8,
+            2,
+            5,
+            6,
+            8,
+            10,
+            8,
+            2
+          ]
+        },
+        "tokens1_attn": {
+          "runs": [
+            {
+              "selected_step": 2600,
+              "inner_safe": 0.8190476298332214,
+              "parameters": 115218,
+              "judge_expected_safe": 0.7946249842643738,
+              "fit_expected_safe": 0.9580952525138855
+            },
+            {
+              "selected_step": 1400,
+              "inner_safe": 0.7142857313156128,
+              "parameters": 115218,
+              "judge_expected_safe": 0.6986250281333923,
+              "fit_expected_safe": 0.8295238018035889
+            },
+            {
+              "selected_step": 1300,
+              "inner_safe": 0.776190459728241,
+              "parameters": 115218,
+              "judge_expected_safe": 0.7011874914169312,
+              "fit_expected_safe": 0.8920238018035889
+            }
+          ],
+          "judge_expected_safe": 0.7314791679382324,
+          "vs_prior": {
+            "difference": 0.10341668128967285,
+            "interval": [
+              0.04115961492061615,
+              0.17383643984794617
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.7867674827575684,
+            "night": 0.6883897185325623,
+            "lava_adjacent": 0.9129735231399536,
+            "zombie_adjacent": 0.6041666865348816,
+            "arrow_or_skeleton": 0.7686948180198669,
+            "none_of_these": 0.8392156362533569
+          },
+          "chosen_actions": [
+            27,
+            261,
+            281,
+            299,
+            161,
+            92,
+            131,
+            23,
+            71,
+            9,
+            30,
+            14,
+            20,
+            37,
+            6,
+            31,
+            7
+          ]
+        },
+        "cls_pooled1": {
+          "runs": [
+            {
+              "selected_step": 900,
+              "inner_safe": 0.7809523940086365,
+              "parameters": 1680401,
+              "judge_expected_safe": 0.7216249704360962,
+              "fit_expected_safe": 0.9047619104385376
+            },
+            {
+              "selected_step": 1700,
+              "inner_safe": 0.7904762029647827,
+              "parameters": 1680401,
+              "judge_expected_safe": 0.7348750233650208,
+              "fit_expected_safe": 0.935952365398407
+            },
+            {
+              "selected_step": 1600,
+              "inner_safe": 0.8142856955528259,
+              "parameters": 1680401,
+              "judge_expected_safe": 0.7080625295639038,
+              "fit_expected_safe": 0.9424999952316284
+            }
+          ],
+          "judge_expected_safe": 0.7215209007263184,
+          "vs_prior": {
+            "difference": 0.09345841407775879,
+            "interval": [
+              0.02847837470471859,
+              0.16723813116550446
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.7735445499420166,
+            "night": 0.6809756755828857,
+            "lava_adjacent": 0.8917614221572876,
+            "zombie_adjacent": 0.599685549736023,
+            "arrow_or_skeleton": 0.7732478976249695,
+            "none_of_these": 0.8431373238563538
+          },
+          "chosen_actions": [
+            17,
+            475,
+            223,
+            318,
+            284,
+            56,
+            21,
+            2,
+            6,
+            17,
+            7,
+            1,
+            10,
+            14,
+            26,
+            14,
+            9
+          ]
+        },
+        "cls1": {
+          "runs": [
+            {
+              "selected_step": 2000,
+              "inner_safe": 0.6952381134033203,
+              "parameters": 107537,
+              "judge_expected_safe": 0.5651875138282776,
+              "fit_expected_safe": 0.8171428442001343
+            },
+            {
+              "selected_step": 100,
+              "inner_safe": 0.6714285612106323,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6725624799728394,
+              "fit_expected_safe": 0.6957440376281738
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6904761791229248,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6424375176429749,
+              "fit_expected_safe": 0.7049106955528259
+            }
+          ],
+          "judge_expected_safe": 0.6267291307449341,
+          "vs_prior": {
+            "difference": -0.0013333559036254883,
+            "interval": [
+              -0.052185311913490295,
+              0.0535750687122345
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6289002299308777,
+            "night": 0.6250370740890503,
+            "lava_adjacent": 0.8463068604469299,
+            "zombie_adjacent": 0.5034984350204468,
+            "arrow_or_skeleton": 0.6823261380195618,
+            "none_of_these": 0.6823529601097107
+          },
+          "chosen_actions": [
+            37,
+            180,
+            155,
+            252,
+            553,
+            118,
+            122,
+            0,
+            11,
+            6,
+            19,
+            5,
+            6,
+            2,
+            2,
+            30,
+            2
+          ]
+        },
+        "cls4": {
+          "runs": [
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6809523701667786,
+              "parameters": 402449,
+              "judge_expected_safe": 0.629812479019165,
+              "fit_expected_safe": 0.7161607146263123
+            },
+            {
+              "selected_step": 900,
+              "inner_safe": 0.6666666865348816,
+              "parameters": 402449,
+              "judge_expected_safe": 0.6426874995231628,
+              "fit_expected_safe": 0.7672916650772095
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6904761791229248,
+              "parameters": 402449,
+              "judge_expected_safe": 0.6228125095367432,
+              "fit_expected_safe": 0.6992559432983398
+            }
+          ],
+          "judge_expected_safe": 0.6317708492279053,
+          "vs_prior": {
+            "difference": 0.003708362579345703,
+            "interval": [
+              -0.0579829066991806,
+              0.06358611583709717
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.5854262113571167,
+            "night": 0.6678900122642517,
+            "lava_adjacent": 0.9008522629737854,
+            "zombie_adjacent": 0.4611242711544037,
+            "arrow_or_skeleton": 0.7100579738616943,
+            "none_of_these": 0.7843137979507446
+          },
+          "chosen_actions": [
+            3,
+            192,
+            138,
+            256,
+            452,
+            110,
+            106,
+            15,
+            19,
+            44,
+            31,
+            17,
+            31,
+            22,
+            19,
+            39,
+            6
+          ]
+        },
+        "z1": {
+          "runs": [
+            {
+              "selected_step": 100,
+              "inner_safe": 0.6714285612106323,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6451249718666077,
+              "fit_expected_safe": 0.725565493106842
+            },
+            {
+              "selected_step": 700,
+              "inner_safe": 0.6714285612106323,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6187499761581421,
+              "fit_expected_safe": 0.808571457862854
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6761904954910278,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6118749976158142,
+              "fit_expected_safe": 0.7504464387893677
+            }
+          ],
+          "judge_expected_safe": 0.625249981880188,
+          "vs_prior": {
+            "difference": -0.002812504768371582,
+            "interval": [
+              -0.05869920924305916,
+              0.05559402331709862
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6160102486610413,
+            "night": 0.632451057434082,
+            "lava_adjacent": 0.8220643997192383,
+            "zombie_adjacent": 0.49830979108810425,
+            "arrow_or_skeleton": 0.659768283367157,
+            "none_of_these": 0.7215685844421387
+          },
+          "chosen_actions": [
+            2,
+            170,
+            183,
+            274,
+            575,
+            109,
+            51,
+            17,
+            0,
+            26,
+            17,
+            21,
+            26,
+            3,
+            12,
+            8,
+            6
+          ]
+        },
+        "z4": {
+          "runs": [
+            {
+              "selected_step": 500,
+              "inner_safe": 0.6857143044471741,
+              "parameters": 402449,
+              "judge_expected_safe": 0.6581249833106995,
+              "fit_expected_safe": 0.8023214340209961
+            },
+            {
+              "selected_step": 1200,
+              "inner_safe": 0.7047619223594666,
+              "parameters": 402449,
+              "judge_expected_safe": 0.5983750224113464,
+              "fit_expected_safe": 0.8340476155281067
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6809523701667786,
+              "parameters": 402449,
+              "judge_expected_safe": 0.6181250214576721,
+              "fit_expected_safe": 0.7637797594070435
+            }
+          ],
+          "judge_expected_safe": 0.624875009059906,
+          "vs_prior": {
+            "difference": -0.0031874775886535645,
+            "interval": [
+              -0.06292109936475754,
+              0.06322949379682541
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6218607425689697,
+            "night": 0.6272242069244385,
+            "lava_adjacent": 0.7917613387107849,
+            "zombie_adjacent": 0.5188679099082947,
+            "arrow_or_skeleton": 0.6474889516830444,
+            "none_of_these": 0.6980392336845398
+          },
+          "chosen_actions": [
+            8,
+            395,
+            175,
+            205,
+            414,
+            43,
+            65,
+            26,
+            14,
+            14,
+            5,
+            17,
+            13,
+            21,
+            35,
+            21,
+            29
+          ]
+        },
+        "root_features": {
+          "runs": [
+            {
+              "selected_step": 700,
+              "inner_safe": 0.6190476417541504,
+              "parameters": 140305,
+              "judge_expected_safe": 0.6035624742507935,
+              "fit_expected_safe": 0.8604464530944824
+            },
+            {
+              "selected_step": 100,
+              "inner_safe": 0.6428571343421936,
+              "parameters": 140305,
+              "judge_expected_safe": 0.6571249961853027,
+              "fit_expected_safe": 0.7366964221000671
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6380952596664429,
+              "parameters": 140305,
+              "judge_expected_safe": 0.6212499737739563,
+              "fit_expected_safe": 0.7985119223594666
+            }
+          ],
+          "judge_expected_safe": 0.627312421798706,
+          "vs_prior": {
+            "difference": -0.0007500648498535156,
+            "interval": [
+              -0.05307623744010925,
+              0.05416559427976608
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.624809741973877,
+            "night": 0.6292630434036255,
+            "lava_adjacent": 0.8220643997192383,
+            "zombie_adjacent": 0.5064465403556824,
+            "arrow_or_skeleton": 0.6643901467323303,
+            "none_of_these": 0.6862744688987732
+          },
+          "chosen_actions": [
+            18,
+            273,
+            239,
+            229,
+            469,
+            102,
+            24,
+            21,
+            5,
+            12,
+            11,
+            21,
+            24,
+            11,
+            6,
+            11,
+            24
+          ]
+        },
+        "u": {
+          "runs": [
+            {
+              "selected_step": 500,
+              "inner_safe": 0.6857143044471741,
+              "parameters": 132097,
+              "judge_expected_safe": 0.6465625166893005,
+              "fit_expected_safe": 0.6792262196540833
+            },
+            {
+              "selected_step": 2200,
+              "inner_safe": 0.7047619223594666,
+              "parameters": 132097,
+              "judge_expected_safe": 0.6706874966621399,
+              "fit_expected_safe": 0.7797916531562805
+            },
+            {
+              "selected_step": 2500,
+              "inner_safe": 0.6809523701667786,
+              "parameters": 132097,
+              "judge_expected_safe": 0.6446874737739563,
+              "fit_expected_safe": 0.7708631157875061
+            }
+          ],
+          "judge_expected_safe": 0.6539791822433472,
+          "vs_prior": {
+            "difference": 0.025916695594787598,
+            "interval": [
+              -0.021954234689474106,
+              0.0790771096944809
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6633371710777283,
+            "night": 0.6466859579086304,
+            "lava_adjacent": 0.9675189852714539,
+            "zombie_adjacent": 0.45581763982772827,
+            "arrow_or_skeleton": 0.7526903748512268,
+            "none_of_these": 0.7647058963775635
+          },
+          "chosen_actions": [
+            2,
+            96,
+            66,
+            161,
+            595,
+            47,
+            207,
+            3,
+            114,
+            8,
+            4,
+            6,
+            147,
+            15,
+            6,
+            0,
+            23
+          ]
+        },
+        "generated_z": {
+          "runs": [
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6523809432983398,
+              "parameters": 99329,
+              "judge_expected_safe": 0.5878750085830688,
+              "fit_expected_safe": 0.6121428608894348
+            },
+            {
+              "selected_step": 200,
+              "inner_safe": 0.6857143044471741,
+              "parameters": 99329,
+              "judge_expected_safe": 0.628125011920929,
+              "fit_expected_safe": 0.6428868770599365
+            },
+            {
+              "selected_step": 100,
+              "inner_safe": 0.6619047522544861,
+              "parameters": 99329,
+              "judge_expected_safe": 0.6161249876022339,
+              "fit_expected_safe": 0.5990774035453796
+            }
+          ],
+          "judge_expected_safe": 0.6107082962989807,
+          "vs_prior": {
+            "difference": -0.017354190349578857,
+            "interval": [
+              -0.07268521189689636,
+              0.04107978567481041
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6338946223258972,
+            "night": 0.5926379561424255,
+            "lava_adjacent": 0.985700786113739,
+            "zombie_adjacent": 0.3617531657218933,
+            "arrow_or_skeleton": 0.7462748289108276,
+            "none_of_these": 0.8156862854957581
+          },
+          "chosen_actions": [
+            5,
+            23,
+            38,
+            182,
+            350,
+            50,
+            686,
+            0,
+            49,
+            10,
+            1,
+            25,
+            0,
+            78,
+            2,
+            0,
+            1
+          ]
+        },
+        "generated_features": {
+          "runs": [
+            {
+              "selected_step": 900,
+              "inner_safe": 0.6666666865348816,
+              "parameters": 132097,
+              "judge_expected_safe": 0.6453750133514404,
+              "fit_expected_safe": 0.7377678751945496
+            },
+            {
+              "selected_step": 500,
+              "inner_safe": 0.6904761791229248,
+              "parameters": 132097,
+              "judge_expected_safe": 0.6106874942779541,
+              "fit_expected_safe": 0.680654764175415
+            },
+            {
+              "selected_step": 900,
+              "inner_safe": 0.6619047522544861,
+              "parameters": 132097,
+              "judge_expected_safe": 0.6351249814033508,
+              "fit_expected_safe": 0.7381250262260437
+            }
+          ],
+          "judge_expected_safe": 0.6303958296775818,
+          "vs_prior": {
+            "difference": 0.002333343029022217,
+            "interval": [
+              -0.05252937227487564,
+              0.05890609323978424
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6425513625144958,
+            "night": 0.620922327041626,
+            "lava_adjacent": 0.9675189852714539,
+            "zombie_adjacent": 0.41273584961891174,
+            "arrow_or_skeleton": 0.723164975643158,
+            "none_of_these": 0.7960785031318665
+          },
+          "chosen_actions": [
+            14,
+            49,
+            72,
+            232,
+            533,
+            48,
+            249,
+            7,
+            101,
+            26,
+            9,
+            2,
+            76,
+            30,
+            10,
+            1,
+            41
+          ]
+        }
+      },
+      "contrasts": {
+        "actions_only_vs_prior": {
+          "difference": 0.024895846843719482,
+          "interval": [
+            -0.03301995247602463,
+            0.09011967480182648
+          ],
+          "excludes_zero": false
+        },
+        "pixels4_actions_vs_pixels4": {
+          "difference": 0.041312456130981445,
+          "interval": [
+            0.010906090028584003,
+            0.07135318964719772
+          ],
+          "excludes_zero": true
+        },
+        "pixels4_vs_pixels1": {
+          "difference": -0.18197911977767944,
+          "interval": [
+            -0.22699414193630219,
+            -0.13702431321144104
+          ],
+          "excludes_zero": true
+        },
+        "tokens1_flat_vs_pixels1": {
+          "difference": -0.10627079010009766,
+          "interval": [
+            -0.14578218758106232,
+            -0.06953290104866028
+          ],
+          "excludes_zero": true
+        },
+        "tokens1_attn_vs_pixels1": {
+          "difference": -0.15289580821990967,
+          "interval": [
+            -0.19157308340072632,
+            -0.11433961987495422
+          ],
+          "excludes_zero": true
+        },
+        "cls_pooled1_vs_tokens1_flat": {
+          "difference": -0.056583285331726074,
+          "interval": [
+            -0.0890343189239502,
+            -0.025444762781262398
+          ],
+          "excludes_zero": true
+        },
+        "cls1_vs_cls_pooled1": {
+          "difference": -0.09479176998138428,
+          "interval": [
+            -0.1420544981956482,
+            -0.04572434723377228
+          ],
+          "excludes_zero": true
+        },
+        "z1_vs_cls1": {
+          "difference": -0.0014791488647460938,
+          "interval": [
+            -0.029963631182909012,
+            0.02684887684881687
+          ],
+          "excludes_zero": false
+        },
+        "z4_vs_cls4": {
+          "difference": -0.006895840167999268,
+          "interval": [
+            -0.050160061568021774,
+            0.03827928751707077
+          ],
+          "excludes_zero": false
+        },
+        "root_features_vs_z4": {
+          "difference": 0.002437412738800049,
+          "interval": [
+            -0.029942180961370468,
+            0.031696829944849014
+          ],
+          "excludes_zero": false
+        },
+        "u_vs_root_features": {
+          "difference": 0.026666760444641113,
+          "interval": [
+            -0.010281209833920002,
+            0.06536352634429932
+          ],
+          "excludes_zero": false
+        },
+        "generated_z_vs_u": {
+          "difference": -0.043270885944366455,
+          "interval": [
+            -0.08297066390514374,
+            -0.006724967155605555
+          ],
+          "excludes_zero": true
+        },
+        "generated_features_vs_generated_z": {
+          "difference": 0.019687533378601074,
+          "interval": [
+            -0.018295176327228546,
+            0.05848244950175285
+          ],
+          "excludes_zero": false
+        }
+      }
+    },
+    "death2": {
+      "judge_opportunity_roots": 986,
+      "prior_action": 4,
+      "prior_expected_safe": 0.6849644780158997,
+      "oracle_expected_safe": 0.8294878005981445,
+      "strata_opportunity": {
+        "day": 453,
+        "night": 533,
+        "lava_adjacent": 110,
+        "zombie_adjacent": 346,
+        "arrow_or_skeleton": 207,
+        "none_of_these": 447
+      },
+      "prior_by_stratum": {
+        "day": 0.712403416633606,
+        "night": 0.6616439819335938,
+        "lava_adjacent": 0.7596591114997864,
+        "zombie_adjacent": 0.3513367176055908,
+        "arrow_or_skeleton": 0.6544383764266968,
+        "none_of_these": 0.9001677632331848
+      },
+      "arms": {
+        "actions_only": {
+          "runs": [
+            {
+              "selected_step": 1400,
+              "inner_safe": 0.6648035049438477,
+              "parameters": 46097,
+              "judge_expected_safe": 0.696374237537384,
+              "fit_expected_safe": 0.7125208377838135
+            },
+            {
+              "selected_step": 1600,
+              "inner_safe": 0.6639566421508789,
+              "parameters": 46097,
+              "judge_expected_safe": 0.6805907487869263,
+              "fit_expected_safe": 0.7119559049606323
+            },
+            {
+              "selected_step": 400,
+              "inner_safe": 0.6588753461837769,
+              "parameters": 46097,
+              "judge_expected_safe": 0.6868661046028137,
+              "fit_expected_safe": 0.6942792534828186
+            }
+          ],
+          "judge_expected_safe": 0.687943696975708,
+          "vs_prior": {
+            "difference": 0.0029792189598083496,
+            "interval": [
+              -0.024266019463539124,
+              0.03130539506673813
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.7193939089775085,
+            "night": 0.6612139940261841,
+            "lava_adjacent": 0.7215908169746399,
+            "zombie_adjacent": 0.376414954662323,
+            "arrow_or_skeleton": 0.6544383764266968,
+            "none_of_these": 0.9016591906547546
+          },
+          "chosen_actions": [
+            1,
+            942,
+            767,
+            407,
+            749,
+            32,
+            0,
+            1,
+            11,
+            6,
+            38,
+            2,
+            0,
+            0,
+            0,
+            1,
+            1
+          ]
+        },
+        "pixels1": {
+          "runs": [
+            {
+              "selected_step": 2000,
+              "inner_safe": 0.7154471278190613,
+              "parameters": 609457,
+              "judge_expected_safe": 0.7553245425224304,
+              "fit_expected_safe": 0.7775927782058716
+            },
+            {
+              "selected_step": 2800,
+              "inner_safe": 0.7333164215087891,
+              "parameters": 609457,
+              "judge_expected_safe": 0.7546272873878479,
+              "fit_expected_safe": 0.7834503054618835
+            },
+            {
+              "selected_step": 1800,
+              "inner_safe": 0.7324694991111755,
+              "parameters": 609457,
+              "judge_expected_safe": 0.7488590478897095,
+              "fit_expected_safe": 0.7776225209236145
+            }
+          ],
+          "judge_expected_safe": 0.7529370188713074,
+          "vs_prior": {
+            "difference": 0.06797254085540771,
+            "interval": [
+              0.0456671267747879,
+              0.09575100988149643
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.7917816042900085,
+            "night": 0.7199225425720215,
+            "lava_adjacent": 0.948106050491333,
+            "zombie_adjacent": 0.4096519649028778,
+            "arrow_or_skeleton": 0.7402375340461731,
+            "none_of_these": 0.9603374600410461
+          },
+          "chosen_actions": [
+            0,
+            731,
+            652,
+            395,
+            877,
+            35,
+            1,
+            77,
+            76,
+            56,
+            58,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "pixels4": {
+          "runs": [
+            {
+              "selected_step": 2600,
+              "inner_safe": 0.6764058470726013,
+              "parameters": 627889,
+              "judge_expected_safe": 0.7210636138916016,
+              "fit_expected_safe": 0.7791686654090881
+            },
+            {
+              "selected_step": 2800,
+              "inner_safe": 0.6857215166091919,
+              "parameters": 627889,
+              "judge_expected_safe": 0.7260395288467407,
+              "fit_expected_safe": 0.7787078022956848
+            },
+            {
+              "selected_step": 2000,
+              "inner_safe": 0.6911416053771973,
+              "parameters": 627889,
+              "judge_expected_safe": 0.7214123010635376,
+              "fit_expected_safe": 0.7768642902374268
+            }
+          ],
+          "judge_expected_safe": 0.7228385210037231,
+          "vs_prior": {
+            "difference": 0.037874042987823486,
+            "interval": [
+              0.016828473657369614,
+              0.06451437622308731
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.7611294984817505,
+            "night": 0.6902947425842285,
+            "lava_adjacent": 0.9561553001403809,
+            "zombie_adjacent": 0.37728801369667053,
+            "arrow_or_skeleton": 0.7419987320899963,
+            "none_of_these": 0.9176687002182007
+          },
+          "chosen_actions": [
+            0,
+            611,
+            851,
+            537,
+            712,
+            66,
+            23,
+            58,
+            16,
+            37,
+            46,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "pixels4_actions": {
+          "runs": [
+            {
+              "selected_step": 2900,
+              "inner_safe": 0.7063854932785034,
+              "parameters": 664753,
+              "judge_expected_safe": 0.7319346070289612,
+              "fit_expected_safe": 0.7810270190238953
+            },
+            {
+              "selected_step": 2900,
+              "inner_safe": 0.7051998376846313,
+              "parameters": 664753,
+              "judge_expected_safe": 0.7261346578598022,
+              "fit_expected_safe": 0.7671859860420227
+            },
+            {
+              "selected_step": 2900,
+              "inner_safe": 0.6867377758026123,
+              "parameters": 664753,
+              "judge_expected_safe": 0.7258810997009277,
+              "fit_expected_safe": 0.7833164930343628
+            }
+          ],
+          "judge_expected_safe": 0.7279834747314453,
+          "vs_prior": {
+            "difference": 0.043018996715545654,
+            "interval": [
+              0.022200878709554672,
+              0.06772773712873459
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.76795893907547,
+            "night": 0.6940079927444458,
+            "lava_adjacent": 0.9521780610084534,
+            "zombie_adjacent": 0.3797868490219116,
+            "arrow_or_skeleton": 0.7362117767333984,
+            "none_of_these": 0.9262677431106567
+          },
+          "chosen_actions": [
+            0,
+            678,
+            676,
+            394,
+            748,
+            64,
+            19,
+            35,
+            96,
+            104,
+            143,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        "tokens1_flat": {
+          "runs": [
+            {
+              "selected_step": 2100,
+              "inner_safe": 0.6944444179534912,
+              "parameters": 7971857,
+              "judge_expected_safe": 0.7062943577766418,
+              "fit_expected_safe": 0.7571955323219299
+            },
+            {
+              "selected_step": 1700,
+              "inner_safe": 0.704014241695404,
+              "parameters": 7971857,
+              "judge_expected_safe": 0.7177358269691467,
+              "fit_expected_safe": 0.771527111530304
+            },
+            {
+              "selected_step": 2200,
+              "inner_safe": 0.704776406288147,
+              "parameters": 7971857,
+              "judge_expected_safe": 0.734882116317749,
+              "fit_expected_safe": 0.7813986539840698
+            }
+          ],
+          "judge_expected_safe": 0.7196374535560608,
+          "vs_prior": {
+            "difference": 0.03467297554016113,
+            "interval": [
+              0.010604416951537132,
+              0.06243651732802391
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.7733168005943298,
+            "night": 0.6740149855613708,
+            "lava_adjacent": 0.8537880182266235,
+            "zombie_adjacent": 0.38647037744522095,
+            "arrow_or_skeleton": 0.7175925374031067,
+            "none_of_these": 0.9274795055389404
+          },
+          "chosen_actions": [
+            25,
+            864,
+            519,
+            593,
+            624,
+            44,
+            6,
+            47,
+            96,
+            30,
+            60,
+            21,
+            1,
+            3,
+            16,
+            2,
+            7
+          ]
+        },
+        "tokens1_attn": {
+          "runs": [
+            {
+              "selected_step": 2200,
+              "inner_safe": 0.6937669515609741,
+              "parameters": 115218,
+              "judge_expected_safe": 0.7435027956962585,
+              "fit_expected_safe": 0.7535085678100586
+            },
+            {
+              "selected_step": 3000,
+              "inner_safe": 0.6793699264526367,
+              "parameters": 115218,
+              "judge_expected_safe": 0.7119358777999878,
+              "fit_expected_safe": 0.7439938187599182
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6572662591934204,
+              "parameters": 115218,
+              "judge_expected_safe": 0.6932048797607422,
+              "fit_expected_safe": 0.6747740507125854
+            }
+          ],
+          "judge_expected_safe": 0.7162144184112549,
+          "vs_prior": {
+            "difference": 0.031249940395355225,
+            "interval": [
+              0.010767667554318905,
+              0.05559750273823738
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.7594049572944641,
+            "night": 0.6795066595077515,
+            "lava_adjacent": 0.925568163394928,
+            "zombie_adjacent": 0.3662692904472351,
+            "arrow_or_skeleton": 0.7374697327613831,
+            "none_of_these": 0.9148489236831665
+          },
+          "chosen_actions": [
+            0,
+            544,
+            454,
+            455,
+            781,
+            33,
+            10,
+            47,
+            333,
+            92,
+            202,
+            0,
+            3,
+            0,
+            2,
+            2,
+            0
+          ]
+        },
+        "cls_pooled1": {
+          "runs": [
+            {
+              "selected_step": 2300,
+              "inner_safe": 0.6979166865348816,
+              "parameters": 1680401,
+              "judge_expected_safe": 0.7087664604187012,
+              "fit_expected_safe": 0.7621164321899414
+            },
+            {
+              "selected_step": 1700,
+              "inner_safe": 0.7041835784912109,
+              "parameters": 1680401,
+              "judge_expected_safe": 0.7065796256065369,
+              "fit_expected_safe": 0.7583551406860352
+            },
+            {
+              "selected_step": 1700,
+              "inner_safe": 0.6977472901344299,
+              "parameters": 1680401,
+              "judge_expected_safe": 0.7145981192588806,
+              "fit_expected_safe": 0.7549060583114624
+            }
+          ],
+          "judge_expected_safe": 0.7099814414978027,
+          "vs_prior": {
+            "difference": 0.025016963481903076,
+            "interval": [
+              0.0006879211287014186,
+              0.05283825471997261
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.7596808671951294,
+            "night": 0.6677415370941162,
+            "lava_adjacent": 0.8644886612892151,
+            "zombie_adjacent": 0.36672085523605347,
+            "arrow_or_skeleton": 0.6974637508392334,
+            "none_of_these": 0.9250559210777283
+          },
+          "chosen_actions": [
+            2,
+            651,
+            574,
+            845,
+            655,
+            77,
+            28,
+            19,
+            33,
+            18,
+            20,
+            3,
+            4,
+            20,
+            1,
+            8,
+            0
+          ]
+        },
+        "cls1": {
+          "runs": [
+            {
+              "selected_step": 200,
+              "inner_safe": 0.6551490426063538,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6978955268859863,
+              "fit_expected_safe": 0.6806018352508545
+            },
+            {
+              "selected_step": 100,
+              "inner_safe": 0.6525236964225769,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6689908504486084,
+              "fit_expected_safe": 0.6767513155937195
+            },
+            {
+              "selected_step": 200,
+              "inner_safe": 0.6515074372291565,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6808443069458008,
+              "fit_expected_safe": 0.6753984093666077
+            }
+          ],
+          "judge_expected_safe": 0.6825768947601318,
+          "vs_prior": {
+            "difference": -0.0023875832557678223,
+            "interval": [
+              -0.025846658274531364,
+              0.02532595582306385
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.7259474396705627,
+            "night": 0.6457160711288452,
+            "lava_adjacent": 0.8483902812004089,
+            "zombie_adjacent": 0.347573459148407,
+            "arrow_or_skeleton": 0.6713466048240662,
+            "none_of_these": 0.884950578212738
+          },
+          "chosen_actions": [
+            6,
+            559,
+            426,
+            642,
+            1025,
+            118,
+            0,
+            41,
+            8,
+            93,
+            4,
+            0,
+            17,
+            7,
+            1,
+            3,
+            8
+          ]
+        },
+        "cls4": {
+          "runs": [
+            {
+              "selected_step": 1700,
+              "inner_safe": 0.6635332107543945,
+              "parameters": 402449,
+              "judge_expected_safe": 0.6668673753738403,
+              "fit_expected_safe": 0.718170166015625
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6558265686035156,
+              "parameters": 402449,
+              "judge_expected_safe": 0.6672160029411316,
+              "fit_expected_safe": 0.6812856793403625
+            },
+            {
+              "selected_step": 2500,
+              "inner_safe": 0.6592140793800354,
+              "parameters": 402449,
+              "judge_expected_safe": 0.6790377497673035,
+              "fit_expected_safe": 0.7312083840370178
+            }
+          ],
+          "judge_expected_safe": 0.671040415763855,
+          "vs_prior": {
+            "difference": -0.013924062252044678,
+            "interval": [
+              -0.04459969699382782,
+              0.018054718151688576
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6850625276565552,
+            "night": 0.659122884273529,
+            "lava_adjacent": 0.7644886374473572,
+            "zombie_adjacent": 0.34453272819519043,
+            "arrow_or_skeleton": 0.6047202348709106,
+            "none_of_these": 0.8953205943107605
+          },
+          "chosen_actions": [
+            3,
+            744,
+            513,
+            614,
+            850,
+            143,
+            0,
+            26,
+            9,
+            20,
+            14,
+            1,
+            3,
+            0,
+            6,
+            7,
+            5
+          ]
+        },
+        "z1": {
+          "runs": [
+            {
+              "selected_step": 500,
+              "inner_safe": 0.651761531829834,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6805590987205505,
+              "fit_expected_safe": 0.6963011622428894
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6483739614486694,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6733645796775818,
+              "fit_expected_safe": 0.6921384334564209
+            },
+            {
+              "selected_step": 1100,
+              "inner_safe": 0.6456639766693115,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6695296764373779,
+              "fit_expected_safe": 0.7166537642478943
+            }
+          ],
+          "judge_expected_safe": 0.6744844317436218,
+          "vs_prior": {
+            "difference": -0.010480046272277832,
+            "interval": [
+              -0.04230882599949837,
+              0.0211398433893919
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.715185821056366,
+            "night": 0.6398921012878418,
+            "lava_adjacent": 0.7896780371665955,
+            "zombie_adjacent": 0.3432382047176361,
+            "arrow_or_skeleton": 0.6140800714492798,
+            "none_of_these": 0.8960197567939758
+          },
+          "chosen_actions": [
+            5,
+            602,
+            555,
+            779,
+            742,
+            132,
+            0,
+            32,
+            27,
+            43,
+            30,
+            0,
+            3,
+            3,
+            0,
+            5,
+            0
+          ]
+        },
+        "z4": {
+          "runs": [
+            {
+              "selected_step": 500,
+              "inner_safe": 0.6616700291633606,
+              "parameters": 402449,
+              "judge_expected_safe": 0.6796082854270935,
+              "fit_expected_safe": 0.696643054485321
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6646341681480408,
+              "parameters": 402449,
+              "judge_expected_safe": 0.6546970009803772,
+              "fit_expected_safe": 0.6916478276252747
+            },
+            {
+              "selected_step": 1100,
+              "inner_safe": 0.6540480852127075,
+              "parameters": 402449,
+              "judge_expected_safe": 0.6666455268859863,
+              "fit_expected_safe": 0.7159996628761292
+            }
+          ],
+          "judge_expected_safe": 0.6669836640357971,
+          "vs_prior": {
+            "difference": -0.01798081398010254,
+            "interval": [
+              -0.05446082726120949,
+              0.018768418580293655
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6986064910888672,
+            "night": 0.6401070952415466,
+            "lava_adjacent": 0.6999053359031677,
+            "zombie_adjacent": 0.34528541564941406,
+            "arrow_or_skeleton": 0.5924416780471802,
+            "none_of_these": 0.9005173444747925
+          },
+          "chosen_actions": [
+            1,
+            660,
+            670,
+            883,
+            521,
+            122,
+            0,
+            43,
+            13,
+            18,
+            19,
+            0,
+            4,
+            3,
+            0,
+            0,
+            1
+          ]
+        },
+        "root_features": {
+          "runs": [
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6494749188423157,
+              "parameters": 140305,
+              "judge_expected_safe": 0.6804956793785095,
+              "fit_expected_safe": 0.7026789784431458
+            },
+            {
+              "selected_step": 100,
+              "inner_safe": 0.6496443152427673,
+              "parameters": 140305,
+              "judge_expected_safe": 0.6806541681289673,
+              "fit_expected_safe": 0.6872175335884094
+            },
+            {
+              "selected_step": 1100,
+              "inner_safe": 0.639735758304596,
+              "parameters": 140305,
+              "judge_expected_safe": 0.6636346578598022,
+              "fit_expected_safe": 0.733705997467041
+            }
+          ],
+          "judge_expected_safe": 0.6749281287193298,
+          "vs_prior": {
+            "difference": -0.010036349296569824,
+            "interval": [
+              -0.03773314878344536,
+              0.019058849662542343
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.7031134963035583,
+            "night": 0.6509732604026794,
+            "lava_adjacent": 0.7362690567970276,
+            "zombie_adjacent": 0.341943621635437,
+            "arrow_or_skeleton": 0.6132246851921082,
+            "none_of_these": 0.9025447964668274
+          },
+          "chosen_actions": [
+            1,
+            532,
+            339,
+            908,
+            934,
+            64,
+            0,
+            92,
+            16,
+            51,
+            7,
+            1,
+            0,
+            1,
+            4,
+            3,
+            5
+          ]
+        },
+        "u": {
+          "runs": [
+            {
+              "selected_step": 700,
+              "inner_safe": 0.6531165242195129,
+              "parameters": 132097,
+              "judge_expected_safe": 0.6881021857261658,
+              "fit_expected_safe": 0.6711762547492981
+            },
+            {
+              "selected_step": 500,
+              "inner_safe": 0.6497290134429932,
+              "parameters": 132097,
+              "judge_expected_safe": 0.6970081329345703,
+              "fit_expected_safe": 0.6664634943008423
+            },
+            {
+              "selected_step": 600,
+              "inner_safe": 0.6544715166091919,
+              "parameters": 132097,
+              "judge_expected_safe": 0.6906693577766418,
+              "fit_expected_safe": 0.6720682978630066
+            }
+          ],
+          "judge_expected_safe": 0.6919265985488892,
+          "vs_prior": {
+            "difference": 0.006962120532989502,
+            "interval": [
+              -0.009259234182536602,
+              0.026723457500338554
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.726591169834137,
+            "night": 0.6624647974967957,
+            "lava_adjacent": 0.9516099691390991,
+            "zombie_adjacent": 0.3310452401638031,
+            "arrow_or_skeleton": 0.6854871511459351,
+            "none_of_these": 0.8993754982948303
+          },
+          "chosen_actions": [
+            0,
+            36,
+            115,
+            114,
+            1991,
+            0,
+            8,
+            0,
+            511,
+            17,
+            56,
+            0,
+            107,
+            2,
+            1,
+            0,
+            0
+          ]
+        },
+        "generated_z": {
+          "runs": [
+            {
+              "selected_step": 1100,
+              "inner_safe": 0.6570122241973877,
+              "parameters": 99329,
+              "judge_expected_safe": 0.687214732170105,
+              "fit_expected_safe": 0.6771973371505737
+            },
+            {
+              "selected_step": 1000,
+              "inner_safe": 0.6555724740028381,
+              "parameters": 99329,
+              "judge_expected_safe": 0.6794815063476562,
+              "fit_expected_safe": 0.6719047427177429
+            },
+            {
+              "selected_step": 1000,
+              "inner_safe": 0.660738468170166,
+              "parameters": 99329,
+              "judge_expected_safe": 0.6885458827018738,
+              "fit_expected_safe": 0.675725519657135
+            }
+          ],
+          "judge_expected_safe": 0.6850807070732117,
+          "vs_prior": {
+            "difference": 0.00011622905731201172,
+            "interval": [
+              -0.021080173552036285,
+              0.022553611546754837
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.709896981716156,
+            "night": 0.6639891266822815,
+            "lava_adjacent": 0.9406249523162842,
+            "zombie_adjacent": 0.3385416269302368,
+            "arrow_or_skeleton": 0.6801026463508606,
+            "none_of_these": 0.8831561803817749
+          },
+          "chosen_actions": [
+            55,
+            39,
+            65,
+            748,
+            1480,
+            13,
+            115,
+            0,
+            105,
+            121,
+            9,
+            1,
+            13,
+            182,
+            5,
+            0,
+            7
+          ]
+        },
+        "generated_features": {
+          "runs": [
+            {
+              "selected_step": 200,
+              "inner_safe": 0.6722561120986938,
+              "parameters": 132097,
+              "judge_expected_safe": 0.6830628514289856,
+              "fit_expected_safe": 0.6720831394195557
+            },
+            {
+              "selected_step": 100,
+              "inner_safe": 0.6734417080879211,
+              "parameters": 132097,
+              "judge_expected_safe": 0.685883641242981,
+              "fit_expected_safe": 0.6590895652770996
+            },
+            {
+              "selected_step": 200,
+              "inner_safe": 0.6767445802688599,
+              "parameters": 132097,
+              "judge_expected_safe": 0.6873098611831665,
+              "fit_expected_safe": 0.6678312420845032
+            }
+          ],
+          "judge_expected_safe": 0.6854187846183777,
+          "vs_prior": {
+            "difference": 0.00045430660247802734,
+            "interval": [
+              -0.034123267978429794,
+              0.034480441361665726
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.7024696469306946,
+            "night": 0.6709271669387817,
+            "lava_adjacent": 0.8544507622718811,
+            "zombie_adjacent": 0.3658478260040283,
+            "arrow_or_skeleton": 0.6443236470222473,
+            "none_of_these": 0.8811288475990295
+          },
+          "chosen_actions": [
+            12,
+            20,
+            826,
+            1036,
+            516,
+            8,
+            8,
+            14,
+            275,
+            35,
+            5,
+            0,
+            36,
+            119,
+            2,
+            0,
+            46
+          ]
+        }
+      },
+      "contrasts": {
+        "actions_only_vs_prior": {
+          "difference": 0.0029792189598083496,
+          "interval": [
+            -0.024506423622369766,
+            0.02929643541574478
+          ],
+          "excludes_zero": false
+        },
+        "pixels4_actions_vs_pixels4": {
+          "difference": 0.005144953727722168,
+          "interval": [
+            -0.004483808763325214,
+            0.014601688832044601
+          ],
+          "excludes_zero": false
+        },
+        "pixels4_vs_pixels1": {
+          "difference": -0.03009849786758423,
+          "interval": [
+            -0.0437011793255806,
+            -0.016360297799110413
+          ],
+          "excludes_zero": true
+        },
+        "tokens1_flat_vs_pixels1": {
+          "difference": -0.03329956531524658,
+          "interval": [
+            -0.04945085942745209,
+            -0.018424956128001213
+          ],
+          "excludes_zero": true
+        },
+        "tokens1_attn_vs_pixels1": {
+          "difference": -0.03672260046005249,
+          "interval": [
+            -0.05146277695894241,
+            -0.021960267797112465
+          ],
+          "excludes_zero": true
+        },
+        "cls_pooled1_vs_tokens1_flat": {
+          "difference": -0.009656012058258057,
+          "interval": [
+            -0.023051893338561058,
+            0.004499340429902077
+          ],
+          "excludes_zero": false
+        },
+        "cls1_vs_cls_pooled1": {
+          "difference": -0.0274045467376709,
+          "interval": [
+            -0.04575072601437569,
+            -0.00984801072627306
+          ],
+          "excludes_zero": true
+        },
+        "z1_vs_cls1": {
+          "difference": -0.00809246301651001,
+          "interval": [
+            -0.02339688502252102,
+            0.007599025033414364
+          ],
+          "excludes_zero": false
+        },
+        "z4_vs_cls4": {
+          "difference": -0.004056751728057861,
+          "interval": [
+            -0.01707559823989868,
+            0.008036193437874317
+          ],
+          "excludes_zero": false
+        },
+        "root_features_vs_z4": {
+          "difference": 0.007944464683532715,
+          "interval": [
+            -0.011655311100184917,
+            0.026505449786782265
+          ],
+          "excludes_zero": false
+        },
+        "u_vs_root_features": {
+          "difference": 0.016998469829559326,
+          "interval": [
+            -0.005897265858948231,
+            0.04329376667737961
+          ],
+          "excludes_zero": false
+        },
+        "generated_z_vs_u": {
+          "difference": -0.00684589147567749,
+          "interval": [
+            -0.020016994327306747,
+            0.0066666072234511375
+          ],
+          "excludes_zero": false
+        },
+        "generated_features_vs_generated_z": {
+          "difference": 0.0003380775451660156,
+          "interval": [
+            -0.02858792059123516,
+            0.02430795319378376
+          ],
+          "excludes_zero": false
+        }
+      }
+    }
+  }
+}

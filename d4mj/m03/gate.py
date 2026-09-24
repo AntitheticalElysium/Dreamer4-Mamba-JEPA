@@ -207,9 +207,15 @@ def _run_contract(*, raw_checkpoint: Path, tc_checkpoint: Path, dataset: Path, s
         "diagnostics_source": _input_identity(ROOT / "d4mj/m03/diagnostics.py"),
         "historical_source": _input_identity(ROOT / "d4mj/m03/history.py"),
         "environment_source": _input_identity(ROOT / "d4mj/env.py"),
+        # The files that define the world being evaluated belong in the seal. Without them
+        # a backend edit leaves the contract digest unchanged, and a completed report is
+        # returned before any checkpoint source is re-validated. Feature-cache identities
+        # are separate dependency keys, so replay and Direct stay reusable.
         "evaluation_sources": [_input_identity(ROOT / p) for p in (
             "d4mj/m03/diagnostics.py", "d4mj/diagnostics.py", "d4mj/data.py", "d4mj/config.py",
-            "d4mj/representation.py", "d4mj/transition.py", "d4mj/world_api.py", "artifacts/eda/legacy.py")],
+            "d4mj/representation.py", "d4mj/transition.py", "d4mj/world_api.py",
+            "d4mj/lewm.py", "d4mj/lewm_config.py", "d4mj/state.py", "d4mj/lewm_transformer.py",
+            "artifacts/eda/legacy.py")],
         "historical_panels_included": include_history,
         "simulator_sources": [_input_identity(p) for p in sorted(craftax_root.rglob("*.py"))],
         "settings": asdict(settings),
@@ -696,24 +702,194 @@ def _load_or_build_sidecar(dataset: Path, output: Path, settings: M03Settings) -
     return payload, manifest
 
 
-def _current_source_with_ieee_delta(recorded: dict) -> tuple[dict, dict]:
+def _current_source_with_ieee_delta(recorded: dict, config=None) -> tuple[dict, dict]:
     """Allow precisely the declared execution delta; reject every other drift."""
 
-    current = lewm_source_manifest()
+    current = lewm_source_manifest(config)
     adjusted = json.loads(json.dumps(recorded))
     before = adjusted.get("execution", {}).get("triton_f32_default")
     after = current.get("execution", {}).get("triton_f32_default")
-    if before != "unset" or after != "ieee":
+    if before == after:
+        # A run already trained under the evaluation precision has no delta to
+        # approve. Refusing it would reject the one case that needs no approval.
+        delta: dict = {}
+    elif before == "unset" and after == "ieee":
+        adjusted["execution"]["triton_f32_default"] = after
+        delta = {"triton_f32_default": {"recorded": before, "evaluation": after}}
+    else:
         raise ValueError(f"m03_precision: expected recorded unset -> evaluation ieee, found {before!r} -> {after!r}")
-    adjusted["execution"]["triton_f32_default"] = after
     if adjusted != current:
         changed = [key for key in current if adjusted.get(key) != current[key]]
         raise ValueError(f"m03_source_identity: unapproved LeWM source/environment drift in {changed}")
-    return current, {"triton_f32_default": {"recorded": before, "evaluation": after}}
+    return current, delta
 
 
-def load_m03_bundle(path: Path, *, device: str, dataset_sha256: str) -> tuple[ModelBundle, dict, dict]:
-    """Load a frozen joint bundle under the explicitly recorded IEEE evaluation delta."""
+FROZEN_EVAL_SCHEMA = "lewm_frozen_eval_compatibility_v1"
+# The committed record, consulted automatically once the strict check has raised.
+FROZEN_EVAL_RECORD = Path(__file__).parent / "frozen_eval_compat.json"
+# The runtime closure in ``sources.py`` covers ``d4mj/*.py`` -- the sampler in
+# ``data.py`` defines the objective, so training resume must keep exact equality.
+# Frozen evaluation never calls the sampler, so a source delta there is
+# admissible *if measured*.  This code lives under ``d4mj/m03/`` precisely
+# because that package is outside the closure: putting it in ``sources.py``
+# would perturb the manifest it exists to verify on every edit.
+
+
+def frozen_eval_parity(checkpoints: dict[str, Path], device: str, allow_drift: bool) -> dict:
+    """Dump the frozen-evaluation surface for one tree, for later comparison."""
+
+    from ..sources import lewm_source_manifest
+
+    os.environ["TRITON_F32_DEFAULT"] = "ieee"
+    global _current_source_with_ieee_delta
+    original = _current_source_with_ieee_delta
+    if allow_drift:
+        # Deliberate, local, and the whole point: the guard is what is measured.
+        def _measured(recorded, config=None):
+            # This module is copied into a reference worktree to measure a delta, so it
+            # must run against that tree's own `sources.py`, which may predate the
+            # backend-aware signature. Copying sources.py instead would move the very
+            # manifest being measured.
+            try:
+                return lewm_source_manifest(config), {"measured": True}
+            except TypeError:
+                return lewm_source_manifest(), {"measured": True}
+
+        _current_source_with_ieee_delta = _measured
+    try:
+        out = {"schema": "lewm_frozen_eval_parity_v1", "device": device,
+               "manifest_digest": _sha(lewm_source_manifest()),
+               "runtime": lewm_source_manifest()["runtime"], "arms": {}}
+        generator = torch.Generator().manual_seed(20260916)
+        frames = torch.randint(256, (2, 4, 63, 63, 3), generator=generator, dtype=torch.uint8)
+        actions = torch.randint(17, (2, 3), generator=generator)
+        candidate = torch.tensor([[3], [11]])
+        for arm, checkpoint in checkpoints.items():
+            stored = torch.load(Path(checkpoint), map_location="cpu", weights_only=False, mmap=True)
+            recorded, dataset = _sha(stored["sources"]), stored["dataset"]["sha256"]
+            del stored
+            bundle, payload, _ = load_m03_bundle(Path(checkpoint), device=device, dataset_sha256=dataset)
+            del payload
+            # The patch grid is part of the frozen-evaluation surface too: the
+            # patch-token experiments read it through a hook on this backbone,
+            # so a proof that covered only CLS would not cover what they consume.
+            captured: dict[str, Tensor] = {}
+            handle = bundle.encoder.backbone.register_forward_hook(
+                lambda module, args, output: captured.__setitem__("h", output.last_hidden_state))
+            try:
+                with torch.inference_mode():
+                    z, cls = bundle.encoder.projected_and_cls(frames.to(device))
+                    grid = captured["h"][:, 1:]
+                    side = int(round(grid.shape[1] ** 0.5))
+                    pooled = nn.functional.adaptive_avg_pool2d(
+                        grid.transpose(1, 2).reshape(len(grid), -1, side, side), 4).flatten(2).transpose(1, 2)
+            finally:
+                handle.remove()
+            with torch.inference_mode():
+                state = bundle.prefill(z, actions.to(device))
+                advanced, _ = bundle.advance(state, candidate.to(device))
+                tensors = {"z": z, "cls": cls, "patch_grid": grid, "patch16": pooled,
+                           "prefill_latent": state.latent, "prefill_history": state.history,
+                           "advance_latent": advanced.latent, "advance_history": advanced.history}
+            out["arms"][arm] = {"checkpoint_sha256": _sha256(Path(checkpoint)),
+                                "recorded_sources_digest": recorded,
+                                "tensors": {k: v.float().cpu() for k, v in tensors.items()}}
+            del bundle
+            if device == "cuda":
+                torch.cuda.empty_cache()
+        return out
+    finally:
+        _current_source_with_ieee_delta = original
+
+
+def frozen_eval_proof(reference: list[Path], candidate: list[Path], tolerance: float) -> dict:
+    """Compare two trees' dumps, each repeated, into a hash-pinned proof.
+
+    The repeats are not ceremony: ``advance`` is not reproducible run to run, so
+    a nonzero cross-tree gap is meaningless until the within-tree spread of both
+    trees is measured on the same surface.
+    """
+
+    left = [torch.load(p, weights_only=False) for p in reference]
+    right = [torch.load(p, weights_only=False) for p in candidate]
+    def gap(a, b):
+        return max(float((a["arms"][arm]["tensors"][key] - b["arms"][arm]["tensors"][key]).abs().max())
+                   for arm in a["arms"] for key in a["arms"][arm]["tensors"])
+    within = max([gap(g[i], g[j]) for g in (left, right) for i in range(len(g)) for j in range(i + 1, len(g))]
+                 or [0.0])
+    cross = [gap(a, b) for a in left for b in right]
+    arms = {arm: {"checkpoint_sha256": left[0]["arms"][arm]["checkpoint_sha256"],
+                  "recorded_sources_digest": left[0]["arms"][arm]["recorded_sources_digest"]}
+            for arm in left[0]["arms"]}
+    # A closure may grow as a later phase moves into the shared runtime.  Comparing only
+    # reference keys made newly imported files invisible in the human-readable delta even
+    # though the manifest digest changed.  Use the union so the proof says exactly what moved.
+    runtime_keys = set(left[0]["runtime"]) | set(right[0]["runtime"])
+    changed = sorted(k for k in runtime_keys
+                     if left[0]["runtime"].get(k) != right[0]["runtime"].get(k))
+    admissible = max(cross) <= max(tolerance, within)
+    return {
+        "schema": FROZEN_EVAL_SCHEMA,
+        "status": "pass" if admissible else "fail",
+        "scope": "frozen evaluation only; training resume keeps exact full-source equality",
+        "arms": arms,
+        "reference_manifest_digest": left[0]["manifest_digest"],
+        "current_manifest_digest": right[0]["manifest_digest"],
+        "changed_runtime_files": {k: {"reference": left[0]["runtime"].get(k),
+                                       "current": right[0]["runtime"].get(k)}
+                                  for k in changed},
+        "surface": sorted(next(iter(left[0]["arms"].values()))["tensors"]),
+        "parity": {"tolerance": tolerance, "within_tree_max_abs": within,
+                   "cross_tree_max_abs": max(cross), "cross_tree_min_abs": min(cross),
+                   "runs": {"reference": len(left), "current": len(right)}},
+    }
+
+
+def frozen_eval_records(proof: Path) -> list[dict]:
+    """Every proof in a record. One document is a single-proof record.
+
+    Checkpoints sealed against different trees need different reference measurements, so a
+    record has to be able to hold more than one. Each is still checked in full and on its
+    own; this only lets several coexist.
+    """
+    document = json.loads(Path(proof).read_text())
+    return list(document["proofs"]) if isinstance(document.get("proofs"), list) else [document]
+
+
+def _frozen_eval_delta(recorded: dict, proof: Path, document: dict | None = None) -> tuple[dict, dict]:
+    """Admit a measured frozen-evaluation source delta, or refuse it."""
+
+    from ..sources import lewm_source_manifest
+
+    if document is None:
+        candidates = [d for d in frozen_eval_records(proof)
+                      if _sha(recorded) in {a["recorded_sources_digest"] for a in d.get("arms", {}).values()}]
+        document = candidates[0] if candidates else json.loads(Path(proof).read_text())
+    current = lewm_source_manifest()
+    if document.get("schema") != FROZEN_EVAL_SCHEMA or document.get("status") != "pass":
+        raise ValueError("m03_frozen_eval: proof is absent, malformed, or not passing")
+    # The checkpoint stores ``triton_f32_default: unset`` while both trees run
+    # under ``ieee``, so the comparison is against the recorded sources the proof
+    # read out of the checkpoints, not against either tree's live manifest.
+    if _sha(recorded) not in {arm["recorded_sources_digest"] for arm in document["arms"].values()}:
+        raise ValueError("m03_frozen_eval: proof does not describe this checkpoint's recorded sources")
+    if document.get("current_manifest_digest") != _sha(current):
+        raise ValueError("m03_frozen_eval: proof does not describe the current tree")
+    parity = document["parity"]
+    if parity["cross_tree_max_abs"] > max(parity["tolerance"], parity["within_tree_max_abs"]):
+        raise ValueError("m03_frozen_eval: measured parity exceeds its declared tolerance")
+    return current, {"frozen_eval_proof": {"path": str(Path(proof).resolve()), "sha256": _sha256(Path(proof)),
+                                           "parity": parity,
+                                           "changed": sorted(document["changed_runtime_files"])}}
+
+
+def load_m03_bundle(path: Path, *, device: str, dataset_sha256: str,
+                    frozen_eval_proof: Path | None = None) -> tuple[ModelBundle, dict, dict]:
+    """Load a frozen joint bundle under the explicitly recorded IEEE evaluation delta.
+
+    ``frozen_eval_proof`` admits a *measured* source delta for evaluation only.
+    It is consulted after every other identity check and never widens them.
+    """
 
     payload = torch.load(path, map_location="cpu", weights_only=False)
     if payload.get("format") != "d4mj_lewm_bundle_v2" or payload.get("phase") != "joint":
@@ -727,9 +903,27 @@ def load_m03_bundle(path: Path, *, device: str, dataset_sha256: str) -> tuple[Mo
         raise ValueError("m03_checkpoint: requires a completed M0-M3-only checkpoint")
     if payload.get("dataset", {}).get("sha256") != dataset_sha256:
         raise ValueError("m03_checkpoint: checkpoint and exact-replay manifest bytes differ")
-    current_source, source_delta = _current_source_with_ieee_delta(payload["sources"])
-    config = replace(config, runtime=replace(config.runtime, device=device),
-                     dynamics=replace(config.dynamics, backend="triton" if device == "cuda" else "reference"))
+    try:
+        current_source, source_delta = _current_source_with_ieee_delta(payload["sources"], config)
+    except ValueError:
+        if frozen_eval_proof is None and FROZEN_EVAL_RECORD.is_file():
+            frozen_eval_proof = FROZEN_EVAL_RECORD
+        if frozen_eval_proof is None:
+            raise
+        digest = _sha256(Path(path))
+        covering = [d for d in frozen_eval_records(frozen_eval_proof)
+                    if digest in {a["checkpoint_sha256"] for a in d.get("arms", {}).values()}]
+        if not covering:
+            raise ValueError("m03_frozen_eval: proof does not cover this checkpoint")
+        current_source, source_delta = _frozen_eval_delta(payload["sources"], frozen_eval_proof,
+                                                          document=covering[0])
+    # Device is an evaluation choice; the sequence-mixer backend is not. Only the Mamba
+    # world has a kernel to select, and forcing "triton"/"reference" onto the source
+    # predictor would both be meaningless and change its sealed recipe.
+    config = replace(config, runtime=replace(config.runtime, device=device))
+    if getattr(config, "family", "lewm_mamba") != "lewm_transformer":
+        config = replace(config, dynamics=replace(config.dynamics,
+                                                  backend="triton" if device == "cuda" else "reference"))
     bundle = ModelBundle.create(config)
     bundle.encoder.load_state_dict(payload["modules"]["encoder"], strict=True)
     bundle.world.load_state_dict(payload["modules"]["world"], strict=True)
@@ -834,7 +1028,8 @@ def _load_or_encode_features(output: Path, *, arm: str, split: str, identity: di
     if cache is not None:
         dependencies = _feature_dependencies(arm, split, identity, sidecar_sha256, cache)
         external = cache.imports.get('features', {}).get((arm, split))
-        features, dependency_key = cache.get('features:'+arm+':'+split, dependencies, encode, external=external)
+        features, dependency_key = cache.get('features:'+arm+':'+split, dependencies, encode, external=external,
+                                             compatible=_feature_compatible(arm, dependencies))
     else:
         features = encode()
     if not features or not all(isinstance(value, Tensor) and value.device.type == "cpu" for value in features.values()):
@@ -849,6 +1044,47 @@ def _load_or_encode_features(output: Path, *, arm: str, split: str, identity: di
     if dependency_key: manifest['dependency_key'] = dependency_key
     _atomic_json_save(manifest_path, manifest)
     return features, dependency_key or _sha256(manifest_path)
+
+
+FEATURE_COMPAT_SCHEMA = "m03_feature_dependency_compatibility_v1"
+FEATURE_COMPAT_RECORD = Path(__file__).parent / "feature_cache_compat.json"
+
+
+def _feature_compatibility() -> dict:
+    """Prior runtime-file hashes that may stand in for the current ones.
+
+    Feature keys pin whole-file hashes of the runtime, which is right: a change
+    there may alter an encoding through a class method or an attribute call, and
+    neither is covered by the transitive function digest.  But a file can also
+    change in a part no encoder reaches, and then 1,918 cached replay and Direct
+    encodings would be recomputed for nothing.
+
+    This admits exactly the declared prior hashes, for the declared arms.  It is
+    not a blanket waiver: the substitution swaps ``runtime`` alone and keeps the
+    current ``functions``, so a hit still requires every encode function, and its
+    transitive project-function closure, to be byte-identical to the cached run.
+    A further edit to a bridged file leaves the record stale and fails closed.
+    """
+    if not FEATURE_COMPAT_RECORD.is_file():
+        return {}
+    document = json.loads(FEATURE_COMPAT_RECORD.read_text())
+    if document.get("schema") != FEATURE_COMPAT_SCHEMA or document.get("status") != "pass":
+        raise ValueError("m03_feature_compat: record is not a passing proof")
+    for name, entry in document.get("runtime", {}).items():
+        if _sha256(ROOT / "d4mj" / name) != entry["current"]:
+            raise ValueError(f"m03_feature_compat: proof does not describe the current {name}")
+    return document
+
+
+def _feature_compatible(arm: str, dependencies: dict) -> list[dict]:
+    document = _feature_compatibility()
+    if not document or arm not in document.get("arms", []):
+        return []
+    prior = dict(dependencies["runtime"])
+    for name, entry in document["runtime"].items():
+        if prior.get(name) == entry["current"]:
+            prior[name] = entry["prior"]
+    return [dict(dependencies, runtime=prior)] if prior != dependencies["runtime"] else []
 
 
 def _feature_dependencies(arm, split, identity, sidecar, cache):
@@ -868,8 +1104,13 @@ def _feature_dependencies(arm, split, identity, sidecar, cache):
         functions = (_encode_legacy, _legacy_native_parity_preflight)
         fields = ('direct_context','direct_encode_batch','direct_successor_batch')
     # API/runtime changes invalidate their encodings; an unrelated probe edit does not.
+    # A LeWM arm pins the wrapper only when its own recorded manifest imported it, so
+    # adding the comparison backend does not change any existing Mamba feature key.
+    recorded = (identity or {}).get('source', {}).get('current', {}).get('runtime', {})
+    lewm_files = ('lewm.py','lewm_config.py','mamba_recurrence.py') + (
+        ('lewm_transformer.py',) if 'd4mj/lewm_transformer.py' in recorded else ())
     runtime = ('world_api.py','state.py','data.py','config.py') + (
-        ('lewm.py','lewm_config.py','mamba_recurrence.py') if arm in ('raw','tc') else
+        lewm_files if arm in ('raw','tc') else
         ('representation.py','transition.py','time_mixer.py'))
     return {'identity': identity, 'data': sidecar, 'functions':[cache.code(f) for f in functions],
             'execution':dict({k:getattr(settings,k) for k in fields},device=cache.device if arm != 'replay' else 'cpu'),

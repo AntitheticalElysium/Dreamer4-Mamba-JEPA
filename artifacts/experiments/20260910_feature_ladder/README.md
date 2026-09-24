@@ -59,8 +59,10 @@ otherwise invalidate the raw/TC feature cache through the runtime hash in
 The `z` and `cls` rungs must reproduce the sealed encoding within a declared **1e-5
 relative** bound, checked before any probe is fitted, failing closed. Parity is relative
 rather than absolute because the arms differ in latent scale (TC `|z|` max 9.43 vs Raw
-4.25); an absolute bound would penalise TC for being larger. Measured: 3.4e-7 raw,
-7.0e-7 tc — ordinary FP32 for a 12-layer forward re-tiled at a different batch size.
+4.25); an absolute bound would penalise TC for being larger. The completed run measured
+1.1e-6 raw and 4.4e-6 tc — ordinary FP32 for a 12-layer forward re-tiled at a different
+batch size. (A pre-run probe on DEV roots alone read 3.4e-7 / 7.0e-7; the full run covers
+TRAIN and all seventeen successors, so its maximum is larger.)
 
 ## Data identity
 
@@ -97,17 +99,32 @@ Retention decreases monotonically patch → CLS → z on almost every cell. Raw 
 from features the encoder already computes and throws away. TC recovers +0.091
 successor AUC (0.655 → 0.746). Nothing was retrained to get this.
 
+This recovery is for **frozen observation probes only**. The trained world predicts
+projected `z`; it cannot generate future patch tokens. So the patch grid's retention and
+LeWM `z`'s transition-preservation advantage cannot yet be combined, and none of this
+transfers to imagined rollouts until some stream carrying that information is shown to
+be predictable — by `h`, by `[z,h]`, or by a retrained world.
+
 **2. TC's action-concentration is created at the CLS token, not in the patch grid.**
 Action + interaction share: TC patch 0.089, CLS 0.288, z 0.332 — against Raw patch
 0.058, CLS 0.019, z 0.027, and Direct 0.114. In the spatial features TC resembles Raw
 and Direct; the reallocation M03 measured appears when CLS pools the grid. Centering
 shapes *what CLS pools*, not the whole encoder.
 
-**3. Capacity does not explain the gap.** Direct loses almost nothing under the same
-PCA-192 reduction (successor AUC 0.832 → 0.823). At matched 192-D width and matched
-reduction: Direct 0.823 > raw-patch 0.805 > tc-patch 0.746 ≫ raw-z 0.702 > tc-z 0.655.
-This is the "compressed Direct remains strong" branch: the LeWM objective and its
-CLS-only pooling are the cause, not dimensionality or spatial extent.
+**3. Probe-input width does not explain the gap.** Direct loses almost nothing under the
+same PCA-192 reduction (successor AUC 0.832 → 0.823), so its learned information is
+intrinsically compressible to 192 evaluation dimensions. At matched width and matched
+reduction the point ordering is Direct 0.823 > raw-patch 0.805 > tc-patch 0.746 ≫
+raw-z 0.702 > tc-z 0.655.
+
+This is narrower than "capacity is ruled out". Direct was *trained* at 1024-D and
+compressed afterwards, so this rules out the probe's input width, not training-time
+representational capacity, spatial topology, Direct's different objective and encoder,
+or its longer native history. It is not a causal isolation of objective versus
+architecture. The two adjacent rows (Direct 0.823, raw-patch 0.805) also carry no paired
+rung-difference interval: `ladder.json` stores per-rung metrics, not the fitted
+prediction arrays a paired root bootstrap would need. The large patch-versus-z gaps
+within an arm are wide enough to stand; that cross-arm ordering is a point estimate.
 
 ### Qualifications
 

@@ -53,8 +53,44 @@ class DynamicsSettings:
 
 
 @dataclass(frozen=True)
+class TransformerDynamicsSettings:
+    """Constructor arguments of the pinned base-LeWM predictor package.
+
+    These are the source's own values from `config/train/model/lewm.yaml`; the comparison
+    is only a control if they are sealed rather than tuned. `readout_width` belongs to the
+    local compatibility readout, not to the source predictor.
+    """
+
+    width: int = 192
+    depth: int = 6
+    n_actions: int = 17
+    context: int = 3
+    heads: int = 16
+    head_dim: int = 64
+    mlp_dim: int = 2048
+    dropout: float = 0.1
+    embedding_dropout: float = 0.0
+    action_smoothed_dim: int = 10
+    action_mlp_scale: int = 4
+    backend: str = "sdpa"
+    readout_width: int = 256
+
+
+@dataclass(frozen=True)
 class JointSettings:
     frames: int = 4
+    # Native environment steps between retained frames.  1 reproduces the v1
+    # recipe exactly; 4 is TC-LeWM's frame skip, which makes a four-frame
+    # centering window span 13 native steps instead of 4.
+    stride: int = 1
+    # Spacing of the SIGReg centering set, independent of the prediction pairs.
+    # >1 widens the centering window in physical time while dynamics stay
+    # one-step, which is the window-only ablation.  The encoded window is then
+    # the union of the prediction frames and the centering frames, so both
+    # `centering` settings see identical encoder inputs and identical projector
+    # BatchNorm batches: only the index set entering SIGReg differs.
+    centering_stride: int = 1
+    centering: str = "consecutive"
     batch: int = 128
     sigreg_weight: float = 0.09
     projections: int = 1024
@@ -71,6 +107,50 @@ class JointSettings:
     checkpoint_every: int = 500
 
 
+def pair_axis(left: dict, right: dict) -> str:
+    """The single declared axis on which a paired run's two arms may differ.
+
+    A pair isolates one variable: the regularizer target (raw vs TC), or the
+    centering index set for the window ablation, where both arms are TC and the
+    arm directories keep their raw/tc names for tooling.
+    """
+    def leaves(value, prefix=""):
+        flat = {}
+        for key, item in value.items():
+            if isinstance(item, dict):
+                flat.update(leaves(item, prefix + key + "."))
+            else:
+                flat[prefix + key] = item
+        return flat
+    a, b = leaves(left), leaves(right)
+    axis = {key for key in set(a) | set(b) if a.get(key) != b.get(key)}
+    if axis not in ({"variant"}, {"joint.centering"}):
+        raise ValueError("a paired run differs in exactly one declared axis: variant or joint.centering")
+    return next(iter(axis))
+
+
+def window_layout(j: JointSettings) -> tuple[tuple[int, ...], tuple[int, ...], tuple[int, ...]]:
+    """Native offsets of the encoded frames, and positions of the prediction and
+    centering sets *within that window* -- not native offsets themselves.
+
+    At ``frames=4, centering_stride=4`` the window holds native offsets
+    (0,1,2,3,4,8,12); the strided centering set is native (0,4,8,12), which is
+    positions (0,4,5,6) in the window. Callers index tensors, so positions are
+    what is returned.
+
+    The encoded window is the union of the two sets, so a `consecutive` and a
+    `strided` recipe with the same `centering_stride` encode exactly the same
+    frames and differ only in which latents SIGReg centers over.  At the
+    defaults this is the four consecutive frames of the v1 recipe.
+    """
+    base = [k * j.stride for k in range(j.frames)]
+    centre = [k * j.centering_stride * j.stride for k in range(j.frames)]
+    offsets = sorted(set(base) | set(centre))
+    index = {offset: position for position, offset in enumerate(offsets)}
+    selected = centre if j.centering == "strided" else base
+    return tuple(offsets), tuple(index[o] for o in base), tuple(index[o] for o in selected)
+
+
 @dataclass(frozen=True)
 class RuntimeSettings:
     device: str = "cuda"
@@ -80,6 +160,62 @@ class RuntimeSettings:
     cache_chunk: int = 128
     cache_dtype: str = "float32"
     memory_budget_bytes: int = 6 * 1024**3
+
+
+_AGENT_SURFACE = ("horizon", "horizon_eval", "bootstrap", "bins", "symlog_limit", "mtp_leads",
+                  "gamma", "lam", "pmpo_alpha", "prior_beta")
+"""Agent-surface names forwarded to `AgentSettings`; the rest are read through `config.agent`."""
+
+
+@dataclass(frozen=True)
+class AgentSettings:
+    """Canonical M4 bridge, heads, actor and evaluation settings.
+
+    Presence declares an intent to run M4; it never authorizes control.  Authorization is carried
+    only by phase checkpoints and their identity-bound empirical gates.  Counterfactual fork
+    supervision is deliberately absent: TC-17 keeps it evaluation-only in the first architecture.
+    """
+
+    horizon: int = 16
+    horizon_eval: int = 10000
+    bootstrap: int = 2000
+    bins: int = 255
+    symlog_limit: float = 20.0
+    mtp_leads: int = 8
+    gamma: float = 0.997
+    lam: float = 0.95
+    pmpo_alpha: float = 0.5
+    prior_beta: float = 0.3
+    # DECISIONS.md "Phase 2 batch / terminal": 16 main rows + 4 terminal, preserving the 1:4 ratio.
+    batch: int = 16
+    terminal_batch: int = 4
+    # "Phase 2 lengths / prefix": 32 main frames, 128 every fourth update, burn-in up to 96,
+    # true-start fraction 0.25. `Config` derives sequence_long = 4x and dynamics_context = 3x.
+    sequence: int = 32
+    sequence_long: int = 128
+    long_every: int = 4
+    burn_in: int = 96
+    true_start_fraction: float = 0.25
+    event_fraction: float = 0.5
+    # "Phase 2 horizon / steps": 2,000 H2 updates, gate, then 8,000 H16. Total 10,000.
+    h2_steps: int = 2000
+    h16_steps: int = 8000
+    recursive_depth: int = 2
+    recursive_depth_final: int = 16
+    # "Phase 3 batch / budget": 16 starting contexts, screen 500, target 5,000 total.
+    actor_batch: int = 16
+    actor_screen_steps: int = 500
+    actor_steps: int = 5000
+    # "Phase 2/3 optimizer": AdamW 1e-4, decay .01, warmup 1,000 then CONSTANT; group RMS .99.
+    learning_rate: float = 1e-4
+    weight_decay: float = 1e-2
+    betas: tuple[float, float] = (0.9, 0.999)
+    optimizer_eps: float = 1e-8
+    grad_clip: float = 1.0
+    warmup: int = 1000
+    rms_decay: float = 0.99
+    checkpoint_every: int = 500
+    eval_episodes: int = 512
 
 
 @dataclass(frozen=True)
@@ -92,9 +228,47 @@ class LeWMConfig:
     dynamics: DynamicsSettings = field(default_factory=DynamicsSettings)
     joint: JointSettings = field(default_factory=JointSettings)
     runtime: RuntimeSettings = field(default_factory=RuntimeSettings)
+    # None until an M4 recipe. Presence is configuration, never empirical authorization.
+    agent: AgentSettings | None = None
 
     def __post_init__(self):
         validate_recipe(self)
+
+    # The agent surface reads a legacy `Config`. These properties supply exactly the fifteen
+    # attributes agent.py, imagination.py, actor_critic.py and execution.py touch, so those four
+    # modules are reused unchanged. Properties are not dataclass fields: `asdict`, `recipe_dict`
+    # and `recipe_digest` are unaffected, and no sealed recipe's identity moves.
+    @property
+    def device(self) -> str:
+        return self.runtime.device
+
+    @property
+    def n_actions(self) -> int:
+        return self.dynamics.n_actions
+
+    @property
+    def d_model(self) -> int:
+        return self.dynamics.width
+
+    def __getattr__(self, name: str):
+        if name in _AGENT_SURFACE:
+            if self.agent is None:
+                raise AttributeError(f"phase_gate: {name} is an M4 setting; this recipe declares no agent")
+            return getattr(self.agent, name)
+        raise AttributeError(name)
+
+
+@dataclass(frozen=True)
+class LeWMTransformerConfig(LeWMConfig):
+    """The same experiment with the pinned upstream predictor in place of Mamba.
+
+    Comparison backend only. Everything outside `dynamics` -- encoder, objective, schedule,
+    seed -- is deliberately the Mamba recipe's, so the predictor package is the difference.
+    """
+
+    schema: str = "d4mj_lewm_recipe_v3"
+    family: str = "lewm_transformer"
+    dynamics: TransformerDynamicsSettings = field(default_factory=TransformerDynamicsSettings)
 
 
 @dataclass(frozen=True)
@@ -141,8 +315,27 @@ class ScreenConfig:
 
 
 def validate_recipe(c: LeWMConfig) -> None:
-    if c.schema != "d4mj_lewm_recipe_v1" or c.family != "lewm_mamba":
+    transformer = c.family == "lewm_transformer"
+    if transformer:
+        if c.schema != "d4mj_lewm_recipe_v3":
+            raise ValueError("the source-exact predictor family is recipe schema v3")
+    elif c.schema not in ("d4mj_lewm_recipe_v1", "d4mj_lewm_recipe_v2") or c.family != "lewm_mamba":
         raise ValueError("unsupported LeWM recipe schema/family")
+    if type(c.joint.stride) is not int or c.joint.stride < 1:
+        raise ValueError("joint stride must be a positive integer")
+    if c.joint.stride != 1 and c.schema != "d4mj_lewm_recipe_v2":
+        raise ValueError("a strided joint window requires recipe schema v2")
+    if type(c.joint.centering_stride) is not int or c.joint.centering_stride < 1:
+        raise ValueError("centering stride must be a positive integer")
+    if c.joint.centering not in ("consecutive", "strided"):
+        raise ValueError("centering selects the consecutive or the strided index set")
+    if c.joint.centering_stride != 1:
+        if c.schema != "d4mj_lewm_recipe_v2":
+            raise ValueError("a widened centering window requires recipe schema v2")
+        if c.joint.stride != 1:
+            raise ValueError("the centering ablation holds dynamics one-step: stride must be 1")
+    elif c.joint.centering != "consecutive":
+        raise ValueError("a strided centering set needs centering_stride > 1")
     if c.variant not in ("raw", "tc"):
         raise ValueError("regularizer target must be raw or tc")
     e, d, j, r = c.encoder, c.dynamics, c.joint, c.runtime
@@ -150,25 +343,49 @@ def validate_recipe(c: LeWMConfig) -> None:
         for name, value in asdict(group).items():
             if isinstance(value, float) and not math.isfinite(value):
                 raise ValueError(f"nonfinite recipe field {name}")
-    for value in (e.resolution, e.patch, e.width, e.depth, e.heads, e.mlp_ratio,
-                  e.latent_dim, e.projector_hidden, d.width, d.depth, d.n_actions,
-                  d.action_dim, d.d_state, d.headdim, d.expand, d.d_conv, d.chunk_size):
+    shared = (e.resolution, e.patch, e.width, e.depth, e.heads, e.mlp_ratio,
+              e.latent_dim, e.projector_hidden, d.width, d.depth, d.n_actions)
+    backend_dims = ((d.context, d.heads, d.head_dim, d.mlp_dim, d.action_smoothed_dim,
+                     d.action_mlp_scale, d.readout_width) if transformer else
+                    (d.action_dim, d.d_state, d.headdim, d.expand, d.d_conv, d.chunk_size))
+    for value in shared + backend_dims:
         if type(value) is not int or value <= 0:
             raise ValueError("model dimensions must be positive integers")
-    if e.resolution % e.patch or e.width % e.heads or d.width * d.expand % d.headdim:
+    if e.resolution % e.patch or e.width % e.heads:
+        raise ValueError("incompatible patch/head geometry")
+    if not transformer and d.width * d.expand % d.headdim:
         raise ValueError("incompatible patch/head geometry")
     if e.channels != 3 or len(e.pixel_mean) != 3 or len(e.pixel_std) != 3 or min(e.pixel_std) <= 0:
         raise ValueError("encoder requires an explicit RGB normalization")
     if e.dropout != 0 or e.attention_backend not in ("sdpa", "eager"):
         raise ValueError("M0-M3 supports the declared dropout-free ViT recipe")
-    if min(e.layer_norm_eps, e.bn_eps, d.norm_eps) <= 0 or not 0 < e.bn_momentum <= 1:
+    # The source predictor fixes its own LayerNorm eps internally, so it has no norm_eps.
+    norms = (e.layer_norm_eps, e.bn_eps) + (() if transformer else (d.norm_eps,))
+    if min(norms) <= 0 or not 0 < e.bn_momentum <= 1:
         raise ValueError("invalid normalization settings")
-    if d.backend not in ("reference", "triton") or d.ngroups != 1:
-        raise ValueError("supported recurrence: reference/triton, ngroups=1")
-    if tuple(d.dt_limit) != (0.0, "inf") or d.norm_before_gate:
-        raise ValueError("this source-audited path requires unbounded dt and gate before norm")
-    if not 0 < d.dt_min <= d.dt_max or d.A_init_range[0] <= 0 or d.A_init_range[1] < d.A_init_range[0]:
-        raise ValueError("invalid Mamba initialization")
+    if transformer:
+        # Seal the source constructor: a "source-exact" control that has been retuned is not
+        # one. The research purpose also fixes the task to one native step.
+        source = {"width": 192, "depth": 6, "n_actions": 17, "context": 3, "heads": 16,
+                  "head_dim": 64, "mlp_dim": 2048, "dropout": 0.1, "embedding_dropout": 0.0,
+                  "action_smoothed_dim": 10, "action_mlp_scale": 4}
+        if r.purpose == "research" and any(getattr(d, k) != v for k, v in source.items()):
+            raise ValueError("research runs use the pinned source constructor values")
+        if d.backend != "sdpa":
+            raise ValueError("the source attention path is scaled_dot_product_attention")
+        if d.width != e.latent_dim:
+            raise ValueError("the source predictor reads and writes the encoder latent width")
+        if d.heads * d.head_dim <= 0 or not 0 <= d.dropout < 1 or not 0 <= d.embedding_dropout < 1:
+            raise ValueError("invalid source predictor settings")
+        if r.purpose == "research" and j.stride != 1:
+            raise ValueError("the source comparison holds dynamics one-step: stride must be 1")
+    else:
+        if d.backend not in ("reference", "triton") or d.ngroups != 1:
+            raise ValueError("supported recurrence: reference/triton, ngroups=1")
+        if tuple(d.dt_limit) != (0.0, "inf") or d.norm_before_gate:
+            raise ValueError("this source-audited path requires unbounded dt and gate before norm")
+        if not 0 < d.dt_min <= d.dt_max or d.A_init_range[0] <= 0 or d.A_init_range[1] < d.A_init_range[0]:
+            raise ValueError("invalid Mamba initialization")
     if j.frames != 4 or j.batch < 2 or j.projections < 1 or j.knots < 2:
         raise ValueError("joint loss needs four frames, B>=2 and valid SIGReg dimensions")
     if j.sigreg_weight <= 0 or not 0 < j.min_learning_rate <= j.learning_rate:
@@ -185,6 +402,48 @@ def validate_recipe(c: LeWMConfig) -> None:
         raise ValueError("invalid runtime/cache contract")
     if r.purpose == "research" and (j.batch != 128 or j.projections != 1024 or j.knots != 17):
         raise ValueError("research recipe requires actual B128 / J1024 / 17 knots; no microbatch substitute")
+    if c.agent is not None:
+        validate_agent(c.agent)
+
+
+def validate_agent(a: AgentSettings) -> None:
+    """Checked only when M4 is declared, so an M0-M3 recipe never runs this."""
+    counts = (a.horizon, a.horizon_eval, a.bootstrap, a.bins, a.mtp_leads, a.batch, a.sequence,
+              a.sequence_long, a.long_every, a.burn_in, a.checkpoint_every,
+              a.actor_batch, a.terminal_batch, a.h2_steps, a.h16_steps, a.actor_steps,
+              a.actor_screen_steps, a.warmup, a.eval_episodes, a.recursive_depth,
+              a.recursive_depth_final)
+    if any(type(v) is not int or v < 1 for v in counts):
+        raise ValueError("agent counts must be positive integers")
+    if a.batch % 2 or a.actor_batch % 2:
+        raise ValueError("the 50/50 relevant/uniform mixture needs an even batch")
+    if a.recursive_depth >= a.sequence or a.recursive_depth_final >= a.sequence:
+        raise ValueError("a generated prefix must leave observed blocks to start from in EVERY "
+                         "batch, short ones included -- Direct's rule, checked the same way")
+    if a.recursive_depth > a.recursive_depth_final:
+        raise ValueError("the recursive schedule may not descend")
+    if a.sequence_long != 4 * a.sequence or a.burn_in != 3 * a.sequence:
+        raise ValueError("Phase 2 requires 32/128 frames and an up-to-96-frame burn-in ratio")
+    if a.bins % 2 == 0:
+        raise ValueError("a symmetric two-hot grid needs an odd bin count")
+    for name in ("symlog_limit", "learning_rate", "optimizer_eps", "grad_clip"):
+        if not math.isfinite(getattr(a, name)) or getattr(a, name) <= 0:
+            raise ValueError(f"agent {name} must be positive and finite")
+    if not math.isfinite(a.weight_decay) or a.weight_decay < 0:
+        raise ValueError("agent weight_decay must be nonnegative and finite")
+    if len(a.betas) != 2 or not all(0 <= value < 1 for value in a.betas):
+        raise ValueError("agent AdamW betas must lie in [0, 1)")
+    if a.actor_screen_steps > a.actor_steps:
+        raise ValueError("the actor screen must fall inside its total budget")
+    if a.horizon > a.recursive_depth_final:
+        raise ValueError("an actor may not imagine past the depth the bridge trains (S68)")
+    if not 0 < a.rms_decay < 1:
+        raise ValueError("running-RMS decay must lie strictly inside (0, 1)")
+    for name in ("gamma", "lam", "pmpo_alpha", "prior_beta", "event_fraction",
+                 "true_start_fraction"):
+        value = getattr(a, name)
+        if not math.isfinite(value) or not 0 <= value <= 1:
+            raise ValueError(f"agent {name} must lie in [0, 1]")
 
 
 
@@ -208,8 +467,14 @@ def _settings(cls, values):
 
 def config_from_dict(values: dict) -> LeWMConfig:
     values = dict(values)
-    for name, cls in (("encoder", EncoderSettings), ("dynamics", DynamicsSettings),
-                      ("joint", JointSettings), ("runtime", RuntimeSettings)):
-        if name in values:
+    # The backend decides which dynamics dataclass parses, so Mamba fields can never be
+    # silently accepted into a Transformer recipe or the reverse.
+    transformer = values.get("family") == "lewm_transformer"
+    dynamics = TransformerDynamicsSettings if transformer else DynamicsSettings
+    top = LeWMTransformerConfig if transformer else LeWMConfig
+    for name, cls in (("encoder", EncoderSettings), ("dynamics", dynamics),
+                      ("joint", JointSettings), ("runtime", RuntimeSettings),
+                      ("agent", AgentSettings)):
+        if values.get(name) is not None:
             values[name] = _settings(cls, values[name])
-    return _settings(LeWMConfig, values)
+    return _settings(top, values)
