@@ -187,6 +187,8 @@ def main(argv=None):
         labels[split] = {"fatal": (fatal[k], torch.ones_like(fatal[k])), "damage": (damaged[k], alive[k]),
                          "rows": {"fatal": torch.where(fatal_opp[k])[0], "damage": torch.where(damage_opp[k])[0]}}
     log(stage="roots", **{f"{s}_{o}": len(labels[s]["rows"][o]) for s in labels for o in ("fatal", "damage")})
+    kept = {s: succ[s][0][keep[s]] for s in data}
+    del data, succ, dh          # the contexts and unkept successors are ~6 GB; the first run was OOM-killed
 
     from d4mj.experiments import _load_bridge_parent
     bundle, heads, _ = _load_bridge_parent(checkpoint)
@@ -194,8 +196,8 @@ def main(argv=None):
     del heads
     old = old_encoder(device)
     pca_old = torch.load(OLD / "evidence/state_cache.pt", weights_only=False, map_location="cpu")["pca"]
-    feats = {s: encode(bundle, old, pca_old, succ[s][0][keep[s]], device) for s in data}
-    del bundle, old
+    feats = {s: encode(bundle, old, pca_old, kept[s], device) for s in kept}
+    del bundle, old, kept
     torch.cuda.empty_cache()
     log(stage="encoded")
 
