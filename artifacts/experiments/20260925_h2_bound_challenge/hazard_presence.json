@@ -1,0 +1,87 @@
+{
+  "status": "exploratory_preinspected_54k",
+  "script_sha256": "4dd10441177e677a10777c19c12e62e50841ac704b64a5696863568b5f3dfd95",
+  "checkpoint_sha256": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e",
+  "judge_manifest": "5bd60008125f0db93b4ab91b90b1301bb9b56c65e0201ac19208254faf404426",
+  "rows": {
+    "fit": 7085,
+    "inner": 974,
+    "judge": 4072
+  },
+  "prevalence": {
+    "fit": 0.5606210231781006,
+    "judge": 0.5235756635665894
+  },
+  "arms": {
+    "z1": [
+      {
+        "seed": 7,
+        "selected_step": 100,
+        "fit_inner_auc": 0.608187198638916,
+        "judge_auc": 0.6006573438644409,
+        "parameters": 99329
+      },
+      {
+        "seed": 11,
+        "selected_step": 1100,
+        "fit_inner_auc": 0.6312142610549927,
+        "judge_auc": 0.5674909949302673,
+        "parameters": 99329
+      },
+      {
+        "seed": 19,
+        "selected_step": 400,
+        "fit_inner_auc": 0.6156728267669678,
+        "judge_auc": 0.5610836744308472,
+        "parameters": 99329
+      }
+    ],
+    "z4": [
+      {
+        "seed": 7,
+        "selected_step": 900,
+        "fit_inner_auc": 0.6121041178703308,
+        "judge_auc": 0.5862853527069092,
+        "parameters": 394241
+      },
+      {
+        "seed": 11,
+        "selected_step": 1100,
+        "fit_inner_auc": 0.6172788143157959,
+        "judge_auc": 0.5449113845825195,
+        "parameters": 394241
+      },
+      {
+        "seed": 19,
+        "selected_step": 1000,
+        "fit_inner_auc": 0.6113337874412537,
+        "judge_auc": 0.5683066844940186,
+        "parameters": 394241
+      }
+    ],
+    "tokens": [
+      {
+        "seed": 7,
+        "selected_step": 400,
+        "fit_inner_auc": 1.0,
+        "judge_auc": 1.0,
+        "parameters": 107010
+      },
+      {
+        "seed": 11,
+        "selected_step": 200,
+        "fit_inner_auc": 1.0,
+        "judge_auc": 0.9999912977218628,
+        "parameters": 107010
+      },
+      {
+        "seed": 19,
+        "selected_step": 300,
+        "fit_inner_auc": 1.0,
+        "judge_auc": 0.9999871850013733,
+        "parameters": 107010
+      }
+    ]
+  },
+  "seconds": 89.4
+}
