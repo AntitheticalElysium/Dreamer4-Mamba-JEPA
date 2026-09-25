@@ -1,0 +1,836 @@
+{
+  "schema": "d4mj_interface_v1",
+  "status": "SEALED: new seed block, rules committed before collection",
+  "script_sha256": "e2e3578b00ab884d2362acb713ba3a810a509fccbfc6a0b2cf3452bf17c63882",
+  "pool": {
+    "windows": 32647,
+    "pca_explained": 0.9899905900651302,
+    "arms": {
+      "U": {
+        "variance_range": 2313.73828125,
+        "weight_range": 48.10133743286133,
+        "total_variance": 1426.9110107421875
+      },
+      "Z": {
+        "variance_range": 2.732539176940918,
+        "weight_range": 1.6530392169952393,
+        "total_variance": 191.48751831054688
+      }
+    },
+    "source_pool_sha256": "7662de45ae043ae076d1751c7b34300919ec52f99106546fe39a2ff63ac9b5ac",
+    "checkpoint_sha256": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e",
+    "pool_sha256": "2cc89e33bc8defb8e27c11da22bcc7e3e764691fcfc2c913b2a3cef9058d18c6"
+  },
+  "judge_store": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/observe_fresh_v6",
+  "judge_manifest": "c02ee6fe8e9da4a4b97e834d85785e2718738afebe8b8ff736f8aa4d154d828b",
+  "judge_seed_files": 463,
+  "roots": {
+    "fit": 7085,
+    "dev": 3369,
+    "judge": 4387,
+    "opportunity": 804,
+    "zombie_opportunity": 510,
+    "stay_kills_move_survives": 446
+  },
+  "prior_action": 4,
+  "rules": {
+    "P0_tokens_attn_vs_DOWN_zombie": {
+      "difference": 0.09942811727523804,
+      "interval": [
+        0.03402959927916527,
+        0.16098305583000183
+      ],
+      "excludes_zero": true
+    },
+    "interface_zombie": {
+      "difference": 0.1357842981815338,
+      "interval": [
+        0.08699578046798706,
+        0.18741878867149353
+      ],
+      "excludes_zero": true
+    },
+    "interface_overall": {
+      "difference": 0.11718755960464478,
+      "interval": [
+        0.08194343745708466,
+        0.1609741449356079
+      ],
+      "excludes_zero": true
+    },
+    "retention_U_zombie": {
+      "difference": -0.005882441997528076,
+      "interval": [
+        -0.04199598729610443,
+        0.031944990158081055
+      ],
+      "excludes_zero": false
+    },
+    "retention_Z_zombie": {
+      "difference": -0.04893794655799866,
+      "interval": [
+        -0.08266220986843109,
+        -0.01515587791800499
+      ],
+      "excludes_zero": true
+    },
+    "world_U_vs_DOWN": {
+      "difference": 0.10697817802429199,
+      "interval": [
+        0.05738309398293495,
+        0.15691591799259186
+      ],
+      "excludes_zero": true
+    },
+    "world_U_vs_DOWN_zombie": {
+      "difference": 0.11372548341751099,
+      "interval": [
+        0.04852285981178284,
+        0.17804326117038727
+      ],
+      "excludes_zero": true
+    },
+    "world_U_vs_actions_only": {
+      "difference": 0.07090848684310913,
+      "interval": [
+        0.03364244103431702,
+        0.10563859343528748
+      ],
+      "excludes_zero": true
+    },
+    "trained_U_vs_DOWN": {
+      "difference": 0.03797423839569092,
+      "interval": [
+        -0.003685401286929846,
+        0.08090769499540329
+      ],
+      "excludes_zero": false
+    },
+    "trained_U_vs_DOWN_zombie": {
+      "difference": -0.005882352590560913,
+      "interval": [
+        -0.06707348674535751,
+        0.052340202033519745
+      ],
+      "excludes_zero": false
+    },
+    "trained_U_vs_actions_only": {
+      "difference": 0.0019045472145080566,
+      "interval": [
+        -0.03761131688952446,
+        0.03930890932679176
+      ],
+      "excludes_zero": false
+    },
+    "trained_Z_vs_DOWN": {
+      "difference": -0.006801903247833252,
+      "interval": [
+        -0.06775802373886108,
+        0.05687558278441429
+      ],
+      "excludes_zero": false
+    },
+    "trained_Z_vs_DOWN_zombie": {
+      "difference": -0.07843136787414551,
+      "interval": [
+        -0.162606343626976,
+        0.008191129192709923
+      ],
+      "excludes_zero": false
+    },
+    "trained_Z_vs_actions_only": {
+      "difference": -0.04287159442901611,
+      "interval": [
+        -0.09231475740671158,
+        0.0016959160566329956
+      ],
+      "excludes_zero": false
+    }
+  },
+  "readings": {
+    "P0": "ok",
+    "interface": "patch_interface_better",
+    "retention": {
+      "U": "retains",
+      "Z": "world_degrades"
+    },
+    "world": "u_world_state_passes",
+    "trained": {
+      "U": "trained_system_fails",
+      "Z": "trained_system_fails"
+    }
+  },
+  "reported": {
+    "expected_safe": {
+      "DOWN": {
+        "overall": 0.586442768573761,
+        "zombie": 0.4960784316062927,
+        "stay_kills_move_survives": 0.47008126974105835,
+        "day": 0.6042251586914062,
+        "night": 0.5512731671333313,
+        "lava_adjacent": 0.760869562625885,
+        "zombie_adjacent": 0.4960784316062927,
+        "arrow_or_skeleton": 0.6007462739944458,
+        "none_of_these": 0.7045454382896423
+      },
+      "actions_only": {
+        "overall": 0.6225124597549438,
+        "zombie": 0.5405229330062866,
+        "stay_kills_move_survives": 0.5087116956710815,
+        "day": 0.6334659457206726,
+        "night": 0.6008487939834595,
+        "lava_adjacent": 0.7149758338928223,
+        "zombie_adjacent": 0.5405229330062866,
+        "arrow_or_skeleton": 0.6007462739944458,
+        "none_of_these": 0.8055555820465088
+      },
+      "tokens_attn": {
+        "overall": 0.7083074450492859,
+        "zombie": 0.5955065488815308,
+        "stay_kills_move_survives": 0.5788723826408386,
+        "day": 0.7408122420310974,
+        "night": 0.6440200805664062,
+        "lava_adjacent": 0.9275362491607666,
+        "zombie_adjacent": 0.5955065488815308,
+        "arrow_or_skeleton": 0.7175062298774719,
+        "none_of_these": 0.8888888359069824
+      },
+      "root_U": {
+        "overall": 0.714966893196106,
+        "zombie": 0.6156863570213318,
+        "stay_kills_move_survives": 0.5911575555801392,
+        "day": 0.7602801322937012,
+        "night": 0.6253472566604614,
+        "lava_adjacent": 0.95652174949646,
+        "zombie_adjacent": 0.6156863570213318,
+        "arrow_or_skeleton": 0.7400497794151306,
+        "none_of_these": 0.8560606241226196
+      },
+      "generated_U": {
+        "overall": 0.693420946598053,
+        "zombie": 0.6098039150238037,
+        "stay_kills_move_survives": 0.5848514437675476,
+        "day": 0.7169358730316162,
+        "night": 0.6469135284423828,
+        "lava_adjacent": 0.898550808429718,
+        "zombie_adjacent": 0.6098039150238037,
+        "arrow_or_skeleton": 0.7451026439666748,
+        "none_of_these": 0.7929293513298035
+      },
+      "features_U": {
+        "overall": 0.6765909790992737,
+        "zombie": 0.5764705538749695,
+        "stay_kills_move_survives": 0.5396814346313477,
+        "day": 0.7216565012931824,
+        "night": 0.5874614119529724,
+        "lava_adjacent": 0.9516909122467041,
+        "zombie_adjacent": 0.5764705538749695,
+        "arrow_or_skeleton": 0.7237250804901123,
+        "none_of_these": 0.7727273106575012
+      },
+      "trained_U": {
+        "overall": 0.6244170069694519,
+        "zombie": 0.4901960790157318,
+        "stay_kills_move_survives": 0.42972254753112793,
+        "day": 0.6554892063140869,
+        "night": 0.5629629492759705,
+        "lava_adjacent": 0.8985507488250732,
+        "zombie_adjacent": 0.4901960790157318,
+        "arrow_or_skeleton": 0.6121734976768494,
+        "none_of_these": 0.8636363744735718
+      },
+      "root_Z": {
+        "overall": 0.6216444373130798,
+        "zombie": 0.5229575634002686,
+        "stay_kills_move_survives": 0.48612672090530396,
+        "day": 0.6360018849372864,
+        "night": 0.5932484865188599,
+        "lava_adjacent": 0.9371981620788574,
+        "zombie_adjacent": 0.5229575634002686,
+        "arrow_or_skeleton": 0.6502642631530762,
+        "none_of_these": 0.6767677068710327
+      },
+      "generated_Z": {
+        "overall": 0.5762333869934082,
+        "zombie": 0.4740196168422699,
+        "stay_kills_move_survives": 0.4293254613876343,
+        "day": 0.609375,
+        "night": 0.5106867551803589,
+        "lava_adjacent": 0.9275362491607666,
+        "zombie_adjacent": 0.4740196168422699,
+        "arrow_or_skeleton": 0.6190921068191528,
+        "none_of_these": 0.6136363744735718
+      },
+      "features_Z": {
+        "overall": 0.5904073119163513,
+        "zombie": 0.4863562285900116,
+        "stay_kills_move_survives": 0.43322592973709106,
+        "day": 0.6226006746292114,
+        "night": 0.5267361402511597,
+        "lava_adjacent": 0.9492753744125366,
+        "zombie_adjacent": 0.4863562285900116,
+        "arrow_or_skeleton": 0.60712069272995,
+        "none_of_these": 0.6363636255264282
+      },
+      "trained_Z": {
+        "overall": 0.5796408653259277,
+        "zombie": 0.4176470637321472,
+        "stay_kills_move_survives": 0.35348933935165405,
+        "day": 0.6124180555343628,
+        "night": 0.5148147940635681,
+        "lava_adjacent": 0.9637681245803833,
+        "zombie_adjacent": 0.4176470637321472,
+        "arrow_or_skeleton": 0.5823227763175964,
+        "none_of_these": 0.8257575631141663
+      }
+    },
+    "per_seed": {
+      "actions_only": [
+        0.6274875402450562,
+        0.6157104969024658,
+        0.62433922290802
+      ],
+      "tokens_attn": [
+        0.7436256408691406,
+        0.6677549481391907,
+        0.7135416865348816
+      ],
+      "root_U": [
+        0.7195273637771606,
+        0.7108209133148193,
+        0.7145522236824036
+      ],
+      "generated_U": [
+        0.6985774040222168,
+        0.7054959535598755,
+        0.6761893630027771
+      ],
+      "features_U": [
+        0.6781327724456787,
+        0.6772388219833374,
+        0.6744014024734497
+      ],
+      "root_Z": [
+        0.6179260015487671,
+        0.6304804086685181,
+        0.61652672290802
+      ],
+      "generated_Z": [
+        0.5864816308021545,
+        0.5841884613037109,
+        0.5580301880836487
+      ],
+      "features_Z": [
+        0.5829446315765381,
+        0.6177704930305481,
+        0.5705068111419678
+      ]
+    },
+    "contrasts": {
+      "generated_U_vs_generated_Z": {
+        "overall": {
+          "difference": 0.11718755960464478,
+          "interval": [
+            0.08194343745708466,
+            0.1609741449356079
+          ],
+          "excludes_zero": true
+        },
+        "zombie": {
+          "difference": 0.1357842981815338,
+          "interval": [
+            0.08699578046798706,
+            0.18741878867149353
+          ],
+          "excludes_zero": true
+        },
+        "night": {
+          "difference": 0.13622677326202393,
+          "interval": [
+            0.06093919649720192,
+            0.20314781367778778
+          ],
+          "excludes_zero": true
+        }
+      },
+      "root_U_vs_root_Z": {
+        "overall": {
+          "difference": 0.09332245588302612,
+          "interval": [
+            0.05982319265604019,
+            0.12801611423492432
+          ],
+          "excludes_zero": true
+        },
+        "zombie": {
+          "difference": 0.09272879362106323,
+          "interval": [
+            0.046206284314394,
+            0.14034375548362732
+          ],
+          "excludes_zero": true
+        },
+        "night": {
+          "difference": 0.03209877014160156,
+          "interval": [
+            -0.03280225023627281,
+            0.09962131828069687
+          ],
+          "excludes_zero": false
+        }
+      },
+      "features_U_vs_features_Z": {
+        "overall": {
+          "difference": 0.08618366718292236,
+          "interval": [
+            0.04741612449288368,
+            0.1234295517206192
+          ],
+          "excludes_zero": true
+        },
+        "zombie": {
+          "difference": 0.09011432528495789,
+          "interval": [
+            0.03964149206876755,
+            0.13537396490573883
+          ],
+          "excludes_zero": true
+        },
+        "night": {
+          "difference": 0.060725271701812744,
+          "interval": [
+            -0.00014848112186882645,
+            0.11927441507577896
+          ],
+          "excludes_zero": false
+        }
+      },
+      "trained_U_vs_trained_Z": {
+        "overall": {
+          "difference": 0.04477614164352417,
+          "interval": [
+            -0.001324538025073707,
+            0.08831173181533813
+          ],
+          "excludes_zero": false
+        },
+        "zombie": {
+          "difference": 0.0725490152835846,
+          "interval": [
+            0.015082296915352345,
+            0.1277560591697693
+          ],
+          "excludes_zero": true
+        },
+        "night": {
+          "difference": 0.048148155212402344,
+          "interval": [
+            -0.022560637444257736,
+            0.11879095435142517
+          ],
+          "excludes_zero": false
+        }
+      },
+      "generated_U_vs_tokens_attn": {
+        "overall": {
+          "difference": -0.01488649845123291,
+          "interval": [
+            -0.04869856312870979,
+            0.01859218068420887
+          ],
+          "excludes_zero": false
+        },
+        "zombie": {
+          "difference": 0.01429736614227295,
+          "interval": [
+            -0.026027724146842957,
+            0.0565376915037632
+          ],
+          "excludes_zero": false
+        },
+        "night": {
+          "difference": 0.0028934478759765625,
+          "interval": [
+            -0.06454240530729294,
+            0.06735801696777344
+          ],
+          "excludes_zero": false
+        }
+      },
+      "root_U_vs_tokens_attn": {
+        "overall": {
+          "difference": 0.006659448146820068,
+          "interval": [
+            -0.02458287589251995,
+            0.038158100098371506
+          ],
+          "excludes_zero": false
+        },
+        "zombie": {
+          "difference": 0.020179808139801025,
+          "interval": [
+            -0.02152257412672043,
+            0.06679502129554749
+          ],
+          "excludes_zero": false
+        },
+        "night": {
+          "difference": -0.018672823905944824,
+          "interval": [
+            -0.07395178824663162,
+            0.04414750635623932
+          ],
+          "excludes_zero": false
+        }
+      }
+    },
+    "fidelity": {
+      "U": {
+        "trained_within_root_auc_real": 0.9927217231298356,
+        "trained_within_root_auc_generated": 0.6488848635868708,
+        "generated_death_mean": 0.42845579981803894,
+        "generated_pre_death_mean": 0.33221179246902466,
+        "generated_auc_vs_alive_10": 0.8224999904632568,
+        "generated_auc_vs_pre_death": 0.637499988079071,
+        "real_death_mean": 0.9066528081893921,
+        "real_pre_death_mean": 0.0331738144159317,
+        "real_auc_vs_alive_10": 0.9975000023841858,
+        "real_auc_vs_pre_death": 0.9975000023841858
+      },
+      "Z": {
+        "trained_within_root_auc_real": 0.7165481375435021,
+        "trained_within_root_auc_generated": 0.6122553406815776,
+        "generated_death_mean": 0.29716548323631287,
+        "generated_pre_death_mean": 0.23471124470233917,
+        "generated_auc_vs_alive_10": 0.71875,
+        "generated_auc_vs_pre_death": 0.5774999856948853,
+        "real_death_mean": 0.6561533212661743,
+        "real_pre_death_mean": 0.14420443773269653,
+        "real_auc_vs_alive_10": 0.875,
+        "real_auc_vs_pre_death": 0.8725000023841858
+      }
+    },
+    "trained_sleep_choices": {
+      "U": 192,
+      "Z": 292
+    },
+    "trained_chosen_histogram": {
+      "U": [
+        0,
+        142,
+        48,
+        139,
+        281,
+        0,
+        192,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "Z": [
+        0,
+        287,
+        70,
+        71,
+        29,
+        26,
+        292,
+        10,
+        8,
+        0,
+        0,
+        0,
+        0,
+        3,
+        6,
+        2,
+        0
+      ]
+    },
+    "training": {
+      "U": {
+        "history": [
+          {
+            "phase": 1,
+            "update": 1000,
+            "dynamics": 0.20190681517124176
+          },
+          {
+            "phase": 1,
+            "update": 2000,
+            "dynamics": 0.1430172175168991
+          },
+          {
+            "phase": 1,
+            "update": 3000,
+            "dynamics": 0.1189424991607666
+          },
+          {
+            "phase": 1,
+            "update": 4000,
+            "dynamics": 0.0998535007238388
+          },
+          {
+            "phase": 1,
+            "update": 5000,
+            "dynamics": 0.08540361374616623
+          },
+          {
+            "phase": 1,
+            "update": 6000,
+            "dynamics": 0.08433464914560318
+          },
+          {
+            "phase": 1,
+            "update": 7000,
+            "dynamics": 0.11371680349111557
+          },
+          {
+            "phase": 1,
+            "update": 8000,
+            "dynamics": 0.08371545374393463
+          },
+          {
+            "phase": 1,
+            "update": 9000,
+            "dynamics": 0.06734444200992584
+          },
+          {
+            "phase": 1,
+            "update": 10000,
+            "dynamics": 0.082373708486557
+          },
+          {
+            "phase": 2,
+            "update": 1000,
+            "gradient_norm": 19.189250946044922,
+            "reward": 0.24303491413593292,
+            "continuation": 0.1339755654335022,
+            "dynamics": 0.23727968335151672
+          },
+          {
+            "phase": 2,
+            "update": 2000,
+            "gradient_norm": 20.50817108154297,
+            "reward": 0.516552746295929,
+            "continuation": 0.1410929560661316,
+            "dynamics": 0.12345495820045471
+          },
+          {
+            "phase": 2,
+            "update": 3000,
+            "gradient_norm": 23.136655807495117,
+            "reward": 0.14297762513160706,
+            "continuation": 0.10047974437475204,
+            "dynamics": 0.22799471020698547
+          },
+          {
+            "phase": 2,
+            "update": 4000,
+            "gradient_norm": 56.03449630737305,
+            "reward": 0.30396223068237305,
+            "continuation": 0.1828303188085556,
+            "dynamics": 0.24513933062553406
+          },
+          {
+            "phase": 2,
+            "update": 5000,
+            "gradient_norm": 42.31398391723633,
+            "reward": 0.2370215505361557,
+            "continuation": 0.18274378776550293,
+            "dynamics": 0.19461758434772491
+          },
+          {
+            "phase": 2,
+            "update": 6000,
+            "gradient_norm": 18.757999420166016,
+            "reward": 0.2810763418674469,
+            "continuation": 0.05630583316087723,
+            "dynamics": 0.2145329713821411
+          },
+          {
+            "phase": 2,
+            "update": 7000,
+            "gradient_norm": 25.359079360961914,
+            "reward": 0.23097500205039978,
+            "continuation": 0.07870864123106003,
+            "dynamics": 0.27090972661972046
+          },
+          {
+            "phase": 2,
+            "update": 8000,
+            "gradient_norm": 11.625367164611816,
+            "reward": 0.23220080137252808,
+            "continuation": 0.03745412454009056,
+            "dynamics": 0.13868266344070435
+          },
+          {
+            "phase": 2,
+            "update": 9000,
+            "gradient_norm": 16.84341812133789,
+            "reward": 0.19068032503128052,
+            "continuation": 0.05516113340854645,
+            "dynamics": 0.16822078824043274
+          },
+          {
+            "phase": 2,
+            "update": 9333,
+            "gradient_norm": 23.045379638671875,
+            "reward": 0.18034233152866364,
+            "continuation": 0.04817520081996918,
+            "dynamics": 0.16107134521007538
+          }
+        ],
+        "depth_counts": {
+          "1": 4748,
+          "2": 4585
+        }
+      },
+      "Z": {
+        "history": [
+          {
+            "phase": 1,
+            "update": 1000,
+            "dynamics": 0.03419732302427292
+          },
+          {
+            "phase": 1,
+            "update": 2000,
+            "dynamics": 0.026924367994070053
+          },
+          {
+            "phase": 1,
+            "update": 3000,
+            "dynamics": 0.02637883462011814
+          },
+          {
+            "phase": 1,
+            "update": 4000,
+            "dynamics": 0.030578352510929108
+          },
+          {
+            "phase": 1,
+            "update": 5000,
+            "dynamics": 0.023229336366057396
+          },
+          {
+            "phase": 1,
+            "update": 6000,
+            "dynamics": 0.022141100838780403
+          },
+          {
+            "phase": 1,
+            "update": 7000,
+            "dynamics": 0.028378235176205635
+          },
+          {
+            "phase": 1,
+            "update": 8000,
+            "dynamics": 0.028549857437610626
+          },
+          {
+            "phase": 1,
+            "update": 9000,
+            "dynamics": 0.022813836112618446
+          },
+          {
+            "phase": 1,
+            "update": 10000,
+            "dynamics": 0.020951712504029274
+          },
+          {
+            "phase": 2,
+            "update": 1000,
+            "gradient_norm": 15.923711776733398,
+            "reward": 0.21987465023994446,
+            "continuation": 0.11913537979125977,
+            "dynamics": 0.04406551271677017
+          },
+          {
+            "phase": 2,
+            "update": 2000,
+            "gradient_norm": 18.056291580200195,
+            "reward": 0.4876904785633087,
+            "continuation": 0.2276952564716339,
+            "dynamics": 0.06729552149772644
+          },
+          {
+            "phase": 2,
+            "update": 3000,
+            "gradient_norm": 20.06394386291504,
+            "reward": 0.13734716176986694,
+            "continuation": 0.1674833595752716,
+            "dynamics": 0.08052713423967361
+          },
+          {
+            "phase": 2,
+            "update": 4000,
+            "gradient_norm": 22.250202178955078,
+            "reward": 0.29303669929504395,
+            "continuation": 0.1585206389427185,
+            "dynamics": 0.039654508233070374
+          },
+          {
+            "phase": 2,
+            "update": 5000,
+            "gradient_norm": 20.532878875732422,
+            "reward": 0.21754249930381775,
+            "continuation": 0.15394063293933868,
+            "dynamics": 0.04016178101301193
+          },
+          {
+            "phase": 2,
+            "update": 6000,
+            "gradient_norm": 15.002286911010742,
+            "reward": 0.2879527807235718,
+            "continuation": 0.1287752091884613,
+            "dynamics": 0.05033238232135773
+          },
+          {
+            "phase": 2,
+            "update": 7000,
+            "gradient_norm": 11.213787078857422,
+            "reward": 0.1964259147644043,
+            "continuation": 0.13059930503368378,
+            "dynamics": 0.03780180215835571
+          },
+          {
+            "phase": 2,
+            "update": 8000,
+            "gradient_norm": 11.59516716003418,
+            "reward": 0.19481460750102997,
+            "continuation": 0.10974229872226715,
+            "dynamics": 0.032600075006484985
+          },
+          {
+            "phase": 2,
+            "update": 9000,
+            "gradient_norm": 12.593621253967285,
+            "reward": 0.1814403533935547,
+            "continuation": 0.1810925453901291,
+            "dynamics": 0.029047222808003426
+          },
+          {
+            "phase": 2,
+            "update": 9333,
+            "gradient_norm": 15.389652252197266,
+            "reward": 0.15266308188438416,
+            "continuation": 0.11764945089817047,
+            "dynamics": 0.029148921370506287
+          }
+        ],
+        "depth_counts": {
+          "1": 4748,
+          "2": 4585
+        }
+      }
+    }
+  }
+}
