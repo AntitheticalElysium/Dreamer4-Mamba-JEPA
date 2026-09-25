@@ -52,31 +52,58 @@ observability roots, which have been inspected many times.
 
 ## What this establishes, and what it does not
 
-- **The per-tile world works as a world.** Its imagined successor keeps the root's decision
-  information (step 6). The u→u world's generated state lost it; z-state worlds lose part of it. This
-  is exploratory and unconfirmed on a sealed block.
-- **The decision heads are what fail, for two measured reasons.**
-  - **The tail-aligned terminal layout creates a position shortcut** (step 3). H2 tail-aligns its
-    terminal windows the same way; whether H2 learned the same shortcut is **untested**.
-  - **Factual outcome labels teach a context shortcut, not the action's consequence** (steps 7–8).
-    Counterfactual labels, all actions from one state, are what teach a head to read it.
-- **The added health head gave nothing and cost movement** (TH vs T). Reading only (s_t, s_{t+1}) did
-  not make the predictor write the consequence visibly.
-- **Not established:**
-  - any sealed confirmation of steps 6–8;
-  - that BCE heads can match the ranking probe (0.696 against 0.724; the probe objective matters, see
-    memory);
-  - more than one world seed;
-  - anything about two steps or H16.
+> **Corrected 2026-09-26, after review.** The first version's headline, "the per-tile world works as
+> a world", overclaimed, and is withdrawn.
+>
+> Step 6 shows that T's generated tokens hold a **recoverable safety signal**: a ranking probe finds
+> it. But a successor generated from the root and the action can carry root-plus-action information
+> by passing its input through, without ever drawing the right consequence. The rest of the evidence
+> says T does not draw it:
+> - the generated health tile stays nearer the unchanged tile (step 3);
+> - T's trained head, which reads real successors at AUC 0.998, reads generated ones at 0.557
+>   (step 1).
+>
+> The reviewer's exploratory re-fit of the step-6 probe on the already-opened 53k block gave 0.682
+> against a 0.558 prior (+0.124 [+0.066, +0.180]). Its three seeds varied (0.732 / 0.589 / 0.725),
+> against a root-token reference of about 0.737 there. So "keeps *everything* the root knows" is not
+> shown. No matched root-tokens-plus-action per-branch control has been run, so it is also not shown
+> that the transition adds anything to its input.
 
-## Next test implied (not run)
+- **Established, as a failure of the trained world-and-head system:**
+  - **A position alias.** All 8,155 training deaths sit at window position 5. The trained TH system
+    says 0.97 there and 0.0002 one step earlier.
+  - **No visible consequence in the generated successor.**
+- **Recoverable safety signal, exploratory, in two populations:** T's generated tokens hold a
+  within-root safety signal that fresh ranking probes find (0.724 on the 50k roots, 0.682 on 53k).
+- **Labels:** heads trained on factual labels choose at or near the prior (steps 7–8). Step 8's
+  factual → all-action gain (0.650 → 0.696) also changes the number and distribution of labelled
+  branches, and has no paired interval; it does not isolate label type.
+- **The added health head gave nothing and cost movement** (TH vs T).
+- **Scope:** T is a six-layer **Transformer**, not Mamba. Nothing here establishes a Mamba-LeWM
+  repair.
+- **Contract:** the per-tile state is a declared deviation from the canonical recipe (TC-07 / TC-19:
+  patch tokens do not enter the world). Fork-label heads are outside it (TC-17). A fork-supervised
+  head that selects safely would be a **fork-supervised safety readout**, not a repaired world.
+- **The H2 alias is untested.** H2's terminal sampler is tail-aligned too, and its paired loss scores
+  the last two positions.
 
-Freeze the T world. Fit its decision head on its own generated states with counterfactual outcome
-labels:
+## Next steps (after review; not run)
 
-- the hazard-fork corpus (`broad_forks_v2`: 15,016 roots, all 17 successors and outcomes) at the
-  evaluation position;
-- a ranking-aware objective.
+1. **Frozen-T head comparison.** No retraining. Same heads and budget, on the partition's FIT-train
+   seeds (fit) and FIT-dev seeds (selection) only, never the gate-reserved or unallocated seeds:
+   - logged-action labels;
+   - one uniformly sampled action per root;
+   - all-action BCE;
+   - all-action ranking;
+   - a matched **root-tokens-plus-action** per-branch head.
 
-Judge it once on a new sealed block (54,000+) against the root tokens, the prior and actions_only. In
-parallel, test cheaply whether H2's paired terminal loss is satisfied by position in H2 as well.
+   Rules committed before 54k is collected or read. Judged on:
+   - within-root safe choice, overall, on zombie roots and on stay-versus-move roots;
+   - calibration on ordinary as well as opportunity roots;
+   - action histograms;
+   - variability across head seeds.
+2. **A separate world-fidelity verdict.** For a native repair: retrain with terminal and comparable
+   non-terminal transitions at the *evaluation* prediction position (no alias). Then test whether the
+   generated successor expresses damage and death: the health tile, and a real-fitted head reading
+   generated successors.
+3. **H2 position audit.** Fixed transitions scored at matched positions in the canonical H2 world.
