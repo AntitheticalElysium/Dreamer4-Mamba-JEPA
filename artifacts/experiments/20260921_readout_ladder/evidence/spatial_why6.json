@@ -1,0 +1,54 @@
+{
+  "schema": "d4mj_spatial_why6_v1",
+  "status": "POST HOC, EXPLORATORY: observability roots",
+  "script_sha256": "7c4b2039119e25f8e3846c29a0d995ccae1eb682435d378e5e62fac532ee4788",
+  "opportunity_roots": {
+    "fit": 1260,
+    "judge": 500
+  },
+  "reading": "generated_state_carries_decision",
+  "expected_safe": {
+    "prior": 0.6280624866485596,
+    "root_tokens": 0.7242916226387024,
+    "real_tokens": 0.9982292056083679,
+    "real_z": 0.9284374713897705,
+    "generated_Z": 0.6819167137145996,
+    "generated_ZH": 0.6511458158493042,
+    "generated_T": 0.723895788192749,
+    "generated_TH": 0.711187481880188
+  },
+  "contrasts": {
+    "generated_T_vs_root_tokens": {
+      "difference": -0.00039583444595336914,
+      "interval": [
+        -0.04713251814246178,
+        0.04731433838605881
+      ],
+      "excludes_zero": false
+    },
+    "generated_TH_vs_root_tokens": {
+      "difference": -0.013104140758514404,
+      "interval": [
+        -0.06277883052825928,
+        0.03668554499745369
+      ],
+      "excludes_zero": false
+    },
+    "generated_Z_vs_root_tokens": {
+      "difference": -0.04237490892410278,
+      "interval": [
+        -0.10444719344377518,
+        0.016201389953494072
+      ],
+      "excludes_zero": false
+    },
+    "generated_ZH_vs_root_tokens": {
+      "difference": -0.0731458067893982,
+      "interval": [
+        -0.13125738501548767,
+        -0.01660134084522724
+      ],
+      "excludes_zero": true
+    }
+  }
+}
