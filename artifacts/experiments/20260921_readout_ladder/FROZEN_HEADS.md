@@ -2,6 +2,13 @@
 
 Both predeclared in `a98d9d77`, after the review of SPATIAL.md.
 
+> **Correction, 2026-09-26 (found by the reviewing agent, verified).** The configuration labelled
+> "gate protocol" generated the 4th frame from 3 observed frames. The real evaluator
+> (`d4mj/lewm_diagnostics.py:_fork_readouts`) observes 4 frames and generates the 5th. At that position
+> (L5, depth 1, cross-checked with this script's reader), generated death P(dead) is 0.054 (TRAIN) and
+> 0.058 (DEV), and death vs 10-frames-earlier AUC is 0.51 / 0.53. The agent's independent run
+> (`20260925_h2_independent`) gets 0.055 / 0.505. The conclusion stands.
+
 ## H2 audit (`h2_alias.py`, `36e52337`): declared reading `position_alias_in_H2` — the alias is recursion depth
 
 Canonical H2 world, its trained heads and its frozen latent cache. 400 TRAIN and 400 DEV terminal
@@ -18,7 +25,7 @@ Each is scored as the last block of a window, under the configurations below:
 | H2's exact terminal configuration (L32, burn-in 96, depth 2) | **0.73** | 0.70 | 0.56 | 0.60 |
 | same window, depth 1 | 0.063 | 0.050 | 0.063 | 0.60 |
 | L32 / L16 / L8, no burn-in, depth 1 | 0.055 / 0.046 / 0.041 | | | |
-| gate protocol (L4, one advance) | **0.027** | 0.022 | 0.029 | 0.51 |
+| ~~gate protocol~~ L4, one advance (3 observed + 1 generated; **mislabelled**, see correction) | 0.027 | 0.022 | 0.029 | 0.51 |
 
 Window length and burn-in barely matter (0.03–0.06). **The generation depth does.** At depth 2 the
 reading is not about death: the frame before death reads 0.70 and ten frames before reads 0.56.
@@ -102,3 +109,42 @@ the label. It stays inside the factual-training contract (no fork data). Judge i
 
 - the gate protocol;
 - a world-fidelity check: do depth-1 generated successors now separate death from alive?
+
+## H2 input bound (`h2_bound.py`, `1fdb30a5`): declared reading `cls_input_bound_blocks_zombie_criterion`
+
+Run after the reviewing agent proposed an alias-free H2 bridge judged on zombie action choice against
+DOWN. H2's bridge keeps the encoder frozen, so every CLS-based H2 world sees only z over 4 frames plus
+the actions between them. Heads were all-action ranking, the most favourable supervision. Fit on
+FIT-train, selected on FIT-dev, judged on 54k (**exploratory**; the block was read before).
+
+| head reads | overall | **zombie (479)** | lava |
+|---|---|---|---|
+| DOWN (prior) | 0.613 | 0.533 | 0.675 |
+| actions_only | 0.635 | 0.547 | 0.675 |
+| z4 (H2's latent input) | 0.645 | 0.542 | 0.892 |
+| z4 + actions (H2's full input) | 0.646 | **0.554** | 0.812 |
+| H2 root readout | 0.643 | 0.544 | 0.894 |
+| H2 generated z | 0.606 | **0.434** | 0.976 |
+| H2 generated features | 0.610 | 0.453 | 0.971 |
+| root patch tokens (positive control) | 0.748 | 0.659 | 0.929 |
+
+On zombie roots the positive control works: patch tokens beat DOWN by +0.126 [+0.062, +0.198]. None of
+H2's input arms beats DOWN:
+
+- z4 +0.009 [−0.047, +0.072]
+- z4 + actions +0.022 [−0.034, +0.083]
+- root readout +0.011 [−0.049, +0.072]
+
+This agrees with z (last frame) on both sealed blocks: 0.542 vs 0.567 at 51k, 0.555 vs 0.538 at 53k.
+**An alias-free CLS-H2 bridge cannot pass a zombie criterion against DOWN; its input already sits there.**
+
+The world then makes it worse. Generated state against its own input on zombie roots:
+
+- generated z −0.121 [−0.176, −0.076]
+- generated features −0.102 [−0.146, −0.054]
+
+Both are below DOWN, −0.099\* and −0.080\*, **even under all-action ranking supervision**. On lava the
+transition helps: generated 0.97 against input 0.81–0.89. H2's transition trades mob consequences
+for terrain consequences. So on zombie roots the H2 gate failure is the interface plus the world, not
+the head: no head, supervision layout or alias fix can recover a hazard the input does not carry.
+The depth alias remains a real defect of the trained head everywhere else.

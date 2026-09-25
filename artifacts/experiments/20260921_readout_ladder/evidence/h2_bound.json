@@ -1,0 +1,281 @@
+{
+  "schema": "d4mj_h2_bound_v1",
+  "status": "EXPLORATORY: 54k block read before",
+  "script_sha256": "061ca9c759aa1430c56bc2be91254f610bb66c84569f0bea643ea45b5f3a4f9e",
+  "checkpoint_sha256": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e",
+  "judge_manifest": "5bd60008125f0db93b4ab91b90b1301bb9b56c65e0201ac19208254faf404426",
+  "roots": {
+    "fit": 7085,
+    "dev": 3369,
+    "judge": 4072,
+    "opportunity": 804,
+    "zombie": 479
+  },
+  "prior_action": 4,
+  "rules": {
+    "R0_tokens_attn_vs_prior_zombie": {
+      "difference": 0.12621784210205078,
+      "interval": [
+        0.06184669956564903,
+        0.1982632875442505
+      ],
+      "excludes_zero": true
+    },
+    "z4_vs_prior_zombie": {
+      "difference": 0.009046614170074463,
+      "interval": [
+        -0.04703135043382645,
+        0.07192428410053253
+      ],
+      "excludes_zero": false
+    },
+    "z4_actions_vs_prior_zombie": {
+      "difference": 0.02148568630218506,
+      "interval": [
+        -0.03395148366689682,
+        0.08249250054359436
+      ],
+      "excludes_zero": false
+    },
+    "root_features_vs_prior_zombie": {
+      "difference": 0.010786354541778564,
+      "interval": [
+        -0.049389347434043884,
+        0.07160846143960953
+      ],
+      "excludes_zero": false
+    }
+  },
+  "reading": "cls_input_bound_blocks_zombie_criterion",
+  "reported": {
+    "expected_safe": {
+      "prior": {
+        "overall": 0.6133395433425903,
+        "zombie": 0.5328810214996338,
+        "day": 0.642624020576477,
+        "night": 0.5866983532905579,
+        "lava_adjacent": 0.6746031641960144,
+        "zombie_adjacent": 0.5328810214996338,
+        "arrow_or_skeleton": 0.6641355156898499,
+        "none_of_these": 0.7162162065505981
+      },
+      "z4": {
+        "overall": 0.6454964876174927,
+        "zombie": 0.5419276356697083,
+        "day": 0.671535074710846,
+        "night": 0.6218081712722778,
+        "lava_adjacent": 0.8915344476699829,
+        "zombie_adjacent": 0.5419276356697083,
+        "arrow_or_skeleton": 0.7101830244064331,
+        "none_of_these": 0.7184684872627258
+      },
+      "z4_actions": {
+        "overall": 0.6463645696640015,
+        "zombie": 0.5543667078018188,
+        "day": 0.6595409512519836,
+        "night": 0.6343775391578674,
+        "lava_adjacent": 0.8121693134307861,
+        "zombie_adjacent": 0.5543667078018188,
+        "arrow_or_skeleton": 0.6526966691017151,
+        "none_of_these": 0.7567567825317383
+      },
+      "root_features": {
+        "overall": 0.6429960131645203,
+        "zombie": 0.5436673760414124,
+        "day": 0.6659595966339111,
+        "night": 0.6221051216125488,
+        "lava_adjacent": 0.8941799402236938,
+        "zombie_adjacent": 0.5436673760414124,
+        "arrow_or_skeleton": 0.6976733207702637,
+        "none_of_these": 0.7207207083702087
+      },
+      "generated_z": {
+        "overall": 0.6058769226074219,
+        "zombie": 0.4335421025753021,
+        "day": 0.6495866179466248,
+        "night": 0.5661123991012573,
+        "lava_adjacent": 0.976190447807312,
+        "zombie_adjacent": 0.4335421025753021,
+        "arrow_or_skeleton": 0.6890577077865601,
+        "none_of_these": 0.7747747898101807
+      },
+      "generated_features": {
+        "overall": 0.6102172136306763,
+        "zombie": 0.4525921940803528,
+        "day": 0.627556562423706,
+        "night": 0.5944428443908691,
+        "lava_adjacent": 0.9708994030952454,
+        "zombie_adjacent": 0.4525921940803528,
+        "arrow_or_skeleton": 0.7022488117218018,
+        "none_of_these": 0.7612612843513489
+      },
+      "tokens_attn": {
+        "overall": 0.7476679086685181,
+        "zombie": 0.6590988636016846,
+        "day": 0.7841328978538513,
+        "night": 0.7144942879676819,
+        "lava_adjacent": 0.9285714030265808,
+        "zombie_adjacent": 0.6590988636016846,
+        "arrow_or_skeleton": 0.7544781565666199,
+        "none_of_these": 0.8671171069145203
+      },
+      "actions_only": {
+        "overall": 0.6349243521690369,
+        "zombie": 0.5472338199615479,
+        "day": 0.6711814403533936,
+        "night": 0.601939857006073,
+        "lava_adjacent": 0.6746031045913696,
+        "zombie_adjacent": 0.5472338199615479,
+        "arrow_or_skeleton": 0.6097157001495361,
+        "none_of_these": 0.8468469381332397
+      }
+    },
+    "per_seed": {
+      "z4": [
+        0.6315687298774719,
+        0.6635183691978455,
+        0.6414023637771606
+      ],
+      "z4_actions": [
+        0.6621968150138855,
+        0.6437344551086426,
+        0.6331623196601868
+      ],
+      "root_features": [
+        0.6415189504623413,
+        0.6560167670249939,
+        0.6314521431922913
+      ],
+      "generated_z": [
+        0.6094915866851807,
+        0.6178871393203735,
+        0.5902518630027771
+      ],
+      "generated_features": [
+        0.6162546873092651,
+        0.6060712337493896,
+        0.6083255410194397
+      ],
+      "tokens_attn": [
+        0.8060867786407471,
+        0.6856343150138855,
+        0.7512826323509216
+      ],
+      "actions_only": [
+        0.6328125,
+        0.6224735975265503,
+        0.6494869589805603
+      ]
+    },
+    "contrasts": {
+      "generated_z_vs_prior": {
+        "overall": {
+          "difference": -0.007462620735168457,
+          "interval": [
+            -0.04969945177435875,
+            0.03815671429038048
+          ],
+          "excludes_zero": false
+        },
+        "zombie": {
+          "difference": -0.09933891892433167,
+          "interval": [
+            -0.15740203857421875,
+            -0.04574282839894295
+          ],
+          "excludes_zero": true
+        }
+      },
+      "generated_features_vs_prior": {
+        "overall": {
+          "difference": -0.0031223297119140625,
+          "interval": [
+            -0.05341018736362457,
+            0.04883936047554016
+          ],
+          "excludes_zero": false
+        },
+        "zombie": {
+          "difference": -0.080288827419281,
+          "interval": [
+            -0.13306479156017303,
+            -0.023203443735837936
+          ],
+          "excludes_zero": true
+        }
+      },
+      "generated_features_vs_z4_actions": {
+        "overall": {
+          "difference": -0.036147356033325195,
+          "interval": [
+            -0.0742904543876648,
+            0.001051749917678535
+          ],
+          "excludes_zero": false
+        },
+        "zombie": {
+          "difference": -0.10177451372146606,
+          "interval": [
+            -0.14611196517944336,
+            -0.053845204412937164
+          ],
+          "excludes_zero": true
+        }
+      },
+      "generated_z_vs_z4_actions": {
+        "overall": {
+          "difference": -0.04048764705657959,
+          "interval": [
+            -0.07414686679840088,
+            -0.0037692352198064327
+          ],
+          "excludes_zero": true
+        },
+        "zombie": {
+          "difference": -0.12082460522651672,
+          "interval": [
+            -0.17558391392230988,
+            -0.07575654983520508
+          ],
+          "excludes_zero": true
+        }
+      },
+      "z4_actions_vs_actions_only": {
+        "overall": {
+          "difference": 0.0114402174949646,
+          "interval": [
+            -0.021258462220430374,
+            0.04564334452152252
+          ],
+          "excludes_zero": false
+        },
+        "zombie": {
+          "difference": 0.007132887840270996,
+          "interval": [
+            -0.029777344316244125,
+            0.04700031131505966
+          ],
+          "excludes_zero": false
+        }
+      },
+      "tokens_attn_vs_z4_actions": {
+        "overall": {
+          "difference": 0.1013033390045166,
+          "interval": [
+            0.07017908990383148,
+            0.13499382138252258
+          ],
+          "excludes_zero": true
+        },
+        "zombie": {
+          "difference": 0.10473215579986572,
+          "interval": [
+            0.06551411002874374,
+            0.14788994193077087
+          ],
+          "excludes_zero": true
+        }
+      }
+    }
+  }
+}
