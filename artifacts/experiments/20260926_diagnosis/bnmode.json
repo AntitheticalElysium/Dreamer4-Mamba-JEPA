@@ -1,0 +1,49 @@
+{
+  "z": {
+    "train_eval_z_msd": 0.014584186254069209,
+    "z_variance_per_element": 0.9869595728814602,
+    "one_step_change_msd": 0.024433496175333858
+  },
+  "worlds": {
+    "joint/z_train/predictorBN_train": {
+      "prediction_mse": 0.017982438148465008,
+      "copy_mse": 0.024705215357244015,
+      "ratio": 0.727880242630317
+    },
+    "joint/z_train/predictorBN_eval": {
+      "prediction_mse": 0.019277040963061154,
+      "copy_mse": 0.024705215357244015,
+      "ratio": 0.7802822474651603
+    },
+    "joint/z_eval/predictorBN_train": {
+      "prediction_mse": 0.028507863520644605,
+      "copy_mse": 0.024433496175333858,
+      "ratio": 1.166753350239902
+    },
+    "joint/z_eval/predictorBN_eval": {
+      "prediction_mse": 0.016038136091083288,
+      "copy_mse": 0.024433496175333858,
+      "ratio": 0.6563995580490906
+    },
+    "bridge/z_train/predictorBN_train": {
+      "prediction_mse": 0.05991966836154461,
+      "copy_mse": 0.024705215357244015,
+      "ratio": 2.4253853890804105
+    },
+    "bridge/z_train/predictorBN_eval": {
+      "prediction_mse": 0.05245144129730761,
+      "copy_mse": 0.024705215357244015,
+      "ratio": 2.1230918467556648
+    },
+    "bridge/z_eval/predictorBN_train": {
+      "prediction_mse": 0.07093755528330803,
+      "copy_mse": 0.024433496175333858,
+      "ratio": 2.9032912348794775
+    },
+    "bridge/z_eval/predictorBN_eval": {
+      "prediction_mse": 0.04921316122636199,
+      "copy_mse": 0.024433496175333858,
+      "ratio": 2.0141677995326654
+    }
+  }
+}

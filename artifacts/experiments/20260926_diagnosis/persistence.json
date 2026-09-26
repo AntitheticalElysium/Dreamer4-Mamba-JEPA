@@ -1,0 +1,68 @@
+{
+  "H2": {
+    "true_rho_share_ge_0.95": 0.998626166962193,
+    "true_rho_share_ge_0.9": 0.9999630683707466,
+    "true_rho_share_ge_0.8": 0.9999999999999999,
+    "true_rho_variance_weighted_mean": 0.9854076516155676,
+    "error_rho_errorweighted_mean": 0.9557840433140498,
+    "error_rho_top42": 0.9682934566971315,
+    "error_rho_tail": 0.7347001750605325,
+    "true_rho_top42": 0.9856418158674629,
+    "true_rho_tail": 0.955423149424813
+  },
+  "Z": {
+    "true_rho_share_ge_0.95": 0.998626166962193,
+    "true_rho_share_ge_0.9": 0.9999630683707466,
+    "true_rho_share_ge_0.8": 0.9999999999999999,
+    "true_rho_variance_weighted_mean": 0.9854076516155676,
+    "error_rho_errorweighted_mean": 0.966428931262726,
+    "error_rho_top42": 0.9714177531998496,
+    "error_rho_tail": 0.8062697445716394,
+    "true_rho_top42": 0.9856418158674629,
+    "true_rho_tail": 0.955423149424813
+  },
+  "sZ": {
+    "true_rho_share_ge_0.95": 0.9973791064210159,
+    "true_rho_share_ge_0.9": 0.9999323068344381,
+    "true_rho_share_ge_0.8": 0.9999999999999998,
+    "true_rho_variance_weighted_mean": 0.981982581105673,
+    "error_rho_errorweighted_mean": 0.9055367256028426,
+    "error_rho_top42": 0.9196783681041097,
+    "error_rho_tail": 0.6277632577889455,
+    "true_rho_top42": 0.9822176050587322,
+    "true_rho_tail": 0.9508720378165166
+  },
+  "U": {
+    "true_rho_share_ge_0.95": 0.8910657247120691,
+    "true_rho_share_ge_0.9": 0.9825749399543877,
+    "true_rho_share_ge_0.8": 0.9999666209698793,
+    "true_rho_variance_weighted_mean": 0.9757297708010381,
+    "error_rho_errorweighted_mean": 0.9374460194834495,
+    "error_rho_top42": 0.9465600263469439,
+    "error_rho_tail": 0.8682796036059641,
+    "true_rho_top42": 0.9790094672286578,
+    "true_rho_tail": 0.9062734203393973
+  },
+  "W": {
+    "true_rho_share_ge_0.95": 0.2327953381084732,
+    "true_rho_share_ge_0.9": 0.6415010567215568,
+    "true_rho_share_ge_0.8": 1.0,
+    "true_rho_variance_weighted_mean": 0.9193289664181636,
+    "error_rho_errorweighted_mean": 0.8219170857214269,
+    "error_rho_top42": 0.8123166136690221,
+    "error_rho_tail": 0.8280904833603597,
+    "true_rho_top42": 0.9467257646678865,
+    "true_rho_tail": 0.8868136963722251
+  },
+  "T": {
+    "true_rho_share_ge_0.95": 0.6642858317404692,
+    "true_rho_share_ge_0.9": 0.7604540724267143,
+    "true_rho_share_ge_0.8": 0.8361517759947455,
+    "true_rho_variance_weighted_mean": 0.9148126405400421,
+    "error_rho_errorweighted_mean": 0.9603297685632287,
+    "error_rho_top42": 0.9901803038066784,
+    "error_rho_tail": 0.9237235221341591,
+    "true_rho_top42": 0.973458381628297,
+    "true_rho_tail": 0.7013102525827849
+  }
+}
