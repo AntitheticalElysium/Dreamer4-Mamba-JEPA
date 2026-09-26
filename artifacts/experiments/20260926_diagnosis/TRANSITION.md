@@ -171,3 +171,41 @@ aleatoric floor. The noise across keys is 0.01-0.065 of variance by k=16, agains
 - You et al. 2026, *A Control Theory of Predictability in Latent World Models*, arXiv 2607.10362 (single-step
   validation error does not track control; off-manifold divergence is the binding term).
 - Hafner et al. 2021, *DreamerV2*, arXiv 2010.02193 (discrete latents); Venkatraman et al. 2015 (*DaD*).
+
+## Part 4 — Follow-ups (2026-09-27): TC's encoder, and LeWM's own context rule
+
+**TC vs Raw encoders, joint step 10,000** (`tc_encoder.py`; z = projected CLS; tokens = the same encoder's patch tokens):
+
+| | Raw z | TC z | Raw tokens | TC tokens |
+|---|---|---|---|---|
+| within-4-frame-window share of variance | 1.6% | **44.8%** | 8.4% | 10.9% |
+| Fisher d' of adding a zombie, day / night | 0.51 / 0.28 | 0.72 / 1.54 | | |
+| d' of a lava / stone / water / table tile (day) | 0.89 / 1.37 / 3.5 / 5.2 | 0.13 / 0.12 / 0.10 / 0.30 | | |
+| adjacent vs far zombie, AUC (day / night) | 0.51 / 0.52 | 0.53 / 0.61 | | |
+| zombie adjacent (natural roots, AUC) | 0.61 | 0.65 | 1.00 | 1.00 |
+| move passability (AUC) | 0.59 | 0.59 | 1.00 | 1.00 |
+| tile class per cell | 0.62 (majority 0.58) | 0.61 | 0.975 | 0.965 |
+
+TC does what its paper claims (arXiv 2607.26924: Raw LeWM "biases variance allocation toward the temporally
+persistent component"): its z moves from 1.6% to 45% within-window variance and makes mobs up to 5x more
+detectable. It also nearly drops static terrain, which decides passability, and it does not remove the daytime
+position blindness. Patch tokens are the same under both objectives (SIGReg regularizes only the CLS projection),
+so a TC encoder gives a per-tile world the same input as Raw.
+
+**LeWM's rollout rule repairs the canonical joint world** (`sliding.py`). le-wm `jepa.rollout` conditions every
+step on the last `history_size = 3` frames (`emb[:, -HS:]`); training uses 3 + 1 = 4 frames. Our Mamba runs an
+unbounded recurrence. Diagnostic futures, raw z, error / variance:
+
+| canonical JOINT world | depth 1 | 4 | 8 | 16 | teacher-forced, flat |
+|---|---|---|---|---|---|
+| unbounded recurrence (our protocol) | 0.048 | 0.404 | 1.23 | 2.57 | 0.043-0.056 |
+| sliding window of 4 (our evaluator's context, position 4) | 0.048 | 0.378 | 1.10 | 2.29 | 0.041-0.048 |
+| **sliding window of 3 (LeWM's rule)** | **0.025** | **0.108** | **0.235** | **0.529** | **0.019-0.025** |
+| copy the root | 0.030 | 0.171 | 0.403 | 0.927 | |
+
+With LeWM's own truncation, the existing joint world beats copying at every depth. Its 16-step error drops 4.9x,
+below every other world measured in Part 2 (best: sZ 0.74). The bridge world gets worse under the same rule
+(0.055 at depth 1): the bridge's long burn-in trained the short-context regime away. This is a design mismatch in
+our adaptation. LeWM trains and deploys its predictor on the same 3-frame context; we kept the 4-frame training
+and replaced the fixed window with an unbounded recurrence. The spec expected Phase 2 to teach persistent memory
+("does not train persistent episode memory by itself"), and Phase 2 did not.
