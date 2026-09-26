@@ -96,3 +96,32 @@ fidelity gap on generated states, which has to be fixed inside the factual contr
   plus the paired terminal term.
 
 Replication with a second world seed should precede any H16 step.
+
+## Shuffle control (`interface_shuffle.py`, `95a0d264`; post hoc on the same sealed block)
+
+Readings: **U `state_alone_carries_consequence`**, **Z `root_plus_action_shortcut`**.
+
+Probes were refitted as in `interface.py`. "Permuted" means the 17 generated states were shuffled among
+the actions within each root (5 seeded permutations, tokens kept fixed); "mean" means every state was
+replaced by its within-root mean.
+
+| probe | intact | permuted | mean | intact − permuted (zombie) |
+|---|---|---|---|---|
+| U, state + token | 0.693 | 0.531 | 0.651 | +0.162\* (+0.280\*) |
+| **U, state alone** | **0.684** | 0.475 | 0.442 | **+0.209\* (+0.350\*)** |
+| Z, state + token | 0.576 | 0.580 | 0.589 | −0.004 (−0.009) |
+| Z, state alone | 0.567 | 0.479 | 0.442 | +0.089\* (+0.156\*) |
+| DOWN | 0.586 | | | |
+
+- **U's generated state writes the action's consequence.**
+  - A probe that never sees the action ranks actions from the imagined state alone: DOWN +0.098\*,
+    zombie +0.089\*.
+  - That ranking collapses when successors are shuffled within a root (−0.209\*).
+  - It equals the token probe (−0.009, not resolved).
+  - The token probe also falls to 0.531 under permutation, below DOWN: it relies on the action-specific
+    state, not on the token.
+- **Z's token probe is a root-plus-action shortcut.** Shuffling costs it nothing. Z's state alone does
+  carry action-specific structure (+0.089\* over permuted), but it ranks zombie roots below DOWN
+  (−0.104\*): the direction is wrong.
+- **Limit:** the mean-replaced state is off-distribution, so "token + mean = 0.651" is not a clean
+  measure of how much root-plus-token alone is worth.
