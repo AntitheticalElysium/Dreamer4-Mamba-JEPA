@@ -19,7 +19,7 @@ training seed, and the same probes. Generation depth came out balanced (4,748 dr
 |---|---|---|
 | P0: patch tokens beat DOWN on zombie roots | +0.099 [+0.034, +0.161] | ok |
 | interface: generated_U − generated_Z, zombie | **+0.136 [+0.087, +0.187]** | **patch_interface_better** |
-| retention U: generated_U − root_U, zombie | −0.006 [−0.042, +0.032] | **retains** |
+| retention U: generated_U − root_U, zombie | −0.006 [−0.042, +0.032] | "retains" = **no resolved loss**; non-inferiority was not tested and a loss of ~4 points remains compatible |
 | retention Z: generated_Z − root_Z, zombie | −0.049 [−0.083, −0.015] | world_degrades |
 | world U: generated_U vs DOWN / DOWN zombie / actions_only | +0.107\* / +0.114\* / +0.071\* | **u_world_state_passes** |
 | trained U vs DOWN / DOWN zombie / actions_only | +0.038 / −0.006 / +0.002 (all not resolved) | trained_system_fails (as predicted) |
@@ -56,10 +56,15 @@ Additional contrasts:
 | same, death vs pre-death (generated) | 0.637 | 0.577 | |
 | same on the real successor, death vs alive-10 / vs pre-death | 0.998 / 0.998 | 0.875 / 0.873 | |
 
+> **Tempered after review (2026-09-26).** The generated-state probe also received an explicit
+> candidate-action token, and U's root + action scores 0.715 against generated 0.693. The world-state
+> pass therefore does not by itself show that the transition writes the action's consequence; the probe
+> could be reading preserved root context plus the token. Tested in `interface_shuffle.py`.
+
 ## What this establishes
 
-- **The patch-derived u→u Mamba world's imagined successor keeps the root's decision information on
-  sealed seeds.** Overall 0.693 against a matched root at 0.715, not resolved apart; on zombie roots
+- **The patch-derived u→u Mamba world's imagined successor shows no resolved loss of the root's decision
+  information on sealed seeds** (non-inferiority not tested; up to ~4 points of loss remain compatible). Overall 0.693 against a matched root at 0.715, not resolved apart; on zombie roots
   0.610 against 0.616. It beats DOWN and actions_only, and matches the root patch-token readout. The
   CLS z→z world, identical in every other respect, falls below its own root (−0.049\*) and is
   +0.136\* worse on zombies. This is the first world in the campaign whose generated state passes a
