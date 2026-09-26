@@ -1,0 +1,44 @@
+{
+  "schema": "d4mj_replicate_v1",
+  "script_sha256": "1bf7417c97042c0ad83dcb63c4f82878f78b824a5226d9ff05cb3d5457f671b8",
+  "seed1": {
+    "reading": "does_not_replicate",
+    "interface": {
+      "P0": "ok",
+      "interface": "patch_interface_better",
+      "retention": {
+        "U": "world_degrades",
+        "Z": "retains"
+      },
+      "world": "u_world_state_fails",
+      "trained": {
+        "U": "trained_system_fails",
+        "Z": "trained_system_fails"
+      }
+    },
+    "shuffle": {
+      "U": "mixed",
+      "Z": "root_plus_action_shortcut"
+    }
+  },
+  "seed2": {
+    "reading": "does_not_replicate",
+    "interface": {
+      "P0": "ok",
+      "interface": "patch_interface_better",
+      "retention": {
+        "U": "world_degrades",
+        "Z": "retains"
+      },
+      "world": "u_world_state_fails",
+      "trained": {
+        "U": "trained_system_fails",
+        "Z": "trained_system_fails"
+      }
+    },
+    "shuffle": {
+      "U": "mixed",
+      "Z": "root_plus_action_shortcut"
+    }
+  }
+}

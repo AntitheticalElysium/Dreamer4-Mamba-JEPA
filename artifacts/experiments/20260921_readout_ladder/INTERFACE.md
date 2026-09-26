@@ -1,5 +1,11 @@
 # Representation-interface comparison: alias-free u→u Mamba vs alias-free z→z Mamba
 
+> **Superseded in part, 2026-09-26: the world-state pass did NOT replicate.** On a fresh block (56k),
+> with a second world seed AND the seed-1 worlds, the declared replication reading is
+> `does_not_replicate`. The U-over-Z interface advantage and the action-specific content of U's
+> generated state replicate. The 55k "u_world_state_passes" and "no resolved loss against the root"
+> do not. See "Replication" at the end.
+
 Predeclared `interface.py` (`9aefa86d`), designed by the reviewing agent (`a2c1aee3`). Sealed block:
 seeds 55,000–55,462, collected after the commit and read once. It holds 804 one-step opportunity
 roots, 510 of them next to a zombie.
@@ -125,3 +131,61 @@ replaced by its within-root mean.
   (−0.104\*): the direction is wrong.
 - **Limit:** the mean-replaced state is off-distribution, so "token + mean = 0.651" is not a clean
   measure of how much root-plus-token alone is worth.
+
+## Replication (`replicate.py`, `ff4c83ae`): declared reading `does_not_replicate` (both seeds)
+
+The second world seed (init 8, other batch orders) went through the unchanged recipe. Seed 2 and the
+seed-1 worlds were each scored once on seeds 56,000–56,423: 801 opportunity roots, 528 of them next
+to a zombie, collected after the commit.
+
+| on the 56k block | seed 1 | seed 2 | 55k (seed 1, for reference) |
+|---|---|---|---|
+| P0: patch tokens − DOWN, zombie | +0.120\* | +0.120\* | +0.099\* |
+| **interface: generated_U − generated_Z, zombie** | **+0.069\*** | **+0.076\*** | +0.136\* |
+| generated_U − generated_Z, overall | +0.041\* | +0.050\* | +0.117\* |
+| **retention: generated_U − root_U, zombie** | **−0.046\*** | **−0.055\*** | −0.006 |
+| generated_U − DOWN, overall / zombie | +0.081\* / +0.068\* | +0.079\* / +0.058\* | +0.107\* / +0.114\* |
+| **generated_U − actions_only, overall** | **+0.035 [−0.003, +0.071]** | **+0.033 [−0.003, +0.070]** | +0.071\* |
+| token-free probe on U's state − DOWN, overall / zombie | +0.058\* / +0.033 | +0.043 / +0.011 | +0.098\* / +0.089\* |
+| token-free probe: intact − within-root permuted, zombie | +0.334\* | +0.309\* | +0.350\* |
+| trained_U − DOWN, overall / zombie | +0.065\* / +0.007 | +0.066\* / +0.021 | +0.038 / −0.006 |
+| trained_U − trained_Z, zombie | +0.149\* | +0.081\* | +0.073\* |
+
+Expected safe choice on 56k:
+
+| | root patch tokens | root_U | generated_U | trained_U | generated_Z | DOWN | actions_only |
+|---|---|---|---|---|---|---|---|
+| seed 1 | 0.743 | 0.708 | 0.672 | 0.656 | 0.631 | 0.591 | 0.637 |
+| seed 2 | 0.743 | 0.708 | 0.670 | 0.658 | 0.620 | 0.591 | 0.637 |
+
+### What holds, and what does not
+
+- **Replicates in every seed and block (3 of 3):**
+  - The patch interface beats CLS in the imagined state (+0.07 to +0.14 on zombie roots).
+  - U's imagined state beats DOWN.
+  - Probes use U's action-specific change: shuffling successors within a root costs 0.31–0.35 on
+    zombie roots.
+  - U's trained system beats Z's on zombie roots (+0.07 to +0.15).
+- **Does not replicate:**
+  - **Retention.** On 56k U's transition loses a resolved ~5 points on zombie roots against its own
+    root (−0.046\*, −0.055\*). The 55k "no resolved loss" was the optimistic block; the reviewer's
+    warning that about 4 points of loss remained compatible was right.
+  - **The margin over actions_only** misses resolution in both seeds (+0.035, +0.033).
+  - **The token-free probe** no longer beats DOWN on zombie roots.
+- **The seeds agree closely** (generated_U 0.672 vs 0.670; root and controls identical); the
+  difference from 55k is block-to-block variation. **Where the information goes:**
+  - U's root compression costs little against the full patch tokens (−0.035 overall, −0.006 zombie).
+  - The transition then loses another ~0.04–0.06: generated_U − patch tokens is −0.071\* and −0.073\*.
+- **The trained U head now beats DOWN overall** (+0.065\*, +0.066\*) but not on zombie roots or
+  against actions_only. The real/generated gap is unchanged (within-root AUC 0.996 real against 0.65
+  generated).
+
+### Standing conclusion
+
+- **A better interface, not a repaired world.** The patch-derived state is robustly better than CLS
+  for a Mamba world trained on logged transitions, and its imagined successor carries action-specific
+  safety information.
+- **The transition still loses part of the zombie consequence** (~5 points), and the gain over
+  actions-only is not established.
+- **The trained head's real-to-generated transfer is unsolved.**
+- **H16 and any move into d4mj stay gated.**
