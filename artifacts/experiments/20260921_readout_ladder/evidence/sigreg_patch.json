@@ -1,0 +1,153 @@
+{
+  "schema": "d4mj_sigreg_patch_v1",
+  "status": "SEALED: new seed block, rules committed before collection",
+  "script_sha256": "50ed257aaf36efd4ff5ca1146e21e91b01102bcc96a841a34cdfcdee28430e4d",
+  "judge_manifest": "8250b62f93b3266c06a546a7395b0b7682ef60137c57705e3c1af0ee6fa78992",
+  "judge_seed_files": 402,
+  "state_eigen_range": 2720.38623046875,
+  "roots": {
+    "judge": 3970,
+    "opportunity": 800,
+    "zombie": 520
+  },
+  "rules": {
+    "SP_vs_DOWN": {
+      "difference": 0.011328160762786865,
+      "interval": [
+        -0.04701456055045128,
+        0.07184550166130066
+      ],
+      "excludes_zero": false
+    },
+    "SP_vs_actions_only": {
+      "difference": -0.013541638851165771,
+      "interval": [
+        -0.049770381301641464,
+        0.02278614044189453
+      ],
+      "excludes_zero": false
+    },
+    "SP_vs_DOWN_zombie": {
+      "difference": -0.022776424884796143,
+      "interval": [
+        -0.08374888449907303,
+        0.04578034579753876
+      ],
+      "excludes_zero": false
+    },
+    "SP_vs_W_zombie": {
+      "difference": -0.07187497615814209,
+      "interval": [
+        -0.11342454701662064,
+        -0.028438150882720947
+      ],
+      "excludes_zero": true
+    }
+  },
+  "readings": {
+    "primary": "sp_trained_system_fails",
+    "secondary": "whitening_better"
+  },
+  "reported": {
+    "SP_vs_W_s1": {
+      "overall": {
+        "difference": -0.034023404121398926,
+        "interval": [
+          -0.07503443956375122,
+          0.0013379051815718412
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": -0.07187497615814209,
+        "interval": [
+          -0.11342454701662064,
+          -0.028438150882720947
+        ],
+        "excludes_zero": true
+      }
+    },
+    "W_s1_vs_DOWN": {
+      "overall": {
+        "difference": 0.04535156488418579,
+        "interval": [
+          -0.001969086704775691,
+          0.0948249027132988
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": 0.04909855127334595,
+        "interval": [
+          -0.005607588216662407,
+          0.10897411406040192
+        ],
+        "excludes_zero": false
+      }
+    },
+    "W_s1_vs_actions_only": {
+      "overall": {
+        "difference": 0.020481765270233154,
+        "interval": [
+          -0.014995302073657513,
+          0.05804804712533951
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": 0.01963144540786743,
+        "interval": [
+          -0.030497554689645767,
+          0.06633143872022629
+        ],
+        "excludes_zero": false
+      }
+    }
+  },
+  "sleep_choices": {
+    "SP": 162,
+    "W_s1": 33
+  },
+  "expected_safe": {
+    "DOWN": {
+      "overall": 0.6351171731948853,
+      "zombie": 0.5807692408561707,
+      "day": 0.5709419250488281,
+      "night": 0.7067625522613525,
+      "lava_adjacent": 0.6428571343421936,
+      "zombie_adjacent": 0.5807692408561707,
+      "arrow_or_skeleton": 0.6306965947151184,
+      "none_of_these": 0.800000011920929
+    },
+    "actions_only": {
+      "overall": 0.6599869728088379,
+      "zombie": 0.6102363467216492,
+      "day": 0.6333678960800171,
+      "night": 0.6897045969963074,
+      "lava_adjacent": 0.7414966225624084,
+      "zombie_adjacent": 0.6102363467216492,
+      "arrow_or_skeleton": 0.5936957597732544,
+      "none_of_these": 0.769230842590332
+    },
+    "SP": {
+      "overall": 0.6464453339576721,
+      "zombie": 0.5579928159713745,
+      "day": 0.6698015332221985,
+      "night": 0.6203703880310059,
+      "lava_adjacent": 0.8877550959587097,
+      "zombie_adjacent": 0.5579928159713745,
+      "arrow_or_skeleton": 0.6726887822151184,
+      "none_of_these": 0.7846153974533081
+    },
+    "W_s1": {
+      "overall": 0.680468738079071,
+      "zombie": 0.6298677921295166,
+      "day": 0.6739484667778015,
+      "night": 0.6877480149269104,
+      "lava_adjacent": 0.8469387888908386,
+      "zombie_adjacent": 0.6298677921295166,
+      "arrow_or_skeleton": 0.642578125,
+      "none_of_these": 0.7307692170143127
+    }
+  }
+}

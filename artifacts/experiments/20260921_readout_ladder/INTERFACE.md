@@ -349,5 +349,44 @@ comes from training the world itself in isotropic coordinates.**
 - Full-corpus data does not help the world itself (WF − W_s1, zombie −0.009).
 - The harm head cuts SLEEP choices without moving safe choice.
 - **W seed 1 passes again on this fresh block:** +0.136\* over DOWN, +0.125\* on zombie roots. That
-  makes the whitened world's trained system above DOWN on zombie roots in 6 of 6 blocks, resolved on
-  the three sealed blocks read after its rules or with the effect reported (58k, 59k, 60k).
+  makes the whitened world's trained system above DOWN on zombie roots in 6 of 6 blocks.
+  **Correction (same day):** that margin is resolved on 59k and 60k only; on 58k it was +0.041, not
+  resolved. The earlier wording saying it was resolved on 58k–60k was wrong.
+
+## SIGReg on the patch state (`sigreg_patch.py`, sealed 61k, 800 opportunity / 520 zombie): `sp_trained_system_fails`, `whitening_better`
+
+| own trained head | overall | zombie | SLEEP choices |
+|---|---|---|---|
+| DOWN | 0.635 | 0.581 | |
+| actions_only | 0.660 | 0.610 | |
+| SP (LeWM joint objective on a learned patch projection) | 0.646 | 0.558 | 162 |
+| W seed 1 | 0.680 | 0.630 | 33 |
+
+**Declared rules:**
+- SP − DOWN: +0.011 (not resolved)
+- SP − actions_only: −0.014 (not resolved)
+- SP − DOWN on zombie roots: −0.023 (not resolved)
+- **SP − W on zombie roots: −0.072 [−0.113, −0.028]**
+
+**The mechanism check explains it: SP's state never became isotropic.** Its eigenvalue spread is 2,720×,
+as anisotropic as U's 2,314×; SIGReg at the canonical 0.09 weight over 10k joint updates fell only from
+2.39 to 1.20. So this is not a test of isotropy by SIGReg. It is one more anisotropic state failing, as
+the isotropy account predicts. A real test needs a SIGReg schedule that actually reaches isotropy
+(canonical z's spread is 2.7×).
+
+**On this block the whitened world is positive but not resolved:** W_s1 − DOWN +0.045 [−0.002, +0.095],
+zombie +0.049 [−0.006, +0.109]; − actions_only +0.020. DOWN is unusually strong here (0.635).
+
+**Whitened world's trained head against DOWN, every block:**
+
+| block | status | overall | zombie |
+|---|---|---|---|
+| 55k | post hoc | +0.067\* | +0.045 |
+| 56k | post hoc | +0.085\* | +0.053 |
+| 57k | post hoc | +0.081\* | +0.039 |
+| 58k | sealed, reported | +0.065\* | +0.041 |
+| 59k | sealed, declared; seed 1 / 2-seed mean | +0.081\* / +0.083\* | **+0.070\* / +0.059\*** |
+| 60k | sealed, reported | +0.136\* | **+0.125\*** |
+| 61k | sealed, reported | +0.045 | +0.049 |
+
+Positive in 7 of 7 blocks on both measures. Resolved overall in 6 of 7 and on zombie roots in 2 of 7.
