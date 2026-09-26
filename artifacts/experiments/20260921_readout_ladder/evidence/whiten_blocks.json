@@ -1,0 +1,245 @@
+{
+  "schema": "d4mj_whiten_blocks_v1",
+  "status": "POST HOC: 55k / 56k / 57k all read before",
+  "script_sha256": "b932abf796352b30d25bd88c8dc0b365c580d6d71fd6e4907a8e5c448fc76c24",
+  "reading": "consistent",
+  "result": {
+    "55k": {
+      "manifest": "c02ee6fe8e9da4a4b97e834d85785e2718738afebe8b8ff736f8aa4d154d828b",
+      "opportunity": 804,
+      "zombie": 510,
+      "expected_safe": {
+        "DOWN": {
+          "overall": 0.586442768573761,
+          "zombie": 0.4960784316062927
+        },
+        "W": {
+          "overall": 0.6538013219833374,
+          "zombie": 0.5411764979362488
+        },
+        "U_s1": {
+          "overall": 0.6244170069694519,
+          "zombie": 0.4901960790157318
+        },
+        "U_s2": {
+          "overall": 0.6344060897827148,
+          "zombie": 0.529411792755127
+        }
+      },
+      "contrasts": {
+        "W_vs_U_s1": {
+          "overall": {
+            "difference": 0.029384315013885498,
+            "interval": [
+              -0.001527481945231557,
+              0.06295105814933777
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": 0.05098041892051697,
+            "interval": [
+              0.005733686499297619,
+              0.0980951339006424
+            ],
+            "excludes_zero": true
+          }
+        },
+        "W_vs_U_s2": {
+          "overall": {
+            "difference": 0.01939523220062256,
+            "interval": [
+              -0.023381009697914124,
+              0.06304512172937393
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": 0.011764705181121826,
+            "interval": [
+              -0.03711273893713951,
+              0.06214814633131027
+            ],
+            "excludes_zero": false
+          }
+        },
+        "W_vs_DOWN": {
+          "overall": {
+            "difference": 0.06735855340957642,
+            "interval": [
+              0.024682622402906418,
+              0.1159234568476677
+            ],
+            "excludes_zero": true
+          },
+          "zombie": {
+            "difference": 0.045098066329956055,
+            "interval": [
+              -0.008464150130748749,
+              0.09999999403953552
+            ],
+            "excludes_zero": false
+          }
+        }
+      }
+    },
+    "56k": {
+      "manifest": "0a42c1e36b233190cd2c0456098735e433c9da44e5e1754c352330da4e49cc78",
+      "opportunity": 801,
+      "zombie": 528,
+      "expected_safe": {
+        "DOWN": {
+          "overall": 0.5912531018257141,
+          "zombie": 0.5394176244735718
+        },
+        "W": {
+          "overall": 0.6766541600227356,
+          "zombie": 0.5928030014038086
+        },
+        "U_s1": {
+          "overall": 0.656093955039978,
+          "zombie": 0.5464606881141663
+        },
+        "U_s2": {
+          "overall": 0.6576154828071594,
+          "zombie": 0.5607836246490479
+        }
+      },
+      "contrasts": {
+        "W_vs_U_s1": {
+          "overall": {
+            "difference": 0.02056020498275757,
+            "interval": [
+              -0.010796427726745605,
+              0.05545109137892723
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": 0.046342313289642334,
+            "interval": [
+              0.008725962601602077,
+              0.08845896273851395
+            ],
+            "excludes_zero": true
+          }
+        },
+        "W_vs_U_s2": {
+          "overall": {
+            "difference": 0.019038677215576172,
+            "interval": [
+              -0.013738629408180714,
+              0.05323449894785881
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": 0.03201937675476074,
+            "interval": [
+              -0.008033126592636108,
+              0.07299716770648956
+            ],
+            "excludes_zero": false
+          }
+        },
+        "W_vs_DOWN": {
+          "overall": {
+            "difference": 0.08540105819702148,
+            "interval": [
+              0.03800901025533676,
+              0.1348491907119751
+            ],
+            "excludes_zero": true
+          },
+          "zombie": {
+            "difference": 0.053385376930236816,
+            "interval": [
+              -0.0014773771399632096,
+              0.10662422329187393
+            ],
+            "excludes_zero": false
+          }
+        }
+      }
+    },
+    "57k": {
+      "manifest": "5e831f4826f9299cbbe9e08020f4187c18b6547e93919866015392e8379ed54f",
+      "opportunity": 803,
+      "zombie": 452,
+      "expected_safe": {
+        "DOWN": {
+          "overall": 0.6347680687904358,
+          "zombie": 0.5967229008674622
+        },
+        "W": {
+          "overall": 0.715753436088562,
+          "zombie": 0.6358545422554016
+        },
+        "U_s1": {
+          "overall": 0.6574953198432922,
+          "zombie": 0.5275166034698486
+        },
+        "U_s2": {
+          "overall": 0.696723222732544,
+          "zombie": 0.573838472366333
+        }
+      },
+      "contrasts": {
+        "W_vs_U_s1": {
+          "overall": {
+            "difference": 0.058258116245269775,
+            "interval": [
+              0.02841019257903099,
+              0.08878306299448013
+            ],
+            "excludes_zero": true
+          },
+          "zombie": {
+            "difference": 0.10833793878555298,
+            "interval": [
+              0.06380520015954971,
+              0.1513398289680481
+            ],
+            "excludes_zero": true
+          }
+        },
+        "W_vs_U_s2": {
+          "overall": {
+            "difference": 0.019030213356018066,
+            "interval": [
+              -0.015833744779229164,
+              0.04666457325220108
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": 0.062016069889068604,
+            "interval": [
+              0.02079198509454727,
+              0.10471348464488983
+            ],
+            "excludes_zero": true
+          }
+        },
+        "W_vs_DOWN": {
+          "overall": {
+            "difference": 0.08098536729812622,
+            "interval": [
+              0.02928316779434681,
+              0.13432560861110687
+            ],
+            "excludes_zero": true
+          },
+          "zombie": {
+            "difference": 0.03913164138793945,
+            "interval": [
+              -0.015146794728934765,
+              0.09096822142601013
+            ],
+            "excludes_zero": false
+          }
+        }
+      }
+    }
+  }
+}
