@@ -204,3 +204,20 @@ the direct test.
 a patch-derived world state, so the latent is isotropic Gaussian by construction and still holds the
 mob. That is the LeJEPA recipe with its regulariser moved from CLS to the state the world actually
 needs. Not yet built.
+
+## Follow-ups to the isotropy account (2026-09-26, later)
+
+- **Where the gain comes from (`headwhite.py`, post hoc 4 blocks):** whitening only the readout's input
+  on the unchanged U world recovers about half of W's trained-head gain on zombie roots. The rest needs
+  the world itself trained in isotropic coordinates. Both halves are consistent with LeJEPA §3: the
+  heads are downstream predictors of the state, and the world's own targets are too.
+- **More data and dense supervision on top add nothing (`harmworld.py`, sealed 60k).** A whitened
+  world on a 400k-window full-corpus pool, with a harm head trained on imagined states and gradients
+  into the world, passes the trained-system rule (+0.126\*, zombie +0.105\*), but does not beat the
+  pool-trained whitened world (−0.020, not resolved). The pool-trained whitened world passes again on
+  this fresh block (+0.136\*, zombie +0.125\*). **Isotropy was the binding constraint;** data scale
+  mattered for a direct head on the input, not for this world.
+- **Per-tile T (asked about):** its state is far less anisotropic (per-coordinate spread 194×, against
+  U's 2,314×; the health tile's variance is 0.4× the map tiles'). The isotropy argument therefore
+  predicts little gain there; T's failures were pooled heads, a copied health tile and the position
+  alias. Not run.
