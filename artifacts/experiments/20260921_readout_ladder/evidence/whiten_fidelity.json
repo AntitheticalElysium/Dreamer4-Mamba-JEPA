@@ -1,0 +1,60 @@
+{
+  "schema": "d4mj_whiten_fidelity_v1",
+  "status": "POST HOC 56k",
+  "script_sha256": "73193728e981152b4bc7d135d7607233604a7ee6635b6bc7e53b61b571535387",
+  "judge_manifest": "0a42c1e36b233190cd2c0456098735e433c9da44e5e1754c352330da4e49cc78",
+  "result": {
+    "W": {
+      "all": {
+        "auc_real": 0.9943616685633977,
+        "auc_generated": 0.6501969358669956,
+        "p_dead_generated_fatal": 0.39737334847450256,
+        "p_dead_generated_surviving": 0.23912924528121948,
+        "p_dead_real_fatal": 0.8988683819770813
+      },
+      "zombie": {
+        "auc_real": 0.9994781780740568,
+        "auc_generated": 0.8123447350535605,
+        "p_dead_generated_fatal": 0.414226770401001,
+        "p_dead_generated_surviving": 0.280967652797699,
+        "p_dead_real_fatal": 0.9125853180885315
+      },
+      "dev_fidelity": {
+        "generated_death_mean": 0.4569583833217621,
+        "generated_pre_death_mean": 0.3359881341457367,
+        "generated_auc_vs_alive_10": 0.8450000286102295,
+        "generated_auc_vs_pre_death": 0.6800000071525574,
+        "real_death_mean": 0.9375046491622925,
+        "real_pre_death_mean": 0.03262598440051079,
+        "real_auc_vs_alive_10": 0.9950000047683716,
+        "real_auc_vs_pre_death": 0.9975000023841858
+      }
+    },
+    "U_s1": {
+      "all": {
+        "auc_real": 0.9955401947088492,
+        "auc_generated": 0.6551578186027042,
+        "p_dead_generated_fatal": 0.4124021828174591,
+        "p_dead_generated_surviving": 0.2673789858818054,
+        "p_dead_real_fatal": 0.8541127443313599
+      },
+      "zombie": {
+        "auc_real": 0.9953459603058092,
+        "auc_generated": 0.8033140331393628,
+        "p_dead_generated_fatal": 0.42556577920913696,
+        "p_dead_generated_surviving": 0.2960638999938965,
+        "p_dead_real_fatal": 0.8655579090118408
+      },
+      "dev_fidelity": {
+        "generated_death_mean": 0.4284549057483673,
+        "generated_pre_death_mean": 0.33221179246902466,
+        "generated_auc_vs_alive_10": 0.8224999904632568,
+        "generated_auc_vs_pre_death": 0.637499988079071,
+        "real_death_mean": 0.9066533446311951,
+        "real_pre_death_mean": 0.0331738144159317,
+        "real_auc_vs_alive_10": 0.9975000023841858,
+        "real_auc_vs_pre_death": 0.9975000023841858
+      }
+    }
+  }
+}

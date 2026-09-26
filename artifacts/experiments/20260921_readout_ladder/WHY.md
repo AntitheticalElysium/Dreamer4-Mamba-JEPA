@@ -116,3 +116,48 @@ And every model here saw only the pool: ~1.6% of TRAIN transitions, holding ~500
 - Kim et al. 2026, *Identifiable Token Correspondence* (arXiv 2605.16457): copy-or-generate decoding
   for token persistence on Craftax-Classic. Related to the per-tile world's copied health tile
   (SPATIAL.md), not yet tested here.
+
+
+## Update, end of 2026-09-26 — what the day's tests changed
+
+**Link 2 (the transition) is weaker than it looked.**
+- The ~5-point retention loss (56k) does not recur on 55k, 57k or 58k.
+- 3× bridge training changes nothing (`longer.py`, sealed 57k).
+- The variance-greedy mechanism predicted that whitening would raise tail R² and fatal alignment; it
+  raised neither (`whiten.py`, sealed 58k). With the ridge oracle, **"the tail is learned last" is
+  retired as the binding cause.**
+- What stands: the fatal consequence is a rare change in one near-static HUD cell, and the imagined
+  successor draws it only weakly (fatal-direction AUC ~0.6 overall, ~0.8 on zombie roots).
+
+**Factual data can teach the mechanism, in its dense form, at full scale** (`factual_scale.py`).
+- A factual dueling head on the world's input reaches 0.689 within root (zombie 0.601) when trained
+  on the whole TRAIN corpus with the harm label (death or 2+ health lost).
+- Neither ingredient helps alone. The pool the worlds trained on held ~500 of the corpus's 33,115
+  near-zombie damage events.
+- On U's imagined successors the dense label does not help (`genscale.py`: 0.664 vs 0.661): the
+  imagined state does not draw damage clearly enough for a head to use it.
+
+**The good news: an isotropic (whitened) patch state makes the world's OWN trained system work.**
+
+| block | trained W − DOWN, overall | trained W − DOWN, zombie | trained W − trained U, zombie |
+|---|---|---|---|
+| 55k | +0.067\* | +0.045 | +0.051\* |
+| 56k | +0.085\* | +0.053 | +0.046\* |
+| 57k | +0.081\* | +0.039 | +0.108\* |
+| 58k (sealed) | +0.065\* | +0.041 | +0.127\* |
+
+Its own head, trained on factual data only, scores 0.654–0.725 within root, beats actions_only on
+the sealed block (+0.077\*, zombie +0.069\*), and beats U's trained head on zombie roots in every
+block. **Why is not yet known.** The head's fatal-versus-safe AUC on imagined states is the same as
+U's (0.650 vs 0.655); the gain is in which single action it picks. A sealed second-seed replication
+(`whiten_rep.py`, 59k) is running.
+
+**Revised list of what is wrong, and why:**
+1. **The encoder's compact latent drops the mob** (JEPA's predictability bias; Littwin et al.). Fixed by
+   a patch-derived state. Robust.
+2. **The world is trained, and its heads read, in a badly conditioned state** where the decision-bearing
+   components are tiny. Whitening the state (isotropy, as SIGReg gives z) fixes the trained system's
+   choice without changing the measured world fidelity. The mechanism is open.
+3. **Its heads are trained on the sparse death label, on ~2% of the evidence;** the dense harm signal
+   in the full corpus is what teaches the mechanism. Not yet combined with 2.
+4. **Canonical H2 has a recursion-depth alias** in its terminal supervision.
