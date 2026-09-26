@@ -91,6 +91,10 @@ POOL_IN = ROOT / "artifacts/eda/spatial_pool_v1"
 POOL = ROOT / "artifacts/eda/interface_pool_v1"
 WORLDS = ROOT / "artifacts/eda/interface_worlds_v1"
 SEALED = ROOT / "artifacts/eda/observe_fresh_v6"
+# Replication knobs (replicate.py sets them); these defaults ARE the seed-1 run, unchanged.
+SEEDS = {"init": 7, "phase1": 11, "heads": 2, "phase2": 17, "depth": 13}
+MIN_JUDGE_SEED, USED_STORES, EVIDENCE = 55_000, range(1, 6), "interface.json"
+SEED1_TRAIN_SHA = "e2e3578b00ab884d2362acb713ba3a810a509fccbfc6a0b2cf3452bf17c63882"   # interface.py @ 9aefa86d, which trained the seed-1 worlds
 PHASE1_UPDATES, PHASE1_BATCH = 10_000, 128
 PHASE2_UPDATES, MAIN, TERMINAL = 9_333, 32, 8
 ARMS = ("U", "Z")
@@ -186,8 +190,8 @@ def world_bundle(config, encoder, device):
     from d4mj.lewm import LeWMWorld
     from d4mj.world_api import ModelBundle
     with torch.random.fork_rng(devices=list(range(torch.cuda.device_count()))):
-        torch.manual_seed(7)
-        torch.cuda.manual_seed_all(7)
+        torch.manual_seed(SEEDS["init"])
+        torch.cuda.manual_seed_all(SEEDS["init"])
         world = LeWMWorld(config).to(device)
     return ModelBundle.from_models(config, encoder, world)
 
@@ -223,7 +227,7 @@ def train(arm, pool, device, log):
     parameters = [p for p in world.parameters() if p.requires_grad]
     optimizer = torch.optim.AdamW(parameters, lr=j.learning_rate, betas=tuple(j.betas), eps=j.optimizer_eps,
                                   weight_decay=j.weight_decay)
-    order = torch.Generator().manual_seed(11)
+    order = torch.Generator().manual_seed(SEEDS["phase1"])
     for step in range(PHASE1_UPDATES):
         idx = main_rows[torch.randint(len(main_rows), (PHASE1_BATCH,), generator=order)]
         off = torch.randint(3, (PHASE1_BATCH,), generator=order)
@@ -246,11 +250,11 @@ def train(arm, pool, device, log):
         if isinstance(module, nn.BatchNorm1d):
             module.eval()
     with torch.random.fork_rng(devices=list(range(torch.cuda.device_count()))):
-        torch.manual_seed(config.seed + 2)
+        torch.manual_seed(config.seed + SEEDS["heads"])
         heads = Heads(config).to(device)
     optimizer = phase_optimizer([world, heads], config)
     parameters = [p for group in optimizer.param_groups for p in group["params"]]
-    order, depths, balance = torch.Generator().manual_seed(17), torch.Generator().manual_seed(13), {}
+    order, depths, balance = torch.Generator().manual_seed(SEEDS["phase2"]), torch.Generator().manual_seed(SEEDS["depth"]), {}
     counts = {1: 0, 2: 0}
     for update in range(PHASE2_UPDATES):
         d = 1 + int(torch.randint(2, (), generator=depths))
@@ -374,9 +378,9 @@ def score(device, log):
     judge["successors"] = torch.stack([r["successors"] for f in sorted(SEALED.glob("seed-*.pt"))
                                        for r in torch.load(f, weights_only=False)])
     new = set(judge["seed"].unique().tolist())
-    used = {int(f.stem.split("-")[1]) for k in range(1, 6)
+    used = {int(f.stem.split("-")[1]) for k in USED_STORES
             for f in (ROOT / f"artifacts/eda/observe_fresh_v{k}").glob("seed-*.pt")}
-    if min(new) < 55_000 or new & used or new & (set(fit_seeds) | set(dev_seeds) | forbidden):
+    if min(new) < MIN_JUDGE_SEED or new & used or new & (set(fit_seeds) | set(dev_seeds) | forbidden):
         raise SystemExit("judgement seeds are not a new, untouched block")
 
     encoder, config = load_bridge()
@@ -389,7 +393,7 @@ def score(device, log):
     for arm in ARMS:
         stored = torch.load(WORLDS / f"{arm}.pt", map_location="cpu", weights_only=False)
         if stored["pool_sha256"] != json.loads((POOL / "pool.json").read_text())["pool_sha256"] or \
-                stored["script_sha256"] != _sha256(Path(__file__)):
+                stored["script_sha256"] not in (_sha256(Path(__file__)), SEED1_TRAIN_SHA):
             raise SystemExit(f"{arm} was not trained by this script on this pool")
         bundle = world_bundle(config, encoder, device)
         bundle.world.load_state_dict(stored["world"])
@@ -491,7 +495,7 @@ def score(device, log):
                 "roots": {"fit": len(pf), "dev": len(pd), "judge": len(pj), "opportunity": int(opp.sum()),
                           "zombie_opportunity": int(zombie.sum()), "stay_kills_move_survives": int(stay.sum())},
                 "prior_action": prior, "rules": rules, "readings": readings, "reported": reported}
-    (HERE / "evidence/interface.json").write_text(json.dumps(evidence, indent=2) + "\n")
+    (HERE / f"evidence/{EVIDENCE}").write_text(json.dumps(evidence, indent=2) + "\n")
     log(status="interface_complete", **readings)
 
 

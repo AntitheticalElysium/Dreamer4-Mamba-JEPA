@@ -39,6 +39,7 @@ sys.path.insert(0, str(HERE))
 from d4mj.data import _sha256
 
 N, DRAWS = 17, 5
+RECORD, OUT = "interface.json", "interface_shuffle.json"   # replicate.py sets them
 
 
 def main():
@@ -56,7 +57,7 @@ def main():
     from ladder import paired
     from observability import expected_safe, load
 
-    recorded = json.loads((HERE / "evidence/interface.json").read_text())
+    recorded = json.loads((HERE / f"evidence/{RECORD}").read_text())
     pool = torch.load(POOL / "pool.pt", weights_only=False, mmap=True)
     partition = json.loads((HERE / "evidence/root_partition.json").read_text())
     fit_seeds, _ = seeds_for(partition, FORK_STORE)
@@ -142,7 +143,7 @@ def main():
                 "readings": readings,
                 "expected_safe": {k: {"overall": float(v[opp].mean()), "zombie": float(v[zombie].mean())} for k, v in safe.items()},
                 "per_seed": per_seed, "contrasts": contrasts}
-    (HERE / "evidence/interface_shuffle.json").write_text(json.dumps(evidence, indent=2) + "\n")
+    (HERE / f"evidence/{OUT}").write_text(json.dumps(evidence, indent=2) + "\n")
     log(status="interface_shuffle_complete", **readings)
 
 
