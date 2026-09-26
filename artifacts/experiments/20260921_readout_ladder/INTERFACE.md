@@ -228,3 +228,21 @@ generated AUC is at chance: there the consequence was barely encoded to begin wi
 
 The longer-training test (`longer.py`, running) asks directly whether the tail catches up with more
 training.
+
+## Heads trained on the world's own generated states (`genhead.py`, `43d3d360`; post hoc, 56k)
+
+This is MuZero / TD-MPC2's layout: frozen worlds, and heads fitted only on factual depth-1 generated
+successors of TRAIN windows (65,294 examples, 8,155 deaths).
+
+| U world | head on generated states | the world's own head | head trained on REAL states, applied to generated | counterfactual probe | actions_only | DOWN |
+|---|---|---|---|---|---|---|
+| seed 1 | 0.658 | 0.656 | 0.544 | 0.672 | 0.637 | 0.591 |
+| seed 2 | 0.666 | 0.658 | 0.578 | 0.670 | 0.637 | 0.591 |
+
+- **The training distribution matters.** A head trained on real states loses ~0.09–0.11 when read on
+  generated ones.
+- **The world's own head already gets what factual generated-state training gives.** Its bridge
+  training includes the generated suffix.
+- **Even a counterfactually supervised probe reaches only 0.67.**
+- **For U the head is not the binding constraint; the content of the generated state is.** Z's
+  generated states read below DOWN under every head (0.45–0.58).
