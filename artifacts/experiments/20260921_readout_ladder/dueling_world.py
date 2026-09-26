@@ -46,7 +46,7 @@ WORLDS = {"U_s1": ROOT / "artifacts/eda/interface_worlds_v1/U.pt", "U_s2": ROOT 
 
 
 @torch.no_grad()
-def siblings(bundle, ctx, past, config, device, batch=128):
+def siblings(bundle, ctx, past, config, device, batch=24):
     """ctx [n,4,192], past [n,3] -> imagined successors of all 17 actions [n,17,192] (fp16)."""
     from d4mj.train import autocast_context
     out = []
