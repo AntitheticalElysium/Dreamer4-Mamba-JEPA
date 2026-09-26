@@ -54,7 +54,28 @@ information.** Sealed on 55k; replicated on fresh 56k at 2 seeds:
 var^−½ loss weights (48×) only partly equalize it. The rare, near-static health cell is the tail, and
 it is learned last.
 
+**Challenge, run the same day: the "greedy in variance" account is incomplete.** Closed-form least
+squares (`ridge_oracle.py`: no training dynamics, every output fitted independently, with state ×
+action interaction terms) fits the tail better (R² 0.42 against 0.23). Yet it aligns with the fatal
+direction no better than the Mamba worlds (generated AUC 0.596 against 0.61–0.64): the fatal
+component is hard to predict from the input, not just learned last.
+
+**Factual learning has the same ceiling as the world.**
+- A direct factual MLP on the world's own input reaches within-root 0.645–0.653, with zombie roots at
+  DOWN. U's own head reaches 0.656 (`factual_direct.py`, `factual_direct2.py`).
+- Under pointwise BCE, all-action (counterfactual) labels do no better (0.611). The same input and
+  labels reach 0.708 only with the within-root RANKING objective.
+- A dueling factual head (Wang et al. 2016: V(s) + mean-zero A(s,a), per-action outputs) beats a plain
+  one by +0.050\* (zombie +0.033\*), reaching 0.670 (`dueling.py`).
+- Centring over the world's imagined siblings does not help (`dueling_world.py`).
+
+**Current account:** the decision is the small within-state action gap (Bellemare et al. 2016).
+Pointwise objectives (the world's MSE, the heads' BCE) spend capacity on between-state variation.
+And every model here saw only the pool: ~1.6% of TRAIN transitions, holding ~500 of the corpus's
+33,115 near-zombie damage events.
+
 **Tests of this link, running:**
+- `factual_scale.py`: full-corpus data, and the dense harm label;
 - `longer.py` (3× bridge training, sealed 57k): does the tail catch up?
 - `whiten.py` (isotropic U, sealed 58k): does equalizing λ let it be learned at the rate of the scroll?
 
