@@ -285,3 +285,38 @@ before any rule ran; the identical rerun read the block once. Readings:
 **This is the first trained system to beat actions-only overall and on zombie roots on a sealed
 block.** One seed, one block, and not the declared primary: it needs a predeclared replication.
 The token-free state probe also rises (state_W − state_U +0.036\*, zombie +0.050\*).
+
+## SEALED REPLICATION (`whiten_rep.py`, `bfac957b`): `trained_system_passes`, `whitening_helps_trained_system`
+
+Seeds 59,000+ (800 opportunity roots, 527 zombie), collected after the commit and read once. W seed 2
+was trained with replicate.py's independent seeds. **Each world's OWN trained continuation head reads
+its imagined successors; nothing is fitted** (only the actions_only control).
+
+| head reads imagined successors | overall | zombie | night | lava |
+|---|---|---|---|---|
+| DOWN | 0.602 | 0.552 | 0.670 | 0.455 |
+| actions_only | 0.630 | 0.561 | 0.639 | 0.780 |
+| U (mean of 2 seeds) | 0.658 | 0.555 | 0.650 | 0.841 |
+| **W (mean of 2 seeds)** | **0.686** | **0.611** | 0.681 | 0.830 |
+| W seed 1 / seed 2 | 0.683 / 0.688 | 0.622 / 0.601 | 0.670 / 0.691 | 0.795 / 0.864 |
+
+**Declared rules:**
+
+| rule | result |
+|---|---|
+| W − DOWN, overall | **+0.083 [+0.038, +0.133]** |
+| W − actions_only, overall | **+0.056 [+0.022, +0.091]** |
+| W − DOWN, zombie roots | **+0.059 [+0.007, +0.109]** |
+| W − U, zombie roots | **+0.056 [+0.020, +0.090]** |
+
+- **Per seed:** W seed 1 passes all three rules on its own. W seed 2 passes overall against DOWN and
+  actions_only, with zombie roots +0.048 [−0.010, +0.105].
+- **SLEEP chosen:** W 30 / 71, against U seed 1's 157.
+- **Night roots** show no gain over DOWN (+0.011); DOWN is strong there.
+
+**This is the first system in the campaign that passes the trained-system rule on a sealed block.** It
+is a world trained only on logged transitions, choosing through its own trained head, with two
+independent world seeds. Scope: one-step death only; one encoder; the per-component-whitened
+patch-grid state is a declared deviation from TC-07/TC-19. Why whitening works is under test
+(`headwhite.py`), and whether dense harm supervision at full scale adds more is under test
+(`harmworld.py`, sealed 60k).
