@@ -189,3 +189,42 @@ Expected safe choice on 56k:
   actions-only is not established.
 - **The trained head's real-to-generated transfer is unsolved.**
 - **H16 and any move into d4mj stay gated.**
+
+## Where the transition loses it (`transition_diag.py`, `df25ceed`; post hoc, FIT fit / 56k judge)
+
+DIAGNOSE.md's fatal-direction test, applied to all four worlds. The direction is fitted on real FIT
+successors.
+
+| world | real AUC along fatal dir. | generated AUC (all / zombie) | error ratio (dir. / all) | generated magnitude along dir. | correlation with real | share of effect energy along dir. |
+|---|---|---|---|---|---|---|
+| U seed 1 | 0.9997 | 0.636 / 0.771 | 5.9 | 0.85 | 0.18 | 0.11% |
+| U seed 2 | 0.9997 | 0.614 / 0.782 | 4.1 | 0.64 | 0.22 | 0.11% |
+| Z seed 1 | 0.972 | 0.517 / 0.521 | 6.2 | 0.74 | 0.18 | 0.07% |
+| Z seed 2 | 0.972 | 0.504 / 0.523 | 6.1 | 0.69 | 0.20 | 0.07% |
+| old u→u world (DIAGNOSE.md) | 0.9975 | 0.495 | 25 | 0.39 | 0.02 | 0.04% |
+
+All four read **misaligned, not shrunk**: the world moves along the fatal direction at near-real
+magnitude, but mostly uncorrelated with what really happens. The damage-direction readings are void
+(real AUC 0.72–0.82).
+
+**U's error is spectral.** Grouped by the variance rank of U's PCA coordinates (seed 1; seed 2 alike):
+
+| variance ranks | share of the action-effect energy | the transition's effect R² | share of the fatal direction |
+|---|---|---|---|
+| 0–10 | 73.7% | 0.83 | 0.0% |
+| 10–30 | 15.1% | 0.66 | 0.5% |
+| 30–60 | 6.3% | 0.55 | 5.5% |
+| 60–100 | 2.9% | 0.37 | 42.6% |
+| 100–192 | 2.2% | 0.23 | 51.4% |
+
+**94% of the fatal direction sits in components that carry 5% of the effect energy**, and those are
+exactly where the transition predicts worst. The pooled grid dilutes the health tile into a
+low-variance tail. The world learns the dominant movement and scroll components well and the tail
+poorly, and the loss weighting (var^−½) raises the direction's share of the loss only from 0.11% to
+0.56%.
+
+Z is different. Its effect R² is uniform across its isotropic coordinates (~0.78–0.81), yet its
+generated AUC is at chance: there the consequence was barely encoded to begin with.
+
+The longer-training test (`longer.py`, running) asks directly whether the tail catches up with more
+training.
