@@ -95,6 +95,9 @@ SEALED = ROOT / "artifacts/eda/observe_fresh_v6"
 SEEDS = {"init": 7, "phase1": 11, "heads": 2, "phase2": 17, "depth": 13}
 MIN_JUDGE_SEED, USED_STORES, EVIDENCE = 55_000, range(1, 6), "interface.json"
 SAVE_AT, SAVE = (), None          # optional phase-2 checkpoints (longer.py); empty = unchanged
+EXTRA_MODULES, EXTRA_LOSS = (), None   # optional phase-2 loss group (harmworld.py); empty = unchanged
+WORLD_HOOK = None                        # optional post-construction world hook (headwhite.py); None = unchanged
+HOOK_TRAIN_SHA = "026135e9736b76c4987cb0cd60e59a5f88d5dcdf6d566a677ffbc4b285ffc8aa"   # interface.py with the SAVE hook (longer / W worlds)
 SEED2_TRAIN_SHA = "cf0cce5be439e93b4a62da292290791e8a74cb091007594af3a3cdeda54023a5"   # interface.py @ ff4c83ae (seed-2 worlds)
 SEED1_TRAIN_SHA = "e2e3578b00ab884d2362acb713ba3a810a509fccbfc6a0b2cf3452bf17c63882"   # interface.py @ 9aefa86d, which trained the seed-1 worlds
 PHASE1_UPDATES, PHASE1_BATCH = 10_000, 128
@@ -195,6 +198,8 @@ def world_bundle(config, encoder, device):
         torch.manual_seed(SEEDS["init"])
         torch.cuda.manual_seed_all(SEEDS["init"])
         world = LeWMWorld(config).to(device)
+    if WORLD_HOOK is not None:
+        WORLD_HOOK(world)
     return ModelBundle.from_models(config, encoder, world)
 
 
@@ -254,7 +259,7 @@ def train(arm, pool, device, log):
     with torch.random.fork_rng(devices=list(range(torch.cuda.device_count()))):
         torch.manual_seed(config.seed + SEEDS["heads"])
         heads = Heads(config).to(device)
-    optimizer = phase_optimizer([world, heads], config)
+    optimizer = phase_optimizer([world, heads, *EXTRA_MODULES], config)
     parameters = [p for group in optimizer.param_groups for p in group["params"]]
     order, depths, balance = torch.Generator().manual_seed(SEEDS["phase2"]), torch.Generator().manual_seed(SEEDS["depth"]), {}
     counts = {1: 0, 2: 0}
@@ -280,6 +285,8 @@ def train(arm, pool, device, log):
             observed = heads(t_teacher.features) | {"centers": heads.centers}
             recursive = heads(torch.cat((t_teacher.features[:, :t_anchor + 1], t_features), 1)) | {"centers": heads.centers}
             losses["continuation"] = 0.8 * losses["continuation"] + 0.2 * paired_terminal_loss(recursive, observed, t_targets)
+            if EXTRA_LOSS is not None:
+                losses.update(EXTRA_LOSS(parts, main, term, shift))
             objective = _phase_balance(losses, balance, config.agent.rms_decay)
         if not bool(torch.isfinite(objective)):
             raise RuntimeError(f"nonfinite objective at update {update}")
@@ -397,7 +404,7 @@ def score(device, log):
     for arm in ARMS:
         stored = torch.load(WORLDS / f"{arm}.pt", map_location="cpu", weights_only=False)
         if stored["pool_sha256"] != json.loads((POOL / "pool.json").read_text())["pool_sha256"] or \
-                stored["script_sha256"] not in (_sha256(Path(__file__)), SEED1_TRAIN_SHA, SEED2_TRAIN_SHA):
+                stored["script_sha256"] not in (_sha256(Path(__file__)), SEED1_TRAIN_SHA, SEED2_TRAIN_SHA, HOOK_TRAIN_SHA):
             raise SystemExit(f"{arm} was not trained by this script on this pool")
         bundle = world_bundle(config, encoder, device)
         bundle.world.load_state_dict(stored["world"])
