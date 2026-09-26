@@ -221,3 +221,28 @@ needs. Not yet built.
   U's 2,314×; the health tile's variance is 0.4× the map tiles'). The isotropy argument therefore
   predicts little gain there; T's failures were pooled heads, a copied health tile and the position
   alias. Not run.
+
+## SIGReg as run does not deliver LeJEPA's isotropy (`eigen_spectra.py`, `sigreg_patch.py`)
+
+| state | eigenvalue spread | effective rank | per-coordinate variance range |
+|---|---|---|---|
+| canonical z (LeWM, SIGReg 0.09, 1,024 directions) | **6,220×** | **44 / 192** | 2.7× |
+| u | 2,329× | 11 | 2,325× |
+| SP (the same SIGReg on a learned patch projection) | 2,718× | 48 | 2.5× |
+| **w** | **1.1×** | **191.9** | 1.0× |
+
+**SIGReg equalizes per-coordinate / random-direction marginals, but not the eigen spectrum.** A random
+1-D projection mixes all directions, so a small badly scaled subspace barely changes what the sketch
+tests. LeJEPA's Lemma 1 is stated on the covariance eigenvalues.
+
+The SP arm reached the same final SIGReg loss as canonical LeWM's joint run (1.199 vs 1.202 after 10k
+updates) and stayed anisotropic; its trained system failed like U's (sealed 61k).
+
+**So canonical z is doubly handicapped:** it drops the mob (ρ-bias) and it is not eigen-isotropic.
+**The whitened patch state is the only truly isotropic state tested, and the only one whose trained
+system works.**
+
+**Implication for the canonical path:** "SIGReg on a patch state" is not enough as run. The latent needs
+eigen-isotropy — an explicit whitening layer (running PCA/ZCA statistics), or a decorrelation term
+(VICReg's covariance loss, or W-MSE's whitening; Ermolov et al. 2021) — on a state that holds the mob.
+`zwhite.py` (eigen-whitened z: isotropy without the mob) is running to separate the two factors.
