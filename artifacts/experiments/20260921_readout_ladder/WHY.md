@@ -161,3 +161,46 @@ U's (0.650 vs 0.655); the gain is in which single action it picks. A sealed seco
 3. **Its heads are trained on the sparse death label, on ~2% of the evidence;** the dense harm signal
    in the full corpus is what teaches the mechanism. Not yet combined with 2.
 4. **Canonical H2 has a recursion-depth alias** in its terminal supervision.
+
+## Why isotropy is the fix — it is LeJEPA's own theorem (added after the sealed pass)
+
+**Sealed replication** (`whiten_rep.py`, 59k, two world seeds): the whitened patch-state world's OWN
+trained head passes the trained-system rule.
+
+- W − DOWN: +0.083\*
+- W − actions_only: +0.056\*
+- W − DOWN on zombie roots: +0.059\*
+- W − U on zombie roots: +0.056\*
+
+**The explanation was in the paper this project builds on.** Balestriero & LeCun, *LeJEPA*
+(arXiv 2511.08544, `third_party/papers`), §3.1:
+
+- **Lemma 1, "Anisotropy amplifies bias":** "Whenever λ_K > λ_1, there always exists a downstream task
+  (y) for which Z_aniso produces a higher bias estimator than Z_iso for λ > 0". λ is the Tikhonov
+  (ridge / weight-decay) strength. **Lemma 2** gives the variance counterpart (OLS).
+- From these, the isotropic Gaussian is the unique embedding distribution that minimizes downstream
+  prediction risk, for linear and (§3.2) nonlinear probes. **SIGReg exists to enforce it.**
+
+Mapped onto our three states:
+
+| state | holds the zombie | isotropic | decision heads |
+|---|---|---|---|
+| z (canonical LeWM) | no (JEPA ρ-bias drops low-predictability mobs; Littwin et al.) | yes (SIGReg) | fail on zombie roots |
+| u (PCA of the patch grid) | yes | **no**: 2,314× eigenvalue spread, with death in the lowest-eigenvalue directions — Lemma 1's adversarial task — and heads trained with weight decay | fail |
+| **W** (u whitened on TRAIN) | yes | yes | **pass** (sealed) |
+
+**So the precise diagnosis of the imagined-successor failure is:**
+
+1. The canonical encoder's compact latent drops the decision-relevant mob (ρ-bias).
+2. The obvious repair — a patch-derived state — breaks the isotropy LeJEPA proves the downstream heads
+   need.
+3. Restoring isotropy lets the world's own heads read the consequence from imagination.
+
+The world's measured fatal-direction fidelity barely changed (`whiten_fidelity.py`); the gain is on the
+head side, as Lemma 1 predicts. `headwhite.py` (readout-only whitening on the unchanged U world) is
+the direct test.
+
+**The design this implies for the canonical path:** not a post-hoc PCA whitening, but SIGReg applied to
+a patch-derived world state, so the latent is isotropic Gaussian by construction and still holds the
+mob. That is the LeJEPA recipe with its regulariser moved from CLS to the state the world actually
+needs. Not yet built.
