@@ -1,0 +1,210 @@
+{
+  "schema": "d4mj_harmworld_v1",
+  "status": "SEALED: new seed block, rules committed before collection",
+  "script_sha256": "5f28c0164a86571a27e03a42c797d85bc3efa98796f50c1455e5bd9741b38e02",
+  "judge_manifest": "244bc0ef2c9268c2b518cf0b36eb6197f29208bdf8e42338b58d6276137a8ad2",
+  "judge_seed_files": 435,
+  "roots": {
+    "judge": 4276,
+    "opportunity": 800,
+    "zombie": 551
+  },
+  "rules": {
+    "WFH_harm_vs_DOWN": {
+      "difference": 0.12589848041534424,
+      "interval": [
+        0.06528328359127045,
+        0.17886991798877716
+      ],
+      "excludes_zero": true
+    },
+    "WFH_harm_vs_actions_only": {
+      "difference": 0.07420569658279419,
+      "interval": [
+        0.03736979141831398,
+        0.11161470413208008
+      ],
+      "excludes_zero": true
+    },
+    "WFH_harm_vs_DOWN_zombie": {
+      "difference": 0.10475271940231323,
+      "interval": [
+        0.04365445673465729,
+        0.1649463027715683
+      ],
+      "excludes_zero": true
+    },
+    "WFH_harm_vs_W_s1_zombie": {
+      "difference": -0.01996368169784546,
+      "interval": [
+        -0.0615975446999073,
+        0.020365525037050247
+      ],
+      "excludes_zero": false
+    }
+  },
+  "readings": {
+    "primary": "trained_system_passes",
+    "secondary": "no_evidence"
+  },
+  "reported": {
+    "WF_continuation_vs_W_s1_continuation": {
+      "overall": {
+        "difference": -0.005937516689300537,
+        "interval": [
+          -0.04316979646682739,
+          0.030640749260783195
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": -0.008620679378509521,
+        "interval": [
+          -0.04840270057320595,
+          0.03178616985678673
+        ],
+        "excludes_zero": false
+      }
+    },
+    "WFH_continuation_vs_WF_continuation": {
+      "overall": {
+        "difference": -0.006093740463256836,
+        "interval": [
+          -0.029537569731473923,
+          0.016427699476480484
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": -0.01610708236694336,
+        "interval": [
+          -0.04489612579345703,
+          0.009042369201779366
+        ],
+        "excludes_zero": false
+      }
+    },
+    "WFH_harm_vs_WFH_continuation": {
+      "overall": {
+        "difference": 0.002031266689300537,
+        "interval": [
+          -0.015412268228828907,
+          0.020987968891859055
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": 0.004764080047607422,
+        "interval": [
+          -0.018960561603307724,
+          0.027836551889777184
+        ],
+        "excludes_zero": false
+      }
+    },
+    "W_s1_continuation_vs_DOWN": {
+      "overall": {
+        "difference": 0.13589847087860107,
+        "interval": [
+          0.08735758066177368,
+          0.18330885469913483
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.12471640110015869,
+        "interval": [
+          0.07146938890218735,
+          0.17612701654434204
+        ],
+        "excludes_zero": true
+      }
+    },
+    "WF_continuation_vs_DOWN": {
+      "overall": {
+        "difference": 0.12996095418930054,
+        "interval": [
+          0.0764022022485733,
+          0.1828220635652542
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.11609572172164917,
+        "interval": [
+          0.056641586124897,
+          0.1771235316991806
+        ],
+        "excludes_zero": true
+      }
+    }
+  },
+  "sleep_choices": {
+    "W_s1_continuation": 42,
+    "WF_continuation": 52,
+    "WFH_continuation": 14,
+    "WFH_harm": 12
+  },
+  "expected_safe": {
+    "DOWN": {
+      "overall": 0.5798046588897705,
+      "zombie": 0.5377722382545471,
+      "day": 0.5627570152282715,
+      "night": 0.6337890625,
+      "lava_adjacent": 0.6804123520851135,
+      "zombie_adjacent": 0.5377722382545471,
+      "arrow_or_skeleton": 0.7279744148254395,
+      "none_of_these": 0.591549277305603
+    },
+    "actions_only": {
+      "overall": 0.6314974427223206,
+      "zombie": 0.5677744746208191,
+      "day": 0.6472210884094238,
+      "night": 0.5817057490348816,
+      "lava_adjacent": 0.7422680258750916,
+      "zombie_adjacent": 0.5677744746208191,
+      "arrow_or_skeleton": 0.6417545080184937,
+      "none_of_these": 0.7746478915214539
+    },
+    "W_s1_continuation": {
+      "overall": 0.7157031297683716,
+      "zombie": 0.6624886393547058,
+      "day": 0.7314966917037964,
+      "night": 0.6656901240348816,
+      "lava_adjacent": 0.9175257682800293,
+      "zombie_adjacent": 0.6624886393547058,
+      "arrow_or_skeleton": 0.7865210771560669,
+      "none_of_these": 0.7887324094772339
+    },
+    "WF_continuation": {
+      "overall": 0.709765613079071,
+      "zombie": 0.6538679599761963,
+      "day": 0.73046875,
+      "night": 0.6442057490348816,
+      "lava_adjacent": 0.907216489315033,
+      "zombie_adjacent": 0.6538679599761963,
+      "arrow_or_skeleton": 0.7217620611190796,
+      "none_of_these": 0.8169013857841492
+    },
+    "WFH_continuation": {
+      "overall": 0.7036718726158142,
+      "zombie": 0.6377608776092529,
+      "day": 0.7222450375556946,
+      "night": 0.6448567509651184,
+      "lava_adjacent": 0.8969072103500366,
+      "zombie_adjacent": 0.6377608776092529,
+      "arrow_or_skeleton": 0.7466114163398743,
+      "none_of_these": 0.8450704216957092
+    },
+    "WFH_harm": {
+      "overall": 0.7057031393051147,
+      "zombie": 0.6425249576568604,
+      "day": 0.7216283082962036,
+      "night": 0.6552734375,
+      "lava_adjacent": 0.8453608155250549,
+      "zombie_adjacent": 0.6425249576568604,
+      "arrow_or_skeleton": 0.7503765225410461,
+      "none_of_these": 0.8521126508712769
+    }
+  }
+}

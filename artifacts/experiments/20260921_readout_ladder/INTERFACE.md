@@ -320,3 +320,34 @@ independent world seeds. Scope: one-step death only; one encoder; the per-compon
 patch-grid state is a declared deviation from TC-07/TC-19. Why whitening works is under test
 (`headwhite.py`), and whether dense harm supervision at full scale adds more is under test
 (`harmworld.py`, sealed 60k).
+
+## Head conditioning (`headwhite.py`, post hoc 55k–58k): `mixed`
+
+The U world was left unchanged, with the agent readout fed latent / W's std. On zombie roots, its own
+head beats U's in 4 of 4 blocks (+0.019 to +0.061) and stays below the whitened world in 4 of 4
+(−0.025 to −0.080). **About half of W's gain is head-input conditioning** (LeJEPA Lemma 1); **the rest
+comes from training the world itself in isotropic coordinates.**
+
+## Combined recipe (`harmworld.py`, sealed 60k, 800 opportunity / 551 zombie): primary `trained_system_passes`, secondary `no_evidence`
+
+| own trained head | overall | zombie | SLEEP choices |
+|---|---|---|---|
+| DOWN | 0.580 | 0.538 | |
+| actions_only | 0.631 | 0.568 | |
+| **W seed 1 (pool, continuation head)** | **0.716** | **0.662** | 42 |
+| WF (full-corpus pool, whitened) | 0.710 | 0.654 | 52 |
+| WFH continuation head | 0.704 | 0.638 | 14 |
+| WFH harm head | 0.706 | 0.643 | 12 |
+
+**Declared rules:**
+- WFH harm head − DOWN: +0.126\*
+- WFH harm head − actions_only: +0.074\*
+- WFH harm head − DOWN on zombie roots: +0.105\*
+- **But not above the pool-trained whitened world:** −0.020 [−0.062, +0.020] on zombie roots.
+
+**Also:**
+- Full-corpus data does not help the world itself (WF − W_s1, zombie −0.009).
+- The harm head cuts SLEEP choices without moving safe choice.
+- **W seed 1 passes again on this fresh block:** +0.136\* over DOWN, +0.125\* on zombie roots. That
+  makes the whitened world's trained system above DOWN on zombie roots in 6 of 6 blocks, resolved on
+  the three sealed blocks read after its rules or with the effect reported (58k, 59k, 60k).
