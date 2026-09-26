@@ -246,3 +246,42 @@ successors of TRAIN windows (65,294 examples, 8,155 deaths).
 - **Even a counterfactually supervised probe reaches only 0.67.**
 - **For U the head is not the binding constraint; the content of the generated state is.** Z's
   generated states read below DOWN under every head (0.45–0.58).
+
+## Three follow-ups, 2026-09-26
+
+**Longer bridge training (`longer.py`, sealed 57k, 803 opportunity roots): `no_evidence_longer_helps`.**
+- Imagined state: 0.691 (1×), 0.696 (2×), 0.697 (3×); zombie 3× − 1× −0.017, not resolved.
+- Sanity: 1× equals the saved seed-1 world (−0.002).
+- On this block there is no retention loss even at 1× (imagined − root: −0.011 overall, +0.004
+  zombie). **The 56k ~5-point loss does not recur on 55k or 57k: it is block-specific.**
+
+**Heads on imagined states at full data scale (`genscale.py`, post hoc 56k).**
+- A factual head on U's imagined successors, trained on all 3.09M TRAIN transitions, reaches 0.664
+  with the harm label and 0.661 with the death label: the dense label does not help there.
+- The direct dueling head on the world's input reaches 0.689 (imagined − direct: −0.025
+  [−0.055, +0.003]).
+- **The imagined successor does not draw the damage clearly enough for a head to exploit the dense
+  label.**
+
+**Whitened state (`whiten.py`, sealed 58k, 810 opportunity roots).** The first scoring was OOM-killed
+before any rule ran; the identical rerun read the block once. Readings:
+- primary: `no_evidence_whitening_helps` (gen_W − gen_U, zombie +0.030 [−0.006, +0.066]);
+- `W_beats_actions_only` (+0.088\*);
+- `W_no_resolved_loss`;
+- `mechanism_not_seen` (fatal alignment 0.593 vs 0.592; tail R² 0.21 vs 0.30).
+
+**Reported, not ruled on, and the most important number of the day:**
+
+| trained head (the world's own, no refit) | overall | zombie |
+|---|---|---|
+| DOWN | 0.660 | 0.585 |
+| trained_U | 0.653 | 0.498 |
+| **trained_W** | **0.725** | **0.626** |
+
+- trained_W − trained_U: +0.072\* overall, **+0.127\*** on zombie roots.
+- trained_W − actions_only: +0.077\* overall, +0.069\* on zombie roots.
+- trained_W − DOWN: +0.065\* overall, +0.041 [−0.007, +0.091] on zombie roots.
+
+**This is the first trained system to beat actions-only overall and on zombie roots on a sealed
+block.** One seed, one block, and not the declared primary: it needs a predeclared replication.
+The token-free state probe also rises (state_W − state_U +0.036\*, zombie +0.050\*).

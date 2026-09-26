@@ -1,0 +1,81 @@
+{
+  "schema": "d4mj_genscale_v1",
+  "status": "POST HOC on the 56k block",
+  "script_sha256": "04253592c3adac118d7ca0cf2dc08f66fde49321b040fdc7fbf62c3b86747d36",
+  "world_sha256": "2ca19ed947a4d8ef0b495aae9788366de4ca64de5baecdc2708888f87977dea0",
+  "cache_manifest_sha256": "2408b1b7af12cb1a0780dfe4ea2c751a60545bbfe37c6b66987ec05edc67bb1c",
+  "judge_manifest": "0a42c1e36b233190cd2c0456098735e433c9da44e5e1754c352330da4e49cc78",
+  "readings": {
+    "imagination": "imagination_keeps_consequence",
+    "dense_label": "no_evidence"
+  },
+  "contrasts": {
+    "gen_harm_vs_root_harm": {
+      "overall": {
+        "difference": -0.024955809116363525,
+        "interval": [
+          -0.055090099573135376,
+          0.0032057182397693396
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": -0.013948142528533936,
+        "interval": [
+          -0.047484710812568665,
+          0.018106387928128242
+        ],
+        "excludes_zero": false
+      }
+    },
+    "gen_harm_vs_gen_dead": {
+      "overall": {
+        "difference": 0.0026009082794189453,
+        "interval": [
+          -0.02416202425956726,
+          0.029105613008141518
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": -0.0013218522071838379,
+        "interval": [
+          -0.027937613427639008,
+          0.028214653953909874
+        ],
+        "excludes_zero": false
+      }
+    }
+  },
+  "per_seed": {
+    "gen_harm": [
+      0.6714263558387756,
+      0.6502028703689575,
+      0.6692805886268616
+    ],
+    "gen_dead": [
+      0.6805945634841919,
+      0.6481351256370544,
+      0.6543773412704468
+    ],
+    "root_harm": [
+      0.6758348941802979,
+      0.6976435780525208,
+      0.6922987103462219
+    ]
+  },
+  "expected_safe": {
+    "gen_harm": {
+      "overall": 0.6636366248130798,
+      "zombie": 0.5871606469154358
+    },
+    "gen_dead": {
+      "overall": 0.6610357165336609,
+      "zombie": 0.5884824991226196
+    },
+    "root_harm": {
+      "overall": 0.6885924339294434,
+      "zombie": 0.6011087894439697
+    }
+  }
+}
