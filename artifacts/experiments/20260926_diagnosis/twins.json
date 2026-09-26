@@ -1,0 +1,1393 @@
+{
+  "n_states": 300,
+  "pixel_change": {
+    "day/zombie": 2.5081803798675537,
+    "day/cow": 3.4318594932556152,
+    "day/lava": 6.500062942504883,
+    "day/stone": 4.509909152984619,
+    "day/tree": 2.635356903076172,
+    "day/water": 5.6252617835998535,
+    "day/table": 4.13749361038208,
+    "day/zombie_far": 2.5085108280181885,
+    "night/zombie": 1.097874402999878,
+    "night/cow": 1.474341869354248,
+    "night/lava": 2.309262275695801,
+    "night/stone": 1.6221295595169067,
+    "night/tree": 1.0911272764205933,
+    "night/water": 1.8461660146713257,
+    "night/table": 1.4330540895462036,
+    "night/zombie_far": 0.6653453707695007
+  },
+  "by_step": {
+    "0": {
+      "day/zombie": {
+        "z": {
+          "euclid_over_natural_radius": 0.0413709275736477,
+          "fisher_dprime": 1.7857834040312788,
+          "consistency": 0.9758989075216448
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.03809509485192744,
+          "fisher_dprime": 1.7866702740560314,
+          "consistency": 0.9848626690974828
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.2635356311805095,
+          "fisher_dprime": 4.240752011384048,
+          "consistency": 0.9992728143359019
+        }
+      },
+      "day/cow": {
+        "z": {
+          "euclid_over_natural_radius": 0.051844591131003336,
+          "fisher_dprime": 1.5099242858259256,
+          "consistency": 0.9726439932322626
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.05296863556372168,
+          "fisher_dprime": 1.5226925459515088,
+          "consistency": 0.9830831635400811
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.7206144950310083,
+          "fisher_dprime": 10.742232088091786,
+          "consistency": 0.9994957223958547
+        }
+      },
+      "day/lava": {
+        "z": {
+          "euclid_over_natural_radius": 0.0730618408192303,
+          "fisher_dprime": 1.4475323056360825,
+          "consistency": 0.9530860767135849
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.07720971519121603,
+          "fisher_dprime": 1.3263895050799999,
+          "consistency": 0.9660813335178307
+        },
+        "token": {
+          "euclid_over_natural_radius": 3.0311468638918124,
+          "fisher_dprime": 20.472096053047398,
+          "consistency": 0.9995289860828799
+        }
+      },
+      "day/stone": {
+        "z": {
+          "euclid_over_natural_radius": 0.07393156197022194,
+          "fisher_dprime": 0.8329177046745082,
+          "consistency": 0.9257826197304644
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.07324765977867435,
+          "fisher_dprime": 0.8262336728225677,
+          "consistency": 0.9336538337064231
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.9784879383747254,
+          "fisher_dprime": 14.062563594556433,
+          "consistency": 0.9924797008269208
+        }
+      },
+      "day/tree": {
+        "z": {
+          "euclid_over_natural_radius": 0.0358075857488186,
+          "fisher_dprime": 0.6690988110577343,
+          "consistency": 0.9719829675305411
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.0347773082478408,
+          "fisher_dprime": 0.6571696559063628,
+          "consistency": 0.9832241855884486
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.4738185689301178,
+          "fisher_dprime": 6.001249996061647,
+          "consistency": 0.9993034223059404
+        }
+      },
+      "day/water": {
+        "z": {
+          "euclid_over_natural_radius": 0.08894819496617414,
+          "fisher_dprime": 0.5731271477683229,
+          "consistency": 0.9513467207776127
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.07938031347147133,
+          "fisher_dprime": 0.49871565104672255,
+          "consistency": 0.9534855936737011
+        },
+        "token": {
+          "euclid_over_natural_radius": 3.0023106721923343,
+          "fisher_dprime": 27.20695602914478,
+          "consistency": 0.9992346838473555
+        }
+      },
+      "day/table": {
+        "z": {
+          "euclid_over_natural_radius": 0.05842483425388215,
+          "fisher_dprime": 2.3524912312846706,
+          "consistency": 0.9497286414774828
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.06596631690891165,
+          "fisher_dprime": 2.458340558378734,
+          "consistency": 0.9696998377758496
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.4562558179645295,
+          "fisher_dprime": 12.758114029517762,
+          "consistency": 0.9968153034004511
+        }
+      },
+      "day/zombie_far": {
+        "z": {
+          "euclid_over_natural_radius": 0.04141042628124354,
+          "fisher_dprime": 1.7861113879428798,
+          "consistency": 0.9759536779154329
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.03810608062955903,
+          "fisher_dprime": 1.788526314389886,
+          "consistency": 0.9849205541234604
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.01014688201391415,
+          "fisher_dprime": 0.7402872777080549,
+          "consistency": 0.9942100238858617
+        }
+      },
+      "night/zombie": {
+        "z": {
+          "euclid_over_natural_radius": 0.019753522694779688,
+          "fisher_dprime": 0.9932739190400912,
+          "consistency": 0.9981257358255275
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.01746521582263515,
+          "fisher_dprime": 0.9546588369513225,
+          "consistency": 0.9988689059523975
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.6772507747651022,
+          "fisher_dprime": 5.017631120372562,
+          "consistency": 0.999742081214545
+        }
+      },
+      "night/cow": {
+        "z": {
+          "euclid_over_natural_radius": 0.023530729647961858,
+          "fisher_dprime": 1.13452417965238,
+          "consistency": 0.997713785061855
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.024225919051932065,
+          "fisher_dprime": 0.9507740640624378,
+          "consistency": 0.9988913953624906
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.8870957305334829,
+          "fisher_dprime": 15.491489013199189,
+          "consistency": 0.9997606284693923
+        }
+      },
+      "night/lava": {
+        "z": {
+          "euclid_over_natural_radius": 0.04197968615184125,
+          "fisher_dprime": 1.1451636051172431,
+          "consistency": 0.9970654179470508
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.03865539146273511,
+          "fisher_dprime": 1.0994073863262321,
+          "consistency": 0.9975793087916054
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.4926869080264344,
+          "fisher_dprime": 23.449314358499368,
+          "consistency": 0.9989540292568849
+        }
+      },
+      "night/stone": {
+        "z": {
+          "euclid_over_natural_radius": 0.02300523990419032,
+          "fisher_dprime": 0.37708533742986977,
+          "consistency": 0.9945300668927772
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.022668305999333588,
+          "fisher_dprime": 0.3614396098215106,
+          "consistency": 0.995370865101343
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.0335767627570664,
+          "fisher_dprime": 10.12931026092088,
+          "consistency": 0.9989539306912552
+        }
+      },
+      "night/tree": {
+        "z": {
+          "euclid_over_natural_radius": 0.012522505957739174,
+          "fisher_dprime": 0.503618190916575,
+          "consistency": 0.9971713632600381
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.013064456317154994,
+          "fisher_dprime": 0.41522557910160135,
+          "consistency": 0.9984731980703013
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.6752978317488679,
+          "fisher_dprime": 10.692187356227997,
+          "consistency": 0.9995658311039983
+        }
+      },
+      "night/water": {
+        "z": {
+          "euclid_over_natural_radius": 0.03470517299983151,
+          "fisher_dprime": 0.43923061298508714,
+          "consistency": 0.9959661180352767
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.031062218080999262,
+          "fisher_dprime": 0.38938305564506126,
+          "consistency": 0.9964391262358623
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.1479614121662305,
+          "fisher_dprime": 15.455113895102269,
+          "consistency": 0.9994514123531895
+        }
+      },
+      "night/table": {
+        "z": {
+          "euclid_over_natural_radius": 0.020678603160196454,
+          "fisher_dprime": 0.9249919642106864,
+          "consistency": 0.99563731694683
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.02260235673271966,
+          "fisher_dprime": 0.8126893459311098,
+          "consistency": 0.9974602429894939
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.9245217975509576,
+          "fisher_dprime": 12.58382226056678,
+          "consistency": 0.9992363246263074
+        }
+      },
+      "night/zombie_far": {
+        "z": {
+          "euclid_over_natural_radius": 0.012106654542760598,
+          "fisher_dprime": 0.6162654293425058,
+          "consistency": 0.99750788965325
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.010808220695545562,
+          "fisher_dprime": 0.5885699519708314,
+          "consistency": 0.9982167540508954
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.004389738285488559,
+          "fisher_dprime": 0.3119666043768411,
+          "consistency": 0.9981338486811933
+        }
+      }
+    },
+    "500": {
+      "day/zombie": {
+        "z": {
+          "euclid_over_natural_radius": 0.014817826586658924,
+          "fisher_dprime": 0.562519720750353,
+          "consistency": 0.8955475961874354
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.017541834610080166,
+          "fisher_dprime": 1.1203934433666969,
+          "consistency": 0.9390188659467181
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.0898265143660288,
+          "fisher_dprime": 4.297252781428158,
+          "consistency": 0.9980525721739311
+        }
+      },
+      "day/cow": {
+        "z": {
+          "euclid_over_natural_radius": 0.028147891439220928,
+          "fisher_dprime": 0.9125685735030266,
+          "consistency": 0.8523753967405111
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.030877476215479257,
+          "fisher_dprime": 1.4306569244786747,
+          "consistency": 0.9091019253141849
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.501022008053205,
+          "fisher_dprime": 10.678963379762049,
+          "consistency": 0.9989818647314576
+        }
+      },
+      "day/lava": {
+        "z": {
+          "euclid_over_natural_radius": 0.1099531471365223,
+          "fisher_dprime": 1.5478581300692615,
+          "consistency": 0.7777800977839013
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.11032648444328584,
+          "fisher_dprime": 1.9553892638508266,
+          "consistency": 0.8262593187277422
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.552692210165825,
+          "fisher_dprime": 20.41346906831759,
+          "consistency": 0.9992676847559626
+        }
+      },
+      "day/stone": {
+        "z": {
+          "euclid_over_natural_radius": 0.11537227306040079,
+          "fisher_dprime": 1.117790306900265,
+          "consistency": 0.7192641893678425
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.10800961999528016,
+          "fisher_dprime": 1.2647801740440512,
+          "consistency": 0.698269043245028
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.6821127229169073,
+          "fisher_dprime": 15.766725359017741,
+          "consistency": 0.9873053052955011
+        }
+      },
+      "day/tree": {
+        "z": {
+          "euclid_over_natural_radius": 0.018623600386366384,
+          "fisher_dprime": 0.538009121691071,
+          "consistency": 0.8926707546936501
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.021922660499357823,
+          "fisher_dprime": 0.6529972083006353,
+          "consistency": 0.9421224210586325
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.3571507542280623,
+          "fisher_dprime": 6.124518295288859,
+          "consistency": 0.9980008258219092
+        }
+      },
+      "day/water": {
+        "z": {
+          "euclid_over_natural_radius": 0.09606591818114071,
+          "fisher_dprime": 1.3575968006988954,
+          "consistency": 0.7849699394453044
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.09503537865140732,
+          "fisher_dprime": 1.5085373888574751,
+          "consistency": 0.7967773215308539
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.8977774722475975,
+          "fisher_dprime": 28.677100288641206,
+          "consistency": 0.9989900778741956
+        }
+      },
+      "day/table": {
+        "z": {
+          "euclid_over_natural_radius": 0.05230206343252192,
+          "fisher_dprime": 1.284483329724365,
+          "consistency": 0.8634168393431972
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.053351642803291424,
+          "fisher_dprime": 2.1479366290225204,
+          "consistency": 0.9007473830439464
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.244044174071529,
+          "fisher_dprime": 12.672593618914917,
+          "consistency": 0.9934422380216009
+        }
+      },
+      "day/zombie_far": {
+        "z": {
+          "euclid_over_natural_radius": 0.014905162958124005,
+          "fisher_dprime": 0.5621395913194513,
+          "consistency": 0.8959442722517953
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.01761054439382895,
+          "fisher_dprime": 1.119742185244402,
+          "consistency": 0.9390720687648896
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.009338994546079338,
+          "fisher_dprime": 0.5850934236893814,
+          "consistency": 0.992761983076371
+        }
+      },
+      "night/zombie": {
+        "z": {
+          "euclid_over_natural_radius": 0.015489251847055933,
+          "fisher_dprime": 0.5785422233744668,
+          "consistency": 0.9753266155486654
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.015239570938084795,
+          "fisher_dprime": 0.895427793471319,
+          "consistency": 0.981678653743937
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.814191122971862,
+          "fisher_dprime": 5.917492757962941,
+          "consistency": 0.9979247443493746
+        }
+      },
+      "night/cow": {
+        "z": {
+          "euclid_over_natural_radius": 0.01710128947087803,
+          "fisher_dprime": 0.8589674616180762,
+          "consistency": 0.9306223091703051
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.017659670748672977,
+          "fisher_dprime": 1.1103913405291876,
+          "consistency": 0.9491914423087209
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.0715042554773788,
+          "fisher_dprime": 20.69445284687279,
+          "consistency": 0.9970424679018667
+        }
+      },
+      "night/lava": {
+        "z": {
+          "euclid_over_natural_radius": 0.07901518184175527,
+          "fisher_dprime": 2.5377825189353356,
+          "consistency": 0.9706387086294584
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.07125739864118216,
+          "fisher_dprime": 2.3596303831638816,
+          "consistency": 0.9698576474808336
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.8032509239336203,
+          "fisher_dprime": 26.24286680714549,
+          "consistency": 0.9976555065990957
+        }
+      },
+      "night/stone": {
+        "z": {
+          "euclid_over_natural_radius": 0.046677630384750084,
+          "fisher_dprime": 0.7880668430909443,
+          "consistency": 0.9321679648598237
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.044003154950934056,
+          "fisher_dprime": 0.706910908103061,
+          "consistency": 0.9492657260394933
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.7317614670939365,
+          "fisher_dprime": 15.01011089676596,
+          "consistency": 0.9942395466767889
+        }
+      },
+      "night/tree": {
+        "z": {
+          "euclid_over_natural_radius": 0.016072894549521165,
+          "fisher_dprime": 0.6343079191827246,
+          "consistency": 0.9653404385327067
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.016426072041079518,
+          "fisher_dprime": 0.6924047117985701,
+          "consistency": 0.9772808657351694
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.9543810125600152,
+          "fisher_dprime": 12.670738377006794,
+          "consistency": 0.998106613875115
+        }
+      },
+      "night/water": {
+        "z": {
+          "euclid_over_natural_radius": 0.06298548618656662,
+          "fisher_dprime": 1.1728443657497798,
+          "consistency": 0.944795431404998
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.05757465066788359,
+          "fisher_dprime": 1.0155403377414152,
+          "consistency": 0.9549329956335493
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.9096767572998545,
+          "fisher_dprime": 26.740731429754693,
+          "consistency": 0.9954937506682677
+        }
+      },
+      "night/table": {
+        "z": {
+          "euclid_over_natural_radius": 0.03860392754193466,
+          "fisher_dprime": 1.0593542167257055,
+          "consistency": 0.9503477009061592
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.033695792600611375,
+          "fisher_dprime": 1.1543024243918372,
+          "consistency": 0.9583477228024124
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.4113573637238228,
+          "fisher_dprime": 15.71178591998586,
+          "consistency": 0.9943064395111736
+        }
+      },
+      "night/zombie_far": {
+        "z": {
+          "euclid_over_natural_radius": 0.010543327254685608,
+          "fisher_dprime": 0.37686592091117505,
+          "consistency": 0.9726092998307536
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.010182678123327665,
+          "fisher_dprime": 0.5744130466639252,
+          "consistency": 0.9783512547648576
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.01125353536991163,
+          "fisher_dprime": 0.44087385122266054,
+          "consistency": 0.9843748510927319
+        }
+      }
+    },
+    "2000": {
+      "day/zombie": {
+        "z": {
+          "euclid_over_natural_radius": 0.0177598515623299,
+          "fisher_dprime": 0.4846914053544031,
+          "consistency": 0.8763953451349991
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.017912615775823718,
+          "fisher_dprime": 0.6996089524133343,
+          "consistency": 0.9357660580082788
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.9100065957633515,
+          "fisher_dprime": 4.134877709567481,
+          "consistency": 0.9969711247621834
+        }
+      },
+      "day/cow": {
+        "z": {
+          "euclid_over_natural_radius": 0.019853187466340478,
+          "fisher_dprime": 0.6129373626059905,
+          "consistency": 0.8421352954903528
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.02092130577866544,
+          "fisher_dprime": 1.0395100695687802,
+          "consistency": 0.8901903831704
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.2311433071939093,
+          "fisher_dprime": 10.474643632474647,
+          "consistency": 0.9960984683270908
+        }
+      },
+      "day/lava": {
+        "z": {
+          "euclid_over_natural_radius": 0.10559350535389989,
+          "fisher_dprime": 1.7275349279433263,
+          "consistency": 0.8824157709835507
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.10132715679202527,
+          "fisher_dprime": 1.6894196113148408,
+          "consistency": 0.8973663562314708
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.76852512109378,
+          "fisher_dprime": 19.98554000711555,
+          "consistency": 0.9989560470289727
+        }
+      },
+      "day/stone": {
+        "z": {
+          "euclid_over_natural_radius": 0.10788817658806252,
+          "fisher_dprime": 1.6506527146927352,
+          "consistency": 0.8252029809555916
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.1051731967009245,
+          "fisher_dprime": 1.4901085467052482,
+          "consistency": 0.803964347520797
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.884944996741671,
+          "fisher_dprime": 14.459510582161379,
+          "consistency": 0.9878774002204742
+        }
+      },
+      "day/tree": {
+        "z": {
+          "euclid_over_natural_radius": 0.030280517339750516,
+          "fisher_dprime": 0.4874880806272469,
+          "consistency": 0.8747817393459157
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.025375084844602696,
+          "fisher_dprime": 0.5732170931051718,
+          "consistency": 0.8994106767845896
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.060947829147394,
+          "fisher_dprime": 6.094852671121981,
+          "consistency": 0.9960873501223262
+        }
+      },
+      "day/water": {
+        "z": {
+          "euclid_over_natural_radius": 0.23042578418649368,
+          "fisher_dprime": 4.165335375306839,
+          "consistency": 0.8877594773500812
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.2213927176933855,
+          "fisher_dprime": 3.7231844644992647,
+          "consistency": 0.8676196154473528
+        },
+        "token": {
+          "euclid_over_natural_radius": 3.152352562362851,
+          "fisher_dprime": 26.34044890335123,
+          "consistency": 0.9983590218376839
+        }
+      },
+      "day/table": {
+        "z": {
+          "euclid_over_natural_radius": 0.04624518715494352,
+          "fisher_dprime": 0.8622908677975042,
+          "consistency": 0.9071736629175559
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.04214974026926744,
+          "fisher_dprime": 1.1338341731509975,
+          "consistency": 0.9220941978735846
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.349535305754274,
+          "fisher_dprime": 12.4241964758894,
+          "consistency": 0.9920359337049992
+        }
+      },
+      "day/zombie_far": {
+        "z": {
+          "euclid_over_natural_radius": 0.018436483279165725,
+          "fisher_dprime": 0.5030130590101747,
+          "consistency": 0.8776668364331469
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.01867052984849596,
+          "fisher_dprime": 0.7164222595998021,
+          "consistency": 0.9354830279977622
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.007109665301129995,
+          "fisher_dprime": 0.3638219243787682,
+          "consistency": 0.9917443650290952
+        }
+      },
+      "night/zombie": {
+        "z": {
+          "euclid_over_natural_radius": 0.01186319956986307,
+          "fisher_dprime": 0.3471017121270706,
+          "consistency": 0.9751283457520227
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.009578332158438903,
+          "fisher_dprime": 0.42157442335293954,
+          "consistency": 0.9804615958005892
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.8321530511503806,
+          "fisher_dprime": 7.839332580470991,
+          "consistency": 0.9902823974033337
+        }
+      },
+      "night/cow": {
+        "z": {
+          "euclid_over_natural_radius": 0.00738127656200134,
+          "fisher_dprime": 0.44226684191058135,
+          "consistency": 0.9319278122022164
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.007792209106161839,
+          "fisher_dprime": 0.6494478397313002,
+          "consistency": 0.9486268993542923
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.0061368005730265,
+          "fisher_dprime": 21.474748857185418,
+          "consistency": 0.9777603899334251
+        }
+      },
+      "night/lava": {
+        "z": {
+          "euclid_over_natural_radius": 0.03985909730737435,
+          "fisher_dprime": 1.3900858872648076,
+          "consistency": 0.9307974729038319
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.037417191379195885,
+          "fisher_dprime": 1.544521866237173,
+          "consistency": 0.9581355936892756
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.4623611056535624,
+          "fisher_dprime": 25.979837660257132,
+          "consistency": 0.9964446975992893
+        }
+      },
+      "night/stone": {
+        "z": {
+          "euclid_over_natural_radius": 0.04960300808037044,
+          "fisher_dprime": 1.303620963070833,
+          "consistency": 0.8953796625453266
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.04893785915146499,
+          "fisher_dprime": 1.3409130328180718,
+          "consistency": 0.8979088029497073
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.7818718108213445,
+          "fisher_dprime": 18.57976335012729,
+          "consistency": 0.9941246477933802
+        }
+      },
+      "night/tree": {
+        "z": {
+          "euclid_over_natural_radius": 0.011409811470139815,
+          "fisher_dprime": 0.3661140963622625,
+          "consistency": 0.9561143920610156
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.010326596063164956,
+          "fisher_dprime": 0.41995005828635823,
+          "consistency": 0.9789178054823444
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.9053864920724368,
+          "fisher_dprime": 13.4001529189165,
+          "consistency": 0.9924423327377552
+        }
+      },
+      "night/water": {
+        "z": {
+          "euclid_over_natural_radius": 0.07841516684026889,
+          "fisher_dprime": 1.8474636949289676,
+          "consistency": 0.9322910065384667
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.06198082238675918,
+          "fisher_dprime": 1.8954471571018614,
+          "consistency": 0.907202848406389
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.492912498780322,
+          "fisher_dprime": 22.015300798970497,
+          "consistency": 0.9956429827176104
+        }
+      },
+      "night/table": {
+        "z": {
+          "euclid_over_natural_radius": 0.02496454955525905,
+          "fisher_dprime": 0.8417241652608953,
+          "consistency": 0.924872813675965
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.025653258758213993,
+          "fisher_dprime": 0.9406285628202052,
+          "consistency": 0.9428466386405887
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.6169768608511434,
+          "fisher_dprime": 22.529482979256233,
+          "consistency": 0.992779050749908
+        }
+      },
+      "night/zombie_far": {
+        "z": {
+          "euclid_over_natural_radius": 0.008012969682666972,
+          "fisher_dprime": 0.23069233803480285,
+          "consistency": 0.9677875367596148
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.006556898143932984,
+          "fisher_dprime": 0.2867267363049111,
+          "consistency": 0.9725408347502387
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.010128136113369308,
+          "fisher_dprime": 0.29993948214130345,
+          "consistency": 0.9764935128545846
+        }
+      }
+    },
+    "5000": {
+      "day/zombie": {
+        "z": {
+          "euclid_over_natural_radius": 0.017564277039934482,
+          "fisher_dprime": 0.4145192233995424,
+          "consistency": 0.7653050221375586
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.017218686903770063,
+          "fisher_dprime": 0.46799005705301094,
+          "consistency": 0.9264774061865562
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.8457073271358887,
+          "fisher_dprime": 4.226039831893767,
+          "consistency": 0.9957860730405909
+        }
+      },
+      "day/cow": {
+        "z": {
+          "euclid_over_natural_radius": 0.03092022939076483,
+          "fisher_dprime": 0.806534195920022,
+          "consistency": 0.7842991022270269
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.02985951284816075,
+          "fisher_dprime": 1.0322931870784384,
+          "consistency": 0.8807939615812502
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.0611560786791656,
+          "fisher_dprime": 10.456631872403182,
+          "consistency": 0.9957891712011863
+        }
+      },
+      "day/lava": {
+        "z": {
+          "euclid_over_natural_radius": 0.05972952292354988,
+          "fisher_dprime": 1.0560088173362356,
+          "consistency": 0.8449136697779486
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.05276627106982538,
+          "fisher_dprime": 1.2873508203357815,
+          "consistency": 0.8892030366353209
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.785294267052385,
+          "fisher_dprime": 19.17526795886781,
+          "consistency": 0.9988464844300947
+        }
+      },
+      "day/stone": {
+        "z": {
+          "euclid_over_natural_radius": 0.09396463314444226,
+          "fisher_dprime": 1.379842790741791,
+          "consistency": 0.8481426429184489
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.08012317070059313,
+          "fisher_dprime": 1.3865742294487453,
+          "consistency": 0.869107995813633
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.9754834993075674,
+          "fisher_dprime": 14.874736471589447,
+          "consistency": 0.9868943178961396
+        }
+      },
+      "day/tree": {
+        "z": {
+          "euclid_over_natural_radius": 0.017897203332815463,
+          "fisher_dprime": 0.42508783240982745,
+          "consistency": 0.759253291774955
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.01712308032528207,
+          "fisher_dprime": 0.4552936457215985,
+          "consistency": 0.8952705068498884
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.0036458358090452,
+          "fisher_dprime": 6.239989429462587,
+          "consistency": 0.9954886964042293
+        }
+      },
+      "day/water": {
+        "z": {
+          "euclid_over_natural_radius": 0.17713170121091398,
+          "fisher_dprime": 4.356045294998193,
+          "consistency": 0.868964479932352
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.15946932209437167,
+          "fisher_dprime": 3.7345736171645516,
+          "consistency": 0.9037252320515796
+        },
+        "token": {
+          "euclid_over_natural_radius": 3.1026317059097206,
+          "fisher_dprime": 27.11889501325523,
+          "consistency": 0.9977706788476933
+        }
+      },
+      "day/table": {
+        "z": {
+          "euclid_over_natural_radius": 0.08097373351163081,
+          "fisher_dprime": 1.8464604242887008,
+          "consistency": 0.8411984546753182
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.07976339742212946,
+          "fisher_dprime": 1.9528361948496664,
+          "consistency": 0.9430737992660304
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.62263715968257,
+          "fisher_dprime": 12.389017575723296,
+          "consistency": 0.9942160025229623
+        }
+      },
+      "day/zombie_far": {
+        "z": {
+          "euclid_over_natural_radius": 0.01805327785172736,
+          "fisher_dprime": 0.42381789028071853,
+          "consistency": 0.76620220166119
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.017676844902408513,
+          "fisher_dprime": 0.47800824202599523,
+          "consistency": 0.9268548712212688
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.006332805999399704,
+          "fisher_dprime": 0.3348233121516245,
+          "consistency": 0.9904558512020886
+        }
+      },
+      "night/zombie": {
+        "z": {
+          "euclid_over_natural_radius": 0.007021750822615862,
+          "fisher_dprime": 0.21862490949915905,
+          "consistency": 0.9615343434015767
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.006161399106142888,
+          "fisher_dprime": 0.3415214013190453,
+          "consistency": 0.9765714549716576
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.8502049310704608,
+          "fisher_dprime": 8.443993605085419,
+          "consistency": 0.9850100654560102
+        }
+      },
+      "night/cow": {
+        "z": {
+          "euclid_over_natural_radius": 0.007167251383073697,
+          "fisher_dprime": 0.30512968759983444,
+          "consistency": 0.9378882873653076
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.006316880694826791,
+          "fisher_dprime": 0.4466055072368972,
+          "consistency": 0.9511922256677223
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.9823987906659799,
+          "fisher_dprime": 24.1688950686285,
+          "consistency": 0.9682406368261799
+        }
+      },
+      "night/lava": {
+        "z": {
+          "euclid_over_natural_radius": 0.025134984466096785,
+          "fisher_dprime": 0.8949201640470497,
+          "consistency": 0.9212493724052215
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.023554049486796867,
+          "fisher_dprime": 1.2515253238581152,
+          "consistency": 0.9529589432549798
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.64887490720417,
+          "fisher_dprime": 24.77393296531965,
+          "consistency": 0.9964209689553322
+        }
+      },
+      "night/stone": {
+        "z": {
+          "euclid_over_natural_radius": 0.03738046323548433,
+          "fisher_dprime": 0.7777847280892829,
+          "consistency": 0.9434390780419138
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.030616474682596713,
+          "fisher_dprime": 0.6256314104640079,
+          "consistency": 0.9674219941553577
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.751186048271009,
+          "fisher_dprime": 19.08999715080543,
+          "consistency": 0.9938014325389883
+        }
+      },
+      "night/tree": {
+        "z": {
+          "euclid_over_natural_radius": 0.008990594614044287,
+          "fisher_dprime": 0.31473225156433043,
+          "consistency": 0.9119545931714095
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.008205378201280615,
+          "fisher_dprime": 0.4069759074334265,
+          "consistency": 0.9453833843718551
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.016734626780711,
+          "fisher_dprime": 17.519702857724972,
+          "consistency": 0.989221599889284
+        }
+      },
+      "night/water": {
+        "z": {
+          "euclid_over_natural_radius": 0.04506729859765341,
+          "fisher_dprime": 1.3093535408895611,
+          "consistency": 0.9641879882083306
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.03480988184670566,
+          "fisher_dprime": 1.1626447236578288,
+          "consistency": 0.9659122809643329
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.4409531056242573,
+          "fisher_dprime": 24.998430753530517,
+          "consistency": 0.9955823941152556
+        }
+      },
+      "night/table": {
+        "z": {
+          "euclid_over_natural_radius": 0.02570046748244978,
+          "fisher_dprime": 0.7424625293773437,
+          "consistency": 0.9375855397344793
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.02203787430758288,
+          "fisher_dprime": 0.8944492082277221,
+          "consistency": 0.955581314370214
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.740653682179222,
+          "fisher_dprime": 19.94063367958886,
+          "consistency": 0.9953885351894262
+        }
+      },
+      "night/zombie_far": {
+        "z": {
+          "euclid_over_natural_radius": 0.005780679086372332,
+          "fisher_dprime": 0.16601703051071184,
+          "consistency": 0.9485064600303966
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.004986706301013001,
+          "fisher_dprime": 0.23432823601295535,
+          "consistency": 0.9590873654227055
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.011142594466826656,
+          "fisher_dprime": 0.3025036309172893,
+          "consistency": 0.9681017670998902
+        }
+      }
+    },
+    "10000": {
+      "day/zombie": {
+        "z": {
+          "euclid_over_natural_radius": 0.021169115972191982,
+          "fisher_dprime": 0.5113248454506785,
+          "consistency": 0.8163029756957175
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.0209102380436181,
+          "fisher_dprime": 0.5480106231140573,
+          "consistency": 0.9433918360248519
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.9429161349784881,
+          "fisher_dprime": 4.364038708863402,
+          "consistency": 0.9967998803111509
+        }
+      },
+      "day/cow": {
+        "z": {
+          "euclid_over_natural_radius": 0.028416607990998533,
+          "fisher_dprime": 0.691856949862004,
+          "consistency": 0.785254563207301
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.026950988389893085,
+          "fisher_dprime": 0.9079451896664883,
+          "consistency": 0.8671863077657481
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.0625577825719952,
+          "fisher_dprime": 10.573579186512845,
+          "consistency": 0.9967278876944677
+        }
+      },
+      "day/lava": {
+        "z": {
+          "euclid_over_natural_radius": 0.05052807620768784,
+          "fisher_dprime": 0.8900147018171681,
+          "consistency": 0.8724603163999395
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.04457390335922376,
+          "fisher_dprime": 1.22458224584137,
+          "consistency": 0.8746768724515698
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.743696284868112,
+          "fisher_dprime": 19.055384663363373,
+          "consistency": 0.998784046079384
+        }
+      },
+      "day/stone": {
+        "z": {
+          "euclid_over_natural_radius": 0.07921633999277396,
+          "fisher_dprime": 1.3711830628000052,
+          "consistency": 0.8684757943727626
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.06982252770167736,
+          "fisher_dprime": 1.380560659477142,
+          "consistency": 0.8688038392155044
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.896287325533574,
+          "fisher_dprime": 15.072635757868962,
+          "consistency": 0.9871336969343224
+        }
+      },
+      "day/tree": {
+        "z": {
+          "euclid_over_natural_radius": 0.016930127255338785,
+          "fisher_dprime": 0.3775356390026597,
+          "consistency": 0.8049960379264761
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.016437096478291526,
+          "fisher_dprime": 0.5108522929976409,
+          "consistency": 0.9076961102053537
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.0784334534279352,
+          "fisher_dprime": 6.4275158059027016,
+          "consistency": 0.9953030551031066
+        }
+      },
+      "day/water": {
+        "z": {
+          "euclid_over_natural_radius": 0.17225819003305173,
+          "fisher_dprime": 3.5174870904647833,
+          "consistency": 0.895529460017882
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.1482478696397579,
+          "fisher_dprime": 3.38210989564865,
+          "consistency": 0.9075584052066896
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.96515923439085,
+          "fisher_dprime": 27.76403036550532,
+          "consistency": 0.9980481460600454
+        }
+      },
+      "day/table": {
+        "z": {
+          "euclid_over_natural_radius": 0.2565347893961897,
+          "fisher_dprime": 5.234260204408428,
+          "consistency": 0.8683344036793109
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.24705526814876277,
+          "fisher_dprime": 5.339060336164917,
+          "consistency": 0.9494972150637051
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.6914999814080267,
+          "fisher_dprime": 12.679480917591928,
+          "consistency": 0.9948587447957649
+        }
+      },
+      "day/zombie_far": {
+        "z": {
+          "euclid_over_natural_radius": 0.021512415173136075,
+          "fisher_dprime": 0.5183982158289195,
+          "consistency": 0.8165979552238407
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.0212585319192583,
+          "fisher_dprime": 0.5490292154567509,
+          "consistency": 0.9443619527110464
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.006879569737287659,
+          "fisher_dprime": 0.37862109090292906,
+          "consistency": 0.9908183422484855
+        }
+      },
+      "night/zombie": {
+        "z": {
+          "euclid_over_natural_radius": 0.008448365572913334,
+          "fisher_dprime": 0.28029633220692707,
+          "consistency": 0.9668344884545623
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.007803467129487737,
+          "fisher_dprime": 0.39924373826437687,
+          "consistency": 0.9831763611368867
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.0154182530041758,
+          "fisher_dprime": 9.54574220671526,
+          "consistency": 0.9916403102335778
+        }
+      },
+      "night/cow": {
+        "z": {
+          "euclid_over_natural_radius": 0.008072919124962545,
+          "fisher_dprime": 0.34094439839600493,
+          "consistency": 0.9553182257378091
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.007245717349851815,
+          "fisher_dprime": 0.504412516371128,
+          "consistency": 0.9619097295530982
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.0158857132822556,
+          "fisher_dprime": 23.065827855916076,
+          "consistency": 0.988999786799716
+        }
+      },
+      "night/lava": {
+        "z": {
+          "euclid_over_natural_radius": 0.01936969221825845,
+          "fisher_dprime": 0.8881373210608811,
+          "consistency": 0.9109788309384738
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.01973010141128062,
+          "fisher_dprime": 1.3717080076503396,
+          "consistency": 0.9389693864199887
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.5556802325720382,
+          "fisher_dprime": 27.229388238315813,
+          "consistency": 0.9970727838380178
+        }
+      },
+      "night/stone": {
+        "z": {
+          "euclid_over_natural_radius": 0.023106192590847518,
+          "fisher_dprime": 0.699711074532463,
+          "consistency": 0.9555391497312843
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.02003106488726016,
+          "fisher_dprime": 0.5893449271401905,
+          "consistency": 0.9690411017498983
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.3929246072624597,
+          "fisher_dprime": 20.35971195062976,
+          "consistency": 0.9942316112952202
+        }
+      },
+      "night/tree": {
+        "z": {
+          "euclid_over_natural_radius": 0.008922389771046675,
+          "fisher_dprime": 0.34390577381101206,
+          "consistency": 0.94248299513127
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.007776549452218578,
+          "fisher_dprime": 0.45615051423958736,
+          "consistency": 0.9505607269622626
+        },
+        "token": {
+          "euclid_over_natural_radius": 1.1023484507869756,
+          "fisher_dprime": 17.476657778870567,
+          "consistency": 0.9931592366282498
+        }
+      },
+      "night/water": {
+        "z": {
+          "euclid_over_natural_radius": 0.03872507729278263,
+          "fisher_dprime": 1.367327257861337,
+          "consistency": 0.9713332215163515
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.03132591889434937,
+          "fisher_dprime": 1.1595131630810476,
+          "consistency": 0.9726305782992906
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.2641840523767782,
+          "fisher_dprime": 26.108303576128534,
+          "consistency": 0.9961650689252023
+        }
+      },
+      "night/table": {
+        "z": {
+          "euclid_over_natural_radius": 0.019492404391176804,
+          "fisher_dprime": 0.6686690191810929,
+          "consistency": 0.9472674849878677
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.017659147370720253,
+          "fisher_dprime": 0.9519832540228678,
+          "consistency": 0.9554829301496439
+        },
+        "token": {
+          "euclid_over_natural_radius": 2.5421652457795125,
+          "fisher_dprime": 20.721579672767337,
+          "consistency": 0.9965599447207591
+        }
+      },
+      "night/zombie_far": {
+        "z": {
+          "euclid_over_natural_radius": 0.00651559729572133,
+          "fisher_dprime": 0.19802250536987692,
+          "consistency": 0.9615904125251327
+        },
+        "cls": {
+          "euclid_over_natural_radius": 0.005898327002495079,
+          "fisher_dprime": 0.26145866139640966,
+          "consistency": 0.9746213661602499
+        },
+        "token": {
+          "euclid_over_natural_radius": 0.01202482951526496,
+          "fisher_dprime": 0.35944947604233196,
+          "consistency": 0.9784014404874919
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "validation_on_simulator_truth": {
+    "n": 15100,
+    "decided_share": 0.8747681975364685,
+    "accuracy_when_decided": 0.9884169697761536,
+    "true_blocked_share": 0.37827813625335693,
+    "recall_blocked": 0.8482142686843872
+  },
+  "expert_v1": {
+    "moves": 44678,
+    "moved": 27467,
+    "blocked": 7713,
+    "ambiguous": 9498,
+    "blocked_share_of_decided": 0.21924388857305288
+  },
+  "support_v2": {
+    "moves": 136449,
+    "moved": 85776,
+    "blocked": 23620,
+    "ambiguous": 27053,
+    "blocked_share_of_decided": 0.21591283045083914
+  }
+}
