@@ -94,6 +94,8 @@ SEALED = ROOT / "artifacts/eda/observe_fresh_v6"
 # Replication knobs (replicate.py sets them); these defaults ARE the seed-1 run, unchanged.
 SEEDS = {"init": 7, "phase1": 11, "heads": 2, "phase2": 17, "depth": 13}
 MIN_JUDGE_SEED, USED_STORES, EVIDENCE = 55_000, range(1, 6), "interface.json"
+SAVE_AT, SAVE = (), None          # optional phase-2 checkpoints (longer.py); empty = unchanged
+SEED2_TRAIN_SHA = "cf0cce5be439e93b4a62da292290791e8a74cb091007594af3a3cdeda54023a5"   # interface.py @ ff4c83ae (seed-2 worlds)
 SEED1_TRAIN_SHA = "e2e3578b00ab884d2362acb713ba3a810a509fccbfc6a0b2cf3452bf17c63882"   # interface.py @ 9aefa86d, which trained the seed-1 worlds
 PHASE1_UPDATES, PHASE1_BATCH = 10_000, 128
 PHASE2_UPDATES, MAIN, TERMINAL = 9_333, 32, 8
@@ -283,6 +285,8 @@ def train(arm, pool, device, log):
             raise RuntimeError(f"nonfinite objective at update {update}")
         norm = optimizer_step(optimizer, objective, parameters, learning_rate=_phase_lr(config, update),
                               grad_clip=config.agent.grad_clip, strict=True, zero_grad=False)
+        if SAVE is not None and update + 1 in SAVE_AT:
+            SAVE(world, heads, history, counts, update + 1)
         if (update + 1) % 1000 == 0 or update + 1 == PHASE2_UPDATES:
             row = {"phase": 2, "update": update + 1, "gradient_norm": float(norm),
                    **{k: float(v.detach()) for k, v in losses.items()}}
@@ -393,7 +397,7 @@ def score(device, log):
     for arm in ARMS:
         stored = torch.load(WORLDS / f"{arm}.pt", map_location="cpu", weights_only=False)
         if stored["pool_sha256"] != json.loads((POOL / "pool.json").read_text())["pool_sha256"] or \
-                stored["script_sha256"] not in (_sha256(Path(__file__)), SEED1_TRAIN_SHA):
+                stored["script_sha256"] not in (_sha256(Path(__file__)), SEED1_TRAIN_SHA, SEED2_TRAIN_SHA):
             raise SystemExit(f"{arm} was not trained by this script on this pool")
         bundle = world_bundle(config, encoder, device)
         bundle.world.load_state_dict(stored["world"])
