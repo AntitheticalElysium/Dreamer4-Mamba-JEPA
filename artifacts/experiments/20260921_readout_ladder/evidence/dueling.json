@@ -1,0 +1,53 @@
+{
+  "schema": "d4mj_dueling_v1",
+  "status": "POST HOC on the 56k block",
+  "script_sha256": "3094725a6b0ef2d99e9bd2ec49cbad7eed337f69ed1e870959c6802aafa5e498",
+  "judge_manifest": "0a42c1e36b233190cd2c0456098735e433c9da44e5e1754c352330da4e49cc78",
+  "training": {
+    "factual": [
+      65294,
+      8155
+    ]
+  },
+  "reading": "action_gap_architecture_helps",
+  "dueling_minus_plain": {
+    "overall": {
+      "difference": 0.0498465895652771,
+      "interval": [
+        0.024424633011221886,
+        0.07513298839330673
+      ],
+      "excludes_zero": true
+    },
+    "zombie": {
+      "difference": 0.032670438289642334,
+      "interval": [
+        0.0021756216883659363,
+        0.062469955533742905
+      ],
+      "excludes_zero": true
+    }
+  },
+  "per_seed": {
+    "plain": [
+      0.6511001586914062,
+      0.59636390209198,
+      0.6123205423355103
+    ],
+    "dueling": [
+      0.6787999272346497,
+      0.6547674536705017,
+      0.6757568717002869
+    ]
+  },
+  "expected_safe": {
+    "plain": {
+      "overall": 0.619928240776062,
+      "zombie": 0.5399897694587708
+    },
+    "dueling": {
+      "overall": 0.6697748303413391,
+      "zombie": 0.5726602077484131
+    }
+  }
+}
