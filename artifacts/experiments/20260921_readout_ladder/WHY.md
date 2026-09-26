@@ -246,3 +246,24 @@ system works.**
 eigen-isotropy — an explicit whitening layer (running PCA/ZCA statistics), or a decorrelation term
 (VICReg's covariance loss, or W-MSE's whitening; Ermolov et al. 2021) — on a state that holds the mob.
 `zwhite.py` (eigen-whitened z: isotropy without the mob) is running to separate the two factors.
+
+## The factorial, complete (`zwhite.py`, post hoc 55k–58k): both factors are needed
+
+Each world's own trained head, zombie roots:
+
+| state | mob in state | isotropic | 55k | 56k | 57k | 58k |
+|---|---|---|---|---|---|---|
+| DOWN | | | 0.496 | 0.539 | 0.597 | 0.585 |
+| Z | no | no | 0.418 | 0.398 | 0.392 | 0.455 |
+| ZW (eigen-whitened z) | no | yes | 0.447 | 0.414 | 0.407 | 0.432 |
+| U | yes | no | 0.490 | 0.546 | 0.528 | 0.498 |
+| **W** | **yes** | **yes** | **0.541** | **0.593** | **0.636** | **0.626** |
+
+**Declared readings: `isotropy_helps_without_mob` and `mob_information_needed` both hold.**
+- **Isotropy alone barely helps:** ZW − Z is +0.015 to +0.029 in 3 of 4 blocks, and ZW stays far below
+  DOWN.
+- **The mob alone does not suffice:** U hovers around DOWN.
+- **Only both together work:** W beats ZW by +0.09 to +0.23 in every block.
+
+**The decision needs the consequence-relevant information in the state AND a state geometry the
+downstream heads can use** — LeJEPA's Lemma 1 applied to a latent that holds the mob.
