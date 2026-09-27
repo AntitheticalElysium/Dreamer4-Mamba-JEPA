@@ -1,0 +1,233 @@
+{
+  "raw": {
+    "twins_z": {
+      "day/zombie": 0.5113248456046733,
+      "day/cow": 0.6918569501563804,
+      "day/lava": 0.8900147014896227,
+      "day/stone": 1.371183061483755,
+      "day/tree": 0.377535639031649,
+      "day/water": 3.5174870923302755,
+      "day/table": 5.23426020623371,
+      "day/zombie_far": 0.5183982160307894,
+      "day/cos_adjacent_vs_far": 0.9998883098441571,
+      "night/zombie": 0.28029633220594735,
+      "night/cow": 0.34094439839587165,
+      "night/lava": 0.8881373209356236,
+      "night/stone": 0.6997110744861982,
+      "night/tree": 0.34390577381210646,
+      "night/water": 1.3673272573908979,
+      "night/table": 0.66866901914215,
+      "night/zombie_far": 0.19802250537438293,
+      "night/cos_adjacent_vs_far": 0.977626251992638
+    },
+    "natural_z": {
+      "zombie_adjacent": 0.6056512918243602,
+      "zombie_in_view": 0.7442483474488742,
+      "cow_in_view": 0.611658702052942,
+      "lava_adjacent": 0.9482025054225466,
+      "passability_mean_4_directions": 0.5880052981405528,
+      "health_r2": 0.12197136878967285,
+      "tile_accuracy": 0.6235036849975586,
+      "tile_majority_baseline": 0.5806775093078613
+    },
+    "natural_tokens": {
+      "passability_mean_4_directions": 0.999997754654142,
+      "zombie_adjacent": 1.0,
+      "zombie_in_view": 0.9344110998998936,
+      "cow_in_view": 0.9384366477103654,
+      "health_r2": 0.9992313981056213,
+      "tile_accuracy": 0.9750733375549316
+    },
+    "temporal": {
+      "z_within_window_share_of_variance": 0.015958265928815444,
+      "tokens_within_window_share_of_variance": 0.08366509430857925
+    },
+    "action_from_dz": {
+      "acc_all": 0.35335689783096313,
+      "acc_move_succeeded": 0.08195679634809494,
+      "acc_move_blocked": 0.014311269856989384,
+      "n_test_moved_blocked": [
+        1574,
+        559
+      ],
+      "acc_non_move": 0.6771945953369141,
+      "chance_majority": 0.3279593586921692
+    },
+    "world": {
+      "onestep_window3_x_copy": {
+        "all": 0.5976067781448364,
+        "ambiguous": 0.8656410574913025,
+        "blocked": 1.9993668794631958,
+        "moved": 1.007218599319458,
+        "other": 0.7562503814697266,
+        "sleep_onset": 0.07449653744697571
+      },
+      "imagine16_window3_over_V": [
+        0.025312189012765884,
+        0.1081181988120079,
+        0.23551349341869354,
+        0.5284916758537292
+      ],
+      "copy_root_over_V": [
+        0.029751241207122803,
+        0.17116621136665344,
+        0.4031350016593933,
+        0.9267253279685974
+      ]
+    }
+  },
+  "tc": {
+    "twins_z": {
+      "day/zombie": 0.7190166000540056,
+      "day/cow": 1.2375578980164197,
+      "day/lava": 0.13130065992559378,
+      "day/stone": 0.12355102369557171,
+      "day/tree": 0.06550730644011066,
+      "day/water": 0.09845519964000791,
+      "day/table": 0.29598452445936535,
+      "day/zombie_far": 0.6141940937205247,
+      "day/cos_adjacent_vs_far": 0.9695709849831854,
+      "night/zombie": 1.53967818568168,
+      "night/cow": 1.229666419824982,
+      "night/lava": 0.09935180609340052,
+      "night/stone": 0.11110430732494461,
+      "night/tree": 0.039667349210852264,
+      "night/water": 0.07413246592768102,
+      "night/table": 0.11333846149861002,
+      "night/zombie_far": 0.6719338981145107,
+      "night/cos_adjacent_vs_far": 0.5900712121559462
+    },
+    "natural_z": {
+      "zombie_adjacent": 0.654469470365441,
+      "zombie_in_view": 0.8093897478270542,
+      "cow_in_view": 0.7771178228261443,
+      "lava_adjacent": 0.8811727123221985,
+      "passability_mean_4_directions": 0.5900439416645401,
+      "health_r2": 0.06543183326721191,
+      "tile_accuracy": 0.6076342463493347,
+      "tile_majority_baseline": 0.5806775093078613
+    },
+    "natural_tokens": {
+      "passability_mean_4_directions": 0.999991973134237,
+      "zombie_adjacent": 1.0,
+      "zombie_in_view": 0.9455303656269366,
+      "cow_in_view": 0.9434435693855445,
+      "health_r2": 0.9986816048622131,
+      "tile_accuracy": 0.9648944735527039
+    },
+    "temporal": {
+      "z_within_window_share_of_variance": 0.4483805599422662,
+      "tokens_within_window_share_of_variance": 0.10862874208282998
+    },
+    "action_from_dz": {
+      "acc_all": 0.4728356897830963,
+      "acc_move_succeeded": 0.2662007510662079,
+      "acc_move_blocked": 0.28443649411201477,
+      "n_test_moved_blocked": [
+        1574,
+        559
+      ],
+      "acc_non_move": 0.6888062953948975,
+      "chance_majority": 0.3279593586921692
+    },
+    "world": {
+      "onestep_window3_x_copy": {
+        "all": 0.07603614777326584,
+        "ambiguous": 0.06138225644826889,
+        "blocked": 0.05060354620218277,
+        "moved": 0.020321855321526527,
+        "other": 0.6120799779891968,
+        "sleep_onset": 0.09881065040826797
+      },
+      "imagine16_window3_over_V": [
+        0.03892536088824272,
+        0.06466002017259598,
+        0.09486837685108185,
+        0.19641582667827606
+      ],
+      "copy_root_over_V": [
+        0.9241047501564026,
+        1.5855236053466797,
+        1.996251106262207,
+        1.8188945055007935
+      ]
+    }
+  },
+  "raw_lam10": {
+    "twins_z": {
+      "day/zombie": 3.381554124584942,
+      "day/cow": 1.4631159166439258,
+      "day/lava": 0.8845065014410828,
+      "day/stone": 2.041949848282502,
+      "day/tree": 6.334507313475911,
+      "day/water": 2.6810626993601603,
+      "day/table": 8.568881548251603,
+      "day/zombie_far": 0.8613431430262428,
+      "day/cos_adjacent_vs_far": 0.9397178485382776,
+      "night/zombie": 3.889932464075345,
+      "night/cow": 1.7426028357089296,
+      "night/lava": 1.084300235691285,
+      "night/stone": 2.936086148065307,
+      "night/tree": 8.901832832841428,
+      "night/water": 3.0563159354063516,
+      "night/table": 10.872887358118769,
+      "night/zombie_far": 0.2237272503668406,
+      "night/cos_adjacent_vs_far": 0.7065498760181939
+    },
+    "natural_z": {
+      "zombie_adjacent": 0.9607678615066333,
+      "zombie_in_view": 0.9294636756550617,
+      "cow_in_view": 0.6260981606953586,
+      "lava_adjacent": 0.9390038435459521,
+      "passability_mean_4_directions": 0.8545076236291205,
+      "health_r2": 0.7284881472587585,
+      "tile_accuracy": 0.6406720876693726,
+      "tile_majority_baseline": 0.5806775093078613
+    },
+    "natural_tokens": {
+      "passability_mean_4_directions": 0.9999999721366819,
+      "zombie_adjacent": 1.0,
+      "zombie_in_view": 0.9723445966345161,
+      "cow_in_view": 0.8863609567091352,
+      "health_r2": 0.9994378685951233,
+      "tile_accuracy": 0.9601410031318665
+    },
+    "temporal": {
+      "z_within_window_share_of_variance": 0.17580650061921502,
+      "tokens_within_window_share_of_variance": 0.12201294589393052
+    },
+    "action_from_dz": {
+      "acc_all": 0.6685070395469666,
+      "acc_move_succeeded": 0.6696315407752991,
+      "acc_move_blocked": 0.44186046719551086,
+      "n_test_moved_blocked": [
+        1574,
+        559
+      ],
+      "acc_non_move": 0.7343242168426514,
+      "chance_majority": 0.3279593586921692
+    },
+    "world": {
+      "onestep_window3_x_copy": {
+        "all": 0.23714451491832733,
+        "ambiguous": 0.21519386768341064,
+        "blocked": 0.18318001925945282,
+        "moved": 0.20729243755340576,
+        "other": 0.4136383533477783,
+        "sleep_onset": 0.12864749133586884
+      },
+      "imagine16_window3_over_V": [
+        0.09765039384365082,
+        0.2631276249885559,
+        0.4012549817562103,
+        0.6145285964012146
+      ],
+      "copy_root_over_V": [
+        0.35592082142829895,
+        0.7064447402954102,
+        0.9255791306495667,
+        1.0980091094970703
+      ]
+    }
+  }
+}

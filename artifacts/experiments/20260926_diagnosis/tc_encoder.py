@@ -72,15 +72,29 @@ def tokens_of(enc, frames, device, batch=64):
     return torch.cat([enc._hidden(frames[i:i + batch, None].to(device))[2].float().cpu() for i in range(0, len(frames), batch)])
 
 
+_BLOCKS_CACHE = {}
+
+
+def blocks():
+    """(visible [n,1534], last frame [n,63,63,3] uint8, block index [n]) for the four opened blocks, same row order
+    as loading every row; only these two fields are kept, one file at a time (a full row holds ~66 frames)."""
+    if not _BLOCKS_CACHE:
+        vis, last, block = [], [], []
+        for i, s in enumerate(BLOCKS):
+            for f in sorted((ROOT / "artifacts/eda" / s).glob("seed-*.pt")):
+                rows = torch.load(f, weights_only=False)
+                vis += [r["visible"].float() for r in rows]
+                last += [r["frames"][-1].clone() for r in rows]
+                block += [i] * len(rows)
+                del rows
+        _BLOCKS_CACHE.update(vis=torch.stack(vis), last=torch.stack(last), block=torch.tensor(block))
+    return _BLOCKS_CACHE["vis"], _BLOCKS_CACHE["last"], _BLOCKS_CACHE["block"]
+
+
 def natural_tokens(enc, device):
-    rows, block = [], []
-    for i, s in enumerate(BLOCKS):
-        r = [r for f in sorted((ROOT / "artifacts/eda" / s).glob("seed-*.pt")) for r in torch.load(f, weights_only=False)]
-        rows += r; block += [i] * len(r)
-    block = torch.tensor(block)
+    vis, last, block = blocks()
     tr, te = block <= 1, block >= 2
-    vis = torch.stack([r["visible"].float() for r in rows])
-    tok = tokens_of(enc, torch.stack([r["frames"][-1] for r in rows]), device)          # [n, 81, 192]
+    tok = tokens_of(enc, last, device)                                                   # [n, 81, 192]
     st = strata(vis)
     mobs = vis[:, 1071:1512].reshape(-1, 7, 9, 7)
     cat, _ = move_table(vis)
@@ -109,14 +123,9 @@ def natural_tokens(enc, device):
 
 
 def natural(enc, device):
-    rows, block = [], []
-    for i, s in enumerate(BLOCKS):
-        r = [r for f in sorted((ROOT / "artifacts/eda" / s).glob("seed-*.pt")) for r in torch.load(f, weights_only=False)]
-        rows += r; block += [i] * len(r)
-    block = torch.tensor(block)
+    vis, last, block = blocks()
     tr, te = block <= 1, block >= 2
-    vis = torch.stack([r["visible"].float() for r in rows])
-    z = z_of(enc, torch.stack([r["frames"][-1] for r in rows]), device)
+    z = z_of(enc, last, device)
     st = strata(vis)
     mobs = vis[:, 1071:1512].reshape(-1, 7, 9, 7)
     tiles = vis[:, :1071].reshape(-1, 7, 9, 17)

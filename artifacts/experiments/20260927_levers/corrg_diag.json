@@ -1,0 +1,30 @@
+{
+  "futures": {
+    "moves": 4008,
+    "moved_share": 0.7138223648071289
+  },
+  "train_windows": {
+    "moves": 1831,
+    "moved_share": 0.574003279209137
+  },
+  "corr_raw_suffix_s7": {
+    "copy_mass_moved": 0.6424499750137329,
+    "copy_mass_blocked": 0.4861952066421509,
+    "copy_mass_auc": 0.6630527427902584,
+    "train_copy_mass_auc": 0.7777074337017249,
+    "train_copy_mass_moved": 0.6386568546295166,
+    "train_copy_mass_blocked": 0.4100506901741028
+  },
+  "corrg_raw_suffix_s7": {
+    "copy_mass_moved": 0.6674691438674927,
+    "copy_mass_blocked": 0.3606659770011902,
+    "copy_mass_auc": 0.7956095365415364,
+    "train_copy_mass_auc": 0.8327539095854986,
+    "train_copy_mass_moved": 0.6658616065979004,
+    "train_copy_mass_blocked": 0.3769254684448242,
+    "frame_logit_moved": 2.188312530517578,
+    "frame_logit_blocked": -0.1748374104499817,
+    "frame_logit_auc": 0.7777354538243467,
+    "train_frame_logit_auc": 0.765012564346532
+  }
+}
