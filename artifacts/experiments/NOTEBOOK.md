@@ -41,7 +41,12 @@ deleted; each names the claim it retires.
 - "x copy" = squared error / error of copying the previous frame; < 1 beats copying.
 - "/ V" = squared error / total natural variance of that state.
 - Captured = 1 - error / predictable change.
-- Facts = closed-form ridge probes fitted on TRUE states, read on imagined ones.
+- Historical facts in the existing levers eval JSON files are closed-form ridge probes fitted on TRUE
+  TRAIN-seed states and transferred to imagined TEST-seed states. This measures decoder transfer as well
+  as what is readable from imagination. The corrected teval schema v2 reports both facts_true_fit and
+  facts_generated_fit (same probe family fitted on each world's generated TRAIN states), plus an all-action
+  generated-fit one-step control. Neither is an actor or information-theoretic ceiling; see the
+  2026-09-29 correction below. Existing JSON files retain their historical meaning. The generated-fit factual readout uses a true root token followed by generated successors; the all-action readout uses generated one-step successors. For the 18k corrt and fmamba worlds, version-2 physical and historical true-fit metrics reproduce the old JSON exactly (maximum absolute delta 0.0); all five LDAD historical true-fit fact grids also reproduce exactly.
 
 ## Canonical pipeline status (2026-09-27)
 - Raw: joint done; H2 bridge trained; **H2 gate failed** (5/7 checks).
@@ -51,10 +56,293 @@ deleted; each names the claim it retires.
   1. H2 terminal depth alias. Fixed on branch `h2-terminal-depth` (9e42b7a2), not merged.
   2. Context length (2026-09-27; see below). Not yet fixed.
 - The actor has never been trained on LeWM.
+- 2026-09-30: no world has been trained on more than two self-fed steps, and none has been tested on
+  safe-action choice (see the audit below). The length-64 continuation stopped at update 200 of 3,600.
 
 ---
 
-## 2026-09-27 — Levers campaign (`20260927_levers/`) — IN PROGRESS
+## 2026-09-30 — Audit of the 09-28..30 runs: LDAD move routing, the suffix-induced slot-4 bias, self-feeding
+
+Scope: everything run after db1bfd8e. That is my 09-28 lanes 6-16, and the other agent's 09-29/30 work:
+the readout-v2 correction, the stage-2 evaluations and diagnostics, LDAD λ=1 10k, and the patch-token Mamba
+integration (Subruns 0-1, motion-carry audit, length-64 preparation). Committed stage by stage: 943f2265,
+377c4fdc, 68857605, 8a183340, b44eb8b8, 9da04b45; older uncommitted records in 8f6961ba; then this audit.
+
+**Integrity (all pass).**
+- 59/59 eval JSONs agree with their own per-root tensors (<= 1e-5).
+- The 7 v2 rescores reproduce every legacy physical and true-fit field exactly (247 fields each, max |Δ| 0).
+- Every pinned source matches the committed file (tworld a7e3d3…, teval 7eb04d…, short_train, spatial,
+  d4mj/train, d4mj/mamba_recurrence, tc_pool).
+- Historical versions were reconstructed exactly:
+  - tworld 5e4c2fa2… is the stage-2 pin;
+  - teval c6c64bed… is the pre-integration pin;
+  - my 09-28 teval, re-run on corrt18k, reproduces its 09-28 JSON byte for byte.
+- Long pools: identical ledger and labels across encoders. Raw long-pool tokens equal the six-frame pool's bit
+  for bit on 400 overlapping frames.
+- `short_train.py` is the levers recipe (held-out rule, sampler seed 11, phase optimizer, constant post-warmup
+  LR, suffix loss). 6k → 12k → 18k is one continuous run.
+
+**Run state.**
+- The length-64 stage completed 200 of 3,600 updates of its first arm (LDAD1 full, objective 0.140). The
+  system was then shut down in an orderly way at 17:40:37 (journal: systemd stopped the unit).
+- Its resume checkpoint is intact; the other three arms never started. No long-world result exists.
+- This boot the kernel marked the TSC unstable (14.7e9-cycle warp between CPUs; clocksource hpet). PyTorch's
+  c10 ApproximateClock asserts on a non-monotonic read at startup (exit 134). It happened once today; a retry
+  passed.
+
+**Decision coverage (confirmed from `meta.pt`).**
+- The 1,002-root diagnosis panel has 1 death-opportunity root in TRAIN (719) and 0 in TEST (283). Opportunity
+  means P(death) varies across the 17 actions over the 4 keys.
+- 4 of 1,002 factual futures die within 16 steps.
+- Every world comparison since 09-26 measures physical and semantic fidelity, not safe-action choice.
+
+**Finding 1 — the LDAD integration worlds do not predict moves with the scroll copy.**
+- `where.py` on the integration worlds, successful moves, interior map tokens (`where_int_*.json`):
+
+| moved, interior tokens | Raw 6k | Raw 18k | LDAD1 6k | LDAD1 18k | LDAD10 6k | LDAD10 18k |
+|---|---|---|---|---|---|---|
+| weight: self | 0.10 | 0.07 | 0.54 | 0.52 | 0.26 | 0.49 |
+| weight: scroll source | 0.87 | 0.83 | 0.19 | 0.13 | 0.49 | 0.22 |
+| weight: generate | 0.02 | 0.09 | 0.24 | 0.34 | 0.20 | 0.25 |
+| generator alone (x copy) | 2.26 | 6.66 | 1.78 | **0.60** | 4.62 | 1.47 |
+| mixture output (x copy) | 0.09 | 0.05 | 0.08 | 0.05 | 0.20 | 0.05 |
+
+- Raw scroll-copies. The LDAD worlds blend the old token with a trained generator: a residual-style route,
+  E7's "LDAD tokens make action effects learnable for a head without a copy path".
+- Their generator is not starved: LDAD1's standalone move prediction is 0.60x copy, against Raw's 6.66x.
+- This is why LDAD's blocked-move rows look "correctly routed" at 6k (target scroll weight 0.019). The copy
+  route is barely used at all: even on successful moves the target cell's scroll weight is 0.13-0.19.
+- It also explains why λ10's frame-logit AUC falls with training (0.987 → 0.951 → 0.927) while its moves
+  improve.
+- It replaces the integration note's "why LDAD improves internal routing remains unresolved".
+
+**Finding 2 (E5k) — the time position of the current frame decides blocked moves in the scroll-copy heads.**
+- Six-frame training puts predictions at positions 0-4. teval rolls out with a 5-frame window after the first
+  step, so the current frame sits at learned time embedding 4.
+- Teacher-forced error on TRUE frames, by window w (current frame at position w-1). `w4at4` places 4-frame
+  content at position 4 (`posprofile_*.json`):
+
+| world | w1 | w2 | w3 | w4 | w5 | w4at4 | blocked, w4 → w5 |
+|---|---|---|---|---|---|---|---|
+| corrt 6k | 0.0523 | 0.0519 | 0.0515 | 0.0514 | 0.0645 | 0.0636 | 0.029 → 0.103 |
+| corrt 18k | 0.0430 | 0.0426 | 0.0425 | 0.0423 | **0.0586** | 0.0583 | 0.025 → **0.122** |
+| corrg 18k | 0.0426 | 0.0423 | 0.0431 | 0.0437 | 0.0656 | 0.0652 | 0.037 → 0.192 |
+| fmamba+corrg Raw 18k | 0.0398 | 0.0393 | 0.0427 | 0.0483 | 0.0580 | 0.0579 | 0.098 → 0.142 |
+| fmamba+corrg LDAD1 18k | 0.0438 | 0.0431 | 0.0433 | 0.0434 | 0.0447 | 0.0447 | 0.037 → 0.040 |
+| fmamba+corrg LDAD10 18k | 0.0554 | 0.0544 | 0.0544 | 0.0544 | 0.0565 | 0.0566 | 0.033 → 0.035 |
+| residual 6k (suffix) | 0.1632 | 0.1629 | 0.1630 | 0.1630 | 0.1663 | 0.1661 | 0.056 → 0.058 |
+| residual 6k (teacher only) | 0.1587 | 0.1585 | 0.1587 | 0.1590 | 0.1624 | 0.1622 | 0.058 → 0.058 |
+| direct 6k | 0.1773 | 0.1773 | 0.1773 | 0.1774 | 0.1796 | 0.1795 | 0.032 → 0.032 |
+
+- Only the heads that decide "did the view scroll" (corrt, corrg, and Raw fmamba+corrg, which scroll-copies)
+  degrade, and mostly on blocked moves. The penalty grows with training (corrt 0.103 at 6k, 0.122 at 18k).
+- `w4at4` reproduces w5 in every world: it is the position, not the extra frame.
+- One true frame predicts as well as four (w1 ≈ w4): these six-frame worlds use essentially only the
+  current frame.
+- The move decision itself (`blockwin.py`, corrt18k, 1,983 rule-blocked factual move steps, TRUE frames):
+
+| input | blocked moves scrolled | after a DO | not after a DO | mean logit |
+|---|---|---|---|---|
+| w4 | 0.0% | 0.0% | 0.0% | -10.7 |
+| w5 | 15.4% | 31.1% | 0.5% | -6.7 |
+| w5dup (content of w4, positions of w5) | 14.8% | 30.0% | 0.3% | -6.7 |
+| w5noop (oldest action -> NOOP) | 14.7% | 29.7% | 0.5% | -6.8 |
+
+- Rollouts with a 4-frame window instead of 5, corrt18k (`teval --window 4`, `static.py --window 4`):
+
+| | window 5 (teval default) | window 4 |
+|---|---|---|
+| teacher-forced error, depths 1 / 4 / 16 (/V) | 0.041 / 0.060 / 0.065 | 0.041 / **0.040 / 0.043** |
+| imagined error, depths 1 / 4 / 8 / 16 (/V) | 0.041 / 0.202 / 0.380 / 0.683 | 0.041 / 0.183 / 0.355 / **0.638** |
+| static roots: rollouts with any false scroll | 40.8% | **6.1%** |
+| static roots: false scrolls per blocked-move step | 33.3% | 2.1% |
+| static roots: depth 16 (copy 0.462) | 0.614 | **0.403** |
+| generated-fit facts at 16: near tiles / zombie AUC / health R² | 0.722 / 0.651 / 0.639 | 0.770 / 0.617 / 0.630 |
+
+- fmamba+corrg (all roots), window 5 → 4, depth 16: Raw 0.672 → 0.653 (teacher 0.066 → 0.051); LDAD1
+  0.615 → 0.629; LDAD10 0.627 → 0.630. The LDAD worlds, which do not scroll-copy (Finding 1), have no
+  position penalty.
+- This overturns my 09-28 E5j decomposition: nearly all of corrt18k's imagined false scrolls come from the
+  slot the current frame occupies, not from imagined-input corruption (1.3% of blocked decisions with window
+  4).
+- It also confounds the learned-gate audit (MOTION_CARRY.md). Its depth-1 steps use 4-frame windows (blocked
+  TNR 1.00); depths ≥ 2 use 5-frame windows. Part of the decline it attributes to generated prefixes is this
+  position effect.
+- **Cause confirmed: the depth-2 generated suffix.** Position 4 is the only slot the suffix trains with a
+  generated last frame. Lane 17 retrained corrt 18k teacher-only: same recipe, seed and budget,
+  `--loss teacher`, snapshots every 6k. Paired over 143 walk seeds (`compare_teacher18`):
+
+| corrt | suffix 18k | teacher-only 18k | difference [95% CI] |
+|---|---|---|---|
+| one step all (x copy) | 0.173 | 0.149 | -0.024 [-0.026, -0.023] |
+| moved | 0.180 | 0.142 | -0.038 [-0.040, -0.036] |
+| blocked | 0.326 | 0.301 | -0.025 [-0.036, -0.019] |
+| imagined depth 4 (/V) | 0.202 | 0.168 | -0.033 [-0.049, -0.019] |
+| imagined depth 16 (/V) | 0.683 | 0.622 | -0.061 [-0.092, -0.030] |
+| depth 16, both rolled out with window 4 | 0.638 | 0.622 | -0.017 [-0.028, -0.006] |
+| position profile, blocked, w4 → w5 | 0.025 → 0.122 | 0.023 → 0.024 | |
+| blocked moves scrolled, true 5-frame windows | 15.4% | 0.0% | |
+| generated-fit facts at 16: facing / near tiles | 0.883 / 0.722 | 0.940 / 0.762 | |
+
+- At 6k the teacher-only snapshot already wins: one step 0.302 → 0.191 (-0.112 [-0.153, -0.077]), depth 16
+  0.810 → 0.760 (-0.050 [-0.076, -0.027]). The schedule is constant after warmup, so a 6k snapshot is
+  equivalent to a 6k run.
+- The teacher-only 6k profile is flat on blocked moves (0.027 at every position); all transitions carry a
+  +8% position-4 bump, like the residual head's +2%.
+- So V-JEPA 2-AC's T = 2 rollout loss, as adapted here (generated frame only in slot 4), creates the slot bias
+  and is net harmful for corrt at both budgets, depth 16 included.
+- One seed per arm. The residual 6k pair went the other way at depth 16 (suffix 0.849 vs teacher 0.865*),
+  so the effect is head-dependent.
+- Consequence for self-fed training: generated frames placed in a fixed slot teach slot-specific decisions.
+  Any remedy must expose every position to generated or corrupted inputs.
+
+**Finding 3 — self-feeding is ~90% of depth-16 error in every integration arm.**
+- Recursive-minus-teacher at depth 16, TEST roots, 18k: Raw 0.603 of 0.675, LDAD1 0.566 of 0.617, LDAD10
+  0.594 of 0.656 (89-92%).
+- The best world so far, corrt 18k teacher-only, is 0.622 imagined vs 0.040 teacher-forced at depth 16 (all
+  roots): 94% self-feeding.
+- The only self-fed training is the depth-2 suffix: at most one generated frame in any training input, while a
+  depth-16 rollout's window is entirely generated.
+- The length-64 stage keeps that suffix at the end of 64-frame windows: 115,200 generated-suffix terms at its
+  dose against 1.44M in the short stage. It extends observed context and cuts self-fed training 12.5x. It
+  cannot address long-horizon self-feeding.
+
+**Corrections recorded in place.**
+- Same-seed nondeterminism wording.
+- carry-smoke figures (the committed JSON reads 0.0).
+- E5j false-scroll decomposition (superseded by Finding 2).
+- E1c rows for the matched-compute arms (memory rerun, float-level identical otherwise).
+- Integration section status.
+- Other agents' corrections accepted as correct:
+  - readout transfer (v2);
+  - identifiability (my "LDAD saturates the ceiling" is retracted);
+  - four-key "ceiling" wording;
+  - movement labels come from a visible rule;
+  - `masked_scan` advances the convolution (its "exact hold" docstring is false; preserved because checkpoints
+    pin that source).
+
+---
+
+## 2026-09-30 — Matched 12k/18k outcomes and long-cache preparation
+
+- Raw, LDAD λ=1 and λ=10 `fmamba+corrg` continuations and their 12k and 18k evaluations finished, last evaluation at **15:37 AEST** (`artifacts/eda/levers_logs/lanes.log`). The 18k checkpoints retain source/pool lineage. `20260929_mamba_integration/audit_curve.py` recomputes one-step errors on the same **283 TEST roots / 43 walk seeds** (4,811 labelled actions) and depth-16 errors on the 281 alive TEST roots, with **5,000 paired seed-cluster bootstrap** draws (`audit_curve.json`). Error/copy and `/V` compare within an encoder's latent space; cross-encoder comparisons are descriptive, not control rankings.
+
+  | TEST error ÷ copy | Raw 6k → 12k → 18k | LDAD λ=1 6k → 12k → 18k | LDAD λ=10 6k → 12k → 18k |
+  |---|---:|---:|---:|
+  | moved (784) | .208 → .202 → **.148** | .166 → .135 → **.126** | .229 → .143 → **.094** |
+  | blocked (348) | **5.026 → 1.913 → .696** | .366 → .302 → .295 | .559 → .331 → .284 |
+  | all actions (4,811) | .391 → .286 → **.162** | .227 → .192 → .182 | .323 → .221 → .177 |
+  | generated depth-16 `/V` | .772 → .720 → .675 | .711 → .651 → .617 | .826 → .722 → .656 |
+  | teacher depth-16 `/V` | .125 → .080 → .071 | .063 → .055 → .051 | .111 → .078 → .062 |
+
+  Raw 18k minus 6k blocked ratio is **−4.330 [−9.402, −2.807]**. At 18k Raw blocked is **.696 [.341,1.736]**, so a residual deficit cannot be ruled out. λ1 minus Raw at 18k is −.401 [−1.305,−.126] on blocked actions, but λ1's aggregate ratio is worse by +.020 [.010,.029]. λ10 minus λ1 at 18k moved is −.031 [−.038,−.024]; their aggregate difference is unresolved. Depth-16 generated-minus-teacher `/V` remains **.603 Raw, .566 λ1, .594 λ10**. The training objective contains only a two-step generated suffix, so depth 16 is an out-of-training-depth diagnostic, not an H16 actor result.
+- The Raw blocked-move output-routing fault **improves with budget** (`gate_curve.json`): on 1,132 held-out move attempts, action-token moved/blocked AUC rises **.809 → .980 → 1.000**, trained `corrg` frame-logit AUC **.638 → .861 → .987**, and direction-specific target-copy weight on blocked rows falls **.578 → .146 → .050**. Input/target tokens read near 1.000 at 6k. The measured 6k fault is therefore not an immutable inability of this architecture to represent the visible movement rule. Why LDAD changes optimization speed remains unresolved. At 18k generated-fit zombie-near AUC at depth 16 is **.633 Raw, .600 λ1, .610 λ10** (depth 1: .878/.788/.903).
+- **Decision-coverage limit:** the current diagnosis panel has **one** one-step death-opportunity root among 719 TRAIN-side roots and **zero** among its 283 TEST roots, where opportunity means actions vary in fatality. It cannot measure within-root safe-action selection or support an actor go. The predeclared fresh all-action seed-65000+ Subrun 3 remains necessary. None of the 18k results is an actor result.
+- Length-64 feature-cache preparation exposed two mechanical issues before full collection: the Raw bridge checkpoint needed `read_lewm_bridge`, and its JSON resume contract needed a list-valued shape. Both were corrected; failed zero/eight-row stages were preserved under `raw.failed_*_20260930`. An eight-row smoke succeeded, as did resumption to row 40. The three-arm cache service `lev-mamba-integration-long-pools.service` started at **16:46 AEST** on the sealed **19,789-window** ledger; at 16:51 Raw was active with **6,640/19,789** rows committed. Pool completion and long-world training remain pending.
+
+**18k blocked-move follow-up (2026-09-30):** Repeating the exact frozen wrong-direction-copy intervention on the 348 held-out visible-rule-blocked rows reverses the 6k result: at 18k, removing that copied candidate changes Raw error/copy **0.6945 → 1.0494** (**+51.1% error**); LDAD λ1 **0.2951 → 0.2977** and λ10 **0.2838 → 0.2927** (`blocked_intervention18k.json`). Reconstruction of the frozen head output is exact (max abs 0). Thus the specific wrong-direction-copy mechanism that dominated Raw at 6k has been learned away by 18k; do not carry the 6k explanation forward as the cause of its residual gap.
+
+A separate frozen candidate audit on those same blocked rows (`blocked_candidates18k.json`) locates **97.46% of Raw's residual squared error in map tokens** (HUD 2.54%). Raw's learned map output is **0.7206×** copying the root. A hindsight choice of the best *single normalized* candidate for each tile is **0.2790×** on map tokens and **0.3124×** overall, versus learned output **0.6945×** overall. This shows useful source candidates exist but the learned mixture does not use them optimally on these rows. It is an oracle diagnostic using the true successor, **not** a deployable head or a lower bound on arbitrary mixtures. LDAD λ1's learned mixture is **0.2951×** overall even though its hindsight best single candidate is **0.5711×**: beneficial mixing is material, so this check does not establish a complete causal decomposition or a cross-encoder control ranking. No action-opportunity conclusion follows.
+
+**Length-64 resource and fixed training dose (2026-09-30 17:28 AEST):** All three TRAIN caches completed and published; their 19,789-row ledgers and labels have exactly equal SHA256, and the encoder checkpoint hashes differ. The predeclared warmed full-optimizer resource test selected **batch 16**: B8 median **0.8684 s/step**, 2.115 GB peak allocated; B16 **1.7110 s/step**, 4.125 GB; B24 failed CUDA OOM (B32 untested). B16 has slightly higher teacher-transition throughput (589.1 vs 580.4/s) and satisfies the <=5.0 GiB allocation rule. Fixed long continuation is **3,600 updates** per arm/control, **3,628,800 teacher transitions**, **115,200 generated-suffix terms**, 57,600 common sampler draws and **18,725 unique TRAIN windows**. This exposure matches the short stage's 3.6M teacher transitions approximately; it does **not** match its generated exposure or train depth-16 imagination. `long_resource_steady.json` and the dated `PLAN.md` amendment seal the rule and outcome before fitting.
+
+**Subrun-2 launch (2026-09-30 17:31 AEST):** The source-bound LDAD λ1 full-history long trainer passed a one-step pilot from the exact 18k world+optimizer checkpoint: update 1 objective **0.1943400**, gradient norm **1.4351**, peak allocated **4,121,159,168 bytes**; its atomic optimizer/RNG resume is preserved and will be resumed, not restarted. `lev-mamba-integration-long-train.service` now queues LDAD1 full → LDAD1 reset6 → Raw full → LDAD10 full, all B16/3,600 updates on the sealed shared long ledger, with source/pool/short-checkpoint hashes bound and immutable quarter/half/final snapshots. This is a training launch, not a long-history or actor result; progress and any failures must be read from `artifacts/eda/levers_logs/lanes.log` and the corresponding job logs before interpretation.
+
+---
+
+## 2026-09-30 — Matched Mamba integration at 6k; blocked-move failure localized
+
+- **Run state:** Raw, LDAD λ=1 and λ=10 `fmamba+corrg` worlds and all three 6k readouts finished by 21:51 AEST on 2026-09-29. A length-64 resource smoke finished at 21:52. No long-context trained world, fresh-fork decision screen or actor result exists. Checkpoint, optimizer/RNG, pool and source contracts were verified before continuation. The diagnosis panel has 1,002 roots/143 seeds; 283 roots/43 seeds are held out for the readout. These repeatedly inspected seeds are exploratory, not the fresh Subrun-3 judgment block.
+- **Evaluation scope correction:** `teval.py`'s published one-step and rollout aggregates use **all roots**, while semantic probes judge TEST roots. `20260929_mamba_integration/audit6k.py` recomputes physical errors on the held-out roots with 4,000 paired seed-cluster bootstrap draws. Ratios mean error divided by the error of copying the root within each encoder's latent space; comparing ratios or `/V` across different encoders is descriptive, not a control-quality ranking.
+
+  | TEST at 6k | Raw | LDAD λ=1 | LDAD λ=10 |
+  |---|---:|---:|---:|
+  | moved, 784 actions, × copy | 0.208 [0.190, 0.226] | **0.166 [0.157, 0.174]** | 0.229 [0.220, 0.239] |
+  | blocked, 348 actions, × copy | **5.026 [3.164, 11.126]** | 0.366 [0.238, 0.559] | 0.559 [0.420, 0.688] |
+  | all, 4,811 actions, × copy | 0.391 [0.330, 0.455] | **0.227 [0.203, 0.249]** | 0.323 [0.297, 0.353] |
+  | depth-16 generated `/V`, 281 alive TEST roots | 0.772 | 0.711 | 0.826 |
+  | depth-16 teacher `/V`, same roots | 0.125 | 0.063 | 0.111 |
+
+  λ1 minus Raw moved ratio is -0.042 [-0.056, -0.028], blocked -4.660 [-10.642, -2.903], all -0.164 [-0.243, -0.094]; λ1 minus λ10 all is -0.096 [-0.142, -0.059]. Recursive-minus-teacher depth-16 `/V` is 0.647 Raw, 0.648 λ1 and 0.715 λ10 **within each arm**: generated-context error still compounds. Generated-fit depth-1 zombie-near AUC Raw/λ1/λ10 = 0.823/0.805/0.899; depth 16 = 0.591/0.637/0.674. Health R² depth 16 = 0.670/0.665/0.667. The root patch control reads zombie-near at AUC 1.0 for all three on this panel (only 18 positive near-cell labels across 1,132 TEST cells). None of these readouts establishes within-root safe-action choice.
+- **Raw blocked-move mechanism:** its absolute blocked error is 0.322 `/V` versus copy's 0.064 `/V` (λ1 0.032 versus 0.088); the 5.03× ratio is not merely a small denominator. It appears in all four move directions (3.75–5.59×); the top 5% of blocked rows account for 16.8% of error. On 1,132 held-out move attempts, Raw target input and backbone target state decode moved/blocked at AUC 1.000 and 0.998, but its action-token state drops to 0.809 and trained `corrg` frame logit to 0.638. λ1's action-token and frame-logit AUCs are 1.000 and 0.999. Raw's direction-specific target-copy weight on blocked moves averages **0.578** versus λ1 **0.019** (λ10 0.016). In `blocked_intervention6k.py`, the frozen forward output reconstructs exactly (max abs 0). Removing just that copy source using the visible-rule blocked label changes Raw blocked error **5.026→1.327× copy**, a **73.6%** reduction; λ1 changes 0.366→0.371. This localizes most of Raw's error to its output routing on these rows, but the intervention uses the visible-rule outcome and is not deployable. The remaining 1.327× error and why LDAD improves internal routing remain unresolved. `gate6k.json`, `blocked_intervention6k.json` and `audit6k.json` preserve the numbers and checkpoint hashes.
+- **Literature boundary:** [ITC](https://arxiv.org/html/2605.16457v1) models copy/generation as token correspondence and treats new edge/HUD content separately; our soft local `corrg` head is not its optimal-transport algorithm. [Dreamer 4](https://arxiv.org/html/2509.24527v1) alternates short/long training and warns about fixed start-frame positions; [Po et al.](https://arxiv.org/html/2505.20171v1) evaluate spatial retrieval for a long-context SSM video model. None explains our λ1-versus-Raw contrast or proves six-frame training yields useful 64-frame memory.
+- **Next declared check:** the source-bound 6k resumes all read update 6,000 with zero source drift. Raw→λ1→λ10 continuation to 12k and a matching readout started at **08:11 AEST 2026-09-30** (`lane9_short12k.sh`, `lane10_eval12k.sh`; user services `lev-mamba-integration-short12k` and `lev-mamba-integration-eval12k`). The length-64 smoke proved short-prefix equality (max abs 0) and one batch-8 fit (2.09 GB allocated), but its timings are compilation/shape contaminated, so there is no steady throughput estimate. Long training awaits the 18k endpoint and a measured batch/time protocol. Carry transport remains deferred until a long-memory/revisit failure is measured.
+
+**Movement-label provenance correction (2026-09-30):** `20260926_diagnosis/onestep.py::classify` calls `choices.move_table` on the visible root state; the panel does **not** store absolute player positions. Therefore the original “simulator blocked” wording in the registration note and first draft of this entry was wrong. An independent before/after terrain-alignment rule on the held-out key-0 forks agreed on **759/759 classified moved** and **343/343 classified blocked** rows, abstaining on 25 moved and 5 blocked rows (`move_label_crosscheck6k.json`). This supports the visible-rule labels strongly, but is not direct validation against player-position deltas on the 30 ambiguous rows. The intervention and AUC statistics above are conditional on these rule labels; their provenance has been corrected in code and notebook.
+
+The rule is also source-grounded: `craftax_classic/game_logic.py::craftax_step` replaces a sleeping player's action with NOOP, then calls `move_player`; `move_player` uses target bounds, `SOLID_BLOCKS`, `mob_map`, and an explicit lava override before mobs update. `choices.move_table` uses the visible neighbour tile and first three mob channels with the same solid/out-of-bounds and sleep cases; `onestep.classify` explicitly restores lava entries to moved. This explains why the rule should match the game's pre-mob movement decision, but it remains a **derived label**, not a recorded position delta. The two independently aligned views agree wherever terrain makes the shift identifiable.
+
+**Queue amendment (2026-09-30):** The declared 18k endpoint is now staged as `lane11_short18k.sh` followed by `lane12_eval18k.sh`, with user services `lev-mamba-integration-short18k` and `lev-mamba-integration-eval18k`. It waits for all 12k evaluations before consuming GPU, reuses each arm's optimizer/RNG state, refuses existing snapshots, checks the pinned evaluator source hashes and writes completion markers only after every artifact exists. This adds no treatment or changed hyperparameter. Raw's 12k run was observed resuming at update 6,000 and logging update 6,500, objective 0.1678193, grad norm 0.2552, peak allocation 2.55 GB; this is runtime/optimization health, not a performance verdict.
+
+---
+
+## 2026-09-29 — Patch-token Mamba integration (`20260929_mamba_integration/`) — Subrun 2 stopped at update 200 (see the 2026-09-30 audit)
+
+- User clarified the intended treatment: Raw + LDAD λ=1 encoder, patch-token T state, spatial attention plus temporal **Mamba-2** (`fmamba`), `corrg` output, then actor training in imagination. This is not the full-Transformer T backbone. The protocol and stop/diagnostic conditions are in `PLAN.md`; no actor result exists yet.
+- Inputs were hashed before the first subrun (`inputs.json`). Raw pool `pool.pt` actual SHA256 matches its manifest: `7662de45ae043ae076d1751c7b34300919ec52f99106546fe39a2ff63ac9b5ac`. λ=1 encoder step-010000 SHA256: `b4c56cff70bcb118a4330d10a6c1e7bf1329ad1e971d908579e2969385ffc7d5`. Raw joint and Raw bridge frozen encoders have 209 identical tensors, max absolute difference **0**.
+- Subrun 0 λ=1 per-tile pool completed: **32,647** six-frame windows (24,576 main, 8,071 terminal), SHA256 `410999efe99375a1ecfcda7b3e28a296485f09a866e954871d2866379f7994b0`. Its IDs, actions, reward, alive, health-change and terminal arrays are exactly equal to the Raw source pool (`artifacts/eda/spatial_pool_ldad1_v1/manifest.json`). The matched root-patch fact diagnostic is queued, not yet interpreted.
+- Long TRAIN ledger was sealed before treatment results: **19,789** length-64 windows, 12,288 sampled main and all 7,501 eligible terminal endings, 7,755 eligible episodes, 19,739 unique `(episode,start)` windows; SHA256 `cad11d3dac2e90358750a97299f56a2b4ff2eeeeeaaa82f0ef14200ef2a613aa`. Each encoder arm will use this same ledger. A long pool/model has not yet run.
+- A strict bitwise six-step resume smoke **failed**: split 3+3 vs uninterrupted 6 max parameter difference `4.7683716e-7`. Diagnosis (`verify_diagnose.json`): split-vs-split repeats also `4.7683716e-7`, uninterrupted-vs-uninterrupted `0`, new-vs-legacy trainer `2.7567148e-7`; sampler RNG states identical. This is a measured numerical floor, not proof of exact reproducibility. The original failed check is preserved. A final-source smoke with a documented `1e-6` mechanical tolerance is running; no 6k world job has started.
+- Launcher defect discovered during the failed smoke: under `set -e`, `wait $pid` exited before recording FAILED. `lib.sh` now captures the wait exit status with `wait $pid || code=$?`; a CPU-only deliberate failure returned 1 and wrote the FAILED ledger row. The already-queued root job still waits for the new verified marker.
+- Final-source six-step mechanics check passed its amended `1e-6` tolerance (`verify_accept.json`): resumed vs uninterrupted max parameter difference `2.7567148e-7`; new vs legacy trainer `2.7567148e-7`; sampler RNG exactly equal. This is numerical equivalence at the measured GPU floor, **not** bitwise reproducibility. The original stricter failure remains recorded above.
+- Matched root patch-token diagnostic on the previously inspected diagnosis TEST split (`root_patch.json`): 283 roots / 43 walk seeds, 575 FIT and 144 validation roots. Raw / λ=1 / λ=10 adjacent-zombie near-cell AUC = **1.000 / 1.000 / 1.000**; there are only **18 positive near-zombie cells of 1,132**, so this panel has little power for hazard-coverage claims. Root health R² = 0.9950 / 0.9974 / 0.9974; λ=1 minus Raw +0.00242, paired seed CI [-0.00065,+0.00588]. Root food R² = 0.9967 / 0.9952 / 0.9981; λ=1 minus Raw -0.00147 [-0.00290,-0.00006]. λ=10 exceeds λ=1 on near-tile class accuracy by +0.00795 [+0.00250,+0.01461]. These near-ceiling root facts show no missing Raw patch zombie-presence fact *on this panel*; they do not establish action-consequence retention.
+- Subrun 1 started as `lev-mamba-integration-short6k.service`: Raw, λ=1 and λ=10 use identical `fmamba+corrg` architecture, seed 7, six-frame ledger/sampler, phase optimizer and suffix loss. It stops each arm at update 6,000 with a full optimizer/RNG checkpoint; 18k continuation follows assessment of the matched readouts. The service is monitored and outputs remain source/pool-hash bound.
+- Long-run protocol correction made before any long training: `long_world.rollout_loss` teaches 63 factual next frames but only a **depth-2** generated suffix (at frames 61–63). A length-64 scan therefore permits long observed history but does not train H16 imagination; depth-16 is an out-of-distribution diagnostic until a separately declared alias-free generated-depth bridge runs. The λ=1 length control is now a six-frame-reset continuation on identical long windows/targets, plus full-versus-rolling-six evaluation of the same long-trained model. This avoids attributing data-exposure differences to recurrence (`PLAN.md`). [Dreamer 4](https://arxiv.org/html/2509.24527v1) explicitly trains batch length beyond context and alternates short/long batches, but its diffusion/shortcut objective differs; [Long-Context State-Space Video World Models](https://arxiv.org/html/2505.20171v1) reports a block-size-one spatial-retrieval deficit. Neither paper explains our result without local contrasts.
+
+### 2026-09-29 evening — motion-aligned Mamba carry proposal (exploratory, active)
+
+- User proposed transporting **both** Mamba-2 `conv_state` and FP32 `ssm_state` to the new screen slot under the same frame correspondence used by the copy/output route. Code audit: `fmamba` applies independent temporal Mamba scans at **82 fixed slots** (action + 63 map + 18 HUD), six layers; `corrg` adds a scalar move logit to neighbour-copy logits and does **not** output a per-cell flow or transport a recurrent carry. `fcanvas` already approximately aligns input streams in world coordinates using `scroll.estimate`, but its absent-cell `dt=0` leaves the convolution advance (`canvas_diag.json`: held-cell relative RMSE **0.4183**, all-kept max error **7.15e-7**). Thus the new mechanism is related to, but not identical to, the tested canvas variant.
+- Factual movement evidence: `scroll.json` on diagnosis futures reports **36.60%** scroll frames; real one-step shift inference matches simulator **99.35%** overall, **97.52%** on moved actions, but generated-frame alignment agreement declines to **83.03%** through depth 16 (`canvas_diag.json`), with missed-scroll rate **43.66%** at depths 9–16. An oracle true-token-shift substitution on frozen fcanvas improved depth-16 error /V from **0.74584 to 0.73529**, paired seed CI on difference **[-0.01697,-0.00498]** (`canvas_oracle.json`): estimator error is real but explains a small fraction of that rollout error.
+- Independent visible-terrain registration diagnostic (`20260929_mamba_integration/registration_scope.json`) on the **previously inspected** 1,002-root, 143-seed factual panel: among **16,028** alive transitions, **8,335** move attempts, **5,690** high-confidence scrolls, **2,245** high-confidence blocks, **400** ambiguous. The terrain rule was cross-checked against independently terrain-aligned successors on the existing one-step roots and classified 2,750/2,861 moved and 1,138/1,147 blocked cases, **all classified cases correct**; abstention is explicit and the rule is exploratory, not a sealed estimator. On high-confidence scrolled pairs, overlapping map patch-token MSE is **0.27066 at a fixed screen slot versus 0.04092 after terrain-based one-tile registration**, reduction **84.88%** with seed-cluster CI **[83.66%,85.96%]**. This establishes a large input-stream identity mismatch, not yet a world-error or actor gain. Only **0.62%** of overlapping map cells change zombie occupancy; those pairs' aligned-token error averages **0.2716** versus **0.0396** on zombie-stable pairs, showing that global terrain motion does not register independently moving mobs.
+- Pure carry-mechanism CPU smoke passed (`carry_transport_smoke.json`): action/HUD slots held fixed; matched map slots copied to the correct location; new-border conv and SSM state zero; gradients finite; zero-shift four-step `FunctionalMamba2` matches a single scan to max **1.19e-7** in output, **0** conv and **1.86e-9** SSM final-state difference (the committed `carry_transport_smoke.json` is a later rerun, 19:47, that reports **0.0** for all three and for the full layer). Each token/layer carry is **68,608 bytes** in bf16-conv/FP32-SSM mode, or **33.76 MB per sample** over 82 slots × 6 layers, before training activations. This makes resource smoke mandatory before matched training.
+- A frozen-weight `fcanvas` versus exact carry-transport equivalence diagnostic is staged after the 6k eval and long smoke (`lane6_transport_equivalence.sh`). It will determine whether a full new training arm is substantively distinct from fcanvas on this setting. No result yet; no claim that moving the carry solves control.
+- Primary-source context: [TrajGRU](https://arxiv.org/html/1706.03458v2) learns location-varying recurrent links; [Nilsson & Sminchisescu](https://arxiv.org/html/1612.08871v2) warp propagated hidden estimates and gate unreliable flow; [BasicVSR++](https://arxiv.org/html/2104.13371v1) aligns propagated features; [MGMVFI](https://arxiv.org/html/2608.22861v1) reorders Mamba inputs along motion and explicitly treats unreliable correspondence; [Yang et al.](https://arxiv.org/html/2506.05997v2) find spatial-registration deficits for ordinary RNN/SSM memory. These motivate the mechanism, but no paper tests this exact Mamba-2 `(conv,ssm)` transport in Craftax. MADiff ([arXiv:2409.02638](https://arxiv.org/html/2409.02638v2)) modulates a selective scan with egomotion rather than permuting carries.
+- Queue recovery: Raw 6k finished at objective **0.1887997** (snapshot SHA256 `bdf50eb4…`); all user services were externally stopped at **15:56:24** after λ=1 saved update 500. The queue resumed from optimizer/RNG checkpoint at 19:14; no restart from zero. Reused evaluation caches were sampled at root/context/future/all-action successor positions against all three pinned encoders (`cache_audit.json`): Raw max half-token difference **0.0009766**, λ1 and λ10 max **0.0019531**, mean absolute differences below **6.2e-7**, exact half-token agreement **99.42–99.59%**. The strict bitwise audit failed from CPU/GPU rounding, then a documented max-abs **0.002** cache tolerance passed. These are sampled sentinel checks, not a byte-level proof of every cached token. Eval requires the passing audit report.
+
+- Follow-up `20260929_mamba_integration/registration_hazard.json`, same inspected factual panel: on **5,690** high-confidence scrolls, central 3×3 patch-token MSE fixed-slot **0.27363** vs terrain-aligned **0.13041**, reduction **52.34%** [**48.93%, 55.45%**] by seed cluster, smaller than the **84.88%** full-map reduction. Visible zombie occupancy changed in **813/51,210 (1.59%)** central cells and **544/5,690 (9.56%)** scroll transitions. This is a player-local residual, not proof zombies alone cause it. The frozen fcanvas/carry comparator was strengthened to sample 15 each no-scroll, scroll-no-reentry and scroll-reentry from the 1,002 existing roots; its historical model-source SHA is checked by reversing only the later `ldad1` pool registration. GPU evaluation remains queued.
+- Learned-correspondence audit: old `corrt` target-tile decision logit had moved/blocked AUC **0.99756** on **1,132** held-out move attempts (`20260927_levers/probe_corrt_raw_suffix_s7.json`), versus old `corrg` shared frame logit **0.79304** (`corrg_probe.json`). AUC does not establish a threshold or generated-prefix reliability. Because `corrt` emits that logit after the final layer at frame t, feeding it to the t+1 carry requires frame-outer/layer-inner scheduling or an early side predictor; current carry prototype uses state-pair shift estimation and does not claim to reuse `corrt`. A learned-gate variant would need a matched `corrt` no-transport control.
+- `learned_gate_rollout.py` is queued as `lev-mamba-learned-gate.service` after the transport resource smoke. Frozen historical `corrt`/`fcanvas`; threshold fit on TRAIN-seed true one-step forks only, then TEST true forks and generated-prefix factual-action rollouts (depth 1, 2–4, 5–8, 9–16) against high-confidence visible-terrain movement labels. Compare its move decision to the state-pair shift estimator on the same generated trajectories. This directly tests whether the highly decodable learned gate remains usable in imagination; no result yet.
+- First-Mamba-input check (`20260929_mamba_integration/mixer_registration.json`): exact historical Raw `corrt/fmamba` source hash verified; **704** high-confidence factual scroll pairs, **139** seeds. After spatial attention and normalization, map MSE fixed-screen **0.25180** vs terrain-aligned **0.08364**, reduction **66.78%** [**64.76%, 68.70%**] by seed. Center 3×3 is **0.25312→0.17576**, reduction **30.56%** [**25.59%, 34.92%**]. Raw patch tokens on those same pairs reduce **86.01%** map / **53.26%** center. The recurrence-input misregistration is real but much smaller at the player; these are factual features, not world/control gains.
+- Prior `20260927_levers/canvas_hold_oracle.json` was rechecked: replacing fcanvas absent-cell convolution advance with a full state hold changed frozen depth-16 /V error **0.745844→0.745757**, difference **-0.000088** with seed CI **[-0.000877,+0.000521]**. This makes that known mismatch unlikely to explain the prior fcanvas rollout deficit. Exact bounded carry can still differ at off-screen reentry; frozen equivalence and resource tests remain queued.
+- `20260929_mamba_integration/scroll_hazard.json`: frame-pair shift estimator on the existing one-step simulator panel agrees **98.23%** over **4,008** move attempts; **97.52%** over **2,861** moved, **100%** over **1,147** blocked. On **84** zombie-near roots it agrees **97.62%** over **336** move attempts, including **96.08%** of **204** moved. This is factual correspondence; generated-prefix reliability remains the queued decisive check.
+- New-border scope for proposed bounded carry shift, computed from the same high-confidence factual scroll labels: **5,690** scrolls expose **46,126** fresh border map cells, **12.87%** of map slots on scrolled frames and **4.57%** of map slots across all **16,028** alive transitions. Zero carry is Mamba’s existing initial state; off-screen retention would be a separate long-memory design.
+- First-layer stage decomposition (`20260929_mamba_integration/positional_registration.json`), same **704** pairs and exact historical Raw `corrt/fmamba` checkpoint source: alignment reduces MSE **85.19%** after learned patch projection, **82.12%** after screen position, **81.21%** after time position, and **66.78%** at actual Mamba input after spatial attention/normalization. The **14.4-point** reduction across the latter stage exceeds the **3.1-point** screen-position change. This measures feature geometry, not performance causality; the carry encodes contextualized features rather than pure terrain identity.
+- Carry-transport diagnostic conclusion (2026-09-29 evening): `transport_equivalence.json` used exact historical `corrt/fcanvas` weights/source on 45 existing factual six-frame windows, 15 per no-scroll/scroll-no-reentry/scroll-reentry stratum (candidate counts **308/592/102**). Exact bounded carry versus fcanvas mean relative output RMSE **1.33e-7 / 3.34e-7 / 9.66e-4**; reentry max abs **0.1923**. Prior fcanvas is effectively the same short-window mechanism except rare reentry/off-screen policy. No new world training was run.
+- Resource correction: preserve the compilation-contaminated `transport_resource_first.json`; use `transport_resource_steady.json` (cold plus three warmed, full optimizer steps on synthetic six-frame B40). Fixed fmamba **0.7207 s/step, 2.281 GB peak allocated**; explicit transport **3.5459 s/step, 3.274 GB**; **4.92x** slower, **1.44x** memory, fits 6 GB. Prior `corrt/fcanvas` trained 6k in ~83 min vs prior `corrt/fmamba` ~72 min.
+- `learned_gate_rollout.json` and hashed `learned_gate_rollout_rows.pt`: TRAIN-only threshold **-1.5254**, TEST true one-step n=**1,132**, AUC **0.9995**, accuracy **99.20%**. Generated-prefix TEST factual actions, high-confidence visible-terrain movement labels n=**2,258**: learned gate **78.65%** vs generated-frame shift detection **68.16%**, paired seed gain **+10.50 pp [7.19,13.86]**. Depth 9–16 n=**1,161**: **73.56% vs 57.62%**, gain **+15.93 pp [10.80,20.92]**; gate blocked specificity **45.19%**, AUC **0.713**, moved prior **70.46%**. The learned cue is better but still misroutes many blocked moves in deep imagination; no carry-training/actor gain is established.
+- Decision: **no explicit bounded-carry 6k–18k retrain now**. The short-window mechanism is nearly identical to the prior `fcanvas` arm while its straightforward step implementation is 4.92x slower. Reconsider a distinct long-context/reentry design only if the ongoing main fmamba integration localizes a cross-scroll memory bottleneck.
+- Live-run handling: matched λ=1 short6k service was paused only after its atomic **update-4,000** world/optimizer/RNG checkpoint was read back; GPU motion equivalence, resource and learned-gate diagnostics completed in that interval. The unchanged `lane3_short6k.sh` was relaunched as `lev-mamba-integration-short6k-resume2.service` and logged `resume ... update: 4000` at ~20:07 AEST. λ=1→λ=10→6k evaluations/long smoke queue remains active; no treatment result was used to alter training. The three now-obsolete queued motion services were stopped to avoid duplicate GPU work.
+
+---
+
+## 2026-09-29 — Readout-transfer correction (existing levers results remain historical)
+
+The levers evaluator originally fitted every fact ridge on TRUE successor tokens and applied it to imagined
+tokens. That conflated generated-state information with readout transfer. Corrected teval.py now records a
+versioned report with the historical true-fit readout, the same-capacity readout fitted on each world's
+GENERATED TRAIN-seed factual trajectories, and a separate all-17-action generated-fit one-step readout.
+Validation remains on a disjoint fifth of TRAIN seeds; judgment remains on TEST seeds. Legacy JSON and per-root
+files are preserved; version-2 reports use a __readout_v2 suffix when the old name already exists.
+
+On the 18k corrt world, the corrected run
+(20260927_levers/evals/corrt_raw_suffix_s7_u18000__readout_v2.json) reproduces the old physical metrics:
+one-step all 0.173 x copy, depth-16 imagined 0.683 /V. Adjacent-zombie AUC on imagined tokens is:
+
+| readout fit | one-step moved, all actions | factual rollout depth 1 | depth 8 | depth 16 |
+|---|---:|---:|---:|---:|
+| true states (historical transfer) | 0.799 | 0.842 | 0.581 | 0.530 |
+| generated states (matched) | 0.799 | 0.889 | 0.649 | 0.605 |
+
+The independent matched control (20260926_mechanism_audit/generated_fit.py/json) found a depth-16
+generated-minus-true gain of +0.076, 95% walk-seed-cluster interval [+0.015,+0.141] across 43 seeds and
+281 alive TEST roots. Its depth-16 generated-fit AUC was 0.606; the v2 evaluator gives 0.605 from minor GPU
+numerical variation. At depth 16, all-cell zombie AUC rises 0.499 -> 0.651, health R² 0.590 -> 0.639.
+This is a resolved readout-transfer penalty on an already-inspected diagnostic block, **not** proof of
+missing information or action control. The physical error 0.683 /V recursive versus 0.065 /V teacher-forced
+and the ground-truth substitutions independently establish rollout drift. Older fact-score comparisons in
+this notebook remain explicitly true-fit-transfer scores until each arm has a v2 report.
+
+## 2026-09-27..28 — Levers campaign (`20260927_levers/`) — closed 2026-09-30 (direct-head seed 8 and the 36k corrt curve were deferred and never run)
 
 Questions from the user:
 - (b) Can training the Mamba at its deployment length fix it, and is its memory used?
@@ -70,10 +358,617 @@ Questions from the user:
 | E1d | L64 at 24 windows/update (length or diversity?) | `context_cont.py` arm L64b24 | 10,000 updates, 1,512 transitions/update (DRAMA: 2,048) | done: diversity, not length |
 | E1e | matched compute for E1d | `context_cont.py` arms L4b512, L16b100 | same 1,500-1,536 transitions/update | done |
 | E1f | canonical shape (4-frame world, then long continuation, as the H2 bridge) with E1d's diversity | `context_cont.py` arm L4to64b24 | continue L4 at L=64, 24 windows/update, 5,000 updates | done |
-| E2 | discretization | `codebook.py`, `tworld.py --head categorical`, `teval.py --snap` | k-means K = 1024/4096 on LN tokens; categorical CE, teacher-forced; snap = nearest code after each imagined step | codebooks done; arms queued |
-| E3 | TC + T | `tc_pool.py`, `tc_equiv.py`, `tworld.py --pool tc` | identical windows re-encoded by TC; representational tests; residual/direct T on TC vs Raw tokens | representation done; arms queued |
-| E4 | Delta-JEPA LDAD in joint | `ldad_joint.py`, `ldad_eval.py` | canonical loop + CE(D(z_{t+1}-z_t), a_t), lambda 10 (and raw lambda 1), MLP 192-256-17; paired init verified | running (lane B) |
-| E5 | copy / Delta variants on T | `tworld.py --head {direct,residual,gated,corr}` | spatial.World backbone; 6,000 updates, batch 40, AdamW 1e-4 wd 0.01, 1,000 warmup; L1 teacher + depth-2 suffix | queued (`queue_tworlds.sh`) |
+| E2 | discretization | `codebook.py`, `tworld.py --head categorical`, `teval.py --snap` | k-means K = 1024/4096 on LN tokens; categorical CE, teacher-forced; snap = nearest code after each imagined step | done; contextual-token categorical arm fails (see E2) |
+| E3 | TC + T | `tc_pool.py`, `tc_equiv.py`, `tworld.py --pool tc` | identical windows re-encoded by TC; representational tests; residual/direct T on TC vs Raw tokens | seed-7 arms and seed-8 residual done (see E3c); direct seed 8 deferred |
+| E4 | Delta-JEPA LDAD in joint | `ldad_joint.py`, `ldad_eval.py` | canonical loop + CE(D(z_{t+1}-z_t), a_t), MLP 192-256-17; paired init verified | lambda-10 Raw/TC/no-SIGReg and Raw lambda 1 done and rescored |
+| E5 | copy / Delta variants on T | `tworld.py --head {direct,residual,gated,corr}` | spatial.World backbone; 6,000 updates, batch 40, AdamW 1e-4 wd 0.01, 1,000 warmup; L1 teacher + depth-2 suffix | seed-7 heads done; corrt 18k done; 36k learning curve deferred |
+
+**Source checks, 2026-09-28 (what each running arm is, and is not, relative to its paper):**
+- **E4 is LeWM + LDAD, not Delta-JEPA as published.** Checked in the PDF (`third_party/papers/2606.31232v1-deltajepa.pdf`):
+  - Eq. 7 is L = L_pred + lambda L_action, "no ... distribution-matching regularizers". There is no SIGReg; LDAD
+    is the anti-collapse term, and lambda = 0 "nearly collapses".
+  - E4 keeps SIGReg 0.09 and adds LDAD.
+  - Their N = 5 action queries decode the 5 actions of one latent step (le-wm `frameskip: 5` in all four of their
+    environments, `config/train/data/*.yaml`). Craftax has one action per step, so single-step decoding is the
+    faithful analogue; our MLP decoder for one discrete action is a stated reduction of their 3-layer Transformer.
+  - **E4c** (lane 8, `ldad_joint.py --no-sigreg`): Delta-JEPA as published, Raw, lambda 10, paired batches.
+    `ldad_eval.py` now also reports z's spectrum (effective rank, spread), backfilled for every run: collapse is
+    the question without SIGReg.
+- **E2 is not Dedieu et al.'s discretization** (arXiv 2502.01591, HTML read 2026-09-28).
+  - Their Nearest-Neighbour Tokenizer codes each RAW 7x7 pixel patch independently: K = 4096, threshold 0.75,
+    codes frozen once created. Targets are stationary and non-contextual.
+  - E2 quantizes contextual ViT tokens, whose codes flip on 14.6% of unchanged cells (`codebook.json`).
+  - `catdiag.py` (lane 7) measures how much of the categorical world's loss is those flips.
+- **E6 Lalt's 1:1 ratio is ours.** Dreamer 4 (p. 14): "many short batches and occasional long batches, and
+  finetune the model on only long batches afterwards"; long batches (256) exceed the context (192). No ratio is
+  given, and neither vendored reimplementation has alternation. Lalt tests the regime hypothesis; it is not a
+  Dreamer 4 replication. E1f (L4 then long only) is the finetune half.
+- **E6 ceiling (`bdiag.json`)**, closed-form ridge, held-out R^2 of dz:
+  - 3 frames + 3 actions 0.101; + frames 3-15 back 0.114; + mean of 16-63 back 0.113.
+  - Linear predictability gains only +0.013 from longer history, while E1's measured memory benefit is +18-29%:
+    what the Mamba uses from memory is mostly nonlinear. The arms that decide E6 (L4chop, Lalt) are queued.
+
+**Four-key simulator reference for imagined facts (`ceiling.py`, `ceiling.json`), 2026-09-28.**
+- The futures roll the same factual actions from the FULL root state under 4 other keys. Predicting sample 0's
+  facts from samples 1-4 by their sample mean or mode gives an empirical full-state reference. Four samples do
+  not define a proven optimum or upper bound; the old JSON field named ceiling is retained for provenance.
+- Rows and labels are exactly teval's (test-seed roots alive at depth k).
+
+| depth 16 | four-key reference | one simulator key | copy root | corrt 6k imagined, true-fit |
+|---|---|---|---|---|
+| tile near player (acc) | 0.947 | 0.939 | 0.625 | 0.710 |
+| zombie, all cells (AUC) | 0.788 | 0.706 | 0.689 | 0.562 |
+| zombie, 4 adjacent cells (AUC) | 0.802 | 0.700 | 0.684 | 0.500 |
+| health (R^2) | 0.872 | 0.808 | 0.588 | 0.585 |
+| food (R^2) | 0.975 | 0.966 | 0.880 | 0.881 |
+| facing (acc) | **1.000** | 1.000 | 0.327 | **0.310** |
+
+- These numbers compare a direct simulator fact estimator with a true-fit probe transferred to generated tokens.
+  The gap cannot be assigned wholly to world error. The generated-fit control below measures part of the
+  transfer penalty; token-space error and ground-truth substitution separately demonstrate rollout error.
+- Facing is deterministic given the actions (ceiling 1.000 at every depth), yet corrt reads it at copy level
+  (0.661 at depth 1; 0.18 on one-step moves). `where.py` localizes this.
+- Craftax renderer (`craftax_classic/renderer.py`, read 2026-09-28):
+  - the map view is a slice centred on the player (it scrolls);
+  - the player sprite (texture = direction, or asleep) is alpha-blended at the fixed centre over the terrain
+    under the player;
+  - the 2 HUD rows never scroll.
+  - corrt adds ONE frame-level move logit to the neighbour logits of every token, the player tile and the HUD
+    included.
+
+**E6 result: why (b) does not beat (a) at matched compute (`bdiag.py`, `bdiag.json`, vs `context_cont.json`).**
+- Error x copy under each world's own 3-frame window (its short-context competence):
+
+| positions | (a) L4b512 | L4chop | (b) L64b24 | gap from correlated data | gap from long-sequence training |
+|---|---|---|---|---|---|
+| 4-7 | 0.523 | 0.676 | 0.850 | +0.153 (47%) | +0.174 (53%) |
+| 16-31 | 0.586 | 0.754 | 0.936 | +0.168 (48%) | +0.182 (52%) |
+| 64-127 | 0.692 | 0.916 | 1.179 | +0.223 (46%) | +0.263 (54%) |
+| 128-255 | 0.715 | 0.954 | 1.226 | +0.239 (47%) | +0.272 (53%) |
+
+- L4chop is L64b24's exact sampled segments cut into 21 consecutive 4-frame windows each (same data, short
+  training). So:
+  - 46-48% of (b)'s short-context deficit comes from seeing only 24 episodes per update instead of 512
+    independent windows;
+  - 52-54% comes from training on 64-frame sequences, on identical data.
+- (b)'s memory benefit (+24-29%) almost exactly cancels that deficit, hence the tie.
+- **Lalt** (L4 x 512 and L64 x 24 alternating 1:1):
+  - window 0.624 / 0.696 / 0.842 / 0.877 (better short competence than (b)), but memory benefit only +3-6%;
+  - full history 0.605 / 0.661 / 0.794 / 0.829, the same as L4to64b24 (0.596 / 0.646 / 0.777 / 0.824);
+  - imagination after 48 frames 0.405, vs L4to64b24 0.400 and L4b512 windowed 0.406.
+- Three recipes, one ceiling (~0.40 /V at depth 16). At this compute, on data where exact revisits are under 1%
+  of transitions, memory buys no imagination gain for the z-Mamba world.
+- Linear ceiling for context: longer history adds only +0.013 R^2 of dz.
+
+**E6c: the literature's length-generalization fix, on our (a) world (`statepass.py`, `statepass.json`).**
+- Source: Buitrago Ruiz & Gu 2025, "Understanding and Improving Length Generalization in Recurrent Models"
+  (arXiv 2507.02782; PDF read, `third_party/papers/2507.02782-length-generalization-recurrent.pdf`, sha256
+  bc87fb04c91185d236ffe865c4a2789551b5c03f5bfbc737715e42a4dde8a790).
+  - "Unexplored states hypothesis": models trained on short contexts never visit the states reachable later.
+  - State Passing (s4.4) is 100 post-training steps at lr / 10, with the initial SSM state = a final state of the
+    previous batch, zeroed with p = 0.1. It fixes Mamba-2 2k -> 128k without hurting in-context performance.
+    TBTT (s4.5) is about as good.
+- Ours: E1e's L4b512 world, 500 post-training updates, 512 x 4-frame windows, lr 5e-6. Error x copy, full
+  history / own 3-frame window:
+
+| arm | 4-7 | 16-31 | 64-127 | 128-255 | imagination 16 (recurrent / window) |
+|---|---|---|---|---|---|
+| L4b512 (base) | 1.74 / 0.52 | 4.68 / 0.59 | 9.14 / 0.69 | 11.35 / 0.72 | 2.076 / 0.406 |
+| post-training, zero state (control) | 1.73 / 0.52 | 4.69 / 0.58 | 9.18 / 0.69 | 11.41 / 0.71 | 2.092 / 0.416 |
+| State Passing | 1.70 / 0.77 | 3.12 / 0.86 | 4.79 / 1.07 | 5.62 / 1.12 | 1.839 / 0.685 |
+| TBTT | 0.98 / 1.59 | 0.93 / 1.81 | 1.94 / 2.39 | 2.42 / 2.60 | 1.002 / 1.277 |
+| (b) L4to64b24 | 0.60 / 0.72 | 0.65 / 0.78 | 0.78 / 0.97 | 0.82 / 1.03 | 0.400 / 0.650 |
+
+- **At this budget it does not transfer.** State Passing halves the long-context blow-up (11.35 -> 5.62x copy)
+  and costs short-context accuracy (0.52 -> 0.77). TBTT reaches 2.42x but wrecks short context and zero-state
+  starts (2.76x at positions 1-3). Neither approaches (a)-windowed or (b) (~0.40). The control rules out the
+  post-training itself.
+- **E6d: why (`statenorm.py`, `statenorm.json`).** Their mechanism is that post-trained states stop drifting
+  past the training length (their Fig. 4). Mean SSM state norm relative to position 3, over 256 DEV/FINAL
+  128-frame windows, full-history recurrence:
+
+| world | pos 4 | 8 | 16 | 32 | 64 | 127 | error x copy at 127 |
+|---|---|---|---|---|---|---|---|
+| L4b512 (base) | 1.32 | 2.14 | 2.82 | 3.55 | 4.31 | 4.96 | 8.12 |
+| + State Passing 500 | 1.31 | 2.08 | 2.70 | 3.33 | 3.97 | 4.46 | 4.21 |
+| + TBTT 500 | 1.32 | 2.12 | 2.80 | 3.48 | 4.17 | 4.72 | 1.81 |
+| (b) L4to64b24 | 1.31 | 2.25 | 2.97 | 3.45 | 3.88 | 4.50 | **0.70** |
+| L64b24 | 1.35 | 1.94 | 2.29 | 2.53 | 2.70 | 2.86 | 0.74 |
+
+  1. The mechanism did not take effect: after State Passing the state still grows 4.5x from position 3 to 127
+     (4.96 -> 4.46). The error gain is partial adaptation, not stationarity.
+  2. Growth itself is not the failure: (b) grows the same 4.5x and predicts well at 127 (0.70x copy), because it
+     trained on those states.
+  3. Scale of the unexplored region: they post-train models trained on 2k tokens; ours trains on 3 steps, where
+     the state is at 1/4.96 of its position-127 norm. Layers 2 and 3 grow most (9.4x, 7.2x at 127). Covering
+     that takes training on long-context states, which is what (b) does.
+  - The hypothesis holds on our data; the cheap remedy does not reach a gap this large. **For d4mj: the
+    invariant (C = trained context) stands; a recurrence usable past 4 frames requires long-context training
+    (option b), not a post-training patch.**
+
+**E2 result and diagnosis (`evals/categorical_raw_teacher_s7_K4096.json`, `catdiag.py`, `catdiag.json`).**
+- The categorical world (K = 4096 codes over contextual Raw tokens, teacher-forced CE, 6k) is worse than the
+  residual world on every one-step class: all 0.840 x copy, idle 1.99, moved 1.04; depth 16 imagined 1.018 /V
+  vs residual 0.849.
+- It fails for three measured reasons:
+  1. **Target noise.** 80.7% of code changes are contextual flips: the cell's tile and mobs are unchanged but its
+     code changes. That is 250,133 flips vs 59,714 content changes, 23% of all cells. The categorical world
+     predicts 17.9% of flips. In its own currency it is below the continuous residual world read through the
+     same codebook: code accuracy 0.664 vs 0.767 (teacher-forced control), and 0.873 vs 0.967 on cells whose
+     code does not change.
+  2. **Quantization floor** (the snapped TRUE next frame), x copy: idle 1.60, blocked 1.25, interact 0.69,
+     moved 0.077, all 0.293; 0.045 of variance at every depth. It explains most of idle's 1.99 and blocked's
+     1.54, not moves.
+  3. **No copy path.** On moves it gets 1.2% of content cells right (residual 5.3%, corrt 31.2%). The categorical
+     head is a direct head, the same failure as the continuous direct head (0.971 x copy on moves).
+- **So E2 as run does not answer "does discretization help".** It combined contextual codes (Dedieu et al. use
+  stationary, non-contextual pixel-patch codes) with a copy-less head. ITC is discrete tokens WITH a copy path.
+- **Rollout-state discretization** (`teval.py --snap`): every imagined frame snapped to its nearest K = 4096
+  code before being fed back. Imagined error / V:
+
+| world | one step all (x copy) | depth 1 | 4 | 8 | 16 | health R^2 at 16 |
+|---|---|---|---|---|---|---|
+| residual, suffix | 0.596 | 0.168 | 0.425 | 0.605 | 0.849 | 0.555 |
+| same, snapped | 0.839 | 0.206 | 0.473 | 0.691 | 1.013 | 0.475 |
+| residual, teacher-forced | 0.544 | 0.159 | 0.421 | 0.607 | 0.865 | 0.625 |
+| same, snapped | 0.788 | 0.197 | 0.468 | 0.686 | 1.015 | 0.473 |
+| direct, suffix | 0.902 | 0.179 | 0.452 | 0.667 | 0.969 | 0.109 |
+| same, snapped | 1.133 | 0.215 | 0.498 | 0.734 | 1.058 | **0.515** |
+| categorical (trained on codes) | 0.840 | 0.207 | 0.487 | 0.702 | 1.018 | 0.498 |
+
+  - Snapping hurts every continuous world at every depth, and does not damp inherited error: the residual
+    world's per-step gain goes 0.982 -> 0.993.
+  - Trained or post hoc, discretization over these codes ends ~0.15 /V worse than the continuous residual world
+    at depth 16.
+  - The one gain is health readability for the direct head (0.109 -> 0.515): snapping projects its drifting HUD
+    tokens back onto valid codes. It repairs a head that corrupts the HUD; it does not stabilize dynamics.
+- Paired intervals (`compare.json`, `compare_disc`):
+  - categorical vs its teacher-forced residual control: worse on every statistic, all resolved (depth 16
+    +0.154 [+0.135, +0.171]).
+  - residual, suffix vs teacher-only: teacher-only is better one step ahead (idle -0.278*, blocked -0.489*,
+    all -0.053*); the depth-2 suffix buys depth 16 (0.849 vs 0.865*).
+  - direct head, TC vs Raw tokens: all -0.270*, almost entirely sleep onset (0.750 -> 0.082*); moves -0.021*;
+    other classes and depths 4-16 unresolved.
+- **E2 verdict:** discretizing CONTEXTUAL tokens does not help, at training or at rollout. The cause is measured:
+  81% of code changes are context flips, and each snap adds the 0.045 /V quantization floor. A fair test of
+  discretization needs non-contextual codes (Dedieu et al.'s NNT on pixel patches, which is not a JEPA state) or
+  discrete tokens with a copy path (ITC). Not pursued further on JEPA tokens.
+
+**E5g: 6,000 updates under-trains the per-tile worlds (`compare.json`, corrg 6k vs 18k, same seed and recipe).**
+
+| | corrg 6k | corrg 18k | corrt 6k |
+|---|---|---|---|
+| moved (x copy) | 0.203 | 0.176* | 0.196 |
+| blocked | 4.612 | **0.374*** | 0.913 |
+| idle | 0.840 | 0.459* | 0.846 |
+| all | 0.350 | **0.178*** | 0.302 |
+| imagined, depth 16 (/V) | 0.839 | **0.703*** | 0.810 |
+
+- Every difference is resolved, and all far exceed the seed-noise floor (all 0.380 vs 0.329 across seeds).
+- **corrt at 18k** (`evals/corrt_raw_suffix_s7_u18000.json`), best world so far:
+  - all 0.173, moved 0.180, blocked 0.326, idle 0.454, sleep 0.025;
+  - imagined 0.041 / 0.202 / 0.380 / **0.683** at depths 1 / 4 / 8 / 16;
+  - facing 0.940 at depth 1, 0.868 at 16.
+  - corrt and corrg converge at 18k (corrg 0.178 / 0.703): the target-tile gate bought speed, not a different
+    endpoint.
+  - Historical depth-16 true-fit-transfer facts: tiles 0.72, all-cell zombie AUC 0.50, health R² 0.59.
+    The four-key simulator reference is 0.95 / 0.79 / 0.87, but it is not a proved ceiling or a matched
+    decoder. See the generated-fit correction below.
+  - The logged training objective (single batches) flattens after ~6k while held-out accuracy improved 6k -> 18k,
+    so it cannot say whether 18k still under-trains. E5i (lane 15, after stage 2): corrt to 36k with held-out
+    snapshots every 6k.
+- Plain attention learns the move routing with 3x the updates; corrt's target-tile read only got there faster.
+- **Every head comparison so far was made at 6k.** Rankings may change with budget. corrt 18k and the best fix
+  at 18k are queued (lane 10); stage-2 backbones need the same check.
+- Same-seed runs are not bit-reproducible. **Corrected 2026-09-30** (an earlier line here said they "match
+  exactly to update 2,000"): corrg 6k vs 18k logged objectives already differ in the 6th digit at update 500,
+  the 4th at 1,000, and by 12% at 3,000 (0.2847 vs 0.2533); corrt 6k vs 18k likewise. GPU kernels are
+  nondeterministic from the first updates.
+
+**18k head choice, generated-fit rescore (2026-09-29).** Existing Raw corrg18k and corrt18k
+checkpoints reproduced all 103 shared historical numeric fields exactly under `teval.py` v2.
+At depth 16, generated-fit adjacent-zombie AUC is .598 for corrg versus .605 for corrt;
+all-cell zombie AUC .660 versus .651, health R² .603 versus .639, and facing accuracy
+.875 versus .883. Physical error remains .703 versus .683 /V, respectively. No paired
+semantic interval is available. Thus corrg is a simpler routing head, but it has no
+measured performance lead over corrt at the adequate 18k budget; choosing it for an LDAD
+integration is a design choice, not a demonstrated improvement.
+
+**E5f: where corrt's error lives (`where.py`, `where_corrt_raw_suffix_s7.json`), one step, futures roots.**
+- **Refuted suspect:** the shared move logit does NOT force copying at the player tile or HUD. On moves the
+  player tile keeps itself (w_self 0.957), and the HUD too (0.999).
+- **The generator is starved.** Its mixture weight is 0.000-0.062 in every group and class except sleep onset.
+  Its standalone output, LN(proj(h)), in x copy:
+  - sleep onset (w_generate 0.73): 0.19-0.28;
+  - moves: 3.4-5.8 on the map, 256 on the HUD;
+  - blocked: 12.6-60; idle: 54-315; interact: 4.7-853.
+  - It learns only where it is chosen, and is chosen only where it learned.
+- **Entering row/column on moves: 57.4% of all moved error**, x copy 0.908.
+  - Its weight goes 0.656 to the scroll source, which is off-grid zero padding, 0.278 to self and 0.018 to the
+    generator.
+  - Other border cells: x copy 0.076.
+  - **CORRECTED 2026-09-28:** the head layer-normalizes its mixture, so the zero-pad weight only RESCALES. The
+    effective content is LN(self + ~0.07-0.12 x generator). Self at an entering cell is the root token at that
+    screen position, which after the scroll is the in-view neighbour's content: a replicate pad.
+    - Measured: zero fill would cost 3.66x copy error at entering cells.
+    - The new cell's tile class equals its in-view neighbour's in 75.0% of 22,951 entering cells.
+    - So entering-cell error is mostly partial observability: a deterministic world cannot know the other 25%
+      without map memory or stochastic generation. The substitution result (-34% at depth 16) measures the
+      price of that, not a fixable head bug.
+- **HUD never updated:** x copy 1.000 in every class (w_self 1.000). It is 34% of interact error and 36% of
+  sleep-onset error. This is why health and food sit at copy level.
+- **Rollout:** interior error grows from 0.029 of its variance (k1) to 0.81 (k16), and its share of error from
+  23% to 42%. Consistent with entering-cell errors scrolling inward; not yet shown.
+- Residual head for contrast: no localized failure. Its error is spread in proportion to copy error
+  (interior 0.906, edge 0.921 x copy on moves).
+- **ITC does both things we lack** (verified in the PDF, `2605.16457v1`):
+  - "leaves the transformer and its training loss unchanged": token predictions are trained on every token, and
+    copying is decided at decoding;
+  - Craftax: "the optimal transport output [is applied] to the central region of the screen ... the
+    transformer's predictions for the screen edges and inventory regions".
+- **Fix arms (lane 10):** `--gen-loss` (the generator's own teacher-forced L1 on all tokens), `--regions itc`
+  (ring and HUD from the generator), both; at 6k, then both and plain corrt at 18k.
+
+**E5h: what causes corrt's depth-16 error (`substitute.py`, `static.py`, `teval.py --hard`), 2026-09-28.**
+- **Ground-truth substitution in imagination.** After each imagined step one component is replaced by the true
+  tokens; the error is read before the replacement. Imagined / V at depth 16:
+
+| substituted | total | player | near | interior | edge | HUD |
+|---|---|---|---|---|---|---|
+| none (= teval) | 0.810 | 1.107 | 0.878 | 0.808 | 0.823 | 0.699 |
+| entering row/column | **0.536** | 1.101 | 0.759 | **0.568** | 0.426 | 0.699 |
+| HUD | 0.713 | 1.076 | 0.846 | 0.769 | 0.780 | 0.067 |
+| player tile | 0.801 | 0.251 | 0.863 | 0.807 | 0.823 | 0.700 |
+| all three | **0.434** | 0.236 | 0.709 | 0.530 | 0.393 | 0.066 |
+
+  - Entering-cell errors are causal: they scroll inward (interior -30%, total -34%).
+  - HUD and player-tile errors are self-contained.
+  - The three localized defects are 46% of depth-16 error.
+- **Static rollouts** (the 98 roots whose TRUE view never scrolls in 16 steps; copy 0.462 /V):
+  - corrt 0.657 /V (1.42x copy), corrg 18k 1.53x, residual 0.388 (0.84x).
+  - corrt imagines a scroll that never happens in 32.7% of these rollouts (4-6% per step from depth 2, 0% at
+    depth 1): with a false scroll 0.969 /V, without 0.506 /V.
+  - The 17 rollouts with no move attempt at all: **0.044 /V**. The 81 with (blocked) move attempts: 0.786.
+  - So corrt handles truly idle futures well. Its static drift is blocked moves that it judges correctly on
+    true frames (one-step blocked 0.913 x copy) but wrongly on its own imagined frames.
+  - Measured mechanism: 387 imagined steps with a (blocked) move attempt; 22.7% falsely scroll (0% at depth 1,
+    on true inputs). False-scroll rate by the input's squared error at the target tile:
+    - below median (<= 8.3): 17.5%; median to p75: 15.6%;
+    - p75 to p90: 29.3%; above p90 (> 203): **56.4%**;
+    - mean target error 111 on false-scroll steps vs 39 on correct ones.
+  - A corrupted target tile triples the false-scroll rate. But even with a nearly clean target tile, 16-18% of
+    blocked moves falsely scroll on imagined inputs. The decision also degrades from something else in the
+    imagined history (OPEN).
+  - Lighting is not the cause: at a below-median light change corrt reads 0.604 vs copy 0.384. Residual tracks
+    brightness drift (0.406 vs copy 0.624 at above-median change); the copy heads cannot, their generator being
+    starved.
+- **ITC's binarized decoding does not help an under-trained soft head** (`corrt_raw_suffix_s7__hard`):
+  - one step all 0.302 -> 0.467, idle 0.846 -> 0.997; depth 16 0.810 -> 1.330; static roots 1.42 -> 1.69x copy.
+  - The small generator admixture HELPS: idle one-step beats pure copying (0.846 vs 0.997). The "soft blending
+    leaks garbage" hypothesis is refuted.
+  - Argmax fills entering cells with the zero pad (depth-16 edge tile accuracy 0.696 -> 0.392).
+  - ITC's hard decoding presupposes a generator trained on every token (lane 10's `--gen-loss`).
+
+**E7: per-tile worlds on LDAD lambda-10 tokens (`spatial_pool_ldad10_v1`: the same windows re-encoded by the Raw
++ LDAD 10 joint encoder; `compare_ldad_t`; seed 7, 6k, suffix loss).**
+
+| LDAD minus Raw | residual head | corrt head |
+|---|---|---|
+| moved (x copy) | **-0.442*** (0.912 -> 0.469) | +0.046* (0.196 -> 0.242) |
+| blocked | -0.949* | -0.398* |
+| interact | -0.034* | -0.012 (ns) |
+| sleep onset | +0.115* | -0.047* |
+| idle | +0.012 (ns) | +0.078* |
+| all | -0.122* | +0.031* |
+| imagined, depth 1 / 4 / 8 / 16 (/V) | +0.002 / -0.021 / -0.039* / -0.059* | +0.054* / +0.107* / +0.108* / +0.009 |
+
+- Historical imagined facts, depth 1 / 4 / 16 (true-fitted probes transferred to generated states, fitted
+  separately per token space; generated-fit control pending for these arms):
+
+| fact | residual Raw | residual LDAD | corrt Raw | corrt LDAD |
+|---|---|---|---|---|
+| facing | 0.66 / 0.44 / 0.31 | **0.92 / 0.94 / 0.82** | 0.66 / 0.44 / 0.31 | **0.94 / 0.94 / 0.91** |
+| zombie adjacent | 0.78 / 0.83 / 0.56 | 0.84 / 0.80 / 0.49 | 0.80 / 0.78 / 0.50 | **0.90** / 0.80 / 0.55 |
+| health R^2 | 0.98 / 0.90 / 0.56 | 0.98 / 0.90 / 0.54 | 0.98 / 0.90 / 0.59 | 0.98 / 0.93 / 0.62 |
+| food R^2 | 1.00 / 0.95 / 0.86 | 1.00 / 0.94 / 0.83 | 1.00 / 0.95 / 0.88 | 1.00 / 0.94 / 0.78 |
+| tiles near player | 0.87 / 0.79 / 0.67 | 0.91 / 0.81 / 0.66 | 0.96 / 0.87 / 0.71 | 0.97 / 0.87 / 0.66 |
+
+- **LDAD tokens make action effects learnable for a head without a copy path.** The residual head's move error
+  halves (0.912 -> 0.469; seed spread on moves is 0.007).
+- Imagination keeps facing, the purely action-determined fact, at 0.82-0.94 through depth 16 (Raw 0.31), in both
+  heads.
+- For corrt, which already scrolls, LDAD tokens do not help moves (+0.046*), and shallow imagination is worse in
+  /V. Caveat: /V here compares different token spaces.
+- Food and far tiles are slightly worse: the same trade-off LDAD showed in z (E4).
+- One seed: blocked, idle and sleep differences are not established (E3c: blocked/idle swing 0.3-0.5 across
+  seeds).
+
+**E7 generated-fit correction (2026-09-29).** `teval.py` rescored the existing Raw corrt6k,
+LDAD10 corrt6k and LDAD10 residual6k checkpoints with identical generated-fit probe capacity.
+Historical physical and true-fit fields reproduced exactly (maximum absolute delta 0 for all
+three), despite the current `tworld.py` source hash differing from the training snapshots.
+The v2 files preserve the old JSON. On the diagnosis TEST roots:
+
+| generated-fit readout | Raw corrt6k | LDAD10 corrt6k | LDAD10 residual6k |
+|---|---:|---:|---:|
+| adjacent zombie AUC, depth 1 | .857 | .924 | .858 |
+| adjacent zombie AUC, depth 16 | .557 | .641 | .564 |
+| all-cell zombie AUC, depth 16 | .619 | .732 | .769 |
+| health R², depth 16 | .636 | .692 | .648 |
+| facing accuracy, depth 16 | .320 | .929 | .943 |
+| moved-action adjacent zombie AUC, one step | .679 | .865 | .752 |
+
+The old true-fit transfer readout undercounted several LDAD10+T facts (for example corrt
+adjacent zombie .545 true-fit versus .641 generated-fit at depth 16). LDAD10+T has a measured
+semantic readout gain even though cross-token-space physical error/V is a poor treatment
+ranking. The between-arm semantic differences have no paired interval yet, and neither a
+within-root safe-action choice nor an actor test exists. This is **λ=10 + T + corrt**, not the
+proposed **λ=1 + T + corrg**; it establishes an interaction worth testing, not additivity.
+
+**E3c: TC + T with a second training seed (`compare_tc_s8`; residual head, suffix loss, seeds 7 and 8).**
+
+| TC minus Raw | seed 7 | seed 8 |
+|---|---|---|
+| moved (x copy) | +0.024* | +0.030* |
+| interact | +0.059* | +0.035* |
+| sleep onset | -0.009* | -0.010* |
+| blocked | -0.794* | +0.131 (ns) |
+| idle | -0.113 (ns) | +0.380* |
+| all | -0.055* | +0.037* |
+| imagined, depth 1 (/V) | +0.016* | +0.035* |
+| imagined, depth 4 | +0.016* | +0.026* |
+| imagined, depth 16 | +0.020 (ns) | +0.017 (ns) |
+
+- Within one arm, blocked and idle swing by 0.3-0.5 between training seeds (Raw blocked 1.335 -> 0.789*, TC
+  blocked 0.542 -> 0.920*). Those statistics cannot rank arms from one seed.
+- **Verdict: TC tokens give the per-tile world no reliable advantage.** Replicated at both seeds, TC is slightly
+  worse on moves, interactions and imagination at depths 1-4 (+0.016 to +0.035 /V); the only replicated gain is
+  trivial (sleep onset -0.01). Consistent with E3a: same facts, different geometry.
+
+**E5f result 1: `--gen-loss` at 6k (`evals/corrt_raw_suffix_s7_gl.json`, `where_corrt_raw_suffix_s7_gl.json`).**
+
+| one step (x copy) | corrt | corrt + gen loss | corrg 18k |
+|---|---|---|---|
+| moved | 0.196 | **0.748** | 0.176 |
+| blocked | 0.913 | 0.425 | 0.374 |
+| idle | 0.846 | 0.504 | 0.459 |
+| sleep onset | 0.190 | 0.052 | 0.040 |
+| all | 0.302 | 0.462 | 0.178 |
+| imagined depth 16 (/V) | 0.810 | 0.939 | 0.703 |
+
+- **The starvation diagnosis is confirmed.** The generator's standalone error (x copy):
+  - moves 3.4-5.8 -> 0.83-0.98; blocked 12.6-60 -> 0.42-0.72;
+  - HUD 256 -> 1.4 (moves) and 159 -> 0.75 (blocked).
+  - The head uses it: blocked interior 0.933 -> 0.380, blocked HUD 1.000 -> 0.492, idle player tile
+    0.999 -> 0.232 (facing updates).
+- **But moves regress because the head stops scrolling, not because the generator wins.** On moves the interior's
+  scroll-source weight falls 0.931 -> 0.204 and self-copy rises 0.047 -> 0.61 (generate only 0.09). Interior
+  x copy 0.064 -> 0.714.
+  - At 6k, the extra objective on the shared backbone weakens the move decision: the routing that needed 18k
+    updates without it (E5g).
+  - In ITC the decision (optimal transport) and the generator are not trained through one shared mixture.
+- corrg 18k learned facing without any generator loss (depth 1 0.936, depth 16 0.861, vs corrt 6k
+  0.661 / 0.310): budget matters as much as design.
+- **`--regions itc` alone is harmful** (`corrt_raw_suffix_s7_itc`): one step all 0.696, moved 0.809, sleep 0.440;
+  depth 16 0.993 /V; health R^2 at depth 16 **-3.40**, food 0.41. The ring and HUD (46 tokens) come from a
+  generator trained only through those tokens: a direct head there (direct is 0.90x copy), and the HUD drifts.
+  The regions rule presupposes ITC's trained generator.
+- **Both switches** (`corrt_raw_suffix_s7_gl_itc`): all 0.662, moved 0.839, blocked 0.891, idle 0.837, sleep 0.343;
+  depth 16 0.927 /V; health R^2 at 16 -0.42, food 0.41.
+- **At 6k no ITC-derived change beats plain corrt** (all 0.302, depth 16 0.810). The generator loss cures
+  starvation but the head stops scrolling. The regions hand 46 tokens to a generator that is at best copy-level
+  on moves (0.83-0.98x). ITC's generator samples plausible DISCRETE tokens for new content; a continuous L1
+  generator regresses to the conditional mean, which is all it can give for never-seen cells.
+- **Where the 6k fix arms lose moves** (`where_*`, `corrg_probe.py <world>` -> `probe_*.json`):
+  - All three stop scrolling: interior scroll-source weight on moves 0.93 -> 0.19-0.24, self 0.05 -> ~0.6.
+    That includes regions-only, which has no generator loss: any path that trains the generator does it.
+  - Two explanations refuted:
+    - the backbone still carries passability at the target tile (AUC 1.00 in every arm);
+    - the head's move decision still ranks moved vs blocked (AUC 0.977-0.989, corrt 0.998), and its magnitude is
+      not smaller: mean decision logit on moved steps is corrt 3.57, gen loss 1.80, regions 4.45, both 4.57
+      (corrg 18k 1.24).
+  - So the per-tile selection logits keep self high on moves once the generator carries gradient.
+  - The 18k runs (corrt, both switches) decide whether this is another budget effect, as corrg's routing was.
+- **18k verdict (`compare_itc18`):**
+  - Both switches at 18k: all 0.320, moved 0.476, depth 16 0.803; health / food R^2 at 16 0.45 / 0.61; facing
+    at 16 0.278.
+  - Budget helps them a lot (6k -> 18k: all 0.662 -> 0.320*, depth 16 0.927 -> 0.803*).
+  - At matched 18k they stay clearly worse than plain corrt: all +0.147*, moved +0.296*, depth 16 +0.120*.
+  - corrt 18k vs corrg 18k: all -0.005*, depth 16 -0.020* (one seed).
+  - **ITC's training/decoding adaptation is dropped for continuous JEPA tokens.** ITC's generator gains from
+    sampling discrete, plausible tokens; a continuous L1 generator regresses to the conditional mean, so what it
+    generates (new cells, HUD) stays blurry. The head for the architecture is plain corrt (or corrg) at an
+    adequate budget.
+- **corrt 18k re-localized (E5j: `where_/static_/substitute_corrt_raw_suffix_s7_u18000.json`).**
+  - Solved by budget:
+    - the player tile is now generated (weight 0.51 on moves; x copy 0.934 -> 0.192), so facing updates;
+    - blocked / idle / HUD errors fall by more than half (blocked interior 0.933 -> 0.302, blocked HUD
+      1.000 -> 0.426, idle HUD 1.000 -> 0.582).
+  - Not solved:
+    1. **Entering cells:** x copy 0.903, now 62% of moved error. Partial observability: the class equals the
+       in-view neighbour's in 75% of cells.
+    2. **Interactions:** near tiles 0.992, inventory 0.995 x copy. Mining and placing outcomes are unlearned.
+    3. **Blocked-move false scrolls in imagination:** worse at 18k.
+  - Substitution at depth 16 (/V):
+
+| substituted | none | entering | HUD | player | all three |
+|---|---|---|---|---|---|
+| total | 0.683 | 0.425 (-38%) | 0.583 (-15%) | 0.685 | 0.320 |
+
+  - Static rollouts (98 roots; copy 0.462): false scroll in 40.8% of rollouts (6k 32.7%); 33.3% of blocked-move
+    steps (6k 22.7%). Depth 16: 0.934 with a false scroll, **0.392 without (beats copy)**, 0.040 with no move
+    attempt.
+  - Mechanism, first false scroll only:
+    - hazard 17.6% per blocked-move step (31.8% at depths 2-4, ~10% after 8);
+    - the head's decision logit on blocked steps is -5.19 on the TRUE window and -4.36 on the imagined window
+      (imagined inputs shift it up +0.8);
+    - on the steps that falsely scrolled it reads +0.88 imagined vs -0.86 true: borderline blocked moves;
+    - 11.0% of blocked first steps are positive even on true windows.
+    - So first false scrolls = ~11 points of blocked moves misjudged on real frames + ~6-7 points flipped by the
+      imagined-input shift. Which blocked moves are borderline: next.
+    - **Superseded 2026-09-30 (E5k, audit section):** those "true windows" were 5-frame windows, which put the
+      current frame at time position 4. With 4-frame windows the same world misjudges 0.0% of blocked moves on
+      true frames and 1.3% on imagined ones; the 11 points are a time-position-4 bias, not borderline moves.
+- **Stage-2 engineering (16:26-16:40):** per-token SSM states (40 x 82 sequences x 4 x 64 x 64 fp32, ~215 MB per
+  tensor per layer) OOM'd fmamba even at chunk 64. Fixed by per-layer gradient checkpointing for the factored
+  backbones (same math).
+  - Measured per update (batch 40): peak GB full 2.53, fattn 0.87, fmamba 2.35, fcanvas 2.02, fscan 0.89;
+    steady s/update fattn 0.33, fscan 0.38, fmamba 0.70, fcanvas 0.80.
+  - teval evaluates per-token Mamba arms at 4 roots per batch (state size); results are unchanged.
+
+**Incident 4 (2026-09-28 09:05-09:54, self-inflicted):** I appended two paper pins to
+`third_party/PAPERS.lock`. It is hashed into every LeWM checkpoint's source identity (`d4mj/sources.py`
+"references"), so canonical loads failed and killed `ldad_raw_lam10_nosig` at start. Reverted with
+`git checkout`; loads verified; lane 8 relaunched. No other job loaded a canonical bundle in that window.
+- Pins kept here instead:
+  - `third_party/papers/2606.31232v1-deltajepa.pdf`, sha256 94e394fd9cbffaffb370fdc5f4bb3e2a2833ca41966e02efe800d5afff30371e;
+  - `third_party/papers/2605.16457v1-itc.pdf`, sha256 37e15d2ea600d8f71b271b5f980a1e76e7af3b0383f70edc9994c06269a5b70e.
+
+**Stage 2 prerequisites (2026-09-28).**
+- **Scroll estimator** (`scroll.py`, `scroll.json`): the shift minimizing token difference over the shared map
+  cells, against the simulator's labels:
+  - moved 0.975 (2.4% read as no scroll), blocked 1.000, non-moves 0.997 (0.28% false scroll);
+  - on the factual futures: 36.6% of transitions scroll, 70.3% of move actions, and the direction matches the
+    action in 99.93%.
+- **Backbones** (`tworld.py --backbone`, verified by `stage2_checks.py` / `stage2_checks.json`, all exact):
+  - `masked_scan` with all steps kept equals `FunctionalMamba2.scan` (max diff 0.0). With absent-frame
+    masks it matches the **SSM-only** zero-delta reference (4.8e-7 at scale 2.3); this does not test holding
+    Mamba's causal convolution. The 2026-09-29 canvas diagnosis below found that the convolution does advance.
+  - with no scroll, fcanvas equals fmamba (0.0);
+  - synthetic scrolling views: every canvas cell receives one world token (0.0);
+  - every backbone is causal (0.0 on frames 0-3 when frames 4-5 change).
+  - Parameters: full 4.98M, fattn 6.56M, fmamba / fcanvas / fscan 6.38M. A single 6k factored arm
+    cannot settle the architecture class, especially against a full model trained for 18k updates;
+    compare training time, matched data, seeds and control-relevant facts.
+  - First version's full canvas (17 x 19 cells) cost ~900 MB per Mamba state tensor per layer at batch 40. Fixed
+    by scanning only cells in view at least once, compacted per window.
+- **Arms (lane 9):** corrt head, Raw tokens, suffix loss, seed 7, 6,000 updates; backbones fmamba, fcanvas,
+  fattn, fscan; then teval and paired comparisons.
+- First fmamba attempt: CUDA OOM (2026-09-28 16:26). The Mamba-2 Triton scan allocates sequences x chunks x
+  chunk_size^2. With the canonical chunk_size 256 and 3,280 six-step sequences that is ~860 MB. The factored
+  arms now use chunk_size 64: kernel tiling only (SSD is exact for any chunking). stage2_checks re-run, all
+  exact.
+
+**Stage 2, matched 6k worlds and scroll diagnostics (2026-09-29; exploratory TEST block).**
+`lane9.sh` completed after fcanvas's 6k checkpoint was found complete but its evaluation interrupted. The
+6k worlds use the same Raw tokens, corrt head, suffix loss and seed. Physical metrics and paired intervals
+use all 1,002 diagnosis roots (143 walk seeds), which were not world-training data; the probe facts below
+use the disjoint 283 TEST roots (43 walk seeds). Lower physical error is better. Paired intervals cluster
+by walk seed (`compare.json`).
+
+| world | training seconds | one-step all x copy | moved x copy | blocked x copy | recursive depth-16 /V |
+|---|---:|---:|---:|---:|---:|
+| full 6k | 1,289 | 0.302 | 0.196 | 0.913 | 0.810 |
+| factored attention 6k | 2,336 | 0.243 | 0.193 | 0.905 | 0.740 |
+| per-token Mamba 6k | 4,317 | 0.245 | 0.191 | 0.978 | 0.745 |
+| scroll canvas 6k | 4,984 | 0.243 | 0.195 | 0.919 | 0.739 |
+| raster-scan Mamba 6k | 2,317 | 0.192 | 0.182 | 0.425 | 0.795 |
+| full 18k | 3,451 total | **0.173** | **0.180** | **0.326** | **0.683** |
+
+Canvas minus factored Mamba at 6k is -0.0015 [-0.0026,-0.0005] on one-step all,
++0.0032 [+0.0025,+0.0039] on moved, -0.0586 [-0.1244,-0.0241] on blocked, and
+-0.0058 [-0.0187,+0.0083] at depth 16. The depth-16 gain is unresolved. Full 18k beats canvas 6k
+at depth 16 by 0.0554 [0.0406,0.0714] and took less training time; this is a compute comparison,
+not a matched-update architecture ceiling. Against factored attention, canvas differs by only
+-0.0009 /V at depth 16, interval [-0.017,+0.016]. Raster-scan Mamba beats attention one step
+(0.192 vs 0.243 x copy, paired difference -0.051 [-0.094,-0.013]) but loses at depth 16
+(0.795 vs 0.740 /V, +0.055 [+0.035,+0.073]). Teacher-forced depth-16 error is better for
+raster scan (0.063 vs 0.069 /V), confirming its gap is in recursive self-feeding, not factual
+one-step fit. The crossover occurs between depths 4 and 8. Full 18k beats attention 6k at
+depth 16 by 0.056 [+0.038,+0.074], though attention uses only two thirds of its wall time.
+All architecture claims remain one world seed on one inspected diagnostic block; equal-time full
+12k versus attention 6k has not been measured.
+
+**Raster-scan recursion localization (`static_*.json`, `where_*.json`, `substitute_*.json`,
+`fscan_hud_feedback.json`, `fscan_hud_curve.json`, `fscan_{hud_,}perturb.json`; post-hoc).**
+On 98 factual no-scroll roots, fscan's 16-step false-scroll rate is 0.306 versus fattn's 0.337,
+so false scrolling does not explain the extra scan error. At depth 16 the scan-minus-attention
+error gap is +0.0551 /V. Error *lands* mostly on interior (+0.0232 /V) and edge map tokens
+(+0.0278 /V), not on HUD tokens themselves (+0.0014 /V); location of error is not necessarily
+its feedback source. Replacing only newly entering map cells with their true tokens helps both
+similarly (fscan 0.795 -> 0.511 /V; fattn 0.740 -> 0.461 /V), leaving a +0.050 gap.
+Replacing only the 18 HUD tokens with true tokens **after each prediction, before feedback**
+helps fscan 0.795 -> 0.619 /V and fattn 0.740 -> 0.647 /V, reversing their ordering. The
+paired walk-seed difference in HUD benefit is -0.0832 /V, 95% bootstrap interval
+[-0.1024,-0.0645] on 1,002 roots/143 walk seeds. It grows from -0.0027 /V at depth 2
+(interval spans zero) to -0.0134 [-0.0252,-0.0040] at depth 4, -0.0303
+[-0.0444,-0.0179] at depth 8, and -0.0832 by depth 16. With the *same* isolated
+first-step HUD perturbation fed to each frozen world on 283 TEST roots, fscan's excess
+error relative to fattn is +0.0055 /V [-0.0031,+0.0201] using fattn's perturbation, or
++0.0066 [-0.0002,+0.0208] using fscan's: neither resolves at depth 2. Full-frame matched
+perturbations also do not resolve. The apparent 2.6-2.9x versus ~1.0x depth-2 output-displacement
+response has a broad walk-seed paired interval for its *difference* that includes zero
+(`fscan_hud_perturb_pair.json`), so it is not a resolved instantaneous sensitivity result.
+Thus the late scan disadvantage disappears when both worlds receive true HUD feedback.
+This establishes a stronger dependence on that feedback in these frozen rollouts; it does not
+prove that native HUD prediction error is the only cause, identify a particular Mamba channel,
+or show how much a retrained model would recover. True HUD tokens also supply outcome information
+that neither imagined world has on its own.
+Both worlds are frozen, use identical actions and true targets, and the intervention is an
+oracle; no actor result follows. The architecture scans T x 82 tokens in frame order
+(`tworld.py` `h.flatten(1,2)`), placing same-position tokens 82 scan steps apart. That is a
+structural difference consistent with the long-context issue described by
+[Po et al., 2025](https://arxiv.org/html/2505.20171v1), but this paper is context, not an
+empirical explanation of the HUD effect here.
+
+The canvas shift estimator agrees with true encoded-frame shifts on 99.3% of first imagined steps but only
+76.4% at depths 9-16, with 43.7% of true scrolls missed late (`canvas_diag.json`). A frozen-world
+intervention replaces only its inferred shifts with those estimated from true frames. Recursive depth-16
+error falls from 0.74584 to 0.73529 /V, difference -0.01055 [-0.01697,-0.00498] over 43 walk seeds
+(`canvas_oracle.json`, the 283 TEST roots only; its native 0.74584 therefore differs from the
+all-root 0.73877 in the table). This shows shift errors cause some rollout error, but account for only ~1.4% of
+canvas's total depth-16 error under this intervention. The reference shift estimator itself is 99.35%
+accurate against simulator steps; this is a near-oracle, not a deployable control.
+
+`masked_scan` also advances Mamba's causal convolution on missing frames: against a scan that removes those
+steps, output relative RMSE is 0.418, while all-kept steps agree to 7.2e-7 (`canvas_diag.json`). This is a
+real implementation defect, but only 2,467 / 285,138 (0.865%) final-frame map cells in the 5-frame TEST
+windows had left view and reentered; 308 / 4,526 windows (6.8%) had any (`canvas_reentry.json`). Its
+quantitative contribution in training remains unmeasured. A frozen-checkpoint full-block-hold intervention
+(`canvas_hold_oracle.py/json`) removes absent steps from both convolution and SSM, with the same actions and
+self-fed tokens. Its all-kept path agrees exactly with the original, including under bfloat16 autocast.
+At depth 16 it changes 0.745844 -> 0.745757 /V, difference **-0.000088** with walk-seed paired interval
+**[-0.000877,+0.000521]**. Thus correcting inference alone has no resolved useful effect on this block;
+a retrained model could differ, but is not justified on this evidence. The historical `tworld.py`
+module header says "exact hold" for fcanvas; this is false for the full Mamba block. It is preserved
+byte-for-byte because every Stage-2 checkpoint pins that source hash; this notebook is the correction.
+
+A post-hoc context split shows canvas's depth-16 advantage concentrated in 346 roots with two or three
+recent scrolls: -0.0181 [-0.0349,-0.0021] /V versus factored Mamba. The 430 no-scroll and 226
+one-scroll strata are unresolved (`canvas_context.json`). The shift near-oracle's benefit is largest in the
+one-scroll subset (-0.0222 [-0.0430,-0.0058]), so shift-estimation error alone does not explain the
+scroll-rich canvas advantage (`canvas_oracle_strata.json`). These strata were selected after viewing
+results and need independent confirmation if they become a decision rule. Spatial memory with egomotion is a
+reasonable architecture precedent (Gupta et al., [CMP, CVPR 2017](https://openaccess.thecvf.com/content_cvpr_2017/html/Gupta_Cognitive_Mapping_and_CVPR_2017_paper.html)),
+but that paper does not validate this five-frame Craftax canvas. The [upstream Mamba-2 implementation](https://github.com/state-spaces/mamba/blob/main/mamba_ssm/modules/mamba2.py)
+keeps causal-convolution and SSM state separately; a zero SSM delta alone cannot mean a whole-block hold.
+
+The corrected v2 readouts (`evals/*fmamba__readout_v2.json`, `evals/*fcanvas__readout_v2.json`)
+change the semantic reading. At depth 16, adjacent-zombie AUC is 0.538 true-fit / **0.595 generated-fit**
+for fmamba, versus 0.547 / **0.574** for canvas. Facing is 0.313 / **0.548** versus 0.285 / **0.384**.
+The old true-fit decoder mildly favoured canvas on adjacent zombies; the matched generated-fit decoder
+reverses that order. These fact differences have no paired arm interval yet. Physical comparisons above
+are unaffected by probe fitting. Corrected depth-16 generated-fit adjacent-zombie AUC is 0.592 for
+factored attention and 0.589 for raster scan; neither has a paired semantic interval. Lane 9 and
+Raw LDAD lambda 1 lane 4b have completed; the λ=1 result is recorded below. In the earlier 2k
+dose screen, root-z zombie AUC was 0.616 (Raw), 0.627 (λ=0.1), 0.850 (λ=1), 0.934 (λ=10).
+Direct seed-8 and the full 36k curve remain deferred for a decision after this comparison.
+
+**Remaining material runs audit (2026-09-29).** `lanes.log` has no `LANE1_DONE` or
+`LANE15_DONE`, and no `direct_raw_suffix_s8.pt` or `corrt_raw_suffix_s7_u36000.pt` exists.
+The direct-head second seed and the 36k corrt learning curve were scripted (`lane1b.sh`,
+`lane15.sh`) but not run. All E1/E6 context and State Passing arms, Stage-2 6k backbones,
+ITC/copy controls, and Raw λ=1 10k are complete. The 6k factorized backbone comparison
+has no matched 18k follow-up or second world seed. No λ=1 patch-token pool, λ=1 + T +
+corrg world, λ=10 + T + corrg world, generated-state decision head for these lever worlds,
+or LeWM actor result exists. `TWorld`'s default `full` backbone is a 6-layer block-causal Transformer,
+but Stage 2 also implemented `fmamba`: spatial attention within each frame followed by canonical Mamba-2
+over time for each token position. Thus λ=1 + patch-token T + `corrg` + `fmamba` would test **Mamba
+dynamics**, as intended. It has not been trained at long context: the current per-tile pool and time-position
+table are six frames, and the E1/E6 long-context checkpoints use global `z` rather than patch tokens, so
+those checkpoints cannot be combined with `fmamba` as weights. The unfinished direct-head seed 8 and
+Transformer 36k curve do not answer whether this long patch-token Mamba combination works. A matched
+long-context per-tile Mamba run, with actor evaluation, remains the decision-relevant unrun work.
 
 **E1 so far (`context_length.json`), DEV/FINAL 256-frame windows:**
 
@@ -151,6 +1046,13 @@ Questions from the user:
 | L16x3 | -3% | -15% | +13% | -9% | -7% | -5% |
 | L64 | +19% | +24% | +42% | +11% | +21% | +21% |
 | L4to64 | +9% | +9% | +13% | -3% | +8% | +9% |
+| L4b512 (E1e) | -748% | -1947% | -329% | -1696% | -1210% | -942% |
+| L16b100 (E1e) | +1% | -8% | +12% | -0% | -3% | -1% |
+| L64b24 (E1d) | +22% | +37% | +42% | +32% | +28% | +26% |
+| L4to64b24 (E1f) | +16% | +27% | +24% | +20% | +20% | +18% |
+
+- The last four rows come from lane 2's 09-28 rerun of `memory_use.py`; its values for the earlier arms differ
+  from the table above only at float precision (5th significant digit).
 
 - Exact revisits: the next map view pixel-identical to a frame 4+ back and to none of the last 3. They are
   53 of 28,672 transitions (0.19%). Recall of content that left the window is almost absent from this data.
@@ -166,12 +1068,14 @@ Questions from the user:
 - le-wm: trains 4 frames, deploys a 3-frame window.
 - All three keep deployment inside the trained range. We trained 4 frames and deployed an unbounded recurrence.
 
-**E4a action identifiability (`identifiability.py`, exact):**
-- Futures roots, all 17 actions under one key. Bayes accuracy of ANY decoder of (o_t, o_{t+1}):
-  0.339 with uniform actions, 0.583 with the corpus action prior.
+**E4a action identifiability (`identifiability.py`, exact for its constructed panel):**
+- Futures roots, all 17 actions under one key. Bayes accuracy of a frame-pair decoder on this panel:
+  0.339 under uniform actions, 0.583 under a fixed GLOBAL action prior copied from the interface pool.
 - 44% of transitions have a uniquely identified action.
 - Dominant collision: NOOP / DO / SLEEP / failed PLACE and MAKE; blocked moves when already facing that way.
-- LDAD's training accuracy reached 0.57 by update 1,500 (lambda 10): it saturates at the ceiling early.
+- **Correction:** LDAD's 0.57 training accuracy at update 1,500 and later 0.607 plateau are on a different
+  state/action distribution with its logged policy. The 0.583 synthetic-panel score is not their ceiling;
+  equality or saturation cannot be inferred from these numbers.
 
 **E5 / E3b, per-tile worlds, seed 7 (`evals/*.json`, `compare.json`).**
 - Setup: futures roots; paired bootstrap over 143 walk seeds (root-sampling uncertainty only; second
@@ -185,10 +1089,10 @@ Questions from the user:
 | residual, TC tokens | **0.541** | 0.936 | **0.542** | 0.040 | 0.693 | 0.869 | 0.60 |
 
 - Residual vs direct: better on everything except blocked moves (+0.36*); 16-step -0.120*.
-- TC vs Raw (residual):
-  - one-step -0.055*, blocked -0.79*;
-  - moved +0.024* and interact +0.059* (TC worse);
-  - 16-step +0.020, not resolved.
+- TC vs Raw (residual), seed 7: one-step -0.055*, blocked -0.79*; moved +0.024* and interact +0.059* (TC worse);
+  16-step +0.020, not resolved.
+  - **CORRECTED 2026-09-28 by the seed-8 replicate (E3c below):** the blocked (-0.79*) and "all" (-0.055*)
+    advantages are training-seed noise; the sign flips at seed 8.
 - Moves remain almost unlearned by the direct/residual/gated heads: 0.91-0.97x copy, against a local-linear
   ceiling of 0.72 captured.
 
@@ -242,7 +1146,8 @@ Questions from the user:
   - The bootstrap covers root sampling only, so one-seed differences of this size (idle, all) are NOT
     established. Gated's idle 0.48 falls inside this. Effects far beyond it stand:
     - corr on moves (-0.71 vs seed spread 0.006);
-    - TC on blocked moves.
+    - ~~TC on blocked moves~~ RETRACTED 2026-09-28: blocked moves swing 0.3-0.5 between training seeds within
+      one arm (E3c).
 - **corr on TC tokens** vs Raw: moved +0.091*, blocked -2.54*, all +0.030*, gen 16 -0.016 (not resolved).
   Same trade-off as under the residual head (blocked better, moves worse), in both heads.
 - E5e (lane 3d), which of the two is it:
@@ -253,7 +1158,8 @@ Questions from the user:
 **E4, Raw LDAD lambda 10 training curve** (`levers_ldad_v1/raw_lam10/metrics.jsonl`, paired with canonical Raw):
 - At updates 9,501-10,000: prediction MSE 0.097 vs 0.018 (5.3x); SIGReg 2.37 vs 1.25.
 - Gradient norm 29 vs 0.93: clipped at 1.0 throughout, so LDAD sets the update direction.
-- LDAD accuracy plateaus at 0.607, at the identifiability ceiling (E4a: 0.583 on futures roots).
+- LDAD training accuracy plateaus at 0.607. E4a's 0.583 refers to different roots under a fixed global
+  prior, so no identifiability ceiling for this training accuracy has been established.
 - Whether the MSE rise is only larger latent steps: the copy-normalized evaluation (`ldad_eval.py`) decides.
 
 **Incident 3 (15:04):** PC shut down. `/tmp` was wiped, so scratchpad logs are lost; all artifacts survived.
@@ -287,6 +1193,41 @@ Questions from the user:
 - 2k screens, z zombie adjacent / passability: canonical 0.616 / 0.600; lambda 0.1 0.627 / 0.624; lambda 1
   0.850 / 0.791.
 
+**E4c/E4d (2026-09-28): TC + LDAD lambda 10 at 10k, and Delta-JEPA as published (no SIGReg).**
+- z on natural root frames (`ldad_eval.json`):
+
+| 10k updates | raw | raw + LDAD 10 | tc | tc + LDAD 10 | raw + LDAD 10, no SIGReg |
+|---|---|---|---|---|---|
+| effective rank | 15.7 | 11.7 | **2.5** | 5.9 | **5.8** |
+| total variance | 159 | 213 | 988 | 1028 | 368 |
+| zombie adjacent (AUC) | 0.606 | 0.961 | 0.654 | 0.979 | 0.912 |
+| passability, 4 dirs (AUC) | 0.588 | 0.855 | 0.590 | 0.868 | 0.837 |
+| health (R^2) | 0.122 | 0.728 | 0.065 | 0.500 | 0.650 |
+| cow in view (AUC) | 0.612 | 0.626 | 0.777 | 0.630 | 0.602 |
+| action from dz (acc) | 0.353 | 0.669 | 0.473 | 0.667 | 0.676 |
+
+- Imagined facts (`ldad_facts.json`; probes fitted on each run's TRUE z, read on its imagined z, 3-frame window),
+  depth 1 / 4 / 16:
+
+| run | zombie adjacent | passability (up) | health R^2 | food R^2 | moved vs blocked | health drop |
+|---|---|---|---|---|---|---|
+| raw | 0.63 / 0.66 / 0.55 | 0.53 / 0.50 / 0.54 | 0.08 / 0.07 / 0.06 | 0.75 / 0.76 / 0.69 | 0.713 | 0.556 |
+| tc | 0.62 / 0.66 / 0.55 | 0.56 / 0.53 / 0.53 | 0.11 / 0.10 / 0.01 | 0.69 / 0.69 / 0.61 | 0.686 | 0.614 |
+| raw + LDAD 10 | **0.91 / 0.82** / 0.60 | **0.79** / 0.65 / 0.56 | **0.43 / 0.38 / 0.13** | 0.54 / 0.49 / 0.38 | 0.859 | **0.884** |
+| tc + LDAD 10 | 0.75 / 0.64 / 0.60 | 0.78 / **0.68 / 0.64** | 0.24 / 0.27 / 0.01 | 0.34 / 0.35 / 0.21 | **0.878** | 0.744 |
+| raw + LDAD 10, no SIGReg | 0.85 / 0.68 / 0.54 | 0.78 / 0.62 / 0.57 | 0.27 / 0.20 / 0.08 | 0.40 / 0.38 / 0.16 | 0.784 | 0.722 |
+
+- TC's z is dimensionally collapsed on natural frames (effective rank 2.5, 6x the variance). Its SIGReg acts on
+  temporally centred residuals, leaving the per-window mean unconstrained. LDAD raises it to 5.9.
+- **TC + LDAD is not better than Raw + LDAD.** It keeps passability better in imagination (0.64 vs 0.56 at depth
+  16) but loses zombie (0.75 vs 0.91 at depth 1), health (0.24 vs 0.43), food and health drop (0.744 vs 0.884).
+- **Delta-JEPA as published partially collapses on Craftax.** Effective rank halves (11.7 -> 5.8). Encoder facts
+  drop slightly (zombie 0.912 vs 0.961, health 0.65 vs 0.73); action decoding is unchanged (0.676). Imagined
+  facts drop clearly (zombie 0.68 vs 0.82 at depth 4, health 0.27 vs 0.43, health drop 0.722 vs 0.884). LDAD
+  alone prevents full collapse, as the paper says, but SIGReg does measurable work here. **Raw + SIGReg +
+  LDAD 10 has the strongest measured true-state encoder facts among these arms; this does not establish the best rollout or actor.**
+- Raw lambda 1 at 10k completed on 2026-09-29 (lane 4b); see the corrected readout section below.
+
 **E4b common currency** (`ldad_facts.py`). Probes fitted on TRUE z per run, read on each world's IMAGINED z
 (3-frame window). Imagined at depth 1 / 4 / 16:
 
@@ -300,7 +1241,7 @@ Questions from the user:
 | one-step moved vs blocked from imagined z(a) | 0.71 | **0.86** |
 | one-step health drop from imagined z(a) | 0.56 | **0.88** |
 
-- LDAD makes the world imagine the decision facts (zombie, passability, health drop).
+- On the historical true-fit transfer readout, LDAD raises several one-step decision-fact scores (zombie, passability, health drop). This is not a safe-action or actor result.
 - Costs:
   - slow HUD facts (food, energy) degrade;
   - by depth 16 imagined zombie / passability fall to or below copying the root (0.60 vs 0.66; pass left
@@ -308,7 +1249,90 @@ Questions from the user:
   - prediction MSE 5.3x, SIGReg 1.9x.
 - 2k screens cannot judge imagination (the world lags the encoder: raw lambda 1 true zombie 0.96, imagined 0.62).
 - TC + LDAD lambda 10 at 2k restores passability in TC's z (true 0.84-0.91 vs plain TC 0.60-0.70).
-- Full 10k runs of TC lambda 10 and Raw lambda 1 are queued (lane 4).
+- Historical status updated: TC lambda 10 and Raw lambda 1 at 10k have since completed; see the corrected readout section below.
+
+**E4b readout-transfer correction (`ldad_facts_v2.json`, 2026-09-29).** The historical E4/E4b
+numbers above are true-fit-to-generated transfer. The version-2 rescore fits the same ridge family on
+generated TRAIN-seed states for each arm and judges TEST seeds. This changes some comparisons, including
+negative shifts; a generated-fit score is an operational decoder score, not information proof.
+
+| arm | zombie adjacency generated-fit depth 1 / 4 / 16 | health R² generated-fit depth 1 / 16 | generated-fit one-step moved/blocked AUC | generated-fit health-drop AUC |
+|---|---|---|---:|---:|
+| Raw | 0.616 / 0.657 / 0.577 | -0.010 / 0.009 | 0.717 | 0.561 |
+| TC | 0.629 / 0.653 / 0.593 | 0.097 / 0.036 | 0.711 | 0.575 |
+| Raw + LDAD 10 | **0.875 / 0.850 / 0.629** | **0.278 / 0.108** | 0.869 | **0.899** |
+| TC + LDAD 10 | 0.753 / 0.677 / **0.640** | 0.124 / 0.001 | **0.910** | 0.711 |
+| Raw + LDAD 10, no SIGReg | 0.793 / 0.740 / 0.591 | 0.121 / 0.039 | 0.867 | 0.813 |
+
+For Raw + LDAD 10, true-fit versus generated-fit zombie AUC is 0.911 versus 0.875 at one step,
+0.817 versus 0.850 at depth 4, and 0.599 versus 0.629 at depth 16. Health R² instead falls
+0.425 -> 0.278 at one step. The transfer effect has no universal sign. LDAD's short-horizon gain
+remains descriptive; at depth 16 the generated-fit zombie margin over Raw is only 0.052 and health
+R² only 0.099 higher. No paired uncertainty for between-arm fact differences was computed here, so
+these differences are leads, not resolved treatment effects. The world is not yet demonstrated to
+select actions or roll out well from these z states. The original `ldad_facts.json` is preserved.
+
+**E4b, Raw + LDAD λ=1 at 10k (2026-09-29; `lane4b.sh`).** Training finished at update 10,000
+(4,278.3 s); `ldad_eval_full2` and `ldad_facts2` both finished, and the checkpoint declares
+`variant=raw`, `lam=1.0`, `no_sigreg=False`. λ=10's older checkpoint declares `lam=10.0`.
+The two 10k runs use the matched Raw recipe, but their latent geometries differ. The report
+row is in `ldad_eval.json`; the generated-fit readout row is in `ldad_facts_v2.json`.
+Readouts use the previously inspected diagnosis TEST set (283 roots from 43 walk seeds) and
+same-capacity ridges fitted on generated TRAIN-seed states; this is not a fresh sealed gate.
+
+| measure | Raw | Raw + λ=1 | Raw + λ=10 |
+|---|---:|---:|---:|
+| root z: adjacent zombie AUC | 0.606 | 0.818 | 0.961 |
+| root z: 4-direction passability AUC | 0.588 | 0.783 | 0.855 |
+| root z: health R² | 0.122 | 0.466 | 0.728 |
+| effective rank of z | 15.7 | 17.4 | 11.7 |
+| generated-fit adjacent zombie AUC, depth 1 / 4 / 16 | .616 / .657 / .577 | .719 / .717 / .598 | .875 / .850 / .629 |
+| generated-fit health R², depth 1 / 16 | -.010 / .009 | .157 / .035 | .278 / .108 |
+| generated-fit one-step moved/blocked AUC | .717 | .850 | .869 |
+| generated-fit one-step health-drop AUC | .561 | .665 | .899 |
+| generated-fit food R², depth 1 / 16 | .758 / .720 | .773 / .648 | .617 / .556 |
+| generated-fit energy R², depth 1 / 16 | .675 / .628 | .674 / .554 | .479 / .411 |
+
+λ=1 does retain materially more root-side zombie, passability and health information than Raw,
+and preserves more food/energy information than λ=10; λ=10 still has stronger safety-related
+readouts, especially one-step health drop (.899 versus .665). Both lose a large part of
+root-side adjacent-zombie signal during imagination: at depth 1, λ=1 generated .719 versus
+copy-root .825 and real successor .904; λ=10 generated .875 versus copy-root .933 and real
+successor .992. At depth 16, λ=1 generated .598 versus copy-root .640; λ=10 generated .629
+versus copy-root .661. Thus λ=1 does not close the transition-retention defect. The physical
+metrics within each latent space are λ=1 one-step error/copy .154 and depth-16 error/V .521,
+versus λ=10 .237 and .615; the changing geometry makes these *cross-arm* scalar ratios
+unsuitable as a quality ranking. The AUC/R² contrasts are descriptive on the already inspected
+TEST block; no paired between-arm interval or all-action safe-choice result exists here.
+Neither dose is ready for a canonical or actor claim. No additional lane is running after
+`LANE4_DONE`; the next expensive run should be selected only after a decision on these tradeoffs.
+
+**LDAD gradient localization (`ldad_grad.py/json`, 2026-09-29).** On the same two TRAIN
+batches of 128, with the canonical prediction + 0.09 SIGReg and the checkpoint's action
+CE differentiated separately through the encoder, the weighted CE gradient norm divided
+by the prediction-plus-SIGReg gradient norm is:
+
+| checkpoint | batch 1 | batch 2 | cosine(total encoder gradient, CE gradient), range |
+|---|---:|---:|---:|
+| common initialization, λ=1 | .022 | .014 | -0.142 to -0.030 |
+| λ=1, update 2k | 1.725 | 1.092 | .697 to .860 |
+| λ=10, update 2k | 6.461 | 6.039 | .986 to .989 |
+| λ=1, update 10k | 3.445 | 3.031 | .946 to .965 |
+| λ=10, update 10k | 7.721 | 18.242 | .992 to .999 |
+
+The LDAD CE is computed from **encoder** z differences; there is no direct CE gradient to
+world parameters in `ldad_joint.py`. At 10k both doses are action-gradient-dominated on
+these batches, substantially more so at λ=10. Over updates 8,001–10,000 the logged
+prediction loss averaged .0408 (λ=1) versus .0998 (λ=10), while action accuracy averaged
+.6055 versus .6078. Logged pre-clip global gradient norm averaged 3.21 versus 29.78,
+with the declared clip at 1.0. This identifies the objective pressure that differs: λ=10 spends
+more encoder gradient on action discrimination with nearly no training-accuracy gain and
+higher latent prediction loss. It does not identify why that pressure preferentially
+retains zombies or prove that the resulting optimizer *update* has the same direction:
+AdamW preconditions gradients after global norm clipping, and this diagnostic uses two
+sampled batches at three checkpoint stages, not a full trajectory of parameter updates.
+The Delta-JEPA paper's own Push-T sweep also reports degradation for excessively high λ,
+but its continuous-control objective omits SIGReg and is not a Craftax threshold.
 
 **Incident (2026-09-27 12:10):** the machine hung and rebooted with 5 jobs running (no OOM-killer record; no swap).
 - `ldad_eval.py`'s probes loaded four full judgement blocks (~13 GB of rows) twice.

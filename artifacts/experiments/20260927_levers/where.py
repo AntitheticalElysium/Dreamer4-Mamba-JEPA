@@ -39,8 +39,9 @@ def main():
         err = torch.empty(R, T.N, 81)
         weights = torch.zeros(R, T.N, 81, 6)
         gen_err = torch.full((R, T.N, 81), float("nan"))                   # the generate candidate alone, LN'd
-        for i in range(0, R, 16):
-            b = min(16, R - i)
+        rb = 4 if getattr(world, "backbone_kind", "full") in ("fmamba", "fcanvas") else 16   # per-token SSM states
+        for i in range(0, R, rb):
+            b = min(rb, R - i)
             fan = cache["ctx"][i:i + b].float().repeat_interleave(T.N, 0)
             acts = torch.cat([cache["ctx_a"][i:i + b].repeat_interleave(T.N, 0), torch.arange(T.N).repeat(b)[:, None]], 1)
             pred = T.step(world, fan, acts, device, config).view(b, T.N, 81, 192)

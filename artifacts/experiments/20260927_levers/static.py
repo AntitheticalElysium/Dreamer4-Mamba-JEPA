@@ -6,7 +6,8 @@ The world imagines the 16 steps (teval's windows). Per depth k:
   err / V, copy / V   imagined error and copy-root error, over the 81 tokens
   per group      imagined error / the group's variance (where.py groups)
   by action      mean imagined error at depth 16 split by whether the 16 factual actions include a move attempt
-Usage: static.py <world.pt> [...] -> static_<name>.json (CPU is enough for the `full` backbone)
+Usage: static.py <world.pt> [...] [--window 4] -> static_<name>[__w4].json (CPU is enough for the `full` backbone).
+--window sets the rollout window after the first step (teval's default 5 puts the current frame at time position 4).
 """
 import json
 import sys
@@ -28,7 +29,11 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
     meta, _, _ = T.split()
-    for path in map(Path, sys.argv[1:]):
+    args = sys.argv[1:]
+    window = 5
+    if "--window" in args:
+        i = args.index("--window"); window = int(args[i + 1]); del args[i:i + 2]
+    for path in map(Path, args):
         world, st = T.load_world(path, device)
         cache = T.build_cache(st["args"]["pool"], device)
         fut = torch.cat([cache["ctx"][:, -1:].float(), cache["fut"].float()], 1)
@@ -41,7 +46,7 @@ def main():
         frames, hist = [ctx[:, j] for j in range(4)], [ca[:, j] for j in range(3)]
         gen = []
         for k in range(T.H):
-            w_ = 4 if k == 0 else 5
+            w_ = 4 if k == 0 else window
             a = torch.stack(hist[-(w_ - 1):] + [fa[:, k]], 1)
             g = torch.cat([T.step(world, torch.stack(frames[-w_:], 1)[i:i + 32], a[i:i + 32], device, config)
                            for i in range(0, len(roots), 32)])
@@ -95,7 +100,7 @@ def main():
             imag_hist = [ctx[:, j] for j in range(4)] + [gen[:, j] for j in range(16)]
             acts = [ca[:, j] for j in range(3)] + [fa[:, j] for j in range(16)]
             for k in range(16):
-                w_ = 4 if k == 0 else 5
+                w_ = 4 if k == 0 else window
                 a = torch.stack(acts[3 + k - (w_ - 1):3 + k] + [fa[:, k]], 1).to(device)
                 for hist, store in ((imag_hist, imag_logit), (true_hist, true_logit)):
                     frames_k = torch.stack(hist[4 + k - w_:4 + k], 1).to(device).float()
@@ -117,7 +122,7 @@ def main():
         fs = false_scroll.sum(1) > 0
         out["err16_over_V_roots_with_false_scroll"] = float(err[fs, 15].sum(-1).mean() / V) if fs.any() else None
         out["err16_over_V_roots_without_false_scroll"] = float(err[~fs, 15].sum(-1).mean() / V) if (~fs).any() else None
-        (HERE / f"static_{st['name']}.json").write_text(json.dumps(out, indent=2) + "\n")
+        (HERE / f"static_{st['name']}{'' if window == 5 else f'__w{window}'}.json").write_text(json.dumps(out, indent=2) + "\n")
         print(st["name"], json.dumps(out), flush=True)
 
 
