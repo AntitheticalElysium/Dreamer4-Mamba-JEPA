@@ -61,6 +61,46 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-01 — E9/E10: decision panels with action-dependent death (DECLARED before results; exploratory)
+
+Why: the diagnosis futures (teval, 1,002 roots) hold 1 opportunity root in TRAIN and 0 in TEST, so no per-tile world
+has ever been judged on a decision. Everything the levers campaign measured is token error and fact probes.
+- **E9, H1/H2** (`20260927_levers/dpanel.py`, lane19b): the readout ladder's judgement blocks carry all 17 first
+  actions and 32-key P(death1) / P(death2 = within two steps, NOOP second step).
+  - Partition: frozen_heads.py's (fit = FIT-train 700 seeds with 32-key P; dev = FIT-dev 350 seeds, realized death,
+    selection only). Judge = observe_fresh_v6 + v7 (55k-56k), OPENED blocks, so exploratory.
+  - Tokens: raw bridge encoder, verified bit-identical to joint step 10,000 (max |diff| 0.0 over 209 tensors), which
+    is the levers Raw token space.
+  - Imagination follows teval: step 1 from 4 context frames and the branch action; step 2 from a 5-frame window and NOOP.
+  - Heads: frozen_heads.train_head's ranking arms (per-branch attention probe, soft_rank, 3 seeds, dev selection).
+    - gen1/gen2: fitted on imagined states.
+    - gen1_h2: step-1 state fitted on P(death2).
+    - transfer1/2: real-successor heads read on imagined states.
+  - References: real1/2, root_rank (no transition), root_tokens, actions_only, prior. Token fidelity err/copy at h = 1, 2.
+  - Worlds:
+    - corrt suffix 18k, corrt teacher 18k, fmamba corrg suffix 18k (Raw);
+    - corrt suffix 6k, corrt teacher 6k;
+    - the E8 arms (noise, selffed, suffix s8, teacher s8).
+  - Reported, not ruled.
+  - CPU smoke (6 seeds per split): end to end; token check err/copy 0.277 at h1 on 14 hazard roots (teval's
+    one-step all for the same world is 0.149 on diagnosis roots), so branch actions are aligned.
+- **E10 stage 1, H16 label statistics** (`deeppanel.py`, lane19a): the collector's walk and retention on 10 fresh seeds
+  (69,000-69,009; seeds 62,000-68,999 stay untouched for sealed blocks).
+  - Per root: 17 first actions x 32 key sequences x 16 open-loop steps in the real simulator.
+  - Continuations, identical across branches: 15 NOOPs, or the BC policy's own next 15 actions.
+  - Measures, per depth k: opportunity rate, within-root spread, prior/oracle safe, and how often the depth-16 argmin
+    differs from depth 1.
+  - This decides whether an H16 panel carries decision content that H2 does not. No world is involved.
+- Also committed: `20260929_mamba_integration/memceil.py` / `memceil.json`, the recall ceiling for cells entering view
+  (2,000 Raw long-pool windows, 126,000 steps).
+  - Scroll rate 0.351. Entering cells are 4.49% of map-cell predictions.
+  - Share of entering cells seen within the last N frames: N = 4: 9.2%, 8: 16.1%, 16: 23.3%, 32: 29.3%, 63: 31.6%.
+  - Seen AND unchanged (token distance below the no-scroll median): 3.1%, 3.9%, 4.4%, 4.6%, 4.7%.
+  - So long-context recall could inform at most ~1.4% of map-cell predictions (0.316 x 0.045); unchanged re-entries
+    are ~0.2%.
+
+---
+
 ## 2026-10-01 — E8: self-feeding recipes that expose every slot (PREDECLARED, not yet run)
 
 Why: the depth-2 suffix (V-JEPA 2-AC's T = 2 rollout loss) puts a generated frame only in time slot 4. It creates
