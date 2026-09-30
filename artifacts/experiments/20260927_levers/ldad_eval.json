@@ -413,5 +413,88 @@
         1.3430044651031494
       ]
     }
+  },
+  "raw_lam1": {
+    "spectrum": {
+      "effective_rank": 17.357076582412265,
+      "total_variance": 175.71545759536437,
+      "top_over_median": 3444.3195334036063,
+      "spread_top_over_bottom": 31104.542606623443
+    },
+    "twins_z": {
+      "day/zombie": 2.38961373829498,
+      "day/cow": 1.7084515667701599,
+      "day/lava": 1.060136966446848,
+      "day/stone": 3.3843151966157436,
+      "day/tree": 4.638969821035794,
+      "day/water": 2.771704337498773,
+      "day/table": 9.484408407614113,
+      "day/zombie_far": 0.581647070513288,
+      "day/cos_adjacent_vs_far": 0.952195879860679,
+      "night/zombie": 2.467487732000745,
+      "night/cow": 2.030624754689039,
+      "night/lava": 3.8525758923108513,
+      "night/stone": 4.880693561737845,
+      "night/tree": 6.935743650831761,
+      "night/water": 5.901757440345965,
+      "night/table": 10.33930237052767,
+      "night/zombie_far": 0.17538831348176306,
+      "night/cos_adjacent_vs_far": 0.760385425596839
+    },
+    "natural_z": {
+      "zombie_adjacent": 0.8184168875081453,
+      "zombie_in_view": 0.8716162426707769,
+      "cow_in_view": 0.6222298624985058,
+      "lava_adjacent": 0.946698896010729,
+      "passability_mean_4_directions": 0.7833477299707261,
+      "health_r2": 0.4661141037940979,
+      "tile_accuracy": 0.6682308316230774,
+      "tile_majority_baseline": 0.5806775093078613
+    },
+    "natural_tokens": {
+      "passability_mean_4_directions": 0.9999993914685835,
+      "zombie_adjacent": 1.0,
+      "zombie_in_view": 0.9664395070948469,
+      "cow_in_view": 0.9167151131186799,
+      "health_r2": 0.9992033839225769,
+      "tile_accuracy": 0.968361496925354
+    },
+    "temporal": {
+      "z_within_window_share_of_variance": 0.12098449685192535,
+      "tokens_within_window_share_of_variance": 0.08364436086455969
+    },
+    "action_from_dz": {
+      "acc_all": 0.6888250708580017,
+      "acc_move_succeeded": 0.732528567314148,
+      "acc_move_blocked": 0.44364938139915466,
+      "n_test_moved_blocked": [
+        1574,
+        559
+      ],
+      "acc_non_move": 0.72828608751297,
+      "chance_majority": 0.3279593586921692
+    },
+    "world": {
+      "onestep_window3_x_copy": {
+        "all": 0.15441535413265228,
+        "ambiguous": 0.14136230945587158,
+        "blocked": 0.07404842972755432,
+        "moved": 0.11381447315216064,
+        "other": 0.5861660838127136,
+        "sleep_onset": 0.08835069090127945
+      },
+      "imagine16_window3_over_V": [
+        0.04524636268615723,
+        0.1605050265789032,
+        0.2842717468738556,
+        0.5205696821212769
+      ],
+      "copy_root_over_V": [
+        0.2946805953979492,
+        0.6270626783370972,
+        0.8687134385108948,
+        1.086837887763977
+      ]
+    }
   }
 }
