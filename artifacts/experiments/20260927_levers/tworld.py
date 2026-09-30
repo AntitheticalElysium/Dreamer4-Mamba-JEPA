@@ -39,6 +39,16 @@ ITC's training and decoding (arXiv 2605.16457, verified in the PDF 2026-09-28), 
   --regions itc  ITC's Craftax rule (appendix, "Choosing Between Transformer and Optimal Transport Output"): copy
                only in the central region; the screen edges (map border ring, 28 cells) and the inventory (HUD,
                18 cells) take the generator's prediction
+Self-feeding recipes (2026-10-01; `--loss`), each exposing every input slot to imperfect frames, unlike `suffix`
+(V-JEPA 2-AC's T = 2 rollout loss), whose generated frame only ever sits in slot 4:
+  noise    teacher L1 with every input frame corrupted by additive Gaussian noise, alpha_t ~ U(0, 0.7) independently
+           per frame; alpha bucketed into 10 levels and given to the model by a learned level embedding added to the
+           frame's tile tokens (GameNGen, arXiv 2408.14837: max level 0.7, 10 buckets; per-timestep independent
+           levels as in Diffusion Forcing, arXiv 2407.01392). Targets are clean. Inference: bucket 0 (clean).
+  selffed  teacher L1 + one self-fed prediction per update: anchor a ~ U{0..3} and target frame k ~ U{a+2..5}; frames
+           a+1..k-1 are the world's own predictions made without gradient, then frame k is predicted with gradient
+           (DaD, Venkatraman et al. 2015: predicted states paired with TRUE next states; Self Forcing, arXiv
+           2506.08009: self-generated history, gradient truncated to the current step)
 Training (fixed for every arm): spatial_pool_v1 (Raw tokens) or spatial_pool_tc_v1 (TC tokens), 2,048 main windows
 held out (seed 1, as parameterization.py); batches of 40 windows (seed 11); AdamW lr 1e-4, wd 0.01, 1,000 warmup,
 clip 1 (H2 phase optimizer); bf16; init seed given (default 7). Loss: `suffix` = spatial.losses' dynamics L1
@@ -66,6 +76,7 @@ POOLS = {"raw": ROOT / "artifacts/eda/spatial_pool_v1", "tc": ROOT / "artifacts/
          "ldad10": ROOT / "artifacts/eda/spatial_pool_ldad10_v1",
          "ldad1": ROOT / "artifacts/eda/spatial_pool_ldad1_v1"}
 OUT = ROOT / "artifacts/eda/levers_tworlds_v1"
+NOISE_MAX, NOISE_LEVELS = 0.7, 10             # GameNGen's maximal context-noise level and bucket count
 BATCH = 40
 NEIGHBOURS = ((-1, 0), (1, 0), (0, -1), (0, 1))
 
@@ -143,10 +154,14 @@ class Factored(nn.Module):
 
 
 class TWorld(S.World):
-    def __init__(self, head, codebook=None, backbone="full", regions="all"):
+    def __init__(self, head, codebook=None, backbone="full", regions="all", noise_levels=0):
         super().__init__(S.TOKENS, False)
         self.head, self.backbone_kind, self.regions = head, backbone, regions
         self.hard_decode = False               # evaluation only: ITC's binarized decoding (one source per token, Eq. 4)
+        self.level = None                      # --loss noise: [B,T] noise bucket of each input frame (None = clean)
+        if noise_levels:
+            self.noise_embed = nn.Embedding(noise_levels, S.D)
+            nn.init.zeros_(self.noise_embed.weight)
         if regions == "itc":
             ring = [r * 9 + c for r in range(7) for c in range(9) if r in (0, 6) or c in (0, 8)]
             mask = torch.zeros(81, dtype=torch.bool)
@@ -181,11 +196,20 @@ class TWorld(S.World):
             self.register_buffer("codes", codebook.float())
             self.logits = nn.Linear(S.D, len(codebook))
 
+    def inputs(self, s, a):
+        """[action token, 81 tile tokens] per frame + space/time positions (+ the noise-level embedding)."""
+        t = s.shape[1]
+        tiles = self.embed(s)
+        if hasattr(self, "noise_embed"):
+            level = self.level if self.level is not None else torch.zeros(s.shape[:2], dtype=torch.long, device=s.device)
+            tiles = tiles + self.noise_embed(level)[:, :, None]
+        return torch.cat([self.action(a)[:, :, None], tiles], 2) + self.space + self.time[:t, None]
+
     def backbone(self, s, a):
         if self.backbone_kind != "full":
             return self.backbone_full(s, a)[0]
         b, t = s.shape[:2]
-        x = torch.cat([self.action(a)[:, :, None], self.embed(s)], 2) + self.space + self.time[:t, None]
+        x = self.inputs(s, a)
         k = t * (self.n + 1)
         x = self.blocks(x.flatten(1, 2), mask=self.blocked[:k, :k]).view(b, t, self.n + 1, S.D)[:, :, 1:]
         return self.norm(x)
@@ -193,7 +217,7 @@ class TWorld(S.World):
     def backbone_full(self, s, a):
         """backbone(), also returning the action token's output (it attends to the whole frame)."""
         b, t = s.shape[:2]
-        x = torch.cat([self.action(a)[:, :, None], self.embed(s)], 2) + self.space + self.time[:t, None]
+        x = self.inputs(s, a)
         if self.backbone_kind == "full":
             k = t * (self.n + 1)
             x = self.norm(self.blocks(x.flatten(1, 2), mask=self.blocked[:k, :k]).view(b, t, self.n + 1, S.D))
@@ -258,12 +282,30 @@ def rollout_losses(world, s, a, loss, gen_loss=False):
     """spatial.rollout + the dynamics L1 (suffix) or teacher-forced L1 only; gen_loss: + the generate candidate's
     own teacher-forced L1 on every token."""
     a = F.pad(a, (0, 1))
+    clean = s
+    if loss == "noise":                       # every input frame corrupted at its own level; targets stay clean
+        alpha = torch.rand(s.shape[:2], device=s.device) * NOISE_MAX
+        world.level = (alpha / NOISE_MAX * NOISE_LEVELS).long().clamp(max=NOISE_LEVELS - 1)
+        s = (s.float() + alpha[..., None, None] * torch.randn_like(s, dtype=torch.float)).to(clean.dtype)
     predicted, history, gen = world(s, a)
-    teacher = (predicted[:, :S.W - 1] - s[:, 1:]).abs().mean()
+    world.level = None
+    teacher = (predicted[:, :S.W - 1] - clean[:, 1:]).abs().mean()
     if gen_loss:
         teacher = teacher + (F.layer_norm(gen[:, :S.W - 1], (S.WIDTH,)) - s[:, 1:]).abs().mean()
-    if loss == "teacher":
+    if loss in ("teacher", "noise"):
         return teacher
+    if loss == "selffed":                     # anchor, generated history without gradient, one predicted frame with it
+        anchor = int(torch.randint(0, S.ANCHOR + 1, ()))
+        k = int(torch.randint(anchor + 2, S.W, ()))
+        frames = [s[:, j] for j in range(anchor + 1)]
+        with torch.no_grad():
+            nxt = predicted[:, anchor].detach()
+            for j in range(anchor + 1, k):
+                frames.append(nxt.to(s.dtype))
+                if j < k - 1:
+                    nxt = world(torch.stack(frames, 1), a[:, :j + 1])[0][:, -1]
+        out, _, _ = world(torch.stack(frames, 1), a[:, :k])
+        return teacher + (out[:, -1] - s[:, k]).abs().mean()
     first = predicted[:, S.ANCHOR]
     second_all, _, _ = world(torch.cat([s[:, :S.ANCHOR + 1], first[:, None].to(s.dtype)], 1), a[:, :S.ANCHOR + 2])
     generated = torch.stack([first, second_all[:, S.ANCHOR + 1]], 1)
@@ -281,7 +323,7 @@ def train(head, pool_name, loss, seed, updates, device, log, codebook=None, back
     rows = torch.cat([main_rows[~torch.isin(main_rows, held)], torch.where(pool["terminal"])[0]])
     with torch.random.fork_rng(devices=[0]):
         torch.manual_seed(seed); torch.cuda.manual_seed_all(seed)
-        world = TWorld(head, codebook, backbone, regions).to(device)
+        world = TWorld(head, codebook, backbone, regions, NOISE_LEVELS if loss == "noise" else 0).to(device)
     log(stage="init", parameters=sum(p.numel() for p in world.parameters()))
     opt = phase_optimizer([world], config)
     params = [p for g in opt.param_groups for p in g["params"]]
@@ -314,7 +356,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--head", required=True, choices=("direct", "residual", "gated", "corr", "corrg", "corrt", "categorical"))
     parser.add_argument("--pool", default="raw", choices=tuple(POOLS))
-    parser.add_argument("--loss", default="suffix", choices=("suffix", "teacher"))
+    parser.add_argument("--loss", default="suffix", choices=("suffix", "teacher", "noise", "selffed"))
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--updates", type=int, default=6000)
     parser.add_argument("--codebook", type=Path, default=None)

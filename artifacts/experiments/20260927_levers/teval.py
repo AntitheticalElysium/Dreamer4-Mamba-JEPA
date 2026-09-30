@@ -256,7 +256,8 @@ def load_world(path, device):
     codebook = None
     if head == "categorical":
         codebook = st["world"]["codes"]
-    w = TWorld(head, codebook, st["args"].get("backbone", "full"), st["args"].get("regions", "all")).to(device)
+    levels = st["world"]["noise_embed.weight"].shape[0] if "noise_embed.weight" in st["world"] else 0
+    w = TWorld(head, codebook, st["args"].get("backbone", "full"), st["args"].get("regions", "all"), levels).to(device)
     w.load_state_dict(st["world"])
     return w.eval(), st
 

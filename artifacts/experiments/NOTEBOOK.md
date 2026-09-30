@@ -61,6 +61,46 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-01 — E8: self-feeding recipes that expose every slot (PREDECLARED, not yet run)
+
+Why: the depth-2 suffix (V-JEPA 2-AC's T = 2 rollout loss) puts a generated frame only in time slot 4. It creates
+the slot-4 bias and is net harmful for corrt (audit, Finding 2). Every world passes its own errors forward at
+gain ~1 (0.94-1.17, teval `gain`), so none corrects its imagined history. The sources' remedies expose every
+slot to imperfect inputs:
+- GameNGen (arXiv 2408.14837): Gaussian noise on context frames, level bucketed (max 0.7, 10 buckets) and
+  embedded; "significantly improved" even with clean inference; without it quality "degrades fast after
+  20-30 steps".
+- Diffusion Forcing (arXiv 2407.01392) / Dreamer 4 (arXiv 2509.24527 s3.2):
+  - independent noise level per timestep in training;
+  - context "slightly corrupted" at inference. Dreamer 4 writes τ_ctx = 0.1 while defining τ = 1 as clean;
+    both reimplementations read it as mostly clean (edwhu/dreamer4-jax `ctx_signal_tau` 0.9;
+    nicklashansen/dreamer4 context at index k_max-1).
+- DaD (Venkatraman, Hebert, Bagnell, AAAI 2015, Alg. 1):
+  - pair the model's predicted states with the TRUE next states and retrain;
+  - Theorem 1: multi-step error is exponential in the horizon for Lipschitz L > 1, linear for L = 1.
+- Self Forcing (arXiv 2506.08009): self-generated history with gradient truncated to the current step (frame-wise
+  VBench: teacher forcing 78.12, diffusion forcing 80.56, Self Forcing 84.26).
+
+Arms (tworld.py `--loss`; corrt head, Raw tokens, full backbone, 6,000 updates, recipe otherwise unchanged):
+- `noise` (seed 7): GameNGen-style per-frame noise with level embedding; clean inference.
+- `selffed` (seed 7): teacher L1 + one self-fed prediction per update. Anchor a ~ U{0..3}, target k ~ U{a+2..5},
+  generated history without gradient.
+- Replication (seed 8): `suffix` and `teacher`.
+- Comparator: teacher-only seed 7 at 6k (snapshot of lane 17; the schedule is constant after warmup).
+
+Evaluation (lanes 18a/18b): teval (5- and 4-frame windows), posprofile, blockwin; paired walk-seed intervals over
+143 seeds (`compare_e8`).
+
+Decision rules, fixed now:
+1. An arm "improves self-feeding" if all three hold against teacher-only 6k: depth-16 imagined error resolved
+   lower; blocked moves scrolled on true 5-frame windows below 2% (no slot bias); one-step all not resolved worse
+   by more than 0.02 x copy.
+2. The suffix harm "replicates" if, at seed 8, suffix is resolved worse than teacher at depth 16 AND on one-step
+   all.
+3. Anything else is reported as measured, with no adoption.
+
+---
+
 ## 2026-09-30 — Audit of the 09-28..30 runs: LDAD move routing, the suffix-induced slot-4 bias, self-feeding
 
 Scope: everything run after db1bfd8e. That is my 09-28 lanes 6-16, and the other agent's 09-29/30 work:
