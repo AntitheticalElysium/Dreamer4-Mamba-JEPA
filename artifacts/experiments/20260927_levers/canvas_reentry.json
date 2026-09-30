@@ -1,0 +1,47 @@
+{
+  "roots": 283,
+  "test_walk_seeds": 43,
+  "estimate_reference": "true encoded frames; one-step simulator accuracy 0.9935",
+  "by_depth": {
+    "1": {
+      "windows": 283,
+      "any_reentry": 1,
+      "affected_final_cells": 7,
+      "final_cells": 17829,
+      "fraction_windows_with_reentry": 0.0035335689045936395,
+      "fraction_final_cells_affected": 0.00039261876717707107
+    },
+    "2-4": {
+      "windows": 849,
+      "any_reentry": 46,
+      "affected_final_cells": 355,
+      "final_cells": 53487,
+      "fraction_windows_with_reentry": 0.05418138987043581,
+      "fraction_final_cells_affected": 0.006637126778469535
+    },
+    "5-8": {
+      "windows": 1132,
+      "any_reentry": 66,
+      "affected_final_cells": 524,
+      "final_cells": 71316,
+      "fraction_windows_with_reentry": 0.05830388692579505,
+      "fraction_final_cells_affected": 0.00734757978574233
+    },
+    "9-16": {
+      "windows": 2262,
+      "any_reentry": 195,
+      "affected_final_cells": 1581,
+      "final_cells": 142506,
+      "fraction_windows_with_reentry": 0.08620689655172414,
+      "fraction_final_cells_affected": 0.01109426971495937
+    },
+    "all": {
+      "windows": 4526,
+      "any_reentry": 308,
+      "affected_final_cells": 2467,
+      "final_cells": 285138,
+      "fraction_windows_with_reentry": 0.06805125939019001,
+      "fraction_final_cells_affected": 0.00865195098513702
+    }
+  }
+}

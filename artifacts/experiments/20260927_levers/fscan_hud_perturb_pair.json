@@ -1,0 +1,20 @@
+{
+  "source_per_root": "artifacts/experiments/20260927_levers/fscan_hud_perturb_per_root.pt",
+  "walk_seeds": 43,
+  "results": {
+    "fattn": {
+      "scan_minus_attention_output_displacement_per_input_displacement": 1.6060868501663208,
+      "ci95": [
+        -0.018870417028665543,
+        5.429878234863281
+      ]
+    },
+    "fscan": {
+      "scan_minus_attention_output_displacement_per_input_displacement": 1.8933823108673096,
+      "ci95": [
+        -0.01666918396949768,
+        5.989680767059326
+      ]
+    }
+  }
+}

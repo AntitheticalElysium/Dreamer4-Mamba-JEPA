@@ -1,0 +1,52 @@
+{
+  "checkpoint_sha256": {
+    "fattn": "f31629206d13707f702b57aead11dd2f78b26ab53d4a9cb4284236bcbd3ffbd9",
+    "fscan": "9f46a0e69fba13705c99be9d1d95a5ef1f201d8b1fc11ba78ffef4c968573c2e"
+  },
+  "model_source_sha256": "5e4c2fa2745102b8b9d54d3794e1c29f0354cb9fc69b604f2841ac6a0cc41d98",
+  "perturbation": "HUD tokens only",
+  "roots_test": 283,
+  "roots_alive_depth2": 283,
+  "walk_seeds": 43,
+  "normalizer_V": 7626.31787109375,
+  "results": {
+    "fattn": {
+      "fattn": {
+        "true_context_err_over_V": 0.059823162853717804,
+        "common_perturb_err_over_V": 0.06363391131162643,
+        "excess_over_V": 0.0038107484579086304,
+        "output_displacement_over_input_displacement": 1.0113898515701294
+      },
+      "fscan": {
+        "true_context_err_over_V": 0.04814041405916214,
+        "common_perturb_err_over_V": 0.05744389072060585,
+        "excess_over_V": 0.00930347666144371,
+        "output_displacement_over_input_displacement": 2.61747670173645
+      },
+      "fscan_minus_fattn_excess_over_V": 0.005492726806551218,
+      "contrast_ci95": [
+        -0.003102377289906144,
+        0.020079180598258972
+      ]
+    },
+    "fscan": {
+      "fattn": {
+        "true_context_err_over_V": 0.059823162853717804,
+        "common_perturb_err_over_V": 0.0628415048122406,
+        "excess_over_V": 0.0030183419585227966,
+        "output_displacement_over_input_displacement": 1.0170631408691406
+      },
+      "fscan": {
+        "true_context_err_over_V": 0.04814041405916214,
+        "common_perturb_err_over_V": 0.05774327367544174,
+        "excess_over_V": 0.009602859616279602,
+        "output_displacement_over_input_displacement": 2.91044545173645
+      },
+      "fscan_minus_fattn_excess_over_V": 0.006584528833627701,
+      "contrast_ci95": [
+        -0.00015099093434400856,
+        0.020801754668354988
+      ]
+    }
+  }
+}
