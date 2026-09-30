@@ -1,13 +1,14 @@
-"""E4a. The exact ceiling on Delta-JEPA's action decoding in Craftax-Classic: how often is the executed action
-identifiable from the frame pair (o_t, o_{t+1}) at all?
+"""E4a. Exact action-identifiability limit for this SYNTHETIC all-action futures panel and chosen priors.
 
 Diagnostic futures (1,002 roots), all 17 actions from each root under the SAME environment key (key 0), so the only
 difference between successors is the action. Actions whose successor frames are pixel-identical cannot be told apart
 by any function of (o_t, o_{t+1}); LDAD sees only z_{t+1} - z_t, a function of that pair. Bayes accuracy of the best
 possible decoder, per root = sum over identical-frame classes of max prior within the class; averaged over roots:
   uniform   actions uniform (the fan)
-  corpus    the corpus action frequencies (interface pool, every action taken)
+  corpus    a FIXED GLOBAL prior from interface-pool action frequencies, applied to every futures root
 Also: which action groups collide most often, and the share of transitions whose action is uniquely identified.
+This is not a bound for LDAD's joint-training distribution or a state-dependent logged policy. Its 0.583 score
+cannot establish that a training accuracy of 0.607 saturates an identifiability ceiling.
 """
 import json
 import sys

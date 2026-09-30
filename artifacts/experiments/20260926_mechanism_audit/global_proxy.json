@@ -1,0 +1,19 @@
+{
+  "rows": 1205,
+  "counts": {
+    "lava": {
+      "adjacent": 45,
+      "any_visible": 200,
+      "global_count_auc": 0.9643965363502502,
+      "presence_auc": 0.9331896305084229,
+      "P_adjacent_given_visible": 0.22499999403953552
+    },
+    "zombie": {
+      "adjacent": 597,
+      "any_visible": 976,
+      "global_count_auc": 0.7276087403297424,
+      "presence_auc": 0.6883223652839661,
+      "P_adjacent_given_visible": 0.6116803288459778
+    }
+  }
+}

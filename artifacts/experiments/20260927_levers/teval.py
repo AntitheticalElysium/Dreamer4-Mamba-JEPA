@@ -2,8 +2,8 @@
 
 Token caches (layer-normed patch tokens, fp16), per encoder: context frames [R,4], the factual 16-step future
 (sample 0) [R,16], the 17 one-step successors under key 0 [R,17].
-Fact probes, fitted per token space on TRUE tokens of the 70% train seeds (the diagnosis split: randperm(seed 0)),
-read on the 30% test seeds: tile class per map cell (shared linear 192->17 on the cell's own token), zombie at a
+Fact probes, fitted per token space on TRUE or GENERATED tokens of the 70% train seeds (the diagnosis split:
+randperm(seed 0)), read on the 30% test seeds: tile class per map cell (shared linear 192->17 on the cell's own token), zombie at a
 cell (192->1), HUD health/food/drink/energy (the 18 HUD tokens -> 4), facing (player token -> 4). Closed-form ridge,
 lambda chosen on a held-out fifth of the train seeds.
 Per world:
@@ -103,14 +103,16 @@ def ridge(x, y, tr, va, lams=(1e-3, 1e-2, 1e-1, 1, 10)):
 
 
 class Probes:
-    """Fitted on true tokens of train-seed roots: root frame (context[-1]) + all 16 future frames."""
+    """Ridge readouts fitted on the supplied 17 frames from TRAIN-seed roots."""
 
-    def __init__(self, cache, meta, train_roots, train_seeds):
+    def __init__(self, cache, meta, train_roots, train_seeds, tokens=None, visible=None):
         seeds = meta["seed"]
         val_roots = torch.isin(seeds, train_seeds[: len(train_seeds) // 5])
         fit_roots = train_roots & ~val_roots
-        toks = torch.cat([cache["ctx"][:, -1:], cache["fut"]], 1).float()               # [R,17,81,192]
-        vis = torch.cat([meta["root_visible"][:, None], meta["future_visible"][:, 0]], 1)
+        toks = (tokens if tokens is not None else torch.cat([cache["ctx"][:, -1:], cache["fut"]], 1)).float()
+        vis = visible if visible is not None else torch.cat(
+            [meta["root_visible"][:, None], meta["future_visible"][:, 0]], 1)
+        assert toks.shape == (len(seeds), 17, 81, 192) and vis.shape == (len(seeds), 17, 1534)
         f = facts_of(vis)
         rows = lambda m: m[:, None].expand(-1, 17).flatten()
         fr, vr = rows(fit_roots), rows(val_roots)
@@ -163,7 +165,8 @@ def step(world, frames, actions, device, config):
 
 
 @torch.no_grad()
-def evaluate(world, cache, meta, probes, test_roots, device, codes=None, batch=16, window=5):
+def evaluate(world, cache, meta, probes, train_roots, train_seeds, test_roots, device,
+             codes=None, batch=16, window=5):
     from d4mj.config import config_from_dict
     import spatial as S
     from onestep import CLASSES, classify
@@ -188,6 +191,10 @@ def evaluate(world, cache, meta, probes, test_roots, device, codes=None, batch=1
             t = step(world, torch.stack(t_frames[-w:], 1), a, device, config)
             gen[i:i + b, k], tf[i:i + b, k] = g.half(), t.half()
             g_frames.append(g); t_frames.append(fut[:, k]); a_hist.append(fa[:, k])
+    generated_probe = Probes(cache, meta, train_roots, train_seeds,
+                             tokens=torch.cat([cache["ctx"][:, -1:], gen], 1))
+    one_step_probe = Probes(cache, meta, train_roots, train_seeds,
+                            tokens=one_pred, visible=meta["onestep_visible"][:, 0])
     true_one, root = cache["one"].float(), cache["ctx"][:, -1].float()
     err = ((one_pred.float() - true_one) ** 2).sum((-1, -2))
     cp = ((root[:, None] - true_one) ** 2).sum((-1, -2))
@@ -199,7 +206,9 @@ def evaluate(world, cache, meta, probes, test_roots, device, codes=None, batch=1
     res["onestep"]["true_moved_over_blocked"] = float(tch[cls == 0].mean() / tch[cls == 1].mean())
     moved = (cls == 0) & test_roots[:, None]
     ov = meta["onestep_visible"][:, 0]
-    res["onestep"]["moved_facts_imagined"] = probes.read(one_pred.float()[moved], ov[moved])
+    res["onestep"]["moved_facts_imagined_true_fit"] = probes.read(one_pred.float()[moved], ov[moved])
+    res["onestep"]["moved_facts_imagined_generated_fit"] = one_step_probe.read(
+        one_pred.float()[moved], ov[moved])
     res["onestep"]["moved_facts_true"] = probes.read(true_one[moved], ov[moved])
     res["onestep"]["moved_facts_copy"] = probes.read(root[:, None].expand_as(true_one)[moved], ov[moved])
     fut = cache["fut"].float()
@@ -220,12 +229,22 @@ def evaluate(world, cache, meta, probes, test_roots, device, codes=None, batch=1
     res["_per_root"] = {"onestep_err": err, "onestep_copy": cp, "class": cls, "gen_err": generr, "tf_err": tferr,
                         "alive": alive, "V": V, "seed": meta["seed"]}
     fv = meta["future_visible"][:, 0]
-    res["facts"] = {}
+    res["schema_version"] = 2
+    res["readout_contract"] = {
+        "true_fit": "ridge fitted on real TRAIN-seed root and factual successor tokens",
+        "generated_fit": "same ridge fitted on true TRAIN-seed root tokens and this world's generated factual successors",
+        "one_step_generated_fit": "same ridge fitted on this world's all-17-action generated TRAIN-seed successors",
+        "validation": "first fifth of shuffled TRAIN seeds; judgment on disjoint TEST seeds",
+    }
+    res["facts_true_fit"] = {}
+    res["facts_generated_fit"] = {}
     for k in (1, 2, 4, 8, 16):
         m = alive[:, k - 1] & test_roots
-        res["facts"][k] = {name: probes.read(x[m].float(), fv[m, k - 1]) for name, x in
+        res["facts_true_fit"][k] = {name: probes.read(x[m].float(), fv[m, k - 1]) for name, x in
                            (("imagined", gen[:, k - 1]), ("teacher", tf[:, k - 1]), ("copy_root", root),
                             ("true", fut[:, k - 1]))}
+        res["facts_generated_fit"][k] = {"imagined": generated_probe.read(
+            gen[m, k - 1].float(), fv[m, k - 1])}
     return res
 
 
@@ -264,16 +283,25 @@ def main(argv=None):
             probes_by[pool] = Probes(cache, meta, train_roots, train_seeds)
         codes = torch.load(args.snap, weights_only=False)["codes"].float().to(device) if args.snap else None
         per_token_ssm = getattr(world, "backbone_kind", "full") in ("fmamba", "fcanvas")    # B*82 x 16k-float states
-        res = evaluate(world, cache, meta, probes_by[pool], test_roots, device, codes, batch=4 if per_token_ssm else 16,
+        res = evaluate(world, cache, meta, probes_by[pool], train_roots, train_seeds, test_roots, device, codes,
+                       batch=4 if per_token_ssm else 16,
                        window=args.window)
         tag = st["name"] + (f"__snap_{args.snap.stem}" if args.snap else "") + ("__hard" if args.hard else "") \
             + ("" if args.window == 5 else f"__w{args.window}")
-        torch.save(res.pop("_per_root"), out / f"{tag}_per_root.pt")
-        (out / f"{tag}.json").write_text(json.dumps(res, indent=2) + "\n")
+        per_root = out / f"{tag}_per_root.pt"
+        if per_root.exists():
+            per_root = out / f"{tag}__readout_v2_per_root.pt"
+        torch.save(res.pop("_per_root"), per_root)
+        report = json.dumps(res, indent=2) + "\n"
+        (out / f"{tag}__readout_v2.json").write_text(report)
+        legacy = out / f"{tag}.json"
+        if not legacy.exists():
+            legacy.write_text(report)
         brief = {"onestep": {k: round(v, 3) for k, v in res["onestep"].items() if isinstance(v, float)},
                  "gen": [round(res["rollout"][d]["gen"], 3) for d in (0, 3, 7, 15)],
                  "tf": [round(res["rollout"][d]["tf"], 3) for d in (0, 3, 7, 15)],
-                 "facts16": {k: round(v, 3) for k, v in res["facts"][16]["imagined"].items()}}
+                 "facts16_true_fit": {k: round(v, 3) for k, v in res["facts_true_fit"][16]["imagined"].items()},
+                 "facts16_generated_fit": {k: round(v, 3) for k, v in res["facts_generated_fit"][16]["imagined"].items()}}
         print(tag, json.dumps(brief), flush=True)
 
 

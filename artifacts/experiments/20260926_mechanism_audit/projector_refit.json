@@ -1,0 +1,43 @@
+{
+  "roots": 1002,
+  "fit_roots": 542,
+  "dev_roots": 159,
+  "test_roots": 301,
+  "V": 960.6928100585938,
+  "arms": {
+    "factual": {
+      "selected_lambda": 0.01,
+      "dev_mse": 0.06202260137886991,
+      "all_actions": {
+        "refit_mse": 0.10496223717927933,
+        "native_mse": 0.04397347569465637,
+        "persist_mse": 0.10920043289661407,
+        "refit_vs_mean_mse": 0.10432391613721848,
+        "native_vs_mean_mse": 0.043403349816799164,
+        "key_noise": 0.00075851398287341
+      },
+      "factual_action": {
+        "refit_mse": 0.06820657849311829,
+        "native_mse": 0.034128449857234955,
+        "persist_mse": 0.06374233216047287
+      }
+    },
+    "all_actions": {
+      "selected_lambda": 0.01,
+      "dev_mse": 0.06509551053745838,
+      "all_actions": {
+        "refit_mse": 0.06155787780880928,
+        "native_mse": 0.04397347569465637,
+        "persist_mse": 0.10920043289661407,
+        "refit_vs_mean_mse": 0.06091747060418129,
+        "native_vs_mean_mse": 0.043403349816799164,
+        "key_noise": 0.00075851398287341
+      },
+      "factual_action": {
+        "refit_mse": 0.05459418520331383,
+        "native_mse": 0.034128449857234955,
+        "persist_mse": 0.06374233216047287
+      }
+    }
+  }
+}

@@ -1,13 +1,12 @@
-"""Stage 3 prerequisite. The aleatoric ceiling of teval's imagined-fact metrics, from the simulator's own spread.
+"""Stage 3 prerequisite. Four-key full-state simulator reference for teval's imagined-fact metrics.
 
 The futures roll the SAME factual 16 actions from the FULL root state under the walk's key (sample 0, the label every
 world is scored on) and 4 other keys (samples 1-4). For each teval fact, on teval's own rows (test-seed roots alive at
 depth k, labels from sample 0's visible state) and definitions (teval.facts_of, NEAR, INTERIOR, EDGE):
-  ceiling     the prediction from samples 1-4 alone: mean zombie presence per cell (AUC), per-cell modal tile
-              class (accuracy), mean health / food (R^2), modal facing (accuracy). A 4-sample estimate of the
-              conditional law given the full state and the actions, so it slightly UNDER-states the true ceiling
-              for a predictor that knew that law; a world that sees only the observation cannot exceed it by
-              more than that.
+  ceiling     HISTORICAL JSON KEY: prediction from samples 1-4 alone: mean zombie presence per cell (AUC),
+              per-cell modal tile class (accuracy), mean health / food (R^2), modal facing (accuracy).
+              This is a finite-sample empirical reference, not a mathematical upper bound or a matched
+              readout control for a world model. The name is retained so saved evidence remains comparable.
   one_key     sample 1 alone as the prediction (what one exact simulator rollout scores)
   copy_root   the root's own facts (teval's copy_root)
 """

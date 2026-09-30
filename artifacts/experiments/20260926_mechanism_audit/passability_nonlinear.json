@@ -1,0 +1,103 @@
+{
+  "1": {
+    "n_fit": 1551,
+    "n_test": 1511,
+    "runs": [
+      {
+        "seed": 1,
+        "selected_epoch": 140,
+        "dev_auc": 0.656812472752185,
+        "test_auc": 0.6459586882342215
+      },
+      {
+        "seed": 2,
+        "selected_epoch": 15,
+        "dev_auc": 0.6536569162739522,
+        "test_auc": 0.6513059236353759
+      },
+      {
+        "seed": 3,
+        "selected_epoch": 40,
+        "dev_auc": 0.6584663718712588,
+        "test_auc": 0.6561936019230697
+      }
+    ],
+    "mean_test_auc": 0.651152737930889
+  },
+  "2": {
+    "n_fit": 1532,
+    "n_test": 1562,
+    "runs": [
+      {
+        "seed": 1,
+        "selected_epoch": 10,
+        "dev_auc": 0.6485257065032346,
+        "test_auc": 0.6573412622847059
+      },
+      {
+        "seed": 2,
+        "selected_epoch": 5,
+        "dev_auc": 0.6338100102145046,
+        "test_auc": 0.6635400627859782
+      },
+      {
+        "seed": 3,
+        "selected_epoch": 5,
+        "dev_auc": 0.6410078311201907,
+        "test_auc": 0.6663402231060379
+      }
+    ],
+    "mean_test_auc": 0.6624071827255741
+  },
+  "3": {
+    "n_fit": 1543,
+    "n_test": 1571,
+    "runs": [
+      {
+        "seed": 1,
+        "selected_epoch": 50,
+        "dev_auc": 0.7475981772269469,
+        "test_auc": 0.7704676532769557
+      },
+      {
+        "seed": 2,
+        "selected_epoch": 20,
+        "dev_auc": 0.7481496531506691,
+        "test_auc": 0.7660566596194504
+      },
+      {
+        "seed": 3,
+        "selected_epoch": 25,
+        "dev_auc": 0.7514657649551563,
+        "test_auc": 0.7676059196617336
+      }
+    ],
+    "mean_test_auc": 0.7680434108527132
+  },
+  "4": {
+    "n_fit": 1549,
+    "n_test": 1542,
+    "runs": [
+      {
+        "seed": 1,
+        "selected_epoch": 115,
+        "dev_auc": 0.8011653116531166,
+        "test_auc": 0.8056179775280898
+      },
+      {
+        "seed": 2,
+        "selected_epoch": 60,
+        "dev_auc": 0.7920663956639566,
+        "test_auc": 0.7958623423175019
+      },
+      {
+        "seed": 3,
+        "selected_epoch": 150,
+        "dev_auc": 0.7911924119241193,
+        "test_auc": 0.8123526573378369
+      }
+    ],
+    "mean_test_auc": 0.8046109923944762
+  },
+  "mean_auc": 0.7215535809759132
+}

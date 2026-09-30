@@ -1,0 +1,142 @@
+{
+  "55k": {
+    "W_minus_U": 0.05098041892051697,
+    "action_marginal": 0.054985348135232925,
+    "state_conditional_remainder": -0.004004929214715958,
+    "W": {
+      "stay_chosen": 0.021568628028035164,
+      "move_ok_chosen": 0.5098039507865906,
+      "mean_stay_minus_move_risk": 0.33309364318847656,
+      "min_stay_below_min_move": 0.11660078912973404,
+      "has_move_ok": 0.9921568632125854
+    },
+    "U": {
+      "stay_chosen": 0.1764705926179886,
+      "move_ok_chosen": 0.42352941632270813,
+      "mean_stay_minus_move_risk": 0.25935477018356323,
+      "min_stay_below_min_move": 0.2964426875114441,
+      "has_move_ok": 0.9921568632125854
+    },
+    "episode_cluster_95pct": {
+      "W_minus_U": [
+        0.00406709173694253,
+        0.09534493833780289
+      ],
+      "action_marginal": [
+        0.04055161774158478,
+        0.07135803252458572
+      ],
+      "state_conditional_remainder": [
+        -0.046907711774110794,
+        0.03768312931060791
+      ]
+    },
+    "n_roots": 510,
+    "n_episodes": 335
+  },
+  "56k": {
+    "W_minus_U": 0.046342313289642334,
+    "action_marginal": 0.06500229239463806,
+    "state_conditional_remainder": -0.018659979104995728,
+    "W": {
+      "stay_chosen": 0.04356060549616814,
+      "move_ok_chosen": 0.5473484992980957,
+      "mean_stay_minus_move_risk": 0.3353342115879059,
+      "min_stay_below_min_move": 0.11954459547996521,
+      "has_move_ok": 0.998106062412262
+    },
+    "U": {
+      "stay_chosen": 0.20075757801532745,
+      "move_ok_chosen": 0.47537878155708313,
+      "mean_stay_minus_move_risk": 0.28403440117836,
+      "min_stay_below_min_move": 0.30550283193588257,
+      "has_move_ok": 0.998106062412262
+    },
+    "episode_cluster_95pct": {
+      "W_minus_U": [
+        0.007798910140991211,
+        0.08754629641771317
+      ],
+      "action_marginal": [
+        0.047784268856048584,
+        0.08379780501127243
+      ],
+      "state_conditional_remainder": [
+        -0.05390284210443497,
+        0.01952226832509041
+      ]
+    },
+    "n_roots": 528,
+    "n_episodes": 309
+  },
+  "57k": {
+    "W_minus_U": 0.10833793878555298,
+    "action_marginal": 0.08717722445726395,
+    "state_conditional_remainder": 0.021160714328289032,
+    "W": {
+      "stay_chosen": 0.028761062771081924,
+      "move_ok_chosen": 0.6128318309783936,
+      "mean_stay_minus_move_risk": 0.3496261537075043,
+      "min_stay_below_min_move": 0.12638580799102783,
+      "has_move_ok": 0.997787594795227
+    },
+    "U": {
+      "stay_chosen": 0.2300885021686554,
+      "move_ok_chosen": 0.5,
+      "mean_stay_minus_move_risk": 0.3013414740562439,
+      "min_stay_below_min_move": 0.3148558735847473,
+      "has_move_ok": 0.997787594795227
+    },
+    "episode_cluster_95pct": {
+      "W_minus_U": [
+        0.06588827818632126,
+        0.15339766442775726
+      ],
+      "action_marginal": [
+        0.0678371787071228,
+        0.10861535370349884
+      ],
+      "state_conditional_remainder": [
+        -0.018039347603917122,
+        0.06317964196205139
+      ]
+    },
+    "n_roots": 452,
+    "n_episodes": 284
+  },
+  "58k": {
+    "W_minus_U": 0.12746882438659668,
+    "action_marginal": 0.07659269869327545,
+    "state_conditional_remainder": 0.05087612569332123,
+    "W": {
+      "stay_chosen": 0.03742203861474991,
+      "move_ok_chosen": 0.5675675868988037,
+      "mean_stay_minus_move_risk": 0.3369983732700348,
+      "min_stay_below_min_move": 0.10438413172960281,
+      "has_move_ok": 0.9958419799804688
+    },
+    "U": {
+      "stay_chosen": 0.23700623214244843,
+      "move_ok_chosen": 0.4116424024105072,
+      "mean_stay_minus_move_risk": 0.24947617948055267,
+      "min_stay_below_min_move": 0.3549060523509979,
+      "has_move_ok": 0.9958419799804688
+    },
+    "episode_cluster_95pct": {
+      "W_minus_U": [
+        0.08193773031234741,
+        0.17605668306350708
+      ],
+      "action_marginal": [
+        0.05886559933423996,
+        0.09569680690765381
+      ],
+      "state_conditional_remainder": [
+        0.007236512377858162,
+        0.0958390086889267
+      ]
+    },
+    "n_roots": 481,
+    "n_episodes": 281
+  }
+}
