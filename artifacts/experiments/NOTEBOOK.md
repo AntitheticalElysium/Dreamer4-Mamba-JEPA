@@ -91,6 +91,46 @@ has ever been judged on a decision. Everything the levers campaign measured is t
   - Measures, per depth k: opportunity rate, within-root spread, prior/oracle safe, and how often the depth-16 argmin
     differs from depth 1.
   - This decides whether an H16 panel carries decision content that H2 does not. No world is involved.
+  - **Stage-1 result (83 roots, 10 seeds; small, exploratory):**
+    - Sanity checks:
+      - k = 1 opportunity 15.7% (judgement blocks 18.6%);
+      - k = 1 within-root spread exactly 1.000 (one-step death deterministic, as the replay pilot found);
+      - k = 1 prior = DOWN.
+    - Opportunity by depth k:
+
+      | Continuation | k=1 | k=2 | k=4 | k=8 | k=16 |
+      |---|---|---|---|---|---|
+      | noop | 0.157 | 0.289 | 0.253 | 0.747 | 0.675 |
+      | recorded | 0.157 | 0.289 | 0.253 | 0.771 | 0.735 |
+
+      Mean P(dead by 16): 0.48 (noop), 0.54 (recorded).
+    - At k = 16, of the roots whose death varies over first actions (56 noop / 61 recorded), only 5% / 7% vary at
+      k = 1 and 14% / 16% at k = 2.
+    - Expected safe at k = 16, choosing uniformly among the actions that minimize a shorter horizon's P:
+
+      | Continuation | By H1 | By H2 | Uniform | Fixed prior | Oracle |
+      |---|---|---|---|---|---|
+      | noop | 0.663 | 0.665 | 0.662 | 0.718 | 0.764 |
+      | recorded | 0.533 | 0.539 | 0.529 | 0.600 | 0.690 |
+
+      The oracle is optimistic: a minimum over 17 noisy 32-key estimates.
+    - Reading: H1/H2 knowledge carries almost nothing about the depth-16 decision; an H16 panel is a different panel,
+      not an extension.
+- **E10 stage 2 (declared before collection):** `deeppanel.py --mode replay|collect`.
+  - Deep labels (both continuations, K = 32) for:
+    - the FIT-train seeds (lane20a);
+    - the FIT-dev seeds (lane20b). Replayed roots are checked against the fork store exactly as observe.py replay
+      does (frames within 1, identical one-step deaths).
+  - A fresh judgement block, seeds 62,000-62,399 (lane20b, collect mode), untouched until an evaluation with
+    predeclared rules is committed.
+  - Each row also stores, under the recorded continuation and key sequence 0:
+    - the real frames at depths 1, 2, 4, 8, 16 for all 17 branches, and that draw's dead-by-k (checked equal to key
+      sequence 0 of the label rollout);
+    - the root's last 8 frames and actions;
+    - the visible state.
+  - Tests before launch:
+    - smoke mode reproduces the committed seed-69,000 labels bit for bit (15/15 roots);
+    - a one-seed collect (69,010) wrote 10 complete rows, with zero realized-vs-P contradictions and cumulative deaths.
 - Also committed: `20260929_mamba_integration/memceil.py` / `memceil.json`, the recall ceiling for cells entering view
   (2,000 Raw long-pool windows, 126,000 steps).
   - Scroll rate 0.351. Entering cells are 4.49% of map-cell predictions.
