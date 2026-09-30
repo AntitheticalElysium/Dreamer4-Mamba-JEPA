@@ -47,7 +47,8 @@ def main():
     from d4mj.config import config_from_dict
     from d4mj.train import autocast_context
     import spatial as S
-    device = torch.device("cuda")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    path = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "artifacts/eda/levers_tworlds_v1/corrg_raw_suffix_s7.pt"
     config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
     meta, train_roots, _ = T.split()
     cls, _ = classify(meta)
@@ -56,8 +57,8 @@ def main():
     rows = [(i, a) for i in range(len(ctx)) for a in (1, 2, 3, 4) if cls[i, a] in (0, 1)]
     y = torch.tensor([bool(cls[i, a] == 0) for i, a in rows])
     tr = torch.tensor([bool(train_roots[i]) for i, _ in rows]); te = ~tr
-    world, _ = T.load_world(ROOT / "artifacts/eda/levers_tworlds_v1/corrg_raw_suffix_s7.pt", device)
-    feats = {k: [] for k in ("input_target", "h_target", "h_player", "h_action", "frame_logit")}
+    world, st = T.load_world(path, device)
+    feats = {k: [] for k in ("input_target", "h_target", "h_player", "h_action", "frame_logit", "decision_logit")}
     with autocast_context(config):
         for k in range(0, len(rows), 256):
             chunk = rows[k:k + 256]
@@ -70,12 +71,18 @@ def main():
             feats["h_target"].append(h[ar, -1, tgt].float().cpu())
             feats["h_player"].append(h[:, -1, 31].float().cpu())
             feats["h_action"].append(ha[:, -1].float().cpu())
-            feats["frame_logit"].append(world.frame(ha[:, -1]).float()[:, 0].cpu())
+            frame = world.frame(ha[:, -1]).float()[:, 0]
+            feats["frame_logit"].append(frame.cpu())
+            gate = world.target_gate(h[ar, -1, tgt]).float()[:, 0] if hasattr(world, "target_gate") else 0 * frame
+            feats["decision_logit"].append((frame + gate).cpu())            # corrt's move logit (corrg: = frame)
     feats = {k: torch.cat(v) for k, v in feats.items()}
-    res = {k: probe_auc(v, y, tr, te) for k, v in feats.items() if k != "frame_logit"}
+    res = {k: probe_auc(v, y, tr, te) for k, v in feats.items() if k not in ("frame_logit", "decision_logit")}
     res["frame_logit_itself"] = auc(feats["frame_logit"][te], y[te])
+    res["decision_logit_itself"] = auc(feats["decision_logit"][te], y[te])
+    res["decision_logit_mean_moved_blocked"] = [float(feats["decision_logit"][y].mean()), float(feats["decision_logit"][~y].mean())]
     res["n_test"] = int(te.sum()); res["moved_share"] = float(y.float().mean())
-    (HERE / "corrg_probe.json").write_text(json.dumps(res, indent=2) + "\n")
+    out = HERE / ("corrg_probe.json" if len(sys.argv) == 1 else f"probe_{st['name']}.json")
+    out.write_text(json.dumps(res, indent=2) + "\n")
     print(json.dumps({k: round(v, 3) if isinstance(v, float) else v for k, v in res.items()}))
 
 

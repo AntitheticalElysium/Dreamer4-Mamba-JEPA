@@ -152,7 +152,8 @@ def main():
         d = result[run]["depth"]
         print(run, json.dumps({k: {n: round(d[k][n]["imagined"], 3) for n in ("zombie_adjacent", "pass_left", "health")}
                                for k in d}), json.dumps(result[run]["moved_vs_blocked_auc"]), flush=True)
-        path.write_text(json.dumps(result, indent=2) + "\n")
+        current = json.loads(path.read_text()) if path.exists() else {}      # another lane may have written since
+        path.write_text(json.dumps(current | {run: result[run]}, indent=2) + "\n")
         del bundle
         torch.cuda.empty_cache()
 

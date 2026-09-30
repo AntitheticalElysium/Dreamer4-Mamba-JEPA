@@ -29,7 +29,8 @@ sys.path.insert(0, str(ROOT)); sys.path.insert(0, str(HERE)); sys.path.insert(0,
 sys.path.insert(0, str(ROOT / "artifacts/experiments/20260921_readout_ladder"))
 
 ENCODERS = {"raw": ROOT / "artifacts/lewm_m4_canonical/raw/joint/step-010000.pt",
-            "tc": ROOT / "artifacts/lewm_m4_canonical/tc/joint/step-010000.pt"}
+            "tc": ROOT / "artifacts/lewm_m4_canonical/tc/joint/step-010000.pt",
+            "ldad10": ROOT / "artifacts/eda/levers_ldad_v1/raw_lam10/step-010000.pt"}
 CACHE = ROOT / "artifacts/eda/levers_futures_tokens_{}.pt"
 META = ROOT / "artifacts/eda/diagnosis_rollouts_v1/meta.pt"
 N, H = 17, 16
@@ -56,7 +57,8 @@ def build_cache(name, device):
     path = Path(str(CACHE).format(name))
     if path.exists():
         return torch.load(path, weights_only=False)
-    payload = read_lewm_bundle(ENCODERS[name])
+    raw_payload = torch.load(ENCODERS[name], map_location="cpu", weights_only=False)
+    payload = read_lewm_bundle(ENCODERS[name]) if "format" in raw_payload else raw_payload     # LDAD runs: plain dict
     bundle = ModelBundle.create(config_from_dict(payload["config"]))
     bundle.encoder.load_state_dict(payload["modules"]["encoder"])
     enc = bundle.encoder.to(device).freeze()
@@ -161,7 +163,7 @@ def step(world, frames, actions, device, config):
 
 
 @torch.no_grad()
-def evaluate(world, cache, meta, probes, test_roots, device, codes=None, batch=16):
+def evaluate(world, cache, meta, probes, test_roots, device, codes=None, batch=16, window=5):
     from d4mj.config import config_from_dict
     import spatial as S
     from onestep import CLASSES, classify
@@ -180,7 +182,7 @@ def evaluate(world, cache, meta, probes, test_roots, device, codes=None, batch=1
         one_pred[i:i + b] = snap(step(world, fan, acts, device, config), codes).view(b, N, 81, 192).half()
         g_frames, t_frames, a_hist = [ctx[:, j] for j in range(4)], [ctx[:, j] for j in range(4)], [ca[:, j] for j in range(3)]
         for k in range(H):
-            w = 4 if k == 0 else 5
+            w = 4 if k == 0 else window
             a = torch.stack(a_hist[-(w - 1):] + [fa[:, k]], 1)
             g = snap(step(world, torch.stack(g_frames[-w:], 1), a, device, config), codes)
             t = step(world, torch.stack(t_frames[-w:], 1), a, device, config)
@@ -234,7 +236,7 @@ def load_world(path, device):
     codebook = None
     if head == "categorical":
         codebook = st["world"]["codes"]
-    w = TWorld(head, codebook).to(device)
+    w = TWorld(head, codebook, st["args"].get("backbone", "full"), st["args"].get("regions", "all")).to(device)
     w.load_state_dict(st["world"])
     return w.eval(), st
 
@@ -244,6 +246,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("worlds", nargs="+", type=Path)
     parser.add_argument("--snap", type=Path, default=None, help="codebook to snap imagined tokens to")
+    parser.add_argument("--hard", action="store_true", help="corr heads: argmax decoding (ITC's binarized plan)")
+    parser.add_argument("--window", type=int, default=5, help="rollout window in frames (default 5)")
     args = parser.parse_args(argv)
     device = torch.device("cuda")
     meta, train_roots, train_seeds = split()
@@ -253,13 +257,17 @@ def main(argv=None):
     probes_by = {}
     for path in args.worlds:
         world, st = load_world(path, device)
+        world.hard_decode = args.hard
         pool = st["args"]["pool"]
         cache = build_cache(pool, device)
         if pool not in probes_by:
             probes_by[pool] = Probes(cache, meta, train_roots, train_seeds)
         codes = torch.load(args.snap, weights_only=False)["codes"].float().to(device) if args.snap else None
-        res = evaluate(world, cache, meta, probes_by[pool], test_roots, device, codes)
-        tag = st["name"] + (f"__snap_{args.snap.stem}" if args.snap else "")
+        per_token_ssm = getattr(world, "backbone_kind", "full") in ("fmamba", "fcanvas")    # B*82 x 16k-float states
+        res = evaluate(world, cache, meta, probes_by[pool], test_roots, device, codes, batch=4 if per_token_ssm else 16,
+                       window=args.window)
+        tag = st["name"] + (f"__snap_{args.snap.stem}" if args.snap else "") + ("__hard" if args.hard else "") \
+            + ("" if args.window == 5 else f"__w{args.window}")
         torch.save(res.pop("_per_root"), out / f"{tag}_per_root.pt")
         (out / f"{tag}.json").write_text(json.dumps(res, indent=2) + "\n")
         brief = {"onestep": {k: round(v, 3) for k, v in res["onestep"].items() if isinstance(v, float)},

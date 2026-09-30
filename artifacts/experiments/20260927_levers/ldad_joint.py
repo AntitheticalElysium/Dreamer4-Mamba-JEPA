@@ -8,6 +8,10 @@ distribution-matching regularizers; here LDAD is ADDED to the canonical objectiv
 raw or temporally centered), the only change. Adaptations, stated: Craftax actions are discrete (17), so
 L_action is cross-entropy, not MSE; the decoder is single-step (their eq. 3-5) as a 2-layer MLP 192 -> 256 -> 17,
 not their 5-query Transformer multi-step extension; lambda = 10.
+--no-sigreg is Delta-JEPA as published: L = L_pred + lambda L_action, SIGReg still computed (logged; its projection
+RNG consumed, so batches stay paired) but out of the objective. Their N = 5 action queries decode the 5 actions of
+one latent step (le-wm frameskip 5 in all four of their environments, config/train/data/*.yaml); Craftax has one
+action per step, so single-step decoding is the faithful analogue.
 
 Pairing: the canonical loop itself (`_joint_components`, `JointSampler`, `joint_loss`, `learning_rate`,
 `optimizer_step`) with the canonical run's own config. ModelBundle.create seeds from config.seed, the sampler from
@@ -36,6 +40,7 @@ def main(argv=None):
     parser.add_argument("--variant", required=True, choices=("raw", "tc"))
     parser.add_argument("--lam", type=float, default=10.0)
     parser.add_argument("--steps", type=int, default=10_000)
+    parser.add_argument("--no-sigreg", action="store_true", help="Delta-JEPA as published: no SIGReg in the objective")
     args = parser.parse_args(argv)
     from d4mj.checkpoint import read_lewm_bundle
     from d4mj.config import config_from_dict
@@ -60,7 +65,7 @@ def main(argv=None):
     regularizer = SIGReg(config.joint.knots, config.joint.projections).to(config.runtime.device)
     # A run shorter than the schedule is a SCREEN: the canonical recipe's first `steps` updates (the cosine schedule
     # keeps config.joint.steps), paired with the canonical run's own step checkpoint.
-    name = f"{args.variant}_lam{args.lam:g}" + ("" if args.steps == config.joint.steps else f"_screen{args.steps}")
+    name = f"{args.variant}_lam{args.lam:g}" + ("_nosig" if args.no_sigreg else "") + ("" if args.steps == config.joint.steps else f"_screen{args.steps}")
     out = OUT / name
     out.mkdir(parents=True, exist_ok=True)
     log = out / "metrics.jsonl"
@@ -74,7 +79,7 @@ def main(argv=None):
             z = loss.latent[:, :, 0].float()
             logits = head(z[:, 1:] - z[:, :-1]).float()
             ce = F.cross_entropy(logits.flatten(0, 1), batch.actions.flatten())
-            total = loss.total + args.lam * ce
+            total = (loss.prediction if args.no_sigreg else loss.total) + args.lam * ce
         if not bool(torch.isfinite(total)):
             raise RuntimeError(f"nonfinite objective at update {update}")
         norm = optimizer_step(opt, total, params, learning_rate=learning_rate(config, update),
@@ -87,7 +92,7 @@ def main(argv=None):
         if (update + 1) % 500 == 0:
             print(json.dumps(row), flush=True)
         if (update + 1) in (2000, args.steps):
-            torch.save({"config": canonical["config"], "variant": args.variant, "lam": args.lam, "step": update + 1,
+            torch.save({"config": canonical["config"], "variant": args.variant, "lam": args.lam, "no_sigreg": args.no_sigreg, "step": update + 1,
                         "modules": {"encoder": bundle.encoder.state_dict(), "world": bundle.world.state_dict(),
                                     "ldad": head.state_dict()}}, out / f"step-{update + 1:06d}.pt")
 

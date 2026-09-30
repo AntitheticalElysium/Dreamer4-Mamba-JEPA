@@ -1,0 +1,23 @@
+{
+  "masked_scan_all_kept_vs_scan_maxabs": 0.0,
+  "masked_scan_holds_vs_reference_maxabs": 4.76837158203125e-07,
+  "reference_scale": 2.346714973449707,
+  "static_fcanvas_vs_fmamba_maxabs": 0.0,
+  "synthetic_scroll_estimate_accuracy": 1.0,
+  "canvas_same_world_token_maxabs": 0.0,
+  "causal_full_maxabs_frames_0_3": 0.0,
+  "causal_full_changes_frames_4_5": 6.060857772827148,
+  "parameters_full": 4982216,
+  "causal_fattn_maxabs_frames_0_3": 0.0,
+  "causal_fattn_changes_frames_4_5": 6.068912506103516,
+  "parameters_fattn": 6564296,
+  "causal_fmamba_maxabs_frames_0_3": 0.0,
+  "causal_fmamba_changes_frames_4_5": 6.147356986999512,
+  "parameters_fmamba": 6379280,
+  "causal_fcanvas_maxabs_frames_0_3": 0.0,
+  "causal_fcanvas_changes_frames_4_5": 6.152048110961914,
+  "parameters_fcanvas": 6379280,
+  "causal_fscan_maxabs_frames_0_3": 0.0,
+  "causal_fscan_changes_frames_4_5": 6.136684417724609,
+  "parameters_fscan": 6379280
+}

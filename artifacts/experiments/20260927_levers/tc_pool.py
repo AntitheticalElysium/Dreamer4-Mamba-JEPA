@@ -21,6 +21,8 @@ from d4mj.data import _sha256  # noqa: E402
 SRC = ROOT / "artifacts/eda/spatial_pool_v1"
 OUT = ROOT / "artifacts/eda/spatial_pool_tc_v1"
 TC = ROOT / "artifacts/lewm_m4_canonical/tc/joint/step-010000.pt"
+if len(sys.argv) == 3:                     # tc_pool.py <encoder checkpoint> <out dir>: any encoder, same windows
+    TC, OUT = (ROOT / sys.argv[1]).resolve(), (ROOT / sys.argv[2]).resolve()
 
 
 @torch.no_grad()
@@ -31,7 +33,8 @@ def main():
     from d4mj.world_api import ModelBundle
     os.chdir(ROOT)
     device = torch.device("cuda")
-    payload = read_lewm_bundle(TC)
+    raw_payload = torch.load(TC, map_location="cpu", weights_only=False)
+    payload = read_lewm_bundle(TC) if "format" in raw_payload else raw_payload                # LDAD runs: plain dict
     config = config_from_dict(payload["config"])
     bundle = ModelBundle.create(config)
     bundle.encoder.load_state_dict(payload["modules"]["encoder"])
@@ -56,7 +59,7 @@ def main():
             print(json.dumps({"done": b + len(chunk), "of": n}), flush=True)
     pool = {k: v for k, v in src.items() if k not in ("z", "tokens", "meta")}
     pool.update({"z": z, "tokens": tokens,
-                 "meta": dict(src["meta"]) | {"encoder": "tc_joint_step_10000", "encoder_sha256": _sha256(TC),
+                 "meta": dict(src["meta"]) | {"encoder": str(TC.relative_to(ROOT)), "encoder_sha256": _sha256(TC),
                                               "source_pool_sha256": json.loads((SRC / "pool.json").read_text())["pool_sha256"]}})
     OUT.mkdir(parents=True, exist_ok=True)
     torch.save(pool, OUT / "pool.pt")

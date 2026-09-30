@@ -22,11 +22,17 @@ job() { # name need_mib cmd...
   local log=$LOGDIR/$name.log
   for attempt in 1 2 3 4 5 6; do
     if [ "$need" -gt 0 ]; then
-      exec 9>>$LOGDIR/gpu.lock; flock -x 9
-      admit $need
+      # wait for memory WITHOUT the lock; take the lock only to re-check and start (a large job waiting for memory
+      # must never block smaller jobs that fit)
+      while true; do
+        admit $need
+        exec 9>>$LOGDIR/gpu.lock; flock -x 9
+        [ "$(free_mib)" -ge $(( need + 256 )) ] && break
+        flock -u 9; exec 9>&-; sleep 15
+      done
     fi
     echo "$(date '+%F %T') START $name attempt $attempt" >> $LOGDIR/lanes.log
-    "$@" >> "$log" 2>&1 &
+    "$@" >> "$log" 2>&1 9>&- &
     local pid=$!
     if [ "$need" -gt 0 ]; then
       for i in $(seq 1 60); do

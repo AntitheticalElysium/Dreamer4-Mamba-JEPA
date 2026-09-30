@@ -74,6 +74,12 @@
         0.4031350016593933,
         0.9267253279685974
       ]
+    },
+    "spectrum": {
+      "effective_rank": 15.743887334921366,
+      "total_variance": 159.08369747365998,
+      "top_over_median": 9157.172835736514,
+      "spread_top_over_bottom": 168461.74864767518
     }
   },
   "tc": {
@@ -151,6 +157,12 @@
         1.996251106262207,
         1.8188945055007935
       ]
+    },
+    "spectrum": {
+      "effective_rank": 2.514777611105672,
+      "total_variance": 987.6870161004431,
+      "top_over_median": 181996.5415989159,
+      "spread_top_over_bottom": 1594050.8129487503
     }
   },
   "raw_lam10": {
@@ -227,6 +239,178 @@
         0.7064447402954102,
         0.9255791306495667,
         1.0980091094970703
+      ]
+    },
+    "spectrum": {
+      "effective_rank": 11.694426767336296,
+      "total_variance": 213.35012991896923,
+      "top_over_median": 2750.1135852869957,
+      "spread_top_over_bottom": 20479.427171291318
+    }
+  },
+  "tc_lam10": {
+    "spectrum": {
+      "effective_rank": 5.931473762311688,
+      "total_variance": 1028.2410975071057,
+      "top_over_median": 32545.373312491993,
+      "spread_top_over_bottom": 231555.63076198977
+    },
+    "twins_z": {
+      "day/zombie": 2.278016214742992,
+      "day/cow": 0.9015360585981886,
+      "day/lava": 0.5849873303712332,
+      "day/stone": 1.80538255176352,
+      "day/tree": 3.5584869210649193,
+      "day/water": 0.5622703699990127,
+      "day/table": 3.951455080326046,
+      "day/zombie_far": 0.38248236225751847,
+      "day/cos_adjacent_vs_far": 0.8606622512312447,
+      "night/zombie": 2.2270091394334774,
+      "night/cow": 0.8251151619824447,
+      "night/lava": 0.49257748038321425,
+      "night/stone": 2.516427413248282,
+      "night/tree": 4.214380934999801,
+      "night/water": 1.1787831339046546,
+      "night/table": 4.563251208676,
+      "night/zombie_far": 0.10424506277584315,
+      "night/cos_adjacent_vs_far": 0.6982107486283704
+    },
+    "natural_z": {
+      "zombie_adjacent": 0.9792999089402274,
+      "zombie_in_view": 0.9199308192840004,
+      "cow_in_view": 0.6298364063270879,
+      "lava_adjacent": 0.9398059870907803,
+      "passability_mean_4_directions": 0.8676199360231347,
+      "health_r2": 0.4995412230491638,
+      "tile_accuracy": 0.6416199207305908,
+      "tile_majority_baseline": 0.5806775093078613
+    },
+    "natural_tokens": {
+      "passability_mean_4_directions": 0.9999992755537277,
+      "zombie_adjacent": 0.9999993872842488,
+      "zombie_in_view": 0.9813603355949978,
+      "cow_in_view": 0.9188413806845808,
+      "health_r2": 0.9992799162864685,
+      "tile_accuracy": 0.9623484015464783
+    },
+    "temporal": {
+      "z_within_window_share_of_variance": 0.22704837617261422,
+      "tokens_within_window_share_of_variance": 0.14858682775001314
+    },
+    "action_from_dz": {
+      "acc_all": 0.666961133480072,
+      "acc_move_succeeded": 0.6925031542778015,
+      "acc_move_blocked": 0.44364938139915466,
+      "n_test_moved_blocked": [
+        1574,
+        559
+      ],
+      "acc_non_move": 0.7129586338996887,
+      "chance_majority": 0.3279593586921692
+    },
+    "world": {
+      "onestep_window3_x_copy": {
+        "all": 0.08209288865327835,
+        "ambiguous": 0.08414901793003082,
+        "blocked": 0.05243825912475586,
+        "moved": 0.06414745002985,
+        "other": 0.1982562392950058,
+        "sleep_onset": 0.01753101870417595
+      },
+      "imagine16_window3_over_V": [
+        0.05243740603327751,
+        0.17459966242313385,
+        0.2609429359436035,
+        0.39718830585479736
+      ],
+      "copy_root_over_V": [
+        0.5537733435630798,
+        1.0668972730636597,
+        1.376563549041748,
+        1.5268858671188354
+      ]
+    }
+  },
+  "raw_lam10_nosig": {
+    "spectrum": {
+      "effective_rank": 5.812155836579579,
+      "total_variance": 367.53875798002,
+      "top_over_median": 17070.86835217279,
+      "spread_top_over_bottom": 122015.93263171187
+    },
+    "twins_z": {
+      "day/zombie": 2.523078655552579,
+      "day/cow": 1.0020679209849697,
+      "day/lava": 0.5381250800436528,
+      "day/stone": 1.5467174630807223,
+      "day/tree": 4.318703812957988,
+      "day/water": 1.6254474833190538,
+      "day/table": 6.310906561254301,
+      "day/zombie_far": 0.6307002469140276,
+      "day/cos_adjacent_vs_far": 0.9588117238443709,
+      "night/zombie": 2.425097461089944,
+      "night/cow": 1.2691173262550264,
+      "night/lava": 0.8126918401490146,
+      "night/stone": 1.777184998768687,
+      "night/tree": 5.773464738452373,
+      "night/water": 2.6455888400144794,
+      "night/table": 5.543852456707673,
+      "night/zombie_far": 0.19410415321219643,
+      "night/cos_adjacent_vs_far": 0.9204275474874007
+    },
+    "natural_z": {
+      "zombie_adjacent": 0.9119275741388612,
+      "zombie_in_view": 0.9194612723054677,
+      "cow_in_view": 0.6018132941283717,
+      "lava_adjacent": 0.9006920068479551,
+      "passability_mean_4_directions": 0.837303829221093,
+      "health_r2": 0.6502515077590942,
+      "tile_accuracy": 0.6360745429992676,
+      "tile_majority_baseline": 0.5806775093078613
+    },
+    "natural_tokens": {
+      "passability_mean_4_directions": 0.9999982190387207,
+      "zombie_adjacent": 1.0,
+      "zombie_in_view": 0.9766417261214307,
+      "cow_in_view": 0.88968474911135,
+      "health_r2": 0.9991940855979919,
+      "tile_accuracy": 0.9588204622268677
+    },
+    "temporal": {
+      "z_within_window_share_of_variance": 0.1686908101221526,
+      "tokens_within_window_share_of_variance": 0.12163777999272035
+    },
+    "action_from_dz": {
+      "acc_all": 0.6760159134864807,
+      "acc_move_succeeded": 0.7001270651817322,
+      "acc_move_blocked": 0.44186046719551086,
+      "n_test_moved_blocked": [
+        1574,
+        559
+      ],
+      "acc_non_move": 0.7259637713432312,
+      "chance_majority": 0.3279593586921692
+    },
+    "world": {
+      "onestep_window3_x_copy": {
+        "all": 0.12318435311317444,
+        "ambiguous": 0.13896290957927704,
+        "blocked": 0.05526465177536011,
+        "moved": 0.09482952207326889,
+        "other": 0.3707735538482666,
+        "sleep_onset": 0.016750101000070572
+      },
+      "imagine16_window3_over_V": [
+        0.05765186622738838,
+        0.162602499127388,
+        0.2706453502178192,
+        0.41653311252593994
+      ],
+      "copy_root_over_V": [
+        0.44407370686531067,
+        0.8726759552955627,
+        1.1779873371124268,
+        1.3430044651031494
       ]
     }
   }

@@ -1,0 +1,14 @@
+{
+  "accuracy_all": 0.9935423135757446,
+  "accuracy_moved": 0.9751834869384766,
+  "n_moved": 2861,
+  "accuracy_blocked": 1.0,
+  "n_blocked": 1147,
+  "accuracy_non_move": 0.9970059990882874,
+  "moved_detected_as_none": 0.02376791276037693,
+  "non_moved_detected_as_scroll": 0.002751711057499051,
+  "futures_scroll_rate": 0.3659555912017822,
+  "futures_scroll_on_move_actions": 0.7032018303871155,
+  "futures_scroll_on_other_actions": 0.0003899649018421769,
+  "futures_scroll_direction_matches_action": 0.9993182420730591
+}

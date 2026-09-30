@@ -33,7 +33,8 @@ RUNS = {"raw": ROOT / "artifacts/lewm_m4_canonical/raw/joint/step-010000.pt",
         "raw_lam1": ROOT / "artifacts/eda/levers_ldad_v1/raw_lam1/step-010000.pt",
         "raw_lam0.1": ROOT / "artifacts/eda/levers_ldad_v1/raw_lam0.1/step-010000.pt",
         "tc_lam1": ROOT / "artifacts/eda/levers_ldad_v1/tc_lam1/step-010000.pt",
-        "tc_lam10": ROOT / "artifacts/eda/levers_ldad_v1/tc_lam10/step-010000.pt"}
+        "tc_lam10": ROOT / "artifacts/eda/levers_ldad_v1/tc_lam10/step-010000.pt",
+        "raw_lam10_nosig": ROOT / "artifacts/eda/levers_ldad_v1/raw_lam10_nosig/step-010000.pt"}
 
 
 def load(path, device):
@@ -153,27 +154,40 @@ def main():
     out_path = HERE / ("ldad_screens.json" if "--screens" in sys.argv else "ldad_eval.json")
     result = json.loads(out_path.read_text()) if out_path.exists() else {}
     for run, path in RUNS.items():
-        if run in result or not path.exists():
+        if not path.exists() or "spectrum" in result.get(run, {}):
             continue
         bundle = load(path, device)
         enc = bundle.encoder
         nz = TE.z_of(enc, nat, device)
-        Wz = TW.inverse_sqrt_cov(nz)
-        Z = {k: TE.z_of(enc, f, device).double() for k, f in frames.items()}
-        tw = {}
-        for light in ("day", "night"):
-            base = Z[(light, "base")]
-            for e in TW.EDITS:
-                tw[f"{light}/{e}"] = float((Wz @ (Z[(light, e)] - base).mean(0)).norm())
-            dn, df = Z[(light, "zombie")] - base, Z[(light, "zombie_far")] - base
-            tw[f"{light}/cos_adjacent_vs_far"] = float(torch.nn.functional.cosine_similarity(dn.mean(0), df.mean(0), dim=0))
-        result[run] = {"twins_z": tw, "natural_z": TE.natural(enc, device), "natural_tokens": TE.natural_tokens(enc, device),
-                       "temporal": TE.temporal(enc, device), "action_from_dz": action_probe(enc, device),
-                       "world": world_eval(bundle, device)}
+        e = torch.linalg.eigvalsh(torch.cov(nz.double().T)).clamp_min(0).flip(0)       # eigen_spectra.py's measures
+        spectrum = {"effective_rank": float(e.sum() ** 2 / (e ** 2).sum()), "total_variance": float(e.sum()),
+                    "top_over_median": float(e[0] / e[95]), "spread_top_over_bottom": float(e[0] / e[-1].clamp_min(1e-12))}
+        if run in result:                                   # evaluated before the spectrum was added: backfill only
+            result[run]["spectrum"] = spectrum
+        else:
+            result[run] = {"spectrum": spectrum, **full(bundle, enc, nz, frames, device)}
         print(run, json.dumps({k: v for k, v in result[run].items() if k != "twins_z"}), flush=True)
-        out_path.write_text(json.dumps(result, indent=2) + "\n")
+        current = json.loads(out_path.read_text()) if out_path.exists() else {}   # another lane may have written since
+        out_path.write_text(json.dumps(current | {run: result[run]}, indent=2) + "\n")
         del bundle
         torch.cuda.empty_cache()
+
+
+def full(bundle, enc, nz, frames, device):
+    import tc_encoder as TE
+    import twins as TW
+    Wz = TW.inverse_sqrt_cov(nz)
+    Z = {k: TE.z_of(enc, f, device).double() for k, f in frames.items()}
+    tw = {}
+    for light in ("day", "night"):
+        base = Z[(light, "base")]
+        for e in TW.EDITS:
+            tw[f"{light}/{e}"] = float((Wz @ (Z[(light, e)] - base).mean(0)).norm())
+        dn, df = Z[(light, "zombie")] - base, Z[(light, "zombie_far")] - base
+        tw[f"{light}/cos_adjacent_vs_far"] = float(torch.nn.functional.cosine_similarity(dn.mean(0), df.mean(0), dim=0))
+    return {"twins_z": tw, "natural_z": TE.natural(enc, device), "natural_tokens": TE.natural_tokens(enc, device),
+            "temporal": TE.temporal(enc, device), "action_from_dz": action_probe(enc, device),
+            "world": world_eval(bundle, device)}
 
 
 if __name__ == "__main__":

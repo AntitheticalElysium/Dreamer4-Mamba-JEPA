@@ -1,0 +1,408 @@
+{
+  "onestep": {
+    "moved": {
+      "player": {
+        "x_copy": 0.9751856923103333,
+        "share_of_error": 0.016065949574112892,
+        "share_of_copy_error": 0.013326087966561317,
+        "w_self": 0.9764504432678223,
+        "w_generate": 0.0010505402460694313,
+        "w_scroll_source": 0.020888613536953926,
+        "w_all_neighbours": 0.022499047219753265,
+        "generator_alone_x_copy": 1.6102968454360962
+      },
+      "near": {
+        "x_copy": 0.6905791163444519,
+        "share_of_error": 0.05789726600050926,
+        "share_of_copy_error": 0.0678153783082962,
+        "w_self": 0.7352076768875122,
+        "w_generate": 0.025051651522517204,
+        "w_scroll_source": 0.1874164193868637,
+        "w_all_neighbours": 0.23974062502384186,
+        "generator_alone_x_copy": 1.00998055934906
+      },
+      "interior": {
+        "x_copy": 0.665558397769928,
+        "share_of_error": 0.38622212409973145,
+        "share_of_copy_error": 0.46939077973365784,
+        "w_self": 0.5943266153335571,
+        "w_generate": 0.07332567870616913,
+        "w_scroll_source": 0.24344511330127716,
+        "w_all_neighbours": 0.33234766125679016,
+        "generator_alone_x_copy": 0.9785525798797607
+      },
+      "edge": {
+        "x_copy": 0.9687318801879883,
+        "share_of_error": 0.5327569246292114,
+        "share_of_copy_error": 0.44484543800354004,
+        "w_self": 0.5839775204658508,
+        "w_generate": 0.07875321805477142,
+        "w_scroll_source": 0.24598254263401031,
+        "w_all_neighbours": 0.33726924657821655,
+        "generator_alone_x_copy": 0.9687318801879883
+      },
+      "hud": {
+        "x_copy": 1.2350460290908813,
+        "share_of_error": 0.007057724520564079,
+        "share_of_copy_error": 0.004622375126928091,
+        "w_self": 0.04599891975522041,
+        "w_generate": 0.003487957641482353,
+        "w_scroll_source": 0.2404792308807373,
+        "w_all_neighbours": 0.9505131244659424,
+        "generator_alone_x_copy": 1.2350460290908813
+      },
+      "entering": {
+        "x_copy": 0.9678402931764858,
+        "share_of_error": 0.1483311537951712,
+        "generator_alone_x_copy": 0.9678402931764858,
+        "w_self": 0.5617444974696432,
+        "w_scroll_source": 0.27409464945944195,
+        "w_generate": 0.07757547815756768
+      },
+      "edge_other": {
+        "x_copy": 0.9690763807065101,
+        "share_of_error": 0.38442580884853217,
+        "generator_alone_x_copy": 0.9690763807065101,
+        "w_self": 0.5929050693498281,
+        "w_scroll_source": 0.23469432827673734,
+        "w_generate": 0.07922612624444786
+      }
+    },
+    "blocked": {
+      "player": {
+        "x_copy": 0.9993993639945984,
+        "share_of_error": 0.05899766460061073,
+        "share_of_copy_error": 0.05777652561664581,
+        "w_self": 0.9980617761611938,
+        "w_generate": 0.001756967161782086,
+        "w_scroll_source": 0.00011422570241848007,
+        "w_all_neighbours": 0.00018119151354767382,
+        "generator_alone_x_copy": 2.0782527923583984
+      },
+      "near": {
+        "x_copy": 1.2551525831222534,
+        "share_of_error": 0.049048468470573425,
+        "share_of_copy_error": 0.038245875388383865,
+        "w_self": 0.9412606358528137,
+        "w_generate": 0.046787962317466736,
+        "w_scroll_source": 0.006057802587747574,
+        "w_all_neighbours": 0.011951380409300327,
+        "generator_alone_x_copy": 1.8834669589996338
+      },
+      "interior": {
+        "x_copy": 0.9976994395256042,
+        "share_of_error": 0.3837064802646637,
+        "share_of_copy_error": 0.376404732465744,
+        "w_self": 0.8670654296875,
+        "w_generate": 0.11660107970237732,
+        "w_scroll_source": 0.009227937087416649,
+        "w_all_neighbours": 0.016333529725670815,
+        "generator_alone_x_copy": 1.0719445943832397
+      },
+      "edge": {
+        "x_copy": 0.912337601184845,
+        "share_of_error": 0.4317120909690857,
+        "share_of_copy_error": 0.46312081813812256,
+        "w_self": 0.8450168371200562,
+        "w_generate": 0.13507699966430664,
+        "w_scroll_source": 0.011255339719355106,
+        "w_all_neighbours": 0.01990620791912079,
+        "generator_alone_x_copy": 0.912337601184845
+      },
+      "hud": {
+        "x_copy": 1.1621986627578735,
+        "share_of_error": 0.07653521746397018,
+        "share_of_copy_error": 0.06445202976465225,
+        "w_self": 0.7074844837188721,
+        "w_generate": 0.13991738855838776,
+        "w_scroll_source": 0.028272463008761406,
+        "w_all_neighbours": 0.15259811282157898,
+        "generator_alone_x_copy": 1.1621986627578735
+      },
+      "entering": {
+        "x_copy": 0.92805746231254,
+        "share_of_error": 0.12563251789084307,
+        "generator_alone_x_copy": 0.9280574926063734,
+        "w_self": 0.8444295108978931,
+        "w_scroll_source": 0.012496624141522744,
+        "w_generate": 0.1333780396485661
+      },
+      "edge_other": {
+        "x_copy": 0.9060382155299836,
+        "share_of_error": 0.3060795894984396,
+        "generator_alone_x_copy": 0.9060382276692818,
+        "w_self": 0.8452494859705799,
+        "w_scroll_source": 0.010763585326495712,
+        "w_generate": 0.13575005470159462
+      }
+    },
+    "interact": {
+      "player": {
+        "x_copy": 0.9953532218933105,
+        "share_of_error": 0.0006587777170352638,
+        "share_of_copy_error": 0.0006127723027020693,
+        "w_self": 0.9984517097473145,
+        "w_generate": 0.0015410427004098892,
+        "w_scroll_source": null,
+        "w_all_neighbours": 7.236193141579861e-06,
+        "generator_alone_x_copy": 144.33229064941406
+      },
+      "near": {
+        "x_copy": 1.0005074739456177,
+        "share_of_error": 0.3473101854324341,
+        "share_of_copy_error": 0.3213917016983032,
+        "w_self": 0.9487224817276001,
+        "w_generate": 0.05075795203447342,
+        "w_scroll_source": null,
+        "w_all_neighbours": 0.0005195675767026842,
+        "generator_alone_x_copy": 1.0609318017959595
+      },
+      "interior": {
+        "x_copy": 0.7786699533462524,
+        "share_of_error": 0.12036046385765076,
+        "share_of_copy_error": 0.1431093066930771,
+        "w_self": 0.841813325881958,
+        "w_generate": 0.15719620883464813,
+        "w_scroll_source": null,
+        "w_all_neighbours": 0.000990449683740735,
+        "generator_alone_x_copy": 1.0599524974822998
+      },
+      "edge": {
+        "x_copy": 0.7849692702293396,
+        "share_of_error": 0.1972203403711319,
+        "share_of_copy_error": 0.23261435329914093,
+        "w_self": 0.8174262642860413,
+        "w_generate": 0.1810816377401352,
+        "w_scroll_source": null,
+        "w_all_neighbours": 0.0014921202091500163,
+        "generator_alone_x_copy": 0.7849692702293396
+      },
+      "hud": {
+        "x_copy": 1.0244039297103882,
+        "share_of_error": 0.3344501852989197,
+        "share_of_copy_error": 0.30227184295654297,
+        "w_self": 0.7373011112213135,
+        "w_generate": 0.2276126891374588,
+        "w_scroll_source": null,
+        "w_all_neighbours": 0.03508617356419563,
+        "generator_alone_x_copy": 1.0244039297103882
+      }
+    },
+    "sleep": {
+      "player": {
+        "x_copy": 0.8833138942718506,
+        "share_of_error": 0.03385462239384651,
+        "share_of_copy_error": 0.016866842284798622,
+        "w_self": 0.8093265295028687,
+        "w_generate": 0.1905183643102646,
+        "w_scroll_source": null,
+        "w_all_neighbours": 0.0001551270834170282,
+        "generator_alone_x_copy": 0.5336705446243286
+      },
+      "near": {
+        "x_copy": 0.4968106746673584,
+        "share_of_error": 0.0679769441485405,
+        "share_of_copy_error": 0.0602145679295063,
+        "w_self": 0.40530481934547424,
+        "w_generate": 0.5928065776824951,
+        "w_scroll_source": null,
+        "w_all_neighbours": 0.0018885984318330884,
+        "generator_alone_x_copy": 0.384563148021698
+      },
+      "interior": {
+        "x_copy": 0.4121161103248596,
+        "share_of_error": 0.4216749668121338,
+        "share_of_copy_error": 0.4502866864204407,
+        "w_self": 0.29495444893836975,
+        "w_generate": 0.7023181915283203,
+        "w_scroll_source": null,
+        "w_all_neighbours": 0.002727432642132044,
+        "generator_alone_x_copy": 0.39043208956718445
+      },
+      "edge": {
+        "x_copy": 0.4183890223503113,
+        "share_of_error": 0.3845360577106476,
+        "share_of_copy_error": 0.4044712483882904,
+        "w_self": 0.3195570707321167,
+        "w_generate": 0.6781110167503357,
+        "w_scroll_source": null,
+        "w_all_neighbours": 0.0023319388274103403,
+        "generator_alone_x_copy": 0.4183890223503113
+      },
+      "hud": {
+        "x_copy": 0.5937227606773376,
+        "share_of_error": 0.0919574499130249,
+        "share_of_copy_error": 0.06816071271896362,
+        "w_self": 0.599263608455658,
+        "w_generate": 0.371120810508728,
+        "w_scroll_source": null,
+        "w_all_neighbours": 0.029615571722388268,
+        "generator_alone_x_copy": 0.5937227010726929
+      }
+    },
+    "idle": {
+      "player": {
+        "x_copy": 0.9995353817939758,
+        "share_of_error": 0.008793836459517479,
+        "share_of_copy_error": 0.008140619844198227,
+        "w_self": 0.9987571239471436,
+        "w_generate": 0.001235733856447041,
+        "w_scroll_source": null,
+        "w_all_neighbours": 7.139997705962742e-06,
+        "generator_alone_x_copy": 25.53159523010254
+      },
+      "near": {
+        "x_copy": 1.039587140083313,
+        "share_of_error": 0.0349787212908268,
+        "share_of_copy_error": 0.031132949516177177,
+        "w_self": 0.9631478786468506,
+        "w_generate": 0.03654433414340019,
+        "w_scroll_source": null,
+        "w_all_neighbours": 0.0003078693989664316,
+        "generator_alone_x_copy": 2.9985082149505615
+      },
+      "interior": {
+        "x_copy": 0.885753333568573,
+        "share_of_error": 0.36242184042930603,
+        "share_of_copy_error": 0.3785984516143799,
+        "w_self": 0.890220046043396,
+        "w_generate": 0.10895214229822159,
+        "w_scroll_source": null,
+        "w_all_neighbours": 0.0008277955930680037,
+        "generator_alone_x_copy": 1.1428812742233276
+      },
+      "edge": {
+        "x_copy": 0.8978970050811768,
+        "share_of_error": 0.5040550827980042,
+        "share_of_copy_error": 0.519432008266449,
+        "w_self": 0.8725267052650452,
+        "w_generate": 0.12614786624908447,
+        "w_scroll_source": null,
+        "w_all_neighbours": 0.0013254341902211308,
+        "generator_alone_x_copy": 0.8978970050811768
+      },
+      "hud": {
+        "x_copy": 1.3245692253112793,
+        "share_of_error": 0.0897505134344101,
+        "share_of_copy_error": 0.0626959502696991,
+        "w_self": 0.7602004408836365,
+        "w_generate": 0.2083287090063095,
+        "w_scroll_source": null,
+        "w_all_neighbours": 0.03147086128592491,
+        "generator_alone_x_copy": 1.3245692253112793
+      }
+    }
+  },
+  "rollout": {
+    "1": {
+      "player": {
+        "over_group_V": 0.23829957842826843,
+        "share_of_error": 0.014914593659341335
+      },
+      "near": {
+        "over_group_V": 0.1948237121105194,
+        "share_of_error": 0.0652005523443222
+      },
+      "interior": {
+        "over_group_V": 0.1391325145959854,
+        "share_of_error": 0.3836544156074524
+      },
+      "edge": {
+        "over_group_V": 0.18267804384231567,
+        "share_of_error": 0.5056313872337341
+      },
+      "hud": {
+        "over_group_V": 0.04899010434746742,
+        "share_of_error": 0.030599014833569527
+      }
+    },
+    "2": {
+      "player": {
+        "over_group_V": 0.37897762656211853,
+        "share_of_error": 0.013946115039288998
+      },
+      "near": {
+        "over_group_V": 0.3240894079208374,
+        "share_of_error": 0.06377138942480087
+      },
+      "interior": {
+        "over_group_V": 0.2559306025505066,
+        "share_of_error": 0.4149400591850281
+      },
+      "edge": {
+        "over_group_V": 0.29086923599243164,
+        "share_of_error": 0.4733659625053406
+      },
+      "hud": {
+        "over_group_V": 0.09251837432384491,
+        "share_of_error": 0.03397651016712189
+      }
+    },
+    "4": {
+      "player": {
+        "over_group_V": 0.5550876259803772,
+        "share_of_error": 0.012579613365232944
+      },
+      "near": {
+        "over_group_V": 0.5148876905441284,
+        "share_of_error": 0.062393542379140854
+      },
+      "interior": {
+        "over_group_V": 0.43035241961479187,
+        "share_of_error": 0.4296882450580597
+      },
+      "edge": {
+        "over_group_V": 0.45055463910102844,
+        "share_of_error": 0.4515572190284729
+      },
+      "hud": {
+        "over_group_V": 0.19358518719673157,
+        "share_of_error": 0.04378132149577141
+      }
+    },
+    "8": {
+      "player": {
+        "over_group_V": 0.8287340998649597,
+        "share_of_error": 0.012267800979316235
+      },
+      "near": {
+        "over_group_V": 0.7806445956230164,
+        "share_of_error": 0.06179114058613777
+      },
+      "interior": {
+        "over_group_V": 0.6660332083702087,
+        "share_of_error": 0.4343810975551605
+      },
+      "edge": {
+        "over_group_V": 0.6661238670349121,
+        "share_of_error": 0.4360799193382263
+      },
+      "hud": {
+        "over_group_V": 0.3755562901496887,
+        "share_of_error": 0.05548014119267464
+      }
+    },
+    "16": {
+      "player": {
+        "over_group_V": 1.1703113317489624,
+        "share_of_error": 0.011269199661910534
+      },
+      "near": {
+        "over_group_V": 1.1381880044937134,
+        "share_of_error": 0.05860396474599838
+      },
+      "interior": {
+        "over_group_V": 1.0272713899612427,
+        "share_of_error": 0.43581318855285645
+      },
+      "edge": {
+        "over_group_V": 0.9649888873100281,
+        "share_of_error": 0.4109354019165039
+      },
+      "hud": {
+        "over_group_V": 0.86766117811203,
+        "share_of_error": 0.08337826281785965
+      }
+    }
+  }
+}
