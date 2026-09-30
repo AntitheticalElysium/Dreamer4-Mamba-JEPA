@@ -1,0 +1,40 @@
+{
+  "status": "complete",
+  "strata": {
+    "zombie_near": {
+      "roots": 84,
+      "move_attempts": 336,
+      "agreement": 0.976190447807312,
+      "moved_n": 204,
+      "moved_agreement": 0.9607843160629272,
+      "moved_miss_or_false": 0.03431372717022896,
+      "blocked_n": 132,
+      "blocked_agreement": 1.0,
+      "blocked_miss_or_false": 0.0
+    },
+    "no_zombie_near": {
+      "roots": 918,
+      "move_attempts": 3672,
+      "agreement": 0.9828431606292725,
+      "moved_n": 2657,
+      "moved_agreement": 0.9762890338897705,
+      "moved_miss_or_false": 0.022958222776651382,
+      "blocked_n": 1015,
+      "blocked_agreement": 1.0,
+      "blocked_miss_or_false": 0.0
+    },
+    "all": {
+      "roots": 1002,
+      "move_attempts": 4008,
+      "agreement": 0.9822854399681091,
+      "moved_n": 2861,
+      "moved_agreement": 0.9751834869384766,
+      "moved_miss_or_false": 0.02376791276037693,
+      "blocked_n": 1147,
+      "blocked_agreement": 1.0,
+      "blocked_miss_or_false": 0.0
+    }
+  },
+  "raw_cache_sha256": "76dc92b0ab7b17efdfd5884d26d3cece291524a941fa4f714488d3209bc07f8e",
+  "source_sha256": "7b4eb1a7b047c368e7a1ee542fb590db70bbdd948bbba69b477f490f5c197271"
+}

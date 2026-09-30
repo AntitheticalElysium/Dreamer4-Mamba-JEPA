@@ -1,0 +1,49 @@
+{
+  "status": "complete",
+  "roots": 1002,
+  "sample_indices": [
+    0,
+    501,
+    1001
+  ],
+  "accept_max_abs": 0.002,
+  "arms": {
+    "raw": {
+      "checkpoint_sha256": "344a872b7f77ca2eabb817c8fc29bc7f5454819d819fdb667e7d2be8ed22c685",
+      "cache_sha256": "76dc92b0ab7b17efdfd5884d26d3cece291524a941fa4f714488d3209bc07f8e",
+      "max_abs_token_difference": 0.0009765625,
+      "per_root_max_abs": [
+        0.0009765625,
+        0.0009765625,
+        0.0009765625
+      ],
+      "mean_abs_token_difference": 4.675164764951963e-07,
+      "exact_token_share": 0.995881199836731
+    },
+    "ldad1": {
+      "checkpoint_sha256": "b4c56cff70bcb118a4330d10a6c1e7bf1329ad1e971d908579e2969385ffc7d5",
+      "cache_sha256": "ff1d78a232f071951355c6483efa7d9df6a488ae8fbb4677d9521eb1d090de48",
+      "max_abs_token_difference": 0.001953125,
+      "per_root_max_abs": [
+        0.0009765625,
+        0.001953125,
+        0.0009765625
+      ],
+      "mean_abs_token_difference": 6.139097952958158e-07,
+      "exact_token_share": 0.9941986600557963
+    },
+    "ldad10": {
+      "checkpoint_sha256": "e28358becedadebe8b1ef298ae2772afc3d0676b73595700e91d652e7b9de2f7",
+      "cache_sha256": "65d265458238252022c4154597f7a0012064dc078fa8a6b225fc7828a1d60d21",
+      "max_abs_token_difference": 0.001953125,
+      "per_root_max_abs": [
+        0.0009765625,
+        0.001953125,
+        0.0009765625
+      ],
+      "mean_abs_token_difference": 4.151499221431247e-07,
+      "exact_token_share": 0.9957740505536398
+    }
+  },
+  "source_sha256": "31198516fb02dcbb9d079fe1844c26fc79341b729d658dfa1a271b281ce01a26"
+}

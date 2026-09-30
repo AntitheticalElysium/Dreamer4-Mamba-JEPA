@@ -1,0 +1,124 @@
+{
+  "status": "complete",
+  "scope": "one cold plus three warmed full optimizer steps on synthetic six-frame inputs",
+  "rows": [
+    {
+      "kind": "fmamba",
+      "batch": 1,
+      "ok": true,
+      "cold_seconds": 11.951844169999731,
+      "warm_seconds": [
+        0.2853933430001234,
+        0.1098763909999434,
+        0.11058786600005988
+      ],
+      "warm_median_seconds": 0.11058786600005988,
+      "max_peak_allocated_bytes": 368030208,
+      "error": null
+    },
+    {
+      "kind": "fmamba",
+      "batch": 4,
+      "ok": true,
+      "cold_seconds": 0.1296609390001322,
+      "warm_seconds": [
+        0.10821109100015747,
+        0.1108466280002176,
+        0.11152800199988633
+      ],
+      "warm_median_seconds": 0.1108466280002176,
+      "max_peak_allocated_bytes": 316697600,
+      "error": null
+    },
+    {
+      "kind": "fmamba",
+      "batch": 16,
+      "ok": true,
+      "cold_seconds": 0.5055882209999254,
+      "warm_seconds": [
+        0.296270241000002,
+        0.2965860640001665,
+        0.30411015400022734
+      ],
+      "warm_median_seconds": 0.2965860640001665,
+      "max_peak_allocated_bytes": 969633280,
+      "error": null
+    },
+    {
+      "kind": "fmamba",
+      "batch": 40,
+      "ok": true,
+      "cold_seconds": 0.7143759649998174,
+      "warm_seconds": [
+        0.7252043929997853,
+        0.7207099570000537,
+        0.7171812870001304
+      ],
+      "warm_median_seconds": 0.7207099570000537,
+      "max_peak_allocated_bytes": 2281094656,
+      "error": null
+    },
+    {
+      "kind": "transport",
+      "batch": 1,
+      "ok": true,
+      "cold_seconds": 1.3128979490002166,
+      "warm_seconds": [
+        0.937607480999759,
+        0.9433186259998365,
+        0.9388972420001664
+      ],
+      "warm_median_seconds": 0.9388972420001664,
+      "max_peak_allocated_bytes": 194424832,
+      "error": null
+    },
+    {
+      "kind": "transport",
+      "batch": 4,
+      "ok": true,
+      "cold_seconds": 0.9559576239998933,
+      "warm_seconds": [
+        0.9171064299998761,
+        0.9126223990001563,
+        0.9175694780001322
+      ],
+      "warm_median_seconds": 0.9171064299998761,
+      "max_peak_allocated_bytes": 424784384,
+      "error": null
+    },
+    {
+      "kind": "transport",
+      "batch": 16,
+      "ok": true,
+      "cold_seconds": 4.826656488000026,
+      "warm_seconds": [
+        1.7097371609997936,
+        1.7105220389998976,
+        1.8945500800000445
+      ],
+      "warm_median_seconds": 1.7105220389998976,
+      "max_peak_allocated_bytes": 1372134912,
+      "error": null
+    },
+    {
+      "kind": "transport",
+      "batch": 40,
+      "ok": true,
+      "cold_seconds": 3.542343321000317,
+      "warm_seconds": [
+        3.5458636090002074,
+        3.547153371999684,
+        3.5449912210001457
+      ],
+      "warm_median_seconds": 3.5458636090002074,
+      "max_peak_allocated_bytes": 3274280960,
+      "error": null
+    }
+  ],
+  "source_sha256": {
+    "artifacts/experiments/20260929_mamba_integration/transport_resource_steady.py": "ae61050d610f3b54bfd0dbfde1a559d9feca5f1b1390155d2881e13f3112b24f",
+    "artifacts/experiments/20260929_mamba_integration/transport_world.py": "0c7e931bd6e172a193a1e66766fd35fafaf48e54119032c882ed2a9a98ccd92e",
+    "artifacts/experiments/20260929_mamba_integration/carry_transport.py": "8a06ceb29c4bcd97a6d876f3a0ffc1fb8e8bc8f65593346c63bc282b8d5570ab",
+    "artifacts/experiments/20260927_levers/tworld.py": "a7e3d3f473595f524e45b6004a91f9bd458b2766c37873630cd6d0d8e29cf343"
+  }
+}

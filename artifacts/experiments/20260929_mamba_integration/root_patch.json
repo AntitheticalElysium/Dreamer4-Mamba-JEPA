@@ -1,0 +1,159 @@
+{
+  "status": "complete",
+  "scope": "exploratory diagnosis seeds, root patch tokens only",
+  "roots_test": 283,
+  "test_seed_count": 43,
+  "fit_roots": 575,
+  "validation_roots": 144,
+  "metrics": {
+    "raw": {
+      "zombie_near_auc": 1.0,
+      "health_r2": 0.9950133562088013,
+      "food_r2": 0.9966956377029419,
+      "energy_r2": 0.9929336309432983,
+      "tile_near_acc": 0.9876325130462646,
+      "facing_acc": 0.9575971961021423,
+      "selected_ridge_lambda": {
+        "zombie": 0.001,
+        "tile": 0.001,
+        "hud": 0.001,
+        "facing": 0.001
+      }
+    },
+    "ldad1": {
+      "zombie_near_auc": 1.0,
+      "health_r2": 0.9974339604377747,
+      "food_r2": 0.9952259063720703,
+      "energy_r2": 0.9939526319503784,
+      "tile_near_acc": 0.9876325130462646,
+      "facing_acc": 0.9575971961021423,
+      "selected_ridge_lambda": {
+        "zombie": 0.001,
+        "tile": 0.001,
+        "hud": 0.001,
+        "facing": 0.01
+      }
+    },
+    "ldad10": {
+      "zombie_near_auc": 1.0,
+      "health_r2": 0.997410774230957,
+      "food_r2": 0.9981370568275452,
+      "energy_r2": 0.9946824908256531,
+      "tile_near_acc": 0.9955830574035645,
+      "facing_acc": 0.9575971961021423,
+      "selected_ridge_lambda": {
+        "zombie": 0.001,
+        "tile": 0.001,
+        "hud": 0.001,
+        "facing": 0.01
+      }
+    }
+  },
+  "paired_seed_bootstrap": {
+    "ldad1_minus_raw": {
+      "zombie_near": {
+        "difference": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "bootstrap": 1000
+      },
+      "health": {
+        "difference": 0.0024206042289733887,
+        "ci95": [
+          -0.0006456524133682251,
+          0.005883472040295601
+        ],
+        "bootstrap": 1000
+      },
+      "food": {
+        "difference": -0.001469731330871582,
+        "ci95": [
+          -0.0028962851502001286,
+          -6.328969175228849e-05
+        ],
+        "bootstrap": 1000
+      },
+      "energy": {
+        "difference": 0.0010190010070800781,
+        "ci95": [
+          -0.0028452991973608732,
+          0.0038322126492857933
+        ],
+        "bootstrap": 1000
+      },
+      "tile_near": {
+        "difference": 0.0,
+        "ci95": [
+          -0.007814556360244751,
+          0.007380752824246883
+        ],
+        "bootstrap": 1000
+      },
+      "facing": {
+        "difference": 0.0,
+        "ci95": [
+          -0.0105320168659091,
+          0.010309278964996338
+        ],
+        "bootstrap": 1000
+      }
+    },
+    "ldad10_minus_ldad1": {
+      "zombie_near": {
+        "difference": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "bootstrap": 1000
+      },
+      "health": {
+        "difference": -2.3186206817626953e-05,
+        "ci95": [
+          -0.0007239326951093972,
+          0.0012652535224333405
+        ],
+        "bootstrap": 1000
+      },
+      "food": {
+        "difference": 0.0029111504554748535,
+        "ci95": [
+          0.0013649568427354097,
+          0.004616009071469307
+        ],
+        "bootstrap": 1000
+      },
+      "energy": {
+        "difference": 0.0007298588752746582,
+        "ci95": [
+          -0.0037195340264588594,
+          0.00794634222984314
+        ],
+        "bootstrap": 1000
+      },
+      "tile_near": {
+        "difference": 0.007950544357299805,
+        "ci95": [
+          0.002498375019058585,
+          0.0146104097366333
+        ],
+        "bootstrap": 1000
+      },
+      "facing": {
+        "difference": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "bootstrap": 1000
+      }
+    }
+  },
+  "cache_sha256": {
+    "raw": "76dc92b0ab7b17efdfd5884d26d3cece291524a941fa4f714488d3209bc07f8e",
+    "ldad1": "ff1d78a232f071951355c6483efa7d9df6a488ae8fbb4677d9521eb1d090de48",
+    "ldad10": "65d265458238252022c4154597f7a0012064dc078fa8a6b225fc7828a1d60d21"
+  }
+}

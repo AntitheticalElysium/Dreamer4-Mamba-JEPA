@@ -1,9 +1,9 @@
 """D12. One step, all 17 actions: which kinds of transition does each world get wrong, and which events does
 its imagined successor carry? From the D10 rollouts (depth-1 fan) and the simulator facts; nothing trained.
 
-Class of each (root, action), from the simulator (key 0), mutually exclusive in this order:
+Class of each (root, action), from a visible-state passability rule (key 0), mutually exclusive in this order:
   moved        a move that changed the player's position (the view scrolls)
-  blocked      a move that did not (solid tile or mob)
+  blocked      a move predicted not to change player position (solid tile or mob)
   interact     another action that changed a view tile or the inventory (mine, place, craft, eat, drink)
   sleep        the player fell asleep
   idle         nothing of the above changed (NOOP-like; mobs, intrinsics and daylight still evolve)

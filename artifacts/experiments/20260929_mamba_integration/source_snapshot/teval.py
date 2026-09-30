@@ -30,8 +30,7 @@ sys.path.insert(0, str(ROOT / "artifacts/experiments/20260921_readout_ladder"))
 
 ENCODERS = {"raw": ROOT / "artifacts/lewm_m4_canonical/raw/joint/step-010000.pt",
             "tc": ROOT / "artifacts/lewm_m4_canonical/tc/joint/step-010000.pt",
-            "ldad10": ROOT / "artifacts/eda/levers_ldad_v1/raw_lam10/step-010000.pt",
-            "ldad1": ROOT / "artifacts/eda/levers_ldad_v1/raw_lam1/step-010000.pt"}
+            "ldad10": ROOT / "artifacts/eda/levers_ldad_v1/raw_lam10/step-010000.pt"}
 CACHE = ROOT / "artifacts/eda/levers_futures_tokens_{}.pt"
 META = ROOT / "artifacts/eda/diagnosis_rollouts_v1/meta.pt"
 N, H = 17, 16

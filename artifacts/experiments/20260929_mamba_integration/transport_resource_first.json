@@ -1,0 +1,65 @@
+{
+  "status": "complete",
+  "steps": [
+    {
+      "kind": "fmamba",
+      "batch": 1,
+      "ok": true,
+      "seconds": 22.785151720046997,
+      "peak_allocated_bytes": 368030208,
+      "peak_reserved_bytes": 692060160,
+      "objective": 2.2610721588134766,
+      "gradient_norm": 0.02831077389419079
+    },
+    {
+      "kind": "fmamba",
+      "batch": 2,
+      "ok": true,
+      "seconds": 0.12769031524658203,
+      "peak_allocated_bytes": 160136704,
+      "peak_reserved_bytes": 425721856,
+      "objective": 2.2615504264831543,
+      "gradient_norm": 0.02032984420657158
+    },
+    {
+      "kind": "fmamba",
+      "batch": 4,
+      "ok": true,
+      "seconds": 0.13369488716125488,
+      "peak_allocated_bytes": 266567680,
+      "peak_reserved_bytes": 423624704,
+      "objective": 2.2605934143066406,
+      "gradient_norm": 0.01431766152381897
+    },
+    {
+      "kind": "transport",
+      "batch": 1,
+      "ok": true,
+      "seconds": 2.98175311088562,
+      "peak_allocated_bytes": 144294912,
+      "peak_reserved_bytes": 427819008,
+      "objective": 2.2609405517578125,
+      "gradient_norm": 0.02846030332148075
+    },
+    {
+      "kind": "transport",
+      "batch": 2,
+      "ok": true,
+      "seconds": 1.6033225059509277,
+      "peak_allocated_bytes": 220076032,
+      "peak_reserved_bytes": 425721856,
+      "objective": 2.261502265930176,
+      "gradient_norm": 0.020698130130767822
+    },
+    {
+      "kind": "transport",
+      "batch": 4,
+      "ok": true,
+      "seconds": 0.9485197067260742,
+      "peak_allocated_bytes": 373733888,
+      "peak_reserved_bytes": 469762048,
+      "objective": 2.2604990005493164,
+      "gradient_norm": 0.014687241055071354
+    }
+  ]
+}

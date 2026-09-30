@@ -1,9 +1,8 @@
-"""Blocked moves in imagination, labelled by the SIMULATOR (static.py labelled them by the scroll estimator, which
-misses 2.4% of real moves, mostly over uniform terrain, and selecting "never-scrolling" roots enriches those).
+"""Blocked moves in imagination, labelled by the visible passability rule (static.py labelled them by the scroll estimator, which
+misses 2.4% of visible-rule moved rows, mostly over uniform terrain, and selecting "never-scrolling" roots enriches those).
 
-All futures roots, factual actions, teval's windows. For every future step k whose action is a move, the simulator's
-own label from the true state before the step (onestep.move_table: 0 moved, 1 blocked; lava entries count as moves,
-as onestep.classify). On TRULY BLOCKED move steps with no earlier false scroll in that rollout:
+All futures roots, factual actions, teval's windows. For every future step k whose action is a move, the visible-state passability rule from the true state before the step (onestep.move_table: 0 moved, 1 blocked; lava entries count as moves,
+as onestep.classify). On rule-BLOCKED move steps with no earlier false scroll in that rollout:
   false_scroll      the imagined frame k scrolled relative to imagined frame k-1 (scroll.estimate)
   decision logit    the head's move logit (frame gate + target-tile gate) on the imagined window vs the TRUE window
   by target         the blocked target's true tile class / mob

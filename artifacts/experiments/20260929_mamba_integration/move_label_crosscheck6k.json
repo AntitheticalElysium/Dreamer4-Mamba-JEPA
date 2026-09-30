@@ -1,0 +1,16 @@
+{
+  "moved_rule": {
+    "n": 784,
+    "alignment_classified": 759,
+    "alignment_agrees": 759,
+    "alignment_disagrees": 0,
+    "alignment_abstains": 25
+  },
+  "blocked_rule": {
+    "n": 348,
+    "alignment_classified": 343,
+    "alignment_agrees": 343,
+    "alignment_disagrees": 0,
+    "alignment_abstains": 5
+  }
+}

@@ -42,7 +42,8 @@ job() { # name need_mib cmd...
       done
       flock -u 9; exec 9>&-
     fi
-    wait $pid; local code=$?
+    local code=0
+    wait $pid || code=$?
     if [ $code -eq 0 ]; then echo "$(date '+%F %T') DONE $name" >> $LOGDIR/lanes.log; return 0; fi
     if tail -40 "$log" | grep -q "out of memory"; then
       echo "$(date '+%F %T') OOM $name attempt $attempt" >> $LOGDIR/lanes.log; sleep 120; continue

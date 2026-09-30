@@ -1,0 +1,26 @@
+{
+  "raw": {
+    "checkpoint_sha256": "bdf50eb426830501daf1a3b79f86d86f4557988c190282ac0e3cf5d056f324f4",
+    "n_test_blocked": 348,
+    "reconstruction_max_abs": 0.0,
+    "actual_over_copy": 5.025530920473543,
+    "cut_direction_scroll_over_copy": 1.3269623594538047,
+    "relative_error_change": -0.7359557864726523
+  },
+  "ldad1": {
+    "checkpoint_sha256": "a84d2cc971b961a82a4f83ced01bfe14ed600473428233e989088ea49ec23efa",
+    "n_test_blocked": 348,
+    "reconstruction_max_abs": 0.0,
+    "actual_over_copy": 0.3661938473774355,
+    "cut_direction_scroll_over_copy": 0.37054676155800076,
+    "relative_error_change": 0.011886912387358395
+  },
+  "ldad10": {
+    "checkpoint_sha256": "30776813133c52fc5938165818dc3af21567faf743502b7368e001bc7d2d0f78",
+    "n_test_blocked": 348,
+    "reconstruction_max_abs": 0.0,
+    "actual_over_copy": 0.5587966673341836,
+    "cut_direction_scroll_over_copy": 0.5797994851618969,
+    "relative_error_change": 0.037585796507896285
+  }
+}
