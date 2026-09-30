@@ -1,0 +1,41 @@
+{
+  "prefix_max_abs": 0.0,
+  "batches": [
+    {
+      "batch": 1,
+      "ok": true,
+      "seconds": 25.904,
+      "peak_gpu_bytes": 532380672,
+      "loss": 2.2546496391296387,
+      "grad_norm": 0.023478329181671143
+    },
+    {
+      "batch": 2,
+      "ok": true,
+      "seconds": 0.785,
+      "peak_gpu_bytes": 556296192,
+      "loss": 2.2598609924316406,
+      "grad_norm": 0.016851432621479034
+    },
+    {
+      "batch": 4,
+      "ok": true,
+      "seconds": 0.425,
+      "peak_gpu_bytes": 1067430400,
+      "loss": 2.260843276977539,
+      "grad_norm": 0.012163630686700344
+    },
+    {
+      "batch": 8,
+      "ok": true,
+      "seconds": 3.07,
+      "peak_gpu_bytes": 2089697280,
+      "loss": 2.258284091949463,
+      "grad_norm": 0.008267167955636978
+    }
+  ],
+  "source": {
+    "long_world": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260929_mamba_integration/long_world.py",
+    "short_world": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/tworld.py"
+  }
+}

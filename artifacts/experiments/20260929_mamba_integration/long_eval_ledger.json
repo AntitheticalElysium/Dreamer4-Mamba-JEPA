@@ -1,0 +1,12 @@
+{
+  "status": "sealed",
+  "split": "dev",
+  "length": 128,
+  "windows": 128,
+  "unique_episodes": 128,
+  "seed": 20260929,
+  "eligible_dev_episodes": 805,
+  "ledger_sha256": "d5af34672ab532dab6911a9be98a1217d18ebae5ff2cd52c983c39b6c1147523",
+  "dataset_audit_sha256": "ec5d6c259f4a37395e37226a589f7611c4e7754786d93faf7c7cecb3b584f7dd",
+  "final_opened": false
+}
