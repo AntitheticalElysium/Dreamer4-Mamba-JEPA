@@ -165,6 +165,7 @@ def main(argv=None):
     from dataclasses import replace
     from collect_broad_forks import HISTORY, load_policy, make_fork
     from d4mj.config import Config
+    import observe  # noqa: F401  before confirm, or observe's `from replay import` finds artifacts/eda/replay.py
     args.out.mkdir(parents=True, exist_ok=True)
     started = time.time()
     log = lambda **kw: print(json.dumps({**kw, "seconds": round(time.time() - started, 1)}), flush=True)
