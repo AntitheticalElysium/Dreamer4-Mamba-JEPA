@@ -1,0 +1,7 @@
+{
+  "status": "stopped",
+  "component": "dataset_identity",
+  "reason": "dataset_identity: dataset changed after M0",
+  "architecture_verdict": "not_evaluated",
+  "m4_authorized": false
+}

@@ -1,0 +1,7 @@
+{
+  "status": "stopped",
+  "component": "lewm_execution",
+  "reason": "bridge_schedule: target stage is not after the restored update",
+  "architecture_verdict": "not_evaluated",
+  "m4_authorized": false
+}

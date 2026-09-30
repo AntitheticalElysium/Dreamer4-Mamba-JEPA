@@ -1,0 +1,89 @@
+{
+  "schema": "d4mj_u2u_prep_record_v1",
+  "status": "PREPARED, NOT LAUNCHED - one blocking gap, see evaluation_gap",
+  "branch": "u2u-secondary",
+  "base_commit": "cfceeb8cc865e09f832b91c0b5050ed7be69acf1",
+  "separation": {
+    "why": "editing any d4mj/*.py invalidates the runtime source closure, so the sealed source-exact checkpoints stop loading until the frozen-eval proof is regenerated",
+    "measure": "all u2u work lives on branch u2u-secondary; craftax-clean-baseline is untouched",
+    "verified": "on craftax-clean-baseline all three sealed checkpoints (mamba raw, transformer raw, transformer tc) still load; on u2u-secondary they do not, as expected"
+  },
+  "design_source": {
+    "file": "third_party/sources/lucas-maes__le-wm/jepa.py",
+    "evidence": "the reference builds `projector = projector or nn.Identity()` and applies the predictor to `projector(cls)`. With no projector supplied that IS u->u, so predicting in the bare CLS space is the reference's own default, not an invention. The regularizer applies to the same space the predictor uses.",
+    "corroboration": "d4mj/lewm.py LeWMEncoder.export docstring: TC-LeWM's policy reads CLS, so the policy already consumes u while the world model predicts z"
+  },
+  "changes": {
+    "d4mj/lewm_config.py": "JointSettings.latent_space ('z'|'u', default 'z') + two validation lines",
+    "d4mj/config.py": "recipe_dict omits latent_space at default 'z' so every sealed recipe digest is unchanged",
+    "d4mj/lewm.py": "joint_loss selects cls.unsqueeze(2) when latent_space=='u'",
+    "recipes": [
+      "d4mj/recipes/lewm_mamba_u2u_raw.json",
+      "d4mj/recipes/lewm_mamba_u2u_tc.json"
+    ]
+  },
+  "recipes": {
+    "raw": {
+      "path": "d4mj/recipes/lewm_mamba_u2u_raw.json",
+      "digest": "50fa4fdf502d36c48ba8b769018a623af9a9d81f9511f9f252029a1ea2568892"
+    },
+    "tc": {
+      "path": "d4mj/recipes/lewm_mamba_u2u_tc.json",
+      "digest": "dce6892137344b87777b4245594251efc800d56bddba01d2dd8a328109ba262f"
+    }
+  },
+  "regression_guard": {
+    "sealed_digests_unchanged": true,
+    "digests": {
+      "lewm_mamba_raw": "3edb1419b5f3",
+      "lewm_mamba_tc": "b6e02c7122c2",
+      "lewm_transformer_raw": "a83f36e627fa",
+      "lewm_transformer_tc": "201dee70236c"
+    },
+    "why_it_matters": "adding a JointSettings field without an omission rule changes every recipe digest and orphans every sealed checkpoint; this is the regression the stride field caused previously"
+  },
+  "smoke": {
+    "z_baseline": {
+      "pred": 0.2609,
+      "reg": 0.7683,
+      "grads": "backbone 38/38, projector 6/6, world 64/68"
+    },
+    "u_raw": {
+      "pred": 1.1105,
+      "reg": 1.6014,
+      "grads": "backbone 38/38, projector 0/6, world 64/68"
+    },
+    "u_tc": {
+      "pred": 1.1105,
+      "reg": 0.7742,
+      "grads": "backbone 38/38, projector 0/6, world 64/68"
+    },
+    "reading": "the projector correctly receives no gradient in u space; backbone and world train normally"
+  },
+  "evaluation_gap": {
+    "BLOCKING": true,
+    "problem": "G1 screen_features and M03 score the projector output z via encoder(frames). A u->u arm never trains the projector, so every downstream evaluation would read an untrained projection and the arm would score as garbage for reasons unrelated to its world model.",
+    "scope": "d4mj/lewm_diagnostics.screen_features and the M03 feature extraction would have to select the cls space for a latent_space=='u' arm. M03 already calls projected_and_cls and therefore already has cls in hand, so this is a selection change rather than new computation.",
+    "note": "this is exactly the 'u is not well exploited downstream' concern raised earlier in the session; it is a real property of the arm, not an implementation slip"
+  },
+  "not_done": [
+    "not launched",
+    "evaluation path not yet switched to u",
+    "frozen-eval proof not regenerated on this branch",
+    "no G1, no M03"
+  ],
+  "tests": {
+    "command": "pytest -q on branch u2u-secondary",
+    "result": "4 failed, 289 passed, 4 skipped",
+    "baseline_on_craftax_clean_baseline": "293 passed, 4 skipped",
+    "arithmetic": "289 + 4 = 293, so exactly the four proof-staleness tests moved and nothing else",
+    "failures": [
+      "test_dependency_cache_reuses_across_runs_and_invalidates_only_changed_arm",
+      "test_the_feature_bridge_swaps_runtime_only_and_fails_closed",
+      "test_frozen_eval_proof_admits_only_a_measured_delta",
+      "test_frozen_eval_proof_fails_closed[overrides4-declared tolerance]"
+    ],
+    "diagnosis": "all four are the frozen-eval and feature-compat records failing closed because editing config.py/lewm.py/lewm_config.py changed whole-file hashes they pin. This is the designed safety behaviour, not a logic regression: the bridge refuses to reuse cache nodes it can no longer vouch for.",
+    "deliberately_not_fixed": "regenerating both proofs now would be wasted work - closing the evaluation gap requires further source edits that would invalidate them again. Regenerate once, after the code is frozen."
+  }
+}

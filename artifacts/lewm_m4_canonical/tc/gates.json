@@ -1,0 +1,290 @@
+{
+  "schema": "d4mj_lewm_gates_v1",
+  "recipe_id": "bf9175a0644cef25c47287f777bd95db303dbc58bf9ab1709f52965bd8d08a44",
+  "dataset_id": "11a0e733d2067a0fd82aee6a4819058525d192fbbba091577a4aa178683b8077",
+  "components": {
+    "source_identity": {
+      "status": "pass",
+      "detail": {
+        "versions": {
+          "torch": "2.13.0",
+          "transformers": "5.13.0",
+          "mamba-ssm": "2.3.2.post1",
+          "triton": "3.7.1",
+          "einops": "0.8.2",
+          "numpy": "2.1.0",
+          "safetensors": "0.8.0"
+        }
+      }
+    },
+    "dataset": {
+      "status": "pass",
+      "detail": {
+        "split_counts": {
+          "train": 8325,
+          "dev": 1041,
+          "final": 1034
+        }
+      }
+    },
+    "device": {
+      "status": "pass",
+      "detail": "cuda"
+    },
+    "objective_source": {
+      "status": "pass",
+      "detail": {
+        "source_value": 1.0265271663665771,
+        "absolute_error": 0.0,
+        "centering_offset_error": 0.0
+      }
+    },
+    "model_construction": {
+      "status": "pass",
+      "detail": {
+        "encoder_parameters": 6175872,
+        "world_parameters": 2503496
+      }
+    },
+    "recurrence": {
+      "status": "pass",
+      "detail": {
+        "context_frames": 18,
+        "training_frames": 4,
+        "numerical_profile": "rtx3060_mamba_f577286d_v2",
+        "numerical_checks": [
+          {
+            "precision": "fp32",
+            "profile": "triton_fp32",
+            "rows": [
+              {
+                "length": 2,
+                "scan_step_output_max_abs": 2.980232238769531e-07,
+                "scan_step_conv_max_abs": 0.0,
+                "scan_step_ssm_max_abs": 7.450580596923828e-09,
+                "scan_step_gradient_max_abs": 2.0023435354232788e-08,
+                "reference_output_max_abs": 3.5762786865234375e-07,
+                "reference_ssm_max_abs": 8.183997124433517e-08,
+                "reference_gradient_max_abs": 2.1886080503463745e-08
+              },
+              {
+                "length": 17,
+                "scan_step_output_max_abs": 6.556510925292969e-07,
+                "scan_step_conv_max_abs": 7.152557373046875e-07,
+                "scan_step_ssm_max_abs": 3.166496753692627e-08,
+                "scan_step_gradient_max_abs": 7.450580596923828e-09,
+                "reference_output_max_abs": 4.76837158203125e-07,
+                "reference_ssm_max_abs": 9.359791874885559e-08,
+                "reference_gradient_max_abs": 7.159542292356491e-09
+              },
+              {
+                "length": 65,
+                "scan_step_output_max_abs": 1.0132789611816406e-06,
+                "scan_step_conv_max_abs": 7.152557373046875e-07,
+                "scan_step_ssm_max_abs": 4.6566128730773926e-08,
+                "scan_step_gradient_max_abs": 3.725290298461914e-09,
+                "reference_output_max_abs": 4.76837158203125e-07,
+                "reference_ssm_max_abs": 9.685754776000977e-08,
+                "reference_gradient_max_abs": 3.026798367500305e-09
+              },
+              {
+                "length": 257,
+                "scan_step_output_max_abs": 1.0728836059570312e-06,
+                "scan_step_conv_max_abs": 9.5367431640625e-07,
+                "scan_step_ssm_max_abs": 1.1920928955078125e-07,
+                "scan_step_gradient_max_abs": 5.587935447692871e-09,
+                "reference_output_max_abs": 5.066394805908203e-07,
+                "reference_ssm_max_abs": 1.1548399925231934e-07,
+                "reference_gradient_max_abs": 1.0477378964424133e-09
+              }
+            ],
+            "incoming_state_gradients": true
+          },
+          {
+            "precision": "bf16",
+            "profile": "triton_bf16",
+            "rows": [
+              {
+                "length": 2,
+                "scan_step_output_max_abs": 0.00390625,
+                "scan_step_conv_max_abs": 0.0,
+                "scan_step_ssm_max_abs": 0.00027451664209365845,
+                "scan_step_gradient_max_abs": 0.000244140625,
+                "reference_output_max_abs": 0.0078125,
+                "reference_ssm_max_abs": 0.00020360201597213745,
+                "reference_gradient_max_abs": 0.000244140625
+              },
+              {
+                "length": 17,
+                "scan_step_output_max_abs": 0.0078125,
+                "scan_step_conv_max_abs": 0.0,
+                "scan_step_ssm_max_abs": 0.00011473521590232849,
+                "scan_step_gradient_max_abs": 0.0001220703125,
+                "reference_output_max_abs": 0.0078125,
+                "reference_ssm_max_abs": 6.18230551481247e-05,
+                "reference_gradient_max_abs": 6.103515625e-05
+              },
+              {
+                "length": 65,
+                "scan_step_output_max_abs": 0.0078125,
+                "scan_step_conv_max_abs": 0.0,
+                "scan_step_ssm_max_abs": 6.139278411865234e-05,
+                "scan_step_gradient_max_abs": 0.00018310546875,
+                "reference_output_max_abs": 0.0078125,
+                "reference_ssm_max_abs": 3.983639180660248e-05,
+                "reference_gradient_max_abs": 3.0517578125e-05
+              },
+              {
+                "length": 257,
+                "scan_step_output_max_abs": 0.015625,
+                "scan_step_conv_max_abs": 0.0,
+                "scan_step_ssm_max_abs": 3.8621947169303894e-05,
+                "scan_step_gradient_max_abs": 0.0003662109375,
+                "reference_output_max_abs": 0.0078125,
+                "reference_ssm_max_abs": 4.5357272028923035e-05,
+                "reference_gradient_max_abs": 3.0517578125e-05
+              }
+            ],
+            "incoming_state_gradients": true
+          }
+        ],
+        "world_state_max_abs": 2.384185791015625e-06,
+        "state_gradient_checked": true,
+        "source_step_error": 4.76837158203125e-07,
+        "memory_effect": 0.012423098087310791,
+        "cuda_kernels_checked": true
+      }
+    },
+    "normalization": {
+      "status": "pass",
+      "detail": {
+        "singleton_batch_parity": true,
+        "buffers_immutable": true
+      }
+    },
+    "joint_resource": {
+      "status": "pass",
+      "detail": {
+        "actual_batch": 128,
+        "frames": 4,
+        "precision": "bf16",
+        "peak_allocated_bytes": 944177664,
+        "peak_reserved_bytes": 1067450368,
+        "warm_step_seconds": 0.2918154989993127,
+        "encoder_gradient": 0.1729731410741806,
+        "predictor_gradient": 0.10138160735368729,
+        "gpu_validated": true,
+        "device_name": "NVIDIA GeForce RTX 3060 Laptop GPU",
+        "device_total_bytes": 6076104704,
+        "optimizer_steps": 3,
+        "purpose": "resource_only_not_a_learning_result"
+      }
+    }
+  },
+  "architecture_verdict": "not_evaluated",
+  "m4": {
+    "status": "blocked",
+    "reason": "M4/H16/actor/renderer require subsequent component gates"
+  },
+  "sources": {
+    "schema": "d4mj_lewm_sources_v1",
+    "pins": {
+      "lucas-maes__le-wm": {
+        "url": "https://github.com/lucas-maes/le-wm.git",
+        "commit": "8edfeb336732b5f3ce7b8b210d0ba370a09e2cac"
+      },
+      "galilai-group__stable-pretraining": {
+        "url": "https://github.com/galilai-group/stable-pretraining.git",
+        "commit": "9aa93f8b6153eebb73f57d4853ccf8a13d848310"
+      },
+      "state-spaces__mamba": {
+        "url": "https://github.com/state-spaces/mamba.git",
+        "commit": "f577286d052741c35d39cd43bdc3fad27120f22c"
+      }
+    },
+    "references": {
+      "sources_lock": "e28af969bd86f10f274f1b47dc55bf1f0d6a5208ba1ba535897d964d8b04afdd",
+      "papers_lock": "ba63f70189769007dc90af89efe9a29b5a7fee276ff1e52140ed2f5f49898343",
+      "dependencies_lock": "3a3e19a6b333c6dc466b1f6e8941fd8210ab7eda164416a562dd784ce2034709",
+      "tc_paper": "b15777f14c11b8196a32665a037822425e0016dc7682852ff11c79b4e52b9ef3",
+      "vit_helper": "4254967db78d759b6238c6b9a5ef8219e643b1a5d165d63d5da69d740c4ec6de",
+      "pixel_statistics": "b5063768d173792bbb38a25acf9ea2a599e3adcbea077cf9507ee0c5ca258302",
+      "lucas-maes__le-wm/LICENSE": "4882021920cbd61e050e4dc2e02440e9bd36ea4cbc5803e738a2ee3d63502e07",
+      "galilai-group__stable-pretraining/LICENSE": "8fa02eaa4e67a5455e8ab9268b29e0c283d4b4a5ae239f88282c00392f373bfd",
+      "state-spaces__mamba/LICENSE": "760939b000194d04548ede6a857bbe735d1695d8422ec85955c8e2bd7f4b95c5",
+      "lewm/train.py": "5d5666a785148635f8bcb50b49f98dd4527c5aba8a02d90206eb5d46406079d2",
+      "lewm/module.py": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620",
+      "lewm/jepa.py": "41bad7fd21e0f14aea4c9c3d39a9c87037e787746d953ab62cdc0677e938ce96",
+      "lewm/utils.py": "b3e5cfce6d0eecd9510f06a7adc178edde86074e1474b899ff739ed8a5355b08",
+      "lewm/config/train/lewm.yaml": "a90ec80bc30a6b33228047222d6b897d4df14b57b4879727b9d8284a00a9d7a3",
+      "lewm/config/train/model/lewm.yaml": "7be97eaa2c83f809b9ea7a6da5a7d3f3c70502c27537383f54db32335e21e42b",
+      "mamba/modules/mamba2.py": "605e4439ff0baec8d8acaf4a191d9f0570eea9900065a065909124c472b08707",
+      "mamba/ops/triton/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mamba/ops/triton/k_activations.py": "ede8d75600b1b01fd867df00eae4a727df9a34ef8091baf965522c36b3dfdf7b",
+      "mamba/ops/triton/layer_norm.py": "0cecae69ed780c07454fe067f9738608a53ebb17ae6046988d13bbbd84ca128b",
+      "mamba/ops/triton/layernorm_gated.py": "eb6252e247b90f1c8a75946efbc1a221e0c4da701b6757ddae49f3495cf7a42f",
+      "mamba/ops/triton/mamba3/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mamba/ops/triton/mamba3/angle_dt.py": "7d99f8cff37371cfbfe9d4dd36f17a16135fb07f2c6e14add3ad4dd5c0034e2e",
+      "mamba/ops/triton/mamba3/grouped_head_reduction.py": "d461ec57ef42e2f04ceb611daba02705a06347793a44cd40f68b5dc45d3a2d2d",
+      "mamba/ops/triton/mamba3/mamba3_mimo_rotary_step.py": "e117b5da3d2ddfcfa66673a88dfd88a6d688100291d3b6a1b0b3c24c82ef79d6",
+      "mamba/ops/triton/mamba3/mamba3_mimo_utils.py": "efbdd750f53c67fd882ffe7a3af3d51ac4aaa341e764e0efa92ce8ea51c27b7c",
+      "mamba/ops/triton/mamba3/mamba3_siso_bwd.py": "270639817bf8070c6b3f1fac229826c89344e38e8375e73e95249bf3087355de",
+      "mamba/ops/triton/mamba3/mamba3_siso_combined.py": "410ad57555b5841fba7bd76fdafdc3ddf82741176489c3e3493f5c6f3c0c6012",
+      "mamba/ops/triton/mamba3/mamba3_siso_fwd.py": "34100060eef7316e2a16ede09636a517f10733cc856980869651e21208ad05b0",
+      "mamba/ops/triton/mamba3/mamba3_siso_step.py": "66d2471245e47de4207eb633deb3e8415034f9e718b38d0955f62a6262a3ae61",
+      "mamba/ops/triton/mamba3/utils.py": "9d93fd772c7f256f517e75445261773e469cfeddb8bb76c1f8f16e9feabb3c13",
+      "mamba/ops/triton/selective_state_update.py": "4bc67389730c9fd0ad40569b9ee48de88c699bc9612fbc4607eb5d38c1b4a9b9",
+      "mamba/ops/triton/softplus.py": "addcf96f306dd2c9bf1c9ef9feda42381a6e55ad906dd92e220598fcfec7b508",
+      "mamba/ops/triton/ssd_bmm.py": "5059b16f8fa269cd84e8159ee3c6880e4ccf90e4bedf9c2d733e6bc2baff9587",
+      "mamba/ops/triton/ssd_chunk_scan.py": "055b5ce4cb0f30c84c3e031d775f218227fa0b793359254a2465777097b224f9",
+      "mamba/ops/triton/ssd_chunk_state.py": "6d82771b2f62a7bf84c381c8ef8e4b579a95e0352021d117507a1072e4d71dcd",
+      "mamba/ops/triton/ssd_combined.py": "0b7c4cfa9e994278860e7254c27baa31ca32019a808a423ed24b80eabcbe919d",
+      "mamba/ops/triton/ssd_state_passing.py": "ae1fab6c680cb5312ef746862a2cf8e74157033c80878490cc64fa1f24f88b70"
+    },
+    "runtime": {
+      "transformers_vit": "d6e8e18d0d7c32beaac672b5701f1e83d72df62781e79f8508ca7f3dc0db9de2",
+      "transformers_modeling_utils": "b440b5e30a7b9cd58beeaafa32d0d8da3aef6a6f88fe7f9999bb1065f722a9dc",
+      "transformers_sdpa": "fdf62fb0eb9b5dc0a6796a7e526015865267f271a0d5ac8377968ad05d1454b8",
+      "transformers_config": "0ec851794e2692154466915ecd7344ab77f42b8c1ca7832078bfe9e5af5e506c",
+      "d4mj/lewm_config.py": "92ae1920be5ea7222b6d2e80e21a93250152927440ae56c128ab5fd504c8da38",
+      "d4mj/lewm.py": "682117426d0fd84e6babe2185002e0bf50d7fbcdeeb4d458eb06efe893b91256",
+      "d4mj/mamba_recurrence.py": "8de9df2578d7bf45c9d98acaf51c99d03ca9185c641f8b09ae107370133bf4c0",
+      "d4mj/world_api.py": "f8dfcbe26ea1b1ded73c023d19e9de31962039e4845afabacecef59567dc878c",
+      "d4mj/state.py": "dcda26ce33cdefb76163c8067954646399e3315a3a01ac85a0d474b2f76cf594",
+      "d4mj/config.py": "4cf956c9a587deb12730597643f51971711b1c33b0b027b59bebf89f4ecbde1d",
+      "d4mj/cache.py": "53f20d962184f55563faaa3b158368c6a62b60519e4f4a2ef12c1bd6a91881d5",
+      "d4mj/train.py": "95af8574bb7621813c122cb775e214fac3d629690e286561338fef485b2f5234",
+      "d4mj/checkpoint.py": "0484d7da0dabcd17bc1d3ea58989d7f3814d385490e7f8d4b8cad1d2a17b780d",
+      "d4mj/data.py": "1c624aa9676a4005a586dd6ab1a5c2b69f0060ad932b578397cf8dcb247166c9",
+      "d4mj/sources.py": "3e0ec80b742a8302c265d43e7abe7f62c2099ac425d19915a6c52ff23a5b40b5",
+      "d4mj/gates.py": "79118ab725feb22eb26a69389ec932f9a29ead03c4b2b602fe2e9bcabd2f8653",
+      "d4mj/lewm_diagnostics.py": "04f7ba980bec419b6a9e6c4f3fa75a6553fd64257d29721367c7c64bcd96f0fc",
+      "d4mj/experiments.py": "2e1c0baa61ae5dddc5c4c1bedba4685fb8f04717129080f012d28a1e81a650a2",
+      "d4mj/__main__.py": "1399bc986938f34578fa54eb2d0fef80f35b73507d3b5e4024854f7cdb781577",
+      "d4mj/agent.py": "ede81c4e0e0caafbbb996f9f18e115ab987d76def7e5e1ac022de0172ae4ba22",
+      "d4mj/actor_critic.py": "5f4430485244b0d821a4ce8227a70571d87c7da37c273e628099f3fe6970a321",
+      "d4mj/execution.py": "7d77bbbbd34a77793943e1aa1a1d2809c19bc35605d4a736ce3ff47290aada7d",
+      "d4mj/imagination.py": "f0d110aa70e73fed3669ac0e2a30cf3d13012ed6319dbd9b7967bbf17f9edd91",
+      "d4mj/env.py": "e8f821d1d29affa4020bd407f00330ce3eb0790b9343b2c9351472e74dd1d960",
+      "d4mj/diagnostics.py": "506a1d47b8a66bae745e78a85db8c80c2392898e86546430091e777292121db9"
+    },
+    "versions": {
+      "torch": "2.13.0",
+      "transformers": "5.13.0",
+      "mamba-ssm": "2.3.2.post1",
+      "triton": "3.7.1",
+      "einops": "0.8.2",
+      "numpy": "2.1.0",
+      "safetensors": "0.8.0"
+    },
+    "execution": {
+      "float32_matmul_precision": "highest",
+      "cuda_matmul_tf32": false,
+      "cudnn_tf32": true,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "deterministic_algorithms": false,
+      "triton_f32_default": "ieee"
+    }
+  }
+}

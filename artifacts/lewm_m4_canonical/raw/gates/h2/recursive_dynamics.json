@@ -1,0 +1,71 @@
+{
+  "depth_1": {
+    "rows": 384,
+    "generated_mse": 0.03219829872250557,
+    "persistence_mse": 0.048274341970682144,
+    "marginal_action_mse": 0.050589609891176224,
+    "deranged_action_mse": 0.06250474601984024,
+    "vs_persistence": {
+      "difference": 0.016076043248176575,
+      "interval": [
+        0.002483323449268937,
+        0.030117088928818703
+      ],
+      "excludes_zero": true
+    },
+    "vs_marginal_action": {
+      "difference": 0.018391311168670654,
+      "interval": [
+        0.008404172025620937,
+        0.030965447425842285
+      ],
+      "excludes_zero": true
+    },
+    "vs_deranged_action": {
+      "difference": 0.03030644729733467,
+      "interval": [
+        0.01611972600221634,
+        0.045602940022945404
+      ],
+      "excludes_zero": true
+    },
+    "baselines": "marginal = conditional mean over all actions (the gating control); deranged = one wrong action (sensitivity only, never substitutes)",
+    "beats_both_baselines": true
+  },
+  "depth_2": {
+    "rows": 384,
+    "generated_mse": 0.049200475215911865,
+    "persistence_mse": 0.06019302085042,
+    "marginal_action_mse": 0.07076853513717651,
+    "deranged_action_mse": 0.10113591700792313,
+    "vs_persistence": {
+      "difference": 0.010992545634508133,
+      "interval": [
+        -0.0033344293478876352,
+        0.026812296360731125
+      ],
+      "excludes_zero": false
+    },
+    "vs_marginal_action": {
+      "difference": 0.02156805992126465,
+      "interval": [
+        0.012190565466880798,
+        0.030457468703389168
+      ],
+      "excludes_zero": true
+    },
+    "vs_deranged_action": {
+      "difference": 0.05193544179201126,
+      "interval": [
+        0.03533301502466202,
+        0.07046748697757721
+      ],
+      "excludes_zero": true
+    },
+    "baselines": "marginal = conditional mean over all actions (the gating control); deranged = one wrong action (sensitivity only, never substitutes)",
+    "beats_both_baselines": false
+  },
+  "depths_cleared": 1,
+  "depths_required": 2,
+  "failed_checks": 1
+}

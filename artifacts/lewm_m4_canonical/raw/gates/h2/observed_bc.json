@@ -1,0 +1,34 @@
+{
+  "rows": 192,
+  "top1_agreement": 0.1770833283662796,
+  "generated_top1_agreement": 0.1666666716337204,
+  "generated_policy_kl": 0.0016371795209124684,
+  "most_frequent_action_rate": 0.15625,
+  "vs_most_frequent": {
+    "difference": 0.020833328366279602,
+    "interval": [
+      -0.05557909235358238,
+      0.09314527362585068
+    ],
+    "excludes_zero": false
+  },
+  "generated_vs_most_frequent": {
+    "difference": 0.010416671633720398,
+    "interval": [
+      -0.05760685354471207,
+      0.07923310250043869
+    ],
+    "excludes_zero": false
+  },
+  "observed_minus_generated": {
+    "difference": 0.010416656732559204,
+    "interval": [
+      -0.02312474697828293,
+      0.0396081879734993
+    ],
+    "excludes_zero": false
+  },
+  "beats_marginal": false,
+  "generated_beats_marginal": false,
+  "failed_checks": 2
+}

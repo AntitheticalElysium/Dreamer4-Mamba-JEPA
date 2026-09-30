@@ -1,0 +1,10 @@
+{
+  "schema": "d4mj_lewm_checkpoints_v1",
+  "snapshots": {
+    "step-000500.pt": "12e4f95050ac9d23a076f6a5cb1c3cc2ecb5b3f3e81de6ad02afc3a147ba6cf5",
+    "step-001000.pt": "f13c1a99818483dcf488a351fe20e8c37aa1e04e8ae8cbe7e942fa380bc11e90",
+    "step-001500.pt": "cfd38d5ab0c53cc6db3a9191cd1d7c21d883dc025da192b0e5cd6567ed232e72",
+    "step-002000.pt": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e"
+  },
+  "latest": "step-002000.pt"
+}

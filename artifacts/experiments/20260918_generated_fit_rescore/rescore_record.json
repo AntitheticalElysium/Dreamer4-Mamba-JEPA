@@ -1,0 +1,1009 @@
+{
+  "schema": "d4mj_generated_fit_rescore_v1",
+  "commit": "cfceeb8cc865e09f832b91c0b5050ed7be69acf1",
+  "question": "Does the M03 outcome/successor deficit survive fitting the decoder where it is evaluated?",
+  "method": "read-only refit using artifacts/experiments/20260917_generated_readout/generated_readout.py over published M03 features. Changes no gate output, authorizes nothing.",
+  "parents": {
+    "transformer": "artifacts/lewm_transformer_comparison/m03",
+    "mamba_raw_tc": "artifacts/lewm_gates_20260906/m03_bootstrap/evaluation_v2 (the CORRECT jointly trained Raw/TC)"
+  },
+  "evidence": {
+    "transformer": {
+      "path": "artifacts/experiments/20260918_generated_fit_rescore/evidence/transformer/readout.json",
+      "sha256": "b45c55aaf6fe71135267a7e91fa6d00bd82c67b119166746d7c9864610d4d3d1"
+    },
+    "mamba": {
+      "path": "artifacts/experiments/20260918_generated_fit_rescore/evidence/mamba/readout.json",
+      "sha256": "1c1e79345cd94e94eeef5165befa1549706e07b29fa4150eb8f670bd1cb3d111"
+    }
+  },
+  "arms": {
+    "mamba_raw": {
+      "outcomes": {
+        "death": {
+          "observed_fit_on_generated": {
+            "auc": 0.5558,
+            "interval": [
+              0.4661,
+              0.6484
+            ]
+          },
+          "generated_fit_on_generated": {
+            "auc": 0.7305,
+            "interval": [
+              0.6458,
+              0.811
+            ]
+          },
+          "root_action": {
+            "auc": 0.7314,
+            "interval": [
+              0.6455,
+              0.8111
+            ]
+          },
+          "observed_fit_on_observed": {
+            "auc": 0.7489,
+            "interval": [
+              0.6686,
+              0.8277
+            ]
+          },
+          "generated_fit_on_observed": {
+            "auc": 0.6275,
+            "interval": [
+              0.5441,
+              0.7135
+            ]
+          },
+          "action_only": {
+            "auc": 0.5484,
+            "interval": [
+              0.5326,
+              0.5664
+            ]
+          }
+        },
+        "damage": {
+          "observed_fit_on_generated": {
+            "auc": 0.5598,
+            "interval": [
+              0.4697,
+              0.6544
+            ]
+          },
+          "generated_fit_on_generated": {
+            "auc": 0.7159,
+            "interval": [
+              0.6368,
+              0.7946
+            ]
+          },
+          "root_action": {
+            "auc": 0.7164,
+            "interval": [
+              0.634,
+              0.793
+            ]
+          },
+          "observed_fit_on_observed": {
+            "auc": 0.7383,
+            "interval": [
+              0.6598,
+              0.8201
+            ]
+          },
+          "generated_fit_on_observed": {
+            "auc": 0.6179,
+            "interval": [
+              0.5336,
+              0.7038
+            ]
+          },
+          "action_only": {
+            "auc": 0.5434,
+            "interval": [
+              0.5256,
+              0.5643
+            ]
+          }
+        }
+      },
+      "outcomes_linear_death": {
+        "observed_fit_on_generated": {
+          "auc": 0.5665,
+          "interval": [
+            0.4777,
+            0.6604
+          ]
+        },
+        "generated_fit_on_generated": {
+          "auc": 0.7533,
+          "interval": [
+            0.6744,
+            0.8343
+          ]
+        },
+        "root_action": {
+          "auc": 0.7549,
+          "interval": [
+            0.6734,
+            0.8382
+          ]
+        },
+        "observed_fit_on_observed": {
+          "auc": 0.7358,
+          "interval": [
+            0.6517,
+            0.8185
+          ]
+        },
+        "generated_fit_on_observed": {
+          "auc": 0.6532,
+          "interval": [
+            0.5629,
+            0.7486
+          ]
+        },
+        "action_only": {
+          "auc": 0.5452,
+          "interval": [
+            0.5302,
+            0.563
+          ]
+        }
+      },
+      "successor_binary_mlp": {
+        "observed_fit_on_generated": {
+          "mean_auc": 0.6817,
+          "n_targets": 18
+        },
+        "generated_fit_on_generated": {
+          "mean_auc": 0.6874,
+          "n_targets": 18
+        },
+        "root_action": {
+          "mean_auc": 0.6839,
+          "n_targets": 18
+        },
+        "observed_fit_on_observed": {
+          "mean_auc": 0.72,
+          "n_targets": 18
+        },
+        "generated_fit_on_observed": {
+          "mean_auc": 0.703,
+          "n_targets": 18
+        },
+        "action_only": {
+          "mean_auc": 0.5739,
+          "n_targets": 18
+        }
+      }
+    },
+    "mamba_tc": {
+      "outcomes": {
+        "death": {
+          "observed_fit_on_generated": {
+            "auc": 0.4183,
+            "interval": [
+              0.3259,
+              0.5132
+            ]
+          },
+          "generated_fit_on_generated": {
+            "auc": 0.7097,
+            "interval": [
+              0.6372,
+              0.783
+            ]
+          },
+          "root_action": {
+            "auc": 0.693,
+            "interval": [
+              0.6101,
+              0.776
+            ]
+          },
+          "observed_fit_on_observed": {
+            "auc": 0.723,
+            "interval": [
+              0.653,
+              0.7916
+            ]
+          },
+          "generated_fit_on_observed": {
+            "auc": 0.4984,
+            "interval": [
+              0.4133,
+              0.591
+            ]
+          },
+          "action_only": {
+            "auc": 0.5484,
+            "interval": [
+              0.5326,
+              0.5664
+            ]
+          }
+        },
+        "damage": {
+          "observed_fit_on_generated": {
+            "auc": 0.4327,
+            "interval": [
+              0.3418,
+              0.5371
+            ]
+          },
+          "generated_fit_on_generated": {
+            "auc": 0.6934,
+            "interval": [
+              0.6197,
+              0.7672
+            ]
+          },
+          "root_action": {
+            "auc": 0.6725,
+            "interval": [
+              0.588,
+              0.7566
+            ]
+          },
+          "observed_fit_on_observed": {
+            "auc": 0.7263,
+            "interval": [
+              0.6595,
+              0.7984
+            ]
+          },
+          "generated_fit_on_observed": {
+            "auc": 0.5061,
+            "interval": [
+              0.4275,
+              0.5902
+            ]
+          },
+          "action_only": {
+            "auc": 0.5434,
+            "interval": [
+              0.5256,
+              0.5643
+            ]
+          }
+        }
+      },
+      "outcomes_linear_death": {
+        "observed_fit_on_generated": {
+          "auc": 0.4186,
+          "interval": [
+            0.3303,
+            0.515
+          ]
+        },
+        "generated_fit_on_generated": {
+          "auc": 0.6878,
+          "interval": [
+            0.6033,
+            0.7616
+          ]
+        },
+        "root_action": {
+          "auc": 0.6395,
+          "interval": [
+            0.5463,
+            0.7214
+          ]
+        },
+        "observed_fit_on_observed": {
+          "auc": 0.7058,
+          "interval": [
+            0.6371,
+            0.7753
+          ]
+        },
+        "generated_fit_on_observed": {
+          "auc": 0.423,
+          "interval": [
+            0.348,
+            0.5077
+          ]
+        },
+        "action_only": {
+          "auc": 0.5452,
+          "interval": [
+            0.5302,
+            0.563
+          ]
+        }
+      },
+      "successor_binary_mlp": {
+        "observed_fit_on_generated": {
+          "mean_auc": 0.6264,
+          "n_targets": 18
+        },
+        "generated_fit_on_generated": {
+          "mean_auc": 0.6107,
+          "n_targets": 18
+        },
+        "root_action": {
+          "mean_auc": 0.5923,
+          "n_targets": 18
+        },
+        "observed_fit_on_observed": {
+          "mean_auc": 0.6709,
+          "n_targets": 18
+        },
+        "generated_fit_on_observed": {
+          "mean_auc": 0.6201,
+          "n_targets": 18
+        },
+        "action_only": {
+          "mean_auc": 0.5739,
+          "n_targets": 18
+        }
+      }
+    },
+    "mamba_direct_attention": {
+      "outcomes": {
+        "death": {
+          "observed_fit_on_generated": {
+            "auc": 0.4399,
+            "interval": [
+              0.347,
+              0.5342
+            ]
+          },
+          "generated_fit_on_generated": {
+            "auc": 0.7822,
+            "interval": [
+              0.7098,
+              0.852
+            ]
+          },
+          "root_action": {
+            "auc": 0.7867,
+            "interval": [
+              0.7117,
+              0.8545
+            ]
+          },
+          "observed_fit_on_observed": {
+            "auc": 0.8046,
+            "interval": [
+              0.7353,
+              0.8699
+            ]
+          },
+          "generated_fit_on_observed": {
+            "auc": 0.449,
+            "interval": [
+              0.3636,
+              0.5401
+            ]
+          },
+          "action_only": {
+            "auc": 0.5484,
+            "interval": [
+              0.5326,
+              0.5664
+            ]
+          }
+        },
+        "damage": {
+          "observed_fit_on_generated": {
+            "auc": 0.4298,
+            "interval": [
+              0.343,
+              0.5249
+            ]
+          },
+          "generated_fit_on_generated": {
+            "auc": 0.7704,
+            "interval": [
+              0.6963,
+              0.8352
+            ]
+          },
+          "root_action": {
+            "auc": 0.7751,
+            "interval": [
+              0.6978,
+              0.8384
+            ]
+          },
+          "observed_fit_on_observed": {
+            "auc": 0.7659,
+            "interval": [
+              0.6916,
+              0.836
+            ]
+          },
+          "generated_fit_on_observed": {
+            "auc": 0.4597,
+            "interval": [
+              0.3723,
+              0.5475
+            ]
+          },
+          "action_only": {
+            "auc": 0.5434,
+            "interval": [
+              0.5256,
+              0.5643
+            ]
+          }
+        }
+      },
+      "outcomes_linear_death": {
+        "observed_fit_on_generated": {
+          "auc": 0.4363,
+          "interval": [
+            0.3455,
+            0.5289
+          ]
+        },
+        "generated_fit_on_generated": {
+          "auc": 0.7552,
+          "interval": [
+            0.6783,
+            0.8261
+          ]
+        },
+        "root_action": {
+          "auc": 0.754,
+          "interval": [
+            0.6738,
+            0.8302
+          ]
+        },
+        "observed_fit_on_observed": {
+          "auc": 0.7664,
+          "interval": [
+            0.6927,
+            0.8406
+          ]
+        },
+        "generated_fit_on_observed": {
+          "auc": 0.4535,
+          "interval": [
+            0.366,
+            0.547
+          ]
+        },
+        "action_only": {
+          "auc": 0.5452,
+          "interval": [
+            0.5302,
+            0.563
+          ]
+        }
+      },
+      "successor_binary_mlp": {
+        "observed_fit_on_generated": {
+          "mean_auc": 0.7509,
+          "n_targets": 18
+        },
+        "generated_fit_on_generated": {
+          "mean_auc": 0.7941,
+          "n_targets": 18
+        },
+        "root_action": {
+          "mean_auc": 0.7571,
+          "n_targets": 18
+        },
+        "observed_fit_on_observed": {
+          "mean_auc": 0.8476,
+          "n_targets": 18
+        },
+        "generated_fit_on_observed": {
+          "mean_auc": 0.8174,
+          "n_targets": 18
+        },
+        "action_only": {
+          "mean_auc": 0.5739,
+          "n_targets": 18
+        }
+      }
+    },
+    "transformer_raw": {
+      "outcomes": {
+        "death": {
+          "observed_fit_on_generated": {
+            "auc": 0.5744,
+            "interval": [
+              0.4797,
+              0.6645
+            ]
+          },
+          "generated_fit_on_generated": {
+            "auc": 0.7297,
+            "interval": [
+              0.6488,
+              0.8043
+            ]
+          },
+          "root_action": {
+            "auc": 0.7331,
+            "interval": [
+              0.6499,
+              0.8084
+            ]
+          },
+          "observed_fit_on_observed": {
+            "auc": 0.7275,
+            "interval": [
+              0.6474,
+              0.8041
+            ]
+          },
+          "generated_fit_on_observed": {
+            "auc": 0.6501,
+            "interval": [
+              0.565,
+              0.7353
+            ]
+          },
+          "action_only": {
+            "auc": 0.5484,
+            "interval": [
+              0.5326,
+              0.5664
+            ]
+          }
+        },
+        "damage": {
+          "observed_fit_on_generated": {
+            "auc": 0.5767,
+            "interval": [
+              0.4943,
+              0.6674
+            ]
+          },
+          "generated_fit_on_generated": {
+            "auc": 0.7165,
+            "interval": [
+              0.6357,
+              0.7946
+            ]
+          },
+          "root_action": {
+            "auc": 0.7193,
+            "interval": [
+              0.6366,
+              0.7972
+            ]
+          },
+          "observed_fit_on_observed": {
+            "auc": 0.7151,
+            "interval": [
+              0.6409,
+              0.7923
+            ]
+          },
+          "generated_fit_on_observed": {
+            "auc": 0.6388,
+            "interval": [
+              0.553,
+              0.7253
+            ]
+          },
+          "action_only": {
+            "auc": 0.5434,
+            "interval": [
+              0.5256,
+              0.5643
+            ]
+          }
+        }
+      },
+      "outcomes_linear_death": {
+        "observed_fit_on_generated": {
+          "auc": 0.6003,
+          "interval": [
+            0.5099,
+            0.6906
+          ]
+        },
+        "generated_fit_on_generated": {
+          "auc": 0.7551,
+          "interval": [
+            0.6803,
+            0.8314
+          ]
+        },
+        "root_action": {
+          "auc": 0.7552,
+          "interval": [
+            0.6767,
+            0.8287
+          ]
+        },
+        "observed_fit_on_observed": {
+          "auc": 0.7089,
+          "interval": [
+            0.6272,
+            0.7867
+          ]
+        },
+        "generated_fit_on_observed": {
+          "auc": 0.6719,
+          "interval": [
+            0.5882,
+            0.7559
+          ]
+        },
+        "action_only": {
+          "auc": 0.5452,
+          "interval": [
+            0.5302,
+            0.563
+          ]
+        }
+      },
+      "successor_binary_mlp": {
+        "observed_fit_on_generated": {
+          "mean_auc": 0.6852,
+          "n_targets": 18
+        },
+        "generated_fit_on_generated": {
+          "mean_auc": 0.6941,
+          "n_targets": 18
+        },
+        "root_action": {
+          "mean_auc": 0.6877,
+          "n_targets": 18
+        },
+        "observed_fit_on_observed": {
+          "mean_auc": 0.7214,
+          "n_targets": 18
+        },
+        "generated_fit_on_observed": {
+          "mean_auc": 0.7078,
+          "n_targets": 18
+        },
+        "action_only": {
+          "mean_auc": 0.5739,
+          "n_targets": 18
+        }
+      }
+    },
+    "transformer_tc": {
+      "outcomes": {
+        "death": {
+          "observed_fit_on_generated": {
+            "auc": 0.4183,
+            "interval": [
+              0.327,
+              0.5125
+            ]
+          },
+          "generated_fit_on_generated": {
+            "auc": 0.6948,
+            "interval": [
+              0.614,
+              0.7783
+            ]
+          },
+          "root_action": {
+            "auc": 0.6122,
+            "interval": [
+              0.5172,
+              0.6943
+            ]
+          },
+          "observed_fit_on_observed": {
+            "auc": 0.6061,
+            "interval": [
+              0.529,
+              0.6804
+            ]
+          },
+          "generated_fit_on_observed": {
+            "auc": 0.4456,
+            "interval": [
+              0.364,
+              0.5258
+            ]
+          },
+          "action_only": {
+            "auc": 0.5484,
+            "interval": [
+              0.5326,
+              0.5664
+            ]
+          }
+        },
+        "damage": {
+          "observed_fit_on_generated": {
+            "auc": 0.4282,
+            "interval": [
+              0.3389,
+              0.5297
+            ]
+          },
+          "generated_fit_on_generated": {
+            "auc": 0.6865,
+            "interval": [
+              0.6055,
+              0.7615
+            ]
+          },
+          "root_action": {
+            "auc": 0.6172,
+            "interval": [
+              0.5281,
+              0.7039
+            ]
+          },
+          "observed_fit_on_observed": {
+            "auc": 0.6363,
+            "interval": [
+              0.5616,
+              0.7134
+            ]
+          },
+          "generated_fit_on_observed": {
+            "auc": 0.4441,
+            "interval": [
+              0.3646,
+              0.5285
+            ]
+          },
+          "action_only": {
+            "auc": 0.5434,
+            "interval": [
+              0.5256,
+              0.5643
+            ]
+          }
+        }
+      },
+      "outcomes_linear_death": {
+        "observed_fit_on_generated": {
+          "auc": 0.4116,
+          "interval": [
+            0.3174,
+            0.5085
+          ]
+        },
+        "generated_fit_on_generated": {
+          "auc": 0.6817,
+          "interval": [
+            0.5985,
+            0.7615
+          ]
+        },
+        "root_action": {
+          "auc": 0.5874,
+          "interval": [
+            0.4918,
+            0.6697
+          ]
+        },
+        "observed_fit_on_observed": {
+          "auc": 0.632,
+          "interval": [
+            0.5537,
+            0.7051
+          ]
+        },
+        "generated_fit_on_observed": {
+          "auc": 0.4279,
+          "interval": [
+            0.3452,
+            0.5085
+          ]
+        },
+        "action_only": {
+          "auc": 0.5452,
+          "interval": [
+            0.5302,
+            0.563
+          ]
+        }
+      },
+      "successor_binary_mlp": {
+        "observed_fit_on_generated": {
+          "mean_auc": 0.6315,
+          "n_targets": 18
+        },
+        "generated_fit_on_generated": {
+          "mean_auc": 0.6216,
+          "n_targets": 18
+        },
+        "root_action": {
+          "mean_auc": 0.6017,
+          "n_targets": 18
+        },
+        "observed_fit_on_observed": {
+          "mean_auc": 0.6276,
+          "n_targets": 18
+        },
+        "generated_fit_on_observed": {
+          "mean_auc": 0.5671,
+          "n_targets": 18
+        },
+        "action_only": {
+          "mean_auc": 0.5739,
+          "n_targets": 18
+        }
+      }
+    },
+    "transformer_direct_attention": {
+      "outcomes": {
+        "death": {
+          "observed_fit_on_generated": {
+            "auc": 0.4399,
+            "interval": [
+              0.347,
+              0.5342
+            ]
+          },
+          "generated_fit_on_generated": {
+            "auc": 0.7822,
+            "interval": [
+              0.7098,
+              0.852
+            ]
+          },
+          "root_action": {
+            "auc": 0.7867,
+            "interval": [
+              0.7117,
+              0.8545
+            ]
+          },
+          "observed_fit_on_observed": {
+            "auc": 0.8046,
+            "interval": [
+              0.7353,
+              0.8699
+            ]
+          },
+          "generated_fit_on_observed": {
+            "auc": 0.449,
+            "interval": [
+              0.3636,
+              0.5401
+            ]
+          },
+          "action_only": {
+            "auc": 0.5484,
+            "interval": [
+              0.5326,
+              0.5664
+            ]
+          }
+        },
+        "damage": {
+          "observed_fit_on_generated": {
+            "auc": 0.4298,
+            "interval": [
+              0.343,
+              0.5249
+            ]
+          },
+          "generated_fit_on_generated": {
+            "auc": 0.7704,
+            "interval": [
+              0.6963,
+              0.8352
+            ]
+          },
+          "root_action": {
+            "auc": 0.7751,
+            "interval": [
+              0.6978,
+              0.8384
+            ]
+          },
+          "observed_fit_on_observed": {
+            "auc": 0.7659,
+            "interval": [
+              0.6916,
+              0.836
+            ]
+          },
+          "generated_fit_on_observed": {
+            "auc": 0.4597,
+            "interval": [
+              0.3723,
+              0.5475
+            ]
+          },
+          "action_only": {
+            "auc": 0.5434,
+            "interval": [
+              0.5256,
+              0.5643
+            ]
+          }
+        }
+      },
+      "outcomes_linear_death": {
+        "observed_fit_on_generated": {
+          "auc": 0.4363,
+          "interval": [
+            0.3455,
+            0.5289
+          ]
+        },
+        "generated_fit_on_generated": {
+          "auc": 0.7552,
+          "interval": [
+            0.6783,
+            0.8261
+          ]
+        },
+        "root_action": {
+          "auc": 0.754,
+          "interval": [
+            0.6738,
+            0.8302
+          ]
+        },
+        "observed_fit_on_observed": {
+          "auc": 0.7664,
+          "interval": [
+            0.6927,
+            0.8406
+          ]
+        },
+        "generated_fit_on_observed": {
+          "auc": 0.4535,
+          "interval": [
+            0.366,
+            0.547
+          ]
+        },
+        "action_only": {
+          "auc": 0.5452,
+          "interval": [
+            0.5302,
+            0.563
+          ]
+        }
+      },
+      "successor_binary_mlp": {
+        "observed_fit_on_generated": {
+          "mean_auc": 0.7509,
+          "n_targets": 18
+        },
+        "generated_fit_on_generated": {
+          "mean_auc": 0.7941,
+          "n_targets": 18
+        },
+        "root_action": {
+          "mean_auc": 0.7571,
+          "n_targets": 18
+        },
+        "observed_fit_on_observed": {
+          "mean_auc": 0.8476,
+          "n_targets": 18
+        },
+        "generated_fit_on_observed": {
+          "mean_auc": 0.8174,
+          "n_targets": 18
+        },
+        "action_only": {
+          "mean_auc": 0.5739,
+          "n_targets": 18
+        }
+      }
+    }
+  },
+  "findings": [
+    "OUTCOMES: the gate's transfer number badly understates recoverable death information. obs-fit->GEN is 0.556/0.574/0.418/0.418 (mamba raw / transf raw / mamba tc / transf tc, mlp) while gen-fit->GEN is 0.731/0.730/0.710/0.695. Information is NOT absent from generated latents.",
+    "BUT NO ARM BEATS ITS ROOT+ACTION CONTROL. gen-fit->GEN vs root+action: mamba raw 0.7305 vs 0.7314, transf raw 0.7297 vs 0.7331, direct 0.7822 vs 0.7867. No arm separates at 95% - including Direct. The refit rescues the transfer claim; it does not show any world model adds outcome information.",
+    "SUCCESSOR STATE IS NOT A DECODER ARTIFACT. Refitting barely moves it: obs-fit->GEN 0.6817 -> gen-fit 0.6874 (mamba raw), 0.6852 -> 0.6941 (transf raw). The outcome artifact is specific to outcomes. The successor-state deficit survives the repair and is the residual real finding.",
+    "TRANSFORMER AND MAMBA RAW ARE INDISTINGUISHABLE under the corrected protocol: death gen-fit 0.7297 vs 0.7305; successor mean 0.6941 vs 0.6874. The architectural swap changes nothing here.",
+    "CROSS-BACK IS POOR EVERYWHERE (gen-fit->OBS 0.42-0.67 vs obs-fit->OBS 0.61-0.75), so observed and generated occupy genuinely different decodable subspaces, not merely rotated ones.",
+    "CAPACITY IS NOT THE LIMIT at this scale: linear matches or beats mlp on gen-fit->GEN (mamba raw 0.7533 linear vs 0.7305 mlp). Partially addresses the capacity-ladder concern; a predeclared ladder was NOT built."
+  ],
+  "not_done": [
+    "audit item 1: declared coverage panel using the 129 verified addresses - NOT built",
+    "audit item 3: structured simulator controls - NOT built; the flattened full_simulator control remains invalid as a ceiling (exact961 death linear 0.4780 vs pixels 0.8339)",
+    "audit item 3: predeclared shared capacity ladder - only the existing linear/mlp two-point contrast",
+    "the jointly trained u arm was NOT run, per instruction"
+  ],
+  "m4_authorized": false
+}

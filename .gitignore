@@ -276,3 +276,18 @@ artifacts/lewm_gates_20260906/
 # Stride-4 paired retrain: checkpoints and per-update histories, reproducible
 # from d4mj/recipes/lewm_mamba_{raw,tc}_stride4.json
 artifacts/lewm_gates_20260916/
+
+# Expert trajectory corpus: 8 GB of shards, pinned (paths and hashes) by artifacts/lewm_m4_canonical/*/dataset.json
+artifacts/craftax_expert_store_v1/
+
+# Canonical LeWM M4 runs and the Mamba-vs-Transformer comparison (2026-09-18..20). Their JSON records (recipes,
+# manifests, gate reports, status) are tracked; latent caches, per-update metric logs (~50 MB each), the M03
+# per-root stage dumps and reports (up to 220 MB per file) are reproducible bulk and are not.
+artifacts/lewm_m4_canonical/*/cache/
+artifacts/lewm_m4_canonical/*/joint/metrics.jsonl
+artifacts/lewm_transformer_comparison/paired/*/cache/
+artifacts/lewm_transformer_comparison/paired/*/joint/metrics.jsonl
+artifacts/lewm_transformer_comparison/m03/historical/
+artifacts/lewm_transformer_comparison/m03/memory/
+artifacts/lewm_transformer_comparison/m03/report.json
+artifacts/lewm_transformer_comparison/m03/stages/corrected_eda.json

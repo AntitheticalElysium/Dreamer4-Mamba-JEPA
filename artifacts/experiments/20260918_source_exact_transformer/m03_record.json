@@ -1,0 +1,288 @@
+{
+  "schema": "d4mj_source_exact_m03_record_v2",
+  "supersedes": "d4mj_source_exact_m03_record_v1, which used the WRONG comparator",
+  "commit": "cfceeb8cc865e09f832b91c0b5050ed7be69acf1",
+  "CORRECTION": {
+    "error": "v1 compared the transformer against artifacts/lewm_gates_20260918/m03_matched, whose arms are world_z_z.pt and world_u_u.pt - the frozen z->z / u->u ablation - NOT the jointly trained Raw/TC pair. I read the directory names raw/tc as variants without checking the recorded config.",
+    "authority": "artifacts/experiments/20260918_matched_10k/README.md line ~80: 'Not a Raw-versus-TC comparison. Both arms share one TC-consecutive encoder (paired_window/raw is variant: tc).'",
+    "correct_baseline": "artifacts/lewm_gates_20260906/m03_bootstrap/evaluation_v2 (paired/raw variant=raw, paired/tc variant=tc, both lewm_mamba, verified from each checkpoint's own recorded config)",
+    "retracted_claims": [
+      "RETRACTED: 'clean sign flip, TC helps Mamba and hurts the transformer'. TC hurts BOTH backends: transformer -0.149/-0.156, Mamba -0.127/-0.138 (damage/death), both significant.",
+      "RETRACTED: 'transformer raw beats Direct where Mamba raw does not'. Mamba raw DOES beat Direct (+0.130/+0.116, significant) and essentially ties the transformer (+0.147/+0.135).",
+      "RETRACTED: 'transformer halves the observed->generated deficit'. -0.138/-0.153 vs -0.179/-0.193, heavily overlapping intervals - a modest, non-separated difference.",
+      "RETRACTED: 'Mamba matches the source-exact transformer at 1/4.9 params via an equal advantage at each backend's best configuration'. That framing rested on the mislabelled arms.",
+      "RETRACTED: 'Mamba gains monotonically with context (0.634->0.713)'. That was world_u_u.pt. The real Mamba plateaus after c4 and slightly declines: raw 0.5758->0.6079->0.6041->0.6032."
+    ],
+    "claims_that_survive": [
+      "The transformer is architecturally context-saturated: buffered_pairs {min:2,max:2} and bit-identical AUC at c4/c16/c64. Measured on the transformer alone, so the comparator error does not touch it. But the correct reading is that it receives only three action-pairs, NOT that Mamba learned long memory.",
+      "critical_coverage insufficient_coverage with 116 missing is corpus-determined; 13/25 static and 18/25 successor binary targets supported.",
+      "The G1 record used artifacts/lewm_gates_20260906/paired/G1, the CORRECT pair, and is unaffected."
+    ]
+  },
+  "reports": {
+    "transformer": {
+      "path": "artifacts/lewm_transformer_comparison/m03/report.json",
+      "sha256": "02a25088f3f6000b9d4db6dd0a5afc6066d75b7b8a2b3c37b176a47b5b2e6bb4"
+    },
+    "mamba_raw_tc": {
+      "path": "artifacts/lewm_gates_20260906/m03_bootstrap/evaluation_v2/report.json",
+      "sha256": "2cd02650256ac6db1cfcafbbb8a9abe7075c1fb673c6edb55f3875be647808f0"
+    },
+    "transformer_memory": {
+      "path": "artifacts/lewm_transformer_comparison/m03/memory/report.json",
+      "sha256": "07ddc2fd779a0f2aa03b6591e06a882b3d71056c6a9d40e08b63864085513730"
+    },
+    "mamba_memory": {
+      "path": "artifacts/lewm_gates_20260906/m03_bootstrap/evaluation_v2/memory/report.json",
+      "sha256": "d98f37603590870d39429caa9062abe30041d85b78a13a08dede4c0444d5a8de"
+    }
+  },
+  "paired_auc_differences_mlp": {
+    "raw_generated_minus_raw_observed": {
+      "damage": {
+        "transformer": {
+          "auc_difference": -0.1384,
+          "interval": [
+            -0.1893,
+            -0.0927
+          ],
+          "excludes_zero": true
+        },
+        "mamba": {
+          "auc_difference": -0.1785,
+          "interval": [
+            -0.237,
+            -0.1214
+          ],
+          "excludes_zero": true
+        }
+      },
+      "death": {
+        "transformer": {
+          "auc_difference": -0.1531,
+          "interval": [
+            -0.2041,
+            -0.1046
+          ],
+          "excludes_zero": true
+        },
+        "mamba": {
+          "auc_difference": -0.1932,
+          "interval": [
+            -0.2569,
+            -0.1342
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "tc_generated_minus_tc_observed": {
+      "damage": {
+        "transformer": {
+          "auc_difference": -0.208,
+          "interval": [
+            -0.298,
+            -0.1129
+          ],
+          "excludes_zero": true
+        },
+        "mamba": {
+          "auc_difference": -0.2936,
+          "interval": [
+            -0.385,
+            -0.2003
+          ],
+          "excludes_zero": true
+        }
+      },
+      "death": {
+        "transformer": {
+          "auc_difference": -0.1877,
+          "interval": [
+            -0.2815,
+            -0.0957
+          ],
+          "excludes_zero": true
+        },
+        "mamba": {
+          "auc_difference": -0.3047,
+          "interval": [
+            -0.3963,
+            -0.2144
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "raw_generated_minus_direct_attention_generated": {
+      "damage": {
+        "transformer": {
+          "auc_difference": 0.1469,
+          "interval": [
+            0.0541,
+            0.2384
+          ],
+          "excludes_zero": true
+        },
+        "mamba": {
+          "auc_difference": 0.13,
+          "interval": [
+            0.0304,
+            0.2278
+          ],
+          "excludes_zero": true
+        }
+      },
+      "death": {
+        "transformer": {
+          "auc_difference": 0.1345,
+          "interval": [
+            0.0297,
+            0.2352
+          ],
+          "excludes_zero": true
+        },
+        "mamba": {
+          "auc_difference": 0.1159,
+          "interval": [
+            0.0083,
+            0.2218
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "tc_generated_minus_direct_attention_generated": {
+      "damage": {
+        "transformer": {
+          "auc_difference": -0.0016,
+          "interval": [
+            -0.1013,
+            0.1058
+          ],
+          "excludes_zero": false
+        },
+        "mamba": {
+          "auc_difference": 0.0029,
+          "interval": [
+            -0.0964,
+            0.098
+          ],
+          "excludes_zero": false
+        }
+      },
+      "death": {
+        "transformer": {
+          "auc_difference": -0.0216,
+          "interval": [
+            -0.1302,
+            0.0912
+          ],
+          "excludes_zero": false
+        },
+        "mamba": {
+          "auc_difference": -0.0216,
+          "interval": [
+            -0.1323,
+            0.0874
+          ],
+          "excludes_zero": false
+        }
+      }
+    },
+    "tc_generated_minus_raw_generated": {
+      "damage": {
+        "transformer": {
+          "auc_difference": -0.1485,
+          "interval": [
+            -0.2355,
+            -0.062
+          ],
+          "excludes_zero": true
+        },
+        "mamba": {
+          "auc_difference": -0.1271,
+          "interval": [
+            -0.2031,
+            -0.0529
+          ],
+          "excludes_zero": true
+        }
+      },
+      "death": {
+        "transformer": {
+          "auc_difference": -0.156,
+          "interval": [
+            -0.2476,
+            -0.0627
+          ],
+          "excludes_zero": true
+        },
+        "mamba": {
+          "auc_difference": -0.1375,
+          "interval": [
+            -0.2155,
+            -0.0687
+          ],
+          "excludes_zero": true
+        }
+      }
+    }
+  },
+  "fatal_safe_mlp": {
+    "mamba_raw": {
+      "rate": 0.3056,
+      "n": 36,
+      "interval": [
+        0.1622,
+        0.4571
+      ]
+    },
+    "transformer_raw": {
+      "rate": 0.4444,
+      "n": 36,
+      "interval": [
+        0.2703,
+        0.6053
+      ]
+    },
+    "mamba_tc": {
+      "rate": 0.3333,
+      "n": 36,
+      "interval": [
+        0.1749,
+        0.5
+      ]
+    },
+    "transformer_tc": {
+      "rate": 0.5833,
+      "n": 36,
+      "interval": [
+        0.4054,
+        0.75
+      ]
+    },
+    "direct": {
+      "rate": 0.8611,
+      "n": 36,
+      "interval": [
+        0.7419,
+        0.9688
+      ]
+    }
+  },
+  "verdict": "The transformer did NOT broadly rescue CLS or the gate. Improvements are localized (generated [z,h] death .608->.649 raw; safe-action selection 31%->44% raw, 33%->58% tc at n=36 with overlapping intervals). Observed CLS retention is unchanged (.800 vs .800). Historical panels show no rescue: exact .799->.800, policy .807->.799, hazard .769->.767, legacy .704->.691. Direct still leads safe-action at 86%.",
+  "implication": "This argues against Mamba alone explaining the deficits. It does NOT show CLS is intrinsically defective, nor identify the shared objective/data/encoder choices as the cause.",
+  "g1_record_status": {
+    "valid": true,
+    "why": "g1_record.json compared against artifacts/lewm_gates_20260906/paired/G1/screen.json, whose recorded recipe digests are 3edb1419b5f3 (lewm_mamba_raw) and b6e02c7122c2 (lewm_mamba_tc) - the real jointly trained Raw/TC pair. Its 'pair_axis' key is absent only because that report predates the field.",
+    "note": "the comparator error was confined to the M03 stage, which used m03_matched"
+  },
+  "prereg_hypothesis_outcome": {
+    "hypothesis": "Whether Mamba TC's G1 prediction advantage survives to 10k and translates into M03 capability rows, or is an artifact of the low-rank collapse making next-latent prediction mechanically easier.",
+    "scored_against": "the CORRECT Raw/TC baseline",
+    "result": "NOT SUPPORTED AS STATED - the premise was wrong. At G1 Mamba TC had essentially NO prediction advantage over Mamba raw (normalized_prediction_mse 0.0646 vs 0.0653) despite effective rank 3.15 vs 23.36. So there was no advantage for the collapse to explain.",
+    "what_is_true": "Mamba TC reaches equal observed (0.7508 vs 0.7536) and slightly better generated successor (0.6373 vs 0.6210) at roughly 1/7 the effective rank - but is much worse on generated [z,h] death (0.494 vs 0.608). Low rank is not free; it costs the death row specifically.",
+    "note": "in v1 I recorded this as SUPPORTED using transformer-TC-vs-'Mamba TC' training predictions where the latter was world_u_u.pt. That scoring is retracted."
+  }
+}

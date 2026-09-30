@@ -1,0 +1,16 @@
+{
+  "baseline": {
+    "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_transformer_comparison/m03/report.json",
+    "sha256": "02a25088f3f6000b9d4db6dd0a5afc6066d75b7b8a2b3c37b176a47b5b2e6bb4"
+  },
+  "memory": {
+    "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_transformer_comparison/m03/memory/report.json",
+    "sha256": "07ddc2fd779a0f2aa03b6591e06a882b3d71056c6a9d40e08b63864085513730"
+  },
+  "decision": {
+    "m4_authorized": false,
+    "status": "measured_pending_capability_review",
+    "suite_complete": true,
+    "promotion": "requires_review_of_coverage_and_semantic_results; no automatic scalar pass"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "balanced_reference_bce": 0.6931471805599453,
+  "gated_on": "generated states",
+  "reward": {
+    "generated_mse": 0.039528291672468185,
+    "observed_mse": 0.038350995630025864,
+    "zero_mse": 0.07016927003860474,
+    "marginal_mse": 0.06535277515649796,
+    "vs_zero": {
+      "difference": 0.03064097836613655,
+      "interval": [
+        0.017132775858044624,
+        0.04600359871983528
+      ],
+      "excludes_zero": true
+    },
+    "vs_marginal": {
+      "difference": 0.02582448348402977,
+      "interval": [
+        0.012793713249266148,
+        0.038799166679382324
+      ],
+      "excludes_zero": true
+    },
+    "beats_both": true
+  },
+  "continuation": {
+    "status": "insufficient_coverage",
+    "alive": 767,
+    "dead": 1
+  },
+  "failed_checks": 1
+}

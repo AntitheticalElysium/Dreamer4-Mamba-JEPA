@@ -1,0 +1,71 @@
+{
+  "schema": "d4mj_source_exact_g1_record_v1",
+  "commit": "cfceeb8cc865e09f832b91c0b5050ed7be69acf1",
+  "sealed_utc": "2026-09-18T00:05:23Z",
+  "stage": "G1 at 2000 updates; run continued to the 10000 budget",
+  "decision": "continue_joint_budget",
+  "blocked_component": null,
+  "architecture_verdict": "not_evaluated",
+  "pair_axis": "variant",
+  "components": {
+    "pair_identity": "pass",
+    "objective_contrast": "pass",
+    "raw_normalization": "pass",
+    "raw_recurrence": "pass",
+    "tc_normalization": "pass",
+    "tc_recurrence": "pass"
+  },
+  "screen_reports": {
+    "transformer": {
+      "path": "artifacts/lewm_transformer_comparison/paired/G1/screen.json",
+      "sha256": "3efce85d029ae4ff37033b0c79b23c6c5b78b3bbc53ab844fa10a3e7e51ed622"
+    },
+    "mamba_baseline": {
+      "path": "artifacts/lewm_gates_20260906/paired/G1/screen.json",
+      "sha256": "025fe63eba4831d9619e0c994263de8b2ee6ff7d73248e03f6142cf3b800864c"
+    }
+  },
+  "arms": {
+    "transformer_raw": {
+      "normalized_prediction_mse": 0.05741427093744278,
+      "initial_normalized_prediction_mse": 12.16748046875,
+      "learning_progress": true,
+      "coordinate_variance": 0.8634706367190598,
+      "effective_rank": 24.389870719752253,
+      "persistent_effective_rank": 24.14160838265492
+    },
+    "transformer_tc": {
+      "normalized_prediction_mse": 0.734958291053772,
+      "initial_normalized_prediction_mse": 12.16748046875,
+      "learning_progress": true,
+      "coordinate_variance": 1.2340831622462778,
+      "effective_rank": 10.434200095953651,
+      "persistent_effective_rank": 9.777653086369412
+    },
+    "mamba_raw": {
+      "normalized_prediction_mse": 0.06534811854362488,
+      "initial_normalized_prediction_mse": 11.47125244140625,
+      "learning_progress": true,
+      "coordinate_variance": 0.8541568790508274,
+      "effective_rank": 23.362133188382472,
+      "persistent_effective_rank": 23.101488125204693
+    },
+    "mamba_tc": {
+      "normalized_prediction_mse": 0.06463228166103363,
+      "initial_normalized_prediction_mse": 11.47125244140625,
+      "learning_progress": true,
+      "coordinate_variance": 4.247255778307113,
+      "effective_rank": 3.152047107906136,
+      "persistent_effective_rank": 3.0771624028242117
+    }
+  },
+  "observation": "Transformer raw edges Mamba raw on dev prediction (0.0574 vs 0.0654). Transformer TC is 11x worse (0.7350 vs 0.0646), but Mamba TC reaches its low error with effective rank 3.15 against the transformer's 10.43 and ~24 for both raw arms.",
+  "status": "HYPOTHESIS, NOT A FINDING",
+  "to_test_in_m03": "Whether Mamba TC's G1 prediction advantage survives to 10000 updates and translates into M03 capability rows, or is an artifact of low-rank collapse that makes next-latent prediction mechanically easier without carrying task-relevant structure. Rank and error at a 2000-update screen are both free to move by 10000; this record fixes the 2k numbers so the 10k comparison is against something written down beforehand.",
+  "caveats": [
+    "single seed",
+    "2000 updates, not the 10000 budget",
+    "screen dev windows, not M03 capability rows",
+    "G1 itself reports architecture_verdict=not_evaluated"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "stage": "joint_budget_complete",
+  "pid": 163159,
+  "updated_unix": 1789968778.4584756,
+  "m4_authorized": false,
+  "next_component": "M4",
+  "next_component_status": "blocked"
+}

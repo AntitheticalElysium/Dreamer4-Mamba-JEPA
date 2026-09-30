@@ -1,0 +1,77 @@
+{
+  "depth": 2,
+  "rows": 384,
+  "scope": "latent effects on DEV windows; state-conditioned consequences are measured on held-out all-action forks under `all_action`",
+  "effect_r2": 0.16421449184417725,
+  "effect_cosine": 0.3164762556552887,
+  "action_sensitivity_vs_deranged": {
+    "difference": 0.04191874712705612,
+    "interval": [
+      0.0242826696485281,
+      0.06067659705877304
+    ],
+    "excludes_zero": true
+  },
+  "vs_action_blind_mean": {
+    "difference": 0.02156805992126465,
+    "interval": [
+      0.012500313110649586,
+      0.03056921437382698
+    ],
+    "excludes_zero": true
+  },
+  "uses_the_action": true,
+  "beats_action_blind": true,
+  "all_action": {
+    "roots": 512,
+    "actions": 17,
+    "reward_opportunity_roots": 512,
+    "terminal_opportunity_roots": 102,
+    "minimum_opportunity_roots": 24,
+    "reward": {
+      "generated_regret": 0.27812498807907104,
+      "action_marginal_regret": 0.22773438692092896,
+      "true_successor_regret": 0.28789061307907104,
+      "vs_action_marginal": {
+        "difference": -0.05039060115814209,
+        "interval": [
+          -0.1137440875172615,
+          -0.005943529307842255
+        ],
+        "excludes_zero": true
+      },
+      "beats_marginal": false
+    },
+    "terminal": {
+      "generated_safe_choice": 0.45098039507865906,
+      "action_marginal_safe_choice": 0.656862735748291,
+      "true_successor_safe_choice": 0.5588235259056091,
+      "generated_death_auc": 0.5902652716170248,
+      "vs_action_marginal": {
+        "difference": -0.20588234066963196,
+        "interval": [
+          -0.4035128057003021,
+          -0.024375688284635544
+        ],
+        "excludes_zero": true
+      },
+      "beats_marginal": false
+    },
+    "policy_weighted_true_death": {
+      "actor": 0.08908899128437042
+    },
+    "effect_equivalence": {
+      "equivalent_pair_share": 0.4886326789855957,
+      "mean_generated_gap_on_equivalent_pairs": 0.8432067036628723,
+      "mean_generated_gap_overall": 2.107410430908203,
+      "note": "actions with coincident real successors should not be driven apart"
+    },
+    "failed_checks": 2,
+    "raw_rows": {
+      "path": "artifacts/lewm_m4_canonical/raw/gates/h2/action_outcomes.rows.pt",
+      "sha256": "31ee704f977632bdf5d1a2e070eb71503b9553ca907f62841a27a5cfe809f402",
+      "rows": 512
+    }
+  },
+  "failed_checks": 2
+}

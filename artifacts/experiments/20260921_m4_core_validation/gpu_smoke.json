@@ -1,0 +1,40 @@
+{
+  "schema": "d4mj_m4_gpu_smoke_v1",
+  "date": "2026-09-21",
+  "status": "pass",
+  "scope": "mechanical CUDA feasibility only; synthetic cached latents, no research result",
+  "environment": {
+    "device": "NVIDIA GeForce RTX 3060 Laptop GPU",
+    "triton_f32_default": "ieee",
+    "recipe_id": "a740b7feefbb119ab57bbca0d3b8c9ae1284cca40c5d7bbe1a4143a44918e202",
+    "source_manifest_digest": "7044e7a3088bd8ca5d6db84a93d867d204ed58cffd4d6753769ccccc457e29b3"
+  },
+  "bridge": {
+    "batch": 16,
+    "frames": 128,
+    "recursive_depth": 16,
+    "optimizer_updates": 1,
+    "losses": {
+      "policy": 2.828125,
+      "reward": 5.541263580322266,
+      "continuation": 0.7106980085372925,
+      "dynamics": 0.0963250994682312
+    },
+    "gradient_norm_before_clip": 2.4454236030578613,
+    "seconds_including_cold_compile": 64.22491455078125,
+    "peak_allocated_bytes": 1026917376,
+    "predictor_bn_buffers_unchanged": true
+  },
+  "actor": {
+    "batch": 16,
+    "recursive_depth": 16,
+    "optimizer_updates": 1,
+    "losses": {
+      "actor": 1.5020337741589174e-05,
+      "critic": 5.541263580322266
+    },
+    "gradient_norm_before_clip": 6440.55859375,
+    "seconds": 0.16239309310913086,
+    "peak_allocated_bytes": 157592576
+  }
+}
