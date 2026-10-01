@@ -22,6 +22,9 @@ root), or REVEALED (first drawn during the rollout); MOB if any of the five samp
 frame. Shares for the cases and their controls, and the target-tile distance by provenance. OCCUPIED (added after E11g: the
 tile the player leaves is predicted 4-12x worse than the tile ahead, seen in context or not): the target world cell was under the
 player in an earlier frame (context frames via their scroll offsets, rollout frames via sample 0's true offsets).
+SLEPT (added after E11n: the worlds' drift on known cells is 66-72% sleeping steps): sample 0's player was asleep at the root or
+any rollout frame before the current one. Reading, declared before that run: sleep_triggered if the slept share among wrong
+decisions (missed + false) is >= 2x that among their controls AND >= 0.4.
 Readings, declared before running, per kind ("right" = scroll for missed, no scroll for false):
   input_caused     the true window is right on >= 80% of cases while the imagined window is wrong on >= 80%
   current_frame    img_cur is wrong on >= 70% of cases while img_hist is right on >= 70%
@@ -150,7 +153,7 @@ def main():
                 d = ((wi[:, -1] - wt[:, -1]) ** 2).sum(-1)                            # [b,81]
                 dist["target"].append(d[torch.arange(len(chunk)), tg]); dist["player"].append(d[:, 31]); dist["frame"].append(d[:, :63].mean(1))
             logits = {v: torch.cat(x) for v, x in variants.items()}
-            prov = {"observable": [], "mob": [], "occupied": []}
+            prov = {"observable": [], "mob": [], "occupied": [], "slept": []}
             vis = meta["future_visible"]
             for r, k in lst:
                 tcell = TARGET[int(fa[r, k])]; tr_, tc_ = divmod(tcell, 9)
@@ -162,14 +165,17 @@ def main():
                 seen_player = {(3 + int(o[0]), 4 + int(o[1])) for o in ctx_off[r]} | \
                               {(3 + int(o[0]), 4 + int(o[1])) for o in true_off[r, 0, :max(k - 1, 0)]}
                 prov["occupied"].append((wr, wc) in seen_player)
+                asleep = [float(meta["root_visible"][r, 1520])] + [float(x) for x in vis[r, 0, :k, 1520]]
+                prov["slept"].append(max(asleep) > 0.5)
             ob, mb, oc = torch.tensor(prov["observable"]), torch.tensor(prov["mob"]), torch.tensor(prov["occupied"])
+            sp = torch.tensor(prov["slept"])
             dd = {q: torch.cat(x) for q, x in dist.items()}
             res[cname] = {"scroll_rate": {v: float((x > 0).float().mean()) for v, x in logits.items()},
                           "mean_logit": {v: float(x.mean()) for v, x in logits.items()},
                           "token_distance_imagined_vs_true": {q: float(x.mean()) for q, x in dd.items()},
                           "depth_hist": torch.bincount(torch.tensor([k for _, k in lst]), minlength=H).tolist(),
                           "provenance": {"observable_share": float(ob.float().mean()), "mob_share": float(mb.float().mean()),
-                                         "occupied_share": float(oc.float().mean()),
+                                         "occupied_share": float(oc.float().mean()), "slept_share": float(sp.float().mean()),
                                          "target_distance_occupied": {g: float(dd["target"][m].mean()) if m.any() else None
                                                                       for g, m in (("occupied", oc), ("not_occupied", ~oc))},
                                          "target_distance": {g: float(dd["target"][m].mean()) if m.any() else None for g, m in
@@ -190,6 +196,11 @@ def main():
                 "history": right["img_hist"] <= 0.3 and right["img_cur"] >= 0.7,
                 "target_tile": (ctrl in res and m["token_distance_imagined_vs_true"]["target"] >=
                                 2 * res[ctrl]["token_distance_imagined_vs_true"]["target"])}
+        if all(k in res for k in ("missed", "false", "control", "control_false")):
+            wrong = (res["missed"]["provenance"]["slept_share"] * res["n"]["missed"] + res["false"]["provenance"]["slept_share"] * res["n"]["false"]) / max(res["n"]["missed"] + res["n"]["false"], 1)
+            ctrl = (res["control"]["provenance"]["slept_share"] * res["n"]["control"] + res["control_false"]["provenance"]["slept_share"] * res["n"]["control_false"]) / max(res["n"]["control"] + res["n"]["control_false"], 1)
+            res["readings"]["sleep"] = {"wrong_slept_share": wrong, "control_slept_share": ctrl,
+                                        "sleep_triggered": wrong >= 2 * ctrl and wrong >= 0.4}
         m = res.get("missed")
         (out_dir / f"missedscroll_{name}.json").write_text(json.dumps(res, indent=2) + "\n")
         print(json.dumps({"world": name, "n": res["n"], "missed": m and m["scroll_rate"], "readings": res.get("readings")}), flush=True)

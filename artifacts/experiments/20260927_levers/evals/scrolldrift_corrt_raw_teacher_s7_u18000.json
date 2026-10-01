@@ -185,9 +185,23 @@
       "cells": 0.0
     }
   },
+  "sleep": {
+    "awake": {
+      "per_cell": 7.065631507430226e-05,
+      "sum": 26.740236282348633,
+      "cells": 378455.0
+    },
+    "sleeping": {
+      "per_cell": 0.0013643346028402448,
+      "sum": 69.65200805664062,
+      "cells": 51052.0
+    }
+  },
   "readings": {
     "scroll_over_still": 0.6876098557024956,
     "scroll_driven": false,
-    "lighting_driven": false
+    "lighting_driven": false,
+    "sleep_share_of_increment": 0.722589373588562,
+    "sleep_driven": true
   }
 }
