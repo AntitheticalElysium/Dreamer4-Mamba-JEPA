@@ -162,8 +162,32 @@
       "cells": 19298.0
     }
   },
+  "light_bins": {
+    "edges": [
+      0.001,
+      0.01,
+      0.03
+    ],
+    "bin0": {
+      "per_cell": 0.0003332312626298517,
+      "cells": 93844.0
+    },
+    "bin1": {
+      "per_cell": 0.000226450472837314,
+      "cells": 224987.0
+    },
+    "bin2": {
+      "per_cell": 0.0003717472718562931,
+      "cells": 61634.0
+    },
+    "bin3": {
+      "per_cell": 0.0,
+      "cells": 0.0
+    }
+  },
   "readings": {
     "scroll_over_still": 1.0164909126955664,
-    "scroll_driven": false
+    "scroll_driven": false,
+    "lighting_driven": false
   }
 }
