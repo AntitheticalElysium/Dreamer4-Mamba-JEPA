@@ -61,6 +61,30 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-01 — E10 stage 3, first sealed world (judge block 62,000-62,399; rules in 8c969101)
+
+corrt teacher 18k s7.
+- Roots: fit / dev / judge = 6,393 / 3,096 / 3,631. Judge opportunity roots: k=1 760, k=4 1,562, k=16 2,957.
+- Fidelity err/copy at k = 1 / 4 / 16: 0.204 / 0.529 / 0.673.
+
+| k | prior | root_rank | gen | transfer | real (one draw) |
+|---|---|---|---|---|---|
+| 1 | 0.591 | 0.692 | 0.900 | 0.531 | 0.999 |
+| 4 | 0.647 | 0.655 | 0.675 | 0.635 | 0.718 |
+| 16 | 0.586 | 0.588 | 0.597 | 0.569 | 0.652 |
+
+- **E9's H1 reading, sealed confirmation: CONFIRMED.**
+  - gen1 − root_rank1 = +0.208 [+0.174, +0.246];
+  - gen1 − prior1 = +0.310 [+0.255, +0.363].
+- Carries the H16 decision: **formally yes, but small.**
+  - gen16 − prior16 = +0.011 [+0.003, +0.019];
+  - gen16 − root_rank16 = +0.009 [+0.003, +0.016];
+  - this is 17% of the prior-to-real-draw margin (32% at k = 4).
+- Usable in imagination at H16: **no.** transfer16 − prior16 = −0.017 [−0.028, −0.008].
+- The other worlds are running (lane23).
+
+---
+
 ## 2026-10-01 — E11 / E11b result: imagined error is ~90% the model's own; its growth is wrong move decisions on imagined inputs, not randomness
 
 Asked: is a stochastic head the fix, or an assumption? It was an assumption. This measures it.
