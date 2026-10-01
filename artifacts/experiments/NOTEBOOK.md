@@ -102,6 +102,59 @@ First fact, corrt teacher s7 at 18k, mean mixture weights:
   - 0.11% under L1 and 0.76% under L2 (x6.8);
   - cos(g_cons, g_rest) -0.14 per batch and -0.37 summed over 20 batches.
 
+**E14a result (lane30, `headfit.py`, 4 worlds): with the backbone frozen, the head alone cannot express the consequences
+without paying everywhere else. A fresh head re-learns exactly the trained catch rate.** Held-out strict consequences
+(556; train within 0.02 of held everywhere):
+
+| arm (dose on consequence tokens) | corrt teacher s7 | corrt teacher s8 | categorical s7 | direct suffix s7 |
+|---|---|---|---|---|
+| trained head, +3,000 updates (`continue`) | 0.002 | 0.257 | 0.004 | 0.000 |
+| fresh head, uniform (cRT) | 0.002 | 0.257 | 0.004 | 0.000 |
+| L2 | 0.002 | 0.264 | — | 0.000 |
+| EAWM same-position, w 0.5 (x1.7) | 0.002 | 0.270 | 0.034 | 0.000 |
+| EAWM copy-compensated, w 0.9 (x4.7) | 0.002 | 0.273 | 0.113 (L1 +7%) | 0.000 |
+| EAWM copy-compensated, w 0.99 (x8.8) | 0.002 | 0.270 | 0.464 (L1 +61%, halluc 0.175) | — |
+| resample, half the batch from rich windows (x3.7) | 0.002 | 0.261 | 0.007 | 0.000 |
+| mask10, faced tile of every attempt (x3,034) | 0.579 (L1 +59%) | 0.568 (L1 +38%) | 0.653 (L1 +36%) | 0.570 (L1 +59%) |
+
+- Predeclared readings:
+  - H_uniform_copies true wherever the trained world copies; H_converged true everywhere: the fresh uniform head reaches
+    the trained head's all-token L1.
+  - H_head_fixable, H_generic and H_geometry false everywhere: mask10 catches but fails the L1 guard.
+  - G_starved true everywhere: consequence tokens carry 0.11% (s7), 0.32% (direct) and 0.9% (categorical) of the head
+    gradient norm.
+  - G_l1_sign: 6.8 (s7), 4.3 (s8), 6.5 (direct). L2 changes nothing at the head, so the per-token sign of L1 is not the
+    cause.
+  - G_cancel false (batch cos -0.14 to +0.05).
+- The seed difference lives in the backbone. The s8 backbone gives 0.257 with a fresh head, s7's gives 0.002.
+- Doses up to x9 do nothing to the L1 heads. The CE head (categorical) responds, but always at a large cost.
+- The L1-median explanation is refuted: on the faced cells of attempts, a linear probe on the same h gives
+  P(change | changed) 0.634 / 0.652 (s7 / s8; E13e). 69% of true changes are above 0.5, where the L1-optimal decision is
+  already "change", yet the head copies 99.8% (s7).
+- Doses (from the labels, `headfit_labels_v1`):
+  - consequence tokens are 0.0569% of tokens; faced tiles of attempts are 0.33%;
+  - 23% of consequence tokens are not copy-residual events: the new tile matches a neighbour's token;
+  - EAWM's published w = 0.5 gives x1.7.
+- Open (lane32 addendum, predeclared in e741a46c): an MLP readout on the same frozen h (capacity or representation?),
+  the mask dose response x31 / x304 / x911, and SimPLe's dead zone.
+
+**Literature for these facts (primary sources read 2026-10-02):**
+- SimPLe (Kaiser et al., ICLR 2020, sec. 4): "clipped loss max(Loss, C) ... crucial ... decreases the magnitude of gradients
+  stemming from fine-tuning of big areas of background ... concentrate on small but important areas (e.g. the ball in
+  Pong)". C = 10 for pixel L2, 0.03 for softmax. tensor2tensor applies it per element: `relu(|pred - target| - cutoff)`.
+- CGSReg (arXiv 2607.15142, sec. 4 / Table 6):
+  - the loss is `sum m (x - x̂)² / sum m`, i.e. our mask form;
+  - λ in {0, 0.01, 0.1, 1}; selected 0.1 (DreamerV3), 0.01 (DIAMOND), 1.0 (TWISTER);
+  - λ = 1 hurts DreamerV3 (-21.0 vs -11.9);
+  - no measurement of quality outside the concept regions, so the trade-off we measured is not reported there.
+- Δ-IRIS (Micheli et al., ICML 2024, sec. 2.2 and Fig. 3, Crafter):
+  - the autoencoder, conditioned on past frames and actions, encodes only "what has changed and that cannot be inferred
+    from actions, i.e. the stochastic delta";
+  - the next frame's Δ-tokens are sampled autoregressively (the joint law);
+  - with RANDOM Δ-tokens, the deterministic dynamics stay correct ("wood level increasing, crafting table appearing"):
+    crafting consequences are learnable by a deterministic, frame-conditioned decoder in Crafter;
+  - it is also the template for E14m's requirement: deterministic known content, jointly sampled unseen content.
+
 **E14m (lane31, `monotone.py`, readings predeclared in 6512dfb6; `check_monotone_why.py`): deterministic imagination IS monotone,
 exactly on content the world cannot see, and naive sampling is not the fix.**
 
