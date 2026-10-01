@@ -83,6 +83,31 @@ corrt teacher 18k s7.
 - Usable in imagination at H16: **no.** transfer16 − prior16 = −0.017 [−0.028, −0.008].
 - The other worlds are running (lane23).
 
+**Second sealed world, corrt suffix 18k s7 (landed before an unplanned restart at ~18:43).**
+- Same 3,631 roots; every world-independent reference arm (prior / root_rank / real at k = 1, 4, 16) is bit-identical
+  to the teacher run's.
+- Fidelity err/copy: 0.225 / 0.560 / 0.619.
+
+| k | gen | transfer |
+|---|---|---|
+| 1 | 0.950 | 0.531 |
+| 4 | 0.684 | 0.626 |
+| 16 | 0.602 | 0.569 |
+
+- H1 confirmation: **confirmed** (gen1 − root_rank1 = +0.258 [+0.224, +0.293]; gen1 − prior1 = +0.359).
+- Carries H16: **yes, small** (gen16 − prior16 = +0.016 [+0.008, +0.025]; gen16 − root_rank16 = +0.015 [+0.007, +0.022];
+  24% of the margin to the real draw).
+- Usable at H16: **no** (transfer16 − prior16 = −0.017 [−0.026, −0.008]).
+- Teacher − suffix, paired (`deep_compare.json`, seed 7 only, so NOT attributed under the two-seed rule):
+  - gen1: −0.049 [−0.066, −0.033]; gen4: −0.009 (ns); gen16: −0.005 [−0.011, −0.000];
+  - transfer: ns at every depth.
+  - The 6k pairs showed no gen1 difference on the opened blocks (−0.006, −0.002 ns).
+- Restart: lanes 19d / 23 / 27 were killed.
+  - deepeval_group1 was imagining fmamba; its partial memmaps are rewritten on rerun.
+  - E12 training had never been admitted: it needed 3.6 GB beside deepeval's 2.1 GB.
+  - Relaunch order changed: the seed-8 18k pair (needed by E12's two-seed rule) now runs before the 6k pairs.
+  - E12 training admission is 3.1 GB (E8's selffed training measured 2.9 GB), so it can run beside deepeval.
+
 ---
 
 ## 2026-10-01 — E11 / E11b result: imagined error is ~90% the model's own; its growth is wrong move decisions on imagined inputs, not randomness

@@ -1,0 +1,98 @@
+{
+  "corrt_raw_teacher_s7_u18000:corrt_raw_suffix_s7_u18000:gen1@overall": {
+    "difference": -0.04945170879364014,
+    "interval": [
+      -0.06564413756132126,
+      -0.0331026166677475
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_teacher_s7_u18000:corrt_raw_suffix_s7_u18000:gen1@zombie_adjacent": {
+    "difference": -0.055130183696746826,
+    "interval": [
+      -0.07852292060852051,
+      -0.034462157636880875
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_teacher_s7_u18000:corrt_raw_suffix_s7_u18000:transfer1@overall": {
+    "difference": -0.00010973215103149414,
+    "interval": [
+      -0.025327207520604134,
+      0.02565118484199047
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u18000:corrt_raw_suffix_s7_u18000:transfer1@zombie_adjacent": {
+    "difference": -0.015234589576721191,
+    "interval": [
+      -0.043200165033340454,
+      0.012081628665328026
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u18000:corrt_raw_suffix_s7_u18000:gen4@overall": {
+    "difference": -0.009416341781616211,
+    "interval": [
+      -0.018871573731303215,
+      0.00012435756798367947
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u18000:corrt_raw_suffix_s7_u18000:gen4@zombie_adjacent": {
+    "difference": -0.00822901725769043,
+    "interval": [
+      -0.02041022852063179,
+      0.003953192848712206
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u18000:corrt_raw_suffix_s7_u18000:transfer4@overall": {
+    "difference": 0.00864952802658081,
+    "interval": [
+      -0.005957841873168945,
+      0.021723058074712753
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u18000:corrt_raw_suffix_s7_u18000:transfer4@zombie_adjacent": {
+    "difference": 0.025882720947265625,
+    "interval": [
+      0.008601758629083633,
+      0.04271043837070465
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_teacher_s7_u18000:corrt_raw_suffix_s7_u18000:gen16@overall": {
+    "difference": -0.005463778972625732,
+    "interval": [
+      -0.010979501530528069,
+      -0.00020721172040794045
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_teacher_s7_u18000:corrt_raw_suffix_s7_u18000:gen16@zombie_adjacent": {
+    "difference": 0.0003027915954589844,
+    "interval": [
+      -0.005733279976993799,
+      0.005884945392608643
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u18000:corrt_raw_suffix_s7_u18000:transfer16@overall": {
+    "difference": -0.0001761317253112793,
+    "interval": [
+      -0.009233390912413597,
+      0.008665253408253193
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u18000:corrt_raw_suffix_s7_u18000:transfer16@zombie_adjacent": {
+    "difference": 0.0042272210121154785,
+    "interval": [
+      -0.006134797818958759,
+      0.014089541509747505
+    ],
+    "excludes_zero": false
+  }
+}
