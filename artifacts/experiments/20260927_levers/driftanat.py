@@ -16,10 +16,15 @@ Reported, on depths where all five samples are alive and only where `agree` (so 
                       vs wrong, and each group's share of all depth-16 excess
   realigned           for wrong cases, the imagined map shifted by (O^0 - O^) and compared with mu on the cells both cover:
                       the static excess that remains once position is corrected = content drift
-Readings, declared before running:
-  position_dominated  if wrong cases carry >= 50% of the depth-16 excess on map cells, AND realigning removes >= 50% of
-                      their map-cell excess
-  content_dominated   if aligned cases carry >= 50% of the depth-16 map-cell excess
+  observable / revealed (amended before any run, after stochdiag's depth tables: static error is 0.0055 at depth 1 and
+                      0.44 at depth 16, while entering cells carry 60% of depth-1 error, so cells filled when they entered
+                      may be re-labelled "static" later): with sample 0's true offset O^0_k, map cell (r, c) at depth k sits
+                      at world cell (r, c) + O^0_k; it is OBSERVABLE if that world cell is inside the root frame's 7 x 9 view,
+                      else REVEALED (first shown during the rollout; its terrain is fixed but was never in view at the root)
+Readings, declared before running (map cells, depth 16, share of excess):
+  position_dominated    wrong cases >= 50%, AND realigning removes >= 50% of their map-cell excess
+  unobservable_dominated  aligned + revealed cells >= 50%
+  observable_drift_dominated  aligned + observable cells >= 50%
 Usage: driftanat.py <world.pt> ... -> evals/driftanat_<name>.json
 """
 import json
@@ -103,6 +108,7 @@ def main():
         valid = alive & agree
         # excess per token, then split
         sums = {g: {"map": torch.zeros(H), "hud": torch.zeros(H), "n": torch.zeros(H)} for g in ("aligned", "wrong")}
+        split = {g: {"excess": torch.zeros(H), "cells": torch.zeros(H)} for g in ("aligned_observable", "aligned_revealed")}
         realigned_map, wrong_map_cov = torch.zeros(H), torch.zeros(H)
         for i in range(0, R, 16):
             b = min(16, R - i)
@@ -114,6 +120,14 @@ def main():
                 sums[gname]["map"] += (ex[..., :63] * m[..., None]).sum((0, 2))
                 sums[gname]["hud"] += (ex[..., 63:] * m[..., None]).sum((0, 2))
                 sums[gname]["n"] += m.sum(0).float()
+            off0 = true_off[i:i + b, 0]                                              # [b,16,2]
+            rr = torch.arange(7)[:, None].expand(7, 9).reshape(63); cc = torch.arange(9)[None].expand(7, 9).reshape(63)
+            wr, wc = rr + off0[..., 0:1], cc + off0[..., 1:2]                          # [b,16,63] world cell
+            observable = (wr >= 0) & (wr < 7) & (wc >= 0) & (wc < 9)
+            m_al = (aligned[i:i + b] & valid[i:i + b])[..., None]
+            for gname, m in (("aligned_observable", m_al & observable), ("aligned_revealed", m_al & ~observable)):
+                split[gname]["excess"] += (ex[..., :63] * m).sum((0, 2))
+                split[gname]["cells"] += m.sum((0, 2)).float()
             for j in range(b):
                 for k in range(H):
                     if not (valid[i + j, k] and not aligned[i + j, k]):
@@ -140,13 +154,22 @@ def main():
                                                  "hud": (sums[gname]["hud"] / n_valid / V).tolist()} for gname in sums},
                "wrong_map_excess_before_after_realign": {"before": (wrong_map_cov / n_valid / V).tolist(),
                                                          "after": (realigned_map / n_valid / V).tolist()}}
+        res["aligned_split"] = {g: {"excess_per_valid_root": (split[g]["excess"] / n_valid / V).tolist(),
+                                    "cells_per_valid_root": (split[g]["cells"] / n_valid).tolist(),
+                                    "excess_per_cell": (split[g]["excess"] / split[g]["cells"].clamp(min=1) / V).tolist()}
+                                for g in split}
         k16 = H - 1
         map_total = float(sums["aligned"]["map"][k16] + sums["wrong"]["map"][k16])
         wrong_share = float(sums["wrong"]["map"][k16]) / map_total if map_total else 0.0
         removed = 1 - float(realigned_map[k16]) / float(wrong_map_cov[k16]) if float(wrong_map_cov[k16]) else 0.0
+        obs_share = float(split["aligned_observable"]["excess"][k16]) / map_total if map_total else 0.0
+        rev_share = float(split["aligned_revealed"]["excess"][k16]) / map_total if map_total else 0.0
         res["readings"] = {"map_excess_share_wrong_16": wrong_share, "realign_removes_16": removed,
+                           "map_excess_share_aligned_observable_16": obs_share,
+                           "map_excess_share_aligned_revealed_16": rev_share,
                            "position_dominated": wrong_share >= 0.5 and removed >= 0.5,
-                           "content_dominated": (1 - wrong_share) >= 0.5}
+                           "unobservable_dominated": rev_share >= 0.5,
+                           "observable_drift_dominated": obs_share >= 0.5}
         (out_dir / f"driftanat_{name}.json").write_text(json.dumps(res, indent=2) + "\n")
         print(json.dumps({"world": name, **res["readings"], "wrong_rate_16": res["wrong_rate"][k16],
                           "roots_ever_wrong": res["roots_ever_wrong"]}), flush=True)
