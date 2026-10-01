@@ -61,6 +61,26 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-02 — Independent E13 review and primary-source pass (read-only diagnostics; no GPU)
+
+Full review: [`20260927_levers/E13_REVIEW.md`](20260927_levers/E13_REVIEW.md). Source/results pinned to `9fabf964`.
+- Verified TRAIN underfit (teacher s7: 1/870 strict changed tiles caught), h change AUC 0.9446 and class readout 0.8633,
+  and content-substitution effects across the four worlds. E13 is strong evidence for an **output underfit and content-to-move
+  error pathway** in the current per-tile worlds.
+- Scope correction: loss dilution is a justified intervention target, not yet a measured gradient-starvation mechanism.
+  The 0.892% share is alive-transition diagnostic **L1 loss**, not gradient mass; rare coefficient mass is 0.0553% of tile targets.
+- `check_enterpred.py`'s 0.760 world / 0.756 three-edge-token MLP does **not** establish that 24% is unknowable. E11 replay varies
+  future RNG from one fixed full simulator state/map; its variance does not cover hidden-map uncertainty conditional on pixels.
+- The 28/36/3/33 oracle decomposition is sequential and intervention-dependent; realignment also fills exposed cells with true
+  tokens. `R4_target_tile_causal` remains false under its original conjunction (all-but-target repair 0.346 > 0.30), although
+  target repair 0.604 versus random 0.030 establishes a substantial, non-exclusive effect. No threshold changed.
+- Primary papers support testing interaction-focused output loss first; EAWM is not interchangeable with an arbitrary h-only
+  auxiliary head. For (2), supervise the emitted state or a gate used in that output. For (3), learn calibrated, coherent
+  hidden-content distributions and retain sampled/observed map content across reentries. Preserve failed attempts and check
+  inventory/reward consistency, H16 choice and real-to-generated head transfer. No intervention launched or predeclared here.
+
+---
+
 ## 2026-10-01 night — Literature on the diagnosed problem (E13); nothing implemented
 
 Read from the papers' text (PDFs) unless noted. Problem 1 is the main one: a rare, deterministic, sparse action consequence (one
