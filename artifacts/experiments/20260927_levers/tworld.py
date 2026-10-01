@@ -49,6 +49,12 @@ Self-feeding recipes (2026-10-01; `--loss`), each exposing every input slot to i
            a+1..k-1 are the world's own predictions made without gradient, then frame k is predicted with gradient
            (DaD, Venkatraman et al. 2015: predicted states paired with TRUE next states; Self Forcing, arXiv
            2506.08009: self-generated history, gradient truncated to the current step)
+  rolloutK (2026-10-01) Terver et al., "What drives success in physical planning with JEPA world models?" (TMLR 2026,
+           arXiv 2512.24497), best variant per their appendix and code (facebookresearch/jepa-wms, app/vjepa_wm/train.py,
+           config rollout_steps 2, train_rollout_prefixes random, rollout_stop_gradient true): teacher L1 on every position,
+           plus a prefix t ~ U{0..W-K-1}: true frames 0..t and the teacher-forced prediction of frame t+1 (detached) are
+           rolled K-1 further steps, each input detached, each step's L1 against the true frame; weights 1/(K+1) for the
+           teacher term and 1/K per rollout step, as their code (the paper writes L1 + ... + LK)
 Training (fixed for every arm): spatial_pool_v1 (Raw tokens) or spatial_pool_tc_v1 (TC tokens), 2,048 main windows
 held out (seed 1, as parameterization.py); batches of 40 windows (seed 11); AdamW lr 1e-4, wd 0.01, 1,000 warmup,
 clip 1 (H2 phase optimizer); bf16; init seed given (default 7). Loss: `suffix` = spatial.losses' dynamics L1
@@ -294,6 +300,16 @@ def rollout_losses(world, s, a, loss, gen_loss=False):
         teacher = teacher + (F.layer_norm(gen[:, :S.W - 1], (S.WIDTH,)) - s[:, 1:]).abs().mean()
     if loss in ("teacher", "noise"):
         return teacher
+    if loss.startswith("rollout"):            # Terver et al. (TMLR 2026), jepa-wms train.py / video_wm.rollout: random prefix,
+        K = int(loss[len("rollout"):])        # inputs detached (TBPTT), weights 1/(K+1) teacher and 1/K per rollout step
+        t = int(torch.randint(0, S.W - K, ()))
+        frames = [s[:, j] for j in range(t + 1)] + [predicted[:, t].detach().to(s.dtype)]
+        total = teacher / (K + 1)
+        for h in range(1, K):
+            out, _, _ = world(torch.stack(frames, 1), a[:, :t + h + 1])
+            total = total + (out[:, -1] - s[:, t + h + 1]).abs().mean() / K
+            frames.append(out[:, -1].detach().to(s.dtype))
+        return total
     if loss == "selffed":                     # anchor, generated history without gradient, one predicted frame with it
         anchor = int(torch.randint(0, S.ANCHOR + 1, ()))
         k = int(torch.randint(anchor + 2, S.W, ()))
@@ -356,7 +372,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--head", required=True, choices=("direct", "residual", "gated", "corr", "corrg", "corrt", "categorical"))
     parser.add_argument("--pool", default="raw", choices=tuple(POOLS))
-    parser.add_argument("--loss", default="suffix", choices=("suffix", "teacher", "noise", "selffed"))
+    parser.add_argument("--loss", default="suffix", choices=("suffix", "teacher", "noise", "selffed", "rollout2", "rollout4"))
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--updates", type=int, default=6000)
     parser.add_argument("--codebook", type=Path, default=None)

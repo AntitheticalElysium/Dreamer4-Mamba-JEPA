@@ -61,6 +61,51 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-01 — E12: FAIR's multistep rollout recipe, ported exactly (PREDECLARED, not yet run)
+
+Why: Terver et al., "What drives success in physical planning with JEPA world models?" (TMLR 2026, arXiv 2512.24497,
+read in full, code read at facebookresearch/jepa-wms 13cf1d9). What it found:
+- A k-step rollout loss (their Eq. 5, TBPTT) helps on average from 1 to 2 steps, then hurts in simulated environments;
+  DROID's optimum is 6 steps (Fig. 3b).
+- Per environment it is not uniform: Metaworld success is 29.7 ± 3.8 at 1 step vs 28.7 ± 5.8 at 2 steps (Table 13).
+- The best variant is "2-step 'Last-gradient only' with random initial context"; "what matters is to train the predictor
+  to receive as input a mix of encoder outputs and predictor outputs" (App. C).
+- Theory (App. D, Remark 1): K raises one-step error δ_K and is conjectured to lower the effective Lipschitz constant
+  Λ_K; test error ≤ δ_K (Λ_K^H − 1)/(Λ_K − 1). This is DaD's bound.
+- They found V-JEPA-2-AC's official 2-step loss miscomputed (App. C).
+- Our `suffix` is not their recipe: fixed prefix (slot 4 only), gradient through the generated frame, frame 4 counted
+  twice. Our `selffed` is a longer single-term relative. Their recipe has never been run here.
+
+E11/E11b (below) measured the failure such a loss should address:
+- ~90% of depth-16 error is the model's own.
+- The first view-position error is a MISSED SCROLL on a successful move in 86% of roots, at ~3-4% of remaining roots per
+  step from depth 2, on imagined inputs only.
+- A loss on the predictor's own inputs targets exactly that.
+
+Arms (tworld.py `--loss rolloutK`): corrt, Raw, full backbone, 18,000 updates, recipe identical to
+corrt_raw_{teacher,suffix}_s{7,8}_u18000 except the loss.
+- rollout2 at seeds 7 and 8 (their simulated optimum).
+- rollout4 at seed 7 (trade-off probe; reported only).
+- Port, per their code: prefix t ~ U{0..W−K−1}; the teacher-forced prediction of frame t+1, detached, then K−1 rollout
+  steps, each input detached; weights 1/(K+1) for the teacher term and 1/K per rollout step.
+- CPU unit test: losses finite, gradients flow; teacher / suffix / selffed bit-identical to before the edit.
+
+Evaluation:
+- Measures: teval (w5, w4), blockwin, posprofile, driftanat (position-error rate), stochdiag, dpanel (H1/H2, opened
+  55k-56k), deepeval (H16, sealed 62k; these worlds are added to E10 stage 3's sealed set here, before any of them is
+  read).
+- Comparators: teacher 18k s7 / s8.
+
+Decision rules, fixed now (two-seed rule):
+1. rollout2 "**improves self-feeding**" iff, at BOTH seeds against teacher of the same seed:
+   - compare.py depth-16 imagined error is resolved lower;
+   - driftanat wrong_rate at depth 16 is lower;
+   - deepeval gen16 is not resolved lower.
+2. rollout2 "**helps the H16 decision**" iff deepeval gen16 (rollout2 − teacher) > 0, resolved at both seeds.
+3. Otherwise report as measured. rollout4 is reported only.
+
+---
+
 ## 2026-10-01 afternoon — E9 groups 2-3 (head ablation), seed-8 18k replication, a hung summary
 
 **E9 head ablation (lane19c, 6k, seed 7, suffix; same blocks and protocol): the copy head is what makes the one-step
