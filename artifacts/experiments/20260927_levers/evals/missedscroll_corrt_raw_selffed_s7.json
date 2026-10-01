@@ -45,6 +45,11 @@
     "provenance": {
       "observable_share": 0.7792642116546631,
       "mob_share": 0.006688963156193495,
+      "occupied_share": 0.0568561889231205,
+      "target_distance_occupied": {
+        "occupied": 36.961517333984375,
+        "not_occupied": 72.45854187011719
+      },
       "target_distance": {
         "observable_no_mob": 77.14518737792969,
         "revealed_no_mob": 48.02901840209961,
@@ -96,6 +101,11 @@
     "provenance": {
       "observable_share": 0.8506131768226624,
       "mob_share": 0.0033444815780967474,
+      "occupied_share": 0.18394649028778076,
+      "target_distance_occupied": {
+        "occupied": 46.731109619140625,
+        "not_occupied": 17.214921951293945
+      },
       "target_distance": {
         "observable_no_mob": 17.725200653076172,
         "revealed_no_mob": 50.37117004394531,
@@ -147,6 +157,11 @@
     "provenance": {
       "observable_share": 0.7900552749633789,
       "mob_share": 0.03867403417825699,
+      "occupied_share": 0.033149171620607376,
+      "target_distance_occupied": {
+        "occupied": 121.44441986083984,
+        "not_occupied": 86.02288055419922
+      },
       "target_distance": {
         "observable_no_mob": 59.40225601196289,
         "revealed_no_mob": 187.18238830566406,
@@ -198,6 +213,11 @@
     "provenance": {
       "observable_share": 0.968692421913147,
       "mob_share": 0.007366482634097338,
+      "occupied_share": 0.01104972418397665,
+      "target_distance_occupied": {
+        "occupied": 41.99311065673828,
+        "not_occupied": 24.377817153930664
+      },
       "target_distance": {
         "observable_no_mob": 20.792762756347656,
         "revealed_no_mob": 145.68556213378906,
