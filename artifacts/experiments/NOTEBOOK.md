@@ -61,6 +61,54 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-02 morning — E14a / E14m launched; E12 port correction (primary source)
+
+**E12 correction: our rollout2 was not an exact port, and my "RoPE vs learned absolute positions" explanation is refuted.**
+Read at facebookresearch/jepa-wms 13cf1d9:
+- The Metaworld 2-roll config (`configs/vjepa_wm/mw_final_sweep/mw_4f_fsk5_ask1_r224_pred_dino_wm_depth6_noprop_repro_2roll.yaml`)
+  uses `pred_type: dino_wm`, `use_rope: null`.
+- Its predictor `ViTPredictor` (app/plan_common/models/vit.py) has a learned absolute (frame x patch) table,
+  `pos_embedding = nn.Parameter(torch.randn(1, num_frames * num_patches, dim))`, applied as `pos_embedding[:, :n]`. That is
+  the same class of encoding as our learned space + time tables, so RoPE is not the difference.
+- The difference is the context window:
+  - That config sets `ctxt_window_train_rollout: 3` (code default 8). `video_wm.rollout` feeds the predictor
+    `vid_feats[:, -ctxt_window:]`, and the positions are indexed from 0, so the generated frame sits at slot 1 or 2 of a
+    window of at most 3 frames.
+  - Its evaluation rollouts also use 3 (`data_traj_eval_ctxt_window: 3`).
+  - Our port (`tworld.rollout_losses`) fed the full prefix: the generated frame was at slots 1-4 of a window of up to
+    6 frames, and we evaluate with a 5-frame window.
+- E12's measured mechanism was blocked moves scrolled from TRUE frames when the current frame sits in slots 1-4; with a
+  1-frame window the world is fine. That is consistent with this train/eval slot mismatch, which FAIR's setup avoids by
+  construction. Consistent only, not tested: an E12 arm with a 3-frame rollout window would test it.
+- E12 negative is not noise: both seeds are resolved worse at depth 16, and the effect is larger than the seed spread.
+  It stays lowest priority.
+
+**E14a launched (lane30, `headfit.py`, readings predeclared in 72a4ca77).** Two questions decide which fix attacks the right
+problem:
+- Can the output head alone learn DO / place consequences from the frozen backbone? This is Kang et al.'s cRT.
+- What does the gradient look like at the trained checkpoint?
+
+First fact, corrt teacher s7 at 18k, mean mixture weights:
+
+| tokens | self | up / down / left / right | generate |
+|---|---|---|---|
+| consequence (faced tile of a DO / place that changed it) | 0.971 | 0.0001-0.0002 each | 0.029 |
+| all other tokens | 0.745 | 0.028-0.031 each | 0.141 |
+
+- The head copies the faced tile of an attempt, and copying is right on 83% of attempts. Labels:
+  - 26.7% of transitions are attempts and 4.6% are strict consequences;
+  - 4,647 training windows hold at least one consequence.
+- Gradient share of consequence tokens in the head:
+  - 0.11% under L1 and 0.76% under L2 (x6.8);
+  - cos(g_cons, g_rest) -0.14 per batch and -0.37 summed over 20 batches.
+
+**E14m launched (lane31, `monotone.py`, readings predeclared).** It answers the user's question, "is option 3 (generative)
+needed so imagination is not monotone?":
+- the class content of imagined frames vs the simulator, on cells revealed after the root vs cells observable at the root;
+- the categorical world decoded both argmax and sampled.
+
+---
+
 ## 2026-10-02 — Independent E13 review and primary-source pass (read-only diagnostics; no GPU)
 
 Full review: [`20260927_levers/E13_REVIEW.md`](20260927_levers/E13_REVIEW.md). Source/results pinned to `9fabf964`.
