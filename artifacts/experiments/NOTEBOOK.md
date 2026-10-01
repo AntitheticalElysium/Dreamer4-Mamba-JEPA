@@ -141,10 +141,72 @@ has ever been judged on a decision. Everything the levers campaign measured is t
 
 ---
 
+## 2026-10-01 — E8 result: neither recipe improves self-feeding; the suffix harm does NOT replicate (only its slot-4 scroll bias does)
+
+All arms are corrt, Raw, 6k, run in lanes 18a/18b. Comparisons are paired over walk seeds (`compare_e8.log`).
+**These intervals are within-model; they do not include init-seed variance.**
+
+| arm | one-step all | blocked | idle | depth 1 / 4 / 16 | gain k = 2 / 4 / 16 | blockwin w4 / w5 | blocked TF w4 → w5 |
+|---|---|---|---|---|---|---|---|
+| teacher s7 | 0.191 | 0.391 | 0.492 | 0.045 / 0.209 / 0.760 | 1.13 / 1.06 / 1.00 | 0% / 0% | 0.027 → 0.027 |
+| teacher s8 | 0.237 | 0.895 | 0.821 | 0.053 / 0.216 / 0.745 | | 0.1% / 0.05% | 0.027 → 0.027 |
+| suffix s7 | 0.302 | 0.913 | 0.846 | 0.054 / 0.229 / 0.810 | 1.05 / 1.02 / 1.00 | (18k: 0% / 15.5%) | 0.029 → 0.103 |
+| suffix s8 | 0.257 | 0.907 | 0.842 | 0.053 / 0.217 / 0.753 | 1.05 / 1.03 / 1.00 | 0.05% / 11.2% | 0.029 → 0.071 |
+| noise s7 | 0.364 | 0.530 | 0.527 | 0.106 / 0.341 / 0.873 | **0.97 / 0.97 / 0.99** | 5.4% / 4.4% | 0.036 → 0.036 |
+| selffed s7 | 0.219 | 0.799 | 0.564 | 0.052 / 0.215 / 0.788 | 1.06 / 1.03 / 1.00 | 10.1% / 13.4% | 0.072 → 0.094 |
+
+Rule 1 ("improves self-feeding" vs teacher s7 6k needs all three of: depth 16 lower, blockwin w5 < 2%, one-step not
+worse by more than 0.02):
+- noise fails all three. Depth 16 +0.113 [+0.090, +0.139]; blockwin 4.4%; one-step +0.174.
+- selffed fails all three. Depth 16 +0.028 [+0.004, +0.052]; blockwin 13.4%; one-step +0.029.
+- **Neither is adopted.**
+
+Rule 2 ("the suffix harm replicates" at seed 8 needs both depth 16 and one-step all resolved worse):
+- One-step all: suffix s8 → teacher s8 −0.020 [−0.022, −0.018].
+- Depth 16: −0.008 [−0.025, +0.008].
+- **Does not replicate.**
+
+**Correction to the 2026-09-30 audit, Finding 2:**
+- What stands, replicated on 2 seeds: the suffix creates the slot-4 scroll bias.
+  - blockwin w5: suffix 15.5% (s7 18k) and 11.2% (s8); teacher ≤ 0.05% (s7, s8).
+  - Blocked TF error w4 → w5: suffix 0.029 → 0.071; teacher flat at 0.027 on both seeds.
+- What is withdrawn: "net harmful for corrt at both budgets, depth 16 included" and "teacher-only better on all
+  paired statistics".
+  - At 6k, teacher s7's one-step blocked/idle advantage is a seed effect. teacher s8 sits at 0.895 / 0.821, like
+    both suffix seeds.
+  - teacher s7 learned facing/idle rendering early: imagined moved/blocked ratio 9.6 at 6k, vs 55-75 for the other
+    three; every run reaches ~9 by 18k.
+  - The depth-16 gap does not replicate at seed 8. The 18k teacher-vs-suffix contrast is single-seed and unproven
+    for the same reason.
+- Init-seed spread of one recipe: corrt suffix s7 vs s8 differ by 0.057 at depth 16 (−0.072, −0.041); residual
+  raw 0.004, corr raw 0.026, residual TC 0.001. One-step all differs by 0.04-0.05 for every pair.
+  - The rule-1 tolerance of 0.02 is below that spread.
+  - **From now on, a recipe effect needs ≥ 2 init seeds per arm before it is attributed.**
+
+What the arms show (measured, not ruled):
+- noise reproduces DaD's L < 1 regime (Venkatraman et al. 2015, below Theorem 1: "predictions converge to the mean"):
+  - gain < 1 at every depth (0.97-0.99): the first world here that contracts its own errors;
+  - but blurred: moved one-step 0.547 vs 0.196, imagined moved/blocked 4.55 vs true 8.0;
+  - GameNGen itself warns that with noise augmentation "small local changes get ignored".
+- selffed (DaD-style: L1 from self-generated history to the TRUE next frame):
+  - scroll bias at every window (10.1% at w4, where no other arm exceeds 0.05% except noise);
+  - is WORSE with more true context (TF w1 0.047, w4 0.053).
+  - Self Forcing (arXiv 2506.08009 s3.3) instead matches the DISTRIBUTION of self-rolled videos to real ones
+    (DMD/SiD/GAN, post-training). Paired regression to the true next frame asks a deterministic model for an
+    average wherever the generated history has drifted on stochastic content (mobs).
+- `blocklevel.py` (noise world, clean frames labelled with noise level k):
+  - blocked moves scrolled at w4: k = 0: 5.35%, 3: 7.42%, 6: 7.72%, 9: 7.98%; mean logit −4.28 → −3.71;
+  - w5: 4.39% → 6.81%;
+  - k = 0 reproduces the original exactly.
+  - Partial support for "unreliable inputs → action-prior fallback": the label alone moves the logit +0.57, but
+    most of the harm (0 → 5.35%) is present at k = 0, i.e. in the shared weights.
+
+---
+
 ## 2026-10-01 — E8: self-feeding recipes that expose every slot (PREDECLARED, not yet run)
 
 Why: the depth-2 suffix (V-JEPA 2-AC's T = 2 rollout loss) puts a generated frame only in time slot 4. It creates
-the slot-4 bias and is net harmful for corrt (audit, Finding 2). Every world passes its own errors forward at
+the slot-4 bias and is net harmful for corrt (audit, Finding 2; "net harmful" withdrawn 2026-10-01, see E8 result). Every world passes its own errors forward at
 gain ~1 (0.94-1.17, teval `gain`), so none corrects its imagined history. The sources' remedies expose every
 slot to imperfect inputs:
 - GameNGen (arXiv 2408.14837): Gaussian noise on context frames, level bucketed (max 0.7, 10 buckets) and
@@ -311,6 +373,8 @@ integration (Subruns 0-1, motion-carry audit, length-64 preparation). Committed 
   +8% position-4 bump, like the residual head's +2%.
 - So V-JEPA 2-AC's T = 2 rollout loss, as adapted here (generated frame only in slot 4), creates the slot bias
   and is net harmful for corrt at both budgets, depth 16 included.
+  **CORRECTED 2026-10-01 (E8 result): the slot bias replicates at seed 8; "net harmful" does not (teacher s8 is
+  as bad as suffix on one-step blocked/idle, and depth 16 −0.008 ns). Withdrawn.**
 - One seed per arm. The residual 6k pair went the other way at depth 16 (suffix 0.849 vs teacher 0.865*),
   so the effect is head-dependent.
 - Consequence for self-fed training: generated frames placed in a fixed slot teach slot-specific decisions.
