@@ -50,26 +50,33 @@ def token_cache(device, log):
     for split, store in STORES.items():
         meta_path = CACHE / f"{split}_meta.pt"
         if not meta_path.exists():
-            rows = [r for f in sorted(store.glob("seed-*.pt")) for r in torch.load(f, weights_only=False)]
-            p = torch.stack([r["p_dead_by"]["recorded"] for r in rows])[:, :, [k - 1 for k in DEPTHS]]  # [R,17,3]
-            keep = torch.where((p.amax(1) > p.amin(1)).any(1))[0]
-            rows = [rows[i] for i in keep.tolist()]
+            files = sorted(store.glob("seed-*.pt"))
+            judged = lambda r: r["p_dead_by"]["recorded"][:, [k - 1 for k in DEPTHS]]                   # [17, 3]
+            kept = lambda rows: [r for r in rows if bool((judged(r).amax(0) > judged(r).amin(0)).any())]
+            R = sum(len(kept(torch.load(f, weights_only=False))) for f in files)      # pass 1: count (frames do not fit in RAM)
             encoder = encoder or S.bridge()[0]
-            R = len(rows)
             ctx = D.memmap(CACHE / f"{split}_ctx.f16", (R, 4, 81, 192), "w+")
             real = {k: D.memmap(CACHE / f"{split}_real{k}.f16", (R, N, 81, 192), "w+") for k in DEPTHS}
-            for i in range(0, R, 8):
-                chunk = rows[i:i + 8]
-                ctx[i:i + 8] = S.encode(encoder, torch.stack([r["frames"][-4:] for r in chunk]), device)[1].numpy()
-                for k in DEPTHS:
-                    frames = torch.stack([r["depth_frames"][:, STORED.index(k)] for r in chunk])     # [b,17,63,63,3]
-                    real[k][i:i + 8] = S.encode(encoder, frames, device)[1].numpy()
+            meta, i = {k: [] for k in ("seed", "acts", "cont", "visible", "p")}, 0
+            for f in files:                                                           # pass 2: encode file by file
+                rows = kept(torch.load(f, weights_only=False))
+                for j in range(0, len(rows), 8):
+                    chunk = rows[j:j + 8]
+                    b = len(chunk)
+                    ctx[i:i + b] = S.encode(encoder, torch.stack([r["frames"][-4:] for r in chunk]), device)[1].numpy()
+                    for k in DEPTHS:
+                        frames = torch.stack([r["depth_frames"][:, STORED.index(k)] for r in chunk])  # [b,17,63,63,3]
+                        real[k][i:i + b] = S.encode(encoder, frames, device)[1].numpy()
+                    i += b
+                for r in rows:
+                    meta["seed"].append(r["seed"]); meta["acts"].append(r["led_to_action"][-3:])
+                    meta["cont"].append(r["recorded"]); meta["visible"].append(r["visible"]); meta["p"].append(judged(r))
+            if i != R:
+                raise SystemExit(f"{split}: encoded {i} of {R} kept roots")
             ctx.flush(); [m.flush() for m in real.values()]
-            meta = {"seed": torch.tensor([r["seed"] for r in rows]),
-                    "acts": torch.stack([r["led_to_action"][-3:] for r in rows]),
-                    "cont": torch.stack([r["recorded"] for r in rows]),
-                    "visible": torch.stack([r["visible"] for r in rows]),
-                    **{f"p{k}": p[keep][:, :, j] for j, k in enumerate(DEPTHS)}}
+            p = torch.stack(meta.pop("p"))
+            meta = {"seed": torch.tensor(meta["seed"]), **{k: torch.stack(v) for k, v in meta.items() if k != "seed"},
+                    **{f"p{k}": p[:, :, j] for j, k in enumerate(DEPTHS)}}
             torch.save(meta, meta_path.with_suffix(".tmp"))
             meta_path.with_suffix(".tmp").replace(meta_path)
             log(stage="tokens", split=split, roots=R)

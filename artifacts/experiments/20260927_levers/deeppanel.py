@@ -196,7 +196,8 @@ def main(argv=None):
             torch.save(rows, target.with_suffix(".tmp"))
             target.with_suffix(".tmp").replace(target)
             log(seed=seed, roots=len(rows))
-    rows = [r for f in sorted(args.out.glob("seed-*.pt")) for r in torch.load(f, weights_only=False)]
+    rows = [{"p_dead_by": r["p_dead_by"]} for f in sorted(args.out.glob("seed-*.pt"))      # labels only: the
+            for r in torch.load(f, weights_only=False)]                                # frames do not fit in RAM
     summary = summarize(rows)
     (args.out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     for name in ("noop", "recorded"):
