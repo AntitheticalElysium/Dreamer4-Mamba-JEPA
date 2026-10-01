@@ -19,7 +19,9 @@ the imagined and true tokens, beside the same distance for the player tile and f
 Provenance of the target tile (added 2026-10-01 after the first run, reported only): with sample 0's true offset at the
 current frame, the target cell's world position is OBSERVABLE (inside the root frame's view: its content was drawn at the
 root), or REVEALED (first drawn during the rollout); MOB if any of the five samples has a mob on that cell at the current
-frame. Shares for the cases and their controls, and the target-tile distance by provenance.
+frame. Shares for the cases and their controls, and the target-tile distance by provenance. OCCUPIED (added after E11g: the
+tile the player leaves is predicted 4-12x worse than the tile ahead, seen in context or not): the target world cell was under the
+player in an earlier frame (context frames via their scroll offsets, rollout frames via sample 0's true offsets).
 Readings, declared before running, per kind ("right" = scroll for missed, no scroll for false):
   input_caused     the true window is right on >= 80% of cases while the imagined window is wrong on >= 80%
   current_frame    img_cur is wrong on >= 70% of cases while img_hist is right on >= 70%
@@ -75,6 +77,11 @@ def main():
     agree = (true_off == true_off[:, :1]).all(-1).all(1)
     valid = alive & agree
     fut0 = fut5[:, 0]
+    from scroll import SHIFTS
+    cs = torch.stack([estimate(ctx[:, j].float(), ctx[:, j + 1].float()) for j in range(3)], 1)          # [R,3]
+    steps = torch.tensor(SHIFTS)[cs]                                                                   # [R,3,2]
+    ctx_off = torch.stack([-(steps[:, j:].sum(1)) for j in range(3)] + [torch.zeros(R, 2, dtype=torch.long)], 1)  # [R,4,2]
+    true_off = true_off.long()
     out_dir = HERE / "evals"
     for path in [Path(p) for p in sys.argv[1:]]:
         world, st = T.load_world(path, device)
@@ -143,7 +150,7 @@ def main():
                 d = ((wi[:, -1] - wt[:, -1]) ** 2).sum(-1)                            # [b,81]
                 dist["target"].append(d[torch.arange(len(chunk)), tg]); dist["player"].append(d[:, 31]); dist["frame"].append(d[:, :63].mean(1))
             logits = {v: torch.cat(x) for v, x in variants.items()}
-            prov = {"observable": [], "mob": []}
+            prov = {"observable": [], "mob": [], "occupied": []}
             vis = meta["future_visible"]
             for r, k in lst:
                 tcell = TARGET[int(fa[r, k])]; tr_, tc_ = divmod(tcell, 9)
@@ -152,13 +159,19 @@ def main():
                 prov["observable"].append(0 <= wr < 7 and 0 <= wc < 9)
                 mobs = vis[r, :, k - 1, 1071:1071 + 441].float().reshape(S, 7, 9, 7).sum(-1)[:, tr_, tc_]
                 prov["mob"].append(bool((mobs > 0).any()))
-            ob, mb = torch.tensor(prov["observable"]), torch.tensor(prov["mob"])
+                seen_player = {(3 + int(o[0]), 4 + int(o[1])) for o in ctx_off[r]} | \
+                              {(3 + int(o[0]), 4 + int(o[1])) for o in true_off[r, 0, :max(k - 1, 0)]}
+                prov["occupied"].append((wr, wc) in seen_player)
+            ob, mb, oc = torch.tensor(prov["observable"]), torch.tensor(prov["mob"]), torch.tensor(prov["occupied"])
             dd = {q: torch.cat(x) for q, x in dist.items()}
             res[cname] = {"scroll_rate": {v: float((x > 0).float().mean()) for v, x in logits.items()},
                           "mean_logit": {v: float(x.mean()) for v, x in logits.items()},
                           "token_distance_imagined_vs_true": {q: float(x.mean()) for q, x in dd.items()},
                           "depth_hist": torch.bincount(torch.tensor([k for _, k in lst]), minlength=H).tolist(),
                           "provenance": {"observable_share": float(ob.float().mean()), "mob_share": float(mb.float().mean()),
+                                         "occupied_share": float(oc.float().mean()),
+                                         "target_distance_occupied": {g: float(dd["target"][m].mean()) if m.any() else None
+                                                                      for g, m in (("occupied", oc), ("not_occupied", ~oc))},
                                          "target_distance": {g: float(dd["target"][m].mean()) if m.any() else None for g, m in
                                                              (("observable_no_mob", ob & ~mb), ("revealed_no_mob", ~ob & ~mb),
                                                               ("mob", mb))},
