@@ -70,6 +70,16 @@ result and keeps its anatomy):
   H_capacity      mlp_mask10 reaches held caught >= 0.5 with all-token L1 <= 1.1 x mlp_uniform's: the linear readout is the
                   bottleneck (an expressive head is a fix); otherwise (caught but L1 > 1.1x) H_representation: the frozen
                   representation cannot carry both, the fix must reach the backbone (end-to-end)
+Addendum 2 (declared 2026-10-02 after check_allprobe, before any skip arm ran; `--tag skip` writes headfit_<world>_skip.json):
+  check_allprobe: among ALL tokens at the natural rate, h singles out consequence tokens with AP 0.16 / 0.34 (s7 / s8, linear;
+  MLP 0.28 / 0.44), while an MLP on the RAW local input (token, 4 neighbours, action) reaches AP 0.667, recall 0.917 at precision
+  0.5: the backbone dilutes a conjunction the input carries. Substitution: the head reads it directly.
+    skip_uniform / skip_mask1 / skip_mask10   proj and choose (logits for categorical) become 2-layer MLPs (512, GELU) on
+                  [h, the token, its 4 grid neighbours (zero off-grid), the action one-hot] of the same forward pass (no Craftax
+                  semantics: a locality prior, as Delta-IRIS's decoder conditioned on the previous frame and action)
+  H_local_uniform  skip_uniform reaches held caught >= 0.5 with all-token L1 <= 1.1 x uniform's: the diluted representation
+                   was the cause; a local-input readout learns the consequences with no re-weighting
+  H_local_dose     skip_mask1 or skip_mask10 passes H_head_fixable's three conditions: with local input the dose no longer costs
   Every addendum arm's re-trained head is saved (artifacts/eda/headfit_heads_v1/<world>_<arm>.pt) for the cost analysis.
   Every arm also logs its training objective every 500 updates (plateau check).
 Usage: headfit.py <world.pt> ... -> evals/headfit_<name>.json
@@ -93,6 +103,26 @@ ACT = torch.tensor([5, 7, 8, 9, 10])
 HEAD = ("proj.", "choose.", "frame.", "target_gate.", "gate.", "logits.")
 LABELS = ROOT / "artifacts/eda/headfit_labels_v1.pt"
 HEADS = ROOT / "artifacts/eda/headfit_heads_v1"
+LOCAL = 5 * 192 + 17                                    # token + 4 grid neighbours + action one-hot (check_allprobe's input)
+
+
+def local_features(s, a):
+    """[B,T,81,192], [B,T] -> [B,T,81,977]: each token, its 4 grid neighbours (zeros off-grid) and the action."""
+    g = s.float().view(*s.shape[:2], 9, 9, 192); p = F.pad(g, (0, 0, 1, 1, 1, 1))
+    nb = [g] + [p[:, :, 1 + dr:10 + dr, 1 + dc:10 + dc] for dr, dc in ((-1, 0), (1, 0), (0, -1), (0, 1))]
+    act = F.one_hot(a, 17).float()[:, :, None, None].expand(-1, -1, 9, 9, -1)
+    return torch.cat(nb + [act], -1).view(*s.shape[:2], 81, -1)
+
+
+class Skip(torch.nn.Module):
+    """A head module reading [h, the raw local input of the current forward pass]."""
+
+    def __init__(self, net, holder):
+        super().__init__()
+        self.net, self.holder = net, holder
+
+    def forward(self, h):
+        return self.net(torch.cat([h, self.holder["x"].to(h.dtype)], -1))
 UPDATES, BATCH = 3000, 40
 
 
@@ -309,6 +339,7 @@ def main():
         rich_windows=len(rich), train_windows=len(train_rows))
     argv = sys.argv[1:]
     only = argv[argv.index("--arms") + 1].split(",") if "--arms" in argv else None
+    tag = argv[argv.index("--tag") + 1] if "--tag" in argv else None
     paths = [Path(p) for p in argv if p.endswith(".pt")]
     for path in paths:
         trained, st = T.load_world(path, device)
@@ -342,6 +373,22 @@ def main():
                 sd = world.state_dict()
                 sd.update({k: v.to(device) for k, v in fresh.state_dict().items() if k.startswith(HEAD)})
                 world.load_state_dict(sd)
+            if arm.startswith("skip_"):          # the head also reads the raw local neighbourhood (addendum 2)
+                torch.manual_seed(0)
+                holder = {}
+                for nm in ("proj", "choose", "logits"):
+                    lin = getattr(world, nm, None)
+                    if isinstance(lin, torch.nn.Linear):
+                        last = torch.nn.Linear(512, lin.out_features)
+                        if nm == "choose":
+                            torch.nn.init.zeros_(last.weight); last.bias.data.copy_(lin.bias.data)
+                        net = torch.nn.Sequential(torch.nn.Linear(lin.in_features + LOCAL, 512), torch.nn.GELU(), last)
+                        setattr(world, nm, Skip(net, holder).to(device))
+
+                def fwd(s, a, forward=world.forward, holder=holder):
+                    holder["x"] = local_features(s, a)
+                    return forward(s, a)
+                world.forward = fwd
             if arm.startswith("mlp_"):           # the same frozen h, an expressive readout
                 torch.manual_seed(0)
                 for nm in ("proj", "choose", "logits"):
@@ -365,7 +412,7 @@ def main():
                     rows = torch.cat([rows[:BATCH // 2], rich[torch.randint(len(rich), (BATCH // 2,), generator=gen)]])
                 s = pool["tokens"][rows].float().to(device); a = pool["actions"][rows].to(device)
                 with autocast_context(config):
-                    base = "uniform" if arm == "resample" else arm[4:] if arm.startswith("mlp_") else arm
+                    base = "uniform" if arm == "resample" else arm.split("_", 1)[1] if arm.startswith(("mlp_", "skip_")) else arm
                     loss = objective(world, s, a, base, lab, rows, device, res.get("cutoffs"))
                 opt.zero_grad(set_to_none=True)
                 loss.backward()
@@ -405,11 +452,14 @@ def main():
             m10, mu_ = A["mlp_mask10"]["held"], A["mlp_uniform"]["held"]
             rd["H_capacity"] = m10["caught"] >= 0.5 and m10["l1_all"] <= 1.1 * mu_["l1_all"]
             rd["H_representation"] = m10["caught"] >= 0.5 and m10["l1_all"] > 1.1 * mu_["l1_all"]
+        if "skip_uniform" in A:
+            rd["H_local_uniform"] = A["skip_uniform"]["held"]["caught"] >= 0.5 and A["skip_uniform"]["held"]["l1_all"] <= 1.1 * u["l1_all"]
+            rd["H_local_dose"] = any(ok.get(k, False) for k in ("skip_mask1", "skip_mask10"))
         dose = sorted((float(k[4:]), k) for k in A if k.startswith("mask") and A[k]["held"]["caught"] >= 0.5)
         if dose:
             rd["mask_dose"] = {"arm": dose[0][1], "l1_over_uniform": A[dose[0][1]]["held"]["l1_all"] / u["l1_all"]}
         res["readings"] = rd
-        out.write_text(json.dumps(res, indent=2) + "\n")
+        (out if tag is None else out.with_name(f"headfit_{name}_{tag}.json")).write_text(json.dumps(res, indent=2) + "\n")
         log(world=name, readings=rd)
         del trained
         torch.cuda.empty_cache()
