@@ -46,6 +46,7 @@
       "observable_share": 0.7792642116546631,
       "mob_share": 0.006688963156193495,
       "occupied_share": 0.0568561889231205,
+      "slept_share": 0.08361203968524933,
       "target_distance_occupied": {
         "occupied": 36.961517333984375,
         "not_occupied": 72.45854187011719
@@ -102,6 +103,7 @@
       "observable_share": 0.8506131768226624,
       "mob_share": 0.0033444815780967474,
       "occupied_share": 0.18394649028778076,
+      "slept_share": 0.007803790271282196,
       "target_distance_occupied": {
         "occupied": 46.731109619140625,
         "not_occupied": 17.214921951293945
@@ -158,6 +160,7 @@
       "observable_share": 0.7900552749633789,
       "mob_share": 0.03867403417825699,
       "occupied_share": 0.033149171620607376,
+      "slept_share": 0.033149171620607376,
       "target_distance_occupied": {
         "occupied": 121.44441986083984,
         "not_occupied": 86.02288055419922
@@ -214,6 +217,7 @@
       "observable_share": 0.968692421913147,
       "mob_share": 0.007366482634097338,
       "occupied_share": 0.01104972418397665,
+      "slept_share": 0.16390423476696014,
       "target_distance_occupied": {
         "occupied": 41.99311065673828,
         "not_occupied": 24.377817153930664
@@ -254,6 +258,11 @@
       "current_frame": false,
       "history": false,
       "target_tile": true
+    },
+    "sleep": {
+      "wrong_slept_share": 0.06458333318587392,
+      "control_slept_share": 0.06666666621652742,
+      "sleep_triggered": false
     }
   }
 }
