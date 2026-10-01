@@ -118,7 +118,61 @@ tracked by scroll.estimate offsets.
 - What it does not cover:
   - revealed cells (14-19% of map excess) carry terrain no observation contained; a deterministic world can only guess it;
   - the decision value of sampling, which is untested here.
-- E11c (`missedscroll.py`) localizes the wrong decisions (imagined vs true vs hybrid windows), both kinds; running.
+- E11c (`missedscroll.py`) localizes the wrong decisions (imagined vs true vs hybrid windows), both kinds; results below.
+
+**E11c (`missedscroll.py`, readings declared in 20e067ed, extended to false scrolls before any run).**
+- Setup: at the FIRST wrong step, the head's move logit (frame + target gate) is read on four windows: imagined; true;
+  true current frame with imagined history; imagined current frame with true history.
+- Share deciding right, written true / imagined / img_hist / img_cur:
+
+| world | missed scroll (n) | false scroll (n) | target-tile distance, imagined vs true (case vs control): missed, false |
+|---|---|---|---|
+| teacher s7 | 1.00 / 0.37 / 1.00 / 0.38 (381) | 0.97 / 0.02 / 0.97 / 0.02 (58) | 69.3 vs 6.9, 180.9 vs 13.1 |
+| teacher s8 | 0.99 / 0.69 / 0.99 / 0.69 (235) | 1.00 / 0.13 / 1.00 / 0.13 (245) | 51.3 vs 9.6, 173.5 vs 13.6 |
+| suffix s7 | 0.87 / 0.60 / 0.88 / 0.61 (272) | 0.57 / 0.21 / 0.54 / 0.22 (252) | 55.3 vs 21.2, 70.8 vs 18.9 |
+| suffix s8 | 0.91 / 0.53 / 0.91 / 0.58 (309) | 0.53 / 0.21 / 0.55 / 0.20 (216) | 56.4 vs 18.2, 66.7 vs 16.2 |
+| selffed | 0.89 / 0.43 / 0.90 / 0.44 (299) | 0.55 / 0.06 / 0.54 / 0.07 (181) | 70.4 vs 22.6, 87.2 vs 24.6 |
+
+- Squared distances; a layer-normed token has |x|^2 ≈ 192. Frame-mean distances are only 1.2-1.9x those of the controls.
+- fmamba is excluded: its frame logit is negative on every input, so this readout cannot express its scroll.
+- Declared readings:
+  - false scrolls, teacher s7 / s8: input_caused and current_frame both true;
+  - missed scrolls everywhere, and false scrolls in suffix / selffed: thresholds not met, because the move logit is
+    only part of the corr mixture (an imperfect proxy for the actual scroll);
+  - target_tile: true in every world and both kinds.
+- Direction, identical in every world: swapping in the TRUE current frame restores the true-window decision rate;
+  swapping in the imagined current frame reproduces the imagined rate; history does not matter.
+- Provenance of the target tile (re-run reproduced run 1 exactly):
+  - observable at the root: 69-82% of missed and 55-87% of false scrolls;
+  - mob-occupied: ≤ 1% of missed, 3-12% of false scrolls.
+  - Within the observable class, the target tile is far more corrupted on wrong decisions than on correct ones:
+    49-77 vs 3-18 (missed), 41-184 vs 12-21 (false).
+  - Revealed target tiles are equally corrupted on wrong and correct decisions (missed 37-56 vs 36-59).
+
+**E11d (`adjdrift.py`, reading declared in 88aaf506).** Per-cell excess of known cells (observable, no mob, position
+right), move targets vs Chebyshev ring 3+:
+
+| world | depth 1 | depth 8 |
+|---|---|---|
+| teacher s7 | 6.4x | 1.28x |
+| teacher s8 | 9.0x | 1.53x |
+| suffix s7 | 5.5x | 1.68x |
+| suffix s8 | 5.5x | 1.72x |
+
+- Declared adjacent_drift (≥ 2x at depth 8): false. As measured: the player's neighbours drift 5.5-9x faster at the
+  first imagined step, when the first wrong decisions start, and the drift then spreads over the map.
+- Consistent with contextual ViT tokens: a neighbour's token changes when the player turns, so the copy head must
+  regenerate it there (not tested directly).
+
+**The chain, measured:**
+1. Known static content at the tiles beside the player drifts first.
+2. The move decision, which reads the target tile, flips (missed or false scroll).
+3. The view position goes wrong (46-81% of roots by depth 16).
+4. Those trajectories hold 66-91% of depth-16 map error.
+5. Randomness is 7-9% of the error; revealed terrain is 14-19% of map excess.
+
+So the lever is keeping known content stable at decision-critical tiles under self-feeding, not stochasticity. E12
+(FAIR's rollout loss) trains the predictor on its own outputs, which targets exactly that.
 
 ---
 
