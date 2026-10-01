@@ -11,6 +11,9 @@ Reported: pooled per cell, scroll vs no-scroll steps, day vs night (light 0.5), 
 Reading, declared before running:
   true_target_moves  pooled det_change on no-scroll steps >= 0.5x the soft worlds' mean pooled no-scroll increment (E11h:
                      teacher s7/s8, suffix s7/s8: 0.000243, 0.000303, 0.000280, 0.000275; mean 0.000275)
+Scroll-step split (added after the first run, reported only): the four move targets after a move are the tile the player LEFT
+(behind: its drawn pixels change from the player sprite to terrain, so "content unchanged" in the visible state is not
+"pixels unchanged"), the next tile AHEAD, and the two SIDES; only ahead and sides are pure context changes.
 Usage: truechange.py -> evals/truechange.json
 """
 import json
@@ -76,6 +79,11 @@ def main():
                 for g, gm in (("targets", torch.isin(torch.arange(63), torch.tensor((22, 30, 32, 40)))), ("ring2", ring == 2),
                               ("ring3plus", ring >= 3)):
                     add((kind, g), det, keep & gm)
+                if sidx != 0:
+                    cell = lambda a, b_: torch.arange(63) == a * 9 + b_
+                    for g, gm in (("behind", cell(3 - dr, 4 - dc)), ("ahead", cell(3 + dr, 4 + dc)),
+                                  ("sides", cell(3 + dc, 4 + dr) | cell(3 - dc, 4 - dr))):
+                        add((kind, g), det, keep & gm)
     pooled = {f"{k}_{g}": {"per_cell": v[0] / max(v[1], 1), "cells": v[1]} for (k, g), v in acc.items()}
     res = {"V": V, "det_change": pooled, "soft_world_still_increment_mean": SOFT_STILL}
     res["readings"] = {"still_det_over_soft_increment": pooled["still_all"]["per_cell"] / SOFT_STILL,

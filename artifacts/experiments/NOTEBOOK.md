@@ -246,14 +246,28 @@ on imagined inputs?** Seven conjectures were tested in sequence; the data reject
 | scroll | 0.000817 | **0.003696** | 0.000219 | 0.000226 | 0.000762 | 0.001101 |
 
   - No-scroll: the true change is 0.93x the soft worlds' mean drift increment (0.000256 vs 0.000275).
-  - After a move, content-unchanged tiles beside the player change token **16x** more than distant ones.
-  - The encoder is a ViT with global attention, so a patch token depends on its surroundings; the player arriving next to
-    a tile changes that tile's token.
+  - ~~After a move, content-unchanged tiles beside the player change token 16x more than distant ones~~ **CORRECTED the
+    same evening.** Splitting the scroll-step targets shows the whole effect is the tile the player LEFT, whose drawn pixels
+    change from the player sprite to terrain (the visible-state tile class ignores the sprite):
+
+    | scroll-step cell | true change per cell | cells |
+    |---|---|---|
+    | behind (the tile the player left) | 0.0132 | 3,658 |
+    | ahead | 0.000256 | 3,143 |
+    | sides | 0.000199 | 6,898 |
+    | ring 2 / ring 3+ | 0.00022 / 0.00023 | |
+
+    There is no special contextual effect at the player's neighbours. E11d's depth-1 neighbour ratio (5.5-9x) likely also
+    comes mostly from the left tile (E11g: that tile 4-12x the tile ahead).
+  - What stands: true tokens of content-unchanged cells move ~0.00026 per cell per step everywhere (day 0.00029, night
+    0.00011), about as fast as the worlds drift. Their source is not established: global-attention context or lighting
+    (E11k argues against lighting for the world's increments).
 
 **The chain, measured:**
-0. (E11l) Tokens are contextual: after a move, the player's neighbours' tokens change 16x more than distant tiles', and
-   all tokens move a little every step. From true frames the world tracks this (depth-1 error on unchanged cells ~1-4e-5);
-   from imagined frames it tracks almost none of it on no-scroll steps.
+0. (E11l, corrected) The true tokens of content-unchanged cells move ~0.00026 per cell per step (source not established).
+   From true frames the world tracks this (depth-1 error on unchanged cells ~1-4e-5); from imagined frames it tracks
+   almost none of it (increment 0.93x the true change). The tile the player leaves changes most (sprite to terrain, 0.0132)
+   and is predicted 4-12x worse, but it is NOT over-represented among decision-flipping tiles (5-14% vs 16-19%).
 1. Known static content at the tiles beside the player drifts first.
 2. The move decision, which reads the target tile, flips (missed or false scroll).
 3. The view position goes wrong (46-81% of roots by depth 16).

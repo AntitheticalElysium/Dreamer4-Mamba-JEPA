@@ -41,6 +41,18 @@
       "per_cell": 0.00022565430624283433,
       "cells": 83035
     },
+    "scroll_behind": {
+      "per_cell": 0.013246150653793524,
+      "cells": 3658
+    },
+    "scroll_ahead": {
+      "per_cell": 0.00025549947945779943,
+      "cells": 3143
+    },
+    "scroll_sides": {
+      "per_cell": 0.00019933578170935336,
+      "cells": 6898
+    },
     "still_night": {
       "per_cell": 0.00011066770563057111,
       "cells": 86937
