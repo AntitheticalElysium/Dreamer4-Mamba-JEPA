@@ -50,6 +50,27 @@ Readings, declared before running (per world):
   H_generic          an arm without Craftax semantics (l2, eawm_same, eawm_copy, eawm_copy99) reaches held caught >= 0.5
   H_converged        uniform's held all-token L1 <= 1.05 x the trained world's (else "copies" may mean "under-trained")
   If no arm reaches 0.5: not fixable at the head with these doses -> the fix must reach the representation (end-to-end).
+Addendum (declared 2026-10-02 after the first world's arms, before any addendum arm ran; `--arms` adds arms to an existing
+result and keeps its anatomy):
+    clip50 / clip75 / clip90   SimPLe's clipped loss (Kaiser et al., ICLR 2020, sec. 4; tensor2tensor modalities.video_l1_internal_
+                  loss: relu(|pred - target| - cutoff), per element): every element whose error is inside the cutoff gives no
+                  gradient, so well-predicted background stops competing. Cutoff = the 50 / 75 / 90% quantile of the TRAINED
+                  world's per-element |error| on 20 seeded training batches (no Craftax semantics). Categorical: per-token CE,
+                  cutoffs = quantiles of its per-token CE
+    ce_clip03     (categorical) SimPLe's softmax value: relu(CE - 0.03) per token ("no gradient once confidence exceeds 97%")
+    mask0.1 / mask1 / mask3   the dose response of mask10 (per-token dose on the faced tile of an attempt: x31 / x304 / x911;
+                  mask10 = x3,034 caught 0.58 at +59% all-token L1 on teacher s7; EAWM's x1.7-x8.8 and resample's x3.7 changed
+                  nothing)
+    mlp_uniform / mlp_mask10 / mlp_mask1   capacity or representation? (both seeds: a fresh LINEAR head re-learns the trained
+                  head's catch rate exactly, and mask10 catches 0.57-0.58 only at +38-59% all-token L1). The head's linear
+                  maps (proj, choose; logits for categorical) become 2-layer MLPs on the same frozen h (hidden 512, GELU; last
+                  layer initialized as the linear module: choose zero weight, bias (3,0,0,0,0,0)); frame / target_gate unchanged
+  H_clip          a clip arm passes H_head_fixable's three conditions
+  mask_dose       the smallest mask dose reaching held caught >= 0.5, and its all-token L1 / uniform (reported)
+  H_capacity      mlp_mask10 reaches held caught >= 0.5 with all-token L1 <= 1.1 x mlp_uniform's: the linear readout is the
+                  bottleneck (an expressive head is a fix); otherwise (caught but L1 > 1.1x) H_representation: the frozen
+                  representation cannot carry both, the fix must reach the backbone (end-to-end)
+  Every addendum arm's re-trained head is saved (artifacts/eda/headfit_heads_v1/<world>_<arm>.pt) for the cost analysis.
   Every arm also logs its training objective every 500 updates (plateau check).
 Usage: headfit.py <world.pt> ... -> evals/headfit_<name>.json
 """
@@ -71,6 +92,7 @@ FACED = torch.tensor([30, 32, 22, 40])           # facing one-hot index (left, r
 ACT = torch.tensor([5, 7, 8, 9, 10])
 HEAD = ("proj.", "choose.", "frame.", "target_gate.", "gate.", "logits.")
 LABELS = ROOT / "artifacts/eda/headfit_labels_v1.pt"
+HEADS = ROOT / "artifacts/eda/headfit_heads_v1"
 UPDATES, BATCH = 3000, 40
 
 
@@ -111,16 +133,19 @@ def head_params(world):
     return [p for n, p in world.named_parameters() if n.startswith(HEAD)]
 
 
-def per_token(world, s, a, kind, device):
-    """[B,5,81] per-token loss of the 5 teacher-forced next-frame predictions."""
+def per_token(world, s, a, kind, device, cut=None):
+    """[B,5,81] per-token loss of the 5 teacher-forced next-frame predictions (cut: SimPLe's per-element dead zone)."""
     from tworld import quantize
     a = F.pad(a, (0, 1))
     if world.head == "categorical":
         idx = quantize(s, world.codes)
         _, _, logits = world(world.codes[idx], a)
-        return F.cross_entropy(logits[:, :5].flatten(0, 2).float(), idx[:, 1:].flatten(), reduction="none").view(len(s), 5, 81)
+        ce = F.cross_entropy(logits[:, :5].flatten(0, 2).float(), idx[:, 1:].flatten(), reduction="none").view(len(s), 5, 81)
+        return ce if cut is None else (ce - cut).clamp(min=0)
     out = world(s, a)[0][:, :5].float()
     err = out - s[:, 1:].float()
+    if cut is not None:
+        return (err.abs() - cut).clamp(min=0).mean(-1)
     return err.abs().mean(-1) if kind == "l1" else (err ** 2).mean(-1)
 
 
@@ -137,16 +162,41 @@ def weights(arm, lab, rows, device):
     raise ValueError(arm)
 
 
-def objective(world, s, a, arm, lab, rows, device):
+def objective(world, s, a, arm, lab, rows, device, cuts=None):
+    if arm in (cuts or {}):
+        return per_token(world, s, a, "l1", device, cuts[arm]).mean()
     kind = "l2" if arm == "l2" else "l1"
     tok = per_token(world, s, a, kind, device)
-    if arm == "mask10":
+    if arm.startswith("mask"):
         m = torch.zeros_like(tok, dtype=torch.bool)
         att = lab["attempt"][rows].to(device); cell = lab["faced"][rows].to(device)
         m.scatter_(2, cell[..., None], att[..., None])
-        return tok.mean() + 10.0 * (tok * m).sum() / m.sum().clamp(min=1)
+        return tok.mean() + float(arm[4:]) * (tok * m).sum() / m.sum().clamp(min=1)
     w = weights(arm, lab, rows, device)
     return tok.mean() if w is None else (tok * w).mean()
+
+
+@torch.no_grad()
+def cutoffs(world, pool, train_rows, device, config):
+    """The trained world's per-element |error| (per-token CE for categorical) quantiles on 20 seeded training batches."""
+    from d4mj.train import autocast_context
+    from tworld import quantize
+    gen = torch.Generator().manual_seed(123); keep = torch.Generator().manual_seed(5); vals = []
+    for _ in range(20):
+        rows = train_rows[torch.randint(len(train_rows), (BATCH,), generator=gen)]
+        s = pool["tokens"][rows].float().to(device); a = F.pad(pool["actions"][rows], (0, 1)).to(device)
+        with autocast_context(config):
+            if world.head == "categorical":
+                idx = quantize(s, world.codes)
+                e = F.cross_entropy(world(world.codes[idx], a)[2][:, :5].flatten(0, 2).float(), idx[:, 1:].flatten(), reduction="none")
+            else:
+                e = (world(s, a)[0][:, :5].float() - s[:, 1:]).abs().flatten()
+        vals.append(e.cpu()[torch.randint(len(e), (50000,), generator=keep)])
+    v = torch.cat(vals)
+    out = {f"clip{q}": float(torch.quantile(v, q / 100)) for q in (50, 75, 90)}
+    if world.head == "categorical":
+        out["ce_clip03"] = 0.03
+    return out
 
 
 def anatomy(world, pool, lab, train_rows, device, config, kinds):
@@ -257,21 +307,32 @@ def main():
     rich = train_rows[lab["cons"][train_rows].any(-1)]
     log(stage="labels", cons_rate=float(lab["cons"].float().mean()), attempt_rate=float(lab["attempt"].float().mean()),
         rich_windows=len(rich), train_windows=len(train_rows))
-    for path in [Path(p) for p in sys.argv[1:]]:
+    argv = sys.argv[1:]
+    only = argv[argv.index("--arms") + 1].split(",") if "--arms" in argv else None
+    paths = [Path(p) for p in argv if p.endswith(".pt")]
+    for path in paths:
         trained, st = T.load_world(path, device)
         name = st["name"]
-        res = {"world": name, "head": trained.head}
-        trained.train()
-        kinds = ["l1"] if trained.head == "categorical" else ["l1", "l2"]
-        res["anatomy"] = anatomy(trained, pool, lab, train_rows, device, config, kinds)
-        log(world=name, anatomy=res["anatomy"])
-        trained.eval()
-        res["trained"] = {"train": evaluate(trained, pool, lab, train_eval, probes, device, config),
-                          "held": evaluate(trained, pool, lab, held, probes, device, config)}
-        arms = ["continue", "uniform", "l2", "eawm_same", "eawm_copy", "eawm_copy99", "mask10", "resample"]
-        if trained.head == "categorical":
-            arms.remove("l2")
-        res["arms"] = {}
+        out = HERE / "evals" / f"headfit_{name}.json"
+        if only:
+            res = json.loads(out.read_text())
+            trained.eval()
+            res["cutoffs"] = cutoffs(trained, pool, train_rows, device, config)
+            arms = only
+            log(world=name, cutoffs=res["cutoffs"])
+        else:
+            res = {"world": name, "head": trained.head}
+            trained.train()
+            kinds = ["l1"] if trained.head == "categorical" else ["l1", "l2"]
+            res["anatomy"] = anatomy(trained, pool, lab, train_rows, device, config, kinds)
+            log(world=name, anatomy=res["anatomy"])
+            trained.eval()
+            res["trained"] = {"train": evaluate(trained, pool, lab, train_eval, probes, device, config),
+                              "held": evaluate(trained, pool, lab, held, probes, device, config)}
+            arms = ["continue", "uniform", "l2", "eawm_same", "eawm_copy", "eawm_copy99", "mask10", "resample"]
+            if trained.head == "categorical":
+                arms.remove("l2")
+            res["arms"] = {}
         for arm in arms:
             world, _ = T.load_world(path, device)
             if arm != "continue":
@@ -281,6 +342,15 @@ def main():
                 sd = world.state_dict()
                 sd.update({k: v.to(device) for k, v in fresh.state_dict().items() if k.startswith(HEAD)})
                 world.load_state_dict(sd)
+            if arm.startswith("mlp_"):           # the same frozen h, an expressive readout
+                torch.manual_seed(0)
+                for nm in ("proj", "choose", "logits"):
+                    lin = getattr(world, nm, None)
+                    if isinstance(lin, torch.nn.Linear):
+                        last = torch.nn.Linear(512, lin.out_features)
+                        if nm == "choose":
+                            torch.nn.init.zeros_(last.weight); last.bias.data.copy_(lin.bias.data)
+                        setattr(world, nm, torch.nn.Sequential(torch.nn.Linear(lin.in_features, 512), torch.nn.GELU(), last).to(device))
             for n_, p in world.named_parameters():
                 p.requires_grad_(n_.startswith(HEAD))
             params = head_params(world)
@@ -295,7 +365,8 @@ def main():
                     rows = torch.cat([rows[:BATCH // 2], rich[torch.randint(len(rich), (BATCH // 2,), generator=gen)]])
                 s = pool["tokens"][rows].float().to(device); a = pool["actions"][rows].to(device)
                 with autocast_context(config):
-                    loss = objective(world, s, a, "uniform" if arm == "resample" else arm, lab, rows, device)
+                    base = "uniform" if arm == "resample" else arm[4:] if arm.startswith("mlp_") else arm
+                    loss = objective(world, s, a, base, lab, rows, device, res.get("cutoffs"))
                 opt.zero_grad(set_to_none=True)
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(params, 1.0)
@@ -305,6 +376,9 @@ def main():
             world.eval()
             res["arms"][arm] = {"train": evaluate(world, pool, lab, train_eval, probes, device, config),
                                 "held": evaluate(world, pool, lab, held, probes, device, config), "objective_every_500": curve}
+            if only:
+                HEADS.mkdir(parents=True, exist_ok=True)
+                torch.save({k: v.cpu() for k, v in world.state_dict().items() if k.startswith(HEAD)}, HEADS / f"{name}_{arm}.pt")
             log(world=name, arm=arm, held={k: round(v, 4) if isinstance(v, float) else v for k, v in res["arms"][arm]["held"].items()},
                 train_caught=round(res["arms"][arm]["train"]["caught"], 4))
             del world, opt
@@ -324,8 +398,18 @@ def main():
         if "l2" in A:
             rd["H_geometry"] = A["l2"]["held"]["caught"] >= 0.5 and u["caught"] < 0.1
         rd["H_generic"] = any(A[k]["held"]["caught"] >= 0.5 for k in ("l2", "eawm_same", "eawm_copy", "eawm_copy99") if k in A)
+        clip = [k for k in ok if k.startswith(("clip", "ce_clip"))]
+        if clip:
+            rd["H_clip"] = any(ok[k] for k in clip)
+        if "mlp_mask10" in A and "mlp_uniform" in A:
+            m10, mu_ = A["mlp_mask10"]["held"], A["mlp_uniform"]["held"]
+            rd["H_capacity"] = m10["caught"] >= 0.5 and m10["l1_all"] <= 1.1 * mu_["l1_all"]
+            rd["H_representation"] = m10["caught"] >= 0.5 and m10["l1_all"] > 1.1 * mu_["l1_all"]
+        dose = sorted((float(k[4:]), k) for k in A if k.startswith("mask") and A[k]["held"]["caught"] >= 0.5)
+        if dose:
+            rd["mask_dose"] = {"arm": dose[0][1], "l1_over_uniform": A[dose[0][1]]["held"]["l1_all"] / u["l1_all"]}
         res["readings"] = rd
-        (HERE / "evals" / f"headfit_{name}.json").write_text(json.dumps(res, indent=2) + "\n")
+        out.write_text(json.dumps(res, indent=2) + "\n")
         log(world=name, readings=rd)
         del trained
         torch.cuda.empty_cache()
