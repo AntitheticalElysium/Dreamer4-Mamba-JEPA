@@ -16,6 +16,10 @@ For each case the head's move logit (blockwin.py: frame logit + target-tile gate
   img_cur    imagined current frame, true history
 A positive logit = scroll. Also, at the target tile (the cell the move enters) of the current frame: squared distance between
 the imagined and true tokens, beside the same distance for the player tile and for the frame mean.
+Provenance of the target tile (added 2026-10-01 after the first run, reported only): with sample 0's true offset at the
+current frame, the target cell's world position is OBSERVABLE (inside the root frame's view: its content was drawn at the
+root), or REVEALED (first drawn during the rollout); MOB if any of the five samples has a mob on that cell at the current
+frame. Shares for the cases and their controls, and the target-tile distance by provenance.
 Readings, declared before running, per kind ("right" = scroll for missed, no scroll for false):
   input_caused     the true window is right on >= 80% of cases while the imagined window is wrong on >= 80%
   current_frame    img_cur is wrong on >= 70% of cases while img_hist is right on >= 70%
@@ -139,11 +143,27 @@ def main():
                 d = ((wi[:, -1] - wt[:, -1]) ** 2).sum(-1)                            # [b,81]
                 dist["target"].append(d[torch.arange(len(chunk)), tg]); dist["player"].append(d[:, 31]); dist["frame"].append(d[:, :63].mean(1))
             logits = {v: torch.cat(x) for v, x in variants.items()}
+            prov = {"observable": [], "mob": []}
+            vis = meta["future_visible"]
+            for r, k in lst:
+                tcell = TARGET[int(fa[r, k])]; tr_, tc_ = divmod(tcell, 9)
+                off = true_off[r, 0, k - 1]                                             # current frame = future k-1
+                wr, wc = tr_ + int(off[0]), tc_ + int(off[1])
+                prov["observable"].append(0 <= wr < 7 and 0 <= wc < 9)
+                mobs = vis[r, :, k - 1, 1071:1071 + 441].float().reshape(S, 7, 9, 7).sum(-1)[:, tr_, tc_]
+                prov["mob"].append(bool((mobs > 0).any()))
+            ob, mb = torch.tensor(prov["observable"]), torch.tensor(prov["mob"])
             dd = {q: torch.cat(x) for q, x in dist.items()}
             res[cname] = {"scroll_rate": {v: float((x > 0).float().mean()) for v, x in logits.items()},
                           "mean_logit": {v: float(x.mean()) for v, x in logits.items()},
                           "token_distance_imagined_vs_true": {q: float(x.mean()) for q, x in dd.items()},
-                          "depth_hist": torch.bincount(torch.tensor([k for _, k in lst]), minlength=H).tolist()}
+                          "depth_hist": torch.bincount(torch.tensor([k for _, k in lst]), minlength=H).tolist(),
+                          "provenance": {"observable_share": float(ob.float().mean()), "mob_share": float(mb.float().mean()),
+                                         "target_distance": {g: float(dd["target"][m].mean()) if m.any() else None for g, m in
+                                                             (("observable_no_mob", ob & ~mb), ("revealed_no_mob", ~ob & ~mb),
+                                                              ("mob", mb))},
+                                         "counts": {"observable_no_mob": int((ob & ~mb).sum()), "revealed_no_mob": int((~ob & ~mb).sum()),
+                                                    "mob": int(mb.sum())}}}
         res["readings"] = {}
         for kind, ctrl, sign in (("missed", "control", 1), ("false", "control_false", -1)):
             m = res.get(kind)

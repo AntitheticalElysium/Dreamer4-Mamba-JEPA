@@ -1,0 +1,183 @@
+{
+  "world": "corrt_raw_suffix_s8_u18000",
+  "n": {
+    "missed": 309,
+    "control": 927,
+    "false": 216,
+    "control_false": 641
+  },
+  "missed": {
+    "scroll_rate": {
+      "imagined": 0.5339806079864502,
+      "true": 0.9126213788986206,
+      "img_hist": 0.9061488509178162,
+      "img_cur": 0.5760517716407776
+    },
+    "mean_logit": {
+      "imagined": -1.2663239240646362,
+      "true": 2.1196131706237793,
+      "img_hist": 2.1786603927612305,
+      "img_cur": -1.234684705734253
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 56.42888641357422,
+      "player": 43.228614807128906,
+      "frame": 38.27682876586914
+    },
+    "depth_hist": [
+      0,
+      14,
+      21,
+      16,
+      32,
+      29,
+      31,
+      27,
+      25,
+      28,
+      22,
+      19,
+      18,
+      9,
+      7,
+      11
+    ]
+  },
+  "control": {
+    "scroll_rate": {
+      "imagined": 0.9784250259399414,
+      "true": 0.983818769454956,
+      "img_hist": 0.9816612601280212,
+      "img_cur": 0.9784250259399414
+    },
+    "mean_logit": {
+      "imagined": 2.3970258235931396,
+      "true": 2.4774558544158936,
+      "img_hist": 2.4725425243377686,
+      "img_cur": 2.4179115295410156
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 18.208698272705078,
+      "player": 32.31230163574219,
+      "frame": 31.02678108215332
+    },
+    "depth_hist": [
+      0,
+      42,
+      63,
+      48,
+      96,
+      87,
+      93,
+      81,
+      75,
+      84,
+      66,
+      57,
+      54,
+      27,
+      21,
+      33
+    ]
+  },
+  "false": {
+    "scroll_rate": {
+      "imagined": 0.7870370149612427,
+      "true": 0.4722222089767456,
+      "img_hist": 0.45370370149612427,
+      "img_cur": 0.8009259104728699
+    },
+    "mean_logit": {
+      "imagined": 1.398469090461731,
+      "true": -2.284925937652588,
+      "img_hist": -2.7837297916412354,
+      "img_cur": 1.3326947689056396
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 66.70543670654297,
+      "player": 33.20610427856445,
+      "frame": 32.65523147583008
+    },
+    "depth_hist": [
+      0,
+      26,
+      26,
+      20,
+      18,
+      17,
+      16,
+      13,
+      10,
+      12,
+      13,
+      9,
+      7,
+      13,
+      8,
+      8
+    ]
+  },
+  "control_false": {
+    "scroll_rate": {
+      "imagined": 0.045241810381412506,
+      "true": 0.04056162387132645,
+      "img_hist": 0.029641184955835342,
+      "img_cur": 0.054602183401584625
+    },
+    "mean_logit": {
+      "imagined": -6.916743278503418,
+      "true": -7.744115352630615,
+      "img_hist": -7.977838516235352,
+      "img_cur": -6.878676414489746
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 16.227066040039062,
+      "player": 24.8851375579834,
+      "frame": 19.149600982666016
+    },
+    "depth_hist": [
+      0,
+      78,
+      78,
+      60,
+      54,
+      51,
+      48,
+      39,
+      30,
+      36,
+      39,
+      27,
+      21,
+      32,
+      24,
+      24
+    ]
+  },
+  "readings": {
+    "missed": {
+      "right_rate": {
+        "imagined": 0.5339806079864502,
+        "true": 0.9126213788986206,
+        "img_hist": 0.9061488509178162,
+        "img_cur": 0.5760517716407776
+      },
+      "input_caused": false,
+      "current_frame": false,
+      "history": false,
+      "target_tile": true
+    },
+    "false": {
+      "right_rate": {
+        "imagined": 0.21296298503875732,
+        "true": 0.5277777910232544,
+        "img_hist": 0.5462962985038757,
+        "img_cur": 0.19907408952713013
+      },
+      "input_caused": false,
+      "current_frame": false,
+      "history": false,
+      "target_tile": true
+    }
+  }
+}
