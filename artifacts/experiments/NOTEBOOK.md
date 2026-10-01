@@ -263,7 +263,44 @@ on imagined inputs?** Seven conjectures were tested in sequence; the data reject
     0.00011), about as fast as the worlds drift. Their source is not established: global-attention context or lighting
     (E11k argues against lighting for the world's increments).
 
-**The chain, measured:**
+**E11m-E11o: what moves tokens, and what corrupts the DECISIVE tile.**
+- **E11m `truecause.py` (exploratory): sleeping steps carry ~73% of the true token motion of unchanged cells.**
+  - Per cell: 0.0013 asleep vs 0.00006 awake.
+  - The renderer draws the whole map grayscale at half brightness while the player sleeps (renderer.py "Apply sleep").
+  - Night, HUD changes, turning and mobs all show SMALLER means.
+- **E11n (`scrolldrift.py` sleep split; reading declared): the worlds' known-cell drift is sleep_driven.**
+  - Sleeping steps hold 66-72% of the summed increment.
+  - Per cell: 0.00136-0.00151 asleep vs 0.00007-0.00010 awake.
+- **Sleep does NOT trigger decision failures** (`missedscroll.py` slept provenance; declared reading false in all 5 worlds).
+  - 5.5-7.5% of wrong decisions had a sleeping frame earlier, vs 2.4-8.9% of controls.
+  - Missed scrolls do follow sleep more (7-11% vs 0.7-1.7%); false scrolls follow it less.
+- **E11o `onset.py` (exploratory, re-run reproduced): the decisive tile's corruption is a single-step event, mostly an
+  interaction with that tile.**
+  - Method: for each first wrong decision and each control, the target tile's world cell is traced back through the
+    imagined frames. The onset is the step with the largest error increase.
+
+| onset event | teacher s7 | teacher s8 | suffix s7 | suffix s8 | controls |
+|---|---|---|---|---|---|
+| faced tile under DO / place, content CHANGED (real consequence missed) | **0.460** | 0.117 | 0.115 | 0.145 | 0.005-0.047 |
+| faced tile under DO / place, content UNCHANGED (consequence hallucinated) | 0.016 | **0.271** | 0.111 | 0.088 | 0.014-0.052 |
+| DO at the onset step | 0.46 | 0.43 | 0.21 | 0.23 | 0.11-0.13 |
+| entered the view | 0.15 | 0.15 | 0.14 | 0.13 | 0.03-0.05 |
+| mob within one cell | 0.22 | 0.20 | 0.19 | 0.20 | 0.17 |
+| asleep | 0.07 | 0.06 | 0.06 | 0.06 | 0.04-0.06 |
+| tile the player left | 0.04 | 0.01 | 0.03 | 0.04 | 0.03-0.05 |
+| share of final error added at onset (median) | 0.98 | 0.96 | 0.94 | 0.92 | 0.68-0.83 |
+
+  - The onset is ~3 steps before the decision (wrong 3.0-3.6, controls 3.3-3.5).
+
+**The chain, measured (revised):**
+- *Trigger:* the world mispredicts the consequence of acting on the faced tile (DO / place), in one step. teacher s7 misses
+  real changes; teacher s8 hallucinates them; the suffix worlds do both. Cells entering the view are a second trigger
+  (13-15% vs 3-5%).
+- About 3 steps later the player moves onto or through that tile; the move decision reads the wrongly drawn tile and
+  flips. Then the view position goes wrong and the trajectory corrupts (steps 1-3 below).
+- *Background (not the trigger):* known tiles also drift slowly, mostly on sleeping steps (grayscale rendering). That
+  carries 66-72% of the known-cell drift VOLUME but rarely flips a decision.
+
 0. (E11l, corrected) The true tokens of content-unchanged cells move ~0.00026 per cell per step (source not established).
    From true frames the world tracks this (depth-1 error on unchanged cells ~1-4e-5); from imagined frames it tracks
    almost none of it (increment 0.93x the true change). The tile the player leaves changes most (sprite to terrain, 0.0132)
