@@ -41,7 +41,21 @@
       16,
       7,
       10
-    ]
+    ],
+    "provenance": {
+      "observable_share": 0.693617045879364,
+      "mob_share": 0.008510638028383255,
+      "target_distance": {
+        "observable_no_mob": 49.35302734375,
+        "revealed_no_mob": 55.984039306640625,
+        "mob": 38.127254486083984
+      },
+      "counts": {
+        "observable_no_mob": 162,
+        "revealed_no_mob": 71,
+        "mob": 2
+      }
+    }
   },
   "control": {
     "scroll_rate": {
@@ -78,7 +92,21 @@
       48,
       21,
       30
-    ]
+    ],
+    "provenance": {
+      "observable_share": 0.8624113202095032,
+      "mob_share": 0.007092198356986046,
+      "target_distance": {
+        "observable_no_mob": 4.3251566886901855,
+        "revealed_no_mob": 39.04703903198242,
+        "mob": 77.06598663330078
+      },
+      "counts": {
+        "observable_no_mob": 604,
+        "revealed_no_mob": 96,
+        "mob": 5
+      }
+    }
   },
   "false": {
     "scroll_rate": {
@@ -115,7 +143,21 @@
       16,
       11,
       9
-    ]
+    ],
+    "provenance": {
+      "observable_share": 0.8734694123268127,
+      "mob_share": 0.03265305981040001,
+      "target_distance": {
+        "observable_no_mob": 173.730712890625,
+        "revealed_no_mob": 195.1006317138672,
+        "mob": 83.93406677246094
+      },
+      "counts": {
+        "observable_no_mob": 206,
+        "revealed_no_mob": 31,
+        "mob": 8
+      }
+    }
   },
   "control_false": {
     "scroll_rate": {
@@ -152,7 +194,21 @@
       40,
       33,
       27
-    ]
+    ],
+    "provenance": {
+      "observable_share": 0.9614855647087097,
+      "mob_share": 0.012379642575979233,
+      "target_distance": {
+        "observable_no_mob": 12.168351173400879,
+        "revealed_no_mob": 49.83287811279297,
+        "mob": 8.726686477661133
+      },
+      "counts": {
+        "observable_no_mob": 690,
+        "revealed_no_mob": 28,
+        "mob": 9
+      }
+    }
   },
   "readings": {
     "missed": {
