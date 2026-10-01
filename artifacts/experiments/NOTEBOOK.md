@@ -210,10 +210,50 @@ right), move targets vs Chebyshev ring 3+:
 
 - Declared adjacent_drift (≥ 2x at depth 8): false. As measured: the player's neighbours drift 5.5-9x faster at the
   first imagined step, when the first wrong decisions start, and the drift then spreads over the map.
-- Consistent with contextual ViT tokens: a neighbour's token changes when the player turns, so the copy head must
-  regenerate it there (not tested directly).
+- Explanation tested in E11e-E11l below: contextual tokens, through the player MOVING next to a tile (not turning).
+
+**E11e-E11l (2026-10-01 evening, after a restart; each reading declared and committed before its run). Why do known tiles drift
+on imagined inputs?** Seven conjectures were tested in sequence; the data rejected six.
+- **E11e `ctxtok.py`: contextual tokens when the player TURNS.**
+  - Content-unchanged move targets change 0.29 (squared token distance) when the facing changed vs 2.67 when it did not;
+    ring 3+ changes 4.80.
+  - contextual_neighbour: false, and I first wrote this up as "contextual tokens refuted". **CORRECTED by E11l: refuted for
+    turning only; moving is a different matter.**
+- **E11f `targetdrift.py`: the FACED tile (where DO / place act), depth 1, no-scroll steps.**
+  - Unchanged cells barely drift (1-4e-5 per cell); the faced tile is not worse in 3 of 4 worlds.
+  - teacher s8 alone hallucinates DO effects on the faced tile (0.0049 vs ~2e-5): a seed-specific defect.
+- **E11g `occlusion.py`: the tile the player just LEFT.**
+  - It is predicted 4-12x worse than the tile ahead after a move, but barely better when a context frame had shown it
+    (1.15-1.35x). occlusion_driven: false.
+  - Consistent with these worlds using ~only the current frame.
+  - Separately, previously occupied tiles are UNDER-represented among the decision-flipping targets (5-14% of missed vs
+    16-19% of controls).
+- **E11h `scrolldrift.py`: drift added at SCROLL steps?** No: scroll / no-scroll per-cell increments 0.48-1.02x. The drift
+  appears once inputs are imagined (~1.5-3e-4 per cell per step vs ~1-4e-5 from true frames).
+- **E11i `copyconf.py`: the copy head loses confidence on its own outputs?**
+  - No: correct-source weight imagined vs true agrees within 0.004 in all 5 worlds (0.76-0.94).
+  - The mixture is soft even on true inputs.
+- **E11j `scrolldrift.py --hard`: repeated soft re-mixing (diffusion)?** No: exact argmax copying INCREASES known-cell drift
+  (soft / hard 0.60-0.63). So the TRUE tokens of content-unchanged cells must move.
+- **E11k: the light change per step?** No: increments 0.00029 / 0.00017 / 0.00030 at light change < 0.001 / 0.001-0.01 /
+  0.01-0.03.
+- **E11l `truechange.py`: do the true tokens move?** YES (true_target_moves).
+  - Measure: deterministic change of the true token of content-unchanged cells (sample-mean change, noise-corrected), / V.
+
+| step | all cells | move targets | ring 2 | ring 3+ | day | night |
+|---|---|---|---|---|---|---|
+| no scroll | 0.000256 | 0.000287 | 0.000242 | 0.000240 | 0.000294 | 0.000111 |
+| scroll | 0.000817 | **0.003696** | 0.000219 | 0.000226 | 0.000762 | 0.001101 |
+
+  - No-scroll: the true change is 0.93x the soft worlds' mean drift increment (0.000256 vs 0.000275).
+  - After a move, content-unchanged tiles beside the player change token **16x** more than distant ones.
+  - The encoder is a ViT with global attention, so a patch token depends on its surroundings; the player arriving next to
+    a tile changes that tile's token.
 
 **The chain, measured:**
+0. (E11l) Tokens are contextual: after a move, the player's neighbours' tokens change 16x more than distant tiles', and
+   all tokens move a little every step. From true frames the world tracks this (depth-1 error on unchanged cells ~1-4e-5);
+   from imagined frames it tracks almost none of it on no-scroll steps.
 1. Known static content at the tiles beside the player drifts first.
 2. The move decision, which reads the target tile, flips (missed or false scroll).
 3. The view position goes wrong (46-81% of roots by depth 16).
