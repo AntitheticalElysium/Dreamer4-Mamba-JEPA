@@ -81,9 +81,10 @@ def token_cache(device, log):
 
 
 @torch.no_grad()
-def imagine(world, config, data, window, path, device, batch=16):
+def imagine(world, config, data, window, path, device, batch=None):
     """Imagined states at DEPTHS for every root and first action, continuation actions after step 1 -> memmaps."""
     R = len(data["seed"])
+    batch = batch or (16 if world.backbone_kind == "full" else 4)      # per-token SSM scans: where.py's OOM rule
     mms = {k: D.memmap(f"{path}_gen{k}.f16", (R, N, 81, 192), "w+") for k in DEPTHS}
     for i in range(0, R, batch):
         frames = data["ctx"][i:i + batch].float().repeat_interleave(N, 0)

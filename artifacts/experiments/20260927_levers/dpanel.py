@@ -124,9 +124,10 @@ def token_cache(splits, device, log):
 
 
 @torch.no_grad()
-def imagine(world, config, data, window, path, device, batch=16):
+def imagine(world, config, data, window, path, device, batch=None):
     """The world's step-1 (branch action) and step-2 (NOOP) states for every root and branch -> fp16 memmaps."""
     R = len(data["seed"])
+    batch = batch or (16 if world.backbone_kind == "full" else 4)      # per-token SSM scans: where.py's OOM rule
     m1, m2 = memmap(f"{path}_gen1.f16", (R, N, 81, 192), "w+"), memmap(f"{path}_gen2.f16", (R, N, 81, 192), "w+")
     g1, g2 = torch.from_numpy(m1), torch.from_numpy(m2)
     for i in range(0, R, batch):
