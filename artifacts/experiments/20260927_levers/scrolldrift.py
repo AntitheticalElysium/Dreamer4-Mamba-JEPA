@@ -10,7 +10,10 @@ no mob in any sample at k-1 or k, same drawn content (tile class) at k-1 and k i
 Reported: mean increment per cell on scroll steps vs no-scroll steps, overall and by depth; the same for the four move targets.
 Reading, declared before running:
   scroll_driven  per-cell increment on scroll steps >= 3x that on no-scroll steps (all kept cells, depths 2-16 pooled)
-Usage: scrolldrift.py <world.pt> ... -> evals/scrolldrift_<name>.json
+--hard (added after E11i, reading declared before that run): the corr head decodes with ITC's argmax (world.hard_decode: each
+tile copies exactly one candidate). Reading: mixing_diffusion if the pooled per-cell increment on no-scroll steps falls >= 3x
+against the soft run of the same world (the soft head's repeated re-mixing of its own outputs is what drifts known content).
+Usage: scrolldrift.py <world.pt> ... [--hard] -> evals/scrolldrift_<name>[__hard].json
 """
 import json
 import sys
@@ -54,9 +57,11 @@ def main():
     rr = torch.arange(63) // 9; cc = torch.arange(63) % 9
     is_target = torch.isin(torch.arange(63), torch.tensor(TARGETS))
     out_dir = HERE / "evals"
-    for path in [Path(p) for p in sys.argv[1:]]:
+    hard = "--hard" in sys.argv
+    for path in [Path(p) for p in sys.argv[1:] if p != "--hard"]:
         world, st = T.load_world(path, device)
-        name = st["name"]
+        world.hard_decode = hard
+        name = st["name"] + ("__hard" if hard else "")
         batch = 16 if world.backbone_kind == "full" else 4
         gen = torch.empty(R, H, 81, 192, dtype=torch.float16)
         for i in range(0, R, batch):
