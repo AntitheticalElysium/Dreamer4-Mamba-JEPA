@@ -1,0 +1,18 @@
+{
+  "world": "corrt_raw_teacher_s7_u18000",
+  "input_change_probe": {
+    "auc": 0.963887095451355,
+    "mean_p_changed": 0.7010968327522278,
+    "mean_p_unchanged": 0.10753798484802246,
+    "share_p_over_half_changed": 0.7877697944641113
+  },
+  "backbone_h_change_probe": {
+    "auc": 0.9445638060569763,
+    "mean_p_changed": 0.6341297626495361,
+    "mean_p_unchanged": 0.11936549097299576,
+    "share_p_over_half_changed": 0.6942446231842041
+  },
+  "readings": {
+    "h_below_threshold": false
+  }
+}
