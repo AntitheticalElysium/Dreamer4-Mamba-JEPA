@@ -131,6 +131,42 @@ has ever been judged on a decision. Everything the levers campaign measured is t
   - Tests before launch:
     - smoke mode reproduces the committed seed-69,000 labels bit for bit (15/15 roots);
     - a one-seed collect (69,010) wrote 10 complete rows, with zero realized-vs-P contradictions and cumulative deaths.
+- **E10 stage 3, the H16 evaluation (`deepeval.py`; rules fixed before the judgement block 62,000-62,399 is read):**
+  - Data:
+    - fit / dev = the replayed FIT-train / FIT-dev deep rows; judge = the fresh block.
+    - Kept: roots whose P varies at some judged depth.
+  - Continuation: `recorded` (the BC policy's next 15 actions, open loop, identical across the 17 branches).
+  - Labels: P(dead by k) over 32 key sequences, k ∈ {1, 4, 16}.
+  - Imagination: teval's convention (4 frames, then a 5-frame window), with the continuation's actions.
+  - Heads: dpanel.fit_head, 3 seeds.
+    - gen_k: fitted on imagined depth-k states.
+    - transfer_k: real_k head on imagined states.
+  - References:
+    - real_k (real depth-k tiles, ONE draw);
+    - root_rank_k (root tiles + first action; it does NOT see the continuation);
+    - prior_k.
+  - Fidelity: err/copy at each depth.
+  - Worlds:
+    - corrt teacher / suffix 18k (s7, and s8 from lane22);
+    - fmamba corrg suffix 18k;
+    - corrt teacher / suffix 6k (s7, s8).
+  - Declared readings, per world, at k = 16 on judge opportunity roots (paired seed-clustered 95% intervals):
+    1. **carries the H16 decision**: gen16 − prior16 > 0 resolved AND gen16 − root_rank16 > 0 resolved.
+    2. **usable in imagination at H16**: transfer16 − prior16 > 0 resolved.
+    3. Recipe contrasts (teacher vs suffix, corrt vs fmamba) are attributed only if resolved with the same sign at
+       BOTH init seeds; otherwise reported as measured.
+  - k = 1 and 4 are reported with the same contrasts, not ruled.
+- **lane22 (seed-8 18k teacher / suffix pair; declared before results):** the 18k recipe effect counts only if
+  suffix − teacher is resolved with the same sign at seeds 7 and 8 (compare.py, depth 16 and one-step all).
+- **Sealed confirmation of E9's H1 reading (declared before the 62k block is read):**
+  - deepeval at k = 1 is E9's gen1 question exactly: the continuation starts at step 2, and P(dead by 1) is one-step
+    death over 32 fresh key sequences.
+  - For each world, "**the transition makes the one-step decision readable (confirmed)**" iff gen1 − root_rank1 > 0
+    AND gen1 − prior1 > 0, both resolved on the 62k block.
+  - deepeval GPU smoke (10 stage-2 rows from seed 69,010 as fit/dev/judge, teacher 18k): end to end; depth
+    err/copy 0.225 / 0.316 / 0.553 at k = 1 / 4 / 16.
+- **lane19c (E9 head ablation, declared):** dpanel on direct and residual 6k (seed 7, suffix) vs corrt 6k. spatial.py's T,
+  which carried no decision (frozen_heads 0.676 vs root_rank 0.684), used the direct output. Reported, not ruled.
 - Also committed: `20260929_mamba_integration/memceil.py` / `memceil.json`, the recall ceiling for cells entering view
   (2,000 Raw long-pool windows, 126,000 steps).
   - Scroll rate 0.351. Entering cells are 4.49% of map-cell predictions.
