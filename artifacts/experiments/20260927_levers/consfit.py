@@ -61,8 +61,12 @@ def main():
                 r = rows[i:i + 64]
                 s = pool["tokens"][r].float()                                       # [b,6,81,192]
                 a = pool["actions"][r]; alive = pool["alive"][r]
+                s_in = s.to(device)
+                if world.head == "categorical":                                       # trained on quantized inputs (teval.step)
+                    from tworld import quantize
+                    s_in = world.codes[quantize(s_in, world.codes)]
                 with autocast_context(config):
-                    pred = world(s.to(device), F.pad(a, (0, 1)).to(device))[0].float().cpu()   # pred[:,t] -> frame t+1
+                    pred = world(s_in, F.pad(a, (0, 1)).to(device))[0].float().cpu()   # pred[:,t] -> frame t+1
                 err = (pred[:, :5] - s[:, 1:]).abs().sum(-1)                         # [b,5,81] L1 per token
                 ok = alive[:, 1:]
                 l1_total += float((err.sum(-1) * ok).sum()); n_trans += int(ok.sum())

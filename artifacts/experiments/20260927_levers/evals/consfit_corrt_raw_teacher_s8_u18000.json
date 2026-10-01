@@ -1,0 +1,119 @@
+{
+  "world": "corrt_raw_teacher_s8_u18000",
+  "train": {
+    "act_transitions": 5409,
+    "transitions": 19428,
+    "strict_cut_token_change": 147.75979614257812,
+    "d_true_median": {
+      "probe_changed": 160.0996551513672,
+      "probe_unchanged": 0.10929900407791138
+    },
+    "probe": {
+      "changed": 1676,
+      "unchanged": 3733,
+      "caught_rate": 0.32517901062965393,
+      "copied_rate": 0.6718376874923706,
+      "closer_to_after_rate": 0.32995226979255676,
+      "hallucinated_rate": 0.013394053094089031,
+      "consequence_density": 0.08626724315421042,
+      "objective_share_of_changed_faced_tiles": 0.009810975155604711
+    },
+    "strict": {
+      "changed": 870,
+      "unchanged": 3733,
+      "caught_rate": 0.25517240166664124,
+      "copied_rate": 0.7436781525611877,
+      "closer_to_after_rate": 0.25632184743881226,
+      "hallucinated_rate": 0.013394053094089031,
+      "consequence_density": 0.044780728844966027,
+      "objective_share_of_changed_faced_tiles": 0.00738945318738099
+    },
+    "by_action_strict": {
+      "5": {
+        "n": 2823,
+        "changed": 468,
+        "caught_rate": 0.4743589758872986
+      },
+      "7": {
+        "n": 791,
+        "changed": 214,
+        "caught_rate": 0.0
+      },
+      "8": {
+        "n": 579,
+        "changed": 103,
+        "caught_rate": 0.0
+      },
+      "9": {
+        "n": 586,
+        "changed": 85,
+        "caught_rate": 0.0
+      },
+      "10": {
+        "n": 630,
+        "changed": 0,
+        "caught_rate": 0.0
+      }
+    }
+  },
+  "held": {
+    "act_transitions": 3069,
+    "transitions": 10234,
+    "strict_cut_token_change": 118.390625,
+    "d_true_median": {
+      "probe_changed": 116.68309020996094,
+      "probe_unchanged": 0.07999597489833832
+    },
+    "probe": {
+      "changed": 1130,
+      "unchanged": 1939,
+      "caught_rate": 0.35044246912002563,
+      "copied_rate": 0.6451327204704285,
+      "closer_to_after_rate": 0.35221239924430847,
+      "hallucinated_rate": 0.014956163242459297,
+      "consequence_density": 0.11041625952706664,
+      "objective_share_of_changed_faced_tiles": 0.011777204544975413
+    },
+    "strict": {
+      "changed": 560,
+      "unchanged": 1939,
+      "caught_rate": 0.27142858505249023,
+      "copied_rate": 0.7214285731315613,
+      "closer_to_after_rate": 0.28035715222358704,
+      "hallucinated_rate": 0.014956163242459297,
+      "consequence_density": 0.05471956224350205,
+      "objective_share_of_changed_faced_tiles": 0.008759919920023685
+    },
+    "by_action_strict": {
+      "5": {
+        "n": 1706,
+        "changed": 315,
+        "caught_rate": 0.4793650805950165
+      },
+      "7": {
+        "n": 440,
+        "changed": 131,
+        "caught_rate": 0.0
+      },
+      "8": {
+        "n": 302,
+        "changed": 66,
+        "caught_rate": 0.0
+      },
+      "9": {
+        "n": 261,
+        "changed": 47,
+        "caught_rate": 0.0
+      },
+      "10": {
+        "n": 360,
+        "changed": 1,
+        "caught_rate": 1.0
+      }
+    }
+  },
+  "readings": {
+    "underfit": true,
+    "generalization": false
+  }
+}
