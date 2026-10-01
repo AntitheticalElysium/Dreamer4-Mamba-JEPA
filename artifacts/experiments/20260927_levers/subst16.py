@@ -11,6 +11,9 @@ PART A -- oracle components, each a counterfactual rollout of the same world on 
   scroll_pm20 (first version, kept as a reported variant after its first run: ~98.5% right scrolls but depth-16 excess 0.560
            -> 0.992 for teacher s7, so a saturated gate is not a faithful oracle) the frame logit set to +20 / -20 from the true
            scroll, target gate 0. Its per-class excess shows what the saturated gate corrupts.
+  realign  (added after the gate oracles: neither isolates position) whenever the drawn frame scrolled differently from the truth,
+           the frame is shifted by the difference so its position is exact; the world's own content is kept, the map cells
+           left uncovered are filled with the true tokens (counted: realign_fill), the player cell and HUD are untouched
   cons     after a DO / place step (actions 5, 7-10), the faced tile's predicted token is replaced by the true one
   enter    on a scroll step, the cells entering the view are replaced by the true ones
   cons / enter substitute only while the imagined view position is still right, in every arm (afterwards true tokens would
@@ -34,7 +37,7 @@ Readings, declared before any run (per world):
   R4 target_tile_causal    (b) restores the right decision on >= 50% of cases, (c) on <= 15%, and (d) on <= 30%
   R5 consequence_one_step  on the true window, the faced-tile class error rate (missed + hallucinated) is >= 50% of that on the
                            imagined window (the consequence error exists without self-feeding)
-Usage: subst16.py <world.pt> ... -> evals/subst16_<name>.json
+Usage: subst16.py <world.pt> ... [--arms a,b,c --tag t] -> evals/subst16_<name>[_t].json
 """
 import json
 import sys
@@ -52,7 +55,8 @@ TARGET = {1: 30, 2: 32, 3: 22, 4: 40}                    # move action -> the ce
 ACT = (5, 7, 8, 9, 10)                                   # DO, place stone / table / furnace / plant
 ARMS = (("base", ()), ("scroll_pm20", ("pm20",)), ("scroll", ("scroll",)), ("scroll+cons", ("scroll", "cons")), ("scroll+enter", ("scroll", "enter")),
         ("scroll+cons+enter", ("scroll", "cons", "enter")), ("cons", ("cons",)), ("enter", ("enter",)),
-        ("cons+enter", ("cons", "enter")))
+        ("cons+enter", ("cons", "enter")), ("realign", ("realign",)), ("realign+cons", ("realign", "cons")),
+        ("realign+enter", ("realign", "enter")), ("realign+cons+enter", ("realign", "cons", "enter")))
 
 
 def entering_cells(shift_idx):
@@ -130,7 +134,14 @@ def main():
     fut0 = fut5[:, 0]
     out_dir = HERE / "evals"
 
-    for path in [Path(p) for p in sys.argv[1:]]:
+    argv = sys.argv[1:]
+    arms_sel, tag = None, ""
+    if "--arms" in argv:
+        i_ = argv.index("--arms"); arms_sel = argv[i_ + 1].split(","); del argv[i_:i_ + 2]
+    if "--tag" in argv:
+        i_ = argv.index("--tag"); tag = "_" + argv[i_ + 1]; del argv[i_:i_ + 2]
+    arms = [x for x in ARMS if arms_sel is None or x[0] in arms_sel]
+    for path in [Path(p) for p in argv]:
         world, st = T.load_world(path, device)
         name = st["name"]
         if world.head != "corrt":
@@ -139,7 +150,7 @@ def main():
         batch = 64
         res = {"world": name, "V": V, "arms": {}}
         gens = {}
-        for arm, flags in ARMS:
+        for arm, flags in arms:
             gen = torch.empty(R, H, 81, 192, dtype=torch.float16)
             drawn_right = torch.zeros(R, H, dtype=torch.bool)
             subs = {"cons": 0, "enter": 0}
@@ -167,6 +178,21 @@ def main():
                     else:
                         g = T.step(world, win, acts, device, config)
                     est = estimate(frames[-1].float(), g)
+                    if "realign" in flags:                                               # exact position, world's content
+                        from scroll import SHIFTS
+                        for r in torch.nonzero((est != ts0[rows, k]) & on_track)[:, 0].tolist():
+                            (dt, ct), (de, ce) = SHIFTS[int(ts0[i + r, k])], SHIFTS[int(est[r])]
+                            dr, dc = dt - de, ct - ce
+                            grid = g[r, :63].view(7, 9, -1)
+                            new_grid = fut0[i + r, k].float()[:63].view(7, 9, -1).clone()     # fill: true tokens
+                            rs, re_ = max(0, -dr), 7 - max(0, dr)
+                            cs, ce_ = max(0, -dc), 9 - max(0, dc)
+                            new_grid[rs:re_, cs:ce_] = grid[rs + dr:re_ + dr, cs + dc:ce_ + dc]
+                            filled = 63 - (re_ - rs) * (ce_ - cs)
+                            player = g[r, 31].clone()
+                            g[r, :63] = new_grid.reshape(63, -1); g[r, 31] = player
+                            subs["realign"] = subs.get("realign", 0) + 1; subs["realign_fill"] = subs.get("realign_fill", 0) + filled
+                        est = estimate(frames[-1].float(), g)
                     ok = est == ts0[rows, k]
                     drawn_right[i:i + b, k] = ok
                     allowed = ok & on_track                                              # true tokens land on the right cells
@@ -290,17 +316,24 @@ def main():
                          "class": conf, "change_rate": float(changed.float().mean())}
         a = res["arms"]
         pb = res["part_b"].get("all", {})
-        res["readings"] = {
-            "R1_scroll_removes": 1 - a["scroll"]["excess16"] / a["base"]["excess16"],
-            "R1_position_causal": 1 - a["scroll"]["excess16"] / a["base"]["excess16"] >= 0.5,
-            "R2_cons_reduces_wrong": 1 - a["cons"]["ever_position_wrong"] / a["base"]["ever_position_wrong"],
-            "R2_enter_reduces_wrong": 1 - a["enter"]["ever_position_wrong"] / a["base"]["ever_position_wrong"],
-            "R2_cons_enter_reduces_wrong": 1 - a["cons+enter"]["ever_position_wrong"] / a["base"]["ever_position_wrong"],
-            "R2_triggers_causal": 1 - a["cons+enter"]["ever_position_wrong"] / a["base"]["ever_position_wrong"] >= 0.3,
-            "R3_residual": a["scroll+cons+enter"]["excess16"] / a["base"]["excess16"],
-            "R4_target_tile_causal": bool(pb) and pb["target_true"] >= 0.5 and pb["random_true"] <= 0.15 and pb["all_but_target"] <= 0.3,
-            "R5_consequence_one_step": conf["true"]["class_error"] >= 0.5 * conf["imagined"]["class_error"]}
-        (out_dir / f"subst16_{name}.json").write_text(json.dumps(res, indent=2) + "\n")
+        rd, ex16 = {}, lambda k: a[k]["excess16"]
+        wr = lambda k: a[k]["ever_position_wrong"]
+        if "scroll" in a:
+            rd["R1_scroll_removes"] = 1 - ex16("scroll") / ex16("base"); rd["R1_position_causal"] = rd["R1_scroll_removes"] >= 0.5
+        if "realign" in a:
+            rd["R1b_realign_removes"] = 1 - ex16("realign") / ex16("base"); rd["R1b_position_causal"] = rd["R1b_realign_removes"] >= 0.5
+        for k in ("cons", "enter", "cons+enter"):
+            if k in a:
+                rd[f"R2_{k}_reduces_wrong"] = 1 - wr(k) / wr("base")
+        if "cons+enter" in a:
+            rd["R2_triggers_causal"] = rd["R2_cons+enter_reduces_wrong"] >= 0.3
+        for k in ("scroll+cons+enter", "realign+cons+enter"):
+            if k in a:
+                rd[f"R3_residual_{k}"] = ex16(k) / ex16("base")
+        rd["R4_target_tile_causal"] = bool(pb) and pb["target_true"] >= 0.5 and pb["random_true"] <= 0.15 and pb["all_but_target"] <= 0.3
+        rd["R5_consequence_one_step"] = conf["true"]["class_error"] >= 0.5 * conf["imagined"]["class_error"]
+        res["readings"] = rd
+        (out_dir / f"subst16_{name}{tag}.json").write_text(json.dumps(res, indent=2) + "\n")
         print(json.dumps({"world": name, "readings": res["readings"], "part_b": res["part_b"], "part_c": res["part_c"]}), flush=True)
         del world, gens
         torch.cuda.empty_cache()
