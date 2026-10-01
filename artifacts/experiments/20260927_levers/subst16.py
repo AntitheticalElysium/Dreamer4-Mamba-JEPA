@@ -5,9 +5,12 @@ Data: the diagnosis futures (1,002 roots; five sampled 16-step futures per root 
 Worlds: corrt per-tile worlds (their move gate can be set). Rollout: teval's convention (4 context frames, then a 5-frame window).
 
 PART A -- oracle components, each a counterfactual rollout of the same world on the same roots (sample 0 supplies the truth):
-  scroll   the move gate (corrt: frame logit + target gate) is set to +20 / -20 at every step from the TRUE scroll of that step,
-           so the world itself draws the frame with the right "did the view move" decision (it still chooses directions and
-           content). Reported: how often the drawn frame then scrolls as the truth does.
+  scroll   the move gate (corrt: frame logit + target gate) of the imagined pass is replaced by the gate the same world computes
+           on the TRUE window at that step (its own, calibrated decision on true input); everything else is computed from the
+           imagined window. Reported: how often the drawn frame then scrolls as the truth does.
+  scroll_pm20 (first version, kept as a reported variant after its first run: ~98.5% right scrolls but depth-16 excess 0.560
+           -> 0.992 for teacher s7, so a saturated gate is not a faithful oracle) the frame logit set to +20 / -20 from the true
+           scroll, target gate 0. Its per-class excess shows what the saturated gate corrupts.
   cons     after a DO / place step (actions 5, 7-10), the faced tile's predicted token is replaced by the true one
   enter    on a scroll step, the cells entering the view are replaced by the true ones
   cons / enter substitute only while the imagined view position is still right, in every arm (afterwards true tokens would
@@ -47,7 +50,7 @@ H, S = SD.H, SD.S
 FACED = {0: 30, 1: 32, 2: 22, 3: 40}                     # facing one-hot index (left, right, up, down) -> cell
 TARGET = {1: 30, 2: 32, 3: 22, 4: 40}                    # move action -> the cell it enters
 ACT = (5, 7, 8, 9, 10)                                   # DO, place stone / table / furnace / plant
-ARMS = (("base", ()), ("scroll", ("scroll",)), ("scroll+cons", ("scroll", "cons")), ("scroll+enter", ("scroll", "enter")),
+ARMS = (("base", ()), ("scroll_pm20", ("pm20",)), ("scroll", ("scroll",)), ("scroll+cons", ("scroll", "cons")), ("scroll+enter", ("scroll", "enter")),
         ("scroll+cons+enter", ("scroll", "cons", "enter")), ("cons", ("cons",)), ("enter", ("enter",)),
         ("cons+enter", ("cons", "enter")))
 
@@ -65,17 +68,28 @@ def entering_cells(shift_idx):
 
 
 class Gate:
-    """Forward hooks that set the corrt move gate to +-20 per batch row (frame logit) and 0 (target gate)."""
+    """Forward hooks on the corrt move gate. mode "capture": store the frame-logit and target-gate outputs of a pass (run on the
+    TRUE window); mode "replay": replace them by the stored ones (the world's own decision on true input); mode "fixed": frame
+    logit set to `value` (+-20 per batch row), target gate 0."""
 
     def __init__(self, world):
-        self.world, self.value, self.handles = world, None, []
+        self.world, self.mode, self.value, self.stored, self.handles = world, None, None, {}, []
 
     def __enter__(self):
-        def frame_hook(_, __, out):
-            return out.new_full(out.shape, 0.0) + self.value.to(out.device, out.dtype).view(-1, 1, 1)
-        self.handles.append(self.world.frame.register_forward_hook(frame_hook))
+        def hook(key):
+            def f(_, __, out):
+                if self.mode == "capture":
+                    self.stored[key] = out.detach().clone()
+                    return out
+                if self.mode == "replay":
+                    return self.stored[key].to(out.dtype)
+                if key == "frame":
+                    return out.new_zeros(out.shape) + self.value.to(out.device, out.dtype).view(-1, 1, 1)
+                return torch.zeros_like(out)
+            return f
+        self.handles.append(self.world.frame.register_forward_hook(hook("frame")))
         if hasattr(self.world, "target_gate"):
-            self.handles.append(self.world.target_gate.register_forward_hook(lambda _, __, out: torch.zeros_like(out)))
+            self.handles.append(self.world.target_gate.register_forward_hook(hook("target")))
         return self
 
     def __exit__(self, *a):
@@ -122,7 +136,7 @@ def main():
         if world.head != "corrt":
             print(json.dumps({"world": name, "skipped": "oracle gate needs corrt"}), flush=True)
             continue
-        batch = 16
+        batch = 64
         res = {"world": name, "V": V, "arms": {}}
         gens = {}
         for arm, flags in ARMS:
@@ -140,9 +154,15 @@ def main():
                 for k in range(H):
                     w = 4 if k == 0 else 5
                     win, acts = torch.stack(frames[-w:], 1), torch.stack(hist[-(w - 1):] + [fk[:, k]], 1)
-                    if "scroll" in flags:
+                    if "scroll" in flags:                                                # the decision made on TRUE input
                         with Gate(world) as gate:
-                            gate.value = torch.where(ts0[rows, k] != 0, 20.0, -20.0)
+                            gate.mode = "capture"
+                            T.step(world, torch.stack(tframes[-w:], 1), acts, device, config)
+                            gate.mode = "replay"
+                            g = T.step(world, win, acts, device, config)
+                    elif "pm20" in flags:
+                        with Gate(world) as gate:
+                            gate.mode, gate.value = "fixed", torch.where(ts0[rows, k] != 0, 20.0, -20.0)
                             g = T.step(world, win, acts, device, config)
                     else:
                         g = T.step(world, win, acts, device, config)
