@@ -102,10 +102,64 @@ First fact, corrt teacher s7 at 18k, mean mixture weights:
   - 0.11% under L1 and 0.76% under L2 (x6.8);
   - cos(g_cons, g_rest) -0.14 per batch and -0.37 summed over 20 batches.
 
-**E14m launched (lane31, `monotone.py`, readings predeclared).** It answers the user's question, "is option 3 (generative)
-needed so imagination is not monotone?":
-- the class content of imagined frames vs the simulator, on cells revealed after the root vs cells observable at the root;
-- the categorical world decoded both argmax and sampled.
+**E14m (lane31, `monotone.py`, readings predeclared in 6512dfb6; `check_monotone_why.py`): deterministic imagination IS monotone,
+exactly on content the world cannot see, and naive sampling is not the fix.**
+
+Question (the user's): is option 3 (generative) needed so imagination is not monotone? Method: the class content of imagined
+frames vs the simulator, on cells revealed after the root vs cells observable at the root; the categorical world decoded both
+argmax and sampled.
+
+Diagnosis futures, test roots, aligned depths (imagined camera = true camera); corrt teacher 18k s7 / s8:
+
+| depth 16 | observable at root | revealed after root |
+|---|---|---|
+| TV vs truth (probe floor) | 0.019 / 0.038 (0.011 / 0.028) | 0.133 / 0.170 (0.001 / 0.017) |
+| entropy imagined / true (bits) | 2.00 / 2.11, 1.84 / 2.04 | 1.64 / 2.29, 1.52 / 2.25 |
+| grass share imagined / true | 0.541 / 0.535, 0.589 / 0.567 | 0.611 / 0.483, 0.663 / 0.493 |
+| class accuracy vs simulator | 0.933 / 0.875 | 0.663 / 0.604 |
+
+- Readings: M_monotone on revealed cells at both seeds; observable cells faithful; M_known_drift false.
+- Revealed class ratios at depth 16 (imagined / true share), s7 / s8:
+
+  | class | s7 | s8 |
+  |---|---|---|
+  | tree | 0.011 | 0.020 |
+  | coal | 0.06 | 0.0 |
+  | iron | 0.0 | 0.18 |
+  | lava | 0.0 | 0.0 |
+  | water | 0.63 | 0.48 |
+  | grass | 1.26 | 1.35 |
+
+- Distinct classes per frame in the revealed area: 2.2 vs 3.55. It starts at the first revealed step: depth 1 grass
+  0.539 vs 0.478, entropy 1.86 vs 2.27.
+- Why (check_monotone_why, 27,976 held one-step entering cells): the world's entering content equals the local deterministic
+  predictor's (an MLP on the 3 visible edge tokens):
+
+  | class | true | world s7 | MLP |
+  |---|---|---|---|
+  | grass | 0.476 | 0.528 | 0.527 |
+  | tree | 0.037 | 0.0012 | 0.0002 |
+  | stone | 0.172 | 0.186 | 0.186 |
+
+  - Tree recall: world 0.003 / 0.0, MLP 0.0.
+  - Accuracy: world 0.760 vs MLP 0.756.
+  - Tokens are on-manifold: median nearest-code distance 2.75 vs 2.69 true. Where a tree enters, the world draws a crisp
+    grass token (0.92 vs 1.98).
+  - So the monotony is the deterministic mode under uncertainty the model cannot remove from what it sees: entering trees
+    are never the most likely class. More deterministic training of the same objective cannot produce them.
+- Naive generative decoding (the categorical world, every token sampled independently from its K = 4,096 code softmax,
+  T = 1):
+  - On the rows that can be compared, it restores the class histogram: revealed grass 0.559 vs 0.555 at depth 4, entropy
+    2.12 vs 2.12.
+  - It destroys known content: observable aligned accuracy 0.956 → 0.871 at depth 1, 0.949 → 0.721 at depth 4,
+    0.942 → 0.467 at depth 16.
+  - The predeclared sampling readings could not be computed: the categorical world never scrolls (below), so it has no
+    aligned revealed cells.
+- The categorical and direct worlds never draw a scroll: imagined scroll rate 0.0002 / 0.0 vs true 0.369. Their
+  monotone rows describe a frozen view, so the monotone answer rests on the two corrt worlds (0.276 / 0.323).
+- Answer to the user: option 3 is needed for diversity of unseen content (the trees, ores and water an agent would explore
+  for). It must be a generative component confined to what the world cannot know. Independent per-token sampling corrupts
+  what it does know. This is a measured requirement, not yet an intervention.
 
 ---
 
