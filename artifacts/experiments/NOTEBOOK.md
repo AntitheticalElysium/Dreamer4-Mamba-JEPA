@@ -138,6 +138,32 @@ without paying everywhere else. A fresh head re-learns exactly the trained catch
 - Open (lane32 addendum, predeclared in e741a46c): an MLP readout on the same frozen h (capacity or representation?),
   the mask dose response x31 / x304 / x911, and SimPLe's dead zone.
 
+**Why the head cannot single them out (`check_allprobe.py`): the backbone dilutes a conjunction that the raw local input
+carries.** Probes for "this token is a consequence" among ALL held tokens at the natural rate (829,440 tokens, 556
+positives, 0.067%):
+
+| features | AP linear | recall @ precision 0.5 (linear) | AP MLP | fresh-head caught (E14a) |
+|---|---|---|---|---|
+| h, corrt s8 | 0.338 | 0.451 | 0.442 | 0.257 |
+| h, corrt s7 | 0.164 | 0.020 | 0.281 | 0.002 |
+| h, direct s7 | 0.043 | 0.000 | 0.115 | 0.000 |
+| h, categorical s7 | 0.020 | 0.000 | 0.091 | 0.004 |
+| raw local input (token, 4 neighbours, action) | 0.214 | 0.086 | **0.667** (r@p0.5 0.917) | — |
+
+- AUC is 0.95-0.9997 everywhere; E13's AUC 0.92-0.95 hid this. With a 0.067% positive rate, precision is the binding
+  quantity.
+- The fresh-head catch rate tracks h's precision across the 4 worlds. The seed difference is this: s8's h singles out 45%
+  of consequences at precision 0.5, s7's 2%.
+- Readings:
+  - `representation` true for s7, direct and categorical (h MLP AP < 0.3);
+  - `linear_bottleneck` true only for direct and categorical;
+  - `seed_difference` true.
+- Every backbone is worse than an MLP on the raw local input. The conjunction (faced tile x action x tile type) is in the
+  input but diluted in h, which was trained with a uniform loss where it carries 0.06% of the tokens.
+- Substitution test launched (lane33, addendum 2, predeclared in 045c4564): the head reads [h, raw local neighbourhood,
+  action]. Under the uniform loss, then with mask doses.
+  - This is a locality prior with no Craftax semantics, as Δ-IRIS's decoder is conditioned on x_t and a_t.
+
 **Literature for these facts (primary sources read 2026-10-02):**
 - SimPLe (Kaiser et al., ICLR 2020, sec. 4): "clipped loss max(Loss, C) ... crucial ... decreases the magnitude of gradients
   stemming from fine-tuning of big areas of background ... concentrate on small but important areas (e.g. the ball in

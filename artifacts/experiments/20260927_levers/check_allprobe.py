@@ -12,6 +12,15 @@ Reading, declared before running:
   linear_bottleneck   MLP AP >= 2 x linear AP on h (an expressive readout singles them out, a linear one cannot)
   representation      MLP AP on h < 0.3 (h does not single them out at the natural rate, whatever the readout)
   seed_difference     s8's linear AP on h >= 2 x s7's (the backbone property that lets a fresh head catch 0.257)
+Result (2026-10-02, levers_logs/check_allprobe.log; held 829,440 tokens, 556 positives, base rate 0.067%):
+  world           h linear AP (recall @ precision 0.5)   h MLP AP (r@p0.5)   fresh-head caught (E14a)
+  corrt s8        0.338 (0.451)                          0.442 (0.531)       0.257
+  corrt s7        0.164 (0.020)                          0.281 (0.158)       0.002
+  direct s7       0.043 (0.000)                          0.115 (0.023)       0.000
+  categorical s7  0.020 (0.000)                          0.091 (0.000)       0.004
+  raw local input: linear 0.214 (0.086), MLP 0.667 (0.917). AUC is 0.95-0.9997 everywhere and does not separate the worlds.
+  Readings: representation true for s7 / direct / categorical, false for s8; linear_bottleneck true for direct / categorical
+  only; seed_difference true (2.06x). Every backbone singles out consequences less precisely than an MLP on the raw local input.
 """
 import sys, json, torch, torch.nn as nn, torch.nn.functional as F
 sys.path.insert(0, "artifacts/experiments/20260927_levers"); sys.path.insert(0, "artifacts/experiments/20260926_diagnosis"); sys.path.insert(0, "artifacts/experiments/20260921_readout_ladder")
