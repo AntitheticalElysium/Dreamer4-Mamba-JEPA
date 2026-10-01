@@ -13,6 +13,10 @@ Reading, declared before running:
 --hard (added after E11i, reading declared before that run): the corr head decodes with ITC's argmax (world.hard_decode: each
 tile copies exactly one candidate). Reading: mixing_diffusion if the pooled per-cell increment on no-scroll steps falls >= 3x
 against the soft run of the same world (the soft head's repeated re-mixing of its own outputs is what drifts known content).
+Light split (added after E11j: hard decoding INCREASES known-cell drift, so the true tokens of "unchanged" cells move; Craftax's
+light level changes every step, 1 - |cos(pi (t/300 mod 1 + 0.3))|^3, game_logic.calculate_light_level): increments binned by
+|change in light level| between k-1 and k (visible state, sample 0): < 0.001, 0.001-0.01, 0.01-0.03, >= 0.03. Reading, declared
+before that run: lighting_driven if the pooled per-cell increment (all kept cells) in the < 0.001 bin is <= 1/3 of the >= 0.03 bin.
 Usage: scrolldrift.py <world.pt> ... [--hard] -> evals/scrolldrift_<name>[__hard].json
 """
 import json
@@ -76,6 +80,8 @@ def main():
         img_off = DA.offsets(torch.cat([estimate(gprev[i:i + 32].float(), gen[i:i + 32].float()) for i in range(0, R, 32)]))
         good = (img_off == true_off[:, 0]).all(-1) & alive & agree                                         # [R,16]
         acc = {(kind, grp): torch.zeros(2, H) for kind in ("scroll", "still") for grp in ("all", "targets")}
+        edges = (0.001, 0.01, 0.03)
+        light_acc = torch.zeros(2, len(edges) + 1)
         for i in range(0, R, 16):
             b = min(16, R - i)
             x = fut5[i:i + b].float(); mu = x.mean(1)
@@ -97,15 +103,21 @@ def main():
                     kind = "scroll" if int(true_shift[r, 0, k]) != 0 else "still"
                     for grp, gm in (("all", keep), ("targets", keep & is_target)):
                         acc[(kind, grp)][0, k] += float(inc[gm].sum()); acc[(kind, grp)][1, k] += float(gm.sum())
+                    dl = abs(float(vis[r, 0, k, 1521]) - float(vis[r, 0, k - 1, 1521]))
+                    lb = sum(dl >= e for e in edges)
+                    light_acc[0, lb] += float(inc[keep].sum()); light_acc[1, lb] += float(keep.sum())
         per = {f"{kind}_{grp}": {"per_cell_by_depth": (v[0] / v[1].clamp(min=1)).tolist(), "cells_by_depth": v[1].tolist(),
                                   "pooled_per_cell": float(v[0].sum() / v[1].sum().clamp(min=1)), "cells": float(v[1].sum())}
                for (kind, grp), v in acc.items()}
-        res = {"world": name, "increments": per}
+        light = {f"bin{b}": {"per_cell": float(light_acc[0, b] / light_acc[1, b].clamp(min=1)), "cells": float(light_acc[1, b])}
+                 for b in range(len(edges) + 1)}
+        res = {"world": name, "increments": per, "light_bins": {"edges": edges, **light}}
         ratio = per["scroll_all"]["pooled_per_cell"] / max(per["still_all"]["pooled_per_cell"], 1e-12)
-        res["readings"] = {"scroll_over_still": ratio, "scroll_driven": ratio >= 3}
+        res["readings"] = {"scroll_over_still": ratio, "scroll_driven": ratio >= 3,
+                           "lighting_driven": light["bin0"]["per_cell"] <= light[f"bin{len(edges)}"]["per_cell"] / 3}
         (out_dir / f"scrolldrift_{name}.json").write_text(json.dumps(res, indent=2) + "\n")
         print(json.dumps({"world": name, **{k: round(v["pooled_per_cell"], 6) for k, v in per.items()},
-                          **res["readings"]}), flush=True)
+                          "light": {b: (round(v["per_cell"], 6), int(v["cells"])) for b, v in light.items()}, **res["readings"]}), flush=True)
         del world
         torch.cuda.empty_cache()
 
