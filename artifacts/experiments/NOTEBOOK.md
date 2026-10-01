@@ -61,6 +61,44 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-01 — E9 result (group 1, exploratory on opened blocks 55k-56k): every per-tile world's imagined successor carries the one-step decision; none draws it like a real successor
+
+1,605 H1-opportunity and 3,097 H2-opportunity judge roots (zombie-adjacent 1,038 / 1,435).
+- Fit / dev / judge = 2,493 / 1,040 / 3,125 roots.
+- Arms are per-root means over 3 head seeds; contrasts are paired, seed-clustered.
+- References:
+  - H1: prior (DOWN) 0.589, actions_only 0.626, root_rank 0.732, root_tokens 0.737, real 0.999; zombie: prior 0.518,
+    root_rank 0.603.
+  - H2: prior 0.639, actions_only 0.647, root_rank 0.654, root_tokens 0.668, **real2 0.739**.
+
+| world | err/copy h1 / h2 | gen1 (zombie) | gen1 − root_rank | transfer1 | gen2 | gen2 − root_rank | transfer2 | gen2 − gen1_h2 |
+|---|---|---|---|---|---|---|---|---|
+| corrt suffix 18k | 0.253 / 0.534 | 0.937 (0.927) | +0.205 [+0.182, +0.227] | 0.658 | 0.711 | +0.057 [+0.048, +0.066] | 0.633 | −0.001 |
+| corrt teacher 18k | 0.232 / 0.566 | 0.917 (0.913) | +0.185 [+0.162, +0.210] | 0.643 | 0.702 | +0.049 [+0.040, +0.057] | 0.638 | −0.004 |
+| fmamba corrg suffix 18k | 0.247 / 0.532 | 0.925 (0.909) | +0.193 [+0.171, +0.215] | 0.643 | 0.705 | +0.051 [+0.041, +0.061] | 0.644 | −0.004 |
+| corrt suffix 6k | 0.344 / 0.567 | 0.926 (0.912) | +0.194 [+0.171, +0.217] | 0.626 | 0.695 | +0.041 [+0.032, +0.050] | 0.639 | −0.023 |
+| corrt teacher 6k | 0.274 / 0.580 | 0.920 (0.904) | +0.188 [+0.166, +0.211] | 0.692 | 0.682 | +0.028 [+0.019, +0.037] | 0.625 | −0.033 |
+
+Readings (measured, exploratory):
+- **The transition adds on the one-step decision, in every per-tile world: +0.19-0.21 over the same root + action
+  read without it (zombie roots +0.31-0.32).**
+  - This is the first time in this project. Earlier worlds did not add:
+    - spatial.py's T: frozen_heads 0.676 vs root_rank 0.684 on 54k;
+    - interface U: 0.693 vs root 0.708 on 55k.
+  - It holds across the corrt / corrg heads, attention / Mamba backbones, 6k / 18k, and suffix / teacher.
+- **Heads fitted on real successors do not read imagined ones.**
+  - transfer1 0.63-0.69 vs gen1 0.92-0.94; the real-fitted head reads real successors at 0.999.
+  - The imagined successor carries the consequence, but drawn differently (step-1 err/copy 0.23-0.34).
+  - Imagination training must fit its heads on the world's own imagined states, or close this drawing gap.
+- **H2 is capped by randomness:** one real step-2 draw reaches only 0.739 against 32-key P(death2). gen2 recovers
+  0.028-0.057 of root_rank's 0.085 gap to that ceiling.
+- **The second imagined step adds nothing** (gen2 − gen1_h2 −0.001 to −0.033). At 6k it is worse than the first step.
+- Recipe contrasts (suffix vs teacher, corrt vs fmamba) are single-seed here. They are not attributed (E8's two-seed
+  rule); dpanel --compare runs after group 2.
+- Sealed confirmation: E10 stage 3's k = 1 reading on the fresh block 62,000-62,399 (rules committed in 8c969101).
+
+---
+
 ## 2026-10-01 — E9/E10: decision panels with action-dependent death (DECLARED before results; exploratory)
 
 Why: the diagnosis futures (teval, 1,002 roots) hold 1 opportunity root in TRAIN and 0 in TEST, so no per-tile world
