@@ -3,8 +3,7 @@ source artifacts/experiments/20260927_levers/lib.sh
 W=artifacts/eda/levers_tworlds_v1
 M=artifacts/eda/levers_mamba_integration_v1
 until grep -q "LANE20A_DONE" $LOGDIR/lanes.log && grep -q "LANE20B_DONE" $LOGDIR/lanes.log; do sleep 120; done
-# 2026-10-01 18:53: E12 training (~3 GB) cannot share the GPU with deepeval (~2.1 GB): wait for it
-until grep -qE "DONE tworld_corrt_raw_rollout4_s7_u18000|FAILED tworld_corrt_raw_rollout" $LOGDIR/lanes.log; do sleep 120; done
+# 2026-10-01 20:55: E12 paused (no interventions before the diagnosis + literature sweep); no wait
 [ -f $L/evals/deep_int_corrg_raw_suffix_s7_fmamba_u18000.json ] || job deepeval_group1 3000 $PY $L/deepeval.py \
   $W/corrt_raw_teacher_s7_u18000.pt $W/corrt_raw_suffix_s7_u18000.pt $M/int_corrg_raw_suffix_s7_fmamba_u18000.pt
 # 2026-10-01 after the restart: the seed-8 18k pair (needed by E12's two-seed rule) before the 6k pairs
