@@ -265,6 +265,29 @@ So the lever is keeping known content stable at decision-critical tiles under se
 
 ---
 
+## 2026-10-01 evening — E12 first arm (rollout2 s7; not ruled until seed 8 and the decision panels)
+
+corrt_raw_rollout2_s7_u18000, against the 18k references:
+
+| world | one-step all / blocked / moved / idle | depth 1 / 16 | gain k = 2 / 4 / 16 | blockwin w4 / w5 | blocked TF w1 / w4 / w5 |
+|---|---|---|---|---|---|
+| teacher s7 | 0.149 / 0.301 / 0.142 / 0.442 | 0.035 / 0.622 | 1.17 / 1.10 / 1.01 | 0% / 0% | 0.024 / 0.023 / 0.024 |
+| teacher s8 | 0.152 / 0.316 / 0.141 / 0.473 | 0.036 / 0.678 | 1.17 / 1.11 / 1.01 | 0% / 0% | |
+| suffix s7 | 0.173 / 0.326 / 0.180 / 0.454 | 0.041 / 0.683 | 1.02 / 1.03 / 1.00 | 0% / 15.5% | 0.025 / 0.025 / 0.122 |
+| **rollout2 s7** | 0.213 / **1.648** / 0.189 / 0.484 | 0.060 / 0.720 | 1.02 / 1.01 / 0.99 | **29.4% / 30.7%** | 0.031 / **0.146 / 0.154** |
+
+- rollout2 s7 scrolls on ~30% of blocked moves from TRUE frames: a blocked-move error worse than copying (1.648).
+- It is fine with one frame (w1); the damage appears when the current frame sits in slots 1-4. FAIR's random prefix puts
+  predicted frames in exactly slots 1-4 during training; slot 0 is always true.
+- This generalizes the suffix finding: suffix had predicted frames in slot 4 only and was biased only at w5.
+- Reading (consistent with E11c, blocklevel and E11l): in every slot that held a drifted predicted frame during training,
+  the move decision learns to discount the drawn target tile (unreliable there) and fall back on the action prior
+  ("moves usually succeed").
+- Gain at 16 is 0.99: the error stops compounding, but every depth starts worse (depth 1: 0.060 vs 0.035).
+- Seed 8, rollout4, driftanat, dpanel and deepeval are running (lane27).
+
+---
+
 ## 2026-10-01 — E12: FAIR's multistep rollout recipe, ported exactly (PREDECLARED, not yet run)
 
 Why: Terver et al., "What drives success in physical planning with JEPA world models?" (TMLR 2026, arXiv 2512.24497,
