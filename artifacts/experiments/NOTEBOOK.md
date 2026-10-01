@@ -61,6 +61,59 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-01 night — Literature on the diagnosed problem (E13); nothing implemented
+
+Read from the papers' text (PDFs) unless noted. Problem 1 is the main one: a rare, deterministic, sparse action consequence (one
+token in 81, 4.5% of transitions, < 0.9% of the objective) that the input and the backbone encode, yet every trained head copies.
+
+**Problem 1, the same diagnosis in the literature: uniform per-token objectives starve sparse interaction regions.**
+- CAER (arXiv 2608.30897, Aug 2026): "abundant background tokens dominate the gradient while sparse interaction dynamics remain
+  under-optimized". It reweights tokens by the model's OWN action effect (prediction under the real vs a learned null action, read
+  at a fixed noise level), normalized to unit mean per sample. Action dropout (p = 0.1) keeps a recall floor. First-order result:
+  at equal coefficient mass, focused weighting lowers interaction risk iff Cov(weight, token utility) > 0.
+  Caveats for us, from our numbers: our heads' faced-tile prediction is action-INSENSITIVE (they copy), so the effect map starts
+  blind exactly there; in Craftax a move shifts the whole view, so the map would concentrate on scroll steps.
+- IMPACT (arXiv 2609.00161, same group): the same "supervision-allocation mismatch". It weights candidate regions by DETACHED
+  LOCAL PREDICTION ERROR, which does fire on our missed consequences (copy error ~160 squared distance). Its prior is language
+  cross-attention, which we do not have.
+- CGSReg (arXiv 2607.15142, Sep 2026): five SOTA world-model agents (DreamerV3, DIAMOND, TWISTER, Simulus, STORM) are weak worlds.
+  Policies trained from scratch in the frozen world collapse in Pong (DreamerV3 -5.5 -> -20.9, STORM 18.7 -> -21.0), and the gap
+  holds in 22-26 of 26 Atari100K games. The failures are interactions: ball disappearance, invalid ball-paddle contact.
+  Fix: an auxiliary mask-normalized MSE on task-critical regions (lambda 0.01-1.0), which helps 4 of 5 models. It needs masks; for
+  us the faced tile is known exactly.
+- EAWM (ICLR 2026, arXiv 2601.19336): auxiliary prediction of EVENTS (statistically significant per-pixel changes; for token inputs,
+  a type change) on top of the world model, +10-45% across Atari 100K, Craftax-1M and DMC.
+- Gradient Starvation (Pezeshki et al., NeurIPS 2021): dominant easy features starve the gradient of less frequent predictive
+  ones (theory for cross-entropy; fix: spectral decoupling). Matches our late, abrupt, seed-dependent learning (teacher s8:
+  0 at 12k, DO 0.47 at 18k).
+- "Modeling What Changes" (arXiv 2609.02046): a per-object change gate + residual wins only by not corrupting the static
+  majority; delta regression on the movers stays at no-op quality. The same pattern as our copy heads.
+- Dreamer 4 (arXiv 2509.24527, vendored): its world model learns placing / breaking blocks (14 of 16 interaction tasks) with a
+  uniform objective, via a generative shortcut-forcing objective, more spatial tokens (capacity) and 2,541 h of data. Oasis
+  "hallucinates large structures" after a few placed blocks, cf. teacher s8's hallucinated DO effects.
+- Sample-level prioritization: Curious Replay (ICML 2023; DreamerV3 on Crafter 14.5 -> 19.4) and Simulus's prioritized
+  world-model replay (Simulus's ablations exclude Craftax). Caveat: our error is one token in 81, so window-level priority dilutes
+  it; token-level weighting is the direct form.
+- AGWM (arXiv 2605.06841): world models learn frequent action-outcome co-occurrences as rules and ignore preconditions; it adds
+  explicit affordance tracking. Its own Crafter / Craftax imagination MSE does not improve.
+- Delta-IRIS (ICML 2024): the tokenizer encodes deltas conditioned on the past; the decoder carries deterministic dynamics.
+  Reconstruction-based.
+- Background (read, broader framing only): "Imagined rollouts are kinematic, not dynamic" (2607.05966; DreamerV3 DMC);
+  "The planning limits of latent world models" (2609.39235); DWM (2607.18715, action vs world effects); MV2MAE motion-weighted
+  patch loss (pretraining).
+
+**Problem 2 (revealed terrain, ~24% unpredictable from what is visible).** The game-world-model agents that train in imagination
+on Crafter / Craftax (IRIS, Delta-IRIS, Dedieu et al.'s TWM, DreamerV3) all SAMPLE the next state. A deterministic regressor
+must commit to one guess. No paper found quantifies this for revealed terrain specifically.
+
+**What this implies (candidates only; none run, each would need predeclared rules and >= 2 seeds):**
+(a) token-level weighting of changed / interaction tokens: CGSReg-style on the faced tile, error-calibrated (IMPACT),
+action-effect (CAER, with the cold-start caveat); (b) auxiliary event prediction (EAWM); (c) a generative / sampling objective
+for unobservable content (Dreamer 4, IRIS-family). Judged on consfit (caught rate on training and held-out), E13 position
+failures and depth-16 excess, and the decision panels.
+
+---
+
 ## 2026-10-01 night — E13: the imagined-error chain by substitution; every link now causal (after the user's audit request)
 
 The user asked: no intervention until the diagnosis is certain, then a literature sweep. E11 had built the chain from correlations
