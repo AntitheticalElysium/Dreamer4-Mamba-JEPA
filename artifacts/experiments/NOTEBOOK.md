@@ -61,6 +61,67 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-01 — E11 / E11b result: imagined error is ~90% the model's own; its growth is wrong move decisions on imagined inputs, not randomness
+
+Asked: is a stochastic head the fix, or an assumption? It was an assumption. This measures it.
+
+**E11 (`stochdiag.py`, readings declared in c9bdc65a).**
+- The diagnosis futures have FIVE sampled 16-step futures per root under the same actions, so their per-token variance
+  is the exact floor of ANY deterministic world.
+- Estimator checked on synthetic data: floor 3.920 vs 3.920 true; excess 0.0003 at the true mean, 1.999 for a 0.5
+  offset (2.0).
+
+| world | aleatoric share at 16 | excess-growth share: static / hud / mob / entering / player | mob blur | code ratio |
+|---|---|---|---|---|
+| corrt teacher 18k s7 | 0.092 | 0.813 / 0.082 / 0.067 / 0.031 / 0.008 | 4.21 | 1.00 |
+| corrt teacher 18k s8 | 0.084 | 0.822 / 0.075 / 0.068 / 0.026 / 0.009 | 4.67 | 1.04 |
+| corrt suffix 18k s7 | 0.083 | 0.822 / 0.077 / 0.067 / 0.025 / 0.009 | 4.70 | 0.99 |
+| corrt suffix 18k s8 | 0.084 | 0.817 / 0.079 / 0.067 / 0.026 / 0.012 | 4.63 | 1.04 |
+| fmamba corrg 18k | 0.085 | 0.820 / 0.078 / 0.068 / 0.026 / 0.008 | 4.63 | 1.10 |
+| corrt teacher 6k | 0.076 | 0.806 / 0.085 / 0.069 / 0.028 / 0.012 | 5.25 | 1.08 |
+| noise | 0.066 | 0.816 / 0.074 / 0.070 / 0.029 / 0.010 | 5.92 | 0.92 |
+| selffed | 0.073 | 0.805 / 0.083 / 0.072 / 0.029 / 0.012 | 5.68 | 1.18 |
+
+- Every world: aleatoric_dominated = false, growth = deterministic_growth, mode_averaged = false.
+- Imagined mob tokens are 4-6x farther from the conditional mean than a typical true sample, and as close to real tokens
+  (codebook distance) as true ones. They are wrong, not averaged.
+- Teacher 18k s7, by depth:
+  - floor 0.009 → 0.057; excess 0.027 → 0.560;
+  - entering cells carry 60% of depth-1 excess (0.0158 of 0.0265) and barely grow;
+  - static excess goes 0.0055 → 0.037 (depth 2) → 0.439 (depth 16).
+
+**E11b (`driftanat.py`, readings declared in c154db33, amended before any run in ee2ca978).** The view position is
+tracked by scroll.estimate offsets.
+
+| world | map excess in position-wrong cases | realigning removes | aligned observable | aligned revealed | wrong at 16 | roots ever wrong | first error: missed / false scroll |
+|---|---|---|---|---|---|---|---|
+| teacher s7 | 0.657 | 0.346 | 0.155 | 0.188 | 0.464 | 447 | 0.86 / 0.11 |
+| teacher s8 | 0.710 | 0.333 | 0.127 | 0.163 | 0.558 | 491 | 0.49 / 0.49 |
+| suffix s7 | 0.705 | 0.345 | 0.119 | 0.176 | 0.587 | 540 | 0.52 / 0.45 |
+| suffix s8 | 0.712 | 0.347 | 0.127 | 0.161 | 0.581 | 543 | 0.59 / 0.39 |
+| fmamba corrg | 0.751 | 0.371 | 0.109 | 0.141 | 0.612 | 553 | 0.52 / 0.46 |
+| noise | 0.914 | 0.472 | 0.079 | 0.007 | 0.807 | 800 | 0.96 / 0.02 |
+| selffed | 0.662 | 0.281 | 0.161 | 0.177 | 0.536 | 510 | 0.60 / 0.36 |
+
+- None of the declared readings is met.
+  - Position-wrong cases hold 66-91% of depth-16 map excess, but realigning removes only 28-47% of it: after a wrong
+    scroll the content corrupts too. At depth 2, realigning removes 78% (teacher s7).
+- The trigger, in 97-98% of roots, is a wrong move decision: a missed scroll on a successful move, or a false scroll on a
+  blocked one, with a world-dependent mix.
+  - From true frames this almost never happens (0.3% at depth 1).
+  - From depth 2 on, ~3-4% of remaining roots go wrong per step.
+- Correction: an earlier message to the user said "86% missed scrolls" from teacher s7 alone. Across worlds the split
+  is about half and half.
+- **Answer to the question: the measured growth of imagined error is deterministic, mainly wrong move decisions on
+  imagined inputs. Randomness is 7-9% of depth-16 error, and mob tokens are not mode-averaged. This diagnostic does not
+  indicate a stochastic head.**
+- What it does not cover:
+  - revealed cells (14-19% of map excess) carry terrain no observation contained; a deterministic world can only guess it;
+  - the decision value of sampling, which is untested here.
+- E11c (`missedscroll.py`) localizes the wrong decisions (imagined vs true vs hybrid windows), both kinds; running.
+
+---
+
 ## 2026-10-01 — E12: FAIR's multistep rollout recipe, ported exactly (PREDECLARED, not yet run)
 
 Why: Terver et al., "What drives success in physical planning with JEPA world models?" (TMLR 2026, arXiv 2512.24497,
@@ -78,8 +139,9 @@ read in full, code read at facebookresearch/jepa-wms 13cf1d9). What it found:
 
 E11/E11b (below) measured the failure such a loss should address:
 - ~90% of depth-16 error is the model's own.
-- The first view-position error is a MISSED SCROLL on a successful move in 86% of roots, at ~3-4% of remaining roots per
-  step from depth 2, on imagined inputs only.
+- The first view-position error is a wrong move decision on imagined inputs (missed or false scroll; 86% missed for
+  teacher s7, about half and half in the other worlds; corrected the same day), at ~3-4% of remaining roots per step from
+  depth 2.
 - A loss on the predictor's own inputs targets exactly that.
 
 Arms (tworld.py `--loss rolloutK`): corrt, Raw, full backbone, 18,000 updates, recipe identical to

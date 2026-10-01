@@ -1,12 +1,14 @@
-"""E11c. Why does the move decision fail in imagination? (E11b: 86% of first view-position errors are missed scrolls on moves that
-succeeded; they almost never happen from true frames, 0.3% at depth 1, then ~3-4% of remaining roots per step.)
+"""E11c. Why does the move decision fail in imagination? (E11b: in 97-98% of roots the first view-position error is a wrong move
+decision -- a missed scroll on a move that succeeded, or a false scroll on a move that was blocked; the mix is world-dependent,
+e.g. corrt teacher s7 0.86 / 0.11, s8 0.49 / 0.49. From true frames it almost never happens: 0.3% at depth 1.)
 
 Same rollouts as driftanat.py (diagnosis futures, imagined rollout of the shared actions, teval's window convention, scroll
 offsets from scroll.estimate). Cases, on depths where all five samples are alive and agree on the true offset:
   missed    the first step at which the imagined offset goes wrong, where the factual action is a move that succeeded
             (true scroll != none) and the imagined frame did not scroll
-  control   moves that succeeded and that the imagined frame DID scroll correctly, at steps where the offset was still right,
-            matched to the missed cases' depth distribution (up to 3 per missed case, seeded)
+  false     the same, where the factual move was BLOCKED (true scroll = none) and the imagined frame scrolled
+  control   for each kind, moves of the same outcome that the imagined frame got right, at steps where the offset was still
+            right, matched to that kind's depth distribution (up to 3 per case, seeded)
 For each case the head's move logit (blockwin.py: frame logit + target-tile gate for corrt; frame logit for corrg) is read on:
   imagined   the window the rollout used (imagined frames after the root)
   true       the same positions filled with sample 0's TRUE frames
@@ -14,11 +16,11 @@ For each case the head's move logit (blockwin.py: frame logit + target-tile gate
   img_cur    imagined current frame, true history
 A positive logit = scroll. Also, at the target tile (the cell the move enters) of the current frame: squared distance between
 the imagined and true tokens, beside the same distance for the player tile and for the frame mean.
-Readings, declared before running:
-  input_caused     on missed cases, true > 0 for >= 80% while imagined <= 0 (the same weights decide right on true input)
-  current_frame    img_cur reproduces the miss (<= 0) on >= 70% of missed cases while img_hist does not (> 0 on >= 70%)
+Readings, declared before running, per kind ("right" = scroll for missed, no scroll for false):
+  input_caused     the true window is right on >= 80% of cases while the imagined window is wrong on >= 80%
+  current_frame    img_cur is wrong on >= 70% of cases while img_hist is right on >= 70%
   history          the reverse
-  target_tile      the target tile's imagined-vs-true distance on missed cases >= 2x that on control cases
+  target_tile      the target tile's imagined-vs-true distance on the cases >= 2x that on their controls
 Usage: missedscroll.py <world.pt> ... -> evals/missedscroll_<name>.json
 """
 import json
@@ -96,15 +98,24 @@ def main():
         first = missed & (torch.cumsum(missed.int(), 1) == 1) & (torch.cumsum((valid & ~aligned).int(), 1) == 1)
         first[:, 0] = False                       # depth 1 uses a 4-frame window; padding would move time positions
         control_pool = valid & prev_ok & aligned & moved_ok & (img_shift == true_shift[:, 0])
-        miss_idx = torch.nonzero(first)                                                # [n,2] (root, depth)
+        blocked = (true_shift[:, 0] == 0) & (fa >= 1) & (fa <= 4)
+        false_ = valid & prev_ok & ~aligned & blocked & (img_shift != 0)
+        first_false = false_ & (torch.cumsum((valid & ~aligned).int(), 1) == 1)
+        first_false[:, 0] = False
+        control_false = valid & prev_ok & aligned & blocked & (img_shift == 0)
         gen_rng = torch.Generator().manual_seed(20261001)
-        ctrl = []
-        for k in miss_idx[:, 1].unique().tolist():
-            n_k = int((miss_idx[:, 1] == k).sum())
-            pool = torch.nonzero(control_pool[:, k])[:, 0]
-            pick = pool[torch.randperm(len(pool), generator=gen_rng)[:3 * n_k]]
-            ctrl += [(int(r), k) for r in pick]
-        cases = {"missed": [(int(r), int(k)) for r, k in miss_idx], "control": ctrl}
+
+        def matched(idx, pool_mask):
+            ctrl = []
+            for k in idx[:, 1].unique().tolist():
+                n_k = int((idx[:, 1] == k).sum())
+                pool = torch.nonzero(pool_mask[:, k])[:, 0]
+                pick = pool[torch.randperm(len(pool), generator=gen_rng)[:3 * n_k]]
+                ctrl += [(int(r), k) for r in pick]
+            return ctrl
+        miss_idx, false_idx = torch.nonzero(first), torch.nonzero(first_false)
+        cases = {"missed": [(int(r), int(k)) for r, k in miss_idx], "control": matched(miss_idx, control_pool),
+                 "false": [(int(r), int(k)) for r, k in false_idx], "control_false": matched(false_idx, control_false)}
         res = {"world": name, "n": {c: len(v) for c, v in cases.items()}}
         for cname, lst in cases.items():
             if not lst:
@@ -133,15 +144,20 @@ def main():
                           "mean_logit": {v: float(x.mean()) for v, x in logits.items()},
                           "token_distance_imagined_vs_true": {q: float(x.mean()) for q, x in dd.items()},
                           "depth_hist": torch.bincount(torch.tensor([k for _, k in lst]), minlength=H).tolist()}
+        res["readings"] = {}
+        for kind, ctrl, sign in (("missed", "control", 1), ("false", "control_false", -1)):
+            m = res.get(kind)
+            if not m:
+                continue
+            right = {v: (r if sign > 0 else 1 - r) for v, r in m["scroll_rate"].items()}   # share deciding right
+            res["readings"][kind] = {
+                "right_rate": right,
+                "input_caused": right["true"] >= 0.8 and right["imagined"] <= 0.2,
+                "current_frame": right["img_cur"] <= 0.3 and right["img_hist"] >= 0.7,
+                "history": right["img_hist"] <= 0.3 and right["img_cur"] >= 0.7,
+                "target_tile": (ctrl in res and m["token_distance_imagined_vs_true"]["target"] >=
+                                2 * res[ctrl]["token_distance_imagined_vs_true"]["target"])}
         m = res.get("missed")
-        if m:
-            sr = m["scroll_rate"]
-            res["readings"] = {
-                "input_caused": sr["true"] >= 0.8 and sr["imagined"] <= 0.2,
-                "current_frame": (1 - sr["img_cur"]) >= 0.7 and sr["img_hist"] >= 0.7,
-                "history": (1 - sr["img_hist"]) >= 0.7 and sr["img_cur"] >= 0.7,
-                "target_tile": ("control" in res and m["token_distance_imagined_vs_true"]["target"] >=
-                                2 * res["control"]["token_distance_imagined_vs_true"]["target"])}
         (out_dir / f"missedscroll_{name}.json").write_text(json.dumps(res, indent=2) + "\n")
         print(json.dumps({"world": name, "n": res["n"], "missed": m and m["scroll_rate"], "readings": res.get("readings")}), flush=True)
         del world
