@@ -1,0 +1,21 @@
+{
+  "world": "residual_raw_teacher_s7",
+  "n": {
+    "train": 15932,
+    "train_changed": 2772,
+    "held": 3069,
+    "held_changed": 556
+  },
+  "input_probe_linear": {
+    "changed_acc": 0.9838129281997681,
+    "unchanged_acc": 0.8810186982154846
+  },
+  "backbone_h_probe_linear": {
+    "changed_acc": 0.8111510872840881,
+    "unchanged_acc": 0.8006367087364197
+  },
+  "readings": {
+    "backbone_encodes": true,
+    "backbone_misses": false
+  }
+}

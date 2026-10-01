@@ -1,0 +1,21 @@
+{
+  "world": "direct_raw_suffix_s7",
+  "n": {
+    "train": 15932,
+    "train_changed": 2772,
+    "held": 3069,
+    "held_changed": 556
+  },
+  "input_probe_linear": {
+    "changed_acc": 0.9838129281997681,
+    "unchanged_acc": 0.8810186982154846
+  },
+  "backbone_h_probe_linear": {
+    "changed_acc": 0.7895683646202087,
+    "unchanged_acc": 0.8058097958564758
+  },
+  "readings": {
+    "backbone_encodes": false,
+    "backbone_misses": false
+  }
+}

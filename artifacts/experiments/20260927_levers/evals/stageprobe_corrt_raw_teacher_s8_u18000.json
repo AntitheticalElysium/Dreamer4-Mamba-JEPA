@@ -1,0 +1,21 @@
+{
+  "world": "corrt_raw_teacher_s8_u18000",
+  "n": {
+    "train": 15932,
+    "train_changed": 2772,
+    "held": 3069,
+    "held_changed": 556
+  },
+  "input_probe_linear": {
+    "changed_acc": 0.9838129281997681,
+    "unchanged_acc": 0.8810186982154846
+  },
+  "backbone_h_probe_linear": {
+    "changed_acc": 0.8309352397918701,
+    "unchanged_acc": 0.8571428656578064
+  },
+  "readings": {
+    "backbone_encodes": true,
+    "backbone_misses": false
+  }
+}
