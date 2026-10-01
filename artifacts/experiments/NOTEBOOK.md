@@ -61,6 +61,81 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-01 night — E13: the imagined-error chain by substitution; every link now causal (after the user's audit request)
+
+The user asked: no intervention until the diagnosis is certain, then a literature sweep. E11 had built the chain from correlations
+and onset attribution. E13 tests each link causally. E12 is paused: rollout2 was resolved worse than teacher-only at both seeds
+(depth 16 +0.097 [+0.065, +0.132] s7, +0.088 [+0.069, +0.108] s8; blocked moves scrolled from TRUE frames 23-31%).
+
+**Population substitution (`subst16.py`, readings in its docstring; diagnosis futures, 1,002 roots).** Depth-16 excess / share of
+roots ever position-wrong:
+
+| arm | teacher s7 | teacher s8 | suffix s7 | suffix s8 |
+|---|---|---|---|---|
+| no oracle | 0.560 / 0.449 | 0.619 / 0.493 | 0.627 / 0.542 | 0.624 / 0.545 |
+| true consequence tiles (DO / place) | 0.493 / 0.282 | 0.522 / 0.309 | 0.608 / 0.475 | 0.599 / 0.478 |
+| true entering cells | 0.380 / 0.341 | 0.415 / 0.359 | 0.447 / 0.427 | 0.451 / 0.455 |
+| both | 0.250 / 0.121 | 0.289 / 0.179 | 0.416 / 0.364 | 0.408 / 0.381 |
+| exact position (realign) | 0.404 / 0.025 | 0.446 / 0.025 | 0.453 / 0.058 | 0.450 / 0.049 |
+| exact position + entering | 0.203 / 0.009 | 0.221 / 0.007 | 0.240 / 0.029 | 0.247 / 0.035 |
+| exact position + entering + consequences | 0.184 / 0.009 | 0.186 / 0.009 | 0.225 / 0.025 | 0.232 / 0.036 |
+| world's own gate replayed from TRUE input | 0.568 / 0.372 | 0.697 / 0.346 | 0.590 / 0.407 | 0.585 / 0.397 |
+| gate saturated +-20 (not a faithful oracle) | 0.992 / 0.140 | 1.089 / 0.182 | 0.874 / 0.075 | 0.975 / 0.387 |
+
+- Depth-16 error decomposition (teacher s7; all four worlds within a few points): view position 28% (realign; 1,539 corrections,
+  12,769 filled cells), entering-cell content 36%, consequence pixels ~3%, residual 33% (HUD 0.044, mobs ~0.02, static drift,
+  mostly sleeping steps per E11n).
+- Triggers of position failures: consequences alone prevent 37% (teacher) / 12% (suffix); entering content 24-27% / 17-21%; both
+  64-73% / 30-33%. The suffix worlds have a third trigger, their slot-4 scroll bias: a fully true current frame restores only
+  66-68% of their flipped decisions (teacher 98%).
+- The saturated gate corrupts content (HUD 0.046 -> 0.370), so it is not an oracle; the true-input gate adds nothing: the decision
+  error is in the drawn content, not the gate.
+
+**The decision step (`subst16.py` part B).** At the first wrong move decision, re-run with the current frame altered:
+
+| restores the decision | teacher s7 | teacher s8 | suffix s7 | suffix s8 |
+|---|---|---|---|---|
+| only the target tile true | 0.60 | 0.61 | 0.33 | 0.36 |
+| one random other tile true | 0.03 | 0.04 | 0.04 | 0.02 |
+| all tiles true except the target | 0.35 | 0.35 | 0.32 | 0.34 |
+| whole current frame true | 0.98 | 0.98 | 0.66 | 0.68 |
+
+- False scrolls (teacher): the target tile alone restores 93-98%. Missed scrolls: the target tile and the rest of the frame share it.
+
+**Consequences are never learned (E13b-f).**
+- `consfit.py` (training and held-out pool windows, the worlds' own training data; strict change = probe class change AND token
+  change above the 99th percentile of unchanged): DO / place change the faced tile in 4.5% of transitions (16% of DO / place
+  transitions), carrying < 0.9% of the objective. Caught on TRAINING windows: corrt teacher s7, suffix s7 / s8 0.001 (copied
+  0.999). The same for direct, residual, gated, corr, corrg, corrt 6k, ITC generator loss (gl, gl_itc, gl_itc 18k), categorical
+  (CE on 4,096 codes), fmamba (Mamba), rollout2: 0.000-0.001. Only teacher s8 catches some (DO mining 0.47, placement 0), and only
+  between 12k and 18k updates (0 at 6k and 12k).
+- Not alignment (`check_align.py`): faced-tile change after NOOP 0.0016, after DO 0.217.
+- Not information (`check_infoprobe.py`): an MLP on the INPUT faced token + action predicts the next class of changed tiles at 0.977
+  held-out (with HUD 0.984; copying 0.000).
+- Not a backbone failure (`stageprobe.py`, `conscalib.py`): the world's backbone state at the faced tile encodes it (linear class
+  probe 0.79-0.86 on changed; unweighted change probe AUC 0.92-0.95, mean P(change) 0.60-0.65 on true changes vs 0.11-0.12).
+- The output head does not express it: the categorical world puts 0.067 of its mass on the true next class of changed tiles and
+  0.828 on the current class (`check_catmass.py`). Not a threshold effect.
+- One-step, not self-feeding (`subst16.py` part C): from the TRUE window the faced-tile change is missed 100% (teacher s7) / 35%
+  (s8) / 76-100% (suffix). Hallucinated changes are the self-feeding part: 1% from true windows vs 9-19% from imagined ones.
+
+**Entering terrain is an observation limit (`check_enterpred.py`).** Class of cells entering the view, held-out: world (true
+frames) 0.760, MLP on the 3 adjacent visible edge tokens 0.756, copy the adjacent tile 0.714, majority 0.476. About 24% of new
+terrain cannot be inferred from what is visible, so a deterministic guess is wrong that often.
+
+**The chain, causal:**
+1. Interaction consequences (DO / place on the faced tile) are deterministic, present in the input, and encoded by the backbone,
+   but every trained output head copies the tile. They are 0.05% of token targets; the one world that learns some does so late
+   (12k-18k) and on one seed only. A starved minority signal, not missing information.
+2. With newly revealed terrain (an observation limit), the wrong content of the target tile flips the move decision (target-tile
+   repair restores 60% in the teacher worlds; a random tile 3%).
+3. These two triggers cause 64-73% of position failures (teacher worlds); the suffix worlds add the slot-4 bias.
+4. Position errors cause 28-29% of depth-16 error; entering content 36%; the residual 33-37% is HUD, mobs and slow drift.
+
+Open (not this campaign): the H16 decision panel is not yet tied to this chain; the sealed deepeval groups are paused.
+
+---
+
 ## 2026-10-01 — E10 stage 3, first sealed world (judge block 62,000-62,399; rules in 8c969101)
 
 corrt teacher 18k s7.
