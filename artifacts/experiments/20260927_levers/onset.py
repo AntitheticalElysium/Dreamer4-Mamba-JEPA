@@ -10,7 +10,9 @@ in view, its excess e_t = |g_t - mu_t|^2 - s2_t/5 (/ V). The onset is the frame 
 the FACED cell at t-1 under a DO / place action; did its drawn tile class CHANGE between t-1 and t; was a MOB within one cell of it
 at t-1 or t (any sample); was the player ASLEEP at t-1 or t; did the view SCROLL at t. Also the share of the final error added at the
 onset step.
-Reported only (exploratory): event shares for wrong cases vs controls, and the onset depth relative to k.
+Reported only (exploratory): event shares for wrong cases vs controls, and the onset depth relative to k. Joint split (added after
+the first run): faced-tile DO / place events with the drawn tile class changed (a real consequence mispredicted) vs unchanged (a
+consequence hallucinated), and the action at the onset step.
 Usage: onset.py <world.pt> ... -> evals/onset_<name>.json
 """
 import json
@@ -124,7 +126,7 @@ def main():
             near = mobs[r, ti - 1, max(0, sr - 1):sr + 2, max(0, sc - 1):sc + 2].any() | mobs[r, ti, max(0, sr - 1):sr + 2, max(0, sc - 1):sc + 2].any()
             prev_sr, prev_sc = sr + ps[0], sc + ps[1]
             changed = (0 <= prev_sr < 7 and 0 <= prev_sc < 9) and bool(tiles[r, ti, sr, sc] != tiles[r, ti - 1, prev_sr, prev_sc])
-            return {"onset_depth_before_k": k - t, "share_of_final": inc / max(series[-1][3], 1e-12),
+            return {"onset_depth_before_k": k - t, "share_of_final": inc / max(series[-1][3], 1e-12), "action": a_t,
                     "entered": not was_in_view, "left_by_player": ps != (0, 0) and (sr, sc) == (3 - ps[0], 4 - ps[1]),
                     "faced_act": (prev_sr, prev_sc) == (fr, fc) and a_t in (5, 7, 8, 9, 10),
                     "tile_changed": changed, "mob_near": bool(near),
@@ -135,6 +137,11 @@ def main():
             keys = ("entered", "left_by_player", "faced_act", "tile_changed", "mob_near", "asleep", "scrolled")
             res[label] = {key: sum(x[key] for x in recs) / max(len(recs), 1) for key in keys}
             res[label]["n_attributed"] = len(recs)
+            n = max(len(recs), 1)
+            res[label]["faced_act_and_changed"] = sum(x["faced_act"] and x["tile_changed"] for x in recs) / n
+            res[label]["faced_act_unchanged"] = sum(x["faced_act"] and not x["tile_changed"] for x in recs) / n
+            res[label]["action_at_onset"] = {str(a): sum(x["action"] == a for x in recs) / n for a in range(17)
+                                            if any(x["action"] == a for x in recs)}
             res[label]["onset_depth_before_k_mean"] = sum(x["onset_depth_before_k"] for x in recs) / max(len(recs), 1)
             res[label]["share_of_final_median"] = float(torch.tensor([x["share_of_final"] for x in recs]).median()) if recs else None
         (out_dir / f"onset_{name}.json").write_text(json.dumps(res, indent=2) + "\n")

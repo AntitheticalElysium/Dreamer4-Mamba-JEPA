@@ -1,0 +1,31 @@
+{
+  "world": "corrt_raw_teacher_s7_u18000",
+  "n": {
+    "wrong": 439,
+    "control": 1317
+  },
+  "wrong": {
+    "entered": 0.14578587699316628,
+    "left_by_player": 0.03644646924829157,
+    "faced_act": 0.4760820045558087,
+    "tile_changed": 0.4646924829157175,
+    "mob_near": 0.22323462414578588,
+    "asleep": 0.0683371298405467,
+    "scrolled": 0.4031890660592255,
+    "n_attributed": 439,
+    "onset_depth_before_k_mean": 2.9726651480637813,
+    "share_of_final_median": 0.9780333638191223
+  },
+  "control": {
+    "entered": 0.025816249050873197,
+    "left_by_player": 0.04176157934700076,
+    "faced_act": 0.05618830675778284,
+    "tile_changed": 0.008352315869400152,
+    "mob_near": 0.1716021260440395,
+    "asleep": 0.04403948367501898,
+    "scrolled": 0.7046317388003037,
+    "n_attributed": 1317,
+    "onset_depth_before_k_mean": 3.337129840546697,
+    "share_of_final_median": 0.6830953359603882
+  }
+}

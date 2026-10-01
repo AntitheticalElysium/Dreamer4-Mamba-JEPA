@@ -1,0 +1,31 @@
+{
+  "world": "corrt_raw_suffix_s8_u18000",
+  "n": {
+    "wrong": 525,
+    "control": 1575
+  },
+  "wrong": {
+    "entered": 0.12571428571428572,
+    "left_by_player": 0.04,
+    "faced_act": 0.23238095238095238,
+    "tile_changed": 0.14666666666666667,
+    "mob_near": 0.2038095238095238,
+    "asleep": 0.05523809523809524,
+    "scrolled": 0.5847619047619048,
+    "n_attributed": 525,
+    "onset_depth_before_k_mean": 3.6323809523809523,
+    "share_of_final_median": 0.9226278066635132
+  },
+  "control": {
+    "entered": 0.045714285714285714,
+    "left_by_player": 0.029206349206349208,
+    "faced_act": 0.06412698412698413,
+    "tile_changed": 0.05333333333333334,
+    "mob_near": 0.17142857142857143,
+    "asleep": 0.05015873015873016,
+    "scrolled": 0.7225396825396826,
+    "n_attributed": 1575,
+    "onset_depth_before_k_mean": 3.4438095238095237,
+    "share_of_final_median": 0.7960419058799744
+  }
+}
