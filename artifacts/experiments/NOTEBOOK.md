@@ -61,6 +61,56 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-01 afternoon — E9 groups 2-3 (head ablation), seed-8 18k replication, a hung summary
+
+**E9 head ablation (lane19c, 6k, seed 7, suffix; same blocks and protocol): the copy head is what makes the one-step
+decision readable.**
+
+| head | err/copy h1 | gen1 (zombie) | gen1 − root_rank | transfer1 |
+|---|---|---|---|---|
+| corrt (copy) | 0.344 | 0.926 (0.912) | +0.194 [+0.171, +0.217] | 0.626 |
+| residual | 0.494 | 0.647 (0.502) | −0.085 [−0.107, −0.065] | 0.551 |
+| direct (spatial.py T's output) | 0.797 | 0.592 (0.485) | −0.139 [−0.167, −0.111] | 0.465 |
+
+- The direct head's imagined successor reads WORSE than root + action, which explains why T carried no decision.
+- Copying the tile from its neighbour keeps the successor's geometry sharp: player beside the zombie, player on lava.
+
+**E9 group 2 (E8 arms and seed 8, 6k):**
+
+| world | gen1 | gen1 − root_rank | gen2 − root_rank |
+|---|---|---|---|
+| suffix s8 | 0.922 | +0.190 | +0.009 [−0.000, +0.018] |
+| teacher s8 | 0.919 | +0.187 | +0.019 |
+| selffed | 0.916 | +0.184 | +0.043 |
+| noise | 0.792 | +0.060 | +0.015 |
+
+- noise's blur costs 0.127 of gen1 against teacher s7.
+- Teacher − suffix on gen1: −0.006 [−0.017, +0.005] (s7 6k), −0.002 [−0.012, +0.008] (s8 6k), so there is no recipe
+  effect on the one-step decision at 6k.
+- At 18k s7 it is −0.020 [−0.032, −0.007]. Seed-8 18k panel queued (lane19d).
+- transfer1 teacher − suffix: +0.066 (s7 6k) but −0.000 (s8 6k), another seed effect.
+
+**Seed-8 18k pair (lane22, rule declared in 8c969101: same sign, resolved, at both seeds):**
+- One-step all: suffix → teacher −0.024 [−0.026, −0.022] at s8; −0.024 at s7. **Teacher-only better, attributed.**
+- Depth 16: −0.004 [−0.016, +0.009] at s8 vs −0.061 at s7. **Not attributed.**
+  - teacher s7 18k (0.622) is the outlier; the other three sit at 0.678-0.683.
+  - teacher s7 → s8: +0.055 [+0.024, +0.088].
+- blockwin w5: suffix 15.4% (s7) / 15.4% (s8); teacher 0% / 0%.
+- Recipe at 18k, on two seeds: teacher-only has better one-step error, no slot bias, and equal depth-16 error.
+
+**Hung summary (operations):**
+- The FIT replay wrote all 700 seeds (7,085 roots = the FIT root count) by about 13:19. It then sat in disk sleep in
+  its summary, which loaded every depth frame (RSS 9.4 GB under MemoryHigh 8 GB).
+- Killed at 14:51 (logged FAILED, exit 143).
+- Fixed in 368a60a1: the summary keeps labels only, and deepeval's token cache streams in two passes. The streamed
+  cache is bit-identical to the old one on the smoke rows.
+- Relaunched; the summary completed in 35 s:
+  - FIT opportunity: k=1 0.178, k=2 0.349, k=16 0.679 (noop) / 0.752 (recorded);
+  - one-step spread 0.994 (a few random one-step deaths, cf. the replay pilot's 0.17%).
+- lane23 (deepeval) started at 14:56.
+
+---
+
 ## 2026-10-01 — E9 result (group 1, exploratory on opened blocks 55k-56k): every per-tile world's imagined successor carries the one-step decision; none draws it like a real successor
 
 1,605 H1-opportunity and 3,097 H2-opportunity judge roots (zombie-adjacent 1,038 / 1,435).
