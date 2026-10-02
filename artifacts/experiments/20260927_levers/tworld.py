@@ -63,6 +63,9 @@ E14 options (2026-10-02, after the E14a head-only diagnosis; both default off, t
                    hardQxL  the batch's top-Q% tokens by their current (detached) loss, lambda = L (online hard example mining;
                             generic: no labels)
                    maskL    the faced tile of every DO / place attempt (headfit_labels_v1; Craftax labels, diagnostic only)
+Resumable runs (2026-10-02): every 6,000 updates and at the end the full training state (weights, AdamW state, batch-order
+generator, CPU / CUDA RNG, update, history) is written to levers_tworlds_v1/state/<name>.state.pt (overwritten in place);
+`--resume <state file> --updates N` continues that run to N updates, bit-identical to an uninterrupted run (CPU-tested).
 Training (fixed for every arm): spatial_pool_v1 (Raw tokens) or spatial_pool_tc_v1 (TC tokens), 2,048 main windows
 held out (seed 1, as parameterization.py); batches of 40 windows (seed 11); AdamW lr 1e-4, wd 0.01, 1,000 warmup,
 clip 1 (H2 phase optimizer); bf16; init seed given (default 7). Loss: `suffix` = spatial.losses' dynamics L1
@@ -92,6 +95,7 @@ POOLS = {"raw": ROOT / "artifacts/eda/spatial_pool_v1", "tc": ROOT / "artifacts/
 OUT = ROOT / "artifacts/eda/levers_tworlds_v1"
 NOISE_MAX, NOISE_LEVELS = 0.7, 10             # GameNGen's maximal context-noise level and bucket count
 BATCH = 40
+STATE_EVERY = 6000                            # full training state written every STATE_EVERY updates (resume)
 NEIGHBOURS = ((-1, 0), (1, 0), (0, -1), (0, 1))
 LOCAL = 5 * 192 + 17                          # --skip: token + 4 grid neighbours + action one-hot
 LABELS = ROOT / "artifacts/eda/headfit_labels_v1.pt"
@@ -368,7 +372,7 @@ def rollout_losses(world, s, a, loss, gen_loss=False, weight=None, faced=None):
 
 
 def train(head, pool_name, loss, seed, updates, device, log, codebook=None, backbone="full", gen_loss=False,
-          regions="all", snapshot=None, weight=None, skip=False):
+          regions="all", snapshot=None, weight=None, skip=False, state_path=None, resume=None):
     from d4mj.config import config_from_dict
     from d4mj.train import _phase_lr, autocast_context, optimizer_step, phase_optimizer
     config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
@@ -387,7 +391,24 @@ def train(head, pool_name, loss, seed, updates, device, log, codebook=None, back
     history, started = [], time.time()
     lab = torch.load(LABELS) if weight and weight.startswith("mask") else None
     faced = None
-    for update in range(updates):
+    start = 0
+    if resume is not None:                    # continue a run from its full state (weights, AdamW, batch order, RNG)
+        st = torch.load(resume, map_location="cpu", weights_only=False)
+        world.load_state_dict(st["world"]); opt.load_state_dict(st["optimizer"]); order.set_state(st["order"])
+        torch.set_rng_state(st["rng_cpu"])
+        if st["rng_cuda"] is not None and torch.cuda.is_available():
+            torch.cuda.set_rng_state_all(st["rng_cuda"])
+        history, start = st["history"], st["update"]
+        log(stage="resume", update=start)
+
+    def save_state(u):
+        if state_path is not None:
+            tmp = state_path.with_suffix(".tmp")
+            torch.save({"update": u, "world": world.state_dict(), "optimizer": opt.state_dict(), "order": order.get_state(),
+                        "rng_cpu": torch.get_rng_state(), "history": history,
+                        "rng_cuda": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None}, tmp)
+            tmp.replace(state_path)
+    for update in range(start, updates):
         idx = rows[torch.randint(len(rows), (BATCH,), generator=order)]
         b = S.batch_of(pool, idx, "tokens", device)
         if lab is not None:
@@ -411,6 +432,8 @@ def train(head, pool_name, loss, seed, updates, device, log, codebook=None, back
                    "seconds": round(time.time() - started, 1)}
             history.append(row)
             log(stage="train", head=head, pool=pool_name, **row)
+        if (update + 1) % STATE_EVERY == 0 or update + 1 == updates:
+            save_state(update + 1)
     return world.eval(), history, held
 
 
@@ -428,6 +451,7 @@ def main(argv=None):
     parser.add_argument("--snapshots", action="store_true", help="also save the world every 6,000 updates")
     parser.add_argument("--weight", default=None, help="E14: hardQxL or maskL (see the docstring)")
     parser.add_argument("--skip", action="store_true", help="E14: the head also reads the raw local neighbourhood")
+    parser.add_argument("--resume", type=Path, default=None, help="continue from a full training state file to --updates")
     args = parser.parse_args(argv)
     started = time.time()
     log = lambda **kw: print(json.dumps({**kw, "seconds_total": round(time.time() - started, 1)}), flush=True)
@@ -446,8 +470,10 @@ def main(argv=None):
                                          "world": w.state_dict(), "history": h,
                                          "script_sha256": _sha256(Path(__file__))}, OUT / f"{tag}.pt")
     snapshot = (lambda u, w, h: save(f"{name}_at{u}", w, h)) if args.snapshots else None
+    (OUT / "state").mkdir(exist_ok=True)
     world, history, held = train(args.head, args.pool, args.loss, args.seed, args.updates, device, log, codebook,
-                                 args.backbone, args.gen_loss, args.regions, snapshot, args.weight, args.skip)
+                                 args.backbone, args.gen_loss, args.regions, snapshot, args.weight, args.skip,
+                                 OUT / "state" / f"{name}.state.pt", args.resume)
     save(name, world, history)
     log(status="saved", name=name)
     return 0
