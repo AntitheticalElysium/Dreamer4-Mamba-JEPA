@@ -22,6 +22,9 @@ Result (2026-10-03; sample 0: 337 damage transitions, rate 0.021; s7 18k / s7 36
   transitions (drawn drops do not track hits); after a hit in the window drawn on 0.17-0.24 of no-hit transitions.
   So the hit is copied even where the input predicts it (the rarity pathology of the DO consequences, slowly shrinking with
   budget), and where it is a coin flip the L1 median removes it anyway.
+50k extensions (lane49; 42k / 48k / 50k snapshots): teacher caught s7 0.101 / 0.033 / 0.042, s8 0.074 / 0.042 / 0.045; fresh
+  arrivals 0 (s7) / 1 (s8) of 31 at every snapshot; beside, drawn on hits 0.05-0.19 vs on no-hit transitions 0.10-0.27. Unlike the
+  placements (consfit: stage-like jumps 42k -> 50k), no hit mode is learned by 50k.
 """
 import json
 import sys
