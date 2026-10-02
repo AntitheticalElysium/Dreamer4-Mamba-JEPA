@@ -55,6 +55,14 @@ Self-feeding recipes (2026-10-01; `--loss`), each exposing every input slot to i
            plus a prefix t ~ U{0..W-K-1}: true frames 0..t and the teacher-forced prediction of frame t+1 (detached) are
            rolled K-1 further steps, each input detached, each step's L1 against the true frame; weights 1/(K+1) for the
            teacher term and 1/K per rollout step, as their code (the paper writes L1 + ... + LK)
+E14 options (2026-10-02, after the E14a head-only diagnosis; both default off, the default recipe is bit-identical):
+  --skip         proj / choose (logits) become 2-layer MLPs (512, GELU) on [h, the raw local neighbourhood of the input: the
+                 token, its 4 grid neighbours (zeros off-grid), the action one-hot] (headfit's skip_ readout; a locality prior,
+                 as Delta-IRIS's decoder conditioned on the previous frame and action)
+  --weight       teacher term + lambda x the mask-normalized mean of the per-token L1 over a token set (CGSReg's form):
+                   hardQxL  the batch's top-Q% tokens by their current (detached) loss, lambda = L (online hard example mining;
+                            generic: no labels)
+                   maskL    the faced tile of every DO / place attempt (headfit_labels_v1; Craftax labels, diagnostic only)
 Training (fixed for every arm): spatial_pool_v1 (Raw tokens) or spatial_pool_tc_v1 (TC tokens), 2,048 main windows
 held out (seed 1, as parameterization.py); batches of 40 windows (seed 11); AdamW lr 1e-4, wd 0.01, 1,000 warmup,
 clip 1 (H2 phase optimizer); bf16; init seed given (default 7). Loss: `suffix` = spatial.losses' dynamics L1
@@ -85,6 +93,16 @@ OUT = ROOT / "artifacts/eda/levers_tworlds_v1"
 NOISE_MAX, NOISE_LEVELS = 0.7, 10             # GameNGen's maximal context-noise level and bucket count
 BATCH = 40
 NEIGHBOURS = ((-1, 0), (1, 0), (0, -1), (0, 1))
+LOCAL = 5 * 192 + 17                          # --skip: token + 4 grid neighbours + action one-hot
+LABELS = ROOT / "artifacts/eda/headfit_labels_v1.pt"
+
+
+def local_features(s, a):
+    """[B,T,81,192], [B,T] -> [B,T,81,977]: each token, its 4 grid neighbours (zeros off-grid) and the action."""
+    g = s.float().view(*s.shape[:2], 9, 9, 192); p = F.pad(g, (0, 0, 1, 1, 1, 1))
+    nb = [g] + [p[:, :, 1 + dr:10 + dr, 1 + dc:10 + dc] for dr, dc in NEIGHBOURS]
+    act = F.one_hot(a, 17).float()[:, :, None, None].expand(-1, -1, 9, 9, -1)
+    return torch.cat(nb + [act], -1).view(*s.shape[:2], 81, -1)
 
 
 def masked_scan(mixer, inputs, keep):
@@ -160,7 +178,7 @@ class Factored(nn.Module):
 
 
 class TWorld(S.World):
-    def __init__(self, head, codebook=None, backbone="full", regions="all", noise_levels=0):
+    def __init__(self, head, codebook=None, backbone="full", regions="all", noise_levels=0, skip=False):
         super().__init__(S.TOKENS, False)
         self.head, self.backbone_kind, self.regions = head, backbone, regions
         self.hard_decode = False               # evaluation only: ITC's binarized decoding (one source per token, Eq. 4)
@@ -201,6 +219,17 @@ class TWorld(S.World):
         if head == "categorical":
             self.register_buffer("codes", codebook.float())
             self.logits = nn.Linear(S.D, len(codebook))
+        self.skip = skip
+        if skip:                                  # E14: the head also reads the raw local neighbourhood (--skip)
+            for nm in ("proj", "choose", "logits"):
+                lin = getattr(self, nm, None)
+                if isinstance(lin, nn.Linear):
+                    last = nn.Linear(512, lin.out_features)
+                    if nm == "choose":
+                        nn.init.zeros_(last.weight)
+                        with torch.no_grad():
+                            last.bias.copy_(lin.bias)
+                    setattr(self, nm, nn.Sequential(nn.Linear(S.D + LOCAL, 512), nn.GELU(), last))
 
     def inputs(self, s, a):
         """[action token, 81 tile tokens] per frame + space/time positions (+ the noise-level embedding)."""
@@ -242,10 +271,11 @@ class TWorld(S.World):
             h, h_action = self.backbone_full(s, a)
         else:
             h = self.backbone(s, a)
+        hx = torch.cat([h, local_features(s, a).to(h.dtype)], -1) if self.skip else h
         if self.head == "categorical":
-            logits = self.logits(h).float()
+            logits = self.logits(hx).float()
             return self.codes[logits.argmax(-1)], h, logits
-        gen = self.proj(h).float()
+        gen = self.proj(hx).float()
         s = s.float()
         if self.head == "direct":
             out = gen
@@ -259,7 +289,7 @@ class TWorld(S.World):
             pad = F.pad(grid, (0, 0, 1, 1, 1, 1))
             cands = [grid] + [pad[:, :, 1 + dr:10 + dr, 1 + dc:10 + dc] for dr, dc in NEIGHBOURS]
             cands = torch.stack([c.reshape(s.shape) for c in cands] + [gen], -2)          # [B,T,81,6,D]
-            logits = self.choose(h).float()
+            logits = self.choose(hx).float()
             if self.head in ("corrg", "corrt"):  # one "did the view move" logit per frame, added to the 4 neighbours
                 moved = self.frame(h_action).float()[:, :, None, :]                  # [B,T,1,1]
                 if self.head == "corrt":         # the tile the move enters (player token 31 + direction), moves only
@@ -284,7 +314,7 @@ def quantize(x, codes, chunk=16384):
     return idx.view(x.shape[:-1])
 
 
-def rollout_losses(world, s, a, loss, gen_loss=False):
+def rollout_losses(world, s, a, loss, gen_loss=False, weight=None, faced=None):
     """spatial.rollout + the dynamics L1 (suffix) or teacher-forced L1 only; gen_loss: + the generate candidate's
     own teacher-forced L1 on every token."""
     a = F.pad(a, (0, 1))
@@ -295,7 +325,16 @@ def rollout_losses(world, s, a, loss, gen_loss=False):
         s = (s.float() + alpha[..., None, None] * torch.randn_like(s, dtype=torch.float)).to(clean.dtype)
     predicted, history, gen = world(s, a)
     world.level = None
-    teacher = (predicted[:, :S.W - 1] - clean[:, 1:]).abs().mean()
+    err = (predicted[:, :S.W - 1] - clean[:, 1:]).abs()
+    teacher = err.mean()
+    if weight:                                # E14 --weight: + lambda x the mask-normalized mean over a token set
+        tok = err.mean(-1)
+        if weight.startswith("hard"):         # the batch's top-Q% tokens by current loss (OHEM)
+            q, lam = (float(v) for v in weight[4:].split("x"))
+            m = tok.detach() >= tok.detach().flatten().topk(max(1, int(q / 100 * tok.numel()))).values[-1]
+        else:                                 # maskL: the faced tile of every DO / place attempt (Craftax labels)
+            lam, m = float(weight[4:]), faced
+        teacher = teacher + lam * (tok * m).sum() / m.sum().clamp(min=1)
     if gen_loss:
         teacher = teacher + (F.layer_norm(gen[:, :S.W - 1], (S.WIDTH,)) - s[:, 1:]).abs().mean()
     if loss in ("teacher", "noise"):
@@ -329,7 +368,7 @@ def rollout_losses(world, s, a, loss, gen_loss=False):
 
 
 def train(head, pool_name, loss, seed, updates, device, log, codebook=None, backbone="full", gen_loss=False,
-          regions="all", snapshot=None):
+          regions="all", snapshot=None, weight=None, skip=False):
     from d4mj.config import config_from_dict
     from d4mj.train import _phase_lr, autocast_context, optimizer_step, phase_optimizer
     config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
@@ -339,15 +378,22 @@ def train(head, pool_name, loss, seed, updates, device, log, codebook=None, back
     rows = torch.cat([main_rows[~torch.isin(main_rows, held)], torch.where(pool["terminal"])[0]])
     with torch.random.fork_rng(devices=[0]):
         torch.manual_seed(seed); torch.cuda.manual_seed_all(seed)
-        world = TWorld(head, codebook, backbone, regions, NOISE_LEVELS if loss == "noise" else 0).to(device)
+        world = TWorld(head, codebook, backbone, regions, NOISE_LEVELS if loss == "noise" else 0, skip).to(device)
     log(stage="init", parameters=sum(p.numel() for p in world.parameters()))
     opt = phase_optimizer([world], config)
     params = [p for g in opt.param_groups for p in g["params"]]
     order = torch.Generator().manual_seed(11)
     codes = codebook.to(device) if codebook is not None else None
     history, started = [], time.time()
+    lab = torch.load(LABELS) if weight and weight.startswith("mask") else None
+    faced = None
     for update in range(updates):
-        b = S.batch_of(pool, rows[torch.randint(len(rows), (BATCH,), generator=order)], "tokens", device)
+        idx = rows[torch.randint(len(rows), (BATCH,), generator=order)]
+        b = S.batch_of(pool, idx, "tokens", device)
+        if lab is not None:
+            faced = torch.zeros(BATCH, S.W - 1, 81, dtype=torch.bool)
+            faced.scatter_(2, lab["faced"][idx][..., None], lab["attempt"][idx][..., None])
+            faced = faced.to(device)
         s, a = b["s"], b["actions"]
         with autocast_context(config):
             if head == "categorical":
@@ -355,7 +401,7 @@ def train(head, pool_name, loss, seed, updates, device, log, codebook=None, back
                 _, _, logits = world(codes[idx], F.pad(a, (0, 1)))
                 objective = F.cross_entropy(logits[:, :S.W - 1].flatten(0, 2), idx[:, 1:].flatten())
             else:
-                objective = rollout_losses(world, s, a, loss, gen_loss)
+                objective = rollout_losses(world, s, a, loss, gen_loss, weight, faced)
         norm = optimizer_step(opt, objective, params, learning_rate=_phase_lr(config, update),
                               grad_clip=config.agent.grad_clip, strict=True, zero_grad=True)
         if snapshot is not None and (update + 1) % 6000 == 0 and update + 1 < updates:
@@ -380,6 +426,8 @@ def main(argv=None):
     parser.add_argument("--gen-loss", action="store_true")
     parser.add_argument("--regions", default="all", choices=("all", "itc"))
     parser.add_argument("--snapshots", action="store_true", help="also save the world every 6,000 updates")
+    parser.add_argument("--weight", default=None, help="E14: hardQxL or maskL (see the docstring)")
+    parser.add_argument("--skip", action="store_true", help="E14: the head also reads the raw local neighbourhood")
     args = parser.parse_args(argv)
     started = time.time()
     log = lambda **kw: print(json.dumps({**kw, "seconds_total": round(time.time() - started, 1)}), flush=True)
@@ -387,7 +435,8 @@ def main(argv=None):
     codebook = torch.load(args.codebook, weights_only=False)["codes"] if args.codebook else None
     name = f"{args.head}_{args.pool}_{args.loss}_s{args.seed}" + (f"_K{len(codebook)}" if codebook is not None else "") \
         + ("" if args.backbone == "full" else f"_{args.backbone}") + ("_gl" if args.gen_loss else "") \
-        + ("" if args.regions == "all" else f"_{args.regions}") + ("" if args.updates == 6000 else f"_u{args.updates}")
+        + ("" if args.regions == "all" else f"_{args.regions}") + (f"_{args.weight}" if args.weight else "") \
+        + ("_skip" if args.skip else "") + ("" if args.updates == 6000 else f"_u{args.updates}")
     OUT.mkdir(parents=True, exist_ok=True)
     if (OUT / f"{name}.pt").exists():
         log(status="exists", name=name)
@@ -398,7 +447,7 @@ def main(argv=None):
                                          "script_sha256": _sha256(Path(__file__))}, OUT / f"{tag}.pt")
     snapshot = (lambda u, w, h: save(f"{name}_at{u}", w, h)) if args.snapshots else None
     world, history, held = train(args.head, args.pool, args.loss, args.seed, args.updates, device, log, codebook,
-                                 args.backbone, args.gen_loss, args.regions, snapshot)
+                                 args.backbone, args.gen_loss, args.regions, snapshot, args.weight, args.skip)
     save(name, world, history)
     log(status="saved", name=name)
     return 0
