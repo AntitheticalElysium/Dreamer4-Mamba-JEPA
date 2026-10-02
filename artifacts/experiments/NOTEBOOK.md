@@ -61,6 +61,51 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-02 17:20 — reviewed at the user's pause request (results 15:45-16:22); PAUSE: no new trainings
+
+E14c, both seeds (mask1 + skip vs the same-seed teacher 18k):
+
+| reading | s7 | s8 |
+|---|---|---|
+| c_learned (held caught) | **0.991** (pass) | **0.950** (pass; baseline 0.271) |
+| c_cost (onestep_all) | 0.149 → 0.256 (fail) | 0.152 → 0.256 (fail) |
+| blocked / idle | 0.30 → 0.93 / 0.44 → 0.88 | 0.32 → 0.93 / 0.47 → 0.90 |
+| c_position (ever wrong) | 0.449 → 0.466 (fail) | 0.493 → 0.477 (fail) |
+| c_depth16 (gen_16) | +0.160 (fail) | +0.100 (fail) |
+| c_decision: gen1 | -0.050 [-0.064, -0.035] (fail) | -0.037 [-0.051, -0.022] (fail) |
+| c_decision: gen2 | -0.007 [-0.014, -0.001] | ns |
+| transfer1 | **+0.072** [+0.054, +0.094] | **+0.042** [+0.024, +0.060] |
+| transfer2 | +0.013 [+0.002, +0.024] | ns |
+
+- Why (s7, measured):
+  - check_e14c_grad: the mask term's backbone gradient is 5.4x the uniform term's in the trained world (cos 0.05).
+  - check_e14c_refit: backbone_damage TRUE.
+    - A fresh linear uniform head on the E14c backbone keeps the damage: idle static +34%, sleep static +134%.
+    - Only the near-player error on interact steps was the skip head's.
+    - That head catches 0.000 consequences: they need the dose even on this backbone.
+
+E14d s7, mask0.1 + skip (dose x31): consequences caught **1.000** (hallucinated 0.006); onestep_all 0.206 (+38%; blocked
+0.859, idle 0.783, sleep back to normal 0.017); gen_16 +0.030 [+0.013, +0.046]; excess16 0.590; ever position-wrong 0.410 (-9%).
+d_cost, d_position and d_depth16 fail at s7. The dpanel and seed 8 are pending; E14d s8 is held by the pause.
+
+E14b' s7, 36k plain recipe:
+
+| reading | 18k | 36k |
+|---|---|---|
+| consequences caught | 0.002 | 0.562 |
+| onestep_all | 0.149 | 0.126 (-0.023, resolved) |
+| every one-step class | | better: moved -0.034, blocked -0.031, interact -0.039, idle -0.032 |
+| gen_16 | 0.622 | 0.556 (-0.067, resolved) |
+| excess16 | 0.560 | 0.493 |
+| ever position-wrong | 0.449 | **0.298 (-34%; E13's oracle consequence substitution: -37%)** |
+
+- b_cost, b_position and b_depth16 pass at s7. The dpanel is pending (an OOM at 16:10, retrying); s8 36k lands ~18:00.
+- The leading reading at s7 (one seed, decision panel pending): the 18k worlds were under-trained.
+  - The uniform loss learns the consequences late and abruptly (s8 12-18k, s7 18-24k) and improves everything else.
+  - The dose buys the consequences but damages the backbone on blocked / idle / sleep.
+
+---
+
 ## 2026-10-02 afternoon — E14c seed 7 (interim; seed 8 and the linear arm pending)
 
 corrt_raw_teacher_s7_mask1_skip_u18000 vs corrt_raw_teacher_s7_u18000:

@@ -10,6 +10,10 @@ Reading, declared before running:
                     the damage sits in the skip head
   backbone_damage   otherwise (the representation itself was degraded by the end-to-end dose)
 Usage: check_e14c_refit.py <baseline.pt> <e14c.pt>
+Result (2026-10-02, s7): backbone_damage TRUE. Control: baseline_refit reproduces the baseline (moved static 0.0855 vs 0.0863,
+idle static 0.0437 vs 0.0438). E14c backbone + fresh linear uniform head: idle static 0.0587 (+34% vs 0.0437), sleep static
+0.1248 (+134% vs 0.0534), moved player 0.285 -- the damage persists without the skip head; only interact near-player recovers
+(0.0546 -> 0.0355: that part was the head). Consequences caught with the uniform linear head on the E14c backbone: 0.000.
 """
 import sys, json, torch, torch.nn.functional as F
 sys.path.insert(0, "artifacts/experiments/20260927_levers")
