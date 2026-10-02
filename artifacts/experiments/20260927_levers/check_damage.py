@@ -61,7 +61,7 @@ def main():
     print(json.dumps(out), flush=True)
     M = {k: v[:, 0] for k, v in DR.masks(meta).items()}                                # sample 0, transition k: frame k -> k+1
     base = M["valid"] & M["k3"]
-    hist = {"fresh": M["adjacent"] & ~M["win"] & ~M["adjwin"], "beside_no_hit": M["adjacent"] & ~M["win"] & M["adjwin"],
+    cases = {"fresh": M["adjacent"] & ~M["win"] & ~M["adjwin"], "beside_no_hit": M["adjacent"] & ~M["win"] & M["adjwin"],
             "hit_in_window": M["adjacent"] & M["win"]}
     for path in sys.argv[1:]:
         world, st = T.load_world(Path(path), device)
@@ -97,7 +97,7 @@ def main():
         r["teacher_by_history"] = {c: {"n_hit": int((base & q & M["drop2"]).sum()),
                                        "caught": float(pd_t[base & q & M["drop2"]].float().mean()),
                                        "n_no_hit": int((base & q & ~M["drop2"]).sum()),
-                                       "drawn_without_hit": float(pd_t[base & q & ~M["drop2"]].float().mean())} for c, q in hist.items()}
+                                       "drawn_without_hit": float(pd_t[base & q & ~M["drop2"]].float().mean())} for c, q in cases.items()}
         r["readings_part"] = {"teacher_caught_le_0.2": r["teacher"]["caught"] <= 0.2}
         out[name] = r
         print(json.dumps({name: r}), flush=True)
