@@ -135,8 +135,26 @@ deleted; each names the claim it retires.
 - Tree removal is measured on the futures with simulator labels (check_dohalluc): caught 0.000 (s7 18k), 1.000 (s7 36k),
   0.886 (s8 18k), 0.998 (s8 36k).
 - The encoder puts tree and grass close (squared distance about 49), though one blocks movement and the other does not. A
-  blur toward grass costs little L1 for a decision-critical error. This candidate cause of the tree → grass false scrolls is
-  not yet tested.
+  blur toward grass costs little L1 for a decision-critical error. Tested below.
+- Encoder token geometry (frozen Raw encoder, diagnosis futures, simulator labels, mob cells excluded), separation = squared
+  distance between class means / mean within-class spread:
+
+  | pair | distance | separation |
+  |---|---|---|
+  | **tree - grass** | 39.6 | **1.29** |
+  | **stone - path** | 106.1 | **1.20** |
+  | coal - stone | 103.6 | 1.17 |
+  | table - grass | | 4.29 |
+  | furnace - grass | | 3.49 |
+  | sand - grass | | 3.80 |
+  | lava - grass | | 5.84 |
+  | water - grass | | 6.76 |
+
+  - The two worst-separated solid / passable pairs are exactly the classes whose consequence token change is small, and
+    the two largest groups of truly blocking targets drawn passable before false scrolls after placed objects (stone 13-120,
+    trees 20-43).
+  - Encoder geometry → small L1 cost for decision-critical errors → false scrolls: the last link is an inference
+    consistent with the counts, not a causal test (that would substitute only these classes' tokens).
   - Missed scrolls are repaired more by the true REVEALED region (0.30 / 0.58 / 0.57 / 0.60) than by the observable one
     (0.18 / 0.17 / 0.31 / 0.19).
   - Content the world never saw drives most missed scrolls and 32-44% of the passable-drawn false scrolls at 36k. The
