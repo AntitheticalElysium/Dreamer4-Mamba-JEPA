@@ -121,6 +121,22 @@ deleted; each names the claim it retires.
 
     The stone-erasing runs ignore or partly ignore the inventory condition, which lives in the HUD tokens far from the
     faced cell. Whether a run learns that conjunction varies run to run.
+  - Why ignoring the pickaxe is cheap in training (headfit_labels on the training pool):
+    - DO facing stone succeeds in 52% of the pool's cases (n 7,162), but in 26% on the diagnosis futures (344 / 1,306).
+    - Without the pickaxe cue, "mined" is the L1-favoured output in training (P > 0.5), and it hallucinates under the
+      futures' distribution (a policy shift: the BC policy hits stone without a pickaxe far more often than the expert data).
+
+**LABEL LIMITATION (found 2026-10-02 19:15; affects every "strict consequence" number since E13):**
+- In the pool, DO on a tree turns it into grass (probe class after: grass 3,164 / 3,240), but the squared token change at
+  the faced cell is median 49 (q90 54). The strict cut is > 120, the 99th percentile of probe-unchanged transitions.
+- So consfit / headfit / check_allprobe / check_toperr / the "pos" and "event" counts EXCLUDE tree mining entirely. Their
+  "consequences" are mining stone / coal / iron / diamond (stone: median 147) plus placements.
+- The mask dose arms dosed the faced tile of every attempt, trees included.
+- Tree removal is measured on the futures with simulator labels (check_dohalluc): caught 0.000 (s7 18k), 1.000 (s7 36k),
+  0.886 (s8 18k), 0.998 (s8 36k).
+- The encoder puts tree and grass close (squared distance about 49), though one blocks movement and the other does not. A
+  blur toward grass costs little L1 for a decision-critical error. This candidate cause of the tree → grass false scrolls is
+  not yet tested.
   - Missed scrolls are repaired more by the true REVEALED region (0.30 / 0.58 / 0.57 / 0.60) than by the observable one
     (0.18 / 0.17 / 0.31 / 0.19).
   - Content the world never saw drives most missed scrolls and 32-44% of the passable-drawn false scrolls at 36k. The
