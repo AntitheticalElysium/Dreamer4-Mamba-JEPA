@@ -61,6 +61,102 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-02 18:45 — diagnostics of the unexplained (lane41 + checks), and the budget worlds' full readings
+
+**Budget (36k, plain recipe), both seeds vs the same-seed 18k teacher:**
+
+| reading | s7 | s8 | two-seed |
+|---|---|---|---|
+| held consequences caught | 0.563 | 0.559 | |
+| b_cost (onestep_all) | 0.149 → 0.126 | 0.152 → 0.130 | **pass** (every class better) |
+| b_depth16 (gen_16) | -0.067 | -0.101 | **pass** |
+| b_position (ever position-wrong) | 0.449 → 0.298 (-34%) | 0.493 → 0.339 (-31%) | **pass** |
+| b_decision: gen1 overall | -0.012 (ns) | -0.001 (ns) | **fail** |
+| gen1, zombie-adjacent | -0.034 | -0.036 | **worse at both seeds** |
+| transfer1 | +0.044 | +0.027 | **better at both seeds** |
+| transfer2 | +0.024 | +0.014 | **better at both seeds** |
+| revealed terrain | still monotone (tree x0.017) | still monotone (tree x0.016) | |
+| aligned share at depth 16 | 0.413 → 0.498 | 0.313 → 0.463 | |
+
+**Learning is mode by mode.** The 0.56 plateau is exactly the DO consequences:
+- DO caught 0.997 / 0.990;
+- place stone / table / furnace caught 0.000 at both seeds;
+- 315 / 560 = 0.5625;
+- the dose (E14c) learns the placements too (1.0 / 1.0 / 0.94).
+
+**D1, precision across snapshots** (`check_allprobe`): pre-transition h linear AP 0.09-0.21. At the transition, AP and the catch
+jump together inside one 6k interval (s7 24k: AP 0.166 → 0.368, caught 0.002 → 0.432; s8 30k: AP 0.216 → 0.515, caught
+0.002 → 0.557).
+- Readings: s7 simultaneous; s8 representation first, marginally (AP 0.216 at 24k, 2.45x its 6k value, before its catch).
+- After the transition, h's MLP AP is 0.74-0.75, above the raw local input's 0.667.
+- Empirical relation in the uniform worlds: caught ≈ recall at precision 0.5 of a linear probe on h.
+  - 36k: 0.56 vs 0.53 / 0.56; 30k: 0.56 vs 0.49 / 0.55; s7 24k: 0.43 vs 0.38.
+  - About 0 below 0.15 recall.
+  - Mechanism not tested.
+- Literature: Saxe, McClelland & Ganguli (PNAS 2019, verified):
+  - each mode of a deep network is learned in a sigmoidal transition, time O(1/s_alpha) up to a log factor;
+  - the transition can be arbitrarily sharp from small initial weights;
+  - the representation and the readout grow together.
+  - Consistent with the measured coupled jump and with DO (the strongest consequence mode) being learned first; its
+    predictions (placement later; time ~ 1/dose) are untested.
+
+**D3, dosed backbones**:
+
+| | h linear AP | h MLP AP | caught |
+|---|---|---|---|
+| E14c s7 / s8 | 0.234 / 0.254 | 0.50 / 0.49 | 0.99 / 0.95 |
+| E14d | 0.313 | | 1.00 |
+| linear | 0.363 | | 0.98 |
+
+- end_to_end_precise FALSE, refit_paradox_holds FALSE. The dosed worlds catch without a precise h, and a uniform head on
+  E14c's h catches nothing, as the precision predicts.
+
+**Item 4, where the dose's damage comes from:**
+- `check_facing`: the dosed worlds stop turning the agent.
+
+  | | turns drawn right, moved / blocked |
+  |---|---|
+  | baseline | 0.985 / 0.950 |
+  | mask1 + skip | 0.014 / 0.002 |
+  | mask0.1 + skip | 0.163 / 0.118 |
+  | linear | 0.004 / 0.002 |
+  | 36k | 0.998 / 0.956 |
+
+- `check_facing_h`: h at the player token still encodes the next facing in every world (linear 0.95-0.98, baseline 0.981):
+  backbone_lost_turn FALSE.
+  - The heads stop generating there on turns: generate weight 0.000 (mask1 + skip), 0.004 (linear), 0.238 (mask0.1)
+    vs 0.540 (baseline).
+- `check_gencand`, the generate candidate's L1 on turns (copy 0.403):
+
+  | | generate candidate L1 | |
+  |---|---|---|
+  | baseline | 0.393 | |
+  | mask1 + skip | **0.718** | gen_degraded |
+  | linear | **1.030** | gen_degraded |
+  | mask0.1 + skip | 0.383 | not degraded |
+  | 36k | 0.177 | |
+
+  - At lambda 1, the shared generate path is pulled toward consequence content and the gate rationally copies the player.
+  - At lambda 0.1, the candidate is fine and the GATE copies (self 0.657): cause open.
+- `check_e14c_grad` on E14d: the mask term's backbone gradient at lambda 0.1 is 0.13x the uniform term's. **Gradient
+  dominance is retracted as the mechanism** of the damage (it was a lambda = 1 correlate).
+- `e14d_cost`: no false scrolls. The player token on moved / blocked steps is +142% / +136% even at x31. The linear arm's
+  interact excess is the 4 near-player tiles (0.028 → 0.173).
+
+**D2, oracle substitution on the 36k world** (s7, ever position-wrong):
+- the consequence oracle still gives -25% (18k: -37%): consequence_gain_shrinks FALSE;
+- the entering-cell oracle gives -51% (18k: -24%). Entering terrain is now the largest remaining trigger of position
+  failures against the true future.
+- The oracle uses the TRUE terrain, which no world can know; it bounds perfect knowledge, not generation.
+
+**Determinism** (`check_determinism`): plain GPU training differs from update 20 (max |diff| 4.8e-7, then 2.2e-5 at 300,
+about x2 per 48 updates). Under `torch.use_deterministic_algorithms(True)` the pair is bit-identical at 20 and 300 updates.
+gpu_nondeterministic TRUE: run-to-run divergence is kernel nondeterminism amplified chaotically.
+
+**Resumable training** (f69d4411): full state every 6k updates and at the end; `--resume`; bit-exact on CPU.
+
+---
+
 ## 2026-10-02 18:00 — E14b two seeds: budget learns the consequences; same-seed runs do NOT reproduce
 
 Held strict caught, the plain teacher recipe:
