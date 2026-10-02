@@ -132,7 +132,8 @@ def main(argv=None):
                 for stratum, m in (("overall", ra[f"opp{k}"]), ("zombie_adjacent", ra[f"opp{k}"] & ra["zombie"])):
                     res[f"{pair}:{arm}@{stratum}"] = paired(ra[arm][m], rb[arm][m], ra["seed"][m], draws=1000, seed=20261001)
                     log(pair=pair, arm=arm, stratum=stratum, **res[f"{pair}:{arm}@{stratum}"])
-        (out_dir / "deep_compare.json").write_text(json.dumps(res, indent=2) + "\n")
+        path = out_dir / "deep_compare.json"                       # merged: earlier pairs are kept (2026-10-02)
+        path.write_text(json.dumps((json.loads(path.read_text()) if path.exists() else {}) | res, indent=2) + "\n")
         return
     from d4mj.config import config_from_dict
     from frozen_ladder import strata
