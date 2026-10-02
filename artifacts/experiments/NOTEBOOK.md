@@ -61,6 +61,83 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-03 morning — the damage is a rule, not chance (correction); what the H16 decision needs
+
+**Operations.** The machine was powered off at 22:01:48 on 10-02 (orderly systemd power-off). Lost: s8 36k→50k at update 47,500,
+deepeval_36k_s8 mid-imagination, check_damage (never admitted). The s8 extension resumed from its own full state at 42,000 (AdamW
+included; lane45 now prefers that state over the warm 36k one). deepeval_36k_s8 and check_damage were relaunched.
+
+**CORRECTION of 2026-10-02 "damage is mostly aleatoric".** That figure (mean P 0.35-0.51 across 5 futures) compared the 5 futures at
+the same STEP, after their states had diverged through random zombie moves. From one state the hit repeats:
+- one step from the root, 17 actions x 4 keys: 389 of 403 dropping (root, action) pairs drop in 4/4 keys, 14 in 2/4;
+- futures step 1 (shared root): 20 of 21 roots drop in 5/5.
+
+**The hit is a source-exact rule with a hidden timer** (`check_damage_rule`; craftax_classic game_logic read 2026-10-03).
+- Mechanics: a zombie hits (2; 7 asleep) iff its PRE-move position is next to the player's POST-move position and its hidden
+  attack_cooldown <= 0; the cooldown resets to 5 on a hit and falls by 1 every other step. Arrows hit for 2; a hidden counter costs
+  1 health about every 16 steps without food / drink / energy; lava kills.
+- On 79,763 futures transitions the zombie rule predicts 0.920 of drops >= 2. The misses are arrows (70% have a skeleton within 4
+  cells) and the "false" hits are hits netted against a same-step +1 recovery (48 of 63). rule_exact FALSE only for those reasons.
+- P(hit | zombie beside the post-move player, last hit j transitions ago): j = 1-5: 0.024-0.049; j = 6: 0.978 (the 6-step cycle).
+- What the world's input resolves:
+
+  | visible history | P(hit), zombie beside the player after the move |
+  |---|---|
+  | 4-frame window (3 transitions), no hit seen | **0.512** (n 2,263) |
+  | ... no zombie beside the player in those frames (fresh arrival) | 0.973 (n 147) |
+  | ... a zombie already beside it | 0.480 (n 2,116) |
+  | ... a hit seen in the window | 0.028 (n 2,141) |
+  | 6 frames (5 transitions), no hit seen | 0.893 (n 1,135) |
+  | no zombie beside the post-move player | 0.0017 |
+
+- damage_visible FALSE. In the commonest case the 4-frame input gives a coin flip; a deterministic L1 world outputs the median and
+  draws no hit. Six frames would make most hits predictable. The per-tile worlds use essentially only the current frame (09-30
+  audit: w1 ≈ w4), where P(hit | beside) is 0.277.
+- `check_damage` (relaunched) now also reports the teacher-forced catch per visible-history case (added before its run).
+
+**The H16 panel measures a real decision** (`check_h16_signal`, FIT + DEV rows; the sealed judge is not read):
+- within-root covariance of key 0's outcome with the other 31 keys' P: 98.5% of the across-action variation of P(dead by 16) is a
+  real first-action effect (binomial noise 6%); observed oracle 0.745 vs 0.655 if the action had no effect.
+- My conjecture that the H16 oracle is mostly sampling noise is refuted.
+
+**What the H16 decision needs** (`check_h16_value`, 7,920 FIT + DEV roots with opportunity at 16):
+
+| the chooser knows | expected safe at 16 |
+|---|---|
+| nothing (uniform) | 0.573 |
+| the fixed action prior (DEV) | 0.613 |
+| P(dead by 1) / P(dead by 4) exactly | 0.579 / 0.601 |
+| **one real future per action** (survives or not; hindsight) | **0.663** |
+| M sampled futures from a perfect stochastic world, M = 1 / 2 / 4 / 8 / 16 / 32 | 0.653 / 0.674 / 0.696 / 0.714 / 0.727 / 0.735 |
+| P from 31 keys (oracle, unbiased) | 0.730 |
+
+- Perfect short-horizon knowledge is nearly worthless at 16. On the 66% of roots with no opportunity by step 4 it equals uniform.
+- One faithful future carries 57% of the margin (one_sample_insufficient FALSE); 16 futures carry 90% (M90 = 16).
+- Our worlds' sealed gen16 (0.593-0.602, uniform 0.544, prior 0.586, real16 one draw 0.652) is far from the one-faithful-future
+  value. Their futures draw no hits, so every imagined future survives.
+- `check_h16_subst` (lane46, DEV) tests whether the H16 transfer gap is the drawn outcome (HUD) as at H1.
+
+**Literature (primary text read):**
+- Dedieu et al. 2025 (arXiv 2502.01591, the Craftax-Classic TWM):
+  - T_WM = 20-frame windows, imagination 20 steps, burn-in 5;
+  - next-state tokens SAMPLED (Q_{t+1} ∼ p_Θ), and rollouts show "feasible hallucinations ... such as spawning mobs and losing
+    health";
+  - separate reward and termination heads, sampled in imagination (MinAtar: ×10 CE weight "strongly penalizes inaccurate
+    predictions of terminal states");
+  - the health reward was dropped for a binary achievement reward.
+- DreamerV3 (Hafner et al., arXiv 2301.04104, eq. 1, 5):
+  - stochastic categorical representations, ẑt ∼ pϕ(ẑt | ht);
+  - a continue predictor trained by logistic regression;
+  - the actor learns from λ-returns over imagined trajectories with c_t, imagination horizon 15.
+- MoP-JEPA (arXiv 2607.05238, Prop. 1): a regression-trained JEPA predictor converges to the conditional mean, "a point between the
+  true next states that corresponds to no state at all"; independently trained heads collapse to the same mean, and hard assignment
+  is what makes heads enumerate modes.
+- Our L1 world is the per-dimension median version of the same collapse.
+- Stochastic MuZero (Antonoglou et al., ICLR 2022) is relevant but its text could not be read (OpenReview bot wall), so it is not
+  cited for any claim.
+
+---
+
 ## 2026-10-02 20:30 — item 1 continued, sealed H16 (s7), the missing damage, option A validated
 
 **Item 1, the gen regression next to zombies is REAL** (`check_headseeds`, 8 head seeds per world, two-level bootstrap):
@@ -101,7 +178,9 @@ health_signal_lost FALSE: the signal was never present.
 - Caveat: real1 heads are hindsight references, so the real HUD carries the outcome. What this proves: everything a
   real-fitted head misses in imagination at H1 is the HUD consequence (the damage).
 
-**Damage is mostly aleatoric** (diagnosis futures, 5 sampled futures under identical actions, simulator health):
+~~**Damage is mostly aleatoric**~~ **CORRECTED 2026-10-03** (see that entry): these numbers compare futures whose states had already
+diverged; from one state the hit repeats (389 / 403), and it is a rule with a hidden 6-step cooldown, a coin flip from the 4-frame
+input in the commonest case. Original text (diagnosis futures, 5 sampled futures under identical actions, simulator health):
 - damage at a step in at least 1 of 5 futures: 945 of 15,836 alive steps;
 - how many of the 5 take it: 1 / 2 / 3 / 4 / 5 = 584 / 174 / 81 / 45 / 61;
 - mean P(damage | some future takes it) 0.35; given the factual sample takes it, 0.51, and all 5 in only 18%;
