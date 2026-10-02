@@ -8,7 +8,9 @@ source artifacts/experiments/20260927_levers/lib.sh
 W=artifacts/eda/levers_tworlds_v1
 for s in 7 8; do
   [ -f $W/state/warm_s${s}_at36000.state.pt ] || job warmstate_s${s}_36k 0 $PY $L/warmstate.py $W/corrt_raw_teacher_s${s}_u36000.pt 36000 $W/state/warm_s${s}_at36000.state.pt
-  [ -f $W/corrt_raw_teacher_s${s}_u50000.pt ] || job tworld_s${s}_36k_to_50k 2400 $PY $L/tworld.py --head corrt --loss teacher --seed $s --updates 50000 --snapshots --resume $W/state/warm_s${s}_at36000.state.pt
+  R=$W/state/warm_s${s}_at36000.state.pt                     # 2026-10-03: after the 22:01 power-off, resume from the run's own
+  [ -f $W/state/corrt_raw_teacher_s${s}_u50000.state.pt ] && R=$W/state/corrt_raw_teacher_s${s}_u50000.state.pt   # full state
+  [ -f $W/corrt_raw_teacher_s${s}_u50000.pt ] || job tworld_s${s}_36k_to_50k 2400 $PY $L/tworld.py --head corrt --loss teacher --seed $s --updates 50000 --snapshots --resume $R
 done
 for s in 7 8; do
   N=corrt_raw_teacher_s${s}_u50000; T0=corrt_raw_teacher_s${s}_u36000
