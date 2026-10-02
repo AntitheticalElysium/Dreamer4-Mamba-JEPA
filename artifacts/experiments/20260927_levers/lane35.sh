@@ -14,16 +14,10 @@ source artifacts/experiments/20260927_levers/lib.sh
 #   skip_needed   the skip arm passes c_learned and c_cost and the linear arm fails one of them
 # Monotone (revealed terrain) is reported for both.
 W=artifacts/eda/levers_tworlds_v1
-# Order (one 3.1 GB training at a time): skip s7, skip s8, E14b's 36k s7 (declared in lane32.sh, moved here 2026-10-02 11:15),
-# linear s7, linear s8, 36k s8
-train() { N=$1; shift; [ -f $W/$N.pt ] || job tworld_$N 3100 $PY $L/tworld.py --head corrt --loss teacher "$@"; }
+# Order: two lanes in parallel (2026-10-02 12:45: measured peak 1.9 GB reserved for teacher + skip + mask1, 1.7 GB plain;
+# admission 2,400 MiB): this lane = seed 7 (skip, 36k, linear); lane35b.sh = seed 8 (skip, linear, 36k) + consfit_36k
+train() { N=$1; shift; [ -f $W/$N.pt ] || job tworld_$N 2400 $PY $L/tworld.py --head corrt --loss teacher "$@"; }
 train corrt_raw_teacher_s7_mask1_skip_u18000 --seed 7 --updates 18000 --weight mask1 --skip
-train corrt_raw_teacher_s8_mask1_skip_u18000 --seed 8 --updates 18000 --weight mask1 --skip
 train corrt_raw_teacher_s7_u36000 --seed 7 --updates 36000 --snapshots
 train corrt_raw_teacher_s7_mask1_u18000 --seed 7 --updates 18000 --weight mask1
-train corrt_raw_teacher_s8_mask1_u18000 --seed 8 --updates 18000 --weight mask1
-train corrt_raw_teacher_s8_u36000 --seed 8 --updates 36000 --snapshots
-job consfit_36k 2000 $PY $L/consfit.py $W/corrt_raw_teacher_s7_u36000_at18000.pt $W/corrt_raw_teacher_s7_u36000_at24000.pt \
-  $W/corrt_raw_teacher_s7_u36000_at30000.pt $W/corrt_raw_teacher_s7_u36000.pt $W/corrt_raw_teacher_s8_u36000_at18000.pt \
-  $W/corrt_raw_teacher_s8_u36000_at24000.pt $W/corrt_raw_teacher_s8_u36000_at30000.pt $W/corrt_raw_teacher_s8_u36000.pt
 echo "$(date '+%F %T') LANE35_DONE" >> $LOGDIR/lanes.log
