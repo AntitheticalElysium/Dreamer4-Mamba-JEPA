@@ -95,8 +95,32 @@ deleted; each names the claim it retires.
   | ... erasing step = DO on the faced cell | 0% | 73% | 73% | 86% |
   | placed never drawn | 12 | 16 | 14 | 16 |
 
-  - In the worlds that learned DO, a DO on a faced obstacle that truly stays (trees stay in Craftax; stone needs a pickaxe)
-    is drawn as removing it. Learning the DO consequence brought hallucinated removals.
+  - In the worlds that learned DO, a DO on a faced obstacle that truly stays is drawn as removing it. Learning the DO
+    consequence brought hallucinated removals.
+  - CORRECTION (craftax_classic game_logic, read 2026-10-02): mining a tree ALWAYS turns it into grass. My "trees stay" was
+    wrong. Stone becomes path only with a wood pickaxe.
+  - `check_dohalluc`: DO on an obstacle that truly stays, drawn removed, teacher-forced / self-fed:
+
+    | | removed, teacher / self-fed | true consequences caught |
+    |---|---|---|
+    | s7 18k | 0.011 / 0.048 | 0.000 |
+    | s7 36k | 0.025 / 0.067 | 0.965 |
+    | s8 18k | 0.403 / 0.417 | 0.828 |
+    | s8 36k | 0.136 / 0.142 | 0.981 |
+
+    - selffed_amplifies TRUE for s7, FALSE for s8: the s8 errors exist one step from true inputs.
+    - learned_do_halluc FALSE at both seeds.
+    - Edge-of-world cells are drawn removed 0.2-0.5 in every world.
+  - `check_stone_pickaxe`: the data follow the rule exactly (no pickaxe → stays 962 / 962; pickaxe → mined 344 / 344).
+
+    | | drawn mined, no pickaxe | drawn mined, with pickaxe |
+    |---|---|---|
+    | s7 36k | 0.005 | 0.904 |
+    | s8 18k | 0.601 | 0.724 |
+    | s8 36k | 0.199 | 0.954 |
+
+    The stone-erasing runs ignore or partly ignore the inventory condition, which lives in the HUD tokens far from the
+    faced cell. Whether a run learns that conjunction varies run to run.
   - Missed scrolls are repaired more by the true REVEALED region (0.30 / 0.58 / 0.57 / 0.60) than by the observable one
     (0.18 / 0.17 / 0.31 / 0.19).
   - Content the world never saw drives most missed scrolls and 32-44% of the passable-drawn false scrolls at 36k. The
