@@ -394,7 +394,9 @@ def train(head, pool_name, loss, seed, updates, device, log, codebook=None, back
     start = 0
     if resume is not None:                    # continue a run from its full state (weights, AdamW, batch order, RNG)
         st = torch.load(resume, map_location="cpu", weights_only=False)
-        world.load_state_dict(st["world"]); opt.load_state_dict(st["optimizer"]); order.set_state(st["order"])
+        world.load_state_dict(st["world"]); order.set_state(st["order"])
+        if st["optimizer"] is not None:       # None = a warm restart from weights only (warmstate.py): fresh AdamW
+            opt.load_state_dict(st["optimizer"])
         torch.set_rng_state(st["rng_cpu"])
         if st["rng_cuda"] is not None and torch.cuda.is_available():
             torch.cuda.set_rng_state_all(st["rng_cuda"])
