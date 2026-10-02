@@ -1,65 +1,65 @@
 {
-  "corrt_raw_teacher_s8_mask1_skip_u18000:corrt_raw_teacher_s8_u18000:gen1@overall": {
-    "difference": -0.0364876389503479,
+  "corrt_raw_teacher_s7_u36000:corrt_raw_teacher_s7_u18000:gen1@overall": {
+    "difference": -0.011584818363189697,
     "interval": [
-      -0.05132972449064255,
-      -0.021498719230294228
-    ],
-    "excludes_zero": true
-  },
-  "corrt_raw_teacher_s8_mask1_skip_u18000:corrt_raw_teacher_s8_u18000:gen1@zombie_adjacent": {
-    "difference": -0.06303191184997559,
-    "interval": [
-      -0.08266127109527588,
-      -0.04329683259129524
-    ],
-    "excludes_zero": true
-  },
-  "corrt_raw_teacher_s8_mask1_skip_u18000:corrt_raw_teacher_s8_u18000:gen2@overall": {
-    "difference": 0.005031764507293701,
-    "interval": [
-      -0.0019116416806355119,
-      0.01249801553785801
+      -0.024379702284932137,
+      0.0027897837571799755
     ],
     "excludes_zero": false
   },
-  "corrt_raw_teacher_s8_mask1_skip_u18000:corrt_raw_teacher_s8_u18000:gen2@zombie_adjacent": {
-    "difference": 0.0005517303943634033,
+  "corrt_raw_teacher_s7_u36000:corrt_raw_teacher_s7_u18000:gen1@zombie_adjacent": {
+    "difference": -0.033548057079315186,
     "interval": [
-      -0.006942256353795528,
-      0.008964448235929012
-    ],
-    "excludes_zero": false
-  },
-  "corrt_raw_teacher_s8_mask1_skip_u18000:corrt_raw_teacher_s8_u18000:transfer1@overall": {
-    "difference": 0.04241955280303955,
-    "interval": [
-      0.024133089929819107,
-      0.06015679985284805
+      -0.051130302250385284,
+      -0.017175085842609406
     ],
     "excludes_zero": true
   },
-  "corrt_raw_teacher_s8_mask1_skip_u18000:corrt_raw_teacher_s8_u18000:transfer1@zombie_adjacent": {
-    "difference": 0.07698088884353638,
+  "corrt_raw_teacher_s7_u36000:corrt_raw_teacher_s7_u18000:gen2@overall": {
+    "difference": -4.369020462036133e-05,
     "interval": [
-      0.05565118417143822,
-      0.09772186726331711
-    ],
-    "excludes_zero": true
-  },
-  "corrt_raw_teacher_s8_mask1_skip_u18000:corrt_raw_teacher_s8_u18000:transfer2@overall": {
-    "difference": -0.006639420986175537,
-    "interval": [
-      -0.01657172478735447,
-      0.0037858919240534306
+      -0.005682540126144886,
+      0.0059313056990504265
     ],
     "excludes_zero": false
   },
-  "corrt_raw_teacher_s8_mask1_skip_u18000:corrt_raw_teacher_s8_u18000:transfer2@zombie_adjacent": {
-    "difference": -0.01961377263069153,
+  "corrt_raw_teacher_s7_u36000:corrt_raw_teacher_s7_u18000:gen2@zombie_adjacent": {
+    "difference": 0.00035566091537475586,
     "interval": [
-      -0.032109349966049194,
-      -0.007515034172683954
+      -0.006773903034627438,
+      0.007131922524422407
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u36000:corrt_raw_teacher_s7_u18000:transfer1@overall": {
+    "difference": 0.04345148801803589,
+    "interval": [
+      0.029679197818040848,
+      0.05802265554666519
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_teacher_s7_u36000:corrt_raw_teacher_s7_u18000:transfer1@zombie_adjacent": {
+    "difference": 0.06373441219329834,
+    "interval": [
+      0.046671055257320404,
+      0.08150063455104828
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_teacher_s7_u36000:corrt_raw_teacher_s7_u18000:transfer2@overall": {
+    "difference": 0.023867130279541016,
+    "interval": [
+      0.016957182437181473,
+      0.031334929168224335
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_teacher_s7_u36000:corrt_raw_teacher_s7_u18000:transfer2@zombie_adjacent": {
+    "difference": 0.04028743505477905,
+    "interval": [
+      0.03059164248406887,
+      0.05012375861406326
     ],
     "excludes_zero": true
   }

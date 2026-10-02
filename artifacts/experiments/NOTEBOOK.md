@@ -61,6 +61,40 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-02 18:00 — E14b two seeds: budget learns the consequences; same-seed runs do NOT reproduce
+
+Held strict caught, the plain teacher recipe:
+
+| snapshot | s7, 18k run | s7, 36k run | s8, 18k run | s8, 36k run |
+|---|---|---|---|---|
+| 6k | | | 0.000 | |
+| 12k | | | 0.002 | |
+| 18k | 0.002 | 0.002 | **0.271** | **0.002** |
+| 24k | | 0.432 | | 0.002 |
+| 30k | | 0.561 | | 0.557 |
+| 36k | | 0.563 | | 0.559 |
+
+- **budget_fixes TRUE**: held caught >= 0.5 at 36k at both seeds; hallucinated 0.007 / 0.015.
+- **reproducible FALSE** (predeclared): the s8 36k run's 18k snapshot catches 0.002, the original 18k run 0.271.
+  - s7's check was uninformative: both runs sat at 0.002.
+  - Weights already differ at 6k at both seeds: median relative difference 19% (s7) / 19% (s8), growing to 32% by 18k.
+  - The args are identical. The script hashes differ, but the default recipe is bit-identical on CPU.
+  - check_determinism.py (predeclared) tests GPU kernel nondeterminism.
+- Consequences until that test reports:
+  - "s8 learns earlier than s7" (E14a) is NOT a property of the seed. The transition time varies run to run, at least
+    6-12k updates for the same seed.
+  - E14a's facts about the specific trained worlds stand: a fresh head on THAT s8 backbone catches 0.257.
+- 36k s7 decision panel (36k - 18k teacher):
+
+  | | gen1 | gen2 | transfer1 | transfer2 |
+  |---|---|---|---|---|
+  | overall | -0.012 (ns) | 0.000 (ns) | **+0.044** [+0.030, +0.058] | **+0.024** [+0.017, +0.031] |
+  | zombie-adjacent | -0.034 (resolved) | | | |
+
+  b_decision fails at s7; transfer improves, the same split as E14c.
+
+---
+
 ## 2026-10-02 17:20 — reviewed at the user's pause request (results 15:45-16:22); PAUSE: no new trainings
 
 E14c, both seeds (mask1 + skip vs the same-seed teacher 18k):
