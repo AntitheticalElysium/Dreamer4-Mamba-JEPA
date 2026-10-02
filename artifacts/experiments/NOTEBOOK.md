@@ -61,6 +61,54 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-02 20:30 — item 1 continued, sealed H16 (s7), the missing damage, option A validated
+
+**Item 1, the gen regression next to zombies is REAL** (`check_headseeds`, 8 head seeds per world, two-level bootstrap):
+
+| | overall | zombie-adjacent |
+|---|---|---|
+| s7 | -0.013 [-0.030, +0.003] (ns) | -0.030 [-0.052, -0.008] |
+| s8 | +0.000 (ns) | -0.035 [-0.060, -0.013] |
+
+- zombie_regression_real TRUE, within_head_noise FALSE.
+- Not explained by the imagined states:
+  - zombie AUC up;
+  - branch alignment up (check_branches);
+  - mob blur at depth 1 down (stochdiag: 1.14 / 1.12 → 0.94 / 0.93), lower excess. The "crisp wrong zombies" candidate is
+    REFUTED.
+- Not explained by the imagined health either (`check_hud_danger`): see the next item. Cause open.
+
+**Imagination never draws the damage** (`check_hud_danger`, dpanel judge, step 1):
+
+| | per-root correlation, -health vs P(death1), zombie / other | health spread across the 17 branches |
+|---|---|---|
+| real successors | 0.907 / 0.926 | 0.05-0.10 |
+| every world, 18k and 36k | -0.07 to +0.11 | 0.010-0.013 |
+
+health_signal_lost FALSE: the signal was never present. `check_transfer_subst` (predeclared) tests whether this missing
+damage is what real-fitted heads cannot read in imagination.
+
+**Sealed H16, seed 7** (E15; judge block 62,000-62,399; 18k → 36k):
+
+| | 18k | 36k |
+|---|---|---|
+| fidelity err/copy at depths 1 / 4 / 16 | 0.204 / 0.529 / 0.673 | 0.184 / 0.522 / 0.602 |
+| gen16 | 0.597 | 0.597 |
+| gen16 - prior16 | +0.011 | +0.012 (carried, small) |
+| transfer16 | 0.569 | 0.574 |
+| transfer16 - prior16 | -0.017 | -0.012 (not usable) |
+
+- More faithful at depth 16, yet the decision value is unchanged: objective mismatch at the goal horizon.
+- The s8 pair and the predeclared paired contrasts are pending.
+
+**Option A validated** (lane44; warm restart of s7's 24k snapshot to 30k vs the true 30k snapshot):
+- consfit 0.5625 vs 0.5607;
+- onestep_all 0.131 vs 0.131 (every class within ±0.002);
+- gen_16 0.642 vs 0.658;
+- warm_ok TRUE: weights-only worlds can be extended.
+
+---
+
 ## 2026-10-02 19:00 — item 1 (branches), item 9 (decision step), literature on nondeterminism and objective mismatch
 
 **Item 1:**
