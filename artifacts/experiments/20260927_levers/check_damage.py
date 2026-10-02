@@ -14,6 +14,14 @@ caught / drawn-without-a-hit by that visible history (sample 0, k >= 3, drops of
 Reading, declared before running: damage_copied = teacher-forced caught <= 0.2 in every world (the drop is not drawn even from true
 inputs); damage_small = median HUD token change on damage <= 2 x the unchanged median.
 Usage: check_damage.py <world.pt> ...
+Result (2026-10-03; sample 0: 337 damage transitions, rate 0.021; s7 18k / s7 36k / s8 18k / s8 36k):
+  damage_copied TRUE: teacher-forced caught 0.018 / 0.030 / 0.021 / 0.050 (false drops 0.009-0.014); self-fed 0.004-0.009.
+  damage_small FALSE: HUD squared token change on damage median 74.9 vs 2.1 unchanged (36x); the probe sees every true drop.
+  By visible history (teacher, k >= 3): fresh arrivals (hit P 0.97 from the window) caught 0 / 0 / 0 / 1 of 31; beside without a
+  hit in the window caught 0.023 / 0.041 / 0.027 / 0.073 of 220 hits but drawn on 0.080 / 0.112 / 0.085 / 0.134 of 224 no-hit
+  transitions (drawn drops do not track hits); after a hit in the window drawn on 0.17-0.24 of no-hit transitions.
+  So the hit is copied even where the input predicts it (the rarity pathology of the DO consequences, slowly shrinking with
+  budget), and where it is a coin flip the L1 median removes it anyway.
 """
 import json
 import sys
