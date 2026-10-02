@@ -87,6 +87,15 @@ s7 / s8 18k; top-1% recall 0.998 / 0.72), the top-1% set being 52% entering cell
                   (online hard example mining, Shrivastava et al. 2016): dose ~L / Q% on what sits in the tail.
                   hard1x1 (x101), hard1x3 (x301), hard0.3x1 (x334); mlp_hard1x3 and skip_hard1x3 with those readouts
   H_hard          a hard arm (any readout) passes H_head_fixable's three conditions: a generic dose catches the consequences
+Addendum 4 (declared 2026-10-02 after check_rho and the calm-event count, before any event arm ran; `--tag event`): a generic,
+SELECTIVE dose. Label-free selection by loss (hard arms: 93% of the tail is entering / static / HUD) and by reducible loss
+(check_rho: the IL model copies the consequences too) both fail. Counted from the labels: in calm frames (fewer than 10% of the
+frame's tokens with copy residual > 60, i.e. no scroll), tokens with copy residual > 60 are 0.64% of all tokens, consequences
+are 6.7% of them, and 75% of consequences are among them (entering cells are excluded by construction). EAWM's event definition
+(camera-compensated change; boundary frames revert to uniform) at a CGSReg-form dose:
+    eventCxL      uniform mean + L x the mean over calm-frame events (copy residual > C in frames whose share of such tokens
+                  is < 10%); event60x2 (dose ~x300), skip_event60x1, skip_event60x2
+  H_event         an event arm passes H_head_fixable's three conditions: a label-free selective dose works at the head
   Every addendum arm's re-trained head is saved (artifacts/eda/headfit_heads_v1/<world>_<arm>.pt) for the cost analysis.
   Every arm also logs its training objective every 500 updates (plateau check).
 Usage: headfit.py <world.pt> ... -> evals/headfit_<name>.json
@@ -202,6 +211,12 @@ def weights(arm, lab, rows, device):
 def objective(world, s, a, arm, lab, rows, device, cuts=None):
     if arm in (cuts or {}):
         return per_token(world, s, a, "l1", device, cuts[arm]).mean()
+    if arm.startswith("event"):                # addendum 4: dose calm-frame camera-compensated change events
+        c, lam = (float(v) for v in arm[5:].split("x"))
+        tok = per_token(world, s, a, "l1", device)
+        ev = lab["copyres"][rows].float().to(device) > c
+        m = ev & (ev.float().mean(-1, keepdim=True) < 0.1)
+        return tok.mean() + lam * (tok * m).sum() / m.sum().clamp(min=1)
     if arm.startswith("hard"):                 # addendum 3: dose the batch's top-Q% tokens by current loss
         q, lam = (float(v) for v in arm[4:].split("x"))
         tok = per_token(world, s, a, "l1", device)
@@ -465,6 +480,9 @@ def main():
             m10, mu_ = A["mlp_mask10"]["held"], A["mlp_uniform"]["held"]
             rd["H_capacity"] = m10["caught"] >= 0.5 and m10["l1_all"] <= 1.1 * mu_["l1_all"]
             rd["H_representation"] = m10["caught"] >= 0.5 and m10["l1_all"] > 1.1 * mu_["l1_all"]
+        event = [k for k in ok if k.split("_")[-1].startswith("event")]
+        if event:
+            rd["H_event"] = any(ok[k] for k in event); rd["H_event_arms"] = [k for k in event if ok[k]]
         hard = [k for k in ok if k.split("_")[-1].startswith("hard")]
         if hard:
             rd["H_hard"] = any(ok[k] for k in hard); rd["H_hard_arms"] = [k for k in hard if ok[k]]
