@@ -86,6 +86,21 @@ deleted; each names the claim it retires.
 - Missed scrolls come from the whole-map content: ring 0.11-0.22, player <= 0.04, HUD <= 0.005.
 - So unseen-terrain generation (option 3) can address at most the revealed part of false scrolls, about 15-20% of first wrong
   decisions at 36k.
+- `check_erasure` (s7 18k / s7 36k / s8 18k / s8 36k), how the obstacle was lost:
+
+  | | s7 18k | s7 36k | s8 18k | s8 36k |
+  |---|---|---|---|---|
+  | entering content misdrawn from its first appearance | 26 | 42 | 31 | 38 |
+  | **erased after being drawn blocking** | 6 | 30 | 175 | 56 |
+  | ... erasing step = DO on the faced cell | 0% | 73% | 73% | 86% |
+  | placed never drawn | 12 | 16 | 14 | 16 |
+
+  - In the worlds that learned DO, a DO on a faced obstacle that truly stays (trees stay in Craftax; stone needs a pickaxe)
+    is drawn as removing it. Learning the DO consequence brought hallucinated removals.
+  - Missed scrolls are repaired more by the true REVEALED region (0.30 / 0.58 / 0.57 / 0.60) than by the observable one
+    (0.18 / 0.17 / 0.31 / 0.19).
+  - Content the world never saw drives most missed scrolls and 32-44% of the passable-drawn false scrolls at 36k. The
+    "15-20%" bound above counted false scrolls only and is superseded.
 
 **Literature (primary sources read):**
 - Summers & Dinneen, ICML 2021:

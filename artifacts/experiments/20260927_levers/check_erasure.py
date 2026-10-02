@@ -16,6 +16,10 @@ tokens, or with the OBSERVABLE map cells (inside it; excluding the ring, the tar
 Reading, declared before running (per world): erasure_cause = the largest category of (i), and for `erased` the share at DO /
 place steps on the faced cell (hallucinated consequence) vs other steps (drift); missed_region = the region repairing more.
 Usage: check_erasure.py <world.pt> ...
+Result (2026-10-02; s7 18k / s7 36k / s8 18k / s8 36k): false-passable cases 52 / 95 / 228 / 118.
+  entering_misdrawn 26 / 42 / 31 / 38; erased 6 / 30 / 175 / 56 (erasing step DO on the faced cell 0 / 73 / 73 / 86%);
+  placed_never_drawn 12 / 16 / 14 / 16; never_blocking_seen 8 / 7 / 8 / 8. erasure_cause: entering (s7) / erased (s8).
+  Missed scrolls: revealed-region repair 0.30 / 0.58 / 0.57 / 0.60 vs observable 0.18 / 0.17 / 0.31 / 0.19 (missed_region revealed x4).
 """
 import json
 import sys
