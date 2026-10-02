@@ -61,6 +61,51 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-02 midday — E14c PREDECLARED: end-to-end training with the head-only fix (labelled upper bound)
+
+Head-only facts that set it up (E14a addenda, both corrt seeds unless noted):
+
+| s7 (s8) head, frozen backbone | caught | all-token L1 vs uniform | hallucinated |
+|---|---|---|---|
+| any readout, uniform loss | 0.002 (0.26-0.28) | — | — |
+| linear, mask0.1 (x31) | 0.002 | +0% | 0.003 |
+| linear, mask1 (x304) | 0.541 | +21% | 0.046 |
+| linear, mask3 / mask10 | 0.581 / 0.579 (0.568) | +38% / +59% (+38%) | 0.05 |
+| MLP, mask1 | 0.583 | +7% | 0.049 |
+| **skip (raw local neighbourhood), mask1** | **0.628 (0.653)** | **+7% (+9%)** | **0.022 (0.027)** |
+| SimPLe dead zone q50 / q75 / q90 | 0.002 | ≤ +4% | 0.001 |
+| hard-token (own error) 1% x3 | 0.237 | +83% | 0.058 |
+| skip + hard 1% x3 | 0.633 | +72% | 0.155 |
+
+- Where the linear mask1 cost lands (`check_costwhere.py`, held):
+  - 70% on static tokens. The trained head uses "generate" at 12% weight to refine copies; the dose pulls the single linear
+    proj toward consequence content.
+  - 14% on the 4 tokens next to the player (+69%: h cannot tell an attempt's faced tile from its neighbours).
+  - An MLP readout cuts the static part (+20% → +5%); the near-player part stays (+58%).
+- Generic doses fail for a measured reason (`check_toperr.py`). Consequences do sit in the error tail (median rank
+  0.32% / 0.53%; top-1% recall 0.998 / 0.72), but 93% of the tail is something else: entering cells 52%, static 25%,
+  HUD 12%. A x300 dose on the tail distorts everything.
+- E14c asks the decision-relevant question before searching further for a generic selective dose: if catching the
+  consequences (with Craftax labels) does not improve imagination and decisions end-to-end, the search is moot.
+
+Arms (lane35, then lane36 evaluates): corrt, Raw, teacher, 18k, seeds 7 and 8, the u18000 recipe except
+`--weight mask1 --skip` (primary) or `--weight mask1` (linear head). The 36k budget control (E14b, declared in lane32.sh)
+runs in the same lane between them.
+
+Readings (fixed in lane35.sh before training; comparator = the same-seed teacher u18000 world; two-seed rule):
+- c_learned: consfit held caught ≥ 0.5.
+- c_cost: teval onestep_all ratio ≤ 1.10.
+- c_position: subst16 ever_position_wrong at least 20% lower. E13's oracle substitution gave -37%.
+- c_depth16: gen_16 not resolved worse.
+- c_decision: dpanel gen1 or gen2 resolved better.
+- skip_needed: the skip arm passes c_learned and c_cost while the linear arm fails one.
+
+GPU (11:15):
+- lane23 stops after deepeval group1 (group3 and group2 resume after the trainings);
+- the direct / categorical addenda are dropped. Those worlds never scroll; the two corrt seeds decide.
+
+---
+
 ## 2026-10-02 morning — E14a / E14m launched; E12 port correction (primary source)
 
 **E12 correction: our rollout2 was not an exact port, and my "RoPE vs learned absolute positions" explanation is refuted.**
