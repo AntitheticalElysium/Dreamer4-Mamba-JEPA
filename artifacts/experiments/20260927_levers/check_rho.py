@@ -13,6 +13,10 @@ Reading, declared before running:
                   loss on s7): a label-free selection that targets them
   il_copies       the IL model's mean L1 on consequence tokens >= 0.8 x the world's (it does not learn them either; RHO's
                   selection then cannot favour them)
+Result (2026-10-02, levers_logs/check_rho.log): IL model train L1 0.151 (the world's held all-token L1 is 0.058). IL on consequence
+tokens 0.900 vs the world's 0.919 (s7) / 0.738 (s8): il_copies TRUE -- a local MLP trained with the uniform L1 copies them too.
+Top-0.3% by reducible loss: 71% static, 10-12% entering, 9-11% near-player, consequence recall 0.000 (s7) / 0.002 (s8);
+rho_selective FALSE at both seeds. RHO's IL model faces the same rarity, so its selection cannot favour what it cannot learn.
 """
 import sys, json, torch, torch.nn as nn, torch.nn.functional as F
 sys.path.insert(0, "artifacts/experiments/20260927_levers")

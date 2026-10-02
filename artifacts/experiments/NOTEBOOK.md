@@ -87,6 +87,14 @@ Head-only facts that set it up (E14a addenda, both corrt seeds unless noted):
   HUD 12%. A x300 dose on the tail distorts everything.
 - E14c asks the decision-relevant question before searching further for a generic selective dose: if catching the
   consequences (with Craftax labels) does not improve imagination and decisions end-to-end, the search is moot.
+- RHO-LOSS (Mindermann et al., ICML 2022, eq. 3, verified in the PDF; `check_rho.py`) does not rescue a label-free
+  selection. Its irreducible-loss model, a local MLP on the raw neighbourhood trained with the uniform L1, copies the
+  consequences too: IL 0.900 vs the world's 0.919.
+  - The reducible-loss tail is 71% static tokens; consequence recall is 0.000 / 0.002 in the top 0.3%.
+  - Every model trained with the uniform per-token L1 on this data copies them: all transformer heads, MLP / skip
+    readouts, and a standalone local MLP whose input carries the conjunction.
+  - A classifier on the same input with balanced positives singles them out (AP 0.667). The obstacle is rarity under
+    the uniform objective, not the information.
 
 Arms (lane35, then lane36 evaluates): corrt, Raw, teacher, 18k, seeds 7 and 8, the u18000 recipe except
 `--weight mask1 --skip` (primary) or `--weight mask1` (linear head). The 36k budget control (E14b, declared in lane32.sh)
