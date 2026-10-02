@@ -96,6 +96,11 @@ are 6.7% of them, and 75% of consequences are among them (entering cells are exc
     eventCxL      uniform mean + L x the mean over calm-frame events (copy residual > C in frames whose share of such tokens
                   is < 10%); event60x2 (dose ~x300), skip_event60x1, skip_event60x2
   H_event         an event arm passes H_head_fixable's three conditions: a label-free selective dose works at the head
+Addendum 5 (declared 2026-10-02 after addendum 4, before any pos arm ran; `--tag pos`): is the calm-event arms' hallucination
+(32-38% of failed attempts, vs 2-3% with the attempt mask) caused by dosing only the positives (a prior shift)?
+    posL          uniform mean + L x the mean over the strict consequence tiles ONLY (no failed attempts). L = 0.17 matches mask1's
+                  per-token dose (x304: consequences are 0.057% of tokens, attempts 0.33%); skip_pos0.17, skip_pos1 (x1,750)
+  H_prior_shift   skip_pos0.17 held hallucinated >= 3 x skip_mask1's at both seeds: positives-only dosing shifts the change prior
   Every addendum arm's re-trained head is saved (artifacts/eda/headfit_heads_v1/<world>_<arm>.pt) for the cost analysis.
   Every arm also logs its training objective every 500 updates (plateau check).
 Usage: headfit.py <world.pt> ... -> evals/headfit_<name>.json
@@ -211,6 +216,12 @@ def weights(arm, lab, rows, device):
 def objective(world, s, a, arm, lab, rows, device, cuts=None):
     if arm in (cuts or {}):
         return per_token(world, s, a, "l1", device, cuts[arm]).mean()
+    if arm.startswith("pos"):                  # addendum 5: dose the strict consequence tiles only
+        lam = float(arm[3:])
+        tok = per_token(world, s, a, "l1", device)
+        m = torch.zeros_like(tok, dtype=torch.bool)
+        m.scatter_(2, lab["faced"][rows].to(device)[..., None], lab["cons"][rows].to(device)[..., None])
+        return tok.mean() + lam * (tok * m).sum() / m.sum().clamp(min=1)
     if arm.startswith("event"):                # addendum 4: dose calm-frame camera-compensated change events
         c, lam = (float(v) for v in arm[5:].split("x"))
         tok = per_token(world, s, a, "l1", device)
