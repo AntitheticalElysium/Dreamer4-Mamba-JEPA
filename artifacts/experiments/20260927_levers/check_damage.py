@@ -74,7 +74,7 @@ def main():
                     t = T.step(world, torch.stack(tfr[-w:], 1), acts, device, config)
                     gen[i:i + b, k] = g.half(); tf[i:i + b, k] = health(t)
                     frames.append(g); hist.append(fk[:, k]); tfr.append(fut5[i:i + b, 0, k].float())
-        sf = health(gen.float())
+        sf = torch.stack([health(gen[:, k].float()) for k in range(H)], 1)
         gprev = torch.cat([root[:, None], gen[:, :-1]], 1)
         img_off = DA.offsets(torch.cat([estimate(gprev[j:j + 32].float(), gen[j:j + 32].float()) for j in range(0, R, 32)])).long()
         aligned = torch.cat([torch.ones(R, 1, dtype=torch.bool), (img_off == true_off).all(-1)[:, :-1]], 1)   # aligned before step k
