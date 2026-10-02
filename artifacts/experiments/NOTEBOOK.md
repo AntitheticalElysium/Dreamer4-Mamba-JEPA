@@ -109,6 +109,12 @@ failed attempts.
     dosing the OTHER events (HUD, mobs), and their hallucination from the prior shift.
   - With this h, catching versus hallucinating is a threshold trade-off: success depends on inventory, which the head
     must read from h.
+- A label-free dose WITH matching negatives, an action-effect map counted per (action, k-means state of the agent token)
+  (`check_effectmap.py`, predeclared), is not selective enough.
+  - Best: recall 0.57 at 1.3% of tokens dosed, with consequences only 2.5% of the dosed set (the attempt mask: 0.33% /
+    17%). The rule failed.
+  - Status of label-free selection: by loss, by reducible loss, by calm events and by count maps, none matches the
+    attempt mask. E14c decides first whether the consequence fix is worth this search.
 
 - Where the linear mask1 cost lands (`check_costwhere.py`, held):
   - 70% on static tokens. The trained head uses "generate" at 12% weight to refine copies; the dose pulls the single linear

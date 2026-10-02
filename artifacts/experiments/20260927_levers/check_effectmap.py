@@ -10,6 +10,9 @@ whether or not they change (matching negatives). Reported for K in {4, 8, 16} an
 frames: consequence recall, dosed share of tokens, consequences among dosed tokens, attempt-mask overlap.
 Reading, declared before running:
   effectmap_selective  some (K, tau) reaches consequence recall >= 0.6 with dosed share <= 1% of tokens
+Result (2026-10-02): FALSE. tau 0.05: recall 0.76 at 4.0-4.3% dosed (consequences 1.0% of the dosed set); tau 0.1: K4 0.13 /
+0.9%, K8 0.39 / 1.2%, K16 0.57 / 1.3% (2.5% of the dosed set); tau 0.2: <= 0.21. The attempt mask doses 0.33% of tokens, 17%
+of them consequences: k-means states of the agent token do not recover facing well enough.
 """
 import json
 import torch
