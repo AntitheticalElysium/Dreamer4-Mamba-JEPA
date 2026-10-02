@@ -85,8 +85,32 @@ deleted; each names the claim it retires.
 | real successors | 0.907 / 0.926 | 0.05-0.10 |
 | every world, 18k and 36k | -0.07 to +0.11 | 0.010-0.013 |
 
-health_signal_lost FALSE: the signal was never present. `check_transfer_subst` (predeclared) tests whether this missing
-damage is what real-fitted heads cannot read in imagination.
+health_signal_lost FALSE: the signal was never present.
+
+**The whole H1 transfer gap is the HUD** (`check_transfer_subst`; dpanel's own real1 heads on imagined step-1 states):
+
+| world | imagined | + real HUD only | + real 3x3 near the player |
+|---|---|---|---|
+| s7 18k | 0.643 | **0.999** | 0.666 |
+| s7 36k | 0.686 | **0.999** | 0.702 |
+| s8 18k | 0.660 | **0.998** | 0.678 |
+| s8 36k | 0.686 | **0.999** | 0.704 |
+
+- Swapping ONLY the 18 HUD tokens closes 99.8-99.9% of the gap at all four worlds; the near-player cells close 5-6%.
+  hud_bottleneck TRUE.
+- Caveat: real1 heads are hindsight references, so the real HUD carries the outcome. What this proves: everything a
+  real-fitted head misses in imagination at H1 is the HUD consequence (the damage).
+
+**Damage is mostly aleatoric** (diagnosis futures, 5 sampled futures under identical actions, simulator health):
+- damage at a step in at least 1 of 5 futures: 945 of 15,836 alive steps;
+- how many of the 5 take it: 1 / 2 / 3 / 4 / 5 = 584 / 174 / 81 / 45 / 61;
+- mean P(damage | some future takes it) 0.35; given the factual sample takes it, 0.51, and all 5 in only 18%;
+- size: mostly 2 health points (zombie hits).
+- A deterministic L1 world draws the conditional median, "no damage" whenever P < 0.5. The risk is removed from
+  imagination by construction. `check_damage` measures the catch rates.
+- PlaNet (Hafner et al., ICML 2019, read): purely deterministic transitions prevent "capturing multiple futures and make it
+  easy for the planner to exploit inaccuracies"; "the stochastic component is even more important – the agent does not
+  learn without it". Option 3 (stochastic / generative) is therefore DECISION-relevant here, not only a diversity concern.
 
 **Sealed H16, seed 7** (E15; judge block 62,000-62,399; 18k → 36k):
 
