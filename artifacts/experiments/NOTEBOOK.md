@@ -74,8 +74,26 @@ Head-only facts that set it up (E14a addenda, both corrt seeds unless noted):
 | MLP, mask1 | 0.583 | +7% | 0.049 |
 | **skip (raw local neighbourhood), mask1** | **0.628 (0.653)** | **+7% (+9%)** | **0.022 (0.027)** |
 | SimPLe dead zone q50 / q75 / q90 | 0.002 | ≤ +4% | 0.001 |
-| hard-token (own error) 1% x3 | 0.237 | +83% | 0.058 |
-| skip + hard 1% x3 | 0.633 | +72% | 0.155 |
+| hard-token (own error) 1% x3 | 0.237 (0.200) | +83% (+71%) | 0.058 (0.054) |
+| skip + hard 1% x3 | 0.633 (0.529) | +72% (+84%) | 0.155 (0.154) |
+| linear, calm-frame events c60 x2 (label-free) | 0.565 | +119% | 0.105 |
+| skip, calm-frame events c60 x1 / x2 | **0.925** / 0.934 | +85% / +108% | **0.315** / 0.378 |
+
+Seed 8 (where not in brackets above), addendum:
+- dead zone q50 / q75 / q90: 0.255-0.263, null at both seeds;
+- mask0.1 (x31): 0.439, already effective on s8's sharper h (check_allprobe AP 2x s7's);
+- mask1: 0.554 (+14%); mask3: 0.567 (+26%);
+- mlp_mask1: 0.588 (+5%, passes); mlp_mask10: 0.595 (+26%).
+
+Readings at both seeds: H_capacity false, H_representation true.
+
+The dose needed scales with the backbone's precision. Calm-frame events catch 92-93% with a skip head but hallucinate on 32-38% of
+failed attempts.
+- The event dose up-weights only the changes that happened, about x300. That moves the change / no-change threshold to
+  P > ~1/300, so every plausible change is drawn. This is our reading of the numbers, not yet tested.
+- The labelled mask doses the faced tile of every attempt, successful or not, so the prior within the attempt set is
+  unchanged.
+- A selective dose therefore needs its matching negatives: the context where a change could happen, not only the changes.
 
 - Where the linear mask1 cost lands (`check_costwhere.py`, held):
   - 70% on static tokens. The trained head uses "generate" at 12% weight to refine copies; the dose pulls the single linear
