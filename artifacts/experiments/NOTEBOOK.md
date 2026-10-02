@@ -61,6 +61,45 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-02 19:00 — item 1 (branches), item 9 (decision step), literature on nondeterminism and objective mismatch
+
+**Item 1:**
+- `check_branches`: near zombies, the 36k worlds' imagined branches are BETTER aligned with the real ones (0.928 → 0.939 s7,
+  0.927 → 0.939 s8), with lower error (36.5 → 32.2, 37.7 → 32.4) and similar spread. branch_alignment_lost and
+  branch_spread_lost are FALSE.
+- dpanel's head-seed spreads (gen1 overall 0.008-0.045 across 3 seeds) are as large as the effect, and its interval omits
+  head-fit variance. `check_headseeds` (8 head seeds, two-level bootstrap) is running.
+
+**Item 9** (`check_decision_step`, both seeds, 18k and 36k):
+
+| | s7 18k | s7 36k | s8 18k | s8 36k |
+|---|---|---|---|---|
+| false scrolls: target drawn passable, truly blocking | 0.90 | 0.87 | 0.93 | 0.85 |
+| ... of those, target revealed after the root | 0.50 | 0.46 | 0.14 | 0.32 |
+| missed scrolls repaired by the rest of the map | 0.36 | 0.65 | 0.67 | 0.66 |
+
+- Readings: false_passable_drawn TRUE x4; false_on_revealed TRUE only for s7 18k.
+- Most false scrolls erase obstacles the world could see:
+  - at 36k, tables and furnaces are drawn as grass (about 27-34% of false scrolls; the placement mode is unlearned);
+  - in s8 18k, 120 stone targets are drawn as PATH (the mined result);
+  - trees are drawn as grass or path.
+- Missed scrolls come from the whole-map content: ring 0.11-0.22, player <= 0.04, HUD <= 0.005.
+- So unseen-terrain generation (option 3) can address at most the revealed part of false scrolls, about 15-20% of first wrong
+  decisions at 36k.
+
+**Literature (primary sources read):**
+- Summers & Dinneen, ICML 2021:
+  - cuDNN nondeterminism alone gives the same model diversity as different initialization seeds (Table 1: accuracy SD 0.22
+    vs 0.23%, disagreement 10.5 vs 10.7%);
+  - a one-bit weight change diverges within epochs (0.18 → 2.33 → 10.42% accuracy gap) and ends as different as any other
+    source (Table 3);
+  - "instability occurs as soon as a single hidden layer was added".
+  - This matches check_determinism: same-seed runs are independent draws.
+- Lambert et al., L4DC 2020: "objective mismatch". The likelihood of one-step predictions "is not always correlated with
+  control performance". It names our observation (fidelity up, gen decisions not) but does not explain our instance.
+
+---
+
 ## 2026-10-02 18:45 — diagnostics of the unexplained (lane41 + checks), and the budget worlds' full readings
 
 **Budget (36k, plain recipe), both seeds vs the same-seed 18k teacher:**

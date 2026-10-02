@@ -14,6 +14,14 @@ Readings, declared before running (per world):
   false_on_revealed      among those, the target cell revealed after the root >= 0.5 (entering content drives false scrolls)
   missed_cause           the group repairing the most missed cases, with its rate (reported)
 Usage: check_decision_step.py <world.pt> ...
+Result (2026-10-02, levers_logs/check_decision_step.log; s7 18k / s7 36k / s8 18k / s8 36k):
+  cases (false / missed) 439 (58/381) / 293 (109/184) / 481 (245/236) / 329 (139/190)
+  false: drawn passable & truly blocking 0.897 / 0.872 / 0.931 / 0.849 (false_passable_drawn TRUE x4); of those revealed after the
+    root 0.50 / 0.46 / 0.14 / 0.32 (false_on_revealed TRUE only for s7 18k): mostly obstacles the world could SEE are erased.
+    True -> drawn classes: 36k tables 23-25 and furnaces 12 drawn as grass (the unlearned placement mode); s8 18k 120 true-stone
+    targets drawn as PATH (the mined result); trees -> grass / path.
+  missed: repaired by the rest of the map (not ring / target / player) 0.36 / 0.65 / 0.67 / 0.66; ring 0.11-0.22, player 0.01-0.04,
+    HUD <= 0.005 (missed_cause = map_rest x4).
 """
 import json
 import sys
