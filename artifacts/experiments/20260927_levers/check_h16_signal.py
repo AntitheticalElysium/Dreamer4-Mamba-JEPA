@@ -14,6 +14,10 @@ the variance of the TRUE p_a across actions ("signal"); the within-root variance
 Readings, declared before running: h16_noise_dominated = signal_share < 0.5 at k = 16; oracle_is_noise = noise_oracle within
 0.02 of the observed oracle at k = 16.
 Usage: check_h16_signal.py   (CPU)
+Result (2026-10-03; 9,489 FIT + DEV roots): the across-action variation is a real first-action effect at every depth.
+  k = 1 / 4 / 16: opportunity roots 1,900 / 4,032 / 7,920; signal_share 0.999 / 0.991 / 0.985 (binomial noise 0.0003 / 0.026 /
+  0.061); observed oracle 1.000 / 0.775 / 0.745 vs noise-only oracle 0.571 / 0.664 / 0.655; uniform 0.480 / 0.598 / 0.573.
+  h16_noise_dominated FALSE, oracle_is_noise FALSE: the H16 panel measures a real decision; my noise conjecture is refuted.
 """
 import json
 import sys
