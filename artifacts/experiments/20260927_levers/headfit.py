@@ -80,6 +80,13 @@ Addendum 2 (declared 2026-10-02 after check_allprobe, before any skip arm ran; `
   H_local_uniform  skip_uniform reaches held caught >= 0.5 with all-token L1 <= 1.1 x uniform's: the diluted representation
                    was the cause; a local-input readout learns the consequences with no re-weighting
   H_local_dose     skip_mask1 or skip_mask10 passes H_head_fixable's three conditions: with local input the dose no longer costs
+Addendum 3 (declared 2026-10-02 after check_toperr, before any hard arm ran; `--tag hard`): the dose from the model's OWN
+error, no Craftax labels. check_toperr: consequence tokens sit in the per-token error tail (median rank 0.32% / 0.53% of tokens,
+s7 / s8 18k; top-1% recall 0.998 / 0.72), the top-1% set being 52% entering cells, 25% static, 12% HUD, 7% consequences.
+    hardQxL       uniform mean + L x the mean over the top-Q% tokens of the batch by their current (detached) per-token loss
+                  (online hard example mining, Shrivastava et al. 2016): dose ~L / Q% on what sits in the tail.
+                  hard1x1 (x101), hard1x3 (x301), hard0.3x1 (x334); mlp_hard1x3 and skip_hard1x3 with those readouts
+  H_hard          a hard arm (any readout) passes H_head_fixable's three conditions: a generic dose catches the consequences
   Every addendum arm's re-trained head is saved (artifacts/eda/headfit_heads_v1/<world>_<arm>.pt) for the cost analysis.
   Every arm also logs its training objective every 500 updates (plateau check).
 Usage: headfit.py <world.pt> ... -> evals/headfit_<name>.json
@@ -195,6 +202,12 @@ def weights(arm, lab, rows, device):
 def objective(world, s, a, arm, lab, rows, device, cuts=None):
     if arm in (cuts or {}):
         return per_token(world, s, a, "l1", device, cuts[arm]).mean()
+    if arm.startswith("hard"):                 # addendum 3: dose the batch's top-Q% tokens by current loss
+        q, lam = (float(v) for v in arm[4:].split("x"))
+        tok = per_token(world, s, a, "l1", device)
+        thr = tok.detach().flatten().topk(max(1, int(q / 100 * tok.numel()))).values[-1]
+        m = tok.detach() >= thr
+        return tok.mean() + lam * (tok * m).sum() / m.sum()
     kind = "l2" if arm == "l2" else "l1"
     tok = per_token(world, s, a, kind, device)
     if arm.startswith("mask"):
@@ -452,6 +465,9 @@ def main():
             m10, mu_ = A["mlp_mask10"]["held"], A["mlp_uniform"]["held"]
             rd["H_capacity"] = m10["caught"] >= 0.5 and m10["l1_all"] <= 1.1 * mu_["l1_all"]
             rd["H_representation"] = m10["caught"] >= 0.5 and m10["l1_all"] > 1.1 * mu_["l1_all"]
+        hard = [k for k in ok if k.split("_")[-1].startswith("hard")]
+        if hard:
+            rd["H_hard"] = any(ok[k] for k in hard); rd["H_hard_arms"] = [k for k in hard if ok[k]]
         if "skip_uniform" in A:
             rd["H_local_uniform"] = A["skip_uniform"]["held"]["caught"] >= 0.5 and A["skip_uniform"]["held"]["l1_all"] <= 1.1 * u["l1_all"]
             rd["H_local_dose"] = any(ok.get(k, False) for k in ("skip_mask1", "skip_mask10"))
