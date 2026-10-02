@@ -14,6 +14,13 @@ Readings, declared before running:
 Added after a smoke run on the REAL successors only (zombie roots: beside 0.066, stayed 0.615), before any world was run:
   stayed_cue_lost   on zombie roots the 36k world's stayed-correlation is lower than the 18k world's by >= 0.05 at both seeds
 Usage: check_zombie_cue.py <world.pt> ...
+Result (2026-10-03; zombie roots 1,038; correlation with P(death1) across the 17 branches, beside / stayed):
+  real successors 0.066 / 0.615; s7 18k 0.465 / 0.429, s7 36k 0.437 / 0.669; s8 18k 0.481 / 0.526, s8 36k 0.398 / 0.680.
+  beside_cue_lost FALSE (s7 -0.029, s8 -0.084), stayed_cue_lost FALSE: the stayed cue GAINED +0.240 / +0.155, to the real
+  successors' level; real_cue_weaker TRUE (0.066 vs 0.465 / 0.481).
+  So the 18k worlds' successors carry a shortcut reality lacks: the zombie drawn beside the player mainly in the deadly branches.
+  The 36k worlds draw stay-when-attacking / chase-otherwise like reality; their death information sits in a ROOT-relative cue
+  (did the zombie stay), while dpanel's gen head reads each branch's successor alone. Tested by check_rootaware.
 """
 import json
 import sys

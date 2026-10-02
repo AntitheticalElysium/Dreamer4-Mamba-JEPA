@@ -162,7 +162,7 @@ def fit_head(x, p, dev_x, p_dev, device, seed, path):
     from observability import expected_safe, soft_rank
     from spatial_why4 import Probe
     torch.manual_seed(seed)
-    model = Probe(192, x.dim() == 3).to(device)
+    model = Probe(x.shape[-1], x.dim() == 3).to(device)            # 192 for every token input; wider for check_rootaware
     if path.exists():
         saved = torch.load(path)
         model.load_state_dict(saved["state"])
