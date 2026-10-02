@@ -20,6 +20,7 @@ rows = torch.cat([main_rows[~torch.isin(main_rows, held)], torch.where(pool["ter
 order = torch.Generator().manual_seed(11)
 for _ in range(U):
     torch.randint(len(rows), (TW.BATCH,), generator=order)
+out.parent.mkdir(parents=True, exist_ok=True)
 torch.save({"update": U, "world": st["world"], "optimizer": None, "order": order.get_state(), "rng_cpu": torch.get_rng_state(),
             "rng_cuda": None, "history": list(st.get("history", []))}, out)
 print({"from": str(src), "update": U, "out": str(out)})
