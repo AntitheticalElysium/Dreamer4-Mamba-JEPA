@@ -6,6 +6,8 @@ backbone and the head parameters: norms, ratio ||g_M|| / ||g_U||, cosine. For a 
 init) and the trained E14c world.
 Reading, declared before running:
   dominates   ||g_M|| / ||g_U|| >= 3 on the backbone for the trained world (the mask term sets the update direction / Adam's scale)
+Result (2026-10-02, batches of 16): backbone ratio 2.26 (fresh skip init, cos 0.38), 1.74 (baseline teacher s7, cos 0.08), 5.38
+(E14c s7, cos 0.05): dominates TRUE. Head 1.06 / 2.02 / 9.62.
 """
 import sys, json, torch, torch.nn.functional as F
 sys.path.insert(0, "artifacts/experiments/20260927_levers")
