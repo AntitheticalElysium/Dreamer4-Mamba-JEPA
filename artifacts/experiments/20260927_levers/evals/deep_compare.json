@@ -94,5 +94,197 @@
       0.014089541509747505
     ],
     "excludes_zero": false
+  },
+  "corrt_raw_suffix_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:gen1@overall": {
+    "difference": 0.034292757511138916,
+    "interval": [
+      0.0177413672208786,
+      0.05096227675676346
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_suffix_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:gen1@zombie_adjacent": {
+    "difference": 0.040390729904174805,
+    "interval": [
+      0.020204691216349602,
+      0.06264745444059372
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_suffix_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:transfer1@overall": {
+    "difference": -0.06554269790649414,
+    "interval": [
+      -0.09484180808067322,
+      -0.03808195888996124
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_suffix_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:transfer1@zombie_adjacent": {
+    "difference": -0.09230268001556396,
+    "interval": [
+      -0.1238393783569336,
+      -0.06113531067967415
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_suffix_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:gen4@overall": {
+    "difference": 0.005975246429443359,
+    "interval": [
+      -0.005431616213172674,
+      0.016043327748775482
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_suffix_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:gen4@zombie_adjacent": {
+    "difference": 0.011535942554473877,
+    "interval": [
+      -0.0027128171641379595,
+      0.02429993450641632
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_suffix_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:transfer4@overall": {
+    "difference": 0.00018662214279174805,
+    "interval": [
+      -0.010276086628437042,
+      0.011007691733539104
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_suffix_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:transfer4@zombie_adjacent": {
+    "difference": -0.01191750168800354,
+    "interval": [
+      -0.025432802736759186,
+      0.001089837634935975
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_suffix_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:gen16@overall": {
+    "difference": 0.006989121437072754,
+    "interval": [
+      0.0010378941660746932,
+      0.012932906858623028
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_suffix_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:gen16@zombie_adjacent": {
+    "difference": 0.0039476752281188965,
+    "interval": [
+      -0.0022098601330071688,
+      0.010544276796281338
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_suffix_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:transfer16@overall": {
+    "difference": -0.007577359676361084,
+    "interval": [
+      -0.014358827844262123,
+      -0.001380298170261085
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_suffix_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:transfer16@zombie_adjacent": {
+    "difference": -0.008279740810394287,
+    "interval": [
+      -0.0160231813788414,
+      0.0003113684942945838
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:gen1@overall": {
+    "difference": -0.01515895128250122,
+    "interval": [
+      -0.032598596066236496,
+      0.0025526455137878656
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:gen1@zombie_adjacent": {
+    "difference": -0.014739453792572021,
+    "interval": [
+      -0.03467906638979912,
+      0.003864911152049899
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:transfer1@overall": {
+    "difference": -0.06565243005752563,
+    "interval": [
+      -0.09269106388092041,
+      -0.03996634483337402
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_teacher_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:transfer1@zombie_adjacent": {
+    "difference": -0.10753726959228516,
+    "interval": [
+      -0.13943803310394287,
+      -0.07882539927959442
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_teacher_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:gen4@overall": {
+    "difference": -0.0034410953521728516,
+    "interval": [
+      -0.01422562263906002,
+      0.0060989754274487495
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:gen4@zombie_adjacent": {
+    "difference": 0.0033069252967834473,
+    "interval": [
+      -0.010428349487483501,
+      0.01612176187336445
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:transfer4@overall": {
+    "difference": 0.008836150169372559,
+    "interval": [
+      -0.002191899809986353,
+      0.021114274859428406
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:transfer4@zombie_adjacent": {
+    "difference": 0.013965219259262085,
+    "interval": [
+      -0.0017090216279029846,
+      0.02929888479411602
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:gen16@overall": {
+    "difference": 0.0015253424644470215,
+    "interval": [
+      -0.004596245475113392,
+      0.007516915909945965
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:gen16@zombie_adjacent": {
+    "difference": 0.004250466823577881,
+    "interval": [
+      -0.0023038149811327457,
+      0.010703958570957184
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:transfer16@overall": {
+    "difference": -0.007753491401672363,
+    "interval": [
+      -0.015453336760401726,
+      -6.14753007539548e-05
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_teacher_s7_u18000:int_corrg_raw_suffix_s7_fmamba_u18000:transfer16@zombie_adjacent": {
+    "difference": -0.004052519798278809,
+    "interval": [
+      -0.013432735577225685,
+      0.0056109968572855
+    ],
+    "excludes_zero": false
   }
 }

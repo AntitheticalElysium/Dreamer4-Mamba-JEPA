@@ -523,6 +523,26 @@ corrt teacher 18k s7.
   - gen1: −0.049 [−0.066, −0.033]; gen4: −0.009 (ns); gen16: −0.005 [−0.011, −0.000];
   - transfer: ns at every depth.
   - The 6k pairs showed no gen1 difference on the opened blocks (−0.006, −0.002 ns).
+**Third sealed world, int_corrg_raw_suffix_s7_fmamba_u18000 (Mamba-2 backbone; landed 2026-10-02 12:56).**
+- Same roots and reference arms. Fidelity err/copy 0.220 / 0.546 / 0.631.
+- Expected safe at k = 1 / 4 / 16:
+  - gen 0.915 / 0.678 / 0.595;
+  - transfer 0.597 / 0.625 / 0.576.
+- H1 confirmation: **confirmed** (gen1 - root_rank1 = +0.224 [+0.190, +0.260]; gen1 - prior1 = +0.325).
+- Carries H16: **marginal**.
+  - gen16 - prior16 = +0.0095 [+0.0003, +0.0185];
+  - gen16 - root_rank16 = +0.008 [-0.001, +0.015], not resolved.
+- Usable at H16: **no** (transfer16 - prior16 = -0.0095 [-0.018, +0.0003]).
+- Paired A - B, seed 7 only (not attributed under the two-seed rule; deep_compare.json, merged with the earlier pairs):
+
+  | | gen1 | transfer1 | gen16 | transfer16 |
+  |---|---|---|---|---|
+  | suffix - fmamba | +0.034 [+0.018, +0.051] | -0.066 [-0.095, -0.038] | +0.007 [+0.001, +0.013] | -0.008 [-0.014, -0.001] |
+  | teacher - fmamba | -0.015 (ns) | -0.066 [-0.093, -0.040] | ns | -0.008 [-0.016, -0.000] |
+
+  The Mamba world's imagined states take real-fitted heads better (transfer) at H1 and H16, but carry less of the decision in
+  their own imagined-state heads than the attention suffix world.
+
 - Restart: lanes 19d / 23 / 27 were killed.
   - deepeval_group1 was imagining fmamba; its partial memmaps are rewritten on rerun.
   - E12 training had never been admitted: it needed 3.6 GB beside deepeval's 2.1 GB.
