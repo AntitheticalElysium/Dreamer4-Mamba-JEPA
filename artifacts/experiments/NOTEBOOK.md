@@ -61,6 +61,35 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-02 afternoon — E14c seed 7 (interim; seed 8 and the linear arm pending)
+
+corrt_raw_teacher_s7_mask1_skip_u18000 vs corrt_raw_teacher_s7_u18000:
+
+| reading | teacher s7 | E14c s7 | rule |
+|---|---|---|---|
+| consfit held caught / hallucinated | 0.002 / 0.003 | **0.991** / 0.011 (train 0.998) | c_learned **pass** |
+| teval onestep_all (err / copy) | 0.149 | 0.256 (+72%; interact 0.863 → 0.652, blocked 0.301 → 0.926, idle 0.442 → 0.882) | c_cost **fail** |
+| subst16 ever position-wrong / at 16 | 0.449 / 0.464 | 0.466 / 0.499 | c_position **fail** |
+| subst16 depth-16 excess (static) | 0.560 (0.439) | 0.712 (0.553) | — |
+| compare gen_16 | 0.622 | 0.783 (+0.160 [+0.135, +0.186]) | c_depth16 **fail** |
+| dpanel gen1 / gen2 (E14c - teacher) | | -0.050 [-0.064, -0.035] / -0.007 [-0.014, -0.001] | c_decision **fail** |
+| dpanel transfer1 / transfer2 | | **+0.072** [+0.054, +0.094] / **+0.013** [+0.002, +0.024] | reported |
+
+- End-to-end, the backbone learns the consequences almost perfectly (head-only on a frozen h: 0.63).
+- The rest of the world degrades broadly (`check_e14c_cost.py`, held, by action x token class):
+  - no false scrolls (blocked 0.0095 → 0.012);
+  - static tokens are 68% of the increase, in every action class;
+  - player token on moved steps 0.091 → 0.249; HUD +72% on moved steps.
+- Against the baseline's own snapshots:
+  - moved / blocked player, HUD and static errors sit at the 6k level, as if under-trained;
+  - idle and sleep static, and near-player tokens on interact steps, are WORSE than the 6k baseline: active damage.
+- The broad degradation offsets the gain E13's oracle predicted (-37% position failures), so position failures do not
+  drop.
+- Open: does the mask term dominate the gradient (`check_e14c_grad.py`)? Is the skip readout behind the active damage
+  (the linear arm)? Seed 8.
+
+---
+
 ## 2026-10-02 midday — E14c PREDECLARED: end-to-end training with the head-only fix (labelled upper bound)
 
 Head-only facts that set it up (E14a addenda, both corrt seeds unless noted):
