@@ -8,6 +8,9 @@ DROPS ("damage"), vs where it is unchanged. Per world:
   false      the same on unchanged transitions (a drop drawn where none happened)
 Data-only: damage rate per transition; HUD squared token change t -> t+1 on damage vs unchanged transitions (the token size of a
 lost heart vs ordinary frame-to-frame HUD noise).
+Added 2026-10-03 before the first run, reported only (check_damage_rule: a zombie hit lands with P 0.97 after a fresh arrival,
+0.48 when a zombie was already beside the player and no hit is in the 4-frame window, 0.03 after a hit in the window): teacher-forced
+caught / drawn-without-a-hit by that visible history (sample 0, k >= 3, drops of >= 2).
 Reading, declared before running: damage_copied = teacher-forced caught <= 0.2 in every world (the drop is not drawn even from true
 inputs); damage_small = median HUD token change on damage <= 2 x the unchanged median.
 Usage: check_damage.py <world.pt> ...
@@ -20,6 +23,7 @@ import torch
 
 sys.path.insert(0, "artifacts/experiments/20260927_levers")
 import check_decision_step as CD
+import check_damage_rule as DR
 DA, SD, T = CD.DA, CD.SD, CD.T
 H = CD.H
 
@@ -55,6 +59,10 @@ def main():
     out["probe_check"] = {"true_drop_seen_by_probe": float((h_true[:, 1:] < h_true[:, :-1] - 0.5)[drop].float().mean()),
                           "false_drop_by_probe": float((h_true[:, 1:] < h_true[:, :-1] - 0.5)[same].float().mean())}
     print(json.dumps(out), flush=True)
+    M = {k: v[:, 0] for k, v in DR.masks(meta).items()}                                # sample 0, transition k: frame k -> k+1
+    base = M["valid"] & M["k3"]
+    hist = {"fresh": M["adjacent"] & ~M["win"] & ~M["adjwin"], "beside_no_hit": M["adjacent"] & ~M["win"] & M["adjwin"],
+            "hit_in_window": M["adjacent"] & M["win"]}
     for path in sys.argv[1:]:
         world, st = T.load_world(Path(path), device)
         name = st["name"]
@@ -85,6 +93,11 @@ def main():
             pdrop = pred < cur - 0.5
             r[mode] = {"caught": float(pdrop[drop & extra].float().mean()), "n_damage": int((drop & extra).sum()),
                        "false_drop": float(pdrop[same & extra].float().mean())}
+        pd_t = tf < h_cur - 0.5
+        r["teacher_by_history"] = {c: {"n_hit": int((base & q & M["drop2"]).sum()),
+                                       "caught": float(pd_t[base & q & M["drop2"]].float().mean()),
+                                       "n_no_hit": int((base & q & ~M["drop2"]).sum()),
+                                       "drawn_without_hit": float(pd_t[base & q & ~M["drop2"]].float().mean())} for c, q in hist.items()}
         r["readings_part"] = {"teacher_caught_le_0.2": r["teacher"]["caught"] <= 0.2}
         out[name] = r
         print(json.dumps({name: r}), flush=True)

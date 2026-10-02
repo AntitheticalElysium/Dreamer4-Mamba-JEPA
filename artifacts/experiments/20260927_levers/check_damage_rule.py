@@ -17,6 +17,19 @@ Readings, declared before running:
   rule_exact      the rule (with the hidden cooldown) predicts >= 0.95 of the drops of size >= 2, with <= 0.05 false hits
   damage_visible  P(hit | adjacent, no hit in window) >= 0.8: a deterministic 4-frame world could draw the hit from its input
 Usage: check_damage_rule.py   (CPU, data only)
+Result (2026-10-03; 79,763 alive transitions, displacement identified in all): health change -2 x1,498, -7 x15, -4 x7, -1 x180,
++1 x548.
+  rule_exact FALSE as declared: the zombie rule predicts 0.920 of the 1,520 drops >= 2 (false hits 0.043). Measured: of the 121
+  misses, 70% have a skeleton within 4 cells and arrows nearby (arrow hits, not in the rule), 2 have a cooldown-positive zombie
+  beside the player; of the 63 false hits, 48 are a hit netted against a same-step +1 recovery (-1). On zombie hits the rule is
+  exact; all 15 asleep hits are -7.
+  damage_visible FALSE: P(hit | zombie beside the post-move player, no hit in the 4-frame window) 0.512 (n 2,263); with no zombie
+  beside the player in the window frames (fresh arrival) 0.973 (n 147), with one beside it 0.480 (n 2,116); after a hit in the
+  window 0.028; no zombie beside the post-move player 0.0017. P(hit | beside, last hit j transitions ago): j = 1-5 0.024-0.049,
+  j = 6 0.978, 7 0.950, 8 0.925 (the 6-step cooldown cycle). Window of 5 transitions (6 frames): 0.893 (n 1,135); 8: 0.869.
+  Same root state, one step, 17 actions x 4 keys: 389 of 403 dropping pairs drop in 4/4 keys, 14 in 2/4.
+  So a hit is a rule on state, not chance; from the world's 4-frame input it is a coin flip in the commonest case (a zombie
+  already beside the player), and the L1 median draws no hit. The 2026-10-02 "aleatoric" reading is corrected.
 """
 import json
 import sys
@@ -29,8 +42,8 @@ import teval as T  # noqa: E402
 SHIFTS = [(0, 0), (-1, 0), (1, 0), (0, -1), (0, 1)]          # player displacement (row, col)
 
 
-def main():
-    meta, _, _ = T.split()
+def masks(meta):
+    """[R,5,16] per transition t -> t+1 (frame 0 = root): the rule's quantities (see the docstring)."""
     R = len(meta["seed"])
     vis = torch.cat([meta["root_visible"][:, None, None].expand(R, 5, 1, 1534),
                      meta["future_visible"]], 2).float()                          # [R,5,17,1534]
@@ -62,20 +75,32 @@ def main():
     rule_hit = (adj_cells & (cd[:, :, :-1] <= 0)).any((-1, -2))
     valid = alive_before & ok & ~dead                                             # alive after, displacement identified
     drop2 = dh <= -2
+    win, adjwin = torch.zeros_like(drop2), torch.zeros_like(drop2)
+    adj_now = (zomb & (((rr - 3).abs() + (cc - 4).abs()) == 1)).any((-1, -2))[:, :, :16]   # zombie beside the player, frame t
+    for j in (1, 2, 3):
+        win[:, :, j:] |= drop2[:, :, :-j]
+        adjwin[:, :, j:] |= adj_now[:, :, :-j]
+    adjwin |= adj_now
+    k3 = (torch.arange(16) >= 3).expand_as(drop2)
+    return dict(dh=dh, drop2=drop2, valid=valid, ok=ok, dead=dead, alive_before=alive_before, adjacent=adjacent,
+                rule_hit=rule_hit, asleep=asleep[:, :, :-1], win=win, adjwin=adjwin, k3=k3)
+
+
+def main():
+    meta, _, _ = T.split()
+    m = masks(meta)
+    dh, drop2, valid, ok, dead, alive_before = m["dh"], m["drop2"], m["valid"], m["ok"], m["dead"], m["alive_before"]
+    adjacent, rule_hit, asleep, win = m["adjacent"], m["rule_hit"], m["asleep"], m["win"]
     out = {"transitions": int(valid.sum()), "ambiguous_displacement": int((alive_before & ~ok & ~dead).sum()),
            "health_change_counts": {str(int(v)): int(n) for v, n in zip(*torch.unique(dh[valid], return_counts=True))}}
     v = valid
     out["rule"] = {"drops_ge2": int((drop2 & v).sum()),
                    "rule_hit_on_drops_ge2": float(rule_hit[drop2 & v].float().mean()),
                    "rule_hit_without_drop": float((~drop2[rule_hit & v]).float().mean()),
-                   "hit_size_7_when_asleep": int((dh[v & rule_hit & asleep[:, :, :-1]] <= -7).sum()),
-                   "asleep_rule_hits": int((v & rule_hit & asleep[:, :, :-1]).sum())}
+                   "hit_size_7_when_asleep": int((dh[v & rule_hit & asleep] <= -7).sum()),
+                   "asleep_rule_hits": int((v & rule_hit & asleep).sum())}
     # visible predictability: transitions with k >= 3 so the world's 4-frame window is inside the stored trajectory
-    k = torch.arange(16)
-    win = torch.zeros_like(drop2)
-    for j in (1, 2, 3):
-        win[:, :, j:] |= drop2[:, :, :-j]
-    w3 = v & (k >= 3)
+    w3 = v & m["k3"]
     sel = w3 & adjacent
     out["visible"] = {"adjacent_transitions": int(sel.sum()),
                       "p_hit_given_adjacent": float(drop2[sel].float().mean()),
