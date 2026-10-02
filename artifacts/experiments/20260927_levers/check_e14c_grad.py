@@ -1,6 +1,6 @@
 """E14c check (2026-10-02): does the mask term dominate the gradient? (check_e14c_cost: the end-to-end mask1 + skip world's
 player / HUD / static errors on moved and blocked steps sit at the baseline's 6k level, as if the rest were under-trained.)
-On 20 seeded training batches (the trainer's rows), teacher-forced: U = the uniform per-token L1 mean, M = lambda x the
+On 20 seeded training batches of 16 windows (the trainer's rows; 16, not 40: memory beside training), teacher-forced: U = the uniform per-token L1 mean, M = lambda x the
 mask-normalized mean over the faced tiles of attempts (lambda 1, tworld's --weight mask1). Gradients of U and of M w.r.t. the
 backbone and the head parameters: norms, ratio ||g_M|| / ||g_U||, cosine. For a fresh skip world (init seed 7, the trainer's
 init) and the trained E14c world.
@@ -25,9 +25,9 @@ def anatomy(world):
     gen = torch.Generator().manual_seed(123)
     acc = {g: {"U": [], "M": [], "cos": []} for g in groups}
     for _ in range(20):
-        idx = rows_all[torch.randint(len(rows_all), (40,), generator=gen)]
+        idx = rows_all[torch.randint(len(rows_all), (16,), generator=gen)]
         s = C.pool["tokens"][idx].float().to(C.dev); a = F.pad(C.pool["actions"][idx], (0, 1)).to(C.dev)
-        m = torch.zeros(40, 5, 81, dtype=torch.bool)
+        m = torch.zeros(16, 5, 81, dtype=torch.bool)
         m.scatter_(2, lab["faced"][idx][..., None], lab["attempt"][idx][..., None]); m = m.to(C.dev)
         with C.autocast_context(C.config):
             err = (world(s, a)[0][:, :5].float() - s[:, 1:]).abs()
