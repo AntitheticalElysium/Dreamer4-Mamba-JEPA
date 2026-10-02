@@ -16,6 +16,13 @@ Also on "late" roots: opp16 with P(dead by 4) constant over actions (no short-ho
 Readings, declared before running: one_sample_insufficient = (one_real_future - uniform) < 0.5 x (oracle31 - uniform) on opp16;
 M90 = the smallest M with sampled_M - uniform >= 0.9 x (oracle31 - uniform) (reported).
 Usage: check_h16_value.py   (CPU)
+Result (2026-10-03; FIT + DEV opp16 roots 7,920; DEV 2,590; late 5,239 = 66%):
+  opp16: uniform 0.573, by_h1 0.579, by_h4 0.601, one_real_future 0.663, sampled_1 / 2 / 4 / 8 / 16 / 32 = 0.653 / 0.674 / 0.696 /
+  0.714 / 0.727 / 0.735, oracle31 0.730 (oracle32, optimistic, 0.745). DEV: prior (action 4) 0.613, one_real_future 0.659.
+  late (no opportunity at k <= 4): by_h1 = by_h4 = uniform 0.681, one_real_future 0.758, sampled_16 0.813, oracle31 0.815.
+  one_sample_insufficient FALSE: one real future carries 57% of the oracle's margin over uniform; M90 = 16.
+  So the H16 decision is about later events (perfect H1 / H4 knowledge adds +0.006 / +0.028), a single FAITHFUL future already
+  beats the prior (+0.046 on DEV), and expressing the risk needs futures that can die: 16 sampled futures reach 90%.
 """
 import json
 import sys
