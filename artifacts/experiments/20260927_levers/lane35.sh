@@ -19,5 +19,7 @@ W=artifacts/eda/levers_tworlds_v1
 train() { N=$1; shift; [ -f $W/$N.pt ] || job tworld_$N 2400 $PY $L/tworld.py --head corrt --loss teacher "$@"; }
 train corrt_raw_teacher_s7_mask1_skip_u18000 --seed 7 --updates 18000 --weight mask1 --skip
 train corrt_raw_teacher_s7_u36000 --seed 7 --updates 36000 --snapshots
+# 2026-10-02 15:45: the E14c evaluations of both skip worlds (lane36) first
+until [ -f $L/evals/monotone_corrt_raw_teacher_s8_mask1_skip_u18000.json ]; do sleep 60; done
 train corrt_raw_teacher_s7_mask1_u18000 --seed 7 --updates 18000 --weight mask1
 echo "$(date '+%F %T') LANE35_DONE" >> $LOGDIR/lanes.log
