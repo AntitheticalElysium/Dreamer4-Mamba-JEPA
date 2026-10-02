@@ -30,15 +30,20 @@ STORES = [ROOT / "artifacts/eda/deeppanel_fit_v1", ROOT / "artifacts/eda/deeppan
 DEPTHS = (1, 4, 16)
 
 
-def main():
-    P, D = [], []
-    for store in STORES:
+def load(stores=STORES):
+    """Kept roots of the stores: P [R,17,3] (32-key P(dead by k)), D [R,17,3] (key 0's dead-by-k), split [R] (store index)."""
+    P, D, S = [], [], []
+    for i, store in enumerate(stores):
         for f in sorted(store.glob("seed-*.pt")):
             for r in torch.load(f, weights_only=False):
                 p = r["p_dead_by"]["recorded"][:, [k - 1 for k in DEPTHS]].float()                  # [17, 3]
                 if bool((p.amax(0) > p.amin(0)).any()):
-                    P.append(p); D.append(r["depth_dead"][:, [k - 1 for k in DEPTHS]].float())
-    P, D = torch.stack(P), torch.stack(D)                                                            # [R, 17, 3]
+                    P.append(p); D.append(r["depth_dead"][:, [k - 1 for k in DEPTHS]].float()); S.append(i)
+    return torch.stack(P), torch.stack(D), torch.tensor(S)
+
+
+def main():
+    P, D, _ = load()
     rest = (32 * P - D) / 31
     out = {"roots": len(P)}
     g = torch.Generator().manual_seed(20261003)
