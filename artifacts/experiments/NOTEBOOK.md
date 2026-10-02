@@ -94,6 +94,21 @@ failed attempts.
 - The labelled mask doses the faced tile of every attempt, successful or not, so the prior within the attempt set is
   unchanged.
 - A selective dose therefore needs its matching negatives: the context where a change could happen, not only the changes.
+- Tested (addendum 5, predeclared in 909a5b45): dose ONLY the strict consequence tiles at mask1's per-token dose (x304),
+  skip readout.
+
+  | | positives only (s7 / s8) | attempt mask, skip_mask1 (s7 / s8) |
+  |---|---|---|
+  | caught | 0.966 / 0.946 | 0.628 / 0.653 |
+  | hallucinated | 0.297 / 0.240 | 0.022 / 0.027 |
+  | all-token L1 | x1.06 / x1.07 | x1.07 / x1.09 |
+  | HUD | x0.98 / 0.97 | x0.99 / 0.97 |
+
+  - H_prior_shift is TRUE at both seeds (hallucination 11-13x).
+  - Positives-only dosing costs almost nothing elsewhere. So the calm-event arms' +85-108% L1 and HUD x3-4 come from
+    dosing the OTHER events (HUD, mobs), and their hallucination from the prior shift.
+  - With this h, catching versus hallucinating is a threshold trade-off: success depends on inventory, which the head
+    must read from h.
 
 - Where the linear mask1 cost lands (`check_costwhere.py`, held):
   - 70% on static tokens. The trained head uses "generate" at 12% weight to refine copies; the dose pulls the single linear
