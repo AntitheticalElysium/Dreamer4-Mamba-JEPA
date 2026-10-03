@@ -66,6 +66,10 @@ E14 options (2026-10-02, after the E14a head-only diagnosis; both default off, t
 Resumable runs (2026-10-02): every 6,000 updates and at the end the full training state (weights, AdamW state, batch-order
 generator, CPU / CUDA RNG, update, history) is written to levers_tworlds_v1/state/<name>.state.pt (overwritten in place);
 `--resume <state file> --updates N` continues that run to N updates, bit-identical to an uninterrupted run (CPU-tested).
+E17 (2026-10-03): `--frames L --pool rawlong [--windows W]` trains on L-frame windows of the 64-frame Raw TRAIN ledger
+(levers_mamba_long_pools_v1/raw): W windows per update, a TERMINAL_SHARE (the 6-frame recipe's 26.4%) of them end-aligned on a
+death, the rest at uniform starts; an L-row time table and L-frame block-causal mask; teacher loss over all L - 1 targets. The
+default recipe is unchanged (CPU-tested 2026-10-03: identical initial weights, teacher / suffix losses and gradients).
 Training (fixed for every arm): spatial_pool_v1 (Raw tokens) or spatial_pool_tc_v1 (TC tokens), 2,048 main windows
 held out (seed 1, as parameterization.py); batches of 40 windows (seed 11); AdamW lr 1e-4, wd 0.01, 1,000 warmup,
 clip 1 (H2 phase optimizer); bf16; init seed given (default 7). Loss: `suffix` = spatial.losses' dynamics L1
@@ -91,10 +95,12 @@ from scroll import SHIFTS, estimate  # noqa: E402
 
 POOLS = {"raw": ROOT / "artifacts/eda/spatial_pool_v1", "tc": ROOT / "artifacts/eda/spatial_pool_tc_v1",
          "ldad10": ROOT / "artifacts/eda/spatial_pool_ldad10_v1",
-         "ldad1": ROOT / "artifacts/eda/spatial_pool_ldad1_v1"}
+         "ldad1": ROOT / "artifacts/eda/spatial_pool_ldad1_v1",
+         "rawlong": ROOT / "artifacts/eda/levers_mamba_long_pools_v1/raw"}      # 19,789 x 64-frame Raw windows (TRAIN ledger)
 OUT = ROOT / "artifacts/eda/levers_tworlds_v1"
 NOISE_MAX, NOISE_LEVELS = 0.7, 10             # GameNGen's maximal context-noise level and bucket count
 BATCH = 40
+TERMINAL_SHARE = 8071 / (24576 - 2048 + 8071)  # the 6-frame recipe's share of training windows ending at a death (26.4%)
 STATE_EVERY = 6000                            # full training state written every STATE_EVERY updates (resume)
 NEIGHBOURS = ((-1, 0), (1, 0), (0, -1), (0, 1))
 LOCAL = 5 * 192 + 17                          # --skip: token + 4 grid neighbours + action one-hot
@@ -182,8 +188,13 @@ class Factored(nn.Module):
 
 
 class TWorld(S.World):
-    def __init__(self, head, codebook=None, backbone="full", regions="all", noise_levels=0, skip=False):
+    def __init__(self, head, codebook=None, backbone="full", regions="all", noise_levels=0, skip=False, frames=None):
         super().__init__(S.TOKENS, False)
+        if frames is not None and frames != S.W:  # --frames L: an L-row time table and an L-frame block-causal mask
+            self.time = nn.Parameter(torch.zeros(frames, S.D))
+            nn.init.trunc_normal_(self.time, std=0.02)
+            t = torch.arange(frames).repeat_interleave(self.n + 1)
+            self.register_buffer("blocked", t[None, :] > t[:, None], persistent=False)
         self.head, self.backbone_kind, self.regions = head, backbone, regions
         self.hard_decode = False               # evaluation only: ITC's binarized decoding (one source per token, Eq. 4)
         self.level = None                      # --loss noise: [B,T] noise bucket of each input frame (None = clean)
@@ -329,7 +340,7 @@ def rollout_losses(world, s, a, loss, gen_loss=False, weight=None, faced=None):
         s = (s.float() + alpha[..., None, None] * torch.randn_like(s, dtype=torch.float)).to(clean.dtype)
     predicted, history, gen = world(s, a)
     world.level = None
-    err = (predicted[:, :S.W - 1] - clean[:, 1:]).abs()
+    err = (predicted[:, :s.shape[1] - 1] - clean[:, 1:]).abs()       # S.W - 1 targets for every 6-frame pool
     teacher = err.mean()
     if weight:                                # E14 --weight: + lambda x the mask-normalized mean over a token set
         tok = err.mean(-1)
@@ -372,17 +383,24 @@ def rollout_losses(world, s, a, loss, gen_loss=False, weight=None, faced=None):
 
 
 def train(head, pool_name, loss, seed, updates, device, log, codebook=None, backbone="full", gen_loss=False,
-          regions="all", snapshot=None, weight=None, skip=False, state_path=None, resume=None):
+          regions="all", snapshot=None, weight=None, skip=False, state_path=None, resume=None, frames=None, windows=BATCH):
     from d4mj.config import config_from_dict
     from d4mj.train import _phase_lr, autocast_context, optimizer_step, phase_optimizer
     config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
-    pool = torch.load(POOLS[pool_name] / "pool.pt", weights_only=False, mmap=True)
-    main_rows = torch.where(~pool["terminal"])[0]
-    held = main_rows[torch.randperm(len(main_rows), generator=torch.Generator().manual_seed(1))[:2048]]
-    rows = torch.cat([main_rows[~torch.isin(main_rows, held)], torch.where(pool["terminal"])[0]])
+    long = pool_name == "rawlong"
+    if long:                                  # --frames L windows from the 64-frame TRAIN ledger (no held-out rows: TRAIN only)
+        import numpy as np
+        pool = torch.load(POOLS[pool_name] / "labels.pt", weights_only=False, mmap=True)
+        tokens = np.memmap(POOLS[pool_name] / "tokens.f16", dtype=np.float16, mode="r", shape=(len(pool["terminal"]), 64, 81, 192))
+        main_rows, term_rows, held = torch.where(~pool["terminal"])[0], torch.where(pool["terminal"])[0], None
+    else:
+        pool = torch.load(POOLS[pool_name] / "pool.pt", weights_only=False, mmap=True)
+        main_rows = torch.where(~pool["terminal"])[0]
+        held = main_rows[torch.randperm(len(main_rows), generator=torch.Generator().manual_seed(1))[:2048]]
+        rows = torch.cat([main_rows[~torch.isin(main_rows, held)], torch.where(pool["terminal"])[0]])
     with torch.random.fork_rng(devices=[0]):
         torch.manual_seed(seed); torch.cuda.manual_seed_all(seed)
-        world = TWorld(head, codebook, backbone, regions, NOISE_LEVELS if loss == "noise" else 0, skip).to(device)
+        world = TWorld(head, codebook, backbone, regions, NOISE_LEVELS if loss == "noise" else 0, skip, frames).to(device)
     log(stage="init", parameters=sum(p.numel() for p in world.parameters()))
     opt = phase_optimizer([world], config)
     params = [p for g in opt.param_groups for p in g["params"]]
@@ -411,8 +429,16 @@ def train(head, pool_name, loss, seed, updates, device, log, codebook=None, back
                         "rng_cuda": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None}, tmp)
             tmp.replace(state_path)
     for update in range(start, updates):
-        idx = rows[torch.randint(len(rows), (BATCH,), generator=order)]
-        b = S.batch_of(pool, idx, "tokens", device)
+        if long:                              # a TERMINAL_SHARE of the windows end at a death (end-aligned), the rest uniform
+            term = torch.rand(windows, generator=order) < TERMINAL_SHARE
+            r = torch.where(term, term_rows[torch.randint(len(term_rows), (windows,), generator=order)],
+                            main_rows[torch.randint(len(main_rows), (windows,), generator=order)])
+            t0 = torch.where(term, 64 - frames, torch.randint(0, 65 - frames, (windows,), generator=order))
+            b = {"s": torch.stack([torch.from_numpy(np.array(tokens[int(i), int(j):int(j) + frames])) for i, j in zip(r, t0)]).to(device).float(),
+                 "actions": torch.stack([pool["actions"][int(i), int(j):int(j) + frames - 1] for i, j in zip(r, t0)]).to(device)}
+        else:
+            idx = rows[torch.randint(len(rows), (BATCH,), generator=order)]
+            b = S.batch_of(pool, idx, "tokens", device)
         if lab is not None:
             faced = torch.zeros(BATCH, S.W - 1, 81, dtype=torch.bool)
             faced.scatter_(2, lab["faced"][idx][..., None], lab["attempt"][idx][..., None])
@@ -454,7 +480,11 @@ def main(argv=None):
     parser.add_argument("--weight", default=None, help="E14: hardQxL or maskL (see the docstring)")
     parser.add_argument("--skip", action="store_true", help="E14: the head also reads the raw local neighbourhood")
     parser.add_argument("--resume", type=Path, default=None, help="continue from a full training state file to --updates")
+    parser.add_argument("--frames", type=int, default=None, help="E17: L-frame windows (needs --pool rawlong, --loss teacher)")
+    parser.add_argument("--windows", type=int, default=BATCH, help="E17: windows per update with --frames")
     args = parser.parse_args(argv)
+    if (args.pool == "rawlong") != (args.frames is not None) or (args.frames and args.loss != "teacher"):
+        parser.error("--frames goes with --pool rawlong and --loss teacher")
     started = time.time()
     log = lambda **kw: print(json.dumps({**kw, "seconds_total": round(time.time() - started, 1)}), flush=True)
     device = torch.device("cuda")
@@ -462,7 +492,8 @@ def main(argv=None):
     name = f"{args.head}_{args.pool}_{args.loss}_s{args.seed}" + (f"_K{len(codebook)}" if codebook is not None else "") \
         + ("" if args.backbone == "full" else f"_{args.backbone}") + ("_gl" if args.gen_loss else "") \
         + ("" if args.regions == "all" else f"_{args.regions}") + (f"_{args.weight}" if args.weight else "") \
-        + ("_skip" if args.skip else "") + ("" if args.updates == 6000 else f"_u{args.updates}")
+        + ("_skip" if args.skip else "") + (f"_L{args.frames}b{args.windows}" if args.frames else "") \
+        + ("" if args.updates == 6000 else f"_u{args.updates}")
     OUT.mkdir(parents=True, exist_ok=True)
     if (OUT / f"{name}.pt").exists():
         log(status="exists", name=name)
@@ -475,7 +506,7 @@ def main(argv=None):
     (OUT / "state").mkdir(exist_ok=True)
     world, history, held = train(args.head, args.pool, args.loss, args.seed, args.updates, device, log, codebook,
                                  args.backbone, args.gen_loss, args.regions, snapshot, args.weight, args.skip,
-                                 OUT / "state" / f"{name}.state.pt", args.resume)
+                                 OUT / "state" / f"{name}.state.pt", args.resume, args.frames, args.windows)
     save(name, world, history)
     log(status="saved", name=name)
     return 0
