@@ -136,6 +136,27 @@ the same STEP, after their states had diverged through random zombie moves. From
 - Stochastic MuZero (Antonoglou et al., ICLR 2022) is relevant but its text could not be read (OpenReview bot wall), so it is not
   cited for any claim.
 
+**E15 complete: sealed H16 of the budget worlds** (lane42; judge block 62,000-62,399; readings declared in lane42.sh):
+
+| | s7 18k | s7 36k | s8 18k | s8 36k |
+|---|---|---|---|---|
+| fidelity err/copy at 1 / 4 / 16 | 0.204 / 0.529 / 0.673 | 0.184 / 0.522 / 0.602 | 0.205 / 0.503 / 0.707 | 0.187 / 0.530 / 0.620 |
+| gen1 / gen4 / gen16 | 0.900 / 0.675 / 0.597 | 0.879 / 0.666 / 0.597 | 0.890 / 0.672 / 0.593 | 0.882 / 0.670 / 0.599 |
+| transfer1 / transfer16 | 0.531 / 0.569 | 0.573 / 0.574 | 0.570 / 0.565 | 0.571 / 0.580 |
+| gen16 − prior16 | +0.011* | +0.012* | +0.008 ns | +0.013* |
+| transfer16 − prior16 | −0.017* | −0.012* | −0.021* | −0.006 ns |
+
+- Readings:
+  - h16_carried TRUE (small);
+  - h16_usable FALSE;
+  - budget_gen16 FALSE: 36k − 18k is +0.0005 [−0.005, +0.006] (s7) and +0.006 [−0.001, +0.012] (s8);
+  - budget_transfer16 FALSE: +0.006 ns (s7); +0.015 [+0.008, +0.022] (s8) resolved, but under the 18k world's head-seed spread
+    (0.019).
+- Paired, H1: gen1 zombie-adjacent −0.019 ns (s7) and −0.039 [−0.061, −0.014] (s8); transfer1 +0.042 / +0.070 zombie (s7), ~0
+  (s8).
+- The 36k budget made depth 16 more faithful (err/copy −0.07 / −0.09) and moved no H16 decision. Read with check_h16_value: a
+  future that never dies cannot carry the H16 decision, however faithful its map.
+
 ---
 
 ## 2026-10-02 20:30 — item 1 continued, sealed H16 (s7), the missing damage, option A validated
