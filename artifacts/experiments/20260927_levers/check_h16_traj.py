@@ -280,7 +280,9 @@ def main():
     ws = [k for k in out if k != "references"]
     out["readings"] = {"traj_gain": all(out[w]["traj_minus_snapshot"]["interval"][0] > 0 for w in ws),
                        "traj_reaches_one_future": all(out[w]["trajectory"] >= refs["one_real_future"] - 0.01 for w in ws)}
-    (OUT / "result.json").write_text(json.dumps(out, indent=2) + "\n")
+    target = OUT / ("result.json" if ws == ["corrt_raw_teacher_s7_u36000", "corrt_raw_teacher_s8_u36000"] and window == 5 and not e16
+                    else f"result_{ws[0]}{'' if window == 5 else f'__w{window}'}.json")      # the first run keeps result.json
+    target.write_text(json.dumps(out, indent=2) + "\n")
     print(json.dumps(out))
 
 
