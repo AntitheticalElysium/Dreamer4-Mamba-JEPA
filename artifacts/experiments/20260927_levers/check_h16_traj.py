@@ -65,6 +65,46 @@ def features(world, config, data, path, width, device, batch=16, window=5):
     return torch.from_numpy(np.memmap(path, dtype=np.float16, mode="r", shape=(R, N, H, 3 * width)))
 
 
+@torch.no_grad()
+def features_e16(world, post, prior, config, data, path, width, device, generator, batch=16, window=5):
+    """E16 (dworld.py): as features(), but every step's Delta is SAMPLED by the stage-B prior given the true context (posterior
+    codes for the 3 context transitions) and the imagined history, then decoded. Also P(end) per step from the prior's end head.
+    -> features [R,17,16,3*width] (memmap), p_end [R,17,16]"""
+    import dworld as DW
+    from d4mj.train import autocast_context
+    R = len(data["seed"])
+    mm = np.memmap(path, dtype=np.float16, mode="w+", shape=(R, N, H, 3 * width))
+    pend = torch.empty(R, N, H)
+    for i in range(0, R, batch):
+        ctx = data["ctx"][i:i + batch].float().to(device)
+        b = len(ctx)
+        past = data["acts"][i:i + batch].to(device)
+        with torch.no_grad():
+            pc = post.quantizer(post.encode(ctx[:, :-1].flatten(0, 1), past.flatten(), ctx[:, 1:].flatten(0, 1)))[1].view(b, 3, DW.K)
+        frames = ctx.repeat_interleave(N, 0)
+        acts = torch.cat([past.repeat_interleave(N, 0), torch.arange(N, device=device).repeat(b)[:, None]], 1)
+        codes = pc.repeat_interleave(N, 0)
+        cont = data["cont"][i:i + batch].to(device).repeat_interleave(N, 0)
+        for k in range(1, H + 1):
+            sampled, p_end = prior.sample(frames[:, -DW.BLOCKS:], acts[:, -DW.BLOCKS:], codes[:, -(DW.BLOCKS - 1):], generator=generator)
+            w = min(frames.shape[1], window)
+            delta = torch.zeros(len(frames), w, 81, DW.S.D, device=device)
+            delta[:, -1] = post.condition(post.quantizer.embed(sampled))
+            world.delta = delta
+            with autocast_context(config):
+                out, h, _ = world(frames[:, -w:], acts[:, -w:])
+            world.delta = None
+            hk = h[:, -1].float()
+            mm[i:i + b, :, k - 1] = torch.cat([hk.mean(1), hk[:, NEAR].mean(1), hk[:, 63:81].mean(1)], -1).view(b, N, -1).half().cpu().numpy()
+            pend[i:i + b, :, k - 1] = p_end.view(b, N).cpu()
+            frames = torch.cat([frames, out[:, -1].float()[:, None]], 1)
+            codes = torch.cat([codes, sampled[:, None]], 1)
+            if k < H:
+                acts = torch.cat([acts, cont[:, k - 1:k]], 1)
+    mm.flush()
+    return torch.from_numpy(np.memmap(path, dtype=np.float16, mode="r", shape=(R, N, H, 3 * width))), pend
+
+
 class Hazard(nn.Module):
     def __init__(self, d, steps):
         super().__init__()
@@ -143,7 +183,8 @@ def main():
     device = torch.device("cuda")
     args = sys.argv[1:]
     window = int(args[args.index("--window") + 1]) if "--window" in args else 5
-    paths = [a for i, a in enumerate(args) if a != "--window" and (i == 0 or args[i - 1] != "--window")]
+    e16 = "--e16" in args                       # E16: the paths are stage-B prior files (dworld.py); imagination samples Delta
+    paths = [a for i, a in enumerate(args) if a not in ("--window", "--e16") and (i == 0 or args[i - 1] != "--window")]
     log = lambda **kw: print(json.dumps(kw), flush=True)
     data = E.token_cache(device, log)
     Pall, D0, split = HS.load(full=True)
@@ -170,21 +211,35 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     out = {"references": refs}
     for path in paths:
-        world, st = T.load_world(Path(path), device)
-        name = st["name"]
-        tag = E.CACHE / f"h16traj_{name}"
-        xs = {s: features(world, config, data[s], f"{tag}_{s}.f16", S.D, device, window=window) for s in ("fit", "dev")}
-        del world; torch.cuda.empty_cache()
+        if e16:
+            import dworld as DW
+            st = torch.load(path, map_location="cpu", weights_only=False)
+            world, post, _ = DW.load_a(Path(st["stage_a"]), device)
+            prior = DW.Prior().to(device); prior.load_state_dict(st["prior"]); prior.eval()
+            gen = torch.Generator(device=device).manual_seed(20261003)
+            name = st["name"]
+            tag = E.CACHE / f"h16traj_{name}"
+            xs, pend = {}, {}
+            for sp in ("fit", "dev"):
+                xs[sp], pend[sp] = features_e16(world, post, prior, config, data[sp], f"{tag}_{sp}.f16", S.D, device, gen, window=window)
+        else:
+            world, st = T.load_world(Path(path), device)
+            name = st["name"]
+            tag = E.CACHE / f"h16traj_{name}"
+            xs = {s: features(world, config, data[s], f"{tag}_{s}.f16", S.D, device, window=window) for s in ("fit", "dev")}
+            del world; torch.cuda.empty_cache()
         flat = xs["fit"].flatten(0, 2)
         mu = torch.stack([flat[i:i + 65536].float().mean(0) for i in range(0, len(flat), 65536)]).mean(0)
         sd = torch.stack([flat[i:i + 65536].float().std(0) for i in range(0, len(flat), 65536)]).mean(0).clamp(min=1e-3)
         stdz = lambda x: ((x.float() - mu) / sd).half()
         xf, xd = stdz(xs["fit"]), stdz(xs["dev"])
-        res, safe = {}, {}
+        res, safe, traj_models = {}, {}, []
         for arm, traj in (("trajectory", True), ("snapshot", False)):
             runs, cont = [], []
             for seed in range(3):
                 model, best = fit(xf, Pf, xd[A], Pd[A], traj, seed, device)
+                if traj:
+                    traj_models.append(model)
                 s = scores(model, xd[B], traj, device)[oppB]
                 runs.append(1 - p16B[torch.arange(len(p16B)), s.argmin(1)])
                 log(world=name, arm=arm, seed=seed, devA=round(best, 4), devB=round(float(runs[-1].mean()), 4))
@@ -197,6 +252,21 @@ def main():
             safe[arm] = torch.stack(runs).mean(0)
             res[arm] = float(safe[arm].mean())
         res["traj_minus_snapshot"] = paired(safe["trajectory"], safe["snapshot"], seeds[B][oppB], draws=1000, seed=20261003)
+        if e16:                                     # M sampled futures per action on DEV-B: average the predicted P(dead by 16)
+            dB = {k: (v[B] if torch.is_tensor(v) and len(v) == len(seeds) else v) for k, v in data["dev"].items()}
+            judge_risk = lambda r: float((1 - p16B[torch.arange(len(p16B)), r[oppB].argmin(1)]).mean())
+            r_traj, r_end = [], []
+            for m in range(16):
+                if m == 0:
+                    fx, pe = xd[B], pend["dev"][B]
+                else:
+                    fx, pe = features_e16(world, post, prior, config, dB, f"{tag}_devB_m.f16", S.D, device, gen, window=window)
+                    fx = stdz(fx)
+                r_traj.append(torch.stack([scores(mdl, fx, True, device) for mdl in traj_models]).mean(0))
+                r_end.append(1 - torch.prod(1 - pe, -1))
+            res["e16_samples"] = {f"M{M}": {"trajectory_head": judge_risk(torch.stack(r_traj[:M]).mean(0)),
+                                            "end_head": judge_risk(torch.stack(r_end[:M]).mean(0))} for M in (1, 4, 16)}
+            del world, post, prior; torch.cuda.empty_cache()
         res["window"] = window
         out[name] = res
         (OUT / f"{name}{'' if window == 5 else f'__w{window}'}.json").write_text(json.dumps(res | {"references": refs}, indent=2) + "\n")
