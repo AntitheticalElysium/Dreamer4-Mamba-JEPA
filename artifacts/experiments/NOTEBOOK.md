@@ -278,6 +278,31 @@ deterministic world draw hits, attention vs Mamba? Design constraints, each from
   failing to capture long-term dependencies"). Hits are 2% of transitions, so a predeclared reading tests whether a longer
   window alone changes the catch.
 - State Passing (Buitrago Ruiz & Gu, arXiv 2507.02782) did not transfer at our budget (E6c); long-context training was needed.
+- 2026-10-04 additions (read in the text):
+  - S4WM (Deng et al., NeurIPS 2023, arXiv 2307.02064, sec. 2 and 5.4): "Transformers can be better at capturing local
+    (short-range) information", and the transformer world model is best "where the context phase is short", S4WM when it is
+    longer.
+  - DRAMA (arXiv 2410.08893, Table 2): Mamba-2 15.6 ± 2.6 vs Transformer 24.7 ± 7.4 error on 8-frame sequences; at 64 frames the
+    transformer runs out of memory. Its Atari100k score roughly matches STORM's.
+  - Every per-tile Mamba comparison we ran gave both backbones the same <= 5-frame context: the regime where these sources
+    report no SSM advantage.
+  - Before any long-window run, check_context (lane61) measures how much of that short history each 36k world uses.
+- E17 stage 2 PREDECLARED (2026-10-04; launched after a GPU resource smoke, which may only change windows-per-update for
+  memory, recorded before the run):
+  - Arms: A16 and M16, each continued at L = 16 from its own 36k teacher world (corrt_raw_teacher_s{7,8}_u36000 /
+    ..._fmamba_u36000; tworld --init, time positions copy-tiled), on 16-frame windows of the 64-frame Raw TRAIN ledger (26.4%
+    end-aligned death windows), 40 windows per update (the 6-frame recipe's window count), 6,000 updates, seeds 7 and 8.
+  - Comparators:
+    - the parent 36k worlds;
+    - each continued world evaluated at a 6-frame and a 16-frame window: what the longer context itself buys;
+    - for attention, a matched-update 6-frame continuation (the 50k runs' 42k snapshots, 36k + 6k).
+  - Evaluation with the trained context: check_damage --window 16, check_h16_traj --window 16, teval --window 16, plus the
+    6-frame-window evaluation of the same worlds (what the longer window itself buys).
+  - Readings:
+    - long_hits: teacher-forced hit catch with window 16 >= 0.3 at both seeds for either backbone (the 6-frame ceiling 0.857;
+      current worlds 0.03-0.10);
+    - long_fresh: fresh-arrival hits caught >= 0.5;
+    - mamba_long_edge: (M16 - A16) on hits caught and on H16 trajectory value, both >= +0.02, at both seeds.
 - Arms: A6 → A16 and M6 → M16, each continued at L = 16 from its own 36k world with matched windows per update. The `rawlong`
   path (64-frame Raw TRAIN ledger, 26.4% end-aligned death windows) is implemented and CPU-tested.
 
