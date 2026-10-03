@@ -141,6 +141,26 @@ E16 reading is ALSO reported against the matched-budget deterministic world, the
 (corrt_raw_teacher_s{7,8}_u100000_at54000; check_h16_traj and check_damage run on it). e16_h16 passes only if it holds against
 both the declared 36k value and the 54k snapshot's.
 
+AMENDMENT 2 (2026-10-03, after stage-A smokes; no E16 reading had been measured):
+- What the smokes showed:
+  - crafter revival: codebook collapse, 3-4 codes, 1.7 bits;
+  - atari revival: 76 codes at 500 updates, re-collapse to 8 after revival stops at 400;
+  - always revival: diversity held (8-11 bits, 6-126 codes per batch).
+- A 6k diagnostic (always revival, the 36k world continued) logged the same-batch teacher loss with Delta zeroed. At EVERY
+  checkpoint the loss with the posterior's Delta was 0.4-1.5% HIGHER than with Delta zeroed: the decoder takes no information
+  from the channel.
+- On 2,560 held transitions, each region's code explains 0.8-1.2% of the deterministic decoder's residual variance. Chance for
+  the 13-25 codes in use is about 0.5-0.9%. The encoder does not encode what the decoder misses.
+- Cause, matching Bowman et al. 2016 (arXiv 1511.06349, sec. 3.1, read): a model "initially learn[s] to ignore z ... Once this
+  has happened, the decoder ignores the encoder and little to no gradient signal passes between the two, yielding an undesirable
+  stable equilibrium". Continuing a converged deterministic world STARTS stage A in that equilibrium.
+- Delta-IRIS avoids it by its actual recipe: tokenizer (E + D) trained jointly from scratch.
+- Amended stage A: the corrt decoder from scratch (same seed and init as the deterministic arms), Delta-IRIS's Crafter revival
+  setting, 36k updates. This also removes the budget confound: the comparator is the from-scratch 36k deterministic world
+  (corrt_raw_teacher_s{7,8}_u36000), at equal updates.
+- A from-scratch smoke (3k updates) must show a positive Delta gain (teacher loss with Delta zeroed minus with Delta) before the
+  full runs. The readings and their thresholds are unchanged.
+
 Implementation order: E / quantizer / D-conditioning with CPU unit tests (zero-init identity with the deterministic world;
 codebook usage); stage A lane; stage B lane; sampling rollouts in check_damage / check_h16_traj (`--sample M`).
 

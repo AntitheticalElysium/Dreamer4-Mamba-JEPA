@@ -151,7 +151,8 @@ def train_a(seed, init, updates, device, log, state_path, max_revival=0):
         torch.manual_seed(seed); torch.cuda.manual_seed_all(seed)
         world = TW.TWorld("corrt")
         post = Posterior(max_revival=max_revival)
-    world.load_state_dict(torch.load(init, map_location="cpu", weights_only=False)["world"])
+    if init is not None:                       # None = Delta-IRIS's recipe: decoder from scratch (amendment 2, NOTEBOOK)
+        world.load_state_dict(torch.load(init, map_location="cpu", weights_only=False)["world"])
     world, post = world.to(device), post.to(device)
     opt = phase_optimizer([world, post], config)
     params = [p for g in opt.param_groups for p in g["params"]]
@@ -319,14 +320,14 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--stage", choices=("a", "b"), required=True)
     p.add_argument("--seed", type=int, required=True)
-    p.add_argument("--init", type=Path, required=True)
+    p.add_argument("--init", type=Path, default=None, help="stage a: a world to continue (default: from scratch); stage b: the stage-A file")
     p.add_argument("--updates", type=int, required=True)
     p.add_argument("--revival", default="crafter", choices=("crafter", "atari", "always"),
                    help="Delta-IRIS codebook revival: crafter.yaml 0, atari.yaml 400 (steps_first_epoch), the class default None")
     a = p.parse_args()
     started = time.time()
     log = lambda **kw: print(json.dumps({**kw, "seconds_total": round(time.time() - started, 1)}), flush=True)
-    name = (f"dworld_a_s{a.seed}_from{a.init.stem.split('_u')[-1]}" + ("" if a.revival == "crafter" else f"_rev{a.revival}") + f"_u{a.updates}" if a.stage == "a"
+    name = (f"dworld_a_s{a.seed}_" + (f"from{a.init.stem.split('_u')[-1]}" if a.init else "scratch") + ("" if a.revival == "crafter" else f"_rev{a.revival}") + f"_u{a.updates}" if a.stage == "a"
             else f"{a.init.stem}_prior_u{a.updates}")
     out = TW.OUT / f"{name}.pt"
     if out.exists():
