@@ -61,6 +61,46 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-03 evening — E14f: 100k learns the placements, never health; positions plateau
+
+The 50k worlds continued to 100k from their full states (lane51; readings declared in lane51.sh).
+
+**Held strict consequences caught, per action:**
+
+| | DO | stone | furnace | table | all | hallucinated |
+|---|---|---|---|---|---|---|
+| s7 50k → 54k → 100k | 1.00 → 1.00 → 1.00 | 0.99 → 0.99 → 1.00 | 0.75 → 0.92 → 0.98 | 0.11 → **0.86** → 0.94 | 0.871 → 0.975 → 0.991 | 0.006-0.012 |
+| s8 50k → 54k → 100k | 0.99 → 0.98 → 0.99 | 0.94 → 0.98 → 0.99 | 0.19 → **0.79** → 1.00 | 0.000 throughout | 0.795 → 0.845 → 0.877 | 0.005-0.010 |
+
+- The order is identical at both seeds: DO, stone, furnace, table.
+- s7's table jump (50k → 54k) happened in a true continuation (full state, no optimizer reset). A warm restart is not needed for
+  a stage-like jump.
+- s8 has not learned table by 100k. With one run per seed and the 6-12k run-to-run spread from GPU nondeterminism, seed and run
+  cannot be separated.
+
+**Health never learned** (check_damage, every 6k snapshot 54k-100k, both seeds):
+- hits caught 0.006-0.134;
+- fresh arrivals 0 / 31 at every s7 snapshot, at most 1 / 31 at s8;
+- drops drawn LESS often with a hit than without one, in the beside case, at every snapshot;
+- recoveries and starvation drops 0.000.
+
+**Positions plateau** (subst16, ever position-wrong):
+- s7: 0.449 / 0.298 / 0.283 / 0.269 (18k / 36k / 50k / 100k);
+- s8: 0.493 / 0.339 / 0.284 / 0.270;
+- the scroll decision is drawn right 0.94 from 50k on.
+
+**compare, 100k − 50k:** one-step −0.003 at both seeds (resolved; interact −0.063 / −0.054); depth 16 −0.012 [−0.024, −0.000]
+(s7) and +0.009 [−0.001, +0.020] (s8).
+
+**Readings:** table_learned FALSE (s7 only); hit_mode FALSE; fresh_hits FALSE; position_plateau TRUE at both seeds;
+budget_continues FALSE.
+
+So budget keeps buying the deterministic consequence modes one by one, and nothing else: no health change at any budget to
+100k, and positions and depth-16 error flat after 50k. That is consistent with the E16 rationale. A hit is a coin flip from the
+window where it is most common, and copied where it is predictable; a deterministic L1 world does not acquire it with budget.
+
+---
+
 ## 2026-10-03 — E16 DESIGN (predeclared before any code): a Delta-IRIS stochastic channel on the per-tile world
 
 **Why (measured):**
