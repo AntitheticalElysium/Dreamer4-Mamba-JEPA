@@ -18,6 +18,12 @@ Risk-suite additions (2026-10-03, after the first run started; reported): `--win
 continuation / death prediction of the trajectory head on DEV-B: Brier of the per-step cumulative P(dead by k) against the 32-key
 P (all roots, branches, k), and AUC of P(dead by 16) against key 0's realized death by 16; per-world JSON (evals/h16traj/<name>.json).
 Usage: check_h16_traj.py <world.pt> ... [--window W]
+Result (2026-10-03, first run, 36k worlds; DEV-B opp16 roots 1,139; references uniform 0.571, prior 0.616, one_real_future
+0.679, oracle31 0.766): trajectory / snapshot = 0.645 / 0.629 (s7), 0.646 / 0.629 (s8); trajectory - snapshot +0.017 [+0.007,
++0.026] (s7), +0.017 [+0.005, +0.031] (s8). traj_gain TRUE, traj_reaches_one_future FALSE (-0.033 at both seeds).
+Share of the uniform-to-oracle margin: prior 23%, snapshot 30%, trajectory 38%, one real future 55% (check_h16_value: 16 sampled
+futures ~90%). Reading the deterministic trajectory step by step helps, but futures that never draw damage stay well below one
+faithful sample.
 """
 import json
 import sys
