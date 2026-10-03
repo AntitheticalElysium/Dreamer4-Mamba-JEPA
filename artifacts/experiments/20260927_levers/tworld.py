@@ -383,7 +383,8 @@ def rollout_losses(world, s, a, loss, gen_loss=False, weight=None, faced=None):
 
 
 def train(head, pool_name, loss, seed, updates, device, log, codebook=None, backbone="full", gen_loss=False,
-          regions="all", snapshot=None, weight=None, skip=False, state_path=None, resume=None, frames=None, windows=BATCH):
+          regions="all", snapshot=None, weight=None, skip=False, state_path=None, resume=None, frames=None, windows=BATCH,
+          init=None):
     from d4mj.config import config_from_dict
     from d4mj.train import _phase_lr, autocast_context, optimizer_step, phase_optimizer
     config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
@@ -401,6 +402,12 @@ def train(head, pool_name, loss, seed, updates, device, log, codebook=None, back
     with torch.random.fork_rng(devices=[0]):
         torch.manual_seed(seed); torch.cuda.manual_seed_all(seed)
         world = TWorld(head, codebook, backbone, regions, NOISE_LEVELS if loss == "noise" else 0, skip, frames).to(device)
+    if init is not None and resume is None:   # E17 continuation: a trained world's weights, its time table tiled to L rows
+        w0 = torch.load(init, map_location="cpu", weights_only=False)["world"]     # (Longformer's copy initialization, sec. 5)
+        if w0["time"].shape[0] != world.time.shape[0]:
+            w0["time"] = w0["time"][torch.arange(world.time.shape[0]) % w0["time"].shape[0]]
+        world.load_state_dict(w0)
+        log(stage="init_from", path=str(init))
     log(stage="init", parameters=sum(p.numel() for p in world.parameters()))
     opt = phase_optimizer([world], config)
     params = [p for g in opt.param_groups for p in g["params"]]
@@ -482,6 +489,7 @@ def main(argv=None):
     parser.add_argument("--resume", type=Path, default=None, help="continue from a full training state file to --updates")
     parser.add_argument("--frames", type=int, default=None, help="E17: L-frame windows (needs --pool rawlong, --loss teacher)")
     parser.add_argument("--windows", type=int, default=BATCH, help="E17: windows per update with --frames")
+    parser.add_argument("--init", type=Path, default=None, help="E17: start from a trained world (time table tiled to --frames)")
     args = parser.parse_args(argv)
     if (args.pool == "rawlong") != (args.frames is not None) or (args.frames and args.loss != "teacher"):
         parser.error("--frames goes with --pool rawlong and --loss teacher")
@@ -493,6 +501,7 @@ def main(argv=None):
         + ("" if args.backbone == "full" else f"_{args.backbone}") + ("_gl" if args.gen_loss else "") \
         + ("" if args.regions == "all" else f"_{args.regions}") + (f"_{args.weight}" if args.weight else "") \
         + ("_skip" if args.skip else "") + (f"_L{args.frames}b{args.windows}" if args.frames else "") \
+        + (f"_from{args.init.stem.split('_u')[-1]}" if args.init else "") \
         + ("" if args.updates == 6000 else f"_u{args.updates}")
     OUT.mkdir(parents=True, exist_ok=True)
     if (OUT / f"{name}.pt").exists():
@@ -506,7 +515,7 @@ def main(argv=None):
     (OUT / "state").mkdir(exist_ok=True)
     world, history, held = train(args.head, args.pool, args.loss, args.seed, args.updates, device, log, codebook,
                                  args.backbone, args.gen_loss, args.regions, snapshot, args.weight, args.skip,
-                                 OUT / "state" / f"{name}.state.pt", args.resume, args.frames, args.windows)
+                                 OUT / "state" / f"{name}.state.pt", args.resume, args.frames, args.windows, args.init)
     save(name, world, history)
     log(status="saved", name=name)
     return 0
