@@ -30,15 +30,17 @@ STORES = [ROOT / "artifacts/eda/deeppanel_fit_v1", ROOT / "artifacts/eda/deeppan
 DEPTHS = (1, 4, 16)
 
 
-def load(stores=STORES):
-    """Kept roots of the stores: P [R,17,3] (32-key P(dead by k)), D [R,17,3] (key 0's dead-by-k), split [R] (store index)."""
+def load(stores=STORES, full=False):
+    """Kept roots of the stores (deepeval's rule and order): P [R,17,3] (32-key P(dead by k); all 16 depths if `full`),
+    D [R,17,3] (key 0's dead-by-k), split [R] (store index)."""
     P, D, S = [], [], []
     for i, store in enumerate(stores):
         for f in sorted(store.glob("seed-*.pt")):
             for r in torch.load(f, weights_only=False):
                 p = r["p_dead_by"]["recorded"][:, [k - 1 for k in DEPTHS]].float()                  # [17, 3]
                 if bool((p.amax(0) > p.amin(0)).any()):
-                    P.append(p); D.append(r["depth_dead"][:, [k - 1 for k in DEPTHS]].float()); S.append(i)
+                    P.append(r["p_dead_by"]["recorded"].float() if full else p)
+                    D.append(r["depth_dead"][:, [k - 1 for k in DEPTHS]].float()); S.append(i)
     return torch.stack(P), torch.stack(D), torch.tensor(S)
 
 
