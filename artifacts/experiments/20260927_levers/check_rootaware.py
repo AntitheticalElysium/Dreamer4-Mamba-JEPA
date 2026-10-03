@@ -13,6 +13,14 @@ Readings, declared before running:
   rootaware_gain_36k          per seed, (root-aware - successor-only) zombie-adjacent mean is larger for the 36k world than for the
                               18k world (reported)
 Usage: check_rootaware.py <world.pt> ...   then   check_rootaware.py --analyse s7_18k:s7_36k ...
+Result (2026-10-03; 8 head seeds per world, 1,038 zombie-adjacent H1 roots; evals/rootaware/analysis.json):
+  zombie-adjacent mean safe, successor-only (check_headseeds) -> root-aware: s7 18k 0.908 -> 0.952 (+0.044), s7 36k 0.878 -> 0.949
+  (+0.071), s8 18k 0.908 -> 0.957 (+0.049), s8 36k 0.873 -> 0.949 (+0.076); real successors root-aware 0.999.
+  Root-aware 36k - 18k: zombie -0.004 [-0.014, +0.006] (s7), -0.008 [-0.019, +0.002] (s8); overall -0.003 / -0.005, ns.
+  rootaware_regression_gone TRUE, rootaware_gain_36k TRUE at both seeds.
+  So item 1 is measured: the 36k worlds draw zombie stay / chase like reality (check_zombie_cue), which moves the death information
+  into a root-relative cue that a successor-only head cannot read; with the root aligned in, the regression shrinks from -0.030 /
+  -0.035 (resolved) to -0.004 / -0.008 (not resolved), and every world's imagined successor carries 0.95 next to zombies.
 """
 import json
 import sys

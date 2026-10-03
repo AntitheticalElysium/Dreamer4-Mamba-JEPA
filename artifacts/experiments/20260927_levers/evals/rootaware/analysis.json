@@ -1,0 +1,154 @@
+{
+  "corrt_raw_teacher_s7_u18000:corrt_raw_teacher_s7_u36000": {
+    "overall": {
+      "roots": 1605,
+      "per_seed_a": [
+        0.9572,
+        0.9642,
+        0.9603,
+        0.9532,
+        0.9532,
+        0.9601,
+        0.9579,
+        0.9594
+      ],
+      "per_seed_b": [
+        0.95,
+        0.9613,
+        0.9575,
+        0.9529,
+        0.9537,
+        0.9544,
+        0.9469,
+        0.9616
+      ],
+      "difference": -0.0034000277519226074,
+      "interval": [
+        -0.011287769302725792,
+        0.004097781144082546
+      ],
+      "excludes_zero": false
+    },
+    "zombie_adjacent": {
+      "roots": 1038,
+      "per_seed_a": [
+        0.9513,
+        0.96,
+        0.9561,
+        0.9478,
+        0.9435,
+        0.9552,
+        0.9523,
+        0.9516
+      ],
+      "per_seed_b": [
+        0.9436,
+        0.9571,
+        0.9542,
+        0.9417,
+        0.9494,
+        0.9513,
+        0.9359,
+        0.955
+      ],
+      "difference": -0.0037030577659606934,
+      "interval": [
+        -0.014377218671143055,
+        0.00604551937431097
+      ],
+      "excludes_zero": false
+    }
+  },
+  "corrt_raw_teacher_s8_u18000:corrt_raw_teacher_s8_u36000": {
+    "overall": {
+      "roots": 1605,
+      "per_seed_a": [
+        0.9541,
+        0.9563,
+        0.9616,
+        0.9567,
+        0.9641,
+        0.9644,
+        0.9559,
+        0.9576
+      ],
+      "per_seed_b": [
+        0.9523,
+        0.9463,
+        0.9485,
+        0.9547,
+        0.9536,
+        0.9517,
+        0.9558,
+        0.9645
+      ],
+      "difference": -0.005417585372924805,
+      "interval": [
+        -0.013753382489085197,
+        0.0026716203428804874
+      ],
+      "excludes_zero": false
+    },
+    "zombie_adjacent": {
+      "roots": 1038,
+      "per_seed_a": [
+        0.9532,
+        0.9571,
+        0.96,
+        0.9542,
+        0.9648,
+        0.9639,
+        0.9504,
+        0.9533
+      ],
+      "per_seed_b": [
+        0.9474,
+        0.9465,
+        0.9436,
+        0.9475,
+        0.951,
+        0.9474,
+        0.9475,
+        0.96
+      ],
+      "difference": -0.008226454257965088,
+      "interval": [
+        -0.019155221059918404,
+        0.0018455344252288342
+      ],
+      "excludes_zero": false
+    }
+  },
+  "readings": {
+    "rootaware_regression_gone": true,
+    "rootaware_gain_36k": {
+      "corrt_raw_teacher_s7_u18000:corrt_raw_teacher_s7_u36000": true,
+      "corrt_raw_teacher_s8_u18000:corrt_raw_teacher_s8_u36000": true
+    }
+  },
+  "zombie_adjacent_means": {
+    "corrt_raw_teacher_s7_u18000": {
+      "rootaware": 0.9522143006324768,
+      "successor_only": 0.9079509973526001,
+      "gain": 0.04426330327987671
+    },
+    "corrt_raw_teacher_s7_u36000": {
+      "rootaware": 0.9485112428665161,
+      "successor_only": 0.8778224587440491,
+      "gain": 0.07068878412246704
+    },
+    "corrt_raw_teacher_s8_u18000": {
+      "rootaware": 0.9571065306663513,
+      "successor_only": 0.9081730246543884,
+      "gain": 0.04893350601196289
+    },
+    "corrt_raw_teacher_s8_u36000": {
+      "rootaware": 0.9488800764083862,
+      "successor_only": 0.8729264736175537,
+      "gain": 0.07595360279083252
+    },
+    "real": {
+      "rootaware": 0.999397873878479
+    }
+  }
+}
