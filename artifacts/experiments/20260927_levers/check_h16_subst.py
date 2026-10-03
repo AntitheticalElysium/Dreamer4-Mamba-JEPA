@@ -10,6 +10,13 @@ Expected safe on DEV roots with opportunity at k (seed mean), k in 1, 4, 16. Als
 depth 16: mean, and the per-root correlation of -health with P(dead by 16) across the 17 first actions.
 Reading, declared before running: h16_hud_bottleneck = (+real_hud - imagined) >= 0.5 x (real - imagined) at k = 16 in every world.
 Usage: check_h16_subst.py <world.pt> ...
+Result (2026-10-03; DEV opportunity roots k1 640 / k4 1,309 / k16 2,590; real 0.999 / 0.738 / 0.691):
+  k16 imagined -> +real_hud (HUD share of the gap) / +real_map: s7 18k 0.597 -> 0.688 (0.960) / 0.591; s7 36k 0.600 -> 0.687
+  (0.951) / 0.589; s8 18k 0.585 -> 0.685 (0.938) / 0.579; s8 36k 0.600 -> 0.688 (0.966) / 0.594. k4 HUD share 0.906-0.948; k1
+  0.998-0.999. The real map never helps at k16 (share -0.06 to -0.12). h16_hud_bottleneck TRUE.
+  Imagined health at 16 (opportunity roots): 5.93 / 6.03 / 5.94 / 5.94 vs real 2.42; danger_corr 0.15 / 0.35 / 0.08 / 0.35 vs real 0.54.
+  So at every depth what a real-fitted head misses in imagination is the drawn outcome (damage / death), not the map; the imagined
+  futures keep ~3.5 more health than the real ones.
 """
 import json
 import sys
