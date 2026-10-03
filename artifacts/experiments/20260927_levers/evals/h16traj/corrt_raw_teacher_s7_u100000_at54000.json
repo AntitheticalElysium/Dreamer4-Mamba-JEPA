@@ -1,0 +1,24 @@
+{
+  "continuation": {
+    "brier_all_k": 0.08968770255645116,
+    "auc_dead16_key0": 0.8632351358731588
+  },
+  "trajectory": 0.6526923775672913,
+  "snapshot": 0.6201620697975159,
+  "traj_minus_snapshot": {
+    "difference": 0.03253030776977539,
+    "interval": [
+      0.019305426627397537,
+      0.045856498181819916
+    ],
+    "excludes_zero": true
+  },
+  "window": 5,
+  "references": {
+    "roots_devB_opp16": 1139,
+    "uniform": 0.571426510810852,
+    "prior": 0.6160831451416016,
+    "one_real_future": 0.6793657541275024,
+    "oracle31": 0.7664617896080017
+  }
+}

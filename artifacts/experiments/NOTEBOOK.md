@@ -61,6 +61,29 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-03 night — interim: Mamba at an equal budget (s7); matched-budget comparators; E16 running
+
+**E17 stage 1, seed 7** (corrt teacher, 6-frame windows, 36k, fmamba backbone vs the attention world; lane60). Mamba matches
+attention:
+- consequences: held 0.564 vs 0.562; DO 1.000 vs 0.997; every placement type 0.000 in both; hallucinated 0.008 vs 0.007;
+- one-step all −0.002 [−0.003, −0.001] (moved −0.004, other classes unchanged); depth 16 −0.011 [−0.022, +0.001] (ns);
+- health frozen like attention: hits caught 0.050 (attention 0.030), fresh arrivals 0 / 31, beside drawn with / without a hit
+  0.082 / 0.156, ±1 never.
+- Seed 8 (lane52) is running. m6_depth16 cannot pass (s7 not resolved).
+- Expected from the window argument: with the same 6-frame windows both backbones see the same history.
+
+**Matched-budget deterministic comparators** (the 100k run's 54k snapshots; lane55):
+- trajectory H16 0.653 / 0.651 (36k: 0.645 / 0.646); trajectory − snapshot +0.033 / +0.031 (resolved);
+- continuation head Brier 0.090 / 0.100, AUC vs realized death by 16 0.863 / 0.844.
+- Under amendment 2 (E16 from scratch, 36k), E16's matched comparator is the 36k world; the 54k values are reference only.
+- 18k more deterministic updates buy +0.005-0.007 of H16 decision value.
+
+**E16 amendment-2 smoke** (from scratch, 3k): Delta gain +70%, 110 codes. Delta use on that early decoder: it removes 91% of the
+rest-of-map error, 45% player, 22% HUD, 15% entering cells. Early on the channel carries deterministic map content; the full
+runs (lane59) log the Delta gain every 500 updates.
+
+---
+
 ## 2026-10-03 evening — E14f: 100k learns the placements, never health; positions plateau
 
 The 50k worlds continued to 100k from their full states (lane51; readings declared in lane51.sh).
