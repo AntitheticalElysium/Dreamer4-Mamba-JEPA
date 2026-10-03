@@ -17,7 +17,11 @@ Readings, declared before running (worlds: the 36k teacher worlds, seeds 7 and 8
 Risk-suite additions (2026-10-03, after the first run started; reported): `--window W` (imagination context, default 5);
 continuation / death prediction of the trajectory head on DEV-B: Brier of the per-step cumulative P(dead by k) against the 32-key
 P (all roots, branches, k), and AUC of P(dead by 16) against key 0's realized death by 16; per-world JSON (evals/h16traj/<name>.json).
-Usage: check_h16_traj.py <world.pt> ... [--window W]
+E16 (`--e16`, 2026-10-03; the paths are dworld.py stage-B prior files): imagination samples every step's Delta from the prior and
+decodes it (features_e16); the heads are fit as above on one sample. DEV-B is then re-imagined to 16 samples per action and the
+predicted P(dead by 16) averaged over the first M = 1 / 4 / 16 samples, from the trajectory heads and from the prior's own end
+head (1 - prod_k (1 - P(end_k)), no fitting): e16_h16's quantities.
+Usage: check_h16_traj.py <world.pt> ... [--window W]   |   check_h16_traj.py --e16 <prior.pt> ...
 Result (2026-10-03, first run, 36k worlds; DEV-B opp16 roots 1,139; references uniform 0.571, prior 0.616, one_real_future
 0.679, oracle31 0.766): trajectory / snapshot = 0.645 / 0.629 (s7), 0.646 / 0.629 (s8); trajectory - snapshot +0.017 [+0.007,
 +0.026] (s7), +0.017 [+0.005, +0.031] (s8). traj_gain TRUE, traj_reaches_one_future FALSE (-0.033 at both seeds).
@@ -215,13 +219,13 @@ def main():
             import dworld as DW
             st = torch.load(path, map_location="cpu", weights_only=False)
             world, post, _ = DW.load_a(Path(st["stage_a"]), device)
-            prior = DW.Prior().to(device); prior.load_state_dict(st["prior"]); prior.eval()
+            dyn = DW.Prior().to(device); dyn.load_state_dict(st["prior"]); dyn.eval()
             gen = torch.Generator(device=device).manual_seed(20261003)
             name = st["name"]
             tag = E.CACHE / f"h16traj_{name}"
             xs, pend = {}, {}
             for sp in ("fit", "dev"):
-                xs[sp], pend[sp] = features_e16(world, post, prior, config, data[sp], f"{tag}_{sp}.f16", S.D, device, gen, window=window)
+                xs[sp], pend[sp] = features_e16(world, post, dyn, config, data[sp], f"{tag}_{sp}.f16", S.D, device, gen, window=window)
         else:
             world, st = T.load_world(Path(path), device)
             name = st["name"]
@@ -253,20 +257,20 @@ def main():
             res[arm] = float(safe[arm].mean())
         res["traj_minus_snapshot"] = paired(safe["trajectory"], safe["snapshot"], seeds[B][oppB], draws=1000, seed=20261003)
         if e16:                                     # M sampled futures per action on DEV-B: average the predicted P(dead by 16)
-            dB = {k: (v[B] if torch.is_tensor(v) and len(v) == len(seeds) else v) for k, v in data["dev"].items()}
+            devB = {k: data["dev"][k][B] for k in ("ctx", "acts", "cont", "seed")}
             judge_risk = lambda r: float((1 - p16B[torch.arange(len(p16B)), r[oppB].argmin(1)]).mean())
             r_traj, r_end = [], []
             for m in range(16):
                 if m == 0:
                     fx, pe = xd[B], pend["dev"][B]
                 else:
-                    fx, pe = features_e16(world, post, prior, config, dB, f"{tag}_devB_m.f16", S.D, device, gen, window=window)
+                    fx, pe = features_e16(world, post, dyn, config, devB, f"{tag}_devB_m.f16", S.D, device, gen, window=window)
                     fx = stdz(fx)
                 r_traj.append(torch.stack([scores(mdl, fx, True, device) for mdl in traj_models]).mean(0))
                 r_end.append(1 - torch.prod(1 - pe, -1))
             res["e16_samples"] = {f"M{M}": {"trajectory_head": judge_risk(torch.stack(r_traj[:M]).mean(0)),
                                             "end_head": judge_risk(torch.stack(r_end[:M]).mean(0))} for M in (1, 4, 16)}
-            del world, post, prior; torch.cuda.empty_cache()
+            del world, post, dyn; torch.cuda.empty_cache()
         res["window"] = window
         out[name] = res
         (OUT / f"{name}{'' if window == 5 else f'__w{window}'}.json").write_text(json.dumps(res | {"references": refs}, indent=2) + "\n")
