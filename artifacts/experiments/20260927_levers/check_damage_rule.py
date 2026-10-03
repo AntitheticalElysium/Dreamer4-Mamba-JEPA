@@ -30,11 +30,14 @@ Result (2026-10-03; 79,763 alive transitions, displacement identified in all): h
   Same root state, one step, 17 actions x 4 keys: 389 of 403 dropping pairs drop in 4/4 keys, 14 in 2/4.
   So a hit is a rule on state, not chance; from the world's 4-frame input it is a coin flip in the commonest case (a zombie
   already beside the player), and the L1 median draws no hit. The 2026-10-02 "aleatoric" reading is corrected.
+  Deterministic ceiling (added the same day, reported; in-sample cell rates, slightly optimistic): share of hits a deterministic
+  world could draw from the visible history = 0.473 (4 frames), 0.621 (5), 0.857 (6), 0.833 (9; fewer roots).
 """
 import json
 import sys
 
 import torch
+import torch.nn.functional as F
 
 sys.path.insert(0, "artifacts/experiments/20260927_levers")
 import teval as T  # noqa: E402
@@ -83,7 +86,7 @@ def masks(meta):
     adjwin |= adj_now
     k3 = (torch.arange(16) >= 3).expand_as(drop2)
     return dict(dh=dh, drop2=drop2, valid=valid, ok=ok, dead=dead, alive_before=alive_before, adjacent=adjacent,
-                rule_hit=rule_hit, asleep=asleep[:, :, :-1], win=win, adjwin=adjwin, k3=k3)
+                rule_hit=rule_hit, asleep=asleep[:, :, :-1], win=win, adjwin=adjwin, k3=k3, beside_now=adj_now)
 
 
 def main():
@@ -116,6 +119,19 @@ def main():
     drop1 = (hp1 <= hp0[:, None, None] - 2) | meta["onestep_dead"].bool()
     n = drop1.sum(1)
     out["same_state_onestep"] = {"pairs_with_drop": int((n > 0).sum()), "keys_dropping_hist_1_to_4": [int((n == q).sum()) for q in range(1, 5)]}
+    # deterministic ceiling (added 2026-10-03, reported): share of hits in visible-feature cells (beside the post-move player,
+    # steps since the last visible hit, window frames with a zombie beside the player) whose in-sample P(hit) > 0.5
+    beside_now = m["beside_now"]
+    out["deterministic_ceiling"] = {}
+    for W in (3, 4, 5, 8):
+        since = torch.zeros_like(drop2, dtype=torch.long)
+        for j in range(W, 0, -1):
+            since[:, :, j:] = torch.where(drop2[:, :, :-j], torch.full_like(since[:, :, j:], j), since[:, :, j:])
+        nb = sum(F.pad(beside_now[:, :, :16 - j], (j, 0)).long() for j in range(W + 1))
+        use = valid & (torch.arange(16) >= W)
+        key = adjacent.long() * 10000 + since * 100 + nb
+        drawable = sum(int((drop2 & use & (key == v)).sum()) for v in key[use].unique() if float(drop2[use & (key == v)].float().mean()) > 0.5)
+        out["deterministic_ceiling"][f"{W + 1}_frames"] = round(drawable / int((drop2 & use).sum()), 4)
     out["readings"] = {"rule_exact": out["rule"]["rule_hit_on_drops_ge2"] >= 0.95 and out["rule"]["rule_hit_without_drop"] <= 0.05,
                        "damage_visible": out["visible"]["p_hit_given_adjacent_no_hit_in_window"] >= 0.8}
     print(json.dumps(out, indent=1))
