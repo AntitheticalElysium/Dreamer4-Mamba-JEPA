@@ -61,6 +61,47 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-03 afternoon — what decisions miss is the outcome; reading trajectories helps but not enough; terrain bound holds
+
+**H16 transfer gap = the HUD** (`check_h16_subst`, deepeval DEV split, real16 heads; h16_hud_bottleneck TRUE):
+
+| world | H16 imagined | + real HUD only (share of gap) | + real map only |
+|---|---|---|---|
+| s7 18k | 0.597 | 0.688 (0.96) | 0.591 |
+| s7 36k | 0.600 | 0.687 (0.95) | 0.589 |
+| s8 18k | 0.585 | 0.685 (0.94) | 0.579 |
+| s8 36k | 0.600 | 0.688 (0.97) | 0.594 |
+
+- The real reference is 0.691.
+- HUD share by depth: H1 0.998-0.999, H4 0.91-0.95, H16 0.94-0.97. The real map never helps at H16.
+- Imagined health at depth 16 is 5.9-6.0 against 2.4 in reality.
+
+**Reading the deterministic trajectory** (`check_h16_traj`; per-step hazard head, a Dreamer-style continue head, on the 36k
+worlds' imagined trajectories; DEV-B, 1,139 roots):
+- trajectory 0.645 / 0.646 vs depth-16 snapshot 0.629 / 0.629: +0.017 [+0.007, +0.026] (s7), +0.017 [+0.005, +0.031] (s8);
+  traj_gain TRUE.
+- traj_reaches_one_future FALSE: one real future is 0.679, oracle 0.766.
+- Share of the uniform-to-oracle margin: prior 23%, snapshot 30%, trajectory 38%, one real future 55%, 16 sampled futures ~90%
+  (check_h16_value).
+- So a better head recovers part of the value. Futures that never draw damage cap the decision below one faithful sample: the
+  measured case for sampled (stochastic) imagination.
+
+**Health is frozen in every attention world, not only hits** (risk suite, `check_damage` on 36k / 50k):
+- Accuracy of the drawn health change: no change 0.989-0.991; −2 or worse 0.029-0.049; **−1 (starvation) 0.000**; **+1
+  (recovery) 0.000**. n = 15,387 / 305 / 32 / 112.
+- Recovery and starvation follow hidden counters (player_recover, read in game_logic), like the zombie cooldown.
+- E5f's 6k finding "HUD never updated" still holds for health at 36k and 50k.
+
+**Terrain bound** (`check_enterbound`):
+- v1 was INVALID as a ceiling test: frame-wide class one-hots gave 0.645, below copying the adjacent tile (0.714).
+- v2, an aligned 28-cell token patch (a superset of the 3-edge input, alignment verified exactly): 0.767 vs 3-edge MLP 0.756 and
+  world 0.760; terrain_bound_holds TRUE.
+- Entering trees, coal, iron and tables are never predicted (recall 0.000).
+- About 23% of entering terrain is not inferable from the visible frame by this predictor. It is a bound from one predictor
+  class (history excluded), not a proof.
+
+---
+
 ## 2026-10-03 midday — the queue: every untested or assumed item, and how it gets tested
 
 The user asked for: longer training, Mamba at an equal budget, and decision-linked metrics instead of generic map error.
