@@ -8,6 +8,9 @@ k >= 3 (check_damage_rule's visible-history cases need the 4-frame window inside
               post-move player -> e16_no_false_hits (<= 0.01)
   selffed     the world's own sampled rollout (one sample), drawn hit frequency per case on steps whose imagined view is still
               aligned with the true one (check_damage's alignment rule); reported
+  delta_use   (added 2026-10-03 before the first run, reported) teacher-forced squared error of the decoded next frame with the
+              posterior's Delta vs with Delta zeroed, per token class: HUD (63-80), player (31), cells entering the view on scroll
+              steps (scroll.estimate on the true pair), the rest of the map: what the channel carries
 A drawn hit = the HUD probe's health on the predicted frame below the current health (true current for teacher-forced, imagined
 for self-fed) by more than 1.5 (check_damage's class cut for <= -2).
 Usage: check_e16.py <stage-B prior .pt> [--samples M]
@@ -42,7 +45,8 @@ def main():
     from d4mj.config import config_from_dict
     from scroll import estimate
     import spatial as Sp
-    device = torch.device("cuda")
+    import os
+    device = torch.device(os.environ.get("E16_DEVICE", "cuda"))                     # E16_DEVICE / E16_ROOTS: tests only
     args = sys.argv[1:]
     M = int(args[args.index("--samples") + 1]) if "--samples" in args else 8
     prior_path = Path(args[0])
@@ -53,22 +57,25 @@ def main():
     meta, train_roots, train_seeds = T.split()
     fut5, _ = SD.token_cache(device)
     cache = T.build_cache("raw", device)
-    R = len(meta["seed"])
-    ctx, ca, fa = cache["ctx"], cache["ctx_a"], cache["fut_a"]
+    R = int(os.environ.get("E16_ROOTS", len(meta["seed"])))
+    ctx, ca, fa = cache["ctx"][:R], cache["ctx_a"][:R], cache["fut_a"][:R]
+    fut5 = fut5[:R]
     probes = T.Probes(cache, meta, train_roots, train_seeds)
     health = lambda tok: probes.hud(tok[..., 63:81, :].float().cpu().flatten(-2))[..., 0] * 9          # probes are CPU ridges
-    MA = DR.masks(meta)
+    MA = {k: v[:R] for k, v in DR.masks(meta).items()}
     M0 = {k: v[:, 0] for k, v in MA.items()}
     use = MA["valid"] & MA["k3"]
     cases = {"fresh": lambda m: m["adjacent"] & ~m["win"] & ~m["adjwin"], "beside_no_hit": lambda m: m["adjacent"] & ~m["win"] & m["adjwin"],
              "hit_in_window": lambda m: m["adjacent"] & m["win"], "no_zombie_beside": lambda m: ~m["adjacent"]}
     bayes = {c: float(MA["drop2"][use & f(MA)].float().mean()) for c, f in cases.items()}
-    allv = torch.cat([meta["root_visible"][:, None], meta["future_visible"][:, 0]], 1).float()
+    allv = torch.cat([meta["root_visible"][:R, None], meta["future_visible"][:R, 0]], 1).float()
     hp = allv[:, :, 1512] * 9
-    alive = ~meta["future_dead"].cumsum(2).bool().any(1)
+    alive = ~meta["future_dead"][:R].cumsum(2).bool().any(1)
     true_frames = torch.cat([ctx.cpu(), fut5[:, 0].cpu()], 1)                        # [R, 4 + 16, 81, 192]
     acts_all = torch.cat([ca.cpu(), fa.cpu()], 1)                                                # [R, 3 + 16]: action t leads frame t -> t+1
     post_h = torch.empty(R, H); prior_hits = torch.zeros(R, H); self_h = torch.empty(R, H)
+    from scroll import SHIFTS
+    use_err = {c: [0.0, 0.0] for c in ("hud", "player", "entering", "map_rest")}             # [with posterior Delta, Delta zeroed]
     gen = torch.empty(R, H, 81, 192, dtype=torch.float16)
     g = torch.Generator(device=device).manual_seed(20261003)
     with torch.no_grad():
@@ -82,7 +89,25 @@ def main():
                 c = 3 + k                                                            # index of the current frame in tf
                 w = min(c + 1, 5)
                 win, wa = tf[:, c + 1 - w:c + 1], ac[:, c + 1 - w:c + 1]
-                post_h[i:i + b, k] = health(step(world, post, win, wa, pc[:, c], device, config).to(device)).cpu()
+                with_d = step(world, post, win, wa, pc[:, c], device, config)
+                post_h[i:i + b, k] = health(with_d).cpu()
+                world.delta = None
+                no_d = T.step(world, win, wa, device, config)
+                nxt_true = tf[:, c + 1].cpu()
+                sh = estimate(tf[:, c].cpu(), nxt_true)
+                ent = torch.zeros(b, 81, dtype=torch.bool)
+                for j in range(b):
+                    dr, dc = SHIFTS[int(sh[j])]
+                    if dr: ent[j, [(6 if dr == 1 else 0) * 9 + cc for cc in range(9)]] = True
+                    if dc: ent[j, [rr * 9 + (8 if dc == 1 else 0) for rr in range(7)]] = True
+                live = alive[i:i + b, k] if k < H else torch.ones(b, dtype=torch.bool)
+                masks = {"hud": torch.zeros(b, 81, dtype=torch.bool), "player": torch.zeros(b, 81, dtype=torch.bool), "entering": ent}
+                masks["hud"][:, 63:81] = True; masks["player"][:, 31] = True
+                masks["map_rest"] = ~(masks["hud"] | masks["player"] | ent)
+                e1, e0 = ((with_d - nxt_true) ** 2).sum(-1), ((no_d - nxt_true) ** 2).sum(-1)       # [b,81]
+                for cname, m in masks.items():
+                    mm = m & live[:, None]
+                    use_err[cname][0] += float(e1[mm].sum()); use_err[cname][1] += float(e0[mm].sum())
                 hist_s, hist_a, hist_c = tf[:, max(0, c + 1 - DW.BLOCKS):c + 1], ac[:, max(0, c + 1 - DW.BLOCKS):c + 1], pc[:, max(0, c + 1 - DW.BLOCKS):c]
                 cur = health(tf[:, c]).cpu()
                 for _ in range(M):
@@ -97,7 +122,9 @@ def main():
     dclass = lambda d: torch.bucketize(d, torch.tensor([-1.5, -0.5, 0.5]))
     h_true = torch.stack([health(true_frames[:, 3 + k].float()).cpu() for k in range(H + 1)], 1)          # probe on true frames
     true_c, post_c = dclass(hp[:, 1:] - hp[:, :-1]), dclass(post_h - h_true[:, :-1])
-    out = {"samples": M, "bayes": bayes}
+    out = {"samples": M, "bayes": bayes,
+           "delta_use": {c: {"err_with_delta": v[0], "err_delta_zeroed": v[1], "reduction": (v[1] - v[0]) / max(v[1], 1e-9)}
+                         for c, v in use_err.items()}}
     out["posterior_health_accuracy"] = {n: {"n": int((alive & (true_c == ci)).sum()), "acc": round(float((post_c == ci)[alive & (true_c == ci)].float().mean()), 4)}
                                         for ci, n in enumerate(("le-2", "-1", "0", "ge+1"))}
     base = M0["valid"] & M0["k3"]
