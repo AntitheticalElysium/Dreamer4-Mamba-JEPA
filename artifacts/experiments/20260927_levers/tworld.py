@@ -250,6 +250,8 @@ class TWorld(S.World):
         """[action token, 81 tile tokens] per frame + space/time positions (+ the noise-level embedding)."""
         t = s.shape[1]
         tiles = self.embed(s)
+        if getattr(self, "delta", None) is not None:  # E16 (dworld.py): per-tile Delta conditioning [B,T,81,D]; None = unchanged
+            tiles = tiles + self.delta
         if hasattr(self, "noise_embed"):
             level = self.level if self.level is not None else torch.zeros(s.shape[:2], dtype=torch.long, device=s.device)
             tiles = tiles + self.noise_embed(level)[:, :, None]
