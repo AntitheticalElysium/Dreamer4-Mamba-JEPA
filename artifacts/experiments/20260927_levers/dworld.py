@@ -54,9 +54,11 @@ class Quantizer(nn.Module):
     """Delta-IRIS tokenizer/quantizer.py: cosine nearest code, EMA codebook (0.99), frequencies (0.98), commitment 0.02,
     revival of expired codes only while the codebook entropy is below 1 bit (max_codebook_updates_with_revival = 0)."""
 
-    def __init__(self, size, dim, input_dim):
+    def __init__(self, size, dim, input_dim, max_revival=0):
         super().__init__()
         self.revival_entropy_threshold = int(math.log2(size)) - 2
+        self.max_revival = max_revival                  # Delta-IRIS max_codebook_updates_with_revival: crafter 0, atari 400, None
+        self.register_buffer("updates", torch.zeros((), dtype=torch.long))
         self.pre, self.post = nn.Linear(input_dim, dim), nn.Linear(dim, input_dim)
         self.register_buffer("codebook", torch.empty(size, dim).uniform_(-1.0 / size, 1.0 / size))
         self.register_buffer("freqs", torch.ones(size) / size)
@@ -83,12 +85,14 @@ class Quantizer(nn.Module):
                 update = F.normalize(onehot.t() @ z / counts.clamp(min=1)[:, None], dim=-1)
                 self.codebook.lerp_(update, 1 - 0.99)
                 self.freqs.lerp_(counts / len(z), 1 - 0.98)
-                if self.entropy() < 1 and self.entropy() < self.revival_entropy_threshold:
+                can = self.entropy() < 1 or self.max_revival is None or int(self.updates) < self.max_revival
+                if can and self.entropy() < self.revival_entropy_threshold:
                     expired = torch.where(self.freqs < 1 / (10 * len(self.freqs)))[0]
                     expired = expired[torch.randperm(len(expired), device=z.device)[:len(z)]]
                     self.codebook[expired] = z[torch.randperm(len(z), device=z.device)[:len(expired)]]
                     self.freqs[expired] = 1 / len(self.freqs)
                 self.codebook.copy_(F.normalize(self.codebook, dim=-1))
+                self.updates += 1
         q = z + (q - z).detach()
         return self.post(q).view(*shape[:-1], -1), tokens.view(shape[:-1]), loss
 
@@ -100,7 +104,7 @@ class Quantizer(nn.Module):
 class Posterior(nn.Module):
     """Delta-IRIS's encoder over (x1, action plane, x2), on the token grid: [192 + 192 + 1, 10, 10] -> 4 x 64 -> codes."""
 
-    def __init__(self, channels=64, mult=(1, 1, 2, 2, 4)):
+    def __init__(self, channels=64, mult=(1, 1, 2, 2, 4), max_revival=0):
         super().__init__()
         self.action = nn.Embedding(S.N, GRID * GRID)
         layers, c = [nn.Conv2d(2 * S.WIDTH + 1, channels, 3, 1, 1)], channels
@@ -108,7 +112,7 @@ class Posterior(nn.Module):
             layers.append(ResidualBlock(c, m * channels)); c = m * channels
         layers += [nn.GroupNorm(32, c), nn.SiLU(), nn.Conv2d(c, LAT, 3, 1, 1)]
         self.net = nn.Sequential(*layers)
-        self.quantizer = Quantizer(CODES, CDIM, LAT * REGION * REGION)
+        self.quantizer = Quantizer(CODES, CDIM, LAT * REGION * REGION, max_revival)
         self.cond = nn.Linear(LAT, S.D)                 # region vector -> tile embedding offset; zero-init: D = the world at start
         nn.init.zeros_(self.cond.weight); nn.init.zeros_(self.cond.bias)
 
@@ -135,7 +139,7 @@ class Posterior(nn.Module):
         return F.pad(cond, (0, 0, 0, 0, 0, 1)), tokens.view(b, t - 1, K), loss
 
 
-def train_a(seed, init, updates, device, log, state_path):
+def train_a(seed, init, updates, device, log, state_path, max_revival=0):
     from d4mj.config import config_from_dict
     from d4mj.train import _phase_lr, autocast_context, optimizer_step, phase_optimizer
     config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
@@ -146,7 +150,7 @@ def train_a(seed, init, updates, device, log, state_path):
     with torch.random.fork_rng(devices=[0]):
         torch.manual_seed(seed); torch.cuda.manual_seed_all(seed)
         world = TW.TWorld("corrt")
-        post = Posterior()
+        post = Posterior(max_revival=max_revival)
     world.load_state_dict(torch.load(init, map_location="cpu", weights_only=False)["world"])
     world, post = world.to(device), post.to(device)
     opt = phase_optimizer([world, post], config)
@@ -314,10 +318,12 @@ def main():
     p.add_argument("--seed", type=int, required=True)
     p.add_argument("--init", type=Path, required=True)
     p.add_argument("--updates", type=int, required=True)
+    p.add_argument("--revival", default="crafter", choices=("crafter", "atari", "always"),
+                   help="Delta-IRIS codebook revival: crafter.yaml 0, atari.yaml 400 (steps_first_epoch), the class default None")
     a = p.parse_args()
     started = time.time()
     log = lambda **kw: print(json.dumps({**kw, "seconds_total": round(time.time() - started, 1)}), flush=True)
-    name = (f"dworld_a_s{a.seed}_from{a.init.stem.split('_u')[-1]}_u{a.updates}" if a.stage == "a"
+    name = (f"dworld_a_s{a.seed}_from{a.init.stem.split('_u')[-1]}" + ("" if a.revival == "crafter" else f"_rev{a.revival}") + f"_u{a.updates}" if a.stage == "a"
             else f"{a.init.stem}_prior_u{a.updates}")
     out = TW.OUT / f"{name}.pt"
     if out.exists():
@@ -327,7 +333,8 @@ def main():
     from d4mj.data import _sha256
     meta = {"name": name, "args": {k: str(v) for k, v in vars(a).items()}, "script_sha256": _sha256(Path(__file__))}
     if a.stage == "a":
-        world, post, history = train_a(a.seed, a.init, a.updates, torch.device("cuda"), log, TW.OUT / "state" / f"{name}.state.pt")
+        world, post, history = train_a(a.seed, a.init, a.updates, torch.device("cuda"), log, TW.OUT / "state" / f"{name}.state.pt",
+                                       {"crafter": 0, "atari": 400, "always": None}[a.revival])
         torch.save(meta | {"world": world.state_dict(), "post": post.state_dict(), "history": history}, out)
     else:
         prior, history = train_b(a.seed, a.init, a.updates, torch.device("cuda"), log, TW.OUT / "state" / f"{name}.state.pt")
