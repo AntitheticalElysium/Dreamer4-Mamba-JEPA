@@ -61,6 +61,46 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-03 — E16 DESIGN (predeclared before any code): a Delta-IRIS stochastic channel on the per-tile world
+
+**Why (measured):**
+- At every depth, the decision value a real-fitted head misses in imagination is the drawn outcome (HUD), not the map
+  (check_transfer_subst, check_h16_subst).
+- Health is frozen in every deterministic world: hits caught 3-5%, recoveries and starvation 0%.
+- Even visibly predictable hits are copied (fresh arrivals 0-1 / 31). Where the 4-frame input gives a coin flip (P 0.48), the L1
+  median erases the hit.
+- One faithful future per action carries 55% of the H16 margin, 16 samples ~90%. The best reading of our deterministic futures
+  carries 38% (check_h16_value, check_h16_traj).
+
+**Source:** Delta-IRIS (Micheli et al., ICML 2024; arXiv 2406.19320 sections 2.2-2.4; code vmicheli/delta-iris f8d4173, read
+2026-10-03). On Crafter, its random-Delta-token ablation keeps layout / movement / items / crafting, but mobs and HEALTH
+INDICATORS degrade: health is carried by the stochastic channel.
+
+**Architecture** (Delta-IRIS values unless marked DEVIATION):
+
+| component | design |
+|---|---|
+| posterior encoder E | a CNN over (frame t tokens, action, frame t+1 tokens) on the 9 x 9 token grid (Delta-IRIS: a CNN over (x1, action plane, x2) on pixels). K = 4 Delta-tokens, one per 2 x 2 spatial region (the grid zero-padded to 10 x 10 so regions are equal, 5 x 5: a mechanical change). Vector quantization: codebook 1024 x 64, cosine similarity, EMA updates (0.99), commitment 0.02, revival only on collapse (Crafter config). DEVIATION: inputs are JEPA tokens, not pixels. |
+| decoder D | our corrt TWorld, continued from the 36k teacher world (seeds 7 and 8). Each Delta-token's post-quantized vector covers its region's tiles and is added to frame t's input tile embeddings through a zero-initialized projection (Delta-IRIS concatenates it with the latent feature map at aligned positions). At initialization D is exactly the deterministic world. DEVIATION: additive conditioning on tokens instead of channel concatenation on a CNN feature map. |
+| dynamics prior G | a 3-layer causal transformer, width 512, 8 heads, blocks of [I-token, action token, 4 Delta-tokens] per step, 21-step sequences. It predicts the 4 Delta-tokens autoregressively (CE) and episode end (CE, weight 1). I-token = per-tile linear 192 → 8, flattened (648) → 512 → LayerNorm (Delta-IRIS: an 8-channel frame CNN flattened to 512). G is trained on the 64-frame Raw TRAIN ledger with Delta codes from frozen E: 21 steps, 26.4% death-ending windows. Its context covers the 6-step cooldown (the 6-frame ceiling is 0.857). Reward head omitted at first: DEVIATION, noted. |
+| training | offline and sequential: stage A trains E + D on the 6-frame pool (teacher L1 + commitment); stage B trains G on frozen codes. Delta-IRIS alternates only because its data grows online. |
+| imagination | per step, sample 4 Delta-tokens and the end flag from G (temperature 1), then decode with D (5-frame window). M samples per action for H16. |
+
+**Readings, declared now** (two seeds; comparators = the same-seed deterministic 36k world and check_damage_rule's Bayes rates):
+- e16_health_drawable: with POSTERIOR Delta (teacher-forced), drawn health-change accuracy >= 0.8 for −2, −1 and +1 at both
+  seeds (the decoder can draw the outcome when told).
+- e16_hits_calibrated: self-fed sampled rollouts (diagnosis futures, sample-0 actions) draw hits at each visible-history case's
+  Bayes rate within ±0.15 (fresh 0.97, already beside 0.48, recent hit 0.03) at both seeds.
+- e16_no_false_hits: sampled hit frequency with no zombie beside the post-move player <= 0.01 (Bayes 0.0017) at both seeds.
+- e16_h16: H16 expected safe on DEV-B (check_h16_traj protocol) with M = 1 sampled future per action >= the deterministic
+  trajectory value + 0.02 (0.645 / 0.646) at both seeds; M = 4 and 16 reported against one_real_future 0.679 and oracle 0.766.
+- e16_map_cost: one-step map-token error with prior samples vs the deterministic world, reported (a cost bound of +10%).
+
+Implementation order: E / quantizer / D-conditioning with CPU unit tests (zero-init identity with the deterministic world;
+codebook usage); stage A lane; stage B lane; sampling rollouts in check_damage / check_h16_traj (`--sample M`).
+
+---
+
 ## 2026-10-03 afternoon — what decisions miss is the outcome; reading trajectories helps but not enough; terrain bound holds
 
 **H16 transfer gap = the HUD** (`check_h16_subst`, deepeval DEV split, real16 heads; h16_hud_bottleneck TRUE):
