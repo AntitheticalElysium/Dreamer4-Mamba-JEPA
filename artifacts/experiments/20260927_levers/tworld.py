@@ -466,7 +466,8 @@ def train(head, pool_name, loss, seed, updates, device, log, codebook=None, back
             snapshot(update + 1, world, history)          # held-out learning curve: every 6k, evaluated by teval
         if (update + 1) % 500 == 0:
             row = {"update": update + 1, "objective": float(objective), "gradient_norm": float(norm),
-                   "seconds": round(time.time() - started, 1)}
+                   "seconds": round(time.time() - started, 1),
+                   "peak_gb": round(torch.cuda.max_memory_allocated() / 1e9, 3) if torch.cuda.is_available() else None}
             history.append(row)
             log(stage="train", head=head, pool=pool_name, **row)
         if (update + 1) % STATE_EVERY == 0 or update + 1 == updates:
