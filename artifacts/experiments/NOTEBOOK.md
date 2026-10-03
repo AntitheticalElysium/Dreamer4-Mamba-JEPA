@@ -201,7 +201,7 @@ deterministic world draw hits, attention vs Mamba? Design constraints, each from
 | memory helps hits | untested | E17 stage 2 |
 | ~24% of entering terrain is unknowable | assumed (local-MLP baseline only) | a stronger predictor (full view + history) on held-out entering cells |
 | encoder geometry → false scrolls | correlational | needs a retrain; lowest priority |
-| why furnace is learned before table | unexplained | table-only dose (Saxe: time ∝ 1/strength) |
+| why furnace is learned before table | unexplained; count (85 vs 103) and token change (separation from grass 3.49 vs 4.29) both favour TABLE. Preconditions (game_logic.place_block, read 2026-10-03): table needs wood >= 2; furnace stone > 0 (no nearby-table requirement in Classic); stone stone > 0. Stone and furnace share one precondition, table needs a different count threshold: consistent with the order, untested | inventory-labelled placement attempts (the pool has none); table-only dose (Saxe: time ∝ 1/strength) |
 | the stone jump at 42k-48k in both 50k runs | confounded with the warm restart at 36k | the 100k continuations have no restart; a continuous 0 → 50k control if needed |
 
 ---
