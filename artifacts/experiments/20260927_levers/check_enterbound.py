@@ -10,6 +10,13 @@ AdamW 1e-3, wd 1e-4, 20% of the training cells for early stopping (best epoch of
 Reading, declared before running: terrain_bound_holds = held-out accuracy <= 0.78 (within ~0.02 of the 3-edge MLP and the world);
 otherwise the "~24% unknowable" statement is retracted and replaced by the measured figure.
 Usage: check_enterbound.py   (CPU)
+Result v1 (2026-10-03): held accuracy 0.645 (val 0.72; 60 epochs), majority 0.476. The reading is formally TRUE but the check is
+INVALID as a ceiling test: this "stronger" predictor is below copying the adjacent tile (0.714) and the 3-edge MLP (0.756). The
+frame-wide class one-hots make the MLP learn the entering-cell / edge-cell correspondence per direction, and the probe argmax
+discards token detail the baseline used. Replaced by v2 (`--aligned`): tokens of a patch aligned to the entering cell.
+v2 (`--aligned`, declared before its run): per entering cell, the TOKENS of frame t's cells at depth 1-4 into the view along the
+scroll axis and lateral offset -3..+3 (canonical orientation: depth axis = scroll axis), zeros + a validity flag off-view, the
+scroll direction (4); a strict superset of the 3-edge input (depth 1, lateral -1..+1). Same MLP / training / reading.
 """
 import json
 import sys
@@ -47,8 +54,36 @@ def collect(pool, rows, probes):
     return torch.stack(X), torch.tensor(Y)
 
 
+def collect_aligned(pool, rows, probes, depth=4, lateral=3):
+    X, Y = [], []
+    for i in range(0, len(rows), 64):
+        r = rows[i:i + 64]
+        s = pool["tokens"][r].float(); alive = pool["alive"][r]
+        for t in range(5):
+            sh = estimate(s[:, t], s[:, t + 1])
+            for j in torch.nonzero((sh != 0) & alive[:, t + 1])[:, 0].tolist():
+                dr, dc = SHIFTS[int(sh[j])]
+                g0 = s[j, t, :63].view(7, 9, -1)
+                lab = probes.tile(s[j, t + 1, :63]).argmax(-1).view(7, 9)
+                cells = [((6 if dr == 1 else 0), c) for c in range(9)] if dr else [(rr, (8 if dc == 1 else 0)) for rr in range(7)]
+                for rr, cc in cells:
+                    feats, valid = [], []
+                    for d in range(1, depth + 1):                      # entering cell = (rr + dr, cc + dc) in frame t coordinates;
+                        for l in range(-lateral, lateral + 1):         # d cells back into the view (d = 1: the edge), l across
+                            fr = rr + dr - d * dr + (l if dc else 0)
+                            fc = cc + dc - d * dc + (l if dr else 0)
+                            ok = 0 <= fr < 7 and 0 <= fc < 9
+                            feats.append(g0[fr, fc] if ok else torch.zeros(192)); valid.append(float(ok))
+                    X.append(torch.cat(feats + [torch.tensor(valid), F.one_hot(torch.tensor(int(sh[j]) - 1), 4).float()]))
+                    Y.append(int(lab[rr, cc]))
+    return torch.stack(X), torch.tensor(Y)
+
+
 def main():
     torch.manual_seed(0)
+    global collect
+    if "--aligned" in sys.argv:
+        collect = collect_aligned
     meta, tr, ts = T.split()
     probes = T.Probes(T.build_cache("raw", torch.device("cpu")), meta, tr, ts)
     pool = torch.load(POOLS["raw"] / "pool.pt", weights_only=False, mmap=True)
