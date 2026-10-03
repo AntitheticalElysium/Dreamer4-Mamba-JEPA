@@ -61,6 +61,70 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-03 midday — the queue: every untested or assumed item, and how it gets tested
+
+The user asked for: longer training, Mamba at an equal budget, and decision-linked metrics instead of generic map error.
+
+**Risk suite** (the user's list; committed in check_damage / check_h16_traj / check_rootaware; run on every new world):
+
+| metric | where |
+|---|---|
+| zombie-hit catch | check_damage, teacher-forced and self-fed |
+| damage false positives | check_damage |
+| health-change accuracy, by true change (<= −2, −1, 0, >= +1) | check_damage |
+| history-conditioned hit prediction | check_damage, catch per visible-history case beside that case's Bayes rate (fresh 0.97 / already beside 0.48 / recent hit 0.03) |
+| continuation / death prediction | check_h16_traj: per-step hazard head on imagined trajectories (Brier over k, AUC vs realized death by 16) |
+| H16 trajectory decision value | check_h16_traj |
+| H1 root-aware decision value | check_rootaware |
+
+- Every check takes `--window`, so long-context worlds are judged with the context they were trained on.
+- Map error stays as a secondary metric (it drives position failures).
+- Reference for hit catch: a deterministic world can draw at most 47.3% of hits from a 4-frame input, 62.1% from 5, 85.7% from
+  6 (check_damage_rule).
+
+**Running:**
+- E14f (lane51): the 50k worlds continued to 100k from their full states. Readings: table_learned, hit_mode, fresh_hits,
+  position_plateau, budget_continues.
+- E17 stage 1 (lane52): Mamba-2 factorized backbone (fmamba), corrt teacher, the attention worlds' exact recipe at 36k, seeds 7
+  and 8 (0.72 s/update measured). Readings: m6_depth16, m6_onestep, m6_hits, m6_h16_traj, m6_consequences.
+- check_h16_traj (lane50): does a hazard head on the deterministic trajectory carry the H16 decision?
+
+**E17 stage 2, memory (designed; finalized after a GPU resource smoke):** does context covering the 6-step cooldown let a
+deterministic world draw hits, attention vs Mamba? Design constraints, each from a measurement or a read source:
+- The dependency must lie inside the training window:
+  - R2I (arXiv 2403.04253, app. O): models trained on 64-step sequences "fail to perform" when the dependency exceeds 64;
+    performance rises with batch length 64 → 1024.
+  - Our E1: a recurrence is usable only within (up to ~4x) its training length.
+  - DRAMA, Dreamer 4 and le-wm all deploy inside their trained range.
+  - Our 6-frame windows give at most 4 transitions of history; the cooldown needs 6.
+- Batch diversity confounds length (E1: L64 at 6 windows / update 1.2-1.8x copy, at 24 windows 0.65-0.87x). Windows per update
+  are matched, not only transitions.
+- Continuing a short-window world beats a long-window world from scratch for imagination (E1f: 0.400 vs 0.406 windowed, memory
+  +18-20%).
+  - Learned absolute time positions are extended by copying (Longformer, arXiv 2004.05150, sec. 5: copy init 1.957 BPC vs
+    random 10.299 before training; 1.705 after 65K updates).
+  - tworld `--init` implements it. CPU check: the first 6 frames reproduce the 6-frame world to 7e-7; late frames L1 0.390 vs
+    0.043 before any long training.
+- Models stay on nearby frames unless the loss gives a reason (Po et al., arXiv 2505.20171, sec. 4.2: "trapped in local minima,
+  failing to capture long-term dependencies"). Hits are 2% of transitions, so a predeclared reading tests whether a longer
+  window alone changes the catch.
+- State Passing (Buitrago Ruiz & Gu, arXiv 2507.02782) did not transfer at our budget (E6c); long-context training was needed.
+- Arms: A6 → A16 and M6 → M16, each continued at L = 16 from its own 36k world with matched windows per update. The `rawlong`
+  path (64-frame Raw TRAIN ledger, 26.4% end-aligned death windows) is implemented and CPU-tested.
+
+**Untested or assumed items, and their tests:**
+
+| item | status | test |
+|---|---|---|
+| a stochastic channel draws hits at the right rate | untested | E16 (Delta-IRIS design), only if check_h16_traj says sampling is required |
+| memory helps hits | untested | E17 stage 2 |
+| ~24% of entering terrain is unknowable | assumed (local-MLP baseline only) | a stronger predictor (full view + history) on held-out entering cells |
+| encoder geometry → false scrolls | correlational | needs a retrain; lowest priority |
+| why furnace is learned before table | unexplained | table-only dose (Saxe: time ∝ 1/strength) |
+| the stone jump at 42k-48k in both 50k runs | confounded with the warm restart at 36k | the 100k continuations have no restart; a continuous 0 → 50k control if needed |
+
+---
+
 ## 2026-10-03 late morning — item 1 explained (zombie cue), hits copied, the 50k extensions
 
 **Item 1, the 36k gen1 regression next to zombies, is explained** (`check_zombie_cue`, `check_rootaware`):
