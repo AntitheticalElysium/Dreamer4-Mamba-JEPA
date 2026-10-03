@@ -61,6 +61,65 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-03 late morning — item 1 explained (zombie cue), hits copied, the 50k extensions
+
+**Item 1, the 36k gen1 regression next to zombies, is explained** (`check_zombie_cue`, `check_rootaware`):
+- Craftax: an attacking zombie stays put; one that does not attack moves, 75% of the time toward the player.
+- Correlation with P(death1) across the 17 branches (zombie roots):
+
+  | successor | "zombie beside the player" | "zombie stayed in place" |
+  |---|---|---|
+  | real | 0.066 | 0.615 |
+  | s7 18k / 36k | 0.465 / 0.437 | 0.429 / 0.669 |
+  | s8 18k / 36k | 0.481 / 0.398 | 0.526 / 0.680 |
+
+- The 18k worlds' successors carried a shortcut reality lacks: the zombie drawn beside the player mainly in the deadly branches.
+- The 36k worlds draw stay / chase like reality, which puts the death information in a ROOT-relative cue.
+- dpanel's gen head reads each branch's successor alone.
+- With the successor concatenated to the root (aligned by the world's own imagined view shift; 8 head seeds), mean safe next to
+  zombies:
+
+  | world | successor only | root-aware |
+  |---|---|---|
+  | s7 18k / 36k | 0.908 / 0.878 | 0.952 / 0.949 |
+  | s8 18k / 36k | 0.908 / 0.873 | 0.957 / 0.949 |
+  | real | | 0.999 |
+
+- Root-aware 36k − 18k: −0.004 [−0.014, +0.006] (s7), −0.008 [−0.019, +0.002] (s8), against successor-only −0.030 / −0.035
+  (resolved). rootaware_regression_gone TRUE; rootaware_gain_36k TRUE.
+- Consequence: every successor-only decision panel so far UNDERSTATES what imagination carries (0.95 next to zombies, not
+  0.87-0.91). Decision heads and critics must see history.
+
+**Hits are copied, not only median-erased** (`check_damage`, both budgets and the 50k snapshots):
+- damage_copied TRUE: teacher-forced, 1.8-5.0% of real hits drawn (18k / 36k), 3.3-10.1% at 42k-50k; self-fed 0-0.9%.
+- damage_small FALSE: a hit is a large token change (HUD squared change 74.9 vs 2.1 for ordinary frames, 36×).
+- Fresh arrivals (hit 97% predictable from the window) are drawn 0 / 0 / 0 / 1 of 31.
+- In the beside-without-hit case, drops are drawn MORE often without a hit (0.08-0.27) than with one (0.02-0.19): the drawn drops
+  do not track hits.
+- So two failures stack: the rarity pathology of the DO consequences (copied even when predictable), and the L1 median where
+  the window gives a coin flip.
+
+**E14e, the 50k extensions** (lane45; warm restart at 36k; s8 resumed from its own 42k state after the power-off):
+- Mode by mode, held strict consequences caught:
+
+  | | DO | place stone | place furnace | place table |
+  |---|---|---|---|---|
+  | s7 42k / 48k / 50k | 1.00 / 1.00 / 1.00 | 0.000 / **0.992** / 0.992 | 0.000 / 0.106 / **0.745** | 0 / 0 / 0.106 |
+  | s8 42k / 48k / 50k | 0.99 / 0.98 / 0.99 | 0.000 / **0.893** / 0.939 | 0 / 0 / 0.191 | 0 / 0 / 0 |
+
+- placement_learned TRUE at both seeds. The order is identical at both seeds: DO, stone, furnace, table. Each type jumps from 0
+  within one snapshot interval (Saxe et al.'s stage-like learning). Both stone jumps fall in the same 42k-48k interval; both runs
+  began from a warm restart at 36k (noted, not attributed).
+- Furnace (85 training consequences) was learned before table (103): the order does not follow count or attempt success rate.
+- budget_continues FALSE: 50k − 36k one-step −0.009 / −0.004 (resolved; interact −0.252 / −0.085); depth 16 −0.012 [−0.027,
+  +0.003] (s7, ns) and −0.035 [−0.056, −0.017] (s8).
+- Ever position-wrong (s7): 0.449 (18k) → 0.298 (36k) → 0.283 (50k).
+- dpanel 50k − 36k (s7, opened blocks): gen1 +0.010 / zombie +0.017; transfer1 zombie −0.014; transfer2 +0.013 (head-seed
+  variance not in these intervals).
+- No hit mode is learned by 50k.
+
+---
+
 ## 2026-10-03 morning — the damage is a rule, not chance (correction); what the H16 decision needs
 
 **Operations.** The machine was powered off at 22:01:48 on 10-02 (orderly systemd power-off). Lost: s8 36k→50k at update 47,500,

@@ -958,5 +958,69 @@
       -0.03312040492892265
     ],
     "excludes_zero": true
+  },
+  "corrt_raw_teacher_s7_u50000:corrt_raw_teacher_s7_u36000:gen1@overall": {
+    "difference": 0.010163605213165283,
+    "interval": [
+      0.000877220940310508,
+      0.01959620788693428
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_teacher_s7_u50000:corrt_raw_teacher_s7_u36000:gen1@zombie_adjacent": {
+    "difference": 0.01701986789703369,
+    "interval": [
+      0.0039430889301002026,
+      0.030412929132580757
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_teacher_s7_u50000:corrt_raw_teacher_s7_u36000:gen2@overall": {
+    "difference": 0.0009046792984008789,
+    "interval": [
+      -0.0034771040081977844,
+      0.005598506890237331
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u50000:corrt_raw_teacher_s7_u36000:gen2@zombie_adjacent": {
+    "difference": -0.0002613067626953125,
+    "interval": [
+      -0.005309955216944218,
+      0.005199088249355555
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u50000:corrt_raw_teacher_s7_u36000:transfer1@overall": {
+    "difference": 0.0015705227851867676,
+    "interval": [
+      -0.009017987176775932,
+      0.011964880861341953
+    ],
+    "excludes_zero": false
+  },
+  "corrt_raw_teacher_s7_u50000:corrt_raw_teacher_s7_u36000:transfer1@zombie_adjacent": {
+    "difference": -0.013748407363891602,
+    "interval": [
+      -0.027614131569862366,
+      -0.00025615832419134676
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_teacher_s7_u50000:corrt_raw_teacher_s7_u36000:transfer2@overall": {
+    "difference": 0.012969493865966797,
+    "interval": [
+      0.007666806690394878,
+      0.018815143033862114
+    ],
+    "excludes_zero": true
+  },
+  "corrt_raw_teacher_s7_u50000:corrt_raw_teacher_s7_u36000:transfer2@zombie_adjacent": {
+    "difference": 0.003789246082305908,
+    "interval": [
+      -0.001835887087509036,
+      0.00957647804170847
+    ],
+    "excludes_zero": false
   }
 }
