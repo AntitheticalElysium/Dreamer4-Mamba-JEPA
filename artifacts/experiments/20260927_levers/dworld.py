@@ -186,7 +186,10 @@ def train_a(seed, init, updates, device, log, state_path, max_revival=0):
                               strict=True, zero_grad=True)
         if (update + 1) % 500 == 0:
             used = int(torch.unique(tokens).numel())
-            row = {"update": update + 1, "teacher": float(teacher), "commitment": float(commit), "gradient_norm": float(norm),
+            with torch.no_grad(), autocast_context(config):                           # the information the decoder takes from Delta:
+                no_delta = float(TW.rollout_losses(world, s, a, "teacher"))            # same batch, Delta zeroed (world.delta None)
+            row = {"update": update + 1, "teacher": float(teacher), "teacher_no_delta": no_delta, "commitment": float(commit),
+                   "gradient_norm": float(norm),
                    "codebook_entropy": round(post.quantizer.entropy(), 3), "codes_in_batch": used,
                    "seconds": round(time.time() - started, 1)}
             history.append(row)
