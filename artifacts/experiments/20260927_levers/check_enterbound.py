@@ -17,6 +17,11 @@ discards token detail the baseline used. Replaced by v2 (`--aligned`): tokens of
 v2 (`--aligned`, declared before its run): per entering cell, the TOKENS of frame t's cells at depth 1-4 into the view along the
 scroll axis and lateral offset -3..+3 (canonical orientation: depth axis = scroll axis), zeros + a validity flag off-view, the
 scroll direction (4); a strict superset of the 3-edge input (depth 1, lateral -1..+1). Same MLP / training / reading.
+Result v2 (2026-10-03): held accuracy 0.767 (val best 0.771 at epoch ~3, then overfitting to 0.725; best kept), majority 0.476,
+vs 3-edge MLP 0.756 / world 0.760. terrain_bound_holds TRUE: 9x the spatial context buys +1.1 points. Held recall by class:
+grass 0.945, water 0.808, stone 0.677, path 0.532, sand 0.661, lava 0.197, out-of-bounds 0.386, TREE 0.000, coal / iron / table
+0.000. About 23% of entering terrain is not inferable from the visible frame by this predictor (a bound from one predictor
+class, not a proof; history not included).
 """
 import json
 import sys
