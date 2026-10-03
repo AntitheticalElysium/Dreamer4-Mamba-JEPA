@@ -96,6 +96,11 @@ INDICATORS degrade: health is carried by the stochastic channel.
   trajectory value + 0.02 (0.645 / 0.646) at both seeds; M = 4 and 16 reported against one_real_future 0.679 and oracle 0.766.
 - e16_map_cost: one-step map-token error with prior samples vs the deterministic world, reported (a cost bound of +10%).
 
+AMENDMENT (2026-10-03, before any E16 run): stage A continues the 36k world for 18k updates, so the E16 decoder has 54k. Every
+E16 reading is ALSO reported against the matched-budget deterministic world, the 100k continuation's 54k snapshot
+(corrt_raw_teacher_s{7,8}_u100000_at54000; check_h16_traj and check_damage run on it). e16_h16 passes only if it holds against
+both the declared 36k value and the 54k snapshot's.
+
 Implementation order: E / quantizer / D-conditioning with CPU unit tests (zero-init identity with the deterministic world;
 codebook usage); stage A lane; stage B lane; sampling rollouts in check_damage / check_h16_traj (`--sample M`).
 
