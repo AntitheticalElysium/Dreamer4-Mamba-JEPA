@@ -14,7 +14,10 @@ interval of trajectory - snapshot; references on the same roots: uniform, FIT pr
 Readings, declared before running (worlds: the 36k teacher worlds, seeds 7 and 8):
   traj_gain                 trajectory - snapshot > 0, interval excluding 0, at both seeds
   traj_reaches_one_future   trajectory >= one_real_future - 0.01 at both seeds
-Usage: check_h16_traj.py <world.pt> ...
+Risk-suite additions (2026-10-03, after the first run started; reported): `--window W` (imagination context, default 5);
+continuation / death prediction of the trajectory head on DEV-B: Brier of the per-step cumulative P(dead by k) against the 32-key
+P (all roots, branches, k), and AUC of P(dead by 16) against key 0's realized death by 16; per-world JSON (evals/h16traj/<name>.json).
+Usage: check_h16_traj.py <world.pt> ... [--window W]
 """
 import json
 import sys
@@ -34,7 +37,7 @@ OUT = Path("artifacts/experiments/20260927_levers/evals/h16traj")
 
 
 @torch.no_grad()
-def features(world, config, data, path, width, device, batch=16):
+def features(world, config, data, path, width, device, batch=16, window=5):
     """[R,17,16,3*width] fp16 memmap: the world's hidden state for each imagined step (deepeval.imagine's rollout)."""
     from d4mj.train import autocast_context
     R = len(data["seed"])
@@ -50,7 +53,7 @@ def features(world, config, data, path, width, device, batch=16):
             hk = h[:, -1].float()
             mm[i:i + b, :, k - 1] = torch.cat([hk.mean(1), hk[:, NEAR].mean(1), hk[:, 63:81].mean(1)], -1).view(b, N, -1).half().cpu().numpy()
             if k < H:
-                frames = torch.cat([frames, out[:, -1].float().cpu()[:, None]], 1)[:, -5:]
+                frames = torch.cat([frames, out[:, -1].float().cpu()[:, None]], 1)[:, -window:]
                 acts = torch.cat([acts, cont[:, k - 1:k]], 1)
     mm.flush()
     return torch.from_numpy(np.memmap(path, dtype=np.float16, mode="r", shape=(R, N, H, 3 * width)))
@@ -101,6 +104,20 @@ def fit(x, P, xa, Pa, traj, seed, device, steps=4000):
 
 
 @torch.no_grad()
+def cumulative(model, x, device):
+    """trajectory head: P(dead by k) for k = 1..16, [R,17,16]"""
+    return torch.cat([(1 - torch.exp(-F.softplus(model(x[i:i + 256].flatten(0, 1).float().to(device))).cumsum(1))).view(-1, N, H).cpu()
+                      for i in range(0, len(x), 256)])
+
+
+def auc(score, label):
+    order = score.argsort()
+    ranks = torch.empty_like(order, dtype=torch.float); ranks[order] = torch.arange(1, len(score) + 1, dtype=torch.float)
+    pos = label.bool(); n1, n0 = int(pos.sum()), int((~pos).sum())
+    return float((ranks[pos].sum() - n1 * (n1 + 1) / 2) / max(n1 * n0, 1))
+
+
+@torch.no_grad()
 def scores(model, x, traj, device):
     return torch.cat([p16(model, x[i:i + 256].flatten(0, 1).float().to(device), traj).view(-1, N).cpu()
                       for i in range(0, len(x), 256)])
@@ -118,6 +135,9 @@ def main():
     from ladder import paired
     import spatial as S
     device = torch.device("cuda")
+    args = sys.argv[1:]
+    window = int(args[args.index("--window") + 1]) if "--window" in args else 5
+    paths = [a for i, a in enumerate(args) if a != "--window" and (i == 0 or args[i - 1] != "--window")]
     log = lambda **kw: print(json.dumps(kw), flush=True)
     data = E.token_cache(device, log)
     Pall, D0, split = HS.load(full=True)
@@ -143,11 +163,11 @@ def main():
     config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
     OUT.mkdir(parents=True, exist_ok=True)
     out = {"references": refs}
-    for path in sys.argv[1:]:
+    for path in paths:
         world, st = T.load_world(Path(path), device)
         name = st["name"]
         tag = E.CACHE / f"h16traj_{name}"
-        xs = {s: features(world, config, data[s], f"{tag}_{s}.f16", S.D, device) for s in ("fit", "dev")}
+        xs = {s: features(world, config, data[s], f"{tag}_{s}.f16", S.D, device, window=window) for s in ("fit", "dev")}
         del world; torch.cuda.empty_cache()
         flat = xs["fit"].flatten(0, 2)
         mu = torch.stack([flat[i:i + 65536].float().mean(0) for i in range(0, len(flat), 65536)]).mean(0)
@@ -156,16 +176,24 @@ def main():
         xf, xd = stdz(xs["fit"]), stdz(xs["dev"])
         res, safe = {}, {}
         for arm, traj in (("trajectory", True), ("snapshot", False)):
-            runs = []
+            runs, cont = [], []
             for seed in range(3):
                 model, best = fit(xf, Pf, xd[A], Pd[A], traj, seed, device)
                 s = scores(model, xd[B], traj, device)[oppB]
                 runs.append(1 - p16B[torch.arange(len(p16B)), s.argmin(1)])
                 log(world=name, arm=arm, seed=seed, devA=round(best, 4), devB=round(float(runs[-1].mean()), 4))
+                if traj:                                                             # continuation / death prediction, DEV-B
+                    c = cumulative(model, xd[B], device)
+                    cont.append({"brier_all_k": float(((c - Pd[B]) ** 2).mean()),
+                                 "auc_dead16_key0": auc(c[..., -1].flatten(), Dd[B].flatten())})
+            if cont:
+                res["continuation"] = {k: sum(x[k] for x in cont) / len(cont) for k in cont[0]}
             safe[arm] = torch.stack(runs).mean(0)
             res[arm] = float(safe[arm].mean())
         res["traj_minus_snapshot"] = paired(safe["trajectory"], safe["snapshot"], seeds[B][oppB], draws=1000, seed=20261003)
+        res["window"] = window
         out[name] = res
+        (OUT / f"{name}{'' if window == 5 else f'__w{window}'}.json").write_text(json.dumps(res | {"references": refs}, indent=2) + "\n")
         log(world=name, **res)
         for f in E.CACHE.glob(f"h16traj_{name}_*"):
             f.unlink()

@@ -11,6 +11,9 @@ lost heart vs ordinary frame-to-frame HUD noise).
 Added 2026-10-03 before the first run, reported only (check_damage_rule: a zombie hit lands with P 0.97 after a fresh arrival,
 0.48 when a zombie was already beside the player and no hit is in the 4-frame window, 0.03 after a hit in the window): teacher-forced
 caught / drawn-without-a-hit by that visible history (sample 0, k >= 3, drops of >= 2).
+Risk-suite additions (2026-10-03, reported): `--window W` (rollout context; default 5 = the convention above, frames available
+min(4 + k, W)); health-change accuracy by true change class (<= -2, -1, 0, >= +1; predicted class from pred - current with
++-0.5 / -1.5 cuts), teacher-forced; each visible-history case's Bayes hit rate (check_damage_rule, all 5 samples) beside the catch.
 Reading, declared before running: damage_copied = teacher-forced caught <= 0.2 in every world (the drop is not drawn even from true
 inputs); damage_small = median HUD token change on damage <= 2 x the unchanged median.
 Usage: check_damage.py <world.pt> ...
@@ -70,11 +73,20 @@ def main():
     out["probe_check"] = {"true_drop_seen_by_probe": float((h_true[:, 1:] < h_true[:, :-1] - 0.5)[drop].float().mean()),
                           "false_drop_by_probe": float((h_true[:, 1:] < h_true[:, :-1] - 0.5)[same].float().mean())}
     print(json.dumps(out), flush=True)
-    M = {k: v[:, 0] for k, v in DR.masks(meta).items()}                                # sample 0, transition k: frame k -> k+1
+    MA = DR.masks(meta)
+    M = {k: v[:, 0] for k, v in MA.items()}                                            # sample 0, transition k: frame k -> k+1
     base = M["valid"] & M["k3"]
     cases = {"fresh": M["adjacent"] & ~M["win"] & ~M["adjwin"], "beside_no_hit": M["adjacent"] & ~M["win"] & M["adjwin"],
             "hit_in_window": M["adjacent"] & M["win"]}
-    for path in sys.argv[1:]:
+    use = MA["valid"] & MA["k3"]
+    bayes = {"fresh": MA["adjacent"] & ~MA["win"] & ~MA["adjwin"], "beside_no_hit": MA["adjacent"] & ~MA["win"] & MA["adjwin"],
+             "hit_in_window": MA["adjacent"] & MA["win"]}
+    out["bayes_hit_rate"] = {c: round(float(MA["drop2"][use & q].float().mean()), 4) for c, q in bayes.items()}
+    args = sys.argv[1:]
+    window = int(args[args.index("--window") + 1]) if "--window" in args else 5
+    paths = [a for i, a in enumerate(args) if a != "--window" and (i == 0 or args[i - 1] != "--window")]
+    dclass = lambda d: torch.bucketize(d, torch.tensor([-1.5, -0.5, 0.5]))            # 0: <= -2, 1: -1, 2: 0, 3: >= +1
+    for path in paths:
         world, st = T.load_world(Path(path), device)
         name = st["name"]
         tf = torch.empty(R, H)
@@ -87,7 +99,7 @@ def main():
                 frames, hist = [c4[:, j] for j in range(4)], [a3[:, j] for j in range(3)]
                 tfr = [c4[:, j] for j in range(4)]
                 for k in range(H):
-                    w = 4 if k == 0 else 5
+                    w = min(4 + k, window)
                     acts = torch.stack(hist[-(w - 1):] + [fk[:, k]], 1)
                     g = T.step(world, torch.stack(frames[-w:], 1), acts, device, config)
                     t = T.step(world, torch.stack(tfr[-w:], 1), acts, device, config)
@@ -109,6 +121,11 @@ def main():
                                        "caught": float(pd_t[base & q & M["drop2"]].float().mean()),
                                        "n_no_hit": int((base & q & ~M["drop2"]).sum()),
                                        "drawn_without_hit": float(pd_t[base & q & ~M["drop2"]].float().mean())} for c, q in cases.items()}
+        true_c, pred_c = dclass(hp[:, 1:] - hp[:, :-1]), dclass(tf - h_cur)
+        r["health_change_accuracy"] = {name_: {"n": int((alive & (true_c == c)).sum()),
+                                              "acc": round(float((pred_c == c)[alive & (true_c == c)].float().mean()), 4)}
+                                       for c, name_ in enumerate(("le-2", "-1", "0", "ge+1"))}
+        r["window"] = window
         r["readings_part"] = {"teacher_caught_le_0.2": r["teacher"]["caught"] <= 0.2}
         out[name] = r
         print(json.dumps({name: r}), flush=True)
