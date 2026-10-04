@@ -1,0 +1,146 @@
+{
+  "draws": 1000,
+  "clustering": "whole held-out episode",
+  "contrasts": {
+    "semantic_retention.probes.linear.cls": {
+      "difference": -0.006610882699264023,
+      "interval": [
+        -0.09121587127447128,
+        0.06272369623184204
+      ],
+      "excludes_zero": null
+    },
+    "semantic_retention.probes.mlp.cls": {
+      "difference": -0.024000578716325955,
+      "interval": [
+        -0.07482938468456268,
+        0.0119156613945961
+      ],
+      "excludes_zero": null
+    },
+    "recursive_dynamics.depth_1.vs_persistence": {
+      "difference": 0.016076043248176575,
+      "interval": [
+        0.002483323449268937,
+        0.030117088928818703
+      ],
+      "excludes_zero": true
+    },
+    "recursive_dynamics.depth_1.vs_marginal_action": {
+      "difference": 0.018391311168670654,
+      "interval": [
+        0.008404172025620937,
+        0.030965447425842285
+      ],
+      "excludes_zero": true
+    },
+    "recursive_dynamics.depth_1.vs_deranged_action": {
+      "difference": 0.03030644729733467,
+      "interval": [
+        0.01611972600221634,
+        0.045602940022945404
+      ],
+      "excludes_zero": true
+    },
+    "recursive_dynamics.depth_2.vs_persistence": {
+      "difference": 0.010992545634508133,
+      "interval": [
+        -0.0033344293478876352,
+        0.026812296360731125
+      ],
+      "excludes_zero": false
+    },
+    "recursive_dynamics.depth_2.vs_marginal_action": {
+      "difference": 0.02156805992126465,
+      "interval": [
+        0.012190565466880798,
+        0.030457468703389168
+      ],
+      "excludes_zero": true
+    },
+    "recursive_dynamics.depth_2.vs_deranged_action": {
+      "difference": 0.05193544179201126,
+      "interval": [
+        0.03533301502466202,
+        0.07046748697757721
+      ],
+      "excludes_zero": true
+    },
+    "action_effects.action_sensitivity_vs_deranged": {
+      "difference": 0.04191874712705612,
+      "interval": [
+        0.0242826696485281,
+        0.06067659705877304
+      ],
+      "excludes_zero": true
+    },
+    "action_effects.vs_action_blind_mean": {
+      "difference": 0.02156805992126465,
+      "interval": [
+        0.012500313110649586,
+        0.03056921437382698
+      ],
+      "excludes_zero": true
+    },
+    "action_effects.all_action.reward.vs_action_marginal": {
+      "difference": -0.05039060115814209,
+      "interval": [
+        -0.1137440875172615,
+        -0.005943529307842255
+      ],
+      "excludes_zero": true
+    },
+    "action_effects.all_action.terminal.vs_action_marginal": {
+      "difference": -0.20588234066963196,
+      "interval": [
+        -0.4035128057003021,
+        -0.024375688284635544
+      ],
+      "excludes_zero": true
+    },
+    "outcome_calibration.reward.vs_zero": {
+      "difference": 0.03064097836613655,
+      "interval": [
+        0.017132775858044624,
+        0.04600359871983528
+      ],
+      "excludes_zero": true
+    },
+    "outcome_calibration.reward.vs_marginal": {
+      "difference": 0.02582448348402977,
+      "interval": [
+        0.012793713249266148,
+        0.038799166679382324
+      ],
+      "excludes_zero": true
+    },
+    "observed_bc.vs_most_frequent": {
+      "difference": 0.020833328366279602,
+      "interval": [
+        -0.05557909235358238,
+        0.09314527362585068
+      ],
+      "excludes_zero": false
+    },
+    "observed_bc.generated_vs_most_frequent": {
+      "difference": 0.010416671633720398,
+      "interval": [
+        -0.05760685354471207,
+        0.07923310250043869
+      ],
+      "excludes_zero": false
+    },
+    "observed_bc.observed_minus_generated": {
+      "difference": 0.010416656732559204,
+      "interval": [
+        -0.02312474697828293,
+        0.0396081879734993
+      ],
+      "excludes_zero": false
+    }
+  },
+  "resolved": 17,
+  "unresolved": [],
+  "failed_checks": 0,
+  "rule": "every decision-bearing contrast must carry an interval; one resolved contrast out of many is not paired uncertainty"
+}

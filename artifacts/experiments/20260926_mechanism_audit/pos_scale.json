@@ -1,0 +1,135 @@
+{
+  "states": 300,
+  "scales": {
+    "0": {
+      "day": {
+        "cls": {
+          "near_far_fisher_dprime": 0.0026463168483446594,
+          "near_far_pair_cosine": 0.9999432154536773,
+          "contrast_over_near": 0.0045723650648787206
+        },
+        "z": {
+          "near_far_fisher_dprime": 0.0035274286686174596,
+          "near_far_pair_cosine": 0.9999509227618109,
+          "contrast_over_near": 0.004472407197827143
+        }
+      },
+      "night": {
+        "cls": {
+          "near_far_fisher_dprime": 0.1780710019140618,
+          "near_far_pair_cosine": 0.953651921586836,
+          "contrast_over_near": 0.3474867492558531
+        },
+        "z": {
+          "near_far_fisher_dprime": 0.11532263869603394,
+          "near_far_pair_cosine": 0.9606077157592764,
+          "contrast_over_near": 0.32558401379481017
+        }
+      }
+    },
+    "1": {
+      "day": {
+        "cls": {
+          "near_far_fisher_dprime": 0.031078712163071755,
+          "near_far_pair_cosine": 0.9997216443044702,
+          "contrast_over_near": 0.03666375611743886
+        },
+        "z": {
+          "near_far_fisher_dprime": 0.017873174520439565,
+          "near_far_pair_cosine": 0.9997854757960145,
+          "contrast_over_near": 0.034713672712496944
+        }
+      },
+      "night": {
+        "cls": {
+          "near_far_fisher_dprime": 0.18477870209995548,
+          "near_far_pair_cosine": 0.9561529070329327,
+          "contrast_over_near": 0.34955737232965933
+        },
+        "z": {
+          "near_far_fisher_dprime": 0.11583539760422312,
+          "near_far_pair_cosine": 0.9622483478435869,
+          "contrast_over_near": 0.3260264114305245
+        }
+      }
+    },
+    "2": {
+      "day": {
+        "cls": {
+          "near_far_fisher_dprime": 0.06444278195568806,
+          "near_far_pair_cosine": 0.9989755553878024,
+          "contrast_over_near": 0.07365805682247978
+        },
+        "z": {
+          "near_far_fisher_dprime": 0.037615865211946355,
+          "near_far_pair_cosine": 0.9992040525121687,
+          "contrast_over_near": 0.06993275720944196
+        }
+      },
+      "night": {
+        "cls": {
+          "near_far_fisher_dprime": 0.20381680553200862,
+          "near_far_pair_cosine": 0.9513012448363156,
+          "contrast_over_near": 0.3664191096695735
+        },
+        "z": {
+          "near_far_fisher_dprime": 0.11788582964829632,
+          "near_far_pair_cosine": 0.9587464307202626,
+          "contrast_over_near": 0.33939535276340904
+        }
+      }
+    },
+    "4": {
+      "day": {
+        "cls": {
+          "near_far_fisher_dprime": 0.1263453467297813,
+          "near_far_pair_cosine": 0.994849383328922,
+          "contrast_over_near": 0.16537455086704325
+        },
+        "z": {
+          "near_far_fisher_dprime": 0.07291904020703241,
+          "near_far_pair_cosine": 0.9958459016134162,
+          "contrast_over_near": 0.15896603549384256
+        }
+      },
+      "night": {
+        "cls": {
+          "near_far_fisher_dprime": 0.2449521849927467,
+          "near_far_pair_cosine": 0.9333183782506493,
+          "contrast_over_near": 0.4147058188148321
+        },
+        "z": {
+          "near_far_fisher_dprime": 0.12385595113349422,
+          "near_far_pair_cosine": 0.9520411337592896,
+          "contrast_over_near": 0.3690252599794542
+        }
+      }
+    },
+    "8": {
+      "day": {
+        "cls": {
+          "near_far_fisher_dprime": 0.22100530930487358,
+          "near_far_pair_cosine": 0.9622574699356282,
+          "contrast_over_near": 0.40230649904581756
+        },
+        "z": {
+          "near_far_fisher_dprime": 0.10469930135697159,
+          "near_far_pair_cosine": 0.9695320948207093,
+          "contrast_over_near": 0.3878878029534008
+        }
+      },
+      "night": {
+        "cls": {
+          "near_far_fisher_dprime": 0.25390592575406135,
+          "near_far_pair_cosine": 0.8727854295918056,
+          "contrast_over_near": 0.526649861310293
+        },
+        "z": {
+          "near_far_fisher_dprime": 0.12956291376261317,
+          "near_far_pair_cosine": 0.932299769010781,
+          "contrast_over_near": 0.4219949496915855
+        }
+      }
+    }
+  }
+}

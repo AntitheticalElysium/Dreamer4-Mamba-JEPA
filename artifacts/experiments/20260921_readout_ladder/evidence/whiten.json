@@ -1,0 +1,397 @@
+{
+  "schema": "d4mj_whiten_v1",
+  "status": "SEALED: new seed block, rules committed before collection",
+  "script_sha256": "94724ecd0e330ecbe8e3fc0c81ccf593e4514ca830b912d46d0da460ce56e9f0",
+  "judge_manifest": "81c0b4af7df89cc36dfc06d8a3c2664567159b27d4c9f7157970a3757051a054",
+  "judge_seed_files": 423,
+  "roots": {
+    "judge": 4307,
+    "opportunity": 810,
+    "zombie": 481
+  },
+  "rules": {
+    "primary_gen_W_vs_gen_U_zombie": {
+      "difference": 0.030037283897399902,
+      "interval": [
+        -0.006067654583603144,
+        0.0660349652171135
+      ],
+      "excludes_zero": false
+    },
+    "gen_W_vs_actions_only": {
+      "difference": 0.08769285678863525,
+      "interval": [
+        0.05164705589413643,
+        0.12431158125400543
+      ],
+      "excludes_zero": true
+    },
+    "retention_W_zombie": {
+      "difference": 0.013665080070495605,
+      "interval": [
+        -0.026713939383625984,
+        0.0535845011472702
+      ],
+      "excludes_zero": false
+    }
+  },
+  "readings": {
+    "primary": "no_evidence_whitening_helps",
+    "controls": "W_beats_actions_only",
+    "retention": "W_no_resolved_loss",
+    "mechanism": "mechanism_not_seen"
+  },
+  "mechanism": {
+    "W": {
+      "all": {
+        "real_auc": 0.9997483120209899,
+        "generated_auc": 0.5930872852943249,
+        "effect_corr": 0.19821324944496155
+      },
+      "zombie": {
+        "real_auc": 0.9995750099167986,
+        "generated_auc": 0.7573536502481517,
+        "effect_corr": 0.34807291626930237
+      },
+      "tail_effect_r2": 0.21304309368133545,
+      "top10_effect_r2": 0.506404459476471
+    },
+    "U": {
+      "all": {
+        "real_auc": 0.9997483120209899,
+        "generated_auc": 0.5915209139922781,
+        "effect_corr": 0.1888457089662552
+      },
+      "zombie": {
+        "real_auc": 0.9995750099167986,
+        "generated_auc": 0.7565458682128938,
+        "effect_corr": 0.31144052743911743
+      },
+      "tail_effect_r2": 0.3042082190513611,
+      "top10_effect_r2": 0.8221834897994995
+    }
+  },
+  "contrasts": {
+    "gen_W_vs_gen_U": {
+      "overall": {
+        "difference": 0.014081716537475586,
+        "interval": [
+          -0.010378172621130943,
+          0.04020697623491287
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": 0.030037283897399902,
+        "interval": [
+          -0.006067654583603144,
+          0.0660349652171135
+        ],
+        "excludes_zero": false
+      }
+    },
+    "state_W_vs_state_U": {
+      "overall": {
+        "difference": 0.03641963005065918,
+        "interval": [
+          0.011368145234882832,
+          0.06307569146156311
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.050134241580963135,
+        "interval": [
+          0.014276926405727863,
+          0.08569500595331192
+        ],
+        "excludes_zero": true
+      }
+    },
+    "trained_W_vs_trained_U": {
+      "overall": {
+        "difference": 0.07218360900878906,
+        "interval": [
+          0.04180891439318657,
+          0.10294360667467117
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.12746882438659668,
+        "interval": [
+          0.08149641007184982,
+          0.1709488034248352
+        ],
+        "excludes_zero": true
+      }
+    },
+    "state_W_vs_state_W_permuted": {
+      "overall": {
+        "difference": 0.2062448263168335,
+        "interval": [
+          0.16746985912322998,
+          0.24480421841144562
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.36215347051620483,
+        "interval": [
+          0.3061903417110443,
+          0.41023674607276917
+        ],
+        "excludes_zero": true
+      }
+    },
+    "state_W_vs_DOWN": {
+      "overall": {
+        "difference": 0.06282144784927368,
+        "interval": [
+          0.0161796472966671,
+          0.1090315505862236
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.033892035484313965,
+        "interval": [
+          -0.022698352113366127,
+          0.08950623869895935
+        ],
+        "excludes_zero": false
+      }
+    },
+    "gen_U_vs_root_U": {
+      "overall": {
+        "difference": -0.012667179107666016,
+        "interval": [
+          -0.04385082796216011,
+          0.0194097850471735
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": -0.016372203826904297,
+        "interval": [
+          -0.05699118971824646,
+          0.02752755768597126
+        ],
+        "excludes_zero": false
+      }
+    },
+    "gen_W_vs_tokens_attn": {
+      "overall": {
+        "difference": -0.02187502384185791,
+        "interval": [
+          -0.0529823862016201,
+          0.009745502844452858
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": -0.024254977703094482,
+        "interval": [
+          -0.0698181688785553,
+          0.021287551149725914
+        ],
+        "excludes_zero": false
+      }
+    },
+    "trained_W_vs_DOWN": {
+      "overall": {
+        "difference": 0.06466048955917358,
+        "interval": [
+          0.021691642701625824,
+          0.10432488471269608
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.04099529981613159,
+        "interval": [
+          -0.006627547554671764,
+          0.09085768461227417
+        ],
+        "excludes_zero": false
+      }
+    },
+    "trained_W_vs_actions_only": {
+      "overall": {
+        "difference": 0.0768132209777832,
+        "interval": [
+          0.040197938680648804,
+          0.11061044037342072
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.06873703002929688,
+        "interval": [
+          0.018383514136075974,
+          0.12200083583593369
+        ],
+        "excludes_zero": true
+      }
+    }
+  },
+  "per_seed": {
+    "actions_only": [
+      0.6444830298423767,
+      0.6504243612289429,
+      0.6499999761581421
+    ],
+    "tokens_attn": [
+      0.7951388955116272,
+      0.718441367149353,
+      0.7600308656692505
+    ],
+    "root_U": [
+      0.7293595671653748,
+      0.7335647940635681,
+      0.7408179044723511
+    ],
+    "gen_W": [
+      0.7508487701416016,
+      0.733063280582428,
+      0.7240740656852722
+    ],
+    "state_W": [
+      0.7260416746139526,
+      0.7246913313865662,
+      0.7190971970558167
+    ],
+    "gen_U": [
+      0.7281249761581421,
+      0.7289737462997437,
+      0.7086419463157654
+    ],
+    "state_U": [
+      0.6804783940315247,
+      0.6887345910072327,
+      0.6913580298423767
+    ]
+  },
+  "expected_safe": {
+    "DOWN": {
+      "overall": 0.6604552268981934,
+      "zombie": 0.584589421749115,
+      "day": 0.6607764363288879,
+      "night": 0.6601995825767517,
+      "lava_adjacent": 0.7596899271011353,
+      "zombie_adjacent": 0.584589421749115,
+      "arrow_or_skeleton": 0.6394988894462585,
+      "none_of_these": 0.7913669347763062
+    },
+    "actions_only": {
+      "overall": 0.6483024954795837,
+      "zombie": 0.5568476915359497,
+      "day": 0.6819579601287842,
+      "night": 0.6215124130249023,
+      "lava_adjacent": 0.7493540644645691,
+      "zombie_adjacent": 0.5568476915359497,
+      "arrow_or_skeleton": 0.6387012004852295,
+      "none_of_these": 0.7937650084495544
+    },
+    "tokens_attn": {
+      "overall": 0.7578703761100769,
+      "zombie": 0.6662768125534058,
+      "day": 0.7954097390174866,
+      "night": 0.7279887199401855,
+      "lava_adjacent": 0.9431524872779846,
+      "zombie_adjacent": 0.6662768125534058,
+      "arrow_or_skeleton": 0.7291666865348816,
+      "none_of_these": 0.8944844603538513
+    },
+    "root_U": {
+      "overall": 0.7345808148384094,
+      "zombie": 0.6283567547798157,
+      "day": 0.8017061352729797,
+      "night": 0.6811484098434448,
+      "lava_adjacent": 0.9715762734413147,
+      "zombie_adjacent": 0.6283567547798157,
+      "arrow_or_skeleton": 0.7357826828956604,
+      "none_of_these": 0.8633093237876892
+    },
+    "gen_W": {
+      "overall": 0.735995352268219,
+      "zombie": 0.6420218348503113,
+      "day": 0.7605907917022705,
+      "night": 0.7164171934127808,
+      "lava_adjacent": 0.961240291595459,
+      "zombie_adjacent": 0.6420218348503113,
+      "arrow_or_skeleton": 0.7454485297203064,
+      "none_of_these": 0.8321342468261719
+    },
+    "state_W": {
+      "overall": 0.723276674747467,
+      "zombie": 0.618481457233429,
+      "day": 0.7499420046806335,
+      "night": 0.7020509839057922,
+      "lava_adjacent": 0.9819121956825256,
+      "zombie_adjacent": 0.618481457233429,
+      "arrow_or_skeleton": 0.7530968189239502,
+      "none_of_these": 0.8297362327575684
+    },
+    "state_W_permuted": {
+      "overall": 0.5170318484306335,
+      "zombie": 0.2563279867172241,
+      "day": 0.5459900498390198,
+      "night": 0.4939810037612915,
+      "lava_adjacent": 0.9245478510856628,
+      "zombie_adjacent": 0.2563279867172241,
+      "arrow_or_skeleton": 0.6447259783744812,
+      "none_of_these": 0.9179856181144714
+    },
+    "trained_W": {
+      "overall": 0.7251157164573669,
+      "zombie": 0.6255847215652466,
+      "day": 0.7563544511795044,
+      "night": 0.700249433517456,
+      "lava_adjacent": 0.9379844665527344,
+      "zombie_adjacent": 0.6255847215652466,
+      "arrow_or_skeleton": 0.7538006901741028,
+      "none_of_these": 0.8417266011238098
+    },
+    "gen_U": {
+      "overall": 0.7219136357307434,
+      "zombie": 0.6119845509529114,
+      "day": 0.7452704310417175,
+      "night": 0.7033213973045349,
+      "lava_adjacent": 0.9819121956825256,
+      "zombie_adjacent": 0.6119845509529114,
+      "arrow_or_skeleton": 0.7556306719779968,
+      "none_of_these": 0.8345324397087097
+    },
+    "state_U": {
+      "overall": 0.6868570446968079,
+      "zombie": 0.5683472156524658,
+      "day": 0.7183147668838501,
+      "night": 0.6618163585662842,
+      "lava_adjacent": 0.9741601943969727,
+      "zombie_adjacent": 0.5683472156524658,
+      "arrow_or_skeleton": 0.7208145260810852,
+      "none_of_these": 0.8033573627471924
+    },
+    "state_U_permuted": {
+      "overall": 0.5161677002906799,
+      "zombie": 0.2563626170158386,
+      "day": 0.5431929230690002,
+      "night": 0.49465540051460266,
+      "lava_adjacent": 0.9291990399360657,
+      "zombie_adjacent": 0.2563626170158386,
+      "arrow_or_skeleton": 0.6391704082489014,
+      "none_of_these": 0.9199041724205017
+    },
+    "trained_U": {
+      "overall": 0.6529321074485779,
+      "zombie": 0.4981158971786499,
+      "day": 0.7234505414962769,
+      "night": 0.5967987775802612,
+      "lava_adjacent": 0.9147287011146545,
+      "zombie_adjacent": 0.4981158971786499,
+      "arrow_or_skeleton": 0.6706081032752991,
+      "none_of_these": 0.8705036044120789
+    }
+  }
+}

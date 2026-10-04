@@ -1,0 +1,97 @@
+{
+  "schema": "d4mj_twin_cost_v1",
+  "status": "POST HOC, EXPLORATORY: observability roots",
+  "script_sha256": "8c3a8a3b14e417b3ddf32bc893994e327e953f0f765a2b287617d46dcd5350f1",
+  "identity": {
+    "fit": "5f1e9a00c3103610d720bce2e834ca481099e6122cf400fb087e60fe14e02c8d",
+    "judge": "8ed62edd825409b9820be8ea93e0c790a934f9968cad4f10d33a7aa8472da6aa"
+  },
+  "checkpoint_sha256": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e",
+  "reading": "mixed",
+  "result": {
+    "fatal": {
+      "roots": 493,
+      "branches": 3797,
+      "z": {
+        "cost": 0.11269276546243509,
+        "effect_per_branch": 8.659506528904664,
+        "consequence_per_branch": 0.9758637382822788
+      },
+      "grid": {
+        "cost": 0.054884055778065946,
+        "effect_per_branch": 132.70102389333016,
+        "consequence_per_branch": 7.283170397167995
+      },
+      "grid_pca": {
+        "cost": 0.05179143164660818,
+        "effect_per_branch": 130.1607449140914,
+        "consequence_per_branch": 6.741211323289768
+      },
+      "u_old": {
+        "cost": 0.022349554672422514,
+        "effect_per_branch": 299.3075520522611,
+        "consequence_per_branch": 6.6893904984609565
+      },
+      "tokens": {
+        "cost": 0.2503776827446336,
+        "effect_per_branch": 1123.8419043073618,
+        "consequence_per_branch": 281.3849317717935,
+        "share_on_health_tile": 0.9100737571716309
+      },
+      "tokens_ln": {
+        "cost": 0.2505594030450212,
+        "effect_per_branch": 1122.686523087937,
+        "consequence_per_branch": 281.2996650316039,
+        "share_on_health_tile": 0.9101352691650391
+      },
+      "codes": {
+        "cost": 1.0342700633993023,
+        "effect_per_branch": 17.482007176761424,
+        "consequence_per_branch": 18.081116671056098,
+        "share_on_health_tile": 0.11061263829469681
+      }
+    },
+    "damage": {
+      "roots": 2268,
+      "branches": 19457,
+      "z": {
+        "cost": 0.036057281996481665,
+        "effect_per_branch": 8.572197515415034,
+        "consequence_per_branch": 0.3090901431428594
+      },
+      "grid": {
+        "cost": 0.01218367489075687,
+        "effect_per_branch": 123.92876849560938,
+        "consequence_per_branch": 1.509907824962377
+      },
+      "grid_pca": {
+        "cost": 0.01048059698420015,
+        "effect_per_branch": 121.82051476406039,
+        "consequence_per_branch": 1.2767517196499212
+      },
+      "u_old": {
+        "cost": 0.010142197110277841,
+        "effect_per_branch": 281.7806444238352,
+        "consequence_per_branch": 2.8578748376076493
+      },
+      "tokens": {
+        "cost": 0.06677333580679753,
+        "effect_per_branch": 1075.82355764242,
+        "consequence_per_branch": 71.83632768332092,
+        "share_on_health_tile": 0.9448309540748596
+      },
+      "tokens_ln": {
+        "cost": 0.06676597976777109,
+        "effect_per_branch": 1074.830915352288,
+        "consequence_per_branch": 71.76213914818574,
+        "share_on_health_tile": 0.9448235034942627
+      },
+      "codes": {
+        "cost": 0.36641442284560166,
+        "effect_per_branch": 18.459811012811947,
+        "consequence_per_branch": 6.763940998098371,
+        "share_on_health_tile": 0.19289393723011017
+      }
+    }
+  }
+}

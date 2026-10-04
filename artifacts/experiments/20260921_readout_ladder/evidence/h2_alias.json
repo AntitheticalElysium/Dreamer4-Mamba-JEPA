@@ -1,0 +1,157 @@
+{
+  "schema": "d4mj_h2_alias_v1",
+  "script_sha256": "95dc868d7521f96446eb9f1d45113b3997d200e2e7cd7aaa8c9e3136675dab09",
+  "checkpoint_sha256": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e",
+  "cache_manifest_sha256": "80d3d60521424ddb61318e6ebda9020e304cbcd3a96a7f2d07b1055bb1c30618",
+  "reading": "position_alias_in_H2",
+  "result": {
+    "train": {
+      "train_d2": {
+        "generated_death": 0.7279292941093445,
+        "generated_death_share": 0.7549999952316284,
+        "observed_death": 0.6039873957633972,
+        "observed_death_share": 0.574999988079071,
+        "generated_pre_death": 0.696351945400238,
+        "generated_alive_10": 0.5564019083976746,
+        "generated_auc_vs_pre_death": 0.5462499856948853,
+        "generated_auc_vs_alive_10": 0.6899999976158142,
+        "observed_auc_vs_pre_death": 0.8424999713897705,
+        "observed_auc_vs_alive_10": 0.8500000238418579
+      },
+      "train_d1": {
+        "generated_death": 0.06290982663631439,
+        "generated_death_share": 0.0,
+        "observed_death": 0.6039873957633972,
+        "observed_death_share": 0.574999988079071,
+        "generated_pre_death": 0.05024684593081474,
+        "generated_alive_10": 0.06282664090394974,
+        "generated_auc_vs_pre_death": 0.6112499833106995,
+        "generated_auc_vs_alive_10": 0.5112500190734863,
+        "observed_auc_vs_pre_death": 0.8424999713897705,
+        "observed_auc_vs_alive_10": 0.8500000238418579
+      },
+      "L32_d1": {
+        "generated_death": 0.05447905883193016,
+        "generated_death_share": 0.0,
+        "observed_death": 0.5897329449653625,
+        "observed_death_share": 0.5600000023841858,
+        "generated_pre_death": 0.04275719076395035,
+        "generated_alive_10": 0.05363496392965317,
+        "generated_auc_vs_pre_death": 0.6100000143051147,
+        "generated_auc_vs_alive_10": 0.5137500166893005,
+        "observed_auc_vs_pre_death": 0.84375,
+        "observed_auc_vs_alive_10": 0.84375
+      },
+      "L16_d1": {
+        "generated_death": 0.0459919273853302,
+        "generated_death_share": 0.0,
+        "observed_death": 0.5756362080574036,
+        "observed_death_share": 0.5450000166893005,
+        "generated_pre_death": 0.03590534254908562,
+        "generated_alive_10": 0.04476083815097809,
+        "generated_auc_vs_pre_death": 0.5924999713897705,
+        "generated_auc_vs_alive_10": 0.5074999928474426,
+        "observed_auc_vs_pre_death": 0.8525000214576721,
+        "observed_auc_vs_alive_10": 0.8424999713897705
+      },
+      "L8_d1": {
+        "generated_death": 0.040863391011953354,
+        "generated_death_share": 0.0,
+        "observed_death": 0.5622276663780212,
+        "observed_death_share": 0.5274999737739563,
+        "generated_pre_death": 0.032119520008563995,
+        "generated_alive_10": 0.0405973419547081,
+        "generated_auc_vs_pre_death": 0.606249988079071,
+        "generated_auc_vs_alive_10": 0.5,
+        "observed_auc_vs_pre_death": 0.8575000166893005,
+        "observed_auc_vs_alive_10": 0.8374999761581421
+      },
+      "gate": {
+        "generated_death": 0.027153486385941505,
+        "generated_death_share": 0.0,
+        "observed_death": 0.5076248645782471,
+        "observed_death_share": 0.49000000953674316,
+        "generated_pre_death": 0.021796489134430885,
+        "generated_alive_10": 0.028747837990522385,
+        "generated_auc_vs_pre_death": 0.6274999976158142,
+        "generated_auc_vs_alive_10": 0.5049999952316284,
+        "observed_auc_vs_pre_death": 0.8525000214576721,
+        "observed_auc_vs_alive_10": 0.8324999809265137
+      }
+    },
+    "dev": {
+      "train_d2": {
+        "generated_death": 0.741068422794342,
+        "generated_death_share": 0.7900000214576721,
+        "observed_death": 0.6270399689674377,
+        "observed_death_share": 0.6075000166893005,
+        "generated_pre_death": 0.6903526186943054,
+        "generated_alive_10": 0.5686585903167725,
+        "generated_auc_vs_pre_death": 0.606249988079071,
+        "generated_auc_vs_alive_10": 0.7087500095367432,
+        "observed_auc_vs_pre_death": 0.8637499809265137,
+        "observed_auc_vs_alive_10": 0.8374999761581421
+      },
+      "train_d1": {
+        "generated_death": 0.06783030182123184,
+        "generated_death_share": 0.0,
+        "observed_death": 0.6270399689674377,
+        "observed_death_share": 0.6075000166893005,
+        "generated_pre_death": 0.05191975086927414,
+        "generated_alive_10": 0.06335802376270294,
+        "generated_auc_vs_pre_death": 0.6075000166893005,
+        "generated_auc_vs_alive_10": 0.4737499952316284,
+        "observed_auc_vs_pre_death": 0.8637499809265137,
+        "observed_auc_vs_alive_10": 0.8374999761581421
+      },
+      "L32_d1": {
+        "generated_death": 0.05824894830584526,
+        "generated_death_share": 0.0,
+        "observed_death": 0.6130589842796326,
+        "observed_death_share": 0.5824999809265137,
+        "generated_pre_death": 0.04398788511753082,
+        "generated_alive_10": 0.05347352847456932,
+        "generated_auc_vs_pre_death": 0.6012499928474426,
+        "generated_auc_vs_alive_10": 0.47999998927116394,
+        "observed_auc_vs_pre_death": 0.8587499856948853,
+        "observed_auc_vs_alive_10": 0.8324999809265137
+      },
+      "L16_d1": {
+        "generated_death": 0.048901624977588654,
+        "generated_death_share": 0.0,
+        "observed_death": 0.5987825989723206,
+        "observed_death_share": 0.5625,
+        "generated_pre_death": 0.037240684032440186,
+        "generated_alive_10": 0.044908519834280014,
+        "generated_auc_vs_pre_death": 0.6112499833106995,
+        "generated_auc_vs_alive_10": 0.47999998927116394,
+        "observed_auc_vs_pre_death": 0.8612499833106995,
+        "observed_auc_vs_alive_10": 0.8450000286102295
+      },
+      "L8_d1": {
+        "generated_death": 0.04321108013391495,
+        "generated_death_share": 0.0,
+        "observed_death": 0.5851448178291321,
+        "observed_death_share": 0.550000011920929,
+        "generated_pre_death": 0.033240627497434616,
+        "generated_alive_10": 0.04010246694087982,
+        "generated_auc_vs_pre_death": 0.6112499833106995,
+        "generated_auc_vs_alive_10": 0.48374998569488525,
+        "observed_auc_vs_pre_death": 0.862500011920929,
+        "observed_auc_vs_alive_10": 0.8462499976158142
+      },
+      "gate": {
+        "generated_death": 0.026878034695982933,
+        "generated_death_share": 0.0,
+        "observed_death": 0.5321395397186279,
+        "observed_death_share": 0.5099999904632568,
+        "generated_pre_death": 0.021837303414940834,
+        "generated_alive_10": 0.02532052993774414,
+        "generated_auc_vs_pre_death": 0.6175000071525574,
+        "generated_auc_vs_alive_10": 0.5087500214576721,
+        "observed_auc_vs_pre_death": 0.8550000190734863,
+        "observed_auc_vs_alive_10": 0.8337500095367432
+      }
+    }
+  }
+}

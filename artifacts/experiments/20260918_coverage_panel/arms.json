@@ -1,0 +1,6 @@
+{
+  "mamba_raw":       "artifacts/lewm_gates_20260906/paired/raw/joint/step-010000.pt",
+  "mamba_tc":        "artifacts/lewm_gates_20260906/paired/tc/joint/step-010000.pt",
+  "transformer_raw": "artifacts/lewm_transformer_comparison/paired/raw/joint/step-010000.pt",
+  "transformer_tc":  "artifacts/lewm_transformer_comparison/paired/tc/joint/step-010000.pt"
+}

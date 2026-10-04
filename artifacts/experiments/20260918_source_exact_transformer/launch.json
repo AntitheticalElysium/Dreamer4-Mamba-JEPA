@@ -1,0 +1,50 @@
+{
+  "schema": "d4mj_source_exact_launch_v1",
+  "scope": "comparison only; Mamba remains the thesis architecture",
+  "commit": "cfceeb8cc865e09f832b91c0b5050ed7be69acf1",
+  "command": "TRITON_F32_DEFAULT=ieee .venv/bin/python -m d4mj paired-run --dataset artifacts/craftax_support_v2 --raw-recipe d4mj/recipes/lewm_transformer_raw.json --tc-recipe d4mj/recipes/lewm_transformer_tc.json --out artifacts/lewm_transformer_comparison/paired",
+  "recipes": {
+    "raw": {
+      "path": "d4mj/recipes/lewm_transformer_raw.json",
+      "sha256": "b1697497e77faf25e54ba3bb0cfd2c79108f5e18fbb025ee53c61cd9d6eace21",
+      "recipe_id": "a83f36e627fad5422b33f5b855e979cb4465ab29cee43c4f7bab06129e5f4630"
+    },
+    "tc": {
+      "path": "d4mj/recipes/lewm_transformer_tc.json",
+      "sha256": "5ec88c21a3bdee4f7f0bc871214b8f81b1336261d8ef9243c38772a98b1a31e9",
+      "recipe_id": "201dee70236c16af0a1844f0f5fc0af1be950d73d236cb519d8758e066c74af0"
+    }
+  },
+  "vendored_source": {
+    "module.py": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620",
+    "jepa.py": "41bad7fd21e0f14aea4c9c3d39a9c87037e787746d953ab62cdc0677e938ce96",
+    "config/train/model/lewm.yaml": "7be97eaa2c83f809b9ea7a6da5a7d3f3c70502c27537383f54db32335e21e42b"
+  },
+  "vendor_commit": "8edfeb336732b5f3ce7b8b210d0ba370a09e2cac",
+  "dataset": {
+    "path": "artifacts/craftax_support_v2",
+    "manifest_sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574"
+  },
+  "gpu_preflight": {
+    "actual_batch": 128,
+    "frames": 4,
+    "precision": "bf16",
+    "peak_allocated_bytes": 1105876992,
+    "peak_reserved_bytes": 1281359872,
+    "warm_step_seconds": 1.6129210570002215,
+    "encoder_gradient": 1.9333775043487549,
+    "predictor_gradient": 0.22684231400489807,
+    "gpu_validated": true,
+    "device_name": "NVIDIA GeForce RTX 3060 Laptop GPU",
+    "device_total_bytes": 6076104704,
+    "optimizer_steps": 3,
+    "purpose": "resource_only_not_a_learning_result"
+  },
+  "parameters": {
+    "predictor_package": 11740404,
+    "mamba_world": 2388040,
+    "ratio": 4.916334734761562
+  },
+  "launched_unix": 1789687753.7286658,
+  "m4_authorized": false
+}

@@ -1,0 +1,120 @@
+{
+  "world": "corrt_raw_suffix_s7_u18000",
+  "roots": 1002,
+  "train_seeds": 100,
+  "test_roots": 283,
+  "method": "same teval.Probes ridge, train on true versus imagined TRAIN seeds; test on imagined TEST seeds",
+  "depth": {
+    "1": {
+      "n": 283,
+      "true_fit": {
+        "tile_near": 0.9690812826156616,
+        "tile_interior": 0.9804475903511047,
+        "tile_edge": 0.9453558921813965,
+        "zombie_auc": 0.8103579267263211,
+        "zombie_near_auc": 0.8417690417690418,
+        "health_r2": 0.9817283153533936,
+        "food_r2": 0.9972309470176697,
+        "facing_acc": 0.9399293065071106
+      },
+      "generated_fit": {
+        "tile_near": 0.9646643400192261,
+        "tile_interior": 0.9776207208633423,
+        "tile_edge": 0.9447248578071594,
+        "zombie_auc": 0.8153066201436959,
+        "zombie_near_auc": 0.8887387387387388,
+        "health_r2": 0.9003905057907104,
+        "food_r2": 0.9360963702201843,
+        "facing_acc": 0.9469964504241943
+      }
+    },
+    "4": {
+      "n": 283,
+      "true_fit": {
+        "tile_near": 0.8816254138946533,
+        "tile_interior": 0.9095406532287598,
+        "tile_edge": 0.8672387599945068,
+        "zombie_auc": 0.7626758084373755,
+        "zombie_near_auc": 0.8841884188418841,
+        "health_r2": 0.8623110055923462,
+        "food_r2": 0.9490828514099121,
+        "facing_acc": 0.9363957643508911
+      },
+      "generated_fit": {
+        "tile_near": 0.8780918717384338,
+        "tile_interior": 0.908833920955658,
+        "tile_edge": 0.8668601512908936,
+        "zombie_auc": 0.7488362826086568,
+        "zombie_near_auc": 0.8858171531438859,
+        "health_r2": 0.8528038263320923,
+        "food_r2": 0.938129723072052,
+        "facing_acc": 0.9540635943412781
+      }
+    },
+    "8": {
+      "n": 283,
+      "true_fit": {
+        "tile_near": 0.8286219239234924,
+        "tile_interior": 0.826619565486908,
+        "tile_edge": 0.7900050282478333,
+        "zombie_auc": 0.6062044369076243,
+        "zombie_near_auc": 0.5807129917184265,
+        "health_r2": 0.8311653733253479,
+        "food_r2": 0.9284424185752869,
+        "facing_acc": 0.9081271886825562
+      },
+      "generated_fit": {
+        "tile_near": 0.8268551230430603,
+        "tile_interior": 0.82579505443573,
+        "tile_edge": 0.7895002365112305,
+        "zombie_auc": 0.6776867957083607,
+        "zombie_near_auc": 0.6495535714285714,
+        "health_r2": 0.8323965668678284,
+        "food_r2": 0.9148744940757751,
+        "facing_acc": 0.9328621625900269
+      }
+    },
+    "16": {
+      "n": 281,
+      "true_fit": {
+        "tile_near": 0.7233096361160278,
+        "tile_interior": 0.7158955931663513,
+        "tile_edge": 0.6883578896522522,
+        "zombie_auc": 0.49929952102383524,
+        "zombie_near_auc": 0.5302352398523985,
+        "health_r2": 0.5902951955795288,
+        "food_r2": 0.8802315592765808,
+        "facing_acc": 0.8683273792266846
+      },
+      "generated_fit": {
+        "tile_near": 0.7206405401229858,
+        "tile_interior": 0.7170818448066711,
+        "tile_edge": 0.687976598739624,
+        "zombie_auc": 0.6512650035023949,
+        "zombie_near_auc": 0.6059271217712177,
+        "health_r2": 0.640512228012085,
+        "food_r2": 0.9091500043869019,
+        "facing_acc": 0.8825622797012329
+      }
+    }
+  },
+  "depth16_bootstrap": {
+    "unit": "walk seed",
+    "seeds": 43,
+    "draws": 1000,
+    "ci95": {
+      "true_fit": [
+        0.45467668771743774,
+        0.6209077835083008
+      ],
+      "generated_fit": [
+        0.5321362614631653,
+        0.681725263595581
+      ],
+      "generated_minus_true": [
+        0.014607430435717106,
+        0.14077697694301605
+      ]
+    }
+  }
+}

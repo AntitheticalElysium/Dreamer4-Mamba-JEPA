@@ -1,0 +1,1024 @@
+{
+  "schema": "d4mj_boundary_v1",
+  "status": "SEALED: new seed block, rules committed before collection",
+  "script_sha256": "7c8bbab8b8b05b5d0ffe05b7ed1f40387205dbc80beeeb75815af44a53e239f2",
+  "frozen_ladder_sha256": "d41cb6b8286adc8426f6f7e0d993ea8a517c277d4d74fbe010406fecaf8047ed",
+  "checkpoint_sha256": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e",
+  "judge_store": "artifacts/eda/observe_fresh_v4",
+  "judge_manifest": "765ce386ee412378eb96d7024b3babd0394e6af417cc52812b4e730a88ca0f76",
+  "judge_seeds": [
+    53000,
+    53001,
+    53002,
+    53003,
+    53004,
+    53005,
+    53006,
+    53007,
+    53008,
+    53009,
+    53010,
+    53011,
+    53012,
+    53013,
+    53014,
+    53015,
+    53016,
+    53017,
+    53018,
+    53019,
+    53020,
+    53021,
+    53022,
+    53023,
+    53024,
+    53025,
+    53026,
+    53027,
+    53028,
+    53029,
+    53030,
+    53031,
+    53032,
+    53033,
+    53034,
+    53035,
+    53036,
+    53037,
+    53038,
+    53039,
+    53040,
+    53041,
+    53042,
+    53043,
+    53044,
+    53045,
+    53046,
+    53047,
+    53048,
+    53049,
+    53050,
+    53051,
+    53052,
+    53053,
+    53054,
+    53055,
+    53056,
+    53057,
+    53058,
+    53059,
+    53060,
+    53061,
+    53062,
+    53063,
+    53064,
+    53065,
+    53066,
+    53067,
+    53068,
+    53069,
+    53070,
+    53071,
+    53072,
+    53073,
+    53074,
+    53075,
+    53076,
+    53077,
+    53078,
+    53079,
+    53080,
+    53081,
+    53082,
+    53083,
+    53084,
+    53085,
+    53086,
+    53087,
+    53088,
+    53089,
+    53090,
+    53091,
+    53092,
+    53093,
+    53094,
+    53095,
+    53096,
+    53097,
+    53098,
+    53099,
+    53100,
+    53101,
+    53102,
+    53103,
+    53104,
+    53105,
+    53106,
+    53108,
+    53109,
+    53110,
+    53111,
+    53112,
+    53113,
+    53114,
+    53115,
+    53116,
+    53117,
+    53118,
+    53119,
+    53120,
+    53121,
+    53122,
+    53123,
+    53124,
+    53125,
+    53126,
+    53127,
+    53128,
+    53129,
+    53130,
+    53131,
+    53132,
+    53133,
+    53134,
+    53135,
+    53136,
+    53137,
+    53138,
+    53139,
+    53140,
+    53141,
+    53142,
+    53143,
+    53145,
+    53146,
+    53147,
+    53148,
+    53149,
+    53150,
+    53151,
+    53152,
+    53153,
+    53154,
+    53155,
+    53156,
+    53157,
+    53158,
+    53159,
+    53160,
+    53161,
+    53162,
+    53163,
+    53164,
+    53165,
+    53166,
+    53167,
+    53168,
+    53169,
+    53170,
+    53171,
+    53172,
+    53173,
+    53174,
+    53175,
+    53176,
+    53177,
+    53178,
+    53179,
+    53180,
+    53181,
+    53182,
+    53183,
+    53184,
+    53185,
+    53186,
+    53187,
+    53188,
+    53189,
+    53190,
+    53191,
+    53192,
+    53194,
+    53195,
+    53196,
+    53197,
+    53198,
+    53199,
+    53200,
+    53201,
+    53202,
+    53203,
+    53204,
+    53205,
+    53206,
+    53207,
+    53208,
+    53209,
+    53210,
+    53211,
+    53212,
+    53213,
+    53214,
+    53215,
+    53216,
+    53217,
+    53218,
+    53219,
+    53220,
+    53221,
+    53222,
+    53223,
+    53224,
+    53225,
+    53226,
+    53227,
+    53228,
+    53229,
+    53230,
+    53231,
+    53232,
+    53233,
+    53234,
+    53235,
+    53236,
+    53237,
+    53238,
+    53239,
+    53240,
+    53241,
+    53242,
+    53243,
+    53244,
+    53245,
+    53246,
+    53247,
+    53248,
+    53249,
+    53251,
+    53252,
+    53253,
+    53254,
+    53255,
+    53256,
+    53257,
+    53258,
+    53259,
+    53260,
+    53261,
+    53262,
+    53263,
+    53264,
+    53265,
+    53266,
+    53267,
+    53268,
+    53269,
+    53270,
+    53271,
+    53272,
+    53273,
+    53274,
+    53275,
+    53276,
+    53277,
+    53278,
+    53279,
+    53280,
+    53281,
+    53282,
+    53283,
+    53284,
+    53285,
+    53286,
+    53287,
+    53288,
+    53289,
+    53290,
+    53291,
+    53292,
+    53293,
+    53294,
+    53295,
+    53296,
+    53297,
+    53298,
+    53299,
+    53300,
+    53301,
+    53302,
+    53303,
+    53304,
+    53305,
+    53306,
+    53307,
+    53308,
+    53309,
+    53310,
+    53311,
+    53312,
+    53313,
+    53314,
+    53315,
+    53316,
+    53317,
+    53318,
+    53319,
+    53320,
+    53321,
+    53322,
+    53323,
+    53324,
+    53325,
+    53326,
+    53327,
+    53328,
+    53329,
+    53330,
+    53331,
+    53333,
+    53334,
+    53335,
+    53336,
+    53337,
+    53338,
+    53339,
+    53340,
+    53341,
+    53342,
+    53343,
+    53344,
+    53345,
+    53346,
+    53347,
+    53348,
+    53349,
+    53350,
+    53351,
+    53352,
+    53353,
+    53354,
+    53355,
+    53356,
+    53357,
+    53358,
+    53359,
+    53360,
+    53361,
+    53362,
+    53363,
+    53364,
+    53365,
+    53366,
+    53367,
+    53368,
+    53369,
+    53370,
+    53371,
+    53372,
+    53373,
+    53374,
+    53375,
+    53376,
+    53377,
+    53378,
+    53379,
+    53380,
+    53381,
+    53382,
+    53383,
+    53384,
+    53385,
+    53386,
+    53387,
+    53388,
+    53389,
+    53390,
+    53391,
+    53392,
+    53393,
+    53394,
+    53395,
+    53396,
+    53397,
+    53398,
+    53399,
+    53400,
+    53401,
+    53402
+  ],
+  "roots": {
+    "fit": 7085,
+    "judge": 4215
+  },
+  "holds": {
+    "R0_pixels1_vs_prior": true,
+    "R1_tokens_attn_vs_cls": true,
+    "R2_tokens_attn_vs_cls_wide": true,
+    "R3_tokens_attn_vs_cls_wide_zombie": true
+  },
+  "reading": "patch_over_cls_confirmed",
+  "outcomes": {
+    "death1": {
+      "judge_opportunity_roots": 800,
+      "prior_action": 4,
+      "prior_expected_safe": 0.5575390458106995,
+      "strata_opportunity": {
+        "day": 415,
+        "night": 385,
+        "lava_adjacent": 93,
+        "zombie_adjacent": 519,
+        "arrow_or_skeleton": 209,
+        "none_of_these": 119
+      },
+      "prior_by_stratum": {
+        "day": 0.5093373656272888,
+        "night": 0.6094967722892761,
+        "lava_adjacent": 0.5161290168762207,
+        "zombie_adjacent": 0.5384151935577393,
+        "arrow_or_skeleton": 0.6269437670707703,
+        "none_of_these": 0.605042040348053
+      },
+      "arms": {
+        "pixels1": {
+          "runs": [
+            {
+              "selected_step": 1400,
+              "inner_safe": 0.9285714030265808,
+              "parameters": 609457,
+              "judge_expected_safe": 0.8767969012260437,
+              "fit_expected_safe": 0.991428554058075
+            },
+            {
+              "selected_step": 2900,
+              "inner_safe": 0.9476190209388733,
+              "parameters": 609457,
+              "judge_expected_safe": 0.9199609160423279,
+              "fit_expected_safe": 1.0
+            },
+            {
+              "selected_step": 1700,
+              "inner_safe": 0.9285714030265808,
+              "parameters": 609457,
+              "judge_expected_safe": 0.908984363079071,
+              "fit_expected_safe": 1.0
+            }
+          ],
+          "judge_expected_safe": 0.9019140601158142,
+          "vs_prior": {
+            "difference": 0.34437501430511475,
+            "interval": [
+              0.29230064153671265,
+              0.39934733510017395
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.9412148594856262,
+            "night": 0.8595508337020874,
+            "lava_adjacent": 1.0,
+            "zombie_adjacent": 0.8715076446533203,
+            "arrow_or_skeleton": 0.8637858629226685,
+            "none_of_these": 0.9663864970207214
+          }
+        },
+        "tokens_attn": {
+          "runs": [
+            {
+              "selected_step": 2600,
+              "inner_safe": 0.8190476298332214,
+              "parameters": 115218,
+              "judge_expected_safe": 0.8094921708106995,
+              "fit_expected_safe": 0.9580952525138855
+            },
+            {
+              "selected_step": 1400,
+              "inner_safe": 0.7142857313156128,
+              "parameters": 115218,
+              "judge_expected_safe": 0.6632031202316284,
+              "fit_expected_safe": 0.8295238018035889
+            },
+            {
+              "selected_step": 1300,
+              "inner_safe": 0.776190459728241,
+              "parameters": 115218,
+              "judge_expected_safe": 0.7378515601158142,
+              "fit_expected_safe": 0.8920238018035889
+            }
+          ],
+          "judge_expected_safe": 0.7368490099906921,
+          "vs_prior": {
+            "difference": 0.17930996417999268,
+            "interval": [
+              0.12154688686132431,
+              0.23423312604427338
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.7629016041755676,
+            "night": 0.7087662220001221,
+            "lava_adjacent": 0.9749103784561157,
+            "zombie_adjacent": 0.6684530377388,
+            "arrow_or_skeleton": 0.7502990365028381,
+            "none_of_these": 0.8235294818878174
+          }
+        },
+        "cls": {
+          "runs": [
+            {
+              "selected_step": 2000,
+              "inner_safe": 0.6952381134033203,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6473047137260437,
+              "fit_expected_safe": 0.8171428442001343
+            },
+            {
+              "selected_step": 100,
+              "inner_safe": 0.6714285612106323,
+              "parameters": 107537,
+              "judge_expected_safe": 0.584765613079071,
+              "fit_expected_safe": 0.6957440376281738
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6904761791229248,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6000781059265137,
+              "fit_expected_safe": 0.7049106955528259
+            }
+          ],
+          "judge_expected_safe": 0.6107161045074463,
+          "vs_prior": {
+            "difference": 0.053177058696746826,
+            "interval": [
+              -0.0016294700326398015,
+              0.11210513114929199
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6189256906509399,
+            "night": 0.6018669009208679,
+            "lava_adjacent": 0.9569892287254333,
+            "zombie_adjacent": 0.5282394289970398,
+            "arrow_or_skeleton": 0.6566487550735474,
+            "none_of_these": 0.64705890417099
+          }
+        },
+        "cls_wide": {
+          "runs": [
+            {
+              "selected_step": 500,
+              "inner_safe": 0.6857143044471741,
+              "parameters": 4626449,
+              "judge_expected_safe": 0.6192187666893005,
+              "fit_expected_safe": 0.7774404883384705
+            },
+            {
+              "selected_step": 1200,
+              "inner_safe": 0.7142857313156128,
+              "parameters": 4626449,
+              "judge_expected_safe": 0.63671875,
+              "fit_expected_safe": 0.8573511838912964
+            },
+            {
+              "selected_step": 1000,
+              "inner_safe": 0.6380952596664429,
+              "parameters": 4626449,
+              "judge_expected_safe": 0.6279687285423279,
+              "fit_expected_safe": 0.8580952286720276
+            }
+          ],
+          "judge_expected_safe": 0.6279687285423279,
+          "vs_prior": {
+            "difference": 0.07042968273162842,
+            "interval": [
+              0.011356286704540253,
+              0.1312500238418579
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.6507028341293335,
+            "night": 0.6034632325172424,
+            "lava_adjacent": 0.8673835396766663,
+            "zombie_adjacent": 0.5755659937858582,
+            "arrow_or_skeleton": 0.6301834583282471,
+            "none_of_these": 0.6414566040039062
+          }
+        },
+        "z": {
+          "runs": [
+            {
+              "selected_step": 100,
+              "inner_safe": 0.6714285612106323,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6063671708106995,
+              "fit_expected_safe": 0.725565493106842
+            },
+            {
+              "selected_step": 700,
+              "inner_safe": 0.6714285612106323,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6459765434265137,
+              "fit_expected_safe": 0.808571457862854
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6761904954910278,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6213281154632568,
+              "fit_expected_safe": 0.7504464387893677
+            }
+          ],
+          "judge_expected_safe": 0.6245572566986084,
+          "vs_prior": {
+            "difference": 0.06701821088790894,
+            "interval": [
+              0.012394528836011887,
+              0.12177961319684982
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.6370481848716736,
+            "night": 0.6110930442810059,
+            "lava_adjacent": 0.888888955116272,
+            "zombie_adjacent": 0.5548129081726074,
+            "arrow_or_skeleton": 0.6713516712188721,
+            "none_of_these": 0.6694677472114563
+          }
+        }
+      },
+      "rules": {
+        "R0_pixels1_vs_prior": {
+          "difference": 0.34437501430511475,
+          "interval": [
+            0.28898119926452637,
+            0.3962397873401642
+          ],
+          "excludes_zero": true
+        },
+        "R1_tokens_attn_vs_cls": {
+          "difference": 0.12613290548324585,
+          "interval": [
+            0.09405522793531418,
+            0.15911094844341278
+          ],
+          "excludes_zero": true
+        },
+        "R2_tokens_attn_vs_cls_wide": {
+          "difference": 0.10888028144836426,
+          "interval": [
+            0.07473279535770416,
+            0.1421571522951126
+          ],
+          "excludes_zero": true
+        },
+        "R3_tokens_attn_vs_cls_wide_zombie": {
+          "difference": 0.0928870439529419,
+          "interval": [
+            0.0489775575697422,
+            0.1344173699617386
+          ],
+          "excludes_zero": true
+        }
+      },
+      "reported": {
+        "cls_wide_vs_cls": {
+          "difference": 0.017252624034881592,
+          "interval": [
+            -0.009782719425857067,
+            0.048010390251874924
+          ],
+          "excludes_zero": false
+        },
+        "z_vs_cls": {
+          "difference": 0.01384115219116211,
+          "interval": [
+            -0.009450073353946209,
+            0.03757649287581444
+          ],
+          "excludes_zero": false
+        },
+        "tokens_attn_vs_prior": {
+          "difference": 0.17930996417999268,
+          "interval": [
+            0.12312357127666473,
+            0.2350761890411377
+          ],
+          "excludes_zero": true
+        },
+        "cls_wide_vs_prior": {
+          "difference": 0.07042968273162842,
+          "interval": [
+            0.01087890937924385,
+            0.13138744235038757
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "death2": {
+      "judge_opportunity_roots": 1450,
+      "prior_action": 4,
+      "prior_expected_safe": 0.5964224338531494,
+      "strata_opportunity": {
+        "day": 781,
+        "night": 669,
+        "lava_adjacent": 93,
+        "zombie_adjacent": 638,
+        "arrow_or_skeleton": 352,
+        "none_of_these": 539
+      },
+      "prior_by_stratum": {
+        "day": 0.5931898355484009,
+        "night": 0.6001961827278137,
+        "lava_adjacent": 0.5161290168762207,
+        "zombie_adjacent": 0.3118632435798645,
+        "arrow_or_skeleton": 0.6392933130264282,
+        "none_of_these": 0.88166743516922
+      },
+      "arms": {
+        "pixels1": {
+          "runs": [
+            {
+              "selected_step": 2600,
+              "inner_safe": 0.7207825183868408,
+              "parameters": 609457,
+              "judge_expected_safe": 0.6827801465988159,
+              "fit_expected_safe": 0.7831975221633911
+            },
+            {
+              "selected_step": 2600,
+              "inner_safe": 0.7195968627929688,
+              "parameters": 609457,
+              "judge_expected_safe": 0.6914870738983154,
+              "fit_expected_safe": 0.7828556299209595
+            },
+            {
+              "selected_step": 2500,
+              "inner_safe": 0.7290819883346558,
+              "parameters": 609457,
+              "judge_expected_safe": 0.6873275637626648,
+              "fit_expected_safe": 0.7809377908706665
+            }
+          ],
+          "judge_expected_safe": 0.687198281288147,
+          "vs_prior": {
+            "difference": 0.09077584743499756,
+            "interval": [
+              0.06696860492229462,
+              0.1156231239438057
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.7101204991340637,
+            "night": 0.6604384183883667,
+            "lava_adjacent": 1.0,
+            "zombie_adjacent": 0.37268152832984924,
+            "arrow_or_skeleton": 0.7227451205253601,
+            "none_of_these": 0.9411912560462952
+          }
+        },
+        "tokens_attn": {
+          "runs": [
+            {
+              "selected_step": 2200,
+              "inner_safe": 0.6937669515609741,
+              "parameters": 115218,
+              "judge_expected_safe": 0.6711422204971313,
+              "fit_expected_safe": 0.7535085678100586
+            },
+            {
+              "selected_step": 3000,
+              "inner_safe": 0.6793699264526367,
+              "parameters": 115218,
+              "judge_expected_safe": 0.6348922252655029,
+              "fit_expected_safe": 0.7439938187599182
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6572662591934204,
+              "parameters": 115218,
+              "judge_expected_safe": 0.6216379404067993,
+              "fit_expected_safe": 0.6747740507125854
+            }
+          ],
+          "judge_expected_safe": 0.6425575017929077,
+          "vs_prior": {
+            "difference": 0.0461350679397583,
+            "interval": [
+              0.02406751550734043,
+              0.07167406380176544
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.66649329662323,
+            "night": 0.6146144866943359,
+            "lava_adjacent": 0.9677419066429138,
+            "zombie_adjacent": 0.323406457901001,
+            "arrow_or_skeleton": 0.6714902520179749,
+            "none_of_these": 0.9058827757835388
+          }
+        },
+        "cls": {
+          "runs": [
+            {
+              "selected_step": 200,
+              "inner_safe": 0.6551490426063538,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6268749833106995,
+              "fit_expected_safe": 0.6806018352508545
+            },
+            {
+              "selected_step": 100,
+              "inner_safe": 0.6525236964225769,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6080818772315979,
+              "fit_expected_safe": 0.6767513155937195
+            },
+            {
+              "selected_step": 200,
+              "inner_safe": 0.6515074372291565,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6281896829605103,
+              "fit_expected_safe": 0.6753984093666077
+            }
+          ],
+          "judge_expected_safe": 0.6210488677024841,
+          "vs_prior": {
+            "difference": 0.024626433849334717,
+            "interval": [
+              0.003228126559406519,
+              0.04714915156364441
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.641191840171814,
+            "night": 0.597533643245697,
+            "lava_adjacent": 0.8960573673248291,
+            "zombie_adjacent": 0.3104427754878998,
+            "arrow_or_skeleton": 0.6540601253509521,
+            "none_of_these": 0.8816287517547607
+          }
+        },
+        "cls_wide": {
+          "runs": [
+            {
+              "selected_step": 2400,
+              "inner_safe": 0.6648035049438477,
+              "parameters": 4626449,
+              "judge_expected_safe": 0.6043750047683716,
+              "fit_expected_safe": 0.7576266527175903
+            },
+            {
+              "selected_step": 100,
+              "inner_safe": 0.6665819883346558,
+              "parameters": 4626449,
+              "judge_expected_safe": 0.6151077747344971,
+              "fit_expected_safe": 0.6793381571769714
+            },
+            {
+              "selected_step": 1600,
+              "inner_safe": 0.6558265686035156,
+              "parameters": 4626449,
+              "judge_expected_safe": 0.6178017258644104,
+              "fit_expected_safe": 0.7426706552505493
+            }
+          ],
+          "judge_expected_safe": 0.6124281883239746,
+          "vs_prior": {
+            "difference": 0.016005754470825195,
+            "interval": [
+              -0.009624948725104332,
+              0.043186552822589874
+            ],
+            "excludes_zero": false
+          },
+          "by_stratum": {
+            "day": 0.6439660787582397,
+            "night": 0.5756103992462158,
+            "lava_adjacent": 0.774193525314331,
+            "zombie_adjacent": 0.3139367997646332,
+            "arrow_or_skeleton": 0.6265092492103577,
+            "none_of_these": 0.8734926581382751
+          }
+        },
+        "z": {
+          "runs": [
+            {
+              "selected_step": 500,
+              "inner_safe": 0.651761531829834,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6276077628135681,
+              "fit_expected_safe": 0.6963011622428894
+            },
+            {
+              "selected_step": 300,
+              "inner_safe": 0.6483739614486694,
+              "parameters": 107537,
+              "judge_expected_safe": 0.642650842666626,
+              "fit_expected_safe": 0.6921384334564209
+            },
+            {
+              "selected_step": 1100,
+              "inner_safe": 0.6456639766693115,
+              "parameters": 107537,
+              "judge_expected_safe": 0.6234267354011536,
+              "fit_expected_safe": 0.7166537642478943
+            }
+          ],
+          "judge_expected_safe": 0.631228506565094,
+          "vs_prior": {
+            "difference": 0.03480607271194458,
+            "interval": [
+              0.009190944954752922,
+              0.062070462852716446
+            ],
+            "excludes_zero": true
+          },
+          "by_stratum": {
+            "day": 0.651581883430481,
+            "night": 0.6074676513671875,
+            "lava_adjacent": 0.9211469292640686,
+            "zombie_adjacent": 0.3189328610897064,
+            "arrow_or_skeleton": 0.6624644994735718,
+            "none_of_these": 0.8897457122802734
+          }
+        }
+      },
+      "rules": {
+        "R0_pixels1_vs_prior": {
+          "difference": 0.09077584743499756,
+          "interval": [
+            0.06652960926294327,
+            0.11463303864002228
+          ],
+          "excludes_zero": true
+        },
+        "R1_tokens_attn_vs_cls": {
+          "difference": 0.021508634090423584,
+          "interval": [
+            0.010744239203631878,
+            0.03242623805999756
+          ],
+          "excludes_zero": true
+        },
+        "R2_tokens_attn_vs_cls_wide": {
+          "difference": 0.030129313468933105,
+          "interval": [
+            0.01738603413105011,
+            0.04302521422505379
+          ],
+          "excludes_zero": true
+        },
+        "R3_tokens_attn_vs_cls_wide_zombie": {
+          "difference": 0.009469658136367798,
+          "interval": [
+            -0.0028440228197723627,
+            0.02167096547782421
+          ],
+          "excludes_zero": false
+        }
+      },
+      "reported": {
+        "cls_wide_vs_cls": {
+          "difference": -0.008620679378509521,
+          "interval": [
+            -0.021663431078195572,
+            0.004354321397840977
+          ],
+          "excludes_zero": false
+        },
+        "z_vs_cls": {
+          "difference": 0.010179638862609863,
+          "interval": [
+            0.001198595855385065,
+            0.019929436966776848
+          ],
+          "excludes_zero": true
+        },
+        "tokens_attn_vs_prior": {
+          "difference": 0.0461350679397583,
+          "interval": [
+            0.02449829690158367,
+            0.0710459053516388
+          ],
+          "excludes_zero": true
+        },
+        "cls_wide_vs_prior": {
+          "difference": 0.016005754470825195,
+          "interval": [
+            -0.008712491020560265,
+            0.04336811602115631
+          ],
+          "excludes_zero": false
+        }
+      }
+    }
+  }
+}

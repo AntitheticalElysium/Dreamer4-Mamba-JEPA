@@ -1,0 +1,35 @@
+{
+  "windows": 32647,
+  "terminal_windows": 8071,
+  "frames": 195882,
+  "groups": {
+    "main": {
+      "all_positions": {
+        "awake_dead": 83,
+        "asleep_dead": 1,
+        "awake_alive": 119524,
+        "asleep_alive": 27848
+      },
+      "last_position": {
+        "awake_dead": 83,
+        "asleep_dead": 1,
+        "awake_alive": 19831,
+        "asleep_alive": 4661
+      }
+    },
+    "terminal": {
+      "all_positions": {
+        "awake_dead": 7819,
+        "asleep_dead": 252,
+        "awake_alive": 24185,
+        "asleep_alive": 16170
+      },
+      "last_position": {
+        "awake_dead": 7819,
+        "asleep_dead": 252,
+        "awake_alive": 0,
+        "asleep_alive": 0
+      }
+    }
+  }
+}

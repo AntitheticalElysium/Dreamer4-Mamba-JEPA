@@ -1,0 +1,206 @@
+{
+  "states": 300,
+  "natural": 804,
+  "steps": {
+    "0": [
+      {
+        "layer": 0,
+        "cls_near_far_cosine": null,
+        "cls_near_far_over_natural_radius": 0.0,
+        "cls_near_far_dprime": NaN,
+        "local_token_near_far_dprime": 5.234943447446535
+      },
+      {
+        "layer": 1,
+        "cls_near_far_cosine": 0.9998646177869378,
+        "cls_near_far_over_natural_radius": 0.0006668647401966155,
+        "cls_near_far_dprime": 0.04701127442247341,
+        "local_token_near_far_dprime": 5.6150981427962785
+      },
+      {
+        "layer": 2,
+        "cls_near_far_cosine": 0.9998690043226921,
+        "cls_near_far_over_natural_radius": 0.0006494460394605994,
+        "cls_near_far_dprime": 0.04681371640254815,
+        "local_token_near_far_dprime": 5.952224812913114
+      },
+      {
+        "layer": 3,
+        "cls_near_far_cosine": 0.9998955579136035,
+        "cls_near_far_over_natural_radius": 0.0006453782552853227,
+        "cls_near_far_dprime": 0.045161261229887624,
+        "local_token_near_far_dprime": 5.989174014672636
+      },
+      {
+        "layer": 4,
+        "cls_near_far_cosine": 0.999899181321954,
+        "cls_near_far_over_natural_radius": 0.000677455507684499,
+        "cls_near_far_dprime": 0.04925542764603727,
+        "local_token_near_far_dprime": 6.00451973083584
+      },
+      {
+        "layer": 5,
+        "cls_near_far_cosine": 0.9999093455497933,
+        "cls_near_far_over_natural_radius": 0.000656445452477783,
+        "cls_near_far_dprime": 0.04552613077829167,
+        "local_token_near_far_dprime": 6.055141388348571
+      },
+      {
+        "layer": 6,
+        "cls_near_far_cosine": 0.9998943467440712,
+        "cls_near_far_over_natural_radius": 0.0006745345890522003,
+        "cls_near_far_dprime": 0.04589739999105946,
+        "local_token_near_far_dprime": 6.078897356023282
+      },
+      {
+        "layer": 7,
+        "cls_near_far_cosine": 0.9999033933385881,
+        "cls_near_far_over_natural_radius": 0.0007019691984169185,
+        "cls_near_far_dprime": 0.04810395148636683,
+        "local_token_near_far_dprime": 6.12926519913251
+      },
+      {
+        "layer": 8,
+        "cls_near_far_cosine": 0.9998931073848465,
+        "cls_near_far_over_natural_radius": 0.0007147711585275829,
+        "cls_near_far_dprime": 0.048494696595024554,
+        "local_token_near_far_dprime": 6.176413543915392
+      },
+      {
+        "layer": 9,
+        "cls_near_far_cosine": 0.9998925138684065,
+        "cls_near_far_over_natural_radius": 0.0007061463547870517,
+        "cls_near_far_dprime": 0.04647375126792157,
+        "local_token_near_far_dprime": 6.201496174878671
+      },
+      {
+        "layer": 10,
+        "cls_near_far_cosine": 0.9998855656264085,
+        "cls_near_far_over_natural_radius": 0.0007337607094086707,
+        "cls_near_far_dprime": 0.04679342501175624,
+        "local_token_near_far_dprime": 6.245648444239943
+      },
+      {
+        "layer": 11,
+        "cls_near_far_cosine": 0.999880409981363,
+        "cls_near_far_over_natural_radius": 0.0007183280540630221,
+        "cls_near_far_dprime": 0.04806637035587503,
+        "local_token_near_far_dprime": 6.290164697377777
+      },
+      {
+        "layer": 12,
+        "cls_near_far_cosine": 0.999882696229921,
+        "cls_near_far_over_natural_radius": 0.0007140464731492102,
+        "cls_near_far_dprime": 0.04915975559744522,
+        "local_token_near_far_dprime": 6.302827787553356
+      },
+      {
+        "layer": 13,
+        "cls_near_far_cosine": 0.9998803061532956,
+        "cls_near_far_over_natural_radius": 0.000741174619179219,
+        "cls_near_far_dprime": 0.050218291823630516,
+        "local_token_near_far_dprime": 6.228091846249416
+      }
+    ],
+    "10000": [
+      {
+        "layer": 0,
+        "cls_near_far_cosine": null,
+        "cls_near_far_over_natural_radius": 0.0,
+        "cls_near_far_dprime": NaN,
+        "local_token_near_far_dprime": 5.25128750959927
+      },
+      {
+        "layer": 1,
+        "cls_near_far_cosine": 0.9990519059593517,
+        "cls_near_far_over_natural_radius": 0.0010228565661236644,
+        "cls_near_far_dprime": 0.06305502704190831,
+        "local_token_near_far_dprime": 5.981336275547346
+      },
+      {
+        "layer": 2,
+        "cls_near_far_cosine": 0.9991090962791849,
+        "cls_near_far_over_natural_radius": 0.0011607471387833357,
+        "cls_near_far_dprime": 0.07268947167417499,
+        "local_token_near_far_dprime": 6.164049354747336
+      },
+      {
+        "layer": 3,
+        "cls_near_far_cosine": 0.9992523003875505,
+        "cls_near_far_over_natural_radius": 0.0011993773514404893,
+        "cls_near_far_dprime": 0.0775360576313865,
+        "local_token_near_far_dprime": 6.240257996160904
+      },
+      {
+        "layer": 4,
+        "cls_near_far_cosine": 0.9994079067509483,
+        "cls_near_far_over_natural_radius": 0.001118774525821209,
+        "cls_near_far_dprime": 0.06993720743588412,
+        "local_token_near_far_dprime": 6.282448216999371
+      },
+      {
+        "layer": 5,
+        "cls_near_far_cosine": 0.9995122506899563,
+        "cls_near_far_over_natural_radius": 0.0010614135535433888,
+        "cls_near_far_dprime": 0.06274025482521108,
+        "local_token_near_far_dprime": 6.304535510134299
+      },
+      {
+        "layer": 6,
+        "cls_near_far_cosine": 0.9995745509385144,
+        "cls_near_far_over_natural_radius": 0.0010194971691817045,
+        "cls_near_far_dprime": 0.0585974940300721,
+        "local_token_near_far_dprime": 6.218557397805617
+      },
+      {
+        "layer": 7,
+        "cls_near_far_cosine": 0.9996979241852677,
+        "cls_near_far_over_natural_radius": 0.0009465855546295643,
+        "cls_near_far_dprime": 0.05326497415704538,
+        "local_token_near_far_dprime": 6.209575329789803
+      },
+      {
+        "layer": 8,
+        "cls_near_far_cosine": 0.9997544546113614,
+        "cls_near_far_over_natural_radius": 0.0009004338062368333,
+        "cls_near_far_dprime": 0.04980407344843972,
+        "local_token_near_far_dprime": 6.214331981478251
+      },
+      {
+        "layer": 9,
+        "cls_near_far_cosine": 0.9997833854097837,
+        "cls_near_far_over_natural_radius": 0.0008699073223397136,
+        "cls_near_far_dprime": 0.045856667283465095,
+        "local_token_near_far_dprime": 6.284817818940761
+      },
+      {
+        "layer": 10,
+        "cls_near_far_cosine": 0.999808115978652,
+        "cls_near_far_over_natural_radius": 0.000853914360050112,
+        "cls_near_far_dprime": 0.04258346342724624,
+        "local_token_near_far_dprime": 6.3176210713361725
+      },
+      {
+        "layer": 11,
+        "cls_near_far_cosine": 0.9998379167936242,
+        "cls_near_far_over_natural_radius": 0.0008421065285801888,
+        "cls_near_far_dprime": 0.039062911405616116,
+        "local_token_near_far_dprime": 6.369396336013574
+      },
+      {
+        "layer": 12,
+        "cls_near_far_cosine": 0.9998601917725309,
+        "cls_near_far_over_natural_radius": 0.000827745592687279,
+        "cls_near_far_dprime": 0.035458711083852214,
+        "local_token_near_far_dprime": 6.41215713523892
+      },
+      {
+        "layer": 13,
+        "cls_near_far_cosine": 0.9998567815770272,
+        "cls_near_far_over_natural_radius": 0.0007864089566282928,
+        "cls_near_far_dprime": 0.034192618774178916,
+        "local_token_near_far_dprime": 6.2384061127486135
+      }
+    ]
+  }
+}

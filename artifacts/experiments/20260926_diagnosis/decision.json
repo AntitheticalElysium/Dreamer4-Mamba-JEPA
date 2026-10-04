@@ -1,0 +1,90 @@
+{
+  "55k": {
+    "visible_rule": {
+      "overall": 0.9761859178543091,
+      "zombie": 0.9815786480903625
+    },
+    "cooldown_rule": {
+      "overall": 0.9799935221672058,
+      "zombie": 0.9874122738838196
+    },
+    "ceiling": {
+      "overall": 0.9990283250808716,
+      "zombie": 0.998774528503418
+    },
+    "DOWN": {
+      "overall": 0.586442768573761,
+      "zombie": 0.4960784316062927
+    },
+    "n": {
+      "opportunity": 804,
+      "zombie": 510
+    }
+  },
+  "56k": {
+    "visible_rule": {
+      "overall": 0.9790909886360168,
+      "zombie": 0.9815903902053833
+    },
+    "cooldown_rule": {
+      "overall": 0.9832620620727539,
+      "zombie": 0.9880224466323853
+    },
+    "ceiling": {
+      "overall": 1.0,
+      "zombie": 1.0
+    },
+    "DOWN": {
+      "overall": 0.5912531018257141,
+      "zombie": 0.5394176244735718
+    },
+    "n": {
+      "opportunity": 801,
+      "zombie": 528
+    }
+  },
+  "57k": {
+    "visible_rule": {
+      "overall": 0.9662234783172607,
+      "zombie": 0.97812420129776
+    },
+    "cooldown_rule": {
+      "overall": 0.969429075717926,
+      "zombie": 0.9838117361068726
+    },
+    "ceiling": {
+      "overall": 0.9997276067733765,
+      "zombie": 0.9995160102844238
+    },
+    "DOWN": {
+      "overall": 0.6347680687904358,
+      "zombie": 0.5967229008674622
+    },
+    "n": {
+      "opportunity": 803,
+      "zombie": 452
+    }
+  },
+  "58k": {
+    "visible_rule": {
+      "overall": 0.9736243486404419,
+      "zombie": 0.9774640202522278
+    },
+    "cooldown_rule": {
+      "overall": 0.9802791476249695,
+      "zombie": 0.988630473613739
+    },
+    "ceiling": {
+      "overall": 0.9997684955596924,
+      "zombie": 0.999610185623169
+    },
+    "DOWN": {
+      "overall": 0.6604552268981934,
+      "zombie": 0.584589421749115
+    },
+    "n": {
+      "opportunity": 810,
+      "zombie": 481
+    }
+  }
+}

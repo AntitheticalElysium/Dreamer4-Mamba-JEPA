@@ -1,0 +1,128 @@
+{
+  "source_per_root": "artifacts/experiments/20260927_levers/fscan_hud_feedback_per_root.pt",
+  "source_script": "fscan_hud_feedback.py",
+  "walk_seeds": 143,
+  "normalizer_V": 7626.31787109375,
+  "depths": {
+    "1": {
+      "alive": 1002,
+      "per_world": {
+        "fattn": {
+          "native": 0.052323780953884125,
+          "hud": 0.052323319017887115
+        },
+        "fscan": {
+          "native": 0.04342157393693924,
+          "hud": 0.04342145472764969
+        }
+      },
+      "scan_minus_attention_native": -0.008902207016944885,
+      "scan_minus_attention_hud": -0.008901864290237427,
+      "difference_in_hud_effect": 3.427267074584961e-07,
+      "ci95": [
+        4.842877388000488e-08,
+        6.892720421092235e-07
+      ]
+    },
+    "2": {
+      "alive": 1002,
+      "per_world": {
+        "fattn": {
+          "native": 0.10646549612283707,
+          "hud": 0.10268556326627731
+        },
+        "fscan": {
+          "native": 0.09559115022420883,
+          "hud": 0.08912410587072372
+        }
+      },
+      "scan_minus_attention_native": -0.010874345898628235,
+      "scan_minus_attention_hud": -0.013561457395553589,
+      "difference_in_hud_effect": -0.002687111496925354,
+      "ci95": [
+        -0.008627540431916714,
+        0.001220463658683002
+      ]
+    },
+    "4": {
+      "alive": 1002,
+      "per_world": {
+        "fattn": {
+          "native": 0.2172854244709015,
+          "hud": 0.20473487675189972
+        },
+        "fscan": {
+          "native": 0.21466578543186188,
+          "hud": 0.1887214481830597
+        }
+      },
+      "scan_minus_attention_native": -0.002619639039039612,
+      "scan_minus_attention_hud": -0.016013428568840027,
+      "difference_in_hud_effect": -0.013393789529800415,
+      "ci95": [
+        -0.02517637610435486,
+        -0.003966249991208315
+      ]
+    },
+    "8": {
+      "alive": 1002,
+      "per_world": {
+        "fattn": {
+          "native": 0.4055882394313812,
+          "hud": 0.3655787408351898
+        },
+        "fscan": {
+          "native": 0.4217623174190521,
+          "hud": 0.35146355628967285
+        }
+      },
+      "scan_minus_attention_native": 0.0161740779876709,
+      "scan_minus_attention_hud": -0.014115184545516968,
+      "difference_in_hud_effect": -0.030289262533187866,
+      "ci95": [
+        -0.044366784393787384,
+        -0.017887307330965996
+      ]
+    },
+    "12": {
+      "alive": 1002,
+      "per_world": {
+        "fattn": {
+          "native": 0.586857795715332,
+          "hud": 0.5188133716583252
+        },
+        "fscan": {
+          "native": 0.6272804737091064,
+          "hud": 0.501952588558197
+        }
+      },
+      "scan_minus_attention_native": 0.040422677993774414,
+      "scan_minus_attention_hud": -0.016860783100128174,
+      "difference_in_hud_effect": -0.05728346109390259,
+      "ci95": [
+        -0.07423973828554153,
+        -0.041149888187646866
+      ]
+    },
+    "16": {
+      "alive": 998,
+      "per_world": {
+        "fattn": {
+          "native": 0.7397036552429199,
+          "hud": 0.6471927165985107
+        },
+        "fscan": {
+          "native": 0.7947990894317627,
+          "hud": 0.6191248893737793
+        }
+      },
+      "scan_minus_attention_native": 0.05509543418884277,
+      "scan_minus_attention_hud": -0.028067827224731445,
+      "difference_in_hud_effect": -0.08316326141357422,
+      "ci95": [
+        -0.10241018980741501,
+        -0.06445005536079407
+      ]
+    }
+  }
+}

@@ -1,0 +1,403 @@
+{
+  "panel": "verified critical addresses, re-encoded from this checkpoint",
+  "labels": 25,
+  "supported_labels": 21,
+  "coverage": [
+    {
+      "label": "front_lava",
+      "counts": {
+        "train": {
+          "positive": 10,
+          "negative": 54
+        },
+        "dev": {
+          "positive": 10,
+          "negative": 55
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "front_water",
+      "counts": {
+        "train": {
+          "positive": 10,
+          "negative": 54
+        },
+        "dev": {
+          "positive": 10,
+          "negative": 55
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "front_tree",
+      "counts": {
+        "train": {
+          "positive": 10,
+          "negative": 54
+        },
+        "dev": {
+          "positive": 10,
+          "negative": 55
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "front_resource",
+      "counts": {
+        "train": {
+          "positive": 0,
+          "negative": 64
+        },
+        "dev": {
+          "positive": 0,
+          "negative": 65
+        }
+      },
+      "supported": false
+    },
+    {
+      "label": "front_ripe_plant",
+      "counts": {
+        "train": {
+          "positive": 15,
+          "negative": 49
+        },
+        "dev": {
+          "positive": 15,
+          "negative": 50
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "near_table",
+      "counts": {
+        "train": {
+          "positive": 12,
+          "negative": 52
+        },
+        "dev": {
+          "positive": 12,
+          "negative": 53
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "near_furnace",
+      "counts": {
+        "train": {
+          "positive": 12,
+          "negative": 52
+        },
+        "dev": {
+          "positive": 12,
+          "negative": 53
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "adjacent_mob",
+      "counts": {
+        "train": {
+          "positive": 0,
+          "negative": 64
+        },
+        "dev": {
+          "positive": 0,
+          "negative": 65
+        }
+      },
+      "supported": false
+    },
+    {
+      "label": "sleeping",
+      "counts": {
+        "train": {
+          "positive": 0,
+          "negative": 64
+        },
+        "dev": {
+          "positive": 1,
+          "negative": 64
+        }
+      },
+      "supported": false
+    },
+    {
+      "label": "move_left",
+      "counts": {
+        "train": {
+          "positive": 42,
+          "negative": 22
+        },
+        "dev": {
+          "positive": 52,
+          "negative": 13
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "move_right",
+      "counts": {
+        "train": {
+          "positive": 40,
+          "negative": 24
+        },
+        "dev": {
+          "positive": 45,
+          "negative": 20
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "move_up",
+      "counts": {
+        "train": {
+          "positive": 46,
+          "negative": 18
+        },
+        "dev": {
+          "positive": 39,
+          "negative": 26
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "move_down",
+      "counts": {
+        "train": {
+          "positive": 48,
+          "negative": 16
+        },
+        "dev": {
+          "positive": 46,
+          "negative": 19
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "do",
+      "counts": {
+        "train": {
+          "positive": 45,
+          "negative": 19
+        },
+        "dev": {
+          "positive": 45,
+          "negative": 20
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "sleep",
+      "counts": {
+        "train": {
+          "positive": 39,
+          "negative": 25
+        },
+        "dev": {
+          "positive": 47,
+          "negative": 18
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "place_stone",
+      "counts": {
+        "train": {
+          "positive": 25,
+          "negative": 39
+        },
+        "dev": {
+          "positive": 25,
+          "negative": 40
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "place_table",
+      "counts": {
+        "train": {
+          "positive": 9,
+          "negative": 55
+        },
+        "dev": {
+          "positive": 5,
+          "negative": 60
+        }
+      },
+      "supported": false
+    },
+    {
+      "label": "place_furnace",
+      "counts": {
+        "train": {
+          "positive": 17,
+          "negative": 47
+        },
+        "dev": {
+          "positive": 15,
+          "negative": 50
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "place_plant",
+      "counts": {
+        "train": {
+          "positive": 10,
+          "negative": 54
+        },
+        "dev": {
+          "positive": 11,
+          "negative": 54
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "make_wood_pickaxe",
+      "counts": {
+        "train": {
+          "positive": 11,
+          "negative": 53
+        },
+        "dev": {
+          "positive": 11,
+          "negative": 54
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "make_stone_pickaxe",
+      "counts": {
+        "train": {
+          "positive": 11,
+          "negative": 53
+        },
+        "dev": {
+          "positive": 11,
+          "negative": 54
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "make_iron_pickaxe",
+      "counts": {
+        "train": {
+          "positive": 10,
+          "negative": 54
+        },
+        "dev": {
+          "positive": 10,
+          "negative": 55
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "make_wood_sword",
+      "counts": {
+        "train": {
+          "positive": 11,
+          "negative": 53
+        },
+        "dev": {
+          "positive": 11,
+          "negative": 54
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "make_stone_sword",
+      "counts": {
+        "train": {
+          "positive": 11,
+          "negative": 53
+        },
+        "dev": {
+          "positive": 11,
+          "negative": 54
+        }
+      },
+      "supported": true
+    },
+    {
+      "label": "make_iron_sword",
+      "counts": {
+        "train": {
+          "positive": 10,
+          "negative": 54
+        },
+        "dev": {
+          "positive": 10,
+          "negative": 55
+        }
+      },
+      "supported": true
+    }
+  ],
+  "auc_margin": 0.03,
+  "probes": {
+    "linear": {
+      "cls": {
+        "difference": -0.006610882699264023,
+        "interval": [
+          -0.09121587127447128,
+          0.06272369623184204
+        ],
+        "valid_draws": 1000,
+        "draws": 1000,
+        "unit": "episode",
+        "status": "measured"
+      }
+    },
+    "mlp": {
+      "cls": {
+        "difference": -0.024000578716325955,
+        "interval": [
+          -0.07482938468456268,
+          0.0119156613945961
+        ],
+        "valid_draws": 1000,
+        "draws": 1000,
+        "unit": "episode",
+        "status": "measured"
+      }
+    }
+  },
+  "macro_auc": {
+    "linear": {
+      "projected": 0.7014951735815126,
+      "cls": 0.7081060562807766
+    },
+    "mlp": {
+      "projected": 0.7052030679556612,
+      "cls": 0.7292036466719872
+    }
+  },
+  "failed_checks": 2,
+  "rule": "projected z must be noninferior to CLS and to the preselected reference: every probe family's lower 95% bound above -auc_margin",
+  "raw_rows": {
+    "path": "artifacts/lewm_m4_canonical/raw/gates/h2/semantic_retention.rows.pt",
+    "sha256": "2bfc3cfb24db335eb25ae01c0da665d6071e5640bf8e5502fed2ec63ed265f98",
+    "rows": 129
+  }
+}

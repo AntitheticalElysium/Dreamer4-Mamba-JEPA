@@ -1,0 +1,35 @@
+{
+  "schema": "d4mj_ridge_oracle_v1",
+  "status": "POST HOC, exploratory (56k read three times)",
+  "script_sha256": "c740701dcc378b9e163c633ac7a033b2d3914cc6b0e92ee2f45f9f983279469e",
+  "judge_manifest": "0a42c1e36b233190cd2c0456098735e433c9da44e5e1754c352330da4e49cc78",
+  "ridge_lambda": 100.0,
+  "held_out_sse": 144.89105224609375,
+  "reading": "not_linearly_predictable",
+  "result": {
+    "all": {
+      "roots": 797,
+      "real_auc": 0.9996706397650084,
+      "generated_auc": 0.596435291606143,
+      "effect_corr": 0.2014026641845703,
+      "effect_ratio": 0.42639899253845215,
+      "effect_r2_all": 0.7724775075912476,
+      "top10_effect_r2": 0.8320308923721313,
+      "tail_effect_r2": 0.4193273186683655
+    },
+    "zombie": {
+      "roots": 527,
+      "real_auc": 0.9995018973296236,
+      "generated_auc": 0.7531601194879023,
+      "effect_corr": 0.35104793310165405,
+      "effect_ratio": 0.40715813636779785,
+      "effect_r2_all": 0.7789120674133301,
+      "top10_effect_r2": 0.839285135269165,
+      "tail_effect_r2": 0.4177083969116211
+    }
+  },
+  "u_worlds_on_56k": {
+    "U_s1": 0.6357,
+    "U_s2": 0.6136
+  }
+}

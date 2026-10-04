@@ -1,0 +1,143 @@
+{
+  "raw": {
+    "checkpoint_sha256": "bdf50eb426830501daf1a3b79f86d86f4557988c190282ac0e3cf5d056f324f4",
+    "n_all": 4008,
+    "n_test": 1132,
+    "n_test_moved": 784,
+    "n_test_blocked": 348,
+    "metrics": {
+      "frame": {
+        "auc_moved_test": 0.6382535772929862,
+        "mean_test_moved": 0.071923166513443,
+        "mean_test_blocked": -0.7355166673660278
+      },
+      "player_self": {
+        "auc_moved_test": 0.28686151184611774,
+        "mean_test_moved": 0.5640922784805298,
+        "mean_test_blocked": 0.7606291770935059
+      },
+      "player_scroll": {
+        "auc_moved_test": 0.7077688834154351,
+        "mean_test_moved": 0.08306306600570679,
+        "mean_test_blocked": 0.043870288878679276
+      },
+      "target_self": {
+        "auc_moved_test": 0.3954264895613418,
+        "mean_test_moved": 0.13286417722702026,
+        "mean_test_blocked": 0.35548728704452515
+      },
+      "target_scroll": {
+        "auc_moved_test": 0.6820094417077176,
+        "mean_test_moved": 0.8479636907577515,
+        "mean_test_blocked": 0.5782997012138367
+      },
+      "h_action": {
+        "probe_auc_moved_test": 0.8091829404175463
+      },
+      "h_target": {
+        "probe_auc_moved_test": 0.9981417135819846
+      },
+      "input_target": {
+        "probe_auc_moved_test": 0.9999926694815857
+      }
+    },
+    "player_scroll_beats_self": {
+      "moved": 0.020408162847161293,
+      "blocked": 0.008620689623057842
+    }
+  },
+  "ldad1": {
+    "checkpoint_sha256": "a84d2cc971b961a82a4f83ced01bfe14ed600473428233e989088ea49ec23efa",
+    "n_all": 4008,
+    "n_test": 1132,
+    "n_test_moved": 784,
+    "n_test_blocked": 348,
+    "metrics": {
+      "frame": {
+        "auc_moved_test": 0.9992339608257096,
+        "mean_test_moved": -0.8343480825424194,
+        "mean_test_blocked": -1.280430555343628
+      },
+      "player_self": {
+        "auc_moved_test": 0.18957820197044334,
+        "mean_test_moved": 0.39482372999191284,
+        "mean_test_blocked": 0.677108883857727
+      },
+      "player_scroll": {
+        "auc_moved_test": 0.8122324360778794,
+        "mean_test_moved": 0.0639103502035141,
+        "mean_test_blocked": 0.024560555815696716
+      },
+      "target_self": {
+        "auc_moved_test": 0.07653427750410509,
+        "mean_test_moved": 0.5727484226226807,
+        "mean_test_blocked": 0.891785740852356
+      },
+      "target_scroll": {
+        "auc_moved_test": 0.9654622624912034,
+        "mean_test_moved": 0.18719330430030823,
+        "mean_test_blocked": 0.019351880997419357
+      },
+      "h_action": {
+        "probe_auc_moved_test": 1.0
+      },
+      "h_target": {
+        "probe_auc_moved_test": 1.0
+      },
+      "input_target": {
+        "probe_auc_moved_test": 1.0
+      }
+    },
+    "player_scroll_beats_self": {
+      "moved": 0.0,
+      "blocked": 0.0
+    }
+  },
+  "ldad10": {
+    "checkpoint_sha256": "30776813133c52fc5938165818dc3af21567faf743502b7368e001bc7d2d0f78",
+    "n_all": 4008,
+    "n_test": 1132,
+    "n_test_moved": 784,
+    "n_test_blocked": 348,
+    "metrics": {
+      "frame": {
+        "auc_moved_test": 0.9865704902650716,
+        "mean_test_moved": -1.1312031745910645,
+        "mean_test_blocked": -1.3240166902542114
+      },
+      "player_self": {
+        "auc_moved_test": 0.20633576706544687,
+        "mean_test_moved": 0.49397289752960205,
+        "mean_test_blocked": 0.758608877658844
+      },
+      "player_scroll": {
+        "auc_moved_test": 0.7969556357025569,
+        "mean_test_moved": 0.056181587278842926,
+        "mean_test_blocked": 0.024627024307847023
+      },
+      "target_self": {
+        "auc_moved_test": 0.018887080694346706,
+        "mean_test_moved": 0.3804447054862976,
+        "mean_test_blocked": 0.9133468866348267
+      },
+      "target_scroll": {
+        "auc_moved_test": 0.9818606321839081,
+        "mean_test_moved": 0.37220457196235657,
+        "mean_test_blocked": 0.015945520251989365
+      },
+      "h_action": {
+        "probe_auc_moved_test": 0.9998900422237861
+      },
+      "h_target": {
+        "probe_auc_moved_test": 1.0
+      },
+      "input_target": {
+        "probe_auc_moved_test": 1.0
+      }
+    },
+    "player_scroll_beats_self": {
+      "moved": 0.0,
+      "blocked": 0.0
+    }
+  }
+}

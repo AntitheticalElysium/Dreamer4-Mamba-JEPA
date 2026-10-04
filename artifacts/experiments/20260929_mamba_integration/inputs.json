@@ -1,0 +1,50 @@
+{
+  "git_head": "db1bfd8e5df91c90cddd26212790908b9357e82a",
+  "inputs": {
+    "lambda1_encoder": {
+      "path": "artifacts/eda/levers_ldad_v1/raw_lam1/step-010000.pt",
+      "sha256": "b4c56cff70bcb118a4330d10a6c1e7bf1329ad1e971d908579e2969385ffc7d5",
+      "bytes": 35073103
+    },
+    "lambda10_encoder": {
+      "path": "artifacts/eda/levers_ldad_v1/raw_lam10/step-010000.pt",
+      "sha256": "e28358becedadebe8b1ef298ae2772afc3d0676b73595700e91d652e7b9de2f7",
+      "bytes": 35073103
+    },
+    "raw_pool": {
+      "path": "artifacts/eda/spatial_pool_v1/pool.pt",
+      "sha256": "7662de45ae043ae076d1751c7b34300919ec52f99106546fe39a2ff63ac9b5ac",
+      "bytes": 6247660387
+    },
+    "raw_pool_meta": {
+      "path": "artifacts/eda/spatial_pool_v1/pool.json",
+      "sha256": "af55e27e6b277aa413c6d863c7798a69e6f3fa7a336b5ae73cbc285cb9563294",
+      "bytes": 550
+    },
+    "pool_builder": {
+      "path": "artifacts/experiments/20260927_levers/tc_pool.py",
+      "sha256": "ef47cba94bcbb4338d7779a4e3e80c51b844de2ce2107a9e52799f46dc3b1f11",
+      "bytes": 3538
+    },
+    "world": {
+      "path": "artifacts/experiments/20260927_levers/tworld.py",
+      "sha256": "a7e3d3f473595f524e45b6004a91f9bd458b2766c37873630cd6d0d8e29cf343",
+      "bytes": 22161
+    },
+    "eval": {
+      "path": "artifacts/experiments/20260927_levers/teval.py",
+      "sha256": "c6c64bedf7f2d7765b04c242a528a4be7c373a2a5b773a250fce91579afc44af",
+      "bytes": 16995
+    },
+    "spatial": {
+      "path": "artifacts/experiments/20260921_readout_ladder/spatial.py",
+      "sha256": "89e055243d5378166fafd083f5055c05d5e4762e7a72ac2a954c48dbfefd8f81",
+      "bytes": 34500
+    },
+    "long_world_reference": {
+      "path": "artifacts/experiments/20260927_levers/context_cont.py",
+      "sha256": "4a88f586b9649383598d79e10f013dec8c70acd216e645ef24f1569e689c7879",
+      "bytes": 4021
+    }
+  }
+}

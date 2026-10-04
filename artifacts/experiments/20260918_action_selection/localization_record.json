@@ -1,0 +1,126 @@
+{
+  "schema": "d4mj_selection_localization_v1",
+  "commit": "cfceeb8cc865e09f832b91c0b5050ed7be69acf1",
+  "correction": {
+    "retracted": "'no world model adds skill' (from the generated-fit rescore write-up)",
+    "why_wrong": "that read global macro AUC, which pools all (root,action) pairs. Safe-action choice is a ranking WITHIN a root over its 17 forks. The two disagree.",
+    "evidence": "Direct-Mamba selection .917 vs its own root+action control .611, paired cluster bootstrap +.306 CI [+.125,+.487], excludes zero - while its death AUC (.782) sits on that control (.787)."
+  },
+  "safe_selection_death_mlp": {
+    "action_only_floor": 0.611,
+    "mamba_raw": 0.611,
+    "mamba_tc": 0.583,
+    "transformer_raw": 0.472,
+    "transformer_tc": 0.556,
+    "direct_mamba": 0.917,
+    "direct_attention": 0.889,
+    "opportunity_roots": 36
+  },
+  "paired_vs_own_root_action": {
+    "direct_mamba": {
+      "diff": 0.306,
+      "interval": [
+        0.125,
+        0.487
+      ],
+      "excludes_zero": true
+    },
+    "direct_attention": {
+      "diff": 0.278,
+      "interval": [
+        0.091,
+        0.472
+      ],
+      "excludes_zero": true
+    },
+    "mamba_raw": {
+      "diff": 0.0,
+      "interval": [
+        -0.162,
+        0.162
+      ],
+      "excludes_zero": false
+    },
+    "mamba_tc": {
+      "diff": -0.056,
+      "interval": [
+        -0.231,
+        0.125
+      ],
+      "excludes_zero": false
+    },
+    "transformer_raw": {
+      "diff": -0.083,
+      "interval": [
+        -0.231,
+        0.056
+      ],
+      "excludes_zero": false
+    },
+    "transformer_tc": {
+      "diff": 0.083,
+      "interval": [
+        -0.121,
+        0.273
+      ],
+      "excludes_zero": false
+    }
+  },
+  "ORACLE_decomposition": {
+    "what": "safe-action selection using the REAL observed successor encodings and a probe fitted on real successors. No world model is involved: this is the ceiling the representation permits.",
+    "linear": {
+      "mamba_raw": 0.222,
+      "mamba_tc": 0.194,
+      "transformer_raw": 0.417,
+      "transformer_tc": 0.25,
+      "direct": 0.861
+    },
+    "mlp": {
+      "mamba_raw": 0.389,
+      "mamba_tc": 0.222,
+      "transformer_raw": 0.389,
+      "transformer_tc": 0.167,
+      "direct": 1.0
+    },
+    "global_death_auc_same_probe": {
+      "mamba_raw": 0.7489,
+      "mamba_tc": 0.723,
+      "transformer_raw": 0.7275,
+      "transformer_tc": 0.6061,
+      "direct": 0.8046
+    },
+    "reading": "Direct picks the safe fork EVERY time from real successors; every LeWM arm is BELOW the .611 action-only floor. Global death AUC differs by only .056 (.749 vs .805) while within-root selection differs by .611 (.389 vs 1.000). The deficit is in the REPRESENTATION, not the dynamics, and global AUC is nearly blind to it."
+  },
+  "action_conditioning": {
+    "what": "mean pairwise distance between the 17 successor branches, over latent norm",
+    "observed_spread_over_norm": {
+      "mamba_raw": 0.088,
+      "mamba_tc": 0.435,
+      "transformer_raw": 0.0716,
+      "transformer_tc": 0.5109,
+      "direct": 0.1819
+    },
+    "generated_over_observed_ratio": {
+      "mamba_raw": 0.977,
+      "mamba_tc": 0.983,
+      "transformer_raw": 0.675,
+      "transformer_tc": 0.189,
+      "direct": 0.926
+    },
+    "reading": "mamba_raw reproduces the true action-spread almost exactly (.977) and still selects at the floor, so fidelity of action-conditioning is not the limit. mamba_tc has the LARGEST observed spread (.435) and the WORST oracle (.222): the branches differ, but along directions unrelated to death. transformer_tc barely responds to actions at all (.189), which explains its degeneracy separately."
+  },
+  "structural_confound": {
+    "direct": {
+      "latent_dims": 1024,
+      "spatial_slots": 64,
+      "eval_context_frames": 64
+    },
+    "lewm": {
+      "latent_dims": 192,
+      "spatial_slots": 1,
+      "eval_context_frames": 4
+    },
+    "note": "Direct differs on width, spatial structure AND context at once. Only the sequence mixer was ever varied inside the LeWM line (Mamba -> Transformer at 4.92x params: no change), so the confound between pooling, width, context and objective has never been broken."
+  },
+  "m4_authorized": false
+}

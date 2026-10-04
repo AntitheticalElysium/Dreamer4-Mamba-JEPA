@@ -1,0 +1,1971 @@
+{
+  "scope": "DEV all eligible episodes, all logged pre-action times t>=63; TRAIN until ten positive episodes per front-tile target",
+  "minimum_context_frames": 64,
+  "checked_episodes": {
+    "dev": 930,
+    "train": 365
+  },
+  "positive_episode_counts": {
+    "train:front_lava": 38,
+    "train:front_ripe_plant": 10,
+    "train:front_water": 210,
+    "train:front_tree": 314,
+    "dev:front_lava": 91,
+    "dev:front_ripe_plant": 25,
+    "dev:front_water": 535,
+    "dev:front_tree": 793
+  },
+  "candidates": {
+    "dev:front_lava": [
+      {
+        "split": "dev",
+        "shard": 0,
+        "slot": 9,
+        "t": 178,
+        "episode_id": "support-v2:20270731:0:9",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 0,
+        "slot": 18,
+        "t": 124,
+        "episode_id": "support-v2:20270731:0:18",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 4,
+        "slot": 16,
+        "t": 448,
+        "episode_id": "support-v2:20270731:4:16",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 8,
+        "slot": 11,
+        "t": 705,
+        "episode_id": "support-v2:20270731:8:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 17,
+        "slot": 13,
+        "t": 195,
+        "episode_id": "support-v2:20270731:17:13",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 28,
+        "slot": 13,
+        "t": 153,
+        "episode_id": "support-v2:20270731:28:13",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 40,
+        "slot": 23,
+        "t": 418,
+        "episode_id": "support-v2:20270731:40:23",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 41,
+        "slot": 8,
+        "t": 227,
+        "episode_id": "support-v2:20270731:41:8",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 48,
+        "slot": 1,
+        "t": 93,
+        "episode_id": "support-v2:20270731:48:1",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 48,
+        "slot": 4,
+        "t": 816,
+        "episode_id": "support-v2:20270731:48:4",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 48,
+        "slot": 16,
+        "t": 174,
+        "episode_id": "support-v2:20270731:48:16",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 48,
+        "slot": 19,
+        "t": 86,
+        "episode_id": "support-v2:20270731:48:19",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 52,
+        "slot": 11,
+        "t": 382,
+        "episode_id": "support-v2:20270731:52:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 56,
+        "slot": 9,
+        "t": 150,
+        "episode_id": "support-v2:20270731:56:9",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 64,
+        "slot": 7,
+        "t": 211,
+        "episode_id": "support-v2:20270731:64:7",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 73,
+        "slot": 17,
+        "t": 286,
+        "episode_id": "support-v2:20270731:73:17",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 76,
+        "slot": 0,
+        "t": 1563,
+        "episode_id": "support-v2:20270731:76:0",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 76,
+        "slot": 14,
+        "t": 905,
+        "episode_id": "support-v2:20270731:76:14",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 80,
+        "slot": 3,
+        "t": 117,
+        "episode_id": "support-v2:20270731:80:3",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 87,
+        "slot": 22,
+        "t": 105,
+        "episode_id": "support-v2:20270731:87:22",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 92,
+        "slot": 16,
+        "t": 107,
+        "episode_id": "support-v2:20270731:92:16",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 94,
+        "slot": 9,
+        "t": 66,
+        "episode_id": "support-v2:20270731:94:9",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 102,
+        "slot": 8,
+        "t": 296,
+        "episode_id": "support-v2:20270731:102:8",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 104,
+        "slot": 12,
+        "t": 1222,
+        "episode_id": "support-v2:20270731:104:12",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 112,
+        "slot": 0,
+        "t": 223,
+        "episode_id": "support-v2:20270731:112:0",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 112,
+        "slot": 11,
+        "t": 202,
+        "episode_id": "support-v2:20270731:112:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 120,
+        "slot": 18,
+        "t": 928,
+        "episode_id": "support-v2:20270731:120:18",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 124,
+        "slot": 18,
+        "t": 105,
+        "episode_id": "support-v2:20270731:124:18",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 128,
+        "slot": 14,
+        "t": 132,
+        "episode_id": "support-v2:20270731:128:14",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "dev",
+        "shard": 132,
+        "slot": 10,
+        "t": 114,
+        "episode_id": "support-v2:20270731:132:10",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      }
+    ],
+    "dev:front_water": [
+      {
+        "split": "dev",
+        "shard": 0,
+        "slot": 9,
+        "t": 108,
+        "episode_id": "support-v2:20270731:0:9",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 0,
+        "slot": 16,
+        "t": 221,
+        "episode_id": "support-v2:20270731:0:16",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 0,
+        "slot": 18,
+        "t": 92,
+        "episode_id": "support-v2:20270731:0:18",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 4,
+        "slot": 5,
+        "t": 205,
+        "episode_id": "support-v2:20270731:4:5",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 4,
+        "slot": 8,
+        "t": 204,
+        "episode_id": "support-v2:20270731:4:8",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 4,
+        "slot": 16,
+        "t": 205,
+        "episode_id": "support-v2:20270731:4:16",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 5,
+        "slot": 16,
+        "t": 235,
+        "episode_id": "support-v2:20270731:5:16",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 6,
+        "slot": 3,
+        "t": 222,
+        "episode_id": "support-v2:20270731:6:3",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 8,
+        "slot": 1,
+        "t": 114,
+        "episode_id": "support-v2:20270731:8:1",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 8,
+        "slot": 11,
+        "t": 131,
+        "episode_id": "support-v2:20270731:8:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 9,
+        "slot": 11,
+        "t": 88,
+        "episode_id": "support-v2:20270731:9:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 9,
+        "slot": 19,
+        "t": 106,
+        "episode_id": "support-v2:20270731:9:19",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 10,
+        "slot": 12,
+        "t": 265,
+        "episode_id": "support-v2:20270731:10:12",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 16,
+        "slot": 0,
+        "t": 74,
+        "episode_id": "support-v2:20270731:16:0",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 16,
+        "slot": 4,
+        "t": 86,
+        "episode_id": "support-v2:20270731:16:4",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 17,
+        "slot": 13,
+        "t": 226,
+        "episode_id": "support-v2:20270731:17:13",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 20,
+        "slot": 2,
+        "t": 84,
+        "episode_id": "support-v2:20270731:20:2",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 20,
+        "slot": 8,
+        "t": 151,
+        "episode_id": "support-v2:20270731:20:8",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 20,
+        "slot": 21,
+        "t": 92,
+        "episode_id": "support-v2:20270731:20:21",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 21,
+        "slot": 6,
+        "t": 103,
+        "episode_id": "support-v2:20270731:21:6",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 21,
+        "slot": 7,
+        "t": 103,
+        "episode_id": "support-v2:20270731:21:7",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 21,
+        "slot": 10,
+        "t": 131,
+        "episode_id": "support-v2:20270731:21:10",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 21,
+        "slot": 12,
+        "t": 74,
+        "episode_id": "support-v2:20270731:21:12",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 24,
+        "slot": 4,
+        "t": 221,
+        "episode_id": "support-v2:20270731:24:4",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 24,
+        "slot": 6,
+        "t": 123,
+        "episode_id": "support-v2:20270731:24:6",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 25,
+        "slot": 15,
+        "t": 281,
+        "episode_id": "support-v2:20270731:25:15",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 26,
+        "slot": 11,
+        "t": 81,
+        "episode_id": "support-v2:20270731:26:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 26,
+        "slot": 20,
+        "t": 74,
+        "episode_id": "support-v2:20270731:26:20",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 28,
+        "slot": 13,
+        "t": 122,
+        "episode_id": "support-v2:20270731:28:13",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "dev",
+        "shard": 28,
+        "slot": 19,
+        "t": 281,
+        "episode_id": "support-v2:20270731:28:19",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      }
+    ],
+    "dev:front_tree": [
+      {
+        "split": "dev",
+        "shard": 0,
+        "slot": 9,
+        "t": 92,
+        "episode_id": "support-v2:20270731:0:9",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 0,
+        "slot": 16,
+        "t": 78,
+        "episode_id": "support-v2:20270731:0:16",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 0,
+        "slot": 18,
+        "t": 65,
+        "episode_id": "support-v2:20270731:0:18",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 2,
+        "slot": 12,
+        "t": 153,
+        "episode_id": "support-v2:20270731:2:12",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 4,
+        "slot": 5,
+        "t": 92,
+        "episode_id": "support-v2:20270731:4:5",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 4,
+        "slot": 8,
+        "t": 128,
+        "episode_id": "support-v2:20270731:4:8",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 4,
+        "slot": 16,
+        "t": 73,
+        "episode_id": "support-v2:20270731:4:16",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 5,
+        "slot": 6,
+        "t": 114,
+        "episode_id": "support-v2:20270731:5:6",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 5,
+        "slot": 16,
+        "t": 75,
+        "episode_id": "support-v2:20270731:5:16",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 6,
+        "slot": 3,
+        "t": 88,
+        "episode_id": "support-v2:20270731:6:3",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 6,
+        "slot": 18,
+        "t": 64,
+        "episode_id": "support-v2:20270731:6:18",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 7,
+        "slot": 3,
+        "t": 73,
+        "episode_id": "support-v2:20270731:7:3",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 8,
+        "slot": 1,
+        "t": 84,
+        "episode_id": "support-v2:20270731:8:1",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 8,
+        "slot": 11,
+        "t": 78,
+        "episode_id": "support-v2:20270731:8:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 9,
+        "slot": 1,
+        "t": 84,
+        "episode_id": "support-v2:20270731:9:1",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 9,
+        "slot": 11,
+        "t": 114,
+        "episode_id": "support-v2:20270731:9:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 9,
+        "slot": 19,
+        "t": 89,
+        "episode_id": "support-v2:20270731:9:19",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 10,
+        "slot": 7,
+        "t": 86,
+        "episode_id": "support-v2:20270731:10:7",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 10,
+        "slot": 12,
+        "t": 66,
+        "episode_id": "support-v2:20270731:10:12",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 11,
+        "slot": 3,
+        "t": 70,
+        "episode_id": "support-v2:20270731:11:3",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 11,
+        "slot": 22,
+        "t": 63,
+        "episode_id": "support-v2:20270731:11:22",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 14,
+        "slot": 13,
+        "t": 64,
+        "episode_id": "support-v2:20270731:14:13",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 15,
+        "slot": 18,
+        "t": 63,
+        "episode_id": "support-v2:20270731:15:18",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 16,
+        "slot": 0,
+        "t": 79,
+        "episode_id": "support-v2:20270731:16:0",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 16,
+        "slot": 4,
+        "t": 109,
+        "episode_id": "support-v2:20270731:16:4",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 16,
+        "slot": 7,
+        "t": 63,
+        "episode_id": "support-v2:20270731:16:7",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 17,
+        "slot": 3,
+        "t": 79,
+        "episode_id": "support-v2:20270731:17:3",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 17,
+        "slot": 13,
+        "t": 89,
+        "episode_id": "support-v2:20270731:17:13",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 19,
+        "slot": 17,
+        "t": 63,
+        "episode_id": "support-v2:20270731:19:17",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "dev",
+        "shard": 20,
+        "slot": 2,
+        "t": 89,
+        "episode_id": "support-v2:20270731:20:2",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      }
+    ],
+    "dev:front_ripe_plant": [
+      {
+        "split": "dev",
+        "shard": 8,
+        "slot": 11,
+        "t": 628,
+        "episode_id": "support-v2:20270731:8:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 9,
+        "slot": 11,
+        "t": 608,
+        "episode_id": "support-v2:20270731:9:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 48,
+        "slot": 16,
+        "t": 1078,
+        "episode_id": "support-v2:20270731:48:16",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 76,
+        "slot": 0,
+        "t": 610,
+        "episode_id": "support-v2:20270731:76:0",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 76,
+        "slot": 14,
+        "t": 894,
+        "episode_id": "support-v2:20270731:76:14",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 88,
+        "slot": 13,
+        "t": 608,
+        "episode_id": "support-v2:20270731:88:13",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 92,
+        "slot": 16,
+        "t": 607,
+        "episode_id": "support-v2:20270731:92:16",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 112,
+        "slot": 11,
+        "t": 785,
+        "episode_id": "support-v2:20270731:112:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 120,
+        "slot": 18,
+        "t": 912,
+        "episode_id": "support-v2:20270731:120:18",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 129,
+        "slot": 5,
+        "t": 620,
+        "episode_id": "support-v2:20270731:129:5",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 136,
+        "slot": 12,
+        "t": 681,
+        "episode_id": "support-v2:20270731:136:12",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 152,
+        "slot": 2,
+        "t": 1612,
+        "episode_id": "support-v2:20270731:152:2",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 152,
+        "slot": 11,
+        "t": 621,
+        "episode_id": "support-v2:20270731:152:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 156,
+        "slot": 21,
+        "t": 2199,
+        "episode_id": "support-v2:20270731:156:21",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 260,
+        "slot": 0,
+        "t": 2398,
+        "episode_id": "support-v2:20270731:260:0",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 276,
+        "slot": 22,
+        "t": 702,
+        "episode_id": "support-v2:20270731:276:22",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 300,
+        "slot": 21,
+        "t": 772,
+        "episode_id": "support-v2:20270731:300:21",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 308,
+        "slot": 8,
+        "t": 918,
+        "episode_id": "support-v2:20270731:308:8",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 316,
+        "slot": 15,
+        "t": 606,
+        "episode_id": "support-v2:20270731:316:15",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 328,
+        "slot": 2,
+        "t": 739,
+        "episode_id": "support-v2:20270731:328:2",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 348,
+        "slot": 6,
+        "t": 721,
+        "episode_id": "support-v2:20270731:348:6",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 368,
+        "slot": 12,
+        "t": 1109,
+        "episode_id": "support-v2:20270731:368:12",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 384,
+        "slot": 15,
+        "t": 706,
+        "episode_id": "support-v2:20270731:384:15",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 400,
+        "slot": 8,
+        "t": 746,
+        "episode_id": "support-v2:20270731:400:8",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "dev",
+        "shard": 412,
+        "slot": 12,
+        "t": 624,
+        "episode_id": "support-v2:20270731:412:12",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      }
+    ],
+    "train:front_water": [
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 0,
+        "t": 91,
+        "episode_id": "support-v2:20270731:0:0",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 1,
+        "t": 142,
+        "episode_id": "support-v2:20270731:0:1",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 2,
+        "t": 322,
+        "episode_id": "support-v2:20270731:0:2",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 4,
+        "t": 250,
+        "episode_id": "support-v2:20270731:0:4",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 5,
+        "t": 119,
+        "episode_id": "support-v2:20270731:0:5",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 6,
+        "t": 64,
+        "episode_id": "support-v2:20270731:0:6",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 8,
+        "t": 241,
+        "episode_id": "support-v2:20270731:0:8",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 11,
+        "t": 78,
+        "episode_id": "support-v2:20270731:0:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 13,
+        "t": 156,
+        "episode_id": "support-v2:20270731:0:13",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 15,
+        "t": 80,
+        "episode_id": "support-v2:20270731:0:15",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 17,
+        "t": 296,
+        "episode_id": "support-v2:20270731:0:17",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 19,
+        "t": 148,
+        "episode_id": "support-v2:20270731:0:19",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 20,
+        "t": 148,
+        "episode_id": "support-v2:20270731:0:20",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 22,
+        "t": 167,
+        "episode_id": "support-v2:20270731:0:22",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 23,
+        "t": 209,
+        "episode_id": "support-v2:20270731:0:23",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 0,
+        "t": 77,
+        "episode_id": "support-v2:20270731:1:0",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 1,
+        "t": 173,
+        "episode_id": "support-v2:20270731:1:1",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 2,
+        "t": 256,
+        "episode_id": "support-v2:20270731:1:2",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 3,
+        "t": 144,
+        "episode_id": "support-v2:20270731:1:3",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 4,
+        "t": 161,
+        "episode_id": "support-v2:20270731:1:4",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 5,
+        "t": 86,
+        "episode_id": "support-v2:20270731:1:5",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 7,
+        "t": 103,
+        "episode_id": "support-v2:20270731:1:7",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 10,
+        "t": 94,
+        "episode_id": "support-v2:20270731:1:10",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 11,
+        "t": 217,
+        "episode_id": "support-v2:20270731:1:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 13,
+        "t": 100,
+        "episode_id": "support-v2:20270731:1:13",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 14,
+        "t": 222,
+        "episode_id": "support-v2:20270731:1:14",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 16,
+        "t": 113,
+        "episode_id": "support-v2:20270731:1:16",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 18,
+        "t": 79,
+        "episode_id": "support-v2:20270731:1:18",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 19,
+        "t": 133,
+        "episode_id": "support-v2:20270731:1:19",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      },
+      {
+        "split": "train",
+        "shard": 2,
+        "slot": 0,
+        "t": 191,
+        "episode_id": "support-v2:20270731:2:0",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_water"
+      }
+    ],
+    "train:front_tree": [
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 0,
+        "t": 69,
+        "episode_id": "support-v2:20270731:0:0",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 1,
+        "t": 69,
+        "episode_id": "support-v2:20270731:0:1",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 2,
+        "t": 70,
+        "episode_id": "support-v2:20270731:0:2",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 3,
+        "t": 66,
+        "episode_id": "support-v2:20270731:0:3",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 4,
+        "t": 93,
+        "episode_id": "support-v2:20270731:0:4",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 5,
+        "t": 70,
+        "episode_id": "support-v2:20270731:0:5",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 6,
+        "t": 73,
+        "episode_id": "support-v2:20270731:0:6",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 7,
+        "t": 85,
+        "episode_id": "support-v2:20270731:0:7",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 8,
+        "t": 66,
+        "episode_id": "support-v2:20270731:0:8",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 11,
+        "t": 100,
+        "episode_id": "support-v2:20270731:0:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 13,
+        "t": 76,
+        "episode_id": "support-v2:20270731:0:13",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 15,
+        "t": 85,
+        "episode_id": "support-v2:20270731:0:15",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 17,
+        "t": 66,
+        "episode_id": "support-v2:20270731:0:17",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 19,
+        "t": 111,
+        "episode_id": "support-v2:20270731:0:19",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 20,
+        "t": 70,
+        "episode_id": "support-v2:20270731:0:20",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 21,
+        "t": 70,
+        "episode_id": "support-v2:20270731:0:21",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 22,
+        "t": 68,
+        "episode_id": "support-v2:20270731:0:22",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 23,
+        "t": 77,
+        "episode_id": "support-v2:20270731:0:23",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 0,
+        "t": 68,
+        "episode_id": "support-v2:20270731:1:0",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 1,
+        "t": 70,
+        "episode_id": "support-v2:20270731:1:1",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 2,
+        "t": 154,
+        "episode_id": "support-v2:20270731:1:2",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 3,
+        "t": 87,
+        "episode_id": "support-v2:20270731:1:3",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 4,
+        "t": 89,
+        "episode_id": "support-v2:20270731:1:4",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 5,
+        "t": 82,
+        "episode_id": "support-v2:20270731:1:5",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 7,
+        "t": 143,
+        "episode_id": "support-v2:20270731:1:7",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 10,
+        "t": 92,
+        "episode_id": "support-v2:20270731:1:10",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 11,
+        "t": 63,
+        "episode_id": "support-v2:20270731:1:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 13,
+        "t": 89,
+        "episode_id": "support-v2:20270731:1:13",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 14,
+        "t": 65,
+        "episode_id": "support-v2:20270731:1:14",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 15,
+        "t": 110,
+        "episode_id": "support-v2:20270731:1:15",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_tree"
+      }
+    ],
+    "train:front_lava": [
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 2,
+        "t": 1041,
+        "episode_id": "support-v2:20270731:0:2",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 6,
+        "t": 155,
+        "episode_id": "support-v2:20270731:0:6",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 11,
+        "t": 128,
+        "episode_id": "support-v2:20270731:0:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 15,
+        "t": 148,
+        "episode_id": "support-v2:20270731:0:15",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 5,
+        "t": 159,
+        "episode_id": "support-v2:20270731:1:5",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 13,
+        "t": 147,
+        "episode_id": "support-v2:20270731:1:13",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 15,
+        "t": 187,
+        "episode_id": "support-v2:20270731:1:15",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 1,
+        "slot": 18,
+        "t": 156,
+        "episode_id": "support-v2:20270731:1:18",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 4,
+        "slot": 14,
+        "t": 964,
+        "episode_id": "support-v2:20270731:4:14",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 4,
+        "slot": 15,
+        "t": 162,
+        "episode_id": "support-v2:20270731:4:15",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 4,
+        "slot": 19,
+        "t": 1165,
+        "episode_id": "support-v2:20270731:4:19",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 4,
+        "slot": 20,
+        "t": 117,
+        "episode_id": "support-v2:20270731:4:20",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 5,
+        "slot": 1,
+        "t": 123,
+        "episode_id": "support-v2:20270731:5:1",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 5,
+        "slot": 7,
+        "t": 166,
+        "episode_id": "support-v2:20270731:5:7",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 5,
+        "slot": 21,
+        "t": 66,
+        "episode_id": "support-v2:20270731:5:21",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 8,
+        "slot": 0,
+        "t": 961,
+        "episode_id": "support-v2:20270731:8:0",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 8,
+        "slot": 2,
+        "t": 182,
+        "episode_id": "support-v2:20270731:8:2",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 8,
+        "slot": 6,
+        "t": 292,
+        "episode_id": "support-v2:20270731:8:6",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 9,
+        "slot": 9,
+        "t": 142,
+        "episode_id": "support-v2:20270731:9:9",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 9,
+        "slot": 10,
+        "t": 258,
+        "episode_id": "support-v2:20270731:9:10",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 10,
+        "slot": 0,
+        "t": 81,
+        "episode_id": "support-v2:20270731:10:0",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 10,
+        "slot": 5,
+        "t": 223,
+        "episode_id": "support-v2:20270731:10:5",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 12,
+        "slot": 0,
+        "t": 1887,
+        "episode_id": "support-v2:20270731:12:0",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 12,
+        "slot": 2,
+        "t": 576,
+        "episode_id": "support-v2:20270731:12:2",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 12,
+        "slot": 5,
+        "t": 183,
+        "episode_id": "support-v2:20270731:12:5",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 12,
+        "slot": 6,
+        "t": 92,
+        "episode_id": "support-v2:20270731:12:6",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 12,
+        "slot": 7,
+        "t": 80,
+        "episode_id": "support-v2:20270731:12:7",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 12,
+        "slot": 23,
+        "t": 152,
+        "episode_id": "support-v2:20270731:12:23",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 13,
+        "slot": 3,
+        "t": 149,
+        "episode_id": "support-v2:20270731:13:3",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      },
+      {
+        "split": "train",
+        "shard": 13,
+        "slot": 20,
+        "t": 213,
+        "episode_id": "support-v2:20270731:13:20",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_lava"
+      }
+    ],
+    "train:front_ripe_plant": [
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 6,
+        "t": 2068,
+        "episode_id": "support-v2:20270731:0:6",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "train",
+        "shard": 0,
+        "slot": 11,
+        "t": 1431,
+        "episode_id": "support-v2:20270731:0:11",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "train",
+        "shard": 4,
+        "slot": 6,
+        "t": 609,
+        "episode_id": "support-v2:20270731:4:6",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "train",
+        "shard": 4,
+        "slot": 14,
+        "t": 829,
+        "episode_id": "support-v2:20270731:4:14",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "train",
+        "shard": 8,
+        "slot": 6,
+        "t": 1125,
+        "episode_id": "support-v2:20270731:8:6",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "train",
+        "shard": 12,
+        "slot": 0,
+        "t": 2108,
+        "episode_id": "support-v2:20270731:12:0",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "train",
+        "shard": 12,
+        "slot": 2,
+        "t": 1056,
+        "episode_id": "support-v2:20270731:12:2",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "train",
+        "shard": 16,
+        "slot": 5,
+        "t": 922,
+        "episode_id": "support-v2:20270731:16:5",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "train",
+        "shard": 20,
+        "slot": 10,
+        "t": 885,
+        "episode_id": "support-v2:20270731:20:10",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      },
+      {
+        "split": "train",
+        "shard": 20,
+        "slot": 12,
+        "t": 625,
+        "episode_id": "support-v2:20270731:20:12",
+        "candidate_reason": "all_logged_front_tile_census",
+        "target": "front_ripe_plant"
+      }
+    ]
+  }
+}

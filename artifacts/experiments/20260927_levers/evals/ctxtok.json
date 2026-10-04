@@ -1,0 +1,25 @@
+{
+  "mean_token_change": {
+    "targets_turned": 0.2898360685851481,
+    "targets_same": 2.6740915762941224,
+    "ring3plus_turned": 4.804729051909326,
+    "ring3plus_same": 4.5532945349868275,
+    "player_turned": 41.55038940688361,
+    "player_same": 3.17893065817882
+  },
+  "counts": {
+    "targets_turned": 20144,
+    "targets_same": 173636,
+    "ring3plus_turned": 192401,
+    "ring3plus_same": 1710801,
+    "player_turned": 5191,
+    "player_same": 45644
+  },
+  "ratios": {
+    "targets_turned_over_targets_same": 0.10838674006326145,
+    "targets_turned_over_ring3plus_turned": 0.06032308283231324
+  },
+  "readings": {
+    "contextual_neighbour": false
+  }
+}

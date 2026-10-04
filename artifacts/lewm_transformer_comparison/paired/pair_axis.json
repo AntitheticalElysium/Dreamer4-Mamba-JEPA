@@ -1,0 +1,15 @@
+{
+  "axis": "variant",
+  "arms": {
+    "raw": {
+      "variant": "raw",
+      "centering": "consecutive",
+      "centering_stride": 1
+    },
+    "tc": {
+      "variant": "tc",
+      "centering": "consecutive",
+      "centering_stride": 1
+    }
+  }
+}

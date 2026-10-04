@@ -1,0 +1,57 @@
+{
+  "states": 300,
+  "steps": {
+    "0": {
+      "z": {
+        "near_far_mean_cosine": 0.9998985263227032,
+        "near_far_pair_cosine_mean": 0.999746685310282,
+        "near_far_fisher_dprime": 0.04657403663735991,
+        "near_far_euclid_over_natural_radius": 0.0007934347647809672,
+        "near_change_norm": 0.03383488982288188,
+        "far_change_norm": 0.033867193532226385
+      },
+      "cls": {
+        "near_far_mean_cosine": 0.9998803254100528,
+        "near_far_pair_cosine_mean": 0.999708116567258,
+        "near_far_fisher_dprime": 0.04895977835261398,
+        "near_far_euclid_over_natural_radius": 0.000786604044716995,
+        "near_change_norm": 0.15965058377172212,
+        "far_change_norm": 0.15969662344740443
+      },
+      "right_patch": {
+        "near_far_mean_cosine": -0.030285029877452695,
+        "near_far_pair_cosine_mean": -0.029739715728417167,
+        "near_far_fisher_dprime": 4.230893873820819,
+        "near_far_euclid_over_natural_radius": 1.2638754222761788,
+        "near_change_norm": 7.581840990353044,
+        "far_change_norm": 0.060886328868694786
+      }
+    },
+    "10000": {
+      "z": {
+        "near_far_mean_cosine": 0.9998883098438522,
+        "near_far_pair_cosine_mean": 0.9997854757960145,
+        "near_far_fisher_dprime": 0.017873174520439565,
+        "near_far_euclid_over_natural_radius": 0.000734857763471564,
+        "near_change_norm": 0.26963317996464264,
+        "far_change_norm": 0.2740058167507735
+      },
+      "cls": {
+        "near_far_mean_cosine": 0.9998568700441042,
+        "near_far_pair_cosine_mean": 0.9997216443044702,
+        "near_far_fisher_dprime": 0.031078712163071755,
+        "near_far_euclid_over_natural_radius": 0.000766647867988806,
+        "near_change_norm": 0.2514315656417765,
+        "far_change_norm": 0.255619565523604
+      },
+      "right_patch": {
+        "near_far_mean_cosine": -0.28042281469264735,
+        "near_far_pair_cosine_mean": -0.27654301118039104,
+        "near_far_fisher_dprime": 4.349944835545379,
+        "near_far_euclid_over_natural_radius": 0.9448403348540587,
+        "near_change_norm": 6.160105273546801,
+        "far_change_norm": 0.04494447835423405
+      }
+    }
+  }
+}

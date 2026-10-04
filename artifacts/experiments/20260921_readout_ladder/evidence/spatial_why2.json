@@ -1,0 +1,150 @@
+{
+  "schema": "d4mj_spatial_why2_v1",
+  "status": "POST HOC",
+  "script_sha256": "25d5bd556c3646fe3544dcc6f1ff3480f294f3d0d577d0965c194e18b9125184",
+  "reading_TH": "never",
+  "result": {
+    "Z": {
+      "train": {
+        "n_terminal": 4061,
+        "n_damaged": 576,
+        "n_ordinary": 0,
+        "gen_p_dead_terminal": 0.0010341738816350698,
+        "gen_share_dead_terminal": 0.00024624477373436093,
+        "gen_p_dead_ordinary": null,
+        "real_p_dead_terminal": 0.12327475100755692,
+        "real_share_dead_terminal": 0.11918246746063232,
+        "real_p_dead_ordinary": null
+      },
+      "dev": {
+        "n_terminal": 1007,
+        "n_damaged": 4000,
+        "n_ordinary": 3922,
+        "gen_p_dead_terminal": 0.001110811484977603,
+        "gen_share_dead_terminal": 0.0009930486558005214,
+        "gen_p_dead_ordinary": 0.0002536335668992251,
+        "real_p_dead_terminal": 0.09715250879526138,
+        "real_share_dead_terminal": 0.088381327688694,
+        "real_p_dead_ordinary": 0.0002472850901540369
+      }
+    },
+    "ZH": {
+      "train": {
+        "n_terminal": 4061,
+        "n_damaged": 576,
+        "n_ordinary": 0,
+        "gen_p_dead_terminal": 0.0008062937995418906,
+        "gen_share_dead_terminal": 0.00024624477373436093,
+        "gen_p_dead_ordinary": null,
+        "gen_health_accuracy_damaged": 0.0069444444961845875,
+        "gen_health_accuracy_terminal": 0.0034474267158657312,
+        "real_p_dead_terminal": 0.1209334284067154,
+        "real_share_dead_terminal": 0.11302635073661804,
+        "real_p_dead_ordinary": null,
+        "real_health_accuracy_damaged": 0.0798611119389534,
+        "real_health_accuracy_terminal": 0.23910367488861084
+      },
+      "dev": {
+        "n_terminal": 1007,
+        "n_damaged": 4000,
+        "n_ordinary": 3922,
+        "gen_p_dead_terminal": 4.28631974500604e-05,
+        "gen_share_dead_terminal": 0.0,
+        "gen_p_dead_ordinary": 0.0002110335190081969,
+        "gen_health_accuracy_damaged": 0.0010000000474974513,
+        "gen_health_accuracy_terminal": 0.0009930486558005214,
+        "real_p_dead_terminal": 0.11312708258628845,
+        "real_share_dead_terminal": 0.10824230313301086,
+        "real_p_dead_ordinary": 0.00037576755858026445,
+        "real_health_accuracy_damaged": 0.048250000923871994,
+        "real_health_accuracy_terminal": 0.18470704555511475
+      }
+    },
+    "T": {
+      "train": {
+        "n_terminal": 4061,
+        "n_damaged": 576,
+        "n_ordinary": 0,
+        "gen_p_dead_terminal": 0.00011815405014203861,
+        "gen_share_dead_terminal": 0.0,
+        "gen_p_dead_ordinary": null,
+        "real_p_dead_terminal": 0.6478602290153503,
+        "real_share_dead_terminal": 0.6481162309646606,
+        "real_p_dead_ordinary": null
+      },
+      "dev": {
+        "n_terminal": 1007,
+        "n_damaged": 4000,
+        "n_ordinary": 3922,
+        "gen_p_dead_terminal": 4.3491501855896786e-05,
+        "gen_share_dead_terminal": 0.0,
+        "gen_p_dead_ordinary": 8.891897778084967e-06,
+        "real_p_dead_terminal": 0.6376100182533264,
+        "real_share_dead_terminal": 0.6305859088897705,
+        "real_p_dead_ordinary": 1.6288071492454037e-05
+      }
+    },
+    "TH": {
+      "train": {
+        "n_terminal": 4061,
+        "n_damaged": 576,
+        "n_ordinary": 0,
+        "gen_p_dead_terminal": 0.00013048989058006555,
+        "gen_share_dead_terminal": 0.0,
+        "gen_p_dead_ordinary": null,
+        "gen_health_accuracy_damaged": 0.0399305559694767,
+        "gen_health_accuracy_terminal": 0.0,
+        "real_p_dead_terminal": 0.637526273727417,
+        "real_share_dead_terminal": 0.6429451107978821,
+        "real_p_dead_ordinary": null,
+        "real_health_accuracy_damaged": 0.8420138955116272,
+        "real_health_accuracy_terminal": 0.9874415397644043
+      },
+      "dev": {
+        "n_terminal": 1007,
+        "n_damaged": 4000,
+        "n_ordinary": 3922,
+        "gen_p_dead_terminal": 3.0775234336033463e-05,
+        "gen_share_dead_terminal": 0.0,
+        "gen_p_dead_ordinary": 4.334010009188205e-05,
+        "gen_health_accuracy_damaged": 0.023749999701976776,
+        "gen_health_accuracy_terminal": 0.0,
+        "real_p_dead_terminal": 0.613793671131134,
+        "real_share_dead_terminal": 0.6156901717185974,
+        "real_p_dead_ordinary": 7.076752353896154e-06,
+        "real_health_accuracy_damaged": 0.8497499823570251,
+        "real_health_accuracy_terminal": 0.9870903491973877
+      }
+    }
+  },
+  "fork_from_spatial_why": {
+    "Z": {
+      "real_p_dead_fatal": 0.0009619892807677388,
+      "real_p_dead_surviving": 0.0005380952497944236,
+      "gen_p_dead_fatal": 0.00047795739374123514,
+      "gen_p_dead_surviving": 0.0004999800003133714
+    },
+    "ZH": {
+      "real_p_dead_fatal": 0.0003376167733222246,
+      "real_p_dead_surviving": 0.0005399310030043125,
+      "real_health_accuracy_on_damage": 0.1282188892364502,
+      "gen_p_dead_fatal": 0.00027708994457498193,
+      "gen_p_dead_surviving": 0.0006551837432198226,
+      "gen_health_accuracy_on_damage": 0.0008047210285440087
+    },
+    "T": {
+      "real_p_dead_fatal": 0.24629925191402435,
+      "real_p_dead_surviving": 0.0020403165835887194,
+      "gen_p_dead_fatal": 0.00011215956328669563,
+      "gen_p_dead_surviving": 0.0005213888944126666
+    },
+    "TH": {
+      "real_p_dead_fatal": 0.3542681932449341,
+      "real_p_dead_surviving": 0.0010702667059376836,
+      "real_health_accuracy_on_damage": 0.9805525541305542,
+      "gen_p_dead_fatal": 5.063206481281668e-05,
+      "gen_p_dead_surviving": 0.0007992956088855863,
+      "gen_health_accuracy_on_damage": 0.0
+    }
+  }
+}

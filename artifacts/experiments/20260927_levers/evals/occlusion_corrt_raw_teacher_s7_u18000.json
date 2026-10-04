@@ -1,0 +1,24 @@
+{
+  "world": "corrt_raw_teacher_s7_u18000",
+  "moves_kept": 360,
+  "context_still": 62,
+  "per_cell_excess": {
+    "behind_hidden": 0.0008631651504250234,
+    "behind_seen": 0.0006696478985042478,
+    "ahead": 0.00011569588770899874,
+    "sides": 8.91456947235282e-05,
+    "ring3plus": 0.0013208220150126633
+  },
+  "cells": {
+    "behind_hidden": 57,
+    "behind_seen": 271,
+    "ahead": 352,
+    "sides": 686,
+    "ring3plus": 13267
+  },
+  "readings": {
+    "behind_hidden_over_ahead": 7.460638122212939,
+    "behind_hidden_over_behind_seen": 1.2889835872747806,
+    "occlusion_driven": false
+  }
+}

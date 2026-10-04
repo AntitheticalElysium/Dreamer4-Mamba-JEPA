@@ -1,0 +1,13 @@
+{
+  "mapping_pass": true,
+  "gradient_pass": true,
+  "zero_shift_mamba_maxabs": 1.1920928955078125e-07,
+  "full_layer_no_shift_maxabs": 2.384185791015625e-07,
+  "full_layer_with_shift_delta_rmse": 0.28389859199523926,
+  "source_sha256": "d3b7d7e8f6bb94f89602ad6970e0d56952fd6d8d0350fd02fbfc909f8dabd1f1",
+  "zero_shift_final_conv_maxabs": 0.0,
+  "zero_shift_final_ssm_maxabs": 1.862645149230957e-09,
+  "carry_bytes_per_token_per_layer": 68608,
+  "num_slots": 82,
+  "layers": 6
+}

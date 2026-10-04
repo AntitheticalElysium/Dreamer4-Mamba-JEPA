@@ -1,0 +1,284 @@
+{
+  "schema": "d4mj_m03_probe_coverage_audit_v1",
+  "date": "2026-09-18",
+  "status": "all_12_missing_binary_labels_recoverable_from_existing_support_data",
+  "not_a_capability_verdict": true,
+  "original_gate": {
+    "run": "artifacts/lewm_gates_20260906/m03_bootstrap/evaluation_v2",
+    "suite_complete": true,
+    "baseline_sha256": "2cd02650256ac6db1cfcafbbb8a9abe7075c1fb673c6edb55f3875be647808f0",
+    "memory_sha256": "d98f37603590870d39429caa9062abe30041d85b78a13a08dede4c0444d5a8de",
+    "published_hashes_verified": true,
+    "m03_capability": "insufficient_coverage",
+    "missing_entries": 116,
+    "unique_missing_binary_labels": [
+      "front_lava",
+      "front_ripe_plant",
+      "front_tree",
+      "front_water",
+      "make_iron_pickaxe",
+      "make_iron_sword",
+      "make_stone_pickaxe",
+      "make_stone_sword",
+      "make_wood_pickaxe",
+      "make_wood_sword",
+      "near_table",
+      "place_plant"
+    ],
+    "static_binary_supported": 13,
+    "successor_binary_supported": 18,
+    "m4_authorized": false
+  },
+  "later_matched_10k_diagnostic": {
+    "run": "artifacts/lewm_gates_20260918/m03_matched",
+    "suite_complete": false,
+    "scope": "unsealed loader adaptation and primary panels; does not supersede original gate"
+  },
+  "dataset": {
+    "path": "artifacts/craftax_support_v2/manifest.json",
+    "sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+    "raw_shard_hashes_independently_reverified": false,
+    "final_episodes_excluded": true
+  },
+  "front_tile_census": {
+    "scope": "DEV all eligible episodes, all logged pre-action times t>=63; TRAIN until ten positive episodes per front-tile target",
+    "minimum_context_frames": 64,
+    "checked_episodes": {
+      "dev": 930,
+      "train": 365
+    },
+    "positive_episode_counts": {
+      "train:front_lava": 38,
+      "train:front_ripe_plant": 10,
+      "train:front_water": 210,
+      "train:front_tree": 314,
+      "dev:front_lava": 91,
+      "dev:front_ripe_plant": 25,
+      "dev:front_water": 535,
+      "dev:front_tree": 793
+    }
+  },
+  "verified_root_index": {
+    "path": "evidence/verified_root_index.json",
+    "sha256": "1a8446ab8387a7bdbec5c8fa49ad492d9ae000ed6281cc2fdc93c984ad680f3d",
+    "roots": 129,
+    "distinct_episodes": {
+      "train": 50,
+      "dev": 50
+    },
+    "root_pixel_max_abs": 0,
+    "factual_pixel_max_abs": 0,
+    "native_context_frames_minimum": 64,
+    "same_recorded_key_used_for_all_17_successor_actions": true,
+    "coverage": {
+      "front_lava": {
+        "train": {
+          "static_positive_episodes": 10,
+          "static_negative_episodes": 45,
+          "successor_positive_episodes": 10,
+          "successor_negative_episode_lower_bound": 45
+        },
+        "dev": {
+          "static_positive_episodes": 10,
+          "static_negative_episodes": 44,
+          "successor_positive_episodes": 10,
+          "successor_negative_episode_lower_bound": 44
+        }
+      },
+      "front_ripe_plant": {
+        "train": {
+          "static_positive_episodes": 13,
+          "static_negative_episodes": 40,
+          "successor_positive_episodes": 13,
+          "successor_negative_episode_lower_bound": 40
+        },
+        "dev": {
+          "static_positive_episodes": 14,
+          "static_negative_episodes": 38,
+          "successor_positive_episodes": 14,
+          "successor_negative_episode_lower_bound": 38
+        }
+      },
+      "front_tree": {
+        "train": {
+          "static_positive_episodes": 10,
+          "static_negative_episodes": 40,
+          "successor_positive_episodes": 15,
+          "successor_negative_episode_lower_bound": 37
+        },
+        "dev": {
+          "static_positive_episodes": 10,
+          "static_negative_episodes": 41,
+          "successor_positive_episodes": 18,
+          "successor_negative_episode_lower_bound": 38
+        }
+      },
+      "front_water": {
+        "train": {
+          "static_positive_episodes": 10,
+          "static_negative_episodes": 46,
+          "successor_positive_episodes": 12,
+          "successor_negative_episode_lower_bound": 45
+        },
+        "dev": {
+          "static_positive_episodes": 10,
+          "static_negative_episodes": 45,
+          "successor_positive_episodes": 10,
+          "successor_negative_episode_lower_bound": 45
+        }
+      },
+      "make_iron_pickaxe": {
+        "train": {
+          "static_positive_episodes": 10,
+          "static_negative_episodes": 47,
+          "successor_positive_episodes": 10,
+          "successor_negative_episode_lower_bound": 47
+        },
+        "dev": {
+          "static_positive_episodes": 10,
+          "static_negative_episodes": 48,
+          "successor_positive_episodes": 10,
+          "successor_negative_episode_lower_bound": 48
+        }
+      },
+      "make_iron_sword": {
+        "train": {
+          "static_positive_episodes": 10,
+          "static_negative_episodes": 47,
+          "successor_positive_episodes": 10,
+          "successor_negative_episode_lower_bound": 47
+        },
+        "dev": {
+          "static_positive_episodes": 10,
+          "static_negative_episodes": 48,
+          "successor_positive_episodes": 10,
+          "successor_negative_episode_lower_bound": 48
+        }
+      },
+      "make_stone_pickaxe": {
+        "train": {
+          "static_positive_episodes": 11,
+          "static_negative_episodes": 46,
+          "successor_positive_episodes": 17,
+          "successor_negative_episode_lower_bound": 39
+        },
+        "dev": {
+          "static_positive_episodes": 10,
+          "static_negative_episodes": 47,
+          "successor_positive_episodes": 12,
+          "successor_negative_episode_lower_bound": 45
+        }
+      },
+      "make_stone_sword": {
+        "train": {
+          "static_positive_episodes": 11,
+          "static_negative_episodes": 46,
+          "successor_positive_episodes": 17,
+          "successor_negative_episode_lower_bound": 39
+        },
+        "dev": {
+          "static_positive_episodes": 10,
+          "static_negative_episodes": 47,
+          "successor_positive_episodes": 12,
+          "successor_negative_episode_lower_bound": 45
+        }
+      },
+      "make_wood_pickaxe": {
+        "train": {
+          "static_positive_episodes": 11,
+          "static_negative_episodes": 46,
+          "successor_positive_episodes": 17,
+          "successor_negative_episode_lower_bound": 39
+        },
+        "dev": {
+          "static_positive_episodes": 10,
+          "static_negative_episodes": 47,
+          "successor_positive_episodes": 12,
+          "successor_negative_episode_lower_bound": 45
+        }
+      },
+      "make_wood_sword": {
+        "train": {
+          "static_positive_episodes": 11,
+          "static_negative_episodes": 46,
+          "successor_positive_episodes": 17,
+          "successor_negative_episode_lower_bound": 39
+        },
+        "dev": {
+          "static_positive_episodes": 10,
+          "static_negative_episodes": 47,
+          "successor_positive_episodes": 12,
+          "successor_negative_episode_lower_bound": 45
+        }
+      },
+      "near_table": {
+        "train": {
+          "static_positive_episodes": 11,
+          "static_negative_episodes": 46,
+          "successor_positive_episodes": 18,
+          "successor_negative_episode_lower_bound": 38
+        },
+        "dev": {
+          "static_positive_episodes": 11,
+          "static_negative_episodes": 46,
+          "successor_positive_episodes": 13,
+          "successor_negative_episode_lower_bound": 43
+        }
+      },
+      "place_plant": {
+        "train": {
+          "static_positive_episodes": 10,
+          "static_negative_episodes": 41,
+          "successor_positive_episodes": 12,
+          "successor_negative_episode_lower_bound": 39
+        },
+        "dev": {
+          "static_positive_episodes": 10,
+          "static_negative_episodes": 44,
+          "successor_positive_episodes": 13,
+          "successor_negative_episode_lower_bound": 41
+        }
+      }
+    }
+  },
+  "label_definition": {
+    "function": "d4mj.m03.gate._state_binary_labels",
+    "source_sha256": "834bdb62501adc5de448dcf8dcd3d8ab016e91e1c01f87f997462e092a15547f",
+    "source": "def _state_binary_labels(state) -> np.ndarray:\n    \"\"\"Visible-state and source-derived action-prerequisite labels.\n\n    The predicates mirror Craftax-Classic ``game_logic.py``.  They deliberately\n    describe the *pre-state* ability for an action to have its intended effect;\n    the all-action outcome labels are separate and are never reverse-engineered\n    from the evaluated successor.\n    \"\"\"\n\n    from craftax.craftax_classic.constants import BlockType, CLOSE_BLOCKS, DIRECTIONS, SOLID_BLOCKS\n\n    board = _array(state.map)\n    mobs = _array(state.mob_map).astype(bool)\n    position = _array(state.player_position, dtype=np.int64)\n    direction = int(_array(state.player_direction))\n    shape = np.asarray(board.shape, dtype=np.int64)\n\n    def inside(point: np.ndarray) -> bool:\n        return bool(np.all(point >= 0) and np.all(point < shape))\n\n    def tile(point: np.ndarray) -> int:\n        return int(board[tuple(point)]) if inside(point) else int(BlockType.OUT_OF_BOUNDS.value)\n\n    def mob(point: np.ndarray) -> bool:\n        return bool(mobs[tuple(point)]) if inside(point) else False\n\n    front = position + _array(DIRECTIONS[direction], dtype=np.int64)\n    front_tile = tile(front)\n    front_in_bounds = inside(front)\n    front_open = front_in_bounds and not mob(front)\n    solid = {int(value) for value in _array(SOLID_BLOCKS)}\n    wall_front = front_tile in solid\n    near = lambda block: any(tile(position + _array(offset, dtype=np.int64)) == int(block)\n                             for offset in _array(CLOSE_BLOCKS))\n    inv = state.inventory\n\n    # Movement is an action precondition, not a claim that it has a useful outcome.\n    def valid_move(action: int) -> bool:\n        point = position + _array(DIRECTIONS[action], dtype=np.int64)\n        # Craftax permits entry into lava; it is a valid (and potentially fatal)\n        # movement consequence, not a disabled action.\n        return inside(point) and not mob(point) and tile(point) not in solid\n\n    do_enabled = front_in_bounds and (\n        mob(front)\n        or front_tile in {\n            int(BlockType.TREE.value), int(BlockType.WATER.value), int(BlockType.RIPE_PLANT.value),\n            # Grass has a stochastic sapling-collection consequence.\n            int(BlockType.GRASS.value),\n        }\n        or (front_tile in {int(BlockType.STONE.value), int(BlockType.COAL.value)} and bool(inv.wood_pickaxe))\n        or (front_tile == int(BlockType.IRON.value) and bool(inv.stone_pickaxe))\n        or (front_tile == int(BlockType.DIAMOND.value) and bool(inv.iron_pickaxe))\n    )\n    place_ok = front_open\n    table = place_ok and not wall_front and int(inv.wood) >= 2\n    furnace = place_ok and not wall_front and int(inv.stone) > 0\n    stone = place_ok and int(inv.stone) > 0 and (front_tile == int(BlockType.WATER.value) or not wall_front)\n    plant = place_ok and front_tile == int(BlockType.GRASS.value) and int(inv.sapling) > 0\n    at_table, at_furnace = near(BlockType.CRAFTING_TABLE.value), near(BlockType.FURNACE.value)\n    wood_pick = at_table and int(inv.wood) >= 1\n    stone_pick = at_table and int(inv.wood) >= 1 and int(inv.stone) >= 1\n    iron_pick = at_table and at_furnace and int(inv.wood) >= 1 and int(inv.stone) >= 1 and int(inv.iron) >= 1 and int(inv.coal) >= 1\n    wood_sword = at_table and int(inv.wood) >= 1\n    stone_sword = at_table and int(inv.wood) >= 1 and int(inv.stone) >= 1\n    iron_sword = at_table and at_furnace and int(inv.wood) >= 1 and int(inv.stone) >= 1 and int(inv.iron) >= 1 and int(inv.coal) >= 1\n\n    awake = not bool(state.is_sleeping)\n    return np.asarray(\n        [front_tile == int(BlockType.LAVA.value), front_tile == int(BlockType.WATER.value),\n         front_tile == int(BlockType.TREE.value), front_tile in {int(BlockType.STONE.value), int(BlockType.COAL.value), int(BlockType.IRON.value), int(BlockType.DIAMOND.value)},\n         front_tile == int(BlockType.RIPE_PLANT.value), at_table, at_furnace, mob(front), bool(state.is_sleeping),\n         awake and valid_move(1), awake and valid_move(2), awake and valid_move(3), awake and valid_move(4), awake and do_enabled,\n         awake and int(state.player_energy) < 9, awake and stone, awake and table, awake and furnace, awake and plant,\n         awake and wood_pick, awake and stone_pick, awake and iron_pick, awake and wood_sword, awake and stone_sword, awake and iron_sword],\n        dtype=np.bool_,\n    )\n"
+  },
+  "scope_limits": [
+    "No model encodings, probe fits, world training, gate rerun, promotion, or control were performed.",
+    "Candidate event counts are not certified prerequisite counts; only exact-replayed roots are certified.",
+    "Cached historical labels are triage evidence; revalidate current predicates before gate use.",
+    "TRAIN front-tile census stopped after ten positive episodes per front-tile target, so its counts are lower bounds.",
+    "DEV census covers all logged pre-action states with 64-frame prefix; successor-only opportunities are additional.",
+    "Ten independent episodes meets the existing coverage floor, not a power guarantee.",
+    "Coverage-selected roots define a stress distribution and cannot silently replace the original broad/terminal population.",
+    "Within-root opportunity counts and paired confidence bounds still require actual evaluation."
+  ],
+  "probe_review": {
+    "observed_fit_is_valid_for_shared_decoder_transfer": true,
+    "native_generated_fit_in_main_gate": false,
+    "refit_evidence": "artifacts/experiments/20260917_generated_readout/evidence/readout.json",
+    "refit_consecutive_tc_death_auc": {
+      "observed_fit_generated": 0.4127192459133755,
+      "generated_fit_generated": 0.6956662178055807,
+      "root_action": 0.6827500980108068,
+      "action_only": 0.5484360884313157
+    },
+    "refit_parent_scope": "paired_window consecutive/strided TC, not every historical panel or the new matched-10k worlds",
+    "exact961_death_auc": {
+      "full_simulator_linear": 0.4780056245104236,
+      "full_simulator_mlp": 0.4334557779645322,
+      "pixels_linear": 0.833941751645476
+    },
+    "probe_capacity_ladder_and_equal_capacity_ceilings": "not fully reproduced in the main gate",
+    "required_repair": [
+      "Keep observed-trained transfer and add generated-TRAIN-fitted recoverability scores.",
+      "Score both with paired uncertainty and root+action/action-only/shuffled-action controls.",
+      "Validate structured simulator-state positive controls before using them as decoder ceilings.",
+      "Predeclare and run a bounded shared probe-capacity ladder and memorisation/shuffled-label controls.",
+      "Add a model-blind coverage panel using immutable existing root addresses; preserve original population panels and seed grouping."
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "status": "stopped",
+  "component": "lewm_execution",
+  "reason": "Tensor-likes are not close!\n\nMismatched elements: 1 / 192 (0.5%)\nGreatest absolute difference: 1.919269561767578e-05 at index (0, 0, 0, 141) (up to 1e-05 allowed)\nGreatest relative difference: 0.011290588416159153 at index (0, 0, 0, 141) (up to 0.0001 allowed)",
+  "architecture_verdict": "not_evaluated",
+  "m4_authorized": false
+}

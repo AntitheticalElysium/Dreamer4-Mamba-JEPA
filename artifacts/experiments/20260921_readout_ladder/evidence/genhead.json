@@ -1,0 +1,548 @@
+{
+  "schema": "d4mj_genhead_v1",
+  "status": "POST HOC on the 56k block",
+  "script_sha256": "ee51fc2b072491af633961b3edc4be9be3022896450e3479c6f6cecdd489dd6b",
+  "judge_manifest": "0a42c1e36b233190cd2c0456098735e433c9da44e5e1754c352330da4e49cc78",
+  "roots": {
+    "opportunity": 801,
+    "zombie": 528
+  },
+  "training_examples": {
+    "U_s1": {
+      "examples": 65294,
+      "dead": 8155
+    },
+    "U_s2": {
+      "examples": 65294,
+      "dead": 8155
+    },
+    "Z_s1": {
+      "examples": 65294,
+      "dead": 8155
+    },
+    "Z_s2": {
+      "examples": 65294,
+      "dead": 8155
+    }
+  },
+  "readings": {
+    "U_s1": {
+      "generated_training_helps": false,
+      "beats_actions_only": false,
+      "training_distribution_matters": true
+    },
+    "U_s2": {
+      "generated_training_helps": false,
+      "beats_actions_only": false,
+      "training_distribution_matters": true
+    }
+  },
+  "contrasts": {
+    "U_s1_gen_state_vs_U_s1_own": {
+      "overall": {
+        "difference": 0.0023148059844970703,
+        "interval": [
+          -0.026149103417992592,
+          0.03256702050566673
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": 0.022806167602539062,
+        "interval": [
+          -0.01266403030604124,
+          0.05802939832210541
+        ],
+        "excludes_zero": false
+      }
+    },
+    "U_s1_gen_state_vs_actions_only": {
+      "overall": {
+        "difference": 0.021418511867523193,
+        "interval": [
+          -0.0130093889310956,
+          0.0543854795396328
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": 0.004754602909088135,
+        "interval": [
+          -0.040452778339385986,
+          0.047006163746118546
+        ],
+        "excludes_zero": false
+      }
+    },
+    "U_s1_gen_state_vs_DOWN": {
+      "overall": {
+        "difference": 0.06715565919876099,
+        "interval": [
+          0.023765748366713524,
+          0.11286818981170654
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.029849231243133545,
+        "interval": [
+          -0.021015701815485954,
+          0.07767090201377869
+        ],
+        "excludes_zero": false
+      }
+    },
+    "U_s1_gen_state_vs_U_s1_real_state": {
+      "overall": {
+        "difference": 0.11425822973251343,
+        "interval": [
+          0.07458637654781342,
+          0.15725208818912506
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.22439229488372803,
+        "interval": [
+          0.17347823083400726,
+          0.27729329466819763
+        ],
+        "excludes_zero": true
+      }
+    },
+    "U_s1_gen_features_vs_U_s1_own": {
+      "overall": {
+        "difference": 0.015150368213653564,
+        "interval": [
+          -0.01005582232028246,
+          0.04101386293768883
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": 0.01603931188583374,
+        "interval": [
+          -0.017130762338638306,
+          0.049150850623846054
+        ],
+        "excludes_zero": false
+      }
+    },
+    "U_s1_gen_features_vs_actions_only": {
+      "overall": {
+        "difference": 0.03425407409667969,
+        "interval": [
+          -0.0015556898433715105,
+          0.06664438545703888
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": -0.0020122528076171875,
+        "interval": [
+          -0.04818095266819,
+          0.04494667798280716
+        ],
+        "excludes_zero": false
+      }
+    },
+    "U_s2_gen_state_vs_U_s2_own": {
+      "overall": {
+        "difference": 0.00832289457321167,
+        "interval": [
+          -0.01838238351047039,
+          0.03600868582725525
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": 0.017657041549682617,
+        "interval": [
+          -0.017937269061803818,
+          0.05487055331468582
+        ],
+        "excludes_zero": false
+      }
+    },
+    "U_s2_gen_state_vs_actions_only": {
+      "overall": {
+        "difference": 0.02894812822341919,
+        "interval": [
+          -0.00889307726174593,
+          0.06249551475048065
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": 0.013928413391113281,
+        "interval": [
+          -0.030897457152605057,
+          0.05597913637757301
+        ],
+        "excludes_zero": false
+      }
+    },
+    "U_s2_gen_state_vs_DOWN": {
+      "overall": {
+        "difference": 0.07468527555465698,
+        "interval": [
+          0.026106465607881546,
+          0.12790903449058533
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.03902304172515869,
+        "interval": [
+          -0.017642196267843246,
+          0.09185013175010681
+        ],
+        "excludes_zero": false
+      }
+    },
+    "U_s2_gen_state_vs_U_s2_real_state": {
+      "overall": {
+        "difference": 0.08766382932662964,
+        "interval": [
+          0.05108150094747543,
+          0.12562870979309082
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.1464449167251587,
+        "interval": [
+          0.10011833906173706,
+          0.19509513676166534
+        ],
+        "excludes_zero": true
+      }
+    },
+    "U_s2_gen_features_vs_U_s2_own": {
+      "overall": {
+        "difference": -0.0015865564346313477,
+        "interval": [
+          -0.02231469377875328,
+          0.018099647015333176
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": -0.000532686710357666,
+        "interval": [
+          -0.0294010229408741,
+          0.030849304050207138
+        ],
+        "excludes_zero": false
+      }
+    },
+    "U_s2_gen_features_vs_actions_only": {
+      "overall": {
+        "difference": 0.019038677215576172,
+        "interval": [
+          -0.02167641930282116,
+          0.05833945423364639
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": -0.004261314868927002,
+        "interval": [
+          -0.053711678832769394,
+          0.03838486224412918
+        ],
+        "excludes_zero": false
+      }
+    },
+    "Z_s1_gen_state_vs_Z_s1_own": {
+      "overall": {
+        "difference": -0.09373697638511658,
+        "interval": [
+          -0.13693691790103912,
+          -0.048344459384679794
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": -0.2070707231760025,
+        "interval": [
+          -0.2584933042526245,
+          -0.15674342215061188
+        ],
+        "excludes_zero": true
+      }
+    },
+    "Z_s1_gen_state_vs_actions_only": {
+      "overall": {
+        "difference": -0.19159647822380066,
+        "interval": [
+          -0.2415897399187088,
+          -0.14504015445709229
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": -0.37367814779281616,
+        "interval": [
+          -0.4269273281097412,
+          -0.3205503225326538
+        ],
+        "excludes_zero": true
+      }
+    },
+    "Z_s1_gen_state_vs_DOWN": {
+      "overall": {
+        "difference": -0.14585933089256287,
+        "interval": [
+          -0.2013649195432663,
+          -0.08507067710161209
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": -0.34858351945877075,
+        "interval": [
+          -0.40822604298591614,
+          -0.29117289185523987
+        ],
+        "excludes_zero": true
+      }
+    },
+    "Z_s1_gen_state_vs_Z_s1_real_state": {
+      "overall": {
+        "difference": 0.007490634918212891,
+        "interval": [
+          -0.004121590871363878,
+          0.020215600728988647
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": 0.0277777761220932,
+        "interval": [
+          0.012507460080087185,
+          0.04428455978631973
+        ],
+        "excludes_zero": true
+      }
+    },
+    "Z_s1_gen_features_vs_Z_s1_own": {
+      "overall": {
+        "difference": 0.017530202865600586,
+        "interval": [
+          -0.016026010736823082,
+          0.05221669375896454
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": 0.018742114305496216,
+        "interval": [
+          -0.023690741509199142,
+          0.06428828835487366
+        ],
+        "excludes_zero": false
+      }
+    },
+    "Z_s1_gen_features_vs_actions_only": {
+      "overall": {
+        "difference": -0.0803292989730835,
+        "interval": [
+          -0.12930378317832947,
+          -0.035092826932668686
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": -0.14786529541015625,
+        "interval": [
+          -0.1996907740831375,
+          -0.09620711207389832
+        ],
+        "excludes_zero": true
+      }
+    },
+    "Z_s2_gen_state_vs_Z_s2_own": {
+      "overall": {
+        "difference": -0.13260769844055176,
+        "interval": [
+          -0.18754315376281738,
+          -0.08084817975759506
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": -0.3014717400074005,
+        "interval": [
+          -0.36157384514808655,
+          -0.24610772728919983
+        ],
+        "excludes_zero": true
+      }
+    },
+    "Z_s2_gen_state_vs_actions_only": {
+      "overall": {
+        "difference": -0.19098526239395142,
+        "interval": [
+          -0.2446211874485016,
+          -0.14264015853405
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": -0.3866397738456726,
+        "interval": [
+          -0.44100266695022583,
+          -0.33079594373703003
+        ],
+        "excludes_zero": true
+      }
+    },
+    "Z_s2_gen_state_vs_DOWN": {
+      "overall": {
+        "difference": -0.14524811506271362,
+        "interval": [
+          -0.20276322960853577,
+          -0.0815650224685669
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": -0.3615451455116272,
+        "interval": [
+          -0.42511627078056335,
+          -0.3003433644771576
+        ],
+        "excludes_zero": true
+      }
+    },
+    "Z_s2_gen_state_vs_Z_s2_real_state": {
+      "overall": {
+        "difference": 0.010182589292526245,
+        "interval": [
+          0.000431763386586681,
+          0.020833643153309822
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.014184817671775818,
+        "interval": [
+          0.0016439780592918396,
+          0.027167150750756264
+        ],
+        "excludes_zero": true
+      }
+    },
+    "Z_s2_gen_features_vs_Z_s2_own": {
+      "overall": {
+        "difference": -0.054866254329681396,
+        "interval": [
+          -0.09578374773263931,
+          -0.015860894694924355
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": -0.12310609221458435,
+        "interval": [
+          -0.1702388972043991,
+          -0.07796402275562286
+        ],
+        "excludes_zero": true
+      }
+    },
+    "Z_s2_gen_features_vs_actions_only": {
+      "overall": {
+        "difference": -0.11324381828308105,
+        "interval": [
+          -0.16310162842273712,
+          -0.06322776526212692
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": -0.20827412605285645,
+        "interval": [
+          -0.2679002583026886,
+          -0.14398199319839478
+        ],
+        "excludes_zero": true
+      }
+    }
+  },
+  "expected_safe": {
+    "DOWN": {
+      "overall": 0.5912531018257141,
+      "zombie": 0.5394176244735718
+    },
+    "actions_only": {
+      "overall": 0.6369902491569519,
+      "zombie": 0.5645122528076172
+    },
+    "U_s1_own": {
+      "overall": 0.656093955039978,
+      "zombie": 0.5464606881141663
+    },
+    "U_s1_gen_state": {
+      "overall": 0.6584087610244751,
+      "zombie": 0.5692668557167053
+    },
+    "U_s1_gen_features": {
+      "overall": 0.6712443232536316,
+      "zombie": 0.5625
+    },
+    "U_s1_real_state": {
+      "overall": 0.5441505312919617,
+      "zombie": 0.3448745608329773
+    },
+    "U_s2_own": {
+      "overall": 0.6576154828071594,
+      "zombie": 0.5607836246490479
+    },
+    "U_s2_gen_state": {
+      "overall": 0.6659383773803711,
+      "zombie": 0.5784406661987305
+    },
+    "U_s2_gen_features": {
+      "overall": 0.6560289263725281,
+      "zombie": 0.5602509379386902
+    },
+    "U_s2_real_state": {
+      "overall": 0.5782745480537415,
+      "zombie": 0.4319957494735718
+    },
+    "Z_s1_own": {
+      "overall": 0.5391307473182678,
+      "zombie": 0.3979048430919647
+    },
+    "Z_s1_gen_state": {
+      "overall": 0.44539377093315125,
+      "zombie": 0.19083411991596222
+    },
+    "Z_s1_gen_features": {
+      "overall": 0.5566609501838684,
+      "zombie": 0.41664695739746094
+    },
+    "Z_s1_real_state": {
+      "overall": 0.43790313601493835,
+      "zombie": 0.16305634379386902
+    },
+    "Z_s2_own": {
+      "overall": 0.5786126852035522,
+      "zombie": 0.4793442189693451
+    },
+    "Z_s2_gen_state": {
+      "overall": 0.4460049867630005,
+      "zombie": 0.17787247896194458
+    },
+    "Z_s2_gen_features": {
+      "overall": 0.5237464308738708,
+      "zombie": 0.35623812675476074
+    },
+    "Z_s2_real_state": {
+      "overall": 0.43582239747047424,
+      "zombie": 0.16368766129016876
+    }
+  }
+}

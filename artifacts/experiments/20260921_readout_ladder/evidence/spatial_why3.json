@@ -1,0 +1,123 @@
+{
+  "schema": "d4mj_spatial_why3_v1",
+  "status": "POST HOC",
+  "script_sha256": "0f344c2895cd651af8d6465749c5f42510a2f819d195263c8dff03941ff99b3b",
+  "readings_TH": {
+    "position_shortcut": true,
+    "health_tile_copied": true
+  },
+  "result": {
+    "Z": {
+      "train": {
+        "one_step": 0.000922162551432848,
+        "teacher_pos5": 0.5395957231521606,
+        "rollout_pos5": 0.8977373242378235,
+        "real_pos5": 0.9443461894989014
+      },
+      "dev": {
+        "one_step": 0.0011153363157063723,
+        "teacher_pos5": 0.2925194501876831,
+        "rollout_pos5": 0.624964714050293,
+        "real_pos5": 0.722782552242279
+      }
+    },
+    "ZH": {
+      "train": {
+        "one_step": 0.00099744217004627,
+        "teacher_pos5": 0.6408373117446899,
+        "rollout_pos5": 0.9204236268997192,
+        "real_pos5": 0.9695603251457214
+      },
+      "dev": {
+        "one_step": 4.26454353146255e-05,
+        "teacher_pos5": 0.38903695344924927,
+        "rollout_pos5": 0.6358893513679504,
+        "real_pos5": 0.749836802482605
+      }
+    },
+    "T": {
+      "train": {
+        "one_step": 0.00013228556781541556,
+        "teacher_pos5": 0.035646796226501465,
+        "rollout_pos5": 0.9551488161087036,
+        "real_pos5": 0.9958746433258057,
+        "tile_damaging": {
+          "n": 3143,
+          "nearer_copy_than_real": 1.0,
+          "generated_to_real": 16.205886840820312,
+          "generated_to_copy": 5.349855899810791,
+          "real_change": 16.739810943603516
+        },
+        "tile_ordinary": {
+          "n": 3762,
+          "nearer_copy_than_real": 0.5348219275474548,
+          "generated_to_real": 5.435317516326904,
+          "generated_to_copy": 5.398392200469971,
+          "real_change": 0.8070911765098572
+        }
+      },
+      "dev": {
+        "one_step": 4.351660027168691e-05,
+        "teacher_pos5": 0.029710404574871063,
+        "rollout_pos5": 0.9100346565246582,
+        "real_pos5": 0.9888448119163513,
+        "tile_damaging": {
+          "n": 794,
+          "nearer_copy_than_real": 1.0,
+          "generated_to_real": 16.237537384033203,
+          "generated_to_copy": 5.353466510772705,
+          "real_change": 16.791378021240234
+        },
+        "tile_ordinary": {
+          "n": 959,
+          "nearer_copy_than_real": 0.5589155554771423,
+          "generated_to_real": 5.429629325866699,
+          "generated_to_copy": 5.385371208190918,
+          "real_change": 0.8507152199745178
+        }
+      }
+    },
+    "TH": {
+      "train": {
+        "one_step": 0.0001804185303626582,
+        "teacher_pos5": 0.362362265586853,
+        "rollout_pos5": 0.9679582118988037,
+        "real_pos5": 0.9995126128196716,
+        "tile_damaging": {
+          "n": 3143,
+          "nearer_copy_than_real": 1.0,
+          "generated_to_real": 17.391799926757812,
+          "generated_to_copy": 7.854159832000732,
+          "real_change": 16.739810943603516
+        },
+        "tile_ordinary": {
+          "n": 3762,
+          "nearer_copy_than_real": 0.6039340496063232,
+          "generated_to_real": 8.053171157836914,
+          "generated_to_copy": 7.955129623413086,
+          "real_change": 0.8070911765098572
+        }
+      },
+      "dev": {
+        "one_step": 3.073675907216966e-05,
+        "teacher_pos5": 0.35552355647087097,
+        "rollout_pos5": 0.9267566204071045,
+        "real_pos5": 0.9966149926185608,
+        "tile_damaging": {
+          "n": 794,
+          "nearer_copy_than_real": 1.0,
+          "generated_to_real": 17.425119400024414,
+          "generated_to_copy": 7.871528148651123,
+          "real_change": 16.791378021240234
+        },
+        "tile_ordinary": {
+          "n": 959,
+          "nearer_copy_than_real": 0.6141814589500427,
+          "generated_to_real": 8.07868480682373,
+          "generated_to_copy": 7.969789028167725,
+          "real_change": 0.8507152199745178
+        }
+      }
+    }
+  }
+}

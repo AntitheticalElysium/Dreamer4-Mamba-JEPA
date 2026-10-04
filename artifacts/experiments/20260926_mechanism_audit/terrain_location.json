@@ -1,0 +1,56 @@
+{
+  "states": 300,
+  "edits": {
+    "lava": {
+      "z": {
+        "near_far_mean_cosine": 0.9992110158767988,
+        "near_far_fisher_dprime": 0.06893154091627739,
+        "near_fisher_dprime": 0.8900147018171681
+      },
+      "cls": {
+        "near_far_mean_cosine": 0.9986947682307481,
+        "near_far_fisher_dprime": 0.09932663673154508,
+        "near_fisher_dprime": 1.22458224584137
+      },
+      "right_patch": {
+        "near_far_mean_cosine": -0.311723094480093,
+        "near_far_fisher_dprime": 19.148193431391352,
+        "near_fisher_dprime": 19.055384663363373
+      }
+    },
+    "water": {
+      "z": {
+        "near_far_mean_cosine": 0.9997930424123744,
+        "near_far_fisher_dprime": 0.13825969630439092,
+        "near_fisher_dprime": 3.5174870904647833
+      },
+      "cls": {
+        "near_far_mean_cosine": 0.9996546358993061,
+        "near_far_fisher_dprime": 0.2341418779553805,
+        "near_fisher_dprime": 3.38210989564865
+      },
+      "right_patch": {
+        "near_far_mean_cosine": -0.22619847595829357,
+        "near_far_fisher_dprime": 27.754067165548832,
+        "near_fisher_dprime": 27.76403036550532
+      }
+    },
+    "stone": {
+      "z": {
+        "near_far_mean_cosine": 0.9916776222096342,
+        "near_far_fisher_dprime": 0.5228216697666153,
+        "near_fisher_dprime": 1.3711830628000052
+      },
+      "cls": {
+        "near_far_mean_cosine": 0.984791413411114,
+        "near_far_fisher_dprime": 0.7257821402677799,
+        "near_fisher_dprime": 1.380560659477142
+      },
+      "right_patch": {
+        "near_far_mean_cosine": -0.16796784314683402,
+        "near_far_fisher_dprime": 15.098453444711144,
+        "near_fisher_dprime": 15.072635757868962
+      }
+    }
+  }
+}

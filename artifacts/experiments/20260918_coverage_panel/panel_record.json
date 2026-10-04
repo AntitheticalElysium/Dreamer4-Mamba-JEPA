@@ -1,0 +1,117 @@
+{
+  "schema": "d4mj_coverage_panel_record_v1",
+  "commit": "cfceeb8cc865e09f832b91c0b5050ed7be69acf1",
+  "report": {
+    "path": "artifacts/experiments/20260918_coverage_panel/evidence/coverage_panel.json",
+    "sha256": "35abcdee462e0d4b6e6f482a3f2e1007fde0e69d95bcac00cf8187ea78516b2f"
+  },
+  "what_this_is": "a DECLARED STRESS PANEL over the 129 model-free audited addresses, selected for the twelve rare labels. It does NOT replace the gate's broad population panel and changes no gate output.",
+  "coverage_repair": {
+    "gate_status": "116 entries insufficient_coverage = 12 distinct labels",
+    "panel_status": "48/48 arm-label cells MEASURED (12 labels x 4 arms)",
+    "new_collection_required": false,
+    "world_training_required": false,
+    "replay_integrity": "root and factual-successor pixel max abs = 0, re-verified here rather than inherited"
+  },
+  "mean_auc_over_12_labels": {
+    "mlp": {
+      "observed_fit_on_generated": {
+        "mamba_raw": 0.7936,
+        "mamba_tc": 0.6741,
+        "transformer_raw": 0.8063,
+        "transformer_tc": 0.562
+      },
+      "generated_fit_on_generated": {
+        "mamba_raw": 0.7829,
+        "mamba_tc": 0.6924,
+        "transformer_raw": 0.7872,
+        "transformer_tc": 0.577
+      },
+      "root_action": {
+        "mamba_raw": 0.7829,
+        "mamba_tc": 0.6745,
+        "transformer_raw": 0.7739,
+        "transformer_tc": 0.511
+      },
+      "action_only": {
+        "mamba_raw": 0.605,
+        "mamba_tc": 0.605,
+        "transformer_raw": 0.605,
+        "transformer_tc": 0.605
+      },
+      "observed_fit_on_observed": {
+        "mamba_raw": 0.7848,
+        "mamba_tc": 0.6485,
+        "transformer_raw": 0.8051,
+        "transformer_tc": 0.5089
+      },
+      "generated_fit_on_observed": {
+        "mamba_raw": 0.7694,
+        "mamba_tc": 0.675,
+        "transformer_raw": 0.7839,
+        "transformer_tc": 0.5477
+      }
+    },
+    "linear": {
+      "observed_fit_on_generated": {
+        "mamba_raw": 0.718,
+        "mamba_tc": 0.6541,
+        "transformer_raw": 0.7444,
+        "transformer_tc": 0.5924
+      },
+      "generated_fit_on_generated": {
+        "mamba_raw": 0.7324,
+        "mamba_tc": 0.6669,
+        "transformer_raw": 0.7461,
+        "transformer_tc": 0.612
+      },
+      "root_action": {
+        "mamba_raw": 0.7368,
+        "mamba_tc": 0.6169,
+        "transformer_raw": 0.7498,
+        "transformer_tc": 0.5231
+      },
+      "action_only": {
+        "mamba_raw": 0.5819,
+        "mamba_tc": 0.5819,
+        "transformer_raw": 0.5819,
+        "transformer_tc": 0.5819
+      },
+      "observed_fit_on_observed": {
+        "mamba_raw": 0.7149,
+        "mamba_tc": 0.6212,
+        "transformer_raw": 0.7438,
+        "transformer_tc": 0.4926
+      },
+      "generated_fit_on_observed": {
+        "mamba_raw": 0.7279,
+        "mamba_tc": 0.6538,
+        "transformer_raw": 0.7435,
+        "transformer_tc": 0.5511
+      }
+    }
+  },
+  "separation_test": {
+    "comparison": "each arm's generated-fit vs its OWN root+action control, per label, 95% CI",
+    "separated": 0,
+    "cells": 48,
+    "note": "also no label-arm cell differs by more than 0.05 AUC"
+  },
+  "findings": [
+    "COVERAGE IS REPAIRED. All twelve labels the completed gate could not measure are measurable on the audited addresses, for every arm, with no new collection and no retraining. The gate's insufficient_coverage was a panel-selection limit, exactly as the audit argued.",
+    "THE LABELS ARE DECODABLE. Raw arms reach mean AUC 0.78-0.81 against an action-only floor of 0.605, so these predicates are not intrinsically unreadable from the representation.",
+    "BUT NO ARM BEATS ITS OWN ROOT+ACTION CONTROL. 0 of 48 label-arm cells separate at 95%, and none differs by more than 0.05 AUC. mamba_raw generated-fit 0.7829 vs its control 0.7829; transformer_raw 0.7872 vs 0.7739. Repairing coverage does not reveal hidden world-model skill.",
+    "THE DECODER ARTIFACT IS OUTCOME-SPECIFIC. On these state labels observed-fit and generated-fit nearly agree (mamba_raw 0.7936 vs 0.7829), unlike outcomes where they differed by up to 0.29. This independently corroborates the rescore finding that successor/state decoding is not a transfer artifact.",
+    "TRANSFORMER TC IS DEGENERATE HERE: mean 0.5770, BELOW the action-only floor of 0.6050 - it reads worse than knowing the action alone.",
+    "transformer_raw edges mamba_raw on this panel (0.7872 vs 0.7829 generated-fit) but the margin is far inside the noise, consistent with the two being indistinguishable elsewhere."
+  ],
+  "limits": [
+    "one seed",
+    "a stress distribution selected for rare labels: NOT a population estimate and not a gate result",
+    "12 labels only; the panel says nothing about the other 13 static labels",
+    "structured simulator controls and a predeclared capacity ladder remain unbuilt, so no information-loss claim is licensed from these numbers",
+    "within-root action-opportunity counts and tighter confidence bounds still unevaluated, as the audit warned"
+  ],
+  "m03_capability": "not_a_gate_result",
+  "m4_authorized": false
+}

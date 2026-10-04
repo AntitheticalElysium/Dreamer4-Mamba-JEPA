@@ -1,0 +1,14 @@
+{
+  "input_target": 0.9999926694815857,
+  "h_target": 0.9999963347407929,
+  "h_player": 0.7333597231996247,
+  "h_action": 0.7455210532488857,
+  "frame_logit_itself": 0.468973580811635,
+  "decision_logit_itself": 0.9890555360075064,
+  "decision_logit_mean_moved_blocked": [
+    1.8046239614486694,
+    -7.283988952636719
+  ],
+  "n_test": 1132,
+  "moved_share": 0.7138223648071289
+}

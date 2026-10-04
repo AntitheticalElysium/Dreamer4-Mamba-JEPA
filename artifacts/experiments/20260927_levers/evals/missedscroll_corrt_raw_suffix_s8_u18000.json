@@ -1,0 +1,268 @@
+{
+  "world": "corrt_raw_suffix_s8_u18000",
+  "n": {
+    "missed": 309,
+    "control": 927,
+    "false": 216,
+    "control_false": 641
+  },
+  "missed": {
+    "scroll_rate": {
+      "imagined": 0.5339806079864502,
+      "true": 0.9126213788986206,
+      "img_hist": 0.9061488509178162,
+      "img_cur": 0.5760517716407776
+    },
+    "mean_logit": {
+      "imagined": -1.2663239240646362,
+      "true": 2.1196131706237793,
+      "img_hist": 2.1786603927612305,
+      "img_cur": -1.234684705734253
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 56.42888641357422,
+      "player": 43.228614807128906,
+      "frame": 38.27682876586914
+    },
+    "depth_hist": [
+      0,
+      14,
+      21,
+      16,
+      32,
+      29,
+      31,
+      27,
+      25,
+      28,
+      22,
+      19,
+      18,
+      9,
+      7,
+      11
+    ],
+    "provenance": {
+      "observable_share": 0.8090614676475525,
+      "mob_share": 0.009708737954497337,
+      "occupied_share": 0.13915857672691345,
+      "slept_share": 0.08090614527463913,
+      "target_distance_occupied": {
+        "occupied": 61.48678207397461,
+        "not_occupied": 55.61124801635742
+      },
+      "target_distance": {
+        "observable_no_mob": 57.91414260864258,
+        "revealed_no_mob": 47.686893463134766,
+        "mob": 102.6589584350586
+      },
+      "counts": {
+        "observable_no_mob": 248,
+        "revealed_no_mob": 58,
+        "mob": 3
+      }
+    }
+  },
+  "control": {
+    "scroll_rate": {
+      "imagined": 0.9784250259399414,
+      "true": 0.983818769454956,
+      "img_hist": 0.9816612601280212,
+      "img_cur": 0.9784250259399414
+    },
+    "mean_logit": {
+      "imagined": 2.3970258235931396,
+      "true": 2.4774558544158936,
+      "img_hist": 2.4725425243377686,
+      "img_cur": 2.4179115295410156
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 18.208698272705078,
+      "player": 32.31230163574219,
+      "frame": 31.02678108215332
+    },
+    "depth_hist": [
+      0,
+      42,
+      63,
+      48,
+      96,
+      87,
+      93,
+      81,
+      75,
+      84,
+      66,
+      57,
+      54,
+      27,
+      21,
+      33
+    ],
+    "provenance": {
+      "observable_share": 0.8694714307785034,
+      "mob_share": 0.0010787486098706722,
+      "occupied_share": 0.15965479612350464,
+      "slept_share": 0.017259977757930756,
+      "target_distance_occupied": {
+        "occupied": 31.875349044799805,
+        "not_occupied": 15.612210273742676
+      },
+      "target_distance": {
+        "observable_no_mob": 12.198859214782715,
+        "revealed_no_mob": 58.45792770385742,
+        "mob": 32.23300552368164
+      },
+      "counts": {
+        "observable_no_mob": 806,
+        "revealed_no_mob": 120,
+        "mob": 1
+      }
+    }
+  },
+  "false": {
+    "scroll_rate": {
+      "imagined": 0.7870370149612427,
+      "true": 0.4722222089767456,
+      "img_hist": 0.45370370149612427,
+      "img_cur": 0.8009259104728699
+    },
+    "mean_logit": {
+      "imagined": 1.398469090461731,
+      "true": -2.284925937652588,
+      "img_hist": -2.7837297916412354,
+      "img_cur": 1.3326947689056396
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 66.70543670654297,
+      "player": 33.20610427856445,
+      "frame": 32.65523147583008
+    },
+    "depth_hist": [
+      0,
+      26,
+      26,
+      20,
+      18,
+      17,
+      16,
+      13,
+      10,
+      12,
+      13,
+      9,
+      7,
+      13,
+      8,
+      8
+    ],
+    "provenance": {
+      "observable_share": 0.8564814925193787,
+      "mob_share": 0.02777777798473835,
+      "occupied_share": 0.018518518656492233,
+      "slept_share": 0.018518518656492233,
+      "target_distance_occupied": {
+        "occupied": 115.62863159179688,
+        "not_occupied": 65.78236389160156
+      },
+      "target_distance": {
+        "observable_no_mob": 40.738670349121094,
+        "revealed_no_mob": 209.9344482421875,
+        "mob": 101.3642807006836
+      },
+      "counts": {
+        "observable_no_mob": 179,
+        "revealed_no_mob": 31,
+        "mob": 6
+      }
+    }
+  },
+  "control_false": {
+    "scroll_rate": {
+      "imagined": 0.045241810381412506,
+      "true": 0.04056162387132645,
+      "img_hist": 0.029641184955835342,
+      "img_cur": 0.054602183401584625
+    },
+    "mean_logit": {
+      "imagined": -6.916743278503418,
+      "true": -7.744115352630615,
+      "img_hist": -7.977838516235352,
+      "img_cur": -6.878676414489746
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 16.227066040039062,
+      "player": 24.8851375579834,
+      "frame": 19.149600982666016
+    },
+    "depth_hist": [
+      0,
+      78,
+      78,
+      60,
+      54,
+      51,
+      48,
+      39,
+      30,
+      36,
+      39,
+      27,
+      21,
+      32,
+      24,
+      24
+    ],
+    "provenance": {
+      "observable_share": 0.9719188809394836,
+      "mob_share": 0.015600623562932014,
+      "occupied_share": 0.0171606857329607,
+      "slept_share": 0.17940717935562134,
+      "target_distance_occupied": {
+        "occupied": 33.32241439819336,
+        "not_occupied": 15.928574562072754
+      },
+      "target_distance": {
+        "observable_no_mob": 13.652336120605469,
+        "revealed_no_mob": 109.84160614013672,
+        "mob": 5.551759719848633
+      },
+      "counts": {
+        "observable_no_mob": 613,
+        "revealed_no_mob": 18,
+        "mob": 10
+      }
+    }
+  },
+  "readings": {
+    "missed": {
+      "right_rate": {
+        "imagined": 0.5339806079864502,
+        "true": 0.9126213788986206,
+        "img_hist": 0.9061488509178162,
+        "img_cur": 0.5760517716407776
+      },
+      "input_caused": false,
+      "current_frame": false,
+      "history": false,
+      "target_tile": true
+    },
+    "false": {
+      "right_rate": {
+        "imagined": 0.21296298503875732,
+        "true": 0.5277777910232544,
+        "img_hist": 0.5462962985038757,
+        "img_cur": 0.19907408952713013
+      },
+      "input_caused": false,
+      "current_frame": false,
+      "history": false,
+      "target_tile": true
+    },
+    "sleep": {
+      "wrong_slept_share": 0.055238093180315834,
+      "control_slept_share": 0.08354591922739482,
+      "sleep_triggered": false
+    }
+  }
+}

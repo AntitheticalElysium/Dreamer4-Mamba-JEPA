@@ -1,0 +1,87 @@
+{
+  "blocked_first_steps": 620,
+  "all_blocked_steps": 2105,
+  "false_scroll_rate": 0.1806451678276062,
+  "by_depth": {
+    "1": 0.0,
+    "2": 0.3173076808452606,
+    "4": 0.3962264060974121,
+    "8": 0.14814814925193787,
+    "16": 0.0714285746216774
+  },
+  "decision_true_window_mean": -6.930837154388428,
+  "decision_imagined_window_mean": -5.285196781158447,
+  "share_positive_true_window": 0.10806451737880707,
+  "share_positive_imagined_window": 0.17903225123882294,
+  "on_false_scrolls_true_vs_imagined": [
+    -1.7879029512405396,
+    0.8366422653198242
+  ],
+  "by_target_n_falsescroll_truepositive": {
+    "tile:4": [
+      280,
+      62,
+      49
+    ],
+    "tile:5": [
+      106,
+      4,
+      0
+    ],
+    "tile:11": [
+      47,
+      11,
+      7
+    ],
+    "tile:3": [
+      40,
+      1,
+      0
+    ],
+    "mob:zombie": [
+      38,
+      11,
+      4
+    ],
+    "tile:12": [
+      37,
+      6,
+      0
+    ],
+    "tile:15": [
+      29,
+      5,
+      2
+    ],
+    "mob:cow": [
+      15,
+      5,
+      1
+    ],
+    "tile:9": [
+      13,
+      5,
+      3
+    ],
+    "tile:8": [
+      5,
+      1,
+      0
+    ],
+    "tile:10": [
+      5,
+      1,
+      1
+    ],
+    "tile:1": [
+      4,
+      0,
+      0
+    ],
+    "mob:skeleton": [
+      1,
+      0,
+      0
+    ]
+  }
+}

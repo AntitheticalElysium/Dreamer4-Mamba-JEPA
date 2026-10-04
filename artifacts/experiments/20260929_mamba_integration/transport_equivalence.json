@@ -1,0 +1,759 @@
+{
+  "status": "complete",
+  "scope": "frozen fcanvas weights on inspected diagnosis true windows",
+  "candidate_counts": {
+    "no_scroll": 308,
+    "scroll_no_reentry": 592,
+    "scroll_reentry": 102
+  },
+  "selected_ids": [
+    0,
+    2,
+    7,
+    10,
+    13,
+    16,
+    20,
+    23,
+    30,
+    33,
+    34,
+    35,
+    36,
+    38,
+    42,
+    1,
+    3,
+    4,
+    5,
+    6,
+    8,
+    9,
+    11,
+    12,
+    14,
+    15,
+    18,
+    19,
+    21,
+    22,
+    17,
+    28,
+    31,
+    47,
+    56,
+    64,
+    77,
+    78,
+    83,
+    93,
+    105,
+    107,
+    118,
+    137,
+    142
+  ],
+  "checkpoint_source_sha256": "5e4c2fa2745102b8b9d54d3794e1c29f0354cb9fc69b604f2841ac6a0cc41d98",
+  "reconstructed_source_sha256": "5e4c2fa2745102b8b9d54d3794e1c29f0354cb9fc69b604f2841ac6a0cc41d98",
+  "checkpoint_sha256": "2424af359e2f28b96b4231351627d231803ef3c5037a72733ca3ef7d00ddb9c0",
+  "raw_cache_sha256": "76dc92b0ab7b17efdfd5884d26d3cece291524a941fa4f714488d3209bc07f8e",
+  "transport_source_sha256": "0c7e931bd6e172a193a1e66766fd35fafaf48e54119032c882ed2a9a98ccd92e",
+  "carry_source_sha256": "8a06ceb29c4bcd97a6d876f3a0ffc1fb8e8bc8f65593346c63bc282b8d5570ab",
+  "groups": {
+    "no_scroll": {
+      "n": 15,
+      "max_abs": 2.0623207092285156e-05,
+      "mean_rmse": 1.3337923571536218e-07,
+      "mean_relative_rmse": 1.333799945039779e-07
+    },
+    "scroll_no_reentry": {
+      "n": 15,
+      "max_abs": 3.224611282348633e-05,
+      "mean_rmse": 3.337791869266008e-07,
+      "mean_relative_rmse": 3.338352382165815e-07
+    },
+    "scroll_reentry": {
+      "n": 15,
+      "max_abs": 0.19228017330169678,
+      "mean_rmse": 0.0009652416731190291,
+      "mean_relative_rmse": 0.0009657829467156332
+    }
+  },
+  "rows": [
+    {
+      "root": 0,
+      "shifts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": false,
+      "reentry": false,
+      "max_abs": 4.76837158203125e-07,
+      "rmse": 2.6543890641050893e-08,
+      "normalizer": 0.9999949336051941
+    },
+    {
+      "root": 2,
+      "shifts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": false,
+      "reentry": false,
+      "max_abs": 1.7881393432617188e-06,
+      "rmse": 6.352486536798096e-08,
+      "normalizer": 0.9999949336051941
+    },
+    {
+      "root": 7,
+      "shifts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": false,
+      "reentry": false,
+      "max_abs": 4.76837158203125e-07,
+      "rmse": 2.1041689279854836e-08,
+      "normalizer": 0.9999949336051941
+    },
+    {
+      "root": 10,
+      "shifts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": false,
+      "reentry": false,
+      "max_abs": 4.76837158203125e-07,
+      "rmse": 2.6347821702188412e-08,
+      "normalizer": 0.9999949336051941
+    },
+    {
+      "root": 13,
+      "shifts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": false,
+      "reentry": false,
+      "max_abs": 4.76837158203125e-07,
+      "rmse": 2.7619053710736807e-08,
+      "normalizer": 0.9999949336051941
+    },
+    {
+      "root": 16,
+      "shifts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": false,
+      "reentry": false,
+      "max_abs": 4.76837158203125e-07,
+      "rmse": 3.1228939434413405e-08,
+      "normalizer": 0.9999949336051941
+    },
+    {
+      "root": 20,
+      "shifts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": false,
+      "reentry": false,
+      "max_abs": 5.364418029785156e-06,
+      "rmse": 1.1273463229599656e-07,
+      "normalizer": 0.9999949336051941
+    },
+    {
+      "root": 23,
+      "shifts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": false,
+      "reentry": false,
+      "max_abs": 3.814697265625e-06,
+      "rmse": 9.04698964632189e-08,
+      "normalizer": 0.9999949336051941
+    },
+    {
+      "root": 30,
+      "shifts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": false,
+      "reentry": false,
+      "max_abs": 7.152557373046875e-07,
+      "rmse": 2.5984062901329708e-08,
+      "normalizer": 0.9999949336051941
+    },
+    {
+      "root": 33,
+      "shifts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": false,
+      "reentry": false,
+      "max_abs": 4.589557647705078e-06,
+      "rmse": 1.078291163025824e-07,
+      "normalizer": 0.9999949336051941
+    },
+    {
+      "root": 34,
+      "shifts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": false,
+      "reentry": false,
+      "max_abs": 4.798173904418945e-06,
+      "rmse": 9.219461105658411e-08,
+      "normalizer": 0.9999949336051941
+    },
+    {
+      "root": 35,
+      "shifts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": false,
+      "reentry": false,
+      "max_abs": 2.0623207092285156e-05,
+      "rmse": 1.0997781600963208e-06,
+      "normalizer": 0.9999938011169434
+    },
+    {
+      "root": 36,
+      "shifts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": false,
+      "reentry": false,
+      "max_abs": 7.152557373046875e-07,
+      "rmse": 3.136561943506422e-08,
+      "normalizer": 0.9999949336051941
+    },
+    {
+      "root": 38,
+      "shifts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": false,
+      "reentry": false,
+      "max_abs": 9.775161743164062e-06,
+      "rmse": 2.161926460075847e-07,
+      "normalizer": 0.9999949336051941
+    },
+    {
+      "root": 42,
+      "shifts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": false,
+      "reentry": false,
+      "max_abs": 4.76837158203125e-07,
+      "rmse": 2.7833531035525994e-08,
+      "normalizer": 0.9999949336051941
+    },
+    {
+      "root": 1,
+      "shifts": [
+        0,
+        0,
+        0,
+        3,
+        3
+      ],
+      "any_scroll": true,
+      "reentry": false,
+      "max_abs": 3.516674041748047e-06,
+      "rmse": 1.3564751100147987e-07,
+      "normalizer": 0.9998847246170044
+    },
+    {
+      "root": 3,
+      "shifts": [
+        4,
+        0,
+        0,
+        1,
+        4
+      ],
+      "any_scroll": true,
+      "reentry": false,
+      "max_abs": 2.5875866413116455e-05,
+      "rmse": 5.976477837066341e-07,
+      "normalizer": 0.9993298053741455
+    },
+    {
+      "root": 4,
+      "shifts": [
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "any_scroll": true,
+      "reentry": false,
+      "max_abs": 5.245208740234375e-06,
+      "rmse": 1.667357594214991e-07,
+      "normalizer": 0.9997509121894836
+    },
+    {
+      "root": 5,
+      "shifts": [
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      "any_scroll": true,
+      "reentry": false,
+      "max_abs": 9.5367431640625e-07,
+      "rmse": 5.6664820391461035e-08,
+      "normalizer": 0.9999949336051941
+    },
+    {
+      "root": 6,
+      "shifts": [
+        3,
+        3,
+        3,
+        0,
+        1
+      ],
+      "any_scroll": true,
+      "reentry": false,
+      "max_abs": 6.4373016357421875e-06,
+      "rmse": 1.8798677103859518e-07,
+      "normalizer": 0.9996894001960754
+    },
+    {
+      "root": 8,
+      "shifts": [
+        3,
+        3,
+        0,
+        3,
+        0
+      ],
+      "any_scroll": true,
+      "reentry": false,
+      "max_abs": 2.263486385345459e-05,
+      "rmse": 5.301252485878649e-07,
+      "normalizer": 0.9999900460243225
+    },
+    {
+      "root": 9,
+      "shifts": [
+        0,
+        0,
+        0,
+        3,
+        1
+      ],
+      "any_scroll": true,
+      "reentry": false,
+      "max_abs": 5.4836273193359375e-06,
+      "rmse": 1.5873197867222189e-07,
+      "normalizer": 0.9999346733093262
+    },
+    {
+      "root": 11,
+      "shifts": [
+        1,
+        0,
+        4,
+        0,
+        0
+      ],
+      "any_scroll": true,
+      "reentry": false,
+      "max_abs": 3.224611282348633e-05,
+      "rmse": 6.525908133880876e-07,
+      "normalizer": 0.9998053312301636
+    },
+    {
+      "root": 12,
+      "shifts": [
+        0,
+        0,
+        0,
+        0,
+        3
+      ],
+      "any_scroll": true,
+      "reentry": false,
+      "max_abs": 1.068413257598877e-05,
+      "rmse": 2.3651314506878407e-07,
+      "normalizer": 0.9997360706329346
+    },
+    {
+      "root": 14,
+      "shifts": [
+        2,
+        2,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": true,
+      "reentry": false,
+      "max_abs": 1.411139965057373e-05,
+      "rmse": 2.7726738949240826e-07,
+      "normalizer": 0.9999949336051941
+    },
+    {
+      "root": 15,
+      "shifts": [
+        4,
+        4,
+        4,
+        4,
+        0
+      ],
+      "any_scroll": true,
+      "reentry": false,
+      "max_abs": 2.47955322265625e-05,
+      "rmse": 5.510640903594322e-07,
+      "normalizer": 0.9999863505363464
+    },
+    {
+      "root": 18,
+      "shifts": [
+        0,
+        0,
+        3,
+        2,
+        3
+      ],
+      "any_scroll": true,
+      "reentry": false,
+      "max_abs": 1.1146068572998047e-05,
+      "rmse": 2.9838855652997154e-07,
+      "normalizer": 0.999912679195404
+    },
+    {
+      "root": 19,
+      "shifts": [
+        0,
+        0,
+        0,
+        3,
+        0
+      ],
+      "any_scroll": true,
+      "reentry": false,
+      "max_abs": 2.2679567337036133e-05,
+      "rmse": 6.807064210079261e-07,
+      "normalizer": 0.999987006187439
+    },
+    {
+      "root": 21,
+      "shifts": [
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "any_scroll": true,
+      "reentry": false,
+      "max_abs": 5.0067901611328125e-06,
+      "rmse": 1.3565497170020535e-07,
+      "normalizer": 0.9997309446334839
+    },
+    {
+      "root": 22,
+      "shifts": [
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_scroll": true,
+      "reentry": false,
+      "max_abs": 1.341104507446289e-05,
+      "rmse": 3.409625435324415e-07,
+      "normalizer": 0.9998868107795715
+    },
+    {
+      "root": 17,
+      "shifts": [
+        2,
+        1,
+        0,
+        1,
+        4
+      ],
+      "any_scroll": true,
+      "reentry": true,
+      "max_abs": 0.04192090034484863,
+      "rmse": 0.0010058465413749218,
+      "normalizer": 0.9994139075279236
+    },
+    {
+      "root": 28,
+      "shifts": [
+        0,
+        2,
+        0,
+        0,
+        1
+      ],
+      "any_scroll": true,
+      "reentry": true,
+      "max_abs": 0.0008313655853271484,
+      "rmse": 2.248423515993636e-05,
+      "normalizer": 0.9994191527366638
+    },
+    {
+      "root": 31,
+      "shifts": [
+        3,
+        2,
+        4,
+        0,
+        0
+      ],
+      "any_scroll": true,
+      "reentry": true,
+      "max_abs": 0.00012922286987304688,
+      "rmse": 5.3434091569215525e-06,
+      "normalizer": 0.999816358089447
+    },
+    {
+      "root": 47,
+      "shifts": [
+        0,
+        2,
+        1,
+        3,
+        3
+      ],
+      "any_scroll": true,
+      "reentry": true,
+      "max_abs": 0.02389422059059143,
+      "rmse": 0.0006557781016454101,
+      "normalizer": 0.9990785121917725
+    },
+    {
+      "root": 56,
+      "shifts": [
+        0,
+        2,
+        1,
+        0,
+        3
+      ],
+      "any_scroll": true,
+      "reentry": true,
+      "max_abs": 0.061879873275756836,
+      "rmse": 0.0019007216906175017,
+      "normalizer": 0.9998014569282532
+    },
+    {
+      "root": 64,
+      "shifts": [
+        4,
+        0,
+        3,
+        3,
+        1
+      ],
+      "any_scroll": true,
+      "reentry": true,
+      "max_abs": 0.11418306827545166,
+      "rmse": 0.0022777034901082516,
+      "normalizer": 0.9993372559547424
+    },
+    {
+      "root": 77,
+      "shifts": [
+        1,
+        3,
+        0,
+        4,
+        4
+      ],
+      "any_scroll": true,
+      "reentry": true,
+      "max_abs": 0.19228017330169678,
+      "rmse": 0.0029400347266346216,
+      "normalizer": 0.9989049434661865
+    },
+    {
+      "root": 78,
+      "shifts": [
+        0,
+        2,
+        0,
+        0,
+        1
+      ],
+      "any_scroll": true,
+      "reentry": true,
+      "max_abs": 1.1771917343139648e-05,
+      "rmse": 4.3327020193828503e-07,
+      "normalizer": 0.9997919201850891
+    },
+    {
+      "root": 83,
+      "shifts": [
+        0,
+        1,
+        3,
+        4,
+        4
+      ],
+      "any_scroll": true,
+      "reentry": true,
+      "max_abs": 0.07439470291137695,
+      "rmse": 0.0015964288031682372,
+      "normalizer": 0.9998051524162292
+    },
+    {
+      "root": 93,
+      "shifts": [
+        0,
+        2,
+        0,
+        4,
+        1
+      ],
+      "any_scroll": true,
+      "reentry": true,
+      "max_abs": 0.007699728012084961,
+      "rmse": 0.0002902550040744245,
+      "normalizer": 0.9999913573265076
+    },
+    {
+      "root": 105,
+      "shifts": [
+        1,
+        0,
+        2,
+        0,
+        0
+      ],
+      "any_scroll": true,
+      "reentry": true,
+      "max_abs": 0.01212012767791748,
+      "rmse": 0.0003316099173389375,
+      "normalizer": 0.9995655417442322
+    },
+    {
+      "root": 107,
+      "shifts": [
+        3,
+        1,
+        0,
+        2,
+        2
+      ],
+      "any_scroll": true,
+      "reentry": true,
+      "max_abs": 0.08678406476974487,
+      "rmse": 0.0013823785120621324,
+      "normalizer": 0.9998636841773987
+    },
+    {
+      "root": 118,
+      "shifts": [
+        0,
+        1,
+        1,
+        2,
+        3
+      ],
+      "any_scroll": true,
+      "reentry": true,
+      "max_abs": 0.019691430032253265,
+      "rmse": 0.0005387573037296534,
+      "normalizer": 0.9995144009590149
+    },
+    {
+      "root": 137,
+      "shifts": [
+        4,
+        1,
+        1,
+        3,
+        2
+      ],
+      "any_scroll": true,
+      "reentry": true,
+      "max_abs": 0.06771624088287354,
+      "rmse": 0.0015256034675985575,
+      "normalizer": 0.9994188547134399
+    },
+    {
+      "root": 142,
+      "shifts": [
+        3,
+        1,
+        0,
+        3,
+        2
+      ],
+      "any_scroll": true,
+      "reentry": true,
+      "max_abs": 0.00017273426055908203,
+      "rmse": 5.246623913990334e-06,
+      "normalizer": 0.9992108941078186
+    }
+  ]
+}

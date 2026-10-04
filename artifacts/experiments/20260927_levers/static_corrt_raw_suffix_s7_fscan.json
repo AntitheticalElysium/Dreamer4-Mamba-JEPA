@@ -1,0 +1,93 @@
+{
+  "roots": 98,
+  "depth": {
+    "1": {
+      "false_scroll": 0.0,
+      "err_over_V": 0.016310932114720345,
+      "copy_over_V": 0.05033809691667557,
+      "player": 0.04707133024930954,
+      "near": 0.022158002480864525,
+      "interior": 0.0121228052303195,
+      "edge": 0.01864132471382618,
+      "hud": 0.01825837790966034
+    },
+    "2": {
+      "false_scroll": 0.051020409911870956,
+      "err_over_V": 0.05384136363863945,
+      "copy_over_V": 0.07337361574172974,
+      "player": 0.13591039180755615,
+      "near": 0.07710754126310349,
+      "interior": 0.05732903629541397,
+      "edge": 0.04884156584739685,
+      "hud": 0.03991049900650978
+    },
+    "4": {
+      "false_scroll": 0.0714285746216774,
+      "err_over_V": 0.13210955262184143,
+      "copy_over_V": 0.1385040581226349,
+      "player": 0.19651761651039124,
+      "near": 0.20742152631282806,
+      "interior": 0.15441004931926727,
+      "edge": 0.11187968403100967,
+      "hud": 0.07649844139814377
+    },
+    "8": {
+      "false_scroll": 0.051020409911870956,
+      "err_over_V": 0.23897399008274078,
+      "copy_over_V": 0.2648012042045593,
+      "player": 0.33087974786758423,
+      "near": 0.316087007522583,
+      "interior": 0.2697595953941345,
+      "edge": 0.21915699541568756,
+      "hud": 0.14035262167453766
+    },
+    "16": {
+      "false_scroll": 0.040816325694322586,
+      "err_over_V": 0.6567272543907166,
+      "copy_over_V": 0.4623453915119171,
+      "player": 1.0321053266525269,
+      "near": 0.7507980465888977,
+      "interior": 0.7129042744636536,
+      "edge": 0.6233963370323181,
+      "hud": 0.468402236700058
+    }
+  },
+  "any_false_scroll_in_16": 0.30612245202064514,
+  "err16_over_V_with_move_attempts": 0.7855730652809143,
+  "err16_over_V_without_move_attempts": 0.04281472787261009,
+  "n_with_move_attempts": 81,
+  "move_steps": 387,
+  "false_scroll_rate_on_move_steps": 0.24806201457977295,
+  "false_scroll_rate_by_target_input_error": {
+    "below_median": 0.15463916957378387,
+    "median_to_p75": 0.1979166716337204,
+    "p75_to_p90": 0.32758620381355286,
+    "above_p90": 0.7179487347602844
+  },
+  "target_input_error_quantiles": [
+    6.523503303527832,
+    57.41480255126953,
+    170.20262145996094
+  ],
+  "target_input_error_mean_false_vs_not": [
+    113.250732421875,
+    30.215797424316406
+  ],
+  "first_false_scroll_hazard_on_move_steps": 0.11278195679187775,
+  "first_false_scroll_hazard_by_depth": {
+    "2": 0.22727273404598236,
+    "4": 0.1818181872367859,
+    "8": 0.0,
+    "16": 0.0714285746216774
+  },
+  "decision_logit_blocked_first_steps": {
+    "true_window_mean": -4.962973117828369,
+    "imagined_window_mean": -3.929619073867798,
+    "imagined_on_false_scroll": -0.34703776240348816,
+    "true_on_false_scroll_steps": -3.0703125,
+    "share_true_window_positive": 0.02631578966975212,
+    "share_imagined_window_positive": 0.04135338217020035
+  },
+  "err16_over_V_roots_with_false_scroll": 1.0302273035049438,
+  "err16_over_V_roots_without_false_scroll": 0.491947740316391
+}

@@ -1,0 +1,4 @@
+z   eigen spread     6220.2  top/median   581.5  median/bottom    10.7  effective rank   44.0/192  per-coord var range     2.7
+u   eigen spread     2329.2  top/median   570.2  median/bottom     4.1  effective rank   10.8/192  per-coord var range  2325.1
+w   eigen spread        1.1  top/median     1.1  median/bottom     1.1  effective rank  191.9/192  per-coord var range     1.0
+SP  eigen spread     2718.3  top/median   368.5  median/bottom     7.4  effective rank   48.1/192  per-coord var range     2.5

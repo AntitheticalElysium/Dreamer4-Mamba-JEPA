@@ -1,0 +1,316 @@
+{
+  "schema": "d4mj_headwhite_v1",
+  "status": "POST HOC on four blocks read before",
+  "script_sha256": "6bc28b9ab32d2f028e1e712d82b717debbc5ce121ccffa08939ae6b7aba9c375",
+  "reading": "mixed",
+  "result": {
+    "55k": {
+      "manifest": "c02ee6fe8e9da4a4b97e834d85785e2718738afebe8b8ff736f8aa4d154d828b",
+      "expected_safe": {
+        "DOWN": {
+          "overall": 0.586442768573761,
+          "zombie": 0.4960784316062927
+        },
+        "UHW": {
+          "overall": 0.6339008212089539,
+          "zombie": 0.5156862735748291
+        },
+        "U_s1": {
+          "overall": 0.6244170069694519,
+          "zombie": 0.4901960790157318
+        },
+        "W_s1": {
+          "overall": 0.6538013219833374,
+          "zombie": 0.5411764979362488
+        }
+      },
+      "contrasts": {
+        "UHW_vs_U_s1": {
+          "overall": {
+            "difference": 0.009483814239501953,
+            "interval": [
+              -0.016851747408509254,
+              0.03392048552632332
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": 0.02549019455909729,
+            "interval": [
+              -0.009709746576845646,
+              0.05905833840370178
+            ],
+            "excludes_zero": false
+          }
+        },
+        "UHW_vs_W_s1": {
+          "overall": {
+            "difference": -0.019900500774383545,
+            "interval": [
+              -0.05054667592048645,
+              0.009123675525188446
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": -0.025490224361419678,
+            "interval": [
+              -0.06560814380645752,
+              0.009495062753558159
+            ],
+            "excludes_zero": false
+          }
+        },
+        "W_s1_vs_U_s1": {
+          "overall": {
+            "difference": 0.029384315013885498,
+            "interval": [
+              -0.002557468367740512,
+              0.06290057301521301
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": 0.05098041892051697,
+            "interval": [
+              0.0056376149877905846,
+              0.09757864475250244
+            ],
+            "excludes_zero": true
+          }
+        }
+      }
+    },
+    "56k": {
+      "manifest": "0a42c1e36b233190cd2c0456098735e433c9da44e5e1754c352330da4e49cc78",
+      "expected_safe": {
+        "DOWN": {
+          "overall": 0.5912531018257141,
+          "zombie": 0.5394176244735718
+        },
+        "UHW": {
+          "overall": 0.656328022480011,
+          "zombie": 0.5657551884651184
+        },
+        "U_s1": {
+          "overall": 0.656093955039978,
+          "zombie": 0.5464606881141663
+        },
+        "W_s1": {
+          "overall": 0.6766541600227356,
+          "zombie": 0.5928030014038086
+        }
+      },
+      "contrasts": {
+        "UHW_vs_U_s1": {
+          "overall": {
+            "difference": 0.00023406744003295898,
+            "interval": [
+              -0.024752449244260788,
+              0.024810440838336945
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": 0.01929450035095215,
+            "interval": [
+              -0.009826567955315113,
+              0.052007436752319336
+            ],
+            "excludes_zero": false
+          }
+        },
+        "UHW_vs_W_s1": {
+          "overall": {
+            "difference": -0.02032613754272461,
+            "interval": [
+              -0.0550498403608799,
+              0.011703066527843475
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": -0.027047812938690186,
+            "interval": [
+              -0.0674172192811966,
+              0.01834648661315441
+            ],
+            "excludes_zero": false
+          }
+        },
+        "W_s1_vs_U_s1": {
+          "overall": {
+            "difference": 0.02056020498275757,
+            "interval": [
+              -0.01320006512105465,
+              0.053359225392341614
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": 0.046342313289642334,
+            "interval": [
+              0.004094460513442755,
+              0.0875074490904808
+            ],
+            "excludes_zero": true
+          }
+        }
+      }
+    },
+    "57k": {
+      "manifest": "5e831f4826f9299cbbe9e08020f4187c18b6547e93919866015392e8379ed54f",
+      "expected_safe": {
+        "DOWN": {
+          "overall": 0.6347680687904358,
+          "zombie": 0.5967229008674622
+        },
+        "UHW": {
+          "overall": 0.6731398105621338,
+          "zombie": 0.5884955525398254
+        },
+        "U_s1": {
+          "overall": 0.6574953198432922,
+          "zombie": 0.5275166034698486
+        },
+        "W_s1": {
+          "overall": 0.715753436088562,
+          "zombie": 0.6358545422554016
+        }
+      },
+      "contrasts": {
+        "UHW_vs_U_s1": {
+          "overall": {
+            "difference": 0.015644490718841553,
+            "interval": [
+              -0.025360528379678726,
+              0.05184830352663994
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": 0.06097894906997681,
+            "interval": [
+              0.02733570709824562,
+              0.09936320036649704
+            ],
+            "excludes_zero": true
+          }
+        },
+        "UHW_vs_W_s1": {
+          "overall": {
+            "difference": -0.04261362552642822,
+            "interval": [
+              -0.08748261630535126,
+              -0.0017571811331436038
+            ],
+            "excludes_zero": true
+          },
+          "zombie": {
+            "difference": -0.04735898971557617,
+            "interval": [
+              -0.09030015766620636,
+              -0.0012417229590937495
+            ],
+            "excludes_zero": true
+          }
+        },
+        "W_s1_vs_U_s1": {
+          "overall": {
+            "difference": 0.058258116245269775,
+            "interval": [
+              0.027368681505322456,
+              0.08943233639001846
+            ],
+            "excludes_zero": true
+          },
+          "zombie": {
+            "difference": 0.10833793878555298,
+            "interval": [
+              0.06565357744693756,
+              0.15207922458648682
+            ],
+            "excludes_zero": true
+          }
+        }
+      }
+    },
+    "58k": {
+      "manifest": "81c0b4af7df89cc36dfc06d8a3c2664567159b27d4c9f7157970a3757051a054",
+      "expected_safe": {
+        "DOWN": {
+          "overall": 0.6604552268981934,
+          "zombie": 0.584589421749115
+        },
+        "UHW": {
+          "overall": 0.671566367149353,
+          "zombie": 0.5454131960868835
+        },
+        "U_s1": {
+          "overall": 0.6529321074485779,
+          "zombie": 0.4981158971786499
+        },
+        "W_s1": {
+          "overall": 0.7251157164573669,
+          "zombie": 0.6255847215652466
+        }
+      },
+      "contrasts": {
+        "UHW_vs_U_s1": {
+          "overall": {
+            "difference": 0.018634259700775146,
+            "interval": [
+              -0.005436818115413189,
+              0.04322810098528862
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": 0.04729729890823364,
+            "interval": [
+              0.013402076438069344,
+              0.07986736297607422
+            ],
+            "excludes_zero": true
+          }
+        },
+        "UHW_vs_W_s1": {
+          "overall": {
+            "difference": -0.053549349308013916,
+            "interval": [
+              -0.08197776973247528,
+              -0.028698910027742386
+            ],
+            "excludes_zero": true
+          },
+          "zombie": {
+            "difference": -0.08017152547836304,
+            "interval": [
+              -0.12130939960479736,
+              -0.04089856892824173
+            ],
+            "excludes_zero": true
+          }
+        },
+        "W_s1_vs_U_s1": {
+          "overall": {
+            "difference": 0.07218360900878906,
+            "interval": [
+              0.04198332875967026,
+              0.10445476323366165
+            ],
+            "excludes_zero": true
+          },
+          "zombie": {
+            "difference": 0.12746882438659668,
+            "interval": [
+              0.08043139427900314,
+              0.1746620386838913
+            ],
+            "excludes_zero": true
+          }
+        }
+      }
+    }
+  }
+}

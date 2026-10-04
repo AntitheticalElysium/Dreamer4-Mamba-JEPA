@@ -1,0 +1,407 @@
+{
+  "schema": "d4mj_zwhite_v1",
+  "status": "POST HOC on four blocks read before",
+  "script_sha256": "1a6a666b1a42408973c2b89b87c609d8f32c6f058004436f4f65f22ce7b3cefc",
+  "readings": {
+    "isotropy_helps_without_mob": true,
+    "mob_information_needed": true
+  },
+  "result": {
+    "55k": {
+      "manifest": "c02ee6fe8e9da4a4b97e834d85785e2718738afebe8b8ff736f8aa4d154d828b",
+      "expected_safe": {
+        "DOWN": {
+          "overall": 0.586442768573761,
+          "zombie": 0.4960784316062927
+        },
+        "ZW": {
+          "overall": 0.5964707732200623,
+          "zombie": 0.4470588266849518
+        },
+        "Z_s1": {
+          "overall": 0.5796408653259277,
+          "zombie": 0.4176470637321472
+        },
+        "U_s1": {
+          "overall": 0.6244170069694519,
+          "zombie": 0.4901960790157318
+        },
+        "W_s1": {
+          "overall": 0.6538013219833374,
+          "zombie": 0.5411764979362488
+        }
+      },
+      "contrasts": {
+        "ZW_vs_Z_s1": {
+          "overall": {
+            "difference": 0.01682990789413452,
+            "interval": [
+              -0.019508562982082367,
+              0.05170830711722374
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": 0.029411762952804565,
+            "interval": [
+              -0.017063118517398834,
+              0.07817093282938004
+            ],
+            "excludes_zero": false
+          }
+        },
+        "W_s1_vs_ZW": {
+          "overall": {
+            "difference": 0.057330548763275146,
+            "interval": [
+              0.002805019961670041,
+              0.10761425644159317
+            ],
+            "excludes_zero": true
+          },
+          "zombie": {
+            "difference": 0.094117671251297,
+            "interval": [
+              0.028684234246611595,
+              0.1531120240688324
+            ],
+            "excludes_zero": true
+          }
+        },
+        "ZW_vs_DOWN": {
+          "overall": {
+            "difference": 0.01002800464630127,
+            "interval": [
+              -0.054900579154491425,
+              0.0715450569987297
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": -0.04901960492134094,
+            "interval": [
+              -0.11639195680618286,
+              0.025949593633413315
+            ],
+            "excludes_zero": false
+          }
+        },
+        "U_s1_vs_Z_s1": {
+          "overall": {
+            "difference": 0.04477614164352417,
+            "interval": [
+              0.0,
+              0.08718433231115341
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": 0.0725490152835846,
+            "interval": [
+              0.015093325637280941,
+              0.1284068524837494
+            ],
+            "excludes_zero": true
+          }
+        }
+      }
+    },
+    "56k": {
+      "manifest": "0a42c1e36b233190cd2c0456098735e433c9da44e5e1754c352330da4e49cc78",
+      "expected_safe": {
+        "DOWN": {
+          "overall": 0.5912531018257141,
+          "zombie": 0.5394176244735718
+        },
+        "ZW": {
+          "overall": 0.5346441864967346,
+          "zombie": 0.4137073755264282
+        },
+        "Z_s1": {
+          "overall": 0.5391307473182678,
+          "zombie": 0.3979048430919647
+        },
+        "U_s1": {
+          "overall": 0.656093955039978,
+          "zombie": 0.5464606881141663
+        },
+        "W_s1": {
+          "overall": 0.6766541600227356,
+          "zombie": 0.5928030014038086
+        }
+      },
+      "contrasts": {
+        "ZW_vs_Z_s1": {
+          "overall": {
+            "difference": -0.004486560821533203,
+            "interval": [
+              -0.04601867124438286,
+              0.035415492951869965
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": 0.0158025324344635,
+            "interval": [
+              -0.038306690752506256,
+              0.06738951802253723
+            ],
+            "excludes_zero": false
+          }
+        },
+        "W_s1_vs_ZW": {
+          "overall": {
+            "difference": 0.14200997352600098,
+            "interval": [
+              0.0900397002696991,
+              0.19769948720932007
+            ],
+            "excludes_zero": true
+          },
+          "zombie": {
+            "difference": 0.17909562587738037,
+            "interval": [
+              0.11520415544509888,
+              0.24439825117588043
+            ],
+            "excludes_zero": true
+          }
+        },
+        "ZW_vs_DOWN": {
+          "overall": {
+            "difference": -0.05660891532897949,
+            "interval": [
+              -0.125446155667305,
+              0.012139244936406612
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": -0.12571024894714355,
+            "interval": [
+              -0.19947901368141174,
+              -0.05236750841140747
+            ],
+            "excludes_zero": true
+          }
+        },
+        "U_s1_vs_Z_s1": {
+          "overall": {
+            "difference": 0.1169632077217102,
+            "interval": [
+              0.06106559559702873,
+              0.16957154870033264
+            ],
+            "excludes_zero": true
+          },
+          "zombie": {
+            "difference": 0.14855584502220154,
+            "interval": [
+              0.08831806480884552,
+              0.20841152966022491
+            ],
+            "excludes_zero": true
+          }
+        }
+      }
+    },
+    "57k": {
+      "manifest": "5e831f4826f9299cbbe9e08020f4187c18b6547e93919866015392e8379ed54f",
+      "expected_safe": {
+        "DOWN": {
+          "overall": 0.6347680687904358,
+          "zombie": 0.5967229008674622
+        },
+        "ZW": {
+          "overall": 0.5720734596252441,
+          "zombie": 0.4074253439903259
+        },
+        "Z_s1": {
+          "overall": 0.5774439573287964,
+          "zombie": 0.39207687973976135
+        },
+        "U_s1": {
+          "overall": 0.6574953198432922,
+          "zombie": 0.5275166034698486
+        },
+        "W_s1": {
+          "overall": 0.715753436088562,
+          "zombie": 0.6358545422554016
+        }
+      },
+      "contrasts": {
+        "ZW_vs_Z_s1": {
+          "overall": {
+            "difference": -0.005370497703552246,
+            "interval": [
+              -0.04186883941292763,
+              0.03294718638062477
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": 0.015348464250564575,
+            "interval": [
+              -0.03613933548331261,
+              0.06431689113378525
+            ],
+            "excludes_zero": false
+          }
+        },
+        "W_s1_vs_ZW": {
+          "overall": {
+            "difference": 0.14367997646331787,
+            "interval": [
+              0.09984017163515091,
+              0.1883048117160797
+            ],
+            "excludes_zero": true
+          },
+          "zombie": {
+            "difference": 0.22842919826507568,
+            "interval": [
+              0.16527025401592255,
+              0.2854383587837219
+            ],
+            "excludes_zero": true
+          }
+        },
+        "ZW_vs_DOWN": {
+          "overall": {
+            "difference": -0.06269460916519165,
+            "interval": [
+              -0.12138047814369202,
+              0.004681545775383711
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": -0.18929755687713623,
+            "interval": [
+              -0.25915032625198364,
+              -0.11049841344356537
+            ],
+            "excludes_zero": true
+          }
+        },
+        "U_s1_vs_Z_s1": {
+          "overall": {
+            "difference": 0.08005136251449585,
+            "interval": [
+              0.03867840766906738,
+              0.12267161905765533
+            ],
+            "excludes_zero": true
+          },
+          "zombie": {
+            "difference": 0.13543972373008728,
+            "interval": [
+              0.07495395094156265,
+              0.19063149392604828
+            ],
+            "excludes_zero": true
+          }
+        }
+      }
+    },
+    "58k": {
+      "manifest": "81c0b4af7df89cc36dfc06d8a3c2664567159b27d4c9f7157970a3757051a054",
+      "expected_safe": {
+        "DOWN": {
+          "overall": 0.6604552268981934,
+          "zombie": 0.584589421749115
+        },
+        "ZW": {
+          "overall": 0.5828317999839783,
+          "zombie": 0.4324324429035187
+        },
+        "Z_s1": {
+          "overall": 0.6094135642051697,
+          "zombie": 0.4549766182899475
+        },
+        "U_s1": {
+          "overall": 0.6529321074485779,
+          "zombie": 0.4981158971786499
+        },
+        "W_s1": {
+          "overall": 0.7251157164573669,
+          "zombie": 0.6255847215652466
+        }
+      },
+      "contrasts": {
+        "ZW_vs_Z_s1": {
+          "overall": {
+            "difference": -0.026581764221191406,
+            "interval": [
+              -0.06970581412315369,
+              0.015069601126015186
+            ],
+            "excludes_zero": false
+          },
+          "zombie": {
+            "difference": -0.022544175386428833,
+            "interval": [
+              -0.07576469331979752,
+              0.02597501501441002
+            ],
+            "excludes_zero": false
+          }
+        },
+        "W_s1_vs_ZW": {
+          "overall": {
+            "difference": 0.14228391647338867,
+            "interval": [
+              0.0927075445652008,
+              0.19163818657398224
+            ],
+            "excludes_zero": true
+          },
+          "zombie": {
+            "difference": 0.1931522786617279,
+            "interval": [
+              0.13454324007034302,
+              0.2529464364051819
+            ],
+            "excludes_zero": true
+          }
+        },
+        "ZW_vs_DOWN": {
+          "overall": {
+            "difference": -0.07762342691421509,
+            "interval": [
+              -0.1388157606124878,
+              -0.012651273049414158
+            ],
+            "excludes_zero": true
+          },
+          "zombie": {
+            "difference": -0.1521569788455963,
+            "interval": [
+              -0.22641374170780182,
+              -0.08037075400352478
+            ],
+            "excludes_zero": true
+          }
+        },
+        "U_s1_vs_Z_s1": {
+          "overall": {
+            "difference": 0.0435185432434082,
+            "interval": [
+              0.0017720761243253946,
+              0.09160315245389938
+            ],
+            "excludes_zero": true
+          },
+          "zombie": {
+            "difference": 0.04313927888870239,
+            "interval": [
+              -0.020061928778886795,
+              0.10301271826028824
+            ],
+            "excludes_zero": false
+          }
+        }
+      }
+    }
+  }
+}

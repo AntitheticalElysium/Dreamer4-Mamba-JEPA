@@ -1,0 +1,18 @@
+{
+  "checkpoint_sha256": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e",
+  "parent_checkpoint": null,
+  "cache_path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_m4_canonical/raw/cache",
+  "cache_manifest_sha256": "80d3d60521424ddb61318e6ebda9020e304cbcd3a96a7f2d07b1055bb1c30618",
+  "encoder_frozen": true,
+  "predictor_bn_modules": 1,
+  "predictor_bn_in_eval": true,
+  "capabilities": {
+    "joint_complete": true,
+    "readout_trained": true,
+    "trained_recursive_depth": 2,
+    "validated_recursive_depth": 0,
+    "actor_trained": false,
+    "m4_authorized": false
+  },
+  "failed_checks": 0
+}

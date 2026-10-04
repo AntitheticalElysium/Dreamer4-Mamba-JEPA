@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "limit": 1e-06,
+  "resume_max_abs": 2.7567148208618164e-07,
+  "legacy_max_abs": 2.7567148208618164e-07,
+  "sampler_rng_equal": true,
+  "steps": 6,
+  "source_sha256": {
+    "artifacts/experiments/20260929_mamba_integration/short_train.py": "2a0efd39cb02a4f2aa6b80b742ae54de536f21ec841b0b972aa0067b681cacd3",
+    "artifacts/experiments/20260927_levers/tworld.py": "a7e3d3f473595f524e45b6004a91f9bd458b2766c37873630cd6d0d8e29cf343",
+    "artifacts/experiments/20260921_readout_ladder/spatial.py": "89e055243d5378166fafd083f5055c05d5e4762e7a72ac2a954c48dbfefd8f81",
+    "d4mj/train.py": "95af8574bb7621813c122cb775e214fac3d629690e286561338fef485b2f5234",
+    "d4mj/mamba_recurrence.py": "8de9df2578d7bf45c9d98acaf51c99d03ca9185c641f8b09ae107370133bf4c0"
+  }
+}

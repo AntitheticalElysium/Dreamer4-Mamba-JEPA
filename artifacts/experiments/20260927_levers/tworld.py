@@ -1,0 +1,528 @@
+"""Per-tile world arms (E2 discretization, E3 TC+T, E5 copy/Delta variants): one recipe, one switch at a time.
+
+Backbone: spatial.World exactly (V-JEPA 2-AC frame layout at H2's scale: per frame [action token, 81 tile
+tokens], frame block-causal attention, 6 pre-norm layers, width 256, 4 heads, learned space/time positions).
+Only the OUTPUT differs between arms; h = the backbone's normalized output for tile i at frame t:
+  direct       LN(proj(h))                                       spatial.World as trained (no copy path)
+  residual     LN(s_t + proj(h)), proj zero-init                 Nagabandi et al. 2018 (predict the change)
+  gated        LN(g s_t + (1-g) proj(h)), g = sigmoid(w.h + 3)   copy-or-generate at the same tile (ITC's
+                                                                 decision, continuous, same position)
+  corrg        corr, plus one logit per frame from the action token's output (which attends to the whole frame),
+               added to the 4 neighbour logits of every tile: a shared "did the view move" decision; zero-init
+  corrt        corrg, plus (move actions only) a logit read from the backbone output AT the tile the move enters
+               (player token 31 + direction): bypasses routing the target's passability to the action token
+  corr         LN(sum_c w_c cand_c + w_gen proj(h)), w = softmax over {self, up, down, left, right, generate},
+               cand = the tile's own and its 4 neighbours' tokens in frame t (zeros off-grid), self logit +3
+               (ITC's displacement-capped copy-or-generate, continuous, cap = 1 tile)
+  categorical  input tokens quantized to the nearest of K k-means codes (codebook.py); output = K logits per tile;
+               cross-entropy on the next frame's code (Dedieu et al. 2025 / DreamerV2: discrete targets)
+Backbones (stage 2; `--backbone`, default `full`; every other part of the recipe identical):
+  full         spatial.World: one block-causal attention over all frames' 82 tokens (V-JEPA 2-AC layout)
+  fattn        per layer: space attention within the frame (82 tokens), causal time attention per token position,
+               MLP -- Dreamer 4's factorized layout (arXiv 2509.24527 s3; nicklashansen/dreamer4 model.py
+               BlockCausalLayer), time mixing in every layer
+  fmamba       fattn with the time mixer = the canonical Mamba-2 block (RMSNorm + FunctionalMamba2, canonical
+               DynamicsSettings) per token position: Po et al. 2025 (arXiv 2505.20171) block size 1
+  fcanvas      fmamba on a world-aligned canvas: frame t's 63 map tokens sit at canvas cell (r, c) + o_t, o_t the
+               cumulative view scroll estimated between consecutive INPUT frames (scroll.estimate: 0.994 accurate);
+               each canvas cell is scanned over time with delta = 0 (an exact hold: decay 1, no update) at frames
+               where it is out of view; outputs gathered back to screen positions. CMP's egocentric memory warped
+               by ego-motion (Gupta et al. 2017), done as a change of coordinates. HUD and action tokens unshifted
+               (their own sequences)
+  fscan        one Mamba-2 scan over the window in spatial-major order (T x 82 tokens): Po et al.'s variant
+               "without block-wise scan"
+ITC's training and decoding (arXiv 2605.16457, verified in the PDF 2026-09-28), two switches on the corr heads:
+  --gen-loss   the generate candidate also gets its own teacher-forced L1 on every token. ITC "leaves the
+               transformer and its training loss unchanged": the transformer's next-token predictions are trained
+               on all tokens (their appendix loss 1) and copying is chosen at decoding. Our corr heads train the
+               generator only through its mixture weight (measured 0.002-0.06 outside sleep onset: where.py)
+  --regions itc  ITC's Craftax rule (appendix, "Choosing Between Transformer and Optimal Transport Output"): copy
+               only in the central region; the screen edges (map border ring, 28 cells) and the inventory (HUD,
+               18 cells) take the generator's prediction
+Self-feeding recipes (2026-10-01; `--loss`), each exposing every input slot to imperfect frames, unlike `suffix`
+(V-JEPA 2-AC's T = 2 rollout loss), whose generated frame only ever sits in slot 4:
+  noise    teacher L1 with every input frame corrupted by additive Gaussian noise, alpha_t ~ U(0, 0.7) independently
+           per frame; alpha bucketed into 10 levels and given to the model by a learned level embedding added to the
+           frame's tile tokens (GameNGen, arXiv 2408.14837: max level 0.7, 10 buckets; per-timestep independent
+           levels as in Diffusion Forcing, arXiv 2407.01392). Targets are clean. Inference: bucket 0 (clean).
+  selffed  teacher L1 + one self-fed prediction per update: anchor a ~ U{0..3} and target frame k ~ U{a+2..5}; frames
+           a+1..k-1 are the world's own predictions made without gradient, then frame k is predicted with gradient
+           (DaD, Venkatraman et al. 2015: predicted states paired with TRUE next states; Self Forcing, arXiv
+           2506.08009: self-generated history, gradient truncated to the current step)
+  rolloutK (2026-10-01) Terver et al., "What drives success in physical planning with JEPA world models?" (TMLR 2026,
+           arXiv 2512.24497), best variant per their appendix and code (facebookresearch/jepa-wms, app/vjepa_wm/train.py,
+           config rollout_steps 2, train_rollout_prefixes random, rollout_stop_gradient true): teacher L1 on every position,
+           plus a prefix t ~ U{0..W-K-1}: true frames 0..t and the teacher-forced prediction of frame t+1 (detached) are
+           rolled K-1 further steps, each input detached, each step's L1 against the true frame; weights 1/(K+1) for the
+           teacher term and 1/K per rollout step, as their code (the paper writes L1 + ... + LK)
+E14 options (2026-10-02, after the E14a head-only diagnosis; both default off, the default recipe is bit-identical):
+  --skip         proj / choose (logits) become 2-layer MLPs (512, GELU) on [h, the raw local neighbourhood of the input: the
+                 token, its 4 grid neighbours (zeros off-grid), the action one-hot] (headfit's skip_ readout; a locality prior,
+                 as Delta-IRIS's decoder conditioned on the previous frame and action)
+  --weight       teacher term + lambda x the mask-normalized mean of the per-token L1 over a token set (CGSReg's form):
+                   hardQxL  the batch's top-Q% tokens by their current (detached) loss, lambda = L (online hard example mining;
+                            generic: no labels)
+                   maskL    the faced tile of every DO / place attempt (headfit_labels_v1; Craftax labels, diagnostic only)
+Resumable runs (2026-10-02): every 6,000 updates and at the end the full training state (weights, AdamW state, batch-order
+generator, CPU / CUDA RNG, update, history) is written to levers_tworlds_v1/state/<name>.state.pt (overwritten in place);
+`--resume <state file> --updates N` continues that run to N updates, bit-identical to an uninterrupted run (CPU-tested).
+E17 (2026-10-03): `--frames L --pool rawlong [--windows W]` trains on L-frame windows of the 64-frame Raw TRAIN ledger
+(levers_mamba_long_pools_v1/raw): W windows per update, a TERMINAL_SHARE (the 6-frame recipe's 26.4%) of them end-aligned on a
+death, the rest at uniform starts; an L-row time table and L-frame block-causal mask; teacher loss over all L - 1 targets. The
+default recipe is unchanged (CPU-tested 2026-10-03: identical initial weights, teacher / suffix losses and gradients).
+Training (fixed for every arm): spatial_pool_v1 (Raw tokens) or spatial_pool_tc_v1 (TC tokens), 2,048 main windows
+held out (seed 1, as parameterization.py); batches of 40 windows (seed 11); AdamW lr 1e-4, wd 0.01, 1,000 warmup,
+clip 1 (H2 phase optimizer); bf16; init seed given (default 7). Loss: `suffix` = spatial.losses' dynamics L1
+(teacher-forced + depth-2 generated suffix from frame 3); `teacher` = teacher-forced only. Categorical is
+teacher-forced CE (argmax is not differentiable). No heads in any arm.
+"""
+import argparse
+import json
+import sys
+import time
+from pathlib import Path
+
+import torch
+import torch.nn.functional as F
+import torch.utils.checkpoint
+from torch import nn
+
+HERE = Path(__file__).parent
+ROOT = Path("/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA")
+sys.path.insert(0, str(ROOT)); sys.path.insert(0, str(ROOT / "artifacts/experiments/20260921_readout_ladder"))
+import spatial as S  # noqa: E402
+from scroll import SHIFTS, estimate  # noqa: E402
+
+POOLS = {"raw": ROOT / "artifacts/eda/spatial_pool_v1", "tc": ROOT / "artifacts/eda/spatial_pool_tc_v1",
+         "ldad10": ROOT / "artifacts/eda/spatial_pool_ldad10_v1",
+         "ldad1": ROOT / "artifacts/eda/spatial_pool_ldad1_v1",
+         "rawlong": ROOT / "artifacts/eda/levers_mamba_long_pools_v1/raw"}      # 19,789 x 64-frame Raw windows (TRAIN ledger)
+OUT = ROOT / "artifacts/eda/levers_tworlds_v1"
+NOISE_MAX, NOISE_LEVELS = 0.7, 10             # GameNGen's maximal context-noise level and bucket count
+BATCH = 40
+TERMINAL_SHARE = 8071 / (24576 - 2048 + 8071)  # the 6-frame recipe's share of training windows ending at a death (26.4%)
+STATE_EVERY = 6000                            # full training state written every STATE_EVERY updates (resume)
+NEIGHBOURS = ((-1, 0), (1, 0), (0, -1), (0, 1))
+LOCAL = 5 * 192 + 17                          # --skip: token + 4 grid neighbours + action one-hot
+LABELS = ROOT / "artifacts/eda/headfit_labels_v1.pt"
+
+
+def local_features(s, a):
+    """[B,T,81,192], [B,T] -> [B,T,81,977]: each token, its 4 grid neighbours (zeros off-grid) and the action."""
+    g = s.float().view(*s.shape[:2], 9, 9, 192); p = F.pad(g, (0, 0, 1, 1, 1, 1))
+    nb = [g] + [p[:, :, 1 + dr:10 + dr, 1 + dc:10 + dc] for dr, dc in NEIGHBOURS]
+    act = F.one_hot(a, 17).float()[:, :, None, None].expand(-1, -1, 9, 9, -1)
+    return torch.cat(nb + [act], -1).view(*s.shape[:2], 81, -1)
+
+
+def masked_scan(mixer, inputs, keep):
+    """FunctionalMamba2.scan from a zero carry (its Triton path, same equations), with delta = 0 wherever keep is
+    False: decay exp(0) = 1 and no state update, so the state is held exactly through those steps."""
+    from mamba_ssm.ops.triton.ssd_combined import mamba_chunk_scan_combined
+    c = mixer.core
+    z, xbc, dt = torch.split(c.in_proj(inputs), [c.d_ssm, c.d_ssm + 2 * c.d_state, c.nheads], dim=-1)
+    filtered = F.silu(F.conv1d(F.pad(xbc.transpose(1, 2), (c.d_conv - 1, 0)), c.conv1d.weight, c.conv1d.bias,
+                               groups=c.conv1d.groups)).transpose(1, 2)
+    x, b, cc = torch.split(filtered, [c.d_ssm, c.d_state, c.d_state], dim=-1)
+    dt = torch.where(keep[..., None], dt, dt.new_tensor(-1e4))             # softplus(-1e4 + dt_bias) == 0
+    y = mamba_chunk_scan_combined(x.reshape(*x.shape[:2], c.nheads, c.headdim), dt, -c.A_log.float().exp(),
+                                  b.unsqueeze(2), cc.unsqueeze(2), chunk_size=c.chunk_size, D=c.D,
+                                  dt_bias=c.dt_bias, dt_softplus=True)
+    y = y.flatten(2).to(z.dtype)
+    gated = y.float() * F.silu(z.float())
+    normalized = gated * torch.rsqrt(gated.square().mean(-1, keepdim=True) + c.norm.eps)
+    return c.out_proj((normalized * c.norm.weight.float()).to(y.dtype))
+
+
+class Factored(nn.Module):
+    """One factorized layer (see the module docstring): space attention, a time mixer, MLP; pre-norm residuals."""
+
+    def __init__(self, time, settings):
+        super().__init__()
+        self.time = time
+        self.n1, self.n3 = nn.LayerNorm(S.D), nn.LayerNorm(S.D)
+        self.space = nn.MultiheadAttention(S.D, 4, batch_first=True)
+        self.mlp = nn.Sequential(nn.Linear(S.D, 4 * S.D), nn.GELU(), nn.Linear(4 * S.D, S.D))
+        if time == "fattn":
+            self.n2, self.mix = nn.LayerNorm(S.D), nn.MultiheadAttention(S.D, 4, batch_first=True)
+        else:                                     # the canonical _MambaBlock's norm and mixer
+            from d4mj.mamba_recurrence import FunctionalMamba2
+            self.n2, self.mix = nn.RMSNorm(S.D, eps=settings.norm_eps), FunctionalMamba2(settings)
+
+    def forward(self, x, shifts):
+        b, t, n, d = x.shape
+        h = self.n1(x).flatten(0, 1)
+        x = x + self.space(h, h, h, need_weights=False)[0].view(b, t, n, d)
+        h = self.n2(x)
+        per_position = h.transpose(1, 2).flatten(0, 1)                                  # [B*82, T, D]
+        if self.time == "fattn":
+            causal = torch.ones(t, t, dtype=torch.bool, device=x.device).triu(1)
+            y = self.mix(per_position, per_position, per_position, attn_mask=causal, need_weights=False)[0]
+            y = y.view(b, n, t, d).transpose(1, 2)
+        elif self.time == "fmamba":
+            y = self.mix(per_position)[0].view(b, n, t, d).transpose(1, 2)
+        elif self.time == "fscan":
+            y = self.mix(h.flatten(1, 2))[0].view(b, t, n, d)
+        else:                                                                           # fcanvas
+            pad = t - 1
+            cols, cells = 9 + 2 * pad, (7 + 2 * pad) * (9 + 2 * pad)
+            offset = torch.tensor(SHIFTS, device=x.device)[shifts].cumsum(1)            # [B,T,2]
+            r = torch.arange(7, device=x.device)[:, None] + offset[..., 0, None, None] + pad
+            c = torch.arange(9, device=x.device)[None] + offset[..., 1, None, None] + pad
+            cell = (r * cols + c).flatten(2)                                            # [B,T,63]
+            # scan only the canvas cells in view at least once (<= 63 + 9 per scroll), compacted per window
+            present = torch.zeros(b, cells, dtype=torch.bool, device=x.device).scatter(1, cell.flatten(1), True)
+            cell = (present.long().cumsum(1) - 1).gather(1, cell.flatten(1)).view(b, t, 63)
+            cells = int(present.sum(1).max())
+            seq = torch.cat([h.new_zeros(b, t, cells, d), h[:, :, :1], h[:, :, 64:]], 2)  # canvas, action, HUD
+            seq = seq.scatter(2, cell[..., None].expand(-1, -1, -1, d), h[:, :, 1:64])
+            keep = torch.zeros(b, t, cells + 19, dtype=torch.bool, device=x.device)
+            keep[:, :, cells:] = True
+            keep = keep.scatter(2, cell, True)
+            y = masked_scan(self.mix, seq.transpose(1, 2).flatten(0, 1), keep.transpose(1, 2).flatten(0, 1))
+            y = y.view(b, cells + 19, t, d).transpose(1, 2)
+            tiles = y.gather(2, cell[..., None].expand(-1, -1, -1, d))
+            y = torch.cat([y[:, :, cells:cells + 1], tiles, y[:, :, cells + 1:]], 2)
+        x = x + y
+        return x + self.mlp(self.n3(x))
+
+
+class TWorld(S.World):
+    def __init__(self, head, codebook=None, backbone="full", regions="all", noise_levels=0, skip=False, frames=None):
+        super().__init__(S.TOKENS, False)
+        if frames is not None and frames != S.W:  # --frames L: an L-row time table and an L-frame block-causal mask
+            self.time = nn.Parameter(torch.zeros(frames, S.D))
+            nn.init.trunc_normal_(self.time, std=0.02)
+            t = torch.arange(frames).repeat_interleave(self.n + 1)
+            self.register_buffer("blocked", t[None, :] > t[:, None], persistent=False)
+        self.head, self.backbone_kind, self.regions = head, backbone, regions
+        self.hard_decode = False               # evaluation only: ITC's binarized decoding (one source per token, Eq. 4)
+        self.level = None                      # --loss noise: [B,T] noise bucket of each input frame (None = clean)
+        if noise_levels:
+            self.noise_embed = nn.Embedding(noise_levels, S.D)
+            nn.init.zeros_(self.noise_embed.weight)
+        if regions == "itc":
+            ring = [r * 9 + c for r in range(7) for c in range(9) if r in (0, 6) or c in (0, 8)]
+            mask = torch.zeros(81, dtype=torch.bool)
+            mask[ring + list(range(63, 81))] = True
+            self.register_buffer("generated_region", mask, persistent=False)
+        if backbone != "full":
+            from d4mj.config import config_from_dict
+            from dataclasses import replace
+            settings = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"]).dynamics
+            # kernel tiling only (SSD is exact for any chunking): the canonical 256 allocates B*82 x 256 x 256 for
+            # 6-step sequences (~860 MB at batch 40); 64 keeps it at ~54 MB
+            settings = replace(settings, chunk_size=64)
+            del self.blocks
+            self.layers = nn.ModuleList(Factored(backbone, settings) for _ in range(6))
+        if head in ("residual",):
+            nn.init.zeros_(self.proj.weight); nn.init.zeros_(self.proj.bias)
+        if head == "gated":
+            self.gate = nn.Linear(S.D, 1)
+            nn.init.zeros_(self.gate.weight); nn.init.constant_(self.gate.bias, 3.0)
+        if head in ("corrg", "corrt"):            # corr + a frame-level move gate from the action token
+            self.frame = nn.Linear(S.D, 1)
+            nn.init.zeros_(self.frame.weight); nn.init.zeros_(self.frame.bias)
+        if head == "corrt":                       # + the target tile's own output, indexed by the move direction
+            self.target_gate = nn.Linear(S.D, 1)
+            nn.init.zeros_(self.target_gate.weight); nn.init.zeros_(self.target_gate.bias)
+        if head in ("corr", "corrg", "corrt"):
+            self.choose = nn.Linear(S.D, 6)
+            nn.init.zeros_(self.choose.weight)
+            with torch.no_grad():
+                self.choose.bias.copy_(torch.tensor([3.0, 0, 0, 0, 0, 0]))
+        if head == "categorical":
+            self.register_buffer("codes", codebook.float())
+            self.logits = nn.Linear(S.D, len(codebook))
+        self.skip = skip
+        if skip:                                  # E14: the head also reads the raw local neighbourhood (--skip)
+            for nm in ("proj", "choose", "logits"):
+                lin = getattr(self, nm, None)
+                if isinstance(lin, nn.Linear):
+                    last = nn.Linear(512, lin.out_features)
+                    if nm == "choose":
+                        nn.init.zeros_(last.weight)
+                        with torch.no_grad():
+                            last.bias.copy_(lin.bias)
+                    setattr(self, nm, nn.Sequential(nn.Linear(S.D + LOCAL, 512), nn.GELU(), last))
+
+    def inputs(self, s, a):
+        """[action token, 81 tile tokens] per frame + space/time positions (+ the noise-level embedding)."""
+        t = s.shape[1]
+        tiles = self.embed(s)
+        if getattr(self, "delta", None) is not None:  # E16 (dworld.py): per-tile Delta conditioning [B,T,81,D]; None = unchanged
+            tiles = tiles + self.delta
+        if hasattr(self, "noise_embed"):
+            level = self.level if self.level is not None else torch.zeros(s.shape[:2], dtype=torch.long, device=s.device)
+            tiles = tiles + self.noise_embed(level)[:, :, None]
+        return torch.cat([self.action(a)[:, :, None], tiles], 2) + self.space + self.time[:t, None]
+
+    def backbone(self, s, a):
+        if self.backbone_kind != "full":
+            return self.backbone_full(s, a)[0]
+        b, t = s.shape[:2]
+        x = self.inputs(s, a)
+        k = t * (self.n + 1)
+        x = self.blocks(x.flatten(1, 2), mask=self.blocked[:k, :k]).view(b, t, self.n + 1, S.D)[:, :, 1:]
+        return self.norm(x)
+
+    def backbone_full(self, s, a):
+        """backbone(), also returning the action token's output (it attends to the whole frame)."""
+        b, t = s.shape[:2]
+        x = self.inputs(s, a)
+        if self.backbone_kind == "full":
+            k = t * (self.n + 1)
+            x = self.norm(self.blocks(x.flatten(1, 2), mask=self.blocked[:k, :k]).view(b, t, self.n + 1, S.D))
+            return x[:, :, 1:], x[:, :, 0]
+        shifts = F.pad(estimate(s[:, :-1], s[:, 1:]), (1, 0)) if self.backbone_kind == "fcanvas" else None
+        for layer in self.layers:
+            if torch.is_grad_enabled():   # per-token SSM states (B*82 x 4 x 64 x 64 fp32) exceed 6 GB otherwise; same math
+                x = torch.utils.checkpoint.checkpoint(layer, x, shifts, use_reentrant=False)
+            else:
+                x = layer(x, shifts)
+        x = self.norm(x)
+        return x[:, :, 1:], x[:, :, 0]
+
+    def forward(self, s, a):
+        if self.head in ("corrg", "corrt"):
+            h, h_action = self.backbone_full(s, a)
+        else:
+            h = self.backbone(s, a)
+        hx = torch.cat([h, local_features(s, a).to(h.dtype)], -1) if self.skip else h
+        if self.head == "categorical":
+            logits = self.logits(hx).float()
+            return self.codes[logits.argmax(-1)], h, logits
+        gen = self.proj(hx).float()
+        s = s.float()
+        if self.head == "direct":
+            out = gen
+        elif self.head == "residual":
+            out = s + gen
+        elif self.head == "gated":
+            g = torch.sigmoid(self.gate(h).float())
+            out = g * s + (1 - g) * gen
+        elif self.head in ("corr", "corrg", "corrt"):
+            grid = s.view(*s.shape[:2], 9, 9, s.shape[-1])
+            pad = F.pad(grid, (0, 0, 1, 1, 1, 1))
+            cands = [grid] + [pad[:, :, 1 + dr:10 + dr, 1 + dc:10 + dc] for dr, dc in NEIGHBOURS]
+            cands = torch.stack([c.reshape(s.shape) for c in cands] + [gen], -2)          # [B,T,81,6,D]
+            logits = self.choose(hx).float()
+            if self.head in ("corrg", "corrt"):  # one "did the view move" logit per frame, added to the 4 neighbours
+                moved = self.frame(h_action).float()[:, :, None, :]                  # [B,T,1,1]
+                if self.head == "corrt":         # the tile the move enters (player token 31 + direction), moves only
+                    target = torch.tensor([31, 30, 32, 22, 40], device=a.device)[a.clamp(max=4)]      # [B,T]
+                    h_t = h.gather(2, target[:, :, None, None].expand(-1, -1, 1, h.shape[-1]))[:, :, 0]
+                    is_move = ((a >= 1) & (a <= 4)).float()[:, :, None, None]
+                    moved = moved + is_move * self.target_gate(h_t).float()[:, :, None, :]
+                logits = logits + moved * logits.new_tensor([0, 1, 1, 1, 1, 0])
+            w = torch.softmax(logits, -1)[..., None]
+            if self.hard_decode:
+                w = F.one_hot(w[..., 0].argmax(-1), 6).to(w.dtype)[..., None]
+            self.last_weights, self.last_generated = w.detach()[..., 0], gen.detach()   # read by where.py
+            out = (w * cands).sum(-2)
+            if self.regions == "itc":
+                out = torch.where(self.generated_region[:, None], gen, out)
+        return F.layer_norm(out, (S.WIDTH,)), h, gen
+
+
+def quantize(x, codes, chunk=16384):
+    flat = x.reshape(-1, x.shape[-1]).float()
+    idx = torch.cat([torch.cdist(flat[i:i + chunk], codes).argmin(-1) for i in range(0, len(flat), chunk)])
+    return idx.view(x.shape[:-1])
+
+
+def rollout_losses(world, s, a, loss, gen_loss=False, weight=None, faced=None):
+    """spatial.rollout + the dynamics L1 (suffix) or teacher-forced L1 only; gen_loss: + the generate candidate's
+    own teacher-forced L1 on every token."""
+    a = F.pad(a, (0, 1))
+    clean = s
+    if loss == "noise":                       # every input frame corrupted at its own level; targets stay clean
+        alpha = torch.rand(s.shape[:2], device=s.device) * NOISE_MAX
+        world.level = (alpha / NOISE_MAX * NOISE_LEVELS).long().clamp(max=NOISE_LEVELS - 1)
+        s = (s.float() + alpha[..., None, None] * torch.randn_like(s, dtype=torch.float)).to(clean.dtype)
+    predicted, history, gen = world(s, a)
+    world.level = None
+    err = (predicted[:, :s.shape[1] - 1] - clean[:, 1:]).abs()       # S.W - 1 targets for every 6-frame pool
+    teacher = err.mean()
+    if weight:                                # E14 --weight: + lambda x the mask-normalized mean over a token set
+        tok = err.mean(-1)
+        if weight.startswith("hard"):         # the batch's top-Q% tokens by current loss (OHEM)
+            q, lam = (float(v) for v in weight[4:].split("x"))
+            m = tok.detach() >= tok.detach().flatten().topk(max(1, int(q / 100 * tok.numel()))).values[-1]
+        else:                                 # maskL: the faced tile of every DO / place attempt (Craftax labels)
+            lam, m = float(weight[4:]), faced
+        teacher = teacher + lam * (tok * m).sum() / m.sum().clamp(min=1)
+    if gen_loss:
+        teacher = teacher + (F.layer_norm(gen[:, :S.W - 1], (S.WIDTH,)) - s[:, 1:]).abs().mean()
+    if loss in ("teacher", "noise"):
+        return teacher
+    if loss.startswith("rollout"):            # Terver et al. (TMLR 2026), jepa-wms train.py / video_wm.rollout: random prefix,
+        K = int(loss[len("rollout"):])        # inputs detached (TBPTT), weights 1/(K+1) teacher and 1/K per rollout step
+        t = int(torch.randint(0, S.W - K, ()))
+        frames = [s[:, j] for j in range(t + 1)] + [predicted[:, t].detach().to(s.dtype)]
+        total = teacher / (K + 1)
+        for h in range(1, K):
+            out, _, _ = world(torch.stack(frames, 1), a[:, :t + h + 1])
+            total = total + (out[:, -1] - s[:, t + h + 1]).abs().mean() / K
+            frames.append(out[:, -1].detach().to(s.dtype))
+        return total
+    if loss == "selffed":                     # anchor, generated history without gradient, one predicted frame with it
+        anchor = int(torch.randint(0, S.ANCHOR + 1, ()))
+        k = int(torch.randint(anchor + 2, S.W, ()))
+        frames = [s[:, j] for j in range(anchor + 1)]
+        with torch.no_grad():
+            nxt = predicted[:, anchor].detach()
+            for j in range(anchor + 1, k):
+                frames.append(nxt.to(s.dtype))
+                if j < k - 1:
+                    nxt = world(torch.stack(frames, 1), a[:, :j + 1])[0][:, -1]
+        out, _, _ = world(torch.stack(frames, 1), a[:, :k])
+        return teacher + (out[:, -1] - s[:, k]).abs().mean()
+    first = predicted[:, S.ANCHOR]
+    second_all, _, _ = world(torch.cat([s[:, :S.ANCHOR + 1], first[:, None].to(s.dtype)], 1), a[:, :S.ANCHOR + 2])
+    generated = torch.stack([first, second_all[:, S.ANCHOR + 1]], 1)
+    return teacher + (generated - s[:, S.ANCHOR + 1:]).abs().mean()
+
+
+def train(head, pool_name, loss, seed, updates, device, log, codebook=None, backbone="full", gen_loss=False,
+          regions="all", snapshot=None, weight=None, skip=False, state_path=None, resume=None, frames=None, windows=BATCH,
+          init=None):
+    from d4mj.config import config_from_dict
+    from d4mj.train import _phase_lr, autocast_context, optimizer_step, phase_optimizer
+    config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
+    long = pool_name == "rawlong"
+    if long:                                  # --frames L windows from the 64-frame TRAIN ledger (no held-out rows: TRAIN only)
+        import numpy as np
+        pool = torch.load(POOLS[pool_name] / "labels.pt", weights_only=False, mmap=True)
+        tokens = np.memmap(POOLS[pool_name] / "tokens.f16", dtype=np.float16, mode="r", shape=(len(pool["terminal"]), 64, 81, 192))
+        main_rows, term_rows, held = torch.where(~pool["terminal"])[0], torch.where(pool["terminal"])[0], None
+    else:
+        pool = torch.load(POOLS[pool_name] / "pool.pt", weights_only=False, mmap=True)
+        main_rows = torch.where(~pool["terminal"])[0]
+        held = main_rows[torch.randperm(len(main_rows), generator=torch.Generator().manual_seed(1))[:2048]]
+        rows = torch.cat([main_rows[~torch.isin(main_rows, held)], torch.where(pool["terminal"])[0]])
+    with torch.random.fork_rng(devices=[0]):
+        torch.manual_seed(seed); torch.cuda.manual_seed_all(seed)
+        world = TWorld(head, codebook, backbone, regions, NOISE_LEVELS if loss == "noise" else 0, skip, frames).to(device)
+    if init is not None and resume is None:   # E17 continuation: a trained world's weights, its time table tiled to L rows
+        w0 = torch.load(init, map_location="cpu", weights_only=False)["world"]     # (Longformer's copy initialization, sec. 5)
+        if w0["time"].shape[0] != world.time.shape[0]:
+            w0["time"] = w0["time"][torch.arange(world.time.shape[0]) % w0["time"].shape[0]]
+        world.load_state_dict(w0)
+        log(stage="init_from", path=str(init))
+    log(stage="init", parameters=sum(p.numel() for p in world.parameters()))
+    opt = phase_optimizer([world], config)
+    params = [p for g in opt.param_groups for p in g["params"]]
+    order = torch.Generator().manual_seed(11)
+    codes = codebook.to(device) if codebook is not None else None
+    history, started = [], time.time()
+    lab = torch.load(LABELS) if weight and weight.startswith("mask") else None
+    faced = None
+    start = 0
+    if resume is not None:                    # continue a run from its full state (weights, AdamW, batch order, RNG)
+        st = torch.load(resume, map_location="cpu", weights_only=False)
+        world.load_state_dict(st["world"]); order.set_state(st["order"])
+        if st["optimizer"] is not None:       # None = a warm restart from weights only (warmstate.py): fresh AdamW
+            opt.load_state_dict(st["optimizer"])
+        torch.set_rng_state(st["rng_cpu"])
+        if st["rng_cuda"] is not None and torch.cuda.is_available():
+            torch.cuda.set_rng_state_all(st["rng_cuda"])
+        history, start = st["history"], st["update"]
+        log(stage="resume", update=start)
+
+    def save_state(u):
+        if state_path is not None:
+            tmp = state_path.with_suffix(".tmp")
+            torch.save({"update": u, "world": world.state_dict(), "optimizer": opt.state_dict(), "order": order.get_state(),
+                        "rng_cpu": torch.get_rng_state(), "history": history,
+                        "rng_cuda": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None}, tmp)
+            tmp.replace(state_path)
+    for update in range(start, updates):
+        if long:                              # a TERMINAL_SHARE of the windows end at a death (end-aligned), the rest uniform
+            term = torch.rand(windows, generator=order) < TERMINAL_SHARE
+            r = torch.where(term, term_rows[torch.randint(len(term_rows), (windows,), generator=order)],
+                            main_rows[torch.randint(len(main_rows), (windows,), generator=order)])
+            t0 = torch.where(term, 64 - frames, torch.randint(0, 65 - frames, (windows,), generator=order))
+            b = {"s": torch.stack([torch.from_numpy(np.array(tokens[int(i), int(j):int(j) + frames])) for i, j in zip(r, t0)]).to(device).float(),
+                 "actions": torch.stack([pool["actions"][int(i), int(j):int(j) + frames - 1] for i, j in zip(r, t0)]).to(device)}
+        else:
+            idx = rows[torch.randint(len(rows), (BATCH,), generator=order)]
+            b = S.batch_of(pool, idx, "tokens", device)
+        if lab is not None:
+            faced = torch.zeros(BATCH, S.W - 1, 81, dtype=torch.bool)
+            faced.scatter_(2, lab["faced"][idx][..., None], lab["attempt"][idx][..., None])
+            faced = faced.to(device)
+        s, a = b["s"], b["actions"]
+        with autocast_context(config):
+            if head == "categorical":
+                idx = quantize(s, codes)
+                _, _, logits = world(codes[idx], F.pad(a, (0, 1)))
+                objective = F.cross_entropy(logits[:, :S.W - 1].flatten(0, 2), idx[:, 1:].flatten())
+            else:
+                objective = rollout_losses(world, s, a, loss, gen_loss, weight, faced)
+        norm = optimizer_step(opt, objective, params, learning_rate=_phase_lr(config, update),
+                              grad_clip=config.agent.grad_clip, strict=True, zero_grad=True)
+        if snapshot is not None and (update + 1) % 6000 == 0 and update + 1 < updates:
+            snapshot(update + 1, world, history)          # held-out learning curve: every 6k, evaluated by teval
+        if (update + 1) % 500 == 0:
+            row = {"update": update + 1, "objective": float(objective), "gradient_norm": float(norm),
+                   "seconds": round(time.time() - started, 1),
+                   "peak_gb": round(torch.cuda.max_memory_allocated() / 1e9, 3) if torch.cuda.is_available() else None}
+            history.append(row)
+            log(stage="train", head=head, pool=pool_name, **row)
+        if (update + 1) % STATE_EVERY == 0 or update + 1 == updates:
+            save_state(update + 1)
+    return world.eval(), history, held
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--head", required=True, choices=("direct", "residual", "gated", "corr", "corrg", "corrt", "categorical"))
+    parser.add_argument("--pool", default="raw", choices=tuple(POOLS))
+    parser.add_argument("--loss", default="suffix", choices=("suffix", "teacher", "noise", "selffed", "rollout2", "rollout4"))
+    parser.add_argument("--seed", type=int, default=7)
+    parser.add_argument("--updates", type=int, default=6000)
+    parser.add_argument("--codebook", type=Path, default=None)
+    parser.add_argument("--backbone", default="full", choices=("full", "fattn", "fmamba", "fcanvas", "fscan"))
+    parser.add_argument("--gen-loss", action="store_true")
+    parser.add_argument("--regions", default="all", choices=("all", "itc"))
+    parser.add_argument("--snapshots", action="store_true", help="also save the world every 6,000 updates")
+    parser.add_argument("--weight", default=None, help="E14: hardQxL or maskL (see the docstring)")
+    parser.add_argument("--skip", action="store_true", help="E14: the head also reads the raw local neighbourhood")
+    parser.add_argument("--resume", type=Path, default=None, help="continue from a full training state file to --updates")
+    parser.add_argument("--frames", type=int, default=None, help="E17: L-frame windows (needs --pool rawlong, --loss teacher)")
+    parser.add_argument("--windows", type=int, default=BATCH, help="E17: windows per update with --frames")
+    parser.add_argument("--init", type=Path, default=None, help="E17: start from a trained world (time table tiled to --frames)")
+    args = parser.parse_args(argv)
+    if (args.pool == "rawlong") != (args.frames is not None) or (args.frames and args.loss != "teacher"):
+        parser.error("--frames goes with --pool rawlong and --loss teacher")
+    started = time.time()
+    log = lambda **kw: print(json.dumps({**kw, "seconds_total": round(time.time() - started, 1)}), flush=True)
+    device = torch.device("cuda")
+    codebook = torch.load(args.codebook, weights_only=False)["codes"] if args.codebook else None
+    name = f"{args.head}_{args.pool}_{args.loss}_s{args.seed}" + (f"_K{len(codebook)}" if codebook is not None else "") \
+        + ("" if args.backbone == "full" else f"_{args.backbone}") + ("_gl" if args.gen_loss else "") \
+        + ("" if args.regions == "all" else f"_{args.regions}") + (f"_{args.weight}" if args.weight else "") \
+        + ("_skip" if args.skip else "") + (f"_L{args.frames}b{args.windows}" if args.frames else "") \
+        + (f"_from{args.init.stem.split('_u')[-1]}" if args.init else "") \
+        + ("" if args.updates == 6000 else f"_u{args.updates}")
+    OUT.mkdir(parents=True, exist_ok=True)
+    if (OUT / f"{name}.pt").exists():
+        log(status="exists", name=name)
+        return 0
+    from d4mj.data import _sha256
+    save = lambda tag, w, h: torch.save({"name": tag, "args": {k: str(v) for k, v in vars(args).items()},
+                                         "world": w.state_dict(), "history": h,
+                                         "script_sha256": _sha256(Path(__file__))}, OUT / f"{tag}.pt")
+    snapshot = (lambda u, w, h: save(f"{name}_at{u}", w, h)) if args.snapshots else None
+    (OUT / "state").mkdir(exist_ok=True)
+    world, history, held = train(args.head, args.pool, args.loss, args.seed, args.updates, device, log, codebook,
+                                 args.backbone, args.gen_loss, args.regions, snapshot, args.weight, args.skip,
+                                 OUT / "state" / f"{name}.state.pt", args.resume, args.frames, args.windows, args.init)
+    save(name, world, history)
+    log(status="saved", name=name)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

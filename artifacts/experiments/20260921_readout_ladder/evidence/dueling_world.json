@@ -1,0 +1,93 @@
+{
+  "schema": "d4mj_dueling_world_v1",
+  "status": "POST HOC on the 56k block",
+  "script_sha256": "7877622b9500e35274474279f9a62581abefca7eb88260e7ffddb0dacc408304",
+  "judge_manifest": "0a42c1e36b233190cd2c0456098735e433c9da44e5e1754c352330da4e49cc78",
+  "readings": {
+    "U_s1": "no_evidence",
+    "U_s2": "no_evidence"
+  },
+  "contrasts": {
+    "U_s1": {
+      "duel_minus_plain": {
+        "overall": {
+          "difference": -0.013043522834777832,
+          "interval": [
+            -0.041218943893909454,
+            0.017829347401857376
+          ],
+          "excludes_zero": false
+        },
+        "zombie": {
+          "difference": -0.05222141742706299,
+          "interval": [
+            -0.08677464723587036,
+            -0.01369333267211914
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "U_s2": {
+      "duel_minus_plain": {
+        "overall": {
+          "difference": -0.0218086838722229,
+          "interval": [
+            -0.045743755996227264,
+            0.0018402277491986752
+          ],
+          "excludes_zero": false
+        },
+        "zombie": {
+          "difference": -0.04941999912261963,
+          "interval": [
+            -0.07954452186822891,
+            -0.017864003777503967
+          ],
+          "excludes_zero": true
+        }
+      }
+    }
+  },
+  "per_seed": {
+    "U_s1_plain_gen": [
+      0.63931804895401,
+      0.656093955039978,
+      0.6518804430961609
+    ],
+    "U_s1_duel_gen": [
+      0.6738061904907227,
+      0.6379525661468506,
+      0.5964029431343079
+    ],
+    "U_s2_plain_gen": [
+      0.6712312698364258,
+      0.6304619312286377,
+      0.648954451084137
+    ],
+    "U_s2_duel_gen": [
+      0.6200452446937561,
+      0.6414638161659241,
+      0.6237125396728516
+    ]
+  },
+  "reference_actions_only": 0.6369902491569519,
+  "expected_safe": {
+    "U_s1_plain_gen": {
+      "overall": 0.6490974426269531,
+      "zombie": 0.5657551884651184
+    },
+    "U_s1_duel_gen": {
+      "overall": 0.6360539197921753,
+      "zombie": 0.5135337710380554
+    },
+    "U_s2_plain_gen": {
+      "overall": 0.6502159237861633,
+      "zombie": 0.5668007731437683
+    },
+    "U_s2_duel_gen": {
+      "overall": 0.6284072399139404,
+      "zombie": 0.5173807740211487
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "schema": "d4mj_factual_direct_v1",
+  "status": "POST HOC on the 56k block",
+  "script_sha256": "7fb9b65044960d04f3104277b47c003ff64afb665ae1e4a8fd7b1f496ea6ffd8",
+  "judge_manifest": "0a42c1e36b233190cd2c0456098735e433c9da44e5e1754c352330da4e49cc78",
+  "training": {
+    "factual": [
+      65294,
+      8155
+    ],
+    "counterfactual": [
+      7085,
+      17
+    ]
+  },
+  "reading": "factual_data_suffices",
+  "factual_minus_counterfactual": {
+    "overall": {
+      "difference": 0.04140651226043701,
+      "interval": [
+        0.0038448497653007507,
+        0.07897207140922546
+      ],
+      "excludes_zero": true
+    },
+    "zombie": {
+      "difference": 0.076250821352005,
+      "interval": [
+        0.02177356369793415,
+        0.13456420600414276
+      ],
+      "excludes_zero": true
+    }
+  },
+  "per_seed": {
+    "factual": [
+      0.6672518849372864,
+      0.6226591467857361,
+      0.6688514351844788
+    ],
+    "counterfactual": [
+      0.5981975793838501,
+      0.613061785697937,
+      0.6232833862304688
+    ]
+  },
+  "expected_safe": {
+    "factual": {
+      "overall": 0.6529207825660706,
+      "zombie": 0.5473484992980957
+    },
+    "counterfactual": {
+      "overall": 0.6115142703056335,
+      "zombie": 0.4710976779460907
+    }
+  }
+}

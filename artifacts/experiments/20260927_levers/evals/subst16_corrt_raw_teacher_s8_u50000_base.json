@@ -1,0 +1,98 @@
+{
+  "world": "corrt_raw_teacher_s8_u50000",
+  "V": 7626.31787109375,
+  "arms": {
+    "base": {
+      "excess16": 0.4787766635417938,
+      "excess16_by_class": {
+        "hud": 0.044758062809705734,
+        "player": 0.003282385179772973,
+        "mob": 0.03317614644765854,
+        "entering": 0.029345644637942314,
+        "static": 0.3682143986225128
+      },
+      "excess_by_depth": [
+        0.01983002945780754,
+        0.04409916326403618,
+        0.07376613467931747,
+        0.10930254310369492,
+        0.14958681166172028,
+        0.1763639748096466,
+        0.20699052512645721,
+        0.23904956877231598,
+        0.26897385716438293,
+        0.30205756425857544,
+        0.3389086425304413,
+        0.36744314432144165,
+        0.3945433497428894,
+        0.4265331029891968,
+        0.4506562054157257,
+        0.47877681255340576
+      ],
+      "ever_position_wrong": 0.2841365337371826,
+      "position_wrong_at16": 0.3145896792411804,
+      "drawn_scroll_right_rate": 0.9374337792396545,
+      "substitutions": {
+        "cons": 0,
+        "enter": 0
+      }
+    }
+  },
+  "part_b": {
+    "n": 276,
+    "n_missed": 190,
+    "all": {
+      "imagined": 0.0,
+      "target_true": 0.4021739065647125,
+      "random_true": 0.043478261679410934,
+      "all_but_target": 0.49637681245803833,
+      "all_true": 0.9492753744125366
+    },
+    "missed": {
+      "imagined": 0.0,
+      "target_true": 0.15263158082962036,
+      "random_true": 0.06315789371728897,
+      "all_but_target": 0.6842105388641357,
+      "all_true": 0.9263157844543457
+    },
+    "false": {
+      "imagined": 0.0,
+      "target_true": 0.9534883499145508,
+      "random_true": 0.0,
+      "all_but_target": 0.08139535039663315,
+      "all_true": 1.0
+    }
+  },
+  "part_c": {
+    "steps": 4773,
+    "faced_distance": {
+      "imagined_window": 18.286945343017578,
+      "true_window": 6.708948135375977
+    },
+    "faced_distance_changed": {
+      "imagined_window": 38.09741973876953,
+      "true_window": 30.181171417236328
+    },
+    "class": {
+      "imagined": {
+        "n": 1357,
+        "n_changed": 256,
+        "change_missed": 0.23828125,
+        "change_hallucinated": 0.058128975331783295,
+        "class_error": 0.09211496263742447
+      },
+      "true": {
+        "n": 1357,
+        "n_changed": 256,
+        "change_missed": 0.21875,
+        "change_hallucinated": 0.009990917518734932,
+        "class_error": 0.04937361925840378
+      }
+    },
+    "change_rate": 0.1881416290998459
+  },
+  "readings": {
+    "R4_target_tile_causal": false,
+    "R5_consequence_one_step": true
+  }
+}

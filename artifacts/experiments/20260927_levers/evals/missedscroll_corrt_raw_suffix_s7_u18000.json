@@ -1,0 +1,268 @@
+{
+  "world": "corrt_raw_suffix_s7_u18000",
+  "n": {
+    "missed": 272,
+    "control": 816,
+    "false": 252,
+    "control_false": 733
+  },
+  "missed": {
+    "scroll_rate": {
+      "imagined": 0.6029411554336548,
+      "true": 0.8713235259056091,
+      "img_hist": 0.875,
+      "img_cur": 0.6066176295280457
+    },
+    "mean_logit": {
+      "imagined": -1.173163890838623,
+      "true": 1.3706341981887817,
+      "img_hist": 1.3688461780548096,
+      "img_cur": -1.3028744459152222
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 55.33469009399414,
+      "player": 35.946128845214844,
+      "frame": 41.65896987915039
+    },
+    "depth_hist": [
+      0,
+      10,
+      17,
+      11,
+      30,
+      21,
+      32,
+      15,
+      25,
+      20,
+      24,
+      17,
+      18,
+      15,
+      8,
+      9
+    ],
+    "provenance": {
+      "observable_share": 0.7647058963775635,
+      "mob_share": 0.0,
+      "occupied_share": 0.10661764442920685,
+      "slept_share": 0.09558823704719543,
+      "target_distance_occupied": {
+        "occupied": 51.56108856201172,
+        "not_occupied": 55.7850341796875
+      },
+      "target_distance": {
+        "observable_no_mob": 59.626182556152344,
+        "revealed_no_mob": 41.387332916259766,
+        "mob": null
+      },
+      "counts": {
+        "observable_no_mob": 208,
+        "revealed_no_mob": 64,
+        "mob": 0
+      }
+    }
+  },
+  "control": {
+    "scroll_rate": {
+      "imagined": 0.9730392098426819,
+      "true": 0.9754902124404907,
+      "img_hist": 0.9779411554336548,
+      "img_cur": 0.968137264251709
+    },
+    "mean_logit": {
+      "imagined": 1.7775100469589233,
+      "true": 1.8026434183120728,
+      "img_hist": 1.8202072381973267,
+      "img_cur": 1.7650864124298096
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 21.16983413696289,
+      "player": 16.213315963745117,
+      "frame": 33.20813751220703
+    },
+    "depth_hist": [
+      0,
+      30,
+      51,
+      33,
+      90,
+      63,
+      96,
+      45,
+      75,
+      60,
+      72,
+      51,
+      54,
+      45,
+      24,
+      27
+    ],
+    "provenance": {
+      "observable_share": 0.8517156839370728,
+      "mob_share": 0.006127451080828905,
+      "occupied_share": 0.18995098769664764,
+      "slept_share": 0.007352941203862429,
+      "target_distance_occupied": {
+        "occupied": 28.397708892822266,
+        "not_occupied": 19.474946975708008
+      },
+      "target_distance": {
+        "observable_no_mob": 15.316361427307129,
+        "revealed_no_mob": 53.47195816040039,
+        "mob": 47.23765563964844
+      },
+      "counts": {
+        "observable_no_mob": 690,
+        "revealed_no_mob": 121,
+        "mob": 5
+      }
+    }
+  },
+  "false": {
+    "scroll_rate": {
+      "imagined": 0.7896825671195984,
+      "true": 0.4325396716594696,
+      "img_hist": 0.4563491940498352,
+      "img_cur": 0.7777777910232544
+    },
+    "mean_logit": {
+      "imagined": 1.0257267951965332,
+      "true": -2.7792067527770996,
+      "img_hist": -2.7609426975250244,
+      "img_cur": 0.9488099217414856
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 70.75789642333984,
+      "player": 21.993330001831055,
+      "frame": 31.09675407409668
+    },
+    "depth_hist": [
+      0,
+      33,
+      26,
+      23,
+      21,
+      19,
+      15,
+      14,
+      17,
+      18,
+      14,
+      11,
+      10,
+      16,
+      6,
+      9
+    ],
+    "provenance": {
+      "observable_share": 0.8690476417541504,
+      "mob_share": 0.02777777798473835,
+      "occupied_share": 0.01984127052128315,
+      "slept_share": 0.0396825410425663,
+      "target_distance_occupied": {
+        "occupied": 134.2781524658203,
+        "not_occupied": 69.47206115722656
+      },
+      "target_distance": {
+        "observable_no_mob": 51.24198532104492,
+        "revealed_no_mob": 193.65013122558594,
+        "mob": 82.46238708496094
+      },
+      "counts": {
+        "observable_no_mob": 212,
+        "revealed_no_mob": 33,
+        "mob": 7
+      }
+    }
+  },
+  "control_false": {
+    "scroll_rate": {
+      "imagined": 0.055934514850378036,
+      "true": 0.025920873507857323,
+      "img_hist": 0.024556616321206093,
+      "img_cur": 0.057298772037029266
+    },
+    "mean_logit": {
+      "imagined": -6.5961174964904785,
+      "true": -7.536304473876953,
+      "img_hist": -7.613999843597412,
+      "img_cur": -6.6876606941223145
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 18.933395385742188,
+      "player": 19.907926559448242,
+      "frame": 21.838970184326172
+    },
+    "depth_hist": [
+      0,
+      99,
+      78,
+      69,
+      63,
+      57,
+      45,
+      42,
+      51,
+      52,
+      42,
+      33,
+      30,
+      30,
+      18,
+      24
+    ],
+    "provenance": {
+      "observable_share": 0.9699863791465759,
+      "mob_share": 0.015006821602582932,
+      "occupied_share": 0.016371076926589012,
+      "slept_share": 0.17326056957244873,
+      "target_distance_occupied": {
+        "occupied": 31.089792251586914,
+        "not_occupied": 18.731069564819336
+      },
+      "target_distance": {
+        "observable_no_mob": 15.892019271850586,
+        "revealed_no_mob": 123.57286071777344,
+        "mob": 12.985881805419922
+      },
+      "counts": {
+        "observable_no_mob": 701,
+        "revealed_no_mob": 21,
+        "mob": 11
+      }
+    }
+  },
+  "readings": {
+    "missed": {
+      "right_rate": {
+        "imagined": 0.6029411554336548,
+        "true": 0.8713235259056091,
+        "img_hist": 0.875,
+        "img_cur": 0.6066176295280457
+      },
+      "input_caused": false,
+      "current_frame": false,
+      "history": false,
+      "target_tile": true
+    },
+    "false": {
+      "right_rate": {
+        "imagined": 0.2103174328804016,
+        "true": 0.5674603283405304,
+        "img_hist": 0.5436508059501648,
+        "img_cur": 0.2222222089767456
+      },
+      "input_caused": false,
+      "current_frame": false,
+      "history": false,
+      "target_tile": true
+    },
+    "sleep": {
+      "wrong_slept_share": 0.06870229164038906,
+      "control_slept_share": 0.08586184475077899,
+      "sleep_triggered": false
+    }
+  }
+}

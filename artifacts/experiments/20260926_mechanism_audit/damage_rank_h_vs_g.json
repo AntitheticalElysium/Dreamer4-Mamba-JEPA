@@ -1,0 +1,92 @@
+{
+  "root_action": {
+    "fit_roots": 1038,
+    "test_roots": 933,
+    "test_pairs": 27420,
+    "runs": [
+      {
+        "seed": 1,
+        "chosen_step": 100,
+        "dev_auc": 0.8836724162101746,
+        "test_within_root_auc": 0.891940176486969,
+        "test_safe_choice": 0.6387995481491089
+      },
+      {
+        "seed": 2,
+        "chosen_step": 100,
+        "dev_auc": 0.8833463788032532,
+        "test_within_root_auc": 0.8924142718315125,
+        "test_safe_choice": 0.6355841159820557
+      },
+      {
+        "seed": 3,
+        "chosen_step": 100,
+        "dev_auc": 0.8818466067314148,
+        "test_within_root_auc": 0.8938366174697876,
+        "test_safe_choice": 0.6420149803161621
+      }
+    ],
+    "mean_auc": 0.8927303552627563,
+    "mean_safe_choice": 0.6387995481491089
+  },
+  "h": {
+    "fit_roots": 1038,
+    "test_roots": 933,
+    "test_pairs": 27420,
+    "runs": [
+      {
+        "seed": 1,
+        "chosen_step": 100,
+        "dev_auc": 0.8833463788032532,
+        "test_within_root_auc": 0.8953683376312256,
+        "test_safe_choice": 0.6387995481491089
+      },
+      {
+        "seed": 2,
+        "chosen_step": 100,
+        "dev_auc": 0.8843244910240173,
+        "test_within_root_auc": 0.894565999507904,
+        "test_safe_choice": 0.6323686838150024
+      },
+      {
+        "seed": 3,
+        "chosen_step": 100,
+        "dev_auc": 0.8858894109725952,
+        "test_within_root_auc": 0.8941283822059631,
+        "test_safe_choice": 0.6227223873138428
+      }
+    ],
+    "mean_auc": 0.8946875731150309,
+    "mean_safe_choice": 0.6312968730926514
+  },
+  "gen": {
+    "fit_roots": 1038,
+    "test_roots": 933,
+    "test_pairs": 27420,
+    "runs": [
+      {
+        "seed": 1,
+        "chosen_step": 100,
+        "dev_auc": 0.8740218877792358,
+        "test_within_root_auc": 0.8845003843307495,
+        "test_safe_choice": 0.6366559267044067
+      },
+      {
+        "seed": 2,
+        "chosen_step": 100,
+        "dev_auc": 0.8712180256843567,
+        "test_within_root_auc": 0.886250913143158,
+        "test_safe_choice": 0.6216505765914917
+      },
+      {
+        "seed": 3,
+        "chosen_step": 100,
+        "dev_auc": 0.8723265528678894,
+        "test_within_root_auc": 0.886323869228363,
+        "test_safe_choice": 0.625937819480896
+      }
+    ],
+    "mean_auc": 0.8856917222340902,
+    "mean_safe_choice": 0.6280814409255981
+  }
+}

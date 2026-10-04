@@ -1,0 +1,18 @@
+{
+  "world": "direct_raw_suffix_s7",
+  "input_change_probe": {
+    "auc": 0.963887095451355,
+    "mean_p_changed": 0.7010968327522278,
+    "mean_p_unchanged": 0.10753798484802246,
+    "share_p_over_half_changed": 0.7877697944641113
+  },
+  "backbone_h_change_probe": {
+    "auc": 0.9413366913795471,
+    "mean_p_changed": 0.6379938721656799,
+    "mean_p_unchanged": 0.11423327028751373,
+    "share_p_over_half_changed": 0.6546762585639954
+  },
+  "readings": {
+    "h_below_threshold": false
+  }
+}

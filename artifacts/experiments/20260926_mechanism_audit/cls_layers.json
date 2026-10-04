@@ -1,0 +1,136 @@
+{
+  "status": "exploratory_existing_54k",
+  "rows": {
+    "fit": 2408,
+    "judge": 1205
+  },
+  "fit_identity": "48fe5c111c8d2c3e702114dfcffdca71d65b3b12be68ec7fe0d43ee3aedfb98a",
+  "judge_identity": "d18d2a71451183950fc370858990f0b7c088f74a832625e6c0411529a95437ce",
+  "counts": {
+    "zombie_adjacent": {
+      "fit": 1345,
+      "judge": 597
+    },
+    "lava_adjacent": {
+      "fit": 54,
+      "judge": 45
+    }
+  },
+  "lambda_per_n": 0.1,
+  "checkpoints": {
+    "0": {
+      "sha256": "0b86d8a18406b2918b2d2912896f84fdb6df3c7d9919387e8ffb2ae599204d72",
+      "scores": {
+        "zombie_adjacent": {
+          "cls_L1": 0.6684574484825134,
+          "cls_L3": 0.6649999022483826,
+          "cls_L6": 0.6709479093551636,
+          "cls_L9": 0.6664435267448425,
+          "cls_L12": 0.663228452205658,
+          "z": 0.6661267280578613,
+          "local_patch_mean": 1.0,
+          "global_patch_mean": 0.6871197819709778
+        },
+        "lava_adjacent": {
+          "cls_L1": 0.9840229749679565,
+          "cls_L3": 0.9859194755554199,
+          "cls_L6": 0.9856896996498108,
+          "cls_L9": 0.9836972951889038,
+          "cls_L12": 0.9842720627784729,
+          "z": 0.9837356209754944,
+          "local_patch_mean": 1.0,
+          "global_patch_mean": 0.9829692840576172
+        }
+      }
+    },
+    "2000": {
+      "sha256": "5dcf1828249e2e7c06a0eed309717b4627473e867598d38bb2dac1aefdfeb049",
+      "scores": {
+        "zombie_adjacent": {
+          "cls_L1": 0.6456942558288574,
+          "cls_L3": 0.6351191401481628,
+          "cls_L6": 0.6409322023391724,
+          "cls_L9": 0.6357706785202026,
+          "cls_L12": 0.6300223469734192,
+          "z": 0.6127650141716003,
+          "local_patch_mean": 0.9999311566352844,
+          "global_patch_mean": 0.619104266166687
+        },
+        "lava_adjacent": {
+          "cls_L1": 0.9751149415969849,
+          "cls_L3": 0.9796934723854065,
+          "cls_L6": 0.9770689606666565,
+          "cls_L9": 0.9730076193809509,
+          "cls_L12": 0.9713793396949768,
+          "z": 0.9650957584381104,
+          "local_patch_mean": 0.9984290599822998,
+          "global_patch_mean": 0.9752491116523743
+        }
+      }
+    },
+    "10000": {
+      "sha256": "344a872b7f77ca2eabb817c8fc29bc7f5454819d819fdb667e7d2be8ed22c685",
+      "scores": {
+        "zombie_adjacent": {
+          "cls_L1": 0.6392378807067871,
+          "cls_L3": 0.6445164680480957,
+          "cls_L6": 0.6264380812644958,
+          "cls_L9": 0.6153492331504822,
+          "cls_L12": 0.610081672668457,
+          "z": 0.5940089225769043,
+          "local_patch_mean": 0.999198317527771,
+          "global_patch_mean": 0.6283280253410339
+        },
+        "lava_adjacent": {
+          "cls_L1": 0.9656130075454712,
+          "cls_L3": 0.9697318077087402,
+          "cls_L6": 0.9665899872779846,
+          "cls_L9": 0.9609578251838684,
+          "cls_L12": 0.9631417393684387,
+          "z": 0.9112643599510193,
+          "local_patch_mean": 0.999885082244873,
+          "global_patch_mean": 0.9795785546302795
+        }
+      }
+    }
+  },
+  "paired_episode_intervals": {
+    "trained_vs_initial_cls": {
+      "difference": -0.05314677953720093,
+      "episode_cluster_95pct": [
+        -0.09155136346817017,
+        -0.01495659351348877
+      ],
+      "episodes": 117,
+      "draws": 1000
+    },
+    "trained_vs_initial_z": {
+      "difference": -0.07211780548095703,
+      "episode_cluster_95pct": [
+        -0.11194103956222534,
+        -0.03486150503158569
+      ],
+      "episodes": 117,
+      "draws": 1000
+    },
+    "trained_local_vs_cls": {
+      "difference": 0.38911664485931396,
+      "episode_cluster_95pct": [
+        0.3400895595550537,
+        0.43303608894348145
+      ],
+      "episodes": 117,
+      "draws": 1000
+    },
+    "trained_global_patch_vs_cls": {
+      "difference": 0.018246352672576904,
+      "episode_cluster_95pct": [
+        -0.011515557765960693,
+        0.04960215091705322
+      ],
+      "episodes": 117,
+      "draws": 1000
+    }
+  },
+  "script_sha256": "b1e189202b251b3f873443f28b402a086fb3ba3d666bf388809d0ead76e3c7a5"
+}

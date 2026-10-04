@@ -1,0 +1,374 @@
+{
+  "schema": "d4mj_whiten_rep_v1",
+  "status": "SEALED: new seed block, rules committed before collection",
+  "script_sha256": "1e47d607604811d467612c1591fa438e5ad32b865458d47c7695a26060b00800",
+  "judge_manifest": "9d6215520f38a72ebb418d971b563c9ad04902d15d8b4776688ece79bb5ced49",
+  "judge_seed_files": 423,
+  "roots": {
+    "judge": 4289,
+    "opportunity": 800,
+    "zombie": 527
+  },
+  "rules": {
+    "W_vs_DOWN": {
+      "difference": 0.08330076932907104,
+      "interval": [
+        0.037873268127441406,
+        0.13270166516304016
+      ],
+      "excludes_zero": true
+    },
+    "W_vs_actions_only": {
+      "difference": 0.05551433563232422,
+      "interval": [
+        0.021672941744327545,
+        0.09080834686756134
+      ],
+      "excludes_zero": true
+    },
+    "W_vs_DOWN_zombie": {
+      "difference": 0.05903106927871704,
+      "interval": [
+        0.00693532545119524,
+        0.10863495618104935
+      ],
+      "excludes_zero": true
+    },
+    "W_vs_U_zombie": {
+      "difference": 0.05576968193054199,
+      "interval": [
+        0.020300760865211487,
+        0.0904231071472168
+      ],
+      "excludes_zero": true
+    }
+  },
+  "readings": {
+    "primary": "trained_system_passes",
+    "secondary": "whitening_helps_trained_system"
+  },
+  "reported": {
+    "W_s1_vs_DOWN": {
+      "overall": {
+        "difference": 0.08101564645767212,
+        "interval": [
+          0.030948802828788757,
+          0.13261273503303528
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.06973439455032349,
+        "interval": [
+          0.014070901088416576,
+          0.1233408972620964
+        ],
+        "excludes_zero": true
+      },
+      "night": {
+        "difference": 0.00010216236114501953,
+        "interval": [
+          -0.06686858087778091,
+          0.06848273426294327
+        ],
+        "excludes_zero": false
+      }
+    },
+    "W_s1_vs_actions_only": {
+      "overall": {
+        "difference": 0.05322921276092529,
+        "interval": [
+          0.01647208258509636,
+          0.09041830152273178
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.06068152189254761,
+        "interval": [
+          0.015055595897138119,
+          0.10389208048582077
+        ],
+        "excludes_zero": true
+      },
+      "night": {
+        "difference": 0.030909597873687744,
+        "interval": [
+          -0.02866208925843239,
+          0.08610354363918304
+        ],
+        "excludes_zero": false
+      }
+    },
+    "W_s1_vs_U": {
+      "overall": {
+        "difference": 0.025000035762786865,
+        "interval": [
+          -0.007547474000602961,
+          0.05745367333292961
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": 0.06647300720214844,
+        "interval": [
+          0.023136913776397705,
+          0.10453096032142639
+        ],
+        "excludes_zero": true
+      },
+      "night": {
+        "difference": 0.019556820392608643,
+        "interval": [
+          -0.03335465490818024,
+          0.07247985154390335
+        ],
+        "excludes_zero": false
+      }
+    },
+    "W_s2_vs_DOWN": {
+      "overall": {
+        "difference": 0.08558595180511475,
+        "interval": [
+          0.04053938016295433,
+          0.13485786318778992
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.04832780361175537,
+        "interval": [
+          -0.009744813665747643,
+          0.10470478236675262
+        ],
+        "excludes_zero": false
+      },
+      "night": {
+        "difference": 0.02113974094390869,
+        "interval": [
+          -0.04751291498541832,
+          0.09356217831373215
+        ],
+        "excludes_zero": false
+      }
+    },
+    "W_s2_vs_actions_only": {
+      "overall": {
+        "difference": 0.05779951810836792,
+        "interval": [
+          0.020347151905298233,
+          0.09610576927661896
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.03927493095397949,
+        "interval": [
+          -0.005686858203262091,
+          0.09023798257112503
+        ],
+        "excludes_zero": false
+      },
+      "night": {
+        "difference": 0.051947176456451416,
+        "interval": [
+          -0.003381947986781597,
+          0.10821682214736938
+        ],
+        "excludes_zero": false
+      }
+    },
+    "W_s2_vs_U": {
+      "overall": {
+        "difference": 0.029570341110229492,
+        "interval": [
+          -0.0009680746588855982,
+          0.061242975294589996
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": 0.04506641626358032,
+        "interval": [
+          0.004080526530742645,
+          0.08448585122823715
+        ],
+        "excludes_zero": true
+      },
+      "night": {
+        "difference": 0.040594398975372314,
+        "interval": [
+          -0.00859522819519043,
+          0.08536584675312042
+        ],
+        "excludes_zero": false
+      }
+    },
+    "W_vs_DOWN": {
+      "overall": {
+        "difference": 0.08330076932907104,
+        "interval": [
+          0.037873268127441406,
+          0.13270166516304016
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.05903106927871704,
+        "interval": [
+          0.00693532545119524,
+          0.10863495618104935
+        ],
+        "excludes_zero": true
+      },
+      "night": {
+        "difference": 0.010620951652526855,
+        "interval": [
+          -0.05315382033586502,
+          0.07427791506052017
+        ],
+        "excludes_zero": false
+      }
+    },
+    "W_vs_actions_only": {
+      "overall": {
+        "difference": 0.05551433563232422,
+        "interval": [
+          0.021672941744327545,
+          0.09080834686756134
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.04997819662094116,
+        "interval": [
+          0.009292257018387318,
+          0.09450313448905945
+        ],
+        "excludes_zero": true
+      },
+      "night": {
+        "difference": 0.04142838716506958,
+        "interval": [
+          -0.009890335611999035,
+          0.0904150977730751
+        ],
+        "excludes_zero": false
+      }
+    },
+    "W_vs_U": {
+      "overall": {
+        "difference": 0.02728515863418579,
+        "interval": [
+          0.0006299272063188255,
+          0.05412396416068077
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.05576968193054199,
+        "interval": [
+          0.020300760865211487,
+          0.0904231071472168
+        ],
+        "excludes_zero": true
+      },
+      "night": {
+        "difference": 0.03007560968399048,
+        "interval": [
+          -0.014888760633766651,
+          0.07103145867586136
+        ],
+        "excludes_zero": false
+      }
+    }
+  },
+  "sleep_choices": {
+    "W_s1": 30,
+    "W_s2": 71,
+    "U_s1": 157,
+    "U_s2": 31
+  },
+  "expected_safe": {
+    "DOWN": {
+      "overall": 0.6022265553474426,
+      "zombie": 0.552182137966156,
+      "day": 0.5602859258651733,
+      "night": 0.6699346303939819,
+      "lava_adjacent": 0.4545454680919647,
+      "zombie_adjacent": 0.552182137966156,
+      "arrow_or_skeleton": 0.6084222793579102,
+      "none_of_these": 0.7530864477157593
+    },
+    "actions_only": {
+      "overall": 0.6300129890441895,
+      "zombie": 0.5612350106239319,
+      "day": 0.6243674755096436,
+      "night": 0.6391271948814392,
+      "lava_adjacent": 0.7803030610084534,
+      "zombie_adjacent": 0.5612350106239319,
+      "arrow_or_skeleton": 0.6281123161315918,
+      "none_of_these": 0.7716049551963806
+    },
+    "W_s1": {
+      "overall": 0.6832422018051147,
+      "zombie": 0.6219165325164795,
+      "day": 0.6914220452308655,
+      "night": 0.670036792755127,
+      "lava_adjacent": 0.7954545617103577,
+      "zombie_adjacent": 0.6219165325164795,
+      "arrow_or_skeleton": 0.7170350551605225,
+      "none_of_these": 0.8086419701576233
+    },
+    "W_s2": {
+      "overall": 0.6878125071525574,
+      "zombie": 0.6005099415779114,
+      "day": 0.6857920289039612,
+      "night": 0.6910743713378906,
+      "lava_adjacent": 0.8636363744735718,
+      "zombie_adjacent": 0.6005099415779114,
+      "arrow_or_skeleton": 0.7637194991111755,
+      "none_of_these": 0.845678985118866
+    },
+    "U_s1": {
+      "overall": 0.6475390791893005,
+      "zombie": 0.5151209831237793,
+      "day": 0.6551113128662109,
+      "night": 0.6353145241737366,
+      "lava_adjacent": 0.8636363744735718,
+      "zombie_adjacent": 0.5151209831237793,
+      "arrow_or_skeleton": 0.6831173896789551,
+      "none_of_these": 0.9259259104728699
+    },
+    "U_s2": {
+      "overall": 0.6689453125,
+      "zombie": 0.5957661271095276,
+      "day": 0.6709893941879272,
+      "night": 0.6656454205513,
+      "lava_adjacent": 0.8181818127632141,
+      "zombie_adjacent": 0.5957661271095276,
+      "arrow_or_skeleton": 0.7570502758026123,
+      "none_of_these": 0.7839506268501282
+    },
+    "W": {
+      "overall": 0.6855273246765137,
+      "zombie": 0.611213207244873,
+      "day": 0.6886070370674133,
+      "night": 0.6805555820465088,
+      "lava_adjacent": 0.8295454382896423,
+      "zombie_adjacent": 0.611213207244873,
+      "arrow_or_skeleton": 0.7403773069381714,
+      "none_of_these": 0.8271604776382446
+    },
+    "U": {
+      "overall": 0.6582421660423279,
+      "zombie": 0.555443525314331,
+      "day": 0.6630503535270691,
+      "night": 0.6504799723625183,
+      "lava_adjacent": 0.8409090638160706,
+      "zombie_adjacent": 0.555443525314331,
+      "arrow_or_skeleton": 0.7200838327407837,
+      "none_of_these": 0.854938268661499
+    }
+  }
+}

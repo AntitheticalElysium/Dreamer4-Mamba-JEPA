@@ -1,0 +1,57 @@
+{
+  "n_moves": 2861,
+  "H2": {
+    "persist": 0.04461143910884857,
+    "shift_oracle": 0.014628187753260136,
+    "strip_only": 0.009820598177611828,
+    "world": 0.06517515331506729,
+    "captured_shift_oracle": 0.6720978285957453,
+    "captured_strip_only": 0.7798636768105529,
+    "captured_world": -0.4609515993430473
+  },
+  "Z": {
+    "persist": 0.04461143910884857,
+    "shift_oracle": 0.014628187753260136,
+    "strip_only": 0.009820598177611828,
+    "world": 0.04650113731622696,
+    "captured_shift_oracle": 0.6720978285957453,
+    "captured_strip_only": 0.7798636768105529,
+    "captured_world": -0.04235905061855694
+  },
+  "sZ": {
+    "persist": 0.05357937514781952,
+    "shift_oracle": 0.017267437651753426,
+    "strip_only": 0.012193990871310234,
+    "world": 0.06415263563394547,
+    "captured_shift_oracle": 0.6777223025816466,
+    "captured_strip_only": 0.7724125964950436,
+    "captured_world": -0.1973382566884272
+  },
+  "U": {
+    "persist": 0.11050079762935638,
+    "shift_oracle": 0.01652466505765915,
+    "strip_only": 0.012097087688744068,
+    "world": 0.041907504200935364,
+    "captured_shift_oracle": 0.8504565992990706,
+    "captured_strip_only": 0.890524883545906,
+    "captured_world": 0.6207493058873457
+  },
+  "W": {
+    "persist": 0.36472073197364807,
+    "shift_oracle": 0.09362776577472687,
+    "strip_only": 0.057223834097385406,
+    "world": 0.24442151188850403,
+    "captured_shift_oracle": 0.7432891591655073,
+    "captured_strip_only": 0.843102327121015,
+    "captured_world": 0.3298392702662045
+  },
+  "T": {
+    "persist": 0.4300505220890045,
+    "shift_oracle": 0.0745876207947731,
+    "strip_only": 0.053710680454969406,
+    "world": 0.3971377909183502,
+    "captured_shift_oracle": 0.8265607946888245,
+    "captured_strip_only": 0.8751061149883843,
+    "captured_world": 0.07653224326011299
+  }
+}

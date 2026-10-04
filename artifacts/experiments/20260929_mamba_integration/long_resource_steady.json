@@ -1,0 +1,46 @@
+{
+  "source_sha256": {
+    "artifacts/experiments/20260929_mamba_integration/long_resource_steady.py": "93d1c924d0d176c15cac1f89be65276ba736333ac0fba9469e831b56f660abb4",
+    "artifacts/experiments/20260929_mamba_integration/long_world.py": "2163ac3179d021f06c7a924897eb6ed6c5dde4e1c01b0dd84b2782f479c746e7",
+    "artifacts/experiments/20260927_levers/tworld.py": "a7e3d3f473595f524e45b6004a91f9bd458b2766c37873630cd6d0d8e29cf343",
+    "artifacts/experiments/20260921_readout_ladder/spatial.py": "89e055243d5378166fafd083f5055c05d5e4762e7a72ac2a954c48dbfefd8f81"
+  },
+  "hardware": {
+    "name": "NVIDIA GeForce RTX 3060 Laptop GPU",
+    "total_bytes": 6132858880
+  },
+  "results": [
+    {
+      "batch": 8,
+      "ok": true,
+      "warmed_seconds": [
+        0.8542086489978828,
+        0.8684210610008449,
+        0.8694724550005049
+      ],
+      "median_warmed_seconds": 0.8684210610008449,
+      "peak_gpu_bytes": 2115188224,
+      "last_objective": 2.257073402404785,
+      "last_grad_norm": 0.016423573717474937
+    },
+    {
+      "batch": 16,
+      "ok": true,
+      "warmed_seconds": [
+        1.716216151995468,
+        1.707699597995088,
+        1.7109693679958582
+      ],
+      "median_warmed_seconds": 1.7109693679958582,
+      "peak_gpu_bytes": 4124546048,
+      "last_objective": 2.2578892707824707,
+      "last_grad_norm": 0.011939171701669693
+    },
+    {
+      "batch": 24,
+      "ok": false,
+      "error": "CUDA out of memory. Tried to allocate 540.00 MiB. GPU 0 has a total capacity of 5.71 GiB of which 431.94 MiB is free. Process 107319 has 69.21 MiB memory in use. Including non-PyTorch memory, this process has 4.72 GiB memory in use. Of the allocated memory 4.04 GiB is allocated by PyTorch, and 527.44 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)",
+      "peak_gpu_bytes": 4948681728
+    }
+  ]
+}

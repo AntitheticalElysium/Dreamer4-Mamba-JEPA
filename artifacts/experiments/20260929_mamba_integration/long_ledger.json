@@ -1,0 +1,14 @@
+{
+  "status": "sealed",
+  "length": 64,
+  "main": 12288,
+  "terminal": 7501,
+  "eligible_train_episodes": 7755,
+  "possible_train_windows": 2602749,
+  "seed": 20260929,
+  "row_count": 19789,
+  "unique_episode_count": 7755,
+  "unique_window_count": 19739,
+  "ledger_sha256": "cad11d3dac2e90358750a97299f56a2b4ff2eeeeeaaa82f0ef14200ef2a613aa",
+  "dataset_audit_sha256": "ec5d6c259f4a37395e37226a589f7611c4e7754786d93faf7c7cecb3b584f7dd"
+}

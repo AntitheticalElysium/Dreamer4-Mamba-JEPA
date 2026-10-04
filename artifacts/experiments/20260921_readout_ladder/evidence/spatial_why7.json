@@ -1,0 +1,47 @@
+{
+  "schema": "d4mj_spatial_why7_v1",
+  "status": "POST HOC, EXPLORATORY: observability judge roots",
+  "script_sha256": "418201d6da59f10ec1577c454951e538205b7b02e95e9f1a0d18605c2f808a07",
+  "opportunity_roots": 500,
+  "reference": {
+    "prior": 0.6280624866485596,
+    "root_tokens": 0.7242916226387024,
+    "generated_T": 0.723895788192749,
+    "generated_Z": 0.6819167137145996
+  },
+  "reading": "factual_training_does_not_transfer",
+  "result": {
+    "Z_state": {
+      "expected_safe": 0.6192291776339213,
+      "per_seed": [
+        0.6225625276565552,
+        0.6205624938011169,
+        0.6145625114440918
+      ]
+    },
+    "Z_history": {
+      "expected_safe": 0.6629375020662943,
+      "per_seed": [
+        0.6551250219345093,
+        0.6586250066757202,
+        0.6750624775886536
+      ]
+    },
+    "T_state": {
+      "expected_safe": 0.6277499993642172,
+      "per_seed": [
+        0.6315000057220459,
+        0.6342499852180481,
+        0.6175000071525574
+      ]
+    },
+    "T_history": {
+      "expected_safe": 0.659208337465922,
+      "per_seed": [
+        0.664187490940094,
+        0.6506875157356262,
+        0.6627500057220459
+      ]
+    }
+  }
+}

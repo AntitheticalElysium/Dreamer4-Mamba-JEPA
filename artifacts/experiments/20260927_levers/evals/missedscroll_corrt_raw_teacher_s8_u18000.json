@@ -1,0 +1,268 @@
+{
+  "world": "corrt_raw_teacher_s8_u18000",
+  "n": {
+    "missed": 235,
+    "control": 705,
+    "false": 245,
+    "control_false": 727
+  },
+  "missed": {
+    "scroll_rate": {
+      "imagined": 0.693617045879364,
+      "true": 0.9914893507957458,
+      "img_hist": 0.9872340559959412,
+      "img_cur": 0.693617045879364
+    },
+    "mean_logit": {
+      "imagined": -0.9993011951446533,
+      "true": 0.4047207534313202,
+      "img_hist": 0.4116024076938629,
+      "img_cur": -1.1110674142837524
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 51.26089859008789,
+      "player": 36.99111557006836,
+      "frame": 46.01709747314453
+    },
+    "depth_hist": [
+      0,
+      8,
+      10,
+      9,
+      22,
+      23,
+      21,
+      11,
+      28,
+      26,
+      12,
+      18,
+      14,
+      16,
+      7,
+      10
+    ],
+    "provenance": {
+      "observable_share": 0.693617045879364,
+      "mob_share": 0.008510638028383255,
+      "occupied_share": 0.05106382817029953,
+      "slept_share": 0.11063829809427261,
+      "target_distance_occupied": {
+        "occupied": 64.70018768310547,
+        "not_occupied": 50.53771209716797
+      },
+      "target_distance": {
+        "observable_no_mob": 49.35302734375,
+        "revealed_no_mob": 55.984039306640625,
+        "mob": 38.127254486083984
+      },
+      "counts": {
+        "observable_no_mob": 162,
+        "revealed_no_mob": 71,
+        "mob": 2
+      }
+    }
+  },
+  "control": {
+    "scroll_rate": {
+      "imagined": 0.9843971729278564,
+      "true": 0.99858158826828,
+      "img_hist": 0.99858158826828,
+      "img_cur": 0.9815602898597717
+    },
+    "mean_logit": {
+      "imagined": 0.4228861927986145,
+      "true": 0.45948582887649536,
+      "img_hist": 0.4610815644264221,
+      "img_cur": 0.41991356015205383
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 9.569134712219238,
+      "player": 10.681729316711426,
+      "frame": 31.544403076171875
+    },
+    "depth_hist": [
+      0,
+      24,
+      30,
+      27,
+      66,
+      69,
+      63,
+      33,
+      84,
+      78,
+      36,
+      54,
+      42,
+      48,
+      21,
+      30
+    ],
+    "provenance": {
+      "observable_share": 0.8624113202095032,
+      "mob_share": 0.007092198356986046,
+      "occupied_share": 0.17872340977191925,
+      "slept_share": 0.012765957042574883,
+      "target_distance_occupied": {
+        "occupied": 9.242904663085938,
+        "not_occupied": 9.640128135681152
+      },
+      "target_distance": {
+        "observable_no_mob": 4.3251566886901855,
+        "revealed_no_mob": 39.04703903198242,
+        "mob": 77.06598663330078
+      },
+      "counts": {
+        "observable_no_mob": 604,
+        "revealed_no_mob": 96,
+        "mob": 5
+      }
+    }
+  },
+  "false": {
+    "scroll_rate": {
+      "imagined": 0.8693877458572388,
+      "true": 0.0,
+      "img_hist": 0.0,
+      "img_cur": 0.8693877458572388
+    },
+    "mean_logit": {
+      "imagined": 0.3198660612106323,
+      "true": -8.186336517333984,
+      "img_hist": -8.21296215057373,
+      "img_cur": 0.3231186270713806
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 173.5025177001953,
+      "player": 14.4027681350708,
+      "frame": 30.365760803222656
+    },
+    "depth_hist": [
+      0,
+      24,
+      25,
+      25,
+      18,
+      23,
+      21,
+      16,
+      14,
+      16,
+      12,
+      9,
+      6,
+      16,
+      11,
+      9
+    ],
+    "provenance": {
+      "observable_share": 0.8734694123268127,
+      "mob_share": 0.03265305981040001,
+      "occupied_share": 0.020408162847161293,
+      "slept_share": 0.02448979578912258,
+      "target_distance_occupied": {
+        "occupied": 130.44737243652344,
+        "not_occupied": 174.39950561523438
+      },
+      "target_distance": {
+        "observable_no_mob": 173.730712890625,
+        "revealed_no_mob": 195.1006317138672,
+        "mob": 83.93406677246094
+      },
+      "counts": {
+        "observable_no_mob": 206,
+        "revealed_no_mob": 31,
+        "mob": 8
+      }
+    }
+  },
+  "control_false": {
+    "scroll_rate": {
+      "imagined": 0.06602475792169571,
+      "true": 0.042640991508960724,
+      "img_hist": 0.042640991508960724,
+      "img_cur": 0.061898212879896164
+    },
+    "mean_logit": {
+      "imagined": -5.652620315551758,
+      "true": -7.0717363357543945,
+      "img_hist": -7.108887195587158,
+      "img_cur": -5.63740873336792
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 13.576375007629395,
+      "player": 14.781798362731934,
+      "frame": 20.376461029052734
+    },
+    "depth_hist": [
+      0,
+      72,
+      75,
+      75,
+      54,
+      69,
+      63,
+      48,
+      42,
+      48,
+      36,
+      27,
+      18,
+      40,
+      33,
+      27
+    ],
+    "provenance": {
+      "observable_share": 0.9614855647087097,
+      "mob_share": 0.012379642575979233,
+      "occupied_share": 0.012379642575979233,
+      "slept_share": 0.1623108685016632,
+      "target_distance_occupied": {
+        "occupied": 4.25184440612793,
+        "not_occupied": 13.693254470825195
+      },
+      "target_distance": {
+        "observable_no_mob": 12.168351173400879,
+        "revealed_no_mob": 49.83287811279297,
+        "mob": 8.726686477661133
+      },
+      "counts": {
+        "observable_no_mob": 690,
+        "revealed_no_mob": 28,
+        "mob": 9
+      }
+    }
+  },
+  "readings": {
+    "missed": {
+      "right_rate": {
+        "imagined": 0.693617045879364,
+        "true": 0.9914893507957458,
+        "img_hist": 0.9872340559959412,
+        "img_cur": 0.693617045879364
+      },
+      "input_caused": false,
+      "current_frame": false,
+      "history": false,
+      "target_tile": true
+    },
+    "false": {
+      "right_rate": {
+        "imagined": 0.13061225414276123,
+        "true": 1.0,
+        "img_hist": 1.0,
+        "img_cur": 0.13061225414276123
+      },
+      "input_caused": true,
+      "current_frame": true,
+      "history": false,
+      "target_tile": true
+    },
+    "sleep": {
+      "wrong_slept_share": 0.06666666670935228,
+      "control_slept_share": 0.08868715161712601,
+      "sleep_triggered": false
+    }
+  }
+}

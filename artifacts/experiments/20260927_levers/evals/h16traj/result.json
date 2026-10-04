@@ -1,0 +1,37 @@
+{
+  "references": {
+    "roots_devB_opp16": 1139,
+    "uniform": 0.571426510810852,
+    "prior": 0.6160831451416016,
+    "one_real_future": 0.6793657541275024,
+    "oracle31": 0.7664617896080017
+  },
+  "corrt_raw_teacher_s7_u36000": {
+    "trajectory": 0.6451200246810913,
+    "snapshot": 0.62857586145401,
+    "traj_minus_snapshot": {
+      "difference": 0.0165441632270813,
+      "interval": [
+        0.006657445337623358,
+        0.026126215234398842
+      ],
+      "excludes_zero": true
+    }
+  },
+  "corrt_raw_teacher_s8_u36000": {
+    "trajectory": 0.6462448239326477,
+    "snapshot": 0.6289600133895874,
+    "traj_minus_snapshot": {
+      "difference": 0.017284810543060303,
+      "interval": [
+        0.004609465599060059,
+        0.03121982514858246
+      ],
+      "excludes_zero": true
+    }
+  },
+  "readings": {
+    "traj_gain": true,
+    "traj_reaches_one_future": false
+  }
+}

@@ -1,0 +1,313 @@
+{
+  "schema": "d4mj_interface_shuffle_v1",
+  "status": "POST HOC on the sealed 55k block interface.py scored",
+  "script_sha256": "30d177b9f2fed7343b69b10e13f962e700f1ff5e30048593cc9c197d44d03f68",
+  "interface_script_sha256": "e2e3578b00ab884d2362acb713ba3a810a509fccbfc6a0b2cf3452bf17c63882",
+  "judge_manifest": "c02ee6fe8e9da4a4b97e834d85785e2718738afebe8b8ff736f8aa4d154d828b",
+  "roots": {
+    "opportunity": 804,
+    "zombie": 510
+  },
+  "readings": {
+    "U": "state_alone_carries_consequence",
+    "Z": "root_plus_action_shortcut"
+  },
+  "expected_safe": {
+    "DOWN": {
+      "overall": 0.586442768573761,
+      "zombie": 0.4960784316062927
+    },
+    "token_U_intact": {
+      "overall": 0.693420946598053,
+      "zombie": 0.6098039150238037
+    },
+    "token_U_permuted": {
+      "overall": 0.5312811136245728,
+      "zombie": 0.3296446204185486
+    },
+    "token_U_mean": {
+      "overall": 0.6505234241485596,
+      "zombie": 0.5385620594024658
+    },
+    "state_U_intact": {
+      "overall": 0.6842869520187378,
+      "zombie": 0.584967315196991
+    },
+    "state_U_permuted": {
+      "overall": 0.47506216168403625,
+      "zombie": 0.23500408232212067
+    },
+    "state_U_mean": {
+      "overall": 0.44216418266296387,
+      "zombie": 0.1411764770746231
+    },
+    "token_Z_intact": {
+      "overall": 0.5762333869934082,
+      "zombie": 0.4740196168422699
+    },
+    "token_Z_permuted": {
+      "overall": 0.5803611874580383,
+      "zombie": 0.4831209182739258
+    },
+    "token_Z_mean": {
+      "overall": 0.5890469551086426,
+      "zombie": 0.4962826669216156
+    },
+    "state_Z_intact": {
+      "overall": 0.5673844218254089,
+      "zombie": 0.39189133048057556
+    },
+    "state_Z_permuted": {
+      "overall": 0.4787857234477997,
+      "zombie": 0.23633986711502075
+    },
+    "state_Z_mean": {
+      "overall": 0.44216418266296387,
+      "zombie": 0.1411764770746231
+    }
+  },
+  "per_seed": {
+    "token_U_intact": [
+      0.6985774040222168,
+      0.7054959535598755,
+      0.6761893630027771
+    ],
+    "token_U_permuted": [
+      0.5338774919509888,
+      0.5357275605201721,
+      0.5242381691932678
+    ],
+    "token_U_mean": [
+      0.6461442708969116,
+      0.6573383212089539,
+      0.6480876803398132
+    ],
+    "state_U_intact": [
+      0.6804260015487671,
+      0.7092273235321045,
+      0.6632074117660522
+    ],
+    "state_U_permuted": [
+      0.47995179891586304,
+      0.47497665882110596,
+      0.47025811672210693
+    ],
+    "state_U_mean": [
+      0.44216418266296387,
+      0.44216418266296387,
+      0.44216418266296387
+    ],
+    "token_Z_intact": [
+      0.5864816308021545,
+      0.5841884613037109,
+      0.5580301880836487
+    ],
+    "token_Z_permuted": [
+      0.5777208209037781,
+      0.5870180726051331,
+      0.5763448476791382
+    ],
+    "token_Z_mean": [
+      0.5925062298774719,
+      0.5954601764678955,
+      0.5791744589805603
+    ],
+    "state_Z_intact": [
+      0.5702736377716064,
+      0.5635883212089539,
+      0.5682913661003113
+    ],
+    "state_Z_permuted": [
+      0.47766637802124023,
+      0.47627484798431396,
+      0.482416033744812
+    ],
+    "state_Z_mean": [
+      0.44216418266296387,
+      0.44216418266296387,
+      0.44216418266296387
+    ]
+  },
+  "contrasts": {
+    "token_U_intact_vs_token_U_permuted": {
+      "overall": {
+        "difference": 0.16213983297348022,
+        "interval": [
+          0.1251177340745926,
+          0.20044119656085968
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.2801592946052551,
+        "interval": [
+          0.23831138014793396,
+          0.3182266056537628
+        ],
+        "excludes_zero": true
+      }
+    },
+    "token_U_intact_vs_token_U_mean": {
+      "overall": {
+        "difference": 0.04289752244949341,
+        "interval": [
+          0.013682189397513866,
+          0.07275363802909851
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.07124185562133789,
+        "interval": [
+          0.030410755425691605,
+          0.11131969094276428
+        ],
+        "excludes_zero": true
+      }
+    },
+    "state_U_intact_vs_state_U_permuted": {
+      "overall": {
+        "difference": 0.20922479033470154,
+        "interval": [
+          0.16713236272335052,
+          0.2526096701622009
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.3499632477760315,
+        "interval": [
+          0.3028287887573242,
+          0.392238974571228
+        ],
+        "excludes_zero": true
+      }
+    },
+    "state_U_intact_vs_DOWN": {
+      "overall": {
+        "difference": 0.0978441834449768,
+        "interval": [
+          0.052174702286720276,
+          0.14608590304851532
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.08888888359069824,
+        "interval": [
+          0.029110847041010857,
+          0.14229096472263336
+        ],
+        "excludes_zero": true
+      }
+    },
+    "state_U_intact_vs_token_U_intact": {
+      "overall": {
+        "difference": -0.009133994579315186,
+        "interval": [
+          -0.03154861181974411,
+          0.013995996676385403
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": -0.024836599826812744,
+        "interval": [
+          -0.049607060849666595,
+          1.525125844636932e-05
+        ],
+        "excludes_zero": false
+      }
+    },
+    "token_Z_intact_vs_token_Z_permuted": {
+      "overall": {
+        "difference": -0.004127800464630127,
+        "interval": [
+          -0.01497595477849245,
+          0.006856369785964489
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": -0.009101301431655884,
+        "interval": [
+          -0.02353227511048317,
+          0.0057431054301559925
+        ],
+        "excludes_zero": false
+      }
+    },
+    "token_Z_intact_vs_token_Z_mean": {
+      "overall": {
+        "difference": -0.012813568115234375,
+        "interval": [
+          -0.02429746463894844,
+          -0.0013256464153528214
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": -0.022263050079345703,
+        "interval": [
+          -0.03830791264772415,
+          -0.005778889637440443
+        ],
+        "excludes_zero": true
+      }
+    },
+    "state_Z_intact_vs_state_Z_permuted": {
+      "overall": {
+        "difference": 0.08859869837760925,
+        "interval": [
+          0.05881708487868309,
+          0.1173575222492218
+        ],
+        "excludes_zero": true
+      },
+      "zombie": {
+        "difference": 0.1555514633655548,
+        "interval": [
+          0.11878596991300583,
+          0.192560076713562
+        ],
+        "excludes_zero": true
+      }
+    },
+    "state_Z_intact_vs_DOWN": {
+      "overall": {
+        "difference": -0.01905834674835205,
+        "interval": [
+          -0.07110054790973663,
+          0.034934740513563156
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": -0.10418710112571716,
+        "interval": [
+          -0.1719818413257599,
+          -0.036330901086330414
+        ],
+        "excludes_zero": true
+      }
+    },
+    "state_Z_intact_vs_token_Z_intact": {
+      "overall": {
+        "difference": -0.008848965167999268,
+        "interval": [
+          -0.04184688255190849,
+          0.02635146863758564
+        ],
+        "excludes_zero": false
+      },
+      "zombie": {
+        "difference": -0.08212828636169434,
+        "interval": [
+          -0.12653739750385284,
+          -0.03385426849126816
+        ],
+        "excludes_zero": true
+      }
+    }
+  }
+}

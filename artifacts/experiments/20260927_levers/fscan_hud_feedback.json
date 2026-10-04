@@ -1,0 +1,34 @@
+{
+  "checkpoint_sha256": {
+    "fattn": "f31629206d13707f702b57aead11dd2f78b26ab53d4a9cb4284236bcbd3ffbd9",
+    "fscan": "9f46a0e69fba13705c99be9d1d95a5ef1f201d8b1fc11ba78ffef4c968573c2e"
+  },
+  "model_source_sha256": "5e4c2fa2745102b8b9d54d3794e1c29f0354cb9fc69b604f2841ac6a0cc41d98",
+  "roots": 1002,
+  "alive_depth16": 998,
+  "walk_seeds": 143,
+  "normalizer_V": 7626.31787109375,
+  "per_world": {
+    "fattn": {
+      "native": 0.7397036552429199,
+      "hud": 0.6471927165985107
+    },
+    "fscan": {
+      "native": 0.7947990894317627,
+      "hud": 0.6191248893737793
+    }
+  },
+  "hud_minus_native": {
+    "fattn": -0.09251093864440918,
+    "fscan": -0.1756742000579834
+  },
+  "scan_minus_attention": {
+    "native": 0.05509543418884277,
+    "hud": -0.028067827224731445
+  },
+  "difference_in_hud_effect": -0.08316326141357422,
+  "difference_in_effect_ci95": [
+    -0.10241018980741501,
+    -0.06445005536079407
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "V": 7626.31787109375,
+  "det_change": {
+    "still_all": {
+      "per_cell": 0.00025577766514952655,
+      "cells": 417583
+    },
+    "still_day": {
+      "per_cell": 0.00029393153530280066,
+      "cells": 330646
+    },
+    "still_targets": {
+      "per_cell": 0.00028679944053041343,
+      "cells": 28795
+    },
+    "still_ring2": {
+      "per_cell": 0.00024222062996262525,
+      "cells": 115684
+    },
+    "still_ring3plus": {
+      "per_cell": 0.00023998990303225585,
+      "cells": 235003
+    },
+    "scroll_all": {
+      "per_cell": 0.0008174199426322439,
+      "cells": 162971
+    },
+    "scroll_day": {
+      "per_cell": 0.0007618874274253447,
+      "cells": 136301
+    },
+    "scroll_targets": {
+      "per_cell": 0.0036960706763886483,
+      "cells": 13699
+    },
+    "scroll_ring2": {
+      "per_cell": 0.00021934934702190042,
+      "cells": 49131
+    },
+    "scroll_ring3plus": {
+      "per_cell": 0.00022565430624283433,
+      "cells": 83035
+    },
+    "scroll_behind": {
+      "per_cell": 0.013246150653793524,
+      "cells": 3658
+    },
+    "scroll_ahead": {
+      "per_cell": 0.00025549947945779943,
+      "cells": 3143
+    },
+    "scroll_sides": {
+      "per_cell": 0.00019933578170935336,
+      "cells": 6898
+    },
+    "still_night": {
+      "per_cell": 0.00011066770563057111,
+      "cells": 86937
+    },
+    "scroll_night": {
+      "per_cell": 0.001101227117555962,
+      "cells": 26670
+    }
+  },
+  "soft_world_still_increment_mean": 0.000275,
+  "readings": {
+    "still_det_over_soft_increment": 0.9301006005437329,
+    "true_target_moves": true
+  }
+}

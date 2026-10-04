@@ -1,0 +1,1154 @@
+{
+  "schema": "d4mj_action_selection_v1",
+  "run": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_transformer_comparison/m03",
+  "question": "within-root safe-fork choice under each readout condition, with a paired cluster bootstrap against the root+action control",
+  "sidecar_sha256": "ead287f0f9a1aac03d20db701100bd76f387fbac1ec4a03eab661fc82e2be3c0",
+  "script_sha256": "b0ddd9f43badade94b4b6cf614758b7e87a3dd8783c122997c0d97ed4bf9f8e6",
+  "arms": {
+    "raw": {
+      "linear": {
+        "conditions": {
+          "death": {
+            "observed_fit_on_generated": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.4444444477558136,
+              "selected_actual_interval": [
+                0.27272728085517883,
+                0.6000000238418579
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.2222222238779068,
+              "status": "measured"
+            },
+            "generated_fit_on_generated": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.6111111044883728,
+              "selected_actual_interval": [
+                0.4358333349227905,
+                0.7693182826042175
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.388888880610466,
+              "status": "measured"
+            },
+            "root_action": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.6111111044883728,
+              "selected_actual_interval": [
+                0.4358333349227905,
+                0.7693182826042175
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.388888880610466,
+              "status": "measured"
+            },
+            "action_only": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.6111111044883728,
+              "selected_actual_interval": [
+                0.4358333349227905,
+                0.7693182826042175
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.388888880610466,
+              "status": "measured"
+            }
+          },
+          "reward_positive": {
+            "observed_fit_on_generated": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.1538461595773697,
+              "selected_actual_interval": [
+                0.0,
+                0.375
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.0859728530049324,
+              "status": "measured"
+            },
+            "generated_fit_on_generated": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.1538461595773697,
+              "selected_actual_interval": [
+                0.0,
+                0.375
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.0859728530049324,
+              "status": "measured"
+            },
+            "root_action": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.1538461595773697,
+              "selected_actual_interval": [
+                0.0,
+                0.375
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.0859728530049324,
+              "status": "measured"
+            },
+            "action_only": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.1538461595773697,
+              "selected_actual_interval": [
+                0.0,
+                0.375
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.0859728530049324,
+              "status": "measured"
+            }
+          }
+        },
+        "paired_vs_root_action": {
+          "death": {
+            "generated_fit_on_generated": {
+              "a": 0.6111111044883728,
+              "b": 0.6111111044883728,
+              "difference": 0.0,
+              "interval": [
+                0.0,
+                0.0
+              ],
+              "excludes_zero": false
+            },
+            "observed_fit_on_generated": {
+              "a": 0.4444444477558136,
+              "b": 0.6111111044883728,
+              "difference": -0.1666666567325592,
+              "interval": [
+                -0.35483869910240173,
+                0.0
+              ],
+              "excludes_zero": false
+            }
+          },
+          "reward_positive": {
+            "generated_fit_on_generated": {
+              "a": 0.1538461595773697,
+              "b": 0.1538461595773697,
+              "difference": 0.0,
+              "interval": [
+                0.0,
+                0.0
+              ],
+              "excludes_zero": false
+            },
+            "observed_fit_on_generated": {
+              "a": 0.1538461595773697,
+              "b": 0.1538461595773697,
+              "difference": 0.0,
+              "interval": [
+                0.0,
+                0.0
+              ],
+              "excludes_zero": false
+            }
+          }
+        }
+      },
+      "mlp": {
+        "conditions": {
+          "death": {
+            "observed_fit_on_generated": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.4444444477558136,
+              "selected_actual_interval": [
+                0.2702702581882477,
+                0.6052831411361694
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.2222222238779068,
+              "status": "measured"
+            },
+            "generated_fit_on_generated": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.4722222089767456,
+              "selected_actual_interval": [
+                0.31244611740112305,
+                0.638988196849823
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.2499999850988388,
+              "status": "measured"
+            },
+            "root_action": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.5555555820465088,
+              "selected_actual_interval": [
+                0.4000000059604645,
+                0.71875
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.333333358168602,
+              "status": "measured"
+            },
+            "action_only": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.6111111044883728,
+              "selected_actual_interval": [
+                0.4358333349227905,
+                0.7693182826042175
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.388888880610466,
+              "status": "measured"
+            }
+          },
+          "reward_positive": {
+            "observed_fit_on_generated": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.38461539149284363,
+              "selected_actual_interval": [
+                0.1111111119389534,
+                0.6428571343421936
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.31674208492040634,
+              "status": "measured"
+            },
+            "generated_fit_on_generated": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.3076923191547394,
+              "selected_actual_interval": [
+                0.0714285746216774,
+                0.5714285969734192
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.2398190125823021,
+              "status": "measured"
+            },
+            "root_action": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.3076923191547394,
+              "selected_actual_interval": [
+                0.0714285746216774,
+                0.5714285969734192
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.2398190125823021,
+              "status": "measured"
+            },
+            "action_only": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.3076923191547394,
+              "selected_actual_interval": [
+                0.0714285746216774,
+                0.5714285969734192
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.2398190125823021,
+              "status": "measured"
+            }
+          }
+        },
+        "paired_vs_root_action": {
+          "death": {
+            "generated_fit_on_generated": {
+              "a": 0.4722222089767456,
+              "b": 0.5555555820465088,
+              "difference": -0.08333337306976318,
+              "interval": [
+                -0.23076924681663513,
+                0.055637359619140625
+              ],
+              "excludes_zero": false
+            },
+            "observed_fit_on_generated": {
+              "a": 0.4444444477558136,
+              "b": 0.5555555820465088,
+              "difference": -0.11111113429069519,
+              "interval": [
+                -0.27786460518836975,
+                0.05131584778428078
+              ],
+              "excludes_zero": false
+            }
+          },
+          "reward_positive": {
+            "generated_fit_on_generated": {
+              "a": 0.3076923191547394,
+              "b": 0.3076923191547394,
+              "difference": 0.0,
+              "interval": [
+                0.0,
+                0.0
+              ],
+              "excludes_zero": false
+            },
+            "observed_fit_on_generated": {
+              "a": 0.38461539149284363,
+              "b": 0.3076923191547394,
+              "difference": 0.07692307233810425,
+              "interval": [
+                0.0,
+                0.25
+              ],
+              "excludes_zero": false
+            }
+          }
+        }
+      }
+    },
+    "tc": {
+      "linear": {
+        "conditions": {
+          "death": {
+            "observed_fit_on_generated": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.5833333134651184,
+              "selected_actual_interval": [
+                0.41172701120376587,
+                0.7576019167900085
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.3611110895872116,
+              "status": "measured"
+            },
+            "generated_fit_on_generated": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.5555555820465088,
+              "selected_actual_interval": [
+                0.38088804483413696,
+                0.7142857313156128
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.333333358168602,
+              "status": "measured"
+            },
+            "root_action": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.6111111044883728,
+              "selected_actual_interval": [
+                0.4358333349227905,
+                0.7693182826042175
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.388888880610466,
+              "status": "measured"
+            },
+            "action_only": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.6111111044883728,
+              "selected_actual_interval": [
+                0.4358333349227905,
+                0.7693182826042175
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.388888880610466,
+              "status": "measured"
+            }
+          },
+          "reward_positive": {
+            "observed_fit_on_generated": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.1538461595773697,
+              "selected_actual_interval": [
+                0.0,
+                0.4000000059604645
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.0859728530049324,
+              "status": "measured"
+            },
+            "generated_fit_on_generated": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.23076923191547394,
+              "selected_actual_interval": [
+                0.0,
+                0.5
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.16289592534303665,
+              "status": "measured"
+            },
+            "root_action": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.3076923191547394,
+              "selected_actual_interval": [
+                0.0714285746216774,
+                0.5714285969734192
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.2398190125823021,
+              "status": "measured"
+            },
+            "action_only": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.1538461595773697,
+              "selected_actual_interval": [
+                0.0,
+                0.375
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.0859728530049324,
+              "status": "measured"
+            }
+          }
+        },
+        "paired_vs_root_action": {
+          "death": {
+            "generated_fit_on_generated": {
+              "a": 0.5555555820465088,
+              "b": 0.6111111044883728,
+              "difference": -0.055555522441864014,
+              "interval": [
+                -0.14294427633285522,
+                0.0
+              ],
+              "excludes_zero": false
+            },
+            "observed_fit_on_generated": {
+              "a": 0.5833333134651184,
+              "b": 0.6111111044883728,
+              "difference": -0.027777791023254395,
+              "interval": [
+                -0.19057539105415344,
+                0.1388888955116272
+              ],
+              "excludes_zero": false
+            }
+          },
+          "reward_positive": {
+            "generated_fit_on_generated": {
+              "a": 0.23076923191547394,
+              "b": 0.3076923191547394,
+              "difference": -0.07692308723926544,
+              "interval": [
+                -0.3636363744735718,
+                0.1818181872367859
+              ],
+              "excludes_zero": false
+            },
+            "observed_fit_on_generated": {
+              "a": 0.1538461595773697,
+              "b": 0.3076923191547394,
+              "difference": -0.1538461595773697,
+              "interval": [
+                -0.40000003576278687,
+                0.0
+              ],
+              "excludes_zero": false
+            }
+          }
+        }
+      },
+      "mlp": {
+        "conditions": {
+          "death": {
+            "observed_fit_on_generated": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.5833333134651184,
+              "selected_actual_interval": [
+                0.4054054021835327,
+                0.75
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.3611110895872116,
+              "status": "measured"
+            },
+            "generated_fit_on_generated": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.5555555820465088,
+              "selected_actual_interval": [
+                0.3844827711582184,
+                0.7143974304199219
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.333333358168602,
+              "status": "measured"
+            },
+            "root_action": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.4722222089767456,
+              "selected_actual_interval": [
+                0.3076530694961548,
+                0.6470588445663452
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.2499999850988388,
+              "status": "measured"
+            },
+            "action_only": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.6111111044883728,
+              "selected_actual_interval": [
+                0.4358333349227905,
+                0.7693182826042175
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.388888880610466,
+              "status": "measured"
+            }
+          },
+          "reward_positive": {
+            "observed_fit_on_generated": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.3076923191547394,
+              "selected_actual_interval": [
+                0.07692307978868484,
+                0.5833333134651184
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.2398190125823021,
+              "status": "measured"
+            },
+            "generated_fit_on_generated": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.1538461595773697,
+              "selected_actual_interval": [
+                0.0,
+                0.4000000059604645
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.0859728530049324,
+              "status": "measured"
+            },
+            "root_action": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.23076923191547394,
+              "selected_actual_interval": [
+                0.0,
+                0.46666666865348816
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.16289592534303665,
+              "status": "measured"
+            },
+            "action_only": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.3076923191547394,
+              "selected_actual_interval": [
+                0.0714285746216774,
+                0.5714285969734192
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.2398190125823021,
+              "status": "measured"
+            }
+          }
+        },
+        "paired_vs_root_action": {
+          "death": {
+            "generated_fit_on_generated": {
+              "a": 0.5555555820465088,
+              "b": 0.4722222089767456,
+              "difference": 0.08333337306976318,
+              "interval": [
+                -0.12130682170391083,
+                0.27285370230674744
+              ],
+              "excludes_zero": false
+            },
+            "observed_fit_on_generated": {
+              "a": 0.5833333134651184,
+              "b": 0.4722222089767456,
+              "difference": 0.1111111044883728,
+              "interval": [
+                -0.08830215781927109,
+                0.3142857253551483
+              ],
+              "excludes_zero": false
+            }
+          },
+          "reward_positive": {
+            "generated_fit_on_generated": {
+              "a": 0.1538461595773697,
+              "b": 0.23076923191547394,
+              "difference": -0.07692307233810425,
+              "interval": [
+                -0.35320860147476196,
+                0.1818181872367859
+              ],
+              "excludes_zero": false
+            },
+            "observed_fit_on_generated": {
+              "a": 0.3076923191547394,
+              "b": 0.23076923191547394,
+              "difference": 0.07692308723926544,
+              "interval": [
+                -0.3333333432674408,
+                0.4667648375034332
+              ],
+              "excludes_zero": false
+            }
+          }
+        }
+      }
+    },
+    "direct_mamba": {
+      "linear": {
+        "conditions": {
+          "death": {
+            "observed_fit_on_generated": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.5,
+              "selected_actual_interval": [
+                0.31578946113586426,
+                0.6538461446762085
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.2777777761220932,
+              "status": "measured"
+            },
+            "generated_fit_on_generated": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.8333333134651184,
+              "selected_actual_interval": [
+                0.699999988079071,
+                0.9428571462631226
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.6111110895872116,
+              "status": "measured"
+            },
+            "root_action": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.6111111044883728,
+              "selected_actual_interval": [
+                0.4358333349227905,
+                0.7693182826042175
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.388888880610466,
+              "status": "measured"
+            },
+            "action_only": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.6111111044883728,
+              "selected_actual_interval": [
+                0.4358333349227905,
+                0.7693182826042175
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.388888880610466,
+              "status": "measured"
+            }
+          },
+          "reward_positive": {
+            "observed_fit_on_generated": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.23076923191547394,
+              "selected_actual_interval": [
+                0.0,
+                0.46666666865348816
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.16289592534303665,
+              "status": "measured"
+            },
+            "generated_fit_on_generated": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.23076923191547394,
+              "selected_actual_interval": [
+                0.0,
+                0.5
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.16289592534303665,
+              "status": "measured"
+            },
+            "root_action": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.3076923191547394,
+              "selected_actual_interval": [
+                0.0714285746216774,
+                0.5714285969734192
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.2398190125823021,
+              "status": "measured"
+            },
+            "action_only": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.1538461595773697,
+              "selected_actual_interval": [
+                0.0,
+                0.375
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.0859728530049324,
+              "status": "measured"
+            }
+          }
+        },
+        "paired_vs_root_action": {
+          "death": {
+            "generated_fit_on_generated": {
+              "a": 0.8333333134651184,
+              "b": 0.6111111044883728,
+              "difference": 0.2222222089767456,
+              "interval": [
+                0.027693046256899834,
+                0.44002944231033325
+              ],
+              "excludes_zero": true
+            },
+            "observed_fit_on_generated": {
+              "a": 0.5,
+              "b": 0.6111111044883728,
+              "difference": -0.1111111044883728,
+              "interval": [
+                -0.3143233060836792,
+                0.11428570747375488
+              ],
+              "excludes_zero": false
+            }
+          },
+          "reward_positive": {
+            "generated_fit_on_generated": {
+              "a": 0.23076923191547394,
+              "b": 0.3076923191547394,
+              "difference": -0.07692308723926544,
+              "interval": [
+                -0.2499999850988388,
+                0.0
+              ],
+              "excludes_zero": false
+            },
+            "observed_fit_on_generated": {
+              "a": 0.23076923191547394,
+              "b": 0.3076923191547394,
+              "difference": -0.07692308723926544,
+              "interval": [
+                -0.2666666507720947,
+                0.0
+              ],
+              "excludes_zero": false
+            }
+          }
+        }
+      },
+      "mlp": {
+        "conditions": {
+          "death": {
+            "observed_fit_on_generated": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.8611111044883728,
+              "selected_actual_interval": [
+                0.7419354915618896,
+                0.9697403311729431
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.638888880610466,
+              "status": "measured"
+            },
+            "generated_fit_on_generated": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.9166666865348816,
+              "selected_actual_interval": [
+                0.8204545378684998,
+                1.0
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.6944444626569748,
+              "status": "measured"
+            },
+            "root_action": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.6111111044883728,
+              "selected_actual_interval": [
+                0.4358333349227905,
+                0.7693182826042175
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.388888880610466,
+              "status": "measured"
+            },
+            "action_only": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.6111111044883728,
+              "selected_actual_interval": [
+                0.4358333349227905,
+                0.7693182826042175
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.388888880610466,
+              "status": "measured"
+            }
+          },
+          "reward_positive": {
+            "observed_fit_on_generated": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.23076923191547394,
+              "selected_actual_interval": [
+                0.0,
+                0.5
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.16289592534303665,
+              "status": "measured"
+            },
+            "generated_fit_on_generated": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.3076923191547394,
+              "selected_actual_interval": [
+                0.0714285746216774,
+                0.5714285969734192
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.2398190125823021,
+              "status": "measured"
+            },
+            "root_action": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.3076923191547394,
+              "selected_actual_interval": [
+                0.0714285746216774,
+                0.6000000238418579
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.2398190125823021,
+              "status": "measured"
+            },
+            "action_only": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.3076923191547394,
+              "selected_actual_interval": [
+                0.0714285746216774,
+                0.5714285969734192
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.2398190125823021,
+              "status": "measured"
+            }
+          }
+        },
+        "paired_vs_root_action": {
+          "death": {
+            "generated_fit_on_generated": {
+              "a": 0.9166666865348816,
+              "b": 0.6111111044883728,
+              "difference": 0.3055555820465088,
+              "interval": [
+                0.125,
+                0.4871794879436493
+              ],
+              "excludes_zero": true
+            },
+            "observed_fit_on_generated": {
+              "a": 0.8611111044883728,
+              "b": 0.6111111044883728,
+              "difference": 0.25,
+              "interval": [
+                0.0749768391251564,
+                0.4242613911628723
+              ],
+              "excludes_zero": true
+            }
+          },
+          "reward_positive": {
+            "generated_fit_on_generated": {
+              "a": 0.3076923191547394,
+              "b": 0.3076923191547394,
+              "difference": 0.0,
+              "interval": [
+                -0.2222222238779068,
+                0.20000000298023224
+              ],
+              "excludes_zero": false
+            },
+            "observed_fit_on_generated": {
+              "a": 0.23076923191547394,
+              "b": 0.3076923191547394,
+              "difference": -0.07692308723926544,
+              "interval": [
+                -0.26681819558143616,
+                0.0
+              ],
+              "excludes_zero": false
+            }
+          }
+        }
+      }
+    },
+    "direct_attention": {
+      "linear": {
+        "conditions": {
+          "death": {
+            "observed_fit_on_generated": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.4722222089767456,
+              "selected_actual_interval": [
+                0.30000001192092896,
+                0.6388888955116272
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.2499999850988388,
+              "status": "measured"
+            },
+            "generated_fit_on_generated": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.8333333134651184,
+              "selected_actual_interval": [
+                0.699999988079071,
+                0.939393937587738
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.6111110895872116,
+              "status": "measured"
+            },
+            "root_action": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.6111111044883728,
+              "selected_actual_interval": [
+                0.4358333349227905,
+                0.7693182826042175
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.388888880610466,
+              "status": "measured"
+            },
+            "action_only": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.6111111044883728,
+              "selected_actual_interval": [
+                0.4358333349227905,
+                0.7693182826042175
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.388888880610466,
+              "status": "measured"
+            }
+          },
+          "reward_positive": {
+            "observed_fit_on_generated": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.23076923191547394,
+              "selected_actual_interval": [
+                0.0,
+                0.46666666865348816
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.16289592534303665,
+              "status": "measured"
+            },
+            "generated_fit_on_generated": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.23076923191547394,
+              "selected_actual_interval": [
+                0.0,
+                0.5
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.16289592534303665,
+              "status": "measured"
+            },
+            "root_action": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.3076923191547394,
+              "selected_actual_interval": [
+                0.0714285746216774,
+                0.5714285969734192
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.2398190125823021,
+              "status": "measured"
+            },
+            "action_only": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.1538461595773697,
+              "selected_actual_interval": [
+                0.0,
+                0.375
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.0859728530049324,
+              "status": "measured"
+            }
+          }
+        },
+        "paired_vs_root_action": {
+          "death": {
+            "generated_fit_on_generated": {
+              "a": 0.8333333134651184,
+              "b": 0.6111111044883728,
+              "difference": 0.2222222089767456,
+              "interval": [
+                0.03442716225981712,
+                0.43333327770233154
+              ],
+              "excludes_zero": true
+            },
+            "observed_fit_on_generated": {
+              "a": 0.4722222089767456,
+              "b": 0.6111111044883728,
+              "difference": -0.1388888955116272,
+              "interval": [
+                -0.36117425560951233,
+                0.10349369049072266
+              ],
+              "excludes_zero": false
+            }
+          },
+          "reward_positive": {
+            "generated_fit_on_generated": {
+              "a": 0.23076923191547394,
+              "b": 0.3076923191547394,
+              "difference": -0.07692308723926544,
+              "interval": [
+                -0.25041669607162476,
+                0.0
+              ],
+              "excludes_zero": false
+            },
+            "observed_fit_on_generated": {
+              "a": 0.23076923191547394,
+              "b": 0.3076923191547394,
+              "difference": -0.07692308723926544,
+              "interval": [
+                -0.25,
+                0.0
+              ],
+              "excludes_zero": false
+            }
+          }
+        }
+      },
+      "mlp": {
+        "conditions": {
+          "death": {
+            "observed_fit_on_generated": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.8611111044883728,
+              "selected_actual_interval": [
+                0.7419354915618896,
+                0.9687737226486206
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.638888880610466,
+              "status": "measured"
+            },
+            "generated_fit_on_generated": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.8888888955116272,
+              "selected_actual_interval": [
+                0.7799444198608398,
+                0.9756243228912354
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.6666666716337204,
+              "status": "measured"
+            },
+            "root_action": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.6111111044883728,
+              "selected_actual_interval": [
+                0.4358333349227905,
+                0.7693182826042175
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.388888880610466,
+              "status": "measured"
+            },
+            "action_only": {
+              "opportunity_roots": 36,
+              "selected_actual_rate": 0.6111111044883728,
+              "selected_actual_interval": [
+                0.4358333349227905,
+                0.7693182826042175
+              ],
+              "uniform_action_rate": 0.2222222238779068,
+              "lift_over_uniform": 0.388888880610466,
+              "status": "measured"
+            }
+          },
+          "reward_positive": {
+            "observed_fit_on_generated": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.23076923191547394,
+              "selected_actual_interval": [
+                0.0,
+                0.5
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.16289592534303665,
+              "status": "measured"
+            },
+            "generated_fit_on_generated": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.3076923191547394,
+              "selected_actual_interval": [
+                0.0714285746216774,
+                0.5714285969734192
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.2398190125823021,
+              "status": "measured"
+            },
+            "root_action": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.3076923191547394,
+              "selected_actual_interval": [
+                0.0714285746216774,
+                0.6000000238418579
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.2398190125823021,
+              "status": "measured"
+            },
+            "action_only": {
+              "opportunity_roots": 13,
+              "selected_actual_rate": 0.3076923191547394,
+              "selected_actual_interval": [
+                0.0714285746216774,
+                0.5714285969734192
+              ],
+              "uniform_action_rate": 0.06787330657243729,
+              "lift_over_uniform": 0.2398190125823021,
+              "status": "measured"
+            }
+          }
+        },
+        "paired_vs_root_action": {
+          "death": {
+            "generated_fit_on_generated": {
+              "a": 0.8888888955116272,
+              "b": 0.6111111044883728,
+              "difference": 0.2777777910232544,
+              "interval": [
+                0.09090912342071533,
+                0.4724539518356323
+              ],
+              "excludes_zero": true
+            },
+            "observed_fit_on_generated": {
+              "a": 0.8611111044883728,
+              "b": 0.6111111044883728,
+              "difference": 0.25,
+              "interval": [
+                0.07142859697341919,
+                0.42424243688583374
+              ],
+              "excludes_zero": true
+            }
+          },
+          "reward_positive": {
+            "generated_fit_on_generated": {
+              "a": 0.3076923191547394,
+              "b": 0.3076923191547394,
+              "difference": 0.0,
+              "interval": [
+                -0.222222238779068,
+                0.23076923191547394
+              ],
+              "excludes_zero": false
+            },
+            "observed_fit_on_generated": {
+              "a": 0.23076923191547394,
+              "b": 0.3076923191547394,
+              "difference": -0.07692308723926544,
+              "interval": [
+                -0.26681819558143616,
+                0.0
+              ],
+              "excludes_zero": false
+            }
+          }
+        }
+      }
+    }
+  },
+  "m4_authorized": false
+}

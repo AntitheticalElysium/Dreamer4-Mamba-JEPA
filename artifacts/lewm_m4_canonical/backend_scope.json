@@ -1,0 +1,9 @@
+{
+  "families": [
+    "lewm_mamba"
+  ],
+  "comparison_only": true,
+  "thesis_architecture": "lewm_mamba",
+  "note": "a source-exact predictor package is a control; its ~4.9x parameter count means a win implicates capacity, conditioning and mixer together",
+  "m4_authorized": false
+}

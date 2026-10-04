@@ -1,0 +1,178 @@
+{
+  "55k": {
+    "n_zombie": 510,
+    "arms": {
+      "U": {
+        "actual": {
+          "safe": 0.4901960790157318,
+          "sleep_share": 0.17450980842113495
+        },
+        "sleep_score_equal_noop": {
+          "safe": 0.5470588207244873,
+          "sleep_share": 0.0
+        },
+        "sleep_forbidden": {
+          "safe": 0.5470588207244873,
+          "sleep_share": 0.0
+        },
+        "pdead_sleep": 0.26866844296455383,
+        "pdead_noop": 0.4505818486213684,
+        "truth_sleep": 0.841176450252533,
+        "truth_noop": 0.8588235378265381
+      },
+      "W": {
+        "actual": {
+          "safe": 0.5411764979362488,
+          "sleep_share": 0.019607843831181526
+        },
+        "sleep_score_equal_noop": {
+          "safe": 0.5509803891181946,
+          "sleep_share": 0.0
+        },
+        "sleep_forbidden": {
+          "safe": 0.5509803891181946,
+          "sleep_share": 0.0
+        },
+        "pdead_sleep": 0.318435937166214,
+        "pdead_noop": 0.458927720785141,
+        "truth_sleep": 0.841176450252533,
+        "truth_noop": 0.8588235378265381
+      }
+    },
+    "W_minus_U": 0.05098039284348488,
+    "U_gain_from_forbidding_SLEEP": 0.05686274543404579,
+    "share_of_gap": 1.115384578704834
+  },
+  "56k": {
+    "n_zombie": 528,
+    "arms": {
+      "U": {
+        "actual": {
+          "safe": 0.5464606881141663,
+          "sleep_share": 0.19886364042758942
+        },
+        "sleep_score_equal_noop": {
+          "safe": 0.5900213122367859,
+          "sleep_share": 0.0
+        },
+        "sleep_forbidden": {
+          "safe": 0.5900213122367859,
+          "sleep_share": 0.0
+        },
+        "pdead_sleep": 0.255014568567276,
+        "pdead_noop": 0.4743436872959137,
+        "truth_sleep": 0.8445194363594055,
+        "truth_noop": 0.867246687412262
+      },
+      "W": {
+        "actual": {
+          "safe": 0.5928030014038086,
+          "sleep_share": 0.039772726595401764
+        },
+        "sleep_score_equal_noop": {
+          "safe": 0.6022727489471436,
+          "sleep_share": 0.0
+        },
+        "sleep_forbidden": {
+          "safe": 0.6022727489471436,
+          "sleep_share": 0.0
+        },
+        "pdead_sleep": 0.30157968401908875,
+        "pdead_noop": 0.45171597599983215,
+        "truth_sleep": 0.8445194363594055,
+        "truth_noop": 0.867246687412262
+      }
+    },
+    "W_minus_U": 0.04634232819080353,
+    "U_gain_from_forbidding_SLEEP": 0.04356060549616814,
+    "share_of_gap": 0.9399744868278503
+  },
+  "57k": {
+    "n_zombie": 452,
+    "arms": {
+      "U": {
+        "actual": {
+          "safe": 0.5275166034698486,
+          "sleep_share": 0.22787611186504364
+        },
+        "sleep_score_equal_noop": {
+          "safe": 0.6131775379180908,
+          "sleep_share": 0.0
+        },
+        "sleep_forbidden": {
+          "safe": 0.6131775379180908,
+          "sleep_share": 0.0
+        },
+        "pdead_sleep": 0.25392934679985046,
+        "pdead_noop": 0.4904825687408447,
+        "truth_sleep": 0.8925608396530151,
+        "truth_noop": 0.9058351516723633
+      },
+      "W": {
+        "actual": {
+          "safe": 0.6358545422554016,
+          "sleep_share": 0.028761062771081924
+        },
+        "sleep_score_equal_noop": {
+          "safe": 0.6557660102844238,
+          "sleep_share": 0.0
+        },
+        "sleep_forbidden": {
+          "safe": 0.6557660102844238,
+          "sleep_share": 0.0
+        },
+        "pdead_sleep": 0.3161216676235199,
+        "pdead_noop": 0.4780362546443939,
+        "truth_sleep": 0.8925608396530151,
+        "truth_noop": 0.9058351516723633
+      }
+    },
+    "W_minus_U": 0.10833793878555298,
+    "U_gain_from_forbidding_SLEEP": 0.08566094934940338,
+    "share_of_gap": 0.790682852268219
+  },
+  "58k": {
+    "n_zombie": 481,
+    "arms": {
+      "U": {
+        "actual": {
+          "safe": 0.4981158971786499,
+          "sleep_share": 0.23076923191547394
+        },
+        "sleep_score_equal_noop": {
+          "safe": 0.568801999092102,
+          "sleep_share": 0.0
+        },
+        "sleep_forbidden": {
+          "safe": 0.568801999092102,
+          "sleep_share": 0.0
+        },
+        "pdead_sleep": 0.25678426027297974,
+        "pdead_noop": 0.48106256127357483,
+        "truth_sleep": 0.82536381483078,
+        "truth_noop": 0.837837815284729
+      },
+      "W": {
+        "actual": {
+          "safe": 0.6255847215652466,
+          "sleep_share": 0.03742203861474991
+        },
+        "sleep_score_equal_noop": {
+          "safe": 0.6401377320289612,
+          "sleep_share": 0.0
+        },
+        "sleep_forbidden": {
+          "safe": 0.6401377320289612,
+          "sleep_share": 0.0
+        },
+        "pdead_sleep": 0.33307912945747375,
+        "pdead_noop": 0.4891413450241089,
+        "truth_sleep": 0.82536381483078,
+        "truth_noop": 0.837837815284729
+      }
+    },
+    "W_minus_U": 0.12746880948543549,
+    "U_gain_from_forbidding_SLEEP": 0.07068607211112976,
+    "share_of_gap": 0.5545362234115601
+  }
+}

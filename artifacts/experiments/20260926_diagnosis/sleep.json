@@ -1,0 +1,48 @@
+{
+  "validation": {
+    "frames": 90656,
+    "asleep_share": 0.03637928143143654,
+    "recall": 1.0,
+    "false_positive_rate": 0.0
+  },
+  "zombie_roots": {
+    "55k": {
+      "zombie_roots": 510,
+      "energy_below_9": 0.9823529124259949,
+      "sleep_successor_rendered_asleep": 0.9823529124259949,
+      "p_death1_sleep": 0.841176450252533,
+      "p_death1_noop": 0.8588235378265381
+    },
+    "56k": {
+      "zombie_roots": 528,
+      "energy_below_9": 0.9640151262283325,
+      "sleep_successor_rendered_asleep": 0.9640151262283325,
+      "p_death1_sleep": 0.8445194363594055,
+      "p_death1_noop": 0.867246687412262
+    }
+  },
+  "expert_v1": {
+    "frames": 214303,
+    "asleep": 49071,
+    "dead_next_asleep": 8,
+    "dead_next_awake": 5,
+    "deaths": 13,
+    "sleep_action": 984,
+    "sleep_action_dead_next": 0,
+    "p_dead_next_given_asleep": 0.00016302908031220068,
+    "p_dead_next_given_awake": 3.0260482231044835e-05,
+    "p_dead_next_given_sleep_action_while_awake": 0.0
+  },
+  "support_v2": {
+    "frames": 468074,
+    "asleep": 86969,
+    "dead_next_asleep": 754,
+    "dead_next_awake": 677,
+    "deaths": 1431,
+    "sleep_action": 8276,
+    "sleep_action_dead_next": 35,
+    "p_dead_next_given_asleep": 0.00866975589002978,
+    "p_dead_next_given_awake": 0.0017764133244119074,
+    "p_dead_next_given_sleep_action_while_awake": 0.004229096181730304
+  }
+}

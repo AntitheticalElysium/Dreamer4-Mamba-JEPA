@@ -1,0 +1,106 @@
+{
+  "raw_K1024": {
+    "rel_error": 0.05043770372867584,
+    "flip_rate_unchanged": 0.11550557613372803,
+    "unchanged_pairs": 1499,
+    "facts_quantized_k8": {
+      "tile_near": 0.971731424331665,
+      "tile_interior": 0.9640753865242004,
+      "tile_edge": 0.9519182443618774,
+      "zombie_auc": 0.9432786749163226,
+      "zombie_near_auc": 0.9723408385093167,
+      "health_r2": 0.7949893474578857,
+      "food_r2": 0.7455439567565918,
+      "facing_acc": 0.4204947054386139
+    },
+    "facts_continuous_k8": {
+      "tile_near": 0.9902827143669128,
+      "tile_interior": 0.9840989112854004,
+      "tile_edge": 0.97059565782547,
+      "zombie_auc": 0.9862187858538364,
+      "zombie_near_auc": 1.0,
+      "health_r2": 0.998673141002655,
+      "food_r2": 0.9986414313316345,
+      "facing_acc": 0.9434629082679749
+    },
+    "empty_clusters": 0
+  },
+  "raw_K4096": {
+    "rel_error": 0.0329020731151104,
+    "flip_rate_unchanged": 0.14647860825061798,
+    "unchanged_pairs": 1499,
+    "facts_quantized_k8": {
+      "tile_near": 0.982332170009613,
+      "tile_interior": 0.9726737141609192,
+      "tile_edge": 0.9603735208511353,
+      "zombie_auc": 0.9175439584710664,
+      "zombie_near_auc": 0.9986736542443064,
+      "health_r2": 0.944383442401886,
+      "food_r2": 0.9203871488571167,
+      "facing_acc": 0.8197879791259766
+    },
+    "facts_continuous_k8": {
+      "tile_near": 0.9902827143669128,
+      "tile_interior": 0.9840989112854004,
+      "tile_edge": 0.97059565782547,
+      "zombie_auc": 0.9862187858538364,
+      "zombie_near_auc": 1.0,
+      "health_r2": 0.998673141002655,
+      "food_r2": 0.9986414313316345,
+      "facing_acc": 0.9434629082679749
+    },
+    "empty_clusters": 0
+  },
+  "tc_K1024": {
+    "rel_error": 0.055290114134550095,
+    "flip_rate_unchanged": 0.21140019595623016,
+    "unchanged_pairs": 1499,
+    "facts_quantized_k8": {
+      "tile_near": 0.9699646830558777,
+      "tile_interior": 0.967844545841217,
+      "tile_edge": 0.9469964504241943,
+      "zombie_auc": 0.9539210570785664,
+      "zombie_near_auc": 0.9811400103519669,
+      "health_r2": 0.24113541841506958,
+      "food_r2": 0.7637742161750793,
+      "facing_acc": 0.6925795078277588
+    },
+    "facts_continuous_k8": {
+      "tile_near": 0.9885159134864807,
+      "tile_interior": 0.9798586368560791,
+      "tile_edge": 0.9654214978218079,
+      "zombie_auc": 0.997331807522524,
+      "zombie_near_auc": 1.0,
+      "health_r2": 0.9972456097602844,
+      "food_r2": 0.998289942741394,
+      "facing_acc": 0.9540635943412781
+    },
+    "empty_clusters": 0
+  },
+  "tc_K4096": {
+    "rel_error": 0.03740096837282181,
+    "flip_rate_unchanged": 0.275654673576355,
+    "unchanged_pairs": 1499,
+    "facts_quantized_k8": {
+      "tile_near": 0.981448769569397,
+      "tile_interior": 0.9740871787071228,
+      "tile_edge": 0.9558303952217102,
+      "zombie_auc": 0.9600868051952672,
+      "zombie_near_auc": 0.9988354037267081,
+      "health_r2": 0.7478124499320984,
+      "food_r2": 0.9765426516532898,
+      "facing_acc": 0.9434629082679749
+    },
+    "facts_continuous_k8": {
+      "tile_near": 0.9885159134864807,
+      "tile_interior": 0.9798586368560791,
+      "tile_edge": 0.9654214978218079,
+      "zombie_auc": 0.997331807522524,
+      "zombie_near_auc": 1.0,
+      "health_r2": 0.9972456097602844,
+      "food_r2": 0.998289942741394,
+      "facing_acc": 0.9540635943412781
+    },
+    "empty_clusters": 0
+  }
+}

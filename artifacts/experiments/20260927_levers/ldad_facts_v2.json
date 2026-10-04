@@ -1,0 +1,3434 @@
+{
+  "raw": {
+    "schema_version": 2,
+    "depth": {
+      "1": {
+        "zombie_adjacent": {
+          "true": 0.6501219087425983,
+          "copy_root": 0.6529083942877046,
+          "imagined_true_fit": 0.6314872866597004,
+          "imagined_generated_fit": 0.6161616161616161
+        },
+        "zombie_in_view": {
+          "true": 0.6222111222111222,
+          "copy_root": 0.6227938727938728,
+          "imagined_true_fit": 0.6246253746253746,
+          "imagined_generated_fit": 0.6558441558441559
+        },
+        "pass_up": {
+          "true": 0.5258745041471331,
+          "copy_root": 0.5124413992066355,
+          "imagined_true_fit": 0.5295708618824377,
+          "imagined_generated_fit": 0.5306527226830148
+        },
+        "pass_down": {
+          "true": 0.7467610891523935,
+          "copy_root": 0.7449494949494949,
+          "imagined_true_fit": 0.7438515590689504,
+          "imagined_generated_fit": 0.7222771190162495
+        },
+        "pass_left": {
+          "true": 0.6862295081967213,
+          "copy_root": 0.6772677595628416,
+          "imagined_true_fit": 0.673879781420765,
+          "imagined_generated_fit": 0.6684699453551912
+        },
+        "pass_right": {
+          "true": 0.5735930735930735,
+          "copy_root": 0.5688311688311688,
+          "imagined_true_fit": 0.5764790764790765,
+          "imagined_generated_fit": 0.515007215007215
+        },
+        "health": {
+          "true": 0.04416137933731079,
+          "copy_root": 0.056076765060424805,
+          "imagined_true_fit": 0.07554972171783447,
+          "imagined_generated_fit": -0.01017618179321289
+        },
+        "food": {
+          "true": 0.7551466226577759,
+          "copy_root": 0.7413607835769653,
+          "imagined_true_fit": 0.7542635798454285,
+          "imagined_generated_fit": 0.7584178447723389
+        },
+        "drink": {
+          "true": 0.5563393831253052,
+          "copy_root": 0.5509622097015381,
+          "imagined_true_fit": 0.5576188564300537,
+          "imagined_generated_fit": 0.5651065111160278
+        },
+        "energy": {
+          "true": 0.7073048949241638,
+          "copy_root": 0.703450083732605,
+          "imagined_true_fit": 0.7129170894622803,
+          "imagined_generated_fit": 0.6745160818099976
+        }
+      },
+      "4": {
+        "zombie_adjacent": {
+          "true": 0.7211922937113777,
+          "copy_root": 0.6899309342057434,
+          "imagined_true_fit": 0.6555797891675754,
+          "imagined_generated_fit": 0.6573973100690658
+        },
+        "zombie_in_view": {
+          "true": 0.6322372561359345,
+          "copy_root": 0.6285399622404028,
+          "imagined_true_fit": 0.6354625550660793,
+          "imagined_generated_fit": 0.67754877281309
+        },
+        "pass_up": {
+          "true": 0.5159967186218212,
+          "copy_root": 0.49433962264150944,
+          "imagined_true_fit": 0.4990155865463495,
+          "imagined_generated_fit": 0.549630844954881
+        },
+        "pass_down": {
+          "true": 0.7252734599884859,
+          "copy_root": 0.7135290731145654,
+          "imagined_true_fit": 0.7164651698330455,
+          "imagined_generated_fit": 0.703454231433506
+        },
+        "pass_left": {
+          "true": 0.7297686053783615,
+          "copy_root": 0.7029393370856786,
+          "imagined_true_fit": 0.7267041901188243,
+          "imagined_generated_fit": 0.6989993746091308
+        },
+        "pass_right": {
+          "true": 0.604380707762557,
+          "copy_root": 0.566138698630137,
+          "imagined_true_fit": 0.5706335616438356,
+          "imagined_generated_fit": 0.5220462328767124
+        },
+        "health": {
+          "true": 0.059658944606781006,
+          "copy_root": 0.048913419246673584,
+          "imagined_true_fit": 0.06980568170547485,
+          "imagined_generated_fit": -0.013365030288696289
+        },
+        "food": {
+          "true": 0.7688573598861694,
+          "copy_root": 0.7255933284759521,
+          "imagined_true_fit": 0.7573850154876709,
+          "imagined_generated_fit": 0.7645748853683472
+        },
+        "drink": {
+          "true": 0.5840569734573364,
+          "copy_root": 0.5737196207046509,
+          "imagined_true_fit": 0.5899748802185059,
+          "imagined_generated_fit": 0.5905663967132568
+        },
+        "energy": {
+          "true": 0.6711592674255371,
+          "copy_root": 0.6148637533187866,
+          "imagined_true_fit": 0.6701217889785767,
+          "imagined_generated_fit": 0.6454397439956665
+        }
+      },
+      "8": {
+        "zombie_adjacent": {
+          "true": 0.6159663865546219,
+          "copy_root": 0.6128851540616247,
+          "imagined_true_fit": 0.5802521008403362,
+          "imagined_generated_fit": 0.6210084033613446
+        },
+        "zombie_in_view": {
+          "true": 0.6575864502470007,
+          "copy_root": 0.6536344389555399,
+          "imagined_true_fit": 0.6457304163726182,
+          "imagined_generated_fit": 0.6878616796047988
+        },
+        "pass_up": {
+          "true": 0.5537324197619906,
+          "copy_root": 0.5098269022719076,
+          "imagined_true_fit": 0.5000901550667147,
+          "imagined_generated_fit": 0.5478723404255319
+        },
+        "pass_down": {
+          "true": 0.7100099767209843,
+          "copy_root": 0.6802460924509478,
+          "imagined_true_fit": 0.6815763219155304,
+          "imagined_generated_fit": 0.6790267154417471
+        },
+        "pass_left": {
+          "true": 0.7380172309185778,
+          "copy_root": 0.70780245115884,
+          "imagined_true_fit": 0.7184200946487077,
+          "imagined_generated_fit": 0.6956680014561339
+        },
+        "pass_right": {
+          "true": 0.5704721030042919,
+          "copy_root": 0.5426609442060086,
+          "imagined_true_fit": 0.544549356223176,
+          "imagined_generated_fit": 0.5236051502145923
+        },
+        "health": {
+          "true": 0.013779103755950928,
+          "copy_root": 0.03389561176300049,
+          "imagined_true_fit": 0.06248509883880615,
+          "imagined_generated_fit": 0.0021255016326904297
+        },
+        "food": {
+          "true": 0.7557883858680725,
+          "copy_root": 0.7234172821044922,
+          "imagined_true_fit": 0.7519049644470215,
+          "imagined_generated_fit": 0.7650548815727234
+        },
+        "drink": {
+          "true": 0.5717060565948486,
+          "copy_root": 0.5717090964317322,
+          "imagined_true_fit": 0.5621694326400757,
+          "imagined_generated_fit": 0.5797666311264038
+        },
+        "energy": {
+          "true": 0.6849641799926758,
+          "copy_root": 0.6163865923881531,
+          "imagined_true_fit": 0.6775414943695068,
+          "imagined_generated_fit": 0.676429033279419
+        }
+      },
+      "16": {
+        "zombie_adjacent": {
+          "true": 0.5876556016597511,
+          "copy_root": 0.5513485477178424,
+          "imagined_true_fit": 0.5445020746887966,
+          "imagined_generated_fit": 0.5765560165975103
+        },
+        "zombie_in_view": {
+          "true": 0.6340740740740741,
+          "copy_root": 0.629320987654321,
+          "imagined_true_fit": 0.6246296296296296,
+          "imagined_generated_fit": 0.6404320987654321
+        },
+        "pass_up": {
+          "true": 0.5844403725759658,
+          "copy_root": 0.4953428004275462,
+          "imagined_true_fit": 0.5442815697052985,
+          "imagined_generated_fit": 0.561307069781646
+        },
+        "pass_down": {
+          "true": 0.7618847539015606,
+          "copy_root": 0.6948379351740697,
+          "imagined_true_fit": 0.6513205282112845,
+          "imagined_generated_fit": 0.6404561824729892
+        },
+        "pass_left": {
+          "true": 0.7349429416737109,
+          "copy_root": 0.6815828402366864,
+          "imagined_true_fit": 0.643174133558749,
+          "imagined_generated_fit": 0.6339814032121724
+        },
+        "pass_right": {
+          "true": 0.5367301850317592,
+          "copy_root": 0.5178818006075669,
+          "imagined_true_fit": 0.4942695388014361,
+          "imagined_generated_fit": 0.49019607843137253
+        },
+        "health": {
+          "true": 0.015777170658111572,
+          "copy_root": -0.014071822166442871,
+          "imagined_true_fit": 0.0596238374710083,
+          "imagined_generated_fit": 0.008697926998138428
+        },
+        "food": {
+          "true": 0.6935539245605469,
+          "copy_root": 0.6777398586273193,
+          "imagined_true_fit": 0.6867547035217285,
+          "imagined_generated_fit": 0.7194691896438599
+        },
+        "drink": {
+          "true": 0.4282628893852234,
+          "copy_root": 0.4433510899543762,
+          "imagined_true_fit": 0.386353075504303,
+          "imagined_generated_fit": 0.4288104772567749
+        },
+        "energy": {
+          "true": 0.6531088352203369,
+          "copy_root": 0.5691847801208496,
+          "imagined_true_fit": 0.6222641468048096,
+          "imagined_generated_fit": 0.6280975341796875
+        }
+      }
+    },
+    "readout_contract": "same ridge capacity, TRAIN/validation split and TEST labels; true root plus true or generated factual successors",
+    "moved_vs_blocked_auc": {
+      "true": 0.7235514895613417,
+      "imagined_true_fit": 0.7134866877785597,
+      "imagined_generated_fit": 0.717126290171241
+    },
+    "health_down_auc": {
+      "true": 0.5652197862729977,
+      "imagined_true_fit": 0.5559601189820426,
+      "imagined_generated_fit": 0.560981969079358
+    }
+  },
+  "raw_lam10": {
+    "schema_version": 2,
+    "depth": {
+      "1": {
+        "zombie_adjacent": {
+          "true": 0.9918146987112504,
+          "copy_root": 0.9331243469174504,
+          "imagined_true_fit": 0.9111807732497388,
+          "imagined_generated_fit": 0.875304771856496
+        },
+        "zombie_in_view": {
+          "true": 0.8946053946053946,
+          "copy_root": 0.8523976023976024,
+          "imagined_true_fit": 0.8211788211788211,
+          "imagined_generated_fit": 0.7767232767232767
+        },
+        "pass_up": {
+          "true": 0.9163360980887126,
+          "copy_root": 0.7123151821132347,
+          "imagined_true_fit": 0.7900288496213487,
+          "imagined_generated_fit": 0.7980526505589615
+        },
+        "pass_down": {
+          "true": 0.9309398331137462,
+          "copy_root": 0.8052261747913921,
+          "imagined_true_fit": 0.8281730346947739,
+          "imagined_generated_fit": 0.8304787000439174
+        },
+        "pass_left": {
+          "true": 0.904863387978142,
+          "copy_root": 0.7879234972677596,
+          "imagined_true_fit": 0.8230054644808743,
+          "imagined_generated_fit": 0.8246994535519125
+        },
+        "pass_right": {
+          "true": 0.8715007215007216,
+          "copy_root": 0.8411255411255412,
+          "imagined_true_fit": 0.8295815295815295,
+          "imagined_generated_fit": 0.7966810966810967
+        },
+        "health": {
+          "true": 0.6289914846420288,
+          "copy_root": 0.6093583106994629,
+          "imagined_true_fit": 0.42484092712402344,
+          "imagined_generated_fit": 0.27769219875335693
+        },
+        "food": {
+          "true": 0.7418601512908936,
+          "copy_root": 0.7401331663131714,
+          "imagined_true_fit": 0.5368738174438477,
+          "imagined_generated_fit": 0.6167678236961365
+        },
+        "drink": {
+          "true": 0.9595071077346802,
+          "copy_root": 0.9633283615112305,
+          "imagined_true_fit": 0.8823559284210205,
+          "imagined_generated_fit": 0.8797714710235596
+        },
+        "energy": {
+          "true": 0.6661990880966187,
+          "copy_root": 0.7040696144104004,
+          "imagined_true_fit": 0.46694672107696533,
+          "imagined_generated_fit": 0.47868257761001587
+        }
+      },
+      "4": {
+        "zombie_adjacent": {
+          "true": 0.995456197746274,
+          "copy_root": 0.9318429661941112,
+          "imagined_true_fit": 0.8171573973100691,
+          "imagined_generated_fit": 0.8498727735368957
+        },
+        "zombie_in_view": {
+          "true": 0.9073316551290119,
+          "copy_root": 0.8432976714915041,
+          "imagined_true_fit": 0.7660478288231592,
+          "imagined_generated_fit": 0.7585745752045312
+        },
+        "pass_up": {
+          "true": 0.8863002461033634,
+          "copy_root": 0.6493027071369976,
+          "imagined_true_fit": 0.6465135356849877,
+          "imagined_generated_fit": 0.6205906480721903
+        },
+        "pass_down": {
+          "true": 0.9417962003454231,
+          "copy_root": 0.7671272308578008,
+          "imagined_true_fit": 0.7280944156591825,
+          "imagined_generated_fit": 0.8074265975820379
+        },
+        "pass_left": {
+          "true": 0.9449656035021888,
+          "copy_root": 0.7449656035021889,
+          "imagined_true_fit": 0.7597873671044403,
+          "imagined_generated_fit": 0.8191994996873045
+        },
+        "pass_right": {
+          "true": 0.8889126712328768,
+          "copy_root": 0.7131135844748858,
+          "imagined_true_fit": 0.7563498858447488,
+          "imagined_generated_fit": 0.7361586757990868
+        },
+        "health": {
+          "true": 0.6489570736885071,
+          "copy_root": 0.5980571508407593,
+          "imagined_true_fit": 0.374550998210907,
+          "imagined_generated_fit": 0.2549947500228882
+        },
+        "food": {
+          "true": 0.7703839540481567,
+          "copy_root": 0.7497200965881348,
+          "imagined_true_fit": 0.489007830619812,
+          "imagined_generated_fit": 0.6183537244796753
+        },
+        "drink": {
+          "true": 0.9623120427131653,
+          "copy_root": 0.959632158279419,
+          "imagined_true_fit": 0.8433822393417358,
+          "imagined_generated_fit": 0.8585472702980042
+        },
+        "energy": {
+          "true": 0.5963000059127808,
+          "copy_root": 0.6113040447235107,
+          "imagined_true_fit": 0.373076856136322,
+          "imagined_generated_fit": 0.4409739375114441
+        }
+      },
+      "8": {
+        "zombie_adjacent": {
+          "true": 0.9934173669467787,
+          "copy_root": 0.8414565826330532,
+          "imagined_true_fit": 0.7210084033613445,
+          "imagined_generated_fit": 0.7875350140056022
+        },
+        "zombie_in_view": {
+          "true": 0.8899082568807339,
+          "copy_root": 0.8188426252646436,
+          "imagined_true_fit": 0.7471418489767113,
+          "imagined_generated_fit": 0.7546224417784051
+        },
+        "pass_up": {
+          "true": 0.8927154706094482,
+          "copy_root": 0.5919581680490443,
+          "imagined_true_fit": 0.5916877028489002,
+          "imagined_generated_fit": 0.6921204471691309
+        },
+        "pass_down": {
+          "true": 0.9123711340206185,
+          "copy_root": 0.7225917304068286,
+          "imagined_true_fit": 0.6328012415475003,
+          "imagined_generated_fit": 0.7360048775080368
+        },
+        "pass_left": {
+          "true": 0.9567406868098531,
+          "copy_root": 0.7562795777211504,
+          "imagined_true_fit": 0.6843222909841039,
+          "imagined_generated_fit": 0.7757553694939935
+        },
+        "pass_right": {
+          "true": 0.8959656652360515,
+          "copy_root": 0.6681545064377682,
+          "imagined_true_fit": 0.6343347639484979,
+          "imagined_generated_fit": 0.6959656652360515
+        },
+        "health": {
+          "true": 0.6381258964538574,
+          "copy_root": 0.5923912525177002,
+          "imagined_true_fit": 0.2718399167060852,
+          "imagined_generated_fit": 0.19511663913726807
+        },
+        "food": {
+          "true": 0.7354300022125244,
+          "copy_root": 0.7385776042938232,
+          "imagined_true_fit": 0.5075619220733643,
+          "imagined_generated_fit": 0.616526186466217
+        },
+        "drink": {
+          "true": 0.9636653661727905,
+          "copy_root": 0.9323883652687073,
+          "imagined_true_fit": 0.7805097103118896,
+          "imagined_generated_fit": 0.8037879467010498
+        },
+        "energy": {
+          "true": 0.6144393682479858,
+          "copy_root": 0.6133444309234619,
+          "imagined_true_fit": 0.3362206220626831,
+          "imagined_generated_fit": 0.4394392967224121
+        }
+      },
+      "16": {
+        "zombie_adjacent": {
+          "true": 0.9950207468879668,
+          "copy_root": 0.6607883817427386,
+          "imagined_true_fit": 0.5990663900414938,
+          "imagined_generated_fit": 0.629460580912863
+        },
+        "zombie_in_view": {
+          "true": 0.872037037037037,
+          "copy_root": 0.7493827160493827,
+          "imagined_true_fit": 0.6355555555555555,
+          "imagined_generated_fit": 0.6732716049382717
+        },
+        "pass_up": {
+          "true": 0.9000610780271797,
+          "copy_root": 0.540006107802718,
+          "imagined_true_fit": 0.5629103679951137,
+          "imagined_generated_fit": 0.6137578256222324
+        },
+        "pass_down": {
+          "true": 0.9064825930372149,
+          "copy_root": 0.675750300120048,
+          "imagined_true_fit": 0.6654261704681873,
+          "imagined_generated_fit": 0.7641656662665066
+        },
+        "pass_left": {
+          "true": 0.9009404057480981,
+          "copy_root": 0.6824281487743026,
+          "imagined_true_fit": 0.5102493660185968,
+          "imagined_generated_fit": 0.6804205409974641
+        },
+        "pass_right": {
+          "true": 0.8722038111019056,
+          "copy_root": 0.5794669980668323,
+          "imagined_true_fit": 0.5813311239988953,
+          "imagined_generated_fit": 0.5881662524164596
+        },
+        "health": {
+          "true": 0.6654142141342163,
+          "copy_root": 0.4164547920227051,
+          "imagined_true_fit": 0.12754541635513306,
+          "imagined_generated_fit": 0.1077994704246521
+        },
+        "food": {
+          "true": 0.6873365640640259,
+          "copy_root": 0.7002298831939697,
+          "imagined_true_fit": 0.3813777565956116,
+          "imagined_generated_fit": 0.5556907653808594
+        },
+        "drink": {
+          "true": 0.9569721817970276,
+          "copy_root": 0.8149423599243164,
+          "imagined_true_fit": 0.6216208934783936,
+          "imagined_generated_fit": 0.6787083745002747
+        },
+        "energy": {
+          "true": 0.5929211974143982,
+          "copy_root": 0.5923715829849243,
+          "imagined_true_fit": 0.26311469078063965,
+          "imagined_generated_fit": 0.41096436977386475
+        }
+      }
+    },
+    "readout_contract": "same ridge capacity, TRAIN/validation split and TEST labels; true root plus true or generated factual successors",
+    "moved_vs_blocked_auc": {
+      "true": 0.9373240675580577,
+      "imagined_true_fit": 0.8593896610368286,
+      "imagined_generated_fit": 0.8685454785362421
+    },
+    "health_down_auc": {
+      "true": 0.9236733869486982,
+      "imagined_true_fit": 0.8841320553780617,
+      "imagined_generated_fit": 0.8993389886526385
+    }
+  },
+  "tc": {
+    "schema_version": 2,
+    "depth": {
+      "1": {
+        "zombie_adjacent": {
+          "true": 0.6372344130964821,
+          "copy_root": 0.7267502612330199,
+          "imagined_true_fit": 0.6199930337861372,
+          "imagined_generated_fit": 0.6285266457680251
+        },
+        "zombie_in_view": {
+          "true": 0.7375124875124875,
+          "copy_root": 0.7705627705627706,
+          "imagined_true_fit": 0.6975524475524476,
+          "imagined_generated_fit": 0.7437562437562437
+        },
+        "pass_up": {
+          "true": 0.6325279480706816,
+          "copy_root": 0.5957446808510638,
+          "imagined_true_fit": 0.562567616300036,
+          "imagined_generated_fit": 0.6000721240533718
+        },
+        "pass_down": {
+          "true": 0.7714097496706193,
+          "copy_root": 0.7287000439174353,
+          "imagined_true_fit": 0.6651844532279315,
+          "imagined_generated_fit": 0.7368247694334651
+        },
+        "pass_left": {
+          "true": 0.6717486338797815,
+          "copy_root": 0.6529508196721312,
+          "imagined_true_fit": 0.6019125683060109,
+          "imagined_generated_fit": 0.6175956284153006
+        },
+        "pass_right": {
+          "true": 0.6848484848484848,
+          "copy_root": 0.6360750360750361,
+          "imagined_true_fit": 0.6427128427128427,
+          "imagined_generated_fit": 0.6673881673881674
+        },
+        "health": {
+          "true": 0.14630287885665894,
+          "copy_root": 0.1467021107673645,
+          "imagined_true_fit": 0.10867863893508911,
+          "imagined_generated_fit": 0.09682559967041016
+        },
+        "food": {
+          "true": 0.7538355588912964,
+          "copy_root": 0.750960648059845,
+          "imagined_true_fit": 0.6847065687179565,
+          "imagined_generated_fit": 0.7393538951873779
+        },
+        "drink": {
+          "true": 0.5780686140060425,
+          "copy_root": 0.5583128929138184,
+          "imagined_true_fit": 0.4707675576210022,
+          "imagined_generated_fit": 0.5023041367530823
+        },
+        "energy": {
+          "true": 0.6479282975196838,
+          "copy_root": 0.6167325973510742,
+          "imagined_true_fit": 0.6097466945648193,
+          "imagined_generated_fit": 0.608146071434021
+        }
+      },
+      "4": {
+        "zombie_adjacent": {
+          "true": 0.7380952380952381,
+          "copy_root": 0.7642675390766994,
+          "imagined_true_fit": 0.6575790621592148,
+          "imagined_generated_fit": 0.6530352599054889
+        },
+        "zombie_in_view": {
+          "true": 0.7721050975456262,
+          "copy_root": 0.763215859030837,
+          "imagined_true_fit": 0.7109817495280051,
+          "imagined_generated_fit": 0.7387507866582756
+        },
+        "pass_up": {
+          "true": 0.5871205906480722,
+          "copy_root": 0.5252666119770304,
+          "imagined_true_fit": 0.530188679245283,
+          "imagined_generated_fit": 0.6034454470877769
+        },
+        "pass_down": {
+          "true": 0.7454231433506044,
+          "copy_root": 0.7119170984455958,
+          "imagined_true_fit": 0.6466896948762234,
+          "imagined_generated_fit": 0.721761658031088
+        },
+        "pass_left": {
+          "true": 0.7199499687304566,
+          "copy_root": 0.7080675422138837,
+          "imagined_true_fit": 0.6476547842401501,
+          "imagined_generated_fit": 0.7335209505941214
+        },
+        "pass_right": {
+          "true": 0.674158105022831,
+          "copy_root": 0.586472602739726,
+          "imagined_true_fit": 0.5955336757990868,
+          "imagined_generated_fit": 0.5931792237442922
+        },
+        "health": {
+          "true": 0.12427234649658203,
+          "copy_root": 0.13858401775360107,
+          "imagined_true_fit": 0.10287564992904663,
+          "imagined_generated_fit": 0.10179769992828369
+        },
+        "food": {
+          "true": 0.7472440004348755,
+          "copy_root": 0.7392081618309021,
+          "imagined_true_fit": 0.6854679584503174,
+          "imagined_generated_fit": 0.7347277402877808
+        },
+        "drink": {
+          "true": 0.5728309154510498,
+          "copy_root": 0.5646727085113525,
+          "imagined_true_fit": 0.4470288157463074,
+          "imagined_generated_fit": 0.47208428382873535
+        },
+        "energy": {
+          "true": 0.6147003173828125,
+          "copy_root": 0.5270607471466064,
+          "imagined_true_fit": 0.526050329208374,
+          "imagined_generated_fit": 0.534203290939331
+        }
+      },
+      "8": {
+        "zombie_adjacent": {
+          "true": 0.7690476190476191,
+          "copy_root": 0.7526610644257703,
+          "imagined_true_fit": 0.6002801120448179,
+          "imagined_generated_fit": 0.6777310924369748
+        },
+        "zombie_in_view": {
+          "true": 0.7350741002117149,
+          "copy_root": 0.7261115031757234,
+          "imagined_true_fit": 0.6534932956951306,
+          "imagined_generated_fit": 0.7277346506704305
+        },
+        "pass_up": {
+          "true": 0.607915614857555,
+          "copy_root": 0.5089253516047602,
+          "imagined_true_fit": 0.5556256761630004,
+          "imagined_generated_fit": 0.6217994951316264
+        },
+        "pass_down": {
+          "true": 0.7638842700365813,
+          "copy_root": 0.6597383882052987,
+          "imagined_true_fit": 0.6233233566123489,
+          "imagined_generated_fit": 0.6952666001551935
+        },
+        "pass_left": {
+          "true": 0.7405654653561461,
+          "copy_root": 0.7045261497391093,
+          "imagined_true_fit": 0.6817740565465357,
+          "imagined_generated_fit": 0.6946365732314039
+        },
+        "pass_right": {
+          "true": 0.6763090128755365,
+          "copy_root": 0.6345064377682403,
+          "imagined_true_fit": 0.5590557939914164,
+          "imagined_generated_fit": 0.620343347639485
+        },
+        "health": {
+          "true": 0.10405105352401733,
+          "copy_root": 0.11321187019348145,
+          "imagined_true_fit": 0.06764394044876099,
+          "imagined_generated_fit": 0.08386319875717163
+        },
+        "food": {
+          "true": 0.7287660837173462,
+          "copy_root": 0.741787314414978,
+          "imagined_true_fit": 0.6597691178321838,
+          "imagined_generated_fit": 0.7338874340057373
+        },
+        "drink": {
+          "true": 0.5424631834030151,
+          "copy_root": 0.5541490316390991,
+          "imagined_true_fit": 0.40732961893081665,
+          "imagined_generated_fit": 0.4738030433654785
+        },
+        "energy": {
+          "true": 0.5760711431503296,
+          "copy_root": 0.5299055576324463,
+          "imagined_true_fit": 0.48757457733154297,
+          "imagined_generated_fit": 0.5254130363464355
+        }
+      },
+      "16": {
+        "zombie_adjacent": {
+          "true": 0.6569502074688797,
+          "copy_root": 0.6372406639004149,
+          "imagined_true_fit": 0.546161825726141,
+          "imagined_generated_fit": 0.5925311203319502
+        },
+        "zombie_in_view": {
+          "true": 0.6908641975308641,
+          "copy_root": 0.6967283950617283,
+          "imagined_true_fit": 0.5614814814814815,
+          "imagined_generated_fit": 0.6508024691358024
+        },
+        "pass_up": {
+          "true": 0.5219117422507253,
+          "copy_root": 0.5309207512597343,
+          "imagined_true_fit": 0.5300045808520385,
+          "imagined_generated_fit": 0.5811574286150557
+        },
+        "pass_down": {
+          "true": 0.7340336134453781,
+          "copy_root": 0.6171068427370948,
+          "imagined_true_fit": 0.6158463385354142,
+          "imagined_generated_fit": 0.6624849939975991
+        },
+        "pass_left": {
+          "true": 0.68385460693153,
+          "copy_root": 0.6241018596787827,
+          "imagined_true_fit": 0.5141589180050719,
+          "imagined_generated_fit": 0.5379332206255283
+        },
+        "pass_right": {
+          "true": 0.6407760287213476,
+          "copy_root": 0.6164733499033416,
+          "imagined_true_fit": 0.5575807787903894,
+          "imagined_generated_fit": 0.5593068213200774
+        },
+        "health": {
+          "true": 0.056743323802948,
+          "copy_root": 0.039582014083862305,
+          "imagined_true_fit": 0.013339757919311523,
+          "imagined_generated_fit": 0.03558772802352905
+        },
+        "food": {
+          "true": 0.6667475700378418,
+          "copy_root": 0.7027647495269775,
+          "imagined_true_fit": 0.6119089126586914,
+          "imagined_generated_fit": 0.6810693740844727
+        },
+        "drink": {
+          "true": 0.4762793183326721,
+          "copy_root": 0.3989683985710144,
+          "imagined_true_fit": 0.37548714876174927,
+          "imagined_generated_fit": 0.40331077575683594
+        },
+        "energy": {
+          "true": 0.5019837021827698,
+          "copy_root": 0.4872223734855652,
+          "imagined_true_fit": 0.4347134828567505,
+          "imagined_generated_fit": 0.47849881649017334
+        }
+      }
+    },
+    "readout_contract": "same ridge capacity, TRAIN/validation split and TEST labels; true root plus true or generated factual successors",
+    "moved_vs_blocked_auc": {
+      "true": 0.7473206955195871,
+      "imagined_true_fit": 0.6864004222378607,
+      "imagined_generated_fit": 0.7112802017358668
+    },
+    "health_down_auc": {
+      "true": 0.6966288421284565,
+      "imagined_true_fit": 0.613721493885645,
+      "imagined_generated_fit": 0.5750211156402629
+    }
+  },
+  "tc_lam10": {
+    "schema_version": 2,
+    "depth": {
+      "1": {
+        "zombie_adjacent": {
+          "true": 0.9970393591083246,
+          "copy_root": 0.9397422500870777,
+          "imagined_true_fit": 0.7530477185649599,
+          "imagined_generated_fit": 0.7532218739115291
+        },
+        "zombie_in_view": {
+          "true": 0.9034299034299035,
+          "copy_root": 0.8617216117216118,
+          "imagined_true_fit": 0.7142024642024642,
+          "imagined_generated_fit": 0.7108724608724609
+        },
+        "pass_up": {
+          "true": 0.9216552470248828,
+          "copy_root": 0.7283627839884601,
+          "imagined_true_fit": 0.7842589253516048,
+          "imagined_generated_fit": 0.7829967544175983
+        },
+        "pass_down": {
+          "true": 0.967391304347826,
+          "copy_root": 0.8521080368906456,
+          "imagined_true_fit": 0.8388779095300835,
+          "imagined_generated_fit": 0.8498572683355292
+        },
+        "pass_left": {
+          "true": 0.9471584699453552,
+          "copy_root": 0.8021311475409836,
+          "imagined_true_fit": 0.8201092896174863,
+          "imagined_generated_fit": 0.8122950819672131
+        },
+        "pass_right": {
+          "true": 0.9562770562770563,
+          "copy_root": 0.8800865800865801,
+          "imagined_true_fit": 0.812987012987013,
+          "imagined_generated_fit": 0.7741702741702742
+        },
+        "health": {
+          "true": 0.492850661277771,
+          "copy_root": 0.4784483313560486,
+          "imagined_true_fit": 0.2444968819618225,
+          "imagined_generated_fit": 0.12389153242111206
+        },
+        "food": {
+          "true": 0.6238967180252075,
+          "copy_root": 0.6418153643608093,
+          "imagined_true_fit": 0.34350860118865967,
+          "imagined_generated_fit": 0.4352291226387024
+        },
+        "drink": {
+          "true": 0.8172823786735535,
+          "copy_root": 0.7886807918548584,
+          "imagined_true_fit": 0.3195381760597229,
+          "imagined_generated_fit": 0.37593162059783936
+        },
+        "energy": {
+          "true": 0.6912587881088257,
+          "copy_root": 0.7165459394454956,
+          "imagined_true_fit": 0.582429051399231,
+          "imagined_generated_fit": 0.5402945280075073
+        }
+      },
+      "4": {
+        "zombie_adjacent": {
+          "true": 0.9990912395492548,
+          "copy_root": 0.9318429661941112,
+          "imagined_true_fit": 0.6441294074881861,
+          "imagined_generated_fit": 0.6768447837150128
+        },
+        "zombie_in_view": {
+          "true": 0.8757079924480805,
+          "copy_root": 0.849826935179358,
+          "imagined_true_fit": 0.637114537444934,
+          "imagined_generated_fit": 0.6657488986784141
+        },
+        "pass_up": {
+          "true": 0.928876127973749,
+          "copy_root": 0.676456111566858,
+          "imagined_true_fit": 0.6839212469237079,
+          "imagined_generated_fit": 0.7280557834290402
+        },
+        "pass_down": {
+          "true": 0.9614277489925158,
+          "copy_root": 0.8104202648244099,
+          "imagined_true_fit": 0.742084052964882,
+          "imagined_generated_fit": 0.7980426021876799
+        },
+        "pass_left": {
+          "true": 0.9550343964978111,
+          "copy_root": 0.7227642276422764,
+          "imagined_true_fit": 0.7037523452157598,
+          "imagined_generated_fit": 0.7744215134459037
+        },
+        "pass_right": {
+          "true": 0.9497003424657534,
+          "copy_root": 0.7831763698630136,
+          "imagined_true_fit": 0.7036957762557078,
+          "imagined_generated_fit": 0.7333761415525114
+        },
+        "health": {
+          "true": 0.5394350290298462,
+          "copy_root": 0.4895332455635071,
+          "imagined_true_fit": 0.2694801688194275,
+          "imagined_generated_fit": 0.1546264886856079
+        },
+        "food": {
+          "true": 0.6307573914527893,
+          "copy_root": 0.6603268980979919,
+          "imagined_true_fit": 0.3469913601875305,
+          "imagined_generated_fit": 0.43156296014785767
+        },
+        "drink": {
+          "true": 0.7991777658462524,
+          "copy_root": 0.7851980328559875,
+          "imagined_true_fit": 0.23854035139083862,
+          "imagined_generated_fit": 0.30987071990966797
+        },
+        "energy": {
+          "true": 0.6440121531486511,
+          "copy_root": 0.6064289808273315,
+          "imagined_true_fit": 0.41287362575531006,
+          "imagined_generated_fit": 0.4481874704360962
+        }
+      },
+      "8": {
+        "zombie_adjacent": {
+          "true": 0.9985994397759104,
+          "copy_root": 0.7829131652661064,
+          "imagined_true_fit": 0.546078431372549,
+          "imagined_generated_fit": 0.5617647058823529
+        },
+        "zombie_in_view": {
+          "true": 0.903316866619619,
+          "copy_root": 0.8339449541284404,
+          "imagined_true_fit": 0.6356386732533521,
+          "imagined_generated_fit": 0.6193366266760763
+        },
+        "pass_up": {
+          "true": 0.8878470970068518,
+          "copy_root": 0.5887125856473133,
+          "imagined_true_fit": 0.6407320591417238,
+          "imagined_generated_fit": 0.7149296790479625
+        },
+        "pass_down": {
+          "true": 0.9098215275468352,
+          "copy_root": 0.7552377785167942,
+          "imagined_true_fit": 0.6452721427779625,
+          "imagined_generated_fit": 0.7516904999445738
+        },
+        "pass_left": {
+          "true": 0.9497027059822837,
+          "copy_root": 0.7408688265987138,
+          "imagined_true_fit": 0.7028273267807305,
+          "imagined_generated_fit": 0.7886178861788617
+        },
+        "pass_right": {
+          "true": 0.9369957081545064,
+          "copy_root": 0.6713304721030043,
+          "imagined_true_fit": 0.6393991416309013,
+          "imagined_generated_fit": 0.7025751072961374
+        },
+        "health": {
+          "true": 0.5314580202102661,
+          "copy_root": 0.45759356021881104,
+          "imagined_true_fit": 0.11591178178787231,
+          "imagined_generated_fit": 0.06354302167892456
+        },
+        "food": {
+          "true": 0.6242115497589111,
+          "copy_root": 0.6497775316238403,
+          "imagined_true_fit": 0.3237574100494385,
+          "imagined_generated_fit": 0.4161960482597351
+        },
+        "drink": {
+          "true": 0.799776554107666,
+          "copy_root": 0.7720374464988708,
+          "imagined_true_fit": 0.2357865571975708,
+          "imagined_generated_fit": 0.2775239944458008
+        },
+        "energy": {
+          "true": 0.6804114580154419,
+          "copy_root": 0.6063467264175415,
+          "imagined_true_fit": 0.36357980966567993,
+          "imagined_generated_fit": 0.4652605652809143
+        }
+      },
+      "16": {
+        "zombie_adjacent": {
+          "true": 0.9899377593360996,
+          "copy_root": 0.679149377593361,
+          "imagined_true_fit": 0.6026970954356846,
+          "imagined_generated_fit": 0.6395228215767634
+        },
+        "zombie_in_view": {
+          "true": 0.8660493827160494,
+          "copy_root": 0.7212345679012345,
+          "imagined_true_fit": 0.542037037037037,
+          "imagined_generated_fit": 0.6196913580246913
+        },
+        "pass_up": {
+          "true": 0.9336539929760269,
+          "copy_root": 0.5429073140937548,
+          "imagined_true_fit": 0.6443731867460681,
+          "imagined_generated_fit": 0.6535348908230264
+        },
+        "pass_down": {
+          "true": 0.9378151260504202,
+          "copy_root": 0.7231692677070828,
+          "imagined_true_fit": 0.6371548619447779,
+          "imagined_generated_fit": 0.7468187274909964
+        },
+        "pass_left": {
+          "true": 0.9331677937447168,
+          "copy_root": 0.6569103972950127,
+          "imagined_true_fit": 0.6059277261200338,
+          "imagined_generated_fit": 0.6938398140321217
+        },
+        "pass_right": {
+          "true": 0.9257111295222314,
+          "copy_root": 0.5996271748135874,
+          "imagined_true_fit": 0.6016293841480254,
+          "imagined_generated_fit": 0.5749102457884562
+        },
+        "health": {
+          "true": 0.5089115500450134,
+          "copy_root": 0.31578487157821655,
+          "imagined_true_fit": 0.012089252471923828,
+          "imagined_generated_fit": 0.001350104808807373
+        },
+        "food": {
+          "true": 0.5868568420410156,
+          "copy_root": 0.6188194751739502,
+          "imagined_true_fit": 0.21039986610412598,
+          "imagined_generated_fit": 0.30086541175842285
+        },
+        "drink": {
+          "true": 0.743756890296936,
+          "copy_root": 0.6420776844024658,
+          "imagined_true_fit": -0.019868016242980957,
+          "imagined_generated_fit": 0.1096501350402832
+        },
+        "energy": {
+          "true": 0.6298646330833435,
+          "copy_root": 0.5728021860122681,
+          "imagined_true_fit": 0.30936670303344727,
+          "imagined_generated_fit": 0.41448479890823364
+        }
+      }
+    },
+    "readout_contract": "same ridge capacity, TRAIN/validation split and TEST labels; true root plus true or generated factual successors",
+    "moved_vs_blocked_auc": {
+      "true": 0.9368695754163735,
+      "imagined_true_fit": 0.877822249589491,
+      "imagined_generated_fit": 0.9104393912737508
+    },
+    "health_down_auc": {
+      "true": 0.9198101428518968,
+      "imagined_true_fit": 0.7443281554111123,
+      "imagined_generated_fit": 0.7107506151077816
+    }
+  },
+  "raw_lam10_nosig": {
+    "schema_version": 2,
+    "depth": {
+      "1": {
+        "zombie_adjacent": {
+          "true": 0.988854057819575,
+          "copy_root": 0.9245907349355625,
+          "imagined_true_fit": 0.8470916057122954,
+          "imagined_generated_fit": 0.7927551375827238
+        },
+        "zombie_in_view": {
+          "true": 0.9045121545121545,
+          "copy_root": 0.868964368964369,
+          "imagined_true_fit": 0.7858807858807859,
+          "imagined_generated_fit": 0.8216783216783217
+        },
+        "pass_up": {
+          "true": 0.9195816804904435,
+          "copy_root": 0.7192571222502705,
+          "imagined_true_fit": 0.783447529751172,
+          "imagined_generated_fit": 0.817255679769203
+        },
+        "pass_down": {
+          "true": 0.9632191480017567,
+          "copy_root": 0.8247694334650857,
+          "imagined_true_fit": 0.7613087395696091,
+          "imagined_generated_fit": 0.7863965744400527
+        },
+        "pass_left": {
+          "true": 0.9081420765027323,
+          "copy_root": 0.7897814207650273,
+          "imagined_true_fit": 0.74775956284153,
+          "imagined_generated_fit": 0.7859016393442623
+        },
+        "pass_right": {
+          "true": 0.8477633477633477,
+          "copy_root": 0.8147186147186147,
+          "imagined_true_fit": 0.7368686868686869,
+          "imagined_generated_fit": 0.7408369408369408
+        },
+        "health": {
+          "true": 0.572638988494873,
+          "copy_root": 0.6015430688858032,
+          "imagined_true_fit": 0.27344948053359985,
+          "imagined_generated_fit": 0.12078994512557983
+        },
+        "food": {
+          "true": 0.7157750725746155,
+          "copy_root": 0.7395639419555664,
+          "imagined_true_fit": 0.4036136865615845,
+          "imagined_generated_fit": 0.5318243503570557
+        },
+        "drink": {
+          "true": 0.9033663272857666,
+          "copy_root": 0.8991503119468689,
+          "imagined_true_fit": 0.5956882238388062,
+          "imagined_generated_fit": 0.6355713605880737
+        },
+        "energy": {
+          "true": 0.7829810380935669,
+          "copy_root": 0.7696537971496582,
+          "imagined_true_fit": 0.6160253882408142,
+          "imagined_generated_fit": 0.534206211566925
+        }
+      },
+      "4": {
+        "zombie_adjacent": {
+          "true": 0.9874591057797165,
+          "copy_root": 0.9389312977099237,
+          "imagined_true_fit": 0.6788440567066522,
+          "imagined_generated_fit": 0.7402762631770266
+        },
+        "zombie_in_view": {
+          "true": 0.8517935808684708,
+          "copy_root": 0.830081812460667,
+          "imagined_true_fit": 0.6952485840151038,
+          "imagined_generated_fit": 0.7537759597230963
+        },
+        "pass_up": {
+          "true": 0.8721082854799016,
+          "copy_root": 0.6398687448728466,
+          "imagined_true_fit": 0.6196062346185398,
+          "imagined_generated_fit": 0.70467596390484
+        },
+        "pass_down": {
+          "true": 0.9679907887161773,
+          "copy_root": 0.7907311456534254,
+          "imagined_true_fit": 0.6439263097294186,
+          "imagined_generated_fit": 0.7633851468048359
+        },
+        "pass_left": {
+          "true": 0.941400875547217,
+          "copy_root": 0.7497811131957474,
+          "imagined_true_fit": 0.7293308317698561,
+          "imagined_generated_fit": 0.7959349593495935
+        },
+        "pass_right": {
+          "true": 0.9111729452054794,
+          "copy_root": 0.7408675799086758,
+          "imagined_true_fit": 0.679152397260274,
+          "imagined_generated_fit": 0.6997003424657534
+        },
+        "health": {
+          "true": 0.6235483884811401,
+          "copy_root": 0.61539226770401,
+          "imagined_true_fit": 0.2023060917854309,
+          "imagined_generated_fit": 0.11297357082366943
+        },
+        "food": {
+          "true": 0.6918871402740479,
+          "copy_root": 0.7444295883178711,
+          "imagined_true_fit": 0.3811193108558655,
+          "imagined_generated_fit": 0.5463200211524963
+        },
+        "drink": {
+          "true": 0.9039929509162903,
+          "copy_root": 0.8981332182884216,
+          "imagined_true_fit": 0.4710729122161865,
+          "imagined_generated_fit": 0.5680011510848999
+        },
+        "energy": {
+          "true": 0.7700152397155762,
+          "copy_root": 0.6613515019416809,
+          "imagined_true_fit": 0.39755070209503174,
+          "imagined_generated_fit": 0.45416033267974854
+        }
+      },
+      "8": {
+        "zombie_adjacent": {
+          "true": 0.9760504201680672,
+          "copy_root": 0.7963585434173669,
+          "imagined_true_fit": 0.5964985994397759,
+          "imagined_generated_fit": 0.6719887955182073
+        },
+        "zombie_in_view": {
+          "true": 0.8788990825688073,
+          "copy_root": 0.8093860268172195,
+          "imagined_true_fit": 0.6691601976005646,
+          "imagined_generated_fit": 0.7414255469301341
+        },
+        "pass_up": {
+          "true": 0.8475477821853589,
+          "copy_root": 0.6034078615218176,
+          "imagined_true_fit": 0.6326181031373963,
+          "imagined_generated_fit": 0.6753516047601875
+        },
+        "pass_down": {
+          "true": 0.9440195100321472,
+          "copy_root": 0.7316262055204523,
+          "imagined_true_fit": 0.6035361933266822,
+          "imagined_generated_fit": 0.6984813213612682
+        },
+        "pass_left": {
+          "true": 0.9067467540347045,
+          "copy_root": 0.7599199126319621,
+          "imagined_true_fit": 0.6265016381507099,
+          "imagined_generated_fit": 0.7328600897949278
+        },
+        "pass_right": {
+          "true": 0.9017167381974249,
+          "copy_root": 0.6933905579399141,
+          "imagined_true_fit": 0.691931330472103,
+          "imagined_generated_fit": 0.7107296137339055
+        },
+        "health": {
+          "true": 0.5841896533966064,
+          "copy_root": 0.585685133934021,
+          "imagined_true_fit": 0.08817589282989502,
+          "imagined_generated_fit": 0.0660552978515625
+        },
+        "food": {
+          "true": 0.6900393962860107,
+          "copy_root": 0.7315200567245483,
+          "imagined_true_fit": 0.28809022903442383,
+          "imagined_generated_fit": 0.4708927869796753
+        },
+        "drink": {
+          "true": 0.9044281840324402,
+          "copy_root": 0.8745600581169128,
+          "imagined_true_fit": 0.34043192863464355,
+          "imagined_generated_fit": 0.4282381534576416
+        },
+        "energy": {
+          "true": 0.7952700853347778,
+          "copy_root": 0.6612151861190796,
+          "imagined_true_fit": 0.28244549036026,
+          "imagined_generated_fit": 0.47873473167419434
+        }
+      },
+      "16": {
+        "zombie_adjacent": {
+          "true": 0.9715767634854772,
+          "copy_root": 0.6282157676348548,
+          "imagined_true_fit": 0.537551867219917,
+          "imagined_generated_fit": 0.59149377593361
+        },
+        "zombie_in_view": {
+          "true": 0.863641975308642,
+          "copy_root": 0.7101234567901235,
+          "imagined_true_fit": 0.6194444444444445,
+          "imagined_generated_fit": 0.6795679012345679
+        },
+        "pass_up": {
+          "true": 0.8715071003206596,
+          "copy_root": 0.5319896167353795,
+          "imagined_true_fit": 0.5659642693540998,
+          "imagined_generated_fit": 0.6433043212704229
+        },
+        "pass_down": {
+          "true": 0.9484393757503001,
+          "copy_root": 0.7061824729891957,
+          "imagined_true_fit": 0.572749099639856,
+          "imagined_generated_fit": 0.7156662665066026
+        },
+        "pass_left": {
+          "true": 0.8937552831783601,
+          "copy_root": 0.6673710904480136,
+          "imagined_true_fit": 0.5794061707523246,
+          "imagined_generated_fit": 0.6920435333896873
+        },
+        "pass_right": {
+          "true": 0.8473487986743994,
+          "copy_root": 0.5675227837613919,
+          "imagined_true_fit": 0.603976801988401,
+          "imagined_generated_fit": 0.583954708644021
+        },
+        "health": {
+          "true": 0.5968996286392212,
+          "copy_root": 0.42005157470703125,
+          "imagined_true_fit": 0.07767748832702637,
+          "imagined_generated_fit": 0.03896200656890869
+        },
+        "food": {
+          "true": 0.7003478407859802,
+          "copy_root": 0.6884187459945679,
+          "imagined_true_fit": 0.16304224729537964,
+          "imagined_generated_fit": 0.4103248715400696
+        },
+        "drink": {
+          "true": 0.8992906808853149,
+          "copy_root": 0.7486591339111328,
+          "imagined_true_fit": 0.0917472243309021,
+          "imagined_generated_fit": 0.27000147104263306
+        },
+        "energy": {
+          "true": 0.7689409852027893,
+          "copy_root": 0.6036821603775024,
+          "imagined_true_fit": 0.10258638858795166,
+          "imagined_generated_fit": 0.42423659563064575
+        }
+      }
+    },
+    "readout_contract": "same ridge capacity, TRAIN/validation split and TEST labels; true root plus true or generated factual successors",
+    "moved_vs_blocked_auc": {
+      "true": 0.9312837203847056,
+      "imagined_true_fit": 0.7836654058174994,
+      "imagined_generated_fit": 0.8667751583391977
+    },
+    "health_down_auc": {
+      "true": 0.8784987697844369,
+      "imagined_true_fit": 0.722465205097132,
+      "imagined_generated_fit": 0.8129190995556534
+    }
+  },
+  "raw@2000": {
+    "schema_version": 2,
+    "depth": {
+      "1": {
+        "zombie_adjacent": {
+          "true": 0.7354580285614768,
+          "copy_root": 0.7378962034134448,
+          "imagined_true_fit": 0.7203065134099617,
+          "imagined_generated_fit": 0.6844305120167189
+        },
+        "zombie_in_view": {
+          "true": 0.7100399600399601,
+          "copy_root": 0.7012154512154513,
+          "imagined_true_fit": 0.6842324342324342,
+          "imagined_generated_fit": 0.6328671328671329
+        },
+        "pass_up": {
+          "true": 0.5123512441399206,
+          "copy_root": 0.501803101334295,
+          "imagined_true_fit": 0.5451676884240895,
+          "imagined_generated_fit": 0.5952939055174901
+        },
+        "pass_down": {
+          "true": 0.7580149319279754,
+          "copy_root": 0.75455643390426,
+          "imagined_true_fit": 0.7296332894158981,
+          "imagined_generated_fit": 0.7626811594202898
+        },
+        "pass_left": {
+          "true": 0.6838251366120218,
+          "copy_root": 0.6751912568306011,
+          "imagined_true_fit": 0.6728961748633879,
+          "imagined_generated_fit": 0.6758469945355191
+        },
+        "pass_right": {
+          "true": 0.6675324675324675,
+          "copy_root": 0.6579365079365079,
+          "imagined_true_fit": 0.6608225108225109,
+          "imagined_generated_fit": 0.6258297258297258
+        },
+        "health": {
+          "true": 0.05197560787200928,
+          "copy_root": 0.0717204213142395,
+          "imagined_true_fit": -0.0856243371963501,
+          "imagined_generated_fit": 0.05089461803436279
+        },
+        "food": {
+          "true": 0.7615086436271667,
+          "copy_root": 0.7526391744613647,
+          "imagined_true_fit": 0.7477720975875854,
+          "imagined_generated_fit": 0.750860869884491
+        },
+        "drink": {
+          "true": 0.5399653911590576,
+          "copy_root": 0.5327334403991699,
+          "imagined_true_fit": 0.5272306203842163,
+          "imagined_generated_fit": 0.5039240121841431
+        },
+        "energy": {
+          "true": 0.3422335386276245,
+          "copy_root": 0.348283052444458,
+          "imagined_true_fit": 0.27426791191101074,
+          "imagined_generated_fit": 0.39690059423446655
+        }
+      },
+      "4": {
+        "zombie_adjacent": {
+          "true": 0.687749909123955,
+          "copy_root": 0.7011995637949836,
+          "imagined_true_fit": 0.6941112322791713,
+          "imagined_generated_fit": 0.6819338422391857
+        },
+        "zombie_in_view": {
+          "true": 0.6784140969162996,
+          "copy_root": 0.6910006293266205,
+          "imagined_true_fit": 0.6633102580239144,
+          "imagined_generated_fit": 0.6260226557583386
+        },
+        "pass_up": {
+          "true": 0.538228055783429,
+          "copy_root": 0.5319114027891715,
+          "imagined_true_fit": 0.5716160787530763,
+          "imagined_generated_fit": 0.5495488105004102
+        },
+        "pass_down": {
+          "true": 0.7221070811744387,
+          "copy_root": 0.7006332757628094,
+          "imagined_true_fit": 0.6812320092112838,
+          "imagined_generated_fit": 0.7196315486470927
+        },
+        "pass_left": {
+          "true": 0.7257661038148843,
+          "copy_root": 0.700562851782364,
+          "imagined_true_fit": 0.6894308943089431,
+          "imagined_generated_fit": 0.7036898061288305
+        },
+        "pass_right": {
+          "true": 0.6449058219178082,
+          "copy_root": 0.610445205479452,
+          "imagined_true_fit": 0.5900399543378996,
+          "imagined_generated_fit": 0.6074486301369864
+        },
+        "health": {
+          "true": 0.06116670370101929,
+          "copy_root": 0.055378735065460205,
+          "imagined_true_fit": -0.16326618194580078,
+          "imagined_generated_fit": 0.036099910736083984
+        },
+        "food": {
+          "true": 0.7565121054649353,
+          "copy_root": 0.7391954660415649,
+          "imagined_true_fit": 0.7259897589683533,
+          "imagined_generated_fit": 0.7473369836807251
+        },
+        "drink": {
+          "true": 0.519032895565033,
+          "copy_root": 0.5543352365493774,
+          "imagined_true_fit": 0.5335409641265869,
+          "imagined_generated_fit": 0.5230685472488403
+        },
+        "energy": {
+          "true": 0.32802075147628784,
+          "copy_root": 0.3269991874694824,
+          "imagined_true_fit": 0.26844948530197144,
+          "imagined_generated_fit": 0.390164852142334
+        }
+      },
+      "8": {
+        "zombie_adjacent": {
+          "true": 0.6987394957983193,
+          "copy_root": 0.7180672268907563,
+          "imagined_true_fit": 0.6708683473389355,
+          "imagined_generated_fit": 0.6858543417366947
+        },
+        "zombie_in_view": {
+          "true": 0.657092448835568,
+          "copy_root": 0.6805928016937192,
+          "imagined_true_fit": 0.655257586450247,
+          "imagined_generated_fit": 0.6270289343683839
+        },
+        "pass_up": {
+          "true": 0.573746844572665,
+          "copy_root": 0.5588712585647313,
+          "imagined_true_fit": 0.5494049765596827,
+          "imagined_generated_fit": 0.6164803461954562
+        },
+        "pass_down": {
+          "true": 0.6884491741492074,
+          "copy_root": 0.6789158629863652,
+          "imagined_true_fit": 0.6522558474670214,
+          "imagined_generated_fit": 0.6615120274914089
+        },
+        "pass_left": {
+          "true": 0.7414148768353355,
+          "copy_root": 0.700825142579784,
+          "imagined_true_fit": 0.6797112000970756,
+          "imagined_generated_fit": 0.7106540468389758
+        },
+        "pass_right": {
+          "true": 0.6351072961373391,
+          "copy_root": 0.6118454935622317,
+          "imagined_true_fit": 0.6084978540772532,
+          "imagined_generated_fit": 0.6400858369098712
+        },
+        "health": {
+          "true": 0.06413668394088745,
+          "copy_root": 0.05023932456970215,
+          "imagined_true_fit": -0.15982770919799805,
+          "imagined_generated_fit": 0.03567469120025635
+        },
+        "food": {
+          "true": 0.7638728022575378,
+          "copy_root": 0.746857225894928,
+          "imagined_true_fit": 0.70334792137146,
+          "imagined_generated_fit": 0.7385136485099792
+        },
+        "drink": {
+          "true": 0.5572095513343811,
+          "copy_root": 0.5495144128799438,
+          "imagined_true_fit": 0.49814677238464355,
+          "imagined_generated_fit": 0.5051687955856323
+        },
+        "energy": {
+          "true": 0.32542383670806885,
+          "copy_root": 0.33059579133987427,
+          "imagined_true_fit": 0.2960285544395447,
+          "imagined_generated_fit": 0.39940959215164185
+        }
+      },
+      "16": {
+        "zombie_adjacent": {
+          "true": 0.6285269709543568,
+          "copy_root": 0.5652489626556016,
+          "imagined_true_fit": 0.5453319502074688,
+          "imagined_generated_fit": 0.5201244813278009
+        },
+        "zombie_in_view": {
+          "true": 0.6297530864197531,
+          "copy_root": 0.6478395061728395,
+          "imagined_true_fit": 0.5765432098765432,
+          "imagined_generated_fit": 0.5960493827160493
+        },
+        "pass_up": {
+          "true": 0.5635974958008856,
+          "copy_root": 0.49587723316536875,
+          "imagined_true_fit": 0.4602992823331806,
+          "imagined_generated_fit": 0.5969613681478089
+        },
+        "pass_down": {
+          "true": 0.7548619447779111,
+          "copy_root": 0.6693277310924369,
+          "imagined_true_fit": 0.5417166866746699,
+          "imagined_generated_fit": 0.6100240096038415
+        },
+        "pass_left": {
+          "true": 0.7222104818258664,
+          "copy_root": 0.6712278106508875,
+          "imagined_true_fit": 0.5542054099746407,
+          "imagined_generated_fit": 0.6160714285714286
+        },
+        "pass_right": {
+          "true": 0.6326291079812206,
+          "copy_root": 0.5762910798122066,
+          "imagined_true_fit": 0.501864125932063,
+          "imagined_generated_fit": 0.522024302678818
+        },
+        "health": {
+          "true": 0.0900118350982666,
+          "copy_root": -0.015642166137695312,
+          "imagined_true_fit": -0.08632349967956543,
+          "imagined_generated_fit": 0.013574957847595215
+        },
+        "food": {
+          "true": 0.6879551410675049,
+          "copy_root": 0.7146909236907959,
+          "imagined_true_fit": 0.5986326932907104,
+          "imagined_generated_fit": 0.6633822917938232
+        },
+        "drink": {
+          "true": 0.43052589893341064,
+          "copy_root": 0.43088680505752563,
+          "imagined_true_fit": 0.3282197117805481,
+          "imagined_generated_fit": 0.407146155834198
+        },
+        "energy": {
+          "true": 0.2657968997955322,
+          "copy_root": 0.3339843153953552,
+          "imagined_true_fit": 0.26497960090637207,
+          "imagined_generated_fit": 0.3530561923980713
+        }
+      }
+    },
+    "readout_contract": "same ridge capacity, TRAIN/validation split and TEST labels; true root plus true or generated factual successors",
+    "moved_vs_blocked_auc": {
+      "true": 0.7318239795918368,
+      "imagined_true_fit": 0.735492904058175,
+      "imagined_generated_fit": 0.7390848580811635
+    },
+    "health_down_auc": {
+      "true": 0.7136039807572252,
+      "imagined_true_fit": 0.693257684256913,
+      "imagined_generated_fit": 0.6888233998016966
+    }
+  },
+  "tc@2000": {
+    "schema_version": 2,
+    "depth": {
+      "1": {
+        "zombie_adjacent": {
+          "true": 0.6724137931034483,
+          "copy_root": 0.6642284918146987,
+          "imagined_true_fit": 0.54858934169279,
+          "imagined_generated_fit": 0.6175548589341693
+        },
+        "zombie_in_view": {
+          "true": 0.75008325008325,
+          "copy_root": 0.7569097569097569,
+          "imagined_true_fit": 0.5531968031968032,
+          "imagined_generated_fit": 0.5745088245088245
+        },
+        "pass_up": {
+          "true": 0.6265777136675081,
+          "copy_root": 0.5543635052289939,
+          "imagined_true_fit": 0.5570681572304363,
+          "imagined_generated_fit": 0.6193653083303282
+        },
+        "pass_down": {
+          "true": 0.7792050944224858,
+          "copy_root": 0.7703118137900746,
+          "imagined_true_fit": 0.46519543258673696,
+          "imagined_generated_fit": 0.6262626262626263
+        },
+        "pass_left": {
+          "true": 0.7043715846994536,
+          "copy_root": 0.6714207650273224,
+          "imagined_true_fit": 0.516775956284153,
+          "imagined_generated_fit": 0.5814207650273224
+        },
+        "pass_right": {
+          "true": 0.6668831168831169,
+          "copy_root": 0.6707792207792208,
+          "imagined_true_fit": 0.5790764790764791,
+          "imagined_generated_fit": 0.46616161616161617
+        },
+        "health": {
+          "true": 0.1523706316947937,
+          "copy_root": 0.14352476596832275,
+          "imagined_true_fit": -0.29981327056884766,
+          "imagined_generated_fit": -0.04879617691040039
+        },
+        "food": {
+          "true": 0.6518491506576538,
+          "copy_root": 0.642352819442749,
+          "imagined_true_fit": -0.5661221742630005,
+          "imagined_generated_fit": -0.08092820644378662
+        },
+        "drink": {
+          "true": 0.4402654767036438,
+          "copy_root": 0.43738430738449097,
+          "imagined_true_fit": -0.6076277494430542,
+          "imagined_generated_fit": -0.12233126163482666
+        },
+        "energy": {
+          "true": 0.3785964250564575,
+          "copy_root": 0.33955711126327515,
+          "imagined_true_fit": -0.6061897277832031,
+          "imagined_generated_fit": -0.07910466194152832
+        }
+      },
+      "4": {
+        "zombie_adjacent": {
+          "true": 0.8004362050163577,
+          "copy_root": 0.7097419120319883,
+          "imagined_true_fit": 0.6234096692111959,
+          "imagined_generated_fit": 0.6454016721192294
+        },
+        "zombie_in_view": {
+          "true": 0.7741504090623034,
+          "copy_root": 0.742526746381372,
+          "imagined_true_fit": 0.532016991818754,
+          "imagined_generated_fit": 0.61068281938326
+        },
+        "pass_up": {
+          "true": 0.5968826907301067,
+          "copy_root": 0.5331419196062346,
+          "imagined_true_fit": 0.5051681706316653,
+          "imagined_generated_fit": 0.6022969647251846
+        },
+        "pass_down": {
+          "true": 0.7993667242371906,
+          "copy_root": 0.7404720782959124,
+          "imagined_true_fit": 0.4978698906160046,
+          "imagined_generated_fit": 0.6562464018422568
+        },
+        "pass_left": {
+          "true": 0.7479674796747967,
+          "copy_root": 0.6979987492182614,
+          "imagined_true_fit": 0.54859287054409,
+          "imagined_generated_fit": 0.66729205753596
+        },
+        "pass_right": {
+          "true": 0.6594606164383562,
+          "copy_root": 0.5874001141552512,
+          "imagined_true_fit": 0.4938641552511416,
+          "imagined_generated_fit": 0.5498002283105022
+        },
+        "health": {
+          "true": 0.1309683918952942,
+          "copy_root": 0.13811057806015015,
+          "imagined_true_fit": -0.0232163667678833,
+          "imagined_generated_fit": -0.0002288818359375
+        },
+        "food": {
+          "true": 0.6349302530288696,
+          "copy_root": 0.6235411167144775,
+          "imagined_true_fit": -0.8895496129989624,
+          "imagined_generated_fit": 0.03475511074066162
+        },
+        "drink": {
+          "true": 0.4248465895652771,
+          "copy_root": 0.4513656497001648,
+          "imagined_true_fit": -1.0341558456420898,
+          "imagined_generated_fit": -0.02075505256652832
+        },
+        "energy": {
+          "true": 0.28211915493011475,
+          "copy_root": 0.35518622398376465,
+          "imagined_true_fit": -1.1793568134307861,
+          "imagined_generated_fit": 0.009589731693267822
+        }
+      },
+      "8": {
+        "zombie_adjacent": {
+          "true": 0.7602240896358543,
+          "copy_root": 0.6682072829131652,
+          "imagined_true_fit": 0.5424369747899159,
+          "imagined_generated_fit": 0.5294117647058824
+        },
+        "zombie_in_view": {
+          "true": 0.7572335920959774,
+          "copy_root": 0.7381086803105151,
+          "imagined_true_fit": 0.4965419901199718,
+          "imagined_generated_fit": 0.471136203246295
+        },
+        "pass_up": {
+          "true": 0.5636494771006131,
+          "copy_root": 0.5498557518932564,
+          "imagined_true_fit": 0.46799495131626395,
+          "imagined_generated_fit": 0.608997475658132
+        },
+        "pass_down": {
+          "true": 0.7430994346524775,
+          "copy_root": 0.6853453053985146,
+          "imagined_true_fit": 0.49401396740937814,
+          "imagined_generated_fit": 0.6273694712337878
+        },
+        "pass_left": {
+          "true": 0.78394612304332,
+          "copy_root": 0.7199369008615459,
+          "imagined_true_fit": 0.5116490717145977,
+          "imagined_generated_fit": 0.6201310520567892
+        },
+        "pass_right": {
+          "true": 0.7332188841201717,
+          "copy_root": 0.616480686695279,
+          "imagined_true_fit": 0.5491845493562232,
+          "imagined_generated_fit": 0.5995708154506437
+        },
+        "health": {
+          "true": 0.14387845993041992,
+          "copy_root": 0.12047547101974487,
+          "imagined_true_fit": -0.07688331604003906,
+          "imagined_generated_fit": -0.013593792915344238
+        },
+        "food": {
+          "true": 0.6441975831985474,
+          "copy_root": 0.6290689706802368,
+          "imagined_true_fit": -1.0111751556396484,
+          "imagined_generated_fit": 0.03141486644744873
+        },
+        "drink": {
+          "true": 0.4667621850967407,
+          "copy_root": 0.4401003122329712,
+          "imagined_true_fit": -1.254577875137329,
+          "imagined_generated_fit": -0.0004342794418334961
+        },
+        "energy": {
+          "true": 0.32148754596710205,
+          "copy_root": 0.33648210763931274,
+          "imagined_true_fit": -1.1608667373657227,
+          "imagined_generated_fit": 0.012324273586273193
+        }
+      },
+      "16": {
+        "zombie_adjacent": {
+          "true": 0.7518672199170124,
+          "copy_root": 0.700311203319502,
+          "imagined_true_fit": 0.46680497925311204,
+          "imagined_generated_fit": 0.49263485477178426
+        },
+        "zombie_in_view": {
+          "true": 0.7432716049382716,
+          "copy_root": 0.674074074074074,
+          "imagined_true_fit": 0.5164197530864197,
+          "imagined_generated_fit": 0.4667283950617284
+        },
+        "pass_up": {
+          "true": 0.5906245228279127,
+          "copy_root": 0.5819209039548022,
+          "imagined_true_fit": 0.5697052985188579,
+          "imagined_generated_fit": 0.6229195296991907
+        },
+        "pass_down": {
+          "true": 0.7432773109243698,
+          "copy_root": 0.6566626650660264,
+          "imagined_true_fit": 0.4709483793517407,
+          "imagined_generated_fit": 0.707202881152461
+        },
+        "pass_left": {
+          "true": 0.7074175824175825,
+          "copy_root": 0.6193998309382924,
+          "imagined_true_fit": 0.5140532544378699,
+          "imagined_generated_fit": 0.6306530008453085
+        },
+        "pass_right": {
+          "true": 0.6337337752002209,
+          "copy_root": 0.5996962165147749,
+          "imagined_true_fit": 0.4463545981772991,
+          "imagined_generated_fit": 0.5732532449599558
+        },
+        "health": {
+          "true": 0.07591873407363892,
+          "copy_root": 0.05634492635726929,
+          "imagined_true_fit": -0.035919904708862305,
+          "imagined_generated_fit": -0.035662174224853516
+        },
+        "food": {
+          "true": 0.5732306241989136,
+          "copy_root": 0.5869461297988892,
+          "imagined_true_fit": -1.0134177207946777,
+          "imagined_generated_fit": -0.004208922386169434
+        },
+        "drink": {
+          "true": 0.35891544818878174,
+          "copy_root": 0.36116844415664673,
+          "imagined_true_fit": -1.1076385974884033,
+          "imagined_generated_fit": -0.02101743221282959
+        },
+        "energy": {
+          "true": 0.2635490298271179,
+          "copy_root": 0.3093067407608032,
+          "imagined_true_fit": -1.0315027236938477,
+          "imagined_generated_fit": 0.0024474263191223145
+        }
+      }
+    },
+    "readout_contract": "same ridge capacity, TRAIN/validation split and TEST labels; true root plus true or generated factual successors",
+    "moved_vs_blocked_auc": {
+      "true": 0.7228697513488154,
+      "imagined_true_fit": 0.5803608081163499,
+      "imagined_generated_fit": 0.6525224313863477
+    },
+    "health_down_auc": {
+      "true": 0.6354375527891006,
+      "imagined_true_fit": 0.5180401013550733,
+      "imagined_generated_fit": 0.6551944475046821
+    }
+  },
+  "raw_lam1@2000": {
+    "schema_version": 2,
+    "depth": {
+      "1": {
+        "zombie_adjacent": {
+          "true": 0.9611633577150819,
+          "copy_root": 0.9402647161267851,
+          "imagined_true_fit": 0.6248693834900731,
+          "imagined_generated_fit": 0.7396377568791362
+        },
+        "zombie_in_view": {
+          "true": 0.83999333999334,
+          "copy_root": 0.8376623376623377,
+          "imagined_true_fit": 0.6536796536796536,
+          "imagined_generated_fit": 0.6947219447219447
+        },
+        "pass_up": {
+          "true": 0.7783086909484312,
+          "copy_root": 0.7002344031734583,
+          "imagined_true_fit": 0.7066354129102056,
+          "imagined_generated_fit": 0.7012261089073206
+        },
+        "pass_down": {
+          "true": 0.9201251646903821,
+          "copy_root": 0.8528765920070268,
+          "imagined_true_fit": 0.836352657004831,
+          "imagined_generated_fit": 0.8324549846288977
+        },
+        "pass_left": {
+          "true": 0.8159562841530055,
+          "copy_root": 0.735792349726776,
+          "imagined_true_fit": 0.7395081967213115,
+          "imagined_generated_fit": 0.7498907103825136
+        },
+        "pass_right": {
+          "true": 0.8446608946608947,
+          "copy_root": 0.8136363636363636,
+          "imagined_true_fit": 0.695021645021645,
+          "imagined_generated_fit": 0.7034632034632035
+        },
+        "health": {
+          "true": 0.32488584518432617,
+          "copy_root": 0.3601902723312378,
+          "imagined_true_fit": 0.0038050413131713867,
+          "imagined_generated_fit": 0.12324327230453491
+        },
+        "food": {
+          "true": 0.8050717115402222,
+          "copy_root": 0.799071729183197,
+          "imagined_true_fit": 0.6856492757797241,
+          "imagined_generated_fit": 0.7575674653053284
+        },
+        "drink": {
+          "true": 0.9708842635154724,
+          "copy_root": 0.9725510478019714,
+          "imagined_true_fit": 0.8930707573890686,
+          "imagined_generated_fit": 0.893955409526825
+        },
+        "energy": {
+          "true": 0.38331979513168335,
+          "copy_root": 0.3568328022956848,
+          "imagined_true_fit": 0.2317078709602356,
+          "imagined_generated_fit": 0.3500599265098572
+        }
+      },
+      "4": {
+        "zombie_adjacent": {
+          "true": 0.9516539440203562,
+          "copy_root": 0.9352962559069429,
+          "imagined_true_fit": 0.6953834969102145,
+          "imagined_generated_fit": 0.7295528898582334
+        },
+        "zombie_in_view": {
+          "true": 0.8067967275015733,
+          "copy_root": 0.7943675267463813,
+          "imagined_true_fit": 0.6228760226557584,
+          "imagined_generated_fit": 0.70303650094399
+        },
+        "pass_up": {
+          "true": 0.7544708777686628,
+          "copy_root": 0.6167350287120591,
+          "imagined_true_fit": 0.58785890073831,
+          "imagined_generated_fit": 0.6703855619360132
+        },
+        "pass_down": {
+          "true": 0.9088658606793322,
+          "copy_root": 0.7876799078871618,
+          "imagined_true_fit": 0.7918825561312608,
+          "imagined_generated_fit": 0.8196315486470926
+        },
+        "pass_left": {
+          "true": 0.8123202001250782,
+          "copy_root": 0.7375234521575985,
+          "imagined_true_fit": 0.6744215134459037,
+          "imagined_generated_fit": 0.749906191369606
+        },
+        "pass_right": {
+          "true": 0.835259703196347,
+          "copy_root": 0.7053367579908676,
+          "imagined_true_fit": 0.5820490867579908,
+          "imagined_generated_fit": 0.6400542237442922
+        },
+        "health": {
+          "true": 0.3376254439353943,
+          "copy_root": 0.37508082389831543,
+          "imagined_true_fit": 0.07095849514007568,
+          "imagined_generated_fit": 0.1240609884262085
+        },
+        "food": {
+          "true": 0.7962003350257874,
+          "copy_root": 0.780051589012146,
+          "imagined_true_fit": 0.6457011699676514,
+          "imagined_generated_fit": 0.7528888583183289
+        },
+        "drink": {
+          "true": 0.9723793268203735,
+          "copy_root": 0.9683207273483276,
+          "imagined_true_fit": 0.8104730844497681,
+          "imagined_generated_fit": 0.8701510429382324
+        },
+        "energy": {
+          "true": 0.34452158212661743,
+          "copy_root": 0.3030175566673279,
+          "imagined_true_fit": 0.14652210474014282,
+          "imagined_generated_fit": 0.32471174001693726
+        }
+      },
+      "8": {
+        "zombie_adjacent": {
+          "true": 0.9799719887955182,
+          "copy_root": 0.8710084033613446,
+          "imagined_true_fit": 0.5852941176470589,
+          "imagined_generated_fit": 0.715546218487395
+        },
+        "zombie_in_view": {
+          "true": 0.8169371912491179,
+          "copy_root": 0.781439661256175,
+          "imagined_true_fit": 0.6257586450247,
+          "imagined_generated_fit": 0.6892025405786874
+        },
+        "pass_up": {
+          "true": 0.7987738910926794,
+          "copy_root": 0.576631806707537,
+          "imagined_true_fit": 0.5814100252434187,
+          "imagined_generated_fit": 0.6697619906238731
+        },
+        "pass_down": {
+          "true": 0.877618889258397,
+          "copy_root": 0.7352289103203636,
+          "imagined_true_fit": 0.7028599933488526,
+          "imagined_generated_fit": 0.7314045006096885
+        },
+        "pass_left": {
+          "true": 0.8389758524450917,
+          "copy_root": 0.7305545443514136,
+          "imagined_true_fit": 0.7346802572503337,
+          "imagined_generated_fit": 0.8006309913845407
+        },
+        "pass_right": {
+          "true": 0.8205150214592275,
+          "copy_root": 0.6555364806866952,
+          "imagined_true_fit": 0.615107296137339,
+          "imagined_generated_fit": 0.7214592274678111
+        },
+        "health": {
+          "true": 0.2637385129928589,
+          "copy_root": 0.34275156259536743,
+          "imagined_true_fit": -0.0814899206161499,
+          "imagined_generated_fit": 0.0684087872505188
+        },
+        "food": {
+          "true": 0.769033670425415,
+          "copy_root": 0.7771625518798828,
+          "imagined_true_fit": 0.5663731098175049,
+          "imagined_generated_fit": 0.7145366668701172
+        },
+        "drink": {
+          "true": 0.9743654727935791,
+          "copy_root": 0.9439292550086975,
+          "imagined_true_fit": 0.6836939454078674,
+          "imagined_generated_fit": 0.8060108423233032
+        },
+        "energy": {
+          "true": 0.36425745487213135,
+          "copy_root": 0.32180970907211304,
+          "imagined_true_fit": 0.12471663951873779,
+          "imagined_generated_fit": 0.3407290577888489
+        }
+      },
+      "16": {
+        "zombie_adjacent": {
+          "true": 0.9147302904564315,
+          "copy_root": 0.7073651452282158,
+          "imagined_true_fit": 0.4969917012448133,
+          "imagined_generated_fit": 0.662759336099585
+        },
+        "zombie_in_view": {
+          "true": 0.8262962962962963,
+          "copy_root": 0.685,
+          "imagined_true_fit": 0.5643827160493827,
+          "imagined_generated_fit": 0.6767901234567901
+        },
+        "pass_up": {
+          "true": 0.7339288440983356,
+          "copy_root": 0.6082608031760575,
+          "imagined_true_fit": 0.5575660406168881,
+          "imagined_generated_fit": 0.6418537181249045
+        },
+        "pass_down": {
+          "true": 0.8927370948379352,
+          "copy_root": 0.7120648259303721,
+          "imagined_true_fit": 0.6010204081632653,
+          "imagined_generated_fit": 0.7258103241296519
+        },
+        "pass_left": {
+          "true": 0.7836538461538461,
+          "copy_root": 0.6425929839391378,
+          "imagined_true_fit": 0.606825866441251,
+          "imagined_generated_fit": 0.6962700760777684
+        },
+        "pass_right": {
+          "true": 0.7488262910798122,
+          "copy_root": 0.5571665285832643,
+          "imagined_true_fit": 0.5390776028721348,
+          "imagined_generated_fit": 0.593965755316211
+        },
+        "health": {
+          "true": 0.2755412459373474,
+          "copy_root": 0.23260915279388428,
+          "imagined_true_fit": -0.2752124071121216,
+          "imagined_generated_fit": 0.04139631986618042
+        },
+        "food": {
+          "true": 0.7448247671127319,
+          "copy_root": 0.7401947975158691,
+          "imagined_true_fit": 0.5092915892601013,
+          "imagined_generated_fit": 0.676522433757782
+        },
+        "drink": {
+          "true": 0.9675556421279907,
+          "copy_root": 0.8206367492675781,
+          "imagined_true_fit": 0.3187943696975708,
+          "imagined_generated_fit": 0.6070594191551208
+        },
+        "energy": {
+          "true": 0.29350507259368896,
+          "copy_root": 0.2946861982345581,
+          "imagined_true_fit": 0.053436279296875,
+          "imagined_generated_fit": 0.3426722288131714
+        }
+      }
+    },
+    "readout_contract": "same ridge capacity, TRAIN/validation split and TEST labels; true root plus true or generated factual successors",
+    "moved_vs_blocked_auc": {
+      "true": 0.8775730119634061,
+      "imagined_true_fit": 0.7644191297208539,
+      "imagined_generated_fit": 0.8023582277738681
+    },
+    "health_down_auc": {
+      "true": 0.715460320957732,
+      "imagined_true_fit": 0.7218556057434542,
+      "imagined_generated_fit": 0.7319800962138739
+    }
+  },
+  "raw_lam0.1@2000": {
+    "schema_version": 2,
+    "depth": {
+      "1": {
+        "zombie_adjacent": {
+          "true": 0.7288401253918495,
+          "copy_root": 0.7370254266805991,
+          "imagined_true_fit": 0.7187391152908394,
+          "imagined_generated_fit": 0.7520027864855451
+        },
+        "zombie_in_view": {
+          "true": 0.6557609057609057,
+          "copy_root": 0.645937395937396,
+          "imagined_true_fit": 0.6271228771228772,
+          "imagined_generated_fit": 0.6525141525141526
+        },
+        "pass_up": {
+          "true": 0.5961053011179228,
+          "copy_root": 0.5828525063108547,
+          "imagined_true_fit": 0.5872701045798774,
+          "imagined_generated_fit": 0.6309051568698161
+        },
+        "pass_down": {
+          "true": 0.7788208168642952,
+          "copy_root": 0.7750329380764164,
+          "imagined_true_fit": 0.7491216512955643,
+          "imagined_generated_fit": 0.7761308739569609
+        },
+        "pass_left": {
+          "true": 0.6842622950819672,
+          "copy_root": 0.675464480874317,
+          "imagined_true_fit": 0.5985245901639344,
+          "imagined_generated_fit": 0.6473224043715847
+        },
+        "pass_right": {
+          "true": 0.6753968253968254,
+          "copy_root": 0.6427128427128427,
+          "imagined_true_fit": 0.6098845598845599,
+          "imagined_generated_fit": 0.6140692640692641
+        },
+        "health": {
+          "true": 0.2090246081352234,
+          "copy_root": 0.22200047969818115,
+          "imagined_true_fit": 0.19516092538833618,
+          "imagined_generated_fit": 0.09842574596405029
+        },
+        "food": {
+          "true": 0.8023779392242432,
+          "copy_root": 0.7920273542404175,
+          "imagined_true_fit": 0.6692469120025635,
+          "imagined_generated_fit": 0.7432026863098145
+        },
+        "drink": {
+          "true": 0.6935237050056458,
+          "copy_root": 0.6898343563079834,
+          "imagined_true_fit": 0.6943139433860779,
+          "imagined_generated_fit": 0.6202707886695862
+        },
+        "energy": {
+          "true": 0.4522514343261719,
+          "copy_root": 0.4447839856147766,
+          "imagined_true_fit": 0.22995269298553467,
+          "imagined_generated_fit": 0.49705415964126587
+        }
+      },
+      "4": {
+        "zombie_adjacent": {
+          "true": 0.7440930570701563,
+          "copy_root": 0.7446383133406034,
+          "imagined_true_fit": 0.7033805888767721,
+          "imagined_generated_fit": 0.7201017811704835
+        },
+        "zombie_in_view": {
+          "true": 0.6443517935808685,
+          "copy_root": 0.6415984896161108,
+          "imagined_true_fit": 0.6279106356198867,
+          "imagined_generated_fit": 0.6373505349276274
+        },
+        "pass_up": {
+          "true": 0.5875307629204266,
+          "copy_root": 0.555045118949959,
+          "imagined_true_fit": 0.5721082854799016,
+          "imagined_generated_fit": 0.601968826907301
+        },
+        "pass_down": {
+          "true": 0.7637881404720783,
+          "copy_root": 0.7222222222222222,
+          "imagined_true_fit": 0.7039147956246402,
+          "imagined_generated_fit": 0.7434081750143926
+        },
+        "pass_left": {
+          "true": 0.6969355847404628,
+          "copy_root": 0.691869918699187,
+          "imagined_true_fit": 0.5839899937460913,
+          "imagined_generated_fit": 0.6905565978736711
+        },
+        "pass_right": {
+          "true": 0.6700199771689498,
+          "copy_root": 0.6075913242009132,
+          "imagined_true_fit": 0.5730593607305936,
+          "imagined_generated_fit": 0.5753424657534246
+        },
+        "health": {
+          "true": 0.21324610710144043,
+          "copy_root": 0.2105368971824646,
+          "imagined_true_fit": 0.19072604179382324,
+          "imagined_generated_fit": 0.09888696670532227
+        },
+        "food": {
+          "true": 0.7760829925537109,
+          "copy_root": 0.7646564245223999,
+          "imagined_true_fit": 0.5963130593299866,
+          "imagined_generated_fit": 0.741944432258606
+        },
+        "drink": {
+          "true": 0.6799352765083313,
+          "copy_root": 0.704954981803894,
+          "imagined_true_fit": 0.6790837049484253,
+          "imagined_generated_fit": 0.6261274814605713
+        },
+        "energy": {
+          "true": 0.4298551678657532,
+          "copy_root": 0.3884897232055664,
+          "imagined_true_fit": 0.11680155992507935,
+          "imagined_generated_fit": 0.4374939203262329
+        }
+      },
+      "8": {
+        "zombie_adjacent": {
+          "true": 0.7705882352941177,
+          "copy_root": 0.7285714285714285,
+          "imagined_true_fit": 0.6627450980392157,
+          "imagined_generated_fit": 0.7113445378151261
+        },
+        "zombie_in_view": {
+          "true": 0.6819336626676076,
+          "copy_root": 0.6573041637261821,
+          "imagined_true_fit": 0.6298517995765702,
+          "imagined_generated_fit": 0.6492589978828511
+        },
+        "pass_up": {
+          "true": 0.5861882437793003,
+          "copy_root": 0.5782545979084025,
+          "imagined_true_fit": 0.5105481428056257,
+          "imagined_generated_fit": 0.5283988460151461
+        },
+        "pass_down": {
+          "true": 0.718157632191553,
+          "copy_root": 0.6942689280567564,
+          "imagined_true_fit": 0.635018290655138,
+          "imagined_generated_fit": 0.6902228134353176
+        },
+        "pass_left": {
+          "true": 0.7218177405654653,
+          "copy_root": 0.683412207256401,
+          "imagined_true_fit": 0.6104841645431379,
+          "imagined_generated_fit": 0.7262468147069531
+        },
+        "pass_right": {
+          "true": 0.6265236051502145,
+          "copy_root": 0.5795708154506438,
+          "imagined_true_fit": 0.5730472103004292,
+          "imagined_generated_fit": 0.6274678111587982
+        },
+        "health": {
+          "true": 0.2019781470298767,
+          "copy_root": 0.17715823650360107,
+          "imagined_true_fit": 0.15774327516555786,
+          "imagined_generated_fit": 0.11623638868331909
+        },
+        "food": {
+          "true": 0.7909346222877502,
+          "copy_root": 0.768069863319397,
+          "imagined_true_fit": 0.5715314149856567,
+          "imagined_generated_fit": 0.739385724067688
+        },
+        "drink": {
+          "true": 0.6946528553962708,
+          "copy_root": 0.6913702487945557,
+          "imagined_true_fit": 0.5844445824623108,
+          "imagined_generated_fit": 0.5895165205001831
+        },
+        "energy": {
+          "true": 0.40738219022750854,
+          "copy_root": 0.3808783292770386,
+          "imagined_true_fit": 0.12733298540115356,
+          "imagined_generated_fit": 0.43312543630599976
+        }
+      },
+      "16": {
+        "zombie_adjacent": {
+          "true": 0.6690871369294605,
+          "copy_root": 0.6092323651452282,
+          "imagined_true_fit": 0.6105809128630706,
+          "imagined_generated_fit": 0.5934647302904564
+        },
+        "zombie_in_view": {
+          "true": 0.62,
+          "copy_root": 0.6295679012345679,
+          "imagined_true_fit": 0.5885185185185186,
+          "imagined_generated_fit": 0.5933950617283951
+        },
+        "pass_up": {
+          "true": 0.6402504199114368,
+          "copy_root": 0.5570316078790655,
+          "imagined_true_fit": 0.47656130706978167,
+          "imagined_generated_fit": 0.5637501908688349
+        },
+        "pass_down": {
+          "true": 0.7848139255702281,
+          "copy_root": 0.6729891956782713,
+          "imagined_true_fit": 0.5785714285714286,
+          "imagined_generated_fit": 0.630672268907563
+        },
+        "pass_left": {
+          "true": 0.691198224852071,
+          "copy_root": 0.6527895181741336,
+          "imagined_true_fit": 0.5129437869822485,
+          "imagined_generated_fit": 0.6183431952662722
+        },
+        "pass_right": {
+          "true": 0.6315934824634079,
+          "copy_root": 0.5767053300193317,
+          "imagined_true_fit": 0.506006628003314,
+          "imagined_generated_fit": 0.5470864402098867
+        },
+        "health": {
+          "true": 0.17165154218673706,
+          "copy_root": 0.07678216695785522,
+          "imagined_true_fit": 0.0783764123916626,
+          "imagined_generated_fit": 0.081307053565979
+        },
+        "food": {
+          "true": 0.7027230262756348,
+          "copy_root": 0.7297008037567139,
+          "imagined_true_fit": 0.423206090927124,
+          "imagined_generated_fit": 0.7031584978103638
+        },
+        "drink": {
+          "true": 0.5927833318710327,
+          "copy_root": 0.5376476049423218,
+          "imagined_true_fit": 0.3185950517654419,
+          "imagined_generated_fit": 0.4465542435646057
+        },
+        "energy": {
+          "true": 0.38911694288253784,
+          "copy_root": 0.38120269775390625,
+          "imagined_true_fit": 0.07508957386016846,
+          "imagined_generated_fit": 0.35651910305023193
+        }
+      }
+    },
+    "readout_contract": "same ridge capacity, TRAIN/validation split and TEST labels; true root plus true or generated factual successors",
+    "moved_vs_blocked_auc": {
+      "true": 0.7410640980530143,
+      "imagined_true_fit": 0.7232179509734928,
+      "imagined_generated_fit": 0.7473390218156228
+    },
+    "health_down_auc": {
+      "true": 0.7233612427013331,
+      "imagined_true_fit": 0.6750633469207888,
+      "imagined_generated_fit": 0.6717619624692446
+    }
+  },
+  "raw_lam10@2000": {
+    "schema_version": 2,
+    "depth": {
+      "1": {
+        "zombie_adjacent": {
+          "true": 0.9843260188087775,
+          "copy_root": 0.9362591431556949,
+          "imagined_true_fit": 0.6365377917102055,
+          "imagined_generated_fit": 0.667014977359805
+        },
+        "zombie_in_view": {
+          "true": 0.9264901764901765,
+          "copy_root": 0.9268231768231768,
+          "imagined_true_fit": 0.5887445887445888,
+          "imagined_generated_fit": 0.6694971694971695
+        },
+        "pass_up": {
+          "true": 0.9116480346195456,
+          "copy_root": 0.7275513883880274,
+          "imagined_true_fit": 0.6494771006130544,
+          "imagined_generated_fit": 0.7809231878831591
+        },
+        "pass_down": {
+          "true": 0.94889108476065,
+          "copy_root": 0.7953996486605183,
+          "imagined_true_fit": 0.6669960474308301,
+          "imagined_generated_fit": 0.7837615283267457
+        },
+        "pass_left": {
+          "true": 0.9484153005464481,
+          "copy_root": 0.8169945355191257,
+          "imagined_true_fit": 0.6539890710382513,
+          "imagined_generated_fit": 0.7631693989071038
+        },
+        "pass_right": {
+          "true": 0.8873015873015873,
+          "copy_root": 0.8444444444444444,
+          "imagined_true_fit": 0.704040404040404,
+          "imagined_generated_fit": 0.7057720057720057
+        },
+        "health": {
+          "true": 0.43295931816101074,
+          "copy_root": 0.43838465213775635,
+          "imagined_true_fit": -0.183191180229187,
+          "imagined_generated_fit": 0.008413076400756836
+        },
+        "food": {
+          "true": 0.7565757632255554,
+          "copy_root": 0.766845703125,
+          "imagined_true_fit": 0.5382049083709717,
+          "imagined_generated_fit": 0.5645323991775513
+        },
+        "drink": {
+          "true": 0.9548091292381287,
+          "copy_root": 0.9398577213287354,
+          "imagined_true_fit": 0.5975205898284912,
+          "imagined_generated_fit": 0.7108854055404663
+        },
+        "energy": {
+          "true": 0.4818376898765564,
+          "copy_root": 0.5088792443275452,
+          "imagined_true_fit": 0.23814576864242554,
+          "imagined_generated_fit": 0.2501595616340637
+        }
+      },
+      "4": {
+        "zombie_adjacent": {
+          "true": 0.9978189749182116,
+          "copy_root": 0.9489276626681207,
+          "imagined_true_fit": 0.5557978916757542,
+          "imagined_generated_fit": 0.6165030897855326
+        },
+        "zombie_in_view": {
+          "true": 0.8896318439269981,
+          "copy_root": 0.8757079924480805,
+          "imagined_true_fit": 0.5967589679043424,
+          "imagined_generated_fit": 0.6611076148521082
+        },
+        "pass_up": {
+          "true": 0.9191960623461854,
+          "copy_root": 0.6525020508613618,
+          "imagined_true_fit": 0.5222313371616079,
+          "imagined_generated_fit": 0.715422477440525
+        },
+        "pass_down": {
+          "true": 0.9467472654001151,
+          "copy_root": 0.7874496257915947,
+          "imagined_true_fit": 0.5570523891767415,
+          "imagined_generated_fit": 0.7441565918249856
+        },
+        "pass_left": {
+          "true": 0.9610381488430269,
+          "copy_root": 0.7521575984990619,
+          "imagined_true_fit": 0.6098186366479049,
+          "imagined_generated_fit": 0.7605378361475923
+        },
+        "pass_right": {
+          "true": 0.902611301369863,
+          "copy_root": 0.7286672374429224,
+          "imagined_true_fit": 0.6013841324200914,
+          "imagined_generated_fit": 0.6589611872146118
+        },
+        "health": {
+          "true": 0.44640660285949707,
+          "copy_root": 0.4647199511528015,
+          "imagined_true_fit": -0.12233352661132812,
+          "imagined_generated_fit": 0.04329109191894531
+        },
+        "food": {
+          "true": 0.7723551988601685,
+          "copy_root": 0.7825514078140259,
+          "imagined_true_fit": 0.4463541507720947,
+          "imagined_generated_fit": 0.5714181661605835
+        },
+        "drink": {
+          "true": 0.9503465890884399,
+          "copy_root": 0.9358544945716858,
+          "imagined_true_fit": 0.45364701747894287,
+          "imagined_generated_fit": 0.7014377117156982
+        },
+        "energy": {
+          "true": 0.4713669419288635,
+          "copy_root": 0.4948539733886719,
+          "imagined_true_fit": 0.2214362621307373,
+          "imagined_generated_fit": 0.2948914170265198
+        }
+      },
+      "8": {
+        "zombie_adjacent": {
+          "true": 0.9980392156862745,
+          "copy_root": 0.8380952380952381,
+          "imagined_true_fit": 0.5672268907563025,
+          "imagined_generated_fit": 0.6436974789915967
+        },
+        "zombie_in_view": {
+          "true": 0.916302046577276,
+          "copy_root": 0.8456598447424135,
+          "imagined_true_fit": 0.5836273817925194,
+          "imagined_generated_fit": 0.6467184191954835
+        },
+        "pass_up": {
+          "true": 0.928777497295348,
+          "copy_root": 0.5817706455102777,
+          "imagined_true_fit": 0.5045979084024522,
+          "imagined_generated_fit": 0.7247565813198702
+        },
+        "pass_down": {
+          "true": 0.9214610353619332,
+          "copy_root": 0.7264715663451945,
+          "imagined_true_fit": 0.5722203746812992,
+          "imagined_generated_fit": 0.7253630417913757
+        },
+        "pass_left": {
+          "true": 0.9603203494721514,
+          "copy_root": 0.7620434413299357,
+          "imagined_true_fit": 0.6589612911054483,
+          "imagined_generated_fit": 0.7576750394369616
+        },
+        "pass_right": {
+          "true": 0.9286695278969958,
+          "copy_root": 0.6479828326180258,
+          "imagined_true_fit": 0.5735622317596567,
+          "imagined_generated_fit": 0.6888412017167382
+        },
+        "health": {
+          "true": 0.4561896324157715,
+          "copy_root": 0.4570193886756897,
+          "imagined_true_fit": -0.053052663803100586,
+          "imagined_generated_fit": 0.009338438510894775
+        },
+        "food": {
+          "true": 0.7546106576919556,
+          "copy_root": 0.7779043316841125,
+          "imagined_true_fit": 0.3395131826400757,
+          "imagined_generated_fit": 0.4338003396987915
+        },
+        "drink": {
+          "true": 0.9439794421195984,
+          "copy_root": 0.9106311202049255,
+          "imagined_true_fit": 0.26131653785705566,
+          "imagined_generated_fit": 0.493022620677948
+        },
+        "energy": {
+          "true": 0.5008098483085632,
+          "copy_root": 0.5084019899368286,
+          "imagined_true_fit": 0.1517290472984314,
+          "imagined_generated_fit": 0.2872198820114136
+        }
+      },
+      "16": {
+        "zombie_adjacent": {
+          "true": 0.987240663900415,
+          "copy_root": 0.7112033195020747,
+          "imagined_true_fit": 0.49688796680497926,
+          "imagined_generated_fit": 0.5742738589211618
+        },
+        "zombie_in_view": {
+          "true": 0.9020370370370371,
+          "copy_root": 0.7494444444444445,
+          "imagined_true_fit": 0.5553703703703704,
+          "imagined_generated_fit": 0.6499382716049382
+        },
+        "pass_up": {
+          "true": 0.918918918918919,
+          "copy_root": 0.5677966101694916,
+          "imagined_true_fit": 0.5596274240342037,
+          "imagined_generated_fit": 0.6113910520690182
+        },
+        "pass_down": {
+          "true": 0.925030012004802,
+          "copy_root": 0.7097839135654261,
+          "imagined_true_fit": 0.526890756302521,
+          "imagined_generated_fit": 0.7145858343337335
+        },
+        "pass_left": {
+          "true": 0.9363377007607777,
+          "copy_root": 0.6736580726965342,
+          "imagined_true_fit": 0.5388841927303466,
+          "imagined_generated_fit": 0.6650993237531699
+        },
+        "pass_right": {
+          "true": 0.8987848660590997,
+          "copy_root": 0.5802954984810825,
+          "imagined_true_fit": 0.5488815244407622,
+          "imagined_generated_fit": 0.5471554819110743
+        },
+        "health": {
+          "true": 0.38467997312545776,
+          "copy_root": 0.3317641019821167,
+          "imagined_true_fit": -0.09162628650665283,
+          "imagined_generated_fit": 0.021144211292266846
+        },
+        "food": {
+          "true": 0.7095694541931152,
+          "copy_root": 0.7549262642860413,
+          "imagined_true_fit": 0.1182718276977539,
+          "imagined_generated_fit": 0.24951672554016113
+        },
+        "drink": {
+          "true": 0.9368526935577393,
+          "copy_root": 0.8004199862480164,
+          "imagined_true_fit": 0.07564455270767212,
+          "imagined_generated_fit": 0.2680653929710388
+        },
+        "energy": {
+          "true": 0.4377175569534302,
+          "copy_root": 0.4962080717086792,
+          "imagined_true_fit": 0.09116947650909424,
+          "imagined_generated_fit": 0.2297322154045105
+        }
+      }
+    },
+    "readout_contract": "same ridge capacity, TRAIN/validation split and TEST labels; true root plus true or generated factual successors",
+    "moved_vs_blocked_auc": {
+      "true": 0.9363894264602393,
+      "imagined_true_fit": 0.666593361482524,
+      "imagined_generated_fit": 0.8527335503166784
+    },
+    "health_down_auc": {
+      "true": 0.8580239432999155,
+      "imagined_true_fit": 0.6804010135507326,
+      "imagined_generated_fit": 0.7648580661745804
+    }
+  },
+  "tc_lam1@2000": {
+    "schema_version": 2,
+    "depth": {
+      "1": {
+        "zombie_adjacent": {
+          "true": 0.5818530128874957,
+          "copy_root": 0.6873911529083943,
+          "imagined_true_fit": 0.453848833159178,
+          "imagined_generated_fit": 0.534831069313828
+        },
+        "zombie_in_view": {
+          "true": 0.6510989010989011,
+          "copy_root": 0.6934731934731935,
+          "imagined_true_fit": 0.47768897768897767,
+          "imagined_generated_fit": 0.6172161172161172
+        },
+        "pass_up": {
+          "true": 0.6806707536963578,
+          "copy_root": 0.5902452217814641,
+          "imagined_true_fit": 0.6283808150018031,
+          "imagined_generated_fit": 0.6946447890371439
+        },
+        "pass_down": {
+          "true": 0.836133069828722,
+          "copy_root": 0.7568620992534036,
+          "imagined_true_fit": 0.7796442687747036,
+          "imagined_generated_fit": 0.7978151075977163
+        },
+        "pass_left": {
+          "true": 0.7982513661202186,
+          "copy_root": 0.7333879781420765,
+          "imagined_true_fit": 0.689016393442623,
+          "imagined_generated_fit": 0.6955191256830601
+        },
+        "pass_right": {
+          "true": 0.6955266955266955,
+          "copy_root": 0.689033189033189,
+          "imagined_true_fit": 0.6301587301587301,
+          "imagined_generated_fit": 0.6265512265512265
+        },
+        "health": {
+          "true": 0.07275539636611938,
+          "copy_root": 0.08275365829467773,
+          "imagined_true_fit": -0.016718745231628418,
+          "imagined_generated_fit": 0.019230186939239502
+        },
+        "food": {
+          "true": 0.5725750923156738,
+          "copy_root": 0.5445205569267273,
+          "imagined_true_fit": -0.3679533004760742,
+          "imagined_generated_fit": 0.1381884217262268
+        },
+        "drink": {
+          "true": 0.4060822129249573,
+          "copy_root": 0.4199991226196289,
+          "imagined_true_fit": -0.32196569442749023,
+          "imagined_generated_fit": 0.0739787220954895
+        },
+        "energy": {
+          "true": 0.27850741147994995,
+          "copy_root": 0.2627739906311035,
+          "imagined_true_fit": -0.3835035562515259,
+          "imagined_generated_fit": 0.013013601303100586
+        }
+      },
+      "4": {
+        "zombie_adjacent": {
+          "true": 0.6653944020356234,
+          "copy_root": 0.7368229734641948,
+          "imagined_true_fit": 0.5307161032351873,
+          "imagined_generated_fit": 0.6174118502362778
+        },
+        "zombie_in_view": {
+          "true": 0.6680302076777848,
+          "copy_root": 0.6899779735682819,
+          "imagined_true_fit": 0.49142542479546886,
+          "imagined_generated_fit": 0.665434235368156
+        },
+        "pass_up": {
+          "true": 0.6520918785890074,
+          "copy_root": 0.5406070549630845,
+          "imagined_true_fit": 0.583921246923708,
+          "imagined_generated_fit": 0.7166529942575882
+        },
+        "pass_down": {
+          "true": 0.8484743811168681,
+          "copy_root": 0.781174438687392,
+          "imagined_true_fit": 0.7496257915947035,
+          "imagined_generated_fit": 0.7683362118595279
+        },
+        "pass_left": {
+          "true": 0.8043151969981238,
+          "copy_root": 0.7868042526579112,
+          "imagined_true_fit": 0.683739837398374,
+          "imagined_generated_fit": 0.7664165103189493
+        },
+        "pass_right": {
+          "true": 0.6953481735159818,
+          "copy_root": 0.6420519406392694,
+          "imagined_true_fit": 0.6551084474885844,
+          "imagined_generated_fit": 0.6708761415525114
+        },
+        "health": {
+          "true": 0.07164913415908813,
+          "copy_root": 0.0754324197769165,
+          "imagined_true_fit": 0.034647345542907715,
+          "imagined_generated_fit": 0.01557070016860962
+        },
+        "food": {
+          "true": 0.5739871263504028,
+          "copy_root": 0.5547304153442383,
+          "imagined_true_fit": -0.3517249822616577,
+          "imagined_generated_fit": 0.10113108158111572
+        },
+        "drink": {
+          "true": 0.3740020990371704,
+          "copy_root": 0.42748868465423584,
+          "imagined_true_fit": -0.31633591651916504,
+          "imagined_generated_fit": 0.03239321708679199
+        },
+        "energy": {
+          "true": 0.36975163221359253,
+          "copy_root": 0.2706220746040344,
+          "imagined_true_fit": -0.16113674640655518,
+          "imagined_generated_fit": 0.04782384634017944
+        }
+      },
+      "8": {
+        "zombie_adjacent": {
+          "true": 0.6670868347338935,
+          "copy_root": 0.7016806722689075,
+          "imagined_true_fit": 0.46792717086834734,
+          "imagined_generated_fit": 0.5719887955182072
+        },
+        "zombie_in_view": {
+          "true": 0.6692307692307692,
+          "copy_root": 0.6756527875793931,
+          "imagined_true_fit": 0.47657021877205363,
+          "imagined_generated_fit": 0.5656316160903316
+        },
+        "pass_up": {
+          "true": 0.652542372881356,
+          "copy_root": 0.49495131626397404,
+          "imagined_true_fit": 0.5890732059141723,
+          "imagined_generated_fit": 0.7102416155787955
+        },
+        "pass_down": {
+          "true": 0.8107748586631194,
+          "copy_root": 0.7081809112071833,
+          "imagined_true_fit": 0.6897794036137901,
+          "imagined_generated_fit": 0.7545172375568119
+        },
+        "pass_left": {
+          "true": 0.814403591797112,
+          "copy_root": 0.7596165513893945,
+          "imagined_true_fit": 0.6733406140031549,
+          "imagined_generated_fit": 0.7198155563645189
+        },
+        "pass_right": {
+          "true": 0.7470386266094421,
+          "copy_root": 0.6236909871244635,
+          "imagined_true_fit": 0.7067811158798283,
+          "imagined_generated_fit": 0.6924463519313304
+        },
+        "health": {
+          "true": 0.03022664785385132,
+          "copy_root": 0.05523639917373657,
+          "imagined_true_fit": -0.028889775276184082,
+          "imagined_generated_fit": -0.006840348243713379
+        },
+        "food": {
+          "true": 0.5676124095916748,
+          "copy_root": 0.5575981140136719,
+          "imagined_true_fit": -0.30554795265197754,
+          "imagined_generated_fit": 0.06887340545654297
+        },
+        "drink": {
+          "true": 0.4128797650337219,
+          "copy_root": 0.4238553047180176,
+          "imagined_true_fit": -0.2699075937271118,
+          "imagined_generated_fit": 0.027815043926239014
+        },
+        "energy": {
+          "true": 0.34239083528518677,
+          "copy_root": 0.2679862976074219,
+          "imagined_true_fit": -0.18327903747558594,
+          "imagined_generated_fit": 0.052083373069763184
+        }
+      },
+      "16": {
+        "zombie_adjacent": {
+          "true": 0.6721991701244814,
+          "copy_root": 0.5727178423236514,
+          "imagined_true_fit": 0.5266597510373444,
+          "imagined_generated_fit": 0.5383817427385892
+        },
+        "zombie_in_view": {
+          "true": 0.6507407407407407,
+          "copy_root": 0.6117901234567901,
+          "imagined_true_fit": 0.5412962962962963,
+          "imagined_generated_fit": 0.5317283950617284
+        },
+        "pass_up": {
+          "true": 0.6139868682241564,
+          "copy_root": 0.5434417468315773,
+          "imagined_true_fit": 0.5167201099404489,
+          "imagined_generated_fit": 0.6687280500839823
+        },
+        "pass_down": {
+          "true": 0.8520408163265306,
+          "copy_root": 0.6903961584633853,
+          "imagined_true_fit": 0.6671068427370949,
+          "imagined_generated_fit": 0.7220888355342137
+        },
+        "pass_left": {
+          "true": 0.7821745562130178,
+          "copy_root": 0.6748732037193576,
+          "imagined_true_fit": 0.6018068469991547,
+          "imagined_generated_fit": 0.6562235841081995
+        },
+        "pass_right": {
+          "true": 0.6430544048605358,
+          "copy_root": 0.575807787903894,
+          "imagined_true_fit": 0.6108809721071528,
+          "imagined_generated_fit": 0.6272438552885943
+        },
+        "health": {
+          "true": -0.01587533950805664,
+          "copy_root": -0.0113677978515625,
+          "imagined_true_fit": -0.010759711265563965,
+          "imagined_generated_fit": -0.04685020446777344
+        },
+        "food": {
+          "true": 0.47664332389831543,
+          "copy_root": 0.5249931812286377,
+          "imagined_true_fit": -0.31981801986694336,
+          "imagined_generated_fit": 0.007079780101776123
+        },
+        "drink": {
+          "true": 0.38075780868530273,
+          "copy_root": 0.3451833724975586,
+          "imagined_true_fit": -0.17144370079040527,
+          "imagined_generated_fit": -0.0033986568450927734
+        },
+        "energy": {
+          "true": 0.18919891119003296,
+          "copy_root": 0.26701217889785767,
+          "imagined_true_fit": -0.16152429580688477,
+          "imagined_generated_fit": 0.036656081676483154
+        }
+      }
+    },
+    "readout_contract": "same ridge capacity, TRAIN/validation split and TEST labels; true root plus true or generated factual successors",
+    "moved_vs_blocked_auc": {
+      "true": 0.8023032488857612,
+      "imagined_true_fit": 0.7599071956368755,
+      "imagined_generated_fit": 0.7856519763077645
+    },
+    "health_down_auc": {
+      "true": 0.4599133340677904,
+      "imagined_true_fit": 0.5024145275605009,
+      "imagined_generated_fit": 0.5322793874628181
+    }
+  },
+  "tc_lam10@2000": {
+    "schema_version": 2,
+    "depth": {
+      "1": {
+        "zombie_adjacent": {
+          "true": 0.9865900383141762,
+          "copy_root": 0.9315569487983281,
+          "imagined_true_fit": 0.5545106234761407,
+          "imagined_generated_fit": 0.5578195750609544
+        },
+        "zombie_in_view": {
+          "true": 0.8931068931068931,
+          "copy_root": 0.894022644022644,
+          "imagined_true_fit": 0.5474525474525475,
+          "imagined_generated_fit": 0.5820845820845821
+        },
+        "pass_up": {
+          "true": 0.8389830508474576,
+          "copy_root": 0.644248106743599,
+          "imagined_true_fit": 0.48404255319148937,
+          "imagined_generated_fit": 0.6530833032816444
+        },
+        "pass_down": {
+          "true": 0.9236385595081247,
+          "copy_root": 0.8241655687307862,
+          "imagined_true_fit": 0.7253513394817742,
+          "imagined_generated_fit": 0.7906236275801494
+        },
+        "pass_left": {
+          "true": 0.8994535519125683,
+          "copy_root": 0.7909289617486339,
+          "imagined_true_fit": 0.5672131147540984,
+          "imagined_generated_fit": 0.7133879781420766
+        },
+        "pass_right": {
+          "true": 0.928066378066378,
+          "copy_root": 0.8659451659451659,
+          "imagined_true_fit": 0.645093795093795,
+          "imagined_generated_fit": 0.7481962481962482
+        },
+        "health": {
+          "true": 0.35834187269210815,
+          "copy_root": 0.35648244619369507,
+          "imagined_true_fit": -0.22695422172546387,
+          "imagined_generated_fit": -0.0156632661819458
+        },
+        "food": {
+          "true": 0.7243906855583191,
+          "copy_root": 0.7490054965019226,
+          "imagined_true_fit": 0.1345381736755371,
+          "imagined_generated_fit": 0.28628748655319214
+        },
+        "drink": {
+          "true": 0.9394097924232483,
+          "copy_root": 0.931351900100708,
+          "imagined_true_fit": 0.40733230113983154,
+          "imagined_generated_fit": 0.5236084461212158
+        },
+        "energy": {
+          "true": 0.4303444027900696,
+          "copy_root": 0.407672643661499,
+          "imagined_true_fit": -0.09551537036895752,
+          "imagined_generated_fit": 0.01571720838546753
+        }
+      },
+      "4": {
+        "zombie_adjacent": {
+          "true": 0.9692838967648127,
+          "copy_root": 0.9214830970556162,
+          "imagined_true_fit": 0.47946201381315884,
+          "imagined_generated_fit": 0.574154852780807
+        },
+        "zombie_in_view": {
+          "true": 0.9120516047828823,
+          "copy_root": 0.8709880427942102,
+          "imagined_true_fit": 0.5283196979232222,
+          "imagined_generated_fit": 0.5910163624921334
+        },
+        "pass_up": {
+          "true": 0.8506972928630024,
+          "copy_root": 0.6259228876127974,
+          "imagined_true_fit": 0.5378178835110746,
+          "imagined_generated_fit": 0.6572600492206727
+        },
+        "pass_down": {
+          "true": 0.9206678180771445,
+          "copy_root": 0.7729994242947611,
+          "imagined_true_fit": 0.6692573402417962,
+          "imagined_generated_fit": 0.7279217040875072
+        },
+        "pass_left": {
+          "true": 0.909631019387117,
+          "copy_root": 0.7416510318949343,
+          "imagined_true_fit": 0.5574108818011257,
+          "imagined_generated_fit": 0.7475922451532208
+        },
+        "pass_right": {
+          "true": 0.9399971461187214,
+          "copy_root": 0.7400114155251142,
+          "imagined_true_fit": 0.5802654109589042,
+          "imagined_generated_fit": 0.678082191780822
+        },
+        "health": {
+          "true": 0.37662601470947266,
+          "copy_root": 0.3710307478904724,
+          "imagined_true_fit": -0.2609212398529053,
+          "imagined_generated_fit": 0.010054051876068115
+        },
+        "food": {
+          "true": 0.7517029047012329,
+          "copy_root": 0.7589274048805237,
+          "imagined_true_fit": 0.07117807865142822,
+          "imagined_generated_fit": 0.2705867886543274
+        },
+        "drink": {
+          "true": 0.9326108694076538,
+          "copy_root": 0.924432635307312,
+          "imagined_true_fit": 0.2083088755607605,
+          "imagined_generated_fit": 0.5170380473136902
+        },
+        "energy": {
+          "true": 0.4150572419166565,
+          "copy_root": 0.40183335542678833,
+          "imagined_true_fit": -0.0709911584854126,
+          "imagined_generated_fit": 0.06712651252746582
+        }
+      },
+      "8": {
+        "zombie_adjacent": {
+          "true": 0.9628851540616247,
+          "copy_root": 0.8452380952380952,
+          "imagined_true_fit": 0.5466386554621848,
+          "imagined_generated_fit": 0.5266106442577031
+        },
+        "zombie_in_view": {
+          "true": 0.8852505292872266,
+          "copy_root": 0.8220889202540579,
+          "imagined_true_fit": 0.49075511644318986,
+          "imagined_generated_fit": 0.563514467184192
+        },
+        "pass_up": {
+          "true": 0.8723404255319149,
+          "copy_root": 0.573746844572665,
+          "imagined_true_fit": 0.43544897223223944,
+          "imagined_generated_fit": 0.720519293184277
+        },
+        "pass_down": {
+          "true": 0.9036692162731405,
+          "copy_root": 0.7228688615452832,
+          "imagined_true_fit": 0.6492628311717105,
+          "imagined_generated_fit": 0.7212060747145549
+        },
+        "pass_left": {
+          "true": 0.918941875985924,
+          "copy_root": 0.748331513165878,
+          "imagined_true_fit": 0.5137726004125713,
+          "imagined_generated_fit": 0.7169032884358695
+        },
+        "pass_right": {
+          "true": 0.9490128755364807,
+          "copy_root": 0.6302145922746781,
+          "imagined_true_fit": 0.6528755364806867,
+          "imagined_generated_fit": 0.6860085836909872
+        },
+        "health": {
+          "true": 0.38291603326797485,
+          "copy_root": 0.3544008135795593,
+          "imagined_true_fit": -0.3615003824234009,
+          "imagined_generated_fit": -0.04645800590515137
+        },
+        "food": {
+          "true": 0.7371883392333984,
+          "copy_root": 0.7533384561538696,
+          "imagined_true_fit": -0.07190191745758057,
+          "imagined_generated_fit": 0.16172033548355103
+        },
+        "drink": {
+          "true": 0.9229276776313782,
+          "copy_root": 0.9062108397483826,
+          "imagined_true_fit": -0.14700603485107422,
+          "imagined_generated_fit": 0.37225914001464844
+        },
+        "energy": {
+          "true": 0.4320870637893677,
+          "copy_root": 0.41422563791275024,
+          "imagined_true_fit": -0.08333384990692139,
+          "imagined_generated_fit": 0.06864315271377563
+        }
+      },
+      "16": {
+        "zombie_adjacent": {
+          "true": 0.9658713692946058,
+          "copy_root": 0.7093360995850623,
+          "imagined_true_fit": 0.4763485477178423,
+          "imagined_generated_fit": 0.571161825726141
+        },
+        "zombie_in_view": {
+          "true": 0.9019135802469136,
+          "copy_root": 0.7374074074074074,
+          "imagined_true_fit": 0.4649382716049383,
+          "imagined_generated_fit": 0.5662345679012346
+        },
+        "pass_up": {
+          "true": 0.8189799969460987,
+          "copy_root": 0.5010688654756451,
+          "imagined_true_fit": 0.47404183844861814,
+          "imagined_generated_fit": 0.6426171934646511
+        },
+        "pass_down": {
+          "true": 0.9243097238895558,
+          "copy_root": 0.7209483793517407,
+          "imagined_true_fit": 0.5938175270108044,
+          "imagined_generated_fit": 0.7518607442977191
+        },
+        "pass_left": {
+          "true": 0.9085481825866442,
+          "copy_root": 0.6753486897717667,
+          "imagined_true_fit": 0.5240384615384616,
+          "imagined_generated_fit": 0.6311284868977177
+        },
+        "pass_right": {
+          "true": 0.8996133664733499,
+          "copy_root": 0.5967964650648993,
+          "imagined_true_fit": 0.5397680198840099,
+          "imagined_generated_fit": 0.5863711681855841
+        },
+        "health": {
+          "true": 0.340781033039093,
+          "copy_root": 0.24480730295181274,
+          "imagined_true_fit": -0.34170377254486084,
+          "imagined_generated_fit": -0.04411351680755615
+        },
+        "food": {
+          "true": 0.6893004775047302,
+          "copy_root": 0.723305344581604,
+          "imagined_true_fit": -0.05637311935424805,
+          "imagined_generated_fit": 0.052686214447021484
+        },
+        "drink": {
+          "true": 0.9201287627220154,
+          "copy_root": 0.8085947632789612,
+          "imagined_true_fit": -0.2613253593444824,
+          "imagined_generated_fit": 0.16740942001342773
+        },
+        "energy": {
+          "true": 0.34988105297088623,
+          "copy_root": 0.4244231581687927,
+          "imagined_true_fit": -0.09998917579650879,
+          "imagined_generated_fit": 0.004069983959197998
+        }
+      }
+    },
+    "readout_contract": "same ridge capacity, TRAIN/validation split and TEST labels; true root plus true or generated factual successors",
+    "moved_vs_blocked_auc": {
+      "true": 0.9380241320666197,
+      "imagined_true_fit": 0.6180176812104152,
+      "imagined_generated_fit": 0.8058952029087497
+    },
+    "health_down_auc": {
+      "true": 0.8602438397414711,
+      "imagined_true_fit": 0.577997502846021,
+      "imagined_generated_fit": 0.6682934890382285
+    }
+  },
+  "raw_lam1": {
+    "schema_version": 2,
+    "depth": {
+      "1": {
+        "zombie_adjacent": {
+          "true": 0.9035179380006966,
+          "copy_root": 0.8246255660048764,
+          "imagined_true_fit": 0.718216649251132,
+          "imagined_generated_fit": 0.7189132706374086
+        },
+        "zombie_in_view": {
+          "true": 0.7786380286380287,
+          "copy_root": 0.7186979686979686,
+          "imagined_true_fit": 0.7196969696969697,
+          "imagined_generated_fit": 0.6964701964701965
+        },
+        "pass_up": {
+          "true": 0.8883880274071403,
+          "copy_root": 0.7184457266498377,
+          "imagined_true_fit": 0.7046520014424811,
+          "imagined_generated_fit": 0.7418860439956726
+        },
+        "pass_down": {
+          "true": 0.9321475625823452,
+          "copy_root": 0.8405248133509003,
+          "imagined_true_fit": 0.8560606060606061,
+          "imagined_generated_fit": 0.8456851119894598
+        },
+        "pass_left": {
+          "true": 0.879344262295082,
+          "copy_root": 0.7872131147540984,
+          "imagined_true_fit": 0.7971584699453552,
+          "imagined_generated_fit": 0.8118032786885246
+        },
+        "pass_right": {
+          "true": 0.8769119769119769,
+          "copy_root": 0.8316017316017316,
+          "imagined_true_fit": 0.7678932178932178,
+          "imagined_generated_fit": 0.7589466089466089
+        },
+        "health": {
+          "true": 0.40738433599472046,
+          "copy_root": 0.39874184131622314,
+          "imagined_true_fit": 0.21564561128616333,
+          "imagined_generated_fit": 0.157478928565979
+        },
+        "food": {
+          "true": 0.797005832195282,
+          "copy_root": 0.7977299094200134,
+          "imagined_true_fit": 0.7659459710121155,
+          "imagined_generated_fit": 0.7731443047523499
+        },
+        "drink": {
+          "true": 0.9674057960510254,
+          "copy_root": 0.9615585803985596,
+          "imagined_true_fit": 0.9349039793014526,
+          "imagined_generated_fit": 0.9371947646141052
+        },
+        "energy": {
+          "true": 0.7564178109169006,
+          "copy_root": 0.7614036202430725,
+          "imagined_true_fit": 0.7282719016075134,
+          "imagined_generated_fit": 0.6744168996810913
+        }
+      },
+      "4": {
+        "zombie_adjacent": {
+          "true": 0.9432933478735005,
+          "copy_root": 0.8302435478007997,
+          "imagined_true_fit": 0.742457288258815,
+          "imagined_generated_fit": 0.7166484914576517
+        },
+        "zombie_in_view": {
+          "true": 0.8337004405286343,
+          "copy_root": 0.7386721208307111,
+          "imagined_true_fit": 0.7332441787287602,
+          "imagined_generated_fit": 0.6667715544367526
+        },
+        "pass_up": {
+          "true": 0.8566858080393766,
+          "copy_root": 0.6480721903199343,
+          "imagined_true_fit": 0.5726825266611977,
+          "imagined_generated_fit": 0.6499589827727645
+        },
+        "pass_down": {
+          "true": 0.9500287852619459,
+          "copy_root": 0.7991940126655153,
+          "imagined_true_fit": 0.8128382268278641,
+          "imagined_generated_fit": 0.834887737478411
+        },
+        "pass_left": {
+          "true": 0.9044402751719824,
+          "copy_root": 0.7512820512820513,
+          "imagined_true_fit": 0.7545340838023765,
+          "imagined_generated_fit": 0.7879299562226392
+        },
+        "pass_right": {
+          "true": 0.8715753424657534,
+          "copy_root": 0.7086900684931506,
+          "imagined_true_fit": 0.6998430365296804,
+          "imagined_generated_fit": 0.7215325342465754
+        },
+        "health": {
+          "true": 0.466285765171051,
+          "copy_root": 0.40819787979125977,
+          "imagined_true_fit": 0.14488863945007324,
+          "imagined_generated_fit": 0.11202818155288696
+        },
+        "food": {
+          "true": 0.7915858626365662,
+          "copy_root": 0.7955654263496399,
+          "imagined_true_fit": 0.7430857419967651,
+          "imagined_generated_fit": 0.7697216868400574
+        },
+        "drink": {
+          "true": 0.9691857695579529,
+          "copy_root": 0.9566184282302856,
+          "imagined_true_fit": 0.8978157043457031,
+          "imagined_generated_fit": 0.9159260988235474
+        },
+        "energy": {
+          "true": 0.7351688146591187,
+          "copy_root": 0.6503454446792603,
+          "imagined_true_fit": 0.6005668640136719,
+          "imagined_generated_fit": 0.6202875971794128
+        }
+      },
+      "8": {
+        "zombie_adjacent": {
+          "true": 0.9502801120448179,
+          "copy_root": 0.7780112044817927,
+          "imagined_true_fit": 0.6693277310924369,
+          "imagined_generated_fit": 0.630672268907563
+        },
+        "zombie_in_view": {
+          "true": 0.7932956951305575,
+          "copy_root": 0.7131263232180663,
+          "imagined_true_fit": 0.7248412138320395,
+          "imagined_generated_fit": 0.6427664079040226
+        },
+        "pass_up": {
+          "true": 0.85250631085467,
+          "copy_root": 0.6016949152542372,
+          "imagined_true_fit": 0.573746844572665,
+          "imagined_generated_fit": 0.638478182473855
+        },
+        "pass_down": {
+          "true": 0.9291652810109744,
+          "copy_root": 0.7286886154528323,
+          "imagined_true_fit": 0.7215940583083915,
+          "imagined_generated_fit": 0.753519565458375
+        },
+        "pass_left": {
+          "true": 0.9294381749787647,
+          "copy_root": 0.7715689843465598,
+          "imagined_true_fit": 0.7361363912146585,
+          "imagined_generated_fit": 0.7935323383084577
+        },
+        "pass_right": {
+          "true": 0.8824034334763948,
+          "copy_root": 0.6430042918454936,
+          "imagined_true_fit": 0.6723605150214592,
+          "imagined_generated_fit": 0.730901287553648
+        },
+        "health": {
+          "true": 0.4376770257949829,
+          "copy_root": 0.36728644371032715,
+          "imagined_true_fit": 0.08104062080383301,
+          "imagined_generated_fit": 0.04546487331390381
+        },
+        "food": {
+          "true": 0.7841851711273193,
+          "copy_root": 0.7875507473945618,
+          "imagined_true_fit": 0.704852283000946,
+          "imagined_generated_fit": 0.7516189813613892
+        },
+        "drink": {
+          "true": 0.9709885120391846,
+          "copy_root": 0.9425423741340637,
+          "imagined_true_fit": 0.8631548285484314,
+          "imagined_generated_fit": 0.8892269730567932
+        },
+        "energy": {
+          "true": 0.749966025352478,
+          "copy_root": 0.6405146718025208,
+          "imagined_true_fit": 0.5585795640945435,
+          "imagined_generated_fit": 0.6232333183288574
+        }
+      },
+      "16": {
+        "zombie_adjacent": {
+          "true": 0.866597510373444,
+          "copy_root": 0.6395228215767634,
+          "imagined_true_fit": 0.600311203319502,
+          "imagined_generated_fit": 0.5979253112033195
+        },
+        "zombie_in_view": {
+          "true": 0.7737654320987655,
+          "copy_root": 0.6374074074074074,
+          "imagined_true_fit": 0.630432098765432,
+          "imagined_generated_fit": 0.6442592592592593
+        },
+        "pass_up": {
+          "true": 0.8353183692166744,
+          "copy_root": 0.5372575965796305,
+          "imagined_true_fit": 0.5716139868682242,
+          "imagined_generated_fit": 0.6146739960299282
+        },
+        "pass_down": {
+          "true": 0.9139855942376951,
+          "copy_root": 0.7444777911164466,
+          "imagined_true_fit": 0.5983793517406962,
+          "imagined_generated_fit": 0.7301320528211285
+        },
+        "pass_left": {
+          "true": 0.874735841081995,
+          "copy_root": 0.6879226542688082,
+          "imagined_true_fit": 0.5778740490278952,
+          "imagined_generated_fit": 0.6730769230769231
+        },
+        "pass_right": {
+          "true": 0.7985363159348247,
+          "copy_root": 0.5552333609500139,
+          "imagined_true_fit": 0.5664871582435791,
+          "imagined_generated_fit": 0.6048053024026512
+        },
+        "health": {
+          "true": 0.424322247505188,
+          "copy_root": 0.2162102460861206,
+          "imagined_true_fit": 0.10442686080932617,
+          "imagined_generated_fit": 0.035417020320892334
+        },
+        "food": {
+          "true": 0.7158600091934204,
+          "copy_root": 0.7387712001800537,
+          "imagined_true_fit": 0.6056760549545288,
+          "imagined_generated_fit": 0.6477154493331909
+        },
+        "drink": {
+          "true": 0.9525451064109802,
+          "copy_root": 0.8115538954734802,
+          "imagined_true_fit": 0.7035364508628845,
+          "imagined_generated_fit": 0.7604599595069885
+        },
+        "energy": {
+          "true": 0.6986159086227417,
+          "copy_root": 0.5768890976905823,
+          "imagined_true_fit": 0.4563496708869934,
+          "imagined_generated_fit": 0.5540722608566284
+        }
+      }
+    },
+    "readout_contract": "same ridge capacity, TRAIN/validation split and TEST labels; true root plus true or generated factual successors",
+    "moved_vs_blocked_auc": {
+      "true": 0.9031895085620455,
+      "imagined_true_fit": 0.8215898428336852,
+      "imagined_generated_fit": 0.8500762373915083
+    },
+    "health_down_auc": {
+      "true": 0.6765340971686681,
+      "imagined_true_fit": 0.6639124527193272,
+      "imagined_generated_fit": 0.6648947890272117
+    }
+  }
+}

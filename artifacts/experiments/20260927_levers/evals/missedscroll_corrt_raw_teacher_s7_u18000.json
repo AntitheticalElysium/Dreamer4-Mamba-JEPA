@@ -1,0 +1,268 @@
+{
+  "world": "corrt_raw_teacher_s7_u18000",
+  "n": {
+    "missed": 381,
+    "control": 1143,
+    "false": 58,
+    "control_false": 174
+  },
+  "missed": {
+    "scroll_rate": {
+      "imagined": 0.3727034032344818,
+      "true": 1.0,
+      "img_hist": 1.0,
+      "img_cur": 0.37532809376716614
+    },
+    "mean_logit": {
+      "imagined": -4.38322639465332,
+      "true": 0.8803108334541321,
+      "img_hist": 0.8782398104667664,
+      "img_cur": -4.408801555633545
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 69.27428436279297,
+      "player": 23.610620498657227,
+      "frame": 33.41022872924805
+    },
+    "depth_hist": [
+      0,
+      27,
+      31,
+      25,
+      31,
+      34,
+      35,
+      31,
+      23,
+      38,
+      25,
+      21,
+      21,
+      11,
+      15,
+      13
+    ],
+    "provenance": {
+      "observable_share": 0.8188976645469666,
+      "mob_share": 0.010498687624931335,
+      "occupied_share": 0.06561680138111115,
+      "slept_share": 0.07349081337451935,
+      "target_distance_occupied": {
+        "occupied": 39.361019134521484,
+        "not_occupied": 71.37493133544922
+      },
+      "target_distance": {
+        "observable_no_mob": 76.75812530517578,
+        "revealed_no_mob": 36.88056564331055,
+        "mob": 41.84032440185547
+      },
+      "counts": {
+        "observable_no_mob": 309,
+        "revealed_no_mob": 68,
+        "mob": 4
+      }
+    }
+  },
+  "control": {
+    "scroll_rate": {
+      "imagined": 1.0,
+      "true": 1.0,
+      "img_hist": 1.0,
+      "img_cur": 1.0
+    },
+    "mean_logit": {
+      "imagined": 0.9349983334541321,
+      "true": 0.9643003344535828,
+      "img_hist": 0.9548200964927673,
+      "img_cur": 0.9419564604759216
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 6.878558158874512,
+      "player": 7.366284370422363,
+      "frame": 24.237239837646484
+    },
+    "depth_hist": [
+      0,
+      81,
+      93,
+      75,
+      93,
+      102,
+      105,
+      93,
+      69,
+      114,
+      75,
+      63,
+      63,
+      33,
+      45,
+      39
+    ],
+    "provenance": {
+      "observable_share": 0.8932633399963379,
+      "mob_share": 0.0008748906548134983,
+      "occupied_share": 0.1784776896238327,
+      "slept_share": 0.012248468585312366,
+      "target_distance_occupied": {
+        "occupied": 12.550024032592773,
+        "not_occupied": 5.646417617797852
+      },
+      "target_distance": {
+        "observable_no_mob": 3.349329710006714,
+        "revealed_no_mob": 36.4277458190918,
+        "mob": 1.6897528171539307
+      },
+      "counts": {
+        "observable_no_mob": 1020,
+        "revealed_no_mob": 122,
+        "mob": 1
+      }
+    }
+  },
+  "false": {
+    "scroll_rate": {
+      "imagined": 0.982758641242981,
+      "true": 0.03448275849223137,
+      "img_hist": 0.03448275849223137,
+      "img_cur": 0.982758641242981
+    },
+    "mean_logit": {
+      "imagined": 0.8274515271186829,
+      "true": -7.864729404449463,
+      "img_hist": -7.96923828125,
+      "img_cur": 0.8518319129943848
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 180.85227966308594,
+      "player": 32.86309051513672,
+      "frame": 58.80210876464844
+    },
+    "depth_hist": [
+      0,
+      4,
+      1,
+      2,
+      7,
+      4,
+      7,
+      7,
+      1,
+      4,
+      3,
+      7,
+      0,
+      6,
+      2,
+      3
+    ],
+    "provenance": {
+      "observable_share": 0.5517241358757019,
+      "mob_share": 0.12068965286016464,
+      "occupied_share": 0.06896551698446274,
+      "slept_share": 0.08620689809322357,
+      "target_distance_occupied": {
+        "occupied": 101.51069641113281,
+        "not_occupied": 186.72943115234375
+      },
+      "target_distance": {
+        "observable_no_mob": 183.91421508789062,
+        "revealed_no_mob": 203.04759216308594,
+        "mob": 87.47691345214844
+      },
+      "counts": {
+        "observable_no_mob": 25,
+        "revealed_no_mob": 26,
+        "mob": 7
+      }
+    }
+  },
+  "control_false": {
+    "scroll_rate": {
+      "imagined": 0.08045977354049683,
+      "true": 0.04597701132297516,
+      "img_hist": 0.04597701132297516,
+      "img_cur": 0.07471264153718948
+    },
+    "mean_logit": {
+      "imagined": -7.168254852294922,
+      "true": -7.862136363983154,
+      "img_hist": -7.859604358673096,
+      "img_cur": -7.169429302215576
+    },
+    "token_distance_imagined_vs_true": {
+      "target": 13.067068099975586,
+      "player": 14.865680694580078,
+      "frame": 17.800853729248047
+    },
+    "depth_hist": [
+      0,
+      12,
+      3,
+      6,
+      21,
+      12,
+      21,
+      21,
+      3,
+      12,
+      9,
+      21,
+      0,
+      18,
+      6,
+      9
+    ],
+    "provenance": {
+      "observable_share": 0.9942528605461121,
+      "mob_share": 0.005747126415371895,
+      "occupied_share": 0.0,
+      "slept_share": 0.1034482792019844,
+      "target_distance_occupied": {
+        "occupied": null,
+        "not_occupied": 13.067068099975586
+      },
+      "target_distance": {
+        "observable_no_mob": 12.827767372131348,
+        "revealed_no_mob": 46.52510452270508,
+        "mob": 20.768489837646484
+      },
+      "counts": {
+        "observable_no_mob": 172,
+        "revealed_no_mob": 1,
+        "mob": 1
+      }
+    }
+  },
+  "readings": {
+    "missed": {
+      "right_rate": {
+        "imagined": 0.3727034032344818,
+        "true": 1.0,
+        "img_hist": 1.0,
+        "img_cur": 0.37532809376716614
+      },
+      "input_caused": false,
+      "current_frame": false,
+      "history": false,
+      "target_tile": true
+    },
+    "false": {
+      "right_rate": {
+        "imagined": 0.017241358757019043,
+        "true": 0.9655172415077686,
+        "img_hist": 0.9655172415077686,
+        "img_cur": 0.017241358757019043
+      },
+      "input_caused": true,
+      "current_frame": true,
+      "history": false,
+      "target_tile": true
+    },
+    "sleep": {
+      "wrong_slept_share": 0.07517084279065794,
+      "control_slept_share": 0.02429764629776562,
+      "sleep_triggered": false
+    }
+  }
+}

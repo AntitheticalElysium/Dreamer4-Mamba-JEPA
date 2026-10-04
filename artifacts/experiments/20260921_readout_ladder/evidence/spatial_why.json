@@ -1,0 +1,57 @@
+{
+  "schema": "d4mj_spatial_why_v1",
+  "status": "POST HOC on the sealed block spatial.py scored",
+  "script_sha256": "6c6579731ab43d0509489e11ca5655f5b9deb104242814184584d4a2102ce633",
+  "judge_manifest": "765ce386ee412378eb96d7024b3babd0394e6af417cc52812b4e730a88ca0f76",
+  "opportunity_roots": 800,
+  "result": {
+    "Z": {
+      "real_auc": 0.5791984333814877,
+      "real_p_dead_fatal": 0.0009619892807677388,
+      "real_p_dead_surviving": 0.0005380952497944236,
+      "gen_auc": 0.513429002067859,
+      "gen_p_dead_fatal": 0.00047795739374123514,
+      "gen_p_dead_surviving": 0.0004999800003133714,
+      "reading": "head_fails_hindsight"
+    },
+    "ZH": {
+      "real_auc": 0.5711723090249038,
+      "real_p_dead_fatal": 0.0003376167733222246,
+      "real_p_dead_surviving": 0.0005399310030043125,
+      "real_health_ce": 1.4785467386245728,
+      "real_health_accuracy": 0.5099999904632568,
+      "real_health_accuracy_on_damage": 0.1282188892364502,
+      "gen_auc": 0.5010576110778365,
+      "gen_p_dead_fatal": 0.00027708994457498193,
+      "gen_p_dead_surviving": 0.0006551837432198226,
+      "gen_health_ce": 2.8093173503875732,
+      "gen_health_accuracy": 0.4440441131591797,
+      "gen_health_accuracy_on_damage": 0.0008047210285440087,
+      "reading": "head_fails_hindsight"
+    },
+    "T": {
+      "real_auc": 0.997656253598771,
+      "real_p_dead_fatal": 0.24629925191402435,
+      "real_p_dead_surviving": 0.0020403165835887194,
+      "gen_auc": 0.5574210437026413,
+      "gen_p_dead_fatal": 0.00011215956328669563,
+      "gen_p_dead_surviving": 0.0005213888944126666,
+      "reading": "generation_fails"
+    },
+    "TH": {
+      "real_auc": 0.9956355825160285,
+      "real_p_dead_fatal": 0.3542681932449341,
+      "real_p_dead_surviving": 0.0010702667059376836,
+      "real_health_ce": 0.04490872472524643,
+      "real_health_accuracy": 0.989264726638794,
+      "real_health_accuracy_on_damage": 0.9805525541305542,
+      "gen_auc": 0.5002250254950809,
+      "gen_p_dead_fatal": 5.063206481281668e-05,
+      "gen_p_dead_surviving": 0.0007992956088855863,
+      "gen_health_ce": 5.334402561187744,
+      "gen_health_accuracy": 0.44573530554771423,
+      "gen_health_accuracy_on_damage": 0.0,
+      "reading": "generation_fails"
+    }
+  }
+}

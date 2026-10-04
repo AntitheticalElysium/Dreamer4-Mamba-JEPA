@@ -1,0 +1,42 @@
+{
+  "world": "categorical_raw_teacher_s7_K4096",
+  "input_change_probe": {
+    "auc": 0.963887095451355,
+    "mean_p_changed": 0.7010968327522278,
+    "mean_p_unchanged": 0.10753798484802246,
+    "share_p_over_half_changed": 0.7877697944641113
+  },
+  "backbone_h_change_probe": {
+    "auc": 0.9246228933334351,
+    "mean_p_changed": 0.6014725565910339,
+    "mean_p_unchanged": 0.11888894438743591,
+    "share_p_over_half_changed": 0.6384891867637634
+  },
+  "categorical_train": {
+    "changed": {
+      "mean_p_true_next": 0.024437900632619858,
+      "mean_p_current": 0.5604702234268188,
+      "true_next_ranked_first": 0.0025252525229007006,
+      "median_rank_true_next": 7.0
+    },
+    "unchanged": {
+      "mean_p_true_next": 0.44559359550476074
+    }
+  },
+  "categorical_held": {
+    "changed": {
+      "mean_p_true_next": 0.022873369976878166,
+      "mean_p_current": 0.5462304353713989,
+      "true_next_ranked_first": 0.0017985611921176314,
+      "median_rank_true_next": 8.0
+    },
+    "unchanged": {
+      "mean_p_true_next": 0.40882542729377747
+    }
+  },
+  "readings": {
+    "h_below_threshold": false,
+    "categorical_below_threshold": false,
+    "categorical_absent": true
+  }
+}

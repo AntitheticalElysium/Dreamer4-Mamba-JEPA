@@ -1,0 +1,49 @@
+{
+  "schema": "d4mj_spatial_why8_v1",
+  "status": "POST HOC, EXPLORATORY: observability roots",
+  "script_sha256": "cd5c23d3d169a7d4d937a1a50b386509c4760d834fb130f45086acc2d82e7c6b",
+  "judge_opportunity_roots": 500,
+  "reading": "labels",
+  "result": {
+    "Z_factual": {
+      "expected_safe": 0.5539583365122477,
+      "per_seed": [
+        0.5561249852180481,
+        0.5616250038146973,
+        0.5441250205039978
+      ],
+      "examples": 7085,
+      "positive_mass": 527.75
+    },
+    "Z_counterfactual": {
+      "expected_safe": 0.5822083353996277,
+      "per_seed": [
+        0.5806249976158142,
+        0.5835624933242798,
+        0.5824375152587891
+      ],
+      "examples": 120445,
+      "positive_mass": 11119.21875
+    },
+    "T_factual": {
+      "expected_safe": 0.6500000158945719,
+      "per_seed": [
+        0.6621249914169312,
+        0.6517500281333923,
+        0.6361250281333923
+      ],
+      "examples": 7085,
+      "positive_mass": 527.75
+    },
+    "T_counterfactual": {
+      "expected_safe": 0.6963541507720947,
+      "per_seed": [
+        0.7096250057220459,
+        0.6821249723434448,
+        0.6973124742507935
+      ],
+      "examples": 120445,
+      "positive_mass": 11119.21875
+    }
+  }
+}

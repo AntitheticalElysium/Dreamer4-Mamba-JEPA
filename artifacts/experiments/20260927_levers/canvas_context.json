@@ -1,0 +1,80 @@
+{
+  "no_recent_scroll": {
+    "roots": 430,
+    "walk_seeds": 132,
+    "fmamba": {
+      "one_step_all_x_copy": 0.3255192041397095,
+      "depth16_over_V": 0.8028745651245117
+    },
+    "fcanvas": {
+      "one_step_all_x_copy": 0.32302922010421753,
+      "depth16_over_V": 0.8057587146759033
+    },
+    "fcanvas_minus_fmamba": {
+      "one_step_all_x_copy": -0.0024899840354919434,
+      "depth16_over_V": 0.0028841495513916016
+    },
+    "ci95": {
+      "one_step_all_x_copy": [
+        -0.004542744718492031,
+        -0.0007135882042348385
+      ],
+      "depth16_over_V": [
+        -0.021130414679646492,
+        0.029195208102464676
+      ]
+    }
+  },
+  "one_recent_scroll": {
+    "roots": 226,
+    "walk_seeds": 107,
+    "fmamba": {
+      "one_step_all_x_copy": 0.20130828022956848,
+      "depth16_over_V": 0.7034206986427307
+    },
+    "fcanvas": {
+      "one_step_all_x_copy": 0.19989463686943054,
+      "depth16_over_V": 0.7000988721847534
+    },
+    "fcanvas_minus_fmamba": {
+      "one_step_all_x_copy": -0.0014136433601379395,
+      "depth16_over_V": -0.003321826457977295
+    },
+    "ci95": {
+      "one_step_all_x_copy": [
+        -0.0035655442625284195,
+        0.00039865789585746825
+      ],
+      "depth16_over_V": [
+        -0.02596329338848591,
+        0.016173096373677254
+      ]
+    }
+  },
+  "two_or_three_recent_scrolls": {
+    "roots": 346,
+    "walk_seeds": 124,
+    "fmamba": {
+      "one_step_all_x_copy": 0.17811547219753265,
+      "depth16_over_V": 0.6987016201019287
+    },
+    "fcanvas": {
+      "one_step_all_x_copy": 0.17765183746814728,
+      "depth16_over_V": 0.6806374788284302
+    },
+    "fcanvas_minus_fmamba": {
+      "one_step_all_x_copy": -0.000463634729385376,
+      "depth16_over_V": -0.018064141273498535
+    },
+    "ci95": {
+      "one_step_all_x_copy": [
+        -0.0018811386544257402,
+        0.0009127662633545697
+      ],
+      "depth16_over_V": [
+        -0.034869562834501266,
+        -0.002149364445358515
+      ]
+    }
+  }
+}

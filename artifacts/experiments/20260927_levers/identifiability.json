@@ -1,0 +1,59 @@
+{
+  "roots": 1002,
+  "bayes_accuracy_uniform_actions": 0.3389104144651873,
+  "bayes_accuracy_corpus_prior": 0.582528947679426,
+  "share_uniquely_identified_corpus_prior": 0.44423022121285655,
+  "corpus_prior": {
+    "NOOP": 0.0336,
+    "LEFT": 0.1114,
+    "RIGHT": 0.1087,
+    "UP": 0.1156,
+    "DOWN": 0.1121,
+    "DO": 0.1477,
+    "SLEEP": 0.0386,
+    "P_STONE": 0.0412,
+    "P_TABLE": 0.0304,
+    "P_FURNACE": 0.0288,
+    "P_PLANT": 0.033,
+    "M_WPICK": 0.0317,
+    "M_SPICK": 0.0324,
+    "M_IPICK": 0.0323,
+    "M_WSWORD": 0.0311,
+    "M_SSWORD": 0.0327,
+    "M_ISWORD": 0.0386
+  },
+  "most_common_collision_groups": [
+    [
+      "NOOP DO SLEEP P_STONE P_TABLE P_FURNACE P_PLANT M_WPICK M_SPICK M_IPICK M_WSWORD M_SSWORD M_ISWORD",
+      143
+    ],
+    [
+      "NOOP DOWN DO P_STONE P_TABLE P_FURNACE P_PLANT M_WPICK M_SPICK M_IPICK M_WSWORD M_SSWORD M_ISWORD",
+      71
+    ],
+    [
+      "NOOP LEFT DO P_STONE P_TABLE P_FURNACE P_PLANT M_WPICK M_SPICK M_IPICK M_WSWORD M_SSWORD M_ISWORD",
+      63
+    ],
+    [
+      "NOOP LEFT RIGHT UP DOWN DO SLEEP P_STONE P_TABLE P_FURNACE P_PLANT M_WPICK M_SPICK M_IPICK M_WSWORD M_SSWORD M_ISWORD",
+      62
+    ],
+    [
+      "NOOP DO P_STONE P_FURNACE M_WPICK M_SPICK M_IPICK M_WSWORD M_SSWORD M_ISWORD",
+      57
+    ],
+    [
+      "NOOP DO P_STONE P_TABLE P_FURNACE P_PLANT M_WPICK M_SPICK M_IPICK M_WSWORD M_SSWORD M_ISWORD",
+      56
+    ],
+    [
+      "NOOP DO P_STONE P_FURNACE P_PLANT M_WPICK M_SPICK M_IPICK M_WSWORD M_SSWORD M_ISWORD",
+      45
+    ],
+    [
+      "NOOP DO P_STONE P_TABLE P_FURNACE M_WPICK M_SPICK M_IPICK M_WSWORD M_SSWORD M_ISWORD",
+      38
+    ]
+  ]
+}
