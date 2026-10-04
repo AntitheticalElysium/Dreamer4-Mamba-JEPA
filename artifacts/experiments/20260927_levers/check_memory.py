@@ -17,6 +17,14 @@ Per lookback L (frames before the target, L = 5 is the 6-frame recipe's maximum,
 Readings, declared before running:
   memory_grows_with_L   recallable_share(15) >= 2 x recallable_share(5)
   memory_incentive_16   incentive_share(15) >= 0.02 (2% of the copy error is removable only with 6-16 frames of memory)
+Run 1 (lane65): FALSE (22.2% vs 22.4%) / TRUE (3.9%).
+v2 (2026-10-04, after check_recall's split, declared before running it): check_recall found per-slot Mamba's recall edge only on
+cells re-entering their old VIEW slot (capture 0.86 / 0.67 vs attention 0.51 / 0.30); cells re-entering another slot are
+recalled by no backbone (0.27-0.33, attention 100k included). Per L, the recallable cells are split by slot:
+  moved_slot_share   recallable cells whose most recent sighting was at another view slot / all recallable cells
+  moved_slot_gain    their share of the perfect-memory gain
+  moved_dominates_16   moved_slot_share(15) >= 0.4: at L = 16 a world-aligned memory (fcanvas / carry transport) is needed
+                       for most of what memory can supply
 Usage: check_memory.py
 """
 import json
@@ -53,7 +61,8 @@ def main():
     rows = torch.randperm(n, generator=torch.Generator().manual_seed(20261004))[:1500].sort().values
     IDX, ENTER = source_index()
     cell_r, cell_c = torch.arange(63) // 9, torch.arange(63) % 9
-    stats = {L: {"cells": 0, "recallable": 0, "recall_err": 0.0, "memoryless_err": 0.0, "gain": 0.0} for L in LOOKBACKS}
+    stats = {L: {"cells": 0, "recallable": 0, "recall_err": 0.0, "memoryless_err": 0.0, "gain": 0.0, "moved": 0, "moved_gain": 0.0}
+             for L in LOOKBACKS}
     total_copy_err, transitions, scrolls, enter_cells = 0.0, 0, 0, 0
     frames = torch.arange(64)
     for row in rows.tolist():
@@ -84,21 +93,25 @@ def main():
         sl = s_last.clamp(min=0)
         rec = x[sl, (lr.gather(1, sl[:, None])[:, 0].clamp(0, 6) * 9 + lc.gather(1, sl[:, None])[:, 0].clamp(0, 8))]
         r_err = (rec - x[t, ce]).square().sum(-1)
+        moved = (lr.gather(1, sl[:, None])[:, 0] * 9 + lc.gather(1, sl[:, None])[:, 0]) != ce   # sighting at another view slot
         for L in LOOKBACKS:
             st = stats[L]; m = seen & (age <= L)
             st["cells"] += len(t); st["memoryless_err"] += float(m_err.sum())
             st["recallable"] += int(m.sum()); st["recall_err"] += float(r_err[m].sum())
             st["gain"] += float((m_err[m] - r_err[m]).clamp(min=0).sum())
+            st["moved"] += int((m & moved).sum()); st["moved_gain"] += float((m_err[m & moved] - r_err[m & moved]).clamp(min=0).sum())
     out = {"windows": len(rows), "transitions": transitions, "scroll_share": scrolls / transitions,
            "entering_cells": enter_cells, "copy_err_per_transition": total_copy_err / transitions}
     for L, st in stats.items():
         k = max(st["recallable"], 1)
         out[f"L{L}"] = {"recallable_share": st["recallable"] / st["cells"], "recall_err": st["recall_err"] / k,
                         "memoryless_err_all_entering": st["memoryless_err"] / st["cells"],
-                        "incentive_share": st["gain"] / total_copy_err, "gain_per_transition": st["gain"] / transitions}
+                        "incentive_share": st["gain"] / total_copy_err, "gain_per_transition": st["gain"] / transitions,
+                        "moved_slot_share": st["moved"] / k, "moved_slot_gain": st["moved_gain"] / max(st["gain"], 1e-9)}
         print(json.dumps({f"L{L}": out[f"L{L}"]}), flush=True)
     out["readings"] = {"memory_grows_with_L": out["L15"]["recallable_share"] >= 2 * out["L5"]["recallable_share"],
-                       "memory_incentive_16": out["L15"]["incentive_share"] >= 0.02}
+                       "memory_incentive_16": out["L15"]["incentive_share"] >= 0.02,
+                       "moved_dominates_16": out["L15"]["moved_slot_share"] >= 0.4}
     print(json.dumps(out))
 
 
