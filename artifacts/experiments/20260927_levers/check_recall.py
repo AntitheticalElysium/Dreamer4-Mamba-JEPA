@@ -36,6 +36,13 @@ true context frames, then windows of up to W of its own frames under the true ac
 scored only at steps whose imagined camera offset still equals the true one (cumulative scroll.estimate shifts), so imagined
 and true cells coincide; sightings may lie in imagined frames (the world must keep its own imagination consistent).
   imagined_recall_edge   (6-frame parents) Mamba's same_2_5 capture - attention's >= 0.10 at s7 36k and at s8 30k
+Run v4 (lane71): imagined_recall_edge TRUE (same_2_5 Mamba - attention: s7 36k +0.18, s8 30k +0.21, s8 36k +0.32), but the
+no-memory baselines also differ in imagination (same_6_15: attention -0.14 / -0.25 / -0.19, Mamba -0.06 / -0.08 / -0.01).
+v5 memory contrast (declared before running): the SAME cells, the same world, teacher-forced, with the sighting visible
+(window 5) and not (--window 1: the current frame only, in-distribution: teacher training predicts from one frame):
+  recall_gain_same = capture(same_2_5, w5) - capture(same_2_5, w1)
+  memory_contrast    Mamba's recall_gain_same - attention's >= 0.10 at s7 36k and at s8 30k (computed from lane70's w5 lines
+                     and this run's w1 lines, both in path order)
 Usage: check_recall.py [--futures [--imagined]] [--window W] <world.pt> ...
 """
 import json
