@@ -245,6 +245,24 @@ Same tool, now (lanes 70-71): the parents on DEV futures, teacher-forced (future
   - unshortcut: check_position w4_at0's drawn rate ≥ half of w5_at0's;
   - no_cost: onestep_all ≤ +0.005 and consequences unchanged;
   - then the memory question on hits: beside_no_hit catch (Bayes 0.48, needs the cooldown), Mamba vs attention, w5 vs w16.
+- Implementation ready, CPU-tested, NOT yet applied: a patched tworld.py in the session scratchpad (`--dealign`, `--weight hpL`,
+  hp_labels(); parser guard).
+  - Default recipe identical: equal loss, gradient max difference 0.0. The transform places the death transition at row r
+    with correct actions and keep mask.
+  - It will be applied after fcanvas s8 has started, so no E17 / E18 checkpoint carries a changed script hash.
+- Labels built: `artifacts/eda/hpctx_labels_v1.pt` (zombie beside in the true next frame, per pool transition). On the pool:
+
+| pool transitions | n | zombie beside |
+|---|---|---|
+| main, dh = −2 | 1,346 | 0.803 |
+| main, dh = −1 | 417 | 0.197 |
+| main, dh = 0 | 119,051 | 0.062 |
+| main, dh ≥ +1 | 1,941 | 0.092 |
+| terminal, last transition, dh ≤ −2 | 6,172 | 0.955 |
+
+  - P(hit | beside) 0.1225 vs 0.0023 not beside (53×). The dose covers 0.24% of tokens, so hp1 ≈ ×417 per token (E14's mask1
+    was ×304).
+  - The ~20% of −2 hits without a zombie beside are probably skeleton arrows (2 damage, at range). Not yet checked; zombies first.
 
 **Queue order (after the E17 resource smoke):** E17 stage 2 (A16 / M16), E18 (fcanvas) alongside as memory allows, then E16 s8
 (lane59, relaunched by hand; lane63 stopped 13:20 so it does not jump the queue).
