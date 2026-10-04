@@ -248,6 +248,18 @@ Same tool, now (lanes 70-71): the parents on DEV futures, teacher-forced (future
   - Capture is not zero without memory: cells beyond the window score 0.34-0.42 from generation alone.
   - Against that baseline, Mamba recalls same-slot cells at both seeds. Attention does so weakly at 36k / 30k and strongly
     by 100k (s7). Moved-slot cells stay at the baseline for every world.
+- In imagination (lane71; self-fed, sample 0's actions, aligned steps only, 1,002 DEV roots), imagined_recall_edge TRUE:
+
+| imagined capture | same 2-5 | moved 2-5 | same 6-15 | moved 6-15 |
+|---|---|---|---|---|
+| attention / Mamba s7 36k | 0.171 / 0.353 | 0.280 / 0.195 | −0.138 / −0.060 | −0.014 / 0.033 |
+| attention / Mamba s8 30k | 0.020 / 0.231 | 0.174 / 0.227 | −0.246 / −0.075 | −0.047 / −0.066 |
+| attention / Mamba s8 36k | 0.026 / 0.346 | 0.177 / 0.193 | −0.186 / −0.005 | −0.063 / −0.021 |
+
+  - Unseen entering cells tie: imagined error 69.6 / 70.9 (s7), 72.3 / 72.6 (s8 36k), against ~37 teacher-forced.
+  - Caveat: the no-memory baselines differ in imagination too (same_6_15). The difference against that baseline still
+    favours Mamba (+0.10 / +0.04 / +0.14), but less. The rigorous contrast is v5 (lane75): the same cells in the same world,
+    with the sighting in the window (w5) and without it (w1).
 
 ---
 
