@@ -223,6 +223,29 @@ Same tool, now (lanes 70-71): the parents on DEV futures, teacher-forced (future
   - c6_same_recall: same-slot capture ≥ fmamba's − 0.05;
   - c6_unseen: unseen entering-cell error within 5% of fmamba's.
 
+**E19 DESIGNED (not launched; the GPU is booked by E17 / E18 until ~2026-10-05 morning): make hits learnable, then ask memory.**
+- Causal chain it acts on (all measured today):
+  - deaths are end-aligned, so 78% of training drops sit at position 4 and both backbones learn "drops at the death position";
+  - ordinary hits (1.4% of transitions at positions 0-3, 1 token in 81) are never drawn at any position;
+  - E16's posterior, which sees the answer, does not encode them either.
+- Two components, each from a source:
+  - (a) Death de-alignment. IRIS (`eloialonso/iris` src/dataset.py: start uniform in the episode, right padding with a
+    loss mask) and DreamerV3 / DRAMA (uniform windows over a continuous stream) put terminations at every position. Here: the
+    death transition at a uniform row r ∈ {0..4}, frames after it padded and masked out of the loss (causal, so padding
+    cannot leak).
+  - (b) Selective dose on the health token (63) over a matching-negatives context: E14's CGSReg form (`--weight maskL`; a
+    selective dose needs the context where the change could happen), with the decision-weighting rationale of VaGraM
+    (Voelcker et al., ICLR 2022, arXiv 2204.01464). Context = a zombie in a cell beside the player in the TRUE next frame.
+    - It contains every zombie hit (an attacking zombie stays put; check_zombie_cue) and the cooldown negatives.
+    - Labelled by teval's Probes.zombie on pool tokens. Validated today on 4,811 TEST frames: AUC 1.000; at threshold 0.3
+      precision 1.000, recall 0.996; 10.0% of frames flagged.
+- Arms and readings (to be fixed in the launch commit before any run):
+  - attention and Mamba, continued from the 36k parents, seeds 7 and 8;
+  - learnable: teacher hit catch ≥ 0.3 at window 5 (rule ceiling 0.62) and fresh ≥ 0.5, with false drops ≤ 0.02;
+  - unshortcut: check_position w4_at0's drawn rate ≥ half of w5_at0's;
+  - no_cost: onestep_all ≤ +0.005 and consequences unchanged;
+  - then the memory question on hits: beside_no_hit catch (Bayes 0.48, needs the cooldown), Mamba vs attention, w5 vs w16.
+
 **Queue order (after the E17 resource smoke):** E17 stage 2 (A16 / M16), E18 (fcanvas) alongside as memory allows, then E16 s8
 (lane59, relaunched by hand; lane63 stopped 13:20 so it does not jump the queue).
 - Mamba smoke (lane62): 1.436 s / update, peak 2.87 GB at 40 windows. The predeclared 40 windows per update stand for both arms.
