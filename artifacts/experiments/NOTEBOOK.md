@@ -189,6 +189,34 @@ L31 49.5%, L63 52.2%. Share of the perfect-memory gain at L15: 39.1%. moved_domi
   - Po et al. (arXiv 2505.20171) scan spatial blocks over time: the state follows screen positions, as in fmamba. Their
     full-context transformer still edges their SSM on Memory Maze retrieval (SSIM 0.914 vs 0.898).
 
+**E17 stage 2 amendment 2 (declared in check_recall's docstring, 3ac7e494, before any stage-2 run):** memory readings on the DEV
+futures' true 20-frame trajectories (check_recall --futures, window 15 vs 5):
+- long_recall_same: M16's same-slot capture at ages 6-15 ≥ 0.5 and ≥ A16's + 0.10, at both seeds;
+- long_recall_used: M16's same_6_15 capture at window 15 minus at window 5 ≥ 0.2, at both seeds;
+- moved_unsolved (descriptive): moved_6_15 capture ≤ 0.35 for every world.
+
+Same tool, now (lanes 70-71): the parents on DEV futures, teacher-forced (futures_replicates) and self-fed on aligned steps
+(imagined_recall_edge). These test whether the pool result holds out of the training ledger and carries into imagination.
+
+**E18 PREDECLARED (2026-10-04; lane72, starts after the lane62 smoke): world-aligned Mamba.**
+- Arm: fcanvas (tworld docstring: fmamba's Mamba-2 time scan over world-aligned canvas cells placed by scroll.estimate's
+  offsets) on the exact A6 / M6 recipe: corrt, teacher, 6-frame windows, 36k, seeds 7 and 8, snapshots every 6k.
+- Why: 42% of L15 recall (39% of its gain) re-enters another view slot, which no backbone recalls (0.27-0.33).
+  - The 6k fcanvas arm (lane 9) was judged before recall is learned at all: every backbone is 0.18-0.21 at 6k, and recall
+    emerges after 18k.
+- Sources:
+  - allocentric memory registered by correlation: MapNet (Henriques & Vedaldi, CVPR 2018);
+  - memory shifted by ego-motion: Neural Map (Parisotto & Salakhutdinov, ICLR 2018), FIERY (Hu et al. 2021), SRU (Yang et
+    al., arXiv 2506.05997);
+  - ours on 09-29: explicit carry transport ≈ fcanvas on short windows (relative RMSE 1e-7 except re-entry) at 4.9× the cost.
+- Readings (check_recall pool split vs the same-seed fmamba 36k; two-seed rule):
+  - c6_moved_recall: moved-slot capture ≥ fmamba's + 0.15;
+  - c6_same_recall: same-slot capture ≥ fmamba's − 0.05;
+  - c6_unseen: unseen entering-cell error within 5% of fmamba's.
+
+**Queue order (after the E17 resource smoke):** E17 stage 2 (A16 / M16), E18 (fcanvas) alongside as memory allows, then E16 s8
+(lane59, relaunched by hand; lane63 stopped 13:20 so it does not jump the queue).
+
 ---
 
 ## 2026-10-03 night — interim: Mamba at an equal budget (s7); matched-budget comparators; E16 running
