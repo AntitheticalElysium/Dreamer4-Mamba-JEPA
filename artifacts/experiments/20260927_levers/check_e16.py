@@ -13,6 +13,10 @@ k >= 3 (check_damage_rule's visible-history cases need the 4-frame window inside
               steps (scroll.estimate on the true pair), the rest of the map: what the channel carries
 A drawn hit = the HUD probe's health on the predicted frame below the current health (true current for teacher-forced, imagined
 for self-fed) by more than 1.5 (check_damage's class cut for <= -2).
+First s7 run (2026-10-04 12:10, log e16_check_s7_v1_lastframe.log) set Delta on the last window frame only; training conditions
+every frame (dworld.Posterior.forward), fixed here. A CPU rerun of the fixed version on 32 roots gives the same posterior -2
+accuracy (0/10), and the decoder trace on pool windows (NOTEBOOK 2026-10-04) shows why it is not an evaluation artifact: the
+decoder draws health changes only on the death transitions of end-aligned terminal windows; on ordinary hits it copies.
 Usage: check_e16.py <stage-B prior .pt> [--samples M]
 """
 import json
@@ -30,11 +34,11 @@ H = CD.H
 
 
 def step(world, post, frames, acts, codes, device, config):
-    """frames [B,w,81,192], acts [B,w], codes [B,4] for the last transition -> next frame [B,81,192]"""
+    """frames [B,w,81,192], acts [B,w], codes [B,w,4]: the code of the transition LEAVING each window frame (training conditions
+    every frame on its own; FIXED 2026-10-04: the first version set only the last frame's) -> next frame [B,81,192]"""
     b, w = frames.shape[:2]
-    delta = torch.zeros(b, w, 81, DW.S.D, device=device)
     with torch.no_grad():
-        delta[:, -1] = post.condition(post.quantizer.embed(codes.to(device)))
+        delta = post.condition(post.quantizer.embed(codes.to(device).flatten(0, 1))).view(b, w, 81, DW.S.D)
     world.delta = delta
     out = T.step(world, frames, acts, device, config)
     world.delta = None
@@ -89,7 +93,7 @@ def main():
                 c = 3 + k                                                            # index of the current frame in tf
                 w = min(c + 1, 5)
                 win, wa = tf[:, c + 1 - w:c + 1], ac[:, c + 1 - w:c + 1]
-                with_d = step(world, post, win, wa, pc[:, c], device, config)
+                with_d = step(world, post, win, wa, pc[:, c + 1 - w:c + 1], device, config)
                 post_h[i:i + b, k] = health(with_d).cpu()
                 world.delta = None
                 no_d = T.step(world, win, wa, device, config)
@@ -112,11 +116,13 @@ def main():
                 cur = health(tf[:, c]).cpu()
                 for _ in range(M):
                     codes, _ = prior.sample(hist_s, hist_a, hist_c, generator=g)
-                    prior_hits[i:i + b, k] += (health(step(world, post, win, wa, codes, device, config).to(device)).cpu() < cur - 1.5).float() / M
+                    cw = torch.cat([pc[:, c + 1 - w:c], codes[:, None]], 1)
+                    prior_hits[i:i + b, k] += (health(step(world, post, win, wa, cw, device, config).to(device)).cpu() < cur - 1.5).float() / M
                 iw = min(len(imagined), 5)
                 isn = torch.stack(imagined[-DW.BLOCKS:], 1); ian = ac[:, max(0, c + 1 - len(imagined[-DW.BLOCKS:])):c + 1]
                 scodes, _ = prior.sample(isn, ian, torch.stack(icodes[-(isn.shape[1] - 1):], 1), generator=g)
-                nxt = step(world, post, torch.stack(imagined[-iw:], 1), ac[:, c + 1 - iw:c + 1], scodes, device, config).to(device)
+                cw = torch.stack(icodes[len(icodes) - (iw - 1):] + [scodes], 1)
+                nxt = step(world, post, torch.stack(imagined[-iw:], 1), ac[:, c + 1 - iw:c + 1], cw, device, config).to(device)
                 gen[i:i + b, k] = nxt.half().cpu(); self_h[i:i + b, k] = health(nxt).cpu()
                 imagined.append(nxt); icodes.append(scodes)
     dclass = lambda d: torch.bucketize(d, torch.tensor([-1.5, -0.5, 0.5]))

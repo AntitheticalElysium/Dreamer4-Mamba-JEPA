@@ -10,6 +10,12 @@ with the hit's visible-history case.
 Readings, declared before running (worlds: attention and Mamba 36k teacher, seed 7):
   uses_history      error(w = 5) at least 5% below error(w = 1) on the map or the HUD, per world
   mamba_uses_more   Mamba's relative gain from w = 1 to 5 exceeds attention's by >= 5 points on the HUD (the cooldown lives there)
+Results (2026-10-04, 13,022 transitions; log check_context.log), error per transition w1 -> w5:
+  attention  map 213.7 -> 206.1 (-3.6%)  HUD 25.72 -> 29.64 (+15.2%)  player 0.635 -> 0.593; hits drawn only at w5: catch 3.2%,
+             false drops 1.1%, fresh 0%
+  Mamba      map 218.9 -> 209.2 (-4.5%; w4 205.8, -6.0%)  HUD 25.72 -> 29.50 (+14.7%); w5 only: catch 6.1%, false 0.8%, fresh 0%
+  uses_history FALSE for both, mamba_uses_more FALSE. Neither world uses its <= 5-frame history beyond ~4-6% on the map.
+  Drops appear only at w5, where window length and "last frame on time row 4" coincide: separated by check_position.py.
 Usage: check_context.py <world.pt> ...
 """
 import json

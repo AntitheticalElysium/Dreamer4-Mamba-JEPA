@@ -92,8 +92,8 @@ def features_e16(world, post, prior, config, data, path, width, device, generato
         for k in range(1, H + 1):
             sampled, p_end = prior.sample(frames[:, -DW.BLOCKS:], acts[:, -DW.BLOCKS:], codes[:, -(DW.BLOCKS - 1):], generator=generator)
             w = min(frames.shape[1], window)
-            delta = torch.zeros(len(frames), w, 81, DW.S.D, device=device)
-            delta[:, -1] = post.condition(post.quantizer.embed(sampled))
+            cw = torch.cat([codes[:, codes.shape[1] - (w - 1):], sampled[:, None]], 1)     # every window frame's own code
+            delta = post.condition(post.quantizer.embed(cw.flatten(0, 1))).view(len(frames), w, 81, DW.S.D)   # (fixed 2026-10-04)
             world.delta = delta
             with autocast_context(config):
                 out, h, _ = world(frames[:, -w:], acts[:, -w:])
