@@ -189,6 +189,15 @@ L31 49.5%, L63 52.2%. Share of the perfect-memory gain at L15: 39.1%. moved_domi
   - Po et al. (arXiv 2505.20171) scan spatial blocks over time: the state follows screen positions, as in fmamba. Their
     full-context transformer still edges their SSM on Memory Maze retrieval (SSIM 0.914 vs 0.898).
 
+- How this sits with the recall literature: Zoology (Arora et al., arXiv 2312.04927) finds attention far ahead of
+  gated-convolution / SSM models on associative recall (a 70M attention model beats a 1.4B gated convolution on MQAR).
+  - Our edge is positional, not associative: same view slot at a fixed lag, which a per-slot recurrence holds by construction.
+  - The moved-slot case is a position lookup through the camera offset, closer to associative recall. No backbone has
+    learned it yet.
+
+**E17 resource smoke (lane62):** attention at L = 16, 40 windows per update: 0.468 s / update, peak 4.20 GB (500 updates,
+objective 0.081). Mamba: below.
+
 **E17 stage 2 amendment 2 (declared in check_recall's docstring, 3ac7e494, before any stage-2 run):** memory readings on the DEV
 futures' true 20-frame trajectories (check_recall --futures, window 15 vs 5):
 - long_recall_same: M16's same-slot capture at ages 6-15 ≥ 0.5 and ≥ A16's + 0.10, at both seeds;
@@ -216,6 +225,29 @@ Same tool, now (lanes 70-71): the parents on DEV futures, teacher-forced (future
 
 **Queue order (after the E17 resource smoke):** E17 stage 2 (A16 / M16), E18 (fcanvas) alongside as memory allows, then E16 s8
 (lane59, relaunched by hand; lane63 stopped 13:20 so it does not jump the queue).
+- Mamba smoke (lane62): 1.436 s / update, peak 2.87 GB at 40 windows. The predeclared 40 windows per update stand for both arms.
+- lane72 started fcanvas s7 at 13:43, before E17 had a lane. Stopped at 13:44, before any state was saved.
+- lane73: E17 stage 2. A16 s7, s8 first (4.2 GB, cannot share the GPU), then M16 s7, s8, then the predeclared evaluations:
+  - check_recall --futures at windows 15 and 5, and --imagined;
+  - check_damage at windows 16 and 5;
+  - check_h16_traj --window 16;
+  - teval at windows 16 and 5;
+  - compare: parent vs long, A16 vs M16, and w5 vs w16 per world.
+- lane74: E18, unchanged, starting after A16 s8 so it runs beside the Mamba runs.
+- DEV-futures replication (lane70, teacher-forced, window 5): futures_replicates TRUE (computed from the ordered lines; the
+  name bug is fixed in 472d20f4).
+
+| capture | same 2-5 | moved 2-5 | same 6-15 | moved 6-15 (outside the window = no-memory baseline) |
+|---|---|---|---|---|
+| attention s7 36k | 0.430 | 0.447 | 0.349 | 0.422 |
+| Mamba s7 36k | 0.716 | 0.371 | 0.366 | 0.376 |
+| attention s8 30k | 0.242 | 0.361 | 0.336 | 0.368 |
+| Mamba s8 30k | 0.561 | 0.364 | 0.353 | 0.406 |
+| attention s7 100k | 0.857 | 0.349 | 0.339 | 0.391 |
+
+  - Capture is not zero without memory: cells beyond the window score 0.34-0.42 from generation alone.
+  - Against that baseline, Mamba recalls same-slot cells at both seeds. Attention does so weakly at 36k / 30k and strongly
+    by 100k (s7). Moved-slot cells stay at the baseline for every world.
 
 ---
 
