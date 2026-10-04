@@ -31,7 +31,12 @@ same_6_15, moved_6_15 (ages beyond a world's window are scored too: what it does
   long_recall_same     M16's same_6_15 capture >= 0.5 and >= A16's + 0.10 at both seeds
   long_recall_used     M16's same_6_15 capture at window 15 - at window 5 >= 0.2 at both seeds
   moved_unsolved       moved_6_15 capture <= 0.35 for every world (descriptive)
-Usage: check_recall.py [--futures] [--window W] <world.pt> ...
+v4 --futures --imagined (declared before running): the same groups in the world's SELF-FED rollout (teval's convention: the 4
+true context frames, then windows of up to W of its own frames under the true actions; sample 0's trajectory, 1,002 roots),
+scored only at steps whose imagined camera offset still equals the true one (cumulative scroll.estimate shifts), so imagined
+and true cells coincide; sightings may lie in imagined frames (the world must keep its own imagination consistent).
+  imagined_recall_edge   (6-frame parents) Mamba's same_2_5 capture - attention's >= 0.10 at s7 36k and at s8 30k
+Usage: check_recall.py [--futures [--imagined]] [--window W] <world.pt> ...
 """
 import json
 import sys
@@ -84,11 +89,13 @@ def main():
     device = torch.device("cuda")
     config = config_from_dict(torch.load(Sp.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
     argv = sys.argv[1:]
-    fut = "--futures" in argv
+    fut, imagined = "--futures" in argv, "--imagined" in argv
     window = int(argv[argv.index("--window") + 1]) if "--window" in argv else None
     paths = [x for i, x in enumerate(argv) if x.endswith(".pt")]
     if fut:
         seqs, acts, valid = futures(device)
+        if imagined:
+            seqs, acts, valid = seqs[0::5], acts[0::5], valid[0::5]                              # sample 0: the factual future
         batches = [(seqs[i:i + 64], acts[i:i + 64], valid[i:i + 64]) for i in range(0, len(seqs), 64)]
     else:
         pool = torch.load(TW.POOLS["raw"] / "pool.pt", weights_only=False, mmap=True)
@@ -98,13 +105,24 @@ def main():
     out = {}
     for path in paths:
         world, st = T.load_world(Path(path), device)
-        name = st["name"] + (f"_w{window}" if window else "")
+        name = st["name"] + (f"_w{window}" if window else "") + ("_imagined" if imagined else "")
         W = window or world.time.shape[0] - 1
         acc = {c: {"n": 0, "world": 0.0, "sighting": 0.0, "neighbour": 0.0}
                for c in ("recallable", "unseen", "same_slot", "moved_slot", "age2", "age3plus", "same_2_5", "moved_2_5", "same_6_15", "moved_6_15")}
         with torch.no_grad():
             for batch in batches:
-                if fut:
+                if imagined:
+                    s, a, ok = batch
+                    g = [s[:, j].float() for j in range(4)]
+                    for t in range(4, s.shape[1]):
+                        w = min(len(g), W)
+                        g.append(T.step(world, torch.stack(g[-w:], 1), a[:, t - w:t], device, config))
+                    gen, s = torch.stack(g, 1), s.float()
+                    pred = gen[:, 1:]                                                            # pred[:, t-1] = frame t
+                    io = torch.tensor(SHIFTS)[estimate(gen[:, :-1], gen[:, 1:])].cumsum(1)         # offset of frame t, t >= 1
+                    to = torch.tensor(SHIFTS)[estimate(s[:, :-1], s[:, 1:])].cumsum(1)
+                    ok = ok & torch.cat([torch.zeros(len(s), 4, dtype=torch.bool), (io == to).all(-1)[:, 3:]], 1)
+                elif fut:
                     s, a, ok = batch
                     pred = torch.stack([T.step(world, s[:, max(0, t - W):t].float(), a[:, max(0, t - W):t], device, config)
                                         for t in range(1, s.shape[1])], 1)                       # pred[:, t-1] = frame t
@@ -156,9 +174,10 @@ def main():
         rd = {}
         pairs = (("corrt_raw_teacher_s7_u36000", "corrt_raw_teacher_s7_fmamba_u36000"),
                  ("corrt_raw_teacher_s8_u36000_at30000", "corrt_raw_teacher_s8_fmamba_u36000_at30000"))
-        if all(a in out and m in out for a, m in pairs):
-            rd["futures_replicates"] = all(out[m]["same_2_5"]["recall_capture"] - out[a]["same_2_5"]["recall_capture"] >= 0.10
-                                           for a, m in pairs)
+        x = "_imagined" if imagined else ""
+        if all(a + x in out and m + x in out for a, m in pairs):
+            key = "imagined_recall_edge" if imagined else "futures_replicates"
+            rd[key] = all(out[m + x]["same_2_5"]["recall_capture"] - out[a + x]["same_2_5"]["recall_capture"] >= 0.10 for a, m in pairs)
     out["readings"] = rd
     print(json.dumps(out))
 
