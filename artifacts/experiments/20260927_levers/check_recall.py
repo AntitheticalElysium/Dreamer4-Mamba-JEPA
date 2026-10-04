@@ -13,6 +13,14 @@ neighbour (memoryless copy); recall_capture = (neighbour - world) / (neighbour -
 Readings, declared before running:
   recall_gap_36k     fmamba 36k's recallable error >= 1.10 x the full 36k world's while their unseen errors differ by < 5%
   canvas_recalls_6k  fcanvas 6k's recallable error <= 0.90 x fmamba 6k's (suffix arms, seed 7, lane 9)
+Run 1 (lane67) and the curves (lane68, check_recall_curve.log): both readings FALSE in the other direction. fmamba recalls
+FASTER: capture s7 0.78 vs 0.47 at 36k, s8 0.61 vs 0.30 at 30k (attention s8 stays 0.30 to 100k; s7 attention reaches 0.74 at
+50k, 0.83 at 100k); unseen cells tie; all backbones ~0.18-0.21 at 6k.
+v2 split (added after the curves, declared before running it): a cell that left through an edge and re-enters through the same
+edge with no perpendicular move re-enters its old VIEW slot, where a per-slot scan is aligned.
+  same_slot / moved_slot   recallable cells whose last sighting was at the same view slot / another one
+  age2 / age3plus          sighting 2 frames / 3-5 frames before the target
+  slot_bias   (per fmamba vs full pair) fmamba's capture edge on same_slot cells >= 2 x its edge on moved_slot cells
 Usage: check_recall.py <world.pt> ...
 """
 import json
@@ -59,7 +67,8 @@ def main():
     out = {}
     for path in sys.argv[1:]:
         world, st = T.load_world(Path(path), device)
-        acc = {c: {"n": 0, "world": 0.0, "sighting": 0.0, "neighbour": 0.0} for c in ("recallable", "unseen")}
+        acc = {c: {"n": 0, "world": 0.0, "sighting": 0.0, "neighbour": 0.0}
+               for c in ("recallable", "unseen", "same_slot", "moved_slot", "age2", "age3plus")}
         with torch.no_grad():
             for i in range(0, len(held), 32):
                 b = Sp.batch_of(pool, held[i:i + 32], "tokens", device)
@@ -72,14 +81,17 @@ def main():
                     tgt = s[j, t, ce]
                     errs = {"world": (pred[j, t - 1, ce] - tgt).square().sum(-1), "sighting": (s[j, sf, sc] - tgt).square().sum(-1),
                             "neighbour": (s[j, t, nb] - tgt).square().sum(-1)}
-                    for k, name in ((1, "recallable"), (0, "unseen")):
-                        m = cls == k
+                    rec = cls == 1
+                    groups = {"recallable": rec, "unseen": ~rec, "same_slot": rec & (sc == ce), "moved_slot": rec & (sc != ce),
+                              "age2": rec & (t - sf == 2), "age3plus": rec & (t - sf > 2)}
+                    for name, m in groups.items():
                         acc[name]["n"] += int(m.sum())
                         for e, v in errs.items():
                             acc[name][e] += float(v[m].sum())
         res = {c: {"n": v["n"], **{e: v[e] / max(v["n"], 1) for e in ("world", "sighting", "neighbour")}} for c, v in acc.items()}
-        r = res["recallable"]
-        r["recall_capture"] = (r["neighbour"] - r["world"]) / (r["neighbour"] - r["sighting"])
+        for g in ("recallable", "same_slot", "moved_slot", "age2", "age3plus"):
+            r = res[g]
+            r["recall_capture"] = (r["neighbour"] - r["world"]) / (r["neighbour"] - r["sighting"]) if r["n"] else None
         res["unseen"]["gain_over_neighbour"] = 1 - res["unseen"]["world"] / res["unseen"]["neighbour"]
         out[st["name"]] = res
         print(json.dumps({st["name"]: res}), flush=True)
@@ -92,6 +104,11 @@ def main():
     cv, f6 = out.get("corrt_raw_suffix_s7_fcanvas"), out.get("corrt_raw_suffix_s7_fmamba")
     if cv and f6:
         rd["canvas_recalls_6k"] = cv["recallable"]["world"] <= 0.90 * f6["recallable"]["world"]
+    for a, m in (("corrt_raw_teacher_s7_u36000", "corrt_raw_teacher_s7_fmamba_u36000"),
+                 ("corrt_raw_teacher_s8_u36000_at30000", "corrt_raw_teacher_s8_fmamba_u36000_at30000")):
+        if a in out and m in out:
+            edge = {g: out[m][g]["recall_capture"] - out[a][g]["recall_capture"] for g in ("same_slot", "moved_slot")}
+            rd[f"slot_bias_{m}"] = edge["same_slot"] >= 2 * edge["moved_slot"]
     out["readings"] = rd
     print(json.dumps(out))
 
