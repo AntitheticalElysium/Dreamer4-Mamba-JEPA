@@ -15,6 +15,8 @@ Readings, declared before running:
   delta_flags_error        delta_mean AUC >= 0.70 at both seeds
   delta_beyond_saliency    delta_mean_within_change >= 0.60 at both seeds
   delta_vs_ensemble        delta_mean AUC >= disagreement AUC at both seeds
+DELTA_DEVICE=cpu runs it on the CPU with the Mamba-2 reference scan (the module's own float32 equations; added 2026-10-04 while
+the GPU is held by E17's Mamba runs).
 Usage: check_delta.py <M6 s7.pt> <M6 s8.pt>
 """
 import json
@@ -64,7 +66,9 @@ def rollout(world, cache, device, config, batch=4):
 def main():
     from d4mj.config import config_from_dict
     import spatial as Sp
-    device = torch.device("cuda")
+    import dataclasses
+    import os
+    device = torch.device(os.environ.get("DELTA_DEVICE", "cuda"))
     config = config_from_dict(torch.load(Sp.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
     meta, _, _ = T.split()
     cache = T.build_cache("raw", device)
@@ -73,6 +77,9 @@ def main():
     runs = {}
     for path in sys.argv[1:3]:
         world, st = T.load_world(Path(path), device)
+        if device.type == "cpu":
+            for l in world.layers:
+                l.mix.settings = dataclasses.replace(l.mix.settings, backend="reference")
         runs[st["name"]] = rollout(world, cache, device, config)
         del world; torch.cuda.empty_cache()
     names = list(runs)
