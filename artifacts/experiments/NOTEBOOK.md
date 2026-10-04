@@ -61,6 +61,91 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-04 — Mamba diagnosis: health drops are a position artifact in both backbones; memory incentive measured; E16 correction
+
+**Correction (retracts my 10-04 midday claim "E16's 0/305 health reading is an evaluation artifact").**
+- check_e16's first s7 run set Delta on the last window frame only; training conditions every frame. Fixed (f6823df0).
+- The fix changes nothing: a CPU rerun on 32 roots gives posterior −2 accuracy 0/10. On 12 true hits (64 roots), a
+  training-style call (posterior over the full window) leaves the health token at copy error (e.g. 69.5 → 69.5).
+- My pool diagnostic ("generate weight 0.678 on hits, error 258.9 → 13.1") mixed 1,024 end-aligned death windows with
+  1,024 ordinary ones. Split by window type (stage-A s7 decoder, posterior Delta on every frame):
+
+| windows | dh | n | last-transition share | generate weight | token-63 error copy → world |
+|---|---|---|---|---|---|
+| held main | −2 | 106 | 0.29 | 0.090 | 75.4 → 66.1 |
+| held main | ±1 | 32 / 171 | | 0.05-0.08 | 66.8 → 57.9 / 56.0 → 54.9 |
+| terminal | −2 | 384 | 0.82 | 0.507 | 245.0 → 16.5 |
+| terminal | ≤ −3 | 447 | 0.98 | 0.890 | 291.7 → 3.8 |
+
+- Where ordinary-hit information is lost (`dbg`-style trace on held / 6,144 training main windows, dh = −2 vs 0):
+  - posterior encoder output before VQ (region 2, which holds token 63): probe AUC 0.634 / 0.701, though it sees the true
+    next frame;
+  - quantized code: AUC 0.548 / 0.642; I(code; hit) ≤ 0.028 of 0.085 bits per region; hit codes also cover 50-79% of non-hits;
+  - decoder h at token 63: AUC 0.772 / 0.808 (0.653 / 0.758 with Delta zeroed); output copies (generate weight 0.09).
+- Reading: e16_health_drawable FALSE stands. The posterior is trained only through the decoder's uniform MSE. Deaths (large
+  token change, ~6,500 per pass over the pool) get encoded; ordinary hits (~2,200, error 75 each) do not. This is E14's
+  rarity diagnosis again, now with the answer fed to the model.
+
+**check_context (lane61; teacher-forced, true frames, window w = 1..5):** neither 36k world uses its history.
+- Map error w1 → w5: attention −3.6%, Mamba −4.5% (w4 −6.0%). HUD error rises 15% at w5 in both.
+- Drops are drawn only at w5: catch 3.2% / 6.1%, false 1.1% / 0.8%, fresh 0 / 0.
+- uses_history FALSE (both), mamba_uses_more FALSE.
+
+**Pool structure (raw, 6-frame windows):** 78% of the training health drops ≤ −2 sit at time position 4.
+- Main windows by position: [276, 258, 300, 298, 339]. End-aligned terminal windows: [185, 195, 167, 158, 6172].
+- Terminal −1: 1,897 of 2,071 at position 4. Recoveries at position 4: 363 vs ~640 elsewhere.
+
+**check_position (lanes 64, 66; the same windows with the time table re-indexed, weights unchanged):**
+
+| condition | attention drawn / catch / false | Mamba drawn / catch / false |
+|---|---|---|
+| 4 frames, rows 0-3 | 0 / 0 / 0 | 0 / 0 / 0 |
+| same 4 frames, rows 1-4 | 1.34% / 3.2% / 1.29% | 0.01% / 0.4% / 0 |
+| 5 frames, rows 0-4 (evaluation convention) | 1.18% / 3.2% / 1.14% | 0.93% / 6.1% / 0.82% |
+| 1 frame, row 0 / row 4 | 0 / 0.86% (all false) | 0 / 0 |
+| last frame × 5, noop actions (no history) | 1.37% / 3.6% / 1.32% | 1.25% / 4.7% / 1.18% |
+| last 4 frames, first doubled | 1.19% / 2.9% / 1.15% | 0.94% / 6.1% / 0.82% |
+
+- Readings:
+  - attention: position_shortcut TRUE, row4_alone TRUE, scan_shortcut TRUE, fifth_frame_used FALSE;
+  - Mamba: position_shortcut FALSE, row4_alone FALSE, scan_shortcut TRUE, fifth_frame_used FALSE.
+- Exact mechanism: both worlds learned "health drops at the death position" from the end-aligned terminal windows.
+  Attention reads it from time-table row 4; Mamba from its fifth scan step (a scan from a zero state counts its steps; it
+  ignores the table). Both condition on the current frame only: with no history at all they draw as many drops.
+- At positions 0-3 neither draws a single drop, so ordinary hits are not learned at any position. Every evaluation step after
+  warm-up (≤ 5-frame windows) sits at the death position.
+- This explains 10-03's "drops drawn LESS often with a hit than without one" (E14f).
+- The H16 health gap is therefore a training-signal problem (rarity + position-locked deaths), not a context-length or backbone
+  problem. Mamba's slightly better discrimination at w5 (catch / false 7.4 vs 2.8) is real for this seed, but it is not
+  history use (no-history catch 4.7%).
+
+**check_memory (lane65, data only; 1,500 64-frame windows, 93,942 transitions; scroll share 35.1%):** how much does perfect
+memory of terrain re-entering the view pay?
+
+| lookback L | entering cells seen within L | sighting error (memoryless neighbour 57.0) | share of copy-world error removed | per transition |
+|---|---|---|---|---|
+| 2 | 3.6% | 8.9 | 0.7% | 5.9 |
+| 5 | 11.2% | 11.9 | 2.1% | 17.7 |
+| 8 | 16.0% | 14.7 | 2.9% | 24.5 |
+| 15 | 22.2% | 21.7 | 3.9% | 32.3 |
+| 31 | 28.7% | 35.3 | 4.7% | 39.3 |
+| 63 | 31.4% | 43.6 | 5.0% | 41.8 |
+
+- Readings: memory_grows_with_L FALSE (22.2% vs the 22.4% threshold), memory_incentive_16 TRUE (3.9% ≥ 2%).
+- Long memory has a real but small map payoff, about +1.8 points of copy error from L = 5 to 15. The other dependency, the hit
+  cooldown, needs 6 frames (ceiling 62.1% at 5, 85.7% at 6), but hits are not learned at all (above).
+
+**E17 stage 2 amendment 1 (2026-10-04, before any stage-2 run; the lane62 resource smoke still runs):**
+- Launch is held until check_recall (lane67) reports.
+- Reason 1: long_hits and long_fresh are expected FALSE for a reason unrelated to memory. Hits are not learned inside 5
+  frames, where the information is present, and the rawlong pool end-aligns deaths the same way (they would sit at position 15).
+- Reason 2: the map content memory can supply is terrain re-entering after a scroll. fmamba scans view slots, not world
+  cells, so its state is misaligned with what re-enters. check_recall measures this per backbone (36k full vs fmamba; 6k
+  full / fattn / fmamba / fcanvas / fscan).
+- If fmamba cannot recall across scrolls, the fair Mamba arm for a memory test is world-aligned (fcanvas), not fmamba.
+
+---
+
 ## 2026-10-03 night — interim: Mamba at an equal budget (s7); matched-budget comparators; E16 running
 
 **E17 stage 1, seed 7** (corrt teacher, 6-frame windows, 36k, fmamba backbone vs the attention world; lane60). Mamba matches
