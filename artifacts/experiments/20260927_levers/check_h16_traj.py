@@ -230,7 +230,8 @@ def main():
             world, st = T.load_world(Path(path), device)
             name = st["name"]
             tag = E.CACHE / f"h16traj_{name}"
-            xs = {s: features(world, config, data[s], f"{tag}_{s}.f16", S.D, device, window=window) for s in ("fit", "dev")}
+            bs = 4 if getattr(world, "backbone_kind", "full") in ("fmamba", "fcanvas") else 16   # teval's per-token-SSM rule (2026-10-04)
+            xs = {s: features(world, config, data[s], f"{tag}_{s}.f16", S.D, device, batch=bs, window=window) for s in ("fit", "dev")}
             del world; torch.cuda.empty_cache()
         flat = xs["fit"].flatten(0, 2)
         mu = torch.stack([flat[i:i + 65536].float().mean(0) for i in range(0, len(flat), 65536)]).mean(0)

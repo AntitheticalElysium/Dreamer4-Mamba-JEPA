@@ -92,9 +92,10 @@ def main():
         tf = torch.empty(R, H)
         sf = torch.empty(R, H)
         gen = torch.empty(R, H, 81, 192, dtype=torch.float16)
+        bs = 16 if getattr(world, "backbone_kind", "full") in ("fmamba", "fcanvas") else 64   # per-token SSM memory (2026-10-04)
         with torch.no_grad():
-            for i in range(0, R, 64):
-                b = min(64, R - i)
+            for i in range(0, R, bs):
+                b = min(bs, R - i)
                 c4, a3, fk = ctx[i:i + b].float(), ca[i:i + b], fa[i:i + b]
                 frames, hist = [c4[:, j] for j in range(4)], [a3[:, j] for j in range(3)]
                 tfr = [c4[:, j] for j in range(4)]

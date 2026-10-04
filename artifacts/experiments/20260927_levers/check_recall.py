@@ -103,7 +103,6 @@ def main():
         seqs, acts, valid = futures(device)
         if imagined:
             seqs, acts, valid = seqs[0::5], acts[0::5], valid[0::5]                              # sample 0: the factual future
-        batches = [(seqs[i:i + 64], acts[i:i + 64], valid[i:i + 64]) for i in range(0, len(seqs), 64)]
     else:
         pool = torch.load(TW.POOLS["raw"] / "pool.pt", weights_only=False, mmap=True)
         main_rows = torch.where(~pool["terminal"])[0]
@@ -114,6 +113,9 @@ def main():
         world, st = T.load_world(Path(path), device)
         name = st["name"] + (f"_w{window}" if window else "") + ("_imagined" if imagined else "")
         W = window or world.time.shape[0] - 1
+        if fut:                                                    # per-token SSMs: smaller batches (memory; same per-sequence math)
+            bs = 16 if getattr(world, "backbone_kind", "full") in ("fmamba", "fcanvas") else 64
+            batches = [(seqs[i:i + bs], acts[i:i + bs], valid[i:i + bs]) for i in range(0, len(seqs), bs)]
         acc = {c: {"n": 0, "world": 0.0, "sighting": 0.0, "neighbour": 0.0}
                for c in ("recallable", "unseen", "same_slot", "moved_slot", "age2", "age3plus", "same_2_5", "moved_2_5", "same_6_15", "moved_6_15")}
         with torch.no_grad():
