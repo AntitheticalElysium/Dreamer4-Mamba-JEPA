@@ -144,6 +144,51 @@ memory of terrain re-entering the view pay?
   full / fattn / fmamba / fcanvas / fscan).
 - If fmamba cannot recall across scrolls, the fair Mamba arm for a memory test is world-aligned (fcanvas), not fmamba.
 
+**check_recall (lanes 67-69): Mamba learns cross-scroll recall about twice as fast as attention, replicated at both seeds.**
+Held-out 6-frame pool windows, teacher-forced. Entering cells: 2,018 recallable (seen earlier in the window), 25,967 unseen.
+Recall capture = (neighbour − world) / (neighbour − sighting).
+
+| capture | 6k | 12k | 18k | 24k | 30k | 36k | 50k | 100k |
+|---|---|---|---|---|---|---|---|---|
+| s7 attention (full) | 0.171 | 0.184 | 0.239 | 0.303 | 0.319 | 0.472 | 0.739 | 0.825 |
+| s7 Mamba (fmamba) | 0.191 | 0.269 | 0.331 | 0.450 | 0.685 | 0.778 | | |
+| s8 attention | 0.168 | 0.184 | 0.201 | 0.301 | 0.300 | 0.283 | 0.304 | 0.304 |
+| s8 Mamba | 0.218 | 0.273 | 0.321 | 0.467 | 0.612 | (training) | | |
+
+- Unseen entering cells tie at every snapshot (36k: 41.9 vs 42.7). The 6k suffix arms (full / fattn / fmamba / fcanvas /
+  fscan) are all 0.18-0.21.
+- Readings:
+  - recall_gap_36k FALSE and canvas_recalls_6k FALSE: my misalignment hypothesis was wrong in direction;
+  - mamba_recall_edge_s8 TRUE (+0.312 at 30k); mamba_recall_edge_both TRUE (every snapshot from 18k, both seeds);
+  - attention_catches_up TRUE at s7 (0.739 at 50k, 0.825 at 100k), FALSE at s8 (0.30 from 24k to 100k).
+- Why it never showed in aggregate metrics: the recallable-cell difference (36k s7: 38.3 vs 22.1 on 2,018 cells over 10,240
+  transitions) is ~3.2 per transition, about 1.6% of the map error. That matches E17 stage 1's only resolved difference,
+  moved −0.004 (scrolls are where recall happens).
+- Exact mechanism (v2 split; slot_bias TRUE at both seeds):
+
+| capture | same view slot (1,615) | moved slot (403) | age 2 (957) | age 3-5 (1,061) |
+|---|---|---|---|---|
+| s7 36k attention / Mamba | 0.508 / 0.864 | 0.274 / 0.299 | 0.570 / 0.922 | 0.324 / 0.558 |
+| s8 30k attention / Mamba | 0.300 / 0.671 | 0.295 / 0.279 | 0.299 / 0.715 | 0.300 / 0.454 |
+| s7 attention 100k | 0.913 | 0.330 | 0.935 | 0.656 |
+
+  - A cell leaving through an edge and returning through it with no perpendicular move re-enters its old view slot. There, a
+    per-slot recurrence is aligned: "what was in this slot k steps ago" is its default pathway. Attention must learn the
+    same lookup and learns it slowly (s8: not by 100k).
+  - Cells re-entering another slot are recalled by NO backbone (0.27-0.33, attention 100k included).
+
+**check_memory v2 (moved-slot share of recallable cells, long pool):** L2 0%, L3 10.5%, L5 23.5%, L8 33.1%, L15 42.4%,
+L31 49.5%, L63 52.2%. Share of the perfect-memory gain at L15: 39.1%. moved_dominates_16 TRUE.
+- At L = 16, per-slot Mamba can carry at most ~61% of what memory supplies (same-slot re-entries, ages 6-15). The rest needs
+  a world-aligned state: fcanvas, or the 2026-09-29 carry transport. That proposal was deferred "unless the fmamba integration
+  localizes a cross-scroll memory bottleneck". It is now localized.
+- Literature read for this:
+  - DRAMA's replay (`third_party/Drama/replay_buffer.py`) and DreamerV3's (`embodied/core/replay.py`) both sample windows
+    uniformly over a continuous stream, so terminations fall at every position.
+  - EMERALD (arXiv 2507.04075) uses relative positions, T = 64, and cached keys / values across batches.
+  - Po et al. (arXiv 2505.20171) scan spatial blocks over time: the state follows screen positions, as in fmamba. Their
+    full-context transformer still edges their SSM on Memory Maze retrieval (SSIM 0.914 vs 0.898).
+
 ---
 
 ## 2026-10-03 night — interim: Mamba at an equal budget (s7); matched-budget comparators; E16 running
