@@ -260,6 +260,30 @@ Same tool, now (lanes 70-71): the parents on DEV futures, teacher-forced (future
   - Caveat: the no-memory baselines differ in imagination too (same_6_15). The difference against that baseline still
     favours Mamba (+0.10 / +0.04 / +0.14), but less. The rigorous contrast is v5 (lane75): the same cells in the same world,
     with the sighting in the window (w5) and without it (w1).
+- **Memory contrast (lane75; DEV futures, teacher-forced; computed from the ordered w5 / w1 lines): memory_contrast TRUE.**
+
+| same-slot, ages 2-5 | w5 | w1 (no history) | memory gain |
+|---|---|---|---|
+| attention s7 36k | 0.430 | 0.294 | +0.136 |
+| Mamba s7 36k | 0.716 | 0.258 | **+0.458** |
+| attention s8 30k | 0.242 | 0.252 | −0.010 |
+| Mamba s8 30k | 0.561 | 0.245 | **+0.315** |
+| attention s7 100k | 0.857 | 0.267 | +0.589 |
+
+  - Every world has the same no-history baseline (0.25-0.29), so the gain is memory use alone.
+  - Moved-slot gains are ≈ 0 for every world (−0.03 to +0.05).
+  - At matched budget, Mamba uses its window for same-slot recall 3.4× more than attention (s7). Attention s8 uses none. Attention
+    needs ~3× the updates (s7 100k) to match.
+
+**E17 stage 1, both seeds (M6 s8 finished 13:20; lane52's evaluations):**
+- m6_onestep TRUE: onestep_all M6 − A6 is s7 −0.002 [−0.003, −0.001], s8 −0.005 [−0.006, −0.004]. Driven by moved (s7
+  −0.004, s8 −0.011, both resolved): the recall mechanism. s8 blocked is +0.012 [+0.006, +0.021] (Mamba worse).
+- m6_depth16 FALSE: s7 −0.011 [−0.022, +0.001] (ns); s8 −0.018 [−0.032, −0.003] (resolved, with gen_1 / 4 / 8 all resolved lower).
+- m6_hits FALSE: teacher caught s7 0.050 vs 0.030, s8 0.036 vs 0.050. Expected: drops are the death-position artifact in both.
+- m6_consequences: held strict caught matches (s7 0.562 vs 0.564, s8 0.559 vs 0.564); hallucinated 0.007-0.015.
+- m6_h16_traj: lane77. Lane76 OOMed twice: the Mamba world allocates +1.36 GB over 2.06 GB at check_h16_traj's batch 16 × 17
+  branches. Fixed by teval's per-token-SSM batch rule in check_h16_traj (4), check_damage (16) and check_recall --futures
+  (16), 3a9681ca. Per-sequence math unchanged. This also covers lane73's E17 stage-2 evaluations.
 
 ---
 
