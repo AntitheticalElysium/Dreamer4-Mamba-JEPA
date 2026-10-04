@@ -21,7 +21,17 @@ edge with no perpendicular move re-enters its old VIEW slot, where a per-slot sc
   same_slot / moved_slot   recallable cells whose last sighting was at the same view slot / another one
   age2 / age3plus          sighting 2 frames / 3-5 frames before the target
   slot_bias   (per fmamba vs full pair) fmamba's capture edge on same_slot cells >= 2 x its edge on moved_slot cells
-Usage: check_recall.py <world.pt> ...
+v3 --futures (2026-10-04, declared before running): the diagnosis futures' TRUE trajectories (DEV roots, 4 context frames + each
+of the 5 sampled 16-step futures under the same actions: 5,010 x 20 frames; targets whose frame is past a death excluded). Each
+target t is predicted from the last W frames (sliding, teval's convention), W = the world's trained context (time rows - 1: 5
+for the 6-frame worlds, 15 for E17's L = 16) or --window W. Groups by the TRUE sighting age and slot: same_2_5, moved_2_5,
+same_6_15, moved_6_15 (ages beyond a world's window are scored too: what it does without the sighting).
+  futures_replicates   (6-frame parents) Mamba's same_2_5 capture - attention's >= 0.10 at s7 36k and at s8 30k
+  E17 stage 2 (amendment 2, NOTEBOOK), per seed, window 15:
+  long_recall_same     M16's same_6_15 capture >= 0.5 and >= A16's + 0.10 at both seeds
+  long_recall_used     M16's same_6_15 capture at window 15 - at window 5 >= 0.2 at both seeds
+  moved_unsolved       moved_6_15 capture <= 0.35 for every world (descriptive)
+Usage: check_recall.py [--futures] [--window W] <world.pt> ...
 """
 import json
 import sys
@@ -55,46 +65,79 @@ def cells(x):
     return t, ce, (s >= 0).long(), s.clamp(min=0), sc, nb
 
 
+def futures(device):
+    """[R*5, 20, 81, 192] true trajectories, actions [R*5, 19], valid targets [R*5, 20] (frame alive)"""
+    import check_decision_step as CD
+    fut5, _ = CD.SD.token_cache(device)
+    cache = T.build_cache("raw", device)
+    meta, _, _ = T.split()
+    s = torch.cat([cache["ctx"].cpu()[:, None].expand(-1, 5, -1, -1, -1), fut5.cpu()], 2).flatten(0, 1)
+    a = torch.cat([cache["ctx_a"].cpu(), cache["fut_a"].cpu()], 1).repeat_interleave(5, 0)
+    alive = ~meta["future_dead"].cumsum(2).bool()                                                 # [R,5,16]
+    return s, a, torch.cat([torch.ones(alive.shape[0] * 5, 4, dtype=torch.bool), alive.flatten(0, 1)], 1)
+
+
 def main():
     from d4mj.config import config_from_dict
     from d4mj.train import autocast_context
     import spatial as Sp
     device = torch.device("cuda")
     config = config_from_dict(torch.load(Sp.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
-    pool = torch.load(TW.POOLS["raw"] / "pool.pt", weights_only=False, mmap=True)
-    main_rows = torch.where(~pool["terminal"])[0]
-    held = main_rows[torch.randperm(len(main_rows), generator=torch.Generator().manual_seed(1))[:2048]]
+    argv = sys.argv[1:]
+    fut = "--futures" in argv
+    window = int(argv[argv.index("--window") + 1]) if "--window" in argv else None
+    paths = [x for i, x in enumerate(argv) if x.endswith(".pt")]
+    if fut:
+        seqs, acts, valid = futures(device)
+        batches = [(seqs[i:i + 64], acts[i:i + 64], valid[i:i + 64]) for i in range(0, len(seqs), 64)]
+    else:
+        pool = torch.load(TW.POOLS["raw"] / "pool.pt", weights_only=False, mmap=True)
+        main_rows = torch.where(~pool["terminal"])[0]
+        held = main_rows[torch.randperm(len(main_rows), generator=torch.Generator().manual_seed(1))[:2048]]
+        batches = [held[i:i + 32] for i in range(0, len(held), 32)]
     out = {}
-    for path in sys.argv[1:]:
+    for path in paths:
         world, st = T.load_world(Path(path), device)
+        name = st["name"] + (f"_w{window}" if window else "")
+        W = window or world.time.shape[0] - 1
         acc = {c: {"n": 0, "world": 0.0, "sighting": 0.0, "neighbour": 0.0}
-               for c in ("recallable", "unseen", "same_slot", "moved_slot", "age2", "age3plus")}
+               for c in ("recallable", "unseen", "same_slot", "moved_slot", "age2", "age3plus", "same_2_5", "moved_2_5", "same_6_15", "moved_6_15")}
         with torch.no_grad():
-            for i in range(0, len(held), 32):
-                b = Sp.batch_of(pool, held[i:i + 32], "tokens", device)
-                s, a = b["s"].float(), b["actions"]
-                with autocast_context(config):
-                    pred = world(s, F.pad(a, (0, 1)))[0].float()                                 # pred[:, t] = frame t+1
-                s, pred = s.cpu(), pred.cpu()
+            for batch in batches:
+                if fut:
+                    s, a, ok = batch
+                    pred = torch.stack([T.step(world, s[:, max(0, t - W):t].float(), a[:, max(0, t - W):t], device, config)
+                                        for t in range(1, s.shape[1])], 1)                       # pred[:, t-1] = frame t
+                    s = s.float()
+                else:
+                    b = Sp.batch_of(pool, batch, "tokens", device)
+                    s, a = b["s"].float(), b["actions"]
+                    with autocast_context(config):
+                        pred = world(s, F.pad(a, (0, 1)))[0].float()                             # pred[:, t] = frame t+1
+                    s, pred = s.cpu(), pred.cpu()
+                    ok = torch.ones(s.shape[:2], dtype=torch.bool)
                 for j in range(len(s)):
                     t, ce, cls, sf, sc, nb = cells(s[j])
+                    live = ok[j, t]
                     tgt = s[j, t, ce]
                     errs = {"world": (pred[j, t - 1, ce] - tgt).square().sum(-1), "sighting": (s[j, sf, sc] - tgt).square().sum(-1),
                             "neighbour": (s[j, t, nb] - tgt).square().sum(-1)}
-                    rec = cls == 1
-                    groups = {"recallable": rec, "unseen": ~rec, "same_slot": rec & (sc == ce), "moved_slot": rec & (sc != ce),
-                              "age2": rec & (t - sf == 2), "age3plus": rec & (t - sf > 2)}
+                    rec, age, same = (cls == 1) & live, t - sf, sc == ce
+                    groups = {"recallable": rec, "unseen": (cls == 0) & live, "same_slot": rec & same, "moved_slot": rec & ~same,
+                              "age2": rec & (age == 2), "age3plus": rec & (age > 2), "same_2_5": rec & same & (age <= 5),
+                              "moved_2_5": rec & ~same & (age <= 5), "same_6_15": rec & same & (age >= 6) & (age <= 15),
+                              "moved_6_15": rec & ~same & (age >= 6) & (age <= 15)}
                     for name, m in groups.items():
                         acc[name]["n"] += int(m.sum())
                         for e, v in errs.items():
                             acc[name][e] += float(v[m].sum())
         res = {c: {"n": v["n"], **{e: v[e] / max(v["n"], 1) for e in ("world", "sighting", "neighbour")}} for c, v in acc.items()}
-        for g in ("recallable", "same_slot", "moved_slot", "age2", "age3plus"):
+        for g in ("recallable", "same_slot", "moved_slot", "age2", "age3plus", "same_2_5", "moved_2_5", "same_6_15", "moved_6_15"):
             r = res[g]
             r["recall_capture"] = (r["neighbour"] - r["world"]) / (r["neighbour"] - r["sighting"]) if r["n"] else None
         res["unseen"]["gain_over_neighbour"] = 1 - res["unseen"]["world"] / res["unseen"]["neighbour"]
-        out[st["name"]] = res
-        print(json.dumps({st["name"]: res}), flush=True)
+        out[name] = res
+        print(json.dumps({name: res}), flush=True)
         del world; torch.cuda.empty_cache()
     rd = {}
     full, fm = out.get("corrt_raw_teacher_s7_u36000"), out.get("corrt_raw_teacher_s7_fmamba_u36000")
@@ -109,6 +152,13 @@ def main():
         if a in out and m in out:
             edge = {g: out[m][g]["recall_capture"] - out[a][g]["recall_capture"] for g in ("same_slot", "moved_slot")}
             rd[f"slot_bias_{m}"] = edge["same_slot"] >= 2 * edge["moved_slot"]
+    if fut:
+        rd = {}
+        pairs = (("corrt_raw_teacher_s7_u36000", "corrt_raw_teacher_s7_fmamba_u36000"),
+                 ("corrt_raw_teacher_s8_u36000_at30000", "corrt_raw_teacher_s8_fmamba_u36000_at30000"))
+        if all(a in out and m in out for a, m in pairs):
+            rd["futures_replicates"] = all(out[m]["same_2_5"]["recall_capture"] - out[a]["same_2_5"]["recall_capture"] >= 0.10
+                                           for a, m in pairs)
     out["readings"] = rd
     print(json.dumps(out))
 
