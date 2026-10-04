@@ -145,10 +145,10 @@ def main():
                               "age2": rec & (age == 2), "age3plus": rec & (age > 2), "same_2_5": rec & same & (age <= 5),
                               "moved_2_5": rec & ~same & (age <= 5), "same_6_15": rec & same & (age >= 6) & (age <= 15),
                               "moved_6_15": rec & ~same & (age >= 6) & (age <= 15)}
-                    for name, m in groups.items():
-                        acc[name]["n"] += int(m.sum())
+                    for g, m in groups.items():                    # (v3-v4 reused `name` here: lane70's lines are keyed "moved_6_15", in path order)
+                        acc[g]["n"] += int(m.sum())
                         for e, v in errs.items():
-                            acc[name][e] += float(v[m].sum())
+                            acc[g][e] += float(v[m].sum())
         res = {c: {"n": v["n"], **{e: v[e] / max(v["n"], 1) for e in ("world", "sighting", "neighbour")}} for c, v in acc.items()}
         for g in ("recallable", "same_slot", "moved_slot", "age2", "age3plus", "same_2_5", "moved_2_5", "same_6_15", "moved_6_15"):
             r = res[g]
