@@ -11,23 +11,23 @@ for bb in full fmamba; do
     N=corrt_rawlong_teacher_s${s}$( [ $bb = fmamba ] && echo _fmamba )_L16b40_from36000
     tag=A16; [ $bb = fmamba ] && tag=M16; need=4400; [ $bb = fmamba ] && need=3200
     [ -f $W/$N.pt ] || job e17_${tag}_s$s $need $PY $L/tworld.py --head corrt --loss teacher --seed $s --backbone $bb --pool rawlong \
-      --frames 16 --windows 40 --updates 6000 --init $W/$P.pt $( [ -f $W/state/$N.state.pt ] && echo --resume $W/state/$N.state.pt )
+      --frames 16 --windows 40 --updates 6000 --state-every 1000 --init $W/$P.pt $( [ -f $W/state/$N.state.pt ] && echo --resume $W/state/$N.state.pt )
   done
 done
 L16="" ; for s in 7 8; do L16="$L16 $W/corrt_rawlong_teacher_s${s}_L16b40_from36000.pt $W/corrt_rawlong_teacher_s${s}_fmamba_L16b40_from36000.pt"; done
 job e17_recall_w15 3000 $PY $L/check_recall.py --futures $L16
 job e17_recall_w5 3000 $PY $L/check_recall.py --futures --window 5 $L16
 job e17_recall_imagined_w15 3000 $PY $L/check_recall.py --futures --imagined $L16
-job e17_damage_w16 3000 $PY $L/check_damage.py $L16 --window 16
+job e17_damage_w15 3000 $PY $L/check_damage.py $L16 --window 15
 job e17_damage_w5 3000 $PY $L/check_damage.py $L16
-job e17_h16traj_w16 3000 $PY $L/check_h16_traj.py $L16 --window 16
+job e17_h16traj_w15 3000 $PY $L/check_h16_traj.py $L16 --window 15
 for s in 7 8; do
   for N in corrt_rawlong_teacher_s${s}_L16b40_from36000 corrt_rawlong_teacher_s${s}_fmamba_L16b40_from36000; do
-    [ -f $L/evals/${N}__w16_per_root.pt ] || job e17_teval_w16_$N 3000 $PY $L/teval.py $W/$N.pt --window 16
-    [ -f $L/evals/${N}_per_root.pt ] || job e17_teval_w5_$N 3000 $PY $L/teval.py $W/$N.pt
+    [ -f $L/evals/${N}__w15_per_root.pt ] || job e17_teval_w15_$N 3000 $PY artifacts/experiments/20261005_recovery/teval_export.py $W/$N.pt --window 15
+    [ -f $L/evals/${N}_per_root.pt ] || job e17_teval_w5_$N 3000 $PY artifacts/experiments/20261005_recovery/teval_export.py $W/$N.pt
   done
   A6=corrt_raw_teacher_s${s}_u36000; M6=corrt_raw_teacher_s${s}_fmamba_u36000
   A16=corrt_rawlong_teacher_s${s}_L16b40_from36000; M16=corrt_rawlong_teacher_s${s}_fmamba_L16b40_from36000
-  job e17_compare_s$s 0 $PY $L/compare.py $A6:${A16}__w16 $M6:${M16}__w16 ${A16}__w16:${M16}__w16 $A16:${A16}__w16 $M16:${M16}__w16
+  job e17_compare_s$s 0 $PY $L/compare.py $A6:${A16}__w15 $M6:${M16}__w15 ${A16}__w15:${M16}__w15 $A16:${A16}__w15 $M16:${M16}__w15
 done
 echo "$(date '+%F %T') LANE73_DONE" >> $LOGDIR/lanes.log

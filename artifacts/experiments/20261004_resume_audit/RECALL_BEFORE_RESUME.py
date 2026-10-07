@@ -44,16 +44,12 @@ v5 memory contrast (declared before running): the SAME cells, the same world, te
   memory_contrast    Mamba's recall_gain_same - attention's >= 0.10 at s7 36k and at s8 30k (computed from lane70's w5 lines
                      and this run's w1 lines, both in path order)
 Usage: check_recall.py [--futures [--imagined]] [--window W] <world.pt> ...
-Resume (2026-10-04): same command restores hash-bound batch progress/accumulators or a completed world result from
-artifacts/eda/frozen_eval_resume_v1. Actual inputs, numeric sources, weights, window and rollout mode are bound. No metric
-or forward change; a partially completed batch is replayed, with prior accumulated floating-point sums preserved.
 """
 import json
 import sys
 from pathlib import Path
 
 import torch
-import h16_resume as RSM
 import torch.nn.functional as F
 
 sys.path.insert(0, "artifacts/experiments/20260927_levers")
@@ -112,82 +108,64 @@ def main():
         main_rows = torch.where(~pool["terminal"])[0]
         held = main_rows[torch.randperm(len(main_rows), generator=torch.Generator().manual_seed(1))[:2048]]
         batches = [held[i:i + 32] for i in range(0, len(held), 32)]
-    inputs = {"seqs": seqs, "acts": acts, "valid": valid} if fut else {
-        "tokens": pool["tokens"][held], "actions": pool["actions"][held], "held": held}
     out = {}
     for path in paths:
-        name = torch.load(path, map_location="cpu", weights_only=False)["name"] + (f"_w{window}" if window else "") + ("_imagined" if imagined else "")
-        store = RSM.frozen_eval_store(path, name + ("__recall_futures" if fut else "__recall_pool"),
-                                     {"window": window, "futures": fut, "imagined": imagined}, inputs, [Sp.CHECKPOINT])
-        with store.lock():
-            completed = store.load("result")
-            if completed is not None:
-                out[name] = completed
-                print(json.dumps({name: completed}), flush=True)
-                continue
-            world, st = T.load_world(Path(path), device)
-            W = window or world.time.shape[0] - 1
-            if fut:                                                    # per-token SSMs: smaller batches (memory; same per-sequence math)
-                bs = 16 if getattr(world, "backbone_kind", "full") in ("fmamba", "fcanvas") else 64
-                batches = [(seqs[i:i + bs], acts[i:i + bs], valid[i:i + bs]) for i in range(0, len(seqs), bs)]
-            acc = {c: {"n": 0, "world": 0.0, "sighting": 0.0, "neighbour": 0.0}
-                   for c in ("recallable", "unseen", "same_slot", "moved_slot", "age2", "age3plus", "same_2_5", "moved_2_5", "same_6_15", "moved_6_15")}
-            progress = store.load("progress")
-            start = 0
-            if progress is not None:
-                start, acc = progress["next"], progress["acc"]
-            with torch.no_grad():
-                for batch_index, batch in enumerate(batches):
-                    if batch_index < start:
-                        continue
-                    if imagined:
-                        s, a, ok = batch
-                        g = [s[:, j].float() for j in range(4)]
-                        for t in range(4, s.shape[1]):
-                            w = min(len(g), W)
-                            g.append(T.step(world, torch.stack(g[-w:], 1), a[:, t - w:t], device, config))
-                        gen, s = torch.stack(g, 1), s.float()
-                        pred = gen[:, 1:]                                                            # pred[:, t-1] = frame t
-                        io = torch.tensor(SHIFTS)[estimate(gen[:, :-1], gen[:, 1:])].cumsum(1)         # offset of frame t, t >= 1
-                        to = torch.tensor(SHIFTS)[estimate(s[:, :-1], s[:, 1:])].cumsum(1)
-                        ok = ok & torch.cat([torch.zeros(len(s), 4, dtype=torch.bool), (io == to).all(-1)[:, 3:]], 1)
-                    elif fut:
-                        s, a, ok = batch
-                        pred = torch.stack([T.step(world, s[:, max(0, t - W):t].float(), a[:, max(0, t - W):t], device, config)
-                                            for t in range(1, s.shape[1])], 1)                       # pred[:, t-1] = frame t
-                        s = s.float()
-                    else:
-                        b = Sp.batch_of(pool, batch, "tokens", device)
-                        s, a = b["s"].float(), b["actions"]
-                        with autocast_context(config):
-                            pred = world(s, F.pad(a, (0, 1)))[0].float()                             # pred[:, t] = frame t+1
-                        s, pred = s.cpu(), pred.cpu()
-                        ok = torch.ones(s.shape[:2], dtype=torch.bool)
-                    for j in range(len(s)):
-                        t, ce, cls, sf, sc, nb = cells(s[j])
-                        live = ok[j, t]
-                        tgt = s[j, t, ce]
-                        errs = {"world": (pred[j, t - 1, ce] - tgt).square().sum(-1), "sighting": (s[j, sf, sc] - tgt).square().sum(-1),
-                                "neighbour": (s[j, t, nb] - tgt).square().sum(-1)}
-                        rec, age, same = (cls == 1) & live, t - sf, sc == ce
-                        groups = {"recallable": rec, "unseen": (cls == 0) & live, "same_slot": rec & same, "moved_slot": rec & ~same,
-                                  "age2": rec & (age == 2), "age3plus": rec & (age > 2), "same_2_5": rec & same & (age <= 5),
-                                  "moved_2_5": rec & ~same & (age <= 5), "same_6_15": rec & same & (age >= 6) & (age <= 15),
-                                  "moved_6_15": rec & ~same & (age >= 6) & (age <= 15)}
-                        for g, m in groups.items():                    # (v3-v4 reused `name` here: lane70's lines are keyed "moved_6_15", in path order)
-                            acc[g]["n"] += int(m.sum())
-                            for e, v in errs.items():
-                                acc[g][e] += float(v[m].sum())
-                    store.save("progress", {"next": batch_index + 1, "acc": acc}, batch_index + 1)
-            res = {c: {"n": v["n"], **{e: v[e] / max(v["n"], 1) for e in ("world", "sighting", "neighbour")}} for c, v in acc.items()}
-            for g in ("recallable", "same_slot", "moved_slot", "age2", "age3plus", "same_2_5", "moved_2_5", "same_6_15", "moved_6_15"):
-                r = res[g]
-                r["recall_capture"] = (r["neighbour"] - r["world"]) / (r["neighbour"] - r["sighting"]) if r["n"] else None
-            res["unseen"]["gain_over_neighbour"] = 1 - res["unseen"]["world"] / res["unseen"]["neighbour"]
-            store.save("result", res, 1)
-            out[name] = res
-            print(json.dumps({name: res}), flush=True)
-            del world; torch.cuda.empty_cache()
+        world, st = T.load_world(Path(path), device)
+        name = st["name"] + (f"_w{window}" if window else "") + ("_imagined" if imagined else "")
+        W = window or world.time.shape[0] - 1
+        if fut:                                                    # per-token SSMs: smaller batches (memory; same per-sequence math)
+            bs = 16 if getattr(world, "backbone_kind", "full") in ("fmamba", "fcanvas") else 64
+            batches = [(seqs[i:i + bs], acts[i:i + bs], valid[i:i + bs]) for i in range(0, len(seqs), bs)]
+        acc = {c: {"n": 0, "world": 0.0, "sighting": 0.0, "neighbour": 0.0}
+               for c in ("recallable", "unseen", "same_slot", "moved_slot", "age2", "age3plus", "same_2_5", "moved_2_5", "same_6_15", "moved_6_15")}
+        with torch.no_grad():
+            for batch in batches:
+                if imagined:
+                    s, a, ok = batch
+                    g = [s[:, j].float() for j in range(4)]
+                    for t in range(4, s.shape[1]):
+                        w = min(len(g), W)
+                        g.append(T.step(world, torch.stack(g[-w:], 1), a[:, t - w:t], device, config))
+                    gen, s = torch.stack(g, 1), s.float()
+                    pred = gen[:, 1:]                                                            # pred[:, t-1] = frame t
+                    io = torch.tensor(SHIFTS)[estimate(gen[:, :-1], gen[:, 1:])].cumsum(1)         # offset of frame t, t >= 1
+                    to = torch.tensor(SHIFTS)[estimate(s[:, :-1], s[:, 1:])].cumsum(1)
+                    ok = ok & torch.cat([torch.zeros(len(s), 4, dtype=torch.bool), (io == to).all(-1)[:, 3:]], 1)
+                elif fut:
+                    s, a, ok = batch
+                    pred = torch.stack([T.step(world, s[:, max(0, t - W):t].float(), a[:, max(0, t - W):t], device, config)
+                                        for t in range(1, s.shape[1])], 1)                       # pred[:, t-1] = frame t
+                    s = s.float()
+                else:
+                    b = Sp.batch_of(pool, batch, "tokens", device)
+                    s, a = b["s"].float(), b["actions"]
+                    with autocast_context(config):
+                        pred = world(s, F.pad(a, (0, 1)))[0].float()                             # pred[:, t] = frame t+1
+                    s, pred = s.cpu(), pred.cpu()
+                    ok = torch.ones(s.shape[:2], dtype=torch.bool)
+                for j in range(len(s)):
+                    t, ce, cls, sf, sc, nb = cells(s[j])
+                    live = ok[j, t]
+                    tgt = s[j, t, ce]
+                    errs = {"world": (pred[j, t - 1, ce] - tgt).square().sum(-1), "sighting": (s[j, sf, sc] - tgt).square().sum(-1),
+                            "neighbour": (s[j, t, nb] - tgt).square().sum(-1)}
+                    rec, age, same = (cls == 1) & live, t - sf, sc == ce
+                    groups = {"recallable": rec, "unseen": (cls == 0) & live, "same_slot": rec & same, "moved_slot": rec & ~same,
+                              "age2": rec & (age == 2), "age3plus": rec & (age > 2), "same_2_5": rec & same & (age <= 5),
+                              "moved_2_5": rec & ~same & (age <= 5), "same_6_15": rec & same & (age >= 6) & (age <= 15),
+                              "moved_6_15": rec & ~same & (age >= 6) & (age <= 15)}
+                    for g, m in groups.items():                    # (v3-v4 reused `name` here: lane70's lines are keyed "moved_6_15", in path order)
+                        acc[g]["n"] += int(m.sum())
+                        for e, v in errs.items():
+                            acc[g][e] += float(v[m].sum())
+        res = {c: {"n": v["n"], **{e: v[e] / max(v["n"], 1) for e in ("world", "sighting", "neighbour")}} for c, v in acc.items()}
+        for g in ("recallable", "same_slot", "moved_slot", "age2", "age3plus", "same_2_5", "moved_2_5", "same_6_15", "moved_6_15"):
+            r = res[g]
+            r["recall_capture"] = (r["neighbour"] - r["world"]) / (r["neighbour"] - r["sighting"]) if r["n"] else None
+        res["unseen"]["gain_over_neighbour"] = 1 - res["unseen"]["world"] / res["unseen"]["neighbour"]
+        out[name] = res
+        print(json.dumps({name: res}), flush=True)
+        del world; torch.cuda.empty_cache()
     rd = {}
     full, fm = out.get("corrt_raw_teacher_s7_u36000"), out.get("corrt_raw_teacher_s7_fmamba_u36000")
     if full and fm:

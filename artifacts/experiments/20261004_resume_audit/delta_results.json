@@ -1,0 +1,39 @@
+{
+  "corrt_raw_teacher_s7_fmamba_u36000": {
+    "delta_mean": 0.564266760035703,
+    "delta_last": 0.5850183458236661,
+    "input_change": 0.4711423758886242,
+    "disagreement": 0.6417575365076243,
+    "delta_mean_within_change": 0.5637171029240469,
+    "within_change_by_quintile": [
+      0.6359,
+      0.5171,
+      0.5511,
+      0.5368,
+      0.5436
+    ],
+    "tiles": 1009764,
+    "positives": 100977
+  },
+  "corrt_raw_teacher_s8_fmamba_u36000": {
+    "delta_mean": 0.5322887402507259,
+    "delta_last": 0.6004437696536797,
+    "input_change": 0.4716195284605347,
+    "disagreement": 0.6512897682449474,
+    "delta_mean_within_change": 0.5317216412809201,
+    "within_change_by_quintile": [
+      0.4594,
+      0.5928,
+      0.5466,
+      0.532,
+      0.5726
+    ],
+    "tiles": 1009764,
+    "positives": 100977
+  },
+  "readings": {
+    "delta_flags_error": false,
+    "delta_beyond_saliency": false,
+    "delta_vs_ensemble": false
+  }
+}

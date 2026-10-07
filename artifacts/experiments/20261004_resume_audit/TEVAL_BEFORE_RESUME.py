@@ -21,7 +21,6 @@ from pathlib import Path
 
 import torch
 import torch.nn.functional as F
-import h16_resume as RSM
 
 HERE = Path(__file__).parent
 ROOT = Path("/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA")
@@ -172,7 +171,7 @@ def step(world, frames, actions, device, config):
 
 @torch.no_grad()
 def evaluate(world, cache, meta, probes, train_roots, train_seeds, test_roots, device,
-             codes=None, batch=16, window=5, resume_store=None):
+             codes=None, batch=16, window=5):
     from d4mj.config import config_from_dict
     import spatial as S
     from onestep import CLASSES, classify
@@ -183,11 +182,6 @@ def evaluate(world, cache, meta, probes, train_roots, train_seeds, test_roots, d
     gen = torch.empty(R, H, 81, 192, dtype=torch.float16)
     tf = torch.empty(R, H, 81, 192, dtype=torch.float16)
     for i in range(0, R, batch):
-        saved = resume_store.load(f"batch_{i}") if resume_store else None
-        if saved is not None:
-            b = len(saved["one"])
-            one_pred[i:i + b], gen[i:i + b], tf[i:i + b] = saved["one"], saved["generated"], saved["teacher"]
-            continue
         ctx = cache["ctx"][i:i + batch].float()
         b = len(ctx)
         ca, fa, fut = cache["ctx_a"][i:i + batch], cache["fut_a"][i:i + batch], cache["fut"][i:i + batch].float()
@@ -202,9 +196,6 @@ def evaluate(world, cache, meta, probes, train_roots, train_seeds, test_roots, d
             t = step(world, torch.stack(t_frames[-w:], 1), a, device, config)
             gen[i:i + b, k], tf[i:i + b, k] = g.half(), t.half()
             g_frames.append(g); t_frames.append(fut[:, k]); a_hist.append(fa[:, k])
-        if resume_store:
-            resume_store.save(f"batch_{i}", {"one": one_pred[i:i + b].clone(), "generated": gen[i:i + b].clone(),
-                                            "teacher": tf[i:i + b].clone()}, 1)
     generated_probe = Probes(cache, meta, train_roots, train_seeds,
                              tokens=torch.cat([cache["ctx"][:, -1:], gen], 1))
     one_step_probe = Probes(cache, meta, train_roots, train_seeds,
@@ -279,7 +270,6 @@ def load_world(path, device):
 
 def main(argv=None):
     import argparse
-    import spatial as S
     parser = argparse.ArgumentParser()
     parser.add_argument("worlds", nargs="+", type=Path)
     parser.add_argument("--snap", type=Path, default=None, help="codebook to snap imagined tokens to")
@@ -301,37 +291,20 @@ def main(argv=None):
             probes_by[pool] = Probes(cache, meta, train_roots, train_seeds)
         codes = torch.load(args.snap, weights_only=False)["codes"].float().to(device) if args.snap else None
         per_token_ssm = getattr(world, "backbone_kind", "full") in ("fmamba", "fcanvas")    # B*82 x 16k-float states
-        inputs = {**{f"cache_{k}": v for k, v in cache.items() if isinstance(v, torch.Tensor)},
-                  **{f"meta_{k}": v for k, v in meta.items() if isinstance(v, torch.Tensor)},
-                  "train_roots": train_roots, "train_seeds": train_seeds}
-        if codes is not None:
-            inputs["snap_codes"] = codes
-        store = RSM.frozen_eval_store(path, st["name"] + f"__teval_w{args.window}",
-                                     {"window": args.window, "hard": args.hard,
-                                      "snap": str(args.snap), "batch": 4 if per_token_ssm else 16}, inputs, [S.CHECKPOINT])
-        with store.lock():
-            res = store.load("result")
-            if res is None:
-                res = evaluate(world, cache, meta, probes_by[pool], train_roots, train_seeds, test_roots, device, codes,
-                               batch=4 if per_token_ssm else 16, window=args.window, resume_store=store)
-                store.save("result", res, 1)
+        res = evaluate(world, cache, meta, probes_by[pool], train_roots, train_seeds, test_roots, device, codes,
+                       batch=4 if per_token_ssm else 16,
+                       window=args.window)
         tag = st["name"] + (f"__snap_{args.snap.stem}" if args.snap else "") + ("__hard" if args.hard else "") \
             + ("" if args.window == 5 else f"__w{args.window}")
         per_root = out / f"{tag}_per_root.pt"
         if per_root.exists():
             per_root = out / f"{tag}__readout_v2_per_root.pt"
-        rows = res.pop("_per_root")
-        if per_root.exists():
-            prior_rows = torch.load(per_root, map_location="cpu", weights_only=False)
-            if set(prior_rows) != set(rows) or any(not torch.equal(prior_rows[k], rows[k]) if isinstance(rows[k], torch.Tensor)
-                                                  else prior_rows[k] != rows[k] for k in rows):
-                raise RuntimeError(f"Refusing to overwrite different per-root evidence: {per_root}")
-        else:
-            RSM.atomic_torch(per_root, rows)
-        RSM.atomic_json(out / f"{tag}__readout_v2.json", res, immutable=True)
+        torch.save(res.pop("_per_root"), per_root)
+        report = json.dumps(res, indent=2) + "\n"
+        (out / f"{tag}__readout_v2.json").write_text(report)
         legacy = out / f"{tag}.json"
         if not legacy.exists():
-            RSM.atomic_json(legacy, res, immutable=True)
+            legacy.write_text(report)
         brief = {"onestep": {k: round(v, 3) for k, v in res["onestep"].items() if isinstance(v, float)},
                  "gen": [round(res["rollout"][d]["gen"], 3) for d in (0, 3, 7, 15)],
                  "tf": [round(res["rollout"][d]["tf"], 3) for d in (0, 3, 7, 15)],

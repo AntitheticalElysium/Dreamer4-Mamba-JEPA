@@ -17,9 +17,6 @@ min(4 + k, W)); health-change accuracy by true change class (<= -2, -1, 0, >= +1
 Reading, declared before running: damage_copied = teacher-forced caught <= 0.2 in every world (the drop is not drawn even from true
 inputs); damage_small = median HUD token change on damage <= 2 x the unchanged median.
 Usage: check_damage.py <world.pt> ...
-Resume (2026-10-04): same command reuses hash-bound completed root batches (teacher health and self-fed tokens) and
-completed world results in artifacts/eda/frozen_eval_resume_v1. Input/label tensors, numeric sources, weights and window
-are bound; mismatches use a different contract, corrupt committed states fail. Model mathematics/metrics are unchanged.
 Result (2026-10-03; sample 0: 337 damage transitions, rate 0.021; s7 18k / s7 36k / s8 18k / s8 36k):
   damage_copied TRUE: teacher-forced caught 0.018 / 0.030 / 0.021 / 0.050 (false drops 0.009-0.014); self-fed 0.004-0.009.
   damage_small FALSE: HUD squared token change on damage median 74.9 vs 2.1 unchanged (36x); the probe sees every true drop.
@@ -39,7 +36,6 @@ from pathlib import Path
 import torch
 
 sys.path.insert(0, "artifacts/experiments/20260927_levers")
-import h16_resume as RSM
 import check_decision_step as CD
 import check_damage_rule as DR
 DA, SD, T = CD.DA, CD.SD, CD.T
@@ -91,68 +87,50 @@ def main():
     paths = [a for i, a in enumerate(args) if a != "--window" and (i == 0 or args[i - 1] != "--window")]
     dclass = lambda d: torch.bucketize(d, torch.tensor([-1.5, -0.5, 0.5]))            # 0: <= -2, 1: -1, 2: 0, 3: >= +1
     for path in paths:
-        name = torch.load(path, map_location="cpu", weights_only=False)["name"]
-        store = RSM.frozen_eval_store(path, name + f"__damage_w{window}", {"window": window, "task": "damage"},
-                                     {**{f"cache_{k}": v for k, v in cache.items() if isinstance(v, torch.Tensor)},
-                                      **{f"meta_{k}": v for k, v in meta.items() if isinstance(v, torch.Tensor)},
-                                      "future5": fut5, "visible": allv, "alive": alive,
-                                      "train_roots": train_roots, "train_seeds": train_seeds,
-                                      **{f"mask_{k}": v for k, v in MA.items()}}, [Sp.CHECKPOINT])
-        with store.lock():
-            completed = store.load("result")
-            if completed is not None:
-                out[name] = completed
-                print(json.dumps({name: completed}), flush=True)
-                continue
-            world, st = T.load_world(Path(path), device)
-            tf = torch.empty(R, H)
-            sf = torch.empty(R, H)
-            gen = torch.empty(R, H, 81, 192, dtype=torch.float16)
-            bs = 16 if getattr(world, "backbone_kind", "full") in ("fmamba", "fcanvas") else 64   # per-token SSM memory (2026-10-04)
-            with torch.no_grad():
-                for i in range(0, R, bs):
-                    b = min(bs, R - i)
-                    saved = store.load(f"batch_{i}")
-                    if saved is not None:
-                        tf[i:i + b], gen[i:i + b] = saved["teacher"], saved["generated"]
-                        continue
-                    c4, a3, fk = ctx[i:i + b].float(), ca[i:i + b], fa[i:i + b]
-                    frames, hist = [c4[:, j] for j in range(4)], [a3[:, j] for j in range(3)]
-                    tfr = [c4[:, j] for j in range(4)]
-                    for k in range(H):
-                        w = min(4 + k, window)
-                        acts = torch.stack(hist[-(w - 1):] + [fk[:, k]], 1)
-                        g = T.step(world, torch.stack(frames[-w:], 1), acts, device, config)
-                        t = T.step(world, torch.stack(tfr[-w:], 1), acts, device, config)
-                        gen[i:i + b, k] = g.half(); tf[i:i + b, k] = health(t)
-                        frames.append(g); hist.append(fk[:, k]); tfr.append(fut5[i:i + b, 0, k].float())
-                    store.save(f"batch_{i}", {"teacher": tf[i:i + b].clone(), "generated": gen[i:i + b].clone()}, 1)
-            sf = torch.stack([health(gen[:, k].float()) for k in range(H)], 1)
-            gprev = torch.cat([root[:, None], gen[:, :-1]], 1)
-            img_off = DA.offsets(torch.cat([estimate(gprev[j:j + 32].float(), gen[j:j + 32].float()) for j in range(0, R, 32)])).long()
-            aligned = torch.cat([torch.ones(R, 1, dtype=torch.bool), (img_off == true_off).all(-1)[:, :-1]], 1)   # aligned before step k
-            h_cur = h_true[:, :-1]                                                         # true current health (probe)
-            h_cur_self = torch.cat([h_true[:, :1], sf[:, :-1]], 1)                         # imagined current health
-            r = {}
-            for mode, pred, cur, extra in (("teacher", tf, h_cur, torch.ones_like(drop)), ("selffed", sf, h_cur_self, aligned)):
-                pdrop = pred < cur - 0.5
-                r[mode] = {"caught": float(pdrop[drop & extra].float().mean()), "n_damage": int((drop & extra).sum()),
-                           "false_drop": float(pdrop[same & extra].float().mean())}
-            pd_t = tf < h_cur - 0.5
-            r["teacher_by_history"] = {c: {"n_hit": int((base & q & M["drop2"]).sum()),
-                                           "caught": float(pd_t[base & q & M["drop2"]].float().mean()),
-                                           "n_no_hit": int((base & q & ~M["drop2"]).sum()),
-                                           "drawn_without_hit": float(pd_t[base & q & ~M["drop2"]].float().mean())} for c, q in cases.items()}
-            true_c, pred_c = dclass(hp[:, 1:] - hp[:, :-1]), dclass(tf - h_cur)
-            r["health_change_accuracy"] = {name_: {"n": int((alive & (true_c == c)).sum()),
-                                                  "acc": round(float((pred_c == c)[alive & (true_c == c)].float().mean()), 4)}
-                                           for c, name_ in enumerate(("le-2", "-1", "0", "ge+1"))}
-            r["window"] = window
-            r["readings_part"] = {"teacher_caught_le_0.2": r["teacher"]["caught"] <= 0.2}
-            store.save("result", r, 1)
-            out[name] = r
-            print(json.dumps({name: r}), flush=True)
-            del world; torch.cuda.empty_cache()
+        world, st = T.load_world(Path(path), device)
+        name = st["name"]
+        tf = torch.empty(R, H)
+        sf = torch.empty(R, H)
+        gen = torch.empty(R, H, 81, 192, dtype=torch.float16)
+        bs = 16 if getattr(world, "backbone_kind", "full") in ("fmamba", "fcanvas") else 64   # per-token SSM memory (2026-10-04)
+        with torch.no_grad():
+            for i in range(0, R, bs):
+                b = min(bs, R - i)
+                c4, a3, fk = ctx[i:i + b].float(), ca[i:i + b], fa[i:i + b]
+                frames, hist = [c4[:, j] for j in range(4)], [a3[:, j] for j in range(3)]
+                tfr = [c4[:, j] for j in range(4)]
+                for k in range(H):
+                    w = min(4 + k, window)
+                    acts = torch.stack(hist[-(w - 1):] + [fk[:, k]], 1)
+                    g = T.step(world, torch.stack(frames[-w:], 1), acts, device, config)
+                    t = T.step(world, torch.stack(tfr[-w:], 1), acts, device, config)
+                    gen[i:i + b, k] = g.half(); tf[i:i + b, k] = health(t)
+                    frames.append(g); hist.append(fk[:, k]); tfr.append(fut5[i:i + b, 0, k].float())
+        sf = torch.stack([health(gen[:, k].float()) for k in range(H)], 1)
+        gprev = torch.cat([root[:, None], gen[:, :-1]], 1)
+        img_off = DA.offsets(torch.cat([estimate(gprev[j:j + 32].float(), gen[j:j + 32].float()) for j in range(0, R, 32)])).long()
+        aligned = torch.cat([torch.ones(R, 1, dtype=torch.bool), (img_off == true_off).all(-1)[:, :-1]], 1)   # aligned before step k
+        h_cur = h_true[:, :-1]                                                         # true current health (probe)
+        h_cur_self = torch.cat([h_true[:, :1], sf[:, :-1]], 1)                         # imagined current health
+        r = {}
+        for mode, pred, cur, extra in (("teacher", tf, h_cur, torch.ones_like(drop)), ("selffed", sf, h_cur_self, aligned)):
+            pdrop = pred < cur - 0.5
+            r[mode] = {"caught": float(pdrop[drop & extra].float().mean()), "n_damage": int((drop & extra).sum()),
+                       "false_drop": float(pdrop[same & extra].float().mean())}
+        pd_t = tf < h_cur - 0.5
+        r["teacher_by_history"] = {c: {"n_hit": int((base & q & M["drop2"]).sum()),
+                                       "caught": float(pd_t[base & q & M["drop2"]].float().mean()),
+                                       "n_no_hit": int((base & q & ~M["drop2"]).sum()),
+                                       "drawn_without_hit": float(pd_t[base & q & ~M["drop2"]].float().mean())} for c, q in cases.items()}
+        true_c, pred_c = dclass(hp[:, 1:] - hp[:, :-1]), dclass(tf - h_cur)
+        r["health_change_accuracy"] = {name_: {"n": int((alive & (true_c == c)).sum()),
+                                              "acc": round(float((pred_c == c)[alive & (true_c == c)].float().mean()), 4)}
+                                       for c, name_ in enumerate(("le-2", "-1", "0", "ge+1"))}
+        r["window"] = window
+        r["readings_part"] = {"teacher_caught_le_0.2": r["teacher"]["caught"] <= 0.2}
+        out[name] = r
+        print(json.dumps({name: r}), flush=True)
+        del world; torch.cuda.empty_cache()
     ws = [k for k in out if isinstance(out[k], dict) and "teacher" in out[k]]
     out["readings"] = {"damage_copied": all(out[k]["teacher"]["caught"] <= 0.2 for k in ws),
                        "damage_small": out["hud_token_change_median"]["damage"] <= 2 * out["hud_token_change_median"]["unchanged"]}

@@ -66,7 +66,6 @@ E14 options (2026-10-02, after the E14a head-only diagnosis; both default off, t
 Resumable runs (2026-10-02): every 6,000 updates and at the end the full training state (weights, AdamW state, batch-order
 generator, CPU / CUDA RNG, update, history) is written to levers_tworlds_v1/state/<name>.state.pt (overwritten in place);
 `--resume <state file> --updates N` continues that run to N updates, bit-identical to an uninterrupted run (CPU-tested).
-`--state-every` (2026-10-04) changes only that save interval; default 6000, resumed E17/E18 use 1000 to limit lost work.
 E17 (2026-10-03): `--frames L --pool rawlong [--windows W]` trains on L-frame windows of the 64-frame Raw TRAIN ledger
 (levers_mamba_long_pools_v1/raw): W windows per update, a TERMINAL_SHARE (the 6-frame recipe's 26.4%) of them end-aligned on a
 death, the rest at uniform starts; an L-row time table and L-frame block-causal mask; teacher loss over all L - 1 targets. The
@@ -387,7 +386,7 @@ def rollout_losses(world, s, a, loss, gen_loss=False, weight=None, faced=None):
 
 def train(head, pool_name, loss, seed, updates, device, log, codebook=None, backbone="full", gen_loss=False,
           regions="all", snapshot=None, weight=None, skip=False, state_path=None, resume=None, frames=None, windows=BATCH,
-          init=None, state_every=STATE_EVERY):
+          init=None):
     from d4mj.config import config_from_dict
     from d4mj.train import _phase_lr, autocast_context, optimizer_step, phase_optimizer
     config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
@@ -471,7 +470,7 @@ def train(head, pool_name, loss, seed, updates, device, log, codebook=None, back
                    "peak_gb": round(torch.cuda.max_memory_allocated() / 1e9, 3) if torch.cuda.is_available() else None}
             history.append(row)
             log(stage="train", head=head, pool=pool_name, **row)
-        if (update + 1) % state_every == 0 or update + 1 == updates:
+        if (update + 1) % STATE_EVERY == 0 or update + 1 == updates:
             save_state(update + 1)
     return world.eval(), history, held
 
@@ -483,7 +482,6 @@ def main(argv=None):
     parser.add_argument("--loss", default="suffix", choices=("suffix", "teacher", "noise", "selffed", "rollout2", "rollout4"))
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--updates", type=int, default=6000)
-    parser.add_argument("--state-every", type=int, default=STATE_EVERY, help="full resume-state interval (default 6000)")
     parser.add_argument("--codebook", type=Path, default=None)
     parser.add_argument("--backbone", default="full", choices=("full", "fattn", "fmamba", "fcanvas", "fscan"))
     parser.add_argument("--gen-loss", action="store_true")
@@ -520,7 +518,7 @@ def main(argv=None):
     (OUT / "state").mkdir(exist_ok=True)
     world, history, held = train(args.head, args.pool, args.loss, args.seed, args.updates, device, log, codebook,
                                  args.backbone, args.gen_loss, args.regions, snapshot, args.weight, args.skip,
-                                 OUT / "state" / f"{name}.state.pt", args.resume, args.frames, args.windows, args.init, args.state_every)
+                                 OUT / "state" / f"{name}.state.pt", args.resume, args.frames, args.windows, args.init)
     save(name, world, history)
     log(status="saved", name=name)
     return 0

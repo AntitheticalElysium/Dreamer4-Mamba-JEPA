@@ -61,6 +61,190 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-04 late evening — Pending-run rationale, causal scope and evaluator resume repair (reviewer)
+
+Full ten-claim audit, separating evidence and priorities: `20261004_resume_audit/PRIORITIES.md`. No running experiment
+was stopped or given a different training treatment. E17 is a long-context-use comparison; E18 is a coordinate-registration
+repair test. Both are justified, but neither repairs the ordinary-health reconstruction bottleneck by itself.
+
+**New M6 seed-7 H16 trajectory result:** DEV-B 1,139 opportunity roots; trajectory 0.644105, snapshot 0.624918,
+paired difference +0.019187 [0.005559,0.033441]. Same-panel prior 0.616083, one-real-future 0.679366. It roughly matches
+attention's 0.645/0.646 trajectory scores; do not claim an architecture advantage before the matched seed-8 comparison.
+Evidence: `20260927_levers/evals/h16traj/corrt_raw_teacher_s7_fmamba_u36000.json`. This is the previously opened DEV
+panel, not a new sealed actor result; the continuation AUC was produced by the old tie-rank implementation.
+
+**Corrections/limits for the bigger-picture claims:**
+- Sparse-consequence objective allocation has intervention evidence, but is not the sole explanation of all failures.
+  At 100k s7 catches 0.991 of strict consequences, s8 0.877 and still zero tables. The strict labels omit tree mining.
+- Real-HUD injection recovers 94–97% of the H16 **real-fitted decoder transfer gap**, not 94–97% of an actor's attainable
+  improvement. It replaces all 18 HUD tokens and supplies the true future outcome. Health fails while other HUD
+  reconstruction can improve substantially (corrected E16's aggregate HUD error reduction 79.2%).
+- Position/scan dependence is demonstrated; end-aligned sampling's causal contribution still needs a de-alignment-only
+  retrain. The older “rawlong deaths sit at position15” wording conflates target frame with predictor input row: at L16
+  terminal frame15 is predicted from row14; row15 has no teacher target. The earlier w16→w15 evaluation correction stands.
+- E16's ordinary-hit bottleneck exists even with true-future posterior conditioning. More prior samples cannot fix
+  that bottleneck. Rarity, magnitude, terminal position and objective weighting have not yet been causally separated.
+- An unseen current cell may have been observed earlier: memory should resolve those cases before stochastic generation.
+  Local-predictor agreement is not a universal information ceiling. Our latent L1 optimum is a coordinatewise median,
+  not an MSE conditional mean. The causal contribution of class geometry to false scrolls remains unisolated.
+- E17 short→long changes more than context length (ledger/time table/targets per update/additional training/fresh optimizer).
+  E18's historical fcanvas holds
+  SSM state on absent frames but advances convolution state; both carries contribute to measured recall. Neither finite-
+  window evaluator proves an advantage for persistent streaming Mamba carries in an actor.
+- Keep E19 separated: unchanged continuation, de-alignment alone, then the same de-aligned batches plus health-context
+  weighting. Positive-only weighting already produces 24–30% false consequences versus 2–3% with attempt negatives.
+  Matching negatives are necessary but future-dependent masks still need conditional calibration checks. No E19 run
+  was launched in this review. Current literature rationale and the proposal's superseded claims are recorded in PRIORITIES.
+
+**Resumability repaired for future launches:** previously `check_h16_traj.py` overwrote partial feature files, held
+optimizer/RNG/best states only in memory, deleted features and reran completed worlds. It now journals hash-checked
+complete root batches, saves head optimizer/model/best/RNG each 200 updates, persists E16 draw/generator/end states,
+retains raw score/decision rows and skips complete worlds. Sources, checkpoints, input/label contents, window and
+runtime are bound; corrupted storage fails; changed contracts cannot reuse old partials. Atomic publication and writer
+locks protect evidence. Legacy unbound reports are preserved; `--result-dir` permits a separate re-evaluation.
+Chunked standardization removes the whole-matrix float32 allocation without changing its arithmetic. Continuation
+AUC now averages tied ranks (constant 0.5); primary safe-choice metrics are unchanged.
+Long-window H16 attention also uses four roots per forward (68 action branches), matching the Mamba batch, rather than
+16 roots / 272 branches under the lane's 3 GiB admission. This is a conservative evaluation-memory cap, not a measured
+GPU peak or a training change. Short-window attention retains its historical batch16.
+
+The other queued evaluators (`check_damage.py`, `check_recall.py`, `teval.py`) now checkpoint root-batch outputs or recall
+accumulators and skip completed worlds under the same source/data/checkpoint binding. Numerical forward/metric contracts
+are unchanged. CPU original-versus-amended and interruption checks pass for damage, pool recall, future recall, imagined
+recall and teval, with zero forward calls on completed reuse. H16 feature/head/optimizer differences are exactly 0,
+RNG/best states match, and negative corruption/contract/layout controls reject. Evidence:
+`20261004_resume_audit/verify_h16_resume.json`, `verify_queued_eval_resume.json`; original evaluator sources archived nearby.
+CUDA bitwise equivalence was not tested: the GPU stayed with the running research jobs.
+
+**Existing live H16 process is still legacy and non-resumable.** Source edits cannot retrofit code already loaded in
+PID11404. It was deliberately not interrupted; its new seed-7 primary result is retained, seed8 is still running.
+New cache namespaces avoid its cleanup glob. New E17/E18 evaluation subprocesses will load the amended code. Training
+already saves full states every 1000 updates for these lanes. At 22:31 Sydney (11:31 UTC), E18 s7 last logged 11000/36000;
+E18 s8 has not started. E17 A16 s7/s8 are complete; M16 is still waiting for GPU admission (its old 1000-update log is
+the interrupted run). Live status continues in `20261004_resume_audit/live_status.json` and `status_events.jsonl`.
+At 22:51 Sydney (11:51 UTC), a read-only checkpoint inspection confirms fcanvas s7 full state **12000/36000** and both
+A16 full states **6000/6000**; M16 s7 still has no full-run state. The M6 seed-8 H16 result remains unpublished. No jobs
+were stopped during this review.
+
+## 2026-10-04 — Independent resume audit (reviewer)
+
+User explicitly lifted the October 2 read-only restriction and authorized notebook/memory writes and experiments.
+Protocol and diagnostic plan: `20261004_resume_audit/PLAN.md`. Existing negative evidence and other agent's changes preserved.
+
+**New protocol defect, caught before the pending E17 evaluations:** `tworld.rollout_losses` supervises positions 0..L−2,
+and `teval.step` reads the final input position. With a 16-frame teacher window, prediction from **15 input frames** is
+supervised; prediction from 16 is not. A CPU backward pass on the completed A16 s7 checkpoint gives exactly zero gradient
+for time row 15; row 0..14 gradient norms range 0.000507–0.001388. Lane73's damage, H16-trajectory, teval and comparison
+commands have been corrected from window 16 to **15**, including output tags. Training is unchanged. The recall commands
+already used 15 correctly. No final stage-2 window-16 reports had been produced, so no result is being silently replaced.
+
+**Corrections to the causal scope of the entries below (historical numbers retained):**
+- E16's posterior is trained through **uniform latent L1 plus commitment**, not uniform MSE: `dworld.train_a` calls
+  `tworld.rollout_losses(..., 'teacher')`, whose error is `.abs()`. The pre-VQ/code/decoder AUCs localize weak ordinary-hit
+  encoding and output suppression. Rarity, magnitude and terminal position differ together between main and terminal
+  windows; their individual causal contributions have not been isolated.
+- "Neither 36k world uses its history" was too broad. The aggregate check_context reading fails its declared threshold,
+  while the later terrain-recall measurements show a substantial history-dependent contrast. Health drawing is strongly
+  position/scan-length dependent, as demonstrated by the same-frame repetition and time-row interventions.
+- The damage-rule "ceiling" numbers (0.621 at 5 frames, 0.857 at 6) are in-sample plug-in results for one coarse set of
+  history features. They are **not upper bounds** on arbitrary predictors or pixel histories. Rule cases also use the
+  measured next-frame view shift and exclude fatal transitions. Do not use 0.62 as an architectural pass ceiling.
+- "Per-slot Mamba can carry at most ~61%" is not a capacity bound: its within-frame attention can route information
+  across slots. The measured 39.1% is the share of this terrain-reentry oracle's gain assigned to moved-slot cases.
+  The memory incentive also clips negative sighting-copy gains to zero, so it is an optimistic selective-copy statistic.
+- Window-5 versus window-1 recall changes time position and scan length, not only visible history. The new frozen-checkpoint
+  sighting intervention holds those fixed and edits only historical token contents, with an unrelated-token control.
+- Root-aware readout gains establish that context helps this head family. They also add root features and double the
+  concatenated input width; they do not isolate one zombie cue or prove equivalence from an unresolved difference.
+- E19 combines death de-alignment with health weighting. As designed it can test their combined effect, but cannot
+  identify the separate cause. Keep a de-alignment-only arm before attributing a gain to the dose. Its true-next-frame
+  zombie mask covers 80.3% of main −2 events, not all damage; the remaining causes are not yet attributed exhaustively.
+
+**Interrupted-run reconciliation, before restart:** A16 s7/s8 completed and each full state records update 6000. M16 s7
+logged update 1000 but saved no full-run state; its separate 500-update smoke is not a resume checkpoint for that job.
+M16 s8, E18 fcanvas s7/s8, M6 H16 trajectory heads and check_delta are unfinished. No research process was running when
+checked; GPU compute was idle apart from the desktop. Pending E19 remains unapplied. Restarting M16 s7 must use its
+declared 36k parent; completed A16 weights and prior reports are retained. Live statuses/results are recorded in the audit
+folder and updated here as they land.
+
+**Primary-literature correction:** Delta-IRIS §2.2 uses a mixture of L1, L2 and max-pixel reconstruction losses, not our
+E16's uniform latent L1. Its Crafter health examples support the method's possibility, not adequacy of our loss/encoder.
+Mamba's input-dependent Delta is a retention/overwrite mechanism; uncertainty must be measured (pending check_delta).
+
+**Fixed-length sighting intervention completed:** 512 same-slot cases from 168 episodes and 236 moved-slot cases from
+35 episodes, existing held-out main windows. Same current frame, actions, window length and time positions in all arms;
+only historical target sightings or equally many unrelated map tokens replaced with held-out donor tokens. Same-slot
+target error, original → target-sighting swap → unrelated swap:
+
+| world, 36k | original | target swap | unrelated swap | target − unrelated, episode-clustered 95% interval |
+|---|---:|---:|---:|---:|
+| attention s7 | 37.133 | 52.965 | 36.962 | +16.003 [10.651, 21.487] |
+| Mamba s7 | 16.740 | 125.825 | 16.623 | +109.202 [92.734, 126.301] |
+| attention s8 | 50.370 | 50.332 | 50.291 | +0.041 [−0.029, 0.131] |
+| Mamba s8 | 20.053 | 101.108 | 19.979 | +81.129 [66.567, 96.026] |
+
+Mamba's predicted token is pulled towards the donor (projected displacement 0.278 / 0.204), unlike unrelated swaps.
+Moved-slot target-minus-unrelated changes remain unresolved in both Mamba seeds: −0.268 [−0.635,0.011],
+−0.121 [−1.015,0.523]. This establishes actual use of historical cell content in the same-slot case, independently of
+scan-length/time-position confounds. It does not identify convolution versus SSM storage or establish actor utility.
+Edited histories are exploratory interventions. Evidence and checkpoint/pool hashes: `20261004_resume_audit/sighting_results.json`,
+raw paired predictions in `sighting_rows.pt`, episode intervals in `sighting_episode_intervals.json`.
+
+**Interrupted check_delta completed on GPU:** 1,009,764 alive map-cell predictions per seed. Mean Delta error AUC
+0.564267 / 0.532289; final-layer Delta 0.585018 / 0.600444; input-change 0.471142 / 0.471620; disagreement between worlds
+0.641758 / 0.651290. Mean Delta within input-change quintiles 0.563717 / 0.531722. All three declared readings FALSE.
+This rejects mean Delta as the proposed useful error gate in these worlds, not every possible learned uncertainty head.
+Before the run, fixed tie handling in `check_delta.auc`: constant scores now give 0.5 (old arbitrary ranks could give 1.0).
+Direct positive-negative pairwise checks give exactly 0.5, 0.75 and 1.0. No prior completed report was overwritten.
+Evidence: `20261004_resume_audit/delta_results.json`, full log `artifacts/eda/levers_logs/oct04_check_delta.log`.
+
+**Second pending evaluator defect fixed:** teval treated `rawlong` as a new encoder and would fail dictionary lookup.
+Its pool manifest pins Raw bridge; Raw bridge and Raw joint encoders match in all 209 tensors. `build_cache('rawlong')`
+now aliases Raw, with all five returned tensors verified exactly equal. No training/checkpoint change is involved.
+
+**Resume order:** complete M6 H16 trajectory heads at the corrected batch 4, then restart corrected lane73 (E17) and
+lane74 (E18) under GPU admission locks and systemd memory limits. In parallel, finish the amended full E16 seed-7
+evaluation (all roots, eight samples, posterior conditioning on every frame) rather than relying only on its CPU subset.
+E16 seed-8 training and E19 stay held. E18 still tests the historical fcanvas implementation, whose absent-frame hold
+applies to the SSM but not the convolution (see the September 29 correction); it is not a test of every carry-transport
+design. Local DRAMA replay uses count-dependent sampling probabilities, not strictly uniform starts; the relevant
+precedent is avoiding deterministic terminal end-alignment.
+
+**Carry-path intervention completed:** 64 same-slot cases from 55 episodes and 64 moved-slot cases from 30 episodes,
+both Mamba seeds, CPU float32 reference scan. Splitting a scan just before its last input reproduces the unsplit path
+to max absolute error 1.67e−6 / 3.76e−6. On same-slot cases, donor pull (s7 / s8): intact 0.248871 / 0.256607;
+target SSM cleared 0.136614 / 0.097742; target convolution cleared 0.074911 / 0.034068; both cleared 0.001349 / 0.001000;
+unrelated slot's two carries cleared 0.248634 / 0.256864. Attenuation from clearing each target component resolves in
+both seeds; clearing an unrelated slot does not. This locates the measured short-history content path in **both**
+convolution and SSM carry. It is not an additive attribution or evidence of long-range actor utility.
+Evidence: `20261004_resume_audit/carry_results.json`, paired rows and attenuation intervals beside it.
+
+**Full amended E16 s7 evaluation completed (19:23:54 Sydney):** 1002 roots, 8 prior samples. Posterior health readout
+accuracy remains **0/305** for ≥2 damage, **0/32** for −1, **0/112** for recovery; unchanged accuracy 0.9995 on 15387
+transitions. Prior drawn-hit rates fresh 0.0000, already-beside/no-recent-hit 0.0003, recent-hit 0.0003 versus empirical
+0.9728 / 0.4802 / 0.0280. Health-drawing and calibration readings FALSE. Delta reduces aggregate decoder error by
+79.2% on HUD and 92.8% on other map cells, which does not rescue health drawing; the channel carries much deterministic
+map information. The reconstruction/readout failure remains when the posterior sees truth, so more prior samples cannot
+remove that particular defect. This is not a claim that hidden features contain no damage information.
+Evidence: `20261004_resume_audit/e16_fixed_result.json`, full log `artifacts/eda/levers_logs/oct04_e16_fixed_s7.log`.
+
+**Resume-state protection:** E17/E18 now pass `--state-every 1000`; default remains 6000 for historical recipes. The new
+argument changes only full-state serialization cadence, recorded in checkpoint args. Forward, teacher loss and gradients
+are unchanged (CPU comparison against the archived original training source: maximum loss/gradient differences 0;
+serialization does not change CPU RNG). Old source preserved in `20261004_resume_audit/TRAIN_SOURCE_BEFORE_RESUME.py`;
+verification in `checkpoint_cadence_check.json`. Completed checkpoints are untouched. Because the M6 H16 feature pass
+is substantial, E17/E18 units were admitted early under the same GPU lock rather than waiting idle for all its heads.
+The coordinator checks unit existence to prevent duplicate trainers. Its memory limit was raised to 16 GiB solely for
+the existing full-matrix CPU feature standardization; individual training units remain at 12 GiB. E19 remains held.
+
+**Live status, 19:47 Sydney:** E18 fcanvas s7 is actively training, latest logged update 500/36000 (objective 0.137890,
+peak torch allocation 2.128 GB). M6 H16 trajectory evaluation is still generating features; there is no completed M6
+trajectory report. E17's unit is active **waiting for GPU admission**, not computing a new M16 update; its older log's
+1000 updates belong to the interrupted run. Completed A16 checkpoints remain 2/4 of the E17 arms. Timestamped status is
+maintained every 30 seconds in `20261004_resume_audit/live_status.json`, with append-only `status_events.jsonl`; this
+monitor records runtime/output presence, does not declare scientific passes, and launches no experiments. Full audit:
+`20261004_resume_audit/FINDINGS.md`. E19 and E16 seed-8 training remain held.
+
 ## 2026-10-04 — Mamba diagnosis: health drops are a position artifact in both backbones; memory incentive measured; E16 correction
 
 **Correction (retracts my 10-04 midday claim "E16's 0/305 health reading is an evaluation artifact").**
@@ -82,11 +266,11 @@ deleted; each names the claim it retires.
     next frame;
   - quantized code: AUC 0.548 / 0.642; I(code; hit) ≤ 0.028 of 0.085 bits per region; hit codes also cover 50-79% of non-hits;
   - decoder h at token 63: AUC 0.772 / 0.808 (0.653 / 0.758 with Delta zeroed); output copies (generate weight 0.09).
-- Reading: e16_health_drawable FALSE stands. The posterior is trained only through the decoder's uniform MSE. Deaths (large
+- Reading: e16_health_drawable FALSE stands. The posterior is trained through the decoder's uniform latent L1 plus commitment. Deaths (large
   token change, ~6,500 per pass over the pool) get encoded; ordinary hits (~2,200, error 75 each) do not. This is E14's
   rarity diagnosis again, now with the answer fed to the model.
 
-**check_context (lane61; teacher-forced, true frames, window w = 1..5):** neither 36k world uses its history.
+**check_context (lane61; teacher-forced, true frames, window w = 1..5):** aggregate error gain misses the declared history-use threshold (not evidence of no history use; see recall below).
 - Map error w1 → w5: attention −3.6%, Mamba −4.5% (w4 −6.0%). HUD error rises 15% at w5 in both.
 - Drops are drawn only at w5: catch 3.2% / 6.1%, false 1.1% / 0.8%, fresh 0 / 0.
 - uses_history FALSE (both), mamba_uses_more FALSE.
