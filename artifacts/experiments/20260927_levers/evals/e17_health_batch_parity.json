@@ -1,0 +1,29 @@
+{
+  "scope": "CPU numerical diagnosis of the frozen-health test's exact reproduction failure.\n\nNo fitting choices: recreate literal teval HUD ridge TRAIN/validation contract.\nCompare seed7 batch4 GPU HUD outputs to check_damage's saved batch16 teacher\nhealth on exactly those cases. Report all threshold crossings and absolute error;\ndo not relax the half-unit threshold or relabel the failed clock test valid.\n",
+  "sources": {
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_health_batch_parity.py": "ba1c753cbbdc902a65d0d84a891832020a3e0459bb281b7923b1d4864823ad21",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/teval.py": "a2f873442031b2fc1a671a8f210acf4b5a759767e3b8c6b7720b2dd916793d20",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08"
+  },
+  "inputs": {
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_health_clock/contract.json": "3695171978cf3b561579336c033639cf17d1b1cce13c4d8463368f5b9121ce4c",
+    "artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__damage_w15__3195cbd745b466db/contract.json": "49204da3c47d69dee0790205bcebafd0c571ae16e0171b2ddfa852ebb434559c"
+  },
+  "cases": 851,
+  "max_absolute_health_difference": 0.2337050437927246,
+  "mean_absolute_health_difference": 0.0013439729809761047,
+  "crossings": [
+    {
+      "root": 456,
+      "step": 12,
+      "damage": true,
+      "current": 5.952760696411133,
+      "batch4": 5.491476058959961,
+      "batch16": 5.427490234375,
+      "difference": 0.06398582458496094
+    }
+  ],
+  "damage_catches_batch4": 28,
+  "damage_catches_batch16": 29,
+  "failed_exact_count_reproduction_preserved": true
+}

@@ -1,0 +1,26 @@
+{
+  "arms": {
+    "conditional": {
+      "resume_exact": true,
+      "final_loss": 0.5157848596572876
+    },
+    "cumulative": {
+      "resume_exact": true,
+      "final_loss": 6.3075714111328125
+    },
+    "rank": {
+      "resume_exact": true,
+      "final_loss": 0.6827786564826965
+    },
+    "rank8": {
+      "resume_exact": true,
+      "final_loss": 0.6883655190467834
+    }
+  },
+  "cumulative_probability_bce_error": 0.0,
+  "extreme_loss_gradients_finite": true,
+  "sources": {
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_h16_target_intervention.py": "dba9c9df6f4c339b00b55f5c72386f1abe1ba5ca10ce62d9b867131138222f0f",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_h16_traj.py": "3779bc7936a6607173f68e98b4cd855593ab9d64f42c7261a4aa8331e40b3884"
+  }
+}

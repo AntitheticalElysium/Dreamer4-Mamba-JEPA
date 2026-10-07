@@ -1,0 +1,81 @@
+{
+  "references": {
+    "roots_devB_opp16": 1139,
+    "uniform": 0.571426510810852,
+    "prior": 0.6160831451416016,
+    "one_real_future": 0.6793657541275024,
+    "oracle31": 0.7664617896080017
+  },
+  "corrt_rawlong_teacher_s7_L16b40_from36000": {
+    "continuation": {
+      "brier_all_k": 0.10356273502111435,
+      "auc_dead16_key0": 0.863230211597993
+    },
+    "trajectory": 0.6519516706466675,
+    "snapshot": 0.631475031375885,
+    "traj_minus_snapshot": {
+      "difference": 0.02047663927078247,
+      "interval": [
+        0.00759663013741374,
+        0.03334645554423332
+      ],
+      "excludes_zero": true
+    },
+    "window": 15
+  },
+  "corrt_rawlong_teacher_s7_fmamba_L16b40_from36000": {
+    "continuation": {
+      "brier_all_k": 0.12673724939425787,
+      "auc_dead16_key0": 0.8230676251329937
+    },
+    "trajectory": 0.6572651267051697,
+    "snapshot": 0.6226222515106201,
+    "traj_minus_snapshot": {
+      "difference": 0.03464287519454956,
+      "interval": [
+        0.021865572780370712,
+        0.04825145751237869
+      ],
+      "excludes_zero": true
+    },
+    "window": 15
+  },
+  "corrt_rawlong_teacher_s8_L16b40_from36000": {
+    "continuation": {
+      "brier_all_k": 0.11661287397146225,
+      "auc_dead16_key0": 0.8464386663440222
+    },
+    "trajectory": 0.6438944935798645,
+    "snapshot": 0.623555064201355,
+    "traj_minus_snapshot": {
+      "difference": 0.02033942937850952,
+      "interval": [
+        0.009120087139308453,
+        0.03194199502468109
+      ],
+      "excludes_zero": true
+    },
+    "window": 15
+  },
+  "corrt_rawlong_teacher_s8_fmamba_L16b40_from36000": {
+    "continuation": {
+      "brier_all_k": 0.09315658112366994,
+      "auc_dead16_key0": 0.8667210235036276
+    },
+    "trajectory": 0.6470131278038025,
+    "snapshot": 0.6205461621284485,
+    "traj_minus_snapshot": {
+      "difference": 0.026466965675354004,
+      "interval": [
+        0.013280073180794716,
+        0.03973904997110367
+      ],
+      "excludes_zero": true
+    },
+    "window": 15
+  },
+  "readings": {
+    "traj_gain": true,
+    "traj_reaches_one_future": false
+  }
+}

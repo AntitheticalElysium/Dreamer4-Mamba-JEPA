@@ -61,6 +61,143 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-07 — E17 completed H16 and separating diagnostics
+
+**Original protocol:** four frozen L16-trained worlds (attention/Mamba, seeds7/8),
+window15, four observed root frames then self-fed states and recorded continuation
+acts. Hazard readout:768 pooled hidden features/step, three head seeds,4000 updates;
+FIT training, DEV-A selection, reused DEV-B judgement (1139 opportunity roots,
+149 episode clusters). Metrics average each head's own choice. Reports:
+`20260927_levers/evals/h16traj/*rawlong*__w15.json`.
+
+| world | trajectory safe | snapshot safe | trajectory−snapshot,95% interval |
+|---|---:|---:|---|
+|attention7|0.651952|0.631475|+0.020477[+0.007597,+0.033346]|
+|Mamba7|0.657265|0.622622|+0.034643[+0.021866,+0.048251]|
+|attention8|0.643894|0.623555|+0.020339[+0.009120,+0.031942]|
+|Mamba8|0.647013|0.620546|+0.026467[+0.013280,+0.039739]|
+
+References: DOWN0.616083, uniform0.571427, one real future/action with held-out-key
+scoring0.679366. Trajectory−snapshot passes both seeds/backbones; one-real-future−0.01
+threshold0.669366 fails all. E17's Mamba−attention>=0.02 also fails:
++0.005314[−0.004406,+0.015445]/+0.003119[−0.005676,+0.012384]. Mamba−DOWN resolves:
++0.041182[+0.020717,+0.064258]/+0.030930[+0.009944,+0.054074]. Health endpoints fail;
+same-slot memory passes (October6 endpoint record). Parent→long additionally changes
+budget/data/optimizer; this is neither a pure context contrast nor actor performance.
+
+**Short-parent seed8 comparison completed:** resumed report
+`20261005_recovery/h16_results/corrt_raw_teacher_s8_fmamba_u36000.json`:
+window5 trajectory0.641736, snapshot0.615727. `e17_h16_parent_compare.py` verifies
+identical1139 DEV-B opportunity rows/outcomes and numerical sources;
+long−short trajectory+0.005277[−0.005532,+0.017497], snapshot+0.004820
+[−0.008980,+0.017812]. Neither contrast resolves. This changes training/context
+jointly and is not a memory-only effect. Evidence: `evals/e17_h16_parent_compare.json`.
+
+**Frozen-reader CPU controls:** `e17_h16_final.py`, `e17_h16_numeric_control.py`,
+`e17_h16_action_strata.py` → matching `evals/*.json`. All four original decisions
+reproduce exactly. Stable log-survival scoring changes zero Mamba decisions and no
+safe score for any world. True32-key hazards reconstruct P16 within1e-6; true full16
+safe0.762593 versus first8 0.667091. Learned late action-risk SD0.034783/0.057436,
+versus true0.139729; correlation0.275702/0.346305. Full16−first8 gain unresolved in
+all four worlds. Mamba SLEEP choices2.25%/3.31%; restricting scores to movement
+improves safe+0.006109[+0.002005,+0.010700]/+0.004600[+0.000525,+0.009003].
+
+**Reader optimization diagnosis:** `e17_h16_generalization.py` and
+`e17_h16_choice_error.py` → corresponding reports. Selected→final4000 weights,
+world/features fixed, original decisions reproduced. Seed7 P16 Brier improves
+0.126193→0.092199 while safe falls0.657265→0.634850
+(−0.022415[−0.035034,−0.010106]); seed8 safe0.647013→0.637273, unresolved decline.
+True-gap-weighted action-pair errors rise0.170571→0.221229/0.188022→0.207206;
+optimal32-key choices fall0.591455→0.532924/0.578285→0.544337. Chosen-action error
+relative to root mean becomes more optimistic at both seeds; this is action-order
+failure despite improved probability errors, not likelihood overfitting alone.
+Earlier seed7-only controls and snapshot-objective test are retained in
+`evals/e17_h16_s7_*`, `evals/e17_h16_m7_head_objective.json`.
+
+**Matched target intervention, completed:** `e17_h16_target_intervention.py` →
+`evals/e17_h16_target_intervention.json`. Same frozen caches/normalization,
+Hazard(768,16), initializations, three head seeds,4000 updates, paired32-root×17-action
+batches and selection. Conditional uses original hazard BCE; cumulative fits H16
+likelihood; rank/rank8 fit the same H16 within-root ranking with16/8 terms.
+Grouped conditional differs in batching from the original evaluator.
+
+| reader objective | Mamba7 safe | Mamba8 safe |
+|---|---:|---:|
+|conditional|0.659012|0.648403|
+|cumulative|0.617629|0.617226|
+|rank16|0.661710|0.663795|
+|rank8|0.666758|0.665103|
+
+Cumulative−conditional−0.041383[−0.057717,−0.026270]/
+−0.031177[−0.047815,−0.015629]. Rank16−conditional+0.002698[−0.006443,+0.011462]/
++0.015392[+0.005945,+0.024881]. Rank16−rank8 unresolved at both seeds.
+`e17_h16_target_errors.py`: cumulative raises weighted pair misordering
+0.167430→0.236266/0.188043→0.244008. Seed7 root-mean MSE improves0.115593→0.094612,
+but action-contrast MSE0.022107→0.022273; selected relative optimism worsens at
+both seeds. No replicated objective repair or late-feature gain. Ranking energies
+are not calibrated probabilities. CPU optimizer-resume proof: `evals/e17_h16_target_smoke.json`.
+
+**Exact TRAIN exposure:** `e17_train_exposure.py` → `evals/e17_train_exposure.json`.
+Reconstruct6000×40 draws and match all four saved end-RNG states. Among3,600,000
+targets,63,414 deaths (7500 distinct episode transitions) occur exclusively at
+position15; living>=2 damage85,338 times (12,748 distinct transitions) across all15
+positions. This verifies E17's anticipated terminal alignment and excludes absent
+ordinary damage; it does not identify the historical causal contribution of either.
+
+**Health-clock and isolated time-input interventions, completed:**
+`e17_health_clock_b16.py`, `e17_health_time_swap.py`, `e17_health_time_true.py`;
+reports of the same names under `evals`. Same337 living drops,31 fresh hits,
+512 seeded unchanged controls (851 distinct root-transition cases including overlaps),
+frozen worlds7/8, exact original real-fit HUD ridge. Real-successor control337/337,
+31/31,0/512 false. Original0.5-unit detection cut;1.5-unit cuts reported separately.
+Original teacher29/337 and46/337, fresh0/31 and1/31 reproduce exactly.
+Repeated-current controls preserve current pixels/final action, set past NOOP:
+
+| inference context | damage drawn, seed7/8 (337) | false drops, seed7/8 (512) |
+|---|---|---|
+|true history|29/46|5/10|
+|repeat current, matched length|18/44|7/10|
+|repeat current, length5|0/0|0/0|
+|repeat current, length9|6/0|0/0|
+|repeat current, length15|30/91|12/26|
+
+On repeated length15, changing ONLY the current time embedding row14→row4 reduces
+drawn damage30→14/91→9. Reverse transplant at length5 draws6/0, so the late
+embedding alone is not sufficient. On real length15 histories, same single-input
+change reduces catches26→12/44→13 of131 actual drops; mean drawn health loss
+0.880993→0.377300/1.412231→0.255215. Paired health-change effects
++0.503693[+0.259203,+0.805772]/+1.157016[+0.819676,+1.542660],100 episode clusters.
+Pixels, actions, earlier recurrent updates, scan length and other weights are fixed.
+Below length15, catches3/206 and2/206;89.7%/95.7% of true-history catches occur at
+length15. These controls identify causal reliance on the explicit time input and
+its interaction with scan/history; they do not establish a trained fix or prove
+that terminal alignment accounts for every error. Repeated-history lesions are OOD.
+Raw rows and paired intervals: `evals/e17_health_clock_stats.json` (v2 labels rows
+as transitions/distinct roots; legacy root-label report retained, metrics unchanged).
+
+**Numerical guard:** initial batch4 trial failed exact reproduction28 versus29;
+preserved at `evals/resume/e17_health_clock`. `e17_health_batch_parity.py` locates
+one threshold crossing: root456/step12, current5.952761, predicted5.491476 atbatch4
+versus5.427490 atbatch16. Mean absolute difference0.001344, maximum0.233705.
+Original batch16/tail10 dimensions restore both seeds' original counts without
+changing thresholds. Full forward dependencies and167 source/input/checkpoint hash checks verified
+by `e17_health_verify.py`; wrappers verify it again before resume. All tests have
+atomic input/source-bound chunks or optimizer checkpoints. The true-history
+time transplant also completed an actual cache-resume verification: no new inference
+chunks, intact result retained and wrapper exit success. Logs only under
+`artifacts/eda/levers_logs`; evaluators never edit NOTEBOOK.
+
+**Primary-source comparison after diagnosis:** [Geirhos et al.,§4/§6](https://arxiv.org/pdf/2004.07780)
+distinguish shortcut opportunities from learned cue reliance and recommend controlled
+cue changes; the TRAIN census and time transplant address those separately.
+[Lambert et al.](https://proceedings.mlr.press/v120/lambert20a.html) document likelihood/control
+objective mismatch; our numerical action-order diagnosis and target intervention
+are the project evidence. [Nnet-survival](https://arxiv.org/abs/1805.00917) supports conditional-hazard
+likelihood/product survival; our true-hazard/numerical controls verify the implementation.
+[DeepHit](https://ojs.aaai.org/index.php/AAAI/article/view/11842) combines likelihood/ranking,
+but ranks patients/events, not this project's within-root actions. None establishes
+our proposed sampler/objective repair.
+
 ## 2026-10-06 — H16 evaluator resume and position-balance feasibility
 
 `20261005_recovery/h16_resume_oct06.sh` resumed the declared four frozen E17

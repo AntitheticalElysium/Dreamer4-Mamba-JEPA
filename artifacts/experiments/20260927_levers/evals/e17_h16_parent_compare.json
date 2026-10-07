@@ -1,0 +1,320 @@
+{
+  "scope": "Completed short/long Mamba8 H16 comparison on identical DEV-B roots.\n\nOriginal averaged-head decision rows; assert labels/root order/opportunity masks\nand numerical sources match. Parent-to-long changes window, world training budget,\ncorpus pool and optimizer; this is not a causal context-only or memory-only effect.\n",
+  "contracts": {
+    "short": {
+      "version": "h16-resume-v1",
+      "window": 5,
+      "e16": false,
+      "data": {
+        "fit": {
+          "ctx": "7b21dbe1655857b2da38f3f7e8f19674902d04979584d1e1004242b44e5284b8",
+          "acts": "d907dab98eff7d542b82e8fcfcee1de5eb89f51e50f7b551bbb18cce3fbe30b9",
+          "cont": "39a829ab39f032d71c526b6fe8f96f0a9ded8c94df93633f96e2849bedef3b8b",
+          "seed": "f707dbf5ccbc4e051d9a636950887de8bb1096163a1d288e442fdf5e3253c76d"
+        },
+        "dev": {
+          "ctx": "2df3c0b85f2f018390cb754de5060ca70d85dfc54c6a4ef16327ae622f22723c",
+          "acts": "2593f5cb6d716f3b70e19ecc1549b82f55d12b2adb9c129d2bb23b7b5ff05e3b",
+          "cont": "aa43f595ee78ad781af23299af17286a162e3b5bb1aab1537b7d38817ded22f5",
+          "seed": "60e89db4d26206a8f75a08406e0c064caa57cf1b5db553251b50abd329885edd"
+        },
+        "labels_P": "609bf47e1394e4c8d94fbcf107c85b89a3770eb2818fe11ff852e311a30fda26",
+        "labels_D": "506a5b346480eccdc156eb4df81bf5b9c4c4692e44fbb808ccc023094e425746",
+        "split": "5b94ab214832605f3331f091ad895792d15d0adeb3d7b2a29ee9ddbdaaed0618"
+      },
+      "references": {
+        "roots_devB_opp16": 1139,
+        "uniform": 0.571426510810852,
+        "prior": 0.6160831451416016,
+        "one_real_future": 0.6793657541275024,
+        "oracle31": 0.7664617896080017
+      },
+      "sources": {
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_h16_traj.py": "3779bc7936a6607173f68e98b4cd855593ab9d64f42c7261a4aa8331e40b3884",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_h16_signal.py": "8f4da96b207647a74c4785677854335bfe6b1e056a6ab9201cec89d3ca1e47eb",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/deepeval.py": "81c92c69a5c9a06df2a42b9ab743fed8cd8c604387acd210065229bb9bfc6e21",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/dpanel.py": "938a37a4cceb46ca5128776959174cce1e91d498d85591fcfe41c2abbe5607d3",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/teval.py": "a2f873442031b2fc1a671a8f210acf4b5a759767e3b8c6b7720b2dd916793d20",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/tworld.py": "1435057c2b2f0c3d90f563e8dcaf94d06121deebc45928e18ec5cacc93d01569",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/scroll.py": "32f21939825d3e3bc84b3442234baead507934cd0d4c36ac76a6c821fbdc99dc",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260921_readout_ladder/spatial.py": "89e055243d5378166fafd083f5055c05d5e4762e7a72ac2a954c48dbfefd8f81",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260921_readout_ladder/ladder.py": "0c506483f5ada1acf62dff4bc277bf0b0926f5d902f0023c4e75846e5773afd4",
+        "d4mj/__init__.py": "f2a8c8877e753852cec40973493b506ed1ed8788a02a720793258d9b88d4f9bd",
+        "d4mj/__main__.py": "1399bc986938f34578fa54eb2d0fef80f35b73507d3b5e4024854f7cdb781577",
+        "d4mj/actor_critic.py": "5f4430485244b0d821a4ce8227a70571d87c7da37c273e628099f3fe6970a321",
+        "d4mj/agent.py": "ede81c4e0e0caafbbb996f9f18e115ab987d76def7e5e1ac022de0172ae4ba22",
+        "d4mj/backbone.py": "5c19109870fbbb8d9133bc7af8a26b71ddada1f407b65b3bce99d0f59a0f555f",
+        "d4mj/cache.py": "53f20d962184f55563faaa3b158368c6a62b60519e4f4a2ef12c1bd6a91881d5",
+        "d4mj/checkpoint.py": "0484d7da0dabcd17bc1d3ea58989d7f3814d385490e7f8d4b8cad1d2a17b780d",
+        "d4mj/config.py": "4cf956c9a587deb12730597643f51971711b1c33b0b027b59bebf89f4ecbde1d",
+        "d4mj/counterfactual.py": "28ac05721255ac16f6ced7a7a9f57754b00d40c268cb8d8fc5726ccb10797451",
+        "d4mj/data.py": "1c624aa9676a4005a586dd6ab1a5c2b69f0060ad932b578397cf8dcb247166c9",
+        "d4mj/diagnostics.py": "506a1d47b8a66bae745e78a85db8c80c2392898e86546430091e777292121db9",
+        "d4mj/env.py": "e8f821d1d29affa4020bd407f00330ce3eb0790b9343b2c9351472e74dd1d960",
+        "d4mj/execution.py": "7d77bbbbd34a77793943e1aa1a1d2809c19bc35605d4a736ce3ff47290aada7d",
+        "d4mj/experiments.py": "2e1c0baa61ae5dddc5c4c1bedba4685fb8f04717129080f012d28a1e81a650a2",
+        "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+        "d4mj/gates.py": "79118ab725feb22eb26a69389ec932f9a29ead03c4b2b602fe2e9bcabd2f8653",
+        "d4mj/imagination.py": "f0d110aa70e73fed3669ac0e2a30cf3d13012ed6319dbd9b7967bbf17f9edd91",
+        "d4mj/lewm.py": "682117426d0fd84e6babe2185002e0bf50d7fbcdeeb4d458eb06efe893b91256",
+        "d4mj/lewm_config.py": "92ae1920be5ea7222b6d2e80e21a93250152927440ae56c128ab5fd504c8da38",
+        "d4mj/lewm_diagnostics.py": "04f7ba980bec419b6a9e6c4f3fa75a6553fd64257d29721367c7c64bcd96f0fc",
+        "d4mj/lewm_transformer.py": "ffd215fea3945e5d62419e5ac2375060ecde596c43e53135f02f930bfaf5519e",
+        "d4mj/m03/__init__.py": "02efa2fcc16fdd8a74b0ef4eca22457f7e10ab18039446f11f134d05064ec1f2",
+        "d4mj/m03/cache.py": "d38e38e39974034150a155494ca1725792ff1e682bb0a6f2d1febb0ccb71ae96",
+        "d4mj/m03/diagnostics.py": "cde5e356747d422ff5858727b897533b0d50c010c454ecda43b43eac6585a966",
+        "d4mj/m03/gate.py": "78653ecf999692457ebf168f769cda0cd49b690fe9a2dfab21f3f626bb06e6ab",
+        "d4mj/m03/history.py": "882a2d58c06d3c97f5c6fda482fa87a68a354fc725a753545d2e44058cd472eb",
+        "d4mj/mamba_recurrence.py": "8de9df2578d7bf45c9d98acaf51c99d03ca9185c641f8b09ae107370133bf4c0",
+        "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+        "d4mj/sources.py": "3e0ec80b742a8302c265d43e7abe7f62c2099ac425d19915a6c52ff23a5b40b5",
+        "d4mj/state.py": "dcda26ce33cdefb76163c8067954646399e3315a3a01ac85a0d474b2f76cf594",
+        "d4mj/tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "d4mj/tests/conftest.py": "f0ee7ab71242db9ffb30405d2217dabda028d0da0d494b68d29cf2131709dd9f",
+        "d4mj/tests/test_actor_critic.py": "5c228ff0a0871b1cb1de60cef0f2f92bd37b73a0bf66c5f9a89e695d47e77817",
+        "d4mj/tests/test_agent.py": "2e4cba12f7f67b20654fc6720b06c997a68c6bd2aefe157e2d0a03c3f5c49f22",
+        "d4mj/tests/test_backbone.py": "670b93f2783c1e54bdadd650e63773fe1ac3a11979aa17170ee71a2d3ae7d4a1",
+        "d4mj/tests/test_bridge_gate.py": "bd56025af85ae9480ba10d4967d7b251e768ea4950b74077eb6e39fb6296b4c3",
+        "d4mj/tests/test_bundle_checkpoint.py": "2d41c922646208031ae2dec9b1b44a08de4ad0d94d674607fbe6cafc33b806c7",
+        "d4mj/tests/test_counterfactual.py": "23c304177da6fc085f9a28755baa4f5126a30b3bfd06a060ddb17440b67cb057",
+        "d4mj/tests/test_data.py": "9d6a569f5bac4abfbba4bae4e1cf949c26ddc498ad1763bb0db4caa1f098ce0f",
+        "d4mj/tests/test_execution.py": "a14f4ca14e631d52b5a8f8c7af0b3f6b35a953082baa312a76916e754c976634",
+        "d4mj/tests/test_experiment_diagnostics.py": "2a493590638c9bba4b5a75027ab321d18763e395bad49e072f26db260d861cd8",
+        "d4mj/tests/test_gates.py": "e7a16212935bf948f6e5dd21d1ca7709e6199b9b7096055e233ff0347e2ade8e",
+        "d4mj/tests/test_imagination.py": "03d46c58961c6a5351fabe04116d86cfe852ac5f5d493f829b13f3b8c7e9df1f",
+        "d4mj/tests/test_integration.py": "3a81070fe92aacc2e76d6fcf8897f8cd92168badc48d37c84cf08381f3a9116d",
+        "d4mj/tests/test_joint_data.py": "2708aebb39d860db5989141bca52a500217b47b13234538f1b6f073bf0b5ec3f",
+        "d4mj/tests/test_joint_screen.py": "14fcacebfe61c5558f38464807f04881e78dcfb4cbfb834f96ed8c84c2470da4",
+        "d4mj/tests/test_lewm.py": "f04af5d89c05fa825083079c3fb4ca3ef250b2eedeb52be34e5b93928c814e6e",
+        "d4mj/tests/test_m03.py": "a12d78760e3892b7970df793b42270c46546c51d15ceb4c59296a4ca6ae13074",
+        "d4mj/tests/test_m4_core.py": "9d8af88064e58ce8c14ee03eae930855d4a84f7040dae0c40d3a68b4e7ea19c5",
+        "d4mj/tests/test_mamba_recurrence.py": "514396c2e672d92cec4446feee47e9d37f0a3d666278986636a3417a19bbd6be",
+        "d4mj/tests/test_representation.py": "c955ee2d3b4bd1a0e62f66047fae03823cd325f21b0bb11e5e68420e0982de82",
+        "d4mj/tests/test_sources.py": "ae74d3f1dfdc6bd8164b7260cf92a3b483383a2f5179ed6c8fdd942790ff7c03",
+        "d4mj/tests/test_time_mixer.py": "23c478f2c254e45c0a2fe5cbe8572147ab790e2170de62d6d0741b65fae0c44e",
+        "d4mj/tests/test_train.py": "0235835fd8cd2be83c51d1a344e157a30a94836be524cea951f6cc9bab455f2c",
+        "d4mj/tests/test_train_lewm.py": "99e5477636fa8daded64045455f7a6259e5b1984af50c39683d5c58049b76b9f",
+        "d4mj/tests/test_transition.py": "3d63240f4922f928e0bfe82c4bb2cacc1503089d0c39a98405f47bdf19eae8be",
+        "d4mj/tests/test_world_api.py": "6dd8c3b7365ddfa12d442e9fc5b8c596bf2249f74f18c42fd3dc174e347442b6",
+        "d4mj/time_mixer.py": "bb79b7f03abe35cb9a66cf04cde2ec58e8e74c7bc172e30f03e306e9df5d0849",
+        "d4mj/train.py": "95af8574bb7621813c122cb775e214fac3d629690e286561338fef485b2f5234",
+        "d4mj/transition.py": "87cf8cbe96cf216e4639ffca1a2f933e473a25e749367a3ac6d1a8b110d658b2",
+        "d4mj/world_api.py": "f8dfcbe26ea1b1ded73c023d19e9de31962039e4845afabacecef59567dc878c"
+      },
+      "checkpoints": {
+        "artifacts/eda/levers_tworlds_v1/corrt_raw_teacher_s8_fmamba_u36000.pt": "2cc73a6701beb7a60b2803a659c0137aaaa3ef4444ce0c0b4dce901ade6404ee",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_m4_canonical/raw/bridge/step-002000.pt": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e"
+      },
+      "head": {
+        "steps": 4000,
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "selection_every": 200
+      },
+      "runtime": {
+        "torch": "2.13.0+cu130",
+        "numpy": "2.1.0",
+        "cuda": "13.0",
+        "cpu_threads": 6,
+        "cpu_interop_threads": 12,
+        "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+        "tf32_matmul": false,
+        "tf32_cudnn": true,
+        "cudnn_deterministic": false,
+        "cudnn_benchmark": false,
+        "deterministic_algorithms": false
+      }
+    },
+    "long": {
+      "version": "h16-resume-v1",
+      "window": 15,
+      "e16": false,
+      "data": {
+        "fit": {
+          "ctx": "7b21dbe1655857b2da38f3f7e8f19674902d04979584d1e1004242b44e5284b8",
+          "acts": "d907dab98eff7d542b82e8fcfcee1de5eb89f51e50f7b551bbb18cce3fbe30b9",
+          "cont": "39a829ab39f032d71c526b6fe8f96f0a9ded8c94df93633f96e2849bedef3b8b",
+          "seed": "f707dbf5ccbc4e051d9a636950887de8bb1096163a1d288e442fdf5e3253c76d"
+        },
+        "dev": {
+          "ctx": "2df3c0b85f2f018390cb754de5060ca70d85dfc54c6a4ef16327ae622f22723c",
+          "acts": "2593f5cb6d716f3b70e19ecc1549b82f55d12b2adb9c129d2bb23b7b5ff05e3b",
+          "cont": "aa43f595ee78ad781af23299af17286a162e3b5bb1aab1537b7d38817ded22f5",
+          "seed": "60e89db4d26206a8f75a08406e0c064caa57cf1b5db553251b50abd329885edd"
+        },
+        "labels_P": "609bf47e1394e4c8d94fbcf107c85b89a3770eb2818fe11ff852e311a30fda26",
+        "labels_D": "506a5b346480eccdc156eb4df81bf5b9c4c4692e44fbb808ccc023094e425746",
+        "split": "5b94ab214832605f3331f091ad895792d15d0adeb3d7b2a29ee9ddbdaaed0618"
+      },
+      "references": {
+        "roots_devB_opp16": 1139,
+        "uniform": 0.571426510810852,
+        "prior": 0.6160831451416016,
+        "one_real_future": 0.6793657541275024,
+        "oracle31": 0.7664617896080017
+      },
+      "sources": {
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_h16_traj.py": "3779bc7936a6607173f68e98b4cd855593ab9d64f42c7261a4aa8331e40b3884",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_h16_signal.py": "8f4da96b207647a74c4785677854335bfe6b1e056a6ab9201cec89d3ca1e47eb",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/deepeval.py": "81c92c69a5c9a06df2a42b9ab743fed8cd8c604387acd210065229bb9bfc6e21",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/dpanel.py": "938a37a4cceb46ca5128776959174cce1e91d498d85591fcfe41c2abbe5607d3",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/teval.py": "a2f873442031b2fc1a671a8f210acf4b5a759767e3b8c6b7720b2dd916793d20",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/tworld.py": "1435057c2b2f0c3d90f563e8dcaf94d06121deebc45928e18ec5cacc93d01569",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/scroll.py": "32f21939825d3e3bc84b3442234baead507934cd0d4c36ac76a6c821fbdc99dc",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260921_readout_ladder/spatial.py": "89e055243d5378166fafd083f5055c05d5e4762e7a72ac2a954c48dbfefd8f81",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260921_readout_ladder/ladder.py": "0c506483f5ada1acf62dff4bc277bf0b0926f5d902f0023c4e75846e5773afd4",
+        "d4mj/__init__.py": "f2a8c8877e753852cec40973493b506ed1ed8788a02a720793258d9b88d4f9bd",
+        "d4mj/__main__.py": "1399bc986938f34578fa54eb2d0fef80f35b73507d3b5e4024854f7cdb781577",
+        "d4mj/actor_critic.py": "5f4430485244b0d821a4ce8227a70571d87c7da37c273e628099f3fe6970a321",
+        "d4mj/agent.py": "ede81c4e0e0caafbbb996f9f18e115ab987d76def7e5e1ac022de0172ae4ba22",
+        "d4mj/backbone.py": "5c19109870fbbb8d9133bc7af8a26b71ddada1f407b65b3bce99d0f59a0f555f",
+        "d4mj/cache.py": "53f20d962184f55563faaa3b158368c6a62b60519e4f4a2ef12c1bd6a91881d5",
+        "d4mj/checkpoint.py": "0484d7da0dabcd17bc1d3ea58989d7f3814d385490e7f8d4b8cad1d2a17b780d",
+        "d4mj/config.py": "4cf956c9a587deb12730597643f51971711b1c33b0b027b59bebf89f4ecbde1d",
+        "d4mj/counterfactual.py": "28ac05721255ac16f6ced7a7a9f57754b00d40c268cb8d8fc5726ccb10797451",
+        "d4mj/data.py": "1c624aa9676a4005a586dd6ab1a5c2b69f0060ad932b578397cf8dcb247166c9",
+        "d4mj/diagnostics.py": "506a1d47b8a66bae745e78a85db8c80c2392898e86546430091e777292121db9",
+        "d4mj/env.py": "e8f821d1d29affa4020bd407f00330ce3eb0790b9343b2c9351472e74dd1d960",
+        "d4mj/execution.py": "7d77bbbbd34a77793943e1aa1a1d2809c19bc35605d4a736ce3ff47290aada7d",
+        "d4mj/experiments.py": "2e1c0baa61ae5dddc5c4c1bedba4685fb8f04717129080f012d28a1e81a650a2",
+        "d4mj/expert.py": "c6161fb2afd42d11ad309b6f0a1eee6ab09ab9254c36922798c860b2bd5cf29c",
+        "d4mj/gates.py": "79118ab725feb22eb26a69389ec932f9a29ead03c4b2b602fe2e9bcabd2f8653",
+        "d4mj/imagination.py": "f0d110aa70e73fed3669ac0e2a30cf3d13012ed6319dbd9b7967bbf17f9edd91",
+        "d4mj/lewm.py": "682117426d0fd84e6babe2185002e0bf50d7fbcdeeb4d458eb06efe893b91256",
+        "d4mj/lewm_config.py": "92ae1920be5ea7222b6d2e80e21a93250152927440ae56c128ab5fd504c8da38",
+        "d4mj/lewm_diagnostics.py": "04f7ba980bec419b6a9e6c4f3fa75a6553fd64257d29721367c7c64bcd96f0fc",
+        "d4mj/lewm_transformer.py": "ffd215fea3945e5d62419e5ac2375060ecde596c43e53135f02f930bfaf5519e",
+        "d4mj/m03/__init__.py": "02efa2fcc16fdd8a74b0ef4eca22457f7e10ab18039446f11f134d05064ec1f2",
+        "d4mj/m03/cache.py": "d38e38e39974034150a155494ca1725792ff1e682bb0a6f2d1febb0ccb71ae96",
+        "d4mj/m03/diagnostics.py": "cde5e356747d422ff5858727b897533b0d50c010c454ecda43b43eac6585a966",
+        "d4mj/m03/gate.py": "78653ecf999692457ebf168f769cda0cd49b690fe9a2dfab21f3f626bb06e6ab",
+        "d4mj/m03/history.py": "882a2d58c06d3c97f5c6fda482fa87a68a354fc725a753545d2e44058cd472eb",
+        "d4mj/mamba_recurrence.py": "8de9df2578d7bf45c9d98acaf51c99d03ca9185c641f8b09ae107370133bf4c0",
+        "d4mj/representation.py": "1564c2b8c9ec60669bd306f46717e9dae7fab73fad1901fb86a27cf9e705a446",
+        "d4mj/sources.py": "3e0ec80b742a8302c265d43e7abe7f62c2099ac425d19915a6c52ff23a5b40b5",
+        "d4mj/state.py": "dcda26ce33cdefb76163c8067954646399e3315a3a01ac85a0d474b2f76cf594",
+        "d4mj/tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "d4mj/tests/conftest.py": "f0ee7ab71242db9ffb30405d2217dabda028d0da0d494b68d29cf2131709dd9f",
+        "d4mj/tests/test_actor_critic.py": "5c228ff0a0871b1cb1de60cef0f2f92bd37b73a0bf66c5f9a89e695d47e77817",
+        "d4mj/tests/test_agent.py": "2e4cba12f7f67b20654fc6720b06c997a68c6bd2aefe157e2d0a03c3f5c49f22",
+        "d4mj/tests/test_backbone.py": "670b93f2783c1e54bdadd650e63773fe1ac3a11979aa17170ee71a2d3ae7d4a1",
+        "d4mj/tests/test_bridge_gate.py": "bd56025af85ae9480ba10d4967d7b251e768ea4950b74077eb6e39fb6296b4c3",
+        "d4mj/tests/test_bundle_checkpoint.py": "2d41c922646208031ae2dec9b1b44a08de4ad0d94d674607fbe6cafc33b806c7",
+        "d4mj/tests/test_counterfactual.py": "23c304177da6fc085f9a28755baa4f5126a30b3bfd06a060ddb17440b67cb057",
+        "d4mj/tests/test_data.py": "9d6a569f5bac4abfbba4bae4e1cf949c26ddc498ad1763bb0db4caa1f098ce0f",
+        "d4mj/tests/test_execution.py": "a14f4ca14e631d52b5a8f8c7af0b3f6b35a953082baa312a76916e754c976634",
+        "d4mj/tests/test_experiment_diagnostics.py": "2a493590638c9bba4b5a75027ab321d18763e395bad49e072f26db260d861cd8",
+        "d4mj/tests/test_gates.py": "e7a16212935bf948f6e5dd21d1ca7709e6199b9b7096055e233ff0347e2ade8e",
+        "d4mj/tests/test_imagination.py": "03d46c58961c6a5351fabe04116d86cfe852ac5f5d493f829b13f3b8c7e9df1f",
+        "d4mj/tests/test_integration.py": "3a81070fe92aacc2e76d6fcf8897f8cd92168badc48d37c84cf08381f3a9116d",
+        "d4mj/tests/test_joint_data.py": "2708aebb39d860db5989141bca52a500217b47b13234538f1b6f073bf0b5ec3f",
+        "d4mj/tests/test_joint_screen.py": "14fcacebfe61c5558f38464807f04881e78dcfb4cbfb834f96ed8c84c2470da4",
+        "d4mj/tests/test_lewm.py": "f04af5d89c05fa825083079c3fb4ca3ef250b2eedeb52be34e5b93928c814e6e",
+        "d4mj/tests/test_m03.py": "a12d78760e3892b7970df793b42270c46546c51d15ceb4c59296a4ca6ae13074",
+        "d4mj/tests/test_m4_core.py": "9d8af88064e58ce8c14ee03eae930855d4a84f7040dae0c40d3a68b4e7ea19c5",
+        "d4mj/tests/test_mamba_recurrence.py": "514396c2e672d92cec4446feee47e9d37f0a3d666278986636a3417a19bbd6be",
+        "d4mj/tests/test_representation.py": "c955ee2d3b4bd1a0e62f66047fae03823cd325f21b0bb11e5e68420e0982de82",
+        "d4mj/tests/test_sources.py": "ae74d3f1dfdc6bd8164b7260cf92a3b483383a2f5179ed6c8fdd942790ff7c03",
+        "d4mj/tests/test_time_mixer.py": "23c478f2c254e45c0a2fe5cbe8572147ab790e2170de62d6d0741b65fae0c44e",
+        "d4mj/tests/test_train.py": "0235835fd8cd2be83c51d1a344e157a30a94836be524cea951f6cc9bab455f2c",
+        "d4mj/tests/test_train_lewm.py": "99e5477636fa8daded64045455f7a6259e5b1984af50c39683d5c58049b76b9f",
+        "d4mj/tests/test_transition.py": "3d63240f4922f928e0bfe82c4bb2cacc1503089d0c39a98405f47bdf19eae8be",
+        "d4mj/tests/test_world_api.py": "6dd8c3b7365ddfa12d442e9fc5b8c596bf2249f74f18c42fd3dc174e347442b6",
+        "d4mj/time_mixer.py": "bb79b7f03abe35cb9a66cf04cde2ec58e8e74c7bc172e30f03e306e9df5d0849",
+        "d4mj/train.py": "95af8574bb7621813c122cb775e214fac3d629690e286561338fef485b2f5234",
+        "d4mj/transition.py": "87cf8cbe96cf216e4639ffca1a2f933e473a25e749367a3ac6d1a8b110d658b2",
+        "d4mj/world_api.py": "f8dfcbe26ea1b1ded73c023d19e9de31962039e4845afabacecef59567dc878c"
+      },
+      "checkpoints": {
+        "artifacts/eda/levers_tworlds_v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000.pt": "5085ee21418e853a4d337f7fae16ae76e51afb8f157b97e5783bfe1a01cce2c2",
+        "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_m4_canonical/raw/bridge/step-002000.pt": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e"
+      },
+      "head": {
+        "steps": 4000,
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "selection_every": 200
+      },
+      "runtime": {
+        "torch": "2.13.0+cu130",
+        "numpy": "2.1.0",
+        "cuda": "13.0",
+        "cpu_threads": 6,
+        "cpu_interop_threads": 12,
+        "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+        "tf32_matmul": false,
+        "tf32_cudnn": true,
+        "cudnn_deterministic": false,
+        "cudnn_benchmark": false,
+        "deterministic_algorithms": false
+      }
+    }
+  },
+  "sources": {
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_h16_parent_compare.py": "6a1908a6485d4a3cd148d2954544f14665ff23f4719f53805ed907b4816942c2",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_h16_diagnose.py": "5fdeabe0332a7c915951d3539fecfec82b0330942951dac34536d94bde70e3df"
+  },
+  "short": {
+    "continuation": {
+      "brier_all_k": 0.09444184601306915,
+      "auc_dead16_key0": 0.8475851286719972
+    },
+    "trajectory": 0.6417362093925476,
+    "snapshot": 0.6157265901565552,
+    "traj_minus_snapshot": {
+      "difference": 0.02600961923599243,
+      "interval": [
+        0.013840270228683949,
+        0.03882143273949623
+      ],
+      "excludes_zero": true
+    },
+    "window": 5
+  },
+  "long": {
+    "continuation": {
+      "brier_all_k": 0.09315658112366994,
+      "auc_dead16_key0": 0.8667210235036276
+    },
+    "trajectory": 0.6470131278038025,
+    "snapshot": 0.6205461621284485,
+    "traj_minus_snapshot": {
+      "difference": 0.026466965675354004,
+      "interval": [
+        0.013280073180794716,
+        0.03973904997110367
+      ],
+      "excludes_zero": true
+    },
+    "window": 15
+  },
+  "long_minus_short": {
+    "trajectory": {
+      "difference": 0.005276924464851618,
+      "interval95": [
+        -0.005532128003641345,
+        0.017497454367167157
+      ],
+      "episode_seed_clusters": 149,
+      "roots": 1139
+    },
+    "snapshot": {
+      "difference": 0.004819652531296015,
+      "interval95": [
+        -0.008979630177622443,
+        0.017812187255343257
+      ],
+      "episode_seed_clusters": 149,
+      "roots": 1139
+    }
+  }
+}

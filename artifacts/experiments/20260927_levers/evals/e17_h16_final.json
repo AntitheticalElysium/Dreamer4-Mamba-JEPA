@@ -1,0 +1,1137 @@
+{
+  "scope": "E17 final H16 diagnosis, predeclared 2026-10-07 before execution.\n\nReproduce saved risk heads and action choices for both backbones/world seeds.\nReuse completed seed7 CPU hazards only with source/input contract verification;\ncompute seed8 on the exact frozen feature caches and original FIT normalization.\nMeasure paired prior/snapshot/backbone contrasts, temporal hazard-term subsets,\ndeath timing and within-root action-effect compression. Repeat the existing\ntrue-hazard deletion control. Roots/labels/head weights/thresholds fixed; CPU\nthreads2, no world/head fitting or GPU. Later-only failure does not prove missing\nlatent information. Reused DEV-B panel; intervals cluster149 episode seeds and\nare conditional on these trained worlds, not uncertainty over training seeds.\nSource/input-bound atomic batch checkpoints; logs only to EDA, no notebook writes.\n",
+  "contract": {
+    "scope": "E17 final H16 diagnosis, predeclared 2026-10-07 before execution.\n\nReproduce saved risk heads and action choices for both backbones/world seeds.\nReuse completed seed7 CPU hazards only with source/input contract verification;\ncompute seed8 on the exact frozen feature caches and original FIT normalization.\nMeasure paired prior/snapshot/backbone contrasts, temporal hazard-term subsets,\ndeath timing and within-root action-effect compression. Repeat the existing\ntrue-hazard deletion control. Roots/labels/head weights/thresholds fixed; CPU\nthreads2, no world/head fitting or GPU. Later-only failure does not prove missing\nlatent information. Reused DEV-B panel; intervals cluster149 episode seeds and\nare conditional on these trained worlds, not uncertainty over training seeds.\nSource/input-bound atomic batch checkpoints; logs only to EDA, no notebook writes.\n",
+    "sources": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_h16_final.py": "203b7b8d2a01b8fce6060634ec8479f04dca599683b3517eb767a2373137981f",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_h16_traj.py": "3779bc7936a6607173f68e98b4cd855593ab9d64f42c7261a4aa8331e40b3884",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_h16_diagnose.py": "5fdeabe0332a7c915951d3539fecfec82b0330942951dac34536d94bde70e3df",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_h16_error_split.py": "b67f45e7bcfa355685f93e748c5dd7bd52487d06e64d3674f30fd7e681f42035"
+    },
+    "inputs": {
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef/contract.json": "e1da200e94213427bcf0d48055c9ecde518d051e0721a23a9eafa20713201c9a",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef/features_fit.f16": "3b49c7fadf1ebf73d514a35b501325340daf4ccf583fff95d54e83aae6aabb97",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef/features_dev.f16": "3f9ab20d631efa71aaf6d47f0c6e867f53bf35faa77d1f6056ffec4a7478d4a7",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef/result-1.pt": "e403e07e794ee09c2585ebd38d6d6c7c5b9bdf6c63465221aff30f3460fba1c0",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef/head_trajectory_0-4000.pt": "5ca477ae62e58edddf47004700994d2e2ae760bf701eec16ca88dc5a5264df8b",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef/head_trajectory_1-4000.pt": "d150ea954c9bb728bd35c0fc83567d4cfef5f90d1717271fcd9dfe810342b167",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef/head_trajectory_2-4000.pt": "7240b8d54006292ced66b15b699149b3ca19b79d71d1d83f536d624febff03d2",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/contract.json": "c79c0a719ced67f95ed480d8a0837239c41cb3f584e8b7b75a7a72187bd20260",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/features_fit.f16": "238a997000ff6cad24df17677d9209772d3fe9af562af3b005e8a21f9fc7ca41",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/features_dev.f16": "f5a39d286e4ec2db48398eec3825ace2f316e29790950ab9b1ff796b290e6fea",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/result-1.pt": "0467accd44f2b55ea82e68e6679295dcfdc315b4d36fb576989cbf97331ffbd5",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/head_trajectory_0-4000.pt": "3b6fe79a5c5d270d98f5152fe58b876cb53887e2e7076f732e4e3e230ba1e424",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/head_trajectory_1-4000.pt": "61a5026b8ef6bd7257be6e9e3631711b322189343a23e088a7bf304d269e6738",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/head_trajectory_2-4000.pt": "db43e120586368e37877363ad4b8146df9f59eaca58ca18c8a782606caf8f5b9",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_L16b40_from36000__w15__det__c2d0e05f779612fe/contract.json": "4955515175c9e605a9835ca374c6dd95b49c362222dff0053c0abc28a21e102a",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_L16b40_from36000__w15__det__c2d0e05f779612fe/features_fit.f16": "b4609e06afd4d08b95a44f7e3bfe4f93ded805c40d71bddf41f03ce4d2c8bb9f",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_L16b40_from36000__w15__det__c2d0e05f779612fe/features_dev.f16": "77e6f022cd555c1141eb595c78fa8a0d4101de39454ce76851eb128d6b98a1c7",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_L16b40_from36000__w15__det__c2d0e05f779612fe/result-1.pt": "dc9e2b3ed295b3a126d711d89add4afc864adeabb34dd9bf64f687f4f27e9a06",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_L16b40_from36000__w15__det__c2d0e05f779612fe/head_trajectory_0-4000.pt": "7821cce97ffe7705fc87c279921a35e9b46ff3d2d7b70d8d22bb162637fd5787",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_L16b40_from36000__w15__det__c2d0e05f779612fe/head_trajectory_1-4000.pt": "6367c57d22eb25eaa27120a1c6cf1b3193847560df964f778f19746d8aa271a7",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_L16b40_from36000__w15__det__c2d0e05f779612fe/head_trajectory_2-4000.pt": "a3975e4295c950b05da47e100364e5d6741f1a8419c95dcde4c045b96ccb8678",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__w15__det__cb1596225c7af346/contract.json": "028de4097c341ee79a3263f6995eaa9edebe45f6c767d3074682627897253cb7",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__w15__det__cb1596225c7af346/features_fit.f16": "58c5756d1eed016712842e53036b386159dd38493e47d76429c505dd14b8e6ea",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__w15__det__cb1596225c7af346/features_dev.f16": "56caf254dba0ebcf60264a01683944ce873d7aaaff7e2b32c4da2fcefb85587d",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__w15__det__cb1596225c7af346/result-1.pt": "39fd4ecb023bb828d27b75178c4c9cdeff4efbed25ab22b1782448a850c1a512",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__w15__det__cb1596225c7af346/head_trajectory_0-4000.pt": "f49cc4b87ef3c0d9ded328fa14c04914b2d32ecf5fb75aa088313c915c45994b",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__w15__det__cb1596225c7af346/head_trajectory_1-4000.pt": "70a688f586ba59f77331beb5b4ab29ef43c1663a78d8203d10db7a2aaf0aea11",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__w15__det__cb1596225c7af346/head_trajectory_2-4000.pt": "3dfe4ac045739e0f5837f5cd9a527b60e3e52a1a52722cc7af79087deb13ccae",
+      "artifacts/eda/deepeval_v1/fit_meta.pt": "5d70f8d51cee08b806fa18fbd90cccbfd99ac7d677901c6c122731cf186466c2",
+      "artifacts/eda/deepeval_v1/dev_meta.pt": "7ebc8537602d8d3042c104390e875b04b989e1c23a232d090e97c026464bb4d6",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/rows-1.pt": "0bd64a4f968724c33c3182f16a0f81d2a58151f0ab36678ca88f8a91306b960a",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_0-32.pt": "6d8e5b7f56d166dcf516e96c48dcd89c04499a9a25f057ab6e22781c1c5ace54",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_32-64.pt": "6be28d2f828e9a3d1d6c4fe31b61555162d56c2242782cf1887b109a6b0e5915",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_64-96.pt": "fdb4d5e87b4fe0db811a29beffa6623a974da19825814363f958f7ac8ce294ce",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_96-128.pt": "e699dace23115dfb9bf61a9feac7b08914a0db31fd37f504779e1c4f6b05b140",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_128-160.pt": "5ca6c7ef4b8addc77f28a2ebddd9e1871841124a70d3b2e693a341570576205a",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_160-192.pt": "1c77c89de8ebf8ade58da06c600e007854e939f485f1f41a2004ccc8b1844a55",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_192-224.pt": "09e123dc3ae7223b390d1f707322540a13a053c930f7fab08e4d4baf0bd17860",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_224-256.pt": "22bd5ed24efc28b9b9a73ef3789840c16cac39748778bc885f5d5c09d0e25ffb",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_256-288.pt": "4e33d47d7c051158c9ed4fb76f7f809f55a6073efd31380326e0adf4b6a1ed0a",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_288-320.pt": "7f3b4098c5a7beae4eea80787df32b7cfd9830a58043d72179600145bb5af130",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_320-352.pt": "96abe3d984e1f74745a832f5c2544957bea0ff77089ff82eb13bf61f484751dd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_352-384.pt": "ef179dc461f9927848bb562c0a411da2f258ef2b797e1e1622306007a5858b5d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_384-416.pt": "0766a9c1a9c6962b99089ec52cb6d259ac3eddfc9bc4b0f5853e751d69cbf590",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_416-448.pt": "a8ebcda1c01b12e1a3cc4448dcbfa8e27e91f0019576bbba3eca83bdc6d1235a",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_448-480.pt": "e6e7dc22ada1b48eee2cd0e5c0a892eb4c1e442462eb063247521f12e026418e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_480-512.pt": "e24993ffdfe11eb7b40a55e97c25eb8647a34af4296f0b36f73cc334e8fd099a",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_512-544.pt": "bdb20ead71d878ee1942d0f52645e73135952d31a26080de5699cd55e19cedaa",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_544-576.pt": "c7dfde560628aaabb12543dc5f090ed48b55b507892332df1eb02c214b8c5a03",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_576-608.pt": "89a7b1b68ff82db736821aa6aed25341ebf6ae2c9eedd530853483a1dfaced1e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_608-640.pt": "3a3850d106de654a43a9cac331b9addb47320a222bd02b5d247dc6aef737da3e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_640-672.pt": "bc2877d26fe376817f4cbd1c80595772f8565be2db48a1bbfd57cca13c8d0008",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_672-704.pt": "d90b6847a0c0643492b64153c6276cea13d07fd269312066fd7f4ae2497dbcb5",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_704-736.pt": "4260afc4c2776a2c72d90580e004190e09565079c1f2352228a47389b60b9cdd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_736-768.pt": "744e89be8b8067981cb20506788759d8ab1965441cdf6ee817b8e73a431eccb6",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_768-800.pt": "aab840cf9bee72978d544a9d7847464e5f1dbd43b86c7b4b7c14f9a9a18b0844",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_800-832.pt": "2f0b3fdbc1a0aad4ec8714241ff486a09b6112dab3204296247989aabe9dc8d7",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_832-864.pt": "8d714b6c01fc1e15b99a58fb059b4dd997682d5413c0685189e883312d80176d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_864-896.pt": "b55deb6b0ee6f4ff2e73d092bb932434b2a9afcb24cb1a108b10952c9dd4e1d1",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_896-928.pt": "80f2c3b7d683574601f0e5d04d6fa6fa1acc193c3f2359121ed8eefdb3fbe259",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_928-960.pt": "f348e2dee1449756da6a9dec80603ff6edc376e415d8cbb36cc9df0615611b9c",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_960-992.pt": "53625ab75360082930369658b9bc19cb1f82d594016fa1d91e95358917c93ace",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_992-1024.pt": "29937cc6ba1f2410e3fe077d5700452013539f5ec771cc5fe5e7430e8702f0c6",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1024-1056.pt": "a5b705bfcc4ca1d82baddb903e56f3fa38a72a221f663c728e66d5ca026520c0",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1056-1088.pt": "4d12add64f008ff4ba3189a80ca746f98fcdc59c4734edbd2b47a8d48b421851",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1088-1120.pt": "179ce5e1ccd81cc87d8a3e272db6cb6c8dc6ccaa313b7a4a6f0a0d32a5e94bdd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1120-1152.pt": "4cbcbbe383a7009f3601929667e3e8e88c53d6d641e6915b2e2de6551debcb86",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1152-1184.pt": "4531dc29817aeb9c05cff51291447f16681dae34319278e07cb45ad1ad5202f1",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1184-1216.pt": "e988c5df4d4bd9b80ac90aa3a63f6cc3db9649abdc15376b9022a09d884d39c9",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1216-1248.pt": "b0dcf52b0a9d494e2e010225cc31f2519c064ae0fbbb969b8af7817689c8364b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1248-1280.pt": "708ea6ecf04f092088bd8fc086628a1754d0ffbce2f1ee5ed7b0e2f11a7bbe7b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1280-1312.pt": "27046ce74eabfddde5a67c72a962696921893179a5072bb7b0f2dc60cdf09188",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1312-1344.pt": "1e48f8cccd498f8d9753083ef2dbf81006437219c9904c69662e7fb567c95da4",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1344-1366.pt": "8e2844649dc47c520cf05f01b31b65bce584393c8c140fdb81c3f22d33ae3be3",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_0-32.pt": "18f10a45532cd866b2950c8e56d0b2b9079fb4c581c2dc62d57ed028486d5533",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_32-64.pt": "46bb9544eadff6251d63817b5e26c201c9e13f544e65e8782088495b547c5225",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_64-96.pt": "614e0738e7d151ab9f0d4b64083a05423cc91d35c8ac5f4d375f20b9a99bac26",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_96-128.pt": "fdfba9678bb8b00c5501d80dd19be9f2a1349c648bf63062af4196bd5de006ed",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_128-160.pt": "78f4dce85407308a142b99b17ae81f919d3ff2da736723e4a59127363f9b3cd1",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_160-192.pt": "3f1e2932a9856ac1748577e3dd5bbbdfb8b61a229c65e9c04057adb45fa36856",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_192-224.pt": "0e3978e4730a0c8b741287e6d5e13702767f7d6e8cd03d27fab333057266c901",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_224-256.pt": "dcf9ea18cd412e5148d04e2bcb5dcd92a0f7abd81be97f6272a40e0a6bad4281",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_256-288.pt": "41270e6ecae80c29b589ebc1c62bde52964c8f18648b9e282c6db25b8b6e0a5b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_288-320.pt": "7a9dc229ed595c0bddd69d47aa4408354dfd6e5d757076225e52f3ae50d40036",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_320-352.pt": "c1a03b1637e324ede2ffd919f6ca9140c9fb56ffe8757e800ea89ce7233580e6",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_352-384.pt": "70814e81c6de0fefc83d5db194aefcb1245976a0ae32f09c5d8d8b341ef8f401",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_384-416.pt": "c272a6dd66afe264eff10bae78d170a34a64884ce31e644b2a1894cce84103cf",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_416-448.pt": "56de7ef02a01d9ac0b18eb0df15e815419f93293ca0418243db16e4564b47d13",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_448-480.pt": "aeb963afbf982de3ab1ed447c8bb6e88e5cb9cd5446375398590b64e1c5623c0",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_480-512.pt": "1cab3f98fadc5ce21bb5458f93ae326c6a9660e26cd89ac0532c55a4d06db3f5",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_512-544.pt": "ac89c5a05e681f3e6fc01d1f3179fe3cfde52e9f988e63b233e681550b4acea0",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_544-576.pt": "fa4f4ab0929d714b26564d8267dc82f3fb74740dd22e71587af62fafdcf76887",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_576-608.pt": "6d5d5a32a5f42116478a30085e51b5b2cfffe25657a8df819dcd959cae31c384",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_608-640.pt": "6da3f9398351f3b8f12adea1cae44d2f093955fa5fd886080a3c969da37d3b39",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_640-672.pt": "db30bc1539e56e89bfac12b07c12696ea862177f2f41b4c3bb972798e59231a3",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_672-704.pt": "f1bad612cdc8418a63daad4d3e419d1f07be2b4bfc99aa7691c581738422f8a5",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_704-736.pt": "c17b67ee770a86e45c680044549c0d5dcfa4ca3f268fcc4d8417deb0c88305c4",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_736-768.pt": "c9e5854dcf8db8c07b44e5cccf539ef36ad9c4ce7c3a3146ee8b0f7d3c691f0d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_768-800.pt": "67ec5cc6d52443750c10b41ee29515cc122685cc77a8fd8b8055386aae4afb7b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_800-832.pt": "5a0ddd6ec06d23eb1d198a8a6c23ef94fc368698cba86fa4049ef6c2ef8aaaeb",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_832-864.pt": "e3622b8b9b54b1e25ab2a05ac6a74f8ab953f230ca971e298b122fea2529a489",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_864-896.pt": "ce893245d06cba13b130ba59a9172c0018750de191ed00569a447fd0f14b5893",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_896-928.pt": "98a2af040113fd44aa7dc96d2e01023046e5e2a58dd4717b8872d53c9dba3b01",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_928-960.pt": "ccd2a521493fca6d18214860bb146f74d74a68af985fa0d6cd7855a0ae007e34",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_960-992.pt": "6a6c31a06376d9d1c4cd231dc60d8113619a99c29cc0c80eb005272621bbfe3b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_992-1024.pt": "ae29deed8404c104a93ca753218a210b13a76d3b40e785b7b49ad2aae9f7bca8",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1024-1056.pt": "1f3808494e2fd4791d47ed43d8aced40787b236ca64dbef8c47beb636d4effed",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1056-1088.pt": "44700ed51f2ddb9a3853bf5555dda001043f922445aaa18c2c5b5504b1ed5f62",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1088-1120.pt": "7dac1350c28869375c4ef6f464fe467af4241c3b670988bfb369dea725763c99",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1120-1152.pt": "9bcac8ae17a1d1b211867aa75246baaadbb4c992397e0dfc67b8f429670d8611",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1152-1184.pt": "0d3b0509f7170b26e18c5e4f522e6cfa09b3cc0e891d585025b2e3ac2ca23f0d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1184-1216.pt": "e1903b350757ad31d0e168651b1bb1abbf780fa80e88a16efab2dec281d73aff",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1216-1248.pt": "9f46a87fe732e66e09f62f42b0c648d18f95103c98245feb425e8060a514821b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1248-1280.pt": "15c49340b42d23c14d9bd140e21b28a4549638c2e34dd8f3df1a4dd9f9ce50ac",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1280-1312.pt": "f184e0afcf361f504c74b15d540bed198491261adaa60e770f4648bf1ea27ea9",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1312-1344.pt": "ae8b0ca418568513e1d8c1ae31752936a0cd3d9282fb6e4fc1b516cd76421c9d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1344-1366.pt": "91368c1d7fe91b327caa5c3989bf68c94571b1366102e6696bafff23684558e0"
+    },
+    "previous_contract": "5d7d36f8044f3a96f06c66b4d0ba522a6c2f40cac183877663e1fc908868bb31",
+    "world_contracts": {
+      "attention7": "03a8b3e104ebe9ef7d754ec5b9a79144af0db844d191cfb514202b0a45e2b41c",
+      "mamba7": "f97b2da4f9e724b47e62ed3f057b5a1a7bc4e99c4ff08321af917665795502be",
+      "attention8": "c2d0e05f779612fe21394db72dfa802ecdfcba44f61bda78b47d3a7ffcc8902a",
+      "mamba8": "cb1596225c7af34699c800d81430cf58768788a58d28a3209c08c989ae12fc11"
+    },
+    "bootstrap": {
+      "draws": 4000,
+      "seed": 20261007
+    },
+    "runtime": {
+      "torch": "2.13.0+cu130",
+      "threads": 2,
+      "precision": "CPU FP32 / original FP16 normalized inputs"
+    }
+  },
+  "worlds": {
+    "attention7": {
+      "official": {
+        "continuation": {
+          "brier_all_k": 0.10356273502111435,
+          "auc_dead16_key0": 0.863230211597993
+        },
+        "trajectory": 0.6519516706466675,
+        "snapshot": 0.631475031375885,
+        "traj_minus_snapshot": {
+          "difference": 0.02047663927078247,
+          "interval": [
+            0.00759663013741374,
+            0.03334645554423332
+          ],
+          "excludes_zero": true
+        },
+        "window": 15
+      },
+      "reproduction": {
+        "max_score_error": 7.152557373046875e-07,
+        "choice_mismatches": 0
+      },
+      "groups": {
+        "all": {
+          "roots": 1139,
+          "scores": {
+            "full16": 0.6519516110420227,
+            "step1": 0.6388188004493713,
+            "first4": 0.6502140164375305,
+            "first8": 0.6555183529853821,
+            "last8": 0.6281094551086426,
+            "omit_first4": 0.6342277526855469,
+            "step16": 0.5996670722961426
+          },
+          "full_minus_prior": {
+            "difference": 0.03586845472455025,
+            "interval95": [
+              0.013805650428379793,
+              0.06096565501790607
+            ],
+            "episode_seed_clusters": 149,
+            "roots": 1139
+          },
+          "full_minus_first8": {
+            "difference": -0.003566725179553032,
+            "interval95": [
+              -0.011287492565290042,
+              0.004252486324800743
+            ],
+            "episode_seed_clusters": 149,
+            "roots": 1139
+          }
+        },
+        "adjacent_zombie": {
+          "roots": 599,
+          "scores": {
+            "full16": 0.5795075297355652,
+            "step1": 0.578794538974762,
+            "first4": 0.5814899802207947,
+            "first8": 0.5841158628463745,
+            "last8": 0.5620130300521851,
+            "omit_first4": 0.5667605400085449,
+            "step16": 0.5320499539375305
+          },
+          "full_minus_prior": {
+            "difference": 0.018729131668806076,
+            "interval95": [
+              -0.0022797839759192903,
+              0.03844452136765521
+            ],
+            "episode_seed_clusters": 125,
+            "roots": 599
+          },
+          "full_minus_first8": {
+            "difference": -0.004608375020325184,
+            "interval95": [
+              -0.011340548884135273,
+              0.001248113150086522
+            ],
+            "episode_seed_clusters": 125,
+            "roots": 599
+          }
+        },
+        "only_after8": {
+          "roots": 137,
+          "scores": {
+            "full16": 0.9291362762451172,
+            "step1": 0.9317214488983154,
+            "first4": 0.9344587326049805,
+            "first8": 0.9353711009025574,
+            "last8": 0.9254105687141418,
+            "omit_first4": 0.9280717968940735,
+            "step16": 0.9104318618774414
+          },
+          "full_minus_prior": {
+            "difference": 0.0009884428000077605,
+            "interval95": [
+              -0.022618372628026857,
+              0.02679829450278286
+            ],
+            "episode_seed_clusters": 68,
+            "roots": 137
+          },
+          "full_minus_first8": {
+            "difference": -0.006234793923795223,
+            "interval95": [
+              -0.020835234170412494,
+              0.009615383721314943
+            ],
+            "episode_seed_clusters": 68,
+            "roots": 137
+          }
+        }
+      },
+      "risk_error": {
+        "all_DEV_B": {
+          "roots": 1366,
+          "metrics": {
+            "early8": {
+              "MSE": 0.1032784070918117,
+              "root_mean_MSE": 0.08630032269337358,
+              "within_root_action_contrast_MSE": 0.016978084398438117,
+              "predicted_action_contrast_SD": 0.12237295458043893,
+              "true_action_contrast_SD": 0.17933707236585508,
+              "centered_correlation_mean_head_seed": 0.6870007813971277,
+              "prediction_mean": 0.36304664584352375,
+              "truth_mean": 0.3303077361984325
+            },
+            "late_increment": {
+              "MSE": 0.0766005529828551,
+              "root_mean_MSE": 0.061085351632618703,
+              "within_root_action_contrast_MSE": 0.015515201350236416,
+              "predicted_action_contrast_SD": 0.05239673772312511,
+              "true_action_contrast_SD": 0.12979090732639173,
+              "centered_correlation_mean_head_seed": 0.2995179096122618,
+              "prediction_mean": 0.21618241545091943,
+              "truth_mean": 0.1932246361209198
+            },
+            "full16": {
+              "MSE": 0.10293864331319229,
+              "root_mean_MSE": 0.08612472651288064,
+              "within_root_action_contrast_MSE": 0.016813916800311628,
+              "predicted_action_contrast_SD": 0.09962054297089434,
+              "true_action_contrast_SD": 0.1683941277565511,
+              "centered_correlation_mean_head_seed": 0.6413254773573033,
+              "prediction_mean": 0.5792290612944432,
+              "truth_mean": 0.5235323723193523
+            }
+          }
+        },
+        "opportunity16": {
+          "roots": 1139,
+          "metrics": {
+            "early8": {
+              "MSE": 0.09154495523774592,
+              "root_mean_MSE": 0.07305716163374294,
+              "within_root_action_contrast_MSE": 0.018487793604002982,
+              "predicted_action_contrast_SD": 0.12730628253815585,
+              "true_action_contrast_SD": 0.1946605176716106,
+              "centered_correlation_mean_head_seed": 0.7185424822203453,
+              "prediction_mean": 0.3091527407247202,
+              "truth_mean": 0.20415547694055672
+            },
+            "late_increment": {
+              "MSE": 0.07917266571947121,
+              "root_mean_MSE": 0.06168403068901425,
+              "within_root_action_contrast_MSE": 0.017488635030456962,
+              "predicted_action_contrast_SD": 0.0505919765169473,
+              "true_action_contrast_SD": 0.13972883611111833,
+              "centered_correlation_mean_head_seed": 0.3252763960867716,
+              "prediction_mean": 0.21334275045972628,
+              "truth_mean": 0.2244180266487631
+            },
+            "full16": {
+              "MSE": 0.11462514392348963,
+              "root_mean_MSE": 0.09488734905124618,
+              "within_root_action_contrast_MSE": 0.019737794872243444,
+              "predicted_action_contrast_SD": 0.10712159869491054,
+              "true_action_contrast_SD": 0.18441253181005043,
+              "centered_correlation_mean_head_seed": 0.6531225563061843,
+              "prediction_mean": 0.5224954911844465,
+              "truth_mean": 0.42857350358931984
+            }
+          }
+        },
+        "only_after8": {
+          "roots": 137,
+          "metrics": {
+            "early8": {
+              "MSE": 0.07090573074684108,
+              "root_mean_MSE": 0.06334692511231839,
+              "within_root_action_contrast_MSE": 0.007558805634522679,
+              "predicted_action_contrast_SD": 0.08694139195183545,
+              "true_action_contrast_SD": 0.0,
+              "centered_correlation_mean_head_seed": null,
+              "prediction_mean": 0.2174084168212752,
+              "truth_mean": 0.0
+            },
+            "late_increment": {
+              "MSE": 0.051583931918583285,
+              "root_mean_MSE": 0.034026079842333225,
+              "within_root_action_contrast_MSE": 0.01755785207625006,
+              "predicted_action_contrast_SD": 0.0296661473000977,
+              "true_action_contrast_SD": 0.13568755420152143,
+              "centered_correlation_mean_head_seed": 0.19678118400801245,
+              "prediction_mean": 0.1761488837542001,
+              "truth_mean": 0.09615178188063546
+            },
+            "full16": {
+              "MSE": 0.15345074548150656,
+              "root_mean_MSE": 0.14180888668350614,
+              "within_root_action_contrast_MSE": 0.011641858798000476,
+              "predicted_action_contrast_SD": 0.0913183596948386,
+              "true_action_contrast_SD": 0.13568755420152143,
+              "centered_correlation_mean_head_seed": 0.6094524981961614,
+              "prediction_mean": 0.3935573005754753,
+              "truth_mean": 0.09615178188063546
+            }
+          }
+        }
+      },
+      "late_choice_changes": {
+        "changed": 1163,
+        "improved": 306,
+        "worsened": 351,
+        "equal_outcome": 506,
+        "safe_change": -0.003566725179553032
+      }
+    },
+    "mamba7": {
+      "official": {
+        "continuation": {
+          "brier_all_k": 0.12673724939425787,
+          "auc_dead16_key0": 0.8230676251329937
+        },
+        "trajectory": 0.6572651267051697,
+        "snapshot": 0.6226222515106201,
+        "traj_minus_snapshot": {
+          "difference": 0.03464287519454956,
+          "interval": [
+            0.021865572780370712,
+            0.04825145751237869
+          ],
+          "excludes_zero": true
+        },
+        "window": 15
+      },
+      "reproduction": {
+        "max_score_error": 4.172325134277344e-07,
+        "choice_mismatches": 0
+      },
+      "groups": {
+        "all": {
+          "roots": 1139,
+          "scores": {
+            "full16": 0.6572651267051697,
+            "step1": 0.6281093955039978,
+            "first4": 0.6494823098182678,
+            "first8": 0.6592954397201538,
+            "last8": 0.6265456080436707,
+            "omit_first4": 0.636651337146759,
+            "step16": 0.5961918234825134
+          },
+          "full_minus_prior": {
+            "difference": 0.041181959211826324,
+            "interval95": [
+              0.020717142748457856,
+              0.06425787331664892
+            ],
+            "episode_seed_clusters": 149,
+            "roots": 1139
+          },
+          "full_minus_first8": {
+            "difference": -0.002030289964750409,
+            "interval95": [
+              -0.00888561532476053,
+              0.004268076966469089
+            ],
+            "episode_seed_clusters": 149,
+            "roots": 1139
+          }
+        },
+        "adjacent_zombie": {
+          "roots": 599,
+          "scores": {
+            "full16": 0.5914719104766846,
+            "step1": 0.5679256916046143,
+            "first4": 0.5854723453521729,
+            "first8": 0.5933152437210083,
+            "last8": 0.5577350854873657,
+            "omit_first4": 0.5780641436576843,
+            "step16": 0.520485520362854
+          },
+          "full_minus_prior": {
+            "difference": 0.030693519860506058,
+            "interval95": [
+              0.010660337724069642,
+              0.05078018577739205
+            ],
+            "episode_seed_clusters": 125,
+            "roots": 599
+          },
+          "full_minus_first8": {
+            "difference": -0.0018433505902066827,
+            "interval95": [
+              -0.009011613296940833,
+              0.005251572852937617
+            ],
+            "episode_seed_clusters": 125,
+            "roots": 599
+          }
+        },
+        "only_after8": {
+          "roots": 137,
+          "scores": {
+            "full16": 0.9343825578689575,
+            "step1": 0.9114202857017517,
+            "first4": 0.9341545104980469,
+            "first8": 0.9432784914970398,
+            "last8": 0.927539587020874,
+            "omit_first4": 0.9296684265136719,
+            "step16": 0.9187195897102356
+          },
+          "full_minus_prior": {
+            "difference": 0.006234793923795223,
+            "interval95": [
+              -0.008458986867340585,
+              0.02411898536581389
+            ],
+            "episode_seed_clusters": 68,
+            "roots": 137
+          },
+          "full_minus_first8": {
+            "difference": -0.008895986713469028,
+            "interval95": [
+              -0.01825058448678356,
+              -0.0008862035105346232
+            ],
+            "episode_seed_clusters": 68,
+            "roots": 137
+          }
+        }
+      },
+      "risk_error": {
+        "all_DEV_B": {
+          "roots": 1366,
+          "metrics": {
+            "early8": {
+              "MSE": 0.13160296452244513,
+              "root_mean_MSE": 0.1114832825822302,
+              "within_root_action_contrast_MSE": 0.020119681940214885,
+              "predicted_action_contrast_SD": 0.09368196744042936,
+              "true_action_contrast_SD": 0.17933707236585508,
+              "centered_correlation_mean_head_seed": 0.6194668012036996,
+              "prediction_mean": 0.36179527121948457,
+              "truth_mean": 0.3303077361984325
+            },
+            "late_increment": {
+              "MSE": 0.07846936435698208,
+              "root_mean_MSE": 0.06276368026354794,
+              "within_root_action_contrast_MSE": 0.015705684093434157,
+              "predicted_action_contrast_SD": 0.035437180583690414,
+              "true_action_contrast_SD": 0.12979090732639173,
+              "centered_correlation_mean_head_seed": 0.2600962826360926,
+              "prediction_mean": 0.21729849639424323,
+              "truth_mean": 0.1932246361209198
+            },
+            "full16": {
+              "MSE": 0.126193432825667,
+              "root_mean_MSE": 0.10679331269024454,
+              "within_root_action_contrast_MSE": 0.019400120135422444,
+              "predicted_action_contrast_SD": 0.08179262377908461,
+              "true_action_contrast_SD": 0.1683941277565511,
+              "centered_correlation_mean_head_seed": 0.5680729897695801,
+              "prediction_mean": 0.5790937676137278,
+              "truth_mean": 0.5235323723193523
+            }
+          }
+        },
+        "opportunity16": {
+          "roots": 1139,
+          "metrics": {
+            "early8": {
+              "MSE": 0.11445245727202834,
+              "root_mean_MSE": 0.09170389512861324,
+              "within_root_action_contrast_MSE": 0.022748562143415096,
+              "predicted_action_contrast_SD": 0.09690678758020858,
+              "true_action_contrast_SD": 0.1946605176716106,
+              "centered_correlation_mean_head_seed": 0.6502883400412328,
+              "prediction_mean": 0.3242781435889855,
+              "truth_mean": 0.20415547694055672
+            },
+            "late_increment": {
+              "MSE": 0.08155637528851921,
+              "root_mean_MSE": 0.06350501255343481,
+              "within_root_action_contrast_MSE": 0.018051362735084404,
+              "predicted_action_contrast_SD": 0.03478269666618764,
+              "true_action_contrast_SD": 0.13972883611111833,
+              "centered_correlation_mean_head_seed": 0.275702033012882,
+              "prediction_mean": 0.21112383301167914,
+              "truth_mean": 0.2244180266487631
+            },
+            "full16": {
+              "MSE": 0.13805137162071066,
+              "root_mean_MSE": 0.11523636592965225,
+              "within_root_action_contrast_MSE": 0.022815005691058397,
+              "predicted_action_contrast_SD": 0.08701625528715685,
+              "true_action_contrast_SD": 0.18441253181005043,
+              "centered_correlation_mean_head_seed": 0.5846819419167114,
+              "prediction_mean": 0.5354019766006647,
+              "truth_mean": 0.42857350358931984
+            }
+          }
+        },
+        "only_after8": {
+          "roots": 137,
+          "metrics": {
+            "early8": {
+              "MSE": 0.08841909594147383,
+              "root_mean_MSE": 0.08352816024452595,
+              "within_root_action_contrast_MSE": 0.004890935696947883,
+              "predicted_action_contrast_SD": 0.06993522500820229,
+              "true_action_contrast_SD": 0.0,
+              "centered_correlation_mean_head_seed": null,
+              "prediction_mean": 0.2656856355398224,
+              "truth_mean": 0.0
+            },
+            "late_increment": {
+              "MSE": 0.05257143008639058,
+              "root_mean_MSE": 0.03561099309276274,
+              "within_root_action_contrast_MSE": 0.016960436993627842,
+              "predicted_action_contrast_SD": 0.02583344203003484,
+              "true_action_contrast_SD": 0.13568755420152143,
+              "centered_correlation_mean_head_seed": 0.30156213880375166,
+              "prediction_mean": 0.1872407714832967,
+              "truth_mean": 0.09615178188063546
+            },
+            "full16": {
+              "MSE": 0.18562615647135963,
+              "root_mean_MSE": 0.1720956428107407,
+              "within_root_action_contrast_MSE": 0.013530513660618892,
+              "predicted_action_contrast_SD": 0.07784286736146477,
+              "true_action_contrast_SD": 0.13568755420152143,
+              "centered_correlation_mean_head_seed": 0.5178100908381857,
+              "prediction_mean": 0.4529264070231191,
+              "truth_mean": 0.09615178188063546
+            }
+          }
+        }
+      },
+      "late_choice_changes": {
+        "changed": 926,
+        "improved": 267,
+        "worsened": 292,
+        "equal_outcome": 367,
+        "safe_change": -0.0020302897319197655
+      }
+    },
+    "attention8": {
+      "official": {
+        "continuation": {
+          "brier_all_k": 0.11661287397146225,
+          "auc_dead16_key0": 0.8464386663440222
+        },
+        "trajectory": 0.6438944935798645,
+        "snapshot": 0.623555064201355,
+        "traj_minus_snapshot": {
+          "difference": 0.02033942937850952,
+          "interval": [
+            0.009120087139308453,
+            0.03194199502468109
+          ],
+          "excludes_zero": true
+        },
+        "window": 15
+      },
+      "reproduction": {
+        "max_score_error": 5.960464477539062e-07,
+        "choice_mismatches": 0
+      },
+      "groups": {
+        "all": {
+          "roots": 1139,
+          "scores": {
+            "full16": 0.6438945531845093,
+            "step1": 0.6305969953536987,
+            "first4": 0.6452389359474182,
+            "first8": 0.6510645151138306,
+            "last8": 0.6204820871353149,
+            "omit_first4": 0.6318773031234741,
+            "step16": 0.5826565623283386
+          },
+          "full_minus_prior": {
+            "difference": 0.027811309322714806,
+            "interval95": [
+              0.006153636754857705,
+              0.05236975420780632
+            ],
+            "episode_seed_clusters": 149,
+            "roots": 1139
+          },
+          "full_minus_first8": {
+            "difference": -0.007170031778514385,
+            "interval95": [
+              -0.014568233421777535,
+              3.249888838445441e-05
+            ],
+            "episode_seed_clusters": 149,
+            "roots": 1139
+          }
+        },
+        "adjacent_zombie": {
+          "roots": 599,
+          "scores": {
+            "full16": 0.581768274307251,
+            "step1": 0.5740817785263062,
+            "first4": 0.5859244465827942,
+            "first8": 0.5891068577766418,
+            "last8": 0.5608652830123901,
+            "omit_first4": 0.5697169303894043,
+            "step16": 0.5068517327308655
+          },
+          "full_minus_prior": {
+            "difference": 0.02098984271287918,
+            "interval95": [
+              0.0005027928138159905,
+              0.04143714622668538
+            ],
+            "episode_seed_clusters": 125,
+            "roots": 599
+          },
+          "full_minus_first8": {
+            "difference": -0.007338619325309992,
+            "interval95": [
+              -0.014410342799683592,
+              -0.0005265491621709653
+            ],
+            "episode_seed_clusters": 125,
+            "roots": 599
+          }
+        },
+        "only_after8": {
+          "roots": 137,
+          "scores": {
+            "full16": 0.9228253960609436,
+            "step1": 0.9215328693389893,
+            "first4": 0.929440438747406,
+            "first8": 0.9298205971717834,
+            "last8": 0.911952555179596,
+            "omit_first4": 0.9216849207878113,
+            "step16": 0.9030565619468689
+          },
+          "full_minus_prior": {
+            "difference": -0.0053223855793476105,
+            "interval95": [
+              -0.027084075604206562,
+              0.01851894269679107
+            ],
+            "episode_seed_clusters": 68,
+            "roots": 137
+          },
+          "full_minus_first8": {
+            "difference": -0.0069951340556144714,
+            "interval95": [
+              -0.014467723279707903,
+              0.00032070149674894374
+            ],
+            "episode_seed_clusters": 68,
+            "roots": 137
+          }
+        }
+      },
+      "risk_error": {
+        "all_DEV_B": {
+          "roots": 1366,
+          "metrics": {
+            "early8": {
+              "MSE": 0.11890572309142801,
+              "root_mean_MSE": 0.0995741243771935,
+              "within_root_action_contrast_MSE": 0.019331598714234496,
+              "predicted_action_contrast_SD": 0.1109885182013751,
+              "true_action_contrast_SD": 0.17933707236585508,
+              "centered_correlation_mean_head_seed": 0.6336327735855081,
+              "prediction_mean": 0.3743453942081217,
+              "truth_mean": 0.3303077361984325
+            },
+            "late_increment": {
+              "MSE": 0.08135265890116937,
+              "root_mean_MSE": 0.06528827182573076,
+              "within_root_action_contrast_MSE": 0.016064387075438637,
+              "predicted_action_contrast_SD": 0.04710950180222105,
+              "true_action_contrast_SD": 0.12979090732639173,
+              "centered_correlation_mean_head_seed": 0.2436065870985581,
+              "prediction_mean": 0.21827908375550484,
+              "truth_mean": 0.1932246361209198
+            },
+            "full16": {
+              "MSE": 0.11429216624284756,
+              "root_mean_MSE": 0.09592546524567133,
+              "within_root_action_contrast_MSE": 0.018366700997176213,
+              "predicted_action_contrast_SD": 0.09330686415566627,
+              "true_action_contrast_SD": 0.1683941277565511,
+              "centered_correlation_mean_head_seed": 0.5977528640242306,
+              "prediction_mean": 0.5926244779636265,
+              "truth_mean": 0.5235323723193523
+            }
+          }
+        },
+        "opportunity16": {
+          "roots": 1139,
+          "metrics": {
+            "early8": {
+              "MSE": 0.10809211989360076,
+              "root_mean_MSE": 0.08667792457990721,
+              "within_root_action_contrast_MSE": 0.02141419531369356,
+              "predicted_action_contrast_SD": 0.11521271669242003,
+              "true_action_contrast_SD": 0.1946605176716106,
+              "centered_correlation_mean_head_seed": 0.6663104251511177,
+              "prediction_mean": 0.3254940304803529,
+              "truth_mean": 0.20415547694055672
+            },
+            "late_increment": {
+              "MSE": 0.08417705995076696,
+              "root_mean_MSE": 0.06594227435613938,
+              "within_root_action_contrast_MSE": 0.018234785594627607,
+              "predicted_action_contrast_SD": 0.04536757502922984,
+              "true_action_contrast_SD": 0.13972883611111833,
+              "centered_correlation_mean_head_seed": 0.26238822884434454,
+              "prediction_mean": 0.2133707985284253,
+              "truth_mean": 0.2244180266487631
+            },
+            "full16": {
+              "MSE": 0.12891416083065022,
+              "root_mean_MSE": 0.10730902999125447,
+              "within_root_action_contrast_MSE": 0.021605130839395727,
+              "predicted_action_contrast_SD": 0.10009635354207906,
+              "true_action_contrast_SD": 0.18441253181005043,
+              "centered_correlation_mean_head_seed": 0.6108098571704148,
+              "prediction_mean": 0.5388648290087782,
+              "truth_mean": 0.42857350358931984
+            }
+          }
+        },
+        "only_after8": {
+          "roots": 137,
+          "metrics": {
+            "early8": {
+              "MSE": 0.0868416847530443,
+              "root_mean_MSE": 0.07851335669344157,
+              "within_root_action_contrast_MSE": 0.008328328059602737,
+              "predicted_action_contrast_SD": 0.09125967378641421,
+              "true_action_contrast_SD": 0.0,
+              "centered_correlation_mean_head_seed": null,
+              "prediction_mean": 0.2507510093962223,
+              "truth_mean": 0.0
+            },
+            "late_increment": {
+              "MSE": 0.05221665854589437,
+              "root_mean_MSE": 0.03437822760236326,
+              "within_root_action_contrast_MSE": 0.017838430943531117,
+              "predicted_action_contrast_SD": 0.029431595823600356,
+              "true_action_contrast_SD": 0.13568755420152143,
+              "centered_correlation_mean_head_seed": 0.16753247256065498,
+              "prediction_mean": 0.1749600889141235,
+              "truth_mean": 0.09615178188063546
+            },
+            "full16": {
+              "MSE": 0.16786112398174477,
+              "root_mean_MSE": 0.15490195944938218,
+              "within_root_action_contrast_MSE": 0.01295916453236259,
+              "predicted_action_contrast_SD": 0.09857619812179257,
+              "true_action_contrast_SD": 0.13568755420152143,
+              "centered_correlation_mean_head_seed": 0.5747207857842614,
+              "prediction_mean": 0.4257110983103458,
+              "truth_mean": 0.09615178188063546
+            }
+          }
+        }
+      },
+      "late_choice_changes": {
+        "changed": 932,
+        "improved": 251,
+        "worsened": 323,
+        "equal_outcome": 358,
+        "safe_change": -0.0071700322441756725
+      }
+    },
+    "mamba8": {
+      "official": {
+        "continuation": {
+          "brier_all_k": 0.09315658112366994,
+          "auc_dead16_key0": 0.8667210235036276
+        },
+        "trajectory": 0.6470131278038025,
+        "snapshot": 0.6205461621284485,
+        "traj_minus_snapshot": {
+          "difference": 0.026466965675354004,
+          "interval": [
+            0.013280073180794716,
+            0.03973904997110367
+          ],
+          "excludes_zero": true
+        },
+        "window": 15
+      },
+      "reproduction": {
+        "max_score_error": 1.4901161193847656e-06,
+        "choice_mismatches": 0
+      },
+      "groups": {
+        "all": {
+          "roots": 1139,
+          "scores": {
+            "full16": 0.6470130681991577,
+            "step1": 0.6368433237075806,
+            "first4": 0.6471959948539734,
+            "first8": 0.64994877576828,
+            "last8": 0.6209576725959778,
+            "omit_first4": 0.632526695728302,
+            "step16": 0.5403131246566772
+          },
+          "full_minus_prior": {
+            "difference": 0.030929910019040108,
+            "interval95": [
+              0.009943569985724755,
+              0.054074080295342566
+            ],
+            "episode_seed_clusters": 149,
+            "roots": 1139
+          },
+          "full_minus_first8": {
+            "difference": -0.002935688942670822,
+            "interval95": [
+              -0.00976216434198878,
+              0.003934992273489218
+            ],
+            "episode_seed_clusters": 149,
+            "roots": 1139
+          }
+        },
+        "adjacent_zombie": {
+          "roots": 599,
+          "scores": {
+            "full16": 0.5840463042259216,
+            "step1": 0.5761164426803589,
+            "first4": 0.581907331943512,
+            "first8": 0.5863592624664307,
+            "last8": 0.5591089129447937,
+            "omit_first4": 0.5711429119110107,
+            "step16": 0.4577246606349945
+          },
+          "full_minus_prior": {
+            "difference": 0.023267945274710655,
+            "interval95": [
+              0.0038895394506862848,
+              0.04131875784303926
+            ],
+            "episode_seed_clusters": 125,
+            "roots": 599
+          },
+          "full_minus_first8": {
+            "difference": -0.002312883036211133,
+            "interval95": [
+              -0.01004477597596694,
+              0.005291249710257826
+            ],
+            "episode_seed_clusters": 125,
+            "roots": 599
+          }
+        },
+        "only_after8": {
+          "roots": 137,
+          "scores": {
+            "full16": 0.9254866242408752,
+            "step1": 0.9222931265830994,
+            "first4": 0.9232816100120544,
+            "first8": 0.9312651753425598,
+            "last8": 0.9313412308692932,
+            "omit_first4": 0.9295164346694946,
+            "step16": 0.9196320176124573
+          },
+          "full_minus_prior": {
+            "difference": -0.002661193488165736,
+            "interval95": [
+              -0.02604257891282516,
+              0.01906339257371192
+            ],
+            "episode_seed_clusters": 68,
+            "roots": 137
+          },
+          "full_minus_first8": {
+            "difference": -0.005778587888926268,
+            "interval95": [
+              -0.018448414507449842,
+              0.005334156062566876
+            ],
+            "episode_seed_clusters": 68,
+            "roots": 137
+          }
+        }
+      },
+      "risk_error": {
+        "all_DEV_B": {
+          "roots": 1366,
+          "metrics": {
+            "early8": {
+              "MSE": 0.09394028305718019,
+              "root_mean_MSE": 0.07668968056225128,
+              "within_root_action_contrast_MSE": 0.017250602494928904,
+              "predicted_action_contrast_SD": 0.11631915414067956,
+              "true_action_contrast_SD": 0.17933707236585508,
+              "centered_correlation_mean_head_seed": 0.6819569331662644,
+              "prediction_mean": 0.37004384263193624,
+              "truth_mean": 0.3303077361984325
+            },
+            "late_increment": {
+              "MSE": 0.07303702520356259,
+              "root_mean_MSE": 0.057882537527721774,
+              "within_root_action_contrast_MSE": 0.015154487675840808,
+              "predicted_action_contrast_SD": 0.05670798946680699,
+              "true_action_contrast_SD": 0.12979090732639173,
+              "centered_correlation_mean_head_seed": 0.33372581319164824,
+              "prediction_mean": 0.20555027319787922,
+              "truth_mean": 0.1932246361209198
+            },
+            "full16": {
+              "MSE": 0.10027527504918733,
+              "root_mean_MSE": 0.08303556545392352,
+              "within_root_action_contrast_MSE": 0.01723970959526382,
+              "predicted_action_contrast_SD": 0.1018626720969362,
+              "true_action_contrast_SD": 0.1683941277565511,
+              "centered_correlation_mean_head_seed": 0.6296570152204803,
+              "prediction_mean": 0.5755941158298155,
+              "truth_mean": 0.5235323723193523
+            }
+          }
+        },
+        "opportunity16": {
+          "roots": 1139,
+          "metrics": {
+            "early8": {
+              "MSE": 0.08923451671433572,
+              "root_mean_MSE": 0.06991181525685526,
+              "within_root_action_contrast_MSE": 0.01932270145748045,
+              "predicted_action_contrast_SD": 0.12250312507323216,
+              "true_action_contrast_SD": 0.1946605176716106,
+              "centered_correlation_mean_head_seed": 0.7049625939473598,
+              "prediction_mean": 0.29955789918986875,
+              "truth_mean": 0.20415547694055672
+            },
+            "late_increment": {
+              "MSE": 0.07914283049330446,
+              "root_mean_MSE": 0.061839020648410924,
+              "within_root_action_contrast_MSE": 0.01730380984489353,
+              "predicted_action_contrast_SD": 0.05743622028952341,
+              "true_action_contrast_SD": 0.13972883611111833,
+              "centered_correlation_mean_head_seed": 0.34630533560502164,
+              "prediction_mean": 0.21221551888123133,
+              "truth_mean": 0.2244180266487631
+            },
+            "full16": {
+              "MSE": 0.11382886643396944,
+              "root_mean_MSE": 0.0934441340239767,
+              "within_root_action_contrast_MSE": 0.020384732409992775,
+              "predicted_action_contrast_SD": 0.11024112898599552,
+              "true_action_contrast_SD": 0.18441253181005043,
+              "centered_correlation_mean_head_seed": 0.6377466398323158,
+              "prediction_mean": 0.5117734180711001,
+              "truth_mean": 0.42857350358931984
+            }
+          }
+        },
+        "only_after8": {
+          "roots": 137,
+          "metrics": {
+            "early8": {
+              "MSE": 0.0610875596679131,
+              "root_mean_MSE": 0.05353350293189626,
+              "within_root_action_contrast_MSE": 0.007554056736016843,
+              "predicted_action_contrast_SD": 0.08691407674259011,
+              "true_action_contrast_SD": 0.0,
+              "centered_correlation_mean_head_seed": null,
+              "prediction_mean": 0.18835610969393862,
+              "truth_mean": 0.0
+            },
+            "late_increment": {
+              "MSE": 0.052520140759992534,
+              "root_mean_MSE": 0.03737989346610023,
+              "within_root_action_contrast_MSE": 0.015140247293892295,
+              "predicted_action_contrast_SD": 0.04915146720421375,
+              "true_action_contrast_SD": 0.13568755420152143,
+              "centered_correlation_mean_head_seed": 0.4103527064334987,
+              "prediction_mean": 0.1682371589286791,
+              "truth_mean": 0.09615178188063546
+            },
+            "full16": {
+              "MSE": 0.1362229018276199,
+              "root_mean_MSE": 0.1239895784074402,
+              "within_root_action_contrast_MSE": 0.012233323420179723,
+              "predicted_action_contrast_SD": 0.1119614381958345,
+              "true_action_contrast_SD": 0.13568755420152143,
+              "centered_correlation_mean_head_seed": 0.6247023861292543,
+              "prediction_mean": 0.3565932686226177,
+              "truth_mean": 0.09615178188063546
+            }
+          }
+        }
+      },
+      "late_choice_changes": {
+        "changed": 1183,
+        "improved": 313,
+        "worsened": 353,
+        "equal_outcome": 517,
+        "safe_change": -0.002935689175501466
+      }
+    }
+  },
+  "mamba_minus_attention": {
+    "7": {
+      "all": {
+        "difference": 0.0053135063499212265,
+        "interval95": [
+          -0.004406034121554436,
+          0.015444775904257467
+        ],
+        "episode_seed_clusters": 149,
+        "roots": 1139
+      },
+      "adjacent_zombie": {
+        "difference": 0.011964385397732258,
+        "interval95": [
+          0.0008304690452690058,
+          0.024141335324182417
+        ],
+        "episode_seed_clusters": 125,
+        "roots": 599
+      },
+      "only_after8": {
+        "difference": 0.005246350541710854,
+        "interval95": [
+          -0.020052353116722706,
+          0.028777078965362662
+        ],
+        "episode_seed_clusters": 68,
+        "roots": 137
+      }
+    },
+    "8": {
+      "all": {
+        "difference": 0.003118597436696291,
+        "interval95": [
+          -0.005675737381685091,
+          0.012384226183118616
+        ],
+        "episode_seed_clusters": 149,
+        "roots": 1139
+      },
+      "adjacent_zombie": {
+        "difference": 0.0022781016305088997,
+        "interval95": [
+          -0.008094471954816097,
+          0.011851251482214002
+        ],
+        "episode_seed_clusters": 125,
+        "roots": 599
+      },
+      "only_after8": {
+        "difference": 0.002661193022504449,
+        "interval95": [
+          -0.016337240041026425,
+          0.021577751672031076
+        ],
+        "episode_seed_clusters": 68,
+        "roots": 137
+      }
+    }
+  },
+  "readings": {
+    "trajectory_gain_both_seeds": {
+      "mamba": true,
+      "attention": true
+    },
+    "one_real_future_minus_001_both_seeds": {
+      "mamba": false,
+      "attention": false
+    },
+    "original_mamba_H16_edge_002_both_seeds": false
+  }
+}

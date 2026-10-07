@@ -1,0 +1,30 @@
+{
+  "references": {
+    "roots_devB_opp16": 1139,
+    "uniform": 0.571426510810852,
+    "prior": 0.6160831451416016,
+    "one_real_future": 0.6793657541275024,
+    "oracle31": 0.7664617896080017
+  },
+  "corrt_raw_teacher_s8_fmamba_u36000": {
+    "continuation": {
+      "brier_all_k": 0.09444184601306915,
+      "auc_dead16_key0": 0.8475851286719972
+    },
+    "trajectory": 0.6417362093925476,
+    "snapshot": 0.6157265901565552,
+    "traj_minus_snapshot": {
+      "difference": 0.02600961923599243,
+      "interval": [
+        0.013840270228683949,
+        0.03882143273949623
+      ],
+      "excludes_zero": true
+    },
+    "window": 5
+  },
+  "readings": {
+    "traj_gain": true,
+    "traj_reaches_one_future": false
+  }
+}

@@ -1,0 +1,381 @@
+{
+  "scope": "Post-hoc CPU true-hazard control for E17 reader temporal interventions.\n\nRules fixed before execution: identical hazard-term subsets as e17_h16_diagnose;\napply them to true 32-key conditional hazards and score the chosen action at H16.\nReport first-argmin and uniform selection among exact ties. Classify roots as\naction-dependent by4, newly dependent by8, or dependent only after8 using the\nsaved P arrays, not a fitted model. Within those strata compare existing head\nfull16/first8 choices with episode-cluster intervals. Calibration uses each\nselected head's cumulative risks, averaged metrics over the three head seeds;\nit is not an ensemble choosing a new action. No world/head forward, GPU or fitting.\nRaw rows/source-bound atomic result; reused DEV-B panel, exploratory only.\n",
+  "contract": {
+    "scope": "Post-hoc CPU true-hazard control for E17 reader temporal interventions.\n\nRules fixed before execution: identical hazard-term subsets as e17_h16_diagnose;\napply them to true 32-key conditional hazards and score the chosen action at H16.\nReport first-argmin and uniform selection among exact ties. Classify roots as\naction-dependent by4, newly dependent by8, or dependent only after8 using the\nsaved P arrays, not a fitted model. Within those strata compare existing head\nfull16/first8 choices with episode-cluster intervals. Calibration uses each\nselected head's cumulative risks, averaged metrics over the three head seeds;\nit is not an ensemble choosing a new action. No world/head forward, GPU or fitting.\nRaw rows/source-bound atomic result; reused DEV-B panel, exploratory only.\n",
+    "script": "b9e1ef4b9d91903318e56b5a033c190ce8bf221da05acc7075c77eb2c346067b",
+    "paired_source": "5fdeabe0332a7c915951d3539fecfec82b0330942951dac34536d94bde70e3df",
+    "storage_source": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+    "previous_contract": "5d7d36f8044f3a96f06c66b4d0ba522a6c2f40cac183877663e1fc908868bb31",
+    "previous_result": "982a2b795dff57899440fd1b8f4bf5fb1df1dde2108055449b1bc1cc30677454",
+    "blocks": {
+      "full16": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "step1": [
+        0
+      ],
+      "first4": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "first8": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "last8": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "omit_first4": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "step16": [
+        15
+      ]
+    },
+    "bootstrap": {
+      "seed": 20261007,
+      "draws": 4000
+    }
+  },
+  "true_hazard_references": {
+    "full16": {
+      "H16_safe_first_argmin": 0.7625932693481445,
+      "H16_safe_uniform_exact_ties": 0.7625932693481445,
+      "mean_minimum_risk_tie_count": 6.940298557281494
+    },
+    "step1": {
+      "H16_safe_first_argmin": 0.5939969420433044,
+      "H16_safe_uniform_exact_ties": 0.5784066319465637,
+      "mean_minimum_risk_tie_count": 16.313432693481445
+    },
+    "first4": {
+      "H16_safe_first_argmin": 0.6121323704719543,
+      "H16_safe_uniform_exact_ties": 0.6016178131103516,
+      "mean_minimum_risk_tie_count": 15.330114364624023
+    },
+    "first8": {
+      "H16_safe_first_argmin": 0.662944495677948,
+      "H16_safe_uniform_exact_ties": 0.6670905351638794,
+      "mean_minimum_risk_tie_count": 11.790166854858398
+    },
+    "last8": {
+      "H16_safe_first_argmin": 0.6397607326507568,
+      "H16_safe_uniform_exact_ties": 0.6280196905136108,
+      "mean_minimum_risk_tie_count": 7.8050923347473145
+    },
+    "omit_first4": {
+      "H16_safe_first_argmin": 0.7136742472648621,
+      "H16_safe_uniform_exact_ties": 0.7138140201568604,
+      "mean_minimum_risk_tie_count": 7.603160858154297
+    },
+    "step16": {
+      "H16_safe_first_argmin": 0.5658746957778931,
+      "H16_safe_uniform_exact_ties": 0.5230122804641724,
+      "mean_minimum_risk_tie_count": 11.87620735168457
+    }
+  },
+  "worlds": {
+    "attention": {
+      "calibration": {
+        "1": {
+          "true_death_mean_all_DEV_B_actions": 0.11339462548494339,
+          "predicted_death_mean": 0.10871142894029617,
+          "Brier_average_head_seed": 0.08137805014848709,
+          "within_root_centered_correlation_mean_head_seed": 0.3397497832775116,
+          "within_root_predicted_effect_SD": 0.06011008471250534,
+          "within_root_true_effect_SD": 0.14315766096115112
+        },
+        "4": {
+          "true_death_mean_all_DEV_B_actions": 0.20032593607902527,
+          "predicted_death_mean": 0.21606197953224182,
+          "Brier_average_head_seed": 0.10538091510534286,
+          "within_root_centered_correlation_mean_head_seed": 0.4065817594528198,
+          "within_root_predicted_effect_SD": 0.08295982331037521,
+          "within_root_true_effect_SD": 0.1303713172674179
+        },
+        "8": {
+          "true_death_mean_all_DEV_B_actions": 0.3303077220916748,
+          "predicted_death_mean": 0.36304664611816406,
+          "Brier_average_head_seed": 0.10327841341495514,
+          "within_root_centered_correlation_mean_head_seed": 0.6870007514953613,
+          "within_root_predicted_effect_SD": 0.12237294763326645,
+          "within_root_true_effect_SD": 0.17933708429336548
+        },
+        "16": {
+          "true_death_mean_all_DEV_B_actions": 0.5235323905944824,
+          "predicted_death_mean": 0.5792290568351746,
+          "Brier_average_head_seed": 0.10293863713741302,
+          "within_root_centered_correlation_mean_head_seed": 0.6413254737854004,
+          "within_root_predicted_effect_SD": 0.09962053596973419,
+          "within_root_true_effect_SD": 0.16839413344860077
+        }
+      },
+      "groups": {
+        "all": {
+          "roots": 1139,
+          "full16": 0.6519516110420227,
+          "first8": 0.6555183529853821,
+          "full16_minus_first8": {
+            "difference": -0.003566725179553032,
+            "interval95": [
+              -0.011287492565290042,
+              0.004252486324800743
+            ],
+            "episode_seed_clusters": 149,
+            "roots": 1139
+          },
+          "full16_minus_prior": {
+            "difference": 0.03586845472455025,
+            "interval95": [
+              0.013805650428379793,
+              0.06096565501790607
+            ],
+            "episode_seed_clusters": 149,
+            "roots": 1139
+          }
+        },
+        "varies_by4": {
+          "roots": 417,
+          "full16": 0.49540361762046814,
+          "first8": 0.49917566776275635,
+          "full16_minus_first8": {
+            "difference": -0.003771982854232192,
+            "interval95": [
+              -0.018383142285648316,
+              0.012505562051245579
+            ],
+            "episode_seed_clusters": 122,
+            "roots": 417
+          },
+          "full16_minus_prior": {
+            "difference": 0.08098521828651428,
+            "interval95": [
+              0.03289308827142829,
+              0.13520527880913732
+            ],
+            "episode_seed_clusters": 122,
+            "roots": 417
+          }
+        },
+        "newly_varies_by8": {
+          "roots": 585,
+          "full16": 0.6986289620399475,
+          "first8": 0.7014245390892029,
+          "full16_minus_first8": {
+            "difference": -0.002795583102852106,
+            "interval95": [
+              -0.011401909452423937,
+              0.0050806558178266665
+            ],
+            "episode_seed_clusters": 126,
+            "roots": 585
+          },
+          "full16_minus_prior": {
+            "difference": 0.011876781471073627,
+            "interval95": [
+              -0.0067231211163848136,
+              0.030175994530095483
+            ],
+            "episode_seed_clusters": 126,
+            "roots": 585
+          }
+        },
+        "varies_only_after8": {
+          "roots": 137,
+          "full16": 0.9291362762451172,
+          "first8": 0.9353711009025574,
+          "full16_minus_first8": {
+            "difference": -0.006234793923795223,
+            "interval95": [
+              -0.020835234170412494,
+              0.009615383721314943
+            ],
+            "episode_seed_clusters": 68,
+            "roots": 137
+          },
+          "full16_minus_prior": {
+            "difference": 0.0009884428000077605,
+            "interval95": [
+              -0.022618372628026857,
+              0.02679829450278286
+            ],
+            "episode_seed_clusters": 68,
+            "roots": 137
+          }
+        }
+      }
+    },
+    "mamba": {
+      "calibration": {
+        "1": {
+          "true_death_mean_all_DEV_B_actions": 0.11339462548494339,
+          "predicted_death_mean": 0.10401295870542526,
+          "Brier_average_head_seed": 0.09250972419977188,
+          "within_root_centered_correlation_mean_head_seed": 0.2853449583053589,
+          "within_root_predicted_effect_SD": 0.04718580096960068,
+          "within_root_true_effect_SD": 0.14315766096115112
+        },
+        "4": {
+          "true_death_mean_all_DEV_B_actions": 0.20032593607902527,
+          "predicted_death_mean": 0.21013040840625763,
+          "Brier_average_head_seed": 0.12358200550079346,
+          "within_root_centered_correlation_mean_head_seed": 0.3895907700061798,
+          "within_root_predicted_effect_SD": 0.0698392242193222,
+          "within_root_true_effect_SD": 0.1303713172674179
+        },
+        "8": {
+          "true_death_mean_all_DEV_B_actions": 0.3303077220916748,
+          "predicted_death_mean": 0.3617952764034271,
+          "Brier_average_head_seed": 0.1316029578447342,
+          "within_root_centered_correlation_mean_head_seed": 0.6194668412208557,
+          "within_root_predicted_effect_SD": 0.09368197619915009,
+          "within_root_true_effect_SD": 0.17933708429336548
+        },
+        "16": {
+          "true_death_mean_all_DEV_B_actions": 0.5235323905944824,
+          "predicted_death_mean": 0.5790938138961792,
+          "Brier_average_head_seed": 0.12619343400001526,
+          "within_root_centered_correlation_mean_head_seed": 0.5680729746818542,
+          "within_root_predicted_effect_SD": 0.08179262280464172,
+          "within_root_true_effect_SD": 0.16839413344860077
+        }
+      },
+      "groups": {
+        "all": {
+          "roots": 1139,
+          "full16": 0.6572651267051697,
+          "first8": 0.6592954397201538,
+          "full16_minus_first8": {
+            "difference": -0.002030289964750409,
+            "interval95": [
+              -0.00888561532476053,
+              0.004268076966469089
+            ],
+            "episode_seed_clusters": 149,
+            "roots": 1139
+          },
+          "full16_minus_prior": {
+            "difference": 0.041181959211826324,
+            "interval95": [
+              0.020717142748457856,
+              0.06425787331664892
+            ],
+            "episode_seed_clusters": 149,
+            "roots": 1139
+          }
+        },
+        "varies_by4": {
+          "roots": 417,
+          "full16": 0.4971023201942444,
+          "first8": 0.49642786383628845,
+          "full16_minus_first8": {
+            "difference": 0.0006744610145688057,
+            "interval95": [
+              -0.01198735829431739,
+              0.013905176428367578
+            ],
+            "episode_seed_clusters": 122,
+            "roots": 417
+          },
+          "full16_minus_prior": {
+            "difference": 0.08268385380506516,
+            "interval95": [
+              0.03703676773302439,
+              0.1348459222507809
+            ],
+            "episode_seed_clusters": 122,
+            "roots": 417
+          }
+        },
+        "newly_varies_by8": {
+          "roots": 585,
+          "full16": 0.7065348625183105,
+          "first8": 0.7088853716850281,
+          "full16_minus_first8": {
+            "difference": -0.0023504276759922504,
+            "interval95": [
+              -0.01015650501716117,
+              0.004792620997115406
+            ],
+            "episode_seed_clusters": 126,
+            "roots": 585
+          },
+          "full16_minus_prior": {
+            "difference": 0.019782762974500656,
+            "interval95": [
+              0.0016296874333529762,
+              0.037482590118130515
+            ],
+            "episode_seed_clusters": 126,
+            "roots": 585
+          }
+        },
+        "varies_only_after8": {
+          "roots": 137,
+          "full16": 0.9343825578689575,
+          "first8": 0.9432784914970398,
+          "full16_minus_first8": {
+            "difference": -0.008895986713469028,
+            "interval95": [
+              -0.01825058448678356,
+              -0.0008862035105346232
+            ],
+            "episode_seed_clusters": 68,
+            "roots": 137
+          },
+          "full16_minus_prior": {
+            "difference": 0.006234793923795223,
+            "interval95": [
+              -0.008458986867340585,
+              0.02411898536581389
+            ],
+            "episode_seed_clusters": 68,
+            "roots": 137
+          }
+        }
+      }
+    }
+  },
+  "scope_limit": "Deletion changes event interval for true hazards too; late-only learned-head failure does not establish missing late state information."
+}
