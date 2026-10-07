@@ -61,6 +61,52 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-08 (live) — WHY HEALTH FAILS: link-by-link diagnosis (lead; user mandate: exact cause before any ablation)
+
+**Decisions recorded:** Mamba (fmamba, L16) is permanently canonical. E20 services stopped and disabled 08:20.
+
+**Setup.** `health_chain.py` fixes a subset of the E20 factual TRAIN pool (seed 20261008), split fit / held by episode:
+- all 1,005 fresh ordinary hits;
+- 5,000 other ordinary hits (living dh ≤ −2);
+- 8,000 unchanged;
+- 1,000 deaths.
+
+Frozen worlds are teacher-forced on their trained context (L16: 15 frames). `health_chain_read.py` / `health_refit.py` read
+health with teval's HUD ridge (drop cut 1.5). Controls: the true next frame catches 5,988/6,005 hits; copy catches 0.
+
+**Facts, canonical Mamba M16 s7 (held episodes unless stated):**
+1. *The target is easy.* The true token-63 change for a given health transition is nearly constant: cosine to the group
+   mean 0.98-0.99, relative residual 0.14-0.20. "Copy + group-mean change" is read as the right drop in 100% of held cases.
+2. *Upstream dynamics are mostly right on fresh hits* (all 1,005): emitted scroll correct 99.0%; zombie drawn beside the
+   player 82% (true 99.8%). Yet the damage is drawn 8/1,005 (0.8%). Not mainly an upstream failure.
+3. *The information is in h.* Hit vs unchanged probes on h (63, 31, 4 neighbours), MLP: AUC 0.958; fresh 0.941; fresh vs
+   hard negatives 0.884 (raw-input probes 0.905 / 0.873 / 0.713).
+4. *A frozen-h head can depict hits*, but only when its training class mix is not the natural one:
+
+| token-63 head on frozen h (held) | hits / 1,211 | fresh / 207 | false / 1,728 |
+|---|---|---|---|
+| emitted (trained corrt) | 154 | 4 | 127 |
+| dedicated linear, h63, TRAIN hit rate (1.4%) | 83 | 1 | 13 |
+| dedicated MLP, h63, 1.4% | 81 | 0 | 11 |
+| copy + residual, h63, 1.4% | 17 | 0 | 6 |
+| linear, 6 positions, 1.4% | 81 | 6 | 16 |
+| linear, h63, subset mix (43% hits) | 723 | 61 | 124 |
+| linear, 6 positions, balanced | 899 | 140 | 124 |
+
+5. *The world's own generator alone* (token 63 := generated) draws on 54% of hits but also 51% of unchanged. The router
+   suppresses it, and copies the HUD token below health (weight 0.28) on stationary zombie-beside states, which yields
+   spurious drops (42% of those no-hit states vs 17% of stationary hits).
+
+**Reading so far.**
+- At the training class rate, every head type (corrt, linear, MLP, residual) copies. The corr / corrg head is not the
+  bottleneck.
+- L1 returns the per-dimension conditional median, so a deterministic head draws damage only when P(hit | features) > 0.5.
+  At a 1.4% base rate that needs a likelihood ratio above ~70:1, which this h reaches for only a few percent of hits.
+- Open: is the evidence weak in h (representation), or intrinsically uncertain given the visible history? Fresh hits are
+  99% determined by the visible history, so a sharp representation would draw them. Next: h at every cell within 2 and the
+  action token (the fresh zombie sits 2 away before the move); prior-corrected posteriors per stratum; all worlds.
+
+
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
 **Method.** Every headline number below was re-derived from raw rows, logs or per-root files, not from summaries:
