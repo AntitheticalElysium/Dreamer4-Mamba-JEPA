@@ -1,0 +1,126 @@
+{
+  "scope": "CPU TRAIN coverage of the gate's incoming-hazard/fresh-arrival condition.\n\nFresh: pre-move zombie beside post-move player, no adjacency in current/prior3\nframes, no >=2 damage in prior3 transitions. Four frames exist at original target\npositions3/4. Zombie is a frozen TRAIN-fitted detector; displacement comes from\ntrue-transition token correspondence, both labelled approximations. Count sampled\nwindow-targets and deduplicated episode/step targets, plus actual boundary lengths.\nNo simulator oracle, GPU or model training. Atomic source/input-bound chunks.\n",
+  "contract": {
+    "scope": "CPU TRAIN coverage of the gate's incoming-hazard/fresh-arrival condition.\n\nFresh: pre-move zombie beside post-move player, no adjacency in current/prior3\nframes, no >=2 damage in prior3 transitions. Four frames exist at original target\npositions3/4. Zombie is a frozen TRAIN-fitted detector; displacement comes from\ntrue-transition token correspondence, both labelled approximations. Count sampled\nwindow-targets and deduplicated episode/step targets, plus actual boundary lengths.\nNo simulator oracle, GPU or model training. Atomic source/input-bound chunks.\n",
+    "ledger": "cf2457d1011a49dd55e8af7e53eb8561413bc2f2d07bd64573bc4e85d0be8ab5",
+    "layout": "e0b80861a21fcd32a9146135ce5f4526cfb3928c7ceaa3d1c1e497c92175f775",
+    "inputs": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/spatial_pool_v1/pool.pt": "7662de45ae043ae076d1751c7b34300919ec52f99106546fe39a2ff63ac9b5ac",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_futures_tokens_raw.pt": "76dc92b0ab7b17efdfd5884d26d3cece291524a941fa4f714488d3209bc07f8e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/hpctx_labels_v1.pt": "bbf20b31dd4046f53426efeca2a975cc9e8a90f0dbe02c35809a7e5f96231c23",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/diagnosis_rollouts_v1/meta.pt": "a92cd355577144446575dcfa2865dc6d7e0a3ed098de34a12ce5792365764c8d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_C_s7_fmamba_from36000/contract.json": "374e5eb110e8e61f71147207ee6ea2d24d4065c346498e0138847f7e431349af",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_C_s7_fmamba_from36000/train.json": "b64ed9a57bfd5bf2e631c12d27e121c7e11a9f650a72985808e2c4c0424b3416"
+    },
+    "sources": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e19_incoming_exposure.py": "818a61a8ba6d259d451cd703016112c51cdbc429d17723d3fbb4728f07056f10",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/teval.py": "a2f873442031b2fc1a671a8f210acf4b5a759767e3b8c6b7720b2dd916793d20",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e19.py": "5c6c9fd461dcfe63d164b1688e36cc0b8ccb09153878568c1e11fc751ab4addd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/scroll.py": "32f21939825d3e3bc84b3442234baead507934cd0d4c36ac76a6c821fbdc99dc",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260921_readout_ladder/spatial.py": "89e055243d5378166fafd083f5055c05d5e4762e7a72ac2a954c48dbfefd8f81"
+    },
+    "runtime": {
+      "torch": "2.13.0+cu130",
+      "precision": "CPU FP32",
+      "threads": 3
+    },
+    "batch": 128
+  },
+  "sampled_windows": 240000,
+  "groups": {
+    "four_frame_alive": {
+      "ordinary_ge2": {
+        "window_target_pairs": 679,
+        "sampled_targets": 5245,
+        "selected_sampled": 4430,
+        "boundary_four_frames_sampled": 2078,
+        "unique_episode_step_targets": 672
+      },
+      "unchanged": {
+        "window_target_pairs": 51205,
+        "sampled_targets": 401786,
+        "selected_sampled": 59979,
+        "boundary_four_frames_sampled": 160480,
+        "unique_episode_step_targets": 50759
+      },
+      "other": {
+        "window_target_pairs": 1151,
+        "sampled_targets": 9072,
+        "selected_sampled": 2205,
+        "boundary_four_frames_sampled": 3661,
+        "unique_episode_step_targets": 1147
+      }
+    },
+    "post_move_adjacent": {
+      "ordinary_ge2": {
+        "window_target_pairs": 539,
+        "sampled_targets": 4186,
+        "selected_sampled": 4061,
+        "boundary_four_frames_sampled": 1645,
+        "unique_episode_step_targets": 534
+      },
+      "unchanged": {
+        "window_target_pairs": 3014,
+        "sampled_targets": 23820,
+        "selected_sampled": 19671,
+        "boundary_four_frames_sampled": 9490,
+        "unique_episode_step_targets": 2964
+      },
+      "other": {
+        "window_target_pairs": 122,
+        "sampled_targets": 952,
+        "selected_sampled": 808,
+        "boundary_four_frames_sampled": 379,
+        "unique_episode_step_targets": 122
+      }
+    },
+    "fresh_incoming": {
+      "ordinary_ge2": {
+        "window_target_pairs": 15,
+        "sampled_targets": 111,
+        "selected_sampled": 111,
+        "boundary_four_frames_sampled": 28,
+        "unique_episode_step_targets": 15
+      },
+      "unchanged": {
+        "window_target_pairs": 25,
+        "sampled_targets": 201,
+        "selected_sampled": 33,
+        "boundary_four_frames_sampled": 73,
+        "unique_episode_step_targets": 25
+      },
+      "other": {
+        "window_target_pairs": 1,
+        "sampled_targets": 12,
+        "selected_sampled": 12,
+        "boundary_four_frames_sampled": 3,
+        "unique_episode_step_targets": 1
+      }
+    },
+    "scroll_fresh_incoming": {
+      "ordinary_ge2": {
+        "window_target_pairs": 15,
+        "sampled_targets": 111,
+        "selected_sampled": 111,
+        "boundary_four_frames_sampled": 28,
+        "unique_episode_step_targets": 15
+      },
+      "unchanged": {
+        "window_target_pairs": 25,
+        "sampled_targets": 201,
+        "selected_sampled": 33,
+        "boundary_four_frames_sampled": 73,
+        "unique_episode_step_targets": 25
+      },
+      "other": {
+        "window_target_pairs": 1,
+        "sampled_targets": 12,
+        "selected_sampled": 12,
+        "boundary_four_frames_sampled": 3,
+        "unique_episode_step_targets": 1
+      }
+    }
+  },
+  "stored_mask_reproduction_disagreements": 0
+}

@@ -1,0 +1,32 @@
+{
+  "artifacts/experiments/20261005_recovery/recovery_inputs/e18_access_s7_36k.py": {
+    "original": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e18_access.py",
+    "original_sha256": "5d962ba735a71bdd6babfc011fedc96f9ff23f3fee8f4742f030b61c80455705",
+    "diagnostic_sha256": "2e565327c53594b3c4522a361b82451d599de8c32416574139ff56bd178d2414",
+    "changes": [
+      "checkpoint/tag/scope 12k to 36k",
+      "keep original levers HERE/import paths under isolated file location"
+    ],
+    "numerical_algorithm_changed": false
+  },
+  "artifacts/experiments/20261005_recovery/recovery_inputs/e18_carry_s7_36k.py": {
+    "original": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e18_carry.py",
+    "original_sha256": "526b45fd55e3ca46870a2588704c0d316186ddb893f02f6921df24c4be14c892",
+    "diagnostic_sha256": "f762d561e471ebe9dc12ef6f2b6b77c145e172728d5a6bd3612e60925ee237cd",
+    "changes": [
+      "checkpoint/tag/scope 12k to 36k",
+      "keep original levers HERE/import paths under isolated file location"
+    ],
+    "numerical_algorithm_changed": false
+  },
+  "artifacts/experiments/20261005_recovery/recovery_inputs/e18_reroute_s7_36k.py": {
+    "original": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e18_reroute.py",
+    "original_sha256": "a248fbcc9d2834b3f16e1b947ab3290a542d53bd4113beeacac9d1ae7bbb0c68",
+    "diagnostic_sha256": "0253314afa0e8aec3d583e0e301b22fa677f44b8462b75d4363f44cd9ac322a0",
+    "changes": [
+      "checkpoint/tag/scope 12k to 36k",
+      "keep original levers HERE/import paths under isolated file location"
+    ],
+    "numerical_algorithm_changed": false
+  }
+}

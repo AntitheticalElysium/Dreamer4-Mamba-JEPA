@@ -61,6 +61,229 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-06 afternoon — E19 replication and canvas endpoint diagnosis (lead)
+
+**Canvas scheduling correction,16:39 AEDT:** the user challenged the unchanged
+seed8 replication. It indeed uses the same implementation as s7; neither missing
+direct next-view read nor off-screen convolution advance was repaired. Parked
+seed8 at its decoded **24,000/36,000 full state**, with finite weights, optimizer,
+order and CPU/CUDA RNG present. Immutable archive:
+`20261005_recovery/recovery_inputs/canvas_s8_u24000_parked.state.pt`, SHA256
+`d02f8ac94ae376ab2f54b0e217c947e0fd88a1750659e39cc3b3878f77cdecae`.
+`20260927_levers/e18_seed8_hold.json` blocks automatic unchanged resume.
+Remaining12,000 updates are held, not completed or declared a negative second
+seed. Lane74 now scores only completed s7 canvas/Mamba endpoints and passes on
+to the already-booked attention controls/E17 H16 queue. Numerical trainer/model
+sources and all failed evidence are unchanged. This is a scheduling decision,
+not a predeclared statistical early-stop verdict.
+
+At the completed s7 canvas36k endpoint, all2,048 held windows are computed in
+CPU FP32: recall capture0.331725, same-slot0.335330, moved-slot0.311509. Resetting
+SSM every step changes recallable squared error by−0.090593
+[−0.318831,+0.139504], unresolved. The matched slot-Mamba part is still computing;
+the608-window interim paired contrast is explicitly provisional, not a full
+cohort result. The lack of direct read is a source/address fact; these endpoint
+numbers alone do not establish its causal share of the whole deficit.
+
+**Final-checkpoint component diagnosis declared before execution,16:42:** repeat
+the existing16-window access, carry-contribution and correct/zero/permuted
+last-query-residual substitutions on **s7's completed36k weights**. Reuse the
+same deterministic cohort and FP32 equations; oracle future coordinates select
+addresses only, never future features. This separates whether extra training
+learned a useful held SSM/read and whether supplying the missing frozen residual
+rescues prediction. Preserve the12k results. Run isolated source-bound copies
+in the existing recovery_inputs folder, changing only checkpoint/tag/scope paths;
+no active source or trainer modifications. Convolution-only hold is already a
+known non-repair on the earlier6k rollout (+/− interval includes zero), so it must
+not be presented as the established explanation of canvas36k's deficit.
+
+**Completed36k component result,16:45 AEDT:** the same2,018 entering-cell
+addresses still have0 direct matches. On840 layer/cell queries the SSM state is
+nonzero and held exactly, but the off-screen output is exactly0; all-kept CPU
+parity max2.38e−7. Restored old-query reads have meanRMS0.559325. Their pre-gate
+SSM energy share is only1.846% across layers and1.401% in the final layer;
+zero-SSM old-query output cosine0.998364. This energy decomposition is not a
+semantic information ceiling. Off-screen conv buffers still advance/erase.
+
+Unlike the12k intervention, the completed36k generator **does benefit** from
+correct remembered residuals: normalized generator MSE0.382472→0.297505,
+difference−0.084967[−0.159302,−0.028356], a22.2% decrease. Zeroing instead worsens
+generator MSE to0.505510; permuting gives0.383625 (unresolved versus baseline).
+But routed output MSE0.207283→0.201540 has unresolved difference−0.005743
+[−0.053862,+0.023563]. Generate weight0.260806→0.265591. Direct old-token copy
+MSE0.057157 shows available past content; it is not a deployable oracle policy.
+Untreated outputs are exactly unchanged. Thus missing direct access has a
+measured component effect at final training, while this residual substitution
+alone does **not** repair routed prediction. This is16 inspected windows/140
+cells, one checkpoint, oracle addresses and frozen heads—not a trained causal
+repair or an actor result. Reports:`evals/e18_{access,carry,reroute}_s7_at36000.json`.
+
+Primary-source check: official Mamba2 implements distinct convolution and SSM
+state updates (`state-spaces/mamba`, `modules/mamba2.py`); dt masking alone holds
+the SSM, not the convolution. Neural Map separates spatially addressed writes
+from global/context reads (Parisotto/Salakhutdinov, arXiv1702.08360, equations2–6
+and sections3.1–3.2). This supports auditing the read path independently of
+registration, but proves neither a particular Craftax repair nor causality of
+our full canvas deficit. No further canvas training is booked from this lead.
+
+**Full matched endpoint completed,16:45 AEDT:** CPU FP32, all2,048 held windows,
+identical cell counts and baselines, paired window-bootstrap2,000 draws:
+
+| recall capture | canvas s7 36k | slot-Mamba s7 36k | canvas−Mamba95% interval |
+|---|---:|---:|---:|
+|all2,018 recallable cells|0.331725|0.778389|−0.446664[−0.515513,−0.373928]|
+|1,615 same-slot cells|0.335330|0.863475|−0.528146[−0.593691,−0.456649]|
+|403 moved-slot cells|0.311509|0.301172|+0.010336[−0.105560,+0.128580]|
+
+Canvas loses the existing same-slot capability without a resolved moved-slot
+benefit. It has slightly lower unseen-cell error41.535824 versus42.728435;
+paired difference−1.192612[−1.770694,−0.598067]. Thus do not call canvas universally
+worse or replace this registration test with an overall forecasting/actor claim.
+Resetting SSM each step increases slot-Mamba recallable error+4.164600
+[+2.160867,+6.435003] and same-slot error+5.331637[+2.888094,+7.987166], while
+canvas's corresponding changes remain unresolved. Same clocks/convolution/
+actions/current-step update are retained. Source/input/weights-bound report:
+`evals/e18_s7_at36000__endpoint_cpu.json`. Raw per-window rows and contracts remain
+in `evals/resume/e18_s7_at36000__endpoint_cpu/`. These are inspected held TRAIN-pool
+windows, one trained seed; seed8 has no36k verdict and is deliberately parked.
+The completed result strengthens the budget hold; it does not prove that the
+missing direct read is the only cause, nor that convolution hold alone repairs it.
+
+At16:18 AEDT, E19 fmamba seed8 A/B/C and all booked endpoint/mechanism readings
+are complete. Canvas seed7 completed36,000 at13:40; seed8 is actually training
+(last logged21,500/36,000). Remaining attention controls and E17 H16 readings
+stay booked. Automatic process logs remain in EDA; this entry is manual.
+
+**Completed TRAIN-coverage and conditioning follow-ups:** ABC ledgers/boundaries
+are byte-identical across both seeds; every extra-health context mask is reproduced
+with0 disagreements. Across240,000 sampled windows/1.2M targets, ordinary damage
+appears15,579 times;12,755 are context-selected. Of243,378 selected targets,
+ordinary damage is5.24%, unchanged68.71%, deaths23.77%. `unique_targets` in the
+first census means **window-target pairs**, not deduplicated physical events.
+
+The corrected gate-equivalent fresh-arrival census (detector/estimated-motion
+labels, original positions3/4 where four-frame history exists) finds only
+**15 distinct episode/step ordinary-damage events**, drawn111 times, all selected
+for health dose. E19's randomized boundary leaves all four frames available on
+only28 of those111 draws. The matched fresh unchanged population is25 distinct
+events,201 draws,33 selected. These labels use TRAIN-fitted zombie detection and
+true-pair token displacement, not full simulator truth. This is direct sparse/
+context-truncation **support evidence**, not a proof that it causes0/31 evaluation
+hits. It narrows the prior 'adequate hazard exposure' claim: aggregate ordinary
+hits do not establish coverage of this moving fresh-arrival condition.
+Reports:`evals/e19_fmamba__{exposure_census,incoming_exposure}.json`.
+
+On frozen C traces, fresh generated-health change is−0.9455(s7)/−0.8071(s8),
+with generation weights0.07399/0.08665; all actual fresh predictions remain0/31.
+Stationary damage generation weights0.18415/0.21082 and catches62/228,67/228.
+Forced generation draws false damage on4,537/12,623 unchanged cases(s7) and
+7,680/12,623(s8). Physical health9 stationary drops are caught53/65 and59/65,
+whereas health7 stationary drops are caught1/51 and0/51. These are specific
+candidate/routing/health-stratum measurements, not evidence for a universal
+health template or a seed-general gradient-conflict mechanism. Router-trace s8
+has387 actual unchanged false drops versus388 in the primary evaluator; preserve
+both batch/precision protocols, rather than silently equating their counts.
+Report:`evals/e19_fmamba__health_conditioning.json`.
+
+Queue hold was exercised with real checkpoint-hash validation and training/eval
+commands replaced by dry-run records: s8 skipped, only completed s7 pool/futures
+commands emitted. Both CPU endpoint/component services finished successfully.
+The remaining lead/replica services are active; no canvas s8 process is running.
+Recovery launch retains the hold and can resume unfinished bound diagnostics.
+
+**E19 replica changes the causal account:** primary living k>=3 reading uses
+the same279 ordinary drops,12,623 unchanged transitions and31 fresh drops:
+
+| seed | A hits / false drops | B hits / false drops | C hits / false drops |
+|---|---:|---:|---:|
+|7|14 /115|24 /122|62 /297|
+|8|18 /84|13 /164|67 /388|
+
+All arms at both seeds draw0/31 fresh drops. At s8, B−A hit gain is−0.017921
+[−0.046518,+0.007693], while false rate rises+0.006338[+0.003131,+0.009981].
+C−B hit gain is+0.193548[+0.151846,+0.237157]; false rate rises+0.017745
+[+0.014258,+0.021249]. Boundary randomization alone is not a replicated
+ordinary-hit repair; dose improves sensitivity with a replicated false-positive
+cost. These are reused diagnosis roots and paired143-seed-cluster intervals,
+not two independent judgement datasets or an actor result.
+
+**Direct B→C prediction-cost check, CPU:** paired same1,002 roots/143 seed
+clusters,2,000 draws. At s7 C raises depth16 error/V by+0.039984
+[+0.024083,+0.057117]; s8 by+0.016712[+0.003517,+0.029959]. One-step all-action
+error/copy-error rises by+0.007670[+0.006538,+0.008846] at s7 and
++0.007069[+0.005588,+0.008638] at s8. These are direct B→C contrasts, not the older parent→C rows.
+Thus the health sensitivity gain comes with replicated prediction-cost increases;
+`no_cost` is not supported. Original per-arm reports' historical 'Pending' field
+is preserved. Bound source/input hashes and all metrics:
+`evals/e19_fmamba_B_C_prediction_cost.json`; raw console output is in EDA logs.
+
+**Narrowing the morning gradient lead:** frozen C's combined ordinary-gradient
+dot objective is−9.46368e−5 at s7 but+1.03314e−3 at s8. Selection weights are
+−1.12613e−4 versus+1.00475e−3. S8's ordinary/unchanged/death contributions to
+the selection dot are+9.06315e−4,+3.57643e−5,−8.83157e−5. Thus the s7
+unchanged-versus-damage endpoint conflict is NOT a seed-general explanation
+of fresh-hit failure. It remains valid for that endpoint; no evidence is erased.
+This is measured output-weight local GD geometry, not historical AdamW updates.
+Reports:`evals/e19_s{7,8}_fmamba__gradient_budget.json`.
+
+**CPU diagnostics declared before running,16:22:**
+1. Run frozen canvas36k s7 versus matched slot-Mamba36k s7 on all original2,048
+   held windows, with explicit FP32 CPU masked equations. Repeat with SSM reset
+   at each step, retaining convolution/history/current-step updates. Preserve
+   per-window same/moved/unseen errors and paired window-bootstrap intervals.
+   All-kept CPU parity binds the reference equations; this separates endpoint
+   SSM use and registration benefit, not an information ceiling or trained repair.
+   Repeat unchanged once s8's36k checkpoint exists; source/checkpoint/pool hashes
+   and atomic batches prevent mixed partial evidence. No world recipe changes.
+2. Census all actually sampled E19 TRAIN targets, rather than30 batches: quantify
+   ordinary damage/death/unchanged exposure by scroll, health value and the exact
+   target-derived context mask. Rebuild current/next adjacency from the same
+   frozen TRAIN-fitted detector. Compare selected/unselected and first-encounter
+   support. Detector-derived groups are labelled; no simulator-truth claim.
+3. On saved B/C traces at both seeds, condition candidate accuracy, router weight
+   and read health on current health and camera motion. Contrast damage versus
+   unchanged at matched strata. Determine whether the generator depicts a
+   context-specific damage change or a common health template. A distribution
+   resemblance is descriptive; causal attribution requires interventions.
+
+**Separating router-family test declared,16:29:** the saved seven-logit sweeps
+give0/31 fresh hits even when a per-case oracle selects the lowest true-target
+health-token L1, at both C seeds; some other sweep settings depict damage on
+10/31 and8/31 respectively. Extend the exact same candidate family to193 offsets
+[-12,+12], plus copy/generator endpoints. One frozen forward supplies each case's
+actual candidates; all subsequent sweeps are CPU. All279 ordinary hits and the
+same512 unchanged controls, both C seeds. Verify every historical seven-offset
+loss/health value and actual-mixture reconstruction. Report per-case best latent
+L1, reachable health decrease, false drops and fresh/scroll/health strata.
+This tests a specified one-dimensional frozen routing family, not a global
+information ceiling; future targets are an explicitly labelled diagnostic oracle.
+No model training/weight changes. GPU allocator capped16%, admission1600MiB;
+source/input-bound batches resume. Original GPU training continues.
+
+**Exposure alignment follow-up declared,16:34:** the completed census's first
+encounter is CURRENT adjacency after no earlier adjacency in the original window.
+The gate's `fresh` instead asks whether a PRE-move zombie is beside the POST-move
+player, with no current/prior3-frame adjacency or prior3-transition damage.
+These are different conditions; do not compare their counts as matching support.
+Compute the gate-equivalent four-frame-history condition on original TRAIN
+windows, using the same frozen zombie detector and token-estimated displacement.
+Restrict targets to original positions3/4, where all four frames exist; separately
+count whether E19's actual boundary leaves four frames available. Count actual
+draws, window-target pairs and deduplicated `(episode_id, start+target)` events.
+This is detector/estimated-motion coverage, not simulator-truth attribution.
+Old census is preserved, and its `unique_targets` means window-target pairs.
+
+**Dense router result,16:33:** both seeds completed193 offsets plus two endpoints
+on791 cases (279 ordinary hits +512 unchanged controls). Maximum historical
+seven-offset loss difference2.38e−7; health difference1.91e−6; reconstruction
+9.54e−7. Fresh: latent-L1 oracle depicts0/31 at both seeds; ANY audited routing
+setting can depict10/31 at s7 and8/31 at s8. Scroll: oracle0/51; any setting15/51
+and13/51. Overall ordinary oracle79/279 and98/279, versus actual62 and67. This
+separates poor candidates/reachability within this specific family from an
+objective that chooses non-depiction even when depiction is possible. It is not
+a global convex-hull optimum or information ceiling, and causal training history
+remains unmeasured. Evidence:`evals/e19_C_s{7,8}_fmamba_from36000__e19_router_oracle.json`.
+
 ## 2026-10-06 — Reboot recovery, registration priority and mechanism replication (lead)
 
 At07:42 AEDT no research process or recovered systemd unit was running. The

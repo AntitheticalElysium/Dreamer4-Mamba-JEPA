@@ -1,0 +1,271 @@
+{
+  "scope": "CPU census of every actually sampled E19 TRAIN target, including mask coverage.\n\nUse original pool dh/alive labels and the saved 6000x40 sampled-row ledger.\nCurrent/next adjacency and health bins are frozen TRAIN-fitted image readouts,\nnot simulator annotations. Scroll is the same token correspondence estimator.\nFirst encounter means first detected adjacency inside the original six-frame\nwindow, not the full episode. Hash-bound atomic chunk records, no GPU/training.\n",
+  "contract": {
+    "scope": "CPU census of every actually sampled E19 TRAIN target, including mask coverage.\n\nUse original pool dh/alive labels and the saved 6000x40 sampled-row ledger.\nCurrent/next adjacency and health bins are frozen TRAIN-fitted image readouts,\nnot simulator annotations. Scroll is the same token correspondence estimator.\nFirst encounter means first detected adjacency inside the original six-frame\nwindow, not the full episode. Hash-bound atomic chunk records, no GPU/training.\n",
+    "ledger": "f42c16f93f5830f00306c12d81b4ca35e994ad4469449447299f9043d182b7f7",
+    "layout": "daae17620296776300a321f465dcfb4e0844f7b25242d29c56b934ad2e8cd6a1",
+    "inputs": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/spatial_pool_v1/pool.pt": "7662de45ae043ae076d1751c7b34300919ec52f99106546fe39a2ff63ac9b5ac",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/hpctx_labels_v1.pt": "bbf20b31dd4046f53426efeca2a975cc9e8a90f0dbe02c35809a7e5f96231c23",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_futures_tokens_raw.pt": "76dc92b0ab7b17efdfd5884d26d3cece291524a941fa4f714488d3209bc07f8e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/diagnosis_rollouts_v1/meta.pt": "a92cd355577144446575dcfa2865dc6d7e0a3ed098de34a12ce5792365764c8d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_A_s7_fmamba_from36000/contract.json": "fec1661ade168898345bdfde87078b4f3efa2c6522728f9e0b5dfe1ac531fa96",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_A_s7_fmamba_from36000/train.json": "59dc7763ab4655c695b1535e664b015973b74352a82c29b2d7a9642a180632cb",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_A_s7_fmamba_from36000/train-6000.pt": "b5097d1fc61ad991f433a5114a78f8b90785258c3c8fe4207d8b5e3db52572ca",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_B_s7_fmamba_from36000/contract.json": "590867994c91146effbda35088f19971ab0473261de9b177397c59efb08d433e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_B_s7_fmamba_from36000/train.json": "fed9c4881f86463206a500a9ed62501c153749e73d294895ca65705d2973d080",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_B_s7_fmamba_from36000/train-6000.pt": "2de6e890fa925f33e2d6e7a2a1d94fa3d978de35aa4632ddad0e62dec637f9ea",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_C_s7_fmamba_from36000/contract.json": "374e5eb110e8e61f71147207ee6ea2d24d4065c346498e0138847f7e431349af",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_C_s7_fmamba_from36000/train.json": "b64ed9a57bfd5bf2e631c12d27e121c7e11a9f650a72985808e2c4c0424b3416",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_C_s7_fmamba_from36000/train-6000.pt": "c027f79248de1eef1b87114273cd38807f4528bfe6da57d3f3bc0d9968d9ff85",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_A_s8_fmamba_from36000/contract.json": "70365f628809eb52dabbcace23125cd40578e48e6c84525a30aa84d16f0822fe",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_A_s8_fmamba_from36000/train.json": "edaad315e2915dad244bd79ddc891d50c10dae8a2a6258b1bc615e59e00ddfbe",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_A_s8_fmamba_from36000/train-6000.pt": "38429eb568210e1495e9bafc102075dadc22149d7241f7b64b63271c76e65019",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_B_s8_fmamba_from36000/contract.json": "cb72e6ff2615c7ac79dffe672cdd3a88e886090e723c45a8ca05e815be459435",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_B_s8_fmamba_from36000/train.json": "d4aa17c1dac85ba47f1092ff1d84d3684fecb55ceca0f7257f7c143531a373af",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_B_s8_fmamba_from36000/train-6000.pt": "284a9fb3c493e5655192cb84cb25c583687497c304cb2e486c5c2f4c49b0de5f",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_C_s8_fmamba_from36000/contract.json": "04505be7d3ef9f655bebf89c5ba05d7b6fb910ae00f9cdd8509ba44cd3bea9c5",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_C_s8_fmamba_from36000/train.json": "f0eec7e62a9b72b7facdc0e9d60d77722767e67edd531ca2b4132ce96f758c5b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_C_s8_fmamba_from36000/train-6000.pt": "3216a461b02627e1d00b578f6fcb2b0d831393cf04f1cf15bd883f8d890d4271"
+    },
+    "sources": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e19_exposure_census.py": "b4b95d45a951ff63b8dcd71ad777872b473cd92aa95d47175ee5bd0423292e58",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/teval.py": "a2f873442031b2fc1a671a8f210acf4b5a759767e3b8c6b7720b2dd916793d20",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e19.py": "5c6c9fd461dcfe63d164b1688e36cc0b8ccb09153878568c1e11fc751ab4addd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/scroll.py": "32f21939825d3e3bc84b3442234baead507934cd0d4c36ac76a6c821fbdc99dc",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08"
+    },
+    "runtime": {
+      "torch": "2.13.0+cu130",
+      "precision": "CPU FP32",
+      "threads": 3
+    },
+    "batch": 128
+  },
+  "sampled_windows": 240000,
+  "unique_sampled_windows": 30592,
+  "targets": {
+    "all": {
+      "death": {
+        "unique_targets": 8149,
+        "sampled_targets": 63897,
+        "selected_unique": 7381,
+        "selected_sampled": 57845
+      },
+      "ordinary_ge2": {
+        "unique_targets": 1997,
+        "sampled_targets": 15579,
+        "selected_unique": 1633,
+        "selected_sampled": 12755
+      },
+      "unchanged": {
+        "unique_targets": 139562,
+        "sampled_targets": 1094934,
+        "selected_unique": 21307,
+        "selected_sampled": 167229
+      },
+      "other": {
+        "unique_targets": 3252,
+        "sampled_targets": 25590,
+        "selected_unique": 711,
+        "selected_sampled": 5549
+      }
+    },
+    "scroll": {
+      "death": {
+        "unique_targets": 994,
+        "sampled_targets": 7826,
+        "selected_unique": 643,
+        "selected_sampled": 5101
+      },
+      "ordinary_ge2": {
+        "unique_targets": 231,
+        "sampled_targets": 1819,
+        "selected_unique": 136,
+        "selected_sampled": 1083
+      },
+      "unchanged": {
+        "unique_targets": 46015,
+        "sampled_targets": 362132,
+        "selected_unique": 8217,
+        "selected_sampled": 64336
+      },
+      "other": {
+        "unique_targets": 915,
+        "sampled_targets": 7331,
+        "selected_unique": 192,
+        "selected_sampled": 1553
+      }
+    },
+    "stationary": {
+      "death": {
+        "unique_targets": 7155,
+        "sampled_targets": 56071,
+        "selected_unique": 6738,
+        "selected_sampled": 52744
+      },
+      "ordinary_ge2": {
+        "unique_targets": 1766,
+        "sampled_targets": 13760,
+        "selected_unique": 1497,
+        "selected_sampled": 11672
+      },
+      "unchanged": {
+        "unique_targets": 93547,
+        "sampled_targets": 732802,
+        "selected_unique": 13090,
+        "selected_sampled": 102893
+      },
+      "other": {
+        "unique_targets": 2337,
+        "sampled_targets": 18259,
+        "selected_unique": 519,
+        "selected_sampled": 3996
+      }
+    },
+    "current_adjacent": {
+      "death": {
+        "unique_targets": 5287,
+        "sampled_targets": 41398,
+        "selected_unique": 5164,
+        "selected_sampled": 40417
+      },
+      "ordinary_ge2": {
+        "unique_targets": 1536,
+        "sampled_targets": 11977,
+        "selected_unique": 1453,
+        "selected_sampled": 11325
+      },
+      "unchanged": {
+        "unique_targets": 19964,
+        "sampled_targets": 156836,
+        "selected_unique": 16151,
+        "selected_sampled": 126666
+      },
+      "other": {
+        "unique_targets": 648,
+        "sampled_targets": 5027,
+        "selected_unique": 520,
+        "selected_sampled": 4041
+      }
+    },
+    "first_encounter_in_window": {
+      "death": {
+        "unique_targets": 1123,
+        "sampled_targets": 8682,
+        "selected_unique": 1112,
+        "selected_sampled": 8601
+      },
+      "ordinary_ge2": {
+        "unique_targets": 805,
+        "sampled_targets": 6352,
+        "selected_unique": 768,
+        "selected_sampled": 6045
+      },
+      "unchanged": {
+        "unique_targets": 6451,
+        "sampled_targets": 50692,
+        "selected_unique": 4970,
+        "selected_sampled": 38927
+      },
+      "other": {
+        "unique_targets": 196,
+        "sampled_targets": 1558,
+        "selected_unique": 152,
+        "selected_sampled": 1223
+      }
+    },
+    "scroll_first_encounter": {
+      "death": {
+        "unique_targets": 15,
+        "sampled_targets": 100,
+        "selected_unique": 11,
+        "selected_sampled": 69
+      },
+      "ordinary_ge2": {
+        "unique_targets": 30,
+        "sampled_targets": 236,
+        "selected_unique": 22,
+        "selected_sampled": 175
+      },
+      "unchanged": {
+        "unique_targets": 2913,
+        "sampled_targets": 22776,
+        "selected_unique": 2405,
+        "selected_sampled": 18738
+      },
+      "other": {
+        "unique_targets": 60,
+        "sampled_targets": 477,
+        "selected_unique": 51,
+        "selected_sampled": 414
+      }
+    },
+    "health9": {
+      "death": {
+        "unique_targets": 121,
+        "sampled_targets": 934,
+        "selected_unique": 49,
+        "selected_sampled": 395
+      },
+      "ordinary_ge2": {
+        "unique_targets": 685,
+        "sampled_targets": 5375,
+        "selected_unique": 532,
+        "selected_sampled": 4191
+      },
+      "unchanged": {
+        "unique_targets": 71272,
+        "sampled_targets": 558572,
+        "selected_unique": 2573,
+        "selected_sampled": 20321
+      },
+      "other": {
+        "unique_targets": 346,
+        "sampled_targets": 2775,
+        "selected_unique": 30,
+        "selected_sampled": 243
+      }
+    },
+    "below9": {
+      "death": {
+        "unique_targets": 8028,
+        "sampled_targets": 62963,
+        "selected_unique": 7332,
+        "selected_sampled": 57450
+      },
+      "ordinary_ge2": {
+        "unique_targets": 1312,
+        "sampled_targets": 10204,
+        "selected_unique": 1101,
+        "selected_sampled": 8564
+      },
+      "unchanged": {
+        "unique_targets": 68290,
+        "sampled_targets": 536362,
+        "selected_unique": 18734,
+        "selected_sampled": 146908
+      },
+      "other": {
+        "unique_targets": 2906,
+        "sampled_targets": 22815,
+        "selected_unique": 681,
+        "selected_sampled": 5306
+      }
+    }
+  },
+  "health_bins_sampled": {
+    "0": 193,
+    "1": 64610,
+    "2": 108331,
+    "3": 60545,
+    "4": 60439,
+    "5": 67058,
+    "6": 75429,
+    "7": 103966,
+    "8": 91773,
+    "9": 567656
+  },
+  "mask_reproduction_disagreements": 0,
+  "ledgers_equal_all_six_arms": true
+}
