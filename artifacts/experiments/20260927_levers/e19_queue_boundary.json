@@ -1,0 +1,6 @@
+{
+  "m16_saved_update": 3000,
+  "path": "artifacts/eda/levers_tworlds_v1/state/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000.state.pt",
+  "sha256": "bcdaaabc28ab8396bc2d433b5fa212bba04cd0d5ecccb7b55725dee92bb936b2",
+  "reason": "Safe saved boundary for exclusive batch40 E19 validation and priority queue insertion"
+}

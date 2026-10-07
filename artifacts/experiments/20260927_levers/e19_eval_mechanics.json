@@ -1,0 +1,35 @@
+{
+  "nothing_drawn": {
+    "n": 13022,
+    "n_hit": 279,
+    "hits_drawn": 0,
+    "hit_catch": 0.0,
+    "n_unchanged": 12623,
+    "false_drops": 0,
+    "false_drop_rate": 0.0,
+    "drawn_rate": 0.0,
+    "recovery_n": 96,
+    "recovery_false_drops": 0
+  },
+  "truth_drawn": {
+    "n": 13022,
+    "n_hit": 279,
+    "hits_drawn": 279,
+    "hit_catch": 1.0,
+    "n_unchanged": 12623,
+    "false_drops": 0,
+    "false_drop_rate": 0.0,
+    "drawn_rate": 0.0214252807199955,
+    "recovery_n": 96,
+    "recovery_false_drops": 0
+  },
+  "paired_correctness_control": {
+    "B_minus_A": 1.0,
+    "interval95": [
+      1.0,
+      1.0
+    ],
+    "transitions": 279,
+    "episode_seeds": 143
+  }
+}

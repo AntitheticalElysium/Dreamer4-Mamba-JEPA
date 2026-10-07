@@ -1,0 +1,18 @@
+{
+  "mask_disagreements": 0,
+  "mask_elements": 163235,
+  "mask_true": 31752,
+  "rebuilt_true": 31752,
+  "threshold": 0.3,
+  "fit_cells": 229474,
+  "validation_cells": 57755,
+  "scope": "Exact regeneration from existing Raw cache/TRAIN-seed probe and pool; no GPU, no new evaluation block.",
+  "sources": {
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/teval.py": "a2f873442031b2fc1a671a8f210acf4b5a759767e3b8c6b7720b2dd916793d20",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261005_recovery/verify_health_mask.py": "d401f9a502f16f241260102ded5148f1671ff477a813203ca384ef782c3c84f7"
+  },
+  "mask_sha256": "bbf20b31dd4046f53426efeca2a975cc9e8a90f0dbe02c35809a7e5f96231c23",
+  "cache_sha256": "76dc92b0ab7b17efdfd5884d26d3cece291524a941fa4f714488d3209bc07f8e",
+  "meta_sha256": "a92cd355577144446575dcfa2865dc6d7e0a3ed098de34a12ce5792365764c8d",
+  "pool_sha256": "7662de45ae043ae076d1751c7b34300919ec52f99106546fe39a2ff63ac9b5ac"
+}

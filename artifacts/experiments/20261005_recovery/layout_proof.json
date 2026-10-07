@@ -1,0 +1,20 @@
+{
+  "scope": "CPU mechanisms/ledgers for a proposed target-preserving alternative; no retrain or causal treatment result.",
+  "all_offsets_preserve_exact_five_transition_action_target_pairs": true,
+  "no_split_loss_delta": 0.0,
+  "no_split_gradient_max_abs": 0.0,
+  "future_padding_prediction_max_abs": 2.473592758178711e-06,
+  "original_targets_per_window": 5,
+  "candidate_targets_per_window": 5,
+  "candidate_terminal_target_rows": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "remaining_treatment_difference": "Some contexts become shorter and recurrent boundaries reset; this isolates a boundary/layout intervention, not position embeddings alone.",
+  "Mamba_validation": "Pending: same pair ledger applies, but actual Mamba padding/reset CUDA check is not run while trainer owns GPU.",
+  "parent_sha256": "48c1070389a62ee7121070f4bc1ca921b76ce9e5ab33eb4a9c395cd6b6686a6a",
+  "trainer_sha256": "1435057c2b2f0c3d90f563e8dcaf94d06121deebc45928e18ec5cacc93d01569"
+}

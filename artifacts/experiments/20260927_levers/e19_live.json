@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-05T01:02:34.833535+00:00",
+  "update": 1000,
+  "saved_sha256": "3a363a723a31fdfdea1afba9633a3b61806dc381c0ee665e6a2a71f0dd18d014",
+  "path": "artifacts/eda/levers_tworlds_v1/state/e19_A_s7_fmamba_from36000/train-1000.pt",
+  "objective": 0.04520755633711815,
+  "gradient_norm": 0.07853370159864426,
+  "training_targets": 200000,
+  "finite_weights": true
+}

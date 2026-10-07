@@ -61,6 +61,132 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-05 — Lead queue: E19 implemented and numerically validated before launch
+
+E19 implementation is now `20260927_levers/e19.py`, within the existing campaign. No new experiment directory.
+Predeclaration/contrasts/scope: `20260927_levers/E19.md`; priority coordinator: `20260927_levers/lane81.sh`.
+A=unchanged continuation, B=target-preserving random boundaries, C=exactly B + health dose1;
+fmamba first, matched full-attention control, both seeds7/8, own36k parents,6000 updates, batch40, same rows/RNG.
+Every five original transitions/window remains scored; no crop-and-pad target loss. Both terminal and nonterminal
+windows use the same boundary distribution. This changes context length/reset as well as position.
+
+**Important measured/design limit:** randomized terminal row counts do not flatten terminal prevalence. Expected
+scored targets/window by row are[1.8,1.4,1.0,0.6,0.2], giving expected TRAIN death rates
+[2.96%,3.80%,5.33%,8.88%,26.63%]. The method broadens death exposure; it is **not claimed alias-free**.
+Position/repeated-frame checks are necessary to measure remaining dependence. The primary 1.5-unit draw cut is
+explicitly separate from `check_damage.py`'s0.5-unit sensitivity. Paired seed-cluster intervals/raw rows retained.
+
+**Actual CUDA, not CPU-only:** old/control loss delta0, gradient max2.91e-11; B/C base-loss delta0;
+all three arms four uninterrupted updates vs two+serialized restart+two: parameter delta0, AdamW max7.28e-12,
+all sampler/boundary/CPU/CUDA RNG identical. Source/recipe mismatch and corrupt payload rejected. Synthetic
+copy control confirms all action/target/mask pairs and denominator exactly retained (base delta0, extra term delta4.77e-7).
+Evidence `e19_verify_{cpu,cuda}.json`, `e19_target_ledger_proof.json` in levers. Full batch40 finite CUDA updates:
+fmamba A peak2.260GB (first autotune), B/C0.731GB; attention A1.585GB, B/C1.625GB.
+The earlier concurrent smoke OOM was a256MiB kernel-benchmark allocation while M16 occupied3.05GiB;
+no research treatment failed and M16 survived. Do not use cold first-update timing as steady throughput.
+
+**What landed:** M16 seed7 complete6000, final objective0.05307013. A16 both seeds already complete.
+M16 seed8 reached3000, objective0.04806252; full model/optimizer/order/CPU/CUDA RNG state verified before pausing
+for exclusive batch40 validation (`e19_queue_boundary.json`). Source/data/parent identities unchanged. No new E17
+scientific endpoint is inferred from these losses. Canvas seed7 remains13000/36000, seed8 unstarted.
+
+**Priority:** corrected E19 Mamba seed7 A now first; resume M16 seed8 from3000 next, then E19 B/C and its
+matched per-position/damage/cost diagnostics. E17's short health/recall checks follow before seed8/control replicas;
+E18 remains booked unchanged; expensive H16 heads come after mechanism/training lanes. One serialized coordinator
+replaces competing waiting services. No old failed/partial results are overwritten. Full E19 states every500 updates,
+atomic source/data/parent/runtime-bound resume, including exact sampled row/split ledgers. `e19_eval.py` journals
+root batches; `e19_note.py` appends completed measurements to
+`artifacts/eda/levers_logs/e19_<backbone>_s<seed>_summary.log`. Notebook updates are written by agents after reviewing
+the evidence; experiment processes never write here. This corrects the initially proposed automatic notebook writer.
+Primary-source sanity check remains
+[IRIS sampling/masks](https://github.com/eloialonso/iris/blob/main/src/dataset.py) and
+[VaGraM objective mismatch](https://arxiv.org/abs/2204.01464); neither proves our mechanism nor prescribes our mask.
+
+**Launch verified, 12:00 AEDT:** `d4mj-oct05-lead.service` is actually training E19 Mamba seed7 A, not waiting.
+At500/6000 it saved a full hash-checked state: objective0.04547052, gradient0.05720623, peak2.260GB. All100,000
+original transition targets seen; the20,000 sampled-window and boundary ledgers independently reproduce seed11/19
+exactly, including saved generator states; model/AdamW tensors finite. Control's5,323 sampled deaths remain row4
+by design. Actual A/B/C treatment comparison is still pending. Evidence `20260927_levers/e19_launch.json`.
+Live monitor now tracks the single lead queue; old competing waiting lanes are stopped. `20261005_recovery/launch.sh`
+resumes the unified queue after another reboot; each E19 arm self-resumes its immutable contract/checkpoint.
+Evaluator correctness controls on the actual13,022 diagnostic transitions pass: copying-health detects0/279 true
+>=2 drops; injected exact labels detect279/279 with0/12,623 false drops; paired cluster contrast1.000[1.000,1.000].
+These controls validate counting/bootstrap, not any world's performance (`e19_eval_mechanics.json`).
+
+**Latest saved E19 checkpoint, 12:02 AEDT:** control A **1,000/6,000**, objective0.04520756, gradient0.07853370;
+full state hash and finite weights verified,200,000 original transition targets scored. B/C outcomes remain pending
+(`20260927_levers/e19_live.json`).
+
+## 2026-10-05 — Reboot recovery (reviewer; source/data verification before relaunch)
+
+At 09:42 AEDT (22:42 UTC October 4), reboot inspection found no research Python processes and no loaded research services.
+GPU 474 MiB desktop / 5,375 MiB free. Final A16 s7/s8 worlds remain complete at 6,000 updates. Canvas s7's actual full
+state is **13,000/36,000**, including optimizer, batch-order generator and CPU/CUDA RNG; s8 has not started. M16 s7 has
+no full-run state (historical log reached 1,000); the separate 500-update smoke must not be substituted. Restart it from
+its own M6 36k parent. M16 s8 has not started. No newly completed scientific report was found after the preceding audit.
+
+Recovery plan and immutable input hashes: `20261005_recovery/PLAN.md`, `inputs.json`. The original canvas state is
+archived separately before its working state advances. Actual Raw pool and Raw-long label/token SHA256 checks are
+required against their historical manifests. Numerical trainer source is unchanged; its only prior amendment changes
+checkpoint cadence to 1,000 for booked lanes, preserving loss, optimizer and sampler. Historical source pins are retained.
+
+**Actual CUDA resume check, before relaunch:** from canvas update13,000, four uninterrupted updates versus two+two
+with optimizer/RNG restoration: parameter max absolute difference **0.0**, optimizer tensor difference
+**9.094947e-12**, batch-order / CPU / CUDA RNG all exactly equal. This passes the previously declared mechanical
+tolerance 1e-6; it is not a promise of long-run bitwise equality. Evidence: `20261005_recovery/gpu_resume.json`.
+
+The legacy M6 s7 H16 report remains valid with its stated readout scope. The interrupted s8 FIT feature file has no
+batch journal and no completed DEV/head/report; it is preserved, never trusted by file size. Its evaluation uses the
+new resumable evaluator in a separate result directory after the booked training lanes. E17/E18 retain their declared
+treatments and admission rules. Detailed status is recorded in `20261005_recovery/live_status.json` and append-only
+`status_events.jsonl`; an active waiting service is distinguished from a computing job.
+
+**Priority remains separating mechanisms.** E17 asks whether trained longer context changes recall; E18 tests mature
+world-coordinate registration. Neither alone fixes health reconstruction. Corrected E16 s7's true-future posterior
+still draws 0/305 ordinary damage, 0/32 starvation and 0/112 recovery; another prior replica cannot separate that
+bottleneck. E19 remains a design until its unchanged continuation / de-alignment-only / additional-dose contrasts are
+implemented and verified; do not conflate layout and dose or import the scratch implementation, not recovered in this
+review, as independently verified code.
+
+**New data-only diagnosis, exact TRAIN subset (30,599 windows):** all **8,149 actual deaths** occur at predictor row4,
+none at rows0–3. The old78% statistic concerns ≥2 health drops, not death labels. Ordinary ≥2 damage with a living
+successor is2,000/144,846 (1.3808%). Rebuilding the stored health-context mask from the exact TRAIN-seed ridge yields
+**0 disagreements/163,235 labels**; it covers1,636/2,000 ordinary ≥2 drops (81.8%). Its masked ordinary-hit rate is
+6.9135%, rather than a universal hit probability;364 drops are outside it. Exact counts/source pins:
+`20261005_recovery/health_mask.json`, `health_design.json`.
+
+**E19 design correction before launch:** terminal crop/right-pad discards earlier targets. Enumerating offsets gives
+valid targets152,995→136,853 (−10.5507%), ordinary damage2,000→1,636.6 (−18.1700%), death prevalence5.3263%→5.9546%.
+Thus it confounds boundary randomization with exposure/normalization. A candidate instead predicts both retained prefix
+and terminal suffix, preserving every action/target pair and the loss denominator. CPU checks on real A6: no-split
+loss/gradient difference0, future-padding difference2.47e-6; all offsets preserve five pairs. It still changes context
+lengths/resets, so it tests a boundary/layout intervention, not positional embeddings alone. Actual Mamba layout check
+and matched branch trainer remain pending; **no E19 training launched**. The hp1 whole-pool selected-coordinate
+multiplier is~400.18×; weighted health-drop prevalence24.19% (including deaths) vs5.38% is a loss measure, not a
+predicted hit rate. `20261005_recovery/FINDINGS.md` records controls, limits and checked primary literature.
+
+**Live recovery, 10:03 AEDT:** M16s7 genuinely restarted, logged1,000/6,000 and wrote a73MB full state; s8 is queued.
+CUDA allocated peak2.872GB; actual device usage~3,599MiB leaves~2,251MiB, below canvas's2,556MiB admission. E18 is
+explicitly serialized behind E17 including evaluations, preventing an intra-evaluator allocation increase colliding
+with canvas after head-fitting releases memory. Only its waiting shell was replaced. Canvas resumes unchanged from13k,
+then s8 from scratch. M6s8 H16 follows in a separate resumable directory. M16 fresh-start losses do not reproduce the
+discarded run (500:0.06193946 vs0.06049695); no cause of this difference is claimed. Current inputs/parents are pinned.
+
+**Verified recovery point, 10:15 AEDT:** M16 s7 is now **2,000/6,000**, objective 0.04926093, gradient norm 0.04280990,
+actual GPU utilization 100%. Full state decoded: finite weights, 16-row time table, optimizer/order/CPU/CUDA RNG present;
+archived at `20261005_recovery/recovery_inputs/m16_s7_u2000.state.pt`. Pinned numerical sources remain unchanged.
+The initial verification expected the earlier 1k update but the live run had advanced to 2k; dynamic-state validation
+resolved that stale assertion, not a training failure (`m16_checkpoint_verified.json`). E18 and M6 s8 readout are waiting
+in their scheduled services. Subsequent reboot entry point: `20261005_recovery/launch.sh`, which refuses duplicates and
+rechecks immutable source/parent/data pins and decodable working/final states. Detailed new counts and the primary-
+literature check are in `20261005_recovery/FINDINGS.md`.
+
+**Final live check, 10:22 AEDT (23:22 UTC October 4):** M16 s7 logged **2,500/6,000** (objective 0.06221406), latest
+saved full state **2,000**. GPU **100%**, 3,601 MiB used / 2,248 MiB free. E17 is computing; E18 and M6 s8 H16 services
+are waiting in the explicit serial queue. Source/parent and all dataset bytes were rechecked by the future-reboot guard
+(224 static pins, three datasets; both current full states decoded). Syntax/whitespace checks pass. No new full scientific
+endpoint was claimed from this recovery; the new results are the verified health-count/mask/layout diagnostics above.
+
 ## 2026-10-04 late evening — Pending-run rationale, causal scope and evaluator resume repair (reviewer)
 
 Full ten-claim audit, separating evidence and priorities: `20261004_resume_audit/PRIORITIES.md`. No running experiment
