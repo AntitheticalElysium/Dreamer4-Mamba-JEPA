@@ -1,0 +1,38 @@
+{
+  "arm": "C",
+  "scope": "Frozen TRAIN loss and shared output-head gradients on 30 actual recorded batches.\n\nBatch updates 0,200,...,5800 are fixed before execution. C and B use identical\nrecorded windows/splits. Reconstruct ALL output tokens from detached backbone\nfeatures through the live proj/choose heads; move logits remain fixed. Require\n<=2e-5 parity. Measure actual extra health loss by death/living-damage/unchanged,\nand class/teacher gradients on proj+choose weights. This measures endpoint head\ngradient conflict, not encoder/backbone gradients or the entire optimization path.\nAtomic source/input-bound per-batch records support interruption and resumption.\n",
+  "batches": 30,
+  "selected_counts": {
+    "death": 293,
+    "ordinary_ge2": 47,
+    "unchanged": 876,
+    "other": 29
+  },
+  "mean_loss": {
+    "death": 0.08884954355598892,
+    "ordinary_ge2": 0.015694272824718306,
+    "unchanged": 0.03305302169186083,
+    "other": 0.009360564251740774,
+    "teacher": 0.06147220278314004
+  },
+  "extra_loss_share": {
+    "death": 0.6045938629203161,
+    "ordinary_ge2": 0.10679470769416459,
+    "unchanged": 0.22491566378479316,
+    "other": 0.06369576560072608
+  },
+  "mean_head_gradient_norm": {
+    "death": 0.044245779514312744,
+    "ordinary_ge2": 0.008778129704296589,
+    "unchanged": 0.05408916994929314,
+    "other": 0.0020103652495890856,
+    "teacher": 0.012950650416314602
+  },
+  "gradient_cosine": {
+    "ordinary_vs_death": 0.31364595890045166,
+    "ordinary_vs_unchanged": -0.5269026160240173,
+    "health_vs_teacher": 0.48731109499931335
+  },
+  "reconstruction_max": 9.5367431640625e-07,
+  "resume_contract": "c24a108030051f01102523ee516d2e217e574c22c4462e00be056bb7b06def62"
+}

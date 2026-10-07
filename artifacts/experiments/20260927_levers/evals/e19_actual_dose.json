@@ -1,0 +1,73 @@
+{
+  "contract": {
+    "pool": "7662de45ae043ae076d1751c7b34300919ec52f99106546fe39a2ff63ac9b5ac",
+    "mask": "bbf20b31dd4046f53426efeca2a975cc9e8a90f0dbe02c35809a7e5f96231c23",
+    "training": "c027f79248de1eef1b87114273cd38807f4528bfe6da57d3f3bc0d9968d9ff85",
+    "source": "ba64b2431dc9f8ebf52bfe7ef3a6d88fbe3938ec38b09b8888d79410fe318a02",
+    "scope": "CPU-only exact TRAIN target/dose accounting, and frozen router paired contrasts.\n\nThe error allocation here is the measured error of COPYING true health token63,\nnot the trained model's loss or its parameter gradients. Exposure and coefficients\ncome from the actual 6000-update ledger. No inferred motion labels are called truth.\nAtomic source/input-bound stages resume independently; output stays in this campaign.\n"
+  },
+  "updates": 6000,
+  "windows": 30599,
+  "targets_seen": 1200000,
+  "selected_seen": 243378,
+  "mask_count": 31045,
+  "classes": {
+    "death": {
+      "pool_targets": 8149,
+      "pool_selected": 7381,
+      "sampled_targets": 63897,
+      "sampled_selected": 57845,
+      "extra_loss_coefficient_share": 0.24231964928293256,
+      "extra_copy_loss_share": 0.7958233672592683,
+      "copy_token63_L1_mean": 0.9636539816856384,
+      "copy_token63_L1_median": 0.9775097966194153
+    },
+    "ordinary_ge2": {
+      "pool_targets": 2000,
+      "pool_selected": 1636,
+      "sampled_targets": 15579,
+      "sampled_selected": 12755,
+      "extra_loss_coefficient_share": 0.052654319812548506,
+      "extra_copy_loss_share": 0.08740649242810412,
+      "copy_token63_L1_mean": 0.499249130487442,
+      "copy_token63_L1_median": 0.4899676740169525
+    },
+    "starvation_net_minus1": {
+      "pool_targets": 537,
+      "pool_selected": 148,
+      "sampled_targets": 4326,
+      "sampled_selected": 1226,
+      "extra_loss_coefficient_share": 0.0050479630480007665,
+      "extra_copy_loss_share": 0.006649597679658412,
+      "copy_token63_L1_mean": 0.4155433773994446,
+      "copy_token63_L1_median": 0.4190405607223511
+    },
+    "unchanged": {
+      "pool_targets": 139594,
+      "pool_selected": 21317,
+      "sampled_targets": 1094934,
+      "sampled_selected": 167229,
+      "extra_loss_coefficient_share": 0.682281854386467,
+      "extra_copy_loss_share": 0.08650414042660354,
+      "copy_token63_L1_mean": 0.03383314982056618,
+      "copy_token63_L1_median": 0.01629539392888546
+    },
+    "recovery": {
+      "pool_targets": 2715,
+      "pool_selected": 563,
+      "sampled_targets": 21264,
+      "sampled_selected": 4323,
+      "extra_loss_coefficient_share": 0.01769621347005115,
+      "extra_copy_loss_share": 0.02361640220636576,
+      "copy_token63_L1_mean": 0.40694329142570496,
+      "copy_token63_L1_median": 0.4275937080383301
+    }
+  },
+  "extra_over_teacher_coordinate_coefficient_quantiles": [
+    270.0,
+    346.2080568938598,
+    393.8963404574003,
+    457.6102941176471,
+    892.2526486671222
+  ]
+}

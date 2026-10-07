@@ -1,0 +1,52 @@
+{
+  "scope": "Paired seed-cluster contrasts for completed E17 fixed-clock interventions.",
+  "contrasts": {
+    "7": {
+      "same": {
+        "mamba_minus_attention_history_gain": 0.2129139239859184,
+        "interval95": [
+          0.07947383016381311,
+          0.36339401509555486
+        ],
+        "episode_seeds": 103,
+        "cells": 459
+      },
+      "moved": {
+        "mamba_minus_attention_history_gain": -0.03935294060590761,
+        "interval95": [
+          -0.13511303407626007,
+          0.033862808559161274
+        ],
+        "episode_seeds": 103,
+        "cells": 589
+      }
+    },
+    "8": {
+      "same": {
+        "mamba_minus_attention_history_gain": 0.34702058668608626,
+        "interval95": [
+          0.15332803436213677,
+          0.5564990778545534
+        ],
+        "episode_seeds": 103,
+        "cells": 459
+      },
+      "moved": {
+        "mamba_minus_attention_history_gain": 0.052537248302770886,
+        "interval95": [
+          -0.02000399793856811,
+          0.12070525769349448
+        ],
+        "episode_seeds": 103,
+        "cells": 589
+      }
+    }
+  },
+  "inputs": {
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/corrt_rawlong_teacher_s7_L16b40_from36000__e17_fixed_clock_rows.pt": "05138296c35141564bb1eb2f255c6fb261c84aa279f61e329e4e4f0d4d8da244",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__e17_fixed_clock_rows.pt": "f76e44f26beff768adaaa25d72b993a32b0af789e8e6efc18f72600546727d8b",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/corrt_rawlong_teacher_s8_L16b40_from36000__e17_fixed_clock_rows.pt": "f7c0966148557091ff2c600ae8351ebc7fecb90f22d8d7db93300016c9e2f6f5",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__e17_fixed_clock_rows.pt": "56af551981c92c64eda4ff3338c4a46b17540dc3702dd9c32a4812755ab9b46a"
+  },
+  "source_sha256": "1e3d4ee41cf313d780501242ad569e217644d10c13d406f96a434a98249188b5"
+}

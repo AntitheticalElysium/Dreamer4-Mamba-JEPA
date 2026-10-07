@@ -61,6 +61,194 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-05 — E19 seed7 endpoints and measured generator/router mechanism (lead)
+
+Reviewed after all three fmamba arms completed6,000 updates. A/B/C sampled-row and
+boundary ledgers are byte-identical (240,000 windows,1.2M original targets per arm).
+Each saw63,897 actual deaths; A scores them only at row4, B/C counts by row are
+[12,956,12,658,12,861,12,678,12,744]. Source/data/parent hashes and failed evidence
+remain preserved. These are the reused diagnosis futures, **not sealed new seeds**.
+
+Primary health reading: sample0,k>=3,living successors;13,022 transitions,
+279 drops>=2,12,623 unchanged,96 recovery. A true-fitted HUD reader detects278/279
+real drops with0 false; the primary imagined-drop cut is1.5 units (separate from
+check_damage's0.5 sensitivity). Reports and raw rows:
+`20260927_levers/evals/{parent,e19_[ABC]_s7_fmamba_from36000}__e19_health.json`.
+
+| arm | drops drawn /279 | false drops /12,623 | fresh drops /31 |
+|---|---:|---:|---:|
+| 36k parent |17 (6.09%)|98 (0.776%)|0|
+| A: unchanged continuation |14 (5.02%)|115 (0.911%)|0|
+| B: target-preserving boundaries |24 (8.60%)|122 (0.966%)|0|
+| C: B + health dose1 |62 (22.22%)|297 (2.353%)|0|
+
+Paired143-seed-cluster bootstrap,2,000 draws: B−A hit catch+0.03584
+[+0.00707,+0.06954]; C−B+0.13620[+0.08393,+0.18750], with false rate
++0.01386[+0.00993,+0.01830]. C fails the declared learnable thresholds (>=30%
+catch,>=50% fresh catch,<=2% false). Its repeated-frame w5 control draws only4/279
+hits versus62 with real history: the improvement uses history, but it is not a
+repair. TEST subset:17/87 hits,118/3,546 false,0/9 fresh.
+
+**Cost is measurable:** versus the own36k parent, C's one-step error rises
+0.123788→0.131317 (+0.007530[+0.006209,+0.008903]); H16 error/V rises
+0.545125→0.582792 (+0.037668[+0.021174,+0.054015]). It fails the declared
+<=0.005 one-step noninferiority margin. A/B aggregate cost differences are unresolved.
+`20260927_levers/compare.json` retains all three paired comparisons. At the separate
+0.5 sensitivity cut, C catches79/337 teacher-forced damage cases but only5/221
+self-fed aligned damage cases; each world's alignment changes the denominator,
+so this is not a paired teacher→imagination causal contrast.
+
+### What the frozen interventions establish
+
+`e19_diagnose.py`, `e19_gradients.py`, `e19_dose_audit.py`,
+`e19_train_diagnose.py` and `e19_trace_readout.py` live in the existing campaign.
+Each retains source/input/checkpoint-bound atomic resume evidence. No experiment
+process writes this notebook; automatic logs/summaries use `artifacts/eda/levers_logs/`.
+
+1. **The failure is motion-conditioned.** Exact recorded map-tile displacements
+   identify51 scrolling and228 stationary ordinary hits; C catches0/51 and62/228.
+   All31 fresh hits scroll. This is actual view motion, not merely a move action.
+   Removing only the shared movement-logit contribution on HUD still catches0/51;
+   forbidding neighbour copies also catches0/51. The suspected global camera gate
+   does **not** explain the missing health updates.
+2. **Generation is not a safe bypass.** On fresh hits C's health63 generate weight
+   averages0.07399 and self weight0.92576. Forcing normalized generator63 draws10/31
+   fresh hits, but4,537/12,623 false drops (35.94%); generator63 L1 on those fresh
+   targets is1.980× self-copy error, and it beats the best copy on0/31. Replacing
+   only health63 with its true successor draws31/31,0 false at the primary cut:
+   the reader can see a correctly expressed health change in that token.
+3. **The local objective explains why opening this gate is costly.** Actual mixture
+   reconstruction max7.15e-7 (C). Sweeping only its generate logit on all31 fresh
+   hits from0→+4→+8 raises mean health63 L1 0.47632→0.79085→0.94419 while catch rises
+   0→7→10. Autograd locally favours opening on20/31 and closing on11/31: the gate
+   is not universally driven closed. At epsilon0.01, finite differences agree on
+   all791 C derivative signs (median absolute difference1.56e-6; max0.00700 at L1
+   kinks). B has10/791 sign discrepancies at that finite step; no global derivative
+   parity claim is made. Raw gradients and sweeps are retained in `__e19_local_gradients*`.
+4. **The candidate contains signal plus larger unwanted change.** On fresh hits,
+   normalized generator change has median projection0.620× the true health-token
+   change, but orthogonal residual energy3.696× true change energy (stationary1.291×).
+   This explains the observed fidelity tradeoff numerically; it is not a claim
+   about the optimum of a newly trained generator or about information absence.
+5. **Exposure and objective allocation are different measurements.** Exact6k ledger
+   sees15,579 ordinary living>=2 drops,12,755 selected by the health mask;57,845
+   selected terminal deaths and167,229 selected unchanged targets. For copying the
+   true health token, deaths supply79.58% and ordinary damage8.74% of the extra
+   loss. That copying baseline is NOT a trained-model gradient measurement.
+   The independent frozen TRAIN check uses30 fixed recorded batches (updates
+   0,200,...,5800;1,200 windows). C's actual masked loss share is60.46% death,
+   10.68% ordinary damage,22.49% unchanged,6.37% other. Shared projection/selection
+   gradient norms: ordinary0.008778,unchanged0.054089,death0.044246. Cosines:
+   ordinary vs unchanged−0.52690; ordinary vs death+0.31365; health vs teacher
+   +0.48731. Reconstruction max9.54e-7. This identifies an **endpoint output-head
+   gradient conflict with unchanged-health examples**, not an encoder/backbone
+   conflict, not the complete learning history, and not proof that death competes
+   with ordinary damage (its measured cosine is positive).
+6. **Decoder transfer still matters.** Distribution-matched ridge classifiers
+   (FIT/validation seeds fixed; TEST43 seeds,87 ordinary drops vs3,546 unchanged)
+   on current health63 + generated63 + action read C at AUC0.88874
+   [0.85632,0.92072], B0.77365[0.72032,0.82089]. C's local hidden63 is0.86053.
+   Thus0/31 drawn fresh hits does not mean damage information is absent. Fresh
+   TEST has only9 positives: C generated63 AUC0.70995[0.54495,0.85922] against
+   1,376 scrolling unchanged controls, and the HUD-input-only control is0.67959
+   [0.42350,0.88638]. No resolved gain over that control or information ceiling is
+   claimed. This repeats the M03 lesson: faithful successor geometry and probe
+   readability are separate targets. `e19_[BC]_trace_readout.json` retains scope.
+
+**Literature recheck after these measurements:**
+[ITC](https://arxiv.org/html/2605.16457v1), appendixB.2, generates inventory and
+screen edges separately from central copying. Its discrete generator/decoding
+differs from our jointly trained continuous soft mixture. Earlier E5f already
+tested generator loss/HUD generation: at18k, both switches still worsened
+one-step error by0.147 and H16 by0.120 versus matched corrt. Do not silently repeat
+that failed repair or equate ITC's mechanism with our implementation.
+[CGSReg](https://arxiv.org/html/2607.15142v1) reweights image-space MSE and explicitly
+limits manually chosen concept masks; E19 uses latent L1 and a zombie-context mask,
+so its Pong result does not establish a repair here.
+[VaGraM](https://arxiv.org/abs/2204.01464) targets value-sensitive directions, which
+is closer to the fidelity/importance mismatch than increasing every coordinate
+of a selected token; no critic/value-gradient intervention has run in E19.
+[Rudy & Sapsis](https://arxiv.org/pdf/2112.00825), sec2.2, show rare-output weighting
+can increase false positives and add a false-positive-sensitive term. That is a
+matching warning, not proof that their fluid/MSE remedy transfers to latent L1.
+[Delta-IRIS](https://arxiv.org/html/2406.19320v1) uses image reconstruction including
+max-pixel loss; our uniform latent loss is a different target.
+
+**E17 health endpoints complete:** all four L16-trained worlds, window15:
+attention s7/s8 teacher catch5/337,16/337; fmamba s7/s8 29/337,46/337 at0.5 cut.
+All four self-fed catches0 (aligned damage denominators243,238,240,241 respectively).
+Long history helps some teacher readings but does not repair health forecasting;
+recovery and net−1 change-class accuracy also remain0. Recall endpoints are still being collected;
+do not infer the complete two-seed long-memory verdict from partial logs.
+
+**Queue at16:12 AEDT:** the lead remains active on E17 window15 recall, followed
+by window5 and imagined recall. E19 fmamba seed8 and both attention controls remain
+booked before the original E18 canvas36k continuations; canvas s7 remains13k and
+s8 is unstarted. Completed mechanism diagnostics did not alter these treatments.
+Main resource limit is now MemoryHigh20G/Max24G (persisted in recovery launch),
+with bounded diagnostic lanes capped separately. Source/hash-bound resume is retained.
+The failed C recipe is not promoted; finish the matched contrasts and distinguish
+event-calibrated consequence learning from a latent-fidelity repair before adding
+another full architecture. No actor improvement is established.
+
+**E17 fixed-clock control declared before execution (16:22 AEDT):** window15
+teacher recall completed. On same-slot cells last seen6–15 steps ago, fmamba
+capture is0.615924/0.643393 (s7/s8), attention0.430657/0.357305; these clear the
+declared `long_recall_same` point thresholds. Moved-slot capture is0.405302/0.440272
+for fmamba and0.426823/0.417918 for attention; the older `moved_unsolved<=0.35`
+reading fails in all four arms, although Mamba has no consistent advantage there.
+Window5 evaluations continue. Source inspection caught a confound in w15→w5:
+`TWorld.inputs` adds `self.time[:t]`, so truncation changes the output time row as
+well as removing visual history. It cannot alone establish memory use.
+`e17_clock_control.py` now runs on200 roots selected with RNG20261005, sample0,
+all four worlds: preserve window length, actions, learned time rows and latest5
+frames, replacing only older frames with the oldest retained frame. Score paired
+same/moved-slot ages6–15 with2,000 seed-cluster intervals and per-root resume.
+This is an intentionally inconsistent visual-history ablation, not an input
+information ceiling. No world is retrained; the original E17/E18/E19 lanes continue.
+Its raw logs go to EDA and results remain in the existing levers campaign.
+
+**E17 completed and clock control resolved,16:28 AEDT:** window15→window5 same-slot
+ages6–15 capture: fmamba s7 0.615924→0.369022; s8 0.643393→0.364637. Both clear
+the declared>=0.20 context contrast, but that contrast retains the time-row confound.
+The added fixed-clock intervention also finished, on the same200 roots/103 seeds
+and459 same-slot,589 moved-slot cells. Original→older-visual-history-ablated capture:
+
+| fixed-clock arm | same slot, original→ablated | history gain,95% seed-cluster CI | moved-slot gain,95% CI |
+|---|---:|---:|---:|
+| fmamba s7 |0.673509→0.310275|+0.363234[+0.169424,+0.557507]|−0.005305[−0.105591,+0.073193]|
+| fmamba s8 |0.671266→0.334793|+0.336473[+0.144386,+0.548151]|+0.049222[−0.017567,+0.114403]|
+| attention s7 |0.460175→0.309855|+0.150320[+0.026237,+0.352233]|+0.034048[−0.019931,+0.114090]|
+| attention s8 |0.370638→0.381185|−0.010547[−0.040241,+0.001887]|−0.003315[−0.011572,+0.003787]|
+
+Paired Mamba−attention history-benefit contrasts on these exact cells are
++0.212914[+0.079474,+0.363394] at s7 and+0.347021[+0.153328,+0.556499] at s8.
+Moved-slot contrasts are unresolved at both seeds. This identifies useful older
+visual evidence for same-screen-slot recall beyond a clock-only explanation;
+the inconsistent-prefix ablation still does not isolate every possible history
+mechanism. Capture is an error-normalized recall statistic, **not tile accuracy**
+or actor return. Evidence: `evals/*__e17_fixed_clock{,_rows}.*`,
+`e17_fixed_clock_contrasts.json`; raw rows retained. No world weights changed.
+
+Imagined window15 recall also completed. Same-slot ages6–15 capture: fmamba
+s7/s8 0.265160/0.277738 versus attention0.123668/−0.057215. These are descriptive
+comparisons on each world's still-camera-aligned subset (Mamba1,480/1,496 cells,
+attention1,452/1,425), **not paired causal effects**, and are substantially below
+teacher-forced recall. Novel terrain is worse than neighbour copying in all four
+imagined worlds (gain−0.35 to−0.40). Long-context recall is real on observed history;
+long imagination and health remain separate unresolved capabilities.
+
+Queue now actually trains E19 fmamba seed8 A; B/C and matched attention controls
+follow, then unchanged E18 canvas. Main/service monitor remains active; completed
+bounded diagnostic lanes are stopped. Clock and TRAIN-loss diagnoses have recovery
+entries and hash-bound per-root/per-batch journals. Notebook was updated by the
+lead after verification; automatic experiment output remains in EDA logs.
+
+**Live verification,16:31 AEDT:** E19 fmamba seed8 A saved its full500/6,000
+checkpoint (objective0.04601904,gradient0.05984034,peak2.260GB). Lead service is
+active/running; GPU98%. B/C and attention controls are pending; E18 has not advanced
+past its preserved13k checkpoint. Logs reflect actual resumed work, not old rows.
+
 ## 2026-10-05 — Lead queue: E19 implemented and numerically validated before launch
 
 E19 implementation is now `20260927_levers/e19.py`, within the existing campaign. No new experiment directory.

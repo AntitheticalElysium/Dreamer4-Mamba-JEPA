@@ -1,0 +1,204 @@
+{
+  "name": "e19_C_s7_fmamba_from36000",
+  "scope": "Frozen local loss mechanism, with exact generator/copy reconstruction.\n\nAll 279 ordinary hits plus 512 deterministic unchanged controls on reused roots.\nDifferentiate health-token L1 through the ACTUAL mixture, holding the backbone and\ncandidate tokens fixed; positive generate-logit derivative means L1 descent closes\ngeneration. This is a local endpoint mechanism, not the full training history.\nSweep that same logit and decode single-token replacements through the unchanged\ntrue-fitted HUD readout; exact reconstruction and finite differences are controls.\nEvery selected batch resumes under a checkpoint/data/source-bound contract.\n",
+  "groups": {
+    "all_hit": {
+      "n": 279,
+      "L1_mean": 0.4112018346786499,
+      "L1_descent_closes_gen": 68,
+      "L1_descent_opens_gen": 211,
+      "gen_logit_gradient_mean": -0.005830599460750818,
+      "generator_gradient_norm_mean": 0.012627793475985527,
+      "generator_weight_mean": 0.16350218653678894,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.498427152633667,
+          "drawn_at_1.5": 6
+        },
+        "-4": {
+          "L1_mean": 0.495071142911911,
+          "drawn_at_1.5": 7
+        },
+        "-2": {
+          "L1_mean": 0.475337415933609,
+          "drawn_at_1.5": 11
+        },
+        "0": {
+          "L1_mean": 0.4112018346786499,
+          "drawn_at_1.5": 62
+        },
+        "2": {
+          "L1_mean": 0.4556749761104584,
+          "drawn_at_1.5": 74
+        },
+        "4": {
+          "L1_mean": 0.5383828282356262,
+          "drawn_at_1.5": 114
+        },
+        "8": {
+          "L1_mean": 0.644696056842804,
+          "drawn_at_1.5": 172
+        }
+      }
+    },
+    "scroll_hit": {
+      "n": 51,
+      "L1_mean": 0.4735461175441742,
+      "L1_descent_closes_gen": 19,
+      "L1_descent_opens_gen": 32,
+      "gen_logit_gradient_mean": -0.0019453306449577212,
+      "generator_gradient_norm_mean": 0.00532628083601594,
+      "generator_weight_mean": 0.07118483632802963,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.47693943977355957,
+          "drawn_at_1.5": 0
+        },
+        "-4": {
+          "L1_mean": 0.4768533408641815,
+          "drawn_at_1.5": 0
+        },
+        "-2": {
+          "L1_mean": 0.47630900144577026,
+          "drawn_at_1.5": 0
+        },
+        "0": {
+          "L1_mean": 0.4735461175441742,
+          "drawn_at_1.5": 0
+        },
+        "2": {
+          "L1_mean": 0.5078941583633423,
+          "drawn_at_1.5": 0
+        },
+        "4": {
+          "L1_mean": 0.76527339220047,
+          "drawn_at_1.5": 10
+        },
+        "8": {
+          "L1_mean": 0.92995285987854,
+          "drawn_at_1.5": 15
+        }
+      }
+    },
+    "stationary_hit": {
+      "n": 228,
+      "L1_mean": 0.39725640416145325,
+      "L1_descent_closes_gen": 49,
+      "L1_descent_opens_gen": 179,
+      "gen_logit_gradient_mean": -0.0066996729001402855,
+      "generator_gradient_norm_mean": 0.014261025935411453,
+      "generator_weight_mean": 0.18415211141109467,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.5032336115837097,
+          "drawn_at_1.5": 6
+        },
+        "-4": {
+          "L1_mean": 0.49914613366127014,
+          "drawn_at_1.5": 7
+        },
+        "-2": {
+          "L1_mean": 0.47512006759643555,
+          "drawn_at_1.5": 11
+        },
+        "0": {
+          "L1_mean": 0.39725640416145325,
+          "drawn_at_1.5": 62
+        },
+        "2": {
+          "L1_mean": 0.44399434328079224,
+          "drawn_at_1.5": 74
+        },
+        "4": {
+          "L1_mean": 0.4876309633255005,
+          "drawn_at_1.5": 104
+        },
+        "8": {
+          "L1_mean": 0.580888569355011,
+          "drawn_at_1.5": 157
+        }
+      }
+    },
+    "fresh_hit": {
+      "n": 31,
+      "L1_mean": 0.47631847858428955,
+      "L1_descent_closes_gen": 11,
+      "L1_descent_opens_gen": 20,
+      "gen_logit_gradient_mean": -0.0018451552605256438,
+      "generator_gradient_norm_mean": 0.005547523032873869,
+      "generator_weight_mean": 0.07398777455091476,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.47953832149505615,
+          "drawn_at_1.5": 0
+        },
+        "-4": {
+          "L1_mean": 0.47945499420166016,
+          "drawn_at_1.5": 0
+        },
+        "-2": {
+          "L1_mean": 0.4789269268512726,
+          "drawn_at_1.5": 0
+        },
+        "0": {
+          "L1_mean": 0.47631847858428955,
+          "drawn_at_1.5": 0
+        },
+        "2": {
+          "L1_mean": 0.5158290266990662,
+          "drawn_at_1.5": 0
+        },
+        "4": {
+          "L1_mean": 0.7908542156219482,
+          "drawn_at_1.5": 7
+        },
+        "8": {
+          "L1_mean": 0.9441850185394287,
+          "drawn_at_1.5": 10
+        }
+      }
+    },
+    "unchanged_control": {
+      "n": 512,
+      "L1_mean": 0.04325636848807335,
+      "L1_descent_closes_gen": 279,
+      "L1_descent_opens_gen": 233,
+      "gen_logit_gradient_mean": 0.001009281724691391,
+      "generator_gradient_norm_mean": 0.002889439929276705,
+      "generator_weight_mean": 0.03984677791595459,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.051965344697237015,
+          "drawn_at_1.5": 10
+        },
+        "-4": {
+          "L1_mean": 0.051742855459451675,
+          "drawn_at_1.5": 10
+        },
+        "-2": {
+          "L1_mean": 0.050356194376945496,
+          "drawn_at_1.5": 11
+        },
+        "0": {
+          "L1_mean": 0.04325636848807335,
+          "drawn_at_1.5": 12
+        },
+        "2": {
+          "L1_mean": 0.1230643093585968,
+          "drawn_at_1.5": 13
+        },
+        "4": {
+          "L1_mean": 0.3602713346481323,
+          "drawn_at_1.5": 81
+        },
+        "8": {
+          "L1_mean": 0.6805074214935303,
+          "drawn_at_1.5": 161
+        }
+      }
+    }
+  },
+  "reconstruction_max": 7.152557373046875e-07,
+  "derivative_FD_max_abs": 0.007004451006650925,
+  "source_contract": "64a46fca2878b3942551e206ff3b750850696c4dfea17115eb02066c05d27968"
+}
