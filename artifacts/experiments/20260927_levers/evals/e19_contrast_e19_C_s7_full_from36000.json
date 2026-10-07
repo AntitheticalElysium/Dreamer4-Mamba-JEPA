@@ -1,0 +1,1187 @@
+{
+  "scope": "paired episode-seed bootstrap on reused diagnostic roots; not an actor/sealed test",
+  "contrasts": {
+    "corrt_raw_teacher_s7_u36000:e19_A_s7_full_from36000": {
+      "w4_at0": {
+        "all_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w4_at1": {
+        "all_hit": {
+          "B_minus_A": 0.15053763440860216,
+          "interval95": [
+            0.1093734185222672,
+            0.1933091697645601
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": 0.007209062821833162,
+          "interval95": [
+            0.004165863239397269,
+            0.010321994468322776
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": 0.1724137931034483,
+          "interval95": [
+            0.1034393885531461,
+            0.24528730703259002
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": 0.007050197405527355,
+          "interval95": [
+            0.0017426031027007283,
+            0.013978890416642145
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w5_at0": {
+        "all_hit": {
+          "B_minus_A": 0.13620071684587814,
+          "interval95": [
+            0.0996437998187811,
+            0.1758669256920835
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": 0.008001267527529114,
+          "interval95": [
+            0.005034964249103258,
+            0.01123602368527247
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": 0.16091954022988506,
+          "interval95": [
+            0.0978194591728526,
+            0.23170731707317074
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": 0.008460236886632826,
+          "interval95": [
+            0.0027247544180026132,
+            0.015529246657505555
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w1_at0": {
+        "all_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w1_at4": {
+        "all_hit": {
+          "B_minus_A": 0.0931899641577061,
+          "interval95": [
+            0.0625,
+            0.12648221343873517
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": 0.005228551057593282,
+          "interval95": [
+            0.002558422349233469,
+            0.007961254445089789
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": 0.08045977011494253,
+          "interval95": [
+            0.03123798076923077,
+            0.13402376162936885
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": 0.00338409475465313,
+          "interval95": [
+            -0.0027522905493644104,
+            0.008839318438728542
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w5_same": {
+        "all_hit": {
+          "B_minus_A": 0.17204301075268819,
+          "interval95": [
+            0.1294052528760582,
+            0.21603258310575382
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": 0.009902558821199397,
+          "interval95": [
+            0.006855268692273481,
+            0.01328647663023181
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": 0.19540229885057472,
+          "interval95": [
+            0.1212037962037962,
+            0.2708333333333333
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": 0.010998307952622674,
+          "interval95": [
+            0.005418969257226385,
+            0.017816300984798184
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w5_rep1": {
+        "all_hit": {
+          "B_minus_A": 0.13978494623655913,
+          "interval95": [
+            0.10187868514150944,
+            0.17993444166036934
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": 0.008080487998098709,
+          "interval95": [
+            0.0050750773345821015,
+            0.01128903200207357
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": 0.16091954022988506,
+          "interval95": [
+            0.0978194591728526,
+            0.23170731707317074
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": 0.00874224478285392,
+          "interval95": [
+            0.0029100656307469086,
+            0.015692605332174748
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      }
+    },
+    "e19_A_s7_full_from36000:e19_B_s7_full_from36000": {
+      "w4_at0": {
+        "all_hit": {
+          "B_minus_A": 0.007168458781362007,
+          "interval95": [
+            0.0,
+            0.01818347710683476
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": 0.0010298661174047373,
+          "interval95": [
+            0.00047332797354217613,
+            0.0017436139568698405
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": 0.0011280315848843769,
+          "interval95": [
+            0.0,
+            0.0027094389016437733
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w4_at1": {
+        "all_hit": {
+          "B_minus_A": -0.07885304659498207,
+          "interval95": [
+            -0.12709486166007905,
+            -0.030645513745028656
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": -0.005070110116454092,
+          "interval95": [
+            -0.008808858298369023,
+            -0.0015680073600783393
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": -0.13793103448275862,
+          "interval95": [
+            -0.20004807692307694,
+            -0.07692307692307693
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": -0.009306260575296108,
+          "interval95": [
+            -0.0179759095147318,
+            -0.0028448088544026865
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w5_at0": {
+        "all_hit": {
+          "B_minus_A": -0.06451612903225806,
+          "interval95": [
+            -0.10884522125681956,
+            -0.02119954710595731
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": -0.0038025825873405686,
+          "interval95": [
+            -0.0075950569580170105,
+            -0.0002958756567731759
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": -0.13793103448275862,
+          "interval95": [
+            -0.19480519480519481,
+            -0.08033685064935077
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": -0.00874224478285392,
+          "interval95": [
+            -0.018115888020535893,
+            -0.0018542290315923264
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w1_at0": {
+        "all_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w1_at4": {
+        "all_hit": {
+          "B_minus_A": -0.08960573476702509,
+          "interval95": [
+            -0.12313432835820895,
+            -0.058823529411764705
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": -0.008476590350946684,
+          "interval95": [
+            -0.011751037451983484,
+            -0.005765806736867075
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": -0.08045977011494253,
+          "interval95": [
+            -0.13402376162936885,
+            -0.031237980769230834
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": -0.009870276367738297,
+          "interval95": [
+            -0.01695978566576659,
+            -0.004134027295701928
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w5_same": {
+        "all_hit": {
+          "B_minus_A": -0.13261648745519714,
+          "interval95": [
+            -0.17966949152542372,
+            -0.08526719445818903
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": -0.007684385645250732,
+          "interval95": [
+            -0.011760283170959568,
+            -0.003694910493940847
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": -0.16091954022988506,
+          "interval95": [
+            -0.23076923076923078,
+            -0.09301248923341952
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": -0.012126339537507051,
+          "interval95": [
+            -0.020138673988343084,
+            -0.005188770486037844
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w5_rep1": {
+        "all_hit": {
+          "B_minus_A": -0.06451612903225806,
+          "interval95": [
+            -0.1111111111111111,
+            -0.018114307016167015
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": -0.004040243999049354,
+          "interval95": [
+            -0.00782471063420117,
+            -0.0003057687634973886
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": -0.13793103448275862,
+          "interval95": [
+            -0.19480519480519481,
+            -0.08033685064935077
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": -0.009306260575296108,
+          "interval95": [
+            -0.018648160436481605,
+            -0.002140020184076956
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      }
+    },
+    "e19_B_s7_full_from36000:e19_C_s7_full_from36000": {
+      "w4_at0": {
+        "all_hit": {
+          "B_minus_A": 0.014336917562724014,
+          "interval95": [
+            0.0033778115363685838,
+            0.03101380813953485
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": 0.002535055058227046,
+          "interval95": [
+            0.0013899673248727181,
+            0.0036517057271696143
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": 0.003948110547095319,
+          "interval95": [
+            0.0018655414786532454,
+            0.005944593722534884
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w4_at1": {
+        "all_hit": {
+          "B_minus_A": -0.053763440860215055,
+          "interval95": [
+            -0.09225781670628094,
+            -0.018585639542888624
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": 0.005307771528162877,
+          "interval95": [
+            0.0011096782176219426,
+            0.010048548272039146
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": -0.011494252873563218,
+          "interval95": [
+            -0.05264557670772676,
+            0.027036282858200616
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": 0.016356457980823462,
+          "interval95": [
+            0.006347220997776406,
+            0.028714947605024826
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w5_at0": {
+        "all_hit": {
+          "B_minus_A": -0.05017921146953405,
+          "interval95": [
+            -0.08488086043651134,
+            -0.017793594306049824
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": 0.006020755763289234,
+          "interval95": [
+            0.0012839492722463688,
+            0.01130892476638243
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            -0.03297619047619048,
+            0.031583124477861296
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": 0.016638465877044557,
+          "interval95": [
+            0.006080671241489515,
+            0.02957356825452755
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w1_at0": {
+        "all_hit": {
+          "B_minus_A": 0.010752688172043012,
+          "interval95": [
+            0.0,
+            0.02439237591676615
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": 0.006337637645567614,
+          "interval95": [
+            0.0033620937179879504,
+            0.009987882752450352
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": 0.009306260575296108,
+          "interval95": [
+            0.0035117166268792974,
+            0.01701651156714168
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w1_at4": {
+        "all_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            -0.010527242401779095,
+            0.010754629090485609
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": -0.004594787293036521,
+          "interval95": [
+            -0.006742971100941935,
+            -0.0027970779127761435
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": -0.003948110547095319,
+          "interval95": [
+            -0.007911379495332717,
+            -0.0007600976683438904
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w5_same": {
+        "all_hit": {
+          "B_minus_A": -0.025089605734767026,
+          "interval95": [
+            -0.05072924901185771,
+            -0.0032954615337310394
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": 0.007129842351263567,
+          "interval95": [
+            0.00268426854639177,
+            0.01209336841329397
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": -0.011494252873563218,
+          "interval95": [
+            -0.03773584905660377,
+            0.0
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": 0.014946418499717992,
+          "interval95": [
+            0.005707985981743666,
+            0.025627849481880596
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      },
+      "w5_rep1": {
+        "all_hit": {
+          "B_minus_A": -0.05017921146953405,
+          "interval95": [
+            -0.08488086043651134,
+            -0.017793594306049824
+          ],
+          "transitions": 279,
+          "episode_seeds": 143
+        },
+        "all_unchanged": {
+          "B_minus_A": 0.005862314822150044,
+          "interval95": [
+            0.0011419526674990121,
+            0.011145506945950517
+          ],
+          "transitions": 12623,
+          "episode_seeds": 143
+        },
+        "all_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 31,
+          "episode_seeds": 143
+        },
+        "test_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            -0.03297619047619048,
+            0.031583124477861296
+          ],
+          "transitions": 87,
+          "episode_seeds": 143
+        },
+        "test_unchanged": {
+          "B_minus_A": 0.016638465877044557,
+          "interval95": [
+            0.00629110814258109,
+            0.02944261832455302
+          ],
+          "transitions": 3546,
+          "episode_seeds": 143
+        },
+        "test_fresh_hit": {
+          "B_minus_A": 0.0,
+          "interval95": [
+            0.0,
+            0.0
+          ],
+          "transitions": 9,
+          "episode_seeds": 143
+        }
+      }
+    }
+  }
+}

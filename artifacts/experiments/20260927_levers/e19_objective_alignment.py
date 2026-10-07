@@ -1,0 +1,149 @@
+"""CPU frozen E19 candidate selection: latent L1 versus recorded health-change error.
+
+Rules fixed before execution. Reuse immutable seven-offset sweeps for every arm;
+also read the 195-member family when already saved. Hold all candidate outputs
+fixed. Compare latent L1, absolute decoded-health-change error / 9, and fixed
+lambda combinations 0,.01,.03,.1,.3,1,3,10. Real recorded future health is an ORACLE
+selection target, never an inference input or a deployable-head claim. Report
+reachability and the latent-L1 price of depicting damage, not an information
+ceiling. Same cases, decoder and inspected roots as historical diagnostics.
+Also compute paired B->C prediction costs from the existing raw endpoint rows,
+separating all-root depth16 from the historical alive-root depth16 estimand.
+No GPU or model forward. Source/input-bound atomic arm journals support resume.
+Experiments write measurements to EDA logs; agents alone update NOTEBOOK.
+"""
+import argparse
+import json
+from pathlib import Path
+
+import numpy as np
+import torch
+
+import h16_resume as R
+
+HERE = Path(__file__).resolve().parent
+EVAL = HERE / 'evals'
+LAMBDAS = [0., .01, .03, .1, .3, 1., 3., 10.]
+
+
+def load(path):
+    return torch.load(path, map_location='cpu', mmap=True, weights_only=False)
+
+
+def family_summary(loss, health, cases, masks):
+    rr, kk = cases.T
+    truth = masks['dh'][rr, kk].float()
+    health_error = (health - truth[:, None]).abs() / 9
+    assert torch.isfinite(loss).all() and torch.isfinite(health).all()
+    fresh = masks['adjacent'][rr, kk] & ~masks['win'][rr, kk] & ~masks['adjwin'][rr, kk]
+    hit = masks['drop2'][rr, kk]
+    groups = {'ordinary_hit': hit, 'fresh_hit': hit & fresh, 'unchanged_controls': ~hit}
+    choices = {'latent_L1': loss.argmin(1), 'health_oracle': health_error.argmin(1)}
+    for lam in LAMBDAS:
+        choices[f'latent_plus_health_lambda{lam:g}'] = (loss + lam * health_error).argmin(1)
+    assert torch.equal(choices['latent_L1'], choices['latent_plus_health_lambda0'])
+    index = torch.arange(len(cases))
+    best_loss = loss.min(1).values
+    drawn = health < -1.5
+    possible = drawn.any(1)
+    cheapest_draw = loss.masked_fill(~drawn, float('inf')).min(1).values
+    out = {}
+    for label, m in groups.items():
+        reachable = m & possible
+        row = {'n': int(m.sum()), 'reachable_damage': int(reachable.sum()), 'choices': {}}
+        if reachable.any():
+            premium = cheapest_draw[reachable] - best_loss[reachable]
+            row['cheapest_depiction_L1_premium_mean'] = float(premium.mean())
+            row['cheapest_depiction_L1_premium_median'] = float(premium.median())
+            row['cheapest_depiction_L1_relative_premium_median'] = float(
+                (premium / best_loss[reachable].clamp_min(1e-9)).median())
+        for name, choice in choices.items():
+            hp = health[index, choice]
+            err = loss[index, choice]
+            row['choices'][name] = {'damage_drawn': int((hp[m] < -1.5).sum()),
+                'latent_L1_mean': float(err[m].mean()),
+                'health_MAE': float((hp[m] - truth[m]).abs().mean())}
+        out[label] = row
+    return out
+
+
+def prediction_cost(b, c):
+    assert torch.equal(b['seed'], c['seed']) and b['V'] == c['V']
+    seeds = b['seed'].numpy()
+    groups = [np.where(seeds == s)[0] for s in np.unique(seeds)]
+    rng = np.random.default_rng(20261006)
+    ii = rng.integers(len(groups), size=(2000, len(groups)))
+    out = {}
+    assert torch.equal(b['alive'], c['alive'])
+    for label, index in [('one_step', None), ('depth16_all_roots', 15), ('depth16_alive', 15)]:
+        if index is None:
+            num = [(x['onestep_err'].double().sum(1)).numpy() for x in (b, c)]
+            den = [x['onestep_copy'].double().sum(1).numpy() for x in (b, c)]
+        else:
+            use = b['alive'][:, index].numpy() if label == 'depth16_alive' else np.ones(len(seeds), dtype=bool)
+            num = [x['gen_err'][:, index].double().numpy() * use for x in (b, c)]
+            den = [np.full(len(seeds), float(x['V'])) * use for x in (b, c)]
+        nn = [np.array([v[g].sum() for g in groups]) for v in num]
+        dd = [np.array([v[g].sum() for g in groups]) for v in den]
+        vals = [n.sum() / d.sum() for n, d in zip(nn, dd)]
+        boots = [n[ii].sum(1) / d[ii].sum(1) for n, d in zip(nn, dd)]
+        out[label] = {'B': float(vals[0]), 'C': float(vals[1]),
+            'C_minus_B': float(vals[1] - vals[0]),
+            'interval95': np.quantile(boots[1] - boots[0], [.025, .975]).tolist(),
+            'episode_seeds': len(groups), 'roots': len(seeds),
+            'root_selection': 'recorded alive at depth16' if label == 'depth16_alive' else 'all roots'}
+    # Bind the intended historical cost statistic, independently of bootstrap RNG.
+    import compare
+    historical = [compare.stats(x, torch.arange(len(seeds))) for x in (b, c)]
+    for key, old in [('one_step', 'onestep_all'), ('depth16_alive', 'gen_16')]:
+        for arm, stats in zip(('B', 'C'), historical):
+            assert abs(out[key][arm] - stats[old]) <= 1e-6
+    return out
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--sets', nargs='+', default=['fmamba:7', 'fmamba:8', 'full:7'])
+    args = parser.parse_args()
+    torch.set_num_threads(3)
+    for pair in args.sets:
+        bb, seed = pair.split(':')
+        name = f'e19_C_s{seed}_{bb}_from36000'
+        paths = {k: EVAL / f'{name}{suffix}' for k, suffix in
+                 [('raw', '__e19_local_gradients_raw.pt'), ('health', '__e19_health_per_root.pt')]}
+        paths['B'] = EVAL / f'e19_B_s{seed}_{bb}_from36000_per_root.pt'
+        paths['C'] = EVAL / f'{name}_per_root.pt'
+        dense_root = EVAL / 'resume' / f'{name}__e19_router_oracle'
+        if (dense_root / 'rows.json').exists():
+            info = json.loads((dense_root / 'rows.json').read_text())
+            paths['dense_rows'] = dense_root / info['file']
+            assert R.file_hash(paths['dense_rows']) == info['sha256']
+        spec = {'scope': __doc__, 'script': R.file_hash(__file__),
+                'resume_source': R.file_hash(R.__file__),
+                'inputs': {k: {'path': str(p), 'sha256': R.file_hash(p)} for k, p in paths.items()},
+                'lambdas': LAMBDAS, 'health_units': 'recorded health change, divided by9 in objective',
+                'runtime': {'torch': str(torch.__version__), 'threads': 3, 'precision': 'CPU FP32'}}
+        store = R.Store(EVAL / 'resume' / f'{name}__objective_alignment_v2', spec)
+        with store.lock():
+            result = store.load('result')
+            if result is None:
+                raw, h = load(paths['raw']), load(paths['health'])
+                offsets = [-8, -4, -2, 0, 2, 4, 8]
+                loss = torch.stack([raw['sweeps'][str(s)]['L1'] for s in offsets], 1)
+                health = torch.stack([raw['sweeps'][str(s)]['delta_hp'] for s in offsets], 1)
+                result = {'scope': __doc__, 'name': name, 'contract': spec,
+                          'seven_offsets': family_summary(loss, health, raw['cases'], h['masks'])}
+                if 'dense_rows' in paths:
+                    dense = load(paths['dense_rows'])
+                    assert torch.equal(dense['cases'], raw['cases'])
+                    result['dense_family'] = family_summary(dense['loss'], dense['health_change'], dense['cases'], h['masks'])
+                result['B_to_C_prediction_cost'] = prediction_cost(load(paths['B']), load(paths['C']))
+                store.save('result', result, 1)
+            R.atomic_json(EVAL / f'{name}__objective_alignment_v2.json', result)
+            print(json.dumps({'name': name, 'seven_fresh': result['seven_offsets']['fresh_hit'],
+                              'dense_fresh': result.get('dense_family', {}).get('fresh_hit'),
+                              'prediction_cost': result['B_to_C_prediction_cost']}), flush=True)
+
+
+if __name__ == '__main__':
+    main()

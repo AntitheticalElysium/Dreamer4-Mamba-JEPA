@@ -1,0 +1,665 @@
+{
+  "name": "e19_B_s8_full_from36000",
+  "scope": "Frozen E19 mechanism trace: generator vs router, moving vs stationary, true63 substitution.\n\nUses the existing diagnosis futures (sample0,k>=3), no new training or sealed claim.\nEvery root batch is journalled with source/input/checkpoint hashes. No experiment\nwrites NOTEBOOK. Reports and per-transition traces remain in existing levers/EDA.\nGPU allocator is capped to1GiB so this bounded forward-only diagnostic can share\nthe device with the booked evaluator. A reconstruction control binds the actual\ncopy/generator mixing equations; oracle substitutions are labelled as diagnostics.\n",
+  "reconstruction_max_abs": 0.0,
+  "groups": {
+    "ordinary_hit": {
+      "n": 279,
+      "predicted_health_change": {
+        "actual": {
+          "caught_at_1.5": 12,
+          "caught_at_0.5": 16,
+          "median": -0.0024938583374023438,
+          "mean": -0.18262049555778503
+        },
+        "no_global_HUD": {
+          "caught_at_1.5": 15,
+          "caught_at_0.5": 18,
+          "median": -0.0026350021362304688,
+          "mean": -0.20793411135673523
+        },
+        "self_gen_HUD": {
+          "caught_at_1.5": 12,
+          "caught_at_0.5": 16,
+          "median": -0.0024929046630859375,
+          "mean": -0.17857584357261658
+        },
+        "gen63": {
+          "caught_at_1.5": 109,
+          "caught_at_0.5": 195,
+          "median": -1.2279033660888672,
+          "mean": -1.143903136253357
+        },
+        "genHUD": {
+          "caught_at_1.5": 94,
+          "caught_at_0.5": 188,
+          "median": -0.9817910194396973,
+          "mean": -0.9682345986366272
+        },
+        "true63": {
+          "caught_at_1.5": 275,
+          "caught_at_0.5": 278,
+          "median": -1.9757206439971924,
+          "mean": -2.063882827758789
+        },
+        "trueHUD": {
+          "caught_at_1.5": 278,
+          "caught_at_0.5": 279,
+          "median": -1.9922332763671875,
+          "mean": -2.083946704864502
+        }
+      },
+      "health63_L1_over_self_copy": {
+        "actual": 1.010301113128662,
+        "self": 1.0,
+        "best_copy": 1.0000008344650269,
+        "gen": 1.6609300374984741
+      },
+      "weight_mean": {
+        "self": 0.9270036220550537,
+        "neighbours": 0.006195560097694397,
+        "generate": 0.0668008029460907
+      },
+      "generator_closer_than_best_copy": 1,
+      "gen_weight_quantiles": [
+        7.141889363992959e-05,
+        0.0029212685767561197,
+        0.025371259078383446,
+        0.12626387178897858,
+        0.8759334683418274
+      ]
+    },
+    "fresh_hit": {
+      "n": 31,
+      "predicted_health_change": {
+        "actual": {
+          "caught_at_1.5": 0,
+          "caught_at_0.5": 0,
+          "median": -0.0040225982666015625,
+          "mean": -0.012681507505476475
+        },
+        "no_global_HUD": {
+          "caught_at_1.5": 0,
+          "caught_at_0.5": 0,
+          "median": -0.004767894744873047,
+          "mean": -0.01285826787352562
+        },
+        "self_gen_HUD": {
+          "caught_at_1.5": 0,
+          "caught_at_0.5": 0,
+          "median": -0.003941535949707031,
+          "mean": -0.01259404607117176
+        },
+        "gen63": {
+          "caught_at_1.5": 6,
+          "caught_at_0.5": 20,
+          "median": -0.762944221496582,
+          "mean": -0.5922187566757202
+        },
+        "genHUD": {
+          "caught_at_1.5": 7,
+          "caught_at_0.5": 22,
+          "median": -1.080643653869629,
+          "mean": -0.7025994658470154
+        },
+        "true63": {
+          "caught_at_1.5": 31,
+          "caught_at_0.5": 31,
+          "median": -1.9788150787353516,
+          "mean": -1.9864834547042847
+        },
+        "trueHUD": {
+          "caught_at_1.5": 31,
+          "caught_at_0.5": 31,
+          "median": -2.002338409423828,
+          "mean": -2.003314256668091
+        }
+      },
+      "health63_L1_over_self_copy": {
+        "actual": 0.9944870471954346,
+        "self": 1.0,
+        "best_copy": 1.0000064373016357,
+        "gen": 1.8878673315048218
+      },
+      "weight_mean": {
+        "self": 0.8902494311332703,
+        "neighbours": 2.882001717807725e-05,
+        "generate": 0.10972172021865845
+      },
+      "generator_closer_than_best_copy": 1,
+      "gen_weight_quantiles": [
+        0.03567831218242645,
+        0.0863228365778923,
+        0.11123669892549515,
+        0.1384565383195877,
+        0.15609847009181976
+      ]
+    },
+    "scroll_hit": {
+      "n": 51,
+      "predicted_health_change": {
+        "actual": {
+          "caught_at_1.5": 0,
+          "caught_at_0.5": 0,
+          "median": -0.005278110504150391,
+          "mean": -0.01162814162671566
+        },
+        "no_global_HUD": {
+          "caught_at_1.5": 0,
+          "caught_at_0.5": 0,
+          "median": -0.0056819915771484375,
+          "mean": -0.012041437439620495
+        },
+        "self_gen_HUD": {
+          "caught_at_1.5": 0,
+          "caught_at_0.5": 0,
+          "median": -0.005270481109619141,
+          "mean": -0.011557050980627537
+        },
+        "gen63": {
+          "caught_at_1.5": 7,
+          "caught_at_0.5": 27,
+          "median": -0.6445446014404297,
+          "mean": -0.2085067331790924
+        },
+        "genHUD": {
+          "caught_at_1.5": 10,
+          "caught_at_0.5": 27,
+          "median": -0.6062283515930176,
+          "mean": -0.28415319323539734
+        },
+        "true63": {
+          "caught_at_1.5": 51,
+          "caught_at_0.5": 51,
+          "median": -1.9739651679992676,
+          "mean": -1.9781395196914673
+        },
+        "trueHUD": {
+          "caught_at_1.5": 51,
+          "caught_at_0.5": 51,
+          "median": -2.000478744506836,
+          "mean": -1.9896128177642822
+        }
+      },
+      "health63_L1_over_self_copy": {
+        "actual": 0.9937795400619507,
+        "self": 1.0,
+        "best_copy": 1.0000035762786865,
+        "gen": 1.8822344541549683
+      },
+      "weight_mean": {
+        "self": 0.8954189419746399,
+        "neighbours": 2.8867265427834354e-05,
+        "generate": 0.10455211997032166
+      },
+      "generator_closer_than_best_copy": 1,
+      "gen_weight_quantiles": [
+        0.03567831218242645,
+        0.05184517055749893,
+        0.10818662494421005,
+        0.1384555697441101,
+        0.15609847009181976
+      ]
+    },
+    "stationary_hit": {
+      "n": 228,
+      "predicted_health_change": {
+        "actual": {
+          "caught_at_1.5": 12,
+          "caught_at_0.5": 16,
+          "median": -0.002349853515625,
+          "mean": -0.2208687663078308
+        },
+        "no_global_HUD": {
+          "caught_at_1.5": 15,
+          "caught_at_0.5": 18,
+          "median": -0.0025224685668945312,
+          "mean": -0.25175219774246216
+        },
+        "self_gen_HUD": {
+          "caught_at_1.5": 12,
+          "caught_at_0.5": 16,
+          "median": -0.0023469924926757812,
+          "mean": -0.21593531966209412
+        },
+        "gen63": {
+          "caught_at_1.5": 102,
+          "caught_at_0.5": 168,
+          "median": -1.3448400497436523,
+          "mean": -1.3531365394592285
+        },
+        "genHUD": {
+          "caught_at_1.5": 84,
+          "caught_at_0.5": 161,
+          "median": -1.0772733688354492,
+          "mean": -1.1212528944015503
+        },
+        "true63": {
+          "caught_at_1.5": 224,
+          "caught_at_0.5": 227,
+          "median": -1.9770870208740234,
+          "mean": -2.083062171936035
+        },
+        "trueHUD": {
+          "caught_at_1.5": 227,
+          "caught_at_0.5": 228,
+          "median": -1.9876017570495605,
+          "mean": -2.1050479412078857
+        }
+      },
+      "health63_L1_over_self_copy": {
+        "actual": 1.01387619972229,
+        "self": 1.0,
+        "best_copy": 1.0000003576278687,
+        "gen": 1.6130409240722656
+      },
+      "weight_mean": {
+        "self": 0.9340685606002808,
+        "neighbours": 0.007574951741844416,
+        "generate": 0.058356426656246185
+      },
+      "generator_closer_than_best_copy": 0,
+      "gen_weight_quantiles": [
+        7.141889363992959e-05,
+        0.002259215572848916,
+        0.019569210708141327,
+        0.07822705805301666,
+        0.8759334683418274
+      ]
+    },
+    "unchanged": {
+      "n": 12623,
+      "predicted_health_change": {
+        "actual": {
+          "caught_at_1.5": 117,
+          "caught_at_0.5": 222,
+          "median": -0.0012788772583007812,
+          "mean": -0.03453129157423973
+        },
+        "no_global_HUD": {
+          "caught_at_1.5": 124,
+          "caught_at_0.5": 226,
+          "median": -0.0014677047729492188,
+          "mean": -0.037045352160930634
+        },
+        "self_gen_HUD": {
+          "caught_at_1.5": 123,
+          "caught_at_0.5": 225,
+          "median": -0.0012664794921875,
+          "mean": -0.03521104156970978
+        },
+        "gen63": {
+          "caught_at_1.5": 3878,
+          "caught_at_0.5": 7857,
+          "median": -0.8819093704223633,
+          "mean": -0.8023097515106201
+        },
+        "genHUD": {
+          "caught_at_1.5": 3831,
+          "caught_at_0.5": 8434,
+          "median": -1.0382165908813477,
+          "mean": -0.7820208668708801
+        },
+        "true63": {
+          "caught_at_1.5": 0,
+          "caught_at_0.5": 3,
+          "median": 6.961822509765625e-05,
+          "mean": -0.000286835158476606
+        },
+        "trueHUD": {
+          "caught_at_1.5": 0,
+          "caught_at_0.5": 0,
+          "median": 0.0,
+          "mean": -9.166161180473864e-05
+        }
+      },
+      "health63_L1_over_self_copy": {
+        "actual": 1.0815176963806152,
+        "self": 1.0,
+        "best_copy": 1.0000803470611572,
+        "gen": 32.27455139160156
+      },
+      "weight_mean": {
+        "self": 0.9300426244735718,
+        "neighbours": 0.007523506414145231,
+        "generate": 0.06243385374546051
+      },
+      "generator_closer_than_best_copy": 0,
+      "gen_weight_quantiles": [
+        5.391078957472928e-05,
+        0.0026991625782102346,
+        0.04208748787641525,
+        0.127649188041687,
+        0.9024010300636292
+      ]
+    },
+    "scroll_unchanged": {
+      "n": 4843,
+      "predicted_health_change": {
+        "actual": {
+          "caught_at_1.5": 15,
+          "caught_at_0.5": 46,
+          "median": -0.007576942443847656,
+          "mean": -0.022979047149419785
+        },
+        "no_global_HUD": {
+          "caught_at_1.5": 18,
+          "caught_at_0.5": 46,
+          "median": -0.007602691650390625,
+          "mean": -0.023437732830643654
+        },
+        "self_gen_HUD": {
+          "caught_at_1.5": 23,
+          "caught_at_0.5": 47,
+          "median": -0.007496833801269531,
+          "mean": -0.023659735918045044
+        },
+        "gen63": {
+          "caught_at_1.5": 1465,
+          "caught_at_0.5": 3226,
+          "median": -0.9711999893188477,
+          "mean": -0.692677915096283
+        },
+        "genHUD": {
+          "caught_at_1.5": 1811,
+          "caught_at_0.5": 3430,
+          "median": -1.2352380752563477,
+          "mean": -0.781784176826477
+        },
+        "true63": {
+          "caught_at_1.5": 0,
+          "caught_at_0.5": 0,
+          "median": -0.002132415771484375,
+          "mean": -0.0029263843316584826
+        },
+        "trueHUD": {
+          "caught_at_1.5": 0,
+          "caught_at_0.5": 0,
+          "median": 0.000148773193359375,
+          "mean": 0.00027907532057724893
+        }
+      },
+      "health63_L1_over_self_copy": {
+        "actual": 0.5902899503707886,
+        "self": 1.0,
+        "best_copy": 1.0000072717666626,
+        "gen": 20.789474487304688
+      },
+      "weight_mean": {
+        "self": 0.8916968107223511,
+        "neighbours": 0.005610245279967785,
+        "generate": 0.10269292443990707
+      },
+      "generator_closer_than_best_copy": 0,
+      "gen_weight_quantiles": [
+        0.004555971827358007,
+        0.0526186004281044,
+        0.10520896315574646,
+        0.1403278112411499,
+        0.5399968028068542
+      ]
+    },
+    "stationary_unchanged": {
+      "n": 7780,
+      "predicted_health_change": {
+        "actual": {
+          "caught_at_1.5": 102,
+          "caught_at_0.5": 176,
+          "median": -0.0006482601165771484,
+          "mean": -0.04172248765826225
+        },
+        "no_global_HUD": {
+          "caught_at_1.5": 106,
+          "caught_at_0.5": 180,
+          "median": -0.0008463859558105469,
+          "mean": -0.0455160029232502
+        },
+        "self_gen_HUD": {
+          "caught_at_1.5": 100,
+          "caught_at_0.5": 178,
+          "median": -0.0006451606750488281,
+          "mean": -0.04240165650844574
+        },
+        "gen63": {
+          "caught_at_1.5": 2413,
+          "caught_at_0.5": 4631,
+          "median": -0.8152275085449219,
+          "mean": -0.8705548644065857
+        },
+        "genHUD": {
+          "caught_at_1.5": 2020,
+          "caught_at_0.5": 5004,
+          "median": -0.9134521484375,
+          "mean": -0.7821681499481201
+        },
+        "true63": {
+          "caught_at_1.5": 0,
+          "caught_at_0.5": 3,
+          "median": 0.000301361083984375,
+          "mean": 0.0013562676031142473
+        },
+        "trueHUD": {
+          "caught_at_1.5": 0,
+          "caught_at_0.5": 0,
+          "median": 0.0,
+          "mean": -0.0003224429674446583
+        }
+      },
+      "health63_L1_over_self_copy": {
+        "actual": 2.0112035274505615,
+        "self": 1.0,
+        "best_copy": 1.0002193450927734,
+        "gen": 54.01093673706055
+      },
+      "weight_mean": {
+        "self": 0.9539126753807068,
+        "neighbours": 0.008714498952031136,
+        "generate": 0.03737284615635872
+      },
+      "generator_closer_than_best_copy": 0,
+      "gen_weight_quantiles": [
+        5.391078957472928e-05,
+        0.0015821874840185046,
+        0.013848599046468735,
+        0.060086484998464584,
+        0.9024010300636292
+      ]
+    },
+    "health9_hit": {
+      "n": 94,
+      "predicted_health_change": {
+        "actual": {
+          "caught_at_1.5": 3,
+          "caught_at_0.5": 4,
+          "median": -0.0035037994384765625,
+          "mean": -0.14298921823501587
+        },
+        "no_global_HUD": {
+          "caught_at_1.5": 3,
+          "caught_at_0.5": 4,
+          "median": -0.0039310455322265625,
+          "mean": -0.14964045584201813
+        },
+        "self_gen_HUD": {
+          "caught_at_1.5": 3,
+          "caught_at_0.5": 4,
+          "median": -0.003467559814453125,
+          "mean": -0.14279039204120636
+        },
+        "gen63": {
+          "caught_at_1.5": 43,
+          "caught_at_0.5": 77,
+          "median": -1.3901348114013672,
+          "mean": -1.6000412702560425
+        },
+        "genHUD": {
+          "caught_at_1.5": 45,
+          "caught_at_0.5": 83,
+          "median": -1.4579038619995117,
+          "mean": -1.5581269264221191
+        },
+        "true63": {
+          "caught_at_1.5": 93,
+          "caught_at_0.5": 93,
+          "median": -1.9735984802246094,
+          "mean": -2.163790464401245
+        },
+        "trueHUD": {
+          "caught_at_1.5": 94,
+          "caught_at_0.5": 94,
+          "median": -2.001215934753418,
+          "mean": -2.2030370235443115
+        }
+      },
+      "health63_L1_over_self_copy": {
+        "actual": 0.9875524044036865,
+        "self": 1.0,
+        "best_copy": 1.0000007152557373,
+        "gen": 1.522024393081665
+      },
+      "weight_mean": {
+        "self": 0.9217870235443115,
+        "neighbours": 5.464891728479415e-05,
+        "generate": 0.07815840095281601
+      },
+      "generator_closer_than_best_copy": 1,
+      "gen_weight_quantiles": [
+        7.141889363992959e-05,
+        0.005014647729694843,
+        0.03934346139431,
+        0.13734862208366394,
+        0.6409437656402588
+      ]
+    },
+    "below9_hit": {
+      "n": 185,
+      "predicted_health_change": {
+        "actual": {
+          "caught_at_1.5": 9,
+          "caught_at_0.5": 12,
+          "median": -0.00140380859375,
+          "mean": -0.20275744795799255
+        },
+        "no_global_HUD": {
+          "caught_at_1.5": 12,
+          "caught_at_0.5": 14,
+          "median": -0.00159454345703125,
+          "mean": -0.23755359649658203
+        },
+        "self_gen_HUD": {
+          "caught_at_1.5": 9,
+          "caught_at_0.5": 12,
+          "median": -0.001399993896484375,
+          "mean": -0.1967587172985077
+        },
+        "gen63": {
+          "caught_at_1.5": 66,
+          "caught_at_0.5": 118,
+          "median": -1.0668883323669434,
+          "mean": -0.9121357798576355
+        },
+        "genHUD": {
+          "caught_at_1.5": 49,
+          "caught_at_0.5": 105,
+          "median": -0.6972446441650391,
+          "mean": -0.6685055494308472
+        },
+        "true63": {
+          "caught_at_1.5": 182,
+          "caught_at_0.5": 185,
+          "median": -1.9788599014282227,
+          "mean": -2.0131192207336426
+        },
+        "trueHUD": {
+          "caught_at_1.5": 184,
+          "caught_at_0.5": 185,
+          "median": -1.9839186668395996,
+          "mean": -2.0234358310699463
+        }
+      },
+      "health63_L1_over_self_copy": {
+        "actual": 1.0219696760177612,
+        "self": 1.0,
+        "best_copy": 1.000001072883606,
+        "gen": 1.732179880142212
+      },
+      "weight_mean": {
+        "self": 0.9296543598175049,
+        "neighbours": 0.00931580737233162,
+        "generate": 0.06102990731596947
+      },
+      "generator_closer_than_best_copy": 0,
+      "gen_weight_quantiles": [
+        0.00019411194080021232,
+        0.00205792672932148,
+        0.023870807141065598,
+        0.1106233075261116,
+        0.8759334683418274
+      ]
+    },
+    "test_seed_metrics": {
+      "overall": {
+        "n": 3677,
+        "n_hit": 87,
+        "hits_drawn": 2,
+        "hit_catch": 0.02298850566148758,
+        "n_unchanged": 3546,
+        "false_drops": 39,
+        "false_drop_rate": 0.010998307727277279,
+        "drawn_rate": 0.011966276913881302,
+        "recovery_n": 37,
+        "recovery_false_drops": 3
+      },
+      "fresh": {
+        "n": 9,
+        "n_hit": 9,
+        "hits_drawn": 0,
+        "hit_catch": 0.0,
+        "n_unchanged": 0,
+        "false_drops": 0,
+        "false_drop_rate": null,
+        "drawn_rate": 0.0,
+        "recovery_n": 0,
+        "recovery_false_drops": 0
+      },
+      "beside_no_hit": {
+        "n": 148,
+        "n_hit": 65,
+        "hits_drawn": 2,
+        "hit_catch": 0.03076923079788685,
+        "n_unchanged": 76,
+        "false_drops": 4,
+        "false_drop_rate": 0.05263157933950424,
+        "drawn_rate": 0.04729729890823364,
+        "recovery_n": 4,
+        "recovery_false_drops": 1
+      },
+      "recent_hit": {
+        "n": 129,
+        "n_hit": 2,
+        "hits_drawn": 0,
+        "hit_catch": 0.0,
+        "n_unchanged": 119,
+        "false_drops": 14,
+        "false_drop_rate": 0.11764705926179886,
+        "drawn_rate": 0.12403100728988647,
+        "recovery_n": 8,
+        "recovery_false_drops": 2
+      },
+      "not_adjacent": {
+        "n": 3391,
+        "n_hit": 11,
+        "hits_drawn": 0,
+        "hit_catch": 0.0,
+        "n_unchanged": 3351,
+        "false_drops": 21,
+        "false_drop_rate": 0.006266786251217127,
+        "drawn_rate": 0.006192863453179598,
+        "recovery_n": 25,
+        "recovery_false_drops": 0
+      }
+    }
+  },
+  "peak_gb": 0.070240768,
+  "resume_contract": "26031c412eea2010834db180eff2cf069130154cacf922812c232b9d72a2f219"
+}

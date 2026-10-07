@@ -1,0 +1,25 @@
+{
+  "verified_at_aedt": "2026-10-06 21:05",
+  "status_snapshot_utc": "2026-10-06T07:48:25.421491+00:00",
+  "status_snapshot_is_stale": true,
+  "lead_service": "inactive",
+  "replica_service": "inactive",
+  "lead_stopped_aedt": "2026-10-06 18:48:39",
+  "machine_boot_aedt": "2026-10-06 20:55:12",
+  "research_gpu_processes": [],
+  "new_long_jobs_launched": false,
+  "h16_evaluation": "interrupted during first world FIT feature extraction; no new verdict",
+  "e19_completed_sets": [
+    "fmamba:7",
+    "fmamba:8",
+    "full:7",
+    "full:8"
+  ],
+  "e17_completed": [
+    "recall_w15",
+    "recall_w5",
+    "recall_imagined_w15",
+    "damage_w15",
+    "damage_w5"
+  ]
+}

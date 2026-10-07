@@ -1,0 +1,204 @@
+{
+  "name": "e19_C_s7_full_from36000",
+  "scope": "Frozen local loss mechanism, with exact generator/copy reconstruction.\n\nAll 279 ordinary hits plus 512 deterministic unchanged controls on reused roots.\nDifferentiate health-token L1 through the ACTUAL mixture, holding the backbone and\ncandidate tokens fixed; positive generate-logit derivative means L1 descent closes\ngeneration. This is a local endpoint mechanism, not the full training history.\nSweep that same logit and decode single-token replacements through the unchanged\ntrue-fitted HUD readout; exact reconstruction and finite differences are controls.\nEvery selected batch resumes under a checkpoint/data/source-bound contract.\n",
+  "groups": {
+    "all_hit": {
+      "n": 279,
+      "L1_mean": 0.4871748983860016,
+      "L1_descent_closes_gen": 46,
+      "L1_descent_opens_gen": 233,
+      "gen_logit_gradient_mean": -0.002947661792859435,
+      "generator_gradient_norm_mean": 0.0045681484043598175,
+      "generator_weight_mean": 0.059640780091285706,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.49886974692344666,
+          "drawn_at_1.5": 6
+        },
+        "-4": {
+          "L1_mean": 0.49834543466567993,
+          "drawn_at_1.5": 6
+        },
+        "-2": {
+          "L1_mean": 0.4955439269542694,
+          "drawn_at_1.5": 9
+        },
+        "0": {
+          "L1_mean": 0.4871748983860016,
+          "drawn_at_1.5": 15
+        },
+        "2": {
+          "L1_mean": 0.49357879161834717,
+          "drawn_at_1.5": 19
+        },
+        "4": {
+          "L1_mean": 0.5675773024559021,
+          "drawn_at_1.5": 71
+        },
+        "8": {
+          "L1_mean": 0.6585495471954346,
+          "drawn_at_1.5": 180
+        }
+      }
+    },
+    "scroll_hit": {
+      "n": 51,
+      "L1_mean": 0.47254031896591187,
+      "L1_descent_closes_gen": 19,
+      "L1_descent_opens_gen": 32,
+      "gen_logit_gradient_mean": -0.0027371735777705908,
+      "generator_gradient_norm_mean": 0.00666316831484437,
+      "generator_weight_mean": 0.08753616362810135,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.4768974184989929,
+          "drawn_at_1.5": 0
+        },
+        "-4": {
+          "L1_mean": 0.47678884863853455,
+          "drawn_at_1.5": 0
+        },
+        "-2": {
+          "L1_mean": 0.4760987162590027,
+          "drawn_at_1.5": 0
+        },
+        "0": {
+          "L1_mean": 0.47254031896591187,
+          "drawn_at_1.5": 0
+        },
+        "2": {
+          "L1_mean": 0.5098875164985657,
+          "drawn_at_1.5": 0
+        },
+        "4": {
+          "L1_mean": 0.7604356408119202,
+          "drawn_at_1.5": 10
+        },
+        "8": {
+          "L1_mean": 0.9028316736221313,
+          "drawn_at_1.5": 20
+        }
+      }
+    },
+    "stationary_hit": {
+      "n": 228,
+      "L1_mean": 0.4904484748840332,
+      "L1_descent_closes_gen": 27,
+      "L1_descent_opens_gen": 201,
+      "gen_logit_gradient_mean": -0.002994744572788477,
+      "generator_gradient_norm_mean": 0.004099524579942226,
+      "generator_weight_mean": 0.05340101942420006,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.5037845969200134,
+          "drawn_at_1.5": 6
+        },
+        "-4": {
+          "L1_mean": 0.5031673312187195,
+          "drawn_at_1.5": 6
+        },
+        "-2": {
+          "L1_mean": 0.49989357590675354,
+          "drawn_at_1.5": 9
+        },
+        "0": {
+          "L1_mean": 0.4904484748840332,
+          "drawn_at_1.5": 15
+        },
+        "2": {
+          "L1_mean": 0.48993074893951416,
+          "drawn_at_1.5": 19
+        },
+        "4": {
+          "L1_mean": 0.5244379639625549,
+          "drawn_at_1.5": 61
+        },
+        "8": {
+          "L1_mean": 0.6039075255393982,
+          "drawn_at_1.5": 160
+        }
+      }
+    },
+    "fresh_hit": {
+      "n": 31,
+      "L1_mean": 0.4749782979488373,
+      "L1_descent_closes_gen": 10,
+      "L1_descent_opens_gen": 21,
+      "gen_logit_gradient_mean": -0.0027965500485152006,
+      "generator_gradient_norm_mean": 0.0070005436427891254,
+      "generator_weight_mean": 0.09168001264333725,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.47947749495506287,
+          "drawn_at_1.5": 0
+        },
+        "-4": {
+          "L1_mean": 0.4793643057346344,
+          "drawn_at_1.5": 0
+        },
+        "-2": {
+          "L1_mean": 0.47864383459091187,
+          "drawn_at_1.5": 0
+        },
+        "0": {
+          "L1_mean": 0.4749782979488373,
+          "drawn_at_1.5": 0
+        },
+        "2": {
+          "L1_mean": 0.5207877159118652,
+          "drawn_at_1.5": 0
+        },
+        "4": {
+          "L1_mean": 0.7970610857009888,
+          "drawn_at_1.5": 8
+        },
+        "8": {
+          "L1_mean": 0.9296612739562988,
+          "drawn_at_1.5": 15
+        }
+      }
+    },
+    "unchanged_control": {
+      "n": 512,
+      "L1_mean": 0.04415871202945709,
+      "L1_descent_closes_gen": 322,
+      "L1_descent_opens_gen": 190,
+      "gen_logit_gradient_mean": 0.003311595181003213,
+      "generator_gradient_norm_mean": 0.003530309535562992,
+      "generator_weight_mean": 0.04712160676717758,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.052895527333021164,
+          "drawn_at_1.5": 12
+        },
+        "-4": {
+          "L1_mean": 0.05263819172978401,
+          "drawn_at_1.5": 12
+        },
+        "-2": {
+          "L1_mean": 0.05102696642279625,
+          "drawn_at_1.5": 12
+        },
+        "0": {
+          "L1_mean": 0.04415871202945709,
+          "drawn_at_1.5": 13
+        },
+        "2": {
+          "L1_mean": 0.12605293095111847,
+          "drawn_at_1.5": 18
+        },
+        "4": {
+          "L1_mean": 0.34241124987602234,
+          "drawn_at_1.5": 123
+        },
+        "8": {
+          "L1_mean": 0.6703888177871704,
+          "drawn_at_1.5": 371
+        }
+      }
+    }
+  },
+  "reconstruction_max": 4.76837158203125e-07,
+  "derivative_FD_max_abs": 0.00260886549949646,
+  "source_contract": "7223c976939917d1931eea4342aae548ef9bb924a45d4ec4317bb5422f502444"
+}

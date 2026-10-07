@@ -1,0 +1,1675 @@
+{
+  "scope": "Frozen E19 on the exact fresh-arrival TRAIN events already counted by the census.\n\nRules fixed before execution. The previous detector/estimated-motion census defines\n15 sampled ordinary-hit events and25 unchanged events; no new event threshold or\nselection. Score C at both Mamba seeds and attention seed7 on (1) every sampled\noriginal window prefix through the current frame and (2) each actually sampled\nboundary/context, weighted by actual multiplicity. Real next-state HUD is a\ndecoder positive control. Force-generating the health token separates candidate\ndepiction from routing. Future frames/labels never enter the world forward.\nThis distinguishes own-TRAIN failure from a failure only on new roots. It does\nnot isolate historical optimization versus scarce unique support. Source/input-\nbound atomic case journals; GPU allocator capped16%, batch4, no model training.\nNo automatic notebook writes. The event condition remains detector-estimated,\nnot ground-truth simulator adjacency; recorded damage/alive labels are factual.\n",
+  "name": "e19_C_s7_fmamba_from36000",
+  "contract": {
+    "scope": "Frozen E19 on the exact fresh-arrival TRAIN events already counted by the census.\n\nRules fixed before execution. The previous detector/estimated-motion census defines\n15 sampled ordinary-hit events and25 unchanged events; no new event threshold or\nselection. Score C at both Mamba seeds and attention seed7 on (1) every sampled\noriginal window prefix through the current frame and (2) each actually sampled\nboundary/context, weighted by actual multiplicity. Real next-state HUD is a\ndecoder positive control. Force-generating the health token separates candidate\ndepiction from routing. Future frames/labels never enter the world forward.\nThis distinguishes own-TRAIN failure from a failure only on new roots. It does\nnot isolate historical optimization versus scarce unique support. Source/input-\nbound atomic case journals; GPU allocator capped16%, batch4, no model training.\nNo automatic notebook writes. The event condition remains detector-estimated,\nnot ground-truth simulator adjacency; recorded damage/alive labels are factual.\n",
+    "selection": [
+      {
+        "pool_row": 374,
+        "target": 4,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "original_context",
+        "weight": 6
+      },
+      {
+        "pool_row": 374,
+        "target": 4,
+        "lo": 4,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 374,
+        "target": 4,
+        "lo": 3,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 374,
+        "target": 4,
+        "lo": 2,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 374,
+        "target": 4,
+        "lo": 1,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 374,
+        "target": 4,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 1074,
+        "target": 4,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "original_context",
+        "weight": 6
+      },
+      {
+        "pool_row": 1074,
+        "target": 4,
+        "lo": 4,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 1074,
+        "target": 4,
+        "lo": 2,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 1074,
+        "target": 4,
+        "lo": 1,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 1279,
+        "target": 4,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "original_context",
+        "weight": 11
+      },
+      {
+        "pool_row": 1279,
+        "target": 4,
+        "lo": 4,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 1279,
+        "target": 4,
+        "lo": 3,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 4
+      },
+      {
+        "pool_row": 1279,
+        "target": 4,
+        "lo": 2,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 1279,
+        "target": 4,
+        "lo": 1,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 1279,
+        "target": 4,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 1747,
+        "target": 4,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 7
+      },
+      {
+        "pool_row": 1747,
+        "target": 4,
+        "lo": 4,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 1747,
+        "target": 4,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 1747,
+        "target": 4,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 1747,
+        "target": 4,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 1747,
+        "target": 4,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 6924,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "original_context",
+        "weight": 8
+      },
+      {
+        "pool_row": 6924,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 6924,
+        "target": 3,
+        "lo": 3,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 4
+      },
+      {
+        "pool_row": 6924,
+        "target": 3,
+        "lo": 1,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 6924,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 8211,
+        "target": 4,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 3
+      },
+      {
+        "pool_row": 8211,
+        "target": 4,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 8211,
+        "target": 4,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 9594,
+        "target": 4,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "original_context",
+        "weight": 8
+      },
+      {
+        "pool_row": 9594,
+        "target": 4,
+        "lo": 4,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 9594,
+        "target": 4,
+        "lo": 3,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 9594,
+        "target": 4,
+        "lo": 2,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 9594,
+        "target": 4,
+        "lo": 1,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 9594,
+        "target": 4,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 10731,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "original_context",
+        "weight": 3
+      },
+      {
+        "pool_row": 10731,
+        "target": 3,
+        "lo": 3,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 10731,
+        "target": 3,
+        "lo": 1,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 13036,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "original_context",
+        "weight": 9
+      },
+      {
+        "pool_row": 13036,
+        "target": 3,
+        "lo": 3,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 4
+      },
+      {
+        "pool_row": 13036,
+        "target": 3,
+        "lo": 2,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 13036,
+        "target": 3,
+        "lo": 1,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 13367,
+        "target": 4,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 8
+      },
+      {
+        "pool_row": 13367,
+        "target": 4,
+        "lo": 4,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 13367,
+        "target": 4,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 4
+      },
+      {
+        "pool_row": 13367,
+        "target": 4,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 13367,
+        "target": 4,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 14127,
+        "target": 4,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "original_context",
+        "weight": 16
+      },
+      {
+        "pool_row": 14127,
+        "target": 4,
+        "lo": 4,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 14127,
+        "target": 4,
+        "lo": 3,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 5
+      },
+      {
+        "pool_row": 14127,
+        "target": 4,
+        "lo": 2,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 5
+      },
+      {
+        "pool_row": 14127,
+        "target": 4,
+        "lo": 1,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 14127,
+        "target": 4,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 15025,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 7
+      },
+      {
+        "pool_row": 15025,
+        "target": 3,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 15025,
+        "target": 3,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 15025,
+        "target": 3,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 15025,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 15482,
+        "target": 4,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 9
+      },
+      {
+        "pool_row": 15482,
+        "target": 4,
+        "lo": 4,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 4
+      },
+      {
+        "pool_row": 15482,
+        "target": 4,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 15482,
+        "target": 4,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 15482,
+        "target": 4,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 15541,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 5
+      },
+      {
+        "pool_row": 15541,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 15541,
+        "target": 3,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 15541,
+        "target": 3,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 15541,
+        "target": 3,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 16283,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "original_context",
+        "weight": 5
+      },
+      {
+        "pool_row": 16283,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 16283,
+        "target": 3,
+        "lo": 3,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 16283,
+        "target": 3,
+        "lo": 2,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 16283,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 16418,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "original_context",
+        "weight": 7
+      },
+      {
+        "pool_row": 16418,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 16418,
+        "target": 3,
+        "lo": 3,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 4
+      },
+      {
+        "pool_row": 16418,
+        "target": 3,
+        "lo": 2,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 16418,
+        "target": 3,
+        "lo": 1,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 16754,
+        "target": 4,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "original_context",
+        "weight": 6
+      },
+      {
+        "pool_row": 16754,
+        "target": 4,
+        "lo": 4,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 16754,
+        "target": 4,
+        "lo": 3,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 16754,
+        "target": 4,
+        "lo": 2,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 16754,
+        "target": 4,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 17205,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 9
+      },
+      {
+        "pool_row": 17205,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 17205,
+        "target": 3,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 4
+      },
+      {
+        "pool_row": 17205,
+        "target": 3,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 17205,
+        "target": 3,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 18146,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 17
+      },
+      {
+        "pool_row": 18146,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 18146,
+        "target": 3,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 4
+      },
+      {
+        "pool_row": 18146,
+        "target": 3,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 18146,
+        "target": 3,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 4
+      },
+      {
+        "pool_row": 18146,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 5
+      },
+      {
+        "pool_row": 18185,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 9
+      },
+      {
+        "pool_row": 18185,
+        "target": 3,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 18185,
+        "target": 3,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 4
+      },
+      {
+        "pool_row": 18185,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 18947,
+        "target": 4,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 15
+      },
+      {
+        "pool_row": 18947,
+        "target": 4,
+        "lo": 4,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 18947,
+        "target": 4,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 18947,
+        "target": 4,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 18947,
+        "target": 4,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 18947,
+        "target": 4,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 5
+      },
+      {
+        "pool_row": 19891,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 6
+      },
+      {
+        "pool_row": 19891,
+        "target": 3,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 19891,
+        "target": 3,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 19891,
+        "target": 3,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 19891,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 19891,
+        "target": 4,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 6
+      },
+      {
+        "pool_row": 19891,
+        "target": 4,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 19891,
+        "target": 4,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 19891,
+        "target": 4,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 19891,
+        "target": 4,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 21902,
+        "target": 4,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 7
+      },
+      {
+        "pool_row": 21902,
+        "target": 4,
+        "lo": 4,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 21902,
+        "target": 4,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 21902,
+        "target": 4,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 21902,
+        "target": 4,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 22049,
+        "target": 4,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "original_context",
+        "weight": 10
+      },
+      {
+        "pool_row": 22049,
+        "target": 4,
+        "lo": 4,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 22049,
+        "target": 4,
+        "lo": 3,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 22049,
+        "target": 4,
+        "lo": 2,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 22049,
+        "target": 4,
+        "lo": 1,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 22049,
+        "target": 4,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 23168,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "original_context",
+        "weight": 6
+      },
+      {
+        "pool_row": 23168,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 23168,
+        "target": 3,
+        "lo": 2,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 23168,
+        "target": 3,
+        "lo": 1,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 23377,
+        "target": 4,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 7
+      },
+      {
+        "pool_row": 23377,
+        "target": 4,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 23377,
+        "target": 4,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 4
+      },
+      {
+        "pool_row": 23377,
+        "target": 4,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 23900,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 7
+      },
+      {
+        "pool_row": 23900,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 23900,
+        "target": 3,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 23900,
+        "target": 3,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 23900,
+        "target": 3,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 23900,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 24815,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 4
+      },
+      {
+        "pool_row": 24815,
+        "target": 3,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 24815,
+        "target": 3,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 25351,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 4
+      },
+      {
+        "pool_row": 25351,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 25351,
+        "target": 3,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 25351,
+        "target": 3,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 25351,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 25582,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "original_context",
+        "weight": 5
+      },
+      {
+        "pool_row": 25582,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 25582,
+        "target": 3,
+        "lo": 3,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 25582,
+        "target": 3,
+        "lo": 2,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 25582,
+        "target": 3,
+        "lo": 1,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 26607,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 5
+      },
+      {
+        "pool_row": 26607,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 26607,
+        "target": 3,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 26607,
+        "target": 3,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 26673,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "original_context",
+        "weight": 5
+      },
+      {
+        "pool_row": 26673,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 26673,
+        "target": 3,
+        "lo": 2,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 26673,
+        "target": 3,
+        "lo": 1,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 26673,
+        "target": 3,
+        "lo": 0,
+        "label": "ordinary_ge2",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 27346,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 8
+      },
+      {
+        "pool_row": 27346,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 27346,
+        "target": 3,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 5
+      },
+      {
+        "pool_row": 27346,
+        "target": 3,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 27346,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 27856,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 8
+      },
+      {
+        "pool_row": 27856,
+        "target": 3,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 27856,
+        "target": 3,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 27856,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 28025,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 11
+      },
+      {
+        "pool_row": 28025,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 28025,
+        "target": 3,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 28025,
+        "target": 3,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 28025,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 4
+      },
+      {
+        "pool_row": 28301,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 6
+      },
+      {
+        "pool_row": 28301,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 28301,
+        "target": 3,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 28301,
+        "target": 3,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 28301,
+        "target": 3,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 28301,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 29834,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 10
+      },
+      {
+        "pool_row": 29834,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 4
+      },
+      {
+        "pool_row": 29834,
+        "target": 3,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 29834,
+        "target": 3,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 29834,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      },
+      {
+        "pool_row": 31585,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 14
+      },
+      {
+        "pool_row": 31585,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 31585,
+        "target": 3,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 31585,
+        "target": 3,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 4
+      },
+      {
+        "pool_row": 31585,
+        "target": 3,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 31585,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 31791,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "original_context",
+        "weight": 9
+      },
+      {
+        "pool_row": 31791,
+        "target": 3,
+        "lo": 3,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 2
+      },
+      {
+        "pool_row": 31791,
+        "target": 3,
+        "lo": 2,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 31791,
+        "target": 3,
+        "lo": 1,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 3
+      },
+      {
+        "pool_row": 31791,
+        "target": 3,
+        "lo": 0,
+        "label": "unchanged",
+        "protocol": "sampled_boundary",
+        "weight": 1
+      }
+    ],
+    "sources": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e19_train_fresh.py": "449eb87e6a27242f1f6af3b9bbcda895a934a4b9f608f6f2361c9f0d6460ebda",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/tworld.py": "1435057c2b2f0c3d90f563e8dcaf94d06121deebc45928e18ec5cacc93d01569",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/teval.py": "a2f873442031b2fc1a671a8f210acf4b5a759767e3b8c6b7720b2dd916793d20",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e19.py": "5c6c9fd461dcfe63d164b1688e36cc0b8ccb09153878568c1e11fc751ab4addd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e19_diagnose.py": "5dd78676b1ed365aa4165473d0aa88e03aee31e67f0fd0eefb74f3bdc8556540"
+    },
+    "inputs": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/e19_C_s7_fmamba_from36000.pt": "9f36e7a0b80e8dc5ae084ae16577d696b0811862e5e5ba3e28bd4e16da49f9e8",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/diagnosis_rollouts_v1/meta.pt": "a92cd355577144446575dcfa2865dc6d7e0a3ed098de34a12ce5792365764c8d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e19_fmamba__incoming_exposure/contract.json": "27fc6e7c61685853aa4d8692b3a025c8e102e0931b01240b897d4a05a42fbe9d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e19_fmamba__incoming_exposure/result.json": "9acb6175323acae35e656cb484116ba7d20e6d95f324467e5fac1a17cd69e25e"
+    },
+    "pool_sha256": "7662de45ae043ae076d1751c7b34300919ec52f99106546fe39a2ff63ac9b5ac",
+    "runtime": {
+      "torch": "2.13.0+cu130",
+      "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+      "precision": "canonical BF16 autocast, FP32 health readout",
+      "batch": 4
+    }
+  },
+  "groups": {
+    "original_context": {
+      "ordinary_ge2": {
+        "unique_window_targets": 15,
+        "sampled_presentations": 111,
+        "weighted_damage_drawn": {
+          "actual": 0,
+          "generator63": 42,
+          "real_successor": 111
+        },
+        "weighted_health_change": {
+          "actual": -0.0015551721727525866,
+          "generator63": -0.7690569559733073,
+          "real_successor": -2.037883056176675
+        }
+      },
+      "unchanged": {
+        "unique_window_targets": 25,
+        "sampled_presentations": 201,
+        "weighted_damage_drawn": {
+          "actual": 0,
+          "generator63": 93,
+          "real_successor": 0
+        },
+        "weighted_health_change": {
+          "actual": 0.009666169460733138,
+          "generator63": -0.6890851419363448,
+          "real_successor": 0.01973794348797395
+        }
+      }
+    },
+    "sampled_boundary": {
+      "ordinary_ge2": {
+        "unique_window_targets": 15,
+        "sampled_presentations": 111,
+        "weighted_damage_drawn": {
+          "actual": 0,
+          "generator63": 42,
+          "real_successor": 111
+        },
+        "weighted_health_change": {
+          "actual": -0.004374325812399924,
+          "generator63": -0.7616319871163583,
+          "real_successor": -2.037883056176675
+        }
+      },
+      "unchanged": {
+        "unique_window_targets": 25,
+        "sampled_presentations": 201,
+        "weighted_damage_drawn": {
+          "actual": 0,
+          "generator63": 91,
+          "real_successor": 0
+        },
+        "weighted_health_change": {
+          "actual": 0.0199515463700935,
+          "generator63": -0.5916064105816742,
+          "real_successor": 0.01973794348797395
+        }
+      }
+    }
+  }
+}

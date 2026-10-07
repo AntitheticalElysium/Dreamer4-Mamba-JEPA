@@ -1,0 +1,171 @@
+{
+  "scope": "independent reconstruction of completed E17 aggregate metrics and declared stage2 criteria from saved log exports. No world forward. Imagined groups are world-specific aligned subsets and are not paired retention contrasts. W15 versus W5 changes clocks as well as history; causal history attribution comes from separate fixed-clock intervention and SSM lesions. No bootstrap is claimed for aggregate criteria.",
+  "inputs": {
+    "artifacts/eda/levers_logs/e17_recall_w15.log": "8927d8b4d72668924f5785286d346bd018ebf4af04caba7487bb3d5ad43167e2",
+    "artifacts/eda/levers_logs/e17_recall_w5.log": "057b15d2c032865c18afea42ac83dcc70e8fd24274348fa5c9b8253f2b8ee693",
+    "artifacts/eda/levers_logs/e17_recall_imagined_w15.log": "41c48d3a94e3beecaef347e457c28ae259507710897af7d501bbbbb33ed2e369",
+    "artifacts/eda/levers_logs/e17_damage_w15.log": "9a7863cc89ef3fb31f407f87314db34f99bae5fd5576f4e2a4e553c9be27a91b",
+    "artifacts/eda/levers_logs/e17_damage_w5.log": "00dc8be1c0271c444837cbab906c36700d91eb9e47b8dd1d0f74c227eb912032"
+  },
+  "criteria": {
+    "long_recall_same": true,
+    "long_recall_used": true,
+    "moved_unsolved": false
+  },
+  "rows": [
+    {
+      "seed": 7,
+      "attention_same15": 0.43065728573541956,
+      "mamba_same15": 0.6159239776887279,
+      "mamba_same5": 0.3690224115907663,
+      "mamba_same15_minus5": 0.24690156609796154,
+      "attention_moved15": 0.4268233481108312,
+      "mamba_moved15": 0.40530193514821017,
+      "mamba_moved5": 0.3962453848985246,
+      "mamba_imagined_same15": {
+        "n": 1480,
+        "world": 42.8442038629053,
+        "sighting": 9.475066347800295,
+        "neighbour": 54.885163559402166,
+        "recall_capture": 0.2651604034316074
+      },
+      "mamba_damage15": {
+        "teacher": {
+          "caught": 0.08605341613292694,
+          "n_damage": 337,
+          "false_drop": 0.007473841775208712
+        },
+        "selffed": {
+          "caught": 0.0,
+          "n_damage": 240,
+          "false_drop": 0.00039588281651958823
+        },
+        "teacher_by_history": {
+          "fresh": {
+            "n_hit": 31,
+            "caught": 0.0,
+            "n_no_hit": 0,
+            "drawn_without_hit": NaN
+          },
+          "beside_no_hit": {
+            "n_hit": 220,
+            "caught": 0.12727272510528564,
+            "n_no_hit": 224,
+            "drawn_without_hit": 0.1339285671710968
+          },
+          "hit_in_window": {
+            "n_hit": 7,
+            "caught": 0.1428571492433548,
+            "n_no_hit": 434,
+            "drawn_without_hit": 0.1428571492433548
+          }
+        },
+        "health_change_accuracy": {
+          "le-2": {
+            "n": 305,
+            "acc": 0.0852
+          },
+          "-1": {
+            "n": 32,
+            "acc": 0.0
+          },
+          "0": {
+            "n": 15387,
+            "acc": 0.9925
+          },
+          "ge+1": {
+            "n": 112,
+            "acc": 0.0
+          }
+        },
+        "window": 15,
+        "readings_part": {
+          "teacher_caught_le_0.2": true
+        }
+      }
+    },
+    {
+      "seed": 8,
+      "attention_same15": 0.35730463458701117,
+      "mamba_same15": 0.6433925437327357,
+      "mamba_same5": 0.364636669750886,
+      "mamba_same15_minus5": 0.2787558739818497,
+      "attention_moved15": 0.4179184058876666,
+      "mamba_moved15": 0.44027214982922924,
+      "mamba_moved5": 0.4305963832382359,
+      "mamba_imagined_same15": {
+        "n": 1496,
+        "world": 43.10736481777895,
+        "sighting": 9.30563401934606,
+        "neighbour": 56.10545725660289,
+        "recall_capture": 0.2777380669351823
+      },
+      "mamba_damage15": {
+        "teacher": {
+          "caught": 0.13649851083755493,
+          "n_damage": 337,
+          "false_drop": 0.013452914543449879
+        },
+        "selffed": {
+          "caught": 0.0,
+          "n_damage": 241,
+          "false_drop": 0.0005536660319194198
+        },
+        "teacher_by_history": {
+          "fresh": {
+            "n_hit": 31,
+            "caught": 0.032258063554763794,
+            "n_no_hit": 0,
+            "drawn_without_hit": NaN
+          },
+          "beside_no_hit": {
+            "n_hit": 220,
+            "caught": 0.22272726893424988,
+            "n_no_hit": 224,
+            "drawn_without_hit": 0.2321428507566452
+          },
+          "hit_in_window": {
+            "n_hit": 7,
+            "caught": 0.2857142984867096,
+            "n_no_hit": 434,
+            "drawn_without_hit": 0.1981566846370697
+          }
+        },
+        "health_change_accuracy": {
+          "le-2": {
+            "n": 305,
+            "acc": 0.1311
+          },
+          "-1": {
+            "n": 32,
+            "acc": 0.0
+          },
+          "0": {
+            "n": 15387,
+            "acc": 0.9865
+          },
+          "ge+1": {
+            "n": 112,
+            "acc": 0.0
+          }
+        },
+        "window": 15,
+        "readings_part": {
+          "teacher_caught_le_0.2": true
+        }
+      }
+    }
+  ],
+  "damage_controls": {
+    "damage_transitions": 337,
+    "unchanged_transitions": 15387,
+    "probe_check": {
+      "true_drop_seen_by_probe": 1.0,
+      "false_drop_by_probe": 0.0
+    },
+    "hud_token_change_median": {
+      "damage": 74.86676025390625,
+      "unchanged": 2.0998971462249756
+    }
+  }
+}

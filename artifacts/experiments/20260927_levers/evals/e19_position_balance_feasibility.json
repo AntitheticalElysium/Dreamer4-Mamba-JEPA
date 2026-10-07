@@ -1,0 +1,137 @@
+{
+  "scope": "CPU algebraic feasibility on the existing recorded TRAIN ledger. Hypothetical loss weights; no world/head fitting or sampler change. This proves weighted class-row marginal independence only, not a neural shortcut repair, conditional-on-content independence, or deployable calibration.",
+  "source": {
+    "path": "artifacts/experiments/20260927_levers/evals/e19_fmamba_s7__depth_census.json",
+    "sha256": "c5533f8f7ee6dae5c9a4209b943d147634cb703601843b1034362cf91cb90f19"
+  },
+  "formula": "w(class,row)=P_TRAIN(class)/P_TRAIN(class|row); every target/context retained; per-row total loss mass and global class mass preserved",
+  "n_targets": 1200000,
+  "class_marginals": {
+    "death": 0.0532475,
+    "ordinary_ge2": 0.0129825,
+    "unchanged": 0.912445,
+    "other": 0.021325
+  },
+  "rows": [
+    {
+      "row": 0,
+      "targets": 432239,
+      "raw_class_counts": {
+        "death": 12956,
+        "ordinary_ge2": 5953,
+        "unchanged": 403780,
+        "other": 9550
+      },
+      "weights": {
+        "death": 1.7764469089610992,
+        "ordinary_ge2": 0.9426411586594994,
+        "unchanged": 0.9767554469141612,
+        "other": 0.9651828979057592
+      },
+      "weighted_class_fractions": {
+        "death": 0.0532475,
+        "ordinary_ge2": 0.0129825,
+        "unchanged": 0.912445,
+        "other": 0.021325
+      }
+    },
+    {
+      "row": 1,
+      "targets": 336120,
+      "raw_class_counts": {
+        "death": 12658,
+        "ordinary_ge2": 4497,
+        "unchanged": 311653,
+        "other": 7312
+      },
+      "weights": {
+        "death": 1.4139318770737874,
+        "ordinary_ge2": 0.9703531020680453,
+        "unchanged": 0.9840784892171741,
+        "other": 0.980273386214442
+      },
+      "weighted_class_fractions": {
+        "death": 0.05324750000000001,
+        "ordinary_ge2": 0.012982500000000001,
+        "unchanged": 0.912445,
+        "other": 0.021325000000000004
+      }
+    },
+    {
+      "row": 2,
+      "targets": 240000,
+      "raw_class_counts": {
+        "death": 12861,
+        "ordinary_ge2": 3051,
+        "unchanged": 219021,
+        "other": 5067
+      },
+      "weights": {
+        "death": 0.9936552367623046,
+        "ordinary_ge2": 1.0212389380530973,
+        "unchanged": 0.9998438505896694,
+        "other": 1.010065127294257
+      },
+      "weighted_class_fractions": {
+        "death": 0.053247499999999996,
+        "ordinary_ge2": 0.0129825,
+        "unchanged": 0.912445,
+        "other": 0.021325
+      }
+    },
+    {
+      "row": 3,
+      "targets": 143880,
+      "raw_class_counts": {
+        "death": 12678,
+        "ordinary_ge2": 1682,
+        "unchanged": 126484,
+        "other": 3036
+      },
+      "weights": {
+        "death": 0.6042948651206815,
+        "ordinary_ge2": 1.1105363258026157,
+        "unchanged": 1.0379382894279119,
+        "other": 1.0106195652173913
+      },
+      "weighted_class_fractions": {
+        "death": 0.0532475,
+        "ordinary_ge2": 0.0129825,
+        "unchanged": 0.9124450000000001,
+        "other": 0.021325
+      }
+    },
+    {
+      "row": 4,
+      "targets": 47761,
+      "raw_class_counts": {
+        "death": 12744,
+        "ordinary_ge2": 396,
+        "unchanged": 33996,
+        "other": 625
+      },
+      "weights": {
+        "death": 0.19955695601851853,
+        "ordinary_ge2": 1.565800965909091,
+        "unchanged": 1.2818945065595952,
+        "other": 1.62960532
+      },
+      "weighted_class_fractions": {
+        "death": 0.053247499999999996,
+        "ordinary_ge2": 0.0129825,
+        "unchanged": 0.912445,
+        "other": 0.021324999999999997
+      }
+    }
+  ],
+  "weight_min": 0.19955695601851853,
+  "weight_max": 1.7764469089610992,
+  "weighted_class_prevalence_spread": {
+    "death": 1.3877787807814457e-17,
+    "ordinary_ge2": 1.734723475976807e-18,
+    "unchanged": 1.1102230246251565e-16,
+    "other": 6.938893903907228e-18
+  },
+  "kish_effective_sample_size": 1176714.360351254,
+  "created_utc": "2026-10-06T10:25:44.749586+00:00"
+}

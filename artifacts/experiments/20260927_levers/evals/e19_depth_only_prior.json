@@ -1,0 +1,54 @@
+{
+  "scope": "Exact aggregated TRAIN class-frequency AUC of the local input row alone; same sampled ledger, no model predictions. Tied row risks grouped. Not proof of learned reliance. Full pool hash independently revalidated.",
+  "pool": {
+    "path": "artifacts/eda/spatial_pool_v1/pool.pt",
+    "sha256": "7662de45ae043ae076d1751c7b34300919ec52f99106546fe39a2ff63ac9b5ac"
+  },
+  "sources": {
+    "e19_fmamba_s7__depth_census.json": {
+      "sha256": "c5533f8f7ee6dae5c9a4209b943d147634cb703601843b1034362cf91cb90f19",
+      "arms": {
+        "A_original": {
+          "depth_only_death_AUC": 0.9224969038898762,
+          "positives": 63897,
+          "negatives": 1136103
+        },
+        "B_C_random_boundaries": {
+          "depth_only_death_AUC": 0.6676472330057364,
+          "positives": 63897,
+          "negatives": 1136103
+        }
+      }
+    },
+    "e19_fmamba_s8__depth_census.json": {
+      "sha256": "c6a8c1a43daaa80147d54ed335a2199855eb377ca340f4f9c7ddbc14c9c52b1b",
+      "arms": {
+        "A_original": {
+          "depth_only_death_AUC": 0.9224969038898762,
+          "positives": 63897,
+          "negatives": 1136103
+        },
+        "B_C_random_boundaries": {
+          "depth_only_death_AUC": 0.6676472330057364,
+          "positives": 63897,
+          "negatives": 1136103
+        }
+      }
+    },
+    "e19_full_s7__depth_census.json": {
+      "sha256": "c393459a66b543ac4405a21cf7349922e28ed93fef3ce4dc4b3246bec9208993",
+      "arms": {
+        "A_original": {
+          "depth_only_death_AUC": 0.9224969038898762,
+          "positives": 63897,
+          "negatives": 1136103
+        },
+        "B_C_random_boundaries": {
+          "depth_only_death_AUC": 0.6676472330057364,
+          "positives": 63897,
+          "negatives": 1136103
+        }
+      }
+    }
+  }
+}
