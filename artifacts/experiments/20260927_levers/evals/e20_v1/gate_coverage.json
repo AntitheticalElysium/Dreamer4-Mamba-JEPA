@@ -1,0 +1,42 @@
+{
+  "dataset_contract": "f1c8583ae0c68935c2db27c727f01183ed88b3691164fa267c8ba38537bce366",
+  "source": {
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e20_gate_coverage.py": "fc432b3d3de3e529dc7bb8443d46cfc24c623bb8ae543b284ede149540875c5c"
+  },
+  "candidate_panel_sha256": "6245bb509ae94f115a8820e49f4e5ff760683065e3ef2f908b37a58183863670",
+  "addresses": 512,
+  "counts": {
+    "train": {
+      "alive": 128,
+      "dead": 128,
+      "episodes": 128
+    },
+    "dev": {
+      "alive": 128,
+      "dead": 128,
+      "episodes": 128
+    }
+  },
+  "baseline_continuation_coverage": {
+    "status": "insufficient_coverage",
+    "alive": 767,
+    "dead": 1
+  },
+  "unsupported_retention_labels": [
+    "front_resource",
+    "adjacent_mob",
+    "sleeping",
+    "place_table"
+  ],
+  "missing_numeric_suite": [
+    "health",
+    "food",
+    "drink",
+    "energy",
+    "12 inventory quantities"
+  ],
+  "FINAL_frames_inspected": 0,
+  "world_forward_calls": 0,
+  "scope": "recovered balanced factual calibration inputs, not population calibration or gate authorization",
+  "not_completed": "numeric retention integration and simulator-verified expansion of missing predicates"
+}

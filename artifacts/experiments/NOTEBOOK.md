@@ -61,6 +61,193 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-08 — E20 seed7 endpoints and frozen CPU diagnostics
+
+All three seed7 arms completed their original6,000 updates. Parent and A/B/C
+window5/15 endpoints and paired comparisons are complete; the additional window4
+endpoint pass remains in progress. Seed8 stays held for review. Numerical sources
+and completed endpoint receipts match their recorded hashes. Reused diagnosis
+roots, one world seed; no actor or sealed promotion result.
+
+**B expanded factual support but did not repair health.** Independent HUD reader,
+teacher successor, window15; strict drop cut1.5 health units:
+
+| endpoint | A | B | paired B−A,95% interval |
+|---|---:|---:|---|
+| ordinary >=2 hits caught |16/279|27/279|+0.03943[+0.00749,+0.07252]|
+| fresh hits caught |0/31|0/31|0|
+| ordinary change MAE,health units |2.06469|2.17689|+0.11220[+0.03104,+0.20419]|
+
+The catch-rate gain is not accurate damage prediction: B adds17 catches and
+loses6, with all17 new cases true7→5 transitions,17 distinct roots/episode seeds.
+Median B successor health0.56459;13/17 below1. These cases already had a zombie
+in their history and are **not** the fresh stratum. Four selected frozen CPU
+decompositions: A's health generation weight0.000253–0.01740, B's0.40114–0.64822;
+B's normalized generated candidate reads health0.809/0.542/0.032/0.191 against
+true5, alongside substantial neighbour mixing. CPU/CUDA health difference up to
+0.0997 in this subset; endpoint statistics use the saved CUDA outputs. This
+localizes those selected over-drops to altered mixing and inaccurate candidates;
+it is not a population-wide learning-cause proof. Window5 teacher B catches18/279
+versus A6/279, but fresh remains0/31. Window15 self-fed B catches2/174, A1/171;
+common-alignment paired gain0.00637[0,+0.02069], fresh0/23 in both.
+
+**Preservation conditions fail.** Paired preselected sample0, window15:
+B same-slot age6..15 capture0.50430 versus parent0.63438 over2,088 cells;
+difference−0.13008[−0.18633,−0.07653], failing the−0.05 retention margin.
+B one-step added error/copy0.007649[0.006391,0.009089], above the0.005 ceiling;
+depth16 added error/V0.030255[0.018314,0.044286]. A and C also lose long-age
+same-slot recall. These parent contrasts combine the shared E20 layout/data/
+optimizer/budget changes; they do not isolate expanded B support as the cause.
+
+**Short checkpoint diagnostics, no optimization:** fixed factual TRAIN panel,
+eight ordinary nonfresh and eight detector-estimated fresh events, all true−2.
+At context4, B fresh mean predicted changes at parent/1500/3000/4500/6000:
+−0.0241/−0.0094/−0.0181/−0.0079/−0.0085 health units,0/8 strict catches at each.
+B context15 at6000 also catches0/8 fresh cases. This is a small post-hoc panel,
+not representative convergence evidence or a scratch comparison. CPU reference
+recurrence versus four stored CUDA predictions: health-readout max difference
+0.00136; checkpoint diagnostics took30.11s and22.43s. B's teacher retains ordinary
+damage class-loss mass1.29825% despite25% sampled endpoints. No arm tests the
+revised recipe from initialization; 6k sufficiency remains unestablished.
+
+**C remains a diagnostic of scalar supervision, not an adopted method.** At
+window15 its loss reader catches266/279 ordinary and31/31 fresh drops; independent
+HUD reader6/279 and0/31. Both readers catch essentially all real successors with
+zero unchanged false drops. Fresh medians: loss-reader predicted delta−1.931,
+independent HUD−1.046. Affine decomposition puts the discrepancy in token63:
+real independent contribution−1.978, generated−1.071; other HUD contributions
+are small. Fixed TRAIN C already shows this two-reader separation at1500 updates.
+The scalar objective constrains one affine projection; its success does not imply
+faithful health-token geometry. This is consistent with the scalar-projection
+ambiguity analyzed in [VaGraM,sec3](https://arxiv.org/html/2204.01464v1#S3), whose
+value-weighted state loss differs from E20. No stochastic-averaging or warm-start
+causal explanation is established by these measurements.
+
+Evidence: EDA `levers_e20_v1/endpoints/contrasts_e20_C_s7_fmamba_fromM16_w{5,15}.json`,
+`analysis_{B_new_catches,B_mae_contrasts,BA_generator_gate_cpu,B_checkpoint_curve_cpu,
+checkpoint_curve_cpu,dual_reader_w15,health_geometry_w15}.json`;
+scripts `20260927_levers/e20_{checkpoint_curve_cpu,b_checkpoint_curve_cpu}.py`.
+All process logs stay in `artifacts/eda/levers_logs/`; notebook updated by agent.
+
+**Historical fresh-hit readability scope, rechecked:** E19's local health hidden
+feature h63 plus current health token/action was probed, with a ridge trained on
+all ordinary damage versus unchanged, not exclusively fresh hits. Its Mamba B
+fresh AUCs: seed7 0.62920[0.42420,0.78722], seed8
+0.70155[0.53379,0.89269]; HUD-input/action control
+0.67959[0.42350,0.88638]. Each uses9 fresh positives/1,376 scrolling unchanged
+controls on43 TEST seeds. These are standalone intervals, not a paired test of
+hidden versus input. Overall hidden damage AUC~0.86 is **not** fresh-hit evidence.
+No full-hidden/carry, expressive fresh-specific comparison is established here,
+and E20 B's hidden fresh readability has not been measured. E19 B randomized
+boundaries/contexts; E20 B expands damage support. Sources:
+`20260927_levers/e19_trace_readout.py`, `evals/e19_B_trace_readout.json`,
+`evals/e19_B_s8_fmamba_from36000__e19_trace_readout.json`. E14a/b strict map-
+consequence AP results concern mining/placement, not health.
+
+## 2026-10-07 — E20 factual damage support and scalar consequence objective
+
+Predeclaration: [E20.md](20260927_levers/E20.md), endpoint implementation:
+[E20_ENDPOINTS.md](20260927_levers/E20_ENDPOINTS.md). Each arm continues its own
+E17 M16 fmamba/corrt seed7/8 parent for6,000 updates; frozen Raw patch encoder,
+same world architecture. Targets have14 preceding factual frames, with4..15
+observed frames selected in balanced12-update cycles. Every batch40 contains
+2 death/10 living >=2 damage/26 unchanged/2 other targets. Predict only the final
+factual successor. Teacher importance weights retain E19's class-loss mass
+0.0532475/0.0129825/0.912445/0.021325 at every context length.
+
+|arm|ordinary damage source|objective|
+|---|---|---|
+|A|old E19 TRAIN support, deduplicated with source history recovered|latent L1|
+|B|all eligible factual TRAIN ordinary damage|latent L1|
+|C|exactly B's targets, batches and contexts|B + frozen health-token63 scalar delta L1, lambda1|
+
+Death/unchanged/other targets are identical in A/B/C. B−A isolates the expanded
+ordinary-damage distribution; C−B isolates the scalar objective. Parent→A combines
+extra training, history/layout repair and endpoint-only supervision; it does not
+isolate the terminal alias. No fork outcome trains a world or the loss reader.
+
+**Full source census and label correction:** all8,325 TRAIN episodes and3,119,763
+frames match exact renderer health templates. At outgoing t>=14 there are8,071
+deaths,36,068 living >=2 damage transitions,2,891,130 unchanged and59,619 other.
+The reward-only health decomposition was ambiguous on exactly two terminal
+transitions: reward approximately0.1 was decoded as+1 but the HUD shows9→0.
+IDs:`support-v2:20270731:13:14` and `support-v2:20270731:42:15`.
+The terminal-aware correction makes every TRAIN reward-derived delta equal the
+exact HUD difference. Living ordinary-damage counts do not change. Historical
+reward-only census and aborted pool allocation are preserved under EDA; legacy
+checkpoint/source files were not edited. E20 uses the corrected labels.
+
+**Measured support admission:** union pool71,918 distinct factual endpoints.
+A ordinary support1,961 events; B/C36,068. Under the same TRAIN-fit token hazard
+detector and true-pair motion audit, A has54 fresh-damage events/54 episodes;
+B/C1,005/934, passing the declared200-event/100-episode minimum. These are
+detector-estimated fresh cases, not simulator annotations. The actual6,000-update
+ledger covers1,961/29,179/29,179 distinct ordinary targets in A/B/C. B/C ledger
+and context bytes match; A/B nonordinary targets match. At each of12 context
+lengths the class counts are exactly1,000/5,000/13,000/1,000. This removes class
+prevalence versus endpoint-position association; no broader causal claim is made.
+Fresh-target draws in that fixed full ledger: A1,664 presentations of54 distinct
+events/54 episodes; B/C1,704 presentations of820 distinct events/774 episodes.
+Thus fresh presentations are close while independent factual support expands.
+This ledger calculation is not a count of completed optimizer updates. Evidence:
+EDA `levers_e20_v1/actual_support_draws.json`.
+
+**Reader and execution admission:** factual TRAIN health-token63 ridge, episode
+holdout,16,384 fit frames/8,192 selection frames, lambda0.0001. Held health MAE
+0.0720653 units; ordinary-hit catch7,489/7,490, false drops0/5,261. Reader validity
+passed. Encoder-cache32-window sentinels: maximum token difference0.0009765625
+against tolerance0.002. Actual CUDA full-batch/context15 loss and gradients finite.
+B/C loss identity and future-input perturbation differences0. Serialized4-update
+versus2+restart+2 proof: model/RNG differences0 for all arms; optimizer maxima
+1.36e−11/1.09e−11/2.91e−11. The proof consumes fresh temporary worlds, not the
+scientific continuation states.
+
+Independent diagnostic real-state controls also completed without world calls:
+historical HUD reader MAE0.02535, strict catch278/279; factual loss reader
+MAE0.04921, catch279/279. Both catch31/31 fresh hits and have0/12,623 false
+drops. Copy controls catch0/279. A rank mismatch in the new dual-reader wrapper
+was caught by this CPU control before any endpoint inference and corrected;
+failed log and old source-pin/preflight records are retained. World training,
+loss and source contracts were unchanged.
+
+**Endpoint contract:** strict1.5-health-unit cut plus separate0.5 sensitivity;
+ordinary/fresh/unchanged/cooldown-negative/recovery/starvation strata; independent
+historical HUD reader and frozen factual loss reader. Hash-checked teval states
+are reused on CPU at windows5/15; window4 gets a compact dual-reader pass. Paired
+memory uncertainty uses the preselected sample0 trajectories:2,088 same-slot
+age6..15 cells,2,949 moved-slot age6..15 and4,237 same-slot age2..5 across143 seed
+clusters. The original all-five-key recall metric is also measured. Retention
+requires own-parent difference lower95%>−0.05; one-step cost upper95%<=0.005.
+Neither a health gain nor this reused diagnostic panel authorizes an actor.
+
+**Gate-data recovery, not a gate pass:** balanced factual addresses recovered
+with4 observed frames and one recorded successor,128 alive/128 dead from128
+episodes in each of TRAIN and DEV; split IDs disjoint, no FINAL frames inspected.
+Canonical continuation previously had767 alive/1 dead. Numeric health/inventory
+retention integration and missing simulator-verified predicate coverage remain
+unfinished. The canonical gate was not changed or rerun.
+
+Execution: persistent `d4mj-e20.service`, serialized GPU training/evaluation;
+`d4mj-e20-post.service` completes paired parent/readout/memory/cost comparisons.
+Full scientific states every500 updates, atomic chunked data/evaluation stores,
+source/input hashes checked on resume. A seed7 reached the committed1,000-update
+state after admission (560.08 s training session, peak2.596 GB);
+other arms/seeds and scientific endpoints are pending. No health-repair result yet.
+Scheduling amendment before endpoint judgement: [E20_REVIEW.md](20260927_levers/E20_REVIEW.md).
+Seed7 A/B completed their original6,000 updates; C continues its original budget.
+Seed8 is held pending user review; seed7 endpoints/parent comparisons remain
+queued. Only orchestration sources and approved-seed schedule changed; original
+pins/sources preserved in EDA. The current C trainer is not interrupted; a
+hash-verified completion handoff replaces the stopped coordinator afterward.
+Original two-seed adoption criteria remain unmet during this hold. Lineage:
+36k short +6k long parent; new6k endpoint phase240k target presentations, versus
+3.6M in the previous6k long phase. This is an adaptation pilot, not a scratch
+training test or demonstrated convergence budget.
+Sources/evidence:`20260927_levers/e20_{data,labels,prepare,train,verify,endpoints,post}.py`,
+EDA `levers_e20_v1/{source_census_corrected,pool,contract_check,health_reader,mechanics,gate_coverage}.json`.
+Process logs only `artifacts/eda/levers_logs/e20_*.log`; experiment processes never
+write this notebook.
+
 ## 2026-10-07 — E17 completed H16 and separating diagnostics
 
 **Original protocol:** four frozen L16-trained worlds (attention/Mamba, seeds7/8),

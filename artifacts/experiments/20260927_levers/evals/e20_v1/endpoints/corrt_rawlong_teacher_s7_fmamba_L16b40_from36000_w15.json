@@ -1,0 +1,1172 @@
+{
+  "positive_controls": {
+    "independent_hud": {
+      "mae_health": 0.025353290140628815,
+      "strict_real_control": {
+        "overall": {
+          "n": 13022,
+          "n_hit": 279,
+          "hits_drawn": 278,
+          "hit_catch": 0.9964157938957214,
+          "n_unchanged": 12623,
+          "false_drops": 0,
+          "false_drop_rate": 0.0,
+          "drawn_rate": 0.021348487585783005,
+          "recovery_n": 96,
+          "recovery_false_drops": 0
+        },
+        "fresh": {
+          "n": 31,
+          "n_hit": 31,
+          "hits_drawn": 31,
+          "hit_catch": 1.0,
+          "n_unchanged": 0,
+          "false_drops": 0,
+          "false_drop_rate": null,
+          "drawn_rate": 1.0,
+          "recovery_n": 0,
+          "recovery_false_drops": 0
+        },
+        "beside_no_hit": {
+          "n": 444,
+          "n_hit": 220,
+          "hits_drawn": 219,
+          "hit_catch": 0.9954545497894287,
+          "n_unchanged": 211,
+          "false_drops": 0,
+          "false_drop_rate": 0.0,
+          "drawn_rate": 0.4932432472705841,
+          "recovery_n": 8,
+          "recovery_false_drops": 0
+        },
+        "recent_hit": {
+          "n": 441,
+          "n_hit": 7,
+          "hits_drawn": 7,
+          "hit_catch": 1.0,
+          "n_unchanged": 416,
+          "false_drops": 0,
+          "false_drop_rate": 0.0,
+          "drawn_rate": 0.01587301678955555,
+          "recovery_n": 18,
+          "recovery_false_drops": 0
+        },
+        "not_adjacent": {
+          "n": 12106,
+          "n_hit": 21,
+          "hits_drawn": 21,
+          "hit_catch": 1.0,
+          "n_unchanged": 11996,
+          "false_drops": 0,
+          "false_drop_rate": 0.0,
+          "drawn_rate": 0.0017346770036965609,
+          "recovery_n": 70,
+          "recovery_false_drops": 0
+        }
+      }
+    },
+    "factual_loss_reader": {
+      "mae_health": 0.049208395183086395,
+      "strict_real_control": {
+        "overall": {
+          "n": 13022,
+          "n_hit": 279,
+          "hits_drawn": 279,
+          "hit_catch": 1.0,
+          "n_unchanged": 12623,
+          "false_drops": 0,
+          "false_drop_rate": 0.0,
+          "drawn_rate": 0.0214252807199955,
+          "recovery_n": 96,
+          "recovery_false_drops": 0
+        },
+        "fresh": {
+          "n": 31,
+          "n_hit": 31,
+          "hits_drawn": 31,
+          "hit_catch": 1.0,
+          "n_unchanged": 0,
+          "false_drops": 0,
+          "false_drop_rate": null,
+          "drawn_rate": 1.0,
+          "recovery_n": 0,
+          "recovery_false_drops": 0
+        },
+        "beside_no_hit": {
+          "n": 444,
+          "n_hit": 220,
+          "hits_drawn": 220,
+          "hit_catch": 1.0,
+          "n_unchanged": 211,
+          "false_drops": 0,
+          "false_drop_rate": 0.0,
+          "drawn_rate": 0.4954954981803894,
+          "recovery_n": 8,
+          "recovery_false_drops": 0
+        },
+        "recent_hit": {
+          "n": 441,
+          "n_hit": 7,
+          "hits_drawn": 7,
+          "hit_catch": 1.0,
+          "n_unchanged": 416,
+          "false_drops": 0,
+          "false_drop_rate": 0.0,
+          "drawn_rate": 0.01587301678955555,
+          "recovery_n": 18,
+          "recovery_false_drops": 0
+        },
+        "not_adjacent": {
+          "n": 12106,
+          "n_hit": 21,
+          "hits_drawn": 21,
+          "hit_catch": 1.0,
+          "n_unchanged": 11996,
+          "false_drops": 0,
+          "false_drop_rate": 0.0,
+          "drawn_rate": 0.0017346770036965609,
+          "recovery_n": 70,
+          "recovery_false_drops": 0
+        }
+      }
+    }
+  },
+  "metrics": {
+    "independent_hud": {
+      "teacher": {
+        "1.5": {
+          "all": {
+            "overall": {
+              "n": 13022,
+              "n_hit": 279,
+              "hits_drawn": 25,
+              "hit_catch": 0.08960573375225067,
+              "n_unchanged": 12623,
+              "false_drops": 108,
+              "false_drop_rate": 0.008555810898542404,
+              "drawn_rate": 0.01044386439025402,
+              "recovery_n": 96,
+              "recovery_false_drops": 1
+            },
+            "fresh": {
+              "n": 31,
+              "n_hit": 31,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 0,
+              "false_drops": 0,
+              "false_drop_rate": null,
+              "drawn_rate": 0.0,
+              "recovery_n": 0,
+              "recovery_false_drops": 0
+            },
+            "beside_no_hit": {
+              "n": 444,
+              "n_hit": 220,
+              "hits_drawn": 24,
+              "hit_catch": 0.1090909093618393,
+              "n_unchanged": 211,
+              "false_drops": 22,
+              "false_drop_rate": 0.10426539927721024,
+              "drawn_rate": 0.11036036163568497,
+              "recovery_n": 8,
+              "recovery_false_drops": 1
+            },
+            "recent_hit": {
+              "n": 441,
+              "n_hit": 7,
+              "hits_drawn": 1,
+              "hit_catch": 0.1428571492433548,
+              "n_unchanged": 416,
+              "false_drops": 48,
+              "false_drop_rate": 0.11538461595773697,
+              "drawn_rate": 0.1111111119389534,
+              "recovery_n": 18,
+              "recovery_false_drops": 0
+            },
+            "not_adjacent": {
+              "n": 12106,
+              "n_hit": 21,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 11996,
+              "false_drops": 38,
+              "false_drop_rate": 0.0031677226070314646,
+              "drawn_rate": 0.0031389393843710423,
+              "recovery_n": 70,
+              "recovery_false_drops": 0
+            }
+          },
+          "test": {
+            "overall": {
+              "n": 3677,
+              "n_hit": 87,
+              "hits_drawn": 8,
+              "hit_catch": 0.09195402264595032,
+              "n_unchanged": 3546,
+              "false_drops": 39,
+              "false_drop_rate": 0.010998307727277279,
+              "drawn_rate": 0.013326081447303295,
+              "recovery_n": 37,
+              "recovery_false_drops": 1
+            },
+            "fresh": {
+              "n": 9,
+              "n_hit": 9,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 0,
+              "false_drops": 0,
+              "false_drop_rate": null,
+              "drawn_rate": 0.0,
+              "recovery_n": 0,
+              "recovery_false_drops": 0
+            },
+            "beside_no_hit": {
+              "n": 148,
+              "n_hit": 65,
+              "hits_drawn": 7,
+              "hit_catch": 0.10769230872392654,
+              "n_unchanged": 76,
+              "false_drops": 8,
+              "false_drop_rate": 0.10526315867900848,
+              "drawn_rate": 0.11486486345529556,
+              "recovery_n": 4,
+              "recovery_false_drops": 1
+            },
+            "recent_hit": {
+              "n": 129,
+              "n_hit": 2,
+              "hits_drawn": 1,
+              "hit_catch": 0.5,
+              "n_unchanged": 119,
+              "false_drops": 13,
+              "false_drop_rate": 0.10924369841814041,
+              "drawn_rate": 0.10852713137865067,
+              "recovery_n": 8,
+              "recovery_false_drops": 0
+            },
+            "not_adjacent": {
+              "n": 3391,
+              "n_hit": 11,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 3351,
+              "false_drops": 18,
+              "false_drop_rate": 0.005371531005948782,
+              "drawn_rate": 0.005308168474584818,
+              "recovery_n": 25,
+              "recovery_false_drops": 0
+            }
+          }
+        },
+        "0.5": {
+          "all": {
+            "overall": {
+              "n": 13022,
+              "n_hit": 279,
+              "hits_drawn": 28,
+              "hit_catch": 0.10035842657089233,
+              "n_unchanged": 12623,
+              "false_drops": 172,
+              "false_drop_rate": 0.013625920750200748,
+              "drawn_rate": 0.015819381922483444,
+              "recovery_n": 96,
+              "recovery_false_drops": 4
+            },
+            "fresh": {
+              "n": 31,
+              "n_hit": 31,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 0,
+              "false_drops": 0,
+              "false_drop_rate": null,
+              "drawn_rate": 0.0,
+              "recovery_n": 0,
+              "recovery_false_drops": 0
+            },
+            "beside_no_hit": {
+              "n": 444,
+              "n_hit": 220,
+              "hits_drawn": 27,
+              "hit_catch": 0.12272727489471436,
+              "n_unchanged": 211,
+              "false_drops": 26,
+              "false_drop_rate": 0.12322274595499039,
+              "drawn_rate": 0.12837837636470795,
+              "recovery_n": 8,
+              "recovery_false_drops": 2
+            },
+            "recent_hit": {
+              "n": 441,
+              "n_hit": 7,
+              "hits_drawn": 1,
+              "hit_catch": 0.1428571492433548,
+              "n_unchanged": 416,
+              "false_drops": 61,
+              "false_drop_rate": 0.14663460850715637,
+              "drawn_rate": 0.1428571492433548,
+              "recovery_n": 18,
+              "recovery_false_drops": 1
+            },
+            "not_adjacent": {
+              "n": 12106,
+              "n_hit": 21,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 11996,
+              "false_drops": 85,
+              "false_drop_rate": 0.007085695397108793,
+              "drawn_rate": 0.007103915326297283,
+              "recovery_n": 70,
+              "recovery_false_drops": 1
+            }
+          },
+          "test": {
+            "overall": {
+              "n": 3677,
+              "n_hit": 87,
+              "hits_drawn": 9,
+              "hit_catch": 0.1034482792019844,
+              "n_unchanged": 3546,
+              "false_drops": 60,
+              "false_drop_rate": 0.01692047342658043,
+              "drawn_rate": 0.019581180065870285,
+              "recovery_n": 37,
+              "recovery_false_drops": 2
+            },
+            "fresh": {
+              "n": 9,
+              "n_hit": 9,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 0,
+              "false_drops": 0,
+              "false_drop_rate": null,
+              "drawn_rate": 0.0,
+              "recovery_n": 0,
+              "recovery_false_drops": 0
+            },
+            "beside_no_hit": {
+              "n": 148,
+              "n_hit": 65,
+              "hits_drawn": 8,
+              "hit_catch": 0.1230769231915474,
+              "n_unchanged": 76,
+              "false_drops": 10,
+              "false_drop_rate": 0.1315789520740509,
+              "drawn_rate": 0.13513512909412384,
+              "recovery_n": 4,
+              "recovery_false_drops": 1
+            },
+            "recent_hit": {
+              "n": 129,
+              "n_hit": 2,
+              "hits_drawn": 1,
+              "hit_catch": 0.5,
+              "n_unchanged": 119,
+              "false_drops": 16,
+              "false_drop_rate": 0.13445378839969635,
+              "drawn_rate": 0.13953489065170288,
+              "recovery_n": 8,
+              "recovery_false_drops": 1
+            },
+            "not_adjacent": {
+              "n": 3391,
+              "n_hit": 11,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 3351,
+              "false_drops": 34,
+              "false_drop_rate": 0.01014622487127781,
+              "drawn_rate": 0.010026540607213974,
+              "recovery_n": 25,
+              "recovery_false_drops": 0
+            }
+          }
+        },
+        "change_mae_health": 0.09163601696491241,
+        "recovery_catch": 0.0,
+        "starvation_catch": 0.0833333358168602
+      },
+      "selffed": {
+        "1.5": {
+          "all": {
+            "overall": {
+              "n": 10044,
+              "n_hit": 171,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 9794,
+              "false_drops": 4,
+              "false_drop_rate": 0.00040841332520358264,
+              "drawn_rate": 0.00039824770647101104,
+              "recovery_n": 60,
+              "recovery_false_drops": 0
+            },
+            "fresh": {
+              "n": 23,
+              "n_hit": 23,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 0,
+              "false_drops": 0,
+              "false_drop_rate": null,
+              "drawn_rate": 0.0,
+              "recovery_n": 0,
+              "recovery_false_drops": 0
+            },
+            "beside_no_hit": {
+              "n": 277,
+              "n_hit": 133,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 135,
+              "false_drops": 0,
+              "false_drop_rate": 0.0,
+              "drawn_rate": 0.0,
+              "recovery_n": 5,
+              "recovery_false_drops": 0
+            },
+            "recent_hit": {
+              "n": 247,
+              "n_hit": 4,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 233,
+              "false_drops": 0,
+              "false_drop_rate": 0.0,
+              "drawn_rate": 0.0,
+              "recovery_n": 10,
+              "recovery_false_drops": 0
+            },
+            "not_adjacent": {
+              "n": 9497,
+              "n_hit": 11,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 9426,
+              "false_drops": 4,
+              "false_drop_rate": 0.00042435814975760877,
+              "drawn_rate": 0.0004211856285110116,
+              "recovery_n": 45,
+              "recovery_false_drops": 0
+            }
+          },
+          "test": {
+            "overall": {
+              "n": 2832,
+              "n_hit": 52,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 2752,
+              "false_drops": 4,
+              "false_drop_rate": 0.0014534883666783571,
+              "drawn_rate": 0.0014124293811619282,
+              "recovery_n": 22,
+              "recovery_false_drops": 0
+            },
+            "fresh": {
+              "n": 6,
+              "n_hit": 6,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 0,
+              "false_drops": 0,
+              "false_drop_rate": null,
+              "drawn_rate": 0.0,
+              "recovery_n": 0,
+              "recovery_false_drops": 0
+            },
+            "beside_no_hit": {
+              "n": 85,
+              "n_hit": 38,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 42,
+              "false_drops": 0,
+              "false_drop_rate": 0.0,
+              "drawn_rate": 0.0,
+              "recovery_n": 2,
+              "recovery_false_drops": 0
+            },
+            "recent_hit": {
+              "n": 73,
+              "n_hit": 2,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 67,
+              "false_drops": 0,
+              "false_drop_rate": 0.0,
+              "drawn_rate": 0.0,
+              "recovery_n": 4,
+              "recovery_false_drops": 0
+            },
+            "not_adjacent": {
+              "n": 2668,
+              "n_hit": 6,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 2643,
+              "false_drops": 4,
+              "false_drop_rate": 0.0015134316636249423,
+              "drawn_rate": 0.0014992504147812724,
+              "recovery_n": 16,
+              "recovery_false_drops": 0
+            }
+          }
+        },
+        "0.5": {
+          "all": {
+            "overall": {
+              "n": 10044,
+              "n_hit": 171,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 9794,
+              "false_drops": 4,
+              "false_drop_rate": 0.00040841332520358264,
+              "drawn_rate": 0.00039824770647101104,
+              "recovery_n": 60,
+              "recovery_false_drops": 0
+            },
+            "fresh": {
+              "n": 23,
+              "n_hit": 23,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 0,
+              "false_drops": 0,
+              "false_drop_rate": null,
+              "drawn_rate": 0.0,
+              "recovery_n": 0,
+              "recovery_false_drops": 0
+            },
+            "beside_no_hit": {
+              "n": 277,
+              "n_hit": 133,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 135,
+              "false_drops": 0,
+              "false_drop_rate": 0.0,
+              "drawn_rate": 0.0,
+              "recovery_n": 5,
+              "recovery_false_drops": 0
+            },
+            "recent_hit": {
+              "n": 247,
+              "n_hit": 4,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 233,
+              "false_drops": 0,
+              "false_drop_rate": 0.0,
+              "drawn_rate": 0.0,
+              "recovery_n": 10,
+              "recovery_false_drops": 0
+            },
+            "not_adjacent": {
+              "n": 9497,
+              "n_hit": 11,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 9426,
+              "false_drops": 4,
+              "false_drop_rate": 0.00042435814975760877,
+              "drawn_rate": 0.0004211856285110116,
+              "recovery_n": 45,
+              "recovery_false_drops": 0
+            }
+          },
+          "test": {
+            "overall": {
+              "n": 2832,
+              "n_hit": 52,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 2752,
+              "false_drops": 4,
+              "false_drop_rate": 0.0014534883666783571,
+              "drawn_rate": 0.0014124293811619282,
+              "recovery_n": 22,
+              "recovery_false_drops": 0
+            },
+            "fresh": {
+              "n": 6,
+              "n_hit": 6,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 0,
+              "false_drops": 0,
+              "false_drop_rate": null,
+              "drawn_rate": 0.0,
+              "recovery_n": 0,
+              "recovery_false_drops": 0
+            },
+            "beside_no_hit": {
+              "n": 85,
+              "n_hit": 38,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 42,
+              "false_drops": 0,
+              "false_drop_rate": 0.0,
+              "drawn_rate": 0.0,
+              "recovery_n": 2,
+              "recovery_false_drops": 0
+            },
+            "recent_hit": {
+              "n": 73,
+              "n_hit": 2,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 67,
+              "false_drops": 0,
+              "false_drop_rate": 0.0,
+              "drawn_rate": 0.0,
+              "recovery_n": 4,
+              "recovery_false_drops": 0
+            },
+            "not_adjacent": {
+              "n": 2668,
+              "n_hit": 6,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 2643,
+              "false_drops": 4,
+              "false_drop_rate": 0.0015134316636249423,
+              "drawn_rate": 0.0014992504147812724,
+              "recovery_n": 16,
+              "recovery_false_drops": 0
+            }
+          }
+        },
+        "change_mae_health": 0.059216152876615524,
+        "recovery_catch": 0.0,
+        "starvation_catch": 0.0
+      }
+    },
+    "factual_loss_reader": {
+      "teacher": {
+        "1.5": {
+          "all": {
+            "overall": {
+              "n": 13022,
+              "n_hit": 279,
+              "hits_drawn": 24,
+              "hit_catch": 0.08602150529623032,
+              "n_unchanged": 12623,
+              "false_drops": 132,
+              "false_drop_rate": 0.010457102209329605,
+              "drawn_rate": 0.0122868986800313,
+              "recovery_n": 96,
+              "recovery_false_drops": 2
+            },
+            "fresh": {
+              "n": 31,
+              "n_hit": 31,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 0,
+              "false_drops": 0,
+              "false_drop_rate": null,
+              "drawn_rate": 0.0,
+              "recovery_n": 0,
+              "recovery_false_drops": 0
+            },
+            "beside_no_hit": {
+              "n": 444,
+              "n_hit": 220,
+              "hits_drawn": 23,
+              "hit_catch": 0.10454545170068741,
+              "n_unchanged": 211,
+              "false_drops": 24,
+              "false_drop_rate": 0.11374407261610031,
+              "drawn_rate": 0.11486486345529556,
+              "recovery_n": 8,
+              "recovery_false_drops": 2
+            },
+            "recent_hit": {
+              "n": 441,
+              "n_hit": 7,
+              "hits_drawn": 1,
+              "hit_catch": 0.1428571492433548,
+              "n_unchanged": 416,
+              "false_drops": 55,
+              "false_drop_rate": 0.13221153616905212,
+              "drawn_rate": 0.1269841343164444,
+              "recovery_n": 18,
+              "recovery_false_drops": 0
+            },
+            "not_adjacent": {
+              "n": 12106,
+              "n_hit": 21,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 11996,
+              "false_drops": 53,
+              "false_drop_rate": 0.004418139345943928,
+              "drawn_rate": 0.00437799422070384,
+              "recovery_n": 70,
+              "recovery_false_drops": 0
+            }
+          },
+          "test": {
+            "overall": {
+              "n": 3677,
+              "n_hit": 87,
+              "hits_drawn": 7,
+              "hit_catch": 0.08045977354049683,
+              "n_unchanged": 3546,
+              "false_drops": 47,
+              "false_drop_rate": 0.013254371471703053,
+              "drawn_rate": 0.015229807235300541,
+              "recovery_n": 37,
+              "recovery_false_drops": 1
+            },
+            "fresh": {
+              "n": 9,
+              "n_hit": 9,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 0,
+              "false_drops": 0,
+              "false_drop_rate": null,
+              "drawn_rate": 0.0,
+              "recovery_n": 0,
+              "recovery_false_drops": 0
+            },
+            "beside_no_hit": {
+              "n": 148,
+              "n_hit": 65,
+              "hits_drawn": 6,
+              "hit_catch": 0.0923076942563057,
+              "n_unchanged": 76,
+              "false_drops": 9,
+              "false_drop_rate": 0.1184210553765297,
+              "drawn_rate": 0.11486486345529556,
+              "recovery_n": 4,
+              "recovery_false_drops": 1
+            },
+            "recent_hit": {
+              "n": 129,
+              "n_hit": 2,
+              "hits_drawn": 1,
+              "hit_catch": 0.5,
+              "n_unchanged": 119,
+              "false_drops": 14,
+              "false_drop_rate": 0.11764705926179886,
+              "drawn_rate": 0.11627907305955887,
+              "recovery_n": 8,
+              "recovery_false_drops": 0
+            },
+            "not_adjacent": {
+              "n": 3391,
+              "n_hit": 11,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 3351,
+              "false_drops": 24,
+              "false_drop_rate": 0.007162041030824184,
+              "drawn_rate": 0.007077558431774378,
+              "recovery_n": 25,
+              "recovery_false_drops": 0
+            }
+          }
+        },
+        "0.5": {
+          "all": {
+            "overall": {
+              "n": 13022,
+              "n_hit": 279,
+              "hits_drawn": 29,
+              "hit_catch": 0.10394265502691269,
+              "n_unchanged": 12623,
+              "false_drops": 180,
+              "false_drop_rate": 0.014259684830904007,
+              "drawn_rate": 0.016664106398820877,
+              "recovery_n": 96,
+              "recovery_false_drops": 6
+            },
+            "fresh": {
+              "n": 31,
+              "n_hit": 31,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 0,
+              "false_drops": 0,
+              "false_drop_rate": null,
+              "drawn_rate": 0.0,
+              "recovery_n": 0,
+              "recovery_false_drops": 0
+            },
+            "beside_no_hit": {
+              "n": 444,
+              "n_hit": 220,
+              "hits_drawn": 28,
+              "hit_catch": 0.12727272510528564,
+              "n_unchanged": 211,
+              "false_drops": 27,
+              "false_drop_rate": 0.12796208262443542,
+              "drawn_rate": 0.13288287818431854,
+              "recovery_n": 8,
+              "recovery_false_drops": 2
+            },
+            "recent_hit": {
+              "n": 441,
+              "n_hit": 7,
+              "hits_drawn": 1,
+              "hit_catch": 0.1428571492433548,
+              "n_unchanged": 416,
+              "false_drops": 67,
+              "false_drop_rate": 0.16105769574642181,
+              "drawn_rate": 0.15646257996559143,
+              "recovery_n": 18,
+              "recovery_false_drops": 1
+            },
+            "not_adjacent": {
+              "n": 12106,
+              "n_hit": 21,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 11996,
+              "false_drops": 86,
+              "false_drop_rate": 0.0071690562181174755,
+              "drawn_rate": 0.007351726293563843,
+              "recovery_n": 70,
+              "recovery_false_drops": 3
+            }
+          },
+          "test": {
+            "overall": {
+              "n": 3677,
+              "n_hit": 87,
+              "hits_drawn": 10,
+              "hit_catch": 0.1149425283074379,
+              "n_unchanged": 3546,
+              "false_drops": 65,
+              "false_drop_rate": 0.018330512568354607,
+              "drawn_rate": 0.02148490585386753,
+              "recovery_n": 37,
+              "recovery_false_drops": 3
+            },
+            "fresh": {
+              "n": 9,
+              "n_hit": 9,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 0,
+              "false_drops": 0,
+              "false_drop_rate": null,
+              "drawn_rate": 0.0,
+              "recovery_n": 0,
+              "recovery_false_drops": 0
+            },
+            "beside_no_hit": {
+              "n": 148,
+              "n_hit": 65,
+              "hits_drawn": 9,
+              "hit_catch": 0.13846154510974884,
+              "n_unchanged": 76,
+              "false_drops": 11,
+              "false_drop_rate": 0.14473684132099152,
+              "drawn_rate": 0.14864864945411682,
+              "recovery_n": 4,
+              "recovery_false_drops": 1
+            },
+            "recent_hit": {
+              "n": 129,
+              "n_hit": 2,
+              "hits_drawn": 1,
+              "hit_catch": 0.5,
+              "n_unchanged": 119,
+              "false_drops": 19,
+              "false_drop_rate": 0.1596638709306717,
+              "drawn_rate": 0.1627907007932663,
+              "recovery_n": 8,
+              "recovery_false_drops": 1
+            },
+            "not_adjacent": {
+              "n": 3391,
+              "n_hit": 11,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 3351,
+              "false_drops": 35,
+              "false_drop_rate": 0.0104446429759264,
+              "drawn_rate": 0.010616336949169636,
+              "recovery_n": 25,
+              "recovery_false_drops": 1
+            }
+          }
+        },
+        "change_mae_health": 0.10351209342479706,
+        "recovery_catch": 0.0,
+        "starvation_catch": 0.0833333358168602
+      },
+      "selffed": {
+        "1.5": {
+          "all": {
+            "overall": {
+              "n": 10044,
+              "n_hit": 171,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 9794,
+              "false_drops": 3,
+              "false_drop_rate": 0.00030630998662672937,
+              "drawn_rate": 0.00029868577257730067,
+              "recovery_n": 60,
+              "recovery_false_drops": 0
+            },
+            "fresh": {
+              "n": 23,
+              "n_hit": 23,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 0,
+              "false_drops": 0,
+              "false_drop_rate": null,
+              "drawn_rate": 0.0,
+              "recovery_n": 0,
+              "recovery_false_drops": 0
+            },
+            "beside_no_hit": {
+              "n": 277,
+              "n_hit": 133,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 135,
+              "false_drops": 0,
+              "false_drop_rate": 0.0,
+              "drawn_rate": 0.0,
+              "recovery_n": 5,
+              "recovery_false_drops": 0
+            },
+            "recent_hit": {
+              "n": 247,
+              "n_hit": 4,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 233,
+              "false_drops": 0,
+              "false_drop_rate": 0.0,
+              "drawn_rate": 0.0,
+              "recovery_n": 10,
+              "recovery_false_drops": 0
+            },
+            "not_adjacent": {
+              "n": 9497,
+              "n_hit": 11,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 9426,
+              "false_drops": 3,
+              "false_drop_rate": 0.00031826860504224896,
+              "drawn_rate": 0.0003158892213832587,
+              "recovery_n": 45,
+              "recovery_false_drops": 0
+            }
+          },
+          "test": {
+            "overall": {
+              "n": 2832,
+              "n_hit": 52,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 2752,
+              "false_drops": 3,
+              "false_drop_rate": 0.0010901163332164288,
+              "drawn_rate": 0.0010593220358714461,
+              "recovery_n": 22,
+              "recovery_false_drops": 0
+            },
+            "fresh": {
+              "n": 6,
+              "n_hit": 6,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 0,
+              "false_drops": 0,
+              "false_drop_rate": null,
+              "drawn_rate": 0.0,
+              "recovery_n": 0,
+              "recovery_false_drops": 0
+            },
+            "beside_no_hit": {
+              "n": 85,
+              "n_hit": 38,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 42,
+              "false_drops": 0,
+              "false_drop_rate": 0.0,
+              "drawn_rate": 0.0,
+              "recovery_n": 2,
+              "recovery_false_drops": 0
+            },
+            "recent_hit": {
+              "n": 73,
+              "n_hit": 2,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 67,
+              "false_drops": 0,
+              "false_drop_rate": 0.0,
+              "drawn_rate": 0.0,
+              "recovery_n": 4,
+              "recovery_false_drops": 0
+            },
+            "not_adjacent": {
+              "n": 2668,
+              "n_hit": 6,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 2643,
+              "false_drops": 3,
+              "false_drop_rate": 0.001135073835030198,
+              "drawn_rate": 0.0011244377819821239,
+              "recovery_n": 16,
+              "recovery_false_drops": 0
+            }
+          }
+        },
+        "0.5": {
+          "all": {
+            "overall": {
+              "n": 10044,
+              "n_hit": 171,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 9794,
+              "false_drops": 8,
+              "false_drop_rate": 0.0008168266504071653,
+              "drawn_rate": 0.0007964954129420221,
+              "recovery_n": 60,
+              "recovery_false_drops": 0
+            },
+            "fresh": {
+              "n": 23,
+              "n_hit": 23,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 0,
+              "false_drops": 0,
+              "false_drop_rate": null,
+              "drawn_rate": 0.0,
+              "recovery_n": 0,
+              "recovery_false_drops": 0
+            },
+            "beside_no_hit": {
+              "n": 277,
+              "n_hit": 133,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 135,
+              "false_drops": 0,
+              "false_drop_rate": 0.0,
+              "drawn_rate": 0.0,
+              "recovery_n": 5,
+              "recovery_false_drops": 0
+            },
+            "recent_hit": {
+              "n": 247,
+              "n_hit": 4,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 233,
+              "false_drops": 0,
+              "false_drop_rate": 0.0,
+              "drawn_rate": 0.0,
+              "recovery_n": 10,
+              "recovery_false_drops": 0
+            },
+            "not_adjacent": {
+              "n": 9497,
+              "n_hit": 11,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 9426,
+              "false_drops": 8,
+              "false_drop_rate": 0.0008487162995152175,
+              "drawn_rate": 0.0008423712570220232,
+              "recovery_n": 45,
+              "recovery_false_drops": 0
+            }
+          },
+          "test": {
+            "overall": {
+              "n": 2832,
+              "n_hit": 52,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 2752,
+              "false_drops": 6,
+              "false_drop_rate": 0.0021802326664328575,
+              "drawn_rate": 0.0021186440717428923,
+              "recovery_n": 22,
+              "recovery_false_drops": 0
+            },
+            "fresh": {
+              "n": 6,
+              "n_hit": 6,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 0,
+              "false_drops": 0,
+              "false_drop_rate": null,
+              "drawn_rate": 0.0,
+              "recovery_n": 0,
+              "recovery_false_drops": 0
+            },
+            "beside_no_hit": {
+              "n": 85,
+              "n_hit": 38,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 42,
+              "false_drops": 0,
+              "false_drop_rate": 0.0,
+              "drawn_rate": 0.0,
+              "recovery_n": 2,
+              "recovery_false_drops": 0
+            },
+            "recent_hit": {
+              "n": 73,
+              "n_hit": 2,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 67,
+              "false_drops": 0,
+              "false_drop_rate": 0.0,
+              "drawn_rate": 0.0,
+              "recovery_n": 4,
+              "recovery_false_drops": 0
+            },
+            "not_adjacent": {
+              "n": 2668,
+              "n_hit": 6,
+              "hits_drawn": 0,
+              "hit_catch": 0.0,
+              "n_unchanged": 2643,
+              "false_drops": 6,
+              "false_drop_rate": 0.002270147670060396,
+              "drawn_rate": 0.0022488755639642477,
+              "recovery_n": 16,
+              "recovery_false_drops": 0
+            }
+          }
+        },
+        "change_mae_health": 0.06658302247524261,
+        "recovery_catch": 0.0,
+        "starvation_catch": 0.0
+      }
+    }
+  },
+  "name": "corrt_rawlong_teacher_s7_fmamba_L16b40_from36000",
+  "window": 15,
+  "original_contract": "32eecd4c36b5127bd11e0cfd8bff9e3487b6fe2ff22efc2e6b062ddd207354b8",
+  "zero_world_forward_calls": true
+}

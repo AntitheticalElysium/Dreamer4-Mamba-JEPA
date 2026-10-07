@@ -1,0 +1,32 @@
+{
+  "affected_train_episodes": [
+    "support-v2:20270731:13:14",
+    "support-v2:20270731:42:15"
+  ],
+  "ambiguity": "reward 0.1 can mean dh+1 or one achievement and dh-9; terminal excludes recovery",
+  "invalid_absolute_health_episodes_before": 2,
+  "invalid_absolute_health_episodes_after": 0,
+  "first_case_exact_hud_health_frames": [
+    0,
+    69,
+    70,
+    77,
+    78,
+    92,
+    93,
+    94,
+    95
+  ],
+  "first_case_exact_hud_health": [
+    9,
+    9,
+    7,
+    7,
+    8,
+    8,
+    9,
+    9,
+    0
+  ],
+  "training_updates_before_correction": 0
+}

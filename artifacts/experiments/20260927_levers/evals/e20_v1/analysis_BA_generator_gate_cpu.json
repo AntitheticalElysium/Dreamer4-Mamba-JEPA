@@ -1,0 +1,186 @@
+{
+  "scope": "FrozenCPUreferencebranchdecomposition on4selectedBnewcatches; nooptimization, posthoc; generatedcandidateLNbeforeHUDreadout",
+  "seconds": 9.941153526306152,
+  "results": {
+    "A": {
+      "checkpoint_sha256": "5d1093ae145a05088e2cfa7efc7b5c5f436f68a5383bc49c1d2594bb69199b87",
+      "CPU_CUDA_max_health_abs": 0.0008807182312011719,
+      "cases": [
+        {
+          "root": 116,
+          "k0": 14,
+          "observed": 15,
+          "outgoing_action": 5,
+          "true_current_health": 7.0,
+          "true_next_health": 5.0,
+          "current_hud_health": 6.986496925354004,
+          "output_hud_health": 6.986489295959473,
+          "generated_candidate_hud_health": 12.358522415161133,
+          "output_lossreader_health": 7.052219390869141,
+          "generated_candidate_lossreader_health": 8.25268268585205,
+          "healthtile_weights_copy4neighbour_generation": [
+            0.9997465014457703,
+            4.202472894121456e-07,
+            2.6049789880744356e-07,
+            1.202339632300209e-07,
+            1.5451691126600053e-07,
+            0.0002525300660636276
+          ]
+        },
+        {
+          "root": 224,
+          "k0": 12,
+          "observed": 15,
+          "outgoing_action": 10,
+          "true_current_health": 7.0,
+          "true_next_health": 5.0,
+          "current_hud_health": 6.998482704162598,
+          "output_hud_health": 6.992819309234619,
+          "generated_candidate_hud_health": 6.794870376586914,
+          "output_lossreader_health": 7.117515563964844,
+          "generated_candidate_lossreader_health": 3.9988951683044434,
+          "healthtile_weights_copy4neighbour_generation": [
+            0.9825565218925476,
+            4.687527507485356e-06,
+            1.9681285266415216e-05,
+            2.6969803457177477e-06,
+            1.367386994388653e-05,
+            0.017402706667780876
+          ]
+        },
+        {
+          "root": 335,
+          "k0": 11,
+          "observed": 15,
+          "outgoing_action": 3,
+          "true_current_health": 7.0,
+          "true_next_health": 5.0,
+          "current_hud_health": 7.012279510498047,
+          "output_hud_health": 7.022917747497559,
+          "generated_candidate_hud_health": 10.794342041015625,
+          "output_lossreader_health": 7.080809593200684,
+          "generated_candidate_lossreader_health": 8.90914249420166,
+          "healthtile_weights_copy4neighbour_generation": [
+            0.9892639517784119,
+            5.3037165343994275e-06,
+            2.1365070779211237e-07,
+            1.5902411405477324e-06,
+            2.58304709177537e-07,
+            0.01072874665260315
+          ]
+        },
+        {
+          "root": 638,
+          "k0": 14,
+          "observed": 15,
+          "outgoing_action": 5,
+          "true_current_health": 7.0,
+          "true_next_health": 5.0,
+          "current_hud_health": 7.021389484405518,
+          "output_hud_health": 7.021190166473389,
+          "generated_candidate_hud_health": 11.264699935913086,
+          "output_lossreader_health": 7.041238784790039,
+          "generated_candidate_lossreader_health": 8.91137409210205,
+          "healthtile_weights_copy4neighbour_generation": [
+            0.9996862411499023,
+            1.205670969284256e-06,
+            4.506758841671399e-07,
+            4.1584542032069294e-07,
+            3.634270342445234e-07,
+            0.00031141808722168207
+          ]
+        }
+      ]
+    },
+    "B": {
+      "checkpoint_sha256": "bbca7de805b39205561a7df6780ae0f4baf4ea91ec945047dfe9e44dabae5712",
+      "CPU_CUDA_max_health_abs": 0.09970873594284058,
+      "cases": [
+        {
+          "root": 116,
+          "k0": 14,
+          "observed": 15,
+          "outgoing_action": 5,
+          "true_current_health": 7.0,
+          "true_next_health": 5.0,
+          "current_hud_health": 6.986496925354004,
+          "output_hud_health": 1.3460334539413452,
+          "generated_candidate_hud_health": 0.8090278506278992,
+          "output_lossreader_health": 1.4735050201416016,
+          "generated_candidate_lossreader_health": -0.3711555004119873,
+          "healthtile_weights_copy4neighbour_generation": [
+            0.34221842885017395,
+            0.0005746188689954579,
+            0.2147841602563858,
+            9.594930452294648e-05,
+            0.001074636704288423,
+            0.4412521719932556
+          ]
+        },
+        {
+          "root": 224,
+          "k0": 12,
+          "observed": 15,
+          "outgoing_action": 10,
+          "true_current_health": 7.0,
+          "true_next_health": 5.0,
+          "current_hud_health": 6.998482704162598,
+          "output_hud_health": 0.3900172710418701,
+          "generated_candidate_hud_health": 0.5424387454986572,
+          "output_lossreader_health": 0.18506330251693726,
+          "generated_candidate_lossreader_health": -0.5916363000869751,
+          "healthtile_weights_copy4neighbour_generation": [
+            0.04141645133495331,
+            0.003031632397323847,
+            0.549443781375885,
+            0.0014713597483932972,
+            0.0034971863497048616,
+            0.4011395275592804
+          ]
+        },
+        {
+          "root": 335,
+          "k0": 11,
+          "observed": 15,
+          "outgoing_action": 3,
+          "true_current_health": 7.0,
+          "true_next_health": 5.0,
+          "current_hud_health": 7.012279510498047,
+          "output_hud_health": 0.5214726328849792,
+          "generated_candidate_hud_health": 0.03245851397514343,
+          "output_lossreader_health": 0.5623573064804077,
+          "generated_candidate_lossreader_health": -0.14181268215179443,
+          "healthtile_weights_copy4neighbour_generation": [
+            0.1431622952222824,
+            0.004099613055586815,
+            0.2026357650756836,
+            9.459303691983223e-05,
+            0.0017904640408232808,
+            0.6482173800468445
+          ]
+        },
+        {
+          "root": 638,
+          "k0": 14,
+          "observed": 15,
+          "outgoing_action": 5,
+          "true_current_health": 7.0,
+          "true_next_health": 5.0,
+          "current_hud_health": 7.021389484405518,
+          "output_hud_health": 0.3051697015762329,
+          "generated_candidate_hud_health": 0.19104096293449402,
+          "output_lossreader_health": 0.19990772008895874,
+          "generated_candidate_lossreader_health": -0.5552290678024292,
+          "healthtile_weights_copy4neighbour_generation": [
+            0.026375507935881615,
+            0.002126243431121111,
+            0.5644124746322632,
+            0.0010689476039260626,
+            0.003226880682632327,
+            0.4027899205684662
+          ]
+        }
+      ]
+    }
+  }
+}

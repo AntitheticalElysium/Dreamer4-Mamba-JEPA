@@ -1,0 +1,14 @@
+[Unit]
+Description=E20 factual support and consequence alignment research queue
+
+[Service]
+Type=simple
+WorkingDirectory=/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA
+ExecStart=/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/bin/python -B /home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e20_driver.py
+MemoryHigh=10G
+MemoryMax=14G
+Restart=no
+TimeoutStopSec=30
+
+[Install]
+WantedBy=default.target

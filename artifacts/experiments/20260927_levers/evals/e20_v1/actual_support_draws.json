@@ -1,0 +1,64 @@
+{
+  "sources": {
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e20_train.py": "a1036bd9dab3be4329be7c8bfa5a6d66914298af1a3706dad9c765e58c2eb7e3"
+  },
+  "labels_sha256": "a645db754fde758bfd37c9d62bbec869c456e50215791a33c886b82c6719b2fa",
+  "scope": "fixed full proposed ledger, not completed optimization",
+  "A": {
+    "fresh_presentations": 1664,
+    "distinct_fresh_targets": 54,
+    "distinct_fresh_episodes": 54,
+    "by_observed_frames": {
+      "4": 138,
+      "5": 140,
+      "6": 132,
+      "7": 131,
+      "8": 138,
+      "9": 142,
+      "10": 138,
+      "11": 149,
+      "12": 125,
+      "13": 140,
+      "14": 137,
+      "15": 154
+    }
+  },
+  "B": {
+    "fresh_presentations": 1704,
+    "distinct_fresh_targets": 820,
+    "distinct_fresh_episodes": 774,
+    "by_observed_frames": {
+      "4": 162,
+      "5": 141,
+      "6": 124,
+      "7": 140,
+      "8": 155,
+      "9": 136,
+      "10": 137,
+      "11": 164,
+      "12": 124,
+      "13": 151,
+      "14": 129,
+      "15": 141
+    }
+  },
+  "C": {
+    "fresh_presentations": 1704,
+    "distinct_fresh_targets": 820,
+    "distinct_fresh_episodes": 774,
+    "by_observed_frames": {
+      "4": 162,
+      "5": 141,
+      "6": 124,
+      "7": 140,
+      "8": 155,
+      "9": 136,
+      "10": 137,
+      "11": 164,
+      "12": 124,
+      "13": 151,
+      "14": 129,
+      "15": 141
+    }
+  }
+}

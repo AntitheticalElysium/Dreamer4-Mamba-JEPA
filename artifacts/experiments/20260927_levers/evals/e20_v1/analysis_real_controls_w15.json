@@ -1,0 +1,62 @@
+{
+  "independent_hud": {
+    "ordinary": {
+      "n": 279,
+      "catch05": 279,
+      "catch15": 278,
+      "median_change": -1.9922332763671875,
+      "mae_true_change": 0.0629035234451294
+    },
+    "fresh": {
+      "n": 31,
+      "catch05": 31,
+      "catch15": 31,
+      "median_change": -2.002338409423828,
+      "mae_true_change": 0.034976787865161896
+    },
+    "unchanged": {
+      "n": 12623,
+      "catch05": 0,
+      "catch15": 0,
+      "median_change": 0.0,
+      "mae_true_change": 0.007494247518479824
+    },
+    "cooldown_negative": {
+      "n": 224,
+      "catch05": 5,
+      "catch15": 0,
+      "median_change": -0.00031185150146484375,
+      "mae_true_change": 0.011285354383289814
+    }
+  },
+  "factual_loss_reader": {
+    "ordinary": {
+      "n": 279,
+      "catch05": 279,
+      "catch15": 279,
+      "median_change": -1.9986059665679932,
+      "mae_true_change": 0.06375028938055038
+    },
+    "fresh": {
+      "n": 31,
+      "catch05": 31,
+      "catch15": 31,
+      "median_change": -1.9852213859558105,
+      "mae_true_change": 0.04556655138731003
+    },
+    "unchanged": {
+      "n": 12623,
+      "catch05": 0,
+      "catch15": 0,
+      "median_change": 0.0,
+      "mae_true_change": 0.014558539725840092
+    },
+    "cooldown_negative": {
+      "n": 224,
+      "catch05": 5,
+      "catch15": 0,
+      "median_change": 0.0,
+      "mae_true_change": 0.014702522195875645
+    }
+  }
+}

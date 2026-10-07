@@ -1,0 +1,47 @@
+{
+  "contract": {
+    "version": "e20-source-census-hud-checked-v2",
+    "scope": "E20 factual TRAIN consequence inventory; resumable, no notebook writes.\n\nFirst inventory the complete source corpus, not the old sampled six-frame pool.\nHealth changes use the previously validated reward decomposition. No fork outcome\nis added to training. A target at t uses observations through t, outgoing action t,\nand observation t+1; t>=3 supports the gate's four observed frames, t>=14 supports\nall proposed context lengths 4..15 without padding or crossing an episode reset.\n",
+    "dataset_contract": "f1c8583ae0c68935c2db27c727f01183ed88b3691164fa267c8ba38537bce366",
+    "inputs": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_m4_canonical/raw/dataset.json": "9aa1e9e69ef084f8a923ec0808c4981eb6141bca9894e98298ecc69665287da2",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_m4_canonical/raw/bridge/step-002000.pt": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e"
+    },
+    "sources": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e20_data.py": "e0547e1c9a05a2864ffb14c3e745afbd09e1ef33337c5e220b19dc5b946eb235",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/data.py": "1c624aa9676a4005a586dd6ab1a5c2b69f0060ad932b578397cf8dcb247166c9",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260921_readout_ladder/exposure.py": "3871664443673c7190944caa979756372d1711974be1e48d172901248e71164b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e20_labels.py": "4126f309e066fb5ca11cce2cd30ac98030351ca3e641283ddf4a4006765ec19e"
+    },
+    "health_templates": "0237ec0c749943c1de1c3c2f9eeabadc9b7fb10eec596d4c51f3a0c476230979",
+    "runtime": {
+      "torch": "2.13.0+cu130",
+      "threads": 3
+    }
+  },
+  "counts": {
+    "target_t_ge_3": {
+      "death": 8071,
+      "ordinary_ge2": 36114,
+      "unchanged": 2982659,
+      "other": 59619
+    },
+    "target_t_ge_14": {
+      "death": 8071,
+      "ordinary_ge2": 36068,
+      "unchanged": 2891130,
+      "other": 59619
+    }
+  },
+  "train_episodes": 8325,
+  "class_names": [
+    "death",
+    "ordinary_ge2",
+    "unchanged",
+    "other"
+  ],
+  "terminal_reward_ambiguities_corrected": 2,
+  "hud_frames_exactly_verified": 3119763,
+  "label_scope": "recorded health/termination, independently exact-HUD checked; no simulator hazard annotations"
+}
