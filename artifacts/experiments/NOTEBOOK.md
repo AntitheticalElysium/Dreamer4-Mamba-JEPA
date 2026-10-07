@@ -61,6 +61,120 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
+
+**Method.** Every headline number below was re-derived from raw rows, logs or per-root files, not from summaries:
+- sighting / carry rows;
+- check_delta, E16 and recall / damage logs;
+- the four E17 H16 stores' per-root safe arrays;
+- fixed-clock rows;
+- all 12 E19 per-root health files;
+- E18 recall logs;
+- E20 endpoint JSONs.
+
+All reproduce exactly, except where noted. Tracked code edits were diffed: numerics are unchanged apart from two tied-rank AUC
+fixes. Everything is committed in stages 1-8 (ae0868ec..689262c1). Resume journals, `.pt` rows and EDA outputs stay on disk,
+outside git. E20's JSON reports are copied to `20260927_levers/evals/e20_v1/`.
+
+**Predeclared readings, final ledger.**
+
+| experiment | reading | verdict | numbers |
+|---|---|---|---|
+| E17 stage 1 | m6_onestep | TRUE | M6 − A6 −0.002 / −0.005, both resolved (moved −0.004 / −0.011) |
+| | m6_depth16 | FALSE | s7 −0.011 [−0.022, +0.001]; s8 −0.018 resolved |
+| | m6_hits | FALSE | 0.050 vs 0.030; 0.036 vs 0.050 |
+| | m6_h16_traj | FALSE | trajectory M6 − A6 −0.0010 / −0.0045 (0.6441 vs 0.6451; 0.6417 vs 0.6462), same 1,139-root panel |
+| E17 stage 2 | long_hits | FALSE | window-15 teacher catch ≤ 0.136 (needs ≥ 0.3) |
+| | long_fresh | FALSE | 0/31, 1/31 |
+| | mamba_long_edge | FALSE | hits +0.071 / +0.089 pass; H16 trajectory +0.0053 [−0.004, +0.016], +0.0031 [−0.006, +0.012] |
+| | long_recall_same | TRUE | Mamba same-slot age 6-15 capture 0.616 / 0.643 vs attention 0.431 / 0.357 |
+| | long_recall_used | TRUE | window 15 − 5: +0.247 / +0.279 |
+| | moved_unsolved | FALSE as declared | mis-specified: ignored the no-memory baseline (0.38-0.43 at window 5); moved-slot memory gain is +0.01..0.04 in every world, i.e. none |
+| check_delta | all three | FALSE | mean-Δ AUC 0.564 / 0.532; disagreement 0.642 / 0.651 |
+| E16 | health readings | FALSE | posterior 0/305, 0/32, 0/112 (full s7) |
+| E18 | c6_moved_recall | FALSE at s7 | +0.010 (needs +0.15) |
+| | c6_same_recall | FALSE at s7 | −0.528 (needs ≥ −0.05) |
+| | c6_unseen | TRUE at s7 | −2.8% |
+| E19 | learnable | FALSE in all 4 sets | best C catch 0.24 with 1.4-3.1% false; fresh 0/31 in all 12 arms |
+| | unshortcut | FALSE | attention s8 C passes the ratio spuriously (same catches with no history) |
+| | no_cost | FALSE | B → C one-step +0.007..0.012, depth 16 +0.017..0.046 |
+| E20 (seed 7 pilot) | every adoption criterion | FALSE | see below; seed 8 held |
+
+- E18 needs both seeds on the two failed readings, so seed 8 (parked at 24k) cannot change their verdict. E18's c6_unseen is
+  undetermined at s8.
+
+**Gaps found and filled.**
+- lane73 never reached its predeclared teval / compare tail: the 10-06 20:55 reboot stopped it after the H16 job, which another
+  script later resumed. lane95 ran exactly those commands today. M16 s7's teval reports already existed (produced 10-07 by
+  E20's pipeline), so lane95 skipped them.
+- E17 completed comparators (compare.py, 143 seed clusters, window 15):
+
+| contrast | s7 one-step all | s7 depth 16 | s8 one-step all | s8 depth 16 |
+|---|---|---|---|---|
+| A6 → A16 | −0.005 * | −0.012 [−0.025, +0.001] | −0.003 * | −0.022 * |
+| M6 → M16 | −0.004 * | −0.017 * | −0.004 * | −0.025 * |
+| **A16 → M16** | −0.001 * | **−0.016 [−0.027, −0.005]** | −0.005 * (moved −0.012) | **−0.021 [−0.034, −0.007]** |
+| window 5 → 15, A16 | 0 | −0.001 | 0 | −0.005 [−0.011, +0.001] |
+| window 5 → 15, M16 | 0 | −0.004 * | 0 | −0.001 |
+
+  - At L16, Mamba's imagined rollouts beat attention's at both seeds. The gain over the parents comes from L16 training, not
+    from reading a longer window at evaluation.
+  - One-step is window-independent because teval predicts it from the 4 root frames.
+  - None of this reaches H16 decisions (mamba_long_edge FALSE).
+
+**New findings from this audit.**
+1. *The zombie cooldown is visible in the training data and position-locks ordinary hits too.*
+   - In the 64-frame long pool's death windows, living ≥ 2 hits by distance to the death frame are 2,578 at 6, against
+     150-190 at distances 1-5. Further peaks: 932 at 12, 519 at 18.
+   - In ordinary windows, gaps between consecutive hits peak at 6 (574, against 50-160 at the other gaps 1-15).
+   - So E17's end-aligned windows put ordinary hits at target positions 9 and 3 (23,266 and 9,351, against ~3-5k elsewhere),
+     not only deaths at 15. This is the data mechanism behind the long worlds' time-row dependence of drawn damage
+     (row 14 → 4 transplant: 26 → 12, 44 → 13).
+2. *Our "two seeds" replicate initialization only.* tworld seeds the batch order with a fixed generator (11), so every seed sees
+   the identical batch sequence. Fcanvas s7 / s8 per-update losses nearly coincide: 0.0370 / 0.0369 at 24k. This holds for
+   E14-E19 alike; replication over data order has never been tested.
+3. *E19 B never tested full de-alignment.*
+   - Row 4 exists only in unsplit windows, so P(death | row 4) stays 26.6%, exactly as in A. The census confirms
+     2.997% → 26.68% from row 0 to row 4.
+   - The rejected crop-and-pad would have kept it near 5.3-6.7% at the cost of 10.6% of targets (my arithmetic, not run).
+   - "B is not a repair" therefore says nothing about removing the death-position cue. E20's class-balanced batches did remove
+     it: the parent's 108 window-15 false drops fell to 3-4.
+4. *E18 failed for a read-path defect, not because world alignment fails.*
+   - The corrt head predicts slot (r, c) of frame t+1 from time t's output at (r, c). In fcanvas that output belongs to the
+     world cell currently there, so the entering cell's remembered stream is never read (0 / 2,018 direct matches).
+   - The per-slot alignment behind Mamba's same-slot recall is also lost: 0.335 vs 0.864. Resetting canvas's SSM changes
+     nothing. A world-aligned memory needs an explicit next-view read (Neural Map / MapNet style).
+5. *E20 C is Goodhart through a frozen linear probe.*
+   - The generated token-63 change has ~13% of the true change's norm (projection 0.03; the token stays ~95% copy).
+   - It is aligned with the readers' health direction (cos −0.31). The loss reader weights token 63 more (norm 5.57 vs 3.18;
+     reader cosine 0.56), so it reads a full drop: 266/279 hits. The independent reader sees 6/279 at 1.5 and 267/279 only at
+     0.5, with 573 false drops.
+   - Also: B's +17 catches are over-drops (true 7 → 5, predicted ~0.56). All E20 arms lose same-slot recall (−0.13 to −0.14)
+     and add one-step cost (+0.008-0.012): endpoint-only supervision (40 targets/update against 600) erodes the world.
+6. *At ages 2-5 the conv buffer carries more than the SSM.* Clearing conv leaves donor pull 0.075 / 0.034; clearing the SSM
+   leaves 0.137 / 0.098 (intact 0.249 / 0.257). At ages 6-15 the SSM carries it at both seeds: resetting the SSM gives
+   0.0004 / 0.0006 history gain.
+
+**Corrections.**
+- Other agent's record:
+  - "512 same-slot cases from 168 episodes": 171 distinct pool rows.
+  - Attention s7's moved-slot sighting effect, +0.84, was omitted.
+  - The E17 teval / compare gap was not noted.
+- Mine (accepted):
+  - E17 was evaluated at window 16, where the output is untrained; window 15 is correct.
+  - My window 5 vs 1 memory contrast also changed scan length and time row; the sighting swap and fixed-clock controls
+    supersede it with the same conclusion.
+  - E16 trains through latent L1, not MSE.
+  - check_context's aggregate miss is not "no history use".
+  - moved_unsolved ignored the generation baseline.
+
+**State.**
+- E20's driver (`d4mj-e20.service`) and post service are enabled at login. After this morning's boot they re-verified and
+  re-exported seed-7 stages: no new results. The driver remains active with seed 8 held.
+- No other research process is running.
+- Fcanvas s8 is parked at 24k (state archived).
+
+
 ## 2026-10-08 — E20 seed7 endpoints and frozen CPU diagnostics
 
 All three seed7 arms completed their original6,000 updates. Parent and A/B/C
