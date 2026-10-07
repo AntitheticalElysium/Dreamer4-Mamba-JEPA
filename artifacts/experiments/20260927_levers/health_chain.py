@@ -14,7 +14,9 @@ from frames 15-W..14. Saves, at that output position: the emitted HUD (18 tokens
 candidate at token 63, backbone h at tokens 63, 31 and the player's 4 neighbours, the emitted tokens of those 4 neighbours,
 and the scroll estimated between true frame 14 and the emitted frame 15.  -> artifacts/eda/health_chain_v1/<world>.pt
 Readouts are computed by health_chain_read.py.
-Usage: health_chain.py extract | health_chain.py world <world.pt> [--window W]
+`--ext` (diagnosis 2, 2026-10-08) also saves h_ext: backbone h at 63, 31 and the 12 cells within Manhattan 2 of the player, plus
+the action token's output (backbone_full; corr heads), [N, 15, 256] -> <world>__w<W>__ext.pt.
+Usage: health_chain.py extract | health_chain.py world <world.pt> [--window W] [--ext]
 """
 import hashlib
 import json
@@ -76,7 +78,7 @@ def extract():
 
 
 @torch.no_grad()
-def world(path, window):
+def world(path, window, ext=False):
     import teval as T
     from d4mj.config import config_from_dict
     from d4mj.train import autocast_context
@@ -90,7 +92,8 @@ def world(path, window):
     W = window or w.time.shape[0] - 1
     bs = 8 if getattr(w, 'backbone_kind', 'full') in ('fmamba', 'fcanvas') else 16
     N = len(x)
-    rec = {k: [] for k in ('hud', 'weights63', 'gen63', 'h', 'near_out', 'pred_scroll')}
+    rec = {k: [] for k in ('hud', 'weights63', 'gen63', 'h', 'near_out', 'pred_scroll', 'h_ext')}
+    cells = [r * 9 + c for r in range(7) for c in range(9) if 0 < abs(r - 3) + abs(c - 4) <= 2]
     for i in range(0, N, bs):
         s = x[i:i + bs, 15 - W:15].float().to(device)
         a = sub['actions'][i:i + bs, 15 - W:15].to(device)
@@ -98,14 +101,20 @@ def world(path, window):
             out, h, gen = w(s, a)
         out, h, gen = out[:, -1].float(), h[:, -1].float(), gen[:, -1].float()
         rec['hud'].append(out[:, 63:81].half().cpu())
-        rec['weights63'].append(w.last_weights[:, -1, 63].float().cpu())
+        if hasattr(w, 'last_weights'):                                  # corr heads only (direct / residual: none)
+            rec['weights63'].append(w.last_weights[:, -1, 63].float().cpu())
         rec['gen63'].append(gen[:, 63].half().cpu())
         rec['h'].append(h[:, [63, 31] + NEAR].half().cpu())
         rec['near_out'].append(out[:, NEAR].half().cpu())
         rec['pred_scroll'].append(estimate(s[:, -1].cpu(), out.cpu()))
-    res = {k: torch.cat(v) for k, v in rec.items()}
+        if ext:
+            with autocast_context(config):
+                hb, ha = w.backbone_full(s, a)
+            assert (hb[:, -1].float() - h).abs().max() < 1e-2           # same backbone pass as forward's h
+            rec['h_ext'].append(torch.cat([hb[:, -1][:, [63, 31] + cells].float(), ha[:, -1, None].float()], 1).half().cpu())
+    res = {k: torch.cat(v) for k, v in rec.items() if v}
     res.update({'world': st['name'], 'window': W, 'checkpoint': str(path)})
-    torch.save(res, OUT / f"{st['name']}__w{W}.pt")
+    torch.save(res, OUT / f"{st['name']}__w{W}{'__ext' if ext else ''}.pt")
     print(json.dumps({'world': st['name'], 'window': W, 'events': N}), flush=True)
 
 
@@ -116,4 +125,4 @@ if __name__ == '__main__':
     if args[0] == 'extract':
         extract()
     else:
-        world(args[1], int(args[args.index('--window') + 1]) if '--window' in args else None)
+        world(args[1], int(args[args.index('--window') + 1]) if '--window' in args else None, '--ext' in args)

@@ -106,6 +106,97 @@ health with teval's HUD ridge (drop cut 1.5). Controls: the true next frame catc
   99% determined by the visible history, so a sharp representation would draw them. Next: h at every cell within 2 and the
   action token (the fresh zombie sits 2 away before the move); prior-corrected posteriors per stratum; all worlds.
 
+### Diagnosis 2-5 (09:00-10:00): two blockers, one root
+
+**Corrections to the reading above (each measured below):**
+- "The corr / corrg head is not the bottleneck" holds only for the *decision rule* on a frozen h. The trained corrt head has a
+  blocker of its own (B2).
+- "The information is in h" (AUC 0.958) is a ranking statistic. At the training base rate what decides drawing is the calibrated
+  posterior: h63 gives P(hit) > 0.5 for only 24% of held hits (B1).
+- E20's "fresh hits are 99% hits" holds in its capped pool only. Population-weighted, the fresh stratum's rate is 0.58: the
+  8 fresh-flagged no-hits in the pool are detector misfires (zombie scores 0.30-0.48 vs the hits' median 0.74; 3 have action 6).
+
+**Is a hit predictable from the visible history at all?** (`health_strata.py`; data only; TRAIN mix at t ≥ 14 restored by
+population weights: fresh hits ×1, other hits ×7.01, unchanged ×361.4.) `adj_post` = a zombie beside the player's post-move
+cell in frame 14 (true scroll); `since` = transitions since the last health drop.
+
+| stratum | population hit rate | share of all hits |
+|---|---|---|
+| fresh (E20 flag) | 0.58 | 2.8% |
+| adj_post, since = 6 | **0.87** | 14.0% |
+| adj_post, since 1..5 | **0.008** | 5.7% |
+| adj_post, since ≥ 7 | 0.63 | 12.0% |
+| adj_post, no drop in the window | 0.67 | 43.4% |
+| not adj_post | 0.003 | 22.2% |
+
+The zombie cooldown is crisp in the data: given adjacency, the hit rate by `since` is 0.018 / 0.009 / 0.007 / 0.007 / 0.007 at
+1-5 and 0.87 at 6. About 72% of hits sit in strata whose rate exceeds 0.5, so a deterministic median head *could* draw them.
+
+**B1 — information: h63 lacks the cooldown phase and the approach adjacency.** (`health_evidence.py`: balanced-batch MLP
+probes, early stop on an inner episode split, weighted Platt calibration to the population mix; drawable = P > 0.5 on held hits.)
+
+| features (M16 s7, held) | drawable hits /1,211 | fresh /207 | since6 /146 | false /1,728 |
+|---|---|---|---|---|
+| V: visible statistics (zombie score beside post-move cell, since, adj history, health) | 742 (61%) | 172 | 146 | 1 |
+| V without `since` | 364 | 126 | 9 | 3 |
+| h63 (the corrt head's only input for token 63) | 286 (24%) | 4 | 21 | 5 |
+| h_ext (h at 63, 31, 12 cells within 2, action token) | 255 | 22 | 27 | 7 |
+| h63 + oracle `since` | 480 | 6 | 88 | 3 |
+| h63 + oracle `since`, adj_post, adj_hist | **768 (63%)** | 136 | 124 | **0** |
+| the trained world's own emission | 154 (13%) | 4 | 20 | **126** |
+
+- Substitution: supplying the two ingredients lifts h63 from 24% to 63% drawable at zero false drops, above V.
+- Positive control (the same probe, same data): the cooldown phase is recoverable from the TRUE token-63 history the world sees
+  (frames 0..14) at AUC 0.9993 (since = 6) / 0.9973 (1..5) / 0.9999 (≥ 7). From M16's h63: 0.888 / 0.909 (1..4) / 0.789.
+  The world sees the phase and does not keep it at token 63.
+- Approach adjacency (adj_post on scroll steps with a zombie within 2): h63 AUC 0.778, h_ext 0.881; stationary 0.997.
+- Probe validity: PCA-reduced h_ext loses the evidence (32 PCs draw 1 hit); adding oracle ingredients to h_ext under-performs
+  h63 + oracle (data-limited 3,840-d probe). Drawable figures from h are lower bounds; the ingredient AUCs and the positive
+  control are the precise statements.
+
+**B2 — expression: the trained corrt generator cannot produce token 63.** corrt's token-63 output is a softmax mixture of the
+input token (copy), four spatial neighbours and `proj(h63)` (one linear map shared by all 81 tokens, trained only through its
+mixture weight). Its LayerNormed candidate vs the true next token, held, per dimension L1 (copy: 0.486 on hits, 0.036 on unchanged):
+
+| world | generator L1 hits / unchanged | generator beats copy, share of hits | gen weight on hits | projection on true change / orthogonal energy |
+|---|---|---|---|---|
+| M16 s7 / s8 | 0.917 / 0.947; 0.925 / 0.960 | 2.0%; 0.1% | 0.12; 0.14 | 0.53 / 3.48; 0.56 / 3.44 |
+| A16 s7 / s8 | 0.908 / 0.944; 0.873 / 0.892 | 1.3%; 0.5% | 0.09; 0.13 | |
+| M6 s7 at 6k, 12k, 18k, 24k, 30k, 36k | 1.030, 1.001, 0.984, 0.975, 0.971, 0.952 | ≤ 0.2% | | |
+| A6 s7 at 6k, 36k, 50k, 100k | 1.075, 0.931, 0.896, 0.863 | ≤ 1.0% | | |
+| E19 C (health dose λ 1, 6k from M6 36k) | **0.659** / 0.886 | **29.1%** | 0.23 | 0.63 / 1.65 |
+
+- A generator L1 near 0.9-1.0 on unit-variance tokens is close to unrelated content (independent tokens: ~1.13). It carries
+  half of the health change plus 3.3-4.2× its energy in unwanted change, so committing to it costs more than copying on
+  98-100% of hits, *whatever h63 knows*. The world can only blend: partial depictions read as 154 hits and 126 false drops.
+- h63 does hold the token's content: a dedicated linear map from the same frozen h63 reaches L1 0.22-0.25 on hits
+  (`health_refit.py`); the world's own shared proj on h63 gives 0.93 / 0.95.
+- Fidelity responds to objective allocation, not to training length: natural dose 36k → 100k moves it 0.931 → 0.863;
+  E19 C's dose moves it 0.952 → 0.659 in 6k updates.
+- The corrt move logit is not involved (M16 s7 / s8, A16 s7, M6 s7): token 63's up / left / right weights are ≤ 0.001 on
+  scroll and stationary steps alike, and its down-neighbour (token 72) weight is 0.05-0.08 on both. On fresh hits the head is
+  most copy-confident (self 0.91, gen 0.09).
+
+**Root: the objective allocates almost nothing to health.** (`health_gradient.py`: M16 on its own training batches, the exact
+replay of tworld.train's sampler, seed-11 order, 20 batches = 12,000 transitions, 341 hits; teacher objective err.mean().)
+
+| M16 | token 63, share of objective | token 63 on hits, share of objective | hits' share of backbone gradient norm | cosine with full gradient |
+|---|---|---|---|---|
+| s7 | 0.80% | 0.27% | 0.16% | 0.096 |
+| s8 | 0.83% | 0.28% | 0.42% | 0.054 |
+
+- Both blockers are what an objective that puts 0.3% of its mass on the event predicts: the backbone keeps no phase at token 63,
+  and the shared generator, which sees token 63 through a mixture weight of 0.05 (unchanged) to 0.24 (hits), never learns it.
+- The same mechanism explains E16 (Delta-IRIS port). Its posterior sees the TRUE next frame, yet before VQ it encodes ordinary hits
+  at AUC 0.634 / 0.701, and its code at 0.548 / 0.642. Deaths, about 3-4× larger token changes and about 3× more frequent per pass,
+  are encoded and drawn (generate weight 0.51-0.89, error 245 → 16.5). E16 trained the posterior through uniform latent L1. Delta-IRIS's own
+  tokenizer loss is 1.0·L2 + 0.1·L1 + 0.01·worst-pixel L2 (vmicheli/delta-iris `tokenizer.py`), which concentrates gradient on
+  rare large local errors such as a heart icon. That was dropped in the port.
+- E20 B could not have moved the decision, by design: it oversampled damage (10/40 per batch) but importance-weighted it back
+  to its natural loss mass (class mass 0.0129825), so the L1 median and the per-hit incentive were unchanged in expectation.
+- E19 C's dose did move B2 (above), but in 6-frame windows: the phase (since = 6) lies outside the window, so B1 could not
+  be met for most hits. Every fresh hit is a scroll step; its generator still lost to copy there (0/51 scrolling hits caught).
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
