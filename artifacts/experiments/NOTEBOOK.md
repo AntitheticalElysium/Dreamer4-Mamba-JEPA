@@ -61,6 +61,314 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-06 — Reboot recovery, registration priority and mechanism replication (lead)
+
+At07:42 AEDT no research process or recovered systemd unit was running. The
+Oct5 lane stopped during E19 fmamba seed8 A: its last committed full state is
+5,000/6,000 (Oct5 16:59), not the earlier500-update snapshot. No additional world
+completed overnight. Canvas s7 remains13,000/36,000; s8 remains unstarted. All
+four E17 L16 training endpoints are complete, including their damage/recall
+readings and the fixed-clock control recorded above.
+
+Recovery revalidated224 source/parent pins, three datasets and full canvas/M16
+states (`20261005_recovery/restart_checks.json`,07:46:59 AEDT). Relaunched the
+lead with MemoryHigh20G/Max24G and the runtime monitor. Training/evaluation
+contracts remain unchanged: model/optimizer/samplers/CPU and CUDA RNG, original
+row/split ledgers, immutable input hashes and atomic progress are preserved.
+Old completed jobs first check/reuse their committed results; an active service
+in startup/admission is not a new training update.
+
+**Scheduling change, not a treatment change:** finish E19 fmamba seed8 A/B/C and
+its endpoints, then bring E18 canvas36k s7/s8 ahead of the remaining E19 attention
+controls. Both attention A/B/C seeds remain booked; original E17 H16 trajectory
+heads/teval and M6 seed8 trajectory heads follow. Same-slot older-history use is
+now measured beyond the time-row confound, making coordinate registration the
+strongest unresolved memory intervention. C's extra health dose is a failed
+seed7 repair, so it is not combined with canvas or promoted. E16 seed8 remains
+held: its seed7 posterior already failed ordinary-hit fidelity after corrected
+evaluation; repeating that whole architecture takes lower priority than the
+separating registration and objective/head checks.
+
+**Bounded diagnosis queue, declared before execution:** `lane86.sh`, service
+`d4mj-oct06-diagnostic-replicas` (MemoryHigh8G/Max10G), first reads already-saved
+canvas/fmamba s7 12k snapshots with the existing pool recall metric. This is a
+descriptive learning-curve point, not a36k verdict or an early stopping rule.
+Then it waits for each new B/C pair (fmamba s8, attention s7/s8) and repeats the
+frozen router substitutions, local loss/logit derivatives,30 preselected actual
+TRAIN batches with shared-head gradient vectors, and distribution-matched local
+readability. Replica CLI plumbing was added to the existing diagnostic helpers;
+no trainer/model mathematics changed and historical seed7 reports remain intact.
+TRAIN checks explicitly assert B/C sampled-window and boundary ledgers equal.
+GPU diagnostic allocators remain capped at16%; admission is serialized. Each
+diagnostic retains checkpoint/data/source-bound batch journals and atomic results.
+
+Purpose: test whether candidate fidelity, unchanged-versus-damage gradient
+conflict and the motion-conditioned failure recur across training seeds and
+backbones. These are endpoint head measurements, not a proof of the entire
+optimization history. No new loss, lambda sweep, fork-supervised world or actor
+claim is scheduled from the single-seed lead. Numerical failure diagnosis comes
+before another literature-backed repair. Automatic experiment logs/summaries
+remain in `artifacts/eda/levers_logs/`; this entry was written by the lead.
+
+**Recovery export defect fixed,08:01 AEDT:** completed teval reuse first stopped
+at `atomic_json(..., immutable=True)`. Its digest sorted integer horizon keys
+before export and string keys after JSON reload, rejecting numerically identical
+evidence. `20261005_recovery/teval_export.py` normalizes only JSON exports and
+validates completed reuse against original source/checkpoint/runtime/input tensor
+hashes, cached results and raw rows. All three seed7 report numerical differences
+are0 and all raw rows exact. A focused check confirms repeated export leaves
+bytes unchanged and changing an actual number still raises. Trainer/Store sources
+and their checkpoint contracts are intact; original reports were not overwritten.
+Main E19/E17 teval calls use this compatibility entrypoint. Recovered seed8 A
+then actually resumed at5,000 and logged5,100; GPU100% at08:02. Completed E17
+cheap readings are reused rather than re-exported unnecessarily.
+
+**New descriptive canvas12k reading:** on the same2,048 held pool windows,
+canvas versus slot Mamba capture is0.213211 versus0.268920 on1,615 same-slot
+cells;0.281442 versus0.269807 on403 moved-slot cells. Unseen-cell squared error
+47.6676 versus47.1440. This is not the36k endpoint, not a sealed block and has
+no paired uncertainty. It shows no large early registration advantage; preserve
+the declared36k/two-seed contrast. Raw log:`EDA/levers_logs/e18_recall_s7_at12000.log`.
+
+**CPU access diagnosis declared and run,08:04–08:06 AEDT:** `e18_access.py`
+counts the actual recurrent addresses on all2,048 held windows, then examines the
+first16 with reentry under frozen12k canvas weights. Test whether the next entering
+cell's remembered stream is gathered at prediction time; measure off-screen SSM
+state retention, its zero-input gated output, and reading the same state with its
+last observed query. The actual world runs with explicit FP32 CPU masked equations
+checked against FunctionalMamba2's all-kept reference backend (max error<=1e-5).
+This diagnoses direct state access, not a full-model information ceiling: spatial
+attention/action/HUD streams could still provide indirect retrieval. Future
+coordinates select diagnostic addresses only, never next-frame feature inputs.
+All input/source hashes and per-window batches resume atomically. No training
+architecture or scheduled budget changes; logs stay in EDA.
+
+**CPU access result,08:06:** all2,018 recallable entering cells (1,615 same-slot,
+403 moved-slot) are outside the current view and none matches the current cell's
+gathered temporal-stream address. On140 cell events across six layers (840
+layer/cell checks), stored SSM states are nonzero and held exactly (max change0),
+but unobserved outputs are exactly0. Reading the held state with its last observed
+query yields nonzero output on840/840 (mean RMS0.60979), reproducing the last
+observed output exactly (max difference0). CPU all-kept reference max error1.19e-7.
+Evidence:`evals/e18_access_s7_at12000.json` and hash-bound address/batch journals.
+This identifies a missing **direct next-view read**: input registration alone does
+not give the generator the off-screen cell's state. It does not show that
+indirect retrieval is impossible or explain every canvas prediction error.
+
+**Separating CPU follow-up declared before running:** keep these same16 windows
+and all weights fixed. At the final temporal block, substitute the entering
+output cell's temporal residual with the remembered cell's last-query read;
+compare unchanged residual, zero residual and cyclically permuted remembered
+reads. Inspect actual output and normalized generator errors separately, with
+paired window-bootstrap intervals, and require non-treated outputs unchanged.
+True next-view coordinates supply an oracle ADDRESS only, never true future
+features. This is a causal component intervention on inspected windows, not a
+deployable repair, not a fresh block, not evidence that an untrained readout is
+optimal. An old-token-copy control locates the available recall benefit. Code:
+`e18_reroute.py`; CPU FP32, source/input-bound per-batch resume. Original36k
+training stays booked; no new architecture is trained from this lead.
+
+**Reroute result,08:16 AEDT:** on140 entering cells in these16 windows, output
+MSE is0.191480 unchanged,0.207736 correct remembered residual,0.191607 zero and
+0.202316 permuted. Correct-read minus baseline is+0.016256[+0.002767,+0.032184]
+under the declared window bootstrap. Generator MSE is0.558381 versus0.589950
+(+0.031569[−0.015048,+0.085778]); generator weight only moves0.1491→0.1567.
+Every untreated output is exactly unchanged. Copying the old observed token has
+MSE0.057157, so past content is useful, but this frozen residual substitution
+does not make it useful to the trained decoder. Neither inaccessible state nor
+nonzero stored state alone explains the whole error. This is a16-window early
+checkpoint component test, not an endpoint verdict. Evidence:
+`evals/e18_reroute_s7_at12000.json`, with all per-cell errors preserved.
+
+**Carry-contribution CPU check declared before running,08:20:** an old-query
+read includes stored C/x/z and Mamba's direct D*x term; its nonzero output is
+not evidence that the held SSM carries terrain semantics. `e18_carry.py` uses
+the same16 windows/frozen12k model, separates full/zero-SSM/zero-D reads, reports
+pre-normalization energy and output differences, and compares the off-screen
+convolution buffer with its last observed buffer. The SSM is held by dt=0, but
+the convolution still processes zero canvas inputs while off-screen. Check
+against the prior CPU equations (max error<=1e-6); per-batch hash-bound resume.
+No new world/head training or semantic information ceiling inferred. Logs in EDA.
+
+**Carry result,08:23:**840 layer/cell reads, CPU equation parity error0. SSM
+contributes mean1.2006% of (SSM energy + D*x energy) before gating/normalization;
+removing SSM leaves cosine0.998424 and mean squared relative output change0.003156.
+At the final block the SSM share is0.5731%, cosine0.999504. Thus the earlier
+nonzero restored read was largely stored old-query/direct-skip information,
+not demonstrated long-lived SSM terrain recall. Conv buffers still advance:
+mean nonzero fraction40%, range0–75%, with off-screen gaps1–4. SSM-only dt masking
+does not preserve the complete `(conv_state,ssm_state)` carry. This is a measured
+component distinction, not proof that small SSM signals are semantically useless.
+Evidence:`evals/e18_carry_s7_at12000.json`; per-query traces retained. No canvas
+full-budget cancellation or memory-architecture promotion follows from this.
+
+**Long-Mamba CPU mechanism test declared,08:25:** the fixed-clock experiment
+proved older visual history helps, not that the SSM supplies that benefit. Six
+four-tap temporal convolutions alone have a19-frame receptive field. On the
+first64 roots of the original preselected200-root cohort, run both frozen L16
+Mamba seeds7/8 under intact, reset-SSM-at-every-step, newest-conv-tap-only and
+combined lesions. Preserve the current-step SSM update, newest conv coefficient,
+biases, actions and time rows. Within each mode repeat the same older-visual
+ablation; report paired seed-cluster differences in history gain on same/moved
+cells aged6–15. CPU FP32, no GPU allocation, no new world training or capacity
+ceiling claim. `e17_recurrence.py`, per-root source/input/weights-bound resume.
+One-frame checks give max difference0 for all three lesions and restore every
+model tensor exactly. Logs:`EDA/levers_logs/e17_recurrence_cpu.log`. The64-root
+selection is bounded diagnosis, not a new sealed promotion panel.
+
+**Long-Mamba component result,08:29:** both seeds complete, same64 roots/53
+seed clusters,117 same-slot and162 moved-slot recallable cells aged6–15. Same-slot
+older-visual-history gain (paired original versus fixed-clock visual ablation):
+
+| frozen mode | Mamba s7 gain | Mamba s8 gain |
+|---|---:|---:|
+| intact |0.200451[0.009875,0.375462]|0.106067[0.005248,0.531627]|
+| reset SSM before each step |0.000143[−0.000073,0.000730]|0.000775[−0.000028,0.006473]|
+| newest conv tap only |0.001676[−0.000006,0.014201]|0.174590[0.001777,0.335621]|
+| reset both |−3.02e−11|−3.85e−9|
+
+Resetting SSM removes a resolved amount of history benefit at both seeds:
+−0.200307[−0.375378,−0.009686] and−0.105292[−0.526545,−0.005096]. Thus the
+older-history advantage in these frozen weights is not just stacked convolutions.
+Older conv taps are additionally necessary at s7; s8 retains a positive SSM
+history benefit without them (the change versus intact is unresolved). Do not
+generalize the s7 convolution dependence to both seeds. Intact moved-slot gains
+are−0.075594[−0.281255,0.037693] and0.031414[−0.131299,0.146506], both unresolved.
+Combined-lesion visual-history effects are numerical zero. These FP32 CPU results
+are paired within this64-root subset; do not substitute them for the earlier200-
+root bf16 readings. Reports:`evals/*L16b40_from36000__e17_recurrence_cpu.json`.
+
+**Additional CPU gradient decomposition, post hoc,08:30:**
+`e19_gradient_budget.py` consumes the existing30 exact TRAIN batch gradients;
+aggregation reproduces every saved gradient norm within1e−7. For a small negative-
+gradient step on the measured `proj.weight`+`choose.weight`, ordinary-damage loss
+changes to first order as−epsilon*(ordinary gradient dot objective gradient).
+The dot is+2.39185e−6 in B (downhill) but−9.46368e−5 in C (uphill). In C,
+projection weights contribute+1.79766e−5; selection weights contribute−1.12613e−4.
+For selection weights, contributions are death+1.29224e−4, own ordinary+6.21531e−5,
+unchanged−2.59101e−4, teacher−4.97166e−5, other+4.82731e−6. Removing unchanged's
+contribution flips selection's dot to+1.46488e−4. This local conflict is concentrated
+in routing, not a negative ordinary projection update or death opposing ordinary
+damage.17/24 actual batches with ordinary damage have an uphill selection dot.
+This is frozen endpoint, measured-weights, first-order **gradient-descent** geometry;
+it does not reconstruct AdamW moment/clip/decay updates, unmeasured biases/backbone
+gradients or the complete optimization history. No new loss-weight recommendation
+is inferred from its zero-crossing, since C's false positives already worsened.
+Evidence:`evals/e19_s7_fmamba__gradient_budget.json`, source-bound raw gradients.
+The same CPU postprocess is booked after each forthcoming B/C gradient replica.
+
+**Full-cohort CPU continuation declared,08:35:** differing conv dependence and
+wide s8 intervals justify extending the same mechanism contrast to all original
+200 fixed-clock roots. `e17_recurrence_full.py` imports the unchanged lesion/
+statistics functions, verifies64-root prefix inputs, weights and all sources,
+and reproduces one nonempty cached root before reusing64 records per seed.
+Compute only the remaining136 per seed; new hash-bound per-root journals preserve
+the64-root reports. No model training/GPU allocation/new seed block; this resolves
+the existing component uncertainty rather than adding an architectural arm.
+Logs:`EDA/levers_logs/e17_recurrence_full_cpu.log`.
+
+**Full-cohort result,08:45:**200 roots/103 seed clusters,459 same-slot and589
+moved-slot cells, both cold prefix reproduction errors0. Same-slot history gains:
+
+| mode | s7 | s8 |
+|---|---:|---:|
+| intact |0.363581[0.165949,0.556088]|0.335796[0.149464,0.541272]|
+| reset SSM each step |0.000437[−0.000225,0.001809]|0.000567[0.000095,0.001326]|
+| newest conv tap only |0.003398[0.000130,0.009305]|0.316337[0.153132,0.495545]|
+| reset both |4.79e−9|−1.04e−9|
+
+Reset-SSM versus intact changes are−0.363143[−0.555952,−0.165652] and−0.335229
+[−0.540685,−0.149075]. Conv-history removal changes−0.360183[−0.550845,−0.165430]
+at s7 but−0.019459[−0.094954,0.055119] at s8. This confirms useful SSM history
+at both seeds and a seed-specific additional convolution dependence. It does not
+identify whether convolution supplies input content, SSM writes or read queries.
+Intact moved-slot history gains remain unresolved:−0.005436[−0.098493,0.081546]
+and0.049434[−0.014862,0.110202]. These are input-history/component interventions
+on known diagnosis roots, not a new task-control result. Reports:
+`evals/*L16b40_from36000__e17_recurrence_full_cpu.json`; all per-root evidence kept.
+
+**Separating conv-channel follow-up declared,08:47:** `e17_conv_channels.py`
+removes older taps separately on convolution outputs x, B and C (input/direct
+skip, SSM write selector, SSM read selector), preserving newest taps and biases.
+Same200-root/103-seed cohort and both frozen worlds, original-versus-fixed-clock
+history comparisons and paired intervals. The interventions act across all six
+layers, so their downstream interactions remain; do not label them independent
+information channels. Reuse intact rows only after exact inputs/source/weights
+and cold reproduction checks. No encoder/world/head training or GPU allocation.
+This addresses the measured s7/s8 convolution difference, rather than proposing
+another architecture. CPU journals and logs in EDA, original reports unchanged.
+
+**Conv-channel result,08:59 AEDT:** both seeds completed the full200 roots/103
+seed clusters,459 same-slot and589 moved-slot cells. Intact cold-cache reproduction
+error is0 at both seeds. Same-slot older-history gains after removing older taps:
+
+| mode | s7 gain | s8 gain |
+|---|---:|---:|
+| intact |0.363581|0.335796|
+| x input/direct-skip taps removed |0.015059|0.324926|
+| B write-selector taps removed |0.093322|0.368382|
+| C read-selector taps removed |0.231337|0.287874|
+
+Paired changes versus intact, s7: x−0.348522[−0.545966,−0.151697],
+B−0.270259[−0.446134,−0.088327], C−0.132244[−0.237224,−0.041892].
+At s8: x−0.010870[−0.070890,0.051192], B+0.032586[0.001338,0.060255],
+C−0.047921[−0.090706,−0.008209]. Thus s7's conv dependence involves input,
+write and read branches, strongest in x; it is not merely an old read-query
+shortcut. S8 retains its SSM history benefit without older x/B taps, with a
+smaller resolved C dependence. The B improvement is a post-hoc component result,
+not a recommendation to remove B convolution. All interventions cross six
+interacting layers; these effects are not additive semantic information shares.
+Moved-slot history gains remain unresolved in every mode. Evidence:
+`evals/*L16b40_from36000__e17_conv_channels_cpu.json`, all root records retained.
+
+**E19 loss-mask interpretation:** the30 sampled C TRAIN batches contain293
+selected death,47 ordinary-damage,876 unchanged and29 other health targets.
+The hazard-context mask is therefore not event balancing: unchanged targets
+outnumber ordinary damage18.6:1. Together with the measured routing dot budget,
+this specifies the local opposition rather than attributing it to deaths.
+It still does not reconstruct historical AdamW updates or prove that reweighting
+will fix the false-positive/fidelity trade-off. Replicas remain booked before
+selecting a repair.
+
+**Primary literature checked after the access measurement:** Neural Map
+([paper](https://arxiv.org/pdf/1702.08360),§3.1–3.2/§3.5) separates write, global
+read and query-conditioned memory read, including key/value and localized read
+variants. MapNet's [author code](https://github.com/jotaf98/mapnet/blob/master/mapnet.py)
+explicitly feeds its entire registered map to localization, rather than merely
+preserving inaccessible recurrent states. These are relevant access mechanisms,
+not proofs of Craftax world prediction or of a Mamba readout repair. The SRU
+navigation paper's spatial-transformation task separates remembered category
+accuracy from coordinate accuracy ([source](https://arxiv.org/html/2506.05997v1),§4.4);
+our direct address defect is a separate, now measured implementation limitation.
+The [official Mamba2 implementation](https://github.com/state-spaces/mamba/blob/main/mamba_ssm/modules/mamba2.py)
+updates convolution and SSM caches separately (`step`), and its output adds
+`D*x` to the SSM read. This confirms the component accounting, not a diagnosis
+of our learned terrain semantics. Our own carries, lesions and model errors
+provide that experiment-specific evidence.
+The [PCGrad paper](https://papers.neurips.cc/paper_files/paper/2020/file/3fe78a8acf5fda99de95303940a2420c-Paper.pdf),§2.2,
+separates gradient conflict, magnitude imbalance and curvature; conflict alone
+does not imply a stalled joint optimum. Our exact routing dot budget provides a
+local measured mechanism. Curvature/AdamW trajectory and a successful intervention
+are still unmeasured. PCGrad's multi-task results do not establish that protecting
+our ordinary-hit subset at the expense of unchanged frames would be a good repair.
+Revisited the user's [TrajGRU paper](https://arxiv.org/pdf/1706.03458),§5.2/Table3:
+its balanced MSE/MAE weights actual target rain intensity (1,2,5,10,30), rather
+than a surrounding hazard-context flag. At rain>=30mm/h, offline ConvGRU CSI
+is0.0712 without balanced loss,0.1776 with it; balanced TrajGRU is0.1856.
+That paper separately measures objective balancing and recurrent alignment.
+Our C treatment did not reproduce event balancing, so its failed health repair
+does not refute that principle. Different task, pixel objective and metrics:
+the paper's gains are not evidence that any proposed Craftax weight will work.
+
+**Runtime handoff,09:01 AEDT:** E19 fmamba s8 A finished6,000 at08:08. B is
+actually training (last logged4,100/6,000; last atomic checkpoint4,000), then C
+and the endpoints precede canvas36k s7/s8. The lead, runtime monitor and frozen
+diagnostic-replica queue are active. Today's bounded CPU mechanism jobs are
+complete; replica queue waits for complete B/C checkpoints and checks hashes
+before running. No automatic process writes this notebook. Detailed live
+updates remain in `../20261005_recovery/live_status.json` and EDA logs; this
+paragraph is a timestamped observation, not a promise that later jobs finished.
+
 ## 2026-10-05 — E19 seed7 endpoints and measured generator/router mechanism (lead)
 
 Reviewed after all three fmamba arms completed6,000 updates. A/B/C sampled-row and

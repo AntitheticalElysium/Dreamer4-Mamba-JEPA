@@ -1,0 +1,56 @@
+{
+  "scope": "CPU-only canvas address/readout mechanism diagnosis; no new world training.\n\nCount direct temporal-stream addresses on the exact 2048 held pool windows. A\nnext-frame entering cell is off-screen at prediction time; does fcanvas gather\nits stored stream, or the stream for the current cell at the same screen slot?\nThen run the frozen 12k canvas on the first16 held windows containing reentry,\nwith an explicit FP32 CPU implementation of its masked SSM equations. Measure\noff-screen state retention, zero-input output gating, and reading the same held\nstate with its last observed C/z/query. Check all-kept parity against the actual\nFunctionalMamba2 reference backend. This is an address/component diagnosis, not\na full-model information ceiling: space attention and action/HUD streams can\nprovide indirect paths. No true next-frame feature enters a prediction; future\ncoordinates are used only to select which stored stream the diagnostic inspects.\n",
+  "contract": {
+    "scope": "CPU-only canvas address/readout mechanism diagnosis; no new world training.\n\nCount direct temporal-stream addresses on the exact 2048 held pool windows. A\nnext-frame entering cell is off-screen at prediction time; does fcanvas gather\nits stored stream, or the stream for the current cell at the same screen slot?\nThen run the frozen 12k canvas on the first16 held windows containing reentry,\nwith an explicit FP32 CPU implementation of its masked SSM equations. Measure\noff-screen state retention, zero-input output gating, and reading the same held\nstate with its last observed C/z/query. Check all-kept parity against the actual\nFunctionalMamba2 reference backend. This is an address/component diagnosis, not\na full-model information ceiling: space attention and action/HUD streams can\nprovide indirect paths. No true next-frame feature enters a prediction; future\ncoordinates are used only to select which stored stream the diagnostic inspects.\n",
+    "checkpoint": "733cc948f6c7fa72ee41ae5e3f696319d44471746d1136b83c49f72039e6d96e",
+    "pool": "7662de45ae043ae076d1751c7b34300919ec52f99106546fe39a2ff63ac9b5ac",
+    "held": "00d072783e8b652d8ae015aa642d86d399a3ce54da89be41ab7ccc1eec392915",
+    "sources": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e18_access.py": "5d962ba735a71bdd6babfc011fedc96f9ff23f3fee8f4742f030b61c80455705",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/tworld.py": "1435057c2b2f0c3d90f563e8dcaf94d06121deebc45928e18ec5cacc93d01569",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_recall.py": "fddea56f3444f8cc19a5fe43fb9a8811728bbcaa4b4ce824273b2da046fb04bd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/scroll.py": "32f21939825d3e3bc84b3442234baead507934cd0d4c36ac76a6c821fbdc99dc",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/mamba_recurrence.py": "8de9df2578d7bf45c9d98acaf51c99d03ca9185c641f8b09ae107370133bf4c0"
+    },
+    "runtime": {
+      "torch": "2.13.0+cu130",
+      "precision": "CPU FP32",
+      "threads": 3
+    },
+    "windows": 16
+  },
+  "address_windows": 2048,
+  "recallable_cells": 2018,
+  "same_slot": 1615,
+  "moved_slot": 403,
+  "direct_current_stream_matches": 0,
+  "targets_outside_current_view": 2018,
+  "CPU_reference_windows": [
+    21541,
+    2663,
+    22773,
+    19727,
+    22320,
+    2157,
+    7718,
+    11748,
+    5406,
+    2036,
+    16094,
+    974,
+    15395,
+    3728,
+    6317,
+    19899
+  ],
+  "layer_cell_queries": 840,
+  "nonzero_stored_state": 840,
+  "state_rms_mean": 0.0030728583224117756,
+  "nonzero_last_query_read": 840,
+  "last_query_read_rms_mean": 0.6097937226295471,
+  "all_kept_reference_max_error": 1.1920928955078125e-07,
+  "held_state_max_error": 0.0,
+  "unobserved_output_max": 0.0,
+  "restored_last_query_max_error": 0.0
+}
