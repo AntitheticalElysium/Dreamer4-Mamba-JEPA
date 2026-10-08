@@ -601,6 +601,27 @@ been trained from scratch. What is measured so far:
   - E′ reading: does fine-tuning with this fitted head push the head's AUC, and the phase / adjacency in h63, above the
     frozen-feature ceiling?
 
+**E21 part 2: GE at 6k, with the noise floor measured** (22:25; `ci_e21_6k.json`, `health_ci.py`: 5 probe seeds; episode-clustered
+paired bootstrap over 1,265 held episodes, 2,000 draws):
+- GE endpoint, row 14: generator beats copy 81.5%; phase (since = 6) 0.908; event head token-63 AUC 0.570 (2k 0.470, 4k 0.540);
+  emitted 73 hits / 37 false.
+- Noise floor: probe-seed std 0.001-0.003 for the phase, 0.007-0.015 for adjacency. Bootstrap 95% half-widths ≈ 0.015 (phase),
+  ≈ 0.055 (adjacency). GE's snapshot swings (0.909 / 0.932 / 0.908) are real model change, not probe noise.
+
+| paired contrast, 6k | since = 6 in h63 | since 1..4 | approach adjacency |
+|---|---|---|---|
+| M16 → C0 (continuation only) | +0.008 [−0.002, +0.017] | −0.006 [−0.017, +0.005] | −0.003 [−0.034, +0.028] |
+| C0 → G (+ generator loss) | **+0.044 [+0.031, +0.058]** | **+0.034 [+0.020, +0.047]** | **−0.154 [−0.213, −0.097]** |
+| C0 → GE | +0.011 [−0.001, +0.024] | +0.011 [−0.003, +0.026] | **−0.081 [−0.142, −0.019]** |
+| G → GE (+ event head) | **−0.033 [−0.042, −0.024]** | **−0.022 [−0.033, −0.013]** | **+0.074 [+0.023, +0.128]** |
+
+- The plain continuation moves nothing (all three unresolved).
+- The generator loss trades approach adjacency for the phase, both resolved.
+- The barely-trained event head pulls G back toward C0 on both, also resolved. Even an under-trained event term reshapes h63.
+  Its direction (more adjacency, less phase) is not what B1 needs: B1 needs both up.
+- Under the binding caveat (event AUC 0.570 < 0.85), GE says nothing about whether a competent event head installs the phase.
+  E′ (LP-FT, head at 0.753 from the start) and the from-scratch GE are the tests.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
