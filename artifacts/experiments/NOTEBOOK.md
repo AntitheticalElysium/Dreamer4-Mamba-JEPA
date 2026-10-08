@@ -304,6 +304,17 @@ generator never learns to produce the token.
     coverage-aware sampling at training time. This is related to E20 B's exposure effect on the phase (0.950), which was
     obtained despite importance weights restoring the natural loss mass.
 
+- **Exposure.** E20 A / B raised the phase in h63 (0.937 / 0.950) and removed false drops (2 / 1,728). They did it with
+  class-balanced endpoint batches importance-weighted back to the natural loss mass: same expected allocation, far lower
+  per-batch variance. Under Adam's per-parameter normalization, consistent small gradients win. The world-model literature
+  for exposure is Curious Replay (Kauvar et al., ICML 2023, arXiv 2306.15934, PDF read):
+  - priority p_i = c·β^{v_i} + (|L_i| + ε)^α, with α = β = 0.7, c = 1e4, ε = 0.01;
+  - no importance correction;
+  - DreamerV3 on Crafter improves from 14.5 to 19.4%.
+
+  Unlike E20's label-balanced batches it is generic, but it is uncorrected, so it shifts the L1 median: E14's prior-shift
+  lesson applies.
+
 **Generic remedies with a primary source, one per blocker:**
 - B1: EAWM's event head. It is a matched-negative classification loss, so the L1 median that decides drawing is unchanged,
   while the representation is pushed to predict *when* each token changes.
