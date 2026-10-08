@@ -745,6 +745,10 @@ paired bootstrap over 1,265 held episodes, 2,000 draws):
     true frames is ≈ 0.4-0.55.
   - Unchanged-frame error is equal across worlds, so D adds no noise there.
   - So D learns *when* a hit lands, and roughly its size.
+- **D @ 4k:**
+  - row 9: 478 hits (39.5%), fresh 2, false 2 / 1,728; generator beats copy 82%; drawn |err| 1.19 (27% within 0.5);
+  - row 14: phase 0.931, 612 hits, fresh 16, false 152 (123 in cooldown; the row-14 cue persists).
+  - Rising from 2k on every health reading; approach hits are still not drawn at row 9.
 
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
