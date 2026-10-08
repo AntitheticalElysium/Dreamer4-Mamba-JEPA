@@ -557,6 +557,22 @@ been trained from scratch. What is measured so far:
   trains exactly as M6's (@60b0c22f) and M16's (@ae0868ec) sources. Parameters, loss and every gradient are bit-identical;
   lane119 re-runs this after the D patch before it starts.
 
+**GE in-flight at 2k (21:38) and a binding caveat on the E / GE arms, recorded before their endpoints:**
+- GE @ 2k: generator beats copy 75.7% (G 73%); since = 6 in h63 0.909 (G 0.906, C0 0.886); the event head's own token-63 logit
+  ranks held hits vs unchanged at **AUC 0.470**. The event term has not yet acted on token 63.
+- Dose, measured against the source:
+  - EASimulus on Craftax (`config/base.yaml`, `benchmark/craftax.yaml`) trains its world model, event head included, at AdamW lr
+    2e-4, 8 sequences × 20 steps, 100 updates per epoch from epoch 150 of 10,000: ≈ 985k updates, ≈ 160M step-targets.
+  - An E21 continuation is 6k updates at lr 1e-4 behind a 1,000-update warm-up, 3.6M step-targets (≈ 2%).
+  - The pre-flight already showed SlotEvent learns token 63 slowly even at lr 1e-3 on frozen h (AUC 0.61 at 600 steps, 0.74 at
+    3,000).
+- Consequence: a negative E or GE *continuation* result on B1 is NOT evidence that EAWM's event prediction fails. It would be an
+  under-dosed test (the half-truth to avoid).
+  - The event head's own token-63 AUC is reported with every E / GE reading. Only where it is high (≥ 0.85) does a B1 null say
+    something about the mechanism.
+  - The from-scratch GE run (lane119: 42k updates, 7× the continuation) is the first test that gives the event head a budget;
+    its event AUC is read at every snapshot.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
