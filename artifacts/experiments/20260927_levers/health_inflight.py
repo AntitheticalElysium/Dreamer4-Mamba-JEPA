@@ -16,13 +16,15 @@ read = lambda hud: (P.hud(hud.float().flatten(-2))[..., 0] * 9).float()
 cur = torch.cat([read(torch.from_numpy(np.array(mm[i:i + 2048, 14, 63:81]))) for i in range(0, N, 2048)])
 cl = (t14 - t15).abs().mean(-1); since = st['since']; cool = (since >= 1) & (since <= 5)
 for n in sys.argv[1:]:
-    r = torch.load(OUT / f'{n}__w15__ext.pt', weights_only=False)
+    W = next(w for w in (15, 10, 5) if (OUT / f'{n}__w{w}__ext.pt').exists())        # 6-frame worlds: window 5
+    r = torch.load(OUT / f'{n}__w{W}__ext.pt', weights_only=False)
     g = F.layer_norm(r['gen63'].float(), (192,)); gl = (g - t15).abs().mean(-1)
     em = read(r['hud']) < cur - 1.5
     h63 = r['h_ext'][:, 0].float()
-    pr = HE.weighted_probe(h63, since == 6, torch.ones(N), allm & fit & ~inner, allm & inner, steps=2000)
+    ph = since == 6 if W >= 7 else (since >= 1) & (since <= 4)                         # since = 6 needs a 7-frame window
+    pr = HE.weighted_probe(h63, ph, torch.ones(N), allm & fit & ~inner, allm & inner, steps=2000)
     line = (f"{n[-48:]:48s} gen L1 hit {gl[hit & held].mean():.3f} beats copy {float((gl[hit & held] < cl[hit & held]).float().mean()):.3f}"
-            f" | gen w hit {float(r['weights63'][hit & held][:, 5].mean()):.3f} | since6 h63 {HE.auc(pr[held], (since == 6)[held]):.3f}"
+            f" | gen w hit {float(r['weights63'][hit & held][:, 5].mean()):.3f} | w{W} {'since6' if W >= 7 else 'since1-4'} h63 {HE.auc(pr[held], ph[held]):.3f}"
             f" | emitted hits {int((em & hit & held).sum())} fresh {int((em & hit & sub['fresh'] & held).sum())} false {int((em & unch & held).sum())} (cooldown {int((em & unch & held & cool).sum())})")
     if 'event63' in r:
         e = r['event63'].float(); line += f" | event63 AUC {HE.auc(e[held & keep], hit[held & keep]):.3f}"
