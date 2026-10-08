@@ -1017,6 +1017,20 @@ Delta-IRIS loss):
   - Either must be judged on self-fed imagination (damage panel, zombie presence at damage steps, food drift), not only
     teacher-forced.
 
+**Test 3 in flight: GE from scratch** (lane122 started 03:26 after the equivalence gate passed again; stage 1 at 0.42 s / update;
+lane135 reads each stage-1 snapshot against M6 at the same update, window 5 = output row 4, the 6-frame recipe's death-cue row):
+
+| @ 6k | generator beats copy | since 1..4 in h63 | approach adjacency | event head AUC | emitted hits / false (row 4) |
+|---|---|---|---|---|---|
+| M6 | 0.1% | 0.916 | 0.708 | — | 9 / 220 |
+| GE from scratch | **57.5%** | **0.975** | 0.593 | 0.468 | 12 / 310 |
+| paired difference | | **+0.060 [+0.046, +0.073]** | **−0.115 [−0.176, −0.054]** | | |
+
+- The direction matches the continuations (phase up, adjacency down: the generator loss dominating the gradient). The phase
+  gain is larger than in any continuation (GE vs C0 +0.011 unresolved; G +0.034).
+- The event head is still untrained at 6k from scratch (0.468): its budget problem is not specific to continuation.
+- Both worlds' false drops sit at the row-4 death cue of 6-frame training. Stage 2 decides.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
