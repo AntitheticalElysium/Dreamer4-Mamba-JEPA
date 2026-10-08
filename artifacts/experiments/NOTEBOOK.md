@@ -411,6 +411,14 @@ every past 6-frame run (S.W = 6).
 
 **E21 v2 launched** with SlotEvent; order G, C0, GE, E.
 
+**In-flight (provisional; not an endpoint reading), G at 2k vs M16, held subset:**
+- generator beats copy on 73% of hits (M16: 2%);
+- phase in h63 0.906 (M16: 0.888);
+- emitted hits 99 (M16: 154), false drops 108 (M16: 126), of which 98 sit in the cooldown window (M16: 107).
+
+B2 removed, B1 unchanged: a usable generator alone draws no more hits, and it still drops health inside the cooldown, as the
+diagnosis predicts.
+
 **E21 arm D, predeclared 17:50, before any E21 v2 result:** M16 s7 continued 6,000 updates exactly as C0, with the teacher L1
 replaced by Delta-IRIS's tokenizer loss in token space: 1.0·mean L2 + 0.1·mean L1 + 0.01·mean over frames of the frame's worst
 element L2 (vmicheli/delta-iris `tokenizer.py`).
