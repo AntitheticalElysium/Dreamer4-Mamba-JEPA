@@ -1145,6 +1145,18 @@ lane135 reads each stage-1 snapshot against M6 at the same update, window 5 = ou
   - Test 3 shows the GE objective fails the same way from scratch.
   - What remains open: D's positive result from scratch (lane131, next), and a mechanistic account of *why* from scratch ends
     worse on the phase (gradient allocation of the from-scratch world: lane122's `health_gradient` job).
+- **Why GE from scratch ends worse on the phase, measured** (lane122 `health_gradient`, 09:14):
+
+| world | token-63 hits' share of backbone gradient | generator-loss term's share |
+|---|---|---|
+| M16 | 0.164% | — |
+| GE as a continuation | 0.560% | 79% |
+| **GE from scratch** | **0.043%** (lowest of any world) | 75% |
+| D | 7.56% | — |
+
+  - Trained from step 0, the generator loss crowds the hits' gradient to a quarter of even M16's share, so the phase is learned
+    less. The continuation started from M16's phase.
+  - Simulator-truth damage panel for GE from scratch: teacher-forced caught 4.2% (C0 5.0%, D 73.3%); fresh 0; self-fed 0.
 - GE from scratch, full evidence (`evidence_scratch_ge.json`): drawable from h63 at row 9 is **317** (M16 334), so the
   information is no better than M16's, and the head emits 91 of them.
 - **A third measured factor, across all worlds at row 9: emitted / drawable**
