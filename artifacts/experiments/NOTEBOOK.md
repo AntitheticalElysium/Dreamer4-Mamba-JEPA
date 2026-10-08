@@ -488,7 +488,7 @@ element L2 (vmicheli/delta-iris `tokenizer.py`).
   world may favour; one-step L1 is reported beside it.
 - Implementation waits until E21's last arm has started, so every E21 arm runs the same `tworld.py`.
 
-### Summary at 03:10 (2026-10-09): the continuation question, and the first generic objective that draws damage
+### Summary at 03:02 (2026-10-09): the continuation question, and the first generic objective that draws damage
 
 **Q (21:00): if a result is negative, do we know it is not caused by continuing instead of training from scratch?**
 - *For the representation (B1): yes, now measured.*
