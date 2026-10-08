@@ -411,6 +411,17 @@ every past 6-frame run (S.W = 6).
 
 **E21 v2 launched** with SlotEvent; order G, C0, GE, E.
 
+**E21 arm D, predeclared 17:50, before any E21 v2 result:** M16 s7 continued 6,000 updates exactly as C0, with the teacher L1
+replaced by Delta-IRIS's tokenizer loss in token space: 1.0·mean L2 + 0.1·mean L1 + 0.01·mean over frames of the frame's worst
+element L2 (vmicheli/delta-iris `tokenizer.py`).
+- Rationale (measured above): the same world and batches give hits 11× the backbone gradient share (0.16% → 1.85%), with no
+  label and no new head.
+- Risk: L2's optimum is the conditional mean, so drawing a 2-point drop past the 1.5 cut needs P(hit) > 0.75. The phase strata
+  (since = 6: 0.87; since 1..5: 0.008) are on the right side of it.
+- Readings: the same four as E21. The cost reading is also reported in teval's own currency (MSE / copy), which an L2-trained
+  world may favour; one-step L1 is reported beside it.
+- Implementation waits until E21's last arm has started, so every E21 arm runs the same `tworld.py`.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
