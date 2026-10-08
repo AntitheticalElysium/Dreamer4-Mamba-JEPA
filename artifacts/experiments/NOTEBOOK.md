@@ -975,6 +975,39 @@ C0 for reference: 0 / 0 / 3.0% / 5.0% caught (zombie beside 10.4% imagined, 73.6
   additionally needs *sampling* of stochastic events. This is the role of Delta-IRIS's stochastic Δ channel, now motivated twice
   (food timers, zombie moves).
 
+**What happens to zombies, measured directly** (09:00; `health_zombie.py`, `zombie_{D,C0,M16}.json`; teval's held roots; true
+zombie cells from the simulator's visible state; zombie scores = teval's probe on the predicted frames):
+- True moves, steps with one zombie at relative distance 1..6 (n = 2,529): toward the player 37.9%, stay / attack 51.0%,
+  other (random) 11.1%.
+- One step from true history:
+
+| true move | D: score at true cell / argmax correct | C0 | M16 | probe on the true frame |
+|---|---|---|---|---|
+| toward (959) | 0.309 / **57.8%** | 0.176 / 30.1% | 0.174 / 30.4% | 0.681 |
+| stay (1,290) | 0.484 / 91.1% | 0.581 / 87.9% | 0.570 / 87.1% | 0.653 |
+| other (280) | 0.032 / 1.1% | 0.003 / 0.0% | 0.003 / 0.0% | 0.625 |
+
+  - D learned the rule's deterministic part much better than the L1 worlds (argmax on toward moves 58% vs 30%).
+  - Random moves are unpredictable for every world, as they must be.
+  - Even on toward moves D's one-step zombie is half-intensity (0.31 vs 0.68): a blend of outcomes.
+- Imagination, the 130 roots with exactly one zombie (peak score / positive mass / share with any cell > 0.3):
+
+| depth | D | C0 | M16 | truth |
+|---|---|---|---|---|
+| 1 | 0.44 / 1.27 / 73% | 0.45 / 1.06 / 63% | 0.44 / 1.04 / 62% | 0.65 / 1.34 / 92% |
+| 2 | 0.33 / 1.27 / 55% | 0.40 / 1.01 / 55% | 0.38 / 0.97 / 52% | 0.64 / 1.34 / 89% |
+| 4 | 0.21 / 1.19 / 20% | 0.30 / 0.89 / 36% | 0.27 / 0.83 / 31% | 0.64 / 1.34 / 92% |
+| 8 | 0.13 / 1.12 / **0%** | 0.19 / 0.75 / 20% | 0.17 / 0.68 / 17% | 0.64 / 1.37 / 93% |
+| 16 | 0.11 / 1.16 / **0%** | 0.13 / 0.70 / 8% | 0.12 / 0.64 / 8% | 0.65 / 1.44 / 96% |
+
+  - **Two measured ways to lose a zombie.** D (L2-type) *diffuses* it: total mass is conserved (≈ 1.2) while the peak decays
+    geometrically, the zombie spread over many cells at low intensity. By depth 8 no cell anywhere reads as a zombie.
+  - The L1 worlds *fade* it: peak and mass both decay (mass 1.06 → 0.70).
+  - Either way, by depth 4-8 the imagined world holds no localized zombie, so no zombie can arrive beside the player, and no
+    hit can be drawn. That is the 8.9% vs 73.6% measured at damage steps.
+- Pending (lane139): the calibration test, i.e. whether D's predicted shares over the 5 candidate cells match the empirical move
+  frequencies (mean-seeking) or concentrate on the mode.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
