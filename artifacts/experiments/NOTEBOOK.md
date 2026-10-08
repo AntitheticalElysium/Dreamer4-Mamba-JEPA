@@ -540,6 +540,13 @@ been trained from scratch. What is measured so far:
    - Selection, fixed now: GE (E21's predeclared main arm) runs first. D runs second if its continuation reading on B1 is
      positive or ambiguous. If every continuation arm is negative, GE and D both run (D addresses the diagnosed root most
      directly: 11× hit gradient share).
+   - *Structural note, recorded 23:10 before any stage-1 result:* stage 1 uses 6-frame windows, where a cooldown phase of 6 cannot
+     be represented (it needs ≥ 6 frames of history). In the from-scratch run, as in M16 and the continuation, since = 6 can only
+     be learned in the 6k L16 stage.
+     - What "from scratch" changes is the 36k of shaping before that stage: generator, event head, since 1..4, adjacency, all
+       read on the stage-1 snapshots against M6's.
+     - A from-scratch result on since = 6 is therefore a statement about stage 2 starting from a differently shaped network,
+       not about 42k updates of phase learning.
 
 **Test 1 result, signatures** (21:30; `plasticity_metrics.json`; 1,024 subset events):
 
