@@ -279,6 +279,18 @@ Positive control (true token-63 history over the world's own window): `since` 1.
     E20 A, 2 false drops).
   - At an unbiased row both worlds draw ~5% of hits with zero false drops: an honest but almost silent health channel. That
     is B1 (+ B2).
+  - **The two blockers at row 9** (`evidence_row9.json`; same probes and calibration as `health_evidence`; positive control at
+    window 10: phase 0.9995):
+
+| world, row 9 | generator beats copy | generator L1 on unchanged | since = 6 in h63 | approach adjacency in h63 | drawable from h63 | + oracle phase, adj | emitted hits / false |
+|---|---|---|---|---|---|---|---|
+| M16 s7 | 3.6% | 0.939 | 0.889 | 0.817 | **334** | 738 | 60 / 0 |
+| G | 74.7% | **0.039** (copy 0.036) | 0.937 | **0.648** | **136** | 626 | 64 / 0 |
+
+    - M16's h63 supports 334 drawable hits, but the head emits 60. That gap is B2.
+    - G removes B2, but its generator loss (~6× the teacher term) turns h63 toward reconstructing token 63's content. The
+      phase improves, approach adjacency falls (0.817 → 0.648), and the evidence drops to 136. G's 64 hits are B1-bound.
+    - With B2 fixed, B1 binds.
   - **Consequence for E21:** the predeclared window-15 health readings mix B1 / B2 with the row-14 cue. Every arm is also read
     at row 9 (window 10) and reported beside them. B1 / B2 movement is judged at row 9; the row-14 numbers stay as
     predeclared.
