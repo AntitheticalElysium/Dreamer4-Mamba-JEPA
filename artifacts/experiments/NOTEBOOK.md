@@ -1005,8 +1005,45 @@ zombie cells from the simulator's visible state; zombie scores = teval's probe o
   - The L1 worlds *fade* it: peak and mass both decay (mass 1.06 → 0.70).
   - Either way, by depth 4-8 the imagined world holds no localized zombie, so no zombie can arrive beside the player, and no
     hit can be drawn. That is the 8.9% vs 73.6% measured at damage steps.
-- Pending (lane139): the calibration test, i.e. whether D's predicted shares over the 5 candidate cells match the empirical move
-  frequencies (mean-seeking) or concentrate on the mode.
+- **Calibration test** (lane139, 09:05; distance 2..6 with no attack possible, n = 1,211; positive zombie-score share over the
+  5 candidate cells):
+
+| next cell | true frequency | D's predicted share | C0's predicted share |
+|---|---|---|---|
+| toward the player | 62.4% | 47.9% | 38.1% |
+| stay | 25.6% | 35.8% | 36.1% |
+| other direction | 12.0% | 16.4% | 24.0% |
+| zombie mass on the 5 cells (true frame 0.695) | | 0.553 | 0.319 |
+
+  - D is not mode-seeking: a mode-seeking model would put nearly everything on "toward". It spreads its one-step prediction
+    across the possible outcomes in roughly the true proportions, with a bias toward staying. That is the expected
+    distribution of the next frame, which is what a deterministic mean-seeking model predicts.
+  - C0 is flatter and loses mass (fading).
+- **The imagination failure, exact:**
+  1. zombie moves are stochastic (source);
+  2. the one-step prediction is a blend in proportion to the true move probabilities (calibration);
+  3. imagination feeds blends back, so the zombie diffuses (D: mass conserved, peak 0.44 → 0.11) or fades (L1 worlds);
+  4. no localized zombie is beside the player at real damage steps (8.9% vs 73.6%); restoring the true map restores 58.5%;
+  5. hits are not drawn (6%).
+
+**Literature step on this exact problem** (09:10; full texts read):
+- *PlaNet* (Hafner et al. 2019, arXiv 1811.04551, Fig. 2): "Transitions in a recurrent neural network are purely deterministic.
+  This prevents the model from capturing multiple futures and makes it easy for the planner to exploit inaccuracies."
+  - The RSSM splits the state into stochastic and deterministic parts "allowing the model to robustly learn to predict multiple
+    futures".
+  - Fig. 4: the purely deterministic GRU model underperforms the RSSM.
+- *DreamerV2* (arXiv 2010.02193, ablation §): categorical latents beat Gaussian latents on 42 / 55 Atari tasks. First hypothesis:
+  a Gaussian prior "cannot match a mixture of Gaussian posteriors, which could make it difficult to predict multi-modal changes
+  between one image and the next".
+- Cited video prediction (Babaeizadeh et al. 2017 SV2P; Denton & Fergus 2018 SVG): stochasticity "to capture multiple futures".
+- *Dreamer 4* (read 03:35) and *Delta-IRIS* (read 10-03) both sample: flow / shortcut forcing in continuous token space; discrete
+  stochastic Δ tokens with an autoregressive prior.
+- **Our per-tile world is a purely deterministic regressor.** Tonight's measurements are the failure these papers describe,
+  quantified on our data.
+- The remedy family is unambiguous: a stochastic transition that *samples* the next frame. Combined with the allocation finding
+  (D), the requirement for the fix is:
+  1. a loss that gives rare large changes their gradient (D's L2-type allocation; Dreamer 4's x-space squared loss);
+  2. a stochastic component sampled at imagination time.
 
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
