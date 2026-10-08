@@ -943,6 +943,34 @@ Bayes hit rates per stratum: fresh 0.973, beside without a hit 0.480, hit in win
   - Not yet diagnosed: whether imagined hits fail because the imagined zombie / phase state diverges, or because the head
     averages them away.
 
+**D's imagination gap, localized by substitution** (03:23; `health_imagination.py`, `imagination_*.json`; check_damage's data,
+reader, masks and alignment rule):
+
+| D: frame fed back at each step | caught, all 337 damage steps (aligned) | zombie drawn beside the player on damage steps | caught where a zombie is beside | false |
+|---|---|---|---|---|
+| imagined (= self-fed) | 4.5% (6.0%) | **8.9%** | 30% | 0.43% |
+| imagined + true HUD (health / phase history) | 5.9% (7.5%) | 8.9% | 30% | 1.43% |
+| **imagined + true map** | **58.5%** | **73.6%** | 69% | 2.07% |
+| true (= teacher-forced) | 73.3% | 73.6% | 87% | 4.06% |
+
+C0 for reference: 0 / 0 / 3.0% / 5.0% caught (zombie beside 10.4% imagined, 73.6% true).
+- The HUD / phase history is **not** what fails in imagination: restoring it moves 4.5% → 5.9%.
+- The **map** is: restoring it moves 4.5% → 58.5%. At the moments damage really happens, D's imagination shows a zombie beside the
+  player 8.9% of the time, against 73.6% in truth.
+- Source, verified (Craftax-Classic `game_logic.py` `update_mobs`, L758-845):
+  - a zombie within Manhattan distance 10 moves toward the player with probability 0.75 (axis chosen at random when tied),
+    otherwise takes a uniformly random step;
+  - at distance 1 with cooldown ≤ 0 it attacks (2 damage, 7 asleep), stays put, and resets its cooldown to 5. That is the 6-step
+    period measured in the data (since = 6 → 0.87).
+- **Exact chain in imagination:** hits require adjacency → adjacency depends on random zombie steps → a deterministic world draws
+  the average of the possible positions → the zombie smears out of the imagined frame → no hit can be drawn.
+  - Same root as the food drift (a mean-seeking world on events it cannot time), now in the map.
+  - It matches the 10-03 finding that H16 decisions need sampled futures (one faithful future ≈ 57% of the value, 16 samples
+    ≈ 90%).
+- **Consequence for the fix:** D's loss fixes allocation (the representation and the head learn the mechanism). Imagination
+  additionally needs *sampling* of stochastic events. This is the role of Delta-IRIS's stochastic Δ channel, now motivated twice
+  (food timers, zombie moves).
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
