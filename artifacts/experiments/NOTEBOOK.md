@@ -975,6 +975,24 @@ C0 for reference: 0 / 0 / 3.0% / 5.0% caught (zombie beside 10.4% imagined, 73.6
   additionally needs *sampling* of stochastic events. This is the role of Delta-IRIS's stochastic Δ channel, now motivated twice
   (food timers, zombie moves).
 
+**Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
+Delta-IRIS loss):
+
+| world | objective | token-63 hits: share of objective | token-63 hits: share of backbone gradient norm | other terms' backbone share |
+|---|---|---|---|---|
+| M16 | 0.0509 | 0.27% | 0.16% | — |
+| C0 | 0.0500 | 0.27% | 0.30% | — |
+| G | 0.1163 | 0.12% | 0.11% | **generator loss 81%** |
+| GE | 0.1182 | 0.14% | 0.56% | generator 79%, event 0.5% |
+| E′ | 0.0504 | 0.27% | 0.11% | event term 1.0% (at token-63 hits 0.24%) |
+| **D** | 0.0423 | 0.36% | **7.56%** | — |
+
+- D gives token-63 hits 25× C0's share of the backbone gradient (46× M16's): the measured mechanism behind its success,
+  confirming the allocation root of the diagnosis.
+- G's generator loss takes 81% of the backbone's gradient, so the representation is reshaped for token reconstruction. That
+  is the measured cause of G's lost approach adjacency (0.761 → 0.619).
+- E′'s event term is 1% of the gradient: its partial effect matches its partial dose.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
