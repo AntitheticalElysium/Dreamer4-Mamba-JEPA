@@ -993,6 +993,30 @@ Delta-IRIS loss):
   is the measured cause of G's lost approach adjacency (0.761 → 0.619).
 - E′'s event term is 1% of the gradient: its partial effect matches its partial dose.
 
+**Literature step on the newly diagnosed problem** (03:35; a deterministic world averages stochastic events in imagination):
+- *Dreamer 4* (arXiv 2509.24527, §2 and §3.2, Eq. 6-8, Table 2; vendored PDF, read): the dynamics model is a *generative* model
+  in continuous token space.
+  - Shortcut forcing = diffusion forcing + shortcut models, sampled autoregressively with K = 4 steps per frame; past inputs are
+    corrupted to τ_ctx = 0.1.
+  - Trained in x-space with a squared loss ‖ẑ₁ − z₁‖², ramp weight w(τ) = 0.9τ + 0.1.
+  - Ablations (FVD): shortcut model 875 → 329; x-loss 326 → 151; ramp 151 → 102.
+- *Delta-IRIS* (2406.19320): discrete stochastic Δ tokens with an autoregressive prior; the decoder trained with L2 + L1 +
+  worst-pixel (read 10-03; E16 / D notes above).
+- *Reading against tonight's measurements:* both of our measured failures are departures from these sources' dynamics
+  objectives.
+
+| failure | our world | the sources |
+|---|---|---|
+| allocation | per-element L1 (copies rare events: 0.27% of the objective, 0.16% of the gradient) | squared loss (D: 7.56%) |
+| imagination | deterministic regression (averages stochastic zombie moves and timers; imagined zombie beside at damage 8.9% vs 73.6%) | sample |
+
+- A flow / shortcut head predicts JEPA tokens, not pixels, so it stays reconstruction-free.
+- **Candidate designs, to predeclare after the from-scratch runs report:**
+  - (a) Dreamer 4's shortcut-forcing objective as the per-tile world's prediction head (the project's own foundation);
+  - (b) faithful Delta-IRIS (E16's Δ channel + D's loss).
+  - Either must be judged on self-fed imagination (damage panel, zombie presence at damage steps, food drift), not only
+    teacher-forced.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
