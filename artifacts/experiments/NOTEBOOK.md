@@ -488,9 +488,9 @@ element L2 (vmicheli/delta-iris `tokenizer.py`).
   world may favour; one-step L1 is reported beside it.
 - Implementation waits until E21's last arm has started, so every E21 arm runs the same `tworld.py`.
 
-### Could a negative come from continuing instead of training from scratch? (user question, 21:00; predeclared 21:20)
+### Could a negative come from continuing instead of training from scratch? (user question, 21:00; predeclared 21:06, commit b7d58a59)
 
-**Status at 21:20: not known.** Every E21 arm (and E19, E20) continues a trained parent (M16 = 36k 6-frame + 6k L16). No arm has
+**Status at 21:06: not known.** Every E21 arm (and E19, E20) continues a trained parent (M16 = 36k 6-frame + 6k L16). No arm has
 been trained from scratch. What is measured so far:
 - The continuation is not frozen. G moved the phase 0.897 → 0.944 (control flat) and the generator 4% → 80% in 6k; E20 B moved the
   phase to 0.950; E19 C moved the generator 0.952 → 0.659.
