@@ -21,10 +21,14 @@ losses read from h at slot 63 (the corrt head's only input for token 63), output
   since    CE over 16 classes: transitions since the last health drop before position t (0 = none in the window); health from teval's
            Probes.hud reader on the true frames, drop = next < current - 0.5
   adj      BCE: a zombie (Probes.zombie > 0.3) in true frame t beside the player's post-move cell (scroll.estimate between frames t, t+1)
-Labels come from the true frames (TRAIN ledger) and are diagnostic only, never a proposed fix. lam default 0.015 (lam x the initial
-oracle loss ~= the teacher loss); the teacher term is asserted equal to tworld.rollout_losses' on the first batch. Snapshots in
+Labels come from the true frames (TRAIN ledger) and are diagnostic only, never a proposed fix. lam default: set on the first
+fine-tuning batch so that lam x the oracle loss = the teacher loss (logged); the teacher term is asserted equal to
+tworld.rollout_losses' on the first batch.
+LP-FT (Kumar et al. 2022, arXiv 2202.10054; added 21:50 before the first run): the two oracle heads are first fitted alone on the
+frozen world's h63 (60 batches of order seed 13, AdamW lr 1e-3, 3,000 steps), so the continuation's gradient into the backbone comes
+from fitted heads, not random ones; the LP losses are logged. Snapshots in
 tworld's checkpoint format at 500 / 1,000 / 2,000 updates -> levers_tworlds_v1/<name>[_atN].pt, read by health_chain.py / health_evidence.
-Usage: health_plasticity.py metrics <world.pt|init> ... | health_plasticity.py oracle <world.pt> [--updates N] [--lam L]
+Usage: health_plasticity.py metrics <world.pt|init> ... | health_plasticity.py oracle <world.pt> [--updates N] [--lam L (default: auto)]
 """
 import json
 import sys
@@ -163,24 +167,46 @@ def oracle(path, updates, lam):
     meta, train_roots, train_seeds = T.split()
     P = T.Probes(T.build_cache('raw', torch.device('cpu')), meta, train_roots, train_seeds)
     aux = nn.ModuleDict({'since': nn.Linear(S.D, 16), 'adj': nn.Linear(S.D, 1)}).to(dev)
-    opt = phase_optimizer([world, aux], config)
-    params = [p for g in opt.param_groups for p in g['params']]
     pool = torch.load(TW.POOLS['rawlong'] / 'labels.pt', weights_only=False, mmap=True)
     tokens = np.memmap(TW.POOLS['rawlong'] / 'tokens.f16', dtype=np.float16, mode='r', shape=(len(pool['terminal']), 64, 81, 192))
     main_rows, term_rows = torch.where(~pool['terminal'])[0], torch.where(pool['terminal'])[0]
+
+    def batch(order):
+        term = torch.rand(TW.BATCH, generator=order) < TW.TERMINAL_SHARE
+        r = torch.where(term, term_rows[torch.randint(len(term_rows), (TW.BATCH,), generator=order)],
+                        main_rows[torch.randint(len(main_rows), (TW.BATCH,), generator=order)])
+        t0 = torch.where(term, 64 - L, torch.randint(0, 65 - L, (TW.BATCH,), generator=order))
+        s_cpu = torch.stack([torch.from_numpy(np.array(tokens[int(i), int(j):int(j) + L])) for i, j in zip(r, t0)]).float()
+        return s_cpu, torch.stack([pool['actions'][int(i), int(j):int(j) + L - 1] for i, j in zip(r, t0)])
+    lp_order, lp_cache = torch.Generator().manual_seed(13), []
+    with torch.no_grad():                                                          # LP: frozen h63 and labels, 60 batches
+        for _ in range(60):
+            s_cpu, a = batch(lp_order)
+            since, adj = oracle_labels(s_cpu, P, estimate)
+            with autocast_context(config):
+                h = world(s_cpu.to(dev), F.pad(a, (0, 1)).to(dev))[1]
+            lp_cache.append((h[:, :L - 1, 63].float(), since.to(dev), adj.to(dev)))
+    lp_opt = torch.optim.AdamW(aux.parameters(), lr=1e-3)
+    lp_log = []
+    for step in range(3000):
+        h63, since, adj = lp_cache[step % len(lp_cache)]
+        ce = F.cross_entropy(aux['since'](h63).flatten(0, 1), since.flatten())
+        bce = F.binary_cross_entropy_with_logits(aux['adj'](h63)[..., 0], adj)
+        lp_opt.zero_grad(); (ce + bce).backward(); lp_opt.step()
+        if (step + 1) % 500 == 0:
+            lp_log.append({'lp_step': step + 1, 'since_ce': float(ce), 'adj_bce': float(bce)})
+            print(json.dumps(lp_log[-1]), flush=True)
+    del lp_cache
+    opt = phase_optimizer([world, aux], config)
+    params = [p for g in opt.param_groups for p in g['params']]
     order = torch.Generator().manual_seed(11)
     name = st['name'].replace('corrt_rawlong_teacher_s7_fmamba_', 'corrt_rawlong_teacher_s7_fmamba_oracle_')
     args = dict(st['args']); args.update(init=str(path), updates=str(updates), oracle_lam=str(lam))
     save = lambda tag, h: torch.save({'name': tag, 'args': args, 'world': world.state_dict(), 'history': h}, WORLDS / f'{tag}.pt')
-    history, started, checked = [], time.time(), False
+    history, started, checked = list(lp_log), time.time(), False
     for update in range(updates):
-        W = TW.BATCH
-        term = torch.rand(W, generator=order) < TW.TERMINAL_SHARE
-        r = torch.where(term, term_rows[torch.randint(len(term_rows), (W,), generator=order)],
-                        main_rows[torch.randint(len(main_rows), (W,), generator=order)])
-        t0 = torch.where(term, 64 - L, torch.randint(0, 65 - L, (W,), generator=order))
-        s_cpu = torch.stack([torch.from_numpy(np.array(tokens[int(i), int(j):int(j) + L])) for i, j in zip(r, t0)]).float()
-        a = torch.stack([pool['actions'][int(i), int(j):int(j) + L - 1] for i, j in zip(r, t0)]).to(dev)
+        s_cpu, a = batch(order)
+        a = a.to(dev)
         since, adj = oracle_labels(s_cpu, P, estimate)
         s = s_cpu.to(dev)
         with autocast_context(config):
@@ -194,6 +220,11 @@ def oracle(path, updates, lam):
             h63 = h[:, :L - 1, 63].float()
             ce = F.cross_entropy(aux['since'](h63).flatten(0, 1), since.to(dev).flatten())
             bce = F.binary_cross_entropy_with_logits(aux['adj'](h63)[..., 0], adj.to(dev))
+            if lam is None:                                                      # oracle term = teacher term at the start
+                lam = float(teacher) / float(ce + bce)
+                args['oracle_lam'] = str(lam)
+                history.append({'oracle_lam': lam})
+                print(json.dumps({'oracle_lam': lam}), flush=True)
             objective = teacher + lam * (ce + bce)
         norm = optimizer_step(opt, objective, params, learning_rate=_phase_lr(config, update),
                               grad_clip=config.agent.grad_clip, strict=True, zero_grad=True)
@@ -215,4 +246,4 @@ if __name__ == '__main__':
     if a[0] == 'metrics':
         metrics(a[1:])
     else:
-        oracle(a[1], int(a[a.index('--updates') + 1]) if '--updates' in a else 2000, float(a[a.index('--lam') + 1]) if '--lam' in a else 0.015)
+        oracle(a[1], int(a[a.index('--updates') + 1]) if '--updates' in a else 2000, float(a[a.index('--lam') + 1]) if '--lam' in a else None)

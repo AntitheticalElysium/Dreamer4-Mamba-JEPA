@@ -513,7 +513,11 @@ been trained from scratch. What is measured so far:
 1. *Signatures* (`health_plasticity.py metrics`, lane117): dormant fractions, feature rank, random-target fitting for fresh init,
    M6 at 6k / 18k / 36k, M16, C0, G. Descriptive: they show whether capacity loss is present, not that it caused a negative.
 2. *Oracle positive control* (`health_plasticity.py oracle`, lane118): M16 continued 2,000 updates with its own recipe plus
-   λ = 0.015 × (CE of the true `since` class + BCE of the true approach adjacency) read from h63. Labels validated against
+   λ × (CE of the true `since` class + BCE of the true approach adjacency) read from h63.
+   - Amended 21:50, before its first run, for the same reason as E′: the two oracle heads are first fitted on frozen h63 (LP-FT;
+     60 batches of order 13, 3,000 steps, lr 1e-3).
+   - λ is set on the first fine-tuning batch so that the oracle term equals the teacher term (the original 0.015 assumed random
+     heads), and logged. Labels validated against
    `strata.pt`: since 99.7%, adjacency 100%. Diagnostic only, never a fix.
    - Readings at 500 / 1,000 / 2,000 updates, health_chain subset, held episodes, window 15, same probes as every other world:
      M16 is plastic for the phase if since = 6 and since 1..4 in h63 are both ≥ 0.97 (input ceiling 0.999); plastic for adjacency
