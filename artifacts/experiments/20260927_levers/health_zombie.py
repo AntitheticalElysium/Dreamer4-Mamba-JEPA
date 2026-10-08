@@ -11,6 +11,11 @@ with p = 0.75 (on a max-|difference| axis, chosen at random when tied), else one
    total positive score mass; also the score at the true cell on the TRUE next frame (probe ceiling).
 2. imagination (self-fed), roots with exactly one zombie in view at the root: per depth 1, 2, 4, 8, 16: peak zombie score and
    positive mass on imagined frames vs on true frames, and share of roots whose imagined frame has any cell > 0.3.
+3. calibration of the one-step prediction (added 09:05): steps with one zombie at relative distance 2..6 (no attack possible),
+   its 5 candidate next cells in the next view (stay, and the 4 world moves; view cell = v0 - player displacement + move), grouped
+   as stay / toward (moves that reduce a max-|difference| component) / other; the world's positive predicted score share per group
+   (normalized over the 5 cells) vs the empirical frequency of the true next cell's group. A mean-seeking world matches the
+   frequencies; a mode-seeking one puts its share on the most frequent group.
 Player displacement per step = scroll.estimate between consecutive true frames (SHIFTS), as health_strata.py.
 Usage: health_zombie.py <name=world.pt> ...  -> artifacts/eda/health_chain_v1/zombie_<name>.json
 """
@@ -108,6 +113,30 @@ def main():
                                'probe_ceiling_on_true_frame': round(float(ceiling[m].mean()), 3),
                                'argmax_is_true_cell': round(float(hitcell[m].float().mean()), 3),
                                'cells_above_0.3': round(float(spread[m].mean()), 2), 'positive_mass': round(float(mass[m].mean()), 3)}
+        # 3. calibration over the 5 candidate cells, distance 2..6
+        dirs = torch.tensor(((0, 0), (-1, 0), (1, 0), (0, -1), (0, 1)))
+        far = keep & (d0 >= 2)
+        base = v0 - disp                                                                             # zombie's old cell in the new view
+        cand = base[:, None] + dirs[None]                                                            # [n, 5, 2]
+        inside = ((cand[..., 0] >= 0) & (cand[..., 0] < 7) & (cand[..., 1] >= 0) & (cand[..., 1] < 9)).all(1)
+        far = far & inside & (move.abs().sum(1) <= 1)                                               # one legal step (scroll errors excluded)
+        cr, cc = cand[..., 0].clamp(0, 6), cand[..., 1].clamp(0, 8)
+        pscore = p_cells[torch.arange(len(r_i))[:, None], cr, cc].clamp(min=0)                        # [n, 5]
+        share = pscore / pscore.sum(1, keepdim=True).clamp(min=1e-6)
+        tow = torch.zeros(len(r_i), 5, dtype=torch.bool)
+        for j in range(1, 5):
+            mv = dirs[j][None].expand(len(r_i), 2)
+            tow[:, j] = ((mv * -rel0.sign()) == 1).any(1) & ((mv != 0) & on_max_axis).any(1)
+        group = torch.where(tow, 1, 2); group[:, 0] = 0                                              # 0 stay, 1 toward, 2 other
+        true_j = ((move[:, None] == dirs[None]).all(-1)).float().argmax(1)
+        true_g = group[torch.arange(len(r_i)), true_j]
+        calib = {}
+        for g_i, g_name in enumerate(('stay', 'toward', 'other')):
+            calib[g_name] = {'empirical_frequency': round(float((true_g[far] == g_i).float().mean()), 3),
+                             'predicted_share': round(float((share[far] * (group[far] == g_i)).sum(1).mean()), 3)}
+        calib['n'] = int(far.sum())
+        calib['predicted_mass_over_5_cells'] = round(float(pscore[far].sum(1).mean()), 3)
+        calib['true_frame_mass_over_5_cells'] = round(float(t_cells[torch.arange(len(r_i))[:, None], cr, cc].clamp(min=0)[far].sum(1).mean()), 3)
         # 2. imagination, roots with exactly one zombie at the root
         roots1 = n1[:, 0] == 1
         true_peak = true_score.flatten(2).max(2).values
@@ -121,6 +150,7 @@ def main():
                             'imagined_any_above_0.3': round(float((gen_peak[m, d - 1] > 0.3).float().mean()), 3),
                             'true_any_above_0.3': round(float((true_peak[m, d - 1] > 0.3).float().mean()), 3)}
         res_all[name] = {'world': st['name'], 'one_step_by_true_move': one_step, 'imagination_one_zombie_roots': imag,
+                         'one_step_calibration_distance_2_to_6': calib,
                          'move_share': {k: round(float(v.sum() / keep.sum()), 3) for k, v in kinds.items()}}
         print(json.dumps({name: res_all[name]}), flush=True)
         del world; torch.cuda.empty_cache()
