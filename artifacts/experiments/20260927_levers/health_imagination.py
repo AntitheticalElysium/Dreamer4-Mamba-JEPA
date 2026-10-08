@@ -6,6 +6,10 @@ drop > 0.5, unchanged = equal; 0.5 cut; window min(4 + k, 15)). Rollouts where t
                replaced by the true next frame's
   gen_trueMAP  its prediction with the 63 map tokens (zombies, terrain, view) replaced by the true next frame's
   teacher      the true next frame (= check_damage's teacher-forced)
+  gen_trueZOMBIE  (09:15) its prediction with only the map cells within Manhattan 2 of a true zombie in the true next frame
+               replaced by the true ones (zombie localization restored; the rest of the map stays imagined)
+  gen_trueRANDOM  control: the same number of map cells, chosen at random among cells farther than 2 from any true zombie,
+               replaced by the true ones (seeded per root batch and step)
 At each step, a drop is drawn when the predicted health < the CURRENT health of the fed-back frame - 0.5 (imagined for gen /
 gen_trueMAP, true for gen_trueHUD / teacher). Reported: caught on true damage transitions (all, and view-aligned as check_damage:
 imagined scroll offsets equal the true ones at every earlier step), false drops on true unchanged transitions, and on damage steps
@@ -49,13 +53,18 @@ def main():
     zombie_near = lambda tok: (probes.zombie(tok[:, NEAR].float().flatten(0, 1))[:, 0].view(len(tok), 4) > 0.3).any(1)
     drop = (hp[:, 1:] < hp[:, :-1] - 0.5) & alive
     same = (hp[:, 1:] == hp[:, :-1]) & alive
-    variants = ('gen', 'gen_trueHUD', 'gen_trueMAP', 'teacher')
+    variants = ('gen', 'gen_trueHUD', 'gen_trueMAP', 'teacher', 'gen_trueZOMBIE', 'gen_trueRANDOM')
+    allv = torch.cat([meta['root_visible'][:, None], meta['future_visible'][:, 0]], 1).float()
+    zt = allv[..., 1071:1512].reshape(R, 17, 7, 9, 7)[..., 0] > 0                                   # true zombies [R, 17, 7, 9]
+    coords = torch.tensor([[c // 9, c % 9] for c in range(63)])
+    zdist = lambda z: torch.where(z.flatten(1)[:, :, None], (coords[None, :, None] - coords[None, None]).abs().sum(-1), torch.tensor(99)).amin(1)
+    gseed = torch.Generator().manual_seed(20261009)
     for path in sys.argv[1:]:
         world, st = T.load_world(Path(path), device)
         pred_h = {v: torch.empty(R, H) for v in variants}
         cur_h = {v: torch.empty(R, H) for v in variants}
         znear = {v: torch.empty(R, H, dtype=torch.bool) for v in variants}
-        fed = {v: torch.empty(R, H, 81, 192, dtype=torch.float16) for v in ('gen', 'gen_trueHUD')}   # for the alignment rule
+        fed = {v: torch.empty(R, H, 81, 192, dtype=torch.float16) for v in ('gen', 'gen_trueHUD', 'gen_trueZOMBIE', 'gen_trueRANDOM')}
         for i in range(0, R, 16):
             b = min(16, R - i)
             c4, a3, fk = ctx[i:i + b].float(), ca[i:i + b], fa[i:i + b]
@@ -76,6 +85,17 @@ def main():
                         nxt = torch.cat([pred[:, :63], true_next[:, 63:]], 1)
                     elif v == 'gen_trueMAP':
                         nxt = torch.cat([true_next[:, :63], pred[:, 63:]], 1)
+                    elif v in ('gen_trueZOMBIE', 'gen_trueRANDOM'):
+                        near = zdist(zt[i:i + b, k + 1]) <= 2                                       # [b, 63] cells near a true zombie
+                        if v == 'gen_trueRANDOM':
+                            pick = torch.zeros_like(near)
+                            for j in range(b):
+                                far = torch.where(~near[j])[0]
+                                n = min(int(near[j].sum()), len(far))
+                                pick[j, far[torch.randperm(len(far), generator=gseed)[:n]]] = True
+                            near = pick
+                        nxt = pred.clone()
+                        nxt[:, :63][near] = true_next[:, :63][near]
                     else:
                         nxt = true_next
                     if v in fed:
