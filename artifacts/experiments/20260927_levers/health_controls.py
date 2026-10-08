@@ -8,7 +8,11 @@ split, inner split and probe (health_evidence.weighted_probe, uniform weights, h
   false       (`health_controls.py false`, CPU) where the emitted false drops sit: held unchanged events by context (zombie
               distance in frame 14, adj_post, time since the last drop, current health), for M16 s7 / s8 and E20 A
               -> false_drops.json
-Usage: health_controls.py [false]  -> artifacts/eda/health_chain_v1/controls.json | false_drops.json
+  pool        (`health_controls.py pool`) the adjacency control at 5x the data: every event of the E20 pool (71,918; frames t-14..t+1)
+              with M16 s7's h63 at the output position (window 15), scroll 14 -> 15 (scroll.estimate), adj_post from Probes.zombie
+              > 0.3 on frame 14 beside the post-move cell, zombie within 2 of the player in frame 14; probes as `adjacency`, fit /
+              held by episode (health_chain.fit_split) -> pool_adjacency.json (h63 / labels cached in pool_h63.pt)
+Usage: health_controls.py [false | pool]  -> controls.json | false_drops.json | pool_adjacency.json in artifacts/eda/health_chain_v1
 """
 import hashlib
 import json
@@ -103,7 +107,59 @@ def false_drops():
     (OUT / 'false_drops.json').write_text(json.dumps(res, indent=1))
 
 
+def pool_adjacency():
+    import teval as T
+    import health_evidence as HE
+    from health_chain import POOL, fit_split
+    from scroll import estimate
+    from d4mj.config import config_from_dict
+    from d4mj.train import autocast_context
+    import spatial as S
+    lab = torch.load(POOL / 'labels.pt', weights_only=False)
+    N = len(lab['classes'])
+    tok = np.memmap(POOL / 'tokens.f16', dtype=np.float16, mode='r', shape=(N, 16, 81, 192))
+    cache = OUT / 'pool_h63.pt'
+    if not cache.exists():
+        meta, train_roots, train_seeds = T.split()
+        P = T.Probes(T.build_cache('raw', torch.device('cpu')), meta, train_roots, train_seeds)
+        config = config_from_dict(torch.load(S.CHECKPOINT, map_location='cpu', weights_only=False)['config'])
+        w, _ = T.load_world(M16, torch.device('cuda'))
+        coords = torch.tensor([[c // 9, c % 9] for c in range(63)])
+        shifts = torch.tensor(((0, 0), (-1, 0), (1, 0), (0, -1), (0, 1)))
+        d_now = (coords - torch.tensor([3, 4])).abs().sum(-1)
+        h63, scroll, adj, near2 = [], [], [], []
+        with torch.no_grad():
+            for i in range(0, N, 8):
+                x = torch.from_numpy(np.array(tok[i:i + 8])).float()
+                with autocast_context(config):
+                    h = w(x[:, :15].cuda(), lab['actions'][i:i + 8, :15].cuda())[1]
+                h63.append(h[:, -1, 63].half().cpu())
+                sc = estimate(x[:, 14], x[:, 15])
+                z = P.zombie(x[:, 14, :63].flatten(0, 1))[:, 0].view(len(x), 63) > 0.3
+                d_post = (coords[None] - (torch.tensor([3, 4])[None] + shifts[sc])[:, None]).abs().sum(-1)
+                scroll.append(sc); adj.append((z & (d_post == 1)).any(1)); near2.append((z & (d_now <= 2)[None]).any(1))
+        torch.save({'h63': torch.cat(h63), 'scroll': torch.cat(scroll), 'adj_post': torch.cat(adj), 'zombie_within_2': torch.cat(near2)}, cache)
+    c = torch.load(cache, weights_only=False)
+    fit = fit_split(lab['ids'])
+    inner = fit & torch.tensor([int(hashlib.sha256((e + '/inner').encode()).hexdigest(), 16) % 4 == 0 for e, _ in lab['ids']])
+    held = ~fit; allm = torch.ones(N, dtype=torch.bool)
+    y, sc, near2 = c['adj_post'], c['scroll'] != 0, c['zombie_within_2']
+    cells = [r * 9 + col for r in range(7) for col in range(9) if abs(r - 3) + abs(col - 4) <= 2]
+    raw = torch.cat([torch.from_numpy(np.array(tok[i:i + 4096, 14][:, cells])).float().flatten(1).half() for i in range(0, N, 4096)])
+    act = F.one_hot(lab['actions'][:, 14].clamp(max=16), 17).float()
+    res = {'events': N, 'held': int(held.sum()), 'adj_post_rate': float(y.float().mean()),
+           'held_scroll_zombie_within_2': [int((held & sc & near2 & y).sum()), int((held & sc & near2).sum())]}
+    for name, X in (('raw_cells13_action', torch.cat([raw.float(), act], 1)),
+                    ('raw_cells13_action_true_scroll', torch.cat([raw.float(), act, F.one_hot(c['scroll'], 5).float()], 1)),
+                    ('m16_s7_h63', c['h63'].float())):
+        pr = HE.weighted_probe(X, y, torch.ones(N), allm & fit & ~inner, allm & inner, steps=4000)
+        res[name] = {'all': round(HE.auc(pr[held], y[held]), 4), 'scroll': round(HE.auc(pr[held & sc], y[held & sc]), 4),
+                     'scroll_zombie_within_2': round(HE.auc(pr[held & sc & near2], y[held & sc & near2]), 4)}
+        print(json.dumps({name: res[name]}), flush=True)
+    (OUT / 'pool_adjacency.json').write_text(json.dumps(res, indent=1))
+
+
 if __name__ == '__main__':
     sys.path.insert(0, str(ROOT / 'artifacts/experiments/20260926_diagnosis'))
     sys.path.insert(0, str(ROOT / 'artifacts/experiments/20260921_readout_ladder'))
-    false_drops() if sys.argv[1:] == ['false'] else main()
+    {'false': false_drops, 'pool': pool_adjacency}.get(sys.argv[1] if sys.argv[1:] else '', main)()
