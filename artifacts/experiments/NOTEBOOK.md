@@ -488,6 +488,55 @@ element L2 (vmicheli/delta-iris `tokenizer.py`).
   world may favour; one-step L1 is reported beside it.
 - Implementation waits until E21's last arm has started, so every E21 arm runs the same `tworld.py`.
 
+### Could a negative come from continuing instead of training from scratch? (user question, 21:00; predeclared 21:20)
+
+**Status at 21:20: not known.** Every E21 arm (and E19, E20) continues a trained parent (M16 = 36k 6-frame + 6k L16). No arm has
+been trained from scratch. What is measured so far:
+- The continuation is not frozen. G moved the phase 0.897 → 0.944 (control flat) and the generator 4% → 80% in 6k; E20 B moved the
+  phase to 0.950; E19 C moved the generator 0.952 → 0.659.
+- The endpoints are not converged: G's phase still rose at 6k (0.906 / 0.923 / 0.944).
+- Our own precedent says continuation can produce a false negative: E16 amendment 2 (10-03). A converged deterministic world
+  started Delta-IRIS training in Bowman et al.'s "decoder ignores the latent" equilibrium; the from-scratch recipe was required.
+
+**Literature read (full texts):**
+- Ash & Adams 2020 (arXiv 1910.08475): warm-started networks generalize worse at equal training loss. Mechanism: gradient
+  imbalance between new and already-fitted data. Shrink-and-perturb (λ = 0.6, noise scale 0.01) matches fresh init.
+- Achille et al. 2019 (arXiv 1711.08856, critical periods): connectivity consolidates early; deficits removed late are not fully
+  recovered.
+- Lyle et al. 2022 (arXiv 2204.09560): capacity loss, measured by target-fitting capacity (Def. 1) and feature rank (Def. 2,
+  ε = 0.01). Lyle et al. 2023 (arXiv 2303.01486): plasticity loss tracks loss-landscape curvature, often without saturated
+  units; layer normalization mitigates it (our backbone is pre-norm).
+- Sokar et al. 2023 (arXiv 2302.12902): τ-dormant units (score = normalized mean |activation|; τ = 0 / 0.025 / 0.1).
+- Nikishin et al. 2022 (arXiv 2205.07802): primacy bias, an early-data overfit that resets cure.
+
+**Three measurements, in increasing strength:**
+1. *Signatures* (`health_plasticity.py metrics`, lane117): dormant fractions, feature rank, random-target fitting for fresh init,
+   M6 at 6k / 18k / 36k, M16, C0, G. Descriptive: they show whether capacity loss is present, not that it caused a negative.
+2. *Oracle positive control* (`health_plasticity.py oracle`, lane118): M16 continued 2,000 updates with its own recipe plus
+   λ = 0.015 × (CE of the true `since` class + BCE of the true approach adjacency) read from h63. Labels validated against
+   `strata.pt`: since 99.7%, adjacency 100%. Diagnostic only, never a fix.
+   - Readings at 500 / 1,000 / 2,000 updates, health_chain subset, held episodes, window 15, same probes as every other world:
+     M16 is plastic for the phase if since = 6 and since 1..4 in h63 are both ≥ 0.97 (input ceiling 0.999); plastic for adjacency
+     if adjacency|scroll, zombie ≤ 2 ≥ 0.90 (M16 0.778).
+   - If plastic: a continuation arm that fails to install an ingredient failed because its objective asks too weakly, not
+     because of lock-in. The from-scratch test (3) still decides whether the *same weak ask* works when present from step 0
+     (critical periods).
+   - If not plastic: no continuation negative on B1 can be interpreted, and every conclusion waits for (3).
+3. *From-scratch replication* (decisive): the selected arm trained through the exact canonical recipe from step 0. Stage 1:
+   `tworld.py --head corrt --pool raw --loss teacher --seed 7 --updates 36000 --backbone fmamba --snapshots` + the arm's flags.
+   Stage 2: `--pool rawlong --frames 16 --windows 40 --init <stage 1>`, 6,000 updates.
+   - Same init seed, batch order (11) and update count as M6 → M16; only the loss differs.
+   - Matched controls exist: M6's snapshots (6k … 36k) for stage 1 and M16 for stage 2. ~8.5 h per arm.
+   - Readings: E21's four, at row 9 and at row 14, plus stage-1 snapshot curves of generator fidelity, `since` 1..4 and
+     adjacency against M6 at the same updates.
+   - Interpretation:
+     - from scratch passes where the continuation failed → the continuation caused the negative;
+     - both fail with the same ingredient values → that negative is not a continuation artifact;
+     - from scratch fails differently → reported as such, with the stage-1 curves locating where they diverge.
+   - Selection, fixed now: GE (E21's predeclared main arm) runs first. D runs second if its continuation reading on B1 is
+     positive or ambiguous. If every continuation arm is negative, GE and D both run (D addresses the diagnosed root most
+     directly: 11× hit gradient share).
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
