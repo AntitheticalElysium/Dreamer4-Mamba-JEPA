@@ -214,6 +214,17 @@ Positive control (true token-63 history over the world's own window): `since` 1.
 - **Training length does not grow the phase.** Under the natural objective, `since` 1..4 in h63 is flat from 6k to 36k (Mamba) and
   from 36k to 100k (attention), against 0.997 available in the input. Drawable-from-h63 stops rising after ~30k. The user's
   "6k too short / grokking late" hypothesis is refuted for the phase; extra *exposure* to damage (E20 B) moved it (0.950).
+- **The phase is computed, then discarded** (M16 s7; slot 63's residual stream at the output position, same probe, held AUC):
+
+| slot 63 after | since = 6 | since 1..4 | since ≥ 7 |
+|---|---|---|---|
+| input embedding (current frame only) | 0.844 | 0.830 | 0.772 |
+| layer 0 / 1 | 0.859 / 0.863 | 0.928 / 0.940 | 0.785 / 0.802 |
+| layer 2 / 3 (peak) | 0.918 / 0.916 | 0.968 / 0.961 | 0.832 / 0.833 |
+| layer 4 / 5 (output) | 0.911 / 0.887 | 0.943 / 0.911 | 0.814 / 0.790 |
+
+  The middle layers build part of the phase from slot 63's history. The last two layers, which feed the copy-dominated head,
+  lose a third of it. That is what a missing incentive predicts, not an inability of the per-slot Mamba to compute it.
 - **The ingredients are sufficient in every world.** h63 + oracle phase + adjacency makes 627-805 of 1,211 hits drawable at
   ~0 false in all 14 worlds, including M6 at 6k.
 - **Correction (approach adjacency).** The adjacency deficit claimed in B1 is NOT established. Positive control on approach
