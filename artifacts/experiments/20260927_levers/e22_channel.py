@@ -1,4 +1,4 @@
-"""E22 channel diagnostics (2026-10-09 10:05; NOTEBOOK "Substitution test of the warm start", predeclared 09:58). Is the Delta
+"""E22 channel diagnostics (2026-10-09, written 09:59; NOTEBOOK "Substitution test of the warm start", predeclared 09:58). Is the Delta
 channel of a dworld stage-A file used, and if not, which side is silent? On held 16-frame windows (teval's Raw diagnosis cache:
 the 4 context frames + the first 12 true future frames with their actions; roots alive through them), batches of 8 in root order,
 posterior and world in eval mode (no EMA, no revival), training's autocast and teacher loss (the file's --recon):
