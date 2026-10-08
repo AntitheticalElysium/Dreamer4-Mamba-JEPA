@@ -573,6 +573,23 @@ been trained from scratch. What is measured so far:
   - The from-scratch GE run (lane119: 42k updates, 7× the continuation) is the first test that gives the event head a budget;
     its event AUC is read at every snapshot.
 
+**Design change before E ran (21:55): E → E′ = LP-FT, and the D patch moved between trainings.**
+- *Why E as queued would be a half-truth.* Its event head starts random. In GE that head's token-63 AUC was 0.470 at 2k, and the
+  pre-flight shows the head learns token 63 slowly even at 10× the world's learning rate.
+  - Kumar et al. 2022 (arXiv 2202.10054, read): fine-tuning a pretrained network behind a random head distorts its features
+    (proved for two-layer linear networks, measured on 10 shifts). Linear-probe-then-fine-tune (LP-FT) is the remedy.
+- *E′:* LP step (`event_preflight.py lp`, lane120) trains SlotEvent alone on frozen M16 with exactly the E21 event term:
+  10,000 steps, AdamW lr 1e-3, rawlong batches of order seed 13 (not the fine-tuning order 11), fixed steps, no selection.
+  The FT step continues M16 + that head for 6,000 updates with `--event`, everything else as C0.
+  - E′ answers the arm's question (does event prediction install the phase into h63?) without the random-head confound.
+  - Readings unchanged, plus the head's token-63 AUC at 0 / 2k / 4k / 6k.
+- *Provenance bug fixed:* `tworld.py` writes `script_sha256` from the file on disk at save time. lane114 would have patched
+  `tworld.py` for D while E was training, stamping E's checkpoints with the patched file's hash.
+  - lane121 now applies the patch right after GE's training process exits, before any other training starts.
+  - It re-runs `tworld_equivalence.py` on the patched file.
+- Lanes 110 / 114 / 115 / 119 were idle waiters (no job started) and were stopped at 21:40. Their readouts now run on
+  C0 / G / GE / E′ / D in lane121, and the from-scratch GE replication in lane122, gated on lane121.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
