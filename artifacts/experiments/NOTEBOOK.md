@@ -860,6 +860,30 @@ paired bootstrap over 1,265 held episodes, 2,000 draws):
   - seed 8;
   - the continuation question for D itself (lane131).
 
+**D's food cost, diagnosed exactly** (03:00; `health_food.py`, `food_e21.json`; teval's held roots; window 15; HUD reader ×9):
+
+| world | food: teacher-forced change on steps where true food is unchanged | on true decrements (true −0.845) | self-fed food bias, depth 1 / 4 / 8 / 16 |
+|---|---|---|---|
+| C0 | −0.003 / step | −0.005 (copies, never draws them) | +0.005 / +0.14 / +0.20 / +0.40 (missed decrements) |
+| G | +0.002 / step | +0.001 | +0.01 / +0.17 / +0.25 / +0.47 |
+| **D** | **−0.100 / step** | −0.046 | **−0.10 / −0.24 / −0.51 / −0.88** (compounding drift) |
+
+- D predicts a fractional decrement at every step and self-feeding compounds it. The same per-step drift appears on HUD columns 2
+  and 3 (−0.079, −0.062) and on health's unchanged steps (−0.087).
+- Health *hits* are drawn at the right size (predicted −1.266 vs true −1.246 on changes), because D installed the phase that
+  makes them predictable.
+- Source, verified (Craftax-Classic `game_logic.py` L1256-1290): food −1 when hunger > 25 (hunger +1 per step, +0.5 asleep);
+  drink −1 when thirst > 20; energy −1 when fatigue > 30.
+  - Periods 21-31 exceed the 15 transitions a 16-frame window shows, so the timer phase is often invisible.
+  - From the world's view the decrement's timing is then genuinely uncertain. A mean-seeking loss draws the expectation as a
+    fraction every step. (The measured −0.10 / step is larger than a uniform-ignorance mean of ≈ 1/26; recorded, not explained.)
+- **Exact link to the literature and to E16:** Delta-IRIS pairs its L2 tokenizer loss with a *stochastic* Δ channel sampled from
+  a learned prior, so uncertain changes are sampled at imagination time, not averaged.
+  - E16 had the Δ channel with our L1 loss: it failed on allocation (the posterior saw the answer, hits AUC 0.63-0.70).
+  - D has the loss without the channel: it fixes allocation and pays in averaging drift on unobservable timers.
+  - **Faithful Delta-IRIS (both) is the literature-consistent next arm.** E16's channel code (`dworld.py`) exists; it needs
+    D's loss. Predeclaration follows after the from-scratch runs report.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
