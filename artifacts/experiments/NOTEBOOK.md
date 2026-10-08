@@ -693,7 +693,25 @@ paired bootstrap over 1,265 held episodes, 2,000 draws):
   oracle's +0.11 within 500 updates.
 - Measured differences between the two asks: the event term's gradient into h63 on hits is 0.38× the teacher's, while the
   oracle term equals the teacher term. The event target is 1 bit ("token 63 changes next step"); the oracle's is the 16-way phase.
-- Endpoint, row 9 and intervals: lane121.
+- **E′ endpoint** (6k; 00:35; `ci_evlp.json`):
+  - event head AUC 0.776; generator beats copy 5.9%;
+  - row 14: 127 hits (2 fresh) / 109 false; **row 9: 79 hits (1 fresh) / 0 false** (M16 60, C0 64, G 64, oracle 70).
+
+| paired contrast | since = 6 in h63 | since 1..4 | approach adjacency |
+|---|---|---|---|
+| C0 → E′ @ 4k | **+0.031 [+0.021, +0.042]** | **+0.028 [+0.018, +0.039]** | **+0.128 [+0.094, +0.165]** |
+| C0 → E′ @ 6k | +0.009 [−0.003, +0.021] | +0.005 [−0.005, +0.015] | **+0.089 [+0.053, +0.127]** |
+| GE → E′ (random vs fitted head, ± generator loss) | −0.002 [−0.015, +0.010] | −0.007 [−0.020, +0.007] | **+0.170 [+0.116, +0.230]** |
+| E′ 4k → 6k | −0.022 [−0.032, −0.012] | −0.023 [−0.033, −0.014] | −0.040 [−0.068, −0.011] |
+
+- **Reading:** with a fitted head from the start, EAWM's event objective installs approach adjacency in h63 (C0 0.763 →
+  0.85-0.89, resolved). That is the "scrolling problem": predicting a token-63 change requires knowing a zombie will be
+  beside the post-move player.
+- Its effect on the phase is small and transient (+0.031 at 4k, gone at 6k). At EAWM's dose (gradient 0.38× teacher on hits) it
+  is a partial, real B1 mechanism, not a complete one. The oracle installs both in 500 updates.
+- Health at row 9 does not follow (79), because B2 binds: E′ has no generator loss.
+- This E′ result is **not** a continuation artifact in the sense of test 2: the same continuation installs both ingredients when
+  asked strongly. What it measures is the strength of EAWM's ask.
 
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
