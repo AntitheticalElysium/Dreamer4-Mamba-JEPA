@@ -663,6 +663,19 @@ paired bootstrap over 1,265 held episodes, 2,000 draws):
 - **Sufficiency test, queued (lane125, 23:05):** oracle (B1) + generator loss (B2) together from M16, 2,000 updates, read at
   rows 14 and 9. If B1 + B2 are jointly sufficient, this world draws most held hits at row 9 with near-zero false drops. That
   closes the causal chain. The remaining problem would then be one thing only: a label-free objective that installs B1.
+- **Test 2 at the honest row** (23:17; `evidence_oracle_row9.json`; window 10 = output row 9, no time cue):
+
+| world, row 9 | since = 6 / adjacency in h63 | drawable from h63 (fresh / false) | emitted hits (fresh / false) | generator beats copy |
+|---|---|---|---|---|
+| M16 | 0.889 / 0.817 | 334 (4 / 7) | 60 (0 / 0) | 3.6% |
+| oracle @ 500 | 0.999 / 0.973 | 601 (110 / 1) | 66 (0 / 11) | 3.9% |
+| oracle @ 2,000 | **1.000 / 0.997** | **848 (184 / 2)** | **70 (2 / 3)** | 3.1% |
+
+  - At row 9, B1 is fully satisfied (70% of hits drawable, 89% of fresh hits), yet the world emits 70. The row-14 figure of 345
+    was the time cue now gated by the phase, not general health drawing.
+  - Exact statement: **with B1 satisfied, every remaining missed hit is in the 848 → 70 gap, and that gap is B2.** The
+    copy-gated generator can produce a dropped health token only where deaths trained it (row 14 of end-aligned death windows).
+  - The sufficiency test (lane125: oracle + generator loss) now decides whether B1 + B2 are jointly sufficient at row 9.
 
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
