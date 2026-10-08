@@ -5,7 +5,10 @@ split, inner split and probe (health_evidence.weighted_probe, uniform weights, h
               the TRUE scroll 14 -> 15; vs M16 s7's h63. All events, scroll steps, scroll steps with a zombie within 2.
   layers      the cooldown phase (time since the last health drop: = 6, 1..4, >= 7) at slot 63 of M16 s7, output position, after
               the input embedding and after each of the 6 factored layers (residual stream, forward hooks on world.layers).
-Usage: health_controls.py  -> artifacts/eda/health_chain_v1/controls.json
+  false       (`health_controls.py false`, CPU) where the emitted false drops sit: held unchanged events by context (zombie
+              distance in frame 14, adj_post, time since the last drop, current health), for M16 s7 / s8 and E20 A
+              -> false_drops.json
+Usage: health_controls.py [false]  -> artifacts/eda/health_chain_v1/controls.json | false_drops.json
 """
 import hashlib
 import json
@@ -77,7 +80,30 @@ def main():
     (OUT / 'controls.json').write_text(json.dumps(res, indent=1))
 
 
+def false_drops():
+    import teval as T
+    sub = torch.load(OUT / 'subset.pt', weights_only=False)
+    st = torch.load(OUT / 'strata.pt', weights_only=False)
+    mm = np.memmap(OUT / 'subset.f16', dtype=np.float16, mode='r', shape=tuple(sub['shape']))
+    meta, train_roots, train_seeds = T.split()
+    P = T.Probes(T.build_cache('raw', torch.device('cpu')), meta, train_roots, train_seeds)
+    read = lambda hud: (P.hud(hud.float().flatten(-2))[..., 0] * 9).float()
+    N = len(sub['classes']); u = (sub['classes'] == 2) & ~sub['fit']
+    cur = torch.cat([read(torch.from_numpy(np.array(mm[i:i + 2048, 14, 63:81]))) for i in range(0, N, 2048)])
+    zd, since, health = sub['zombie_distance'], st['since'], sub['health'][:, 14]
+    contexts = {'all': torch.ones(N, dtype=torch.bool), 'zombie_within_1': zd <= 1, 'zombie_at_2': zd == 2, 'no_zombie_within_2': zd > 2,
+                'adj_post': st['adj_post'], 'since_1to5': (since >= 1) & (since <= 5), 'no_drop_in_window': since == 0,
+                'health_9': health >= 9, 'health_le_3': health <= 3}
+    res = {}
+    for name in ('corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15', 'corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__w15',
+                 'e20_A_s7_fmamba_fromM16__w15__ext'):
+        em = read(torch.load(OUT / f'{name}.pt', weights_only=False)['hud']) < cur - 1.5
+        res[name] = {k: [int((em & u & m).sum()), int((u & m).sum())] for k, m in contexts.items()}
+        print(json.dumps({name: res[name]}), flush=True)
+    (OUT / 'false_drops.json').write_text(json.dumps(res, indent=1))
+
+
 if __name__ == '__main__':
     sys.path.insert(0, str(ROOT / 'artifacts/experiments/20260926_diagnosis'))
     sys.path.insert(0, str(ROOT / 'artifacts/experiments/20260921_readout_ladder'))
-    main()
+    false_drops() if sys.argv[1:] == ['false'] else main()

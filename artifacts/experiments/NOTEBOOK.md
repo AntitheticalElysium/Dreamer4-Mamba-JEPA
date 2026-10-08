@@ -225,6 +225,19 @@ Positive control (true token-63 history over the world's own window): `since` 1.
 
   The middle layers build part of the phase from slot 63's history. The last two layers, which feed the copy-dominated head,
   lose a third of it. That is what a missing incentive predicts, not an inability of the per-slot Mamba to compute it.
+- **False drops are the same phase failure** (held unchanged, emitted drop at the 1.5 cut):
+
+| unchanged events, by context | M16 s7: false / n (rate) | M16 s8 | E20 A (since = 6 in h63 0.937) |
+|---|---|---|---|
+| all | 127 / 1,728 | 151 / 1,728 | 2 / 1,728 |
+| a drop 1..5 transitions back (zombie in cooldown; true hit rate 0.008) | **108 / 327 (0.33)** | **119 / 327 (0.36)** | 2 / 327 |
+| no drop in the window | 8 / 1,188 (0.007) | 16 / 1,188 | 0 |
+| zombie beside in frame 14 / no zombie within 2 | 83 / 264 (0.31); 34 / 1,360 (0.025) | 98 / 264; 38 / 1,360 | 1; 1 |
+| health 9 / health ≤ 3 | 0 / 766; 77 / 303 | 0; 90 / 303 | 0; 1 |
+
+  85% (s7) and 79% (s8) of false drops fall inside the cooldown window. Without the phase, "zombie beside right after a hit"
+  looks like a hit. The missing phase explains both halves of the health failure: missed hits at since = 6 and hallucinated
+  drops at since 1..5.
 - **The ingredients are sufficient in every world.** h63 + oracle phase + adjacency makes 627-805 of 1,211 hits drawable at
   ~0 false in all 14 worlds, including M6 at 6k.
 - **Correction (approach adjacency).** The adjacency deficit claimed in B1 is NOT established. Positive control on approach
