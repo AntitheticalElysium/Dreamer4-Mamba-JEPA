@@ -1037,6 +1037,8 @@ lane135 reads each stage-1 snapshot against M6 at the same update, window 5 = ou
 | 6k | 0.916 → 0.975 (+0.060 [+0.046, +0.073]) | 0.708 → 0.593 (−0.115 [−0.176, −0.054]) | 57.5% / 0.468 | 9 / 220 → 12 / 310 |
 | 12k | 0.902 → 0.964 (+0.062 [+0.045, +0.080]) | 0.646 → 0.513 (−0.133 [−0.201, −0.062]) | 61.0% / 0.524 | 92 / 153 → 49 / 147 |
 | 18k | 0.898 → 0.943 (+0.046 [+0.030, +0.062]) | 0.688 → **0.432** (−0.255 [−0.316, −0.194]) | 61.0% / 0.573 | 43 / 113 → 105 / 131 |
+| 24k | 0.903 → 0.931 (+0.027 [+0.012, +0.042]) | 0.717 → 0.642 (−0.074 [−0.132, −0.014]) | 78.8% / 0.590 | 100 / 117 → 74 / 105 |
+| 30k | 0.904 → 0.927 (+0.023 [+0.009, +0.039]) | 0.788 → 0.631 (**−0.155 [−0.212, −0.097]**) | 68.6% / 0.587 | 96 / 115 → 161 / 143 |
 
   - From step 0, GE's objective removes approach adjacency from h63 even more than in the continuation (G 0.619, GE 0.680 at
     6k). The held AUC at 18k is below 0.5 (the probe's fit-episode rule inverts on held episodes): noted as anomalous, not
@@ -1044,7 +1046,10 @@ lane135 reads each stage-1 snapshot against M6 at the same update, window 5 = ou
   - **GE's adjacency loss is not a continuation artifact.** It is the measured property of an objective whose generator term
     takes ~80% of the backbone's gradient.
   - The phase gain is real from scratch too.
-  - The event head learns slowly (0.47 → 0.57 by 18k).
+  - The event head learns slowly (0.47 → 0.59 by 24-30k, about where it plateaus).
+  - At 30k the from-scratch trade (phase +0.023, adjacency −0.155) matches the G continuation's against its control (phase
+    +0.044, adjacency −0.154). Trained from step 0 through the canonical recipe, the generator-loss objective converges to the
+    same representation trade as the continuation. Stage 2 (L16, row 9 vs M16) is the deciding reading.
 
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
