@@ -917,6 +917,29 @@ paired bootstrap over 1,265 held episodes, 2,000 draws):
   - **Faithful Delta-IRIS (both) is the literature-consistent next arm.** E16's channel code (`dworld.py`) exists; it needs
     D's loss. Predeclaration follows after the from-scratch runs report.
 
+**Simulator-truth damage panel** (03:08; `check_damage.py --window 15`, held diagnosis futures, 0.5 cut; `e21v2_damage_w15.log`):
+
+| world | teacher caught / 337 | false rate | fresh / 31 | beside, no hit in window: caught / drawn without hit | −2 class accuracy | self-fed caught (aligned) |
+|---|---|---|---|---|---|---|
+| M16 | 0.086 | 0.75% | 0 | 0.127 / 0.134 | 0.085 | 0 / 240 |
+| C0 | 0.050 | 0.47% | 0 | 0.077 / 0.103 | 0.052 | 0 / 243 |
+| G | 0.027 | 0.31% | 0 | 0.041 / 0.076 | 0.029 | 0 / 242 |
+| GE | 0.018 | 0.10% | 0 | 0.027 / 0.004 | 0.013 | 0 / 239 |
+| E′ | 0.033 | 0.49% | 0 | 0.045 / 0.080 | 0.033 | 0 / 239 |
+| **D** | **0.733** | 4.06% | **0.613** | 0.909 / 0.536 | **0.475** | **0.060 (15 / 250)** |
+
+Bayes hit rates per stratum: fresh 0.973, beside without a hit 0.480, hit in window 0.028.
+- Teacher-forced on held roots, D catches 73% of real damage, including 19 of 31 fresh approach hits.
+  - In the genuine coin-flip stratum (zombie beside, no recent hit; Bayes 0.48) it draws drops on 54% of no-hit cases: the
+    expected behaviour of a mean-seeking world on an event it cannot time.
+  - This panel's window spans rows up to 14, so part of the 4% false comes from the inherited row-14 cue.
+- **In its own imagination, D draws 6% of aligned hits (15 / 250); every other world draws 0.** For H16 decisions this is the
+  reading that matters. Health in self-fed rollouts remains mostly missing.
+  - The same mechanism as the food drift is the leading candidate: a deterministic mean-seeking world averages what it cannot
+    time, and imagination compounds it.
+  - Not yet diagnosed: whether imagined hits fail because the imagined zombie / phase state diverges, or because the head
+    averages them away.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 

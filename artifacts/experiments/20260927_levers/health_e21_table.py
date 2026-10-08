@@ -67,7 +67,7 @@ def main():
         print('\n| world | teacher caught /337 | false drop rate | fresh caught /31 | beside, no hit in window: caught / drawn without hit | -2 class accuracy |')
         print('|---|---|---|---|---|---|')
         for k, v in r.items():
-            if k == 'readings':
+            if not (isinstance(v, dict) and 'teacher_by_history' in v):     # skip the panel's own summary keys
                 continue
             t, h = v['teacher'], v['teacher_by_history']
             print(f"| {short(k)} | {t['caught']:.3f} | {t['false_drop']:.4f} | {h['fresh']['caught']:.3f} | "
