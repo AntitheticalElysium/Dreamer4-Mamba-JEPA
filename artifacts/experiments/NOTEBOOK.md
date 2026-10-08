@@ -1051,6 +1051,31 @@ lane135 reads each stage-1 snapshot against M6 at the same update, window 5 = ou
     +0.044, adjacency −0.154). Trained from step 0 through the canonical recipe, the generator-loss objective converges to the
     same representation trade as the continuation. Stage 2 (L16, row 9 vs M16) is the deciding reading.
 
+**Test 3 verdict for GE (08:47; stage 2 finished 08:31; `ci_scratch_ge_end_w15.json`, `_w10.json`, `health_row9.py`):**
+
+| world | row-9 hits / 1,211 (fresh / false) | generator beats copy | since = 6 / since 1..4 / adjacency in h63, row 9 | event head AUC |
+|---|---|---|---|---|
+| M16 (from scratch, natural loss, 42k) | 60 (0 / 0) | 3.6% | 0.894 / 0.920 / 0.821 | — |
+| GE as a continuation of M16 (48k) | 30 (0 / 0) | 78.6% | 0.899 / 0.910 / 0.725 | 0.570 |
+| **GE from scratch (42k)** | **91 (1 / 0)** | 79.9% | **0.862 / 0.875 / 0.699** | 0.672 |
+
+| paired contrast, row 9 | since = 6 | since 1..4 | adjacency |
+|---|---|---|---|
+| M16 → GE from scratch | −0.032 [−0.046, −0.018] | −0.045 [−0.064, −0.028] | −0.120 [−0.180, −0.061] |
+| GE continuation → GE from scratch | −0.036 [−0.049, −0.024] | −0.036 [−0.049, −0.022] | −0.025 [−0.069, +0.018] |
+
+(Row 14: M16 → from scratch since = 6 −0.019, adjacency −0.125; continuation → from scratch since = 6 −0.038; all resolved.)
+
+- **By the predeclared rule, GE's negative is not a continuation artifact.** From step 0 the same objective ends worse than M16 on
+  every ingredient and worse than its own continuation on the phase. It draws 7.5% of hits at row 9.
+- The stage-1 gain on in-window phase (since 1..4 +0.06 at 6k-12k) did not survive into the L16 world. As recorded beforehand,
+  the 6-step phase can only be learned in stage 2.
+- **Answer to the 21:00 question, for the arms run tonight:** E21's representation negatives are not caused by continuing.
+  - Test 2 shows the continuation installs B1 within 500 updates when asked directly.
+  - Test 3 shows the GE objective fails the same way from scratch.
+  - What remains open: D's positive result from scratch (lane131, next), and a mechanistic account of *why* from scratch ends
+    worse on the phase (gradient allocation of the from-scratch world: lane122's `health_gradient` job).
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
