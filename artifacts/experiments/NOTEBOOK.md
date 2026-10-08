@@ -573,7 +573,7 @@ been trained from scratch. What is measured so far:
   - The from-scratch GE run (lane119: 42k updates, 7× the continuation) is the first test that gives the event head a budget;
     its event AUC is read at every snapshot.
 
-**Design change before E ran (21:55): E → E′ = LP-FT, and the D patch moved between trainings.**
+**Design change before E ran (21:41; lanes launched 21:42): E → E′ = LP-FT, and the D patch moved between trainings.**
 - *Why E as queued would be a half-truth.* Its event head starts random. In GE that head's token-63 AUC was 0.470 at 2k, and the
   pre-flight shows the head learns token 63 slowly even at 10× the world's learning rate.
   - Kumar et al. 2022 (arXiv 2202.10054, read): fine-tuning a pretrained network behind a random head distorts its features

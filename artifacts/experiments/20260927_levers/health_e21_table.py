@@ -17,17 +17,24 @@ TAIL = '_L16b40_fromcorrt_rawlong_teacher_s7_fmamba_L16b40_from36000'
 SHORT = {'corrt_rawlong_teacher_s7_fmamba_L16b40_from36000': 'M16 s7', 'corrt_rawlong_teacher_s8_fmamba_L16b40_from36000': 'M16 s8',
          'corrt_rawlong_teacher_s7_fmamba' + TAIL: 'C0', 'corrt_rawlong_teacher_s7_fmamba_gl' + TAIL: 'G',
          'corrt_rawlong_teacher_s7_fmamba_ev' + TAIL: 'E', 'corrt_rawlong_teacher_s7_fmamba_gl_ev' + TAIL: 'GE',
-         'corrt_rawlong_teacher_s7_fmamba_di' + TAIL: 'D'}
+         'corrt_rawlong_teacher_s7_fmamba_di' + TAIL: 'D',
+         'corrt_rawlong_teacher_s7_fmamba_ev_L16b40_fromcorrt_rawlong_teacher_s7_fmamba_evlp_L16b40_from36000': "E' (LP-FT)",
+         'corrt_rawlong_teacher_s7_fmamba_oracle_L16b40_from36000': 'oracle (M16 + oracle phase/adjacency)',
+         'corrt_raw_teacher_s7_fmamba_u36000': 'M6 s7 (from scratch, 6-frame)',
+         'corrt_raw_teacher_s7_fmamba_gl_ev_u36000': 'GE from scratch, stage 1',
+         'corrt_rawlong_teacher_s7_fmamba_gl_ev_L16b40_from36000': 'GE from scratch (stage 2)'}
 
 
 def short(name):
     """world (or world__w15, world_atNNNN__w15) -> M16 s7 / C0 / G / E / GE / D [@NNNN]; unknown names unchanged."""
-    base = name.replace('__w15', '')
+    base = name.replace('__w15', '').replace('__w10', ' row9').replace('__w5', '')
+    row = ' row9' if base.endswith(' row9') else ''
+    base = base.replace(' row9', '')
     at = ''
     if '_at' in base and base.rsplit('_at', 1)[1].isdigit():
         base, at = base.rsplit('_at', 1)
         at = f' @{at}'
-    return SHORT.get(base, base) + at
+    return SHORT.get(base, base) + at + row
 
 
 def main():
