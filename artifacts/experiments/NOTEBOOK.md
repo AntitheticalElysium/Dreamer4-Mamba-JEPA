@@ -488,6 +488,39 @@ element L2 (vmicheli/delta-iris `tokenizer.py`).
   world may favour; one-step L1 is reported beside it.
 - Implementation waits until E21's last arm has started, so every E21 arm runs the same `tworld.py`.
 
+### Summary at 03:10 (2026-10-09): the continuation question, and the first generic objective that draws damage
+
+**Q (21:00): if a result is negative, do we know it is not caused by continuing instead of training from scratch?**
+- *For the representation (B1): yes, now measured.*
+  - Continuing M16 with an objective that asks directly (oracle labels; diagnostic only) installs the cooldown phase (0.888 →
+    1.000) and approach adjacency (0.778 → 0.996) at h63 within 500-1,000 updates.
+  - Plasticity signatures show no gross loss: 0 dormant units; random-target fitting only 10-20% slower than fresh init.
+  - So a continuation arm that fails to install B1 fails because its objective asks too weakly, not because the network is
+    locked in.
+- *What is not yet answered:* whether the same weak ask behaves differently when present from step 0 (critical periods). That
+  is test 3, the from-scratch replications of GE (lane122, ETA ≈ 12:00) and D (lane131, ETA ≈ 21:00). Both are matched to M6 /
+  M16, and `tworld.py` with flags off is bit-identical to M6's and M16's sources (`tworld_equivalence.py`).
+- *Measured limits of the arms' own doses:*
+  - GE's random event head was under-trained (EASimulus trains ~985k updates; our 6k reached token-63 AUC 0.57).
+  - E′ (LP-FT) fixed that: it installs approach adjacency, but the phase only transiently.
+
+**D, the Delta-IRIS tokenizer loss (1.0·L2 + 0.1·L1 + 0.01·worst element), continued from M16 for 6k updates:**
+- At the unbiased row 9 it draws **569 / 1,211 held zombie hits (47%), 31 fresh, 1 false drop in 1,728** (M16: 60 / 0 / 0).
+- It installs B1 without labels (phase 0.952, adjacency 0.964, 790 hits drawable from h63 vs C0's 335) and fixes B2 (generator
+  beats copy 85%).
+- It depicts zombies far better: near-player zombie AUC 0.78 → 0.96 one-step, 0.53 → 0.61 at depth 16.
+- teval MSE improves (one-step −0.012, depth 16 −0.052).
+- Costs:
+  - L1 +20% (fewer large errors, more small ones).
+  - The imagined food reading drifts down (R² at depth 16 0.88 → 0.58). Diagnosed exactly: D predicts a fractional decrement
+    every step (−0.10 / step) because the intrinsic timers (21-31 steps, verified in the Craftax source) outlast the 16-frame
+    window, and a mean-seeking loss averages an event it cannot time.
+  - The predeclared window-15 health reading fails on the inherited row-14 death cue (8.6% false; the cue comes from the
+    sampler).
+- **Next (to predeclare after the from-scratch runs):** faithful Delta-IRIS pairs this loss with a stochastic Δ channel, which
+  samples, rather than averages, what the window cannot time. E16 built the channel with the wrong loss; D used the loss without
+  the channel.
+
 ### Could a negative come from continuing instead of training from scratch? (user question, 21:00; predeclared 21:06, commit b7d58a59)
 
 **Status at 21:06: not known.** Every E21 arm (and E19, E20) continues a trained parent (M16 = 36k 6-frame + 6k L16). No arm has
