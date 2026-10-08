@@ -828,6 +828,38 @@ paired bootstrap over 1,265 held episodes, 2,000 draws):
 - D is therefore not adoptable as-is. The food cost has to be diagnosed exactly (the L2 term? the worst-element term? food's slow
   hunger dynamics under a mean-seeking loss?) before any decision; it is the next item after the from-scratch runs.
 
+**E21 row-9 evidence, all arms** (02:53; `evidence_e21v2_row9.json`; same probes / calibration / held episodes):
+
+| world, row 9 | since = 6 / since 1..4 in h63 | approach adjacency | drawable from h63 (fresh) | emitted (fresh / false) | generator beats copy |
+|---|---|---|---|---|---|
+| M16 | 0.889 / 0.914 | 0.817 | 334 (4) | 60 (0 / 0) | 3.6% |
+| C0 | 0.896 / 0.900 | 0.767 | 335 (3) | 64 (0 / 0) | 5.2% |
+| G | 0.937 / 0.924 | 0.648 | 136 (0) | 64 (0 / 0) | 74.7% |
+| GE | 0.898 / 0.906 | 0.710 | 80 (1) | 30 (0 / 0) | 78.6% |
+| E′ | 0.911 / 0.916 | 0.821 | 367 (13) | 79 (1 / 0) | 6.1% |
+| oracle (labels; diagnostic) | 1.000 / 1.000 | 0.997 | 848 (184) | 70 (2 / 3) | 3.1% |
+| **D** | **0.952 / 0.969** | **0.964** | **790 (122)** | **569 (31 / 1)** | **85.4%** |
+
+**E21 D, predeclared readings:**
+
+| reading | result |
+|---|---|
+| (1) B2 fixed, ≥ 30% | **TRUE** (85%) |
+| (2) B1: since = 6 ≥ 0.95 and drawable ≥ 2× C0 | **TRUE at row 9** (0.952; 790 = 2.4× C0's 335); at row 14 since = 6 is 0.946, just under |
+| (3) health drawn at window 15 (row 14), as predeclared | **FAILS**: 711 hits but 149 false (8.6% > 2%), the inherited row-14 death cue |
+| (3) the same reading at row 9 | **PASSES** (569 = 47%; 1 false) |
+| (4) cost | teval MSE: one-step −0.012, depth 16 −0.052 (better). L1 +20%. Imagined food R² at depth 16 0.880 → 0.582 (worse). |
+
+- **The exact answer the diagnosis asked for:** a generic, label-free change (Delta-IRIS's loss shape) fixes both blockers at once.
+  - Information (B1): it brings the phase and approach adjacency close to the oracle's level.
+  - Expression (B2): its generator emits 72% of what h63 supports.
+  - Mechanism, measured before the run: 11× the hit gradient share, plus the mean-seeking decision rule.
+- Open before any adoption:
+  - food cost (diagnosis running, lane133);
+  - row-14 cue (inherited from the sampler, removable as E20 showed);
+  - seed 8;
+  - the continuation question for D itself (lane131).
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
