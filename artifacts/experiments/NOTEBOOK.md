@@ -537,6 +537,26 @@ been trained from scratch. What is measured so far:
      positive or ambiguous. If every continuation arm is negative, GE and D both run (D addresses the diagnosed root most
      directly: 11× hit gradient share).
 
+**Test 1 result, signatures** (21:30; `plasticity_metrics.json`; 1,024 subset events):
+
+| world | dormant units, τ = 0.1 (max over 6 layers) | feature rank, slot 63 / all slots (ε = 0.01) | random-target MSE after 1,000 steps |
+|---|---|---|---|
+| fresh init (seed 7) | 0 | 255 / 255 | 0.102 |
+| M6 at 6k / 18k / 36k | 0 / 0 / 0 | 255 / 255 | 0.112 / 0.117 / 0.120 |
+| M16 | 0.1% | 255 / 255 | 0.122 |
+| C0 / G | 0.1% / 0.3% | 255 / 255 | 0.123 / 0.118 |
+
+- No dormant-unit or rank collapse. Lyle's ε = 0.01 cutoff saturates at our feature scale (singular values 2-14), so feature rank is
+  uninformative here, not a pass.
+- Target-fitting capacity falls modestly and steadily with training (+10% at 6k, +20% at M16 over fresh), the "modest" loss Lyle
+  et al. report for RL checkpoints.
+- Reading: no gross loss of plasticity. This cannot exclude a critical-period effect (information routed early is not
+  redistributed), which is what tests 2 and 3 address. Also exact: the continuations run at the same constant lr 1e-4 as the
+  from-scratch runs (`_phase_lr`: warm-up, then constant), not at a reduced fine-tuning rate.
+- Precondition for test 3 verified (`tworld_equivalence.py`, CPU, reference Mamba backend): current `tworld.py` with flags off
+  trains exactly as M6's (@60b0c22f) and M16's (@ae0868ec) sources. Parameters, loss and every gradient are bit-identical;
+  lane119 re-runs this after the D patch before it starts.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
