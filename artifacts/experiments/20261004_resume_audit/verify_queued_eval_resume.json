@@ -1,0 +1,39 @@
+{
+  "damage": {
+    "legacy_parity": true,
+    "interruption_parity": true,
+    "completed_world_calls": 0
+  },
+  "recall_pool": {
+    "legacy_parity": true,
+    "interruption_parity": true,
+    "completed_world_calls": 0
+  },
+  "recall_futures": {
+    "legacy_parity": true,
+    "interruption_parity": true,
+    "completed_world_calls": 0
+  },
+  "recall_imagined": {
+    "legacy_parity": true,
+    "interruption_parity": true,
+    "completed_world_calls": 0
+  },
+  "teval": {
+    "legacy_parity": true,
+    "interruption_parity": true,
+    "completed_world_calls": 0
+  },
+  "scope": "Synthetic CPU fixtures exercise original and amended evaluator loops/storage; CUDA parity and research performance not tested",
+  "real_contract_helper": {
+    "scalar_strided_hashes": true,
+    "window_namespaces_differ": true,
+    "lazy_forward_sources_bound": true
+  },
+  "sources": {
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_damage.py": "43fc3262d132f556feac5e2a5a3bb2de0b396b8ca21dcb8c085f3c625075c0e4",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_recall.py": "fddea56f3444f8cc19a5fe43fb9a8811728bbcaa4b4ce824273b2da046fb04bd",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/teval.py": "a2f873442031b2fc1a671a8f210acf4b5a759767e3b8c6b7720b2dd916793d20",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08"
+  }
+}

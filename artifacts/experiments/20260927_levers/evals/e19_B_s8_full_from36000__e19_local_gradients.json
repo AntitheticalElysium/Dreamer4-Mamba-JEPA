@@ -1,0 +1,204 @@
+{
+  "name": "e19_B_s8_full_from36000",
+  "scope": "Frozen local loss mechanism, with exact generator/copy reconstruction.\n\nAll 279 ordinary hits plus 512 deterministic unchanged controls on reused roots.\nDifferentiate health-token L1 through the ACTUAL mixture, holding the backbone and\ncandidate tokens fixed; positive generate-logit derivative means L1 descent closes\ngeneration. This is a local endpoint mechanism, not the full training history.\nSweep that same logit and decode single-token replacements through the unchanged\ntrue-fitted HUD readout; exact reconstruction and finite differences are controls.\nEvery selected batch resumes under a checkpoint/data/source-bound contract.\n",
+  "groups": {
+    "all_hit": {
+      "n": 279,
+      "L1_mean": 0.49514397978782654,
+      "L1_descent_closes_gen": 98,
+      "L1_descent_opens_gen": 181,
+      "gen_logit_gradient_mean": 0.001715354504995048,
+      "generator_gradient_norm_mean": 0.00488144950941205,
+      "generator_weight_mean": 0.06680076569318771,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.49330198764801025,
+          "drawn_at_1.5": 5
+        },
+        "-4": {
+          "L1_mean": 0.4932292401790619,
+          "drawn_at_1.5": 6
+        },
+        "-2": {
+          "L1_mean": 0.4936906695365906,
+          "drawn_at_1.5": 6
+        },
+        "0": {
+          "L1_mean": 0.49514397978782654,
+          "drawn_at_1.5": 12
+        },
+        "2": {
+          "L1_mean": 0.5107150077819824,
+          "drawn_at_1.5": 20
+        },
+        "4": {
+          "L1_mean": 0.5959367156028748,
+          "drawn_at_1.5": 45
+        },
+        "8": {
+          "L1_mean": 0.7720316648483276,
+          "drawn_at_1.5": 93
+        }
+      }
+    },
+    "scroll_hit": {
+      "n": 51,
+      "L1_mean": 0.47399935126304626,
+      "L1_descent_closes_gen": 21,
+      "L1_descent_opens_gen": 30,
+      "gen_logit_gradient_mean": -0.001628297846764326,
+      "generator_gradient_norm_mean": 0.008080724626779556,
+      "generator_weight_mean": 0.10455211997032166,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.476963073015213,
+          "drawn_at_1.5": 0
+        },
+        "-4": {
+          "L1_mean": 0.47688060998916626,
+          "drawn_at_1.5": 0
+        },
+        "-2": {
+          "L1_mean": 0.47636231780052185,
+          "drawn_at_1.5": 0
+        },
+        "0": {
+          "L1_mean": 0.47399935126304626,
+          "drawn_at_1.5": 0
+        },
+        "2": {
+          "L1_mean": 0.5120364427566528,
+          "drawn_at_1.5": 0
+        },
+        "4": {
+          "L1_mean": 0.7498928904533386,
+          "drawn_at_1.5": 5
+        },
+        "8": {
+          "L1_mean": 0.8926596641540527,
+          "drawn_at_1.5": 7
+        }
+      }
+    },
+    "stationary_hit": {
+      "n": 228,
+      "L1_mean": 0.49987366795539856,
+      "L1_descent_closes_gen": 77,
+      "L1_descent_opens_gen": 151,
+      "gen_logit_gradient_mean": 0.002463276730850339,
+      "generator_gradient_norm_mean": 0.004165822174400091,
+      "generator_weight_mean": 0.058356378227472305,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.4969567358493805,
+          "drawn_at_1.5": 5
+        },
+        "-4": {
+          "L1_mean": 0.4968861937522888,
+          "drawn_at_1.5": 6
+        },
+        "-2": {
+          "L1_mean": 0.49756672978401184,
+          "drawn_at_1.5": 6
+        },
+        "0": {
+          "L1_mean": 0.49987366795539856,
+          "drawn_at_1.5": 12
+        },
+        "2": {
+          "L1_mean": 0.5104194283485413,
+          "drawn_at_1.5": 20
+        },
+        "4": {
+          "L1_mean": 0.5614992380142212,
+          "drawn_at_1.5": 40
+        },
+        "8": {
+          "L1_mean": 0.7450491189956665,
+          "drawn_at_1.5": 86
+        }
+      }
+    },
+    "fresh_hit": {
+      "n": 31,
+      "L1_mean": 0.4769273102283478,
+      "L1_descent_closes_gen": 13,
+      "L1_descent_opens_gen": 18,
+      "gen_logit_gradient_mean": -0.0012171731796115637,
+      "generator_gradient_norm_mean": 0.008505919948220253,
+      "generator_weight_mean": 0.10972172021865845,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.4795682728290558,
+          "drawn_at_1.5": 0
+        },
+        "-4": {
+          "L1_mean": 0.47948870062828064,
+          "drawn_at_1.5": 0
+        },
+        "-2": {
+          "L1_mean": 0.47898778319358826,
+          "drawn_at_1.5": 0
+        },
+        "0": {
+          "L1_mean": 0.4769273102283478,
+          "drawn_at_1.5": 0
+        },
+        "2": {
+          "L1_mean": 0.5217059850692749,
+          "drawn_at_1.5": 0
+        },
+        "4": {
+          "L1_mean": 0.7739015817642212,
+          "drawn_at_1.5": 4
+        },
+        "8": {
+          "L1_mean": 0.9015806913375854,
+          "drawn_at_1.5": 6
+        }
+      }
+    },
+    "unchanged_control": {
+      "n": 512,
+      "L1_mean": 0.026924295350909233,
+      "L1_descent_closes_gen": 310,
+      "L1_descent_opens_gen": 202,
+      "gen_logit_gradient_mean": 0.004280117806047201,
+      "generator_gradient_norm_mean": 0.004362054634839296,
+      "generator_weight_mean": 0.05817138031125069,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.034470103681087494,
+          "drawn_at_1.5": 6
+        },
+        "-4": {
+          "L1_mean": 0.0343596450984478,
+          "drawn_at_1.5": 6
+        },
+        "-2": {
+          "L1_mean": 0.03327236697077751,
+          "drawn_at_1.5": 6
+        },
+        "0": {
+          "L1_mean": 0.026924295350909233,
+          "drawn_at_1.5": 6
+        },
+        "2": {
+          "L1_mean": 0.11167509853839874,
+          "drawn_at_1.5": 7
+        },
+        "4": {
+          "L1_mean": 0.34187501668930054,
+          "drawn_at_1.5": 54
+        },
+        "8": {
+          "L1_mean": 0.6876269578933716,
+          "drawn_at_1.5": 147
+        }
+      }
+    }
+  },
+  "reconstruction_max": 4.76837158203125e-07,
+  "derivative_FD_max_abs": 0.004187002778053284,
+  "source_contract": "0a9bda81d349d411fcf113c23439566bb5717580631118f29f47153b0e4de3a7"
+}

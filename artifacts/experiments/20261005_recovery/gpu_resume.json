@@ -1,0 +1,16 @@
+{
+  "source": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/corrt_raw_teacher_s7_fcanvas_u36000.state.pt",
+  "source_sha256": "15e1744cad40f124cd7b837b5273322e275676c2432d034160e001cf6a16016c",
+  "start": 13000,
+  "stop": 13004,
+  "parameter_max_abs": 0.0,
+  "optimizer_tensor_max_abs": 9.094947017729282e-12,
+  "order_rng_equal": true,
+  "cpu_rng_equal": true,
+  "cuda_rng_equal": true,
+  "scope": "Four actual CUDA canvas updates from historical state; no long-run bitwise guarantee",
+  "mechanical_tolerance": 1e-06,
+  "sources": {
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/tworld.py": "1435057c2b2f0c3d90f563e8dcaf94d06121deebc45928e18ec5cacc93d01569"
+  }
+}

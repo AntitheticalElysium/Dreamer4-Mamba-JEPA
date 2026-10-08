@@ -32,7 +32,13 @@ T, H = CD.T, CD.H
 
 
 def auc(s, y):
-    o = s.argsort(); r = torch.empty(len(s)); r[o] = torch.arange(1, len(s) + 1, dtype=torch.float)
+    # Average ranks for tied scores. Arbitrary argsort ranks make a constant signal look predictive.
+    o = s.argsort()
+    _, counts = torch.unique_consecutive(s[o], return_counts=True)
+    end = counts.cumsum(0)
+    tied_ranks = (end.double() + (end - counts).double() + 1) / 2
+    r = torch.empty(len(s), dtype=torch.float64)
+    r[o] = torch.repeat_interleave(tied_ranks, counts)
     n1 = int(y.sum()); n0 = len(y) - n1
     return float((r[y].sum() - n1 * (n1 + 1) / 2) / (n1 * n0)) if n1 and n0 else float("nan")
 

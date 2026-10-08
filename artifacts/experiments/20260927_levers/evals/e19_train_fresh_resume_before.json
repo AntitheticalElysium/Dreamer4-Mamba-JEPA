@@ -1,0 +1,5 @@
+{
+  "artifacts/experiments/20260927_levers/evals/e19_C_s7_fmamba_from36000__train_fresh.json": "75e88f4d825da3f044043c933f1a1b4b1eda46839cba43196f65919b28bc99a7",
+  "artifacts/experiments/20260927_levers/evals/e19_C_s7_full_from36000__train_fresh.json": "d72e46ba5282dfdfccd2a0f00879f9e00b624c664a62b518e2fede3d51ba1b76",
+  "artifacts/experiments/20260927_levers/evals/e19_C_s8_fmamba_from36000__train_fresh.json": "d25addead66c9a06c0b446837e3448ebfb975749895e6c2eaec856b655f3542e"
+}

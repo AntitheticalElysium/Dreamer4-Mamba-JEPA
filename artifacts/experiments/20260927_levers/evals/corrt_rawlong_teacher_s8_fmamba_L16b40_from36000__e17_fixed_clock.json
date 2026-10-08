@@ -1,0 +1,27 @@
+{
+  "name": "corrt_rawlong_teacher_s8_fmamba_L16b40_from36000",
+  "scope": "E17 fixed-clock visual-history intervention; no new world training.\n\nOn 200 diagnosis roots drawn before scoring (seed20261005), sample0, use the\nexisting recall cell ledger. Compare true up-to15-frame history with the same\nlength/actions/time rows and latest5 frames, replacing older frames by the oldest\nof those5. This removes the older sighting while preserving the evaluation clock.\nIt is a deliberately inconsistent visual-history ablation, not an in-distribution\ninformation ceiling. Per-root records, source/input/checkpoint-bound resume, paired\nseed-cluster intervals. Report same-slot/moved-slot ages6..15 separately.\n",
+  "groups": {
+    "same": {
+      "n": 459,
+      "original_capture": 0.6712661117291994,
+      "ablated_capture": 0.33479263109805085,
+      "history_gain": 0.33647348063114857,
+      "history_gain_interval95": [
+        0.1443859985111542,
+        0.5481505474375893
+      ]
+    },
+    "moved": {
+      "n": 589,
+      "original_capture": 0.3946452367306996,
+      "ablated_capture": 0.34542301606513964,
+      "history_gain": 0.04922222066555999,
+      "history_gain_interval95": [
+        -0.017567013282051024,
+        0.11440338551750268
+      ]
+    }
+  },
+  "resume_contract": "f6f5e2fb83d631febd36f0b5ca15023ecdbffd138e1ad05bf03a5b64fc15fc33"
+}

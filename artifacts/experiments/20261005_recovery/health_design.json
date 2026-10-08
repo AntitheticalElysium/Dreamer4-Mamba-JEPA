@@ -1,0 +1,110 @@
+{
+  "scope": "Exact TRAIN rows used by six-frame recipe. Counts describe selection, not causal effect of retraining.",
+  "train_windows": 30599,
+  "heldout_windows": 2048,
+  "terminal_windows": 8071,
+  "all_alive_input": {
+    "n": 152995,
+    "health": {
+      "drop_le2": 8228,
+      "starvation_minus1": 2456,
+      "unchanged": 139594,
+      "recovery_plus1": 2717
+    },
+    "drop_le2_rate": 0.05377953527893069,
+    "zombie_mask": 31045
+  },
+  "ordinary_alive_successor": {
+    "n": 144846,
+    "health": {
+      "drop_le2": 2000,
+      "starvation_minus1": 537,
+      "unchanged": 139594,
+      "recovery_plus1": 2715
+    },
+    "drop_le2_rate": 0.013807768250417685,
+    "zombie_mask": 23664
+  },
+  "ordinary_masked": {
+    "n": 23664,
+    "health": {
+      "drop_le2": 1636,
+      "starvation_minus1": 148,
+      "unchanged": 21317,
+      "recovery_plus1": 563
+    },
+    "drop_le2_rate": 0.06913455037187288,
+    "zombie_mask": 23664
+  },
+  "ordinary_unmasked": {
+    "n": 121182,
+    "health": {
+      "drop_le2": 364,
+      "starvation_minus1": 389,
+      "unchanged": 118277,
+      "recovery_plus1": 2152
+    },
+    "drop_le2_rate": 0.0030037464309881005,
+    "zombie_mask": 0
+  },
+  "terminal_health_drop_rows": [
+    185,
+    195,
+    167,
+    158,
+    6172
+  ],
+  "all_health_drop_rows": [
+    440,
+    435,
+    444,
+    433,
+    6476
+  ],
+  "actual_death_rows": [
+    0,
+    0,
+    0,
+    0,
+    8149
+  ],
+  "terminal_already_dead_input_transitions": 0,
+  "mask_rows": [
+    5114,
+    5035,
+    5018,
+    6896,
+    8982
+  ],
+  "death_transitions": 8149,
+  "ordinary_drop_le2_mask_coverage": 0.8180000185966492,
+  "ordinary_drop_le2_health_token_fraction": 0.00016138669907311584,
+  "lambda1_masked_health_token_multiplier": 400.18167176679015,
+  "unweighted_drop_le2_rate": 0.05377953499555588,
+  "weighted_drop_le2_rate_lambda1": 0.24193541705608368,
+  "note": "Mask normalization weights selected health coordinates; scalar multiplier is batch-dependent in training. Global multiplier/rate describe an exact whole-pool loss, not every minibatch or the conditional optimum.",
+  "proposed_dealign_expectation": {
+    "valid_targets": 136853.0,
+    "valid_target_change_fraction": -0.10550671590574856,
+    "death_rows": [
+      1614.2,
+      1614.2,
+      1614.2,
+      1614.2,
+      1692.2
+    ],
+    "death_rate_before": 0.05326317995786667,
+    "death_rate_after": 0.05954564386604605,
+    "ordinary_damage_targets_before": 2000,
+    "ordinary_damage_targets_after": 1636.6,
+    "ordinary_damage_target_change_fraction": -0.18170000000000008,
+    "drop_le2_rows": [
+      1630.4,
+      1578.4,
+      1576.4,
+      1541.0,
+      1538.4
+    ],
+    "note": "This candidate changes target counts/context lengths as well as terminal position. Any de-alignment-only claim must account for these changes before launch; not a measured retrain effect."
+  }
+}

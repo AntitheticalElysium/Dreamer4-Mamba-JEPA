@@ -1,0 +1,281 @@
+{
+  "scope": "Frozen long-Mamba health-clock intervention, batch16 numerical control, Oct7.\n\nThe batch4 trial failed exact count reproduction (28 versus29). Preserve it.\nThis version changes only inference batch shape, matching the original batch16\n(and its last ten-root batch); numerical padding never supplies another case\nwith a different input. Original counts and half-unit thresholds remain binding.\n\nReuse check_damage's1002 roots/sample0, exact real-fit HUD probe and health labels.\nCases: all337 living drops plus every fresh>=2 encounter from its declared mask,\nplus512 unchanged cases fixed by RNG20261007 before model scoring. For seeds7/8:\ntrue up-to15-frame history; repeated current frame at same history length, with\npast NOOP and actual final action; repeated current at fixed lengths5,9,15.\nConstant-history variants are deliberately inconsistent/OOD lesions, NOT an\ninformation ceiling or a repair. They test scan-depth/position sensitivity and\nwhether history removal changes damage/false-drop detection. Original teacher\ncatches/fresh counts must reproduce29/337,46/337 and0/31,1/31 before interpretation.\nRoot true health and real-successor decoder are positive controls. Thresholds\nunchanged: half-unit for both original panels;1.5 units is a separate severe-drop\nmetric, not the original fresh-arrival detection threshold.\nWorld/probe/inputs/source bound, atomic16-case chunks, exclusive resume, GPU cap30%.\nNo fitting, encoder runs, new roots or notebook writes; logs only EDA.\n",
+  "contract": {
+    "scope": "Frozen long-Mamba health-clock intervention, batch16 numerical control, Oct7.\n\nThe batch4 trial failed exact count reproduction (28 versus29). Preserve it.\nThis version changes only inference batch shape, matching the original batch16\n(and its last ten-root batch); numerical padding never supplies another case\nwith a different input. Original counts and half-unit thresholds remain binding.\n\nReuse check_damage's1002 roots/sample0, exact real-fit HUD probe and health labels.\nCases: all337 living drops plus every fresh>=2 encounter from its declared mask,\nplus512 unchanged cases fixed by RNG20261007 before model scoring. For seeds7/8:\ntrue up-to15-frame history; repeated current frame at same history length, with\npast NOOP and actual final action; repeated current at fixed lengths5,9,15.\nConstant-history variants are deliberately inconsistent/OOD lesions, NOT an\ninformation ceiling or a repair. They test scan-depth/position sensitivity and\nwhether history removal changes damage/false-drop detection. Original teacher\ncatches/fresh counts must reproduce29/337,46/337 and0/31,1/31 before interpretation.\nRoot true health and real-successor decoder are positive controls. Thresholds\nunchanged: half-unit for both original panels;1.5 units is a separate severe-drop\nmetric, not the original fresh-arrival detection threshold.\nWorld/probe/inputs/source bound, atomic16-case chunks, exclusive resume, GPU cap30%.\nNo fitting, encoder runs, new roots or notebook writes; logs only EDA.\n",
+    "sources": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_health_clock_b16.py": "60247934a58cc357104f64b4d153c4a1732e1967da5454dfa2259795d3dbb864",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/teval.py": "a2f873442031b2fc1a671a8f210acf4b5a759767e3b8c6b7720b2dd916793d20",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_damage.py": "43fc3262d132f556feac5e2a5a3bb2de0b396b8ca21dcb8c085f3c625075c0e4",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_damage_rule.py": "192d447fe035777279200f03424f83c88505d7b35374eb14d606c407bfc8a113",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/stochdiag.py": "0cf5cd2600a8c03005845947b7852b19d511912807c33280e9b8b1ee6670eea8",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260921_readout_ladder/spatial.py": "89e055243d5378166fafd083f5055c05d5e4762e7a72ac2a954c48dbfefd8f81"
+    },
+    "inputs": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_futures_tokens_raw.pt": "76dc92b0ab7b17efdfd5884d26d3cece291524a941fa4f714488d3209bc07f8e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/lewm_m4_canonical/raw/bridge/step-002000.pt": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e"
+    },
+    "tensors": {
+      "pairs": "5e43c8afab1258b46cd6fe3fbe17534ba2c28d7cfcb01b596d9c96fdf4fff467",
+      "lengths": "3927df319613ea45ba3240202d2c4faf1b46110fd635db0bdb50ceb1354c2c63",
+      "seqs": "b550f397521086f077f105cd4bc3a0f9bc06a108c08f6e05649727b4bda86918",
+      "acts": "149957fb961c4a85a7dd0ef11e04454441e7237caeeb4a55f2aeaf11775ff5c4",
+      "current_health": "b42a652c2564ae7e507ad55bc866d050176e5635d42fd69a96d1af50a555d66e",
+      "next_health": "545bda7c938ce6cc000d2384da99640d897cea457912dbed0d36561c29954b4a",
+      "sim_current_health": "a2a55213c65cd41f5e01b9224b74d1e9480750ee79627945a852f567aa85a59c",
+      "sim_next_health": "6ac9aadb2736175c81a74c8efb2f6bd5099c7e35f5c9018b5b0c9f0786008e66",
+      "living_drop": "55fc12b306da402532bcabb58ad6d25b82996b447d390e61bbb51e8cf90e4101",
+      "fresh_drop": "4b17bbc341fc5d2987081d4f1bdcc7f512fa630d841c901e990f05f99ee203f0",
+      "unchanged": "5d3a0f848b99499034291874edd8bea85cf2c290605bbae2733a0bd53f2b55cd",
+      "probe_coefficients": "a22743a7f979a4ddf5041b17f45aad1234775f6fa77ffc5b7e0178b624df59da",
+      "probe_input_mean": "960ee9e7b8c61af4ddf3327566040fd391d80d71e1beb7bb155623cc2c4af1b4",
+      "probe_input_std": "df27e71fae0f7e0fbecf02992c6d342e2ff9e1749731cd2bc0fbff4f624f5d8e",
+      "all_true_hud_probe_outputs": "7d238497cdd6b847bb5ec119da3001ae3b77a72ca105bd1c080297d17b3cdb68"
+    },
+    "runtime": {
+      "torch": "2.13.0+cu130",
+      "cuda": "13.0",
+      "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+      "threads": 2,
+      "tf32_matmul": false,
+      "tf32_cudnn": true
+    },
+    "batch": 16,
+    "modes": [
+      "true_history",
+      "repeat_same_length",
+      "repeat5",
+      "repeat9",
+      "repeat15"
+    ],
+    "cuda_cap": 0.3,
+    "checkpoints": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000.pt": "aa257473ec0cb262b45dcf704c4a660dd2ce017de84400b9cddb262cb601f653",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000.pt": "5085ee21418e853a4d337f7fae16ae76e51afb8f157b97e5783bfe1a01cce2c2"
+    }
+  },
+  "worlds": {
+    "7": {
+      "true_history": {
+        "living_drop": {
+          "n": 337,
+          "catches_or_false_drops": 29,
+          "severe_drop_count": 26,
+          "mean_drawn_health_change": -0.3756343126296997
+        },
+        "fresh_drop": {
+          "n": 31,
+          "catches_or_false_drops": 0,
+          "severe_drop_count": 0,
+          "mean_drawn_health_change": -0.031048743054270744
+        },
+        "unchanged": {
+          "n": 512,
+          "catches_or_false_drops": 5,
+          "severe_drop_count": 3,
+          "mean_drawn_health_change": -0.02782634273171425
+        }
+      },
+      "repeat_same_length": {
+        "living_drop": {
+          "n": 337,
+          "catches_or_false_drops": 18,
+          "severe_drop_count": 17,
+          "mean_drawn_health_change": -0.23101483285427094
+        },
+        "fresh_drop": {
+          "n": 31,
+          "catches_or_false_drops": 0,
+          "severe_drop_count": 0,
+          "mean_drawn_health_change": -0.02307472750544548
+        },
+        "unchanged": {
+          "n": 512,
+          "catches_or_false_drops": 7,
+          "severe_drop_count": 4,
+          "mean_drawn_health_change": -0.03347320109605789
+        }
+      },
+      "repeat5": {
+        "living_drop": {
+          "n": 337,
+          "catches_or_false_drops": 0,
+          "severe_drop_count": 0,
+          "mean_drawn_health_change": -0.006431563291698694
+        },
+        "fresh_drop": {
+          "n": 31,
+          "catches_or_false_drops": 0,
+          "severe_drop_count": 0,
+          "mean_drawn_health_change": -0.024527456611394882
+        },
+        "unchanged": {
+          "n": 512,
+          "catches_or_false_drops": 0,
+          "severe_drop_count": 0,
+          "mean_drawn_health_change": -0.010844595730304718
+        }
+      },
+      "repeat9": {
+        "living_drop": {
+          "n": 337,
+          "catches_or_false_drops": 6,
+          "severe_drop_count": 6,
+          "mean_drawn_health_change": -0.08728691935539246
+        },
+        "fresh_drop": {
+          "n": 31,
+          "catches_or_false_drops": 0,
+          "severe_drop_count": 0,
+          "mean_drawn_health_change": -0.02253383956849575
+        },
+        "unchanged": {
+          "n": 512,
+          "catches_or_false_drops": 0,
+          "severe_drop_count": 0,
+          "mean_drawn_health_change": -0.010297754779458046
+        }
+      },
+      "repeat15": {
+        "living_drop": {
+          "n": 337,
+          "catches_or_false_drops": 30,
+          "severe_drop_count": 29,
+          "mean_drawn_health_change": -0.41027960181236267
+        },
+        "fresh_drop": {
+          "n": 31,
+          "catches_or_false_drops": 0,
+          "severe_drop_count": 0,
+          "mean_drawn_health_change": -0.02189693972468376
+        },
+        "unchanged": {
+          "n": 512,
+          "catches_or_false_drops": 12,
+          "severe_drop_count": 7,
+          "mean_drawn_health_change": -0.057222094386816025
+        }
+      }
+    },
+    "8": {
+      "true_history": {
+        "living_drop": {
+          "n": 337,
+          "catches_or_false_drops": 46,
+          "severe_drop_count": 40,
+          "mean_drawn_health_change": -0.5618718266487122
+        },
+        "fresh_drop": {
+          "n": 31,
+          "catches_or_false_drops": 1,
+          "severe_drop_count": 1,
+          "mean_drawn_health_change": -0.13290511071681976
+        },
+        "unchanged": {
+          "n": 512,
+          "catches_or_false_drops": 10,
+          "severe_drop_count": 7,
+          "mean_drawn_health_change": -0.049862321466207504
+        }
+      },
+      "repeat_same_length": {
+        "living_drop": {
+          "n": 337,
+          "catches_or_false_drops": 44,
+          "severe_drop_count": 38,
+          "mean_drawn_health_change": -0.5845988392829895
+        },
+        "fresh_drop": {
+          "n": 31,
+          "catches_or_false_drops": 1,
+          "severe_drop_count": 1,
+          "mean_drawn_health_change": -0.07276501506567001
+        },
+        "unchanged": {
+          "n": 512,
+          "catches_or_false_drops": 10,
+          "severe_drop_count": 7,
+          "mean_drawn_health_change": -0.05016890913248062
+        }
+      },
+      "repeat5": {
+        "living_drop": {
+          "n": 337,
+          "catches_or_false_drops": 0,
+          "severe_drop_count": 0,
+          "mean_drawn_health_change": -0.006358499638736248
+        },
+        "fresh_drop": {
+          "n": 31,
+          "catches_or_false_drops": 0,
+          "severe_drop_count": 0,
+          "mean_drawn_health_change": -0.007592747453600168
+        },
+        "unchanged": {
+          "n": 512,
+          "catches_or_false_drops": 0,
+          "severe_drop_count": 0,
+          "mean_drawn_health_change": -0.005541619379073381
+        }
+      },
+      "repeat9": {
+        "living_drop": {
+          "n": 337,
+          "catches_or_false_drops": 0,
+          "severe_drop_count": 0,
+          "mean_drawn_health_change": -0.007660296745598316
+        },
+        "fresh_drop": {
+          "n": 31,
+          "catches_or_false_drops": 0,
+          "severe_drop_count": 0,
+          "mean_drawn_health_change": -0.009988031350076199
+        },
+        "unchanged": {
+          "n": 512,
+          "catches_or_false_drops": 0,
+          "severe_drop_count": 0,
+          "mean_drawn_health_change": -0.006886141374707222
+        }
+      },
+      "repeat15": {
+        "living_drop": {
+          "n": 337,
+          "catches_or_false_drops": 91,
+          "severe_drop_count": 78,
+          "mean_drawn_health_change": -1.1484535932540894
+        },
+        "fresh_drop": {
+          "n": 31,
+          "catches_or_false_drops": 1,
+          "severe_drop_count": 1,
+          "mean_drawn_health_change": -0.07352067530155182
+        },
+        "unchanged": {
+          "n": 512,
+          "catches_or_false_drops": 26,
+          "severe_drop_count": 21,
+          "mean_drawn_health_change": -0.17752404510974884
+        }
+      }
+    }
+  },
+  "control": {
+    "living_drop": {
+      "n": 337,
+      "true_successor_detected_or_false": 337,
+      "true_successor_severe_drop": 304
+    },
+    "fresh_drop": {
+      "n": 31,
+      "true_successor_detected_or_false": 31,
+      "true_successor_severe_drop": 31
+    },
+    "unchanged": {
+      "n": 512,
+      "true_successor_detected_or_false": 0,
+      "true_successor_severe_drop": 0
+    }
+  },
+  "original_teacher_counts_reproduced": true
+}

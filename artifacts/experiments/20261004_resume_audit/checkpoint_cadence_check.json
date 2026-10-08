@@ -1,0 +1,7 @@
+{
+  "teacher_loss_max_delta": 0.0,
+  "gradient_max_delta": 0.0,
+  "save_changes_cpu_rng": false,
+  "before_sha256": "1b2c4bea9ec5433e0a0f4e53997a3a5326c3dcb351ba9bb460c5f655de60d24e",
+  "after_sha256": "1435057c2b2f0c3d90f563e8dcaf94d06121deebc45928e18ec5cacc93d01569"
+}

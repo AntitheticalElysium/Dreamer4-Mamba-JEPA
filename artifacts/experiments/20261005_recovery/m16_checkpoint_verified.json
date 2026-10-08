@@ -1,0 +1,22 @@
+{
+  "utc": "2026-10-04T23:15:51.687092+00:00",
+  "update": 2000,
+  "time_shape": [
+    16,
+    256
+  ],
+  "finite_parameters": true,
+  "optimizer_present": true,
+  "order_cpu_cuda_rng_present": true,
+  "history_last": {
+    "update": 2000,
+    "objective": 0.049260932952165604,
+    "gradient_norm": 0.042809903621673584,
+    "seconds": 1524.4,
+    "peak_gb": 2.872
+  },
+  "sha256": "23089f10826dd5999538c6e799b0614b1588c173db4e12bf8c606012707335fa",
+  "archived_path": "artifacts/experiments/20261005_recovery/recovery_inputs/m16_s7_u2000.state.pt",
+  "pinned_numeric_sources_unchanged": true,
+  "verification_note": "Initial assertion expected1000; training had already advanced to2000. Copied state decoded and verified dynamically; no training failure."
+}

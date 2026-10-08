@@ -1,0 +1,25 @@
+{
+  "continuation": {
+    "brier_all_k": 0.11661287397146225,
+    "auc_dead16_key0": 0.8464386663440222
+  },
+  "trajectory": 0.6438944935798645,
+  "snapshot": 0.623555064201355,
+  "traj_minus_snapshot": {
+    "difference": 0.02033942937850952,
+    "interval": [
+      0.009120087139308453,
+      0.03194199502468109
+    ],
+    "excludes_zero": true
+  },
+  "window": 15,
+  "references": {
+    "roots_devB_opp16": 1139,
+    "uniform": 0.571426510810852,
+    "prior": 0.6160831451416016,
+    "one_real_future": 0.6793657541275024,
+    "oracle31": 0.7664617896080017
+  },
+  "resume_contract": "c2d0e05f779612fe21394db72dfa802ecdfcba44f61bda78b47d3a7ffcc8902a"
+}

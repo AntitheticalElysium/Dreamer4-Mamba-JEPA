@@ -1,0 +1,505 @@
+{
+  "scope": "CPU component check: held SSM versus direct skip, and off-screen conv decay.\n\nSame frozen 36k canvas and 16 windows as access/reroute. An old-query read also\nreuses old C/x/z: quantify the SSM contribution before calling that memory useful.\nCompare full, zero-SSM and zero-D reads; report pre-normalization energies and\noutput changes. Compare each convolution buffer to its last observed buffer.\nThese are component quantities, not semantic decoding or a deployable read.\nNo numerical model/trainer sources change. Per-batch hash-bound CPU resume.\n",
+  "contract": {
+    "scope": "CPU component check: held SSM versus direct skip, and off-screen conv decay.\n\nSame frozen 36k canvas and 16 windows as access/reroute. An old-query read also\nreuses old C/x/z: quantify the SSM contribution before calling that memory useful.\nCompare full, zero-SSM and zero-D reads; report pre-normalization energies and\noutput changes. Compare each convolution buffer to its last observed buffer.\nThese are component quantities, not semantic decoding or a deployable read.\nNo numerical model/trainer sources change. Per-batch hash-bound CPU resume.\n",
+    "sources": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261005_recovery/recovery_inputs/e18_carry_s7_36k.py": "f762d561e471ebe9dc12ef6f2b6b77c145e172728d5a6bd3612e60925ee237cd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e18_access.py": "5d962ba735a71bdd6babfc011fedc96f9ff23f3fee8f4742f030b61c80455705"
+    },
+    "model_sources": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261005_recovery/recovery_inputs/e18_access_s7_36k.py": "2e565327c53594b3c4522a361b82451d599de8c32416574139ff56bd178d2414",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/tworld.py": "1435057c2b2f0c3d90f563e8dcaf94d06121deebc45928e18ec5cacc93d01569",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_recall.py": "fddea56f3444f8cc19a5fe43fb9a8811728bbcaa4b4ce824273b2da046fb04bd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/scroll.py": "32f21939825d3e3bc84b3442234baead507934cd0d4c36ac76a6c821fbdc99dc",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/mamba_recurrence.py": "8de9df2578d7bf45c9d98acaf51c99d03ca9185c641f8b09ae107370133bf4c0"
+    },
+    "inputs": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/corrt_raw_teacher_s7_fcanvas_u36000.pt": "6e08aa58ae3115455db9e6b9c85a1ba830f9215c4d7cdf76be5546645f136b2f",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/spatial_pool_v1/pool.pt": "7662de45ae043ae076d1751c7b34300919ec52f99106546fe39a2ff63ac9b5ac"
+    },
+    "windows": [
+      21541,
+      2663,
+      22773,
+      19727,
+      22320,
+      2157,
+      7718,
+      11748,
+      5406,
+      2036,
+      16094,
+      974,
+      15395,
+      3728,
+      6317,
+      19899
+    ],
+    "precision": "CPU FP32",
+    "threads": 3,
+    "access_contract": "7db5d33ec5900e25ef7637cffe39e4a22eeea686be0b7ad4569311bb910fd5a3"
+  },
+  "windows": 16,
+  "layer_cell_queries": 840,
+  "reference_parity_max": 0.0,
+  "all_layers": {
+    "gap": {
+      "n": 840,
+      "mean": 1.7071428298950195,
+      "median": 1.0,
+      "min": 1.0,
+      "max": 4.0
+    },
+    "history_energy": {
+      "n": 840,
+      "mean": 0.49519726634025574,
+      "median": 0.0333111397922039,
+      "min": 7.250998805830022e-07,
+      "max": 26.298809051513672
+    },
+    "skip_energy": {
+      "n": 840,
+      "mean": 16.795026779174805,
+      "median": 13.293777465820312,
+      "min": 8.005586624145508,
+      "max": 50.020050048828125
+    },
+    "history_energy_share": {
+      "n": 840,
+      "mean": 0.018461832776665688,
+      "median": 0.0024273807648569345,
+      "min": 6.20777811377593e-08,
+      "max": 0.4204447865486145
+    },
+    "zero_ssm_output_relative_l2": {
+      "n": 840,
+      "mean": 0.0032958455849438906,
+      "median": 0.0004336998099461198,
+      "min": 9.373239961973923e-09,
+      "max": 0.13561509549617767
+    },
+    "zero_skip_output_relative_l2": {
+      "n": 840,
+      "mean": 0.6170567274093628,
+      "median": 0.26964855194091797,
+      "min": 0.008154722861945629,
+      "max": 4.258561611175537
+    },
+    "zero_ssm_output_cosine": {
+      "n": 840,
+      "mean": 0.998363733291626,
+      "median": 0.9997873902320862,
+      "min": 0.93153977394104,
+      "max": 1.0000001192092896
+    },
+    "conv_relative_l2": {
+      "n": 840,
+      "mean": 1.5266625881195068,
+      "median": 1.9999998807907104,
+      "min": 0.6704412698745728,
+      "max": 2.000000238418579
+    },
+    "conv_nonzero_fraction": {
+      "n": 840,
+      "mean": 0.4000000059604645,
+      "median": 0.25,
+      "min": 0.0,
+      "max": 0.75
+    }
+  },
+  "by_layer": {
+    "0": {
+      "gap": {
+        "n": 140,
+        "mean": 1.7071428298950195,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 4.0
+      },
+      "history_energy": {
+        "n": 140,
+        "mean": 0.18302588164806366,
+        "median": 0.024991745129227638,
+        "min": 0.00013298008707351983,
+        "max": 0.8986313939094543
+      },
+      "skip_energy": {
+        "n": 140,
+        "mean": 27.1210994720459,
+        "median": 21.25467872619629,
+        "min": 14.384665489196777,
+        "max": 50.020050048828125
+      },
+      "history_energy_share": {
+        "n": 140,
+        "mean": 0.004922378808259964,
+        "median": 0.0013147700810804963,
+        "min": 5.975352905807085e-06,
+        "max": 0.02496647648513317
+      },
+      "zero_ssm_output_relative_l2": {
+        "n": 140,
+        "mean": 0.00039642289630137384,
+        "median": 0.00016158238577190787,
+        "min": 4.243353544097772e-07,
+        "max": 0.0017037780489772558
+      },
+      "zero_skip_output_relative_l2": {
+        "n": 140,
+        "mean": 1.1084136962890625,
+        "median": 0.21857447922229767,
+        "min": 0.06721881777048111,
+        "max": 4.258561611175537
+      },
+      "zero_ssm_output_cosine": {
+        "n": 140,
+        "mean": 0.9998062252998352,
+        "median": 0.9999197125434875,
+        "min": 0.9991723895072937,
+        "max": 0.9999997019767761
+      },
+      "conv_relative_l2": {
+        "n": 140,
+        "mean": 1.4629591703414917,
+        "median": 1.9999998807907104,
+        "min": 0.6704412698745728,
+        "max": 2.000000238418579
+      },
+      "conv_nonzero_fraction": {
+        "n": 140,
+        "mean": 0.4000000059604645,
+        "median": 0.25,
+        "min": 0.0,
+        "max": 0.75
+      }
+    },
+    "1": {
+      "gap": {
+        "n": 140,
+        "mean": 1.7071428298950195,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 4.0
+      },
+      "history_energy": {
+        "n": 140,
+        "mean": 1.7972478866577148,
+        "median": 0.30973976850509644,
+        "min": 0.0003291259054094553,
+        "max": 26.298809051513672
+      },
+      "skip_energy": {
+        "n": 140,
+        "mean": 24.277841567993164,
+        "median": 17.203962326049805,
+        "min": 11.196830749511719,
+        "max": 46.60795211791992
+      },
+      "history_energy_share": {
+        "n": 140,
+        "mean": 0.044522326439619064,
+        "median": 0.018845124170184135,
+        "min": 2.176125781261362e-05,
+        "max": 0.4204447865486145
+      },
+      "zero_ssm_output_relative_l2": {
+        "n": 140,
+        "mean": 0.01013060100376606,
+        "median": 0.0017501161200925708,
+        "min": 3.3478183922852622e-06,
+        "max": 0.13561509549617767
+      },
+      "zero_skip_output_relative_l2": {
+        "n": 140,
+        "mean": 0.25619909167289734,
+        "median": 0.15601640939712524,
+        "min": 0.0368570014834404,
+        "max": 2.0029571056365967
+      },
+      "zero_ssm_output_cosine": {
+        "n": 140,
+        "mean": 0.9949286580085754,
+        "median": 0.9991095662117004,
+        "min": 0.93153977394104,
+        "max": 0.9999983906745911
+      },
+      "conv_relative_l2": {
+        "n": 140,
+        "mean": 1.4786187410354614,
+        "median": 1.9999998807907104,
+        "min": 0.6830711960792542,
+        "max": 2.000000238418579
+      },
+      "conv_nonzero_fraction": {
+        "n": 140,
+        "mean": 0.4000000059604645,
+        "median": 0.25,
+        "min": 0.0,
+        "max": 0.75
+      }
+    },
+    "2": {
+      "gap": {
+        "n": 140,
+        "mean": 1.7071428298950195,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 4.0
+      },
+      "history_energy": {
+        "n": 140,
+        "mean": 0.6343432068824768,
+        "median": 0.022142548114061356,
+        "min": 3.784550472119008e-06,
+        "max": 4.620824813842773
+      },
+      "skip_energy": {
+        "n": 140,
+        "mean": 13.222088813781738,
+        "median": 11.893143653869629,
+        "min": 9.561561584472656,
+        "max": 22.43671989440918
+      },
+      "history_energy_share": {
+        "n": 140,
+        "mean": 0.0335480235517025,
+        "median": 0.0018955781124532223,
+        "min": 3.4456027719897975e-07,
+        "max": 0.18972930312156677
+      },
+      "zero_ssm_output_relative_l2": {
+        "n": 140,
+        "mean": 0.003151338780298829,
+        "median": 0.00017667912470642477,
+        "min": 2.6116769191730782e-08,
+        "max": 0.01778264157474041
+      },
+      "zero_skip_output_relative_l2": {
+        "n": 140,
+        "mean": 0.18124020099639893,
+        "median": 0.15208759903907776,
+        "min": 0.028183283284306526,
+        "max": 0.9428970217704773
+      },
+      "zero_ssm_output_cosine": {
+        "n": 140,
+        "mean": 0.998455822467804,
+        "median": 0.9998992085456848,
+        "min": 0.9912036061286926,
+        "max": 1.0
+      },
+      "conv_relative_l2": {
+        "n": 140,
+        "mean": 1.5217185020446777,
+        "median": 1.9999998807907104,
+        "min": 0.7488852739334106,
+        "max": 2.000000238418579
+      },
+      "conv_nonzero_fraction": {
+        "n": 140,
+        "mean": 0.4000000059604645,
+        "median": 0.25,
+        "min": 0.0,
+        "max": 0.75
+      }
+    },
+    "3": {
+      "gap": {
+        "n": 140,
+        "mean": 1.7071428298950195,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 4.0
+      },
+      "history_energy": {
+        "n": 140,
+        "mean": 0.08738111704587936,
+        "median": 0.024859104305505753,
+        "min": 3.806008680840023e-05,
+        "max": 1.1088083982467651
+      },
+      "skip_energy": {
+        "n": 140,
+        "mean": 12.54664134979248,
+        "median": 11.142578125,
+        "min": 8.819913864135742,
+        "max": 20.42382049560547
+      },
+      "history_energy_share": {
+        "n": 140,
+        "mean": 0.005923840682953596,
+        "median": 0.0021562445908784866,
+        "min": 3.7310790048650233e-06,
+        "max": 0.07029017806053162
+      },
+      "zero_ssm_output_relative_l2": {
+        "n": 140,
+        "mean": 0.0012065819464623928,
+        "median": 0.00034885513014160097,
+        "min": 6.340550839922798e-07,
+        "max": 0.017391575500369072
+      },
+      "zero_skip_output_relative_l2": {
+        "n": 140,
+        "mean": 0.5911188125610352,
+        "median": 0.5793315768241882,
+        "min": 0.061337459832429886,
+        "max": 1.820694088935852
+      },
+      "zero_ssm_output_cosine": {
+        "n": 140,
+        "mean": 0.9994187355041504,
+        "median": 0.9998272657394409,
+        "min": 0.9913560152053833,
+        "max": 0.9999997019767761
+      },
+      "conv_relative_l2": {
+        "n": 140,
+        "mean": 1.5465480089187622,
+        "median": 1.999999761581421,
+        "min": 0.7340322732925415,
+        "max": 2.000000238418579
+      },
+      "conv_nonzero_fraction": {
+        "n": 140,
+        "mean": 0.4000000059604645,
+        "median": 0.25,
+        "min": 0.0,
+        "max": 0.75
+      }
+    },
+    "4": {
+      "gap": {
+        "n": 140,
+        "mean": 1.7071428298950195,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 4.0
+      },
+      "history_energy": {
+        "n": 140,
+        "mean": 0.10898790508508682,
+        "median": 0.029815025627613068,
+        "min": 2.537461114116013e-05,
+        "max": 1.1292026042938232
+      },
+      "skip_energy": {
+        "n": 140,
+        "mean": 12.015563011169434,
+        "median": 11.427794456481934,
+        "min": 8.10402774810791,
+        "max": 22.769065856933594
+      },
+      "history_energy_share": {
+        "n": 140,
+        "mean": 0.007846353575587273,
+        "median": 0.0025985385291278362,
+        "min": 2.1141895558685064e-06,
+        "max": 0.07185134291648865
+      },
+      "zero_ssm_output_relative_l2": {
+        "n": 140,
+        "mean": 0.0020616031251847744,
+        "median": 0.00040764553705230355,
+        "min": 2.7116649903291545e-07,
+        "max": 0.023252736777067184
+      },
+      "zero_skip_output_relative_l2": {
+        "n": 140,
+        "mean": 0.3934497833251953,
+        "median": 0.28217652440071106,
+        "min": 0.008154722861945629,
+        "max": 3.2565767765045166
+      },
+      "zero_ssm_output_cosine": {
+        "n": 140,
+        "mean": 0.9989792108535767,
+        "median": 0.9997974634170532,
+        "min": 0.9883097410202026,
+        "max": 0.9999998211860657
+      },
+      "conv_relative_l2": {
+        "n": 140,
+        "mean": 1.5764787197113037,
+        "median": 1.9999998807907104,
+        "min": 0.7973304390907288,
+        "max": 2.000000238418579
+      },
+      "conv_nonzero_fraction": {
+        "n": 140,
+        "mean": 0.4000000059604645,
+        "median": 0.25,
+        "min": 0.0,
+        "max": 0.75
+      }
+    },
+    "5": {
+      "gap": {
+        "n": 140,
+        "mean": 1.7071428298950195,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 4.0
+      },
+      "history_energy": {
+        "n": 140,
+        "mean": 0.16019760072231293,
+        "median": 0.013707481324672699,
+        "min": 7.250998805830022e-07,
+        "max": 1.796949863433838
+      },
+      "skip_energy": {
+        "n": 140,
+        "mean": 11.58692455291748,
+        "median": 11.403410911560059,
+        "min": 8.005586624145508,
+        "max": 19.531635284423828
+      },
+      "history_energy_share": {
+        "n": 140,
+        "mean": 0.014008067548274994,
+        "median": 0.0012041955487802625,
+        "min": 6.20777811377593e-08,
+        "max": 0.13572464883327484
+      },
+      "zero_ssm_output_relative_l2": {
+        "n": 140,
+        "mean": 0.002828525612130761,
+        "median": 0.0002674037532415241,
+        "min": 9.373239961973923e-09,
+        "max": 0.019821887835860252
+      },
+      "zero_skip_output_relative_l2": {
+        "n": 140,
+        "mean": 1.1719183921813965,
+        "median": 0.9169742465019226,
+        "min": 0.08363913744688034,
+        "max": 3.396472215652466
+      },
+      "zero_ssm_output_cosine": {
+        "n": 140,
+        "mean": 0.9985941052436829,
+        "median": 0.9998644590377808,
+        "min": 0.9900906682014465,
+        "max": 1.0000001192092896
+      },
+      "conv_relative_l2": {
+        "n": 140,
+        "mean": 1.5736521482467651,
+        "median": 1.9999998807907104,
+        "min": 0.7584949135780334,
+        "max": 2.000000238418579
+      },
+      "conv_nonzero_fraction": {
+        "n": 140,
+        "mean": 0.4000000059604645,
+        "median": 0.25,
+        "min": 0.0,
+        "max": 0.75
+      }
+    }
+  },
+  "conv_kernel": 4,
+  "interpretation": "SSM removal measured conditional on stored old query; old C/x/z are additional memory. No semantic ceiling claim."
+}

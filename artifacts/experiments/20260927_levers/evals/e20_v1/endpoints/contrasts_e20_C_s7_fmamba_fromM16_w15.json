@@ -1,0 +1,562 @@
+{
+  "window": 15,
+  "scope": "paired sample0 factual diagnostic roots; no actor/promotion",
+  "contrasts": {
+    "corrt_rawlong_teacher_s7_fmamba_L16b40_from36000:e20_A_s7_fmamba_fromM16": {
+      "independent_hud": {
+        "teacher": {
+          "ordinary": {
+            "B_minus_A": -0.03225806451612903,
+            "interval95": [
+              -0.0625,
+              -0.0035971223021582736
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          },
+          "fresh": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          },
+          "unchanged": {
+            "B_minus_A": -0.008238928939237899,
+            "interval95": [
+              -0.01102972635988823,
+              -0.005858448218560447
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          }
+        },
+        "generated": {
+          "ordinary": {
+            "B_minus_A": 0.00625,
+            "interval95": [
+              0.0,
+              0.02054794520547945
+            ],
+            "transitions": 160,
+            "episode_seeds": 143
+          },
+          "fresh": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 22,
+            "episode_seeds": 143
+          },
+          "unchanged": {
+            "B_minus_A": -0.00021399529210357372,
+            "interval95": [
+              -0.0006591072616041299,
+              0.00021244793098320404
+            ],
+            "transitions": 9346,
+            "episode_seeds": 143
+          }
+        }
+      },
+      "factual_loss_reader": {
+        "teacher": {
+          "ordinary": {
+            "B_minus_A": -0.02867383512544803,
+            "interval95": [
+              -0.05839478766899942,
+              0.0
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          },
+          "fresh": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          },
+          "unchanged": {
+            "B_minus_A": -0.010140220232908184,
+            "interval95": [
+              -0.013499351967478092,
+              -0.007222998098245474
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          }
+        },
+        "generated": {
+          "ordinary": {
+            "B_minus_A": 0.00625,
+            "interval95": [
+              0.0,
+              0.02054794520547945
+            ],
+            "transitions": 160,
+            "episode_seeds": 143
+          },
+          "fresh": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 22,
+            "episode_seeds": 143
+          },
+          "unchanged": {
+            "B_minus_A": -0.00021399529210357372,
+            "interval95": [
+              -0.0006591072616041299,
+              0.00021244793098320404
+            ],
+            "transitions": 9346,
+            "episode_seeds": 143
+          }
+        }
+      }
+    },
+    "e20_A_s7_fmamba_fromM16:e20_B_s7_fmamba_fromM16": {
+      "independent_hud": {
+        "teacher": {
+          "ordinary": {
+            "B_minus_A": 0.03942652329749104,
+            "interval95": [
+              0.00749063670411985,
+              0.07252271586676877
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          },
+          "fresh": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          },
+          "unchanged": {
+            "B_minus_A": -7.922047056959519e-05,
+            "interval95": [
+              -0.000550166370966738,
+              0.00039327500347699767
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          }
+        },
+        "generated": {
+          "ordinary": {
+            "B_minus_A": 0.006369426751592357,
+            "interval95": [
+              0.0,
+              0.020689655172413793
+            ],
+            "transitions": 157,
+            "episode_seeds": 143
+          },
+          "fresh": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 22,
+            "episode_seeds": 143
+          },
+          "unchanged": {
+            "B_minus_A": 0.00010957703265395574,
+            "interval95": [
+              0.0,
+              0.0003471147724151078
+            ],
+            "transitions": 9126,
+            "episode_seeds": 143
+          }
+        }
+      },
+      "factual_loss_reader": {
+        "teacher": {
+          "ordinary": {
+            "B_minus_A": 0.035842293906810034,
+            "interval95": [
+              0.0035211267605633804,
+              0.06884057971014493
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          },
+          "fresh": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          },
+          "unchanged": {
+            "B_minus_A": -7.922047056959519e-05,
+            "interval95": [
+              -0.000550166370966738,
+              0.00039327500347699767
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          }
+        },
+        "generated": {
+          "ordinary": {
+            "B_minus_A": 0.006369426751592357,
+            "interval95": [
+              0.0,
+              0.020689655172413793
+            ],
+            "transitions": 157,
+            "episode_seeds": 143
+          },
+          "fresh": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 22,
+            "episode_seeds": 143
+          },
+          "unchanged": {
+            "B_minus_A": 0.00010957703265395574,
+            "interval95": [
+              0.0,
+              0.0003471147724151078
+            ],
+            "transitions": 9126,
+            "episode_seeds": 143
+          }
+        }
+      }
+    },
+    "e20_B_s7_fmamba_fromM16:e20_C_s7_fmamba_fromM16": {
+      "independent_hud": {
+        "teacher": {
+          "ordinary": {
+            "B_minus_A": -0.07526881720430108,
+            "interval95": [
+              -0.10800270270270271,
+              -0.044669714729558
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          },
+          "fresh": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          },
+          "unchanged": {
+            "B_minus_A": -0.00015844094113919038,
+            "interval95": [
+              -0.0004877434399375195,
+              0.00015295959137796245
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          }
+        },
+        "generated": {
+          "ordinary": {
+            "B_minus_A": -0.014388489208633094,
+            "interval95": [
+              -0.03787878787878788,
+              0.0
+            ],
+            "transitions": 139,
+            "episode_seeds": 143
+          },
+          "fresh": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 19,
+            "episode_seeds": 143
+          },
+          "unchanged": {
+            "B_minus_A": -0.00023272050267628578,
+            "interval95": [
+              -0.0006026241335903456,
+              0.0
+            ],
+            "transitions": 8594,
+            "episode_seeds": 143
+          }
+        }
+      },
+      "factual_loss_reader": {
+        "teacher": {
+          "ordinary": {
+            "B_minus_A": 0.8602150537634409,
+            "interval95": [
+              0.8226936973103172,
+              0.8949199952589783
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          },
+          "fresh": {
+            "B_minus_A": 1.0,
+            "interval95": [
+              1.0,
+              1.0
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          },
+          "unchanged": {
+            "B_minus_A": 0.036441416462013786,
+            "interval95": [
+              0.02952824338289919,
+              0.04379667262125546
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          }
+        },
+        "generated": {
+          "ordinary": {
+            "B_minus_A": 0.07194244604316546,
+            "interval95": [
+              0.033111214492912266,
+              0.11630178052325568
+            ],
+            "transitions": 139,
+            "episode_seeds": 143
+          },
+          "fresh": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 19,
+            "episode_seeds": 143
+          },
+          "unchanged": {
+            "B_minus_A": 0.017221317198045146,
+            "interval95": [
+              0.012112831141709622,
+              0.023665740011785577
+            ],
+            "transitions": 8594,
+            "episode_seeds": 143
+          }
+        }
+      }
+    }
+  },
+  "parent_retention": {
+    "e20_A_s7_fmamba_fromM16": {
+      "same_6_15": {
+        "point": -0.13795725335273126,
+        "interval95": [
+          -0.2144880889215913,
+          -0.07557050795542368
+        ],
+        "episode_clusters": 143,
+        "denominator": 80726.5470413547,
+        "n": 2088,
+        "parent_capture": 0.6343764826792003,
+        "arm_capture": 0.4964192293264691,
+        "noninferior_margin_0.05": false
+      },
+      "moved_6_15": {
+        "point": -0.01454417933800787,
+        "interval95": [
+          -0.07374658199752943,
+          0.044684957792435906
+        ],
+        "episode_clusters": 143,
+        "denominator": 102718.54351466894,
+        "n": 2949,
+        "parent_capture": 0.4145467016602118,
+        "arm_capture": 0.40000252232220396,
+        "noninferior_margin_0.05": false
+      },
+      "same_2_5": {
+        "point": -0.11325045433622825,
+        "interval95": [
+          -0.13826335826502467,
+          -0.08946553731092921
+        ],
+        "episode_clusters": 143,
+        "denominator": 199934.8353320764,
+        "n": 4237,
+        "parent_capture": 0.8949849480444249,
+        "arm_capture": 0.7817344937081967,
+        "noninferior_margin_0.05": false
+      }
+    },
+    "e20_B_s7_fmamba_fromM16": {
+      "same_6_15": {
+        "point": -0.1300781334474096,
+        "interval95": [
+          -0.18633228333067073,
+          -0.0765343820407244
+        ],
+        "episode_clusters": 143,
+        "denominator": 80726.5470413547,
+        "n": 2088,
+        "parent_capture": 0.6343764826792003,
+        "arm_capture": 0.5042983492317907,
+        "noninferior_margin_0.05": false
+      },
+      "moved_6_15": {
+        "point": -0.0020484142017763293,
+        "interval95": [
+          -0.04527359916962524,
+          0.03864441207702066
+        ],
+        "episode_clusters": 143,
+        "denominator": 102718.54351466894,
+        "n": 2949,
+        "parent_capture": 0.4145467016602118,
+        "arm_capture": 0.4124982874584355,
+        "noninferior_margin_0.05": true
+      },
+      "same_2_5": {
+        "point": -0.0370027931940022,
+        "interval95": [
+          -0.057113291854654406,
+          -0.018453323160476084
+        ],
+        "episode_clusters": 143,
+        "denominator": 199934.8353320764,
+        "n": 4237,
+        "parent_capture": 0.8949849480444249,
+        "arm_capture": 0.8579821548504227,
+        "noninferior_margin_0.05": false
+      }
+    },
+    "e20_C_s7_fmamba_fromM16": {
+      "same_6_15": {
+        "point": -0.11693915100853822,
+        "interval95": [
+          -0.17548154502151642,
+          -0.06528052452318504
+        ],
+        "episode_clusters": 143,
+        "denominator": 80726.5470413547,
+        "n": 2088,
+        "parent_capture": 0.6343764826792003,
+        "arm_capture": 0.5174373316706622,
+        "noninferior_margin_0.05": false
+      },
+      "moved_6_15": {
+        "point": -0.027390248060982832,
+        "interval95": [
+          -0.08095826153493277,
+          0.02278175450914668
+        ],
+        "episode_clusters": 143,
+        "denominator": 102718.54351466894,
+        "n": 2949,
+        "parent_capture": 0.4145467016602118,
+        "arm_capture": 0.38715645359922896,
+        "noninferior_margin_0.05": false
+      },
+      "same_2_5": {
+        "point": -0.06505035788439416,
+        "interval95": [
+          -0.09275496709482811,
+          -0.03937318120473342
+        ],
+        "episode_clusters": 143,
+        "denominator": 199934.8353320764,
+        "n": 4237,
+        "parent_capture": 0.8949849480444249,
+        "arm_capture": 0.8299345901600308,
+        "noninferior_margin_0.05": false
+      }
+    }
+  },
+  "physical_cost": {
+    "e20_A_s7_fmamba_fromM16": {
+      "onestep_all_copy_normalized": {
+        "point": 0.008065755718091127,
+        "interval95": [
+          0.006929268492147622,
+          0.009310516003378328
+        ],
+        "episode_clusters": 143,
+        "denominator": 20432880.599121094,
+        "upper95_le_0.005": false
+      },
+      "depth16_variance_normalized": {
+        "point": 0.016245384107779648,
+        "interval95": [
+          0.00385184304744737,
+          0.02810939085084794
+        ],
+        "episode_clusters": 143,
+        "denominator": 7611065.341796875
+      }
+    },
+    "e20_B_s7_fmamba_fromM16": {
+      "onestep_all_copy_normalized": {
+        "point": 0.00764900728551887,
+        "interval95": [
+          0.006390747539825931,
+          0.009089346901831809
+        ],
+        "episode_clusters": 143,
+        "denominator": 20432880.599121094,
+        "upper95_le_0.005": false
+      },
+      "depth16_variance_normalized": {
+        "point": 0.030255222398998634,
+        "interval95": [
+          0.018313519888094307,
+          0.04428649598268637
+        ],
+        "episode_clusters": 143,
+        "denominator": 7611065.341796875
+      }
+    },
+    "e20_C_s7_fmamba_fromM16": {
+      "onestep_all_copy_normalized": {
+        "point": 0.011863128378630227,
+        "interval95": [
+          0.010709997277297337,
+          0.013012929005815795
+        ],
+        "episode_clusters": 143,
+        "denominator": 20432880.599121094,
+        "upper95_le_0.005": false
+      },
+      "depth16_variance_normalized": {
+        "point": 0.03783327224975683,
+        "interval95": [
+          0.023243277862057973,
+          0.05227403507255162
+        ],
+        "episode_clusters": 143,
+        "denominator": 7611065.341796875
+      }
+    }
+  }
+}

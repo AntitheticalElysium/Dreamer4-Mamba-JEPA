@@ -1,0 +1,14 @@
+{
+  "numeric_sources_checked": 70,
+  "numeric_sources_unchanged": true,
+  "admission_inputs_unchanged": {
+    "mechanics_sha256": true,
+    "pool_manifest_sha256": true,
+    "pool_labels_sha256": true,
+    "reader_sha256": true
+  },
+  "prepared_inputs_checked": 6,
+  "prepared_inputs_unchanged": true,
+  "seed8": "held",
+  "scope": "scheduling amendment does not change the measured numerical contracts"
+}

@@ -291,3 +291,9 @@ artifacts/lewm_transformer_comparison/m03/historical/
 artifacts/lewm_transformer_comparison/m03/memory/
 artifacts/lewm_transformer_comparison/m03/report.json
 artifacts/lewm_transformer_comparison/m03/stages/corrected_eda.json
+
+# Runtime state of the resumable evaluators / monitors added 2026-10-04..07 (kept on disk as hash-bound evidence, not
+# versioned: evals/resume holds per-batch journals whose .pt payloads are already ignored; status streams are monitor logs).
+artifacts/experiments/20260927_levers/evals/resume/
+artifacts/experiments/**/status_events.jsonl
+artifacts/experiments/**/live_status.json

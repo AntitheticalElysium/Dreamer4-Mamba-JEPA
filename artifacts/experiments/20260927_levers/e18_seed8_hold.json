@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-06T05:39:40.844053+00:00",
+  "status": "parked_pending_mechanism_diagnosis",
+  "seed": 8,
+  "update": 24000,
+  "planned_budget": 36000,
+  "working_path": "artifacts/eda/levers_tworlds_v1/state/corrt_raw_teacher_s8_fcanvas_u36000.state.pt",
+  "archive_path": "artifacts/experiments/20261005_recovery/recovery_inputs/canvas_s8_u24000_parked.state.pt",
+  "sha256": "d02f8ac94ae376ab2f54b0e217c947e0fd88a1750659e39cc3b3878f77cdecae",
+  "reason": "Unchanged canvas retains missing direct next-view read and offscreen conv advance. Completed s7 recall/SSM-use diagnosis is negative; remaining matched FP32 slot comparison is finishing. Do not resume unchanged as a repair. All original evidence and full resume state retained.",
+  "remaining_updates": 12000,
+  "resume_requires": "Explicit new scheduling decision after diagnosis; no automatic unchanged restart",
+  "completed_s7_checkpoint": "artifacts/eda/levers_tworlds_v1/corrt_raw_teacher_s7_fcanvas_u36000.pt"
+}

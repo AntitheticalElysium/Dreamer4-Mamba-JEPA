@@ -1,0 +1,104 @@
+{
+  "scope": "Post-hoc matched CPU head-objective diagnostic on frozen Mamba7 E17 step16 features.\n\nPredeclared: same 768 input features, FIT normalization, H.Hazard(snapshot)\narchitecture, seeds0/1/2, coherent batches32 roots x17 actions, AdamW1e-3/wd1e-4,\n4000 updates, DEV-A selection every200. Only loss changes: soft-target BCE on\nP(dead16), or within-root pairwise softplus weighted by true P differences.\nSelect and score by raw death logits argmin; rank scores are not calibrated\ndeath probabilities. All-action diagnostic labels; no world/actor training.\nReused DEV-B results are exploratory, not a sealed repair verdict. Checkpoint\nevery200 includes optimizer/model/best state/sampler/CPU RNG; exclusive hash-bound\natomic resume. CPU threads2; measurements go to EDA logs, never NOTEBOOK.\n",
+  "contract": {
+    "scope": "Post-hoc matched CPU head-objective diagnostic on frozen Mamba7 E17 step16 features.\n\nPredeclared: same 768 input features, FIT normalization, H.Hazard(snapshot)\narchitecture, seeds0/1/2, coherent batches32 roots x17 actions, AdamW1e-3/wd1e-4,\n4000 updates, DEV-A selection every200. Only loss changes: soft-target BCE on\nP(dead16), or within-root pairwise softplus weighted by true P differences.\nSelect and score by raw death logits argmin; rank scores are not calibrated\ndeath probabilities. All-action diagnostic labels; no world/actor training.\nReused DEV-B results are exploratory, not a sealed repair verdict. Checkpoint\nevery200 includes optimizer/model/best state/sampler/CPU RNG; exclusive hash-bound\natomic resume. CPU threads2; measurements go to EDA logs, never NOTEBOOK.\n",
+    "script": "f9c2ea84c7eabef5416559e5f03a0be53cbcccdd4a2453ba43e273d0edcf6f45",
+    "storage_source": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+    "architecture_source": "3779bc7936a6607173f68e98b4cd855593ab9d64f42c7261a4aa8331e40b3884",
+    "paired_source": "5fdeabe0332a7c915951d3539fecfec82b0330942951dac34536d94bde70e3df",
+    "previous_contract": "5d7d36f8044f3a96f06c66b4d0ba522a6c2f40cac183877663e1fc908868bb31",
+    "world_contract": "f97b2da4f9e724b47e62ed3f057b5a1a7bc4e99c4ff08321af917665795502be",
+    "previous_result_hash": "982a2b795dff57899440fd1b8f4bf5fb1df1dde2108055449b1bc1cc30677454",
+    "normalization_hash": "0014ec1085b1dca4a8238db8309763783c31069e80ab1fd50afe246c44ae69f1",
+    "bootstrap": {
+      "draws": 4000,
+      "seed": 20261007
+    },
+    "runtime": {
+      "torch": "2.13.0+cu130",
+      "threads": 2,
+      "precision": "CPU FP32, inputs FP16"
+    }
+  },
+  "world": "corrt_rawlong_teacher_s7_fmamba_L16b40_from36000",
+  "roots": 1139,
+  "scores": {
+    "bce": {
+      "score": 0.6118031144142151,
+      "per_head_seed": [
+        0.6135864853858948,
+        0.6064804792404175,
+        0.615342378616333
+      ],
+      "brier_mean_head_seed": 0.1003064215183258,
+      "selected_actions_counts": [
+        33,
+        673,
+        734,
+        562,
+        569,
+        168,
+        247,
+        63,
+        31,
+        44,
+        48,
+        37,
+        46,
+        36,
+        50,
+        33,
+        43
+      ]
+    },
+    "rank": {
+      "score": 0.6280545592308044,
+      "per_head_seed": [
+        0.6295544505119324,
+        0.6281551718711853,
+        0.6264541149139404
+      ],
+      "brier_mean_head_seed": 0.2282213419675827,
+      "selected_actions_counts": [
+        35,
+        721,
+        781,
+        604,
+        553,
+        208,
+        146,
+        61,
+        49,
+        32,
+        38,
+        28,
+        24,
+        18,
+        49,
+        42,
+        28
+      ]
+    }
+  },
+  "contrasts": {
+    "rank_minus_bce": {
+      "difference": 0.016251463443040848,
+      "interval95": [
+        0.004249285980652935,
+        0.027682621883248763
+      ],
+      "episode_seed_clusters": 149,
+      "roots": 1139
+    },
+    "rank_minus_prior": {
+      "difference": 0.011971394531428814,
+      "interval95": [
+        -0.011684600763431823,
+        0.03857392555126472
+      ],
+      "episode_seed_clusters": 149,
+      "roots": 1139
+    }
+  },
+  "prior": 0.6160832047462463
+}

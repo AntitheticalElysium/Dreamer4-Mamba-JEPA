@@ -61,6 +61,2242 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-08 (live) — WHY HEALTH FAILS: link-by-link diagnosis (lead; user mandate: exact cause before any ablation)
+
+**Decisions recorded:** Mamba (fmamba, L16) is permanently canonical. E20 services stopped and disabled 08:20.
+
+**Setup.** `health_chain.py` fixes a subset of the E20 factual TRAIN pool (seed 20261008), split fit / held by episode:
+- all 1,005 fresh ordinary hits;
+- 5,000 other ordinary hits (living dh ≤ −2);
+- 8,000 unchanged;
+- 1,000 deaths.
+
+Frozen worlds are teacher-forced on their trained context (L16: 15 frames). `health_chain_read.py` / `health_refit.py` read
+health with teval's HUD ridge (drop cut 1.5). Controls: the true next frame catches 5,988/6,005 hits; copy catches 0.
+
+**Facts, canonical Mamba M16 s7 (held episodes unless stated):**
+1. *The target is easy.* The true token-63 change for a given health transition is nearly constant: cosine to the group
+   mean 0.98-0.99, relative residual 0.14-0.20. "Copy + group-mean change" is read as the right drop in 100% of held cases.
+2. *Upstream dynamics are mostly right on fresh hits* (all 1,005): emitted scroll correct 99.0%; zombie drawn beside the
+   player 82% (true 99.8%). Yet the damage is drawn 8/1,005 (0.8%). Not mainly an upstream failure.
+3. *The information is in h.* Hit vs unchanged probes on h (63, 31, 4 neighbours), MLP: AUC 0.958; fresh 0.941; fresh vs
+   hard negatives 0.884 (raw-input probes 0.905 / 0.873 / 0.713).
+4. *A frozen-h head can depict hits*, but only when its training class mix is not the natural one:
+
+| token-63 head on frozen h (held) | hits / 1,211 | fresh / 207 | false / 1,728 |
+|---|---|---|---|
+| emitted (trained corrt) | 154 | 4 | 127 |
+| dedicated linear, h63, TRAIN hit rate (1.4%) | 83 | 1 | 13 |
+| dedicated MLP, h63, 1.4% | 81 | 0 | 11 |
+| copy + residual, h63, 1.4% | 17 | 0 | 6 |
+| linear, 6 positions, 1.4% | 81 | 6 | 16 |
+| linear, h63, subset mix (43% hits) | 723 | 61 | 124 |
+| linear, 6 positions, balanced | 899 | 140 | 124 |
+
+5. *The world's own generator alone* (token 63 := generated) draws on 54% of hits but also 51% of unchanged. The router
+   suppresses it, and copies the HUD token below health (weight 0.28) on stationary zombie-beside states, which yields
+   spurious drops (42% of those no-hit states vs 17% of stationary hits).
+
+**Reading so far.**
+- At the training class rate, every head type (corrt, linear, MLP, residual) copies. The corr / corrg head is not the
+  bottleneck.
+- L1 returns the per-dimension conditional median, so a deterministic head draws damage only when P(hit | features) > 0.5.
+  At a 1.4% base rate that needs a likelihood ratio above ~70:1, which this h reaches for only a few percent of hits.
+- Open: is the evidence weak in h (representation), or intrinsically uncertain given the visible history? Fresh hits are
+  99% determined by the visible history, so a sharp representation would draw them. Next: h at every cell within 2 and the
+  action token (the fresh zombie sits 2 away before the move); prior-corrected posteriors per stratum; all worlds.
+
+### Diagnosis 2-5 (09:00-10:00): two blockers, one root
+
+**Corrections to the reading above (each measured below):**
+- "The corr / corrg head is not the bottleneck" holds only for the *decision rule* on a frozen h. The trained corrt head has a
+  blocker of its own (B2).
+- "The information is in h" (AUC 0.958) is a ranking statistic. At the training base rate what decides drawing is the calibrated
+  posterior: h63 gives P(hit) > 0.5 for only 24% of held hits (B1).
+- E20's "fresh hits are 99% hits" holds in its capped pool only. Population-weighted, the fresh stratum's rate is 0.58: the
+  8 fresh-flagged no-hits in the pool are detector misfires (zombie scores 0.30-0.48 vs the hits' median 0.74; 3 have action 6).
+
+**Is a hit predictable from the visible history at all?** (`health_strata.py`; data only; TRAIN mix at t ≥ 14 restored by
+population weights: fresh hits ×1, other hits ×7.01, unchanged ×361.4.) `adj_post` = a zombie beside the player's post-move
+cell in frame 14 (true scroll); `since` = transitions since the last health drop.
+
+| stratum | population hit rate | share of all hits |
+|---|---|---|
+| fresh (E20 flag) | 0.58 | 2.8% |
+| adj_post, since = 6 | **0.87** | 14.0% |
+| adj_post, since 1..5 | **0.008** | 5.7% |
+| adj_post, since ≥ 7 | 0.63 | 12.0% |
+| adj_post, no drop in the window | 0.67 | 43.4% |
+| not adj_post | 0.003 | 22.2% |
+
+The zombie cooldown is crisp in the data: given adjacency, the hit rate by `since` is 0.018 / 0.009 / 0.007 / 0.007 / 0.007 at
+1-5 and 0.87 at 6. About 72% of hits sit in strata whose rate exceeds 0.5, so a deterministic median head *could* draw them.
+
+**B1 — information: h63 lacks the cooldown phase and the approach adjacency.** (`health_evidence.py`: balanced-batch MLP
+probes, early stop on an inner episode split, weighted Platt calibration to the population mix; drawable = P > 0.5 on held hits.)
+
+| features (M16 s7, held) | drawable hits /1,211 | fresh /207 | since6 /146 | false /1,728 |
+|---|---|---|---|---|
+| V: visible statistics (zombie score beside post-move cell, since, adj history, health) | 742 (61%) | 172 | 146 | 1 |
+| V without `since` | 364 | 126 | 9 | 3 |
+| h63 (the corrt head's only input for token 63) | 286 (24%) | 4 | 21 | 5 |
+| h_ext (h at 63, 31, 12 cells within 2, action token) | 255 | 22 | 27 | 7 |
+| h63 + oracle `since` | 480 | 6 | 88 | 3 |
+| h63 + oracle `since`, adj_post, adj_hist | **768 (63%)** | 136 | 124 | **0** |
+| the trained world's own emission | 154 (13%) | 4 | 20 | **126** |
+
+- Substitution: supplying the two ingredients lifts h63 from 24% to 63% drawable at zero false drops, above V.
+- Positive control (the same probe, same data): the cooldown phase is recoverable from the TRUE token-63 history the world sees
+  (frames 0..14) at AUC 0.9993 (since = 6) / 0.9973 (1..5) / 0.9999 (≥ 7). From M16's h63: 0.888 / 0.909 (1..4) / 0.789.
+  The world sees the phase and does not keep it at token 63.
+- Approach adjacency (adj_post on scroll steps with a zombie within 2): h63 AUC 0.778, h_ext 0.881; stationary 0.997.
+- Probe validity: PCA-reduced h_ext loses the evidence (32 PCs draw 1 hit); adding oracle ingredients to h_ext under-performs
+  h63 + oracle (data-limited 3,840-d probe). Drawable figures from h are lower bounds; the ingredient AUCs and the positive
+  control are the precise statements.
+
+**B2 — expression: the trained corrt generator cannot produce token 63.** corrt's token-63 output is a softmax mixture of the
+input token (copy), four spatial neighbours and `proj(h63)` (one linear map shared by all 81 tokens, trained only through its
+mixture weight). Its LayerNormed candidate vs the true next token, held, per dimension L1 (copy: 0.486 on hits, 0.036 on unchanged):
+
+| world | generator L1 hits / unchanged | generator beats copy, share of hits | gen weight on hits | projection on true change / orthogonal energy |
+|---|---|---|---|---|
+| M16 s7 / s8 | 0.917 / 0.947; 0.925 / 0.960 | 2.0%; 0.1% | 0.12; 0.14 | 0.53 / 3.48; 0.56 / 3.44 |
+| A16 s7 / s8 | 0.908 / 0.944; 0.873 / 0.892 | 1.3%; 0.5% | 0.09; 0.13 | |
+| M6 s7 at 6k, 12k, 18k, 24k, 30k, 36k | 1.030, 1.001, 0.984, 0.975, 0.971, 0.952 | ≤ 0.2% | | |
+| A6 s7 at 6k, 36k, 50k, 100k | 1.075, 0.931, 0.896, 0.863 | ≤ 1.0% | | |
+| E19 C (health dose λ 1, 6k from M6 36k) | **0.659** / 0.886 | **29.1%** | 0.23 | 0.63 / 1.65 |
+
+- A generator L1 near 0.9-1.0 on unit-variance tokens is close to unrelated content (independent tokens: ~1.13). It carries
+  half of the health change plus 3.3-4.2× its energy in unwanted change, so committing to it costs more than copying on
+  98-100% of hits, *whatever h63 knows*. The world can only blend: partial depictions read as 154 hits and 126 false drops.
+- h63 does hold the token's content: a dedicated linear map from the same frozen h63 reaches L1 0.22-0.25 on hits
+  (`health_refit.py`); the world's own shared proj on h63 gives 0.93 / 0.95.
+- Fidelity responds to objective allocation, not to training length: natural dose 36k → 100k moves it 0.931 → 0.863;
+  E19 C's dose moves it 0.952 → 0.659 in 6k updates.
+- The corrt move logit is not involved (M16 s7 / s8, A16 s7, M6 s7): token 63's up / left / right weights are ≤ 0.001 on
+  scroll and stationary steps alike, and its down-neighbour (token 72) weight is 0.05-0.08 on both. On fresh hits the head is
+  most copy-confident (self 0.91, gen 0.09).
+
+**Root: the objective allocates almost nothing to health.** (`health_gradient.py`: M16 on its own training batches, the exact
+replay of tworld.train's sampler, seed-11 order, 20 batches = 12,000 transitions, 341 hits; teacher objective err.mean().)
+
+| M16 | token 63, share of objective | token 63 on hits, share of objective | hits' share of backbone gradient norm | cosine with full gradient |
+|---|---|---|---|---|
+| s7 | 0.80% | 0.27% | 0.16% | 0.096 |
+| s8 | 0.83% | 0.28% | 0.42% | 0.054 |
+
+- Both blockers are what an objective that puts 0.3% of its mass on the event predicts: the backbone keeps no phase at token 63,
+  and the shared generator, which sees token 63 through a mixture weight of 0.05 (unchanged) to 0.24 (hits), never learns it.
+- The same mechanism explains E16 (Delta-IRIS port). Its posterior sees the TRUE next frame, yet before VQ it encodes ordinary hits
+  at AUC 0.634 / 0.701, and its code at 0.548 / 0.642. Deaths, about 3-4× larger token changes and about 3× more frequent per pass,
+  are encoded and drawn (generate weight 0.51-0.89, error 245 → 16.5). E16 trained the posterior through uniform latent L1. Delta-IRIS's own
+  tokenizer loss is 1.0·L2 + 0.1·L1 + 0.01·worst-pixel L2 (vmicheli/delta-iris `tokenizer.py`), which concentrates gradient on
+  rare large local errors such as a heart icon. That was dropped in the port.
+- **What Delta-IRIS's real loss would allocate** (`health_gradient.py … deltairis`; the same M16 s7 world and 20 training
+  batches, scored with 1.0·mean L2 + 0.1·mean L1 + 0.01·per-frame worst-element L2 instead of the teacher L1):
+
+| token-63 component | objective share, L1 → Delta-IRIS loss | backbone gradient-norm share, L1 → Delta-IRIS loss |
+|---|---|---|
+| hits | 0.27% → 0.78% | 0.16% → **1.85% (×11)** |
+| unchanged | 0.30% → 0.18% | 1.37% → 18.4% |
+| all of token 63 | 0.80% → 1.69% | 1.5% → 20.8% |
+
+  The squared and worst-element terms put an order of magnitude more of the update on token 63. That covers the hits and also
+  the noisy blends the world emits on unchanged frames. The loss the E16 port dropped is the component that addresses the
+  diagnosed root. Measured at M16's own errors; indicative of allocation, not a trained result.
+- E20 B could not have moved the decision, by design: it oversampled damage (10/40 per batch) but importance-weighted it back
+  to its natural loss mass (class mass 0.0129825), so the L1 median and the per-hit incentive were unchanged in expectation.
+- E19 C's dose did move B2 (above), but in 6-frame windows: the phase (since = 6) lies outside the window, so B1 could not
+  be met for most hits. Every fresh hit is a scroll step; its generator still lost to copy there (0/51 scrolling hits caught).
+
+### Diagnosis 6 (10:00-10:30): across worlds, training length, positive controls
+
+`health_evidence.py main` (`evidence_main.json`), 14 worlds, same probes / calibration / held episodes:
+
+| world | drawable from h63 | + oracle since | + since, adj | `since` 1..4 in h63 | since = 6 in h63 | emitted hits / false |
+|---|---|---|---|---|---|---|
+| M16 s7 / s8 | 286 / 281 | 480 / 353 | 768 / 747 | 0.909 / 0.898 | 0.888 / 0.878 | 154 / 126; 208 / 151 |
+| A16 s7 / s8 | 128 / 182 | 286 / 386 | 639 / 752 | 0.847 / 0.844 | 0.869 / 0.865 | 36 / 122; 125 / 121 |
+| E20 B s7 (damage oversampled, natural mass) | 395 | 496 | 695 | 0.952 | **0.950** | 87 / 13 |
+| M6 s7 at 6k, 12k, 18k, 24k, 30k, 36k | 0, 142, 186, 200, 245, 164 | | 805, 693, 801, 770, 790, 747 | 0.915, 0.896, 0.889, 0.897, 0.900, 0.904 | (outside window) | |
+| A6 s7 at 36k, 50k, 100k | 135, 91, 91 | | 711, 627, 725 | 0.848, 0.849, 0.848 | (outside window) | |
+
+Positive control (true token-63 history over the world's own window): `since` 1..4 0.997-0.999, since = 6 0.999.
+
+- **Training length does not grow the phase.** Under the natural objective, `since` 1..4 in h63 is flat from 6k to 36k (Mamba) and
+  from 36k to 100k (attention), against 0.997 available in the input. Drawable-from-h63 stops rising after ~30k. The user's
+  "6k too short / grokking late" hypothesis is refuted for the phase; extra *exposure* to damage (E20 B) moved it (0.950).
+- **Approach adjacency, resolved at 5× data** (`health_controls.py pool`, `pool_adjacency.json`; all 71,918 pool events,
+  M16 s7 h63 at window 15, episode split; supersedes the "not established" correction above, which was data-limited):
+
+| probe target: zombie beside the post-move cell | all | scroll steps | scroll steps, zombie within 2 |
+|---|---|---|---|
+| raw frame-14 cells (13) + action | 0.9955 | 0.9285 | 0.758 |
+| raw cells + action + the TRUE scroll (the move's outcome) | 0.9989 | 0.9749 | **0.935** |
+| M16's h63 | 0.9939 | 0.904 | **0.750** |
+
+  - On approach moves, h63 knows no more than the raw input without the move's outcome (0.750 vs 0.758).
+  - The world itself predicts the scroll correctly on 99.0% of fresh hits (its corrt move gate reads the action token and the
+    target tile), so the outcome exists inside the network; it is not routed to slot 63.
+  - This is the exact form of the "scrolling problem": h63 does not combine the zombie's position with whether the player
+    actually moved.
+  - Caveat: the control uses the true scroll, not the world's predicted one (99% agreement on fresh hits).
+- **The phase is computed, then discarded** (M16 s7; slot 63's residual stream at the output position, same probe, held AUC):
+
+| slot 63 after | since = 6 | since 1..4 | since ≥ 7 |
+|---|---|---|---|
+| input embedding (current frame only) | 0.844 | 0.830 | 0.772 |
+| layer 0 / 1 | 0.859 / 0.863 | 0.928 / 0.940 | 0.785 / 0.802 |
+| layer 2 / 3 (peak) | 0.918 / 0.916 | 0.968 / 0.961 | 0.832 / 0.833 |
+| layer 4 / 5 (output) | 0.911 / 0.887 | 0.943 / 0.911 | 0.814 / 0.790 |
+
+  The middle layers build part of the phase from slot 63's history. The last two layers, which feed the copy-dominated head,
+  lose a third of it. That is what a missing incentive predicts, not an inability of the per-slot Mamba to compute it.
+- **False drops by context** (held unchanged, emitted drop at the 1.5 cut; **the "same phase failure" reading below is RETRACTED 19:10, see "Correction: false drops are the row-14 death cue"**):
+
+| unchanged events, by context | M16 s7: false / n (rate) | M16 s8 | E20 A (since = 6 in h63 0.937) |
+|---|---|---|---|
+| all | 127 / 1,728 | 151 / 1,728 | 2 / 1,728 |
+| a drop 1..5 transitions back (zombie in cooldown; true hit rate 0.008) | **108 / 327 (0.33)** | **119 / 327 (0.36)** | 2 / 327 |
+| no drop in the window | 8 / 1,188 (0.007) | 16 / 1,188 | 0 |
+| zombie beside in frame 14 / no zombie within 2 | 83 / 264 (0.31); 34 / 1,360 (0.025) | 98 / 264; 38 / 1,360 | 1; 1 |
+| health 9 / health ≤ 3 | 0 / 766; 77 / 303 | 0; 90 / 303 | 0; 1 |
+
+  85% (s7) and 79% (s8) of false drops fall inside the cooldown window. (Retracted reading: "the missing phase explains both
+  halves". The contexts are right; the cause is the time row, as shown next.)
+- **Correction: false drops are the row-14 death cue, not the phase** (19:10; `health_chain.py world … --window 10` puts the
+  same last frames at output row 9 instead of 14):
+
+| world, output row | hits / 1,211 | since = 6 hits / 146 | false / 1,728 | false in cooldown |
+|---|---|---|---|---|
+| M16 s7, row 14 (window 15) | 154 | 25 | 127 | 108 |
+| M16 s7, row 9 (window 10) | 60 | 2 | **0** | 0 |
+| G (E21), row 14 | 100 | 10 | 108 | 102 |
+| G (E21), row 9 | 64 | 5 | **0** | 0 |
+
+  - The training sampler ends 26.4% of windows on a death at frame 15, which is predicted from row 14. In fights, with recent
+    hits, the world learned "row 14 → drop". This is the audit's death-position cue (E20's class-balanced endpoints removed it:
+    E20 A, 2 false drops).
+  - At an unbiased row both worlds draw ~5% of hits with zero false drops: an honest but almost silent health channel. That
+    is B1 (+ B2).
+  - **The two blockers at row 9** (`evidence_row9.json`; same probes and calibration as `health_evidence`; positive control at
+    window 10: phase 0.9995):
+
+| world, row 9 | generator beats copy | generator L1 on unchanged | since = 6 in h63 | approach adjacency in h63 | drawable from h63 | + oracle phase, adj | emitted hits / false |
+|---|---|---|---|---|---|---|---|
+| M16 s7 | 3.6% | 0.939 | 0.889 | 0.817 | **334** | 738 | 60 / 0 |
+| G | 74.7% | **0.039** (copy 0.036) | 0.937 | **0.648** | **136** | 626 | 64 / 0 |
+
+    - M16's h63 supports 334 drawable hits, but the head emits 60. That gap is B2.
+    - G removes B2, but its generator loss (~6× the teacher term) turns h63 toward reconstructing token 63's content. The
+      phase improves, approach adjacency falls (0.817 → 0.648), and the evidence drops to 136. G's 64 hits are B1-bound.
+    - With B2 fixed, B1 binds.
+  - **Consequence for E21:** the predeclared window-15 health readings mix B1 / B2 with the row-14 cue. Every arm is also read
+    at row 9 (window 10) and reported beside them. B1 / B2 movement is judged at row 9; the row-14 numbers stay as
+    predeclared.
+- **The ingredients are sufficient in every world.** h63 + oracle phase + adjacency makes 627-805 of 1,211 hits drawable at
+  ~0 false in all 14 worlds, including M6 at 6k.
+- **Correction (approach adjacency; itself superseded at 5× data, see "Approach adjacency, resolved" below).** The adjacency deficit claimed in B1 is NOT established on the subset. Positive control on approach
+  moves (scroll steps, zombie within 2): raw frame-14 cells + action 0.524, + the true scroll 0.786, M16's h63 0.778. The subset
+  is too small for this three-way conjunction; h63 matches the raw + true-scroll control. Only the phase deficit is established.
+  The world's map draws the zombie beside the post-move player in 82% of fresh hits.
+- **Allocation decomposition** (an identity, not a check): token-63 hit elements are 0.035% of the training elements; their L1
+  is 7.7-8.0× the mean element error; product 0.27-0.28% of the objective. L1's per-element gradient is ±1 whatever the error
+  size, and contextual continuous tokens never sit at exactly zero error, so an event's gradient tracks its element share.
+- **Matched heads at 6k** (attention, teacher, window 5): residual (no mixture gate) draws 23 / 1,211 hits with 328 false;
+  corrt 15 / 245; direct (suffix) 9 / 75. No head type rescues hits under the same objective.
+- **The generator loss fixes B2 on its recipe.** `--gen-loss` (the generator's own L1 on every token, ITC-derived, 6k suffix,
+  attention): token-63 generator L1 on hits 0.973 → 0.491, unchanged 1.005 → 0.209; beats copy on 0% → 36% of hits. It was
+  judged in 09-28 on aggregate one-step error only; its effect on health was never read.
+- **Existing checkpoints that bear on the blockers** (`evidence_more.json`; 6-frame worlds read at window 5):
+
+| world | drawable from h63 | emitted hits / 1,211 | false / 1,728 | reading |
+|---|---|---|---|---|
+| corrt suffix 6k / + gen-loss | 0 / 0 | 21 / 12 | 250 / 282 | B2 fixed alone, no B1 evidence yet: nothing drawn |
+| corrt suffix 18k / + gen-loss + ITC regions | 15 / 6 | 80 / 19 | 235 / 189 | |
+| E19 B (no dose) / C (health dose λ 1), 6k from M6 36k | 264 / **416** | 170 / **376** | 118 / 133 | a health-token dose moves both blockers |
+| M16 at 500 / 6,000 L16 updates | 160 / 286 | 32 / 154 | 30 / 126 | since = 6 in h63: 0.868 → 0.888 |
+| E20 A (endpoint-only continuation of M16) | 212 | 98 | **2** | since = 6 0.937; class-balanced endpoints remove false drops |
+
+  A health-specific dose (E19 C) draws 31% of held hits at window 5. The question for E21 is whether a *generic* allocation
+  does the same.
+- **Token-change events are bimodal for HUD tokens** (400 random TRAIN windows, frames 8..55): health-63 change norms cluster
+  at 0-2 (drift) and 3-12 (real changes) with an empty gap at 2-3 (4 and 11 of 18,800 in the 2.0-2.5 / 2.5-3.0 bins). At a
+  change-norm threshold 2.5, events cover health 5.3%, all HUD 3.2%, map 28%.
+
+### Literature step (10:00-10:40), on the diagnosed problem
+
+Problem as diagnosed: a rare (1.4%) state change on one token of 81, under a uniform per-element regression objective;
+(B1) the representation does not keep the hidden variable that predicts it (the cooldown phase), and (B2) the copy-gated
+generator never learns to produce the token.
+
+- **EAWM** (arXiv 2601.19336, ICLR 2026; code MarquisDarwin/EAWM @ 49eebbe, read):
+  - Mechanism: an event head on the latent (the decoder's input) predicts per-element change events with focal loss; its
+    gradients flow into the world model. The "no event predictor" ablation costs ~0.4 mean HNS (Atari).
+  - Craftax (EASimulus, `config/world_model/craftax.yaml`, `world_model.py`):
+    - modalities: map = token_2d (event = category changed, balance factor 0.25), stats = vector (tendency up/flat/down),
+      direction = token;
+    - focal α 0.15, γ 4;
+    - per-row sparsity weight GES(p) = 1/log(0.1 + p + √(1+p²)), ≈ 10 for sparse rows, ≈ 1.1 at p = 1;
+    - modality weight 0.1;
+    - total loss = obs + reward + end + events, unit weights.
+  - Our E14a "EAWM" was a ×1.7 token reweighting on a frozen backbone (DO / place). It tested neither component.
+- **Delta-IRIS** (vmicheli/delta-iris `tokenizer.py`, read): decoder loss 1.0·L2 + 0.1·L1 + 0.01·worst-pixel L2. E16 replaced
+  it with uniform latent L1.
+- **ITC** (2605.16457, appendix B.2): HUD and screen edges are generated by the transformer with their own loss, never through
+  a copy competition. That is B2's remedy, as `--gen-loss` confirms.
+- **Dedieu et al.** (2502.01591): CE on non-contextual NNT patch codes, nothing health-specific. Under CE, confidently correct
+  unchanged codes give ~0 gradient. Under latent L1 on contextual tokens, every element keeps a ±1 sign gradient.
+- **HarmonyDream** (2310.00344): balances reward vs observation loss scales. A per-token harmonizer would barely move token 63
+  (its mean error is already 0.65× the average); the imbalance is *within* the token.
+- **Imbalanced regression / dense regression**:
+  - Yang et al. 2021 (DIR), Ren et al. 2022 (Balanced MSE): re-balancing shifts the predictor's prior, so it hallucinates at
+    the true rate. E14 measured exactly that for positives-only doses.
+  - Shrinkage / regression-focal losses (Lu et al. 2018) down-weight easy elements; E14's hard-mining dose failed on our
+    tokens (93% of the tail is entering / static / HUD).
+- Vendored papers checked:
+  - Delta-JEPA (2606.31232) addresses encoder collapse; MoP-JEPA (2607.05238) addresses multimodal futures.
+  - Hansen & Wang (2606.27326) find that hallucination concentrates in low-coverage state-action regions, and fix it with
+    coverage-aware sampling at training time. This is related to E20 B's exposure effect on the phase (0.950), which was
+    obtained despite importance weights restoring the natural loss mass.
+
+- **Exposure.** E20 A / B raised the phase in h63 (0.937 / 0.950) and removed false drops (2 / 1,728). They did it with
+  class-balanced endpoint batches importance-weighted back to the natural loss mass: same expected allocation, far lower
+  per-batch variance. Under Adam's per-parameter normalization, consistent small gradients win. The world-model literature
+  for exposure is Curious Replay (Kauvar et al., ICML 2023, arXiv 2306.15934, PDF read):
+  - priority p_i = c·β^{v_i} + (|L_i| + ε)^α, with α = β = 0.7, c = 1e4, ε = 0.01;
+  - no importance correction;
+  - DreamerV3 on Crafter improves from 14.5 to 19.4%.
+
+  Unlike E20's label-balanced batches it is generic, but it is uncorrected, so it shifts the L1 median: E14's prior-shift
+  lesson applies.
+
+**Generic remedies with a primary source, one per blocker:**
+- B1: EAWM's event head. It is a matched-negative classification loss, so the L1 median that decides drawing is unchanged,
+  while the representation is pushed to predict *when* each token changes.
+- B2: the generator's own loss (`--gen-loss`, ITC).
+
+### E21 — predeclared before any code (10:40): event head (B1) × generator loss (B2), 2 × 2 on M16
+
+**Arms.** Each continues M16 s7 (canonical; L16, b40, rawlong, teacher, seed 7, batch order 11, fresh AdamW with warm-up) for
+6,000 updates:
+
+| arm | flags |
+|---|---|
+| C0 | none (control: the continuation itself) |
+| G | `--gen-loss` |
+| E | `--event` |
+| GE | both |
+
+Snapshots at 2k / 4k show trends, so a null cannot hide a slow trend.
+
+**`--event` (port of EASimulus's event loss to per-tile tokens):**
+- Event label: token i changes from t to t+1 by L2 norm > 2.5. The threshold is the measured valley of the bimodal HUD
+  distribution; the analog of "the category changed".
+- Head: per token, shared across tokens, reading h_i, the corrt decoder's own input for token i. This is EAWM's principle
+  "the event predictor reads the decoder's latent". Shape Linear(256, 4) → LayerNorm → SiLU → Linear(4, 1), EASimulus's
+  per-element hidden width outeventdim = 4.
+- Loss: focal α 0.15, γ 4; GES per row and modality (map: 63 tokens, balance 0.25; HUD: 18 tokens, balance 1.0); modality
+  weight 0.1; added to the teacher L1 with weight 1.
+- Deviation: HUD events are binary change events, not up/flat/down tendencies; our HUD is tokens, not values.
+
+**`--gen-loss` fix:** it scored `gen[:, :S.W-1]` (6-frame era). At L16 it must score all L-1 targets. The fix is a no-op for
+every past 6-frame run (S.W = 6).
+
+**Readings** (s7; health_chain subset, held episodes; window 15):
+1. *B2 fixed*: G and GE token-63 generator beats copy on ≥ 30% of held hits (M16 2%).
+2. *B1 fixed*: E and GE, since = 6 AUC in h63 ≥ 0.95 (M16 0.888, input 0.999), and drawable-from-h63 ≥ 2× C0's.
+3. *Health drawn*: GE emitted ≥ 30% of held hits (363 / 1,211) with ≤ 2% false (35 / 1,728). Control C0 is reported alongside.
+4. *Cost*: teval one-step all / depth-16 vs C0, paired. The margin is 0.005 one-step, as in E19. A failed margin is reported,
+   not hidden.
+
+**Interpretation rules, fixed now:**
+- If B1 and B2 both move and health is drawn, the cause is confirmed causally. A from-scratch run (s7 + s8) follows overnight
+  to remove the continuation caveat.
+- If an intermediate does not move, `health_gradient.py` measures whether the arm actually changed the allocation, before any
+  conclusion. If the allocation moved and the ingredient did not, the next test is from scratch, not "the method fails".
+
+**E21 v1 aborted (16:44 → 17:21), caught by an in-flight check at 2k updates of GE:**
+- B2 was already fixed (token-63 generator beats copy on 78% of held hits; L1 0.471 vs copy 0.486).
+- The event head's token-63 logit was constant: AUC 0.505, p = 0.245 for hits and unchanged alike.
+- Cause, a porting defect: v1 shared ONE 4-unit head across all 81 slots, so the dense map events own it. EASimulus's
+  MultiMotDecoder gives every event element its own output weights: Linear(all tokens, current ⊕ previous-detached → 4·n) →
+  LayerNorm(4·n) → SiLU → Linear(4·n → n).
+- Fix: `tworld.SlotEvent`. Per slot, Linear([h_i,t ; sg(h_i,t−1)] → 4), one LayerNorm over the 81 × 4 units, SiLU, per-slot
+  Linear(4 → 1). The aborted files are kept in `levers_tworlds_v1/e21_v1_aborted/`.
+
+**Pre-flight** (`event_preflight.py`, `event_preflight.json`; frozen M16, head-only training on M16's own batches):
+
+| head, loss, steps | token-63 AUC hit vs unchanged (held subset) | fresh vs unchanged |
+|---|---|---|
+| v1 shared, E21 focal, 600 | 0.478 | 0.533 |
+| SlotEvent, E21 focal, 600 / 3,000 | 0.606 / 0.740 | 0.322 / 0.483 |
+| SlotEvent, plain BCE, 600 | 0.508 | 0.455 |
+| per-slot linear, BCE / focal, 600 | 0.621 / 0.647 | 0.393 / 0.398 |
+
+- What a token-63 event is (600 random TRAIN windows, 2,357 events = 6.2% of transitions):
+
+| event type | share of token-63 events |
+|---|---|
+| health drop > 1.5 (hits, deaths) | 36% |
+| health −1 | 10% |
+| recovery +1 | 30% |
+| health unchanged, almost all at action 6 (sleep darkens the whole HUD; the other HUD tokens change 6.9 vs 0.5) | 25% |
+
+  The generic label is meaningful, but hits are a minority of it, and the head learns them slowly.
+- Allocation at EAWM's published coefficients (SlotEvent after 600 head steps; 10 other training batches, 166 hits): the event
+  term pushes h at slot 63 on hits with **0.38×** the teacher L1's gradient.
+- Consequence, recorded before relaunch:
+  - E (and E's half of GE) is a faithful test of EAWM *at its published coefficients*. The measured dose predicts a small
+    effect on B1. A weak E result would mean "dose 0.38×", not "event prediction cannot install the phase".
+  - A dose-matched event arm is the follow-up if E is weak.
+  - G is the clean test of B2's mechanism. With the generator usable, emitted hits should approach what h63 can support
+    (24% drawable).
+
+**E21 v2 launched** with SlotEvent; order G, C0, GE, E.
+
+**In-flight (provisional; not an endpoint reading), G at 2k vs M16, held subset:**
+- generator beats copy on 73% of hits (M16: 2%);
+- phase in h63 0.906 (M16: 0.888);
+- emitted hits 99 (M16: 154), false drops 108 (M16: 126), of which 98 sit in the cooldown window (M16: 107).
+
+B2 removed, B1 unchanged: a usable generator alone draws no more hits, and it still drops health inside the cooldown, as the
+diagnosis predicts.
+
+**E21 arm D, predeclared 17:50, before any E21 v2 result:** M16 s7 continued 6,000 updates exactly as C0, with the teacher L1
+replaced by Delta-IRIS's tokenizer loss in token space: 1.0·mean L2 + 0.1·mean L1 + 0.01·mean over frames of the frame's worst
+element L2 (vmicheli/delta-iris `tokenizer.py`).
+- Rationale (measured above): the same world and batches give hits 11× the backbone gradient share (0.16% → 1.85%), with no
+  label and no new head.
+- Risk: L2's optimum is the conditional mean, so drawing a 2-point drop past the 1.5 cut needs P(hit) > 0.75. The phase strata
+  (since = 6: 0.87; since 1..5: 0.008) are on the right side of it.
+- Readings: the same four as E21. The cost reading is also reported in teval's own currency (MSE / copy), which an L2-trained
+  world may favour; one-step L1 is reported beside it.
+- Implementation waits until E21's last arm has started, so every E21 arm runs the same `tworld.py`.
+
+
+## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
+
+**Method.** Every headline number below was re-derived from raw rows, logs or per-root files, not from summaries:
+- sighting / carry rows;
+- check_delta, E16 and recall / damage logs;
+- the four E17 H16 stores' per-root safe arrays;
+- fixed-clock rows;
+- all 12 E19 per-root health files;
+- E18 recall logs;
+- E20 endpoint JSONs.
+
+All reproduce exactly, except where noted. Tracked code edits were diffed: numerics are unchanged apart from two tied-rank AUC
+fixes. Everything is committed in stages 1-8 (ae0868ec..689262c1). Resume journals, `.pt` rows and EDA outputs stay on disk,
+outside git. E20's JSON reports are copied to `20260927_levers/evals/e20_v1/`.
+
+**Predeclared readings, final ledger.**
+
+| experiment | reading | verdict | numbers |
+|---|---|---|---|
+| E17 stage 1 | m6_onestep | TRUE | M6 − A6 −0.002 / −0.005, both resolved (moved −0.004 / −0.011) |
+| | m6_depth16 | FALSE | s7 −0.011 [−0.022, +0.001]; s8 −0.018 resolved |
+| | m6_hits | FALSE | 0.050 vs 0.030; 0.036 vs 0.050 |
+| | m6_h16_traj | FALSE | trajectory M6 − A6 −0.0010 / −0.0045 (0.6441 vs 0.6451; 0.6417 vs 0.6462), same 1,139-root panel |
+| E17 stage 2 | long_hits | FALSE | window-15 teacher catch ≤ 0.136 (needs ≥ 0.3) |
+| | long_fresh | FALSE | 0/31, 1/31 |
+| | mamba_long_edge | FALSE | hits +0.071 / +0.089 pass; H16 trajectory +0.0053 [−0.004, +0.016], +0.0031 [−0.006, +0.012] |
+| | long_recall_same | TRUE | Mamba same-slot age 6-15 capture 0.616 / 0.643 vs attention 0.431 / 0.357 |
+| | long_recall_used | TRUE | window 15 − 5: +0.247 / +0.279 |
+| | moved_unsolved | FALSE as declared | mis-specified: ignored the no-memory baseline (0.38-0.43 at window 5); moved-slot memory gain is +0.01..0.04 in every world, i.e. none |
+| check_delta | all three | FALSE | mean-Δ AUC 0.564 / 0.532; disagreement 0.642 / 0.651 |
+| E16 | health readings | FALSE | posterior 0/305, 0/32, 0/112 (full s7) |
+| E18 | c6_moved_recall | FALSE at s7 | +0.010 (needs +0.15) |
+| | c6_same_recall | FALSE at s7 | −0.528 (needs ≥ −0.05) |
+| | c6_unseen | TRUE at s7 | −2.8% |
+| E19 | learnable | FALSE in all 4 sets | best C catch 0.24 with 1.4-3.1% false; fresh 0/31 in all 12 arms |
+| | unshortcut | FALSE | attention s8 C passes the ratio spuriously (same catches with no history) |
+| | no_cost | FALSE | B → C one-step +0.007..0.012, depth 16 +0.017..0.046 |
+| E20 (seed 7 pilot) | every adoption criterion | FALSE | see below; seed 8 held |
+
+- E18 needs both seeds on the two failed readings, so seed 8 (parked at 24k) cannot change their verdict. E18's c6_unseen is
+  undetermined at s8.
+
+**Gaps found and filled.**
+- lane73 never reached its predeclared teval / compare tail: the 10-06 20:55 reboot stopped it after the H16 job, which another
+  script later resumed. lane95 ran exactly those commands today. M16 s7's teval reports already existed (produced 10-07 by
+  E20's pipeline), so lane95 skipped them.
+- E17 completed comparators (compare.py, 143 seed clusters, window 15):
+
+| contrast | s7 one-step all | s7 depth 16 | s8 one-step all | s8 depth 16 |
+|---|---|---|---|---|
+| A6 → A16 | −0.005 * | −0.012 [−0.025, +0.001] | −0.003 * | −0.022 * |
+| M6 → M16 | −0.004 * | −0.017 * | −0.004 * | −0.025 * |
+| **A16 → M16** | −0.001 * | **−0.016 [−0.027, −0.005]** | −0.005 * (moved −0.012) | **−0.021 [−0.034, −0.007]** |
+| window 5 → 15, A16 | 0 | −0.001 | 0 | −0.005 [−0.011, +0.001] |
+| window 5 → 15, M16 | 0 | −0.004 * | 0 | −0.001 |
+
+  - At L16, Mamba's imagined rollouts beat attention's at both seeds. The gain over the parents comes from L16 training, not
+    from reading a longer window at evaluation.
+  - One-step is window-independent because teval predicts it from the 4 root frames.
+  - None of this reaches H16 decisions (mamba_long_edge FALSE).
+
+**New findings from this audit.**
+1. *The zombie cooldown is visible in the training data and position-locks ordinary hits too.*
+   - In the 64-frame long pool's death windows, living ≥ 2 hits by distance to the death frame are 2,578 at 6, against
+     150-190 at distances 1-5. Further peaks: 932 at 12, 519 at 18.
+   - In ordinary windows, gaps between consecutive hits peak at 6 (574, against 50-160 at the other gaps 1-15).
+   - So E17's end-aligned windows put ordinary hits at target positions 9 and 3 (23,266 and 9,351, against ~3-5k elsewhere),
+     not only deaths at 15. This is the data mechanism behind the long worlds' time-row dependence of drawn damage
+     (row 14 → 4 transplant: 26 → 12, 44 → 13).
+2. *Our "two seeds" replicate initialization only.* tworld seeds the batch order with a fixed generator (11), so every seed sees
+   the identical batch sequence. Fcanvas s7 / s8 per-update losses nearly coincide: 0.0370 / 0.0369 at 24k. This holds for
+   E14-E19 alike; replication over data order has never been tested.
+3. *E19 B never tested full de-alignment.*
+   - Row 4 exists only in unsplit windows, so P(death | row 4) stays 26.6%, exactly as in A. The census confirms
+     2.997% → 26.68% from row 0 to row 4.
+   - The rejected crop-and-pad would have kept it near 5.3-6.7% at the cost of 10.6% of targets (my arithmetic, not run).
+   - "B is not a repair" therefore says nothing about removing the death-position cue. E20's class-balanced batches did remove
+     it: the parent's 108 window-15 false drops fell to 3-4.
+4. *E18 failed for a read-path defect, not because world alignment fails.*
+   - The corrt head predicts slot (r, c) of frame t+1 from time t's output at (r, c). In fcanvas that output belongs to the
+     world cell currently there, so the entering cell's remembered stream is never read (0 / 2,018 direct matches).
+   - The per-slot alignment behind Mamba's same-slot recall is also lost: 0.335 vs 0.864. Resetting canvas's SSM changes
+     nothing. A world-aligned memory needs an explicit next-view read (Neural Map / MapNet style).
+5. *E20 C is Goodhart through a frozen linear probe.*
+   - The generated token-63 change has ~13% of the true change's norm (projection 0.03; the token stays ~95% copy).
+   - It is aligned with the readers' health direction (cos −0.31). The loss reader weights token 63 more (norm 5.57 vs 3.18;
+     reader cosine 0.56), so it reads a full drop: 266/279 hits. The independent reader sees 6/279 at 1.5 and 267/279 only at
+     0.5, with 573 false drops.
+   - Also: B's +17 catches are over-drops (true 7 → 5, predicted ~0.56). All E20 arms lose same-slot recall (−0.13 to −0.14)
+     and add one-step cost (+0.008-0.012): endpoint-only supervision (40 targets/update against 600) erodes the world.
+6. *At ages 2-5 the conv buffer carries more than the SSM.* Clearing conv leaves donor pull 0.075 / 0.034; clearing the SSM
+   leaves 0.137 / 0.098 (intact 0.249 / 0.257). At ages 6-15 the SSM carries it at both seeds: resetting the SSM gives
+   0.0004 / 0.0006 history gain.
+
+**Corrections.**
+- Other agent's record:
+  - "512 same-slot cases from 168 episodes": 171 distinct pool rows.
+  - Attention s7's moved-slot sighting effect, +0.84, was omitted.
+  - The E17 teval / compare gap was not noted.
+- Mine (accepted):
+  - E17 was evaluated at window 16, where the output is untrained; window 15 is correct.
+  - My window 5 vs 1 memory contrast also changed scan length and time row; the sighting swap and fixed-clock controls
+    supersede it with the same conclusion.
+  - E16 trains through latent L1, not MSE.
+  - check_context's aggregate miss is not "no history use".
+  - moved_unsolved ignored the generation baseline.
+
+**State.**
+- E20's driver (`d4mj-e20.service`) and post service are enabled at login. After this morning's boot they re-verified and
+  re-exported seed-7 stages: no new results. The driver remains active with seed 8 held.
+- No other research process is running.
+- Fcanvas s8 is parked at 24k (state archived).
+
+
+## 2026-10-08 — E20 seed7 endpoints and frozen CPU diagnostics
+
+All three seed7 arms completed their original6,000 updates. Parent and A/B/C
+window5/15 endpoints and paired comparisons are complete; the additional window4
+endpoint pass remains in progress. Seed8 stays held for review. Numerical sources
+and completed endpoint receipts match their recorded hashes. Reused diagnosis
+roots, one world seed; no actor or sealed promotion result.
+
+**B expanded factual support but did not repair health.** Independent HUD reader,
+teacher successor, window15; strict drop cut1.5 health units:
+
+| endpoint | A | B | paired B−A,95% interval |
+|---|---:|---:|---|
+| ordinary >=2 hits caught |16/279|27/279|+0.03943[+0.00749,+0.07252]|
+| fresh hits caught |0/31|0/31|0|
+| ordinary change MAE,health units |2.06469|2.17689|+0.11220[+0.03104,+0.20419]|
+
+The catch-rate gain is not accurate damage prediction: B adds17 catches and
+loses6, with all17 new cases true7→5 transitions,17 distinct roots/episode seeds.
+Median B successor health0.56459;13/17 below1. These cases already had a zombie
+in their history and are **not** the fresh stratum. Four selected frozen CPU
+decompositions: A's health generation weight0.000253–0.01740, B's0.40114–0.64822;
+B's normalized generated candidate reads health0.809/0.542/0.032/0.191 against
+true5, alongside substantial neighbour mixing. CPU/CUDA health difference up to
+0.0997 in this subset; endpoint statistics use the saved CUDA outputs. This
+localizes those selected over-drops to altered mixing and inaccurate candidates;
+it is not a population-wide learning-cause proof. Window5 teacher B catches18/279
+versus A6/279, but fresh remains0/31. Window15 self-fed B catches2/174, A1/171;
+common-alignment paired gain0.00637[0,+0.02069], fresh0/23 in both.
+
+**Preservation conditions fail.** Paired preselected sample0, window15:
+B same-slot age6..15 capture0.50430 versus parent0.63438 over2,088 cells;
+difference−0.13008[−0.18633,−0.07653], failing the−0.05 retention margin.
+B one-step added error/copy0.007649[0.006391,0.009089], above the0.005 ceiling;
+depth16 added error/V0.030255[0.018314,0.044286]. A and C also lose long-age
+same-slot recall. These parent contrasts combine the shared E20 layout/data/
+optimizer/budget changes; they do not isolate expanded B support as the cause.
+
+**Short checkpoint diagnostics, no optimization:** fixed factual TRAIN panel,
+eight ordinary nonfresh and eight detector-estimated fresh events, all true−2.
+At context4, B fresh mean predicted changes at parent/1500/3000/4500/6000:
+−0.0241/−0.0094/−0.0181/−0.0079/−0.0085 health units,0/8 strict catches at each.
+B context15 at6000 also catches0/8 fresh cases. This is a small post-hoc panel,
+not representative convergence evidence or a scratch comparison. CPU reference
+recurrence versus four stored CUDA predictions: health-readout max difference
+0.00136; checkpoint diagnostics took30.11s and22.43s. B's teacher retains ordinary
+damage class-loss mass1.29825% despite25% sampled endpoints. No arm tests the
+revised recipe from initialization; 6k sufficiency remains unestablished.
+
+**C remains a diagnostic of scalar supervision, not an adopted method.** At
+window15 its loss reader catches266/279 ordinary and31/31 fresh drops; independent
+HUD reader6/279 and0/31. Both readers catch essentially all real successors with
+zero unchanged false drops. Fresh medians: loss-reader predicted delta−1.931,
+independent HUD−1.046. Affine decomposition puts the discrepancy in token63:
+real independent contribution−1.978, generated−1.071; other HUD contributions
+are small. Fixed TRAIN C already shows this two-reader separation at1500 updates.
+The scalar objective constrains one affine projection; its success does not imply
+faithful health-token geometry. This is consistent with the scalar-projection
+ambiguity analyzed in [VaGraM,sec3](https://arxiv.org/html/2204.01464v1#S3), whose
+value-weighted state loss differs from E20. No stochastic-averaging or warm-start
+causal explanation is established by these measurements.
+
+Evidence: EDA `levers_e20_v1/endpoints/contrasts_e20_C_s7_fmamba_fromM16_w{5,15}.json`,
+`analysis_{B_new_catches,B_mae_contrasts,BA_generator_gate_cpu,B_checkpoint_curve_cpu,
+checkpoint_curve_cpu,dual_reader_w15,health_geometry_w15}.json`;
+scripts `20260927_levers/e20_{checkpoint_curve_cpu,b_checkpoint_curve_cpu}.py`.
+All process logs stay in `artifacts/eda/levers_logs/`; notebook updated by agent.
+
+**Historical fresh-hit readability scope, rechecked:** E19's local health hidden
+feature h63 plus current health token/action was probed, with a ridge trained on
+all ordinary damage versus unchanged, not exclusively fresh hits. Its Mamba B
+fresh AUCs: seed7 0.62920[0.42420,0.78722], seed8
+0.70155[0.53379,0.89269]; HUD-input/action control
+0.67959[0.42350,0.88638]. Each uses9 fresh positives/1,376 scrolling unchanged
+controls on43 TEST seeds. These are standalone intervals, not a paired test of
+hidden versus input. Overall hidden damage AUC~0.86 is **not** fresh-hit evidence.
+No full-hidden/carry, expressive fresh-specific comparison is established here,
+and E20 B's hidden fresh readability has not been measured. E19 B randomized
+boundaries/contexts; E20 B expands damage support. Sources:
+`20260927_levers/e19_trace_readout.py`, `evals/e19_B_trace_readout.json`,
+`evals/e19_B_s8_fmamba_from36000__e19_trace_readout.json`. E14a/b strict map-
+consequence AP results concern mining/placement, not health.
+
+## 2026-10-07 — E20 factual damage support and scalar consequence objective
+
+Predeclaration: [E20.md](20260927_levers/E20.md), endpoint implementation:
+[E20_ENDPOINTS.md](20260927_levers/E20_ENDPOINTS.md). Each arm continues its own
+E17 M16 fmamba/corrt seed7/8 parent for6,000 updates; frozen Raw patch encoder,
+same world architecture. Targets have14 preceding factual frames, with4..15
+observed frames selected in balanced12-update cycles. Every batch40 contains
+2 death/10 living >=2 damage/26 unchanged/2 other targets. Predict only the final
+factual successor. Teacher importance weights retain E19's class-loss mass
+0.0532475/0.0129825/0.912445/0.021325 at every context length.
+
+|arm|ordinary damage source|objective|
+|---|---|---|
+|A|old E19 TRAIN support, deduplicated with source history recovered|latent L1|
+|B|all eligible factual TRAIN ordinary damage|latent L1|
+|C|exactly B's targets, batches and contexts|B + frozen health-token63 scalar delta L1, lambda1|
+
+Death/unchanged/other targets are identical in A/B/C. B−A isolates the expanded
+ordinary-damage distribution; C−B isolates the scalar objective. Parent→A combines
+extra training, history/layout repair and endpoint-only supervision; it does not
+isolate the terminal alias. No fork outcome trains a world or the loss reader.
+
+**Full source census and label correction:** all8,325 TRAIN episodes and3,119,763
+frames match exact renderer health templates. At outgoing t>=14 there are8,071
+deaths,36,068 living >=2 damage transitions,2,891,130 unchanged and59,619 other.
+The reward-only health decomposition was ambiguous on exactly two terminal
+transitions: reward approximately0.1 was decoded as+1 but the HUD shows9→0.
+IDs:`support-v2:20270731:13:14` and `support-v2:20270731:42:15`.
+The terminal-aware correction makes every TRAIN reward-derived delta equal the
+exact HUD difference. Living ordinary-damage counts do not change. Historical
+reward-only census and aborted pool allocation are preserved under EDA; legacy
+checkpoint/source files were not edited. E20 uses the corrected labels.
+
+**Measured support admission:** union pool71,918 distinct factual endpoints.
+A ordinary support1,961 events; B/C36,068. Under the same TRAIN-fit token hazard
+detector and true-pair motion audit, A has54 fresh-damage events/54 episodes;
+B/C1,005/934, passing the declared200-event/100-episode minimum. These are
+detector-estimated fresh cases, not simulator annotations. The actual6,000-update
+ledger covers1,961/29,179/29,179 distinct ordinary targets in A/B/C. B/C ledger
+and context bytes match; A/B nonordinary targets match. At each of12 context
+lengths the class counts are exactly1,000/5,000/13,000/1,000. This removes class
+prevalence versus endpoint-position association; no broader causal claim is made.
+Fresh-target draws in that fixed full ledger: A1,664 presentations of54 distinct
+events/54 episodes; B/C1,704 presentations of820 distinct events/774 episodes.
+Thus fresh presentations are close while independent factual support expands.
+This ledger calculation is not a count of completed optimizer updates. Evidence:
+EDA `levers_e20_v1/actual_support_draws.json`.
+
+**Reader and execution admission:** factual TRAIN health-token63 ridge, episode
+holdout,16,384 fit frames/8,192 selection frames, lambda0.0001. Held health MAE
+0.0720653 units; ordinary-hit catch7,489/7,490, false drops0/5,261. Reader validity
+passed. Encoder-cache32-window sentinels: maximum token difference0.0009765625
+against tolerance0.002. Actual CUDA full-batch/context15 loss and gradients finite.
+B/C loss identity and future-input perturbation differences0. Serialized4-update
+versus2+restart+2 proof: model/RNG differences0 for all arms; optimizer maxima
+1.36e−11/1.09e−11/2.91e−11. The proof consumes fresh temporary worlds, not the
+scientific continuation states.
+
+Independent diagnostic real-state controls also completed without world calls:
+historical HUD reader MAE0.02535, strict catch278/279; factual loss reader
+MAE0.04921, catch279/279. Both catch31/31 fresh hits and have0/12,623 false
+drops. Copy controls catch0/279. A rank mismatch in the new dual-reader wrapper
+was caught by this CPU control before any endpoint inference and corrected;
+failed log and old source-pin/preflight records are retained. World training,
+loss and source contracts were unchanged.
+
+**Endpoint contract:** strict1.5-health-unit cut plus separate0.5 sensitivity;
+ordinary/fresh/unchanged/cooldown-negative/recovery/starvation strata; independent
+historical HUD reader and frozen factual loss reader. Hash-checked teval states
+are reused on CPU at windows5/15; window4 gets a compact dual-reader pass. Paired
+memory uncertainty uses the preselected sample0 trajectories:2,088 same-slot
+age6..15 cells,2,949 moved-slot age6..15 and4,237 same-slot age2..5 across143 seed
+clusters. The original all-five-key recall metric is also measured. Retention
+requires own-parent difference lower95%>−0.05; one-step cost upper95%<=0.005.
+Neither a health gain nor this reused diagnostic panel authorizes an actor.
+
+**Gate-data recovery, not a gate pass:** balanced factual addresses recovered
+with4 observed frames and one recorded successor,128 alive/128 dead from128
+episodes in each of TRAIN and DEV; split IDs disjoint, no FINAL frames inspected.
+Canonical continuation previously had767 alive/1 dead. Numeric health/inventory
+retention integration and missing simulator-verified predicate coverage remain
+unfinished. The canonical gate was not changed or rerun.
+
+Execution: persistent `d4mj-e20.service`, serialized GPU training/evaluation;
+`d4mj-e20-post.service` completes paired parent/readout/memory/cost comparisons.
+Full scientific states every500 updates, atomic chunked data/evaluation stores,
+source/input hashes checked on resume. A seed7 reached the committed1,000-update
+state after admission (560.08 s training session, peak2.596 GB);
+other arms/seeds and scientific endpoints are pending. No health-repair result yet.
+Scheduling amendment before endpoint judgement: [E20_REVIEW.md](20260927_levers/E20_REVIEW.md).
+Seed7 A/B completed their original6,000 updates; C continues its original budget.
+Seed8 is held pending user review; seed7 endpoints/parent comparisons remain
+queued. Only orchestration sources and approved-seed schedule changed; original
+pins/sources preserved in EDA. The current C trainer is not interrupted; a
+hash-verified completion handoff replaces the stopped coordinator afterward.
+Original two-seed adoption criteria remain unmet during this hold. Lineage:
+36k short +6k long parent; new6k endpoint phase240k target presentations, versus
+3.6M in the previous6k long phase. This is an adaptation pilot, not a scratch
+training test or demonstrated convergence budget.
+Sources/evidence:`20260927_levers/e20_{data,labels,prepare,train,verify,endpoints,post}.py`,
+EDA `levers_e20_v1/{source_census_corrected,pool,contract_check,health_reader,mechanics,gate_coverage}.json`.
+Process logs only `artifacts/eda/levers_logs/e20_*.log`; experiment processes never
+write this notebook.
+
+## 2026-10-07 — E17 completed H16 and separating diagnostics
+
+**Original protocol:** four frozen L16-trained worlds (attention/Mamba, seeds7/8),
+window15, four observed root frames then self-fed states and recorded continuation
+acts. Hazard readout:768 pooled hidden features/step, three head seeds,4000 updates;
+FIT training, DEV-A selection, reused DEV-B judgement (1139 opportunity roots,
+149 episode clusters). Metrics average each head's own choice. Reports:
+`20260927_levers/evals/h16traj/*rawlong*__w15.json`.
+
+| world | trajectory safe | snapshot safe | trajectory−snapshot,95% interval |
+|---|---:|---:|---|
+|attention7|0.651952|0.631475|+0.020477[+0.007597,+0.033346]|
+|Mamba7|0.657265|0.622622|+0.034643[+0.021866,+0.048251]|
+|attention8|0.643894|0.623555|+0.020339[+0.009120,+0.031942]|
+|Mamba8|0.647013|0.620546|+0.026467[+0.013280,+0.039739]|
+
+References: DOWN0.616083, uniform0.571427, one real future/action with held-out-key
+scoring0.679366. Trajectory−snapshot passes both seeds/backbones; one-real-future−0.01
+threshold0.669366 fails all. E17's Mamba−attention>=0.02 also fails:
++0.005314[−0.004406,+0.015445]/+0.003119[−0.005676,+0.012384]. Mamba−DOWN resolves:
++0.041182[+0.020717,+0.064258]/+0.030930[+0.009944,+0.054074]. Health endpoints fail;
+same-slot memory passes (October6 endpoint record). Parent→long additionally changes
+budget/data/optimizer; this is neither a pure context contrast nor actor performance.
+
+**Short-parent seed8 comparison completed:** resumed report
+`20261005_recovery/h16_results/corrt_raw_teacher_s8_fmamba_u36000.json`:
+window5 trajectory0.641736, snapshot0.615727. `e17_h16_parent_compare.py` verifies
+identical1139 DEV-B opportunity rows/outcomes and numerical sources;
+long−short trajectory+0.005277[−0.005532,+0.017497], snapshot+0.004820
+[−0.008980,+0.017812]. Neither contrast resolves. This changes training/context
+jointly and is not a memory-only effect. Evidence: `evals/e17_h16_parent_compare.json`.
+
+**Frozen-reader CPU controls:** `e17_h16_final.py`, `e17_h16_numeric_control.py`,
+`e17_h16_action_strata.py` → matching `evals/*.json`. All four original decisions
+reproduce exactly. Stable log-survival scoring changes zero Mamba decisions and no
+safe score for any world. True32-key hazards reconstruct P16 within1e-6; true full16
+safe0.762593 versus first8 0.667091. Learned late action-risk SD0.034783/0.057436,
+versus true0.139729; correlation0.275702/0.346305. Full16−first8 gain unresolved in
+all four worlds. Mamba SLEEP choices2.25%/3.31%; restricting scores to movement
+improves safe+0.006109[+0.002005,+0.010700]/+0.004600[+0.000525,+0.009003].
+
+**Reader optimization diagnosis:** `e17_h16_generalization.py` and
+`e17_h16_choice_error.py` → corresponding reports. Selected→final4000 weights,
+world/features fixed, original decisions reproduced. Seed7 P16 Brier improves
+0.126193→0.092199 while safe falls0.657265→0.634850
+(−0.022415[−0.035034,−0.010106]); seed8 safe0.647013→0.637273, unresolved decline.
+True-gap-weighted action-pair errors rise0.170571→0.221229/0.188022→0.207206;
+optimal32-key choices fall0.591455→0.532924/0.578285→0.544337. Chosen-action error
+relative to root mean becomes more optimistic at both seeds; this is action-order
+failure despite improved probability errors, not likelihood overfitting alone.
+Earlier seed7-only controls and snapshot-objective test are retained in
+`evals/e17_h16_s7_*`, `evals/e17_h16_m7_head_objective.json`.
+
+**Matched target intervention, completed:** `e17_h16_target_intervention.py` →
+`evals/e17_h16_target_intervention.json`. Same frozen caches/normalization,
+Hazard(768,16), initializations, three head seeds,4000 updates, paired32-root×17-action
+batches and selection. Conditional uses original hazard BCE; cumulative fits H16
+likelihood; rank/rank8 fit the same H16 within-root ranking with16/8 terms.
+Grouped conditional differs in batching from the original evaluator.
+
+| reader objective | Mamba7 safe | Mamba8 safe |
+|---|---:|---:|
+|conditional|0.659012|0.648403|
+|cumulative|0.617629|0.617226|
+|rank16|0.661710|0.663795|
+|rank8|0.666758|0.665103|
+
+Cumulative−conditional−0.041383[−0.057717,−0.026270]/
+−0.031177[−0.047815,−0.015629]. Rank16−conditional+0.002698[−0.006443,+0.011462]/
++0.015392[+0.005945,+0.024881]. Rank16−rank8 unresolved at both seeds.
+`e17_h16_target_errors.py`: cumulative raises weighted pair misordering
+0.167430→0.236266/0.188043→0.244008. Seed7 root-mean MSE improves0.115593→0.094612,
+but action-contrast MSE0.022107→0.022273; selected relative optimism worsens at
+both seeds. No replicated objective repair or late-feature gain. Ranking energies
+are not calibrated probabilities. CPU optimizer-resume proof: `evals/e17_h16_target_smoke.json`.
+
+**Exact TRAIN exposure:** `e17_train_exposure.py` → `evals/e17_train_exposure.json`.
+Reconstruct6000×40 draws and match all four saved end-RNG states. Among3,600,000
+targets,63,414 deaths (7500 distinct episode transitions) occur exclusively at
+position15; living>=2 damage85,338 times (12,748 distinct transitions) across all15
+positions. This verifies E17's anticipated terminal alignment and excludes absent
+ordinary damage; it does not identify the historical causal contribution of either.
+
+**Health-clock and isolated time-input interventions, completed:**
+`e17_health_clock_b16.py`, `e17_health_time_swap.py`, `e17_health_time_true.py`;
+reports of the same names under `evals`. Same337 living drops,31 fresh hits,
+512 seeded unchanged controls (851 distinct root-transition cases including overlaps),
+frozen worlds7/8, exact original real-fit HUD ridge. Real-successor control337/337,
+31/31,0/512 false. Original0.5-unit detection cut;1.5-unit cuts reported separately.
+Original teacher29/337 and46/337, fresh0/31 and1/31 reproduce exactly.
+Repeated-current controls preserve current pixels/final action, set past NOOP:
+
+| inference context | damage drawn, seed7/8 (337) | false drops, seed7/8 (512) |
+|---|---|---|
+|true history|29/46|5/10|
+|repeat current, matched length|18/44|7/10|
+|repeat current, length5|0/0|0/0|
+|repeat current, length9|6/0|0/0|
+|repeat current, length15|30/91|12/26|
+
+On repeated length15, changing ONLY the current time embedding row14→row4 reduces
+drawn damage30→14/91→9. Reverse transplant at length5 draws6/0, so the late
+embedding alone is not sufficient. On real length15 histories, same single-input
+change reduces catches26→12/44→13 of131 actual drops; mean drawn health loss
+0.880993→0.377300/1.412231→0.255215. Paired health-change effects
++0.503693[+0.259203,+0.805772]/+1.157016[+0.819676,+1.542660],100 episode clusters.
+Pixels, actions, earlier recurrent updates, scan length and other weights are fixed.
+Below length15, catches3/206 and2/206;89.7%/95.7% of true-history catches occur at
+length15. These controls identify causal reliance on the explicit time input and
+its interaction with scan/history; they do not establish a trained fix or prove
+that terminal alignment accounts for every error. Repeated-history lesions are OOD.
+Raw rows and paired intervals: `evals/e17_health_clock_stats.json` (v2 labels rows
+as transitions/distinct roots; legacy root-label report retained, metrics unchanged).
+
+**Numerical guard:** initial batch4 trial failed exact reproduction28 versus29;
+preserved at `evals/resume/e17_health_clock`. `e17_health_batch_parity.py` locates
+one threshold crossing: root456/step12, current5.952761, predicted5.491476 atbatch4
+versus5.427490 atbatch16. Mean absolute difference0.001344, maximum0.233705.
+Original batch16/tail10 dimensions restore both seeds' original counts without
+changing thresholds. Full forward dependencies and167 source/input/checkpoint hash checks verified
+by `e17_health_verify.py`; wrappers verify it again before resume. All tests have
+atomic input/source-bound chunks or optimizer checkpoints. The true-history
+time transplant also completed an actual cache-resume verification: no new inference
+chunks, intact result retained and wrapper exit success. Logs only under
+`artifacts/eda/levers_logs`; evaluators never edit NOTEBOOK.
+
+**Primary-source comparison after diagnosis:** [Geirhos et al.,§4/§6](https://arxiv.org/pdf/2004.07780)
+distinguish shortcut opportunities from learned cue reliance and recommend controlled
+cue changes; the TRAIN census and time transplant address those separately.
+[Lambert et al.](https://proceedings.mlr.press/v120/lambert20a.html) document likelihood/control
+objective mismatch; our numerical action-order diagnosis and target intervention
+are the project evidence. [Nnet-survival](https://arxiv.org/abs/1805.00917) supports conditional-hazard
+likelihood/product survival; our true-hazard/numerical controls verify the implementation.
+[DeepHit](https://ojs.aaai.org/index.php/AAAI/article/view/11842) combines likelihood/ranking,
+but ranks patients/events, not this project's within-root actions. None establishes
+our proposed sampler/objective repair.
+
+## 2026-10-06 — H16 evaluator resume and position-balance feasibility
+
+`20261005_recovery/h16_resume_oct06.sh` resumed the declared four frozen E17
+worlds at window15 and the queued short Mamba8 reader. Original FIT/DEV splits,
+three head seeds, labels and budgets retained. Resume verified71 sources,
+2 checkpoints and97 committed chunks against the saved CUDA contract:
+`03a8b3e104ebe9ef7d754ec5b9a79144af0db844d191cfb514202b0a45e2b41c`.
+This is diagnostic H16 evaluation, not canonical bridge or actor training.
+
+`evals/e19_position_balance_feasibility.json`: CPU reweighting of the saved
+1,200,000-target Mamba7 E19 TRAIN ledger by
+`P_TRAIN(class)/P_TRAIN(class|row)` preserves contexts, total row loss mass and
+global class mass while equalizing marginal class prevalence across rows.
+Weights0.199557–1.776447; death prevalence5.32475% and ordinary>=2 damage1.29825%
+at every row; numerical spread1.11e-16; Kish effective count1,176,714.
+This is algebraic feasibility, not a trained repair or conditional independence.
+A cannot support this correction at early rows, where it has zero death targets.
+
+## 2026-10-06 evening — completed E19 matrix and E17 endpoint review (lead)
+
+Attention seed8 A/B/C and booked mechanism/evaluation reports completed18:41 AEDT;
+all four E19 sets now exist. E17 true-history recall at windows15/5, aligned
+self-fed recall at15 and damage at15/5 completed18:44. The18:48 saved runtime
+snapshot showed H16 running, but **live verification at21:05 AEDT supersedes it**:
+systemd's journal records the lead stopped18:48:39, and the machine subsequently
+booted20:55:12. Lead/replica services are inactive and no research GPU process is
+running. H16 is interrupted, not complete. Per this turn's instruction, no new
+long-running job or long resume was started. Historical status JSON is retained.
+
+Short CPU follow-up declared before execution: apply the existing, unchanged
+`e19_objective_alignment.py --sets full:8` to the final attention seed. Hold its
+saved seven routing candidates fixed; reproduce the latent-versus-recorded-health
+oracle comparison and paired B→C prediction cost with the same cohort and rules.
+Future outcomes select a diagnostic oracle, not an inference input. Source/input-
+bound atomic resume; output in EDA `levers_logs`. Separately read/reconcile the
+completed E17 cached records, fixed-clock history control and recurrent-state
+lesions. These checks use saved measurements and do not fit or forward a world.
+**E19 matrix is complete, and remains a health non-repair.** Independently
+recomputed primary counts from all12 saved `__e19_health_per_root.pt` files;
+all counts match their reports. No new world training/GPU forward in this review.
+
+| set | A hits/false | B hits/false | C hits/false | fresh hits in every arm |
+|---|---:|---:|---:|---:|
+|Mamba7|14/115|24/122|62/297|0/31|
+|Mamba8|18/84|13/164|67/388|0/31|
+|attention7|47/240|29/192|15/268|0/31|
+|attention8|15/110|12/117|53/174|0/31|
+
+Same279 ordinary living >=2 drops /12,623 unchanged transitions /31 fresh hits;
+four trained sets on **one reused diagnostic panel**, not four independent
+judgement datasets. Attention8 C−B catch +0.146953[+0.105080,+0.190840], false
+rate +0.004516[+0.002204,+0.007047]. Attention7's negative catch contrast does not
+replicate; the two Mamba gains do. C still fails `learnable` at every endpoint.
+Attention8 alone passes the declared `unshortcut` ratio (0.702128), but that flag
+is not evidence of learned damage mechanics: w4_at0 catches51/279, w5_at0 53,
+current-frame-only at row0 54, repeated-current-frame five-step scan47. Shifting
+the SAME four frames from rows0–3 to1–4 changes catches51→53 and false drops113→179.
+Source/digests/count proof: `evals/e19_completed_matrix_review.json`.
+
+**Latest attention seed narrows the composition finding.** B→C forced-generator
+ordinary catches109→155, full-token63 L1/copy1.661→1.474, mean generation weight
+0.06680→0.14416 and actual catches12→53. Both candidate quality and composition
+improve here, unlike attention7's falling generation weight. On fresh encounters
+C still has generator L1/copy1.929, mean generation weight0.09432 and0/31 output
+catches. Removing the shared HUD motion gate changes that to0/31; forcing health
+generation gives7/31 but4,774/12,623 false drops. True63 substitution gives31/31.
+Exact mixture reconstruction max0.0. Generated-fit output63 damage AUC0.873586
+[0.833242,0.914465] overall; fresh subset has only9 TEST positives and its output
+AUC interval includes0.5. Do not call this absence of information.
+Sources: attention8 `__e19_router_diagnosis.json`, `__e19_trace_readout.json`.
+
+**Short CPU objective test replicated at attention8:** unchanged seven saved
+routing offsets, lowest latent-L1 chooses0/31 fresh depictions, recorded-health
+oracle7/31 (all reachable in this family). Cheapest depicting candidate's median
+relative latent-L1 premium98.859%. Thus the objective prefers non-depiction even
+where this frozen family can depict the hit;24 cases are unreachable only within
+the audited family. Oracle future labels do not enter inference or a training run.
+New paired B→C costs (143 seed clusters,2,000 resamples): one-step error/copy
++0.011583[+0.009088,+0.014471]; alive-at-depth16 error/V
++0.046369[+0.033958,+0.059465]. Point statistics match historical `compare.stats`.
+The fourth C arm also incurs prediction cost. Report:
+`evals/e19_C_s8_full_from36000__objective_alignment_v2.json`; console measurements
+in `artifacts/eda/levers_logs/e19_objective_alignment_full_s8.log`.
+
+Frozen TRAIN C attention8 extra-loss share: death65.20%, ordinary9.79%, unchanged
+19.33%. Total measured output-weight ordinary-gradient dot objective−1.35716e−5,
+but generator/proj contribution+2.35920e−5 and selection contribution−3.71637e−5.
+This supports local endpoint selection conflict at both attention seeds. It is
+not universal over Mamba seeds, nor a reconstruction of historical AdamW/backbone
+updates. The learning cause of poor fresh generator fitting remains unresolved.
+
+**E17 older-terrain recall is a replicated capability, with limited registration.**
+Reparsed all completed logs; repeated/completed exports agree, and recall_capture
+independently matches (neighbour_error−world_error)/(neighbour_error−sighting_error).
+TRUE-history cohort:5,010 trajectories (1,002 roots×5 simulator keys), all models
+share10,509 same-slot and14,377 moved-slot recallable cells with sighting ages6–15.
+
+| capture on age6–15 terrain | Mamba7 | Mamba8 | attention7 | attention8 |
+|---|---:|---:|---:|---:|
+|same slot, window15|0.615924|0.643393|0.430657|0.357305|
+|same slot, window5|0.369022|0.364637|0.356120|0.369334|
+|moved slot, window15|0.405302|0.440272|0.426823|0.417918|
+|moved slot, window5|0.396245|0.430596|0.384315|0.413640|
+
+Mamba same-slot window15−5 gains+0.246902/+0.278756; moved-slot gains only
++0.009057/+0.009676. Stage2 declared `long_recall_same` and `long_recall_used`
+conditions hold at both seeds. **`moved_unsolved` as literally declared (all moved
+captures<=0.35) is false**, not an automatic failure of registration diagnosis:
+absolute moved capture can be supplied without the old sighting. The script's
+historical `readings:{}` does not implement these E17 conditions; the reviewed
+criteria are explicitly reconstructed in `evals/e17_completed_endpoint_review.json`.
+
+Window length also changes time rows/scan length. Causal older-history evidence
+comes from the already-completed fixed-clock intervention: same inputs' latest5
+frames/actions/length/time rows retained while older visual frames are replaced.
+On200 roots/103 seed clusters Mamba's same-slot history gain is0.363581
+[0.165949,0.556088] and0.335796[0.149464,0.541272]. Resetting SSM every step reduces
+those gains to0.000437/0.000567; current-step recurrence still runs. Moved-slot
+history gains−0.005436[−0.098493,+0.081546] and+0.049434[−0.014862,+0.110202]
+are unresolved. This establishes useful frozen SSM memory and no resolved
+older-history benefit after relocation on that panel, not an information ceiling.
+The seed7 dependence on older convolution taps does not generalize to seed8;
+both have SSM dependence. These older component reports are context for the newly
+exported endpoints, not newly run lesions or a trained memory-transport repair.
+
+**Health remains broken after long-context training.** Half-unit sensitivity
+(`check_damage.py`, not E19's1.5-unit cut): Mamba window15 teacher catches29/337
+(s7) and46/337(s8), versus5/337 each at window5. Their aligned self-fed rollouts
+catch0/240 and0/241. Attention window15 catches5/337 and16/337, self-fed0/243 and
+0/238. Real-successor decoder detects337/337 with0 unchanged false drops.
+Fresh >=2-hit stratum at window15: Mamba0/31 and1/31; attention0/31 at both seeds.
+Thus the positive older-static-terrain memory does not repair health mechanics.
+Counts differ from E19 because this lenient check includes all living one-unit
+and larger drops and earlier positions; do not pool the two denominators.
+
+Aligned self-fed older same-slot capture is0.265160/0.277738 for Mamba, compared
+with attention0.123668/−0.057215. These are model-specific surviving/aligned
+subsets (Mamba1,480/1,496 cells, attention1,452/1,425), so differences from the
+true-history table or between worlds are **descriptive, not paired retention
+contrasts**. Camera-coordinate groups derive from the token scroll estimator.
+Reports/logs: EDA `e17_recall_{w15,w5,imagined_w15}.log`,
+`e17_damage_{w15,w5}.log`, and source/hash-bound completed frozen-eval journals.
+
+**H16 resume integrity verified without restarting:** first world attention7
+FIT features has388/6,393 roots,97 committed batches. All97 chunk hashes,71
+recorded numeric-source hashes and2 checkpoint hashes verify. No DEV feature
+cache or head checkpoint exists yet, hence no H16 decision verdict has landed.
+`evals/e17_h16_interrupted_integrity.json`; live status correction:
+`20261005_recovery/review_runtime_oct06_evening.json`. The20:55 reboot does not
+explain the earlier18:48 service-stop request; no actor/stop-cause attribution.
+
+**Primary literature and next decision:** [VaGraM's paper/authors](https://www.pair.toronto.edu/blog/2022/vagram-voelcker/)
+addresses errors cheap for state prediction but costly for control; it also warns
+that optimizing only a learned value on unsupported states can produce invalid
+predictions. This supports testing factual consequence alignment while retaining
+state-validity constraints; E19's whole-token mask is not VaGraM, and scalar
+oracle selection is not a demonstrated trained repair. [TrajGRU](https://arxiv.org/abs/1706.03458)
+learns location-dependent recurrent connections; [Neural Map](https://arxiv.org/abs/1702.08360)
+provides spatial memory addressing/reads. Both support the specific registration
+question, not another unchanged canvas run. Preserve Mamba's established same-slot
+capability when testing any transported-carry/read intervention. Health candidate
+quality/objective alignment and cross-position memory access remain separate
+mechanisms; no evidence that one architecture change fixes both. No C promotion,
+new long training, or actor-success claim. H16 can be resumed from its verified
+prefix in a later authorized run.
+
+## 2026-10-06 — E19 attention control and frozen objective diagnosis (lead)
+
+Attention seed7 A/B/C and booked mechanism diagnostics have completed; seed8 is
+still training. No health arm is promoted. Before running an additional CPU
+diagnostic, declare a fixed-candidate objective comparison: reuse the saved
+seven generate-logit offsets at both Mamba C seeds and attention C seed7, plus
+the already-saved195-member Mamba families. Hold candidate outputs/decoder
+fixed; compare latent L1 to recorded-health-change absolute error/9 and fixed
+combined coefficients0,.01,.03,.1,.3,1,3,10. Record reachable damage, the latent
+loss premium of the cheapest depicting candidate, and paired B→C rollout costs.
+Future recorded health is an explicitly labelled selection oracle, not an
+inference input or proposed trained head. This isolates endpoint objective
+preference from candidate reachability, not the historical cause of learning.
+Script:`20260927_levers/e19_objective_alignment.py`; hash-bound atomic arm journals
+in the existing `evals/resume`, console measurements in EDA `levers_logs`.
+The script never writes this notebook. Detailed completed findings follow after
+the measurements have been checked.
+
+Additional CPU census declared before execution: reconstruct local predictor
+rows for **all1.2M actual targets** in each completed E19 set. Compare conditional
+death frequencies by row, not just the marginal uniformity of terminal depths.
+B/C map original target k to k before their cut, otherwise k-cut; every target
+must occur exactly once and A/B/C ledgers must match. Count deaths, ordinary
+living hits and mask-selected examples. This determines whether random boundaries
+actually remove label-position correlation; it cannot prove the model uses a
+remaining correlation or that balancing rows would repair prediction.
+Script:`20260927_levers/e19_depth_census.py`; immutable per-set journals and EDA log.
+
+Final bounded TRAIN check declared before execution: reuse the incoming census's
+exact15 sampled hit and25 unchanged episode/step events. Score completed C worlds
+(Mamba7/8, attention7) with their original observed prefix and every actually
+sampled boundary, weighting by the recorded multiplicities. Real successor is
+the same fixed decoder's positive control; forced health-token generation
+separates candidate from router. No future frame/label enters world inputs.
+This distinguishes failure on own TRAIN examples from new-root generalization
+alone; it does not isolate optimizer history versus sparse unique support.
+Script:`20260927_levers/e19_train_fresh.py`, GPU allocator16%, batch4, atomic
+per-length/batch resume. No new model training or experiment directory.
+
+**Completed verdict (18:04 AEDT): E19 is not a health repair.** Mamba seeds7/8
+and attention seed7 have all A/B/C endpoint and booked mechanism reports.
+Attention seed8 remains running, so this is three completed sets, not a completed
+four-set claim. A is unchanged6k continuation, B is target-preserving random
+boundaries/resets, C is B plus context-selected token63 latent-L1 dose1.
+All three completed C arms fail `learnable` and `unshortcut` as declared.
+The old reports' historical `no_cost: Pending` is preserved; the new paired cost
+measurements reject no-cost. No arm is promoted into the canonical recipe.
+
+| completed set | A hits/false drops | B hits/false drops | C hits/false drops | fresh hits, every arm |
+|---|---:|---:|---:|---:|
+|Mamba7|14/115|24/122|62/297|0/31|
+|Mamba8|18/84|13/164|67/388|0/31|
+|attention7|47/240|29/192|15/268|0/31|
+
+Denominators279 ordinary>=2 living drops and12,623 unchanged transitions.
+These are the same inspected diagnostic roots, not independent datasets.
+For attention7 B→C, catch falls−0.050179[−0.084881,−0.017794] and false rate
+rises+0.006021[+0.001284,+0.011309]. Thus C's sensitivity gain replicates over
+the two Mamba seeds but does **not** generalize to the completed attention
+control. In attention, the generator improves (forced catches151→205, relative
+health-token L1 to copy1.759→1.462), while its actual mean generation weight
+falls0.08710→0.05964 and final catches29→15. This locates that endpoint reversal
+in composition; it does not explain the entire optimizer trajectory.
+
+**Full census confirms the predeclared residual label/position cue.**
+Exact census of all1.2M actually sampled targets, identical ledgers/layouts in
+all completed sets; every factual target reconstructed exactly once:
+
+| local predictor input row | B/C targets | deaths | P(death at that row) |
+|---|---:|---:|---:|
+|0|432,239|12,956|2.9974%|
+|1|336,120|12,658|3.7659%|
+|2|240,000|12,861|5.3588%|
+|3|143,880|12,678|8.8115%|
+|4|47,761|12,744|26.6829%|
+
+Death counts are nearly uniform; total target counts are not. Conditional death
+frequency therefore differs8.90195× from row0 to4. Within the selected health
+mask, the corresponding death proportions are14.50% versus82.25%. A had all
+63,897 deaths at row4. A row-only TRAIN prior has death AUC0.922497 in A and
+0.667647 in B/C. This is an exploitable supervision correlation, not a measured
+neural-head AUC. This is **not a newly discovered implementation defect**:
+`E19.md` and the Oct5 prelaunch entry already recorded expected row frequencies
+2.96%,3.80%,5.33%,8.88%,26.63% and explicitly did not claim alias-free supervision.
+The complete actual-ledger census verifies that limitation and adds the row-only
+AUC. **B is boundary/context randomization, not alias-free supervision, and its
+failure cannot rule out a genuinely balanced layout.**
+It also truncates context: this census does not isolate position from history.
+Existing attention7 C fixed-four-frame tests draw6 hits/45 false drops on rows0–3,
+versus14/252 on rows1–4. The learned endpoint still depends on time-table position.
+Reports:`evals/e19_{fmamba_s7,fmamba_s8,full_s7}__depth_census.json` and
+`evals/e19_depth_only_prior.json`. The complete6.247GB pool SHA256 was independently
+recomputed and matched all three training contracts.
+
+**Frozen output mechanism replicated across backbones.** For C fresh hits,
+generation weights are0.07399(M7),0.08665(M8),0.09168(T7). The standalone generator
+is1.980×,1.831×,1.946× worse than copying in true-target token63 L1. Removing the
+global HUD movement gate still draws0/31. Forcing generation draws10/31,8/31,
+15/31 fresh hits but also4,537/12,623,7,680/12,623,9,805/12,623 false drops on
+unchanged states. Therefore 'the gate blocks an otherwise correct generator'
+is not supported. The candidate itself is poorly calibrated.
+
+Relative to the actual real-successor token change, generator parallel component
+medians are0.620,0.713,0.620; orthogonal squared error/true-change power medians
+are3.696,3.102,3.538. This is geometry of the **full contextual health token**,
+not a pure health direction, nor proof a particular noise process caused training.
+It quantifies why a partially health-readable candidate can still be a worse
+whole-token prediction than the copy.
+
+**New fixed-candidate objective intervention, CPU:** hold every saved candidate
+and the decoder fixed, change only the per-case selection criterion. On the
+195-member Mamba families (193 logits plus two endpoints), latent-L1 optimum
+draws0/31 fresh hits at both seeds; a recorded-health-error oracle chooses10/31
+and8/31. Those are all reachable cases in the respective audited families.
+The cheapest depicting candidate has median relative latent-L1 premium53.62%
+and45.85% among reachable fresh cases. Attention7's seven-offset family reaches
+15/31; latent-L1 chooses0, health-error oracle14, with79.28% median premium.
+This is a causal endpoint objective-selection contrast, not a learned/inference
+repair: future recorded health chooses the oracle, and the remaining cases are
+unreachable only **within these frozen families**, not an information ceiling.
+Increasing C's full-vector token63 weight is not the same as supervising scalar
+health; it scales correct and off-target components together.
+
+Whole-token weighting was already substantial: selected coordinates receive
+270–892× the teacher coefficient. Yet only5.24% of selected targets are ordinary
+damage;68.71% unchanged and23.77% deaths. On the30 frozen actual TRAIN batches,
+deaths take58.9–64.3% of C's extra loss, ordinary hits10.7–12.1%. These describe
+actual allocations, not a sufficient causal proof of starvation. The gradient
+conflict is still not universal: ordinary dot total-objective is−9.46e−5(M7),
++1.03e−3(M8),−1.03e−4(T7), on frozen output weights. Historical AdamW/backbone
+updates were not measured by these derivatives.
+
+**Own-TRAIN check completed:** the detector/estimated-motion census's exact15
+hit events have111 recorded presentations, all mask-selected; matched25 unchanged
+events have201 presentations. Mamba C7/C8 draw0/111 hits with the original full
+observed prefix and0/111 with their actual sampled boundaries. The same decoder
+reads true successors111/111 and has0/201 false drops. Attention C7 draws16/111
+with original prefixes,3/111 under the sampled boundaries. Original-prefix
+Mamba health changes average−0.00156/−0.02448 versus actual decoded−2.03788.
+Forced generators catch42/111,43/111,69/111 but hallucinate93/201,67/201,85/201
+matched unchanged drops. Thus failure is not solely new-root generalization or
+solely missing history. Sparse unique support can still affect learning; this
+test does not identify the full historical reason for poor generator fitting.
+Reports:`evals/e19_C_s{7,8}_fmamba_from36000__train_fresh.json` and attention7
+equivalent; atomic case journals remain. Sandbox CUDA was unavailable on the
+first attempt; a bounded external systemd job completed all three checkpoints.
+Unchanged warm resume completed18:09:03 AEDT and preserved all three exported
+reports byte-for-byte (`evals/e19_train_fresh_resume_proof.json`); completed case
+journals were reused rather than rerunning world forwards.
+
+**Prediction cost:** new paired143-seed-cluster bootstrap(2,000 draws), historical
+alive-at-depth16 estimand, C−B error/V increases:
+M7+0.039984[+0.024630,+0.056994], M8+0.016712[+0.002064,+0.030313],
+attention7+0.028852[+0.011478,+0.045533]. Point statistics independently match
+`compare.stats` to1e−6. The first objective-diagnostic v1 also computed all-root
+depth16 costs, a different cohort; retained v1 reports are not substituted for
+alive-conditional historical metrics. Corrected v2 explicitly records both
+estimands. Candidate-selection findings are unchanged between versions.
+Evidence:`evals/*__objective_alignment_v2.json`; console logs in EDA. Warm
+unchanged relaunch of both CPU diagnostics preserved all six exported reports
+byte-for-byte (`evals/e19_cpu_diagnosis_resume_proof.json`).
+
+**Literature check and decision:**
+- [ITC](https://arxiv.org/html/2605.16457v1), appendixB.2, generates inventory/HUD
+  through its categorical prediction path rather than transport. Our earlier
+  forced-generator/region adaptation failed; the current thousands of generator
+  false drops explain why simply repeating that switch is not a repair.
+- [Segmentation Dreamer](https://arxiv.org/html/2410.09972v1), sections4.1–4.3 and
+  limitations, supports targeting control-relevant content and warns that even
+  task-relevant appearance reconstruction can encode irrelevant variations.
+  A contextual latent token mask is not equivalent to its pixel masks.
+- [MuDreamer](https://arxiv.org/html/2405.15083v1) learns reward/continuation/value
+  and action prediction; [NE-Dreamer](https://corl-team.github.io/nedreamer/) retains
+  reward/continuation beside next-embedding alignment (Barlow Twins in that
+  source, not merely a cosine loss). These justify testing factual semantic
+  targets beside latent prediction; they do not prove our proposed repair.
+- [Shortcut learning](https://arxiv.org/abs/2004.07780) is the relevant general
+  problem for the residual row cue. Softmax expert competition papers have
+  different models/assumptions and do not establish our learning mechanism.
+
+Keep the booked attention8 control and E17 endpoints running. Do not add C to
+the integrated recipe, force-generate HUD, or launch another architecture as a
+health repair. Any next loss/supervision intervention must verify **conditional**
+row/class balance, preserve/control history, and distinguish direct generator
+quality from whole-token versus scalar-consequence objectives on matched factual
+data. Position balancing and semantic loss are separate factors; changing both
+at once would repeat the old attribution confound. We now have concrete endpoint
+mechanisms and a design defect, not a complete optimizer-history explanation.
+
+## 2026-10-06 afternoon — E19 replication and canvas endpoint diagnosis (lead)
+
+**Canvas scheduling correction,16:39 AEDT:** the user challenged the unchanged
+seed8 replication. It indeed uses the same implementation as s7; neither missing
+direct next-view read nor off-screen convolution advance was repaired. Parked
+seed8 at its decoded **24,000/36,000 full state**, with finite weights, optimizer,
+order and CPU/CUDA RNG present. Immutable archive:
+`20261005_recovery/recovery_inputs/canvas_s8_u24000_parked.state.pt`, SHA256
+`d02f8ac94ae376ab2f54b0e217c947e0fd88a1750659e39cc3b3878f77cdecae`.
+`20260927_levers/e18_seed8_hold.json` blocks automatic unchanged resume.
+Remaining12,000 updates are held, not completed or declared a negative second
+seed. Lane74 now scores only completed s7 canvas/Mamba endpoints and passes on
+to the already-booked attention controls/E17 H16 queue. Numerical trainer/model
+sources and all failed evidence are unchanged. This is a scheduling decision,
+not a predeclared statistical early-stop verdict.
+
+At the completed s7 canvas36k endpoint, all2,048 held windows are computed in
+CPU FP32: recall capture0.331725, same-slot0.335330, moved-slot0.311509. Resetting
+SSM every step changes recallable squared error by−0.090593
+[−0.318831,+0.139504], unresolved. The matched slot-Mamba part is still computing;
+the608-window interim paired contrast is explicitly provisional, not a full
+cohort result. The lack of direct read is a source/address fact; these endpoint
+numbers alone do not establish its causal share of the whole deficit.
+
+**Final-checkpoint component diagnosis declared before execution,16:42:** repeat
+the existing16-window access, carry-contribution and correct/zero/permuted
+last-query-residual substitutions on **s7's completed36k weights**. Reuse the
+same deterministic cohort and FP32 equations; oracle future coordinates select
+addresses only, never future features. This separates whether extra training
+learned a useful held SSM/read and whether supplying the missing frozen residual
+rescues prediction. Preserve the12k results. Run isolated source-bound copies
+in the existing recovery_inputs folder, changing only checkpoint/tag/scope paths;
+no active source or trainer modifications. Convolution-only hold is already a
+known non-repair on the earlier6k rollout (+/− interval includes zero), so it must
+not be presented as the established explanation of canvas36k's deficit.
+
+**Completed36k component result,16:45 AEDT:** the same2,018 entering-cell
+addresses still have0 direct matches. On840 layer/cell queries the SSM state is
+nonzero and held exactly, but the off-screen output is exactly0; all-kept CPU
+parity max2.38e−7. Restored old-query reads have meanRMS0.559325. Their pre-gate
+SSM energy share is only1.846% across layers and1.401% in the final layer;
+zero-SSM old-query output cosine0.998364. This energy decomposition is not a
+semantic information ceiling. Off-screen conv buffers still advance/erase.
+
+Unlike the12k intervention, the completed36k generator **does benefit** from
+correct remembered residuals: normalized generator MSE0.382472→0.297505,
+difference−0.084967[−0.159302,−0.028356], a22.2% decrease. Zeroing instead worsens
+generator MSE to0.505510; permuting gives0.383625 (unresolved versus baseline).
+But routed output MSE0.207283→0.201540 has unresolved difference−0.005743
+[−0.053862,+0.023563]. Generate weight0.260806→0.265591. Direct old-token copy
+MSE0.057157 shows available past content; it is not a deployable oracle policy.
+Untreated outputs are exactly unchanged. Thus missing direct access has a
+measured component effect at final training, while this residual substitution
+alone does **not** repair routed prediction. This is16 inspected windows/140
+cells, one checkpoint, oracle addresses and frozen heads—not a trained causal
+repair or an actor result. Reports:`evals/e18_{access,carry,reroute}_s7_at36000.json`.
+
+Primary-source check: official Mamba2 implements distinct convolution and SSM
+state updates (`state-spaces/mamba`, `modules/mamba2.py`); dt masking alone holds
+the SSM, not the convolution. Neural Map separates spatially addressed writes
+from global/context reads (Parisotto/Salakhutdinov, arXiv1702.08360, equations2–6
+and sections3.1–3.2). This supports auditing the read path independently of
+registration, but proves neither a particular Craftax repair nor causality of
+our full canvas deficit. No further canvas training is booked from this lead.
+
+**Full matched endpoint completed,16:45 AEDT:** CPU FP32, all2,048 held windows,
+identical cell counts and baselines, paired window-bootstrap2,000 draws:
+
+| recall capture | canvas s7 36k | slot-Mamba s7 36k | canvas−Mamba95% interval |
+|---|---:|---:|---:|
+|all2,018 recallable cells|0.331725|0.778389|−0.446664[−0.515513,−0.373928]|
+|1,615 same-slot cells|0.335330|0.863475|−0.528146[−0.593691,−0.456649]|
+|403 moved-slot cells|0.311509|0.301172|+0.010336[−0.105560,+0.128580]|
+
+Canvas loses the existing same-slot capability without a resolved moved-slot
+benefit. It has slightly lower unseen-cell error41.535824 versus42.728435;
+paired difference−1.192612[−1.770694,−0.598067]. Thus do not call canvas universally
+worse or replace this registration test with an overall forecasting/actor claim.
+Resetting SSM each step increases slot-Mamba recallable error+4.164600
+[+2.160867,+6.435003] and same-slot error+5.331637[+2.888094,+7.987166], while
+canvas's corresponding changes remain unresolved. Same clocks/convolution/
+actions/current-step update are retained. Source/input/weights-bound report:
+`evals/e18_s7_at36000__endpoint_cpu.json`. Raw per-window rows and contracts remain
+in `evals/resume/e18_s7_at36000__endpoint_cpu/`. These are inspected held TRAIN-pool
+windows, one trained seed; seed8 has no36k verdict and is deliberately parked.
+The completed result strengthens the budget hold; it does not prove that the
+missing direct read is the only cause, nor that convolution hold alone repairs it.
+
+At16:18 AEDT, E19 fmamba seed8 A/B/C and all booked endpoint/mechanism readings
+are complete. Canvas seed7 completed36,000 at13:40; seed8 is actually training
+(last logged21,500/36,000). Remaining attention controls and E17 H16 readings
+stay booked. Automatic process logs remain in EDA; this entry is manual.
+
+**Completed TRAIN-coverage and conditioning follow-ups:** ABC ledgers/boundaries
+are byte-identical across both seeds; every extra-health context mask is reproduced
+with0 disagreements. Across240,000 sampled windows/1.2M targets, ordinary damage
+appears15,579 times;12,755 are context-selected. Of243,378 selected targets,
+ordinary damage is5.24%, unchanged68.71%, deaths23.77%. `unique_targets` in the
+first census means **window-target pairs**, not deduplicated physical events.
+
+The corrected gate-equivalent fresh-arrival census (detector/estimated-motion
+labels, original positions3/4 where four-frame history exists) finds only
+**15 distinct episode/step ordinary-damage events**, drawn111 times, all selected
+for health dose. E19's randomized boundary leaves all four frames available on
+only28 of those111 draws. The matched fresh unchanged population is25 distinct
+events,201 draws,33 selected. These labels use TRAIN-fitted zombie detection and
+true-pair token displacement, not full simulator truth. This is direct sparse/
+context-truncation **support evidence**, not a proof that it causes0/31 evaluation
+hits. It narrows the prior 'adequate hazard exposure' claim: aggregate ordinary
+hits do not establish coverage of this moving fresh-arrival condition.
+Reports:`evals/e19_fmamba__{exposure_census,incoming_exposure}.json`.
+
+On frozen C traces, fresh generated-health change is−0.9455(s7)/−0.8071(s8),
+with generation weights0.07399/0.08665; all actual fresh predictions remain0/31.
+Stationary damage generation weights0.18415/0.21082 and catches62/228,67/228.
+Forced generation draws false damage on4,537/12,623 unchanged cases(s7) and
+7,680/12,623(s8). Physical health9 stationary drops are caught53/65 and59/65,
+whereas health7 stationary drops are caught1/51 and0/51. These are specific
+candidate/routing/health-stratum measurements, not evidence for a universal
+health template or a seed-general gradient-conflict mechanism. Router-trace s8
+has387 actual unchanged false drops versus388 in the primary evaluator; preserve
+both batch/precision protocols, rather than silently equating their counts.
+Report:`evals/e19_fmamba__health_conditioning.json`.
+
+Queue hold was exercised with real checkpoint-hash validation and training/eval
+commands replaced by dry-run records: s8 skipped, only completed s7 pool/futures
+commands emitted. Both CPU endpoint/component services finished successfully.
+The remaining lead/replica services are active; no canvas s8 process is running.
+Recovery launch retains the hold and can resume unfinished bound diagnostics.
+
+**E19 replica changes the causal account:** primary living k>=3 reading uses
+the same279 ordinary drops,12,623 unchanged transitions and31 fresh drops:
+
+| seed | A hits / false drops | B hits / false drops | C hits / false drops |
+|---|---:|---:|---:|
+|7|14 /115|24 /122|62 /297|
+|8|18 /84|13 /164|67 /388|
+
+All arms at both seeds draw0/31 fresh drops. At s8, B−A hit gain is−0.017921
+[−0.046518,+0.007693], while false rate rises+0.006338[+0.003131,+0.009981].
+C−B hit gain is+0.193548[+0.151846,+0.237157]; false rate rises+0.017745
+[+0.014258,+0.021249]. Boundary randomization alone is not a replicated
+ordinary-hit repair; dose improves sensitivity with a replicated false-positive
+cost. These are reused diagnosis roots and paired143-seed-cluster intervals,
+not two independent judgement datasets or an actor result.
+
+**Direct B→C prediction-cost check, CPU:** paired same1,002 roots/143 seed
+clusters,2,000 draws. At s7 C raises depth16 error/V by+0.039984
+[+0.024083,+0.057117]; s8 by+0.016712[+0.003517,+0.029959]. One-step all-action
+error/copy-error rises by+0.007670[+0.006538,+0.008846] at s7 and
++0.007069[+0.005588,+0.008638] at s8. These are direct B→C contrasts, not the older parent→C rows.
+Thus the health sensitivity gain comes with replicated prediction-cost increases;
+`no_cost` is not supported. Original per-arm reports' historical 'Pending' field
+is preserved. Bound source/input hashes and all metrics:
+`evals/e19_fmamba_B_C_prediction_cost.json`; raw console output is in EDA logs.
+
+**Narrowing the morning gradient lead:** frozen C's combined ordinary-gradient
+dot objective is−9.46368e−5 at s7 but+1.03314e−3 at s8. Selection weights are
+−1.12613e−4 versus+1.00475e−3. S8's ordinary/unchanged/death contributions to
+the selection dot are+9.06315e−4,+3.57643e−5,−8.83157e−5. Thus the s7
+unchanged-versus-damage endpoint conflict is NOT a seed-general explanation
+of fresh-hit failure. It remains valid for that endpoint; no evidence is erased.
+This is measured output-weight local GD geometry, not historical AdamW updates.
+Reports:`evals/e19_s{7,8}_fmamba__gradient_budget.json`.
+
+**CPU diagnostics declared before running,16:22:**
+1. Run frozen canvas36k s7 versus matched slot-Mamba36k s7 on all original2,048
+   held windows, with explicit FP32 CPU masked equations. Repeat with SSM reset
+   at each step, retaining convolution/history/current-step updates. Preserve
+   per-window same/moved/unseen errors and paired window-bootstrap intervals.
+   All-kept CPU parity binds the reference equations; this separates endpoint
+   SSM use and registration benefit, not an information ceiling or trained repair.
+   Repeat unchanged once s8's36k checkpoint exists; source/checkpoint/pool hashes
+   and atomic batches prevent mixed partial evidence. No world recipe changes.
+2. Census all actually sampled E19 TRAIN targets, rather than30 batches: quantify
+   ordinary damage/death/unchanged exposure by scroll, health value and the exact
+   target-derived context mask. Rebuild current/next adjacency from the same
+   frozen TRAIN-fitted detector. Compare selected/unselected and first-encounter
+   support. Detector-derived groups are labelled; no simulator-truth claim.
+3. On saved B/C traces at both seeds, condition candidate accuracy, router weight
+   and read health on current health and camera motion. Contrast damage versus
+   unchanged at matched strata. Determine whether the generator depicts a
+   context-specific damage change or a common health template. A distribution
+   resemblance is descriptive; causal attribution requires interventions.
+
+**Separating router-family test declared,16:29:** the saved seven-logit sweeps
+give0/31 fresh hits even when a per-case oracle selects the lowest true-target
+health-token L1, at both C seeds; some other sweep settings depict damage on
+10/31 and8/31 respectively. Extend the exact same candidate family to193 offsets
+[-12,+12], plus copy/generator endpoints. One frozen forward supplies each case's
+actual candidates; all subsequent sweeps are CPU. All279 ordinary hits and the
+same512 unchanged controls, both C seeds. Verify every historical seven-offset
+loss/health value and actual-mixture reconstruction. Report per-case best latent
+L1, reachable health decrease, false drops and fresh/scroll/health strata.
+This tests a specified one-dimensional frozen routing family, not a global
+information ceiling; future targets are an explicitly labelled diagnostic oracle.
+No model training/weight changes. GPU allocator capped16%, admission1600MiB;
+source/input-bound batches resume. Original GPU training continues.
+
+**Exposure alignment follow-up declared,16:34:** the completed census's first
+encounter is CURRENT adjacency after no earlier adjacency in the original window.
+The gate's `fresh` instead asks whether a PRE-move zombie is beside the POST-move
+player, with no current/prior3-frame adjacency or prior3-transition damage.
+These are different conditions; do not compare their counts as matching support.
+Compute the gate-equivalent four-frame-history condition on original TRAIN
+windows, using the same frozen zombie detector and token-estimated displacement.
+Restrict targets to original positions3/4, where all four frames exist; separately
+count whether E19's actual boundary leaves four frames available. Count actual
+draws, window-target pairs and deduplicated `(episode_id, start+target)` events.
+This is detector/estimated-motion coverage, not simulator-truth attribution.
+Old census is preserved, and its `unique_targets` means window-target pairs.
+
+**Dense router result,16:33:** both seeds completed193 offsets plus two endpoints
+on791 cases (279 ordinary hits +512 unchanged controls). Maximum historical
+seven-offset loss difference2.38e−7; health difference1.91e−6; reconstruction
+9.54e−7. Fresh: latent-L1 oracle depicts0/31 at both seeds; ANY audited routing
+setting can depict10/31 at s7 and8/31 at s8. Scroll: oracle0/51; any setting15/51
+and13/51. Overall ordinary oracle79/279 and98/279, versus actual62 and67. This
+separates poor candidates/reachability within this specific family from an
+objective that chooses non-depiction even when depiction is possible. It is not
+a global convex-hull optimum or information ceiling, and causal training history
+remains unmeasured. Evidence:`evals/e19_C_s{7,8}_fmamba_from36000__e19_router_oracle.json`.
+
+## 2026-10-06 — Reboot recovery, registration priority and mechanism replication (lead)
+
+At07:42 AEDT no research process or recovered systemd unit was running. The
+Oct5 lane stopped during E19 fmamba seed8 A: its last committed full state is
+5,000/6,000 (Oct5 16:59), not the earlier500-update snapshot. No additional world
+completed overnight. Canvas s7 remains13,000/36,000; s8 remains unstarted. All
+four E17 L16 training endpoints are complete, including their damage/recall
+readings and the fixed-clock control recorded above.
+
+Recovery revalidated224 source/parent pins, three datasets and full canvas/M16
+states (`20261005_recovery/restart_checks.json`,07:46:59 AEDT). Relaunched the
+lead with MemoryHigh20G/Max24G and the runtime monitor. Training/evaluation
+contracts remain unchanged: model/optimizer/samplers/CPU and CUDA RNG, original
+row/split ledgers, immutable input hashes and atomic progress are preserved.
+Old completed jobs first check/reuse their committed results; an active service
+in startup/admission is not a new training update.
+
+**Scheduling change, not a treatment change:** finish E19 fmamba seed8 A/B/C and
+its endpoints, then bring E18 canvas36k s7/s8 ahead of the remaining E19 attention
+controls. Both attention A/B/C seeds remain booked; original E17 H16 trajectory
+heads/teval and M6 seed8 trajectory heads follow. Same-slot older-history use is
+now measured beyond the time-row confound, making coordinate registration the
+strongest unresolved memory intervention. C's extra health dose is a failed
+seed7 repair, so it is not combined with canvas or promoted. E16 seed8 remains
+held: its seed7 posterior already failed ordinary-hit fidelity after corrected
+evaluation; repeating that whole architecture takes lower priority than the
+separating registration and objective/head checks.
+
+**Bounded diagnosis queue, declared before execution:** `lane86.sh`, service
+`d4mj-oct06-diagnostic-replicas` (MemoryHigh8G/Max10G), first reads already-saved
+canvas/fmamba s7 12k snapshots with the existing pool recall metric. This is a
+descriptive learning-curve point, not a36k verdict or an early stopping rule.
+Then it waits for each new B/C pair (fmamba s8, attention s7/s8) and repeats the
+frozen router substitutions, local loss/logit derivatives,30 preselected actual
+TRAIN batches with shared-head gradient vectors, and distribution-matched local
+readability. Replica CLI plumbing was added to the existing diagnostic helpers;
+no trainer/model mathematics changed and historical seed7 reports remain intact.
+TRAIN checks explicitly assert B/C sampled-window and boundary ledgers equal.
+GPU diagnostic allocators remain capped at16%; admission is serialized. Each
+diagnostic retains checkpoint/data/source-bound batch journals and atomic results.
+
+Purpose: test whether candidate fidelity, unchanged-versus-damage gradient
+conflict and the motion-conditioned failure recur across training seeds and
+backbones. These are endpoint head measurements, not a proof of the entire
+optimization history. No new loss, lambda sweep, fork-supervised world or actor
+claim is scheduled from the single-seed lead. Numerical failure diagnosis comes
+before another literature-backed repair. Automatic experiment logs/summaries
+remain in `artifacts/eda/levers_logs/`; this entry was written by the lead.
+
+**Recovery export defect fixed,08:01 AEDT:** completed teval reuse first stopped
+at `atomic_json(..., immutable=True)`. Its digest sorted integer horizon keys
+before export and string keys after JSON reload, rejecting numerically identical
+evidence. `20261005_recovery/teval_export.py` normalizes only JSON exports and
+validates completed reuse against original source/checkpoint/runtime/input tensor
+hashes, cached results and raw rows. All three seed7 report numerical differences
+are0 and all raw rows exact. A focused check confirms repeated export leaves
+bytes unchanged and changing an actual number still raises. Trainer/Store sources
+and their checkpoint contracts are intact; original reports were not overwritten.
+Main E19/E17 teval calls use this compatibility entrypoint. Recovered seed8 A
+then actually resumed at5,000 and logged5,100; GPU100% at08:02. Completed E17
+cheap readings are reused rather than re-exported unnecessarily.
+
+**New descriptive canvas12k reading:** on the same2,048 held pool windows,
+canvas versus slot Mamba capture is0.213211 versus0.268920 on1,615 same-slot
+cells;0.281442 versus0.269807 on403 moved-slot cells. Unseen-cell squared error
+47.6676 versus47.1440. This is not the36k endpoint, not a sealed block and has
+no paired uncertainty. It shows no large early registration advantage; preserve
+the declared36k/two-seed contrast. Raw log:`EDA/levers_logs/e18_recall_s7_at12000.log`.
+
+**CPU access diagnosis declared and run,08:04–08:06 AEDT:** `e18_access.py`
+counts the actual recurrent addresses on all2,048 held windows, then examines the
+first16 with reentry under frozen12k canvas weights. Test whether the next entering
+cell's remembered stream is gathered at prediction time; measure off-screen SSM
+state retention, its zero-input gated output, and reading the same state with its
+last observed query. The actual world runs with explicit FP32 CPU masked equations
+checked against FunctionalMamba2's all-kept reference backend (max error<=1e-5).
+This diagnoses direct state access, not a full-model information ceiling: spatial
+attention/action/HUD streams could still provide indirect retrieval. Future
+coordinates select diagnostic addresses only, never next-frame feature inputs.
+All input/source hashes and per-window batches resume atomically. No training
+architecture or scheduled budget changes; logs stay in EDA.
+
+**CPU access result,08:06:** all2,018 recallable entering cells (1,615 same-slot,
+403 moved-slot) are outside the current view and none matches the current cell's
+gathered temporal-stream address. On140 cell events across six layers (840
+layer/cell checks), stored SSM states are nonzero and held exactly (max change0),
+but unobserved outputs are exactly0. Reading the held state with its last observed
+query yields nonzero output on840/840 (mean RMS0.60979), reproducing the last
+observed output exactly (max difference0). CPU all-kept reference max error1.19e-7.
+Evidence:`evals/e18_access_s7_at12000.json` and hash-bound address/batch journals.
+This identifies a missing **direct next-view read**: input registration alone does
+not give the generator the off-screen cell's state. It does not show that
+indirect retrieval is impossible or explain every canvas prediction error.
+
+**Separating CPU follow-up declared before running:** keep these same16 windows
+and all weights fixed. At the final temporal block, substitute the entering
+output cell's temporal residual with the remembered cell's last-query read;
+compare unchanged residual, zero residual and cyclically permuted remembered
+reads. Inspect actual output and normalized generator errors separately, with
+paired window-bootstrap intervals, and require non-treated outputs unchanged.
+True next-view coordinates supply an oracle ADDRESS only, never true future
+features. This is a causal component intervention on inspected windows, not a
+deployable repair, not a fresh block, not evidence that an untrained readout is
+optimal. An old-token-copy control locates the available recall benefit. Code:
+`e18_reroute.py`; CPU FP32, source/input-bound per-batch resume. Original36k
+training stays booked; no new architecture is trained from this lead.
+
+**Reroute result,08:16 AEDT:** on140 entering cells in these16 windows, output
+MSE is0.191480 unchanged,0.207736 correct remembered residual,0.191607 zero and
+0.202316 permuted. Correct-read minus baseline is+0.016256[+0.002767,+0.032184]
+under the declared window bootstrap. Generator MSE is0.558381 versus0.589950
+(+0.031569[−0.015048,+0.085778]); generator weight only moves0.1491→0.1567.
+Every untreated output is exactly unchanged. Copying the old observed token has
+MSE0.057157, so past content is useful, but this frozen residual substitution
+does not make it useful to the trained decoder. Neither inaccessible state nor
+nonzero stored state alone explains the whole error. This is a16-window early
+checkpoint component test, not an endpoint verdict. Evidence:
+`evals/e18_reroute_s7_at12000.json`, with all per-cell errors preserved.
+
+**Carry-contribution CPU check declared before running,08:20:** an old-query
+read includes stored C/x/z and Mamba's direct D*x term; its nonzero output is
+not evidence that the held SSM carries terrain semantics. `e18_carry.py` uses
+the same16 windows/frozen12k model, separates full/zero-SSM/zero-D reads, reports
+pre-normalization energy and output differences, and compares the off-screen
+convolution buffer with its last observed buffer. The SSM is held by dt=0, but
+the convolution still processes zero canvas inputs while off-screen. Check
+against the prior CPU equations (max error<=1e-6); per-batch hash-bound resume.
+No new world/head training or semantic information ceiling inferred. Logs in EDA.
+
+**Carry result,08:23:**840 layer/cell reads, CPU equation parity error0. SSM
+contributes mean1.2006% of (SSM energy + D*x energy) before gating/normalization;
+removing SSM leaves cosine0.998424 and mean squared relative output change0.003156.
+At the final block the SSM share is0.5731%, cosine0.999504. Thus the earlier
+nonzero restored read was largely stored old-query/direct-skip information,
+not demonstrated long-lived SSM terrain recall. Conv buffers still advance:
+mean nonzero fraction40%, range0–75%, with off-screen gaps1–4. SSM-only dt masking
+does not preserve the complete `(conv_state,ssm_state)` carry. This is a measured
+component distinction, not proof that small SSM signals are semantically useless.
+Evidence:`evals/e18_carry_s7_at12000.json`; per-query traces retained. No canvas
+full-budget cancellation or memory-architecture promotion follows from this.
+
+**Long-Mamba CPU mechanism test declared,08:25:** the fixed-clock experiment
+proved older visual history helps, not that the SSM supplies that benefit. Six
+four-tap temporal convolutions alone have a19-frame receptive field. On the
+first64 roots of the original preselected200-root cohort, run both frozen L16
+Mamba seeds7/8 under intact, reset-SSM-at-every-step, newest-conv-tap-only and
+combined lesions. Preserve the current-step SSM update, newest conv coefficient,
+biases, actions and time rows. Within each mode repeat the same older-visual
+ablation; report paired seed-cluster differences in history gain on same/moved
+cells aged6–15. CPU FP32, no GPU allocation, no new world training or capacity
+ceiling claim. `e17_recurrence.py`, per-root source/input/weights-bound resume.
+One-frame checks give max difference0 for all three lesions and restore every
+model tensor exactly. Logs:`EDA/levers_logs/e17_recurrence_cpu.log`. The64-root
+selection is bounded diagnosis, not a new sealed promotion panel.
+
+**Long-Mamba component result,08:29:** both seeds complete, same64 roots/53
+seed clusters,117 same-slot and162 moved-slot recallable cells aged6–15. Same-slot
+older-visual-history gain (paired original versus fixed-clock visual ablation):
+
+| frozen mode | Mamba s7 gain | Mamba s8 gain |
+|---|---:|---:|
+| intact |0.200451[0.009875,0.375462]|0.106067[0.005248,0.531627]|
+| reset SSM before each step |0.000143[−0.000073,0.000730]|0.000775[−0.000028,0.006473]|
+| newest conv tap only |0.001676[−0.000006,0.014201]|0.174590[0.001777,0.335621]|
+| reset both |−3.02e−11|−3.85e−9|
+
+Resetting SSM removes a resolved amount of history benefit at both seeds:
+−0.200307[−0.375378,−0.009686] and−0.105292[−0.526545,−0.005096]. Thus the
+older-history advantage in these frozen weights is not just stacked convolutions.
+Older conv taps are additionally necessary at s7; s8 retains a positive SSM
+history benefit without them (the change versus intact is unresolved). Do not
+generalize the s7 convolution dependence to both seeds. Intact moved-slot gains
+are−0.075594[−0.281255,0.037693] and0.031414[−0.131299,0.146506], both unresolved.
+Combined-lesion visual-history effects are numerical zero. These FP32 CPU results
+are paired within this64-root subset; do not substitute them for the earlier200-
+root bf16 readings. Reports:`evals/*L16b40_from36000__e17_recurrence_cpu.json`.
+
+**Additional CPU gradient decomposition, post hoc,08:30:**
+`e19_gradient_budget.py` consumes the existing30 exact TRAIN batch gradients;
+aggregation reproduces every saved gradient norm within1e−7. For a small negative-
+gradient step on the measured `proj.weight`+`choose.weight`, ordinary-damage loss
+changes to first order as−epsilon*(ordinary gradient dot objective gradient).
+The dot is+2.39185e−6 in B (downhill) but−9.46368e−5 in C (uphill). In C,
+projection weights contribute+1.79766e−5; selection weights contribute−1.12613e−4.
+For selection weights, contributions are death+1.29224e−4, own ordinary+6.21531e−5,
+unchanged−2.59101e−4, teacher−4.97166e−5, other+4.82731e−6. Removing unchanged's
+contribution flips selection's dot to+1.46488e−4. This local conflict is concentrated
+in routing, not a negative ordinary projection update or death opposing ordinary
+damage.17/24 actual batches with ordinary damage have an uphill selection dot.
+This is frozen endpoint, measured-weights, first-order **gradient-descent** geometry;
+it does not reconstruct AdamW moment/clip/decay updates, unmeasured biases/backbone
+gradients or the complete optimization history. No new loss-weight recommendation
+is inferred from its zero-crossing, since C's false positives already worsened.
+Evidence:`evals/e19_s7_fmamba__gradient_budget.json`, source-bound raw gradients.
+The same CPU postprocess is booked after each forthcoming B/C gradient replica.
+
+**Full-cohort CPU continuation declared,08:35:** differing conv dependence and
+wide s8 intervals justify extending the same mechanism contrast to all original
+200 fixed-clock roots. `e17_recurrence_full.py` imports the unchanged lesion/
+statistics functions, verifies64-root prefix inputs, weights and all sources,
+and reproduces one nonempty cached root before reusing64 records per seed.
+Compute only the remaining136 per seed; new hash-bound per-root journals preserve
+the64-root reports. No model training/GPU allocation/new seed block; this resolves
+the existing component uncertainty rather than adding an architectural arm.
+Logs:`EDA/levers_logs/e17_recurrence_full_cpu.log`.
+
+**Full-cohort result,08:45:**200 roots/103 seed clusters,459 same-slot and589
+moved-slot cells, both cold prefix reproduction errors0. Same-slot history gains:
+
+| mode | s7 | s8 |
+|---|---:|---:|
+| intact |0.363581[0.165949,0.556088]|0.335796[0.149464,0.541272]|
+| reset SSM each step |0.000437[−0.000225,0.001809]|0.000567[0.000095,0.001326]|
+| newest conv tap only |0.003398[0.000130,0.009305]|0.316337[0.153132,0.495545]|
+| reset both |4.79e−9|−1.04e−9|
+
+Reset-SSM versus intact changes are−0.363143[−0.555952,−0.165652] and−0.335229
+[−0.540685,−0.149075]. Conv-history removal changes−0.360183[−0.550845,−0.165430]
+at s7 but−0.019459[−0.094954,0.055119] at s8. This confirms useful SSM history
+at both seeds and a seed-specific additional convolution dependence. It does not
+identify whether convolution supplies input content, SSM writes or read queries.
+Intact moved-slot history gains remain unresolved:−0.005436[−0.098493,0.081546]
+and0.049434[−0.014862,0.110202]. These are input-history/component interventions
+on known diagnosis roots, not a new task-control result. Reports:
+`evals/*L16b40_from36000__e17_recurrence_full_cpu.json`; all per-root evidence kept.
+
+**Separating conv-channel follow-up declared,08:47:** `e17_conv_channels.py`
+removes older taps separately on convolution outputs x, B and C (input/direct
+skip, SSM write selector, SSM read selector), preserving newest taps and biases.
+Same200-root/103-seed cohort and both frozen worlds, original-versus-fixed-clock
+history comparisons and paired intervals. The interventions act across all six
+layers, so their downstream interactions remain; do not label them independent
+information channels. Reuse intact rows only after exact inputs/source/weights
+and cold reproduction checks. No encoder/world/head training or GPU allocation.
+This addresses the measured s7/s8 convolution difference, rather than proposing
+another architecture. CPU journals and logs in EDA, original reports unchanged.
+
+**Conv-channel result,08:59 AEDT:** both seeds completed the full200 roots/103
+seed clusters,459 same-slot and589 moved-slot cells. Intact cold-cache reproduction
+error is0 at both seeds. Same-slot older-history gains after removing older taps:
+
+| mode | s7 gain | s8 gain |
+|---|---:|---:|
+| intact |0.363581|0.335796|
+| x input/direct-skip taps removed |0.015059|0.324926|
+| B write-selector taps removed |0.093322|0.368382|
+| C read-selector taps removed |0.231337|0.287874|
+
+Paired changes versus intact, s7: x−0.348522[−0.545966,−0.151697],
+B−0.270259[−0.446134,−0.088327], C−0.132244[−0.237224,−0.041892].
+At s8: x−0.010870[−0.070890,0.051192], B+0.032586[0.001338,0.060255],
+C−0.047921[−0.090706,−0.008209]. Thus s7's conv dependence involves input,
+write and read branches, strongest in x; it is not merely an old read-query
+shortcut. S8 retains its SSM history benefit without older x/B taps, with a
+smaller resolved C dependence. The B improvement is a post-hoc component result,
+not a recommendation to remove B convolution. All interventions cross six
+interacting layers; these effects are not additive semantic information shares.
+Moved-slot history gains remain unresolved in every mode. Evidence:
+`evals/*L16b40_from36000__e17_conv_channels_cpu.json`, all root records retained.
+
+**E19 loss-mask interpretation:** the30 sampled C TRAIN batches contain293
+selected death,47 ordinary-damage,876 unchanged and29 other health targets.
+The hazard-context mask is therefore not event balancing: unchanged targets
+outnumber ordinary damage18.6:1. Together with the measured routing dot budget,
+this specifies the local opposition rather than attributing it to deaths.
+It still does not reconstruct historical AdamW updates or prove that reweighting
+will fix the false-positive/fidelity trade-off. Replicas remain booked before
+selecting a repair.
+
+**Primary literature checked after the access measurement:** Neural Map
+([paper](https://arxiv.org/pdf/1702.08360),§3.1–3.2/§3.5) separates write, global
+read and query-conditioned memory read, including key/value and localized read
+variants. MapNet's [author code](https://github.com/jotaf98/mapnet/blob/master/mapnet.py)
+explicitly feeds its entire registered map to localization, rather than merely
+preserving inaccessible recurrent states. These are relevant access mechanisms,
+not proofs of Craftax world prediction or of a Mamba readout repair. The SRU
+navigation paper's spatial-transformation task separates remembered category
+accuracy from coordinate accuracy ([source](https://arxiv.org/html/2506.05997v1),§4.4);
+our direct address defect is a separate, now measured implementation limitation.
+The [official Mamba2 implementation](https://github.com/state-spaces/mamba/blob/main/mamba_ssm/modules/mamba2.py)
+updates convolution and SSM caches separately (`step`), and its output adds
+`D*x` to the SSM read. This confirms the component accounting, not a diagnosis
+of our learned terrain semantics. Our own carries, lesions and model errors
+provide that experiment-specific evidence.
+The [PCGrad paper](https://papers.neurips.cc/paper_files/paper/2020/file/3fe78a8acf5fda99de95303940a2420c-Paper.pdf),§2.2,
+separates gradient conflict, magnitude imbalance and curvature; conflict alone
+does not imply a stalled joint optimum. Our exact routing dot budget provides a
+local measured mechanism. Curvature/AdamW trajectory and a successful intervention
+are still unmeasured. PCGrad's multi-task results do not establish that protecting
+our ordinary-hit subset at the expense of unchanged frames would be a good repair.
+Revisited the user's [TrajGRU paper](https://arxiv.org/pdf/1706.03458),§5.2/Table3:
+its balanced MSE/MAE weights actual target rain intensity (1,2,5,10,30), rather
+than a surrounding hazard-context flag. At rain>=30mm/h, offline ConvGRU CSI
+is0.0712 without balanced loss,0.1776 with it; balanced TrajGRU is0.1856.
+That paper separately measures objective balancing and recurrent alignment.
+Our C treatment did not reproduce event balancing, so its failed health repair
+does not refute that principle. Different task, pixel objective and metrics:
+the paper's gains are not evidence that any proposed Craftax weight will work.
+
+**Runtime handoff,09:01 AEDT:** E19 fmamba s8 A finished6,000 at08:08. B is
+actually training (last logged4,100/6,000; last atomic checkpoint4,000), then C
+and the endpoints precede canvas36k s7/s8. The lead, runtime monitor and frozen
+diagnostic-replica queue are active. Today's bounded CPU mechanism jobs are
+complete; replica queue waits for complete B/C checkpoints and checks hashes
+before running. No automatic process writes this notebook. Detailed live
+updates remain in `../20261005_recovery/live_status.json` and EDA logs; this
+paragraph is a timestamped observation, not a promise that later jobs finished.
+
+## 2026-10-05 — E19 seed7 endpoints and measured generator/router mechanism (lead)
+
+Reviewed after all three fmamba arms completed6,000 updates. A/B/C sampled-row and
+boundary ledgers are byte-identical (240,000 windows,1.2M original targets per arm).
+Each saw63,897 actual deaths; A scores them only at row4, B/C counts by row are
+[12,956,12,658,12,861,12,678,12,744]. Source/data/parent hashes and failed evidence
+remain preserved. These are the reused diagnosis futures, **not sealed new seeds**.
+
+Primary health reading: sample0,k>=3,living successors;13,022 transitions,
+279 drops>=2,12,623 unchanged,96 recovery. A true-fitted HUD reader detects278/279
+real drops with0 false; the primary imagined-drop cut is1.5 units (separate from
+check_damage's0.5 sensitivity). Reports and raw rows:
+`20260927_levers/evals/{parent,e19_[ABC]_s7_fmamba_from36000}__e19_health.json`.
+
+| arm | drops drawn /279 | false drops /12,623 | fresh drops /31 |
+|---|---:|---:|---:|
+| 36k parent |17 (6.09%)|98 (0.776%)|0|
+| A: unchanged continuation |14 (5.02%)|115 (0.911%)|0|
+| B: target-preserving boundaries |24 (8.60%)|122 (0.966%)|0|
+| C: B + health dose1 |62 (22.22%)|297 (2.353%)|0|
+
+Paired143-seed-cluster bootstrap,2,000 draws: B−A hit catch+0.03584
+[+0.00707,+0.06954]; C−B+0.13620[+0.08393,+0.18750], with false rate
++0.01386[+0.00993,+0.01830]. C fails the declared learnable thresholds (>=30%
+catch,>=50% fresh catch,<=2% false). Its repeated-frame w5 control draws only4/279
+hits versus62 with real history: the improvement uses history, but it is not a
+repair. TEST subset:17/87 hits,118/3,546 false,0/9 fresh.
+
+**Cost is measurable:** versus the own36k parent, C's one-step error rises
+0.123788→0.131317 (+0.007530[+0.006209,+0.008903]); H16 error/V rises
+0.545125→0.582792 (+0.037668[+0.021174,+0.054015]). It fails the declared
+<=0.005 one-step noninferiority margin. A/B aggregate cost differences are unresolved.
+`20260927_levers/compare.json` retains all three paired comparisons. At the separate
+0.5 sensitivity cut, C catches79/337 teacher-forced damage cases but only5/221
+self-fed aligned damage cases; each world's alignment changes the denominator,
+so this is not a paired teacher→imagination causal contrast.
+
+### What the frozen interventions establish
+
+`e19_diagnose.py`, `e19_gradients.py`, `e19_dose_audit.py`,
+`e19_train_diagnose.py` and `e19_trace_readout.py` live in the existing campaign.
+Each retains source/input/checkpoint-bound atomic resume evidence. No experiment
+process writes this notebook; automatic logs/summaries use `artifacts/eda/levers_logs/`.
+
+1. **The failure is motion-conditioned.** Exact recorded map-tile displacements
+   identify51 scrolling and228 stationary ordinary hits; C catches0/51 and62/228.
+   All31 fresh hits scroll. This is actual view motion, not merely a move action.
+   Removing only the shared movement-logit contribution on HUD still catches0/51;
+   forbidding neighbour copies also catches0/51. The suspected global camera gate
+   does **not** explain the missing health updates.
+2. **Generation is not a safe bypass.** On fresh hits C's health63 generate weight
+   averages0.07399 and self weight0.92576. Forcing normalized generator63 draws10/31
+   fresh hits, but4,537/12,623 false drops (35.94%); generator63 L1 on those fresh
+   targets is1.980× self-copy error, and it beats the best copy on0/31. Replacing
+   only health63 with its true successor draws31/31,0 false at the primary cut:
+   the reader can see a correctly expressed health change in that token.
+3. **The local objective explains why opening this gate is costly.** Actual mixture
+   reconstruction max7.15e-7 (C). Sweeping only its generate logit on all31 fresh
+   hits from0→+4→+8 raises mean health63 L1 0.47632→0.79085→0.94419 while catch rises
+   0→7→10. Autograd locally favours opening on20/31 and closing on11/31: the gate
+   is not universally driven closed. At epsilon0.01, finite differences agree on
+   all791 C derivative signs (median absolute difference1.56e-6; max0.00700 at L1
+   kinks). B has10/791 sign discrepancies at that finite step; no global derivative
+   parity claim is made. Raw gradients and sweeps are retained in `__e19_local_gradients*`.
+4. **The candidate contains signal plus larger unwanted change.** On fresh hits,
+   normalized generator change has median projection0.620× the true health-token
+   change, but orthogonal residual energy3.696× true change energy (stationary1.291×).
+   This explains the observed fidelity tradeoff numerically; it is not a claim
+   about the optimum of a newly trained generator or about information absence.
+5. **Exposure and objective allocation are different measurements.** Exact6k ledger
+   sees15,579 ordinary living>=2 drops,12,755 selected by the health mask;57,845
+   selected terminal deaths and167,229 selected unchanged targets. For copying the
+   true health token, deaths supply79.58% and ordinary damage8.74% of the extra
+   loss. That copying baseline is NOT a trained-model gradient measurement.
+   The independent frozen TRAIN check uses30 fixed recorded batches (updates
+   0,200,...,5800;1,200 windows). C's actual masked loss share is60.46% death,
+   10.68% ordinary damage,22.49% unchanged,6.37% other. Shared projection/selection
+   gradient norms: ordinary0.008778,unchanged0.054089,death0.044246. Cosines:
+   ordinary vs unchanged−0.52690; ordinary vs death+0.31365; health vs teacher
+   +0.48731. Reconstruction max9.54e-7. This identifies an **endpoint output-head
+   gradient conflict with unchanged-health examples**, not an encoder/backbone
+   conflict, not the complete learning history, and not proof that death competes
+   with ordinary damage (its measured cosine is positive).
+6. **Decoder transfer still matters.** Distribution-matched ridge classifiers
+   (FIT/validation seeds fixed; TEST43 seeds,87 ordinary drops vs3,546 unchanged)
+   on current health63 + generated63 + action read C at AUC0.88874
+   [0.85632,0.92072], B0.77365[0.72032,0.82089]. C's local hidden63 is0.86053.
+   Thus0/31 drawn fresh hits does not mean damage information is absent. Fresh
+   TEST has only9 positives: C generated63 AUC0.70995[0.54495,0.85922] against
+   1,376 scrolling unchanged controls, and the HUD-input-only control is0.67959
+   [0.42350,0.88638]. No resolved gain over that control or information ceiling is
+   claimed. This repeats the M03 lesson: faithful successor geometry and probe
+   readability are separate targets. `e19_[BC]_trace_readout.json` retains scope.
+
+**Literature recheck after these measurements:**
+[ITC](https://arxiv.org/html/2605.16457v1), appendixB.2, generates inventory and
+screen edges separately from central copying. Its discrete generator/decoding
+differs from our jointly trained continuous soft mixture. Earlier E5f already
+tested generator loss/HUD generation: at18k, both switches still worsened
+one-step error by0.147 and H16 by0.120 versus matched corrt. Do not silently repeat
+that failed repair or equate ITC's mechanism with our implementation.
+[CGSReg](https://arxiv.org/html/2607.15142v1) reweights image-space MSE and explicitly
+limits manually chosen concept masks; E19 uses latent L1 and a zombie-context mask,
+so its Pong result does not establish a repair here.
+[VaGraM](https://arxiv.org/abs/2204.01464) targets value-sensitive directions, which
+is closer to the fidelity/importance mismatch than increasing every coordinate
+of a selected token; no critic/value-gradient intervention has run in E19.
+[Rudy & Sapsis](https://arxiv.org/pdf/2112.00825), sec2.2, show rare-output weighting
+can increase false positives and add a false-positive-sensitive term. That is a
+matching warning, not proof that their fluid/MSE remedy transfers to latent L1.
+[Delta-IRIS](https://arxiv.org/html/2406.19320v1) uses image reconstruction including
+max-pixel loss; our uniform latent loss is a different target.
+
+**E17 health endpoints complete:** all four L16-trained worlds, window15:
+attention s7/s8 teacher catch5/337,16/337; fmamba s7/s8 29/337,46/337 at0.5 cut.
+All four self-fed catches0 (aligned damage denominators243,238,240,241 respectively).
+Long history helps some teacher readings but does not repair health forecasting;
+recovery and net−1 change-class accuracy also remain0. Recall endpoints are still being collected;
+do not infer the complete two-seed long-memory verdict from partial logs.
+
+**Queue at16:12 AEDT:** the lead remains active on E17 window15 recall, followed
+by window5 and imagined recall. E19 fmamba seed8 and both attention controls remain
+booked before the original E18 canvas36k continuations; canvas s7 remains13k and
+s8 is unstarted. Completed mechanism diagnostics did not alter these treatments.
+Main resource limit is now MemoryHigh20G/Max24G (persisted in recovery launch),
+with bounded diagnostic lanes capped separately. Source/hash-bound resume is retained.
+The failed C recipe is not promoted; finish the matched contrasts and distinguish
+event-calibrated consequence learning from a latent-fidelity repair before adding
+another full architecture. No actor improvement is established.
+
+**E17 fixed-clock control declared before execution (16:22 AEDT):** window15
+teacher recall completed. On same-slot cells last seen6–15 steps ago, fmamba
+capture is0.615924/0.643393 (s7/s8), attention0.430657/0.357305; these clear the
+declared `long_recall_same` point thresholds. Moved-slot capture is0.405302/0.440272
+for fmamba and0.426823/0.417918 for attention; the older `moved_unsolved<=0.35`
+reading fails in all four arms, although Mamba has no consistent advantage there.
+Window5 evaluations continue. Source inspection caught a confound in w15→w5:
+`TWorld.inputs` adds `self.time[:t]`, so truncation changes the output time row as
+well as removing visual history. It cannot alone establish memory use.
+`e17_clock_control.py` now runs on200 roots selected with RNG20261005, sample0,
+all four worlds: preserve window length, actions, learned time rows and latest5
+frames, replacing only older frames with the oldest retained frame. Score paired
+same/moved-slot ages6–15 with2,000 seed-cluster intervals and per-root resume.
+This is an intentionally inconsistent visual-history ablation, not an input
+information ceiling. No world is retrained; the original E17/E18/E19 lanes continue.
+Its raw logs go to EDA and results remain in the existing levers campaign.
+
+**E17 completed and clock control resolved,16:28 AEDT:** window15→window5 same-slot
+ages6–15 capture: fmamba s7 0.615924→0.369022; s8 0.643393→0.364637. Both clear
+the declared>=0.20 context contrast, but that contrast retains the time-row confound.
+The added fixed-clock intervention also finished, on the same200 roots/103 seeds
+and459 same-slot,589 moved-slot cells. Original→older-visual-history-ablated capture:
+
+| fixed-clock arm | same slot, original→ablated | history gain,95% seed-cluster CI | moved-slot gain,95% CI |
+|---|---:|---:|---:|
+| fmamba s7 |0.673509→0.310275|+0.363234[+0.169424,+0.557507]|−0.005305[−0.105591,+0.073193]|
+| fmamba s8 |0.671266→0.334793|+0.336473[+0.144386,+0.548151]|+0.049222[−0.017567,+0.114403]|
+| attention s7 |0.460175→0.309855|+0.150320[+0.026237,+0.352233]|+0.034048[−0.019931,+0.114090]|
+| attention s8 |0.370638→0.381185|−0.010547[−0.040241,+0.001887]|−0.003315[−0.011572,+0.003787]|
+
+Paired Mamba−attention history-benefit contrasts on these exact cells are
++0.212914[+0.079474,+0.363394] at s7 and+0.347021[+0.153328,+0.556499] at s8.
+Moved-slot contrasts are unresolved at both seeds. This identifies useful older
+visual evidence for same-screen-slot recall beyond a clock-only explanation;
+the inconsistent-prefix ablation still does not isolate every possible history
+mechanism. Capture is an error-normalized recall statistic, **not tile accuracy**
+or actor return. Evidence: `evals/*__e17_fixed_clock{,_rows}.*`,
+`e17_fixed_clock_contrasts.json`; raw rows retained. No world weights changed.
+
+Imagined window15 recall also completed. Same-slot ages6–15 capture: fmamba
+s7/s8 0.265160/0.277738 versus attention0.123668/−0.057215. These are descriptive
+comparisons on each world's still-camera-aligned subset (Mamba1,480/1,496 cells,
+attention1,452/1,425), **not paired causal effects**, and are substantially below
+teacher-forced recall. Novel terrain is worse than neighbour copying in all four
+imagined worlds (gain−0.35 to−0.40). Long-context recall is real on observed history;
+long imagination and health remain separate unresolved capabilities.
+
+Queue now actually trains E19 fmamba seed8 A; B/C and matched attention controls
+follow, then unchanged E18 canvas. Main/service monitor remains active; completed
+bounded diagnostic lanes are stopped. Clock and TRAIN-loss diagnoses have recovery
+entries and hash-bound per-root/per-batch journals. Notebook was updated by the
+lead after verification; automatic experiment output remains in EDA logs.
+
+**Live verification,16:31 AEDT:** E19 fmamba seed8 A saved its full500/6,000
+checkpoint (objective0.04601904,gradient0.05984034,peak2.260GB). Lead service is
+active/running; GPU98%. B/C and attention controls are pending; E18 has not advanced
+past its preserved13k checkpoint. Logs reflect actual resumed work, not old rows.
+
+## 2026-10-05 — Lead queue: E19 implemented and numerically validated before launch
+
+E19 implementation is now `20260927_levers/e19.py`, within the existing campaign. No new experiment directory.
+Predeclaration/contrasts/scope: `20260927_levers/E19.md`; priority coordinator: `20260927_levers/lane81.sh`.
+A=unchanged continuation, B=target-preserving random boundaries, C=exactly B + health dose1;
+fmamba first, matched full-attention control, both seeds7/8, own36k parents,6000 updates, batch40, same rows/RNG.
+Every five original transitions/window remains scored; no crop-and-pad target loss. Both terminal and nonterminal
+windows use the same boundary distribution. This changes context length/reset as well as position.
+
+**Important measured/design limit:** randomized terminal row counts do not flatten terminal prevalence. Expected
+scored targets/window by row are[1.8,1.4,1.0,0.6,0.2], giving expected TRAIN death rates
+[2.96%,3.80%,5.33%,8.88%,26.63%]. The method broadens death exposure; it is **not claimed alias-free**.
+Position/repeated-frame checks are necessary to measure remaining dependence. The primary 1.5-unit draw cut is
+explicitly separate from `check_damage.py`'s0.5-unit sensitivity. Paired seed-cluster intervals/raw rows retained.
+
+**Actual CUDA, not CPU-only:** old/control loss delta0, gradient max2.91e-11; B/C base-loss delta0;
+all three arms four uninterrupted updates vs two+serialized restart+two: parameter delta0, AdamW max7.28e-12,
+all sampler/boundary/CPU/CUDA RNG identical. Source/recipe mismatch and corrupt payload rejected. Synthetic
+copy control confirms all action/target/mask pairs and denominator exactly retained (base delta0, extra term delta4.77e-7).
+Evidence `e19_verify_{cpu,cuda}.json`, `e19_target_ledger_proof.json` in levers. Full batch40 finite CUDA updates:
+fmamba A peak2.260GB (first autotune), B/C0.731GB; attention A1.585GB, B/C1.625GB.
+The earlier concurrent smoke OOM was a256MiB kernel-benchmark allocation while M16 occupied3.05GiB;
+no research treatment failed and M16 survived. Do not use cold first-update timing as steady throughput.
+
+**What landed:** M16 seed7 complete6000, final objective0.05307013. A16 both seeds already complete.
+M16 seed8 reached3000, objective0.04806252; full model/optimizer/order/CPU/CUDA RNG state verified before pausing
+for exclusive batch40 validation (`e19_queue_boundary.json`). Source/data/parent identities unchanged. No new E17
+scientific endpoint is inferred from these losses. Canvas seed7 remains13000/36000, seed8 unstarted.
+
+**Priority:** corrected E19 Mamba seed7 A now first; resume M16 seed8 from3000 next, then E19 B/C and its
+matched per-position/damage/cost diagnostics. E17's short health/recall checks follow before seed8/control replicas;
+E18 remains booked unchanged; expensive H16 heads come after mechanism/training lanes. One serialized coordinator
+replaces competing waiting services. No old failed/partial results are overwritten. Full E19 states every500 updates,
+atomic source/data/parent/runtime-bound resume, including exact sampled row/split ledgers. `e19_eval.py` journals
+root batches; `e19_note.py` appends completed measurements to
+`artifacts/eda/levers_logs/e19_<backbone>_s<seed>_summary.log`. Notebook updates are written by agents after reviewing
+the evidence; experiment processes never write here. This corrects the initially proposed automatic notebook writer.
+Primary-source sanity check remains
+[IRIS sampling/masks](https://github.com/eloialonso/iris/blob/main/src/dataset.py) and
+[VaGraM objective mismatch](https://arxiv.org/abs/2204.01464); neither proves our mechanism nor prescribes our mask.
+
+**Launch verified, 12:00 AEDT:** `d4mj-oct05-lead.service` is actually training E19 Mamba seed7 A, not waiting.
+At500/6000 it saved a full hash-checked state: objective0.04547052, gradient0.05720623, peak2.260GB. All100,000
+original transition targets seen; the20,000 sampled-window and boundary ledgers independently reproduce seed11/19
+exactly, including saved generator states; model/AdamW tensors finite. Control's5,323 sampled deaths remain row4
+by design. Actual A/B/C treatment comparison is still pending. Evidence `20260927_levers/e19_launch.json`.
+Live monitor now tracks the single lead queue; old competing waiting lanes are stopped. `20261005_recovery/launch.sh`
+resumes the unified queue after another reboot; each E19 arm self-resumes its immutable contract/checkpoint.
+Evaluator correctness controls on the actual13,022 diagnostic transitions pass: copying-health detects0/279 true
+>=2 drops; injected exact labels detect279/279 with0/12,623 false drops; paired cluster contrast1.000[1.000,1.000].
+These controls validate counting/bootstrap, not any world's performance (`e19_eval_mechanics.json`).
+
+**Latest saved E19 checkpoint, 12:02 AEDT:** control A **1,000/6,000**, objective0.04520756, gradient0.07853370;
+full state hash and finite weights verified,200,000 original transition targets scored. B/C outcomes remain pending
+(`20260927_levers/e19_live.json`).
+
+## 2026-10-05 — Reboot recovery (reviewer; source/data verification before relaunch)
+
+At 09:42 AEDT (22:42 UTC October 4), reboot inspection found no research Python processes and no loaded research services.
+GPU 474 MiB desktop / 5,375 MiB free. Final A16 s7/s8 worlds remain complete at 6,000 updates. Canvas s7's actual full
+state is **13,000/36,000**, including optimizer, batch-order generator and CPU/CUDA RNG; s8 has not started. M16 s7 has
+no full-run state (historical log reached 1,000); the separate 500-update smoke must not be substituted. Restart it from
+its own M6 36k parent. M16 s8 has not started. No newly completed scientific report was found after the preceding audit.
+
+Recovery plan and immutable input hashes: `20261005_recovery/PLAN.md`, `inputs.json`. The original canvas state is
+archived separately before its working state advances. Actual Raw pool and Raw-long label/token SHA256 checks are
+required against their historical manifests. Numerical trainer source is unchanged; its only prior amendment changes
+checkpoint cadence to 1,000 for booked lanes, preserving loss, optimizer and sampler. Historical source pins are retained.
+
+**Actual CUDA resume check, before relaunch:** from canvas update13,000, four uninterrupted updates versus two+two
+with optimizer/RNG restoration: parameter max absolute difference **0.0**, optimizer tensor difference
+**9.094947e-12**, batch-order / CPU / CUDA RNG all exactly equal. This passes the previously declared mechanical
+tolerance 1e-6; it is not a promise of long-run bitwise equality. Evidence: `20261005_recovery/gpu_resume.json`.
+
+The legacy M6 s7 H16 report remains valid with its stated readout scope. The interrupted s8 FIT feature file has no
+batch journal and no completed DEV/head/report; it is preserved, never trusted by file size. Its evaluation uses the
+new resumable evaluator in a separate result directory after the booked training lanes. E17/E18 retain their declared
+treatments and admission rules. Detailed status is recorded in `20261005_recovery/live_status.json` and append-only
+`status_events.jsonl`; an active waiting service is distinguished from a computing job.
+
+**Priority remains separating mechanisms.** E17 asks whether trained longer context changes recall; E18 tests mature
+world-coordinate registration. Neither alone fixes health reconstruction. Corrected E16 s7's true-future posterior
+still draws 0/305 ordinary damage, 0/32 starvation and 0/112 recovery; another prior replica cannot separate that
+bottleneck. E19 remains a design until its unchanged continuation / de-alignment-only / additional-dose contrasts are
+implemented and verified; do not conflate layout and dose or import the scratch implementation, not recovered in this
+review, as independently verified code.
+
+**New data-only diagnosis, exact TRAIN subset (30,599 windows):** all **8,149 actual deaths** occur at predictor row4,
+none at rows0–3. The old78% statistic concerns ≥2 health drops, not death labels. Ordinary ≥2 damage with a living
+successor is2,000/144,846 (1.3808%). Rebuilding the stored health-context mask from the exact TRAIN-seed ridge yields
+**0 disagreements/163,235 labels**; it covers1,636/2,000 ordinary ≥2 drops (81.8%). Its masked ordinary-hit rate is
+6.9135%, rather than a universal hit probability;364 drops are outside it. Exact counts/source pins:
+`20261005_recovery/health_mask.json`, `health_design.json`.
+
+**E19 design correction before launch:** terminal crop/right-pad discards earlier targets. Enumerating offsets gives
+valid targets152,995→136,853 (−10.5507%), ordinary damage2,000→1,636.6 (−18.1700%), death prevalence5.3263%→5.9546%.
+Thus it confounds boundary randomization with exposure/normalization. A candidate instead predicts both retained prefix
+and terminal suffix, preserving every action/target pair and the loss denominator. CPU checks on real A6: no-split
+loss/gradient difference0, future-padding difference2.47e-6; all offsets preserve five pairs. It still changes context
+lengths/resets, so it tests a boundary/layout intervention, not positional embeddings alone. Actual Mamba layout check
+and matched branch trainer remain pending; **no E19 training launched**. The hp1 whole-pool selected-coordinate
+multiplier is~400.18×; weighted health-drop prevalence24.19% (including deaths) vs5.38% is a loss measure, not a
+predicted hit rate. `20261005_recovery/FINDINGS.md` records controls, limits and checked primary literature.
+
+**Live recovery, 10:03 AEDT:** M16s7 genuinely restarted, logged1,000/6,000 and wrote a73MB full state; s8 is queued.
+CUDA allocated peak2.872GB; actual device usage~3,599MiB leaves~2,251MiB, below canvas's2,556MiB admission. E18 is
+explicitly serialized behind E17 including evaluations, preventing an intra-evaluator allocation increase colliding
+with canvas after head-fitting releases memory. Only its waiting shell was replaced. Canvas resumes unchanged from13k,
+then s8 from scratch. M6s8 H16 follows in a separate resumable directory. M16 fresh-start losses do not reproduce the
+discarded run (500:0.06193946 vs0.06049695); no cause of this difference is claimed. Current inputs/parents are pinned.
+
+**Verified recovery point, 10:15 AEDT:** M16 s7 is now **2,000/6,000**, objective 0.04926093, gradient norm 0.04280990,
+actual GPU utilization 100%. Full state decoded: finite weights, 16-row time table, optimizer/order/CPU/CUDA RNG present;
+archived at `20261005_recovery/recovery_inputs/m16_s7_u2000.state.pt`. Pinned numerical sources remain unchanged.
+The initial verification expected the earlier 1k update but the live run had advanced to 2k; dynamic-state validation
+resolved that stale assertion, not a training failure (`m16_checkpoint_verified.json`). E18 and M6 s8 readout are waiting
+in their scheduled services. Subsequent reboot entry point: `20261005_recovery/launch.sh`, which refuses duplicates and
+rechecks immutable source/parent/data pins and decodable working/final states. Detailed new counts and the primary-
+literature check are in `20261005_recovery/FINDINGS.md`.
+
+**Final live check, 10:22 AEDT (23:22 UTC October 4):** M16 s7 logged **2,500/6,000** (objective 0.06221406), latest
+saved full state **2,000**. GPU **100%**, 3,601 MiB used / 2,248 MiB free. E17 is computing; E18 and M6 s8 H16 services
+are waiting in the explicit serial queue. Source/parent and all dataset bytes were rechecked by the future-reboot guard
+(224 static pins, three datasets; both current full states decoded). Syntax/whitespace checks pass. No new full scientific
+endpoint was claimed from this recovery; the new results are the verified health-count/mask/layout diagnostics above.
+
+## 2026-10-04 late evening — Pending-run rationale, causal scope and evaluator resume repair (reviewer)
+
+Full ten-claim audit, separating evidence and priorities: `20261004_resume_audit/PRIORITIES.md`. No running experiment
+was stopped or given a different training treatment. E17 is a long-context-use comparison; E18 is a coordinate-registration
+repair test. Both are justified, but neither repairs the ordinary-health reconstruction bottleneck by itself.
+
+**New M6 seed-7 H16 trajectory result:** DEV-B 1,139 opportunity roots; trajectory 0.644105, snapshot 0.624918,
+paired difference +0.019187 [0.005559,0.033441]. Same-panel prior 0.616083, one-real-future 0.679366. It roughly matches
+attention's 0.645/0.646 trajectory scores; do not claim an architecture advantage before the matched seed-8 comparison.
+Evidence: `20260927_levers/evals/h16traj/corrt_raw_teacher_s7_fmamba_u36000.json`. This is the previously opened DEV
+panel, not a new sealed actor result; the continuation AUC was produced by the old tie-rank implementation.
+
+**Corrections/limits for the bigger-picture claims:**
+- Sparse-consequence objective allocation has intervention evidence, but is not the sole explanation of all failures.
+  At 100k s7 catches 0.991 of strict consequences, s8 0.877 and still zero tables. The strict labels omit tree mining.
+- Real-HUD injection recovers 94–97% of the H16 **real-fitted decoder transfer gap**, not 94–97% of an actor's attainable
+  improvement. It replaces all 18 HUD tokens and supplies the true future outcome. Health fails while other HUD
+  reconstruction can improve substantially (corrected E16's aggregate HUD error reduction 79.2%).
+- Position/scan dependence is demonstrated; end-aligned sampling's causal contribution still needs a de-alignment-only
+  retrain. The older “rawlong deaths sit at position15” wording conflates target frame with predictor input row: at L16
+  terminal frame15 is predicted from row14; row15 has no teacher target. The earlier w16→w15 evaluation correction stands.
+- E16's ordinary-hit bottleneck exists even with true-future posterior conditioning. More prior samples cannot fix
+  that bottleneck. Rarity, magnitude, terminal position and objective weighting have not yet been causally separated.
+- An unseen current cell may have been observed earlier: memory should resolve those cases before stochastic generation.
+  Local-predictor agreement is not a universal information ceiling. Our latent L1 optimum is a coordinatewise median,
+  not an MSE conditional mean. The causal contribution of class geometry to false scrolls remains unisolated.
+- E17 short→long changes more than context length (ledger/time table/targets per update/additional training/fresh optimizer).
+  E18's historical fcanvas holds
+  SSM state on absent frames but advances convolution state; both carries contribute to measured recall. Neither finite-
+  window evaluator proves an advantage for persistent streaming Mamba carries in an actor.
+- Keep E19 separated: unchanged continuation, de-alignment alone, then the same de-aligned batches plus health-context
+  weighting. Positive-only weighting already produces 24–30% false consequences versus 2–3% with attempt negatives.
+  Matching negatives are necessary but future-dependent masks still need conditional calibration checks. No E19 run
+  was launched in this review. Current literature rationale and the proposal's superseded claims are recorded in PRIORITIES.
+
+**Resumability repaired for future launches:** previously `check_h16_traj.py` overwrote partial feature files, held
+optimizer/RNG/best states only in memory, deleted features and reran completed worlds. It now journals hash-checked
+complete root batches, saves head optimizer/model/best/RNG each 200 updates, persists E16 draw/generator/end states,
+retains raw score/decision rows and skips complete worlds. Sources, checkpoints, input/label contents, window and
+runtime are bound; corrupted storage fails; changed contracts cannot reuse old partials. Atomic publication and writer
+locks protect evidence. Legacy unbound reports are preserved; `--result-dir` permits a separate re-evaluation.
+Chunked standardization removes the whole-matrix float32 allocation without changing its arithmetic. Continuation
+AUC now averages tied ranks (constant 0.5); primary safe-choice metrics are unchanged.
+Long-window H16 attention also uses four roots per forward (68 action branches), matching the Mamba batch, rather than
+16 roots / 272 branches under the lane's 3 GiB admission. This is a conservative evaluation-memory cap, not a measured
+GPU peak or a training change. Short-window attention retains its historical batch16.
+
+The other queued evaluators (`check_damage.py`, `check_recall.py`, `teval.py`) now checkpoint root-batch outputs or recall
+accumulators and skip completed worlds under the same source/data/checkpoint binding. Numerical forward/metric contracts
+are unchanged. CPU original-versus-amended and interruption checks pass for damage, pool recall, future recall, imagined
+recall and teval, with zero forward calls on completed reuse. H16 feature/head/optimizer differences are exactly 0,
+RNG/best states match, and negative corruption/contract/layout controls reject. Evidence:
+`20261004_resume_audit/verify_h16_resume.json`, `verify_queued_eval_resume.json`; original evaluator sources archived nearby.
+CUDA bitwise equivalence was not tested: the GPU stayed with the running research jobs.
+
+**Existing live H16 process is still legacy and non-resumable.** Source edits cannot retrofit code already loaded in
+PID11404. It was deliberately not interrupted; its new seed-7 primary result is retained, seed8 is still running.
+New cache namespaces avoid its cleanup glob. New E17/E18 evaluation subprocesses will load the amended code. Training
+already saves full states every 1000 updates for these lanes. At 22:31 Sydney (11:31 UTC), E18 s7 last logged 11000/36000;
+E18 s8 has not started. E17 A16 s7/s8 are complete; M16 is still waiting for GPU admission (its old 1000-update log is
+the interrupted run). Live status continues in `20261004_resume_audit/live_status.json` and `status_events.jsonl`.
+At 22:51 Sydney (11:51 UTC), a read-only checkpoint inspection confirms fcanvas s7 full state **12000/36000** and both
+A16 full states **6000/6000**; M16 s7 still has no full-run state. The M6 seed-8 H16 result remains unpublished. No jobs
+were stopped during this review.
+
+## 2026-10-04 — Independent resume audit (reviewer)
+
+User explicitly lifted the October 2 read-only restriction and authorized notebook/memory writes and experiments.
+Protocol and diagnostic plan: `20261004_resume_audit/PLAN.md`. Existing negative evidence and other agent's changes preserved.
+
+**New protocol defect, caught before the pending E17 evaluations:** `tworld.rollout_losses` supervises positions 0..L−2,
+and `teval.step` reads the final input position. With a 16-frame teacher window, prediction from **15 input frames** is
+supervised; prediction from 16 is not. A CPU backward pass on the completed A16 s7 checkpoint gives exactly zero gradient
+for time row 15; row 0..14 gradient norms range 0.000507–0.001388. Lane73's damage, H16-trajectory, teval and comparison
+commands have been corrected from window 16 to **15**, including output tags. Training is unchanged. The recall commands
+already used 15 correctly. No final stage-2 window-16 reports had been produced, so no result is being silently replaced.
+
+**Corrections to the causal scope of the entries below (historical numbers retained):**
+- E16's posterior is trained through **uniform latent L1 plus commitment**, not uniform MSE: `dworld.train_a` calls
+  `tworld.rollout_losses(..., 'teacher')`, whose error is `.abs()`. The pre-VQ/code/decoder AUCs localize weak ordinary-hit
+  encoding and output suppression. Rarity, magnitude and terminal position differ together between main and terminal
+  windows; their individual causal contributions have not been isolated.
+- "Neither 36k world uses its history" was too broad. The aggregate check_context reading fails its declared threshold,
+  while the later terrain-recall measurements show a substantial history-dependent contrast. Health drawing is strongly
+  position/scan-length dependent, as demonstrated by the same-frame repetition and time-row interventions.
+- The damage-rule "ceiling" numbers (0.621 at 5 frames, 0.857 at 6) are in-sample plug-in results for one coarse set of
+  history features. They are **not upper bounds** on arbitrary predictors or pixel histories. Rule cases also use the
+  measured next-frame view shift and exclude fatal transitions. Do not use 0.62 as an architectural pass ceiling.
+- "Per-slot Mamba can carry at most ~61%" is not a capacity bound: its within-frame attention can route information
+  across slots. The measured 39.1% is the share of this terrain-reentry oracle's gain assigned to moved-slot cases.
+  The memory incentive also clips negative sighting-copy gains to zero, so it is an optimistic selective-copy statistic.
+- Window-5 versus window-1 recall changes time position and scan length, not only visible history. The new frozen-checkpoint
+  sighting intervention holds those fixed and edits only historical token contents, with an unrelated-token control.
+- Root-aware readout gains establish that context helps this head family. They also add root features and double the
+  concatenated input width; they do not isolate one zombie cue or prove equivalence from an unresolved difference.
+- E19 combines death de-alignment with health weighting. As designed it can test their combined effect, but cannot
+  identify the separate cause. Keep a de-alignment-only arm before attributing a gain to the dose. Its true-next-frame
+  zombie mask covers 80.3% of main −2 events, not all damage; the remaining causes are not yet attributed exhaustively.
+
+**Interrupted-run reconciliation, before restart:** A16 s7/s8 completed and each full state records update 6000. M16 s7
+logged update 1000 but saved no full-run state; its separate 500-update smoke is not a resume checkpoint for that job.
+M16 s8, E18 fcanvas s7/s8, M6 H16 trajectory heads and check_delta are unfinished. No research process was running when
+checked; GPU compute was idle apart from the desktop. Pending E19 remains unapplied. Restarting M16 s7 must use its
+declared 36k parent; completed A16 weights and prior reports are retained. Live statuses/results are recorded in the audit
+folder and updated here as they land.
+
+**Primary-literature correction:** Delta-IRIS §2.2 uses a mixture of L1, L2 and max-pixel reconstruction losses, not our
+E16's uniform latent L1. Its Crafter health examples support the method's possibility, not adequacy of our loss/encoder.
+Mamba's input-dependent Delta is a retention/overwrite mechanism; uncertainty must be measured (pending check_delta).
+
+**Fixed-length sighting intervention completed:** 512 same-slot cases from 168 episodes and 236 moved-slot cases from
+35 episodes, existing held-out main windows. Same current frame, actions, window length and time positions in all arms;
+only historical target sightings or equally many unrelated map tokens replaced with held-out donor tokens. Same-slot
+target error, original → target-sighting swap → unrelated swap:
+
+| world, 36k | original | target swap | unrelated swap | target − unrelated, episode-clustered 95% interval |
+|---|---:|---:|---:|---:|
+| attention s7 | 37.133 | 52.965 | 36.962 | +16.003 [10.651, 21.487] |
+| Mamba s7 | 16.740 | 125.825 | 16.623 | +109.202 [92.734, 126.301] |
+| attention s8 | 50.370 | 50.332 | 50.291 | +0.041 [−0.029, 0.131] |
+| Mamba s8 | 20.053 | 101.108 | 19.979 | +81.129 [66.567, 96.026] |
+
+Mamba's predicted token is pulled towards the donor (projected displacement 0.278 / 0.204), unlike unrelated swaps.
+Moved-slot target-minus-unrelated changes remain unresolved in both Mamba seeds: −0.268 [−0.635,0.011],
+−0.121 [−1.015,0.523]. This establishes actual use of historical cell content in the same-slot case, independently of
+scan-length/time-position confounds. It does not identify convolution versus SSM storage or establish actor utility.
+Edited histories are exploratory interventions. Evidence and checkpoint/pool hashes: `20261004_resume_audit/sighting_results.json`,
+raw paired predictions in `sighting_rows.pt`, episode intervals in `sighting_episode_intervals.json`.
+
+**Interrupted check_delta completed on GPU:** 1,009,764 alive map-cell predictions per seed. Mean Delta error AUC
+0.564267 / 0.532289; final-layer Delta 0.585018 / 0.600444; input-change 0.471142 / 0.471620; disagreement between worlds
+0.641758 / 0.651290. Mean Delta within input-change quintiles 0.563717 / 0.531722. All three declared readings FALSE.
+This rejects mean Delta as the proposed useful error gate in these worlds, not every possible learned uncertainty head.
+Before the run, fixed tie handling in `check_delta.auc`: constant scores now give 0.5 (old arbitrary ranks could give 1.0).
+Direct positive-negative pairwise checks give exactly 0.5, 0.75 and 1.0. No prior completed report was overwritten.
+Evidence: `20261004_resume_audit/delta_results.json`, full log `artifacts/eda/levers_logs/oct04_check_delta.log`.
+
+**Second pending evaluator defect fixed:** teval treated `rawlong` as a new encoder and would fail dictionary lookup.
+Its pool manifest pins Raw bridge; Raw bridge and Raw joint encoders match in all 209 tensors. `build_cache('rawlong')`
+now aliases Raw, with all five returned tensors verified exactly equal. No training/checkpoint change is involved.
+
+**Resume order:** complete M6 H16 trajectory heads at the corrected batch 4, then restart corrected lane73 (E17) and
+lane74 (E18) under GPU admission locks and systemd memory limits. In parallel, finish the amended full E16 seed-7
+evaluation (all roots, eight samples, posterior conditioning on every frame) rather than relying only on its CPU subset.
+E16 seed-8 training and E19 stay held. E18 still tests the historical fcanvas implementation, whose absent-frame hold
+applies to the SSM but not the convolution (see the September 29 correction); it is not a test of every carry-transport
+design. Local DRAMA replay uses count-dependent sampling probabilities, not strictly uniform starts; the relevant
+precedent is avoiding deterministic terminal end-alignment.
+
+**Carry-path intervention completed:** 64 same-slot cases from 55 episodes and 64 moved-slot cases from 30 episodes,
+both Mamba seeds, CPU float32 reference scan. Splitting a scan just before its last input reproduces the unsplit path
+to max absolute error 1.67e−6 / 3.76e−6. On same-slot cases, donor pull (s7 / s8): intact 0.248871 / 0.256607;
+target SSM cleared 0.136614 / 0.097742; target convolution cleared 0.074911 / 0.034068; both cleared 0.001349 / 0.001000;
+unrelated slot's two carries cleared 0.248634 / 0.256864. Attenuation from clearing each target component resolves in
+both seeds; clearing an unrelated slot does not. This locates the measured short-history content path in **both**
+convolution and SSM carry. It is not an additive attribution or evidence of long-range actor utility.
+Evidence: `20261004_resume_audit/carry_results.json`, paired rows and attenuation intervals beside it.
+
+**Full amended E16 s7 evaluation completed (19:23:54 Sydney):** 1002 roots, 8 prior samples. Posterior health readout
+accuracy remains **0/305** for ≥2 damage, **0/32** for −1, **0/112** for recovery; unchanged accuracy 0.9995 on 15387
+transitions. Prior drawn-hit rates fresh 0.0000, already-beside/no-recent-hit 0.0003, recent-hit 0.0003 versus empirical
+0.9728 / 0.4802 / 0.0280. Health-drawing and calibration readings FALSE. Delta reduces aggregate decoder error by
+79.2% on HUD and 92.8% on other map cells, which does not rescue health drawing; the channel carries much deterministic
+map information. The reconstruction/readout failure remains when the posterior sees truth, so more prior samples cannot
+remove that particular defect. This is not a claim that hidden features contain no damage information.
+Evidence: `20261004_resume_audit/e16_fixed_result.json`, full log `artifacts/eda/levers_logs/oct04_e16_fixed_s7.log`.
+
+**Resume-state protection:** E17/E18 now pass `--state-every 1000`; default remains 6000 for historical recipes. The new
+argument changes only full-state serialization cadence, recorded in checkpoint args. Forward, teacher loss and gradients
+are unchanged (CPU comparison against the archived original training source: maximum loss/gradient differences 0;
+serialization does not change CPU RNG). Old source preserved in `20261004_resume_audit/TRAIN_SOURCE_BEFORE_RESUME.py`;
+verification in `checkpoint_cadence_check.json`. Completed checkpoints are untouched. Because the M6 H16 feature pass
+is substantial, E17/E18 units were admitted early under the same GPU lock rather than waiting idle for all its heads.
+The coordinator checks unit existence to prevent duplicate trainers. Its memory limit was raised to 16 GiB solely for
+the existing full-matrix CPU feature standardization; individual training units remain at 12 GiB. E19 remains held.
+
+**Live status, 19:47 Sydney:** E18 fcanvas s7 is actively training, latest logged update 500/36000 (objective 0.137890,
+peak torch allocation 2.128 GB). M6 H16 trajectory evaluation is still generating features; there is no completed M6
+trajectory report. E17's unit is active **waiting for GPU admission**, not computing a new M16 update; its older log's
+1000 updates belong to the interrupted run. Completed A16 checkpoints remain 2/4 of the E17 arms. Timestamped status is
+maintained every 30 seconds in `20261004_resume_audit/live_status.json`, with append-only `status_events.jsonl`; this
+monitor records runtime/output presence, does not declare scientific passes, and launches no experiments. Full audit:
+`20261004_resume_audit/FINDINGS.md`. E19 and E16 seed-8 training remain held.
+
 ## 2026-10-04 — Mamba diagnosis: health drops are a position artifact in both backbones; memory incentive measured; E16 correction
 
 **Correction (retracts my 10-04 midday claim "E16's 0/305 health reading is an evaluation artifact").**
@@ -82,11 +2318,11 @@ deleted; each names the claim it retires.
     next frame;
   - quantized code: AUC 0.548 / 0.642; I(code; hit) ≤ 0.028 of 0.085 bits per region; hit codes also cover 50-79% of non-hits;
   - decoder h at token 63: AUC 0.772 / 0.808 (0.653 / 0.758 with Delta zeroed); output copies (generate weight 0.09).
-- Reading: e16_health_drawable FALSE stands. The posterior is trained only through the decoder's uniform MSE. Deaths (large
+- Reading: e16_health_drawable FALSE stands. The posterior is trained through the decoder's uniform latent L1 plus commitment. Deaths (large
   token change, ~6,500 per pass over the pool) get encoded; ordinary hits (~2,200, error 75 each) do not. This is E14's
   rarity diagnosis again, now with the answer fed to the model.
 
-**check_context (lane61; teacher-forced, true frames, window w = 1..5):** neither 36k world uses its history.
+**check_context (lane61; teacher-forced, true frames, window w = 1..5):** aggregate error gain misses the declared history-use threshold (not evidence of no history use; see recall below).
 - Map error w1 → w5: attention −3.6%, Mamba −4.5% (w4 −6.0%). HUD error rises 15% at w5 in both.
 - Drops are drawn only at w5: catch 3.2% / 6.1%, false 1.1% / 0.8%, fresh 0 / 0.
 - uses_history FALSE (both), mamba_uses_more FALSE.

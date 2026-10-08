@@ -1,0 +1,984 @@
+{
+  "scope": "CPU postprocess of existing TRAIN gradients: the actual objective direction.\n\nPreviously measured gradient cosines do not determine whether the total objective\nopposes ordinary damage. Sum the exact saved class and teacher gradients using\nthe actual B/C loss coefficients. Report dot products, param-family splits and\nper-batch signs. Positive dot means a small negative-gradient step lowers class\nloss; negative means it raises it to first order. Frozen endpoint proj/choose\nweights only, no bias/backbone gradients, Adam moments, or historical claim.\nNo new model forward or training. Evidence is hash-bound and atomic.\n",
+  "contract": {
+    "scope": "CPU postprocess of existing TRAIN gradients: the actual objective direction.\n\nPreviously measured gradient cosines do not determine whether the total objective\nopposes ordinary damage. Sum the exact saved class and teacher gradients using\nthe actual B/C loss coefficients. Report dot products, param-family splits and\nper-batch signs. Positive dot means a small negative-gradient step lowers class\nloss; negative means it raises it to first order. Frozen endpoint proj/choose\nweights only, no bias/backbone gradients, Adam moments, or historical claim.\nNo new model forward or training. Evidence is hash-bound and atomic.\n",
+    "inputs": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e19_gradient_budget.py": "00af1346e1cbde3fb3af99b0e899241a59299194a9b7d60c13726161469f50bd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/contract.json": "8630ef9c75366c8b7cb537a224bb8d58b255ed041abb1cc42979da81d0d6522a",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/result.json": "4dfb4f01d313b1f385ba014d4042a24bf31fe4d2b43be97c830805507ce5e983",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_0.json": "e623c9a90d1bd94a05746aee9946eed17e83e44595aa27d7ee0a471406b78821",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_0-1.pt": "23d7bf3e681f427b0b2dc4ad35765ec89ac9050ffe3b1316362a680f5d5f2d41",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_200.json": "3b1fadde8fd180c2a6a9391ad65e7baef679868cbc5b5aa5c7947ba4e57f9c5c",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_200-1.pt": "30f8b7d304745885da5a1d34c0ccf4c02735ccecb6ef090df096a6995d95022f",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_400.json": "2d94af6059722f66fbe51ed733142df75f1af75acdef33f7e0cfccbf2129044e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_400-1.pt": "5c9ef2996fcbeb2550498c08f40f806d3a17265db52329930e81ed1707463c0d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_600.json": "93a5ad3e74850345d1205a47e43dc0094dcc3fb3b6b588dc14a6ad014651d794",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_600-1.pt": "958f4fb55663a10f7f10fc2564cc4cf5ef1e486fe192335b62ae05c0447a6ded",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_800.json": "96fa31e184503a57f1b13cb1ff9c113b9e1706d1839d6ccdcc3649dd965af429",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_800-1.pt": "20bc2a61279ed8a8e02ff9f6e1d6b8b8de99f2a36a5e7eb07c5911ab2e972174",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_1000.json": "cb0d341b9c574df946d21392eaca037284599c08e3bd27f8b91a615b5ed2a4bc",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_1000-1.pt": "8ce348d9651161d0304aa77fd3664465d68ad9ad64ab8e6f0c01869f9d0c8dfc",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_1200.json": "cae0186ef4aaf6d31d877fe25870c7744e354bbcba6cfdec8861e8da463a1852",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_1200-1.pt": "da42e7e7c941c8abf6038202fa559dd670bdcebfa8e0c58e9d28b9327ee8ac3c",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_1400.json": "dedd773bebf9853a65e3ca20c4ca1e1ecc2f8c2b81013833c532140fa06978d3",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_1400-1.pt": "2c2a28307c4f2eb58cb9a33179a0b2fbc96600e72b2bb2bc4fafe74c6005ed53",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_1600.json": "1b0856aafe18b552289d42643798cec4151dd689e4c6cb692d93568e7cb80569",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_1600-1.pt": "b137df993632d298ba7050fd4ae8545c48dfc114c12116f30ce5ccd486fe3282",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_1800.json": "aeb2a5dd2ea693cf42fb51cdb1269c9b495757648ae3ce032d14127b1f65c369",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_1800-1.pt": "a41a067c87b0d240e111689ee015e08057485108774e8354182065c2efbd075f",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_2000.json": "bc13f3999adcd1f440a946c89f102534c8848d4cdb0f2903f63e895034d25131",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_2000-1.pt": "7108c874e9ab30cb526e84c69ecbd9892915730bfec8da684ddc6142c18539be",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_2200.json": "77b713e46370b5cf5e8fb87d53ab17856a36629e8919fd4e87b93e3f18b2f459",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_2200-1.pt": "952c258e403cc47ff5253ff1bb01dd18231bdb889272a1d12fe1109eb289f1f7",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_2400.json": "8d161401c221eb6c1fa67b78584092b770f3ab0df6e3827106f9af10fc0742b5",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_2400-1.pt": "9b8c76e1a47f9f294b20cf9f9d61643ef01c9e625b76cf6e806a1df8d5254361",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_2600.json": "b1a865016db2d6a8638e731d7191f2e62a7d41da3ea84ba0db1f63ff4b689e6e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_2600-1.pt": "1e6c2a4474053ecee6abe8c4246f172c9338a0b383413c05dd7be2854ccaad1a",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_2800.json": "19def96be668daa73955a910497369a34bf9b200cdb1bfc54b8562577c3ed6c9",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_2800-1.pt": "2ee7a2677ba2e94bc1d9a822c44e0d4fd9784a2759ba1ef0a9d03b10d4d13891",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_3000.json": "b0adac2c0e7695ad4752d45cafe40714abcc1838d8d38b218a1b42137bf3b551",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_3000-1.pt": "0fe3f0a534506876db0257e19dd34e49ab1599e53dd2a2543f4e5a255d6f2d28",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_3200.json": "772618a1e1d73c49b57947e992de4e3b226ea2e3bdd1d8003bc5b45e54574a1a",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_3200-1.pt": "7172362e7f3dec5d6570345abd4816b22c56b77d60ff97eb8c8efcbdc4c07339",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_3400.json": "96ce69844020058a2262bfcdf4befbc1bf26dffb6bd1e3894d9d080f2b3afa19",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_3400-1.pt": "f77655744c0ba5959aceb7a31076c623a9cd026b7053927480ce11c0a2a89464",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_3600.json": "2b6abe9744b79f790fccb4da7e04e136174f1e9ea744ca49ced6dab191e5b583",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_3600-1.pt": "d30910120fde972ff07830d3622612b4a768ae96c7a385fa71fa504926c56731",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_3800.json": "7015551175bde578485ef59d3851eb2816f3ffd3115eef6c6d4c090ff72cfbb0",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_3800-1.pt": "88e919da765bbd990541fd6ab99dd1f51c5c932a3e89d31645b23fad82bae71c",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_4000.json": "a9000b5c51b5498bac01e1ab572fb4cc50969a136ada6882af069f57ea203ac0",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_4000-1.pt": "9cc65b4810c575e0c12e594b2bf5dc4c92466c626efd389788f4782e852bcaf6",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_4200.json": "b3c03fe3ce6bd22137be610db127dfde302cd4c71cb4237c900f17c478d75027",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_4200-1.pt": "b6aad80dc71e4a5ba575fb15aa46790a99bea3c450faab242d5560763b96b9c9",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_4400.json": "49e8fbfeec6a2cc0cf4784230e9c133fe2955f82b8e997de05a6afe075dcbaa5",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_4400-1.pt": "c84ece4cd9065556be7d76d21b74240b0bed9659b5251d2a338150b378f4f4a5",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_4600.json": "534582e2813697388171dc72ec0275cf2342e45e72e1de52b7bd35aca2aca9a4",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_4600-1.pt": "49179e374b14862f255edd0df739230fa0753277aca4cb327f7b76b31552a53d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_4800.json": "4724f15cb9ba7988c1762dbae35075d93bb93129d5434a51bb663b95b5651820",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_4800-1.pt": "3b8a1ee6fafb255eb82b78c69b4c9fb25b4a8937bb0cb9e35315616e36f877e9",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_5000.json": "a396a3d4251b152b42577cb60b812cfac4cbc2e6f24c0c679988f96f7a26a428",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_5000-1.pt": "4ac1b53925a82bc4b8521cdf62b27ea9e606795a4e4cbadb3517e2c7c2d6676f",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_5200.json": "ff8ef052002d62113432211c0903610d3e1c7cadac6ee5ebda957025e2efe5cc",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_5200-1.pt": "23fb35c401837ca997ed7aa8a0cbc95800c87e6a865bd4d48285eee8cf988a2d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_5400.json": "7dbffa9122c8425140c8b2662e0eae2d3c05d034e91f3e4f89e61c26a587c338",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_5400-1.pt": "1282c5bfe9ecf572444dcb1d90f20ff1c5f2576cf425528e6fd9f9cfdac72647",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_5600.json": "c032347a1c796674393636c72383bbf060b294fcaf5eee3ee8df55fb69127478",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_5600-1.pt": "dd262eae18449646e98aa54f2a7d537ffab230a3e66d50f6e21d905033872c03",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_5800.json": "b57d97ecc429c99c52342b129facba8bd6cffab3ff6b91a6314f20596117a7b1",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_train_mechanism__966f31785181de96/batch_5800-1.pt": "3284a4626678b401f840cc1d19fce9521b709b8f2bb6f65bc76f6f0786325a51",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/contract.json": "9c531e246199bc2e9a13ed909825fbf6d10221331a22bd804038fca693ce7ba1",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/result.json": "754b35a14fe6bd7d16757f18375c962a1a817102c0d7ad2e4d8502cd6d4f4a7c",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_0.json": "ec4c55b927a192fa0956548a0d72371c13292a77d2c77ae5ed1b7dfd6aff3180",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_0-1.pt": "a3eb43e6a1c6eb5daee1a72e6deb1045f22e12d78cb51dfb8eed4053eeacaff9",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_200.json": "d7d2b54eb00f02ab62294e3851a618d7d2d731ed5742c5f3a5120804bb5343d5",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_200-1.pt": "7dcc550160561c096c40e8dc58dad4f3528414276a6dfba5c767658b4ff3c6bc",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_400.json": "df0e7fb1e7abf3b32658202a3f569abe4f803d0052a5db3545e4e99d295c6e13",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_400-1.pt": "14b2781f7609e05f425a100237cad6e476c3ac8baea1f9438cb1246c9e16f0bd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_600.json": "c0c14cc110e1211a324c3225f7a4c0684e1df252b76fdffc5d5290f9c2f54569",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_600-1.pt": "ab9c42fa85542572a212ef78c2617b7bf50bf201a2932ffa0e83d8aa0e3b1cd0",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_800.json": "04c19ce577393f641ac6fc94aebfc0d7aced06f3a74dc5acf5b10af07018782e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_800-1.pt": "8e5575c0f17e0ed49805e3c8466bbbbafe83cd2b7fa8f9c2e977bd6f54a6ab79",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_1000.json": "7db168870ccbab22108a7ebe6e402f48a2e58b20f951b5cde81c62c0880bf263",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_1000-1.pt": "62cc8d2ee6147dd8a5e015eafe1308c13d6428d43ef4e418bce23384d774e55a",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_1200.json": "6cc26b64d8905745445e0789f8e7208517b142e845bdf83aaee29e3e774fdebb",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_1200-1.pt": "a8922fca4a61f2a61dde9d1640acefc193513d105f0de256a8b50868b30b8506",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_1400.json": "f33a35f28ead77a26f389007a247745e9645bf3d8fa0f3fe081f30be70875710",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_1400-1.pt": "027914b421eecaddb3686433d54e50829ad7162162c8c4bd4346f67dec21267c",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_1600.json": "e588128398e6a63f023adbc0b5da705cdac85ea7fd69b0bf907cd7b87b0e9b96",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_1600-1.pt": "4a203f2b30421e415a862853d7b5b775526486a09c8cf97b0e0b516948b4e042",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_1800.json": "2a409b7c463cdbb1686c415be456cb294091b7130ff6599ea81ae448cea48960",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_1800-1.pt": "0416f73d072b28b202015f0c6703dafaccbee9fbbc1a2e2463f184d92c238de0",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_2000.json": "ececb1627371c5bc4bfe773374102c8cf630787cba2da837749c94684fd9d997",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_2000-1.pt": "faf6249f1e657b76159007d3a611a775a4d934afd6da796fd10caea24d9fd358",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_2200.json": "1f1ebb75f7c187db9a0e4934eaf6a59d772adf78188d58a1306a3925cc30613d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_2200-1.pt": "ad4ac77dbff62110fdc33697dc737b502c41b831d1f5b942af2e3a28a67a2950",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_2400.json": "419f928d413fa2e668eb97890c00583e9506db24096637631db7dca5b52fe2d1",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_2400-1.pt": "5bd7d9b2f8fb328ecce0f09960d739040f2c6bcfb669014ed344a3f1a93efd41",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_2600.json": "057753f9505496f551a8be9f88934bdda05e00ec79a7d1f615c59be7c5eb8746",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_2600-1.pt": "7783ecc06b579e3381809803030dfda3352a5b0c36f06f8a70e2312ef3801abc",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_2800.json": "3ee7d65f8989a84eb452db6efd4d7e077fa36b4fc9564efcfa960ef98cb4caf1",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_2800-1.pt": "279a9eb2ea5a4678dc7917db91607600b5da42d1a37ef517a3603dba85f15d4b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_3000.json": "41616d0aec8207e892ea6a6887a106c482caa239ad0915a66979618e75327ef5",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_3000-1.pt": "76c30c24d2ece9d658ef8f9107e4d5133de8dad467cee534498cadaaed8dfcb2",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_3200.json": "585eadd43a42ce60086707f784a37d8f1d71dc9984854bceddac090fd2533e04",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_3200-1.pt": "b8033a6a8d60980d00e4239564b14b291d90ded406fe6149e96b796d83fe527a",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_3400.json": "815aa6488bcaa82c265a4031768e20c83f4e481ba7fff76d44bb19e3de42be93",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_3400-1.pt": "23fc72189d4d620d255d511e0ade87d8d9fc859ed48f998e8613522fdfc4f44e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_3600.json": "a2bc36a27cb33dfa21e866d90dfca02b69905d9b054b0c1b8744160f81cea66b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_3600-1.pt": "2feb993b7d64f581aae65f9f7562c349222b8dde33e8608b96b47f173326340e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_3800.json": "3b3e982d97d08484f0ce93e89b8d6c68cd23b4f3b6c675a68ad8ce6769f2c090",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_3800-1.pt": "9146259eb4a9f6ce0feaea93bb1c244235ab3addb71bc018b1a97c8bc3663046",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_4000.json": "41ec1030ef9cc3b81ce85d311a176e6cf0f823874c0a62c19a2d76036e87e232",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_4000-1.pt": "369ff7070faae2ceba2bb52ed62cf7a6ef648fa39d23e8e57996f543db74eda1",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_4200.json": "506b79cd6a72040d000c75faf568a58832983b2e04fedd61a7e69dce75938bed",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_4200-1.pt": "f225d99f28659781b9ac1f381fe9ecd61e3c880234d9ad37314aa8ca68fc8bed",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_4400.json": "7d6f469084dbb8e6f834c5213f095dd3379e759cb1bd461f8f0c86db9d8bf6f9",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_4400-1.pt": "6395552c9d7be6fd606349f45e9853dad02e532ef39faca3bd8a5dc6d003c99e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_4600.json": "e188668bce36563f9de6af505ee513186941efdcc24b8be408ba96553209df2e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_4600-1.pt": "95926e037f5ce1146820235afc454cdf2052cfd9b3142a9b4384a6520becf365",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_4800.json": "68818d0b786085c63fd0c20454deef99f37ec229b45d4f56807b2ef052d0a11f",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_4800-1.pt": "851b89f3ad22b327b73d0dd83f6413fb17437bd265ac91d48b97b22bfcd6b5c8",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_5000.json": "0ce97479a0ba7610e39dd4d5247bf2e5808515450a0b731e97eb372b5e8dfc04",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_5000-1.pt": "870db183662496dc80721dd6f31ac95736c1848ebaebcb64c75140c97c65a67f",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_5200.json": "593e7e197406499751bc408a8754c085bf973b5c520a35a95523bcd4074ad16f",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_5200-1.pt": "f8fb83691d06c80e09d489ab4c248672eb5ef746e614709999125dab701837d8",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_5400.json": "db5a7414c100b8a136f0b06a593ef30da77f8e904a0a8269bdb3d7b014fb3146",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_5400-1.pt": "7df6401248826c20fa9f1a339dfbecd9387d5c880e6ea5fde178946eb6a0e7c7",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_5600.json": "61ae9c173d9b974bfc2fd66b2264a156c462b57f9a65194b06dd4aca1835b98d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_5600-1.pt": "1c5320c23d6151bffe62e8103003320cb77e2fa4ef356624423787cc296b1d03",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_5800.json": "4ff649499abb707b2acac342268227cbbe2a5a4204e9e4d53378f90c39dcafc0",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_train_mechanism__4fc8e7db63395d47/batch_5800-1.pt": "bcd6ca516ef02b995d89ab957c0fbce120b54f2721679893470fed7dab2998ba"
+    },
+    "seed": 8,
+    "backbone": "full",
+    "coefficients": {
+      "B": {
+        "teacher": 1
+      },
+      "C": {
+        "death": 1,
+        "ordinary_ge2": 1,
+        "unchanged": 1,
+        "other": 1,
+        "teacher": 1
+      }
+    },
+    "gradient_order": "proj.weight flattened, then choose.weight flattened",
+    "projection_size": 49152
+  },
+  "arms": {
+    "B": {
+      "all_measured_weights": {
+        "ordinary_dot_objective": -8.24476683192188e-06,
+        "objective_norm": 0.010360212065279484,
+        "ordinary_self_dot": 1.1352634828654118e-05,
+        "ordinary_dot_each_term": {
+          "death": 0.00010142949759028852,
+          "ordinary_ge2": 1.1352634828654118e-05,
+          "unchanged": -7.041197386570275e-05,
+          "other": 2.196104105678387e-06,
+          "teacher": -8.24476683192188e-06
+        },
+        "damage_batches": 24,
+        "uphill_damage_batches": 8,
+        "downhill_damage_batches": 16,
+        "per_batch": [
+          {
+            "update": 0,
+            "selected_damage": 1,
+            "dot": 2.2704136348750126e-09
+          },
+          {
+            "update": 200,
+            "selected_damage": 1,
+            "dot": 1.2793937003152678e-06
+          },
+          {
+            "update": 400,
+            "selected_damage": 1,
+            "dot": 5.441509021153479e-09
+          },
+          {
+            "update": 800,
+            "selected_damage": 3,
+            "dot": 2.1800190097565064e-06
+          },
+          {
+            "update": 1000,
+            "selected_damage": 2,
+            "dot": 3.5603950436779996e-06
+          },
+          {
+            "update": 1200,
+            "selected_damage": 4,
+            "dot": 2.3420156139764003e-05
+          },
+          {
+            "update": 1600,
+            "selected_damage": 1,
+            "dot": -7.450295925082173e-06
+          },
+          {
+            "update": 1800,
+            "selected_damage": 1,
+            "dot": 1.751910872371809e-06
+          },
+          {
+            "update": 2000,
+            "selected_damage": 1,
+            "dot": -6.822667160122364e-07
+          },
+          {
+            "update": 2200,
+            "selected_damage": 2,
+            "dot": 0.0007111908053047955
+          },
+          {
+            "update": 2400,
+            "selected_damage": 4,
+            "dot": 8.774783054832369e-06
+          },
+          {
+            "update": 2800,
+            "selected_damage": 1,
+            "dot": 9.968712220143061e-06
+          },
+          {
+            "update": 3000,
+            "selected_damage": 2,
+            "dot": 2.9095340323692653e-06
+          },
+          {
+            "update": 3200,
+            "selected_damage": 1,
+            "dot": -6.79646291246172e-07
+          },
+          {
+            "update": 3600,
+            "selected_damage": 2,
+            "dot": -3.4448316910129506e-06
+          },
+          {
+            "update": 3800,
+            "selected_damage": 1,
+            "dot": 4.1641762038580055e-08
+          },
+          {
+            "update": 4200,
+            "selected_damage": 2,
+            "dot": 8.295611223729793e-06
+          },
+          {
+            "update": 4400,
+            "selected_damage": 4,
+            "dot": 2.2768731469113845e-06
+          },
+          {
+            "update": 4600,
+            "selected_damage": 2,
+            "dot": -8.101982530206442e-06
+          },
+          {
+            "update": 5000,
+            "selected_damage": 1,
+            "dot": -3.6973224268876947e-06
+          },
+          {
+            "update": 5200,
+            "selected_damage": 3,
+            "dot": 1.954581603058614e-05
+          },
+          {
+            "update": 5400,
+            "selected_damage": 1,
+            "dot": -5.2573138731304425e-08
+          },
+          {
+            "update": 5600,
+            "selected_damage": 3,
+            "dot": 1.2214673915877938e-05
+          },
+          {
+            "update": 5800,
+            "selected_damage": 3,
+            "dot": -1.4635486422776012e-07
+          }
+        ]
+      },
+      "proj_weight": {
+        "ordinary_dot_objective": 9.374264209327521e-08,
+        "objective_norm": 0.006723710801452398,
+        "ordinary_self_dot": 2.0675013274740195e-06,
+        "ordinary_dot_each_term": {
+          "death": -3.101167521890602e-06,
+          "ordinary_ge2": 2.0675013274740195e-06,
+          "unchanged": 2.2000717763148714e-06,
+          "other": 3.280997518118056e-08,
+          "teacher": 9.374264209327521e-08
+        },
+        "damage_batches": 24,
+        "uphill_damage_batches": 14,
+        "downhill_damage_batches": 10,
+        "per_batch": [
+          {
+            "update": 0,
+            "selected_damage": 1,
+            "dot": 2.783975938669414e-09
+          },
+          {
+            "update": 200,
+            "selected_damage": 1,
+            "dot": -5.230981514614541e-07
+          },
+          {
+            "update": 400,
+            "selected_damage": 1,
+            "dot": -2.161239853748498e-09
+          },
+          {
+            "update": 800,
+            "selected_damage": 3,
+            "dot": -8.156681587934145e-07
+          },
+          {
+            "update": 1000,
+            "selected_damage": 2,
+            "dot": 7.110942306098877e-07
+          },
+          {
+            "update": 1200,
+            "selected_damage": 4,
+            "dot": 1.7864275605461444e-06
+          },
+          {
+            "update": 1600,
+            "selected_damage": 1,
+            "dot": 4.584594080370152e-06
+          },
+          {
+            "update": 1800,
+            "selected_damage": 1,
+            "dot": 3.6061697983313934e-07
+          },
+          {
+            "update": 2000,
+            "selected_damage": 1,
+            "dot": -1.1612569323915523e-06
+          },
+          {
+            "update": 2200,
+            "selected_damage": 2,
+            "dot": 1.597614391357638e-05
+          },
+          {
+            "update": 2400,
+            "selected_damage": 4,
+            "dot": -1.219868650537137e-08
+          },
+          {
+            "update": 2800,
+            "selected_damage": 1,
+            "dot": 3.3660859344308847e-07
+          },
+          {
+            "update": 3000,
+            "selected_damage": 2,
+            "dot": -5.946104693066445e-07
+          },
+          {
+            "update": 3200,
+            "selected_damage": 1,
+            "dot": -1.1293990809235765e-07
+          },
+          {
+            "update": 3600,
+            "selected_damage": 2,
+            "dot": -1.123319179896498e-06
+          },
+          {
+            "update": 3800,
+            "selected_damage": 1,
+            "dot": 1.0318538912201802e-08
+          },
+          {
+            "update": 4200,
+            "selected_damage": 2,
+            "dot": 2.1530131562030874e-06
+          },
+          {
+            "update": 4400,
+            "selected_damage": 4,
+            "dot": -9.59381850407226e-07
+          },
+          {
+            "update": 4600,
+            "selected_damage": 2,
+            "dot": -4.093666206017588e-08
+          },
+          {
+            "update": 5000,
+            "selected_damage": 1,
+            "dot": -9.901859954197789e-08
+          },
+          {
+            "update": 5200,
+            "selected_damage": 3,
+            "dot": -3.9195779208967e-06
+          },
+          {
+            "update": 5400,
+            "selected_damage": 1,
+            "dot": -1.4735135778209951e-08
+          },
+          {
+            "update": 5600,
+            "selected_damage": 3,
+            "dot": -1.1152696544058927e-07
+          },
+          {
+            "update": 5800,
+            "selected_damage": 3,
+            "dot": 6.982909894759359e-08
+          }
+        ]
+      },
+      "choose_weight": {
+        "ordinary_dot_objective": -8.338510269823018e-06,
+        "objective_norm": 0.00788198597729206,
+        "ordinary_self_dot": 9.285133273806423e-06,
+        "ordinary_dot_each_term": {
+          "death": 0.00010453065624460578,
+          "ordinary_ge2": 9.285133273806423e-06,
+          "unchanged": -7.261204882524908e-05,
+          "other": 2.163294311685604e-06,
+          "teacher": -8.338510269823018e-06
+        },
+        "damage_batches": 24,
+        "uphill_damage_batches": 8,
+        "downhill_damage_batches": 16,
+        "per_batch": [
+          {
+            "update": 0,
+            "selected_damage": 1,
+            "dot": -5.135634140174261e-10
+          },
+          {
+            "update": 200,
+            "selected_damage": 1,
+            "dot": 1.8024918517767219e-06
+          },
+          {
+            "update": 400,
+            "selected_damage": 1,
+            "dot": 7.602749541035791e-09
+          },
+          {
+            "update": 800,
+            "selected_damage": 3,
+            "dot": 2.995687054863083e-06
+          },
+          {
+            "update": 1000,
+            "selected_damage": 2,
+            "dot": 2.849300699381274e-06
+          },
+          {
+            "update": 1200,
+            "selected_damage": 4,
+            "dot": 2.163372846553102e-05
+          },
+          {
+            "update": 1600,
+            "selected_damage": 1,
+            "dot": -1.2034888641210273e-05
+          },
+          {
+            "update": 1800,
+            "selected_damage": 1,
+            "dot": 1.3912938356952509e-06
+          },
+          {
+            "update": 2000,
+            "selected_damage": 1,
+            "dot": 4.789899321622215e-07
+          },
+          {
+            "update": 2200,
+            "selected_damage": 2,
+            "dot": 0.000695214606821537
+          },
+          {
+            "update": 2400,
+            "selected_damage": 4,
+            "dot": 8.786981197772548e-06
+          },
+          {
+            "update": 2800,
+            "selected_damage": 1,
+            "dot": 9.632103683543392e-06
+          },
+          {
+            "update": 3000,
+            "selected_damage": 2,
+            "dot": 3.504144387989072e-06
+          },
+          {
+            "update": 3200,
+            "selected_damage": 1,
+            "dot": -5.667064328918059e-07
+          },
+          {
+            "update": 3600,
+            "selected_damage": 2,
+            "dot": -2.3215125111164525e-06
+          },
+          {
+            "update": 3800,
+            "selected_damage": 1,
+            "dot": 3.132322135002141e-08
+          },
+          {
+            "update": 4200,
+            "selected_damage": 2,
+            "dot": 6.1425980675267056e-06
+          },
+          {
+            "update": 4400,
+            "selected_damage": 4,
+            "dot": 3.2362549973186105e-06
+          },
+          {
+            "update": 4600,
+            "selected_damage": 2,
+            "dot": -8.061046173679642e-06
+          },
+          {
+            "update": 5000,
+            "selected_damage": 1,
+            "dot": -3.598303692342597e-06
+          },
+          {
+            "update": 5200,
+            "selected_damage": 3,
+            "dot": 2.3465392587240785e-05
+          },
+          {
+            "update": 5400,
+            "selected_damage": 1,
+            "dot": -3.7837999400380795e-08
+          },
+          {
+            "update": 5600,
+            "selected_damage": 3,
+            "dot": 1.2326200703682844e-05
+          },
+          {
+            "update": 5800,
+            "selected_damage": 3,
+            "dot": -2.1618399159706314e-07
+          }
+        ]
+      }
+    },
+    "C": {
+      "all_measured_weights": {
+        "ordinary_dot_objective": -1.3571640010923147e-05,
+        "objective_norm": 0.1206514835357666,
+        "ordinary_self_dot": 2.042144478764385e-05,
+        "ordinary_dot_each_term": {
+          "death": 8.07010928838281e-06,
+          "ordinary_ge2": 2.042144478764385e-05,
+          "unchanged": -2.959822813863866e-05,
+          "other": 3.796469059125229e-07,
+          "teacher": -1.2844629054598045e-05
+        },
+        "damage_batches": 24,
+        "uphill_damage_batches": 15,
+        "downhill_damage_batches": 9,
+        "per_batch": [
+          {
+            "update": 0,
+            "selected_damage": 1,
+            "dot": -2.387157564953668e-07
+          },
+          {
+            "update": 200,
+            "selected_damage": 1,
+            "dot": -4.775790876010433e-05
+          },
+          {
+            "update": 400,
+            "selected_damage": 1,
+            "dot": 0.0005322670913301408
+          },
+          {
+            "update": 800,
+            "selected_damage": 3,
+            "dot": 0.012092391029000282
+          },
+          {
+            "update": 1000,
+            "selected_damage": 2,
+            "dot": -0.00012099270679755136
+          },
+          {
+            "update": 1200,
+            "selected_damage": 4,
+            "dot": 7.121398812159896e-05
+          },
+          {
+            "update": 1600,
+            "selected_damage": 1,
+            "dot": 0.002170529216527939
+          },
+          {
+            "update": 1800,
+            "selected_damage": 1,
+            "dot": -0.0004842578782700002
+          },
+          {
+            "update": 2000,
+            "selected_damage": 1,
+            "dot": 1.9310080460854806e-05
+          },
+          {
+            "update": 2200,
+            "selected_damage": 2,
+            "dot": -0.0023621374275535345
+          },
+          {
+            "update": 2400,
+            "selected_damage": 4,
+            "dot": -0.0005833270843140781
+          },
+          {
+            "update": 2800,
+            "selected_damage": 1,
+            "dot": -0.0007039944757707417
+          },
+          {
+            "update": 3000,
+            "selected_damage": 2,
+            "dot": -0.0008019236265681684
+          },
+          {
+            "update": 3200,
+            "selected_damage": 1,
+            "dot": -0.0005678975721821189
+          },
+          {
+            "update": 3600,
+            "selected_damage": 2,
+            "dot": 0.002797359135001898
+          },
+          {
+            "update": 3800,
+            "selected_damage": 1,
+            "dot": -5.254497591522522e-05
+          },
+          {
+            "update": 4200,
+            "selected_damage": 2,
+            "dot": 0.00018528432701714337
+          },
+          {
+            "update": 4400,
+            "selected_damage": 4,
+            "dot": -0.00040272934711538255
+          },
+          {
+            "update": 4600,
+            "selected_damage": 2,
+            "dot": 0.003486569272354245
+          },
+          {
+            "update": 5000,
+            "selected_damage": 1,
+            "dot": -0.001148737734183669
+          },
+          {
+            "update": 5200,
+            "selected_damage": 3,
+            "dot": 0.0016735394019633532
+          },
+          {
+            "update": 5400,
+            "selected_damage": 1,
+            "dot": -3.2102109344123164e-06
+          },
+          {
+            "update": 5600,
+            "selected_damage": 3,
+            "dot": -0.0009563638595864177
+          },
+          {
+            "update": 5800,
+            "selected_damage": 3,
+            "dot": -8.931946240409161e-07
+          }
+        ],
+        "ordinary_dot_without_unchanged": 1.6026588127715513e-05,
+        "unchanged_weight_for_zero_dot": 0.5414712006626434
+      },
+      "proj_weight": {
+        "ordinary_dot_objective": 2.3592025172547437e-05,
+        "objective_norm": 0.025410687550902367,
+        "ordinary_self_dot": 1.4065764844417572e-05,
+        "ordinary_dot_each_term": {
+          "death": -1.261156512555317e-06,
+          "ordinary_ge2": 1.4065764844417572e-05,
+          "unchanged": 9.407723155163694e-06,
+          "other": 3.146202587345215e-08,
+          "teacher": 1.3482286931321141e-06
+        },
+        "damage_batches": 24,
+        "uphill_damage_batches": 3,
+        "downhill_damage_batches": 21,
+        "per_batch": [
+          {
+            "update": 0,
+            "selected_damage": 1,
+            "dot": -3.1903402941679815e-07
+          },
+          {
+            "update": 200,
+            "selected_damage": 1,
+            "dot": 3.902098342223326e-06
+          },
+          {
+            "update": 400,
+            "selected_damage": 1,
+            "dot": 0.0007870499393902719
+          },
+          {
+            "update": 800,
+            "selected_damage": 3,
+            "dot": 0.0016474839067086577
+          },
+          {
+            "update": 1000,
+            "selected_damage": 2,
+            "dot": 7.695025487919338e-06
+          },
+          {
+            "update": 1200,
+            "selected_damage": 4,
+            "dot": 1.8416369130136445e-05
+          },
+          {
+            "update": 1600,
+            "selected_damage": 1,
+            "dot": 0.0007485190872102976
+          },
+          {
+            "update": 1800,
+            "selected_damage": 1,
+            "dot": 2.4849609872035217e-06
+          },
+          {
+            "update": 2000,
+            "selected_damage": 1,
+            "dot": -2.503358018657309e-07
+          },
+          {
+            "update": 2200,
+            "selected_damage": 2,
+            "dot": 0.0008112101932056248
+          },
+          {
+            "update": 2400,
+            "selected_damage": 4,
+            "dot": 0.00049586221575737
+          },
+          {
+            "update": 2800,
+            "selected_damage": 1,
+            "dot": 2.5422900762350764e-06
+          },
+          {
+            "update": 3000,
+            "selected_damage": 2,
+            "dot": 8.159453500411473e-06
+          },
+          {
+            "update": 3200,
+            "selected_damage": 1,
+            "dot": 7.375584573310334e-06
+          },
+          {
+            "update": 3600,
+            "selected_damage": 2,
+            "dot": 0.0003755326324608177
+          },
+          {
+            "update": 3800,
+            "selected_damage": 1,
+            "dot": 2.3514085967235587e-07
+          },
+          {
+            "update": 4200,
+            "selected_damage": 2,
+            "dot": 4.001658453489654e-06
+          },
+          {
+            "update": 4400,
+            "selected_damage": 4,
+            "dot": 0.0003089598030783236
+          },
+          {
+            "update": 4600,
+            "selected_damage": 2,
+            "dot": 0.0002487886813469231
+          },
+          {
+            "update": 5000,
+            "selected_damage": 1,
+            "dot": 0.0010118770878762007
+          },
+          {
+            "update": 5200,
+            "selected_damage": 3,
+            "dot": 0.00152314524166286
+          },
+          {
+            "update": 5400,
+            "selected_damage": 1,
+            "dot": -2.565636236795399e-08
+          },
+          {
+            "update": 5600,
+            "selected_damage": 3,
+            "dot": 9.35544721869519e-06
+          },
+          {
+            "update": 5800,
+            "selected_damage": 3,
+            "dot": 2.438393948978046e-07
+          }
+        ],
+        "ordinary_dot_without_unchanged": 1.4184302017383743e-05,
+        "unchanged_weight_for_zero_dot": -1.5077295306673952
+      },
+      "choose_weight": {
+        "ordinary_dot_objective": -3.7163670640438795e-05,
+        "objective_norm": 0.11794521659612656,
+        "ordinary_self_dot": 6.355679943226278e-06,
+        "ordinary_dot_each_term": {
+          "death": 9.331265573564451e-06,
+          "ordinary_ge2": 6.355679943226278e-06,
+          "unchanged": -3.9005946746328846e-05,
+          "other": 3.4818489780263917e-07,
+          "teacher": -1.4192857634043321e-05
+        },
+        "damage_batches": 24,
+        "uphill_damage_batches": 15,
+        "downhill_damage_batches": 9,
+        "per_batch": [
+          {
+            "update": 0,
+            "selected_damage": 1,
+            "dot": 8.031822318343984e-08
+          },
+          {
+            "update": 200,
+            "selected_damage": 1,
+            "dot": -5.1660012104548514e-05
+          },
+          {
+            "update": 400,
+            "selected_damage": 1,
+            "dot": -0.00025478287716396153
+          },
+          {
+            "update": 800,
+            "selected_damage": 3,
+            "dot": 0.01044490747153759
+          },
+          {
+            "update": 1000,
+            "selected_damage": 2,
+            "dot": -0.00012868770863860846
+          },
+          {
+            "update": 1200,
+            "selected_damage": 4,
+            "dot": 5.279762262944132e-05
+          },
+          {
+            "update": 1600,
+            "selected_damage": 1,
+            "dot": 0.0014220098964869976
+          },
+          {
+            "update": 1800,
+            "selected_damage": 1,
+            "dot": -0.00048674282152205706
+          },
+          {
+            "update": 2000,
+            "selected_damage": 1,
+            "dot": 1.9560415239538997e-05
+          },
+          {
+            "update": 2200,
+            "selected_damage": 2,
+            "dot": -0.0031733475625514984
+          },
+          {
+            "update": 2400,
+            "selected_damage": 4,
+            "dot": -0.0010791892418637872
+          },
+          {
+            "update": 2800,
+            "selected_damage": 1,
+            "dot": -0.0007065368117764592
+          },
+          {
+            "update": 3000,
+            "selected_damage": 2,
+            "dot": -0.0008100830018520355
+          },
+          {
+            "update": 3200,
+            "selected_damage": 1,
+            "dot": -0.0005752731813117862
+          },
+          {
+            "update": 3600,
+            "selected_damage": 2,
+            "dot": 0.0024218265898525715
+          },
+          {
+            "update": 3800,
+            "selected_damage": 1,
+            "dot": -5.2780116675421596e-05
+          },
+          {
+            "update": 4200,
+            "selected_damage": 2,
+            "dot": 0.0001812826667446643
+          },
+          {
+            "update": 4400,
+            "selected_damage": 4,
+            "dot": -0.0007116891792975366
+          },
+          {
+            "update": 4600,
+            "selected_damage": 2,
+            "dot": 0.0032377804163843393
+          },
+          {
+            "update": 5000,
+            "selected_damage": 1,
+            "dot": -0.002160614589229226
+          },
+          {
+            "update": 5200,
+            "selected_damage": 3,
+            "dot": 0.00015039410209283233
+          },
+          {
+            "update": 5400,
+            "selected_damage": 1,
+            "dot": -3.1845543162489776e-06
+          },
+          {
+            "update": 5600,
+            "selected_damage": 3,
+            "dot": -0.0009657192858867347
+          },
+          {
+            "update": 5800,
+            "selected_damage": 3,
+            "dot": -1.137033905251883e-06
+          }
+        ],
+        "ordinary_dot_without_unchanged": 1.8422761058900505e-06,
+        "unchanged_weight_for_zero_dot": 0.04723064710801928
+      }
+    }
+  }
+}

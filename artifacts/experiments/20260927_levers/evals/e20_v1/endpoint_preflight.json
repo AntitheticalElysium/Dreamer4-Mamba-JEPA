@@ -1,0 +1,77 @@
+{
+  "sources": {
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e20_endpoint_preflight.py": "d94b365fd0cc7a429de7777c9b5e068f3ab19aa01e3001dd515e0c4a32bc0b65",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e20_endpoints.py": "e69528b3f1baa1defbf3cec9fd39474f52327fbed787f6d8bb0ed8c368e0aee7"
+  },
+  "passed": true,
+  "world_forward_calls": 0,
+  "subset": "sample0 preselected before E20 optimization",
+  "groups": {
+    "same_6_15": {
+      "cells": 2088,
+      "oracle_world_error": 0,
+      "paired_capture_gain_control": {
+        "point": 1.0,
+        "interval95": [
+          1.0,
+          1.0
+        ],
+        "episode_clusters": 143,
+        "denominator": 80726.5470413547
+      },
+      "no_difference_control": {
+        "point": 0.0,
+        "interval95": [
+          0.0,
+          0.0
+        ],
+        "episode_clusters": 143,
+        "denominator": 80726.5470413547
+      }
+    },
+    "moved_6_15": {
+      "cells": 2949,
+      "oracle_world_error": 0,
+      "paired_capture_gain_control": {
+        "point": 1.0,
+        "interval95": [
+          1.0,
+          1.0
+        ],
+        "episode_clusters": 143,
+        "denominator": 102718.54351466894
+      },
+      "no_difference_control": {
+        "point": 0.0,
+        "interval95": [
+          0.0,
+          0.0
+        ],
+        "episode_clusters": 143,
+        "denominator": 102718.54351466894
+      }
+    },
+    "same_2_5": {
+      "cells": 4237,
+      "oracle_world_error": 0,
+      "paired_capture_gain_control": {
+        "point": 1.0,
+        "interval95": [
+          1.0,
+          1.0
+        ],
+        "episode_clusters": 143,
+        "denominator": 199934.8353320764
+      },
+      "no_difference_control": {
+        "point": 0.0,
+        "interval95": [
+          0.0,
+          0.0
+        ],
+        "episode_clusters": 143,
+        "denominator": 199934.8353320764
+      }
+    }
+  }
+}

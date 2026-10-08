@@ -1,0 +1,248 @@
+{
+  "sources": {
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e20_contract_check.py": "c685ac4aedb4216b66bc1c4df1780519f411f25210e6b745a0720f75344d6c67",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e20_prepare.py": "a552a146b24fae7833b119ffbbab80b6cd6d47a9a03dd63f691c8d821489d2f1",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e20_train.py": "a1036bd9dab3be4329be7c8bfa5a6d66914298af1a3706dad9c765e58c2eb7e3"
+  },
+  "event_count": 71918,
+  "all_events_deduplicated": true,
+  "minimum_source_target_step": 14,
+  "all_inputs_have_at_least_four_observed_frames": true,
+  "class_position_independence_exact": true,
+  "B_C_exact_data_and_context_equality": true,
+  "A_B_exact_nonordinary_target_equality": true,
+  "position_table": [
+    {
+      "observed_frames": 4,
+      "target_counts_by_class": [
+        1000,
+        5000,
+        13000,
+        1000
+      ],
+      "teacher_weighted_class_mass": [
+        0.053247499764685055,
+        0.012982499676903247,
+        0.9124450011067046,
+        0.02132499945170712
+      ]
+    },
+    {
+      "observed_frames": 5,
+      "target_counts_by_class": [
+        1000,
+        5000,
+        13000,
+        1000
+      ],
+      "teacher_weighted_class_mass": [
+        0.053247499764685055,
+        0.012982499676903247,
+        0.9124450011067046,
+        0.02132499945170712
+      ]
+    },
+    {
+      "observed_frames": 6,
+      "target_counts_by_class": [
+        1000,
+        5000,
+        13000,
+        1000
+      ],
+      "teacher_weighted_class_mass": [
+        0.053247499764685055,
+        0.012982499676903247,
+        0.9124450011067046,
+        0.02132499945170712
+      ]
+    },
+    {
+      "observed_frames": 7,
+      "target_counts_by_class": [
+        1000,
+        5000,
+        13000,
+        1000
+      ],
+      "teacher_weighted_class_mass": [
+        0.053247499764685055,
+        0.012982499676903247,
+        0.9124450011067046,
+        0.02132499945170712
+      ]
+    },
+    {
+      "observed_frames": 8,
+      "target_counts_by_class": [
+        1000,
+        5000,
+        13000,
+        1000
+      ],
+      "teacher_weighted_class_mass": [
+        0.053247499764685055,
+        0.012982499676903247,
+        0.9124450011067046,
+        0.02132499945170712
+      ]
+    },
+    {
+      "observed_frames": 9,
+      "target_counts_by_class": [
+        1000,
+        5000,
+        13000,
+        1000
+      ],
+      "teacher_weighted_class_mass": [
+        0.053247499764685055,
+        0.012982499676903247,
+        0.9124450011067046,
+        0.02132499945170712
+      ]
+    },
+    {
+      "observed_frames": 10,
+      "target_counts_by_class": [
+        1000,
+        5000,
+        13000,
+        1000
+      ],
+      "teacher_weighted_class_mass": [
+        0.053247499764685055,
+        0.012982499676903247,
+        0.9124450011067046,
+        0.02132499945170712
+      ]
+    },
+    {
+      "observed_frames": 11,
+      "target_counts_by_class": [
+        1000,
+        5000,
+        13000,
+        1000
+      ],
+      "teacher_weighted_class_mass": [
+        0.053247499764685055,
+        0.012982499676903247,
+        0.9124450011067046,
+        0.02132499945170712
+      ]
+    },
+    {
+      "observed_frames": 12,
+      "target_counts_by_class": [
+        1000,
+        5000,
+        13000,
+        1000
+      ],
+      "teacher_weighted_class_mass": [
+        0.053247499764685055,
+        0.012982499676903247,
+        0.9124450011067046,
+        0.02132499945170712
+      ]
+    },
+    {
+      "observed_frames": 13,
+      "target_counts_by_class": [
+        1000,
+        5000,
+        13000,
+        1000
+      ],
+      "teacher_weighted_class_mass": [
+        0.053247499764685055,
+        0.012982499676903247,
+        0.9124450011067046,
+        0.02132499945170712
+      ]
+    },
+    {
+      "observed_frames": 14,
+      "target_counts_by_class": [
+        1000,
+        5000,
+        13000,
+        1000
+      ],
+      "teacher_weighted_class_mass": [
+        0.053247499764685055,
+        0.012982499676903247,
+        0.9124450011067046,
+        0.02132499945170712
+      ]
+    },
+    {
+      "observed_frames": 15,
+      "target_counts_by_class": [
+        1000,
+        5000,
+        13000,
+        1000
+      ],
+      "teacher_weighted_class_mass": [
+        0.053247499764685055,
+        0.012982499676903247,
+        0.9124450011067046,
+        0.02132499945170712
+      ]
+    }
+  ],
+  "actual_coverage": {
+    "A": {
+      "available_distinct_targets": [
+        8071,
+        1961,
+        24576,
+        3203
+      ],
+      "actual_distinct_targets": [
+        6206,
+        1961,
+        24537,
+        3119
+      ],
+      "ledger_sha256": "fecabde85cfa126313257fa5539bdb6ff756a0938f7aadf76f15f803ffab37cd",
+      "context_sha256": "ac9f9923ed020b9753e6dfecc1e1d745e9ed48f189b4bedf5e2c4a029baae191"
+    },
+    "B": {
+      "available_distinct_targets": [
+        8071,
+        36068,
+        24576,
+        3203
+      ],
+      "actual_distinct_targets": [
+        6206,
+        29179,
+        24537,
+        3119
+      ],
+      "ledger_sha256": "53c38adf3763c36e7c7c8ca99eef3bee345634ad44c1359a032e35b0198068ef",
+      "context_sha256": "ac9f9923ed020b9753e6dfecc1e1d745e9ed48f189b4bedf5e2c4a029baae191"
+    },
+    "C": {
+      "available_distinct_targets": [
+        8071,
+        36068,
+        24576,
+        3203
+      ],
+      "actual_distinct_targets": [
+        6206,
+        29179,
+        24537,
+        3119
+      ],
+      "ledger_sha256": "53c38adf3763c36e7c7c8ca99eef3bee345634ad44c1359a032e35b0198068ef",
+      "context_sha256": "ac9f9923ed020b9753e6dfecc1e1d745e9ed48f189b4bedf5e2c4a029baae191"
+    }
+  },
+  "optimization_updates": 0,
+  "scope": "exact proposed ledger before optimization; broad ordinary support is not yet fresh-hit coverage"
+}

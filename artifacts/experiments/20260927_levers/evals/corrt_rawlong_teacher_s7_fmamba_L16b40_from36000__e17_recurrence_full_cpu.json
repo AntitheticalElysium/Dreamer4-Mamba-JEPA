@@ -1,0 +1,173 @@
+{
+  "scope": "Extend the completed CPU recurrence lesion to the full original200-root cohort.\n\nThe64-root result showed differing convolution dependence at seeds7/8. Reuse its\n64 per-root records only after exact prefix input, weights and source checks;\ncompute the remaining136 roots using identical lesions/metrics. Same original\n200-root fixed-clock panel, not new sealed evidence or retraining. CPU FP32,\nsource/input-bound per-root journals, paired seed-cluster bootstrap via the same\nstatistics function. No model/trainer source edits or GPU allocation.\n",
+  "name": "corrt_rawlong_teacher_s7_fmamba_L16b40_from36000",
+  "contract": {
+    "scope": "Extend the completed CPU recurrence lesion to the full original200-root cohort.\n\nThe64-root result showed differing convolution dependence at seeds7/8. Reuse its\n64 per-root records only after exact prefix input, weights and source checks;\ncompute the remaining136 roots using identical lesions/metrics. Same original\n200-root fixed-clock panel, not new sealed evidence or retraining. CPU FP32,\nsource/input-bound per-root journals, paired seed-cluster bootstrap via the same\nstatistics function. No model/trainer source edits or GPU allocation.\n",
+    "base_contract": "c36fc2ea42d961bf5dfad06e8ba6de6ec3024184f669b9d131b054386b9bf9b2",
+    "checkpoint": "aa257473ec0cb262b45dcf704c4a660dd2ce017de84400b9cddb262cb601f653",
+    "sources": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_recurrence.py": "58fdb9bd9c9f2b0657ce5c08ba58a7edefa8cb6cb4e90c5098b6629da075acb6",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_clock_control.py": "ca59d3997b0cbb62e80252cd215181ef6dd18f32ea854742d4964e56fbf68029",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_recall.py": "fddea56f3444f8cc19a5fe43fb9a8811728bbcaa4b4ce824273b2da046fb04bd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260921_readout_ladder/spatial.py": "89e055243d5378166fafd083f5055c05d5e4762e7a72ac2a954c48dbfefd8f81",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/tworld.py": "1435057c2b2f0c3d90f563e8dcaf94d06121deebc45928e18ec5cacc93d01569",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/scroll.py": "32f21939825d3e3bc84b3442234baead507934cd0d4c36ac76a6c821fbdc99dc",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/mamba_recurrence.py": "8de9df2578d7bf45c9d98acaf51c99d03ca9185c641f8b09ae107370133bf4c0",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_recurrence_full.py": "9118a57014dc456d9f06d67879d76f0a9ff449ce6e84cf3b34d0cfa4301c07dc"
+    },
+    "inputs": {
+      "frames": "f2714ebef9b465a20f3cf90fa6faf1ce4206f35d2ebcb77d72d3fa644157d74d",
+      "actions": "8bc550cb435a832211802e9b9201da6b6506d1607d3b2cc712cf833ca8be479b",
+      "alive": "591097692efd0ffa534f81e8434e5e70adb19774ce26d01eeba3c6043798dd1c",
+      "roots": "eee11e7a1f679815ea2228f10a812b6093d423fa776ba0a58366f2221bcab341",
+      "seeds": "b9daf5a4d71cbfd34e27d592517e63c6e98bddd0b4548c34808cbf890fc994c9"
+    },
+    "precision": "CPU FP32",
+    "threads": 3,
+    "constructor_config": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e",
+    "roots": 200,
+    "reused": 64,
+    "draws": 2000,
+    "bootstrap_seed": 20261006
+  },
+  "roots": 200,
+  "seed_clusters": 103,
+  "groups": {
+    "same": {
+      "n": 459,
+      "modes": {
+        "intact": {
+          "original_capture": 0.6731996873181528,
+          "ablated_capture": 0.30961893648017386,
+          "history_gain": 0.36358075083797897,
+          "history_gain_interval95": [
+            0.16594850647870496,
+            0.5560882311068487
+          ]
+        },
+        "reset_ssm": {
+          "original_capture": 0.3994789870925719,
+          "ablated_capture": 0.3990417121500993,
+          "history_gain": 0.00043727494247258346,
+          "history_gain_interval95": [
+            -0.000224865373666907,
+            0.001809260238711912
+          ]
+        },
+        "reset_conv": {
+          "original_capture": 0.4169783004633951,
+          "ablated_capture": 0.41358060508029854,
+          "history_gain": 0.0033976953830965615,
+          "history_gain_interval95": [
+            0.00013019217697640576,
+            0.009304736849869781
+          ]
+        },
+        "reset_both": {
+          "original_capture": 0.4178684688233658,
+          "ablated_capture": 0.41786846403626615,
+          "history_gain": 4.787099638284554e-09,
+          "history_gain_interval95": [
+            -4.986633513582291e-10,
+            1.2643259762213812e-08
+          ]
+        }
+      },
+      "history_gain_contrasts_vs_intact": {
+        "reset_ssm": {
+          "difference": -0.3631434758955064,
+          "interval95": [
+            -0.5559515118541287,
+            -0.1656517765795662
+          ]
+        },
+        "reset_conv": {
+          "difference": -0.3601830554548824,
+          "interval95": [
+            -0.5508452923026325,
+            -0.16543033801026502
+          ]
+        },
+        "reset_both": {
+          "difference": -0.3635807460508793,
+          "interval95": [
+            -0.5560882207352423,
+            -0.16594850678154502
+          ]
+        }
+      }
+    },
+    "moved": {
+      "n": 589,
+      "modes": {
+        "intact": {
+          "original_capture": 0.3075093524658996,
+          "ablated_capture": 0.31294518059118576,
+          "history_gain": -0.0054358281252861965,
+          "history_gain_interval95": [
+            -0.09849255429767136,
+            0.08154635267591896
+          ]
+        },
+        "reset_ssm": {
+          "original_capture": 0.374937716576206,
+          "ablated_capture": 0.37500347500767534,
+          "history_gain": -6.575843146934727e-05,
+          "history_gain_interval95": [
+            -0.00045327129856549307,
+            0.0003998650289773643
+          ]
+        },
+        "reset_conv": {
+          "original_capture": 0.3099095842047788,
+          "ablated_capture": 0.3081868275457848,
+          "history_gain": 0.001722756658994044,
+          "history_gain_interval95": [
+            -0.0007850218602112786,
+            0.0052327732038100205
+          ]
+        },
+        "reset_both": {
+          "original_capture": 0.3108576496888184,
+          "ablated_capture": 0.3108576492526031,
+          "history_gain": 4.362152373347711e-10,
+          "history_gain_interval95": [
+            -6.415239596053633e-09,
+            6.5268328030393874e-09
+          ]
+        }
+      },
+      "history_gain_contrasts_vs_intact": {
+        "reset_ssm": {
+          "difference": 0.005370069693816849,
+          "interval95": [
+            -0.08160690172853788,
+            0.09843603852908145
+          ]
+        },
+        "reset_conv": {
+          "difference": 0.0071585847842802405,
+          "interval95": [
+            -0.08012344702356576,
+            0.10187697561030029
+          ]
+        },
+        "reset_both": {
+          "difference": 0.005435828561501434,
+          "interval95": [
+            -0.08154635030821572,
+            0.09849255672165036
+          ]
+        }
+      }
+    }
+  },
+  "reuse_control": {
+    "root": 2,
+    "max_absolute_record_difference": 0.0,
+    "prefix_inputs_exact": true,
+    "sources_exact": true,
+    "checkpoint_exact": true
+  }
+}

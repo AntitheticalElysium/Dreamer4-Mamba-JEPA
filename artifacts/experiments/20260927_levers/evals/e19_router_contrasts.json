@@ -1,0 +1,575 @@
+{
+  "scope": "post-hoc frozen composition interventions; not a deployment repair",
+  "arms": {
+    "B": {
+      "trace_sha256": "0b836ad9c01f6f6b5cf724614ea215324c0f482e18205544a0deea55e7361b4e",
+      "contrasts": {
+        "hit": {
+          "no_global_HUD": {
+            "B_minus_A": 0.0035842293906810036,
+            "interval95": [
+              0.0,
+              0.011364716557207047
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          },
+          "self_gen_HUD": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          },
+          "gen63": {
+            "B_minus_A": 0.34050179211469533,
+            "interval95": [
+              0.2898525119065909,
+              0.3956043956043956
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          },
+          "genHUD": {
+            "B_minus_A": 0.2974910394265233,
+            "interval95": [
+              0.2426470588235294,
+              0.3552170637536491
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          },
+          "true63": {
+            "B_minus_A": 0.899641577060932,
+            "interval95": [
+              0.8532808649702848,
+              0.9395048009131807
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          },
+          "trueHUD": {
+            "B_minus_A": 0.910394265232975,
+            "interval95": [
+              0.8694045503021686,
+              0.9444495694956949
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          }
+        },
+        "fresh_hit": {
+          "no_global_HUD": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          },
+          "self_gen_HUD": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          },
+          "gen63": {
+            "B_minus_A": 0.3225806451612903,
+            "interval95": [
+              0.15990625,
+              0.5
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          },
+          "genHUD": {
+            "B_minus_A": 0.45161290322580644,
+            "interval95": [
+              0.28125,
+              0.6521739130434783
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          },
+          "true63": {
+            "B_minus_A": 1.0,
+            "interval95": [
+              1.0,
+              1.0
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          },
+          "trueHUD": {
+            "B_minus_A": 1.0,
+            "interval95": [
+              1.0,
+              1.0
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          }
+        },
+        "scroll_hit": {
+          "no_global_HUD": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 51,
+            "episode_seeds": 143
+          },
+          "self_gen_HUD": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 51,
+            "episode_seeds": 143
+          },
+          "gen63": {
+            "B_minus_A": 0.27450980392156865,
+            "interval95": [
+              0.15789473684210525,
+              0.40425531914893614
+            ],
+            "transitions": 51,
+            "episode_seeds": 143
+          },
+          "genHUD": {
+            "B_minus_A": 0.3137254901960784,
+            "interval95": [
+              0.1935342388228636,
+              0.44231557377049174
+            ],
+            "transitions": 51,
+            "episode_seeds": 143
+          },
+          "true63": {
+            "B_minus_A": 0.9803921568627451,
+            "interval95": [
+              0.9361702127659575,
+              1.0
+            ],
+            "transitions": 51,
+            "episode_seeds": 143
+          },
+          "trueHUD": {
+            "B_minus_A": 0.9803921568627451,
+            "interval95": [
+              0.9361702127659575,
+              1.0
+            ],
+            "transitions": 51,
+            "episode_seeds": 143
+          }
+        },
+        "stationary_hit": {
+          "no_global_HUD": {
+            "B_minus_A": 0.0043859649122807015,
+            "interval95": [
+              0.0,
+              0.014086167951102836
+            ],
+            "transitions": 228,
+            "episode_seeds": 143
+          },
+          "self_gen_HUD": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 228,
+            "episode_seeds": 143
+          },
+          "gen63": {
+            "B_minus_A": 0.35526315789473684,
+            "interval95": [
+              0.29256289368937666,
+              0.41778787878787876
+            ],
+            "transitions": 228,
+            "episode_seeds": 143
+          },
+          "genHUD": {
+            "B_minus_A": 0.29385964912280704,
+            "interval95": [
+              0.23220782714874066,
+              0.35652829364212363
+            ],
+            "transitions": 228,
+            "episode_seeds": 143
+          },
+          "true63": {
+            "B_minus_A": 0.881578947368421,
+            "interval95": [
+              0.8260821040372671,
+              0.9285882749326145
+            ],
+            "transitions": 228,
+            "episode_seeds": 143
+          },
+          "trueHUD": {
+            "B_minus_A": 0.8947368421052632,
+            "interval95": [
+              0.8464946705426357,
+              0.9366515837104072
+            ],
+            "transitions": 228,
+            "episode_seeds": 143
+          }
+        },
+        "unchanged": {
+          "no_global_HUD": {
+            "B_minus_A": -0.0007922047056959518,
+            "interval95": [
+              -0.0017497278929005102,
+              -7.779801698444921e-05
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          },
+          "self_gen_HUD": {
+            "B_minus_A": 0.0003961023528479759,
+            "interval95": [
+              -0.00015082661311831587,
+              0.0010079099937616693
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          },
+          "gen63": {
+            "B_minus_A": 0.4384060841321397,
+            "interval95": [
+              0.41289493049797665,
+              0.4633637851201499
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          },
+          "genHUD": {
+            "B_minus_A": 0.4680345401251683,
+            "interval95": [
+              0.43695071479765507,
+              0.49857656465359973
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          },
+          "true63": {
+            "B_minus_A": -0.009664897409490612,
+            "interval95": [
+              -0.01328464039834231,
+              -0.006541823020747717
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          },
+          "trueHUD": {
+            "B_minus_A": -0.009664897409490612,
+            "interval95": [
+              -0.01328464039834231,
+              -0.006541823020747717
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          }
+        }
+      }
+    },
+    "C": {
+      "trace_sha256": "299ea11203c4c1984359802873055417b8c82719db3d78603aac0ebc8dd3cd90",
+      "contrasts": {
+        "hit": {
+          "no_global_HUD": {
+            "B_minus_A": 0.0035842293906810036,
+            "interval95": [
+              0.0,
+              0.011540697674418593
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          },
+          "self_gen_HUD": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          },
+          "gen63": {
+            "B_minus_A": 0.43727598566308246,
+            "interval95": [
+              0.38007016360486184,
+              0.49480968858131485
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          },
+          "genHUD": {
+            "B_minus_A": 0.3978494623655914,
+            "interval95": [
+              0.34306305831510714,
+              0.4525359219979473
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          },
+          "true63": {
+            "B_minus_A": 0.7670250896057348,
+            "interval95": [
+              0.7224196312738785,
+              0.8078462179147421
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          },
+          "trueHUD": {
+            "B_minus_A": 0.7741935483870968,
+            "interval95": [
+              0.7305158791720225,
+              0.815332350576253
+            ],
+            "transitions": 279,
+            "episode_seeds": 143
+          }
+        },
+        "fresh_hit": {
+          "no_global_HUD": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          },
+          "self_gen_HUD": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          },
+          "gen63": {
+            "B_minus_A": 0.3225806451612903,
+            "interval95": [
+              0.16,
+              0.4838709677419355
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          },
+          "genHUD": {
+            "B_minus_A": 0.41935483870967744,
+            "interval95": [
+              0.25,
+              0.6
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          },
+          "true63": {
+            "B_minus_A": 1.0,
+            "interval95": [
+              1.0,
+              1.0
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          },
+          "trueHUD": {
+            "B_minus_A": 1.0,
+            "interval95": [
+              1.0,
+              1.0
+            ],
+            "transitions": 31,
+            "episode_seeds": 143
+          }
+        },
+        "scroll_hit": {
+          "no_global_HUD": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 51,
+            "episode_seeds": 143
+          },
+          "self_gen_HUD": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 51,
+            "episode_seeds": 143
+          },
+          "gen63": {
+            "B_minus_A": 0.29411764705882354,
+            "interval95": [
+              0.1777450980392157,
+              0.4090909090909091
+            ],
+            "transitions": 51,
+            "episode_seeds": 143
+          },
+          "genHUD": {
+            "B_minus_A": 0.3137254901960784,
+            "interval95": [
+              0.1929451287793953,
+              0.43187178387650055
+            ],
+            "transitions": 51,
+            "episode_seeds": 143
+          },
+          "true63": {
+            "B_minus_A": 1.0,
+            "interval95": [
+              1.0,
+              1.0
+            ],
+            "transitions": 51,
+            "episode_seeds": 143
+          },
+          "trueHUD": {
+            "B_minus_A": 1.0,
+            "interval95": [
+              1.0,
+              1.0
+            ],
+            "transitions": 51,
+            "episode_seeds": 143
+          }
+        },
+        "stationary_hit": {
+          "no_global_HUD": {
+            "B_minus_A": 0.0043859649122807015,
+            "interval95": [
+              0.0,
+              0.014426577669902895
+            ],
+            "transitions": 228,
+            "episode_seeds": 143
+          },
+          "self_gen_HUD": {
+            "B_minus_A": 0.0,
+            "interval95": [
+              0.0,
+              0.0
+            ],
+            "transitions": 228,
+            "episode_seeds": 143
+          },
+          "gen63": {
+            "B_minus_A": 0.4692982456140351,
+            "interval95": [
+              0.406110271339529,
+              0.5336278100983982
+            ],
+            "transitions": 228,
+            "episode_seeds": 143
+          },
+          "genHUD": {
+            "B_minus_A": 0.4166666666666667,
+            "interval95": [
+              0.35745057359043203,
+              0.4771012163061037
+            ],
+            "transitions": 228,
+            "episode_seeds": 143
+          },
+          "true63": {
+            "B_minus_A": 0.7149122807017544,
+            "interval95": [
+              0.6649014827544862,
+              0.7619095622119815
+            ],
+            "transitions": 228,
+            "episode_seeds": 143
+          },
+          "trueHUD": {
+            "B_minus_A": 0.7236842105263158,
+            "interval95": [
+              0.6756756756756757,
+              0.7704935774607905
+            ],
+            "transitions": 228,
+            "episode_seeds": 143
+          }
+        },
+        "unchanged": {
+          "no_global_HUD": {
+            "B_minus_A": -0.0023766141170878555,
+            "interval95": [
+              -0.004501068063968976,
+              -0.0009081641336383674
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          },
+          "self_gen_HUD": {
+            "B_minus_A": 0.003406480234492593,
+            "interval95": [
+              0.0009080285613683855,
+              0.006706935198178179
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          },
+          "gen63": {
+            "B_minus_A": 0.3358947952150836,
+            "interval95": [
+              0.3066189593683832,
+              0.36334035069107073
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          },
+          "genHUD": {
+            "B_minus_A": 0.32908183474609837,
+            "interval95": [
+              0.30027924073980905,
+              0.3556828914685805
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          },
+          "true63": {
+            "B_minus_A": -0.02352847975916977,
+            "interval95": [
+              -0.030055963024349912,
+              -0.017748818295835453
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          },
+          "trueHUD": {
+            "B_minus_A": -0.02352847975916977,
+            "interval95": [
+              -0.030055963024349912,
+              -0.017748818295835453
+            ],
+            "transitions": 12623,
+            "episode_seeds": 143
+          }
+        }
+      }
+    }
+  }
+}

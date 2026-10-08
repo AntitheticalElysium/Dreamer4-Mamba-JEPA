@@ -1,0 +1,204 @@
+{
+  "name": "e19_B_s8_fmamba_from36000",
+  "scope": "Frozen local loss mechanism, with exact generator/copy reconstruction.\n\nAll 279 ordinary hits plus 512 deterministic unchanged controls on reused roots.\nDifferentiate health-token L1 through the ACTUAL mixture, holding the backbone and\ncandidate tokens fixed; positive generate-logit derivative means L1 descent closes\ngeneration. This is a local endpoint mechanism, not the full training history.\nSweep that same logit and decode single-token replacements through the unchanged\ntrue-fitted HUD readout; exact reconstruction and finite differences are controls.\nEvery selected batch resumes under a checkpoint/data/source-bound contract.\n",
+  "groups": {
+    "all_hit": {
+      "n": 279,
+      "L1_mean": 0.5005854964256287,
+      "L1_descent_closes_gen": 111,
+      "L1_descent_opens_gen": 168,
+      "gen_logit_gradient_mean": 9.328214946435764e-05,
+      "generator_gradient_norm_mean": 0.0037902966141700745,
+      "generator_weight_mean": 0.04973351210355759,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.5017508268356323,
+          "drawn_at_1.5": 11
+        },
+        "-4": {
+          "L1_mean": 0.501691997051239,
+          "drawn_at_1.5": 11
+        },
+        "-2": {
+          "L1_mean": 0.5015766024589539,
+          "drawn_at_1.5": 11
+        },
+        "0": {
+          "L1_mean": 0.5005854964256287,
+          "drawn_at_1.5": 13
+        },
+        "2": {
+          "L1_mean": 0.5174264311790466,
+          "drawn_at_1.5": 18
+        },
+        "4": {
+          "L1_mean": 0.6248205304145813,
+          "drawn_at_1.5": 42
+        },
+        "8": {
+          "L1_mean": 0.8432344198226929,
+          "drawn_at_1.5": 83
+        }
+      }
+    },
+    "scroll_hit": {
+      "n": 51,
+      "L1_mean": 0.47455522418022156,
+      "L1_descent_closes_gen": 21,
+      "L1_descent_opens_gen": 30,
+      "gen_logit_gradient_mean": -0.001040654256939888,
+      "generator_gradient_norm_mean": 0.0060697090812027454,
+      "generator_weight_mean": 0.07991329580545425,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.4769599139690399,
+          "drawn_at_1.5": 0
+        },
+        "-4": {
+          "L1_mean": 0.4768885672092438,
+          "drawn_at_1.5": 0
+        },
+        "-2": {
+          "L1_mean": 0.47644156217575073,
+          "drawn_at_1.5": 0
+        },
+        "0": {
+          "L1_mean": 0.47455522418022156,
+          "drawn_at_1.5": 0
+        },
+        "2": {
+          "L1_mean": 0.5169018507003784,
+          "drawn_at_1.5": 0
+        },
+        "4": {
+          "L1_mean": 0.7912608981132507,
+          "drawn_at_1.5": 8
+        },
+        "8": {
+          "L1_mean": 0.9880235195159912,
+          "drawn_at_1.5": 10
+        }
+      }
+    },
+    "stationary_hit": {
+      "n": 228,
+      "L1_mean": 0.5064079761505127,
+      "L1_descent_closes_gen": 90,
+      "L1_descent_opens_gen": 138,
+      "gen_logit_gradient_mean": 0.00034692580811679363,
+      "generator_gradient_norm_mean": 0.0032804280053824186,
+      "generator_weight_mean": 0.04298276826739311,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.507296085357666,
+          "drawn_at_1.5": 11
+        },
+        "-4": {
+          "L1_mean": 0.5072401165962219,
+          "drawn_at_1.5": 11
+        },
+        "-2": {
+          "L1_mean": 0.5071989893913269,
+          "drawn_at_1.5": 11
+        },
+        "0": {
+          "L1_mean": 0.5064079761505127,
+          "drawn_at_1.5": 13
+        },
+        "2": {
+          "L1_mean": 0.5175437331199646,
+          "drawn_at_1.5": 18
+        },
+        "4": {
+          "L1_mean": 0.5875903964042664,
+          "drawn_at_1.5": 34
+        },
+        "8": {
+          "L1_mean": 0.8108473420143127,
+          "drawn_at_1.5": 73
+        }
+      }
+    },
+    "fresh_hit": {
+      "n": 31,
+      "L1_mean": 0.4772707223892212,
+      "L1_descent_closes_gen": 12,
+      "L1_descent_opens_gen": 19,
+      "gen_logit_gradient_mean": -0.0008818270871415734,
+      "generator_gradient_norm_mean": 0.006434805225580931,
+      "generator_weight_mean": 0.08440800756216049,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.4795631766319275,
+          "drawn_at_1.5": 0
+        },
+        "-4": {
+          "L1_mean": 0.47949138283729553,
+          "drawn_at_1.5": 0
+        },
+        "-2": {
+          "L1_mean": 0.47903889417648315,
+          "drawn_at_1.5": 0
+        },
+        "0": {
+          "L1_mean": 0.4772707223892212,
+          "drawn_at_1.5": 0
+        },
+        "2": {
+          "L1_mean": 0.5268394947052002,
+          "drawn_at_1.5": 0
+        },
+        "4": {
+          "L1_mean": 0.8190160989761353,
+          "drawn_at_1.5": 6
+        },
+        "8": {
+          "L1_mean": 0.9932506680488586,
+          "drawn_at_1.5": 8
+        }
+      }
+    },
+    "unchanged_control": {
+      "n": 512,
+      "L1_mean": 0.032548937946558,
+      "L1_descent_closes_gen": 265,
+      "L1_descent_opens_gen": 246,
+      "gen_logit_gradient_mean": 0.0014589946949854493,
+      "generator_gradient_norm_mean": 0.0032284846529364586,
+      "generator_weight_mean": 0.042270638048648834,
+      "sweeps": {
+        "-8": {
+          "L1_mean": 0.042571619153022766,
+          "drawn_at_1.5": 7
+        },
+        "-4": {
+          "L1_mean": 0.04231802001595497,
+          "drawn_at_1.5": 7
+        },
+        "-2": {
+          "L1_mean": 0.040692660957574844,
+          "drawn_at_1.5": 7
+        },
+        "0": {
+          "L1_mean": 0.032548937946558,
+          "drawn_at_1.5": 7
+        },
+        "2": {
+          "L1_mean": 0.11816838383674622,
+          "drawn_at_1.5": 6
+        },
+        "4": {
+          "L1_mean": 0.3803732395172119,
+          "drawn_at_1.5": 61
+        },
+        "8": {
+          "L1_mean": 0.7728737592697144,
+          "drawn_at_1.5": 142
+        }
+      }
+    }
+  },
+  "reconstruction_max": 7.152557373046875e-07,
+  "derivative_FD_max_abs": 0.004283793270587921,
+  "source_contract": "6f710d41f44774f0507cbfcf0a7526a58c5e2478beec16ebd28424073f5ce5dc"
+}

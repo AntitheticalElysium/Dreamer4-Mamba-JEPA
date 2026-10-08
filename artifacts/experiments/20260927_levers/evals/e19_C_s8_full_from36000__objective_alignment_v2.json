@@ -1,0 +1,260 @@
+{
+  "scope": "CPU frozen E19 candidate selection: latent L1 versus recorded health-change error.\n\nRules fixed before execution. Reuse immutable seven-offset sweeps for every arm;\nalso read the 195-member family when already saved. Hold all candidate outputs\nfixed. Compare latent L1, absolute decoded-health-change error / 9, and fixed\nlambda combinations 0,.01,.03,.1,.3,1,3,10. Real recorded future health is an ORACLE\nselection target, never an inference input or a deployable-head claim. Report\nreachability and the latent-L1 price of depicting damage, not an information\nceiling. Same cases, decoder and inspected roots as historical diagnostics.\nAlso compute paired B->C prediction costs from the existing raw endpoint rows,\nseparating all-root depth16 from the historical alive-root depth16 estimand.\nNo GPU or model forward. Source/input-bound atomic arm journals support resume.\nExperiments write measurements to EDA logs; agents alone update NOTEBOOK.\n",
+  "name": "e19_C_s8_full_from36000",
+  "contract": {
+    "scope": "CPU frozen E19 candidate selection: latent L1 versus recorded health-change error.\n\nRules fixed before execution. Reuse immutable seven-offset sweeps for every arm;\nalso read the 195-member family when already saved. Hold all candidate outputs\nfixed. Compare latent L1, absolute decoded-health-change error / 9, and fixed\nlambda combinations 0,.01,.03,.1,.3,1,3,10. Real recorded future health is an ORACLE\nselection target, never an inference input or a deployable-head claim. Report\nreachability and the latent-L1 price of depicting damage, not an information\nceiling. Same cases, decoder and inspected roots as historical diagnostics.\nAlso compute paired B->C prediction costs from the existing raw endpoint rows,\nseparating all-root depth16 from the historical alive-root depth16 estimand.\nNo GPU or model forward. Source/input-bound atomic arm journals support resume.\nExperiments write measurements to EDA logs; agents alone update NOTEBOOK.\n",
+    "script": "9f43a9c406d0194da7ebffaf596634388ff0812e4c12f50349162ad71c37500f",
+    "resume_source": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+    "inputs": {
+      "raw": {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/e19_C_s8_full_from36000__e19_local_gradients_raw.pt",
+        "sha256": "dab53c18a9888d2e576e69a3c37645104144495d41a8a92963efa7680974432c"
+      },
+      "health": {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/e19_C_s8_full_from36000__e19_health_per_root.pt",
+        "sha256": "4580af15714cdf027ec50d0f09abc7dccdc53c975e5123fa02fd046f12b14fa8"
+      },
+      "B": {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/e19_B_s8_full_from36000_per_root.pt",
+        "sha256": "874a9c7be5c4b24e63d98a0e357bd0ff97a66a53d28a4637485aa30a474f286f"
+      },
+      "C": {
+        "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/e19_C_s8_full_from36000_per_root.pt",
+        "sha256": "ac51f2ecfa4260fb8bba2861bda82ab94bb82428ede83b2dd767a6d1ebd4b724"
+      }
+    },
+    "lambdas": [
+      0.0,
+      0.01,
+      0.03,
+      0.1,
+      0.3,
+      1.0,
+      3.0,
+      10.0
+    ],
+    "health_units": "recorded health change, divided by9 in objective",
+    "runtime": {
+      "torch": "2.13.0+cu130",
+      "threads": 3,
+      "precision": "CPU FP32"
+    }
+  },
+  "seven_offsets": {
+    "ordinary_hit": {
+      "n": 279,
+      "reachable_damage": 151,
+      "choices": {
+        "latent_L1": {
+          "damage_drawn": 63,
+          "latent_L1_mean": 0.4057745933532715,
+          "health_MAE": 1.548002004623413
+        },
+        "health_oracle": {
+          "damage_drawn": 137,
+          "latent_L1_mean": 0.5386276245117188,
+          "health_MAE": 0.8595949411392212
+        },
+        "latent_plus_health_lambda0": {
+          "damage_drawn": 63,
+          "latent_L1_mean": 0.4057745933532715,
+          "health_MAE": 1.548002004623413
+        },
+        "latent_plus_health_lambda0.01": {
+          "damage_drawn": 63,
+          "latent_L1_mean": 0.40577462315559387,
+          "health_MAE": 1.5479518175125122
+        },
+        "latent_plus_health_lambda0.03": {
+          "damage_drawn": 64,
+          "latent_L1_mean": 0.4057919681072235,
+          "health_MAE": 1.537427544593811
+        },
+        "latent_plus_health_lambda0.1": {
+          "damage_drawn": 66,
+          "latent_L1_mean": 0.4060562252998352,
+          "health_MAE": 1.5011318922042847
+        },
+        "latent_plus_health_lambda0.3": {
+          "damage_drawn": 68,
+          "latent_L1_mean": 0.40786969661712646,
+          "health_MAE": 1.4098703861236572
+        },
+        "latent_plus_health_lambda1": {
+          "damage_drawn": 88,
+          "latent_L1_mean": 0.4221689701080322,
+          "health_MAE": 1.189231038093567
+        },
+        "latent_plus_health_lambda3": {
+          "damage_drawn": 120,
+          "latent_L1_mean": 0.4698709547519684,
+          "health_MAE": 0.965941846370697
+        },
+        "latent_plus_health_lambda10": {
+          "damage_drawn": 133,
+          "latent_L1_mean": 0.5226565003395081,
+          "health_MAE": 0.8661694526672363
+        }
+      },
+      "cheapest_depiction_L1_premium_mean": 0.12763381004333496,
+      "cheapest_depiction_L1_premium_median": 0.061600327491760254,
+      "cheapest_depiction_L1_relative_premium_median": 0.13371515274047852
+    },
+    "fresh_hit": {
+      "n": 31,
+      "reachable_damage": 7,
+      "choices": {
+        "latent_L1": {
+          "damage_drawn": 0,
+          "latent_L1_mean": 0.47358500957489014,
+          "health_MAE": 1.9678155183792114
+        },
+        "health_oracle": {
+          "damage_drawn": 7,
+          "latent_L1_mean": 0.7533904314041138,
+          "health_MAE": 1.1632121801376343
+        },
+        "latent_plus_health_lambda0": {
+          "damage_drawn": 0,
+          "latent_L1_mean": 0.47358500957489014,
+          "health_MAE": 1.9678155183792114
+        },
+        "latent_plus_health_lambda0.01": {
+          "damage_drawn": 0,
+          "latent_L1_mean": 0.47358500957489014,
+          "health_MAE": 1.9678155183792114
+        },
+        "latent_plus_health_lambda0.03": {
+          "damage_drawn": 0,
+          "latent_L1_mean": 0.47358500957489014,
+          "health_MAE": 1.9678155183792114
+        },
+        "latent_plus_health_lambda0.1": {
+          "damage_drawn": 0,
+          "latent_L1_mean": 0.47358930110931396,
+          "health_MAE": 1.9674005508422852
+        },
+        "latent_plus_health_lambda0.3": {
+          "damage_drawn": 0,
+          "latent_L1_mean": 0.4738701283931732,
+          "health_MAE": 1.9523687362670898
+        },
+        "latent_plus_health_lambda1": {
+          "damage_drawn": 0,
+          "latent_L1_mean": 0.47873789072036743,
+          "health_MAE": 1.8991442918777466
+        },
+        "latent_plus_health_lambda3": {
+          "damage_drawn": 6,
+          "latent_L1_mean": 0.6002144813537598,
+          "health_MAE": 1.4433395862579346
+        },
+        "latent_plus_health_lambda10": {
+          "damage_drawn": 7,
+          "latent_L1_mean": 0.7404194474220276,
+          "health_MAE": 1.1706368923187256
+        }
+      },
+      "cheapest_depiction_L1_premium_mean": 0.44521358609199524,
+      "cheapest_depiction_L1_premium_median": 0.44998353719711304,
+      "cheapest_depiction_L1_relative_premium_median": 0.9885900020599365
+    },
+    "unchanged_controls": {
+      "n": 512,
+      "reachable_damage": 176,
+      "choices": {
+        "latent_L1": {
+          "damage_drawn": 8,
+          "latent_L1_mean": 0.03697844594717026,
+          "health_MAE": 0.05511918663978577
+        },
+        "health_oracle": {
+          "damage_drawn": 7,
+          "latent_L1_mean": 0.047863565385341644,
+          "health_MAE": 0.04639967530965805
+        },
+        "latent_plus_health_lambda0": {
+          "damage_drawn": 8,
+          "latent_L1_mean": 0.03697844594717026,
+          "health_MAE": 0.05511918663978577
+        },
+        "latent_plus_health_lambda0.01": {
+          "damage_drawn": 8,
+          "latent_L1_mean": 0.03697844594717026,
+          "health_MAE": 0.055117275565862656
+        },
+        "latent_plus_health_lambda0.03": {
+          "damage_drawn": 8,
+          "latent_L1_mean": 0.036978695541620255,
+          "health_MAE": 0.05500243976712227
+        },
+        "latent_plus_health_lambda0.1": {
+          "damage_drawn": 8,
+          "latent_L1_mean": 0.03698036074638367,
+          "health_MAE": 0.05468976870179176
+        },
+        "latent_plus_health_lambda0.3": {
+          "damage_drawn": 8,
+          "latent_L1_mean": 0.037010952830314636,
+          "health_MAE": 0.053403258323669434
+        },
+        "latent_plus_health_lambda1": {
+          "damage_drawn": 8,
+          "latent_L1_mean": 0.03717898577451706,
+          "health_MAE": 0.05116957426071167
+        },
+        "latent_plus_health_lambda3": {
+          "damage_drawn": 8,
+          "latent_L1_mean": 0.03739609569311142,
+          "health_MAE": 0.050073087215423584
+        },
+        "latent_plus_health_lambda10": {
+          "damage_drawn": 7,
+          "latent_L1_mean": 0.03889032453298569,
+          "health_MAE": 0.047574613243341446
+        }
+      },
+      "cheapest_depiction_L1_premium_mean": 0.6453912258148193,
+      "cheapest_depiction_L1_premium_median": 0.6785472631454468,
+      "cheapest_depiction_L1_relative_premium_median": 55.412654876708984
+    }
+  },
+  "B_to_C_prediction_cost": {
+    "one_step": {
+      "B": 0.12941421215383375,
+      "C": 0.140997399234226,
+      "C_minus_B": 0.011583187080392243,
+      "interval95": [
+        0.009088301374995968,
+        0.014470756448270158
+      ],
+      "episode_seeds": 143,
+      "roots": 1002,
+      "root_selection": "all roots"
+    },
+    "depth16_all_roots": {
+      "B": 0.568236730655474,
+      "C": 0.6141014623983602,
+      "C_minus_B": 0.04586473174288619,
+      "interval95": [
+        0.03363270433487568,
+        0.059112408008400945
+      ],
+      "episode_seeds": 143,
+      "roots": 1002,
+      "root_selection": "all roots"
+    },
+    "depth16_alive": {
+      "B": 0.5678718094888446,
+      "C": 0.6142412486985465,
+      "C_minus_B": 0.046369439209701824,
+      "interval95": [
+        0.03395849200767562,
+        0.05946482724042947
+      ],
+      "episode_seeds": 143,
+      "roots": 1002,
+      "root_selection": "recorded alive at depth16"
+    }
+  }
+}

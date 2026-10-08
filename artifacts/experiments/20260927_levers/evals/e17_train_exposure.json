@@ -1,0 +1,145 @@
+{
+  "scope": "E17 exact long-teacher exposure census, declared Oct7 before execution.\n\nReconstruct6000x40 sampler draws from seed11 and the literal long TRAIN branch;\nrequire reconstructed end generator state to equal all four saved training states.\nVerify labels/episode ledger against completed pool manifest. Count per-position\ndeaths, ordinary living>=2 drops and unchanged targets, with unique episode/\ntransition counts, not repeated exposures called independent. No GPU/fitting.\nThis establishes exposure and opportunity for a position shortcut, not the\nhistorical cause of failure or a trained repair. Source/input-bound atomic report.\n",
+  "contract": {
+    "scope": "E17 exact long-teacher exposure census, declared Oct7 before execution.\n\nReconstruct6000x40 sampler draws from seed11 and the literal long TRAIN branch;\nrequire reconstructed end generator state to equal all four saved training states.\nVerify labels/episode ledger against completed pool manifest. Count per-position\ndeaths, ordinary living>=2 drops and unchanged targets, with unique episode/\ntransition counts, not repeated exposures called independent. No GPU/fitting.\nThis establishes exposure and opportunity for a position shortcut, not the\nhistorical cause of failure or a trained repair. Source/input-bound atomic report.\n",
+    "sources": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_train_exposure.py": "30b50724a5cf68ad63577aebbf47d8be074bfeebaa6a6ba3b17491d9fae785cf",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/tworld.py": "1435057c2b2f0c3d90f563e8dcaf94d06121deebc45928e18ec5cacc93d01569"
+    },
+    "inputs": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_mamba_long_pools_v1/raw/manifest.json": "d9d162a97ea591fadda2f976309df29626323c2c8de323904a86dd37b7827f22",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_mamba_long_pools_v1/raw/labels.pt": "68a9cee75beaf92f3b275ee21d03a7f42ddecb7feff7936ff6b0ce6f20fce53b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260929_mamba_integration/long_ledger.jsonl": "cad11d3dac2e90358750a97299f56a2b4ff2eeeeeaaa82f0ef14200ef2a613aa",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261004_resume_audit/TRAIN_SOURCE_BEFORE_RESUME.py": "1b2c4bea9ec5433e0a0f4e53997a3a5326c3dcb351ba9bb460c5f655de60d24e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/corrt_rawlong_teacher_s7_L16b40_from36000.state.pt": "650ec3ddc45f84ae1ee4b501bc801409d46b96f751ab3e06b6bf60ff50e250af",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/corrt_rawlong_teacher_s8_L16b40_from36000.state.pt": "803b51eac8438a255f4820f345c9e7d1f43b6173bfb299d074dd0f6cfa341cba",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000.state.pt": "4b9e70e14ff62df41670e9056e0745dfbb4f5d2aadb4a247c847a01f3617a3ce",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000.state.pt": "3319935a0f39c5020ba4de1288b5b24f581daefc9568cad8c164c898d3cd977f"
+    },
+    "terminal_share": 0.2637667897643714,
+    "sampler_branch_equal_before_resume": true,
+    "runtime": "2.13.0+cu130"
+  },
+  "windows": 240000,
+  "targets": 3600000,
+  "same_reconstructed_sampler_matches_all4_world_rng_states": true,
+  "classes": {
+    "death": {
+      "exposures": 63414,
+      "per_target_position_1_to15": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        63414
+      ],
+      "rates_by_position": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.2642250061035156
+      ],
+      "distinct_episode_transitions": 7500
+    },
+    "living_drop_at_least2": {
+      "exposures": 85338,
+      "per_target_position_1_to15": [
+        4988,
+        6350,
+        9351,
+        3834,
+        3508,
+        4168,
+        5051,
+        7831,
+        23266,
+        3175,
+        3207,
+        3171,
+        2849,
+        2975,
+        1614
+      ],
+      "rates_by_position": [
+        0.020783333107829094,
+        0.026458334177732468,
+        0.03896249830722809,
+        0.015975000336766243,
+        0.014616666361689568,
+        0.017366666346788406,
+        0.021045833826065063,
+        0.032629165798425674,
+        0.09694166481494904,
+        0.013229167088866234,
+        0.013362499885261059,
+        0.013212500140070915,
+        0.011870833113789558,
+        0.012395833618938923,
+        0.006725000217556953
+      ],
+      "distinct_episode_transitions": 12748
+    },
+    "living_unchanged": {
+      "exposures": 3368741,
+      "per_target_position_1_to15": [
+        229692,
+        228096,
+        224949,
+        230464,
+        231116,
+        230044,
+        229197,
+        226531,
+        211196,
+        231196,
+        231216,
+        231319,
+        231445,
+        231021,
+        171259
+      ],
+      "rates_by_position": [
+        0.9570500254631042,
+        0.9503999948501587,
+        0.9372875094413757,
+        0.960266649723053,
+        0.9629833102226257,
+        0.9585166573524475,
+        0.9549875259399414,
+        0.9438791871070862,
+        0.8799833059310913,
+        0.9633166790008545,
+        0.9634000062942505,
+        0.9638291597366333,
+        0.9643541574478149,
+        0.9625874757766724,
+        0.7135791778564453
+      ],
+      "distinct_episode_transitions": 690672
+    }
+  },
+  "death_last_position_fraction": 1.0,
+  "terminal_windows_drawn": 63405
+}

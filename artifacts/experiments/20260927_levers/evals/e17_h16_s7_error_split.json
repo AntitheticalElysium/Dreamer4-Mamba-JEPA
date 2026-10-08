@@ -1,0 +1,336 @@
+{
+  "scope": "Post-hoc CPU error decomposition for E17's completed seed7 hazard readers.\n\nRules fixed before execution: use preserved, reproduced head hazards only;\ncompare cumulative death by8, additional unconditional death mass from9-16,\nand cumulative death by16. Decompose MSE exactly into episode/root mean error\nand within-root action-contrast error; report centered SD/correlation across\nall DEV-B roots, H16 opportunities, and opportunities with no true action\nvariation through8. Also count improved/worsened/tied selected-action changes\nwhen late head terms are included. Average metrics over three heads; no\nensemble decision, world/head fitting or GPU. This diagnoses outputs, not the\ncause of feature loss. Source/input-bound atomic evidence; EDA logging only.\n",
+  "contract": {
+    "scope": "Post-hoc CPU error decomposition for E17's completed seed7 hazard readers.\n\nRules fixed before execution: use preserved, reproduced head hazards only;\ncompare cumulative death by8, additional unconditional death mass from9-16,\nand cumulative death by16. Decompose MSE exactly into episode/root mean error\nand within-root action-contrast error; report centered SD/correlation across\nall DEV-B roots, H16 opportunities, and opportunities with no true action\nvariation through8. Also count improved/worsened/tied selected-action changes\nwhen late head terms are included. Average metrics over three heads; no\nensemble decision, world/head fitting or GPU. This diagnoses outputs, not the\ncause of feature loss. Source/input-bound atomic evidence; EDA logging only.\n",
+    "script": "b67f45e7bcfa355685f93e748c5dd7bd52487d06e64d3674f30fd7e681f42035",
+    "storage": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+    "source_contract": "5d7d36f8044f3a96f06c66b4d0ba522a6c2f40cac183877663e1fc908868bb31",
+    "world_contract": null,
+    "inputs": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/contract.json": "6ac5a1878af3f4e186124346ad1cad3242eadba91a7bc86bb85c8a29bb66fe37",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/rows-1.pt": "0bd64a4f968724c33c3182f16a0f81d2a58151f0ab36678ca88f8a91306b960a",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_0-32.pt": "6d8e5b7f56d166dcf516e96c48dcd89c04499a9a25f057ab6e22781c1c5ace54",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_32-64.pt": "6be28d2f828e9a3d1d6c4fe31b61555162d56c2242782cf1887b109a6b0e5915",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_64-96.pt": "fdb4d5e87b4fe0db811a29beffa6623a974da19825814363f958f7ac8ce294ce",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_96-128.pt": "e699dace23115dfb9bf61a9feac7b08914a0db31fd37f504779e1c4f6b05b140",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_128-160.pt": "5ca6c7ef4b8addc77f28a2ebddd9e1871841124a70d3b2e693a341570576205a",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_160-192.pt": "1c77c89de8ebf8ade58da06c600e007854e939f485f1f41a2004ccc8b1844a55",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_192-224.pt": "09e123dc3ae7223b390d1f707322540a13a053c930f7fab08e4d4baf0bd17860",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_224-256.pt": "22bd5ed24efc28b9b9a73ef3789840c16cac39748778bc885f5d5c09d0e25ffb",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_256-288.pt": "4e33d47d7c051158c9ed4fb76f7f809f55a6073efd31380326e0adf4b6a1ed0a",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_288-320.pt": "7f3b4098c5a7beae4eea80787df32b7cfd9830a58043d72179600145bb5af130",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_320-352.pt": "96abe3d984e1f74745a832f5c2544957bea0ff77089ff82eb13bf61f484751dd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_352-384.pt": "ef179dc461f9927848bb562c0a411da2f258ef2b797e1e1622306007a5858b5d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_384-416.pt": "0766a9c1a9c6962b99089ec52cb6d259ac3eddfc9bc4b0f5853e751d69cbf590",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_416-448.pt": "a8ebcda1c01b12e1a3cc4448dcbfa8e27e91f0019576bbba3eca83bdc6d1235a",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_448-480.pt": "e6e7dc22ada1b48eee2cd0e5c0a892eb4c1e442462eb063247521f12e026418e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_480-512.pt": "e24993ffdfe11eb7b40a55e97c25eb8647a34af4296f0b36f73cc334e8fd099a",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_512-544.pt": "bdb20ead71d878ee1942d0f52645e73135952d31a26080de5699cd55e19cedaa",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_544-576.pt": "c7dfde560628aaabb12543dc5f090ed48b55b507892332df1eb02c214b8c5a03",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_576-608.pt": "89a7b1b68ff82db736821aa6aed25341ebf6ae2c9eedd530853483a1dfaced1e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_608-640.pt": "3a3850d106de654a43a9cac331b9addb47320a222bd02b5d247dc6aef737da3e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_640-672.pt": "bc2877d26fe376817f4cbd1c80595772f8565be2db48a1bbfd57cca13c8d0008",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_672-704.pt": "d90b6847a0c0643492b64153c6276cea13d07fd269312066fd7f4ae2497dbcb5",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_704-736.pt": "4260afc4c2776a2c72d90580e004190e09565079c1f2352228a47389b60b9cdd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_736-768.pt": "744e89be8b8067981cb20506788759d8ab1965441cdf6ee817b8e73a431eccb6",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_768-800.pt": "aab840cf9bee72978d544a9d7847464e5f1dbd43b86c7b4b7c14f9a9a18b0844",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_800-832.pt": "2f0b3fdbc1a0aad4ec8714241ff486a09b6112dab3204296247989aabe9dc8d7",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_832-864.pt": "8d714b6c01fc1e15b99a58fb059b4dd997682d5413c0685189e883312d80176d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_864-896.pt": "b55deb6b0ee6f4ff2e73d092bb932434b2a9afcb24cb1a108b10952c9dd4e1d1",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_896-928.pt": "80f2c3b7d683574601f0e5d04d6fa6fa1acc193c3f2359121ed8eefdb3fbe259",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_928-960.pt": "f348e2dee1449756da6a9dec80603ff6edc376e415d8cbb36cc9df0615611b9c",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_960-992.pt": "53625ab75360082930369658b9bc19cb1f82d594016fa1d91e95358917c93ace",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_992-1024.pt": "29937cc6ba1f2410e3fe077d5700452013539f5ec771cc5fe5e7430e8702f0c6",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1024-1056.pt": "a5b705bfcc4ca1d82baddb903e56f3fa38a72a221f663c728e66d5ca026520c0",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1056-1088.pt": "4d12add64f008ff4ba3189a80ca746f98fcdc59c4734edbd2b47a8d48b421851",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1088-1120.pt": "179ce5e1ccd81cc87d8a3e272db6cb6c8dc6ccaa313b7a4a6f0a0d32a5e94bdd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1120-1152.pt": "4cbcbbe383a7009f3601929667e3e8e88c53d6d641e6915b2e2de6551debcb86",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1152-1184.pt": "4531dc29817aeb9c05cff51291447f16681dae34319278e07cb45ad1ad5202f1",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1184-1216.pt": "e988c5df4d4bd9b80ac90aa3a63f6cc3db9649abdc15376b9022a09d884d39c9",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1216-1248.pt": "b0dcf52b0a9d494e2e010225cc31f2519c064ae0fbbb969b8af7817689c8364b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1248-1280.pt": "708ea6ecf04f092088bd8fc086628a1754d0ffbce2f1ee5ed7b0e2f11a7bbe7b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1280-1312.pt": "27046ce74eabfddde5a67c72a962696921893179a5072bb7b0f2dc60cdf09188",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1312-1344.pt": "1e48f8cccd498f8d9753083ef2dbf81006437219c9904c69662e7fb567c95da4",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/attention_batch_1344-1366.pt": "8e2844649dc47c520cf05f01b31b65bce584393c8c140fdb81c3f22d33ae3be3",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_0-32.pt": "18f10a45532cd866b2950c8e56d0b2b9079fb4c581c2dc62d57ed028486d5533",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_32-64.pt": "46bb9544eadff6251d63817b5e26c201c9e13f544e65e8782088495b547c5225",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_64-96.pt": "614e0738e7d151ab9f0d4b64083a05423cc91d35c8ac5f4d375f20b9a99bac26",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_96-128.pt": "fdfba9678bb8b00c5501d80dd19be9f2a1349c648bf63062af4196bd5de006ed",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_128-160.pt": "78f4dce85407308a142b99b17ae81f919d3ff2da736723e4a59127363f9b3cd1",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_160-192.pt": "3f1e2932a9856ac1748577e3dd5bbbdfb8b61a229c65e9c04057adb45fa36856",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_192-224.pt": "0e3978e4730a0c8b741287e6d5e13702767f7d6e8cd03d27fab333057266c901",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_224-256.pt": "dcf9ea18cd412e5148d04e2bcb5dcd92a0f7abd81be97f6272a40e0a6bad4281",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_256-288.pt": "41270e6ecae80c29b589ebc1c62bde52964c8f18648b9e282c6db25b8b6e0a5b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_288-320.pt": "7a9dc229ed595c0bddd69d47aa4408354dfd6e5d757076225e52f3ae50d40036",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_320-352.pt": "c1a03b1637e324ede2ffd919f6ca9140c9fb56ffe8757e800ea89ce7233580e6",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_352-384.pt": "70814e81c6de0fefc83d5db194aefcb1245976a0ae32f09c5d8d8b341ef8f401",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_384-416.pt": "c272a6dd66afe264eff10bae78d170a34a64884ce31e644b2a1894cce84103cf",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_416-448.pt": "56de7ef02a01d9ac0b18eb0df15e815419f93293ca0418243db16e4564b47d13",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_448-480.pt": "aeb963afbf982de3ab1ed447c8bb6e88e5cb9cd5446375398590b64e1c5623c0",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_480-512.pt": "1cab3f98fadc5ce21bb5458f93ae326c6a9660e26cd89ac0532c55a4d06db3f5",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_512-544.pt": "ac89c5a05e681f3e6fc01d1f3179fe3cfde52e9f988e63b233e681550b4acea0",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_544-576.pt": "fa4f4ab0929d714b26564d8267dc82f3fb74740dd22e71587af62fafdcf76887",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_576-608.pt": "6d5d5a32a5f42116478a30085e51b5b2cfffe25657a8df819dcd959cae31c384",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_608-640.pt": "6da3f9398351f3b8f12adea1cae44d2f093955fa5fd886080a3c969da37d3b39",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_640-672.pt": "db30bc1539e56e89bfac12b07c12696ea862177f2f41b4c3bb972798e59231a3",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_672-704.pt": "f1bad612cdc8418a63daad4d3e419d1f07be2b4bfc99aa7691c581738422f8a5",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_704-736.pt": "c17b67ee770a86e45c680044549c0d5dcfa4ca3f268fcc4d8417deb0c88305c4",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_736-768.pt": "c9e5854dcf8db8c07b44e5cccf539ef36ad9c4ce7c3a3146ee8b0f7d3c691f0d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_768-800.pt": "67ec5cc6d52443750c10b41ee29515cc122685cc77a8fd8b8055386aae4afb7b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_800-832.pt": "5a0ddd6ec06d23eb1d198a8a6c23ef94fc368698cba86fa4049ef6c2ef8aaaeb",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_832-864.pt": "e3622b8b9b54b1e25ab2a05ac6a74f8ab953f230ca971e298b122fea2529a489",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_864-896.pt": "ce893245d06cba13b130ba59a9172c0018750de191ed00569a447fd0f14b5893",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_896-928.pt": "98a2af040113fd44aa7dc96d2e01023046e5e2a58dd4717b8872d53c9dba3b01",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_928-960.pt": "ccd2a521493fca6d18214860bb146f74d74a68af985fa0d6cd7855a0ae007e34",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_960-992.pt": "6a6c31a06376d9d1c4cd231dc60d8113619a99c29cc0c80eb005272621bbfe3b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_992-1024.pt": "ae29deed8404c104a93ca753218a210b13a76d3b40e785b7b49ad2aae9f7bca8",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1024-1056.pt": "1f3808494e2fd4791d47ed43d8aced40787b236ca64dbef8c47beb636d4effed",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1056-1088.pt": "44700ed51f2ddb9a3853bf5555dda001043f922445aaa18c2c5b5504b1ed5f62",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1088-1120.pt": "7dac1350c28869375c4ef6f464fe467af4241c3b670988bfb369dea725763c99",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1120-1152.pt": "9bcac8ae17a1d1b211867aa75246baaadbb4c992397e0dfc67b8f429670d8611",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1152-1184.pt": "0d3b0509f7170b26e18c5e4f522e6cfa09b3cc0e891d585025b2e3ac2ca23f0d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1184-1216.pt": "e1903b350757ad31d0e168651b1bb1abbf780fa80e88a16efab2dec281d73aff",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1216-1248.pt": "9f46a87fe732e66e09f62f42b0c648d18f95103c98245feb425e8060a514821b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1248-1280.pt": "15c49340b42d23c14d9bd140e21b28a4549638c2e34dd8f3df1a4dd9f9ce50ac",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1280-1312.pt": "f184e0afcf361f504c74b15d540bed198491261adaa60e770f4648bf1ea27ea9",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1312-1344.pt": "ae8b0ca418568513e1d8c1ae31752936a0cd3d9282fb6e4fc1b516cd76421c9d",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/evals/resume/e17_h16_s7_reader_diagnosis/mamba_batch_1344-1366.pt": "91368c1d7fe91b327caa5c3989bf68c94571b1366102e6696bafff23684558e0"
+    },
+    "torch": "2.13.0+cu130",
+    "threads": 2
+  },
+  "worlds": {
+    "attention": {
+      "cohorts": {
+        "all_DEV_B": {
+          "roots": 1366,
+          "metrics": {
+            "early8": {
+              "MSE": 0.1032784070918117,
+              "root_mean_MSE": 0.08630032269337358,
+              "within_root_action_contrast_MSE": 0.016978084398438117,
+              "predicted_action_contrast_SD": 0.12237295458043893,
+              "true_action_contrast_SD": 0.17933707236585508,
+              "centered_correlation_mean_head_seed": 0.6870007813971277,
+              "prediction_mean": 0.36304664584352375,
+              "truth_mean": 0.3303077361984325
+            },
+            "late_increment": {
+              "MSE": 0.0766005529828551,
+              "root_mean_MSE": 0.061085351632618703,
+              "within_root_action_contrast_MSE": 0.015515201350236416,
+              "predicted_action_contrast_SD": 0.05239673772312511,
+              "true_action_contrast_SD": 0.12979090732639173,
+              "centered_correlation_mean_head_seed": 0.2995179096122618,
+              "prediction_mean": 0.21618241545091943,
+              "truth_mean": 0.1932246361209198
+            },
+            "full16": {
+              "MSE": 0.10293864331319229,
+              "root_mean_MSE": 0.08612472651288064,
+              "within_root_action_contrast_MSE": 0.016813916800311628,
+              "predicted_action_contrast_SD": 0.09962054297089434,
+              "true_action_contrast_SD": 0.1683941277565511,
+              "centered_correlation_mean_head_seed": 0.6413254773573033,
+              "prediction_mean": 0.5792290612944432,
+              "truth_mean": 0.5235323723193523
+            }
+          }
+        },
+        "opportunity16": {
+          "roots": 1139,
+          "metrics": {
+            "early8": {
+              "MSE": 0.09154495523774592,
+              "root_mean_MSE": 0.07305716163374294,
+              "within_root_action_contrast_MSE": 0.018487793604002982,
+              "predicted_action_contrast_SD": 0.12730628253815585,
+              "true_action_contrast_SD": 0.1946605176716106,
+              "centered_correlation_mean_head_seed": 0.7185424822203453,
+              "prediction_mean": 0.3091527407247202,
+              "truth_mean": 0.20415547694055672
+            },
+            "late_increment": {
+              "MSE": 0.07917266571947121,
+              "root_mean_MSE": 0.06168403068901425,
+              "within_root_action_contrast_MSE": 0.017488635030456962,
+              "predicted_action_contrast_SD": 0.0505919765169473,
+              "true_action_contrast_SD": 0.13972883611111833,
+              "centered_correlation_mean_head_seed": 0.3252763960867716,
+              "prediction_mean": 0.21334275045972628,
+              "truth_mean": 0.2244180266487631
+            },
+            "full16": {
+              "MSE": 0.11462514392348963,
+              "root_mean_MSE": 0.09488734905124618,
+              "within_root_action_contrast_MSE": 0.019737794872243444,
+              "predicted_action_contrast_SD": 0.10712159869491054,
+              "true_action_contrast_SD": 0.18441253181005043,
+              "centered_correlation_mean_head_seed": 0.6531225563061843,
+              "prediction_mean": 0.5224954911844465,
+              "truth_mean": 0.42857350358931984
+            }
+          }
+        },
+        "only_after8": {
+          "roots": 137,
+          "metrics": {
+            "early8": {
+              "MSE": 0.07090573074684108,
+              "root_mean_MSE": 0.06334692511231839,
+              "within_root_action_contrast_MSE": 0.007558805634522679,
+              "predicted_action_contrast_SD": 0.08694139195183545,
+              "true_action_contrast_SD": 0.0,
+              "centered_correlation_mean_head_seed": null,
+              "prediction_mean": 0.2174084168212752,
+              "truth_mean": 0.0
+            },
+            "late_increment": {
+              "MSE": 0.051583931918583285,
+              "root_mean_MSE": 0.034026079842333225,
+              "within_root_action_contrast_MSE": 0.01755785207625006,
+              "predicted_action_contrast_SD": 0.0296661473000977,
+              "true_action_contrast_SD": 0.13568755420152143,
+              "centered_correlation_mean_head_seed": 0.19678118400801245,
+              "prediction_mean": 0.1761488837542001,
+              "truth_mean": 0.09615178188063546
+            },
+            "full16": {
+              "MSE": 0.15345074548150656,
+              "root_mean_MSE": 0.14180888668350614,
+              "within_root_action_contrast_MSE": 0.011641858798000476,
+              "predicted_action_contrast_SD": 0.0913183596948386,
+              "true_action_contrast_SD": 0.13568755420152143,
+              "centered_correlation_mean_head_seed": 0.6094524981961614,
+              "prediction_mean": 0.3935573005754753,
+              "truth_mean": 0.09615178188063546
+            }
+          }
+        }
+      },
+      "late_choice_changes_over_3_head_seeds": {
+        "changed": 1163,
+        "improved": 306,
+        "worsened": 351,
+        "equal_outcome": 506,
+        "mean_safe_change": -0.003566725179553032
+      }
+    },
+    "mamba": {
+      "cohorts": {
+        "all_DEV_B": {
+          "roots": 1366,
+          "metrics": {
+            "early8": {
+              "MSE": 0.13160296452244513,
+              "root_mean_MSE": 0.1114832825822302,
+              "within_root_action_contrast_MSE": 0.020119681940214885,
+              "predicted_action_contrast_SD": 0.09368196744042936,
+              "true_action_contrast_SD": 0.17933707236585508,
+              "centered_correlation_mean_head_seed": 0.6194668012036996,
+              "prediction_mean": 0.36179527121948457,
+              "truth_mean": 0.3303077361984325
+            },
+            "late_increment": {
+              "MSE": 0.07846936435698208,
+              "root_mean_MSE": 0.06276368026354794,
+              "within_root_action_contrast_MSE": 0.015705684093434157,
+              "predicted_action_contrast_SD": 0.035437180583690414,
+              "true_action_contrast_SD": 0.12979090732639173,
+              "centered_correlation_mean_head_seed": 0.2600962826360926,
+              "prediction_mean": 0.21729849639424323,
+              "truth_mean": 0.1932246361209198
+            },
+            "full16": {
+              "MSE": 0.126193432825667,
+              "root_mean_MSE": 0.10679331269024454,
+              "within_root_action_contrast_MSE": 0.019400120135422444,
+              "predicted_action_contrast_SD": 0.08179262377908461,
+              "true_action_contrast_SD": 0.1683941277565511,
+              "centered_correlation_mean_head_seed": 0.5680729897695801,
+              "prediction_mean": 0.5790937676137278,
+              "truth_mean": 0.5235323723193523
+            }
+          }
+        },
+        "opportunity16": {
+          "roots": 1139,
+          "metrics": {
+            "early8": {
+              "MSE": 0.11445245727202834,
+              "root_mean_MSE": 0.09170389512861324,
+              "within_root_action_contrast_MSE": 0.022748562143415096,
+              "predicted_action_contrast_SD": 0.09690678758020858,
+              "true_action_contrast_SD": 0.1946605176716106,
+              "centered_correlation_mean_head_seed": 0.6502883400412328,
+              "prediction_mean": 0.3242781435889855,
+              "truth_mean": 0.20415547694055672
+            },
+            "late_increment": {
+              "MSE": 0.08155637528851921,
+              "root_mean_MSE": 0.06350501255343481,
+              "within_root_action_contrast_MSE": 0.018051362735084404,
+              "predicted_action_contrast_SD": 0.03478269666618764,
+              "true_action_contrast_SD": 0.13972883611111833,
+              "centered_correlation_mean_head_seed": 0.275702033012882,
+              "prediction_mean": 0.21112383301167914,
+              "truth_mean": 0.2244180266487631
+            },
+            "full16": {
+              "MSE": 0.13805137162071066,
+              "root_mean_MSE": 0.11523636592965225,
+              "within_root_action_contrast_MSE": 0.022815005691058397,
+              "predicted_action_contrast_SD": 0.08701625528715685,
+              "true_action_contrast_SD": 0.18441253181005043,
+              "centered_correlation_mean_head_seed": 0.5846819419167114,
+              "prediction_mean": 0.5354019766006647,
+              "truth_mean": 0.42857350358931984
+            }
+          }
+        },
+        "only_after8": {
+          "roots": 137,
+          "metrics": {
+            "early8": {
+              "MSE": 0.08841909594147383,
+              "root_mean_MSE": 0.08352816024452595,
+              "within_root_action_contrast_MSE": 0.004890935696947883,
+              "predicted_action_contrast_SD": 0.06993522500820229,
+              "true_action_contrast_SD": 0.0,
+              "centered_correlation_mean_head_seed": null,
+              "prediction_mean": 0.2656856355398224,
+              "truth_mean": 0.0
+            },
+            "late_increment": {
+              "MSE": 0.05257143008639058,
+              "root_mean_MSE": 0.03561099309276274,
+              "within_root_action_contrast_MSE": 0.016960436993627842,
+              "predicted_action_contrast_SD": 0.02583344203003484,
+              "true_action_contrast_SD": 0.13568755420152143,
+              "centered_correlation_mean_head_seed": 0.30156213880375166,
+              "prediction_mean": 0.1872407714832967,
+              "truth_mean": 0.09615178188063546
+            },
+            "full16": {
+              "MSE": 0.18562615647135963,
+              "root_mean_MSE": 0.1720956428107407,
+              "within_root_action_contrast_MSE": 0.013530513660618892,
+              "predicted_action_contrast_SD": 0.07784286736146477,
+              "true_action_contrast_SD": 0.13568755420152143,
+              "centered_correlation_mean_head_seed": 0.5178100908381857,
+              "prediction_mean": 0.4529264070231191,
+              "truth_mean": 0.09615178188063546
+            }
+          }
+        }
+      },
+      "late_choice_changes_over_3_head_seeds": {
+        "changed": 926,
+        "improved": 267,
+        "worsened": 292,
+        "equal_outcome": 367,
+        "mean_safe_change": -0.0020302897319197655
+      }
+    }
+  }
+}

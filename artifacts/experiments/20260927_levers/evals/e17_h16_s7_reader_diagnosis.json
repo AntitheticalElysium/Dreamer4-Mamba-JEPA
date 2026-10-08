@@ -1,0 +1,1630 @@
+{
+  "scope": "Post-hoc CPU diagnosis of completed seed7 E17 H16 readers.\n\nRules fixed before execution: independently reproduce saved per-root safe choices;\npaired episode-cluster intervals against prior, attention, and snapshot; root\nzombie-adjacency strata. Then replay the selected trajectory heads on their exact\nsaved features, retaining hazard terms at steps1,1-4,1-8,9-16,5-16,16 or all16.\nNo head fitting, world forward, GPU, or parameter changes. This intervenes on the\nexisting reader's aggregation, not on world memory. It cannot locate information\nabsence or prove that a trained short-context world is equivalent to a long one.\nCPU full-reader reproduction (scores <=2e-5, safe mean <=1e-6, choices identical)\nis required before interpreting temporal interventions. Preserved source/input-\nbound batches and norms support resume. Logs are EDA; agents update NOTEBOOK.\n",
+  "contract": {
+    "scope": "Post-hoc CPU diagnosis of completed seed7 E17 H16 readers.\n\nRules fixed before execution: independently reproduce saved per-root safe choices;\npaired episode-cluster intervals against prior, attention, and snapshot; root\nzombie-adjacency strata. Then replay the selected trajectory heads on their exact\nsaved features, retaining hazard terms at steps1,1-4,1-8,9-16,5-16,16 or all16.\nNo head fitting, world forward, GPU, or parameter changes. This intervenes on the\nexisting reader's aggregation, not on world memory. It cannot locate information\nabsence or prove that a trained short-context world is equivalent to a long one.\nCPU full-reader reproduction (scores <=2e-5, safe mean <=1e-6, choices identical)\nis required before interpreting temporal interventions. Preserved source/input-\nbound batches and norms support resume. Logs are EDA; agents update NOTEBOOK.\n",
+    "script": "5fdeabe0332a7c915951d3539fecfec82b0330942951dac34536d94bde70e3df",
+    "storage": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+    "reader_source": "3779bc7936a6607173f68e98b4cd855593ab9d64f42c7261a4aa8331e40b3884",
+    "inputs": {
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef/contract.json": "e1da200e94213427bcf0d48055c9ecde518d051e0721a23a9eafa20713201c9a",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef/result.json": "aad3e0cd8e7710610aae8a676d8fae8dfc7c9b3d7a13b615ae3ab4964c1a7f33",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef/features_fit.f16": "3b49c7fadf1ebf73d514a35b501325340daf4ccf583fff95d54e83aae6aabb97",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef/features_dev.f16": "3f9ab20d631efa71aaf6d47f0c6e867f53bf35faa77d1f6056ffec4a7478d4a7",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef/result-1.pt": "e403e07e794ee09c2585ebd38d6d6c7c5b9bdf6c63465221aff30f3460fba1c0",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef/head_trajectory_0-4000.pt": "5ca477ae62e58edddf47004700994d2e2ae760bf701eec16ca88dc5a5264df8b",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef/head_trajectory_1-4000.pt": "d150ea954c9bb728bd35c0fc83567d4cfef5f90d1717271fcd9dfe810342b167",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef/head_trajectory_2-4000.pt": "7240b8d54006292ced66b15b699149b3ca19b79d71d1d83f536d624febff03d2",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/contract.json": "c79c0a719ced67f95ed480d8a0837239c41cb3f584e8b7b75a7a72187bd20260",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/result.json": "b1474bfdaa1fcb5e1b72612990acfed590bd081a5d9b6e7d8e9dfd0a964fda59",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/features_fit.f16": "238a997000ff6cad24df17677d9209772d3fe9af562af3b005e8a21f9fc7ca41",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/features_dev.f16": "f5a39d286e4ec2db48398eec3825ace2f316e29790950ab9b1ff796b290e6fea",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/result-1.pt": "0467accd44f2b55ea82e68e6679295dcfdc315b4d36fb576989cbf97331ffbd5",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/head_trajectory_0-4000.pt": "3b6fe79a5c5d270d98f5152fe58b876cb53887e2e7076f732e4e3e230ba1e424",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/head_trajectory_1-4000.pt": "61a5026b8ef6bd7257be6e9e3631711b322189343a23e088a7bf304d269e6738",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/head_trajectory_2-4000.pt": "db43e120586368e37877363ad4b8146df9f59eaca58ca18c8a782606caf8f5b9",
+      "artifacts/eda/deepeval_v1/fit_meta.pt": "5d70f8d51cee08b806fa18fbd90cccbfd99ac7d677901c6c122731cf186466c2",
+      "artifacts/eda/deepeval_v1/dev_meta.pt": "7ebc8537602d8d3042c104390e875b04b989e1c23a232d090e97c026464bb4d6"
+    },
+    "blocks": {
+      "full16": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "step1": [
+        0
+      ],
+      "first4": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "first8": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "last8": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "omit_first4": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "step16": [
+        15
+      ]
+    },
+    "bootstrap": {
+      "draws": 4000,
+      "seed": 20261007
+    },
+    "runtime": {
+      "torch": "2.13.0+cu130",
+      "numpy": "2.1.0",
+      "threads": 2,
+      "precision": "CPU FP32 with original FP16 feature standardization"
+    }
+  },
+  "prior_action": 4,
+  "worlds": {
+    "attention": {
+      "official": {
+        "continuation": {
+          "brier_all_k": 0.10356273502111435,
+          "auc_dead16_key0": 0.863230211597993
+        },
+        "trajectory": 0.6519516706466675,
+        "snapshot": 0.631475031375885,
+        "traj_minus_snapshot": {
+          "difference": 0.02047663927078247,
+          "interval": [
+            0.00759663013741374,
+            0.03334645554423332
+          ],
+          "excludes_zero": true
+        },
+        "window": 15
+      },
+      "reproduction_max_score_delta": 7.152557373046875e-07,
+      "reproduction_choice_mismatches": 0,
+      "strata": {
+        "all": {
+          "roots": 1139,
+          "prior": 0.6160832047462463,
+          "trajectory_minus_prior": {
+            "difference": 0.03586845472455025,
+            "interval95": [
+              0.013805650428379793,
+              0.06096565501790607
+            ],
+            "episode_seed_clusters": 149,
+            "roots": 1139
+          },
+          "trajectory_minus_snapshot": {
+            "difference": 0.02047666162252426,
+            "interval95": [
+              0.006230069342442774,
+              0.034320492976422076
+            ],
+            "episode_seed_clusters": 149,
+            "roots": 1139
+          },
+          "blocks": {
+            "full16": {
+              "safe": 0.6519516110420227,
+              "minus_full16": {
+                "difference": 0.0,
+                "interval95": [
+                  0.0,
+                  0.0
+                ],
+                "episode_seed_clusters": 149,
+                "roots": 1139
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                1,
+                830,
+                812,
+                645,
+                654,
+                226,
+                130,
+                6,
+                1,
+                66,
+                5,
+                33,
+                0,
+                0,
+                3,
+                2,
+                3
+              ]
+            },
+            "step1": {
+              "safe": 0.6388188004493713,
+              "minus_full16": {
+                "difference": -0.01313286554068327,
+                "interval95": [
+                  -0.031655686563156864,
+                  0.002585677933168978
+                ],
+                "episode_seed_clusters": 149,
+                "roots": 1139
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                884,
+                720,
+                553,
+                768,
+                211,
+                44,
+                2,
+                1,
+                91,
+                1,
+                130,
+                0,
+                2,
+                6,
+                4,
+                0
+              ]
+            },
+            "first4": {
+              "safe": 0.6502140164375305,
+              "minus_full16": {
+                "difference": -0.0017376358155161142,
+                "interval95": [
+                  -0.014051308583459097,
+                  0.010022783241744708
+                ],
+                "episode_seed_clusters": 149,
+                "roots": 1139
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                874,
+                814,
+                564,
+                725,
+                184,
+                82,
+                12,
+                0,
+                83,
+                0,
+                73,
+                0,
+                3,
+                2,
+                0,
+                1
+              ]
+            },
+            "first8": {
+              "safe": 0.6555183529853821,
+              "minus_full16": {
+                "difference": 0.003566725179553032,
+                "interval95": [
+                  -0.00425248632480074,
+                  0.011287492565290047
+                ],
+                "episode_seed_clusters": 149,
+                "roots": 1139
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                1,
+                883,
+                860,
+                563,
+                660,
+                213,
+                98,
+                11,
+                0,
+                82,
+                4,
+                37,
+                0,
+                0,
+                3,
+                0,
+                2
+              ]
+            },
+            "last8": {
+              "safe": 0.6281094551086426,
+              "minus_full16": {
+                "difference": -0.023842185735702515,
+                "interval95": [
+                  -0.03370705947589821,
+                  -0.014596019441945189
+                ],
+                "episode_seed_clusters": 149,
+                "roots": 1139
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                20,
+                626,
+                711,
+                723,
+                569,
+                326,
+                193,
+                43,
+                7,
+                75,
+                20,
+                37,
+                11,
+                5,
+                20,
+                12,
+                19
+              ]
+            },
+            "omit_first4": {
+              "safe": 0.6342277526855469,
+              "minus_full16": {
+                "difference": -0.01772388070821762,
+                "interval95": [
+                  -0.02724089187813275,
+                  -0.009400760118119071
+                ],
+                "episode_seed_clusters": 149,
+                "roots": 1139
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                19,
+                669,
+                793,
+                679,
+                575,
+                320,
+                158,
+                44,
+                5,
+                81,
+                16,
+                22,
+                5,
+                9,
+                8,
+                5,
+                9
+              ]
+            },
+            "step16": {
+              "safe": 0.5996670722961426,
+              "minus_full16": {
+                "difference": -0.05228453129529953,
+                "interval95": [
+                  -0.0645698681842986,
+                  -0.040529800518765306
+                ],
+                "episode_seed_clusters": 149,
+                "roots": 1139
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                72,
+                618,
+                669,
+                604,
+                551,
+                164,
+                329,
+                49,
+                34,
+                54,
+                58,
+                34,
+                30,
+                38,
+                50,
+                26,
+                37
+              ]
+            }
+          }
+        },
+        "adjacent_zombie": {
+          "roots": 599,
+          "prior": 0.5607783794403076,
+          "trajectory_minus_prior": {
+            "difference": 0.018729131668806076,
+            "interval95": [
+              -0.0022797839759192903,
+              0.03844452136765521
+            ],
+            "episode_seed_clusters": 125,
+            "roots": 599
+          },
+          "trajectory_minus_snapshot": {
+            "difference": 0.019007371738553047,
+            "interval95": [
+              0.004094464277466059,
+              0.0325421880193727
+            ],
+            "episode_seed_clusters": 125,
+            "roots": 599
+          },
+          "blocks": {
+            "full16": {
+              "safe": 0.5795075297355652,
+              "minus_full16": {
+                "difference": 0.0,
+                "interval95": [
+                  0.0,
+                  0.0
+                ],
+                "episode_seed_clusters": 125,
+                "roots": 599
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                1,
+                465,
+                477,
+                384,
+                346,
+                89,
+                15,
+                1,
+                0,
+                12,
+                1,
+                5,
+                0,
+                0,
+                0,
+                1,
+                0
+              ]
+            },
+            "step1": {
+              "safe": 0.578794538974762,
+              "minus_full16": {
+                "difference": -0.0007129933219403028,
+                "interval95": [
+                  -0.011570941217793713,
+                  0.011274948111358787
+                ],
+                "episode_seed_clusters": 125,
+                "roots": 599
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                559,
+                415,
+                287,
+                416,
+                55,
+                14,
+                0,
+                0,
+                18,
+                0,
+                33,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "first4": {
+              "safe": 0.5814899802207947,
+              "minus_full16": {
+                "difference": 0.0019824712071567774,
+                "interval95": [
+                  -0.007288653552532196,
+                  0.012413973984627472
+                ],
+                "episode_seed_clusters": 125,
+                "roots": 599
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                496,
+                480,
+                315,
+                404,
+                47,
+                19,
+                2,
+                0,
+                20,
+                0,
+                14,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "first8": {
+              "safe": 0.5841158628463745,
+              "minus_full16": {
+                "difference": 0.004608375020325184,
+                "interval95": [
+                  -0.0012481131500865208,
+                  0.011340548884135273
+                ],
+                "episode_seed_clusters": 125,
+                "roots": 599
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                507,
+                522,
+                317,
+                354,
+                60,
+                12,
+                2,
+                0,
+                14,
+                1,
+                8,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "last8": {
+              "safe": 0.5620130300521851,
+              "minus_full16": {
+                "difference": -0.017494434490799904,
+                "interval95": [
+                  -0.030238362027787943,
+                  -0.005138508023309217
+                ],
+                "episode_seed_clusters": 125,
+                "roots": 599
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                5,
+                355,
+                410,
+                412,
+                286,
+                178,
+                36,
+                19,
+                4,
+                28,
+                12,
+                18,
+                6,
+                3,
+                10,
+                7,
+                8
+              ]
+            },
+            "omit_first4": {
+              "safe": 0.5667605400085449,
+              "minus_full16": {
+                "difference": -0.01274693850427866,
+                "interval95": [
+                  -0.024880840379666126,
+                  -0.002031518313253243
+                ],
+                "episode_seed_clusters": 125,
+                "roots": 599
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                5,
+                377,
+                458,
+                390,
+                290,
+                159,
+                30,
+                21,
+                1,
+                33,
+                7,
+                8,
+                2,
+                6,
+                2,
+                3,
+                5
+              ]
+            },
+            "step16": {
+              "safe": 0.5320499539375305,
+              "minus_full16": {
+                "difference": -0.04745756834745407,
+                "interval95": [
+                  -0.062434031932460346,
+                  -0.032554439346410946
+                ],
+                "episode_seed_clusters": 125,
+                "roots": 599
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                32,
+                335,
+                378,
+                357,
+                298,
+                84,
+                108,
+                28,
+                13,
+                29,
+                27,
+                18,
+                16,
+                19,
+                29,
+                7,
+                19
+              ]
+            }
+          }
+        },
+        "no_adjacent_zombie": {
+          "roots": 540,
+          "prior": 0.6774305701255798,
+          "trajectory_minus_prior": {
+            "difference": 0.054880402982234955,
+            "interval95": [
+              0.01743030125953451,
+              0.09628033443535962
+            ],
+            "episode_seed_clusters": 137,
+            "roots": 540
+          },
+          "trajectory_minus_snapshot": {
+            "difference": 0.022106481716036797,
+            "interval95": [
+              -0.002440841993642319,
+              0.0464057698807768
+            ],
+            "episode_seed_clusters": 137,
+            "roots": 540
+          },
+          "blocks": {
+            "full16": {
+              "safe": 0.732310950756073,
+              "minus_full16": {
+                "difference": 0.0,
+                "interval95": [
+                  0.0,
+                  0.0
+                ],
+                "episode_seed_clusters": 137,
+                "roots": 540
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                365,
+                335,
+                261,
+                308,
+                137,
+                115,
+                5,
+                1,
+                54,
+                4,
+                28,
+                0,
+                0,
+                3,
+                1,
+                3
+              ]
+            },
+            "step1": {
+              "safe": 0.7054013013839722,
+              "minus_full16": {
+                "difference": -0.02690972201526165,
+                "interval95": [
+                  -0.06146656844212506,
+                  0.0021662983359468035
+                ],
+                "episode_seed_clusters": 137,
+                "roots": 540
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                325,
+                305,
+                266,
+                352,
+                156,
+                30,
+                2,
+                1,
+                73,
+                1,
+                97,
+                0,
+                2,
+                6,
+                4,
+                0
+              ]
+            },
+            "first4": {
+              "safe": 0.7264467477798462,
+              "minus_full16": {
+                "difference": -0.005864197388291359,
+                "interval95": [
+                  -0.02756081102453211,
+                  0.014971389158068157
+                ],
+                "episode_seed_clusters": 137,
+                "roots": 540
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                378,
+                334,
+                249,
+                321,
+                137,
+                63,
+                10,
+                0,
+                63,
+                0,
+                59,
+                0,
+                3,
+                2,
+                0,
+                1
+              ]
+            },
+            "first8": {
+              "safe": 0.7347221970558167,
+              "minus_full16": {
+                "difference": 0.002411265391856432,
+                "interval95": [
+                  -0.01195388139108491,
+                  0.01634919539670989
+                ],
+                "episode_seed_clusters": 137,
+                "roots": 540
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                1,
+                376,
+                338,
+                246,
+                306,
+                153,
+                86,
+                9,
+                0,
+                68,
+                3,
+                29,
+                0,
+                0,
+                3,
+                0,
+                2
+              ]
+            },
+            "last8": {
+              "safe": 0.7014274597167969,
+              "minus_full16": {
+                "difference": -0.030883485451340675,
+                "interval95": [
+                  -0.04793249325335478,
+                  -0.015571857259628619
+                ],
+                "episode_seed_clusters": 137,
+                "roots": 540
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                15,
+                271,
+                301,
+                311,
+                283,
+                148,
+                157,
+                24,
+                3,
+                47,
+                8,
+                19,
+                5,
+                2,
+                10,
+                5,
+                11
+              ]
+            },
+            "omit_first4": {
+              "safe": 0.7090663909912109,
+              "minus_full16": {
+                "difference": -0.023244598880410194,
+                "interval95": [
+                  -0.039747677533373126,
+                  -0.010060042438818478
+                ],
+                "episode_seed_clusters": 137,
+                "roots": 540
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                14,
+                292,
+                335,
+                289,
+                285,
+                161,
+                128,
+                23,
+                4,
+                48,
+                9,
+                14,
+                3,
+                3,
+                6,
+                2,
+                4
+              ]
+            },
+            "step16": {
+              "safe": 0.6746721267700195,
+              "minus_full16": {
+                "difference": -0.05763888731598854,
+                "interval95": [
+                  -0.07945402404227425,
+                  -0.037431503507452786
+                ],
+                "episode_seed_clusters": 137,
+                "roots": 540
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                40,
+                283,
+                291,
+                247,
+                253,
+                80,
+                221,
+                21,
+                21,
+                25,
+                31,
+                16,
+                14,
+                19,
+                21,
+                19,
+                18
+              ]
+            }
+          }
+        }
+      }
+    },
+    "mamba": {
+      "official": {
+        "continuation": {
+          "brier_all_k": 0.12673724939425787,
+          "auc_dead16_key0": 0.8230676251329937
+        },
+        "trajectory": 0.6572651267051697,
+        "snapshot": 0.6226222515106201,
+        "traj_minus_snapshot": {
+          "difference": 0.03464287519454956,
+          "interval": [
+            0.021865572780370712,
+            0.04825145751237869
+          ],
+          "excludes_zero": true
+        },
+        "window": 15
+      },
+      "reproduction_max_score_delta": 4.172325134277344e-07,
+      "reproduction_choice_mismatches": 0,
+      "strata": {
+        "all": {
+          "roots": 1139,
+          "prior": 0.6160832047462463,
+          "trajectory_minus_prior": {
+            "difference": 0.041181959211826324,
+            "interval95": [
+              0.020717142748457856,
+              0.06425787331664892
+            ],
+            "episode_seed_clusters": 149,
+            "roots": 1139
+          },
+          "trajectory_minus_snapshot": {
+            "difference": 0.034642960876226425,
+            "interval95": [
+              0.021358882586370656,
+              0.0476972397285862
+            ],
+            "episode_seed_clusters": 149,
+            "roots": 1139
+          },
+          "blocks": {
+            "full16": {
+              "safe": 0.6572651267051697,
+              "minus_full16": {
+                "difference": 0.0,
+                "interval95": [
+                  0.0,
+                  0.0
+                ],
+                "episode_seed_clusters": 149,
+                "roots": 1139
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                814,
+                856,
+                689,
+                808,
+                148,
+                77,
+                3,
+                1,
+                12,
+                0,
+                4,
+                0,
+                2,
+                1,
+                2,
+                0
+              ]
+            },
+            "step1": {
+              "safe": 0.6281093955039978,
+              "minus_full16": {
+                "difference": -0.029155690222978592,
+                "interval95": [
+                  -0.04930259555541774,
+                  -0.01198739811924158
+                ],
+                "episode_seed_clusters": 149,
+                "roots": 1139
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                979,
+                650,
+                445,
+                1067,
+                115,
+                159,
+                0,
+                0,
+                0,
+                0,
+                2,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "first4": {
+              "safe": 0.6494823098182678,
+              "minus_full16": {
+                "difference": -0.007782776840031147,
+                "interval95": [
+                  -0.019604644486540156,
+                  0.002494125365808019
+                ],
+                "episode_seed_clusters": 149,
+                "roots": 1139
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                941,
+                784,
+                546,
+                938,
+                109,
+                92,
+                1,
+                0,
+                4,
+                0,
+                2,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "first8": {
+              "safe": 0.6592954397201538,
+              "minus_full16": {
+                "difference": 0.002030289964750409,
+                "interval95": [
+                  -0.004268076966469087,
+                  0.008885615324760532
+                ],
+                "episode_seed_clusters": 149,
+                "roots": 1139
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                875,
+                859,
+                611,
+                864,
+                129,
+                68,
+                1,
+                2,
+                4,
+                0,
+                2,
+                0,
+                0,
+                0,
+                2,
+                0
+              ]
+            },
+            "last8": {
+              "safe": 0.6265456080436707,
+              "minus_full16": {
+                "difference": -0.030719567090272903,
+                "interval95": [
+                  -0.04310814052127023,
+                  -0.01953346862117483
+                ],
+                "episode_seed_clusters": 149,
+                "roots": 1139
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                31,
+                699,
+                799,
+                690,
+                634,
+                157,
+                148,
+                47,
+                34,
+                30,
+                36,
+                13,
+                20,
+                9,
+                30,
+                18,
+                22
+              ]
+            },
+            "omit_first4": {
+              "safe": 0.636651337146759,
+              "minus_full16": {
+                "difference": -0.020613843575119972,
+                "interval95": [
+                  -0.030010399700090125,
+                  -0.012164641771328295
+                ],
+                "episode_seed_clusters": 149,
+                "roots": 1139
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                24,
+                670,
+                847,
+                694,
+                685,
+                160,
+                98,
+                47,
+                47,
+                28,
+                29,
+                16,
+                12,
+                11,
+                19,
+                10,
+                20
+              ]
+            },
+            "step16": {
+              "safe": 0.5961918234825134,
+              "minus_full16": {
+                "difference": -0.06107331067323685,
+                "interval95": [
+                  -0.07633210043817482,
+                  -0.04670803558335279
+                ],
+                "episode_seed_clusters": 149,
+                "roots": 1139
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                50,
+                653,
+                714,
+                603,
+                507,
+                152,
+                285,
+                52,
+                55,
+                58,
+                41,
+                41,
+                47,
+                32,
+                33,
+                36,
+                58
+              ]
+            }
+          }
+        },
+        "adjacent_zombie": {
+          "roots": 599,
+          "prior": 0.5607783794403076,
+          "trajectory_minus_prior": {
+            "difference": 0.030693519860506058,
+            "interval95": [
+              0.010660337724069642,
+              0.05078018577739205
+            ],
+            "episode_seed_clusters": 125,
+            "roots": 599
+          },
+          "trajectory_minus_snapshot": {
+            "difference": 0.0430578738451004,
+            "interval95": [
+              0.028434610834213506,
+              0.058284164044229994
+            ],
+            "episode_seed_clusters": 125,
+            "roots": 599
+          },
+          "blocks": {
+            "full16": {
+              "safe": 0.5914719104766846,
+              "minus_full16": {
+                "difference": 0.0,
+                "interval95": [
+                  0.0,
+                  0.0
+                ],
+                "episode_seed_clusters": 125,
+                "roots": 599
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                460,
+                521,
+                355,
+                413,
+                31,
+                14,
+                0,
+                0,
+                2,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            "step1": {
+              "safe": 0.5679256916046143,
+              "minus_full16": {
+                "difference": -0.023546189069747925,
+                "interval95": [
+                  -0.039797966443404956,
+                  -0.008462150457073702
+                ],
+                "episode_seed_clusters": 125,
+                "roots": 599
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                577,
+                402,
+                214,
+                552,
+                8,
+                44,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "first4": {
+              "safe": 0.5854723453521729,
+              "minus_full16": {
+                "difference": -0.0059995828196406364,
+                "interval95": [
+                  -0.015473009099515808,
+                  0.0029995874315493875
+                ],
+                "episode_seed_clusters": 125,
+                "roots": 599
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                531,
+                478,
+                267,
+                500,
+                10,
+                11,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "first8": {
+              "safe": 0.5933152437210083,
+              "minus_full16": {
+                "difference": 0.0018433505902066827,
+                "interval95": [
+                  -0.005251572852937615,
+                  0.009011613296940838
+                ],
+                "episode_seed_clusters": 125,
+                "roots": 599
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                483,
+                518,
+                307,
+                456,
+                26,
+                7,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "last8": {
+              "safe": 0.5577350854873657,
+              "minus_full16": {
+                "difference": -0.033736780285835266,
+                "interval95": [
+                  -0.04551172317267775,
+                  -0.021945695959579258
+                ],
+                "episode_seed_clusters": 125,
+                "roots": 599
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                14,
+                403,
+                456,
+                342,
+                311,
+                77,
+                72,
+                19,
+                20,
+                16,
+                19,
+                7,
+                11,
+                5,
+                12,
+                6,
+                7
+              ]
+            },
+            "omit_first4": {
+              "safe": 0.5780641436576843,
+              "minus_full16": {
+                "difference": -0.013407763093709946,
+                "interval95": [
+                  -0.02222791946023285,
+                  -0.005166545294452865
+                ],
+                "episode_seed_clusters": 125,
+                "roots": 599
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                13,
+                387,
+                490,
+                350,
+                346,
+                71,
+                39,
+                13,
+                20,
+                11,
+                10,
+                7,
+                5,
+                6,
+                12,
+                6,
+                11
+              ]
+            },
+            "step16": {
+              "safe": 0.520485520362854,
+              "minus_full16": {
+                "difference": -0.07098636776208878,
+                "interval95": [
+                  -0.08776380721754411,
+                  -0.05364289269502192
+                ],
+                "episode_seed_clusters": 125,
+                "roots": 599
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                25,
+                358,
+                396,
+                316,
+                250,
+                69,
+                153,
+                25,
+                28,
+                30,
+                16,
+                24,
+                19,
+                18,
+                19,
+                14,
+                37
+              ]
+            }
+          }
+        },
+        "no_adjacent_zombie": {
+          "roots": 540,
+          "prior": 0.6774305701255798,
+          "trajectory_minus_prior": {
+            "difference": 0.05281635746359825,
+            "interval95": [
+              0.016823228399251454,
+              0.09394066889270963
+            ],
+            "episode_seed_clusters": 137,
+            "roots": 540
+          },
+          "trajectory_minus_snapshot": {
+            "difference": 0.02530864253640175,
+            "interval95": [
+              0.0032463077008237254,
+              0.04783644031184214
+            ],
+            "episode_seed_clusters": 137,
+            "roots": 540
+          },
+          "blocks": {
+            "full16": {
+              "safe": 0.730246901512146,
+              "minus_full16": {
+                "difference": 0.0,
+                "interval95": [
+                  0.0,
+                  0.0
+                ],
+                "episode_seed_clusters": 137,
+                "roots": 540
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                354,
+                335,
+                334,
+                395,
+                117,
+                63,
+                3,
+                1,
+                10,
+                0,
+                4,
+                0,
+                2,
+                0,
+                2,
+                0
+              ]
+            },
+            "step1": {
+              "safe": 0.694868803024292,
+              "minus_full16": {
+                "difference": -0.03537808358669281,
+                "interval95": [
+                  -0.0717630599648404,
+                  -0.005198100005442798
+                ],
+                "episode_seed_clusters": 137,
+                "roots": 540
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                402,
+                248,
+                231,
+                515,
+                107,
+                115,
+                0,
+                0,
+                0,
+                0,
+                2,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "first4": {
+              "safe": 0.7204861044883728,
+              "minus_full16": {
+                "difference": -0.009760800749063492,
+                "interval95": [
+                  -0.031250881220886956,
+                  0.009633827200354153
+                ],
+                "episode_seed_clusters": 137,
+                "roots": 540
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                410,
+                306,
+                279,
+                438,
+                99,
+                81,
+                1,
+                0,
+                4,
+                0,
+                2,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "first8": {
+              "safe": 0.7324845790863037,
+              "minus_full16": {
+                "difference": 0.0022376547567546368,
+                "interval95": [
+                  -0.007702679143040059,
+                  0.011827514560162814
+                ],
+                "episode_seed_clusters": 137,
+                "roots": 540
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                0,
+                392,
+                341,
+                304,
+                408,
+                103,
+                61,
+                1,
+                2,
+                4,
+                0,
+                2,
+                0,
+                0,
+                0,
+                2,
+                0
+              ]
+            },
+            "last8": {
+              "safe": 0.7028742432594299,
+              "minus_full16": {
+                "difference": -0.027372684329748154,
+                "interval95": [
+                  -0.05078637011632378,
+                  -0.008007584023702259
+                ],
+                "episode_seed_clusters": 137,
+                "roots": 540
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                17,
+                296,
+                343,
+                348,
+                323,
+                80,
+                76,
+                28,
+                14,
+                14,
+                17,
+                6,
+                9,
+                4,
+                18,
+                12,
+                15
+              ]
+            },
+            "omit_first4": {
+              "safe": 0.701639711856842,
+              "minus_full16": {
+                "difference": -0.02860725298523903,
+                "interval95": [
+                  -0.04619574883621336,
+                  -0.013004988038654193
+                ],
+                "episode_seed_clusters": 137,
+                "roots": 540
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                11,
+                283,
+                357,
+                344,
+                339,
+                89,
+                59,
+                34,
+                27,
+                17,
+                19,
+                9,
+                7,
+                5,
+                7,
+                4,
+                9
+              ]
+            },
+            "step16": {
+              "safe": 0.6801697611808777,
+              "minus_full16": {
+                "difference": -0.0500771589577198,
+                "interval95": [
+                  -0.07459571023516863,
+                  -0.027920717553483524
+                ],
+                "episode_seed_clusters": 137,
+                "roots": 540
+              },
+              "chosen_actions_counts_over_3_head_seeds": [
+                25,
+                295,
+                318,
+                287,
+                257,
+                83,
+                132,
+                27,
+                27,
+                28,
+                25,
+                17,
+                28,
+                14,
+                14,
+                22,
+                21
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "mamba_minus_attention": {
+    "all": {
+      "difference": 0.0053135063499212265,
+      "interval95": [
+        -0.004406034121554436,
+        0.015444775904257467
+      ],
+      "episode_seed_clusters": 149,
+      "roots": 1139
+    },
+    "adjacent_zombie": {
+      "difference": 0.011964385397732258,
+      "interval95": [
+        0.0008304690452690058,
+        0.024141335324182417
+      ],
+      "episode_seed_clusters": 125,
+      "roots": 599
+    },
+    "no_adjacent_zombie": {
+      "difference": -0.0020640427246689796,
+      "interval95": [
+        -0.015664333883581166,
+        0.011723359478578136
+      ],
+      "episode_seed_clusters": 137,
+      "roots": 540
+    }
+  },
+  "head_seed_averaging": "mean safe score of each seed own choice; not an ensemble choice"
+}

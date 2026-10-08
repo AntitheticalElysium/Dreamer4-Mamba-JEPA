@@ -1,0 +1,623 @@
+{
+  "corrt_raw_teacher_s7_fmamba_u36000": {
+    "split_max_abs_error": 1.6689300537109375e-06,
+    "checkpoint_sha256": "39551edb613f1db718bdb5187ba7488fd633488ac0da427fc00dd0b15d917bbf",
+    "same": {
+      "split": {
+        "original_error": 26.395626068115234,
+        "reset_error_change": {
+          "mean": 0.0,
+          "interval": [
+            0.0,
+            0.0
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "sighting_swap_error_change": {
+          "mean": 107.57712039000035,
+          "interval": [
+            72.88651691274858,
+            140.33600735130807
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "donor_pull": {
+          "mean": 0.24887079790835287,
+          "interval": [
+            0.1738086556252459,
+            0.328775530120359
+          ],
+          "cases": 64,
+          "clusters": 55
+        }
+      },
+      "ssm": {
+        "original_error": 44.27783966064453,
+        "reset_error_change": {
+          "mean": 17.88221187810268,
+          "interval": [
+            -0.6923654596352313,
+            40.73240543531598
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "sighting_swap_error_change": {
+          "mean": 52.32853536739276,
+          "interval": [
+            29.328245158843757,
+            77.2445526060726
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "donor_pull": {
+          "mean": 0.1366135914887252,
+          "interval": [
+            0.08164676125061805,
+            0.20136578575435501
+          ],
+          "cases": 64,
+          "clusters": 55
+        }
+      },
+      "conv": {
+        "original_error": 52.134376525878906,
+        "reset_error_change": {
+          "mean": 25.738750662028906,
+          "interval": [
+            7.265012609275437,
+            49.37015573600758
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "sighting_swap_error_change": {
+          "mean": 31.116809286795615,
+          "interval": [
+            11.026103142175723,
+            54.37752407492549
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "donor_pull": {
+          "mean": 0.07491145439111335,
+          "interval": [
+            0.030165678934747253,
+            0.13092060240239992
+          ],
+          "cases": 64,
+          "clusters": 55
+        }
+      },
+      "both": {
+        "original_error": 63.26923751831055,
+        "reset_error_change": {
+          "mean": 36.87360821987386,
+          "interval": [
+            13.82227015729775,
+            64.95379084876961
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "sighting_swap_error_change": {
+          "mean": 0.3362774970009923,
+          "interval": [
+            -0.08418098748539314,
+            0.9068101515649911
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "donor_pull": {
+          "mean": 0.0013489299860376391,
+          "interval": [
+            -5.7825623194941746e-05,
+            0.0040903001113837606
+          ],
+          "cases": 64,
+          "clusters": 55
+        }
+      },
+      "unrelated_both": {
+        "original_error": 26.335853576660156,
+        "reset_error_change": {
+          "mean": -0.059770258485514205,
+          "interval": [
+            -0.1600117685206217,
+            -0.004378905951196161
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "sighting_swap_error_change": {
+          "mean": 107.4587861341206,
+          "interval": [
+            72.51294489471232,
+            140.33698946184882
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "donor_pull": {
+          "mean": 0.2486344423700757,
+          "interval": [
+            0.173576194288217,
+            0.32822142489855854
+          ],
+          "cases": 64,
+          "clusters": 55
+        }
+      }
+    },
+    "moved": {
+      "split": {
+        "original_error": 42.97988510131836,
+        "reset_error_change": {
+          "mean": 0.0,
+          "interval": [
+            0.0,
+            0.0
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "sighting_swap_error_change": {
+          "mean": -0.06486403713643085,
+          "interval": [
+            -0.5376344149235159,
+            0.3049153884610118
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "donor_pull": {
+          "mean": -0.00037153684169055623,
+          "interval": [
+            -0.0012337639908778079,
+            0.000380513040649746
+          ],
+          "cases": 64,
+          "clusters": 30
+        }
+      },
+      "ssm": {
+        "original_error": 43.27619552612305,
+        "reset_error_change": {
+          "mean": 0.2963127727052779,
+          "interval": [
+            -1.1924664940747627,
+            1.7699118728460077
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "sighting_swap_error_change": {
+          "mean": -0.13945415525813587,
+          "interval": [
+            -0.3742130234812222,
+            0.06279083854543609
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "donor_pull": {
+          "mean": -0.0003487562099024899,
+          "interval": [
+            -0.0009553206861683186,
+            0.00017673208135188695
+          ],
+          "cases": 64,
+          "clusters": 30
+        }
+      },
+      "conv": {
+        "original_error": 44.845428466796875,
+        "reset_error_change": {
+          "mean": 1.8655390432541026,
+          "interval": [
+            -2.246806006028846,
+            6.952953339487908
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "sighting_swap_error_change": {
+          "mean": -0.6183960630733054,
+          "interval": [
+            -1.8577685564337434,
+            0.19172619504946106
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "donor_pull": {
+          "mean": -0.0010012318999201852,
+          "interval": [
+            -0.002670803660236307,
+            0.00016736785113571367
+          ],
+          "cases": 64,
+          "clusters": 30
+        }
+      },
+      "both": {
+        "original_error": 44.75307846069336,
+        "reset_error_change": {
+          "mean": 1.77319498223369,
+          "interval": [
+            -1.6312764229011094,
+            5.854364897501207
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "sighting_swap_error_change": {
+          "mean": 0.37653664099343587,
+          "interval": [
+            -0.06175131033829776,
+            0.9479211295165281
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "donor_pull": {
+          "mean": 0.0003724541259693126,
+          "interval": [
+            -0.0003714001553895662,
+            0.0012474488319785344
+          ],
+          "cases": 64,
+          "clusters": 30
+        }
+      },
+      "unrelated_both": {
+        "original_error": 43.040687561035156,
+        "reset_error_change": {
+          "mean": 0.06080132488568779,
+          "interval": [
+            0.0001338430575895449,
+            0.15800006168944616
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "sighting_swap_error_change": {
+          "mean": -0.05762413190677762,
+          "interval": [
+            -0.5236802911049282,
+            0.3023393158290554
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "donor_pull": {
+          "mean": -0.00034166534567248164,
+          "interval": [
+            -0.001171409381925068,
+            0.0003694301259135747
+          ],
+          "cases": 64,
+          "clusters": 30
+        }
+      }
+    }
+  },
+  "corrt_raw_teacher_s8_fmamba_u36000": {
+    "split_max_abs_error": 3.7550926208496094e-06,
+    "checkpoint_sha256": "2cc73a6701beb7a60b2803a659c0137aaaa3ef4444ce0c0b4dce901ade6404ee",
+    "same": {
+      "split": {
+        "original_error": 29.077091217041016,
+        "reset_error_change": {
+          "mean": 0.0,
+          "interval": [
+            0.0,
+            0.0
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "sighting_swap_error_change": {
+          "mean": 91.97464322954693,
+          "interval": [
+            60.77493863779761,
+            122.26724196956259
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "donor_pull": {
+          "mean": 0.25660662325060457,
+          "interval": [
+            0.17523345792553818,
+            0.3372327247504292
+          ],
+          "cases": 64,
+          "clusters": 55
+        }
+      },
+      "ssm": {
+        "original_error": 35.360206604003906,
+        "reset_error_change": {
+          "mean": 6.28311889440738,
+          "interval": [
+            -3.0291381786952094,
+            17.859774082467773
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "sighting_swap_error_change": {
+          "mean": 34.08229329768437,
+          "interval": [
+            14.543575858772492,
+            55.44324254211956
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "donor_pull": {
+          "mean": 0.09774249112572875,
+          "interval": [
+            0.04444579686973513,
+            0.15648068573597043
+          ],
+          "cases": 64,
+          "clusters": 55
+        }
+      },
+      "conv": {
+        "original_error": 60.618934631347656,
+        "reset_error_change": {
+          "mean": 31.541843935665383,
+          "interval": [
+            12.284903842805964,
+            55.46714261491442
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "sighting_swap_error_change": {
+          "mean": 10.839231102232588,
+          "interval": [
+            -1.145578521327248,
+            25.022373147848533
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "donor_pull": {
+          "mean": 0.0340678024649268,
+          "interval": [
+            0.001967272866935333,
+            0.07279845707370883
+          ],
+          "cases": 64,
+          "clusters": 55
+        }
+      },
+      "both": {
+        "original_error": 56.144935607910156,
+        "reset_error_change": {
+          "mean": 27.06784513209641,
+          "interval": [
+            11.954856881808055,
+            45.00683097120613
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "sighting_swap_error_change": {
+          "mean": 0.31306116093037417,
+          "interval": [
+            -0.04319821223984809,
+            1.0164409161412935
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "donor_pull": {
+          "mean": 0.0010004597912329771,
+          "interval": [
+            -0.00014572999860648465,
+            0.003263143149546392
+          ],
+          "cases": 64,
+          "clusters": 55
+        }
+      },
+      "unrelated_both": {
+        "original_error": 29.129362106323242,
+        "reset_error_change": {
+          "mean": 0.052270761527324794,
+          "interval": [
+            -0.014946940448966675,
+            0.13943982696559248
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "sighting_swap_error_change": {
+          "mean": 91.97158130232492,
+          "interval": [
+            60.8294141666385,
+            122.30253116711403
+          ],
+          "cases": 64,
+          "clusters": 55
+        },
+        "donor_pull": {
+          "mean": 0.25686393080059133,
+          "interval": [
+            0.17553661525437206,
+            0.3384315621210975
+          ],
+          "cases": 64,
+          "clusters": 55
+        }
+      }
+    },
+    "moved": {
+      "split": {
+        "original_error": 52.90550231933594,
+        "reset_error_change": {
+          "mean": 0.0,
+          "interval": [
+            0.0,
+            0.0
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "sighting_swap_error_change": {
+          "mean": 0.6027074422599981,
+          "interval": [
+            0.050894203366020296,
+            1.2548041082761816
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "donor_pull": {
+          "mean": 0.0007495251528704117,
+          "interval": [
+            -0.0006170909772826355,
+            0.0023356986175608243
+          ],
+          "cases": 64,
+          "clusters": 30
+        }
+      },
+      "ssm": {
+        "original_error": 47.20020294189453,
+        "reset_error_change": {
+          "mean": -5.705292715283576,
+          "interval": [
+            -27.02477757149091,
+            6.080139727682606
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "sighting_swap_error_change": {
+          "mean": 0.6432341049803654,
+          "interval": [
+            -0.5618602523367906,
+            2.1878539529318606
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "donor_pull": {
+          "mean": 0.0008993180274430301,
+          "interval": [
+            -0.0008515652114836258,
+            0.0033497587971598815
+          ],
+          "cases": 64,
+          "clusters": 30
+        }
+      },
+      "conv": {
+        "original_error": 45.85399627685547,
+        "reset_error_change": {
+          "mean": -7.051500092711649,
+          "interval": [
+            -26.96898549471411,
+            3.028737511817025
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "sighting_swap_error_change": {
+          "mean": 0.4169191262626555,
+          "interval": [
+            -0.5316413952476435,
+            1.2700941219984294
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "donor_pull": {
+          "mean": -0.0005568101643920187,
+          "interval": [
+            -0.002757355946249424,
+            0.0012663836065238633
+          ],
+          "cases": 64,
+          "clusters": 30
+        }
+      },
+      "both": {
+        "original_error": 48.98777770996094,
+        "reset_error_change": {
+          "mean": -3.9177234402741306,
+          "interval": [
+            -26.280333339217744,
+            11.117773639685913
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "sighting_swap_error_change": {
+          "mean": 0.4074624718632549,
+          "interval": [
+            0.008786287337958736,
+            0.8423141746352175
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "donor_pull": {
+          "mean": 7.857348371942408e-07,
+          "interval": [
+            -0.0004849381992372209,
+            0.0005181473177603915
+          ],
+          "cases": 64,
+          "clusters": 30
+        }
+      },
+      "unrelated_both": {
+        "original_error": 52.95192337036133,
+        "reset_error_change": {
+          "mean": 0.04642182419775054,
+          "interval": [
+            0.003690694972842406,
+            0.10299226324087662
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "sighting_swap_error_change": {
+          "mean": 0.6087426338926889,
+          "interval": [
+            0.05145752478405484,
+            1.2702871641618971
+          ],
+          "cases": 64,
+          "clusters": 30
+        },
+        "donor_pull": {
+          "mean": 0.0007615653538235456,
+          "interval": [
+            -0.0006115174454539519,
+            0.0023591280667195425
+          ],
+          "cases": 64,
+          "clusters": 30
+        }
+      }
+    }
+  },
+  "_provenance": {
+    "script_sha256": "9df33d64cd0897ba3c88a3c37ee860f127ad000ee43172b8cd452cdd7848fae6",
+    "plan_sha256": "502311f580e7971de6486b5313fe9874ff743ae5d3e075567c58beb8c72b455d",
+    "parent_rows_sha256": "9ba27b89211506c477c2663117aa9870f86d4bcd01df33fa6be76dff26d5c7a9"
+  }
+}

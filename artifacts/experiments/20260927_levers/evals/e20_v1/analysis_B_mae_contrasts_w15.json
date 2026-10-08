@@ -1,0 +1,54 @@
+{
+  "ordinary": {
+    "point": 0.11219952268839738,
+    "interval95": [
+      0.031037348185921812,
+      0.2041938544583404
+    ],
+    "episode_clusters": 143,
+    "denominator": 279.0
+  },
+  "beside_hit": {
+    "point": 0.14363970323042435,
+    "interval95": [
+      0.04102844869441912,
+      0.2601222235436647
+    ],
+    "episode_clusters": 143,
+    "denominator": 220.0
+  },
+  "fresh": {
+    "point": 0.007125516091623614,
+    "interval95": [
+      0.002229217759200505,
+      0.011763413385911418
+    ],
+    "episode_clusters": 143,
+    "denominator": 31.0
+  },
+  "unchanged": {
+    "point": -0.003136017177483269,
+    "interval95": [
+      -0.005689722283909969,
+      -0.0013146734247210246
+    ],
+    "episode_clusters": 143,
+    "denominator": 12623.0
+  },
+  "new_catches": {
+    "point": 2.039551762973561,
+    "interval95": [
+      1.4544185509284338,
+      2.485018682103408
+    ],
+    "episode_clusters": 143,
+    "denominator": 17.0
+  },
+  "new_catch_hp": {
+    "median": 0.5645910501480103,
+    "mean": 1.0108559131622314,
+    "below1": 13,
+    "below1_5": 15,
+    "n": 17
+  }
+}

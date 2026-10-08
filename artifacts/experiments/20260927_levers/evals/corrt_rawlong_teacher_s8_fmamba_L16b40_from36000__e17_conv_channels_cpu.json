@@ -1,0 +1,175 @@
+{
+  "scope": "CPU follow-up: identify which convolution branch supplies Long-Mamba recall.\n\nFull200-root recurrence test: s7 needs older conv taps while s8 retains recall\nwithout them. Remove older taps separately in x, B and C, preserving newest tap\nand all other weights. Reuse intact per-root records after exact input/source/\ncheckpoint checks and one cold intact reproduction. Same fixed-clock contrast,\npaired seed-cluster intervals, CPU FP32 and per-root atomic resume. Identifies\nfrozen component dependence, not how SGD learned it or a trained repair.\n",
+  "name": "corrt_rawlong_teacher_s8_fmamba_L16b40_from36000",
+  "contract": {
+    "scope": "CPU follow-up: identify which convolution branch supplies Long-Mamba recall.\n\nFull200-root recurrence test: s7 needs older conv taps while s8 retains recall\nwithout them. Remove older taps separately in x, B and C, preserving newest tap\nand all other weights. Reuse intact per-root records after exact input/source/\ncheckpoint checks and one cold intact reproduction. Same fixed-clock contrast,\npaired seed-cluster intervals, CPU FP32 and per-root atomic resume. Identifies\nfrozen component dependence, not how SGD learned it or a trained repair.\n",
+    "base_contract": "de7f788d596ada11f57a895842875e21d408389ba9c03aea6d775096bc3a5727",
+    "sources": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_recurrence.py": "58fdb9bd9c9f2b0657ce5c08ba58a7edefa8cb6cb4e90c5098b6629da075acb6",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_clock_control.py": "ca59d3997b0cbb62e80252cd215181ef6dd18f32ea854742d4964e56fbf68029",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_recall.py": "fddea56f3444f8cc19a5fe43fb9a8811728bbcaa4b4ce824273b2da046fb04bd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260921_readout_ladder/spatial.py": "89e055243d5378166fafd083f5055c05d5e4762e7a72ac2a954c48dbfefd8f81",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/tworld.py": "1435057c2b2f0c3d90f563e8dcaf94d06121deebc45928e18ec5cacc93d01569",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/scroll.py": "32f21939825d3e3bc84b3442234baead507934cd0d4c36ac76a6c821fbdc99dc",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/mamba_recurrence.py": "8de9df2578d7bf45c9d98acaf51c99d03ca9185c641f8b09ae107370133bf4c0",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_recurrence_full.py": "9118a57014dc456d9f06d67879d76f0a9ff449ce6e84cf3b34d0cfa4301c07dc",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_conv_channels.py": "d3060e451d71786d02573d2b112b1cef61b49e257019baf613bc91900a6b3491"
+    },
+    "inputs": {
+      "frames": "f2714ebef9b465a20f3cf90fa6faf1ce4206f35d2ebcb77d72d3fa644157d74d",
+      "actions": "8bc550cb435a832211802e9b9201da6b6506d1607d3b2cc712cf833ca8be479b",
+      "alive": "591097692efd0ffa534f81e8434e5e70adb19774ce26d01eeba3c6043798dd1c",
+      "roots": "eee11e7a1f679815ea2228f10a812b6093d423fa776ba0a58366f2221bcab341",
+      "seeds": "b9daf5a4d71cbfd34e27d592517e63c6e98bddd0b4548c34808cbf890fc994c9"
+    },
+    "checkpoint": "5085ee21418e853a4d337f7fae16ae76e51afb8f157b97e5783bfe1a01cce2c2",
+    "constructor_config": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e",
+    "modes": [
+      "intact",
+      "conv_x",
+      "conv_B",
+      "conv_C"
+    ],
+    "precision": "CPU FP32",
+    "threads": 3,
+    "draws": 2000,
+    "bootstrap_seed": 20261006
+  },
+  "roots": 200,
+  "seed_clusters": 103,
+  "groups": {
+    "same": {
+      "n": 459,
+      "modes": {
+        "intact": {
+          "original_capture": 0.6697217671081865,
+          "ablated_capture": 0.33392616506003314,
+          "history_gain": 0.33579560204815345,
+          "history_gain_interval95": [
+            0.14946368256343423,
+            0.5412722387178474
+          ]
+        },
+        "conv_x": {
+          "original_capture": 0.6548068474910901,
+          "ablated_capture": 0.32988124795119805,
+          "history_gain": 0.3249255995398921,
+          "history_gain_interval95": [
+            0.16336789868096385,
+            0.5023344357281331
+          ]
+        },
+        "conv_B": {
+          "original_capture": 0.6894601117707542,
+          "ablated_capture": 0.3210781006638696,
+          "history_gain": 0.36838201110688457,
+          "history_gain_interval95": [
+            0.17522883274954898,
+            0.5858557553702106
+          ]
+        },
+        "conv_C": {
+          "original_capture": 0.6284817545310332,
+          "ablated_capture": 0.3406076024604595,
+          "history_gain": 0.28787415207057365,
+          "history_gain_interval95": [
+            0.12925854590261524,
+            0.46343729494308483
+          ]
+        }
+      },
+      "history_gain_contrasts_vs_intact": {
+        "conv_x": {
+          "difference": -0.010870002508261367,
+          "interval95": [
+            -0.07088950979535918,
+            0.05119168301774582
+          ]
+        },
+        "conv_B": {
+          "difference": 0.032586409058731114,
+          "interval95": [
+            0.0013384049272176326,
+            0.06025499195630334
+          ]
+        },
+        "conv_C": {
+          "difference": -0.0479214499775798,
+          "interval95": [
+            -0.09070642363239732,
+            -0.008208626546254738
+          ]
+        }
+      }
+    },
+    "moved": {
+      "n": 589,
+      "modes": {
+        "intact": {
+          "original_capture": 0.3941972987665419,
+          "ablated_capture": 0.3447632945126705,
+          "history_gain": 0.04943400425387142,
+          "history_gain_interval95": [
+            -0.014862087857078082,
+            0.1102018874814435
+          ]
+        },
+        "conv_x": {
+          "original_capture": 0.32749642251225813,
+          "ablated_capture": 0.3037857440271418,
+          "history_gain": 0.023710678485116335,
+          "history_gain_interval95": [
+            -0.03776314282899957,
+            0.08614034978244035
+          ]
+        },
+        "conv_B": {
+          "original_capture": 0.37304838760882786,
+          "ablated_capture": 0.3344075415510626,
+          "history_gain": 0.038640846057765264,
+          "history_gain_interval95": [
+            -0.025373369327184297,
+            0.10576158061600689
+          ]
+        },
+        "conv_C": {
+          "original_capture": 0.41523031032746605,
+          "ablated_capture": 0.3619556881580525,
+          "history_gain": 0.053274622169413546,
+          "history_gain_interval95": [
+            -0.01118067956720467,
+            0.11753636119079225
+          ]
+        }
+      },
+      "history_gain_contrasts_vs_intact": {
+        "conv_x": {
+          "difference": -0.025723325768755086,
+          "interval95": [
+            -0.06397832207708064,
+            0.002910611819288507
+          ]
+        },
+        "conv_B": {
+          "difference": -0.010793158196106156,
+          "interval95": [
+            -0.05310113310791176,
+            0.030010867963774276
+          ]
+        },
+        "conv_C": {
+          "difference": 0.0038406179155421258,
+          "interval95": [
+            -0.029238338018429306,
+            0.04783279167371271
+          ]
+        }
+      }
+    }
+  },
+  "reuse_control": {
+    "root": 2,
+    "intact_max_absolute_record_difference": 0.0
+  }
+}

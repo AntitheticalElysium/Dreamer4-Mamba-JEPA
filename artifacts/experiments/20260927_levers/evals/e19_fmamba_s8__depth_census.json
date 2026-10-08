@@ -1,0 +1,164 @@
+{
+  "scope": "CPU census: actual E19 conditional label frequencies by local predictor row.\n\nDeclared before execution. Reconstruct the exact local row for all five targets\nin the saved6000x40 TRAIN ledger: A uses row k; B/C use row k before the cut,\notherwise k-cut, with cut=4-offset as in e19.segments. No model/decoder/probe.\nCount targets, recorded death, living ordinary damage and selected mask by row.\nUniform death counts are not equal conditional label frequencies when row totals\ndiffer. This is a supervision-design fact, not proof the trained model exploits\nthe remaining cue or that balancing it repairs fresh damage. All actual targets\nmust occur exactly once; B/C ledgers/layouts must match. Atomic source/input-bound\nresume per completed set; measurements stay in EDA logs, never auto-NOTEBOOK.\n",
+  "contract": {
+    "scope": "CPU census: actual E19 conditional label frequencies by local predictor row.\n\nDeclared before execution. Reconstruct the exact local row for all five targets\nin the saved6000x40 TRAIN ledger: A uses row k; B/C use row k before the cut,\notherwise k-cut, with cut=4-offset as in e19.segments. No model/decoder/probe.\nCount targets, recorded death, living ordinary damage and selected mask by row.\nUniform death counts are not equal conditional label frequencies when row totals\ndiffer. This is a supervision-design fact, not proof the trained model exploits\nthe remaining cue or that balancing it repairs fresh damage. All actual targets\nmust occur exactly once; B/C ledgers/layouts must match. Atomic source/input-bound\nresume per completed set; measurements stay in EDA logs, never auto-NOTEBOOK.\n",
+    "inputs": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e19_depth_census.py": "0f8439f132803fca438d75bd46183b67a0a104a5f5921a9f60a40f43e93857d6",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e19.py": "5c6c9fd461dcfe63d164b1688e36cc0b8ccb09153878568c1e11fc751ab4addd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/hpctx_labels_v1.pt": "bbf20b31dd4046f53426efeca2a975cc9e8a90f0dbe02c35809a7e5f96231c23",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_A_s8_fmamba_from36000/contract.json": "70365f628809eb52dabbcace23125cd40578e48e6c84525a30aa84d16f0822fe",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_A_s8_fmamba_from36000/train.json": "edaad315e2915dad244bd79ddc891d50c10dae8a2a6258b1bc615e59e00ddfbe",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_A_s8_fmamba_from36000/train-6000.pt": "38429eb568210e1495e9bafc102075dadc22149d7241f7b64b63271c76e65019",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_B_s8_fmamba_from36000/contract.json": "cb72e6ff2615c7ac79dffe672cdd3a88e886090e723c45a8ca05e815be459435",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_B_s8_fmamba_from36000/train.json": "d4aa17c1dac85ba47f1092ff1d84d3684fecb55ceca0f7257f7c143531a373af",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_B_s8_fmamba_from36000/train-6000.pt": "284a9fb3c493e5655192cb84cb25c583687497c304cb2e486c5c2f4c49b0de5f",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_C_s8_fmamba_from36000/contract.json": "04505be7d3ef9f655bebf89c5ba05d7b6fb910ae00f9cdd8509ba44cd3bea9c5",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_C_s8_fmamba_from36000/train.json": "f0eec7e62a9b72b7facdc0e9d60d77722767e67edd531ca2b4132ce96f758c5b",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_C_s8_fmamba_from36000/train-6000.pt": "3216a461b02627e1d00b578f6fcb2b0d831393cf04f1cf15bd883f8d890d4271"
+    },
+    "pool": {
+      "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/spatial_pool_v1/pool.pt",
+      "sha256_in_verified_training_contract": "7662de45ae043ae076d1751c7b34300919ec52f99106546fe39a2ff63ac9b5ac"
+    },
+    "runtime": {
+      "torch": "2.13.0+cu130",
+      "precision": "CPU integer census",
+      "threads": 3
+    }
+  },
+  "sets": {
+    "A_original": {
+      "rows": [
+        {
+          "local_input_row": 0,
+          "targets": 240000,
+          "death": 0,
+          "ordinary_ge2": 3504,
+          "unchanged": 230972,
+          "other": 5524,
+          "death_rate": 0.0,
+          "ordinary_damage_rate": 0.0146,
+          "mask_selected": 40147,
+          "selected_death_rate": 0.0
+        },
+        {
+          "local_input_row": 1,
+          "targets": 240000,
+          "death": 0,
+          "ordinary_ge2": 3416,
+          "unchanged": 231078,
+          "other": 5506,
+          "death_rate": 0.0,
+          "ordinary_damage_rate": 0.014233333333333334,
+          "mask_selected": 39494,
+          "selected_death_rate": 0.0
+        },
+        {
+          "local_input_row": 2,
+          "targets": 240000,
+          "death": 0,
+          "ordinary_ge2": 3414,
+          "unchanged": 231098,
+          "other": 5488,
+          "death_rate": 0.0,
+          "ordinary_damage_rate": 0.014225,
+          "mask_selected": 39278,
+          "selected_death_rate": 0.0
+        },
+        {
+          "local_input_row": 3,
+          "targets": 240000,
+          "death": 0,
+          "ordinary_ge2": 3282,
+          "unchanged": 230794,
+          "other": 5924,
+          "death_rate": 0.0,
+          "ordinary_damage_rate": 0.013675,
+          "mask_selected": 54020,
+          "selected_death_rate": 0.0
+        },
+        {
+          "local_input_row": 4,
+          "targets": 240000,
+          "death": 63897,
+          "ordinary_ge2": 1963,
+          "unchanged": 170992,
+          "other": 3148,
+          "death_rate": 0.2662375,
+          "ordinary_damage_rate": 0.008179166666666666,
+          "mask_selected": 70439,
+          "selected_death_rate": 0.8212070018029785
+        }
+      ],
+      "max_min_death_rate_ratio": null
+    },
+    "B_C_random_boundaries": {
+      "rows": [
+        {
+          "local_input_row": 0,
+          "targets": 432239,
+          "death": 12956,
+          "ordinary_ge2": 5953,
+          "unchanged": 403780,
+          "other": 9550,
+          "death_rate": 0.02997415781546783,
+          "ordinary_damage_rate": 0.013772473099373263,
+          "mask_selected": 81078,
+          "selected_death_rate": 0.14495917511532105
+        },
+        {
+          "local_input_row": 1,
+          "targets": 336120,
+          "death": 12658,
+          "ordinary_ge2": 4497,
+          "unchanged": 311653,
+          "other": 7312,
+          "death_rate": 0.037659169344281804,
+          "ordinary_damage_rate": 0.01337915030346305,
+          "mask_selected": 64111,
+          "selected_death_rate": 0.17862769259565442
+        },
+        {
+          "local_input_row": 2,
+          "targets": 240000,
+          "death": 12861,
+          "ordinary_ge2": 3051,
+          "unchanged": 219021,
+          "other": 5067,
+          "death_rate": 0.0535875,
+          "ordinary_damage_rate": 0.0127125,
+          "mask_selected": 48434,
+          "selected_death_rate": 0.24032704298633192
+        },
+        {
+          "local_input_row": 3,
+          "targets": 143880,
+          "death": 12678,
+          "ordinary_ge2": 1682,
+          "unchanged": 126484,
+          "other": 3036,
+          "death_rate": 0.08811509591326105,
+          "ordinary_damage_rate": 0.011690297470113985,
+          "mask_selected": 35758,
+          "selected_death_rate": 0.32124279881425133
+        },
+        {
+          "local_input_row": 4,
+          "targets": 47761,
+          "death": 12744,
+          "ordinary_ge2": 396,
+          "unchanged": 33996,
+          "other": 625,
+          "death_rate": 0.26682858399112247,
+          "ordinary_damage_rate": 0.008291283683339963,
+          "mask_selected": 13997,
+          "selected_death_rate": 0.8225334000142888
+        }
+      ],
+      "max_min_death_rate_ratio": 8.901954331254924
+    }
+  },
+  "B_C_layout_and_A_B_C_windows_equal": true,
+  "targets_reconstructed": 1200000
+}

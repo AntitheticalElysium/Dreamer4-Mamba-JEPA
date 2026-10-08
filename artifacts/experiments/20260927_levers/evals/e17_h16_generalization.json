@@ -1,0 +1,398 @@
+{
+  "scope": "Frozen E17 reader train/generalization diagnosis, declared Oct7 before scoring.\n\nOriginal Mamba7/8 trajectory heads, three seeds, selected checkpoint versus final\nupdate4000 on EXACT same feature caches. Evaluate conditional-hazard likelihood,\nH16 Brier, action-contrast errors and safe choice on FIT, DEV-A and DEV-B.\nThis tests whether continued reader training fits FIT while worsening held-out\ndecisions; it cannot infer information absence or causally identify world error.\nDifferent splits can have different difficulty; report prior/opportunity/label\nprevalence and compare selected-v-final within each split. No fitting/world/GPU.\nCPU2 threads, exact original half-rounded normalization, atomic32-root chunks.\nSource/input-bound resume and reproduction of every selected official DEV-B\nchoice. Logs only EDA, no notebook updates from code. DEV-B reused/exploratory.\n",
+  "contract": {
+    "scope": "Frozen E17 reader train/generalization diagnosis, declared Oct7 before scoring.\n\nOriginal Mamba7/8 trajectory heads, three seeds, selected checkpoint versus final\nupdate4000 on EXACT same feature caches. Evaluate conditional-hazard likelihood,\nH16 Brier, action-contrast errors and safe choice on FIT, DEV-A and DEV-B.\nThis tests whether continued reader training fits FIT while worsening held-out\ndecisions; it cannot infer information absence or causally identify world error.\nDifferent splits can have different difficulty; report prior/opportunity/label\nprevalence and compare selected-v-final within each split. No fitting/world/GPU.\nCPU2 threads, exact original half-rounded normalization, atomic32-root chunks.\nSource/input-bound resume and reproduction of every selected official DEV-B\nchoice. Logs only EDA, no notebook updates from code. DEV-B reused/exploratory.\n",
+    "sources": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_h16_generalization.py": "5b451597a7b7fa58c9df15a815e73c562f4baaef1c1c76acc171eb678a812f18",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_h16_traj.py": "3779bc7936a6607173f68e98b4cd855593ab9d64f42c7261a4aa8331e40b3884",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_h16_signal.py": "8f4da96b207647a74c4785677854335bfe6b1e056a6ab9201cec89d3ca1e47eb",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_h16_error_split.py": "b67f45e7bcfa355685f93e748c5dd7bd52487d06e64d3674f30fd7e681f42035",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_h16_diagnose.py": "5fdeabe0332a7c915951d3539fecfec82b0330942951dac34536d94bde70e3df",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08"
+    },
+    "inputs": {
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/head_trajectory_0-4000.pt": "3b6fe79a5c5d270d98f5152fe58b876cb53887e2e7076f732e4e3e230ba1e424",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/head_trajectory_1-4000.pt": "61a5026b8ef6bd7257be6e9e3631711b322189343a23e088a7bf304d269e6738",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/head_trajectory_2-4000.pt": "db43e120586368e37877363ad4b8146df9f59eaca58ca18c8a782606caf8f5b9",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/result-1.pt": "0467accd44f2b55ea82e68e6679295dcfdc315b4d36fb576989cbf97331ffbd5",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/features_fit.f16": "238a997000ff6cad24df17677d9209772d3fe9af562af3b005e8a21f9fc7ca41",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4/features_dev.f16": "f5a39d286e4ec2db48398eec3825ace2f316e29790950ab9b1ff796b290e6fea",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__w15__det__cb1596225c7af346/head_trajectory_0-4000.pt": "f49cc4b87ef3c0d9ded328fa14c04914b2d32ecf5fb75aa088313c915c45994b",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__w15__det__cb1596225c7af346/head_trajectory_1-4000.pt": "70a688f586ba59f77331beb5b4ab29ef43c1663a78d8203d10db7a2aaf0aea11",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__w15__det__cb1596225c7af346/head_trajectory_2-4000.pt": "3dfe4ac045739e0f5837f5cd9a527b60e3e52a1a52722cc7af79087deb13ccae",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__w15__det__cb1596225c7af346/result-1.pt": "39fd4ecb023bb828d27b75178c4c9cdeff4efbed25ab22b1782448a850c1a512",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__w15__det__cb1596225c7af346/features_fit.f16": "58c5756d1eed016712842e53036b386159dd38493e47d76429c505dd14b8e6ea",
+      "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__w15__det__cb1596225c7af346/features_dev.f16": "56caf254dba0ebcf60264a01683944ce873d7aaaff7e2b32c4da2fcefb85587d"
+    },
+    "final_contract": "80075ab59ce71ea61fadae03a4510dac4ff1cd1b306b14e3980d78542b2cb78d",
+    "labels": {
+      "fit": "53e2b36687a4feeb2a94ff30c52bff2dcedb9a1da6f74aba4158ef228c2a1aa8",
+      "dev": "88d93a0c36b84ae8db6f346bf8b19dab21c77cd8d7788f21d3e0529a57e352e9"
+    },
+    "runtime": {
+      "torch": "2.13.0+cu130",
+      "threads": 2,
+      "device": "CPU"
+    }
+  },
+  "worlds": {
+    "7": {
+      "FIT": {
+        "roots": 6393,
+        "opportunities": 5330,
+        "label_mean": 0.5192038416862488,
+        "prior": 0.6205323934555054,
+        "models": {
+          "selected": {
+            "safe": 0.6496384143829346,
+            "per_head_seed": [
+              0.6499354839324951,
+              0.6497068405151367,
+              0.6492729783058167
+            ],
+            "hazard_BCE": 0.11180192232131958,
+            "P16_brier": 0.1132703348994255,
+            "allk_brier": 0.11036229878664017,
+            "P16_action_error": {
+              "MSE": 0.12609714633613162,
+              "root_mean_MSE": 0.10609526507443028,
+              "within_root_action_contrast_MSE": 0.020001881261701333,
+              "predicted_action_contrast_SD": 0.08673090556718108,
+              "true_action_contrast_SD": 0.17721692833552527,
+              "centered_correlation_mean_head_seed": 0.6155316844902345,
+              "prediction_mean": 0.526931801814273,
+              "truth_mean": 0.4233152383842843
+            }
+          },
+          "final4000": {
+            "safe": 0.6494840383529663,
+            "per_head_seed": [
+              0.6490150094032288,
+              0.6482645273208618,
+              0.6511725783348083
+            ],
+            "hazard_BCE": 0.07360201328992844,
+            "P16_brier": 0.039935167878866196,
+            "allk_brier": 0.030870521441102028,
+            "P16_action_error": {
+              "MSE": 0.04679766265645743,
+              "root_mean_MSE": 0.03263198271120371,
+              "within_root_action_contrast_MSE": 0.014165679945253718,
+              "predicted_action_contrast_SD": 0.1289113212195231,
+              "true_action_contrast_SD": 0.17721692833552527,
+              "centered_correlation_mean_head_seed": 0.7411517128243649,
+              "prediction_mean": 0.4419542082347245,
+              "truth_mean": 0.4233152383842843
+            }
+          }
+        },
+        "final_minus_selected": {
+          "difference": -0.00015439378330484033,
+          "interval95": [
+            -0.0045996948999182915,
+            0.004409980591561512
+          ],
+          "episode_seed_clusters": 670,
+          "roots": 5330
+        }
+      },
+      "DEV_A": {
+        "roots": 1730,
+        "opportunities": 1451,
+        "label_mean": 0.5300227403640747,
+        "prior": 0.610548734664917,
+        "models": {
+          "selected": {
+            "safe": 0.6399179100990295,
+            "per_head_seed": [
+              0.6425310373306274,
+              0.638374388217926,
+              0.6388481855392456
+            ],
+            "hazard_BCE": 0.11832201480865479,
+            "P16_brier": 0.12875595688819885,
+            "allk_brier": 0.12444335222244263,
+            "P16_action_error": {
+              "MSE": 0.14548201876611655,
+              "root_mean_MSE": 0.12582381663598327,
+              "within_root_action_contrast_MSE": 0.019658202130133272,
+              "predicted_action_contrast_SD": 0.08475118911989453,
+              "true_action_contrast_SD": 0.1749726573223773,
+              "centered_correlation_mean_head_seed": 0.61144910555719,
+              "prediction_mean": 0.5487926234148787,
+              "truth_mean": 0.4396549539871083
+            }
+          },
+          "final4000": {
+            "safe": 0.6234709024429321,
+            "per_head_seed": [
+              0.6240524053573608,
+              0.6242677569389343,
+              0.6220925450325012
+            ],
+            "hazard_BCE": 0.10689713805913925,
+            "P16_brier": 0.09530306607484818,
+            "allk_brier": 0.07162752747535706,
+            "P16_action_error": {
+              "MSE": 0.10924441314982793,
+              "root_mean_MSE": 0.09143355759305788,
+              "within_root_action_contrast_MSE": 0.017810855556770033,
+              "predicted_action_contrast_SD": 0.12314939172163114,
+              "true_action_contrast_SD": 0.1749726573223773,
+              "centered_correlation_mean_head_seed": 0.6490453640327395,
+              "prediction_mean": 0.4489089165653268,
+              "truth_mean": 0.4396549539871083
+            }
+          }
+        },
+        "final_minus_selected": {
+          "difference": -0.01644698902964592,
+          "interval95": [
+            -0.02477666961525523,
+            -0.0083154210413727
+          ],
+          "episode_seed_clusters": 185,
+          "roots": 1451
+        }
+      },
+      "DEV_B": {
+        "roots": 1366,
+        "opportunities": 1139,
+        "label_mean": 0.5235323905944824,
+        "prior": 0.6160832047462463,
+        "models": {
+          "selected": {
+            "safe": 0.6572651267051697,
+            "per_head_seed": [
+              0.6605849266052246,
+              0.6517230272293091,
+              0.6594874858856201
+            ],
+            "hazard_BCE": 0.11601697653532028,
+            "P16_brier": 0.12619343400001526,
+            "allk_brier": 0.12673725187778473,
+            "P16_action_error": {
+              "MSE": 0.13805137162071066,
+              "root_mean_MSE": 0.11523636592965225,
+              "within_root_action_contrast_MSE": 0.022815005691058397,
+              "predicted_action_contrast_SD": 0.08701625528715685,
+              "true_action_contrast_SD": 0.18441253181005043,
+              "centered_correlation_mean_head_seed": 0.5846819419167114,
+              "prediction_mean": 0.5354019766006647,
+              "truth_mean": 0.42857350358931984
+            }
+          },
+          "final4000": {
+            "safe": 0.6348496675491333,
+            "per_head_seed": [
+              0.6359471082687378,
+              0.6318590641021729,
+              0.6367427706718445
+            ],
+            "hazard_BCE": 0.10527276992797852,
+            "P16_brier": 0.09219859540462494,
+            "allk_brier": 0.07230264693498611,
+            "P16_action_error": {
+              "MSE": 0.10681574755673368,
+              "root_mean_MSE": 0.08622225572196517,
+              "within_root_action_contrast_MSE": 0.02059349183476852,
+              "predicted_action_contrast_SD": 0.13088415367873998,
+              "true_action_contrast_SD": 0.18441253181005043,
+              "centered_correlation_mean_head_seed": 0.6328557638274844,
+              "prediction_mean": 0.4613196508698789,
+              "truth_mean": 0.42857350358931984
+            }
+          }
+        },
+        "final_minus_selected": {
+          "difference": -0.02241549640893936,
+          "interval95": [
+            -0.03503403921075491,
+            -0.010105792099995492
+          ],
+          "episode_seed_clusters": 149,
+          "roots": 1139
+        }
+      }
+    },
+    "8": {
+      "FIT": {
+        "roots": 6393,
+        "opportunities": 5330,
+        "label_mean": 0.5192038416862488,
+        "prior": 0.6205323934555054,
+        "models": {
+          "selected": {
+            "safe": 0.6473850607872009,
+            "per_head_seed": [
+              0.6415748000144958,
+              0.6515888571739197,
+              0.648991584777832
+            ],
+            "hazard_BCE": 0.09727645665407181,
+            "P16_brier": 0.08013370633125305,
+            "allk_brier": 0.07333902269601822,
+            "P16_action_error": {
+              "MSE": 0.0919556283156461,
+              "root_mean_MSE": 0.07550404542431864,
+              "within_root_action_contrast_MSE": 0.01645158289132746,
+              "predicted_action_contrast_SD": 0.10953826291732566,
+              "true_action_contrast_SD": 0.17721692833552527,
+              "centered_correlation_mean_head_seed": 0.6944393418035336,
+              "prediction_mean": 0.5003043177409997,
+              "truth_mean": 0.4233152383842843
+            }
+          },
+          "final4000": {
+            "safe": 0.6529862284660339,
+            "per_head_seed": [
+              0.6512547135353088,
+              0.6547842621803284,
+              0.6529197692871094
+            ],
+            "hazard_BCE": 0.07385753840208054,
+            "P16_brier": 0.04081803560256958,
+            "allk_brier": 0.031369809061288834,
+            "P16_action_error": {
+              "MSE": 0.047344351392811526,
+              "root_mean_MSE": 0.0343845538544572,
+              "within_root_action_contrast_MSE": 0.012959797538354323,
+              "predicted_action_contrast_SD": 0.13871055760493747,
+              "true_action_contrast_SD": 0.17721692833552527,
+              "centered_correlation_mean_head_seed": 0.766745466321835,
+              "prediction_mean": 0.4282960231656407,
+              "truth_mean": 0.4233152383842843
+            }
+          }
+        },
+        "final_minus_selected": {
+          "difference": 0.005601156502962112,
+          "interval95": [
+            0.0015183002296049852,
+            0.009924398251047474
+          ],
+          "episode_seed_clusters": 670,
+          "roots": 5330
+        }
+      },
+      "DEV_A": {
+        "roots": 1730,
+        "opportunities": 1451,
+        "label_mean": 0.5300227403640747,
+        "prior": 0.610548734664917,
+        "models": {
+          "selected": {
+            "safe": 0.640535295009613,
+            "per_head_seed": [
+              0.642724871635437,
+              0.6389989852905273,
+              0.63988196849823
+            ],
+            "hazard_BCE": 0.11053196340799332,
+            "P16_brier": 0.10424870252609253,
+            "allk_brier": 0.09368345886468887,
+            "P16_action_error": {
+              "MSE": 0.11940439700105161,
+              "root_mean_MSE": 0.10263535345121273,
+              "within_root_action_contrast_MSE": 0.016769043549838873,
+              "predicted_action_contrast_SD": 0.10742189861608688,
+              "true_action_contrast_SD": 0.1749726573223773,
+              "centered_correlation_mean_head_seed": 0.6785919002986155,
+              "prediction_mean": 0.5110776687091745,
+              "truth_mean": 0.4396549539871083
+            }
+          },
+          "final4000": {
+            "safe": 0.6250717639923096,
+            "per_head_seed": [
+              0.622135579586029,
+              0.6285751461982727,
+              0.6245046257972717
+            ],
+            "hazard_BCE": 0.10692445188760757,
+            "P16_brier": 0.09320327639579773,
+            "allk_brier": 0.07064186036586761,
+            "P16_action_error": {
+              "MSE": 0.10541232012662698,
+              "root_mean_MSE": 0.08906186426140578,
+              "within_root_action_contrast_MSE": 0.016350455865221197,
+              "predicted_action_contrast_SD": 0.13702708979092645,
+              "true_action_contrast_SD": 0.1749726573223773,
+              "centered_correlation_mean_head_seed": 0.689286248743593,
+              "prediction_mean": 0.4200653999867071,
+              "truth_mean": 0.4396549539871083
+            }
+          }
+        },
+        "final_minus_selected": {
+          "difference": -0.01546347327530384,
+          "interval95": [
+            -0.023140738353409393,
+            -0.008672096896632593
+          ],
+          "episode_seed_clusters": 185,
+          "roots": 1451
+        }
+      },
+      "DEV_B": {
+        "roots": 1366,
+        "opportunities": 1139,
+        "label_mean": 0.5235323905944824,
+        "prior": 0.6160832047462463,
+        "models": {
+          "selected": {
+            "safe": 0.6470130681991577,
+            "per_head_seed": [
+              0.6541099548339844,
+              0.6431628465652466,
+              0.643766462802887
+            ],
+            "hazard_BCE": 0.10700909048318863,
+            "P16_brier": 0.10027527809143066,
+            "allk_brier": 0.09315656870603561,
+            "P16_action_error": {
+              "MSE": 0.11382886643396944,
+              "root_mean_MSE": 0.0934441340239767,
+              "within_root_action_contrast_MSE": 0.020384732409992775,
+              "predicted_action_contrast_SD": 0.11024112898599552,
+              "true_action_contrast_SD": 0.18441253181005043,
+              "centered_correlation_mean_head_seed": 0.6377466398323158,
+              "prediction_mean": 0.5117734180711001,
+              "truth_mean": 0.42857350358931984
+            }
+          },
+          "final4000": {
+            "safe": 0.6372731924057007,
+            "per_head_seed": [
+              0.6411051154136658,
+              0.6331486105918884,
+              0.6375658512115479
+            ],
+            "hazard_BCE": 0.10422614216804504,
+            "P16_brier": 0.09401561319828033,
+            "allk_brier": 0.07003091275691986,
+            "P16_action_error": {
+              "MSE": 0.10849657547032739,
+              "root_mean_MSE": 0.08870232540329631,
+              "within_root_action_contrast_MSE": 0.01979425006703107,
+              "predicted_action_contrast_SD": 0.1415082012173832,
+              "true_action_contrast_SD": 0.18441253181005043,
+              "centered_correlation_mean_head_seed": 0.6563258237734408,
+              "prediction_mean": 0.4391320454940713,
+              "truth_mean": 0.42857350358931984
+            }
+          }
+        },
+        "final_minus_selected": {
+          "difference": -0.009739902801811695,
+          "interval95": [
+            -0.020966670997972205,
+            0.0013800399359832189
+          ],
+          "episode_seed_clusters": 149,
+          "roots": 1139
+        }
+      }
+    }
+  }
+}

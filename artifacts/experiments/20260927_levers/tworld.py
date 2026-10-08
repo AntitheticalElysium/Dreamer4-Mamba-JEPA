@@ -66,10 +66,20 @@ E14 options (2026-10-02, after the E14a head-only diagnosis; both default off, t
 Resumable runs (2026-10-02): every 6,000 updates and at the end the full training state (weights, AdamW state, batch-order
 generator, CPU / CUDA RNG, update, history) is written to levers_tworlds_v1/state/<name>.state.pt (overwritten in place);
 `--resume <state file> --updates N` continues that run to N updates, bit-identical to an uninterrupted run (CPU-tested).
+`--state-every` (2026-10-04) changes only that save interval; default 6000, resumed E17/E18 use 1000 to limit lost work.
 E17 (2026-10-03): `--frames L --pool rawlong [--windows W]` trains on L-frame windows of the 64-frame Raw TRAIN ledger
 (levers_mamba_long_pools_v1/raw): W windows per update, a TERMINAL_SHARE (the 6-frame recipe's 26.4%) of them end-aligned on a
 death, the rest at uniform starts; an L-row time table and L-frame block-causal mask; teacher loss over all L - 1 targets. The
 default recipe is unchanged (CPU-tested 2026-10-03: identical initial weights, teacher / suffix losses and gradients).
+E21 (2026-10-08, health diagnosis; NOTEBOOK "E21"): `--event` adds EAWM's event head (arXiv 2601.19336; EASimulus world_model.py
+MultiMotDecoder and config/world_model/craftax.yaml), SlotEvent: per token slot i, its own Linear([h_i,t ; sg(h_i,t-1)] -> 4)
+(h_i = the corr decoder's input for token i; EASimulus feeds the current outputs and the previous ones detached, 4 hidden units per
+event element), one LayerNorm over all 81 x 4 units, SiLU, the slot's own Linear(4 -> 1); it predicts whether token i changes
+from t to t+1 (L2 norm > EVENT_TAU, the empty valley of the bimodal HUD change-norm distribution). (v1, 16:44-17:20, shared ONE
+4-unit head across all slots: token-63 event AUC 0.505 at 2k updates, aborted.) Focal loss (alpha 0.15, gamma 4), times the per-row
+sparsity weight GES(p) = 1 / log(0.1 + p + sqrt(1 + p^2)) of its modality (map: 63 tokens, balance 0.25 as token_2d; HUD: 18,
+balance 1 as vector), times the modality weight 0.1; added to the teacher L1 with weight 1. `--gen-loss` now scores all L - 1
+targets (it scored S.W - 1: unchanged for every 6-frame run). `--snapshot-every N` saves the world every N updates (6000 before).
 Training (fixed for every arm): spatial_pool_v1 (Raw tokens) or spatial_pool_tc_v1 (TC tokens), 2,048 main windows
 held out (seed 1, as parameterization.py); batches of 40 windows (seed 11); AdamW lr 1e-4, wd 0.01, 1,000 warmup,
 clip 1 (H2 phase optimizer); bf16; init seed given (default 7). Loss: `suffix` = spatial.losses' dynamics L1
@@ -102,6 +112,7 @@ NOISE_MAX, NOISE_LEVELS = 0.7, 10             # GameNGen's maximal context-noise
 BATCH = 40
 TERMINAL_SHARE = 8071 / (24576 - 2048 + 8071)  # the 6-frame recipe's share of training windows ending at a death (26.4%)
 STATE_EVERY = 6000                            # full training state written every STATE_EVERY updates (resume)
+EVENT_TAU = 2.5                               # E21: token change norm separating real changes from contextual drift
 NEIGHBOURS = ((-1, 0), (1, 0), (0, -1), (0, 1))
 LOCAL = 5 * 192 + 17                          # --skip: token + 4 grid neighbours + action one-hot
 LABELS = ROOT / "artifacts/eda/headfit_labels_v1.pt"
@@ -187,8 +198,27 @@ class Factored(nn.Module):
         return x + self.mlp(self.n3(x))
 
 
+class SlotEvent(nn.Module):
+    """E21: EASimulus's MultiMotDecoder made per token slot: [B,T,81,D] -> event logits [B,T,81]."""
+
+    def __init__(self, slots=81, width=4):
+        super().__init__()
+        bound = lambda fan: 1 / fan ** 0.5                                   # nn.Linear's default init
+        self.w1 = nn.Parameter(torch.empty(slots, 2 * S.D, width).uniform_(-bound(2 * S.D), bound(2 * S.D)))
+        self.b1 = nn.Parameter(torch.empty(slots, width).uniform_(-bound(2 * S.D), bound(2 * S.D)))
+        self.norm = nn.LayerNorm(slots * width)
+        self.w2 = nn.Parameter(torch.empty(slots, width).uniform_(-bound(width), bound(width)))
+        self.b2 = nn.Parameter(torch.empty(slots).uniform_(-bound(width), bound(width)))
+
+    def forward(self, h):
+        x = torch.cat([h, F.pad(h[:, :-1], (0, 0, 0, 0, 1, 0)).detach()], -1)     # current, previous detached (zeros at t = 0)
+        z = torch.einsum("btic,ick->btik", x, self.w1) + self.b1
+        z = F.silu(self.norm(z.flatten(2)).view_as(z))
+        return torch.einsum("btik,ik->bti", z, self.w2) + self.b2
+
+
 class TWorld(S.World):
-    def __init__(self, head, codebook=None, backbone="full", regions="all", noise_levels=0, skip=False, frames=None):
+    def __init__(self, head, codebook=None, backbone="full", regions="all", noise_levels=0, skip=False, frames=None, event=False):
         super().__init__(S.TOKENS, False)
         if frames is not None and frames != S.W:  # --frames L: an L-row time table and an L-frame block-causal mask
             self.time = nn.Parameter(torch.zeros(frames, S.D))
@@ -231,6 +261,8 @@ class TWorld(S.World):
             nn.init.zeros_(self.choose.weight)
             with torch.no_grad():
                 self.choose.bias.copy_(torch.tensor([3.0, 0, 0, 0, 0, 0]))
+        if event:                                 # E21: EAWM event head (EASimulus MultiMotDecoder, per element)
+            self.event_head = SlotEvent()
         if head == "categorical":
             self.register_buffer("codes", codebook.float())
             self.logits = nn.Linear(S.D, len(codebook))
@@ -331,9 +363,9 @@ def quantize(x, codes, chunk=16384):
     return idx.view(x.shape[:-1])
 
 
-def rollout_losses(world, s, a, loss, gen_loss=False, weight=None, faced=None):
+def rollout_losses(world, s, a, loss, gen_loss=False, weight=None, faced=None, event=False):
     """spatial.rollout + the dynamics L1 (suffix) or teacher-forced L1 only; gen_loss: + the generate candidate's
-    own teacher-forced L1 on every token."""
+    own teacher-forced L1 on every token; event: + EAWM's event loss (E21)."""
     a = F.pad(a, (0, 1))
     clean = s
     if loss == "noise":                       # every input frame corrupted at its own level; targets stay clean
@@ -353,7 +385,17 @@ def rollout_losses(world, s, a, loss, gen_loss=False, weight=None, faced=None):
             lam, m = float(weight[4:]), faced
         teacher = teacher + lam * (tok * m).sum() / m.sum().clamp(min=1)
     if gen_loss:
-        teacher = teacher + (F.layer_norm(gen[:, :S.W - 1], (S.WIDTH,)) - s[:, 1:]).abs().mean()
+        teacher = teacher + (F.layer_norm(gen[:, :s.shape[1] - 1], (S.WIDTH,)) - s[:, 1:]).abs().mean()
+    if event:                                 # EASimulus get_event_logits / default_focal_loss / event_weight_function
+        y = ((clean[:, 1:].float() - clean[:, :-1].float()).norm(dim=-1) > EVENT_TAU).float()      # [B,T-1,81]
+        logit = world.event_head(history.float())[:, :s.shape[1] - 1]
+        p = torch.sigmoid(logit)
+        p_t, a_t = p * y + (1 - p) * (1 - y), 0.15 * y + 0.85 * (1 - y)
+        focal = a_t * (1 - p_t) ** 4 * F.binary_cross_entropy_with_logits(logit, y, reduction="none")
+        ges = lambda q: 1 / torch.log(0.1 + q + torch.sqrt(1 + q * q))
+        share = lambda part, balance: (part.mean(-1, keepdim=True) / balance).clamp(2e-4, 1).expand_as(part)
+        w = torch.cat([ges(share(y[..., :63], 0.25)), ges(share(y[..., 63:], 1.0))], -1)
+        teacher = teacher + (focal * w * 0.1).mean()
     if loss in ("teacher", "noise"):
         return teacher
     if loss.startswith("rollout"):            # Terver et al. (TMLR 2026), jepa-wms train.py / video_wm.rollout: random prefix,
@@ -386,7 +428,7 @@ def rollout_losses(world, s, a, loss, gen_loss=False, weight=None, faced=None):
 
 def train(head, pool_name, loss, seed, updates, device, log, codebook=None, backbone="full", gen_loss=False,
           regions="all", snapshot=None, weight=None, skip=False, state_path=None, resume=None, frames=None, windows=BATCH,
-          init=None):
+          init=None, state_every=STATE_EVERY, event=False, snapshot_every=6000):
     from d4mj.config import config_from_dict
     from d4mj.train import _phase_lr, autocast_context, optimizer_step, phase_optimizer
     config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
@@ -403,12 +445,13 @@ def train(head, pool_name, loss, seed, updates, device, log, codebook=None, back
         rows = torch.cat([main_rows[~torch.isin(main_rows, held)], torch.where(pool["terminal"])[0]])
     with torch.random.fork_rng(devices=[0]):
         torch.manual_seed(seed); torch.cuda.manual_seed_all(seed)
-        world = TWorld(head, codebook, backbone, regions, NOISE_LEVELS if loss == "noise" else 0, skip, frames).to(device)
+        world = TWorld(head, codebook, backbone, regions, NOISE_LEVELS if loss == "noise" else 0, skip, frames, event).to(device)
     if init is not None and resume is None:   # E17 continuation: a trained world's weights, its time table tiled to L rows
         w0 = torch.load(init, map_location="cpu", weights_only=False)["world"]     # (Longformer's copy initialization, sec. 5)
         if w0["time"].shape[0] != world.time.shape[0]:
             w0["time"] = w0["time"][torch.arange(world.time.shape[0]) % w0["time"].shape[0]]
-        world.load_state_dict(w0)
+        keys = world.load_state_dict(w0, strict=False)               # E21: only a new event head may be missing
+        assert not keys.unexpected_keys and all(k.startswith("event_head.") for k in keys.missing_keys), keys
         log(stage="init_from", path=str(init))
     log(stage="init", parameters=sum(p.numel() for p in world.parameters()))
     opt = phase_optimizer([world], config)
@@ -459,18 +502,18 @@ def train(head, pool_name, loss, seed, updates, device, log, codebook=None, back
                 _, _, logits = world(codes[idx], F.pad(a, (0, 1)))
                 objective = F.cross_entropy(logits[:, :S.W - 1].flatten(0, 2), idx[:, 1:].flatten())
             else:
-                objective = rollout_losses(world, s, a, loss, gen_loss, weight, faced)
+                objective = rollout_losses(world, s, a, loss, gen_loss, weight, faced, event)
         norm = optimizer_step(opt, objective, params, learning_rate=_phase_lr(config, update),
                               grad_clip=config.agent.grad_clip, strict=True, zero_grad=True)
-        if snapshot is not None and (update + 1) % 6000 == 0 and update + 1 < updates:
-            snapshot(update + 1, world, history)          # held-out learning curve: every 6k, evaluated by teval
+        if snapshot is not None and (update + 1) % snapshot_every == 0 and update + 1 < updates:
+            snapshot(update + 1, world, history)          # held-out learning curve: every snapshot_every, evaluated by teval
         if (update + 1) % 500 == 0:
             row = {"update": update + 1, "objective": float(objective), "gradient_norm": float(norm),
                    "seconds": round(time.time() - started, 1),
                    "peak_gb": round(torch.cuda.max_memory_allocated() / 1e9, 3) if torch.cuda.is_available() else None}
             history.append(row)
             log(stage="train", head=head, pool=pool_name, **row)
-        if (update + 1) % STATE_EVERY == 0 or update + 1 == updates:
+        if (update + 1) % state_every == 0 or update + 1 == updates:
             save_state(update + 1)
     return world.eval(), history, held
 
@@ -482,6 +525,7 @@ def main(argv=None):
     parser.add_argument("--loss", default="suffix", choices=("suffix", "teacher", "noise", "selffed", "rollout2", "rollout4"))
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--updates", type=int, default=6000)
+    parser.add_argument("--state-every", type=int, default=STATE_EVERY, help="full resume-state interval (default 6000)")
     parser.add_argument("--codebook", type=Path, default=None)
     parser.add_argument("--backbone", default="full", choices=("full", "fattn", "fmamba", "fcanvas", "fscan"))
     parser.add_argument("--gen-loss", action="store_true")
@@ -493,6 +537,8 @@ def main(argv=None):
     parser.add_argument("--frames", type=int, default=None, help="E17: L-frame windows (needs --pool rawlong, --loss teacher)")
     parser.add_argument("--windows", type=int, default=BATCH, help="E17: windows per update with --frames")
     parser.add_argument("--init", type=Path, default=None, help="E17: start from a trained world (time table tiled to --frames)")
+    parser.add_argument("--event", action="store_true", help="E21: + EAWM's event head and focal event loss")
+    parser.add_argument("--snapshot-every", type=int, default=6000, help="E21: --snapshots interval (default 6000)")
     args = parser.parse_args(argv)
     if (args.pool == "rawlong") != (args.frames is not None) or (args.frames and args.loss != "teacher"):
         parser.error("--frames goes with --pool rawlong and --loss teacher")
@@ -501,7 +547,7 @@ def main(argv=None):
     device = torch.device("cuda")
     codebook = torch.load(args.codebook, weights_only=False)["codes"] if args.codebook else None
     name = f"{args.head}_{args.pool}_{args.loss}_s{args.seed}" + (f"_K{len(codebook)}" if codebook is not None else "") \
-        + ("" if args.backbone == "full" else f"_{args.backbone}") + ("_gl" if args.gen_loss else "") \
+        + ("" if args.backbone == "full" else f"_{args.backbone}") + ("_gl" if args.gen_loss else "") + ("_ev" if args.event else "") \
         + ("" if args.regions == "all" else f"_{args.regions}") + (f"_{args.weight}" if args.weight else "") \
         + ("_skip" if args.skip else "") + (f"_L{args.frames}b{args.windows}" if args.frames else "") \
         + (f"_from{args.init.stem.split('_u')[-1]}" if args.init else "") \
@@ -518,7 +564,8 @@ def main(argv=None):
     (OUT / "state").mkdir(exist_ok=True)
     world, history, held = train(args.head, args.pool, args.loss, args.seed, args.updates, device, log, codebook,
                                  args.backbone, args.gen_loss, args.regions, snapshot, args.weight, args.skip,
-                                 OUT / "state" / f"{name}.state.pt", args.resume, args.frames, args.windows, args.init)
+                                 OUT / "state" / f"{name}.state.pt", args.resume, args.frames, args.windows, args.init, args.state_every,
+                                 args.event, args.snapshot_every)
     save(name, world, history)
     log(status="saved", name=name)
     return 0

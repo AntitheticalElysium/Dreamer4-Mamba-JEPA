@@ -1,0 +1,27 @@
+{
+  "world": "artifacts/eda/levers_tworlds_v1/corrt_rawlong_teacher_s7_L16b40_from36000.pt",
+  "world_sha256": "94ca5a79fc96a7591f1e5d4fce8584a1cb67e476f70644f59d1148d1a9f09387",
+  "tworld_sha256": "1b2c4bea9ec5433e0a0f4e53997a3a5326c3dcb351ba9bb460c5f655de60d24e",
+  "loss": 1.1302573680877686,
+  "time_row_gradient_norms": [
+    0.0009722082759253681,
+    0.001111145131289959,
+    0.0005074544460512698,
+    0.000793761108070612,
+    0.0010474689770489931,
+    0.0007459025364369154,
+    0.0007697261753492057,
+    0.0010070658754557371,
+    0.0006653591990470886,
+    0.0009323821286670864,
+    0.0010609152959659696,
+    0.0006064213812351227,
+    0.0007833689451217651,
+    0.0009399947011843324,
+    0.0013876573648303747,
+    0.0
+  ],
+  "largest_supervised_input_window": 15,
+  "unsupervised_input_window": 16,
+  "note": "Synthetic inputs isolate the causal supervision boundary; this is not a semantic performance test."
+}

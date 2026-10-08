@@ -1,0 +1,15 @@
+[Unit]
+Description=E20 paired health, physical-cost and memory endpoints
+After=default.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA
+ExecStart=/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/bin/python -B /home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e20_post.py
+MemoryHigh=10G
+MemoryMax=14G
+Restart=no
+TimeoutStopSec=30
+
+[Install]
+WantedBy=default.target

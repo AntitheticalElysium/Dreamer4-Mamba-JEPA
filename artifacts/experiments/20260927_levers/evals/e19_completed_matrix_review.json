@@ -1,0 +1,317 @@
+{
+  "scope": "independent primary-count reproduction from all12 completed raw rows; reused roots, not an actor test",
+  "verified": [
+    {
+      "name": "e19_A_s7_fmamba_from36000",
+      "counts": {
+        "overall": {
+          "n_hit": 279,
+          "hits_drawn": 14,
+          "n_unchanged": 12623,
+          "false_drops": 115
+        },
+        "fresh": {
+          "n_hit": 31,
+          "hits_drawn": 0,
+          "n_unchanged": 0,
+          "false_drops": 0
+        }
+      },
+      "inputs": {
+        "artifacts/experiments/20260927_levers/evals/e19_A_s7_fmamba_from36000__e19_health_per_root.pt": "567343331ae860110149b170204e5280ea7d5d090d5fb707d574f36bd06f6d08",
+        "artifacts/experiments/20260927_levers/evals/e19_A_s7_fmamba_from36000__e19_health.json": "d34779c2453249d24b070e69e08c6930d8776924f65bf19d86f274a0f1f3f29e"
+      },
+      "readings": {
+        "learnable": false,
+        "unshortcut": false,
+        "no_cost": "Pending matched teval onestep_all/consequences; not inferred from health"
+      }
+    },
+    {
+      "name": "e19_B_s7_fmamba_from36000",
+      "counts": {
+        "overall": {
+          "n_hit": 279,
+          "hits_drawn": 24,
+          "n_unchanged": 12623,
+          "false_drops": 122
+        },
+        "fresh": {
+          "n_hit": 31,
+          "hits_drawn": 0,
+          "n_unchanged": 0,
+          "false_drops": 0
+        }
+      },
+      "inputs": {
+        "artifacts/experiments/20260927_levers/evals/e19_B_s7_fmamba_from36000__e19_health_per_root.pt": "2648475e35a635a742396e04e3c6b2f24a8ca056387552b1d86cab447bc76e59",
+        "artifacts/experiments/20260927_levers/evals/e19_B_s7_fmamba_from36000__e19_health.json": "aa551f3a2486109c2ca08dee2ea0623932eb2c4f796bb2b28a41b5f1d4183a50"
+      },
+      "readings": {
+        "learnable": false,
+        "unshortcut": false,
+        "no_cost": "Pending matched teval onestep_all/consequences; not inferred from health"
+      }
+    },
+    {
+      "name": "e19_C_s7_fmamba_from36000",
+      "counts": {
+        "overall": {
+          "n_hit": 279,
+          "hits_drawn": 62,
+          "n_unchanged": 12623,
+          "false_drops": 297
+        },
+        "fresh": {
+          "n_hit": 31,
+          "hits_drawn": 0,
+          "n_unchanged": 0,
+          "false_drops": 0
+        }
+      },
+      "inputs": {
+        "artifacts/experiments/20260927_levers/evals/e19_C_s7_fmamba_from36000__e19_health_per_root.pt": "57bfb37f4aca1cf1035c05b80d2dfac07d6b35cdb7d2df40a77ce9a57b2188ac",
+        "artifacts/experiments/20260927_levers/evals/e19_C_s7_fmamba_from36000__e19_health.json": "1e07bf3b40f2cf0b31aed53b4ea981d4b3789487fddd9302abee9b65cbefd8f6"
+      },
+      "readings": {
+        "learnable": false,
+        "unshortcut": false,
+        "no_cost": "Pending matched teval onestep_all/consequences; not inferred from health"
+      }
+    },
+    {
+      "name": "e19_A_s8_fmamba_from36000",
+      "counts": {
+        "overall": {
+          "n_hit": 279,
+          "hits_drawn": 18,
+          "n_unchanged": 12623,
+          "false_drops": 84
+        },
+        "fresh": {
+          "n_hit": 31,
+          "hits_drawn": 0,
+          "n_unchanged": 0,
+          "false_drops": 0
+        }
+      },
+      "inputs": {
+        "artifacts/experiments/20260927_levers/evals/e19_A_s8_fmamba_from36000__e19_health_per_root.pt": "5f4d1d4678114595bf8de0bf359a5aaaaf2970d8723ba19d25f0fab73a86a005",
+        "artifacts/experiments/20260927_levers/evals/e19_A_s8_fmamba_from36000__e19_health.json": "0ff869569608136bdd0a2fdc2a94972318a563efe4a60da8e59b335120730f81"
+      },
+      "readings": {
+        "learnable": false,
+        "unshortcut": false,
+        "no_cost": "Pending matched teval onestep_all/consequences; not inferred from health"
+      }
+    },
+    {
+      "name": "e19_B_s8_fmamba_from36000",
+      "counts": {
+        "overall": {
+          "n_hit": 279,
+          "hits_drawn": 13,
+          "n_unchanged": 12623,
+          "false_drops": 164
+        },
+        "fresh": {
+          "n_hit": 31,
+          "hits_drawn": 0,
+          "n_unchanged": 0,
+          "false_drops": 0
+        }
+      },
+      "inputs": {
+        "artifacts/experiments/20260927_levers/evals/e19_B_s8_fmamba_from36000__e19_health_per_root.pt": "d9ea8275dbdd135507748390948f597b583636ede326ab2acd58c1c2cdf2535f",
+        "artifacts/experiments/20260927_levers/evals/e19_B_s8_fmamba_from36000__e19_health.json": "0e06ba46b4b68d6718413a040b32f920cc819e75a8a1b84b72f1406b62f7899f"
+      },
+      "readings": {
+        "learnable": false,
+        "unshortcut": false,
+        "no_cost": "Pending matched teval onestep_all/consequences; not inferred from health"
+      }
+    },
+    {
+      "name": "e19_C_s8_fmamba_from36000",
+      "counts": {
+        "overall": {
+          "n_hit": 279,
+          "hits_drawn": 67,
+          "n_unchanged": 12623,
+          "false_drops": 388
+        },
+        "fresh": {
+          "n_hit": 31,
+          "hits_drawn": 0,
+          "n_unchanged": 0,
+          "false_drops": 0
+        }
+      },
+      "inputs": {
+        "artifacts/experiments/20260927_levers/evals/e19_C_s8_fmamba_from36000__e19_health_per_root.pt": "90cbc411d4c3413da525429898802b634a9b943ee65d7b3fcc7d269ff5feaac5",
+        "artifacts/experiments/20260927_levers/evals/e19_C_s8_fmamba_from36000__e19_health.json": "c32d075d0fddea7c998e0367c78e64513619444266857592bf206fb4598b409f"
+      },
+      "readings": {
+        "learnable": false,
+        "unshortcut": true,
+        "no_cost": "Pending matched teval onestep_all/consequences; not inferred from health"
+      }
+    },
+    {
+      "name": "e19_A_s7_full_from36000",
+      "counts": {
+        "overall": {
+          "n_hit": 279,
+          "hits_drawn": 47,
+          "n_unchanged": 12623,
+          "false_drops": 240
+        },
+        "fresh": {
+          "n_hit": 31,
+          "hits_drawn": 0,
+          "n_unchanged": 0,
+          "false_drops": 0
+        }
+      },
+      "inputs": {
+        "artifacts/experiments/20260927_levers/evals/e19_A_s7_full_from36000__e19_health_per_root.pt": "4b733dd925ed19b4f231d83b9aa2e75970b4cc05424fda5181bdc8f900acfb6c",
+        "artifacts/experiments/20260927_levers/evals/e19_A_s7_full_from36000__e19_health.json": "1e720f6e3f4a18da03ec34a70a0694bafa31be3b4613fce9a9db8d977ed721d2"
+      },
+      "readings": {
+        "learnable": false,
+        "unshortcut": false,
+        "no_cost": "Pending matched teval onestep_all/consequences; not inferred from health"
+      }
+    },
+    {
+      "name": "e19_B_s7_full_from36000",
+      "counts": {
+        "overall": {
+          "n_hit": 279,
+          "hits_drawn": 29,
+          "n_unchanged": 12623,
+          "false_drops": 192
+        },
+        "fresh": {
+          "n_hit": 31,
+          "hits_drawn": 0,
+          "n_unchanged": 0,
+          "false_drops": 0
+        }
+      },
+      "inputs": {
+        "artifacts/experiments/20260927_levers/evals/e19_B_s7_full_from36000__e19_health_per_root.pt": "7dbc2523049ec700da426a63c0c80d1ba93168a3e169827a61d30bfbabbf8ab7",
+        "artifacts/experiments/20260927_levers/evals/e19_B_s7_full_from36000__e19_health.json": "2477fa8671cdb742cc52f2f7e0611ad26148b521a989b6d96acbb26591855936"
+      },
+      "readings": {
+        "learnable": false,
+        "unshortcut": false,
+        "no_cost": "Pending matched teval onestep_all/consequences; not inferred from health"
+      }
+    },
+    {
+      "name": "e19_C_s7_full_from36000",
+      "counts": {
+        "overall": {
+          "n_hit": 279,
+          "hits_drawn": 15,
+          "n_unchanged": 12623,
+          "false_drops": 268
+        },
+        "fresh": {
+          "n_hit": 31,
+          "hits_drawn": 0,
+          "n_unchanged": 0,
+          "false_drops": 0
+        }
+      },
+      "inputs": {
+        "artifacts/experiments/20260927_levers/evals/e19_C_s7_full_from36000__e19_health_per_root.pt": "69e706ed6f64793a880f76d15126f41d1b303d29420e458ccb865bc880b31a71",
+        "artifacts/experiments/20260927_levers/evals/e19_C_s7_full_from36000__e19_health.json": "4eddc5820962aa44ccdc72554d8c4a43975ebc2bd8b966086a9242ce8581b7b2"
+      },
+      "readings": {
+        "learnable": false,
+        "unshortcut": false,
+        "no_cost": "Pending matched teval onestep_all/consequences; not inferred from health"
+      }
+    },
+    {
+      "name": "e19_A_s8_full_from36000",
+      "counts": {
+        "overall": {
+          "n_hit": 279,
+          "hits_drawn": 15,
+          "n_unchanged": 12623,
+          "false_drops": 110
+        },
+        "fresh": {
+          "n_hit": 31,
+          "hits_drawn": 0,
+          "n_unchanged": 0,
+          "false_drops": 0
+        }
+      },
+      "inputs": {
+        "artifacts/experiments/20260927_levers/evals/e19_A_s8_full_from36000__e19_health_per_root.pt": "30c1a8657d39398561913145911896093bfe7ae13ba08f5a638aa547873a8f2e",
+        "artifacts/experiments/20260927_levers/evals/e19_A_s8_full_from36000__e19_health.json": "07236bce3678a6734be45dc0ce0e58548b98fcc952f8c86b29d3ac3f010a34ff"
+      },
+      "readings": {
+        "learnable": false,
+        "unshortcut": false,
+        "no_cost": "Pending matched teval onestep_all/consequences; not inferred from health"
+      }
+    },
+    {
+      "name": "e19_B_s8_full_from36000",
+      "counts": {
+        "overall": {
+          "n_hit": 279,
+          "hits_drawn": 12,
+          "n_unchanged": 12623,
+          "false_drops": 117
+        },
+        "fresh": {
+          "n_hit": 31,
+          "hits_drawn": 0,
+          "n_unchanged": 0,
+          "false_drops": 0
+        }
+      },
+      "inputs": {
+        "artifacts/experiments/20260927_levers/evals/e19_B_s8_full_from36000__e19_health_per_root.pt": "d49936d5cacd5ac560be7c2f8ee762673e95dfa1af77b40517216b260f22352b",
+        "artifacts/experiments/20260927_levers/evals/e19_B_s8_full_from36000__e19_health.json": "594be8dc692411a33daa252987023e6d7a2c667b67508096c56dd1009b54e4c8"
+      },
+      "readings": {
+        "learnable": false,
+        "unshortcut": false,
+        "no_cost": "Pending matched teval onestep_all/consequences; not inferred from health"
+      }
+    },
+    {
+      "name": "e19_C_s8_full_from36000",
+      "counts": {
+        "overall": {
+          "n_hit": 279,
+          "hits_drawn": 53,
+          "n_unchanged": 12623,
+          "false_drops": 174
+        },
+        "fresh": {
+          "n_hit": 31,
+          "hits_drawn": 0,
+          "n_unchanged": 0,
+          "false_drops": 0
+        }
+      },
+      "inputs": {
+        "artifacts/experiments/20260927_levers/evals/e19_C_s8_full_from36000__e19_health_per_root.pt": "4580af15714cdf027ec50d0f09abc7dccdc53c975e5123fa02fd046f12b14fa8",
+        "artifacts/experiments/20260927_levers/evals/e19_C_s8_full_from36000__e19_health.json": "7a8b2bad57a05321f92614b3abf30dbe9c0db8975c99930092390b09da3f89ab"
+      },
+      "readings": {
+        "learnable": false,
+        "unshortcut": true,
+        "no_cost": "Pending matched teval onestep_all/consequences; not inferred from health"
+      }
+    }
+  ]
+}

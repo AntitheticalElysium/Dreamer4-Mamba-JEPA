@@ -1,0 +1,276 @@
+{
+  "scope": "Frozen 36k canvas versus slot-Mamba: paired recall and SSM-use diagnosis.\n\nAll original 2048 held main windows, CPU FP32, intact versus SSM-reset-each-step.\nKeep convolution/history, newest input-dependent SSM update, actions and clocks.\nPaired window bootstrap, not a fresh task gate, actor result or memory ceiling.\nPer-batch input/source/weights-bound journals; never writes NOTEBOOK.\n",
+  "contract": {
+    "scope": "Frozen 36k canvas versus slot-Mamba: paired recall and SSM-use diagnosis.\n\nAll original 2048 held main windows, CPU FP32, intact versus SSM-reset-each-step.\nKeep convolution/history, newest input-dependent SSM update, actions and clocks.\nPaired window bootstrap, not a fresh task gate, actor result or memory ceiling.\nPer-batch input/source/weights-bound journals; never writes NOTEBOOK.\n",
+    "seed": 7,
+    "sources": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e18_endpoint_cpu.py": "c7bee985fa1803db086e0c732fd61c8fec5b2cd205a5bfb6c9e121a01d0f8bbb",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e18_access.py": "5d962ba735a71bdd6babfc011fedc96f9ff23f3fee8f4742f030b61c80455705",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e17_recurrence.py": "58fdb9bd9c9f2b0657ce5c08ba58a7edefa8cb6cb4e90c5098b6629da075acb6",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/tworld.py": "1435057c2b2f0c3d90f563e8dcaf94d06121deebc45928e18ec5cacc93d01569",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_recall.py": "fddea56f3444f8cc19a5fe43fb9a8811728bbcaa4b4ce824273b2da046fb04bd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/scroll.py": "32f21939825d3e3bc84b3442234baead507934cd0d4c36ac76a6c821fbdc99dc",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/mamba_recurrence.py": "8de9df2578d7bf45c9d98acaf51c99d03ca9185c641f8b09ae107370133bf4c0"
+    },
+    "pool": "7662de45ae043ae076d1751c7b34300919ec52f99106546fe39a2ff63ac9b5ac",
+    "checkpoints": {
+      "fcanvas": "6e08aa58ae3115455db9e6b9c85a1ba830f9215c4d7cdf76be5546645f136b2f",
+      "fmamba": "39551edb613f1db718bdb5187ba7488fd633488ac0da427fc00dd0b15d917bbf"
+    },
+    "held": "00d072783e8b652d8ae015aa642d86d399a3ce54da89be41ab7ccc1eec392915",
+    "constructor_config": "ffb852c1f650a106dd94943c0458615cb8bc42be0181c2c465663db82a9eb20e",
+    "runtime": {
+      "torch": "2.13.0+cu130",
+      "precision": "CPU FP32",
+      "threads": 3
+    },
+    "batch": 16,
+    "draws": 2000,
+    "bootstrap_seed": 20261006
+  },
+  "windows": 2048,
+  "backbones": {
+    "fcanvas": {
+      "recallable": {
+        "n": 2018,
+        "modes": {
+          "intact": {
+            "world_mse_sum_dims": 45.759831570842046,
+            "sighting_mse_sum_dims": 10.371864001287426,
+            "neighbour_mse_sum_dims": 63.32608845265817,
+            "capture": 0.33172531679597494
+          },
+          "reset_ssm": {
+            "world_mse_sum_dims": 45.66923819136565,
+            "sighting_mse_sum_dims": 10.371864001287426,
+            "neighbour_mse_sum_dims": 63.32608845265817,
+            "capture": 0.33343610343131863
+          }
+        },
+        "reset_minus_intact_error": {
+          "difference": -0.09059337947639472,
+          "interval95": [
+            -0.3188309509848632,
+            0.13950432453976183
+          ]
+        }
+      },
+      "same_slot": {
+        "n": 1615,
+        "modes": {
+          "intact": {
+            "world_mse_sum_dims": 45.66056705748795,
+            "sighting_mse_sum_dims": 8.335519570213146,
+            "neighbour_mse_sum_dims": 64.49127064887954,
+            "capture": 0.33532992132920436
+          },
+          "reset_ssm": {
+            "world_mse_sum_dims": 45.587925144116575,
+            "sighting_mse_sum_dims": 8.335519570213146,
+            "neighbour_mse_sum_dims": 64.49127064887954,
+            "capture": 0.33662350056153645
+          }
+        },
+        "reset_minus_intact_error": {
+          "difference": -0.07264191337137399,
+          "interval95": [
+            -0.35039337825017686,
+            0.20526218174849323
+          ]
+        }
+      },
+      "moved_slot": {
+        "n": 403,
+        "modes": {
+          "intact": {
+            "world_mse_sum_dims": 46.15762859910135,
+            "sighting_mse_sum_dims": 18.532400580848712,
+            "neighbour_mse_sum_dims": 58.65668640036145,
+            "capture": 0.3115085426687325
+          },
+          "reset_ssm": {
+            "world_mse_sum_dims": 45.99509532449226,
+            "sighting_mse_sum_dims": 18.532400580848712,
+            "neighbour_mse_sum_dims": 58.65668640036145,
+            "capture": 0.3155592882780175
+          }
+        },
+        "reset_minus_intact_error": {
+          "difference": -0.16253327460908712,
+          "interval95": [
+            -0.45343552246736024,
+            0.13022701924742563
+          ]
+        }
+      },
+      "unseen": {
+        "n": 25967,
+        "modes": {
+          "intact": {
+            "world_mse_sum_dims": 41.53582377834396,
+            "sighting_mse_sum_dims": 77.75576034566707,
+            "neighbour_mse_sum_dims": 57.5094312442971
+          },
+          "reset_ssm": {
+            "world_mse_sum_dims": 41.54887103555776,
+            "sighting_mse_sum_dims": 77.75576034566707,
+            "neighbour_mse_sum_dims": 57.5094312442971
+          }
+        },
+        "reset_minus_intact_error": {
+          "difference": 0.01304725721379222,
+          "interval95": [
+            -0.03768295654804759,
+            0.06647571691472241
+          ]
+        }
+      }
+    },
+    "fmamba": {
+      "recallable": {
+        "n": 2018,
+        "modes": {
+          "intact": {
+            "world_mse_sum_dims": 22.107111696892293,
+            "sighting_mse_sum_dims": 10.371864001287426,
+            "neighbour_mse_sum_dims": 63.32608845265817,
+            "capture": 0.7783888288953859
+          },
+          "reset_ssm": {
+            "world_mse_sum_dims": 26.271712068442486,
+            "sighting_mse_sum_dims": 10.371864001287426,
+            "neighbour_mse_sum_dims": 63.32608845265817,
+            "capture": 0.6997435382750944
+          }
+        },
+        "reset_minus_intact_error": {
+          "difference": 4.164600371550196,
+          "interval95": [
+            2.1608671360798373,
+            6.435002683193207
+          ]
+        }
+      },
+      "same_slot": {
+        "n": 1615,
+        "modes": {
+          "intact": {
+            "world_mse_sum_dims": 16.002158634101644,
+            "sighting_mse_sum_dims": 8.335519570213146,
+            "neighbour_mse_sum_dims": 64.49127064887954,
+            "capture": 0.8634754425571015
+          },
+          "reset_ssm": {
+            "world_mse_sum_dims": 21.333795408743086,
+            "sighting_mse_sum_dims": 8.335519570213146,
+            "neighbour_mse_sum_dims": 64.49127064887954,
+            "capture": 0.7685317071029615
+          }
+        },
+        "reset_minus_intact_error": {
+          "difference": 5.331636774641441,
+          "interval95": [
+            2.8880939148251983,
+            7.987165657525586
+          ]
+        }
+      },
+      "moved_slot": {
+        "n": 403,
+        "modes": {
+          "intact": {
+            "world_mse_sum_dims": 46.57237001092499,
+            "sighting_mse_sum_dims": 18.532400580848712,
+            "neighbour_mse_sum_dims": 58.65668640036145,
+            "capture": 0.3011721241293663
+          },
+          "reset_ssm": {
+            "world_mse_sum_dims": 46.060137746277874,
+            "sighting_mse_sum_dims": 18.532400580848712,
+            "neighbour_mse_sum_dims": 58.65668640036145,
+            "capture": 0.3139382644901254
+          }
+        },
+        "reset_minus_intact_error": {
+          "difference": -0.512232264647117,
+          "interval95": [
+            -2.7406132142243425,
+            1.6554736344131666
+          ]
+        }
+      },
+      "unseen": {
+        "n": 25967,
+        "modes": {
+          "intact": {
+            "world_mse_sum_dims": 42.728435450290995,
+            "sighting_mse_sum_dims": 77.75576034566707,
+            "neighbour_mse_sum_dims": 57.5094312442971
+          },
+          "reset_ssm": {
+            "world_mse_sum_dims": 42.71972292622005,
+            "sighting_mse_sum_dims": 77.75576034566707,
+            "neighbour_mse_sum_dims": 57.5094312442971
+          }
+        },
+        "reset_minus_intact_error": {
+          "difference": -0.008712524070945001,
+          "interval95": [
+            -0.20821905515058786,
+            0.17660661160268068
+          ]
+        }
+      }
+    }
+  },
+  "paired": {
+    "recallable": {
+      "canvas_minus_slot_mse": 23.652719873949753,
+      "interval95": [
+        17.853898759070216,
+        29.83602949347944
+      ],
+      "n": 2018,
+      "canvas_minus_slot_capture": -0.44666351209941085,
+      "capture_interval95": [
+        -0.5155129682410889,
+        -0.3739281217882849
+      ]
+    },
+    "same_slot": {
+      "canvas_minus_slot_mse": 29.658408423386305,
+      "interval95": [
+        23.08947741601507,
+        36.91177719946021
+      ],
+      "n": 1615,
+      "canvas_minus_slot_capture": -0.5281455212278972,
+      "capture_interval95": [
+        -0.5936912693185119,
+        -0.45664872580694227
+      ]
+    },
+    "moved_slot": {
+      "canvas_minus_slot_mse": -0.41474141182364066,
+      "interval95": [
+        -4.820277630788176,
+        3.996126923435881
+      ],
+      "n": 403,
+      "canvas_minus_slot_capture": 0.010336418539366222,
+      "capture_interval95": [
+        -0.10556039875234022,
+        0.12858018187287676
+      ]
+    },
+    "unseen": {
+      "canvas_minus_slot_mse": -1.1926116719470299,
+      "interval95": [
+        -1.7706935337931031,
+        -0.598066890180557
+      ],
+      "n": 25967
+    }
+  }
+}

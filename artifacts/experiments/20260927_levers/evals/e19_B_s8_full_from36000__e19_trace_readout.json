@@ -1,0 +1,158 @@
+{
+  "arm": "B",
+  "scope": "CPU frozen trace geometry and distribution-matched local readability.\n\nRidge classifiers train on diagnosis FIT seeds, lambda selected on their fixed\nvalidation seeds, evaluated on TEST seeds. Binary ordinary >=2 damage versus\nunchanged; recovery excluded. h63 is a local hidden feature, HUD-only input is a\nlimited control, not the world's full input. Failure is not an information ceiling.\nGeometry separates the true health-token change from orthogonal generator error.\nNo GPU, no new training world, atomic source/input-bound completed-arm resume.\n",
+  "geometry": {
+    "fresh": {
+      "n": 31,
+      "parallel_coefficient_median": 0.5352333784103394,
+      "orthogonal_error_over_true_change_median": 3.4238369464874268
+    },
+    "scroll": {
+      "n": 51,
+      "parallel_coefficient_median": 0.5352333784103394,
+      "orthogonal_error_over_true_change_median": 3.279038429260254
+    },
+    "stationary": {
+      "n": 228,
+      "parallel_coefficient_median": 0.36015990376472473,
+      "orthogonal_error_over_true_change_median": 2.1472666263580322
+    }
+  },
+  "readability": {
+    "HUD_input": {
+      "overall": {
+        "auc": 0.7712073179428335,
+        "interval95": [
+          0.7238719505925255,
+          0.8180596390583283
+        ],
+        "positive": 87,
+        "negative": 3546,
+        "episode_seeds": 43
+      },
+      "scroll": {
+        "auc": 0.6918604651162791,
+        "interval95": [
+          0.5579823628045468,
+          0.8215344821979819
+        ],
+        "positive": 17,
+        "negative": 1376,
+        "episode_seeds": 43
+      },
+      "fresh_vs_scroll_unchanged": {
+        "auc": 0.6795865633074936,
+        "interval95": [
+          0.42349516954134897,
+          0.8863762855888624
+        ],
+        "positive": 9,
+        "negative": 1376,
+        "episode_seeds": 43
+      }
+    },
+    "hidden63": {
+      "overall": {
+        "auc": 0.8532813401533864,
+        "interval95": [
+          0.8116283393520325,
+          0.895704323121703
+        ],
+        "positive": 87,
+        "negative": 3546,
+        "episode_seeds": 43
+      },
+      "scroll": {
+        "auc": 0.6003761969904241,
+        "interval95": [
+          0.4801424516640279,
+          0.728772480371203
+        ],
+        "positive": 17,
+        "negative": 1376,
+        "episode_seeds": 43
+      },
+      "fresh_vs_scroll_unchanged": {
+        "auc": 0.5558785529715762,
+        "interval95": [
+          0.4163696082863361,
+          0.6778759634434877
+        ],
+        "positive": 9,
+        "negative": 1376,
+        "episode_seeds": 43
+      }
+    },
+    "output63": {
+      "overall": {
+        "auc": 0.7727567406370137,
+        "interval95": [
+          0.722727341563863,
+          0.8206816727883423
+        ],
+        "positive": 87,
+        "negative": 3546,
+        "episode_seeds": 43
+      },
+      "scroll": {
+        "auc": 0.7264021887824897,
+        "interval95": [
+          0.5679286071363094,
+          0.8506844327855432
+        ],
+        "positive": 17,
+        "negative": 1376,
+        "episode_seeds": 43
+      },
+      "fresh_vs_scroll_unchanged": {
+        "auc": 0.682251291989664,
+        "interval95": [
+          0.41658837579617836,
+          0.8864928193499623
+        ],
+        "positive": 9,
+        "negative": 1376,
+        "episode_seeds": 43
+      }
+    },
+    "generator63": {
+      "overall": {
+        "auc": 0.8294273618971676,
+        "interval95": [
+          0.778757191417599,
+          0.8761156588914963
+        ],
+        "positive": 87,
+        "negative": 3546,
+        "episode_seeds": 43
+      },
+      "scroll": {
+        "auc": 0.5462123803009576,
+        "interval95": [
+          0.4167111481608548,
+          0.6726879035697102
+        ],
+        "positive": 17,
+        "negative": 1376,
+        "episode_seeds": 43
+      },
+      "fresh_vs_scroll_unchanged": {
+        "auc": 0.5470768733850129,
+        "interval95": [
+          0.34155612039489874,
+          0.7183232501972788
+        ],
+        "positive": 9,
+        "negative": 1376,
+        "episode_seeds": 43
+      }
+    }
+  },
+  "contract": {
+    "trace": "46811492897e44b32e1d21d08d2399cbf630baba01c7dcde85daf3a0eb4411ca",
+    "script": "bd617600703ea232c937f57ca265d9dc39d96f439dd9964be39ebc8f32244a3a",
+    "teval": "a2f873442031b2fc1a671a8f210acf4b5a759767e3b8c6b7720b2dd916793d20",
+    "metadata": "a92cd355577144446575dcfa2865dc6d7e0a3ed098de34a12ce5792365764c8d",
+    "cut": "drop2 vs unchanged; original FIT/TEST seed split"
+  }
+}

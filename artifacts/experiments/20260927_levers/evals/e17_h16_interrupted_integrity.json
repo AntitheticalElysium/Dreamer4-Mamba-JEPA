@@ -1,0 +1,12 @@
+{
+  "scope": "read-only integrity check of interrupted H16 fit feature prefix; no model forward or job restart",
+  "rows": 388,
+  "total_roots": 6393,
+  "committed_batches": 97,
+  "source_hashes_verified": 71,
+  "checkpoint_hashes_verified": 2,
+  "committed_chunk_hashes_verified": true,
+  "dev_features_present": false,
+  "head_artifacts": [],
+  "root": "artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef"
+}

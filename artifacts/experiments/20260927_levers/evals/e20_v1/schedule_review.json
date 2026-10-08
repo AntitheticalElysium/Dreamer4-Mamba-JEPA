@@ -1,0 +1,10 @@
+{
+  "approved_seeds": [
+    7
+  ],
+  "held_seeds": [
+    8
+  ],
+  "reason": "User requires seed7 results review before deciding replication",
+  "requested_at": "2026-10-07"
+}

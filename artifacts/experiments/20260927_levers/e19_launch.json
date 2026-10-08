@@ -1,0 +1,31 @@
+{
+  "utc": "2026-10-05T01:00:25.661708+00:00",
+  "name": "e19_A_s7_fmamba_from36000",
+  "verified_update": 500,
+  "contract": "e3ae4e9e0844a9ebebeec925be2cf1327d10091269aff26627be0c7a090b8715",
+  "saved_file": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/state/e19_A_s7_fmamba_from36000/train-500.pt",
+  "saved_sha256": "9f6d47d5848afee0987ac4006b506ce3a4813e842a8ce8428a8772a279312458",
+  "original_transition_targets_seen": 100000,
+  "sample_ledger_equal": true,
+  "boundary_ledger_equal": true,
+  "sampler_rng_equal": true,
+  "boundary_rng_equal": true,
+  "all_weights_and_optimizer_finite": true,
+  "death_rows": [
+    0,
+    0,
+    0,
+    0,
+    5323
+  ],
+  "queued": [
+    "M16_s8_resume3000",
+    "E19_M7_B_C",
+    "E19_M7_endpoint_diagnostics",
+    "E17_critical_damage_recall",
+    "E19_M8_A_B_C",
+    "E19_attention_s7_s8_A_B_C",
+    "E18_s7_s8",
+    "E17_H16_and_M6_s8"
+  ]
+}

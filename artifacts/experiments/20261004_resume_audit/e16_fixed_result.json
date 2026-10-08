@@ -1,0 +1,66 @@
+{
+  "samples": 8,
+  "bayes": {
+    "fresh": 0.9727891087532043,
+    "beside_no_hit": 0.4801512360572815,
+    "hit_in_window": 0.02802428789436817,
+    "no_zombie_beside": 0.0016574127366766334
+  },
+  "delta_use": {
+    "hud": {
+      "err_with_delta": 260530.55886936188,
+      "err_delta_zeroed": 1253076.3264217377,
+      "reduction": 0.79208723892077
+    },
+    "player": {
+      "err_with_delta": 5129.536066830158,
+      "err_delta_zeroed": 336760.02602541447,
+      "reduction": 0.9847679781731487
+    },
+    "entering": {
+      "err_with_delta": 619417.7564926147,
+      "err_delta_zeroed": 1903980.5494003296,
+      "reduction": 0.6746722246255592
+    },
+    "map_rest": {
+      "err_with_delta": 1155310.900817871,
+      "err_delta_zeroed": 16037566.904846191,
+      "reduction": 0.9279622085025402
+    }
+  },
+  "posterior_health_accuracy": {
+    "le-2": {
+      "n": 305,
+      "acc": 0.0
+    },
+    "-1": {
+      "n": 32,
+      "acc": 0.0
+    },
+    "0": {
+      "n": 15387,
+      "acc": 0.9995
+    },
+    "ge+1": {
+      "n": 112,
+      "acc": 0.0
+    }
+  },
+  "prior_hit_rate": {
+    "fresh": 0.0,
+    "beside_no_hit": 0.0003,
+    "hit_in_window": 0.0003,
+    "no_zombie_beside": 0.0001
+  },
+  "selffed_hit_rate": {
+    "fresh": 0.0,
+    "beside_no_hit": 0.0,
+    "hit_in_window": 0.0,
+    "no_zombie_beside": 0.0
+  },
+  "readings": {
+    "e16_health_drawable": false,
+    "e16_hits_calibrated": false,
+    "e16_no_false_hits": true
+  }
+}

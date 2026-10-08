@@ -1,0 +1,119 @@
+{
+  "scope": "Frozen final-block canvas memory rerouting; oracle addresses, past features only.\n\nSame16 preselected held windows as e18_access. Correct remembered residual,\nzero residual and cyclically permuted remembered residual versus unchanged.\nNo model/head training. CPU FP32, exact non-treated-output control, paired\nwindow bootstrap. This does not test a learned deployable read or an information\nceiling. Targets score predictions; future coordinates only select addresses.\n",
+  "contract": {
+    "scope": "Frozen final-block canvas memory rerouting; oracle addresses, past features only.\n\nSame16 preselected held windows as e18_access. Correct remembered residual,\nzero residual and cyclically permuted remembered residual versus unchanged.\nNo model/head training. CPU FP32, exact non-treated-output control, paired\nwindow bootstrap. This does not test a learned deployable read or an information\nceiling. Targets score predictions; future coordinates only select addresses.\n",
+    "inputs": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/levers_tworlds_v1/corrt_raw_teacher_s7_fcanvas_u36000_at12000.pt": "733cc948f6c7fa72ee41ae5e3f696319d44471746d1136b83c49f72039e6d96e",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/spatial_pool_v1/pool.pt": "7662de45ae043ae076d1751c7b34300919ec52f99106546fe39a2ff63ac9b5ac",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e18_access.py": "5d962ba735a71bdd6babfc011fedc96f9ff23f3fee8f4742f030b61c80455705",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e18_reroute.py": "a248fbcc9d2834b3f16e1b947ab3290a542d53bd4113beeacac9d1ae7bbb0c68"
+    },
+    "access_contract": "1ce0f4317b97b63c1dd6734ff9987900ffb336bb53b648f754421bf4f39db7ce",
+    "windows": [
+      21541,
+      2663,
+      22773,
+      19727,
+      22320,
+      2157,
+      7718,
+      11748,
+      5406,
+      2036,
+      16094,
+      974,
+      15395,
+      3728,
+      6317,
+      19899
+    ],
+    "precision": "CPU FP32",
+    "threads": 3,
+    "sources": {
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/e18_access.py": "5d962ba735a71bdd6babfc011fedc96f9ff23f3fee8f4742f030b61c80455705",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/tworld.py": "1435057c2b2f0c3d90f563e8dcaf94d06121deebc45928e18ec5cacc93d01569",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/check_recall.py": "fddea56f3444f8cc19a5fe43fb9a8811728bbcaa4b4ce824273b2da046fb04bd",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/scroll.py": "32f21939825d3e3bc84b3442234baead507934cd0d4c36ac76a6c821fbdc99dc",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20260927_levers/h16_resume.py": "7b753b070b42ee7abc26577a73bd521139d071a7e5b6402f262d139a04aa5e08",
+      "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/d4mj/mamba_recurrence.py": "8de9df2578d7bf45c9d98acaf51c99d03ca9185c641f8b09ae107370133bf4c0"
+    },
+    "draws": 2000,
+    "bootstrap_seed": 20261006
+  },
+  "windows": 16,
+  "cells": 140,
+  "same_slot": 93,
+  "moved_slot": 47,
+  "scores": {
+    "output_error": {
+      "mean": {
+        "baseline": 0.19148039817810059,
+        "remembered": 0.2077363282442093,
+        "zero": 0.19160707294940948,
+        "permuted": 0.20231591165065765
+      },
+      "contrasts": {
+        "remembered": {
+          "error_minus_baseline": 0.016255950555205345,
+          "interval95": [
+            0.0027672622836273134,
+            0.032183625492842274
+          ]
+        },
+        "zero": {
+          "error_minus_baseline": 0.00012668540875893086,
+          "interval95": [
+            -0.008725480301420993,
+            0.007564718438231423
+          ]
+        },
+        "permuted": {
+          "error_minus_baseline": 0.010835538618266582,
+          "interval95": [
+            -0.002031251620175317,
+            0.023347188009354616
+          ]
+        }
+      }
+    },
+    "generator_error": {
+      "mean": {
+        "baseline": 0.5583813190460205,
+        "remembered": 0.5899503231048584,
+        "zero": 0.5853095650672913,
+        "permuted": 0.5819259881973267
+      },
+      "contrasts": {
+        "remembered": {
+          "error_minus_baseline": 0.031569063663482666,
+          "interval95": [
+            -0.015048309018214544,
+            0.08577775434211439
+          ]
+        },
+        "zero": {
+          "error_minus_baseline": 0.026928244158625603,
+          "interval95": [
+            -0.004956039940864794,
+            0.055694526268376225
+          ]
+        },
+        "permuted": {
+          "error_minus_baseline": 0.0235446784645319,
+          "interval95": [
+            -0.021860550850156753,
+            0.07571924583365516
+          ]
+        }
+      }
+    }
+  },
+  "sighting_copy_mean_error": 0.05715746060013771,
+  "generate_weight_mean": {
+    "baseline": 0.14905428886413574,
+    "remembered": 0.1566610485315323,
+    "zero": 0.15357504785060883,
+    "permuted": 0.157317653298378
+  },
+  "non_treated_output_max_error": 0.0
+}
