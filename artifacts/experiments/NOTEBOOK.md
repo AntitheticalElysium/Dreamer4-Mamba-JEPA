@@ -197,6 +197,122 @@ replay of tworld.train's sampler, seed-11 order, 20 batches = 12,000 transitions
 - E19 C's dose did move B2 (above), but in 6-frame windows: the phase (since = 6) lies outside the window, so B1 could not
   be met for most hits. Every fresh hit is a scroll step; its generator still lost to copy there (0/51 scrolling hits caught).
 
+### Diagnosis 6 (10:00-10:30): across worlds, training length, positive controls
+
+`health_evidence.py main` (`evidence_main.json`), 14 worlds, same probes / calibration / held episodes:
+
+| world | drawable from h63 | + oracle since | + since, adj | `since` 1..4 in h63 | since = 6 in h63 | emitted hits / false |
+|---|---|---|---|---|---|---|
+| M16 s7 / s8 | 286 / 281 | 480 / 353 | 768 / 747 | 0.909 / 0.898 | 0.888 / 0.878 | 154 / 126; 208 / 151 |
+| A16 s7 / s8 | 128 / 182 | 286 / 386 | 639 / 752 | 0.847 / 0.844 | 0.869 / 0.865 | 36 / 122; 125 / 121 |
+| E20 B s7 (damage oversampled, natural mass) | 395 | 496 | 695 | 0.952 | **0.950** | 87 / 13 |
+| M6 s7 at 6k, 12k, 18k, 24k, 30k, 36k | 0, 142, 186, 200, 245, 164 | | 805, 693, 801, 770, 790, 747 | 0.915, 0.896, 0.889, 0.897, 0.900, 0.904 | (outside window) | |
+| A6 s7 at 36k, 50k, 100k | 135, 91, 91 | | 711, 627, 725 | 0.848, 0.849, 0.848 | (outside window) | |
+
+Positive control (true token-63 history over the world's own window): `since` 1..4 0.997-0.999, since = 6 0.999.
+
+- **Training length does not grow the phase.** Under the natural objective, `since` 1..4 in h63 is flat from 6k to 36k (Mamba) and
+  from 36k to 100k (attention), against 0.997 available in the input. Drawable-from-h63 stops rising after ~30k. The user's
+  "6k too short / grokking late" hypothesis is refuted for the phase; extra *exposure* to damage (E20 B) moved it (0.950).
+- **The ingredients are sufficient in every world.** h63 + oracle phase + adjacency makes 627-805 of 1,211 hits drawable at
+  ~0 false in all 14 worlds, including M6 at 6k.
+- **Correction (approach adjacency).** The adjacency deficit claimed in B1 is NOT established. Positive control on approach
+  moves (scroll steps, zombie within 2): raw frame-14 cells + action 0.524, + the true scroll 0.786, M16's h63 0.778. The subset
+  is too small for this three-way conjunction; h63 matches the raw + true-scroll control. Only the phase deficit is established.
+  The world's map draws the zombie beside the post-move player in 82% of fresh hits.
+- **Allocation decomposition** (an identity, not a check): token-63 hit elements are 0.035% of the training elements; their L1
+  is 7.7-8.0× the mean element error; product 0.27-0.28% of the objective. L1's per-element gradient is ±1 whatever the error
+  size, and contextual continuous tokens never sit at exactly zero error, so an event's gradient tracks its element share.
+- **Matched heads at 6k** (attention, teacher, window 5): residual (no mixture gate) draws 23 / 1,211 hits with 328 false;
+  corrt 15 / 245; direct (suffix) 9 / 75. No head type rescues hits under the same objective.
+- **The generator loss fixes B2 on its recipe.** `--gen-loss` (the generator's own L1 on every token, ITC-derived, 6k suffix,
+  attention): token-63 generator L1 on hits 0.973 → 0.491, unchanged 1.005 → 0.209; beats copy on 0% → 36% of hits. It was
+  judged in 09-28 on aggregate one-step error only; its effect on health was never read.
+- **Token-change events are bimodal for HUD tokens** (400 random TRAIN windows, frames 8..55): health-63 change norms cluster
+  at 0-2 (drift) and 3-12 (real changes) with an empty gap at 2-3 (4 and 11 of 18,800 in the 2.0-2.5 / 2.5-3.0 bins). At a
+  change-norm threshold 2.5, events cover health 5.3%, all HUD 3.2%, map 28%.
+
+### Literature step (10:00-10:40), on the diagnosed problem
+
+Problem as diagnosed: a rare (1.4%) state change on one token of 81, under a uniform per-element regression objective;
+(B1) the representation does not keep the hidden variable that predicts it (the cooldown phase), and (B2) the copy-gated
+generator never learns to produce the token.
+
+- **EAWM** (arXiv 2601.19336, ICLR 2026; code MarquisDarwin/EAWM @ 49eebbe, read):
+  - Mechanism: an event head on the latent (the decoder's input) predicts per-element change events with focal loss; its
+    gradients flow into the world model. The "no event predictor" ablation costs ~0.4 mean HNS (Atari).
+  - Craftax (EASimulus, `config/world_model/craftax.yaml`, `world_model.py`):
+    - modalities: map = token_2d (event = category changed, balance factor 0.25), stats = vector (tendency up/flat/down),
+      direction = token;
+    - focal α 0.15, γ 4;
+    - per-row sparsity weight GES(p) = 1/log(0.1 + p + √(1+p²)), ≈ 10 for sparse rows, ≈ 1.1 at p = 1;
+    - modality weight 0.1;
+    - total loss = obs + reward + end + events, unit weights.
+  - Our E14a "EAWM" was a ×1.7 token reweighting on a frozen backbone (DO / place). It tested neither component.
+- **Delta-IRIS** (vmicheli/delta-iris `tokenizer.py`, read): decoder loss 1.0·L2 + 0.1·L1 + 0.01·worst-pixel L2. E16 replaced
+  it with uniform latent L1.
+- **ITC** (2605.16457, appendix B.2): HUD and screen edges are generated by the transformer with their own loss, never through
+  a copy competition. That is B2's remedy, as `--gen-loss` confirms.
+- **Dedieu et al.** (2502.01591): CE on non-contextual NNT patch codes, nothing health-specific. Under CE, confidently correct
+  unchanged codes give ~0 gradient. Under latent L1 on contextual tokens, every element keeps a ±1 sign gradient.
+- **HarmonyDream** (2310.00344): balances reward vs observation loss scales. A per-token harmonizer would barely move token 63
+  (its mean error is already 0.65× the average); the imbalance is *within* the token.
+- **Imbalanced regression / dense regression**:
+  - Yang et al. 2021 (DIR), Ren et al. 2022 (Balanced MSE): re-balancing shifts the predictor's prior, so it hallucinates at
+    the true rate. E14 measured exactly that for positives-only doses.
+  - Shrinkage / regression-focal losses (Lu et al. 2018) down-weight easy elements; E14's hard-mining dose failed on our
+    tokens (93% of the tail is entering / static / HUD).
+- Vendored papers checked:
+  - Delta-JEPA (2606.31232) addresses encoder collapse; MoP-JEPA (2607.05238) addresses multimodal futures.
+  - Hansen & Wang (2606.27326) find that hallucination concentrates in low-coverage state-action regions, and fix it with
+    coverage-aware sampling at training time. This is related to E20 B's exposure effect on the phase (0.950), which was
+    obtained despite importance weights restoring the natural loss mass.
+
+**Generic remedies with a primary source, one per blocker:**
+- B1: EAWM's event head. It is a matched-negative classification loss, so the L1 median that decides drawing is unchanged,
+  while the representation is pushed to predict *when* each token changes.
+- B2: the generator's own loss (`--gen-loss`, ITC).
+
+### E21 — predeclared before any code (10:40): event head (B1) × generator loss (B2), 2 × 2 on M16
+
+**Arms.** Each continues M16 s7 (canonical; L16, b40, rawlong, teacher, seed 7, batch order 11, fresh AdamW with warm-up) for
+6,000 updates:
+
+| arm | flags |
+|---|---|
+| C0 | none (control: the continuation itself) |
+| G | `--gen-loss` |
+| E | `--event` |
+| GE | both |
+
+Snapshots at 2k / 4k show trends, so a null cannot hide a slow trend.
+
+**`--event` (port of EASimulus's event loss to per-tile tokens):**
+- Event label: token i changes from t to t+1 by L2 norm > 2.5. The threshold is the measured valley of the bimodal HUD
+  distribution; the analog of "the category changed".
+- Head: per token, shared across tokens, reading h_i, the corrt decoder's own input for token i. This is EAWM's principle
+  "the event predictor reads the decoder's latent". Shape Linear(256, 4) → LayerNorm → SiLU → Linear(4, 1), EASimulus's
+  per-element hidden width outeventdim = 4.
+- Loss: focal α 0.15, γ 4; GES per row and modality (map: 63 tokens, balance 0.25; HUD: 18 tokens, balance 1.0); modality
+  weight 0.1; added to the teacher L1 with weight 1.
+- Deviation: HUD events are binary change events, not up/flat/down tendencies; our HUD is tokens, not values.
+
+**`--gen-loss` fix:** it scored `gen[:, :S.W-1]` (6-frame era). At L16 it must score all L-1 targets. The fix is a no-op for
+every past 6-frame run (S.W = 6).
+
+**Readings** (s7; health_chain subset, held episodes; window 15):
+1. *B2 fixed*: G and GE token-63 generator beats copy on ≥ 30% of held hits (M16 2%).
+2. *B1 fixed*: E and GE, since = 6 AUC in h63 ≥ 0.95 (M16 0.888, input 0.999), and drawable-from-h63 ≥ 2× C0's.
+3. *Health drawn*: GE emitted ≥ 30% of held hits (363 / 1,211) with ≤ 2% false (35 / 1,728). Control C0 is reported alongside.
+4. *Cost*: teval one-step all / depth-16 vs C0, paired. The margin is 0.005 one-step, as in E19. A failed margin is reported,
+   not hidden.
+
+**Interpretation rules, fixed now:**
+- If B1 and B2 both move and health is drawn, the cause is confirmed causally. A from-scratch run (s7 + s8) follows overnight
+  to remove the continuation caveat.
+- If an intermediate does not move, `health_gradient.py` measures whether the arm actually changed the allocation, before any
+  conclusion. If the allocation moved and the ingredient did not, the next test is from scratch, not "the method fails".
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 

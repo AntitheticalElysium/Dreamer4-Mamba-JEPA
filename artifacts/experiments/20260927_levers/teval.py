@@ -272,7 +272,7 @@ def load_world(path, device):
     levels = st["world"]["noise_embed.weight"].shape[0] if "noise_embed.weight" in st["world"] else 0
     frames = st["args"].get("frames", "None")
     w = TWorld(head, codebook, st["args"].get("backbone", "full"), st["args"].get("regions", "all"), levels,
-               st["args"].get("skip") == "True", None if frames == "None" else int(frames)).to(device)
+               st["args"].get("skip") == "True", None if frames == "None" else int(frames), st["args"].get("event") == "True").to(device)
     w.load_state_dict(st["world"])
     return w.eval(), st
 
