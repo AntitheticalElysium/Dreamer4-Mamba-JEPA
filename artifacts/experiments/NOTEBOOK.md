@@ -1176,6 +1176,87 @@ fails, stage A is not run at full length; the failure is diagnosed first.
   - in between → report and diagnose.
 - P2 on the 2k scratch decoder is reported but not a gate (the decoder is immature).
 
+**Substitution result (lane143-146, 09:58-10:35): the warm start shuts the channel; the 09:58 rule came out "in between" on its proxy**
+- Measured on held windows with the same weights (`e22_channel.py`: 1,002 held 16-frame windows, 126 batches; noise-level
+  consistency 0.089; `health_zombie.py` one-step for P1 / P2):
+
+| | warm u0 | scratch u0 | warm u2000 | scratch u2000 |
+|---|---|---|---|---|
+| clean gain (zeroed − with Δ), e22_channel | 0 | 0 | **−0.0000046 (−0.01%)** | **+0.0551 (+46.0%)** |
+| clean gain, health_zombie one-step | — | — | +0.000009 (+0.03%) | +0.0558 (+45.9%) |
+| Δ size: ‖Δ‖ / ‖tile embedding‖ | 0 | 0 | **0.59%** | **16.1%** |
+| cond.weight RMS (zero-init) | 0 | 0 | 0.0027 | 0.0168 (6.1×) |
+| decoder's cond gradient: consistency | **0.146** | **0.380** | 0.326 | 0.623 |
+| encoder gradient from the decoder: norm / consistency | 0 (zero-init) | 0 | 2.1e-4 / 0.29 | 0.0116 / 0.70 |
+| codes used per region (held) | 288-515 | 288-515 | **17-25** | 86-105 |
+| residual variance explained by the region's code (chance) | 4.1-5.8% (1.9-3.4%) | 4.3-6.5% (same) | 0.3-0.7% (0.1-0.16%) | 3.7-5.4% (0.6-0.7%) |
+
+- **Rule outcome, as written:** the scratch clean gain (+46%) passes ≥ +5%; the cond RMS ratio (6.1×) fails ≥ 10×. So the
+  outcome is "in between → report and diagnose".
+- **Diagnosis:** the RMS criterion was a proxy for the size of the channel. Δ's size against the tile embedding it is added
+  to is 27× (0.59% vs 16.1%). That measure was chosen after the rule; it is reported as a diagnosis, not as a pass.
+- **What the warm start does (exact):**
+  - at update 0 the decoder's gradient on the channel is barely above noise (consistency 0.146 vs 0.089; scratch 0.380);
+  - over 2,000 updates the warm encoder DISCARDS what its random initial codes carried: codes per region fall from
+    288-515 to 17-25, and the residual explained above chance falls from ~2% to ~0.3%;
+  - the scratch encoder keeps 86-105 informative codes, and its decoder takes 46% of its loss from Δ.
+  - Changing only the decoder's initialization flips the channel from unused to used.
+- **But the scratch channel at 2k carries deterministic content, not the zombie's choice:**
+  - map MSE 0.067 zeroed → 0.027 with Δ;
+  - P2 one-step: random moves score 0.009, argmax 0.4%; toward moves argmax 1.8%. The immature decoder predicts "stay"
+    (82% share vs 26% true).
+  - This is E16's from-scratch pattern (10-04: at 36k Δ removed 92.8% of map error and 79% of HUD error, yet health stayed
+    0/305).
+- **Correction of my attribution:** E16 amendment 2 and the E22 predeclaration called the warm failure Bowman's
+  equilibrium. Bowman et al. 2016 and He et al. 2019 describe collapse driven by the KL term; stage A has no KL term.
+  The measured failure is the one Park & Lee (below) describe for pretrained decoders.
+
+**Literature on the diagnosed problem (read 10:00-10:35):**
+- **SV2P** (Babaeizadeh et al., ICLR 2018, arXiv 1710.11252, sec. 3.2 and appendix Table 1, read):
+  - "naive training usually results in the model ignoring the latent variables and converging to a suboptimal
+    deterministic solution";
+  - their fix is three phases: (1) generator only, z ~ N(0, I) stacked as a channel on the tiled action, 50k; (2) the
+    inference network with KL 0, 50k, which reaches "very low reconstruction error"; (3) KL annealed to β 0.001, 100k.
+  - A deterministic warm start can work there, but the read path was live (noise fed in phase 1), not zero.
+- **Park & Lee 2021** ("Finetuning Pretrained Transformers into VAEs", arXiv 2108.02446, sec. 4-5.1 and appendix, read):
+  - with a pretrained T5 decoder, "posterior collapse was observed in all training schemes without encoder warmup... The
+    decoder learns to ignore the initially noisy input signal from the encoder";
+  - phase 1 trains with KL 0, and "freezing the decoder and the memory projection layer Wproj while training with an AE
+    objective is crucial in learning meaningful encoder outputs" (5 epochs); phase 2 trains jointly (3 epochs).
+  - Wproj is a new layer that maps z into the decoder (cross-attention keys and values).
+  - This is our case exactly: a converged decoder plus a new, noisy encoder.
+- **He et al. 2019** (arXiv 1901.05534): inference lag plus the KL term; aggressive encoder updates. The mechanism goes through
+  the KL term, so it is not ours.
+- **Delta-IRIS:** the tokenizer is trained jointly from scratch (option A below).
+
+**Decision and predeclaration (10:37, before any E22F code): E22F = Park & Lee phase 1 on D, smoke first**
+- **Why E22F before the from-scratch E22 (A):**
+  - with D frozen, the channel can only reduce D's own residual. D already predicts deterministic content, so its
+    residual is the stochastic part: random zombie moves, hits, and blur. That is exactly what imagination lacks;
+  - A's decoder offloads deterministic content into Δ (measured at 2k; E16 at 36k), which the prior must then predict.
+  - This deviates from the 09:58 rule's action ("E22 then trains jointly from scratch"). The reason is the literature read
+    after that rule plus the scratch P2. A is held, not dropped: it runs if E22F fails, and as E22F's from-scratch
+    confirmation.
+- **E22F design (Park & Lee phase 1, adapted):**
+  - frozen: D (every world parameter) and the projection into D's tile space (`Posterior.cond`) at a new Linear's
+    default initialization (`reset_parameters`; measured Δ/tiles at update 0 = 14.8%, the order of the working scratch
+    channel's 16.1%);
+  - trained: the posterior encoder (conv net, action plane, quantizer pre-projection), the code embedding (quantizer post
+    projection) and the EMA codebook;
+  - D's loss + commitment, revival always, L16 rawlong, batch order 11.
+  - Smoke: 2,000 updates, batch 16 (fits beside D from scratch).
+- **Gate (as E22's):**
+  - P1: clean held gain > 0;
+  - P2: random-move score at the true cell ≥ 0.3 (D 0.032), argmax ≥ 50% (D 1.1%).
+  - Also reported: e22_channel diagnostics, Δ size, codes used, and map vs HUD gain.
+- **Rules:**
+  - P1 + P2 pass → E22F full: phase 1 at D's budget (6,000 updates, batch 40), stage B prior (20k), then E22 readings
+    1-5 with a new evaluator that samples Δ from the prior (D as comparator). Phase 2 (joint) is not run unless the full
+    phase-1 readings show the frozen decoder is the limit.
+  - P1 passes, P2 fails → the channel carries something else; measure what before any run.
+  - P1 fails → frozen-read-path warmup does not open the channel on D; run A (E22 from scratch, dworld `--backbone fmamba`
+    stage 1 36k + `--long` stage 2 6k, matched to D from scratch).
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
