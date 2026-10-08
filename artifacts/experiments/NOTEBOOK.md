@@ -463,6 +463,20 @@ every past 6-frame run (S.W = 6).
 B2 removed, B1 unchanged: a usable generator alone draws no more hits, and it still drops health inside the cooldown, as the
 diagnosis predicts.
 
+**E21 v2 results, part 1: G and C0** (20:50; `evidence_e21v2_ab.json` via `health_e21_table.py`; row 9 from `__w10` files):
+
+| arm (6k from M16) | generator beats copy | since = 6 / 1..4 in h63 | approach adjacency in h63 | drawable from h63 | emitted hits / false, row 14 | emitted hits / false, row 9 |
+|---|---|---|---|---|---|---|
+| M16 (parent) | 2.4% | 0.888 / 0.909 | 0.778 | 286 | 154 / 126 | 60 / 0 |
+| C0 (control) | 4.1% | 0.897 / 0.898 | 0.761 | 290 | 124 / 107 | 64 / 0 |
+| G (+ gen-loss) | **79.7%** | **0.944 / 0.936** | **0.619** | 186 | 100 / 108 | 64 / 0 |
+
+- Reading 1 (B2 fixed, ≥ 30%): **TRUE** for G (79.7%; C0 4.1%).
+- Control: the plain continuation does not grow the phase (C0 at 2k / 4k / 6k: 0.886 / 0.892 / 0.897). G's phase gain
+  (0.906 / 0.923 / 0.944) is the generator loss.
+- The generator loss trades approach adjacency for the phase at h63 (0.761 → 0.619). Drawable evidence falls (290 → 186), and
+  at row 9 G draws exactly what C0 draws (64). Fixing B2 alone does not draw health; B1 binds.
+
 **E21 arm D, predeclared 17:50, before any E21 v2 result:** M16 s7 continued 6,000 updates exactly as C0, with the teacher L1
 replaced by Delta-IRIS's tokenizer loss in token space: 1.0·mean L2 + 0.1·mean L1 + 0.01·mean over frames of the frame's worst
 element L2 (vmicheli/delta-iris `tokenizer.py`).
