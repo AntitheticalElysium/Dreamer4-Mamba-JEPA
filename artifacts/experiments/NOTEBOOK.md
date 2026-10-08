@@ -512,6 +512,10 @@ element L2 (vmicheli/delta-iris `tokenizer.py`).
 - **Limit, measured 03:08:** teacher-forced it catches 73% of real damage on held roots (simulator truth). In its own imagination
   it draws only 6% of aligned hits (every other world: 0). Health in self-fed rollouts, what H16 decisions use, remains mostly
   missing.
+  - Localized by substitution at 03:23: feeding back the true HUD restores nothing (4.5% → 5.9%); feeding back the true map
+    restores most (→ 58.5%). D's imagined zombies are beside the player at only 8.9% of real damage steps (truth 73.6%).
+  - Zombie moves are random 25% of the time (Craftax source). A deterministic world averages them away, so imagination needs
+    sampling.
 - teval MSE improves (one-step −0.012, depth 16 −0.052).
 - Costs:
   - L1 +20% (fewer large errors, more small ones).
