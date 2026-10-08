@@ -802,6 +802,32 @@ paired bootstrap over 1,265 held episodes, 2,000 draws):
   L2-trained world may be favoured on. D's L1 cost on the same held roots and teacher-forced path (`health_l1cost.py`,
   lane132) is required before calling it costless.
 
+**E21 world cost in L1 and in decision-relevant facts** (02:50; `l1cost.json`, teval JSONs):
+- L1 on teval's held roots, teacher-forced, window 15 (mean |err| per element; C0 0.0328):
+
+| vs C0 | all tokens | map tokens |
+|---|---|---|
+| G / GE | +0.0025 / +0.0025 (+7.7%) | +0.0023 / +0.0022 |
+| E′ | −0.00003 (unresolved) | −0.00001 (unresolved) |
+| **D** | **+0.0067 [+0.0064, +0.0071] (+20%)** | **+0.0077 [+0.0073, +0.0081]** |
+
+- The L1 / L2 trade, measured: D has fewer large errors (better squared error) and larger small errors everywhere (worse L1).
+- What can be *read* from the frames (teval's true-fit probes):
+
+| world | one-step moved: tile near / zombie-near AUC / health R² / food R² | imagined d4: tile near / zombie-near / food R² | imagined d16: tile near / zombie-near / health R² / food R² / facing |
+|---|---|---|---|
+| C0 | 0.993 / 0.779 / 0.980 / 0.998 | 0.957 / 0.829 / 0.951 | 0.822 / 0.532 / 0.582 / 0.880 / 0.915 |
+| G | 0.994 / 0.780 / 0.978 / 0.997 | 0.954 / 0.804 / 0.947 | 0.812 / 0.550 / 0.619 / 0.859 / 0.915 |
+| E′ | 0.992 / 0.774 / 0.980 / 0.998 | 0.959 / 0.810 / 0.950 | 0.823 / 0.528 / 0.593 / 0.877 / 0.907 |
+| **D** | 0.993 / **0.961** / 0.984 / 0.987 | **0.973 / 0.955** / 0.929 | 0.829 / **0.609** / 0.582 / **0.582** / 0.893 |
+
+- D's extra L1 error leaves terrain intact (tile accuracy equal or better at every depth). It depicts zombies far better: mobs are
+  rare large changes, the same class as health, and the L1 median was blurring them away too.
+- **D's real cost: the food token degrades in long imagination** (food R² at depth 16 0.880 → 0.582; depth 4 0.951 → 0.929), and
+  facing slips (0.915 → 0.893).
+- D is therefore not adoptable as-is. The food cost has to be diagnosed exactly (the L2 term? the worst-element term? food's slow
+  hunger dynamics under a mean-seeking loss?) before any decision; it is the next item after the from-scratch runs.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
