@@ -516,6 +516,15 @@ element L2 (vmicheli/delta-iris `tokenizer.py`).
     restores most (→ 58.5%). D's imagined zombies are beside the player at only 8.9% of real damage steps (truth 73.6%).
   - Zombie moves are random 25% of the time (Craftax source). A deterministic world averages them away, so imagination needs
     sampling.
+  - Confirmed 09:05-09:17:
+    - D's one-step zombie is a blend in proportion to the true move probabilities;
+    - self-fed blends diffuse it (peak 0.44 → 0.11, no cell > 0.3 by depth 8);
+    - restoring only the cells around true zombies restores 56.4% of damage (true map 58.5%; size-matched random cells:
+      4.5%, no effect).
+  - Literature (PlaNet, DreamerV2, video prediction) names exactly this failure of deterministic transitions.
+
+**Test 3 for GE (08:47):** from scratch it ends worse than M16 on every ingredient and draws 7.5% of hits at row 9. Its negative is
+not a continuation artifact. Measured cause: the generator loss crowds token-63 hits to 0.043% of the gradient.
 - teval MSE improves (one-step −0.012, depth 16 −0.052).
 - Costs:
   - L1 +20% (fewer large errors, more small ones).
@@ -1025,6 +1034,21 @@ zombie cells from the simulator's visible state; zombie scores = teval's probe o
   3. imagination feeds blends back, so the zombie diffuses (D: mass conserved, peak 0.44 → 0.11) or fades (L1 worlds);
   4. no localized zombie is beside the player at real damage steps (8.9% vs 73.6%); restoring the true map restores 58.5%;
   5. hits are not drawn (6%).
+
+- **Localization pinned by a controlled substitution** (09:17; lane140; D):
+
+| D: frame fed back at each step | caught, all 337 damage steps | zombie beside the player on damage steps | false |
+|---|---|---|---|
+| imagined | 4.5% | 8.9% | 0.43% |
+| + true HUD | 5.9% | 8.9% | 1.43% |
+| **+ true tokens on cells within 2 of a true zombie** | **56.4%** | **73.6%** | 1.93% |
+| **+ true tokens on an equal number of random non-zombie cells (control)** | **4.5%** | 8.9% | 0.41% |
+| + true map (all 63 cells) | 58.5% | 73.6% | 2.07% |
+| all true (teacher-forced) | 73.3% | 73.6% | 4.06% |
+
+  - Zombie localization alone accounts for 96% of the full map-substitution effect; the size-matched random control has exactly
+    zero effect.
+  - **The imagination failure is entirely the lost zombie position.** Every link of the chain is measured.
 
 **Literature step on this exact problem** (09:10; full texts read):
 - *PlaNet* (Hafner et al. 2019, arXiv 1811.04551, Fig. 2): "Transitions in a recurrent neural network are purely deterministic.
