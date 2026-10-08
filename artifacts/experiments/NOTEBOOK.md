@@ -1161,7 +1161,24 @@ lane135 reads each stage-1 snapshot against M6 at the same update, window 5 = ou
   - Under every L1-based objective, the world expresses a small fraction of the hits its own h63 supports, even with the
     generator fixed (G, GE). Under D's loss it expresses 72%.
   - So the loss shape matters for *expression*, not only for allocation. The exact mechanism (the router's calibration under L1
-    vs L2) is **not yet measured**; recorded as a fact, not explained.
+    vs L2) was measured next (09:25, `health_express.py`, `express.json`):
+
+| world, row 9 | drawable hits | emitted | generator beats copy on drawable | generate weight: drawable hits vs unchanged | missed: router (good gen, weight < 0.5) | missed: generator (not better than copy) | missed: good gen, weight ≥ 0.5 (partial blend) |
+|---|---|---|---|---|---|---|---|
+| C0 | 335 | 18.8% | 17.9% | 0.15 vs 0.06 | 1 | 271 | 0 |
+| oracle | 848 | 7.0% | 3.5% | 0.09 vs 0.05 | 1 | 787 | 1 |
+| G | 136 | 47.1% | 91.2% | 0.60 vs 0.32 | **52** | 12 | 8 |
+| GE from scratch | 317 | 28.7% | 94.6% | 0.55 vs 0.43 | **136** | 7 | 83 |
+| D | 790 | 64.9% | 94.1% | **0.57 vs 0.13** | 117 | 38 | 122 |
+
+  (Drawable sets come from each world's own calibrated probe, refitted here, hence D's 64.9% vs the 72% from evidence counts.)
+  - Without a generator loss (C0, oracle), the misses are the generator (B2).
+  - With the generator fixed (G, GE), the misses move to the **router**. The generate weight barely separates hits from unchanged
+    frames (0.55-0.60 vs 0.32-0.43): the generator loss makes the generator a near-copy on unchanged frames, so choosing it
+    costs nothing there, and on hits the router's signal is the rare-event allocation problem again.
+  - D's router separates them (0.57 vs 0.13).
+  - **One root, three starved components:** under L1, rare events get almost no gradient. That starves the representation (B1),
+    then the generator (B2), then (once the generator is fixed) the router. D's loss allocates to all three.
 
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
