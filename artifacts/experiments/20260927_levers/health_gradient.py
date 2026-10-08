@@ -12,7 +12,11 @@ update direction an optimizer would see before Adam's normalization). Also, at t
 E21 worlds (2026-10-08): `all` is the arm's whole objective (teacher L1 + generator loss + event loss, as trained) and the
 extra terms are components too: gen_term, event_term, event_tok63_hit (the event loss at token 63 on hits). The event term is
 recomputed here as tworld.rollout_losses does it and checked against it on the first chunk.
-Usage: health_gradient.py <world.pt> [batches]  -> artifacts/eda/health_chain_v1/gradient_<world>.json
+`deltairis` (2026-10-08, diagnosis of E16): the same world and batches scored with Delta-IRIS's tokenizer loss instead of the
+teacher L1 (vmicheli/delta-iris tokenizer.py: 1.0 x mean L2 + 0.1 x mean L1 + 0.01 x the per-frame worst element's L2, here over
+a frame's 81 x 192 token elements); components as above (token 63's share includes the worst-element term when the frame's argmax
+falls on token 63). -> gradient_<world>__deltairis.json
+Usage: health_gradient.py <world.pt> [batches] [deltairis]  -> artifacts/eda/health_chain_v1/gradient_<world>.json
 """
 import json
 import sys
@@ -29,7 +33,7 @@ OUT = ROOT / 'artifacts/eda/health_chain_v1'
 HEAD = ('proj.', 'choose.', 'frame.', 'target_gate.', 'event_head.')
 
 
-def main(path, batches):
+def main(path, batches, deltairis=False):
     import teval as T
     import tworld as TW
     from d4mj.config import config_from_dict
@@ -75,10 +79,18 @@ def main(path, batches):
             with autocast_context(config):
                 pred, h, gen = world(s, a)
             err = (pred[:, :L - 1].float() - s[:, 1:]).abs()                                   # [b, L-1, 81, 192]
-            e63 = err[:, :, 63].sum(-1)                                                         # [b, L-1]
             m = {'tok63_hit': hit, 'tok63_death': death, 'tok63_unchanged': unch}
-            parts = {'teacher': err.sum() / norm, 'tok63_all': e63.sum() / norm}
-            parts.update({k: (e63 * v.to(device)).sum() / norm for k, v in m.items()})
+            if deltairis:                                               # 1.0 L2 + 0.1 L1 per element, 0.01 worst element per frame
+                el = err.pow(2) + 0.1 * err
+                worst = err.pow(2).flatten(2).max(-1)                   # per (b, t) over 81 x 192
+                frames = W * (L - 1)
+                e63 = el[:, :, 63].sum(-1) / norm + 0.01 * worst.values * (worst.indices // 192 == 63) / frames
+                parts = {'teacher': el.sum() / norm + 0.01 * worst.values.sum() / frames, 'tok63_all': e63.sum()}
+                parts.update({k: (e63 * v.to(device)).sum() for k, v in m.items()})
+            else:
+                e63 = err[:, :, 63].sum(-1)                                                     # [b, L-1]
+                parts = {'teacher': err.sum() / norm, 'tok63_all': e63.sum() / norm}
+                parts.update({k: (e63 * v.to(device)).sum() / norm for k, v in m.items()})
             parts['all'] = parts['teacher']
             if gl:                                                      # tworld.rollout_losses' gen_loss term
                 parts['gen_term'] = (F.layer_norm(gen[:, :L - 1].float(), (192,)) - s[:, 1:]).abs().sum() / norm
@@ -124,11 +136,11 @@ def main(path, batches):
            'backbone_grad_cosine_with_all': {k: round(float(F.cosine_similarity(flat[k], flat['all'], 0)), 4) for k in comps},
            'token63_mixture_weights_self_up_down_left_right_gen': {k: [round(float(x), 4) for x in v / max(counts[k], 1)] for k, v in wsum.items()},
            'token63_mean_L1_on_hits': {k: round(v / max(counts['hit'], 1), 4) for k, v in err_hit.items()}}
-    (OUT / f"gradient_{st['name']}.json").write_text(json.dumps(res, indent=1))
+    (OUT / f"gradient_{st['name']}{'__deltairis' if deltairis else ''}.json").write_text(json.dumps(res, indent=1))
     print(json.dumps(res, indent=1))
 
 
 if __name__ == '__main__':
     sys.path.insert(0, str(ROOT / 'artifacts/experiments/20260926_diagnosis'))
     sys.path.insert(0, str(ROOT / 'artifacts/experiments/20260921_readout_ladder'))
-    main(sys.argv[1], int(sys.argv[2]) if len(sys.argv) > 2 else 20)
+    main(sys.argv[1], int(sys.argv[2]) if len(sys.argv) > 2 else 20, sys.argv[3:] == ['deltairis'])

@@ -192,6 +192,18 @@ replay of tworld.train's sampler, seed-11 order, 20 batches = 12,000 transitions
   are encoded and drawn (generate weight 0.51-0.89, error 245 → 16.5). E16 trained the posterior through uniform latent L1. Delta-IRIS's own
   tokenizer loss is 1.0·L2 + 0.1·L1 + 0.01·worst-pixel L2 (vmicheli/delta-iris `tokenizer.py`), which concentrates gradient on
   rare large local errors such as a heart icon. That was dropped in the port.
+- **What Delta-IRIS's real loss would allocate** (`health_gradient.py … deltairis`; the same M16 s7 world and 20 training
+  batches, scored with 1.0·mean L2 + 0.1·mean L1 + 0.01·per-frame worst-element L2 instead of the teacher L1):
+
+| token-63 component | objective share, L1 → Delta-IRIS loss | backbone gradient-norm share, L1 → Delta-IRIS loss |
+|---|---|---|
+| hits | 0.27% → 0.78% | 0.16% → **1.85% (×11)** |
+| unchanged | 0.30% → 0.18% | 1.37% → 18.4% |
+| all of token 63 | 0.80% → 1.69% | 1.5% → 20.8% |
+
+  The squared and worst-element terms put an order of magnitude more of the update on token 63. That covers the hits and also
+  the noisy blends the world emits on unchanged frames. The loss the E16 port dropped is the component that addresses the
+  diagnosed root. Measured at M16's own errors; indicative of allocation, not a trained result.
 - E20 B could not have moved the decision, by design: it oversampled damage (10/40 per batch) but importance-weighted it back
   to its natural loss mass (class mass 0.0129825), so the L1 median and the per-hit incentive were unchanged in expectation.
 - E19 C's dose did move B2 (above), but in 6-frame windows: the phase (since = 6) lies outside the window, so B1 could not
