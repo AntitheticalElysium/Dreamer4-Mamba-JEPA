@@ -787,6 +787,21 @@ paired bootstrap over 1,265 held episodes, 2,000 draws):
 - Next, deciding: drawable vs emitted at row 9 per world (`evidence_e21v2_row9.json`, `evidence_sufficiency.json`). If D emits
   close to what its h63 supports, D fixed expression; if its drawable also rose, it fixed information too.
 
+**E21 world cost, teval** (02:40; `compare.json`; window 15; paired walk-seed bootstrap; MSE / copy and imagined error / V):
+
+| vs C0 | one-step, all | moved | idle | depth 1 | depth 4 | depth 16 |
+|---|---|---|---|---|---|---|
+| M16 → C0 (control drift) | −0.000 | −0.001 | +0.030 * | −0.000 | −0.002 | −0.003 |
+| G | −0.000 | −0.000 | −0.029 * | +0.000 | +0.003 * | **+0.045 [+0.033, +0.058]** |
+| GE | −0.001 | +0.000 | −0.032 * | +0.000 | +0.002 | **+0.033 [+0.021, +0.046]** |
+| E′ | −0.001 * | −0.001 | −0.013 * | −0.000 | −0.001 | +0.004 |
+| **D** | **−0.012 [−0.014, −0.009]** | −0.003 * | −0.042 * | −0.003 * | −0.016 * | **−0.052 [−0.076, −0.028]** |
+
+- The generator loss costs imagination (depth 16 +0.03 to +0.05). The fitted event head is neutral.
+- D *improves* one-step and depth-16 error in teval's currency. As predeclared, teval scores squared error, which an
+  L2-trained world may be favoured on. D's L1 cost on the same held roots and teacher-forced path (`health_l1cost.py`,
+  lane132) is required before calling it costless.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
