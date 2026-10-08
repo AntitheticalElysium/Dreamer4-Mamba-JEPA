@@ -17,6 +17,9 @@ with p = 0.75 (on a max-|difference| axis, chosen at random when tied), else one
    (normalized over the 5 cells) vs the empirical frequency of the true next cell's group. A mean-seeking world matches the
    frequencies; a mode-seeking one puts its share on the most frequent group.
 Player displacement per step = scroll.estimate between consecutive true frames (SHIFTS), as health_strata.py.
+E22 pre-flight (P2, 09:50): a dworld stage-A file (has 'post') is read with the POSTERIOR's Delta conditioning every window frame
+(its code for the transition leaving that frame, the last one from the TRUE next frame), so parts 1 and 3 measure what the channel
+carries; part 2 (imagination) is then reported with Delta zeroed (no prior yet).
 Usage: health_zombie.py <name=world.pt> ...  -> artifacts/eda/health_chain_v1/zombie_<name>.json
 """
 import json
@@ -65,8 +68,13 @@ def main():
     n1 = zt.flatten(2).sum(-1)                                                                       # zombies per frame
     one = (n1[:, :-1] == 1) & (n1[:, 1:] == 1) & alive                                              # [R, 16]
     res_all = {}
+    import dworld as DW
     for name, path in (a.split('=', 1) for a in sys.argv[1:]):
-        world, st = T.load_world(Path(path), device)
+        post = None
+        if 'post' in torch.load(path, map_location='cpu', weights_only=False):
+            world, post, st = DW.load_a(Path(path), device)
+        else:
+            world, st = T.load_world(Path(path), device)
         pred_tf = torch.empty(R, H, 7, 9)
         gen_peak, gen_mass = torch.zeros(R, H), torch.zeros(R, H)
         for i in range(0, R, 16):
@@ -77,7 +85,11 @@ def main():
             for k in range(H):
                 w = min(4 + k, 15)
                 acts = torch.stack(hist[-(w - 1):] + [fk[:, k]], 1)
+                if post is not None:                                                        # posterior Delta incl. the true next frame
+                    s_ext = torch.stack(tfr[-w:] + [fut5[i:i + b, 0, k].float()], 1).to(device)
+                    world.delta = post(s_ext, acts.to(device))[0][:, :w]
                 t = T.step(world, torch.stack(tfr[-w:], 1), acts, device, config)
+                world.delta = None
                 g = T.step(world, torch.stack(gfr[-w:], 1), acts, device, config)
                 pred_tf[i:i + b, k] = zscore(t)
                 zg = zscore(g)
@@ -149,7 +161,8 @@ def main():
                             'imagined_mass': round(float(gen_mass[m, d - 1].mean()), 3), 'true_mass': round(float(true_mass[m, d - 1].mean()), 3),
                             'imagined_any_above_0.3': round(float((gen_peak[m, d - 1] > 0.3).float().mean()), 3),
                             'true_any_above_0.3': round(float((true_peak[m, d - 1] > 0.3).float().mean()), 3)}
-        res_all[name] = {'world': st['name'], 'one_step_by_true_move': one_step, 'imagination_one_zombie_roots': imag,
+        res_all[name] = {'world': st['name'], 'posterior_delta_in_one_step': post is not None, 'one_step_by_true_move': one_step,
+                         'imagination_one_zombie_roots': imag,
                          'one_step_calibration_distance_2_to_6': calib,
                          'move_share': {k: round(float(v.sum() / keep.sum()), 3) for k, v in kinds.items()}}
         print(json.dumps({name: res_all[name]}), flush=True)

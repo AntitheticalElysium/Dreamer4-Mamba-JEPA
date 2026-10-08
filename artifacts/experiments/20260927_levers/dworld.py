@@ -16,7 +16,12 @@ I-token = per-tile Linear 192 -> 8, flattened 648 -> 512, LayerNorm (Delta-IRIS:
 Targets: codes of the FROZEN stage-A posterior on 21-frame windows of the 64-frame Raw TRAIN ledger (26.4% end-aligned on a
 death, tworld.TERMINAL_SHARE); end_t = the frame after action t is dead. CE, weights 1 / 1. minGPT AdamW (lr 1e-4, wd 0.01 on
 Linear weights only), grad clip 10, no warmup, batch 32 (crafter.yaml). The last block's Delta-tokens are dummies (no loss).
+E22 (2026-10-09, NOTEBOOK "E22", predeclared 09:35): `--long` ports stage A to the canonical recipe -- the decoder is the tworld
+TWorld(corrt, fmamba, 16 frames) continued from a tworld checkpoint (--init, e.g. the E21 D world), batches from tworld.train's rawlong
+sampler (batch order seed 11, --windows L16 windows, TERMINAL_SHARE), the teacher term = tworld.rollout_losses(..., recon=--recon)
+(deltairis = D's loss); the posterior / quantizer / commitment are E16's, conditioning all 15 transitions of each window.
 Usage: dworld.py --stage a --seed 7 --init <corrt_raw_teacher_s7_u36000.pt> --updates 18000
+       dworld.py --stage a --long --recon deltairis --revival always --seed 7 --init <E21 D world.pt> --updates 6000 [--windows 40]
        dworld.py --stage b --seed 7 --init <dworld_a_...pt> --updates 20000
 """
 import argparse
@@ -139,17 +144,23 @@ class Posterior(nn.Module):
         return F.pad(cond, (0, 0, 0, 0, 0, 1)), tokens.view(b, t - 1, K), loss
 
 
-def train_a(seed, init, updates, device, log, state_path, max_revival=0):
+def train_a(seed, init, updates, device, log, state_path, max_revival=0, long=False, recon="l1", windows=TW.BATCH):
     from d4mj.config import config_from_dict
     from d4mj.train import _phase_lr, autocast_context, optimizer_step, phase_optimizer
     config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
-    pool = torch.load(TW.POOLS["raw"] / "pool.pt", weights_only=False, mmap=True)
-    main_rows = torch.where(~pool["terminal"])[0]
-    held = main_rows[torch.randperm(len(main_rows), generator=torch.Generator().manual_seed(1))[:2048]]
-    rows = torch.cat([main_rows[~torch.isin(main_rows, held)], torch.where(pool["terminal"])[0]])
+    if long:                                   # E22: tworld.train's rawlong sampler, L = 16
+        import numpy as np
+        pool = torch.load(TW.POOLS["rawlong"] / "labels.pt", weights_only=False, mmap=True)
+        ltok = np.memmap(TW.POOLS["rawlong"] / "tokens.f16", dtype=np.float16, mode="r", shape=(len(pool["terminal"]), 64, 81, 192))
+        main_rows, term_rows = torch.where(~pool["terminal"])[0], torch.where(pool["terminal"])[0]
+    else:
+        pool = torch.load(TW.POOLS["raw"] / "pool.pt", weights_only=False, mmap=True)
+        main_rows = torch.where(~pool["terminal"])[0]
+        held = main_rows[torch.randperm(len(main_rows), generator=torch.Generator().manual_seed(1))[:2048]]
+        rows = torch.cat([main_rows[~torch.isin(main_rows, held)], torch.where(pool["terminal"])[0]])
     with torch.random.fork_rng(devices=[0]):
         torch.manual_seed(seed); torch.cuda.manual_seed_all(seed)
-        world = TW.TWorld("corrt")
+        world = TW.TWorld("corrt", None, "fmamba", "all", 0, False, 16) if long else TW.TWorld("corrt")
         post = Posterior(max_revival=max_revival)
     if init is not None:                       # None = Delta-IRIS's recipe: decoder from scratch (amendment 2, NOTEBOOK)
         world.load_state_dict(torch.load(init, map_location="cpu", weights_only=False)["world"])
@@ -174,13 +185,21 @@ def train_a(seed, init, updates, device, log, state_path, max_revival=0):
                     "rng_cuda": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None}, tmp)
         tmp.replace(state_path)
     for update in range(start, updates):
-        idx = rows[torch.randint(len(rows), (TW.BATCH,), generator=order)]
-        b = S.batch_of(pool, idx, "tokens", device)
-        s, a = b["s"], b["actions"]
+        if long:
+            term = torch.rand(windows, generator=order) < TW.TERMINAL_SHARE
+            r = torch.where(term, term_rows[torch.randint(len(term_rows), (windows,), generator=order)],
+                            main_rows[torch.randint(len(main_rows), (windows,), generator=order)])
+            t0 = torch.where(term, 64 - 16, torch.randint(0, 49, (windows,), generator=order))
+            s = torch.stack([torch.from_numpy(np.array(ltok[int(i), int(j):int(j) + 16])) for i, j in zip(r, t0)]).to(device).float()
+            a = torch.stack([pool["actions"][int(i), int(j):int(j) + 15] for i, j in zip(r, t0)]).to(device)
+        else:
+            idx = rows[torch.randint(len(rows), (TW.BATCH,), generator=order)]
+            b = S.batch_of(pool, idx, "tokens", device)
+            s, a = b["s"], b["actions"]
         with autocast_context(config):
             cond, tokens, commit = post(s, a)
             world.delta = cond
-            teacher = TW.rollout_losses(world, s, a, "teacher")
+            teacher = TW.rollout_losses(world, s, a, "teacher", recon=recon)
             world.delta = None
             objective = teacher + commit
         norm = optimizer_step(opt, objective, params, learning_rate=_phase_lr(config, update), grad_clip=config.agent.grad_clip,
@@ -188,7 +207,7 @@ def train_a(seed, init, updates, device, log, state_path, max_revival=0):
         if (update + 1) % 500 == 0:
             used = int(torch.unique(tokens).numel())
             with torch.no_grad(), autocast_context(config):                           # the information the decoder takes from Delta:
-                no_delta = float(TW.rollout_losses(world, s, a, "teacher"))            # same batch, Delta zeroed (world.delta None)
+                no_delta = float(TW.rollout_losses(world, s, a, "teacher", recon=recon))   # same batch, Delta zeroed (world.delta None)
             row = {"update": update + 1, "teacher": float(teacher), "teacher_no_delta": no_delta, "commitment": float(commit),
                    "gradient_norm": float(norm),
                    "codebook_entropy": round(post.quantizer.entropy(), 3), "codes_in_batch": used,
@@ -256,7 +275,8 @@ def adamw_mingpt(model, lr=1e-4, wd=0.01):
 
 def load_a(path, device):
     st = torch.load(path, map_location="cpu", weights_only=False)
-    world, post = TW.TWorld("corrt"), Posterior()
+    long = st.get("args", {}).get("long") == "True"
+    world, post = (TW.TWorld("corrt", None, "fmamba", "all", 0, False, 16) if long else TW.TWorld("corrt")), Posterior()
     world.load_state_dict(st["world"]); post.load_state_dict(st["post"])
     return world.to(device).eval(), post.to(device).eval(), st
 
@@ -322,13 +342,17 @@ def main():
     p.add_argument("--seed", type=int, required=True)
     p.add_argument("--init", type=Path, default=None, help="stage a: a world to continue (default: from scratch); stage b: the stage-A file")
     p.add_argument("--updates", type=int, required=True)
+    p.add_argument("--long", action="store_true", help="E22: the canonical L16 fmamba world and rawlong sampler")
+    p.add_argument("--recon", default="l1", choices=("l1", "deltairis"), help="E22: the decoder's teacher loss (tworld --recon)")
+    p.add_argument("--windows", type=int, default=TW.BATCH, help="E22: L16 windows per update")
     p.add_argument("--revival", default="crafter", choices=("crafter", "atari", "always"),
                    help="Delta-IRIS codebook revival: crafter.yaml 0, atari.yaml 400 (steps_first_epoch), the class default None")
     a = p.parse_args()
     started = time.time()
     log = lambda **kw: print(json.dumps({**kw, "seconds_total": round(time.time() - started, 1)}), flush=True)
-    name = (f"dworld_a_s{a.seed}_" + (f"from{a.init.stem.split('_u')[-1]}" if a.init else "scratch") + ("" if a.revival == "crafter" else f"_rev{a.revival}") + f"_u{a.updates}" if a.stage == "a"
-            else f"{a.init.stem}_prior_u{a.updates}")
+    name = (f"dworld_a_s{a.seed}_" + (f"from{a.init.stem.split('_u')[-1]}" if a.init else "scratch") + ("" if a.revival == "crafter" else f"_rev{a.revival}")
+            + ("_L16" if a.long else "") + ("_di" if a.recon == "deltairis" else "") + ("" if a.windows == TW.BATCH else f"_b{a.windows}")
+            + f"_u{a.updates}" if a.stage == "a" else f"{a.init.stem}_prior_u{a.updates}")
     out = TW.OUT / f"{name}.pt"
     if out.exists():
         log(status="exists", name=name)
@@ -338,7 +362,7 @@ def main():
     meta = {"name": name, "args": {k: str(v) for k, v in vars(a).items()}, "script_sha256": _sha256(Path(__file__))}
     if a.stage == "a":
         world, post, history = train_a(a.seed, a.init, a.updates, torch.device("cuda"), log, TW.OUT / "state" / f"{name}.state.pt",
-                                       {"crafter": 0, "atari": 400, "always": None}[a.revival])
+                                       {"crafter": 0, "atari": 400, "always": None}[a.revival], a.long, a.recon, a.windows)
         torch.save(meta | {"world": world.state_dict(), "post": post.state_dict(), "history": history}, out)
     else:
         prior, history = train_b(a.seed, a.init, a.updates, torch.device("cuda"), log, TW.OUT / "state" / f"{name}.state.pt")
