@@ -252,7 +252,7 @@ Positive control (true token-63 history over the world's own window): `since` 1.
 
   The middle layers build part of the phase from slot 63's history. The last two layers, which feed the copy-dominated head,
   lose a third of it. That is what a missing incentive predicts, not an inability of the per-slot Mamba to compute it.
-- **False drops are the same phase failure** (held unchanged, emitted drop at the 1.5 cut):
+- **False drops by context** (held unchanged, emitted drop at the 1.5 cut; **the "same phase failure" reading below is RETRACTED 19:10, see "Correction: false drops are the row-14 death cue"**):
 
 | unchanged events, by context | M16 s7: false / n (rate) | M16 s8 | E20 A (since = 6 in h63 0.937) |
 |---|---|---|---|
@@ -262,9 +262,26 @@ Positive control (true token-63 history over the world's own window): `since` 1.
 | zombie beside in frame 14 / no zombie within 2 | 83 / 264 (0.31); 34 / 1,360 (0.025) | 98 / 264; 38 / 1,360 | 1; 1 |
 | health 9 / health ≤ 3 | 0 / 766; 77 / 303 | 0; 90 / 303 | 0; 1 |
 
-  85% (s7) and 79% (s8) of false drops fall inside the cooldown window. Without the phase, "zombie beside right after a hit"
-  looks like a hit. The missing phase explains both halves of the health failure: missed hits at since = 6 and hallucinated
-  drops at since 1..5.
+  85% (s7) and 79% (s8) of false drops fall inside the cooldown window. (Retracted reading: "the missing phase explains both
+  halves". The contexts are right; the cause is the time row, as shown next.)
+- **Correction: false drops are the row-14 death cue, not the phase** (19:10; `health_chain.py world … --window 10` puts the
+  same last frames at output row 9 instead of 14):
+
+| world, output row | hits / 1,211 | since = 6 hits / 146 | false / 1,728 | false in cooldown |
+|---|---|---|---|---|
+| M16 s7, row 14 (window 15) | 154 | 25 | 127 | 108 |
+| M16 s7, row 9 (window 10) | 60 | 2 | **0** | 0 |
+| G (E21), row 14 | 100 | 10 | 108 | 102 |
+| G (E21), row 9 | 64 | 5 | **0** | 0 |
+
+  - The training sampler ends 26.4% of windows on a death at frame 15, which is predicted from row 14. In fights, with recent
+    hits, the world learned "row 14 → drop". This is the audit's death-position cue (E20's class-balanced endpoints removed it:
+    E20 A, 2 false drops).
+  - At an unbiased row both worlds draw ~5% of hits with zero false drops: an honest but almost silent health channel. That
+    is B1 (+ B2).
+  - **Consequence for E21:** the predeclared window-15 health readings mix B1 / B2 with the row-14 cue. Every arm is also read
+    at row 9 (window 10) and reported beside them. B1 / B2 movement is judged at row 9; the row-14 numbers stay as
+    predeclared.
 - **The ingredients are sufficient in every world.** h63 + oracle phase + adjacency makes 627-805 of 1,211 hits drawable at
   ~0 false in all 14 worlds, including M6 at 6k.
 - **Correction (approach adjacency; itself superseded at 5× data, see "Approach adjacency, resolved" below).** The adjacency deficit claimed in B1 is NOT established on the subset. Positive control on approach
