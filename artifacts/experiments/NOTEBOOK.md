@@ -749,6 +749,23 @@ paired bootstrap over 1,265 held episodes, 2,000 draws):
   - row 9: 478 hits (39.5%), fresh 2, false 2 / 1,728; generator beats copy 82%; drawn |err| 1.19 (27% within 0.5);
   - row 14: phase 0.931, 612 hits, fresh 16, false 152 (123 in cooldown; the row-14 cue persists).
   - Rising from 2k on every health reading; approach hits are still not drawn at row 9.
+- **D endpoint (6k; 02:27):**
+
+| D | row 9 hits / 1,211 | fresh / 207 | since = 6 / 157 | false / 1,728 | generator beats copy | drawn \|err\| (within 0.5) |
+|---|---|---|---|---|---|---|
+| 2k | 421 | 1 | 21 | 2 | 71% | 1.27 (22%) |
+| 4k | 478 | 2 | 36 | 2 | 82% | 1.19 (27%) |
+| 6k | **569 (47.0%)** | **31** | **63** | **1** | 85% | **1.02 (34%)** |
+
+  - Row 14 at 6k: phase 0.946 in h63; 711 hits, 69 fresh; 149 false (126 in cooldown: the inherited row-14 cue).
+  - GE at row 9, for contrast: 30 hits, 0 false, all under-drawn large drops, despite its generator beating copy on 79%.
+  - D is the first generic objective (a loss-shape change, no labels, no new head) to draw zombie damage at the unbiased row.
+    It passes the predeclared health reading by a wide margin, with every reading still rising at 6k.
+  - Pending before any "fix" claim:
+    - cost (teval vs C0, both currencies);
+    - B1 ingredient intervals;
+    - the simulator-truth damage panel;
+    - **the continuation question applied to D itself:** D from scratch, the predeclared second from-scratch run.
 
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
