@@ -713,6 +713,25 @@ paired bootstrap over 1,265 held episodes, 2,000 draws):
 - This E′ result is **not** a continuation artifact in the sense of test 2: the same continuation installs both ingredients when
   asked strongly. What it measures is the strength of EAWM's ask.
 
+**D (Delta-IRIS tokenizer loss) in flight at 2k** (00:58; `health_row9.py`):
+
+| world | row | hits / 1,211 | fresh / 207 | false / 1,728 (cooldown) | generator beats copy |
+|---|---|---|---|---|---|
+| M16 | 9 | 60 | 0 | 0 | 3.6% |
+| D @ 2k | 9 | **421 (34.8%)** | 1 | **2 (1)** | **71.3%** |
+| D @ 2k | 14 | 570 | 4 | 169 (133) | 64.2% |
+
+- At the unbiased row, after 2k updates, D passes the predeclared health reading (≥ 30% of held hits, ≤ 2% false).
+- The change is the loss shape only: 1.0·L2 + 0.1·L1 + 0.01·worst element; no label, no new head.
+- It fixes B2 by itself: the generator beats copy on 71% of hits with no generator loss, because under L2 the large token-63
+  errors carry a large gradient.
+- Not yet known:
+  - approach adjacency (fresh hits 1/207 suggest it is not installed);
+  - the B1 ingredient AUCs;
+  - stability at 4k / 6k;
+  - the world-quality cost of an L2 objective (teval after the endpoint, judged in both MSE and L1 currencies as predeclared);
+  - the from-scratch question for D.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
