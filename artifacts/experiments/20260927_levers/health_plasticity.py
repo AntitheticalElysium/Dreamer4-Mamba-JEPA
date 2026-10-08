@@ -28,7 +28,9 @@ LP-FT (Kumar et al. 2022, arXiv 2202.10054; added 21:50 before the first run): t
 frozen world's h63 (60 batches of order seed 13, AdamW lr 1e-3, 3,000 steps), so the continuation's gradient into the backbone comes
 from fitted heads, not random ones; the LP losses are logged. Snapshots in
 tworld's checkpoint format at 500 / 1,000 / 2,000 updates -> levers_tworlds_v1/<name>[_atN].pt, read by health_chain.py / health_evidence.
-Usage: health_plasticity.py metrics <world.pt|init> ... | health_plasticity.py oracle <world.pt> [--updates N] [--lam L (default: auto)]
+`--gen-loss` (23:05, sufficiency test): + tworld's generator loss (the generate candidate's own L1 on every token, as E21 G), so the
+continuation satisfies B1 (oracle) and B2 (generator) together; name gets `_gl`.
+Usage: health_plasticity.py metrics <world.pt|init> ... | health_plasticity.py oracle <world.pt> [--updates N] [--lam L (default: auto)] [--gen-loss]
 """
 import json
 import sys
@@ -152,7 +154,7 @@ def oracle_labels(s, P, estimate):
     return since, adj
 
 
-def oracle(path, updates, lam):
+def oracle(path, updates, lam, gen_loss=False):
     import teval as T
     import tworld as TW
     from scroll import estimate
@@ -200,8 +202,8 @@ def oracle(path, updates, lam):
     opt = phase_optimizer([world, aux], config)
     params = [p for g in opt.param_groups for p in g['params']]
     order = torch.Generator().manual_seed(11)
-    name = st['name'].replace('corrt_rawlong_teacher_s7_fmamba_', 'corrt_rawlong_teacher_s7_fmamba_oracle_')
-    args = dict(st['args']); args.update(init=str(path), updates=str(updates), oracle_lam=str(lam))
+    name = st['name'].replace('corrt_rawlong_teacher_s7_fmamba_', 'corrt_rawlong_teacher_s7_fmamba_oracle_' + ('gl_' if gen_loss else ''))
+    args = dict(st['args']); args.update(init=str(path), updates=str(updates), oracle_lam=str(lam), gen_loss=str(gen_loss))
     save = lambda tag, h: torch.save({'name': tag, 'args': args, 'world': world.state_dict(), 'history': h}, WORLDS / f'{tag}.pt')
     history, started, checked = list(lp_log), time.time(), False
     for update in range(updates):
@@ -210,11 +212,13 @@ def oracle(path, updates, lam):
         since, adj = oracle_labels(s_cpu, P, estimate)
         s = s_cpu.to(dev)
         with autocast_context(config):
-            pred, h, _ = world(s, F.pad(a, (0, 1)))
+            pred, h, gen = world(s, F.pad(a, (0, 1)))
             teacher = (pred[:, :L - 1] - s[:, 1:]).abs().mean()
+            if gen_loss:                                                        # tworld.rollout_losses' gen_loss term
+                teacher = teacher + (F.layer_norm(gen[:, :L - 1], (S.WIDTH,)) - s[:, 1:]).abs().mean()
             if not checked:
                 with torch.no_grad():
-                    ref = TW.rollout_losses(world, s, a, 'teacher')
+                    ref = TW.rollout_losses(world, s, a, 'teacher', gen_loss)
                 assert abs(float(ref) - float(teacher)) < 1e-4, (float(ref), float(teacher))
                 checked = True
             h63 = h[:, :L - 1, 63].float()
@@ -246,4 +250,5 @@ if __name__ == '__main__':
     if a[0] == 'metrics':
         metrics(a[1:])
     else:
-        oracle(a[1], int(a[a.index('--updates') + 1]) if '--updates' in a else 2000, float(a[a.index('--lam') + 1]) if '--lam' in a else None)
+        oracle(a[1], int(a[a.index('--updates') + 1]) if '--updates' in a else 2000, float(a[a.index('--lam') + 1]) if '--lam' in a else None,
+               '--gen-loss' in a)

@@ -635,6 +635,28 @@ paired bootstrap over 1,265 held episodes, 2,000 draws):
   variant only, a ≤ 2× event reweighting that our scrolling view gates off. Neither addresses the diagnosed allocation root.
   E14a's "EAWM" (a ×1.7 token reweighting on a frozen backbone) tested neither component.
 
+**Test 2 result: oracle positive control** (23:02; `evidence_oracle.json`; λ set automatically to 0.0613; LP-FT heads):
+
+| oracle continuation of M16 | since = 6 / 1..4 in h63 | approach adjacency in h63 | drawable from h63 (fresh / false) | + oracle ingredients | emitted, row 14 (fresh / false) |
+|---|---|---|---|---|---|
+| M16 (start) | 0.888 / 0.909 | 0.778 | 286 (4 / 5) | 768 | 154 (4 / 126) |
+| @ 500 | 0.997 / 0.999 | 0.967 | 641 (104 / 1) | 771 | 320 (31 / 96) |
+| @ 1,000 | 1.000 / 0.999 | 0.994 | 758 (145 / 1) | 789 | 252 (30 / 58) |
+| @ 2,000 | **1.000 / 1.000** | **0.996** | **823 (184 / 0)** | 837 | 345 (43 / 84) |
+
+- **Reading TRUE on both counts:** M16 is plastic for the phase (≥ 0.97 within 500 updates) and for approach adjacency (≥ 0.90
+  within 500). h63 alone then carries nearly everything the oracle ingredients add (823 vs 837 drawable).
+- **Answer to the continuation question for B1:** a continuation is not what blocks the ingredients. M16's backbone installs both
+  in 500-1,000 updates when the objective asks directly. A continuation arm that fails to install them fails because of its
+  objective. Whether the *same weak ask* behaves differently from step 0 (critical periods) is test 3's question (lane122).
+- **The chain, confirmed in order:** with B1 satisfied, B2 binds. 823 hits are drawable from h63, but the copy-gated generator
+  (beats copy on 1.5%) lets the head emit 345.
+- The cooldown false drops at row 14 fall as the phase is installed (107 → 86 → 33 → 64 across snapshots). The row-14 time cue
+  produces them; the phase is what lets the world veto them. This refines the 19:10 correction; row 9 (lane124) is the clean read.
+- **Sufficiency test, queued (lane125, 23:05):** oracle (B1) + generator loss (B2) together from M16, 2,000 updates, read at
+  rows 14 and 9. If B1 + B2 are jointly sufficient, this world draws most held hits at row 9 with near-zero false drops. That
+  closes the causal chain. The remaining problem would then be one thing only: a label-free objective that installs B1.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
