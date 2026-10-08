@@ -20,7 +20,7 @@ Player displacement per step = scroll.estimate between consecutive true frames (
 E22 pre-flight (P2; written before 09:20, the lane142 launch): a dworld stage-A file (has 'post') is read with the POSTERIOR's
 Delta conditioning every window frame (its code for the transition leaving that frame, the last one from the TRUE next frame), so
 parts 1 and 3 measure what the channel carries; part 2 (imagination) is then reported with Delta zeroed (no prior yet).
-P1 clean (09:40): train_a's logged gain compares the with-Delta loss BEFORE the optimizer step with the zeroed loss AFTER it (biased
+P1 clean (09:32): train_a's logged gain compares the with-Delta loss BEFORE the optimizer step with the zeroed loss AFTER it (biased
 against Delta). Here, same weights, same held one-step teacher-forced predictions: per alive step, mean squared error, mean |error|,
 the frame's worst squared element, and map-token MSE, with the posterior's Delta and with Delta zeroed; Delta-IRIS's loss
 (1.0 L2 + 0.1 L1 + 0.01 worst) from them; gain = zeroed - with Delta.
