@@ -509,6 +509,9 @@ element L2 (vmicheli/delta-iris `tokenizer.py`).
 - It installs B1 without labels (phase 0.952, adjacency 0.964, 790 hits drawable from h63 vs C0's 335) and fixes B2 (generator
   beats copy 85%).
 - It depicts zombies far better: near-player zombie AUC 0.78 → 0.96 one-step, 0.53 → 0.61 at depth 16.
+- **Limit, measured 03:08:** teacher-forced it catches 73% of real damage on held roots (simulator truth). In its own imagination
+  it draws only 6% of aligned hits (every other world: 0). Health in self-fed rollouts, what H16 decisions use, remains mostly
+  missing.
 - teval MSE improves (one-step −0.012, depth 16 −0.052).
 - Costs:
   - L1 +20% (fewer large errors, more small ones).
