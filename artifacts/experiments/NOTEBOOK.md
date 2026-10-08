@@ -593,6 +593,13 @@ been trained from scratch. What is measured so far:
   - It re-runs `tworld_equivalence.py` on the patched file.
 - Lanes 110 / 114 / 115 / 119 were idle waiters (no job started) and were stopped at 21:40. Their readouts now run on
   C0 / G / GE / E′ / D in lane121, and the from-scratch GE replication in lane122, gated on lane121.
+- *LP step result* (`event_lp.json`, 21:50): the fitted head's token-63 logit on held subset events.
+  - Hit vs unchanged AUC 0.619 / 0.700 / 0.734 / 0.751 / 0.753 at 1k / 3k / 5k / 8k / 10k steps: converged at **0.753**.
+  - Fresh hits vs unchanged ≈ 0.50 throughout.
+  - So frozen M16 features support this head only to 0.75 on token 63 and not at all on approach hits, consistent with the
+    diagnosis (phase weak at h63; approach adjacency not routed there).
+  - E′ reading: does fine-tuning with this fitted head push the head's AUC, and the phase / adjacency in h63, above the
+    frozen-feature ceiling?
 
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
