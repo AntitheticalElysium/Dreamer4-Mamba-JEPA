@@ -85,7 +85,7 @@ def main(path, batches):
                 parts['all'] = parts['all'] + parts['gen_term']
             if ev:                                                      # tworld.rollout_losses' event term, per element
                 y = ((s[:, 1:] - s[:, :-1]).norm(dim=-1) > TW.EVENT_TAU).float()
-                logit = world.event_head(h[:, :L - 1].float())[..., 0]
+                logit = world.event_head(h.float())[:, :L - 1]
                 p = torch.sigmoid(logit)
                 p_t, a_t = p * y + (1 - p) * (1 - y), 0.15 * y + 0.85 * (1 - y)
                 focal = a_t * (1 - p_t) ** 4 * F.binary_cross_entropy_with_logits(logit, y, reduction='none')

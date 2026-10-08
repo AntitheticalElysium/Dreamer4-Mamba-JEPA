@@ -72,9 +72,11 @@ E17 (2026-10-03): `--frames L --pool rawlong [--windows W]` trains on L-frame wi
 death, the rest at uniform starts; an L-row time table and L-frame block-causal mask; teacher loss over all L - 1 targets. The
 default recipe is unchanged (CPU-tested 2026-10-03: identical initial weights, teacher / suffix losses and gradients).
 E21 (2026-10-08, health diagnosis; NOTEBOOK "E21"): `--event` adds EAWM's event head (arXiv 2601.19336; EASimulus world_model.py
-and config/world_model/craftax.yaml): a head shared by all tokens reads h_i (the corr decoder's input for token i; Linear(256, 4),
-LayerNorm, SiLU, Linear(4, 1), EASimulus's per-element width 4) and predicts whether token i changes from t to t+1 (L2 norm >
-EVENT_TAU, the empty valley of the bimodal HUD change-norm distribution); focal loss (alpha 0.15, gamma 4), times the per-row
+MultiMotDecoder and config/world_model/craftax.yaml), SlotEvent: per token slot i, its own Linear([h_i,t ; sg(h_i,t-1)] -> 4)
+(h_i = the corr decoder's input for token i; EASimulus feeds the current outputs and the previous ones detached, 4 hidden units per
+event element), one LayerNorm over all 81 x 4 units, SiLU, the slot's own Linear(4 -> 1); it predicts whether token i changes
+from t to t+1 (L2 norm > EVENT_TAU, the empty valley of the bimodal HUD change-norm distribution). (v1, 16:44-17:20, shared ONE
+4-unit head across all slots: token-63 event AUC 0.505 at 2k updates, aborted.) Focal loss (alpha 0.15, gamma 4), times the per-row
 sparsity weight GES(p) = 1 / log(0.1 + p + sqrt(1 + p^2)) of its modality (map: 63 tokens, balance 0.25 as token_2d; HUD: 18,
 balance 1 as vector), times the modality weight 0.1; added to the teacher L1 with weight 1. `--gen-loss` now scores all L - 1
 targets (it scored S.W - 1: unchanged for every 6-frame run). `--snapshot-every N` saves the world every N updates (6000 before).
@@ -196,6 +198,25 @@ class Factored(nn.Module):
         return x + self.mlp(self.n3(x))
 
 
+class SlotEvent(nn.Module):
+    """E21: EASimulus's MultiMotDecoder made per token slot: [B,T,81,D] -> event logits [B,T,81]."""
+
+    def __init__(self, slots=81, width=4):
+        super().__init__()
+        bound = lambda fan: 1 / fan ** 0.5                                   # nn.Linear's default init
+        self.w1 = nn.Parameter(torch.empty(slots, 2 * S.D, width).uniform_(-bound(2 * S.D), bound(2 * S.D)))
+        self.b1 = nn.Parameter(torch.empty(slots, width).uniform_(-bound(2 * S.D), bound(2 * S.D)))
+        self.norm = nn.LayerNorm(slots * width)
+        self.w2 = nn.Parameter(torch.empty(slots, width).uniform_(-bound(width), bound(width)))
+        self.b2 = nn.Parameter(torch.empty(slots).uniform_(-bound(width), bound(width)))
+
+    def forward(self, h):
+        x = torch.cat([h, F.pad(h[:, :-1], (0, 0, 0, 0, 1, 0)).detach()], -1)     # current, previous detached (zeros at t = 0)
+        z = torch.einsum("btic,ick->btik", x, self.w1) + self.b1
+        z = F.silu(self.norm(z.flatten(2)).view_as(z))
+        return torch.einsum("btik,ik->bti", z, self.w2) + self.b2
+
+
 class TWorld(S.World):
     def __init__(self, head, codebook=None, backbone="full", regions="all", noise_levels=0, skip=False, frames=None, event=False):
         super().__init__(S.TOKENS, False)
@@ -241,7 +262,7 @@ class TWorld(S.World):
             with torch.no_grad():
                 self.choose.bias.copy_(torch.tensor([3.0, 0, 0, 0, 0, 0]))
         if event:                                 # E21: EAWM event head (EASimulus MultiMotDecoder, per element)
-            self.event_head = nn.Sequential(nn.Linear(S.D, 4), nn.LayerNorm(4), nn.SiLU(), nn.Linear(4, 1))
+            self.event_head = SlotEvent()
         if head == "categorical":
             self.register_buffer("codes", codebook.float())
             self.logits = nn.Linear(S.D, len(codebook))
@@ -367,7 +388,7 @@ def rollout_losses(world, s, a, loss, gen_loss=False, weight=None, faced=None, e
         teacher = teacher + (F.layer_norm(gen[:, :s.shape[1] - 1], (S.WIDTH,)) - s[:, 1:]).abs().mean()
     if event:                                 # EASimulus get_event_logits / default_focal_loss / event_weight_function
         y = ((clean[:, 1:].float() - clean[:, :-1].float()).norm(dim=-1) > EVENT_TAU).float()      # [B,T-1,81]
-        logit = world.event_head(history[:, :s.shape[1] - 1].float())[..., 0]
+        logit = world.event_head(history.float())[:, :s.shape[1] - 1]
         p = torch.sigmoid(logit)
         p_t, a_t = p * y + (1 - p) * (1 - y), 0.15 * y + 0.85 * (1 - y)
         focal = a_t * (1 - p_t) ** 4 * F.binary_cross_entropy_with_logits(logit, y, reduction="none")

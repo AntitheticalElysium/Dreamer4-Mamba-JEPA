@@ -100,6 +100,8 @@ def world(path, window, ext=False):
         a = sub['actions'][i:i + bs, 15 - W:15].to(device)
         with autocast_context(config):
             out, h, gen = w(s, a)
+            if hasattr(w, 'event_head'):                                # E21: the event head's logit at token 63
+                rec['event63'].append(w.event_head(h.float())[:, -1, 63].float().cpu())
         out, h, gen = out[:, -1].float(), h[:, -1].float(), gen[:, -1].float()
         rec['hud'].append(out[:, 63:81].half().cpu())
         if hasattr(w, 'last_weights'):                                  # corr heads only (direct / residual: none)
@@ -108,8 +110,6 @@ def world(path, window, ext=False):
         rec['h'].append(h[:, [63, 31] + NEAR].half().cpu())
         rec['near_out'].append(out[:, NEAR].half().cpu())
         rec['pred_scroll'].append(estimate(s[:, -1].cpu(), out.cpu()))
-        if hasattr(w, 'event_head'):                                    # E21: the event head's logit at token 63
-            rec['event63'].append(w.event_head(h[:, 63]).float()[:, 0].cpu())
         if ext:
             with autocast_context(config):
                 hb, ha = w.backbone_full(s, a)

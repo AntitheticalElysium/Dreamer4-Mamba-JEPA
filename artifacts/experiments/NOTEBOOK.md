@@ -336,6 +336,45 @@ every past 6-frame run (S.W = 6).
 - If an intermediate does not move, `health_gradient.py` measures whether the arm actually changed the allocation, before any
   conclusion. If the allocation moved and the ingredient did not, the next test is from scratch, not "the method fails".
 
+**E21 v1 aborted (16:44 → 17:21), caught by an in-flight check at 2k updates of GE:**
+- B2 was already fixed (token-63 generator beats copy on 78% of held hits; L1 0.471 vs copy 0.486).
+- The event head's token-63 logit was constant: AUC 0.505, p = 0.245 for hits and unchanged alike.
+- Cause, a porting defect: v1 shared ONE 4-unit head across all 81 slots, so the dense map events own it. EASimulus's
+  MultiMotDecoder gives every event element its own output weights: Linear(all tokens, current ⊕ previous-detached → 4·n) →
+  LayerNorm(4·n) → SiLU → Linear(4·n → n).
+- Fix: `tworld.SlotEvent`. Per slot, Linear([h_i,t ; sg(h_i,t−1)] → 4), one LayerNorm over the 81 × 4 units, SiLU, per-slot
+  Linear(4 → 1). The aborted files are kept in `levers_tworlds_v1/e21_v1_aborted/`.
+
+**Pre-flight** (`event_preflight.py`, `event_preflight.json`; frozen M16, head-only training on M16's own batches):
+
+| head, loss, steps | token-63 AUC hit vs unchanged (held subset) | fresh vs unchanged |
+|---|---|---|
+| v1 shared, E21 focal, 600 | 0.478 | 0.533 |
+| SlotEvent, E21 focal, 600 / 3,000 | 0.606 / 0.740 | 0.322 / 0.483 |
+| SlotEvent, plain BCE, 600 | 0.508 | 0.455 |
+| per-slot linear, BCE / focal, 600 | 0.621 / 0.647 | 0.393 / 0.398 |
+
+- What a token-63 event is (600 random TRAIN windows, 2,357 events = 6.2% of transitions):
+
+| event type | share of token-63 events |
+|---|---|
+| health drop > 1.5 (hits, deaths) | 36% |
+| health −1 | 10% |
+| recovery +1 | 30% |
+| health unchanged, almost all at action 6 (sleep darkens the whole HUD; the other HUD tokens change 6.9 vs 0.5) | 25% |
+
+  The generic label is meaningful, but hits are a minority of it, and the head learns them slowly.
+- Allocation at EAWM's published coefficients (SlotEvent after 600 head steps; 10 other training batches, 166 hits): the event
+  term pushes h at slot 63 on hits with **0.38×** the teacher L1's gradient.
+- Consequence, recorded before relaunch:
+  - E (and E's half of GE) is a faithful test of EAWM *at its published coefficients*. The measured dose predicts a small
+    effect on B1. A weak E result would mean "dose 0.38×", not "event prediction cannot install the phase".
+  - A dose-matched event arm is the follow-up if E is weak.
+  - G is the clean test of B2's mechanism. With the generator usable, emitted hits should approach what h63 can support
+    (24% drawable).
+
+**E21 v2 launched** with SlotEvent; order G, C0, GE, E.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
