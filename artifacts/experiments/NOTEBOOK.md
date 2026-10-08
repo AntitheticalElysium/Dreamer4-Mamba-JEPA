@@ -1030,6 +1030,21 @@ lane135 reads each stage-1 snapshot against M6 at the same update, window 5 = ou
   gain is larger than in any continuation (GE vs C0 +0.011 unresolved; G +0.034).
 - The event head is still untrained at 6k from scratch (0.468): its budget problem is not specific to continuation.
 - Both worlds' false drops sit at the row-4 death cue of 6-frame training. Stage 2 decides.
+- Stage-1 trajectory (05:30; `ci_scratch_ge_at*.json`; window 5 = row 4):
+
+| update | since 1..4: M6 → GE from scratch (paired diff) | adjacency: M6 → GE from scratch (paired diff) | GE: generator beats copy / event AUC | emitted hits / false (M6 → GE) |
+|---|---|---|---|---|
+| 6k | 0.916 → 0.975 (+0.060 [+0.046, +0.073]) | 0.708 → 0.593 (−0.115 [−0.176, −0.054]) | 57.5% / 0.468 | 9 / 220 → 12 / 310 |
+| 12k | 0.902 → 0.964 (+0.062 [+0.045, +0.080]) | 0.646 → 0.513 (−0.133 [−0.201, −0.062]) | 61.0% / 0.524 | 92 / 153 → 49 / 147 |
+| 18k | 0.898 → 0.943 (+0.046 [+0.030, +0.062]) | 0.688 → **0.432** (−0.255 [−0.316, −0.194]) | 61.0% / 0.573 | 43 / 113 → 105 / 131 |
+
+  - From step 0, GE's objective removes approach adjacency from h63 even more than in the continuation (G 0.619, GE 0.680 at
+    6k). The held AUC at 18k is below 0.5 (the probe's fit-episode rule inverts on held episodes): noted as anomalous, not
+    interpreted.
+  - **GE's adjacency loss is not a continuation artifact.** It is the measured property of an objective whose generator term
+    takes ~80% of the backbone's gradient.
+  - The phase gain is real from scratch too.
+  - The event head learns slowly (0.47 → 0.57 by 18k).
 
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
