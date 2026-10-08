@@ -1069,6 +1069,56 @@ zombie cells from the simulator's visible state; zombie scores = teval's probe o
   1. a loss that gives rare large changes their gradient (D's L2-type allocation; Dreamer 4's x-space squared loss);
   2. a stochastic component sampled at imagination time.
 
+### E22 — predeclared 09:35 (2026-10-09), before any code: faithful Delta-IRIS on the canonical world (D's loss + stochastic Δ)
+
+**Why this design** (diagnosis + literature + our own measured constraints):
+- Diagnosis: D fixes allocation (B1, B2, router: 7.56% gradient share; row-9 hits 47%). Its imagination fails because a
+  deterministic transition blends the stochastic zombie move (blend shares ≈ the true move probabilities) and the blends diffuse
+  the zombie. Restoring only the zombie neighbourhoods restores 56.4% of damage.
+- Literature: stochastic transitions that *sample* (PlaNet RSSM, DreamerV2 categoricals, Delta-IRIS Δ tokens, Dreamer 4 flow).
+- Own constraints:
+  - per-token independent sampling destroys known content (E14, 10-02), so the sample must be a few coherent codes per frame,
+    not per-tile noise;
+  - Delta-IRIS's Δ tokens are exactly that (4 discrete codes per transition, one per 5×5 region), and `dworld.py` implements
+    them (E16, validated: zero-init conditioning reproduces the deterministic world exactly; revival "always" needed, others
+    collapsed to 3-11 codes);
+  - E16 failed for allocation (our L1). D supplies the loss.
+
+**Design:**
+- *Stage A* (`dworld.py` ported to the canonical recipe; every other part as E16):
+  - decoder = D (the E21 D world, continued); posterior E on (frame t, action, frame t+1); 4 codes per transition;
+    revival always; D's loss + commitment 0.02;
+  - L16 rawlong windows, batch order 11, 6,000 updates, M16 / D recipe otherwise.
+- *Stage B:* E16's prior on frozen stage-A codes (3 layers, width 512, 21-step rawlong windows, 20,000 updates, Delta-IRIS
+  crafter.yaml values).
+- *Imagination:* at each step the prior samples the transition's 4 codes from the imagined history; the decoder conditions on
+  them. Past transitions use the codes sampled (or, teacher-forced, the posterior's).
+
+**Bowman risk check first** (E16 amendment 2: under L1 a continued deterministic world ignored Δ). A stage-A smoke of 2,000 updates
+with batch 16 (fits beside the running from-scratch D) must show, before any full run:
+- (P1) the Δ gain (teacher loss with Δ zeroed minus with Δ, same batch) > 0 and rising;
+- (P2) with the posterior's Δ, which sees the true next frame, the one-step zombie on *random* moves becomes localized: score
+  at the true cell ≥ 0.3 (D without Δ 0.032), argmax correct ≥ 50% (D 1.1%).
+
+P2 tests the diagnosed mechanism directly: the channel must carry exactly the stochastic choice D cannot predict. If P1 or P2
+fails, stage A is not run at full length; the failure is diagnosed first.
+
+**Readings of the full E22** (s7; held roots and the health_chain subset; D as the comparator):
+1. Imagination keeps zombies localized: with prior-sampled Δ, one-zombie roots keep a cell > 0.3 at depth 8 in ≥ 50% of
+   roots (D 0%, truth 93%), and the peak at depth 8 is ≥ 0.4 (D 0.13).
+2. Imagined damage: self-fed caught on aligned true-damage steps ≥ 30% (D 6%), false ≤ 2%, mean over 4 prior samples per root.
+3. Teacher-forced health preserved: row 9 hits ≥ 40% of held, false ≤ 1% (D 47% / 0.06%).
+4. Food: imagined food bias at depth 16 within ±0.4 (D −0.88, C0 +0.40).
+5. Cost: teval one-step / depth 16 vs D, both currencies; reported, with no pass threshold beyond "no resolved loss on tile facts".
+
+**Interpretation rules, fixed now:**
+- 1 + 2 pass → the sampled channel fixes the diagnosed imagination failure; a from-scratch E22 then follows (the continuation
+  question, as for D).
+- 1 passes and 2 fails → zombies stay localized but hits are not drawn; diagnose the next link (adjacency at damage steps,
+  phase in imagination).
+- 1 fails with P2 passing → the prior does not sample the moves well; diagnose prior accuracy (code-prediction CE, calibration)
+  before anything else.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
