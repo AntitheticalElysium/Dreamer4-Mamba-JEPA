@@ -731,6 +731,20 @@ paired bootstrap over 1,265 held episodes, 2,000 draws):
   - stability at 4k / 6k;
   - the world-quality cost of an L2 objective (teval after the endpoint, judged in both MSE and L1 currencies as predeclared);
   - the from-scratch question for D.
+- Precision of drawn hits against the exact next health (`health_row9.py`, row 9):
+
+| world | hits drawn | mean \|pred − true\| on drawn | within 0.5 | over / under by > 1 | unchanged \|err\| |
+|---|---|---|---|---|---|
+| M16 | 60 | 3.97 | 2% | 0 / 59 | 0.543 |
+| oracle | 70 | 3.60 | 6% | 1 / 61 | 0.553 |
+| E′ | 79 | 2.41 | 9% | 8 / 59 | 0.542 |
+| D @ 2k | **421** | **1.27** | **22%** | 164 / 83 | 0.577 |
+
+  - The few "hits" other worlds draw at row 9 are partial depictions of large drops, under-drawn by > 1 unit.
+  - D's are more numerous and much closer, but not yet precise. Mean predicted drop 3.3 vs true 2.75; the reader's own error on
+    true frames is ≈ 0.4-0.55.
+  - Unchanged-frame error is equal across worlds, so D adds no noise there.
+  - So D learns *when* a hit lands, and roughly its size.
 
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
