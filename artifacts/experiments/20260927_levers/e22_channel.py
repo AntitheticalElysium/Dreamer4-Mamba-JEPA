@@ -14,6 +14,8 @@ posterior and world in eval mode (no EMA, no revival), training's autocast and t
 Update-0 states (written 10:03): e22_init/dworld_a_s7_{warm,scratch}_u0.pt = train_a's exact initialization (seed 7: TWorld, then the
 Posterior) with D's weights loaded (warm) or not (scratch): the channel's gradient at the start of each run (zero-init cond: the
 encoder's teacher gradient is exactly 0 there, its consistency None).
+Size (10:31; the 09:58 rule's 'cond RMS' was a proxy for it): delta_over_tiles = mean over batches of ||Delta|| / ||tile embedding||
+(Frobenius, the 15 conditioned frames; Delta is added to world.embed(s), spatial.py's Linear 192 -> 256).
 Usage: e22_channel.py <name=dworld_a.pt> ...  -> artifacts/eda/health_chain_v1/e22_channel.json (u0 runs: --out <file>)
 """
 import json
@@ -56,13 +58,14 @@ def main():
         counts = [torch.zeros(DW.CODES, dtype=torch.float64, device=dev) for _ in regions]
         ss = [0.0 for _ in regions]
         torch.cuda.reset_peak_memory_stats()
-        nb = 0
+        nb, ratio = 0, 0.0
         for i in range(0, len(keep), BATCH):
             s, a = s_all[i:i + BATCH].to(dev).float(), a_all[i:i + BATCH].to(dev)
             with autocast_context(config):
                 cond, tokens, commit = post(s, a)
                 world.delta = cond
                 teacher = TW.rollout_losses(world, s, a, 'teacher', recon=recon)
+                ratio += float(cond[:, :-1].detach().float().norm() / world.embed(s[:, :-1]).detach().float().norm())
                 world.delta = None
             gt = torch.autograd.grad(teacher, [post.cond.weight] + enc, retain_graph=True, allow_unused=True)
             gc = torch.autograd.grad(commit, enc, allow_unused=True)
@@ -90,6 +93,7 @@ def main():
             out[k] = {'mean_norm': float(f'{n_sum / nb:.4g}'), 'consistency': round(float(g_sum.norm()) / n_sum, 4) if n_sum > 0 else None}
         out['enc_teacher_over_commit_norm'] = float(f"{acc['enc_teacher'][1] / acc['enc_commit'][1]:.4g}")   # 0 at zero-init cond
         out['noise_consistency'] = round(nb ** -0.5, 4)
+        out['delta_over_tiles'] = float(f'{ratio / nb:.4g}')
         out['cond_weight_rms'] = float(f'{float(post.cond.weight.pow(2).mean().sqrt()):.4g}')
         expl = []
         for j in range(len(regions)):
