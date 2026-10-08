@@ -1145,6 +1145,23 @@ lane135 reads each stage-1 snapshot against M6 at the same update, window 5 = ou
   - Test 3 shows the GE objective fails the same way from scratch.
   - What remains open: D's positive result from scratch (lane131, next), and a mechanistic account of *why* from scratch ends
     worse on the phase (gradient allocation of the from-scratch world: lane122's `health_gradient` job).
+- GE from scratch, full evidence (`evidence_scratch_ge.json`): drawable from h63 at row 9 is **317** (M16 334), so the
+  information is no better than M16's, and the head emits 91 of them.
+- **A third measured factor, across all worlds at row 9: emitted / drawable**
+
+| world | drawable from h63 | emitted | emitted / drawable | objective |
+|---|---|---|---|---|
+| M16 | 334 | 60 | 18% | L1 |
+| oracle | 848 | 70 | 8% | L1 + labels |
+| G | 136 | 64 | 47% | L1 + generator loss |
+| E′ | 367 | 79 | 22% | L1 + event head |
+| GE from scratch | 317 | 91 | 29% | L1 + generator + event |
+| **D** | **790** | **569** | **72%** | 1.0 L2 + 0.1 L1 + 0.01 worst element |
+
+  - Under every L1-based objective, the world expresses a small fraction of the hits its own h63 supports, even with the
+    generator fixed (G, GE). Under D's loss it expresses 72%.
+  - So the loss shape matters for *expression*, not only for allocation. The exact mechanism (the router's calibration under L1
+    vs L2) is **not yet measured**; recorded as a fact, not explained.
 
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
