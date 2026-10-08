@@ -676,6 +676,10 @@ paired bootstrap over 1,265 held episodes, 2,000 draws):
   - Exact statement: **with B1 satisfied, every remaining missed hit is in the 848 → 70 gap, and that gap is B2.** The
     copy-gated generator can produce a dropped health token only where deaths trained it (row 14 of end-aligned death windows).
   - The sufficiency test (lane125: oracle + generator loss) now decides whether B1 + B2 are jointly sufficient at row 9.
+- Intervals (`ci_oracle.json`, paired episode bootstrap, row 14):
+  - M16 → oracle @ 500: phase +0.105 [+0.088, +0.124], since 1..4 +0.086 [+0.071, +0.103], adjacency +0.205 [+0.157, +0.259];
+  - 500 → 2,000: +0.003 / +0.001 / +0.027, each resolved but small.
+  - The backbone acquires both ingredients almost entirely within the first 500 updates.
 
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
