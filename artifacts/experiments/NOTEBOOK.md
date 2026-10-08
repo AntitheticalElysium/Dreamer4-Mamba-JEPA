@@ -226,6 +226,21 @@ Positive control (true token-63 history over the world's own window): `since` 1.
 - **Training length does not grow the phase.** Under the natural objective, `since` 1..4 in h63 is flat from 6k to 36k (Mamba) and
   from 36k to 100k (attention), against 0.997 available in the input. Drawable-from-h63 stops rising after ~30k. The user's
   "6k too short / grokking late" hypothesis is refuted for the phase; extra *exposure* to damage (E20 B) moved it (0.950).
+- **Approach adjacency, resolved at 5× data** (`health_controls.py pool`, `pool_adjacency.json`; all 71,918 pool events,
+  M16 s7 h63 at window 15, episode split; supersedes the "not established" correction above, which was data-limited):
+
+| probe target: zombie beside the post-move cell | all | scroll steps | scroll steps, zombie within 2 |
+|---|---|---|---|
+| raw frame-14 cells (13) + action | 0.9955 | 0.9285 | 0.758 |
+| raw cells + action + the TRUE scroll (the move's outcome) | 0.9989 | 0.9749 | **0.935** |
+| M16's h63 | 0.9939 | 0.904 | **0.750** |
+
+  - On approach moves, h63 knows no more than the raw input without the move's outcome (0.750 vs 0.758).
+  - The world itself predicts the scroll correctly on 99.0% of fresh hits (its corrt move gate reads the action token and the
+    target tile), so the outcome exists inside the network; it is not routed to slot 63.
+  - This is the exact form of the "scrolling problem": h63 does not combine the zombie's position with whether the player
+    actually moved.
+  - Caveat: the control uses the true scroll, not the world's predicted one (99% agreement on fresh hits).
 - **The phase is computed, then discarded** (M16 s7; slot 63's residual stream at the output position, same probe, held AUC):
 
 | slot 63 after | since = 6 | since 1..4 | since ≥ 7 |
@@ -252,7 +267,7 @@ Positive control (true token-63 history over the world's own window): `since` 1.
   drops at since 1..5.
 - **The ingredients are sufficient in every world.** h63 + oracle phase + adjacency makes 627-805 of 1,211 hits drawable at
   ~0 false in all 14 worlds, including M6 at 6k.
-- **Correction (approach adjacency).** The adjacency deficit claimed in B1 is NOT established. Positive control on approach
+- **Correction (approach adjacency; itself superseded at 5× data, see "Approach adjacency, resolved" below).** The adjacency deficit claimed in B1 is NOT established on the subset. Positive control on approach
   moves (scroll steps, zombie within 2): raw frame-14 cells + action 0.524, + the true scroll 0.786, M16's h63 0.778. The subset
   is too small for this three-way conjunction; h63 matches the raw + true-scroll control. Only the phase deficit is established.
   The world's map draws the zombie beside the post-move player in 82% of fresh hits.
