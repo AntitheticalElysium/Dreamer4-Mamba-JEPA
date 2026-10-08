@@ -17,6 +17,9 @@ Per world (health_chain.py --ext file, window W = frames 15-W..14):
   Manhattan 2 in frame 14).
   positive control (per W): the same probe on the TRUE token-63 history over the world's own window (frames 15-W..14).
   emitted: the world's own drawn hits / false drops (Probes.hud reader, 1.5 cut), per stratum.
+  generator63 (B2, 2026-10-08): the LayerNormed generate candidate at token 63 vs the true next token, per-dim L1 on held hits /
+  unchanged, and the share of held hits where it beats copying. event63 (E21 worlds): the event head's own token-63 logit,
+  held AUC hit vs unchanged and drawable after the same population calibration.
 Diagnosis 3 findings that motivated the substitution: 2026-10-08 NOTEBOOK. Writes evidence_<tag>.json.
 Usage: health_evidence.py <tag> <world __ext.pt> ...
 """
@@ -115,7 +118,10 @@ def main():
     oracle = torch.cat([adj, adjh, since1h], 1)
     V = torch.cat([zs[:, None], (zs > 0.3).float()[:, None], since1h, adjh, health1h], 1)
     V_no_since = torch.cat([zs[:, None], (zs > 0.3).float()[:, None], adjh, health1h], 1)
-    raw63 = torch.from_numpy(np.array(mm[:, :15, 63])).float()                                  # [N,15,192] true history
+    raw63 = torch.from_numpy(np.array(mm[:, :16, 63])).float()                                  # [N,16,192] true history
+    t14, t15 = raw63[:, 14], raw63[:, 15]
+    copy_l1 = (t14 - t15).abs().mean(-1)
+    raw63 = raw63[:, :15]
 
     def drawable(Pr):
         draw = Pr > 0.5
@@ -154,6 +160,14 @@ def main():
                            'h63+oracle_since': probe(torch.cat([h63, since1h], 1)),
                            'h63+oracle_since_adj': probe(torch.cat([h63, oracle], 1))},
               'ingredients_h63': ingredients(h63, W), 'ingredients_h_ext': ingredients(he.flatten(1), W)}
+        g = F.layer_norm(r['gen63'].float(), (192,))
+        gl = (g - t15).abs().mean(-1)
+        hh, uh = hit & held, unch & held
+        wr['generator63'] = {'l1_hits': round(float(gl[hh].mean()), 4), 'l1_unchanged': round(float(gl[uh].mean()), 4),
+                             'beats_copy_on_hits': round(float((gl[hh] < copy_l1[hh]).float().mean()), 4)}
+        if 'event63' in r:
+            e = r['event63'].float()
+            wr['event63'] = {'auc_hit_vs_unchanged': round(auc(e[held & keep], hit[held & keep]), 4), 'drawable': probe(e[:, None])}
         # emitted (the world as trained), same strata, held
         read = lambda hud: (P.hud(hud.float().flatten(-2))[..., 0] * 9).float()
         cur = torch.cat([read(torch.from_numpy(np.array(mm[i:i + 2048, 14, 63:81]))) for i in range(0, N, 2048)])

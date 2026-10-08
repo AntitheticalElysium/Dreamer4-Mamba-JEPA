@@ -16,6 +16,7 @@ and the scroll estimated between true frame 14 and the emitted frame 15.  -> art
 Readouts are computed by health_chain_read.py.
 `--ext` (diagnosis 2, 2026-10-08) also saves h_ext: backbone h at 63, 31 and the 12 cells within Manhattan 2 of the player, plus
 the action token's output (backbone_full; corr heads), [N, 15, 256] -> <world>__w<W>__ext.pt.
+E21 worlds (`--event`) also save the event head's logit at token 63 (event63).
 Usage: health_chain.py extract | health_chain.py world <world.pt> [--window W] [--ext]
 """
 import hashlib
@@ -92,7 +93,7 @@ def world(path, window, ext=False):
     W = window or w.time.shape[0] - 1
     bs = 8 if getattr(w, 'backbone_kind', 'full') in ('fmamba', 'fcanvas') else 16
     N = len(x)
-    rec = {k: [] for k in ('hud', 'weights63', 'gen63', 'h', 'near_out', 'pred_scroll', 'h_ext')}
+    rec = {k: [] for k in ('hud', 'weights63', 'gen63', 'h', 'near_out', 'pred_scroll', 'h_ext', 'event63')}
     cells = [r * 9 + c for r in range(7) for c in range(9) if 0 < abs(r - 3) + abs(c - 4) <= 2]
     for i in range(0, N, bs):
         s = x[i:i + bs, 15 - W:15].float().to(device)
@@ -107,6 +108,8 @@ def world(path, window, ext=False):
         rec['h'].append(h[:, [63, 31] + NEAR].half().cpu())
         rec['near_out'].append(out[:, NEAR].half().cpu())
         rec['pred_scroll'].append(estimate(s[:, -1].cpu(), out.cpu()))
+        if hasattr(w, 'event_head'):                                    # E21: the event head's logit at token 63
+            rec['event63'].append(w.event_head(h[:, 63]).float()[:, 0].cpu())
         if ext:
             with autocast_context(config):
                 hb, ha = w.backbone_full(s, a)

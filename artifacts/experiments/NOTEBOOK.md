@@ -228,6 +228,18 @@ Positive control (true token-63 history over the world's own window): `since` 1.
 - **The generator loss fixes B2 on its recipe.** `--gen-loss` (the generator's own L1 on every token, ITC-derived, 6k suffix,
   attention): token-63 generator L1 on hits 0.973 → 0.491, unchanged 1.005 → 0.209; beats copy on 0% → 36% of hits. It was
   judged in 09-28 on aggregate one-step error only; its effect on health was never read.
+- **Existing checkpoints that bear on the blockers** (`evidence_more.json`; 6-frame worlds read at window 5):
+
+| world | drawable from h63 | emitted hits / 1,211 | false / 1,728 | reading |
+|---|---|---|---|---|
+| corrt suffix 6k / + gen-loss | 0 / 0 | 21 / 12 | 250 / 282 | B2 fixed alone, no B1 evidence yet: nothing drawn |
+| corrt suffix 18k / + gen-loss + ITC regions | 15 / 6 | 80 / 19 | 235 / 189 | |
+| E19 B (no dose) / C (health dose λ 1), 6k from M6 36k | 264 / **416** | 170 / **376** | 118 / 133 | a health-token dose moves both blockers |
+| M16 at 500 / 6,000 L16 updates | 160 / 286 | 32 / 154 | 30 / 126 | since = 6 in h63: 0.868 → 0.888 |
+| E20 A (endpoint-only continuation of M16) | 212 | 98 | **2** | since = 6 0.937; class-balanced endpoints remove false drops |
+
+  A health-specific dose (E19 C) draws 31% of held hits at window 5. The question for E21 is whether a *generic* allocation
+  does the same.
 - **Token-change events are bimodal for HUD tokens** (400 random TRAIN windows, frames 8..55): health-63 change norms cluster
   at 0-2 (drift) and 3-12 (real changes) with an empty gap at 2-3 (4 and 11 of 18,800 in the 2.0-2.5 / 2.5-3.0 bins). At a
   change-norm threshold 2.5, events cover health 5.3%, all HUD 3.2%, map 28%.

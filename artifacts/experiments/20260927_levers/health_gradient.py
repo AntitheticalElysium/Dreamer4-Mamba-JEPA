@@ -9,6 +9,9 @@ Per component: its share of the objective and its gradient on the BACKBONE param
 choose, frame, target_gate): norm ratio to the full objective's gradient and cosine with it (summed over batches, i.e. the
 update direction an optimizer would see before Adam's normalization). Also, at token 63 on hits: the corrt mixture weights
 (the generator receives the error scaled by its weight) and the per-dim error of copy vs the world's output.
+E21 worlds (2026-10-08): `all` is the arm's whole objective (teacher L1 + generator loss + event loss, as trained) and the
+extra terms are components too: gen_term, event_term, event_tok63_hit (the event loss at token 63 on hits). The event term is
+recomputed here as tworld.rollout_losses does it and checked against it on the first chunk.
 Usage: health_gradient.py <world.pt> [batches]  -> artifacts/eda/health_chain_v1/gradient_<world>.json
 """
 import json
@@ -23,7 +26,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 ROOT = HERE.parents[2]
 OUT = ROOT / 'artifacts/eda/health_chain_v1'
-HEAD = ('proj.', 'choose.', 'frame.', 'target_gate.')
+HEAD = ('proj.', 'choose.', 'frame.', 'target_gate.', 'event_head.')
 
 
 def main(path, batches):
@@ -44,7 +47,10 @@ def main(path, batches):
     order = torch.Generator().manual_seed(11)
     named = [(n, p) for n, p in world.named_parameters() if not n.startswith(HEAD)]
     params = [p for _, p in named]
-    comps = ('all', 'tok63_all', 'tok63_hit', 'tok63_death', 'tok63_unchanged')
+    gl, ev = st['args'].get('gen_loss') == 'True', st['args'].get('event') == 'True'
+    comps = ('all', 'teacher', 'tok63_all', 'tok63_hit', 'tok63_death', 'tok63_unchanged') + (('gen_term',) if gl else ()) \
+        + (('event_term', 'event_tok63_hit') if ev else ())
+    checked = False
     grad = {c: [torch.zeros_like(p) for p in params] for c in comps}
     loss = {c: 0.0 for c in comps}
     counts = {'transitions': 0, 'hit': 0, 'death': 0, 'unchanged': 0}
@@ -71,8 +77,30 @@ def main(path, batches):
             err = (pred[:, :L - 1].float() - s[:, 1:]).abs()                                   # [b, L-1, 81, 192]
             e63 = err[:, :, 63].sum(-1)                                                         # [b, L-1]
             m = {'tok63_hit': hit, 'tok63_death': death, 'tok63_unchanged': unch}
-            parts = {'all': err.sum() / norm, 'tok63_all': e63.sum() / norm}
+            parts = {'teacher': err.sum() / norm, 'tok63_all': e63.sum() / norm}
             parts.update({k: (e63 * v.to(device)).sum() / norm for k, v in m.items()})
+            parts['all'] = parts['teacher']
+            if gl:                                                      # tworld.rollout_losses' gen_loss term
+                parts['gen_term'] = (F.layer_norm(gen[:, :L - 1].float(), (192,)) - s[:, 1:]).abs().sum() / norm
+                parts['all'] = parts['all'] + parts['gen_term']
+            if ev:                                                      # tworld.rollout_losses' event term, per element
+                y = ((s[:, 1:] - s[:, :-1]).norm(dim=-1) > TW.EVENT_TAU).float()
+                logit = world.event_head(h[:, :L - 1].float())[..., 0]
+                p = torch.sigmoid(logit)
+                p_t, a_t = p * y + (1 - p) * (1 - y), 0.15 * y + 0.85 * (1 - y)
+                focal = a_t * (1 - p_t) ** 4 * F.binary_cross_entropy_with_logits(logit, y, reduction='none')
+                ges = lambda q: 1 / torch.log(0.1 + q + torch.sqrt(1 + q * q))
+                share = lambda part, balance: (part.mean(-1, keepdim=True) / balance).clamp(2e-4, 1).expand_as(part)
+                el = focal * torch.cat([ges(share(y[..., :63], 0.25)), ges(share(y[..., 63:], 1.0))], -1) * 0.1
+                parts['event_term'] = el.sum() / (W * (L - 1) * 81)
+                parts['event_tok63_hit'] = (el[:, :, 63] * hit.to(device)).sum() / (W * (L - 1) * 81)
+                parts['all'] = parts['all'] + parts['event_term']
+                if not checked:                                         # same value as the training code's term
+                    with torch.no_grad(), autocast_context(config):
+                        ref = TW.rollout_losses(world, s, a[:, :L - 1], 'teacher', False, None, None, True) \
+                            - TW.rollout_losses(world, s, a[:, :L - 1], 'teacher')
+                    assert abs(float(ref) - float(el.mean())) < 1e-3 * max(1.0, abs(float(ref))), (float(ref), float(el.mean()))
+                    checked = True
             for k, v in parts.items():
                 g = torch.autograd.grad(v, params, retain_graph=True, allow_unused=True)
                 for acc, gi in zip(grad[k], g):
