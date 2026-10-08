@@ -622,6 +622,19 @@ paired bootstrap over 1,265 held episodes, 2,000 draws):
 - Under the binding caveat (event AUC 0.570 < 0.85), GE says nothing about whether a competent event head installs the phase.
   E′ (LP-FT, head at 0.753 from the start) and the from-scratch GE are the tests.
 
+**EAWM's second component, read in the code (22:55; MarquisDarwin/EAWM @ 49eebbe):** the paper's event-aware observation loss
+ℒ_o = ℒ′_o + Σ ω·g(α)·[𝟙(event) − 1]·ℒ′_o(o_i).
+- *EASimulus* (their Craftax system, `get_next_token_logits_and_labels`): plain per-token CE, **no event-aware reweighting**. Its
+  only EAWM component is the event head (what E21 ports).
+- *EADream* (pixels; `tools.AttentionMSEDist`, `configsc.yaml`):
+  - per-element weight (1 − ω) + ω·event with ω = `attention_weight` 0.5, i.e. an event element counts 2× a non-event one;
+  - applied only while fewer than `event_pred_ratio` = 5% of the frame's elements are events (`dizzy: True`, the GES gate).
+- *Measured in our data:* 31% of map tokens change per frame (τ = 2.5). The 5% gate would be closed on nearly every moving frame,
+  including every fresh hit (all are scroll steps). Even open, ×2 on a 0.27% share is ≈ 0.5%, against Delta-IRIS's measured ×11.
+- *So, exactly why EAWM does not fix health here:* its faithful components are a slowly learned event head plus, in its pixel
+  variant only, a ≤ 2× event reweighting that our scrolling view gates off. Neither addresses the diagnosed allocation root.
+  E14a's "EAWM" (a ×1.7 token reweighting on a frozen backbone) tested neither component.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
