@@ -11,7 +11,7 @@ posterior and world in eval mode (no EMA, no revival), training's autocast and t
              zeroed-Delta residual variance (true next frame - prediction with Delta zeroed, over the region's tiles) explained by
              the region's code: between-code sum of squares / total sum of squares; chance under a random assignment of codes
              with the same counts = (codes used - 1) / (n - 1)
-Update-0 states (10:05): e22_init/dworld_a_s7_{warm,scratch}_u0.pt = train_a's exact initialization (seed 7: TWorld, then the
+Update-0 states (written 10:03): e22_init/dworld_a_s7_{warm,scratch}_u0.pt = train_a's exact initialization (seed 7: TWorld, then the
 Posterior) with D's weights loaded (warm) or not (scratch): the channel's gradient at the start of each run (zero-init cond: the
 encoder's teacher gradient is exactly 0 there, its consistency None).
 Usage: e22_channel.py <name=dworld_a.pt> ...  -> artifacts/eda/health_chain_v1/e22_channel.json (u0 runs: --out <file>)
