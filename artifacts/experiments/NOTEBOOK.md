@@ -1069,7 +1069,7 @@ zombie cells from the simulator's visible state; zombie scores = teval's probe o
   1. a loss that gives rare large changes their gradient (D's L2-type allocation; Dreamer 4's x-space squared loss);
   2. a stochastic component sampled at imagination time.
 
-### E22 — predeclared 09:35 (2026-10-09), before any code: faithful Delta-IRIS on the canonical world (D's loss + stochastic Δ)
+### E22 — predeclared (committed 09:18:46, 2026-10-09; labelled "09:35" in error), before any code: faithful Delta-IRIS on the canonical world (D's loss + stochastic Δ)
 
 **Why this design** (diagnosis + literature + our own measured constraints):
 - Diagnosis: D fixes allocation (B1, B2, router: 7.56% gradient share; row-9 hits 47%). Its imagination fails because a
@@ -1118,6 +1118,63 @@ fails, stage A is not run at full length; the failure is diagnosed first.
   phase in imagination).
 - 1 fails with P2 passing → the prior does not sample the moves well; diagnose prior accuracy (code-prediction CE, calibration)
   before anything else.
+
+### E22 pre-flight result (lane142, 09:20:41-09:55:16): P1 and P2 FAIL — the continued D decoder ignores Δ
+
+- **Smoke:** 2,000 updates of D continued with E16's channel (revival always), batch 16 L16 windows, D's loss.
+- **Logged gain** at 500 / 1,000 / 1,500 / 2,000: −0.00068 / −0.00161 / −0.00059 / −0.00062 (−1.6% / −2.9% / −1.2% / −1.3%).
+  Codes per batch: 72 / 11 / 89 / 54.
+  - This logged gain is biased against Δ: it compares the pre-step loss with Δ to the post-step loss zeroed, on the
+    batch just trained on. E16 amendment 2's "0.4-1.5% higher" was logged the same way.
+  - The logged codebook entropy (8.0-10.4 bits) is not a usage measure: revival resets expired codes' frequencies to
+    1/1024 without renormalizing. Codes per batch is the usage measure.
+- **Clean P1** (`health_zombie.py` `p1_clean_held`, same weights; held 1,002 roots, 16,028 alive one-step teacher-forced
+  predictions):
+  - Delta-IRIS loss 0.037205 with Δ vs 0.037215 zeroed: gain **+0.000009 (+0.03%)**.
+  - MSE 0.012614 vs 0.012615; map MSE 0.014894 vs 0.014891.
+  - **P1 FAILS.**
+- **P2** (posterior Δ sees the true next frame):
+
+  | true zombie move | n | E22A: score at true cell / argmax correct | D: score / argmax |
+  |---|---|---|---|
+  | other (random) | 280 | **0.036 / 1.1%** | 0.032 / 1.1% |
+  | toward | 959 | 0.333 / 58.7% | 0.309 / 57.8% |
+  | stay | 1,290 | 0.502 / 91.1% | 0.484 / 91.1% |
+
+  - Thresholds were 0.3 and 50%. **P2 FAILS.**
+  - Calibration is unchanged: toward share 0.483 (D 0.479; truth 0.624).
+- **Why, measured:** the Δ projection `cond.weight` (zero-init) after 2,000 Adam updates has Frobenius 0.350, RMS 0.0027 per
+  element, max 0.0129.
+  - The lr warms up to 1e-4 by update 1,000. A sign-consistent gradient would move each weight up to ~0.15.
+  - The largest weight moved 9% of that, the RMS 2%: a random walk. The decoder's gradient on the channel has no
+    consistent direction.
+- **Plumbing excluded** (CPU, reference backend, D in the L16 world, 2 rawlong windows):
+  - zero-init Δ: loss identical; the gradient reaches `cond` (norm 0.0024);
+  - with `cond` ~ N(0, 0.02²): Δ changes the loss (0.031585 → 0.031619) and the encoder gradient rises 800×
+    (1.4e-5 → 0.011).
+  - The channel is wired; the decoder does not use it.
+- **Reading:** this is E16 amendment 2 (10-03; L1, 6 frames) reproduced under D's loss at L16. A converged deterministic
+  decoder starts stage A in Bowman's equilibrium, and D's loss does not get it out. Per the rules, no full stage A.
+- **Time labels:** the predeclaration's "09:35" and lane142's "09:55" are wrong. Actual times: predeclaration committed
+  09:18:46 (81d80819), code 09:20:21, lane launched 09:20:41.
+
+**Substitution test of the warm start — predeclared 09:58, before launch (lane143):**
+- `e22s` smoke: the same command without `--init`, i.e. the decoder from scratch (TWorld at seed 7). Recipe, loss, windows,
+  batch order and updates are identical.
+- Readings, on both smoke files:
+  - clean P1 and P2 (`health_zombie.py`);
+  - channel diagnostics (`e22_channel.py`, held 16-frame windows = 4 context + 12 future frames, 62 batches of 16):
+    1. consistency of the `cond` gradient, ‖Σ_b g_b‖ / Σ_b ‖g_b‖ (1 = consistent; ~1/√62 = 0.13 for noise);
+    2. the encoder's gradient from the decoder vs from the commitment term;
+    3. the share of the zeroed-Δ residual variance explained by each region's code, vs permutation chance (E16's
+       measure).
+- Rules:
+  - scratch clean gain ≥ +5% and `cond` RMS ≥ 10× warm's (0.0027) → the warm start is the cause, as in E16 amendment 2.
+    E22 then trains as Delta-IRIS does, posterior and decoder jointly from scratch, on the canonical two-stage recipe
+    (6-frame 36k + L16 6k), matched to D from scratch (lane131).
+  - scratch gain < 1% → the warm start is not the cause; the recipe (loss, L16, quantizer) is diagnosed before any run.
+  - in between → report and diagnose.
+- P2 on the 2k scratch decoder is reported but not a gate (the decoder is immature).
 
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
