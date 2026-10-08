@@ -681,6 +681,20 @@ paired bootstrap over 1,265 held episodes, 2,000 draws):
   - 500 → 2,000: +0.003 / +0.001 / +0.027, each resolved but small.
   - The backbone acquires both ingredients almost entirely within the first 500 updates.
 
+**E′ (LP-FT event head) in flight** (lane126; row 14):
+
+| E′ | event head token-63 AUC | since = 6 in h63 | generator beats copy | emitted hits (fresh / false, cooldown) |
+|---|---|---|---|---|
+| start (LP) | 0.753 | 0.888 (M16) | 2.4% | 154 (4 / 126, 107) |
+| 2k | 0.763 | 0.888 | 3.6% | 121 (0 / 88, 77) |
+| 4k | 0.777 | **0.930** | 4.6% | 183 (**14** / 139, 97) |
+
+- With a competent head from the start, the event term begins installing the phase between 2k and 4k: +0.04, against the
+  oracle's +0.11 within 500 updates.
+- Measured differences between the two asks: the event term's gradient into h63 on hits is 0.38× the teacher's, while the
+  oracle term equals the teacher term. The event target is 1 bit ("token 63 changes next step"); the oracle's is the 16-way phase.
+- Endpoint, row 9 and intervals: lane121.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
