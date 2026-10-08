@@ -767,6 +767,26 @@ paired bootstrap over 1,265 held episodes, 2,000 draws):
     - the simulator-truth damage panel;
     - **the continuation question applied to D itself:** D from scratch, the predeclared second from-scratch run.
 
+**Sufficiency test result** (02:34; lane125; oracle B1 + generator loss B2 from M16, 2,000 updates, λ auto):
+
+| world, row 9 | hits / 1,211 | fresh / 207 | false | generator beats copy | drawn \|err\| |
+|---|---|---|---|---|---|
+| oracle (B1 only) | 70 | 2 | 3 | 3% | 3.60 |
+| G (B2 only, 6k) | 64 | 0 | 0 | 75% | 3.22 |
+| **oracle + generator loss (2k)** | **114** | 22 | 6 | 59% | 2.50 |
+| D (6k, no labels) | 569 | 31 | 1 | 85% | 1.02 |
+
+- Row 14: phase 1.000; 346 hits, 89 fresh, 45 false.
+- **Predeclared reading ("draws most held hits at row 9"): NOT met (9.4%).** Qualified honestly: B2 was only partly satisfied in
+  2,000 updates (59% vs G's 80% at 6k), so this is a partially dosed test, not a clean negative on joint sufficiency.
+- What it does establish: under the L1 objective, an h63 that carries both ingredients plus a half-trained generator draws 114.
+  D, with no labels, draws 569. D's success is therefore not "B1 + B2 under L1".
+  - The loss shape is itself a factor. Under L2 the head's optimum moves from the conditional median (draw only if
+    P(hit) > 0.5, at full size) toward the conditional mean.
+  - The worst-element term sends gradient to exactly the rare large errors.
+- Next, deciding: drawable vs emitted at row 9 per world (`evidence_e21v2_row9.json`, `evidence_sufficiency.json`). If D emits
+  close to what its h63 supports, D fixed expression; if its drawable also rose, it fixed information too.
+
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed
 
