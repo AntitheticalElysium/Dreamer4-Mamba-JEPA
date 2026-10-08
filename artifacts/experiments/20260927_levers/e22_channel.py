@@ -11,7 +11,10 @@ posterior and world in eval mode (no EMA, no revival), training's autocast and t
              zeroed-Delta residual variance (true next frame - prediction with Delta zeroed, over the region's tiles) explained by
              the region's code: between-code sum of squares / total sum of squares; chance under a random assignment of codes
              with the same counts = (codes used - 1) / (n - 1)
-Usage: e22_channel.py <name=dworld_a.pt> ...  -> artifacts/eda/health_chain_v1/e22_channel.json
+Update-0 states (10:05): e22_init/dworld_a_s7_{warm,scratch}_u0.pt = train_a's exact initialization (seed 7: TWorld, then the
+Posterior) with D's weights loaded (warm) or not (scratch): the channel's gradient at the start of each run (zero-init cond: the
+encoder's teacher gradient is exactly 0 there, its consistency None).
+Usage: e22_channel.py <name=dworld_a.pt> ...  -> artifacts/eda/health_chain_v1/e22_channel.json (u0 runs: --out <file>)
 """
 import json
 import sys
@@ -43,7 +46,7 @@ def main():
     cells = torch.arange(81).view(9, 9)
     regions = [cells[5 * i:5 * i + 5, 5 * j:5 * j + 5].flatten().to(dev) for i in range(2) for j in range(2)]
     res = {}
-    for name, path in (x.split('=', 1) for x in sys.argv[1:]):
+    for name, path in (x.split('=', 1) for x in sys.argv[1:] if '=' in x):
         world, post, st = DW.load_a(Path(path), dev)
         recon = st['args'].get('recon', 'l1')
         enc = [p for m in (post.net, post.action, post.quantizer.pre) for p in m.parameters()]
@@ -84,8 +87,8 @@ def main():
         out['gain'] = round((loss['zeroed'] - loss['delta']) / nb, 7)
         out['gain_relative'] = round((loss['zeroed'] - loss['delta']) / loss['zeroed'], 5)
         for k, (g_sum, n_sum) in acc.items():
-            out[k] = {'mean_norm': float(f'{n_sum / nb:.4g}'), 'consistency': round(float(g_sum.norm()) / n_sum, 4)}
-        out['enc_teacher_over_commit_norm'] = float(f"{acc['enc_teacher'][1] / acc['enc_commit'][1]:.4g}")
+            out[k] = {'mean_norm': float(f'{n_sum / nb:.4g}'), 'consistency': round(float(g_sum.norm()) / n_sum, 4) if n_sum > 0 else None}
+        out['enc_teacher_over_commit_norm'] = float(f"{acc['enc_teacher'][1] / acc['enc_commit'][1]:.4g}")   # 0 at zero-init cond
         out['noise_consistency'] = round(nb ** -0.5, 4)
         out['cond_weight_rms'] = float(f'{float(post.cond.weight.pow(2).mean().sqrt()):.4g}')
         expl = []
@@ -101,7 +104,7 @@ def main():
         res[name] = out
         print(json.dumps({name: out}), flush=True)
         del world, post; torch.cuda.empty_cache()
-    (OUT / 'e22_channel.json').write_text(json.dumps(res, indent=1))
+    (OUT / (sys.argv[sys.argv.index('--out') + 1] if '--out' in sys.argv else 'e22_channel.json')).write_text(json.dumps(res, indent=1))
 
 
 if __name__ == '__main__':
