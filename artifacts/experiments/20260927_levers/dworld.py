@@ -151,7 +151,7 @@ class Posterior(nn.Module):
 
 
 def train_a(seed, init, updates, device, log, state_path, max_revival=0, long=False, recon="l1", windows=TW.BATCH, backbone="full",
-            state_every=TW.STATE_EVERY, freeze=False):
+            state_every=TW.STATE_EVERY, freeze=False, zombie_weight=None):
     from d4mj.config import config_from_dict
     from d4mj.train import _phase_lr, autocast_context, optimizer_step, phase_optimizer
     config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
@@ -186,9 +186,14 @@ def train_a(seed, init, updates, device, log, state_path, max_revival=0, long=Fa
     params = [p for g in opt.param_groups for p in g["params"]]
     order = torch.Generator().manual_seed(11)
     history, start, started = [], 0, time.time()
+    lam = None if zombie_weight in (None, "auto") else float(zombie_weight)
+    if zombie_weight is not None:              # E22Z (diagnostic): teval's zombie probe, exported exactly (zombie_probe_export.py)
+        zp = torch.load(TW.ROOT / "artifacts/eda/health_chain_v1/zombie_probe_linear.pt")
+        zW, zb = zp["W"].to(device), zp["b"].to(device)
     if state_path.exists():
         st = torch.load(state_path, map_location="cpu", weights_only=False)
         world.load_state_dict(st["world"]); post.load_state_dict(st["post"]); opt.load_state_dict(st["optimizer"])
+        lam = st.get("zombie_lambda", lam)
         order.set_state(st["order"]); torch.set_rng_state(st["rng_cpu"])
         if st["rng_cuda"] is not None:
             torch.cuda.set_rng_state_all(st["rng_cuda"])
@@ -199,7 +204,7 @@ def train_a(seed, init, updates, device, log, state_path, max_revival=0, long=Fa
         tmp = state_path.with_suffix(".tmp")
         torch.save({"update": u, "world": world.state_dict(), "post": post.state_dict(), "optimizer": opt.state_dict(),
                     "order": order.get_state(), "rng_cpu": torch.get_rng_state(), "history": history,
-                    "rng_cuda": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None}, tmp)
+                    "rng_cuda": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None, "zombie_lambda": lam}, tmp)
         tmp.replace(state_path)
     for update in range(start, updates):
         if long:
@@ -213,15 +218,28 @@ def train_a(seed, init, updates, device, log, state_path, max_revival=0, long=Fa
             idx = rows[torch.randint(len(rows), (TW.BATCH,), generator=order)]
             b = S.batch_of(pool, idx, "tokens", device)
             s, a = b["s"], b["actions"]
+        faced = None
+        if zombie_weight is not None:          # cells where the probe sees a zombie in the true frame t or t+1 (old and new cell)
+            with torch.no_grad():
+                z = (s[:, :, :63].float() @ zW).squeeze(-1) + zb > 0.3                      # [B, T, 63]
+                faced = torch.zeros(s.shape[0], s.shape[1] - 1, 81, dtype=torch.bool, device=device)
+                faced[..., :63] = z[:, :-1] | z[:, 1:]
         with autocast_context(config):
             cond, tokens, commit = post(s, a)
             world.delta = cond
-            teacher = TW.rollout_losses(world, s, a, "teacher", recon=recon)
+            if faced is not None and lam is None:                 # auto: the zombie term equals the teacher on the first batch
+                with torch.no_grad():
+                    base = float(TW.rollout_losses(world, s, a, "teacher", recon=recon))
+                    lam = base / (float(TW.rollout_losses(world, s, a, "teacher", weight="mask1.0", faced=faced, recon=recon)) - base)
+                log(stage="zombie_lambda", value=lam, cells=int(faced.sum()))
+            teacher = TW.rollout_losses(world, s, a, "teacher", recon=recon, weight=f"mask{lam}" if faced is not None else None,
+                                        faced=faced)
             world.delta = None
             objective = teacher + commit
         if (update + 1) % 500 == 0:                   # the information the decoder takes from Delta: same batch, same weights,
             with torch.no_grad(), autocast_context(config):    # Delta zeroed (before the step: 10-09, the post-step value was biased)
-                no_delta = float(TW.rollout_losses(world, s, a, "teacher", recon=recon))
+                no_delta = float(TW.rollout_losses(world, s, a, "teacher", recon=recon, weight=f"mask{lam}" if faced is not None else None,
+                                               faced=faced))
         norm = optimizer_step(opt, objective, params, learning_rate=_phase_lr(config, update), grad_clip=config.agent.grad_clip,
                               strict=True, zero_grad=True)
         if (update + 1) % 500 == 0:
@@ -367,13 +385,14 @@ def main():
     p.add_argument("--backbone", default="full", choices=("full", "fmamba"), help="E22 from scratch, stage 1: the 6-frame world's backbone")
     p.add_argument("--state-every", type=int, default=TW.STATE_EVERY, help="resume-state cadence (snapshots stay every STATE_EVERY)")
     p.add_argument("--freeze-world", action="store_true", help="E22F: Park & Lee phase 1 (decoder and Delta projection frozen)")
+    p.add_argument("--zombie-weight", default=None, help="E22Z diagnostic: 'auto' or lambda for the zombie-cell L1 term (probe mask)")
     p.add_argument("--revival", default="crafter", choices=("crafter", "atari", "always"),
                    help="Delta-IRIS codebook revival: crafter.yaml 0, atari.yaml 400 (steps_first_epoch), the class default None")
     a = p.parse_args()
     started = time.time()
     log = lambda **kw: print(json.dumps({**kw, "seconds_total": round(time.time() - started, 1)}), flush=True)
     name = (f"dworld_a_s{a.seed}_" + (f"from{a.init.stem.split('_u')[-1]}" if a.init else "scratch") + ("" if a.revival == "crafter" else f"_rev{a.revival}")
-            + ("" if a.backbone == "full" else f"_{a.backbone}") + ("_frozen" if a.freeze_world else "") + ("_L16" if a.long else "") + ("_di" if a.recon == "deltairis" else "") + ("" if a.windows == TW.BATCH else f"_b{a.windows}")
+            + ("" if a.backbone == "full" else f"_{a.backbone}") + ("_frozen" if a.freeze_world else "") + ("" if a.zombie_weight is None else f"_zw{a.zombie_weight}") + ("_L16" if a.long else "") + ("_di" if a.recon == "deltairis" else "") + ("" if a.windows == TW.BATCH else f"_b{a.windows}")
             + f"_u{a.updates}" if a.stage == "a" else f"{a.init.stem}_prior_u{a.updates}")
     out = TW.OUT / f"{name}.pt"
     if out.exists():
@@ -385,7 +404,7 @@ def main():
     if a.stage == "a":
         world, post, history = train_a(a.seed, a.init, a.updates, torch.device("cuda"), log, TW.OUT / "state" / f"{name}.state.pt",
                                        {"crafter": 0, "atari": 400, "always": None}[a.revival], a.long, a.recon, a.windows, a.backbone,
-                                       a.state_every, a.freeze_world)
+                                       a.state_every, a.freeze_world, a.zombie_weight)
         torch.save(meta | {"world": world.state_dict(), "post": post.state_dict(), "history": history}, out)
     else:
         prior, history = train_b(a.seed, a.init, a.updates, torch.device("cuda"), log, TW.OUT / "state" / f"{name}.state.pt")
