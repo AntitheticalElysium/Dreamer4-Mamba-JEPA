@@ -1307,6 +1307,35 @@ fails, stage A is not run at full length; the failure is diagnosed first.
   - 1 holds and P2 fails → measure the zombie-cell reduction and per-move-type P2 before anything else.
   - 1 fails (channel shuts again) → A (from scratch) is the remaining faithful route.
 
+**E22FJ smoke result (lane149, 11:15-11:48): the joint phase opens the channel (+35%); P2 still FAILS (random moves 1.1%)**
+- **Logged gain** (same weights) at 500 / 1,000 / 1,500 / 2,000: +5.0% / +25.8% / +24.3% / +18.5%; codes per batch 272 / 242 /
+  268 / 305.
+  - The batch order restarts, so these are E22F's batches. On them D's own loss (E22F zeroed = D) is 0.04210 / 0.05462 /
+    0.04863 / 0.04780.
+  - E22FJ with the posterior's Δ: 0.04065 / 0.04532 / 0.04083 / 0.04125, i.e. 3-17% below D.
+  - E22FJ zeroed: 0.04278 / 0.06107 / 0.05393 / 0.05063, i.e. 2-12% above D. The decoder now leans on Δ for part of what it
+    predicted alone.
+- **Prediction 1 holds:** the warm equilibrium did not re-form.
+- **Clean P1** (held one-step): Delta-IRIS loss 0.043075 zeroed → 0.028168 with Δ (+34.6%).
+  - MSE 0.013415 → 0.009257, against D's 0.012865: −28% vs D with the posterior.
+  - Worst element 2.57 → 1.53.
+- **P2:** random moves score 0.041, argmax **1.1%** (D 1.1%); toward 0.340 / 61.1% (D 0.309 / 57.8%); stay 0.484 / 91.1%.
+  **FAILS.**
+- **Carries** (held, with Δ vs zeroed):
+  - changed map cells: **36.2%** removed (13.66 → 8.72; 84% of the gain); unchanged 30.6%;
+  - **zombie cells 8.4%** (17.79 → 16.30; 0.46% of the gain); HUD −2.5% (worse);
+  - codes per region 297-364, explaining 7.3-9.3% of the residual (chance 2.0-2.4%).
+- **Reading:**
+  - the channel is open and spent on changing cells, but almost none of it on zombie moves;
+  - zombie cells hold ~2.4% of the changed-cell error;
+  - per the rule (prediction 1 holds and P2 fails), I measure where the capacity goes and P2 by scroll before anything
+    else (lane150).
+- **D from scratch at 12k vs M6 at 12k** (lane141, window 5):
+  - phase 0.977 vs 0.897: **+0.077** [+0.061, +0.093];
+  - adjacency 0.761 vs 0.640: **+0.118** [+0.059, +0.178]; both resolved;
+  - emitted hits 311 (fresh 3), false 181.
+  - Unlike GE from scratch, D from scratch is ahead of its matched deterministic run on both blockers.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
