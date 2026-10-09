@@ -1860,6 +1860,21 @@ probed the same way at its 6k-36k snapshots:
 - **Overall:** D trained from scratch is the best deterministic world on every health reading, with no food cost and a
   better teval. It is the decoder to build the stochastic channel on.
 
+**E22MS predeclared (19:29, before launch): the label-free channel recipe on the FROM-SCRATCH decoder**
+- **Why:** D from scratch is the best deterministic world on every health reading, with no food cost (above). E22F to E22H
+  were built on D continued.
+- **Recipe, unchanged except the decoder:**
+  - E22F-style frozen phase (2,000 updates, batch 16, `--freeze-world`);
+  - E22M joint phase (`--motion-weight auto`, 2,000 updates);
+  - prior 20k;
+  - `e22_imagine` with soft and hard-interior decoding (4 samples), plus P2 one step.
+- **Comparator:** E22M on D continued (P2 random 80.4%; hard interior: census 0.25-0.27, localization 48.0%, caught 9.9%,
+  false 1.6%).
+- **Readings:** P2, census, readings 1-2, in-distribution rates. Reported side by side; the E22MP prior-length result
+  applies to both.
+- **Rule:** no new threshold. If the from-scratch decoder does better on the predeclared E22 readings, the channel work
+  continues on it.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 

@@ -396,6 +396,7 @@ def main():
     p.add_argument("--freeze-world", action="store_true", help="E22F: Park & Lee phase 1 (decoder and Delta projection frozen)")
     p.add_argument("--zombie-weight", default=None, help="E22Z diagnostic: 'auto' or lambda for the zombie-cell L1 term (probe mask)")
     p.add_argument("--motion-weight", default=None, help="E22M: 'auto' or lambda for the moved-content L1 term (label-free mask)")
+    p.add_argument("--tag", default="", help="appended to the name (names from a dworld init keep only its '_u' suffix and can clash)")
     p.add_argument("--revival", default="crafter", choices=("crafter", "atari", "always"),
                    help="Delta-IRIS codebook revival: crafter.yaml 0, atari.yaml 400 (steps_first_epoch), the class default None")
     a = p.parse_args()
@@ -403,7 +404,7 @@ def main():
     log = lambda **kw: print(json.dumps({**kw, "seconds_total": round(time.time() - started, 1)}), flush=True)
     name = (f"dworld_a_s{a.seed}_" + (f"from{a.init.stem.split('_u')[-1]}" if a.init else "scratch") + ("" if a.revival == "crafter" else f"_rev{a.revival}")
             + ("" if a.backbone == "full" else f"_{a.backbone}") + ("_frozen" if a.freeze_world else "") + ("" if a.zombie_weight is None else f"_zw{a.zombie_weight}") + ("" if a.motion_weight is None else f"_mw{a.motion_weight}") + ("_L16" if a.long else "") + ("_di" if a.recon == "deltairis" else "") + ("" if a.windows == TW.BATCH else f"_b{a.windows}")
-            + f"_u{a.updates}" if a.stage == "a" else f"{a.init.stem}_prior_u{a.updates}")
+            + (f"_{a.tag}" if a.tag else "") + f"_u{a.updates}" if a.stage == "a" else f"{a.init.stem}_prior_u{a.updates}")
     out = TW.OUT / f"{name}.pt"
     if out.exists():
         log(status="exists", name=name)
