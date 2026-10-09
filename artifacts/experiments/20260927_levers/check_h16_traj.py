@@ -318,8 +318,10 @@ def main():
                 name = st["name"]
                 tag = directory / "features"
                 xs, pend = {}, {}
+                # 2026-10-10: the deterministic path's memory rule, for L16 fmamba stage-A worlds (E22MS); 6-frame E16 keeps 16
+                bs16 = 4 if window > 5 or getattr(world, "backbone_kind", "full") in ("fmamba", "fcanvas") else 16
                 for sp in ("fit", "dev"):
-                    xs[sp], pend[sp] = features_e16(world, post, dyn, config, data[sp], f"{tag}_{sp}.f16", S.D, device, gen, window=window, resumable=True)
+                    xs[sp], pend[sp] = features_e16(world, post, dyn, config, data[sp], f"{tag}_{sp}.f16", S.D, device, gen, batch=bs16, window=window, resumable=True)
             else:
                 world, st = T.load_world(Path(path), device)
                 name = st["name"]
@@ -372,7 +374,7 @@ def main():
                     if m == 0:
                         fx, pe = xd[B], pend["dev"][B]
                     else:
-                        fx, pe = features_e16(world, post, dyn, config, devB, f"{tag}_devB_m{m}.f16", S.D, device, gen, window=window, resumable=True)
+                        fx, pe = features_e16(world, post, dyn, config, devB, f"{tag}_devB_m{m}.f16", S.D, device, gen, batch=bs16, window=window, resumable=True)
                         fx = stdz(fx)
                     r_traj.append(torch.stack([scores(mdl, fx, True, device) for mdl in traj_models]).mean(0))
                     r_end.append(1 - torch.prod(1 - pe, -1))
