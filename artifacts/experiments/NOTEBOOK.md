@@ -1437,6 +1437,12 @@ probed the same way at its 6k-36k snapshots:
   - The linear one-region probe understates what P2 (the decision-level reading) shows.
 - **Rule outcome (12:13):** P2 ≥ 50% → loss share is the cause. Given a share comparable to the scroll edges, a 2,000-update
   joint phase encodes the random move AND the decoder renders it at the probe ceiling. E16 never did in 36k unweighted.
+- **Carries** (unweighted D loss; E22FJ in brackets):
+  - zombie cells **69.9%** removed (8.4%); on no-scroll steps 74.5% (8.6%);
+  - scroll-entering edges 52.2% (61%);
+  - overall gain +34.5% (+35.8%); codes explain 6.6-10.4% of the residual.
+  - The channel had the capacity for both; reweighting moved zombies from 8% to 70% at almost no cost elsewhere. The fix is
+    allocation, not channel size.
 - E22Z's mask is label-derived: a diagnosis, not the fix.
 - **D from scratch at 18k vs M6 at 18k:** phase +0.080 [+0.064, +0.098]; adjacency +0.154 [+0.097, +0.213]; both resolved and
   growing (6k: +0.054 / −0.036; 12k: +0.077 / +0.118).
