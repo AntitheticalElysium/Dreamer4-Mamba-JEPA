@@ -5,7 +5,8 @@ Two one-step settings with several real outcomes from the SAME history (so their
   tf1   the factual first step (tf at depth 1), truth = the five futures' first frames (stochdiag fut5; future_visible)
 Every token of the predicted frame is put in ONE category (map cells; entering = no source after the view's scroll, taken from the
 TRUE tile maps of the root and key 0's successor, as encoder_diag):
-  entering | own_state_changed | player_sprite_left | neighbour_changed | sleep_changed | no_state_change   (map cells, x night/day)
+  entering (never seen in the 4 context frames) | entering_seen (its world position was in view in a context frame; added 10:3x) |
+  own_state_changed | player_sprite_left | neighbour_changed | sleep_changed | no_state_change   (map cells, x night/day)
   hud_changed | hud_same  (the 18 HUD tokens; HUD values + inventory changed or not)   |   player_token
 "changed" compares the root state with KEY 0's successor (the factual one), as a world trained on one realized outcome sees it.
 Per category and world: total L2 error to key 0 (sum over dims of the squared error), total L1 error (sum |error|), the RNG floor
@@ -25,12 +26,12 @@ ROOT = HERE.parents[2]
 sys.path.insert(0, str(HERE))
 OUT = ROOT / 'artifacts/eda/scoreboard_v1'
 SHIFTS = ((0, 0), (-1, 0), (1, 0), (0, -1), (0, 1))
-CATS = ('entering', 'own_state_changed', 'player_sprite_left', 'neighbour_changed', 'sleep_changed', 'no_state_change',
+CATS = ('entering', 'entering_seen', 'own_state_changed', 'player_sprite_left', 'neighbour_changed', 'sleep_changed', 'no_state_change',
         'hud_changed', 'hud_same', 'player_token')
 NB4 = ((-1, 0), (1, 0), (0, -1), (0, 1))
 
 
-def categories(v0, v1, x0, x1):
+def categories(v0, v1, x0, x1, seen_offsets=None):
     """root visible v0 [n,1534], successor visible v1 [n,1534] (key 0), tokens x0 / x1 [n,81,192] -> category per token [n,81],
     night [n] (from the successor's light)"""
     import encoder_diag as ED
@@ -62,6 +63,13 @@ def categories(v0, v1, x0, x1):
             c[:, 3 - dr, 4 - dc] = CATS.index('player_sprite_left')
         c = torch.where(own, torch.full_like(c, CATS.index('own_state_changed')), c)
         c = torch.where(~has_src[None].expand_as(c), torch.full_like(c, CATS.index('entering')), c)
+        if seen_offsets is not None:                                                                 # [n, J, 2]: earlier frames' offsets
+            so = seen_offsets[sel]                                                                   # relative to the root frame
+            rr, cc = torch.meshgrid(torch.arange(7), torch.arange(9), indexing='ij')
+            w = torch.stack([rr + dr, cc + dc], -1)                                                  # successor cell in root coords
+            rel = w[None, None] - so[:, :, None, None, :]                                            # [n,J,7,9,2]
+            seen = ((rel[..., 0] >= 0) & (rel[..., 0] < 7) & (rel[..., 1] >= 0) & (rel[..., 1] < 9)).any(1)
+            c = torch.where((c == CATS.index('entering')) & seen, torch.full_like(c, CATS.index('entering_seen')), c)
         cat[sel, :63] = c.flatten(1)
     hud_same = (v0[:, 1512:1516] == v1[:, 1512:1516]).all(1) & (v0[:, 1522:1534] == v1[:, 1522:1534]).all(1)
     cat[:, 63:] = torch.where(hud_same, CATS.index('hud_same'), CATS.index('hud_changed'))[:, None]
@@ -81,14 +89,22 @@ def main():
     alive5 = ~meta['future_dead'][:, :, 0]                                                            # [R,5] alive at the first step
     one_dead = meta['onestep_dead']                                                                   # [R,4,17]
     # categories once (key 0 successors), and the floors
+    # offsets of the 4 context frames relative to the root (o_root = 0; o_t = o_{t+1} - d_t, scroll.estimate's convention)
+    from scroll import estimate
+    ctx = cache['ctx']
+    dctx = torch.stack([torch.cat([estimate(ctx[i:i + 64, t].float(), ctx[i:i + 64, t + 1].float()) for i in range(0, R, 64)]) for t in range(3)], 1)
+    dvec = torch.tensor(SHIFTS)[dctx]                                                                 # [R,3,2]
+    offs = torch.zeros(R, 4, 2, dtype=torch.long)
+    for t in (2, 1, 0):
+        offs[:, t] = offs[:, t + 1] - dvec[:, t]
     cat_one = torch.empty(R, 17, 81, dtype=torch.long); night_one = torch.empty(R, 17, dtype=torch.bool)
     cat_tf = torch.empty(R, 81, dtype=torch.long); night_tf = torch.empty(R, dtype=torch.bool)
     for i in range(0, R, 32):
         b = min(32, R - i)
         v0 = rootv[i:i + b].repeat_interleave(17, 0); v1 = meta['onestep_visible'][i:i + b, 0].flatten(0, 1)
-        c, nt = categories(v0, v1, root[i:i + b].repeat_interleave(17, 0), one4[i:i + b, 0].float().flatten(0, 1))
+        c, nt = categories(v0, v1, root[i:i + b].repeat_interleave(17, 0), one4[i:i + b, 0].float().flatten(0, 1), offs[i:i + b].repeat_interleave(17, 0))
         cat_one[i:i + b], night_one[i:i + b] = c.view(b, 17, 81), nt.view(b, 17)
-        c, nt = categories(rootv[i:i + b], meta['future_visible'][i:i + b, 0, 0], root[i:i + b], fut5[i:i + b, 0, 0].float())
+        c, nt = categories(rootv[i:i + b], meta['future_visible'][i:i + b, 0, 0], root[i:i + b], fut5[i:i + b, 0, 0].float(), offs[i:i + b])
         cat_tf[i:i + b], night_tf[i:i + b] = c, nt
     valid_one = ~one_dead.any(1)                                                                      # all four keys alive
     valid_tf = alive5.all(1)
