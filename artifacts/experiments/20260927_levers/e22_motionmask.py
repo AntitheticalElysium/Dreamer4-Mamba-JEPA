@@ -26,21 +26,24 @@ OUT = Path('artifacts/eda/health_chain_v1')
 
 
 def moved_ratio(a, b):
-    """a = s_t, b = s_t+1 [n, 81, D] -> ratio [n, 63] (inf where unchanged or no source), change norm [n, 63], entering [n, 63]"""
+    """a = s_t, b = s_t+1 [n, 81, D] (any device) -> ratio [n, 63] (inf where unchanged or no source), change norm [n, 63],
+    entering [n, 63]. Device-aware and vectorized 13:00 (dworld --motion-weight); bit-identical to the 12:53 version (checked)."""
     from scroll import SHIFTS, estimate
     import tworld as TW
-    n = len(a)
+    n, dev = len(a), a.device
     sh = estimate(a, b)
     ga, gb = a[:, :63].float().view(n, 7, 9, -1), b[:, :63].float().view(n, 7, 9, -1)
-    dr = torch.tensor([SHIFTS[int(k)][0] for k in sh]); dc = torch.tensor([SHIFTS[int(k)][1] for k in sh])
-    rr, cc = torch.arange(7)[None, :, None] + dr[:, None, None], torch.arange(9)[None, None, :] + dc[:, None, None]
+    shifts = torch.tensor(SHIFTS, device=dev)
+    dr, dc = shifts[sh, 0], shifts[sh, 1]
+    r7, c9 = torch.arange(7, device=dev), torch.arange(9, device=dev)
+    rr, cc = r7[None, :, None] + dr[:, None, None], c9[None, None, :] + dc[:, None, None]
     valid = (rr >= 0) & (rr < 7) & (cc >= 0) & (cc < 9)                                          # [n, 7, 9]
-    p = ga[torch.arange(n)[:, None, None], rr.clamp(0, 6), cc.clamp(0, 8)]                       # compensated s_t
+    p = ga[torch.arange(n, device=dev)[:, None, None], rr.clamp(0, 6), cc.clamp(0, 8)]          # compensated s_t
     d = (gb - p).norm(dim=-1)
     big = torch.full_like(d, float('inf'))
     best_in, best_out = big.clone(), big.clone()
     for er, ec in ((-1, 0), (1, 0), (0, -1), (0, 1)):
-        r2, c2 = torch.arange(7)[:, None] + er, torch.arange(9)[None, :] + ec
+        r2, c2 = r7[:, None] + er, c9[None, :] + ec
         ok = ((r2 >= 0) & (r2 < 7) & (c2 >= 0) & (c2 < 9))[None] & valid & valid[:, r2.clamp(0, 6), c2.clamp(0, 8)]
         pn, bn = p[:, r2.clamp(0, 6), c2.clamp(0, 8)], gb[:, r2.clamp(0, 6), c2.clamp(0, 8)]
         best_in = torch.minimum(best_in, torch.where(ok, (gb - pn).norm(dim=-1), big))

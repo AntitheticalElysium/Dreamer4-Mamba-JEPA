@@ -151,7 +151,7 @@ class Posterior(nn.Module):
 
 
 def train_a(seed, init, updates, device, log, state_path, max_revival=0, long=False, recon="l1", windows=TW.BATCH, backbone="full",
-            state_every=TW.STATE_EVERY, freeze=False, zombie_weight=None):
+            state_every=TW.STATE_EVERY, freeze=False, zombie_weight=None, motion_weight=None):
     from d4mj.config import config_from_dict
     from d4mj.train import _phase_lr, autocast_context, optimizer_step, phase_optimizer
     config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
@@ -186,7 +186,10 @@ def train_a(seed, init, updates, device, log, state_path, max_revival=0, long=Fa
     params = [p for g in opt.param_groups for p in g["params"]]
     order = torch.Generator().manual_seed(11)
     history, start, started = [], 0, time.time()
-    lam = None if zombie_weight in (None, "auto") else float(zombie_weight)
+    mask_weight = zombie_weight if zombie_weight is not None else motion_weight
+    lam = None if mask_weight in (None, "auto") else float(mask_weight)
+    if motion_weight is not None:              # E22M: label-free moved content (e22_motionmask.moved_ratio, validated 12:53)
+        import e22_motionmask as MM
     if zombie_weight is not None:              # E22Z (diagnostic): teval's zombie probe, exported exactly (zombie_probe_export.py)
         zp = torch.load(TW.ROOT / "artifacts/eda/health_chain_v1/zombie_probe_linear.pt")
         zW, zb = zp["W"].to(device), zp["b"].to(device)
@@ -219,6 +222,12 @@ def train_a(seed, init, updates, device, log, state_path, max_revival=0, long=Fa
             b = S.batch_of(pool, idx, "tokens", device)
             s, a = b["s"], b["actions"]
         faced = None
+        if motion_weight is not None:          # scroll-compensated change whose content moved from / to a neighbour (ratio < 0.3,
+            with torch.no_grad():              # the valley of its bimodal distribution); the agent's own cell (31) excluded
+                ratio = MM.moved_ratio(s[:, :-1].flatten(0, 1), s[:, 1:].flatten(0, 1))[0].view(s.shape[0], s.shape[1] - 1, 63)
+                faced = torch.zeros(s.shape[0], s.shape[1] - 1, 81, dtype=torch.bool, device=device)
+                faced[..., :63] = ratio < 0.3
+                faced[..., 31] = False
         if zombie_weight is not None:          # cells where the probe sees a zombie in the true frame t or t+1 (old and new cell)
             with torch.no_grad():
                 z = (s[:, :, :63].float() @ zW).squeeze(-1) + zb > 0.3                      # [B, T, 63]
@@ -386,13 +395,14 @@ def main():
     p.add_argument("--state-every", type=int, default=TW.STATE_EVERY, help="resume-state cadence (snapshots stay every STATE_EVERY)")
     p.add_argument("--freeze-world", action="store_true", help="E22F: Park & Lee phase 1 (decoder and Delta projection frozen)")
     p.add_argument("--zombie-weight", default=None, help="E22Z diagnostic: 'auto' or lambda for the zombie-cell L1 term (probe mask)")
+    p.add_argument("--motion-weight", default=None, help="E22M: 'auto' or lambda for the moved-content L1 term (label-free mask)")
     p.add_argument("--revival", default="crafter", choices=("crafter", "atari", "always"),
                    help="Delta-IRIS codebook revival: crafter.yaml 0, atari.yaml 400 (steps_first_epoch), the class default None")
     a = p.parse_args()
     started = time.time()
     log = lambda **kw: print(json.dumps({**kw, "seconds_total": round(time.time() - started, 1)}), flush=True)
     name = (f"dworld_a_s{a.seed}_" + (f"from{a.init.stem.split('_u')[-1]}" if a.init else "scratch") + ("" if a.revival == "crafter" else f"_rev{a.revival}")
-            + ("" if a.backbone == "full" else f"_{a.backbone}") + ("_frozen" if a.freeze_world else "") + ("" if a.zombie_weight is None else f"_zw{a.zombie_weight}") + ("_L16" if a.long else "") + ("_di" if a.recon == "deltairis" else "") + ("" if a.windows == TW.BATCH else f"_b{a.windows}")
+            + ("" if a.backbone == "full" else f"_{a.backbone}") + ("_frozen" if a.freeze_world else "") + ("" if a.zombie_weight is None else f"_zw{a.zombie_weight}") + ("" if a.motion_weight is None else f"_mw{a.motion_weight}") + ("_L16" if a.long else "") + ("_di" if a.recon == "deltairis" else "") + ("" if a.windows == TW.BATCH else f"_b{a.windows}")
             + f"_u{a.updates}" if a.stage == "a" else f"{a.init.stem}_prior_u{a.updates}")
     out = TW.OUT / f"{name}.pt"
     if out.exists():
@@ -404,7 +414,7 @@ def main():
     if a.stage == "a":
         world, post, history = train_a(a.seed, a.init, a.updates, torch.device("cuda"), log, TW.OUT / "state" / f"{name}.state.pt",
                                        {"crafter": 0, "atari": 400, "always": None}[a.revival], a.long, a.recon, a.windows, a.backbone,
-                                       a.state_every, a.freeze_world, a.zombie_weight)
+                                       a.state_every, a.freeze_world, a.zombie_weight, a.motion_weight)
         torch.save(meta | {"world": world.state_dict(), "post": post.state_dict(), "history": history}, out)
     else:
         prior, history = train_b(a.seed, a.init, a.updates, torch.device("cuda"), log, TW.OUT / "state" / f"{name}.state.pt")
