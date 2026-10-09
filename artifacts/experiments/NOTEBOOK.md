@@ -239,6 +239,21 @@ SAME full history = what no deterministic world can remove):
 - Entering-cell error is NOT random (floor 0.8% by day: the map is the same under every key). It is unseen or unlearned terrain.
   Seen-before vs never-seen is split next (C4).
 - Of M16's excess over the floor: entering cells 52%, HUD changes 17%, own-state changes 16%, the rest spread.
+- **Combined (budget rerun with entering cells split by whether their world position was in view in a context frame):**
+  - the share of each world's error that its inputs cannot determine = the RNG floor + the excess on NEVER-SEEN entering cells;
+  - the latter is an upper bound on its irreducible part: on those cells the worlds match a local-context predictor's class
+    accuracy, 09-29.
+
+  | world | one-step (17 actions) | factual first step |
+  |---|---|---|
+  | M16 | 0.706 | 0.783 |
+  | D continued | 0.770 | 0.851 |
+  | D scratch | 0.742 | 0.830 |
+  | E22MS decoder alone | 0.662 | 0.767 |
+
+  - Seen-before entering cells are only 1-3% of the L2 error.
+  - In the L1 currency, unchanged cells at night (the static) plus never-seen entering cells are 45-55% of the error mass.
+  - **Only ~15-34% of a world's per-element squared error is learnable from its inputs.**
 
 **The two losses split the budget in opposite directions** (one-step, all 17 actions; mean L2 per token):
 
