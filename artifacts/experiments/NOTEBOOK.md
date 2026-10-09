@@ -1417,6 +1417,42 @@ probed the same way at its 6k-36k snapshots:
     (DIAMOND / Dreamer 4 sampling) is next.
   - between → report and diagnose.
 
+**E22Z result (lane152, 12:15-12:47): loss share IS the cause — weighted, the channel carries the random move (P2 1.1% → 82%)**
+- λ auto = 0.204 (first batch: 132 zombie-marked cells of 15,120 map cells, 0.87%).
+- **Logged gain** (weighted objective, same weights) at 500 / 1,000 / 1,500 / 2,000: +0.8% / +7.7% / +35.6% / +26.5%; codes
+  per batch 189 / 354 / 280 / 315.
+- **P2** (held one-step, posterior Δ; D in brackets):
+
+  | true zombie move | n | score at true cell (probe ceiling) | argmax correct |
+  |---|---|---|---|
+  | **random (other)** | 280 | **0.599** (0.625) | **82.1%** (1.1%) |
+  | other, no scroll / scroll | 185 / 95 | 0.603 / 0.593 | 83.8% / 78.9% (0.0% / 3.2%) |
+  | toward | 959 | 0.684 (0.681) | 96.2% (57.8%) |
+  | stay | 1,290 | 0.653 (0.653) | 95.7% (91.1%) |
+
+  - Predicted mass over the 5 candidate cells is 0.898 vs 0.695 on true frames (some extra mass).
+- **Clean P1:** +32.4% (0.041661 → 0.028144); zeroed MSE 0.012935 ≈ D's 0.012865, so the decoder alone is intact.
+- **Encoder probe**, moving cases only, random moves vs E22FJ: z **0.486** vs 0.225; q 0.439 vs 0.254; toward z 0.631 vs
+  0.354.
+  - The linear one-region probe understates what P2 (the decision-level reading) shows.
+- **Rule outcome (12:13):** P2 ≥ 50% → loss share is the cause. Given a share comparable to the scroll edges, a 2,000-update
+  joint phase encodes the random move AND the decoder renders it at the probe ceiling. E16 never did in 36k unweighted.
+- E22Z's mask is label-derived: a diagnosis, not the fix.
+- **D from scratch at 18k vs M6 at 18k:** phase +0.080 [+0.064, +0.098]; adjacency +0.154 [+0.097, +0.213]; both resolved and
+  growing (6k: +0.054 / −0.036; 12k: +0.077 / +0.118).
+
+**E22Z sufficiency test predeclared (12:49, before launch): does SAMPLING the allocation-corrected channel fix imagined health end to end?**
+- Stage B: E16's prior (dworld `--stage b`, 20k updates, Delta-IRIS crafter.yaml values) on the frozen E22Z posterior.
+- Then `e22_imagine.py` (4 prior samples per root + the zeroed rollout), with E22's predeclared readings:
+  1. at depth 8, ≥ 50% of one-zombie roots keep a cell > 0.3 and the peak is ≥ 0.4 (D 0% / 0.13; truth 93%);
+  2. imagined damage: caught on aligned true-damage steps ≥ 30%, false ≤ 2% (D's self-fed 4.5-6%).
+- Interpretation:
+  - 1 + 2 pass → the mechanism (stochastic channel with the right allocation + prior sampling) fixes imagined health; what
+    remains is making the allocation label-free;
+  - 1 passes, 2 fails → zombies stay localized but hits are not drawn; diagnose phase / adjacency in imagination;
+  - 1 fails → the prior does not sample the moves; diagnose prior code accuracy / calibration first.
+- The zeroed rollout here is E22Z's own decoder (its decoder trained jointly), reported beside D's.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
