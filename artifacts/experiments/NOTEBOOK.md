@@ -148,6 +148,72 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-10 interim (10:08): the Raw token target is mostly NOT game state — and part of it is renderer noise (Part II-A, P-A)
+
+**Incident (09:28):**
+- `encoder_diag` v1 (12.3 GB resident) + a scoreboard test + two exporters exhausted the 31 GB RAM;
+- the kernel OOM-killed the diagnostic, and systemd then killed the whole VS Code cgroup, including both export lanes (started
+  with setsid inside it).
+- Relaunched 10:04 as separate `systemd-run --user` units with memory caps. The exports resume: M16, E22MS zeroed and
+  sample 0 were complete; the generator state is restored from the sample-0 meta.
+- v1's full-run results (80,765 frames, 1,002 roots) were printed before the kill; they are recorded here. v2 (day/night split,
+  noise floor) is rerunning.
+
+**Encoder facts:**
+- The Raw encoder is a ViT (12 layers, 3 heads, width 192, patch 7, 9 × 9 patches, absolute positions; d4mj/lewm.py) trained by
+  LeWM on the CLS only.
+- Its patch tokens are "never regularized by SIGReg and never predicted" (lewm.py export docstring). Nothing makes a patch
+  token local, shift-equivariant or stable.
+
+**Static composition** (held R² of a map cell's token, 192 dims pooled; nested one-hot ridge; v1 full run):
+
+| explanatory set | R² |
+|---|---|
+| own state (tile × mob) | 0.593 |
+| + screen position | 0.597 |
+| + global (light × sleep, tile × sleep, tile × light) | **0.888** |
+| + 4 neighbours' states | 0.892 |
+| + diagonal neighbours | 0.893 |
+| MLP on all of the above | 0.903 |
+
+- About 10% of a token's variance is not explained by the visible 3 × 3 state plus lighting. Lighting and sleep rendering
+  account for 0.29 of R² by themselves.
+
+**Frame-to-frame change of the target, by cause** (consecutive true frames, scroll-compensated, entering cells excluded; L2 =
+Σ|Δ|², L1 = Σ|Δ|, the L1 loss's currency):
+
+| cause (exclusive, in this order) | L2 share | L1 share | cells | mean Σ\|Δ\|² |
+|---|---|---|---|---|
+| own state changed | 17.1% | 10.0% | 74k | 55.8 |
+| player sprite left the tile | 11.8% | 5.3% | 28k | 101 |
+| a 4-neighbour's state changed | 3.1% | 3.9% | 185k | 3.7-10.2 |
+| sleep onset / wake | 25.4% | 8.4% | 34k | 180-186 |
+| **no visible state changed** | **42.6%** | **72.4%** | **4.38M** | 2.5 awake, 0.3 asleep |
+
+- In the L1 currency, **72%** of the target's change mass sits on cells whose visible state did not change; all real state
+  changes together are 19%.
+- Unchanged cells move MORE the farther they are from the player: still steps 0.56 → 1.37 → 2.23 → 2.66 at distance 1 → 4;
+  scroll steps 2.4 → 4.0.
+- **Scroll re-encoding:** unchanged map cells on scroll steps move by Σ|Δ|² = 3.0; S4 (state, position, lighting, neighbours)
+  explains only 11% of it.
+- HUD tokens with the same HUD values: 11.3 (still) / 9.1 (scroll), vs 125 / 83 when the values change. Player token with the
+  same facing and sleep: 0.13 still vs 10.8 on scroll.
+
+**The cause of the distance gradient, from the source** (`craftax_classic/renderer.py` 408-423; `constants.py` 395):
+- at night (daylight < 0.5) every map pixel is blended with `jax.random.uniform(state.state_rng) * 95 + 32`;
+- the mask is `2 (0.5 - daylight) x (1 - exp(-0.5 r^2 / 0.5^2))`: zero at the player, near 1 at the edges;
+- `state_rng` is redrawn every step (`game_logic.py` 1707).
+- So 20.1% of the diagnosis frames carry fresh per-pixel random static. It is not game state, no world can predict it, and
+  through the ViT's global attention it can reach every token.
+- v2 measures it directly: the five futures' token variance where their full simulator states are identical. By day this is
+  exactly 0 in the test, so rendering is deterministic.
+
+**Reading so far (v2 numbers pending; not yet against P-A's thresholds):**
+- own visible state explains 0.59 of the static target and real state changes are 19% of the L1 change mass;
+- the rest is lighting and sleep rendering (deterministic), shift re-encoding (deterministic, but only 11% linear in state and
+  position), and night static (random).
+- Every loss we tried spends most of its mass there.
+
 ## 2026-10-09 — CPU prior/calibration and real-future controls; E22MP/E22MS endpoint review
 
 **Execution:** CPU only, CUDA hidden, two threads; GPU jobs and numerical training/evaluation sources untouched.
