@@ -148,6 +148,67 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-10 RESULT (10:29): Part I scoreboard — M16 / D continued / D from scratch / E22MS (the user's breadth request)
+
+Variants exported by `rollout_export.py` (lanes 170 / 171), read by `scoreboard.py`, `budget.py`, `entering_memory.py`; intervals from
+`scoreboard_compare.py` (paired, episode-clustered, 2,000 draws). E22MS = 4 prior samples scored as one sampled world.
+
+**1. The currency decides the winner.**
+- teval's metric (squared error to the ONE recorded future), self-fed, / V:
+  - M16 0.528 at depth 16; D continued 0.473; D scratch 0.494 (both better, resolved);
+  - E22MS sampled **0.631 (worse, +0.103 [+0.073, +0.133])**; E22MS with the true codes 0.326.
+- The energy score against all five real futures (proper for distributions), depth 16, E22MS sampled vs M16:
+  - static cells **−12.1 [−13.9, −10.3]** (33.8 vs 45.9);
+  - mob cells **−3.2** [−3.8, −2.6]; entering −1.6 [−2.0, −1.2]; HUD −4.8 [−5.4, −4.2];
+  - better at every depth ≥ 4 in every class except the player token.
+- The deterministic worlds tie or lose against M16 on mob / entering cells.
+- **Our standard metric rewards predicting the mean and penalizes correct sampling.**
+- D-loss worlds are worse than M16 at depth 1 on the player token (+0.09 to +0.29) and on static cells (+0.57 to +1.54). That is
+  the copy-precision cost the error budget shows.
+
+**2. Facts at depth 16 (imagined; TEST roots):**
+
+| | M16 | D cont. | D scratch | E22MS zeroed | E22MS sampled | E22MS true codes | true tokens |
+|---|---|---|---|---|---|---|---|
+| tile accuracy | 0.776 | 0.783 | 0.776 | 0.759 | 0.731 | 0.844 | 0.978 |
+| zombie / cow / skeleton count (truth 0.34 / 0.46 / 0.14) | 0.01 / 0.14 / 0.01 | 0.01 / 0.04 / 0.00 | 0.08 / 0.36 / 0.23 | 0.14 / 0.40 / 0.35 | **0.56 / 3.65 / 0.60** | 0.46 / 2.98 / 0.64 | 0.33 / 0.46 / 0.15 |
+| health R² / bias | 0.59 / +0.43 | 0.58 / +0.31 | 0.56 / +0.67 | 0.59 / +0.59 | 0.57 / +0.16 | 0.63 / +0.09 | 0.999 |
+| food R² / bias | 0.88 / +0.41 | **0.58 / −0.92** | 0.88 / +0.09 | 0.84 / −0.06 | 0.83 / +0.06 | 0.85 / +0.02 | 0.999 |
+| inventory R² | **0.74** | 0.92 | 0.92 | 0.92 | 0.92 | 0.93 | 0.986 |
+| facing / sleep accuracy | 0.90 / 0.95 | 0.89 / 0.95 | 0.93 / 0.98 | 0.93 / 0.98 | 0.93 / 0.98 | 0.93 / 0.98 | 0.95 / 1.0 |
+
+- **Mob mass is not conserved in any world.** The deterministic worlds lose their mobs; the Δ-channel worlds MULTIPLY them, cows
+  ×8 when sampled and ×6.5 even with the true codes: decoder-side, as for zombies yesterday, and worse for cows.
+- D's loss gives inventory dynamics (R² 0.74 → 0.92).
+
+**3. Timer-driven HUD changes are not drawn by any world** (decrements per imagined step vs the five real futures on the same steps):
+
+| | health | food | drink | energy |
+|---|---|---|---|---|
+| real futures | 2.10% | 3.10% | 4.11% | 3.04% |
+| M16 | 0.04% | 0 | 0 | 0.01% |
+| D continued | 0.52% | 0.02% | 0.11% | 0.03% |
+| D scratch | 0.23% | 0.10% | 0.23% | 0.66% |
+| E22MS sampled | **1.56%** | 0.07% | 0.17% | 0.61% |
+
+- Food / drink / energy fall on hidden 20-30-step timers (hunger > 25, thirst > 20, fatigue > 30). Every world draws them 5-40×
+  too rarely.
+- The same structure as the health cooldown: a hidden phase that a median / mean-seeking world rounds to "no change".
+- Only health approaches the real rate, and only with sampling.
+
+**4. Scroll fidelity** (depth 16):
+- missed scrolls on true moves: 36% M16, 32% D scratch, 24% E22MS sampled, 17% with the true codes;
+- false scrolls 5-8%; view aligned with the truth: 54-59%, 68% with the true codes.
+- Wrong move decisions remain the main source of misalignment (E11b, 10-01).
+
+**5. Entering terrain** (teacher-forced, `entering_memory.py`):
+- 23% of entering cells were in view earlier in the window; 77% were never seen;
+- on seen cells the deterministic worlds' error is 6-26 vs 4-10 for oracle recall of the last observed token (a memory deficit
+  of 1.5-2.6×);
+- never-seen cells: error 34-37, tile accuracy 78-82% (a deterministic guess of the likely class);
+- E22MS sampled draws never-seen terrain with error 44-47 and tile accuracy 72-75%, as a sampler should against one truth;
+  with the true codes 15.6 / 86%.
+
 ### 10-10 RESULT (10:23): Part II-B (dynamics error budget) — P-B holds on the RNG floor alone; the two losses split the budget in opposite ways
 
 **Validations first:**
