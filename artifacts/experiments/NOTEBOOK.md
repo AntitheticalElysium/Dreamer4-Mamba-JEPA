@@ -1703,6 +1703,27 @@ probed the same way at its 6k-36k snapshots:
 - **E22Z invents entering zombies** at almost the true entry rate (0.0102 vs 0.0119 per scroll step) and catches 21% of the
   real ones: a second, smaller source of its multiplication, beside the neighbour copies.
 
+**Copy mass of the zombie token (lane163, 17:25-17:42): my "one source copied into several cells" reading is REFUTED**
+
+| moved zombie, one step (toward / random) | D | E22Z | E22M |
+|---|---|---|---|
+| zombie token's total outgoing copy weight (ITC row sum) | 0.81 / 0.80 | 0.83 / 0.84 | 0.86 / 0.84 |
+| at the extra zombie cells: copy-from-zombie weight | 0.57 / 0.73 | **0.07 / 0.05** | 0.42 / 0.45 |
+| at the extra zombie cells: generate weight | 0.11 / 0.12 | **0.12 / 0.14** | 0.13 / 0.09 |
+| extra zombie cells (n) | 190 / 187 | 280 / 175 | 84 / 57 |
+
+- **No world copies the zombie token more than once** (total copy weight < 1). ITC's transport row constraint would not
+  bind; ITC's one-to-one decoding would NOT remove E22Z's extra zombies. (The 17:07 reading is withdrawn.)
+- **E22Z's extra zombies are fractional generated zombies:** cells that keep ~80% of their own content and mix in ~12-14%
+  of a strongly zombie-like generated token. The probe reads the blend as a zombie. The region code locates the move
+  ambiguously, and the soft mixture hedges across the candidate cells.
+- D's extras are copies (its mean-seeking spread). E22M's are mixed.
+- **What this points at:** the SOFT per-cell mixture, which lets a cell hold a fraction of a zombie that self-feeding then
+  compounds. ITC's binarized decoding (eq. 4: each cell takes exactly one source, a copy or a generated token) removes
+  fractions by construction.
+  - Our 09-28 hard-decoding failure was entering cells taking the zero pad. ITC's Craftax rule (edges and HUD from the
+    generator) is its answer.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
