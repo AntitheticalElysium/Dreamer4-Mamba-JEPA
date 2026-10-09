@@ -1724,6 +1724,33 @@ probed the same way at its 6k-36k snapshots:
   - Our 09-28 hard-decoding failure was entering cells taking the zero pad. ITC's Craftax rule (edges and HUD from the
     generator) is its answer.
 
+**E22H predeclared (17:43, before code): decoding-only test — do integer (hard) cell decisions conserve zombies in sampled imagination?**
+- **Hypothesis, from the measurements above:** the soft per-cell mixture lets a cell hold a FRACTION of a zombie, and
+  self-feeding compounds the fractions.
+  - E22Z: fractional generated zombies grow into extra zombies (×10 by depth 16).
+  - E22M: a moved zombie is re-mixed with neighbouring content each step and dilutes (×1/3).
+  - ITC's binarized decoding (arXiv 2605.16457 eq. 4; each cell takes exactly one source, a copy or a generated token)
+    allows no fractions: a copy carries the zombie token exactly.
+- **What is already known against it (09-28/29):**
+  - hard decoding of the soft corrt head filled entering cells with the zero pad;
+  - ITC's Craftax rule (ring and HUD from the generator) was harmful with an L1-trained continuous generator (mean
+    regression on never-seen cells).
+  - The E22 worlds differ: their channel carries 52-61% of the entering-edge error, so the generator at the edges is
+    informed by Δ.
+- **Arms** (imagination only; no retraining; `tworld.py` untouched while D from scratch trains, since its script hash is
+  stamped at save):
+  - (a) **itc:** `hard_decode` (per-cell argmax over self / 4 neighbours / generate) + ITC's Craftax regions (map border
+    ring and HUD from the generator);
+  - (b) **interior:** hard decisions in the interior map cells, the soft head kept on the ring and HUD (two forward passes
+    combined per token).
+- **Worlds and rollouts:** E22Z and E22M with their priors, 4 samples, e22_imagine's readings (1-2, in-distribution,
+  census) vs the soft results above.
+- **Rules:**
+  - census at depth 16 within 0.5-2× truth (0.147-0.588) AND readings 1-2 pass → the soft mixture is the cause of the mass
+    failure, and integer decoding is the generic, label-free fix at imagination.
+  - census corrected but a reading fails → diagnose the next link.
+  - census not corrected → the soft mixture is not the (whole) cause; diagnose before anything else.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
