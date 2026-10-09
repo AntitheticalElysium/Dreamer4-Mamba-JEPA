@@ -1842,7 +1842,23 @@ probed the same way at its 6k-36k snapshots:
   - self-fed caught 7.2% (D continued 6%).
   - From scratch it draws damage better from true history. Its deterministic imagination still loses it, the
     localization failure the stochastic channel addresses.
-- teval and gradient allocation from lane131 follow.
+- **teval** (/V, D from scratch − M16, seed-clustered CI):
+  - one step: all −0.009*, interact −0.522*, moved / blocked / idle n.s., sleep +0.005*;
+  - imagination at depth 1 / 4 / 8 / 16: −0.003* / −0.017* / −0.051* / −0.034*.
+- **Imagined facts, M16 / D continued / D from scratch:**
+
+  | depth | food R² | health R² | zombie-near AUC |
+  |---|---|---|---|
+  | 1 | 0.997 / 0.992 / 0.995 | 0.981 / 0.985 / 0.985 | 0.842 / 0.976 / 0.998 |
+  | 8 | 0.932 / 0.839 / 0.935 | 0.862 / 0.841 / 0.845 | 0.530 / 0.743 / 0.678 |
+  | 16 | 0.881 / **0.582** / **0.875** | 0.592 / 0.582 / 0.557 | 0.511 / 0.609 / 0.614 |
+
+  - **The food cost of D continued was a continuation artifact:** from scratch, imagined food at depth 16 is 0.875 vs M16's
+    0.881. The zombie gains are kept.
+- **Gradient allocation:** token-63 hits carry 4.58% of the backbone gradient norm (D continued 7.56%, M16 0.16%; 0.20% of
+  the objective). The router discriminates: generate weight 0.60 on hits vs 0.10 on unchanged.
+- **Overall:** D trained from scratch is the best deterministic world on every health reading, with no food cost and a
+  better teval. It is the decoder to build the stochastic channel on.
 
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
