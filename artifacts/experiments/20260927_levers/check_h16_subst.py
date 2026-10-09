@@ -9,7 +9,7 @@ read on depth-k states built from the imagined state and the REAL depth-k frame 
 Expected safe on DEV roots with opportunity at k (seed mean), k in 1, 4, 16. Also the imagined vs real health (teval HUD probe) at
 depth 16: mean, and the per-root correlation of -health with P(dead by 16) across the 17 first actions.
 Reading, declared before running: h16_hud_bottleneck = (+real_hud - imagined) >= 0.5 x (real - imagined) at k = 16 in every world.
-Usage: check_h16_subst.py <world.pt> ...
+Usage: check_h16_subst.py <world.pt> ... [--window W]   (2026-10-10: --window, and +real_edge / +real_interior arms)
 Result (2026-10-03; DEV opportunity roots k1 640 / k4 1,309 / k16 2,590; real 0.999 / 0.738 / 0.691):
   k16 imagined -> +real_hud (HUD share of the gap) / +real_map: s7 18k 0.597 -> 0.688 (0.960) / 0.591; s7 36k 0.600 -> 0.687
   (0.951) / 0.589; s8 18k 0.585 -> 0.685 (0.938) / 0.579; s8 36k 0.600 -> 0.688 (0.966) / 0.594. k4 HUD share 0.906-0.948; k1
@@ -28,7 +28,9 @@ sys.path.insert(0, "artifacts/experiments/20260927_levers")
 import deepeval as E  # noqa: E402
 D, T = E.D, E.T
 NEAR = [21, 22, 23, 30, 31, 32, 39, 40, 41]
-CELLS = {"+real_hud": list(range(63, 81)), "+real_near": NEAR, "+real_map": list(range(63))}
+EDGE = [r * 9 + c for r in range(7) for c in range(9) if r in (0, 6) or c in (0, 8)]
+CELLS = {"+real_hud": list(range(63, 81)), "+real_near": NEAR, "+real_map": list(range(63)),
+         "+real_edge": EDGE, "+real_interior": [c for c in range(63) if c not in EDGE and c not in NEAR]}   # edge / interior: 2026-10-10
 
 
 def main():
@@ -62,10 +64,12 @@ def main():
            "real_health16": {"mean": float(h_real[opp[16]].mean()), "danger_corr": danger(h_real[opp[16]], dev["p16"][opp[16]])}}
     log(**out)
     config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
-    for path in sys.argv[1:]:
+    args = sys.argv[1:]
+    window = int(args[args.index("--window") + 1]) if "--window" in args else 5                      # 2026-10-10: L16 worlds use 15
+    for path in [a for i, a in enumerate(args) if a != "--window" and (i == 0 or args[i - 1] != "--window")]:
         world, st = T.load_world(Path(path), dev_)
-        name = st["name"]
-        gen = E.imagine(world, config, dev, 5, f"{E.CACHE}/h16subst_{name}_dev", dev_)
+        name = st["name"] + ("" if window == 5 else f"__w{window}")
+        gen = E.imagine(world, config, dev, window, f"{E.CACHE}/h16subst_{name}_dev", dev_)
         r = {}
         for k in E.DEPTHS:
             rk = {"imagined": safe(k, gen[k])}
