@@ -1578,6 +1578,24 @@ probed the same way at its 6k-36k snapshots:
 - **Rule (12:57):** P2 ≥ 50% and score ≥ 0.3 → the label-free allocation works. Next: the same sufficiency test as E22Z
   (prior 20k + `e22_imagine` with the in-distribution readings and the census), then full scale and from scratch.
 
+**E22Z census (lane157, 14:48-15:01): sampled imagination MULTIPLIES zombies — 10× truth by depth 16; adjacency follows**
+
+| cells with zombie score > 0.3 per frame | depth 1 | 2 | 4 | 8 | 16 |
+|---|---|---|---|---|---|
+| E22Z sampled (4 samples) | 0.27-0.28 | 0.36-0.40 | 0.62-0.66 | 1.19-1.32 | **3.0-3.2** |
+| truth | 0.186 | 0.185 | 0.204 | 0.233 | 0.294 |
+| E22Z Δ zeroed | 0.198 | 0.193 | 0.177 | 0.155 | 0.152 |
+
+- **Not faster approach:** the nearest zombie's distance at depth 8 is 2.37-2.51 vs true 2.46. The within-1 excess (depth 8:
+  21-23% vs 9.8%; depth 16: 42-47% vs 13%) comes from the NUMBER of drawn zombies.
+- **Already visible one step ahead, with the posterior's own codes** (P2):
+  - with exactly one zombie, E22Z draws 1.0-1.5 cells > 0.3 (other 1.48, toward 1.24, stay 1.0; positive mass 1.4-1.8; mass
+    over the 5 candidate cells 0.898 vs true 0.695);
+  - a moved zombie is drawn at the new cell without being fully erased at the old one. Compounded over steps, this is the
+    10× census.
+- **E22M duplicates less in the same one-step test:** 0.86-0.96 cells > 0.3, mass 1.34-1.44, 5-cell mass 0.731. Its
+  sufficiency census (lane158) will show whether sampled imagination stays at the true count.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
