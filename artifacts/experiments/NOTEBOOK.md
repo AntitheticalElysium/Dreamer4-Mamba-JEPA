@@ -148,6 +148,29 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-10 RESULT (10:34): loss currency, prediction side — most of the per-element loss sits on cells whose facts are already right
+
+`currency.py`: each world's teacher-forced predictions (all depths, TEST roots, 280,612 map cells), decoded by probes fitted on true
+tokens. A cell's facts are correct when its tile class and all four mob flags match the simulator.
+
+| world | cells with a wrong fact | L1 error on fact-correct cells | L2 error on fact-correct cells | mean L2: correct / wrong | AUC (error flags a wrong fact) |
+|---|---|---|---|---|---|
+| M16 (L1-trained) | 4.2% | **62.5%** | 25.0% | 0.80 / 54.7 | 0.974 |
+| D continued | 4.5% | 72.7% | 49.2% | 1.49 / 32.4 | 0.952 |
+| D scratch | 5.3% | 73.6% | 50.6% | 1.57 / 27.5 | 0.938 |
+| E22MS zeroed | 5.8% | 67.5% | 38.2% | 1.30 / 34.5 | 0.959 |
+| E22MS sample 0 | 5.4% | 63.6% | 29.2% | 1.20 / 50.7 | 0.967 |
+| E22MS true codes | 3.7% | 78.9% | 57.5% | 1.13 / 21.4 | 0.953 |
+
+- Per cell, the token error DOES flag wrong facts (AUC 0.94-0.97).
+- But wrong facts are 4-6% of cells. In the L1 currency M16 trains on, 62.5% of its error mass is on fact-correct cells: night
+  static, re-encoding, rendering detail (Part II-A).
+- The D-loss worlds have halved their wrong-fact errors (27-32 vs 55), so the rest of their error, half of it even in L2, is on
+  fact-correct cells.
+- HUD (rounded health / food / drink / energy readouts): 17-20% of teacher-forced steps have a wrong value in every world, while
+  41-71% of the HUD-token L2 is on steps whose values are all right. The wrong values are dominated by the timer decrements
+  that no L16 world can predict (above).
+
 ### 10-10 RESULT (10:29): Part I scoreboard — M16 / D continued / D from scratch / E22MS (the user's breadth request)
 
 Variants exported by `rollout_export.py` (lanes 170 / 171), read by `scoreboard.py`, `budget.py`, `entering_memory.py`; intervals from
