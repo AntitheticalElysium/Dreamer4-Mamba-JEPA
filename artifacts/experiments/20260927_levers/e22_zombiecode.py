@@ -1,4 +1,4 @@
-"""Does the stage-A posterior ENCODE the zombie's random move? (2026-10-09, written 12:10; E22FJ: the posterior's Delta never localizes
+"""Does the stage-A posterior ENCODE the zombie's random move? (2026-10-09, written 12:00-12:06; E22FJ: the posterior's Delta never localizes
 random zombie moves, 0.0% argmax on no-scroll steps, D 0.0%, while it removes 61% of scroll-entering error.)
 Cases = health_zombie part 1 on steps WITHOUT scroll (player displacement 0, so the view does not shift): held diagnosis futures,
 sample 0, exactly one zombie in view at t and t+1, alive, relative distance 1..6, move of length <= 1; the move class is stay / up /
