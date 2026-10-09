@@ -1575,6 +1575,12 @@ probed the same way at its 6k-36k snapshots:
 - **Clean P1:** +39.6%; zeroed MSE 0.01406 vs D's 0.01287 (+9%: the decoder leans on Δ somewhat more).
 - **Encoder probe** (moving-only, random moves): z 0.318, q 0.312 (E22Z 0.486 / 0.439, E22FJ 0.225 / 0.254). The linear
   probe again understates the decision-level P2.
+- **Carries** (unweighted D loss; E22Z in brackets):
+  - zombie cells 65% removed (70%); on no-scroll steps 70% (75%);
+  - entering edges 55% (52%); other changes on scroll steps 31% (11%);
+  - overall gain +41.4% (+34.5%).
+  - Cost: the decoder alone (Δ zeroed) is worse than D on zombie cells (29.7 vs 18.3; it hands zombies to the channel).
+    With Δ: 10.3 (−44% vs D).
 - **Rule (12:57):** P2 ≥ 50% and score ≥ 0.3 → the label-free allocation works. Next: the same sufficiency test as E22Z
   (prior 20k + `e22_imagine` with the in-distribution readings and the census), then full scale and from scratch.
 
