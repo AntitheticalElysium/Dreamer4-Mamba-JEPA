@@ -28,6 +28,9 @@ Split by scroll (11:49): part 1 also reported on steps without player displaceme
 Ghost (16:32; sampled imagination multiplies (E22Z) or erases (E22M) zombies even with the true codes): for moved zombies (|move| = 1),
 the predicted zombie score at the OLD cell in the new view (v0 - player displacement, as part 3), the share above 0.3, and the true
 frame's score there.
+Where the extra zombies are (16:47; E22Z draws 1.24-1.48 cells > 0.3 for one moved zombie, the old-cell ghost explains 0.10-0.15):
+for moved zombies, predicted cells > 0.3 split into: the true new cell, the old cell, the other candidate cells (the old cell's
+remaining neighbours), and elsewhere (all in the new view).
 Usage: health_zombie.py <name=world.pt> ...  -> artifacts/eda/health_chain_v1/zombie_<name>.json
 """
 import json
@@ -141,6 +144,23 @@ def main():
         at_old = p_cells[torch.arange(len(r_i)), bo_r, bo_c]
         old_true = t_cells[torch.arange(len(r_i)), bo_r, bo_c]
         moved1 = in_o & (move.abs().sum(1) == 1)
+        above = p_cells > 0.3                                                                         # [n, 7, 9]
+        ar_ = torch.arange(len(r_i))
+        at_new_m = torch.zeros_like(above); at_new_m[ar_, v1[:, 0], v1[:, 1]] = True
+        at_old_m = torch.zeros_like(above); at_old_m[ar_, bo_r, bo_c] = in_o
+        cand_m = torch.zeros_like(above)
+        for dr_, dc_ in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+            rr_, cc_ = base_o[:, 0] + dr_, base_o[:, 1] + dc_
+            ok_ = (rr_ >= 0) & (rr_ < 7) & (cc_ >= 0) & (cc_ < 9)
+            cand_m[ar_[ok_], rr_[ok_], cc_[ok_]] = True
+        cand_m &= ~at_new_m
+        where = {'new_cell': (above & at_new_m), 'old_cell': (above & at_old_m), 'other_candidates': (above & cand_m),
+                 'elsewhere': (above & ~at_new_m & ~at_old_m & ~cand_m)}
+        where = {kk: vv.flatten(1).sum(1).float() for kk, vv in where.items()}                       # [n] cells per case
+        above_t = t_cells > 0.3                                                                       # the same split on the TRUE frame
+        where_t = {'new_cell': (above_t & at_new_m), 'old_cell': (above_t & at_old_m), 'other_candidates': (above_t & cand_m),
+                   'elsewhere': (above_t & ~at_new_m & ~at_old_m & ~cand_m)}
+        where_t = {kk: vv.flatten(1).sum(1).float() for kk, vv in where_t.items()}
         one_step, by_scroll = {}, {}
         noscr = sc[r_i, k_i] == 0
         for split, sm in (('no_scroll', noscr), ('scroll', ~noscr)):
@@ -153,7 +173,9 @@ def main():
                                'cells_above_0.3': round(float(spread[m].mean()), 2), 'positive_mass': round(float(mass[m].mean()), 3),
                                'ghost_score_at_old_cell': round(float(at_old[m & moved1].mean()), 3),
                                'ghost_above_0.3': round(float((at_old[m & moved1] > 0.3).float().mean()), 3),
-                               'true_frame_score_at_old_cell': round(float(old_true[m & moved1].mean()), 3)}
+                               'true_frame_score_at_old_cell': round(float(old_true[m & moved1].mean()), 3),
+                               'cells_above_0.3_by_place': {kk: round(float(vv[m & moved1].mean()), 3) for kk, vv in where.items()},
+                               'true_frame_cells_above_0.3_by_place': {kk: round(float(vv[m & moved1].mean()), 3) for kk, vv in where_t.items()}}
         # 3. calibration over the 5 candidate cells, distance 2..6
         dirs = torch.tensor(((0, 0), (-1, 0), (1, 0), (0, -1), (0, 1)))
         far = keep & (d0 >= 2)
