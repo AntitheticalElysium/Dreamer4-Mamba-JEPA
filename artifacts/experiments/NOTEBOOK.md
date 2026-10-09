@@ -1539,6 +1539,25 @@ probed the same way at its 6k-36k snapshots:
   - drawn-hit rate given imagined adjacency vs true hit rate given true adjacency;
   - caught / false split by imagined adjacency.
 
+**E22Z reading 2 diagnosed in distribution (lane156, 14:03-14:16; the v1 readings reproduce exactly)**
+
+| per rollout | sampled (4 samples) | E22Z Δ zeroed | truth |
+|---|---|---|---|
+| steps with a zombie beside the player | **21.1-22.3%** | 4.2% | **8.7%** |
+| hit rate given a zombie beside | **27.6-28.4%** | 10.7% | **18.1%** |
+| false drops with an imagined zombie beside (n ≈ 3,100-3,300) | 27-28% | 8.8% (570) | — |
+| false drops with no imagined zombie beside (n ≈ 12,100-12,300) | 0.6-0.7% | 0.2% | — |
+| caught on true damage with an imagined zombie beside | 34-39% | 27.6% | — |
+
+- **The false drops are not hallucinated health changes:** ~860 of ~945 per sample occur where the world's own imagined
+  zombie is beside the player.
+- **The sampled world is miscalibrated in two exact ways:**
+  1. adjacency 2.5× reality;
+  2. hits given adjacency 1.5× reality (the cooldown under-enforced).
+- The deterministic decoder errs the other way: zombies fade (4.2%), hits under-drawn (10.7%).
+- **Next (lane157, census):** whether adjacency comes from extra zombies (mass inflation; P2 already showed predicted mass
+  0.90 vs true 0.70 over the 5 candidate cells) or from faster approach (nearest-distance by depth).
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
