@@ -1651,6 +1651,27 @@ probed the same way at its 6k-36k snapshots:
 - **Next, exact:** the ghost left at a moved zombie's OLD cell, one step ahead with the posterior's codes (health_zombie),
   for D, E22Z and E22M.
 
+**Ghost at a moved zombie's old cell, one step ahead (lane160, 16:32-16:49; posterior Δ for E22Z / E22M)**
+
+| moved zombie | D: toward / random | E22Z: toward / random | E22M: toward / random |
+|---|---|---|---|
+| score at the old cell | 0.110 / 0.313 | 0.078 / 0.110 | 0.009 / 0.018 |
+| old cell still > 0.3 | 9.6% / 47.4% | 10.2% / 15.4% | 0.2% / 1.9% |
+| cells > 0.3 in the frame (one true zombie) | 0.70 / 0.68 | **1.24 / 1.48** | 0.96 / 0.95 |
+| argmax at the true new cell | 57.8% / 1.1% | 96.2% / 82.1% | 90.1% / 80.4% |
+
+- **E22Z:** the old cell is mostly erased, yet 1.24-1.48 zombie cells are drawn for one moved zombie. The old-cell ghost
+  explains only 0.10-0.15 of the excess, so most extra zombies are drawn ELSEWHERE.
+  - ITC's one-to-one copy constraint (no source copied twice; ITC eq. 3, never ported: our corrt head is an independent
+    per-tile softmax) would not stop generated duplicates.
+  - Where they are is being measured (lane161: new / old / other candidate cells / elsewhere, true-frame reference).
+- **E22M is clean one step ahead** (≈ 1 zombie, no ghost), so its fade is a multi-step phenomenon.
+  - Hypothesis to test (lane162): a zombie ENTERING the view has no source cell, so the moved-content mask never marks it
+    and E22M's channel never learned to render entries. Exits are then uncompensated and the count declines (truth rises
+    ~3% per step).
+  - E22Z's mask (zombie at t or t+1 anywhere) covered entries.
+- **D on random moves** leaves the zombie at its old cell (47% above 0.3): the mean-seeking "stay".
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
