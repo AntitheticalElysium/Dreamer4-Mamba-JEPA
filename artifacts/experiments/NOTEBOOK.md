@@ -148,6 +148,59 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-10 RESULT (10:23): Part II-B (dynamics error budget) — P-B holds on the RNG floor alone; the two losses split the budget in opposite ways
+
+**Validations first:**
+- `rollout_export` = teval bitwise for D from scratch (32 roots: gen / tf / one per-root errors identical).
+- The scoreboard reproduces teval's M16 errors exactly at depths 1 and 4 and in every one-step class. At depth 16, 0.52809 vs
+  0.52778: M16's stored teval file came from an earlier run with different batching. Per root, 9 roots differ at depth 1 (mean
+  relative error 7.5e-5) and 986 at depth 16 (mean 0.5%, max 2,107). Self-fed rollouts amplify near-ulp numeric differences into
+  different futures: an imagination-stability fact in its own right (diagnostic C3, below).
+- The scoreboard reproduces e22_imagine's E22MS zeroed and sample-0 readings exactly (to the last rounded digit).
+- `gradanat`'s per-category terms sum to `rollout_losses`' objective exactly (relative error 0 for L1, 6e-8 for D's loss).
+
+**`budget.py`** (each world's ONE-STEP error, split per token by category; the floor = unbiased variance over the real keys from the
+SAME full history = what no deterministic world can remove):
+
+| M16 (L1-trained), one-step over all 17 actions × 4 keys | share of its L2 error | share of its L1 error | floor share within it | mean L2 / floor per token |
+|---|---|---|---|---|
+| unchanged cells, night | 31.4% | **43.3%** | **91%** | 4.11 / 3.73 |
+| entering cells, day + night | 29.9% | 9.5% | 0.8% / 23% | 33.4 / 0.27 (day) |
+| own state changed, day + night | 22.6% | 11.6% | 23-32% | 47.6 / 10.9 (day) |
+| unchanged cells, day | 1.8% | 16.0% | — | 0.059 |
+| HUD tokens, values changed | 9.4% | 4.6% | ~1% | 5.6 |
+| HUD tokens, values same | 0.4% | 4.7% | — | 0.03 |
+| whole frame | 143.7 / frame | 415 / frame | **44.2%** | |
+
+- On the factual first step (5 futures) the floor share is 31.7%; entering cells are 49% of the L2 error there.
+- **P-B** (≥ 30% of the teacher-forced squared error irreducible from the inputs): **holds on the RNG floor alone** (44% / 32%),
+  before the epistemic part of entering terrain is counted.
+- Entering-cell error is NOT random (floor 0.8% by day: the map is the same under every key). It is unseen or unlearned terrain.
+  Seen-before vs never-seen is split next (C4).
+- Of M16's excess over the floor: entering cells 52%, HUD changes 17%, own-state changes 16%, the rest spread.
+
+**The two losses split the budget in opposite directions** (one-step, all 17 actions; mean L2 per token):
+
+| | M16 (L1) | E22MS decoder alone (D's loss; Δ zeroed) | floor |
+|---|---|---|---|
+| own state changed (day) | 47.6 | **15.7** | 10.9 |
+| HUD values changed (day) | 5.60 | **2.40** | 0.06 |
+| unchanged cells (day) | **0.059** | 0.438 (×7.4) | 0.142 |
+| HUD values same (day) | **0.030** | 0.151 (×5) | 0.013 |
+| entering (day) | 33.4 | 31.3 | 0.27 |
+
+- L1 (a median, every error counted at its absolute size) buys copy precision on the millions of small-change tokens.
+- Squared error buys the rare large changes and gives up precision on unchanged content.
+- Neither touches entering terrain. Each objective is good where the other is bad: the "fighting" in exact numbers.
+
+**A sampled world pays twice the floor by construction** (E|X − Y|² = 2σ² for independent draws): E22MS sample 0's own-state error is
+27.5, vs 21.8 for an ideal sampler (2 × 10.9). MSE against one realized outcome cannot judge a sampler. The energy score in the
+scoreboard is the proper comparison.
+
+**Gradient anatomy, 2-batch CPU test** (M6 at 6k; to be read only from the full GPU run, lane174):
+- under L1, unchanged cells carry 46% of the loss and 64% of the gradient direction;
+- under D's loss, entering cells carry 55% of the loss and 84% of the direction; own-state changes get −0.8%.
+
 ### 10-10 RESULT (10:14): Part II-A (encoder) — P-A holds: the token target is mostly not game state; 40% of its L1 change mass is renderer noise
 
 v2 runs: `encoder_diag.json` (Raw, all five futures, 80,765 frames) and `encoder_diag_{raw,ldad1,ldad10,tc}.json` (root + factual
