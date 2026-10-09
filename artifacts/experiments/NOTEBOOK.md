@@ -1602,6 +1602,34 @@ probed the same way at its 6k-36k snapshots:
 - **E22M duplicates less in the same one-step test:** 0.86-0.96 cells > 0.3, mass 1.34-1.44, 5-cell mass 0.731. Its
   sufficiency census (lane158) will show whether sampled imagination stays at the true count.
 
+**E22M sufficiency result (lane158, 15:03-16:17): both readings FAIL — sampled zombies FADE (the opposite of E22Z)**
+- Prior 20k: code accuracy 0.565, CE 1.78 (E22Z's prior: 0.634, CE 1.36; E22M uses more codes, 417 per batch at the end of
+  its smoke).
+
+| reading (4 samples) | E22M sampled | E22M Δ zeroed | E22Z sampled | truth |
+|---|---|---|---|---|
+| depth 8: roots with a cell > 0.3 / peak | **39.5%** (36-44%) / **0.359** | 3.6% / 0.139 | 87.3% / 0.609 | 92.9% / 0.642 |
+| caught on aligned damage / false | **7.6%** / **0.95%** | 2.9% / 0.23% | 18.0% / 6.3% | — |
+| steps with a zombie beside | 4.0-4.5% | 1.4% | 21-22% | 8.7% |
+| hit rate given a zombie beside | **0.157-0.177** | 0.032 | 0.276-0.284 | **0.181** |
+| drawn zombies per frame, depth 1 / 4 / 8 / 16 | 0.15-0.17 / 0.12-0.14 / 0.11-0.12 / 0.09-0.11 | 0.087 → 0.001 | 0.27 → 3.1 | 0.19 / 0.20 / 0.23 / 0.29 |
+
+- **E22M's hit mechanics are calibrated:** given adjacency it draws hits at reality's rate (0.16-0.18 vs 0.18), and false
+  drops pass (0.95%).
+- **But its zombies fade** to about a third of the true count by depth 16, so adjacency halves and localization and
+  caught fall short.
+- Its decoder alone erases zombies (zeroed: 0.087 → 0.001). It relies on the channel to KEEP zombies, not only to move
+  them (carries: decoder alone 29.7 vs D's 18.3 on zombie cells).
+- **E22Z and E22M fail in opposite directions:**
+  - E22Z multiplies: a moved zombie is not fully erased at its old cell;
+  - E22M fades;
+  - neither conserves zombie mass under sampling.
+- **Rule:** reading 1 fails → diagnose the prior first.
+  - Substitution queued (lane159, `--postcodes`): self-fed frames, but each transition conditioned on the posterior's
+    codes of the TRUE transition.
+  - If zombies then persist at the true count, the prior's sampling is the cause; if they still fade or multiply, the
+    decoder's self-fed behaviour is.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
