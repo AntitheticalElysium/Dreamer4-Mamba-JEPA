@@ -1514,6 +1514,31 @@ probed the same way at its 6k-36k snapshots:
   - Under the same λ rule, moving zombies get roughly a quarter of the mask term, i.e. ~12% of the objective (E22Z: zombie
     cells ~50%; unweighted: 1.9%).
 
+**E22Z sufficiency result (lane153, 12:49-14:03): reading 1 PASSES — sampled zombies stay localized; reading 2 FAILS (18% caught, 6% false)**
+- **Prior** (20k, on the frozen E22Z posterior): latent accuracy 0.593 at 18.5k (E16's 0.615 at 20k).
+- **`e22_imagine`** (4 prior samples per root, held futures; D and truth in brackets):
+
+  | reading | E22Z sampled (mean of 4; per sample) | E22Z Δ zeroed | D | truth |
+  |---|---|---|---|---|
+  | depth 8: roots with a zombie cell > 0.3 | **87.3%** (84.8-92.0%) | 39.3% | 0% | 92.9% |
+  | depth 8: zombie peak | **0.609** (0.595-0.624) | 0.298 | 0.13 | 0.642 |
+  | depth 16: roots with a cell > 0.3 | 83-90% | 21% | — | 95.9% |
+  | caught on aligned true-damage steps | 18.0% (16.7-20.0%) | 7.7% | 4.5-6% | — |
+  | false drops on true unchanged steps | 6.3% (6.1-6.5%) | 0.5% | — | — |
+  | imagined zombie beside on true damage steps | 47-50% | 22.6% | 8.9% | 73.6% |
+
+- **Readings:**
+  - e22_localized TRUE (≥ 50% and ≥ 0.4): the diagnosed imagination failure is fixed by sampling the
+    allocation-corrected channel. To depth 16 the zombie stays as sharp as in truth.
+  - e22_damage FALSE: caught triples vs D but stays below 30%; false drops are 6.3% (≤ 2% required).
+- **Rule:** "1 passes, 2 fails → diagnose the next link".
+- **Caveat measured next, not assumed:** false is scored against the TRUE trajectory. A sampled future in which a zombie
+  reaches the player and hits is a legitimate outcome of a stochastic world. lane156 reruns with in-distribution
+  readings:
+  - imagined vs true rate of a zombie beside the player;
+  - drawn-hit rate given imagined adjacency vs true hit rate given true adjacency;
+  - caught / false split by imagined adjacency.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
