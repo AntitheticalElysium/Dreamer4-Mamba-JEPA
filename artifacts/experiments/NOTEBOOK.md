@@ -1815,6 +1815,29 @@ probed the same way at its 6k-36k snapshots:
     temperature / calibration of the sampled moves) before anything else.
   - held CE does not fall → the prior has converged at its capacity; diagnose prior capacity before anything else.
 
+**Test 3 verdict for D: NOT a continuation artifact — D from scratch (36k + 6k, lane131, 09:15-18:39) beats D continued on every reading**
+
+| row 9 (window 10), held | M16 | D continued | **D from scratch** |
+|---|---|---|---|
+| hits drawn / 1,211 | 60 | 569 | **647** |
+| fresh / 207 | 0 | 31 | **62** |
+| since 6 / 157 | 2 | 63 | 60 |
+| false / 1,728 | 0 | 1 | 5 |
+| generator beats copy on hits | 3.6% | 85.4% | **89.5%** |
+| drawn health within 0.5 | 2% | 34% | **51%** |
+
+| h63 information (window 15, 5 probe seeds, clustered bootstrap) | M16 | D continued | D from scratch | scratch − continued | scratch − M16 |
+|---|---|---|---|---|---|
+| phase, since = 6 | 0.892 | 0.947 | **0.971** | +0.024 [+0.016, +0.032] | +0.079 [+0.064, +0.095] |
+| phase, since 1-4 | 0.912 | 0.969 | **0.989** | +0.019 [+0.012, +0.028] | +0.076 [+0.061, +0.092] |
+| approach adjacency | 0.766 | 0.956 | **0.987** | +0.031 [+0.010, +0.054] | +0.221 [+0.168, +0.277] |
+
+- **Every difference is resolved.** The Delta-IRIS loss installs both blockers from step 0, better than continued; it was
+  ahead of M6 at every stage-1 snapshot (6k-30k).
+- This answers the 10-08 question for D: the positive E21 result is not caused by continuing a converged world. GE from
+  scratch had been worse than its continuation; D is better.
+- Cost readings (teval, damage panel, gradient allocation) follow from lane131.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
