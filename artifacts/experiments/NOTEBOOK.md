@@ -1630,6 +1630,27 @@ probed the same way at its 6k-36k snapshots:
   - If zombies then persist at the true count, the prior's sampling is the cause; if they still fade or multiply, the
     decoder's self-fed behaviour is.
 
+**Prior vs decoder in sampled imagination (lane159, `--postcodes`, 16:17-16:31): the chain WORKS with the true stochastic choices; mass conservation is decoder-side**
+
+| rollout (1 sample each) | depth 8: roots > 0.3 / peak | caught / false | beside / hit given beside | drawn zombies at depth 1 / 4 / 8 / 16 |
+|---|---|---|---|---|
+| E22Z prior-sampled | 84.8% / 0.595 | 16.9% / 6.1% | 21.2% / 0.276 | 0.28 / 0.65 / 1.27 / 3.20 |
+| **E22Z true posterior codes** | **92.9% / 0.647** | **48.9% / 3.3%** | 14.6% / 0.256 | 0.27 / 0.59 / 1.09 / 2.52 |
+| E22M prior-sampled | 41.1% / 0.379 | 8.3% / 0.96% | 4.3% / 0.175 | 0.17 / 0.14 / 0.11 / 0.09 |
+| E22M true posterior codes | 57.1% / 0.444 | 19.2% / 0.69% | 4.9% / 0.140 | 0.17 / 0.15 / 0.12 / 0.09 |
+| truth | 92.9% / 0.642 | — | 8.7% / 0.181 | 0.19 / 0.20 / 0.23 / 0.29 |
+
+- **With the posterior's codes of what really happened** (frames still self-fed), E22Z's imagination matches truth on
+  localization and catches **48.9%** of real damage (≥ 30%). The mechanism works end to end when the stochastic choices are
+  right.
+- **The prior's sampling costs:** caught 48.9% → 16.9%; localization 92.9% → 84.8%. E22M: 57% → 41%, 19% → 8%.
+- **Zombie mass is not conserved by either decoder, even with true codes:**
+  - E22Z multiplies (2.5 per frame at depth 16 vs 0.29 true → false drops 3.3%);
+  - E22M fades (0.09).
+  - Both are decoder behaviours under self-feeding, not prior errors.
+- **Next, exact:** the ghost left at a moved zombie's OLD cell, one step ahead with the posterior's codes (health_zombie),
+  for D, E22Z and E22M.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
