@@ -1507,6 +1507,12 @@ probed the same way at its 6k-36k snapshots:
     else.
   - P2 < 10% → the mask does not carry the allocation; compare its training-window composition to E22Z's before
     anything else.
+- **Measured before the run** (13:01; CPU, the first 100 training batches of the seed-11 order, 1.51M map cells):
+  - E22Z's zombie-probe mask covers 1.27% of map cells; the moved-content mask 2.15%;
+  - 40% of the zombie-probe cells lie inside the moved-content mask (the moving zombies; staying ones do not change);
+  - 24% of moved-content cells are zombie-probe cells (the rest: other mobs and other moved content).
+  - Under the same λ rule, moving zombies get roughly a quarter of the mask term, i.e. ~12% of the objective (E22Z: zombie
+    cells ~50%; unweighted: 1.9%).
 
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
