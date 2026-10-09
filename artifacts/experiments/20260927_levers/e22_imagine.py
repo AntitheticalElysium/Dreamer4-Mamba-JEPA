@@ -16,6 +16,9 @@ In-distribution readings (added 14:03; E22Z sufficiency: reading 1 passed, readi
 against reality's RATES, not against the one realized trajectory: how often an imagined zombie is beside the player (probe > 0.3 on
 the 4 neighbour cells of the current imagined frame) vs a true one (simulator, same cells), and the drawn-hit rate given imagined
 adjacency vs the true hit rate given true adjacency; plus caught / false split by imagined adjacency.
+Zombie census by depth (added 14:15; sampled E22Z puts a zombie beside the player 2.5x as often as reality): per depth 1, 2, 4, 8, 16
+over alive roots, imagined vs true: cells with zombie score > 0.3 (a count of drawn zombies), and among roots with >= 1 such cell the
+Manhattan distance of the nearest one to the player (3, 4); truth = the probe on the true frames (as true_peak).
 Usage: e22_imagine.py <stage-B prior .pt> [--samples S]  -> artifacts/eda/health_chain_v1/e22_imagine_<prior name>.json
 """
 import json
@@ -82,6 +85,7 @@ def main():
     for name in names:
         pred_h, cur_h, znear = torch.empty(R, H), torch.empty(R, H), torch.empty(R, H, dtype=torch.bool)
         peak, gen = torch.empty(R, H), torch.empty(R, H, 81, 192, dtype=torch.float16)
+        zmap = torch.empty(R, H, 7, 9)
         for i in range(0, R, 32):
             b = min(32, R - i)
             tf = true_frames[i:i + b].float().to(device); ac = acts_all[i:i + b].to(device)
@@ -103,7 +107,9 @@ def main():
                     nxt = CE.step(world, post, win, wa, cw, device, config).to(device)
                 cur = imagined[-1]
                 pred_h[i:i + b, k] = health(nxt); cur_h[i:i + b, k] = health(cur); znear[i:i + b, k] = zombie_near(cur)
-                peak[i:i + b, k] = zscore(nxt).flatten(1).max(1).values
+                zs_ = zscore(nxt)
+                peak[i:i + b, k] = zs_.flatten(1).max(1).values
+                zmap[i:i + b, k] = zs_
                 gen[i:i + b, k] = nxt.half().cpu()
                 imagined.append(nxt); icodes.append(scodes)
         gprev = torch.cat([root[:, None], gen[:, :-1]], 1)
@@ -121,6 +127,18 @@ def main():
              'hit_rate_given_beside': [round(float(pdrop[znear & alive_any].float().mean()), 4),
                                        round(float(drop[true_beside].float().mean()), 4)]}
         roots1 = n1[:, 0] == 1
+        dist = (torch.arange(7)[:, None] - 3).abs() + (torch.arange(9)[None, :] - 4).abs()            # [7, 9] to the player
+        census = lambda zm: ((zm > 0.3).flatten(-2).sum(-1).float(),
+                             torch.where(zm > 0.3, dist.float(), torch.tensor(99.)).flatten(-2).min(-1).values)
+        cnt_i, near_i = census(zmap); cnt_t, near_t = census(true_score)
+        r['census'] = {}
+        for d in (1, 2, 4, 8, 16):
+            m = alive0[:, d - 1]
+            mi, mt = m & (near_i[:, d - 1] < 99), m & (near_t[:, d - 1] < 99)
+            r['census'][str(d)] = {'cells_above_0.3': [round(float(cnt_i[m, d - 1].mean()), 3), round(float(cnt_t[m, d - 1].mean()), 3)],
+                                   'nearest_distance': [round(float(near_i[mi, d - 1].mean()), 2), round(float(near_t[mt, d - 1].mean()), 2)],
+                                   'nearest_within_1': [round(float((near_i[m, d - 1] <= 1).float().mean()), 4),
+                                                        round(float((near_t[m, d - 1] <= 1).float().mean()), 4)]}
         r['localization'] = {}
         for d in (1, 2, 4, 8, 16):
             m = roots1 & alive0[:, d - 1] & (n1[:, d] >= 1)
