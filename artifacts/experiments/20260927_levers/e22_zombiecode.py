@@ -10,6 +10,9 @@ frame t+1) as in training; features of the region (Posterior.encode's 5 x 5 bloc
   z4    all four regions' z (256)                            z+rel
 Probe: multinomial logistic regression (torch, standardized features, L2 1e-3, LBFGS), 5 folds grouped by walk seed; accuracy on all
 cases and per kind. A posterior that encodes the observed move predicts `other` moves far above rel.
+Added 12:07 (probe objective vs the question): stay is 66% of cases, so every set is ALSO probed on moving cases only (4 directions,
+'moving'), and a positive control `truth5` = the true change norm |s_t+1 - s_t| at the 5 candidate cells (stay + 4 neighbours of the
+zombie's old cell) shows what a probe reads when the move is in its input.
 Runs on CPU. Usage: e22_zombiecode.py <name=dworld_a.pt> ...  -> artifacts/eda/health_chain_v1/e22_zombiecode.json
 """
 import json
@@ -87,10 +90,23 @@ def main():
     rel = torch.cat([sg(rel0[:, 0]), sg(rel0[:, 1]), F.one_hot((rel0[:, 0].abs() > rel0[:, 1].abs()).long()
                      + 2 * (rel0[:, 0].abs() == rel0[:, 1].abs()).long(), 3).float()], 1)
     region = 2 * (v1[:, 0] // 5) + (v1[:, 1] // 5)
+    cand = v0[keep][:, None] + SHIFTS[None]                                                     # [n, 5, 2] stay, up, down, left, right
+    inside = (cand[..., 0] >= 0) & (cand[..., 0] < 7) & (cand[..., 1] >= 0) & (cand[..., 1] < 9)
+    tok = cand[..., 0].clamp(0, 6) * 9 + cand[..., 1].clamp(0, 8)
+    ch = (frames[r_i, k_i + 1].float() - frames[r_i, k_i].float()).norm(dim=-1)                    # [n, 81]
+    truth5 = torch.where(inside, ch.gather(1, tok), torch.zeros(()))
+    mv = kind > 0
+    def both(x):
+        p = probe(x, y, groups); pm = probe(x[mv], y[mv], groups[mv])
+        r = {'all': acc(p, kind >= 0), **{kn: acc(p, kind == ki) for ki, kn in enumerate(('stay', 'toward', 'other'))}}
+        r['moving'] = {'toward': round(float((pm[kind[mv] == 1] == y[mv][kind[mv] == 1]).float().mean()), 3),
+                       'other': round(float((pm[kind[mv] == 2] == y[mv][kind[mv] == 2]).float().mean()), 3)}
+        return r
     res = {'cases': {'stay': int((kind == 0).sum()), 'toward': int((kind == 1).sum()), 'other': int((kind == 2).sum())}}
     acc = lambda p, m: round(float((p[m] == y[m]).float().mean()), 3)
-    p = probe(rel, y, groups)
-    res['rel'] = {'all': acc(p, kind >= 0), **{kn: acc(p, kind == ki) for ki, kn in enumerate(('stay', 'toward', 'other'))}}
+    res['rel'] = both(rel)
+    res['truth5'] = both(truth5)
+    print(json.dumps({'truth5': res['truth5']}), flush=True)
     print(json.dumps({'rel': res['rel'], 'cases': res['cases']}), flush=True)
     for name, path in (a.split('=', 1) for a in sys.argv[1:]):
         _, post, st = DW.load_a(Path(path), torch.device('cpu'))
@@ -106,8 +122,7 @@ def main():
         feats = {'z': z[ar, region], 'q': q[ar, region], 'z4': z.flatten(1), 'z+rel': torch.cat([z[ar, region], rel], 1)}
         out = {'world': st['name']}
         for fname, x in feats.items():
-            p = probe(x, y, groups)
-            out[fname] = {'all': acc(p, kind >= 0), **{kn: acc(p, kind == ki) for ki, kn in enumerate(('stay', 'toward', 'other'))}}
+            out[fname] = both(x)
         out['codes_used_in_zombie_region'] = int((q[ar, region].unique(dim=0)).shape[0])
         res[name] = out
         print(json.dumps({name: out}), flush=True)

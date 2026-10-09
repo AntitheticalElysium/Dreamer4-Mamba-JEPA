@@ -1336,6 +1336,45 @@ fails, stage A is not run at full length; the failure is diagnosed first.
   - emitted hits 311 (fresh 3), false 181.
   - Unlike GE from scratch, D from scratch is ahead of its matched deterministic run on both blockers.
 
+**Where the E22 channels fail, localized (lane150-151 + CPU probe, 11:50-12:09): the posterior ENCODER never encodes the zombie's move**
+- **D's error budget** (held, 15,030 transitions, teacher-forced, squared error):
+  - scroll-entering edge cells: 4.8% of map tokens, 32.3 per token, **49% of D's error**;
+  - changes on no-scroll steps: 25%; other changes on scroll steps: 10%; unchanged cells 25%;
+  - zombie cells: **1.9%**.
+- **E22FJ's channel** removes 61% of entering-edge error (**92% of its gain**), 7.6% of no-scroll changes, 8.6% of
+  zombie cells on no-scroll steps.
+- **P2 split by scroll:** random moves, argmax on no-scroll steps (n = 185): E22FJ **0.0%**, D 0.0%; on scroll steps
+  (n = 95): 3.2% both.
+  - Without scroll there is no edge to compete for the region's code, and still nothing.
+  - Capacity competition within a transition is not the cause.
+- **Encoder probe** (`e22_zombiecode.py`, CPU):
+  - cases: no-scroll one-zombie steps (stay 1,088, toward 393, other 173);
+  - probe: grouped-CV logistic regression; the move direction is read from the zombie region's pre-VQ z, its codebook
+    vector q, or all four regions' z;
+  - accuracy on moving cases only (4 classes):
+
+  | features | toward | random ("other") |
+  |---|---|---|
+  | **positive control:** true change norm at the 5 candidate cells | 0.916 | **0.890** |
+  | relative position (the toward rule's inputs) | 0.814 | 0.0 |
+  | E22FJ z / q / all regions | 0.354 / 0.351 / 0.260 | **0.225 / 0.254 / 0.306** |
+  | E22F z / q / all regions | 0.308 / 0.316 / 0.229 | 0.237 / 0.225 / 0.260 |
+  | scratch z / all regions | 0.351 / 0.328 | 0.133 / 0.225 |
+  | warm z / all regions | 0.354 / 0.247 | 0.121 / 0.249 |
+
+  - With stay included (66% of cases) every posterior probe falls back on "stay" (random-move accuracy 0-0.08). That is
+    why the moving-only probe and the positive control were added before reading this.
+- **Exact statement:**
+  - the move is linearly readable from the posterior's own inputs (0.89), yet no stage-A posterior encodes it, before or
+    after quantization: it sits at chance, warm, frozen, joint or from scratch;
+  - the failure is the encoder, not VQ or the decoder's rendering;
+  - the encoder learns what reduces the decoder's loss most: entering terrain is 49% of D's error, while a perfectly
+    encoded zombie move could remove at most 1.9%;
+  - this is the allocation root of the whole health diagnosis (rare events get a tiny share of the objective), now one
+    level down, in the stochastic channel.
+- **Open, not measured yet:** whether a longer run would reach zombie moves once the edge gain saturates (the E22FJ
+  smoke is 2k updates).
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
