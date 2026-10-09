@@ -16,6 +16,10 @@ Posterior) with D's weights loaded (warm) or not (scratch): the channel's gradie
 encoder's teacher gradient is exactly 0 there, its consistency None).
 Size (10:31; the 09:58 rule's 'cond RMS' was a proxy for it): delta_over_tiles = mean over batches of ||Delta|| / ||tile embedding||
 (Frobenius, the 15 conditioned frames; Delta is added to world.embed(s), spatial.py's Linear 192 -> 256).
+Carries (11:08; E22F P1 passed, P2 failed -> 'measure what the channel carries'): per-token squared error of the teacher-forced
+prediction with the posterior's Delta vs Delta zeroed, over every target of the window, by class: HUD (63-80), player (31), map
+cells that change (|s_t+1 - s_t| > tworld.EVENT_TAU), map cells that do not, and map cells holding a true zombie in the target frame
+(simulator labels exist for target frames 4-15 = futures 0-11); reduction = 1 - with/zeroed, share = the class's part of the gain.
 Usage: e22_channel.py <name=dworld_a.pt> ...  -> artifacts/eda/health_chain_v1/e22_channel.json (u0 runs: --out <file>)
 """
 import json
@@ -45,6 +49,8 @@ def main():
     keep = torch.where(~meta['future_dead'][:, 0].cumsum(1).bool()[:, 11])[0]
     s_all = torch.cat([cache['ctx'], cache['fut'][:, :12]], 1)[keep]                       # [n, 16, 81, 192]
     a_all = torch.cat([cache['ctx_a'], cache['fut_a'][:, :12]], 1)[keep]                   # [n, 15]
+    allv = torch.cat([meta['root_visible'][:, None], meta['future_visible'][:, 0]], 1).float()
+    zt = (allv[..., 1071:1512].reshape(len(allv), 17, 7, 9, 7)[..., 0] > 0)[keep].flatten(2)          # [n, 17, 63]: frames 3..19
     cells = torch.arange(81).view(9, 9)
     regions = [cells[5 * i:5 * i + 5, 5 * j:5 * j + 5].flatten().to(dev) for i in range(2) for j in range(2)]
     res = {}
@@ -59,6 +65,7 @@ def main():
         ss = [0.0 for _ in regions]
         torch.cuda.reset_peak_memory_stats()
         nb, ratio = 0, 0.0
+        carry = {}                                                                   # class -> [with Delta, zeroed, count]
         for i in range(0, len(keep), BATCH):
             s, a = s_all[i:i + BATCH].to(dev).float(), a_all[i:i + BATCH].to(dev)
             with autocast_context(config):
@@ -76,8 +83,22 @@ def main():
             with torch.no_grad(), autocast_context(config):
                 zeroed = TW.rollout_losses(world, s, a, 'teacher', recon=recon)
                 pred = world(s, F.pad(a, (0, 1)))[0]
+                world.delta = cond.detach()
+                pred_d = world(s, F.pad(a, (0, 1)))[0]
+                world.delta = None
             loss['delta'] += float(teacher); loss['zeroed'] += float(zeroed)
             r = (s[:, 1:] - pred[:, :15].float()).double()                                    # [b, 15, 81, 192] zeroed residual
+            e0, e1 = r.pow(2).sum(-1), (s[:, 1:] - pred_d[:, :15].float()).double().pow(2).sum(-1)       # [b, 15, 81]
+            change = (s[:, 1:] - s[:, :-1]).norm(dim=-1) > TW.EVENT_TAU
+            mapm = torch.zeros(81, dtype=torch.bool, device=dev); mapm[:63] = True; mapm[31] = False
+            zomb = torch.zeros_like(change)
+            zomb[:, 3:, :63] = zt[i:i + BATCH, 1:13].to(dev)                                 # targets 4..15 = frames 4..15
+            classes = {'hud': torch.zeros_like(change), 'player': torch.zeros_like(change),
+                       'map_changed': change & mapm, 'map_unchanged': ~change & mapm, 'zombie_cells': zomb}
+            classes['hud'][..., 63:] = True; classes['player'][..., 31] = True
+            for cname, m in classes.items():
+                c = carry.setdefault(cname, [0.0, 0.0, 0])
+                c[0] += float(e1[m].sum()); c[1] += float(e0[m].sum()); c[2] += int(m.sum())
             for j, cells_j in enumerate(regions):
                 rj = r[:, :, cells_j].flatten(2).flatten(0, 1)                                 # [b * 15, tiles * 192]
                 cj = tokens[..., j].flatten()
@@ -94,6 +115,10 @@ def main():
         out['enc_teacher_over_commit_norm'] = float(f"{acc['enc_teacher'][1] / acc['enc_commit'][1]:.4g}")   # 0 at zero-init cond
         out['noise_consistency'] = round(nb ** -0.5, 4)
         out['delta_over_tiles'] = float(f'{ratio / nb:.4g}')
+        total_gain = sum(c[1] - c[0] for k, c in carry.items() if k != 'zombie_cells')
+        out['carries'] = {k: {'tokens': c[2], 'err_with_delta': float(f'{c[0] / c[2]:.5g}'), 'err_zeroed': float(f'{c[1] / c[2]:.5g}'),
+                              'reduction': round(1 - c[0] / c[1], 4), 'share_of_gain': round((c[1] - c[0]) / total_gain, 4)}
+                          for k, c in carry.items()}
         out['cond_weight_rms'] = float(f'{float(post.cond.weight.pow(2).mean().sqrt()):.4g}')
         expl = []
         for j in range(len(regions)):
