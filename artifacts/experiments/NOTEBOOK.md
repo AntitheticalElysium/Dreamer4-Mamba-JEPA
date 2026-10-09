@@ -1836,7 +1836,13 @@ probed the same way at its 6k-36k snapshots:
   ahead of M6 at every stage-1 snapshot (6k-30k).
 - This answers the 10-08 question for D: the positive E21 result is not caused by continuing a converged world. GE from
   scratch had been worse than its continuation; D is better.
-- Cost readings (teval, damage panel, gradient allocation) follow from lane131.
+- **Damage panel** (check_damage, simulator truth, 337 damage transitions, window 15):
+  - teacher-forced caught **81.9%** (D continued 73.3%), fresh 27/31 (19/31), false drops 1.8%;
+  - health change ≤ −2 read correctly 61.3%;
+  - self-fed caught 7.2% (D continued 6%).
+  - From scratch it draws damage better from true history. Its deterministic imagination still loses it, the
+    localization failure the stochastic channel addresses.
+- teval and gradient allocation from lane131 follow.
 
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
