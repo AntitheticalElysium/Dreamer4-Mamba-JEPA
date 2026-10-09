@@ -1,4 +1,4 @@
-"""Can moved content be found WITHOUT labels? (2026-10-09, written 12:52-13:00; E22Z: weighting zombie cells (label-derived) makes
+"""Can moved content be found WITHOUT labels? (2026-10-09, written 12:50-12:53; E22Z: weighting zombie cells (label-derived) makes
 the channel carry the random move; a generic version needs a label-free mask.) Measured on held diagnosis transitions (root + the 16
 true futures, sample 0, alive), token space only, labels used ONLY to validate:
   scroll     scroll.estimate on the true pair -> shift (dr, dc); the compensated previous frame p(r, c) = s_t(r + dr, c + dc) (the
