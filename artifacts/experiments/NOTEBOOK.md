@@ -1690,6 +1690,19 @@ probed the same way at its 6k-36k snapshots:
   - "Elsewhere" is not covered by that mechanism.
 - **E22M:** surplus 0.09 / 0.22, small; its multi-step fade waits on lane162 (entering zombies).
 
+**Zombies entering the view (lane162, 17:07-17:24; one step, posterior Δ; 70 true entering-zombie cells over 5,865 scroll steps)**
+
+| | D | E22Z | E22M |
+|---|---|---|---|
+| true entering zombies drawn (> 0.3) / mean score (true-frame probe 0.588) | 0% / 0.016 | 21.4% / 0.171 | **0% / 0.006** |
+| false entering zombies per scroll step (true entries: 0.0119) | 0 | **0.0102** | 0.0002 |
+
+- **E22M never draws an entering zombie**, as predicted: its moved-content mask cannot mark content without a source cell.
+  - Entries are rare (~0.07 zombies per frame over 16 steps), so this explains at most about a third of E22M's fade (0.09
+    vs true 0.29 at depth 16). The rest is zombies already in view lost under self-feeding.
+- **E22Z invents entering zombies** at almost the true entry rate (0.0102 vs 0.0119 per scroll step) and catches 21% of the
+  real ones: a second, smaller source of its multiplication, beside the neighbour copies.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
