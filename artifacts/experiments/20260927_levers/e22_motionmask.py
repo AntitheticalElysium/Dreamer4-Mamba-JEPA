@@ -27,7 +27,7 @@ OUT = Path('artifacts/eda/health_chain_v1')
 
 def moved_ratio(a, b):
     """a = s_t, b = s_t+1 [n, 81, D] (any device) -> ratio [n, 63] (inf where unchanged or no source), change norm [n, 63],
-    entering [n, 63]. Device-aware and vectorized 13:00 (dworld --motion-weight); bit-identical to the 12:53 version (checked)."""
+    entering [n, 63]. Device-aware and vectorized 12:58 (dworld --motion-weight); bit-identical to the 12:53 version (checked)."""
     from scroll import SHIFTS, estimate
     import tworld as TW
     n, dev = len(a), a.device
