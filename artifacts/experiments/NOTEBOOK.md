@@ -1558,6 +1558,26 @@ probed the same way at its 6k-36k snapshots:
 - **Next (lane157, census):** whether adjacency comes from extra zombies (mass inflation; P2 already showed predicted mass
   0.90 vs true 0.70 over the 5 candidate cells) or from faster approach (nearest-distance by depth).
 
+**E22M result (lane155, 14:17-14:48): the LABEL-FREE moved-content allocation passes P2 — random moves 80.4% (E22Z 82.1%, D 1.1%)**
+- λ auto = 0.194 (300 moved-content cells in the first batch, 2.0%).
+- **Logged gain** (weighted objective) at 500 / 1,000 / 1,500 / 2,000: +0.6% / +13.4% / +29.3% / +22.9%; codes 120 / 251 /
+  264 / 417.
+- **P2** (held one-step, posterior Δ):
+
+  | true move | n | E22M score / argmax | E22Z argmax | D argmax |
+  |---|---|---|---|---|
+  | **random (other)** | 280 | 0.534 / **80.4%** | 82.1% | 1.1% |
+  | other, no scroll / scroll | 185 / 95 | 0.531 / 82.2%, 0.541 / 76.8% | 83.8% / 78.9% | 0.0% / 3.2% |
+  | toward | 959 | 0.637 / 90.1% | 96.2% | 57.8% |
+  | stay | 1,290 | 0.581 / 89.5% | 95.7% | 91.1% |
+
+- **Calibration:** predicted mass over the 5 candidate cells 0.731 vs true 0.695 (E22Z 0.898: less inflation).
+- **Clean P1:** +39.6%; zeroed MSE 0.01406 vs D's 0.01287 (+9%: the decoder leans on Δ somewhat more).
+- **Encoder probe** (moving-only, random moves): z 0.318, q 0.312 (E22Z 0.486 / 0.439, E22FJ 0.225 / 0.254). The linear
+  probe again understates the decision-level P2.
+- **Rule (12:57):** P2 ≥ 50% and score ≥ 0.3 → the label-free allocation works. Next: the same sufficiency test as E22Z
+  (prior 20k + `e22_imagine` with the in-distribution readings and the census), then full scale and from scratch.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
