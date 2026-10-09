@@ -24,6 +24,7 @@ P1 clean (09:32): train_a's logged gain compares the with-Delta loss BEFORE the 
 against Delta). Here, same weights, same held one-step teacher-forced predictions: per alive step, mean squared error, mean |error|,
 the frame's worst squared element, and map-token MSE, with the posterior's Delta and with Delta zeroed; Delta-IRIS's loss
 (1.0 L2 + 0.1 L1 + 0.01 worst) from them; gain = zeroed - with Delta.
+Split by scroll (11:49): part 1 also reported on steps without player displacement (scroll class 0) and with it (one_step_by_scroll).
 Usage: health_zombie.py <name=world.pt> ...  -> artifacts/eda/health_chain_v1/zombie_<name>.json
 """
 import json
@@ -131,7 +132,11 @@ def main():
         hitcell = p_cells.flatten(1).argmax(1) == (v1[:, 0] * 9 + v1[:, 1])
         spread = (p_cells > 0.3).flatten(1).sum(1).float()
         mass = p_cells.clamp(min=0).flatten(1).sum(1)
-        one_step = {}
+        one_step, by_scroll = {}, {}
+        noscr = sc[r_i, k_i] == 0
+        for split, sm in (('no_scroll', noscr), ('scroll', ~noscr)):
+            by_scroll[split] = {kname: {'n': int((m & sm).sum()), 'score_at_true_cell': round(float(at_true[m & sm].mean()), 3),
+                                        'argmax_is_true_cell': round(float(hitcell[m & sm].float().mean()), 3)} for kname, m in kinds.items()}
         for kname, m in kinds.items():
             one_step[kname] = {'n': int(m.sum()), 'score_at_true_cell': round(float(at_true[m].mean()), 3),
                                'probe_ceiling_on_true_frame': round(float(ceiling[m].mean()), 3),
@@ -184,7 +189,7 @@ def main():
             p1_clean['gain_relative'] = round((loss['zeroed'] - loss['delta']) / loss['zeroed'], 4)
             p1_clean['steps'] = int(n_alive)
         res_all[name] = {'world': st['name'], 'posterior_delta_in_one_step': post is not None, 'p1_clean_held': p1_clean,
-                         'one_step_by_true_move': one_step,
+                         'one_step_by_true_move': one_step, 'one_step_by_scroll': by_scroll,
                          'imagination_one_zombie_roots': imag,
                          'one_step_calibration_distance_2_to_6': calib,
                          'move_share': {k: round(float(v.sum() / keep.sum()), 3) for k, v in kinds.items()}}

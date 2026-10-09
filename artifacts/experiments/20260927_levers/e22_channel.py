@@ -20,6 +20,9 @@ Carries (11:08; E22F P1 passed, P2 failed -> 'measure what the channel carries')
 prediction with the posterior's Delta vs Delta zeroed, over every target of the window, by class: HUD (63-80), player (31), map
 cells that change (|s_t+1 - s_t| > tworld.EVENT_TAU), map cells that do not, and map cells holding a true zombie in the target frame
 (simulator labels exist for target frames 4-15 = futures 0-11); reduction = 1 - with/zeroed, share = the class's part of the gain.
+Changed cells split (11:49; E22FJ carries 36% of changed-cell error, 8% of zombie cells): scroll.estimate on the true pair; 'entering' =
+the new edge row / column of a scroll step (check_e16's mask), 'changed_scroll_other' = other changed map cells on scroll steps,
+'changed_no_scroll' = changed map cells on steps without scroll; 'zombie_cells_no_scroll' likewise.
 Usage: e22_channel.py <name=dworld_a.pt> ...  -> artifacts/eda/health_chain_v1/e22_channel.json (u0 runs: --out <file>)
 """
 import json
@@ -40,6 +43,7 @@ def main():
     import teval as T
     import dworld as DW
     import tworld as TW
+    from scroll import SHIFTS, estimate
     from d4mj.config import config_from_dict
     from d4mj.train import autocast_context
     config = config_from_dict(torch.load(TW.S.CHECKPOINT, map_location='cpu', weights_only=False)['config'])
@@ -96,6 +100,15 @@ def main():
             classes = {'hud': torch.zeros_like(change), 'player': torch.zeros_like(change),
                        'map_changed': change & mapm, 'map_unchanged': ~change & mapm, 'zombie_cells': zomb}
             classes['hud'][..., 63:] = True; classes['player'][..., 31] = True
+            sh = estimate(s[:, :-1], s[:, 1:])                                                  # [b, 15] index into SHIFTS
+            ent = torch.zeros_like(change)
+            for k_s, (dr, dc) in enumerate(SHIFTS):
+                m_s = (sh == k_s)[..., None]
+                if dr: ent[..., (6 if dr == 1 else 0) * 9:(6 if dr == 1 else 0) * 9 + 9] |= m_s
+                if dc: ent[..., [r * 9 + (8 if dc == 1 else 0) for r in range(7)]] |= m_s
+            scr = (sh != 0)[..., None]
+            classes.update({'entering': ent & mapm, 'changed_scroll_other': change & mapm & scr & ~ent,
+                            'changed_no_scroll': change & mapm & ~scr, 'zombie_cells_no_scroll': zomb & ~scr})
             for cname, m in classes.items():
                 c = carry.setdefault(cname, [0.0, 0.0, 0])
                 c[0] += float(e1[m].sum()); c[1] += float(e0[m].sum()); c[2] += int(m.sum())
@@ -115,7 +128,7 @@ def main():
         out['enc_teacher_over_commit_norm'] = float(f"{acc['enc_teacher'][1] / acc['enc_commit'][1]:.4g}")   # 0 at zero-init cond
         out['noise_consistency'] = round(nb ** -0.5, 4)
         out['delta_over_tiles'] = float(f'{ratio / nb:.4g}')
-        total_gain = sum(c[1] - c[0] for k, c in carry.items() if k != 'zombie_cells')
+        total_gain = sum(c[1] - c[0] for k, c in carry.items() if k in ('hud', 'player', 'map_changed', 'map_unchanged'))
         out['carries'] = {k: {'tokens': c[2], 'err_with_delta': float(f'{c[0] / c[2]:.5g}'), 'err_zeroed': float(f'{c[1] / c[2]:.5g}'),
                               'reduction': round(1 - c[0] / c[1], 4), 'share_of_gain': round((c[1] - c[0]) / total_gain, 4)}
                           for k, c in carry.items()}
