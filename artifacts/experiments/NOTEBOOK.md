@@ -1911,6 +1911,53 @@ probed the same way at its 6k-36k snapshots:
 - **Rule:** no new threshold. If the from-scratch decoder does better on the predeclared E22 readings, the channel work
   continues on it.
 
+**E22MP result (lane166, 19:02-21:16): the prior OVERFITS — longer training is not the lever**
+
+| E22M prior | 20k | 60k |
+|---|---|---|
+| training-batch code accuracy | 0.565 | 0.666 (40k) |
+| **held** code CE / accuracy (76,152 codes) | 2.307 / 0.470 | **3.572 / 0.405** |
+| E22M + hard interior: depth 8 roots > 0.3 / peak | 48.0% / 0.48 | 51.8% / 0.52 |
+| caught / false | 9.9% / 1.6% | 11.8% / 1.6% |
+| drawn zombies at depth 16 (truth 0.29) | 0.25-0.27 | 0.27-0.33 |
+
+- Rule (19:02): held CE does not fall → the prior's GENERALIZATION is the limit, not its training length.
+  - 60k × 32 windows ≈ 1.9M windows from a 19,789-episode pool.
+  - The prior's input is a crude per-tile Linear 192 → 8 flattened to 512.
+  - Imagination moved ~1/5 of the way to the true-code ceiling (70.5% / 25.2%), not half.
+
+**E22MS result (lane167, 19:30-21:33): the label-free channel on the FROM-SCRATCH decoder is better at every step; hard decoding HURTS it**
+
+| | E22M (D continued) | **E22MS (D from scratch)** | truth |
+|---|---|---|---|
+| P2 random moves: score / argmax | 0.534 / 80.4% | **0.585 / 86.4%** | — |
+| P2 toward / stay argmax | 90.1% / 89.5% | 94.1% / 88.9% | — |
+| entering zombies drawn | 0% | 0% | — |
+| prior (20k) held accuracy / CE | 0.470 / 2.31 | **0.518 / 2.04** | — |
+| soft: depth 8 roots > 0.3 / peak | 39.5% / 0.36 | **57.6% / 0.45** | 92.9% / 0.64 |
+| soft: drawn zombies at depth 1 / 8 / 16 | 0.16 / 0.11 / 0.10 | **0.17 / 0.17 / 0.19-0.21** | 0.19 / 0.23 / 0.29 |
+| soft: caught / false | 7.6% / 0.95% | 13.2% / 1.3% | — |
+| soft: hit rate given adjacency | 0.16-0.18 | 0.175-0.206 | 0.181 |
+| hard interior: depth 8 roots / caught | 48.0% / 9.9% | 27.7% / 10.4% | — |
+
+- On the from-scratch decoder, soft decoding already conserves zombies; the fade was a property of the decoder built on
+  D continued.
+  - Reading 1 passes with SOFT decoding (57.6%, 0.445). Reading 2 fails (13.2% caught; false 1.3% passes).
+- **Hard decoding is not a general fix:** it compensated E22M's decoder defect and hurts E22MS (57.6% → 27.7%).
+
+**Where the day ends (21:33):**
+- The best pipeline is the label-free channel on D from scratch with soft decoding:
+  - one step, random moves 86%;
+  - sampled imagination: localization 58% (truth 93%), zombie count stable, hits given adjacency calibrated, false 1.3%;
+  - imagined damage caught 13% (30% required).
+- **Measured gaps:**
+  1. **The prior:** the true-code ceiling (70.5% / 25%, on D continued) vs sampled (48-58% / 10-13%). It overfits; its
+     input representation is crude.
+  2. **Entering zombies:** never drawn by the label-free mask (rare: ≤ 1/3 of the count dynamics).
+  3. **Adjacency:** zombies beside the player ~60-70% of truth.
+- **Open evaluation question:** "caught on the true trajectory" has a ceiling for a sampled world. The decision-level test
+  (H16 with N sampled futures; actor vs BC) is the real objective and has not been run on these worlds.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
