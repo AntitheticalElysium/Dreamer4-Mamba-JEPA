@@ -195,6 +195,20 @@ Variants exported by `rollout_export.py` (lanes 170 / 171), read by `scoreboard.
   too rarely.
 - The same structure as the health cooldown: a hidden phase that a median / mean-seeking world rounds to "no change".
 - Only health approaches the real rate, and only with sampling.
+- **Why, exactly** (`craftax_classic/game_logic.py` 1256-1325, read; the diagnosis futures' hidden counters):
+  - per step awake, the hunger / thirst / fatigue / recover timers grow by 1 (by 0.5 asleep, fatigue −1), and fire at 25 / 20 /
+    30 / ±25-15;
+  - eating, drinking and killing a cow reset hunger / thirst.
+  - Across all 8,183 intrinsic decrements of the diagnosis futures (food 2,465, drink 3,276, energy 2,442), the timer just before
+    the decrement is food 24.5-25, drink 19.5-20, energy 30 = **100% ≥ 15**.
+  - So the reset that sets each phase is ≥ 20 steps back, ALWAYS outside an L16 world's 15-frame input window.
+  - `teval.step` re-runs the world on its last ≤ 15 frames each imagined step (no state carried), so this is the world's
+    information horizon.
+- **For every L16 world these decrements are unpredictable from its inputs, whatever the loss:** epistemic, not allocation. A
+  deterministic world can never draw them (P < 0.5 everywhere). A sampling world can only match the base rate (≈ 1 / period).
+  Reaching them needs a memory horizon ≥ 31 steps.
+- Contrast with the zombie cooldown (period 6 < 15): inside the window, learnable; its failure was allocation, fixed by D.
+
 
 **4. Scroll fidelity** (depth 16):
 - missed scrolls on true moves: 36% M16, 32% D scratch, 24% E22MS sampled, 17% with the true codes;
