@@ -1,0 +1,74 @@
+{
+  "protocol": "Read-only CPU diagnostics; review sources only added to existing campaign. Output-path changes only; no model/evaluator edits. CUDA hidden, two threads.",
+  "scripts": {
+    "review_prior_input.py": {
+      "executed_tmp_source_sha256": "315fac25453fe24537fc86fcb6849ab7f35d532aa35ff6c2aa6aebbc3a1c34d7",
+      "preserved_source_sha256": "f99ec6dbade3fe69745b6e87e1e9352e33912cf091e2445328312cb78f6d5bc5",
+      "path": "artifacts/experiments/20260927_levers/review_prior_input.py"
+    },
+    "review_prior_fit.py": {
+      "executed_tmp_source_sha256": "d85d3d972f28265502d890a5018afc8ef55e1fad4590f12023606238c2528aca",
+      "preserved_source_sha256": "bcebecdba391e345475140ec0692f08a34646bd8fef064d0d23fc638a53afff0",
+      "path": "artifacts/experiments/20260927_levers/review_prior_fit.py"
+    },
+    "review_prior_calibration.py": {
+      "executed_tmp_source_sha256": "6cee18ff9259be24acc5d45dc8a656fe15fb8159e7cd4476a2866345228f0745",
+      "preserved_source_sha256": "cadd6b2fa4ea196a30f7a7418041d89e869435bd932ebd89db99362ce56f47b6",
+      "path": "artifacts/experiments/20260927_levers/review_prior_calibration.py"
+    },
+    "review_real_keys.py": {
+      "executed_tmp_source_sha256": "cc52c69004c9f19d7a569bf2bacecb03af60d8c519182bd5e86a0bc89ba88996",
+      "preserved_source_sha256": "c685d352e8ae98e56f62f943643f0e7528a29f8b5fb5e4c2b52c1d1a97df70de",
+      "path": "artifacts/experiments/20260927_levers/review_real_keys.py"
+    },
+    "review_prior_terminal_positions.py": {
+      "preserved_source_sha256": "80daf54a75c357466ad94d92319da3db28952ef7214ee8f52326b102cea56644",
+      "path": "artifacts/experiments/20260927_levers/review_prior_terminal_positions.py"
+    }
+  },
+  "inputs": {
+    "artifacts/eda/diagnosis_rollouts_v1/meta.pt": {
+      "bytes": 553610831,
+      "sha256": "a92cd355577144446575dcfa2865dc6d7e0a3ed098de34a12ce5792365764c8d"
+    },
+    "artifacts/eda/levers_futures_tokens_raw.pt": {
+      "bytes": 1153304991,
+      "sha256": "76dc92b0ab7b17efdfd5884d26d3cece291524a941fa4f714488d3209bc07f8e"
+    },
+    "artifacts/experiments/20260927_levers/dworld.py": {
+      "bytes": 28729,
+      "sha256": "0c3d373eb30938bb4414ca85525d9baf729eef08428431477d52872fe679cf3b"
+    },
+    "artifacts/experiments/20260927_levers/scroll.py": {
+      "bytes": 3739,
+      "sha256": "32f21939825d3e3bc84b3442234baead507934cd0d4c36ac76a6c821fbdc99dc"
+    },
+    "artifacts/experiments/20260927_levers/tworld.py": {
+      "bytes": 41287,
+      "sha256": "2c31cce7eff9ceb58a59d3244180656f5d9b3ea36d7be96a9801ae7e860df935"
+    }
+  },
+  "runtime_archive_sources_verified": true,
+  "reports": {
+    "input_probe": {
+      "path": "artifacts/eda/health_chain_v1/d4mj_prior_input_probe_20261009.json",
+      "sha256": "cbcf04409f757819d5cfea56c417e9dee36b2f0d6620f3accf61ff45e18fe45b"
+    },
+    "prior_fit": {
+      "path": "artifacts/eda/health_chain_v1/d4mj_prior_conditional_fit_20261009.json",
+      "sha256": "c8c9affb53e293095437fac1a840be46d571fec7b9345e66bef8ab16c00aa0f0"
+    },
+    "prior_calibration": {
+      "path": "artifacts/eda/health_chain_v1/d4mj_prior_calibration_20261009.json",
+      "sha256": "0c54517aac09bca1f1e40ed73dde907517c25d95360bcff92d7e3041dc11abf3"
+    },
+    "real_key_control": {
+      "path": "artifacts/eda/health_chain_v1/d4mj_real_key_event_agreement.json",
+      "sha256": "bb138f730320461dbc9d8eeb394517d7e68e3cae55cb618bc454fa397b039a47"
+    },
+    "prior_terminal_position_census": {
+      "path": "artifacts/eda/health_chain_v1/d4mj_prior_terminal_position_census_20261009.json",
+      "sha256": "ae8c5fd2c02485752e10fbcdf3bc7a708d22229fb99865985d417504f1807c69"
+    }
+  }
+}

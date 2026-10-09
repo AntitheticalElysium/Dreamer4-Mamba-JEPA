@@ -61,6 +61,53 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-09 — CPU prior/calibration and real-future controls; E22MP/E22MS endpoint review
+
+**Execution:** CPU only, CUDA hidden, two threads; GPU jobs and numerical training/evaluation sources untouched.
+Opened diagnosis panel: 1,002 roots / 143 episode clusters. Evidence and source/input hashes:
+`20260927_levers/evals/cpu_review_20261009{,_sources}.json`; scripts `review_prior_{input,fit,calibration}.py`
+and `review_real_keys.py`. Runtime logs in `artifacts/eda/levers_logs/cpu_review_*_20261009.log`;
+per-root fit/calibration rows in `artifacts/eda/health_chain_v1/d4mj_prior_*_20261009.pt`.
+
+- **E22MP completed:** canonical held code CE/accuracy 20k **2.3072/0.4698** → 60k **3.5717/0.4047**.
+  CPU reproduces these to ≈0.00021 CE / 0.00014 accuracy. Confidence increases **0.5461→0.6888**.
+  Four-sample hard-interior aligned capture **9.90→11.80%**, localization **48.0→51.8%**;
+  declared halfway thresholds 17.5%/59% unmet. The predeclared “CE does not fall ⇒ capacity convergence”
+  interpretation is unsupported: held generalization worsens.
+- **Calibration intervention:** temperature selected on 20 validation seeds, tested on 43 disjoint seeds.
+  Future-only through first terminal target, excluding context/post-terminal frames: 4,528 test transitions.
+  20k CE **2.229868**, accuracy **0.485038**, selected T=1;
+  60k CE **3.543180→2.587520** with selected T=2, accuracy unchanged at **0.415857**.
+  Calibrated 60k−20k CE **+0.357653 [0.306848,0.408980]**, paired episode bootstrap (2,000 draws).
+  This separates excessive confidence from residual class-order degradation; sampled-rollout benefits untested.
+- **Prior input control:** grouped linear readout of the actual global frame token gives near-cell zombie
+  AUC/AP **0.999526/0.981222** at 20k; **0.999948/0.997950** at 60k. Finite exploratory readouts;
+  adjacent location survives compression, while sufficiency for motion/cooldown is not established.
+- **Real-key event control:** other real futures (keys1–4) versus key0, E22 ordinary-hit/alive masks,
+  no alignment conditioning: capture **38.50% [33.95%,43.00%]** overall and
+  **24.32% [19.85%,29.14%]** at depths9–16; false **1.282%** overall.
+  This is a `caught_all` stochastic reference, not an adjudication of `caught_aligned`.
+- **E22MS endpoints landed:** four-sample soft localization/capture/false **57.57%/13.24%/1.29%**;
+  hard interior **27.67%/10.41%/1.03%**. Hard decoding's earlier benefit does not transfer.
+  Subsequent sampled codes can diverge because changed frames feed the prior; aggregate-only outputs
+  cannot isolate the responsible routing branch or supply paired root intervals.
+- **Stage-B terminal-position census (CPU):** all **7,501 terminal rows** have their only positive death
+  target at position **20**. The **12,288 main rows**, across all **43 allowed window starts**, have zero
+  positive death targets. This verifies positional bias in the prior's end-head supervision; learned
+  shortcut exploitation has not been measured. `e22_imagine` discards this head, so the finding concerns
+  future actor use, not the reported health/localization deficits. Source/protocol:
+  `review_prior_terminal_positions.py`, appended evidence in `cpu_review_20261009.json`.
+- **Reference lineage:** true-code **70.5%/25.2%** is E22M/D-continued/hard-interior;
+  sampled **57.57%/13.24%** is E22MS/D-scratch/soft. No E22MS `postcodes` result exists.
+  Their cross-model difference does not quantify the prior's contribution in the current best pipeline.
+
+**Measurement correction:** historical “hit gradient share” is `||g_hit||/||g_all||`, not an additive
+optimizer-update allocation. D continued ratio 7.557%, cosine −0.0337 ⇒ signed projection −0.2547%;
+scratch D ratio 4.5777%, cosine 0.0104 ⇒ +0.0476%. Adam preconditioning is not measured.
+D's health gains stand; these ratios do not isolate the loss components' causal contributions.
+Zombie-neighborhood substitution closes 75.4% of the whole teacher gap, retaining a 16.91-point residual.
+Detailed protocols, literature and retained leads: [REVIEW_20261009.md](20260927_levers/REVIEW_20261009.md).
+
 ## 2026-10-08 (live) — WHY HEALTH FAILS: link-by-link diagnosis (lead; user mandate: exact cause before any ablation)
 
 **Decisions recorded:** Mamba (fmamba, L16) is permanently canonical. E20 services stopped and disabled 08:20.
