@@ -1257,6 +1257,56 @@ fails, stage A is not run at full length; the failure is diagnosed first.
   - P1 fails → frozen-read-path warmup does not open the channel on D; run A (E22 from scratch, dworld `--backbone fmamba`
     stage 1 36k + `--long` stage 2 6k, matched to D from scratch).
 
+**E22F smoke result (lane147-148, 10:39-11:14): P1 passes (+0.57%), P2 FAILS — the codes carry D's residual, frozen D cannot read it**
+- **Logged gain** (now same-weights, before the step) at 500 / 1,000 / 1,500 / 2,000: −0.3% / −0.6% / +0.01% / +0.13%.
+  Codes per batch 69 / 205 / 113 / 154.
+- **Clean P1** (held one-step): Delta-IRIS loss 0.036737 → 0.036527, **+0.00021 (+0.57%)**; MSE 0.012865 → 0.012756.
+- **P2:** random moves score 0.032 (D 0.032), argmax **1.8%** (D 1.1%); toward 59.0% (D 57.8%); stay 91.0% (D 91.1%).
+  **FAILS.**
+- **Channel** (e22_channel, held): Δ is 15.2% of the tile embedding.
+  - Encoder gradient from the decoder: 0.013 (scratch 0.0116), consistency 0.32 (scratch 0.70).
+  - Codes per region: 88-112.
+  - D's residual explained by the region's code: **2.3-3.5% vs chance 0.6-0.7%**, near the scratch encoder's 3.7-5.4%
+    and unlike warm's 0.3-0.7%.
+  - The encoder became informative; the frozen read path does not use it.
+- **What each channel carries** (`e22_channel` carries, 1,002 held windows, 15,030 transitions; squared error with the
+  posterior's Δ vs zeroed):
+  - **D's own error budget (zeroed):** map cells that change (|Δs| > 2.5) are 11% of tokens and hold **68%** of D's
+    squared error (11.8 per token vs 0.95 unchanged); HUD 6%; zombie cells 1.9%.
+
+  | error removed by Δ | E22F (frozen D) | warm | scratch (2k) |
+  |---|---|---|---|
+  | changed map cells | **0.18%** (13% of its gain) | 0 | 37% (27%) |
+  | unchanged map cells | 3.3% (**87%** of its gain) | −0.06% | 80% (70%) |
+  | true zombie cells | 0.07% | −0.02% | 15% |
+  | player / HUD | −0.4% / 0.05% | −0.3% / 0.2% | 46% / 4.6% |
+
+  - E22F's gain is background drift on unchanged cells: the frozen decoder, read through a frozen random projection,
+    cannot turn the codes' change information into changed outputs.
+  - The scratch decoder at 2k needs Δ even to copy: its unchanged-cell error is 8.25 zeroed (D 0.95). The prior would
+    then have to predict everything, which was E16's pathology.
+- **Reading:** the three smokes separate the two halves of the channel.
+  - warm: the encoder is not informative and the decoder does not read;
+  - E22F: the encoder is informative (4× chance) and the frozen decoder cannot read;
+  - scratch: both are active, but on deterministic content.
+  - This is the situation both sources address with a second, joint phase: SV2P phase 2 (inference network + generator,
+    KL 0) and Park & Lee phase 2 (full fine-tuning after the warmup).
+  - The E22F rule allowed phase 2 "if the frozen decoder is the limit"; the measurements above show that it is.
+
+**E22FJ predeclared (11:14, before launch): Park & Lee / SV2P phase 2 smoke**
+- `dworld --long --init <E22F smoke file>`: world (D) and the whole posterior continue, nothing frozen (cond starts at
+  E22F's default init). D's loss, revival always, batch 16, 2,000 updates.
+- Same gate: P1 (clean held gain > 0) and P2 (random-move score ≥ 0.3, argmax ≥ 50%). Plus carries and channel
+  diagnostics.
+- Specific predictions, read in this order:
+  1. the warm equilibrium does not re-form (codes per region stay ≥ 50; gain does not return to ≤ 0);
+  2. the changed-cell reduction rises above E22F's 0.18%;
+  3. P2.
+- Rules:
+  - P2 passes → E22F/FJ full (phase 1 6k + phase 2 6k at batch 40), prior 20k, readings 1-5 with `e22_imagine.py`.
+  - 1 holds and P2 fails → measure the zombie-cell reduction and per-move-type P2 before anything else.
+  - 1 fails (channel shuts again) → A (from scratch) is the remaining faithful route.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
