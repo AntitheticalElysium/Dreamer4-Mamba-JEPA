@@ -148,6 +148,139 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-10 RESULT (11:40): the loss vs the network, by substitution — the per-element losses' OPTIMA already fail the mob facts, in opposite directions
+
+**Question:** a deterministic world trained by a per-element loss can at best output that loss's optimal statistic of the
+next-token distribution:
+- the per-element median for L1;
+- the per-element mean for squared error.
+
+**Method:** `statoracle.py` replaces the network by the exact statistic of the five real futures of each root (same actions,
+different env keys), which is better than any world can do since the futures share the full simulator state.
+- It reads the statistic with the same probes every world is judged on (fitted on true TRAIN tokens; 283 TEST roots).
+- Check: the real futures decode to the simulator's counts (cows 0.428 vs 0.416 at depth 1; zombies 0.201 vs 0.204).
+- The floor check holds: mean5's L2 to the futures = 4/5 of the unbiased variance (50.35 vs 62.94), and median5 has the lower L1
+  (188.9 vs 214.4), as each statistic must.
+
+**Mob census, decoded counts per frame** (sim = the simulator's mean over the five futures):
+
+| depth | sim cows | median5 | mean5 | sim zombies | median5 | mean5 | sim skeletons | median5 | mean5 |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 0.416 | 0.286 | 0.979 | 0.204 | 0.191 | 0.290 | 0.105 | 0.071 | 0.201 |
+| 4 | 0.463 | 0.120 | 1.548 | 0.223 | 0.173 | 0.424 | 0.100 | 0.035 | 0.307 |
+| 16 | 0.521 | **0.079** | **2.094** | 0.306 | 0.127 | 0.790 | 0.125 | 0.049 | 0.393 |
+
+**The mechanism, per cell.** Share of cells decoded "cow present", by how many of the five futures have a cow there (depth 1;
+the same at every depth):
+
+| futures with the cow | 1 | 2 | 3 | 4 | 5 |
+|---|---|---|---|---|---|
+| a real future (a sample) | 0.20 | 0.40 | 0.59 | 0.80 | 1.0 |
+| median5 (L1's optimum) | **0.0** | **0.0** | 0.95 | 1.0 | 1.0 |
+| mean5 (MSE's optimum) | **0.82** | 0.96 | 0.95 | 1.0 | 1.0 |
+
+- **The median is a majority vote per element:** any mob with < 50% chance at a cell is erased. Mob positions spread with
+  depth (at depth 16, 612 of 652 cow cells have a cow in only ONE future), so the L1 optimum erases nearly every moving mob.
+  The erasure does not depend on the reader: the median token there IS the background token.
+- **The mean is a superposition:** a faint copy of the mob at every cell any future puts it. It is not a state, and how many
+  mobs it "contains" depends on the reader. Probes calibrated on real states read most faint copies as mobs (×4 cows at 16).
+- **Only a sample is calibrated:** the per-cell presence equals the chance (0.2 / 0.4 / 0.6 / 0.8 / 1.0), and mass is
+  conserved.
+
+**The worlds reproduce their loss's optimum at depth 1** (decoded census, same probes; depth 1 is teacher-forced on the true
+context):
+
+| | zombie | skeleton | cow |
+|---|---|---|---|
+| simulator | 0.204 | 0.105 | 0.416 |
+| median5 (L1 optimum) | 0.191 | 0.071 | 0.286 |
+| M16 (L1) | 0.117 | 0.039 | 0.357 |
+| mean5 (MSE optimum) | 0.290 | 0.201 | **0.979** |
+| D scratch (MSE-dominant) | 0.251 | 0.240 | **0.922** |
+| E22MS decoder, Δ zeroed (MSE-trained, no Δ) | 0.209 | 0.187 | **0.972** |
+| E22MS, prior sample / true codes | 0.212 / 0.209 | 0.170 / 0.156 | 0.611 / 0.569 |
+
+- M16 loses mobs as the median does.
+- The MSE-family decoders multiply cows at depth 1 exactly as the mean does (0.92-0.97 vs 0.98).
+- Given Δ codes, the same decoder is closest to calibrated (0.57-0.61).
+- Self-fed to depth 16, every deterministic world LOSES mobs: cows M16 0.135, D continued 0.039, D scratch 0.359, Δ zeroed 0.399,
+  vs 0.521. Iterating a superposition dilutes it: a faint mob's own next-step mean is fainter.
+- The E22MS samples' ×6-8 cow growth at depth 16 is a separate, Δ-channel mechanism, present with true codes too. Not explained
+  here.
+
+**Which statistic each world learned** (depth 1, the 1.4% of elements where mean5 and median5 differ by > 0.1): share closer to
+the median:
+- M16 0.55 (the highest);
+- D continued 0.38, D scratch 0.36, Δ zeroed 0.36;
+- E22MS samples 0.46-0.47.
+
+The ordering follows the loss: L1 → median-like, squared error → mean-like. The separation is moderate; the census is the strong
+evidence.
+
+**HUD:** the statistics draw the timer decrements at the real rate, because the five futures share the hidden counters, which
+are deterministic given the root's FULL state. The worlds' missing decrements are the information horizon (Part I scoreboard entry, timers), not
+the statistic.
+
+**Reading — the "fighting ourselves" mechanism for anything whose outcome is random:**
+- For every fact whose future is uncertain (mob moves, damage, entering content), the optimum of a per-element point loss is not
+  a state the game can be in.
+- Which non-state it is depends on the loss: L1 erases what is uncertain; squared error superimposes it.
+- Switching or mixing the losses moves the failure between these two non-states. It cannot remove it, because the target is a
+  distribution and the output is one point.
+- This is proven on the optimum itself, with no network involved: no architecture fixes it under these losses.
+- Only an objective whose optimum is the distribution (a proper scoring rule: energy score, likelihood, diffusion / flow) makes
+  samples calibrated. This is the scoreboard's energy-score result seen from the facts' side.
+
+### 10-10 LITERATURE step 1 (11:00-11:20): the target space — what the recipe we copied assumes
+
+Read after P-A / P-B were measured, on the cause they point to. Primary sources were read; arXiv PDFs are in the session scratchpad.
+
+**Sources:**
+- **V-JEPA 2 / 2-AC** (arXiv 2506.09985, `third_party/papers/2506.09985v1.pdf`):
+  - its encoder's patch features are TRAINED by a patch-level objective: mask-denoising in representation space, L1 between the
+    predictor's outputs and EMA-target patch features;
+  - 2-AC then trains an action-conditioned predictor on those FROZEN patch features (L1 teacher forcing + a 2-step rollout loss).
+    This is the recipe our world copies;
+  - planning: CEM with horizon 1, re-planned at every step (Table 3);
+  - §4.3 limitations name autoregressive error accumulation and long horizons;
+  - stochastic outcomes are neither modelled nor discussed; the predictor is deterministic.
+- **DINO-WM** (arXiv 2411.04983):
+  - frozen DINOv2 patch features, teacher forcing, a squared-L2 "latent consistency" loss per frame (Eq. 1);
+  - DINOPatch vs DINO CLS success rates 0.98 / 0.96 / 0.92 / 0.90 vs 0.96 / 0.58 / 0.60 / 0.44 (Table 2); ResNet and R3M spatial
+    features are worse;
+  - environments: PointMaze, Wall, Reach, PushT, Rope, Granular. The word "stochastic" occurs only in a reference title.
+- **DINOv2** (arXiv 2304.07193, §4):
+  - image-level DINO loss + a PATCH-LEVEL iBOT loss: student masked patch tokens predict the EMA teacher's patch tokens, + KoLeo;
+  - Table 3b: the masked-image-modelling term improves patch-level tasks.
+- **Ours, LeWM:** the CLS-only objective + SIGReg. "Patch tokens are never regularized by SIGReg and never predicted"
+  (`d4mj/lewm.py`, `export` docstring). The last block's patch outputs receive no gradient from any loss.
+- **Denoising Vision Transformers** (Yang et al., ECCV 2024, arXiv 2401.02957):
+  - ViT outputs ≈ f(x) + g(E_pos) + h(x, E_pos): position-dependent, input-independent artifacts, traced to the position
+    embeddings;
+  - they "maintain a generally consistent relative position in the images" across video frames. Under a scroll, the content
+    moves and the artifact does not: this predicts re-encoding of unchanged content.
+- **Vision Transformers Need Registers** (Darcet et al., ICLR 2024, arXiv 2309.16588):
+  - CLS-trained ViTs recycle low-information patch tokens to store global information;
+  - Fig. 4c: only in models ≥ ViT-Large. Our encoder has width 192, so this is NOT claimed for it.
+- **Littwin et al. 2024 (JEPA implicit bias):** JEPA objectives bias the representation they TRAIN toward predictive features,
+  away from noisy ones. Our patch tokens are not trained by one.
+
+**Reading:** the recipe we copied, deterministic per-element regression of frozen patch features (V-JEPA 2-AC, DINO-WM), is
+demonstrated under three preconditions:
+1. the target patch features were themselves trained by a patch-level predictive objective (iBOT, V-JEPA);
+2. the next frame is (nearly) determined by the action, since no stochastic outcomes are modelled;
+3. a short horizon with closed-loop replanning.
+
+All three fail here, each measured:
+1. our patch tokens are a by-product of a CLS objective: own state explains R² 0.59 of a token; 40% of the L1 change mass is
+   night static; day scroll re-encodes unchanged cells ×25;
+2. the RNG floor is 44% of the one-step L2, and 66-85% of every world's teacher-forced error is undeterminable;
+3. the actor trains on 16-step open-loop imagination.
+
+The next two runs test the mechanisms this predicts:
+- `encoder_why.py`: are the non-state components position artifacts (DVT), context mixing, or the cell's own pixels?
+- `statoracle.py`: is the loss's optimal statistic itself the failure?
+
 ### 10-10 RESULT (10:34): loss currency, prediction side — most of the per-element loss sits on cells whose facts are already right
 
 `currency.py`: each world's teacher-forced predictions (all depths, TEST roots, 280,612 map cells), decoded by probes fitted on true
