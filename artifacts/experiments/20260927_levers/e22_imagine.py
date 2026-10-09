@@ -12,6 +12,10 @@ against health_imagination / health_zombie on that decoder) and S prior samples 
      true damage transitions (all, and view-aligned: imagined scroll offsets equal the true ones at every earlier step), false on
      true unchanged transitions (health_imagination's alive: no sample dead)
 Sampled readings are the mean over the S samples (each sample's rate, then the mean; the per-sample values are kept).
+In-distribution readings (added 14:03; E22Z sufficiency: reading 1 passed, reading 2 failed with 6% false): a sampled world is judged
+against reality's RATES, not against the one realized trajectory: how often an imagined zombie is beside the player (probe > 0.3 on
+the 4 neighbour cells of the current imagined frame) vs a true one (simulator, same cells), and the drawn-hit rate given imagined
+adjacency vs the true hit rate given true adjacency; plus caught / false split by imagined adjacency.
 Usage: e22_imagine.py <stage-B prior .pt> [--samples S]  -> artifacts/eda/health_chain_v1/e22_imagine_<prior name>.json
 """
 import json
@@ -67,6 +71,7 @@ def main():
     frames_true = torch.cat([root[:, None], fut5[:, 0].cpu()], 1).float()
     true_score = torch.stack([zscore(frames_true[:, k + 1]) for k in range(H)], 1)
     true_peak = true_score.flatten(2).max(2).values
+    true_beside = zt[:, :-1].flatten(2)[:, :, NEAR] .any(-1) & alive_any                        # [R, H] true zombie beside, current frame
     true_frames = torch.cat([ctx.cpu(), fut5[:, 0].cpu()], 1)                                   # [R, 4 + 16, 81, 192]
     acts_all = torch.cat([ca.cpu(), fa.cpu()], 1)                                                # [R, 3 + 16]
     names = ['zeroed'] + [f'sample{j}' for j in range(S)]
@@ -108,7 +113,13 @@ def main():
         r = {'caught_all': round(float(pdrop[drop].float().mean()), 4),
              'caught_aligned': [round(float(pdrop[drop & aligned].float().mean()), 4), int((drop & aligned).sum())],
              'false_all': round(float(pdrop[same].float().mean()), 4),
-             'zombie_beside_on_damage': round(float(znear[drop].float().mean()), 4)}
+             'zombie_beside_on_damage': round(float(znear[drop].float().mean()), 4),
+             'caught_where_zombie_beside': round(float(pdrop[drop & znear].float().mean()), 4),
+             'false_where_zombie_beside': [round(float(pdrop[same & znear].float().mean()), 4), int((same & znear).sum())],
+             'false_where_no_zombie_beside': [round(float(pdrop[same & ~znear].float().mean()), 4), int((same & ~znear).sum())],
+             'beside_rate': [round(float(znear[alive_any].float().mean()), 4), round(float(true_beside[alive_any].float().mean()), 4)],
+             'hit_rate_given_beside': [round(float(pdrop[znear & alive_any].float().mean()), 4),
+                                       round(float(drop[true_beside].float().mean()), 4)]}
         roots1 = n1[:, 0] == 1
         r['localization'] = {}
         for d in (1, 2, 4, 8, 16):
