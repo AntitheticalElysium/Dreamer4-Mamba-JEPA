@@ -1672,6 +1672,24 @@ probed the same way at its 6k-36k snapshots:
   - E22Z's mask (zombie at t or t+1 anywhere) covered entries.
 - **D on random moves** leaves the zombie at its old cell (47% above 0.3): the mean-seeking "stay".
 
+**Where the extra zombies are drawn (lane161, 16:50-17:07): mostly at the old zombie's OTHER NEIGHBOURS — one source copied into several cells**
+
+| cells > 0.3 for a moved zombie, one step (posterior Δ) | new cell | old cell | other candidates (old cell's other neighbours) | elsewhere |
+|---|---|---|---|---|
+| truth (probe on the true frame), toward / random | 0.955 / 0.895 | 0 / 0 | 0 / 0 | 0.001 / 0.004 |
+| D | 0.483 / 0.000 | 0.096 / 0.474 | 0.109 / 0.229 | 0 / 0 |
+| **E22Z** | 0.942 / 0.872 | 0.102 / 0.154 | **0.130 / 0.346** | **0.071 / 0.158** |
+| E22M | 0.868 / 0.771 | 0.002 / 0.019 | 0.062 / 0.147 | 0.027 / 0.049 |
+
+- **E22Z's surplus** (0.30 toward / 0.66 random per moved zombie):
+  - mostly the old cell's other neighbours, plus the old cell itself, all cells that can COPY the old zombie token
+    through the corrt head's neighbour or self candidate;
+  - then "elsewhere" (0.07-0.16).
+  - The neighbour and old-cell surplus is one source copied into several destinations: exactly what ITC's transport
+    constraint (each previous token copied at most once; arXiv 2605.16457 eq. 3, never ported) excludes.
+  - "Elsewhere" is not covered by that mechanism.
+- **E22M:** surplus 0.09 / 0.22, small; its multi-step fade waits on lane162 (entering zombies).
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
