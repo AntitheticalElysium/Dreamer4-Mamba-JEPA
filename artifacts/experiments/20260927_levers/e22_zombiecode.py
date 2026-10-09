@@ -108,7 +108,7 @@ def main():
     res['truth5'] = both(truth5)
     print(json.dumps({'truth5': res['truth5']}), flush=True)
     print(json.dumps({'rel': res['rel'], 'cases': res['cases']}), flush=True)
-    for name, path in (a.split('=', 1) for a in sys.argv[1:]):
+    for name, path in (a.split('=', 1) for a in sys.argv[1:] if '=' in a):
         _, post, st = DW.load_a(Path(path), torch.device('cpu'))
         zs, qs = [], []
         with torch.no_grad():
@@ -120,13 +120,13 @@ def main():
         z, q = torch.cat(zs), torch.cat(qs)                                                        # [n, 4, 64]
         ar = torch.arange(len(z))
         feats = {'z': z[ar, region], 'q': q[ar, region], 'z4': z.flatten(1), 'z+rel': torch.cat([z[ar, region], rel], 1)}
-        out = {'world': st['name']}
+        out = {'world': st.get('name', Path(path).stem)}
         for fname, x in feats.items():
             out[fname] = both(x)
         out['codes_used_in_zombie_region'] = int((q[ar, region].unique(dim=0)).shape[0])
         res[name] = out
         print(json.dumps({name: out}), flush=True)
-    (OUT / 'e22_zombiecode.json').write_text(json.dumps(res, indent=1))
+    (OUT / (sys.argv[sys.argv.index('--out') + 1] if '--out' in sys.argv else 'e22_zombiecode.json')).write_text(json.dumps(res, indent=1))
 
 
 if __name__ == '__main__':

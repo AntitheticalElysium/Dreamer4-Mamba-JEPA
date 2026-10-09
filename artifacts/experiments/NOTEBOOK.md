@@ -1375,6 +1375,48 @@ fails, stage A is not run at full length; the failure is diagnosed first.
 - **Open, not measured yet:** whether a longer run would reach zombie moves once the edge gain saturates (the E22FJ
   smoke is 2k updates).
 
+**Training length does not reach the move:** E16's from-scratch posterior (L1, 6-frame transformer world, revival crafter),
+probed the same way at its 6k-36k snapshots:
+
+| moving-only probe | 6k | 12k | 18k | 24k | 30k | 36k |
+|---|---|---|---|---|---|---|
+| random moves, z | 0.214 | 0.237 | 0.260 | 0.277 | 0.237 | 0.301 |
+| random moves, q | 0.260 | 0.272 | 0.306 | 0.289 | 0.220 | 0.237 |
+| toward moves, z | 0.514 | 0.557 | 0.519 | 0.511 | 0.560 | 0.539 |
+| codes in the zombie's region | 111 | 177 | 203 | 223 | 240 | 271 |
+
+- E16's warm 6k posterior: random moves z 0.150, q 0.133.
+- In 36k updates of joint training, codebook use grows steadily and the random move stays at chance.
+
+**Literature on the localized problem (read 12:13):**
+- OC-STORM (arXiv 2501.16443): pixel MBRL "auto-encoding with an L2 loss ... is dominated by large areas and often fails to
+  capture decision-relevant details"; their fix is object-centric (segmentation from few annotations).
+- MuDreamer / Make-the-Pertinent-Salient: "object vanishing" of small task objects in Dreamer.
+- DIAMOND (arXiv 2405.12399): "compression into a compact discrete representation may ignore visual details that are
+  important"; a diffusion world model samples the whole frame instead.
+- EAWM (arXiv 2601.19336): event-weighted observation loss.
+- Our measured version: the stochastic channel's encoder allocates by loss share (edges 49%, zombie cells 1.9%).
+
+**E22Z predeclared (12:13, before code): is loss share the CAUSE of the encoder ignoring the move? (diagnostic, label-derived, not a fix)**
+- **Recipe:** the E22FJ smoke exactly (joint phase from the E22F file, the same 2,000 batches) + λ × the mean L1 over cells
+  where teval's zombie probe on the TRUE frame t or t+1 exceeds 0.3 (the move's old and new cells; tworld.rollout_losses'
+  mask path).
+  - The probe's affine map is exported exactly (zombie_probe_export.py, max deviation 3.4e-7).
+  - λ is auto: zombie term = teacher on the first batch, a share comparable to the edges' 49% (as the oracle test, 10-08).
+- **Why it is causal:** the decoder alone cannot predict a random move, so the only way to lower the zombie term on random
+  moves is to encode the move in Δ.
+- **Readings vs E22FJ:**
+  - P2 (all and no-scroll);
+  - the encoder probe on moving cases (z and q, random moves);
+  - carries.
+- **Rules:**
+  - random-move probe ≥ 0.6 or P2 argmax ≥ 50% → loss share is the cause: the channel carries the move when its share is
+    comparable. The fix is then a label-free allocation for the channel (EAWM-type event weighting, per-cell latents, or a
+    generative head; chosen after reading).
+  - probe at chance (≤ 0.35) and P2 < 10% → even weighted, this channel path does not carry the move; the generative route
+    (DIAMOND / Dreamer 4 sampling) is next.
+  - between → report and diagnose.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
