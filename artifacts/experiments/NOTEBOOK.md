@@ -1459,6 +1459,26 @@ probed the same way at its 6k-36k snapshots:
   - 1 fails → the prior does not sample the moves; diagnose prior code accuracy / calibration first.
 - The zeroed rollout here is E22Z's own decoder (its decoder trained jointly), reported beside D's.
 
+**Literature for a label-free allocation (read 12:50-12:51):**
+- **DyMoDreamer** (arXiv 2509.24804, NeurIPS 2025, sec. 2.1-2.4, read): the closest published mechanism.
+  - Backward frame differencing D = 1[‖o_t − o_t−k‖ > ε], ε = 0.001, k = 1, dilated by a convolution to the
+    surroundings → masked observation o′ = M(o)·o.
+  - A separate dynamic encoder q(d_t | h_t, o′_t) gives 32 × 32 categorical modulators; the decoder reconstructs o_t from
+    (h_t, z_t, d_t).
+  - +9.5% on Crafter at 1M. Label-free, and it forces a latent's capacity onto changing content via its input.
+  - On our data plain differencing marks scroll steps wholesale (entering terrain is the channel's dominant content).
+- **EAWM AttentionMSE:** with the measured composition, upweighting all changed elements leaves zombie cells ≈ 4% of the
+  event term on no-scroll steps, i.e. ≈ 2% of the objective, no better than now. It is not sufficient here (computed, not run).
+- **Dreamer 4** (local PDF, sec. 2-3.2, read): a generative world with no posterior.
+  - Shortcut forcing, flow matching + bootstrap, x-prediction, ramp weight 0.9τ + 0.1, K = 4 sampling steps, τ_ctx 0.1.
+  - Sampling from the learned conditional instead of an encoder discovering the move. It requires restructuring TWorld
+    (each frame predicts its own clean version from its noisy version plus history).
+- **Candidate generic version of E22Z (to predeclare after the sufficiency test): moved content.**
+  - After scroll compensation, a cell whose new token matches a neighbour's old token, or whose old token reappears in a
+    neighbour: mobs translate.
+  - Entering terrain has no source and mined tiles change type, so both are excluded.
+  - Thresholds from the data's own structure; labels only to validate precision / recall.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
