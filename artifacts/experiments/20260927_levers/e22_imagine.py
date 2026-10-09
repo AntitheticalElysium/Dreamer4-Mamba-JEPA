@@ -19,7 +19,10 @@ adjacency vs the true hit rate given true adjacency; plus caught / false split b
 Zombie census by depth (added 14:15; sampled E22Z puts a zombie beside the player 2.5x as often as reality): per depth 1, 2, 4, 8, 16
 over alive roots, imagined vs true: cells with zombie score > 0.3 (a count of drawn zombies), and among roots with >= 1 such cell the
 Manhattan distance of the nearest one to the player (3, 4); truth = the probe on the true frames (as true_peak).
-Usage: e22_imagine.py <stage-B prior .pt> [--samples S]  -> artifacts/eda/health_chain_v1/e22_imagine_<prior name>.json
+--postcodes (added 16:16; E22M's sampled zombies fade, E22Z's multiply): one more rollout, `postcodes`, whose imagined transitions
+carry the POSTERIOR's codes of the TRUE transitions (the frames fed back are still the world's own): prior sampling substituted by
+the codes that describe what really happened, separating the prior from the decoder's self-fed behaviour.
+Usage: e22_imagine.py <stage-B prior .pt> [--samples S] [--postcodes]  -> artifacts/eda/health_chain_v1/e22_imagine_<prior name>.json
 """
 import json
 import sys
@@ -77,7 +80,7 @@ def main():
     true_beside = zt[:, :-1].flatten(2)[:, :, NEAR] .any(-1) & alive_any                        # [R, H] true zombie beside, current frame
     true_frames = torch.cat([ctx.cpu(), fut5[:, 0].cpu()], 1)                                   # [R, 4 + 16, 81, 192]
     acts_all = torch.cat([ca.cpu(), fa.cpu()], 1)                                                # [R, 3 + 16]
-    names = ['zeroed'] + [f'sample{j}' for j in range(S)]
+    names = ['zeroed'] + [f'sample{j}' for j in range(S)] + (['postcodes'] if '--postcodes' in args else [])
     g = torch.Generator(device=device).manual_seed(20261009)
     res = {'prior': st_b.get('name', prior_path.stem), 'stage_a': st_a['name'], 'samples': S, 'window_cap': cap,
            'damage_transitions': int(drop.sum()), 'unchanged_transitions': int(same.sum())}
@@ -89,7 +92,8 @@ def main():
         for i in range(0, R, 32):
             b = min(32, R - i)
             tf = true_frames[i:i + b].float().to(device); ac = acts_all[i:i + b].to(device)
-            pc = post.quantizer(post.encode(tf[:, :3].flatten(0, 1), ac[:, :3].flatten(), tf[:, 1:4].flatten(0, 1)))[1].view(b, 3, DW.K)
+            pc_all = post.quantizer(post.encode(tf[:, :-1].flatten(0, 1), ac.flatten(), tf[:, 1:].flatten(0, 1)))[1].view(b, -1, DW.K)
+            pc = pc_all[:, :3]                                                                  # context transitions' codes
             imagined, icodes = [tf[:, j] for j in range(4)], [pc[:, j] for j in range(3)]
             for k in range(H):
                 c = 3 + k
@@ -99,6 +103,10 @@ def main():
                     world.delta = None
                     nxt = T.step(world, win, wa, device, config).to(device)
                     scodes = torch.zeros(b, DW.K, dtype=torch.long, device=device)              # never read
+                elif name == 'postcodes':
+                    scodes = pc_all[:, c]                                                       # the true transition c -> c + 1
+                    cw = torch.stack(icodes[len(icodes) - (iw - 1):] + [scodes], 1)
+                    nxt = CE.step(world, post, win, wa, cw, device, config).to(device)
                 else:
                     isn = torch.stack(imagined[-DW.BLOCKS:], 1)
                     ian = ac[:, c + 1 - isn.shape[1]:c + 1]
@@ -149,7 +157,7 @@ def main():
         per[name] = r
         print(json.dumps({name: r}), flush=True)
     res['per_rollout'] = per
-    smp = [per[n] for n in names[1:]]
+    smp = [per[n] for n in names[1:] if n.startswith('sample')]
     mean = lambda f: round(sum(f(x) for x in smp) / len(smp), 4)
     res['sampled_mean'] = {'caught_aligned': mean(lambda x: x['caught_aligned'][0]), 'false_all': mean(lambda x: x['false_all']),
                            'caught_all': mean(lambda x: x['caught_all']),
