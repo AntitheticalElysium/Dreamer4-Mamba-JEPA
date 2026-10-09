@@ -35,6 +35,11 @@ remaining neighbours), and elsewhere (all in the new view).
    entering zombie, which has no source cell): on scroll steps, the entering edge row / column of the next view (check_e16's convention);
    for cells there holding a true zombie: predicted score, share > 0.3, and the probe on the true frame; and false entries: predicted
    cells > 0.3 on the entering edge without a true zombie, per scroll step (true-frame probe as baseline).
+Copy mass of the zombie token (17:08; ITC's transport row constraint, each previous token copied at most once): for moved zombies,
+the corrt head's weights (world.last_weights, candidates self / up / down / left / right / generate) on every output cell X whose
+candidate source is the zombie's input cell v0 (v0 - X in {{0, the 4 neighbours}}), summed = the zombie token's total outgoing copy
+weight (1 = conserved, > 1 = duplicated by copying); and at the extra zombie cells (> 0.3, not the new cell) the copy-from-zombie
+weight vs the generate weight.
 Usage: health_zombie.py <name=world.pt> ...  -> artifacts/eda/health_chain_v1/zombie_<name>.json
 """
 import json
@@ -91,6 +96,7 @@ def main():
         else:
             world, st = T.load_world(Path(path), device)
         pred_tf = torch.empty(R, H, 7, 9)
+        wt_tf = torch.zeros(R, H, 63, 6)
         gen_peak, gen_mass = torch.zeros(R, H), torch.zeros(R, H)
         p1 = {'delta': torch.zeros(4), 'zeroed': torch.zeros(4)}                                        # sums: mse, l1, worst, map mse
         for i in range(0, R, 16):
@@ -115,6 +121,8 @@ def main():
                                                 e2[:, :63].mean((1, 2))], 1)[m].sum(0)
                 g = T.step(world, torch.stack(gfr[-w:], 1), acts, device, config)
                 pred_tf[i:i + b, k] = zscore(t)
+                if getattr(world, 'last_weights', None) is not None:
+                    wt_tf[i:i + b, k] = world.last_weights[:, -1, :63].float().cpu()
                 zg = zscore(g)
                 gen_peak[i:i + b, k] = zg.flatten(1).max(1).values
                 gen_mass[i:i + b, k] = zg.clamp(min=0).flatten(1).sum(1)
@@ -165,6 +173,17 @@ def main():
         where_t = {'new_cell': (above_t & at_new_m), 'old_cell': (above_t & at_old_m), 'other_candidates': (above_t & cand_m),
                    'elsewhere': (above_t & ~at_new_m & ~at_old_m & ~cand_m)}
         where_t = {kk: vv.flatten(1).sum(1).float() for kk, vv in where_t.items()}
+        wts = wt_tf[r_i, k_i].view(-1, 7, 9, 6)                                                       # [n, 7, 9, 6]
+        offs = ((0, 0), (-1, 0), (1, 0), (0, -1), (0, 1))                                            # candidate j's source = X + offs[j]
+        copy_mass = torch.zeros(len(r_i)); copy_at = torch.zeros(len(r_i), 7, 9)
+        for j_, (dr_, dc_) in enumerate(offs):
+            xr, xc = v0[:, 0] - dr_, v0[:, 1] - dc_                                                  # X with X + offs[j] = v0
+            ok_ = (xr >= 0) & (xr < 7) & (xc >= 0) & (xc < 9)
+            wv = wts[ar_[ok_], xr[ok_], xc[ok_], j_]
+            copy_mass[ok_] += wv
+            copy_at[ar_[ok_], xr[ok_], xc[ok_]] = wv
+        extra = above & ~at_new_m
+        gen_at = wts[..., 5]
         one_step, by_scroll = {}, {}
         noscr = sc[r_i, k_i] == 0
         for split, sm in (('no_scroll', noscr), ('scroll', ~noscr)):
@@ -179,7 +198,11 @@ def main():
                                'ghost_above_0.3': round(float((at_old[m & moved1] > 0.3).float().mean()), 3),
                                'true_frame_score_at_old_cell': round(float(old_true[m & moved1].mean()), 3),
                                'cells_above_0.3_by_place': {kk: round(float(vv[m & moved1].mean()), 3) for kk, vv in where.items()},
-                               'true_frame_cells_above_0.3_by_place': {kk: round(float(vv[m & moved1].mean()), 3) for kk, vv in where_t.items()}}
+                               'true_frame_cells_above_0.3_by_place': {kk: round(float(vv[m & moved1].mean()), 3) for kk, vv in where_t.items()},
+                               'zombie_copy_mass': round(float(copy_mass[m & moved1].mean()), 3),
+                               'extra_cells_copy_from_zombie': round(float(copy_at[(m & moved1)[:, None, None] & extra].mean()), 3),
+                               'extra_cells_generate_weight': round(float(gen_at[(m & moved1)[:, None, None] & extra].mean()), 3),
+                               'extra_cells_n': int(((m & moved1)[:, None, None] & extra).sum())}
         # 3. calibration over the 5 candidate cells, distance 2..6
         dirs = torch.tensor(((0, 0), (-1, 0), (1, 0), (0, -1), (0, 1)))
         far = keep & (d0 >= 2)
