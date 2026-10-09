@@ -1782,6 +1782,25 @@ probed the same way at its 6k-36k snapshots:
   - per-step imagined damage rate ≈ 0.055 × 0.21 ≈ 1.15% vs true 0.087 × 0.181 ≈ 1.57% (~73%).
   - "Caught on the true trajectory" also has a ceiling for a sampled world: with E22Z's TRUE codes it was 48.9%.
 
+**E22M + hard interior with the TRUE codes (lane165, 18:51-19:01): reading 1 passes and reading 2 nearly does — the prior costs half**
+
+| E22M, hard interior decoding | prior-sampled (sample 0) | true posterior codes | truth |
+|---|---|---|---|
+| depth 8: roots > 0.3 / peak | 49.1% / 0.51 | **70.5% / 0.64** | 92.9% / 0.64 |
+| depth 16: roots > 0.3 | 43.9% | 62.2% | 95.9% |
+| caught on aligned damage / false | 11.1% / 1.7% | **25.2% / 1.3%** | — |
+| zombies beside / hit given beside | 5.7% / 0.215 | 6.0% / **0.187** | 8.7% / 0.181 |
+| drawn zombies at depth 1 / 16 | 0.168 / 0.247 | 0.178 / 0.218 | 0.186 / 0.294 |
+
+- **With the right stochastic choices, the label-free pipeline passes reading 1** (70.5% ≥ 50%, peak 0.64 ≥ 0.4) and is
+  close on reading 2: caught 25.2% vs 30%; false 1.3% ≤ 2%; hits given adjacency calibrated (0.187 vs 0.181); census
+  conserved.
+- **The prior's sampling costs about half:** localization 70.5% → 49%, caught 25% → 11%.
+- The remainder (beside 6.0% vs 8.7%) is the channel / decoder, including the entering zombies E22M never draws (lane162).
+- **The prior is under-trained by its own curve** (single training batches, noisy): accuracy 0.21 / 0.35 / 0.41 / 0.36 /
+  0.48 / 0.45 / 0.47 / 0.56 at 2.5k-20k; CE 4.12 → 1.78 and still falling.
+  - The 20k length was E16's adoption of Delta-IRIS crafter.yaml values, not a measured optimum.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
