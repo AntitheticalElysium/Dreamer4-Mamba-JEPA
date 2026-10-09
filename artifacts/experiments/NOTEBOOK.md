@@ -1479,6 +1479,35 @@ probed the same way at its 6k-36k snapshots:
   - Entering terrain has no source and mined tiles change type, so both are excluded.
   - Thresholds from the data's own structure; labels only to validate precision / recall.
 
+**Label-free moved-content mask, feasibility (lane154, `e22_motionmask.py`, 12:53-12:57; labels validate only)**
+- Held transitions: 1,009,764 alive map cells, 121,541 changed (scroll-compensated change > EVENT_TAU).
+- **The neighbour-match ratio on changed cells is bimodal:**
+  - a moved mode at 0.00-0.15 (≈ 20k cells; most changed zombie cells: 1,764 of the zombie changes);
+  - a broad mode at 0.6-1.0 (≈ 60k);
+  - valley at 0.25-0.35 (≈ 1,000 per bin). So **ρ = 0.3 is set by the data, not by labels**.
+- **At ρ = 0.3:**
+  - marks 2.4% of map cells; zombie recall 36% of all zombie-occupied cells (staying zombies do not change their cell);
+  - 37% of marked cells hold a mob at t or t+1 (mob channel 0 = zombie 9.3%, channel 1 19.6%, channel 2 4.9%, others
+    < 1%);
+  - holds 9.5% of D's map squared error (zombie cells alone: 3.3%).
+- At ρ = 0.5 / 0.8: marked 2.9% / 6.5%, zombie recall 42% / 49%, mob share 34% / 17%.
+- **Contaminant:** the player's own centre cell (token 31) matches the moved pattern on every move step. It is known by
+  construction and is excluded.
+
+**E22M predeclared (12:57, before code): the generic E22Z — moved content instead of labels**
+- **Recipe:** the E22Z smoke exactly (joint phase from the E22F file, the same 2,000 batches, λ auto), with E22Z's
+  label-derived zombie mask replaced by the moved-content mask on the TRUE frames t, t+1 of each training window.
+  - Ratio < 0.3 from the valley; change > EVENT_TAU; scroll-compensated; token 31 excluded. Token space only, no labels,
+    no probe.
+- **Readings vs E22Z / E22FJ:** P2 (all, no-scroll), clean P1, encoder probe, carries (zombie cells).
+- **Rules:**
+  - P2 random-move argmax ≥ 50% and score ≥ 0.3 → the label-free allocation works; then the same sufficiency test as
+    E22Z (prior + sampled imagination, readings 1-2), then full scale and from scratch.
+  - 10% ≤ P2 < 50% → partial; measure which moves are missed (recall of the mask on those transitions) before anything
+    else.
+  - P2 < 10% → the mask does not carry the allocation; compare its training-window composition to E22Z's before
+    anything else.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
