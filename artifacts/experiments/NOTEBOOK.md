@@ -65,6 +65,42 @@ deleted; each names the claim it retires.
 
 **Decisions recorded:** Mamba (fmamba, L16) is permanently canonical. E20 services stopped and disabled 08:20.
 
+### Summary at 19:30 (2026-10-09): the whole chain, measured; where it stands
+
+1. **Teacher-forced health.**
+   - Under uniform L1, zombie hits get ~0.3% of the objective, so no world draws them.
+   - The Delta-IRIS tokenizer loss (D) fixes this generically: row 9 hits 47%, fresh 31, 1 false.
+   - **From scratch D is better still** (test 3): hits 53%, fresh 62, drawn within 0.5 51%; phase +0.024 and adjacency
+     +0.031 over D continued (resolved); no food cost (imagined food R² at depth 16 0.875 vs M16 0.881); teval better
+     than M16; teacher-forced damage caught 81.9%.
+   - Not a continuation artifact.
+2. **Imagination.**
+   - A deterministic world averages the zombie's random moves: D's random-move argmax is 1.1%, its zombie diffuses.
+   - Restoring only the true cells near zombies restores 56% of damage; random cells restore 4.5%.
+   - Imagination needs SAMPLING.
+3. **Stochastic channel (Delta-IRIS posterior + prior on D).**
+   - Warm: the channel stays shut (Park & Lee's mechanism).
+   - Frozen-then-joint: the channel opens, but its encoder never encodes the zombie's move (probe at chance vs a positive
+     control of 0.89; E16 likewise through 36k). Cause: loss share (scroll-entering terrain 49% of D's error, zombie cells
+     1.9%).
+   - **Causal test** (E22Z, label-derived zombie weighting): P2 1.1% → 82%.
+   - **Label-free version** (E22M, moved-content mask whose threshold is the valley of a bimodal ratio): P2 80%.
+4. **Sampled imagination.**
+   - With the prior, zombies stay localized (E22Z: 87% of roots at depth 8 vs truth 93%, D 0%).
+   - Zombie MASS is not conserved: E22Z multiplies (x10 by depth 16), E22M fades (x1/3). Both are decoder-side (they
+     persist with the true codes).
+   - E22Z's extras are fractional generated zombies (copy mass < 1 everywhere; the "copied twice" reading withdrawn).
+   - **Hard (integer) decisions in the interior cure E22M's fade:** census 0.25-0.27 vs true 0.29, hits given adjacency
+     0.20 vs 0.18, false 1.6%.
+   - ITC's region rule fails again (generated HUD: 43% false).
+5. **Where it stands** (label-free E22M + hard interior):
+   - with the TRUE stochastic choices: localization 70.5% (reading 1 passes), caught 25% (30% required), false 1.3%,
+     hits calibrated;
+   - with the prior's samples: 48% / 10%. **The prior is the main remaining gap**; its held code accuracy is 0.470 and
+     its curve was still rising at 20k.
+   - Running: prior 20k → 60k (E22MP) and the same channel recipe on the from-scratch decoder (E22MS).
+
+
 **Setup.** `health_chain.py` fixes a subset of the E20 factual TRAIN pool (seed 20261008), split fit / held by episode:
 - all 1,005 fresh ordinary hits;
 - 5,000 other ordinary hits (living dh ≤ −2);
