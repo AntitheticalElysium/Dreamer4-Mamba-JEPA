@@ -31,6 +31,10 @@ frame's score there.
 Where the extra zombies are (16:47; E22Z draws 1.24-1.48 cells > 0.3 for one moved zombie, the old-cell ghost explains 0.10-0.15):
 for moved zombies, predicted cells > 0.3 split into: the true new cell, the old cell, the other candidate cells (the old cell's
 remaining neighbours), and elsewhere (all in the new view).
+4. zombies ENTERING the view (16:50; E22M's sampled zombies fade even with the true codes, and its moved-content mask cannot mark an
+   entering zombie, which has no source cell): on scroll steps, the entering edge row / column of the next view (check_e16's convention);
+   for cells there holding a true zombie: predicted score, share > 0.3, and the probe on the true frame; and false entries: predicted
+   cells > 0.3 on the entering edge without a true zombie, per scroll step (true-frame probe as baseline).
 Usage: health_zombie.py <name=world.pt> ...  -> artifacts/eda/health_chain_v1/zombie_<name>.json
 """
 import json
@@ -200,6 +204,20 @@ def main():
         calib['n'] = int(far.sum())
         calib['predicted_mass_over_5_cells'] = round(float(pscore[far].sum(1).mean()), 3)
         calib['true_frame_mass_over_5_cells'] = round(float(t_cells[torch.arange(len(r_i))[:, None], cr, cc].clamp(min=0)[far].sum(1).mean()), 3)
+        # 4. zombies entering the view on scroll steps
+        ent_tab = torch.zeros(5, 7, 9, dtype=torch.bool)
+        for k_s, (dr_, dc_) in enumerate(SHIFTS.tolist()):
+            if dr_: ent_tab[k_s, 6 if dr_ == 1 else 0, :] = True
+            if dc_: ent_tab[k_s, :, 8 if dc_ == 1 else 0] = True
+        ent = ent_tab[sc] & alive[..., None, None]                                                 # [R, 16, 7, 9]
+        zin = zt[:, 1:] & ent
+        scroll_steps = (sc != 0) & alive
+        entering = {'cells': int(zin.sum()), 'predicted_score': round(float(pred_tf[zin].mean()), 3),
+                    'predicted_above_0.3': round(float((pred_tf[zin] > 0.3).float().mean()), 3),
+                    'true_frame_score': round(float(true_score[zin].mean()), 3),
+                    'false_entries_per_scroll_step': round(float(((pred_tf > 0.3) & ent & ~zt[:, 1:]).flatten(2).sum(-1)[scroll_steps].float().mean()), 4),
+                    'true_frame_false_entries_per_scroll_step': round(float(((true_score > 0.3) & ent & ~zt[:, 1:]).flatten(2).sum(-1)[scroll_steps].float().mean()), 4),
+                    'scroll_steps': int(scroll_steps.sum())}
         # 2. imagination, roots with exactly one zombie at the root
         roots1 = n1[:, 0] == 1
         true_peak = true_score.flatten(2).max(2).values
@@ -224,7 +242,7 @@ def main():
             p1_clean['steps'] = int(n_alive)
         res_all[name] = {'world': st['name'], 'posterior_delta_in_one_step': post is not None, 'p1_clean_held': p1_clean,
                          'one_step_by_true_move': one_step, 'one_step_by_scroll': by_scroll,
-                         'imagination_one_zombie_roots': imag,
+                         'imagination_one_zombie_roots': imag, 'entering_zombies': entering,
                          'one_step_calibration_distance_2_to_6': calib,
                          'move_share': {k: round(float(v.sum() / keep.sum()), 3) for k, v in kinds.items()}}
         print(json.dumps({name: res_all[name]}), flush=True)
