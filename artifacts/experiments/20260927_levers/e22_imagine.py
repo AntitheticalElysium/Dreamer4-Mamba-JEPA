@@ -22,7 +22,11 @@ Manhattan distance of the nearest one to the player (3, 4); truth = the probe on
 --postcodes (added 16:16; E22M's sampled zombies fade, E22Z's multiply): one more rollout, `postcodes`, whose imagined transitions
 carry the POSTERIOR's codes of the TRUE transitions (the frames fed back are still the world's own): prior sampling substituted by
 the codes that describe what really happened, separating the prior from the decoder's self-fed behaviour.
-Usage: e22_imagine.py <stage-B prior .pt> [--samples S] [--postcodes]  -> artifacts/eda/health_chain_v1/e22_imagine_<prior name>.json
+--decode (added 17:43; E22H): soft (default, as trained) | itc (tworld's hard_decode = per-cell argmax over self / 4 neighbours /
+generate, ITC eq. 4, plus ITC's Craftax regions: map border ring and HUD from the generator) | interior (hard decisions on the
+interior map cells, the soft head on the ring and HUD: two forward passes combined per token). Runtime switches on the loaded world
+only; tworld.py is not modified.
+Usage: e22_imagine.py <stage-B prior .pt> [--samples S] [--postcodes] [--decode soft|itc|interior]  -> artifacts/eda/health_chain_v1/e22_imagine_<prior name>.json
 """
 import json
 import sys
@@ -51,6 +55,22 @@ def main():
     world, post, st_a = DW.load_a(Path(st_b['stage_a']), device)
     prior = DW.Prior().to(device); prior.load_state_dict(st_b['prior']); prior.eval()
     cap = world.time.shape[0] - 1
+    decode = args[args.index('--decode') + 1] if '--decode' in args else 'soft'
+    ring_hud = torch.zeros(81, dtype=torch.bool, device=device)
+    ring_hud[[r * 9 + c for r in range(7) for c in range(9) if r in (0, 6) or c in (0, 8)] + list(range(63, 81))] = True
+    if decode == 'itc':
+        world.hard_decode, world.regions, world.generated_region = True, 'itc', ring_hud
+    elif decode == 'interior':
+        soft_forward = world.forward
+
+        def forward(s_, a_):
+            world.hard_decode = False
+            soft = soft_forward(s_, a_)
+            world.hard_decode = True
+            hard = soft_forward(s_, a_)
+            world.hard_decode = False
+            return (torch.where(ring_hud[:, None], soft[0], hard[0]),) + tuple(soft[1:])
+        world.forward = forward
     config = config_from_dict(torch.load(Sp.CHECKPOINT, map_location='cpu', weights_only=False)['config'])
     meta, train_roots, train_seeds = T.split()
     fut5, _ = SD.token_cache(device)
@@ -82,7 +102,7 @@ def main():
     acts_all = torch.cat([ca.cpu(), fa.cpu()], 1)                                                # [R, 3 + 16]
     names = ['zeroed'] + [f'sample{j}' for j in range(S)] + (['postcodes'] if '--postcodes' in args else [])
     g = torch.Generator(device=device).manual_seed(20261009)
-    res = {'prior': st_b.get('name', prior_path.stem), 'stage_a': st_a['name'], 'samples': S, 'window_cap': cap,
+    res = {'prior': st_b.get('name', prior_path.stem), 'stage_a': st_a['name'], 'samples': S, 'window_cap': cap, 'decode': decode,
            'damage_transitions': int(drop.sum()), 'unchanged_transitions': int(same.sum())}
     per = {}
     for name in names:
@@ -166,7 +186,7 @@ def main():
     res['readings'] = {'e22_localized': res['sampled_mean']['depth8_any_above_0.3'] >= 0.5 and res['sampled_mean']['depth8_peak'] >= 0.4,
                        'e22_damage': res['sampled_mean']['caught_aligned'] >= 0.3 and res['sampled_mean']['false_all'] <= 0.02}
     print(json.dumps({'sampled_mean': res['sampled_mean'], 'readings': res['readings']}), flush=True)
-    (OUT / f"e22_imagine_{res['prior']}.json").write_text(json.dumps(res, indent=1))
+    (OUT / f"e22_imagine_{res['prior']}{'' if decode == 'soft' else '_' + decode}.json").write_text(json.dumps(res, indent=1))
 
 
 if __name__ == '__main__':
