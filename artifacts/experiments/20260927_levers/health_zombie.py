@@ -25,6 +25,9 @@ against Delta). Here, same weights, same held one-step teacher-forced prediction
 the frame's worst squared element, and map-token MSE, with the posterior's Delta and with Delta zeroed; Delta-IRIS's loss
 (1.0 L2 + 0.1 L1 + 0.01 worst) from them; gain = zeroed - with Delta.
 Split by scroll (11:49): part 1 also reported on steps without player displacement (scroll class 0) and with it (one_step_by_scroll).
+Ghost (16:32; sampled imagination multiplies (E22Z) or erases (E22M) zombies even with the true codes): for moved zombies (|move| = 1),
+the predicted zombie score at the OLD cell in the new view (v0 - player displacement, as part 3), the share above 0.3, and the true
+frame's score there.
 Usage: health_zombie.py <name=world.pt> ...  -> artifacts/eda/health_chain_v1/zombie_<name>.json
 """
 import json
@@ -132,6 +135,12 @@ def main():
         hitcell = p_cells.flatten(1).argmax(1) == (v1[:, 0] * 9 + v1[:, 1])
         spread = (p_cells > 0.3).flatten(1).sum(1).float()
         mass = p_cells.clamp(min=0).flatten(1).sum(1)
+        base_o = v0 - disp
+        in_o = (base_o[:, 0] >= 0) & (base_o[:, 0] < 7) & (base_o[:, 1] >= 0) & (base_o[:, 1] < 9)
+        bo_r, bo_c = base_o[:, 0].clamp(0, 6), base_o[:, 1].clamp(0, 8)
+        at_old = p_cells[torch.arange(len(r_i)), bo_r, bo_c]
+        old_true = t_cells[torch.arange(len(r_i)), bo_r, bo_c]
+        moved1 = in_o & (move.abs().sum(1) == 1)
         one_step, by_scroll = {}, {}
         noscr = sc[r_i, k_i] == 0
         for split, sm in (('no_scroll', noscr), ('scroll', ~noscr)):
@@ -141,7 +150,10 @@ def main():
             one_step[kname] = {'n': int(m.sum()), 'score_at_true_cell': round(float(at_true[m].mean()), 3),
                                'probe_ceiling_on_true_frame': round(float(ceiling[m].mean()), 3),
                                'argmax_is_true_cell': round(float(hitcell[m].float().mean()), 3),
-                               'cells_above_0.3': round(float(spread[m].mean()), 2), 'positive_mass': round(float(mass[m].mean()), 3)}
+                               'cells_above_0.3': round(float(spread[m].mean()), 2), 'positive_mass': round(float(mass[m].mean()), 3),
+                               'ghost_score_at_old_cell': round(float(at_old[m & moved1].mean()), 3),
+                               'ghost_above_0.3': round(float((at_old[m & moved1] > 0.3).float().mean()), 3),
+                               'true_frame_score_at_old_cell': round(float(old_true[m & moved1].mean()), 3)}
         # 3. calibration over the 5 candidate cells, distance 2..6
         dirs = torch.tensor(((0, 0), (-1, 0), (1, 0), (0, -1), (0, 1)))
         far = keep & (d0 >= 2)
