@@ -1751,6 +1751,37 @@ probed the same way at its 6k-36k snapshots:
   - census corrected but a reading fails → diagnose the next link.
   - census not corrected → the soft mixture is not the (whole) cause; diagnose before anything else.
 
+**E22H result (lane164, 17:44-18:51): integer decisions conserve E22M's zombies (census ≈ truth) but worsen E22Z's; ITC's region rule fails again**
+
+| sampled imagination (4 samples) | drawn zombies at depth 1 / 4 / 8 / 16 (truth 0.19 / 0.20 / 0.23 / 0.29) | depth 8: roots > 0.3 / peak | caught / false | beside (truth 8.7%) / hit given beside (truth 0.181) |
+|---|---|---|---|---|
+| E22Z soft | 0.28 / 0.65 / 1.27 / 3.2 | 87% / 0.61 | 18.0% / 6.3% | 21-22% / 0.28 |
+| E22Z itc (hard + ring and HUD from the generator) | 0.36 / 2.1 / 8.0 / **22.8** | 96% / 0.88 | 47% / **43%** | 48-50% / 0.40 |
+| E22Z interior (hard interior, soft ring and HUD) | 0.28 / 0.85 / 2.5 / **8.2** | 88% / 0.79 | 21.8% / 8.3% | 25-26% / 0.31-0.32 |
+| E22M soft | 0.16 / 0.13 / 0.11 / 0.10 | 39.5% / 0.36 | 7.6% / 0.95% | 4.0-4.5% / 0.16-0.18 |
+| E22M itc | 0.18 / 0.42 / 0.71 / 1.71 | 51% / 0.50 | 45% / **43%** | 10% / 0.39-0.42 |
+| **E22M interior** | **0.16-0.18 / 0.17-0.19 / 0.17-0.22 / 0.25-0.27** | 48.0% / 0.48 | 9.9% / **1.6%** | 5.1-6.0% / 0.20-0.21 |
+
+- **ITC's Craftax region rule fails here, as on 09-29:** the generated HUD wrecks health (43% false drops) and the
+  generated ring floods the view with zombies. Not a fix for continuous tokens.
+- **E22M interior: the fade is cured.**
+  - The census tracks truth (0.25-0.27 vs 0.29 at depth 16; within the predeclared 0.5-2×);
+  - hits given adjacency calibrated (0.20-0.21 vs 0.18); false 1.6% (≤ 2%).
+  - Exact integer copies carry a zombie forward; soft re-mixing diluted it.
+  - Readings: localization 48.0% (< 50%, just), peak 0.48 (≥ 0.4); caught 9.9% (< 30%). Both readings FALSE.
+- **E22Z interior: multiplication WORSE** (8.2 at depth 16 vs soft 3.2). Even its deterministic decoder multiplies under
+  integer decisions (zeroed census 0.61 vs soft 0.15).
+  - E22Z's extra zombies are not just fractions: integer commitments make them whole.
+  - Its label-derived weighting taught it to draw zombies liberally (one-step mass 0.90 vs true 0.70).
+- **Rule:**
+  - E22M: census corrected, readings fail → diagnose the next link;
+  - E22Z: census not corrected → the soft mixture is not its whole cause (it is the label-derived diagnostic arm, not the
+    candidate fix).
+- **E22M interior's remaining gaps, measured:**
+  - zombies beside the player 59-69% of truth; entering zombies never drawn (lane162);
+  - per-step imagined damage rate ≈ 0.055 × 0.21 ≈ 1.15% vs true 0.087 × 0.181 ≈ 1.57% (~73%).
+  - "Caught on the true trajectory" also has a ceiling for a sampled world: with E22Z's TRUE codes it was 48.9%.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 
