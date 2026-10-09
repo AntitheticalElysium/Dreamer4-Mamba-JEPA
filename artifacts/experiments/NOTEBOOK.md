@@ -61,6 +61,93 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-10 — PROGRAM (predeclared 09:10, before any new code): why does the objective fight us? Diagnosis only
+
+**Mandate (user, 10-10):**
+- the purpose this week is to UNDERSTAND what ties the failures together, not to fix them;
+- no intervention is tried until the cause is measured and the literature on that cause is swept;
+- the GPU and CPU are used continuously.
+- The user's frame: a world can fail in its **encoder** (do the tokens hold the needed information, stably?), its
+  **dynamics** (does it learn the conditional distribution of the next state, random parts included?), or in
+  **imagination** (do self-fed rollouts stay consistent?).
+- I add **decisions:** can heads read correct, calibrated signals from imagined states?
+
+**My correction of the record:** D (E21) was chosen from one measurement (the hits' gradient ratio) plus a published loss. Why the
+objective fights us, and what it must achieve, were never established. This program does that.
+
+**Working hypothesis (to be TESTED, not assumed):**
+- a per-element token-space loss is a currency that mixes three kinds of variation:
+  1. variation irreducible from the world's inputs (environment RNG, terrain never seen, hidden timers);
+  2. change in the game state;
+  3. variation that is not state (lighting, sleep rendering, context bleeding between tiles);
+- it allocates gradient by token-distance magnitude, not by learnability or by relevance;
+- each past fix moved that allocation for one fact and away from others.
+
+**Predictions, each of which can refute it:**
+- **P-A (encoder):** a substantial share of a cell token's variance, and of its frame-to-frame change, is not explained by the
+  cell's own visible state.
+  - Refuted if own state explains ≥ 90% of both.
+- **P-B (dynamics):** ≥ 30% of the world's teacher-forced squared error sits on content irreducible from its inputs (RNG floor +
+  entering terrain never seen in the window), and the learnable remainder concentrates on rare state changes.
+  - Refuted if the irreducible share is < 10%.
+- **P-C (gradient):** the backbone gradient from irreducible content dominates the gradient norm but is inconsistent across
+  batches (noise), while the gradient from rare learnable changes is consistent but small.
+  - Refuted if rare-change consistency ≤ irreducible consistency, or if the irreducible norm share < 25%.
+- **P-D (training dynamics):** across matched L1 (M6) and D-loss (D from scratch, stage 1) snapshots, each loss improves the
+  classes it allocates more to, with stalls or regressions elsewhere.
+  - Refuted if one loss improves every class at least as fast as the other.
+
+**Part I — Scoreboard, the user's request (breadth of D / E22MS, not health only).**
+- **Variants:**
+  - M16 (L1), D continued, D from scratch;
+  - E22MS: Δ zeroed (its decoder alone), 4 prior samples, and the posterior's codes of the TRUE transitions (matched-code
+    reference within the SAME decoder; Codex's lineage point).
+- **Data:** the diagnosis futures (1,002 held roots, 143 episodes, 5 real futures per root under the same actions, 17 actions ×
+  4 keys from each root; visible and hidden simulator state at every frame).
+- **`rollout_export.py` (GPU):** saves every variant's self-fed 16-step rollout, its teacher-forced step at every depth, the 17
+  one-step successors and the corrt routing weights.
+  - Teval's protocol: 4 context frames, window min(4 + k, 15).
+  - E22MS samples use e22_imagine's RNG order, so its summaries must reproduce e22_imagine exactly; the deterministic ones must
+    reproduce teval's per-root errors exactly. Either mismatch stops the readouts.
+- **`scoreboard.py` (CPU, on the saved rollouts):**
+  - teval's errors (one-step classes, depths);
+  - the 5-future decomposition (floor / excess, per class; energy score for sampled variants, a proper score against the 5
+    real futures);
+  - facts by depth for EVERY visible fact (17 tile classes, zombie / cow / skeleton / arrows, health / food / drink / energy,
+    facing, sleep, light, 12 inventory items; ridge probes fitted on true TRAIN-seed tokens, read on TEST seeds);
+  - a mob census by type and depth vs the 5 real futures;
+  - scroll fidelity (missed / false scrolls, first wrong step);
+  - terrain persistence on re-entry; HUD dynamics in distribution (event rates vs the real futures, Codex's real-key control);
+  - distance to the real-token manifold by depth.
+- **Decisions:** `check_h16_traj.py` on D from scratch (`--window 15`) and E22MS (`--e16 --window 15`); M16 exists (trajectory
+  0.657; one real future 0.679).
+  - The prior's end head has the terminal-position bias (Codex): its readings are reported, not judged.
+
+**Part II — Diagnostics on the hypothesis:**
+- **Encoder (P-A), CPU, true tokens + simulator state:**
+  - A1 information: probes of every fact from one token / the 3 × 3 neighbourhood / the frame, linear and MLP (the ceiling any
+    world can express);
+  - A2 target composition: per-cell token variance and frame-to-frame change, explained by own visible state / neighbours' /
+    global (light, sleep) / residual (held R², fitted on TRAIN seeds);
+  - A3 currency alignment: token distance between cells with the SAME vs DIFFERENT state, per fact type. How well does
+    token-space error separate state errors from non-state variation?
+- **Dynamics (P-B):**
+  - B1 floors: the RNG floor per class and fact from the 5 futures (depth 1) and the 4 keys × 17 actions; epistemic entering
+    cells = entering cells whose world position never appeared in the input window (true scroll offsets);
+  - B2 error budget of each world's teacher-forced step, per class and fact: RNG floor + unseen terrain + learnable remainder,
+    in L1 and in squared-error currency.
+- **Gradient and training dynamics (P-C, P-D), GPU, held diagnosis windows:**
+  - B3 per-class learning curves (excess over the floor; fact accuracy) for M6 (L1) vs D from scratch stage 1 at 6k / 12k / 18k /
+    24k / 30k / 36k;
+  - B4 per-class backbone gradient: norm ratio, cross-batch consistency ‖Σg‖ / Σ‖g‖, cross-class cosine, at the same snapshots
+    under each world's own loss.
+- **Imagination (axis 3):**
+  - C1 exposure: per-step error from imagined vs true windows, vs the input's distance from the real manifold;
+  - C2 substitution at depth 16 (entering cells, HUD, player, mob cells, the move-target tile) for D from scratch and E22MS.
+- **Order:** Part I exports (GPU) and A1-A3 (CPU) start now; B1-B2 and the scoreboard read the exports; B3-B4 follow on the
+  GPU; H16 last (longest).
+- Every result is recorded against these predictions; the literature sweep follows the measured cause.
+
 ## 2026-10-09 — CPU prior/calibration and real-future controls; E22MP/E22MS endpoint review
 
 **Execution:** CPU only, CUDA hidden, two threads; GPU jobs and numerical training/evaluation sources untouched.
