@@ -1801,6 +1801,20 @@ probed the same way at its 6k-36k snapshots:
   0.48 / 0.45 / 0.47 / 0.56 at 2.5k-20k; CE 4.12 → 1.78 and still falling.
   - The 20k length was E16's adoption of Delta-IRIS crafter.yaml values, not a measured optimum.
 
+**E22MP predeclared (19:02, before launch): is the prior's training length the limit of E22M's sampled imagination?**
+- **Run:** E22M's prior continues from its saved 20k state (same run: optimizer, batch order and RNG restored) to 60k.
+- **Readings:**
+  1. held prior fit (`e22_imagine --prior-held-only`: teacher-forced code CE and accuracy on the held trajectories' true
+     transitions), 20k vs 60k;
+  2. E22M + hard interior decoding with the 60k prior, 4 samples, vs the 20k prior (localization 48.0%, caught 9.9%) and
+     the true-code ceiling (70.5%, 25.2%).
+- **Rules:**
+  - held CE falls AND imagination moves at least halfway to the ceiling (localization ≥ 59%, caught ≥ 17.5%) → prior
+    training length was the limit; then full-scale stage A and the from-scratch E22M.
+  - held CE falls but imagination does not move → the prior's fit is not what limits sampling; diagnose (sampling
+    temperature / calibration of the sampled moves) before anything else.
+  - held CE does not fall → the prior has converged at its capacity; diagnose prior capacity before anything else.
+
 **Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
 Delta-IRIS loss):
 

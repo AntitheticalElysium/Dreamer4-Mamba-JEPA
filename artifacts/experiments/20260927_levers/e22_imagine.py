@@ -26,13 +26,17 @@ the codes that describe what really happened, separating the prior from the deco
 generate, ITC eq. 4, plus ITC's Craftax regions: map border ring and HUD from the generator) | interior (hard decisions on the
 interior map cells, the soft head on the ring and HUD: two forward passes combined per token). Runtime switches on the loaded world
 only; tworld.py is not modified.
-Usage: e22_imagine.py <stage-B prior .pt> [--samples S] [--postcodes] [--decode soft|itc|interior]  -> artifacts/eda/health_chain_v1/e22_imagine_<prior name>.json
+Prior held fit (added 19:02; the prior's training-batch accuracy is one noisy batch): teacher-forced on the held trajectories (4 context
++ 16 future frames), the prior's code CE and accuracy on the posterior's codes of the 19 true transitions (train_b's convention: the
+last block a dummy). --prior-held-only reports it and exits.
+Usage: e22_imagine.py <stage-B prior .pt> [--samples S] [--postcodes] [--decode soft|itc|interior] [--prior-held-only]  -> artifacts/eda/health_chain_v1/e22_imagine_<prior name>.json
 """
 import json
 import sys
 from pathlib import Path
 
 import torch
+import torch.nn.functional as F
 
 sys.path.insert(0, 'artifacts/experiments/20260927_levers')
 import check_e16 as CE  # noqa: E402
@@ -100,9 +104,21 @@ def main():
     true_beside = zt[:, :-1].flatten(2)[:, :, NEAR] .any(-1) & alive_any                        # [R, H] true zombie beside, current frame
     true_frames = torch.cat([ctx.cpu(), fut5[:, 0].cpu()], 1)                                   # [R, 4 + 16, 81, 192]
     acts_all = torch.cat([ca.cpu(), fa.cpu()], 1)                                                # [R, 3 + 16]
+    ce_sum, acc_sum, n_codes = 0.0, 0.0, 0
+    for i in range(0, R, 32):                                                                     # prior held fit
+        tf, ac = true_frames[i:i + 32].float().to(device), acts_all[i:i + 32].to(device)
+        pca = post.quantizer(post.encode(tf[:, :-1].flatten(0, 1), ac.flatten(), tf[:, 1:].flatten(0, 1)))[1].view(len(tf), -1, DW.K)
+        lat, _ = prior(tf, F.pad(ac, (0, 1)), F.pad(pca, (0, 0, 0, 1)))
+        lg = lat[:, :-1].float()
+        ce_sum += float(F.cross_entropy(lg.flatten(0, 2), pca.flatten(), reduction='sum'))
+        acc_sum += float((lg.argmax(-1) == pca).sum()); n_codes += pca.numel()
+    prior_held = {'ce': round(ce_sum / n_codes, 4), 'accuracy': round(acc_sum / n_codes, 4), 'codes': n_codes}
+    print(json.dumps({'prior_held': prior_held}), flush=True)
+    if '--prior-held-only' in args:
+        return
     names = ['zeroed'] + [f'sample{j}' for j in range(S)] + (['postcodes'] if '--postcodes' in args else [])
     g = torch.Generator(device=device).manual_seed(20261009)
-    res = {'prior': st_b.get('name', prior_path.stem), 'stage_a': st_a['name'], 'samples': S, 'window_cap': cap, 'decode': decode,
+    res = {'prior': st_b.get('name', prior_path.stem), 'stage_a': st_a['name'], 'samples': S, 'window_cap': cap, 'decode': decode, 'prior_held': prior_held,
            'damage_transitions': int(drop.sum()), 'unchanged_transitions': int(same.sum())}
     per = {}
     for name in names:
