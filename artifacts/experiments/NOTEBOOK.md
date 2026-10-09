@@ -148,6 +148,64 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-10 RESULT (10:14): Part II-A (encoder) — P-A holds: the token target is mostly not game state; 40% of its L1 change mass is renderer noise
+
+v2 runs: `encoder_diag.json` (Raw, all five futures, 80,765 frames) and `encoder_diag_{raw,ldad1,ldad10,tc}.json` (root + factual
+future, 17,030 identical frames per encoder).
+
+**A1 information — present** (Raw; held probes on true tokens):
+- HUD health / food / drink / energy R² 0.999 / 0.999 / 0.998 / 0.998; inventory mean R² 0.997;
+- tile class from the own token 97.9% (3 × 3: 98.3%); zombie / skeleton / cow / arrow AUC 0.990 / 1.0 / 1.0 / 1.000;
+- facing 94.6%, sleep 100%, light R² 0.998.
+- The same for the other encoders (tile 96.9-97.7%, zombie AUC 1.0, health 0.998-0.999).
+- The encoder does not lose the state. (The "exact after rounding" HUD numbers are wrong: the targets are fp16 values × 9,
+  not integers. Disregard them.)
+
+**A2 noise floor — measured directly** (Raw; 2,628 of 15,836 all-alive root-depth cases have IDENTICAL simulator states across the
+five futures):
+- day: token variance across the five futures exactly 0 for map, HUD and player tokens;
+- night: map tokens 0.29 / 1.83 / 4.55 / 5.93 at Chebyshev rings 1 / 2 / 3 / 4 around the player; HUD (18 tokens summed) 0.31;
+  player token 0.053.
+- The renderer's night static (source above) is the only randomness in rendering. It is radial as coded and reaches the HUD and
+  player tokens through attention.
+
+**A2 change composition** (Raw full run; L2 / L1 shares of the frame-to-frame target change):
+
+| cause | day | night |
+|---|---|---|
+| own state changed (awake + asleep) | 13.5% / 7.6% | 3.6% / 2.4% |
+| player sprite left the tile | 9.7% / 4.3% | 2.2% / 1.0% |
+| neighbour changed | 1.1% / 1.5% | 2.1% / 2.4% |
+| sleep onset / wake | 22.6% / 7.5% | 2.9% / 0.9% |
+| **no state change** | 8.4% / **32.1%** | **34.2% / 40.3%** |
+
+- Unchanged cells, mean Σ|Δ|² per cell (Raw):
+  - day: still 0.06; scroll 1.4-1.7 (×25: shift re-encoding);
+  - night: still 1.0 / 4.8 / 10.8 / 13.8 at rings 1-4 (= 2 × the measured static variance, as expected for independent noise
+    in consecutive frames); night scroll 5.6-15.5.
+- HUD tokens at unchanged HUD values: about 9-12 per step (18 tokens summed), day or night, still or scroll. Their change when the
+  values change: 79-132.
+
+**Encoder comparison** (identical 17,030 frames; scale-free):
+
+| encoder | own-state R² | + lighting R² | MLP R² | L1 share: state change / day no-change / night no-change / sleep | scroll re-encoding ÷ own change | re-encoding explained by state |
+|---|---|---|---|---|---|---|
+| Raw | **0.592** | 0.888 | 0.865 | 0.19 / 0.32 / 0.40 / 0.09 | 0.028 | 0.13 |
+| TC | 0.380 | 0.742 | 0.733 | 0.20 / 0.43 / 0.31 / 0.06 | 0.027 | 0.09 |
+| LDAD λ1 | 0.335 | 0.759 | 0.753 | 0.13 / 0.57 / 0.27 / 0.03 | **0.271** | 0.50 |
+| LDAD λ10 | 0.277 | 0.536 | 0.485 | 0.12 / 0.62 / 0.23 / 0.02 | **0.350** | 0.31 |
+
+- The MLP R² is on a 5% subsample, lower than the ridge here (undertrained at 17k frames); with all five futures it is 0.902
+  for Raw.
+
+**Reading against P-A** (predeclared: refuted if own state explains ≥ 90% of both):
+- not refuted, by a wide margin: own state explains 59% of a Raw token's variance and 19% of the L1 change mass (7.6% + 2.4%
+  own, plus sprite and neighbours);
+- Raw is the MOST state-aligned of the four encoders;
+- LDAD's inverse-dynamics objective makes patch tokens re-encode ~10× more on scroll (relative to a state change), which fits
+  the 09-30 finding that LDAD worlds do not scroll-copy;
+- the information a world needs is in every encoder (A1). What changes is how much of the per-token target is about it.
+
 ### 10-10 interim (10:08): the Raw token target is mostly NOT game state — and part of it is renderer noise (Part II-A, P-A)
 
 **Incident (09:28):**

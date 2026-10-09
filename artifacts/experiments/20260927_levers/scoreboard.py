@@ -56,25 +56,29 @@ class AllProbes:
         seeds = meta['seed']
         val = torch.isin(seeds, train_seeds[: len(train_seeds) // 5])
         fit = train_roots & ~val
-        toks = torch.cat([cache['ctx'][:, -1:], cache['fut']], 1).float()                    # [R,17,81,192]
-        vis = torch.cat([meta['root_visible'][:, None], meta['future_visible'][:, 0]], 1).float()
+        t = torch.cat([cache['ctx'][:, -1:], cache['fut']], 1).flatten(0, 1)                    # [R*17,81,192] fp16
+        v = torch.cat([meta['root_visible'][:, None], meta['future_visible'][:, 0]], 1).flatten(0, 1).float()
         rows = lambda m: m[:, None].expand(-1, 17).flatten()
         fr, vr = rows(fit), rows(val)
-        t = toks.flatten(0, 1); v = vis.flatten(0, 1)
-        cell = t[:, MAPC].flatten(0, 1)
         f = self.facts(v)
         cr = lambda m: m[:, None].expand(-1, 62).flatten()
-        sub = torch.randperm(len(cell), generator=torch.Generator().manual_seed(0))[:400_000]
-        kf, kv = torch.zeros(len(cell), dtype=torch.bool), torch.zeros(len(cell), dtype=torch.bool)
-        kf[sub] = cr(fr)[sub]; kv[sub] = cr(vr)[sub]
-        self.tile = T.ridge(cell, F.one_hot(f['tile'].flatten(), 17).float(), kf, kv)
-        self.mob = T.ridge(cell, f['mobs'].flatten(0, 1).float(), kf, kv)
-        self.hud = T.ridge(t[:, 63:81].flatten(1), f['hud'], fr, vr)
-        self.facing = T.ridge(t[:, 31], F.one_hot(f['facing'], 4).float(), fr, vr)
-        self.sleep = T.ridge(t[:, 31], f['sleep'][:, None], fr, vr)
-        self.light = T.ridge(t[:, MAPC].mean(1), f['light'][:, None], fr, vr)
-        # per-type thresholds reproducing the true mean count on TRAIN true tokens
-        sc = self.mob(cell[cr(fr)]); lab = f['mobs'].flatten(0, 1)[cr(fr)]
+        ncell = len(t) * 62
+        sub = torch.randperm(ncell, generator=torch.Generator().manual_seed(0))[:400_000]
+        sub = sub[cr(fr)[sub] | cr(vr)[sub]]
+        cell = t[sub // 62, torch.tensor(MAPC)[sub % 62]].float()                                   # only the sampled cells
+        kf, kv = cr(fr)[sub], cr(vr)[sub]
+        tile_y, mob_y = f['tile'].flatten()[sub], f['mobs'].flatten(0, 1)[sub]
+        self.tile = T.ridge(cell, F.one_hot(tile_y, 17).float(), kf, kv)
+        self.mob = T.ridge(cell, mob_y.float(), kf, kv)
+        hud_x = t[:, 63:81].flatten(1).float()
+        self.hud = T.ridge(hud_x, f['hud'], fr, vr)
+        del hud_x
+        pl = t[:, 31].float()
+        self.facing = T.ridge(pl, F.one_hot(f['facing'], 4).float(), fr, vr)
+        self.sleep = T.ridge(pl, f['sleep'][:, None], fr, vr)
+        self.light = T.ridge(torch.cat([t[i:i + 2048][:, MAPC].float().mean(1) for i in range(0, len(t), 2048)]), f['light'][:, None], fr, vr)
+        # per-type thresholds reproducing the true mean count on TRAIN true tokens (the sampled fit cells)
+        sc = self.mob(cell[kf]); lab = mob_y[kf]
         self.thr = []
         for j in range(4):
             n_true = int(lab[:, j].sum())
@@ -144,8 +148,9 @@ def main():
     cache = T.build_cache('raw', torch.device('cpu'))
     fut5, one4 = SD.token_cache(torch.device('cpu'))
     R = len(meta['seed'])
-    fut, root = cache['fut'].float(), cache['ctx'][:, -1].float()
-    V = float(((fut - fut.flatten(0, 1).mean(0)) ** 2).sum((-1, -2)).mean())
+    fut, root = cache['fut'], cache['ctx'][:, -1].float()                                          # fut fp16; converted per chunk
+    fmean = torch.stack([fut[i:i + 64].float().flatten(0, 1).sum(0) for i in range(0, R, 64)]).sum(0) / (R * H)
+    V = float(sum(((fut[i:i + 64].float() - fmean) ** 2).sum((-1, -2)).sum() for i in range(0, R, 64)) / (R * H))
     alive0 = ~meta['future_dead'][:, 0].cumsum(1).bool()                                             # sample 0
     alive5 = ~meta['future_dead'].cumsum(2).bool().any(1)                                            # all five
     ocls, _ = classify(meta)
@@ -153,9 +158,9 @@ def main():
     probes = AllProbes(T, cache, meta, train_roots, train_seeds)
     tprobes = T.Probes(cache, meta, train_roots, train_seeds)                                        # e22_imagine's reader
     codes = torch.load(ROOT / 'artifacts/eda/levers_codebooks_v1/raw_K4096.pt', weights_only=False)['codes'].float()
-    vis5 = meta['future_visible'].float()                                                             # [R,5,16,1534]
-    prev0 = torch.cat([cache['ctx'][:, -1:], cache['fut'][:, :-1]], 1).float()
-    true_sh = torch.cat([estimate(prev0[i:i + 32].flatten(0, 1), fut[i:i + 32].flatten(0, 1)).view(-1, H) for i in range(0, R, 32)])
+    vis5 = meta['future_visible']                                                                    # [R,5,16,1534] fp16
+    true_sh = torch.cat([estimate(torch.cat([cache['ctx'][i:i + 32, -1:], cache['fut'][i:i + 32, :-1]], 1).float().flatten(0, 1),
+                                  fut[i:i + 32].float().flatten(0, 1)).view(-1, H) for i in range(0, R, 32)])
     true_off = DA.offsets(true_sh)
     # truth for e22_imagine's damage readings (its masks exactly)
     allv = torch.cat([meta['root_visible'][:, None], meta['future_visible'][:, 0]], 1).float()
@@ -165,8 +170,7 @@ def main():
     zt = allv[..., 1071:1512].reshape(R, 17, 7, 9, 7)[..., 0] > 0
     n1 = zt.flatten(2).sum(-1)
     true_beside = zt[:, :-1].flatten(2)[:, :, NEAR4].any(-1) & alive5
-    f5 = fut5[:, 0].float()
-    zscore_t = torch.stack([tprobes.zombie(f5[:, k, :63].flatten(0, 1))[:, 0].view(R, 7, 9) for k in range(H)], 1)
+    zscore_t = torch.stack([tprobes.zombie(fut5[:, 0, k, :63].float().flatten(0, 1))[:, 0].view(R, 7, 9) for k in range(H)], 1)
     true_peak = zscore_t.flatten(2).max(2).values
     # real futures' HUD decrement rates per step (all five; in-distribution reference)
     hud5 = torch.cat([meta['root_visible'][:, None, None].expand(-1, S, 1, -1), meta['future_visible']], 2).float()[..., 1512:1516] * 9
@@ -183,14 +187,14 @@ def main():
         res = {'variants': names, 'V': V}
         rows = {}
         # errors (teval's)
-        ge = torch.stack([torch.cat([((v['gen'][i:i + 64].float() - fut[i:i + 64]) ** 2).sum((-1, -2)) for i in range(0, R, 64)]) for v in vs])   # [J,R,16]
-        te = torch.stack([torch.cat([((v['tf'][i:i + 64].float() - fut[i:i + 64]) ** 2).sum((-1, -2)) for i in range(0, R, 64)]) for v in vs])
+        ge = torch.stack([torch.cat([((v['gen'][i:i + 64].float() - fut[i:i + 64].float()) ** 2).sum((-1, -2)) for i in range(0, R, 64)]) for v in vs])   # [J,R,16]
+        te = torch.stack([torch.cat([((v['tf'][i:i + 64].float() - fut[i:i + 64].float()) ** 2).sum((-1, -2)) for i in range(0, R, 64)]) for v in vs])
         rows['gen_err'], rows['tf_err'] = ge, te
         res['errors'] = {'gen_over_V': [round(float(ge[:, alive0[:, k], k].mean() / V), 5) for k in range(H)],
                          'tf_over_V': [round(float(te[:, alive0[:, k], k].mean() / V), 5) for k in range(H)]}
-        true_one = cache['one'].float()
-        oe = torch.stack([torch.cat([((v['one'][i:i + 64].float() - true_one[i:i + 64]) ** 2).sum((-1, -2)) for i in range(0, R, 64)]) for v in vs])
-        cp = ((root[:, None] - true_one) ** 2).sum((-1, -2))
+        true_one = cache['one']
+        oe = torch.stack([torch.cat([((v['one'][i:i + 64].float() - true_one[i:i + 64].float()) ** 2).sum((-1, -2)) for i in range(0, R, 64)]) for v in vs])
+        cp = torch.cat([((root[i:i + 64, None] - true_one[i:i + 64].float()) ** 2).sum((-1, -2)) for i in range(0, R, 64)])
         res['errors']['onestep_over_copy'] = {c: round(float(oe[:, ocls == i].mean() / cp[ocls == i].mean()), 4) for i, c in enumerate(OCL)}
         res['errors']['onestep_over_copy']['all'] = round(float(oe.mean() / cp.mean()), 4)
         # decomposition + energy score
@@ -226,9 +230,9 @@ def main():
             per = [probes.read(v['gen'][m, k - 1], vis) for v in vs]
             row = {key: (round(sum(p[key] for p in per) / J, 4) if per[0][key] is not None else None) for key in per[0]}
             row_tf = probes.read(vs[0]['tf'][m, k - 1], vis)
-            row_true = probes.read(fut[m, k - 1], vis)
+            row_true = probes.read(fut[m, k - 1].float(), vis)
             row_copy = probes.read(root[m], vis)
-            five = vis5[m][:, :, k - 1]                                                                  # [n,5,1534]
+            five = vis5[m][:, :, k - 1].float()                                                          # [n,5,1534]
             for j, nm in enumerate(MOBS):
                 row[f'{nm}_count_5futures'] = round(float(AllProbes.facts(five)['mobs'][..., j].float().sum(-1).mean()), 4)
             res['facts'][str(k)] = {'imagined': row, 'teacher_forced': row_tf, 'true_tokens': row_true, 'copy_root': row_copy}
@@ -298,7 +302,7 @@ def main():
         for k in DEPTHS:
             m = alive0[:, k - 1]
             gk = torch.stack([v['gen'][m, k - 1].float() for v in vs]).mean(0)
-            dg = SD.nearest(codes, gk, torch.device('cpu')); dt = SD.nearest(codes, fut[m, k - 1], torch.device('cpu'))
+            dg = SD.nearest(codes, gk, torch.device('cpu')); dt = SD.nearest(codes, fut[m, k - 1].float(), torch.device('cpu'))
             man[str(k)] = {c: [round(float(dg[cls[m, k - 1] == ci].mean()), 3), round(float(dt[cls[m, k - 1] == ci].mean()), 3)] for ci, c in enumerate(SD.CLASSES)}
         res['manifold_imagined_vs_true'] = man
         d = OUT / label
