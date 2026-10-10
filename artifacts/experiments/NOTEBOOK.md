@@ -148,6 +148,31 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-10 RESULT (20:40, recorded 10-11 09:4x): decision relevance by region, M16 at window 15 — the HUD carries 97-100% of what imagination misses; the map carries none
+
+**Setup:** `check_h16_subst.py --window 15` (lane178; the machine rebooted after 20:44, before the D-scratch arm, which is
+relaunched in lane183).
+- deepeval's DEV split: 3,096 roots; opportunity roots 640 / 1,309 / 2,590 at k = 1 / 4 / 16.
+- Its real-fitted depth-k heads read the imagined state with one region replaced by the real depth-k tokens.
+
+| M16 (w15), expected safe | k = 1 | k = 4 | k = 16 |
+|---|---|---|---|
+| imagined | 0.570 | 0.678 | 0.591 |
+| + real HUD (tokens 63-80) | 0.999 | 0.737 | 0.688 |
+| + real 3 × 3 around the player | 0.576 | 0.679 | 0.596 |
+| + real map (0-62) | 0.622 | 0.642 | 0.572 |
+| + real edge ring / interior | 0.605 / 0.596 | 0.676 / 0.676 | 0.592 / 0.589 |
+| real | 0.999 | 0.738 | 0.691 |
+| HUD share of the gap / map share | **1.00** / 0.12 | **0.98** / −0.59 | **0.97** / −0.19 |
+
+- Imagined health at depth 16: mean 5.98 vs real 2.42. Danger correlation 0.20 vs real 0.54.
+- **This reproduces the 10-03 window-5 result (HUD share 0.94-0.97) on the L16 world at window 15.**
+- **For decisions, what imagination must get right is the drawn outcome in the HUD (damage, death), not the map.**
+  - The edge ring, which holds the largest proper-score gap (61-71% at depth 1; mostly missing information), has ~0 decision
+    relevance.
+  - The decision-relevant subset of the problems is what drives health: the L1 stall on HUD changes (allocation); the hidden
+    zombie cooldown and the timers outside the window (information); and mob movement only through who becomes adjacent.
+
 ### 10-10 RESULT (20:50): H16 decisions, D scratch vs M16 — the D loss's factual gains carry into decisions (single D seed)
 
 **Setup:** `check_h16_traj.py --window 15` (lane170, 17:10-20:44); DEV-B 1,139 opportunity roots, 149 episodes, 3 head seeds.
