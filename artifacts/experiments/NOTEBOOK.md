@@ -148,6 +148,35 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-10 RESULT (19:04): P-C under AdamW and with seen / never-seen entering — the allocation survives the optimizer
+
+**Setup:** `gradanat.py --seen --adam` (lane179). L16 worlds, 1,002 windows, 60 batches.
+- Each run's saved AdamW state (its weights checked equal to the loaded world's; 133 parameters with state) gives
+  P = 1 / (sqrt(v̂) + eps).
+- Entering is split by whether the cell's world position was in an earlier window frame.
+
+Projection share of the update, raw → AdamW-preconditioned, under each world's OWN loss:
+
+| | never-seen entering | seen entering | own state changed | no state change | HUD changed | HUD same |
+|---|---|---|---|---|---|---|
+| M16 / L1 | 0.370 → 0.345 | 0.033 → 0.034 | 0.024 → 0.028 | 0.423 → 0.426 | 0.011 → 0.012 | 0.053 → 0.059 |
+| D scratch / D loss | 0.613 → 0.564 | 0.129 → 0.129 | 0.049 → 0.059 | 0.074 → 0.079 | 0.058 → 0.080 | 0.053 → 0.060 |
+
+Mean update over batches, AdamW (what momentum follows):
+- M16: never-seen 0.15, unchanged 0.63, own state 0.014, HUD changed 0.008.
+- D scratch: never-seen 0.46, seen 0.11, unchanged 0.14, own state 0.060, HUD changed 0.19.
+
+**Reading:**
+- Preconditioning moves no share by more than ~5 points. **The allocation (P-C) holds for the actual update.**
+- Never-seen terrain takes 35% (L1) / 56% (D) of the update. Seen terrain, which memory could recall, takes 3% / 13%.
+- Own-state changes get 3-6%.
+- The 17:20 entry's raw stage-1 figure (89% to entering, D loss at 36k) included seen terrain. On the L16 world, the split is
+  0.61 never-seen + 0.13 seen.
+- **Not interpretable yet:** the cosine of every category's mean update with the run's own saved momentum direction is ≈ 0
+  (−0.11 to +0.07). The momentum is an average over the last ~10 TRAINING batches (corpus windows); these are diagnosis windows.
+  That is noted, not read as a finding.
+- Stage-1 endpoints (M6 / DS1 at 36k) are next in lane179.
+
 ### 10-10 RESULT (18:56): loss currency, GRADIENT side — L1 spends 86% of its averaged update on content whose facts are already right
 
 **Setup:** `gradanat.py --facts` (lane179). The L16 worlds on 283 TEST windows, 60 batches, raw backbone gradients
