@@ -239,9 +239,39 @@ rescored. Share of the gap removed (not additive; ES is a norm):
   world never saw. A world can at best sample plausible terrain there.
 - E22MS removes the edge gap no better than the deterministic worlds (0.61 vs 0.65-0.71). Its Δ channel does not sample terrain.
 - With depth, the interior's share grows to ~28%: earlier errors move inward, plus mobs and misregistration.
-- **Open:** how much of the edge gap a terrain-SAMPLING world could close (a conditional terrain sampler substitute), vs how much
-  is information no world has. This is the measurement that decides whether a generator's noise should reach entering
-  content.
+- **Open → measured below (`terrainsub.py`):** how much of the edge gap a terrain-SAMPLING world could close.
+
+**D. Can sampling plausible terrain close the edge gap?** (`terrainsub.py`, 18:30-19:00)
+- **Setup:**
+  - 376 TEST+TRAIN roots whose factual future scrolls at depth 1 (76 at night).
+  - The world's prediction on the entering line is replaced by terrain from donor transitions of OTHER episodes: the 17
+    one-step successors of every root; 632-762 donors per direction.
+  - Scored: whole-frame fair ES vs the five futures. For a point forecast, the donors' mean; for E22MS, one donor per sample.
+
+| entering line replaced by | tile agreement with the true entering tiles | gap closed by day: det. worlds / E22MS | at night: det. / E22MS |
+|---|---|---|---|
+| the other real futures (ideal; knows the map) | 1.00 | 1 / 1 | 1 / 1 |
+| 4 donors nearest in the visible edge line's tokens (a conditional terrain sampler) | 0.64 | −0.29 to −0.42 / −0.10 | −0.90 to −1.08 / −0.02 |
+| 4 donors best matching the TRUE entering tiles (control; facts no world has) | 0.88 | +0.13 to +0.22 / **+0.41** | −2.26 to −2.63 / −1.75 |
+| 4 random donors (terrain prior) | 0.35 | −1.50 to −1.80 / −1.19 | −3.55 to −4.10 / −2.23 |
+
+- **The worlds' own entering-line predictions already beat plausible terrain sampled from what they can see.** The conditional
+  sampler is neutral for E22MS and harmful for the point forecasts.
+- **Nearly correct terrain WOULD help a sampler by day** (41% of E22MS's entering gap). That terrain is information the window
+  does not contain: the visible edge line raises tile agreement only from 0.35 to 0.64.
+- **At night, correct tiles under another frame's light and static are far worse than a blurred prediction:**
+  - the token of a cell is not a function of its terrain;
+  - this is the target-space finding (encoder_why) again, and it confounds this substitution at night.
+- **Limits:**
+  - a donor bank of ~700 per direction;
+  - the nearest neighbour uses one line of tokens, while a learned sampler could use the whole window and biome structure.
+  - The bound is therefore "this naive conditional sampler does not help", not "no sampler can".
+- **Reading:**
+  - The largest part of the depth-1 gap (the edge ring, 61-71%) is mostly missing information, not a missing stochastic
+    output.
+  - Memory can recover the seen part: 23% of entering cells in L16 windows; oracle recall 4-10 vs the worlds' 6-26
+    (entering_memory, 10:2x).
+  - No generator samples the unseen part into correctness.
 
 ### 10-10 INCIDENT (11:42-17:10): the lane queue was blocked for 5.5 h by one job
 
