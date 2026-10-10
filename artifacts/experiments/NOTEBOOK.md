@@ -222,7 +222,7 @@ L1). Learning a change pushes against copying the unchanged cells. Entering is ~
 
 **Every encoder:**
 - The patch outputs lose own-state alignment in the deep layers that no loss trains, most of all LDAD's.
-- LDAD's inverse-dynamics objective makes its patch tokens position-coded: 93-96% of their ×12-14 larger re-encoding is
+- LDAD's inverse-dynamics objective makes its patch tokens position-coded: 92-96% of their ×12-14 larger re-encoding is
   position. LDAD λ10's HUD tokens move 135-153 per scroll step.
 - Raw's last layer is the most state-aligned of the four. LDAD's measured gains (move routing, 09-30) did not come through its
   patch tokens as targets.
