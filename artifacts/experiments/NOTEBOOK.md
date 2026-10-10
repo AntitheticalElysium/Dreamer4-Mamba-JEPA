@@ -148,6 +148,24 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-10 RESULT (18:35): C3 chaos, M16 — the deterministic world CONTRACTS; depth error is accumulated bias, not input sensitivity
+
+`chaos.py` (lane177; D continued and D scratch still running). The unperturbed rollout equals the saved export bitwise.
+Root-frame tokens perturbed (x + σ N(0, I), then layer-normed); self-fed 16 steps; median growth rate of the divergence per
+step:
+
+| σ (initial / V) | depth 1 | depth 4 | depth 16: divergence / V | scroll differs at 16 | view offset differs at 16 | tiles differ at 16 | median rate per step |
+|---|---|---|---|---|---|---|---|
+| 0.001 (2e-6) | 7e-6 | 6.2e-5 | 0.0018 | 0.1% | 0.6% | 0.2% | +0.15 → +0.06 |
+| 0.01 (2e-4) | 1.7e-4 | 4.2e-4 | 0.0048 | 0.2% | 1.9% | 0.4% | −0.08 to −0.14 |
+| 0.1 (0.020) | 0.016 | 0.013 | 0.021 | 0.8% | 9.4% | 1.2% | −0.08 to −0.15 |
+
+- **Perturbations of 0.01-0.1 shrink.** At depth 16 the divergence is the size of the initial perturbation (0.021 vs 0.020 of
+  V), 25-300× smaller than M16's actual depth-16 error (gen16 / V ≈ 0.53).
+- **M16's long-horizon error is NOT sensitivity to its input:** it is per-step bias accumulated through self-feeding.
+- **The one discrete instability** is the scroll decision: offsets diverge in up to 9.4% of roots by depth 16. This matches
+  E11 (imagined error growth = wrong move decisions).
+
 ### 10-10 RESULT (18:30): P-D (training dynamics) — not refuted; allocation predicts improvement only for learnable content; each world converges toward its loss's statistic
 
 **Setup:**
