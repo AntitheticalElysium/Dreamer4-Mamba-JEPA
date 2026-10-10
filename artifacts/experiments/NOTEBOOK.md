@@ -148,6 +148,53 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-10 RESULT (18:30): P-D (training dynamics) — not refuted; allocation predicts improvement only for learnable content; each world converges toward its loss's statistic
+
+**Setup:**
+- 12 stage-1 snapshot exports (lane173, 17:11-18:13) and their CPU readouts (cpu180: budget, currency, entering_memory,
+  scoreboard; 18:14-18:25). `pd_summary.py` reads them.
+- M6 (L1) and DS1 (D loss): same seed, data and architecture, from scratch; 6k-36k updates.
+- Classes: the budget categories in the one-step setting. Measure: excess over the RNG floor per token.
+- Allocation: each run's raw projection share under its own loss, averaged over the six snapshots (gradanat).
+
+| class | M6 (L1): 6k → 36k | DS1 (D): 6k → 36k | allocation L1 / D |
+|---|---|---|---|
+| never-seen entering | 47.3 → 38.1 (−19%) | 43.5 → 41.5 (−5%; 37.6 at 24k, then RISES) | 0.21 / 0.69 |
+| seen entering | 43.3 → 15.3 (−65%) | 36.2 → 11.4 (−69%) | ~0 / ~0 |
+| own state changed | 39.4 → 29.1 (−26%) | 25.9 → 14.1 (−46%) | 0.036 / 0.027 |
+| player sprite left | 23.0 → 0.0 | 18.5 → 1.1 | 0.016 / 0.009 |
+| sleep changed | 28.6 → 1.2 | 6.5 → 2.3 | 0.036 / 0.004 |
+| no state change | 0.46 → 0.07 (−84%) | 0.65 → 0.29 (−56%) | 0.59 / 0.12 |
+| HUD changed | 5.81 → 5.73 (**−1.5%**) | 4.71 → 3.18 (−32%) | 0.011 / 0.046 |
+| HUD same | 0.46 → 0.03 (−94%) | 0.43 → 0.20 (−54%) | 0.060 / 0.092 |
+| player token | 4.87 → 0.32 | 2.66 → 0.73 | 0.013 / 0.002 |
+
+(neighbour_changed: excess ≤ 0 in both runs, so improvement is undefined.)
+
+**Against the predeclared rule** (refuted if one loss improves every class at least as fast as the other): **not refuted.**
+- M6 is faster on 6 classes, DS1 on 3 (seen entering, own state, HUD changed).
+- Rank correlation across classes, allocation difference vs improvement difference: 0.18 over all classes. Post hoc, labelled:
+  0.37 without neighbour_changed, 0.41 also without never-seen entering. **Weak.**
+
+**What the curves show instead:**
+1. **Allocation buys improvement only where the content is learnable.**
+   - The D loss's largest allocation, 69% of its raw projection on never-seen terrain, bought −5%, and regressed after 24k.
+   - L1's largest allocation, 59% on unchanged cells, bought −84% of an excess that was already < 0.5.
+2. **L1 never learns HUD changes:** −1.5% in 30k updates (5.81 → 5.73), the health failure's root, as a training curve. The D
+   loss learns them (−32%), and own-state changes twice as well (14.1 vs 29.1 at 36k).
+3. **Same totals, different winners:** one-step L2 per frame 148 (M6) vs 153 (DS1) at 36k.
+4. **Each world converges toward its loss's optimum's failure** (decoded cows / the five futures' count):
+   - M6 at depth 16: 1.30 → 0.31 → 0.15 → 0.22 → 0.17 → 0.11. Erasure grows with training: the median's signature
+     (statoracle).
+   - DS1 at depth 1: 0.98 → 0.97 → 0.98 → 1.01 → 1.13 → 1.50. Superposition grows: the mean's signature.
+5. **Facts:**
+   - DS1 improves zombie AUC (0.89 → 0.96) and depth-16 inventory R² (0.77 → 0.89), where M6 stays flat (0.81 → 0.82;
+     0.74 → 0.74).
+   - Map fact-wrong share: M6 5.1 → 4.3%; DS1 5.2 → 5.1%.
+   - Depth-16 tile accuracy: M6 0.73 → 0.77; DS1 0.69 → 0.75.
+6. **M6's 24k snapshot is an unstable point** in every reading (one-step L2 239 vs 170 at 18k; gradanat total consistency
+   0.86).
+
 ### 10-10 RESULT (18:00): proper scores — sampling pays, but it is not where most of the gap is; an energy score on Raw tokens repeats the allocation
 
 Prompted by Codex's proposal: a noise-conditioned generator trained by an energy score on completed successors, replacing the Δ
