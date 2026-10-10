@@ -172,6 +172,23 @@ relaunched in lane183).
     relevance.
   - The decision-relevant subset of the problems is what drives health: the L1 stall on HUD changes (allocation); the hidden
     zombie cooldown and the timers outside the window (information); and mob movement only through who becomes adjacent.
+- **D-scratch arm (lane183, 10-11 09:35-10:23):**
+
+  | expected safe | k = 1 | k = 4 | k = 16 |
+  |---|---|---|---|
+  | D scratch, imagined | 0.534 | 0.690 | **0.616** |
+  | + real HUD | 0.999 | 0.736 | 0.684 |
+  | + real map / edge / interior | 0.618 / 0.592 / 0.577 | 0.656 / 0.692 / 0.692 | 0.619 / 0.618 / 0.616 |
+  | HUD share / map share | 1.00 / 0.18 | 0.96 / −0.70 | 0.90 / 0.04 |
+
+  - Imagined health at depth 16: 5.46 (M16 5.98; real 2.42). Danger correlation 0.33 (M16 0.20; real 0.54).
+  - **The D loss's decision gain flows through the HUD:**
+    - its depth-16 imagined state is 0.616 vs M16's 0.591, so the gap to real shrinks from 0.100 to 0.076 (−24%);
+    - the HUD still carries 90% of what remains;
+    - its imagined health is lower and better tied to danger.
+  - **Even this world imagines 3.0 more health than reality at depth 16.** Drawn damage in imagination is the decision
+    bottleneck for both worlds.
+  - At k = 1 D scratch's imagined state is worse than M16's (0.534 vs 0.570; 640 roots). The real HUD restores both to 0.999.
 
 ### 10-10 RESULT (20:50): H16 decisions, D scratch vs M16 — the D loss's factual gains carry into decisions (single D seed)
 
