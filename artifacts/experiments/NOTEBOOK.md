@@ -148,7 +148,7 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
-### 10-10 RESULT (18:35): C3 chaos, M16 — the deterministic world CONTRACTS; depth error is accumulated bias, not input sensitivity
+### 10-10 RESULT (18:35; all three worlds 18:51): C3 chaos — the deterministic worlds CONTRACT; depth error is accumulated bias, not input sensitivity
 
 `chaos.py` (lane177; D continued and D scratch still running). The unperturbed rollout equals the saved export bitwise.
 Root-frame tokens perturbed (x + σ N(0, I), then layer-normed); self-fed 16 steps; median growth rate of the divergence per
@@ -165,6 +165,16 @@ step:
 - **M16's long-horizon error is NOT sensitivity to its input:** it is per-step bias accumulated through self-feeding.
 - **The one discrete instability** is the scroll decision: offsets diverge in up to 9.4% of roots by depth 16. This matches
   E11 (imagined error growth = wrong move decisions).
+- **Replicated on D continued and D scratch (18:51; both unperturbed rollouts equal their exports):**
+
+  | world (gen16 / V) | σ 0.001: div16 / rate d1 → d16 | σ 0.01: div16 / rate | σ 0.1: div16 / offset differs at 16 / rate |
+  |---|---|---|---|
+  | M16 (0.528) | 0.0018 / +0.15 → +0.06 | 0.0048 / −0.08 to −0.12 | 0.021 / 9.4% / −0.08 to −0.13 |
+  | D continued (0.473) | 0.0013 / +0.42 → +0.13 | 0.0016 / −0.17 to −0.07 | 0.021 / 9.1% / −0.19 to −0.10 |
+  | D scratch (0.494) | 0.0036 / +0.30 → +0.12 | 0.0044 / −0.11 to −0.06 | 0.022 / 11.7% / −0.12 to −0.08 |
+
+- **Under both losses**, depth-16 divergence is 0.1-4.6% of the actual depth-16 error. Imagination instability is not the
+  deterministic worlds' problem; their long-horizon error is per-step bias, plus scroll-decision flips.
 
 ### 10-10 RESULT (18:30): P-D (training dynamics) — not refuted; allocation predicts improvement only for learnable content; each world converges toward its loss's statistic
 
