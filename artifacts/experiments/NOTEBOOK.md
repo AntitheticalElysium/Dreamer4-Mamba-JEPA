@@ -148,6 +148,97 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-10 INCIDENT (11:42-17:10): the lane queue was blocked for 5.5 h by one job
+
+- From 11:42 the GPU ran only `h16_e22ms` (2.9 GB); lanes 170 / 173 / 177 / 178 waited.
+- Their declared needs (2,300-3,000 MiB + 256) did not fit beside it: free was 2,497 MiB.
+- Those declarations were never measured. The CPU was idle after `encoder_why` finished (11:27).
+- 17:10: lane171 stopped (resumable: draw files and feature progress are saved; it was in draw 6 of 16). `lane171b` resumes
+  it once 170 / 173 / 177 / 178 are done.
+- 17:10 h16_dscratch started; 17:11 sb_export_snapshots started beside it.
+- Lesson: before queueing, check the declared needs against the longest running job.
+
+### 10-10 RESULT (17:20): P-C (gradient anatomy) — HOLDS; the update becomes noise from unseen terrain as training proceeds
+
+`gradanat.py`, 63 batches per snapshot (stage-1 worlds, bs 16; noise consistency 1/√63 = 0.126), 60 batches for the L16
+worlds (bs 4; 0.129). The objective was reproduced exactly (relative error 0.0) for both losses.
+
+Cells: **projection share** of the update / grad-norm ratio / **cross-batch consistency**, under each world's OWN loss:
+
+| world | entering (77% never seen) | own state changed | no state change | total consistency |
+|---|---|---|---|---|
+| M6 @ 6k (L1) | 0.09 / 0.23 / 0.35 | 0.04 / 0.19 / 0.58 | 0.56 / 0.69 / 0.43 | 0.39 |
+| M6 @ 36k (L1) | 0.37 / 0.55 / 0.19 | 0.05 / 0.24 / 0.58 | 0.46 / 0.62 / 0.48 | 0.33 |
+| M16 (L1) | 0.40 / 0.54 / 0.20 | 0.02 / 0.13 / 0.51 | 0.42 / 0.55 / 0.46 | 0.34 |
+| DS1 @ 6k (D loss) | 0.29 / 0.49 / 0.27 | 0.04 / 0.18 / 0.51 | 0.29 / 0.45 / 0.46 | 0.37 |
+| DS1 @ 36k (D loss) | **0.89 / 0.94 / 0.18** | **0.01** / 0.10 / 0.38 | 0.04 / 0.15 / 0.35 | 0.19 |
+| D scratch L16 (D loss) | 0.74 / 0.85 / 0.16 | 0.05 / 0.24 / 0.44 | 0.07 / 0.23 / 0.39 | 0.18 |
+
+**Against the predeclared rule** (refuted if rare-change consistency ≤ irreducible consistency, or the irreducible norm share
+< 25%): **not refuted.**
+- In every late world, own-state changes are 2-3× more consistent than entering terrain (0.38-0.58 vs 0.16-0.20).
+- Entering terrain has 54-94% of the gradient norm.
+
+**Over training:**
+- Entering's share of the update rises (L1 0.09 → 0.37; D 0.29 → 0.89) while its consistency falls toward noise (0.35 → 0.19;
+  0.27 → 0.18). Its learnable part gets learned; what remains is noise, and it takes over the update.
+- The D loss's whole update is close to noise late: total consistency 0.37 → 0.19, vs 0.126 for pure noise.
+- Own-state changes stay consistent throughout but receive 1-5% of the direction.
+
+**Conflict:** the cosine between the own-state-change and no-change gradients is −0.15 (DS1 @ 36k, D loss) and −0.18 (M6 @ 36k,
+L1). Learning a change pushes against copying the unchanged cells. Entering is ~orthogonal to both (−0.01 to 0.09).
+
+**The allocation is the loss's, not the world's:** scored under the other loss, each world shows that loss's pattern.
+- M16 under the D loss: entering 0.88 of the update.
+- D scratch under L1: no-change 0.43 and entering 0.28.
+
+**Reading:** P-C holds, with the predicted structure.
+- Under L1, about half of every update copies unchanged cells, a consistent pull that includes the night static.
+- Under the D loss, by the end, ~90% of every update chases never-seen terrain, and that gradient is near-random.
+- Under both, the facts that change get a few percent.
+- **This is the third face of the same cause:** the loss's currency allocates the update by error magnitude, and the largest
+  errors are the unlearnable ones.
+
+### 10-10 RESULT (17:20): encoder interventions across encoders, and E22MS decisions (partial)
+
+`encoder_why.py`, all 1,002 roots per encoder. Raw's checks reproduce encoder_diag: S0 R² 0.5926 vs 0.592; S2 0.888 vs
+0.888. Final tokens match the caches to ≤ 0.002.
+
+| encoder | own-state R² final (day / night) | best layer | day-scroll re-encoding: real / rigid translation / positions matched | HUD jitter, 18 tokens (still day / scroll day) | night static, ring 4: own pixels / context |
+|---|---|---|---|---|---|
+| Raw | 0.59 (0.79 / 0.33) | L6 0.69 | 1.56 / 1.54 / 0.75 | 12.0 / 9.1 | 11.3 / 0.13 |
+| TC | 0.38 (0.49 / 0.41) | L1 0.67 | 6.40 / 6.10 / 1.82 | 54.1 / 36.0 | 20.7 / 1.85 |
+| LDAD λ1 | 0.34 (0.41 / 0.23) | emb 0.62 | 21.5 / 19.5 / 1.50 | 11.6 / 28.6 | 9.9 / 0.18 |
+| LDAD λ10 | 0.28 (0.34 / 0.14) | emb 0.61 | 18.4 / 17.5 / 0.67 | 15.3 / 135.3 | 2.4 / 0.08 |
+
+**Raw:**
+- Re-encoding on scroll is 99% a rigid-translation effect: half position embeddings, half global context.
+- The context part is flat with distance from the entering edge (0.84 → 0.68 → 0.74): global, not local bleeding.
+- A single-patch edit puts only 3-11% of its change on other tokens, flat with distance. On a scroll every patch moves, and
+  those small global effects add up.
+- HUD pixels are identical in 100% of 12,546 unchanged-HUD pairs. Their token change is 0 at the embedding and grows with
+  depth to 9-12: entirely attention to the map.
+- Night static is 99% the cell's own pixels.
+
+**Every encoder:**
+- The patch outputs lose own-state alignment in the deep layers that no loss trains, most of all LDAD's.
+- LDAD's inverse-dynamics objective makes its patch tokens position-coded: 93-96% of their ×12-14 larger re-encoding is
+  position. LDAD λ10's HUD tokens move 135-153 per scroll step.
+- Raw's last layer is the most state-aligned of the four. LDAD's measured gains (move routing, 09-30) did not come through its
+  patch tokens as targets.
+
+**E22MS H16 decisions** (window 15; DEV-B 1,139 opportunity roots; 3 head seeds), before the pause:
+
+| reading | trajectory head | snapshot head |
+|---|---|---|
+| E22MS, 1 sample | 0.630 (0.6317 / 0.6298 / 0.6297) | 0.615 |
+| M16 (`__w15.json`) | 0.657 | 0.623 |
+| references | prior 0.616, one real future 0.679, uniform 0.571, oracle31 0.766 | |
+
+- One E22MS sample decides worse than M16 (−0.027) and only slightly better than the prior.
+- The 16-sample readout (M1 / M4 / M16, averaged P(dead by 16)) is the test of whether sampling pays. It is paused at draw 6
+  and not judged.
+
 ### 10-10 RESULT (11:40): the loss vs the network, by substitution — the per-element losses' OPTIMA already fail the mob facts, in opposite directions
 
 **Question:** a deterministic world trained by a per-element loss can at best output that loss's optimal statistic of the
