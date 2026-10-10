@@ -148,6 +148,82 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-10 RESULT (18:00): proper scores — sampling pays, but it is not where most of the gap is; an energy score on Raw tokens repeats the allocation
+
+Prompted by Codex's proposal: a noise-conditioned generator trained by an energy score on completed successors, replacing the Δ
+posterior, codebook and prior. `properscore.py` tests two of its premises on the exports, before anything is trained.
+
+**Corrections accepted from Codex's review (verified):**
+- **The per-class energy scores in `scoreboard.py` are not proper.** The mob / entering / static masks are chosen from the
+  realized futures (`stochdiag.classes`). Only the HUD and player classes are fixed. The scoreboard's "E22MS better on energy
+  score" by class is withdrawn as a proper-score claim; the fixed-region scores below replace it.
+- **"40% of the L1 change mass is renderer noise" (Part II-A heading) overstates it.**
+  - 40% (L1) / 34% (L2) is the mass of NIGHT cells with NO state change.
+  - Of their squared change, the measured static (2 × the identical-state variance per ring) is ~74%: 58 / 76 / 84 / 86% at
+    rings 1-4 when the view is still, 10 / 39 / 68 / 77% when it scrolls.
+  - The rest is re-encoding and lighting drift.
+  - Night static is therefore ≈ 25% of the L2 change mass.
+  - The noise check matches visible-state descriptors, not full simulator states. By day the variance at identical
+    descriptors is exactly 0 over 2,255 frames, so rendering depends on nothing else by day.
+- **P-C measured RAW backbone gradients, not AdamW's update, and its `entering` includes terrain seen earlier in the window.**
+  "~90% of every update chases never-seen terrain" is withdrawn.
+  - What was measured: under the D loss at 36k, entering cells receive 89% of the raw-gradient projection, with cross-batch
+    consistency 0.18 (vs 0.126 for pure noise).
+  - `gradanat --adam --seen` (preconditioned by the saved AdamW moments; seen / never-seen split) is queued to measure the
+    actual update.
+
+**A. Proper scores** (fair energy score, fixed regions, vs the five real futures; self-fed from the root; paired
+episode-clustered 95% intervals, 143 episodes). Whole frame:
+
+| depth | ideal sampler (4 real futures, leave-one-out) | ideal point (mean / median of 4) | E22MS, 4 samples | M16 | D continued | D scratch | E22MS Δ zeroed | copy root |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 3.36 | 5.60 / 5.56 | 8.67 | 10.85 | 10.77 | 10.85 | 11.32 | 27.2 |
+| 2 | 3.99 | 6.60 / 6.42 | 11.95 | 15.46 | 15.09 | 15.33 | 15.78 | 37.5 |
+| 4 | 5.19 | 8.58 / 8.17 | 18.09 | 24.21 | 23.08 | 23.21 | 24.26 | 51.2 |
+| 8 | 6.74 | 11.12 / 10.55 | 26.33 | 36.60 | 34.59 | 34.47 | 36.66 | 66.8 |
+| 16 | 9.72 | 16.08 / 15.13 | 39.48 | 55.03 | 51.78 | 53.32 | 57.42 | 84.2 |
+
+- **E22MS beats every deterministic world at every depth.**
+  - Depth 1: E22MS − D scratch −2.19 [−2.39, −2.00]; E22MS − M16 −2.19 [−2.52, −1.86].
+  - Depth 16: −13.84 [−15.00, −12.60] and −15.55 [−17.44, −13.64].
+  - Its own decoder with Δ zeroed is the worst: −2.66 at 1, −17.94 at 16.
+- **Depth 1 decomposition:**
+  - E22MS's sampling gain (2.19) is the size of the ideal sampler's gain over the ideal point (2.24 [2.03, 2.43]).
+  - E22MS's gap to the ideal sampler (5.30 [4.96, 5.66]) equals the deterministic worlds' gap to the ideal point (5.26-5.29).
+  - **Sampling removed the point penalty and left the rest untouched.**
+  - Of D scratch's distance to the ideal sampler (7.49), sampling closes 29%. At depth 16, it closes 32% of 43.6.
+  - The other ~70% is information (hidden state, unseen terrain), model error and compounding.
+- **Regions:**
+  - HUD at depth 1: every world is ~10× the ideal (2.0-2.3 vs 0.19), and E22MS ≈ the deterministic worlds (−0.13 vs D scratch).
+  - Map at night, depth 1: E22MS 14.57 ≈ the ideal POINT 14.37, vs the ideal sampler 9.04. It does not sample the static as
+    reality does.
+  - Map by day, depth 1: E22MS 6.50 vs ideal 1.79, ideal point 3.1.
+
+**B. The currency of each loss at the output** (depth 1, ONE observed successor as in training, budget.CATS with seen /
+never-seen entering). Share of the SYSTEMATIC gradient: the part that does not depend on which future happened. Totals:
+systematic fraction 0.72-0.91, vs 0.2 for pure outcome noise.
+
+| loss, at E22MS's samples | unchanged cells | never-seen entering | seen entering | own-state changes | neighbours | HUD, values changed | HUD, values same (jitter) |
+|---|---|---|---|---|---|---|---|
+| L1 | 0.670 | 0.037 | 0.004 | 0.007 | 0.023 | 0.040 | 0.193 |
+| MSE | 0.212 | 0.631 | 0.019 | 0.043 | 0.036 | 0.032 | 0.015 |
+| energy score, whole frame | 0.423 | 0.245 | 0.015 | 0.051 | 0.036 | 0.067 | 0.131 |
+| energy score, map + HUD regions | 0.227 | 0.101 | 0.006 | 0.024 | 0.015 | 0.106 | 0.503 |
+
+- The deterministic worlds give the same pattern (M16 / D scratch under the whole-frame energy score: own-state 7.3 / 5.1%).
+- For a point forecast the whole-frame energy score's gradient is MSE's direction normalized, so its allocation equals MSE's.
+  It differs only through a sampler's repulsion term.
+- **Reading:**
+  - An energy score on frozen Raw tokens sends 5% of its systematic update to own-state changes and 7% to HUD value changes.
+  - The rest goes to unchanged cells (42%), never-seen terrain (25%) and HUD jitter (13%).
+  - Splitting the score into fixed regions (Pic et al.) makes HUD jitter half of it, because the HUD's small norm is
+    normalized up and most of its error is map-context jitter (`encoder_why` E3).
+  - The proposal's premise "a sampler under a proper score beats point forecasts" holds. "That loss would put its pressure on
+    the facts" is false in this target space.
+- At the ideal sampler (pure outcome noise), the score's gradient is on unchanged cells (0.57) and own-state changes (0.22):
+  the stochastic outcomes.
+- Not additive with P-C: this is output space, model-free; P-C is the backbone side.
+
 ### 10-10 INCIDENT (11:42-17:10): the lane queue was blocked for 5.5 h by one job
 
 - From 11:42 the GPU ran only `h16_e22ms` (2.9 GB); lanes 170 / 173 / 177 / 178 waited.
@@ -194,7 +270,7 @@ L1). Learning a change pushes against copying the unchanged cells. Entering is ~
 
 **Reading:** P-C holds, with the predicted structure.
 - Under L1, about half of every update copies unchanged cells, a consistent pull that includes the night static.
-- Under the D loss, by the end, ~90% of every update chases never-seen terrain, and that gradient is near-random.
+- Under the D loss, by the end, ~90% of every update chases never-seen terrain, and that gradient is near-random. **[WITHDRAWN 18:00: raw gradient, not AdamW's update; `entering` includes seen terrain; consistency 0.18 vs noise 0.126 is not 'random'. What holds: 89% of the RAW-gradient projection, consistency 0.18. See the 18:00 entry; `--adam --seen` queued.]**
 - Under both, the facts that change get a few percent.
 - **This is the third face of the same cause:** the loss's currency allocates the update by error magnitude, and the largest
   errors are the unlearnable ones.
@@ -539,6 +615,8 @@ scoreboard is the proper comparison.
 - under D's loss, entering cells carry 55% of the loss and 84% of the direction; own-state changes get −0.8%.
 
 ### 10-10 RESULT (10:14): Part II-A (encoder) — P-A holds: the token target is mostly not game state; 40% of its L1 change mass is renderer noise
+
+**[CORRECTED 18:00: 40% (L1) / 34% (L2) is the mass of night cells with no state change. Measured static is ~74% of their squared change, ≈ 25% of the L2 change mass; the rest is re-encoding and lighting drift. See the 18:00 entry.]**
 
 v2 runs: `encoder_diag.json` (Raw, all five futures, 80,765 frames) and `encoder_diag_{raw,ldad1,ldad10,tc}.json` (root + factual
 future, 17,030 identical frames per encoder).
