@@ -387,6 +387,19 @@ step:
    - Depth-16 tile accuracy: M6 0.73 → 0.77; DS1 0.69 → 0.75.
 6. **M6's 24k snapshot is an unstable point** in every reading (one-step L2 239 vs 170 at 18k; gradanat total consistency
    0.86).
+7. **Seed-8 replication of the L1 side (20:02; lane181 exports + cpu182 readouts; no D-loss seed-8 run exists):**
+
+   | L1, 6k → 36k | seed 7 | seed 8 |
+   |---|---|---|
+   | HUD changed (excess) | 5.81 → 5.73 (−1.5%) | 5.81 → 5.73 (−1.3%) |
+   | cows at depth 16 / five futures | 1.30 → 0.11 | 1.05 → 0.13 |
+   | own state changed | −26% | −22% |
+   | never-seen / seen entering | −19% / −65% | −19% / −60% |
+   | zombie AUC d1 / inventory R² d16 | 0.81 → 0.82 / 0.74 → 0.74 | 0.82 → 0.82 / 0.74 → 0.74 |
+
+   - The HUD-change stall and the growing erasure under L1 replicate across init seeds.
+   - Seed 7's 24k instability does not occur in seed 8: it is seed-specific.
+   - The D-loss side (superposition growing, 0.98 → 1.50) remains single-seed.
 
 ### 10-10 RESULT (18:00): proper scores — sampling pays, but it is not where most of the gap is; an energy score on Raw tokens repeats the allocation
 
