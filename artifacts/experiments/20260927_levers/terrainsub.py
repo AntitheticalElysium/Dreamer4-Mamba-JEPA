@@ -10,7 +10,7 @@ successor. The world's prediction on that line is replaced by:
           visible line the terrain enters next to). Taken: the K = 4 donors whose edge line is nearest in token space (L2) to
           the target root's (one per sample; for a point forecast, their mean): plausible terrain given what the world sees
   rand    4 random donors of the same direction from other episodes: the terrain prior, ignoring the view
-  tile    CONTROL (added 18:5x, after nn and rand both scored worse than the worlds): the 4 donors whose entering line's
+  tile    CONTROL (added 18:0x, after nn and rand both scored worse than the worlds): the 4 donors whose entering line's
           TRUE tiles agree best with the target's true entering tiles (an oracle on the facts; ties by the nn distance). If even
           these do not close the gap, a donor token carries more than its terrain (its own frame's context, light and static;
           encoder_why), and the substitution cannot measure terrain sampling.

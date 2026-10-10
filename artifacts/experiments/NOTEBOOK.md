@@ -241,7 +241,7 @@ rescored. Share of the gap removed (not additive; ES is a norm):
 - With depth, the interior's share grows to ~28%: earlier errors move inward, plus mobs and misregistration.
 - **Open → measured below (`terrainsub.py`):** how much of the edge gap a terrain-SAMPLING world could close.
 
-**D. Can sampling plausible terrain close the edge gap?** (`terrainsub.py`, 18:30-19:00)
+**D. Can sampling plausible terrain close the edge gap?** (`terrainsub.py`, 17:55-18:10)
 - **Setup:**
   - 376 TEST+TRAIN roots whose factual future scrolls at depth 1 (76 at night).
   - The world's prediction on the entering line is replaced by terrain from donor transitions of OTHER episodes: the 17
