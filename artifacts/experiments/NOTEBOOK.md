@@ -148,6 +148,36 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-10 RESULT (18:56): loss currency, GRADIENT side — L1 spends 86% of its averaged update on content whose facts are already right
+
+**Setup:** `gradanat.py --facts` (lane179). The L16 worlds on 283 TEST windows, 60 batches, raw backbone gradients
+(`--adam` pending). The objective was reproduced (relative error ≤ 1.5e-7). Categories are the world's OWN decoded fact errors
+per batch (currency.py's probes).
+- **Projection share:** the per-batch update.
+- **Mean-update share:** the share of the update averaged over batches, which is what momentum follows.
+
+| world / loss | map, fact wrong: proj / mean update / consistency | map, facts right | HUD values wrong | HUD values right |
+|---|---|---|---|---|
+| M16 / L1 (own) | 0.21 / **0.10** / 0.20 | 0.70 / **0.81** / 0.34 | 0.014 / 0.007 / 0.27 | 0.06 / 0.05 / 0.33 |
+| M16 / D loss | 0.73 / 0.59 / 0.20 | 0.25 / 0.40 / 0.36 | 0.013 / 0.004 / 0.66 | 0.002 / 0.001 / 0.53 |
+| D scratch / D loss (own) | 0.57 / **0.37** / 0.30 | 0.30 / 0.21 / 0.39 | 0.06 / 0.09 / 0.41 | 0.06 / **0.33** / 0.48 |
+| D scratch / L1 | 0.10 / 0.04 / 0.34 | 0.73 / 0.69 / 0.43 | 0.025 / 0.031 / 0.37 | 0.14 / 0.23 / 0.66 |
+
+(noise consistency 0.129)
+
+- **Under L1, 81% (map) + 5% (HUD) of the averaged update goes to content whose decoded facts are already right.** Only 10%
+  goes to the ~4% of cells with a wrong fact; 0.7% to wrong HUD values.
+- **The D loss aims at wrong facts:** 37% + 9% of the averaged update. Yet 54% still goes to right content, a third of it to
+  HUD tokens whose values are right (the jitter, `encoder_why` E3).
+- **The allocation follows the loss, not the world:** swap the losses and the pattern swaps.
+- **The fact-wrong gradient is the least consistent across batches** (0.20-0.30 vs 0.34-0.43). Wrong facts are diverse, and
+  their per-batch gradients partly cancel in the average.
+- **This closes the currency chain on both sides:**
+  - prediction: 62.5% of M16's L1 error is on fact-correct cells;
+  - gradient: 86% of L1's averaged update goes to fact-correct content;
+  - outcome (P-D): L1 stalls on HUD changes (−1.5% in 30k updates) and on own-state changes (−26% vs −46% under D).
+- Pending: the AdamW-preconditioned version (`--adam`, lane179 next).
+
 ### 10-10 RESULT (18:35; all three worlds 18:51): C3 chaos — the deterministic worlds CONTRACT; depth error is accumulated bias, not input sensitivity
 
 `chaos.py` (lane177; D continued and D scratch still running). The unperturbed rollout equals the saved export bitwise.
