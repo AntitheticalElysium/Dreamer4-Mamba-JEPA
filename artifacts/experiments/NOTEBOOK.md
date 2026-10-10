@@ -148,6 +148,38 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-10 RESULT (20:50): H16 decisions, D scratch vs M16 — the D loss's factual gains carry into decisions (single D seed)
+
+**Setup:** `check_h16_traj.py --window 15` (lane170, 17:10-20:44); DEV-B 1,139 opportunity roots, 149 episodes, 3 head seeds.
+Paired, episode-clustered 95% intervals (2,000 draws) on the per-root safe rows saved in each resume store.
+
+| world | trajectory | snapshot | traj − snapshot | Brier, P(dead by k) | AUC dead by 16 (key 0) |
+|---|---|---|---|---|---|
+| D scratch (D loss, seed 7) | **0.670** | **0.644** | +0.026 [+0.015, +0.037] | **0.071** | **0.898** |
+| M16 seed 7 (L1) | 0.657 | 0.623 | +0.035 [+0.022, +0.048] | 0.127 | 0.823 |
+| M16 seed 8 (L1) | 0.647 | 0.621 | +0.026 [+0.013, +0.040] | 0.093 | 0.867 |
+
+References: prior 0.616, one real future 0.679, oracle31 0.766, uniform 0.571.
+
+| paired difference | trajectory | snapshot |
+|---|---|---|
+| D scratch − M16 s7 | +0.013 [−0.000, +0.026] | **+0.021 [+0.008, +0.035]** |
+| D scratch − M16 s8 | **+0.023 [+0.012, +0.035]** | **+0.024 [+0.011, +0.037]** |
+| M16 s7 − M16 s8 (seed noise) | +0.010 [+0.002, +0.019] | +0.002 [−0.008, +0.014] |
+
+- **D scratch decides better than M16.**
+  - Resolved on the snapshot head against both L1 seeds, and on the trajectory head against seed 8.
+  - Borderline against seed 7's trajectory head (lower bound −0.0004).
+  - Its death forecasts are better calibrated (Brier 0.071 vs 0.093-0.127).
+  - It closes 86% of the prior → one-real-future gap on the trajectory head (M16: 65% / 49%).
+- **The link:** the D loss learns HUD changes (−32% vs −1.5%), own-state changes (−46% vs −26%) and zombies (AUC 0.96 vs 0.82)
+  (P-D). Those gains reach the decisions, despite its cow superposition and its 2.5× copy error on still cells.
+- **Caveats:**
+  - a single D seed;
+  - M16's own seed spread is 0.010 (trajectory);
+  - D continued (lane170 next) is the second D-loss world, but not an independent seed.
+- E22MS (1 sample): 0.630 / 0.615, below both. Its 16-sample readout is pending (lane171b).
+
 ### 10-10 RESULT (20:05): E22MS cow inflation, mechanism — the decoder leaves faint copies at the source; faint cows persist and duplicate again
 
 **Setup:** `cowdiag.py`, TEST roots, self-fed rollouts.
