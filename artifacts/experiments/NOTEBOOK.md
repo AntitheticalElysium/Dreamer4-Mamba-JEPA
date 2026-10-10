@@ -175,7 +175,13 @@ Mean update over batches, AdamW (what momentum follows):
 - **Not interpretable yet:** the cosine of every category's mean update with the run's own saved momentum direction is ≈ 0
   (−0.11 to +0.07). The momentum is an average over the last ~10 TRAINING batches (corpus windows); these are diagnosis windows.
   That is noted, not read as a finding.
-- Stage-1 endpoints (M6 / DS1 at 36k) are next in lane179.
+- **Stage-1 endpoints (19:16; 63 batches, own loss):**
+  - DS1 @ 36k (D loss): never-seen entering 0.839 → **0.813** under AdamW (mean update 0.822; consistency 0.20 vs 0.126 noise);
+    seen entering 0.05; own state 0.013; no change 0.05; HUD changed 0.025.
+  - M6 @ 36k (L1): never-seen 0.355 → 0.311; no change 0.456 → 0.474; own state 0.048 → 0.052.
+  - **This replaces the withdrawn 17:20 sentence, now measured properly:** at the end of D-loss training, 81% of the AdamW
+    update's projection is on terrain never seen in the window. Its gradient is barely more consistent across batches than
+    noise (0.20 vs 0.126). Own-state changes get 1.3%.
 
 ### 10-10 RESULT (18:56): loss currency, GRADIENT side — L1 spends 86% of its averaged update on content whose facts are already right
 
@@ -453,7 +459,7 @@ L1). Learning a change pushes against copying the unchanged cells. Entering is ~
 
 **Reading:** P-C holds, with the predicted structure.
 - Under L1, about half of every update copies unchanged cells, a consistent pull that includes the night static.
-- Under the D loss, by the end, ~90% of every update chases never-seen terrain, and that gradient is near-random. **[WITHDRAWN 18:00: raw gradient, not AdamW's update; `entering` includes seen terrain; consistency 0.18 vs noise 0.126 is not 'random'. What holds: 89% of the RAW-gradient projection, consistency 0.18. See the 18:00 entry; `--adam --seen` queued.]**
+- Under the D loss, by the end, ~90% of every update chases never-seen terrain, and that gradient is near-random. **[WITHDRAWN 18:00: raw gradient, not AdamW's update; `entering` includes seen terrain; consistency 0.18 vs noise 0.126 is not 'random'. What holds: 89% of the RAW-gradient projection, consistency 0.18. MEASURED 19:16 (`--adam --seen`): 81% of the AdamW update on NEVER-seen terrain (5% on seen), consistency 0.20; see the 19:04 entry.]**
 - Under both, the facts that change get a few percent.
 - **This is the third face of the same cause:** the loss's currency allocates the update by error magnitude, and the largest
   errors are the unlearnable ones.
