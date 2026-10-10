@@ -148,6 +148,54 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-10 RESULT (19:50): checks prompted by the user's questions and Codex's revision — corrections to Problem 1 and to the currency figures
+
+**1. Is the contextual re-encoding predictable, and predicted?** (`reenc_predicted.py`, depth 1, true context,
+factual future, day only)
+
+Share of the target's own change that each world predicts (1 − world error / copy error):
+
+| | unchanged cells, scroll (change 1.50 / token) | HUD values unchanged (jitter 0.56 / token) | unchanged cells, still (change 0.059) |
+|---|---|---|---|
+| M16 (L1) | **0.88** | **0.95** | world 0.056 ≈ copy |
+| D continued / D scratch | 0.82 / 0.73 | 0.74 / 0.72 | world 0.13 / 0.15 = 2.2-2.5× copy |
+| E22MS sample / Δ zeroed | 0.52 / 0.47 | 0.72 / 0.73 | world 0.34 / 0.33 = 5.7× copy |
+
+- **The deterministic context dependence of the tokens is predictable and largely predicted** (M16: 88% of scroll re-encoding,
+  95% of HUD jitter).
+- **"The target isn't game state" was the wrong headline (the user's objection; Codex agrees).** What the target carries that
+  no world can predict is the night static, ≈ 25% of the L2 change mass. Usefulness of the context is unmeasured.
+- **New:** the D-loss and E22MS worlds damage cells that do not change at all (still unchanged cells: 2.2-5.7× a copy's
+  error).
+
+**2. Where do the wrong facts sit, net of the probes' own errors?** (`wrongfacts_by_cat.py` (+ the same on TRUE tokens); depth 1; TEST roots;
+17,546 map cells)
+- **Probe baseline:** on the TRUE tokens the probes mark 2.04% of cells wrong (2.02% of unchanged cells, 5.6% of own-state-
+  changed).
+- **Correction to the 10:34 currency entry:** its "4-6% of cells carry a wrong fact" includes ~2 points of reader error.
+  - World-attributable: M16 2.1%, D continued 2.2%, D scratch 3.0%, E22MS Δ zeroed 3.4%.
+  - The "62.5% of L1 error on fact-correct cells" is conservative: probe-wrong cells have small world error.
+- **World-attributable wrong facts by category:**
+  - M16: never-seen entering 45%, own-state changes 41%, unchanged 10%.
+  - D scratch: entering 31%, own 26%, unchanged 25%, neighbours 16%.
+  - D continued: 42 / 36 / 12 / 8%.
+  - E22MS Δ zeroed: unchanged 38%, entering 28%, neighbours 19%, own 12%.
+- **Correction to the 19:2x inference** ("D's late wrong facts are largely unseen terrain"): at depth 1 unseen terrain is
+  31-45% of world-attributable wrong facts, the largest single bucket but not "largely". Own-state changes are the other big
+  one.
+
+**3. Damage and movement determinism** (Codex's verification; recomputed from the one-step data, 17,032 root × action pairs
+with all four env keys alive):
+- 471 pairs show damage under ≥ 1 key; 457 (97.0%) under all four. Immediate damage is deterministic given the full
+  (hidden) state. Codex counted 389 / 403 with another definition.
+- Mob layouts differ between keys after ONE step in 51% of pairs. The source matches: cows draw from 8 entries, half of
+  them "stay"; zombies chase with p 0.75 when close; spawns are random.
+
+**4. Codex's citations from this NOTEBOOK, verified:**
+- E17 recall: same-slot window 5 → 15 is 0.369 → 0.616 / 0.365 → 0.643; moved slot is 0.396 → 0.405 / 0.431 → 0.440.
+- Consequences caught: 0.002 → 0.562.
+- rollout2 was not an exact port (E12 correction).
+
 ### 10-10 RESULT (19:04): P-C under AdamW and with seen / never-seen entering — the allocation survives the optimizer
 
 **Setup:** `gradanat.py --seen --adam` (lane179). L16 worlds, 1,002 windows, 60 batches.
