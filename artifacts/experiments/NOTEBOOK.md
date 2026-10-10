@@ -224,6 +224,25 @@ systematic fraction 0.72-0.91, vs 0.2 for pure outcome noise.
   the stochastic outcomes.
 - Not additive with P-C: this is output space, model-free; P-C is the backbone side.
 
+**C. Where the gap to the ideal lives** (`properscore.py --subst`). One fixed region at a time is replaced by the ideal of the
+predictor's class: the ideal point for the deterministic worlds, the ideal sampler for E22MS. The whole-frame score is
+rescored. Share of the gap removed (not additive; ES is a norm):
+
+| | edge ring (30 cells; where terrain enters) | interior (32) | HUD (18) | player |
+|---|---|---|---|---|
+| depth 1: M16 / D cont. / D scratch / E22MS | 0.65 / 0.71 / 0.69 / 0.61 | 0.05 / 0.04 / 0.06 / 0.17 | 0.18 / 0.09 / 0.08 / 0.08 | ≤ 0.007 |
+| depth 4 | 0.43 / 0.49 / 0.50 / 0.45 | 0.16 / 0.15 / 0.16 / 0.20 | 0.13 / 0.10 / 0.07 / 0.09 | ≤ 0.005 |
+| depth 16 | 0.31 / 0.33 / 0.35 / 0.33 | 0.28 / 0.28 / 0.28 / 0.29 | 0.09 / 0.07 / 0.06 / 0.07 | ≤ 0.004 |
+
+- At one step, about two-thirds of every world's gap is on the edge ring, the sampler included.
+- **The edge content is mostly epistemic, not aleatoric:** the five futures share the map, so the ideal KNOWS the terrain a
+  world never saw. A world can at best sample plausible terrain there.
+- E22MS removes the edge gap no better than the deterministic worlds (0.61 vs 0.65-0.71). Its Δ channel does not sample terrain.
+- With depth, the interior's share grows to ~28%: earlier errors move inward, plus mobs and misregistration.
+- **Open:** how much of the edge gap a terrain-SAMPLING world could close (a conditional terrain sampler substitute), vs how much
+  is information no world has. This is the measurement that decides whether a generator's noise should reach entering
+  content.
+
 ### 10-10 INCIDENT (11:42-17:10): the lane queue was blocked for 5.5 h by one job
 
 - From 11:42 the GPU ran only `h16_e22ms` (2.9 GB); lanes 170 / 173 / 177 / 178 waited.
