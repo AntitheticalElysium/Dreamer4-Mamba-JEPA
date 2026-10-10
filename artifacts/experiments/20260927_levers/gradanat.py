@@ -13,7 +13,12 @@ Reported per category (over the batches): loss share; gradient norm ratio |g_c| 
 Both objectives are scored on every world (`--loss l1,deltairis`), so what the world IS and what the LOSS allocates are separated.
 Check: on the first batch, sum_c L_c must equal tworld.rollout_losses(world, s, a, 'teacher', recon=...) (printed, relative error).
 --device cpu: the fmamba layers on the reference backend (tests).
-Usage: gradanat.py <world.pt> ... [--loss l1,deltairis] [--batches N] [--device cpu]  -> artifacts/eda/health_chain_v1/gradanat_<world>.json
+--facts (added 11:1x, the loss-currency question on the gradient side): the categories are instead the world's OWN fact errors in each
+batch -- every predicted map cell decoded by scoreboard.AllProbes (fitted on true TRAIN tokens; as currency.py) is map_fact_wrong when
+its tile class or any of the four mob flags differs from the simulator's, else map_fact_correct; the 18 HUD tokens are hud_value_wrong
+when any decoded health / food / drink / energy (rounded) differs, else hud_value_correct; player_token. TEST roots only.
+Usage: gradanat.py <world.pt> ... [--loss l1,deltairis] [--batches N] [--device cpu] [--facts]
+       -> artifacts/eda/health_chain_v1/gradanat_<world>[_facts].json
 """
 import json
 import sys
@@ -39,15 +44,21 @@ def main():
     nb_max = int(args[args.index('--batches') + 1]) if '--batches' in args else 10 ** 9
     paths = [a for i, a in enumerate(args) if not a.startswith('--') and (i == 0 or args[i - 1] not in ('--loss', '--batches', '--device'))]
     dev = torch.device(args[args.index('--device') + 1] if '--device' in args else 'cuda')
+    facts = '--facts' in args
     config = config_from_dict(torch.load(Sp.CHECKPOINT, map_location='cpu', weights_only=False)['config'])
-    meta, _, _ = T.split()
+    meta, train_roots, train_seeds = T.split()
     cache = T.build_cache('raw', torch.device('cpu'))
+    names = ('map_fact_wrong', 'map_fact_correct', 'hud_value_wrong', 'hud_value_correct', 'player_token') if facts else BG.CATS
+    if facts:
+        import scoreboard as SB
+        probes = SB.AllProbes(T, cache, meta, train_roots, train_seeds)
+        thr = torch.tensor(probes.thr)
     R = len(meta['seed'])
     root, fut, fa = cache['ctx'][:, -1], cache['fut'], cache['fut_a']
     vis = torch.cat([meta['root_visible'][:, None], meta['future_visible'][:, 0]], 1)                # [R,17,1534]
     toks = torch.cat([root[:, None], fut], 1)                                                         # [R,17,81,192]
     alive = ~meta['future_dead'][:, 0].cumsum(1).bool()
-    ncat = len(BG.CATS)
+    ncat = len(names)
     for path in paths:
         world, st = T.load_world(Path(path), dev)
         world.eval()
@@ -57,7 +68,7 @@ def main():
                 layer.mix.settings = dataclasses.replace(layer.mix.settings, backend='reference')
         L = world.time.shape[0]
         ok = alive[:, L - 2]                                                                          # alive through future frame L-1
-        idx = torch.where(ok)[0]
+        idx = torch.where(ok & ~train_roots if facts else ok)[0]
         # categories of every transition in the window (frame t -> t+1, t = 0..L-2)
         cats = torch.empty(len(idx), L - 1, 81, dtype=torch.long)
         for t in range(L - 1):
@@ -67,7 +78,7 @@ def main():
         bs = 16 if L <= 6 else 4
         res = {'world': st['name'], 'frames': L, 'windows': int(len(idx)), 'batch': bs, 'backbone_params': sum(p.numel() for p in params)}
         for loss in losses:
-            acc = {c: {'loss': 0.0, 'norm_ratio': 0.0, 'proj': 0.0, 'gsum': None, 'nsum': 0.0} for c in BG.CATS}
+            acc = {c: {'loss': 0.0, 'norm_ratio': 0.0, 'proj': 0.0, 'gsum': None, 'nsum': 0.0} for c in names}
             cos = torch.zeros(ncat, ncat, dtype=torch.float64)
             gtot_sum, gtot_n, nb = None, 0.0, 0
             for j in range(0, len(idx), bs):
@@ -81,6 +92,19 @@ def main():
                 e = pred[:, :L - 1].float() - s[:, 1:]                                                # [b,L-1,81,192]
                 n_el = e.numel()
                 ct = cats[j:j + bs].to(dev)                                                           # [b,L-1,81]
+                if facts:
+                    with torch.no_grad():
+                        P = pred[:, :L - 1].detach().float().cpu()
+                        cells = P[:, :, SB.MAPC].flatten(0, 2)
+                        f_ = SB.AllProbes.facts(vis[ii, 1:L])
+                        wrong = (probes.tile(cells).view(*P.shape[:2], 62, 17).argmax(-1) != f_['tile']) | \
+                            ((probes.mob(cells) > thr).view(*P.shape[:2], 62, 4) != f_['mobs']).any(-1)
+                        hw = (probes.hud(P[:, :, 63:81].flatten(0, 1).flatten(1))[:, :4].round().view(*P.shape[:2], 4)
+                              != f_['hud'][..., :4].round()).any(-1)
+                        ct = torch.full(P.shape[:3], 4, dtype=torch.long)
+                        ct[:, :, SB.MAPC] = torch.where(wrong, 0, 1)
+                        ct[:, :, 63:] = torch.where(hw, 2, 3)[..., None]
+                        ct = ct.to(dev)
                 if loss == 'l1':
                     per_tok = e.abs().sum(-1) / n_el                                                  # [b,L-1,81]
                 else:
@@ -102,7 +126,7 @@ def main():
                 g_tot = torch.cat([(g if g is not None else torch.zeros_like(p)).flatten() for g, p in zip(g_tot, params)]).float()
                 gn = float(g_tot.norm()) + 1e-12
                 gs = []
-                for ci, c in enumerate(BG.CATS):
+                for ci, c in enumerate(names):
                     m = ct == ci
                     lc = (per_tok * m).sum()
                     if m.any():
@@ -128,11 +152,11 @@ def main():
                           'consistency': round(float(A['gsum'].norm()) / A['nsum'], 4) if A['nsum'] > 0 else None}
             res[loss] = {'batches': nb, 'noise_consistency': round(nb ** -0.5, 4),
                          'total_consistency': round(float(gtot_sum.norm()) / gtot_n, 4), 'categories': out,
-                         'cosine_matrix': {BG.CATS[i]: {BG.CATS[k]: round(float(cos[i, k] / nb), 3) for k in range(ncat)} for i in range(ncat)}}
+                         'cosine_matrix': {names[i]: {names[k]: round(float(cos[i, k] / nb), 3) for k in range(ncat)} for i in range(ncat)}}
             print(json.dumps({st['name']: {loss: {c: [v['loss_share'], v['projection_share'], v['consistency']] for c, v in out.items()}}}), flush=True)
             for A in acc.values():
                 A['gsum'] = None
-        (OUT / f"gradanat_{st['name']}.json").write_text(json.dumps(res, indent=1))
+        (OUT / f"gradanat_{st['name']}{'_facts' if facts else ''}.json").write_text(json.dumps(res, indent=1))
         del world; torch.cuda.empty_cache()
 
 
