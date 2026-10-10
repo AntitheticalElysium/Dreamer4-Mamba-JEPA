@@ -148,6 +148,47 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-10 RESULT (20:05): E22MS cow inflation, mechanism — the decoder leaves faint copies at the source; faint cows persist and duplicate again
+
+**Setup:** `cowdiag.py`, TEST roots, self-fed rollouts.
+- Every decoded cow at step k (probe score > 0.164, calibrated on true tokens) is classified against the same sequence's
+  previous frame, after its own scroll:
+  - persisted: a cow in the same cell;
+  - moved: a cow at a 4-neighbour that vacated;
+  - duplicated: a cow at a 4-neighbour that is STILL there;
+  - created: nothing nearby;
+  - entering.
+- Shares, with mean probe score in parentheses:
+
+| variant | depth | cows / frame | persisted | moved | duplicated | created | entering |
+|---|---|---|---|---|---|---|---|
+| real (future 0) | 1 / 9-16 | 0.44 / 0.49 | 0.54 (0.89) / 0.52 (0.90) | 0.31 / 0.34 | **0.01** / 0.01 | 0.11 / 0.09 | 0.02 / 0.05 |
+| E22MS, TRUE codes | 1 / 9-16 | 0.57 / **2.36** | 0.35 (0.82) / 0.58 (**0.40**) | 0.42 / 0.22 | **0.10** (0.47) / 0.10 (0.40) | 0.10 / 0.08 | 0.02 / 0.02 |
+| E22MS, prior samples 0-3 | 1 / 9-16 | 0.61-0.66 / 2.93-3.02 | 0.26-0.32 / 0.61-0.62 (0.42-0.43) | 0.32-0.47 / 0.19-0.20 | 0.04-0.13 / 0.11-0.12 | 0.15-0.20 / 0.06 | 0.03-0.05 / 0.02 |
+| E22MS, Δ zeroed | 1 / 9-16 | 0.97 / 0.56 | 0.12 (0.33) / 0.77 (0.26) | 0.66 / 0.11 | 0.16 / 0.06 | 0.06 / 0.02 | 0.01 / 0.03 |
+| D scratch | 1 / 9-16 | 0.92 / 0.47 | 0.39 (0.56) / 0.79 (0.21) | 0.01 / 0.05 | **0.58** (0.20) / 0.04 | 0.01 / 0.05 | 0.00 / 0.08 |
+
+- **The method is clean on real sequences:** 1% duplicated, cows decode at 0.9.
+- **E22MS, with the TRUE posterior codes:**
+  - 10% of its cows each step are duplicates: the source was not vacated when the cow moved;
+  - its cows are half-strength (0.40-0.47 vs 0.90 real) from depth 2 on;
+  - those faint cows PERSIST (58-62% of cows) and are duplicated again, so the count grows: 0.57 → 0.86 → 1.34 → 2.36 per frame
+    over depth groups 1 / 2-4 / 5-8 / 9-16.
+  - The prior samples behave the same (2.9-3.0 at 9-16). **The inflation is the decoder plus feedback, not the prior's
+    codes.**
+- **The deterministic decoders show the mean optimum at step 1, then dilution:**
+  - D scratch: 58% of its depth-1 cows are "duplicates", i.e. the cow both stays and moves (statoracle's superposition), at
+    score 0.20;
+  - these ghosts fade toward the threshold (0.21 at 9-16) and the count falls (0.92 → 0.47);
+  - the Δ-zeroed decoder does the same (0.97 → 0.56).
+- **Reading:**
+  - Given a movement code, the E22MS decoder renders the destination but not the vacated source fully.
+  - Its outputs are partial cows that do not fade, so self-feeding compounds them.
+  - **Inference (not measured):** this is the reconstruction loss's conditional mean over what a quantized Δ code leaves
+    unspecified. Codex's open question, which of decoding, correspondence and feedback causes the inflation, now has a
+    measured answer: decoding (source residue, 10% per step vs 1% real) + feedback (faint residue persists and re-duplicates).
+    The prior is not required.
+
 ### 10-10 RESULT (19:50): checks prompted by the user's questions and Codex's revision — corrections to Problem 1 and to the currency figures
 
 **1. Is the contextual re-encoding predictable, and predicted?** (`reenc_predicted.py`, depth 1, true context,
