@@ -686,6 +686,11 @@ the median:
 The ordering follows the loss: L1 → median-like, squared error → mean-like. The separation is moderate; the census is the strong
 evidence.
 
+**Seed-8 replication (20:03):**
+- M16 seed 8's depth-1 census: zombies 0.124, skeletons 0.039, cows 0.364 (seed 7: 0.117 / 0.039 / 0.357).
+- Depth 16: cows 0.132 (0.135), zombies 0.007 (0.011).
+- Closer to the median on 0.551 of the differing elements (seed 7: 0.550).
+
 **HUD:** the statistics draw the timer decrements at the real rate, because the five futures share the hidden counters, which
 are deterministic given the root's FULL state. The worlds' missing decrements are the information horizon (Part I scoreboard entry, timers), not
 the statistic.
