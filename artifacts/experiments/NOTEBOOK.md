@@ -211,7 +211,18 @@ per batch (currency.py's probes).
   - prediction: 62.5% of M16's L1 error is on fact-correct cells;
   - gradient: 86% of L1's averaged update goes to fact-correct content;
   - outcome (P-D): L1 stalls on HUD changes (−1.5% in 30k updates) and on own-state changes (−26% vs −46% under D).
-- Pending: the AdamW-preconditioned version (`--adam`, lane179 next).
+- The AdamW version of the state-change split is in the 19:04 entry; preconditioning moves shares by ≤ ~5 points.
+- **Over training** (stage-1 snapshots, 18 TEST batches each; noise consistency 0.24, so coarser), mean-update shares:
+
+  | | map fact wrong | map facts right | HUD values wrong | HUD values right |
+  |---|---|---|---|---|
+  | M6 (L1) @ 6k → 36k | 0.16 → 0.19 | 0.67 → 0.73 | 0.02 → 0.02 | 0.10 → 0.05 |
+  | DS1 (D loss) @ 6k → 36k | 0.06 → **0.70** | 0.66 → 0.28 | 0.02 → 0.01 | 0.26 → 0.01 |
+
+  - Under L1, ~75-80% of the averaged update goes to fact-correct content throughout training.
+  - Under the D loss the update moves to wrong facts as the correct content's errors shrink.
+  - At 36k, D's 70% on wrong-fact cells coincides with 81% of its AdamW update on never-seen terrain (19:04 entry). That the
+    late wrong facts are largely unseen terrain is an INFERENCE: the two splits were not cross-tabulated.
 
 ### 10-10 RESULT (18:35; all three worlds 18:51): C3 chaos — the deterministic worlds CONTRACT; depth error is accumulated bias, not input sensitivity
 
