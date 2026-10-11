@@ -148,6 +148,45 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-11 REVIEW (20:30): Codex's and a third party's critiques of the 19:30 synthesis, checked against sources
+
+**Corrections accepted (verified):**
+- **Dreamer-CDP's 6.3 vs 16.2 removes the prior / posterior KL alignment (Ldyn/rep), NOT the categorical latent** (paper l.229).
+  My 19:30 reading was wrong. Its 12.7 (no reward gradient) stands.
+- **"Categorical targets were the load-bearing missing part" overclaims.** What our evidence requires is a distributional
+  transition whose samples are valid, coherent states. Per-tile categorical CE is one route (Dedieu, ITC on our exact
+  frames); continuous latent diffusion / flow is another, already published reconstruction-free:
+  - JEDI (2605.13013): end-to-end JEPA latent diffusion world model, Atari100k, 38 A100-h per run;
+  - Flow-JEPA (2608.29029); VJEPA (2601.14354).
+- **Independent per-tile sampling breaks coherence.** ITC (2605.16457), on Craftax-classic, built on Dedieu's per-tile tokens:
+  - parallel independent readouts duplicate and erase creatures;
+  - a one-to-one copy-or-generate assignment lifts return 67.4 → 72.5% and creature-step accuracy 33.8 → 38.4%.
+  - For an unobstructed cow (Craftax: 50% stay, 4 × 12.5% moves), independent sampling from PERFECT marginals gives the wrong
+    cow count 57% of the time (P(0) 0.29, P(≥2) 0.28).
+- **Per-tile CE bounds each tile's logit gradient, not its share of parameter updates;** "~4% of the gradient" withdrawn.
+- **E22MS's ghost copies:** the cause ("continuous decoding of what the codes leave unresolved") is labelled
+  "Inference (not measured)" at its source; 19:30 promoted it. Measured: source residue + recursive duplication with true codes.
+- **Dedieu's 21.2 vs 67.4:** our statoracle gives a compatible mechanism; it does not isolate their gap (their continuous arm
+  predicts pixels, and its training differs).
+
+**New measurement (third party's question B: how large is the truly random part of a transition?).** 5 futures from the
+same state, visible simulator state, all alive:
+
+| depth | cells whose state differs (of 63) | terrain class differs | mob differs | HUD values differ | inventory differs |
+|---|---|---|---|---|---|
+| 1 | **1.71 (2.7%)** | 0.00 | 1.71 | 0.1% | 4.2% |
+| 2 | 2.48 | 0.22 | 2.28 | 1.4% | 8.8% |
+| 4 | 3.98 | 1.12 | 2.97 | 3.5% | 15.0% |
+
+- Per step, the world's randomness is ~1.7 cells, all mobs.
+- Terrain is deterministic (never-seen terrain is epistemic: fixed but unknown).
+- The HUD is deterministic given the hidden counters.
+- The third party's questions A (memory vs randomness for timers) and C (which content decisions read) were already answered
+  by the 10-10 timer analysis and the region substitution / check_h16_value.
+
+**Not accepted:** a reconstruction decoder for tokenizer pretraining (Codex) conflicts with the project's reconstruction-free
+thesis. In Craftax a stable context-free per-tile vocabulary needs no decoder (Dedieu's NNT is a fixed lookup).
+
 ### 10-11 SYNTHESIS (19:30): our results against the literature, and the plan they point to (no new runs)
 
 **The pattern we found on 09-25 and partly dropped:** every Crafter/Craftax world model that works has categorical
@@ -163,7 +202,7 @@ The 10-10 diagnosis shows the dropped part was the load-bearing one.
 2. **E22MS's faint copies are the same failure one level down.**
    - Its decoder regresses continuous tokens given the codes. What the codes leave unresolved (the posterior gets 86% of
      random moves) is averaged, which leaves a copy at the source (cowdiag: 10% per step with TRUE codes vs 1% real).
-   - Dreamer-CDP (2603.07083): reconstruction-free needs the categorical latent (6.3 without vs 16.2).
+   - ~~Dreamer-CDP (2603.07083): reconstruction-free needs the categorical latent (6.3 without vs 16.2).~~ WRONG: the 6.3 arm removes the prior/posterior KL alignment (see 20:30 review).
 3. **Allocation.**
    - Per-tile cross-entropy bounds each tile's gradient regardless of token distance.
    - Never-seen entering tiles are 761 of ~17,500 map cells at depth 1 (~4%), vs 56-81% of the D loss's update now.
