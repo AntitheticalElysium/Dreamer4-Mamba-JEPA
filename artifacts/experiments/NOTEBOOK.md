@@ -148,6 +148,43 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-11 RESULT (15:05): E22MS H16 with sampled futures — averaging 16 samples reaches parity with the deterministic worlds, not more
+
+**Setup:** `check_h16_traj.py --e16 --window 15` (lane171 10-10 10:21-17:09, paused at draw 6; resumed in lane183 10-11
+10:24-14:57).
+- DEV-B: 1,139 opportunity roots, 149 episodes.
+- Heads are fit on one sample's trajectory features to the 32-key P(dead by k | root, first action). DEV-B is re-imagined to 16
+  samples per action, and the predicted risk is averaged over the first M samples.
+- Per-root safe rows are recomputed from the saved draws: M = 1 reproduces the logged 0.6322 exactly.
+- Paired episode-clustered 95% intervals.
+
+| E22MS | expected safe | vs D scratch (0.670) | vs M16 s7 (0.657) | vs M16 s8 (0.647) |
+|---|---|---|---|---|
+| 1 sample | 0.632 | −0.038 [−0.051, −0.024] | −0.025 [−0.040, −0.010] | −0.015 [−0.030, +0.001] |
+| 4 samples | 0.647 | −0.023 [−0.034, −0.011] | −0.010 [−0.024, +0.005] | +0.000 [−0.013, +0.014] |
+| 16 samples | **0.663** | −0.007 [−0.018, +0.005] | +0.006 [−0.008, +0.020] | **+0.016 [+0.004, +0.029]** |
+
+- Within E22MS: 16 − 1 = **+0.031 [+0.021, +0.043]**; 16 − 4 = +0.016 [+0.008, +0.025].
+- Other readings: trajectory arm (1 sample, 3 head seeds) 0.630; snapshot 0.615. The prior's own end head gets worse with more
+  samples (0.570 / 0.551 / 0.536); this is the terminal-position defect, reported, not judged.
+- **Continuation:** Brier of P(dead by k) **0.050**, the best of all worlds (D scratch 0.071; M16 0.093-0.127). AUC 0.904.
+
+**Reading:**
+1. **Averaging sampled futures pays within the sampler (+0.031, monotone in M)**, as the 10-03 analysis predicted for faithful
+   futures.
+2. **But one E22MS sample decides worse than every deterministic world,** and 16 samples only reach parity:
+   - tied with D scratch and M16 s7, ahead of M16 s8;
+   - at 16× the imagination cost.
+3. **The proper-score advantage (whole-frame ES −2.2 at depth 1, −13.8 at 16) does not become a decision advantage over the
+   best deterministic world.**
+4. **Calibration vs choice:** E22MS has the best-calibrated death forecasts ACROSS roots (Brier), but not the best choice AMONG a
+   root's 17 actions. The decision depends on within-root discrimination (cf. the probe-objective rule).
+5. **Not separated yet:** why its single sample is worse.
+   - Candidates: the decoder failures (cowdiag; 5.7× copy error on still cells) or the protocol (heads fit to a ROOT-level
+     target on ONE sample's features).
+   - Decisions are ~90-97% HUD (region relevance), so the candidate that matters is what its samples do to imagined HEALTH.
+     That was not measured for E22MS.
+
 ### 10-10 RESULT (20:40, recorded 10-11 09:4x): decision relevance by region, M16 at window 15 — the HUD carries 97-100% of what imagination misses; the map carries none
 
 **Setup:** `check_h16_subst.py --window 15` (lane178; the machine rebooted after 20:44, before the D-scratch arm, which is
