@@ -148,6 +148,22 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-11 RESULT (18:35): D continued H16 — the second D-loss world replicates the snapshot-head gain over L1
+
+`check_h16_traj.py --window 15` (lane183, 14:57-17:26). DEV-B: 1,139 opportunity roots, 149 episodes. Paired
+episode-clustered 95% intervals; seed 20261010.
+
+| | trajectory head | snapshot head | Brier |
+|---|---|---|---|
+| D continued | 0.664 | 0.645 | 0.085 |
+| D continued − M16 s7 | +0.007 [−0.004, +0.018] | **+0.022 [+0.014, +0.032]** | |
+| D continued − M16 s8 | **+0.017 [+0.007, +0.027]** | **+0.025 [+0.012, +0.037]** | |
+| D continued − D scratch | −0.006 [−0.016, +0.005] | +0.001 [−0.011, +0.013] | |
+
+- The snapshot-head gain of the D loss over L1 holds in both D worlds against both L1 seeds: +0.021 to +0.025, all resolved.
+- On the trajectory head, both D worlds resolve against M16 s8 and not against M16 s7.
+- D continued is NOT an independent seed: it continued from M16 s7.
+
 ### 10-11 RESULT (15:05): E22MS H16 with sampled futures — averaging 16 samples reaches parity with the deterministic worlds, not more
 
 **Setup:** `check_h16_traj.py --e16 --window 15` (lane171 10-10 10:21-17:09, paused at draw 6; resumed in lane183 10-11
