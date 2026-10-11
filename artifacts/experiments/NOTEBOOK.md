@@ -148,6 +148,49 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-12 FEASIBILITY STUDY — predeclared (before any code): is the whiteboard's hypothesis promising?
+
+**Hypothesis (WHITEBOARD §8, after Codex's corrections):** persistent history resolves the hidden-counter uncertainty; the
+remaining fresh randomness per step is compact; and integrating over it matters for decisions beyond a coherent
+deterministic future.
+
+**Scope:** a feasibility version of Codex's proposed matched experiment (the user judged its execution over-engineered).
+- ~240 roots, one per support-v2 episode, from different shards; root t ∈ [64, len − 17].
+- Exact replay from stored actions and keys (`artifacts/eda/replay.py`); simulator only, no learned model.
+
+**Checks:**
+- replayed renders equal the stored frames;
+- my counter equations reproduce the simulator's counters at every replayed step;
+- the true counter value is never eliminated by the tracker.
+
+**Q1, history.**
+- Method: a source-derived candidate tracker for hunger / thirst / fatigue / recover, started L steps before the root (L = 1,
+  4, 15, 32, 64, full prefix).
+- Treated as observable: HUD values, the sleep flag, eat / drink events (DO on a visible cow / plant / water), damage events.
+- Invisible: threshold resets while the stat is clipped.
+- Reports: fraction of roots whose counter value is identified, and whose next-16-step HUD event schedule is determined.
+- **Reading:** memory suffices if ≥ 90% of schedules are determined at L ≤ 64 for every counter.
+
+**Q2, one-step innovation.**
+- Method: from each root state, 256 keys × 17 actions, one step. Joint outcomes are hashed on the symbolic visible observation
+  (no renderer noise) and on the full world (all mobs incl. off-screen, map, inventory, counters).
+- Reports: Miller-Madow entropy (with K = 64 vs 256 as a bias check), Good-Turing missing mass, outcomes needed for 95 / 99%
+  coverage.
+- **Reading:** compact if the median visible joint entropy is ≤ 2 bits, the 90th percentile ≤ 4 bits, and ≤ 8 outcomes cover
+  95% in ≥ 90% of root-actions.
+
+**Q3, decision value.**
+- Method: horizon 16, recorded continuation (as H16), the same roots, two independent 32-key banks (selection / judgment),
+  common random numbers across actions within a bank.
+- Compared estimators:
+  - uniform;
+  - a coherent deterministic **mode-world**: at each step take the most frequent next visible observation of 64 forks and
+    continue from that state;
+  - 1 / 4 / 16 sampled futures;
+  - 32 sampled futures (high-precision reference).
+- Measures: expected safe at 16 (judged on the judgment bank) on opportunity roots, plus native 16-step return.
+- **Reading:** sampling matters beyond coherence if S = 16 − mode-world is resolved > 0 (paired root bootstrap).
+
 ### 10-11 WHITEBOARD (21:50): the formalization lives in `artifacts/experiments/WHITEBOARD.md` (no runs, no plan)
 
 What it adds to the 20:30 review, each item verified at source:
