@@ -148,6 +148,84 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-12 FEASIBILITY RESULT: history resolves the counters; the fresh randomness is ~1.4 bits per visible mob and factorizes; a coherent mode-world carries 75-88% of the decision value and 16 samples add a resolved +0.025
+
+`20261012_feasibility/feasibility.py` (q1-q3), `breakdown.py` and `factorize.py` (both POST HOC). Data in
+`artifacts/eda/feasibility_v1/`. CPU only, about 30 min of compute in total.
+
+**Checks:**
+- 240 roots, one per support-v2 episode, from 240 different shards; replayed renders equal the stored frames (max pixel
+  difference 0).
+- My counter equations reproduce the simulator exactly (max error 0.0) after two bugs in my code, both caught by these checks
+  and fixed:
+  - eating on a threshold-crossing step;
+  - eating while the counter is already 0.
+- The tracker never eliminates the true value (0 violations).
+
+**Q1, history** (fraction of roots whose next-16-step VISIBLE HUD schedule is determined; recover assumes damage events are
+observable):
+
+| counter | L = 1 | 4 | 15 (our window) | 32 | 64 | full prefix |
+|---|---|---|---|---|---|---|
+| hunger | 0.06 | 0.17 | 0.52 | 0.98 | **1.00** | 1.00 |
+| thirst | 0.08 | 0.20 | 0.68 | 0.99 | **1.00** | 1.00 |
+| fatigue | 0.03 | 0.11 | 0.47 | 0.79 | **1.00** | 1.00 |
+| recover | 0.43 | 0.47 | 0.61 | 0.74 | 0.78 | **1.00** |
+
+- The predeclared reading (≥ 90% at L ≤ 64 for every counter) holds for 3 of 4.
+- Recover needs the episode: its resets at full health are invisible, so the phase must be counted from the last visible
+  event. That is still memory, not randomness.
+- At our 15-frame window, 47-68% of schedules are determined. This is the measured size of the timer failure.
+
+**Q2, one-step fresh randomness** (from the full simulator state; 256 keys × 17 actions; visible symbolic observation):
+- Miller-Madow entropy: median 1.68 bits, p90 4.04, p99 6.72.
+- K = 64 gives a median of 1.67 (stable); the tail is under-resolved.
+- Good-Turing missing mass 1.7%.
+- 10% of root-actions are deterministic.
+- ≤ 8 outcomes cover 95% in 75% of root-actions.
+- **The predeclared "compact" reading is FALSE** (p90 4.04 > 4; coverage 75% < 90%).
+- Full world (off-screen mobs included): median ≥ 7.0 bits; saturated, so a lower bound.
+- **Post hoc, where it lives:** entropy grows with the visible mobs: 0 mobs → 0.33 bits, 1 → 1.67, 2 → 2.61, 3 → 3.68, 4-6 →
+  5.5-6.7; about 1.37 bits per visible mob. It barely depends on the action (noop 1.84, move 1.87, DO 2.01).
+- **Post hoc, factorization** (74 roots with ≥ 2 visible mobs, 1,258 root-actions):
+  - the joint entropy of the visible mobs' next (position, alive) is 3.25 bits vs 3.38 for the sum of the marginals;
+  - total correlation 0.13 bits (3.8% of the sum; p90 0.39);
+  - spawns and new arrows add 0.14 bits.
+- **The innovation is compact per entity and near-independent across entities.** Frame-level coverage fails through
+  combinatorics, not through a large innovation.
+
+**Q3, decision value** (horizon 16, recorded continuation; independent 32-key selection / judgment banks; 77 opportunity roots
+of 240; root bootstrap):
+
+| | uniform | coherent mode-world | 1 sample | 4 | 16 | 32 |
+|---|---|---|---|---|---|---|
+| expected safe at 16 (opportunity roots) | 0.790 | 0.867 | 0.830 | 0.878 | 0.893 | 0.893 |
+| native 16-step return (all roots) | 0.160 | 0.447 | 0.420 | 0.458 | 0.483 | 0.486 |
+
+- S16 − mode **+0.025 [+0.009, +0.045]**: the predeclared reading "sampling matters beyond coherence" holds. Return:
+  +0.036 [+0.024, +0.050].
+- The mode-world captures **75%** (survival) and **88%** (return) of the 32-sample margin over uniform.
+- **One sample is WORSE than the mode-world:** −0.038 [−0.071, −0.013] safe; −0.027 return.
+- S32 ≈ S16 (+0.001); S4 already beats the mode-world.
+
+**Reading against the hypothesis:**
+1. **History:** confirmed, quantitatively. The counters are memory problems; 64 frames determine three of them and recover needs
+   the episode.
+2. **Compact innovation:** confirmed **per entity** (~1.4 bits per visible mob, near-independent), refuted as a frame-level
+   joint code. This points the chance variable at entities (mobs). Coherence then means entity identity and correspondence
+   (ITC's per-creature assignment fits this).
+3. **Decisions:** coherence is first-order (75-88% of the value); integrating 4-16 samples is second-order but resolved.
+   - One sample per decision is worse than a coherent deterministic future. This matches E22MS (one sample 0.630 < D 0.670).
+   - Caveat: an actor trained on many imagined trajectories integrates over samples across rollouts, so the one-sample
+     penalty applies to per-decision selection.
+
+**Limits:**
+- Forks condition on the full simulator state. Q1 covers the counters, not off-screen mobs.
+- The mode-world is defined on the visible observation (its mode is "cows stay, zombies chase").
+- The continuation is open-loop (recorded).
+- Roots come from the support-v2 policy mix.
+- Plug-in entropies at K = 256 (tails under-resolved; the joint is biased low, so independence is if anything understated).
+
 ### 10-12 FEASIBILITY STUDY — predeclared (before any code): is the whiteboard's hypothesis promising?
 
 **Hypothesis (WHITEBOARD §8, after Codex's corrections):** persistent history resolves the hidden-counter uncertainty; the

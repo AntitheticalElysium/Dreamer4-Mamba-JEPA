@@ -298,3 +298,18 @@ Salakhutdinov arXiv 1702.08360 (Neural Map).
 - **The efficiency hypothesis kept:** compute deterministic context once and reuse it while sampling compact joint
   innovations. "Compute proportional to entropy" is stronger and unestablished: one random bit can trigger consequences
   across a large state.
+
+---
+
+## 11. Feasibility study (10-12; NOTEBOOK "10-12 FEASIBILITY RESULT"): the hypothesis, tested in the simulator
+
+- **History resolves the counters.** At our 15-frame window, 47-68% of next-16-step HUD schedules are determined; at 64 frames,
+  100% for hunger / thirst / fatigue. Recover needs the full episode (78% at 64): it is invisible at full health, so it is
+  counted from the last visible event. Memory, not randomness, as the third party argued.
+- **The fresh randomness is compact per entity.** About 1.37 bits per visible mob, near-independent across mobs (total
+  correlation 3.8% of the sum of marginals). 0.33 bits with no mob in view. It barely depends on the action. As a frame-level
+  joint code it is NOT compact (p90 4 bits, long combinatorial tails). **Chance variables belong to entities.**
+- **Coherence is first-order for decisions; sampling is second-order but real.**
+  - A coherent deterministic mode-world gets 75% (survival) and 88% (return) of the value of 32 sampled futures.
+  - 16 samples add +0.025 [+0.009, +0.045].
+  - **One sample is worse than the mode-world** (−0.038), which is the E22MS-vs-D pattern seen in the simulator itself.
