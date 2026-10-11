@@ -24,8 +24,10 @@ The decomposition is the third party's; the formal conditions are Ni et al. (ICL
 
 **The third party's Jensen point is the gap between ZP and EZP.** V is nonlinear, so V(E[b′]) ≠ E[V(b′)].
 
-**Our worlds fall short even of EZP.** Per-element L1 / L2 optima are the coordinatewise median / mean, which is not the
-expectation of any valid state. statoracle (NOTEBOOK 10-10 11:40):
+**Our worlds sit at EZP at best, and use it as a state.** The per-element L2 optimum IS the expected next embedding, so
+MSE-trained worlds approximate EZP; the L1 optimum (the coordinatewise median) is not even that. The failure is treating
+E[z′] as a concrete future and feeding it back or applying a nonlinear head to it (corrected 10-12 after Codex's review; the
+first version said "below EZP"). statoracle (NOTEBOOK 10-10 11:40):
 - the median erases uncertain mobs (cows 0.08 vs 0.52 at depth 16);
 - the mean superimposes them;
 - each world converges toward its loss's statistic as it trains, in both L1 seeds.
@@ -48,8 +50,8 @@ are ours.
 | source | in Craftax | size (measured) | correct treatment | reaches decisions? | what our losses did with it |
 |---|---|---|---|---|---|
 | **1. Nuisance** | night static: every map pixel blended with fresh `state_rng` noise, no game consequence | ≈25% of the token's L2 change mass; per-token variance 0.3-5.9 at night (rings 1-4), exactly 0 by day | **invariance** (discard) | no (rendering only) | 43% of M16's L1 error is on night cells with no state change |
-| **2. Forgotten history** | hunger / thirst / fatigue / recover counters, per-zombie attack cooldown | every one of 8,183 intrinsic decrements has its reset ≥ 20 steps back; cycles 21-31 steps; the window is 15 frames and imagination rebuilds the state from ≤ 15 frames every step | **memory** | **yes**: the HUD carries 90-100% of the decision gap; imagined food / drink / energy decrements at 0-22% of the real rate across the deterministic worlds; imagined depth-16 health 5.5-6.0 vs 2.4 | no loss can fix it: the information is not in the input |
-| **3. Aleatoric** | cow 50% stay / 4 × 12.5%; zombie within 10 cells 75% chase, else a uniform move; spawns; skeleton arrows | **1.71 cells per step** differ across RNG keys from the same state, all of them mobs; source upper bound ≈ **1.3 bits per step** (cow 2 bits, near zombie ~1 bit) | a **conditional distribution, sampled coherently** | **yes, indirectly**: damage is 97% deterministic given the state, but who becomes adjacent is random; the true map near zombies restores 58.5% of imagined damage; 16 faithful futures lift H16 0.670 → 0.727 | L1 erases (median), MSE superimposes (mean); E22MS draws hits at the real rate but duplicates mobs (10% per step vs 1% real) |
+| **2. Forgotten history** | hunger / thirst / fatigue / recover counters, per-zombie attack cooldown | every one of 8,183 intrinsic decrements has its reset ≥ 20 steps back; periods 26 / 21 / 31 steps awake (hunger / thirst / fatigue; hunger and thirst halve their rate asleep, giving 52 / 42), recover crosses at +25 / −15; the window is 15 frames and imagination rebuilds the state from ≤ 15 frames every step | **memory** | **yes**: the HUD carries 90-100% of the decision gap; imagined food / drink / energy decrements at 0-22% of the real rate across the deterministic worlds; imagined depth-16 health 5.5-6.0 vs 2.4 | no loss can fix it: the information is not in the input |
+| **3. Aleatoric** | cow 50% stay / 4 × 12.5%; zombie within 10 cells 75% chase, else a uniform move; spawns; skeleton arrows | **1.71 cells per step** differ across RNG keys from the same state, all of them mobs; movement-only estimate ≈ **1.3 bits per step** (cow 2 bits; near zombie 0.99 bits, 1.54 with tied chase axes); omits spawns, off-screen changes, the 10% sapling draw (inventory differs across keys in 4.2% of depth-1 cases), and conditions on the FULL state, not on the agent's history (see §10) | a **conditional distribution, sampled coherently** | **yes, indirectly**: damage is 97% deterministic given the state, but who becomes adjacent is random; the true map near zombies restores 58.5% of imagined damage; 16 faithful futures lift H16 0.670 → 0.727 | L1 erases (median), MSE superimposes (mean); E22MS draws hits at the real rate but duplicates mobs (10% per step vs 1% real) |
 | **4. Epistemic** | terrain never seen: fixed per world, unknown until revealed at the view edge | 77% of entering cells never seen in the window; 61-71% of every world's depth-1 gap to the ideal | **sample once from a prior, then persist** within the branch | ~0 on H16 (edge ring share ~0); for an actor that navigates and gathers, **unmeasured** | the D loss's final AdamW update is 81% here; E22FJ's stochastic channel spent 92% of its gain here (random zombie moves 0-3%) |
 
 Details for each row:
@@ -69,8 +71,9 @@ Every loss we tried moved capacity between the rows:
 - **An unstructured stochastic channel:** epistemic terrain again (E22FJ: 92%).
 
 **The only time we got row 3 was when we told the channel which content moved** (E22MS's moved-content mask: random-move
-reconstruction 1.1% → 86%). That was a structural distinction between rows, not a loss weight. It is the lesson to keep:
-**the rows must be separated by structure.**
+reconstruction 1.1% → 86%). That mask is computed from the observed transition and applied as a loss WEIGHT (`dworld.py`),
+so "structure, not weight" (first version) misstated it. The lesson that survives: **a generic, label-free signal that tells
+the rows apart redirected learning where loss reweighting by error magnitude did not.**
 
 ---
 
@@ -96,7 +99,7 @@ insufficient. The right axis is therefore not the output type. It is:
 - whether the randomness is carried by an explicit, sufficient chance variable;
 - whether g is coherent.
 
-**In Craftax the chance is small** (≲ 1.3 bits per step, on mobs). Everything else is deterministic given memory (row 2),
+**In Craftax the visible chance looks small** (1.71 cells per step, all mobs; the bit estimate is movement-only and full-state-conditioned). Everything else is deterministic given memory (row 2),
 discardable (row 1), or epistemic (row 4: sampled once, when revealed).
 
 | family | randomness carried by | coherence | where it pays generative compute | evidence |
@@ -108,8 +111,9 @@ discardable (row 1), or epistemic (row 4: sampled once, when revealed).
 
 **E22MS was the right shape and failed for three measured reasons:**
 - its channel absorbed epistemic terrain until masked (E22FJ: 92% of the gain);
-- with the mask, its posterior captures 86% of random moves, i.e. c is insufficient. That the leftover is averaged into ghosts
-  is an **inference**, not a measurement;
+- with the mask, its posterior reconstructs 86% of random moves. That shows the complete conditional path fails on the rest;
+  it does not show the code is insufficient (decoder capacity or optimization could explain it), and that the leftover is
+  averaged into ghosts is an **inference**, not a measurement;
 - g has no conservation structure: 10% per step source residue even with the TRUE codes (cowdiag).
 
 **Coherence lives in g.** A cow that moves must leave its source. One-to-one assignment (ITC) is one structural way to get it.
@@ -143,7 +147,7 @@ at depth 16. A wrong scroll corrupts both the view and the memory address. *(Con
 ## 5. Representation, and the reconstruction question
 
 **The trade-off:**
-- **Reconstruction (observation prediction)** guarantees retention, but it must model the nuisance (≈ 25% of the change mass)
+- **Reconstruction (observation prediction)** biases toward retention (practical reconstruction can still drop rare details), but it must model the nuisance (≈ 25% of the change mass)
   and every texture. EMERALD and Dedieu pay that cost.
 - **End-to-end predictive latents:** JEDI beat its separately trained latents (Horizon Imagination) where directly
   comparable, and reports that the predictive latents "change more than compute alone".
@@ -153,7 +157,7 @@ reward → observation prediction). JEPA / SIGReg optima favour slow features (K
 09-25 notes), and our CLS encoder did drop mobs.
 
 What we measured that retains content without pixels:
-- **locality:** the per-tile state kept the zombie (+0.080 over CLS, +0.075 on zombie roots; readout ladder, sealed);
+- **locality (a bias, not a guarantee; not isolated as the cause):** the per-tile state exposed the zombie where CLS did not (+0.080, +0.075 on zombie roots; readout ladder, sealed);
 - **consequence gradients in the loss:**
   - E21 oracle: a label gradient installed the cooldown phase (1.000) within 1,000 updates;
   - Dreamer-CDP 16.2 vs 12.7 without the reward gradient;
@@ -179,8 +183,10 @@ its code changes were contextual flips (plus quantization error and no copy path
 
 ## 6. Decisions
 
-- **Decisions need sampled futures** (check_h16_value): one faithful future 0.663, 16 faithful futures 0.727. D (0.670) ≈ one
-  future. E22MS's 16 samples tie D (0.663) at 16× the cost.
+- **Integrating over futures has decision value** (check_h16_value, 7,920 FIT + DEV roots: one real future 0.663; 16
+  simulated Bernoulli draws from the true death probabilities 0.727). That estimator differs from the one that scores D
+  (0.670, DEV-B), so the two are NOT directly comparable (corrected 10-12). A learned risk / value function can amortize the
+  integration; it need not mean 16 rollouts per action. E22MS's 16 samples tie D on the same estimator (0.663 vs 0.670).
 - **Calibration is not discrimination.** E22MS has the best Brier score (0.050) but not the best choice among a root's 17
   actions.
 - **Two different heads with different supervision:** a branch-outcome head reads the sampled successor and memory; a
@@ -267,3 +273,28 @@ arXiv 2212.11087); Zhang et al. arXiv 2006.10742 (DBC); Lim et al. arXiv 2605.13
 Huang arXiv 2601.14354 (VJEPA); Gao & Xu arXiv 2606.26217 (Fast-LeWM); Dedieu et al. arXiv 2502.01591; ITC arXiv 2605.16457;
 EMERALD arXiv 2507.04075; Dreamer-CDP arXiv 2603.07083; Discrete-JEPA arXiv 2506.14373; DWMR arXiv 2603.01748; Parisotto &
 Salakhutdinov arXiv 1702.08360 (Neural Map).
+
+---
+
+## 10. Codex's 10-12 review: accepted corrections (applied above) and two refinements
+
+- **Corrections applied:**
+  - an MSE world approximates EZP; the failure is using E[z′] as a state;
+  - counter periods double asleep;
+  - the bit estimate is movement-only and full-state-conditioned;
+  - the moved-content mask is a loss weight;
+  - 86% does not prove an insufficient code;
+  - 0.663 → 0.727 is a different estimator from D's 0.670;
+  - reconstruction biases toward retention rather than guaranteeing it;
+  - locality was not isolated.
+- **The precise regression condition:** Var(z_{t+1} | afterstate, c) = 0. Capturing the simulator's RNG is not enough while the
+  model still lacks the cooldown phase or the terrain.
+- **Fresh randomness vs state uncertainty:** Var(Y | H, a) = E[Var(Y | S, a) | H, a] + Var(E[Y | S, a] | H, a). Forks from a
+  simulator state measure only the first term. History recovery addresses the second.
+- **Memory must hold uncertainty, not only facts.** Starting mid-episode, clipped invisible resets can leave several phases
+  possible; a branch must keep its own sampled hypothesis and terrain consistently.
+- **The four rows are operations on state** (remember, infer, sample, persist, discard), not four independent channels: the
+  same zombie carries a remembered cooldown, a random move and action-dependent consequences.
+- **The efficiency hypothesis kept:** compute deterministic context once and reuse it while sampling compact joint
+  innovations. "Compute proportional to entropy" is stronger and unestablished: one random bit can trigger consequences
+  across a large state.
