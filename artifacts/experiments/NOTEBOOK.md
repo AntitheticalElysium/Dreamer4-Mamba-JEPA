@@ -148,6 +148,36 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-11 WHITEBOARD (21:50): the formalization lives in `artifacts/experiments/WHITEBOARD.md` (no runs, no plan)
+
+What it adds to the 20:30 review, each item verified at source:
+- **Ni et al. (arXiv 2401.08898).** A sufficient state needs RP + ZP: the next-latent DISTRIBUTION is predictable. Predicting
+  the expected next latent (EZP) is the weak version; this is the third party's V(E[z′]) ≠ E[V(z′)]. Our worlds are below EZP
+  (coordinatewise median / mean).
+  - Their guidance: noisy → self-predictive, sparse reward → observation-predictive, deterministic → ℓ2. Craftax is all three.
+- **Stochastic MuZero (Antonoglou et al., ICLR 2022)** = the formal "innovation, not state" model: a deterministic afterstate, a
+  categorical chance code (one-hot codebook, no decoder), b′ = g(afterstate, c).
+  - Craftax's own `craftax_step` has exactly this order: player action / move (deterministic but a 10% sapling draw) → mob moves
+    + spawns (chance) → plants / counters / health (deterministic) → a fresh `state_rng` for the renderer only.
+  - If c carries all of the randomness, g is deterministic and a point loss on g is correct: the axis is
+    sufficient-chance + coherent g, not categorical vs continuous.
+- **The chance is small:** ≲ 1.3 bits per step (source movement rules × 0.77 visible mobs per frame; an upper bound), with
+  1.71 cells per step differing across keys (20:30).
+- **Our own evidence for the four-row taxonomy (nuisance / forgotten history / aleatoric / epistemic):**
+  - E22FJ's unstructured stochastic channel spent 92% of its gain on never-seen edge terrain (random zombie moves 0-3%);
+  - only the moved-content mask (structure, not weight) got the aleatoric part (86%).
+- **Timers are deterministic counters with observable resets** (source): pure memory, no randomness.
+- **Memory addressing, from our record (E18 / fcanvas):** world-aligned writes failed through the screen-aligned READ (entering
+  cell read 0 / 2,018). Neural Map separates addressed writes and reads.
+  - In imagination the address is the world's own scroll decision, the one discrete instability (chaos test).
+- **Reconstruction:** sided with the user (no reconstruction). The obligation is named: retain fast, sparse-reward content via
+  locality and consequence heads in the loss. Whether that suffices is open and checkable with existing probes.
+- **Papers the third party cited, checked:**
+  - JEDI is reconstruction-free and end-to-end (Atari100k + Craftium, 38 A100-h per run);
+  - Flow-JEPA's tasks are near-deterministic (a robustness gain);
+  - VJEPA's experiment is a toy;
+  - Fast-LeWM is deterministic.
+
 ### 10-11 REVIEW (20:30): Codex's and a third party's critiques of the 19:30 synthesis, checked against sources
 
 **Corrections accepted (verified):**
