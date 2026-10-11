@@ -148,6 +148,50 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-11 SYNTHESIS (19:30): our results against the literature, and the plan they point to (no new runs)
+
+**The pattern we found on 09-25 and partly dropped:** every Crafter/Craftax world model that works has categorical
+per-position targets, and reward / termination heads inside its loss (readout ladder PROPOSAL.md §3). We kept the per-tile
+state and dropped the categorical target, because over the ViT's contextual tokens a tile's code flips when other tiles change.
+The 10-10 diagnosis shows the dropped part was the load-bearing one.
+
+**Connections:**
+1. **Continuous per-tile regression → non-state statistics.**
+   - statoracle: the median erases uncertain mobs (cows 0.08 vs 0.52 at depth 16); the mean superimposes them.
+   - Dedieu et al. (arXiv 2502.01591, our exact frames): 7×7 continuous per-patch prediction 21.20 vs 67.42 quantized.
+   - Agrees; our measurement is the mechanism behind their ablation.
+2. **E22MS's faint copies are the same failure one level down.**
+   - Its decoder regresses continuous tokens given the codes. What the codes leave unresolved (the posterior gets 86% of
+     random moves) is averaged, which leaves a copy at the source (cowdiag: 10% per step with TRUE codes vs 1% real).
+   - Dreamer-CDP (2603.07083): reconstruction-free needs the categorical latent (6.3 without vs 16.2).
+3. **Allocation.**
+   - Per-tile cross-entropy bounds each tile's gradient regardless of token distance.
+   - Never-seen entering tiles are 761 of ~17,500 map cells at depth 1 (~4%), vs 56-81% of the D loss's update now.
+   - Decision heads in the loss: Dreamer-CDP without the reward gradient 12.7 vs 16.2. Our E21 oracle: a label gradient into
+     the world installed the cooldown phase (1.000) within 500-1,000 updates.
+4. **Why the codes flipped on 09-25:** encoder_why located the context (position embeddings + global attention; HUD tokens move
+   9-12 with identical pixels). Dedieu's codes are per-tile, hence context-free.
+   - V-JEPA 2-AC / DINO-WM's contextual patch targets work there because a patch-level objective trained them, in
+     near-deterministic tasks; neither holds here.
+5. **Correction (to my 10-11 15:2x reply):** sampling IS where the decision headroom is.
+   - D (0.670) sits at one real future (0.663 FIT+DEV / 0.679 DEV-B); 16 faithful futures reach 0.727 (check_h16_value).
+   - E22MS's samples are not faithful enough.
+   - Decisions read the HUD, but the HUD's future depends on the zombie map (true map restores 58.5% of damage, 10-09).
+
+**Nearest prior work (short search):**
+- Discrete-JEPA (2506.14373): quantizes a global semantic token; patches stay continuous; not a world model.
+- DWMR (2603.01748): a global Boolean state, deterministic fully observable puzzles.
+- Dedieu: pixel nearest-neighbour codes (no learned encoder).
+- Nothing found that learns per-tile categorical targets without reconstruction for a stochastic world model. A proper sweep is
+  needed before claiming novelty.
+
+**Plan (pitched to the user 10-11):** a per-tile categorical JEPA world model.
+- A local per-tile encoder (no cross-tile attention), reconstruction-free, SIGReg on its embeddings, a categorical code per tile.
+- Per-slot Mamba (state carried through imagination, windows ≥ 32), corrt routing over code logits, cross-entropy.
+- Reward / termination / health heads in the loss; sampled codes in imagination.
+- First, CPU: Dedieu's NNT on our diagnosis frames as a reference target (codebook size day / night; do codes change only when
+  the tile's state changes?).
+
 ### 10-11 RESULT (18:35): D continued H16 — the second D-loss world replicates the snapshot-head gain over L1
 
 `check_h16_traj.py --window 15` (lane183, 14:57-17:26). DEV-B: 1,139 opportunity roots, 149 episodes. Paired
