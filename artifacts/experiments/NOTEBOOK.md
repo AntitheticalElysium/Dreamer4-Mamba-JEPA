@@ -204,6 +204,11 @@ used for throughput. Full 3,000-draw CPU preview has terminal fractions 25.65–
   `generated_prefix/eval_cli_validation.json`. An initial validation-only provenance-hash comparison failed because arm
   labels correctly differ; preserved in the fixture, with no numerical pipeline defect or source change. The fixture is
   not a result of the new worlds. Training is active with a durable update-400 checkpoint; no final report exists yet.
+- **Restart/resume (10-13, 08:27 AEDT):** PC restart interrupted training after the durable update-700 checkpoint. Both
+  arms resume unchanged from 700; trainer confirms exact serialized world/conditioner/optimizer restoration. All 13
+  source/input hashes and the verified token-file fingerprint match. Independent CPU replay reproduces the update-700
+  sampler ledger, aggregate counts and both sampler RNG states exactly. Restored the same training service and automatic
+  evaluation/readout queue; both are active. Snapshots 0/500 remain preserved; no final training or evaluation report yet.
 
 ### 10-12 MATCHED D-LOSS FOLLOW-UP — completed; readout controls completed (19:21 AEDT)
 
