@@ -8,8 +8,12 @@ export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 PREFIX_RUN=artifacts/eda/oracle_v1/generated_prefix
 PREFIX_LOG=artifacts/eda/levers_logs/generated_prefix_eval.log
 PREFIX_TRAINER=oracle_generated_prefix_20261012.service
+# Reuse the verified kernel choices across snapshots and interrupted processes.
+export TRITON_CACHE_AUTOTUNING=1
+export TRITON_CACHE_DIR="$PWD/$PREFIX_RUN/runtime_615_71_09/triton_cache"
 {
     date '+START %Y-%m-%d %H:%M:%S %Z'
+    printf 'RUNTIME: persistent Triton autotuning cache %s\n' "$TRITON_CACHE_DIR"
     # A live driver upgrade can leave the old kernel module loaded. Use only
     # cached libraries matching that module; never replace system libraries.
     if ! nvidia-smi --query-gpu=driver_version --format=csv,noheader >/dev/null 2>&1; then

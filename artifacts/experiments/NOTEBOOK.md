@@ -220,6 +220,17 @@ used for throughput. Full 3,000-draw CPU preview has terminal fractions 25.65–
   Checkpoint hashes, library/package hashes and CUDA smoke: `generated_prefix/runtime_615_71_09/repair.json` and
   `cuda_smoke.json`. Failed log retained in `levers_logs/generated_prefix_eval.log`; model sources, weights, allocator,
   BF16/IEEE settings and scientific contract unchanged. Evaluation verdict remains pending.
+- **Additional runtime-resume defect isolated (10-13):** exact initial-arm parity then failed only on the first 8-root
+  smoke batch, which came from a separate process; the other 192 roots matched exactly. All 145 world and 2 oracle
+  checkpoint tensors match exactly. Independent-process controls reproduce both original batches exactly: allowing Triton
+  to re-tune selects different Mamba kernels and changes teacher-forced outputs by up to 0.03688 and recursive outputs by
+  3.18707. Persisting kernel choices gives **zero difference in all six output/accessory tensors** across two fresh
+  processes on that H16 batch. Launcher now retains this run-local autotuning cache across snapshots and resumes.
+  Both failed initial-cache attempts are preserved in `eval_u0000_driver_repair_failed/`; recompute initial arms together,
+  keeping the exact-parity assertion. Proof: `runtime_615_71_09/inference_repeat_proof.json` (includes kernel choices and
+  exact reproduction of the original discrepancy). Training/checkpoints and BF16/IEEE precision remain unchanged.
+  Corrected initial evaluation completed: all predictions/accessories match exactly across both arms on **all 200 roots**;
+  `eval_u0000/analysis.json` saved, and the same queue proceeded to update 500. Scientific treatment verdict still pending.
 
 ### 10-12 MATCHED D-LOSS FOLLOW-UP — completed; readout controls completed (19:21 AEDT)
 
