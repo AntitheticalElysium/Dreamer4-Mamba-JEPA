@@ -148,6 +148,55 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-12 ORACLE-INNOVATION TEST — predeclared (before any code): can a continuous JEPA world complete a transition coherently when the stochastic outcome is GIVEN?
+
+**User's questions (10-12):**
+1. Does providing the correct stochastic outcome eliminate the continuous-model failures we attributed to averaging?
+2. Can the innovation be learned without privileged labels?
+3. If completion succeeds but recursion fails, what is the minimum structural property that preserves valid transitions?
+
+**Literature read first:**
+- Stochastic MuZero (afterstate + categorical chance code; posterior chance encoder + learned prior σ; value-equivalent).
+- JEDI (whole-latent diffusion, reconstruction-free).
+- Causal-JEPA (arXiv 2602.11389): object-level masking on a frozen slot encoder; reconstruction-free; deterministic predictor;
+  near-deterministic tasks.
+- **LPWM (arXiv 2603.04553, ICLR 2026 oral):**
+  - a per-particle latent action (Gaussian), inferred by a latent inverse-dynamics head from consecutive frames, with a learned
+    latent-policy prior and KL;
+  - patch-anchored particles that keep their identity;
+  - reconstruction-trained;
+  - states that "a global action vector cannot naturally disentangle these local dynamics", which matches our factorization
+    result.
+
+**Q1 design (oracle completion):**
+- **World:** our canonical L16 corrt / fmamba per-tile world on frozen Raw tokens, through the existing per-tile conditioning hook
+  (`TWorld.delta`, as E22).
+- **Oracle:** at input position t, each map tile gets the TRUE mob layout of frame t+1 at that tile, through a zero-initialized
+  Linear(4 → 192). Channels: zombie / cow / skeleton / arrow, from exact replay of the training episodes; target-slot
+  coordinates.
+- **Arms**, 2 losses × {control, oracle}; continuations of the existing worlds; matched sampler (E22's long sampler, support-v2
+  rows only, expert rows excluded in all arms), batch order seed 11, 16 windows, 3,000 updates:
+  - L1: from M16;
+  - D loss: from D scratch.
+- **Evaluation panel:** 200 roots from support-v2 DEV-split episodes (never trained on). Frames t−15..t+16 from the stored
+  observations (exact); oracle layouts by replay.
+  - Decoding: scoreboard.AllProbes (fitted on true TRAIN tokens of the diagnosis panel).
+  - Teacher-forced depth 1 (window 15 true frames) and self-fed 16 steps (true layouts supplied each step).
+- **Metrics per depth:**
+  - decoded mob census / true (cows, zombies);
+  - mob-cell precision / recall vs the true layout;
+  - **ghost rate:** decoded cow where the input frame had a cow and the truth now has none (source residue);
+  - **duplicate share** (cowdiag classes vs the input frame).
+- **Reading Q1:** conditional completion succeeds if both oracle arms at depth 1 have:
+  - cow and zombie census within 10% of the truth;
+  - ghost rate ≤ 2% of true cows;
+  - mob recall ≥ 0.9.
+
+  The controls show their losses' signatures (erasure under L1, superposition under D).
+- **Reading recursion:** recursive coherence succeeds if the oracle arms, self-fed, have the census within 20% and ghost rate
+  ≤ 2% at every depth on scroll-aligned steps.
+- **Next:** only if Q1 succeeds, Q2 (a learned per-tile innovation, no labels) and the recursion analysis follow.
+
 ### 10-12 FEASIBILITY RESULT: history resolves the counters; the fresh randomness is ~1.4 bits per visible mob and factorizes; a coherent mode-world carries 75-88% of the decision value and 16 samples add a resolved +0.025
 
 `20261012_feasibility/feasibility.py` (q1-q3), `breakdown.py` and `factorize.py` (both POST HOC). Data in
