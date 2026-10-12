@@ -198,6 +198,12 @@ used for throughput. Full 3,000-draw CPU preview has terminal fractions 25.65–
   the trainer. Primary source/inputs contract `5ea495dc9bd534f66c7673a2e0095298e47eace83ed740dc8aa9d7279bc43e04`.
   Initial matched batch (p=4) has equal main teacher loss 0.0296357; endpoint D loss is 0.0279704 on real context versus
   0.154864 on generated context. This is a training-input difficulty check, not an outcome verdict.
+- **CPU evaluation-chain validation completed (21:29):** four readout CLIs ran on an isolated old-D prediction fixture,
+  with GPU disabled. Prior readings reproduce exactly; 100 identical-arm contrasts and their intervals are exactly zero.
+  Resume reuses ten results, leaving all 21 output hashes and timestamps unchanged. Proof:
+  `generated_prefix/eval_cli_validation.json`. An initial validation-only provenance-hash comparison failed because arm
+  labels correctly differ; preserved in the fixture, with no numerical pipeline defect or source change. The fixture is
+  not a result of the new worlds. Training is active with a durable update-400 checkpoint; no final report exists yet.
 
 ### 10-12 MATCHED D-LOSS FOLLOW-UP — completed; readout controls completed (19:21 AEDT)
 
