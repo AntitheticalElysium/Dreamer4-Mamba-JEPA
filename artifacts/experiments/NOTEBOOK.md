@@ -148,6 +148,181 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-12 MATCHED D-LOSS FOLLOW-UP — completed; readout controls completed (19:21 AEDT)
+
+**Result: D changes completion tradeoffs; the experiment does not support a D-only explanation of recursive failure.**
+`loss_intervention.py` completed the predeclared 3,000 updates per arm from the same oracle-D world/conditioner, with
+identical TRAIN batches. Evaluation uses 200 DEV episodes, 15 observed frames, H16, and the frozen real-token readers.
+The world receives the true next mob occupancy at every step. These are conditional-completion diagnostics.
+
+Primary population below: all episodes, depths 9–16; 870 true cow cells, 583 zombies, 48 alive-after damage events and
+1,523 unchanged-health steps. MSE and event readings use the same fixed health/food readers in every arm.
+
+| matched arm | cow TP / 870 | cow FP | zombie recall | zombie FP | health MSE | food MSE | damage caught / 48 | false health drops / 1,523 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| shared starting model | 804 | 495 | 0.842 | 270 | 2.051 | 0.742 | 28 | 24 |
+| D, +3,000 updates | 805 | 227 | 0.847 | 70 | 1.635 | 0.661 | 32 | 25 |
+| L1, +3,000 updates | 838 | 161 | 0.895 | 40 | 1.240 | 0.465 | 29 | 13 |
+| D without maximum term, +3,000 | 828 | 213 | 0.873 | 43 | 1.321 | 0.520 | 30 | 24 |
+
+- **D continues to improve:** cow FP falls 54.1% and zombie FP 74.1%, with recall essentially unchanged. Paired
+  episode-bootstrap differences in FP/true are −0.308 [−0.458, −0.190] and −0.343 [−0.491, −0.228]. Health MSE improves
+  −0.416 [−0.755, −0.129]. These improvements also hold on the common camera-aligned sensitivity population.
+- **L1 versus concurrent D:** cow recall +0.0379 [0.0152, 0.0636], zombie recall +0.0480 [0.0171, 0.0870]; both survive
+  common alignment. Cow FP reduction is unresolved: −0.0759 [−0.1862, +0.0188] per true cow. Food MSE improves
+  −0.196 [−0.337, −0.062], and false health-drop rate −0.00788 [−0.01593, −0.00130]; both survive common alignment.
+  Health MAE improves overall, but health MSE and damage-catch differences are unresolved. Terrain and facing differences
+  are unresolved. This is a measured tradeoff, not a universal loss winner.
+- **Maximum-term contrast:** final cow-FP difference is −0.0161 [−0.1179, +0.0827] per true cow, unresolved. Its large
+  apparent FP benefit at update 500 does not persist: D/no-max FP = 477/341 at 500, 293/368 at 1,500, 227/213 at 3,000.
+  No-max improves food and drink MSE overall; only drink remains resolved under common alignment. Recall benefits weaken
+  on that selected population. Negligible clipping (D 4/3,000, L1 0, no-max 3) does not account for these contrasts.
+- **Remaining health limitation:** every arm catches 0/29 recovery steps by the fixed class reader, versus 28/29 on true
+  tokens. Late fresh-arrival damage has zero opportunities, so this panel cannot settle that mechanism.
+- **Scope:** one pretrained parent and one training seed; a continuation/loss-switch test, not a from-scratch ranking.
+  Shared alignment retains 1,143 late root-steps and is a selected sensitivity population. Intervals use 2,000 paired
+  episode bootstrap draws. No claim about a learned unprivileged innovation, an actor, or canonical Raw/TC readiness.
+
+**M0–M3 readout control: the counted excess is substantially calibration-sensitive.** `generated_readout_refit.py`,
+`readout_calibration.py`, `readout_spatial.py`: 100 FIT / 50 DEV / 50 TEST whole episodes, split seed 20261012. Fit-only
+normalization, equal-capacity 192-D linear ridge heads, existing alpha family selected by DEV MSE; no depth/position feature.
+DEV-F1 thresholds are primary; DEV-count matching is a separately reported sensitivity. Original readers remain unchanged.
+All depths fit the heads; late depths score them. TEST is separate from head fitting but reuses the inspected world panel.
+
+| +3,000 D, late 50-episode TEST | cow TP / 215 | cow FP |
+|---|---:|---:|
+| original frozen head and threshold | 205 | 44 |
+| same frozen weights, DEV-F1 threshold | 200 | 18 |
+| generated-fitted equal-capacity head, DEV-F1 | 200 | 10 |
+| generated-fitted head, DEV-count sensitivity | 206 | 17 |
+
+- Threshold-only FP/true change is −0.1209 [−0.2591, −0.0259], with recall change −0.0233 [−0.0621, 0]. At the initial
+  model, threshold cleanup has a larger recall cost: 206 TP / 89 FP → 175 TP / 33 FP. Neither is a free precision gain.
+- **Spatial signal survives:** generated-fitted D top-1 is correct on 182/186 cow-present frames and 94/94 zombie-present
+  frames. Local 3×3 AUC is 0.99886 for cows and 0.98999 for zombies. L1 is 184/186 and 93/94; no-max 183/186 and 93/94.
+  This excludes an explanation based solely on easy global background cells. Presence-conditioned top-1 and privileged
+  top-K are diagnostics, not calibrated absence/count estimation. Generated versus real-fitted zombie AUC advantage is
+  unresolved: +0.00298 [−0.00121, +0.00948].
+- **Correction:** earlier ghost/duplication language described frozen-reader false positives. Those counts alone do not
+  establish literal extra objects, irreversible information loss, or categorical-state necessity. The copied-content
+  substitutions below isolate propagation of a false reader response; completed joint-state validity remains unestablished.
+
+**Execution/evidence:** restart at update 2,000; resumed serialized world/conditioner/optimizer state exactly and completed
+at 18:58, evaluation at 19:00:16. Resume smoke preserves sampler/RNG/batch order but CUDA endpoints differ up to 1.34e−6;
+training is not bit-reproducible. Full numerical/source/input contracts, TRAIN pool verification, atomic checkpoints,
+milestone predictions and paired raw rows are under `oracle_v1/loss_intervention/`: `contract.json`, `training.json`,
+`resume_proof.json`, `eval_u{0000,0500,1500,3000}/analysis.json`, and `readout_refit/{u,calibration_u,spatial_u}*.json`.
+Final shared batch ledger: `6e53c1b824a091ca5d49b7b0788cf76d60e852a4f5bdf0b917140ad3da9c5c87`.
+Stdout stays under `artifacts/eda/levers_logs/`. All jobs in this follow-up have completed.
+
+**Literature after diagnosis:** the borrowed D coefficients are reconstruction losses in Delta-IRIS, not a theorem of
+physical validity. [JEDI §3.2](https://arxiv.org/html/2605.13013v1#S3.SS2) mixes predicted and encoded next contexts;
+[Dreamer 4 §3.2/§3.4](https://arxiv.org/html/2509.24527v1) trains on varying context noise and sequences longer than the
+context. These provide precedents for addressing generated-context mismatch, not evidence that it is repaired here.
+Historical E8/E12 failures used short rollouts without the present known-outcome control; E12 also documented a context
+protocol mismatch. They do not rule out such a controlled intervention. No new architecture or training remedy was launched.
+
+### 10-12 DECODER FEEDBACK DIAGNOSIS (CPU; u0/500/1,500/3,000 exports)
+
+**Measured local contribution: propagation of false frozen-reader responses through copied generated features.**
+`decoder_decomposition.py` and
+`decoder_context_shift.py` reconstruct the emitted token from the saved six candidate weights, raw generator and previous
+frame, then apply the actual terminal LayerNorm. Reconstruction differs ≤1.91e−6 and all frozen mob-reader decisions agree.
+- Interpret physical source labels only where **both previous and current generated camera offsets match the recorded
+  trajectory**. Strong false predecessor = generated copied candidate reads present, actual source mob flag is absent,
+  and the corresponding TRUE copied candidate also reads absent. Actual target must also read absent in the TRUE reader.
+- Initial oracle-D, depths 9–16: 1,207 both-aligned root-steps; 340 clean cow-FP cells, 269/340 (79.1%) with a strong false
+  ordinary-map copied predecessor (203 at self). Only 62/340 are also FP under teacher forcing at the same target cell.
+- **Emission-only substitutions** keep the generated hidden-state prediction and target oracle fixed: replacing only
+  copied candidates with real previous-frame tokens reduces cow FP **360 → 147**, TP **628 → 632**; FP/true difference
+  −0.320 [−0.457, −0.209]. Replacing only raw generator with its teacher-forced counterpart gives FP 360 → 319,
+  TP 628 → 621. Replacing only routing weights with teacher-forced weights gives FP 360 → 399.
+- At matched update 1,500, the same both-aligned copied-content substitution gives:
+
+| arm | baseline cow FP | real copied candidates | TF generator only | TF routing only |
+|---|---:|---:|---:|---:|
+| D | 225 | 98 | 222 | 232 |
+| L1 | 171 | 81 | 155 | 245 |
+| no-max | 282 | 123 | 259 | 457 |
+
+- At the final 3,000-update milestone, both-aligned baseline → real copied-candidate cow FP is **D 192 → 82,
+  L1 133 → 83, no-max 175 → 96**. D FP/true difference is −0.160 [−0.284, −0.072], TP 652 → 656. Substituting only the
+  TF generator gives D 192 → 200 FP; only TF routing 192 → 240. These are arm-specific aligned local comparisons;
+  the matched-arm primary comparison above uses all roots, with a shared-alignment sensitivity.
+- These are **local decoder interventions**, not repaired recursive trajectories. They isolate the contribution of copied
+  content at the observed failing emissions; they do not prove its fraction of total control loss or solve the feedback loop.
+  Standalone generated candidates are co-adapted mixture components, so their normalized reader scores are descriptive,
+  not independent valid-state predictions. Player/HUD source removal clears only 2/463 initial all-root clean cow FPs.
+- Decomposition uses source/input-bound resumable per-root CPU caches; small context-substitution controls write atomic
+  complete-arm results. Same frozen reader/thresholds. JSON evidence and raw rows are retained under
+  `oracle_v1/loss_intervention/eval_u{0000,0500,1500,3000}/decoder_{decomposition,context_shift}_{arm}.json`.
+
+### 10-12 D-LOSS CPU DIAGNOSIS (completed through 15:33 AEDT; matched retrain pending)
+
+**Historical finding: recursive fixed-reader errors occur under both losses. Matched optimization and readout controls are now completed above.**
+- `d_existing_compare.py`: fixed TRAIN readers, 200 DEV episodes, 2,000 paired episode-bootstrap draws, original FP16
+  saved predictions. Late (9–16) oracle-D cow recall is 0.926 teacher-forced → 0.924 recursive, while false positives / true
+  cows rise 0.131 → 0.577 (+0.446 [0.284, 0.657]). Oracle-L1 instead loses recall 0.533 → 0.033
+  (−0.500 [−0.542, −0.452]); its small cow census is erasure.
+- **Extra decoded zombie occupancy also occurs under L1:** TF → recursive FP/true rises +0.391 [0.243, 0.579] for L1,
+  +0.348 [0.227, 0.502] for D. Common camera-aligned sensitivity retains both increases. Terrain accuracy loses
+  8.46 points under L1 and 7.69 under D on common-aligned rows. Historical parent weights differ between these arms;
+  these comparisons cannot isolate the loss. TRUE projection damage occurs before either world/loss and remains independent.
+
+**Full objective, model-free conditional completion:** `conditional_stat.py`, `conditional_dopt.py`, `conditional_norm.py`.
+- Five real futures at depth 1, TEST roots only; group futures sharing exact complete next-mob occupancy. 308 groups
+  (2–5 futures each), 269 roots, 1,147 branches. Full D empirical optimum solved as a convex radius problem: 308/308
+  validated, 12 tiny independent epigraph checks within 1.73e−10 objective units, two-start gap ≤9.58e−10.
+- Conditional full-D optimum: cows 300/302 TP and 10 FP versus real 299/302 TP and 14 FP; zombies 171/179 TP and
+  0 FP versus real 172/179 TP and 4 FP. Applying the world's exact per-token FP32 LayerNorm changes neither count.
+- **Nonidentical support:** 239 groups have identical tokens; 69 groups vary (60 roots, 247 branches). On these 69,
+  D optimum and normalized D optimum give 66/68 cow TP, 0 FP and 54/62 zombie TP, 0 FP; real gives 65/68 cow TP,
+  4 FP and 55/62 zombie TP, 4 FP. Variation is night/render/re-encoding in 58 groups and inventory in 11.
+  This tests one-step reconstructability under known occupancy, not the population conditional optimum or recursive inputs.
+  The normalized candidate is feasible; it is not a solved LayerNorm-constrained optimum.
+
+**Fixed-output incentives:** `d_loss_fixed_outputs.py`, `d_loss_ln_tangent.py`.
+- At identical saved oracle-D late predictions, replacing all 502 decoded cow-FP tokens with their actual target tokens
+  lowers D loss by 0.002547 and L1 by 0.001937. Both penalize these token errors. Their differing units are not a ranking of losses.
+- Cow-FP absolute output-gradient shares: L1 0.388%, D-no-max 0.787%, full D 0.854%. The maximum term alone accounts
+  for 47.0% of scalar teacher-forced D loss (34.0% recursive), 9.20%/9.90% of absolute output-gradient mass.
+- Among 470 recursive cow-FP cells with a cow-free TRUE-token reader, descent through terminal LayerNorm raises the
+  cow score in 25 under D, 16 without max, 17 under MSE, 47 under L1. On 89 teacher-forced FP cells: D 13,
+  no-max 1, MSE 0. The max term contributes some locally wrong reader-score directions; it does not explain every false detection.
+- Literal autograd checks pass (max differences 5.82e−11 and 2.24e−8). Failed output re-normalization diagnostic preserved;
+  corrected tangent uses saved emissions unchanged. These output gradients are not parameter-update measurements.
+- Counts above use original FP16 exports (502 cow FP); the later FP32 projection evaluation has 495. Preserve both lineages.
+
+**Source contract:** our coefficients/reductions match Delta-IRIS's tokenizer reconstruction code, but its original decoder
+receives quantized future-conditioned codes and reconstructs pixels; our D objective trains deterministic contextual-token
+prediction. Its separate world learns code cross-entropy. [Tokenizer](https://github.com/vmicheli/delta-iris/blob/main/src/models/tokenizer/tokenizer.py),
+[paper](https://arxiv.org/abs/2406.19320). The original method supplies no guarantee of object conservation here.
+
+### 10-12 D-LOSS CAUSAL FOLLOW-UP — design fixed before training (15:14 AEDT)
+
+**Question:** does D's loss contribute to the remaining oracle-conditioned recursive occupancy errors?
+- Existing L1 and D oracle arms differ in pretrained parent; their comparison cannot isolate the loss.
+  TRUE-token projection damage is independent of either world/loss and remains a separate measured failure.
+- `20261012_oracle/loss_intervention.py`: three arms from the SAME completed oracle-D world and OracleCond checkpoint:
+  **D** = mean squared error + 0.1 mean absolute error + 0.01 frame-wise maximum squared element;
+  **L1** = mean absolute error; **no_max** = D minus the maximum-element term.
+- Train world AND oracle conditioner in every arm, leaving architecture, frozen encoder, exact support-v2 TRAIN rows,
+  seed-11 batch/start draws, terminal share, fresh phase AdamW, warmup, BF16/IEEE and 3,000-update budget fixed.
+  Batch 16, window 16. Save model snapshots at 0/500/1,500/3,000; full optimizer/RNG/order states every 250 updates.
+- Meaningful implementation checks: identical starting world/conditioner weights; D/L1 loss parity against the existing
+  implementation; short interrupted/resumed training versus uninterrupted training; source/input hashes and batch ledger.
+- Evaluate all snapshots on the existing 200 DEV roots, frozen readers/thresholds: teacher-forced versus H16 recursive
+  cow/zombie false-positive occupancy AND recall, terrain/player/HUD fidelity. No token projection. Primary all roots;
+  common scroll-aligned rows are sensitivity. Paired episode intervals; reducing counts by erasure is not a repair.
+- Separating contrasts: no_max minus D isolates the maximum-element term; L1 minus D tests the full loss switch.
+  A reduced excess with preserved completion supports a causal contribution of that loss in this trained world.
+  A negative at 3,000 updates is an adaptation-budget result if learning is still moving; it cannot exonerate D for every
+  from-scratch recipe. No second training seed or new architecture is implied by this mechanism test.
+- CPU complements: exact saved-prediction loss/gradient/correction incentives (`d_loss_fixed_outputs.py`), paired existing
+  world comparisons (`d_existing_compare.py`), and model-free means/medians conditioned on identical true future mob
+  layouts (`conditional_stat.py`). These distinguish semantic erasure, objective incentives and incomplete conditioning.
+- Evidence stays in `artifacts/eda/oracle_v1`; stdout in `artifacts/eda/levers_logs`. Agents record numerical findings here.
+
 ### 10-12 PROJECTION FOLLOW-UP — completed (13:29–13:33 AEDT; CPU diagnosis through 13:44)
 
 **Result: projected feedback reduces subsequent cow false positives, but nearest-token projection fails content preservation. Do not integrate it as a repair.**
