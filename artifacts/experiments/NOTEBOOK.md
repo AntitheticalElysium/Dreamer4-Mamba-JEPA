@@ -148,6 +148,57 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-12 GENERATED-PREFIX COMPLETION — predeclared before training (21:07 AEDT)
+
+**Question:** does exposure to detached generated history improve the oracle-conditioned world's recursive prediction?
+User authorized this separating experiment after the D-loss/readout diagnosis. This tests conditional branch tracking;
+it does not yet learn stochastic innovations or validate an actor.
+
+- **Initial state:** both arms load exactly `oracle_v1/loss_intervention/D_u3000.pt`, including its OracleCond. Frozen Raw
+  encoder/tokens, corrt/fmamba architecture, full D objective, TRAIN support-v2 row pool, optimizer, seed-11 main sampler,
+  BF16/IEEE and 3,000 updates at batch 16 are fixed. World and OracleCond remain trainable in both arms.
+- **Both arms:** retain the original full-L16 teacher loss and add one matched endpoint loss per row, weighted
+  **0.5 teacher + 0.5 endpoint**. The teacher control receives real context at that endpoint; the prefix arm receives its
+  own detached generated context. This preserves the ordinary 15-target training signal and matches added supervision.
+- **Endpoint exposure:** independent sampler seed 20261012; prefix length p chosen equally from {1,2,4,8,15}; main target
+  t chosen uniformly from [30,63], terminal target t=63. Prefix length is independent of target and terminal status.
+  Starting context is real frames [t−p−15,t−p); generate p states without gradient, then predict target t with gradient
+  from the final 15 frames. Control context is real [t−15,t). Both use actions [t−15,t), next-layout oracle [t−14,t+1),
+  target token t and endpoint input position 14. p=15 makes the entire final context generated. These 64-frame slices
+  avoid the earlier short-prefix/history confound. No gradients pass through prefix generation.
+- **Controls before launch:** frame/action/oracle timeline sentinels; p=0 and truth-substituted-prefix equality; p=15 full
+  generated context; first prediction parity with the evaluator; generated tensors detached and final loss gradients live;
+  terminal and nonterminal endpoint labels represented at every p; interrupted/resumed optimizer/RNG/sampler restoration.
+- **Budget/readings:** save full resumable state every 100 updates and snapshots at 0/500/1,500/3,000. Evaluate the same
+  200 DEV episodes through H16 (exploratory reuse), both factual and self-fed. Paired episode comparisons report matched
+  generated-fitted mob readouts, original-reader sensitivity, location/source residue, camera alignment, near-player
+  terrain, health/food and direct token-error components. Readout FIT/DEV/TEST episodes stay separated as in the preceding
+  CPU control. Primary all roots; common alignment is a selected sensitivity. No new binary gate or unconditional seed 2.
+- **Interpretation:** a smaller recursive gap without losing factual capability supports generated-context robustness at
+  this adaptation budget. A negative while learning is still moving is not proof against continuous completion. Full-screen
+  recorded oracle layouts can become inconsistent after a camera/player branch error; diagnose that separately. HUD timer
+  memory and unprivileged innovation remain distinct questions. This intervention differs from JEDI's random switching,
+  while sharing its predicted/encoded-context training principle ([§3.2](https://arxiv.org/html/2605.13013v1#S3.SS2)).
+- **Files:** new `20261012_oracle/prefix_intervention.py` and prefix evaluation/readout helpers; preserve prior source-bound
+  scripts. Outputs `oracle_v1/generated_prefix/`, stdout `artifacts/eda/levers_logs/`. The prefix arm costs extra no-gradient
+  rollout work; record per-arm time and compute instead of claiming equal wall time. No architecture integration follows.
+
+**Launch/verification (21:17 AEDT):** actual model p=0 outputs, first prefix/evaluator outputs and original D teacher loss
+agree exactly (max difference 0). p=15 has 15 no-gradient calls plus one final gradient call; world/oracle gradient norms
+0.5543/0.01661 on the two-row check. B16 smoke peak 1.659 GiB. Interrupted 2→4 versus uninterrupted 4 reproduces sampler,
+exposure stream, Torch/CUDA RNG and batch ledger; GPU parameter endpoints differ up to 1.58e−6, so no bit-exact training
+claim. Serialized model/optimizer restoration is checked exactly. Resume/reference smokes overlapped briefly and are not
+used for throughput. Full 3,000-draw CPU preview has terminal fractions 25.65–27.30% across p and predicts final ledger
+`b6e6519c7ec90fef26e919558158d133c135dadef8012cf0b8ad7032d7b92a5f`.
+- Official run completed a ten-update throughput check, then resumed unchanged as
+  `oracle_generated_prefix_20261012.service`; evaluation/readout queue `oracle_generated_prefix_eval_20261012.service`.
+  No other research GPU job was active at launch. Both arms will receive 720,000 main targets + 48,000 endpoint targets.
+- Proofs: `oracle_v1/generated_prefix_real_checks.json`, `generated_prefix_resume_proof.json`,
+  `generated_prefix_sampler_preview.json`, `generated_prefix/eval_validation.json`; helper sources are retained beside
+  the trainer. Primary source/inputs contract `5ea495dc9bd534f66c7673a2e0095298e47eace83ed740dc8aa9d7279bc43e04`.
+  Initial matched batch (p=4) has equal main teacher loss 0.0296357; endpoint D loss is 0.0279704 on real context versus
+  0.154864 on generated context. This is a training-input difficulty check, not an outcome verdict.
+
 ### 10-12 MATCHED D-LOSS FOLLOW-UP — completed; readout controls completed (19:21 AEDT)
 
 **Result: D changes completion tradeoffs; the experiment does not support a D-only explanation of recursive failure.**
