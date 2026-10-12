@@ -10,6 +10,19 @@ PREFIX_LOG=artifacts/eda/levers_logs/generated_prefix_eval.log
 PREFIX_TRAINER=oracle_generated_prefix_20261012.service
 {
     date '+START %Y-%m-%d %H:%M:%S %Z'
+    # A live driver upgrade can leave the old kernel module loaded. Use only
+    # cached libraries matching that module; never replace system libraries.
+    if ! nvidia-smi --query-gpu=driver_version --format=csv,noheader >/dev/null 2>&1; then
+        PREFIX_DRIVER_VERSION=$(rg -o '[0-9]{3}\.[0-9]{2}\.[0-9]{2}' /proc/driver/nvidia/version | head -n 1)
+        PREFIX_DRIVER_LIB="$PWD/$PREFIX_RUN/runtime_${PREFIX_DRIVER_VERSION//./_}/usr/lib"
+        if [[ ! -f "$PREFIX_DRIVER_LIB/libcuda.so.1" || ! -f "$PREFIX_DRIVER_LIB/libnvidia-ml.so.1" ]]; then
+            printf 'FAILED: no cached libraries matching loaded NVIDIA driver %s\n' "$PREFIX_DRIVER_VERSION"
+            exit 1
+        fi
+        export LD_LIBRARY_PATH="$PREFIX_DRIVER_LIB${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+        printf 'RUNTIME: process-local NVIDIA libraries %s\n' "$PREFIX_DRIVER_LIB"
+        nvidia-smi --query-gpu=name,driver_version --format=csv,noheader
+    fi
     # Both final snapshots are written before trainer success. Do not compete
     # with the trainer for GPU compute during this matched comparison.
     while [[ ! -f "$PREFIX_RUN/teacher_u3000.pt" || ! -f "$PREFIX_RUN/prefix_u3000.pt" ]]; do

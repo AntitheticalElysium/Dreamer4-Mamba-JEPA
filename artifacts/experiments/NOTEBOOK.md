@@ -209,6 +209,17 @@ used for throughput. Full 3,000-draw CPU preview has terminal fractions 25.65–
   source/input hashes and the verified token-file fingerprint match. Independent CPU replay reproduces the update-700
   sampler ledger, aggregate counts and both sampler RNG states exactly. Restored the same training service and automatic
   evaluation/readout queue; both are active. Snapshots 0/500 remain preserved; no final training or evaluation report yet.
+- **Training complete / evaluation runtime repaired (10-13, 10:50 AEDT):** both arms reached 3,000 updates, each with
+  720,000 main + 48,000 endpoint targets. Final batch ledger matches the independent CPU preview exactly. Evaluation
+  failed before saving predictions: loaded NVIDIA kernel driver **615.71.09** versus upgraded NVML **615.78.08**;
+  `nvidia-smi` independently reports driver/library mismatch and PyTorch fails in `nvmlInit_v2_`. Extracted matching
+  libcuda/NVML from the cached 615.71.09 package into `generated_prefix/runtime_615_71_09/`, without replacing system
+  libraries. CUDA allocation/matmul and the actual H16 evaluator passed; first 8/200 teacher predictions saved. Launcher
+  now selects this fallback only when installed driver libraries fail and the cached version matches the loaded module.
+  Same evaluation/readout service resumed successfully, reusing that batch; remaining snapshots and CPU readouts queued.
+  Checkpoint hashes, library/package hashes and CUDA smoke: `generated_prefix/runtime_615_71_09/repair.json` and
+  `cuda_smoke.json`. Failed log retained in `levers_logs/generated_prefix_eval.log`; model sources, weights, allocator,
+  BF16/IEEE settings and scientific contract unchanged. Evaluation verdict remains pending.
 
 ### 10-12 MATCHED D-LOSS FOLLOW-UP — completed; readout controls completed (19:21 AEDT)
 
