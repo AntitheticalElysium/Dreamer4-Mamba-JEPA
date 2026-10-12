@@ -148,6 +148,97 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-12 PROJECTION FOLLOW-UP — completed (13:29–13:33 AEDT; CPU diagnosis through 13:44)
+
+**Result: projected feedback reduces subsequent cow false positives, but nearest-token projection fails content preservation. Do not integrate it as a repair.**
+- Same checkpoints and 60,000-token dictionary as the aborted attempt; 200 DEV episodes per TRUE/oracle-D/control-D arm,
+  H16, no retraining. Four modes separate immediate reader filtering from changed subsequent model outputs.
+- Primary below: all 200 episodes, depths 9–16 (1,600 root-steps; 870 true cow cells and 583 zombie cells).
+  Intervals are paired episode-bootstrap 95% intervals, 2,000 draws. All modes use the same frozen readers and thresholds.
+
+| oracle-D mode | cow false-positive cells / true cows | cow recall | cow census / truth | zombie recall |
+|---|---:|---:|---:|---:|
+| raw self-fed rollout | 0.569 | 0.924 | 1.493 | 0.842 |
+| project only at readout | 0.244 | 0.746 | 0.990 | 0.599 |
+| projected history, **output before projection** | 0.289 | 0.905 | 1.193 | 0.731 |
+| projected history and output | 0.197 | 0.752 | 0.948 | 0.600 |
+
+- **Feedback effect:** pre-projection cow false positives fall from 495 to 251 (49.3%), a ratio difference
+  −0.280 [−0.494, −0.120]. Cow recall changes −0.020 [−0.053, +0.010]; this is not a noninferiority result.
+  Zombie recall falls −0.111 [−0.193, −0.035]; skeleton recall falls −0.215 [−0.321, −0.120].
+  Depth-1 raw and feedback-pre outputs are byte-identical in every batch, before projected feedback begins.
+- **Readout effect:** projecting the unchanged raw rollout lowers cow false positives by −0.325 [−0.532, −0.171],
+  while erasing recall by −0.178 [−0.246, −0.121]. Final projected feedback does not resolve beyond readout-only projection
+  for cow false positives (−0.047 [−0.147, +0.044]) or recall (+0.006 [−0.056, +0.066]).
+- **Common-aligned sensitivity:** 158 episodes contribute 1,112 late root-steps. The pre-projection cow false-positive
+  benefit remains (−0.249 [−0.406, −0.112]), with a small resolved cow recall loss (−0.034 [−0.074, −0.004]);
+  zombie recall falls −0.145 [−0.230, −0.075]. Primary evidence uses all roots, not arm-specific selected masks.
+
+**TRUE positive control: projection damages genuine tokens.**
+
+| late real-token recall | original | projected | paired change, 95% interval |
+|---|---:|---:|---|
+| cow | 836/870 = 0.961 | 712/870 = 0.818 | −0.143 [−0.201, −0.088] |
+| zombie | 526/583 = 0.902 | 375/583 = 0.643 | −0.259 [−0.352, −0.172] |
+
+- Exact dictionary-source diagnosis distinguishes content replacement from reader errors: 155/158 projected cow
+  false negatives and 208/208 zombie false negatives select bank entries whose original physical source lacked that mob.
+  Actual source-content preservation is 711/870 cows (81.72%) and 372/583 zombies (63.81%).
+- All 201,600 projected TRUE tokens match bank bytes; all 60,000 bank entries match their recorded FIT-cache coordinates;
+  duplicate token bytes have no terrain/mob label ambiguity.
+- **Support versus metric:** suitable nonplayer bank entries with the same terrain and all four mob flags exist for
+  every semantic loss across H16 (300 cow losses, 369 zombie losses). Same-slot suitable entries exist for 260/300 and
+  223/369 respectively. On a fixed sample of 64 losses per type, the selected wrong token is closer in L2 than the nearest
+  suitable token in 64/64 cases for both types; median correct/chosen distance ratio is 1.228 (cow), 1.499 (zombie).
+  Total dictionary absence is excluded for these losses. This diagnoses this L2 selector; it does not isolate context,
+  position, light or sampling density as the sole cause of the metric mismatch.
+- Player-source contamination is a separate limited failure: 71/198,400 nonplayer queries retrieve player-slot entries,
+  accounting for only 5/300 cow and 14/369 zombie semantic losses. Player facing-reader accuracy itself drops
+  0.896 → 0.822; 110/3,200 player queries retrieve nonplayer entries. HUD tokens remain byte-identical under projection.
+  Across all TRUE future frames, terrain-reader accuracy drops 0.960 → 0.945 (near-player 0.970 → 0.947).
+- **Unconditioned control:** late cow recall is 0.079 raw, 0.033 under projected history before projection,
+  and 0.020 after projection. Projection does not recover the missing stochastic outcome.
+
+**Interpretation:** altered fed-back tokens causally reduce later oracle-D cow false positives under the fixed reader,
+but preservation fails on real inputs and on other mobs. Per-token membership in a real dictionary does not ensure a
+valid assembled frame. This result supports feedback sensitivity; it establishes neither categorical-state necessity
+nor a learned stochastic innovation. The prior oracle supplies full future occupancy, so its positive completion result
+is conditional on that privileged information. No actor/control result follows from this test.
+
+**Execution and evidence:**
+- Blocked exhaustive FP64 search completed with 0.659 GiB peak GPU allocation; original OOM script/log preserved.
+  Reference-distance/chunk/duplicate/idempotence/HUD checks and helper syntax checks pass.
+- One-batch interruption/reload check passed. Full re-execution resumed 75 batches, recomputed zero, and left all seven
+  result hashes unchanged (`oracle_v1/snap_resume_proof.json`). No experiment job remains running.
+- Re-evaluated raw oracle-D census is 1.493 versus the earlier rounded 1.500; it is not a byte-exact reproduction of
+  that earlier execution. Every intervention contrast above uses the matched baseline from this run.
+- Source: `20261012_oracle/snap_eval.py`, `snap_analysis.py`, `snap_visible.py`, `snap_bank_diagnose.py`,
+  `snap_bank_support.py`, `run_snap_followup.sh`. Evidence: `oracle_v1/stats_{TRUE,oracle_deltairis,control_deltairis}.json`,
+  `snap_analysis.json`, `snap_bank_diagnose.{json,pt}`, `snap_bank_support.{json,pt}`, saved root batches and exact replay.
+  Stdout: `artifacts/eda/levers_logs/oracle_snap_followup_20261012.log`.
+
+### 10-12 PROJECTION FOLLOW-UP (13:27; post hoc, comparisons fixed before the resumed run)
+
+**Question:** does real-token projection improve subsequent predictions, or merely clean the fixed reader's output?
+- Preserve the original 12:14 CUDA-OOM log and script (`oracle_v1/snap_eval_failed_20261012_1214.py`).
+- Same 200 DEV roots, oracle/control D checkpoints, 15-frame context, H16, and 60,000 real map tokens sampled with seed
+  20261012 from the diagnosis corpus's FIT seeds. No training or threshold changes. This dictionary is diagnostic FIT data,
+  not the world's original training-window pool.
+- `20261012_oracle/snap_eval.py`: exhaustive nearest-neighbour L2, query/bank blocks 256/8,192 and FP64 distances;
+  selected bank values remain FP32. All 63 map tiles (including player slot) project; HUD values are unchanged.
+- Modes: raw rollout; projection at readout only on the same raw rollout; **pre-projection outputs under projected feedback**;
+  projected outputs actually fed back. TRUE raw/projected is the semantics-preservation control.
+- Primary: all roots, depths 9–16, false-positive cow cells / true cows with recall and census; separating contrast is
+  feedback-pre minus raw. Readout minus raw isolates immediate filtering. Shared scroll-aligned subset is sensitivity only.
+- Same frozen readers/thresholds; retain per-root/depth event counts and paired episode-bootstrap intervals (2,000 draws).
+  No passing claim from reducing false positives by erasing true mobs. Bank membership is not joint-frame validity.
+- Exact CPU replay adds terrain/HUD/facing/sleep ground truth for the same 200 roots: mob layouts match at every root;
+  9 sentinel frames match pixels exactly. `snap_visible.py`, `oracle_v1/snap_visible.pt`.
+- Checks: blocked search vs direct exhaustive distances, duplicate tokens, projection idempotence, byte-identical HUD,
+  exported readers vs originals, depth-1 pre-projection identity, saved/reloaded predictions equal. Atomic per-root-batch
+  checkpoint files bind source/input/bank/reader/checkpoint hashes and resume without recomputing completed batches.
+- CPU semantic/paired analysis is `snap_analysis.py`; experiment stdout goes to `artifacts/eda/levers_logs`, never this file.
+
 ### 10-12 ORACLE-INNOVATION TEST — predeclared (before any code): can a continuous JEPA world complete a transition coherently when the stochastic outcome is GIVEN?
 
 **User's questions (10-12):**
