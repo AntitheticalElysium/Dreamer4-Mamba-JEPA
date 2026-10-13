@@ -209,6 +209,68 @@ used for throughput. Full 3,000-draw CPU preview has terminal fractions 25.65–
 - **Evaluation control:** the identical starting arms produce exactly equal predictions and accessories on all 200 DEV
   roots (`generated_prefix/eval_u0000/analysis.json`). This establishes baseline parity for the treatment comparison.
 
+**Completed result (10-13): partial HUD gains; generated-prefix exposure does not close the recursive gap.**
+Primary comparison: 200 reused DEV episodes, all roots, depths 9–16, matched 3,000-update arms. Both receive the true
+next-screen zombie/cow/skeleton/arrow layout; the oracle supplies neither intrinsic timers nor attack cooldowns.
+
+| late self-fed reading | teacher control | generated-prefix arm |
+|---|---:|---:|
+| near-player tile accuracy | 87.52% | 87.00% |
+| camera-aligned root-steps / 1,600 | 1,218 | 1,229 |
+| health MSE, native hearts | 1.384 | 1.529 |
+| food MSE | 0.633 | 0.597 |
+| drink MSE | 0.925 | 0.547 |
+| energy MSE | 0.807 | 0.570 |
+| damage caught / 48 | 28 | 29 |
+| false health drops / 1,523 | 28 | 26 |
+| cow TP / 870; frozen-reader FP | 819; 245 | 852; 838 |
+| zombie TP / 583; frozen-reader FP | 498; 35 | 514; 147 |
+
+- **Resolved benefit:** drink MSE −0.377 [−0.528, −0.238], energy MSE −0.236 [−0.451, −0.039] in paired
+  episode-bootstrap intervals. On the common camera-aligned subset (1,138 late root-steps), drink retains its gain
+  −0.279 [−0.432, −0.140]; energy −0.099 [−0.313, +0.118] is unresolved. Health, food, damage catch, terrain and late
+  camera-alignment contrasts are unresolved. Both arms still catch 0/29 recovery events with the fixed class reader.
+- **Objective tradeoff:** recursive frame L1 rises 0.2124 → 0.2376; difference +0.02519 [+0.01386, +0.03714]. Mean
+  squared error 0.1677 → 0.1723 is unresolved, while mean frame-maximum squared error falls 9.498 → 7.390;
+  difference −2.108 [−2.611, −1.615]. The aggregate D-loss change −0.01393 is composed of **+0.00463 MSE,
+  +0.00252 weighted L1, −0.02108 weighted maximum**; it reflects fewer extreme coordinate errors with worse mean
+  absolute fidelity. Factual frame MSE also rises 0.01184 → 0.01332 (+12.5%; paired difference +0.00148
+  [+0.00116, +0.00183]), so preservation of factual feature fidelity is not established.
+- **Readout control:** on the same 50 TEST episodes, prefix cow TP/FP is 212/131 with the original frozen reader,
+  207/38 after changing only its threshold on DEV, and 207/34 with a generated-fitted equal-capacity head. Teacher
+  generated-fit counts are 200/6. Generated-fit cow F1 is 0.9501 versus 0.9079, difference −0.0422 [−0.0869, +0.0029]
+  (unresolved); its prefix precision cost is resolved, −0.1120 [−0.1763, −0.0531], at the DEV-selected operating points.
+  The DEV-count sensitivity also retains excess prefix FP (28 versus 6). Generated-fit zombie F1 0.8193 versus 0.7865
+  is unresolved. Frozen-reader FP therefore overstates a semantic loss, but refitting does not establish a prefix gain.
+- **Spatial information remains readable:** generated-fit cow top-1 is 184/186 teacher versus 183/186 prefix; zombie
+  93/94 versus 89/94. Prefix local 3×3 AUC is 0.99674 cow / 0.98757 zombie. These presence-conditioned readings show
+  substantial localization under known outcomes; they do not certify calibrated absence, physical state validity or control.
+
+**Post-hoc CPU emission intervention:** ran the existing `decoder_context_shift.py` on both final prediction exports,
+with no model inference/training. Reconstruction and frozen-reader equality checks pass. On the prefix arm's own
+both-current-and-previous-camera-aligned late subset (1,223 root-steps; 673 true cow cells), 580/666 clean cow FP
+(87.1%) have a copied predecessor whose generated features read cow while both the physical source and its true-token
+reader are absent. Replacing only copied candidates with true previous tokens changes **FP 690 → 126; TP 663 → 656**.
+Paired FP/true delta −0.838 [−1.647, −0.332]. Replacing only the generator gives FP 656; routing only gives FP 723.
+The corresponding teacher-arm copy swap is FP 194 → 80 on its own aligned subset. Prefix zombie copy swap is
+FP 113 → 52, TP 400 → 403. These are emission-only substitutions: they isolate propagation of false reader responses
+through copied generated features, without proving literal duplicated objects or a recursively repaired trajectory.
+
+**Reading:** this matched intervention changes generated-context exposure and reveals a partial benefit. The copy-feedback
+failure survives, and the stronger mob result remains the teacher control with generated-state readouts. The cause of the
+learned prefix arm's increased copied-feature bias is not isolated by this experiment. No evidence here settles full
+backpropagation, from-scratch mixed-context training, learned innovations, persistent timer memory or actor performance.
+One training seed; the readout TEST split is separate from fitting but drawn from the repeatedly inspected world panel.
+Recorded world/conditioner compute totals are 1,630 s teacher / 2,829 s prefix, so this is matched updates/targets rather
+than matched computation. Independent CPU recomputation reproduces the four reported semantic paired intervals.
+
+**Literature:** [JEDI §3.2/§4.4](https://arxiv.org/html/2605.13013v1#S3.SS2) combines mixed predicted/encoded context with
+joint latent learning and bounded activations; its switching ablations support that recipe. [Dreamer 4 §3.2](https://arxiv.org/html/2509.24527v1#S3.SS2)
+uses denoising with noise-level conditioning and imperfect contexts. Neither establishes that the present frozen-token,
+detached-prefix continuation is sufficient. Evidence: `generated_prefix/eval_u3000/{analysis,rows}.json`,
+`readout_refit/{paired_u3000,calibration_u3000_*,spatial_u3000_*}.json`, and
+`eval_u3000/decoder_context_shift_{teacher,prefix}.json`; stdout remains in `eda/levers_logs/`.
+
 ### 10-12 MATCHED D-LOSS FOLLOW-UP — completed; readout controls completed (19:21 AEDT)
 
 **Result: D changes completion tradeoffs; the experiment does not support a D-only explanation of recursive failure.**
