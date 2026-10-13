@@ -237,7 +237,7 @@ successor. No prior or rate penalty. All models are free to train; no hypothesis
 - The primary queue tests one-step completion/distribution first; it defers H16 if both current codes are constant or
   shuffling them produces identical output. This is a necessary code-use check, not a new capability gate.
 
-**Completed primary result (10-13): both learned hard channels collapse; compact innovation remains untested.**
+**Completed primary result (10-13): this learning mechanism collapses; the compact-innovation hypothesis is unresolved.**
 All three worlds completed 3,000 updates and 720,000 targets each. The independent CPU sampler reproduction matches the
 final ledger exactly (`38f088d3...f4696cc30`); 12,784/48,000 sampled windows are terminal (26.63%). The 200-root evaluation
 and 32-key content checks are complete.
@@ -270,6 +270,14 @@ deterministic lower bound. The positive control is therefore not established, an
 premature. Every curve is still improving from 1.5109 at initialization. Reviewed and resumed the same models/optimizers
 and sampler to the declared 2,000-update budget; no new seed or architectural change. Source/data/scopes stay fixed.
 Proofs: `optimization_control/review_u0500.json`, source-bound resumable `state.pt` and per-milestone outputs.
+
+**Update-800 optimization reading (interim):** the supplied-code model now beats the exact deterministic-mean floor:
+MSE/floor **0.75245**, versus no-code **1.06243**, learned-hard **1.06324**, learned-soft **1.05977**. Supplied codes identify
+26 futures (at most 5 bits of information per case), rather than providing a complete spatial occupancy map. This
+establishes partial future-specific continuous completion on this tiny support, not generalization or coherent H16.
+The categorical completion path is therefore capable of using supplied distinctions; the joint learned interfaces have
+not yet done so. Because soft learning also lags, blaming hard quantization alone is premature. Continue the fixed-budget
+control; distinguish representability from inverse-encoder/decoder coadaptation, rather than declaring a JEPA failure.
 
 ### 10-12 GENERATED-PREFIX COMPLETION — predeclared before training (21:07 AEDT)
 
