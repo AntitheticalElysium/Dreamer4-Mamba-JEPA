@@ -148,6 +148,129 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+### 10-13 LEARNED-INNOVATION FEASIBILITY — predeclared before implementation/training
+
+**Question:** can a compact latent channel learned only from observed transitions improve conditional completion, and can
+an observation-conditioned prior sample the same useful outcomes? This advances the whiteboard's mechanism study beyond
+simulator-provided occupancy. It does not assume four-way uncertainty separation will emerge from a posterior/prior.
+
+- **Shared parent:** the existing unconditioned D control (`oracle_v1/worlds/control_deltairis_...u3000_b16.pt`), whose
+  oracle projection is identically zero and whose training used no occupancy conditioning. Same frozen Raw tokens,
+  corrt/fmamba world, TRAIN 64-frame ledger, 16-frame teacher windows, seeded batches and 3,000 updates at batch 16.
+- **Three arms:** no channel; six learned categorical factors with 8 choices each and no rate penalty; identical channel
+  with a conditional rate penalty 0.001. The hard channel has an **18-bit maximum per transition**, not an established
+  entity interpretation. Cross-attention learns the factors; no object identities, movement masks, tile classes, health
+  events, simulator layouts or keys enter the training objective. Terminal metadata only selects factual windows.
+- **Mechanism:** posterior sees causal backbone state plus current/next observed tokens. Completion receives only hard
+  discrete codes through a zero-initialized adapter, with no continuous future bypass. Prior reads the world's native
+  spatial/Mamba features and predicts factors autoregressively; it avoids E22MS's 192→8 per-tile input bottleneck.
+  Prior CE learns detached posterior assignments. The regularized arm additionally pays the assignments' conditional
+  negative log probability; this is a rate-distortion surrogate, not an ELBO or a measurement of environmental entropy.
+- **Separating readings:** identical initial outputs; future-input isolation in the prior; current-code zero/shuffle controls;
+  posterior completion versus ancestral prior mode/samples; original and generated-fitted held-episode readouts; actual
+  code use and held conditional rate. Evaluate saved milestones 0/500/1,500/3,000, then freeze posterior/world and refit the
+  prior if its moving targets limit fitting. A posterior failure calls for capacity/optimization diagnosis; a posterior
+  gain with a prior failure calls for prior/conditioning diagnosis. No unconditional second seed or actor launch.
+- **Judgment:** existing 200-episode DEV panel is exploratory. Simulator fields are evaluation-only. Initial evaluation
+  establishes paired factual/posterior completion and channel dependence; sampling quality must also be checked against
+  multiple real outcomes rather than against one realized future. H16 is a separate recursive reading, not inferred from
+  one-step success. Atomic model/optimizer/RNG/batch-ledger checkpoints and evaluation batches are required for resume.
+- **Limits:** the frozen state still includes nuisance; 15-frame completion history still omits some timers. The channel
+  may encode missing history, epistemic content or nuisance. Its actual content must be measured, not named by assumption.
+  The unconditioned parent is a continuation reference, not a from-scratch test of the full whiteboard architecture.
+- **Literature:** [Stochastic MuZero](https://openreview.net/forum?id=X6D9bAHhBQ1) motivates hard chance codes and separate
+  afterstate/chance completion; [LPWM §A.4.3](https://arxiv.org/html/2603.04553v1#A1.SS4.SSS3) motivates learned inverse
+  transitions and history-conditioned priors. LPWM also uses pixel reconstruction; we borrow the latent-context principle
+  without claiming a reproduction. This pilot's conditional rate penalty addresses the previously unregularized
+  posterior/code-learning path; whether it allocates capacity to consequential uncertainty remains a measured question.
+
+**Launch and completed controls (10-13):** three matched arms are training to 3,000 updates. Interrupted 2→4 versus
+uninterrupted 4 reproduces model and channel weights exactly; maximum optimizer-state difference is 1.09e−11. Sampler,
+Torch/CUDA RNG and batch-ledger streams are exact. Mutating the last input frame changes earlier native causal features by
+0; zero-initialized channel outputs match the unconditioned world exactly. Hard forward codes are exact one-hots, with a
+live completion gradient after the adapter is activated. Proof: `oracle_v1/learned_innovation/validation.json`.
+- The evaluation-only CPU fan is complete: **200 DEV roots × 32 independent keys**, at each root's recorded action.
+  Every recorded-key replay has pixel maximum difference 0; re-encoding that branch reproduces the panel tokens exactly.
+  This fan conditions on full simulator state; it does not measure uncertainty remaining under partial observation.
+  Files: `learned_innovation/real_futures/fan.pt` and its per-root atomic records.
+- Evaluation fits branch readouts on each arm's **posterior-completed recorded branches**, then freezes them for prior
+  samples. Independently sampled branches are never assigned the recorded branch's label during head fitting.
+
+**Early optimization diagnosis, update 500 (exploratory):** the monitored constant-code behavior is confirmed across all
+200 DEV roots, not just one training batch. The capacity arm has 2 distinct joint codes; the penalized arm has 1. Swapping
+the next frame changes 0.75% versus 0% of factor assignments (initially 35.08% for both).
+- At initialization the completion gradient into posterior logits is **exactly 0**, because the adapter's output weight
+  is zero, while the β=0.001 rate gradient norm is 4.39e−5 on the two-root control. This is an initialization defect in
+  this pilot's learning signal, not a property of continuous JEPA or of the whiteboard hypothesis.
+- At update 500, completion-logit gradient norms are 4.02e−7 (capacity) and 1.15e−9 (rate). The penalized arm's rate gradient
+  is 7.56e−6, **6,548×** its completion gradient. Random hard codes change the predicted tokens by up to 0.0564/0.0518, so
+  the decoder is not literally invariant to all codes; the learned encoder assigns almost constant ones.
+- These measurements establish channel disuse and a badly imbalanced initial/early gradient. They do **not** isolate the
+  full cause of the unpenalized arm's collapse. It starts using more codes on later monitored TRAIN batches, so the fixed
+  comparison is retained through its declared budget. A constant-code negative cannot reject compact innovation.
+- This relates to documented latent-channel collapse with strong decoders
+  ([He et al., ICLR 2019](https://arxiv.org/abs/1901.05534)); our hard-code rate surrogate is not their VAE ELBO.
+  Source/results: `20261012_oracle/innovation_channel_diagnosis.py`,
+  `oracle_v1/learned_innovation/channel_diagnosis_u0500.json`. Any repair must separate channel optimization from prior
+  fitting and preserve these initial results.
+
+**Separating the observed RNG content (CPU):** `innovation_content.py` evaluates the learned posterior on all 32 real
+successors of each identical root history/action, using exported native causal features. CPU/GPU code assignments on the
+original branches agree exactly. Mob occupancy varies across keys in **155/200 roots**. At update 1,500 both arms have
+**0/200 roots with any code variation across keys**, hence 0 empirical code entropy and 0 measured code/mob mutual
+information on this fan. At update 500 the capacity arm has code variation on 1 root, but none of the 155 mob-variable
+roots; the rate arm has none. The low prior CE therefore measures a predictable constant target, not learned chance.
+K=32 under-resolves rare alternatives; the exact constant-code finding applies to these sampled futures.
+
+**Optimization-control follow-up, predeclared before launch:** use four readout-FIT daytime roots and their distinct
+observed successor tokens. The history/action repeats while the successor varies; no readout-TEST episode is trained.
+Match four models: no code, learned hard code, learned soft probabilities, and assigned hard codes identifying each
+distinct observed future. Same parent, initialization, optimizer and seeded case batches; full D loss on the current
+successor. No prior or rate penalty. All models are free to train; no hypothesis about frozen-backbone capacity is added.
+- The assigned-code arm tests whether completion can use a known compact identifier. It is a deliberately supplied
+  positive control, not a learned innovation. The soft arm deliberately permits continuous future information and tests
+  the hard-quantization/gradient path; it is not a deployable 18-bit proposal.
+- Report error versus the exact empirical conditional-mean MSE floor, actual code use and the learning curves. Budget
+  2,000 updates with an initial stop/review at 500. A failure of the assigned-code control prevents an inverse-encoder
+  failure claim; a still-improving curve does not establish a negative. This overfit control provides no generalization,
+  sampled-distribution or actor result. Outputs remain under `learned_innovation/optimization_control/`.
+- The primary queue tests one-step completion/distribution first; it defers H16 if both current codes are constant or
+  shuffling them produces identical output. This is a necessary code-use check, not a new capability gate.
+
+**Completed primary result (10-13): both learned hard channels collapse; compact innovation remains untested.**
+All three worlds completed 3,000 updates and 720,000 targets each. The independent CPU sampler reproduction matches the
+final ledger exactly (`38f088d3...f4696cc30`); 12,784/48,000 sampled windows are terminal (26.63%). The 200-root evaluation
+and 32-key content checks are complete.
+- Both final posteriors assign **one joint code across all 200 original successors**, and **one code across all 32 RNG
+  futures within every root**. All 155 mob-variable roots have constant codes. Empirical code entropy and code/mob MI are
+  0 on the fan. Current-code shuffling changes the generated output by exactly 0 for both arms. The prior targets are
+  trivial: held assignment NLL is 0.000245/0.0000617 bits for capacity/rate. These are not estimates of game entropy.
+- On the 50 readout-TEST episodes, capacity posterior D minus control is **−0.000003 [−0.000602, +0.000552]**; its sampled
+  whole-frame energy difference is **+0.000642 [−0.000312, +0.001639]**. Neither resolves. The rate arm improves D by
+  **−0.001042 [−0.002188, −0.000070]** and whole-frame energy by **−0.000741 [−0.001417, −0.000082]**. These small exploratory
+  prediction gains cannot be credited to learned stochastic innovation: its code is constant, posterior/prior output
+  metrics coincide, and the adapter adds deterministic trainable capacity. No actor/decision benefit is established.
+- **Measurement control:** deterministic and sampled methods now use the same repeated-root inference batch shape.
+  Initial point-loss differences are exactly 0; energy differences are below 6e−18. The earlier unmatched-BF16-batch
+  exports (`unmatched_batch_eval_*`) had a spurious initial D difference of 1.54e−5 and are preserved with the exact
+  original evaluator source. They are excluded from the result. FP64 accumulation avoids spurious averaging differences.
+- H16 was deferred by the predeclared necessary code-use check. A recursive run of a constant-code channel would test
+  another deterministic adaptation, not innovation completion. The 26-case, four-FIT-root optimization control is now
+  running toward its initial 500-update review; no inverse-encoder/capacity verdict is available before that control.
+- **Interpretation:** the deployed prior cannot supply chance that its learned inverse encoder never encodes. The
+  initial zero-gradient defect and early rate imbalance are measured, but do not establish the full upstream cause of
+  the unpenalized collapse. The small control separates completion with supplied information from hard/soft inverse
+  learning; it must succeed before a negative is used against the whiteboard hypothesis.
+- Evidence: `learned_innovation/eval_u3000_h01/analysis{,_contract}.json`, `content/*_u3000.json`,
+  `recursive_queue_decision.json`, `sampler_reproduction.json`; original/generated-fitted mob heads remain separate.
+
+**Optimization control's 500-update review:** on 26 distinct futures, MSE divided by the exact conditional-mean floor is
+1.0733 (no code), 1.0722 (hard posterior), 1.0713 (soft posterior), **1.0618 (supplied identifiers)**. None beats the
+deterministic lower bound. The positive control is therefore not established, and a hard/soft encoder failure reading is
+premature. Every curve is still improving from 1.5109 at initialization. Reviewed and resumed the same models/optimizers
+and sampler to the declared 2,000-update budget; no new seed or architectural change. Source/data/scopes stay fixed.
+Proofs: `optimization_control/review_u0500.json`, source-bound resumable `state.pt` and per-milestone outputs.
+
 ### 10-12 GENERATED-PREFIX COMPLETION — predeclared before training (21:07 AEDT)
 
 **Question:** does exposure to detached generated history improve the oracle-conditioned world's recursive prediction?
@@ -255,6 +378,21 @@ Paired FP/true delta −0.838 [−1.647, −0.332]. Replacing only the generator
 The corresponding teacher-arm copy swap is FP 194 → 80 on its own aligned subset. Prefix zombie copy swap is
 FP 113 → 52, TP 400 → 403. These are emission-only substitutions: they isolate propagation of false reader responses
 through copied generated features, without proving literal duplicated objects or a recursively repaired trajectory.
+
+**Generated-fitted HUD control (10-13, CPU):** same 100 FIT / 50 DEV / 50 TEST whole-episode split; FIT-only
+standardization, equal-capacity ridge family, DEV-selected alpha, no depth/position input. TEST late depths 9–16 contain
+11 damage and 8 recovery opportunities.
+- Health MSE on the 50 TEST episodes: teacher original **1.2445**, generated-fitted **1.4598**; prefix original **1.5790**,
+  generated-fitted **1.7038**. Matched heads catch 2/11 teacher versus 4/11 prefix damage events, and 0/8 recovery in both.
+  These fits provide no health rescue. They are not information ceilings or a resolved teacher-versus-prefix comparison.
+- The fresh head's TRUE-token positive control has health MSE **0.04928** and drink **0.03117**, but food **1.3780** and
+  energy **0.29586**. For food, one TEST episode accounts for 55.2% of squared error, and TEST includes food=0 while FIT
+  ranges 1–9. The family therefore cannot support a broad claim that generated HUD facts are absent.
+- A simpler FIT/DEV-trained affine calibration of the existing four-counter reader lowers teacher health MSE
+  **1.2445→1.0719**, and prefix **1.5790→1.3123**. These are descriptive point changes, without a paired uncertainty claim;
+  they retain the teacher/prefix ordering and do not establish repaired dynamics.
+- Source: `20261012_oracle/hud_readout_refit.py`. Outputs: `generated_prefix/hud_readout_refit/`, including
+  `positive_control_calibration.json`; original prediction exports/readers are unchanged.
 
 **Reading:** this matched intervention changes generated-context exposure and reveals a partial benefit. The copy-feedback
 failure survives, and the stronger mob result remains the teacher control with generated-state readouts. The cause of the
