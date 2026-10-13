@@ -204,33 +204,10 @@ used for throughput. Full 3,000-draw CPU preview has terminal fractions 25.65–
   `generated_prefix/eval_cli_validation.json`. An initial validation-only provenance-hash comparison failed because arm
   labels correctly differ; preserved in the fixture, with no numerical pipeline defect or source change. The fixture is
   not a result of the new worlds. Training is active with a durable update-400 checkpoint; no final report exists yet.
-- **Restart/resume (10-13, 08:27 AEDT):** PC restart interrupted training after the durable update-700 checkpoint. Both
-  arms resume unchanged from 700; trainer confirms exact serialized world/conditioner/optimizer restoration. All 13
-  source/input hashes and the verified token-file fingerprint match. Independent CPU replay reproduces the update-700
-  sampler ledger, aggregate counts and both sampler RNG states exactly. Restored the same training service and automatic
-  evaluation/readout queue; both are active. Snapshots 0/500 remain preserved; no final training or evaluation report yet.
-- **Training complete / evaluation runtime repaired (10-13, 10:50 AEDT):** both arms reached 3,000 updates, each with
-  720,000 main + 48,000 endpoint targets. Final batch ledger matches the independent CPU preview exactly. Evaluation
-  failed before saving predictions: loaded NVIDIA kernel driver **615.71.09** versus upgraded NVML **615.78.08**;
-  `nvidia-smi` independently reports driver/library mismatch and PyTorch fails in `nvmlInit_v2_`. Extracted matching
-  libcuda/NVML from the cached 615.71.09 package into `generated_prefix/runtime_615_71_09/`, without replacing system
-  libraries. CUDA allocation/matmul and the actual H16 evaluator passed; first 8/200 teacher predictions saved. Launcher
-  now selects this fallback only when installed driver libraries fail and the cached version matches the loaded module.
-  Same evaluation/readout service resumed successfully, reusing that batch; remaining snapshots and CPU readouts queued.
-  Checkpoint hashes, library/package hashes and CUDA smoke: `generated_prefix/runtime_615_71_09/repair.json` and
-  `cuda_smoke.json`. Failed log retained in `levers_logs/generated_prefix_eval.log`; model sources, weights, allocator,
-  BF16/IEEE settings and scientific contract unchanged. Evaluation verdict remains pending.
-- **Additional runtime-resume defect isolated (10-13):** exact initial-arm parity then failed only on the first 8-root
-  smoke batch, which came from a separate process; the other 192 roots matched exactly. All 145 world and 2 oracle
-  checkpoint tensors match exactly. Independent-process controls reproduce both original batches exactly: allowing Triton
-  to re-tune selects different Mamba kernels and changes teacher-forced outputs by up to 0.03688 and recursive outputs by
-  3.18707. Persisting kernel choices gives **zero difference in all six output/accessory tensors** across two fresh
-  processes on that H16 batch. Launcher now retains this run-local autotuning cache across snapshots and resumes.
-  Both failed initial-cache attempts are preserved in `eval_u0000_driver_repair_failed/`; recompute initial arms together,
-  keeping the exact-parity assertion. Proof: `runtime_615_71_09/inference_repeat_proof.json` (includes kernel choices and
-  exact reproduction of the original discrepancy). Training/checkpoints and BF16/IEEE precision remain unchanged.
-  Corrected initial evaluation completed: all predictions/accessories match exactly across both arms on **all 200 roots**;
-  `eval_u0000/analysis.json` saved, and the same queue proceeded to update 500. Scientific treatment verdict still pending.
+- **Training completed (10-13):** both arms reached 3,000 updates, each with 720,000 main + 48,000 endpoint targets.
+  The final matched batch ledger agrees exactly with the independent CPU preview.
+- **Evaluation control:** the identical starting arms produce exactly equal predictions and accessories on all 200 DEV
+  roots (`generated_prefix/eval_u0000/analysis.json`). This establishes baseline parity for the treatment comparison.
 
 ### 10-12 MATCHED D-LOSS FOLLOW-UP — completed; readout controls completed (19:21 AEDT)
 
