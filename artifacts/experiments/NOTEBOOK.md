@@ -279,6 +279,35 @@ The categorical completion path is therefore capable of using supplied distincti
 not yet done so. Because soft learning also lags, blaming hard quantization alone is premature. Continue the fixed-budget
 control; distinguish representability from inverse-encoder/decoder coadaptation, rather than declaring a JEPA failure.
 
+**Completed 2,000-update optimization control (10-13): supplied distinctions work; learned hard and soft interfaces fail
+on this tiny support.** The unchanged four-arm control finished its declared budget. Recomputed source hashes, contract,
+exact target bytes and saved outputs agree. The four FIT roots contain 5/16/3/2 distinct futures, weighted uniformly as
+26 training cases; this is deliberately an overfit/optimization diagnostic, not the environment's outcome frequencies.
+
+| arm | final MSE | MSE / exact deterministic conditional-mean floor | own case is nearest real future |
+|---|---:|---:|---:|
+| no channel | 0.00504717 | 1.05126 | 4/26 |
+| learned hard posterior | 0.00505249 | 1.05237 | 4/26 |
+| learned soft posterior | 0.00502762 | 1.04719 | 4/26 |
+| supplied hard outcome IDs | **0.000073114** | **0.015229** | **26/26** |
+
+- The exact FP64 conditional-mean MSE floor is **0.0048010583**. Supplied IDs reduce error 98.48% below that floor and
+  produce 97.98% of the real within-root token variance. The same existing real-fitted reader recovers all **32 skeleton
+  and 15 cow occupancies**, with **zero false positives**, on both the real targets and supplied-ID predictions.
+  These four roots contain **no zombie or arrow occupancy**: this is no new damage/death result.
+- The hard interface has one joint code and exactly zero within-root prediction variance. The soft interface also has
+  one argmax code, but argmax counts do not bound its continuous information. Its *actual output variance* is only
+  **0.001054%** of the target's within-root variance. Thus removing hard quantization did not recover future-specific
+  prediction here. Soft and hard failures localize this implementation's learned-interface/coadaptation problem;
+  they do not identify its entire upstream optimization cause.
+- The supplied IDs identify cases (at most 5 bits across the 26 IDs). They are not learned, physical innovations or a
+  claim about chance entropy. Completion can express these supplied continuous futures; no generalization, calibrated
+  sampling, recursive coherence, four-way uncertainty separation or actor benefit follows from this overfit result.
+- All negative milestones, final model/optimizer/RNG state, source-bound contracts and prediction snapshots are retained.
+  The optimization control is complete. No further posterior-collapse repair or substantial experiment was launched.
+- Evidence: `oracle_v1/learned_innovation/optimization_control/{contract,result,completed_analysis}.json`; CPU saved-output
+  analysis: `20261012_oracle/innovation_overfit_analysis.py`. No new head was fitted for this final analysis.
+
 ### 10-12 GENERATED-PREFIX COMPLETION — predeclared before training (21:07 AEDT)
 
 **Question:** does exposure to detached generated history improve the oracle-conditioned world's recursive prediction?
