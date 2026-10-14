@@ -146,6 +146,39 @@ actor, no architecture search.
 
 **Verdict:** credible enough for Stage 2, with the afterstate-frame and hard-matching corrections.
 
+### STAGE 2 / F1a — raw-swap expressibility (`transport_stage2.py rawswap|rawswap3k`; T* from layouts, diagnostic only)
+
+**Setup:**
+- 104 bright DEV roots × 32 real keys.
+- T* = greedy one-to-one adjacent same-type swaps in the afterstate frame (exact camera offsets).
+- Carrier and renderer are identity: ẑ = LN(T*·b), so a destination receives the source's afterstate token exactly.
+- Readouts under both frozen readers: the 14 strict sources (205 move keys, 243 stay keys), and all 1,145 interior moves in the
+  panel.
+
+| afterstate used | strict move keys (real / bank) | strict stay keys | panel moves, both endpoints (real / bank) | RMS to real at endpoints (median) |
+|---|---|---|---|---|
+| **true** (aligned real tokens) | **100% / 100%** | 100% / 100% | **99.7% / 99.7%** | 0.060 (static floor 0.009) |
+| D parent reference (u0) | 75.6% / **24.9%** | 94.2% / 58.0% | 74.7% / 42.5% | 0.207 |
+| paired-3k reference | 62.4% / 63.9% | 92.2% / 91.0% | 72.8% / 73.5% | 0.075 (p90 0.470) |
+| reference with T = I | 0 / 0 | as above | 12.6% / 6.8% | 0.355 / 0.475 |
+
+**Readings:**
+1. **Transport is fully expressible in the frozen JEPA representation.** Swapping real afterstate tokens gives decodable valid
+   moves and stays, with no learned carrier or renderer. The cross-terrain background error (Stage 1) costs token fidelity,
+   not reader-level validity: 3 failures in 1,145.
+2. **Neither available reference is an afterstate.** Swapped tokens are exact copies, and both readers score each token
+   independently, so the failures are in the reference itself:
+   - **D parent:** every failed move key is "multiple" (50 / 205 real, 154 / 205 bank). The uncertain mob is ghosted onto its
+     neighbours. Under the bank reader, the reference alone "detects" it at 635 of 1,145 eventual destinations and clears only
+     98 sources.
+   - **Paired-3k reference:** failures are "absent" (77 / 205 real). On some sources the mob is faded out of the reference.
+   - Both were trained toward the *post-chance* target, so each absorbed part of the chance as a mean. That is Stochastic
+     MuZero's afterstate ≠ E[next state], now measured. Transport cannot remove ghosts on cells it doesn't touch, nor restore
+     a faded source.
+3. **Consequence for the proposal:** the operator needs a pre-chance afterstate. Whether a trainable reference becomes one when
+   the operator owns the chance is the next control (F1b), before any stochastic experiment. Otherwise a Stage 3 negative
+   could not be read.
+
 ## 2026-10-15 — S5–S6 reconciliation and optimizer matching correction
 
 - The preregistered direct/paired3k→6k continuation was held before launch. Both
