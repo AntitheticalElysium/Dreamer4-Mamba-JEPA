@@ -136,6 +136,7 @@ def main():
         if (update + 1) % 25 == 0 or snap:
             save(update + 1, snapshot=snap)
         if a.stop_after and update + 1 >= a.stop_after:
+            save(update + 1)
             return
     L.atomic({'contract_id': cid, 'update': a.updates, 'history': history, 'ledger_chain': chain, 'completed': True},
              d / 'training.json', True)
