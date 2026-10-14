@@ -336,6 +336,50 @@ What remains is the copy path propagating faint residue.
 **Reading:** exposure to generated history did not teach robustness. It taught more copying from history, so it amplifies
 the copy-path residue S2 localized. The drink / energy gains are real but small; the mob coherence cost dominates.
 
+### AUDIT S4 — 10-13 learned innovation (other agent): the posterior is a mean pool; that is why it learns nothing
+
+**Verified from raw files:**
+- **Main study, both arms:**
+  - one joint code over all 200 DEV successors, and one code per root over the 32 RNG keys (`content/codes_*_u3000.pt`);
+  - all six factors pick the same choice: (6,6,6,6,6,6) for capacity, (2,2,2,2,2,2) for rate;
+  - shuffling the current code or using the prior mode changes the output by exactly 0.0;
+  - held NLL 0.000245 / 0.0000617 bits.
+- **Optimization control, final table exact:** MSE/floor 1.0513 (none), 1.0524 (hard), 1.0472 (soft), 0.0152 (assigned IDs);
+  within-root output variance soft 1.05e-5, assigned 0.980.
+- **Not recomputed:** the TEST-episode D deltas. They are deterministic-capacity effects of a constant code, so they don't
+  bear on the mechanism.
+
+**New in this audit (`audit_s4_channel.py`, 26 control cases, 4 FIT roots):**
+1. **The information is there.** A root's futures differ on ~3 tiles: half the within-root target variance sits in 3.35
+   tiles per case on average, and one root has 99% on one tile. A flat linear classifier on the posterior's own input
+   (per-tile LayerNorm of [belief, current, successor − current], flattened) memorizes all 26 IDs: **100% at 500 updates (E).**
+2. **Pooling erases it.** The same linear classifier on the tile MEAN stays at **15-19%** (E).
+   - The posterior's attention pool behaves as that mean pool. Attention mass on the tiles where futures differ is 0.0413,
+     equal to uniform (3.35/81), in 5 fresh posteriors AND in both trained ones (D).
+   - The within-root share of variance is ~1% in the input and in the projected tiles, then **0.02% after pooling** (D).
+   - The six factor slots are near copies: pairwise cosine 0.96-0.998. In the trained arms, all 6 slots share one argmax on
+     every case (D).
+   - The query init (std 0.02) makes the attention logits nearly constant over tiles.
+3. **Training never repairs the pool.**
+   - The final soft and hard posteriors' logits differ by at most 0.012 / 0.0024 within a root (A).
+   - Even under direct cross-entropy at 10× the control's learning rate, the attention posterior reaches 38% at 500 updates
+     and **plateaus at 62-73% from 1,500 to 3,000 updates** on 26 fixed cases (B, B3000).
+   - The joint unsupervised path gives the posterior far less signal than this, so it never escapes.
+4. **The zero-initialized adapter is not the binding cause.**
+   - Joint training as the control's soft arm, with the adapter at PyTorch default init (C1), or with that plus unit-std
+     code values (C2): MSE/floor at 800 updates is **1.0648 / 1.0661**, on the no-channel / soft curves (1.0624 / 1.0598).
+   - Within-root output variance stays 2e-5 throughout.
+   - The assigned-ID arm uses the same zero-init adapter and broke below the floor by update 600 (0.959). The decoder side
+     was never blocked.
+
+**Reading:**
+- The learned-innovation negative is a property of this posterior: a global pool over 81 tiles of a difference that lives
+  on ~3 tiles. It is not evidence against learned innovations, and not about hard vs soft codes.
+- The other agent's "learned-interface / coadaptation problem, upstream cause unidentified" is now localized: the inverse
+  model cannot see where the futures differ.
+- This agrees with LPWM's choice of *per-particle* latent actions: innovations inferred locally, not from a global summary.
+  That is a design fact for next steps, not a tested fix.
+
 ### 10-13 LEARNED-INNOVATION FEASIBILITY — predeclared before implementation/training
 
 **Question:** can a compact latent channel learned only from observed transitions improve conditional completion, and can
@@ -556,6 +600,26 @@ Budget:3,000 updates, batch16, L16,720,000 next-state targets/arm. No simulator 
   All29 source/input pins and3,000-update batch/noise ledger verify exactly. Frozen failure diagnostics were declared
   before computation in`PAIRED_FAILURE_PREREG.md`. Negative milestones/checkpoints are retained. One-step exploratory
   evidence only; no new nuisance, long-memory, terrain-persistence, recursive or actor result.
+- **CPU semantic curve audit:** last available interval1,500→3,000, paired all-source movement5.80→12.61%
+  (+6.81pp[2.46,11.16]); duplication18.08→9.49%(−8.59pp[−12.05,−5.36]), but absence3.01→10.38%
+  (+7.37pp[4.13,11.16]). Cow event Brier improves under both readers; primary cow-movement gain unresolved,
+  second-reader gain+3.71pp[0.59,6.45]. Temporal dependence change unresolved; total validity does not improve.
+  Of61 additional movement draws,36 are skeleton/17 cow/8 zombie, so3 skeleton roots dominate the aggregate gain.
+  These are late semantic gains with incomplete coherence, rather than loss-only learning or evidence of convergence.
+- **CPU objective sensitivity:** exact current token energy distance,14 strict roots,disjoint16/16 real-future split,
+  32 independent five-token shuffle repetitions/root. Each full192-D token marginal is preserved; common whole-frame
+  permutation scores bit-identically. Both readers' validity100→52.59%; energy score0.036499→0.038769,
+  penalty+0.002270[0.001341,0.003205]. Cow8 penalty+0.002993[0.001743,0.004078]. Full empirical32 sensitivity
+  agrees. Objective detects this constructed joint incoherence; scalar gaps do not identify parameter-gradient cause.
+  Shuffling includes contextual token changes; finite without-replacement permutations are not iid ensemble draws.
+- **CPU normalization separation:** actual saved-output gradients on all46 unscored tokens are exactly0. Scaling
+  only unscored synthetic pre-LN inputs by1/1,000 changes scored loss/gradients by0. Entering amplification cannot
+  consume gradients through excluded final outputs in teacher-forced training. Earlier packets can still affect scored
+  outputs via attention/writes. CPU FP32 reference recomputation puts93.79–99.16%(mean97.85%) copy weight on
+  exactly zero-padded candidates at all164 GPU-defined low-reference cells; generation weight mean0.937%.
+  This is corroboration, not exact BF16 CUDA replay(low-reference sets agree103/104 roots; max reference difference0.05785).
+  Evidence:`diagnostics/{curve_reassessment,objective_sensitivity,normalization_gradients_cpu,reassessment_preservation}.json`;
+  raw rows and exact executed sources retained beside them. Assessment:`20261012_oracle/PAIRED_REASSESSMENT.md`.
 
 ### 10-14 DIRECT STOCHASTIC COMPLETION — preregistered before optimization
 
