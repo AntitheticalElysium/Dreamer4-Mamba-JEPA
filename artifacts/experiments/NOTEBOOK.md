@@ -179,6 +179,42 @@ actor, no architecture search.
    the operator owns the chance is the next control (F1b), before any stochastic experiment. Otherwise a Stage 3 negative
    could not be read.
 
+### STAGE 2 / F1b — can a trainable reference become an afterstate? (`transport_stage2.py fit|fiteval`)
+
+**Setup:**
+- From the exact D parent: 1,500 updates, batch 16, L16, the parent's own D loss, phase AdamW. Decay groups 127 decayed /
+  18 exempt, so the Mamba flags are preserved.
+- Identical seeded windows of the training ledger, restricted to the 320,376 windows with layouts.
+- **assigned:** output LN(T*·b), with T* from layouts plus the token-estimated camera shift (diagnostic only; 0.53 swaps per
+  step, the census rate).
+- **identity:** output LN(b), the parent's objective continued for the same budget.
+- The launch rule (≥ 90% on all three readings under both readers) was fixed in TRANSPORT_PREREG.md (5aa5f562) before this
+  evaluation.
+
+| reference, raw swap on DEV | strict move (real / bank) | strict stay (real / bank) | panel both endpoints (real / bank) | endpoint RMS |
+|---|---|---|---|---|
+| assigned u500 | 100 / 100% | 100 / 100% | 98.2 / 96.9% | 0.074 |
+| **assigned u1500** | **100 / 100%** | **100 / 100%** | **98.4 / 98.9%** | **0.063** (true-swap ceiling 0.060) |
+| identity u500 | 77.1 / 19.0% | 93.0 / 49.8% | 78.3 / 35.5% | 0.215 |
+| identity u1500 | 100 / **30.7%** | 100 / 66.3% | 81.1 / 45.8% | 0.212 |
+
+**Readings:**
+- **Launch rule met: Stage 3 launches.**
+- When the reassignment is owned by the operator, here supplied, the trainable reference becomes a clean pre-chance
+  afterstate within 500 updates, near the representation's ceiling.
+- Trained toward the post-chance target with the same budget, the reference keeps faint neighbour ghosts, the optimum of the
+  mean. All bank-reader failures are "multiple" (142 / 205). The real reader's higher threshold hides them.
+- So whether the deterministic part absorbs the chance is decided by whether the stochastic operator owns it. This is
+  Stochastic MuZero's afterstate decomposition, measured in our continuous JEPA world.
+- **Not shown:** that the operator can *learn* the assignment from the energy objective. That is Stage 3.
+- **Pre-launch execution checks:**
+  - `transport_model_test.py` passes: exact disjoint adjacent swaps; forward = hard permutation; the reference's gradient
+    follows the moved content; ~1 move per frame at initialization.
+  - Smoke: decay groups 143 / 18 identical by name in both arms; completion parameters 578,752 (free) / 530,693
+    (operator); peak memory 1.41 GiB.
+  - A smoke-found bug (no save on `--stop-after`) was fixed. Interrupted 2 → 4 vs uninterrupted 4: weights identical,
+    optimizer state within 8e-12, ledgers identical.
+
 ## 2026-10-15 — S5–S6 reconciliation and optimizer matching correction
 
 - The preregistered direct/paired3k→6k continuation was held before launch. Both
