@@ -14,7 +14,16 @@ here only as a diagnostic; nothing trains on them.
   rawswap3k  the same with the paired study's 3,000-update reference (paired_u3000: the reference trained jointly with a
            stochastic completion), to test whether joint training turns the D parent's post-chance mean into an afterstate.
   Both also break down the model-swap failures on strict move keys by decoded event (stay/move-wrong-direction/absent/multiple).
-Usage: transport_stage2.py rawswap|rawswap3k -> artifacts/eda/oracle_v1/transport/stage2_<mode>.json
+  fit <arm>  F1b, a supplied-assignment fitting control (diagnostic: T* from layouts never enters the main experiment). From the
+           exact D parent (paired_u0000; fresh PairedWorld + load_state_dict, so upstream Mamba no-decay flags are kept; the unused
+           completion head is frozen), 1,500 updates, batch 16, L16, the parent's own D loss, phase AdamW/lr schedule, seeded
+           windows of the training ledger restricted to rows with layouts (identical across arms):
+             assigned  output LN(T*_t b_t): the reference is trained only through the true reassignment of its own tokens
+             identity  output LN(b_t): the parent's objective continued for the same budget (matched control)
+           T*_t: camera shift estimated from the real tokens (parameter-free scroll reader), layouts aligned to the afterstate,
+           greedy adjacent same-type swaps. Checkpoints at 500 / 1,500 -> transport/fit_<arm>_u<N>.pt
+  fiteval <arm> <N>  the rawswap readings with that fitted reference
+Usage: transport_stage2.py rawswap|rawswap3k|fit <arm>|fiteval <arm> <N> -> artifacts/eda/oracle_v1/transport/stage2_<mode>.json
 """
 import json
 import sys
@@ -65,7 +74,7 @@ def apply(tokens, pairs):
 
 
 @torch.no_grad()
-def rawswap(checkpoint="paired_u0000"):
+def rawswap(checkpoint="paired_u0000", state=None):
     import paired_model as PM
     import direct_train as T
     import direct_eval as E
@@ -74,7 +83,7 @@ def rawswap(checkpoint="paired_u0000"):
     config = T.settings()
     data, _ = E.cohort("exploratory")
     world = PM.PairedWorld().cuda().eval()
-    world.load_state_dict(torch.load(A5.BASE / f"paired_event/training/{checkpoint}.pt", map_location="cpu", weights_only=False)["world"])
+    world.load_state_dict(state if state is not None else torch.load(A5.BASE / f"paired_event/training/{checkpoint}.pt", map_location="cpu", weights_only=False)["world"])
     bank = torch.load(A5.BASE / "snap_bank_readers.pt", map_location="cpu", weights_only=False)
     head = torch.load(A5.BASE / "learned_innovation/eval_u3000_h01/mob_heads.pt", map_location="cpu", weights_only=False)["heads"]["real"]
     n = len(data["roots"])
@@ -161,9 +170,66 @@ def rawswap(checkpoint="paired_u0000"):
     return res
 
 
+def fit(arm, updates=1500):
+    import paired_model as PM
+    import direct_train as T
+    import loss_intervention as L
+    from d4mj.train import autocast_context, optimizer_step, phase_optimizer, _phase_lr
+    assert arm in ("assigned", "identity")
+    config = T.settings()
+    _, windows, actions, tokens = T.load_data()
+    lay = np.load(A5.BASE / "layouts.npy", mmap_mode="r"); valid = torch.from_numpy(np.load(A5.BASE / "layouts_valid.npy"))
+    windows = windows[valid[windows[:, 0]]]
+    scroll = A5.load_scroll(); shifts = scroll.SHIFTS
+    world = PM.PairedWorld()
+    world.load_state_dict(torch.load(A5.BASE / "paired_event/training/paired_u0000.pt", map_location="cpu", weights_only=False)["world"])
+    world = world.cuda().train()
+    for name, prm in world.named_parameters():
+        prm.requires_grad_(not name.startswith("completion."))
+    opt = phase_optimizer([world], config)
+    names = {id(prm): name for name, prm in world.named_parameters()}
+    groups = [{"weight_decay": gr["weight_decay"], "parameters": len(gr["params"]), "names_sha": __import__("hashlib").sha256(
+        ",".join(sorted(names[id(q)] for q in gr["params"])).encode()).hexdigest()} for gr in opt.param_groups]
+    params = [prm for prm in world.parameters() if prm.requires_grad]
+    g = torch.Generator().manual_seed(20261015)
+    log, swaps_total = [], 0
+    for u in range(updates):
+        idx = torch.randint(len(windows), (16,), generator=g)
+        frames, ac, choices = T.batch(tokens, actions, windows, idx)
+        perm = torch.arange(81).repeat(16, 15, 1)
+        if arm == "assigned":
+            est = scroll.estimate(frames[:, :-1], frames[:, 1:]).cpu()
+            for b, (row, start) in enumerate(choices.tolist()):
+                Lw = torch.from_numpy(np.array(lay[row, start:start + 16]) > 0)
+                for t in range(15):
+                    prev = afterstate_layout(Lw[t], *shifts[int(est[b, t])])
+                    for src, dst, _ in swaps(prev, Lw[t + 1]):
+                        perm[b, t, dst], perm[b, t, src] = src, dst; swaps_total += 1
+        with autocast_context(config):
+            belief, ha = world.backbone_full(frames, ac)
+            ref = world.reference(frames, ac, belief, ha)[:, :15].float()
+        ref = ref.gather(2, perm.cuda()[..., None].expand(-1, -1, -1, 192))
+        out = F.layer_norm(ref, (192,))
+        loss = L.objective(L.components(out, frames[:, 1:]), "D")
+        optimizer_step(opt, loss, params, learning_rate=_phase_lr(config, u), grad_clip=config.agent.grad_clip, strict=True, zero_grad=True)
+        if (u + 1) % 100 == 0:
+            log.append({"update": u + 1, "loss": round(float(loss.detach()), 6), "swaps_so_far": swaps_total})
+            print(json.dumps(log[-1]), flush=True)
+        if u + 1 in (500, updates):
+            torch.save({"arm": arm, "update": u + 1, "world": L.cpu_state(world), "groups": groups, "log": log},
+                       OUT / f"fit_{arm}_u{u + 1:04d}.pt")
+    return {"arm": arm, "updates": updates, "optimizer_groups": groups, "log": log, "eligible_windows": len(windows)}
+
+
 if __name__ == "__main__":
     mode = sys.argv[1]
     OUT.mkdir(parents=True, exist_ok=True)
-    res = {"rawswap": rawswap, "rawswap3k": lambda: rawswap("paired_u3000")}[mode]()
+    if mode == "fit":
+        res = fit(sys.argv[2]); mode = f"fit_{sys.argv[2]}"
+    elif mode == "fiteval":
+        state = torch.load(OUT / f"fit_{sys.argv[2]}_u{int(sys.argv[3]):04d}.pt", map_location="cpu", weights_only=False)["world"]
+        res = rawswap(f"fit_{sys.argv[2]}_u{int(sys.argv[3]):04d}", state); mode = f"fiteval_{sys.argv[2]}_u{int(sys.argv[3]):04d}"
+    else:
+        res = {"rawswap": rawswap, "rawswap3k": lambda: rawswap("paired_u3000")}[mode]()
     (OUT / f"stage2_{mode}.json").write_text(json.dumps(res, indent=1))
     print(json.dumps(res, indent=1))
