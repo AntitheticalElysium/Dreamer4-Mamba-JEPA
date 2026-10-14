@@ -5,7 +5,9 @@ metrics on the 14 strict sources (audit S5 selection) under BOTH frozen readers:
 all-source and cow valid movement and stay, distinct valid outcomes, dependence = valid - exact independence baseline;
 scored joint occupancy ES; operator diagnostics (swaps per frame, swaps touching a decoded mob, reference-only validity);
 (3) paired operator - free intervals: 2,000 root-cluster bootstrap draws, seed 20261015.
-Usage: transport_eval.py sample <update> | analyze <update>  -> transport/eval_u<update>/
+Generalized for TRANSPORT_COST_PREREG.md: --train/--eval directories, --arms (free, operator, operator_cost), --free (a
+pred_free.pt from another directory, e.g. Stage 3's seed-1 free arm). Defaults reproduce the Stage 3 evaluation exactly.
+Usage: transport_eval.py sample|analyze <update> [--train DIR] [--eval DIR] [--arms a,b] [--free PATH]
 """
 import json
 import sys
@@ -24,7 +26,7 @@ KINDS = ('zombie', 'cow', 'skeleton')
 
 
 @torch.no_grad()
-def sample(update):
+def sample(update, train_dir=None, eval_dir=None, arms=None):
     import direct_model as DM
     import direct_train as BASE
     import direct_eval as E
@@ -32,9 +34,9 @@ def sample(update):
     from d4mj.train import autocast_context
     config = BASE.settings()
     data, _ = E.cohort('exploratory')
-    d = OUT / f'eval_u{update:04d}'; d.mkdir(parents=True, exist_ok=True)
-    for arm in TM.ARMS:
-        saved = torch.load(OUT / f'training/{arm}_u{update:04d}.pt', map_location='cpu', weights_only=False)
+    d = eval_dir or OUT / f'eval_u{update:04d}'; d.mkdir(parents=True, exist_ok=True)
+    for arm in arms or TM.ARMS:
+        saved = torch.load((train_dir or OUT / 'training') / f'{arm}_u{update:04d}.pt', map_location='cpu', weights_only=False)
         world = TM.TransportWorld(arm).cuda().eval(); world.load_state_dict(saved['world'])
         preds, swaps, refs = [], [], []
         for start in range(0, len(data['roots']), 4):
@@ -69,12 +71,15 @@ def bootstrap(per_source, seed=20261015, draws=2000):
     return [round(float(np.quantile(means, .025)), 4), round(float(np.quantile(means, .975)), 4)]
 
 
-def analyze(update):
+def analyze(update, eval_dir=None, arms=None, free_path=None):
     import direct_coherence as C
     import direct_eval as E
     import transport_model as TM
     data, _ = E.cohort('exploratory')
-    d = OUT / f'eval_u{update:04d}'
+    d = eval_dir or OUT / f'eval_u{update:04d}'
+    arms = list(arms or TM.ARMS)
+    if free_path is not None and 'free' not in arms:
+        arms = ['free'] + arms
     bank = torch.load(A5.BASE / 'snap_bank_readers.pt', map_location='cpu', weights_only=False)
     head = torch.load(A5.BASE / 'learned_innovation/eval_u3000_h01/mob_heads.pt', map_location='cpu', weights_only=False)['heads']['real']
     units = json.loads((A5.OUT / 'audit_recompute.json').read_text())['sources_list']
@@ -82,8 +87,8 @@ def analyze(update):
     root_tok = data['root_tokens'].float(); real_tok = data['fan_tokens'].float(); fan_lay = data['fan_layout'].bool()
     real_dec = C.decode(real_tok, bank, head)['mob']
     res = {'update': update, 'arms': {}, 'per_source': {}}
-    for arm in TM.ARMS:
-        row = torch.load(d / f'pred_{arm}.pt', map_location='cpu', weights_only=False)
+    for arm in arms:
+        row = torch.load(free_path if (arm == 'free' and free_path is not None) else d / f'pred_{arm}.pt', map_location='cpu', weights_only=False)
         pred = row['predictions']
         frozen = C.analyze(pred, root_tok, real_tok, data['root_layout'], data['fan_layout'], bank, head, shifts=data['shifts'],
                            actions=data['actions'][:, -1], root_tiles=data['root_tiles'], real_tiles=data['fan_tiles'])
@@ -126,18 +131,34 @@ def analyze(update):
                                'share_of_swaps_touching_a_root_mob': round(float((moved[..., :63] & C.decode(root_tok, bank, head)['mob']['real'][:, None, :, :3].any(-1)).sum() / max(int(moved.sum()), 1)), 4)}
         res['arms'][arm] = out
         print(json.dumps({arm: out}), flush=True)
-    res['operator_minus_free'] = {}
-    for reader in ('real', 'bank'):
-        a, b = res['per_source']['operator'][reader], res['per_source']['free'][reader]
-        res['operator_minus_free'][reader] = {k: {'mean': round(float(np.mean([x[k] - y[k] for x, y in zip(a, b)])), 4),
-                                                  'ci95': bootstrap([x[k] - y[k] for x, y in zip(a, b)])}
-                                              for k in ('valid', 'valid_move', 'duplicate', 'absent', 'multiple', 'dependence')}
-        ca = [x for x in a if x['kind'] == 'cow']; cb = [x for x in b if x['kind'] == 'cow']
-        res['operator_minus_free'][reader]['cow_valid_move'] = {'mean': round(float(np.mean([x['valid_move'] - y['valid_move'] for x, y in zip(ca, cb)])), 4),
-                                                                'ci95': bootstrap([x['valid_move'] - y['valid_move'] for x, y in zip(ca, cb)])}
+    pairs = [(x, y) for x, y in (('operator', 'free'), ('operator_cost', 'free'), ('operator_cost', 'operator')) if x in arms and y in arms]
+    for x_arm, y_arm in pairs:
+        res[f'{x_arm}_minus_{y_arm}'] = compare(res, x_arm, y_arm)
     (d / 'analysis.json').write_text(json.dumps(res, indent=1))
-    print(json.dumps(res['operator_minus_free'], indent=1), flush=True)
+    print(json.dumps({k: v for k, v in res.items() if '_minus_' in k}, indent=1), flush=True)
+
+
+def compare(res, x_arm, y_arm):
+    out = {}
+    for reader in ('real', 'bank'):
+        a, b = res['per_source'][x_arm][reader], res['per_source'][y_arm][reader]
+        out[reader] = {k: {'mean': round(float(np.mean([x[k] - y[k] for x, y in zip(a, b)])), 4),
+                           'ci95': bootstrap([x[k] - y[k] for x, y in zip(a, b)])}
+                       for k in ('valid', 'valid_move', 'duplicate', 'absent', 'multiple', 'dependence', 'distinct_valid')}
+        ca = [x for x in a if x['kind'] == 'cow']; cb = [x for x in b if x['kind'] == 'cow']
+        out[reader]['cow_valid_move'] = {'mean': round(float(np.mean([x['valid_move'] - y['valid_move'] for x, y in zip(ca, cb)])), 4),
+                                         'ci95': bootstrap([x['valid_move'] - y['valid_move'] for x, y in zip(ca, cb)])}
+    return out
 
 
 if __name__ == '__main__':
-    {'sample': sample, 'analyze': analyze}[sys.argv[1]](int(sys.argv[2]))
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument('mode', choices=('sample', 'analyze')); ap.add_argument('update', type=int)
+    ap.add_argument('--train', type=Path); ap.add_argument('--eval', type=Path); ap.add_argument('--arms'); ap.add_argument('--free', type=Path)
+    a = ap.parse_args()
+    arms = a.arms.split(',') if a.arms else None
+    if a.mode == 'sample':
+        sample(a.update, a.train, a.eval, arms)
+    else:
+        analyze(a.update, a.eval, arms, a.free)

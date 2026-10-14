@@ -336,6 +336,27 @@ seed-1 operator at 500 / 1,500 / 3,000):
   1,000-update continuations with and without the cost) runs before any cost training. Pass: static P(move) −≥ 30% and cow
   P(move) −≤ 15%.
 
+**4. Go / no-go probe: PASS** (`transport_cost_diag.py probe 1e-4`):
+- Setup: from seed-1 operator u3000 (model and optimizer restored), two matched 1,000-update continuations (identical fresh
+  windows and noise). Measured on the 48 stationary training windows.
+
+  | P(move) | u3000 start | no-cost end | cost end | cost vs twin |
+  |---|---|---|---|---|
+  | static (label-free) | 0.0131 | 0.0068 | 0.0035 | **−48.5%** (rule: ≥ 30%) |
+  | cow | 0.193 | 0.214 | 0.186 | **−13.1%** (rule: ≤ 15%) |
+  | zombie | 0.048 | 0.050 | 0.043 | −13% |
+  | skeleton | 0.215 | 0.263 | 0.244 | −7.5% |
+
+- Expected changes per frame: about 1.2 without the cost vs 0.85 with it.
+- **Caveats:**
+  - Continued training alone also halves static proposals: the terrain swaps were being slowly unlearned anyway, and the cost
+    roughly doubles that rate.
+  - The cost also costs mob movement (−7% to −13%), close to the allowance. The trade-off is real, not free.
+- Launching the preregistered experiment: seed set 1 {operator, operator_cost}, seed set 2 {free, operator, operator_cost},
+  λ = 1e-4, 3,000 updates (`run_transport_cost.sh`).
+- `transport_eval.py` was generalized (directories, arms, `--free`). A regression check reproduces the Stage 3 analysis
+  exactly: arms, per-source rows, bootstrap intervals.
+
 ## 2026-10-15 — S5–S6 reconciliation and optimizer matching correction
 
 - The preregistered direct/paired3k→6k continuation was held before launch. Both
