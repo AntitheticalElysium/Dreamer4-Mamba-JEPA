@@ -241,6 +241,58 @@ TRUE tokens projected: cow recall 0.961 → 0.818, zombie 0.902 → 0.643.
   draws a mob mainly by copying it from its history, not from the occupancy signal. S2's decoder decomposition measures the
   same copy dependence from the other side.
 
+### AUDIT S2 — 10-12 D-loss causal follow-up, readout controls, decoder decomposition (other agent)
+
+**What ran:**
+- three continuations (D, L1, D without its max term) of the oracle-D world, +3,000 updates each, with identical batches and
+  the oracle still supplied;
+- evaluation on the 200 DEV roots;
+- CPU diagnostics: fresh readout heads, decoder decomposition, model-free conditional optima.
+
+**Verified from `loss_intervention/eval_u*/analysis.json`** (self-fed, depths 9-16, frozen reader; true cows 870):
+
+| update | D: cow FP / TP | L1: cow FP / TP | no-max: cow FP / TP | D zombie FP |
+|---|---|---|---|---|
+| 0 (shared start) | 495 / 804 | 495 / 804 | 495 / 804 | 270 |
+| 500 | 477 / 771 | 387 / 793 | 341 / 786 | 257 |
+| 1,500 | 293 / 789 | 235 / 798 | 368 / 821 | 187 |
+| 3,000 | **227 / 805** | **161 / 838** | 213 / 828 | 70 |
+
+The same reader on the TRUE future tokens gives 86 FP: that is the instrument's own floor.
+
+**What this audit adds:**
+1. **Nothing had converged.** Every arm's recursive false positives were still falling steeply at 3,000 updates. The S0
+   recursion failure was at least partly an adaptation budget: the excess over the reader's floor fell from 409 to 75 under
+   L1 and to 141 under D.
+2. **The frozen reader overstates the residue.** `calibration_u3000_D.json`, 50 TEST episodes, depths 9-16, 215 true cows:
+
+   | reader | TP / FP |
+   |---|---|
+   | original frozen reader | 205 / 44 |
+   | **fresh equal-capacity head fit on REAL tokens only** | **203 / 17** |
+   | head fit on generated tokens | 200 / 10 |
+
+   - A head that never saw a generated token cuts false positives by 61%. The original count-matched thresholds fire on faint
+     residue.
+   - So **given the true outcome and 6,000 total updates, a continuous JEPA world's 16-step recursion is close to coherent
+     for mob occupancy**: 17 false cows per 215 true, with recall 0.94.
+3. **The residue that remains is carried by the copy path.**
+   - Decoder decomposition at 3,000 updates, both-camera-aligned late cells: replacing ONLY the copied candidates with real
+     previous tokens cuts cow FP 192 → 82 (D), 133 → 83 (L1).
+   - Replacing the generator or the routing alone does nothing.
+   - Faint false content in a generated frame is copied into the next one, which matches S0's "self-sustaining" share.
+4. **The model-free conditional optimum confirms the whiteboard's regression condition** (`conditional_stat/dopt.py`). Grouping
+   real futures by exact next mob occupancy, the full-D optimum gives cows 300 / 302 TP with 10 FP (the real futures: 299 / 302
+   and 14 FP). Once the outcome is fixed, a point loss no longer averages incompatible futures.
+
+**Holds:**
+- The other agent's reading that D's maximum term is not the main cause (no-max ≈ D by 3,000; its early benefit faded).
+- L1 vs D is a tradeoff, not a ranking.
+
+**Answer to the user's question 1 (10-12):** supplying the correct stochastic outcome removes the averaging failure in one
+step (S0, at the reader ceiling). With more training and a calibrated reader, it also removes most of the recursive one.
+What remains is the copy path propagating faint residue.
+
 ### 10-13 LEARNED-INNOVATION FEASIBILITY — predeclared before implementation/training
 
 **Question:** can a compact latent channel learned only from observed transitions improve conditional completion, and can
