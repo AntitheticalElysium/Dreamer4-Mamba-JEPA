@@ -293,6 +293,49 @@ The same reader on the TRUE future tokens gives 86 FP: that is the instrument's 
 step (S0, at the reader ceiling). With more training and a calibrated reader, it also removes most of the recursive one.
 What remains is the copy path propagating faint residue.
 
+### AUDIT S3 — 10-12/13 generated-prefix completion (other agent)
+
+**What ran:**
+- two continuations of the S2 D world (+3,000 updates), each with 0.5 teacher loss + 0.5 loss at one extra endpoint;
+- the endpoint's context is real (teacher arm) or the world's own detached generated rollout of 1-15 steps (prefix arm);
+- both receive the TRUE oracle;
+- evaluation on the 200 DEV roots.
+
+**Verified:**
+- The other agent's table (late self-fed, frozen reader): cow FP 245 teacher vs 838 prefix.
+- With generated-fitted heads: 6 vs 34 FP on 50 TEST episodes.
+- Drink / energy HUD gains for the prefix arm.
+- Factual frame MSE worse (+12.5%).
+- Its cause of the prefix arm's extra false cows was "not isolated".
+
+**New in this audit (`audit_s3_oracle_reliance.py`, `audit_s3_alignment.py`):**
+1. **The prefix arm learned to trust its history over the oracle.** Teacher-forced on real inputs with the oracle present, both
+   arms are the same (arrival cells: 0.81 vs 0.83 mean cow score). With the oracle ZEROED (which tells the world "no mob
+   next"), the share of cells where the arm still draws the cow copied from its history is:
+
+   | cells | shared start | teacher arm | prefix arm |
+   |---|---|---|---|
+   | stay | 0.29 | 0.17 | **0.40** |
+   | vacated | 0.15 | 0.09 | **0.20** |
+
+2. **Not camera misregistration** (my first hypothesis, refuted). Late self-fed false cows per step:
+   - prefix 0.56 on camera-aligned steps vs 0.40 on misaligned ones;
+   - teacher 0.16 / 0.12.
+
+   The excess is on aligned steps.
+3. **It is neighbour-copy spreading.** At late false-cow cells, corrt's routing weights (self, 4 neighbours, generator):
+   - prefix 0.50 / **0.37 total neighbours** / 0.14;
+   - teacher 0.68 / 0.12 / 0.21.
+
+   68% of the prefix arm's aligned false cows (472 / 690) persist from its own previous detection. The prefix arm pulls mob
+   content from adjacent cells into cells the truth says are empty, without clearing the source: duplication.
+4. **Mechanism of the training-side cause: a hypothesis, not tested.** In a generated context a mob can sit one cell away
+   from where the true oracle says it is next. Copying the neighbour's mob into the oracle-marked cell is then rewarded, and
+   that habit produces duplicates at evaluation.
+
+**Reading:** exposure to generated history did not teach robustness. It taught more copying from history, so it amplifies
+the copy-path residue S2 localized. The drink / energy gains are real but small; the mob coherence cost dominates.
+
 ### 10-13 LEARNED-INNOVATION FEASIBILITY — predeclared before implementation/training
 
 **Question:** can a compact latent channel learned only from observed transitions improve conditional completion, and can
