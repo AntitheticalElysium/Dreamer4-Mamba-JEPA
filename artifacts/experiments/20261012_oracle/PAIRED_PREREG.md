@@ -33,8 +33,9 @@ drives a source edit and its receiving edits:
 
 b is the existing parent copy/generation prediction without stochastic completion
 (before the final LN). A shared role-conditioned contextual endpoint decoder
-uses the event carrier and the recipient's deterministic belief; hidden width64
-keeps output-head capacity close to the original linear generation readout.
+uses the event carrier and the recipient's deterministic belief. Its width256
+readout preserves the control's possible full192-D stochastic output span;
+rank16 recipient conditioning keeps capacity close without compressing the event.
 Actual parameter counts and training/inference time/memory are reported. Shared
 parent and stochastic trunk tensors must match exactly at initialization. The
 new readout cannot have identical initial outputs, but both independent noises
@@ -44,6 +45,17 @@ noise-conditioned destination-generation bypass.
 This is a change in endpoint factorization, not an isolated noise-sharing test.
 Soft splitting, endpoint collisions and wrong contextual edits remain possible.
 No conservation of arbitrary JEPA feature sums is claimed.
+
+**Pre-main correction (18:29 AEDT):** implementation validation identified that
+the first width64 endpoint readout would restrict pre-LN edits to a fixed span
+of at most65 dimensions (including its bias), compared with the control's
+possible192. It is replaced before semantic evaluation or main optimization
+by the full-width readout above, adding9,216 parameters (about0.132% total).
+The earlier4-update smoke fixtures, exact sources and original preregistration
+are preserved under `paired_event/preflight_history/v1`; they are execution
+checks, not trained scientific arms or selected model results. The contrast
+identifies contextual endpoint factorization, including recipient conditioning
+and nonlinear editing; it does not isolate pairing alone from those properties.
 
 ## Reference and coordinate limitation
 
