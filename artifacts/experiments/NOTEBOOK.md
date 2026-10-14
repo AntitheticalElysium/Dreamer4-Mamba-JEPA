@@ -215,6 +215,86 @@ actor, no architecture search.
   - A smoke-found bug (no save on `--stop-after`) was fixed. Interrupted 2 → 4 vs uninterrupted 4: weights identical,
     optimizer state within 8e-12, ledgers identical.
 
+### STAGE 3 — the matched comparison (TRANSPORT_PREREG.md, 5aa5f562): free synthesis vs joint reassignment
+
+**What ran:**
+- Both arms trained in one process for 3,000 updates, with identical windows, Gaussian noise and Gumbel draws (ledger
+  `9dadd2560b5bcd02…`).
+- Same parent, backbone, trainable reference, noise trunk (initialization asserted equal) and energy objective.
+- Decay groups 143 / 18, identical by name.
+- Parameters: 6,960,592 free / 6,912,533 operator; completion 578,752 / 530,693.
+- Median 0.312 / 0.327 s per update; peak 1.48 GiB with both arms resident.
+- Evaluation: 104 DEV roots × 64 samples; 14 strict sources under both frozen readers.
+
+**Primary result at 3,000 updates.** Where the two readers agree, one number is given; otherwise real / bank.
+
+| | free | operator | operator − free, 95% root bootstrap |
+|---|---|---|---|
+| valid | 63.2 / 53.3% | **93.8%** | +30.6 [19.8, 42.0] / +40.4 [26.6, 55.1] pp |
+| all-source valid movement | 8.5 / 4.8% | **29.2%** | +20.8 [12.4, 30.3] / +24.4 [14.7, 34.8] pp |
+| cow valid movement (real 41.0%) | 4.5 / 3.5% | **25.0%** | +20.5 [10.7, 31.8] / +21.5 [11.5, 33.0] pp |
+| duplicate | 19.0 / 31.5% | 4.91% | −14.1 / −26.6 pp |
+| absent | 15.0 / 7.0% | 0% | −15.0 / −7.0 pp |
+| dependence (real 45.8pp) | 0.8 / −0.7pp | **31.6pp** | +30.7 / +32.2 pp |
+| distinct valid outcomes (real 3.64) | 2.43 / 2.14 | 4.07 | |
+| scored joint ES | 0.0257 / 0.0275 | **0.0248 / 0.0256** | |
+| scored static corruption | 0.27% | **0.72%** | |
+
+**Gates (both readers):** G1 movement **pass**; G2 coherence **pass** (duplicate 4.91% ≤ 5%); G3 comparison **pass**; **G4
+static FAIL** (0.72% > max(0.27%, 0.5%)); G5 joint law **pass**.
+
+**Preregistered verdict: "transport better" is NOT established.** Reserved fresh roots stay sealed; no repair or extension.
+
+**Attribution (frozen diagnostics, `transport_diag.py`):**
+1. **Validity:** 13 / 14 operator sources are 100% valid under both readers. The only failure, zombie root 83, comes from
+   its *reference*, which holds a ghost ("multiple"); that root produces all the duplicates.
+   - Validity is partly constructive: swaps cannot duplicate or erase.
+   - It is also partly learned: the operator's reference became a clean afterstate (13 / 14 valid stays under the bank
+     reader vs 10 / 14 for the free arm and 6 / 14 at u0), as F1b predicted.
+   - Payload substitution: in 278 / 278 cases the destination's mob vanishes when the moved content is replaced. Provenance
+     holds.
+2. **The movement law is learned, but under-dispersed:**
+
+   | P(move) by content | u0 | u500 | u1500 | u3000 | real |
+   |---|---|---|---|---|---|
+   | cow | 1.4% | 1.5% | 6.6% | **20.9%** | 36% |
+   | skeleton | 1.5% | 1.9% | 8.4% | **38.6%** | 61% |
+   | zombie | 1.5% | 1.6% | 3.2% | 6.6% | 43% |
+   | no mob | 1.4% | 1.3% | 1.4% | 2.1% | — |
+
+   - Mob moves into solid terrain fell from 21% to 6.9%. 11.9% of strict-source moves go in directions with no real support.
+   - Per-source movement tracks reality, mostly below it. Zombies, which chase the player, are barely learned.
+   - The straight-through push on source moves still favours moving at 3k (diversity +7.5e-4 vs attraction −5.0e-4,
+     8 / 14 roots). The movement curve had not converged.
+3. **G4 is caused entirely by terrain swaps.**
+   - Scored static corruption: operator samples 0.737%, its own reference alone 0.296%, free samples 0.303%.
+   - Swaps per frame at 3k: mob ↔ passable 0.19, mob ↔ solid 0.014, terrain ↔ same terrain 0.94, **terrain ↔ different
+     terrain 0.155**.
+   - The terrain swaps come from the initialization prior (~1 proposal per frame, β), which is never unlearned. P(move | no
+     mob) goes 1.4% → 2.1%.
+   - **Why:** at terrain-only tiles the two halves of the energy objective nearly cancel (attraction −4.4e-5 vs diversity
+     +3.8e-5 per pair, at 1.5k and at 3k). A rare spurious swap raises both terms by almost the same second-order amount
+     under the first-power distance. This is the same per-sample insensitivity S5 found for dependence.
+   - The late rise is probably a side effect of the shared proposal weights learning mob moves. That is inference, not
+     measured.
+4. **The objective itself favours the true law.** Model-free: real-key samples of the true law score ES 0.0365, vs 0.0611 for
+   the same keys with moves undone (+68% on 13 / 14 strict roots; +89% on 56 / 62 roots with moves). Attraction alone
+   prefers stay on 11 / 14, so the diversity term carries all of it. That is why discrete moves are learned slowly, and
+   only where two draws differ.
+
+**Reading:**
+- On every coherence and movement measure, joint reassignment of retained content learned far better than per-tile
+  synthesis under the identical objective, data, noise and budget. Movement grew from 2% (random) to 29% by learning, not
+  by construction.
+- The preregistered static gate fails because the same objective does not price spurious terrain reassignment. Its
+  per-sample signal is nearly zero there.
+- **Remaining confounds:**
+  - one training seed;
+  - the straight-through estimator exists only in the operator arm;
+  - the operator cannot express births, deaths or border crossings;
+  - the zombie law is unlearned.
+- **Not tested:** recursion, decisions, nuisance, memory.
+
 ## 2026-10-15 — S5–S6 reconciliation and optimizer matching correction
 
 - The preregistered direct/paired3k→6k continuation was held before launch. Both
