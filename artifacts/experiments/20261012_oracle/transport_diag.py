@@ -45,7 +45,7 @@ OUT = A5.BASE / 'transport'
 
 
 @torch.no_grad()
-def main(update):
+def main(update, train_dir=None, arm='operator', out_dir=None):
     import direct_model as DM
     import direct_train as BASE
     import direct_eval as E
@@ -57,7 +57,7 @@ def main(update):
     bank = torch.load(A5.BASE / 'snap_bank_readers.pt', map_location='cpu', weights_only=False)
     head = torch.load(A5.BASE / 'learned_innovation/eval_u3000_h01/mob_heads.pt', map_location='cpu', weights_only=False)['heads']['real']
     world = TM.TransportWorld('operator').cuda().eval()
-    world.load_state_dict(torch.load(OUT / f'training/operator_u{update:04d}.pt', map_location='cpu', weights_only=False)['world'])
+    world.load_state_dict(torch.load((train_dir or OUT / 'training') / f'{arm}_u{update:04d}.pt', map_location='cpu', weights_only=False)['world'])
     units = json.loads((A5.OUT / 'audit_recompute.json').read_text())['sources_list']
     strict = {root: (source, ('zombie', 'cow', 'skeleton').index(kind)) for root, source, kind in units}
     n = len(data['roots'])
@@ -130,7 +130,7 @@ def main(update):
            'strict_sources_accepted_direction_counts[stay,up,down,left,right]': {str(k): v for k, v in strict_dirs.items()},
            'strict_sources_real_event_counts[stay,up,down,left,right]': {str(k): v for k, v in real_dirs.items()},
            'payload_substitution': payload}
-    (OUT / f'diag_u{update:04d}.json').write_text(json.dumps(res, indent=1))
+    (out_dir or OUT).joinpath(f'diag_{"" if arm == "operator" else arm + "_"}u{update:04d}.json').write_text(json.dumps(res, indent=1))
     print(json.dumps(res, indent=1))
 
 
@@ -245,15 +245,15 @@ def gradsplit(update):
     print(json.dumps({k: v for k, v in res.items() if k != 'rows'}, indent=1))
 
 
-def swaps_mode(update):
+def swaps_mode(update, eval_dir=None, arm='operator', free_path=None, out_dir=None):
     import direct_eval as E
     import direct_coherence as C
     data, _ = E.cohort('exploratory')
     bank = torch.load(A5.BASE / 'snap_bank_readers.pt', map_location='cpu', weights_only=False)
     head = torch.load(A5.BASE / 'learned_innovation/eval_u3000_h01/mob_heads.pt', map_location='cpu', weights_only=False)['heads']['real']
-    d = OUT / f'eval_u{update:04d}'
-    op = torch.load(d / 'pred_operator.pt', map_location='cpu', weights_only=False)
-    fr = torch.load(d / 'pred_free.pt', map_location='cpu', weights_only=False)
+    d = eval_dir or OUT / f'eval_u{update:04d}'
+    op = torch.load(d / f'pred_{arm}.pt', map_location='cpu', weights_only=False)
+    fr = torch.load(free_path or d / 'pred_free.pt', map_location='cpu', weights_only=False)
     solid = {3, 4, 5, 8, 9, 10, 11, 12, 15, 16, 14}
     passable = {2, 7, 13}
     counts = dict.fromkeys(('mob_passable', 'mob_solid', 'mob_mob', 'terrain_same', 'terrain_different', 'entering_or_unknown'), 0)
@@ -299,13 +299,18 @@ def swaps_mode(update):
                                        'operator_reference_only': corruption(op['reference'][:, None].contiguous()),
                                        'free_samples': corruption(fr['predictions']),
                                        'free_reference_only': corruption(fr['reference'][:, None].contiguous())}
-    (OUT / f'diag_swaps_u{update:04d}.json').write_text(json.dumps(res, indent=1))
+    (out_dir or OUT).joinpath(f'diag_swaps_{"" if arm == "operator" else arm + "_"}u{update:04d}.json').write_text(json.dumps(res, indent=1))
     print(json.dumps(res, indent=1))
 
 
 if __name__ == '__main__':
     if sys.argv[1] == 'swaps':
-        swaps_mode(int(sys.argv[2]))
+        # swaps <update> [eval_dir arm free_path]  (TRANSPORT_COST_PREREG diagnostics; defaults = Stage 3)
+        extra = sys.argv[3:]
+        swaps_mode(int(sys.argv[2]), *(Path(extra[0]), extra[1], Path(extra[2]), Path(extra[0])) if extra else ())
+    elif sys.argv[1] == 'content':
+        # content <update> <train_dir> <arm> <out_dir>: P(move) by content, directions, payload (the default mode, other arms)
+        main(int(sys.argv[2]), Path(sys.argv[3]), sys.argv[4], Path(sys.argv[5]))
     elif sys.argv[1] == 'margin':
         margin()
     elif sys.argv[1] == 'gradsplit':
