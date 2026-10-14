@@ -308,6 +308,37 @@ exact target bytes and saved outputs agree. The four FIT roots contain 5/16/3/2 
 - Evidence: `oracle_v1/learned_innovation/optimization_control/{contract,result,completed_analysis}.json`; CPU saved-output
   analysis: `20261012_oracle/innovation_overfit_analysis.py`. No new head was fitted for this final analysis.
 
+### 10-14 PAIRED EVENT COMPLETION — preregistered; training started18:40 AEDT
+
+**Question:** does a continuous source-associated event that owns both endpoint edits learn coherent stochastic
+movement better than the existing destination-centered direct energy generator? Exactly two arms from the original
+D parent; shared encoder/backbone/trunk initialization, TRAIN windows, Gaussian draws, energy objective and optimizer.
+Budget:3,000 updates, batch16, L16,720,000 next-state targets/arm. No simulator labels or future-event masks in training.
+
+- Preregistered before implementation in commit`108469a`; executable study and documented pre-main correction in
+  `8e0ce47`. Protocol:`20261012_oracle/PAIRED_PREREG.md`; code:`paired_{model,train,eval,analysis,diagnostics,checks}.py`.
+  Criteria:`0270895371fa8356764b7243a7d7789864f569be15828dccd61c6a6546c6033a`.
+- Shared continuous packet/gate/soft routing drives contextual removal and arrival writes; no independent stochastic
+  destination writer, hard assignment or feature-sum conservation. Capacity:direct6,962,134 / paired6,971,350
+  parameters; completion580,294 /589,510 (+9,216:0.132% total,1.588% head). Before semantic evaluation/main training,
+  the initial narrow decoder was replaced to preserve a full192-rank output map; earlier4-update implementation
+  fixtures and their exact sources are archived in `paired_event/preflight_history/v1`.
+- Final execution proof: interrupted2→4 vs uninterrupted4 gives model difference0, optimizer7.05e-12, exact RNG/ledger
+  streams, causal future/replay difference0 and nonzero gradients from both independent noise draws. Actual B16 peak
+  allocation1.590GiB with both models resident. Initialization checkpoints remain byte-identical through resume.
+- **Measured reference limitation:** both initialized arms reproduce the same event-off parent reference. On14 clean
+  sources, real-reader validity is12/14 and bank-reader validity6/14; the other cases are multiple apparent destinations,
+  not absences. Scored static corruption0.2664%. Thus b is not assumed to be a valid afterstate. Final readings separate
+  systematic baseline correction from sampled variation and reference-valid/invalid packet interventions.
+- Physical validity, valid cow movement and joint event-law improvements are binding alongside scored35 joint occupancy
+  ES, original absolute coherence/static/readout caps and alternative coverage. Isolated post-attention packet swaps,
+  untied writes, routing concentration,128-shuffle dependence and stable/uncertain variance/mean fidelity are scheduled
+  diagnostics. Existing14 sources are exploratory; original fresh reservation/20-cow confirmation rules remain unchanged.
+- Scope:local stationary-camera movement coordination. All104 roots retain scroll/static/camera diagnostics. No H16,
+  actor, nuisance invariance, long-memory or persistent-terrain claim. Main training/evaluation are resumable; scripts log
+  to `artifacts/eda/levers_logs/paired_event_20261014.log`. Evidence:`artifacts/eda/oracle_v1/paired_event/`.
+  **No trained scientific result yet.**
+
 ### 10-14 DIRECT STOCHASTIC COMPLETION — preregistered before optimization
 
 **Question:** can direct Gaussian-noise completion learn physically valid alternative successors, rather than a
