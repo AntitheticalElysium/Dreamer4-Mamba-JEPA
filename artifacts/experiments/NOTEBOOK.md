@@ -209,6 +209,38 @@ the summaries, run diagnostics where something does not line up, and commit stag
 - My first token-projection (snap) run OOMed at 12:14 (its script is preserved by the other agent as
   `snap_eval_failed_20261012_1214.py`); S1 below is its completed version.
 
+### AUDIT S1 — 10-12 token-projection follow-up (other agent; my snap idea, completed)
+
+**What ran:**
+- 200 DEV roots, oracle-D / control-D / TRUE;
+- every fed-back map tile replaced by its L2-nearest token among 60,000 real tiles;
+- four modes: raw, projection at readout only, the output BEFORE projection under projected feedback, and the projected output.
+
+**Verified from `snap_{TRUE,oracle_deltairis,control_deltairis}.json`** (depths 9-16; all reproduce the NOTEBOOK):
+
+| oracle-D mode | cow false / true | cow recall | zombie recall | skeleton recall |
+|---|---|---|---|---|
+| raw | 0.569 | 0.924 | 0.842 | 0.507 |
+| readout only | 0.244 | 0.746 | 0.599 | 0.201 |
+| **output before projection, under projected feedback** | **0.289** | **0.905** | 0.731 | 0.292 |
+
+TRUE tokens projected: cow recall 0.961 → 0.818, zombie 0.902 → 0.643.
+
+**Holds:**
+- Cleaner fed-back history halves the next outputs' false cows at nearly unchanged cow recall (the feedback effect is real).
+- L2 nearest-token projection is not content-preserving: the chosen wrong token is closer than a semantically correct one in
+  64 / 64 sampled losses.
+
+**Added by this audit:**
+- **The metric failure is the target-space problem again.** In Raw token space, L2 distance is dominated by context: own
+  state explains R² 0.59 of a token, and lighting / position / neighbours most of the rest (encoder_diag, 10-10). So "nearest
+  real token" picks the right context with the wrong content. A valid-state projection would need a content-defined metric,
+  which these tokens do not provide.
+- **Completion is copy-driven even with the oracle.** Projection erases some real zombies from the fed-back history, and
+  although the oracle still gives every zombie's position, zombie recall falls 0.84 → 0.73 (skeleton 0.51 → 0.29). The world
+  draws a mob mainly by copying it from its history, not from the occupancy signal. S2's decoder decomposition measures the
+  same copy dependence from the other side.
+
 ### 10-13 LEARNED-INNOVATION FEASIBILITY — predeclared before implementation/training
 
 **Question:** can a compact latent channel learned only from observed transitions improve conditional completion, and can
