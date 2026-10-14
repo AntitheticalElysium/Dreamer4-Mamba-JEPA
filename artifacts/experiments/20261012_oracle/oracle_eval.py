@@ -134,6 +134,7 @@ def main():
                                   "n_arrive": int(arrive.sum()), "n_left": int(left.sum())}
                     res.setdefault(mode, {}).setdefault(mk, {})[g] = row
         (OUT / f"eval_{name}.json").write_text(json.dumps(res, indent=1))
+        torch.save({"tf": tf.half(), "gen": gen.half(), "aligned": aligned}, OUT / f"pred_{name}.pt")      # for recursion.py
         print(json.dumps({name: {m: {g: {t: [v[t]["census"], v[t]["recall"], v[t]["arrive_recall"], v[t]["residue"]] for t in ("cow", "zombie")}
                                      for g, v in res[m]["all"].items()} for m in ("tf", "gen")}}), flush=True)
         del world; torch.cuda.empty_cache()

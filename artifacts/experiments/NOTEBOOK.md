@@ -148,6 +148,67 @@ objective fights us, and what it must achieve, were never established. This prog
   GPU; H16 last (longest).
 - Every result is recorded against these predictions; the literature sweep follows the measured cause.
 
+## 2026-10-14 — AUDIT (lead, Opus) of everything run 10-12 → 10-14, stage by stage
+
+The user's request: dissect every stage that ran (mostly by the other agent, GPT Sol 6.1), check the raw files rather than
+the summaries, run diagnostics where something does not line up, and commit stage by stage. Each sub-entry gives:
+- what ran;
+- what the raw outputs say;
+- what I re-derived or newly measured;
+- where the original reading holds, needs qualification, or is wrong.
+
+### AUDIT S0 — 10-12 oracle-innovation test (my design and runs; results never recorded as a stage of their own)
+
+**What ran:**
+- four arms, 3,000 updates each, batch 16, E22 long recipe on support-v2 rows (`oracle_world.py`);
+- oracle arms receive the TRUE next-frame mob layout per tile through a zero-initialized Linear(4 → 192);
+- L1 arms start from M16 and D arms from D scratch;
+- evaluation on 200 DEV-split roots (`oracle_eval.py`; `oracle_v1/eval_*.json`).
+
+**Raw results** (cow census / recall / precision / arrival recall / source residue; reader = AllProbes):
+
+| arm | teacher-forced depth 1 | self-fed depths 9-16 (all roots) |
+|---|---|---|
+| TRUE tokens (reader ceiling) | 1.06 / 0.98 / 0.93 / 1.00 / 0.00 | same |
+| control L1 (from M16) | 0.92 / 0.51 / 0.55 / 0.25 / 0.57 | 0.51 / 0.05 / 0.11 / 0.04 / 0.04 |
+| **oracle L1** | **0.57 / 0.54 / 0.95 / 0.25 / 0.02** | 0.06 / 0.03 / 0.60 / 0.04 / 0.00 |
+| control D (from D scratch) | 1.93 / 0.65 / 0.34 / 0.49 / 0.72 | 1.03 / 0.08 / 0.08 / 0.05 / 0.06 |
+| **oracle D** | **1.05 / 0.96 / 0.91 / 0.98 / 0.00** | **1.50 / 0.92 / 0.62 / 0.93 / 0.04** |
+
+**Against the predeclared readings:**
+- **Q1 (conditional completion in BOTH oracle arms): FALSE.**
+  - The D arm passes every criterion; it sits at the reader's own ceiling.
+  - The L1 arm fails: census 0.57, recall 0.54.
+- **Recursion (oracle D self-fed: census within 20% and residue ≤ 2% at every depth on aligned steps): FALSE.** Cow census on
+  aligned steps is 1.20 at depths 2-4 and 1.49 at 9-16; residue is 0.035 at 9-16. Recall is kept (0.94), so the failure is
+  extra detections, not lost mobs.
+
+**New in this audit — why the L1 arm fails** (`audit_s0_arrivals.py`; probe cow score, teacher-forced depths 1-16, 958 arrival /
+964 vacated / 746 stay cells):
+
+| cells | TRUE | oracle L1 | control L1 | oracle D |
+|---|---|---|---|---|
+| arrival (cow now, not before) | 0.85 (98% > threshold) | **0.23 (25%; median ≈ 0)** | 0.20 (23%) | 0.79 (94%) |
+| vacated (cow before, not now) | 0.00 (0%) | **0.04 (5%)** | 0.43 (50%) | 0.02 (2%) |
+
+- With the oracle, L1 learned to ERASE moved cows at their source (vacated-cell detections 50% → 5%) but not to DRAW them at
+  their destination (arrivals unchanged, 23% → 25%). A cow move becomes a disappearance.
+- The training log agrees: zeroing the oracle costs the L1 arm only 6.4% of its loss at update 3,000, against 28% for D.
+- That L1 can HOLD arrivals once learned is shown by the other agent's L1 continuation from the oracle-D world (10-12 D-loss
+  follow-up: 838 / 870 late recursive cow TP).
+- So the L1 failure is in LEARNING to create under L1 from M16 within 3,000 updates. The mechanism is NOT isolated.
+  - A consistent hypothesis: L1's bounded per-element gradient gives the ~1 arrival cell per frame the same weight as any
+    other element, while arrival needs a relational routing decision (which neighbour the cow came from) that clearing does
+    not.
+  - The same allocation pattern as P-C.
+- **Recursion detail** (`recursion.py`, my 10-12 run, aligned steps): oracle-D false cows per true cow 0.09 → 0.25 → 0.46 →
+  0.55 from depth 1 to 9-16.
+  - Their share that persists from the world's OWN earlier false detection rises 0 → 0.30 → 0.40 → 0.55.
+  - False cows score 0.28-0.35 on the probe vs 0.77-0.88 for true ones: faint, self-sustaining residue.
+  - For the control D arm, 87-91% of its late false cows are such persisting false detections.
+- My first token-projection (snap) run OOMed at 12:14 (its script is preserved by the other agent as
+  `snap_eval_failed_20261012_1214.py`); S1 below is its completed version.
+
 ### 10-13 LEARNED-INNOVATION FEASIBILITY — predeclared before implementation/training
 
 **Question:** can a compact latent channel learned only from observed transitions improve conditional completion, and can
