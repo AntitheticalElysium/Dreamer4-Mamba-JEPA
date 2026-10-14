@@ -21,7 +21,9 @@ Mode "noise <arm>" (GPU, u3000, the 14 sources above, 256 fresh noise draws per 
   noise influence: resample the 4 local noise dims at ONE tile (source / each destination / a far map tile), or the 4 shared dims
   only, everything else fixed; the probability each cross cell's decoded flag flips and the mean |change| of keep / move weights.
   Each tile's decision driven only by its own noise = no structural coordination.
-Usage: audit_s5_direct.py [noise energy|direct_replicate|paired] -> stdout + .../direct_generator/audit_recompute.json | audit_noise_<arm>.json
+Mode "paired" (audit S6): the same recomputation for the paired study's arms (paired_event/eval_exploratory_u*/pred_{direct,paired}.pt,
+  same 104 roots, readers and sources) -> paired_event/audit_recompute.json.
+Usage: audit_s5_direct.py [paired | noise energy|direct_replicate|paired] -> stdout + .../direct_generator/audit_recompute.json | audit_noise_<arm>.json
 """
 import importlib.util
 import json
@@ -73,7 +75,7 @@ def energy(x, y):                                                       # [n,K,D
     return (cross - .5 * spread) / np.sqrt(x.shape[-1])
 
 
-def main():
+def main(study="direct"):
     sel = json.loads((OUT / "data/existing_eval_selection.json").read_text())["selected_indices"]
     panel = torch.load(BASE / "panel.pt", map_location="cpu", weights_only=False, mmap=True)
     fan = torch.load(BASE / "learned_innovation/real_futures/fan.pt", map_location="cpu", weights_only=False, mmap=True)
@@ -149,9 +151,10 @@ def main():
     split = energy(real_dec[:, :16, INTERIOR].flatten(2).float(), real_dec[:, 16:, INTERIOR].flatten(2).float())
     res["real_split_scored_ES_mean"] = round(float(split.mean()), 6)
     res["arms"] = {}
+    directory, arms = (OUT, ("point", "energy")) if study == "direct" else (BASE / "paired_event", ("direct", "paired"))
     for update in (0, 500, 1500, 3000):
-        for arm in ("point", "energy"):
-            pred = torch.load(OUT / f"eval_exploratory_u{update:04d}/pred_{arm}.pt", map_location="cpu", weights_only=False)["predictions"]
+        for arm in arms:
+            pred = torch.load(directory / f"eval_exploratory_u{update:04d}/pred_{arm}.pt", map_location="cpu", weights_only=False)["predictions"]
             dec = decode(pred)
             reg = torch.stack([(scroll.estimate(root_tok[i:i + 1, None], pred[i:i + 1])[0] == 0) for i in range(n)])
             es = energy(dec[:, :, INTERIOR].flatten(2).float(), real_dec[:, :, INTERIOR].flatten(2).float())
@@ -160,7 +163,7 @@ def main():
             res["arms"][f"{arm}_u{update:04d}"] = row
             print(arm, update, json.dumps({k: v for k, v in row.items() if k != "counts"}), flush=True)
             del pred, dec
-    (OUT / "audit_recompute.json").write_text(json.dumps(res, indent=1))
+    (directory / "audit_recompute.json").write_text(json.dumps(res, indent=1))
     print(json.dumps({k: v for k, v in res.items() if k not in ("arms",)}), flush=True)
 
 
@@ -255,4 +258,4 @@ def noise(arm):
 
 
 if __name__ == "__main__":
-    noise(sys.argv[2]) if sys.argv[1:2] == ["noise"] else main()
+    noise(sys.argv[2]) if sys.argv[1:2] == ["noise"] else main("paired" if sys.argv[1:] == ["paired"] else "direct")

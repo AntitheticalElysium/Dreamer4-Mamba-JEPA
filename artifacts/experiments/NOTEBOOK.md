@@ -450,6 +450,96 @@ the copy-path residue S2 localized. The drink / energy gains are real but small;
 - That the objective's insensitivity *caused* this choice is consistent with all the measurements but has not been tested by
   intervention.
 
+### AUDIT S6 — 10-14 paired event completion (other agent): moves are created by the destination's own packet
+
+**What ran:**
+- Two arms from the D parent, 3,000 updates each: the direct energy generator (retrained) and a paired editor.
+- The paired editor gives EVERY tile a packet: a gate, soft routes over (self, 4 neighbours), a removal write
+  −g(1−p_self)·R at the tile itself, and arrival writes g·p_j·A at its neighbours. Output = LN(parent reference + writes).
+- R and A are free contextual decoders. Same evaluation as S5; a post-hoc failure localization covers hard routes,
+  gate masking and pre/post-LN variance.
+
+**Verified with independent code (`audit_s5_direct.py paired`), registered table and milestones exact:**
+- At 3,000 updates:
+
+  | | direct | paired |
+  |---|---|---|
+  | valid | 62.50% | 68.42% |
+  | duplicates | 17.19% | 9.49% |
+  | cow valid move | 6.45% | 9.57% |
+  | ES | 0.024295 | 0.024876 |
+  | dependence (exact independence baseline) | 2.85pp | 10.24pp |
+
+  Their shuffle estimates are 2.83 / 10.27pp.
+- Paired milestones (500 / 1,500 / 3,000):
+  - valid 90.18 / 70.42 / 68.42%, cow move 0 / 6.25 / 9.57%;
+  - ES 0.031649 / 0.027167 / 0.024876.
+- The entering-cell numbers are internally consistent: 164 low-reference cells, all entering; 81.28% of post-LN variance; 329×.
+- **Not re-verified:** the single-packet swap counts, the hard-route table and the second-reader figures.
+
+**New in this audit:**
+1. **The gains against run-to-run spread.**
+   - The "direct" arm here is the S5 replicate: identical configuration, numerically diverged run. Two runs of the same
+     direct configuration give valid 64.62 / 62.50% and cow move 8.20 / 6.45%.
+   - Against them, paired is +3.8 / +5.9pp valid and +1.4 / +3.1pp cow move: the size of the replicate spread.
+   - The dependence gain, +7.4 / +7.8pp, is robust.
+   - The study's intervals cover root sampling only, not training-run spread.
+2. **Curves (the 3k question).**
+   - The paired arm learns more slowly: its ES at 3k is about where direct was near 1k, and is still falling
+     (0.0272 → 0.0249).
+   - Duplicates fall (18.1 → 9.5%) and cow movement rises (6.3 → 9.6%).
+   - But **dependence plateaued at 1,500** (11.3 → 10.2pp) and **absence rose** (3.0 → 10.4%). The last 1,500 updates turned
+     duplicates into absences, not into valid moves.
+   - A 3k → 6k continuation would likely finish the ES descent. The coordination measure was no longer moving.
+3. **Mechanism of the interior incoherence: exact score attribution** (`audit_s6_paired.py attrib`).
+   - Method: 14 sources × 256 draws. LN has no affine, so given each token's own LN scale the real reader's score is exactly
+     additive over reference / own packet / the source packet's arrival / other arrivals. Reconstruction is asserted.
+   - Results (mean contributions):
+
+     | event / cell | reference | own packet | source arrival | other |
+     |---|---|---|---|---|
+     | valid move, destination | 0.009 | **0.413** | 0.070 | −0.002 |
+     | multiple, destination | 0.035 | **0.436** | 0.077 | −0.003 |
+     | absent, best destination | 0.028 | 0.044 | 0.044 | −0.001 |
+     | move, source | 0.393 | −0.357 | — | −0.077 |
+     | stay, source | 0.861 | −0.030 | — | −0.006 |
+
+   - **Even valid moves are not transfers.** The destination's mob is created by the destination's OWN packet: its
+     "removal" write is a free decode, used as creation. The source's arrival, the channel the design meant to carry the
+     mob, supplies 14% of the score.
+   - Routes carry no direction: argmax matches the decoded move **24.1% (chance 25%)**, entropy 1.41 (uniform over 4 =
+     1.39). Arrivals are split ~4 ways and too weak to create anything. Absent draws are the source clearing while no
+     destination's own packet fires.
+   - Noise probe (`audit_s5_direct.py noise paired`):
+     - A destination's own noise flips its flag 10-15%; the source's noise flips destination flags only 1.6-3.3%.
+     - Direct, by comparison: ≤0.06%. That coupling is the dependence gain.
+     - Tied weights hold exactly (removal mass = Σ arrival mass, corr −1), but the content they carry is not what draws the
+       mob.
+   - **Reading:** pairing tied one packet's weights, but every tile kept a full-strength per-tile creation path driven by
+     its own noise. That is the same escape route as the direct model (S5).
+4. **Entering-cell fault: exact cause** (`audit_s6_paired.py entering`). The cause is the parent's routing.
+
+   | entering cells | count | weight on scroll candidate | generator | self | reference RMS |
+   |---|---|---|---|---|---|
+   | candidate = **zero padding** outside the 9×9 grid | 164 | **0.979** | 0.009 | 0.011 | 0.023 |
+   | candidate = a HUD token (rows 7-8) | 72 | 0.0005 | 0.385 | 0.540 | 1.19 |
+
+   - The parent learned to avoid copying HUD tokens but copies the zero padding.
+   - Deterministically that is harmless: its final LN discards scale, so the output is just the direction of the small
+     gen/self remainder.
+   - The paired editor's stochastic edits are added outside the mixture at their own scale, so against a ~0 reference LN
+     amplifies them to full scale.
+   - The direct model's noise sits inside the mixture and is scaled down with it, so it is not amplified (edge post/pre
+     ratio 0.52).
+   - This concerns only unscored edge cells, as the other agent said. It is a separate fault from the interior failure in 3
+     (they asked for exactly this separation). For recursion it would feed back.
+
+**Reading across S5-S6:**
+- Both continuous generators fail coherence for one structural reason. Each tile can create or erase content from its own
+  noise, and nothing in the loss (S5: +5.6% for total loss of dependence) makes that path more costly than a coordinated
+  transfer.
+- The pairing constrained bookkeeping weights, not the content path, so the per-tile path stayed open.
+
 ### 10-13 LEARNED-INNOVATION FEASIBILITY — predeclared before implementation/training
 
 **Question:** can a compact latent channel learned only from observed transitions improve conditional completion, and can
