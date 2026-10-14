@@ -61,6 +61,31 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-15 — S5–S6 reconciliation and optimizer matching correction
+
+- The preregistered direct/paired3k→6k continuation was held before launch. Both
+  checkpoints remain at3k; original negative results and fresh reservation remain.
+- S6's signed destination write is a content-creation bypass: at decoded valid
+  movement destinations, reader-score contributions are own packet0.413 versus
+  source arrival0.070. These are additive readout contributions conditional on
+  final normalization, not physical-content or causal-effect percentages.
+- Qualification to the S6 curve reading:1.5k→3k also added61 valid movements
+  (52→113/896, +6.81pp [2.46,11.16]), alongside absence27→93 and duplication
+  162→85. Coordination improvement is unresolved; convergence is not established.
+- Qualification to “nothing in the loss”: the actual token objective penalizes
+  marginal-preserving endpoint shuffles by0.002270 [0.001341,0.003205], while
+  validity falls100%→52.59%. Score sensitivity does not establish optimization
+  pressure sufficient to learn coherence.
+- **New CPU audit:** saved AdamW groups differ. Direct decays163 parameter tensors
+  at0.01; paired decays149 and exempts18 shared Mamba tensors (72 scalars).
+  Deepcopy removed direct parameters' `_no_weight_decay` attributes. Its outcome
+  effect is unmeasured; architecture-only attribution is therefore incomplete.
+  Both use final LR1e−4, betas(0.9,0.999), eps1e−8. Historical states are preserved.
+  Evidence: `oracle_v1/paired_event/diagnostics/optimizer_group_audit.json`.
+- Full evidence reconciliation and proposed, unimplemented content/operator
+  comparison: `20261012_oracle/PROVENANCE_ASSESSMENT.md`. Original S0–S6 audit
+  entries and historical recommendations below are retained.
+
 ## 2026-10-10 — PROGRAM (predeclared 09:10, before any new code): why does the objective fight us? Diagnosis only
 
 **Mandate (user, 10-10):**

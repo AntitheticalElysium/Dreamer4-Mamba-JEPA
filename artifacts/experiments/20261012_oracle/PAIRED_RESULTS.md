@@ -5,6 +5,16 @@ Fresh confirmation is withheld by the original rule. Both matched arms completed
 3,000 updates; the final checkpoint is the scientific endpoint. Earlier milestones
 and all negative results remain available.
 
+**2026-10-15 matching correction:** the arms used the same AdamW settings but
+different weight-decay groups on18 shared Mamba parameter tensors (72 scalars).
+Direct initialization's parameter deepcopy lost `_no_weight_decay`; the paired
+initialization preserved it. The saved direct optimizer has163 tensors at
+weight decay0.01; paired has149 at0.01 and18 at0. Its outcome effect is unmeasured.
+The statement below that the optimizer was identical must be read with this
+correction. Preserve the3k result and all within-arm interventions; the contrast
+does not isolate architecture alone. Evidence:
+`artifacts/eda/oracle_v1/paired_event/diagnostics/optimizer_group_audit.json`.
+
 ```mermaid
 flowchart LR
     P[One source packet owns both endpoint writes] --> D[Stronger learned source-destination dependence]

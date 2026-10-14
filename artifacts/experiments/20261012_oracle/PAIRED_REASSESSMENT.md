@@ -1,5 +1,11 @@
 # Reassessment: a bounded optimization control before another architecture
 
+**2026-10-15 addendum:** the user held the continuation before launch after
+Claude's S0–S6 audit. The numerical diagnostics below remain evidence; the budget
+extension recommendation is superseded by `PROVENANCE_ASSESSMENT.md`. No further
+optimization occurred. That assessment also records the saved optimizer-group
+mismatch, which limits architecture-only attribution in the original comparison.
+
 2026-10-14. Assessment only; no continuation or new architecture was launched.
 The original3,000-update negative, scientific sources, thresholds, readers and
 fresh-data reservation remain unchanged. CPU diagnostics are preserved under

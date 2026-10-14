@@ -1,5 +1,12 @@
 # Bounded matched continuation: 3,000 to 6,000
 
+**2026-10-15 status: HELD before launch, following the user's S0–S6 review.**
+Neither arm advanced beyond3,000. The original state SHA256 remains
+`0c5d152c73582c38bf3d0dd80cc94b0b45827479eb95ab1a835717ce47917109`.
+The plan below is preserved as the previously authorized, subsequently held
+optimization control; it is not an active run. See `PROVENANCE_ASSESSMENT.md`
+for the reconciled mechanism evidence and the proposed next comparison.
+
 2026-10-14. User-authorized budget extension of the completed paired-event study.
 Saved before continuation implementation or optimization. Exactly two existing
 arms: direct energy generator and paired event editor. No new scientific arm.
