@@ -380,6 +380,76 @@ the copy-path residue S2 localized. The drink / energy gains are real but small;
 - This agrees with LPWM's choice of *per-particle* latent actions: innovations inferred locally, not from a global summary.
   That is a design fact for next steps, not a tested fix.
 
+### AUDIT S5 — 10-14 direct stochastic completion (other agent): each tile flips its own coin
+
+**What ran:**
+- Two arms from the D parent, both 3,000 updates: point objective vs first-power energy score on the 35 interior tokens.
+- Completion is one attention + FF block over belief + noise (4 local dims per tile, 4 shared per frame). It produces a
+  generated token and offsets to the routing logits.
+- Output = LN(soft mixture of the 5 copy candidates and the generated token).
+- Evaluation: 104 bright DEV roots × 64 samples; strict physics on 14 isolated sources (8 cow, 3 zombie, 3 skeleton).
+
+**Verified with independent code (`audit_s5_direct.py`, my own source selection, decoding and event logic), all exact:**
+- Energy arm: valid 64.62%, absent 15.18%, multiple 20.20%, source+destination duplicate 15.62%; cow stay 59.77% / move
+  8.20%; 3.071 distinct valid outcomes per source; scored joint ES 0.024439.
+- Point arm: ES 0.031417.
+- Real fan: 100% valid, cow move 41.02%, split ES 0.021161.
+- Dependence, against an exact independence baseline (expected validity if the 5 cross cells were independent with the same
+  marginals): 2.46pp, vs their 2.73pp from 128 shuffles; real 45.84pp.
+
+**New in this audit:**
+1. **Not budget-limited on the binding measures.** Milestones the study did not report (energy arm):
+
+   | update | ES | valid | dependence | cow valid move |
+   |---|---|---|---|---|
+   | 500 | 0.02567 | 66.2% | 3.9pp | 2.7% |
+   | 1,500 | 0.02447 | 61.8% | 0.9pp | 6.5% |
+   | 3,000 | 0.02444 | 64.6% | 2.5pp | 8.2% |
+
+   - The distribution score converged by 1,500; coordination never developed. Cow movement is the only measure still slowly
+     rising.
+   - The training objective is flat from ~1,000 updates, within single-batch noise.
+2. **Mechanism: each tile decides from its own noise.** Probe: 14 sources × 256 draws; resample the 4 local noise dims at ONE
+   tile, everything else fixed.
+
+   | resample at | own cell's flag flips | other cross cells flip |
+   |---|---|---|
+   | source | 29.6% | ≤0.06% |
+   | one destination | 9.5-16.1% | source 0.2-0.4%, others ≤0.14% |
+   | a far tile | — | ~0 |
+   | shared noise only | source 12.6% | destinations 4-6%, all together |
+
+   - The shared noise is a common mode: it moves every cell the same way, not the anti-correlation conservation needs.
+   - The one attention layer could carry noise between tiles, but the trained model does not use it.
+3. **Copy bookkeeping (same probe).**
+   - The source's self-copy weight is bimodal: keep has mean 0.65-0.97, sd 0.3-0.46.
+   - Destinations almost never copy the source in: summed move weight has mean 0.002-0.15. When the source lets go, nothing
+     receives the mob.
+   - corr(keep, Σ move) = −0.12, where conservation needs strongly negative.
+   - Destination mobs come from the generator path (weight 0.04-0.23 at the cross), driven by the destination's own noise.
+   - So "absent" = the source clears and no destination draws; "multiple" = the source keeps and a destination draws. These
+     are two independent coin flips.
+   - Their own diagnostic is consistent. Real futures with cells shuffled independently give 55% valid / 24% absent / 21%
+     multiple / 16% duplicate; the model gives 65 / 15 / 20 / 16. The training metric charges only **+5.6%** for that complete
+     loss of dependence (`dependency_sensitivity/result.json`, 104 roots).
+4. **A free replicate.**
+   - The paired study's "direct" control used the identical initialization and window/noise ledger, yet diverged
+     numerically: the update-1 loss differs in the 7th digit, and weights differ by 5.2% relative L2 at 3,000 (cross-process
+     GPU nondeterminism).
+   - It is therefore an independent run of the same configuration, and it reproduces the mechanism: own-tile flips 12-27%,
+     cross-tile ≤0.5%, corr(keep, move) −0.15.
+   - It gives run-to-run spread: valid 64.62 vs 62.50%, cow move 8.20 vs 6.45%, dependence 2.46 vs 2.83pp.
+   - The studies' bootstrap intervals cover root/episode sampling only, not this training-run spread.
+
+**Reading:**
+- The "why" the other agent left open ("does not identify why optimization failed to learn that dependence") is now
+  localized. The trained generator makes its stochastic decisions per tile from per-tile noise, and the objective barely
+  charges for missing joint dependence.
+- Matching marginals through independent per-tile draws is the cheap solution the score accepts. Nothing in the loss pushes
+  the model off it.
+- That the objective's insensitivity *caused* this choice is consistent with all the measurements but has not been tested by
+  intervention.
+
 ### 10-13 LEARNED-INNOVATION FEASIBILITY — predeclared before implementation/training
 
 **Question:** can a compact latent channel learned only from observed transitions improve conditional completion, and can
