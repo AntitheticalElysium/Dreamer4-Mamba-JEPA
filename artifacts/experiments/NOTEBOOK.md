@@ -347,6 +347,43 @@ WHITEBOARD four-way uncertainty separation, recursive fidelity or actor benefit.
   weight difference **0.0**, optimizer-state difference **1.0e-11**, identical RNG/ledger streams and peak allocated
   memory **1.40GiB**. These are execution checks, not scientific outcome results.
 
+**Completed result (10-14): `coherent_completion_not_established`.** Both arms finished3,000 updates/720,000 targets;
+all input/source/checkpoint pins match, the entire3,000-step batch/noise ledger reproduces exactly, and TRAIN/eval
+episode overlap is zero. Joint scored35 mob ES improves **0.031417→0.024439** (paired−0.006978[−0.009680,−0.004326]),
+but energy has **317/896** invalid clean-source draws:136 absent,181 multiple, including140 source-retained duplicates.
+Both frozen readers agree307 are invalid. Camera and paired static fidelity pass; physical coherence, alternative
+coverage and the small reader-disagreement guard fail. The failed result correctly blocked fresh confirmation.
+
+- The energy channel learned semantic alternatives:12/14 sources, mean3.071 valid alternatives versus point0.786
+  and real3.643. Cow valid moves remain **8.20% versus41.02% real**; point stays on all512 cow draws. This is partial
+  distribution learning, not calibrated coherent movement or a four-way uncertainty separation result.
+- **Joint coordination diagnostic (CPU):** independently shuffling destinations preserves exact per-cell marginals.
+  Real validity falls100%→54.10%; energy64.62%→61.89%. Learned dependence adds2.73pp[0.39,5.14] of validity, versus
+  45.90pp[39.19,51.31] for real futures. Conservation fraction is5.33% (cow9.58%), versus100% real. Coordination is
+  weak rather than absent. `direct_generator/diagnostics/joint_shuffle/{analysis,paired_intervals}.json`.
+- **Path interventions (GPU, frozen weights):** original forecasts replay exactly. Removing off-source source copies
+  changes317 invalid draws to311; hard per-destination choices leave307. Fixing routing at the first draw leaves242,
+  fixing generation leaves300; both paths contribute. Shared-only noise over four fixed local references leaves
+  37.28% invalid; local-only leaves35.30%. None is a repair or a retrained architecture comparison.
+  `diagnostics/{paths,noise_channels}/analysis.json`.
+- **Objective diagnostic (CPU):** stable-cell variance is53.09× this real fan, but suppressing it at fixed means makes
+  held latent ES worse by+0.001698[0.001194,0.002319]. Attraction improves0.055893→0.051242; lost diversity credit is
+  larger,0.027953→0.021604. The current biased predictions receive a local objective benefit from excess spread;
+  this does not contradict proper scoring or prove the sole training cause. Static terrain corruption remains
+  0.2664% point/0.2724% energy, so contextual variation is not automatically physical corruption.
+  `diagnostics/stable_spread/result.json`.
+- **Metric dependence sensitivity (CPU, model-free):** per-cell real192-D token permutations preserve feature and
+  semantic marginals exactly, but create44.55% invalid source outcomes. On those same14 sources the declared latent
+  ES worsens only5.93% (0.037699→0.039936, paired+0.002237[0.001898,0.002566]); cow-only7.08%. Joint decoded ES also
+  detects the damage, with6.78% increase. The modest score cost of large coherence damage is measured directly;
+  it is not proof of a sole optimization cause. `diagnostics/dependency_sensitivity/result.json`.
+- **Interpretation:** direct proper-score learning activated the stochastic path that the prior/posterior study failed
+  to activate. Its completed samples still lack joint source/destination consistency. Repeated source copying alone,
+  soft-versus-hard destination choice and dropping one noise channel do not explain or fix most failures. Literature
+  agrees that a proper population optimum is distinct from finite-model coherent sampling; ITC's joint matching and
+  FGN's shared-noise precedent require testing in contextual continuous features. No further training or recursion ran.
+  Full results, exact scope and primary sources: `20261012_oracle/DIRECT_RESULTS.md`.
+
 ### 10-12 GENERATED-PREFIX COMPLETION — predeclared before training (21:07 AEDT)
 
 **Question:** does exposure to detached generated history improve the oracle-conditioned world's recursive prediction?
