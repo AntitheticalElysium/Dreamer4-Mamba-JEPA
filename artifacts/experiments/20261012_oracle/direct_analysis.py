@@ -314,7 +314,10 @@ def analyze(directory, fresh=None, criteria_path=OUT / "criteria.json"):
     if not valid_execution:
         reasons.append("missing or failed numerical/live-noise execution evidence")
     passed = all(checks.values())
-    fresh_coverage = coverage["energy"]["variable_clean_roots"] >= 20 and coverage["energy"]["variable_clean_cow_roots"] >= 20
+    fresh_coverage = (fresh is not None and bundle.get("coverage_met") is True
+                      and len(bundle["roots"]) >= 128
+                      and coverage["energy"]["variable_clean_roots"] >= 20
+                      and coverage["energy"]["variable_clean_cow_roots"] >= 20)
     update_values = {prediction_contracts[a].get("update") for a in ("point", "energy")}
     final = update_values == {criteria["primary_checkpoint"]}
     if not final:

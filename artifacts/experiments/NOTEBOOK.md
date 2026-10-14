@@ -326,10 +326,12 @@ WHITEBOARD four-way uncertainty separation, recursive fidelity or actor benefit.
   with missing/multiple destinations, duplicates or wrong camera registration stay in the physical denominator.
 - Final64-sample evaluation requires resolved joint semantic distribution improvement, valid alternative outcomes,
   physical coherence and paired static/readout fidelity. Frozen criteria ID:
-  `003e76aa608a9cbe34ec5135718880d03051836c75192b440cef83ee9b4e8400`.
+  `fa9a79d435344a3d4840350c5881c10d9220d90be9152bcb79014c05b994f619`.
   Source absence/multiplicity, duplication and camera margins are **0.00669643**; paired static corruption margin
   **0.00328781**; reader disagreement **0.00060969**; valid-alternative coverage minimum **0.88616071**. These are
   operational real-fan/readout resolution allowances, not population confidence bounds.
+  The earlier preflight ID `003e76aa608a...` is retained separately; the final source pin enforces the already-declared
+  fresh128-root minimum and does not change any numerical criterion.
 - A promising final result triggers unchanged evaluation on reserved fresh seeds **2026101400+**: at least128 bright
   roots and20 independent variable clean source roots including20 cows, with512-root/1,536-episode caps. Thresholds,
   readers and checkpoints remain fixed. Insufficient coverage is inconclusive; an incoherent diverse output fails.
@@ -339,6 +341,11 @@ WHITEBOARD four-way uncertainty separation, recursive fidelity or actor benefit.
 - Protocol/code: `20261012_oracle/DIRECT_PREREG.md`, `direct_{model,data,train,eval,coherence,analysis,fresh,checks}.py`.
   Evidence: `oracle_v1/direct_generator/{data,criteria.json,validation.json,training,eval_*}`. Negative results from the
   earlier learned-innovation control above remain unchanged.
+
+  Pre-training numerical validation: both scored noise paths and causal backbone receive nonzero gradients; changing
+  the unused future input changes current predictions by **0.0**. Interrupted2→4 and uninterrupted4 runs give model
+  weight difference **0.0**, optimizer-state difference **9.1e-12**, identical RNG/ledger streams and peak allocated
+  memory **1.40GiB**. These are execution checks, not scientific outcome results.
 
 ### 10-12 GENERATED-PREFIX COMPLETION — predeclared before training (21:07 AEDT)
 

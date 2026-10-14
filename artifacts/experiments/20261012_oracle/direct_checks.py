@@ -65,10 +65,14 @@ def main():
     assert causal_error == 0 and routing_effect > 1e-6 and generation_effect > 1e-6
     assert torch.count_nonzero(M.distance(frames, frames)) == 0
     assert torch.equal(M.distance(predictions[0], predictions[1]), M.distance(predictions[1], predictions[0]))
+    first_power = torch.allclose(M.distance(2 * predictions[0], 2 * predictions[1]),
+                                 2 * M.distance(predictions[0], predictions[1]), atol=1e-7, rtol=1e-6)
+    assert first_power, 'distance must scale linearly, not quadratically'
     proof = {'matched_initial_output_maxabs': parity, 'future_mutation_current_output_maxabs': causal_error,
              'independent_draw_output_maxabs': sample_effect, 'draw_gradient_norms': gradients,
              'backbone_gradient_norm': backbone_gradient, 'routing_only_noise_effect_maxabs': routing_effect,
              'generation_only_noise_effect_maxabs': generation_effect, 'first_power_identity_symmetry_exact': True,
+             'first_power_linear_scaling': bool(first_power),
              'data_contract_id': manifest['contract_id'], 'precision': 'actual real-parent BF16, post-LayerNorm outputs',
              'sources': {str(Path(x).relative_to(L.ROOT)): L.sha(x) for x in (__file__, M.__file__, T.__file__)}}
     if a.resume_proof:

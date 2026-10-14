@@ -12,6 +12,18 @@ mkdir -p artifacts/eda/levers_logs
 exec >> artifacts/eda/levers_logs/direct_generator_20261014.log 2>&1
 date '+START %Y-%m-%d %H:%M:%S %Z'
 [[ -f "$DIRECT_OUT/validation.json" ]]
+CUDA_VISIBLE_DEVICES='' .venv/bin/python - <<'PY'
+import hashlib,json
+from pathlib import Path
+p=Path('artifacts/eda/oracle_v1/direct_generator/validation.json')
+q=json.loads(p.read_text())
+for name,expected in q['sources'].items():
+    assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==expected, name
+assert all(q['resume_streams_exact'].values())
+assert max(q['resume_endpoint_maxabs'].values())<1e-4
+assert q['real_batch16_peak_allocated_gib']<6
+assert q['first_power_linear_scaling']
+PY
 .venv/bin/python "$DIRECT_SCRIPT/direct_train.py" --updates 3000 --batch 16
 for update in 0 500 1500 3000; do
     .venv/bin/python "$DIRECT_SCRIPT/direct_eval.py" --updates "$update" --samples 64 --batch 4

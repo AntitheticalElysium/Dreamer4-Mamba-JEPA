@@ -28,6 +28,7 @@ import direct_data as D
 import direct_coherence as C
 
 ROOT = D.ROOT
+sys.path.insert(0, str(ROOT))  # standalone CLI must resolve artifacts and d4mj
 OUT = ROOT / 'artifacts/eda/oracle_v1/direct_generator'
 RESERVATION = D.OUT / 'new_seed_confirmation_reservation.json'
 BANK = ROOT / 'artifacts/eda/oracle_v1/snap_bank_readers.pt'
@@ -76,7 +77,14 @@ def gate_report(path, training):
         assert payload['contract_id'] == record['contract_id']
         digests[arm] = D.sha(checkpoint)
     if 'checkpoint_hashes' in report:
-        assert report['checkpoint_hashes'] == digests, 'approval report checkpoint identity mismatch'
+        reported_hashes = report['checkpoint_hashes']
+    else:
+        evidence = report.get('prediction_contracts', {})
+        reported_hashes = {arm: evidence[arm]['contract']['checkpoint_sha256']
+                           for arm in ('point', 'energy')}
+        assert all(evidence[arm]['contract']['training_contract_id'] == record['contract_id']
+                   for arm in ('point', 'energy')), 'approval report training identity mismatch'
+    assert reported_hashes == digests, 'approval report checkpoint identity mismatch'
     return {'report_sha256': D.sha(path), 'training_contract_id': record['contract_id'],
             'checkpoint_hashes': digests}
 
