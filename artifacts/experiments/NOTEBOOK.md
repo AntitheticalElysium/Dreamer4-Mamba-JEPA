@@ -344,7 +344,7 @@ WHITEBOARD four-way uncertainty separation, recursive fidelity or actor benefit.
 
   Pre-training numerical validation: both scored noise paths and causal backbone receive nonzero gradients; changing
   the unused future input changes current predictions by **0.0**. Interrupted2→4 and uninterrupted4 runs give model
-  weight difference **0.0**, optimizer-state difference **9.1e-12**, identical RNG/ledger streams and peak allocated
+  weight difference **0.0**, optimizer-state difference **1.0e-11**, identical RNG/ledger streams and peak allocated
   memory **1.40GiB**. These are execution checks, not scientific outcome results.
 
 ### 10-12 GENERATED-PREFIX COMPLETION — predeclared before training (21:07 AEDT)
