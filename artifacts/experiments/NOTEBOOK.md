@@ -308,7 +308,7 @@ exact target bytes and saved outputs agree. The four FIT roots contain 5/16/3/2 
 - Evidence: `oracle_v1/learned_innovation/optimization_control/{contract,result,completed_analysis}.json`; CPU saved-output
   analysis: `20261012_oracle/innovation_overfit_analysis.py`. No new head was fitted for this final analysis.
 
-### 10-14 PAIRED EVENT COMPLETION — preregistered; training started18:40 AEDT
+### 10-14 PAIRED EVENT COMPLETION — stronger coordination; coherent completion fails
 
 **Question:** does a continuous source-associated event that owns both endpoint edits learn coherent stochastic
 movement better than the existing destination-centered direct energy generator? Exactly two arms from the original
@@ -337,7 +337,37 @@ Budget:3,000 updates, batch16, L16,720,000 next-state targets/arm. No simulator 
 - Scope:local stationary-camera movement coordination. All104 roots retain scroll/static/camera diagnostics. No H16,
   actor, nuisance invariance, long-memory or persistent-terrain claim. Main training/evaluation are resumable; scripts log
   to `artifacts/eda/levers_logs/paired_event_20261014.log`. Evidence:`artifacts/eda/oracle_v1/paired_event/`.
-  **No trained scientific result yet.**
+- **Completed endpoint:** both arms3,000 updates. Registered verdict`coherent_completion_not_established`;
+  `allows_confirmation=false`. No reserved fresh data opened. Primary-reader source validity560→613/896
+  (**62.50→68.42%, +5.92pp [0.33,10.72]**); duplication154→85/896 (**17.19→9.49%**), but absent/multiple
+  remain283/896 (**31.58%**). Cow valid movement33→49/512 (**6.45→9.57%**), difference+3.13pp[−1.17,7.23],
+  against real41.02%. Second-reader cow movement35→36/512; source-validity improvement unresolved.
+  Joint occupancy ES0.024295→0.024876, no improvement; second-reader ES worsens+0.002408[0.000937,0.003968].
+  Camera/scored-static/alternative coverage pass; physical coherence, movement, joint law and reader sensitivity fail.
+- **Measured dependency benefit:**128 matched marginal-preserving shuffles give validity dependence2.83pp direct vs
+  10.27pp paired; gain**+7.45pp[1.45,13.23]**, corroborated by the second reader+8.98pp[3.99,13.90].
+  Overall source-count variance0.467/0.461 vs real0; count conservation remains unresolved and reader-sensitive.
+- **Single-event intervention:** one post-attention packet changes source clearing103/896 times, joint clear/create27,
+  and valid stay→move18 under the primary reader. Only**8/896** moves agree under both readers, all on one cow root;
+  either endpoint ablation eliminates them. Real-fan support and eligible terrain match, but generated local features
+  remain outside the real split reference. All8 cow event-off references are valid STAY under both readers.
+- **Frozen route hardening:** source argmax makes validity613→619/896, increases multiple destinations190→204,
+  and lowers second-reader validity568→551. Inference hardening does not repair this frozen model; changed write
+  magnitudes prevent isolating soft splitting's upstream contribution. Source/destination edits still fail to construct
+  reliable semantic counterparts. Loss/optimization/target-geometry attribution is unisolated.
+- **Variance localized numerically:** full81 variance/real fan7.917× paired vs1.705× direct; scored35 only1.369×/1.268×.
+  All**164** reference cells with centered RMS<0.1 are newly entering the view under exact recorded camera offsets.
+  Their pre-LN variance sum**0.257581→84.813538** after final LN (**329.27×**), accounting for**81.28%** of total
+  paired sampled variance. Suppressing unscored-source packets reduces edge variance90.813→17.482 (−80.75%) with
+  interior valid-source/cow-movement counts unchanged. LN compresses scored-domain variance(post/pre0.777): entering
+  normalization and interior movement incoherence are separate. Entering does not imply never observed in history.
+- **Budget/efficiency:** paired training components+12.76%, completion1.881×, +0.132% total parameters; peak1.590GiB.
+  Paired validity90.18% at500 updates came with zero cow movement; final joint ES still improves, so convergence and
+  universal architectural failure are not established. Dense stochastic computation remains; no adaptive-selectivity claim.
+- Final write-up:`20261012_oracle/PAIRED_RESULTS.md`; raw rows/reports under`paired_event/diagnostics/`.
+  All29 source/input pins and3,000-update batch/noise ledger verify exactly. Frozen failure diagnostics were declared
+  before computation in`PAIRED_FAILURE_PREREG.md`. Negative milestones/checkpoints are retained. One-step exploratory
+  evidence only; no new nuisance, long-memory, terrain-persistence, recursive or actor result.
 
 ### 10-14 DIRECT STOCHASTIC COMPLETION — preregistered before optimization
 
