@@ -23,6 +23,7 @@ import direct_model as DM
 import paired_model as PM
 
 ARMS = ('free', 'operator')
+COST_ARM = 'operator_cost'      # the identical operator; only its loss adds the transition cost (TRANSPORT_COST_PREREG.md)
 DIRS = ((0, 0), (-1, 0), (1, 0), (0, -1), (0, 1))                       # stay + tworld.NEIGHBOURS order
 BETA = math.log(4 * 62)                                                  # ~1 proposed move per frame at initialization
 PLAYER = 31
@@ -126,26 +127,34 @@ class TransportCompletion(DM.Completion):
         return F.layer_norm(mixed, (192,)), aux
 
 
+def expected_changes(logits):
+    """transition cost per frame: the expected number of tiles proposing to change, sum_j (1 - P_j(stay)) [..., 81, 5] -> [...]"""
+    return (1 - logits.softmax(-1)[..., 0]).sum(-1)
+
+
 class TransportWorld(PM.PairedWorld):
-    def __init__(self, arm):
+    def __init__(self, arm, init_seed=7):
         super().__init__()
         with torch.random.fork_rng(devices=[]):
-            torch.manual_seed(7)
-            self.completion = TransportCompletion(arm)
+            torch.manual_seed(init_seed)
+            self.completion = TransportCompletion('free' if arm == 'free' else 'operator')
 
     def complete(self, frames, actions, belief, action_belief, noise, gumbel):
         reference = self.reference(frames, actions, belief, action_belief).float()
         return self.completion(reference, belief, noise, gumbel)
 
 
-def initialized_worlds(parent_state, device):
+def initialized_worlds(parent_state, device, arms=ARMS, init_seed=7):
     worlds = {}
-    for arm in ARMS:
-        w = TransportWorld(arm)
+    for arm in arms:
+        w = TransportWorld(arm, init_seed)
         result = w.load_state_dict(parent_state, strict=False)
         assert not result.unexpected_keys or all(k.startswith('completion.') for k in result.unexpected_keys), result.unexpected_keys
         assert all(k.startswith('completion.') for k in result.missing_keys), result.missing_keys
         worlds[arm] = w.to(device).train()
-    shared = [k for k in worlds['free'].state_dict() if k in worlds['operator'].state_dict()]
-    assert all(torch.equal(worlds['free'].state_dict()[k], worlds['operator'].state_dict()[k]) for k in shared)
+    first = worlds[arms[0]].state_dict()
+    for arm in arms[1:]:
+        other = worlds[arm].state_dict()
+        shared = [k for k in first if k in other]
+        assert all(torch.equal(first[k], other[k]) for k in shared), arm
     return worlds, shared

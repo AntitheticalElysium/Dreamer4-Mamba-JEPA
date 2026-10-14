@@ -295,6 +295,47 @@ static FAIL** (0.72% > max(0.27%, 0.5%)); G5 joint law **pass**.
   - the zombie law is unlearned.
 - **Not tested:** recursion, decisions, nuisance, memory.
 
+### TRANSPORT COST MANDATE (user, 10-15 afternoon) — pre-launch audits (TRANSPORT_COST_PREREG.md)
+
+**Principle under test:** preserve what persists, learn what changes, sample only what is genuinely unpredictable. The
+transition cost is λ·E[tiles proposing a change]: a general minimum-description-length prior on stochastic change, with
+no labels, no terrain rules, and no new parameter.
+
+**1. Lineage is clean** (`transport_lineage.py`, `transport/lineage.json`):
+- Stage 3's pinned inputs contain no layouts, F1b code or checkpoints, fan or panel.
+- Both Stage 3 arms' u0 weights equal the D parent exactly (145 tensors) and differ from every F1b checkpoint (up to 0.024).
+- The D parent is the oracle study's control arm, with identically zero oracle weights.
+- All snapshots descend from the single training contract.
+- **F1b was strictly an oracle positive control**: evaluated, never loaded for training.
+- Disclosure: β ("~1 proposal / frame") was picked after seeing the census rate of 0.5 moves per step.
+
+**2. The cross-terrain contextual-token problem is measured, and a cost cannot fix it** (`transport_cost_diag.py
+crossterrain`, exact tiles):
+- 5.2% of real in-view mob moves (60 / 1,145) cross terrain classes.
+- Swapping the TRUE tokens decodes 100% of those endpoints with the wrong terrain, against 0% for same-terrain moves and 0%
+  in real successors.
+- The seed-1 operator makes 10.8% of its mob moves across terrain, all with wrong endpoint terrain.
+- With an identity carrier, the token moves the mob together with its background. That is a representation limit
+  (WHITEBOARD §5: content vs context), not a sampling one.
+
+**3. What the score pays per unit of move probability** (`benefit`, 48 stationary training windows, label-free classes;
+seed-1 operator at 500 / 1,500 / 3,000):
+
+| content | value |
+|---|---|
+| static | +4.5e-5 / +9.8e-5 / +2.9e-5 (window SE 5.7-7.4e-5): indistinguishable from 0, the measured cause of never-unlearned terrain swaps |
+| changing, along realized moves | +5.2 to +6.5e-3 |
+| changing, other directions at moving steps | +3.5e-3 |
+| changing, at staying steps | −1.1 to −2.3e-4 |
+| labelled mob tiles, all steps (interpretation) | −4.8e-4 / +2.8e-4 / +2.4e-4 |
+
+- **λ = 1e-4 by a fixed rule**: the smallest one-significant-figure value above the largest mean static value.
+- It keeps a positive incentive for content that changes in more than about 1-2% of steps per direction. Cows are at
+  ~9-12%.
+- The margin over average mob tiles is only 2-3×, so the stay-still risk is real. A preregistered go / no-go probe (matched
+  1,000-update continuations with and without the cost) runs before any cost training. Pass: static P(move) −≥ 30% and cow
+  P(move) −≤ 15%.
+
 ## 2026-10-15 — S5–S6 reconciliation and optimizer matching correction
 
 - The preregistered direct/paired3k→6k continuation was held before launch. Both

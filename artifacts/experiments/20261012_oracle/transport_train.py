@@ -27,6 +27,7 @@ from d4mj.train import autocast_context, optimizer_step, phase_optimizer, _phase
 
 OUT = L.OUT / 'transport'
 PREREG = Path(__file__).with_name('TRANSPORT_PREREG.md')
+COST_PREREG = Path(__file__).with_name('TRANSPORT_COST_PREREG.md')
 PARENT = L.OUT / 'paired_event/training/paired_u0000.pt'
 
 
@@ -41,29 +42,38 @@ def main():
     ap.add_argument('--batch', type=int, default=16)
     ap.add_argument('--stop-after', type=int)
     ap.add_argument('--directory', type=Path, default=OUT / 'training')
+    ap.add_argument('--arms', default='free,operator')
+    ap.add_argument('--seed-set', type=int, default=1, choices=(1, 2))
+    ap.add_argument('--cost', type=float, default=0.0, help='transition cost weight for the operator_cost arm')
     a = ap.parse_args()
+    arms = tuple(a.arms.split(','))
+    assert all(x in TM.ARMS + (TM.COST_ARM,) for x in arms) and (a.cost > 0) == (TM.COST_ARM in arms)
+    init_seed, window_seed, noise_seed = {1: (7, 20261014, 2026101401), 2: (17, 20261016, 2026101501)}[a.seed_set]
     assert PREREG.exists()
     config = BASE.settings()
     manifest, windows, actions, tokens = BASE.load_data()
     parent = torch.load(PARENT, map_location='cpu', weights_only=False)
     assert parent['update'] == 0 and parent['arm'] == 'paired'
-    worlds, shared = TM.initialized_worlds(parent['world'], 'cuda')
+    worlds, shared = TM.initialized_worlds(parent['world'], 'cuda', arms, init_seed)
     optimizers = {arm: phase_optimizer([w], config) for arm, w in worlds.items()}
-    gs = {arm: groups(worlds[arm], optimizers[arm]) for arm in TM.ARMS}
-    shared_params = {n for n, _ in worlds['free'].named_parameters()} & {n for n, _ in worlds['operator'].named_parameters()}
-    for wd in (0.01, 0.0):
-        f = {n for g in gs['free'] if g['weight_decay'] == wd for n in g['names']} & shared_params
-        o = {n for g in gs['operator'] if g['weight_decay'] == wd for n in g['names']} & shared_params
-        assert f == o, f'decay-group mismatch on shared parameters at wd={wd}: {sorted(f ^ o)[:5]}'
+    gs = {arm: groups(worlds[arm], optimizers[arm]) for arm in arms}
+    for other in arms[1:]:
+        shared_params = {n for n, _ in worlds[arms[0]].named_parameters()} & {n for n, _ in worlds[other].named_parameters()}
+        for wd in (0.01, 0.0):
+            f = {n for g in gs[arms[0]] if g['weight_decay'] == wd for n in g['names']} & shared_params
+            o = {n for g in gs[other] if g['weight_decay'] == wd for n in g['names']} & shared_params
+            assert f == o, f'decay-group mismatch on shared parameters at wd={wd}: {sorted(f ^ o)[:5]}'
     source = [Path(__file__), Path(TM.__file__), Path(DM.__file__), Path(BASE.__file__), Path(L.__file__), Path(L.TW.__file__),
               L.ROOT / 'd4mj/train.py', L.ROOT / 'd4mj/mamba_recurrence.py', PREREG, PARENT, L.TW.S.CHECKPOINT,
+              *([COST_PREREG] if COST_PREREG.exists() else []),
               BASE.D.OUT / 'manifest.json', BASE.D.OUT / 'windows.pt']
     contract = {'format': 'transport_two_arm_v1', 'sources_inputs': {str(p.relative_to(L.ROOT)): L.sha(p) for p in source},
-                'data_contract_id': manifest['contract_id'], 'updates': a.updates, 'batch': a.batch, 'arms': list(TM.ARMS),
+                'data_contract_id': manifest['contract_id'], 'updates': a.updates, 'batch': a.batch, 'arms': list(arms),
                 'parameters': {arm: {'total': sum(p.numel() for p in w.parameters()),
                                      'completion': sum(p.numel() for p in w.completion.parameters())} for arm, w in worlds.items()},
-                'decay_groups': {arm: [{'weight_decay': g['weight_decay'], 'count': len(g['names'])} for g in gs[arm]] for arm in TM.ARMS},
-                'seeds': {'initialization': 7, 'windows': 20261014, 'noise': 2026101401}, 'beta': TM.BETA,
+                'decay_groups': {arm: [{'weight_decay': g['weight_decay'], 'count': len(g['names'])} for g in gs[arm]] for arm in arms},
+                'seeds': {'initialization': init_seed, 'windows': window_seed, 'noise': noise_seed}, 'beta': TM.BETA,
+                **({'seed_set': a.seed_set, 'transition_cost': a.cost} if (a.seed_set != 1 or a.cost or arms != TM.ARMS) else {}),
                 'loss': 'direct_model.losses energy; 35 scored tokens', 'training_semantic_or_simulator_labels': False}
     contract = json.loads(json.dumps(contract))
     cid = hashlib.sha256(json.dumps(contract, sort_keys=True).encode()).hexdigest()
@@ -72,14 +82,14 @@ def main():
         assert json.loads((d / 'contract.json').read_text()) == contract, 'source/input drift'
     else:
         L.atomic(contract, d / 'contract.json', True)
-    order = torch.Generator().manual_seed(20261014)
-    noise_rng = torch.Generator().manual_seed(2026101401)
+    order = torch.Generator().manual_seed(window_seed)
+    noise_rng = torch.Generator().manual_seed(noise_seed)
     start, chain, history = 0, 'initial', []
     state = d / 'state.pt'
     if state.exists():
         saved = torch.load(state, map_location='cpu', weights_only=False)
         assert saved['contract_id'] == cid
-        for arm in TM.ARMS:
+        for arm in arms:
             worlds[arm].load_state_dict(saved['worlds'][arm]); optimizers[arm].load_state_dict(saved['optimizers'][arm])
         order.set_state(saved['order']); noise_rng.set_state(saved['noise_rng'])
         torch.set_rng_state(saved['torch_rng']); torch.cuda.set_rng_state_all(saved['cuda_rng'])
@@ -93,7 +103,7 @@ def main():
                   'order': order.get_state(), 'noise_rng': noise_rng.get_state(), 'torch_rng': torch.get_rng_state(),
                   'cuda_rng': torch.cuda.get_rng_state_all(), 'ledger_chain': chain, 'history': history}, state)
         if snapshot:
-            for arm in TM.ARMS:
+            for arm in arms:
                 L.atomic({'contract_id': cid, 'update': update, 'arm': arm, 'world': states[arm], 'ledger_chain': chain},
                          d / f'{arm}_u{update:04d}.pt')
     if start == 0:
@@ -108,20 +118,26 @@ def main():
                                + noise.cpu().numpy().tobytes() + gumbel.cpu().numpy().tobytes()).hexdigest()
         cpu_rng, cuda_rng = torch.get_rng_state(), torch.cuda.get_rng_state_all()
         records = {}
-        for arm in TM.ARMS:
+        for arm in arms:
             torch.set_rng_state(cpu_rng); torch.cuda.set_rng_state_all(cuda_rng)
             w = worlds[arm]
             torch.cuda.synchronize(); t0 = time.perf_counter()
             with autocast_context(config):
                 belief, ha = w.backbone_full(frames, ac)
-                outs, moves = [], []
+                outs, moves, logits = [], [], []
                 for k in range(2):
                     o, aux = w.complete(frames, ac, belief, ha, noise[k], gumbel[k])
                     outs.append(o[:, :15])
+                    if 'logits' in aux:
+                        logits.append(aux['logits'])
                     if 'partner' in aux:
                         moves.append(float((aux['partner'][:, :15] != torch.arange(81, device='cuda')).sum(-1).float().mean() / 2))
             values = DM.losses(torch.stack(outs), frames[:, 1:])
-            norm = float(optimizer_step(optimizers[arm], values['energy'], list(w.parameters()), learning_rate=_phase_lr(config, update),
+            objective = values['energy']
+            if arm == TM.COST_ARM:
+                values['transition_cost'] = torch.stack([TM.expected_changes(lg[:, :15]) for lg in logits]).mean()
+                objective = objective + a.cost * values['transition_cost']
+            norm = float(optimizer_step(optimizers[arm], objective, list(w.parameters()), learning_rate=_phase_lr(config, update),
                                         grad_clip=config.agent.grad_clip, strict=True, zero_grad=True))
             torch.cuda.synchronize()
             records[arm] = {k: round(float(v.detach()), 6) for k, v in values.items()}
