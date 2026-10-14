@@ -308,6 +308,38 @@ exact target bytes and saved outputs agree. The four FIT roots contain 5/16/3/2 
 - Evidence: `oracle_v1/learned_innovation/optimization_control/{contract,result,completed_analysis}.json`; CPU saved-output
   analysis: `20261012_oracle/innovation_overfit_analysis.py`. No new head was fitted for this final analysis.
 
+### 10-14 DIRECT STOCHASTIC COMPLETION — preregistered before optimization
+
+**Question:** can direct Gaussian-noise completion learn physically valid alternative successors, rather than a
+future-looking posterior/codebook/prior? This is a controlled one-step feasibility study. It does not establish the
+WHITEBOARD four-way uncertainty separation, recursive fidelity or actor benefit.
+
+- Exactly two arms share the frozen Raw encoder, unconditioned D parent, live corrt/fmamba backbone, new spatial
+  completion head, initialization, batches, independent noise draws and optimizer: **3,000 updates, batch16, L16**,
+  720,000 next-state targets per arm. The sole contrast is first-power point distance versus that same attraction
+  minus the energy score's half pairwise distance. Noise influences both routing and generated content.
+- TRAIN input-only brightness selection retains **367,619 windows / 6,109 episodes**, with all17 actions. There are
+  no simulator labels, future-event masks or terminal oversampling in training. The fixed distance scores35 interior
+  tokens, excluding HUD and entering terrain; unscored corruption and variation remain reported diagnostics.
+- Frozen real-reader controls pass on all **104×32** exploratory real mob layouts. Strict joint source/destination
+  eligibility has only **14 variable roots (8 cow)**, so this panel can establish only an exploratory lead. Samples
+  with missing/multiple destinations, duplicates or wrong camera registration stay in the physical denominator.
+- Final64-sample evaluation requires resolved joint semantic distribution improvement, valid alternative outcomes,
+  physical coherence and paired static/readout fidelity. Frozen criteria ID:
+  `003e76aa608a9cbe34ec5135718880d03051836c75192b440cef83ee9b4e8400`.
+  Source absence/multiplicity, duplication and camera margins are **0.00669643**; paired static corruption margin
+  **0.00328781**; reader disagreement **0.00060969**; valid-alternative coverage minimum **0.88616071**. These are
+  operational real-fan/readout resolution allowances, not population confidence bounds.
+- A promising final result triggers unchanged evaluation on reserved fresh seeds **2026101400+**: at least128 bright
+  roots and20 independent variable clean source roots including20 cows, with512-root/1,536-episode caps. Thresholds,
+  readers and checkpoints remain fixed. Insufficient coverage is inconclusive; an incoherent diverse output fails.
+- Milestones0/500/1,500 are optimization diagnostics only. Both arms save model, optimizer and all RNG/ledger state;
+  interrupted-versus-uninterrupted validation precedes the full budget. Measure backbone/head costs, peak memory,
+  marginal sample costs and sampled variation locations. No third arm, larger generator, H16 or actor is scheduled.
+- Protocol/code: `20261012_oracle/DIRECT_PREREG.md`, `direct_{model,data,train,eval,coherence,analysis,fresh,checks}.py`.
+  Evidence: `oracle_v1/direct_generator/{data,criteria.json,validation.json,training,eval_*}`. Negative results from the
+  earlier learned-innovation control above remain unchanged.
+
 ### 10-12 GENERATED-PREFIX COMPLETION — predeclared before training (21:07 AEDT)
 
 **Question:** does exposure to detached generated history improve the oracle-conditioned world's recursive prediction?
