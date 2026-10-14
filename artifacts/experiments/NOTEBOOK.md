@@ -61,6 +61,91 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-15 — TRANSPORT MANDATE (lead, Opus): does stochastic reassignment of retained content beat free synthesis?
+
+User mandate (10-15): Stage 1 independent assessment of Codex's `PROVENANCE_ASSESSMENT.md` (458dd18), then Stage 2 feasibility
+controls, then at most ONE preregistered matched comparison. No reconstruction, no simulator labels in training, no H16 /
+actor, no architecture search.
+
+### STAGE 1 — independent assessment (`transport_stage1.py`, CPU, evaluation-side layouts only)
+
+**Codex's corrections to my S5-S6 audit, accepted:**
+- All-source valid movement did rise 1.5k → 3k (52 → 113 / 896). I reported cows only.
+- The objective penalizes shuffles +6.2%, not zero. "Nothing in the loss" was too strong; "weak pressure" stands.
+- The two direct runs share initialization and ledgers. Their spread measures numerical divergence, not seed variance, and
+  "within spread" was too categorical.
+- The optimizer weight-decay mismatch is real.
+
+**Measured (3,000 random windows of the exact training ledger, 39,420 steps):**
+
+1. **Locality: the representation holds local, transferable mob content.**
+   - Ridge probe from ONE Raw token to its own tile's zombie / cow / skeleton: AUC **1.000 / 1.000 / 1.000**.
+   - To "a neighbour holds this mob" when its own tile is empty: AUC **0.73 / 0.74 / 0.78** (base rates 2.0 / 3.1 / 0.8%).
+     Neighbour leakage exists but is weak at the linear level. A renderer could still exploit it, so provenance must be tested.
+   - **Real single-cow moves (2,946, stationary camera) are nearly additive transfers:** z'_dst ≈ z_dst + (z_src − z'_src)
+     with median relative error **5.7%**, and cos(Δz_dst, −Δz_src) = 0.886.
+2. **The non-additive tail is the background.**
+
+   | cow moves | n | median error | share > 0.3 |
+   |---|---|---|---|
+   | same tile class at source and destination | 2,679 | 5.2% | 4.4% |
+   | **different tile class** | 267 (9%) | **116%** | 100% |
+   | top 10% static noise | 295 | 27.6% | 46.8% |
+
+   - Among moves with error > 0.3: 69% are terrain mismatches, 36% have high static noise, 6% are dark.
+   - The token binds the mob to its background. A raw-token move drags the source's terrain along, so a content extractor and
+     contextual renderer are justified by measurement, for those 9%.
+3. **Coverage of transport (shares of each type's mob changes):**
+
+   | | in-view move | border in/out | interior birth/death | DO kill |
+   |---|---|---|---|---|
+   | zombie | 79.6% | 15.1% | 3.0% | 2.3% |
+   | cow | 72.4% | 22.3% | 3.0% | 2.3% |
+   | skeleton | 67.2% | 28.4% | 2.9% | 1.5% |
+   | arrow | 58.9% | 14.5% | **26.6%** | 0 |
+
+   - Border crossings sit on unscored edge cells, and kills are deterministic given the action.
+   - Inside the scored interior, transport cannot express about 3% of terrestrial mob changes. Arrows are excluded from any
+     claim.
+   - **The camera moves on 37.6% of steps.**
+
+**Assessment of the proposal:**
+- **(a) Frame. Correction needed.** Codex's c_i = C(z_i, h_i) reads the current frame. Then identity T returns the reference
+  only on stationary steps (62%). Carriers must be read from the deterministic afterstate (the reference, already in
+  next-frame coordinates). That is Stochastic MuZero's afterstate/chance split.
+- **(b) The S5/S6 bypass closes only if noise reaches nothing but T.** If the only stochastic input is the assignment, no tile
+  has a private creation path. A soft T reintroduces split content (blends), so the operator should be an exact matching in
+  the forward pass, used identically in training and evaluation, with a straight-through gradient. That differs from Codex's
+  "continuous operator", which reopens the blend failure S6 measured.
+- **(c) Residual bypasses:**
+  - **The renderer reads context.** D(h_j, ·) sees a belief that knows adjacent mobs, so a moved non-source carrier could be
+    rendered as the mob → payload-substitution test (F2).
+  - **The reference can already be wrong.** It is jointly valid on only 10/14 strict sources at u0, and transport moves
+    whatever the reference holds → report reference validity alongside.
+  - **Collapse.** D may ignore its carrier: everything stays.
+- **(d) Births, deaths, collisions.**
+  - A matching of adjacent swaps excludes collisions and duplication by construction.
+  - It cannot express spawns, despawns, border crossings or arrows. Those stay deterministic (reference), so the operator arm
+    under-samples them. The scored interior loses ~3%.
+  - No stochastic creation path is added, because that reopens S6's bypass.
+- **(e) What a matched comparison could establish:**
+  - That limiting noise to a joint reassignment improves *learned* movement coherence over per-tile synthesis, for one seed,
+    budget and panel.
+  - Validity is partly guaranteed by construction, so the binding readings are learned movement frequency, direction and
+    alternatives (cow valid move vs real 41%).
+  - Remaining confounds: the gradient estimator (straight-through discrete vs continuous), parameter count, run variance, and
+    reader artifacts.
+- **Literature (checked, mechanism-level):**
+  - [ITC](https://arxiv.org/html/2605.16457v3)'s correspondence is a *deterministic* Sinkhorn + greedy decoding step, with no
+    learned or sampled transport. Its stochasticity comes only from "wildcard" token generation, and it hands screen edges to
+    the plain transformer. It reports per-step accuracy and return gains, but no duplication rates.
+  - [Gumbel-Sinkhorn](https://arxiv.org/abs/1802.08665) (Mena et al. 2018) is the precedent for *learned noise-selected
+    permutations*.
+  - No precedent found trains a noise-selected correspondence with a proper score on continuous predictive features, so the
+    question is open, not established.
+
+**Verdict:** credible enough for Stage 2, with the afterstate-frame and hard-matching corrections.
+
 ## 2026-10-15 — S5–S6 reconciliation and optimizer matching correction
 
 - The preregistered direct/paired3k→6k continuation was held before launch. Both
