@@ -357,6 +357,62 @@ seed-1 operator at 500 / 1,500 / 3,000):
 - `transport_eval.py` was generalized (directories, arms, `--free`). A regression check reproduces the Stage 3 analysis
   exactly: arms, per-source rows, bootstrap intervals.
 
+### TRANSPORT COST + SECOND SEED — results (TRANSPORT_COST_PREREG.md; mechanical verdict `transport_cost_verdict.py`)
+
+**Runs:**
+- Seed set 1: {operator, operator_cost} in one process. The streams are identical to Stage 3: update-1 energy 0.064021 and
+  0.8146 swaps / frame, exactly as Stage 3.
+- Seed set 2: {free, operator, operator_cost}.
+- λ = 1e-4, 3,000 updates. All checkpoints kept under `transport/seed1_cost`, `transport/seed2`.
+
+| at 3,000 updates (real / bank where they differ) | valid | dup | all move | cow move | distinct | dependence | static | swaps / frame | ES |
+|---|---|---|---|---|---|---|---|---|---|
+| seed 1 free (Stage 3) | 63.2 / 53.4% | 19.0 / 31.5% | 8.5 / 4.8% | 4.5 / 3.5% | 2.43 / 2.14 | ~0 | 0.27% | — | 0.0257 / 0.0275 |
+| seed 1 operator (in-process replicate) | 93.8 / 89.4% | 4.5 / 5.7% | 30.4 / 26.9% | 28.1% | 4.07 / 4.00 | 32 / 29pp | 0.80% | 1.67 | 0.0249 / 0.0257 |
+| seed 1 operator + cost | 93.8% | 4.6% | 23.3% | **19.5%** | 4.00 | 27pp | **0.61%** | 0.75 | 0.0253 / 0.0260 |
+| seed 2 free | 65.3 / 55.8% | 15.0 / 30.4% | 7.0 / 5.0% | 7.8 / 6.6% | 2.86 / 2.50 | 3pp | 0.27% | — | 0.0253 / 0.0282 |
+| seed 2 operator | 93.4% | 5.1% | 31.5% | 30.3% | 4.14 | 34pp | 0.68% | 1.15 | 0.0239 / 0.0251 |
+| seed 2 operator + cost | 99.0 / 93.9% | 0 / 4.9% | 31.3 / 25.6% | 23.6% | 4.07 / 4.00 | 33 / 31pp | **0.63%** | 0.75 | 0.0257 / 0.0265 |
+
+**Verdict: "not established"** (preregistered, mechanical).
+- **R, architecture replication: PASS (seed 2, both readers).** Operator − free: valid +28.1 [16.4, 42.0] / +37.6 [22.7, 55.1]
+  pp; all-source valid movement +24.4 [14.1, 35.2] / +26.5 [16.0, 37.6] pp; cow movement +22.5 / +23.6 pp; dependence +31pp.
+  - Across Stage 3, the seed-1 replicate and seed 2, the operator lands at 93-94% valid, 29-31% movement, 25-30% cow
+    movement.
+  - The gain over free synthesis is robust to training variability and to cross-process numerical divergence.
+  - Without the cost, the operator still fails G4 everywhere (static 0.68-0.80%), and G2 narrowly on duplicates
+    (5.1-5.7%, from the reference-ghost zombie root).
+- **C, the cost: FAIL at both seeds.**
+  - Seed 1 fails G1 (cow 19.5%), G4 (0.61%) and N.
+  - Seed 2 fails G4 (0.63%) and N: cow −6.6pp [−13.7, −1.8], bank movement −5.9pp.
+  - It passes coherence (G2) and joint law (G5) at both seeds.
+
+**Mechanism (`transport_diag.py swaps|content` on the new runs):**
+
+| operator → operator + cost | seed 1 | seed 2 |
+|---|---|---|
+| terrain ↔ different terrain swaps / frame (static damage) | 0.185 → 0.095 (−49%) | 0.127 → 0.093 (−27%) |
+| terrain ↔ same terrain swaps / frame | 1.20 → 0.46 (−62%) | 0.73 → 0.43 (−40%) |
+| mob ↔ passable swaps / frame (genuine moves) | 0.195 → 0.146 (−25%) | 0.196 → 0.159 (−19%) |
+| P(move \| no mob) | 2.9 → 1.1% | 1.7 → 1.0% |
+| P(move \| cow), real 36% | 22.7 → 14.9% | 22.8 → 17.7% |
+| P(move \| skeleton), real 61% | 42.5 → 32.2% | 41.8 → 32.0% |
+| P(move \| zombie), real 43% | 10.3 → 6.7% | 9.8 → 6.7% |
+
+- The cost is selective only ~1.4-2×: damaging terrain swaps fall 27-49%, genuine moves fall 19-25%. That is exactly the
+  thin margin the probability-space measurement predicted (static ~0 ± 7e-5 vs mob ~2.4-2.8e-4 per unit probability). A
+  uniform price per change cannot separate them, because the score values them too similarly per sample.
+- Provenance holds in every run (payload substitution 228-300 / 228-300).
+- The static excess over the reference shrinks only ~0.1-0.2pp, while cows move further from the truth.
+
+**Further measured (CorrT calibration, `transport_cost_diag.py corrt`, D parent, 14 strict sources):**
+- The deterministic CorrT's neighbour-copy weights rank real moves correctly: r = 0.70 over 56 source-destination pairs;
+  keep-the-source weight vs real stay r = 0.89.
+- But they are mis-scaled about 13×: mean copy weight 0.0088 vs real move frequency 0.114. The rest of the move mass is
+  hidden in a generator blend. Static neighbour-copy mass is 0.0035.
+- A mean-trained mixture weight is a regression coefficient, not a probability. CorrT already encodes *where* content can
+  go (the ghosts are exactly its small copies), but sampling it directly would under-move about 13×.
+
 ## 2026-10-15 — S5–S6 reconciliation and optimizer matching correction
 
 - The preregistered direct/paired3k→6k continuation was held before launch. Both

@@ -18,7 +18,13 @@
   probe         (GPU) the declared go/no-go check of the chosen cost (TRANSPORT_COST_PREREG.md): from the seed-1 operator u3000,
                 two matched 500-update continuations (same windows, noise; with and without the cost), then P(move) on the
                 benefit windows by class.
-Usage: transport_cost_diag.py crossterrain | benefit <update> | probe <lambda> -> artifacts/eda/oracle_v1/transport/cost_diag_<mode>.json
+  corrt         (GPU, frozen D parent, DEV fan, exact layouts: evaluation-side) is the deterministic CorrT correspondence a
+                calibrated move distribution? At the 14 strict sources: the parent's routing weight at each destination cell on
+                the candidate copying from the source, and at the source on copying itself, vs the real fan's frequency of
+                that move / stay. At interior cells holding no mob and not adjacent to one: total weight on neighbour copies
+                (CorrT's spurious move mass). If calibrated, sampling a one-to-one matching from CorrT itself would be the
+                head-free stochastic extension.
+Usage: transport_cost_diag.py crossterrain | benefit <update> | probe <lambda> | corrt -> artifacts/eda/oracle_v1/transport/cost_diag_<mode>.json
 """
 import json
 import sys
@@ -225,6 +231,66 @@ def benefit(update, seed_dir='training'):
 
 
 @torch.no_grad()
+def corrt():
+    import paired_model as PM
+    import direct_train as BASE
+    import direct_eval as E
+    from d4mj.train import autocast_context
+    config = BASE.settings()
+    data, _ = E.cohort('exploratory')
+    world = PM.PairedWorld().cuda().eval()
+    world.load_state_dict(torch.load(A5.BASE / 'paired_event/training/paired_u0000.pt', map_location='cpu', weights_only=False)['world'])
+    offsets = [(0, 0), (-1, 0), (1, 0), (0, -1), (0, 1)]
+    weights = []
+    for s0 in range(0, len(data['roots']), 4):
+        ctx = data['context_tokens'][s0:s0 + 4].cuda().float(); ac = data['actions'][s0:s0 + 4].cuda()
+        frames = torch.cat([ctx, torch.zeros_like(ctx[:, :1])], 1); ac = F.pad(ac, (0, 1))
+        with autocast_context(config):
+            belief, ha = world.backbone_full(frames, ac)
+            logits = world.choose(belief).float()
+            moved = world.frame(ha).float()[:, :, None, :]
+            target = torch.tensor([31, 30, 32, 22, 40], device=ac.device)[ac.clamp(max=4)]
+            htarget = belief.gather(2, target[:, :, None, None].expand(-1, -1, 1, belief.shape[-1]))[:, :, 0]
+            moved = moved + (((ac >= 1) & (ac <= 4)).float()[:, :, None, None] * world.target_gate(htarget).float()[:, :, None, :])
+            weights.append((logits + moved * logits.new_tensor([0, 1, 1, 1, 1, 0])).softmax(-1)[:, 14].float().cpu())
+    w = torch.cat(weights)                                              # [104,81,6]: self, 4 neighbour copies, generator
+    units = json.loads((A5.OUT / 'audit_recompute.json').read_text())['sources_list']
+    pairs = []
+    for root, source, kind in units:
+        k = ('zombie', 'cow', 'skeleton').index(kind)
+        r, c = divmod(source, 9)
+        pts = [(r + a) * 9 + c + e for a, e in A5.CROSS]
+        ev = A5.event(data['fan_layout'][root][:, pts, k].bool())
+        pairs.append({'root': root, 'kind': kind, 'dest': 0, 'corrt_weight': float(w[root, source, 0]), 'real_freq': float((ev == 0).float().mean())})
+        for j in range(1, 5):
+            dst = pts[j]
+            slot = offsets.index((r - dst // 9, c - dst % 9))         # candidate at dst that copies from the source
+            pairs.append({'root': root, 'kind': kind, 'dest': j, 'corrt_weight': float(w[root, dst, slot]), 'real_freq': float((ev == j).float().mean())})
+    mv = [x for x in pairs if x['dest'] > 0]; st = [x for x in pairs if x['dest'] == 0]
+    corr = lambda xs: float(np.corrcoef([x['corrt_weight'] for x in xs], [x['real_freq'] for x in xs])[0, 1])
+    static = []
+    for i in range(len(data['roots'])):
+        if not bool((data['shifts'][i] == 0).all()):
+            continue
+        lay = data['root_layout'][i].bool()[:, :3].any(-1)
+        near = lay.clone()
+        for x in torch.where(lay)[0].tolist():
+            for a, e in A5.CROSS:
+                rr, cc = divmod(x, 9); rr += a; cc += e
+                if 0 <= rr < 7 and 0 <= cc < 9:
+                    near[rr * 9 + cc] = True
+        for x in A5.INTERIOR:
+            if x != 31 and not bool(near[x]):
+                static.append(float(w[i, x, 1:5].sum()))
+    return {'move_pairs': len(mv), 'move_weight_vs_real_freq_corr': round(corr(mv), 4),
+            'move_mean_weight': round(float(np.mean([x['corrt_weight'] for x in mv])), 4), 'move_mean_real_freq': round(float(np.mean([x['real_freq'] for x in mv])), 4),
+            'stay_weight_vs_real_freq_corr': round(corr(st), 4), 'stay_mean_weight': round(float(np.mean([x['corrt_weight'] for x in st])), 4),
+            'stay_mean_real_freq': round(float(np.mean([x['real_freq'] for x in st])), 4),
+            'static_cells': len(static), 'static_neighbour_copy_mass_mean': round(float(np.mean(static)), 5),
+            'static_neighbour_copy_mass_p90': round(float(np.quantile(static, .9)), 5), 'pairs': pairs}
+
+
+@torch.no_grad()
 def p_move_by_class(world, wins, actions, tokens, config):
     import direct_model as DM
     import direct_train as BASE
@@ -313,6 +379,8 @@ if __name__ == '__main__':
         res, name = crossterrain(), 'crossterrain'
     elif mode == 'benefit':
         res, name = benefit(int(sys.argv[2])), f'benefit_u{int(sys.argv[2]):04d}'
+    elif mode == 'corrt':
+        res, name = corrt(), 'corrt'
     elif mode == 'probe':
         res, name = probe(float(sys.argv[2])), 'probe'
     else:
