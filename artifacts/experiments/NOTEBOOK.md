@@ -177,6 +177,36 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R22 — PI trained (both seeds, 3,000 updates): the label-free EM gate becomes a change detector (`edit_gain.py 640 pi_seed{s}/pi_u3000.pt`)
+
+**Training** (`pi_seed{1,2}_train.log`; ~0.63 s per update, both seeds in parallel, peak 1.24 GiB each):
+- **Scroll accuracy** against the label-free estimate is 0.98-1.00 by update 200-300 (0.57-0.60 at init). It is 0.999 on 640
+  training windows at the end.
+- **The gate does not fire until ~update 500.** It then rises with the posterior: non-entering edits per frame go 0.6 → ~3
+  (posterior) and 0 → 2.5-3.3 (gate), with the gate tracking the posterior closely.
+- **End-of-training losses:** point 0.041-0.045 (IC ~0.035-0.04: the copies keep the rendering drift), chance CE ~0.011-0.012.
+
+**Trained gate on 640 training windows** (seed 1 / seed 2):
+
+| cell class | MAP edits (gate > 0) | posterior edits | gen beats copy (init → trained) |
+|---|---|---|---|
+| unchanged terrain (544k) | 1.7% / 1.7% | 1.7% / 1.7% | 1.8% → 1.8% |
+| changed terrain (1,387) | **84% / 84%** | 87% / 87% | 88% → 88% |
+| HUD changed (5,546) | **78% / 79%** | 88% / 89% | **52% → 94-95%** |
+| HUD unchanged (167k) | 0.01% / 0.02% | 0% | 0% |
+| persisting mob (5,439) | 12% / 16% | 8.6% / 8.4% | 8.6% → 8% |
+| mob at one end only (14,212) | 36% / 36% | 65% / 62% | 79% → 81-83% |
+
+- **Gate AUC** (seed 1 / seed 2): changed vs unchanged terrain 0.926 / 0.931; HUD changed vs unchanged 0.981 / 0.979; posterior
+  edit vs rest 0.997 / 0.996.
+- **The hard-EM trap did not occur.** Gen now beats the copy at 94-95% of real HUD changes (52% at init), while trained only
+  where the gate edits: the R18 foothold was enough.
+- **A label-free gate learns where the world changes,** from the MDL evidence and its own prior alone, and persists the rest.
+  This is the separation CorrT's soft weights never made.
+- **Soft spot:** the gate edits persisting mobs (12-16%) more than the evidence does (8.5%). Its prior at mob cells is ~0.2,
+  i.e. "this mob may change". Each edit regenerates the mob from gen, so some fading may return in recursion (readings
+  pending).
+
 ### R21 — TRACK A RESULT: chance-forced self-fed training does not fix fading; the structural account stands (TRANSPORT_SF_PREREG)
 
 Mechanical verdict (`transport_track_verdicts.py sf`): **"partial"**. Under the preregistered interpretation rule, anything

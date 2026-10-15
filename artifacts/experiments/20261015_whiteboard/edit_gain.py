@@ -17,7 +17,11 @@ taken as is: moved mobs count as changed). Cell classes from the frozen bank til
               gen, trained only at edited cells, never learns it (a hard-EM trap)
 Entering map cells (always generated) and the player cell are excluded. Per class: cells, share gain > 0, median gain / s,
 share gain / s > 4 (fires at the gate's initial bias), and the EM fixed-point prior p* solved per class.
-Usage: edit_gain.py [windows] -> artifacts/eda/whiteboard/edit_gain.json
+With a trained PI checkpoint (second argument, relative to transport/): the trained gen and gate. Per class, additionally,
+the trained gate's mean probability sigmoid(gate), the share where MAP fires (gate > 0), and the share the posterior edits
+(sigmoid(gain / s + gate) > 0.5, as in training); and the gate's AUC separating changed from unchanged cells (map, HUD) and
+posterior edits from the rest. Separates 'gate calibrated but below 0.5' from 'gate learned nothing'.
+Usage: edit_gain.py [windows] [checkpoint] -> artifacts/eda/whiteboard/edit_gain[_<checkpoint tag>].json
 """
 import dataclasses
 import json
@@ -37,6 +41,7 @@ import audit_s5_direct as A5
 import direct_coherence as C
 import direct_train as BASE
 import pi_model as PI
+import rep_layers as RL
 from d4mj.mamba_recurrence import FunctionalMamba2
 
 OUT = HERE.parents[1] / 'eda/whiteboard'
@@ -59,8 +64,12 @@ def main():
     _, windows, actions, tokens = BASE.load_data()
     sel = torch.randperm(len(windows), generator=torch.Generator().manual_seed(20261018))[:n_windows]
     w = PI.PIWorld(init_seed=7)
-    res = w.load_state_dict(torch.load(A5.BASE / 'paired_event/training/paired_u0000.pt', map_location='cpu', weights_only=False)['world'], strict=False)
-    assert all(k.startswith(('completion.', 'gate.')) for k in res.missing_keys), res.missing_keys
+    ckpt = sys.argv[2] if len(sys.argv) > 2 else None
+    if ckpt is None:
+        res = w.load_state_dict(torch.load(A5.BASE / 'paired_event/training/paired_u0000.pt', map_location='cpu', weights_only=False)['world'], strict=False)
+        assert all(k.startswith(('completion.', 'gate.')) for k in res.missing_keys), res.missing_keys
+    else:
+        w.load_state_dict(torch.load(A5.BASE / 'transport' / ckpt, map_location='cpu', weights_only=False)['world'])
     for m in w.modules():
         if isinstance(m, FunctionalMamba2):
             m.settings = dataclasses.replace(m.settings, backend='reference')
@@ -69,13 +78,14 @@ def main():
     head = torch.load(A5.BASE / 'learned_innovation/eval_u3000_h01/mob_heads.pt', map_location='cpu', weights_only=False)['heads']['real']
     scroll = A5.load_scroll()
     rows = {k: [] for k in ('unchanged', 'changed', 'mob_kept', 'mob_other', 'hud_changed', 'hud_unchanged')}
+    gates = {k: [] for k in rows}
     agree, total = 0, 0
     for b0 in range(0, n_windows, 8):
         frames, ac, _ = BASE.batch(tokens, actions, windows, sel[b0:b0 + 8], device='cpu')
         est = scroll.estimate(frames[:, :-1], frames[:, 1:])
         belief, ha = w.backbone_full(frames, ac)
         copy, gen, glogit, enter, sl = w.afterstate_parts(frames, ac, belief, ha, scroll=F.pad(est, (0, 1)))
-        copy, gen, enter, sl = (x[:, :15] for x in (copy, gen, enter, sl))
+        copy, gen, glogit, enter, sl = (x[:, :15] for x in (copy, gen, glogit, enter, sl))
         agree += int((sl.argmax(-1) == est).sum()); total += est.numel()
         z = frames[:, 1:]
         res_copy = (F.layer_norm(copy, (192,)) - z).norm(dim=-1)
@@ -88,11 +98,12 @@ def main():
         gm = g[..., :PI.MAP]
         for name, m in (('unchanged', keep & ~mob_z & ~mob_c & (tz == tc)), ('changed', keep & ~mob_z & ~mob_c & (tz != tc)),
                         ('mob_kept', keep & mob_z & mob_c), ('mob_other', keep & (mob_z ^ mob_c))):
-            rows[name].append(gm[m])
+            rows[name].append(gm[m]); gates[name].append(glogit[..., :PI.MAP][m])
         hud_change = (copy[:, :, PI.MAP:] - z[:, :, PI.MAP:]).norm(dim=-1) > 2.5
         rows['hud_changed'].append(g[..., PI.MAP:][hud_change]); rows['hud_unchanged'].append(g[..., PI.MAP:][~hud_change])
+        gates['hud_changed'].append(glogit[..., PI.MAP:][hud_change]); gates['hud_unchanged'].append(glogit[..., PI.MAP:][~hud_change])
         print(json.dumps({'windows_done': b0 + 8}), flush=True)
-    out = {'windows': n_windows, 'parent': 'paired_u0000 (PI init)', 'scroll_argmax_agrees_with_estimate': round(agree / total, 4)}
+    out = {'windows': n_windows, 'parent': ckpt or 'paired_u0000 (PI init)', 'scroll_argmax_agrees_with_estimate': round(agree / total, 4)}
     for name, parts in rows.items():
         x = torch.cat(parts)
         if len(x) == 0:
@@ -100,8 +111,21 @@ def main():
         out[name] = {'cells': len(x), 'share_gain_pos': round(float((x > 0).float().mean()), 4),
                      'median_gain_over_s': round(float(x.median()), 3), 'share_fires_at_init_bias': round(float((x > 4).float().mean()), 4),
                      'em_fixed_point_prior': round(em_prior(x), 4)}
+        if ckpt is not None:
+            gl = torch.cat(gates[name])
+            out[name].update({'gate_prob_mean': round(float(torch.sigmoid(gl).mean()), 4), 'map_fires': round(float((gl > 0).float().mean()), 4),
+                              'posterior_edits': round(float((torch.sigmoid(x + gl) > .5).float().mean()), 4)})
+    if ckpt is not None:
+        cat = {k: (torch.cat(rows[k]), torch.cat(gates[k])) for k in rows}
+        for a, b in (('changed', 'unchanged'), ('hud_changed', 'hud_unchanged')):
+            sc = torch.cat([cat[a][1], cat[b][1]]); lab = torch.cat([torch.ones(len(cat[a][1])), torch.zeros(len(cat[b][1]))])
+            out[f'gate_auc_{a}_vs_{b}'] = round(float(RL.auc(sc, lab)), 4)
+        allg = torch.cat([v[0] for v in cat.values()]); alll = torch.cat([v[1] for v in cat.values()])
+        out['gate_auc_posterior_edit_vs_rest'] = round(float(RL.auc(alll, torch.sigmoid(allg + alll) > .5)), 4)
+        out['gate_prob_max'] = round(float(torch.sigmoid(alll).max()), 4)
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / 'edit_gain.json').write_text(json.dumps(out, indent=1))
+    tag = '' if ckpt is None else '_' + ckpt.replace('/', '_').replace('.pt', '')
+    (OUT / f'edit_gain{tag}.json').write_text(json.dumps(out, indent=1))
     print(json.dumps(out, indent=1), flush=True)
 
 
