@@ -37,7 +37,12 @@ def sample(update, train_dir=None, eval_dir=None, arms=None):
     d = eval_dir or OUT / f'eval_u{update:04d}'; d.mkdir(parents=True, exist_ok=True)
     for arm in arms or TM.ARMS:
         saved = torch.load((train_dir or OUT / 'training') / f'{arm}_u{update:04d}.pt', map_location='cpu', weights_only=False)
-        world = TM.TransportWorld(arm).cuda().eval(); world.load_state_dict(saved['world'])
+        if arm == 'pi':                                                    # TRANSPORT_PI_PREREG (Track B world)
+            sys.path.insert(0, str(HERE.parent / '20261015_whiteboard')); import pi_model
+            world = pi_model.PIWorld().cuda().eval()
+        else:
+            world = TM.TransportWorld(arm).cuda().eval()
+        world.load_state_dict(saved['world'])
         preds, swaps, refs = [], [], []
         for start in range(0, len(data['roots']), 4):
             ctx = data['context_tokens'][start:start + 4].cuda().float(); ac = data['actions'][start:start + 4].cuda()
@@ -131,7 +136,7 @@ def analyze(update, eval_dir=None, arms=None, free_path=None):
                                'share_of_swaps_touching_a_root_mob': round(float((moved[..., :63] & C.decode(root_tok, bank, head)['mob']['real'][:, None, :, :3].any(-1)).sum() / max(int(moved.sum()), 1)), 4)}
         res['arms'][arm] = out
         print(json.dumps({arm: out}), flush=True)
-    pairs = [(x, y) for x, y in (('operator', 'free'), ('operator_cost', 'free'), ('operator_cost', 'operator'), ('ic', 'free'), ('ic', 'operator'), ('icsf', 'free'), ('icsf', 'ic')) if x in arms and y in arms]
+    pairs = [(x, y) for x, y in (('operator', 'free'), ('operator_cost', 'free'), ('operator_cost', 'operator'), ('ic', 'free'), ('ic', 'operator'), ('icsf', 'free'), ('icsf', 'ic'), ('pi', 'free')) if x in arms and y in arms]
     for x_arm, y_arm in pairs:
         res[f'{x_arm}_minus_{y_arm}'] = compare(res, x_arm, y_arm)
     (d / 'analysis.json').write_text(json.dumps(res, indent=1))

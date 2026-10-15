@@ -46,6 +46,10 @@ MODELS = {  # name: (checkpoint, arm, mode)
     'sf_icsf_s1': (T / 'sf_seed1/icsf_u4500.pt', 'operator', 'sample'),
     'sf_ic_s2': (T / 'sf_seed2/ic_u4500.pt', 'operator', 'sample'),
     'sf_icsf_s2': (T / 'sf_seed2/icsf_u4500.pt', 'operator', 'sample'),
+    # TRANSPORT_PI_PREREG (Track B): persistent state + inferred transformations
+    'pi_s1': (T / 'pi_seed1/pi_u3000.pt', 'pi', 'sample'),
+    'pi_s1_ref': (T / 'pi_seed1/pi_u3000.pt', 'pi', 'reference'),
+    'pi_s2': (T / 'pi_seed2/pi_u3000.pt', 'pi', 'sample'),
 }
 H, W, K = 16, 15, 8
 
@@ -59,7 +63,11 @@ def rollout(name):
     from d4mj.train import autocast_context
     config = BASE.settings()
     ckpt, arm, mode = MODELS[name]
-    world = (PM.PairedWorld() if arm == 'paired' else TM.TransportWorld(arm)).cuda().eval()
+    if arm == 'pi':                                                        # TRANSPORT_PI_PREREG (Track B world)
+        sys.path.insert(0, str(HERE.parent / '20261015_whiteboard')); import pi_model
+        world = pi_model.PIWorld().cuda().eval()
+    else:
+        world = (PM.PairedWorld() if arm == 'paired' else TM.TransportWorld(arm)).cuda().eval()
     world.load_state_dict(torch.load(ckpt, map_location='cpu', weights_only=False)['world'])
     panel = torch.load(A5.BASE / 'panel.pt', map_location='cpu', weights_only=False, mmap=True)
     tok, act = panel['tokens'], panel['actions']
