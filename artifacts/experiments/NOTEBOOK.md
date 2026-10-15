@@ -177,6 +177,39 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R30 — R29 localized: the content head is calibrated on real contexts; the overshoot is where it is applied (`innov_calib.py`)
+
+Teacher-forced, 320 held-out training windows (seed 20261022), at PI's training-time innovation cells. Each K 4096 centroid
+is classed once by the frozen readers. Head expected class mass vs actual class of z_pre (seed 1 / seed 2):
+
+| site | class | actual | expected / actual | argmax draws (mean-like) |
+|---|---|---|---|---|
+| entering (15,539 cells) | main terrain classes | 127-7,086 | 0.94-1.07 | |
+| entering | cow | 125 | **0.91 / 0.96** | **14 / 28** |
+| entering | zombie | 28 | 1.98 / 1.56 | 21 / 12 |
+| entering | skeleton | 55 | 1.19 / 0.69 | 38 / 10 |
+| gate-posterior edits (~11,800) | zombie | 2,568 / 2,458 | 0.99 / 0.99 | ≈ actual |
+| gate-posterior edits | cow | 348 / 351 | 1.05 / 0.99 | ≈ actual |
+| gate-posterior edits | terrain classes | | 0.98-1.06 | |
+
+Cross-entropy: entering 3.54-3.55 nats (entropy 4.18), edits 2.58 (3.45).
+
+- **The content distribution is calibrated at the semantic level on real contexts.** Cows at entering cells are drawn at the
+  right rate by sampling and 4-9× too rarely by the argmax: R24's missing arrivals are the mean / mode, confirmed from the
+  other side. Zombies at entering cells are over-predicted ×1.6-2.0 (n = 28, small).
+- **So R29's recursion overshoot (zombies 2.4-2.8×, cows 1.2-1.5×) is not the head's training calibration.** Most likely it
+  is a selection mismatch:
+  - The head is p(content | the cell changed), learned on cells the *posterior* (with evidence) marks as changed. ~21% of
+    those are zombie cells.
+  - In recursion it is applied wherever the *prior* gate fires (MAP), including the 36% of mob-adjacent cells where the gate
+    expects a change (R22) that usually does not happen.
+  - Sampling "what it changed into" there draws the zombie again: duplicates.
+  - Imagined-context drift may add to it (not separated).
+- **Principle:** the content distribution and the change decision must be the same random event. Sample from p(change) ×
+  p(content | change), each calibrated where it is applied; or let the head see the no-change outcome (train on all cells
+  the gate may fire on, with "copy" as a class). R28 (sampled decision, mean content) and R29 (MAP decision, sampled content)
+  are the two halves of this error.
+
 ### R29 — PI_INNOV RESULT: sampled categorical content restores arrivals but injects noise — "not supported" (PI_INNOV_PREREG)
 
 Mechanical verdict (`transport_track_verdicts.py innov`).
