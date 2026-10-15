@@ -222,6 +222,58 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R54 — an evolving belief's graded consequences, read directly (MULTIHORIZON_PREREG): the preregistered ridge heads fail; PI's belief holds the immediate consequence its gate discards (`multihorizon.py`)
+
+**Design (preregistered).**
+- Frozen beliefs: D parent; PI s1, s2.
+- From the root's 8-frame context with the first action under test, heads predict the *expected* HUD tokens at k ∈ {1, 2,
+  3, 4, 6, 8, 12, 16}:
+  - L2, so the target is the conditional mean;
+  - label-free targets: the observed HUD tokens of 30,000 training-pool roots.
+- The linear HUD health reader turns predicted tokens into expected health. Risk = max_k expected loss.
+- No rollout and no regenerated observation.
+- Evaluation on DV16's roots; within-root AUC over noop + 4 moves; paired bootstrap.
+
+| head | backbone | AUC5 (k = 1) | AUC5 | − own rollout HL | − D rollout HL (0.727) | expected safe, 17 actions | sleep chosen |
+|---|---|---|---|---|---|---|---|
+| ridge (primary) | D | **0.571** | 0.647 | −0.086 [−0.129, −0.042] | (same) | 0.388 | 45% |
+| ridge | PI s1 / s2 | 0.606 / 0.609 | 0.634 / 0.645 | +0.048 [−0.012, 0.108] / +0.020 [−0.040, 0.078] | −0.104 / −0.087 | 0.446 / 0.458 | 30 / 33% |
+| MLP (secondary) | D | | 0.697 | −0.033 [−0.071, 0.003] | (same) | **0.571** | 11% |
+| MLP | PI s1 / s2 | | 0.655 / 0.688 | **+0.075 [0.018, 0.130] / +0.074 [0.016, 0.132]** | −0.078 / −0.032 | **0.556 / 0.514** | 9 / 20% |
+
+**Verdict (preregistered rules):**
+- **P1 fails:** the k = 1 ridge on D ranks at 0.571 vs D's own first step 0.711.
+- **P2 fails:** −0.086, interval below −0.03.
+- **P3 fails:** the PI ridge intervals include 0.
+
+**Why P1 failed: the anchor (R54b, post-hoc, not preregistered).**
+- D's own read-out is a soft mixture over candidates: copy the cell's current token, a neighbour's, or generate
+  (`paired_model.reference`). Its prediction is anchored on the current token.
+- The preregistered heads had to rebuild the absolute token from the belief.
+- Giving the heads the root's current HUD tokens too (still label-free):
+
+| ridge + current HUD tokens | AUC5 (k = 1) | AUC5 by k (1 → 16) | AUC5 | − own rollout HL | − D rollout HL | expected safe, 17 | sleep chosen |
+|---|---|---|---|---|---|---|---|
+| D | 0.684 | 0.68 → 0.71 (k 6) → 0.70 | 0.704 | −0.016 [−0.052, 0.021] | (same) | 0.431 | 32% |
+| **PI s1** | **0.711** | **0.71 → 0.69** | 0.689 | **+0.110 [0.052, 0.169]** | −0.042 [−0.092, 0.005] | 0.508 | 18% |
+| **PI s2** | **0.697** | 0.70 → 0.69 | 0.691 | **+0.077 [0.019, 0.134]** | −0.030 [−0.070, 0.011] | 0.464 | 27% |
+| MLP + anchor, PI s2 | | | 0.690 | +0.075 [0.020, 0.128] | −0.032 | **0.577** | **3%** |
+
+**What we learn:**
+- **PI's belief knows the immediate consequence as well as D does** (k = 1: 0.70-0.71 vs its rollout's 0.60). The MAP copy/edit
+  gate is what discards it (R51), now confirmed from the belief side.
+- **Read as an expectation, PI's belief ranks the escape moves +0.08 to +0.11 better than PI's own rollouts** (resolved at both
+  seeds). That is near D's rollout (−0.03 to −0.04, not resolved), without imagining a single frame.
+- The ranking information sits at short horizons (PI: k = 1 is best), as R53 found in reality.
+- **The remaining failure is counterfactual consequences of actions the behaviour policy takes only when they are safe.**
+  - Linear heads judge sleep safe (sleep chosen 18-45%). The behaviour data sleeps in safe states, so E[consequence | sleep]
+    learned from it is low.
+  - Nonlinear heads sometimes recover the state × action interaction: 3% sleep at PI s2 with the anchor, 20-22% elsewhere.
+    Seed- and head-dependent.
+- **Answer to the user's coexistence question, so far:** persistence (faithful scene dynamics, PI) and decision-relevant
+  uncertainty (graded consequences) coexist if consequences are *read from the belief as expectations*, not produced as
+  sampled or MAP edits of observation tokens. The open problem is the counterfactual / confounded consequence of rare actions.
+
 ### R53 — where action-dependent risk lives, and where each world loses it: PI has the most faithful dynamics and the worst immediate consequence; R51/R52's ranking gap is mostly the read-out (`dv16_trace.py`, `dv16_trace_analysis.py`)
 
 **User direction (10-16).**
