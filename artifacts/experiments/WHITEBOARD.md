@@ -313,3 +313,66 @@ Salakhutdinov arXiv 1702.08360 (Neural Map).
   - A coherent deterministic mode-world gets 75% (survival) and 88% (return) of the value of 32 sampled futures.
   - 16 samples add +0.025 [+0.009, +0.045].
   - **One sample is worse than the mode-world** (−0.038), which is the E22MS-vs-D pattern seen in the simulator itself.
+
+---
+
+## 12. 2026-10-14/15 — what the transport, objective and recursion studies measured (NOTEBOOK: TRANSPORT, OBJECTIVE, R1-R12)
+
+**Row 3: chance as reassignment of retained content.** One stochastic operator that only permutes adjacent cells (an
+exact matching) beats per-tile synthesis at every seed: valid 93-100% vs 53-65%, cow movement 25-43% vs 4-8%. Free
+synthesis explodes under recursion (×3-12 mobs, 4.5 phantoms per frame); transport conserves.
+
+**Who owns the chance decides the afterstate.**
+- With the outcome supplied, the deterministic reference becomes a clean pre-chance afterstate (F1b).
+- Trained toward the post-chance target, it ghosts (the mean).
+- 31% of true mob moves (zombie chase) are predicted by the afterstate itself and need no chance.
+
+**Objective: the energy score hedges deterministic error.** For draws that differ only by a one-cell reassignment, the
+two-sample first-power score cannot penalize the change unless the afterstate is exact (triangle inequality):
+- dose-response at both seeds;
+- local scores make it worse.
+
+**Inferred chance** (Stochastic MuZero's split: point loss given a label-free posterior reassignment, log-score on the
+chance head) removes the hedge.
+- Spurious terrain swaps fall 100-280×; one-step validity is 100%; movement and dependence reach the real rates.
+- **The posterior must be Bayesian under the model's own prior.**
+  - Maximum likelihood accepts look-alike swaps (precision 0.25 in a synthetic test).
+  - A global prior self-tightens to "nothing moves".
+  - The per-pair prior of the chance head works.
+- **Remaining failure:** where the posterior is blind (crowded mobs, chase combined with a scroll), the point loss averages,
+  leaving ghosts at a few roots and faster mob fading in recursion.
+
+**Row 1: nuisance is not a context problem.**
+- Persistent content's token drifts because Craftax re-renders it every step (daylight blend, deterministic and global) and
+  because position codes change with scrolls.
+- The drift is equal in the encoder's purely local layer 0 and in Raw.
+- It is not a linear subspace, so no fixed projection or loss metric discards it.
+- Deterministic rendering must be *predicted* (time-of-day is memory); night static needs *learned* invariance.
+- Mob content is perfectly local at every layer. Mob-over-terrain occlusion makes 5% of real moves non-transferable at
+  every layer.
+
+**Rows 2 / 4: memory is addressed by screen slot.** Revisited terrain is recalled well after ≤ 2 scrolls (10-23% error) and
+lost after 3+ (35-41%), at the same age. Terrain seen 8-14 frames earlier is recalled no better than never-seen terrain.
+The information is in the window; the address moves.
+
+**Recursion and decisions.** Every model's deterministic dynamics degrade when they read their own frames:
+- **Mob tokens attenuate geometrically:** a soft blend is not an idempotent copy.
+- **Scroll decisions flip:** wrong imagined content at the faced cell, 37-81% divergence vs 6%.
+- **Zombie pursuit decays:** 38% real vs 10-19% by depth 6-16. Faint zombies chase less, and crisp ones also under-chase.
+
+Consequence: in imagination the world stops threatening the player. Zombie adjacency stays flat while reality's rises
+0.03 → 0.10, and health drops vanish. Stochastic coherence (row 3) was not the decision bottleneck; recursion-stable
+deterministic dynamics and HUD consequences (row 2) are.
+
+**Candidate general mechanisms, each now motivated by a measurement (none yet tested as a whole):**
+1. **One reassignment operator, three uses:**
+   - the deterministic camera translation (action);
+   - the stochastic local swaps (chance);
+   - **the same translation applied to the recurrent memory**, so that memory moves with content.
+2. **Exact, idempotent persistence:** copies of persistent content plus a predicted global rendering update, instead of
+   soft blends that decay when iterated.
+3. **Chance-forced self-fed training:** infer each step's reassignment from the real future (posterior), roll the
+   deterministic part forward on its own outputs, and apply the point loss at every depth. Inferred chance makes
+   multi-step training possible without averaging.
+4. **A Bayesian posterior under the model's own prior** as the only learned-chance signal: one rule that keeps identity
+   unless evidence pays for a change.
