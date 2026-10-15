@@ -50,6 +50,9 @@ MODELS = {  # name: (checkpoint, arm, mode)
     'pi_s1': (T / 'pi_seed1/pi_u3000.pt', 'pi', 'sample'),
     'pi_s1_ref': (T / 'pi_seed1/pi_u3000.pt', 'pi', 'reference'),
     'pi_s2': (T / 'pi_seed2/pi_u3000.pt', 'pi', 'sample'),
+    # PI_STALE_PREREG (user question 10-15 night): stale-context augmentation vs plain continuation, u4000
+    'piplain_s1': (T / 'pi_seed1/piplain_u4000.pt', 'pi', 'sample'), 'pistale_s1': (T / 'pi_seed1/pistale_u4000.pt', 'pi', 'sample'),
+    'piplain_s2': (T / 'pi_seed2/piplain_u4000.pt', 'pi', 'sample'), 'pistale_s2': (T / 'pi_seed2/pistale_u4000.pt', 'pi', 'sample'),
 }
 H, W, K = 16, 15, 8
 

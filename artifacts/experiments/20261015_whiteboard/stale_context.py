@@ -20,7 +20,8 @@ P[x] = mean real token at slot x minus the mean over map slots (400 seeded windo
 cell's origin slot (where its token was last encoded) is tracked through copies and swaps; the world reads token + P[x] -
 P[origin] instead of the stale token. Rendering stays stale (one change). Also a token-level check on REAL scrolled transitions
 (unchanged, unswapped cells): |fresh - copy| vs |fresh - (copy + P[new] - P[old])|.
-Usage: stale_context.py -> artifacts/eda/whiteboard/stale_context[_refresh].json
+Env STALE_CKPT (default pi_seed{s}/pi_u3000.pt, relative to transport/) and STALE_TAG (output suffix) select another checkpoint.
+Usage: stale_context.py -> artifacts/eda/whiteboard/stale_context[_refresh][<tag>].json
 """
 import json
 import os
@@ -143,7 +144,7 @@ def main():
         res['token_check'] = {'plain': [], 'refreshed': []}
     for seed in (1, 2):
         w = PI.PIWorld().cuda().eval()
-        w.load_state_dict(torch.load(T / f'pi_seed{seed}/pi_u3000.pt', map_location='cpu', weights_only=False)['world'])
+        w.load_state_dict(torch.load(T / os.environ.get('STALE_CKPT', 'pi_seed{s}/pi_u3000.pt').format(s=seed), map_location='cpu', weights_only=False)['world'])
         g = torch.Generator().manual_seed(3)
         acc = {}
         for b0 in range(0, N_WINDOWS, 8):
@@ -231,7 +232,7 @@ def main():
         res['token_check'] = {'cells': len(pl), 'plain_mean_dist': round(float(pl.mean()), 4), 'refreshed_mean_dist': round(float(rf.mean()), 4)}
         print(json.dumps({'token_check': res['token_check']}), flush=True)
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / f'stale_context{"_refresh" if refresh else ""}.json').write_text(json.dumps(res, indent=1))
+    (OUT / f'stale_context{"_refresh" if refresh else ""}{os.environ.get("STALE_TAG", "")}.json').write_text(json.dumps(res, indent=1))
 
 
 if __name__ == '__main__':

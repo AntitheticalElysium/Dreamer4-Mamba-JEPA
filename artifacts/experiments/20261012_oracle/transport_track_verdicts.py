@@ -33,6 +33,15 @@ Sampled innovation content (20261015_whiteboard/PI_INNOV_PREREG.md), written bef
   >= pi - 0.02, phantoms per frame <= real_phantoms per frame at every depth. "sampled innovation restores arrivals" if A1, A2,
   H at both seeds; "arrivals restored but the rollout is harmed" if A1 at both seeds and H fails; "not supported" if A1 fails.
 PI_ENTER_PREREG.md: mode 'enter' = the same readings with pi_enter in place of pi_innov.
+PI_STALE_PREREG.md (mode 'stale'), written before its result: per seed, pistale vs piplain (u4000).
+  P1 from stale_context_<arm>_s.json (m8 / m14, scroll buckets 1-3 and 4+ pooled by window count): relative chase drop
+     (1 - stale/fresh toward) of pistale <= 0.5 x piplain's AND relative map-content error increase (stale/fresh - 1) of
+     pistale <= 0.5 x piplain's
+  P2 pursuit_stale.json depth6-16 approach: pistale > piplain
+  H  persisting d16 >= piplain - 0.05, seen terrain d16 <= piplain + 0.005, phantoms <= 0.05 at every depth, |cow census - 1|
+     <= piplain's + 0.05, one-step conditions for pistale (eval_u4000)
+  "belief invariance learned and it carries into recursion" (P1, P2, H both seeds) / "invariance learned, recursion
+  unchanged" (P1, H, not P2) / "not supported" (P1 fails at a seed) / "partial".
 Usage: transport_track_verdicts.py sf|pi|canvas|sampled|innov|enter -> artifacts/eda/oracle_v1/transport/<mode>_verdict.json
 """
 import json
@@ -203,8 +212,51 @@ def innov(arm='innov'):
     return res
 
 
+def stale():
+    res = {}
+    fade = json.loads((W / 'mob_fading_piplain_s1_pistale_s1_piplain_s2_pistale_s2.json').read_text())
+    pur = json.loads((W / 'pursuit_stale.json').read_text())
+    for s in (1, 2):
+        gaps = {}
+        for arm in ('piplain', 'pistale'):
+            d = json.loads((W / f'stale_context_{arm}.json').read_text())[f'seed{s}']
+            n = ft = st = fe = se = 0.
+            for key in ('m8_scrolls1-3', 'm8_scrolls4+', 'm14_scrolls1-3', 'm14_scrolls4+'):
+                v = d.get(key)
+                if not v:
+                    continue
+                k = v['windows']; n += k
+                ft += k * v['fresh']['pursuit_toward']; st += k * v['stale']['pursuit_toward']
+                fe += k * v['fresh']['gen_err_changed_map']; se += k * v['stale']['gen_err_changed_map']
+            gaps[arm] = {'chase_drop': round(1 - st / ft, 4), 'content_increase': round(se / fe - 1, 4)}
+        p1 = (gaps['pistale']['chase_drop'] <= .5 * gaps['piplain']['chase_drop'] and
+              gaps['pistale']['content_increase'] <= .5 * gaps['piplain']['content_increase'])
+        x, b = rec(f'pistale_s{s}'), rec(f'piplain_s{s}')
+        pursuit = [pur[f'pistale_s{s}']['depth6-16']['approach'], pur[f'piplain_s{s}']['depth6-16']['approach']]
+        persist = [fade[f'pistale_s{s}']['vanish_rate_by_depth'][15]['mean_score_of_persisting'],
+                   fade[f'piplain_s{s}']['vanish_rate_by_depth'][15]['mean_score_of_persisting']]
+        cow = [x['census_ratio[zombie,cow,skeleton]_by_depth'][15][1], b['census_ratio[zombie,cow,skeleton]_by_depth'][15][1]]
+        seen = [x['tile_error_seen_by_depth'][15], b['tile_error_seen_by_depth'][15]]
+        one = onestep(json.loads((T / f'pi_seed{s}/eval_u4000/analysis.json').read_text()), 'pistale')
+        h = (persist[0] >= persist[1] - .05 and seen[0] <= seen[1] + .005 and max(x['phantoms_per_frame_by_depth']) <= .05 and
+             abs(cow[0] - 1) <= abs(cow[1] - 1) + .05 and all(one.values()))
+        res[f'seed{s}'] = {'gaps': gaps, 'P1': bool(p1), 'pursuit_d6_16': pursuit, 'P2': bool(pursuit[0] > pursuit[1]),
+                           'persisting_d16': persist, 'cow_census_d16': cow, 'seen_terrain_d16': seen,
+                           'phantoms_max': max(x['phantoms_per_frame_by_depth']), 'one_step_pistale': one, 'H': bool(h)}
+    seeds = [res['seed1'], res['seed2']]
+    if not all(r['P1'] for r in seeds):
+        res['verdict'] = 'not supported'
+    elif all(r['P2'] and r['H'] for r in seeds):
+        res['verdict'] = 'belief invariance learned and it carries into recursion'
+    elif all(r['H'] for r in seeds):
+        res['verdict'] = 'invariance learned, recursion unchanged'
+    else:
+        res['verdict'] = 'partial'
+    return res
+
+
 if __name__ == '__main__':
     which = sys.argv[1]
-    res = {'sf': sf, 'pi': pi, 'canvas': lambda: variant('canvas'), 'sampled': lambda: variant('sampled'), 'innov': innov, 'enter': lambda: innov('enter')}[which]()
+    res = {'sf': sf, 'pi': pi, 'canvas': lambda: variant('canvas'), 'sampled': lambda: variant('sampled'), 'innov': innov, 'enter': lambda: innov('enter'), 'stale': stale}[which]()
     (T / f'{which}_verdict.json').write_text(json.dumps(res, indent=1))
     print(json.dumps(res, indent=1))
