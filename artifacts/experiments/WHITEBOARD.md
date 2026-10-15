@@ -514,6 +514,30 @@ Measured with **exact** transformations (diagnosis futures; R41 fixed my constru
   imagination is interleaved with observation). It does not establish that pure imagination suffers it.
 - Not yet tested directly. A time-frozen frame (all cells at the root's light) needs a renderer.
 
+**Addendum (R47-R48, 10-16): appearance is a fourth kind of transformation, and it must be shared.**
+
+| aspect | evidence | treatment |
+|---|---|---|
+| **global appearance** (sleep grey-out; daylight by day) | the source renders both as one per-pixel colour map. On the pixel-linear content code it is an exact affine map. **One 12-parameter colour map shared by every pixel**, fitted label-free, keeps 97-98% of zombies and cows through the sleep onset. A free operator (192 × 192, content code or token) learns the step's conditional mean and erases rare content (zombies 0.51-0.64). FiLM on tokens fails outright | **transformed by a global, low-dimensional, shared operator**: the bulk of the scene determines it, and it cannot encode content-specific change |
+
+- The table now reads:
+  - identity **persists**;
+  - position and appearance are **transformed** by global operators (one displacement; one colour map);
+  - local change is a **gated edit**;
+  - relations / consequences are **recomputed** by the belief.
+- Night static is random and vignette-shaped: nuisance, not an operator.
+- **Decision value (R48):** emulating PI plus this operator at the sleep onset improves DV16 decisions at both seeds (0.355 →
+  0.492, 0.478 → 0.522).
+- **The catch:** the 12-parameter operator exists only in pixel-linear coordinates (the frozen first layer, inverted exactly).
+  On Raw tokens no shared affine map preserves content.
+- **Open design choice for the user:**
+  1. persist copies as content codes (pixel-equivalent), recontextualize them with the frozen upper layers, and transform
+     them with shared operators. This is exact, but the world then holds and edits pixel-equivalent state: a step toward
+     reconstruction;
+  2. learn an encoder in which global photometric changes act as a shared low-dimensional operator (an equivariance
+     objective), staying latent;
+  3. leave appearance to regeneration and accept the erasure.
+
 ## 16. 2026-10-16 — selective persistence vs an ordinary latent belief (user's sharpened question; NOTEBOOK R44)
 
 - A standard reconstruction-free RSSM (R2-Dreamer's, unchanged, on our JEPA tokens; 60k updates, two seeds) **does not encode
@@ -533,3 +557,13 @@ Measured with **exact** transformations (diagnosis futures; R41 fixed my constru
 - With sleep excluded, every world beats uniform by ~0.03-0.05 and **PI ≈ IC**: persistence does not improve decisions.
 - **Binding constraint for useful imagination: the consequences of rare, high-stakes actions** (health / damage). This
   outranks representation staleness, and it is the row-2 / row-3 consequence problem first diagnosed in E14.
+
+**Localized (R46-R48).** The sleep blind spot has three parts:
+1. **Onset erasure** (no appearance operator; fixable, see §15 addendum). It is about 45-65% of the decision loss.
+2. **Damage magnitude hedged** to ~45-70% of real over 16 steps, awake as well as asleep. The HUD edit draws the conditional
+   mean of the consequence.
+3. **Early timing:** the onset step's mob moves.
+
+PI's Mamba belief *does* know the mechanism: the sleeper-attack rule and the zombie's hidden cooldown, read from history
+(0.93 / 0.82 vs real 0.94 in the cell the behaviour data rarely shows). So memory is not the gap. **The gaps are
+representational (appearance) and distributional (magnitude = mean of consequences).**

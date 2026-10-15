@@ -222,6 +222,85 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R48 — the sleep blind spot, localized: erasure at onset (fixable), then a damage-magnitude hedge; PI already knows the rule and the hidden cooldown
+
+Scripts: `sleep_onset_sub.py` (substitution), `sleep_onset_cond.py`, `sleep_incidence.py`, `sleep_attack_onestep.py`,
+`sleep_cooldown.py`.
+
+**Source facts** (`game_logic.py:815-845, 1238-1247`):
+- An adjacent zombie attacks when its cooldown ≤ 0. An attack resets the cooldown to 5.
+- It deals **7 to a sleeper, 2 to an awake player**, and wakes the sleeper.
+- Sleep starts on SLEEP if energy < 9.
+- The renderer greys only the map rows (the HUD is drawn separately) and draws a sleeping player texture.
+
+**1. Substitution** (DV16's 200 roots, PI s1 / s2, M = 4, first action SLEEP, recorded continuation, the same noise draws for
+every variant). Imagined frame 1 is replaced, then PI imagines frames 2-16 itself.
+
+| (s1 / s2) | zombie adjacent | health drop by 16 (HD) | health at d16 vs root | d16 − d1 | decision, expected safe | sleep chosen |
+|---|---|---|---|---|---|---|
+| natural (as DV16; reproduces its sleep HD 0.275 / 0.62) | 0.10 / 0.15 | 0.28 / 0.62 | +0.07 / −0.94 | −0.27 / −0.38 | 0.356 / 0.478 | 43 / 24% |
+| appearance: root map rendered asleep by the source's function, root HUD | 0.72 / 0.70 | 0.59 / 0.48 | −2.65 / −1.72 | −2.80 / −1.86 | 0.467 / 0.416 | 20 / 33% |
+| **app_pihud**: the same map, PI's **own** sampled HUD at frame 1 (emulates PI + an appearance operator) | **0.75 / 0.69** | **0.67 / 0.74** | −2.62 / −1.98 | −2.95 / −1.41 | **0.492 / 0.522** | **17 / 14%** |
+| real onset: the real depth-1 frame | 0.78 / 0.74 | 0.82 / 0.78 | −3.31 / −2.46 | −2.48 / −1.63 | 0.541 / 0.543 | 6 / 10% |
+| control: first action NOOP, natural | 0.83 / 0.85 | | −1.87 / −2.44 | −1.35 / −1.61 | | |
+| **real sleep / real noop** | 0.92 / 0.92 | 0.98 / 0.94 | **−4.92** / −3.71 | **−4.09** / −2.66 | | |
+
+References: uniform 0.512. Sleep-excluded level (R45): 0.566 / 0.575.
+
+**Decomposition of real onset vs appearance** (real content swapped in at the player cell / the 18 HUD cells / both):
+- **Player sprite:** no effect (decision 0.477 / 0.425; health identical to appearance).
+- **HUD:** decision 0.540 / 0.522, but this is a **leak**. The real depth-1 HUD carries the onset step's real damage (−0.83).
+  PI then adds nothing by d2 (d2 − d1 = −0.02 / 0.00).
+- **What remains:** the zombies' moves during the onset step. Zombie adjacent at d1 is 0.65 (real) vs 0.45 (frozen at root
+  positions). Only real onset imagines early damage (d2 − d1 −0.78 / −0.49 vs −0.12 / −0.13).
+
+**2. Training-data incidence** (all 1.24M pool transitions; frozen readers; an asleep probe on the mean map token, held-out
+accuracy 1.0 on 1,430 deeppanel frames labelled by the pixel rule):
+- Asleep: 19% of transitions.
+- Zombie adjacent: 1.9% of asleep frames vs 11.6% of awake frames.
+- P(health drop next | zombie adjacent): 0.26 asleep vs 0.14 awake (0.009 without a zombie).
+- Attacks on sleepers: 1,159 transitions = 0.09% of transitions, 4% of all health drops, in 1.0% of training windows.
+
+**3. Does PI know the rule and the hidden cooldown?** Teacher-forced, one step, 4 sampled outputs, up to 300 events per cell.
+Cooldown read from history = frames since the last health drop.
+
+| zombie adjacent at t | real P(drop) (pool count) | PI s1 | PI s2 |
+|---|---|---|---|
+| asleep 1-5 frames, hit in the last 5 frames | 0.023 (3,332) | 0.017 | 0.013 |
+| asleep 1-5 frames, no hit for ≥ 6 frames | **0.94 (384)** | **0.93** | **0.82** |
+| awake, recent hit | 0.074 (71,882) | 0.047 | 0.060 |
+| awake, no recent hit | 0.22 (54,873) | 0.21 | 0.26 |
+
+- Sleeper attacks are predicted: P 0.98 / 0.91, against 0.65 / 0.82 for awake attacks. False alarms are ≤ 0.017.
+- **Magnitudes are hedged:**
+  - asleep −4.6 / −4.0 vs real −6.9;
+  - awake −1.05 / −1.66 vs −1.97.
+- The behaviour data confounds the counterfactual:
+  - at sleep onset next to a zombie, 97.5% of training cases were just hit (cooldown active, P(attack) 0.02);
+  - 181 of DV16's 200 roots have no drop in the last ≥ 6 context frames, i.e. the rare cell;
+  - PI's belief resolves this from history.
+
+**What we learn:**
+- **The sleep blind spot has three parts, in order of size:**
+  1. **Onset erasure.** PI regenerates the scene because it has no appearance operator (R46).
+     - Preserving content restores imagined zombies (0.10 / 0.15 → 0.69-0.75; real 0.92).
+     - It improves decisions at **both** seeds (0.355 → 0.492, 0.478 → 0.522; sleep chosen 43 → 17%, 24 → 14%).
+     - That recovers ~65% / 45% of the loss sleep causes.
+  2. **Damage magnitude is hedged.** It is generic, not sleep-specific: one step −4.6 vs −6.9; over 16 steps 45-70% of real,
+     and the same for an awake player (−1.35 / −1.61 vs −2.66).
+     - The HUD edit draws the conditional mean of the consequence (R24's "point-predicted content = mean", on the HUD).
+  3. **Early timing** needs the onset step's mob moves (chase), which an appearance operator plus PI's own chance would
+     supply. Untested.
+- **Positive:** PI's Mamba belief already knows the mechanism. It tracks the hidden attack cooldown from history (0.93 / 0.82
+  vs real 0.94 in the rare cell), even though the behaviour data rarely shows that cell at sleep onset. The WHITEBOARD's memory
+  row ("remember what history determines") holds here.
+- **Correction (R45 / R46 reading):** PI s2's natural sleep damage was not spurious. It predicts the onset step's attack from
+  the root's adjacent zombie (d1 −0.56 vs real −0.83), and only then erases the zombie. My appearance substitution fixed the
+  HUD to the root's and deleted that prediction; `app_pihud` repairs the comparison.
+- **Design consequence (R47 addendum):** the operator that keeps content (12 parameters) lives in the pixel-linear content
+  code. On Raw tokens no shared affine works. Building it into PI means holding pixel-equivalent content for copies, which
+  touches the reconstruction-free constraint. That is the user's call.
+
 ### R47 — a global appearance change is a SHARED operator: 12 parameters keep content, a free operator erases it (`sleep_transform.py`)
 
 **Question (R46 follow-up):** PI has no operator for appearance, so the sleep onset regenerates the scene and loses its mobs.
@@ -275,6 +354,21 @@ Can a learned appearance operator transform persisted content while keeping it?
 - **Caveat:** the colour map acts in the pixel coordinates that the frozen first layer inverts exactly (pseudo-inverse; no
   decoder, no reconstruction loss). It works because this encoder's first layer is linear and injective. Whether a world should
   persist content in that space is a design decision, not established here.
+
+**Addendum (same script, same roots): operators on PI's own Raw tokens instead.** Least squares on the fit roots' map-cell
+token pairs, LN after.
+
+| | token error vs real | tile agreement vs real / oracle | zombie recall vs oracle | cow recall vs oracle |
+|---|---|---|---|---|
+| per-dimension affine shared by every cell (FiLM, 384 parameters) | 9.78 | 0.776 / 0.775 | 0.74 | 1.0 (precision 0.85) |
+| full 192 × 192 affine shared by every cell | 2.52 | 0.964 / 0.966 | **0.64** | 0.82 |
+
+- In the contextual token space, the sleep change is **not** a shared affine map:
+  - FiLM cannot express it;
+  - the full map hedges like the free content-code operator.
+- The 12-parameter operator exists only in the pixel-linear content code.
+- So a world that applies it must hold pixel-equivalent content for its copies. That is the reconstruction-free question, and
+  it is the user's decision (WHITEBOARD §15 addendum).
 
 ### R46 — the sleep blind spot is the WORLD erasing content at a global appearance change (`sleep_check.py`, `sleep_onset.py`)
 

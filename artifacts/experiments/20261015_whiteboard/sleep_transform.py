@@ -17,6 +17,9 @@ while sleeping. Variants for the asleep frame's tokens:
               pixel (12 parameters), plain least squares on all fit cells in the pixel coordinates that the frozen patch embedding
               inverts exactly (pinv; no decoder, no reconstruction loss). Theory: the patch embedding is affine in pixels (conv 7x7x3 -> 192) and the sleep render is
               affine per pixel, so if the embedding is injective (rank 147) the exact operator is affine in content-code space.
+  tok_film / tok_free   operators on PI's own Raw tokens instead (no pixel-equivalent coordinates): a per-dimension affine shared
+              by every cell (FiLM, 384 parameters) / a full 192 x 192 affine shared by every cell; least squares on the fit roots'
+              map-cell token pairs, LN after; the reconstruction-free alternative
 Scored on test roots vs the REAL asleep frame (token error, frozen readers: tile agreement, zombie / cow recall and precision) and,
 for content preservation without the confound of mobs moving during the step, vs the ORACLE's decoded content.
 Usage: sleep_transform.py -> artifacts/eda/whiteboard/sleep_transform.json
@@ -79,9 +82,11 @@ def main():
             'patch_embed_rank': int((sv > sv[0] * 1e-6).sum()), 'patch_embed_cond': float(sv[0] / sv[-1])}
     print(json.dumps(meta), flush=True)
     to_px = lambda fr: fr.float() / 255.0
-    X, Y, Yx, Zmov = [], [], [], []
+    X, Y, Yx, T0, T1 = [], [], [], [], []
     for root, nxt in fit:
         X.append(enc.content_px(to_px(root)[None])[0, :63].float().cpu()); Y.append(enc.content_px(to_px(nxt)[None])[0, :63].float().cpu())
+        T0.append(enc.recontext(enc.content_px(to_px(root)[None]))[0, :63].float().cpu())
+        T1.append(enc.recontext(enc.content_px(to_px(nxt)[None]))[0, :63].float().cpu())
         Yx.append(enc.content_px((sleep_pixels(root) / 255.0)[None])[0, :63].float().cpu())
     X = torch.cat(X).double(); Y = torch.cat(Y).double(); Yx = torch.cat(Yx).double()
     Xa = torch.cat([X, torch.ones(len(X), 1, dtype=torch.float64)], 1)
@@ -114,7 +119,13 @@ def main():
         else:
             ops[f'lin_{lam:g}'] = torch.linalg.solve(Xa.T @ Xa + lam * len(Xa) * torch.eye(193, dtype=torch.float64), Xa.T @ Y).float().cuda()
     meta['content_code_rank_fit'] = int((torch.linalg.svdvals(Xa) > torch.linalg.svdvals(Xa)[0] * 1e-8).sum())
-    names = ['copy', 'oracle'] + list(ops)
+    T0 = torch.cat(T0).double(); T1 = torch.cat(T1).double()                        # token-space operators on PI's own (Raw) tokens
+    film_a = ((T0 - T0.mean(0)) * (T1 - T1.mean(0))).mean(0) / (T0 - T0.mean(0)).pow(2).mean(0)
+    film_b = T1.mean(0) - film_a * T0.mean(0)
+    Wt = torch.linalg.pinv(torch.cat([T0, torch.ones(len(T0), 1, dtype=torch.float64)], 1), rtol=1e-6) @ T1
+    tok_ops = {'tok_film': lambda t: t * film_a.float().cuda() + film_b.float().cuda(),
+               'tok_free': lambda t: torch.cat([t, torch.ones(len(t), 1, device=t.device)], 1) @ Wt.float().cuda()}
+    names = ['copy', 'oracle'] + list(ops) + list(tok_ops)
     keys = ('err', 'n', 'tile_ok', 'tile_n', 'z_hit', 'z_real', 'z_pred', 'c_hit', 'c_real', 'c_pred')
     tally = {ref: {v: dict.fromkeys(keys, 0) for v in names} for ref in ('real', 'oracle')}
     for root, nxt in test:
@@ -128,6 +139,8 @@ def main():
             c_li[:63] = op(c_root[:63]) if callable(op) else torch.cat([c_root[:63], torch.ones(63, 1, device=c_root.device)], 1) @ op
             toks[name] = enc.recontext(c_li[None])[0].float()
         refs = {'real': enc.recontext(c_next[None])[0].float(), 'oracle': toks['oracle']}
+        for name, op in tok_ops.items():
+            t = refs['real'].clone(); t[:63] = F.layer_norm(op(toks['copy'][:63]), (192,)); toks[name] = t
         dec = {name: C.decode(tok[None].cpu(), bank, head) for name, tok in toks.items()}
         dec_real = C.decode(refs['real'][None].cpu(), bank, head)
         for ref, rtok in refs.items():
