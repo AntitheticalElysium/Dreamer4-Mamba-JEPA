@@ -207,6 +207,10 @@ recursion advantage counts as persistence *with* dynamics, not the copy shortcut
 
 Otherwise the PI verdict is reported with "indistinguishable from copying on <the failed guard>".
 
+The same guard applies to Track A (TRANSPORT_SF_PREREG, icsf vs ic), declared before its results exist: self-feeding could
+raise P1/P2 by making the model copy more. icsf's P1/P2 gains count as dynamics only if (a) its mob move rate is ≥ half the
+real rate, (b) its adjacency AUC16s exceed the no-op's, and (c) its camera consistency at d16 is ≥ ic's − 5pp.
+
 ### R18 — Track B, before PI trains: the label-free edit evidence already separates persisting from changing content (`edit_gain.py`)
 
 PI's gate trains toward q = σ(gain/s + logit p). The BCE fixed point is p = E[σ(gain/s + logit p)], i.e. **EM for the edit
