@@ -196,6 +196,23 @@ R16. For each revisited entering cell: the reader's class of the REAL token last
   scroll is an explicit transformation. **Not run on a model yet.** Next, as one change at a time: an inference-time canvas
   (entering cells copy the last token seen at their world position, addressed by the model's own scroll decisions) on PI,
   after the PI verdict.
+- **Our own record:** E18's `fcanvas` (world-aligned Mamba scan) failed through its READ, not its storage. Slot (r, c) of frame
+  t+1 was predicted from the canvas output under (r, c) at t, so the entering cell's remembered stream was never read
+  (0 / 2,018; 10-04 audit item 4).
+  - PI supplies the missing next-view address: its hard scroll decision says which world position each slot will show.
+  - The canvas test reads at that address. A wrong scroll decision misaddresses the whole view, so PI's scroll accuracy in
+    imagination is the precondition.
+- **Literature (checked 10-15):**
+  - Finn, Goodfellow & Levine 2016 (CDNA/STP, arXiv 1605.07157): advecting the previous frame's pixels with a copy
+    ("background") mask beats generating from scratch. Their compositing is a softmax blend, the soft form R15/R16 show
+    fades under recursion when the target keeps residual uncertainty.
+  - MapNet (Henriques & Vedaldi, CVPR 2018): an allocentric memory written and read through registration of the egocentric
+    view (convolution / deconvolution in map space), the addressed read E18 lacked.
+  - Structured World Belief (Singh et al., ICML 2021): object files persist while invisible; presence is separate from
+    visibility.
+  - WorldMem (Xiao et al., NeurIPS 2025, arXiv 2504.12369): retrieval of past frames by pose and time.
+  - Po et al. 2025 (arXiv 2505.20171): block-wise SSM scans per screen block, still screen-aligned.
+  - None trains a hard persistence decision against a label-free MDL criterion; that part of PI is ours.
 
 ### R16 — Track B: persistence must be a trained decision; fading needs residual uncertainty; memory loses storage, not readout
 
