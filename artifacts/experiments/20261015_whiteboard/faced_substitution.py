@@ -46,8 +46,8 @@ def run(name, mode):
     g = torch.Generator().manual_seed(20261015)
     pick = torch.Generator().manual_seed(7)
     ok_all = torch.zeros(R, K, 16, dtype=torch.bool)
-    for s0 in range(0, R, 8):
-        idx = list(range(s0, min(s0 + 8, R))); n = len(idx) * K
+    for s0 in range(0, R, 2):                                              # 2 roots per batch: fits beside two training runs
+        idx = list(range(s0, min(s0 + 2, R))); n = len(idx) * K
         acts = act[idx].repeat_interleave(K, 0)
         real = tok[idx].float().repeat_interleave(K, 0)                    # [n,32,81,192]
         rs = real_shift[idx].repeat_interleave(K, 0)

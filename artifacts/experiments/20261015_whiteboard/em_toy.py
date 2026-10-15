@@ -12,7 +12,11 @@ point loss through an inferred reassignment T_hat of a (detached) vs z, as in tr
   ORACLE  the true reassignment (F1b analogue)
 Readings over 3,000 updates: inferred swaps per step vs true (0.19 per step expected: 3 mobs x 0.5 x ...), precision against
 the true swaps, and the afterstate's identity weight on terrain cells (does it learn to pre-swap persistent content?).
-Usage: em_toy.py -> artifacts/eda/whiteboard/em_toy.json
+Mode "ghost": the afterstate is first trained 1,500 updates WITHOUT reassignment (identity T: plain regression, which learns
+the mean and ghosts mobs onto neighbours, like the D parent), then 3,000 updates of inferred-chance training (MAP / ML /
+ORACLE). Reported additionally: the afterstate's ghost mass (weight a mob cell gives to its neighbours' copies, and that
+empty neighbours of a mob give to the mob).
+Usage: em_toy.py [ghost] -> artifacts/eda/whiteboard/em_toy[_ghost].json
 """
 import json
 import math
@@ -89,13 +93,32 @@ def apply(a, acc):
     return out
 
 
-def run(rule, seed):
+def ghost_mass(m, g, emb):
+    with torch.no_grad():
+        x, z, drift, swap = world(g, emb)
+        a, w = m(x, drift)
+        mob = (x - emb[3]).norm(dim=-1) < 1.0                               # cells holding a mob
+        left, right = mob.roll(-1, 1), mob.roll(1, 1)                       # cell whose right / left neighbour is a mob
+        to_mob = torch.where(left, w[..., 2], torch.zeros_like(w[..., 2])) + torch.where(right, w[..., 0], torch.zeros_like(w[..., 0]))
+        nb = (left | right) & ~mob
+        return round(float(to_mob[nb].mean()), 4), round(float(w[..., 1][mob].mean()), 4)
+
+
+def run(rule, seed, ghost=False):
     g = torch.Generator().manual_seed(seed)
     emb = torch.randn(4, D, generator=g)
     emb[3] *= 1.5                                                         # mobs are distinct
     torch.manual_seed(seed)
     m = Model(); opt = torch.optim.Adam(m.parameters(), lr=3e-3)
     pi = .02; curve = []
+    if ghost:
+        for u in range(1500):
+            x, z, drift, swap = world(g, emb)
+            a, _ = m(x, drift)
+            loss = (a - z).square().mean()
+            opt.zero_grad(); loss.backward(); opt.step()
+        gm = ghost_mass(m, g, emb)
+        curve.append({'update': 0, 'after_regression_ghost_mass_to_mob': gm[0], 'mob_self_weight': gm[1]})
     for u in range(3000):
         x, z, drift, swap = world(g, emb)
         a, w = m(x, drift)
@@ -110,21 +133,24 @@ def run(rule, seed):
         if (u + 1) % 250 == 0:
             tp = int((acc & swap).sum()); fp = int((acc & ~swap).sum())
             mob = (x - 0).norm(dim=-1) > 0                                   # placeholder mask (all cells)
-            curve.append({'update': u + 1, 'loss': round(float(loss), 5), 'inferred_per_step': round(float(acc.float().sum(1).mean()), 3),
+            gm = ghost_mass(m, g, emb) if ghost else (None, None)
+            curve.append({'update': u + 1, 'ghost_mass_to_mob': gm[0], 'mob_self_weight': gm[1], 'loss': round(float(loss), 5), 'inferred_per_step': round(float(acc.float().sum(1).mean()), 3),
                           'true_per_step': round(float(swap.float().sum(1).mean()), 3), 'precision': round(tp / max(tp + fp, 1), 3),
                           'recall': round(tp / max(int(swap.sum()), 1), 3), 'identity_weight_mean': round(float(w[..., 1].mean()), 3)})
     return curve
 
 
 def main():
+    import sys
+    ghost = sys.argv[1:] == ['ghost']
     res = {}
     for rule in ('ORACLE', 'ML', 'MAP'):
         for seed in (0, 1):
-            c = run(rule, seed)
+            c = run(rule, seed, ghost)
             res[f'{rule}_s{seed}'] = c
-            print(json.dumps({'rule': rule, 'seed': seed, 'u250': c[0], 'u1500': c[5], 'u3000': c[-1]}), flush=True)
+            print(json.dumps({'rule': rule, 'seed': seed, 'start': c[0], 'early': c[1], 'mid': c[len(c) // 2], 'end': c[-1]}), flush=True)
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / 'em_toy.json').write_text(json.dumps(res, indent=1))
+    (OUT / f'em_toy{"_ghost" if ghost else ""}.json').write_text(json.dumps(res, indent=1))
 
 
 if __name__ == '__main__':

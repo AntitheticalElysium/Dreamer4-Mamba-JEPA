@@ -53,7 +53,7 @@ def main():
         a = load(d / 'eval_u3000/analysis.json')
         res[f'seed{s}'] = {'ic': gates(a['arms'], 'ic', 'free', 'operator')}
         cont = {arm: load(d / f'diag_{"" if arm == "operator" else arm + "_"}u3000.json') for arm in ('operator', 'ic')}
-        sw = {arm: load(d / f'diag_swaps_{"" if arm == "operator" else arm + "_"}u3000.json') for arm in ('operator', 'ic')}
+        sw = {arm: load(d / 'eval_u3000' / f'diag_swaps_{"" if arm == "operator" else arm + "_"}u3000.json') for arm in ('operator', 'ic')}
         mech = {}
         if all(cont.values()):
             for arm in ('operator', 'ic'):

@@ -100,7 +100,7 @@ def main():
         if by_depth:
             print(json.dumps({name + '_by_depth_cow_vanish': [r['cow'] for r in by_depth], 'persist_score': [r['mean_score_of_persisting'] for r in by_depth]}), flush=True)
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / 'mob_fading.json').write_text(json.dumps(res, indent=1))
+    (OUT / f'mob_fading_{"_".join(sys.argv[1:])}.json').write_text(json.dumps(res, indent=1))
 
 
 if __name__ == '__main__':
