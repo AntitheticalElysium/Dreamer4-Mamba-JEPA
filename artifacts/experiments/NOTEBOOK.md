@@ -413,6 +413,99 @@ seed-1 operator at 500 / 1,500 / 3,000):
 - A mean-trained mixture weight is a regression coefficient, not a probability. CorrT already encodes *where* content can
   go (the ghosts are exactly its small copies), but sampling it directly would under-move about 13×.
 
+### OBJECTIVE INVESTIGATION (user mandate 3, model-free, no training) — `transport_objective.py`
+
+**1. Clean afterstate: oracle control vs unprivileged training** (`afterstate`). Each reference's own deterministic
+afterstate, swapped with the TRUE reassignment of every real key (diagnostic):
+
+| reference | strict move (real / bank) | strict stay | panel moves | static corruption |
+|---|---|---|---|---|
+| true afterstate tokens | 100 / 100% | 100 / 100% | 99.7% | 0.176% (real 0.179%) |
+| **F1b oracle-assigned** (privileged) | 100 / 100% | 100 / 100% | 98.4 / 98.9% | 0.266% |
+| **unprivileged operators** (5 runs) | 92.7 / 92.7% (one 100 / 77%) | 93.0% | 79.7-84.1% | 0.266-0.298% |
+| free arms | 63.9 / 55-68% | 87-91% | 69-75% | 0.266% |
+| D parent | 75.6 / 24.9% | 94.2 / 58.0% | 74.7 / 42.9% | 0.266% |
+
+- The fully clean afterstate was shown only by the oracle control.
+- Unprivileged reassignment training gets most of the way: 13 / 14 strict sources clean, but panel moves 80-84% vs 98%.
+- **With correct reassignment every reference passes the static gate (≤ 0.30%).** The gate excess comes entirely from wrong
+  reassignments, and correct cross-terrain moves never touch it (their endpoints are not stable cells). 0% of the gate is
+  irreducible under whole-token transport.
+
+**2. Exact model-free scoring rules** (`rules`; real fans, mixture ES = p·A − ½pᵀDp, exact derivatives). Held-out 96 roots,
+eval 104 in brackets:
+
+| rule | movement margin (relative) | dependence (shuffle), share of margin | spurious different-terrain penalty at ε = .02, share of genuine-move value |
+|---|---|---|---|
+| E0 (existing) | 0.55 (0.77) | 0.034 (0.071) | 0.077 (0.106) |
+| G (global) | 0.51 (0.73) | 0.040 (0.083) | 0.077 (0.103) |
+| CROSS | 0.41 (0.84) | 0.018 (0.031) | 0.091 (0.122) |
+| DOM | 0.38 (0.83) | 0.008 (0.015) | 0.091 (0.124) |
+| TOK (marginal-only control) | 0.30 (0.82) | **0.000** | 0.091 (0.123) |
+
+- All rules favour the true law over stay (93-96% of roots).
+- The spurious penalty is linear in its probability ε (the score is quadratic in mixture weights) and **negative at ε = 0**
+  for every rule.
+- Locality rescales penalty and movement value together (ratio +18%), and *reduces* dependence detection (also for a break
+  confined to each mover's cross).
+- Dependence is a small part of the score's value under any rule: marginals alone already favour movement.
+- No hybrid weight gives a robust region where false transitions are strongly discouraged.
+
+**3. The learning signal through the actual stochastic head** (`headgrad`; frozen seed-1 and seed-2 operators, 48 stationary
+training windows, training-style two-sample estimator, straight-through):
+- **Global G:** static ≈ 0 (t ≈ 0); labelled mob +2.5 / +7.0e-4; realized moves +7.8e-3.
+- **E0:** static +3 to +5e-5.
+- **CROSS / DOM / TOK:** static **+0.9 to +1.4e-4** (t 1.4-1.7) and labelled mob **−4 to −8e-4**. Locality rewards spurious
+  static swaps and discourages mob movement, the opposite of the hypothesis.
+- **Exact reason:** the operator's two draws are identical outside their swaps. For a one-draw change δ, the score changes by
+  ½(|e+δ| − |e|) − ½|δ| ≤ 0 (triangle inequality, e = the afterstate's error). The score never penalizes it unless the
+  prediction is unbiased. A global norm only dilutes this; locality concentrates it.
+
+**4. Mechanism confirmed by dose-response** (`headgrad … oraclestatic | hard`). Static-tile push as the afterstate's error at
+static tiles goes from 0 (privileged: the real next token substituted) to soft (bias 0.014) to hard-copy (bias 0.028):
+
+| rule | error 0 | soft | hard |
+|---|---|---|---|
+| G | −8.8e-5 (t −3.8) / −7.5e-5 (t −3.1) | ≈ 0 | +7.2e-5 / +9.3e-5 |
+| E0 | −6.3e-5 (−2.9) / −5.5e-5 (−2.4) | +3 to +5e-5 | +1.3 / +1.4e-4 |
+| CROSS | −2.9e-5 (−1.6) / −2.7e-5 (−1.3) | +1e-4 | +1.9 / +2.0e-4 |
+
+- Values are seed 1 / seed 2. Genuine-move value is unchanged with error 0.
+- **Spurious reassignments are a hedge against deterministic error.** Given an accurate afterstate, the energy score
+  penalizes them, so it is not unsuitable in principle.
+
+**5. Where the error comes from** (`biasnoise`, cells with no mob in root or futures):
+
+| | bright eval 104 | darker held-out 96 |
+|---|---|---|
+| real-future spread (nuisance) | 0.0018 | 0.046 |
+| learned afterstates' bias | 0.014-0.026 (operators lowest) | 0.046-0.061 |
+| **exact copy of the current token** | **0.048** | 0.122 |
+| hard CorrT copies | 0.028-0.038 | — |
+
+- **Persistent content does not have a persistent token.** Contextual drift (~0.05 RMS/step) is systematic and
+  predictable, partly modelled by CorrT's soft blend, and makes exact copying worse.
+- "Select instead of blend" is therefore falsified model-free.
+
+**6. The chance outcome is recoverable label-free** (`posterior`). Parameter-free local search (gain > 0, greedy one-to-one)
+against the observed successor, scored vs T*:
+
+| afterstate searched | recall | precision | false swaps per frame |
+|---|---|---|---|
+| unprivileged operator afterstates, bright eval | 0.78-0.80 | 0.95-0.99 | ≈ 0 |
+| D parent, bright eval | 0.79 | 0.71 | — |
+| exact-copy afterstate, bright eval | 0.93 | 0.06 | 3.3 same-terrain (drift again) |
+| operators, darker held-out | 0.53-0.58 | 0.24-0.25 | — (night nuisance) |
+
+**Conclusions:**
+- Localized scoring is rejected in this target space and model.
+- The objective's weakness is conditional: the energy score hedges deterministic error with spurious spread, and the error is
+  contextual token drift.
+- The proposed next comparison is inferred-chance training (Stochastic MuZero split: point loss through a label-free inferred
+  reassignment, likelihood on the chance head), preregistered in `TRANSPORT_INFERRED_PREREG.md` and **not launched**.
+- **Representation limits remain:** cross-terrain backgrounds (5.2% of moves, 100% wrong endpoint terrain), contextual drift
+  of persistent content, and night nuisance (posterior precision 0.25 in dark views).
+
 ## 2026-10-15 — S5–S6 reconciliation and optimizer matching correction
 
 - The preregistered direct/paired3k→6k continuation was held before launch. Both
