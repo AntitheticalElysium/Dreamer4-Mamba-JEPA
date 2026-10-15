@@ -222,6 +222,57 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R53 — where action-dependent risk lives, and where each world loses it: PI has the most faithful dynamics and the worst immediate consequence; R51/R52's ranking gap is mostly the read-out (`dv16_trace.py`, `dv16_trace_analysis.py`)
+
+**User direction (10-16).**
+- Pixel-equivalent content codes and the one-shot appearance operator are controls only.
+- Understand why coherent imagined dynamics fail to preserve action-dependent risk.
+- Explore an evolving predictive belief that represents consequences without regenerating every observation token.
+- The question is how persistence, stochastic dynamics and decision-relevant uncertainty coexist. A simpler evolving belief is
+  welcome if it does better.
+
+**Setup.**
+- DV16's 200 roots, the escape choice (noop + 4 moves), recorded continuation, 16 steps.
+- Real: deeppanel's stored key-0 future for every first action (depths 1, 2, 4, 8, 16) and the 32-key P16.
+- Imagined: each world's frames at every depth (M 4 sampled; D deterministic).
+- Frozen readers give zombies on the map and HUD health. Rankings are within-root AUC over the 5 choices against the P16
+  order.
+
+| | first-step damage ranking | later-only damage ranking | 16-step damage ranking | scene: adjacency ranking d1 | dmin fidelity d1 (Spearman vs real) | zombie adjacent d1 → d16 | pursuit | P(hit next \| adjacent) | first-step share of 16-step damage |
+|---|---|---|---|---|---|---|---|---|---|
+| **real** (one key-0 future) | **0.710** | **0.456** | 0.680 | 0.559 | | 0.69 → 0.64 | 0.457 | 0.257 | 22% |
+| D parent | **0.711** | 0.468 | 0.731 | 0.550 | 0.58 | 0.64 → **0.02** | **0.050** | 0.051 | **54%** |
+| IC s1 / s2 | 0.694 / 0.696 | 0.508 / 0.461 | 0.682 / 0.673 | 0.562 / 0.537 | 0.60 / 0.58 | 0.64 → 0.10 | 0.18 / 0.19 | 0.10 / 0.08 | 34 / 45% |
+| **PI s1 / s2** | **0.597 / 0.616** | 0.534 / 0.496 | 0.599 / 0.598 | **0.648 / 0.642** | **0.66 / 0.74** | 0.53 → **0.35 / 0.40** | **0.25 / 0.30** | **0.12 / 0.14** | 16 / 19% |
+
+PI's sampling variance of the 4-future mean health loss is 0.31 against an across-action variance of 0.68-0.78 (IC
+0.06-0.09; D 0).
+
+**What we learn:**
+- **Action-dependent risk lives in the immediate consequence.** One real future's first-step damage ranks the moves at 0.71.
+  Its later damage ranks them at 0.46, i.e. carries nothing: in reality most damage (78%) comes later and is action-independent
+  at this horizon.
+- **The worlds lose it in opposite places:**
+  - **D:** right immediate consequence, wrong future. Zombies vanish (adjacency 0.02 at d16), barely chase (0.05), barely hit
+    (0.05). Its 16-step ranking is good *because* its future is quiet: 54% of its imagined damage is the first step.
+  - **PI:** the most faithful dynamics by every measure (scene ranking and fidelity, persistence, pursuit, hit rate given
+    adjacency), but the worst immediate consequence (0.60 / 0.62). This is R51's MAP gate under-calling the hit.
+  - **IC:** in between on both.
+- **Correction to R51 / R52:**
+  - "Coherent dynamics lose action-dependent risk" is mostly a read-out effect. A realistic future accumulates
+    action-independent later damage, which dilutes a "max health loss over 16 steps" risk estimated from few samples (PI's
+    sampling noise is ~40% of its action signal).
+  - R52's hybrid had D's first step (the first imagined step sees only real context) plus PI's realistic later damage, hence
+    0.62-0.66.
+  - The genuine deficits are PI's immediate consequence call and (for decisions over long horizons) the sample cost of
+    estimating an expectation from rollouts.
+- **Implication for the user's question:**
+  - Coherent persistent dynamics and decision-relevant risk are not in conflict in the scene: PI's scene is the most
+    action-informative.
+  - The conflict is in how consequences are produced (a MAP edit) and read (a few-sample maximum over a noisy future).
+  - A belief that predicts *expected* consequences directly at several horizons would sidestep both. That is R54
+    (`MULTIHORIZON_PREREG.md`).
+
 ### R52 — the hybrid (PI's scene + D's consequence readout, lockstep) does not keep both; most of PI's damage-ranking deficit is in its imagined scene (`dv16.py hybrid_s*`, `dv16_paired.py`)
 
 **Setup** (evaluation only, no training). At every imagined step of DV16, PI s1 / s2 draws the map (exact persistence, chance,

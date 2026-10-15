@@ -85,7 +85,7 @@ def imagine_pass(world, kind, ctx, acts_full, g, config):
     import direct_model as DM
     import transport_model as TM
     from d4mj.train import autocast_context
-    n = N_ACT
+    n = len(acts_full)
     acts = acts_full.cuda()
     hist = [ctx[j][None].expand(n, -1, -1).float().cuda() for j in range(len(ctx))]
     out = []
