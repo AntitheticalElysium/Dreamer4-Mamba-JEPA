@@ -177,6 +177,50 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R29 — PI_INNOV RESULT: sampled categorical content restores arrivals but injects noise — "not supported" (PI_INNOV_PREREG)
+
+Mechanical verdict (`transport_track_verdicts.py innov`).
+
+- **Head:** head-only K 4096 categorical on frozen PI u3000, trained at its training-time innovation cells. After 1,500
+  updates: cross-entropy 2.93 / 3.11 nats, top-1 32% / 31%, entropy 3.5-3.8 nats.
+- **Recursion:** PI with every innovated cell (gate > 0, or entering; ~4.7 per step) taking a sampled centroid.
+
+| reading (bright, d16) | innov s1 / s2 | PI s1 / s2 | real |
+|---|---|---|---|
+| **A1** cow arrivals per frame, bound [0.065, 0.389] | **0.396 ✗** / 0.310 ✓ | 0.023 / 0.002 | 0.259 |
+| zombie arrivals per frame | 0.33 / 0.28 | 0.006 / 0 | 0.116 |
+| **A2** cow census | **1.15 / 0.90 ✓** | 0.62 / 0.46 | 1 |
+| present-type count, zombie / cow | 0.92 / 0.84, 0.94 / 0.66 | 0.73 / 0.66, 0.69 / 0.50 | 0.94 / 0.82 |
+| persisting-mob score | 0.835 / 0.837 | 0.726 / 0.706 | |
+| **H** seen terrain | **7.3% / 7.3% ✗** | 1.6% / 1.4% | |
+| **H** phantoms at d16 vs reality's far-mob rate | **0.58 / 0.46 ✗** (exceeds from d9 / d9) | | 0.33 |
+| **H** camera | 58.8% / 56.4% ✗ (−4 / −5pp) | 62.9% / 61.2% | |
+| zombie-adj AUC16 (rate, real 0.18) | 0.66 / 0.68 (0.22 / 0.22) | 0.72 / 0.70 (0.09 / 0.08) | |
+| cow-adj AUC16 | 0.85 / 0.84 | 0.89 / 0.88 | |
+| health-drop AUC16 (rate, real 0.26) | 0.55 / 0.55 (0.32 / 0.35) | 0.62 / 0.60 (0.07 / 0.26) | |
+| entering tile error, NEW / REVISIT | 0.44 / 0.22 | 0.31 / 0.14 | context-mode guess 0.49 |
+
+**What we learn:**
+- **Arrivals are restorable by sampling content, and the mean was indeed the cause (R24).** Arrivals go from ~0 to
+  0.31-0.40 cows per frame. Present-type counts reach reality's level at seed 1. Persistence improves further, because
+  sampled mobs are crisp.
+- **But a broad content distribution sampled at every innovated cell is noise.**
+  - Cow arrivals overshoot 1.2-1.5×, zombies 2.4-2.8×.
+  - Re-entering terrain (counted as seen) is now a random draw instead of the mean: seen-terrain error ×4.5.
+  - Sampled content at the faced cell moves the camera decisions (R13), −4 / −5pp.
+  - Decision discrimination falls (AUCs −0.03 to −0.07): imagined futures are less tied to the root's real future.
+- **Two causes, not separated by this design:**
+  1. *Where* to sample. Deterministic, gate-fired edits (84% of changed terrain is predictable, R22) and re-entering seen
+     terrain (a memory problem, R26) are sampled as if epistemic.
+  2. *How sharp* the content is. A linear head on a frozen belief, over contextual codes (several codes per semantic tile),
+     has 3.5 nats of entropy.
+- **Per the protocol, no patching of this variant.** The innovation half of the separation is not solved. What the four
+  evaluation-only variants together show:
+  - persistence: works;
+  - memory: works for static content, needs volatility for mobs;
+  - stochastic content: restores arrivals but must be sampled only where the uncertainty is real, from a sharp
+    distribution.
+
 ### R28 — PI variant 2 (sampled edits, evaluation only): "no gain from sampling" (PI_CANVAS_PREREG variant 2)
 
 Mechanical verdict (`transport_track_verdicts.py sampled`). Edits drawn as Bernoulli(σ(gate)) instead of gate > 0; the content
