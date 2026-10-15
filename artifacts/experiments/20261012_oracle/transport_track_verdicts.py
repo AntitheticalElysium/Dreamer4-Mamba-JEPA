@@ -14,6 +14,11 @@ PI  (per seed, pi u3000 vs the IC v3 run of that seed): P1 score(pi) - score(ic)
     "persistence principle supported" if P1-P4 and pi's one-step conditions hold at both seeds; "not supported" if P1 fails
     at either seed; "persistence helps but decisions are wrong" if P1 holds at both seeds and P3 or P4 fails at either;
     otherwise "partial" with the failed readings listed.
+Copy-shortcut guard (NOTEBOOK R19, declared before either result; does not change the verdicts above): a no-op world (root
+repeated) passes PI's P1-P4 against IC, so a recursion gain counts as dynamics only if, at both seeds,
+  (a) the pooled recursion move rate of cows and of zombies (mob_fading 'move') is >= half the real rate (REAL entry);
+  (b) zombie- and cow-adjacency AUC16 (decision_proxies, bright) exceed the no-op's (decision_noop.json);
+  (c) camera consistency at depth 16 >= the control's - 0.05.
 Usage: transport_track_verdicts.py sf|pi -> artifacts/eda/oracle_v1/transport/{sf,pi}_verdict.json
 """
 import json
@@ -45,6 +50,20 @@ def readings(name, fading_file):
             'camera_d16': rec['camera_consistent_by_depth'][15]}
 
 
+def guard(name, fading_file, control_camera):
+    fade = json.loads((W / fading_file).read_text())
+    dec = json.loads((W / f'decision_{name}.json').read_text())['bright']
+    noop = json.loads((W / 'decision_noop.json').read_text())['bright']
+    cam = json.loads((T / f'recursion_{name}.json').read_text())['bright']['camera_consistent_by_depth'][15]
+    out = {k: {'move': fade[name][k]['move'], 'real': fade['REAL'][k]['move']} for k in ('cow', 'zombie')}
+    out['a'] = all(fade[name][k]['move'] >= .5 * fade['REAL'][k]['move'] for k in ('cow', 'zombie'))
+    out['auc16'] = {k: [dec[k]['auc_16'], noop[k]['auc_16']] for k in ('zombie_adj', 'cow_adj')}
+    out['b'] = all(dec[k]['auc_16'] > noop[k]['auc_16'] for k in ('zombie_adj', 'cow_adj'))
+    out['camera_d16'] = [cam, control_camera]
+    out['c'] = cam >= control_camera - .05
+    return out
+
+
 def sf():
     res = {}
     for s in (1, 2):
@@ -53,7 +72,8 @@ def sf():
         one = onestep(json.loads((T / f'sf_seed{s}/eval_u4500/analysis.json').read_text()), 'icsf')
         res[f'seed{s}'] = {'icsf': x, 'ic': c, 'one_step_icsf': one,
                            'P1': x['persisting_score_d16'] - c['persisting_score_d16'] >= .05,
-                           'P2': abs(x['cow_census_d16'] - 1) < abs(c['cow_census_d16'] - 1)}
+                           'P2': abs(x['cow_census_d16'] - 1) < abs(c['cow_census_d16'] - 1),
+                           'guard_icsf': guard(f'sf_icsf_s{s}', f, c['camera_d16'])}
     seeds = [res['seed1'], res['seed2']]
     if all(r['P1'] and r['P2'] and all(r['one_step_icsf'].values()) for r in seeds):
         v = 'training failure: self-exposure was a major missing ingredient'
@@ -76,7 +96,8 @@ def pi():
                            'P1': x['persisting_score_d16'] - c['persisting_score_d16'] >= .15,
                            'P2': abs(x['cow_census_d16'] - 1) < abs(c['cow_census_d16'] - 1),
                            'P3': x['seen_terrain_d16'] <= c['seen_terrain_d16'] + .010,
-                           'P4': x['phantoms_max'] <= .05}
+                           'P4': x['phantoms_max'] <= .05,
+                           'guard_pi': guard(f'pi_s{s}', 'mob_fading_pi_s1_pi_s2_pi_s1_ref.json', c['camera_d16'])}
     seeds = [res['seed1'], res['seed2']]
     failed = sorted({k for r in seeds for k in ('P1', 'P2', 'P3', 'P4') if not r[k]} |
                     {'one_step:' + k for r in seeds for k, ok in r['one_step_pi'].items() if not ok})

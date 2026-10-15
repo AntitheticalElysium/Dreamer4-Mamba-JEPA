@@ -211,6 +211,11 @@ The same guard applies to Track A (TRANSPORT_SF_PREREG, icsf vs ic), declared be
 raise P1/P2 by making the model copy more. icsf's P1/P2 gains count as dynamics only if (a) its mob move rate is ≥ half the
 real rate, (b) its adjacency AUC16s exceed the no-op's, and (c) its camera consistency at d16 is ≥ ic's − 5pp.
 
+- **Mechanized** in `transport_track_verdicts.py` (`guard_icsf` / `guard_pi`; the verdicts are unchanged).
+- Applied to IC s1 as a check: (b) passes (AUC16 0.67 / 0.79 vs no-op 0.58 / 0.60). **(a) fails:** IC's recursion moves cows
+  at 0.14 and zombies at 0.11 per step vs real 0.42 / 0.30, about a third of the real rate. Its imagined mobs mostly stand
+  still while fading.
+
 ### R18 — Track B, before PI trains: the label-free edit evidence already separates persisting from changing content (`edit_gain.py`)
 
 PI's gate trains toward q = σ(gain/s + logit p). The BCE fixed point is p = E[σ(gain/s + logit p)], i.e. **EM for the edit
