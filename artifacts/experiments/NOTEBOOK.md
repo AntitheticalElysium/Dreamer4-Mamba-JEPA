@@ -177,6 +177,33 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R26 — PI variant 1 (canvas, evaluation only): "memory recovers terrain but harms the rollout" (PI_CANVAS_PREREG)
+
+Mechanical verdict (`transport_track_verdicts.py canvas`). The same PI checkpoints, roots and noise; one change: entering
+cells whose world position was seen copy the stored token, addressed by PI's own hard scroll. 35% of entering cells were
+read from memory (21,674 / 61,870 and 21,088 / 60,646).
+
+| reading (bright) | canvas s1 / s2 | PI s1 / s2 |
+|---|---|---|
+| **C1** REVISIT entering tile error (≤ 0.5 × PI) | **0.001 / 0.001** ✓ | 0.140 / 0.143 |
+| NEW entering tile error | 0.291 / 0.291 | 0.314 / 0.313 |
+| **C2** seen terrain d16 | 1.32% / 1.08% ✓ | 1.61% / 1.38% |
+| **C2** camera d16 (≥ PI − 2pp) | 61.5% / 60.7% ✓ | 62.9% / 61.2% |
+| **C2** max phantoms (≤ PI + 0.02) | **0.094 / 0.058 ✗** | 0.028 / 0.019 |
+| zombie / cow census d16 | 0.61 / 0.73, 0.59 / 0.54 | 0.50 / 0.62, 0.46 / 0.46 |
+
+- **Addressed world-aligned memory works in recursion.** Revisited terrain error falls 140× (14% → 0.1%), at the R17
+  ceiling. E18's failure is resolved by reading at the world's own next-view address. Never-seen terrain is unaffected, and
+  seen terrain improves.
+- **The harm is the declared limit: the canvas replays mobs.** A mob seen at a revisited position reappears where it stood,
+  with no off-screen dynamics. These are counted as phantoms (far from every root mob), and they raise the census.
+- **What it teaches:** persistence applies off-screen too, but with the content's own volatility.
+  - A terrain token is still there after Δt steps with probability (1 − p_change)^Δt, near 1 (the gate's prior on unchanged
+    terrain is ~0.02, R22).
+  - A mob's (prior ~0.2 per step) is near 0 after ~10 steps.
+  - The label-free principled version replays memory with the persistence probability the gate itself assigns. Not built:
+    one change at a time, and this is a design, not a result.
+
 ### R25 — groundwork for stochastic innovation: codes are a usable carrier for NEW content only (`codebook_readers.py`, CPU)
 
 **Our record:**

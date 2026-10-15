@@ -24,7 +24,13 @@
   milestones  (GPU inference) TRANSPORT_IC diagnostic: the v3 posterior (transport_ic_train.infer under each checkpoint's own
             chance-head prior) on the same 400 training windows, for every IC milestone of both seeds: share of STAY-class
             (genuine chance) moves captured, accepted swaps per frame, false accepted swaps per frame by class (scored vs T*).
-Usage: ic_posterior.py calib | posterior | misses | milestones -> artifacts/eda/oracle_v1/transport/ic_<mode>.json
+  pi        (CPU inference, 2026-10-15 night, NOTEBOOK R23: PI's zombies under-chase) the same 400 training windows and the
+            same true STAY-class moves (layouts, diagnostic only), under each PI u3000 checkpoint's TRAINING-TIME inference
+            (pi_train.losses: copy under the label-free scroll estimate, provisional afterstate with the gate's own decisions,
+            the IC v3 posterior with the chance head's prior, then the edit posterior q > 0.5). Each true move is classed:
+            SWAP (the posterior's swap captures it), EDIT (no swap; the edit posterior regenerates its source or destination),
+            MISSED (neither). By mob type. If EDIT is large, the gate absorbs moves the chance head should learn.
+Usage: ic_posterior.py calib | posterior | misses | milestones | pi -> artifacts/eda/oracle_v1/transport/ic_<mode>.json
 """
 import json
 import sys
@@ -309,8 +315,82 @@ def milestones():
     return res
 
 
+def pi_capture():
+    import dataclasses
+    import direct_coherence as C
+    import direct_model as DM
+    import direct_train as BASE
+    import transport_ic_train as IC
+    sys.path.insert(0, str(HERE.parent / '20261015_whiteboard')); import pi_model as PI
+    from d4mj.mamba_recurrence import FunctionalMamba2
+    torch.set_num_threads(8)
+    _, windows, actions, tokens = BASE.load_data()
+    valid = torch.from_numpy(np.load(A5.BASE / 'layouts_valid.npy'))
+    windows = windows[valid[windows[:, 0]]]
+    sel = torch.randperm(len(windows), generator=torch.Generator().manual_seed(20261016))[:400]
+    lay = np.load(A5.BASE / 'layouts.npy', mmap_mode='r')
+    bank = torch.load(A5.BASE / 'snap_bank_readers.pt', map_location='cpu', weights_only=False)
+    head = torch.load(A5.BASE / 'learned_innovation/eval_u3000_h01/mob_heads.pt', map_location='cpu', weights_only=False)['heads']['real']
+    scroll = A5.load_scroll()
+    pos = {x: i for i, x in enumerate(INTERIOR)}
+    res = {}
+    for seed in (1, 2):
+        world = PI.PIWorld().eval(); world.load_state_dict(torch.load(OUT / f'pi_seed{seed}/pi_u3000.pt', map_location='cpu', weights_only=False)['world'])
+        for m_ in world.modules():
+            if isinstance(m_, FunctionalMamba2):
+                m_.settings = dataclasses.replace(m_.settings, backend='reference')
+        g = torch.Generator().manual_seed(1)
+        tally = {t: {'n': 0, 'swap': 0, 'edit': 0, 'missed': 0} for t in ('zombie', 'cow', 'skeleton')}
+        frames_n = 0
+        with torch.no_grad():
+            for b0 in range(0, 400, 8):
+                frames, ac, choices = BASE.batch(tokens, actions, windows, sel[b0:b0 + 8], device='cpu')
+                noise = DM.draw_noise(frames.shape[:2], g)[0]
+                est = scroll.estimate(frames[:, :-1], frames[:, 1:])
+                belief, ha = world.backbone_full(frames, ac)
+                copy, gen, glogit, enter, _ = world.afterstate_parts(frames, ac, belief, ha, scroll=F.pad(est, (0, 1)))
+                logits = world.completion.propose(world.completion.trunk(belief, noise)).float()
+                copy, gen, glogit, enter, logits = (x[:, :15] for x in (copy, gen, glogit, enter, logits))
+                logits = logits.masked_fill(~world.completion.valid, -torch.inf)
+                z = frames[:, 1:]
+                a0 = torch.where(((glogit > 0) | enter)[..., None], gen, copy)
+                partner, _, _, _, _, _ = IC.infer(F.layer_norm(a0, (192,)), z, IC.pair_prior_logit(logits))
+                z_pre = z.gather(2, partner[..., None].expand(-1, -1, -1, 192))
+                res_copy = (F.layer_norm(copy, (192,)) - z_pre).norm(dim=-1)
+                gain = res_copy - (F.layer_norm(gen, (192,)) - z_pre).norm(dim=-1)
+                s = res_copy[..., :PI.MAP].mean(-1, keepdim=True).clamp_min(1e-6)
+                edit = (torch.sigmoid(gain / s + glogit) > .5) | enter
+                dec = C.decode(F.layer_norm(a0, (192,)).reshape(-1, 81, 192), bank, head)['mob']['real'][..., :3]
+                for i, (row, start) in enumerate(choices.tolist()):
+                    L = torch.from_numpy(np.array(lay[row, start:start + 16]) > 0)
+                    for t in range(15):
+                        m = i * 15 + t
+                        frames_n += 1
+                        prev = S2.afterstate_layout(L[t], *scroll.SHIFTS[int(est[i, t])])
+                        truth = {frozenset((s_, d_)): ty for s_, d_, ty in S2.swaps(prev, L[t + 1]) if ty < 3 and s_ in pos and d_ in pos and 31 not in (s_, d_)}
+                        for pr, ty in truth.items():
+                            s_, d_ = tuple(pr)
+                            src, dst = (s_, d_) if bool(prev[s_, ty] == 1) else (d_, s_)
+                            if not (bool(dec[m, src, ty]) and not bool(dec[m, dst, ty])):
+                                continue                                    # STAY class only, as milestones
+                            k = ('zombie', 'cow', 'skeleton')[ty]
+                            tally[k]['n'] += 1
+                            if int(partner[i, t, src]) == dst:
+                                tally[k]['swap'] += 1
+                            elif bool(edit[i, t, src]) or bool(edit[i, t, dst]):
+                                tally[k]['edit'] += 1
+                            else:
+                                tally[k]['missed'] += 1
+                if b0 % 80 == 0:
+                    print(json.dumps({'seed': seed, 'windows_done': b0 + 8}), flush=True)
+        res[f'pi_seed{seed}'] = {k: {**v, **{f'{c}_share': round(v[c] / max(v['n'], 1), 4) for c in ('swap', 'edit', 'missed')}} for k, v in tally.items()}
+        res[f'pi_seed{seed}']['frames'] = frames_n
+        print(json.dumps({f'pi_seed{seed}': res[f'pi_seed{seed}']}), flush=True)
+    return res
+
+
 if __name__ == '__main__':
     mode = sys.argv[1]
-    res = {'calib': calib, 'posterior': posterior, 'misses': misses, 'milestones': milestones}[mode]()
+    res = {'calib': calib, 'posterior': posterior, 'misses': misses, 'milestones': milestones, 'pi': pi_capture}[mode]()
     (OUT / f'ic_{mode}.json').write_text(json.dumps(res, indent=1))
     print(json.dumps(res, indent=1)[:3000])
