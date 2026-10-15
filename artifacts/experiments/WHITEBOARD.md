@@ -576,3 +576,13 @@ Measured with **exact** transformations (diagnosis futures; R41 fixed my constru
 PI's Mamba belief *does* know the mechanism: the sleeper-attack rule and the zombie's hidden cooldown, read from history
 (0.93 / 0.82 vs real 0.94 in the cell the behaviour data rarely shows). So memory is not the gap. **The gaps are
 representational (appearance) and distributional (magnitude = mean of consequences).**
+
+**The sharpened question on decisions (R50, secondary).** PI vs the D parent (the regenerating Mamba belief on the same
+scaffold), paired over DV16's roots, sleep excluded:
+- **HD: no difference** (−0.011 [−0.034, +0.009] / −0.001 [−0.023, +0.018]);
+- **HL: PI worse** (−0.03, resolved at both seeds);
+- **ZA: PI slightly better** (+0.02 / +0.01).
+
+**Selective persistence buys coherence (mob persistence ×2, census ×7), not decision value on this test.** The binding
+constraint for useful imagination is consequence fidelity: the magnitude hedge and appearance events. Longer horizons and
+actor training remain untested.

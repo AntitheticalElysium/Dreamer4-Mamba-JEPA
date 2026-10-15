@@ -222,6 +222,35 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R50 — the user's sharpened question on decisions: selective persistence gives no measurable advantage over the regenerating belief (`dv16_paired.py`)
+
+The D parent is a Mamba belief on the same spatial scaffold whose readout regenerates every cell each step (no copies, no
+transformations). That is the "ordinary evolving latent belief". DV16 already scored it (deterministic, M = 1). Here the
+paired root-level differences are computed from the saved risks: 200 roots, bootstrap 95% intervals. This is a secondary
+comparison: DV16's preregistered readings were PI vs IC and PI vs uniform.
+
+| PI − D | HD, all actions | **HD, sleep excluded** | HL, sleep excluded | ZA, sleep excluded |
+|---|---|---|---|---|
+| s1 | −0.200 [−0.249, −0.153] | **−0.011 [−0.034, +0.009]** | −0.035 [−0.064, −0.007] | +0.021 [+0.003, +0.039] |
+| s2 | −0.078 [−0.115, −0.042] | **−0.001 [−0.023, +0.018]** | −0.033 [−0.062, −0.006] | +0.013 [−0.001, +0.026] |
+
+IC − D, sleep excluded: HD +0.003 / +0.011, HL +0.009 / +0.004, ZA +0.011 / +0.008 (all intervals include 0).
+
+**What we learn:**
+- **On H16 action choice, persistence does not beat an evolving latent belief that regenerates the scene.**
+  - Primary risk (HD): no difference once sleep is excluded.
+  - Health-loss risk: PI is worse at both seeds (its damage hedge, R48).
+  - Zombie-adjacency risk: PI is slightly better (resolved at s1), consistent with keeping mobs.
+  - With sleep, PI is clearly worse: the onset erasure (R46-R48).
+- **This holds although PI's coherence advantages are large** (R23: mob persistence 0.71-0.73 vs D's fading census 1.09 →
+  0.25, R1; zombie census ×7). Those advantages do not reach this decision test. What limits decisions is the fidelity of
+  consequences (magnitude, appearance events), not the persistence of the scene.
+- **Limits of this answer:**
+  - one decision test (H16 first-action choice, 8-frame context, frozen readers as risk);
+  - a deterministic D vs a sampled PI;
+  - not actor training.
+  - Persistence may matter more at longer horizons or for training an actor on imagined rollouts. That is untested.
+
 ### R49 — a reconstruction-free appearance operator works ONCE (IWM-style, on Raw tokens), but it is not compositional
 
 Scripts: `appearance_op.py`, `appearance_op_tiles.py`, `appearance_theta.py`, `appearance_identity.py`; `sleep_onset_sub.py`
