@@ -374,6 +374,15 @@ Consequence: in imagination the world stops threatening the player. Zombie adjac
 deterministic dynamics and HUD consequences (row 2) are.
 
 **Candidate general mechanisms, each now motivated by a measurement (none yet tested as a whole):**
+**Track B, 10-15 evening (NOTEBOOK R17-R20):**
+- A world-aligned exact cache reads revisited terrain at 0.999. E18 failed by its read *address*, which a hard scroll
+  decision supplies.
+- PI's edit gate is EM for the edit prior. At initialization the label-free evidence already says persist (unchanged
+  terrain / mobs, prior ~0) and edit where content changes (0.78-0.91).
+- **A no-op world passes every recursion persistence reading.** Only movement and decision readings separate dynamics from
+  copying (R19).
+- IC's imagined mobs under-move because they are faint (R20).
+
 1. **One reassignment operator, three uses:**
    - the deterministic camera translation (action);
    - the stochastic local swaps (chance);
@@ -382,8 +391,9 @@ deterministic dynamics and HUD consequences (row 2) are.
    (`persistence_variants.py`): exact copies keep persisting-mob scores at 0.76-0.83 at depth 16 vs 0.37-0.50 for the soft
    blend, so fading is structural. But CorrT's argmax is not a trustworthy persistence *decision*: terrain error and
    phantoms rise. The open problem is deciding what persists.
-3. **Chance-forced self-fed training:** infer each step's reassignment from the real future (posterior), roll the
-   deterministic part forward on its own outputs, and apply the point loss at every depth. Inferred chance makes
-   multi-step training possible without averaging.
+3. ~~**Chance-forced self-fed training**~~ — **tested 10-15 evening (TRANSPORT_SF_PREREG, NOTEBOOK R21), not the fix.**
+   The persisting score moved +0.005 / +0.058 against a ~0.4 structural gap, and the census effect flipped sign across
+   seeds. The self-fed loss did not fall with training. Exposure cannot teach a soft blend to stop regressing toward the
+   mean, because the blend *is* the mean. The persistence mechanism must change (item 2 → Track B's PI world).
 4. **A Bayesian posterior under the model's own prior** as the only learned-chance signal: one rule that keeps identity
    unless evidence pays for a change.
