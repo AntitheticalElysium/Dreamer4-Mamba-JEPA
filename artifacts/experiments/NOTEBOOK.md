@@ -222,6 +222,34 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R43 — rendering is a deterministic light clock in the source, yet copies cannot be re-rendered from it (`relight_light.py`)
+
+**Primary source** (Craftax-Classic `renderer.py:408-439`, `game_logic.calculate_light_level`):
+- light = 1 − |cos(π((t / 300) mod 1 + 0.3))|³, a deterministic clock of the episode timestep (300-step day);
+- pixels = light · day + (1 − light) · night(day) (desaturate, tint);
+- plus random per-position static when light < 0.5.
+- So rendering is a function of (content, hidden time) by day, and random at night.
+- R15 tested only previous-step and linear-extrapolation predictors, which cannot see the clock.
+
+**Test.** Predict a persisting cell's new Raw token from (old token, old light, new light), using the true light levels as an
+oracle for a global light state a world model could carry. relight_learn's data: 160 fit / 80 test roots, pairs m 1 / 4 / 8.
+
+| relative error vs copying | day (both lights ≥ 0.5; 108k cells) | night (32k) |
+|---|---|---|
+| observed frame mean shift (additive) | 0.59 | 0.89 |
+| MLP(old token, l_old, l_new, Δl) | **1.75** (m1 2.24, m8 1.02) | 0.81 |
+
+- **The scalar light state does not resolve the token change.** By day the changes are 8-bit quantization flips: which pixels
+  round differently. That matches R2 (light label vs rendered change, correlation 0.03). At night the static is random.
+- At the token level, rendering drift is practically nuisance: neither predictable from history (R15) nor re-renderable from
+  the light clock (here). Only *observing* the current frame (the frame shift) captures part of it.
+- **Consequence for §15:** the rendering part cannot be "recomputed" by a renderer on persisted tokens. The remaining options:
+  - invariance of the encoder / readouts to rendering;
+  - a belief that produces every cell's representation from one state, so it is internally consistent (LB);
+  - a persistence model that refreshes rendering globally from what it observes.
+  - In imagination nothing new is observed, so imagined frames would stay internally consistent at a stale light. That differs
+    from R42's mixed frames, where fresh and stale cells meet.
+
 ### R42 — corrected (after R41's fix): copied content's stale RENDERING is the harm; a stale position code costs almost nothing
 
 `recontext_stale.py` and `chase_cue.py` rerun with the corrected construction: the vacated cell is fresh, the player cell is
