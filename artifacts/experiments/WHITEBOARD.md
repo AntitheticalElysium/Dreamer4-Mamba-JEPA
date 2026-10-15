@@ -608,3 +608,43 @@ graded expectation.
 
 So most of the cost sits in the persisted scene's *dynamics* (candidate: weak pursuit, R23), not only in the copy/edit
 decision on consequences.
+
+## 17. 2026-10-16 — how persistence, stochastic dynamics and decision-relevant risk coexist (user direction; NOTEBOOK R53-R54)
+
+**User decision.**
+- Pixel-equivalent content codes and the one-shot appearance operator are controls only.
+- Persistence is established. The question is how it coexists with stochastic dynamics and decision-relevant uncertainty.
+- A simpler evolving belief is welcome if it does better.
+
+**Where decision-relevant risk lives (R53).**
+- In DV16's escape choice, one real future's first-step damage ranks the moves at 0.71.
+- Its later damage ranks them at 0.46: most real damage comes later and is action-independent at this horizon.
+- The action-specific part is the immediate consequence. The rest matters only as an expectation over many futures.
+
+**What each world gets right:**
+
+| | scene dynamics (adjacency kept, pursuit, hit rate given adjacency) | immediate consequence (first-step damage ranking) |
+|---|---|---|
+| D (regenerating belief) | poor: zombies vanish (0.02 at d16), pursuit 0.05, hits 0.05 | **0.711** (graded expectation, anchored on the current token) |
+| PI (persistent scene) | **best**: 0.35-0.40, 0.25-0.30, 0.12-0.14 | 0.60-0.62 (the MAP copy/edit gate under-calls) |
+| PI's *belief*, read as an expectation (R54b) | (same scene) | **0.70-0.71** |
+
+**Resolution so far:**
+- Persistence and decision-relevant risk do not conflict in the scene: PI's scene is the most action-informative.
+- They conflict only in how consequences are **produced** (a MAP edit of an observation token) and **read** (a few-sample
+  maximum over a realistic, noisy future).
+- Read as expectations from the belief, PI's consequences rank the moves +0.08 to +0.11 better than its own rollouts and near
+  D's rollout, without imagining a frame.
+
+**Working principle (to be tested in a trained model):**
+- persist the scene, with transformations and sampled chance;
+- read consequences from the evolving belief as graded expectations or calibrated distributions, never as MAP edits;
+- this is the Dreamer pattern (reward / continuation heads on imagined latents), with label-free targets on the observation's
+  own consequence channel.
+
+**Open, and now the binding problem:** counterfactual consequences of actions the behaviour policy takes only when they are
+safe.
+- Sleeping next to a zombie is the case here.
+- Heads trained on behaviour data judge sleep safe (confounding). Nonlinear heads recover the interaction only sometimes.
+- This is where *epistemic*, decision-relevant uncertainty should act: a world should know it has rarely seen this
+  (state, action) pair.
