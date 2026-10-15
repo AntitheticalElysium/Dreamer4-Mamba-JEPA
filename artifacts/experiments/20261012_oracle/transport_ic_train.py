@@ -6,10 +6,11 @@ Copied from transport_train.py (unchanged infrastructure: parent, construction, 
             successor z, a label-free posterior over adjacent interior swaps:
               gain(j,k) = |a_j - z_j| + |a_k - z_k| - |a_k - z_j| - |a_j - z_k|          (first-power distances)
               candidates: parallel greedy one-to-one matching over pairs with gain > 0 (the sampler's matching rule)
-              v2 (TRANSPORT_IC_PREREG addendum): Laplace likelihood with scale s = the frame's mean interior residual |a - z|
-              and prior pi = running label-free posterior mass per pair:
-                T_hat = candidates with gain / s > log((1 - pi) / pi)     (MAP: a swap must pay its description cost)
-                q(j,k) = sigmoid(gain / s + logit(pi)) on candidates     (Bayesian marginal; v1 had the sign of logit flipped)
+              v3 (TRANSPORT_IC_PREREG addendum v3): Laplace likelihood with scale s = the frame's mean interior residual
+              |a - z|, prior = the chance head's OWN probability of that pair (canonical endpoint's RIGHT / DOWN, detached):
+                q(j,k) = sigmoid(gain / s + logit p_head(j,k)) on candidates     (Bayesian marginal under the model's prior)
+                T_hat = candidates with q > 0.5                                 (MAP: a swap must pay its description cost)
+              (v1: global prior with a flipped sign; v2: global running prior, which self-tightens to collapse)
             point loss: the parent's D loss on LN(T_hat b) vs z over all 81 tokens (frames 1..15)
             chance loss: cross-entropy of the proposal head (masked as in sampling) toward canonical soft targets: pair
             (j, j+1) labelled only at j as RIGHT, pair (j, j+9) only at j as DOWN (one endpoint per unordered pair keeps
@@ -50,8 +51,17 @@ MAPTILES = [x for x in range(63) if x != 31]
 PAIRS = [(x, x + d) for x in INTERIOR for d in (1, 9) if x + d in INTERIOR and 31 not in (x, x + d)]
 
 
-def infer(a, z, pi):
-    """a, z [B,T,81,192] -> partner [B,T,81] (ML matching), soft canonical targets [B,T,81,5], accepted swaps [B,T], s [B,T]"""
+def pair_prior_logit(logits):
+    """proposal logits [B,T,81,5] (masked) -> prior log-odds of each canonical pair [B,T,P]"""
+    dev = logits.device
+    j = torch.tensor([p[0] for p in PAIRS], device=dev); k = torch.tensor([p[1] for p in PAIRS], device=dev)
+    d = torch.where((k - j) == 1, torch.tensor(4, device=dev), torch.tensor(2, device=dev))
+    logp = logits.log_softmax(-1)[..., j, :].gather(-1, d.expand(*logits.shape[:2], -1)[..., None])[..., 0]
+    return logp - torch.log1p(-logp.exp().clamp(max=1 - 1e-6))
+
+
+def infer(a, z, prior):
+    """a, z [B,T,81,192], prior [B,T,P] log-odds -> partner (MAP), soft canonical targets, accepted, s, candidates, q mass"""
     dev = a.device
     j = torch.tensor([p[0] for p in PAIRS], device=dev); k = torch.tensor([p[1] for p in PAIRS], device=dev)
     res = (a - z).norm(dim=-1)                                               # [B,T,81]
@@ -77,8 +87,8 @@ def infer(a, z, pi):
         free[rows, j[ps]] = False; free[rows, k[ps]] = False
         won |= win
         live = live & ~win
-    logit_pi = float(np.log(pi / (1 - pi)))
     lr = g / s.reshape(-1, 1)                                                # log-likelihood ratio of swap vs keep
+    logit_pi = prior.reshape(-1, len(PAIRS))
     accepted = won & (lr + logit_pi > 0)                                     # MAP: posterior odds > 1
     partner = torch.arange(81, device=dev).repeat(m, 1)
     rows, ps = torch.where(accepted)
@@ -130,7 +140,7 @@ def main():
               L.ROOT / 'd4mj/train.py', L.ROOT / 'd4mj/mamba_recurrence.py', PREREG, PARENT, L.TW.S.CHECKPOINT,
               *([COST_PREREG] if COST_PREREG.exists() else []),
               BASE.D.OUT / 'manifest.json', BASE.D.OUT / 'windows.pt']
-    contract = {'format': 'transport_ic_v2', 'sources_inputs': {str(p.relative_to(L.ROOT)): L.sha(p) for p in source},
+    contract = {'format': 'transport_ic_v3', 'sources_inputs': {str(p.relative_to(L.ROOT)): L.sha(p) for p in source},
                 'data_contract_id': manifest['contract_id'], 'updates': a.updates, 'batch': a.batch, 'arms': list(arms),
                 'parameters': {arm: {'total': sum(p.numel() for p in w.parameters()),
                                      'completion': sum(p.numel() for p in w.completion.parameters())} for arm, w in worlds.items()},
@@ -196,10 +206,9 @@ def main():
                     logits = w.completion.propose(w.completion.trunk(belief, noise[0])).float()[:, :15]
                 logits = logits.masked_fill(~w.completion.valid, -torch.inf)
                 with torch.no_grad():
-                    if pi is None:
-                        pi = 0.01                                               # ~0.5 swaps per frame over 54 pairs
-                    partner, target, nsw, s_, ncand, qmass = infer(F.layer_norm(b.detach(), (192,)), z, pi)
-                    pi = min(max(0.99 * pi + 0.01 * float(qmass.mean()) / len(PAIRS), 1e-4), 0.5)
+                    prior = pair_prior_logit(logits.detach())
+                    partner, target, nsw, s_, ncand, qmass = infer(F.layer_norm(b.detach(), (192,)), z, prior)
+                    pi = float(prior.sigmoid().mean())                          # logged: the head's mean pair prior
                 out = F.layer_norm(b.gather(2, partner[..., None].expand(-1, -1, -1, 192)), (192,))
                 point = L.objective(L.components(out, z), 'D')
                 logp = logits.log_softmax(-1)

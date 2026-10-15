@@ -139,3 +139,34 @@ checkpoints) as the record of the gain > 0 + flipped-sign variant.
 **New risk (stated before running):** with the D-parent afterstate, MAP captures 54% of genuine chance moves at
 initialization (88% with a trained afterstate). Missed moves teach the afterstate to blur. Watched via posterior swaps per
 frame (expected about 0.15-0.4) and, at milestones, the posterior's recall on DEV.
+
+## Addendum v3 (2026-10-15, ~15:35): v2 stopped at update 600 (collapse toward "always stay"); one change
+
+**v2 trajectory.** Posterior swaps per frame went 0.22 → 0.11 → 0.03 (seed 1) and 0.13 (seed 2) by update 600, with the
+global prior π falling to 0.0019. Sampled swaps: 0.017 / 0.13 per frame vs about 0.3 genuine chance moves.
+
+**Synthetic test 2** (`20261015_whiteboard/em_toy2.py`; hard regime, where evidence for genuine moves sits near the MDL
+threshold, as for the D-parent afterstate):
+
+| rule (2 seeds) | recall | precision | head's swap probability at mob pairs (true 0.19-0.24) |
+|---|---|---|---|
+| oracle | 1.00 | 1.00 | 0.23-0.24 |
+| global prior (v2) | **0.00 (complete collapse)** | — | 0.0002 |
+| model's own context prior | 1.00 | 0.94-1.00 | 0.27-0.31 |
+
+- **Mechanism:** a global prior self-tightens. Fewer acceptances lower π, which raises the threshold, which accepts fewer.
+- The proper Bayesian form uses the model's own prior for each pair: posterior ∝ p_head(pair | context) × likelihood. Near
+  mobs the prior rises; on terrain it falls. Look-alike terrain swaps are rejected by a low prior, not by a global
+  threshold.
+
+**v3 (one change):** q = sigmoid(gain/s + logit p_head(j,k)), with p_head the chance head's own (detached) probability of
+the canonical proposal (RIGHT for (j, j+1), DOWN for (j, j+9)). T̂ = candidates with q > 0.5. Everything else, including
+gates, verdict script, seeds, budget and evaluation, is unchanged.
+
+**Stop rule (fixed now, before v3 runs):** v3 is the last posterior variant in this study. If v3 fails, the result is
+recorded and diagnosed; no v4 is launched within TRANSPORT_IC.
+
+**New risk:** the synthetic test shows mild over-dispersion (0.27-0.31 vs 0.19-0.24), so a self-reinforcing prior could
+over-accept.
+
+**Artifacts preserved:** v2 at `transport/ic_v2_globalprior_seed{1,2}` (u500 checkpoints, logs).

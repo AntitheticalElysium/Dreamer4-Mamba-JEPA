@@ -9,6 +9,8 @@ the real camera track:
   NEW       never inside any context frame: genuinely unknown (epistemic), only a prior can fill it
 Tile error rate per class (frozen bank tile reader, real vs imagined frame; cells with a decoded mob in either are excluded),
 and the error of the trivial 'most common tile class in the context frames' guess on NEW cells (a prior baseline).
+REVISIT cells are also split by recency: frames since the world position was last inside a context frame (1-3 / 4-8 / 9-15
+frames before the root), separating memory decay (error grows with age) from addressing failure (flat).
 Usage: entering_memory.py <model> ... -> artifacts/eda/whiteboard/entering_<model>.json
 """
 import json
@@ -49,12 +51,12 @@ def main():
         prior = {p: [0, 0] for p in ('bright', 'dark')}
         for i in range(R):
             part = 'bright' if i in selected else 'dark'
-            seen = set()                                                    # world cells inside any context frame 1..15
+            seen, last = set(), {}                                          # world cells inside any context frame 1..15
             for f in range(1, 16):
                 o = origin[i, f]
                 for r in range(7):
                     for c in range(9):
-                        seen.add((r + int(o[0]), c + int(o[1])))
+                        seen.add((r + int(o[0]), c + int(o[1]))); last[(r + int(o[0]), c + int(o[1]))] = f
             ctx_tiles = rtile[i, 1:16].flatten()
             mode_tile = int(ctx_tiles[ctx_tiles >= 0].mode().values)
             img = imag[i].float()
@@ -74,12 +76,18 @@ def main():
                         if 0 <= w[0] - int(op[0]) < 7 and 0 <= w[1] - int(op[1]) < 9:
                             continue                                       # visible in the previous frame: not entering
                         cls = 'REVISIT' if w in seen else 'NEW'
+                        if cls == 'REVISIT':
+                            age = 15 - last[w]
+                            sub = 'REVISIT_age0-2' if age <= 2 else ('REVISIT_age3-7' if age <= 7 else 'REVISIT_age8-14')
                         real_t = int(rtile[i, f, x])
                         if bool(rmob[i, f, x]):
                             continue
                         ok = cam_ok[:, k] & ~imob[:, k, x]
                         if ok.any():
                             acc[part][cls][0] += int((itile[ok, k, x] != real_t).sum()); acc[part][cls][1] += int(ok.sum())
+                            if cls == 'REVISIT':
+                                acc[part].setdefault(sub, [0, 0])
+                                acc[part][sub][0] += int((itile[ok, k, x] != real_t).sum()); acc[part][sub][1] += int(ok.sum())
                         if cls == 'NEW':
                             prior[part][0] += int(mode_tile != real_t); prior[part][1] += 1
         res = {'model': name}
