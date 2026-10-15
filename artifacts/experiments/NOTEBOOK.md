@@ -222,6 +222,93 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R55 — REPRESENTATION AND OBJECTIVE AUDIT (user, 10-16): what our encoder is, what our loss rewards, whether discrete targets would be stable (`objective_audit.py`, `code_stability.py`)
+
+**Verified from code:**
+- The encoder (`d4mj/lewm.py`, a port of LeWorldModel 2603.19312) is trained by one objective:
+  - z = projector(CLS of the last layer);
+  - a Mamba world predicts the next z; loss = MSE(z) + λ SIGReg(z) (`joint_loss`, lines 271-290).
+- The docstring states it: "Patch tokens are never regularized by SIGReg and never predicted."
+- The final-layer patch tokens that D, IC and PI use as state and targets get **no gradient**. They are side outputs of weights
+  trained for the CLS path.
+
+**1. What the token-regression objective rewards** (240 diagnosis roots, 16,320 one-step transitions, 4 keys × 17 actions;
+exact state used only to label cells). Shares of the squared token change a regression world must explain beyond a scroll-aligned
+copy:
+
+| cell category | share of cells | share of target change | mean per cell | aleatoric part (4-key spread) |
+|---|---|---|---|---|
+| persisting content (rendering / context drift) | 74.0% | **60.6%** | 9.7 | 6% |
+| entering (never seen; epistemic) | 1.7% | **26.7%** | 192 | 0.5% |
+| mob changed | 0.8% | 3.7% | 55 | **25%** |
+| terrain edited | 0.04% | 0.6% | 168 | 0% |
+| player cell | 1.2% | 2.8% | 27 | 0% |
+| HUD, a displayed value changed | 3.1% | 2.2% | **8.4** | 0.9% |
+| HUD, no displayed change (context drift) | 19.1% | 3.4% | 2.1 | 0.3% |
+
+- ~64% of the objective is nuisance, ~27% unpredictable terrain, ~9% consequences.
+- **A health or inventory change moves its HUD token less (8.4) than lighting / context drift moves an unchanged grass tile
+  (9.7):** the consequence channel is less salient than nuisance in this space.
+- **The regression optimum at stochastic mob cells is a non-state.** Where the 4 keys disagree, the frozen reader sees a mob in
+  40% of individual futures but in **67%** of the 4-key mean tokens: smeared ghosts at every candidate position (MoP-JEPA's
+  conditional-mean collapse, in our data).
+
+**2. Would categorical targets on these tokens be stable?** (Raw k-means codebooks K1024 / K4096; the same roots' futures,
+~1.2M cell transitions):
+
+| code change per step | K1024 | K4096 |
+|---|---|---|
+| persisting content, day, steady light | **25%** | 35% |
+| persisting content, day, changing light | 24% | 33% |
+| persisting content, night (random static) | 35% | 46% |
+| persisting content, asleep | 17% | 18% |
+| mob changed / terrain edited (signal) | 91% / 97% | 96% / 98% |
+| HUD, a displayed value changed | **16%** | 21% |
+| HUD, nothing displayed changed | **15%** | 20% |
+
+- Persisting content has no stable discrete identity in the Raw token space. A quarter of unchanged tiles flip code each step
+  even in steady light: position code and context, not only light.
+- Generic codes do not resolve the consequence channel at all: HUD codes change as often without a value change as with one.
+  A linear reader does recover health, so the information is present, but not in the code geometry.
+
+**Literature, verified from the papers:**
+- **LeWM:** CLS-only, goal-reaching continuous control; patch tokens never trained.
+- **When Does LeJEPA Learn a World Model?** (Klindt, LeCun, Balestriero):
+  - LeJEPA's optimum extracts the slowest features;
+  - linear identifiability holds only for Gaussian latents with additive-noise transitions;
+  - it breaks on goal-directed policy data (R² ≤ 0.5 on some dimensions);
+  - with fewer latent dimensions than the world has, which subspace is kept is undetermined.
+- **MoP-JEPA:** proof that a deterministic JEPA predictor converges to the conditional mean under stochastic transitions, and
+  that a gated MoE does too. Hard-assigned mixtures plus a router enumerate modes with probabilities (planning success
+  0.02-0.09 → 0.75-0.85). V-JEPA 2-AC's released predictor is single-head.
+- **Dedieu et al. 2025 (Craftax-Classic, our exact 81 × 7×7 patches):** nearest-neighbour patch codes 67.42 ± 0.55, VQ-VAE
+  patches 60.66, **continuous 7×7 patches 21.20 ± 0.55 (MBRL collapses)**. Their codes are pixel patches (not
+  reconstruction-free).
+- **Dreamer-CDP (Crafter, reconstruction-free):**
+  - full model 16.2 ± 2.1 (DreamerV3 14.5);
+  - without the reward gradient 12.7;
+  - next-embedding prediction alone without the categorical KL 6.3;
+  - without next-embedding prediction 3.2.
+- **DINO-WM:** patch vs CLS state, Wall 0.96 vs 0.58, Reach 0.92 vs 0.60, PushT 0.90 vs 0.44 (the patches come from DINOv2,
+  which is trained at the patch level).
+- **V-JEPA 2-AC (vendored):** frozen patch targets, per-token LN, L1, a single deterministic predictor.
+- **LeVJEPA:** CLS-only supervision *can* yield organized patch tokens (multi-view invariance + SIGReg). So "untrained" is not
+  "useless"; our probes agree that content is linearly present.
+- **Ni et al. (ICLR 2024):** a sufficient abstraction needs next-latent AND reward prediction; ZP alone is trivial;
+  observation-predictive representations degrade faster under distractors.
+- **Hansen & Wang 2026:** world-model hallucination is a data-coverage problem; "action-marginalized" hallucination in
+  low-coverage state-action regions.
+  - That is our sleep failure. It recurred in the CLS world (09-24: SLEEP picked on 513 / 670 risk roots), in PI, and in R54's
+    heads.
+
+**What we learn:**
+- The current target space is not aligned with the objective. It is dominated by nuisance and unpredictable terrain.
+- Consequences are less salient than nuisance.
+- Persisting content has no stable identity in it (continuous or discrete).
+- Continuous regression of its stochastic parts produces non-states.
+- The information *is* there, linearly. The problem is the geometry and the loss, not missing content.
+- Rare counterfactual consequences are additionally a coverage problem that no representation alone fixes.
+
 ### R54 — an evolving belief's graded consequences, read directly (MULTIHORIZON_PREREG): the preregistered ridge heads fail; PI's belief holds the immediate consequence its gate discards (`multihorizon.py`)
 
 **Design (preregistered).**

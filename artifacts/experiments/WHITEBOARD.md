@@ -648,3 +648,89 @@ safe.
 - Heads trained on behaviour data judge sleep safe (confounding). Nonlinear heads recover the interaction only sometimes.
 - This is where *epistemic*, decision-relevant uncertainty should act: a world should know it has rarely seen this
   (state, action) pair.
+
+## 18. 2026-10-16 — representation and objective, reassessed together (user request; NOTEBOOK R55; R46-R54)
+
+### Verified facts (code, our measurements, papers)
+
+1. **Our encoder never trained the patch tokens we use.** LeWM (`d4mj/lewm.py`; LeWorldModel 2603.19312) trains only
+   projector(CLS) with next-z MSE + SIGReg. D, IC and PI use the last-layer patch tokens as state *and* targets.
+   - Content is linearly present in them (tiles 0.96, mobs AUC 1.0, health readable; R2). LeVJEPA shows CLS-only training can
+     organize patches.
+   - Nothing in our objective asked them to be stable, salient or predictive.
+2. **The token target is misaligned with what matters (R55):**
+   - shares of the target change: ~64% nuisance (rendering / context drift of unchanged content), ~27% never-seen entering
+     terrain, ~9% consequences;
+   - a health change moves its HUD token *less* than light moves an unchanged tile;
+   - discrete codes on these tokens are unstable: 25-46% of persisting tiles change code per step, and HUD codes do not react
+     to value changes.
+3. **Continuous point prediction cannot represent stochastic outcomes:**
+   - the L2 optimum at stochastic mob cells reads as a mob 67% of the time vs 40% in real outcomes (ghosts; R55);
+   - MoP-JEPA proves the conditional-mean collapse;
+   - on our exact Craftax frames, continuous 7×7 patch targets collapse MBRL (21.2 vs 67.4; Dedieu et al.);
+   - Dreamer-CDP needs a categorical latent with KL (6.3 → 16.2) and reward gradients (12.7 → 16.2).
+   - PI avoids ghosts with a MAP gate but discards graded risk (R51; its belief has it: R54b).
+4. **The theory of our own objective warns against it here.** LeJEPA's optimum is the slowest features; identifiability holds
+   only for Gaussian additive-noise worlds and breaks on policy data; with too few dimensions the kept subspace is undetermined
+   (Klindt, LeCun, Balestriero 2026). Craftax is discrete, event-driven, behaviour-policy data, much larger than 192 dims.
+5. **What decisions need (R53-R54):**
+   - the immediate consequence of the action (first-step damage ranks escape moves 0.71);
+   - the *expectation* of later consequences. Rollouts from few samples dilute it; graded heads on the belief read it.
+6. **Rare counterfactual consequences are a coverage problem.**
+   - Sleeping next to a ready zombie: 384 training transitions.
+   - It failed in every representation: the CLS world (09-24), PI, and R54's heads.
+   - Hansen & Wang 2026: action-marginalized hallucination concentrates in low-coverage state-action regions. No
+     representation alone removes it.
+
+### Assessment: the most promising direction
+
+**The world model should learn its own spatial information state**, instead of adopting the frozen encoder's tokens as state
+and regression targets:
+- **spatial:** per position, on the scaffold;
+- **self-predictive:** predictable from the belief and the action, with stop-gradient targets (Ni et al.; Dreamer-CDP);
+- **discrete where outcomes branch:** categorical posterior / prior, or hard-assigned mixtures, giving modes *with
+  probabilities* rather than means or MAP choices;
+- **consequences in the loss:** graded heads for the observation's own consequence channel, plus continuation / reward.
+
+The frozen encoder stays as the *input* (the information is there) and at most as an auxiliary next-embedding target (cosine,
+as Dreamer-CDP). Retraining the encoder at the patch level becomes necessary only if a learned state on top of it cannot be
+made stable and salient (S1 below decides this).
+
+**What survives from PI and inferred chance (evidence, not loyalty):**
+- the spatial scaffold;
+- persistence as the *default mode* of a position's state (exact carry when unchanged: no fading, R23);
+- explicit global transformations (scroll; appearance as a global factor, R47);
+- stochastic events as discrete choices with inferred posteriors (IC ≈ MoP's hard assignment ≈ Stochastic MuZero's chance);
+- consequences read from the belief as expectations (R54b).
+
+**What should not survive:**
+- frozen Raw tokens as the persistent state;
+- continuous point regression of branching content;
+- MAP edits of the consequence channel.
+
+### The smallest decisive experiments (in order; each can falsify the direction)
+
+- **S0 — output parameterization, head-only (hours).**
+  - Setup: on a frozen belief (D and PI), against the 4-key one-step data, compare three heads for next content:
+    1. regression (the mean);
+    2. hard-assigned K-head mixture + router (MoP);
+    3. categorical over a per-cell codebook.
+  - Readings: ghosts at stochastic mob cells (reader rate vs real 40%); calibration of mode probabilities against the 4-key
+    frequencies; sleeper-attack magnitude.
+  - Decides how branching outcomes must be represented, independent of the state.
+- **S1 — a learned per-tile discrete state on the frozen tokens (≈1 h, label-free).**
+  - Setup: a per-tile categorical encoder trained only to be self-predictive (next codes from scroll-aligned neighbour codes
+    and the action), to keep information (next-embedding cosine) and to use its codes.
+  - Readings:
+    - code flips on persisting content (k-means: 25%);
+    - change rate on real changes (≥ 90%);
+    - HUD salience (value-changed vs unchanged; k-means 16 vs 15%);
+    - tile / mob decodability.
+  - **If stable and salient:** the encoder can stay frozen as input → S2.
+  - **If not:** the encoder is the bottleneck → train a patch-level temporal JEPA on Craftax frames first.
+- **S2 — a small world on the S1 state vs D and PI** (same data and budget, 2 seeds, preregistered).
+  - Readings: row-9 one-step consequences; mode fidelity of mob moves; recursion persistence; DV16 escape ranking and 17-action
+    decisions.
+  - This is the first substantial training.
+- **S3 — coverage.** Branched counterfactual data (all actions from sampled states, as the 08-29 hazard-choice sampling) for the
+  best world. It separates the representation and coverage causes of the sleep failure.
