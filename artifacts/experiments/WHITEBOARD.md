@@ -502,3 +502,14 @@ Measured with **exact** transformations (diagnosis futures; R41 fixed my constru
   3. a properly learned renderer conditioned on a carried lighting state.
 - **Context-free representation is not a requirement** (user, Codex): content codes are already spatially equivariant
   (camera drift 0.007 vs 0.086) and lose nothing, but they do not remove lighting.
+
+**Addendum (R43, 10-16):**
+- The Craftax source makes rendering a deterministic light clock by day (random static at night). Even with the true light
+  level, a copied token cannot be re-rendered (8-bit quantization flips), so at the token level rendering is practically
+  nuisance.
+- **Caution on R42's magnitude:** its substitution mixes freshly-lit changed cells with stale-lit copies in one frame. In PI's
+  own imagination nothing is freshly observed: copies carry the root's light, and generated cells are predicted from a
+  root-lit context.
+- So imagined frames are largely *consistently* lit at an earlier time. R42 measures the harm of *mixed* lighting (real when
+  imagination is interleaved with observation). It does not establish that pure imagination suffers it.
+- Not yet tested directly. A time-frozen frame (all cells at the root's light) needs a renderer.
