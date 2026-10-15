@@ -177,6 +177,23 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R27 — PI's weaker pursuit is not edits absorbing moves (`ic_posterior.py pi`, CPU, layouts diagnostic only)
+
+- **Setup:** the 400 training windows and true STAY-class mob moves of the IC milestones check, under each PI u3000's
+  training-time inference: copy under the label-free scroll, provisional afterstate with the gate's decisions, IC v3
+  posterior, edit posterior.
+- **Captured by a chance swap** (seed 1 / seed 2):
+  - zombies 93% / 92% (n 725 / 740);
+  - cows 90% / 90%;
+  - skeletons 92% / 92% (IC v3: 89% over all mobs).
+- **Explained by edits instead:** 3-5%. **Missed:** 4-5%.
+- **The R23 hypothesis is refuted:** the gate does not absorb moves, and the chance head receives them.
+- **The gap is already one-step:** pursuit at depth 1, one step from real context, is 0.29 / 0.26 approach vs IC arms
+  0.40-0.43 and real 0.35. PI's chance head learned a weaker *direction* bias toward the player, with the same targets.
+- **Candidate (untested):** in PI the point loss reaches the backbone only through edited cells, while mob cells are copied.
+  The belief gets less pressure to encode zombie-player relations, and only the chance cross-entropy carries movement
+  direction.
+
 ### R26 — PI variant 1 (canvas, evaluation only): "memory recovers terrain but harms the rollout" (PI_CANVAS_PREREG)
 
 Mechanical verdict (`transport_track_verdicts.py canvas`). The same PI checkpoints, roots and noise; one change: entering
