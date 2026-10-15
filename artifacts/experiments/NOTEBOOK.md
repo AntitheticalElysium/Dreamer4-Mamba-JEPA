@@ -222,6 +222,35 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R41 — DEFECT in my exact-transformation stale construction (R39, R40); PI itself is unaffected (10-16)
+
+**Found while verifying R40.** In my rebuild (`recontext_stale.transitions`), the cell the player **vacates** after a move (its
+copy source is cell 31) was not marked as changed: its tile class matched. The copy planted the player sprite there, a ghost
+player, while the real frame shows terrain the sprite had occluded.
+- Each move adds one ghost, and the ghosts drift with the camera.
+- Their tokens are almost entirely wrong: difference ~11 vs token norm ~14.
+- Every scroll window of **R39 and R40** is contaminated: T, C, P, G and the partial-freshness table. In particular "player
+  neighbourhood restores ~47%" and "most recent frame restores ~95%".
+- **Fixed:** the vacated cell takes the real content, and the player cell is always fresh (its sprite animates with actions).
+  Verified: in pixel-exact windows, C now reproduces the fresh frames exactly (0 differing cells, token difference 0).
+- Reruns are in progress; R39 / R40 conclusions are suspended until then.
+
+**Two more construction issues found the same way:**
+- "Quiet" / "render-stable" used a 2-intensity-level threshold. Daylight moves pixels by 1-2 levels on most steps, and that
+  accumulates over a chain. A pixel-exact class was added.
+- **Scrolls do not change rendering** (`scroll_render.py`): 81.6% of scroll transitions vs 79.2% of still transitions have zero
+  changed persisting cells, uniform in player distance.
+
+**PI is unaffected** (`vacated_cell.py`, 1,677 scroll transitions per seed, teacher-forced):
+- PI's edit posterior regenerates the vacated cell 100% of the time.
+- Its prior gate fires there 99.9-100% (probability 0.996), vs 0.4-0.5% at other cells.
+- So PI learned label-free that the cell behind the player must be re-generated (memory / uncertainty for occluded content).
+- R34 and R38, built from PI's posterior, handled it.
+
+**Learned relight** (`relight_learn.py`, 140k changed test cells): an MLP from (old token, frame-mean shift) is no better than
+the additive shift overall. Median relative error vs copying 1.0 / shift 0.66 / MLP 0.82; at depth 8, shift 0.57 / MLP 0.45. It
+lowers mob agreement (0.95 vs 0.999).
+
 ### R40 — what a stale imagined frame loses: the CURRENT frame's rendering consistency (`chase_cue.py`, `sprite_dynamics.py`)
 
 **Partial-freshness substitution.**

@@ -23,8 +23,13 @@ PI (u3000, both seeds) reads each context; its belief-driven outputs at index 14
 fresh on the same windows: chase toward-probability of exact zombies (distance <= 4), gate AUC for exact non-swap map changes,
 gen error at exact terrain edits (target: the real next token), health-drop AUC of the gate at the health token, scroll
 accuracy, belief cosine by cell class.
-Splits: scrolls in the stale span (0 / >= 1) x rendering change in the stale span (STABLE: < 5% of persisting, unchanged cells
-change pixels in every transition; else CHANGED), so position / context staleness and rendering staleness separate.
+Splits: scrolls in the stale span (0 / >= 1) x rendering change in the stale span (QUIET: no persisting, unchanged cell changes
+pixels in any transition -- copies equal the real pixels; STABLE: < 5% per transition; else CHANGED), so position / context
+staleness and rendering staleness separate. (QUIET added 10-16 to verify R40; it still allowed 1-2 intensity-level drift per step,
+which accumulates over a chain, so EXACT -- no pixel of any persisting cell changes in any transition -- was added; the player cell
+is always fresh, since its sprite animates with actions. The cell the player vacates after a scroll -- whose source is cell 31 --
+takes the fresh content: copying it planted a ghost player sprite that drifted with the camera (found 10-16; R39 / R40 scroll
+windows were contaminated and are rerun).)
 Usage: recontext_stale.py -> artifacts/eda/whiteboard/recontext_stale.json   (env RECONTEXT_ROOTS, default 240)
 """
 import json
@@ -133,17 +138,24 @@ def transitions(tiles, mobs, hud, facing, frames):
                 continue
             if int(prev_tile[x]) != int(tiles[j][x]) or bool((moved[x] != lay[j][x]).any()) or bool(lay[j][x, 3]) or bool(prev[x, 3] == 1):
                 changed[x] = True
-        if bool((facing[j] != facing[j - 1]).any()):
-            changed[31] = True
+        if (dr, dc) != (0, 0):                                                   # 10-16 FIX: the cell the player vacated
+            x_vac = (3 - dr) * 9 + 4 - dc                                          # (its source is cell 31) reveals terrain the
+            if 0 <= x_vac < 63:                                                    # sprite occluded; copying gave a ghost player
+                changed[x_vac] = True
+        changed[31] = True                                                       # 10-16: the player sprite animates with
+        #                                                                          actions without a facing change (always fresh)
         if bool((hud[j] != hud[j - 1]).any()):
             changed[63:] = True
         # rendering change: persisting, unchanged, camera-aligned map cells whose pixels differ
         px_now = frames[j].reshape(9, 7, 9, 7, 3).permute(0, 2, 1, 3, 4).reshape(81, -1).int()
         px_prev = frames[j - 1].reshape(9, 7, 9, 7, 3).permute(0, 2, 1, 3, 4).reshape(81, -1).int()
-        keep = [x for x in range(63) if not bool(changed[x]) and x != 31 and not lay[j][x].any() and (moved[x] == 0).all()]
-        src = [((x // 9) + dr) * 9 + (x % 9) + dc for x in keep]
+        keep = [x for x in range(63) if not bool(changed[x]) and x != 31 and not lay[j][x].any() and (moved[x] == 0).all()
+                and ((x // 9) + dr) * 9 + (x % 9) + dc != 31]                    # 10-16 fix: a cell whose source is the player cell
+        src = [((x // 9) + dr) * 9 + (x % 9) + dc for x in keep]                  # compared the player sprite (every scroll looked lit)
         diff = (px_now[keep] - px_prev[src]).abs().amax(-1) > 2 if keep else torch.zeros(0, dtype=torch.bool)
+        exact = (px_now[keep] != px_prev[src]).any(-1) if keep else torch.zeros(0, dtype=torch.bool)     # 10-16: ANY pixel change
         out.append({'scroll': s, 'swaps': swaps, 'changed': changed, 'render': float(diff.float().mean()) if len(keep) else 0.,
+                    'render_exact': float(exact.float().mean()) if len(keep) else 0.,
                     'lay_prev': prev, 'lay': lay[j]})
     return out
 
@@ -286,7 +298,9 @@ def main():
                 for m in DEPTHS:
                     span = p['trans'][14 - m:14]
                     sc = 'scrolls0' if all(t['scroll'] == 0 for t in span) else 'scrolls1+'
-                    rd = 'render_stable' if all(t['render'] < .05 for t in span) else 'render_changed'
+                    rd = ('render_exact' if all(t['render_exact'] == 0 for t in span) else
+                          'render_quiet' if all(t['render'] == 0 for t in span) else
+                          'render_stable' if all(t['render'] < .05 for t in span) else 'render_changed')
                     for rep in REPS:
                         key = f'm{m}_{sc}_{rd}'
                         a = acc.setdefault(key, {})
@@ -340,7 +354,7 @@ def main():
         print(json.dumps({f'seed{seed}': out}), flush=True)
         del w; torch.cuda.empty_cache()
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / f'recontext_stale{"_relight" if RELIGHT else ""}.json').write_text(json.dumps(res, indent=1))
+    (OUT / f'recontext_stale{"_relight" if RELIGHT else ""}{os.environ.get("RECONTEXT_TAG", "")}.json').write_text(json.dumps(res, indent=1))
 
 
 if __name__ == '__main__':
