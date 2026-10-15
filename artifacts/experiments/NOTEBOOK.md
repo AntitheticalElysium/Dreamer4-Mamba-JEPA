@@ -222,6 +222,41 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R46 — the sleep blind spot is the WORLD erasing content at a global appearance change (`sleep_check.py`, `sleep_onset.py`)
+
+**Readers vs world on the DV16 roots** (real futures are deeppanel's stored key-0 frames; PI s1 imagination, M = 4):
+
+| after the first action | real noop | real sleep | PI imagined noop | PI imagined sleep |
+|---|---|---|---|---|
+| health drop by 16 (frozen HUD reader) | 0.94 | **0.98** | 0.69 | **0.28** |
+| mean health change, d1 → d16 | −1.05 → −3.71 | **−0.83 → −4.92** | −0.52 → −1.94 | **+0.34 → +0.09** |
+| zombie adjacent at some depth | 0.92 | **0.92** | 0.83 | **0.09** |
+| dead by 16 (real label) | 0.48 | **0.84** | | |
+| imagined-vs-real token distance | | | 3.4 | **7.2** |
+
+- The frozen readers see the damage on real sleep frames. **The failure is the world's:** PI's imagined sleep futures lose the
+  zombies (92% → 9%) and the damage.
+- With noop, PI keeps most of the danger (zombies 83%, damage 69%, about half the magnitude).
+
+**One teacher-forced step** (240 training windows containing sleep; PI s1, sampled one-step output, frozen mob reader vs the
+real next frame):
+
+| transition | n | map cells edited | zombie recall | cow recall | token error |
+|---|---|---|---|---|---|
+| sleep onset | 318 | **49%** | **0.38** (102 zombies) | 0.34 | 1.08 |
+| already sleeping | 42 | 5% | 0.92 (12) | 0.48 | 0.31 |
+| other actions | 3,240 | 5% | 0.60 | 0.49 | 0.64 |
+
+- **Mechanism:**
+  - Sleep greys the whole screen, a frame-global *appearance* transformation of unchanged content.
+  - PI can express an appearance change only by regenerating the cell. Regeneration draws the conditional mean, so mobs are
+    erased at onset.
+  - Persistence then faithfully keeps the zombie-free grey world: no attacks, health even rises.
+- Sleep is not rare in training: 2.8% of actions, 23% of windows contain one. What is missing is an operator that transforms
+  appearance while preserving content.
+- **This is the user's principle in its decision-critical form:** persist the information, transform its representation. PI
+  has transformations for position (scroll) and identity (chance swaps), but none for appearance.
+
 ### R45 — DV16 RESULT: imagination's decision value is dominated by a SLEEP blind spot; persistence does not help decisions
 
 Preregistered (`DV16_PREREG.md`, `dv16.py`; 200 deeppanel DEV opp16 roots, 8-frame context, 17 first actions, M = 4 futures,
