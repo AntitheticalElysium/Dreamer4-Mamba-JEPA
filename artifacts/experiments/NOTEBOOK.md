@@ -127,6 +127,64 @@ Drift is relative to the RMS distance between different cells.
   drift" → "because rendering changes deterministically (daylight) and with position". This is predictable from history, and
   the learned afterstate removes most of it (0.048 → 0.014).
 
+### R4 — why imagined cameras diverge (`20261015_whiteboard/camera_diag.py`, saved recursion samples)
+
+**The divergence compounds.** First-divergence rate per step at depth 1 (true context) vs later (self-fed):
+
+| model | depth 1 | later | share of divergences at depth 1 |
+|---|---|---|---|
+| D parent | 0.0% | 4.0% | 0% |
+| transport operator | 1.2% | 4.9% | 2% |
+| free synthesis | 1.0% | 4.7% | 2% |
+
+- Kinds: missed scroll 63%, false scroll 36%, wrong direction < 1%.
+- When a real mob blocks the move, the imagined camera scrolls anyway in 57-59% of cases.
+
+**It comes from the faced cell.** Operator, move steps still camera-consistent; the imagined faced cell vs the real one:
+
+| imagined faced cell | steps | divergence rate |
+|---|---|---|
+| agrees | 7,237 | 5.9% |
+| tile differs | 694 | 37% |
+| real mob missing | 193 | 81% |
+| extra mob | 83 | 60% |
+
+- Wrong faced cells are 12% of steps and cause 52% of divergences. The D parent shows the same pattern.
+- **Reading:** the frame-shift gate reads the tile the player faces. Imagined content errors there (mob fading, terrain
+  corruption) flip the scroll decision, and a wrong scroll misaddresses everything after it.
+- Recursive fidelity hinges on a few decision-relevant cells.
+- This is correlational. A substitution test (put the real faced cell into the imagined frame) is queued for when the GPU
+  frees up.
+
+### R5 — rows 2 / 4: entering terrain, memory vs epistemic (`entering_memory.py`)
+
+Each entering cell at depth k on camera-consistent trajectories is classed by the real camera track as REVISIT (inside one
+of the 15 context frames) or NEW. Tile error, bright, D parent / operator:
+
+| entering cell | D parent | operator | prior: most common context tile |
+|---|---|---|---|
+| REVISIT (~30% of entering cells) | 15% | 21% | — |
+| NEW | 29% | 44-46% | 49% |
+
+Dark: REVISIT 28-36%, NEW 33-41%.
+
+- **Memory read failure:** terrain the history contains is still wrong 15-21% of the time when it re-enters (row 2 / 4;
+  consistent with the E18 read-path finding).
+- **The energy-trained operators lost the parent's skill on new terrain** (44-46% vs 29%, near the 49% prior). Their
+  objective scored only the 35 interior tokens. IC trains all 81, so this is a secondary reading for TRANSPORT_IC.
+
+### R6 — row 1: is rendering nuisance a linear subspace of Raw tokens? (`rep_nuisance.py`) — NO
+
+- **Setup:** project out m nuisance dimensions estimated on 80 fit roots; measure on 40 held-out roots.
+- **Labelled within-class directions** (an upper bound): relative persistent drift *rises* (day 0.021 → 0.053, night 0.14 →
+  0.40 at m = 64). Content distances shrink faster than drift.
+- **Label-free change directions:** drift unchanged (day 0.021 → 0.020-0.022, night 0.14 → 0.13).
+- Content decodability is unchanged in all cases (tile 0.96-0.98, mob AUC ≈ 1).
+- **Reading:** Craftax's daylight is a content-dependent multiplicative blend, spread over all dimensions. No fixed projection
+  or loss metric discards it. Deterministic daylight must be *predicted* (a function of time: memory); random night static
+  needs *learned* invariance in the encoder (e.g. photometric augmentation during JEPA training). Two treatments, as
+  WHITEBOARD §2 predicts. A linear "content subspace" shortcut is ruled out.
+
 ### R3 — inferred-chance design checks (`20261012_oracle/ic_posterior.py`), before TRANSPORT_IC_PREREG.md
 
 - **Labels:** labelling a swap at both endpoints, as in the draft, makes the operator's sampler accept swaps **1.59-1.96×**
