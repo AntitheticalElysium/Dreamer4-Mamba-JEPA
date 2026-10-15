@@ -177,6 +177,28 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R31 — R29's terrain error is sampling at gate-fired edits on cells that never left the view (`seen_split.py`, CPU)
+
+transport_recursion's seen-terrain error, split by the real camera track: cells that **stayed** in view at every depth vs
+cells that **left and re-entered**.
+
+| tile error (all depths / d16) | stayed (~93% of cells) | re-entered (~7%) |
+|---|---|---|
+| PI s1 / s2 | 1.05% / 0.98% (d16 1.37% / 1.09%) | 7.2% / 6.2% (d16 5.0% / 5.4%) |
+| PI_INNOV s1 / s2 | **3.0% / 3.1% (d16 6.7% / 6.7%)** | 13.1% / 11.6% (d16 15.6% / 14.3%) |
+| PI + canvas s1 | 1.05% (d16 1.37%) | **0.34% (d16 0.54%)** |
+
+- **R29's seen-terrain increase is mostly on cells that never left the view.** Only copies and gate-fired edits act there,
+  so it comes from sampled content at gate-fired edits: ×3 over all depths, ×5 at d16.
+- **Re-entry is a pure memory problem,** fixed by the canvas (7% → 0.3%).
+- For terrain this supports what R30 withdrew for zombies: p(content | changed) is broader than the truth at deterministic
+  or absent changes. A gate-fired cell that keeps its class draws another class.
+- **The rule this localizes:**
+  - sample content only where the uncertainty is real (never-seen entering cells, stochastic events);
+  - keep deterministic edits at their point / mode (PI);
+  - read re-entered cells from memory (canvas).
+  - Mob memory still needs volatility (R26).
+
 ### R30 — R29 localized: the content head is calibrated on real contexts; the overshoot is where it is applied (`innov_calib.py`)
 
 Teacher-forced, 320 held-out training windows (seed 20261022), at PI's training-time innovation cells. Each K 4096 centroid
