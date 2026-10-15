@@ -177,6 +177,36 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R15 — Track A structural diagnostic + Track B rendering probe (user's two-track framing, 10-15 evening)
+
+**Exact persistence** (`persistence_variants.py`). Deterministic self-fed H16; same backbone pass, four afterstates; bright,
+depth 16:
+
+| model / afterstate | cow census | zombie census | seen-terrain error | camera | phantoms max | persisting-mob score d1 → d16 |
+|---|---|---|---|---|---|---|
+| IC soft | 0.36 | 0.07 | 1.3% | 61% | 0.03 | 0.92 → 0.37 |
+| IC hard (exact copy of CorrT argmax) | 0.53 | 0.48 | 4.7% | 50% | 0.11 | 0.91 → **0.76** |
+| IC hard + label-free global rendering | 1.35 | 1.52 | 3.9% | 41% | 1.08 | 0.91 → 0.61 |
+| IC hard + true global rendering (oracle) | 0.86 | 0.63 | 6.3% | 46% | 0.41 | 0.91 → 0.79 |
+| ES twin soft | 0.69 | 0.44 | 2.8% | 56% | 0.07 | 0.92 → 0.50 |
+| ES twin hard | 0.75 | 0.59 | 7.5% | 54% | 0.16 | 0.91 → **0.83** |
+
+- **Fading is structural:** exact copies keep mob tokens intact (0.76-0.83 vs 0.37-0.50).
+- **CorrT's argmax is not a trustworthy persistence decision:** wrong discrete choices raise terrain error 3-4× and
+  phantoms 3-4×.
+- The label-free rendering estimate (soft − hard common mode) injects ghost directions (phantoms 1.08).
+- **The open problem is deciding what persists**, not whether exact persistence helps.
+
+**Rendering predictability** (`render_predictability.py`, 3,438 day / 763 night camera-still frame pairs):
+- Day: 58% of the drift is frame-common. Explained by the previous step's change: −1.20; by linear extrapolation: −4.71.
+  Per-cell part by the previous step: −1.14.
+- Night: 5% common; −0.34 / −2.70 / −1.93.
+- **Nothing from history beats predicting no change.** Daylight reaches the 8-bit frames as intermittent quantization
+  steps. Treat it as nuisance (invariance), not prediction. WHITEBOARD §12 corrected.
+
+**Track A launched:** TRANSPORT_SF_PREREG.md (194513f7), chance-forced self-fed continuation, both seeds.
+- Smoke: the self-fed point loss compounds over the 4 generated steps, 0.038 → 0.053 → 0.089 → 0.100 (teacher-forced 0.033).
+
 ### R14 — IC follow-ups: the posterior converged; fading is deterministic and survives supplied chance
 
 **Posterior quality during training** (`ic_posterior.py milestones`; 400 training windows; vs T*, diagnostic):

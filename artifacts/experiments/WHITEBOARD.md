@@ -352,7 +352,11 @@ chance head) removes the hedge.
   because position codes change with scrolls.
 - The drift is equal in the encoder's purely local layer 0 and in Raw.
 - It is not a linear subspace, so no fixed projection or loss metric discards it.
-- Deterministic rendering must be *predicted* (time-of-day is memory); night static needs *learned* invariance.
+- ~~Deterministic rendering must be *predicted*~~ (corrected 10-15 evening, `render_predictability.py`): the rendering change
+  is not predictable from history. The previous step's change explains −120% of the day drift energy (worse than predicting
+  no change); linear extrapolation explains −471%. Daylight reaches the 8-bit frames as intermittent quantization steps.
+  Deterministic in principle, unpredictable from observation in practice: treat it, like night static, as nuisance requiring
+  *invariance*, not prediction.
 - Mob content is perfectly local at every layer. Mob-over-terrain occlusion makes 5% of real moves non-transferable at
   every layer.
 
@@ -374,8 +378,10 @@ deterministic dynamics and HUD consequences (row 2) are.
    - the deterministic camera translation (action);
    - the stochastic local swaps (chance);
    - **the same translation applied to the recurrent memory**, so that memory moves with content.
-2. **Exact, idempotent persistence:** copies of persistent content plus a predicted global rendering update, instead of
-   soft blends that decay when iterated.
+2. **Exact, idempotent persistence** instead of soft blends that decay when iterated. Measured 10-15 evening
+   (`persistence_variants.py`): exact copies keep persisting-mob scores at 0.76-0.83 at depth 16 vs 0.37-0.50 for the soft
+   blend, so fading is structural. But CorrT's argmax is not a trustworthy persistence *decision*: terrain error and
+   phantoms rise. The open problem is deciding what persists.
 3. **Chance-forced self-fed training:** infer each step's reassignment from the real future (posterior), roll the
    deterministic part forward on its own outputs, and apply the point loss at every depth. Inferred chance makes
    multi-step training possible without averaging.
