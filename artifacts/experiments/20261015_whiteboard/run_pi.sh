@@ -1,6 +1,6 @@
 #!/bin/sh
 # TRANSPORT_PI_PREREG.md (Track B) then PI_CANVAS_PREREG.md: waits for both self-fed pipelines to finish (6 GB GPU), smoke,
-# both seeds in parallel, one-step evaluation, recursion readings, verdict; then the evaluation-only canvas arm.
+# both seeds in parallel, one-step evaluation, recursion readings, verdict; then the evaluation-only canvas and sampled-edit arms.
 set -u
 cd "$(dirname "$0")"
 P=../../../.venv/bin/python
@@ -35,3 +35,7 @@ $P entering_memory.py pi_s1 pi_s2 pi_canvas_s1 pi_canvas_s2 >> $LOG/pi_canvas.lo
 $P mob_fading.py pi_canvas_s1 pi_canvas_s2 >> $LOG/pi_canvas.log 2>&1
 $P decision_proxies.py pi_canvas_s1 pi_canvas_s2 >> $LOG/pi_canvas.log 2>&1
 echo CANVASDONE >> $LOG/pi_canvas.log
+$P pi_canvas.py pi_sampled_s1 pi_sampled_s2 > $LOG/pi_sampled.log 2>&1
+$P decision_proxies.py pi_sampled_s1 pi_sampled_s2 >> $LOG/pi_sampled.log 2>&1
+$P mob_fading.py pi_sampled_s1 pi_sampled_s2 >> $LOG/pi_sampled.log 2>&1
+echo SAMPLEDDONE >> $LOG/pi_sampled.log

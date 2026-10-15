@@ -1,4 +1,4 @@
-# PI + world-aligned canvas: addressed memory in recursion (evaluation only), preregistration
+# PI evaluation-only variants: world-aligned canvas (1) and sampled edits (2), preregistration
 
 2026-10-15 evening. Written before PI has trained and before any canvas rollout. One change relative to PI; no training.
 
@@ -49,3 +49,35 @@ noise / Gumbel stream.
 - If PI's own scroll decisions are poor, the canvas misaddresses the view. Camera consistency is reported, and C1 counts only
   camera-consistent trajectories.
 - Fresh confirmation stays sealed.
+
+---
+
+## Variant 2: sampled edits (added 2026-10-15 ~19:05, before PI has trained; independent of variant 1)
+
+**Question.** PI's recursion edits by MAP (gate logit > 0). A change whose probability in context stays below 0.5 is never
+drawn: 10-03, deterministic worlds draw no zombie hits, which follow a hidden cooldown. PI's gate is trained toward the EM
+posterior, so σ(gate) is its own prior probability of a change. Does drawing edits from it, i.e. treating them as stochastic
+innovation, restore rare consequences?
+
+**Arms.** Same checkpoints, roots, context, actions, H16, 8 samples and chance stream:
+- **pi_s{1,2}:** MAP edits.
+- **pi_sampled_s{1,2}:** edit ~ Bernoulli(σ(gate logit)), drawn with their own generator. No canvas; entering cells are
+  always generated.
+
+**Readings (bright, both seeds):**
+- **S1 (primary):** health-drop AUC at H16 (`decision_proxies.py`, `bright.health_drop.auc_16`) above pi's, AND the
+  imagined within-16 rate closer to the real one than pi's.
+- **S2 (no harm):**
+  - seen-terrain error at depth 16 ≤ pi + 0.5pp;
+  - max phantoms per frame ≤ pi + 0.02;
+  - zombie-adjacency AUC at H16 ≥ pi − 0.02.
+
+**Verdict:**
+- **"Rare consequences need sampled innovation"** if S1 and S2 hold at both seeds.
+- **"Sampling draws consequences but harms the rollout"** if S1 holds and S2 fails.
+- **"No gain from sampling"** if S1 fails.
+
+**Secondary:** non-entering edits per step, cow / zombie census, persisting-mob score, health bias.
+
+**Known limit:** the health drop is read by a frozen linear HUD reader. Its 0.5-unit threshold can fire on reader noise; the
+real rate is read by the same reader.

@@ -8,8 +8,14 @@ seen there instead of the generated token. The canvas:
   write    every frame (real context, then each imagined frame after chance) writes its 62 map tokens (not the player cell)
   read     known entering cells copy the stored token exactly; unknown entering cells are generated as in PI; all other cells
            follow PI's own decisions (exact copy / gated edit), then PI's chance operator
-Names: pi_canvas_s{1,2} (sampled), pi_canvas_s{1,2}_ref (deterministic afterstate, no chance). Writes the same files as
-transport_recursion (recursion_samples_<name>.pt, recursion_<name>.json), so every whiteboard analysis reads them by name.
+Names: pi_canvas_s{1,2} (sampled), pi_canvas_s{1,2}_ref (deterministic afterstate, no chance).
+Second evaluation-only variant (PI_CANVAS_PREREG.md, variant 2), no canvas: pi_sampled_s{1,2} -- edits are DRAWN, edit ~
+Bernoulli(sigmoid(gate logit)), instead of PI's MAP rule gate > 0 (entering cells still always generated). The gate is
+trained toward the EM posterior, so sigmoid(gate) is PI's own prior probability of a change; MAP never draws a change whose
+probability stays below 0.5 (10-03: deterministic worlds draw no hits). The Bernoulli draws use their own generator
+(seed 20261019), so the chance noise / Gumbel stream is identical to pi_s{1,2}.
+Writes the same files as transport_recursion (recursion_samples_<name>.pt, recursion_<name>.json), so every whiteboard
+analysis reads them by name.
 Usage: pi_canvas.py <name> ...
 """
 import json
@@ -27,8 +33,9 @@ import audit_s5_direct as A5
 import transport_recursion as TR
 import pi_model as PI
 
-NAMES = {'pi_canvas_s1': ('pi_seed1', 'sample'), 'pi_canvas_s1_ref': ('pi_seed1', 'reference'),
-         'pi_canvas_s2': ('pi_seed2', 'sample'), 'pi_canvas_s2_ref': ('pi_seed2', 'reference')}
+NAMES = {'pi_canvas_s1': ('pi_seed1', 'sample', True, False), 'pi_canvas_s1_ref': ('pi_seed1', 'reference', True, False),
+         'pi_canvas_s2': ('pi_seed2', 'sample', True, False), 'pi_canvas_s2_ref': ('pi_seed2', 'reference', True, False),
+         'pi_sampled_s1': ('pi_seed1', 'sample', False, True), 'pi_sampled_s2': ('pi_seed2', 'sample', False, True)}
 P = TR.W + TR.H                                                           # the origin moves at most one cell per frame
 ROWS, COLS = 7 + 2 * P, 9 + 2 * P
 MAPCELLS = torch.tensor([x for x in range(PI.MAP) if x != 31])
@@ -55,7 +62,7 @@ def rollout(name):
     import transport_model as TM
     from d4mj.train import autocast_context
     config = BASE.settings()
-    directory, mode = NAMES[name]
+    directory, mode, use_canvas, sample_edits = NAMES[name]
     world = PI.PIWorld().cuda().eval()
     world.load_state_dict(torch.load(TR.OUT / directory / 'pi_u3000.pt', map_location='cpu', weights_only=False)['world'])
     panel = torch.load(A5.BASE / 'panel.pt', map_location='cpu', weights_only=False, mmap=True)
@@ -66,8 +73,9 @@ def rollout(name):
     out = torch.empty(R, k_samples, TR.H, 81, 192, dtype=torch.float16)
     flat = out.view(R * k_samples, TR.H, 81, 192)
     g = torch.Generator().manual_seed(20261015)                            # transport_recursion's stream
+    g_edit = torch.Generator().manual_seed(20261019)
     B = 8
-    stats = {'entering_cells': 0, 'entering_known': 0}
+    stats = {'entering_cells': 0, 'entering_known': 0, 'edits_nonentering': 0, 'steps': 0}
     for s0 in range(0, R, B):
         idx = list(range(s0, min(s0 + B, R)))
         n = len(idx) * k_samples
@@ -88,11 +96,15 @@ def rollout(name):
             with autocast_context(config):
                 belief, ha = world.backbone_full(fr, ac)
                 copy, gen, glogit, enter, sl = world.afterstate_parts(fr, ac, belief, ha)
-                after = torch.where(((glogit > 0) | enter)[..., None], gen, copy)
+                if sample_edits:
+                    fire = torch.rand(glogit.shape, generator=g_edit).cuda() < torch.sigmoid(glogit.float())
+                else:
+                    fire = glogit > 0
+                after = torch.where((fire | enter)[..., None], gen, copy)
                 choice = sl[:, 14].argmax(-1).cpu()
                 nxt_origin = origin + shifts[choice]
                 addr = cells(nxt_origin)                                   # [n,63]
-                known = seen.gather(1, addr) & enter[:, 14, :PI.MAP].cpu()
+                known = seen.gather(1, addr) & enter[:, 14, :PI.MAP].cpu() & use_canvas
                 remembered = store.gather(1, addr[..., None].expand(-1, -1, 192))
                 last = after[:, 14].clone()
                 last[:, :PI.MAP] = torch.where(known[..., None].cuda(), remembered.cuda().to(last.dtype), last[:, :PI.MAP])
@@ -104,6 +116,7 @@ def rollout(name):
                     mixed, _ = world.completion.operate(after, world.completion.trunk(belief, noise), gum)
                     nxt = F.layer_norm(mixed, (192,))[:, 14].float()
             stats['entering_cells'] += int(enter[:, 14, :PI.MAP].sum()); stats['entering_known'] += int(known.sum())
+            stats['edits_nonentering'] += int((fire[:, 14] & ~enter[:, 14]).sum()); stats['steps'] += n
             nxt = nxt.cpu()
             origin = nxt_origin
             write(store, seen, origin, nxt)
