@@ -6,7 +6,7 @@ transport_recursion's census) is split by whether the root view holds that type 
   absent    the type is not in the root view: every decoded mob of that type is an arrival (walked in or spawned)
 Census ratio per split = summed imagined count / summed real count; for 'absent', also the real arrival rate per frame.
 If persistence is solved and the gap is arrivals, 'present' is near 1 and 'absent' near 0.
-Usage: census_split.py <model> ... -> prints (artifacts/eda/whiteboard/census_split.json)
+Usage: census_split.py <model> ... -> artifacts/eda/whiteboard/census_split_<models>.json
 """
 import json
 import sys
@@ -41,7 +41,7 @@ def main():
                                           'imagined_per_frame_d1_d8_d16': [round(float(ic[m, d, t].mean()), 3) for d in (0, 7, 15)]}
         res[name] = out
         print(json.dumps({name: out}), flush=True)
-    (ROOT / 'artifacts/eda/whiteboard/census_split.json').write_text(json.dumps(res, indent=1))
+    (ROOT / f'artifacts/eda/whiteboard/census_split_{"_".join(sys.argv[1:])}.json').write_text(json.dumps(res, indent=1))
 
 
 if __name__ == '__main__':

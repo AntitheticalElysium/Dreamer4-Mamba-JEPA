@@ -14,6 +14,10 @@ Bernoulli(sigmoid(gate logit)), instead of PI's MAP rule gate > 0 (entering cell
 trained toward the EM posterior, so sigmoid(gate) is PI's own prior probability of a change; MAP never draws a change whose
 probability stays below 0.5 (10-03: deterministic worlds draw no hits). The Bernoulli draws use their own generator
 (seed 20261019), so the chance noise / Gumbel stream is identical to pi_s{1,2}.
+Third variant (PI_INNOV_PREREG.md), no canvas, MAP edits: pi_innov_s{1,2} -- every innovated cell (gate > 0, or entering) takes
+the centroid of a code DRAWN from the head-only content categorical (pi_innov_train.py, innov_u1500.pt; E2's K 4096 Raw codes)
+at temperature 1 (Gumbel-max with its own generator, seed 20261021) instead of the point-predicted token; everything else is
+PI. The chance noise / Gumbel stream is identical to pi_s{1,2}.
 Writes the same files as transport_recursion (recursion_samples_<name>.pt, recursion_<name>.json), so every whiteboard
 analysis reads them by name.
 Usage: pi_canvas.py <name> ...
@@ -35,7 +39,9 @@ import pi_model as PI
 
 NAMES = {'pi_canvas_s1': ('pi_seed1', 'sample', True, False), 'pi_canvas_s1_ref': ('pi_seed1', 'reference', True, False),
          'pi_canvas_s2': ('pi_seed2', 'sample', True, False), 'pi_canvas_s2_ref': ('pi_seed2', 'reference', True, False),
-         'pi_sampled_s1': ('pi_seed1', 'sample', False, True), 'pi_sampled_s2': ('pi_seed2', 'sample', False, True)}
+         'pi_sampled_s1': ('pi_seed1', 'sample', False, True), 'pi_sampled_s2': ('pi_seed2', 'sample', False, True),
+         'pi_innov_s1': ('pi_seed1', 'sample', False, False, True), 'pi_innov_s2': ('pi_seed2', 'sample', False, False, True)}
+CODES = A5.ROOT / 'artifacts/eda/levers_codebooks_v1/raw_K4096.pt'
 P = TR.W + TR.H                                                           # the origin moves at most one cell per frame
 ROWS, COLS = 7 + 2 * P, 9 + 2 * P
 MAPCELLS = torch.tensor([x for x in range(PI.MAP) if x != 31])
@@ -62,7 +68,13 @@ def rollout(name):
     import transport_model as TM
     from d4mj.train import autocast_context
     config = BASE.settings()
-    directory, mode, use_canvas, sample_edits = NAMES[name]
+    directory, mode, use_canvas, sample_edits, *rest = NAMES[name]
+    innov_head = None
+    if rest and rest[0]:
+        saved = torch.load(TR.OUT / directory / 'innov_u1500.pt', map_location='cpu', weights_only=False)['head']
+        codes = torch.load(CODES, map_location='cpu', weights_only=False)['codes'].float().cuda()
+        innov_head = torch.nn.Linear(256, codes.shape[0]).cuda(); innov_head.load_state_dict(saved)
+        g_innov = torch.Generator().manual_seed(20261021)
     world = PI.PIWorld().cuda().eval()
     world.load_state_dict(torch.load(TR.OUT / directory / 'pi_u3000.pt', map_location='cpu', weights_only=False)['world'])
     panel = torch.load(A5.BASE / 'panel.pt', map_location='cpu', weights_only=False, mmap=True)
@@ -75,7 +87,7 @@ def rollout(name):
     g = torch.Generator().manual_seed(20261015)                            # transport_recursion's stream
     g_edit = torch.Generator().manual_seed(20261019)
     B = 8
-    stats = {'entering_cells': 0, 'entering_known': 0, 'edits_nonentering': 0, 'steps': 0}
+    stats = {'entering_cells': 0, 'entering_known': 0, 'edits_nonentering': 0, 'steps': 0, 'innovated': 0}
     for s0 in range(0, R, B):
         idx = list(range(s0, min(s0 + B, R)))
         n = len(idx) * k_samples
@@ -107,6 +119,13 @@ def rollout(name):
                 known = seen.gather(1, addr) & enter[:, 14, :PI.MAP].cpu() & use_canvas
                 remembered = store.gather(1, addr[..., None].expand(-1, -1, 192))
                 last = after[:, 14].clone()
+                if innov_head is not None:                                 # sampled content at every innovated cell
+                    where = torch.nonzero((fire | enter)[:, 14])
+                    lg = innov_head(belief[:, 14].float())[where[:, 0], where[:, 1]]
+                    u = torch.rand(lg.shape, generator=g_innov).clamp(1e-12, 1 - 1e-12).cuda()
+                    code = (lg - torch.log(-torch.log(u))).argmax(-1)
+                    last[where[:, 0], where[:, 1]] = codes[code].to(last.dtype)
+                    stats['innovated'] += len(where)
                 last[:, :PI.MAP] = torch.where(known[..., None].cuda(), remembered.cuda().to(last.dtype), last[:, :PI.MAP])
                 after = torch.cat([after[:, :14], last[:, None], after[:, 15:]], 1)
                 if mode == 'reference':

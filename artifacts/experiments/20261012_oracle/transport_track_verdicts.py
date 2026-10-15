@@ -27,7 +27,12 @@ sampled S1 decision health_drop auc_16(pi_sampled) > pi's AND |imagined_rate_wit
         terrain d16 <= pi + 0.005, max phantoms <= pi + 0.02, zombie_adj auc_16 >= pi - 0.02. "rare consequences need sampled
         innovation" if S1 and S2 at both seeds; "sampling draws consequences but harms the rollout" if S1 holds and S2 fails;
         "no gain from sampling" if S1 fails.
-Usage: transport_track_verdicts.py sf|pi|canvas|sampled -> artifacts/eda/oracle_v1/transport/<mode>_verdict.json
+Sampled innovation content (20261015_whiteboard/PI_INNOV_PREREG.md), written before its result: per seed, pi_innov vs pi:
+  A1 cow arrivals per frame at d16 (census_split_pi_innov_s1_pi_innov_s2.json, cow_absent imagined d16) in [0.25, 1.5] x real;
+  A2 cow census d16 closer to 1 than pi's; H persisting-mob score d16 >= pi - 0.05, seen terrain d16 <= pi + 0.005, camera d16
+  >= pi - 0.02, phantoms per frame <= real_phantoms per frame at every depth. "sampled innovation restores arrivals" if A1, A2,
+  H at both seeds; "arrivals restored but the rollout is harmed" if A1 at both seeds and H fails; "not supported" if A1 fails.
+Usage: transport_track_verdicts.py sf|pi|canvas|sampled|innov -> artifacts/eda/oracle_v1/transport/<mode>_verdict.json
 """
 import json
 import sys
@@ -163,8 +168,42 @@ def variant(kind):
     return res
 
 
+def innov():
+    res = {}
+    split = json.loads((W / 'census_split_pi_innov_s1_pi_innov_s2.json').read_text())
+    fade = json.loads((W / 'mob_fading_pi_innov_s1_pi_innov_s2.json').read_text())
+    base_fade = json.loads((W / 'mob_fading_pi_s1_pi_s2_pi_s1_ref.json').read_text())
+    for s in (1, 2):
+        x, b = rec(f'pi_innov_s{s}'), rec(f'pi_s{s}')
+        cow = split[f'pi_innov_s{s}']['cow_absent']
+        arr, real = cow['imagined_per_frame_d1_d8_d16'][2], cow['real_per_frame_d1_d8_d16'][2]
+        census = [x['census_ratio[zombie,cow,skeleton]_by_depth'][15][1], b['census_ratio[zombie,cow,skeleton]_by_depth'][15][1]]
+        persist = [fade[f'pi_innov_s{s}']['vanish_rate_by_depth'][15]['mean_score_of_persisting'],
+                   base_fade[f'pi_s{s}']['vanish_rate_by_depth'][15]['mean_score_of_persisting']]
+        harm = {'persisting_d16': persist, 'seen_terrain_d16': [x['tile_error_seen_by_depth'][15], b['tile_error_seen_by_depth'][15]],
+                'camera_d16': [x['camera_consistent_by_depth'][15], b['camera_consistent_by_depth'][15]],
+                'phantoms_vs_real_by_depth': [x['phantoms_per_frame_by_depth'], x['real_phantoms_per_frame_by_depth']]}
+        h_ok = (persist[0] >= persist[1] - .05 and harm['seen_terrain_d16'][0] <= harm['seen_terrain_d16'][1] + .005 and
+                harm['camera_d16'][0] >= harm['camera_d16'][1] - .02 and
+                all(p <= r for p, r in zip(x['phantoms_per_frame_by_depth'], x['real_phantoms_per_frame_by_depth'])))
+        res[f'seed{s}'] = {'cow_arrivals_d16': [arr, real], 'A1': bool(.25 * real <= arr <= 1.5 * real),
+                           'cow_census_d16': census, 'A2': bool(abs(census[0] - 1) < abs(census[1] - 1)), 'no_harm': harm, 'H': bool(h_ok),
+                           'zombie_arrivals_d16': [split[f'pi_innov_s{s}']['zombie_absent']['imagined_per_frame_d1_d8_d16'][2],
+                                                   split[f'pi_innov_s{s}']['zombie_absent']['real_per_frame_d1_d8_d16'][2]]}
+    seeds = [res['seed1'], res['seed2']]
+    if all(r['A1'] and r['A2'] and r['H'] for r in seeds):
+        res['verdict'] = 'sampled innovation restores arrivals'
+    elif all(r['A1'] for r in seeds) and not all(r['H'] for r in seeds):
+        res['verdict'] = 'arrivals restored but the rollout is harmed'
+    elif not all(r['A1'] for r in seeds):
+        res['verdict'] = 'not supported'
+    else:
+        res['verdict'] = 'partial'
+    return res
+
+
 if __name__ == '__main__':
     which = sys.argv[1]
-    res = {'sf': sf, 'pi': pi, 'canvas': lambda: variant('canvas'), 'sampled': lambda: variant('sampled')}[which]()
+    res = {'sf': sf, 'pi': pi, 'canvas': lambda: variant('canvas'), 'sampled': lambda: variant('sampled'), 'innov': innov}[which]()
     (T / f'{which}_verdict.json').write_text(json.dumps(res, indent=1))
     print(json.dumps(res, indent=1))
