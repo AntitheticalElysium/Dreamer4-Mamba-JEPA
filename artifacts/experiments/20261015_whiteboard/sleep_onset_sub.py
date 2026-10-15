@@ -13,6 +13,9 @@ M = 4 futures; first action SLEEP; recorded continuation; 16 steps as dv16.imagi
                sleeping player texture) / at the 18 HUD cells / both: which cue separates appearance from real_onset
   app_pihud    appearance map cells, PI's OWN sampled HUD at frame 1 (the appearance substitution otherwise fixes the HUD to the
                root's and deletes PI's own onset-step consequence): an emulation of PI with an appearance operator on its copies
+  tokop_pihud  as app_pihud, but the map cells come from R49's token-space operator (appearance_op_d4_s1.pt) applied to the
+               root's Raw tokens with the source's sleep theta: no pixel-equivalent state
+  tokopfit_pihud  the same with theta INFERRED from real token pairs through the frozen operator (appearance_theta_d4_s1.json)
 Env: SUB_VARIANTS (comma list), SUB_TAG (output suffix).
 Per-future health and zombie adjacency by depth are saved (sleep_onset_sub_<world>.pt) for conditional readouts: P(drop | zombie
 adjacent), damage after depth 1 only (real_onset's depth-1 HUD is real).
@@ -92,6 +95,13 @@ def main():
     head = torch.load(A5.BASE / 'learned_innovation/eval_u3000_h01/mob_heads.pt', map_location='cpu', weights_only=False)['heads']['real']
     summary = json.loads((DV.OUT / 'dv16.json').read_text())
     P16 = torch.stack([r['P'] for r in roots])[..., 2]                                        # [200,17]
+    top = None
+    if any(v.startswith('tokop') for v in VARIANTS):
+        import appearance_op as AO
+        globals()['AO'] = AO
+        top = AO.Operator(4).cuda().eval()
+        top.load_state_dict(torch.load(DV.OUT / 'appearance_op_d4_s1.pt', map_location='cuda', weights_only=False))
+        th_fit = torch.tensor(json.loads((DV.OUT / 'appearance_theta_d4_s1.json').read_text())['fitted_theta']).cuda()
     onsets = []
     for r in roots:
         root = r['frames'][-1]
@@ -103,7 +113,12 @@ def main():
         variants = {'appearance': c_app, 'real_onset': c_real}
         for name, cells in (('app_player', [31]), ('app_hud', list(range(63, 81))), ('app_player_hud', [31] + list(range(63, 81)))):
             c = c_app.clone(); c[cells] = c_real[cells]; variants[name] = c
-        onsets.append({k: enc.recontext(c[None])[0].half().cpu() for k, c in variants.items()})
+        on = {k: enc.recontext(c[None])[0].half().cpu() for k, c in variants.items()}
+        if top is not None:                                                                # R49 token-space operator, source sleep theta
+            with torch.no_grad():
+                on['tokop'] = top(enc.recontext(c_root[None]).float(), AO.sleep_theta()[None].cuda())[0].half().cpu()
+                on['tokopfit'] = top(enc.recontext(c_root[None]).float(), th_fit[None])[0].half().cpu()
+        onsets.append(on)
     res = {'roots': len(roots), 'M': M}
     for wname in ('pi_s1', 'pi_s2'):
         kind, ckpt, _ = DV.WORLDS[wname]
@@ -116,7 +131,8 @@ def main():
             for v in VARIANTS:
                 acts = torch.cat([r['led'][1:8], torch.tensor([0 if v == 'noop_natural' else SLEEP]), r['rec']])[None].repeat(M, 1)
                 g = torch.Generator().manual_seed(20261040 + ri)                                 # the same draws for every variant
-                imag = rollout(world, ctx, acts, g, config, onsets[ri].get('appearance' if v == 'app_pihud' else v), v == 'app_pihud')
+                src = {'app_pihud': 'appearance', 'tokop_pihud': 'tokop', 'tokopfit_pihud': 'tokopfit'}.get(v, v)
+                imag = rollout(world, ctx, acts, g, config, onsets[ri].get(src), v in ('app_pihud', 'tokop_pihud', 'tokopfit_pihud'))
                 hk = hud_health(imag.float(), bank['heads']['hud'])                               # [M,16]
                 mob = C.decode(imag.float(), bank, head)['mob']['real'][..., 0]                   # [M,16,81]
                 A = acc[v]

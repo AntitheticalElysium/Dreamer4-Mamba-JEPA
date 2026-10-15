@@ -222,6 +222,83 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R49 — a reconstruction-free appearance operator works ONCE (IWM-style, on Raw tokens), but it is not compositional
+
+Scripts: `appearance_op.py`, `appearance_op_tiles.py`, `appearance_theta.py`, `appearance_identity.py`; `sleep_onset_sub.py`
+variants `tokop_pihud`, `tokopfit_pihud`.
+
+**Question.** R47's operator lives in pixel-linear coordinates, and the user's constraint is reconstruction-free. Is there a
+latent-space operator?
+
+**Literature (read first).** Image World Models (Garrido et al. 2024, arXiv 2403.00504) learn photometric operators in JEPA latent
+space from **synthetic, parameter-conditioned pairs**:
+- feature conditioning: MRR 0.79-0.85 with an 18-layer predictor, 0.09-0.25 with 12 layers on weak / mixed augmentation, 0 with
+  no conditioning;
+- a predictor that cannot apply the transformation makes the encoder invariant instead.
+
+Synthetic pairs remove exactly the confound that broke R47's real-pair fits (the step's content changes). Related: SIE
+(Garrido et al. ICML 2023, hypernetwork predictor, split invariant / equivariant); symmetric embeddings for equivariant world
+models (Park et al. ICML 2022).
+
+**Setup:**
+- Operator g(tokens [81,192], θ [12]): feature conditioning, transformer of depth 4 or 8 (width 256), residual, LN.
+- Trained on frozen Raw tokens of diagnosis_futures frames (seeds 900000-900143; no overlap with deeppanel DEV) recoloured by
+  random per-pixel colour maps from a generic family (saturation / grayscale, brightness 0.4-1.3, tint −0.1-0.15; map rows
+  only, 8-bit). The family's ranges were chosen to cover the game's documented render maps; the sleep map itself is never
+  targeted.
+- 6,000 updates. Synthetic held-out token error 1.25-1.37 vs copy 10.7.
+- **Declared before running:** feasible if zombie and cow recall vs the oracle are ≥ 0.90 and tile agreement is ≥ 0.98 (R47's
+  200 test roots, source sleep θ).
+
+**Results** (vs the oracle; R47's references: colour map 0.996 / 0.974 / 0.976, free token operator 0.966 / 0.64 / 0.82):
+
+| operator | tile agreement | zombie recall (155) | cow recall (82) | verdict |
+|---|---|---|---|---|
+| depth 4 | 0.953 | 0.961 | 0.963 | not feasible (tile) |
+| depth 8 | 0.951 | 0.955 | 0.963 | not feasible (tile) |
+| depth 4 + exact-identity draws (p 0.2) | 0.957 | 0.929 | 0.963 | not feasible (tile) |
+| depth 4, θ **inferred** label-free from real token pairs through the frozen g (400 fit roots, Adam on 12 numbers) | 0.953 | 0.961 | 0.963 | identical to the given θ |
+
+- **Capacity is not the limit** (unlike IWM): depth 8 = depth 4.
+- **Tile errors:** path → grass (21% of path cells) and grass → tree / water / stone. The reader itself disagrees with the
+  oracle on 2.3% even on the real asleep frame (agreement 0.977).
+- **The inferred θ is not the source's matrix** (g does not identify θ; a negative blue coefficient), but it is functionally
+  equivalent.
+
+**Decision value inside PI's imagination** (DV16 roots, map cells from g at the onset, PI's own HUD; as `app_pihud`):
+
+| (s1 / s2) | zombie adjacent | expected safe | sleep chosen |
+|---|---|---|---|
+| natural PI | 0.10 / 0.15 | 0.356 / 0.478 | 43 / 24% |
+| exact appearance (pixel-equivalent; R48) | 0.75 / 0.69 | 0.492 / 0.522 | 17 / 14% |
+| **token operator, source θ** | 0.68 / 0.64 | **0.485 / 0.531** | 18 / 14% |
+| **token operator, inferred θ** | 0.68 / 0.64 | **0.488 / 0.528** | 18 / 14% |
+
+**Recursion check (declared: stable if zombie recall ≥ 0.90 after 16 identity applications).** Apply g(·, identity)
+repeatedly to the awake roots:
+
+| applications | 1 | 2 | 4 | 8 | 16 |
+|---|---|---|---|---|---|
+| token drift / zombie recall (depth 4) | 1.30 / 0.82 | 2.16 / 0.71 | 4.0 / 0.61 | 8.4 / 0.23 | 15.6 / 0.04 |
+| the same, with identity draws | 0.55 / 1.0 | 1.03 / 1.0 | 2.2 / 1.0 | 5.4 / 0.84 | 11.6 / **0.26** |
+
+After the sleep θ, identity applications degrade faster: zombies 0.67 after 4, 0 after 8.
+
+**What we learn:**
+- **There is a reconstruction-free appearance operator for one event.** Trained only on synthetic recolourings, conditioned on
+  12 numbers that can be inferred label-free from real token pairs, it carries 93-96% of mobs through the sleep onset. In PI's
+  imagination it gives the same decision gain as the exact pixel-equivalent transform.
+- **It is not compositional.** A learned token map is approximate. Applied every step (or at every lighting change) its error
+  compounds, the non-idempotent fading of R21 again.
+  - The pixel-linear colour map composes exactly; its identity is exact by construction.
+- **Design consequence:**
+  - **reconstruction-free:** the operator can only be a *gated, one-shot* event transform (sleep onset, wake-up), not a per-step
+    relighting of copies. The world must decide when appearance changed;
+  - **exact and compositional:** pixel-equivalent copies (content codes). That is the user's decision.
+- **Size of the prize:** fixing the onset moves PI to 0.49-0.53. The sleep-excluded level is 0.566-0.575, the FIT prior is
+  0.561, one real future 0.61. Appearance is necessary but small. The larger decision lever is the consequence hedge (R48: damage
+  magnitude 45-70% of real; a regression blur, not a probability blend).
+
 ### R48 — the sleep blind spot, localized: erasure at onset (fixable), then a damage-magnitude hedge; PI already knows the rule and the hidden cooldown
 
 Scripts: `sleep_onset_sub.py` (substitution), `sleep_onset_cond.py`, `sleep_incidence.py`, `sleep_attack_onestep.py`,
@@ -275,6 +352,11 @@ Cooldown read from history = frames since the last health drop.
 - **Magnitudes are hedged:**
   - asleep −4.6 / −4.0 vs real −6.9;
   - awake −1.05 / −1.66 vs −1.97.
+- **The hedge is a regression blur, not a probability blend:**
+  - the per-event predicted change is unimodal: median −4.36 / −4.31, 10-90% range −6.5 … −3.45 / −5.36 … −2.46;
+  - the real change is tightly −7.0;
+  - the draws are identical, because PI's HUD content is deterministic given the belief;
+  - it sits between the frequent awake hit (−2) and the rare sleeper hit (−7).
 - The behaviour data confounds the counterfactual:
   - at sleep onset next to a zombie, 97.5% of training cases were just hit (cooldown active, P(attack) 0.02);
   - 181 of DV16's 200 roots have no drop in the last ≥ 6 context frames, i.e. the rare cell;

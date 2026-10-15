@@ -537,6 +537,15 @@ Measured with **exact** transformations (diagnosis futures; R41 fixed my constru
   2. learn an encoder in which global photometric changes act as a shared low-dimensional operator (an equivariance
      objective), staying latent;
   3. leave appearance to regeneration and accept the erasure.
+- **R49 adds a measured fourth option:** a latent operator on the frozen Raw tokens, Image-World-Model style (conditioned on 12
+  numbers, trained only on synthetic recolourings, θ inferable label-free).
+  - It keeps 93-96% of mobs through the sleep onset and gives the same DV16 decision gain as option 1.
+  - Terrain is 0.95-0.96, below the declared 0.98.
+  - **It is not compositional:** repeated application compounds its error (16 identity applications: zombies 0.26).
+  - So it can only serve as a gated, one-shot event transform (sleep onset / wake-up), never as per-step relighting.
+  - Option 1 composes exactly.
+- **Weight of the choice:** fixing appearance moves PI's decisions only to ~0.49-0.53. The sleep-excluded ceiling is 0.57, and
+  the larger lever is the consequence hedge (§16).
 
 ## 16. 2026-10-16 — selective persistence vs an ordinary latent belief (user's sharpened question; NOTEBOOK R44)
 

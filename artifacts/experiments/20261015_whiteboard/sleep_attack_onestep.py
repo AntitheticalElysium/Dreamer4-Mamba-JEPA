@@ -7,7 +7,8 @@ alive), 300 seeded transitions t -> t+1 per class:
   asleep_adjacent_safe / awake_adjacent_safe   the same with no drop (false-alarm controls)
 Each event is the last transition of a 16-frame window (frames t-14 .. t+1; start clamped to 0). PI u3000 (s1, s2), teacher-forced,
 4 sampled one-step outputs per window. Readouts at t+1: P(predicted drop >= 0.5 below the real health at t), mean predicted health
-change vs real, and the share of HUD cells PI edits.
+change vs real, and the share of HUD cells PI edits; quantiles of the predicted and real health change per event and the spread
+across draws (is the hedge a probability blend, a regression blur, or sampling?).
 Usage: sleep_attack_onestep.py -> artifacts/eda/whiteboard/sleep_attack_onestep.json
 """
 import json
@@ -81,8 +82,13 @@ def main():
                 pred_drop.append(hp <= ht - .5); d_pred.append(hp - ht); d_real.append(hr - ht)
                 hud_edit.append(aux['edits'][ar, pos_r.cuda(), 63:].float().mean(-1).cpu())
             pd, dp, dr, he = (torch.cat(x).float() for x in (pred_drop, d_pred, d_real, hud_edit))
+            q = torch.tensor([.1, .25, .5, .75, .9])
             out[k] = {'events': len(ev), 'P_predicted_drop': round(float(pd.mean()), 4), 'mean_pred_health_change': round(float(dp.mean()), 3),
-                      'mean_real_health_change': round(float(dr.mean()), 3), 'hud_edit_share': round(float(he.mean()), 4)}
+                      'mean_real_health_change': round(float(dr.mean()), 3), 'hud_edit_share': round(float(he.mean()), 4),
+                      'pred_change_quantiles_10_25_50_75_90': [round(float(v), 2) for v in dp.quantile(q)],
+                      'real_change_quantiles_10_25_50_75_90': [round(float(v), 2) for v in dr.quantile(q)],
+                      'pred_change_draw_spread': round(float(dp.view(-1, DRAWS).std(1).mean()), 3),
+                      'pred_minus_real_abs_median': round(float((dp - dr).abs().median()), 2)}
         res[wname] = out
         print(json.dumps({wname: out}, indent=1), flush=True)
         del world; torch.cuda.empty_cache()
