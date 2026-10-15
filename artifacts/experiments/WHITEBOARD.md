@@ -526,3 +526,10 @@ Measured with **exact** transformations (diagnosis futures; R41 fixed my constru
   - it keeps one-step coherence;
   - it improves food / hazard decision proxies.
 - Whether that improves *decisions*: DV16, running.
+
+**DV16 (R45): decision value.**
+- Imagined-risk action choice over 17 first actions is dominated by a **sleep blind spot**. Sleep is deadly (P16 0.86); PI
+  imagines it as safest and picks it at 24-43% of roots, falling below uniform.
+- With sleep excluded, every world beats uniform by ~0.03-0.05 and **PI ≈ IC**: persistence does not improve decisions.
+- **Binding constraint for useful imagination: the consequences of rare, high-stakes actions** (health / damage). This
+  outranks representation staleness, and it is the row-2 / row-3 consequence problem first diagnosed in E14.

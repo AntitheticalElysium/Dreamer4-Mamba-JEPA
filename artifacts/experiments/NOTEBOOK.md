@@ -222,6 +222,49 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R45 — DV16 RESULT: imagination's decision value is dominated by a SLEEP blind spot; persistence does not help decisions
+
+Preregistered (`DV16_PREREG.md`, `dv16.py`; 200 deeppanel DEV opp16 roots, 8-frame context, 17 first actions, M = 4 futures,
+recorded continuation, 16 steps, frozen readers). **P1 (PI > IC) and P2 (PI > uniform) both fail, at both seeds.**
+
+| expected safe at 16 | HD (primary) | HL | ZA |
+|---|---|---|---|
+| uniform / FIT prior / one real future / oracle31 | 0.512 / 0.561 / 0.610 / 0.715 | | |
+| D parent (deterministic) | **0.555** (+0.042 [0.021, 0.064] vs uniform) | 0.576 | 0.482 |
+| IC s1 / s2 | 0.480 / 0.529 | 0.518 / 0.550 | 0.447 / 0.433 |
+| **PI s1 / s2** | **0.355 / 0.476** | 0.281 / 0.372 | 0.229 / 0.240 |
+
+- PI − IC (HD): **−0.126 [−0.170, −0.082]** (s1), **−0.053 [−0.088, −0.021]** (s2).
+- PI − uniform: −0.158 / −0.036 (intervals exclude 0).
+
+**Cause: sleep.**
+- Real P(dead by 16) after sleeping is **0.86**, against 0.42-0.48 for every other first action.
+- PI imagines sleep as the *safest* action (imagined HD 0.28 at s1 vs 0.58-0.69 for other actions) and picks it at **43% / 24%**
+  of roots. IC picks it at 19%, the D parent at 6%.
+- Sleep greys the whole frame, a global change PI must regenerate. The damage that follows (zombies attack sleepers) is rare in
+  the behaviour data, so the world imagines a quiet grey future.
+
+**Sleep excluded** (diagnostic, not preregistered; references over 16 actions: uniform 0.535, oracle 0.702):
+- **Every world beats uniform:** D 0.577, IC 0.580 / 0.588, PI 0.566 / 0.575. PI − uniform is +0.031 [0.019, 0.044] and
+  +0.040 [0.025, 0.056]. That is ~20-25% of the uniform → oracle margin.
+- **PI − IC:**
+  - HD −0.013 [−0.032, +0.005] and −0.012 [−0.032, +0.005];
+  - HL −0.044 / −0.037 (PI worse, significant);
+  - ZA +0.009 / +0.005 (not significant).
+
+**What we learn (big picture):**
+- **Persistence improves one-step coherence, recursion persistence and the decision *proxies* (R23), but not decisions.** On
+  this H16 action-choice test PI is no better than IC, and slightly worse on health loss.
+- **The decisive failure is a consequence blind spot for a rare, high-stakes action.** A world that misses the consequence of one
+  action is driven to it by argmin. PI, the most "conservative" imaginer, is the most exposed: by default nothing changes, so
+  danger must be *edited in*.
+- This is the WHITEBOARD's rare-consequence / health problem (E14, the health diagnosis) at decision level. It is now the
+  binding constraint on usefulness, ahead of representation staleness.
+- **Not yet separated:**
+  - whether the world fails to imagine the damage;
+  - or the frozen readers fail on imagined grey sleep frames;
+  - or both.
+
 ### R44 — PI vs LB (LB_PREREG): mechanically "PI advantage", but LB cannot represent mobs, so the question stays open
 
 **LB:** R2-Dreamer's RSSM imported unchanged (12M configuration), a JEPA-token embedding, a token readout with the summed
