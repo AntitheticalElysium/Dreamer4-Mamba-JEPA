@@ -68,3 +68,19 @@
   - A matched spatial-latent ablation would be the follow-up.
 - LB's stochasticity is the RSSM prior. It has no separate chance operator.
 - Fresh confirmation stays sealed.
+
+## Addendum (10-15 late, before any LB evaluation): a defect in the token objective's scale, corrected
+
+**What happened.** The first launch scored the readout with PI's *mean* D token loss. Against R2-Dreamer's KL, which is summed
+over latent dimensions, encoding the observation was worth less than its KL cost, and the posterior collapsed:
+- posterior entropy 87.7 of a maximum of 88.7;
+- KL at the free-bits floor;
+- the readout predicted mean tokens (evaluation-pipeline smoke at ~2.7k updates: no mobs, 45-80% tile error);
+- the same through 2.5k updates at both seeds.
+
+**Correction.** R2-Dreamer's decoder likelihood sums over pixels, so LB now uses R2-Dreamer's own `MSEDist(agg='sum')`, summed
+over the 81 × 192 token elements. This restores the reference's loss scale; it is not a tuning choice. PI's mean D loss is
+logged for comparison.
+
+Both seeds restart from scratch (`lb_v2`); the discarded runs are not used. Budget, extension rule, readings and verdict are
+unchanged.

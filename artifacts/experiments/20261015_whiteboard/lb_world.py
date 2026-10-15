@@ -11,9 +11,13 @@ Two adaptations to our setting (disclosed):
   embed    an MLP over the frozen Raw JEPA tokens of the frame (81 x 192 -> 1024 -> 1024 -> 1024; RMSNorm + SiLU), in place of
            R2-Dreamer's pixel CNN (our evidence is the token grid, as for PI)
   readout  the representation objective is the prediction of the CURRENT frame's JEPA tokens from feat = (stoch, deter) by a
-           token head (feat -> 1024 -> 81 x 64, + learned cell embedding, per-cell MLP 64 -> 256 -> 192), scored with the same D
-           token loss PI uses (loss_intervention.objective 'D') -- reconstruction-free (no pixels) and the same target family as
-           PI; R2-Dreamer's Barlow alignment would leave no token readout for the frozen readers. Scale 1.0.
+           token head (feat -> 1024 -> 81 x 64, + learned cell embedding, per-cell MLP 64 -> 256 -> 192), scored with
+           R2-Dreamer's own MSEDist(agg='sum') -- the squared error SUMMED over all 81 x 192 token elements, as R2-Dreamer's
+           decoder likelihood sums over pixels -- reconstruction-free (no pixels), same target family as PI; R2-Dreamer's
+           Barlow alignment would leave no token readout for the frozen readers. Scale 1.0. PI's mean D loss is logged too.
+           (10-15 late correction: the first launch used PI's MEAN D loss; against KL summed over latent dimensions the
+           observation was worth < 1 nat and the posterior collapsed -- entropy 87.7 of 88.7 max, KL at the free-bits floor,
+           readout = mean tokens, through 2.5k updates. Discarded before any evaluation; LB_PREREG addendum.)
 Windows / batch exactly as PI (seeded training-ledger windows of 16 frames, batch 16); each window starts the RSSM (is_first).
 Actions: one-hot 17; the RSSM step for frame i takes the action at frame i-1 (zero at the first frame).
 Usage: lb_world.py --seed-set 1|2 [--updates 30000] [--stop-after N] -> transport/lb_seed<s>/lb_u<updates>.pt (+ resumable state)
@@ -44,6 +48,7 @@ from torch import nn
 from torch.nn import functional as F
 
 import rssm as R2RSSM                                                              # R2-Dreamer, unchanged
+import distributions as R2D_DISTS                                                  # R2-Dreamer, unchanged
 from optim import LaProp, clip_grad_agc_                                           # R2-Dreamer, unchanged
 from tools import weight_init_                                                     # R2-Dreamer, unchanged
 
@@ -92,9 +97,11 @@ def losses(w, frames, actions):
     _, prior_logit = w.rssm.prior(deter)
     dyn, rep = w.rssm.kl_loss(post_logit, prior_logit, KL_FREE)
     pred = w.readout(stoch, deter)
-    tok = L.objective(L.components(pred, frames.float()), 'D')
-    loss = DYN * dyn.mean() + REP * rep.mean() + TOK * tok
-    return loss, {'dyn': float(dyn.mean()), 'rep': float(rep.mean()), 'token': float(tok),
+    nll = -R2D_DISTS.MSEDist(pred.flatten(-2), agg='sum').log_prob(frames.float().flatten(-2)).mean()
+    with torch.no_grad():
+        tok = L.objective(L.components(pred, frames.float()), 'D')                   # PI's mean D loss, for comparison
+    loss = DYN * dyn.mean() + REP * rep.mean() + TOK * nll
+    return loss, {'dyn': float(dyn.mean()), 'rep': float(rep.mean()), 'token_nll_sum': float(nll), 'token_D_mean': float(tok),
                   'prior_entropy': float(w.rssm.get_dist(prior_logit).entropy().mean()),
                   'post_entropy': float(w.rssm.get_dist(post_logit).entropy().mean())}
 
@@ -118,7 +125,7 @@ def main():
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / OPT['warmup']))
     d = L.OUT / OUT_NAME / f'lb_seed{a.seed_set}'; d.mkdir(parents=True, exist_ok=True)
     source = [Path(__file__), prereg, R2D / 'rssm.py', R2D / 'optim/laprop.py', R2D / 'optim/agc.py', R2D / 'distributions.py']
-    contract = {'format': 'lb_v1', 'sources_inputs': {str(p.relative_to(L.ROOT)): L.sha(p) for p in source},
+    contract = {'format': 'lb_v2', 'sources_inputs': {str(p.relative_to(L.ROOT)): L.sha(p) for p in source},
                 'data_contract_id': manifest['contract_id'], 'seed_set': a.seed_set, 'updates': a.updates, 'cfg': CFG, 'opt': OPT,
                 'parameters': sum(p.numel() for p in params), 'training_semantic_or_simulator_labels': False}
     cid = hashlib.sha256(json.dumps(contract, sort_keys=True).encode()).hexdigest()
