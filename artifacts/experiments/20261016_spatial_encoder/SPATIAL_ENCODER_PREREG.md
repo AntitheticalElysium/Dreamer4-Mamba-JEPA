@@ -123,3 +123,17 @@ diagnosis-store frames, seeds disjoint between fit and test; identical protocol 
   later question.
 - Linear probes are fitted with simulator labels for evaluation only. No label enters any training.
 - Fresh confirmation data stays sealed; the judge block is not read.
+
+## Amendment 1 (2026-10-16, before any result; memory)
+
+- SIGReg over all B·81 = 10,368 patch samples per frame index needs about 2.7 GB for its projections, and fails on the 6 GB GPU.
+- It uses **1,024 random patches per frame index** instead.
+- Its statistic is the Epps-Pulley test statistic multiplied by the sample count (`d4mj/lewm.py:132`). The weight is therefore
+  **0.09 · 128 / 1,024**, which keeps LeWM's per-discrepancy strength at its batch of 128. Using all patches at 0.09 would
+  have made it about 81× stronger.
+- The batch is Raw's 128 windows (the recipe validator requires it). The earlier "batch 64" is withdrawn.
+
+## Amendment 2 (before any result)
+
+- 1,024 patches still exceed the GPU when combined with the full arm's doubled encoder pass (backward at 4.9 GB).
+- Every SIGReg arm uses **512 random patches per frame index, weight 0.09 · 128 / 512**.
