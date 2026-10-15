@@ -586,3 +586,20 @@ scaffold), paired over DV16's roots, sleep excluded:
 **Selective persistence buys coherence (mob persistence ×2, census ×7), not decision value on this test.** The binding
 constraint for useful imagination is consequence fidelity: the magnitude hedge and appearance events. Longer horizons and
 actor training remain untested.
+
+**What it costs (R51).** On the escape choice (noop + 4 moves), imagined health loss ranks the moves at within-root AUC:
+- D 0.73;
+- IC 0.68;
+- PI 0.58-0.63 (resolved vs D at both seeds; not sampling noise, not the HUD gate).
+
+Teacher-forced, PI's gate under-calls uncertain attacks (awake recall 0.58 / 0.81 vs D 0.90) and shrinks them; D predicts the
+graded expectation.
+
+**The MAP copy/edit decision that makes the scene coherent also discards graded risk.**
+
+| content | treatment the evidence supports |
+|---|---|
+| scene (terrain, mobs) | exact persistence + transformations (R23, R47) |
+| consequences (body state on the HUD) | graded expectation from the belief, or a calibrated sample; never a copy/edit MAP decision |
+
+The hybrid (PI's scene + a regenerated consequence readout) is untested.

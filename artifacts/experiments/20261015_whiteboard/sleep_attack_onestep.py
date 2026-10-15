@@ -9,7 +9,9 @@ Each event is the last transition of a 16-frame window (frames t-14 .. t+1; star
 4 sampled one-step outputs per window. Readouts at t+1: P(predicted drop >= 0.5 below the real health at t), mean predicted health
 change vs real, and the share of HUD cells PI edits; quantiles of the predicted and real health change per event and the spread
 across draws (is the hedge a probability blend, a regression blur, or sampling?).
-Usage: sleep_attack_onestep.py -> artifacts/eda/whiteboard/sleep_attack_onestep.json
+Env ONESTEP_ROW: place every event at that window row (default: the last transition, row 14 when possible; D-lineage worlds draw
+false drops at row 14, the end-aligned-death cue, so health is judged at row 9). Env ONESTEP_WORLDS (dv16 world names; deterministic ones use reference(), HUD edit share then 1), ONESTEP_TAG (output suffix).
+Usage: sleep_attack_onestep.py -> artifacts/eda/whiteboard/sleep_attack_onestep<tag>.json
 """
 import json
 import os
@@ -30,6 +32,9 @@ import dv16 as DV
 from decision_proxies import hud_health
 
 N_EVENTS, DRAWS = 300, 4
+WORLDS = tuple(os.environ.get('ONESTEP_WORLDS', 'pi_s1,pi_s2').split(','))
+TAG = os.environ.get('ONESTEP_TAG', '')
+ROW = int(os.environ['ONESTEP_ROW']) if os.environ.get('ONESTEP_ROW') else None
 
 
 @torch.no_grad()
@@ -53,9 +58,11 @@ def main():
     events = {}
     for k, mask in classes.items():
         idx = torch.nonzero(mask & ok)
+        if ROW is not None:                                                                 # the event at window row ROW exactly
+            idx = idx[(idx[:, 1] >= ROW) & (idx[:, 1] - ROW <= 48)]
         events[k] = idx[torch.randperm(len(idx), generator=g)[:N_EVENTS]]
     res = {'pool_counts': {k: int((v & ok).sum()) for k, v in classes.items()}}
-    for wname in ('pi_s1', 'pi_s2'):
+    for wname in WORLDS:
         kind, ckpt, _ = DV.WORLDS[wname]
         world = DV.load_world(kind, ckpt)
         gn = torch.Generator().manual_seed(20261043)
@@ -64,7 +71,7 @@ def main():
             pred_drop, d_pred, d_real, hud_edit = [], [], [], []
             for b0 in range(0, len(ev), 4):
                 chunk = ev[b0:b0 + 4]
-                starts = (chunk[:, 1] - 14).clamp_min(0)
+                starts = (chunk[:, 1] - (14 if ROW is None else ROW)).clamp_min(0)
                 fr = torch.stack([torch.from_numpy(np.array(tokens[int(r), int(st):int(st) + 16])) for (r, _), st in zip(chunk, starts)]).float()
                 ac = torch.stack([actions[int(r), int(st):int(st) + 15] for (r, _), st in zip(chunk, starts)])
                 pos = chunk[:, 1] - starts                                                       # index of frame t in the window
@@ -73,7 +80,11 @@ def main():
                 with autocast_context(config):
                     belief, ha = world.backbone_full(fr, ac)
                     noise = DM.draw_noise(fr.shape[:2], gn)[0].cuda(); gum = TM.draw_gumbel(fr.shape[:2], gn)[0].cuda()
-                    o, aux = world.complete(fr, ac, belief, ha, noise, gum)
+                    if kind == 'pi':
+                        o, aux = world.complete(fr, ac, belief, ha, noise, gum)
+                    else:                                                                   # deterministic references (R51)
+                        o = F.layer_norm(world.reference(fr, ac, belief, ha).float(), (192,))
+                        aux = {'edits': torch.ones(o.shape[:3], dtype=torch.bool, device=o.device)}
                 ar = torch.arange(len(fr))
                 nxt = o[ar, pos_r.cuda()].float().cpu()                                          # predicted frame t+1
                 hp = hud_health(nxt, bank['heads']['hud'])
@@ -92,7 +103,7 @@ def main():
         res[wname] = out
         print(json.dumps({wname: out}, indent=1), flush=True)
         del world; torch.cuda.empty_cache()
-    (DV.OUT / 'sleep_attack_onestep.json').write_text(json.dumps(res, indent=1))
+    (DV.OUT / f'sleep_attack_onestep{TAG}.json').write_text(json.dumps(res, indent=1))
 
 
 if __name__ == '__main__':

@@ -222,6 +222,60 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R51 — what selective persistence costs: graded consequences. PI's hard copy/edit gate under-calls uncertain damage; the regenerating belief ranks actions better (`dv16.py` post-hoc arms, `dv16_paired.py`, `sleep_attack_onestep.py`)
+
+**The decision is an escape choice.** On DV16's roots the 11 non-movement actions equal noop (real P16 0.47-0.48), the four
+moves are slightly safer (0.42-0.44) and sleep is the outlier (0.86). Restricted to noop + 4 moves: uniform 0.558, oracle
+0.687; 152 roots have a real spread.
+
+**Within-root ranking of the 5 choices** (pairwise AUC of imagined risk against the real P16 order; paired bootstrap vs D,
+152 roots; post-hoc):
+
+| world | AUC, imagined health loss (HL) | − D | AUC, any drop (HD) |
+|---|---|---|---|
+| D parent (regenerates every cell; deterministic) | **0.727** | | 0.609 |
+| IC s1 / s2 (soft persistence) | 0.686 / 0.675 | −0.05 [−0.09, −0.004] / −0.06 [−0.10, −0.02] | 0.587 / 0.619 |
+| PI s1 / s2 (hard persistence, sampled, M 4) | 0.580 / 0.626 | **−0.15 [−0.21, −0.10] / −0.11 [−0.16, −0.05]** | 0.585 / 0.621 |
+| PI's deterministic afterstate (no chance) | 0.580 / 0.630 | −0.15 / −0.10 (resolved) | 0.576 / 0.617 |
+| PI deterministic, HUD always regenerated | 0.532 / 0.579 | −0.20 / −0.15 (resolved) | 0.537 / 0.532 |
+
+- PI imagines **more** damage on average than D (HL over moves 1.77 / 2.23 vs 1.35; ZA 0.79 vs 0.67). Its damage is less
+  **action-specific**.
+- **Not sampling noise:** deterministic PI is the same.
+- **Not the HUD gate:** forcing HUD regeneration is worse, because PI's generator is trained only on edited cells.
+- D has the *worst* adjacency ranking (ZA AUC 0.55) and the best damage ranking: its consequence prediction does not run
+  through a coherent imagined scene.
+
+**One step, teacher-forced, the event at window row 9** (the row-14 end-aligned-death cue gave D false drops: at row 14 its
+false alarm on cooldown cases was 0.94 asleep / 0.26 awake, at row 9 0.02 / 0.10; PI's numbers barely change):
+
+| | sleeper attacked: P(predicted drop), mean (real −6.88) | awake attacked: P, mean (real −1.94) | zombie adjacent on cooldown: false alarm, asleep / awake |
+|---|---|---|---|
+| D parent | **1.00, −5.31** | **0.90, −1.87** | 0.02 / 0.10 |
+| PI s1 | 0.97, −4.52 | 0.58, −0.93 | 0.003 / 0.0 |
+| PI s2 | 0.90, −3.99 | 0.81, −1.63 | 0.0 / 0.003 |
+
+**Mechanism (measured):**
+- PI's EM gate makes every change a hard decision: edit iff the generator beats the copy (q > 0.5).
+- A consequence whose occurrence is uncertain (an attack timed by the hidden cooldown) defaults to "copy: nothing happened".
+- PI is therefore conservative. It almost never imagines false damage, but it misses attacks (awake recall 0.58 / 0.81 vs
+  0.90) and shrinks their size.
+- D regenerates every cell, predicting the graded expectation of the consequence. For ranking actions, the graded expectation
+  is what matters.
+- **The MAP decision that makes persistence coherent (no ghosts, no fading) is the same decision that discards graded risk.**
+
+**What we learn (the user's sharpened question):**
+- **Selective persistence sacrifices contextual consequence reasoning.** The more a world persists (D → IC → PI), the less
+  action-specific its imagined damage (AUC 0.73 → 0.68 → 0.58-0.63).
+- **Persistence buys no decision value in return (R50).** Its mob-coherence advantages do not reach the H16 escape choice.
+- **The two needs are different kinds of content:**
+  - the scene (terrain, mobs) benefits from exact persistence;
+  - consequences (the body state on the HUD: damage, hunger) should be predicted as graded expectations from the belief, or
+    sampled from a calibrated distribution. They should not be decided by a copy/edit gate.
+  - This refines §15: "relations / consequences are recomputed by the belief" applies to the HUD consequence channel too.
+- **Not yet shown:** that a world with PI's scene persistence and D's consequence readout keeps both advantages. That is a
+  model change (a hybrid readout), to be preregistered if pursued.
+
 ### R50 — the user's sharpened question on decisions: selective persistence gives no measurable advantage over the regenerating belief (`dv16_paired.py`)
 
 The D parent is a Mamba belief on the same spatial scaffold whose readout regenerates every cell each step (no copies, no
