@@ -8,7 +8,7 @@ imagined frame k takes recorded[k - 1].
 Risk (frozen readers on imagined frames): HD share of futures whose health (bank HUD reader) drops >= 0.5 below the root's within
 16 steps (primary); HL mean max health loss; ZA share with a zombie adjacent at some step. Decision: argmin risk, uniform over ties;
 expected safe = 1 - P16(chosen) (32-key real labels), averaged over roots; references (check_h16_value.arms) on the same roots.
-Usage: dv16.py <world> ...   worlds: pi_s1 pi_s2 ic_s1 ic_s2 D_parent_ref (preregistered); pi_ref_s1 pi_ref_s2 pi_hudgen_s1 pi_hudgen_s2 (post-hoc R51)   -> artifacts/eda/whiteboard/dv16_<world>.pt + dv16.json
+Usage: dv16.py <world> ...   worlds: pi_s1 pi_s2 ic_s1 ic_s2 D_parent_ref (preregistered); pi_ref_s1 pi_ref_s2 pi_hudgen_s1 pi_hudgen_s2 (post-hoc R51); hybrid_s1 hybrid_s2 (post-hoc R52)   -> artifacts/eda/whiteboard/dv16_<world>.pt + dv16.json
 """
 import json
 import os
@@ -36,7 +36,8 @@ WORLDS = {'pi_s1': ('pi', 'pi_seed1/pi_u3000.pt', 4), 'pi_s2': ('pi', 'pi_seed2/
           'ic_s1': ('operator', 'ic_seed1/ic_u3000.pt', 4), 'ic_s2': ('operator', 'ic_seed2/ic_u3000.pt', 4),
           'D_parent_ref': ('paired', None, 1),
           'pi_ref_s1': ('piref', 'pi_seed1/pi_u3000.pt', 1), 'pi_ref_s2': ('piref', 'pi_seed2/pi_u3000.pt', 1),   # post-hoc (R51): PI's deterministic afterstate
-          'pi_hudgen_s1': ('pihudgen', 'pi_seed1/pi_u3000.pt', 1), 'pi_hudgen_s2': ('pihudgen', 'pi_seed2/pi_u3000.pt', 1)}  # ... with HUD always regenerated
+          'pi_hudgen_s1': ('pihudgen', 'pi_seed1/pi_u3000.pt', 1), 'pi_hudgen_s2': ('pihudgen', 'pi_seed2/pi_u3000.pt', 1),  # ... with HUD always regenerated
+          'hybrid_s1': ('hybrid', 'pi_seed1/pi_u3000.pt', 4), 'hybrid_s2': ('hybrid', 'pi_seed2/pi_u3000.pt', 4)}  # post-hoc (R52): PI map + D HUD, lockstep
 
 
 def load_roots():
@@ -55,6 +56,8 @@ def load_roots():
 
 
 def load_world(kind, ckpt):
+    if kind == 'hybrid':
+        return load_world('pi', ckpt), load_world('paired', None)
     import paired_model as PM
     import transport_model as TM
     import pi_model as PI
@@ -92,8 +95,17 @@ def imagine_pass(world, kind, ctx, acts_full, g, config):
         fr = torch.cat([fr, torch.zeros_like(fr[:, :1])], 1)
         ac = F.pad(acts[:, start:L], (0, 1))
         with autocast_context(config):
-            belief, ha = world.backbone_full(fr, ac)
             i = L - 1 - start
+            if kind == 'hybrid':                                                      # PI's sampled map + D's deterministic HUD
+                w_pi, w_d = world
+                belief, ha = w_pi.backbone_full(fr, ac)
+                noise = DM.draw_noise((n, fr.shape[1]), g)[0].cuda(); gum = TM.draw_gumbel((n, fr.shape[1]), g)[0].cuda()
+                nxt = w_pi.complete(fr, ac, belief, ha, noise, gum)[0][:, i].float()
+                bd, hd = w_d.backbone_full(fr, ac)
+                nxt[:, 63:] = F.layer_norm(w_d.reference(fr, ac, bd, hd)[:, i].float(), (192,))[:, 63:]
+                hist.append(nxt); out.append(nxt.half().cpu())
+                continue
+            belief, ha = world.backbone_full(fr, ac)
             if kind in ('paired', 'piref'):
                 nxt = F.layer_norm(world.reference(fr, ac, belief, ha)[:, i].float(), (192,))
             elif kind == 'pihudgen':                                                  # map: PI's own copy / gated edit; HUD: always gen

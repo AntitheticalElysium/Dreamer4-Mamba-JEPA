@@ -7,6 +7,7 @@ latent belief" of the user's sharpened question.
 Part 2 (R51): the escape-direction sub-choice (noop + 4 moves): within-root pairwise AUC of each world's imagined risk against the
 real P16 ordering (ties 0.5; roots with no real spread contribute nothing), per root, and paired bootstrap of AUC differences vs D
 (PI sampled, PI's deterministic afterstate pi_ref, and pi_hudgen: pi_ref with the 18 HUD cells always regenerated).
+Part 3 (R52): the lockstep hybrid (PI's sampled map + D's HUD) vs D and PI: expected safe (all 17 / sleep excluded / 5-way).
 Usage: dv16_paired.py -> prints
 """
 import sys
@@ -46,8 +47,24 @@ def auc_root(risk):
                     den += 1; num += float(risk[i, a] > risk[i, b]) + .5 * float(risk[i, a] == risk[i, b])
         out.append(num / den if den else float('nan'))
     return torch.tensor(out)
-for key in ('HL', 'HD'):
-    A = {w: auc_root(torch.stack([r[key] for r in torch.load(OUT / f'dv16_{w}.pt', weights_only=False)])) for w in ('pi_s1', 'pi_s2', 'pi_ref_s1', 'pi_ref_s2', 'pi_hudgen_s1', 'pi_hudgen_s2', 'ic_s1', 'ic_s2', 'D_parent_ref')}
+for key in ('HL', 'HD', 'ZA'):
+    A = {w: auc_root(torch.stack([r[key] for r in torch.load(OUT / f'dv16_{w}.pt', weights_only=False)])) for w in ('pi_s1', 'pi_s2', 'pi_ref_s1', 'pi_ref_s2', 'pi_hudgen_s1', 'pi_hudgen_s2', 'hybrid_s1', 'hybrid_s2', 'ic_s1', 'ic_s2', 'D_parent_ref')}
     ok = ~A['D_parent_ref'].isnan()
-    for w in ('pi_s1', 'pi_s2', 'pi_ref_s1', 'pi_ref_s2', 'pi_hudgen_s1', 'pi_hudgen_s2', 'ic_s1', 'ic_s2'):
+    for w in ('pi_s1', 'pi_s2', 'pi_ref_s1', 'pi_ref_s2', 'pi_hudgen_s1', 'pi_hudgen_s2', 'hybrid_s1', 'hybrid_s2', 'ic_s1', 'ic_s2'):
         print(key, 'AUC5', w, round(float(A[w][ok].mean()), 4), '- D', boot(A[w][ok] - A['D_parent_ref'][ok]), 'roots', int(ok.sum()))
+
+P5all = P[:, :5]
+def es(rows, key, cols):
+    v = []
+    for i, row in enumerate(rows):
+        r = row[key][cols]; p = P[i][cols]; m = r == r.min(); v.append(1 - float(p[m].mean()))
+    return torch.tensor(v)
+ALL, NOSLEEP, FIVE = list(range(17)), [a for a in range(17) if a != 6], list(range(5))
+for w in ('hybrid_s1', 'hybrid_s2'):
+    R = torch.load(OUT / f'dv16_{w}.pt', weights_only=False)
+    for ref in ('D_parent_ref', 'pi_s' + w[-1]):
+        Rr = torch.load(OUT / f'dv16_{ref}.pt', weights_only=False)
+        for key in ('HD', 'HL', 'ZA'):
+            for cols, lab in ((ALL, 'all'), (NOSLEEP, 'no-sleep'), (FIVE, '5-way')):
+                a, b = es(R, key, cols), es(Rr, key, cols)
+                print('ES', w, '-', ref, key, lab, round(float(a.mean()), 4), boot(a - b))

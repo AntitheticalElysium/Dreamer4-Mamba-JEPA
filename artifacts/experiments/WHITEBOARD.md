@@ -602,4 +602,9 @@ graded expectation.
 | scene (terrain, mobs) | exact persistence + transformations (R23, R47) |
 | consequences (body state on the HUD) | graded expectation from the belief, or a calibrated sample; never a copy/edit MAP decision |
 
-The hybrid (PI's scene + a regenerated consequence readout) is untested.
+**Hybrid tested (R52, evaluation only):** PI's scene with D's HUD readout in lockstep does not keep both advantages.
+- The damage ranking rises only to 0.62 / 0.66 (D 0.73).
+- D's own readout ranks worse on PI's scene than on its own.
+
+So most of the cost sits in the persisted scene's *dynamics* (candidate: weak pursuit, R23), not only in the copy/edit
+decision on consequences.

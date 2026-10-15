@@ -222,6 +222,43 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R52 — the hybrid (PI's scene + D's consequence readout, lockstep) does not keep both; most of PI's damage-ranking deficit is in its imagined scene (`dv16.py hybrid_s*`, `dv16_paired.py`)
+
+**Setup** (evaluation only, no training). At every imagined step of DV16, PI s1 / s2 draws the map (exact persistence, chance,
+gated edits; M = 4) and the D parent's deterministic readout supplies the 18 HUD cells. Both run on the shared imagined
+history.
+
+**Declared before the run:** "keeps both" if
+- (a) the damage-ranking AUC is within 0.03 of D's or better;
+- (b) the zombie-adjacency ranking is at least PI's;
+- (c) expected safe (HD, all 17 actions) is not below D's.
+
+| | HL AUC, 5-way | ZA AUC, 5-way | expected safe HD: all / sleep excluded / 5-way |
+|---|---|---|---|
+| D parent | 0.727 | 0.550 | 0.555 / 0.577 / 0.592 |
+| PI s1 / s2 | 0.580 / 0.626 | 0.599 / 0.588 | 0.355 / 0.566, 0.476 / 0.575 |
+| **hybrid s1 / s2** | **0.619 / 0.656** (vs D −0.11 [−0.17, −0.06] / −0.08 [−0.13, −0.02]) | 0.591 / 0.585 | **0.479 / 0.580 / 0.592**, **0.469 / 0.574 / 0.592** |
+
+**Verdict:**
+- (a), (b) and (c) all fail: "keeps both" is not supported.
+- **Partial:**
+  - the damage ranking improves over PI by +0.04 / +0.03, and the hybrid's HL decisions beat PI's at s1 (sleep excluded
+    +0.028 [0.006, 0.054]);
+  - zombie adjacency stays at PI's level;
+  - sleep stays wrong, because the map still erases zombies at the onset.
+
+**What we learn:**
+- **The consequence readout explains only about a third of PI's damage-ranking gap to D.** D's own readout, fed PI's imagined
+  scene, ranks escape moves 0.08-0.11 worse than it does on its own regenerated scene.
+- **The rest is in the scene's dynamics.** PI's crisp scene makes damage less action-specific than D's blurred one, for D's own
+  readout too.
+  - Candidate (from R23, not yet tested here): PI's zombies chase too little (pursuit 0.24-0.26 vs real 0.38; IC 0.41-0.44).
+    A mean-blurred zombie mass spread around the player may carry more action-relevant danger than a crisp, under-pursuing
+    sample.
+- **Consequence:** "persist the scene, regenerate the consequences" is not sufficient by itself. The persisted scene must also
+  move consequentially: pursuit, i.e. the chance head's action-conditioned movement. That is the next thing to localize
+  before any model change.
+
 ### R51 — what selective persistence costs: graded consequences. PI's hard copy/edit gate under-calls uncertain damage; the regenerating belief ranks actions better (`dv16.py` post-hoc arms, `dv16_paired.py`, `sleep_attack_onestep.py`)
 
 **The decision is an escape choice.** On DV16's roots the 11 non-movement actions equal noop (real P16 0.47-0.48), the four
