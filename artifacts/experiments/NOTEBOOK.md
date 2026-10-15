@@ -222,6 +222,59 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R39 — context-free representations do not fix the stale belief; requiring them is the wrong frame (user programme, 10-15 late)
+
+**Setup:**
+- The frozen Raw encoder factors exactly (max |diff| 0.001) as token = LN(Upper(PatchEmbed(pixels) + PosEmbed)).
+- PatchEmbed is a local, position-free linear code of the tile's own pixels (the "content code").
+- Data: diagnosis_futures_v1 (pixels + exact state), so the transformations here are **exact**, not R34's inferred ones.
+
+**1. Audit of persistent content** (`content_audit.py`, `invariant_content.py`). Drift relative to between-cell scale,
+held-out roots:
+
+| representation | day still | day, camera moved | night | tile acc | mob AUC |
+|---|---|---|---|---|---|
+| Raw token | 0.021 | 0.086-0.089 | 0.15-0.22 | 0.961 | 1.0 / 1.0 / 0.99 |
+| content code | 0.018-0.020 | **0.007** | 0.10-0.13 | 0.968 | 1.0 |
+| content code from per-frame-normalized pixels | 0.016 | 0.103 | 0.51-0.56 | 0.977 | 1.0 |
+| learned linear projection of the content code (k 32-128) | 0.036-0.067 | 0.029-0.061 | 0.14-0.32 | 0.93-0.98 | 1.0 |
+| learned VICReg MLP on persistent pairs | 0.027 | 0.020 | 0.136 | 0.959 | 1.0 |
+
+- The content code is spatially equivariant (12× less camera drift) and loses no local information.
+- Lighting is the residual. Neither normalization nor learned invariance (fit on exact persistent pairs, an upper bound)
+  removes it on held-out roots.
+
+**2. R34's causal test redone with exact transformations** (`recontext_stale.py`; 240 roots, 1,175 windows, PI u3000).
+Pooled over m 8 / 14 with ≥ 1 scroll. Rendering is "stable" if < 5% of persisting cells change pixels per step; even
+then, 26% of cells differ after 8 steps, because daylight drifts below the per-step threshold.
+
+| (s1 / s2) | fresh | T: stale Raw tokens | C: content codes, context recomputed by the upper layers | G: C + oracle global relight (12 numbers/frame) |
+|---|---|---|---|---|
+| chase, render-stable | 0.32 / 0.39 | 0.26 / 0.30 | 0.26 / 0.31 (recovers **12%**) | 0.24 / 0.31 (−33% / +5%) |
+| chase, render-changed | 0.23 / 0.26 | 0.18 / 0.21 | 0.18 / 0.20 (~0%) | 0.15 / 0.18 (−46 to −58%) |
+| content error at real edits, render-stable | 1.16 / 1.20 | 3.04 / 3.60 | 2.78 / 3.22 (14-16%) | **1.48 / 1.73 (78-83%)** |
+| content error, render-changed | 2.63 / 2.76 | 5.68 / 4.76 | 5.57 / 5.31 | 3.66 / 3.31 (66-73%) |
+| health-drop AUC, render-stable | 0.996 / 0.997 | 0.968 / 0.950 | 0.966 / 0.949 | 0.931 / 0.928 |
+
+P (pixel copies, embedded and recontextualized) equals C to 3 decimals, as linearity requires.
+
+**What we learn:**
+- **Recomputing context from position-free content recovers little** of the relational loss (≤ 12%). The position part of R34
+  is small.
+- **Consequence content is mostly a lighting problem.** One global relight per frame recovers 66-83% of it.
+- **The chase loss is explained by neither.** Relighting even worsens it: a global colour map blurs sprite identity (zombie
+  belief cosine falls in render-stable windows).
+- So no candidate representation tested here removes the stale-belief harm while keeping the relational reading.
+- **Requiring a context-free persistent representation is the wrong frame** (user, and ARCHITECTURE_RESEARCH.md, Codex, 10-15).
+  A contextual state can preserve everything if its *transition* keeps it compatible with the readout. Copying it is what
+  fails.
+- **The sharper question (user):** does selective persistence give a measurable advantage over an ordinary evolving latent
+  belief, without sacrificing contextual reasoning? That needs the straightforward recurrent baseline we never built.
+  - Prior art bounds the novelty: Variational Sparse Gating (NeurIPS 2022) already learns binary latent update gates with
+    exact carry; Scope-WM already shows that copying the background hurts.
+- **Open (not tested):** what in a fresh frame drives the chase reading that stale copies lack. Candidate: temporal
+  appearance cues that exact copies freeze.
+
 ### R38 — PI_STALE RESULT: learned invariance to stale representations is "not supported"; the belief hedges instead (PI_STALE_PREREG)
 
 Mechanical verdict (`transport_track_verdicts.py stale`): **"not supported"** (P1 fails at both seeds).
