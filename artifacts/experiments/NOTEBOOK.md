@@ -222,6 +222,21 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R36 — re-deriving an additive position code does not help (`stale_context.py`, STALE_REFRESH=1)
+
+- **Test:** each slot's position offset P[x] (mean real token at slot x minus the map mean, 400 windows). The slot where every
+  stale token was last encoded is tracked through copies and swaps, and the world reads token + P[x] − P[origin].
+- **Token level** (91,791 unchanged, unswapped cells on real scrolled transitions): the fresh − copy distance goes 1.347 →
+  1.242 (−8%). The additive part is small.
+- **Belief level:** every reading is unchanged at both seeds. E.g. m 14, ≥ 4 scrolls: chase 0.271 → 0.267 / 0.248 → 0.248;
+  map content error 2.54 → 2.56; zombie belief cosine 0.797 → 0.798.
+- **So the harmful staleness is not an additive slot code.** It is:
+  - stale rendering, which alone (no scroll) already costs chase −17% / −18% and content error +52% / +35% at m 8;
+  - position effects that interact with content.
+- R15 showed rendering steps are not predictable from history, so no refresh operator can re-render a copy. The general
+  treatment is **invariance**: the belief must read persistent content regardless of its representation's age (WHITEBOARD
+  row 1: nuisance → invariance).
+
 ### R35 — the Mamba belief keeps temporal context across slot changes on real inputs (`slot_history.py`)
 
 1,600 training windows per seed, real context. At 1,764 frames with a zombie adjacent to the player, PI predicts the next

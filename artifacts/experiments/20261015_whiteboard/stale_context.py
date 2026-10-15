@@ -15,7 +15,12 @@ context (m = 0). Everything read is a function of the belief only:
   scroll      own scroll argmax == est_14 (blocked vs moved: reads the faced cell)
   belief      cosine(belief_stale, belief_fresh) at index 14, by cell class (zombie, player-adjacent, other map, HUD)
 Split by the number of scrolls inside the stale span (0 = rendering staleness only; >= 1 adds stale position codes).
-Usage: stale_context.py -> artifacts/eda/whiteboard/stale_context.json
+REFRESH mode (env STALE_REFRESH=1; R34 follow-up): preserve the content, re-derive the position code. Each slot's position offset
+P[x] = mean real token at slot x minus the mean over map slots (400 seeded windows, seed 20261025; HUD slots 0). Every stale
+cell's origin slot (where its token was last encoded) is tracked through copies and swaps; the world reads token + P[x] -
+P[origin] instead of the stale token. Rendering stays stale (one change). Also a token-level check on REAL scrolled transitions
+(unchanged, unswapped cells): |fresh - copy| vs |fresh - (copy + P[new] - P[old])|.
+Usage: stale_context.py -> artifacts/eda/whiteboard/stale_context[_refresh].json
 """
 import json
 import os
@@ -117,7 +122,25 @@ def main():
     lay = np.load(A5.BASE / 'layouts.npy', mmap_mode='r')
     scroll = A5.load_scroll()
     pair_index = {p: i for i, p in enumerate(IC.PAIRS)}
+    refresh = os.environ.get('STALE_REFRESH') == '1'
     res = {}
+    if refresh:
+        psel = torch.randperm(len(windows), generator=torch.Generator().manual_seed(20261025))[:400]
+        tot = torch.zeros(81, 192, dtype=torch.float64); cnt = 0
+        for b0 in range(0, 400, 8):
+            fr, _, _ = BASE.batch(tokens, actions, windows, psel[b0:b0 + 8], device='cpu')
+            tot += fr.double().sum((0, 1)); cnt += fr.shape[0] * fr.shape[1]
+        mean = (tot / cnt).float()
+        P = torch.zeros(81, 192); P[:PI.MAP] = mean[:PI.MAP] - mean[:PI.MAP].mean(0)
+        P = P.cuda()
+        src = torch.arange(81).repeat(5, 1)                                         # [5,81] copy source per scroll choice
+        for sc, (dr, dc) in enumerate(PI.SCROLL_OFFSETS):
+            for x in range(PI.MAP):
+                r, c = divmod(x, 9)
+                if 0 <= r + dr < 7 and 0 <= c + dc < 9:
+                    src[sc, x] = (r + dr) * 9 + c + dc
+        src = src.cuda()
+        res['token_check'] = {'plain': [], 'refreshed': []}
     for seed in (1, 2):
         w = PI.PIWorld().cuda().eval()
         w.load_state_dict(torch.load(T / f'pi_seed{seed}/pi_u3000.pt', map_location='cpu', weights_only=False)['world'])
@@ -141,9 +164,24 @@ def main():
             idx = torch.zeros(frames.shape[0], 15, 81, dtype=torch.long, device=frames.device)
             idx[..., :PI.MAP] = est[..., None]
             lays = [torch.from_numpy(np.array(lay[row, start:start + 16]) > 0) for row, start in choices.tolist()]
+            if refresh and seed == 1:                                                  # token-level check on real transitions
+                for j in range(15):
+                    moved = est[:, j] != 0
+                    if not bool(moved.any()):
+                        continue
+                    cand = w.candidates(frames[:, j:j + 1].float())[:, 0]
+                    cp = cand.gather(-2, idx[:, j][..., None, None].expand(-1, -1, 1, 192))[..., 0, :]
+                    keep = moved[:, None] & ~edit[:, j] & (partner[:, j] == torch.arange(81, device=frames.device))
+                    keep[:, PI.MAP:] = False
+                    sx = src[est[:, j]]                                                # [B,81]
+                    rf = cp + P[None] - P[sx]
+                    res['token_check']['plain'].append((frames[:, j + 1].float() - cp).norm(dim=-1)[keep].cpu())
+                    res['token_check']['refreshed'].append((frames[:, j + 1].float() - rf).norm(dim=-1)[keep].cpu())
             fresh = None
             for m in DEPTHS:
                 stale = frames.clone().float()
+                orig = torch.arange(81, device=frames.device).repeat(len(frames), 1)
+                feed = stale
                 for j in range(15 - m, 15):
                     if m == 0:
                         break
@@ -151,7 +189,14 @@ def main():
                     cp = cand.gather(-2, idx[:, j - 1][..., None, None].expand(-1, -1, 1, 192))[..., 0, :]
                     after = torch.where(edit[:, j - 1][..., None], z_pre[:, j - 1], cp)
                     stale[:, j] = after.gather(1, partner[:, j - 1][..., None].expand(-1, -1, 192))
-                outs = outputs(w, stale, ac, noise, config, est16)
+                    if refresh:
+                        o_cp = orig.gather(1, src[est[:, j - 1]])
+                        o_after = torch.where(edit[:, j - 1], torch.arange(81, device=frames.device).expand_as(o_cp), o_cp)
+                        orig = o_after.gather(1, partner[:, j - 1])
+                        if feed is stale:
+                            feed = stale.clone()
+                        feed[:, j] = stale[:, j] + P[None] - P[orig]
+                outs = outputs(w, feed, ac, noise, config, est16)
                 if m == 0:
                     fresh = outs
                     continue
@@ -181,8 +226,12 @@ def main():
         res[f'seed{seed}'] = out
         print(json.dumps({f'seed{seed}': out}), flush=True)
         del w; torch.cuda.empty_cache()
+    if refresh:
+        pl, rf = torch.cat(res['token_check']['plain']), torch.cat(res['token_check']['refreshed'])
+        res['token_check'] = {'cells': len(pl), 'plain_mean_dist': round(float(pl.mean()), 4), 'refreshed_mean_dist': round(float(rf.mean()), 4)}
+        print(json.dumps({'token_check': res['token_check']}), flush=True)
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / 'stale_context.json').write_text(json.dumps(res, indent=1))
+    (OUT / f'stale_context{"_refresh" if refresh else ""}.json').write_text(json.dumps(res, indent=1))
 
 
 if __name__ == '__main__':
