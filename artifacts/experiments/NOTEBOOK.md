@@ -177,6 +177,53 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R14 — IC follow-ups: the posterior converged; fading is deterministic and survives supplied chance
+
+**Posterior quality during training** (`ic_posterior.py milestones`; 400 training windows; vs T*, diagnostic):
+
+| update | genuine chance moves captured | accepted swaps per frame | false swaps per frame (terrain / mob) |
+|---|---|---|---|
+| 0 | 63% | 0.10 | 0.003 / 0.003 |
+| 500 | 77-79% | 0.12 | 0.001 / 0.003 |
+| 1,500 | 88% | 0.17-0.18 | 0.005-0.006 / 0.003 |
+| 3,000 | 89% | 0.18 | 0.006 / 0.003-0.004 |
+
+- About 95% precision. Genuine chance events rise from 841 to 1,090-1,131: the afterstate learns to hold mobs at their source
+  and leaves the move to the chance step.
+- **EM with the model's own prior converged, at both seeds.**
+
+**Pursuit** (`pursuit.py`, IC models, depths 2-16):
+- Crisp zombies approach 43 / 41% (IC s1 / s2) vs real 37% vs ES twin 30 / 31%. Faint zombies 27 / 14%; "lost" 17-20%.
+- **Under IC the deterministic chase is correct when the zombie token is intact.** What remains is fading.
+
+**Decision proxies (bright):**
+- Imagined health drops within 16 steps: IC 0.16-0.22 vs real 0.26 (ES twin 0.12).
+- Zombie adjacency still decays to ≈ 0 by depth 13. Health bias at d16: +0.25 / +0.37.
+
+**Posterior-forced recursion** (`posterior_forced.py`, seed 1). Each step's reassignment is inferred from the REAL next frame;
+the deterministic part reads its own history. Cow census at depth 1 / 8 / 16:
+
+| | IC | ES twin |
+|---|---|---|
+| posterior-forced | 1.02 / 0.77 / 0.36 | 1.03 / 0.80 / 0.69 |
+| sampled | 1.02 / 0.69 / 0.33 | 1.03 / 0.72 / 0.58 |
+| afterstate only | 1.02 / 0.77 / 0.36 | 1.03 / 0.79 / 0.69 |
+
+- **Supplying the chance outcome does not stop fading.** It is a property of the deterministic dynamics iterated on their own
+  outputs.
+- IC's point-loss afterstate fades about 2× faster than the energy-trained one: a mean-seeking map attenuates mobs when
+  iterated. The energy score's sharp samples had partly held mob tokens up.
+
+**Overall reading (TRANSPORT_IC + R1-R14):**
+- Inferred chance fixes the stochastic part: no spurious reassignment, valid outcomes, real movement and dependence, a
+  converged label-free posterior.
+- The recursion bottleneck is now isolated to one deterministic failure: **non-idempotent persistence** (mob tokens attenuate
+  when the model reads its own frames). Fading in turn drives lost pursuit (faint zombies), lost hazards, and some camera
+  divergence (mob missing at the faced cell: 80% divergence).
+- **Most justified next experiment:** chance-forced self-fed training. Roll the deterministic part on its own outputs, with
+  each step's reassignment from the posterior against the real future, and apply the point loss at every depth so attenuation
+  is penalized directly. It is the training counterpart of this diagnostic, possible only because chance is inferred.
+
 ### R13 — causal test: the faced cell drives camera divergence (`faced_substitution.py`, op_s1, 200 roots × 8 samples)
 
 Self-fed H16; before each step, on camera-consistent trajectories, ONE cell of the last imagined frame is replaced by the real
