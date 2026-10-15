@@ -451,3 +451,31 @@ each a hard decision that must pay its description cost:
   - arrival rates below reality;
   - pursuit direction;
   - health consequences.
+
+## 14. 2026-10-15 late — persist information, not representation (user question; NOTEBOOK R34-R38)
+
+**User's concern:** a latent need not represent a fixed object. A zombie moving closer changes its significance, so exact
+token copying may preserve stale context.
+
+**Measured:**
+- **The belief updates context correctly when its inputs are fresh** (R35). The next health drop beside a zombie is predicted
+  with AUC 0.97-0.98, best for zombies that just changed slot. Slot-wise Mamba memory does not freeze temporal context
+  within the window.
+- **Exact copies freeze the representation** (R34). With perfect transformations and only stale encodings:
+  - content-level decisions survive (change detection AUC ≥ 0.97, scroll 0.99);
+  - the relational reading (chase toward the player, −30 to −64%) and consequence content (+25 to +62% error) degrade;
+  - this is the mechanism behind PI's pursuit decay in recursion (R33).
+- **What the frozen Raw token binds to content:** global rendering (unpredictable steps, R15), a content-dependent position
+  code (R36: not additive), and the mob's background (R37: swaps drag terrain, 0.5-5% of moves).
+- **Two repairs inside the current representation fail:**
+  - re-deriving an additive position code (R36: no change);
+  - learning invariance by stale-input augmentation (R38: the belief hedges, and pursuit gets worse).
+
+**Principle (the user's):** persist the information, not its representation or interpretation.
+- In this pipeline that means the persisted state must be content-level and context-free.
+- Context (position, rendering, relations, consequences) is recomputed each step by the model from where and when the content
+  now is.
+- Our frozen contextual ViT tokens cannot serve as that state. The persistent-state principle (PI) is right about *what*
+  persists, and wrong to persist the token.
+- **Open design question for the user:** the persisted state's representation. Options include a local, position-free
+  content encoder, or context-free per-tile codes (Dedieu et al.), with the encoder-side change it implies.

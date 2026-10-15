@@ -222,6 +222,38 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R38 — PI_STALE RESULT: learned invariance to stale representations is "not supported"; the belief hedges instead (PI_STALE_PREREG)
+
+Mechanical verdict (`transport_track_verdicts.py stale`): **"not supported"** (P1 fails at both seeds).
+- **Arms:** piplain (PI continued 3,000 → 4,000) vs pistale (identical batches; the backbone reads idealized stale
+  reconstructions for m ~ U{0..14} context frames).
+
+| reading | seed 1 pistale / piplain | seed 2 pistale / piplain |
+|---|---|---|
+| **P1** chase drop, stale vs fresh (m 8/14, ≥ 1 scroll; need ≤ ½ piplain) | 0.18 / 0.24 ✗ | 0.29 / 0.31 ✗ |
+| **P1** map-content error increase | 0.38 / 0.49 ✗ | 0.32 / 0.54 ✗ |
+| fresh chase toward-probability (m 14, ≥ 4 scrolls) | **0.33 / 0.42** | 0.43 / 0.38 |
+| **P2** recursion pursuit, depth 6-16 (real 0.38) | **0.17 / 0.23 ✗** | **0.19 / 0.24 ✗** |
+| recursion pursuit, depth 1 (one step from the real root) | 0.32 / 0.41 | 0.22 / 0.31 |
+| **H** persisting d16 / phantoms max | 0.75 / 0.71, 0.005 ✓ | **0.64 / 0.77, 0.054 ✗** |
+| decision AUC16, zombie-adj / cow-adj / health | 0.70 / 0.70, 0.90 / 0.87, 0.63 / 0.63 | 0.74 / 0.72, 0.87 / 0.86, 0.64 / 0.62 |
+
+**What we learn:**
+- **Augmenting the input with stale representations narrows the stale gap only by 8-41%**, partly by **hedging**:
+  - at seed 1 the belief chases less on fresh inputs too;
+  - in recursion both seeds chase less already at depth 1, from the real root.
+  - The belief learned "relations are uncertain", not "read the content regardless of its encoding's age".
+- **Neither in-architecture repair works:**
+  - re-deriving the representation (R36: an additive position code; rendering cannot be predicted, R15);
+  - learning to ignore its age (R38).
+- **The defect is in what PI persists.** Frozen contextual ViT tokens bind content to rendering, screen position and, for
+  mobs, background (R2, R37). Persisting the token persists all of it.
+- To persist the *information* and let its interpretation evolve, the persisted state must be content-level (context-free),
+  with context re-derived each step: position from the slot, rendering from a global state, relations from the belief.
+  - That is a representation change (the encoder side; WHITEBOARD §5 and the 10-11 per-tile categorical plan, Dedieu et
+    al.'s context-free per-patch codes).
+  - Not started: it is a design decision for the user.
+
 ### R37 — literal swap transport across terrain: rare, systematic, and not repaired by PI's gate (`swap_background.py`)
 
 - **Setup:** 400 training windows. True STAY-class mob moves captured by PI u3000's own training-time swaps (1,407 / 1,412).
