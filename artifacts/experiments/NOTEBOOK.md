@@ -177,6 +177,46 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R21 — TRACK A RESULT: chance-forced self-fed training does not fix fading; the structural account stands (TRANSPORT_SF_PREREG)
+
+Mechanical verdict (`transport_track_verdicts.py sf`): **"partial"**. Under the preregistered interpretation rule, anything
+short of P1 and P2 at both seeds means **"the structural account stands: the soft persistence mechanism must change"**.
+
+The arms: continued IC (ic) vs chance-forced self-fed (icsf), 3,000 → 4,500 updates, bright, 8 samples, H16.
+
+| reading | seed 1 icsf / ic | seed 2 icsf / ic |
+|---|---|---|
+| **P1** persisting-mob score d16 (need +0.05) | 0.391 / 0.386 (**+0.005 ✗**) | 0.452 / 0.394 (**+0.058 ✓**) |
+| **P2** cow census d16 closer to 1 | 0.34 / 0.27 **✓** | 0.33 / 0.37 **✗** |
+| one-step (valid, dup/absent, static, movement) | all pass | all pass |
+| guard (a) recursion move rate, cow / zombie (real 0.42 / 0.30) | 0.19 / 0.20 vs 0.14 / 0.15 ✗ | 0.19 / 0.18 vs 0.16 / 0.14 ✗ |
+| guard (b) zombie-adj / cow-adj AUC16 (no-op 0.58 / 0.60) | 0.72 / 0.80 vs 0.73 / 0.76 | 0.67 / 0.81 vs 0.70 / 0.81 |
+| seen terrain d16 | 2.42% / 1.84% | 1.48% / 1.48% |
+| phantoms max | 0.062 / 0.010 | 0.029 / 0.029 |
+| zombie census d16 | 0.07 / 0.11 | 0.09 / 0.13 |
+| health-drop AUC16 | 0.68 / 0.60 | 0.58 / 0.58 |
+| zombie pursuit, approach at depth 6-16 (real 0.38) | 0.18 / 0.17 | 0.17 / 0.28 |
+| bank-reader one-step joint ES | 0.0325 / 0.0279 | 0.0320 / 0.0321 |
+
+**What we learn:**
+- **Self-exposure does not close the fading gap.** It moves the persisting score by +0.005 / +0.058 against a structural gap
+  of ~0.4 (soft 0.37-0.50 vs exact copies 0.76-0.83, R15). The census effect flips sign between seeds.
+- The one consistent effect is slightly more recursion movement (cow +0.03-0.05, zombie +0.04-0.05). It stays below half the
+  real rate in both arms.
+- No decision proxy improves at both seeds. Zombie census, pursuit at seed 2, and phantoms / terrain at seed 1 get worse.
+- **Training signal:** the self-fed loss by step did not fall over the 1,500 updates. Step 4 went 0.117 → 0.121 → 0.112
+  (seed 1) and 0.142 → 0.115 → 0.128 (seed 2), in blocks of ~500. icsf's teacher-forced loss stayed ~0.0015 above ic's.
+  Exposure does not teach the soft blend to stop regressing toward the mean: the blend is the mean.
+- **More training alone does nothing:** continued ic at 4,500 vs IC v3 at 3,000 has persisting score 0.386 / 0.394 vs
+  0.376 / 0.363.
+- **Track A closes on the structural account.** The persistence mechanism, not the training distribution, must change. That
+  is Track B's PI, which is now training.
+
+Disclosures:
+- Seed 2's recursion OOMed in the first pass (both seeds' recursions ran at once, ~3.9 GB each). Its recursion and readings
+  were re-run unchanged after seed 1 (`run_sf_rest.sh`).
+- Pursuit for both seeds is in `pursuit_sf_s{1,2}.json`.
+
 ### R20 — imagined mobs under-move because they fade (`move_by_score.py`, IC, bright, CPU)
 
 Recursion move rate (mob_fading's transition rule, camera-consistent, camera-still steps), binned by the mob's real-reader
