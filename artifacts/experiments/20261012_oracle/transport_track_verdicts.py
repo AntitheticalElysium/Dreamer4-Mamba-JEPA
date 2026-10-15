@@ -33,6 +33,14 @@ Sampled innovation content (20261015_whiteboard/PI_INNOV_PREREG.md), written bef
   >= pi - 0.02, phantoms per frame <= real_phantoms per frame at every depth. "sampled innovation restores arrivals" if A1, A2,
   H at both seeds; "arrivals restored but the rollout is harmed" if A1 at both seeds and H fails; "not supported" if A1 fails.
 PI_ENTER_PREREG.md: mode 'enter' = the same readings with pi_enter in place of pi_innov.
+LB_PREREG.md (mode 'lb'), written before LB's result: per seed, PI (pi_s<s>) vs LB (lb_s<s>):
+  A  persisting-mob score d16 (mob_fading) PI - LB >= 0.10 AND |cow census d16 - 1| smaller for PI
+  B  PI >= LB - 0.03 on zombie-adj AUC16, cow-adj AUC16, health-drop AUC16 (decision_proxies) and pursuit approach depth 6-16
+     (pursuit_pi.json / pursuit_lb.json)
+  C  reported: one-step (LB eval analysis.json, final update; PI eval_u3000), phantoms vs reality's far-mob rate
+  "selective persistence gives a measurable advantage without sacrificing contextual reasoning" (A, B both seeds) / "persistence
+  advantage with a contextual cost" (A both seeds, B fails somewhere) / "no persistence advantage over an ordinary latent
+  belief" (A fails at a seed); readings where LB is better are listed.
 PI_STALE_PREREG.md (mode 'stale'), written before its result: per seed, pistale vs piplain (u4000).
   P1 from stale_context_<arm>_s.json (m8 / m14, scroll buckets 1-3 and 4+ pooled by window count): relative chase drop
      (1 - stale/fresh toward) of pistale <= 0.5 x piplain's AND relative map-content error increase (stale/fresh - 1) of
@@ -255,8 +263,43 @@ def stale():
     return res
 
 
+def lb(update=30000):
+    res = {}
+    pi_fade = json.loads((W / 'mob_fading_pi_s1_pi_s2_pi_s1_ref.json').read_text())
+    lb_fade = json.loads((W / 'mob_fading_lb_s1_lb_s2.json').read_text())
+    pur = {**json.loads((W / 'pursuit_pi.json').read_text()), **json.loads((W / 'pursuit_lb.json').read_text())}
+    for s in (1, 2):
+        x, y = f'pi_s{s}', f'lb_s{s}'
+        rx, ry = rec(x), rec(y)
+        persist = [pi_fade[x]['vanish_rate_by_depth'][15]['mean_score_of_persisting'], lb_fade[y]['vanish_rate_by_depth'][15]['mean_score_of_persisting']]
+        cow = [rx['census_ratio[zombie,cow,skeleton]_by_depth'][15][1], ry['census_ratio[zombie,cow,skeleton]_by_depth'][15][1]]
+        A = persist[0] is not None and persist[1] is not None and persist[0] - persist[1] >= .10 and abs(cow[0] - 1) < abs(cow[1] - 1)
+        if persist[1] is None:                                                   # LB keeps no camera-consistent persisting mobs
+            A = abs(cow[0] - 1) < abs(cow[1] - 1)
+        dx, dy = (json.loads((W / f'decision_{n}.json').read_text())['bright'] for n in (x, y))
+        b = {k: [dx[k]['auc_16'], dy[k]['auc_16']] for k in ('zombie_adj', 'cow_adj', 'health_drop')}
+        b['pursuit_d6_16'] = [pur[x]['depth6-16']['approach'], pur[y]['depth6-16']['approach']]
+        B = all(v[0] is not None and v[1] is not None and v[0] >= v[1] - .03 for v in b.values())
+        one = {'pi': onestep(json.loads((T / f'pi_seed{s}/eval_u3000/analysis.json').read_text()), 'pi'),
+               'lb': onestep(json.loads((T / f'lb_seed{s}/eval_u{update:05d}/analysis.json').read_text()), 'lb')}
+        res[f'seed{s}'] = {'persisting_d16': persist, 'cow_census_d16': cow, 'A': bool(A), 'contextual': b, 'B': bool(B),
+                           'one_step': one, 'phantoms_d16': [rx['phantoms_per_frame_by_depth'][15], ry['phantoms_per_frame_by_depth'][15],
+                                                             rx['real_phantoms_per_frame_by_depth'][15]],
+                           'seen_terrain_d16': [rx['tile_error_seen_by_depth'][15], ry['tile_error_seen_by_depth'][15]],
+                           'camera_d16': [rx['camera_consistent_by_depth'][15], ry['camera_consistent_by_depth'][15]],
+                           'lb_better_on': [k for k, v in b.items() if v[0] is not None and v[1] is not None and v[1] > v[0]]}
+    seeds = [res['seed1'], res['seed2']]
+    if not all(r['A'] for r in seeds):
+        res['verdict'] = 'no persistence advantage over an ordinary latent belief'
+    elif all(r['B'] for r in seeds):
+        res['verdict'] = 'selective persistence gives a measurable advantage without sacrificing contextual reasoning'
+    else:
+        res['verdict'] = 'persistence advantage with a contextual cost'
+    return res
+
+
 if __name__ == '__main__':
     which = sys.argv[1]
-    res = {'sf': sf, 'pi': pi, 'canvas': lambda: variant('canvas'), 'sampled': lambda: variant('sampled'), 'innov': innov, 'enter': lambda: innov('enter'), 'stale': stale}[which]()
+    res = {'sf': sf, 'pi': pi, 'canvas': lambda: variant('canvas'), 'sampled': lambda: variant('sampled'), 'innov': innov, 'enter': lambda: innov('enter'), 'stale': stale, 'lb': lb}[which]()
     (T / f'{which}_verdict.json').write_text(json.dumps(res, indent=1))
     print(json.dumps(res, indent=1))
