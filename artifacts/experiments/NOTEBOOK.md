@@ -61,6 +61,100 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-15 (afternoon) — WHITEBOARD PROGRAM (lead, Opus, autonomous mandate): recursion, representation, inferred chance
+
+**User mandate (10-15):**
+- Continue inferred-chance (IC) training with attention to uncertain assignments.
+- Keep cheap CPU probes running.
+- Look across all five WHITEBOARD questions, the representation included.
+- Keep asking whether one-step gains reach recursion and decisions.
+
+### R1 — does one-step coherence carry into recursion? (`transport_recursion.py`, evaluation only)
+
+**Setup:**
+- Self-fed H16 rollouts from the 200 DEV panel roots with the recorded actions.
+- Stochastic models: 8 samples per root. Deterministic references: 1.
+- Frozen real mob reader and bank tile reader.
+
+Bright (104 roots), depths 1 → 16:
+
+| model | cow census (imagined / real) | abs count error per frame | tile error, seen cells | phantoms per frame | camera consistent at d16 |
+|---|---|---|---|---|---|
+| free synthesis s1 / s2 | 3.0 → 12.6 / 2.3 → 3.9 | 1.7 → 7.5 | 0.07% → 3.8% | 1.4 → 4.5 | 53% |
+| transport operator s1 / s2 | 1.0 → 0.49 / 0.98 → 0.47 | 0.08 → 0.81 | 0.63% → 8.1% / 7.5% | ≈ 0 | 50 / 53% |
+| operator's own afterstate only (T = I) | 1.0 → 0.55 | 0.08 → 0.77 | 0.08% → 1.1% | 0 | 56% |
+| D parent (deterministic) | 1.09 → 1.53 (d4) → 0.25 | 0.18 → 0.93 | 0.07% → 1.3% | ≈ 0.04 | 59% |
+| real births and entries (reference) | — | — | — | 0.04 → 0.33 | — |
+
+**Readings:**
+- **Free synthesis explodes under recursion:** its one-step "63% valid" hides ×3-12 mob inflation and 4.5 phantom mobs per
+  frame.
+- **Transport never invents mobs**, but:
+  - its mobs fade (half lost by d16), as its own deterministic afterstate does;
+  - its spurious terrain swaps accumulate: 7× the terrain error of its afterstate alone.
+- **Camera divergence is universal and large:** only 50-59% of trajectories keep the real camera by d16, for every model.
+- **Entering terrain is wrong 25-40% of the time** (epistemic, row 4), for every model.
+
+### R2 — representation: is the "drift" of persistent content contextual? (`20261015_whiteboard/rep_layers.py`, `rep_drift.py`)
+
+**Setup:**
+- The frozen Raw encoder: ViT-12, width 192, patch 7. One patch = one 7×7-pixel Craftax tile.
+- 597 independent futures × 16 steps (diagnosis_futures_v1, exact visible state).
+- Every layer gets LN (no affine); the final layer reproduces Raw (max |Δ| 0.001 fp16).
+
+| layer | day drift, camera still | day drift, camera moved | night drift | tile acc | mob AUC | neighbour-cow leak AUC | cow-move transfer error (same / cross terrain) |
+|---|---|---|---|---|---|---|---|
+| 0 (own pixels + position) | 0.019 | 0.123 | 0.126 | 0.964 | 1.0 | 0.636 | 0.018 / 1.08 |
+| 2-4 | 0.019-0.021 | 0.080-0.093 | 0.23-0.26 | 0.97 | 1.0 | 0.67 | 0.030-0.040 / 1.07 |
+| 12 (Raw) | 0.021 | 0.086 | 0.193 | 0.961 | 1.0 (skeleton 0.99) | 0.660 | 0.066 / 1.21 |
+
+Drift is relative to the RMS distance between different cells.
+
+- **The drift of persistent content is NOT contextual mixing.** It is as large in pixel space (layer 0) as in the final
+  layer. Neighbour changes add only 0.004.
+- **Cause, from Craftax's renderer:** map pixels = daylight·map + (1 − daylight)·(desaturated, tinted night pixels), with
+  daylight = light_level(timestep). Every pixel of persistent content changes every step, deterministically and identically
+  across RNG keys. That is why the across-key nuisance was tiny (0.0018) while copying the current token is 25× worse (0.048).
+  - About 60% of day drift energy is frame-common (layers 0 and 12). The rest is content-dependent, as a multiplicative blend
+    implies.
+  - Night static (light < 0.5) adds per-pixel random noise. It is worst in middle layers.
+- **Position:** camera moves add drift at layer 0 through the position code (0.12). Later layers are partly position-robust.
+- **Mob content is linearly local at every layer** (AUC 1.0). Neighbour leakage of 0.64-0.67 is ecological correlation: it
+  is the same at layer 0, which cannot see neighbours.
+- **Cross-terrain non-additivity (~1.1) is the same at every layer, pixels included.** The sprite occludes the background, so
+  no layer of this encoder separates mob from background linearly. Cow deltas across terrains have cosine 0.46-0.61.
+- **Correction to the OBJECTIVE INVESTIGATION wording:** "persistent content has no persistent token because of contextual
+  drift" → "because rendering changes deterministically (daylight) and with position". This is predictable from history, and
+  the learned afterstate removes most of it (0.048 → 0.014).
+
+### R3 — inferred-chance design checks (`20261012_oracle/ic_posterior.py`), before TRANSPORT_IC_PREREG.md
+
+- **Labels:** labelling a swap at both endpoints, as in the draft, makes the operator's sampler accept swaps **1.59-1.96×**
+  too often. Canonical one-endpoint labels: 0.92-1.03×.
+- **Training windows** (400 windows, 6,000 transitions, 98% day). True interior mob moves by what the afterstate holds:
+
+  | afterstate | PREDICTED (already moved) | GHOST | STAY (chance) |
+  |---|---|---|---|
+  | trained operator | 31% (500 / 805 zombie moves: chase is deterministic) | 13% | 56% (626 / 630 cow moves) |
+  | D parent | 27% | 22% | 51% |
+
+  Share of STAY events captured:
+
+  | rule | trained afterstate | D-parent initialization |
+  |---|---|---|
+  | gain > 0 (ML) | 92% | 90% (precision 0.60; false swaps mostly same-terrain, 0.09 / frame) |
+  | Bayes MAP (measured Laplace scale + running prior) | 88% | 54% (precision 0.96) |
+
+- **Design:**
+  - The point loss uses the ML assignment: misses teach blur.
+  - The chance head uses Bayesian soft targets on the ML matching.
+  - Canonical labels.
+  - Zombie chase stays with the deterministic part.
+- Preregistered in `TRANSPORT_IC_PREREG.md` (ba1b4117). Both seeds launched 15:1x.
+- **Smoke:** peak 1.34 GiB; initial posterior 0.49 swaps per frame (the census moves 0.5 per step). Resume equivalence is
+  up to 1.5e-6 at 4 updates (GPU reduction nondeterminism amplified by Adam's early sign steps). The earlier two-arm smoke
+  was bit-exact.
+
 ## 2026-10-15 — TRANSPORT MANDATE (lead, Opus): does stochastic reassignment of retained content beat free synthesis?
 
 User mandate (10-15): Stage 1 independent assessment of Codex's `PROVENANCE_ASSESSMENT.md` (458dd18), then Stage 2 feasibility
