@@ -222,6 +222,43 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R44 — PI vs LB (LB_PREREG): mechanically "PI advantage", but LB cannot represent mobs, so the question stays open
+
+**LB:** R2-Dreamer's RSSM imported unchanged (12M configuration), a JEPA-token embedding, a token readout with the summed
+likelihood (v2), two seeds. The declared extension was triggered: training token NLL 25-30k was still 10.3% / 6.1% below
+20-25k. LB was evaluated at 60k (`lb_verdict.json` at 30k, `lb60k_verdict.json` at 60k).
+- **Mechanical verdict at both 30k and 60k:** "selective persistence gives a measurable advantage without sacrificing contextual
+  reasoning". A and B hold at both seeds; LB is better on nothing.
+
+| reading (bright, d16) | PI s1 / s2 | LB 60k s1 / s2 |
+|---|---|---|
+| cow census | 0.62 / 0.46 | **0 / 0** (mobs absent at every depth, including depth 1) |
+| seen-terrain error | 1.6% / 1.4% | 21% / 21% (11% at depth 1) |
+| camera consistency | 63% / 61% | 24% / 26% |
+| zombie-adj / cow-adj AUC16 | 0.72 / 0.89, 0.70 / 0.88 | 0.53 / 0.50, 0.50 / 0.50 |
+| health drops within 16 (real 0.26) | 0.07 / 0.26 | 0.88 / 0.85 (HUD jitter) |
+| one-step conditions | all pass | all fail (mobs 100% absent) |
+
+**Diagnosis** (`lb_posterior_mobs.py`, 320 training windows): LB's readout of its *posterior* states, i.e. frames it has
+observed, has mob recall **0** (zombies 0 / 2,046, cows 0 / 2,895, skeletons 0 / 760; 0-5 predicted in total), with tile
+agreement 0.91.
+- The global latent does not encode mobs at all after 60k updates. This is a representation failure of the baseline, not an
+  imagination or persistence effect.
+- A summed token loss does weight mob cells (~20-30% of per-frame error by a rough count), so this is not obviously the loss
+  scale. It is a known small-object failure of reconstruction-trained global latents, and may also be optimization or budget.
+  Not separated.
+
+**Reading:**
+- The comparison is formally won by PI, but it **does not test** the user's question. A baseline that cannot see mobs cannot
+  show whether selective persistence beats an ordinary evolving belief.
+- The meaningful evidence on the shared spatial scaffold remains the internal ladder: D parent (full regeneration) → IC (soft
+  persistence + chance) → PI (hard selective persistence + chance). PI wins persistence by 2× and food / hazard decision proxies
+  over IC (R23).
+- A fair "evolving latent belief" baseline must at least represent the scene. Candidates:
+  - a spatial latent belief on PI's backbone (per-cell carries, latent inputs in imagination);
+  - or LB with a per-cell latent.
+- DV16 (running) asks whether the D → IC → PI differences matter for action choice.
+
 ### R43 — rendering is a deterministic light clock in the source, yet copies cannot be re-rendered from it (`relight_light.py`)
 
 **Primary source** (Craftax-Classic `renderer.py:408-439`, `game_logic.calculate_light_level`):

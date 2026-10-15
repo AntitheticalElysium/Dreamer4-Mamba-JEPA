@@ -513,3 +513,16 @@ Measured with **exact** transformations (diagnosis futures; R41 fixed my constru
 - So imagined frames are largely *consistently* lit at an earlier time. R42 measures the harm of *mixed* lighting (real when
   imagination is interleaved with observation). It does not establish that pure imagination suffers it.
 - Not yet tested directly. A time-frozen frame (all cells at the root's light) needs a renderer.
+
+## 16. 2026-10-16 — selective persistence vs an ordinary latent belief (user's sharpened question; NOTEBOOK R44)
+
+- A standard reconstruction-free RSSM (R2-Dreamer's, unchanged, on our JEPA tokens; 60k updates, two seeds) **does not encode
+  mobs at all**: posterior readout mob recall 0. It loses terrain (21% error at d16) and fails every one-step condition.
+- PI wins every preregistered reading, but against this baseline that **does not answer** the question.
+- Still open: does selective persistence beat an evolving latent belief **that represents the scene**? The fair test is a
+  latent belief on the same spatial scaffold.
+- **What is established on the shared scaffold** (D → IC → PI):
+  - hard selective persistence + inferred chance doubles mob persistence;
+  - it keeps one-step coherence;
+  - it improves food / hazard decision proxies.
+- Whether that improves *decisions*: DV16, running.
