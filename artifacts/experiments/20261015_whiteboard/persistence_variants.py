@@ -12,7 +12,13 @@ At every step the afterstate is built four ways from the same backbone pass:
                 mob content are unchanged between the real frames t-1 and t (privileged; a ceiling for exact persistence)
 Readings (bright): cow / zombie census by depth, tile error on seen cells, camera consistency, phantoms
 (transport_recursion.evaluate), and the persisting-mob score decay (mob_fading.py on the saved samples).
-Usage: persistence_variants.py <checkpoint relative to transport/> <tag> -> artifacts/eda/whiteboard/persistence_<tag>.json
+  gated_<p>     Track B: exact copy (the argmax candidate) only where CorrT is confident (its largest mixture weight > p), the
+                soft blend elsewhere: does a label-free confidence decision give exact persistence without the argmax's
+                wrong copies? p in {0.5, 0.8, 0.95} is a diagnostic sweep (a Pareto curve), not a tuned choice.
+  oracle_decide (privileged upper bound) per cell, the exact copy (argmax candidate) or the soft prediction, whichever is
+                closer to the REAL next token, while the trajectory is camera-consistent (soft otherwise): if persistence
+                decisions were right, does exact-copy-unless-change recursion persist without phantoms?
+Usage: persistence_variants.py <checkpoint relative to transport/> <tag> [gated | oracle] -> artifacts/eda/whiteboard/persistence_<tag>[_gated].json
 """
 import json
 import sys
@@ -28,10 +34,24 @@ import audit_s5_direct as A5  # noqa: E402
 
 OUT = ROOT / 'artifacts/eda/whiteboard'
 VARIANTS = ('soft', 'hard', 'hard_render', 'hard_oracle')
+GATED = ('gated_0.5', 'gated_0.8', 'gated_0.95')
+ORACLE = ('oracle_decide',)
+
+
+def corrt_weights(world, frames, actions, belief, action_belief):
+    """CorrT mixture weights over (self, 4 neighbours, generated), exactly as PairedWorld.reference computes them"""
+    logits = world.choose(belief).float()
+    moved = world.frame(action_belief).float()[:, :, None, :]
+    target = torch.tensor([31, 30, 32, 22, 40], device=actions.device)[actions.clamp(max=4)]
+    htarget = belief.gather(2, target[:, :, None, None].expand(-1, -1, 1, belief.shape[-1]))[:, :, 0]
+    moved = moved + (((actions >= 1) & (actions <= 4)).float()[:, :, None, None] * world.target_gate(htarget).float()[:, :, None, :])
+    return (logits + moved * logits.new_tensor([0, 1, 1, 1, 1, 0])).softmax(-1)
 
 
 @torch.no_grad()
 def rollout(world, variant, panel, config, real_render):
+    scroll = A5.load_scroll(); shifts = torch.as_tensor(scroll.SHIFTS)
+    real_shift = shifts[scroll.estimate(panel['tokens'][:, 15:31].float(), panel['tokens'][:, 16:32].float())]
     import transport_objective as TO
     from d4mj.train import autocast_context
     tok, act = panel['tokens'], panel['actions']
@@ -40,6 +60,7 @@ def rollout(world, variant, panel, config, real_render):
     for s0 in range(0, R, 8):
         idx = list(range(s0, min(s0 + 8, R))); n = len(idx)
         hist = [tok[idx, j].float() for j in range(1, 16)]
+        ok = torch.ones(n, dtype=torch.bool)
         for k in range(1, 17):
             ctx = torch.stack(hist[-15:], 1).cuda(); a = act[idx, k:k + 15].cuda()
             fr = torch.cat([ctx, torch.zeros_like(ctx[:, :1])], 1); ac = F.pad(a, (0, 1))
@@ -48,15 +69,26 @@ def rollout(world, variant, panel, config, real_render):
                 soft = world.reference(fr, ac, belief, ha)[:, 14].float()
                 if variant != 'soft':
                     hard = TO.hard_reference(world, fr, ac, belief, ha)[:, 14].float()
+                if variant.startswith('gated'):
+                    wmax = corrt_weights(world, fr, ac, belief, ha)[:, 14].amax(-1, keepdim=True)
             if variant == 'soft':
                 nxt = F.layer_norm(soft, (192,))
             elif variant == 'hard':
                 nxt = F.layer_norm(hard, (192,))
+            elif variant == 'oracle_decide':
+                z = tok[idx, 15 + k].float().cuda()
+                use_copy = (hard - z).norm(dim=-1, keepdim=True) <= (F.layer_norm(soft, (192,)) - z).norm(dim=-1, keepdim=True)
+                use_copy = use_copy & ok.cuda()[:, None, None]
+                nxt = F.layer_norm(torch.where(use_copy, hard, soft), (192,))
+            elif variant.startswith('gated'):
+                nxt = F.layer_norm(torch.where(wmax > float(variant.split('_')[1]), hard, soft), (192,))
             elif variant == 'hard_render':
                 nxt = F.layer_norm(hard + (soft - hard)[:, :63].mean(1, keepdim=True), (192,))
             else:
                 nxt = F.layer_norm(hard + real_render[idx, k - 1][:, None].cuda(), (192,))
             nxt = nxt.cpu()
+            est = shifts[scroll.estimate(hist[-1][:, None], nxt[:, None])[:, 0]]
+            ok = ok & (est == real_shift[idx, k - 1]).all(-1)
             hist.append(nxt)
             out[idx, 0, k - 1] = nxt.half()
     return out
@@ -68,6 +100,8 @@ def main():
     import transport_model as TM
     import transport_recursion as TR
     ckpt, tag = sys.argv[1], sys.argv[2]
+    gated = sys.argv[3:] == ['gated']
+    oracle = sys.argv[3:] == ['oracle']
     config = BASE.settings()
     world = TM.TransportWorld('operator').cuda().eval()
     world.load_state_dict(torch.load(A5.BASE / 'transport' / ckpt, map_location='cpu', weights_only=False)['world'])
@@ -94,7 +128,7 @@ def main():
             if d:
                 real_render[i, k] = torch.stack(d).mean(0)
     res = {'checkpoint': ckpt}
-    for v in VARIANTS:
+    for v in (GATED if gated else ORACLE if oracle else VARIANTS):
         imag = rollout(world, v, panel, config, real_render)
         key = f'persist_{tag}_{v}'
         torch.save(imag, A5.BASE / f'transport/recursion_samples_{key}.pt')
@@ -106,7 +140,7 @@ def main():
                   'phantoms_max': max(b['phantoms_per_frame_by_depth'])}
         print(json.dumps({v: res[v]}), flush=True)
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / f'persistence_{tag}.json').write_text(json.dumps(res, indent=1))
+    (OUT / f'persistence_{tag}{"_gated" if gated else "_oracle" if oracle else ""}.json').write_text(json.dumps(res, indent=1))
 
 
 if __name__ == '__main__':
