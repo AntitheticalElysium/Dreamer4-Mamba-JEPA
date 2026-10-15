@@ -105,3 +105,37 @@ Directional predictions, each reported with the ES replicate as reference:
 - **Cross-terrain moves** carry their background (5.2% of real moves; representation limit).
 - **One budget, no extension, no tuning.** All checkpoints are kept under `transport/ic_seed1`, `transport/ic_seed2`. The
   fresh confirmation set stays sealed.
+
+## Addendum v2 (2026-10-15, 15:1x): implementation bug + one design correction; v1 runs stopped at update 900
+
+**Bug.** The soft target was specified and coded as q = sigmoid(gain/s − logit π). The Bayesian posterior this design
+claims is sigmoid(gain/s + logit π).
+- With π ≈ 0.01 the flipped sign gives q ≈ 0.99 to every accepted pair, so v1 taught the chance head every candidate swap
+  at full strength.
+- The MAP rule measured in `ic_posterior.py` (P1) had the correct sign, so the design checks are unaffected.
+
+**Design correction (one change), driven by v1's trajectory and a synthetic test:**
+- In v1 the gain > 0 posterior grew from 0.3-0.5 to 2.1-3.6 inferred swaps per frame by update 400-600 (real moves ≈ 0.5).
+- `20261015_whiteboard/em_toy.py` (ring world, soft-copy afterstate, point loss through the inferred reassignment, 2 seeds):
+
+  | rule | inferred swaps per step (true 1.2-1.6) | precision | recall |
+  |---|---|---|---|
+  | gain > 0 | 5.0-5.5 | 0.25-0.31 | 1.00 |
+  | MAP, gain/s > log((1−π)/π) | ≈ true | 0.99-1.00 | 0.98-1.00 |
+  | oracle | = true | 1.00 | 1.00 |
+
+- Maximum likelihood has no preference for identity among look-alike cells. The point loss cannot correct it, because
+  swapping look-alikes costs nothing.
+
+**v2:**
+- T̂ = candidates whose posterior odds exceed 1 (MAP: a swap must pay its description cost s·log((1−π)/π)).
+- q = sigmoid(gain/s + logit π) on all candidates.
+- π = running posterior mass per pair (initial 0.01).
+- Everything else, including gates, verdict script, seeds, budget and evaluation, is unchanged.
+
+The v1 artifacts are preserved (`transport/ic_v1_bug_seed{1,2}`, `levers_logs/ic_v1_bug_seed*_train.log`, u500
+checkpoints) as the record of the gain > 0 + flipped-sign variant.
+
+**New risk (stated before running):** with the D-parent afterstate, MAP captures 54% of genuine chance moves at
+initialization (88% with a trained afterstate). Missed moves teach the afterstate to blur. Watched via posterior swaps per
+frame (expected about 0.15-0.4) and, at milestones, the posterior's recall on DEV.

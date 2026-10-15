@@ -5,9 +5,11 @@ Copied from transport_train.py (unchanged infrastructure: parent, construction, 
   ic        the same model. Per update, from the current deterministic afterstate a = LN(b) (detached) and the observed
             successor z, a label-free posterior over adjacent interior swaps:
               gain(j,k) = |a_j - z_j| + |a_k - z_k| - |a_k - z_j| - |a_j - z_k|          (first-power distances)
-              ML matching T_hat: parallel greedy one-to-one over pairs with gain > 0 (the sampler's matching rule)
-              soft posterior q(j,k) = sigmoid(gain / s - logit(pi)) for pairs in T_hat, 0 otherwise; s = the frame's mean
-              interior residual |a - z| (measured Laplace scale), pi = running label-free rate of accepted swaps per pair
+              candidates: parallel greedy one-to-one matching over pairs with gain > 0 (the sampler's matching rule)
+              v2 (TRANSPORT_IC_PREREG addendum): Laplace likelihood with scale s = the frame's mean interior residual |a - z|
+              and prior pi = running label-free posterior mass per pair:
+                T_hat = candidates with gain / s > log((1 - pi) / pi)     (MAP: a swap must pay its description cost)
+                q(j,k) = sigmoid(gain / s + logit(pi)) on candidates     (Bayesian marginal; v1 had the sign of logit flipped)
             point loss: the parent's D loss on LN(T_hat b) vs z over all 81 tokens (frames 1..15)
             chance loss: cross-entropy of the proposal head (masked as in sampling) toward canonical soft targets: pair
             (j, j+1) labelled only at j as RIGHT, pair (j, j+9) only at j as DOWN (one endpoint per unordered pair keeps
@@ -75,16 +77,20 @@ def infer(a, z, pi):
         free[rows, j[ps]] = False; free[rows, k[ps]] = False
         won |= win
         live = live & ~win
+    logit_pi = float(np.log(pi / (1 - pi)))
+    lr = g / s.reshape(-1, 1)                                                # log-likelihood ratio of swap vs keep
+    accepted = won & (lr + logit_pi > 0)                                     # MAP: posterior odds > 1
     partner = torch.arange(81, device=dev).repeat(m, 1)
-    rows, ps = torch.where(won)
+    rows, ps = torch.where(accepted)
     partner[rows, j[ps]] = k[ps]; partner[rows, k[ps]] = j[ps]
-    q = torch.sigmoid(g / s.reshape(-1, 1) - float(np.log(pi / (1 - pi)))) * won.float()
+    q = torch.sigmoid(lr + logit_pi) * won.float()
     right = ((k - j) == 1).float()
     target = torch.zeros(m, 81, 5, device=dev)
     target[:, :, 4] = target[:, :, 4].index_add(1, j, q * right)
     target[:, :, 2] = target[:, :, 2].index_add(1, j, q * (1 - right))
     target[:, :, 0] = (1 - target[:, :, 2] - target[:, :, 4]).clamp_min(0)
-    return partner.view(*shape, 81), target.view(*shape, 81, 5), won.view(*shape, -1).sum(-1).float(), s
+    return (partner.view(*shape, 81), target.view(*shape, 81, 5), accepted.view(*shape, -1).sum(-1).float(), s,
+            won.view(*shape, -1).sum(-1).float(), q.view(*shape, -1).sum(-1))
 PARENT = L.OUT / 'paired_event/training/paired_u0000.pt'
 
 
@@ -124,7 +130,7 @@ def main():
               L.ROOT / 'd4mj/train.py', L.ROOT / 'd4mj/mamba_recurrence.py', PREREG, PARENT, L.TW.S.CHECKPOINT,
               *([COST_PREREG] if COST_PREREG.exists() else []),
               BASE.D.OUT / 'manifest.json', BASE.D.OUT / 'windows.pt']
-    contract = {'format': 'transport_ic_v1', 'sources_inputs': {str(p.relative_to(L.ROOT)): L.sha(p) for p in source},
+    contract = {'format': 'transport_ic_v2', 'sources_inputs': {str(p.relative_to(L.ROOT)): L.sha(p) for p in source},
                 'data_contract_id': manifest['contract_id'], 'updates': a.updates, 'batch': a.batch, 'arms': list(arms),
                 'parameters': {arm: {'total': sum(p.numel() for p in w.parameters()),
                                      'completion': sum(p.numel() for p in w.completion.parameters())} for arm, w in worlds.items()},
@@ -190,11 +196,10 @@ def main():
                     logits = w.completion.propose(w.completion.trunk(belief, noise[0])).float()[:, :15]
                 logits = logits.masked_fill(~w.completion.valid, -torch.inf)
                 with torch.no_grad():
-                    if pi is None:                                              # label-free initial rate: gain > 0 matches
-                        _, _, n0, _ = infer(F.layer_norm(b.detach(), (192,)), z, 0.01)
-                        pi = max(float(n0.mean()) / len(PAIRS), 1e-3)
-                    partner, target, nsw, s_ = infer(F.layer_norm(b.detach(), (192,)), z, pi)
-                    pi = min(max(0.99 * pi + 0.01 * float(nsw.mean()) / len(PAIRS), 1e-4), 0.5)
+                    if pi is None:
+                        pi = 0.01                                               # ~0.5 swaps per frame over 54 pairs
+                    partner, target, nsw, s_, ncand, qmass = infer(F.layer_norm(b.detach(), (192,)), z, pi)
+                    pi = min(max(0.99 * pi + 0.01 * float(qmass.mean()) / len(PAIRS), 1e-4), 0.5)
                 out = F.layer_norm(b.gather(2, partner[..., None].expand(-1, -1, -1, 192)), (192,))
                 point = L.objective(L.components(out, z), 'D')
                 logp = logits.log_softmax(-1)
@@ -204,7 +209,8 @@ def main():
                                             grad_clip=config.agent.grad_clip, strict=True, zero_grad=True))
                 torch.cuda.synchronize()
                 records[arm] = {'point': round(float(point.detach()), 6), 'ce': round(float(ce.detach()), 6),
-                                'posterior_swaps_per_frame': round(float(nsw.mean()), 4), 'scale_s': round(float(s_.mean()), 4),
+                                'posterior_swaps_per_frame': round(float(nsw.mean()), 4), 'candidates_per_frame': round(float(ncand.mean()), 4),
+                                'q_mass_per_frame': round(float(qmass.mean()), 4), 'scale_s': round(float(s_.mean()), 4),
                                 'pi': round(pi, 6), 'gradient_norm': round(norm, 4), 'seconds': round(time.perf_counter() - t0, 4)}
                 if (update + 1) % 100 == 0 or update == start:
                     with torch.no_grad(), autocast_context(config):
