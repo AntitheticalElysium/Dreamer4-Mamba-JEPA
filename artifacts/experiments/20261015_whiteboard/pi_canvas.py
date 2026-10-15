@@ -18,6 +18,9 @@ Third variant (PI_INNOV_PREREG.md), no canvas, MAP edits: pi_innov_s{1,2} -- eve
 the centroid of a code DRAWN from the head-only content categorical (pi_innov_train.py, innov_u1500.pt; E2's K 4096 Raw codes)
 at temperature 1 (Gumbel-max with its own generator, seed 20261021) instead of the point-predicted token; everything else is
 PI. The chance noise / Gumbel stream is identical to pi_s{1,2}.
+Fourth variant (PI_ENTER_PREREG.md, after R31): pi_enter_s{1,2} -- as pi_innov, but content is drawn ONLY at entering cells whose
+world position was never seen (in the real context or the imagined rollout; the canvas bookkeeping, not its content); gate-fired
+edits and re-entering cells keep PI's point-predicted token. Same head, generators and chance stream.
 Writes the same files as transport_recursion (recursion_samples_<name>.pt, recursion_<name>.json), so every whiteboard
 analysis reads them by name.
 Usage: pi_canvas.py <name> ...
@@ -40,7 +43,8 @@ import pi_model as PI
 NAMES = {'pi_canvas_s1': ('pi_seed1', 'sample', True, False), 'pi_canvas_s1_ref': ('pi_seed1', 'reference', True, False),
          'pi_canvas_s2': ('pi_seed2', 'sample', True, False), 'pi_canvas_s2_ref': ('pi_seed2', 'reference', True, False),
          'pi_sampled_s1': ('pi_seed1', 'sample', False, True), 'pi_sampled_s2': ('pi_seed2', 'sample', False, True),
-         'pi_innov_s1': ('pi_seed1', 'sample', False, False, True), 'pi_innov_s2': ('pi_seed2', 'sample', False, False, True)}
+         'pi_innov_s1': ('pi_seed1', 'sample', False, False, True), 'pi_innov_s2': ('pi_seed2', 'sample', False, False, True),
+         'pi_enter_s1': ('pi_seed1', 'sample', False, False, 'unseen'), 'pi_enter_s2': ('pi_seed2', 'sample', False, False, 'unseen')}
 CODES = A5.ROOT / 'artifacts/eda/levers_codebooks_v1/raw_K4096.pt'
 P = TR.W + TR.H                                                           # the origin moves at most one cell per frame
 ROWS, COLS = 7 + 2 * P, 9 + 2 * P
@@ -119,8 +123,13 @@ def rollout(name):
                 known = seen.gather(1, addr) & enter[:, 14, :PI.MAP].cpu() & use_canvas
                 remembered = store.gather(1, addr[..., None].expand(-1, -1, 192))
                 last = after[:, 14].clone()
-                if innov_head is not None:                                 # sampled content at every innovated cell
-                    where = torch.nonzero((fire | enter)[:, 14])
+                if innov_head is not None:                                 # sampled content at innovated cells
+                    if rest[0] == 'unseen':                                # only never-seen entering cells
+                        site = torch.zeros_like(enter[:, 14])
+                        site[:, :PI.MAP] = enter[:, 14, :PI.MAP] & ~seen.gather(1, addr).cuda()
+                    else:
+                        site = (fire | enter)[:, 14]
+                    where = torch.nonzero(site)
                     lg = innov_head(belief[:, 14].float())[where[:, 0], where[:, 1]]
                     u = torch.rand(lg.shape, generator=g_innov).clamp(1e-12, 1 - 1e-12).cuda()
                     code = (lg - torch.log(-torch.log(u))).argmax(-1)

@@ -32,7 +32,8 @@ Sampled innovation content (20261015_whiteboard/PI_INNOV_PREREG.md), written bef
   A2 cow census d16 closer to 1 than pi's; H persisting-mob score d16 >= pi - 0.05, seen terrain d16 <= pi + 0.005, camera d16
   >= pi - 0.02, phantoms per frame <= real_phantoms per frame at every depth. "sampled innovation restores arrivals" if A1, A2,
   H at both seeds; "arrivals restored but the rollout is harmed" if A1 at both seeds and H fails; "not supported" if A1 fails.
-Usage: transport_track_verdicts.py sf|pi|canvas|sampled|innov -> artifacts/eda/oracle_v1/transport/<mode>_verdict.json
+PI_ENTER_PREREG.md: mode 'enter' = the same readings with pi_enter in place of pi_innov.
+Usage: transport_track_verdicts.py sf|pi|canvas|sampled|innov|enter -> artifacts/eda/oracle_v1/transport/<mode>_verdict.json
 """
 import json
 import sys
@@ -168,17 +169,17 @@ def variant(kind):
     return res
 
 
-def innov():
+def innov(arm='innov'):
     res = {}
-    split = json.loads((W / 'census_split_pi_innov_s1_pi_innov_s2.json').read_text())
-    fade = json.loads((W / 'mob_fading_pi_innov_s1_pi_innov_s2.json').read_text())
+    split = json.loads((W / f'census_split_pi_{arm}_s1_pi_{arm}_s2.json').read_text())
+    fade = json.loads((W / f'mob_fading_pi_{arm}_s1_pi_{arm}_s2.json').read_text())
     base_fade = json.loads((W / 'mob_fading_pi_s1_pi_s2_pi_s1_ref.json').read_text())
     for s in (1, 2):
-        x, b = rec(f'pi_innov_s{s}'), rec(f'pi_s{s}')
-        cow = split[f'pi_innov_s{s}']['cow_absent']
+        x, b = rec(f'pi_{arm}_s{s}'), rec(f'pi_s{s}')
+        cow = split[f'pi_{arm}_s{s}']['cow_absent']
         arr, real = cow['imagined_per_frame_d1_d8_d16'][2], cow['real_per_frame_d1_d8_d16'][2]
         census = [x['census_ratio[zombie,cow,skeleton]_by_depth'][15][1], b['census_ratio[zombie,cow,skeleton]_by_depth'][15][1]]
-        persist = [fade[f'pi_innov_s{s}']['vanish_rate_by_depth'][15]['mean_score_of_persisting'],
+        persist = [fade[f'pi_{arm}_s{s}']['vanish_rate_by_depth'][15]['mean_score_of_persisting'],
                    base_fade[f'pi_s{s}']['vanish_rate_by_depth'][15]['mean_score_of_persisting']]
         harm = {'persisting_d16': persist, 'seen_terrain_d16': [x['tile_error_seen_by_depth'][15], b['tile_error_seen_by_depth'][15]],
                 'camera_d16': [x['camera_consistent_by_depth'][15], b['camera_consistent_by_depth'][15]],
@@ -188,8 +189,8 @@ def innov():
                 all(p <= r for p, r in zip(x['phantoms_per_frame_by_depth'], x['real_phantoms_per_frame_by_depth'])))
         res[f'seed{s}'] = {'cow_arrivals_d16': [arr, real], 'A1': bool(.25 * real <= arr <= 1.5 * real),
                            'cow_census_d16': census, 'A2': bool(abs(census[0] - 1) < abs(census[1] - 1)), 'no_harm': harm, 'H': bool(h_ok),
-                           'zombie_arrivals_d16': [split[f'pi_innov_s{s}']['zombie_absent']['imagined_per_frame_d1_d8_d16'][2],
-                                                   split[f'pi_innov_s{s}']['zombie_absent']['real_per_frame_d1_d8_d16'][2]]}
+                           'zombie_arrivals_d16': [split[f'pi_{arm}_s{s}']['zombie_absent']['imagined_per_frame_d1_d8_d16'][2],
+                                                   split[f'pi_{arm}_s{s}']['zombie_absent']['real_per_frame_d1_d8_d16'][2]]}
     seeds = [res['seed1'], res['seed2']]
     if all(r['A1'] and r['A2'] and r['H'] for r in seeds):
         res['verdict'] = 'sampled innovation restores arrivals'
@@ -204,6 +205,6 @@ def innov():
 
 if __name__ == '__main__':
     which = sys.argv[1]
-    res = {'sf': sf, 'pi': pi, 'canvas': lambda: variant('canvas'), 'sampled': lambda: variant('sampled'), 'innov': innov}[which]()
+    res = {'sf': sf, 'pi': pi, 'canvas': lambda: variant('canvas'), 'sampled': lambda: variant('sampled'), 'innov': innov, 'enter': lambda: innov('enter')}[which]()
     (T / f'{which}_verdict.json').write_text(json.dumps(res, indent=1))
     print(json.dumps(res, indent=1))
