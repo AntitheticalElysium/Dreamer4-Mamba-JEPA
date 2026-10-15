@@ -177,6 +177,31 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R28 — PI variant 2 (sampled edits, evaluation only): "no gain from sampling" (PI_CANVAS_PREREG variant 2)
+
+Mechanical verdict (`transport_track_verdicts.py sampled`). Edits drawn as Bernoulli(σ(gate)) instead of gate > 0; the content
+is still the point-predicted token; same chance stream. Non-entering edits per step: 3.0-3.1 (MAP 2.45).
+
+| reading (bright) | sampled s1 / s2 | PI (MAP) s1 / s2 |
+|---|---|---|
+| **S1** health-drop AUC16 | 0.638 / 0.666 | 0.617 / 0.603 |
+| **S1** health drops within 16 (real 0.26) | 0.090 / **0.293** (overshoots) | 0.072 / 0.261 |
+| S1 | ✓ / **✗** | |
+| **S2** max phantoms (≤ PI + 0.02) | **0.115 / 0.097 ✗** | 0.028 / 0.019 |
+| S2 seen terrain d16 | 1.70% / 1.48% | 1.61% / 1.38% |
+| S2 zombie-adj AUC16 | 0.720 / 0.690 | 0.719 / 0.696 |
+| cow vanish per step | **0.071 / 0.078** | 0.029 / 0.029 |
+| persisting-mob score d16 | 0.594 / 0.657 | 0.726 / 0.706 |
+
+- **Sampling the *decision* while the *content* is the mean makes ghosts.** Persisting mobs carry a gate probability of ~0.2
+  (R22). Each sampled edit replaces the mob with the mean token, so mobs vanish 2.5× more often, faint mob-like blur appears,
+  and phantoms rise 4-5×.
+- Health-drop AUC rises at both seeds, but the drop rate overshoots at seed 2: a sampled HUD edit draws the mean health
+  change wherever the gate is unsure.
+- **Same lesson as R24, from the other side:** stochastic innovation must sample the *content* of a change from its
+  distribution (R25: codes as carrier), and the change decision must be calibrated where it is sampled. Neither half alone
+  works.
+
 ### R27 — PI's weaker pursuit is not edits absorbing moves (`ic_posterior.py pi`, CPU, layouts diagnostic only)
 
 - **Setup:** the 400 training windows and true STAY-class mob moves of the IC milestones check, under each PI u3000's
