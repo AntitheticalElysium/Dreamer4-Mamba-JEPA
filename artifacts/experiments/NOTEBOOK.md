@@ -207,6 +207,14 @@ Measured at PI's initialization (exact D parent, gen = its proj(belief)), teache
   - CorrT trained this logit as one term in a softmax against a +3 self logit, never against a threshold. Not a convention
     bug: the SHIFTS / MOVE_SHIFT / candidate orders agree.
   - PI's scroll training must learn both the calibration and the moved-vs-blocked separation (88% of move actions scroll).
+- **Second prediction (written before PI trains): consequences.**
+  - In PI the generated token is trained only at cells the gate edits (plus entering cells), so its loss is no longer
+    diluted by the ~98% of cells that persist.
+  - E14 diagnosed that dilution as the reason consequences were never learned: rare events are ~0.3% of uniform L1, so the
+    model copies.
+  - **Expected:** PI draws consequences (HUD health drops in `decision_proxies.py`, edits at the faced cell) better than IC.
+    If it does not, rarity was not only dilution: the gate's prior could still refuse rare edits, because their
+    context-level rate is low.
 
 ### R17 — Track B: a memory that follows world position would recover nearly all revisited terrain (`memory_probe.py cache`)
 
