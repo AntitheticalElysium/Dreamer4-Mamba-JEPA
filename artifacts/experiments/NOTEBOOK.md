@@ -131,6 +131,37 @@ Drift is relative to the RMS distance between different cells.
   drift" → "because rendering changes deterministically (daylight) and with position". This is predictable from history, and
   the learned afterstate removes most of it (0.048 → 0.014).
 
+### R10 — decision-relevant imagination: the world stops threatening the player (`decision_proxies.py`)
+
+**Setup:** saved H16 rollouts, frozen readers. 104 bright roots; one real future per root, so AUCs are about ±0.07.
+
+| within 16 steps | real rate | D parent (rate / AUC) | transport operator | free synthesis |
+|---|---|---|---|---|
+| zombie adjacent | 0.18 | 0.04 / 0.61 | 0.08 / 0.66 | 0.13 / 0.72 |
+| cow adjacent | 0.21 | 0.12 / 0.72 | 0.16 / **0.85** | 0.52 / 0.64 |
+| health drop | 0.26 | 0.08 / 0.60 | 0.07 / 0.57 | 0.10 / 0.64 |
+
+- Within 4 steps zombie adjacency is forecast well by all models (AUC 0.90-1.00).
+- **Over depth:**
+
+  | depth | 1 | 4 | 7 | 10 | 13 | 16 |
+  |---|---|---|---|---|---|---|
+  | real zombie adjacency | 0.03 | 0.04 | 0.02 | 0.10 | 0.10 | 0.08 |
+  | transport operator | 0.04 | 0.05 | 0.05 | 0.03 | 0.02 | 0.02 |
+  | free synthesis | 0.05 | 0.05 | 0.05 | 0.06 | 0.04 | 0.04 |
+  | D parent | 0.04 | 0.02 | 0 | 0 | 0 | 0 |
+
+  Real health drops rise to 0.02-0.04 per step. Imagined drops are ≈ 0-0.005 per step after depth 2, for every model.
+  Decoded health is biased +0.5 units at depth 16 (D, operator).
+- **Reading:**
+  - In imagination, zombies stop closing in and damage stops. That is decision-critical, and it leaves an imagination-trained
+    actor overconfident (cf. Phase-3 actors losing to BC; E17-E20 "health never learned").
+  - Transport's coherence gain helps where coherence matters (cow encounters, AUC 0.85 vs 0.64). It does **not** improve
+    hazard forecasting over free synthesis, whose phantom mobs inflate hazard.
+  - The decision bottleneck is not stochastic coherence (row 3). It is multi-step deterministic pursuit (zombie chase is
+    mostly deterministic; imagined zombies move 10% per step vs 43% real; mobs fade, R7) and HUD consequence dynamics
+    (row 2).
+
 ### R8 — TRANSPORT_IC: two failed posterior designs, both diagnosed by synthetic tests; v3 running
 
 **v1 (stopped at update 900; `transport/ic_v1_bug_seed{1,2}`)**
