@@ -418,8 +418,9 @@ each a hard decision that must pay its description cost:
 - **What PI does not do:**
   - **Arrivals** (R24): new mobs entering the view are never drawn, 0-0.02 vs real 0.12-0.26 per frame. Its new content is a
     point prediction, the mean.
-  - **Pursuit** (R27): crisp zombies approach at 0.24-0.29 vs real 0.35-0.38. This is one-step, a weaker learned direction
-    bias, not edits absorbing moves.
+  - **Pursuit** (R27, corrected by R33): PI's chance head chases close to reality on real contexts (toward 0.25-0.41 vs
+    real 0.35-0.45; IC's chance head 0.09-0.18). Its imagined pursuit decays with depth (0.29 → 0.22 vs real 0.38): a
+    recursive effect, not fading and not one-step.
   - **Health drops** are seed-inconsistent.
 
 **Two evaluation-only variants, each one change:**
@@ -436,7 +437,7 @@ each a hard decision that must pay its description cost:
 | stable content | exact copy by default, under an explicit camera transformation | works (PI) |
 | contextual belief | the screen-slot Mamba belief drives the decisions | works for one-step decisions; memory needs world addressing (canvas works for terrain) |
 | deterministic evolution | EM-gated hard edits, content = gen | works where predictable (84% of changed terrain, 78% of HUD changes) |
-| stochastic reassignment | chance swaps with an inferred posterior | works (92% capture); direction bias weaker in PI |
+| stochastic reassignment | chance swaps with an inferred posterior | works (92% capture); PI's chance head carries the chase near the real rate one-step (R33), but pursuit decays with depth in recursion |
 | stochastic innovation | new content **drawn** from a learned categorical (K 4096 codes) **only where the uncertainty is epistemic** (never-seen entering cells) | **works** (R32): arrivals ~0 → 0.4-0.56× real, no harm, camera +3pp. Sampling everywhere (R29) or sampling decisions with mean content (R28) fails |
 
 **Innovation rule (R28-R32):**
