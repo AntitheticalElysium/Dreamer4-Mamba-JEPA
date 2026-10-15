@@ -11,7 +11,10 @@ t+1 at that cell (no simulator labels).
                scroll; no memory)
 probe_acc >> output_acc => the information is stored but not read out; probe_acc ~ output_acc ~ low => not stored/addressed.
 REVISIT split by scrolls between the last frame that showed the cell and t.
-Usage: memory_probe.py <checkpoint relative to transport/ | D_parent> -> artifacts/eda/whiteboard/memory_probe_<name>.json
+Mode "cache" (model-free, CPU; world-aligned memory ceiling): for REVISIT cells, the reader's class of the REAL token last seen
+at that world position (latest frame <= t showing it outside the player cell), tracked with the same label-free scroll
+estimate. cache_acc - output_acc = what a memory that follows world position could recover over the screen-slot memory.
+Usage: memory_probe.py <checkpoint relative to transport/ | D_parent | cache> -> artifacts/eda/whiteboard/memory_probe_<name>.json
 """
 import json
 import sys
@@ -42,7 +45,9 @@ def main():
     config = BASE.settings()
     _, windows, actions, tokens = BASE.load_data()
     sel = torch.randperm(len(windows), generator=torch.Generator().manual_seed(20261017))[:N_WINDOWS]
-    if name == 'D_parent':
+    if name == 'cache':
+        world = None
+    elif name == 'D_parent':
         world = PM.PairedWorld().cuda().eval()
         world.load_state_dict(torch.load(A5.BASE / 'paired_event/training/paired_u0000.pt', map_location='cpu', weights_only=False)['world'])
     else:
@@ -51,15 +56,20 @@ def main():
     bank = torch.load(A5.BASE / 'snap_bank_readers.pt', map_location='cpu', weights_only=False)
     head = torch.load(A5.BASE / 'learned_innovation/eval_u3000_h01/mob_heads.pt', map_location='cpu', weights_only=False)['heads']['real']
     scroll = A5.load_scroll(); shifts = torch.as_tensor(scroll.SHIFTS)
-    feats, prevtok, tgt, outcls, cls, nscr, widx = [], [], [], [], [], [], []
+    feats, prevtok, tgt, outcls, cls, nscr, widx, cache = [], [], [], [], [], [], [], []
     for b0 in range(0, N_WINDOWS, 8):
         frames, ac, _ = BASE.batch(tokens, actions, windows, sel[b0:b0 + 8])
-        with autocast_context(config):
-            belief, ha = world.backbone_full(frames, ac)
-            pred = F.layer_norm(world.reference(frames, ac, belief, ha).float(), (192,))
-        fr = frames.float().cpu(); belief = belief.float().cpu(); pred = pred.cpu()
+        fr = frames.float().cpu()
+        if world is None:
+            belief = torch.zeros(*fr.shape[:3], 1); pred = fr[:, 1:]       # placeholders (cache mode reads no model)
+        else:
+            with autocast_context(config):
+                belief, ha = world.backbone_full(frames, ac)
+                pred = F.layer_norm(world.reference(frames, ac, belief, ha).float(), (192,))
+            belief = belief.float().cpu(); pred = pred.cpu()
         sh = shifts[scroll.estimate(fr[:, :-1], fr[:, 1:])]                # [b,15,2]
-        real_tile = C.decode(fr[:, 1:], bank, head)['tile']                 # [b,15,63] reader classes on real successors
+        all_tile = C.decode(fr, bank, head)['tile']                         # [b,16,63] reader classes on real frames
+        real_tile = all_tile[:, 1:]                                         # [b,15,63] on real successors
         pred_tile = C.decode(pred[:, :15], bank, head)['tile']
         for b in range(len(fr)):
             origin = torch.zeros(16, 2, dtype=torch.long)
@@ -77,22 +87,36 @@ def main():
                         w = (r + int(o[0]), c + int(o[1]))
                         if 0 <= w[0] - int(op[0]) < 7 and 0 <= w[1] - int(op[1]) < 9:
                             continue                                       # visible at t: not entering
-                        last = None
+                        last, held = None, -1
                         for f in range(t + 1):
                             of = origin[f]
                             if 0 <= w[0] - int(of[0]) < 7 and 0 <= w[1] - int(of[1]) < 9:
                                 last = f
+                                xf = (w[0] - int(of[0])) * 9 + w[1] - int(of[1])
+                                if xf != 31:
+                                    held = int(all_tile[b, f, xf])
                         if real_tile[b, t, x] < 0:
                             continue
                         feats.append(belief[b, t, x]); prevtok.append(fr[b, t, x]); tgt.append(int(real_tile[b, t, x]))
                         outcls.append(int(pred_tile[b, t, x])); cls.append(last is not None)
                         nscr.append(int((sh[b, last:t] != 0).any(-1).sum()) if last is not None else -1)
-                        widx.append(b0 + b)
+                        widx.append(b0 + b); cache.append(held)
         if b0 % 400 == 0:
             print(json.dumps({'windows_done': b0 + 8, 'cells': len(tgt)}), flush=True)
     X = torch.stack(feats); P = torch.stack(prevtok); y = torch.tensor(tgt); o = torch.tensor(outcls)
-    rv = torch.tensor(cls); ns = torch.tensor(nscr); wi = torch.tensor(widx)
+    rv = torch.tensor(cls); ns = torch.tensor(nscr); wi = torch.tensor(widx); ca = torch.tensor(cache)
     train = wi % 2 == 0; test = ~train
+    if world is None:
+        res = {'model': 'cache (model-free, label-free scroll track)', 'entering_cells': len(y)}
+        for key, m in (('REVISIT', rv), ('REVISIT_scrolls0-2', rv & (ns <= 2)), ('REVISIT_scrolls3+', rv & (ns >= 3))):
+            m = m & (ca >= 0)
+            res[key] = {'cells': int(m.sum()), 'cache_acc': round(float((ca[m] == y[m]).float().mean()), 4),
+                        'majority_class_acc': round(float((y[m] == y[m].mode().values).float().mean()), 4)}
+        res['revisit_share_of_entering'] = round(float(rv.float().mean()), 4)
+        OUT.mkdir(parents=True, exist_ok=True)
+        (OUT / 'memory_probe_cache.json').write_text(json.dumps(res, indent=1))
+        print(json.dumps(res, indent=1), flush=True)
+        return
     yoh = F.one_hot(y, 17).float()
     pb = RL.ridge(X, yoh, torch.where(train)[0], torch.where(test)[0]).argmax(-1)
     pp = RL.ridge(P, yoh, torch.where(train)[0], torch.where(test)[0]).argmax(-1)

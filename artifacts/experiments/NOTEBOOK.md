@@ -177,6 +177,26 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R17 — Track B: a memory that follows world position would recover nearly all revisited terrain (`memory_probe.py cache`)
+
+Model-free ceiling, with the same 2,400 training windows, entering cells, label-free scroll track and frozen tile reader as
+R16. For each revisited entering cell: the reader's class of the REAL token last seen at that world position (latest frame
+≤ t showing it outside the player cell).
+
+| entering cell | cells | world-aligned exact cache | D parent / IC output (R16) | majority class |
+|---|---|---|---|---|
+| revisit ≤ 2 scrolls | 12,952 | **0.999** | 0.94 / 0.94 | 0.49 |
+| revisit 3+ scrolls | 5,661 | **0.999** | 0.80 / 0.80 | 0.49 |
+
+- Revisits are 16.6% of entering cells in 16-frame training windows.
+- Terrain almost never changes between visits, and the label-free scroll track is accurate enough to address it. A
+  world-coordinate state whose camera is an explicit transformation would turn the revisit error from 6-20% into ~0.1%.
+  The screen-slot backbone cannot do this: after 3+ scrolls it is at the never-seen level (0.80).
+- Same principle as PI, extended off-screen: the persistent state is world-aligned, the view is a window into it, and the
+  scroll is an explicit transformation. **Not run on a model yet.** Next, as one change at a time: an inference-time canvas
+  (entering cells copy the last token seen at their world position, addressed by the model's own scroll decisions) on PI,
+  after the PI verdict.
+
 ### R16 — Track B: persistence must be a trained decision; fading needs residual uncertainty; memory loses storage, not readout
 
 **Confidence-gated persistence fails** (`persistence_variants.py ic_s1 gated`). Exact copy where CorrT's top weight > p, soft
