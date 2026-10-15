@@ -177,6 +177,69 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R34 — USER QUESTION (10-15 night): does exact copying freeze information that should evolve? Yes, the representation (`stale_context.py`)
+
+**User's concern:** a latent need not represent a fixed physical object. A zombie moving closer changes its contextual
+significance (danger, actions, consequences). Does exact token copying preserve stale context? Preserve the persistent
+*information*, not necessarily its representation.
+
+**What our tokens carry** (R2, encoder layers):
+- content (mob identity is linearly local);
+- global daylight rendering;
+- a position code (drift 0.086 when the camera moved vs 0.021 when still, relative to between-cell distances);
+- almost no neighbour context (+0.004).
+- The player is always at slot 31, so "distance to the player / danger" is a function of position. A copied token carries
+  the position code of the slot where it was last encoded.
+
+**Substitution test with an idealized PI** (320 training windows per seed; frames f0..f15):
+- The last m context frames are rebuilt as PI builds imagined frames, but with the TRUE transformations: the label-free
+  scroll, the posterior swaps, and real tokens at every changed cell (posterior edit or entering).
+- They differ from reality only in that unchanged content keeps its last-encoded token.
+- PI's belief-driven outputs at the last frame are compared, stale vs fresh, on the **same windows**.
+
+| reading (s1 / s2) | m 4, ≥ 4 scrolls (24 w) | m 8, ≥ 4 scrolls (119 w) | m 14, ≥ 4 scrolls (199 w) | m 8, no scroll (61 w) |
+|---|---|---|---|---|
+| chase: P(toward player) | 0.61 → 0.43 / 0.64 → 0.37 | 0.42 → 0.26 / 0.45 → 0.16 | **0.40 → 0.27 / 0.45 → 0.25** | 0.16 → 0.13 / 0.23 → 0.19 |
+| gen error at real map changes | 1.56 → 2.16 / 1.35 → 1.81 | 1.64 → 2.51 / 1.57 → 2.38 | 1.63 → 2.54 / 1.56 → 2.46 | 1.42 → 2.16 / 1.40 → 1.89 |
+| gen error at real HUD changes | | 2.11 → 2.60 / 2.08 → 2.68 | 2.19 → 2.78 / 2.48 → 3.10 | 1.94 → 2.09 / 1.91 → 2.06 |
+| gate AUC, map / HUD | 0.999 → 0.98 / 1.0 | 0.996 → 0.976-0.981 / ≥ 0.996 | 0.996 → 0.973-0.978 / ≥ 0.995 | ~1.0 → 0.999 |
+| scroll accuracy | 1.0 | 0.99-1.0 | 0.99 | 1.0 |
+| belief cosine stale vs fresh: zombie / adjacent / other map / HUD | 0.85 / 0.99 / 0.99 / 1.0 (s1) | 0.76 / 0.98 / 0.98 / 0.99 (s1); 0.69 (s2 zombie) | 0.80 / 0.97 / 0.98 / 0.98 | 0.92 / 0.99 / 0.99 / 1.0 |
+
+One stale step already moves the belief at zombie cells (cosine 0.91-0.95 at m = 1). A zombie that moved keeps the position
+code of its old cell.
+
+**What we learn:**
+- **Exact copying preserves the information that is about content.** Change detection (gate AUC ≥ 0.97) and scroll decisions
+  (0.99-1.0) are intact.
+- **It freezes the information that is about context:**
+  - The relational reading collapses: the chance head's chase toward the player falls 30-64% with scrolls.
+  - The generated content of consequences worsens 25-62%.
+  - The stale *position code* (scrolls, moved mobs) is the larger cause. Stale *rendering* alone (no scroll) costs less:
+    chase −15-20%, map content +35-50%.
+- This is the mechanism behind R33's recursive pursuit decay (0.29 → 0.22): one-step chase is near real on fresh tokens and
+  decays as copies age.
+- **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
+  and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
+
+### R35 — the Mamba belief keeps temporal context across slot changes on real inputs (`slot_history.py`)
+
+1,600 training windows per seed, real context. At 1,764 frames with a zombie adjacent to the player, PI predicts the next
+health drop (gate probability at the health token, HUD 63):
+
+| zombie has held its slot | frames | drop rate | gate AUC, health token (s1 / s2) | gen health-drop AUC |
+|---|---|---|---|---|
+| 0-1 steps (just moved or scrolled in) | 1,301 | 19.5% | **0.978 / 0.978** | 0.87 / 0.90 |
+| 2-3 steps | 296 | 6.4% | 0.969 / 0.973 | 0.61 / 0.65 |
+| 4+ steps | 167 | 8.4% | 0.916 / 0.917 | 0.70 / 0.69 |
+
+- **No loss after a slot change:** the hit cooldown and its consequence are predicted best for zombies that just arrived.
+  Screen-slot addressing does not freeze or misattribute the zombie's temporal context within the window.
+- So on real inputs **the belief recomputes relations and consequences correctly.** What degrades in imagination is the
+  stale representation it is fed (R34), not the belief's ability to update.
+- The generated health *content* is weaker than the change *detection* (gen AUC 0.61-0.90 vs gate 0.92-0.98): the model
+  knows a drop comes better than it draws its size.
+
 ### R33 — R27 corrected: PI's chance head chases MORE than IC's, close to reality; its deficit is decay with depth (`pursuit_onestep.py`)
 
 Teacher-forced, 400 training windows with layouts (diagnostic only). For every zombie in the afterstate layout: the chance
