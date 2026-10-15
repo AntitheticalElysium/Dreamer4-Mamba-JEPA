@@ -177,6 +177,29 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R13 — causal test: the faced cell drives camera divergence (`faced_substitution.py`, op_s1, 200 roots × 8 samples)
+
+Self-fed H16; before each step, on camera-consistent trajectories, ONE cell of the last imagined frame is replaced by the real
+token. Camera consistent at depth 8 / 16:
+
+| | bright | dark |
+|---|---|---|
+| no substitution | 76 / 51% | 69 / 37% |
+| **faced cell** | **88 / 75%** | **88 / 74%** |
+| random other interior cell (control) | 76 / 53% | 70 / 38% |
+
+- Correcting the single cell the player is about to enter recovers most of the lost camera consistency. A random cell does
+  nothing.
+- **Causal:** imagined content at the faced cell decides the scroll, and the scroll addresses everything after it.
+- Recursion fidelity is concentrated in a few action-relevant cells, so a world model should spend precision there.
+
+**IC follow-ups (post-IC queue, seed 1):**
+- **Fading:** IC's persisting-mob score decays faster: 0.92 → 0.50 (d6) → 0.38 (d16), vs ES twin 0.92 → 0.72 → 0.48. Cow
+  vanish rate is 3.5% per step vs 0.6%. This confirms R12's R2 failure: point-loss averaging at blind spots attenuates mobs.
+- **Camera:** divergence 3.4% per step (ES 4.5%), with the same faced-cell pattern (agree 4.0%, mob missing 80%).
+- **Memory:** revisit error 14% (ES 25%); new terrain 31% (ES 57%). Addressing replicates: last seen 8-14 frames ago, error
+  is 8.7% with ≤ 2 scrolls vs 33% / 39% with 3-5 / 6+.
+
 ### R10 — decision-relevant imagination: the world stops threatening the player (`decision_proxies.py`)
 
 **Setup:** saved H16 rollouts, frozen readers. 104 bright roots; one real future per root, so AUCs are about ±0.07.
