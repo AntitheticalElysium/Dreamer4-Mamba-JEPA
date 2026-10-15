@@ -215,6 +215,15 @@ Measured at PI's initialization (exact D parent, gen = its proj(belief)), teache
   - **Expected:** PI draws consequences (HUD health drops in `decision_proxies.py`, edits at the faced cell) better than IC.
     If it does not, rarity was not only dilution: the gate's prior could still refuse rare edits, because their
     context-level rate is low.
+- **Hard-EM trap check** (`edit_gain.py 640`). Gen learns only where the gate edits, and the gate edits only where gen
+  already wins, so a consequence the parent cannot draw would never be learned.
+  - HUD tokens that really change (|z − copy| > 2.5, E21's valley; 5,546 cells = 3.2% of HUD cells): gen already beats the
+    copy at **52%** (median gain/s ≈ 0, EM prior **0.76**, 23% fire at the initial bias).
+  - Unchanged HUD: gen never wins (0.0%, prior 0.000).
+  - So the gate has a foothold on HUD consequences from the start. Which consequences are in the losing 48% is not
+    identified (no labels).
+  - The 640-window rerun replicates the table: unchanged terrain 1.8% / prior 0.000; persisting mob 8.6% / 0.005; changed
+    terrain 88% / 0.91; mob at one end 79% / 0.85; parent scroll agreement 61.7%.
 
 ### R17 — Track B: a memory that follows world position would recover nearly all revisited terrain (`memory_probe.py cache`)
 

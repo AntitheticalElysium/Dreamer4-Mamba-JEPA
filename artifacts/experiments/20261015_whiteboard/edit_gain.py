@@ -11,10 +11,13 @@ taken as is: moved mobs count as changed). Cell classes from the frozen bank til
   changed     tile class differs, no mob                                                    (edits: do / place / drift flips)
   mob_kept    a mob at the copy source at t and at the cell at t+1                          (persisting mobs, moved or not)
   mob_other   a mob at exactly one of the two
-  hud         the 18 HUD tokens (copied in place)
+  hud_changed / hud_unchanged   the 18 HUD tokens (copied in place), split by the label-free change test |z - copy| > 2.5
+              (tworld.EVENT_TAU, E21: the valley of the bimodal HUD change-norm distribution): is a rare consequence (health,
+              food, inventory change) one the generated token already beats the copy on? If not, PI's gate never edits it and
+              gen, trained only at edited cells, never learns it (a hard-EM trap)
 Entering map cells (always generated) and the player cell are excluded. Per class: cells, share gain > 0, median gain / s,
 share gain / s > 4 (fires at the gate's initial bias), and the EM fixed-point prior p* solved per class.
-Usage: edit_gain.py -> artifacts/eda/whiteboard/edit_gain.json
+Usage: edit_gain.py [windows] -> artifacts/eda/whiteboard/edit_gain.json
 """
 import dataclasses
 import json
@@ -52,8 +55,9 @@ def em_prior(g, iters=200):
 @torch.no_grad()
 def main():
     torch.manual_seed(0)
+    n_windows = int(sys.argv[1]) if len(sys.argv) > 1 else N_WINDOWS
     _, windows, actions, tokens = BASE.load_data()
-    sel = torch.randperm(len(windows), generator=torch.Generator().manual_seed(20261018))[:N_WINDOWS]
+    sel = torch.randperm(len(windows), generator=torch.Generator().manual_seed(20261018))[:n_windows]
     w = PI.PIWorld(init_seed=7)
     res = w.load_state_dict(torch.load(A5.BASE / 'paired_event/training/paired_u0000.pt', map_location='cpu', weights_only=False)['world'], strict=False)
     assert all(k.startswith(('completion.', 'gate.')) for k in res.missing_keys), res.missing_keys
@@ -64,9 +68,9 @@ def main():
     bank = torch.load(A5.BASE / 'snap_bank_readers.pt', map_location='cpu', weights_only=False)
     head = torch.load(A5.BASE / 'learned_innovation/eval_u3000_h01/mob_heads.pt', map_location='cpu', weights_only=False)['heads']['real']
     scroll = A5.load_scroll()
-    rows = {k: [] for k in ('unchanged', 'changed', 'mob_kept', 'mob_other', 'hud')}
+    rows = {k: [] for k in ('unchanged', 'changed', 'mob_kept', 'mob_other', 'hud_changed', 'hud_unchanged')}
     agree, total = 0, 0
-    for b0 in range(0, N_WINDOWS, 8):
+    for b0 in range(0, n_windows, 8):
         frames, ac, _ = BASE.batch(tokens, actions, windows, sel[b0:b0 + 8], device='cpu')
         est = scroll.estimate(frames[:, :-1], frames[:, 1:])
         belief, ha = w.backbone_full(frames, ac)
@@ -85,11 +89,14 @@ def main():
         for name, m in (('unchanged', keep & ~mob_z & ~mob_c & (tz == tc)), ('changed', keep & ~mob_z & ~mob_c & (tz != tc)),
                         ('mob_kept', keep & mob_z & mob_c), ('mob_other', keep & (mob_z ^ mob_c))):
             rows[name].append(gm[m])
-        rows['hud'].append(g[..., PI.MAP:].flatten())
+        hud_change = (copy[:, :, PI.MAP:] - z[:, :, PI.MAP:]).norm(dim=-1) > 2.5
+        rows['hud_changed'].append(g[..., PI.MAP:][hud_change]); rows['hud_unchanged'].append(g[..., PI.MAP:][~hud_change])
         print(json.dumps({'windows_done': b0 + 8}), flush=True)
-    out = {'windows': N_WINDOWS, 'parent': 'paired_u0000 (PI init)', 'scroll_argmax_agrees_with_estimate': round(agree / total, 4)}
+    out = {'windows': n_windows, 'parent': 'paired_u0000 (PI init)', 'scroll_argmax_agrees_with_estimate': round(agree / total, 4)}
     for name, parts in rows.items():
         x = torch.cat(parts)
+        if len(x) == 0:
+            out[name] = {'cells': 0}; continue
         out[name] = {'cells': len(x), 'share_gain_pos': round(float((x > 0).float().mean()), 4),
                      'median_gain_over_s': round(float(x.median()), 3), 'share_fires_at_init_bias': round(float((x > 4).float().mean()), 4),
                      'em_fixed_point_prior': round(em_prior(x), 4)}
