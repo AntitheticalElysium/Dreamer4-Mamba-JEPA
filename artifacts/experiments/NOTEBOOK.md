@@ -177,6 +177,37 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R24 — PI's census gap has two parts: continuing mobs mostly kept, arrivals never imagined (`census_split.py`)
+
+Per bright root and mob type: the decoded count at depth 16 (all trajectories, as the census), split by whether the root view
+holds that type (panel layout, evaluation only). "Absent" means every decoded mob of that type is an arrival (walked in or
+spawned).
+
+| d16 | zombie, type at root (18 roots) | zombie, type absent (86): arrivals | cow, type at root (50) | cow, type absent (54): arrivals |
+|---|---|---|---|---|
+| real, per frame | 0.94 | **0.116** | 0.82 | **0.259** |
+| no-op | 1.11 | 0 | 1.20 | 0 |
+| IC s1 / s2 | 0.11 / 0.10 (census 0.12 / 0.11) | 0 / 0 | 0.27 / 0.21 (0.33 / 0.25) | 0.056 / 0 |
+| **PI s1 / s2** | **0.73 / 0.69 (0.77 / 0.74)** | **0.006 / 0** | **0.66 / 0.50 (0.80 / 0.61)** | **0.023 / 0.002** |
+
+- **Continuing mobs:** PI keeps 61-80% at d16 (IC 11-33%). The imagined count of present-type mobs falls faster than reality's
+  departures: cow 1.10 → 0.66 / 0.50 vs real 1.12 → 0.82. Some loss of continuing mobs remains, in part the gate's 12-16%
+  edits of persisting mobs (R22).
+- **Arrivals are missing entirely:** reality brings 0.12 zombies and 0.26 cows per frame into views that had none by d16;
+  every model draws ~0. Arrivals are mobs walking in through entering cells, or spawns.
+- **Why, structurally.**
+  - PI's generated token is a point prediction, so an entering or edited cell gets the *mean* of what may be there. A mob that
+    is present with p < 0.5 is never drawn.
+  - The chance operator only moves existing content.
+  - Sampling the edit decision (variant 2) does not help here: the content drawn is still the mean.
+- **This is the fourth part of the user's separation, made concrete.** Stable content (persist), deterministic evolution
+  (gated edits) and chance reassignment (swaps) are now in place. **Stochastic innovation, new content drawn from a prior at
+  entering / edited cells, is not.**
+  - Decision-relevant: arriving zombies are the night hazard.
+  - The hazard part of R10's "hazards vanish in imagination" is now this, not fading.
+- Next question for Track B: how to draw new content (entering cells, spawns) from a learned prior without reintroducing the
+  free arm's incoherence. Free synthesis gave ×3-12 mobs: it lacked exactly the persistence-by-default PI now provides.
+
 ### R23 — TRACK B RESULT: "persistence principle supported" (TRANSPORT_PI_PREREG, both seeds; R19 guards pass)
 
 Mechanical verdict (`transport_track_verdicts.py pi`): **P1-P4 and every one-step condition pass at both seeds; failed = [].**
