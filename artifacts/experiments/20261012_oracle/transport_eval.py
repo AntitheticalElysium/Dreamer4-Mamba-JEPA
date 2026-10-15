@@ -131,7 +131,7 @@ def analyze(update, eval_dir=None, arms=None, free_path=None):
                                'share_of_swaps_touching_a_root_mob': round(float((moved[..., :63] & C.decode(root_tok, bank, head)['mob']['real'][:, None, :, :3].any(-1)).sum() / max(int(moved.sum()), 1)), 4)}
         res['arms'][arm] = out
         print(json.dumps({arm: out}), flush=True)
-    pairs = [(x, y) for x, y in (('operator', 'free'), ('operator_cost', 'free'), ('operator_cost', 'operator')) if x in arms and y in arms]
+    pairs = [(x, y) for x, y in (('operator', 'free'), ('operator_cost', 'free'), ('operator_cost', 'operator'), ('ic', 'free'), ('ic', 'operator')) if x in arms and y in arms]
     for x_arm, y_arm in pairs:
         res[f'{x_arm}_minus_{y_arm}'] = compare(res, x_arm, y_arm)
     (d / 'analysis.json').write_text(json.dumps(res, indent=1))
