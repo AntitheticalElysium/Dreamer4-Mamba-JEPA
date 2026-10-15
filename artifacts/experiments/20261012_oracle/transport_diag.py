@@ -61,7 +61,7 @@ def main(update, train_dir=None, arm='operator', out_dir=None):
     units = json.loads((A5.OUT / 'audit_recompute.json').read_text())['sources_list']
     strict = {root: (source, ('zombie', 'cow', 'skeleton').index(kind)) for root, source, kind in units}
     n = len(data['roots'])
-    groups = {g: [] for g in ('zombie', 'cow', 'skeleton', 'no_mob')}
+    groups = {g: [] for g in ('zombie', 'cow', 'skeleton', 'no_mob', 'no_mob_isolated')}
     real_rate = {g: [0, 0] for g in ('zombie', 'cow', 'skeleton')}
     strict_dirs, real_dirs, nonmob_swaps, frames_seen, payload = {}, {}, 0, 0, {'checked': 0, 'destination_mob_vanished': 0}
     for start in range(0, n, 4):
@@ -92,6 +92,10 @@ def main(update, train_dir=None, arm='operator', out_dir=None):
                     continue
                 kinds = [k for k in range(3) if after[x, k] == 1]
                 groups[('zombie', 'cow', 'skeleton')[kinds[0]] if kinds else 'no_mob'].append(float(pm[x]))
+                rr, cc = divmod(x, 9)                                       # no mob here nor in any 4-neighbour (terrain-only proposals)
+                nbr = [(rr + a) * 9 + cc + e for a, e in ((-1, 0), (1, 0), (0, -1), (0, 1)) if 0 <= rr + a < 7 and 0 <= cc + e < 9]
+                if not kinds and not any(bool((after[y, :3] == 1).any()) for y in nbr):
+                    groups['no_mob_isolated'].append(float(pm[x]))
             for k in range(32):
                 for s, dst, kind in S2.swaps(after, data['fan_layout'][i, k].bool()):
                     if kind < 3:

@@ -118,6 +118,10 @@ Drift is relative to the RMS distance between different cells.
   - About 60% of day drift energy is frame-common (layers 0 and 12). The rest is content-dependent, as a multiplicative blend
     implies.
   - Night static (light < 0.5) adds per-pixel random noise. It is worst in middle layers.
+- **Pixel check:** at light ≥ 0.99 (where the light label saturates), the change is frame-global events. In 321 of ~1,800
+  transitions > 90% of all patches change at once, uniformly over positions; the rest are unchanged. Below 0.99, 86% of
+  patches change slightly every step. The light label does not track the rendered light (corr(|Δpixel|, |Δlight|) =
+  0.03). So: global, time-driven rendering, deterministic across RNG keys. Not context.
 - **Position:** camera moves add drift at layer 0 through the position code (0.12). Later layers are partly position-robust.
 - **Mob content is linearly local at every layer** (AUC 1.0). Neighbour leakage of 0.64-0.67 is ecological correlation: it
   is the same at layer 0, which cannot see neighbours.
