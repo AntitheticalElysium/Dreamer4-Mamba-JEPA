@@ -177,6 +177,29 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R25 — groundwork for stochastic innovation: codes are a usable carrier for NEW content only (`codebook_readers.py`, CPU)
+
+**Our record:**
+- E2's categorical arm failed because codes over contextual ViT tokens flip on 11-15% of *unchanged* cells (`codebook.json`;
+  NOTEBOOK E2).
+- Dedieu et al. (arXiv 2502.01591, our exact frames) predict per-tile categorical tokens, sampled per patch.
+
+**In PI the flip failure cannot occur.** Unchanged cells are exact copies and never quantized; only entering and edited cells
+(~9 per frame) would carry a code.
+
+**The E2 Raw codebooks fit the current pool:** relative error 0.0506 (K 1024) / 0.0316 (K 4096), vs 0.0504 / 0.0329 on their
+own pool. Same token space.
+
+**Reader fidelity of centroids** (300 training windows, map cells replaced by their nearest code, frozen readers):
+
+| K | zombies kept | cows kept | skeletons kept | false mobs per 1,000 cells | tile agreement |
+|---|---|---|---|---|---|
+| 1024 | 92.5% | 92.7% | 69.7% | 0.18 / 0.09 / 0 | 99.1% |
+| 4096 | 94.3% | 96.8% | 85.2% | 0.01 / 0.04 / 0 | 99.4% |
+
+A categorical head over K 4096 codes, *sampled* at entering / edited cells, could draw arrivals at their learned rate (R24).
+Not designed or preregistered yet: the evaluation-only variants come first.
+
 ### R24 — PI's census gap has two parts: continuing mobs mostly kept, arrivals never imagined (`census_split.py`)
 
 Per bright root and mob type: the decoded count at depth 16 (all trajectories, as the census), split by whether the root view
