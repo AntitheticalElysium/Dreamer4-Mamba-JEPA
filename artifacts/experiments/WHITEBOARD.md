@@ -397,3 +397,44 @@ deterministic dynamics and HUD consequences (row 2) are.
    mean, because the blend *is* the mean. The persistence mechanism must change (item 2 → Track B's PI world).
 4. **A Bayesian posterior under the model's own prior** as the only learned-chance signal: one rule that keeps identity
    unless evidence pays for a change.
+
+## 13. 2026-10-15 night — the persistent-state principle, tested (NOTEBOOK R17-R28)
+
+**The principle under test:** keep a persistent world state, and change it only through explicit, inferred transformations,
+each a hard decision that must pay its description cost:
+- the camera scroll (from the action);
+- chance swaps (the IC posterior under the chance head's own prior);
+- deterministic edits (an EM-gated per-cell edit).
+
+**Results:**
+- **Track A** (R21): exposing CorrT's soft blend to its own predictions does not fix fading (+0.005 / +0.058 on a ~0.4 gap).
+  The blend is the mean.
+- **Track B, PI** (R22-R23): **supported at both seeds, as preregistered, and not the copy shortcut** (R19 guards pass).
+  - Persisting-mob score 0.37 → 0.71-0.73; zombie census ×7; terrain and phantoms unchanged.
+  - Joint ES beats IC and free synthesis under both readers. Per-step vanish rates are at the real level.
+  - The label-free EM gate becomes a change detector (AUC 0.93 terrain, 0.98 HUD). It persists 98% of unchanged content and
+    edits 84% of changed terrain.
+  - Its generated token learns HUD consequences (wins at 95% of real HUD changes, from 52%).
+- **What PI does not do:**
+  - **Arrivals** (R24): new mobs entering the view are never drawn, 0-0.02 vs real 0.12-0.26 per frame. Its new content is a
+    point prediction, the mean.
+  - **Pursuit** (R27): crisp zombies approach at 0.24-0.29 vs real 0.35-0.38. This is one-step, a weaker learned direction
+    bias, not edits absorbing moves.
+  - **Health drops** are seed-inconsistent.
+
+**Two evaluation-only variants, each one change:**
+- **World-aligned canvas** (R26): revisited terrain error 14% → 0.1%. Addressed memory works once the read uses the world's own
+  next-view address, which was E18's defect. But it replays stale mobs: off-screen persistence must follow the content's own
+  volatility.
+- **Sampled edit decisions** (R28): ghosts (phantoms ×4-5, vanish ×2.5). Sampling *whether* a cell changes while filling it
+  with the *mean* of what it could become is worse than either alone.
+
+**The separation the user asked for, as it now stands:**
+
+| part | treatment | status |
+|---|---|---|
+| stable content | exact copy by default, under an explicit camera transformation | works (PI) |
+| contextual belief | the screen-slot Mamba belief drives the decisions | works for one-step decisions; memory needs world addressing (canvas works for terrain) |
+| deterministic evolution | EM-gated hard edits, content = gen | works where predictable (84% of changed terrain, 78% of HUD changes) |
+| stochastic reassignment | chance swaps with an inferred posterior | works (92% capture); direction bias weaker in PI |
+| stochastic innovation | **new content drawn from a learned distribution** | **missing:** the open piece. PI_INNOV (categorical content at innovated cells, Dedieu et al.'s per-tile sampling) running |
