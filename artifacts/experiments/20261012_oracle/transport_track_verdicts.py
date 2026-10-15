@@ -19,7 +19,15 @@ repeated) passes PI's P1-P4 against IC, so a recursion gain counts as dynamics o
   (a) the pooled recursion move rate of cows and of zombies (mob_fading 'move') is >= half the real rate (REAL entry);
   (b) zombie- and cow-adjacency AUC16 (decision_proxies, bright) exceed the no-op's (decision_noop.json);
   (c) camera consistency at depth 16 >= the control's - 0.05.
-Usage: transport_track_verdicts.py sf|pi -> artifacts/eda/oracle_v1/transport/{sf,pi}_verdict.json
+Evaluation-only PI variants (20261015_whiteboard/PI_CANVAS_PREREG.md), written before either variant's result:
+canvas  C1 entering_<name>.json bright.REVISIT.tile_error(pi_canvas) <= 0.5 x pi's; C2 seen terrain d16 <= pi + 0.005, max
+        phantoms <= pi + 0.02, camera d16 >= pi - 0.02. "addressed world-aligned memory works in recursion" if C1 and C2 at
+        both seeds; "memory recovers terrain but harms the rollout" if C1 holds and C2 fails; "not supported" if C1 fails.
+sampled S1 decision health_drop auc_16(pi_sampled) > pi's AND |imagined_rate_within_16 - real| smaller than pi's; S2 seen
+        terrain d16 <= pi + 0.005, max phantoms <= pi + 0.02, zombie_adj auc_16 >= pi - 0.02. "rare consequences need sampled
+        innovation" if S1 and S2 at both seeds; "sampling draws consequences but harms the rollout" if S1 holds and S2 fails;
+        "no gain from sampling" if S1 fails.
+Usage: transport_track_verdicts.py sf|pi|canvas|sampled -> artifacts/eda/oracle_v1/transport/<mode>_verdict.json
 """
 import json
 import sys
@@ -114,8 +122,49 @@ def pi():
     return res
 
 
+def rec(name):
+    return json.loads((T / f'recursion_{name}.json').read_text())['bright']
+
+
+def variant(kind):
+    res = {}
+    for s in (1, 2):
+        base, x = f'pi_s{s}', f'pi_{kind}_s{s}'
+        b, v = rec(base), rec(x)
+        harm = {'seen_terrain_d16': [v['tile_error_seen_by_depth'][15], b['tile_error_seen_by_depth'][15]],
+                'phantoms_max': [max(v['phantoms_per_frame_by_depth']), max(b['phantoms_per_frame_by_depth'])]}
+        ok_harm = harm['seen_terrain_d16'][0] <= harm['seen_terrain_d16'][1] + .005 and harm['phantoms_max'][0] <= harm['phantoms_max'][1] + .02
+        if kind == 'canvas':
+            e = {n: json.loads((W / f'entering_{n}.json').read_text())['bright'] for n in (base, x)}
+            harm['camera_d16'] = [v['camera_consistent_by_depth'][15], b['camera_consistent_by_depth'][15]]
+            ok_harm = ok_harm and harm['camera_d16'][0] >= harm['camera_d16'][1] - .02
+            primary = {'revisit_tile_error': [e[x]['REVISIT']['tile_error'], e[base]['REVISIT']['tile_error']],
+                       'new_tile_error': [e[x]['NEW']['tile_error'], e[base]['NEW']['tile_error']]}
+            ok_primary = primary['revisit_tile_error'][0] <= .5 * primary['revisit_tile_error'][1]
+        else:
+            d = {n: json.loads((W / f'decision_{n}.json').read_text())['bright'] for n in (base, x)}
+            h = {n: d[n]['health_drop'] for n in (base, x)}
+            harm['zombie_adj_auc16'] = [d[x]['zombie_adj']['auc_16'], d[base]['zombie_adj']['auc_16']]
+            ok_harm = ok_harm and harm['zombie_adj_auc16'][0] >= harm['zombie_adj_auc16'][1] - .02
+            primary = {'health_auc16': [h[x]['auc_16'], h[base]['auc_16']],
+                       'health_rate16': [h[x]['imagined_rate_within_16'], h[base]['imagined_rate_within_16'], h[x]['real_rate_within_16']]}
+            ok_primary = (h[x]['auc_16'] > h[base]['auc_16'] and
+                          abs(h[x]['imagined_rate_within_16'] - h[x]['real_rate_within_16']) < abs(h[base]['imagined_rate_within_16'] - h[base]['real_rate_within_16']))
+        res[f'seed{s}'] = {'primary': primary, 'primary_ok': bool(ok_primary), 'no_harm': harm, 'no_harm_ok': bool(ok_harm)}
+    seeds = [res['seed1'], res['seed2']]
+    labels = {'canvas': ('addressed world-aligned memory works in recursion', 'memory recovers terrain but harms the rollout'),
+              'sampled': ('rare consequences need sampled innovation', 'sampling draws consequences but harms the rollout')}[kind]
+    if all(r['primary_ok'] and r['no_harm_ok'] for r in seeds):
+        res['verdict'] = labels[0]
+    elif all(r['primary_ok'] for r in seeds):
+        res['verdict'] = labels[1]
+    else:
+        res['verdict'] = 'not supported' if kind == 'canvas' else 'no gain from sampling'
+    return res
+
+
 if __name__ == '__main__':
     which = sys.argv[1]
-    res = {'sf': sf, 'pi': pi}[which]()
+    res = {'sf': sf, 'pi': pi, 'canvas': lambda: variant('canvas'), 'sampled': lambda: variant('sampled')}[which]()
     (T / f'{which}_verdict.json').write_text(json.dumps(res, indent=1))
     print(json.dumps(res, indent=1))
