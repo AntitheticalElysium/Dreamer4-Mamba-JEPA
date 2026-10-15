@@ -341,6 +341,11 @@ chance head) removes the hedge.
   - The per-pair prior of the chance head works.
 - **Remaining failure:** where the posterior is blind (crowded mobs, chase combined with a scroll), the point loss averages,
   leaving ghosts at a few roots and faster mob fading in recursion.
+- **Final IC measurements:**
+  - The label-free posterior converged (89% of genuine chance moves, ~95% precision, both seeds).
+  - Under IC, intact zombies chase at the real rate.
+  - Supplying the true chance outcome every step does **not** stop fading: it lives in the deterministic dynamics iterated on
+    their own outputs.
 
 **Row 1: nuisance is not a context problem.**
 - Persistent content's token drifts because Craftax re-renders it every step (daylight blend, deterministic and global) and
