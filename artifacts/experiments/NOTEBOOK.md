@@ -179,7 +179,9 @@ Dark: REVISIT 28-36%, NEW 33-41%.
 - **Labelled within-class directions** (an upper bound): relative persistent drift *rises* (day 0.021 → 0.053, night 0.14 →
   0.40 at m = 64). Content distances shrink faster than drift.
 - **Label-free change directions:** drift unchanged (day 0.021 → 0.020-0.022, night 0.14 → 0.13).
-- Content decodability is unchanged in all cases (tile 0.96-0.98, mob AUC ≈ 1).
+- Content decodability is unchanged under the labelled projection (tile 0.96-0.98, mob AUC ≈ 1). The label-free removal
+  at m ≥ 16 erases mob content (cow AUC 0.90 / 0.66 / 0.81 at m = 16 / 32 / 64), because the dominant change directions
+  include mob movement.
 - **Reading:** Craftax's daylight is a content-dependent multiplicative blend, spread over all dimensions. No fixed projection
   or loss metric discards it. Deterministic daylight must be *predicted* (a function of time: memory); random night static
   needs *learned* invariance in the encoder (e.g. photometric augmentation during JEPA training). Two treatments, as
