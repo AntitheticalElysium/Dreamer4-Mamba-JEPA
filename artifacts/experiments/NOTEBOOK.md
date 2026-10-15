@@ -177,6 +177,50 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R32 — PI_ENTER RESULT: sampling new content only where it is epistemic restores arrivals with no harm (PI_ENTER_PREREG)
+
+Mechanical verdict (`transport_track_verdicts.py enter`): **"sampled innovation restores arrivals": A1, A2, H at both seeds.**
+- **The change:** PI exactly, except that content is drawn from the R29 head only at entering cells never seen before
+  (~1.6 per step, 40k of ~61k entering cells). Gate-fired edits and re-entering cells keep the point token.
+
+| reading (bright, d16) | enter s1 / s2 | PI s1 / s2 | INNOV s1 / s2 (R29) | real |
+|---|---|---|---|---|
+| **A1** cow arrivals per frame | **0.144 / 0.106** ✓ | 0.023 / 0.002 | 0.396 / 0.310 | 0.259 |
+| zombie arrivals per frame | 0.041 / 0.025 | 0.006 / 0 | 0.33 / 0.28 | 0.116 |
+| **A2** cow census | **0.84 / 0.61** ✓ | 0.62 / 0.46 | 1.15 / 0.90 | 1 |
+| present-type cows | 0.77 / 0.56 | 0.66 / 0.50 | 0.84 / 0.66 | 0.82 |
+| persisting-mob score | 0.742 / 0.716 ✓ | 0.726 / 0.706 | 0.835 / 0.837 | |
+| seen terrain (stayed cells) | 1.81% / 1.70% (1.03% / 0.96%) ✓ | 1.61% / 1.38% (1.05% / 0.98%) | 7.3% (3.0%) | |
+| camera | **65.6% / 64.2%** ✓ | 62.9% / 61.2% | 58.8% / 56.4% | |
+| phantoms at d16 (≤ reality's far-mob rate) | 0.137 / 0.093 ✓ | 0.028 / 0.019 | 0.58 / 0.46 | 0.33 |
+| per-step vanish, cow / zombie | 0.028 / 0.024, 0.029 / 0.022 | 0.029 / 0.025 | | 0.019 / 0.036 |
+| cow-adj AUC16 (imagined rate, real 0.212) | 0.90 / 0.88 (**0.213 / 0.185**) | 0.89 / 0.88 (0.192 / 0.168) | 0.85 / 0.84 | |
+| zombie-adj AUC16 | 0.70 / 0.66 | 0.72 / 0.70 | 0.66 / 0.68 | |
+| health-drop AUC16 | 0.61 / 0.58 | 0.62 / 0.60 | 0.55 / 0.55 | |
+| NEW entering tile error | 0.43 / 0.43 | 0.31 / 0.31 | 0.44 | context-mode guess 0.49 |
+
+**Prediction scorecard** (written in the prereg):
+- A1 holds ✓.
+- Stayed-cell terrain returns to PI's level ✓ (1.03% / 0.96% vs 1.05% / 0.98%).
+- **Zombie arrivals overshoot ×1.5-2: wrong.** They undershoot, 0.2-0.35× real.
+
+**What we learn:**
+- **Sample new content where, and only where, the uncertainty is epistemic.** Arrivals return (cows 0.4-0.56× real, from
+  ~0), the census rises, and imagined cow adjacency reaches reality's rate. Nothing that worked degrades.
+- The camera even improves (+2.7 / +3.0pp): sampled entering content no longer biases the faced cell toward the mean.
+- **Attribution of R29's zombie overshoot:**
+  - Sampling at entering cells gives 0.03-0.04 zombies per frame; sampling also at gate-fired edits gave 0.28-0.33.
+  - So the overshoot was zombies drawn *from nothing* at gate-fired edit sites: the content head is p(content | changed),
+    and ~21% of training edits are zombie cells.
+  - **This re-establishes R30's selection-mismatch mechanism for absent-type zombies.** The withdrawal stands only for
+    duplication of present zombies, which R29 did not show.
+- **Root-level decision discrimination does not improve** (AUC16 −0.03 to +0.01). Arrivals independent of the root's real
+  future cannot be ranked from the root. They correct expectations (rates), not discrimination.
+- **Remaining:**
+  - zombie and cow arrivals below reality (0.2-0.56×): interior spawns are not drawn, and zombies arrive mostly at night;
+  - re-entry from memory needs the canvas, with mob volatility (R26);
+  - pursuit (R27) and health (R23).
+
 ### R31 — R29's terrain error is sampling at gate-fired edits on cells that never left the view (`seen_split.py`, CPU)
 
 transport_recursion's seen-terrain error, split by the real camera track: cells that **stayed** in view at every depth vs
@@ -224,6 +268,9 @@ Cross-entropy: entering 3.54-3.55 nats (entropy 4.18), edits 2.58 (3.45).
   duplicates.~~
   - **Withdrawn the same night: R29's own numbers contradict it.** With sampled content, present-type counts sit at
     reality's level (zombies 0.92 / 0.94 vs real 0.94; cows 0.84 / 0.66 vs 0.82). There is no duplication inflation.
+  - **Partly re-established by R32:** absent-type zombie arrivals are 0.03-0.04 per frame with entering-only sampling vs
+    0.28-0.33 with edit-site sampling. The overshoot was zombies drawn from nothing at gate-fired edits, i.e. the selection
+    mismatch, not entering cells.
 - **The overshoot is in arrivals of types absent at the root.** These enter through entering cells, where the head
   over-predicts zombies ×1.6-2.0 on real contexts (n = 28, small).
   - Plausibly that is daylight conditioning: the bright roots are day, and zombies arrive mostly at night.

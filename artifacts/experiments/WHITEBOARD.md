@@ -437,4 +437,16 @@ each a hard decision that must pay its description cost:
 | contextual belief | the screen-slot Mamba belief drives the decisions | works for one-step decisions; memory needs world addressing (canvas works for terrain) |
 | deterministic evolution | EM-gated hard edits, content = gen | works where predictable (84% of changed terrain, 78% of HUD changes) |
 | stochastic reassignment | chance swaps with an inferred posterior | works (92% capture); direction bias weaker in PI |
-| stochastic innovation | **new content drawn from a learned distribution** | **missing:** the open piece. PI_INNOV (categorical content at innovated cells, Dedieu et al.'s per-tile sampling) running |
+| stochastic innovation | new content **drawn** from a learned categorical (K 4096 codes) **only where the uncertainty is epistemic** (never-seen entering cells) | **works** (R32): arrivals ~0 → 0.4-0.56× real, no harm, camera +3pp. Sampling everywhere (R29) or sampling decisions with mean content (R28) fails |
+
+**Innovation rule (R28-R32):**
+- A change and its content are one random event, and each half must be calibrated where it is applied.
+  - Sampling the decision with mean content gives ghosts (R28).
+  - Sampling content at deterministic or gate-fired sites gives terrain noise and zombies from nothing (R29, R31).
+  - Sampling content at epistemic sites only works (R32).
+- **Still open:**
+  - interior spawns;
+  - mob volatility in memory;
+  - arrival rates below reality;
+  - pursuit direction;
+  - health consequences.
