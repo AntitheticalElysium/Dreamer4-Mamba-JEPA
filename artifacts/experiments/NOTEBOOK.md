@@ -177,6 +177,57 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R16 — Track B: persistence must be a trained decision; fading needs residual uncertainty; memory loses storage, not readout
+
+**Confidence-gated persistence fails** (`persistence_variants.py ic_s1 gated`). Exact copy where CorrT's top weight > p, soft
+elsewhere; IC s1, bright, d16:
+
+| p | persisting score | zombie census | seen-terrain error | phantoms |
+|---|---|---|---|---|
+| 0.5 | 0.72 | 0.93 | 5.0% | 0.21 |
+| 0.8 | 0.50 | 4.26 | 4.0% | 1.21 |
+| 0.95 | 0.44 | 3.19 | 3.4% | 1.23 |
+
+- Mixing exact copies with soft blends is unstable: ghosts in neighbouring soft cells grow around exactly-copied mobs.
+- CorrT's weights are regression coefficients, not decisions. Persistence cannot be read off them after the fact; it must be
+  trained as a decision.
+
+**Oracle per-cell decision** (`… oracle`; copy vs soft, whichever is closer to the real next token, while
+camera-consistent):
+- Seen-terrain error 0.83% (soft 1.25%), camera 65% (61%), phantoms 0.06. But cow census 0.29 and persisting score 0.51.
+- **Confounded for mobs:** in deterministic rollouts without chance, reality's own mob moves make the stale copy look wrong at
+  mob cells, so the oracle picks the fading blend. Informative for terrain only.
+
+**Synthetic: soft regeneration vs persistent state + inferred transformations** (`persist_toy.py`). Ring world with scrolls,
+stochastic mob moves (true chance outcome supplied), deterministic edits (`do` places a block) and an unpredictable global
+brightness nuisance; 2 seeds each. Mob count ratio at depth 1 / 8 / 16:
+
+| | chance fully supplied | 30% of moves unexplained in training |
+|---|---|---|
+| REGEN (CorrT principle) | 1.00 / 1.00 / 1.00 (strength 0.97) | 1.00 / 1.00 / **0.06** and 1.00 / 0.95 / **0.001** |
+| PERSIST (exact copy + MDL-gated edits) | 1.00 / 1.00 / 1.00 | 1.00 / 1.00 / **1.01** and 1.00 / 0.99 / **0.88** |
+
+- **Soft regeneration fades exactly when the deterministic target retains unexplained variance.** Mob cells regress toward
+  the mean each step, until the mobs are gone.
+- Persistence-by-default, where an edit must pay its description cost, is robust.
+- This explains the real data: IC's posterior misses ~11% of chance moves, and zombie chase is 75% reliable. It supports the
+  user's "preserve a persistent state, learn the transformations".
+
+**Memory: storage, not readout** (`memory_probe.py`; 2,400 training windows, teacher-forced; entering cells; frozen tile
+reader). D parent / IC:
+
+| entering cell | output accuracy | ridge probe on the model's belief at that slot |
+|---|---|---|
+| revisit ≤ 2 scrolls | 0.94 / 0.94 | 0.93 / 0.93 |
+| revisit 3+ scrolls | 0.80 / 0.80 | 0.80 / 0.81 |
+| never seen | 0.80 / 0.80 | 0.80 / 0.80 |
+
+Previous-token control 0.75-0.77; majority class 0.49-0.50.
+- **Output equals what the belief holds:** the readout is not the bottleneck.
+- After 3+ scrolls the remembered terrain is absent from the belief at the slot where it reappears, even with real context.
+  The screen-slot memory loses it (storage / addressing).
+- Memory must follow content (WHITEBOARD candidate 1: the camera's reassignment applied to the memory state).
+
 ### R15 — Track A structural diagnostic + Track B rendering probe (user's two-track framing, 10-15 evening)
 
 **Exact persistence** (`persistence_variants.py`). Deterministic self-fed H16; same backbone pass, four afterstates; bright,
