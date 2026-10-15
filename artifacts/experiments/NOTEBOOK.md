@@ -202,6 +202,11 @@ Measured at PI's initialization (exact D parent, gen = its proj(belief)), teache
 - **Risk:** the parent's own hard scroll (argmax of its frame + target_gate logit) agrees with the label-free estimate on
   only **56.9%** of steps at initialization. PI's scroll cross-entropy must fix this; `scroll_acc` in the training log is the
   first thing to check. A wrong scroll misaddresses the whole view in recursion.
+  - Breakdown (80 windows, CPU): the hard argmax is "stay" on every step. The parent's move logit is negative on real moves
+    (mean −1.32, 535 steps) and on blocked moves (−1.50, 74 steps): barely separated, never above 0.
+  - CorrT trained this logit as one term in a softmax against a +3 self logit, never against a threshold. Not a convention
+    bug: the SHIFTS / MOVE_SHIFT / candidate orders agree.
+  - PI's scroll training must learn both the calibration and the moved-vs-blocked separation (88% of move actions scroll).
 
 ### R17 — Track B: a memory that follows world position would recover nearly all revisited terrain (`memory_probe.py cache`)
 
