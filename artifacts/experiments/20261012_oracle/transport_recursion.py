@@ -41,6 +41,11 @@ MODELS = {  # name: (checkpoint, arm, mode)
     'ic_s1_ref': (T / 'ic_seed1/ic_u3000.pt', 'operator', 'reference'),
     'ic_s2': (T / 'ic_seed2/ic_u3000.pt', 'operator', 'sample'),
     'esrep_s2': (T / 'ic_seed2/operator_u3000.pt', 'operator', 'sample'),
+    # TRANSPORT_SF_PREREG (Track A): continued IC vs chance-forced self-fed IC, 4,500 updates
+    'sf_ic_s1': (T / 'sf_seed1/ic_u4500.pt', 'operator', 'sample'),
+    'sf_icsf_s1': (T / 'sf_seed1/icsf_u4500.pt', 'operator', 'sample'),
+    'sf_ic_s2': (T / 'sf_seed2/ic_u4500.pt', 'operator', 'sample'),
+    'sf_icsf_s2': (T / 'sf_seed2/icsf_u4500.pt', 'operator', 'sample'),
 }
 H, W, K = 16, 15, 8
 
