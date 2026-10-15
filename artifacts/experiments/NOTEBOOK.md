@@ -197,18 +197,21 @@ Cross-entropy: entering 3.54-3.55 nats (entropy 4.18), edits 2.58 (3.45).
 - **The content distribution is calibrated at the semantic level on real contexts.** Cows at entering cells are drawn at the
   right rate by sampling and 4-9× too rarely by the argmax: R24's missing arrivals are the mean / mode, confirmed from the
   other side. Zombies at entering cells are over-predicted ×1.6-2.0 (n = 28, small).
-- **So R29's recursion overshoot (zombies 2.4-2.8×, cows 1.2-1.5×) is not the head's training calibration.** Most likely it
-  is a selection mismatch:
-  - The head is p(content | the cell changed), learned on cells the *posterior* (with evidence) marks as changed. ~21% of
-    those are zombie cells.
-  - In recursion it is applied wherever the *prior* gate fires (MAP), including the 36% of mob-adjacent cells where the gate
-    expects a change (R22) that usually does not happen.
-  - Sampling "what it changed into" there draws the zombie again: duplicates.
-  - Imagined-context drift may add to it (not separated).
-- **Principle:** the content distribution and the change decision must be the same random event. Sample from p(change) ×
-  p(content | change), each calibrated where it is applied; or let the head see the no-change outcome (train on all cells
-  the gate may fire on, with "copy" as a class). R28 (sampled decision, mean content) and R29 (MAP decision, sampled content)
-  are the two halves of this error.
+- **So R29's overshoot is not the head's calibration on gate-posterior edits.**
+- ~~Most likely a selection mismatch: p(content | posterior change) applied where the prior MAP gate fires → zombie
+  duplicates.~~
+  - **Withdrawn the same night: R29's own numbers contradict it.** With sampled content, present-type counts sit at
+    reality's level (zombies 0.92 / 0.94 vs real 0.94; cows 0.84 / 0.66 vs 0.82). There is no duplication inflation.
+- **The overshoot is in arrivals of types absent at the root.** These enter through entering cells, where the head
+  over-predicts zombies ×1.6-2.0 on real contexts (n = 28, small).
+  - Plausibly that is daylight conditioning: the bright roots are day, and zombies arrive mostly at night.
+  - It may be amplified by imagined contexts. Not separated.
+- **Seen-terrain error ×4.5 has two candidate sources:**
+  - re-entering seen terrain is sampled instead of remembered (R26: a memory problem);
+  - gate-fired edits on unchanged-looking terrain (1.7% per step, R22) are now random draws.
+  - Not separated.
+- **Still standing:** R28 (sampled decision, mean content: ghosts) and R29 (MAP decision, sampled content: arrivals with
+  noise) show that a change and its content must be sampled as one calibrated event, where the uncertainty is real.
 
 ### R29 — PI_INNOV RESULT: sampled categorical content restores arrivals but injects noise — "not supported" (PI_INNOV_PREREG)
 
