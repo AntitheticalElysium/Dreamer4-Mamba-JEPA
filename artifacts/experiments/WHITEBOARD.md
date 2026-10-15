@@ -479,3 +479,26 @@ token copying may preserve stale context.
   persists, and wrong to persist the token.
 - **Open design question for the user:** the persisted state's representation. Options include a local, position-free
   content encoder, or context-free per-tile codes (Dedieu et al.), with the encoder-side change it implies.
+
+## 15. 2026-10-16 — what remains invariant, what is transformed, what must be recomputed (NOTEBOOK R39-R42; user's guiding question)
+
+Measured with **exact** transformations (diagnosis futures; R41 fixed my construction defect; R42 holds the corrected numbers).
+
+| aspect of persisting content | what the evidence says | treatment |
+|---|---|---|
+| **identity** (tile class, mob type) | exact copies keep it. PI's label-free gate learns which cells persist, including that the cell the player vacates must be regenerated (gate 0.996, R41) | **invariant:** persist exactly |
+| **position** (scroll, chance moves) | exact transport is correct. A stale *position code* in the copied token is nearly harmless (pixel-exact windows: content +3-12%, belief cosine 0.998), and recomputing context through the encoder's upper layers from position-free content codes removes it exactly (R42) | **transformed:** explicit transformation; context recomputed (cheap, exact) |
+| **rendering** (global lighting) | the dominant harm. Under lighting events, consequence content error more than doubles and chase drops 16-18% (R42). The content code is linear in pixels, so it carries the light | **must be recomputed, and nothing tested does it:** global affine relight (R39), learned relight MLP (R41), normalization / learned invariance (R39) all fail |
+| **relations / consequences** | carried by the *current* frame's representation, not by history (a fresh current frame alone recovers 87-97%; R42). On fresh inputs the belief computes them correctly, including temporal context after slot changes (R35) | **recomputed by the belief** from a current, consistent frame |
+| **occluded content** (under the player / mobs) | not in the current observation. PI regenerates the vacated cell. Literal swaps drag mob backgrounds (0.5-5% of moves, never repaired; R37) | memory / uncertainty, not transport |
+
+**Reading:**
+- The persistent-state principle is right about identity and position.
+- The open problem is narrower than "context": it is the frame-global *rendering* that every copied cell carries. Rendering is
+  nuisance for content, but the belief's readouts depend on it being current.
+- Candidate treatments, none validated:
+  1. encoder-level invariance to lighting, learned during JEPA training;
+  2. a belief whose readout renders every cell from one state (LB; the global-RSSM baseline, see §16);
+  3. a properly learned renderer conditioned on a carried lighting state.
+- **Context-free representation is not a requirement** (user, Codex): content codes are already spatially equivariant
+  (camera drift 0.007 vs 0.086) and lose nothing, but they do not remove lighting.
