@@ -222,6 +222,47 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R40 — what a stale imagined frame loses: the CURRENT frame's rendering consistency (`chase_cue.py`, `sprite_dynamics.py`)
+
+**Partial-freshness substitution.**
+- Exact transformations (diagnosis futures), 983 windows with ≥ 1 scroll.
+- Stale Raw-token span of 8 frames; the real token is restored in one cell set at a time.
+- PI u3000; recovery is measured relative to the stale → fresh gap (s1 / s2).
+
+| restored | chase recovery | consequence-content recovery | health-drop AUC (stale 0.93 / 0.90, fresh 0.99 / 0.99) |
+|---|---|---|---|
+| **most recent frame only** | **94% / 95%** | **98% / 96%** | 0.96 / 0.99 |
+| all frames except the most recent | −6% / −8% | 19% / 30% | 0.86 / 0.82 |
+| zombie cells + 4 neighbours | 63% / 69% | 1% | 0.93 / 0.89 |
+| every map cell except zombies | 57% / 46% | 100% / 100% | 0.98 / 0.99 |
+| player + 4 neighbours | 46% / 49% | 27% / 51% | 0.96 / 0.98 |
+| zombie cells only | 27% / 39% | 0% | 0.93 / 0.90 |
+| HUD | 0% | 0% | unchanged |
+
+- **The harm is in the current input, not the history.** A fresh current frame behind stale history recovers almost
+  everything; fresh history behind a stale current frame recovers nothing. With R35: the belief is not frozen; PI's one-step
+  heads read a stale current frame.
+- **Chase needs the zombie together with its neighbourhood; consequence content needs the terrain.**
+
+**Sprites are static** (240 roots, no-scroll transitions, exact content unchanged):
+- In transitions without a global rendering event, 0% of stationary zombies (n 1,364), cows (2,993), skeletons (402) and
+  terrain cells (572k) change pixels.
+- With a global event (~20% of steps), 94-98% of all cells change at once.
+
+**Correction to R39:** I wrote that "the chase loss is explained by neither" position nor lighting. Under exact
+transformations, the C variant recomputes position and neighbour context, and stationary content has no appearance dynamics.
+What still differs from the fresh frame is therefore the **rendering of copied cells** (plus rare cross-terrain swaps, R37).
+- Rendering staleness explains the residual: ~88% of the chase gap and ~85% of the content gap remain under C.
+- My global affine relight (G) is an inadequate *model* of Craftax's rendering step, not evidence against rendering.
+- The precise failure: a copied cell keeps the light of the frame where it was last seen; real and generated cells carry the
+  current light; and **PI's relational and consequence readings break on this within-frame inconsistency.**
+
+**For the whiteboard (row 1, nuisance):** rendering is nuisance for *content*, but its *consistency* within the current frame
+is load-bearing for the belief's readouts. Three general remedies, none tested yet:
+1. readouts / encoder robust to lighting (invariance learned in the encoder, e.g. photometric variation in JEPA training);
+2. lighting as a global state re-applied to persisted content by a learned (not affine) renderer;
+3. a latent belief whose readout renders every cell from one state (LB, now training), which cannot be inconsistent in this way.
+
 ### R39 — context-free representations do not fix the stale belief; requiring them is the wrong frame (user programme, 10-15 late)
 
 **Setup:**
@@ -264,6 +305,8 @@ P (pixel copies, embedded and recontextualized) equals C to 3 decimals, as linea
 - **Consequence content is mostly a lighting problem.** One global relight per frame recovers 66-83% of it.
 - **The chase loss is explained by neither.** Relighting even worsens it: a global colour map blurs sprite identity (zombie
   belief cosine falls in render-stable windows).
+  - *(Corrected by R40: under exact transformations the C residual is the rendering of copied cells, since sprites are static.
+    The global affine relight is an inadequate model of that rendering, not evidence against it.)*
 - So no candidate representation tested here removes the stale-belief harm while keeping the relational reading.
 - **Requiring a context-free persistent representation is the wrong frame** (user, and ARCHITECTURE_RESEARCH.md, Codex, 10-15).
   A contextual state can preserve everything if its *transition* keeps it compatible with the readout. Copying it is what
