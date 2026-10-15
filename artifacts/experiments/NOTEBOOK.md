@@ -222,6 +222,60 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R47 — a global appearance change is a SHARED operator: 12 parameters keep content, a free operator erases it (`sleep_transform.py`)
+
+**Question (R46 follow-up):** PI has no operator for appearance, so the sleep onset regenerates the scene and loses its mobs.
+Can a learned appearance operator transform persisted content while keeping it?
+
+**Source facts (Craftax-Classic `renderer.py`):**
+- Asleep, every map pixel becomes 0.5 · luminance + (0, 0, 8): one per-pixel colour map, identical at every pixel.
+- The frozen encoder's content code is a 7×7×3 → 192 convolution of normalized pixels. Its weight has rank 147 (condition 13),
+  so it is injective.
+- Therefore the sleep render is an **exact affine map on content codes**, applied before the frozen upper layers recompute
+  context.
+
+**Data:**
+- 600 deeppanel DEV roots (seeded) that are awake at the root and asleep one step after first action SLEEP. 3,195 eligible.
+- Fit on 400 roots (25,200 map cells, no labels), test on 200.
+- Each variant replaces the asleep frame's map content codes, then is recontextualized (HUD from the real frame).
+- Scored with the frozen readers against the real asleep frame. Also scored against the oracle's own decoded content, which
+  removes the confound of mobs moving during the step.
+
+| asleep-frame map content | token error vs real | tile agreement vs real / oracle | zombie recall vs oracle (155) | cow recall vs oracle (82) |
+|---|---|---|---|---|
+| copy (PI's copy of the awake tokens) | 13.47 | 0.899 / 0.899 | 1.0 (precision 0.71) | 1.0 (precision 0.82) |
+| **oracle**: the source's sleep render of the root pixels | 0.80 | 0.977 / 1 | 1 | 1 |
+| affine fit to the oracle's targets (checks the theory) | 0.83 | 0.977 / **0.998** | **1.0** | **1.0** |
+| free affine operator (192 × 192 + bias), least squares on real pairs, ridge 0 … 1e-3 | 0.72-0.79 | 0.976-0.979 / 0.982-0.985 | **0.51-0.52** | 0.76-0.79 |
+| free operator, label-free trimmed fit (3 rounds, keep the 80% best-fitting cells) | 0.68 | 0.978 / 0.986 | 1.0 | **0.0** |
+| **shared colour map** (3×3 + bias = 12 parameters at every pixel), plain least squares on real pairs | 0.93 | 0.977 / **0.996** | **0.974** | **0.976** |
+
+- Fitted colour map: rows (0.142, 0.283, 0.051) vs the source's (0.150, 0.294, 0.057). Blue offset 0.039 vs 8/255 = 0.031.
+- Against the real frame, every root-derived variant has zombie recall 0.68: that is the ceiling set by zombies that move
+  during the step.
+
+**What we learn:**
+- **Content survives the appearance change if the representation is transformed instead of regenerated.** The exact transform
+  keeps every zombie and cow and agrees on 97.7% of tiles with the real frame. PI's copy agrees on 89.9%; PI's regeneration
+  erased 62% of zombies (R46).
+- **An unconstrained operator learns the conditional mean of the step:**
+  - 31% of fit cells differ from the exact transform: mobs that moved, the player sprite, night static.
+  - The free map is fitted to them too, so it maps zombie content to a blend of "grey zombie" and "grey grass", and loses
+    half the zombies.
+  - This is R46's erasure again, moved into the operator.
+- **Robust fitting does not fix it.** Trimming the worst-fitting cells keeps zombies but drops every cow. Directions spanned
+  only by rare content are underdetermined, fit badly, and are trimmed away: the rarity failure again (E14).
+- **What works is sharing.** One colour map applied identically at every pixel has 12 parameters. The bulk of the scene
+  (terrain) determines them, and they transfer to rare content. Such a map cannot express content-specific dynamics such as
+  "zombie → grass", so mob motion cannot leak into it.
+  - This is the same structural reason the scroll works: one global displacement applied to every cell.
+- **Principle (§15):** appearance is a *global, low-dimensional, shared* transformation of persisted content; content change is a
+  *local, gated* edit; context is *recomputed*. The daylight cycle has the same form in the source:
+  light · pixel + (1 − light) · (desaturate, tint) is also a per-pixel colour map, plus random night static.
+- **Caveat:** the colour map acts in the pixel coordinates that the frozen first layer inverts exactly (pseudo-inverse; no
+  decoder, no reconstruction loss). It works because this encoder's first layer is linear and injective. Whether a world should
+  persist content in that space is a design decision, not established here.
+
 ### R46 — the sleep blind spot is the WORLD erasing content at a global appearance change (`sleep_check.py`, `sleep_onset.py`)
 
 **Readers vs world on the DV16 roots** (real futures are deeppanel's stored key-0 frames; PI s1 imagination, M = 4):
