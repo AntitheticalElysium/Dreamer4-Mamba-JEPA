@@ -187,6 +187,23 @@ Dark: REVISIT 28-36%, NEW 33-41%.
   needs *learned* invariance in the encoder (e.g. photometric augmentation during JEPA training). Two treatments, as
   WHITEBOARD §2 predicts. A linear "content subspace" shortcut is ruled out.
 
+### R7 — why imagined mobs fade (`20261015_whiteboard/mob_fading.py`, saved recursion samples, bright, camera-still steps)
+
+| | cow: stay / move / vanish per step | real-reader score of persisting mobs, depth 1 → 4 → 8 → 16 |
+|---|---|---|
+| real futures | 56 / 42 / 2% | ~0.94, constant |
+| transport operator (sampled) | 82 / 17 / 1% | 0.91 → 0.75 → 0.62 → 0.46 |
+| its afterstate alone (T = I) | 98 / 0 / 2% | 0.92 → 0.78 → 0.62 → 0.52 |
+| D parent | 95 / 0 / 5% | 0.93 → 0.34 → 0.30 → 0.29 |
+
+- Mobs do not vanish abruptly. **The deterministic afterstate attenuates persistent mob tokens geometrically** (operators
+  ~4% per step; D parent almost entirely in 3 steps) until they cross the reader threshold.
+- A soft, mean-trained CorrT blend is a regression coefficient, not an idempotent copy: iterating it decays persistent
+  content. **Recursion needs exact copies of persistent content.**
+- Movement is also under-dispersed in recursion: cows move 17% per step vs 42% real.
+- **Prediction for TRANSPORT_IC:** a point loss given the inferred reassignment removes the incentive to hedge at mob cells,
+  so persisting-score decay should be slower for IC than for the ES replicate. (Diagnostic; not a gate.)
+
 ### R3 — inferred-chance design checks (`20261012_oracle/ic_posterior.py`), before TRANSPORT_IC_PREREG.md
 
 - **Labels:** labelling a swap at both endpoints, as in the draft, makes the operator's sampler accept swaps **1.59-1.96×**

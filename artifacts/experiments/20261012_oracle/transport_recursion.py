@@ -35,6 +35,12 @@ MODELS = {  # name: (checkpoint, arm, mode)
     'free_s2': (T / 'seed2/free_u3000.pt', 'free', 'sample'),
     'op_s2': (T / 'seed2/operator_u3000.pt', 'operator', 'sample'),
     'opcost_s2': (T / 'seed2/operator_cost_u3000.pt', 'operator', 'sample'),
+    # TRANSPORT_IC_PREREG secondary readings (R1-R3): IC arms and their in-process ES replicates
+    'ic_s1': (T / 'ic_seed1/ic_u3000.pt', 'operator', 'sample'),
+    'esrep_s1': (T / 'ic_seed1/operator_u3000.pt', 'operator', 'sample'),
+    'ic_s1_ref': (T / 'ic_seed1/ic_u3000.pt', 'operator', 'reference'),
+    'ic_s2': (T / 'ic_seed2/ic_u3000.pt', 'operator', 'sample'),
+    'esrep_s2': (T / 'ic_seed2/operator_u3000.pt', 'operator', 'sample'),
 }
 H, W, K = 16, 15, 8
 
