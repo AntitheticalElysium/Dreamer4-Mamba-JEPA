@@ -131,6 +131,54 @@ Drift is relative to the RMS distance between different cells.
   drift" → "because rendering changes deterministically (daylight) and with position". This is predictable from history, and
   the learned afterstate removes most of it (0.048 → 0.014).
 
+### R8 — TRANSPORT_IC: two failed posterior designs, both diagnosed by synthetic tests; v3 running
+
+**v1 (stopped at update 900; `transport/ic_v1_bug_seed{1,2}`)**
+- **Bug:** the soft target was specified and coded as sigmoid(gain/s − logit π) instead of sigmoid(gain/s + logit π). Every
+  accepted swap got q ≈ 0.99.
+- **Design error:** the point loss used ML acceptance (gain > 0).
+- **Trajectory:** posterior 0.3-0.5 → 2.1-3.6 swaps per frame (real ≈ 0.5); sampled swaps 1.9-2.1 vs ES 0.7-1.1.
+- **Synthetic ring test** (`em_toy.py`; soft-copy afterstate, point loss through the inferred reassignment, 2 seeds): gain
+  > 0 accepts 5.0-5.5 swaps per step vs 1.2-1.6 true (precision 0.25-0.31). MAP with a measured scale is 0.99-1.00, the oracle
+  1.00.
+- **Reading:** maximum likelihood has no preference for identity among look-alike cells, and the point loss cannot penalize
+  swapping look-alikes.
+
+**v2 (stopped at update 600; `transport/ic_v2_globalprior_seed{1,2}`)**
+- MAP with a global running prior π, correct sign.
+- **Trajectory:** posterior 0.22 → 0.11 → 0.03 (seed 1) / 0.13 (seed 2) swaps per frame by update 600, π falling to 0.0019,
+  sampled swaps 0.017 / 0.13 vs ≈ 0.3 genuine chance moves.
+- **Synthetic test 2** (`em_toy2.py`, hard regime): the global prior collapses completely (recall 0; head probability at mob
+  pairs 0.0002 vs true 0.19-0.24).
+- **Mechanism:** a self-tightening loop. Fewer acceptances lower π, which raises the threshold.
+- **The model's own context prior** (posterior ∝ p_head(pair) × likelihood): recall 1.00, precision 0.94-1.00, head 0.27-0.31
+  at mob pairs (mild over-dispersion).
+
+**Ghosted start** (`em_toy.py ghost`):
+- Plain regression first teaches ghosts: empty neighbours copy 24% of a mob; mob self-weight 0.50.
+- Inferred-chance training (any rule) then clears them within 250 updates.
+- **EM escapes a ghosted afterstate.**
+
+**v3** (`TRANSPORT_IC_PREREG.md` addendum v3, 676998d8): the posterior under the chance head's own per-pair prior. Declared
+the last posterior variant of this study. Launched 15:27.
+
+### R9 — memory decays with age, inside the model's own context window (`entering_memory.py`, recency split, bright)
+
+| last seen before the root | D parent | operator |
+|---|---|---|
+| 0-2 frames | 7% | 14% |
+| 3-7 frames | 17% | 25% |
+| 8-14 frames | **31%** | **36%** |
+| never seen (NEW) | 29% | 44% |
+
+Dark: 19 / 33 / 48% and 31 / 39 / 49%.
+
+- Terrain seen 8-14 frames before the root is recalled no better than never-seen terrain, although those frames are inside
+  the 15-frame input window.
+- The effective world-aligned memory is about 5-7 frames. This is row 2 / 4 in numbers. Recurrent capacity is not the binding
+  limit, since the information is in the window; retention or addressing across scrolls is (cf. the E18 read-path and Mamba
+  recall-edge memories).
+
 ### R4 — why imagined cameras diverge (`20261015_whiteboard/camera_diag.py`, saved recursion samples)
 
 **The divergence compounds.** First-divergence rate per step at depth 1 (true context) vs later (self-fed):
