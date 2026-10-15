@@ -177,6 +177,25 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R20 — imagined mobs under-move because they fade (`move_by_score.py`, IC, bright, CPU)
+
+Recursion move rate (mob_fading's transition rule, camera-consistent, camera-still steps), binned by the mob's real-reader
+score at k−1. Bin edges are terciles of REAL decoded-mob scores (zombie 0.88 / 0.98; cow 0.97 / 1.01). Cells:
+(n, move rate).
+
+| | faint (bin 0) | middle (bin 1) | crisp (bin 2) |
+|---|---|---|---|
+| real cows | 138, 0.46 | 140, 0.38 | 140, 0.41 |
+| IC s1 / s2 cows | 1,908, 0.12 / 1,710, 0.14 | 136, 0.33 / 118, 0.32 | 64, 0.30 / 64, 0.30 |
+| real zombies | 84, 0.21 | 83, 0.33 | 85, 0.37 |
+| IC s1 / s2 zombies | 648, 0.10 / 665, 0.07 | 48, 0.27 / 48, 0.33 | 39, 0.08 / 37, 0.16 |
+
+- **88-91% of imagined mob-steps are fainter than two thirds of real mobs.** Faint mobs move at about a third of the real rate.
+  Mid-score cows and zombies move at 0.27-0.33, close to real.
+- So IC's low recursion movement (R19 guard (a)) is mostly fading, as R11 found for zombie pursuit.
+- **Prediction for PI:** exact copies keep mobs crisp, so recursion movement should approach the one-step rate. If PI's
+  mobs stay crisp but do not move, the chance operator, not fading, limits movement.
+
 ### R19 — the copy shortcut: a no-op world passes PI's four recursion readings (written before PI trains)
 
 **Literature:**
