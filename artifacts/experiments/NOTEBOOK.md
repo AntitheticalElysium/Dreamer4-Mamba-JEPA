@@ -175,6 +175,23 @@ Dark: 19 / 33 / 48% and 31 / 39 / 49%.
 
 - Terrain seen 8-14 frames before the root is recalled no better than never-seen terrain, although those frames are inside
   the 15-frame input window.
+- **Scrolls, not only time** (same probe, split by camera scrolls between the last showing and the root). Bright, last
+  seen 8-14 frames ago:
+
+  | scrolls since | D parent | operator |
+  |---|---|---|
+  | ≤ 2 | 10% (n = 39) | 23% (n = 204) |
+  | 3-5 | 35% | 36% |
+  | 6+ | 38% | 41% |
+
+  At age 3-7: 14 / 19% (D) and 24 / 29% (operator). Error grows mainly with the number of scrolls (content moving across
+  screen slots), plus some decay with age for the operator.
+  - **Caveat:** few-scroll windows are periods of standing still, a different activity.
+  - **Reading:** recall is tied to screen slots and lost as the camera translates content. That is an *addressing* failure
+    (WHITEBOARD §4; E17 screen-slot memory).
+  - **Candidate unifying mechanism (untested):** the camera scroll is itself a deterministic global reassignment of cells.
+    Applying the same reassignment to the recurrent memory state, not only to tokens, would carry memory with content. This is
+    the 09-29 motion-aligned carry idea, now motivated by measurement.
 - The effective world-aligned memory is about 5-7 frames. This is row 2 / 4 in numbers. Recurrent capacity is not the binding
   limit, since the information is in the window; retention or addressing across scrolls is (cf. the E18 read-path and Mamba
   recall-edge memories).

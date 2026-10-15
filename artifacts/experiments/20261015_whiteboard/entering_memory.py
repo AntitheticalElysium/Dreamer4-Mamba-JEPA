@@ -9,6 +9,8 @@ the real camera track:
   NEW       never inside any context frame: genuinely unknown (epistemic), only a prior can fill it
 Tile error rate per class (frozen bank tile reader, real vs imagined frame; cells with a decoded mob in either are excluded),
 and the error of the trivial 'most common tile class in the context frames' guess on NEW cells (a prior baseline).
+REVISIT cells are also split by the number of camera scrolls between the last context frame that showed them and the
+root (0-2 / 3-5 / 6+), crossed with age, separating addressing (content moved across screen slots) from decay.
 REVISIT cells are also split by recency: frames since the world position was last inside a context frame (1-3 / 4-8 / 9-15
 frames before the root), separating memory decay (error grows with age) from addressing failure (flat).
 Usage: entering_memory.py <model> ... -> artifacts/eda/whiteboard/entering_<model>.json
@@ -79,6 +81,8 @@ def main():
                         if cls == 'REVISIT':
                             age = 15 - last[w]
                             sub = 'REVISIT_age0-2' if age <= 2 else ('REVISIT_age3-7' if age <= 7 else 'REVISIT_age8-14')
+                            nscroll = int((sh[i, last[w]:15] != 0).any(-1).sum())
+                            sub2 = f"{sub}|scrolls{'0-2' if nscroll <= 2 else ('3-5' if nscroll <= 5 else '6+')}"
                         real_t = int(rtile[i, f, x])
                         if bool(rmob[i, f, x]):
                             continue
@@ -86,8 +90,9 @@ def main():
                         if ok.any():
                             acc[part][cls][0] += int((itile[ok, k, x] != real_t).sum()); acc[part][cls][1] += int(ok.sum())
                             if cls == 'REVISIT':
-                                acc[part].setdefault(sub, [0, 0])
-                                acc[part][sub][0] += int((itile[ok, k, x] != real_t).sum()); acc[part][sub][1] += int(ok.sum())
+                                for key in (sub, sub2):
+                                    acc[part].setdefault(key, [0, 0])
+                                    acc[part][key][0] += int((itile[ok, k, x] != real_t).sum()); acc[part][key][1] += int(ok.sum())
                         if cls == 'NEW':
                             prior[part][0] += int(mode_tile != real_t); prior[part][1] += 1
         res = {'model': name}
