@@ -162,6 +162,25 @@ Drift is relative to the RMS distance between different cells.
     mostly deterministic; imagined zombies move 10% per step vs 43% real; mobs fade, R7) and HUD consequence dynamics
     (row 2).
 
+### R11 — zombie pursuit decays under self-feeding (`pursuit.py`, bright, camera-consistent)
+
+Per step, a zombie approaches the player:
+
+| | depth 1 | depth 2-5 | depth 6-16 |
+|---|---|---|---|
+| real | 35% | 36% | 38% |
+| transport operator | 41% | 26% | 14% |
+| operator afterstate | 45% | 29% | 10% |
+| free | 45% | 24% | 19% (22% lost) |
+| D parent | 40% | 21% | 0% |
+
+- With true context every model chases correctly; reading its own frames, pursuit fades.
+- By zombie token strength at depths 2-16 (operator / afterstate): crisp (score ≥ 0.6) 25 / 28%, faint 14 / 9%, real 37%.
+- **Token fading (R7) explains part of it.** Even crisp zombies under-chase, so self-generated context also degrades the
+  deterministic dynamics.
+- Together with R4 (camera) and R7 (fading): **recursion degrades the deterministic part** (pursuit, scrolling, persistence)
+  more than the chance part.
+
 ### R8 — TRANSPORT_IC: two failed posterior designs, both diagnosed by synthetic tests; v3 running
 
 **v1 (stopped at update 900; `transport/ic_v1_bug_seed{1,2}`)**
