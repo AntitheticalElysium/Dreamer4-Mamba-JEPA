@@ -222,6 +222,50 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R42 — corrected (after R41's fix): copied content's stale RENDERING is the harm; a stale position code costs almost nothing
+
+`recontext_stale.py` and `chase_cue.py` rerun with the corrected construction: the vacated cell is fresh, the player cell is
+fresh, and there is a pixel-exact class. Exact transformations, PI u3000, diagnosis futures.
+
+**T vs C by rendering change in the stale span** (scroll windows, pooled over m 4 / 8 / 14; s1 / s2):
+
+| rendering in span | windows | chase: fresh / T / C | content error at edits: fresh / T / C | belief cos, map (T) |
+|---|---|---|---|---|
+| pixel-exact | 131 | (no zombies) | 1.30 / 1.34 / **1.30**; 1.18 / 1.32 / **1.18** | 0.998 |
+| ≤ 2-level drift | 694 | 0.49 / 0.48 / 0.48 (7 zombies) | 0.96 / 1.06 / 1.05; 0.99 / 1.09 / 1.05 | 0.998 |
+| < 5% cells per step | 1,249 | 0.33 / 0.29 / 0.30; 0.39 / 0.35 / 0.36 | 1.06 / 1.14 / 1.11; 1.12 / 1.23 / 1.18 | 0.992 |
+| global rendering events | 805 | 0.17 / 0.15 / 0.15; 0.20 / 0.16 / 0.16 | **2.44 / 5.59 / 5.39; 2.46 / 5.37 / 5.93** | 0.87-0.88 |
+
+**Partial freshness, corrected** (983 scroll windows, m 8):
+- **Total stale cost:** chase 0.26 → 0.23 / 0.30 → 0.27 (−13%); content 1.33 → 1.99 / 1.36 → 2.00 (+50%); health AUC
+  0.99 → 0.96 / 0.98.
+
+| restored | chase recovery (s1 / s2) | content recovery (s1 / s2) |
+|---|---|---|
+| most recent frame | 89% / 87% | 97% / 96% |
+| history only | 12% / 5% | ~0% |
+| zombies + 4 neighbours | 93% / 81% | 11% |
+| map except zombies | 52% / 41% | 100% |
+| player + 4 neighbours | 41% / 53% | 80% / 78% |
+| zombies only | 38% / 45% | — |
+| HUD | 0% | 0% |
+
+**What stands (replacing R39 / R40's scroll-window numbers):**
+- **A stale position code alone is nearly harmless.** In pixel-exact windows, content error rises only 3-12% and belief cosine
+  stays 0.998. Recomputing context from content codes (C) removes even that, exactly.
+- **The harm is the stale rendering of copied content.** Under global lighting events, consequence content error more than
+  doubles (+120-130%) and chase drops 16-18%. Recomputing context does not help, because the lighting is in the content code.
+- **The current frame carries the readings, not the history.** Chase depends on the zombies' local neighbourhood; consequence
+  content depends on the terrain.
+- **R34's larger losses** (chase −30-64% with ≥ 4 scrolls) used PI's *inferred* transformations on training windows. Part of
+  that gap is transformation inference error, not representation staleness (Codex's caveat in ARCHITECTURE_RESEARCH.md was right).
+- **Remedies tested so far** for the rendering part:
+  - additive frame-shift: −34% token error;
+  - learned MLP relight: no better (R41);
+  - global affine relight: harmful (R39).
+  - Rendering is a frame-global, history-unpredictable nuisance whose per-cell effect is content-dependent.
+  - Open options: invariance in the encoder, or a belief that renders every cell from one state (LB).
+
 ### R41 — DEFECT in my exact-transformation stale construction (R39, R40); PI itself is unaffected (10-16)
 
 **Found while verifying R40.** In my rebuild (`recontext_stale.transitions`), the cell the player **vacates** after a move (its
