@@ -177,6 +177,54 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R23 — TRACK B RESULT: "persistence principle supported" (TRANSPORT_PI_PREREG, both seeds; R19 guards pass)
+
+Mechanical verdict (`transport_track_verdicts.py pi`): **P1-P4 and every one-step condition pass at both seeds; failed = [].**
+All three copy-shortcut guards pass at both seeds. PI u3000 vs IC v3 u3000; bright, 8 samples, H16.
+
+| reading | PI s1 / s2 | IC s1 / s2 |
+|---|---|---|
+| **P1** persisting-mob score d16 (need IC + 0.15) | **0.726 / 0.706** | 0.376 / 0.363 |
+| **P2** cow census d16 | **0.62 / 0.46** | 0.30 / 0.19 |
+| **P3** seen-terrain error d16 (≤ IC + 1pp) | 1.61% / 1.38% | 1.51% / 1.27% |
+| **P4** max phantoms per frame (≤ 0.05) | 0.028 / 0.019 | 0.029 / 0.019 |
+| zombie census d16 | **0.50 / 0.46** | 0.07 / 0.07 |
+| camera consistency d16 | 62.9% / 61.2% | 60.7% / 60.1% |
+| guard (a) recursion move rate, cow / zombie (real 0.42 / 0.30) | 0.22 / 0.19, 0.24 / 0.22 ✓ | 0.14 / 0.11 (s1) ✗ |
+| guard (b) zombie-adj AUC16 (no-op 0.58) | 0.72 / 0.70 ✓ | 0.67 / 0.68 |
+| guard (b) cow-adj AUC16 (no-op 0.60) | **0.89 / 0.88** ✓ | 0.79 / 0.79 |
+| health-drop AUC16 | 0.62 / 0.60 | 0.61 / 0.57 |
+| health drops within 16, imagined (real 0.26) | 0.07 / 0.26 | 0.16 / 0.22 |
+| per-step vanish rate, cow / zombie (real 0.019 / 0.036) | 0.029 / 0.025, 0.029 / 0.023 | 0.035 / 0.071 (s1) |
+| zombie pursuit approach, crisp, depth 2-16 (real 0.36-0.38) | 0.26 / 0.24 | 0.41-0.44 (SF ic arms) |
+
+**One-step, u3000** (both readers; preregistered conditions pass):
+- valid 100%, duplicate / absent 0;
+- movement 39% / 41%, cow 34% / 34%;
+- static 0.32% / 0.31%.
+- **Joint ES beats IC and free under both readers:** real 0.0238 / 0.0245 vs IC 0.0263 / 0.0252 vs free 0.0257 / 0.0253;
+  bank 0.0250 / 0.0257 vs IC 0.0280 / 0.0294 vs free 0.0275 / 0.0282. IC failed N on the bank reader because of afterstate
+  ghosts. Exact persistence removes them.
+
+**What we learn:**
+- **The principle holds as preregistered:** keep the state; change it only through explicit inferred transformations (hard
+  scroll, chance swaps, EM-gated edits).
+  - Mob persistence in recursion doubles (0.37 → 0.71-0.73), and the zombie census rises ~7×.
+  - Terrain stays as good, with no phantoms. One-step coherence and joint ES improve.
+- **Fading is solved at the per-step level:** vanish rates are at the real level. The persisting score declines 0.89 →
+  0.71-0.73, no more than the no-op's subset drift (0.91 → 0.57), against IC's 0.92 → 0.38.
+- **Remaining census gap (cow 0.46-0.62): hypothesis, to be tested.** It is not fading. Reality gains mobs walking in from
+  off-screen and spawning (its own "phantom" rate is 0.33 per frame at d16). PI draws almost none (0.02).
+- **Decisions:**
+  - Food (cow adjacency) improves strongly: 0.79 → 0.88-0.89.
+  - Hazard (zombie adjacency) improves slightly: 0.67-0.68 → 0.70-0.72.
+  - **Health drops do not improve at both seeds.** Seed 1 draws fewer than IC; seed 2 matches reality's rate. The R18
+    "consequences" prediction is not supported.
+  - **Pursuit is weaker:** crisp zombies approach at 0.24-0.26 vs real 0.38 (IC's crisp zombies chased at the real rate).
+    Candidate cause (not yet tested): the gate edits "mob at one end" cells at 36%, so some moves are explained as two edits
+    instead of a chance swap, and the chance head sees fewer pursuit targets.
+- Track B's evaluation-only variants (canvas, sampled edits) are running.
+
 ### R22 — PI trained (both seeds, 3,000 updates): the label-free EM gate becomes a change detector (`edit_gain.py 640 pi_seed{s}/pi_u3000.pt`)
 
 **Training** (`pi_seed{1,2}_train.log`; ~0.63 s per update, both seeds in parallel, peak 1.24 GiB each):
