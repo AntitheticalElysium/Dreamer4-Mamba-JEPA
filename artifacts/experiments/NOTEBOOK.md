@@ -177,6 +177,36 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R19 — the copy shortcut: a no-op world passes PI's four recursion readings (written before PI trains)
+
+**Literature:**
+- ScratchWorld (arXiv 2606.31689): copying the input state reaches 98% state accuracy and 0% changed-field F1.
+- "Modeling What Changes" (arXiv 2609.02046): a per-object change gate with verbatim copies of unflagged objects compounds
+  far less rollout error than a dense model and stays close to the no-motion floor (abstract).
+
+**Measured:** the no-op world (`recursion_samples_noop.pt`: the root frame repeated for 16 steps), through the same readers,
+bright:
+
+| | persisting score d16 | cow census d16 | seen terrain d16 | phantoms max | camera d16 | zombie-adj AUC16 | cow-adj AUC16 | health-drop AUC16 |
+|---|---|---|---|---|---|---|---|---|
+| no-op | 0.573 | 1.09 | 1.0% | 0.000 | 9.6% | 0.58 | 0.60 | 0.50 (never drawn) |
+| IC s1 | 0.376 | 0.30 | 1.5% | 0.029 | 61% | 0.67 | 0.79 | 0.61 |
+
+- **The no-op passes P1-P4 of TRANSPORT_PI_PREREG against IC.** Only the preregistered one-step conditions (valid movement
+  ≥ 15%, cow ≥ 20.5%) exclude it.
+- Recursion readings are taken on camera-consistent trajectories. For the no-op these are the 9.6% where the player stands
+  still, so its persisting score decays (0.91 → 0.57) with identical tokens: **the persisting score is confounded by which
+  trajectories stay camera-consistent.**
+- The decision proxies separate a world with dynamics from the no-op; the recursion persistence readings do not.
+
+**Interpretation guard (added now, before PI results; the preregistered verdict is unchanged and reported as is).** PI's
+recursion advantage counts as persistence *with* dynamics, not the copy shortcut, only if at both seeds:
+- (a) its pooled recursion mob move rate (`mob_fading`, cow and zombie) is ≥ half the real rate (real cow 0.42, zombie 0.30);
+- (b) its zombie-adjacency and cow-adjacency AUC16 exceed the no-op's (0.58, 0.60);
+- (c) its camera consistency at d16 is ≥ IC's − 5pp.
+
+Otherwise the PI verdict is reported with "indistinguishable from copying on <the failed guard>".
+
 ### R18 — Track B, before PI trains: the label-free edit evidence already separates persisting from changing content (`edit_gain.py`)
 
 PI's gate trains toward q = σ(gain/s + logit p). The BCE fixed point is p = E[σ(gain/s + logit p)], i.e. **EM for the edit
