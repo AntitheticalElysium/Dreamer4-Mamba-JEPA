@@ -21,7 +21,10 @@
             destination and not at the source: the deterministic part already moved it, nothing to sample), GHOST (a shows
             it at both or neither: blurred/faded), STAY (a shows it at the source only: a genuine chance event), and for
             STAY moves whether P0 / P1 captured the swap. By mob type and camera still / moving.
-Usage: ic_posterior.py calib | posterior | misses -> artifacts/eda/oracle_v1/transport/ic_<mode>.json
+  milestones  (GPU inference) TRANSPORT_IC diagnostic: the v3 posterior (transport_ic_train.infer under each checkpoint's own
+            chance-head prior) on the same 400 training windows, for every IC milestone of both seeds: share of STAY-class
+            (genuine chance) moves captured, accepted swaps per frame, false accepted swaps per frame by class (scored vs T*).
+Usage: ic_posterior.py calib | posterior | misses | milestones -> artifacts/eda/oracle_v1/transport/ic_<mode>.json
 """
 import json
 import sys
@@ -240,8 +243,74 @@ def misses():
     return res
 
 
+@torch.no_grad()
+def milestones():
+    import direct_coherence as C
+    import direct_model as DM
+    import direct_train as BASE
+    import transport_model as TM
+    import transport_ic_train as IC
+    from d4mj.train import autocast_context
+    config = BASE.settings()
+    _, windows, actions, tokens = BASE.load_data()
+    valid = torch.from_numpy(np.load(A5.BASE / 'layouts_valid.npy'))
+    windows = windows[valid[windows[:, 0]]]
+    sel = torch.randperm(len(windows), generator=torch.Generator().manual_seed(20261016))[:400]
+    lay = np.load(A5.BASE / 'layouts.npy', mmap_mode='r')
+    bank = torch.load(A5.BASE / 'snap_bank_readers.pt', map_location='cpu', weights_only=False)
+    head = torch.load(A5.BASE / 'learned_innovation/eval_u3000_h01/mob_heads.pt', map_location='cpu', weights_only=False)['heads']['real']
+    scroll = A5.load_scroll()
+    pos = {x: i for i, x in enumerate(INTERIOR)}
+    res = {}
+    for seed in (1, 2):
+        for u in (0, 500, 1500, 3000):
+            path = OUT / f'ic_seed{seed}/ic_u{u:04d}.pt'
+            if not path.exists():
+                continue
+            world = TM.TransportWorld('operator').cuda().eval(); world.load_state_dict(torch.load(path, map_location='cpu', weights_only=False)['world'])
+            g = torch.Generator().manual_seed(1)
+            tally = {'n_stay': 0, 'stay_captured': 0, 'accepted': 0, 'false_terrain': 0, 'false_mob': 0, 'frames': 0}
+            for b0 in range(0, 400, 8):
+                frames, ac, choices = BASE.batch(tokens, actions, windows, sel[b0:b0 + 8])
+                noise = DM.draw_noise(frames.shape[:2], g)[0].cuda()
+                with autocast_context(config):
+                    belief, ha = world.backbone_full(frames, ac)
+                    b = world.reference(frames, ac, belief, ha).float()[:, :15]
+                    logits = world.completion.propose(world.completion.trunk(belief, noise)).float()[:, :15]
+                logits = logits.masked_fill(~world.completion.valid, -torch.inf)
+                a = F.layer_norm(b, (192,)); z = frames[:, 1:].float()
+                partner, _, nacc, _, _, _ = IC.infer(a, z, IC.pair_prior_logit(logits))
+                dec = C.decode(a.cpu().reshape(-1, 81, 192), bank, head)['mob']['real'][..., :3]
+                est = scroll.estimate(frames[:, :-1].float().cpu(), frames[:, 1:].float().cpu())
+                partner = partner.cpu()
+                for i, (row, start) in enumerate(choices.tolist()):
+                    L = torch.from_numpy(np.array(lay[row, start:start + 16]) > 0)
+                    for t in range(15):
+                        m = i * 15 + t
+                        prev = S2.afterstate_layout(L[t], *scroll.SHIFTS[int(est[i, t])])
+                        truth = {frozenset((s_, d_)): ty for s_, d_, ty in S2.swaps(prev, L[t + 1]) if ty < 3 and s_ in pos and d_ in pos and 31 not in (s_, d_)}
+                        got = {frozenset((x, int(partner[i, t, x]))) for x in INTERIOR if int(partner[i, t, x]) != x}
+                        tally['frames'] += 1; tally['accepted'] += len(got)
+                        for pr, ty in truth.items():
+                            s_, d_ = tuple(pr)
+                            src, dst = (s_, d_) if bool(prev[s_, ty] == 1) else (d_, s_)
+                            if bool(dec[m, src, ty]) and not bool(dec[m, dst, ty]):
+                                tally['n_stay'] += 1; tally['stay_captured'] += int(pr in got)
+                        mobs = set(torch.where(L[t + 1][:, :3].any(-1) | (prev[:, :3] == 1).any(-1))[0].tolist())
+                        for pr in got - set(truth):
+                            x, y = tuple(pr)
+                            tally['false_mob' if (x in mobs or y in mobs) else 'false_terrain'] += 1
+            f = tally['frames']
+            res[f'seed{seed}_u{u}'] = {'stay_capture': round(tally['stay_captured'] / max(tally['n_stay'], 1), 4), 'stay_events': tally['n_stay'],
+                                       'accepted_per_frame': round(tally['accepted'] / f, 4), 'false_terrain_per_frame': round(tally['false_terrain'] / f, 4),
+                                       'false_mob_per_frame': round(tally['false_mob'] / f, 4)}
+            print(json.dumps({f'seed{seed}_u{u}': res[f'seed{seed}_u{u}']}), flush=True)
+            del world; torch.cuda.empty_cache()
+    return res
+
+
 if __name__ == '__main__':
     mode = sys.argv[1]
-    res = {'calib': calib, 'posterior': posterior, 'misses': misses}[mode]()
+    res = {'calib': calib, 'posterior': posterior, 'misses': misses, 'milestones': milestones}[mode]()
     (OUT / f'ic_{mode}.json').write_text(json.dumps(res, indent=1))
     print(json.dumps(res, indent=1)[:3000])
