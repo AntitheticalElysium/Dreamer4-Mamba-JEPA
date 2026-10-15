@@ -177,6 +177,32 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R18 — Track B, before PI trains: the label-free edit evidence already separates persisting from changing content (`edit_gain.py`)
+
+PI's gate trains toward q = σ(gain/s + logit p). The BCE fixed point is p = E[σ(gain/s + logit p)], i.e. **EM for the edit
+prior**, so the gate learns the edit rate that the likelihood ratio exp(gain/s) supports.
+
+Measured at PI's initialization (exact D parent, gen = its proj(belief)), teacher-forced, CPU reference scan:
+- 160 seeded training windows;
+- copy = exact copy under the label-free scroll estimate;
+- chance not applied, so moved mobs count as changed;
+- classes from the frozen readers on real frames.
+
+| cell class | cells | gen beats copy | median gain/s | EM fixed-point edit prior |
+|---|---|---|---|---|
+| unchanged terrain | 135,241 | 1.7% | −7.1 | **0.000** |
+| persisting mob (mob at source and target) | 1,234 | 9.2% | −11.1 | **0.005** |
+| HUD (copied in place) | 43,200 | 1.6% | −6.8 | 0.008 |
+| changed terrain (reader class differs) | 443 | 73.8% | +11.0 | **0.78** |
+| mob at only one of source / target (moves, arrivals) | 3,494 | 80.5% | +1.5 | 0.87 |
+
+- **Prediction for PI (written before PI trains):** the gate persists by default and edits where content changes. This is
+  exactly the separation that CorrT's soft blend fails to make.
+  - In PI, the chance posterior explains most mob moves before the gate sees them, so the last row should shrink.
+- **Risk:** the parent's own hard scroll (argmax of its frame + target_gate logit) agrees with the label-free estimate on
+  only **56.9%** of steps at initialization. PI's scroll cross-entropy must fix this; `scroll_acc` in the training log is the
+  first thing to check. A wrong scroll misaddresses the whole view in recursion.
+
 ### R17 — Track B: a memory that follows world position would recover nearly all revisited terrain (`memory_probe.py cache`)
 
 Model-free ceiling, with the same 2,400 training windows, entering cells, label-free scroll track and frozen tile reader as
