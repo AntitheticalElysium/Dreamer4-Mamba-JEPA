@@ -131,6 +131,52 @@ Drift is relative to the RMS distance between different cells.
   drift" → "because rendering changes deterministically (daylight) and with position". This is predictable from history, and
   the learned afterstate removes most of it (0.048 → 0.014).
 
+### R12 — TRANSPORT_IC v3 RESULT (both seeds, 3,000 updates; mechanical verdict `transport_ic_verdict.py`)
+
+At 3,000 updates (real / bank where they differ):
+
+| | IC s1 | IC s2 | ES twin s1 / s2 | free s1 / s2 | real |
+|---|---|---|---|---|---|
+| valid | **100 / 100%** | **100 / 100%** | 94.2 / 93.6% | 63 / 65%, 53 / 56% | 100% |
+| duplicate / absent | **0 / 0** | **0 / 0** | 4.3-4.9% / 0 | 15-19% / 7-17% | 0 |
+| all-source valid movement | 36.8% | 44.8% | 31.4 / 31.5% | 5-9% | ~46% |
+| cow valid movement | 34.0% | 42.6% | 28.7 / 31.2% | 4-8% | 41.0% |
+| dependence | 43pp | 47pp | 35 / 36pp | ~0 | 45.8pp |
+| scored static corruption | **0.270%** | **0.276%** | 0.80 / 0.70% | 0.27% | 0.18% |
+| sampled swaps per frame | 0.17 | 0.20 | 1.68 / 1.11 | — | — |
+| joint ES (real / bank) | 0.0263 / 0.0280 | 0.0252 / 0.0294 | 0.0249 / 0.0257, 0.0253 / 0.0267 | — | — |
+
+- By u1,500 IC already shows valid 100%, movement 30%, static 0.30%.
+- **Gates:** IC passes G1, G2, G4, G5 at both seeds under both readers. It fails **N under the bank reader only**: joint ES is
+  0.0024 / 0.0028 above the ES twin, against a 0.002 margin. Under the real reader it is +0.0014 / −0.0001.
+- **Mechanical verdict string: "cost bought with movement"** (the preregistered rule: G4 passes while G1 or N fails).
+  **Semantically wrong here:** IC's movement is *higher* than ES's; the failing N component is joint ES. **Preregistered
+  result: "inferred chance established" is NOT reached.** Fresh data stays sealed.
+- **Mechanism: supported** (both clean measures, both seeds):
+  - accepted terrain ↔ terrain swaps per frame: ES 1.37 / 0.87 → IC 0.005 / 0.012;
+  - P(move) at isolated no-mob cells: 0.024 / 0.014 → 0.000 / 0.0002.
+  - Removing the energy score's hedging incentive eliminates spurious reassignment.
+- **Why N fails** (per root, bank reader): the gap is concentrated in a few roots with **deterministic ghosts in IC's
+  afterstate**, the same count in all 64 samples:
+  - root 85, both seeds: the zombie both kept and chase-moved (cells 46 and 37) on a scroll step;
+  - seed-1 root 53: zombie at 37 and 38;
+  - seed-2 root 22: three crowded cows ghosted onto all nine destination cells;
+  - seed-2 root 5: a skeleton ghosted onto its neighbours.
+  - Where the label-free posterior cannot explain the outcome (crowded mobs, chase with a scroll), the point loss regresses
+    to the mean: the regression condition at the posterior's blind spots.
+- **Recursion (preregistered secondary, bright, depth 16):**
+  - **R1 holds:** seen-terrain error 1.5 / 1.3% vs ES 10.4 / 9.5%.
+  - **R2 fails:** cow census 0.30 / 0.19 vs ES 0.60 / 0.51; zombies 0.07 vs 0.32-0.44. IC's mobs fade faster.
+  - **R3 fails narrowly:** phantoms up to 0.029 / 0.019 per frame vs ≤ 0.01; ES is 0.071 / 0.038.
+  - Also: camera consistent 61 / 60% vs 50 / 54%; entering-terrain error 26% vs 44-59%. IC trains all 81 tokens with the D
+    loss.
+- **Reading:**
+  - Inferred chance solves what it targeted: no spurious reassignment, perfect one-step validity, movement and dependence at
+    the real rates.
+  - Its deterministic part, trained by a point loss, keeps averaging where the posterior is blind. Under recursion that
+    becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
+  - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
+
 ### R10 — decision-relevant imagination: the world stops threatening the player (`decision_proxies.py`)
 
 **Setup:** saved H16 rollouts, frozen readers. 104 bright roots; one real future per root, so AUCs are about ±0.07.
