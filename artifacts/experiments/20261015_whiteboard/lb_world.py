@@ -21,6 +21,8 @@ Two adaptations to our setting (disclosed):
 Windows / batch exactly as PI (seeded training-ledger windows of 16 frames, batch 16); each window starts the RSSM (is_first).
 Actions: one-hot 17; the RSSM step for frame i takes the action at frame i-1 (zero at the first frame).
 Usage: lb_world.py --seed-set 1|2 [--updates 30000] [--stop-after N] -> transport/lb_seed<s>/lb_u<updates>.pt (+ resumable state)
+       lb_world.py --seed-set 1|2 --updates 60000 --extend   (LB_PREREG's declared extension, 10-16: continues the 30k run's exact
+       state -- weights, LaProp, schedule, window stream, RNG -- under contract_ext.json, which records the base contract id)
 """
 import argparse
 import copy as cp
@@ -113,6 +115,7 @@ def main():
     ap.add_argument('--seed-set', type=int, required=True, choices=(1, 2))
     ap.add_argument('--updates', type=int, default=30000)
     ap.add_argument('--stop-after', type=int)
+    ap.add_argument('--extend', action='store_true')
     a = ap.parse_args()
     prereg = HERE / 'LB_PREREG.md'
     assert prereg.exists()
@@ -129,7 +132,17 @@ def main():
                 'data_contract_id': manifest['contract_id'], 'seed_set': a.seed_set, 'updates': a.updates, 'cfg': CFG, 'opt': OPT,
                 'parameters': sum(p.numel() for p in params), 'training_semantic_or_simulator_labels': False}
     cid = hashlib.sha256(json.dumps(contract, sort_keys=True).encode()).hexdigest()
-    if (d / 'contract.json').exists():
+    if a.extend:                                                                  # the base run's contract, as recorded
+        base = json.loads((d / 'contract.json').read_text())
+        base_cid = hashlib.sha256(json.dumps(base, sort_keys=True).encode()).hexdigest()
+        contract = {'format': 'lb_v2_ext', 'base_contract_id': base_cid, 'base_updates': base['updates'], 'updates': a.updates,
+                    'sources_inputs': contract['sources_inputs']}
+        cid = hashlib.sha256(json.dumps(contract, sort_keys=True).encode()).hexdigest()
+        if (d / 'contract_ext.json').exists():
+            assert json.loads((d / 'contract_ext.json').read_text()) == contract, 'source/input drift'
+        else:
+            L.atomic(contract, d / 'contract_ext.json', True)
+    elif (d / 'contract.json').exists():
         assert json.loads((d / 'contract.json').read_text()) == contract, 'source/input drift'
     else:
         L.atomic(contract, d / 'contract.json', True)
@@ -137,7 +150,7 @@ def main():
     start, history = 0, []
     if (d / 'state.pt').exists():
         st = torch.load(d / 'state.pt', map_location='cpu', weights_only=False)
-        assert st['contract_id'] == cid
+        assert st['contract_id'] in ((cid, base_cid) if a.extend else (cid,))
         w.load_state_dict(st['world']); opt.load_state_dict(st['optimizer']); sched.load_state_dict(st['sched'])
         order.set_state(st['order']); torch.set_rng_state(st['torch_rng']); torch.cuda.set_rng_state_all(st['cuda_rng'])
         start, history = st['update'], st['history']

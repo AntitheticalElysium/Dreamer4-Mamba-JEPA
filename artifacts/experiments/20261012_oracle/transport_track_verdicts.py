@@ -263,13 +263,13 @@ def stale():
     return res
 
 
-def lb(update=30000):
-    res = {}
+def lb(update=30000, prefix='lb'):
+    res = {'lb_update': update, 'lb_names': prefix}
     pi_fade = json.loads((W / 'mob_fading_pi_s1_pi_s2_pi_s1_ref.json').read_text())
-    lb_fade = json.loads((W / 'mob_fading_lb_s1_lb_s2.json').read_text())
-    pur = {**json.loads((W / 'pursuit_pi.json').read_text()), **json.loads((W / 'pursuit_lb.json').read_text())}
+    lb_fade = json.loads((W / f'mob_fading_{prefix}_s1_{prefix}_s2.json').read_text())
+    pur = {**json.loads((W / 'pursuit_pi.json').read_text()), **json.loads((W / f'pursuit_{prefix}.json').read_text())}
     for s in (1, 2):
-        x, y = f'pi_s{s}', f'lb_s{s}'
+        x, y = f'pi_s{s}', f'{prefix}_s{s}'
         rx, ry = rec(x), rec(y)
         persist = [pi_fade[x]['vanish_rate_by_depth'][15]['mean_score_of_persisting'], lb_fade[y]['vanish_rate_by_depth'][15]['mean_score_of_persisting']]
         cow = [rx['census_ratio[zombie,cow,skeleton]_by_depth'][15][1], ry['census_ratio[zombie,cow,skeleton]_by_depth'][15][1]]
@@ -300,6 +300,6 @@ def lb(update=30000):
 
 if __name__ == '__main__':
     which = sys.argv[1]
-    res = {'sf': sf, 'pi': pi, 'canvas': lambda: variant('canvas'), 'sampled': lambda: variant('sampled'), 'innov': innov, 'enter': lambda: innov('enter'), 'stale': stale, 'lb': lb}[which]()
-    (T / f'{which}_verdict.json').write_text(json.dumps(res, indent=1))
+    res = {'sf': sf, 'pi': pi, 'canvas': lambda: variant('canvas'), 'sampled': lambda: variant('sampled'), 'innov': innov, 'enter': lambda: innov('enter'), 'stale': stale, 'lb': lb, 'lb60k': lambda: lb(60000, 'lb60k')}[which]()
+    (T / f'{which}_verdict.json').write_text(json.dumps(res, indent=1))                       # lb60k: LB_PREREG extension verdict
     print(json.dumps(res, indent=1))
