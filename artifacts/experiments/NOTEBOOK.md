@@ -222,6 +222,21 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R37 — literal swap transport across terrain: rare, systematic, and not repaired by PI's gate (`swap_background.py`)
+
+- **Setup:** 400 training windows. True STAY-class mob moves captured by PI u3000's own training-time swaps (1,407 / 1,412).
+  At the vacated cell, the swapped-in token is compared with the background revealed at t+1 (frozen tile reader).
+- **Cross-terrain:** 7 / 8 moves (0.5%). The swapped-in token always reads as the wrong terrain. Neither PI's edit posterior
+  nor its gate regenerates the cell (0 / 7, 0 / 8). The final output reads correct in 4 / 7 and 4 / 8 cases, by the reader's
+  tolerance.
+- **Same terrain:** 1,400 / 1,404 moves, all correct.
+- Our exact-tile measurement (TRANSPORT COST audit, 10-15) counted **5.2%** of real in-view moves crossing terrain classes,
+  with 100% wrong endpoint terrain under token swaps. The frozen reader sees fewer, because it collapses some tile
+  distinctions and only one endpoint is checked here.
+- **Reading:** a swap moves the mob *with its background*, because the token binds content to its context (R2: the sprite
+  occludes non-additively). It is infrequent here but systematic, and nothing in PI repairs it. It is the user's "preserve the
+  information, not the representation" at the level of a single token.
+
 ### R36 — re-deriving an additive position code does not help (`stale_context.py`, STALE_REFRESH=1)
 
 - **Test:** each slot's position offset P[x] (mean real token at slot x minus the map mean, 400 windows). The slot where every
