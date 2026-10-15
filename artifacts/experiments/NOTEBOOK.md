@@ -177,6 +177,29 @@ At 3,000 updates (real / bank where they differ):
     becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
   - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
 
+### R33 — R27 corrected: PI's chance head chases MORE than IC's, close to reality; its deficit is decay with depth (`pursuit_onestep.py`)
+
+Teacher-forced, 400 training windows with layouts (diagnostic only). For every zombie in the afterstate layout: the chance
+head's canonical pair probabilities toward / away from the player (cell 31), vs the real next-layout moves.
+
+| zombie distance | toward: PI s1 / s2 | toward: IC s1 / s2 | toward: real | toward share: PI / IC / real |
+|---|---|---|---|---|
+| 1-2 (810) | **0.25 / 0.30** | 0.09 / 0.13 | 0.35 | **0.70-0.72** / 0.57-0.58 / 0.74 |
+| 3-4 (693) | **0.37 / 0.41** | 0.09 / 0.18 | 0.45 | 0.87-0.88 / 0.79-0.80 / 0.83 |
+| 5+ (162) | 0.29 / 0.34 | 0.03 / 0.05 | 0.41 | 1.0 / 1.0 / 0.84 |
+
+- **R27's reading ("PI's chance head learned a weaker direction bias") was wrong.**
+  - PI's chance head carries the chase: 70-90% of the real toward-rate, with the real direction share.
+  - IC's chance head barely chases (0.09-0.18). IC's higher depth-1 pursuit (0.41-0.46) comes from its soft deterministic
+    afterstate moving zombies (R12: 31% of chase lives there), and it *overshoots* reality (0.35).
+  - With exact persistence, chase must be chance, and PI's chance head learned it.
+- **PI's actual pursuit deficit is recursive:** 0.26-0.29 at depth 1 (≈ its one-step pair probabilities, ~80% of real) →
+  0.22 at depth 6-16 vs real 0.38. Its zombies stay crisp (R23), so the decay is not fading.
+  - Candidate (untested): the chance head reads context that degrades in imagination (e.g. the player's relative motion
+    under imagined scrolls).
+- **Decision chain** (R23): fewer imagined adjacencies (0.09 vs 0.18) feed fewer health drops. The upstream causes are this
+  recursive pursuit decay and zombie arrivals below reality (R32).
+
 ### R32 — PI_ENTER RESULT: sampling new content only where it is epistemic restores arrivals with no harm (PI_ENTER_PREREG)
 
 Mechanical verdict (`transport_track_verdicts.py enter`): **"sampled innovation restores arrivals": A1, A2, H at both seeds.**
@@ -362,6 +385,8 @@ is still the point-predicted token; same chance stream. Non-entering edits per s
   - skeletons 92% / 92% (IC v3: 89% over all mobs).
 - **Explained by edits instead:** 3-5%. **Missed:** 4-5%.
 - **The R23 hypothesis is refuted:** the gate does not absorb moves, and the chance head receives them.
+- *(Corrected by R33: the one-step comparison below was against IC's soft-afterstate pursuit, which overshoots reality.
+  PI's chance head is the more directional one.)*
 - **The gap is already one-step:** pursuit at depth 1, one step from real context, is 0.29 / 0.26 approach vs IC arms
   0.40-0.43 and real 0.35. PI's chance head learned a weaker *direction* bias toward the player, with the same targets.
 - **Candidate (untested):** in PI the point loss reaches the backbone only through edited cells, while mob cells are copied.
