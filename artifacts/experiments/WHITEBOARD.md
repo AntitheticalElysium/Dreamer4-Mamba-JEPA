@@ -767,7 +767,7 @@ deployed-state readers, so one number mixes all three:
 | Level | What it is | Seed-1 evidence |
 |---|---|---|
 | 1. Backbone | the patch-trained ViT | at least Raw's rare-mob decodability (zombie AP 0.986-0.993); lower night drift. Already reacts to sleep rendering (zombie FP 4.4% on sleeping vs 0.03% on awake cells) |
-| 2. Deployed state | projector (Linear → BN → GELU → Linear 2048→192) | zombie AP 0.51-0.62. Lost in the nonlinear warp + compression (hidden state 0.995; same-size PCA 0.873); not stale BN. Sleep false positives ×6 (26% of sleeping negative cells). Evaluation frames come from another policy (legacy BC vs PPO expert): earlier, brighter, less sleep |
+| 2. Deployed state | projector (Linear → BN → GELU → Linear 2048→192) | zombie AP 0.51-0.62. Lost in the nonlinear warp + compression (hidden state 0.995; same-size PCA 0.873); not stale BN. In sleeping frames the deployed state goes blind at both seeds (R61: zombie AP 0.006 / 0.10 vs backbone 1.00; false positives are seed-dependent; Raw's reader also misfires in sleep, 1.1-1.3%). Evaluation frames come from another policy (legacy BC vs PPO expert): earlier, brighter, less sleep |
 | 3. World predictor | 2-frame, 4-layer, K = 4 heads | R60 (both seeds; location, not counts): Spatial worlds' imagined mobs are in the wrong cells (location precision 0-3%; expected states show none) and inflate through recursion (s2 d16: 2.8 zombies vs 0.25). Raw-predictor ≈ a degraded copy, then erases mobs. The s1 cow-census and graded-health edges did not replicate (retracted). Both miss attacks |
 
 **Consequence for interpretation.** The verdict concerns this deployed interface with this predictor. It is not a verdict on
