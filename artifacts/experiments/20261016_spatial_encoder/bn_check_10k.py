@@ -4,7 +4,12 @@ evaluated frames' own batch statistics (train-mode BN, no update), same episode-
 120 fit roots and all test roots for speed), same ridge and metrics. Also the gap between running and batch statistics.
 If batch statistics restore decodability, the running statistics are mismatched to this distribution (a reader artefact);
 if not, the loss is in the projected state itself.
-Usage: bn_check_10k.py <spatial checkpoint> -> prints"""
+Usage: bn_check_10k.py <spatial checkpoint> -> prints
+
+CORRECTION (R59, after Codex's BN_AUDIT.md; code unchanged): 'train_batch_stats' normalizes each root / future SEQUENCE (<= 17
+correlated frames x 81 patches, including the frame's own future) as one batch, separately for fit and test. That is a different
+function, not a calibration, and it cannot separate stale running statistics from cohort effects. The copied projector's BN
+buffers DO update in .train() (the 'no update' wording above is wrong); the original checkpoint is unaffected."""
 import json, os, sys, copy
 from pathlib import Path
 os.environ['EVAL_DEVICE'] = 'cpu'

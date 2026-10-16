@@ -722,7 +722,7 @@ S0 (output parameterization, head-only) and S1 (a learned per-tile state on top 
 The central candidate became **retraining the encoder with a patch-level predictive objective** (§19; NOTEBOOK R56).
 S3 (coverage via branched counterfactual data) remains a separate, open lever for the sleep blind spot.
 
-## 19. 2026-10-16 — retraining the encoder at the patch level (user's central candidate; NOTEBOOK R56-R57)
+## 19. 2026-10-16 — retraining the encoder at the patch level (user's central candidate; NOTEBOOK R56-R59)
 
 **Question.** Our encoder was trained only through its CLS objective. Does an encoder whose *patch* representations are trained
 for action-conditioned prediction give a better predictive world state than frozen Raw?
@@ -749,9 +749,34 @@ All are corrected in new scripts registered before any Stage 2 result.
   tiles (0.97) and mobs (AUC ≥ 0.999) about as well as Raw; Raw is worse on rare classes and at night.
 - **At the common backbone stage, patch training matches or beats Raw on content** (tiles 0.976-0.980, rare-class recall
   0.82-0.84 vs 0.79). It is worse on daytime drift.
-  - The learned projector makes the deployed state harder for a fixed linear probe; much of that is conditioning.
+  - The learned projector makes the deployed state harder for a fixed linear probe. R59 localizes the loss to its nonlinear
+    warp + final compression (conditioning contributes; stale BN statistics do not).
 - **The corrected screening selects the full arm** (MoP + SIGReg + photometric invariance + inverse dynamics). The original,
   defective evaluation had selected MoP + SIGReg, which Stage 2 is training. Stage 2 is kept and evaluated correctly; the
   full arm at Stage 2 is a separate decision.
-- **Pending:** whether patch training improves predictive dynamics, rare events and decision-relevant predictions (Tier B,
-  Stage 2, both seeds).
+- **Stage 2, seed 1 (R58): "not supported"** (MoP + SIGReg vs Raw-predictor). Both worlds sit at a floor on the primaries:
+  attack recall ~2%, escape AUC ~0.5.
+
+**Three levels must be kept apart** (R59; user, after Codex's BN_AUDIT.md). Tier B reads predicted *deployed* states with
+deployed-state readers, so one number mixes all three:
+
+| Level | What it is | Seed-1 evidence |
+|---|---|---|
+| 1. Backbone | the patch-trained ViT | at least Raw's rare-mob decodability (zombie AP 0.986-0.993); lower night drift. Already reacts to sleep rendering (zombie FP 4.4% on sleeping vs 0.03% on awake cells) |
+| 2. Deployed state | projector (Linear → BN → GELU → Linear 2048→192) | zombie AP 0.51-0.62. Lost in the nonlinear warp + compression (hidden state 0.995; same-size PCA 0.873); not stale BN. Sleep false positives ×6 (26% of sleeping negative cells). Evaluation frames come from another policy (legacy BC vs PPO expert): earlier, brighter, less sleep |
+| 3. World predictor | 2-frame, 4-layer, K = 4 heads | reader-relative: keeps cows through recursion (≈ 0.6-0.9 of its reader's real census to d8; Raw-predictor 0 after d1); small graded-health edge (0.14 vs 0.00); both under-produce zombies and miss attacks |
+
+**Consequence for interpretation.** The verdict concerns this deployed interface with this predictor. It is not a verdict on
+patch-level learning or on the backbone.
+
+**Measured next, not assumed:** whether the full arm's photometric invariance reduces the sleep confound (Amendment 6; both
+stages, all arms; registered before any full-arm number).
+
+**Candidate after the comparison:** a matched backbone-state vs projected-state world-prediction control. It isolates level 2
+from level 3 and is preferred to a BN → LN swap as the first follow-up.
+
+**Pending:**
+- seed 2 (both arms);
+- the original-protocol numbers;
+- the full arm (2 seeds; same protocol);
+- the Amendment 6 readings.

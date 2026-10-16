@@ -222,6 +222,117 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R59 — Codex's projector / BatchNorm audit verified and incorporated; my R58 BN reading CORRECTED; Stage 2 read at three levels; the sleep confound registered for measurement (Amendment 6)
+
+**Source.** `20261016_spatial_bn_audit/BN_AUDIT.md` (Codex; CPU; frozen MoP + SIGReg s1 at 10,000; isolated readers only;
+no checkpoint or production edits).
+
+**What I verified myself** against its raw outputs and the code:
+- `stages.json`, zombie / cow AP:
+  - post-GELU 2048-D hidden state 0.995 / 0.976;
+  - the same state FIT-PCA'd to 192-D 0.873 / 0.937;
+  - the actual deployed 192-D state 0.509 / 0.869.
+- `false_positives.json`, deployed reader at its FIT-derived threshold:
+  - 366 zombie false positives, 312 of them in sleeping frames;
+  - false-positive rate 26.1% on sleeping negative cells vs 0.158% on awake ones.
+- `bn_check_10k.py:25-38` normalizes **each root / future sequence (≤ 17 correlated frames × 81 patches) as its own batch**,
+  separately for fit and test.
+- Collector provenance:
+  - The diagnosis store (`20260926_diagnosis/futures.py:31`) uses `collect_broad_forks.load_policy`, i.e. the legacy BC
+    checkpoints `stage_a_terminalfix/phase1a.pt` and `stage_a_s76_terminal_only/direct-attention.2.pt`.
+  - The training corpus (`collect_support_v2.py`) comes from the PPO expert with ε-noise.
+  - So the evaluation frames come from a different policy than the training frames.
+- Not re-run by me (reported as Codex's): the TRAIN-moment calibration variants, the distribution table, and the nonlinear
+  reader negative.
+
+**Correction of R58** (its BN paragraph is kept and annotated below). R58 said "zombie AP 0.45 with the saved statistics and 0.78
+with the frames' own batch statistics" and that a BN-normalized state "is sensitive to" the shift. That diagnostic is not a
+calibration:
+- It applies a different function: normalization by a frame's own correlated sequence, including its future.
+- It cannot separate stale running statistics from cohort effects.
+- Its "no update" wording is wrong: the copied BN's buffers do update in `.train()`. The original checkpoint is unaffected.
+
+Legitimate, TRAIN-only recalibration barely moves zombie AP:
+- fresh pooled TRAIN moments: paired difference [−0.002, +0.023];
+- mean-only, variance-only and EMA refresh: no change.
+
+The saved statistics match TRAIN: on TRAIN data, BN inputs sit 0.021 running-std from the saved means, std ratio 1.001.
+**This is not a stale-BN problem.** The loss is localized to the learned **nonlinear warp + final 2048→192 compression**:
+- the hidden state still decodes zombies at 0.995;
+- a PCA to the same 192 dimensions keeps 0.873;
+- bypassing GELU keeps 0.994 with CV ridge (0.734 at fixed λ);
+- yet the actual deployed state gives 0.509.
+
+Distribution context changes how much is lost:
+- Early-TRAIN and brightness-conditioned TRAIN moments recover part of the zombie AP, at a cost in cow AP.
+- Neither is selected by fit-only CV, so neither is a validated repair.
+
+**The sleep confound starts in the backbone; the projector amplifies it.** This is my reading of Codex's `false_positives.json`.
+Its backbone_ln reader also puts most of its (few) false positives in sleeping frames. Zombie false-positive rate, sleeping vs
+awake negative cells:
+
+| Stage | Sleeping | Awake | False positives in sleeping frames |
+|---|---|---|---|
+| backbone_ln | 4.4% | 0.032% | 53 / 64 |
+| deployed | 26.1% | 0.158% | 312 / 366 |
+| GELU bypassed | 2.3% | 0.038% | 28 / 41 |
+
+So:
+- the backbone already responds to sleep rendering;
+- the deployed interface multiplies that about 6×;
+- Raw has not been measured this way yet.
+
+**Stage 2, seed 1, read at three levels** (the preregistered verdict "not supported" stands unchanged):
+1. **Backbone (level 1):** at least as good as Raw for rare mobs, where measured.
+   - zombie / cow AP 0.986 / 0.967 vs Raw 0.987 / 0.988 (Tier A);
+   - 0.983-0.993 in Codex's panel;
+   - tile accuracy slightly lower (0.970 vs 0.977); lower night drift (0.097 vs 0.154).
+   - The Stage 2 verdict says nothing against this backbone.
+2. **Deployed projected state (level 2):** a poor and appearance-fragile *linear* substrate for mobs.
+   - zombie AP 0.62 (Tier A) / 0.52 on real next frames, vs Raw 0.95-0.99;
+   - false positives concentrated in sleep.
+   - The evaluation frames are earlier, brighter, less often sleeping, and from a different policy than the training frames
+     (Codex's table, TRAIN vs diagnosis test): mean episode index 528 vs 79; night 33% vs 15%; sleep signature 19% vs 3.2%.
+   - The deployed state's weakness on this store is therefore partly a robustness property, not only a capacity one.
+3. **World predictor (level 3):** read with level-2 readers, so confounded. Three reader-relative readings separate them:
+   - **Health:** the readers are equally good on real next frames (health correlation 0.985 vs 0.983). The predicted graded
+     health change correlates 0.139 vs 0.004 [+0.005, +0.293]: a small level-3 edge for Spatial.
+   - **Cows:** compare each world's imagined census with **its own reader on the real futures** (decoded-real).
+     - Spatial's world keeps 84% / 83% / 60% / 93% of it at d1 / d2 / d4 / d8 (imagined 0.45 / 0.43 / 0.35 / 0.51 vs
+       decoded-real 0.54 / 0.52 / 0.58 / 0.55).
+     - Raw-predictor's world keeps 82% at d1, then **0%** (0.34 → 0.00 vs decoded-real 0.41-0.54), although its reader is
+       near-perfect.
+     - Persistence through recursion is a level-3 difference in Spatial's favour.
+   - **Primaries:** zombies are under-produced by both worlds; at d1, Spatial produces 29% of its reader's real census and
+     Raw-predictor 14%. Attack recall and escape AUC sit at a floor for both. Health readers are strong for both, so that floor is
+     a predictor / design limit (2-frame context, 4 layers, 10k updates), not a reader artefact. Codex's audit does not explain
+     Raw's simultaneous floor either.
+
+**Interpretation of Stage 2 so far.** "Not supported" concerns *this deployed MoP-SIG interface with this predictor*. It is not
+evidence against the patch-trained backbone or against patch-level learning. B2 and B4 mob readings for Spatial are bounded by
+its deployed reader (zombie AP 0.52 on real next frames), not only by its predictor.
+
+**Measure, don't assume — Amendment 6** (commit 88430228, written before any full-arm or seed-2 number;
+`sleep_strat_eval.py`, `sleep_strat_analysis.py`, `run_sleep_strat.sh`):
+- **Scope:** the same deterministic readers (asserted equal to the Tier B readers at the deployed stage), fitted at **both
+  stages** for Raw, MoP s1 / s2 and full s1 / s2.
+- **Populations:**
+  - A: Tier A test frames; 304 sleeping frames in 8 episodes.
+  - B: the Tier B real next frames; 428 sleeping frames in 33 of 40 episodes, mostly after the SLEEP action.
+- **Breakdown:** awake / sleeping / day / night.
+- **Level 3:** predictor false positives on certain-empty cells after transitions into sleep, vs the same reader on the real next
+  frames.
+- **Pre-declared reading:** "the full arm reduces the sleep confound" iff the full − MoP episode-bootstrap interval of M1 lies
+  entirely below 0 at both seeds.
+  - M1 = deployed zombie false-positive rate in sleeping frames of B.
+  - Guard: awake zombie AP of B must not drop (else "traded, not reduced").
+- MoP s1 is not blind (Codex's audit); MoP s2 and the full arm are.
+
+**Not run, candidate after this comparison** (user, 10-16): a matched **backbone-state vs projected-state world-prediction
+control**. Same encoder; the same predictor and budget trained on backbone_ln tokens vs deployed tokens. It would separate level 2
+from level 3 for world prediction directly, and is more informative than first swapping BN for LN. Codex's narrow LN-projector
+arm remains a possible later control. Neither is registered.
+
 ### R58 — Stage 2, CORRECTED evaluation, seed 1 (MoP + SIGReg vs Raw-predictor; seed 2 and the full arm pending)
 
 **Registration.** Amendment 5 (15:55, before any Stage 2 result, user-approved) adds the full arm as a third Stage 2
@@ -238,6 +349,11 @@ CV λ is reported in Tier A. A full-arm advantage would not identify which of it
 
 **The deployed Spatial state lost rare-mob decodability between step 2,000 and 10,000** (zombie AP 0.92 → 0.62), while its
 backbone keeps it (0.986).
+
+> **[Corrected in R59]** The paragraph below is kept as originally written. Its 0.45 → 0.78 "batch statistics" result
+> normalizes each root's own correlated sequence (including its future), so it is not a calibration and does not separate stale
+> statistics from cohort effects. Legitimate TRAIN-only recalibration barely changes zombie AP. The loss is localized to the
+> projector's nonlinear warp + final compression (Codex, BN_AUDIT.md).
 
 **BatchNorm check** (`bn_check_10k.py`, `bn_check_train_10k.py`): the cause is partly distribution shift, not stale statistics.
 - On the diagnosis frames, the projector's BN inputs sit 0.22 running-std from the saved means (std ratio 0.95). On real
