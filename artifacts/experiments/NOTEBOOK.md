@@ -222,6 +222,54 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R61 — Amendment 6, Raw and MoP + SIGReg (full arm pending): in sleeping frames the deployed state does not MISFIRE so much as GO BLIND — at both seeds, while its backbone stays perfect
+
+Source: `sleep2_verdict.json` and `sleep2_<arm>_s<seed>.json`. Deployed readers were asserted identical to the Tier B readers.
+
+Populations:
+- A: Tier A natural-trajectory frames; 304 sleeping frames, 38 sleeping zombie cells, 8 episodes.
+- B: real next frames, mostly sleep onsets after the SLEEP action; 428 sleeping frames, 63 sleeping zombie cells, 33 episodes.
+
+**Zombie, sleeping frames: AP / false-positive rate on negative cells** (awake AP in brackets):
+
+| | A, backbone_ln | A, deployed | B, backbone_ln | B, deployed |
+|---|---|---|---|---|
+| Raw (backbone = deployed) | 1.00 / 1.25% [0.99] | same | 0.66 / 1.07% [0.96] | same |
+| MoP s1 | 1.00 / 0.03% [0.99] | **0.006** / 3.2% [0.64] | 0.69 / 0.61% [0.96] | **0.07** / 0.77% [0.54] |
+| MoP s2 | 1.00 / 0.80% [0.99] | **0.10** / 0.00% [0.89] | 0.66 / 0.65% [0.95] | **0.18** / 0.08% [0.92] |
+
+Cows in sleeping frames, deployed AP:
+- A: s1 0.008, s2 0.047 (backbone 0.91 / 0.61; Raw 1.00);
+- B: 0.04 / 0.03.
+
+Reading:
+1. **The level-2 sleep failure is a loss of detection, at both seeds.**
+   - The deployed state's AP in sleeping frames is near chance (A: 0.006 / 0.10).
+   - Its own backbone reads the same cells perfectly (1.00), and so does Raw.
+   - False positives are seed-dependent: present at s1, absent at s2. Codex's "false-positive burden" is the s1 face of a
+     broader blindness.
+   - Its 26% sleeping FP rate (vs my 3.2% at s1) comes from a different reader (FIT-CV λ, a smaller fit panel) and frame panel.
+     The concentration of errors in sleep is the shared, robust part.
+2. **Sleep false positives also exist for Raw** (1.07-1.25% of sleeping negative cells vs ~0.01% awake; 80% of Raw's zombie false
+   positives fall in sleeping frames). This is a property of linear readers on sleep rendering, not of the projector alone.
+3. **Preregistered M1** (B, deployed, zombie FP rate in sleeping frames):
+   - Raw 1.07%; MoP s1 0.77%; MoP s2 0.08%.
+   - MoP − Raw: s1 −0.30 pt [−1.11, +1.43]; s2 −0.99 pt [−1.27, −0.43].
+   - Guard, awake AP MoP − Raw: s1 −0.42 [−0.63, −0.24]; s2 −0.044 [−0.119, −0.001].
+   - So MoP's lower M1 is **traded**, not reduced.
+   - M1 measures misfires only. It does not register the blindness of reading 1. The full-vs-MoP reading is reported as
+     registered, beside the sleeping AP.
+4. **Level 3**, sleep-next rows, certain-empty cells:
+   - Raw's predictors produce *fewer* false positives than the reader on the real sleeping frames (0.03-0.05% vs 1.07%): the
+     predicted states do not carry the sleep rendering.
+   - MoP s2's predictor *adds* them (0.54% vs 0.08% [+0.23, +0.88] pt).
+   - From the Tier B units, reader-relative fidelity: no world reproduces its own reader's view of health on the real next frame.
+     Pearson(predicted, reader-on-real-next): Raw −0.01 / −0.17; MoP +0.14 / −0.14.
+
+**For the full-arm question** (does photometric invariance help?), the informative quantity is the **sleeping-frame AP at the
+deployed stage**, beside the preregistered M1. Both will be reported for the full arm. Only M1 has a pre-declared reading; the
+sleeping AP is descriptive and was named here before any full-arm number.
+
 ### R60 — Stage 2 MoP + SIGReg vs Raw, BOTH seeds (corrected): "mixed" by the preregistered rule; the Spatial worlds' imagined mobs are in the wrong cells (R59's level-3 cow reading RETRACTED)
 
 **Verdict (preregistered rule, `stage2_verdict_v2.json`): "mixed (reported as is)."**
