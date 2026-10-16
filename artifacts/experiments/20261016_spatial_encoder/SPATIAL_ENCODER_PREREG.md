@@ -205,3 +205,44 @@ numbers. The corrected evaluation is new code: `spatial_eval_v2.py`, `tierb_eval
   units for the episode-cluster bootstrap.
 - Test now uses **40 episodes (the first 40 of the seeded permutation), at most 3 roots each** (≤ 120 roots).
 - Fit uses 280 roots from the other episodes. There are still no shared seeds.
+
+## Amendment 5 — the full arm as a third Stage 2 comparison (2026-10-16 15:55; user-approved; before ANY Stage 2 result)
+
+**Why.** The corrected Stage 1 evaluation selects the full arm (MoP + SIGReg + photometric invariance + inverse dynamics), not
+MoP + SIGReg (NOTEBOOK R57). The selection is treated as promising, not conclusive: what matters is predictive dynamics,
+consequence fidelity, recursion and decisions, not linear probes.
+
+**Runs:**
+- The current Stage 2 runs (MoP + SIGReg and Raw-predictor, 2 seeds each) finish undisturbed.
+- Then `spatial_encoder.py full_sig` is trained at seeds 20260731 and 20260732, 10,000 updates. Everything else is the same
+  as the other arms:
+  - initialization protocol (`torch.manual_seed(seed)` before construction);
+  - data stream (JointSampler seeded with seed + 1);
+  - batch, schedule, optimizer, corpus.
+  - Amendment 3's L_inv subsample (32 windows) applies, exactly as in Stage 1.
+
+**Evaluation:** identical corrected protocol for all three arms.
+- `spatial_eval_v2.py` (both feature stages);
+- `tierb_eval_v2.py` on CPU for every world (same device, same sampling streams, same test units);
+- `stage2_analysis_v2.py`.
+
+**Comparisons:**
+- **Primary (as for MoP + SIGReg):** full vs Raw-predictor at both seeds.
+  - Readings: B1 attack recall and B3 per-root AUC.
+  - Guards: B2 calibration MAE, B4 d16 zombie census vs decoded-real.
+  - Same verdict rule; episode-cluster bootstrap.
+- **Secondary:** full vs MoP + SIGReg, paired per seed, the same readings with episode intervals. Descriptive, no verdict.
+- **Reported without a verdict:** Tier A at both stages; B1 Pearson; B2 rates and threshold sensitivity; B4 by depth with the
+  decoded-real control.
+
+**Probe hyperparameters:**
+- The Tier B readers use the fixed ridge λ 1e-2 and fit-only rate-matched thresholds. Nothing is selected on test episodes.
+- Tier A additionally reports λ chosen by 4-fold cross-validation **grouped by episode within the fit set** (grid 1e-4 … 1e-1),
+  with test metrics at that λ.
+- The λ-sensitivity rows (1e-3 / 1e-2 / 1e-1 on test) are descriptive only and select nothing.
+
+**What this experiment can establish:**
+- The full arm adds photometric invariance and inverse dynamics **together**.
+- A full-arm advantage over MoP + SIGReg would not identify which component (or their interaction) is responsible; that needs a
+  later factorial ablation, if warranted.
+- Stage 2 is one training budget, 2 seeds per arm, a 2-frame-context predictor, and one evaluation panel.

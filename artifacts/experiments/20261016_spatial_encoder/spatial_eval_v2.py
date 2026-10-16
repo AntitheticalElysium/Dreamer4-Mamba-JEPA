@@ -12,6 +12,9 @@ Corrections vs spatial_eval.py:
   A2          persistence = same tile AND same mob layer, neither source nor destination the player cell (31); between-content
               distance from ONE seeded, label-defined set of cell pairs shared by all encoders; HUD salience over ALL displayed
               values (4 stats + inventory); counts reported. K-means K 1024, seeded init on CPU.
+Amendment 5: ridge lambda also chosen by 4-fold CV grouped by episode WITHIN THE FIT SET (grid 1e-4 .. 1e-1; tile accuracy / mob
+AP / HUD R^2), test metrics reported at that lambda; the Tier B readers keep the fixed lambda 1e-2 (no selection anywhere uses
+test episodes).
 Usage: spatial_eval_v2.py <name>=<spec> ...   spec: raw@<step> | spatial:<ckpt> | rgb | untrained
   -> artifacts/eda/spatial_encoder_v1/tierA2_<name>.json, probes2_<name>.pt (deployed stage, Tier B readers), split_v2.json
 """
@@ -136,7 +139,32 @@ def gather(rows, idx, stages):
     return feats, T, L, H, seq, rid
 
 
-def a1(Sf, St, Tf, Tt, Lf, Lt, Hf, Ht, lam_list=(1e-3, 1e-2, 1e-1)):
+CV_LAMS = (1e-4, 1e-3, 1e-2, 1e-1)
+
+
+def cv_select(X, Y, groups, score_fn, folds=4, seed=20261084):
+    """ridge lambda chosen by K-fold cross-validation GROUPED BY EPISODE within the FIT set only (Amendment 5); the test
+    episodes never enter the selection. Same ridge form as spatial_eval.ridge (penalty relative to the mean eigenvalue)."""
+    X = torch.cat([X.double(), torch.ones(len(X), 1, dtype=torch.float64)], 1); Y = Y.double()
+    ug = sorted(set(groups.tolist()))
+    perm = torch.randperm(len(ug), generator=torch.Generator().manual_seed(seed)).tolist()
+    fold_of = {ug[perm[i]]: i % folds for i in range(len(ug))}
+    f = torch.tensor([fold_of[x] for x in groups.tolist()])
+    XtX = [X[f == k].T @ X[f == k] for k in range(folds)]; XtY = [X[f == k].T @ Y[f == k] for k in range(folds)]
+    TX, TY = sum(XtX), sum(XtY)
+    scores = {}
+    for lam in CV_LAMS:
+        sc = []
+        for k in range(folds):
+            A = TX - XtX[k]
+            A = A + lam * torch.trace(A) / len(A) * torch.eye(len(A), dtype=torch.float64)
+            W = torch.linalg.solve(A, TY - XtY[k])
+            sc.append(score_fn((X[f == k] @ W).float(), Y[f == k].float()))
+        scores[lam] = sum(sc) / len(sc)
+    return max(scores, key=scores.get), {str(k): round(v, 4) for k, v in scores.items()}
+
+
+def a1(Sf, St, Tf, Tt, Lf, Lt, Hf, Ht, lam_list=(1e-3, 1e-2, 1e-1), cell_groups=None, frame_groups=None):
     res, probes = {}, {}
     D = Sf.shape[-1]
     sub = torch.randperm(len(Sf) * 63, generator=torch.Generator().manual_seed(1))[:400000]
@@ -174,6 +202,28 @@ def a1(Sf, St, Tf, Tt, Lf, Lt, Hf, Ht, lam_list=(1e-3, 1e-2, 1e-1)):
     ph = EV.apply(Wh, St[:, 63:].reshape(len(St), -1)); ht = (Ht[:, :4] / 9).float()
     r2 = 1 - (ph - ht).pow(2).mean(0) / ht.var(0).clamp_min(1e-9)
     res['hud_r2'] = {k: round(float(v), 4) for k, v in zip(('health', 'food', 'drink', 'energy'), r2)}
+    if cell_groups is not None:                                                   # Amendment 5: fit-only, episode-grouped CV lambda
+        cv = {}
+        lt_cv, scores = cv_select(Xf, F.one_hot(yf, 17).float(), cell_groups[sub], lambda P, Y: float((P.argmax(-1) == Y.argmax(-1)).float().mean()))
+        Wc = EV.ridge(Xf, F.one_hot(yf, 17).float(), lam=lt_cv)
+        pred = torch.cat([EV.apply(Wc, Xt[i:i + 200000]).argmax(-1) for i in range(0, len(Xt), 200000)])
+        sup = torch.bincount(yt, minlength=17); hit = torch.bincount(yt[pred == yt], minlength=17); present = sup > 0
+        cv['tile'] = {'selected_lambda': lt_cv, 'cv_scores': scores, 'test_acc': round(float((pred == yt).float().mean()), 4),
+                      'test_macro_recall_present': round(float((hit[present].float() / sup[present].float()).mean()), 4)}
+        for bit, nm in ((1, 'zombie'), (2, 'cow')):
+            lf = ((Lf.reshape(-1)[sub] & bit) > 0).float(); lt = (Lt.reshape(-1) & bit) > 0
+            lm, scores = cv_select(Xf, lf[:, None], cell_groups[sub], lambda P, Y: average_precision(P[:, 0], Y[:, 0] > 0.5) or 0.0)
+            Wm = EV.ridge(Xf, lf[:, None], lam=lm)
+            st = torch.cat([EV.apply(Wm, Xt[i:i + 200000])[:, 0] for i in range(0, len(Xt), 200000)])
+            cv[nm] = {'selected_lambda': lm, 'cv_scores': scores, 'test_ap': round(average_precision(st, lt), 4), 'test_auc': round(auc_tie(st, lt), 4)}
+        Hx = Sf[:, 63:].reshape(len(Sf), -1).float()
+        r2f = lambda P, Y: float((1 - (P - Y).pow(2).mean(0) / Y.var(0).clamp_min(1e-9)).mean())
+        lh, scores = cv_select(Hx, Hf[:, :4] / 9, frame_groups, r2f)
+        Whc = EV.ridge(Hx, Hf[:, :4] / 9, lam=lh)
+        ph2 = EV.apply(Whc, St[:, 63:].reshape(len(St), -1))
+        r2c = 1 - (ph2 - ht).pow(2).mean(0) / ht.var(0).clamp_min(1e-9)
+        cv['hud'] = {'selected_lambda': lh, 'cv_scores': scores, 'test_r2': {k: round(float(v), 4) for k, v in zip(('health', 'food', 'drink', 'energy'), r2c)}}
+        res['cv_lambda_fit_only'] = cv
     e = Xt[torch.randperm(len(Xt), generator=torch.Generator().manual_seed(2))[:20000]].float()
     sv = torch.linalg.svdvals(e - e.mean(0)); p = sv / sv.sum()
     res['eff_rank'] = round(float(torch.exp(-(p * torch.log(p + 1e-12)).sum())), 2)
@@ -245,12 +295,15 @@ def main():
     for arg in sys.argv[1:]:
         name, spec = arg.split('=', 1)
         st = Stages(spec)
-        ff, Tf, Lf, Hf, _, _ = gather(rows, split['fit'], st)
+        ff, Tf, Lf, Hf, _, ridf = gather(rows, split['fit'], st)
         ft, Tt, Lt, Ht, seqt, ridt = gather(rows, split['test'], st)
+        frame_groups = torch.cat([torch.full((len(t),), int(rows[r]['seed'])) for t, r in zip(Tf, ridf)])
+        cell_groups = frame_groups.repeat_interleave(63)
         res = {'encoder': spec, 'split': 'episode-disjoint (split_v2.json)', 'frames_fit': sum(len(x) for x in Tf), 'frames_test': sum(len(x) for x in Tt)}
         for stage in ff:
             Sf, St = torch.cat(ff[stage]), torch.cat(ft[stage])
-            r1, probes, Xf, sub = a1(Sf, St, torch.cat(Tf), torch.cat(Tt), torch.cat(Lf), torch.cat(Lt), torch.cat(Hf), torch.cat(Ht))
+            r1, probes, Xf, sub = a1(Sf, St, torch.cat(Tf), torch.cat(Tt), torch.cat(Lf), torch.cat(Lt), torch.cat(Hf), torch.cat(Ht),
+                                     cell_groups=cell_groups, frame_groups=frame_groups)
             r2 = a2(Sf, St, sub, ft[stage], Tt, Lt, Ht, seqt, ridt)
             res[stage] = {**r1, **r2}
             if stage == 'deployed':
