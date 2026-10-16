@@ -198,3 +198,10 @@ numbers. The corrected evaluation is new code: `spatial_eval_v2.py`, `tierb_eval
   - "Better predictive world state" requires the primary readings **and** both guards at both seeds. If a guard fails, the
     verdict is "mixed".
 - **Primary readings and thresholds:** unchanged.
+
+## Amendment 4b (before any encoder was evaluated under the corrected protocol; only an RGB smoke test had run)
+
+- "Whole seeds until ≥ 120 test roots" yields only 15 test episodes (about 8 roots per episode). That is too few independent
+  units for the episode-cluster bootstrap.
+- Test now uses **40 episodes (the first 40 of the seeded permutation), at most 3 roots each** (≤ 120 roots).
+- Fit uses 280 roots from the other episodes. There are still no shared seeds.
