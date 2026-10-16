@@ -14,6 +14,8 @@ B2 branching (same data): map cells whose zombie-or-cow presence differs across 
    and (c) the router-weighted read probability; mean |(c) - real rate| = calibration.
 B3 escape choice (DV16 roots, deeppanel frames): predicted first-step health loss for noop + 4 moves; within-root AUC against the
    real P16 order (R53: one real future 0.710, D 0.711), and the expected-safe of the argmin.
+Controls: the probes on the encoder's own states of the REAL next frames (health-change Pearson; mob read rate at cells where
+   every key has a mob, and at branching cells) and a copy predictor's read rate at branching cells; they check the readers.
 B4 recursion (test roots' 5 recorded futures x 16 steps): 4 sampled rollouts; zombie / cow census (probe reads on the 63 map cells)
    and zombie adjacency by depth vs the exact state.
 Usage: tierb_eval.py <name>=<encoder spec>,<predictor checkpoint>,<probes file> ... -> artifacts/eda/spatial_encoder_v1/tierB_<name>.json
@@ -36,6 +38,11 @@ import objective_audit as OA                                                   #
 import dv16 as DV                                                              # noqa: E402
 
 ADJ = [22, 30, 32, 40]
+
+
+def mob(probes, z, c):
+    """zombie-or-cow read with the probes' rate-matched thresholds"""
+    return (z > probes['zombie_threshold']) | (c > probes['cow_threshold'])
 
 
 def read(probes, states):
@@ -85,14 +92,17 @@ def main():
         name, spec = arg.split('=', 1)
         enc_spec, pred_ck, probe_file = spec.split(',')
         enc = EV.PatchState(enc_spec)
-        pred = SE.PatchPredictor(4).cuda().eval()
-        pred.load_state_dict(torch.load(pred_ck, map_location='cuda', weights_only=False)['predictor'])
+        sd = torch.load(pred_ck, map_location='cuda', weights_only=False)['predictor']
+        K = sd['router.weight'].shape[0]                                                   # the arm's own K (naive: 1)
+        pred = SE.PatchPredictor(K).cuda().eval()
+        pred.load_state_dict(sd)
         probes = torch.load(probe_file, weights_only=False)
         g = torch.Generator(device='cuda').manual_seed(20261071)
         res = {'encoder': enc_spec, 'predictor': pred_ck}
         # B1 / B2
         pc, rc, att_pred, att_real, fa = [], [], [], [], []
-        b2 = {'cells': 0, 'real': 0., 'sampled': 0., 'expected': 0., 'weighted': 0., 'abs_err': 0.}
+        b2 = {'cells': 0, 'real': 0., 'sampled': 0., 'expected': 0., 'weighted': 0., 'abs_err': 0., 'real_next_read': 0., 'copy_read': 0.}
+        ctl = {'mob_cells_real_next': 0, 'mob_cells_read_real_next': 0, 'mob_cells_read_expected': 0, 'real_next_dh_pred': [], 'real_dh': []}
         for ri in test:
             r = rows[ri]
             st = enc(r['context'][-2:])                                                      # [2,81,D]
@@ -102,10 +112,14 @@ def main():
             h_exp, z_exp, c_exp = read(probes, exp.cpu())
             _, z_s, c_s = read(probes, samp.cpu())
             zc_k, cc_k = [], []
-            for k in range(4):
+            for k in range(K):
                 _, zk, ck = read(probes, cand[:, :, k].cpu()); zc_k.append(zk); cc_k.append(ck)
             zc_k, cc_k = torch.stack(zc_k, -1), torch.stack(cc_k, -1)                        # [17,63,K]
             t1, l1, sh1 = OA.layout(r['onestep_visible'])                                    # [4,17,...]
+            # controls: the encoder's own states of the REAL next frames (probes must read them) and a copy predictor
+            real_next = enc(r['onestep_frames'].flatten(0, 1)).view(4, 17, 81, -1)
+            h_rn, z_rn, c_rn = read(probes, real_next.cpu())
+            _, z_cp, c_cp = read(probes, st[1:2].cpu())
             dead = r['onestep_dead'].bool()
             real_dh = (sh1[..., 0] - sh0[0, 0]).float()                                      # shown health change [4,17]
             for a in range(17):
@@ -114,6 +128,14 @@ def main():
                     continue
                 d_pred = float(h_exp[a]) - h_cur
                 pc.append(d_pred); rc.append(float(real_dh[ok, a].mean()))
+                okk = torch.nonzero(ok)[:, 0]
+                ctl['real_next_dh_pred'].append(float(h_rn[okk, a].mean()) - h_cur); ctl['real_dh'].append(float(real_dh[ok, a].mean()))
+                allmob = ((l1[okk, a] & 3) > 0).all(0)                                         # mobs present in every key
+                if bool(allmob.any()):
+                    u = torch.nonzero(allmob)[:, 0]
+                    ctl['mob_cells_real_next'] += len(u)
+                    ctl['mob_cells_read_real_next'] += float(mob(probes, z_rn[okk][:, a][:, u], c_rn[okk][:, a][:, u]).float().mean(0).sum())
+                    ctl['mob_cells_read_expected'] += int(mob(probes, z_exp[a, u], c_exp[a, u]).sum())
                 for k in torch.nonzero(ok)[:, 0].tolist():
                     if float(real_dh[k, a]) <= -1:
                         att_pred.append(d_pred); att_real.append(float(real_dh[k, a]))
@@ -125,10 +147,13 @@ def main():
                 if bool(varying.any()):
                     v = torch.nonzero(varying)[:, 0]
                     real_rate = mk[:, v].float().mean(0)
-                    reads = lambda zz, cc: ((zz > 0.5) | (cc > 0.5))
+                    reads = lambda zz, cc: mob(probes, zz, cc)
                     b2['cells'] += len(v); b2['real'] += float(real_rate.sum())
                     b2['sampled'] += float(reads(z_s[a, v], c_s[a, v]).float().sum())
                     b2['expected'] += float(reads(z_exp[a, v], c_exp[a, v]).float().sum())
+                    okk = torch.nonzero(ok)[:, 0]
+                    b2['real_next_read'] += float(reads(z_rn[okk][:, a][:, v], c_rn[okk][:, a][:, v]).float().mean(0).sum())
+                    b2['copy_read'] += float(reads(z_cp[0, v], c_cp[0, v]).float().sum())
                     w = (pi[a, v].cpu() * reads(zc_k[a, v], cc_k[a, v]).float()).sum(-1)
                     b2['weighted'] += float(w.sum()); b2['abs_err'] += float((w - real_rate).abs().sum())
         pc, rc = torch.tensor(pc), torch.tensor(rc)
@@ -138,10 +163,17 @@ def main():
                      'attack_mean_pred': round(float(ap.mean()), 3) if len(ap) else None, 'attack_mean_real': round(float(ar.mean()), 3) if len(ar) else None,
                      'false_alarm': round(float(torch.tensor(fa).float().mean()), 4)}
         n = max(b2['cells'], 1)
+        m_ = max(ctl['mob_cells_real_next'], 1)
+        res['controls'] = {'probe_on_real_next_pearson_dh': round(float(torch.corrcoef(torch.tensor([ctl['real_next_dh_pred'], ctl['real_dh']]))[0, 1]), 4),
+                           'certain_mob_cells': ctl['mob_cells_real_next'],
+                           'certain_mob_read_rate_real_next': round(ctl['mob_cells_read_real_next'] / m_, 4),
+                           'certain_mob_read_rate_expected_pred': round(ctl['mob_cells_read_expected'] / m_, 4),
+                           'branching_read_rate_real_next': round(b2['real_next_read'] / n, 4),
+                           'branching_read_rate_copy': round(b2['copy_read'] / n, 4)}
         res['B2'] = {'branching_cells': b2['cells'], 'real_rate': round(b2['real'] / n, 4), 'sampled_read_rate': round(b2['sampled'] / n, 4),
                      'expected_read_rate': round(b2['expected'] / n, 4), 'router_weighted_rate': round(b2['weighted'] / n, 4),
                      'calibration_mae': round(b2['abs_err'] / n, 4)}
-        print(json.dumps({name: {'B1': res['B1'], 'B2': res['B2']}}), flush=True)
+        print(json.dumps({name: {'B1': res['B1'], 'B2': res['B2'], 'controls': res['controls']}}), flush=True)
         # B3
         risk = torch.zeros(len(roots), 5)
         for i, r in enumerate(roots):
@@ -180,9 +212,10 @@ def main():
                     if d > alive:
                         continue
                     zr = (lr_[d - 1] & 1) > 0; cr = (lr_[d - 1] & 2) > 0
-                    acc['z_imag'][di] += float((zi[:, d - 1] > 0.5).float().sum(-1).mean()); acc['z_real'][di] += float(zr.sum())
-                    acc['c_imag'][di] += float((ci[:, d - 1] > 0.5).float().sum(-1).mean()); acc['c_real'][di] += float(cr.sum())
-                    acc['adj_imag'][di] += float((zi[:, d - 1][:, ADJ] > 0.5).any(-1).float().mean()); acc['adj_real'][di] += float(zr[ADJ].any())
+                    zt, ct = probes['zombie_threshold'], probes['cow_threshold']
+                    acc['z_imag'][di] += float((zi[:, d - 1] > zt).float().sum(-1).mean()); acc['z_real'][di] += float(zr.sum())
+                    acc['c_imag'][di] += float((ci[:, d - 1] > ct).float().sum(-1).mean()); acc['c_real'][di] += float(cr.sum())
+                    acc['adj_imag'][di] += float((zi[:, d - 1][:, ADJ] > zt).any(-1).float().mean()); acc['adj_real'][di] += float(zr[ADJ].any())
                     cnt[di] += 1
         res['B4'] = {k: [round(float(v), 3) for v in (acc[k] / cnt.clamp_min(1))] for k in acc}
         res['B4']['depths'] = list(depths)

@@ -6,6 +6,8 @@ Patch state per encoder:
   spatial:<ckpt>    a spatial_encoder.py checkpoint: patch_proj(last-layer patch tokens), eval-mode BatchNorm
 Frames: diagnosis_futures_v1 roots (seeded 400; the first 280 by a seeded permutation fit the probes, the other 120 test; split
 by root = by episode seed), each root's last context frame + its 5 futures x 16 frames (alive).
+Probes saved for Tier B, with mob thresholds rate-matched on the FIT split (a ridge score on a 1.4%-positive label never reaches
+0.5; the threshold makes the fit-split read rate equal the true rate).
 A1 content: per-patch ridge-classifier tile accuracy (17 classes, map cells); zombie / cow AUC (ridge score, map cells);
    HUD R^2 of health, food, drink, energy (shown values) from the 18 HUD patch states (ridge).
 A2 nuisance: persisting-content drift (consecutive frames, exact camera shift; tile + mob layer unchanged) divided by the mean
@@ -151,6 +153,9 @@ def main():
         for ch, nm in ((0, 'zombie'), (1, 'cow')):
             Wm = ridge(Xf, Mf[..., ch].reshape(-1)[sub].float()[:, None])
             probes[nm] = Wm
+            yf = Mf[..., ch].reshape(-1)[sub].float()                                       # rate-matched threshold on the FIT split
+            sf = apply(Wm, Xf)[:, 0]
+            probes[f'{nm}_threshold'] = float(sf.sort(descending=True).values[max(int(yf.sum()) - 1, 0)])
             sc = torch.cat([apply(Wm, Xt[i:i + 200000])[:, 0] for i in range(0, len(Xt), 200000)])
             res[f'{nm}_auc'] = round(auc(sc, Mt[..., ch].reshape(-1)), 4)
         Wh = ridge(Sf[:, 63:].reshape(len(Sf), -1).float(), Hf)

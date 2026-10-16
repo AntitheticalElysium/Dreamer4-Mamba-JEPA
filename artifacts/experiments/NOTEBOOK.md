@@ -222,6 +222,59 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R56 — USER (10-16): retrain the ENCODER at the patch level. Spatial JEPA encoder study, Stage 1 (`20261016_spatial_encoder/`, SPATIAL_ENCODER_PREREG.md)
+
+**User:** the frozen Raw encoder was trained through CLS only. Train an encoder whose *patch* representations are optimized for
+predictive dynamics and compare it rigorously with frozen Raw, designing the objective against our known failures.
+- Prior history checked: no patch-level encoder was ever trained here. E3 (TC) and E4 (Delta-JEPA LDAD) were CLS-level.
+
+**Design (preregistered; every term tied to a failure and its source):**
+- **New encoder = Raw's objective (CLS + Mamba + SIGReg, line for line) + a patch path.** The comparison isolates "add
+  patch-level training". Same corpus (digest f1c8583a…), batch 128, seed, schedule.
+  - Check: update 1 reproduces Raw's logged CLS prediction / regularization (0.26897 / 37.7834 vs 0.26896 / 37.7834), so
+    initialization and data stream are identical.
+- **Patch path:**
+  - patch state = per-patch projector (Linear-BN-GELU-Linear);
+  - a 4-layer spatial transformer predictor over [z_{t-1}, z_t, action] with K = 4 hard-assigned heads + router (MoP-JEPA;
+    the naive arm uses K = 1);
+  - anti-collapse on patches: SIGReg or VICReg;
+  - optional photometric multi-view invariance (R49's colour-map family + pixel noise, map rows only) and inverse dynamics
+    (AC-MTM / PLDM).
+- **Literature read for the design:** LeJEPA (SIGReg is view-level only), PLDM (spatial latent; variance / covariance
+  essential: removal → 11-29% success; IDM 98.7 → 75.5), AC-MTM 2608.17542 (contrastive inverse dynamics; prescribed
+  Gaussian geometry a bottleneck on multi-object scenes, 80.0 vs 58.0), PSG-JEPA (forward prediction alone does not ground
+  local state), VICReg (γ = 1, λ = μ = 25, ν = 1 verified), H-JEPA (global latents; not applicable).
+- **Facts that motivated screening SIGReg vs VICReg:** 6 tile classes are 97% of map patches; mobs are 1.4%; 40% of
+  transitions have no visible action effect.
+- **Amendments before any result:** SIGReg on patches uses 512 random patches per frame index, weight 0.09 · 128 / 512.
+  Its statistic is the Epps-Pulley test statistic × N (`lewm.py:132`), so this keeps LeWM's per-discrepancy strength; all
+  10,368 patches OOM.
+
+**Tier A protocol** (`spatial_eval.py`; diagnosis store, 400 roots, probes fit on 280, tested on 120, split by episode seed;
+the patch state of each encoder):
+
+| encoder (step) | tile acc | zombie / cow AUC | HUD R² health / food / drink / energy | eff. rank | drift ratio day steady / changing / night | code flips (persisting) | HUD salience |
+|---|---|---|---|---|---|---|---|
+| Raw (2,000) | 0.968 | 0.997 / 0.998 | 0.992 / 0.991 / 0.994 / 0.949 | 55.0 | 0.045 / 0.044 / 0.173 | 28.3% | +0.017 |
+| Raw (10,000; our encoder) | 0.973 | 0.994 / 0.997 | 0.988 / 0.986 / 0.992 / 0.954 | 56.8 | 0.041 / 0.040 / 0.196 | 30.0% | +0.042 |
+| naive (K 1 + SIGReg, 2,000) | 0.932 | 0.993 / 0.959 | 0.971 / 0.972 / 0.973 / 0.938 | 50.6 | 0.183 / 0.214 / 0.375 | 31.2% | +0.002 |
+| MoP + SIGReg (2,000) | 0.947 | 0.994 / 0.979 | 0.981 / 0.979 / 0.982 / 0.926 | 45.2 | 0.081 / 0.082 / **0.120** | **26.6%** | +0.006 |
+| MoP + VICReg (2,000) | 0.887 | 0.991 / 0.935 | 0.970 / 0.967 / 0.984 / 0.924 | 44.1 | 0.090 / 0.094 / 0.128 | 30.2% | +0.011 |
+
+**Selection (declared rule):**
+- SIGReg over VICReg: lower day-changing drift (0.082 vs 0.094) and higher tile accuracy.
+- MoP + VICReg also fails eligibility (tile < Raw@2000 − 0.05 = 0.918).
+- **My hypothesis that VICReg would keep nuisance out of the patches is refuted at 2k.**
+- The full arm (MoP + SIGReg + photometric invariance + inverse dynamics) is running.
+
+**Tier B readers had a defect, caught by their own control:**
+- Ridge probes on a 1.4%-positive mob label never score above 0.5. On the encoder's own states of *real* next frames,
+  "certain" mob cells read 0%.
+- Fixed with rate-matched thresholds on the fit split. Real next frames then read 82-84% at certain mob cells and 34% at
+  branching cells (real 42%); the health probe tracks real health changes at Pearson 0.94-0.95.
+- **At 2k steps the jointly trained predictors are too weak to judge** (no attack predicted; branching mobs erased; zombies
+  multiply in rollouts). Tier B is judged at Stage 2 (10k, against a Raw-predictor with the same predictor and budget).
+
 ### R55 — REPRESENTATION AND OBJECTIVE AUDIT (user, 10-16): what our encoder is, what our loss rewards, whether discrete targets would be stable (`objective_audit.py`, `code_stability.py`)
 
 **Verified from code:**
