@@ -246,3 +246,82 @@ consequence fidelity, recursion and decisions, not linear probes.
 - A full-arm advantage over MoP + SIGReg would not identify which component (or their interaction) is responsible; that needs a
   later factorial ablation, if warranted.
 - Stage 2 is one training budget, 2 seeds per arm, a 2-frame-context predictor, and one evaluation panel.
+
+## Amendment 6 — sleep-stratified, level-separated evaluation (2026-10-16 ~19:45; evaluation only; before ANY full-arm result)
+
+**State of knowledge when this was written.**
+- Full-arm Stage 2 training has not started; no full-arm Stage 2 number exists.
+- MoP + SIGReg seed 2 and Raw-predictor seed 2 have finished training; their corrected evaluations are running and no number has
+  been read.
+- Seed-1 numbers are known (NOTEBOOK R58). So is Codex's projector / BatchNorm audit of MoP + SIGReg s1
+  (`../20261016_spatial_bn_audit/BN_AUDIT.md`): 312 / 366 zombie false positives of the deployed reader fall in 19 sleeping
+  frames. **For MoP s1, this analysis is therefore not blind.** It is blind for MoP s2 and both full seeds.
+
+**Why.** Three levels are confounded in Tier B, which reads predicted deployed states with deployed-state readers:
+1. the learned ViT backbone;
+2. the deployed projected state (projector + BN + final compression) and its robustness;
+3. the world predictor.
+
+The full arm's photometric invariance may reduce the sleep confound. This amendment measures that rather than assuming it.
+
+**Code:**
+- `sleep_strat_eval.py`: per encoder; CPU; after the running evaluations finish; does not touch any running script.
+- `sleep_strat_analysis.py`: the comparisons below.
+- Inputs: the same episode-disjoint split (`split_v2.json`, asserted identical); the same diagnosis store.
+- Labels: `is_sleeping` (visible index 1520) and `light_level` (index 1521; night = light < 0.5), per `observe.py`. These are
+  evaluation labels only.
+
+**Readers.**
+- Per encoder and stage (backbone_ln, deployed), zombie / cow ridge readers fitted exactly as in `spatial_eval_v2.a1`:
+  - same fit frames, same seeded 400k-cell subsample, λ 1e-2;
+  - fit-only rate-matched threshold, strict >.
+- At the deployed stage, these must reproduce `probes2_<name>.pt` (the Tier B readers); this is asserted.
+- Nothing is selected on test episodes.
+
+**Populations (test episodes only):**
+- **A:** Tier A test frames (`gather`; root + 5 recorded futures; root frames repeat once per future, as in Tier A).
+- **B:** the real next frames of the Tier B test roots (4 keys × 17 actions, alive only). Action 6 (SLEEP) makes B the larger
+  sleeping set: counted before any score, B has 428 sleeping frames in 33 of the 40 test episodes; A has 304 in 8.
+
+**Level 1 and level 2 measures** (both stages, both populations):
+- by frame group (all / awake / sleeping / day / night), zombie and cow:
+  - AP;
+  - tie-aware AUC;
+  - false-positive rate on negative cells at the fit threshold;
+  - recall at that threshold;
+- the share of all false positives that fall in sleeping frames;
+- positive and episode counts.
+
+**Level 3 measures** (predictor; deployed stage):
+- For each test root and each of the 17 actions, one step from the root's 2-frame context (as in `tierb_eval_v2.py`). Take the
+  map cells where no alive key's real next frame holds a zombie (certain-empty cells).
+- Compare the reader's zombie false-positive rate on:
+  - the predicted expected state;
+  - one router sample;
+  - the real next frames (mean over keys).
+- Split by whether the real next frames are sleeping.
+- Predicted minus real-next isolates what the predictor adds on top of the reader's own confound.
+- From the existing Tier B units (no rerun), reader-relative predictor fidelity:
+  - Pearson(predicted health change, reader-on-real-next health change);
+  - per-row |router-weighted − real-next| branching-cell read count (B2 rows store sums only).
+
+**Pre-declared readings** (descriptive; the Stage 2 verdicts of Amendments 4 / 5 are unchanged):
+- **Sleep confound:**
+  - the measure: M1 = deployed-stage zombie false-positive rate in sleeping frames of population B;
+  - "the full arm reduces the sleep confound" iff the paired episode-cluster bootstrap 95% interval of full − MoP lies entirely
+    below 0 at both seeds;
+  - "does not" iff it contains 0 or lies above 0 at both seeds; otherwise "mixed".
+  - The bootstrap: 4,000 resamples of the 40 test episodes; a ratio estimator, ΣFP / Σnegatives over the drawn episodes.
+- **Same reading for M1 at backbone_ln** (level 1): is the confound already in the backbone, or introduced by the projector?
+- **Guard on M1:** awake-frame zombie AP of population B (deployed), full − MoP with the same bootstrap. A reduction of M1 bought
+  with an interval of awake AP entirely below 0 is reported as "traded, not reduced".
+- **Also reported:** full − Raw and MoP − Raw for M1. Raw is a single encoder (its backbone and deployed states coincide), so
+  only the predictor differs between Raw seeds.
+
+**Limits:**
+- Sleeping frames in B are mostly one step after sleep onset. That is the state a world model must produce after the SLEEP
+  action, but not long sleep.
+- 33 episodes carry sleep; zombie positives inside sleeping frames are few (counted and reported).
+- No intervention follows from this amendment. The matched backbone-state vs projected-state world-prediction control (same
+  predictor, same budget, trained on backbone_ln vs deployed tokens of the same encoder) is a candidate for after this
+  comparison. It is not registered here.
