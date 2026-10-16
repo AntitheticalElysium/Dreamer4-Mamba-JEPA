@@ -721,3 +721,37 @@ S0 (output parameterization, head-only) and S1 (a learned per-tile state on top 
 
 The central candidate became **retraining the encoder with a patch-level predictive objective** (§19; NOTEBOOK R56).
 S3 (coverage via branched counterfactual data) remains a separate, open lever for the sleep blind spot.
+
+## 19. 2026-10-16 — retraining the encoder at the patch level (user's central candidate; NOTEBOOK R56-R57)
+
+**Question.** Our encoder was trained only through its CLS objective. Does an encoder whose *patch* representations are trained
+for action-conditioned prediction give a better predictive world state than frozen Raw?
+
+**Design** (SPATIAL_ENCODER_PREREG.md):
+- The new encoder's objective = Raw's (CLS) + a patch path:
+  - a spatial predictor with K = 4 hard-assigned heads + router (against the conditional-mean collapse);
+  - patch SIGReg or VICReg;
+  - optionally photometric invariance and inverse dynamics.
+- Same architecture, corpus, batch, schedule and seed as Raw.
+- Stage 1 screens at 2k updates. Stage 2 compares 10k encoders against the same predictor trained on frozen Raw, judged on
+  decision-relevant predictions (Tier B).
+
+**Evaluation trust (R57).** Codex's audit found, and I verified:
+- a probe split that leaked episodes;
+- persistence masks that admitted mob changes and the player;
+- an analyzer that could not run;
+- intervals that ignored episode clustering.
+
+All are corrected in new scripts registered before any Stage 2 result.
+
+**What the corrected numbers say so far:**
+- **Static linear probes measure visual decodability, not predictive understanding.** RGB pixels and an untrained ViT decode
+  tiles (0.97) and mobs (AUC ≥ 0.999) about as well as Raw; Raw is worse on rare classes and at night.
+- **At the common backbone stage, patch training matches or beats Raw on content** (tiles 0.976-0.980, rare-class recall
+  0.82-0.84 vs 0.79). It is worse on daytime drift.
+  - The learned projector makes the deployed state harder for a fixed linear probe; much of that is conditioning.
+- **The corrected screening selects the full arm** (MoP + SIGReg + photometric invariance + inverse dynamics). The original,
+  defective evaluation had selected MoP + SIGReg, which Stage 2 is training. Stage 2 is kept and evaluated correctly; the
+  full arm at Stage 2 is a separate decision.
+- **Pending:** whether patch training improves predictive dynamics, rare events and decision-relevant predictions (Tier B,
+  Stage 2, both seeds).
