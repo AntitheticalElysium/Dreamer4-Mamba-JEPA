@@ -34,6 +34,8 @@ def groups(seeds):
 
 def boot(stat, by, g):
     ids = sorted(by)
+    if not ids:
+        return [None, None]                                                        # no units: no interval (never counts as a pass)
     vals = []
     for _ in range(B):
         draw = [ids[i] for i in torch.randint(len(ids), (len(ids),), generator=g).tolist()]
@@ -41,6 +43,8 @@ def boot(stat, by, g):
         vals.append(stat(idx))
     v = torch.tensor(vals, dtype=torch.float64)
     v = v[~torch.isnan(v)]
+    if len(v) == 0:
+        return [None, None]
     return [round(float(v.quantile(.025)), 4), round(float(v.quantile(.975)), 4)]
 
 
@@ -67,6 +71,7 @@ def main():
     roots, _ = DV.load_roots()
     P5 = torch.stack([r['P'] for r in roots])[..., 2][:, :5]
     g = torch.Generator().manual_seed(20261090)
+    pos = lambda ci: ci[0] is not None and ci[0] > 0                                 # interval entirely above 0
     res = {'seeds': seeds}
     for s in seeds:
         sp = torch.load(EV.OUT / f'tierB2_units_{a.prefix_sp}{s}.pt', weights_only=False)
@@ -77,7 +82,8 @@ def main():
         ep = [x[0] for x in sp['att']]; by = groups(ep)
         hs = torch.tensor([x[3] <= -0.5 for x in sp['att']], dtype=torch.float64); hr = torch.tensor([x[3] <= -0.5 for x in rw['att']], dtype=torch.float64)
         f = lambda idx: float(hs[idx].mean() - hr[idx].mean()) if idx else float('nan')
-        out['B1_attack_recall'] = {'spatial': round(float(hs.mean()), 4), 'rawpred': round(float(hr.mean()), 4), 'diff': round(f(list(range(len(ep)))), 4),
+        nz = lambda x: None if x != x else round(x, 4)                               # NaN -> None
+        out['B1_attack_recall'] = {'spatial': nz(float(hs.mean())), 'rawpred': nz(float(hr.mean())), 'diff': nz(f(list(range(len(ep))))),
                                    'ci95': boot(f, by, g), 'events': len(ep), 'episodes': len(by)}
         # B1 Pearson (graded)
         assert [x[:3] for x in sp['b1']] == [x[:3] for x in rw['b1']]
@@ -89,7 +95,8 @@ def main():
                              'ci95': boot(f1, by1, g), 'reader_control_real_next': {'spatial': round(pearson(ctl_s, real), 4), 'rawpred': round(pearson(ctl_r, real), 4)}}
         # B3 per-root AUC, episodes = DV16 seeds
         rs = torch.tensor([x[2] for x in sp['b3']]); rr = torch.tensor([x[2] for x in rw['b3']])
-        a_s = torch.tensor([auc_root(rs[i], P5[i]) for i in range(len(P5))]); a_r = torch.tensor([auc_root(rr[i], P5[i]) for i in range(len(P5))])
+        assert [x[1] for x in sp['b3']] == [x[1] for x in rw['b3']]
+        a_s = torch.tensor([auc_root(rs[j], P5[x[1]]) for j, x in enumerate(sp['b3'])]); a_r = torch.tensor([auc_root(rr[j], P5[x[1]]) for j, x in enumerate(rw['b3'])])
         ok = (~torch.isnan(a_s)).nonzero()[:, 0].tolist()
         by3 = groups([sp['b3'][i][0] for i in ok])
         d3 = (a_s - a_r)[ok]
@@ -105,7 +112,7 @@ def main():
         f2 = lambda idx: float(es[idx].sum() / n2[idx].sum() - er[idx].sum() / n2[idx].sum())
         ci2 = boot(f2, by2, g)
         out['B2_guard_calibration_mae'] = {'spatial': round(float(es.sum() / n2.sum()), 4), 'rawpred': round(float(er.sum() / n2.sum()), 4),
-                                           'diff_spatial_minus_raw': round(f2(list(range(len(common)))), 4), 'ci95': ci2, 'fails': ci2[0] > 0}
+                                           'diff_spatial_minus_raw': round(f2(list(range(len(common)))), 4), 'ci95': ci2, 'fails': pos(ci2)}
         # B4 guard: zombie census abs error at depth 16 vs decoded-real, paired by (root, future)
         k4 = lambda x: (x[1], x[2], x[3])
         s4 = {k4(x): x for x in sp['b4'] if x[3] == 16}; r4 = {k4(x): x for x in rw['b4'] if x[3] == 16}
@@ -115,7 +122,7 @@ def main():
         f4 = lambda idx: float(e_s[idx].mean() - e_r[idx].mean())
         ci4 = boot(f4, by4, g)
         out['B4_guard_zombie_census_abs_err_d16_vs_decoded_real'] = {'spatial': round(float(e_s.mean()), 4), 'rawpred': round(float(e_r.mean()), 4),
-                                                                      'diff_spatial_minus_raw': round(f4(list(range(len(c4)))), 4), 'ci95': ci4, 'fails': ci4[0] > 0, 'units': len(c4)}
+                                                                      'diff_spatial_minus_raw': round(f4(list(range(len(c4)))), 4), 'ci95': ci4, 'fails': pos(ci4), 'units': len(c4)}
         # descriptive B4 by depth (imagined / decoded-real / exact), both worlds
         for nm, U in (('spatial', sp), ('rawpred', rw)):
             dd = {}
@@ -128,8 +135,10 @@ def main():
             out[f'B4_by_depth_{nm}'] = dd
         out['reader_quality_real_next'] = {'spatial': sp['reader_quality'], 'rawpred': rw['reader_quality']}
         res[f'seed{s}'] = out
-    prim = lambda s: (res[f'seed{s}']['B1_attack_recall']['ci95'][0] > 0, res[f'seed{s}']['B3_auc5_mean_per_root']['ci95'][0] > 0)
-    guards_fail = lambda s: res[f'seed{s}']['B2_guard_calibration_mae']['fails'] or res[f'seed{s}']['B4_guard_zombie_census_abs_err_d16_vs_decoded_real']['fails']
+    pos = lambda ci: ci[0] is not None and ci[0] > 0
+    prim = lambda s: (pos(res[f'seed{s}']['B1_attack_recall']['ci95']), pos(res[f'seed{s}']['B3_auc5_mean_per_root']['ci95']))
+    guards_fail = lambda s: (res[f'seed{s}']['B2_guard_calibration_mae']['fails'] or res[f'seed{s}']['B4_guard_zombie_census_abs_err_d16_vs_decoded_real']['fails']
+                             or None in res[f'seed{s}']['B2_guard_calibration_mae']['ci95'] or None in res[f'seed{s}']['B4_guard_zombie_census_abs_err_d16_vs_decoded_real']['ci95'])
     if all(all(prim(s)) and not guards_fail(s) for s in seeds):
         v = 'better predictive world state'
     elif all(not any(prim(s)) for s in seeds):

@@ -43,6 +43,8 @@ def main():
     split = json.loads(EV2.SPLIT.read_text())
     test = split['test']
     roots, _ = DV.load_roots()
+    if os.environ.get('TIERB_SMOKE'):                                               # code-path smoke test only (default: everything)
+        test, roots = test[:6], roots[:12]
     for arg in sys.argv[1:]:
         name, spec = arg.split('=', 1)
         enc_spec, pred_ck, probe_file = spec.split(',')
