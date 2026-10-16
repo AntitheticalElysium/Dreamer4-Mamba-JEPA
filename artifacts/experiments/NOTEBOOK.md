@@ -222,6 +222,80 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R57 — Codex's audit of R56 verified; evaluation corrected; corrected Stage 1 SELECTS A DIFFERENT ARM (`spatial_eval_v2.py`, `tierb_eval_v2.py`, `stage2_analysis_v2.py`, Amendments 4 / 4b)
+
+Codex audited R56 while Stage 2 trained (`20261016_spatial_encoder_audit/AUDIT.md`). Every finding was checked against the code
+and data. The original scripts and outputs are kept unchanged. Stage 2 training was not interrupted. The seed-1 preview, which
+would have run the defective evaluation, was stopped before it ran. **No Stage 2 result existed** when the corrections and the
+B2 / B4 guard were registered (Amendment 4, 15:10).
+
+| audit finding | verified? | correction |
+|---|---|---|
+| probe fit / test split by root, not episode | **yes**: 113 / 120 test roots from fit episodes (76 shared seeds of 121 / 82). The R56 text "split by episode seed" was false | split by episode seed: 40 test episodes × ≤ 3 roots (113 roots), 280 fit roots from 88 other episodes, 0 shared (Amendment 4b: whole episodes gave only 15 test episodes) |
+| A2 persistence ignored mobs; source-player admitted | **yes** (`spatial_eval.py:188-189`) | same tile AND same mob layer, neither source nor destination the player. Excluded on the corrected panel: 7,413 mob-change and 12,492 player pairs (of 517,271 kept) |
+| HUD-change label used 4 stats | **yes** (lines 138, 205) | all displayed values (4 stats + inventory) |
+| AUROC not tie-aware | **yes** (line 94) | tie-averaged ranks; AP and precision / recall at the threshold added |
+| unseeded between-content pairs | **yes** (line 210) | one seeded, label-defined pair set shared by all encoders |
+| analyzer cannot import `dv16`; runner never calls it | **yes** (`stage2_analysis.py:17-19`: `parents[1]` = `artifacts/`) | `stage2_analysis_v2.py` imports and was smoke-tested end to end |
+| B3 point estimate (pooled) ≠ bootstrap (per-root mean) | **yes** | one estimand: the mean of per-root AUCs; pooled as a secondary |
+| intervals resample roots, not episodes | **yes** | episode-seed cluster bootstrap everywhere |
+| B2 / B4 guard unimplemented | **yes** | registered: the paired episode interval for calibration MAE and for d16 zombie-census error vs the *decoded-real* census must not lie entirely on the worse side |
+| feature-stage mismatch (Raw LN vs Spatial projector) | **yes, by design** | both stages reported for every encoder; RGB and untrained-ViT references |
+| static probes measure visual decodability | **yes**: confirmed below on the corrected panel | reported as such; Tier B is the predictive test |
+| BatchNorm | no defect (audit) | — |
+
+**Wording corrected:** "the patch tokens get no gradient" → "no direct patch-level prediction / regularization objective". The
+shared weights do receive CLS gradients.
+
+**Corrected Tier A** (episode-disjoint; ridge λ 1e-2 unless stated; Raw's two stages are identical):
+
+| encoder (step), stage | tile acc (λ 1e-3 / 1e-2 / 1e-1) | macro recall (present classes) | zombie / cow AUC, AP | HUD R² health / food / drink / energy | eff. rank | drift day steady / changing / night | code flips (persisting) |
+|---|---|---|---|---|---|---|---|
+| RGB 7×7 pixels | 0.974 / **0.972** / 0.954 | **0.864** | 0.9995, .994 / 0.9997, .996 | .9995 / .9999 / .9999 / .9977 | 18.5 | 0 / 0.005 / 0.083 | 56% |
+| untrained ViT | 0.976 / **0.971** / 0.952 | 0.841 | 0.9992, .991 / 0.9992, .994 | .998 / .998 / .998 / .991 | 52.0 | 0.053 / 0.047 / 0.097 | 35% |
+| Raw (2,000) | 0.983 / **0.976** / 0.968 | 0.791 | 0.9989, .991 / 0.9994, .995 | .995 / .994 / .995 / .981 | 52.7 | 0.041 / 0.036 / 0.141 | 31% |
+| Raw (10,000) | 0.984 / **0.977** / 0.969 | 0.777 | 0.9985, .987 / 0.9969, .988 | .994 / .991 / .995 / .985 | 52.9 | 0.035 / 0.033 / 0.154 | 32% |
+| naive (2,000), backbone | 0.980 / 0.972 / 0.951 | 0.777 | | .990 / .991 / .994 / .982 | 55.1 | 0.195 / 0.209 / 0.258 | 33% |
+| naive, deployed | 0.963 / 0.942 / 0.876 | 0.444 | 0.9945, .941 / 0.9688, .900 | .977 / .981 / .982 / .970 | 49.2 | 0.219 / 0.242 / 0.307 | 34% |
+| MoP + SIGReg (2,000), backbone | 0.980 / 0.976 / 0.957 | 0.825 | | .994 / .993 / .994 / .979 | 50.5 | 0.062 / 0.061 / 0.107 | 29% |
+| MoP + SIGReg, deployed | 0.972 / **0.955** / 0.944 | 0.478 | 0.9914, .923 / 0.9822, .922 | .984 / .987 / .983 / .955 | 43.2 | 0.072 / **0.070** / 0.093 | 31% |
+| MoP + VICReg (2,000), backbone | 0.980 / 0.972 / 0.946 | 0.818 | | .995 / .992 / .994 / .990 | 52.4 | 0.077 / 0.074 / 0.124 | 30% |
+| MoP + VICReg, deployed | 0.960 / **0.893** / 0.861 | 0.375 | 0.9894, .886 / 0.9499, .843 | .970 / .980 / .984 / .980 | 42.1 | 0.088 / **0.084** / 0.097 | 33% |
+| full (2,000), backbone | 0.985 / **0.980** / 0.960 | **0.842** | | .995 / .993 / .995 / .985 | 43.8 | 0.067 / 0.059 / 0.143 | 32% |
+| full, deployed | 0.980 / **0.963** / 0.947 | 0.546 | 0.9981, .941 / 0.9877, .954 | .984 / .969 / .976 / .956 | 33.6 | 0.079 / **0.069** / 0.108 | 33% |
+
+**Stage 1 selection, re-applied on the deployed state as originally defined** (λ 1e-2):
+- Eligibility (tile ≥ Raw@2000 − 0.05 = 0.926, rank ≥ 20): naive, MoP + SIGReg and full are eligible; MoP + VICReg is not
+  (0.893).
+- SIGReg over VICReg: unchanged (drift 0.070 vs 0.084; tile 0.955 vs 0.893).
+- **Full vs MoP + SIGReg: the full arm now PASSES.**
+  - Drift 0.069 vs 0.070.
+  - HUD R² mean 0.971 vs 0.977 (−0.006, within −0.02). The largest per-stat gap is food, −0.018.
+  - The original −0.029 came from the leaky split and the defective evaluation.
+- **The corrected rule selects the full arm (MoP + SIGReg + photometric invariance + inverse dynamics), not MoP + SIGReg.**
+  Stage 2 is training MoP + SIGReg. It is kept (the user's instruction) and evaluated with the corrected protocol, but it is
+  **not the arm the corrected screening selects**. Running the full arm at Stage 2 is a separate decision for the user.
+
+**What survives, what changes:**
+- **Survives:** naive per-patch MSE is the worst arm (its drift is ~3-6× the others' at both stages); SIGReg is preferred over
+  VICReg; Raw's training buys little static decodability.
+- **Changes:**
+  1. **Static probes are visual decodability, not predictive understanding.** RGB pixels and an untrained ViT decode tiles at
+     0.971-0.972 and mobs at AUC ≥ 0.999. Raw adds ≤ 0.6 points of tile accuracy, and is *worse* on rare classes (macro recall
+     0.78-0.79 vs RGB 0.86) and on night drift (0.15 vs untrained 0.10). The R56 Tier A comparisons cannot support claims about
+     learned dynamics.
+  2. **Common stage: the spatial backbones match or beat Raw on content.** Tile 0.976-0.980 vs 0.976 at step 2,000; macro
+     recall 0.82-0.84 vs 0.79.
+     - They are worse by day (drift 0.059-0.074 vs 0.036).
+     - MoP + SIGReg is better at night (0.107 vs 0.141).
+  3. **Deployed stage:** the learned projector makes the state harder for a fixed ridge.
+     - Tiles 0.955-0.963, macro recall 0.48-0.55, AP 0.92-0.95.
+     - Much of the loss is conditioning: at λ 1e-3, MoP + SIGReg recovers 0.955 → 0.972 and VICReg 0.893 → 0.960.
+     - Rare classes remain the weakness of the deployed state.
+  4. **Generic K = 1024 codes do not register displayed HUD changes for any encoder** (HUD salience −0.02 … +0.02). This
+     metric does not discriminate.
+- **Predictive dynamics, rare events and decision information** are measured by Tier B (Stage 2, corrected), pending.
+
 ### R56 — USER (10-16): retrain the ENCODER at the patch level. Spatial JEPA encoder study, Stage 1 (`20261016_spatial_encoder/`, SPATIAL_ENCODER_PREREG.md)
 
 **User:** the frozen Raw encoder was trained through CLS only. Train an encoder whose *patch* representations are optimized for
@@ -250,8 +324,8 @@ predictive dynamics and compare it rigorously with frozen Raw, designing the obj
   Its statistic is the Epps-Pulley test statistic × N (`lewm.py:132`), so this keeps LeWM's per-discrepancy strength; all
   10,368 patches OOM.
 
-**Tier A protocol** (`spatial_eval.py`; diagnosis store, 400 roots, probes fit on 280, tested on 120, split by episode seed;
-the patch state of each encoder):
+**Tier A protocol** (`spatial_eval.py`; diagnosis store, 400 roots, probes fit on 280, tested on 120; *split by root, NOT by
+episode seed as first written: 113 / 120 test roots came from fit episodes. Corrected in R57*; the patch state of each encoder):
 
 | encoder (step) | tile acc | zombie / cow AUC | HUD R² health / food / drink / energy | eff. rank | drift ratio day steady / changing / night | code flips (persisting) | HUD salience |
 |---|---|---|---|---|---|---|---|
@@ -261,7 +335,7 @@ the patch state of each encoder):
 | MoP + SIGReg (2,000) | 0.947 | 0.994 / 0.979 | 0.981 / 0.979 / 0.982 / 0.926 | 45.2 | 0.081 / 0.082 / **0.120** | **26.6%** | +0.006 |
 | MoP + VICReg (2,000) | 0.887 | 0.991 / 0.935 | 0.970 / 0.967 / 0.984 / 0.924 | 44.1 | 0.090 / 0.094 / 0.128 | 30.2% | +0.011 |
 
-**Selection (declared rule):**
+**Selection (declared rule; ORIGINAL, defective evaluation; superseded by R57):**
 - SIGReg over VICReg: lower day-changing drift (0.082 vs 0.094) and higher tile accuracy.
 - MoP + VICReg also fails eligibility (tile < Raw@2000 − 0.05 = 0.918).
 - **My hypothesis that VICReg would keep nuisance out of the patches is refuted at 2k.**
@@ -277,7 +351,8 @@ the patch state of each encoder):
 | MoP + SIGReg | 0.947 | 0.979 | 0.981 / 0.979 / 0.982 / 0.926 | 45.2 | 0.082 / 0.120 | 26.6% | +0.006 |
 | full | 0.958 | 0.990 | 0.974 / **0.948 / 0.938 / 0.894** | 34.9 | 0.080 / 0.144 | 32.8% | −0.002 |
 
-**Stage 2 arm (declared rule): MoP + SIGReg.**
+**Stage 2 arm (declared rule, ORIGINAL evaluation): MoP + SIGReg.** *(R57: under the corrected evaluation the same rule
+selects the full arm.)*
 - The full arm is eligible and its drift (day changing) is within +0.02.
 - But its HUD R² is 0.029 lower on average over the 4 stats, beyond −0.02.
 - Invariance + inverse dynamics help map content slightly and cost HUD consequence information and effective rank.
