@@ -222,6 +222,65 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R58 — Stage 2, CORRECTED evaluation, seed 1 (MoP + SIGReg vs Raw-predictor; seed 2 and the full arm pending)
+
+**Registration.** Amendment 5 (15:55, before any Stage 2 result, user-approved) adds the full arm as a third Stage 2
+comparison, with identical evaluation for all three arms. The probe λ is fixed for the Tier B readers; fit-only, episode-grouped
+CV λ is reported in Tier A. A full-arm advantage would not identify which of its two added components is responsible.
+
+**Tier A at step 10,000** (episode-disjoint; λ 1e-2; in brackets: fit-only CV λ):
+
+| | tile acc | macro recall | zombie / cow AP | HUD R² health / food / drink / energy | eff. rank | drift day steady / changing / night | code flips |
+|---|---|---|---|---|---|---|---|
+| Raw (10k) | 0.977 [0.985] | 0.777 [0.887] | 0.987 / 0.988 [0.992 / 0.991] | .994 / .991 / .995 / .985 | 52.9 | 0.035 / 0.033 / 0.154 | 32% |
+| Spatial s1, backbone stage | 0.970 [0.983] | 0.727 [0.868] | 0.986 / 0.967 [0.994 / 0.984] | .993 / .994 / .991 / .989 | 54.5 | 0.062 / 0.064 / **0.097** | **26%** |
+| Spatial s1, deployed | **0.938** [0.963] | **0.426** [0.595] | **0.620 / 0.743** [0.696 / 0.894] | .986 / .994 / .992 / .982 | 50.3 | 0.068 / 0.069 / 0.095 | 27% |
+
+**The deployed Spatial state lost rare-mob decodability between step 2,000 and 10,000** (zombie AP 0.92 → 0.62), while its
+backbone keeps it (0.986).
+
+**BatchNorm check** (`bn_check_10k.py`, `bn_check_train_10k.py`): the cause is partly distribution shift, not stale statistics.
+- On the diagnosis frames, the projector's BN inputs sit 0.22 running-std from the saved means (std ratio 0.95). On real
+  training batches the gap is 0.03-0.055 (std ratio 1.00).
+- On the same episode-disjoint frames, zombie AP is 0.45 with the saved statistics and 0.78 with the frames' own batch
+  statistics.
+- The evaluation store is off-distribution for the training corpus in this feature space. A BN-normalized patch state is
+  sensitive to that; Raw's per-token LN state is not.
+- Eval mode stays the measured behaviour (re-normalizing on evaluation frames would be illegitimate). This is a property of the
+  deployed Spatial interface, not an evaluation bug.
+
+**Tier B, seed 1** (113 test roots from 40 episodes; DV16's 200 roots for B3; CPU; deployed-stage readers, fixed λ):
+
+| | Spatial | Raw-predictor | difference [episode 95% CI] |
+|---|---|---|---|
+| **B1 attack recall** (primary; 272 events from only **5** episodes) | 0.015 | 0.022 | −0.007 [−0.082, +0.041] |
+| **B3 escape AUC, mean per root** (primary; 152 roots, 119 episodes) | 0.535 | 0.504 | +0.030 [−0.048, +0.106] |
+| B1 graded health-change correlation | 0.139 | 0.004 | +0.135 [+0.005, +0.293] |
+| reader control: probes on real next frames, health correlation | 0.985 | 0.983 | |
+| B2 calibration MAE (guard) | 0.395 | 0.375 | +0.020 [−0.010, +0.053]: passes |
+| B2 sampled read rate at branching cells (real 0.427; real-next control) | 0.043 (0.293) | 0.235 (0.396) | |
+| reader quality on real next frames, zombie / cow AP | 0.519 / 0.777 | 0.949 / 0.978 | |
+| B4 d16 zombie-census error vs decoded-real (guard) | 0.63 | 0.47 | +0.16 [−0.11, +0.47]: passes |
+| B4 cow census d1 / d2 / d4 / d8 / d16 (exact 0.43 / 0.43 / 0.46 / 0.56 / 0.56) | 0.45 / 0.43 / 0.35 / 0.51 / 1.20 | 0.34 / **0.00 / 0.00 / 0.00** / 0.12 | |
+| B4 zombie census d1 / d16 (exact 0.20 / 0.32) | 0.08 / 0.33 | 0.03 / 0.25 | |
+
+**Verdict, seed 1 (preregistered rule): "not supported".** Neither primary improves. Guards pass.
+
+**What the seed-1 result can and cannot say:**
+- **Floor on the primaries.** Neither world predicts attacks (recall ~2%), and neither ranks escape moves above chance (D's own
+  rollout: 0.711). A 2-frame-context, 4-layer predictor trained 10k updates is not decision-competent in either representation.
+  The primary readings therefore cannot discriminate encoders here.
+  - This is a property of the Stage 2 design (predictor capacity, context, budget), not evidence that the representations carry
+    no decision information.
+- **The B1 recall interval rests on 5 attack-bearing episodes.** The 40-episode test panel is thin for rare events.
+- **Where the arms do differ:**
+  - Spatial's world keeps cows through recursion (≈ exact through d8; inflated at d16). The Raw-predictor's world erases them
+    after one step.
+  - Spatial predicts graded health changes slightly better (0.14 vs 0.00).
+  - The deployed Spatial state is a worse *linear* substrate for mobs (AP 0.52-0.62 vs 0.95-0.99), and its BN makes it
+    sensitive to the evaluation store's distribution shift.
+- Seed 2 (both arms), the original-protocol numbers (from `run_stage2.sh`) and the full arm follow.
+
 ### R57 — Codex's audit of R56 verified; evaluation corrected; corrected Stage 1 SELECTS A DIFFERENT ARM (`spatial_eval_v2.py`, `tierb_eval_v2.py`, `stage2_analysis_v2.py`, Amendments 4 / 4b)
 
 Codex audited R56 while Stage 2 trained (`20261016_spatial_encoder_audit/AUDIT.md`). Every finding was checked against the code
