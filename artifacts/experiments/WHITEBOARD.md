@@ -754,8 +754,12 @@ All are corrected in new scripts registered before any Stage 2 result.
 - **The corrected screening selects the full arm** (MoP + SIGReg + photometric invariance + inverse dynamics). The original,
   defective evaluation had selected MoP + SIGReg, which Stage 2 is training. Stage 2 is kept and evaluated correctly; the
   full arm at Stage 2 is a separate decision.
-- **Stage 2, seed 1 (R58): "not supported"** (MoP + SIGReg vs Raw-predictor). Both worlds sit at a floor on the primaries:
-  attack recall ~2%, escape AUC ~0.5.
+- **Stage 2, both seeds (R58, R60): "mixed"** (MoP + SIGReg vs Raw-predictor), by the preregistered rule.
+  - Seed 1: no primary improves.
+  - Seed 2: escape AUC 0.550 vs a below-chance 0.459 [+0.046, +0.140], but both guards fail (census explosion; calibration).
+  - Attack recall stays at ~1-2% throughout; D's own rollout reaches 0.711 on the same escape test.
+- **Open hypothesis (R60, untested):** the patch targets are not detached (as in LeWM's CLS path). The encoder may make its
+  deployed tokens predictable by discarding hard-to-predict mob content.
 
 **Three levels must be kept apart** (R59; user, after Codex's BN_AUDIT.md). Tier B reads predicted *deployed* states with
 deployed-state readers, so one number mixes all three:
@@ -764,7 +768,7 @@ deployed-state readers, so one number mixes all three:
 |---|---|---|
 | 1. Backbone | the patch-trained ViT | at least Raw's rare-mob decodability (zombie AP 0.986-0.993); lower night drift. Already reacts to sleep rendering (zombie FP 4.4% on sleeping vs 0.03% on awake cells) |
 | 2. Deployed state | projector (Linear → BN → GELU → Linear 2048→192) | zombie AP 0.51-0.62. Lost in the nonlinear warp + compression (hidden state 0.995; same-size PCA 0.873); not stale BN. Sleep false positives ×6 (26% of sleeping negative cells). Evaluation frames come from another policy (legacy BC vs PPO expert): earlier, brighter, less sleep |
-| 3. World predictor | 2-frame, 4-layer, K = 4 heads | reader-relative: keeps cows through recursion (≈ 0.6-0.9 of its reader's real census to d8; Raw-predictor 0 after d1); small graded-health edge (0.14 vs 0.00); both under-produce zombies and miss attacks |
+| 3. World predictor | 2-frame, 4-layer, K = 4 heads | R60 (both seeds; location, not counts): Spatial worlds' imagined mobs are in the wrong cells (location precision 0-3%; expected states show none) and inflate through recursion (s2 d16: 2.8 zombies vs 0.25). Raw-predictor ≈ a degraded copy, then erases mobs. The s1 cow-census and graded-health edges did not replicate (retracted). Both miss attacks |
 
 **Consequence for interpretation.** The verdict concerns this deployed interface with this predictor. It is not a verdict on
 patch-level learning or on the backbone.
@@ -776,7 +780,5 @@ stages, all arms; registered before any full-arm number).
 from level 3 and is preferred to a BN → LN swap as the first follow-up.
 
 **Pending:**
-- seed 2 (both arms);
-- the original-protocol numbers;
 - the full arm (2 seeds; same protocol);
 - the Amendment 6 readings.

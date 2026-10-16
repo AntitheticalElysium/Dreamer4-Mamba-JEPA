@@ -222,6 +222,114 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R60 — Stage 2 MoP + SIGReg vs Raw, BOTH seeds (corrected): "mixed" by the preregistered rule; the Spatial worlds' imagined mobs are in the wrong cells (R59's level-3 cow reading RETRACTED)
+
+**Verdict (preregistered rule, `stage2_verdict_v2.json`): "mixed (reported as is)."**
+- Seed 1: neither primary improves; guards pass.
+- Seed 2: B3 improves; B1 does not; **both guards fail**.
+
+| Corrected (episode intervals) | seed 1: Spatial / Raw-pred, diff [95% CI] | seed 2: Spatial / Raw-pred, diff [95% CI] |
+|---|---|---|
+| **B1 attack recall** (272 events, 5 episodes) | 0.015 / 0.022, −0.007 [−0.082, +0.041] | 0.022 / 0.007, +0.015 [0.000, +0.045] |
+| **B3 escape AUC, mean per root** (152 roots) | 0.535 / 0.504, +0.030 [−0.048, +0.106] | **0.550 / 0.459, +0.092 [+0.046, +0.140]** |
+| B1 graded health correlation | 0.139 / 0.004, +0.135 [+0.005, +0.293] | **−0.112 / −0.162**, +0.050 [−0.058, +0.165] |
+| B2 calibration MAE (guard) | 0.395 / 0.375: passes | 0.426 / 0.383, +0.043 [+0.016, +0.069]: **fails** |
+| B4 d16 zombie census error vs decoded-real (guard) | 0.63 / 0.47: passes | **2.64** / 0.37, +2.28 [+1.75, +2.84]: **fails** |
+| reader on real next frames, zombie / cow AP | 0.52 / 0.78 vs 0.95 / 0.98 | 0.89 / 0.79 vs 0.95 / 0.98 |
+
+What the seed-2 B3 gain is:
+- It is measured against a **below-chance** Raw world (0.459).
+- Both stay far from D's own rollout on the same roots (0.711).
+- It reads the predicted HUD health, not mob positions.
+
+**Original protocol, preserved (`run_stage2.sh`; defective: leaky probe split, pooled B3, 120 roots).**
+
+| | Spatial s1 | Raw-pred s1 | Spatial s2 | Raw-pred s2 |
+|---|---|---|---|---|
+| B1 attack recall | 0.014 | 0.247 | 0.041 | 0.041 |
+| B3 pooled AUC | 0.503 | 0.523 | 0.548 | 0.491 |
+| B1 Pearson | 0.088 | 0.217 | −0.022 | 0.199 |
+
+The same Raw-predictor s1 world scores attack recall 0.247 here and 0.022 corrected. The worlds are identical; only the readers and
+roots differ. Attack recall on these panels is dominated by which few episodes carry attacks, so the two protocols cannot be
+compared.
+
+**Level 1 (backbone), both seeds** (Tier A, episode-disjoint): the R58 reading replicates.
+
+| | tile acc | macro recall | zombie / cow AP | night drift |
+|---|---|---|---|---|
+| Spatial s1 | 0.970 | 0.727 | 0.986 / 0.967 | 0.097 |
+| Spatial s2 | 0.971 | 0.667 | 0.985 / 0.959 | 0.083 |
+| Raw | 0.977 | 0.777 | 0.987 / 0.988 | 0.154 |
+
+**Level 2 (deployed state): seed-dependent loss.**
+- zombie / cow AP: s1 0.620 / 0.743; s2 0.878 / 0.814 (fit-only CV λ: 0.696 / 0.894 and 0.915 / 0.860);
+- real-next reader zombie AP: s1 0.519; s2 0.886.
+- Both seeds stay below their own backbone (0.985).
+
+**Level 3 (world predictor): where the imagined mobs are** (`census_localization.py`, new, descriptive, evaluation only).
+- Setting: depth 1, the B4 setting (2-frame root context, the recorded first action, 4 router samples, the same probes2 readers
+  and thresholds); 565 (root, future) units.
+- Cells are compared with the exact mob cells of the real next frame. "Copy" = the reader on the root's own state, i.e.
+  "nothing happens".
+
+| per frame (exact: zombie 0.198, cow 0.430) | sample: count · precision · recall | expected state: count | decoded-real: precision · recall | copy: precision · recall |
+|---|---|---|---|---|
+| Spatial s1, cow | 0.41 · **0.028 · 0.027** | 0.00 | 0.63 · 0.78 | 0.21 · 0.25 |
+| Spatial s1, zombie | 0.08 · **0.00 · 0.00** | 0.00 | 0.45 · 0.61 | 0.25 · 0.28 |
+| Spatial s2, cow | 0.04 · **0.00 · 0.00** | 0.02 | 0.55 · 0.81 | 0.19 · 0.27 |
+| Spatial s2, zombie | 0.19 · **0.00 · 0.00** | 0.00 | 1.00 · 0.70 | 0.59 · 0.37 |
+| Raw-pred s1 / s2, cow | 0.34 · 0.32 · 0.25 | 0.35 | 1.00 · 0.96 | 0.33 · 0.32 |
+| Raw-pred s1 / s2, zombie | 0.03-0.05 · 0.46-0.64 · 0.08-0.16 | 0.02-0.04 | 0.87 · 0.91 | 0.47 · 0.48 |
+
+State-space squared error, relative to copying the root's tokens (below 1 = better than copy):
+
+| | expected, mob-free cells | expected, mob cells | samples |
+|---|---|---|---|
+| Spatial s1 | 0.77 | 1.04 | 1.3-1.6 |
+| Spatial s2 | 0.75 | 0.61 | 1.4-1.8 |
+| Raw-pred s1 / s2 | 0.83 | 0.98 | 1.3-1.6 |
+
+Reading:
+- **Spatial worlds put their imagined mobs in the wrong cells.**
+  - Seed 1: 41% of frames carry a sampled cow, but only 2.8% of imagined cow cells hold a real cow.
+  - Seed 2 never places one correctly.
+  - Their expected states show no mobs at all, even where seed 2's expected tokens are closer to the truth than copying is (0.61).
+    This is the conditional-mean blur that MoP was meant to avoid: the router-weighted expectation re-averages the heads.
+- **Raw-predictor's world is a degraded copy.** Its cow localization equals the copy baseline (0.32 vs 0.33); zombies fade.
+- Through recursion, the two kinds of world fail differently:
+  - Raw-predictor erases mobs (cows 0.34 at d1 → ≤ 0.03 at d2 and 0.00 at d4, both seeds).
+  - Spatial worlds hallucinate. At s2 d16: 2.78 zombies and 5.65 cows per frame, vs its reader's real-future 0.25 / 0.55.
+
+**Corrections to R59** (annotated there):
+1. "Spatial's world keeps cows through recursion" compared **counts**. The locations are essentially wrong (2.8% at s1, 0% at
+   s2), and the census does not replicate at s2 (d1-d4: 0.04-0.06 vs decoded-real 0.49-0.64). **Retracted.**
+2. "A small level-3 edge in graded health" (+0.135 at s1) did **not replicate**: at s2, both worlds anti-correlate (−0.11 vs
+   −0.16; diff interval contains 0).
+
+**What Stage 2 (MoP + SIGReg vs Raw) establishes:**
+- At 10k updates, neither a patch-trained encoder's deployed state nor frozen Raw tokens give this 2-frame, 4-layer predictor a
+  decision-competent or location-faithful world.
+- The patch-trained **backbone** is not the weak link (level 1 replicates).
+- The deployed state is seed-dependently fragile (level 2).
+- The predictors fail on both inputs, in different ways (level 3).
+
+**Candidate mechanism — a hypothesis, NOT tested.** The Spatial patch path regresses onto **non-detached** targets
+(`spatial_encoder.py:168`, `tgt = zp[:, 2:4]`). This follows LeWM's own CLS path: `d4mj/lewm.py:284` has no stop-gradient
+anywhere, and SIGReg is the only anti-collapse term.
+- The encoder and projector can therefore lower the prediction loss by making the deployed tokens easier to predict, e.g. by
+  de-emphasizing hard-to-predict mob content in the final compression.
+- Consistent with:
+  - the s1 deployed zombie AP falling from 0.92 at 2k to 0.62 at 10k (R58) while the backbone keeps it;
+  - Codex's localization of the loss to the projector's compression.
+- **Not shown.** Tests that would decide it, evaluation only on existing checkpoints:
+  - deployed mob AP across the saved 500-step checkpoints vs the patch-prediction loss, both seeds;
+  - the matched backbone-state vs projected-state world control (R59).
+- Neither is run until the current comparison (full arm, Amendment 6) is complete.
+
+`census_localization.py` will be applied unchanged to the full arm (both seeds) when its checkpoints exist, so all three arms are
+read the same way. It is descriptive, not a preregistered reading.
+
 ### R59 — Codex's projector / BatchNorm audit verified and incorporated; my R58 BN reading CORRECTED; Stage 2 read at three levels; the sleep confound registered for measurement (Amendment 6)
 
 **Source.** `20261016_spatial_bn_audit/BN_AUDIT.md` (Codex; CPU; frozen MoP + SIGReg s1 at 10,000; isolated readers only;
@@ -294,7 +402,11 @@ So:
    - The evaluation frames are earlier, brighter, less often sleeping, and from a different policy than the training frames
      (Codex's table, TRAIN vs diagnosis test): mean episode index 528 vs 79; night 33% vs 15%; sleep signature 19% vs 3.2%.
    - The deployed state's weakness on this store is therefore partly a robustness property, not only a capacity one.
-3. **World predictor (level 3):** read with level-2 readers, so confounded. Three reader-relative readings separate them:
+3. **World predictor (level 3):** read with level-2 readers, so confounded. Three reader-relative readings separate them.
+   > **[Corrected in R60]** The cow reading below compared **counts** only. The imagined cows are in the wrong cells (location
+   > precision 2.8% at s1, 0% at s2), and the census does not replicate at s2. The graded-health edge also does not replicate
+   > at s2. Both claims are retracted.
+
    - **Health:** the readers are equally good on real next frames (health correlation 0.985 vs 0.983). The predicted graded
      health change correlates 0.139 vs 0.004 [+0.005, +0.293]: a small level-3 edge for Spatial.
    - **Cows:** compare each world's imagined census with **its own reader on the real futures** (decoded-real).
