@@ -35,6 +35,7 @@ from torch.nn import functional as F
 import objective_audit as OA
 
 OUT = ROOT / 'artifacts/eda/spatial_encoder_v1'
+DEV = os.environ.get('EVAL_DEVICE', 'cuda')                                   # 'cpu' for previews while the GPU trains
 RAW_DIR = ROOT / 'artifacts/lewm_m4_canonical/raw/joint'
 
 
@@ -50,16 +51,16 @@ class PatchState:
         torch.backends.cudnn.allow_tf32 = True; torch.backends.cudnn.benchmark = False; torch.backends.cudnn.deterministic = False
         torch.use_deterministic_algorithms(False)
         config = load_recipe(ROOT / 'd4mj/recipes/lewm_mamba_raw.json')
-        self.enc = LeWMEncoder(config).cuda().eval()
+        self.enc = LeWMEncoder(config).to(DEV).eval()
         self.proj = None
         if spec.startswith('raw@'):
             from d4mj.checkpoint import read_lewm_bundle
             payload = read_lewm_bundle(RAW_DIR / f'step-{int(spec[4:]):06d}.pt')
             self.enc.load_state_dict(payload['modules']['encoder'])
         elif spec.startswith('spatial:'):
-            ck = torch.load(spec[8:], map_location='cuda', weights_only=False)
+            ck = torch.load(spec[8:], map_location=DEV, weights_only=False)
             self.enc.load_state_dict(ck['encoder'])
-            self.proj = LeWMProjector(192, config.encoder).cuda().eval()
+            self.proj = LeWMProjector(192, config.encoder).to(DEV).eval()
             self.proj.load_state_dict(ck['patch_proj'])
         else:
             raise ValueError(spec)
@@ -71,7 +72,7 @@ class PatchState:
     def __call__(self, frames):
         out = []
         for i in range(0, len(frames), 256):
-            x = frames[i:i + 256].cuda()[:, None]
+            x = frames[i:i + 256].to(DEV)[:, None]
             _, _, tok, _, _ = self.enc._hidden(x)                                         # [n,81,192] post backbone LN
             tok = tok.float()
             out.append(F.layer_norm(tok, (192,)) if self.proj is None else self.proj(tok.reshape(-1, 192)).view(tok.shape).float())
@@ -164,18 +165,18 @@ def main():
         res['hud_r2'] = {k: round(float(v), 4) for k, v in zip(('health', 'food', 'drink', 'energy'), r2)}
         probes['hud'] = Wh                                                                 # saved for Tier B (same readers)
         # A3
-        e = Xt[torch.randperm(len(Xt), generator=torch.Generator().manual_seed(2))[:20000]].float().cuda()
+        e = Xt[torch.randperm(len(Xt), generator=torch.Generator().manual_seed(2))[:20000]].float().to(DEV)
         sv = torch.linalg.svdvals(e - e.mean(0)); p = sv / sv.sum()
         res['eff_rank'] = round(float(torch.exp(-(p * torch.log(p + 1e-12)).sum())), 2)
         res['mean_dim_std'] = round(float(e.std(0).mean()), 4)
         # A2
-        C = kmeans(torch.cat([Sf[:, :63].reshape(-1, Sf.shape[-1])[sub[:200000]], Sf[:, 63:].reshape(-1, Sf.shape[-1])[:50000]]).float().cuda())
+        C = kmeans(torch.cat([Sf[:, :63].reshape(-1, Sf.shape[-1])[sub[:200000]], Sf[:, 63:].reshape(-1, Sf.shape[-1])[:50000]]).float().to(DEV))
         drift = {k: [0., 0] for k in ('day_steady', 'day_changing', 'night')}
         flips = {k: [0, 0] for k in ('persist', 'hud_value_changed', 'hud_unchanged')}
         between = []
         pos = 0
         for (n, light, sleep), s, t, l, sh in zip(test['seq'], test['S'], test['T'], [None] * len(test['S']), test['H']):
-            s = s.float().cuda()
+            s = s.float().to(DEV)
             codes = assign(s.reshape(-1, s.shape[-1]), C).view(n, 81).cpu()
             tiles = t
             # mob layer for persistence labels
@@ -196,7 +197,7 @@ def main():
                     reg = 'day_changing'
                 idx = torch.nonzero(same)[:, 0]
                 if len(idx):
-                    d = (s[j + 1, idx.cuda()] - s[j, src[idx].cuda()]).norm(dim=-1)
+                    d = (s[j + 1, idx.to(DEV)] - s[j, src[idx].to(DEV)]).norm(dim=-1)
                     if reg is not None:
                         drift[reg][0] += float(d.sum()); drift[reg][1] += len(idx)
                     fl = codes[j + 1, idx] != codes[j, src[idx]]
@@ -209,7 +210,7 @@ def main():
                     a_, b_ = torch.randint(63, (64,)), torch.randint(63, (64,))
                     diff = tj[a_] != tj[b_]
                     if bool(diff.any()):
-                        between.append((s[j, a_[diff].cuda()] - s[j, b_[diff].cuda()]).norm(dim=-1).cpu())
+                        between.append((s[j, a_[diff].to(DEV)] - s[j, b_[diff].to(DEV)]).norm(dim=-1).cpu())
         bd = float(torch.cat(between).mean())
         res['between_content_distance'] = round(bd, 4)
         res['drift_ratio'] = {k: round(v[0] / max(v[1], 1) / bd, 4) for k, v in drift.items()}

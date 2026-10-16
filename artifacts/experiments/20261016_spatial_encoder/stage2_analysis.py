@@ -19,6 +19,8 @@ sys.path.insert(0, str(HERE.parents[1] / '20261015_whiteboard'))
 sys.path.insert(0, str(HERE.parents[1] / '20261012_oracle'))
 OUT = HERE.parents[2] / 'artifacts/eda/spatial_encoder_v1'
 B = 4000
+import os
+SEEDS = tuple(int(x) for x in os.environ.get('STAGE2_SEEDS', '1,2').split(','))     # '1' for the seed-1 preview
 
 
 def pearson(x, y):
@@ -52,7 +54,7 @@ def main():
     P5 = torch.stack([r['P'] for r in roots])[..., 2][:, :5]
     g = torch.Generator().manual_seed(20261072)
     res = {}
-    for s in (1, 2):
+    for s in SEEDS:
         u_sp = torch.load(OUT / f'tierB_units_spatial_s{s}.pt', weights_only=False)
         u_rw = torch.load(OUT / f'tierB_units_rawpred_s{s}.pt', weights_only=False)
         out = {}
@@ -98,12 +100,13 @@ def main():
             out[k] = {'spatial': json.loads((OUT / f'tierB_spatial_s{s}.json').read_text())[k],
                       'rawpred': json.loads((OUT / f'tierB_rawpred_s{s}.json').read_text())[k]}
         res[f'seed{s}'] = out
-    wins = all(res[f'seed{s}']['B1_attack_recall']['ci95'][0] > 0 and res[f'seed{s}']['B3_auc5']['ci95'][0] > 0 for s in (1, 2))
-    no_better = all(res[f'seed{s}']['B1_attack_recall']['ci95'][0] <= 0 and res[f'seed{s}']['B3_auc5']['ci95'][0] <= 0 for s in (1, 2))
+    wins = all(res[f'seed{s}']['B1_attack_recall']['ci95'][0] > 0 and res[f'seed{s}']['B3_auc5']['ci95'][0] > 0 for s in SEEDS)
+    no_better = all(res[f'seed{s}']['B1_attack_recall']['ci95'][0] <= 0 and res[f'seed{s}']['B3_auc5']['ci95'][0] <= 0 for s in SEEDS)
     res['verdict_primary'] = ('patch-trained encoder gives a better predictive world state (B2/B4 to be checked)' if wins
                               else 'not supported' if no_better else 'mixed: reported as is')
     print(json.dumps(res, indent=1))
-    (OUT / 'stage2_verdict.json').write_text(json.dumps(res, indent=1))
+    res['seeds'] = list(SEEDS)
+    (OUT / f"stage2_verdict{'' if SEEDS == (1, 2) else '_seeds' + '_'.join(map(str, SEEDS))}.json").write_text(json.dumps(res, indent=1))
 
 
 if __name__ == '__main__':

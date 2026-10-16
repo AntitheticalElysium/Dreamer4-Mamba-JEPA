@@ -38,6 +38,7 @@ import objective_audit as OA                                                   #
 import dv16 as DV                                                              # noqa: E402
 
 ADJ = [22, 30, 32, 40]
+DEV = EV.DEV
 
 
 def mob(probes, z, c):
@@ -69,7 +70,7 @@ def auc_within(score, P):
 @torch.no_grad()
 def step(pred, prev, cur, acts, g=None):
     """prev, cur [N,81,D], acts [N] -> expected [N,81,D], sampled [N,81,D], router probs [N,81,K], candidates [N,81,K,D]"""
-    cand, router = pred(prev.cuda(), cur.cuda(), acts.cuda())
+    cand, router = pred(prev.to(DEV), cur.to(DEV), acts.to(DEV))
     cand, pi = cand.float(), router.float().softmax(-1)
     exp = (pi[..., None] * cand).sum(-2)
     k = torch.multinomial(pi.reshape(-1, pi.shape[-1]), 1, generator=g).view(pi.shape[:-1])
@@ -92,12 +93,12 @@ def main():
         name, spec = arg.split('=', 1)
         enc_spec, pred_ck, probe_file = spec.split(',')
         enc = EV.PatchState(enc_spec)
-        sd = torch.load(pred_ck, map_location='cuda', weights_only=False)['predictor']
+        sd = torch.load(pred_ck, map_location=DEV, weights_only=False)['predictor']
         K = sd['router.weight'].shape[0]                                                   # the arm's own K (naive: 1)
-        pred = SE.PatchPredictor(K).cuda().eval()
+        pred = SE.PatchPredictor(K).to(DEV).eval()
         pred.load_state_dict(sd)
         probes = torch.load(probe_file, weights_only=False)
-        g = torch.Generator(device='cuda').manual_seed(20261071)
+        g = torch.Generator(device=DEV).manual_seed(20261071)
         res = {'encoder': enc_spec, 'predictor': pred_ck}
         # B1 / B2
         pc, rc, att_pred, att_real, fa = [], [], [], [], []
