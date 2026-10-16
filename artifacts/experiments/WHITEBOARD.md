@@ -653,11 +653,15 @@ safe.
 
 ### Verified facts (code, our measurements, papers)
 
-1. **Our encoder never trained the patch tokens we use.** LeWM (`d4mj/lewm.py`; LeWorldModel 2603.19312) trains only
-   projector(CLS) with next-z MSE + SIGReg. D, IC and PI use the last-layer patch tokens as state *and* targets.
+1. **Our encoder has no patch-level objective.** LeWM (`d4mj/lewm.py`; LeWorldModel 2603.19312) trains only projector(CLS)
+   with next-z MSE + SIGReg. The shared embedding and attention weights do receive gradient through the CLS path, but the
+   last-layer patch outputs that D, IC and PI use as state *and* targets are never predicted or regularized themselves.
+   *(Wording corrected 10-16 after Codex's audit: "no gradient to the patch tokens" was too strong.)*
    - Content is linearly present in them (tiles 0.96, mobs AUC 1.0, health readable; R2). LeVJEPA shows CLS-only training can
      organize patches.
-   - Nothing in our objective asked them to be stable, salient or predictive.
+   - **But static decodability is not evidence of predictive learning** (audit control, 10-16): RGB pixels alone decode tiles at
+     ~96% and mobs at AUC ~0.997, and an *untrained* ViT matches them.
+   - Nothing in our objective asked the patch outputs to be stable, salient or predictive.
 2. **The token target is misaligned with what matters (R55):**
    - shares of the target change: ~64% nuisance (rendering / context drift of unchanged content), ~27% never-seen entering
      terrain, ~9% consequences;
@@ -693,8 +697,8 @@ and regression targets:
 - **consequences in the loss:** graded heads for the observation's own consequence channel, plus continuation / reward.
 
 The frozen encoder stays as the *input* (the information is there) and at most as an auxiliary next-embedding target (cosine,
-as Dreamer-CDP). Retraining the encoder at the patch level becomes necessary only if a learned state on top of it cannot be
-made stable and salient (S1 below decides this).
+as Dreamer-CDP). *(Superseded the same day: the user made retraining the encoder at the patch level the central candidate.
+See §19.)*
 
 **What survives from PI and inferred chance (evidence, not loyalty):**
 - the spatial scaffold;
@@ -708,29 +712,12 @@ made stable and salient (S1 below decides this).
 - continuous point regression of branching content;
 - MAP edits of the consequence channel.
 
-### The smallest decisive experiments (in order; each can falsify the direction)
+### Proposed experiments S0-S3: superseded, not run
 
-- **S0 — output parameterization, head-only (hours).**
-  - Setup: on a frozen belief (D and PI), against the 4-key one-step data, compare three heads for next content:
-    1. regression (the mean);
-    2. hard-assigned K-head mixture + router (MoP);
-    3. categorical over a per-cell codebook.
-  - Readings: ghosts at stochastic mob cells (reader rate vs real 40%); calibration of mode probabilities against the 4-key
-    frequencies; sleeper-attack magnitude.
-  - Decides how branching outcomes must be represented, independent of the state.
-- **S1 — a learned per-tile discrete state on the frozen tokens (≈1 h, label-free).**
-  - Setup: a per-tile categorical encoder trained only to be self-predictive (next codes from scroll-aligned neighbour codes
-    and the action), to keep information (next-embedding cosine) and to use its codes.
-  - Readings:
-    - code flips on persisting content (k-means: 25%);
-    - change rate on real changes (≥ 90%);
-    - HUD salience (value-changed vs unchanged; k-means 16 vs 15%);
-    - tile / mob decodability.
-  - **If stable and salient:** the encoder can stay frozen as input → S2.
-  - **If not:** the encoder is the bottleneck → train a patch-level temporal JEPA on Craftax frames first.
-- **S2 — a small world on the S1 state vs D and PI** (same data and budget, 2 seeds, preregistered).
-  - Readings: row-9 one-step consequences; mode fidelity of mob moves; recursion persistence; DV16 escape ranking and 17-action
-    decisions.
-  - This is the first substantial training.
-- **S3 — coverage.** Branched counterfactual data (all actions from sampled states, as the 08-29 hazard-choice sampling) for the
-  best world. It separates the representation and coverage causes of the sleep failure.
+S0 (output parameterization, head-only) and S1 (a learned per-tile state on top of the frozen tokens) were proposed here and
+**were not run**. The user redirected (10-16):
+- S0 overlaps the existing stochastic-prediction / inferred-chance work;
+- S1 does not test how the encoder itself was trained.
+
+The central candidate became **retraining the encoder with a patch-level predictive objective** (§19; NOTEBOOK R56).
+S3 (coverage via branched counterfactual data) remains a separate, open lever for the sleep blind spot.
