@@ -104,7 +104,6 @@ def score_all(T, probes):
         for st in ('exp', 'copy', 'pers', 'real', 'smp'):
             X = (T[st][:, 0] if st == 'smp' else T[st]).reshape(-1, D).float()
             out = torch.empty(len(X)); th = torch.empty(n)
-            Xs = T['smp'].reshape(-1, D).float() if st == 'smp' else None
             out4 = torch.empty(n, 4, 63) if st == 'smp' else None
             for k in range(FOLDS):
                 tr = fc != k
