@@ -819,7 +819,9 @@ accuracy. Two numbers keep us honest:
 4. **Background prediction is equal across encoders in content** (~+0.7 pt tile accuracy over copy; ~24% of camera-shifted cells,
    vs 93% real). The full arm's token-MSE advantage tracks its larger frame-to-frame drift.
 5. **Retention is necessary but not sufficient.** The Raw-predictor retains mobs (cows slightly beyond copy) yet predicts no
-   attacks (recall ≤ 2%) and ranks escapes at chance (R60). Two distinct level-3 failures:
+   attacks (recall ≤ 2%) and ranks escapes at chance (R60).
+   - **[R64]** Its retention is *screen copy*: it does not move mobs with the camera or predict arrivals beyond copy.
+   Two distinct level-3 failures:
    - **F1, erasure:** learned in joint training;
    - **F2, no consequences:** present without any projector.
 6. **Predicted states can carry information off the real-state manifold.** Early joint predictors retained mobs that real-state
@@ -852,3 +854,44 @@ accuracy. Two numbers keep us honest:
 
 F1 decides which state to build on. F2 decides whether any of them can improve decisions. The control answers F1 cheaply; F2 is
 the larger blocker for the objective.
+
+## 21. 2026-10-17 — after the audit: mobs at four levels, consequences within roots (NOTEBOOK R64; Codex audit)
+
+**Measurement first.**
+- AP is now tie-grouped (a confirmed defect, corrected; small impact; R63's trajectory survives).
+- "Retention" is renamed relative next-cell decodability.
+- Consequences are judged **within roots, across actions** (a pooled AUC measured root danger).
+- Mobs are judged at four levels, because the central objective needs all four.
+
+### What the Stage 2 worlds do, against the objective (§8's five questions; §17's working principle)
+
+| need (§8 / §17) | best Stage 2 world | measured |
+|---|---|---|
+| 1. decodable state | Raw tokens | the real next frame's mobs refit-decodable at 0.94 / 0.99; joint spaces 0.49-0.91 |
+| 2. persistence ("persist the scene, with transformations") | Raw-pred = **screen copy** | static stays ≈ copy; **shifted stays 0.001** (world persistence 0.14 / 0.38); joint worlds lose even static stays |
+| 3. stochastic dynamics (future locations) | none | no world beats screen copy on arrivals (zombies chase the player); the sibling reference is 0.51 |
+| 4. chance sampled coherently | none | samples miscount objects: Raw 6× exact persistence; joint 20× |
+| 5. consequences read for decisions | none | within-root attack AUC ≤ the linear action prior (0.62); Raw s1 0.36, worse than it. The real next frame: 1.00. §17's D world: 0.711 escape ranking |
+
+**Interpretation.**
+- The Stage 2 patch predictor (2-frame context, 4 layers, min-over-K MSE + router; heads sampled independently per patch) is a
+  **copy machine with blur**, on every input.
+- Joint training adds erasure on top. Neither BN mode nor cohort explains it (C-BN negative).
+- The earlier Raw-token belief worlds (D, PI; §17) were stronger on both axes that matter: D's first-step consequence ranking
+  0.711, PI's pursuit 0.25-0.30.
+- So the encoder study has not produced a better world. It has localized two failures:
+  - **erasure:** learned under joint training;
+  - **no dynamics or consequences:** in the Stage 2 predictor on any input.
+
+### What remains hypothetical
+- Why joint training erases. FD (learnability of the final interface) is running.
+  - Co-adaptation through target gradients is **not** testable by FD and is not claimed.
+- Whether any of this matters once a stronger predictor (D / PI class) reads these states. Untested; no new architecture
+  experiment is planned now.
+
+### The next decision (after FD s1 / s2; registered rule, δ = 0.153)
+- **FD learnable like Raw:** the final deployed interface is learnable without erasure. The joint history is implicated
+  (mechanism open). No FB.
+- **Otherwise:** FB (frozen backbone) isolates the representation interface.
+- In either case the decision-relevant conclusion stands: no Stage 2 predictor delivers dynamics, coherent samples or
+  consequences. The bottleneck for the objective is the world model's dynamics / consequence channel, not the encoder alone.

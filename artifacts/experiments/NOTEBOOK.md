@@ -222,6 +222,145 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R64 — Codex's frozen-state audit verified: the AP tie defect corrected (small impact); consequences show NO action discrimination; Raw's mob "retention" is screen copy, not dynamics; the frozen-state control registered as a LEARNABILITY test (training; conclusions held)
+
+**Sources.**
+- Codex `20261017_frozen_state_audit/ASSESSMENT.md`, verified point by point below.
+- Corrected code:
+  - `metrics_tied.py`;
+  - `erasure_diagnosis.py` → `erasure_v2/`;
+  - `location_dynamics.py` v2;
+  - `consequence_check.py` + `consequence_within_root.py`;
+  - `cbn_check.py`.
+- Registration: `FROZEN_STATE_CONTROL_PREREG.md` (69b4ee18) + Amendment 1 (1317ec24). δ fixed in 8c8d48d7.
+- Coordination note for Codex: `AP_TIE_CORRECTION.md`.
+
+**User instructions (10-17):**
+- continue training without interruption;
+- hold strong conclusions until the metrics are audited;
+- treat FD as a learnability experiment;
+- prioritize within-root action discrimination for consequences;
+- separate four mob levels;
+- no new architecture experiments.
+
+**1. Codex's findings, checked against code and data:**
+- **AP tie defect: confirmed and corrected.**
+  - `spatial_eval_v2.average_precision` is order-dependent inside ties.
+  - `metrics_tied.ap_grouped` is Codex's grouped AP verbatim (identical on 200 random tied cases), with an exactly replicated
+    episode bootstrap (verified against explicit replication).
+  - Impact on real-frame results is negligible: median |change| 1e-5 over 144 entries; headline Tier A and real-next AP ≤ 0.0004;
+    the largest is a 38-positive sleeping subgroup, 0.520 → 0.564.
+  - Impact on R63 is ≤ 0.06 per value, and the trajectory survives (`AP_TIE_CORRECTION.md` §5).
+- **FD / Raw / J initialization:** FD's predictor starts bitwise equal to the Raw-predictor's (Codex's CPU reconstruction, 57 / 57
+  tensors); J's differs (31 / 57). Already corrected in the prereg before any run.
+- **Optimization differences:** confirmed from the logs. J clips every logged step (median multiplier 0.44 / 0.48 between 1k and
+  4k); the Raw-predictor never clips. J also has bf16, train-mode BN and auxiliary losses. Recorded in Amendment 1 §2.
+- **C-BN cohort:** confirmed. The full arm's BN saw 128 clean + 32 augmented windows. `cbn_check.py` now reproduces that cohort in
+  one projector call (results below).
+- **E1 is relative next-cell linear decodability,** not survival or destruction of input information. The term "retention" is
+  retired; absolute APs are reported.
+- **Interpretation limits adopted:**
+  - E2 needed a reader-matched persistence baseline and an alignment check.
+  - The sibling frequency is a reference, not a ceiling.
+  - Coherent samples need their own test.
+  - A pooled consequence AUC can be root danger.
+  - "Not below Raw" is not non-inferiority.
+
+**2. Consequences: within-root action discrimination** (read-only; all diagnosis roots; 5-fold episode cross-fitting; units with
+≥ 2 alive keys). 44 roots in 40 episodes have both attacking and non-attacking actions (1,250 pairs). Intervals: episode bootstrap.
+
+| attack AUC | pooled (contrast) | **within root (pairs)** [95% CI] | within-root Pearson(pred, real Δh) |
+|---|---|---|---|
+| Raw-pred s1, predicted HUD | 0.78 | **0.36** [0.26, 0.45] | 0.12 |
+| Raw-pred s2, predicted HUD | 0.76 | **0.57** [0.47, 0.66] | 0.19 |
+| Raw-pred s1 / s2, predicted HUD + near-player | 0.73 / 0.71 | 0.51 / **0.69** [0.59, 0.80] | 0.17 / 0.25 |
+| copy (root) + action one-hot = linear action prior | 0.80 | 0.62 [0.51, 0.71] | 0.19 |
+| real next frame (ceiling) | 0.97 | 1.00 | 0.99 |
+| joint full s1 / s2, HUD + near | 0.56 / 0.55 | 0.69 / 0.60 | 0.22 / 0.12 |
+| joint MoP s1 / s2, HUD + near | 0.66 / 0.72 | 0.55 / 0.63 | 0.08 / 0.15 |
+
+- **Pooled AUC was mostly root danger.** Codex's label-only control (adjacent zombies, constant over actions) scores 0.87 pooled
+  and 0.50 within roots.
+- **No world's predicted state discriminates attacking from non-attacking actions beyond the linear action prior.** Paired
+  predicted − (copy + action) intervals contain 0, except Raw s1 HUD, which is **worse** ([−0.41, −0.09]).
+- **Answer to the user's check:** Raw's predicted states do **not** contain action-discriminating, attack-related health changes.
+  Its pooled 0.78 is the danger of the root.
+- The registered pooled readings are reported as registered: "the predicted display beats copy", pooled 0.78 / 0.76 vs 0.80, is
+  not met at either seed. They are superseded as the primary by Amendment 1 §6.
+- **Limits:**
+  - 44 comparable roots: intervals are about ±0.1.
+  - A refitted HUD reader measures supervised accessibility, not faithful rendering.
+  - The action prior is a linear main effect: it can rank "sleep is risky" without seeing any zombie.
+
+**3. Mobs at four levels, existing worlds** (`location_dynamics.py` v2; all 143 episodes, 5,010 depth-1 units; cross-fitted refit
+readers; tie-grouped AP).
+- Every unit's camera shift has a unique tile-mismatch minimum, so no alignment ambiguity occurs in this store.
+
+| zombie (cow) | Raw-pred s1 / s2 | joint full s1 / s2 | joint MoP s1 / s2 |
+|---|---|---|---|
+| 1. decodability of the real next frame (refit AP) | 0.94 (0.99) | 0.62-0.66 (0.79-0.91) | 0.49-0.66 (0.70-0.71) |
+| E1 relative next-cell decodability [CI] | 0.80 [0.68, 0.91] / 0.89 [0.78, 0.98] (1.25 / 1.25) | 0.078 / 0.083 (0.42 / 0.91) | 0.086 / 0.056 (0.26 / 0.19) |
+| 2. stay, static camera, AP: expected vs copy | 0.38-0.44 vs 0.45 (0.42-0.43 vs 0.30) | 0.02 vs 0.30-0.32 (0.13-0.37 vs 0.31-0.34) | 0.01-0.02 vs 0.23-0.28 |
+| 2. stay, **shifted** camera, AP: expected vs world persistence | **0.001** vs 0.14 (**0.002** vs 0.38) | 0.001 vs 0.08-0.10 | 0.001 vs 0.04-0.06 |
+| 2. stay-vs-vacated AUC: expected (copy; sibling reference) | 0.65 (0.66; 0.93) | 0.59-0.61 | 0.57-0.59 |
+| 3. arrive AP: expected / screen copy / reader-matched world persistence / sibling reference | 0.044-0.048 / **0.079** / 0.005 / 0.51 (0.011 / 0.014 / 0.003 / 0.036) | 0.005 / 0.09-0.10 / 0.003-0.006 | 0.005 / 0.08 / 0.004 |
+| 4. sample count error: samples (exact persistence; decoded-real floor) | 0.12-0.14 (0.022; 0.044) | 0.44-0.46 | 0.41-0.47 |
+| 4. samples outside the sibling count range (decoded-real floor) | 10-12% (3.7%) | 19-20% | 20% |
+
+**Readings:**
+- **Raw's "retention" is screen copy, not world-coherent persistence.**
+  - With a static camera it keeps zombies about as well as copy.
+  - When the camera moves, it does **not** move them: shifted-stay AP 0.001-0.002, where reader-matched world persistence scores
+    0.14 / 0.38.
+  - **R63's reading that the Raw-predictor "keeps" mobs is corrected to "copies them in screen coordinates".**
+- **No world predicts mob motion beyond the best trivial baseline.**
+  - The registered motion reading (expected beats reader-matched world persistence on arrivals) is formally **met** for Raw at both
+    seeds (zombies +[0.020, 0.069] / +[0.023, 0.079]; cows likewise).
+  - But **screen copy beats Raw's expected state on arrivals** (0.079 vs 0.044-0.048). Zombies chase the player, so they keep
+    their screen position when the camera moves.
+  - The comparator I registered in Amendment 1 is therefore weaker than screen copy for zombies. That is a limitation found in the
+    data, not a success: the honest reading is "no motion prediction demonstrated".
+  - The sibling-frequency reference (0.51) shows that much of arrival is predictable from the state.
+- **No world's samples are object-coherent.** Even Raw's samples miscount zombies about 6× more than exact persistence does and
+  leave the realized count range 3× more often than the reader on real frames. The joint worlds are about 3× worse again.
+  - This matches Codex's structural point: heads are sampled independently per patch.
+
+**4. Frozen-state control (stage A, both seeds).**
+- FD s1 is training (~6k / 10k); FD s2 follows.
+- δ = 0.153, from Raw (0.800 / 0.892) and J full (0.078 / 0.083); committed before any FD evaluation.
+- It answers a **learnability** question: can a fresh predictor, with the Raw-predictor's exact init and data stream, learn the
+  final full-arm deployed interface without erasing?
+- It does **not** test a co-adaptation mechanism. J differs in target history, BN mode and cohort, precision, initialization and
+  optimization (clipping on all modules); see Amendment 1 §2.
+
+**5. C-BN (corrected cohort) is negative.**
+- Setup: `cbn_check.py`; 2,048 held-out dev windows; pseudo-labels from Raw's readers; the projector copy in train mode over the
+  **actual** training cohort (full arm: 128 clean + 32 augmented windows, one projector call; MoP: 128 clean).
+- Relative decodability, eval-mode vs train-mode BN, zombie / cow:
+
+| world | zombie (eval → train) | cow (eval → train) |
+|---|---|---|
+| J full s1 | 0.433 → 0.421 | 0.311 → 0.311 |
+| J full s2 | 0.660 → 0.645 | 0.876 → 0.882 |
+| J MoP s1 | 0.661 → 0.643 | 0.318 → 0.324 |
+| J MoP s2 | 0.587 → 0.610 | 0.467 → 0.450 |
+
+- All |changes| ≤ 0.025. **BN mode / cohort does not explain the joint worlds' lower decodability.**
+- **Limits:**
+  - Dev pseudo-labels are noisy for zombies: the refit AP of the real frames is only 0.10-0.41 there, against 0.94 on the
+    diagnosis store. So the dev panel compresses differences.
+  - A negative here rules out one artefact; it does not establish co-adaptation.
+
+**Held until FD is in:** any statement about what causes the joint erasure.
+
+**Already established, independent of FD:**
+- No Stage 2 world, Raw included, predicts action consequences beyond an action prior.
+- None predicts mob motion beyond screen copy.
+- None samples object-coherent futures.
+
+For context (WHITEBOARD §17), the earlier D world ranks escapes at 0.711 by graded first-step damage, and PI's persistent scene
+shows pursuit (0.25-0.30). The Stage 2 patch predictors are below both on both axes.
+
 ### R63 — Why the full arm "predicts background" yet erases mobs (user, 10-17): erasure is LEARNED during joint training, not built into the predictor or the objective; the background advantage is not content
 
 **Question (user).** Why does the full arm improve background prediction yet erase mobs immediately? Cheap checks only, on
@@ -260,6 +399,14 @@ reader-independent.
   the root state the predictor was given.
 - **It is not a camera-shift failure:** it holds with the camera static and moving, and under noop and moves.
 - **It is not distribution shift:** it holds on held-out training-distribution windows (dev retention 0.43 / 0.31, pseudo-labels).
+
+> **[Corrected / qualified in R64]**
+> - AP was not tie-aware. The corrected values move ≤ 0.06 and the trajectory survives.
+> - "Retention" is relative next-cell linear decodability; it shows neither survival nor destruction of information.
+> - Raw's high value is **screen copy**: Raw does not move retained mobs with the camera, does not predict arrivals beyond copy,
+>   and its samples are not count-coherent.
+> - "Not a property of the predictor or the MSE objective" is withdrawn as stated. The Raw comparison shows the predictor can
+>   avoid this decodability loss on frozen Raw tokens; it does not exonerate the objective (Codex).
 
 **2. Erasure is learned during joint training.** The same predictor on frozen Raw tokens never learns it.
 

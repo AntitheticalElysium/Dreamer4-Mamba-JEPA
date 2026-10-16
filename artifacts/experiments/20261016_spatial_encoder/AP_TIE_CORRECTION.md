@@ -61,10 +61,24 @@ behind the reported numbers. Coverage: 144 encoder × stage × population × mob
 
 **Conclusion:** R57-R62's real-frame AP readings survive the correction.
 
-## 5. Impact on R63 (predicted-state reads): PENDING (`erasure_v2/`, 44 checkpoints)
+## 5. Impact on R63 (predicted-state reads): small; the qualitative trajectory survives
 
-First checkpoint, MoP s1 @ 500: zombie refit AP expected 0.2403 → 0.2423, copy 0.2765 → 0.2886, so the relative decodability goes
-0.869 → 0.840.
+Source: `erasure_diagnosis.py` re-run on all 44 checkpoints → `erasure_v2/`. Comparison: `erasure_v2/r63_original_vs_corrected.json`.
+Same split, same readers, only the AP changed.
+- **Every change is ≤ 0.06.** The largest is full s1 zombie at 10k: 0.26 → 0.32.
+- **Trajectory of zombie relative next-cell decodability,** corrected:
+  - joint runs: 0.81-1.02 at 500-1k, then 0.08-0.22 at 4k and 0.08-0.32 at 10k;
+  - Raw-predictor: 0.92-1.05 at 1k-2k, 0.88 / 0.94 at 10k.
+- **Split-panel intervals at 10k are wide** (episode bootstrap over the 40 test episodes):
+  - Raw s1 [0.53, 1.20], Raw s2 [0.73, 1.13];
+  - MoP s1 [0.05, 0.83], MoP s2 [0.03, 0.28];
+  - full s1 [0.11, 0.70], full s2 [0.04, 0.55].
+- **The all-roots cross-fitted version** (`location_dynamics.py` v2, 143 episodes) separates cleanly:
+  - Raw 0.80 [0.68, 0.91] / 0.89 [0.78, 0.98];
+  - J full 0.078 [0.055, 0.124] / 0.083 [0.050, 0.142];
+  - J MoP 0.086 / 0.056.
+- **Wording correction (Codex):** "retention" is relative next-cell linear decodability on future labels. It shows neither survival
+  nor destruction of input information, and Raw's value is screen-copy behaviour, not dynamics (NOTEBOOK R64).
 
 ## 5b. Staging margin δ (Amendment 1 §3), fixed before any FD number
 
