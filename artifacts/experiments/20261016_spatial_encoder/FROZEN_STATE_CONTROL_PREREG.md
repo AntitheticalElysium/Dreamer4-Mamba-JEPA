@@ -140,3 +140,98 @@ The question: do Raw's predicted states contain attack-related health changes?
 - Depth-1 measurements; recursion appears only through E3's B4.
 - Pseudo-labels on dev windows.
 - Sleep and night are not stratified here (Amendment 6 covers the readers).
+
+## Amendment 1 — after Codex's audit (2026-10-17, written while FD s1 trains at ~2,600 / 10,000; before ANY FD evaluation)
+
+Source: `../20261017_frozen_state_audit/ASSESSMENT.md`. Each finding was verified against the code and the evidence before this
+amendment. User instructions:
+- treat the control as a learnability experiment;
+- account for BN, initialization and optimization differences;
+- prioritize within-root action discrimination for consequences;
+- separate four mob levels;
+- no new architecture experiments.
+
+**1. Metric correction (confirmed defect).**
+- `spatial_eval_v2.average_precision` is order-dependent inside tied scores (Codex: four equal scores, labels [1,1,0,0] → 1.0 vs
+  0.4167). E1 / E2 repeat expected and copy scores across a root's futures with different labels.
+- All AP here is now `metrics_tied.ap_grouped`:
+  - Codex's `grouped_ap` verbatim (identical on 200 random tied cases);
+  - the scikit-learn step definition;
+  - an exactly replicated episode bootstrap (weights = episode multiplicity; verified against explicit replication);
+  - numerator and denominator recomputed within each draw;
+  - scores kept at full precision.
+- The impact on existing results is recorded in `AP_TIE_CORRECTION.md`. R63 is being recomputed (`erasure_diagnosis.py` →
+  `erasure_v2/`; the originals are kept).
+
+**2. What the control is.**
+- FD is a **learnability control**: can a fresh predictor learn the final, fixed deployed interface under this recipe? It does not
+  isolate a co-adaptation mechanism.
+- Differences between FD and J beyond "joint vs frozen", recorded before any FD number:
+
+| | J (joint) | FD (frozen) |
+|---|---|---|
+| target history | inputs and targets evolve over 10k updates | final, stationary space for 10k updates |
+| BN | train mode; cohort 128 clean + 32 augmented windows (full arm) | eval mode (running statistics) |
+| precision | bf16 autocast for encoder + predictor | fp32 extracted states, bf16 predictor |
+| initialization | predictor constructed after encoder + projector (differs in 31 / 57 tensors) | bitwise = Raw-predictor (all 57 tensors; Codex CPU reconstruction) |
+| optimization | one clip (1.0) over all modules plus auxiliary losses: 100% of logged steps clipped, median multiplier 0.44 / 0.48 in 1k-4k | predictor only; Raw's comparable runs never clip |
+
+- **Interpretation table** (adopted from Codex; these replace the stage-A wording):
+  - **FD improves over J:** the final deployed interface does not by itself force this predictor to erase. The joint
+    setup / history is implicated; target gradients specifically are not isolated.
+  - **FD fails and FB improves:** this projector / BN / scale interface makes the task harder under this predictor, objective
+    and budget. This is not proof of irreversible information loss.
+  - **Both fail while Raw succeeds:** feature-dependent predictor / objective difficulty. Static decodability does not establish
+    predictive sufficiency.
+- Success on one state never exonerates the objective. Raw and backbone tokens are per-token LN and projected tokens are not, so
+  the balance of MSE vs 0.1 router CE differs with state scale.
+
+**3. Staging rule, made explicit about non-inferiority.**
+- "FD − Raw not below 0" established only failure to prove inferiority. It is replaced by a **non-inferiority margin**
+  δ = 0.2 × mean over seeds of (Raw − J) on the corrected relative next-cell decodability. δ is computed from the existing Raw and
+  J worlds before any FD number is read, and recorded in `AP_TIE_CORRECTION.md`.
+- **"FD learnable like Raw":** at both seeds, FD − J lower bound > 0 **and** FD − Raw lower bound > −δ. Then FB does not run.
+- **Otherwise FB runs** (stage B), because the interface question remains open. Wide intervals therefore lead to FB, never to a
+  skipped test.
+
+**4. E1 renamed and reported with absolutes.**
+- "Retention" becomes **relative next-cell linear decodability**: AP(expected refit) / AP(copy refit) on future labels at screen
+  coordinates.
+- A ratio of 1 does not prove that all input information survived, and a lower ratio does not prove destruction (nonlinear
+  recoding, camera motion and real motion matter). Absolute APs are always reported beside the ratio.
+- FD − J shares J's copy denominator, so it is the cleanest comparison.
+- Codex's fixed 5NN audit recovered zombie AP 0.766 from MoP s1's deployed state. Fixed-ridge negatives are qualified
+  accordingly.
+
+**5. Mobs at four levels (E2, `location_dynamics.py` v2).**
+1. **Decodability:** absolute AP of next-cell mobs from the input and from the real next frame.
+2. **Persistence:** stay AP (static and shifted camera) and stay-vs-vacated AUC.
+3. **Correct future locations:** arrive AP. The primary comparator is now **reader-matched persistence** (root tokens moved by the
+   exact camera shift, with a cross-fitted refit reader); the transferred version is reported beside it. Sensitivity: units whose
+   camera-shift minimum is unique (homogeneous maps tie).
+4. **Coherent stochastic samples:** all 4 router samples scored. Object counts use fit-only rate-matched thresholds:
+   - count error vs exact;
+   - samples outside the counts their sibling futures realize;
+   - count spread over samples vs over sibling futures;
+   - the decoded-real reader floor and exact persistence as references.
+   The existing sampler draws heads **independently per patch** (Codex: correct marginals can still miss or duplicate objects).
+- The sibling-future frequency is a noisy **reference**, not a ceiling.
+- The motion reading becomes: a world "predicts mob motion" iff FL-arrive AP(expected) − AP(reader-matched persistence) has a 95%
+  interval above 0 at both seeds.
+
+**6. Consequences: within-root action discrimination is primary.**
+- Pooled attack AUC can identify dangerous roots with zero action ranking. Codex's label-only control gives pooled 0.87,
+  within-root 0.50.
+- **Primary:** within-root attack AUC over actions (pair-weighted; roots having both attacking and non-attacking actions; units
+  with ≥ 2 alive keys) and within-root Pearson of predicted vs real Δh, with episode bootstrap.
+- **Comparator:** COPY + action one-hot, i.e. a linear action prior, the conservative baseline.
+- The original pooled readings are reported as registered, but superseded.
+- A refitted HUD reader measures supervised accessibility in those coordinates, not faithful rendering of health.
+- Timing: this analysis was computed after the user's request and before this amendment was written (NOTEBOOK R64); it is
+  labelled descriptive.
+
+**7. C-BN, corrected cohort.**
+- The full arm's BN saw 128 clean + 32 augmented windows (640 frames). `cbn_check.py` now reproduces that cohort in a single
+  projector call (never through PatchState's chunks).
+- A positive result shows mode / cohort sensitivity only. Train-mode statistics include target-future frames, which is not the
+  absence of co-adaptation. It is reported before stage A is read.

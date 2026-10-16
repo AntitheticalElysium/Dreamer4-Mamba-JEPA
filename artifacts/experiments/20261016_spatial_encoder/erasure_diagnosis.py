@@ -23,6 +23,10 @@ D  IN-DISTRIBUTION (held-out DEV split of the training corpus; never FINAL): 2,0
    alignment (z1, z2, a2 -> z3). No simulator labels exist there: labels = Raw@10000's Tier B readers on the real f3 frame
    (pseudo-labels, AP 0.95-0.99 on diagnosis frames). P1 transfer AP and P2 refit AP (episode-disjoint halves).
 Usage: erasure_diagnosis.py <label>=<encoder spec>,<predictor ckpt> ... -> artifacts/eda/spatial_encoder_v1/erasure/<label>.json
+CORRECTION (10-17, Codex audit ../20261017_frozen_state_audit/ASSESSMENT.md): AP is now metrics_tied.ap_grouped (tie-grouped). The
+original spatial_eval_v2.average_precision is order-dependent inside ties, and expected / copy scores repeat across a root's
+futures with different labels. Outputs go to erasure_v2/; the original erasure/ outputs (R63) are kept. Per-unit test refit
+scores are saved (erasure_v2/<label>_units.pt) for episode-bootstrap intervals.
 """
 import json
 import os
@@ -41,9 +45,10 @@ import torch                                                                   #
 from torch.nn import functional as F                                           # noqa: E402
 
 import objective_audit as OA                                                   # noqa: E402
+from metrics_tied import ap_grouped                                            # noqa: E402
 
-OUTD = EV.OUT / 'erasure'
-AP, AUC = EV2.average_precision, EV2.auc_tie
+OUTD = EV.OUT / 'erasure_v2'
+AP, AUC = ap_grouped, EV2.auc_tie
 rnd = lambda x: None if x is None else round(float(x), 4)
 score = lambda W, X: torch.cat([EV.apply(W, X[i:i + 200000].float()) for i in range(0, len(X), 200000)])
 dil = lambda m: F.max_pool2d(m.float().reshape(-1, 1, 7, 9), 3, 1, 1).reshape(m.shape) > 0
@@ -146,11 +151,14 @@ def predictor_part(Uf, Ut, R):
                            for s, m in strata.items() if int(ex[m].sum()) > 0}
         exf = ((Uf['lay1'] & bit) > 0).reshape(-1).float()[:, None]
         o['refit_ap'] = {}
+        o['_scores'] = {'label': ex}
         for k, src in (('exp', 'exp'), ('sample0', 'smp'), ('copy', 'copy'), ('real', 'real')):
             xf = Uf[src][:, 0] if src == 'smp' else Uf[src]
             xt = Ut[src][:, 0] if src == 'smp' else Ut[src]
             Wr = EV.ridge(flat(xf).float(), exf)
-            o['refit_ap'][k] = rnd(AP(score(Wr, flat(xt))[:, 0], ex.reshape(-1)))
+            st_ = score(Wr, flat(xt))[:, 0]
+            o['refit_ap'][k] = rnd(AP(st_, ex.reshape(-1)))
+            o['_scores'][k] = st_.view(ex.shape)
         out[nm] = o
     # background
     t1, t0 = Ut['tile1'], Ut['tile0']
@@ -255,9 +263,10 @@ def main():
         g = torch.Generator(device=EV.DEV).manual_seed(20261071)
         Uf = predictor_units(rows, split['fit'], enc, pred, g)
         Ut = predictor_units(rows, split['test'], enc, pred, g)
-        res = {'label': label, 'encoder': enc_spec, 'predictor': pred_ck, 'device': EV.DEV, 'representation': res_r,
+        res = {'label': label, 'encoder': enc_spec, 'predictor': pred_ck, 'device': EV.DEV, 'ap': 'metrics_tied.ap_grouped', 'representation': res_r,
                'predictor_d1': predictor_part(Uf, Ut, R),
                'dev_in_distribution': dev_part(frames, acts, ep, enc, pred, R, lab, g)}
+        torch.save({'seed': Ut['seed'], **{m: res['predictor_d1'][m].pop('_scores') for m in ('zombie', 'cow')}}, OUTD / f'{label}_units.pt')
         (OUTD / f'{label}.json').write_text(json.dumps(res, indent=1))
         pz = res['predictor_d1']['zombie']; pc = res['predictor_d1']['cow']
         print(json.dumps({label: {'dep_zAP': res_r['deployed']['zombie_ap'], 'z_exp_ap': pz['exp']['ap'], 'z_refit': pz['refit_ap'],
