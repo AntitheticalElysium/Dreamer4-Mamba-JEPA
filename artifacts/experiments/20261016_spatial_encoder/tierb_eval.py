@@ -101,6 +101,7 @@ def main():
         res = {'encoder': enc_spec, 'predictor': pred_ck}
         # B1 / B2
         pc, rc, att_pred, att_real, fa = [], [], [], [], []
+        units = {'b1_root': [], 'b1_pred': [], 'b1_real': [], 'att_root': [], 'att_pred': []}       # per-unit, for paired bootstraps
         b2 = {'cells': 0, 'real': 0., 'sampled': 0., 'expected': 0., 'weighted': 0., 'abs_err': 0., 'real_next_read': 0., 'copy_read': 0.}
         ctl = {'mob_cells_real_next': 0, 'mob_cells_read_real_next': 0, 'mob_cells_read_expected': 0, 'real_next_dh_pred': [], 'real_dh': []}
         for ri in test:
@@ -128,6 +129,7 @@ def main():
                     continue
                 d_pred = float(h_exp[a]) - h_cur
                 pc.append(d_pred); rc.append(float(real_dh[ok, a].mean()))
+                units['b1_root'].append(ri); units['b1_pred'].append(d_pred); units['b1_real'].append(float(real_dh[ok, a].mean()))
                 okk = torch.nonzero(ok)[:, 0]
                 ctl['real_next_dh_pred'].append(float(h_rn[okk, a].mean()) - h_cur); ctl['real_dh'].append(float(real_dh[ok, a].mean()))
                 allmob = ((l1[okk, a] & 3) > 0).all(0)                                         # mobs present in every key
@@ -139,6 +141,7 @@ def main():
                 for k in torch.nonzero(ok)[:, 0].tolist():
                     if float(real_dh[k, a]) <= -1:
                         att_pred.append(d_pred); att_real.append(float(real_dh[k, a]))
+                        units['att_root'].append(ri); units['att_pred'].append(d_pred)
                 if bool((real_dh[ok, a] > -1).all()):
                     fa.append(d_pred <= -0.5)
                 mobs = (l1[:, a] & 3) > 0                                                     # zombie or cow present [4,63]
@@ -187,6 +190,7 @@ def main():
         for i in range(len(roots)):
             m = risk[i] == risk[i].min(); es.append(1 - float(P5[i][m].mean()))
         res['B3'] = {'auc5_first_step_risk': round(auc_within(risk, P5), 4), 'expected_safe_5': round(sum(es) / len(es), 4)}
+        units['b3_risk'] = risk; units['b3_es'] = torch.tensor(es)
         print(json.dumps({name: {'B3': res['B3']}}), flush=True)
         # B4
         depths = (1, 2, 4, 8, 16)
@@ -221,6 +225,7 @@ def main():
         res['B4']['depths'] = list(depths)
         print(json.dumps({name: {'B4': res['B4']}}), flush=True)
         (EV.OUT / f'tierB_{name}.json').write_text(json.dumps(res, indent=1))
+        torch.save(units, EV.OUT / f'tierB_units_{name}.pt')
         del enc, pred; torch.cuda.empty_cache()
 
 
