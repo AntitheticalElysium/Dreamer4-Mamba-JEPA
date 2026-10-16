@@ -783,7 +783,8 @@ from level 3 and is preferred to a BN → LN swap as the first follow-up.
 - **Full vs Raw: "not supported."**
   - Attack recall 0; escape AUC below chance at both seeds (0.462 / 0.460);
   - descriptively worse than MoP on escape at both seeds;
-  - better census stability and the best background prediction, but it erases mobs at the first step.
+  - better census stability and the best background prediction *in token MSE* (equal in content, R63), but it erases mobs at
+    the first step.
 - **Sleep (Amendment 6):** the preregistered misfire reading is "does not reduce". Descriptively, the full arm restores cow
   detection in sleeping frames at both seeds (deployed AP 0.73-0.91 vs MoP 0.03-0.05); zombies only partly.
 - **Synthesis:**
@@ -795,3 +796,59 @@ from level 3 and is preferred to a BN → LN swap as the first follow-up.
   from level 3 directly. Two cheap evaluation-only checks could precede it:
   - the deployed-AP trajectory over saved checkpoints vs the prediction loss;
   - a known-good localization reference.
+
+## 20. 2026-10-17 — why worlds erase mobs, and what still blocks decisions (user question; NOTEBOOK R63)
+
+**The objective, restated.** Coherent, reconstruction-free imagination that **improves decisions**, not latent prediction
+accuracy. Two numbers keep us honest:
+- a predicted state that copies its input already reaches ~97% of token variance;
+- the decisions depend on the ~1-2% of cells where mobs and consequences live.
+
+### What we now know (measured; R60-R63)
+
+1. **Static decodability is not the bottleneck.** Every encoder's backbone keeps rare mobs (AP ≥ 0.97). So do RGB pixels.
+2. **Imagined mobs are judged by location, not counts.** Census agreement hid wrong-cell hallucination (R60).
+   - Location measures are validated: they reproduce independent implementations exactly.
+   - They are threshold-free, tolerant to one-cell displacement, with an oracle head choice, and stratified by camera motion.
+   - They hold on held-out training-distribution windows.
+3. **Jointly trained Spatial worlds LEARN to erase mobs.** All four runs (MoP, full × 2 seeds) keep next-step mob information at
+   copy level for ~1k updates, then destroy it between ~1k and ~4k. Zombie retention at 10k: 0.07-0.26.
+   - The same predictor, loss, budget, data and seeds on frozen Raw tokens never does (0.77-1.05).
+   - So erasure is **not** a property of the predictor or the MSE objective. It is not caused by low mob energy in the space
+     either: Raw's space has less.
+4. **Background prediction is equal across encoders in content** (~+0.7 pt tile accuracy over copy; ~24% of camera-shifted cells,
+   vs 93% real). The full arm's token-MSE advantage tracks its larger frame-to-frame drift.
+5. **Retention is necessary but not sufficient.** The Raw-predictor retains mobs (cows slightly beyond copy) yet predicts no
+   attacks (recall ≤ 2%) and ranks escapes at chance (R60). Two distinct level-3 failures:
+   - **F1, erasure:** learned in joint training;
+   - **F2, no consequences:** present without any projector.
+6. **Predicted states can carry information off the real-state manifold.** Early joint predictors retained mobs that real-state
+   readers could not read. Imagination read by heads trained on real states needs predictions **on** the manifold. The
+   Raw-predictor's predictions move onto it as training proceeds; the joint predictors' never do.
+
+### What remains hypothetical
+
+- **The cause of F1.** Three candidates:
+  - (a) co-adaptation through non-detached patch targets: Ni et al. 2024, online targets lose rank; Littwin et al. 2024, JEPA's
+    bias toward predictable features;
+  - (b) the projected space's geometry;
+  - (c) the patch-trained backbone.
+  The existing runs cannot separate them, because space and predictor co-evolve.
+- **The cause of F2.** Either the consequence is never represented in the predicted state (uniform token MSE: consequence cells
+  are rare, R55 ~9% of target change, E14), or it is represented off-manifold and unread.
+- **That fixing F1 helps decisions.** Raw-like retention alone does not (R60).
+- **The full arm's drift explanation** for its token-MSE advantage.
+
+### The next discriminating questions
+
+1. **F1:** given a frozen patch-trained encoder, does a fresh predictor on its **deployed** tokens erase, and one on its
+   **backbone** tokens not?
+   - The design is `20261016_spatial_encoder/FROZEN_STATE_CONTROL_PROPOSAL.md`: ~5 h GPU, predictor-only; staged.
+   - If co-adaptation is implicated, a detached-target joint run follows.
+2. **F2:** in a world that retains the mob, is the attack's consequence present in the predicted state at all?
+   - A cheap refit check on existing Raw-predictor checkpoints comes first.
+   - Only then an objective-level intervention, e.g. consequence-weighted or discriminative prediction, preregistered and after
+     a literature sweep on that diagnosis.
+
+F1 decides which state to build on. F2 decides whether any of them can improve decisions. The control answers F1 cheaply; F2 is
+the larger blocker for the objective.

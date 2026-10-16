@@ -222,6 +222,119 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R63 — Why the full arm "predicts background" yet erases mobs (user, 10-17): erasure is LEARNED during joint training, not built into the predictor or the objective; the background advantage is not content
+
+**Question (user).** Why does the full arm improve background prediction yet erase mobs immediately? Cheap checks only, on
+existing checkpoints: validate the mob-location evaluation, follow the representations through training, and separate projector
+limitations from predictor / objective failures.
+
+**Code.**
+- `erasure_diagnosis.py`: evaluation only; GPU; exact simulator labels evaluate, never train.
+- `erasure_summary.py`: builds the tables below.
+- Coverage: 44 checkpoints. MoP s1 / s2 and full s1 / s2 at 500, 1k, 2k, 3k, 4k, 6k, 8k, 10k (encoder, projector and the
+  co-trained predictor of the same step). Raw-predictor s1 / s2 at 1k, 2k, 4k, 6k, 8k, 10k (frozen Raw@10000).
+- Per checkpoint:
+  - **Representation:** both stages; Tier A readers exactly as `spatial_eval_v2.a1`; mob variance share within tile classes;
+    change energy by cell type.
+  - **Depth-1 predictor:** the B4 setting; fit + test roots of `split_v2.json`.
+    - P1: transfer reads with the real-state readers. Threshold-free AP, precision / recall at the threshold, exact and within one
+      cell, best-of-K, strata by camera motion and action.
+    - P2: refit reads. Ridge fitted on the FIT units' predicted / copy / real states, scored on test.
+    - P3: background. Tile reader on predicted states, all cells and camera-changed cells; token error.
+  - **Held-out DEV split** of the training corpus (never FINAL): 2,048 windows in the training alignment. Labels are Raw's
+    readers on the real next frame (pseudo-labels).
+
+**Retention** = refit AP on the predicted expected state ÷ refit AP on the root's own state (copy). It is threshold-free and
+reader-independent.
+- 1 = the predictor keeps the mob information its input carried.
+- Below 1 = it destroys some.
+
+**1. The evaluation is valid; the erasure is real.**
+- **Reproduction:** full s1 @ 10k reproduces Tier A's deployed zombie AP exactly (0.7452), and `census_localization.py`'s real /
+  copy precision and recall to 4 decimals.
+- **The erasure is not a reader or threshold artefact:**
+  - threshold-free AP of the expected state: zombie 0.043, cow 0.021 (copy 0.22 / 0.08);
+  - recall within one cell: 0;
+  - no head carries the mob: best-of-K AP 0.005.
+- **The information is gone, not unread.** Refit readers recover 0.053 / 0.043 from the predicted state, against 0.20 / 0.08 from
+  the root state the predictor was given.
+- **It is not a camera-shift failure:** it holds with the camera static and moving, and under noop and moves.
+- **It is not distribution shift:** it holds on held-out training-distribution windows (dev retention 0.43 / 0.31, pseudo-labels).
+
+**2. Erasure is learned during joint training.** The same predictor on frozen Raw tokens never learns it.
+
+| zombie retention | 500 | 1k | 2k | 4k | 10k |
+|---|---|---|---|---|---|
+| Raw-pred s1 / s2 (frozen Raw tokens) | — | 1.01 / 0.94 | 1.05 / 0.97 | 0.77 / 0.93 | **0.88 / 0.95** |
+| MoP s1 / s2 (joint) | 0.87 / 0.89 | 0.87 / 0.84 | 0.46 / 0.58 | 0.15 / 0.20 | **0.15 / 0.07** |
+| full s1 / s2 (joint) | 0.98 / 1.02 | 0.80 / 0.80 | 0.58 / 0.35 | 0.16 / 0.07 | **0.26 / 0.23** |
+
+| cow retention | 500 | 1k | 2k | 4k | 10k |
+|---|---|---|---|---|---|
+| Raw-pred s1 / s2 | — | 0.97 / 0.96 | 0.94 / 0.94 | 1.09 / 1.18 | **1.11 / 1.10** |
+| MoP s1 / s2 | 0.67 / 0.85 | 0.79 / 0.86 | 0.28 / 0.45 | 0.21 / 0.13 | **0.33 / 0.27** |
+| full s1 / s2 | 0.90 / 0.85 | 0.79 / 0.96 | 0.36 / 1.03 | 0.27 / 1.06 | **0.55 / 0.84** |
+
+- **Early on, every joint world keeps the mob information at copy level** (500-1k: 0.80-1.02), as the Raw-predictor does.
+- **Between ~1k and ~4k updates it is destroyed,** in all four joint runs (zombies; cows in three of four, not full s2).
+- Over the same window:
+  - the deployed state's own zombie AP falls (0.98-0.99 → 0.62-0.88 at 10k);
+  - the patch-prediction loss keeps falling (≈ 0.07 at 1k → 0.03 at 4k).
+- The Raw-predictor has the **same** architecture, loss (min-over-K MSE + router CE), budget, data stream and seeds. It keeps
+  zombies at ≥ 0.77 and cows at ≥ copy throughout.
+- So **the erasure is not a property of the predictor or its MSE objective.** It comes with joint encoder-projector-predictor
+  training, or with the projected space that joint training produces.
+- Reader compatibility differs too:
+  - The Raw-predictor's expected states become readable by real-state readers as training proceeds. Zombie transfer AP 0.02 → 0.14 /
+    0.26; cows 0.18 vs copy 0.15, i.e. beyond copy.
+  - The joint predictors' never do (≤ 0.15, mostly 0.01-0.05). Even when they retained information, it sat off the real-state
+    manifold.
+
+**3. Low mob energy in the space is NOT the explanation** (a hypothesis I held; now contradicted).
+- The deployed spaces' mob variance share within tile classes is 0.0015-0.010.
+- Frozen Raw's is **0.0059**, lower than three of the four joint spaces, and Raw's world retains.
+- Mob-change salience (energy per mob-change cell ÷ per drift cell) is 20.7 for Raw, 10-44 for the joint spaces. It does not order
+  the outcomes either.
+
+**4. The full arm's "background advantage" (R62) is token MSE, not content.** At 10k:
+
+| | tile acc of predicted state (copy) | camera-changed cells correct | token error ÷ copy, mob-free cells | drift share of change energy |
+|---|---|---|---|---|
+| Raw-pred s1 / s2 | 0.878 / 0.877 (0.870) | 0.24 / 0.23 | 0.83 / 0.83 | 0.12 |
+| MoP s1 / s2 | 0.857 / 0.855 (0.848 / 0.850) | 0.24 / 0.23 | 0.77 / 0.75 | 0.11 / 0.12 |
+| full s1 / s2 | 0.860 / 0.848 (0.851 / 0.842) | 0.24 / 0.28 | **0.64 / 0.70** | **0.20 / 0.21** |
+
+- In reader terms, all six worlds predict background equally: about +0.7 pt over copy, and about 24% of camera-shifted cells right
+  (real: 93%).
+- The full arm's lower token error relative to copy coincides with its space carrying more frame-to-frame drift (0.20-0.21 of the
+  change energy vs 0.12). Copying pays for that drift and the predictor can partly anticipate it.
+- That explanation is likely but **not tested**. **R62's "predicts background best" is corrected:** best in token MSE relative
+  to copy, equal in content.
+
+**5. Projector limits vs predictor / objective failures** (what the evidence separates):
+- **F1, erasure:** specific to jointly trained Spatial worlds. Its cause is among:
+  - joint co-adaptation (training dynamics; the patch targets are not detached, as in LeWM);
+  - the geometry of the projected space joint training produces;
+  - both.
+  It is not the predictor architecture or the loss, which retain on frozen Raw. These checks cannot separate the remaining
+  candidates, because in every joint run the space and the predictor change together.
+- **F2, no consequences:** present **without any projector**. The Raw-predictor retains mobs (and slightly beyond copy for cows),
+  yet its attack recall is ≤ 2% and its escape AUC 0.46-0.50 (R60). This is a predictor / objective failure: retention is
+  necessary for decisions but not sufficient.
+
+**Literature checked for this diagnosis** (primary sources read, not summaries):
+- Ni et al. 2024 (arXiv 2401.08898, ICLR): online (non-detached) self-predictive targets lose rank and return in all MuJoCo tasks;
+  stop-gradient preserves rank in their linear analysis. The ℓ2 objective is exact only for deterministic dynamics.
+- Littwin et al. 2024 (arXiv 2407.03475): JEPA's implicit bias toward high-influence (predictive) features over noisy ones.
+- Branch-JEPA (arXiv 2607.05238): hard-assigned heads "can duplicate one another, ignore rare futures, or spread into unsupported
+  regions"; hard assignment "updates only the selected location".
+- MuDreamer (arXiv 2405.15083): "object vanishing … particularly when crucial elements are small" (under reconstruction).
+- Lu et al. 2026 (arXiv 2607.15142): all five frozen Pong world models fail on the ball, and policies trained inside them collapse.
+  Their fix is pixel reconstruction on concept regions, which is outside our reconstruction-free constraint.
+- DINO-WM (arXiv 2411.04983): a frozen encoder, patch-MSE predictor, teacher forcing, history up to 3 with a causal mask.
+
+**Next (proposed, not started):** `20261016_spatial_encoder/FROZEN_STATE_CONTROL_PROPOSAL.md`.
+
 ### R62 — The full arm at Stage 2 (2 seeds) and Amendment 6 complete: the three-encoder comparison, read at three levels
 
 **Runs.**
