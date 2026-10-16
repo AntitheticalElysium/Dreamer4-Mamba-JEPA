@@ -779,6 +779,19 @@ stages, all arms; registered before any full-arm number).
 **Candidate after the comparison:** a matched backbone-state vs projected-state world-prediction control. It isolates level 2
 from level 3 and is preferred to a BN → LN swap as the first follow-up.
 
-**Pending:**
-- the full arm (2 seeds; same protocol);
-- the Amendment 6 readings.
+**Result of the three-encoder comparison** (R62; 2 seeds each, identical corrected protocol):
+- **Full vs Raw: "not supported."**
+  - Attack recall 0; escape AUC below chance at both seeds (0.462 / 0.460);
+  - descriptively worse than MoP on escape at both seeds;
+  - better census stability and the best background prediction, but it erases mobs at the first step.
+- **Sleep (Amendment 6):** the preregistered misfire reading is "does not reduce". Descriptively, the full arm restores cow
+  detection in sleeping frames at both seeds (deployed AP 0.73-0.91 vs MoP 0.03-0.05); zombies only partly.
+- **Synthesis:**
+  - Level 1 is not the bottleneck: every backbone keeps rare mobs; patch training costs temporal stability.
+  - Level 2 costs the Spatial arms 9-37 AP points.
+  - Level 3 fails for all three encoders, in three different ways: copy then erase / hallucinate then explode / erase.
+  - Changing how the encoder is trained changed how the world fails, not whether it fails.
+- **Proposed next (user decides):** the matched backbone-state vs projected-state world-prediction control. It separates level 2
+  from level 3 directly. Two cheap evaluation-only checks could precede it:
+  - the deployed-AP trajectory over saved checkpoints vs the prediction loss;
+  - a known-good localization reference.

@@ -222,6 +222,125 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R62 — The full arm at Stage 2 (2 seeds) and Amendment 6 complete: the three-encoder comparison, read at three levels
+
+**Runs.**
+- `run_stage2_full.sh`: full_sig at seeds 20260731 / 20260732, 10,000 updates, identical init / data / budget. The identical
+  corrected evaluation ran on CPU after the other arms.
+- Then `run_sleep_strat.sh` and `census_localization.py` (unchanged).
+- Training ended `stage2_full_done`. Final idm_acc 0.41 over 17 actions (chance 0.06); patch effective rank 45.7.
+
+**Primary, preregistered (full vs Raw-predictor, `stage2_verdict_v2_full.json`): "NOT SUPPORTED."** Neither primary improves at
+either seed.
+
+| full vs Raw-pred | seed 1: full / Raw, diff [CI] | seed 2: full / Raw, diff [CI] |
+|---|---|---|
+| **B1 attack recall** | **0.000** / 0.022, −0.022 [−0.085, 0.000] | **0.000** / 0.007, −0.007 [−0.028, 0.000] |
+| **B3 escape AUC** | 0.462 / 0.504, −0.042 [−0.118, +0.037] | 0.460 / 0.459, +0.001 [−0.049, +0.051] |
+| B1 graded health | **−0.307** / 0.004, −0.311 [−0.486, −0.062] | −0.133 / −0.162, +0.029 [−0.090, +0.150] |
+| B2 MAE (guard) | 0.427 / 0.375: **fails** [+0.025, +0.081] | 0.375 / 0.383: passes |
+| B4 d16 zombie error (guard) | 0.35 / 0.47: passes (better) | 0.72 / 0.37: **fails** [+0.12, +0.65] |
+| reader on real next, zombie / cow AP | 0.64 / 0.83 (Raw 0.95 / 0.98) | 0.80 / 0.88 |
+
+**Secondary, descriptive (full vs MoP + SIGReg, `stage2_verdict_v2_full_vs_mop.json`).** Amendment 5 gives no verdict here; the
+file's mechanical "verdict" field does not apply.
+- B3 is **worse at both seeds**: −0.073 [−0.136, −0.010] and −0.090 [−0.134, −0.045].
+- The full arm's escape ranking is below chance at both seeds (0.462 / 0.460).
+- B4 census error is better at both seeds: −0.28 [−0.56, −0.05] and −1.93 [−2.56, −1.31]. The full world does not explode.
+- B2 is worse at s1 and better at s2. B1 graded health is worse at s1 (−0.45 [−0.73, −0.09]).
+
+**Level 1 — backbone (Tier A, backbone_ln):**
+
+| | tile | zombie / cow AP | drift day steady / night | code flips |
+|---|---|---|---|---|
+| Raw | 0.977 | 0.987 / 0.988 | 0.035 / 0.154 | 0.32 |
+| MoP s1 / s2 | 0.970 / 0.971 | 0.986 / 0.967 · 0.985 / 0.959 | 0.062 / 0.097 · 0.068 / 0.083 | 0.26 / 0.23 |
+| full s1 / s2 | 0.971 / 0.967 | 0.977 / 0.975 · 0.970 / 0.989 | **0.105 / 0.139 · 0.154 / 0.155** | 0.33 / 0.32 |
+
+- All three backbones keep rare mobs (AP ≥ 0.97).
+- The full arm's backbone is the **least temporally stable** of the Spatial ones: day drift 2-3× MoP's, and it loses MoP's night
+  advantage.
+- At sleep onset, its backbone decodes better than MoP's (population B zombie AP 0.81 / 0.88 vs 0.69 / 0.66).
+
+**Level 2 — deployed state (Tier A, deployed):**
+- **Mob AP in Tier A frames:**
+  - full s1 / s2: zombie 0.745 / 0.816, cow 0.784 / 0.897;
+  - MoP s1 / s2: zombie 0.620 / 0.878, cow 0.743 / 0.814;
+  - Raw 0.987 / 0.988.
+- **Fit-only CV λ:** full zombie AP 0.88 / 0.87, cow 0.95 / 0.95.
+- **Energy HUD R²:** drops to 0.904 at full s2.
+- **Sleep (Amendment 6):**
+  - The preregistered reading: **"does not reduce."** full − MoP M1 is −0.58 pt [−1.99, +0.13] and −0.05 pt [−0.21, +0.05].
+  - Guard, awake AP full − MoP: +0.11 [+0.002, +0.245] and −0.11 [−0.20, −0.04].
+  - M1 counts misfires, and MoP's were already low on B.
+  - The descriptive companion named in R61, sleeping-frame AP (deployed), moves strongly. Intervals are post hoc
+    (`sleep_ap_ci.py`, episode bootstrap 2,000; A rests on 8 episodes, B on 33):
+
+| sleeping-frame AP, deployed | full s1 / MoP s1, diff [CI] | full s2 / MoP s2, diff [CI] |
+|---|---|---|
+| cow, B | 0.91 / 0.04, +0.87 [+0.64, +0.96] | 0.73 / 0.03, +0.70 [+0.49, +0.90] |
+| cow, A | 0.90 / 0.01, +0.89 [+0.65, +1.00] | 0.82 / 0.05, +0.77 [+0.58, +0.87] |
+| zombie, B | 0.38 / 0.07, +0.31 [−0.02, +0.60] | 0.60 / 0.18, +0.42 [+0.05, +0.67] |
+| zombie, A | 0.52 / 0.01, +0.51 [+0.32, +0.96] | 0.05 / 0.10, −0.06 [−0.93, +0.01] |
+
+  - **So photometric invariance + inverse dynamics (together) largely remove the deployed state's blindness to cows in sleeping
+    frames, at both seeds and in both populations.** Zombie gains are partial: one seed per population.
+  - It stays at or below Raw (cow sleeping AP 0.73-0.91 vs Raw 0.91-1.0; zombie 0.05-0.60 vs 0.66-1.0).
+  - Which component is responsible is not identified (Amendment 5).
+
+**Level 3 — world predictor** (`census_localization.py`, d1, 565 units). Imagined vs exact mob cells:
+
+| | zombie: sample count · precision · recall | cow: sample count · precision · recall | sq. error vs copy, expected: mob-free / mob cells |
+|---|---|---|---|
+| full s1 | 0.035 · 0.00 · 0.00 | 0.000 · 0.00 · 0.00 | **0.64** / 0.94 |
+| full s2 | 0.059 · 0.00 · 0.00 | 0.097 · 0.28 · 0.06 | **0.70** / 0.94 |
+| MoP s1 / s2 (R60) | 0.08 / 0.19 · 0.00 · 0.00 | 0.41 / 0.04 · ≤ 0.03 · ≤ 0.03 | 0.77 / 1.04 · 0.75 / 0.61 |
+| Raw-pred (R60) | 0.03-0.05 · 0.46-0.64 · 0.08-0.16 | 0.34 · 0.32 · 0.25 | 0.83 / 0.98 |
+
+- The full arm's world predicts the **background best** of the three (0.64-0.70 of copy error on mob-free cells).
+- It **erases mobs at the first step** (0% zombie locations; at most 6% cow recall).
+- Through recursion its cows stay far below its reader's real census (s1 ≈ 0; s2 0.06-0.10 vs 0.42-0.55 to d8), and its zombies
+  under-produce (s1) or inflate late (s2 d16: 0.68 vs 0.27).
+- Reader-relative health, Pearson(predicted, reader on the real next frame): −0.34 / −0.15. No world reproduces its own reader's
+  health.
+
+**Answer to the question the user set** (does the full arm improve predictive dynamics, consequence fidelity, recursive imagination
+and decisions, not just probes?):
+- **No, on every world-level measure that bears on decisions.**
+  - Attack recall 0;
+  - escape ranking below chance at both seeds, and worse than MoP;
+  - imagined mobs erased.
+- What it does improve:
+  - level 2's robustness to sleep rendering (cows, robustly);
+  - background prediction;
+  - recursive stability (no census explosion).
+- None of these reaches decisions.
+
+**The three-encoder comparison, as a whole (2 seeds each, identical protocol):**
+1. **Level 1 is not the bottleneck.** Every backbone (Raw, MoP, full) keeps rare mobs (AP ≥ 0.97). Patch training does not beat
+   Raw's backbone on mobs and costs temporal stability (most for the full arm).
+2. **Level 2 costs both Spatial arms** 9-37 AP points at the projector (zombie / cow, seed-dependent). The full arm's objective makes that loss
+   far more robust to sleep rendering, but does not close it to Raw's LN state.
+3. **Level 3 fails for all three encoders at this predictor and budget**, in three different ways:
+   - Raw-predictor: a degraded copy, then erasure;
+   - MoP: mobs hallucinated in wrong cells, then explosion;
+   - full: mobs erased, background excellent.
+   - No world is location-faithful for mobs or decision-competent (best escape AUC 0.55 vs D's 0.711; attack recall ≤ 2%).
+   - Changing how the encoder is trained changed *how* the world fails, not *whether* it fails.
+4. Changing the encoder alone is therefore not sufficient. The predictive objective and the world model (level 3) are where
+   decision-relevant information is lost for all three representations. For the Spatial arms, part of that may be inherited from
+   level 2 (untested; see R60's non-detached-target hypothesis).
+
+**Next — proposed, not started (user decides):** the matched **backbone-state vs projected-state world-prediction control**.
+- Design: the same encoder checkpoint (e.g. full s1 / s2 and MoP s1 / s2, frozen); the same PatchPredictor, budget and data
+  stream; trained once on backbone_ln tokens and once on deployed tokens; read by each stage's own readers; the identical corrected
+  Tier B and localization.
+- It separates level 2 from level 3 directly. If backbone-state worlds localize mobs and the projected ones do not, the projector
+  is the world's bottleneck. If both fail, the predictor and objective are.
+- Evaluation-only checks on existing checkpoints, which cost no training and could precede it:
+  - the deployed-AP trajectory across the saved 500-step checkpoints vs the patch-prediction loss (R60's hypothesis);
+  - the same localization check at depth 1 for the D world (if its state admits these readers), as a "known-good" reference.
+
 ### R61 — Amendment 6, Raw and MoP + SIGReg (full arm pending): in sleeping frames the deployed state does not MISFIRE so much as GO BLIND — at both seeds, while its backbone stays perfect
 
 Source: `sleep2_verdict.json` and `sleep2_<arm>_s<seed>.json`. Deployed readers were asserted identical to the Tier B readers.
