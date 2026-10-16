@@ -267,6 +267,26 @@ the patch state of each encoder):
 - **My hypothesis that VICReg would keep nuisance out of the patches is refuted at 2k.**
 - The full arm (MoP + SIGReg + photometric invariance + inverse dynamics) is running.
 
+**Full arm** (MoP + SIGReg + photometric invariance + inverse dynamics, step 2,000):
+- It OOMed deterministically at update ~600, even alone on the GPU. Amendment 3: L_inv on the augmented views of 32 of the 128
+  windows; peak 4.3 → 3.56 GB.
+- One run was lost earlier to a concurrent evaluation on the GPU. Stage 2 now runs strictly one GPU job at a time.
+
+| step 2,000 | tile | cow AUC | HUD R² health / food / drink / energy | eff. rank | drift day changing / night | code flips | HUD salience |
+|---|---|---|---|---|---|---|---|
+| MoP + SIGReg | 0.947 | 0.979 | 0.981 / 0.979 / 0.982 / 0.926 | 45.2 | 0.082 / 0.120 | 26.6% | +0.006 |
+| full | 0.958 | 0.990 | 0.974 / **0.948 / 0.938 / 0.894** | 34.9 | 0.080 / 0.144 | 32.8% | −0.002 |
+
+**Stage 2 arm (declared rule): MoP + SIGReg.**
+- The full arm is eligible and its drift (day changing) is within +0.02.
+- But its HUD R² is 0.029 lower on average over the 4 stats, beyond −0.02.
+- Invariance + inverse dynamics help map content slightly and cost HUD consequence information and effective rank.
+
+**Stage 2 launched 13:38** (`run_stage2.sh mop_sig`):
+- the spatial encoder at seeds 20260731 (Raw's own: identical initialization and window stream) and 20260732;
+- the Raw-predictor at the same seeds;
+- 10,000 updates each, sequential, then Tier A / B for every world and `stage2_analysis.py`.
+
 **Tier B readers had a defect, caught by their own control:**
 - Ridge probes on a 1.4%-positive mob label never score above 0.5. On the encoder's own states of *real* next frames,
   "certain" mob cells read 0%.
