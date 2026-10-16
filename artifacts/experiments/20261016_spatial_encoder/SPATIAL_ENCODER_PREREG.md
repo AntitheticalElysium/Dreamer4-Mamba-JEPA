@@ -144,3 +144,57 @@ diagnosis-store frames, seeds disjoint between fit and test; identical protocol 
   the ~5.46 GB available. It encodes 1,024 frames per update (clean + augmented).
 - L_inv now uses the augmented views of the **first 32 of the 128 windows** (128 augmented frames). Every other term keeps
   the full batch.
+
+## Amendment 4 — corrected evaluation (2026-10-16 15:10; written before ANY Stage 2 result exists; Stage 2 training untouched)
+
+An independent audit (Codex, `../20261016_spatial_encoder_audit/AUDIT.md`) found evaluation defects. Each was verified against
+the code and data before this amendment:
+
+1. **Probe fit / test split was by root, not by episode.** 113 / 120 test roots come from episodes used for fitting (76 shared
+   seeds). Tier B inherits this.
+2. **A2 persistence mask** ignored mob changes and admitted source-player cells.
+3. **HUD-change label** used 4 stats, not all displayed values.
+4. **AUROC** is not tie-aware.
+5. **Between-content distance pairs** were unseeded.
+6. **`stage2_analysis.py`** cannot import `dv16` (wrong path), and the runner never calls it.
+7. **B3** point estimate (pooled pairs) and bootstrap (per-root mean) differ.
+8. **Intervals** resample roots, not episodes.
+9. **The B2 / B4 guard** was not implemented.
+
+The original scripts and outputs are kept unchanged; `run_stage2.sh` still runs them at the end, which preserves the original
+numbers. The corrected evaluation is new code: `spatial_eval_v2.py`, `tierb_eval_v2.py`, `stage2_analysis_v2.py`.
+
+**Corrected protocol:**
+- **Split:** diagnosis roots grouped by episode seed. A seeded permutation of seeds (20261080) assigns whole seeds to test until
+  ≥ 120 test roots; 280 fit roots are drawn from the remaining seeds. Fit and test share no seed. Tier B uses the same test
+  roots and the probes fitted on the fit roots.
+- **Feature stages:** every encoder is read at its backbone stage with Raw's interface (LN of last-layer patch tokens) **and**
+  at its deployed state (Raw: identical; Spatial: patch projector).
+  - Reference rows: RGB 7×7 patches; an untrained ViT (Raw's architecture, fresh initialization).
+  - Stage 1's selection rule is re-applied on the **deployed** state, as originally defined. The backbone stage is reported
+    beside it.
+- **A1:**
+  - tile micro accuracy, macro recall over classes present in test, per-class support and recall;
+  - zombie / cow tie-aware ROC AUC, average precision, and precision / recall at the fit-only rate-matched threshold (strict >);
+  - HUD R²;
+  - fit-only ridge sensitivity for tiles (λ 1e-3, 1e-2, 1e-1).
+- **A2:**
+  - persistence = same tile AND same mob layer, with neither source nor destination the player cell;
+  - between-content distance from one seeded, label-defined set of cell pairs shared by all encoders;
+  - HUD salience uses all displayed values (4 stats + inventory); counts reported.
+- **Tier B additions:**
+  - per-root units with episode seeds;
+  - a decoded-real census at every B4 depth (the same probes on real future frames);
+  - threshold sensitivity for the mob reads (rate-matched at 0.5× and 2× the fit rate);
+  - AP of the real-next reads.
+- **B3 estimand:** the mean of per-root within-root AUCs over roots with a real spread, for both point estimate and bootstrap.
+  The pooled-pair AUC is a secondary.
+- **Intervals:** paired percentile bootstrap, 4,000 resamples of **episode seeds** (diagnosis seeds for B1 / B2 / B4; DV16
+  episode seeds for B3).
+- **B2 / B4 guard** (operationalizes "not worse than Raw-predictor beyond noise"): at each seed, the paired episode-bootstrap
+  interval of Spatial − Raw-predictor must not lie entirely on the worse side for:
+  - B2 calibration MAE;
+  - B4 zombie-census absolute error at depth 16 against the **decoded-real** census.
+  - "Better predictive world state" requires the primary readings **and** both guards at both seeds. If a guard fails, the
+    verdict is "mixed".
+- **Primary readings and thresholds:** unchanged.
