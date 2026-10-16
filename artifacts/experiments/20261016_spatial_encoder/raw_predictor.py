@@ -4,7 +4,9 @@ Patch state: LN(last-layer patch tokens) of artifacts/lewm_m4_canonical/raw/join
 spatial_encoder.PatchPredictor (K 4 + router), L_patch = mean over patches of min_k MSE + 0.1 router CE, the 2 transitions of each
 4-frame window with a previous frame. Same corpus, d4mj JointSampler, batch 128, AdamW (d4mj grouping), Raw's 10,000-step
 schedule, clip 1.0, bf16. Only the predictor trains.
-Usage: raw_predictor.py --out DIR [--stop-at N] [--seed S]
+Frozen-state control (FROZEN_STATE_CONTROL_PREREG.md): --encoder spatial:<ckpt> --stage deployed|backbone_ln trains the same
+predictor on a frozen patch-trained encoder's deployed (projector, eval-mode BN) or backbone_ln tokens. Defaults = the Raw-predictor.
+Usage: raw_predictor.py --out DIR [--stop-at N] [--seed S] [--encoder SPEC] [--stage deployed|backbone_ln]
 """
 import argparse
 import dataclasses
@@ -32,17 +34,21 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--out', type=Path, required=True); ap.add_argument('--stop-at', type=int, default=10000)
     ap.add_argument('--seed', type=int, default=20260731)
+    ap.add_argument('--encoder', default=RAW); ap.add_argument('--stage', choices=('deployed', 'backbone_ln'), default='deployed')
     a = ap.parse_args()
     a.out = (SE.CALLER_CWD / a.out).resolve()
     a.out.mkdir(parents=True, exist_ok=True)
     base = load_recipe(SE.RECIPE)
     config = dataclasses.replace(base, seed=a.seed)
-    (a.out / 'arm.json').write_text(json.dumps({'arm': 'raw_predictor', 'encoder': RAW, 'K': 4, 'seed': a.seed, 'batch': config.joint.batch}, indent=1))
+    (a.out / 'arm.json').write_text(json.dumps({'arm': 'raw_predictor' if a.encoder == RAW else 'frozen_state', 'encoder': a.encoder,
+                                                'stage': a.stage, 'K': 4, 'seed': a.seed, 'batch': config.joint.batch}, indent=1))
     t0 = time.time()
     episodes, contract = load_joint_corpus(SE.CORPUS, config)
     print(json.dumps({'corpus_loaded_s': round(time.time() - t0, 1), 'dataset_sha256': contract['sha256']}), flush=True)
-    enc = PatchState(RAW)
-    for p in enc.enc.parameters():
+    enc = PatchState(a.encoder)
+    if a.stage == 'backbone_ln':
+        enc.proj = None                                                            # PatchState then returns LN(last-layer patch tokens)
+    for p in list(enc.enc.parameters()) + (list(enc.proj.parameters()) if enc.proj is not None else []):
         p.requires_grad_(False)
     torch.manual_seed(a.seed)
     predictor = SE.PatchPredictor(4).cuda()
@@ -79,7 +85,7 @@ def main():
             if (update + 1) % 500 == 0 or update == 0:
                 print(json.dumps(row), flush=True)
         if (update + 1) % 1000 == 0 or update + 1 == a.stop_at:
-            torch.save({'update': update + 1, 'encoder_spec': RAW, 'predictor': predictor.state_dict(), 'optimizer': opt.state_dict()},
+            torch.save({'update': update + 1, 'encoder_spec': a.encoder, 'stage': a.stage, 'predictor': predictor.state_dict(), 'optimizer': opt.state_dict()},
                        a.out / f'step-{update + 1:06d}.pt')
 
 

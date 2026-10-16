@@ -34,7 +34,9 @@ Design rationale: `FROZEN_STATE_CONTROL_PROPOSAL.md`. Evidence: NOTEBOOK R63.
 `--stage deployed|backbone_ln`, with the defaults reproducing the Raw-predictor.
 - PatchPredictor(K = 4); min-over-K MSE + 0.1 router CE; AdamW (d4mj grouping); Raw's 10,000-update schedule; clip 1.0; bf16 for
   the predictor; checkpoints every 1k.
-- `torch.manual_seed(seed)` before construction, so the predictor init is identical to J_s and Raw_s.
+- `torch.manual_seed(seed)` before construction, so the predictor init is identical to Raw_s.
+  - **Correction (before any run):** J_s's predictor was constructed after its encoder and projector in the same seeded stream, so
+    its init differs from FD's and Raw's. The data stream is identical for all three.
 - JointSampler seeded with seed + 1: the **same windows in the same order** as J_s and Raw_s; seed = 20260731 (s1) / 20260732
   (s2).
 - One known difference, inherent to freezing: J's predictor saw train-mode-BN deployed tokens (bf16 autocast), while FD's sees
