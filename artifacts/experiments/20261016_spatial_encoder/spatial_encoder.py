@@ -8,7 +8,7 @@ reproduced line for line) PLUS a patch path:
   L_patch       mean over patches of min_k mean-squared error to zp_{t+1} (no stop-gradient, LeWM's choice) + 0.1 router CE
   anti-collapse on patches (all frames): SIGReg (512 random patches per frame index, weight 0.09 x 128 / 512) or VICReg variance hinge at 1 (weight 1)
                 + covariance (weight 0.04)
-  L_inv (full)  each frame also encoded under a random per-pixel colour map on the map rows (+ Gaussian pixel noise, p 0.5,
+  L_inv (full)  each frame of the first 32 windows (amendment 3) also encoded under a random per-pixel colour map on the map rows (+ Gaussian pixel noise, p 0.5,
                 sigma ~ U(0, 0.05)); MSE between augmented and clean map-patch states (weight 1)
   L_idm (full)  17-way CE of the action from [zp_t, zp_{t+1}] (per-patch linear 384 -> 64, mean over patches, MLP), weight 0.1
 Data / schedule: Raw's corpus (craftax_expert_store_v1 + craftax_support_v2, train split, d4mj JointSampler, 4-frame windows),
@@ -45,6 +45,7 @@ ARMS = {'naive': dict(K=1, ac='sigreg', inv=False, idm=False), 'mop_sig': dict(K
         'mop_vic': dict(K=4, ac='vicreg', inv=False, idm=False), 'full_sig': dict(K=4, ac='sigreg', inv=True, idm=True),
         'full_vic': dict(K=4, ac='vicreg', inv=True, idm=True)}
 SIG_N = 512
+INV_B = 32                                                                 # amendment 3 (memory)
 BATCH, MAP_PX, D, P = 128, 49, 192, 81                                   # Raw's actual batch (the recipe validator requires it)
 LUM = torch.tensor([0.299, 0.587, 0.114])
 
@@ -152,14 +153,14 @@ def main():
         B, T = frames.shape[:2]
         with autocast_context(config):
             enc_in = frames
-            if arm['inv']:
-                aug = augment(frames.flatten(0, 1), aug_g).view_as(frames)
+            if arm['inv']:                                                          # amendment 3: augmented views of INV_B windows
+                aug = augment(frames[:INV_B].flatten(0, 1), aug_g).view(INV_B, *frames.shape[1:])
                 enc_in = torch.cat([frames, aug], 0)
             zc, _, tokens, _, _ = bundle.encoder._hidden(enc_in)                    # [n*T, D], [n*T, 81, D]
             zp_all = patch_proj(tokens.reshape(-1, D)).view(-1, T, P, D)
             zc = zc.view(-1, T, 1, D)
             if arm['inv']:
-                zp, zp_aug, z = zp_all[:B], zp_all[B:], zc[:B]
+                zp, zp_aug, z = zp_all[:B], zp_all[B:], zc[:B]                          # zp_aug: the first INV_B windows' views
             else:
                 zp, zp_aug, z = zp_all, None, zc
             # CLS path: d4mj.lewm.joint_loss, raw variant, consecutive 4-frame layout
@@ -187,7 +188,7 @@ def main():
             loss = cls_pred + 0.09 * cls_reg + patch_pred + 0.1 * router_ce + ac_w * ac
             row_extra = {}
             if arm['inv']:
-                inv = (zp_aug[:, :, :63].float() - zp[:, :, :63].float()).square().mean()
+                inv = (zp_aug[:, :, :63].float() - zp[:INV_B, :, :63].float()).square().mean()
                 loss = loss + inv; row_extra['inv'] = round(float(inv), 5)
             if arm['idm']:
                 logits = idm(zp[:, :-1].float(), zp[:, 1:].float())                  # [B,3,17]

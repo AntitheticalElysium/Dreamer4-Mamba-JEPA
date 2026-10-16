@@ -137,3 +137,10 @@ diagnosis-store frames, seeds disjoint between fit and test; identical protocol 
 
 - 1,024 patches still exceed the GPU when combined with the full arm's doubled encoder pass (backward at 4.9 GB).
 - Every SIGReg arm uses **512 random patches per frame index, weight 0.09 · 128 / 512**.
+
+## Amendment 3 (before any full-arm reading; only training logs seen)
+
+- The full arm OOMs deterministically at update ~600, even alone on the GPU: 4.17 GB allocated + reserve + context exceeds
+  the ~5.46 GB available. It encodes 1,024 frames per update (clean + augmented).
+- L_inv now uses the augmented views of the **first 32 of the 128 windows** (128 augmented frames). Every other term keeps
+  the full batch.
