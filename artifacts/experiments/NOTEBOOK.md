@@ -222,6 +222,55 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R66 — Frozen-state stage B: dropping the projector recovers most of the erasure; a smaller, seed-dependent zombie gap to Raw remains (registered reading "mixed")
+
+**Run.**
+- FB: a fresh Stage 2 predictor on the frozen full-arm **backbone-LN** tokens; the same init, data stream and 10k budget as FD and
+  the Raw-predictor; 2 seeds.
+- Triggered by the stage-A rule.
+- Evaluation is identical to stage A: all-roots cross-fit, the four mob levels, within-root consequences, Tier B v2.
+  Backbone-stage readers come from the Tier A procedure (`tierA2_fullbb_s*`: backbone zombie AP 0.977).
+
+| relative next-cell decodability | zombie s1 / s2 | cow s1 / s2 |
+|---|---|---|
+| FB (frozen backbone) | 0.69 / 0.51 | 1.15 / 1.12 |
+| FD (frozen projected) | 0.089 / 0.071 | 0.30 / 0.65 |
+| Raw-predictor | 0.80 / 0.89 | 1.25 / 1.25 |
+| FB − FD [95% CI] | [+0.40, +0.80] / [+0.29, +0.59] | [+0.74, +0.97] / [+0.35, +0.58] |
+| FB − Raw [95% CI] | [−0.35, +0.15] / [−0.57, −0.15] | [−0.21, +0.03] / [−0.22, −0.03] |
+
+**Registered reading: "mixed".**
+- FB − FD > 0 at both seeds: the projector accounts for most of the erasure. It recovers 84% / 53% of the FD-to-Raw gap for
+  zombies and 90% / 78% for cows.
+- But FB is not established within δ = 0.153 of Raw. Zombies: s1's interval reaches −0.35; s2 is below Raw.
+
+So neither "the projector alone" nor "the backbone alone" holds.
+
+**Further observations:**
+- **Training trajectory** (split panel): FB's zombie decodability **declines** over training, s1 1.02 → 0.99 → 0.78 and s2
+  0.84 → 0.76 → 0.51 at 1k / 4k / 10k. Cows rise. A milder version of the joint erasure appears on the backbone too, seed-dependent.
+- **The other levels:** FB is a Raw-predictor-like copy machine, slightly worse.
+  - zombie static stays 0.24 vs copy 0.38-0.44;
+  - shifted stays 0.001-0.002;
+  - arrivals below screen copy;
+  - count error zombies 0.26-0.29 (Raw-pred 0.12-0.14), cows 0.49-0.51 (0.18-0.20);
+  - within-root consequences at the action prior (0.62 / 0.60 vs 0.62);
+  - attack recall 0; escape AUC 0.48 / 0.52.
+
+**What stage B establishes, and what it cannot:**
+- **The projected state is the main problem.** The full arm's projector + BN + 2048 → 192 compression makes erasure almost total
+  for this learner. On the backbone, most of the information remains predictable.
+- **A residual zombie gap to Raw remains with the small learner** (seed-dependent), and it grows over training.
+- **Not a test of the encoder hypothesis.** The small learner fails every capability gate on Raw too, so FB ≈ or < Raw says nothing
+  about dynamics or decisions. That question belongs to the matched D-class comparison (MATCHED_ENCODER_PREREG.md), which uses
+  MoP-s1, not full-s1.
+
+**Matched D-class comparison status:**
+- R0a passed exactly: bridge2k encoder = joint10k bitwise; the pool re-encodes bitwise; actions equal.
+- **R0b passed exactly:** the 1k-update Raw rerun reproduces the historical objectives bit for bit (0.16536 @ 500, 0.08425 @ 1000).
+  The reused Raw arm is exactly reproducible.
+- The MoP-s1 pool is built, and the MoP arm is training.
+
 ### R65 — Frozen-state stage A: the projected interface is NOT learnable without erasure; a read-only calibration shows what a D-class learner on Raw learns, and when
 
 **Stage A** (registered; Amendment 1; δ = 0.153). FD = a fresh Stage 2 predictor on the frozen full-arm deployed tokens, with the
