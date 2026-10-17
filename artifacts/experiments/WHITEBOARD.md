@@ -895,3 +895,45 @@ the larger blocker for the objective.
 - **Otherwise:** FB (frozen backbone) isolates the representation interface.
 - In either case the decision-relevant conclusion stands: no Stage 2 predictor delivers dynamics, coherent samples or
   consequences. The bottleneck for the objective is the world model's dynamics / consequence channel, not the encoder alone.
+
+## 22. 2026-10-17 — the encoder hypothesis, tested downstream (NOTEBOOK R65-R68)
+
+**§19's question:** *does an encoder whose patch representations are trained for action-conditioned prediction give a better
+predictive world state than frozen Raw?*
+
+**Answer for the recipe tested: no.**
+- **Setup:** MoP-s1 vs Raw-s1 backbone-LN, frozen; an identical D-class world (the same code, seed, data windows and exposure); the
+  Raw arm verified bit for bit (R0a / R0b).
+- **Consequences:** no difference established (12k: −0.032 [−0.102, +0.039]).
+- **Camera-aligned persistence:** MoP worse (12k: −0.152 [−0.206, −0.102]).
+- **Mob motion:** MoP worse (36k: −0.079 [−0.144, −0.019]). MoP learns arrivals earlier but plateaus lower.
+- Static decodability is equal (0.93 vs 0.91), so these are **dynamics** effects.
+
+### Two separate failure sites (do not merge them)
+
+| site | evidence | status |
+|---|---|---|
+| **projector output** (Linear → BN → GELU → Linear 2048→192) | frozen deployed states erase mobs for a fresh predictor from its first checkpoint (FD, R65); dropping the projector recovers 53-90% of the gap (FB, R66); BN mode / cohort is not the cause (R64); the loss sits in the final compression (Codex, R59) | **established** for the Stage 2 learner |
+| **the patch-trained backbone itself** | read without the projector, MoP-s1's backbone gives D-class worlds worse persistence and motion than Raw's at matched exposure (R68); FB's zombie decodability also declines during training (R66) | **established** as an effect; **cause unmeasured** |
+
+- **The backbone effect** arises from joint training. Candidate routes, untested:
+  - gradients from the patch path (min-K MSE, router, patch SIGReg) that pass through the projector into the ViT;
+  - target co-adaptation;
+  - interaction with the shared CLS path.
+- **SIGReg's role:** Codex found that patch SIGReg dominates the **projector's** gradient (97-99%), with stable event exposure and
+  active heads. That is an optimization pressure on the projector. Without backbone-gradient evidence it is not a cause of the
+  backbone effect.
+
+### Consequence for the objective (§8's five questions)
+- **Discarding nuisance / keeping consequences:** patch-level JEPA training as implemented does not help a capable world learn
+  consequences, and it hurts persistence and motion.
+- **The bottleneck** for coherent stochastic imagination that improves decisions is the world-model side:
+  - dynamics: D needs ~36k to learn motion; PI's machinery gives pursuit and coherence;
+  - consequences: the D lineage reaches 0.95 with 16-frame context;
+  - coherent sampling: per-patch independent heads (Codex) and deterministic D.
+- **Frozen CLS-trained Raw tokens remain the better input** for the D / IC / PI line on current evidence.
+
+### Open, untested (no experiment planned)
+- other encoder seeds, the full arm downstream, 16-frame context, recursion, coherence;
+- **mechanism:** which gradient reshaped the backbone. A read-only backbone-gradient attribution on saved checkpoints would be the
+  first discriminating measurement.

@@ -222,6 +222,48 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R68 — Matched D-class encoder comparison COMPLETE: the WHITEBOARD §19 encoder hypothesis is NOT supported for this recipe — no consequence gain, camera-aligned persistence worse (12k), mob motion worse (36k), with equal representation ceilings
+
+**Registered readings** (`MATCHED_ENCODER_PREREG.md`; R0a / R0b / R0c passed; only the frozen encoder differs; paired episode bootstrap
+over 143 episodes):
+
+| WHITEBOARD question | endpoint (primary budget) | Raw-D | MoP-D | MoP − Raw [95% CI] | reading |
+|---|---|---|---|---|---|
+| consequences | E-C within-root attack AUC (12k) | 0.819 | 0.787 | −0.032 [−0.102, +0.039] | **no difference established** |
+| persistence | E-P camera-aligned (shifted-camera) stay AP, mean of zombie and cow (12k) | 0.353 | 0.200 | −0.152 [−0.206, −0.102] | **MoP worse** (normalized also worse) |
+| motion | E-M zombie arrival AP (36k; Raw gate passes [+0.098, +0.221] over screen copy) | 0.233 | 0.155 | −0.079 [−0.144, −0.019] | **MoP worse** (normalized −0.080 [−0.146, −0.015]) |
+
+- **Representation:** real-next decodability on the evaluation units is 0.93 (Raw) vs 0.91 (MoP). Tier A backbone zombie AP:
+  0.987 vs 0.986.
+  - The persistence and motion deficits survive ceiling normalization. They are **dynamics** differences, not representation ones.
+- **Trajectories, Raw → MoP at 6k / 12k / 36k:**
+  - zombie arrivals 0.023 / 0.029 / 0.233 → 0.060 / 0.126 / 0.155;
+  - within-root consequences 0.847 / 0.819 / 0.816 → 0.815 / 0.787 / 0.754.
+  - MoP learns arrivals **earlier** but **saturates lower**.
+  - At 36k (descriptive), MoP is also behind on consequences (−0.062 [−0.149, +0.022]), cow arrivals (0.024 vs 0.052) and zombie
+    static stays (0.44 vs 0.59).
+- **Persistence at 36k:** no reading. Raw-D's own camera-shifted persistence falls back to persistence level by 36k (0.256; gate
+  [−0.04, +0.04]), as in the calibration (D36k 0.12 / 0.40).
+
+**What this establishes** (a component result):
+- With a capable downstream learner (D-class, T6), matched recipe, data, initialization and exposure, MoP + SIGReg patch training
+  (seed 1) **does not improve** decision-relevant consequences.
+- It **makes** camera-transformed persistence (12k) and asymptotic mob-motion prediction (36k) **worse** than the CLS-trained Raw
+  encoder, despite equal static decodability.
+
+**Scope limits:**
+- one encoder seed pair (MoP-s1 shares Raw-s1's initial tensors); one downstream seed;
+- six-frame windows; a deterministic D (no coherence test); depth 1 (no recursion);
+- evaluation store collected by the legacy BC policy;
+- the full arm (invariance + inverse dynamics) was not tested downstream.
+
+**Causes are not claimed.** This test reads the **backbone** (LN of last-layer tokens), never the projector. The deficit is
+therefore not the projector-output failure of stages A / B: patch training changed the backbone in a way that hurts D's dynamics.
+- Which component did it is **unmeasured**: patch prediction, patch SIGReg, the router, target co-adaptation, or the shared CLS
+  path.
+- Codex's measurement that patch SIGReg dominates the **projector** gradient (97-99%) says nothing yet about the gradients that
+  reached the ViT backbone. It is a hypothesis to test, not an explanation.
+
 ### R67 — Matched D-class encoder comparison (MoP-s1 vs Raw-s1 backbone-LN), primary 12k read: decisions — no difference; camera-aligned persistence — MoP WORSE; motion — no reading yet (MoP ahead descriptively); continuing to 36k by rule
 
 **Registration and checks.**
