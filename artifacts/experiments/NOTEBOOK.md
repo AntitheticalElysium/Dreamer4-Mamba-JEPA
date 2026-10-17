@@ -222,6 +222,70 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R65 — Frozen-state stage A: the projected interface is NOT learnable without erasure; a read-only calibration shows what a D-class learner on Raw learns, and when
+
+**Stage A** (registered; Amendment 1; δ = 0.153). FD = a fresh Stage 2 predictor on the frozen full-arm deployed tokens, with the
+Raw-predictor's exact init and data stream, 10k updates, 2 seeds.
+
+| zombie relative next-cell decodability (all-roots cross-fit) | s1 | s2 |
+|---|---|---|
+| FD | 0.089 | 0.071 |
+| J (joint) | 0.078 | 0.083 |
+| Raw-predictor | 0.80 | 0.89 |
+| FD − J [95% CI] | [−0.002, +0.027] | [−0.045, +0.075] |
+| FD − Raw [95% CI] | [−0.81, −0.59] | [−0.91, −0.65] |
+
+- **Cows:** FD is below J.
+- **Split-panel check:** FD 0.39 / 0.23 vs J 0.32 / 0.23 vs Raw 0.88 / 0.94.
+- **FD erases from its first checkpoint** (0.30 / 0.13 at 1k), unlike early J.
+- **Every other level matches J:**
+  - static stays destroyed (0.01-0.02 vs copy 0.30-0.32);
+  - shifted stays 0.001;
+  - arrivals at the base rate;
+  - counts incoherent (20-38% of samples outside the sibling range);
+  - within-root consequences ≤ the action prior (0.57 / 0.51 vs 0.62);
+  - B1 attack recall 0; B3 escape AUC 0.48 / 0.54.
+- **Registered reading: "frozen projected states also erase"**, so stage B (FB) runs. By Codex's interpretation table:
+  - the final deployed interface by itself makes this predictor erase;
+  - the joint training history is **not** needed to produce the erasure;
+  - this is not proof of irreversible information loss.
+
+**Calibration** (read-only; no training; `d_adapter.py`, `run_d_calibration.sh`). Existing D-class worlds on frozen Raw tokens,
+scored on the same audited gates:
+- the scratch-D lineage: seed 7, 6-frame windows, the D loss, 6k-36k;
+- long D: 42k, 16 frames;
+- control D: 45k, §17's 0.711.
+
+Adapter alignment verified: D's map error is 0.15 / 0.12 of copy, vs 0.6-0.9 for every Stage 2 predictor.
+
+| zombie (cow) | baseline | Stage 2 Raw-pred | D 6k | D 12k | D 18k | D 36k | D 45k |
+|---|---|---|---|---|---|---|---|
+| within-root attack AUC (HUD + near) | action prior 0.62 | 0.51 / 0.69 | **0.85** [0.76, 0.93] | 0.82 | 0.81 | 0.82 | **0.95** |
+| shifted-camera stays AP | world persistence 0.14 (0.38) | 0.001 (0.002) | **0.18 (0.52)** | 0.19 (0.52) | 0.21 (0.51) | 0.12 (0.40) | 0.16 (0.37) |
+| arrival AP | screen copy 0.079 | 0.044-0.048 | 0.023 | 0.029 | 0.061 | **0.233** | **0.291** |
+| stay-vs-vacated AUC | copy 0.66 | 0.65 | 0.48 | 0.51 | 0.59 | **0.75** | **0.80** |
+
+**Reading.** A D-class learner on Raw passes:
+- **consequences** from 6k (+0.11 to +0.37 over the action prior; +0.12 more with 16-frame context);
+- **camera-aligned persistence** from 6k;
+- **motion** only between 18k and 36k.
+
+Coherent samples cannot be scored: D is deterministic.
+
+**Consequence for the encoder question** (Codex's recipe audit, verified against these numbers):
+- The Stage 2 learner cannot test the encoder hypothesis.
+- D's advantages are not an encoder comparison: 45k updates, a different architecture, loss, context and sampler.
+- A matched test needs a D-class learner with gates matched to these onset budgets.
+- Codex's 6k / 12k / 18k staging would reach consequences and persistence, never motion.
+
+**Proposed, not launched:** `20261016_spatial_encoder/MATCHED_ENCODER_TEST_REVIEW.md`.
+- Train **only a MoP-s1 arm** against the verified historical Raw scratch-D lineage: identical code (tworld.py sha equal to the
+  checkpoints'), seed, pool windows and sampler.
+- R0 identity / reproduction checks come first.
+- Stages: 6k (consequences + persistence), 12k (confirmation), conditional 36k (motion).
+- Cost: about 2.5 h core, about 6 h with motion.
+- Coherence and recursion stay outside a D-class test.
+
 ### R64 — Codex's frozen-state audit verified: the AP tie defect corrected (small impact); consequences show NO action discrimination; Raw's mob "retention" is screen copy, not dynamics; the frozen-state control registered as a LEARNABILITY test (training; conclusions held)
 
 **Sources.**
