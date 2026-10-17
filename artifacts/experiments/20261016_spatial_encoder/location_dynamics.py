@@ -17,7 +17,8 @@ Cell classes per mob (exact camera shift via objective_audit.shift_of; sources()
   stay (static / shifted camera), arrive (a mob in a world cell that had none), enter (came into view), vacated, empty.
 Scores: refit = ridge lambda 1e-2 on the state's map tokens -> next-cell mob, 5-fold cross-fitting grouped by episode (folds of
 consequence_check.py); samples use the reader fitted on sample 0. transfer = the world's Tier B real-state reader.
-Usage: location_dynamics.py <label>=<encoder spec>,<predictor ckpt>,<probes2> ...   -> erasure/locdyn2_<label>.pt
+Usage: location_dynamics.py <label>=<encoder spec>,<predictor ckpt | d:<D-world ckpt>>,<probes2> ...   -> erasure/locdyn2_<label>.pt
+  (d:  an existing D-class world via d_adapter.py: 4 context frames, deterministic, so its 'samples' equal its prediction)
        location_dynamics.py --analyse <label> ... [--pairs a:b,...] [--tag T]       -> erasure/locdyn2_summary_<T>.json
 """
 import json
@@ -57,8 +58,13 @@ def mismatches(t0, t1):
 @torch.no_grad()
 def collect(enc_spec, pred_ck, probe_file):
     enc = EV.PatchState(enc_spec)
-    sd = torch.load(pred_ck, map_location=EV.DEV, weights_only=False)['predictor']
-    pred = SE.PatchPredictor(sd['router.weight'].shape[0]).to(EV.DEV).eval(); pred.load_state_dict(sd)
+    dw = None
+    if pred_ck.startswith('d:'):                                                 # an existing D-class world (d_adapter.py)
+        from d_adapter import DWorld
+        dw = DWorld(pred_ck[2:])
+    else:
+        sd = torch.load(pred_ck, map_location=EV.DEV, weights_only=False)['predictor']
+        pred = SE.PatchPredictor(sd['router.weight'].shape[0]).to(EV.DEV).eval(); pred.load_state_dict(sd)
     probes = torch.load(probe_file, weights_only=False)
     g = torch.Generator(device=EV.DEV).manual_seed(20261071)
     U = {}
@@ -68,8 +74,13 @@ def collect(enc_spec, pred_ck, probe_file):
         alive = [f for f in range(5) if not bool(r['future_dead'][f][0])]
         if not alive:
             continue
-        ctx = enc(r['context'][-2:])
-        exp, smp, _, _ = TB.step(pred, ctx[0:1].expand(4, -1, -1), ctx[1:2].expand(4, -1, -1), r['future_actions'][0:1].repeat(4), g)
+        if dw is not None:                                                       # D: all 4 context frames; deterministic
+            ctx4 = enc(r['context'])
+            nxt = dw.predict(ctx4[None], torch.cat([r['context_actions'], r['future_actions'][0:1]])[None])
+            exp = nxt.expand(4, -1, -1); smp = exp; ctx = ctx4[-2:]
+        else:
+            ctx = enc(r['context'][-2:])
+            exp, smp, _, _ = TB.step(pred, ctx[0:1].expand(4, -1, -1), ctx[1:2].expand(4, -1, -1), r['future_actions'][0:1].repeat(4), g)
         real = enc(torch.stack([r['future_frames'][f][0] for f in alive]))[:, :63].cpu()
         t0, l0, _ = OA.layout(r['root_visible'][None]); t0, l0 = t0[0], l0[0]
         t1, l1, _ = OA.layout(torch.stack([r['future_visible'][f][0] for f in alive]))

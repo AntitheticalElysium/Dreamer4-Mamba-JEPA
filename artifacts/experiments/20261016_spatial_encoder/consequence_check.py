@@ -70,8 +70,13 @@ def crossfit(X, y, fold, lam=1e-2, chunk=4096):
 @torch.no_grad()
 def collect(label, enc_spec, pred_ck, probe_file):
     enc = EV.PatchState(enc_spec)
-    sd = torch.load(pred_ck, map_location=EV.DEV, weights_only=False)['predictor']
-    pred = SE.PatchPredictor(sd['router.weight'].shape[0]).to(EV.DEV).eval(); pred.load_state_dict(sd)
+    dw = None
+    if pred_ck.startswith('d:'):                                                 # an existing D-class world (d_adapter.py)
+        from d_adapter import DWorld
+        dw = DWorld(pred_ck[2:])
+    else:
+        sd = torch.load(pred_ck, map_location=EV.DEV, weights_only=False)['predictor']
+        pred = SE.PatchPredictor(sd['router.weight'].shape[0]).to(EV.DEV).eval(); pred.load_state_dict(sd)
     probes = torch.load(probe_file, weights_only=False)
     g = torch.Generator(device=EV.DEV).manual_seed(20261071)
     keep = HUD + NEAR
@@ -81,8 +86,13 @@ def collect(label, enc_spec, pred_ck, probe_file):
         ok = ~r['onestep_dead'].bool()                                           # [4,17]
         if not bool(ok.any()):
             continue
-        ctx = enc(r['context'][-2:])
-        exp, _, _, _ = TB.step(pred, ctx[0:1].expand(17, -1, -1), ctx[1:2].expand(17, -1, -1), torch.arange(17), g)
+        if dw is not None:                                                       # D: all 4 context frames, the 17 actions
+            ctx4 = enc(r['context'])
+            acts = torch.cat([r['context_actions'][None].expand(17, -1), torch.arange(17)[:, None]], 1)
+            exp = dw.predict(ctx4[None].expand(17, -1, -1, -1), acts); ctx = ctx4[-2:]
+        else:
+            ctx = enc(r['context'][-2:])
+            exp, _, _, _ = TB.step(pred, ctx[0:1].expand(17, -1, -1), ctx[1:2].expand(17, -1, -1), torch.arange(17), g)
         h_tr = TB.read(probes, exp.cpu())[0]                                     # transfer: the Tier B HUD reader
         h_cur = float(TB.read(probes, ctx[1:2].cpu())[0][0])
         real = enc(r['onestep_frames'].flatten(0, 1)).view(4, 17, 81, -1)[:, :, keep].cpu().half()

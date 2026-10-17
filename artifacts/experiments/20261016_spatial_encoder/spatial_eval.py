@@ -57,6 +57,9 @@ class PatchState:
             from d4mj.checkpoint import read_lewm_bundle
             payload = read_lewm_bundle(RAW_DIR / f'step-{int(spec[4:]):06d}.pt')
             self.enc.load_state_dict(payload['modules']['encoder'])
+        elif spec.startswith('spatial-bb:'):                                     # a Spatial encoder's BACKBONE-LN stage (no projector)
+            ck = torch.load(spec[11:], map_location=DEV, weights_only=False)
+            self.enc.load_state_dict(ck['encoder'])
         elif spec.startswith('spatial:'):
             ck = torch.load(spec[8:], map_location=DEV, weights_only=False)
             self.enc.load_state_dict(ck['encoder'])
