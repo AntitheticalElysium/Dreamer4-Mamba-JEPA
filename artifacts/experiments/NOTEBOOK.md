@@ -222,6 +222,44 @@ code of its old cell.
 - **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
   and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
 
+### R67 — Matched D-class encoder comparison (MoP-s1 vs Raw-s1 backbone-LN), primary 12k read: decisions — no difference; camera-aligned persistence — MoP WORSE; motion — no reading yet (MoP ahead descriptively); continuing to 36k by rule
+
+**Registration and checks.**
+- `MATCHED_ENCODER_PREREG.md` (885a6aaa), committed before any check or training.
+- **R0a passed exactly:** bridge2k = joint10k encoder bitwise; the stored pool re-encodes bitwise; actions equal.
+- **R0b passed exactly:** the Raw recipe's 1k rerun reproduces the historical objectives bit for bit.
+- **R0c passed at 6k:** finite objective; MoP-D one-step map error 0.25 of copy.
+- Arms: the identical tworld.py (an unmodified file via the launcher), seed 7, the same 32,647 windows, batch order and held-out rows.
+  Only the frozen encoder differs.
+- Representation ceilings are equal: real-next decodability on the evaluation units 0.93 (Raw) vs 0.91 (MoP).
+
+| endpoint | Raw-D 6k / 12k | MoP-D 6k / 12k | MoP − Raw at 12k [95% CI] | registered reading (12k) |
+|---|---|---|---|---|
+| **E-C** decisions: within-root attack AUC (HUD + near) | 0.847 / 0.819 | 0.815 / 0.787 | −0.032 [−0.102, +0.039] | **no difference established** (both above the action prior 0.62) |
+| **E-P** camera-aligned persistence: shifted-camera stay AP, mean of zombie and cow | 0.351 / 0.353 | 0.299 / 0.200 | −0.152 [−0.206, −0.102]; normalized −0.155 [−0.213, −0.104] | **MoP worse**, in absolute and ceiling-normalized form, so a dynamics deficit, not a representation one |
+| **E-M** motion: zombie arrival AP | 0.023 / 0.029 | 0.060 / 0.126 | +0.097 [+0.052, +0.159] | **no reading**: the Raw gate (vs screen copy 0.079) fails, as calibrated; the primary read is at 36k |
+
+**Descriptive detail (12k), zombie (cow):**
+- shifted-camera stays: MoP 0.124 (0.277) vs reader-matched world persistence 0.126 (0.355). Raw 0.185 (0.520) vs 0.141 (0.384).
+  MoP-D no longer moves retained mobs with the camera better than persistence, and it declined from 6k (0.189 / 0.409).
+- static-camera stays: MoP 0.51 (0.44) vs copy 0.40 (0.32); Raw 0.39 (0.33) vs copy 0.45 (0.30). MoP keeps mobs in place better.
+- arrivals: MoP 0.126 (0.026) exceeds its own screen copy 0.090 (0.013) at 12k. Raw-D reached that only between 18k and 36k
+  (calibration: 0.061 at 18k, 0.233 at 36k).
+  - This is descriptive only. E-M is read at 36k, against Raw's gate.
+
+**Continuation rule:** not decisively worse on both E-C and E-P, so **continue to 36k** (training is at 14k).
+
+**Interpretation, provisional until 36k:**
+- With a capable learner and matched exposure, the patch-trained encoder:
+  - gives **no established change in decision-relevant consequences**;
+  - makes **camera-transformed persistence worse**, beyond any representation difference;
+  - may make **arrivals (mob motion) learnable earlier**, which the 36k read must establish or refute.
+- That pattern does not fit a simple "better" or "worse" encoder.
+
+**Not claimed:** any cause. In particular, Codex's finding that patch SIGReg dominates the projector gradient concerns the
+projector's output path. Whether projector gradients reshaped the backbone that this test reads has not been measured (no
+backbone-gradient evidence), so it is not invoked here.
+
 ### R66 — Frozen-state stage B: dropping the projector recovers most of the erasure; a smaller, seed-dependent zombie gap to Raw remains (registered reading "mixed")
 
 **Run.**
