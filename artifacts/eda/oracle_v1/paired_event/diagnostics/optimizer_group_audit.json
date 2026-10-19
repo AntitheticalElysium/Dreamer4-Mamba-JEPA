@@ -1,0 +1,129 @@
+{
+  "question": "Did the completed direct/paired study actually use identical decay policy on shared Mamba parameters?",
+  "update": 3000,
+  "state_sha256": "0c5d152c73582c38bf3d0dd80cc94b0b45827479eb95ab1a835717ce47917109",
+  "arms": {
+    "direct": {
+      "serialized_groups": [
+        {
+          "parameters": 163,
+          "weight_decay": 0.01,
+          "lr": 0.0001,
+          "betas": [
+            0.9,
+            0.999
+          ],
+          "eps": 1e-08
+        }
+      ],
+      "fresh_initialization_exempt_parameters": [],
+      "exempt_scalar_count": 0
+    },
+    "paired": {
+      "serialized_groups": [
+        {
+          "parameters": 149,
+          "weight_decay": 0.01,
+          "lr": 0.0001,
+          "betas": [
+            0.9,
+            0.999
+          ],
+          "eps": 1e-08
+        },
+        {
+          "parameters": 18,
+          "weight_decay": 0.0,
+          "lr": 0.0001,
+          "betas": [
+            0.9,
+            0.999
+          ],
+          "eps": 1e-08
+        }
+      ],
+      "fresh_initialization_exempt_parameters": [
+        [
+          "layers.0.mix.core.dt_bias",
+          4
+        ],
+        [
+          "layers.0.mix.core.A_log",
+          4
+        ],
+        [
+          "layers.0.mix.core.D",
+          4
+        ],
+        [
+          "layers.1.mix.core.dt_bias",
+          4
+        ],
+        [
+          "layers.1.mix.core.A_log",
+          4
+        ],
+        [
+          "layers.1.mix.core.D",
+          4
+        ],
+        [
+          "layers.2.mix.core.dt_bias",
+          4
+        ],
+        [
+          "layers.2.mix.core.A_log",
+          4
+        ],
+        [
+          "layers.2.mix.core.D",
+          4
+        ],
+        [
+          "layers.3.mix.core.dt_bias",
+          4
+        ],
+        [
+          "layers.3.mix.core.A_log",
+          4
+        ],
+        [
+          "layers.3.mix.core.D",
+          4
+        ],
+        [
+          "layers.4.mix.core.dt_bias",
+          4
+        ],
+        [
+          "layers.4.mix.core.A_log",
+          4
+        ],
+        [
+          "layers.4.mix.core.D",
+          4
+        ],
+        [
+          "layers.5.mix.core.dt_bias",
+          4
+        ],
+        [
+          "layers.5.mix.core.A_log",
+          4
+        ],
+        [
+          "layers.5.mix.core.D",
+          4
+        ]
+      ],
+      "exempt_scalar_count": 72
+    }
+  },
+  "cause": "Direct initialization deep-copies parameter objects; upstream _no_weight_decay attributes are lost. Paired initialization preserves the fresh Mamba attributes. Decay mismatch is a second difference between arms; its effect on outcomes has not been isolated.",
+  "method": "CPU only: torch.load(state.pt,map_location=cpu,mmap=True); inspect serialized optimizer.param_groups; paired_model.initialized_worlds(cpu); inspect _no_weight_decay on named parameters. No forward pass or optimizer step.",
+  "source_sha256": {
+    "artifacts/experiments/20261012_oracle/paired_model.py": "414a7c959db8b4d6a3db0ccb8badfcc6c4405358f3b8ded4c0eea35acac81c86",
+    "artifacts/experiments/20261012_oracle/direct_train.py": "3154451904d99ad104f4982bae9d76b5cc77a8f2f8f0cdb3c75e833903eaf42c",
+    "d4mj/train.py": "95af8574bb7621813c122cb775e214fac3d629690e286561338fef485b2f5234"
+  }
+}

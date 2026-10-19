@@ -61,9 +61,6148 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-15 (afternoon) — WHITEBOARD PROGRAM (lead, Opus, autonomous mandate): recursion, representation, inferred chance
+
+**User mandate (10-15):**
+- Continue inferred-chance (IC) training with attention to uncertain assignments.
+- Keep cheap CPU probes running.
+- Look across all five WHITEBOARD questions, the representation included.
+- Keep asking whether one-step gains reach recursion and decisions.
+
+### R1 — does one-step coherence carry into recursion? (`transport_recursion.py`, evaluation only)
+
+**Setup:**
+- Self-fed H16 rollouts from the 200 DEV panel roots with the recorded actions.
+- Stochastic models: 8 samples per root. Deterministic references: 1.
+- Frozen real mob reader and bank tile reader.
+
+Bright (104 roots), depths 1 → 16:
+
+| model | cow census (imagined / real) | abs count error per frame | tile error, seen cells | phantoms per frame | camera consistent at d16 |
+|---|---|---|---|---|---|
+| free synthesis s1 / s2 | 3.0 → 12.6 / 2.3 → 3.9 | 1.7 → 7.5 | 0.07% → 3.8% | 1.4 → 4.5 | 53% |
+| transport operator s1 / s2 | 1.0 → 0.49 / 0.98 → 0.47 | 0.08 → 0.81 | 0.63% → 8.1% / 7.5% | ≈ 0 | 50 / 53% |
+| operator's own afterstate only (T = I) | 1.0 → 0.55 | 0.08 → 0.77 | 0.08% → 1.1% | 0 | 56% |
+| D parent (deterministic) | 1.09 → 1.53 (d4) → 0.25 | 0.18 → 0.93 | 0.07% → 1.3% | ≈ 0.04 | 59% |
+| real births and entries (reference) | — | — | — | 0.04 → 0.33 | — |
+
+**Readings:**
+- **Free synthesis explodes under recursion:** its one-step "63% valid" hides ×3-12 mob inflation and 4.5 phantom mobs per
+  frame.
+- **Transport never invents mobs**, but:
+  - its mobs fade (half lost by d16), as its own deterministic afterstate does;
+  - its spurious terrain swaps accumulate: 7× the terrain error of its afterstate alone.
+- **Camera divergence is universal and large:** only 50-59% of trajectories keep the real camera by d16, for every model.
+- **Entering terrain is wrong 25-40% of the time** (epistemic, row 4), for every model.
+
+### R2 — representation: is the "drift" of persistent content contextual? (`20261015_whiteboard/rep_layers.py`, `rep_drift.py`)
+
+**Setup:**
+- The frozen Raw encoder: ViT-12, width 192, patch 7. One patch = one 7×7-pixel Craftax tile.
+- 597 independent futures × 16 steps (diagnosis_futures_v1, exact visible state).
+- Every layer gets LN (no affine); the final layer reproduces Raw (max |Δ| 0.001 fp16).
+
+| layer | day drift, camera still | day drift, camera moved | night drift | tile acc | mob AUC | neighbour-cow leak AUC | cow-move transfer error (same / cross terrain) |
+|---|---|---|---|---|---|---|---|
+| 0 (own pixels + position) | 0.019 | 0.123 | 0.126 | 0.964 | 1.0 | 0.636 | 0.018 / 1.08 |
+| 2-4 | 0.019-0.021 | 0.080-0.093 | 0.23-0.26 | 0.97 | 1.0 | 0.67 | 0.030-0.040 / 1.07 |
+| 12 (Raw) | 0.021 | 0.086 | 0.193 | 0.961 | 1.0 (skeleton 0.99) | 0.660 | 0.066 / 1.21 |
+
+Drift is relative to the RMS distance between different cells.
+
+- **The drift of persistent content is NOT contextual mixing.** It is as large in pixel space (layer 0) as in the final
+  layer. Neighbour changes add only 0.004.
+- **Cause, from Craftax's renderer:** map pixels = daylight·map + (1 − daylight)·(desaturated, tinted night pixels), with
+  daylight = light_level(timestep). Every pixel of persistent content changes every step, deterministically and identically
+  across RNG keys. That is why the across-key nuisance was tiny (0.0018) while copying the current token is 25× worse (0.048).
+  - About 60% of day drift energy is frame-common (layers 0 and 12). The rest is content-dependent, as a multiplicative blend
+    implies.
+  - Night static (light < 0.5) adds per-pixel random noise. It is worst in middle layers.
+- **Pixel check:** at light ≥ 0.99 (where the light label saturates), the change is frame-global events. In 321 of ~1,800
+  transitions > 90% of all patches change at once, uniformly over positions; the rest are unchanged. Below 0.99, 86% of
+  patches change slightly every step. The light label does not track the rendered light (corr(|Δpixel|, |Δlight|) =
+  0.03). So: global, time-driven rendering, deterministic across RNG keys. Not context.
+- **Position:** camera moves add drift at layer 0 through the position code (0.12). Later layers are partly position-robust.
+- **Mob content is linearly local at every layer** (AUC 1.0). Neighbour leakage of 0.64-0.67 is ecological correlation: it
+  is the same at layer 0, which cannot see neighbours.
+- **Cross-terrain non-additivity (~1.1) is the same at every layer, pixels included.** The sprite occludes the background, so
+  no layer of this encoder separates mob from background linearly. Cow deltas across terrains have cosine 0.46-0.61.
+- **Correction to the OBJECTIVE INVESTIGATION wording:** "persistent content has no persistent token because of contextual
+  drift" → "because rendering changes deterministically (daylight) and with position". This is predictable from history, and
+  the learned afterstate removes most of it (0.048 → 0.014).
+
+### R12 — TRANSPORT_IC v3 RESULT (both seeds, 3,000 updates; mechanical verdict `transport_ic_verdict.py`)
+
+At 3,000 updates (real / bank where they differ):
+
+| | IC s1 | IC s2 | ES twin s1 / s2 | free s1 / s2 | real |
+|---|---|---|---|---|---|
+| valid | **100 / 100%** | **100 / 100%** | 94.2 / 93.6% | 63 / 65%, 53 / 56% | 100% |
+| duplicate / absent | **0 / 0** | **0 / 0** | 4.3-4.9% / 0 | 15-19% / 7-17% | 0 |
+| all-source valid movement | 36.8% | 44.8% | 31.4 / 31.5% | 5-9% | ~46% |
+| cow valid movement | 34.0% | 42.6% | 28.7 / 31.2% | 4-8% | 41.0% |
+| dependence | 43pp | 47pp | 35 / 36pp | ~0 | 45.8pp |
+| scored static corruption | **0.270%** | **0.276%** | 0.80 / 0.70% | 0.27% | 0.18% |
+| sampled swaps per frame | 0.17 | 0.20 | 1.68 / 1.11 | — | — |
+| joint ES (real / bank) | 0.0263 / 0.0280 | 0.0252 / 0.0294 | 0.0249 / 0.0257, 0.0253 / 0.0267 | — | — |
+
+- By u1,500 IC already shows valid 100%, movement 30%, static 0.30%.
+- **Gates:** IC passes G1, G2, G4, G5 at both seeds under both readers. It fails **N under the bank reader only**: joint ES is
+  0.0024 / 0.0028 above the ES twin, against a 0.002 margin. Under the real reader it is +0.0014 / −0.0001.
+- **Mechanical verdict string: "cost bought with movement"** (the preregistered rule: G4 passes while G1 or N fails).
+  **Semantically wrong here:** IC's movement is *higher* than ES's; the failing N component is joint ES. **Preregistered
+  result: "inferred chance established" is NOT reached.** Fresh data stays sealed.
+- **Mechanism: supported** (both clean measures, both seeds):
+  - accepted terrain ↔ terrain swaps per frame: ES 1.37 / 0.87 → IC 0.005 / 0.012;
+  - P(move) at isolated no-mob cells: 0.024 / 0.014 → 0.000 / 0.0002.
+  - Removing the energy score's hedging incentive eliminates spurious reassignment.
+- **Why N fails** (per root, bank reader): the gap is concentrated in a few roots with **deterministic ghosts in IC's
+  afterstate**, the same count in all 64 samples:
+  - root 85, both seeds: the zombie both kept and chase-moved (cells 46 and 37) on a scroll step;
+  - seed-1 root 53: zombie at 37 and 38;
+  - seed-2 root 22: three crowded cows ghosted onto all nine destination cells;
+  - seed-2 root 5: a skeleton ghosted onto its neighbours.
+  - Where the label-free posterior cannot explain the outcome (crowded mobs, chase with a scroll), the point loss regresses
+    to the mean: the regression condition at the posterior's blind spots.
+- **Recursion (preregistered secondary, bright, depth 16):**
+  - **R1 holds:** seen-terrain error 1.5 / 1.3% vs ES 10.4 / 9.5%.
+  - **R2 fails:** cow census 0.30 / 0.19 vs ES 0.60 / 0.51; zombies 0.07 vs 0.32-0.44. IC's mobs fade faster.
+  - **R3 fails narrowly:** phantoms up to 0.029 / 0.019 per frame vs ≤ 0.01; ES is 0.071 / 0.038.
+  - Also: camera consistent 61 / 60% vs 50 / 54%; entering-terrain error 26% vs 44-59%. IC trains all 81 tokens with the D
+    loss.
+- **Reading:**
+  - Inferred chance solves what it targeted: no spurious reassignment, perfect one-step validity, movement and dependence at
+    the real rates.
+  - Its deterministic part, trained by a point loss, keeps averaging where the posterior is blind. Under recursion that
+    becomes faster mob fading. The energy score's sample-sharpening had partly masked fading.
+  - The recursion bottleneck (R4, R7, R11) remains in the deterministic dynamics.
+
+### R34 — USER QUESTION (10-15 night): does exact copying freeze information that should evolve? Yes, the representation (`stale_context.py`)
+
+**User's concern:** a latent need not represent a fixed physical object. A zombie moving closer changes its contextual
+significance (danger, actions, consequences). Does exact token copying preserve stale context? Preserve the persistent
+*information*, not necessarily its representation.
+
+**What our tokens carry** (R2, encoder layers):
+- content (mob identity is linearly local);
+- global daylight rendering;
+- a position code (drift 0.086 when the camera moved vs 0.021 when still, relative to between-cell distances);
+- almost no neighbour context (+0.004).
+- The player is always at slot 31, so "distance to the player / danger" is a function of position. A copied token carries
+  the position code of the slot where it was last encoded.
+
+**Substitution test with an idealized PI** (320 training windows per seed; frames f0..f15):
+- The last m context frames are rebuilt as PI builds imagined frames, but with the TRUE transformations: the label-free
+  scroll, the posterior swaps, and real tokens at every changed cell (posterior edit or entering).
+- They differ from reality only in that unchanged content keeps its last-encoded token.
+- PI's belief-driven outputs at the last frame are compared, stale vs fresh, on the **same windows**.
+
+| reading (s1 / s2) | m 4, ≥ 4 scrolls (24 w) | m 8, ≥ 4 scrolls (119 w) | m 14, ≥ 4 scrolls (199 w) | m 8, no scroll (61 w) |
+|---|---|---|---|---|
+| chase: P(toward player) | 0.61 → 0.43 / 0.64 → 0.37 | 0.42 → 0.26 / 0.45 → 0.16 | **0.40 → 0.27 / 0.45 → 0.25** | 0.16 → 0.13 / 0.23 → 0.19 |
+| gen error at real map changes | 1.56 → 2.16 / 1.35 → 1.81 | 1.64 → 2.51 / 1.57 → 2.38 | 1.63 → 2.54 / 1.56 → 2.46 | 1.42 → 2.16 / 1.40 → 1.89 |
+| gen error at real HUD changes | | 2.11 → 2.60 / 2.08 → 2.68 | 2.19 → 2.78 / 2.48 → 3.10 | 1.94 → 2.09 / 1.91 → 2.06 |
+| gate AUC, map / HUD | 0.999 → 0.98 / 1.0 | 0.996 → 0.976-0.981 / ≥ 0.996 | 0.996 → 0.973-0.978 / ≥ 0.995 | ~1.0 → 0.999 |
+| scroll accuracy | 1.0 | 0.99-1.0 | 0.99 | 1.0 |
+| belief cosine stale vs fresh: zombie / adjacent / other map / HUD | 0.85 / 0.99 / 0.99 / 1.0 (s1) | 0.76 / 0.98 / 0.98 / 0.99 (s1); 0.69 (s2 zombie) | 0.80 / 0.97 / 0.98 / 0.98 | 0.92 / 0.99 / 0.99 / 1.0 |
+
+One stale step already moves the belief at zombie cells (cosine 0.91-0.95 at m = 1). A zombie that moved keeps the position
+code of its old cell.
+
+**What we learn:**
+- **Exact copying preserves the information that is about content.** Change detection (gate AUC ≥ 0.97) and scroll decisions
+  (0.99-1.0) are intact.
+- **It freezes the information that is about context:**
+  - The relational reading collapses: the chance head's chase toward the player falls 30-64% with scrolls.
+  - The generated content of consequences worsens 25-62%.
+  - The stale *position code* (scrolls, moved mobs) is the larger cause. Stale *rendering* alone (no scroll) costs less:
+    chase −15-20%, map content +35-50%.
+- This is the mechanism behind R33's recursive pursuit decay (0.29 → 0.22): one-step chase is near real on fresh tokens and
+  decays as copies age.
+- **The user's principle holds:** persist the information, not its representation. The copy operator must transport content
+  and re-derive the representation that depends on where and when it is, i.e. position code and rendering.
+
+### R68 — Matched D-class encoder comparison COMPLETE: the WHITEBOARD §19 encoder hypothesis is NOT supported for this recipe — no consequence gain, camera-aligned persistence worse (12k), mob motion worse (36k), with equal representation ceilings
+
+**Registered readings** (`MATCHED_ENCODER_PREREG.md`; R0a / R0b / R0c passed; only the frozen encoder differs; paired episode bootstrap
+over 143 episodes):
+
+| WHITEBOARD question | endpoint (primary budget) | Raw-D | MoP-D | MoP − Raw [95% CI] | reading |
+|---|---|---|---|---|---|
+| consequences | E-C within-root attack AUC (12k) | 0.819 | 0.787 | −0.032 [−0.102, +0.039] | **no difference established** |
+| persistence | E-P camera-aligned (shifted-camera) stay AP, mean of zombie and cow (12k) | 0.353 | 0.200 | −0.152 [−0.206, −0.102] | **MoP worse** (normalized also worse) |
+| motion | E-M zombie arrival AP (36k; Raw gate passes [+0.098, +0.221] over screen copy) | 0.233 | 0.155 | −0.079 [−0.144, −0.019] | **MoP worse** (normalized −0.080 [−0.146, −0.015]) |
+
+- **Representation:** real-next decodability on the evaluation units is 0.93 (Raw) vs 0.91 (MoP). Tier A backbone zombie AP:
+  0.987 vs 0.986.
+  - The persistence and motion deficits survive ceiling normalization. They are **dynamics** differences, not representation ones.
+- **Trajectories, Raw → MoP at 6k / 12k / 36k:**
+  - zombie arrivals 0.023 / 0.029 / 0.233 → 0.060 / 0.126 / 0.155;
+  - within-root consequences 0.847 / 0.819 / 0.816 → 0.815 / 0.787 / 0.754.
+  - MoP learns arrivals **earlier** but **saturates lower**.
+  - At 36k (descriptive), MoP is also behind on consequences (−0.062 [−0.149, +0.022]), cow arrivals (0.024 vs 0.052) and zombie
+    static stays (0.44 vs 0.59).
+- **Persistence at 36k:** no reading. Raw-D's own camera-shifted persistence falls back to persistence level by 36k (0.256; gate
+  [−0.04, +0.04]), as in the calibration (D36k 0.12 / 0.40).
+
+**What this establishes** (a component result):
+- With a capable downstream learner (D-class, T6), matched recipe, data, initialization and exposure, MoP + SIGReg patch training
+  (seed 1) **does not improve** decision-relevant consequences.
+- It **makes** camera-transformed persistence (12k) and asymptotic mob-motion prediction (36k) **worse** than the CLS-trained Raw
+  encoder, despite equal static decodability.
+
+**Scope limits:**
+- one encoder seed pair (MoP-s1 shares Raw-s1's initial tensors); one downstream seed;
+- six-frame windows; a deterministic D (no coherence test); depth 1 (no recursion);
+- evaluation store collected by the legacy BC policy;
+- the full arm (invariance + inverse dynamics) was not tested downstream.
+
+**Causes are not claimed.** This test reads the **backbone** (LN of last-layer tokens), never the projector. The deficit is
+therefore not the projector-output failure of stages A / B: patch training changed the backbone in a way that hurts D's dynamics.
+- Which component did it is **unmeasured**: patch prediction, patch SIGReg, the router, target co-adaptation, or the shared CLS
+  path.
+- Codex's measurement that patch SIGReg dominates the **projector** gradient (97-99%) says nothing yet about the gradients that
+  reached the ViT backbone. It is a hypothesis to test, not an explanation.
+
+### R67 — Matched D-class encoder comparison (MoP-s1 vs Raw-s1 backbone-LN), primary 12k read: decisions — no difference; camera-aligned persistence — MoP WORSE; motion — no reading yet (MoP ahead descriptively); continuing to 36k by rule
+
+**Registration and checks.**
+- `MATCHED_ENCODER_PREREG.md` (885a6aaa), committed before any check or training.
+- **R0a passed exactly:** bridge2k = joint10k encoder bitwise; the stored pool re-encodes bitwise; actions equal.
+- **R0b passed exactly:** the Raw recipe's 1k rerun reproduces the historical objectives bit for bit.
+- **R0c passed at 6k:** finite objective; MoP-D one-step map error 0.25 of copy.
+- Arms: the identical tworld.py (an unmodified file via the launcher), seed 7, the same 32,647 windows, batch order and held-out rows.
+  Only the frozen encoder differs.
+- Representation ceilings are equal: real-next decodability on the evaluation units 0.93 (Raw) vs 0.91 (MoP).
+
+| endpoint | Raw-D 6k / 12k | MoP-D 6k / 12k | MoP − Raw at 12k [95% CI] | registered reading (12k) |
+|---|---|---|---|---|
+| **E-C** decisions: within-root attack AUC (HUD + near) | 0.847 / 0.819 | 0.815 / 0.787 | −0.032 [−0.102, +0.039] | **no difference established** (both above the action prior 0.62) |
+| **E-P** camera-aligned persistence: shifted-camera stay AP, mean of zombie and cow | 0.351 / 0.353 | 0.299 / 0.200 | −0.152 [−0.206, −0.102]; normalized −0.155 [−0.213, −0.104] | **MoP worse**, in absolute and ceiling-normalized form, so a dynamics deficit, not a representation one |
+| **E-M** motion: zombie arrival AP | 0.023 / 0.029 | 0.060 / 0.126 | +0.097 [+0.052, +0.159] | **no reading**: the Raw gate (vs screen copy 0.079) fails, as calibrated; the primary read is at 36k |
+
+**Descriptive detail (12k), zombie (cow):**
+- shifted-camera stays: MoP 0.124 (0.277) vs reader-matched world persistence 0.126 (0.355). Raw 0.185 (0.520) vs 0.141 (0.384).
+  MoP-D no longer moves retained mobs with the camera better than persistence, and it declined from 6k (0.189 / 0.409).
+- static-camera stays: MoP 0.51 (0.44) vs copy 0.40 (0.32); Raw 0.39 (0.33) vs copy 0.45 (0.30). MoP keeps mobs in place better.
+- arrivals: MoP 0.126 (0.026) exceeds its own screen copy 0.090 (0.013) at 12k. Raw-D reached that only between 18k and 36k
+  (calibration: 0.061 at 18k, 0.233 at 36k).
+  - This is descriptive only. E-M is read at 36k, against Raw's gate.
+
+**Continuation rule:** not decisively worse on both E-C and E-P, so **continue to 36k** (training is at 14k).
+
+**Interpretation, provisional until 36k:**
+- With a capable learner and matched exposure, the patch-trained encoder:
+  - gives **no established change in decision-relevant consequences**;
+  - makes **camera-transformed persistence worse**, beyond any representation difference;
+  - may make **arrivals (mob motion) learnable earlier**, which the 36k read must establish or refute.
+- That pattern does not fit a simple "better" or "worse" encoder.
+
+**Not claimed:** any cause. In particular, Codex's finding that patch SIGReg dominates the projector gradient concerns the
+projector's output path. Whether projector gradients reshaped the backbone that this test reads has not been measured (no
+backbone-gradient evidence), so it is not invoked here.
+
+### R66 — Frozen-state stage B: dropping the projector recovers most of the erasure; a smaller, seed-dependent zombie gap to Raw remains (registered reading "mixed")
+
+**Run.**
+- FB: a fresh Stage 2 predictor on the frozen full-arm **backbone-LN** tokens; the same init, data stream and 10k budget as FD and
+  the Raw-predictor; 2 seeds.
+- Triggered by the stage-A rule.
+- Evaluation is identical to stage A: all-roots cross-fit, the four mob levels, within-root consequences, Tier B v2.
+  Backbone-stage readers come from the Tier A procedure (`tierA2_fullbb_s*`: backbone zombie AP 0.977).
+
+| relative next-cell decodability | zombie s1 / s2 | cow s1 / s2 |
+|---|---|---|
+| FB (frozen backbone) | 0.69 / 0.51 | 1.15 / 1.12 |
+| FD (frozen projected) | 0.089 / 0.071 | 0.30 / 0.65 |
+| Raw-predictor | 0.80 / 0.89 | 1.25 / 1.25 |
+| FB − FD [95% CI] | [+0.40, +0.80] / [+0.29, +0.59] | [+0.74, +0.97] / [+0.35, +0.58] |
+| FB − Raw [95% CI] | [−0.35, +0.15] / [−0.57, −0.15] | [−0.21, +0.03] / [−0.22, −0.03] |
+
+**Registered reading: "mixed".**
+- FB − FD > 0 at both seeds: the projector accounts for most of the erasure. It recovers 84% / 53% of the FD-to-Raw gap for
+  zombies and 90% / 78% for cows.
+- But FB is not established within δ = 0.153 of Raw. Zombies: s1's interval reaches −0.35; s2 is below Raw.
+
+So neither "the projector alone" nor "the backbone alone" holds.
+
+**Further observations:**
+- **Training trajectory** (split panel): FB's zombie decodability **declines** over training, s1 1.02 → 0.99 → 0.78 and s2
+  0.84 → 0.76 → 0.51 at 1k / 4k / 10k. Cows rise. A milder version of the joint erasure appears on the backbone too, seed-dependent.
+- **The other levels:** FB is a Raw-predictor-like copy machine, slightly worse.
+  - zombie static stays 0.24 vs copy 0.38-0.44;
+  - shifted stays 0.001-0.002;
+  - arrivals below screen copy;
+  - count error zombies 0.26-0.29 (Raw-pred 0.12-0.14), cows 0.49-0.51 (0.18-0.20);
+  - within-root consequences at the action prior (0.62 / 0.60 vs 0.62);
+  - attack recall 0; escape AUC 0.48 / 0.52.
+
+**What stage B establishes, and what it cannot:**
+- **The projected state is the main problem.** The full arm's projector + BN + 2048 → 192 compression makes erasure almost total
+  for this learner. On the backbone, most of the information remains predictable.
+- **A residual zombie gap to Raw remains with the small learner** (seed-dependent), and it grows over training.
+- **Not a test of the encoder hypothesis.** The small learner fails every capability gate on Raw too, so FB ≈ or < Raw says nothing
+  about dynamics or decisions. That question belongs to the matched D-class comparison (MATCHED_ENCODER_PREREG.md), which uses
+  MoP-s1, not full-s1.
+
+**Matched D-class comparison status:**
+- R0a passed exactly: bridge2k encoder = joint10k bitwise; the pool re-encodes bitwise; actions equal.
+- **R0b passed exactly:** the 1k-update Raw rerun reproduces the historical objectives bit for bit (0.16536 @ 500, 0.08425 @ 1000).
+  The reused Raw arm is exactly reproducible.
+- The MoP-s1 pool is built, and the MoP arm is training.
+
+### R65 — Frozen-state stage A: the projected interface is NOT learnable without erasure; a read-only calibration shows what a D-class learner on Raw learns, and when
+
+**Stage A** (registered; Amendment 1; δ = 0.153). FD = a fresh Stage 2 predictor on the frozen full-arm deployed tokens, with the
+Raw-predictor's exact init and data stream, 10k updates, 2 seeds.
+
+| zombie relative next-cell decodability (all-roots cross-fit) | s1 | s2 |
+|---|---|---|
+| FD | 0.089 | 0.071 |
+| J (joint) | 0.078 | 0.083 |
+| Raw-predictor | 0.80 | 0.89 |
+| FD − J [95% CI] | [−0.002, +0.027] | [−0.045, +0.075] |
+| FD − Raw [95% CI] | [−0.81, −0.59] | [−0.91, −0.65] |
+
+- **Cows:** FD is below J.
+- **Split-panel check:** FD 0.39 / 0.23 vs J 0.32 / 0.23 vs Raw 0.88 / 0.94.
+- **FD erases from its first checkpoint** (0.30 / 0.13 at 1k), unlike early J.
+- **Every other level matches J:**
+  - static stays destroyed (0.01-0.02 vs copy 0.30-0.32);
+  - shifted stays 0.001;
+  - arrivals at the base rate;
+  - counts incoherent (20-38% of samples outside the sibling range);
+  - within-root consequences ≤ the action prior (0.57 / 0.51 vs 0.62);
+  - B1 attack recall 0; B3 escape AUC 0.48 / 0.54.
+- **Registered reading: "frozen projected states also erase"**, so stage B (FB) runs. By Codex's interpretation table:
+  - the final deployed interface by itself makes this predictor erase;
+  - the joint training history is **not** needed to produce the erasure;
+  - this is not proof of irreversible information loss.
+
+**Calibration** (read-only; no training; `d_adapter.py`, `run_d_calibration.sh`). Existing D-class worlds on frozen Raw tokens,
+scored on the same audited gates:
+- the scratch-D lineage: seed 7, 6-frame windows, the D loss, 6k-36k;
+- long D: 42k, 16 frames;
+- control D: 45k, §17's 0.711.
+
+Adapter alignment verified: D's map error is 0.15 / 0.12 of copy, vs 0.6-0.9 for every Stage 2 predictor.
+
+| zombie (cow) | baseline | Stage 2 Raw-pred | D 6k | D 12k | D 18k | D 36k | D 45k |
+|---|---|---|---|---|---|---|---|
+| within-root attack AUC (HUD + near) | action prior 0.62 | 0.51 / 0.69 | **0.85** [0.76, 0.93] | 0.82 | 0.81 | 0.82 | **0.95** |
+| shifted-camera stays AP | world persistence 0.14 (0.38) | 0.001 (0.002) | **0.18 (0.52)** | 0.19 (0.52) | 0.21 (0.51) | 0.12 (0.40) | 0.16 (0.37) |
+| arrival AP | screen copy 0.079 | 0.044-0.048 | 0.023 | 0.029 | 0.061 | **0.233** | **0.291** |
+| stay-vs-vacated AUC | copy 0.66 | 0.65 | 0.48 | 0.51 | 0.59 | **0.75** | **0.80** |
+
+**Reading.** A D-class learner on Raw passes:
+- **consequences** from 6k (+0.11 to +0.37 over the action prior; +0.12 more with 16-frame context);
+- **camera-aligned persistence** from 6k;
+- **motion** only between 18k and 36k.
+
+Coherent samples cannot be scored: D is deterministic.
+
+**Consequence for the encoder question** (Codex's recipe audit, verified against these numbers):
+- The Stage 2 learner cannot test the encoder hypothesis.
+- D's advantages are not an encoder comparison: 45k updates, a different architecture, loss, context and sampler.
+- A matched test needs a D-class learner with gates matched to these onset budgets.
+- Codex's 6k / 12k / 18k staging would reach consequences and persistence, never motion.
+
+**Proposed, not launched:** `20261016_spatial_encoder/MATCHED_ENCODER_TEST_REVIEW.md`.
+- Train **only a MoP-s1 arm** against the verified historical Raw scratch-D lineage: identical code (tworld.py sha equal to the
+  checkpoints'), seed, pool windows and sampler.
+- R0 identity / reproduction checks come first.
+- Stages: 6k (consequences + persistence), 12k (confirmation), conditional 36k (motion).
+- Cost: about 2.5 h core, about 6 h with motion.
+- Coherence and recursion stay outside a D-class test.
+
+### R64 — Codex's frozen-state audit verified: the AP tie defect corrected (small impact); consequences show NO action discrimination; Raw's mob "retention" is screen copy, not dynamics; the frozen-state control registered as a LEARNABILITY test (training; conclusions held)
+
+**Sources.**
+- Codex `20261017_frozen_state_audit/ASSESSMENT.md`, verified point by point below.
+- Corrected code:
+  - `metrics_tied.py`;
+  - `erasure_diagnosis.py` → `erasure_v2/`;
+  - `location_dynamics.py` v2;
+  - `consequence_check.py` + `consequence_within_root.py`;
+  - `cbn_check.py`.
+- Registration: `FROZEN_STATE_CONTROL_PREREG.md` (69b4ee18) + Amendment 1 (1317ec24). δ fixed in 8c8d48d7.
+- Coordination note for Codex: `AP_TIE_CORRECTION.md`.
+
+**User instructions (10-17):**
+- continue training without interruption;
+- hold strong conclusions until the metrics are audited;
+- treat FD as a learnability experiment;
+- prioritize within-root action discrimination for consequences;
+- separate four mob levels;
+- no new architecture experiments.
+
+**1. Codex's findings, checked against code and data:**
+- **AP tie defect: confirmed and corrected.**
+  - `spatial_eval_v2.average_precision` is order-dependent inside ties.
+  - `metrics_tied.ap_grouped` is Codex's grouped AP verbatim (identical on 200 random tied cases), with an exactly replicated
+    episode bootstrap (verified against explicit replication).
+  - Impact on real-frame results is negligible: median |change| 1e-5 over 144 entries; headline Tier A and real-next AP ≤ 0.0004;
+    the largest is a 38-positive sleeping subgroup, 0.520 → 0.564.
+  - Impact on R63 is ≤ 0.06 per value, and the trajectory survives (`AP_TIE_CORRECTION.md` §5).
+- **FD / Raw / J initialization:** FD's predictor starts bitwise equal to the Raw-predictor's (Codex's CPU reconstruction, 57 / 57
+  tensors); J's differs (31 / 57). Already corrected in the prereg before any run.
+- **Optimization differences:** confirmed from the logs. J clips every logged step (median multiplier 0.44 / 0.48 between 1k and
+  4k); the Raw-predictor never clips. J also has bf16, train-mode BN and auxiliary losses. Recorded in Amendment 1 §2.
+- **C-BN cohort:** confirmed. The full arm's BN saw 128 clean + 32 augmented windows. `cbn_check.py` now reproduces that cohort in
+  one projector call (results below).
+- **E1 is relative next-cell linear decodability,** not survival or destruction of input information. The term "retention" is
+  retired; absolute APs are reported.
+- **Interpretation limits adopted:**
+  - E2 needed a reader-matched persistence baseline and an alignment check.
+  - The sibling frequency is a reference, not a ceiling.
+  - Coherent samples need their own test.
+  - A pooled consequence AUC can be root danger.
+  - "Not below Raw" is not non-inferiority.
+
+**2. Consequences: within-root action discrimination** (read-only; all diagnosis roots; 5-fold episode cross-fitting; units with
+≥ 2 alive keys). 44 roots in 40 episodes have both attacking and non-attacking actions (1,250 pairs). Intervals: episode bootstrap.
+
+| attack AUC | pooled (contrast) | **within root (pairs)** [95% CI] | within-root Pearson(pred, real Δh) |
+|---|---|---|---|
+| Raw-pred s1, predicted HUD | 0.78 | **0.36** [0.26, 0.45] | 0.12 |
+| Raw-pred s2, predicted HUD | 0.76 | **0.57** [0.47, 0.66] | 0.19 |
+| Raw-pred s1 / s2, predicted HUD + near-player | 0.73 / 0.71 | 0.51 / **0.69** [0.59, 0.80] | 0.17 / 0.25 |
+| copy (root) + action one-hot = linear action prior | 0.80 | 0.62 [0.51, 0.71] | 0.19 |
+| real next frame (ceiling) | 0.97 | 1.00 | 0.99 |
+| joint full s1 / s2, HUD + near | 0.56 / 0.55 | 0.69 / 0.60 | 0.22 / 0.12 |
+| joint MoP s1 / s2, HUD + near | 0.66 / 0.72 | 0.55 / 0.63 | 0.08 / 0.15 |
+
+- **Pooled AUC was mostly root danger.** Codex's label-only control (adjacent zombies, constant over actions) scores 0.87 pooled
+  and 0.50 within roots.
+- **No world's predicted state discriminates attacking from non-attacking actions beyond the linear action prior.** Paired
+  predicted − (copy + action) intervals contain 0, except Raw s1 HUD, which is **worse** ([−0.41, −0.09]).
+- **Answer to the user's check:** Raw's predicted states do **not** contain action-discriminating, attack-related health changes.
+  Its pooled 0.78 is the danger of the root.
+- The registered pooled readings are reported as registered: "the predicted display beats copy", pooled 0.78 / 0.76 vs 0.80, is
+  not met at either seed. They are superseded as the primary by Amendment 1 §6.
+- **Limits:**
+  - 44 comparable roots: intervals are about ±0.1.
+  - A refitted HUD reader measures supervised accessibility, not faithful rendering.
+  - The action prior is a linear main effect: it can rank "sleep is risky" without seeing any zombie.
+
+**3. Mobs at four levels, existing worlds** (`location_dynamics.py` v2; all 143 episodes, 5,010 depth-1 units; cross-fitted refit
+readers; tie-grouped AP).
+- Every unit's camera shift has a unique tile-mismatch minimum, so no alignment ambiguity occurs in this store.
+
+| zombie (cow) | Raw-pred s1 / s2 | joint full s1 / s2 | joint MoP s1 / s2 |
+|---|---|---|---|
+| 1. decodability of the real next frame (refit AP) | 0.94 (0.99) | 0.62-0.66 (0.79-0.91) | 0.49-0.66 (0.70-0.71) |
+| E1 relative next-cell decodability [CI] | 0.80 [0.68, 0.91] / 0.89 [0.78, 0.98] (1.25 / 1.25) | 0.078 / 0.083 (0.42 / 0.91) | 0.086 / 0.056 (0.26 / 0.19) |
+| 2. stay, static camera, AP: expected vs copy | 0.38-0.44 vs 0.45 (0.42-0.43 vs 0.30) | 0.02 vs 0.30-0.32 (0.13-0.37 vs 0.31-0.34) | 0.01-0.02 vs 0.23-0.28 |
+| 2. stay, **shifted** camera, AP: expected vs world persistence | **0.001** vs 0.14 (**0.002** vs 0.38) | 0.001 vs 0.08-0.10 | 0.001 vs 0.04-0.06 |
+| 2. stay-vs-vacated AUC: expected (copy; sibling reference) | 0.65 (0.66; 0.93) | 0.59-0.61 | 0.57-0.59 |
+| 3. arrive AP: expected / screen copy / reader-matched world persistence / sibling reference | 0.044-0.048 / **0.079** / 0.005 / 0.51 (0.011 / 0.014 / 0.003 / 0.036) | 0.005 / 0.09-0.10 / 0.003-0.006 | 0.005 / 0.08 / 0.004 |
+| 4. sample count error: samples (exact persistence; decoded-real floor) | 0.12-0.14 (0.022; 0.044) | 0.44-0.46 | 0.41-0.47 |
+| 4. samples outside the sibling count range (decoded-real floor) | 10-12% (3.7%) | 19-20% | 20% |
+
+**Readings:**
+- **Raw's "retention" is screen copy, not world-coherent persistence.**
+  - With a static camera it keeps zombies about as well as copy.
+  - When the camera moves, it does **not** move them: shifted-stay AP 0.001-0.002, where reader-matched world persistence scores
+    0.14 / 0.38.
+  - **R63's reading that the Raw-predictor "keeps" mobs is corrected to "copies them in screen coordinates".**
+- **No world predicts mob motion beyond the best trivial baseline.**
+  - The registered motion reading (expected beats reader-matched world persistence on arrivals) is formally **met** for Raw at both
+    seeds (zombies +[0.020, 0.069] / +[0.023, 0.079]; cows likewise).
+  - But **screen copy beats Raw's expected state on arrivals** (0.079 vs 0.044-0.048). Zombies chase the player, so they keep
+    their screen position when the camera moves.
+  - The comparator I registered in Amendment 1 is therefore weaker than screen copy for zombies. That is a limitation found in the
+    data, not a success: the honest reading is "no motion prediction demonstrated".
+  - The sibling-frequency reference (0.51) shows that much of arrival is predictable from the state.
+- **No world's samples are object-coherent.** Even Raw's samples miscount zombies about 6× more than exact persistence does and
+  leave the realized count range 3× more often than the reader on real frames. The joint worlds are about 3× worse again.
+  - This matches Codex's structural point: heads are sampled independently per patch.
+
+**4. Frozen-state control (stage A, both seeds).**
+- FD s1 is training (~6k / 10k); FD s2 follows.
+- δ = 0.153, from Raw (0.800 / 0.892) and J full (0.078 / 0.083); committed before any FD evaluation.
+- It answers a **learnability** question: can a fresh predictor, with the Raw-predictor's exact init and data stream, learn the
+  final full-arm deployed interface without erasing?
+- It does **not** test a co-adaptation mechanism. J differs in target history, BN mode and cohort, precision, initialization and
+  optimization (clipping on all modules); see Amendment 1 §2.
+
+**5. C-BN (corrected cohort) is negative.**
+- Setup: `cbn_check.py`; 2,048 held-out dev windows; pseudo-labels from Raw's readers; the projector copy in train mode over the
+  **actual** training cohort (full arm: 128 clean + 32 augmented windows, one projector call; MoP: 128 clean).
+- Relative decodability, eval-mode vs train-mode BN, zombie / cow:
+
+| world | zombie (eval → train) | cow (eval → train) |
+|---|---|---|
+| J full s1 | 0.433 → 0.421 | 0.311 → 0.311 |
+| J full s2 | 0.660 → 0.645 | 0.876 → 0.882 |
+| J MoP s1 | 0.661 → 0.643 | 0.318 → 0.324 |
+| J MoP s2 | 0.587 → 0.610 | 0.467 → 0.450 |
+
+- All |changes| ≤ 0.025. **BN mode / cohort does not explain the joint worlds' lower decodability.**
+- **Limits:**
+  - Dev pseudo-labels are noisy for zombies: the refit AP of the real frames is only 0.10-0.41 there, against 0.94 on the
+    diagnosis store. So the dev panel compresses differences.
+  - A negative here rules out one artefact; it does not establish co-adaptation.
+
+**Held until FD is in:** any statement about what causes the joint erasure.
+
+**Already established, independent of FD:**
+- No Stage 2 world, Raw included, predicts action consequences beyond an action prior.
+- None predicts mob motion beyond screen copy.
+- None samples object-coherent futures.
+
+For context (WHITEBOARD §17), the earlier D world ranks escapes at 0.711 by graded first-step damage, and PI's persistent scene
+shows pursuit (0.25-0.30). The Stage 2 patch predictors are below both on both axes.
+
+### R63 — Why the full arm "predicts background" yet erases mobs (user, 10-17): erasure is LEARNED during joint training, not built into the predictor or the objective; the background advantage is not content
+
+**Question (user).** Why does the full arm improve background prediction yet erase mobs immediately? Cheap checks only, on
+existing checkpoints: validate the mob-location evaluation, follow the representations through training, and separate projector
+limitations from predictor / objective failures.
+
+**Code.**
+- `erasure_diagnosis.py`: evaluation only; GPU; exact simulator labels evaluate, never train.
+- `erasure_summary.py`: builds the tables below.
+- Coverage: 44 checkpoints. MoP s1 / s2 and full s1 / s2 at 500, 1k, 2k, 3k, 4k, 6k, 8k, 10k (encoder, projector and the
+  co-trained predictor of the same step). Raw-predictor s1 / s2 at 1k, 2k, 4k, 6k, 8k, 10k (frozen Raw@10000).
+- Per checkpoint:
+  - **Representation:** both stages; Tier A readers exactly as `spatial_eval_v2.a1`; mob variance share within tile classes;
+    change energy by cell type.
+  - **Depth-1 predictor:** the B4 setting; fit + test roots of `split_v2.json`.
+    - P1: transfer reads with the real-state readers. Threshold-free AP, precision / recall at the threshold, exact and within one
+      cell, best-of-K, strata by camera motion and action.
+    - P2: refit reads. Ridge fitted on the FIT units' predicted / copy / real states, scored on test.
+    - P3: background. Tile reader on predicted states, all cells and camera-changed cells; token error.
+  - **Held-out DEV split** of the training corpus (never FINAL): 2,048 windows in the training alignment. Labels are Raw's
+    readers on the real next frame (pseudo-labels).
+
+**Retention** = refit AP on the predicted expected state ÷ refit AP on the root's own state (copy). It is threshold-free and
+reader-independent.
+- 1 = the predictor keeps the mob information its input carried.
+- Below 1 = it destroys some.
+
+**1. The evaluation is valid; the erasure is real.**
+- **Reproduction:** full s1 @ 10k reproduces Tier A's deployed zombie AP exactly (0.7452), and `census_localization.py`'s real /
+  copy precision and recall to 4 decimals.
+- **The erasure is not a reader or threshold artefact:**
+  - threshold-free AP of the expected state: zombie 0.043, cow 0.021 (copy 0.22 / 0.08);
+  - recall within one cell: 0;
+  - no head carries the mob: best-of-K AP 0.005.
+- **The information is gone, not unread.** Refit readers recover 0.053 / 0.043 from the predicted state, against 0.20 / 0.08 from
+  the root state the predictor was given.
+- **It is not a camera-shift failure:** it holds with the camera static and moving, and under noop and moves.
+- **It is not distribution shift:** it holds on held-out training-distribution windows (dev retention 0.43 / 0.31, pseudo-labels).
+
+> **[Corrected / qualified in R64]**
+> - AP was not tie-aware. The corrected values move ≤ 0.06 and the trajectory survives.
+> - "Retention" is relative next-cell linear decodability; it shows neither survival nor destruction of information.
+> - Raw's high value is **screen copy**: Raw does not move retained mobs with the camera, does not predict arrivals beyond copy,
+>   and its samples are not count-coherent.
+> - "Not a property of the predictor or the MSE objective" is withdrawn as stated. The Raw comparison shows the predictor can
+>   avoid this decodability loss on frozen Raw tokens; it does not exonerate the objective (Codex).
+
+**2. Erasure is learned during joint training.** The same predictor on frozen Raw tokens never learns it.
+
+| zombie retention | 500 | 1k | 2k | 4k | 10k |
+|---|---|---|---|---|---|
+| Raw-pred s1 / s2 (frozen Raw tokens) | — | 1.01 / 0.94 | 1.05 / 0.97 | 0.77 / 0.93 | **0.88 / 0.95** |
+| MoP s1 / s2 (joint) | 0.87 / 0.89 | 0.87 / 0.84 | 0.46 / 0.58 | 0.15 / 0.20 | **0.15 / 0.07** |
+| full s1 / s2 (joint) | 0.98 / 1.02 | 0.80 / 0.80 | 0.58 / 0.35 | 0.16 / 0.07 | **0.26 / 0.23** |
+
+| cow retention | 500 | 1k | 2k | 4k | 10k |
+|---|---|---|---|---|---|
+| Raw-pred s1 / s2 | — | 0.97 / 0.96 | 0.94 / 0.94 | 1.09 / 1.18 | **1.11 / 1.10** |
+| MoP s1 / s2 | 0.67 / 0.85 | 0.79 / 0.86 | 0.28 / 0.45 | 0.21 / 0.13 | **0.33 / 0.27** |
+| full s1 / s2 | 0.90 / 0.85 | 0.79 / 0.96 | 0.36 / 1.03 | 0.27 / 1.06 | **0.55 / 0.84** |
+
+- **Early on, every joint world keeps the mob information at copy level** (500-1k: 0.80-1.02), as the Raw-predictor does.
+- **Between ~1k and ~4k updates it is destroyed,** in all four joint runs (zombies; cows in three of four, not full s2).
+- Over the same window:
+  - the deployed state's own zombie AP falls (0.98-0.99 → 0.62-0.88 at 10k);
+  - the patch-prediction loss keeps falling (≈ 0.07 at 1k → 0.03 at 4k).
+- The Raw-predictor has the **same** architecture, loss (min-over-K MSE + router CE), budget, data stream and seeds. It keeps
+  zombies at ≥ 0.77 and cows at ≥ copy throughout.
+- So **the erasure is not a property of the predictor or its MSE objective.** It comes with joint encoder-projector-predictor
+  training, or with the projected space that joint training produces.
+- Reader compatibility differs too:
+  - The Raw-predictor's expected states become readable by real-state readers as training proceeds. Zombie transfer AP 0.02 → 0.14 /
+    0.26; cows 0.18 vs copy 0.15, i.e. beyond copy.
+  - The joint predictors' never do (≤ 0.15, mostly 0.01-0.05). Even when they retained information, it sat off the real-state
+    manifold.
+
+**3. Low mob energy in the space is NOT the explanation** (a hypothesis I held; now contradicted).
+- The deployed spaces' mob variance share within tile classes is 0.0015-0.010.
+- Frozen Raw's is **0.0059**, lower than three of the four joint spaces, and Raw's world retains.
+- Mob-change salience (energy per mob-change cell ÷ per drift cell) is 20.7 for Raw, 10-44 for the joint spaces. It does not order
+  the outcomes either.
+
+**4. The full arm's "background advantage" (R62) is token MSE, not content.** At 10k:
+
+| | tile acc of predicted state (copy) | camera-changed cells correct | token error ÷ copy, mob-free cells | drift share of change energy |
+|---|---|---|---|---|
+| Raw-pred s1 / s2 | 0.878 / 0.877 (0.870) | 0.24 / 0.23 | 0.83 / 0.83 | 0.12 |
+| MoP s1 / s2 | 0.857 / 0.855 (0.848 / 0.850) | 0.24 / 0.23 | 0.77 / 0.75 | 0.11 / 0.12 |
+| full s1 / s2 | 0.860 / 0.848 (0.851 / 0.842) | 0.24 / 0.28 | **0.64 / 0.70** | **0.20 / 0.21** |
+
+- In reader terms, all six worlds predict background equally: about +0.7 pt over copy, and about 24% of camera-shifted cells right
+  (real: 93%).
+- The full arm's lower token error relative to copy coincides with its space carrying more frame-to-frame drift (0.20-0.21 of the
+  change energy vs 0.12). Copying pays for that drift and the predictor can partly anticipate it.
+- That explanation is likely but **not tested**. **R62's "predicts background best" is corrected:** best in token MSE relative
+  to copy, equal in content.
+
+**5. Projector limits vs predictor / objective failures** (what the evidence separates):
+- **F1, erasure:** specific to jointly trained Spatial worlds. Its cause is among:
+  - joint co-adaptation (training dynamics; the patch targets are not detached, as in LeWM);
+  - the geometry of the projected space joint training produces;
+  - both.
+  It is not the predictor architecture or the loss, which retain on frozen Raw. These checks cannot separate the remaining
+  candidates, because in every joint run the space and the predictor change together.
+- **F2, no consequences:** present **without any projector**. The Raw-predictor retains mobs (and slightly beyond copy for cows),
+  yet its attack recall is ≤ 2% and its escape AUC 0.46-0.50 (R60). This is a predictor / objective failure: retention is
+  necessary for decisions but not sufficient.
+
+**Literature checked for this diagnosis** (primary sources read, not summaries):
+- Ni et al. 2024 (arXiv 2401.08898, ICLR): online (non-detached) self-predictive targets lose rank and return in all MuJoCo tasks;
+  stop-gradient preserves rank in their linear analysis. The ℓ2 objective is exact only for deterministic dynamics.
+- Littwin et al. 2024 (arXiv 2407.03475): JEPA's implicit bias toward high-influence (predictive) features over noisy ones.
+- Branch-JEPA (arXiv 2607.05238): hard-assigned heads "can duplicate one another, ignore rare futures, or spread into unsupported
+  regions"; hard assignment "updates only the selected location".
+- MuDreamer (arXiv 2405.15083): "object vanishing … particularly when crucial elements are small" (under reconstruction).
+- Lu et al. 2026 (arXiv 2607.15142): all five frozen Pong world models fail on the ball, and policies trained inside them collapse.
+  Their fix is pixel reconstruction on concept regions, which is outside our reconstruction-free constraint.
+- DINO-WM (arXiv 2411.04983): a frozen encoder, patch-MSE predictor, teacher forcing, history up to 3 with a causal mask.
+
+**Next (proposed, not started):** `20261016_spatial_encoder/FROZEN_STATE_CONTROL_PROPOSAL.md`.
+
+### R62 — The full arm at Stage 2 (2 seeds) and Amendment 6 complete: the three-encoder comparison, read at three levels
+
+**Runs.**
+- `run_stage2_full.sh`: full_sig at seeds 20260731 / 20260732, 10,000 updates, identical init / data / budget. The identical
+  corrected evaluation ran on CPU after the other arms.
+- Then `run_sleep_strat.sh` and `census_localization.py` (unchanged).
+- Training ended `stage2_full_done`. Final idm_acc 0.41 over 17 actions (chance 0.06); patch effective rank 45.7.
+
+**Primary, preregistered (full vs Raw-predictor, `stage2_verdict_v2_full.json`): "NOT SUPPORTED."** Neither primary improves at
+either seed.
+
+| full vs Raw-pred | seed 1: full / Raw, diff [CI] | seed 2: full / Raw, diff [CI] |
+|---|---|---|
+| **B1 attack recall** | **0.000** / 0.022, −0.022 [−0.085, 0.000] | **0.000** / 0.007, −0.007 [−0.028, 0.000] |
+| **B3 escape AUC** | 0.462 / 0.504, −0.042 [−0.118, +0.037] | 0.460 / 0.459, +0.001 [−0.049, +0.051] |
+| B1 graded health | **−0.307** / 0.004, −0.311 [−0.486, −0.062] | −0.133 / −0.162, +0.029 [−0.090, +0.150] |
+| B2 MAE (guard) | 0.427 / 0.375: **fails** [+0.025, +0.081] | 0.375 / 0.383: passes |
+| B4 d16 zombie error (guard) | 0.35 / 0.47: passes (better) | 0.72 / 0.37: **fails** [+0.12, +0.65] |
+| reader on real next, zombie / cow AP | 0.64 / 0.83 (Raw 0.95 / 0.98) | 0.80 / 0.88 |
+
+**Secondary, descriptive (full vs MoP + SIGReg, `stage2_verdict_v2_full_vs_mop.json`).** Amendment 5 gives no verdict here; the
+file's mechanical "verdict" field does not apply.
+- B3 is **worse at both seeds**: −0.073 [−0.136, −0.010] and −0.090 [−0.134, −0.045].
+- The full arm's escape ranking is below chance at both seeds (0.462 / 0.460).
+- B4 census error is better at both seeds: −0.28 [−0.56, −0.05] and −1.93 [−2.56, −1.31]. The full world does not explode.
+- B2 is worse at s1 and better at s2. B1 graded health is worse at s1 (−0.45 [−0.73, −0.09]).
+
+**Level 1 — backbone (Tier A, backbone_ln):**
+
+| | tile | zombie / cow AP | drift day steady / night | code flips |
+|---|---|---|---|---|
+| Raw | 0.977 | 0.987 / 0.988 | 0.035 / 0.154 | 0.32 |
+| MoP s1 / s2 | 0.970 / 0.971 | 0.986 / 0.967 · 0.985 / 0.959 | 0.062 / 0.097 · 0.068 / 0.083 | 0.26 / 0.23 |
+| full s1 / s2 | 0.971 / 0.967 | 0.977 / 0.975 · 0.970 / 0.989 | **0.105 / 0.139 · 0.154 / 0.155** | 0.33 / 0.32 |
+
+- All three backbones keep rare mobs (AP ≥ 0.97).
+- The full arm's backbone is the **least temporally stable** of the Spatial ones: day drift 2-3× MoP's, and it loses MoP's night
+  advantage.
+- At sleep onset, its backbone decodes better than MoP's (population B zombie AP 0.81 / 0.88 vs 0.69 / 0.66).
+
+**Level 2 — deployed state (Tier A, deployed):**
+- **Mob AP in Tier A frames:**
+  - full s1 / s2: zombie 0.745 / 0.816, cow 0.784 / 0.897;
+  - MoP s1 / s2: zombie 0.620 / 0.878, cow 0.743 / 0.814;
+  - Raw 0.987 / 0.988.
+- **Fit-only CV λ:** full zombie AP 0.88 / 0.87, cow 0.95 / 0.95.
+- **Energy HUD R²:** drops to 0.904 at full s2.
+- **Sleep (Amendment 6):**
+  - The preregistered reading: **"does not reduce."** full − MoP M1 is −0.58 pt [−1.99, +0.13] and −0.05 pt [−0.21, +0.05].
+  - Guard, awake AP full − MoP: +0.11 [+0.002, +0.245] and −0.11 [−0.20, −0.04].
+  - M1 counts misfires, and MoP's were already low on B.
+  - The descriptive companion named in R61, sleeping-frame AP (deployed), moves strongly. Intervals are post hoc
+    (`sleep_ap_ci.py`, episode bootstrap 2,000; A rests on 8 episodes, B on 33):
+
+| sleeping-frame AP, deployed | full s1 / MoP s1, diff [CI] | full s2 / MoP s2, diff [CI] |
+|---|---|---|
+| cow, B | 0.91 / 0.04, +0.87 [+0.64, +0.96] | 0.73 / 0.03, +0.70 [+0.49, +0.90] |
+| cow, A | 0.90 / 0.01, +0.89 [+0.65, +1.00] | 0.82 / 0.05, +0.77 [+0.58, +0.87] |
+| zombie, B | 0.38 / 0.07, +0.31 [−0.02, +0.60] | 0.60 / 0.18, +0.42 [+0.05, +0.67] |
+| zombie, A | 0.52 / 0.01, +0.51 [+0.32, +0.96] | 0.05 / 0.10, −0.06 [−0.93, +0.01] |
+
+  - **So photometric invariance + inverse dynamics (together) largely remove the deployed state's blindness to cows in sleeping
+    frames, at both seeds and in both populations.** Zombie gains are partial: one seed per population.
+  - It stays at or below Raw (cow sleeping AP 0.73-0.91 vs Raw 0.91-1.0; zombie 0.05-0.60 vs 0.66-1.0).
+  - Which component is responsible is not identified (Amendment 5).
+
+**Level 3 — world predictor** (`census_localization.py`, d1, 565 units). Imagined vs exact mob cells:
+
+| | zombie: sample count · precision · recall | cow: sample count · precision · recall | sq. error vs copy, expected: mob-free / mob cells |
+|---|---|---|---|
+| full s1 | 0.035 · 0.00 · 0.00 | 0.000 · 0.00 · 0.00 | **0.64** / 0.94 |
+| full s2 | 0.059 · 0.00 · 0.00 | 0.097 · 0.28 · 0.06 | **0.70** / 0.94 |
+| MoP s1 / s2 (R60) | 0.08 / 0.19 · 0.00 · 0.00 | 0.41 / 0.04 · ≤ 0.03 · ≤ 0.03 | 0.77 / 1.04 · 0.75 / 0.61 |
+| Raw-pred (R60) | 0.03-0.05 · 0.46-0.64 · 0.08-0.16 | 0.34 · 0.32 · 0.25 | 0.83 / 0.98 |
+
+- The full arm's world predicts the **background best** of the three (0.64-0.70 of copy error on mob-free cells).
+- It **erases mobs at the first step** (0% zombie locations; at most 6% cow recall).
+- Through recursion its cows stay far below its reader's real census (s1 ≈ 0; s2 0.06-0.10 vs 0.42-0.55 to d8), and its zombies
+  under-produce (s1) or inflate late (s2 d16: 0.68 vs 0.27).
+- Reader-relative health, Pearson(predicted, reader on the real next frame): −0.34 / −0.15. No world reproduces its own reader's
+  health.
+
+**Answer to the question the user set** (does the full arm improve predictive dynamics, consequence fidelity, recursive imagination
+and decisions, not just probes?):
+- **No, on every world-level measure that bears on decisions.**
+  - Attack recall 0;
+  - escape ranking below chance at both seeds, and worse than MoP;
+  - imagined mobs erased.
+- What it does improve:
+  - level 2's robustness to sleep rendering (cows, robustly);
+  - background prediction;
+  - recursive stability (no census explosion).
+- None of these reaches decisions.
+
+**The three-encoder comparison, as a whole (2 seeds each, identical protocol):**
+1. **Level 1 is not the bottleneck.** Every backbone (Raw, MoP, full) keeps rare mobs (AP ≥ 0.97). Patch training does not beat
+   Raw's backbone on mobs and costs temporal stability (most for the full arm).
+2. **Level 2 costs both Spatial arms** 9-37 AP points at the projector (zombie / cow, seed-dependent). The full arm's objective makes that loss
+   far more robust to sleep rendering, but does not close it to Raw's LN state.
+3. **Level 3 fails for all three encoders at this predictor and budget**, in three different ways:
+   - Raw-predictor: a degraded copy, then erasure;
+   - MoP: mobs hallucinated in wrong cells, then explosion;
+   - full: mobs erased, background excellent.
+   - No world is location-faithful for mobs or decision-competent (best escape AUC 0.55 vs D's 0.711; attack recall ≤ 2%).
+   - Changing how the encoder is trained changed *how* the world fails, not *whether* it fails.
+4. Changing the encoder alone is therefore not sufficient. The predictive objective and the world model (level 3) are where
+   decision-relevant information is lost for all three representations. For the Spatial arms, part of that may be inherited from
+   level 2 (untested; see R60's non-detached-target hypothesis).
+
+**Next — proposed, not started (user decides):** the matched **backbone-state vs projected-state world-prediction control**.
+- Design: the same encoder checkpoint (e.g. full s1 / s2 and MoP s1 / s2, frozen); the same PatchPredictor, budget and data
+  stream; trained once on backbone_ln tokens and once on deployed tokens; read by each stage's own readers; the identical corrected
+  Tier B and localization.
+- It separates level 2 from level 3 directly. If backbone-state worlds localize mobs and the projected ones do not, the projector
+  is the world's bottleneck. If both fail, the predictor and objective are.
+- Evaluation-only checks on existing checkpoints, which cost no training and could precede it:
+  - the deployed-AP trajectory across the saved 500-step checkpoints vs the patch-prediction loss (R60's hypothesis);
+  - the same localization check at depth 1 for the D world (if its state admits these readers), as a "known-good" reference.
+
+### R61 — Amendment 6, Raw and MoP + SIGReg (full arm pending): in sleeping frames the deployed state does not MISFIRE so much as GO BLIND — at both seeds, while its backbone stays perfect
+
+Source: `sleep2_verdict.json` and `sleep2_<arm>_s<seed>.json`. Deployed readers were asserted identical to the Tier B readers.
+
+Populations:
+- A: Tier A natural-trajectory frames; 304 sleeping frames, 38 sleeping zombie cells, 8 episodes.
+- B: real next frames, mostly sleep onsets after the SLEEP action; 428 sleeping frames, 63 sleeping zombie cells, 33 episodes.
+
+**Zombie, sleeping frames: AP / false-positive rate on negative cells** (awake AP in brackets):
+
+| | A, backbone_ln | A, deployed | B, backbone_ln | B, deployed |
+|---|---|---|---|---|
+| Raw (backbone = deployed) | 1.00 / 1.25% [0.99] | same | 0.66 / 1.07% [0.96] | same |
+| MoP s1 | 1.00 / 0.03% [0.99] | **0.006** / 3.2% [0.64] | 0.69 / 0.61% [0.96] | **0.07** / 0.77% [0.54] |
+| MoP s2 | 1.00 / 0.80% [0.99] | **0.10** / 0.00% [0.89] | 0.66 / 0.65% [0.95] | **0.18** / 0.08% [0.92] |
+
+Cows in sleeping frames, deployed AP:
+- A: s1 0.008, s2 0.047 (backbone 0.91 / 0.61; Raw 1.00);
+- B: 0.04 / 0.03.
+
+Reading:
+1. **The level-2 sleep failure is a loss of detection, at both seeds.**
+   - The deployed state's AP in sleeping frames is near chance (A: 0.006 / 0.10).
+   - Its own backbone reads the same cells perfectly (1.00), and so does Raw.
+   - False positives are seed-dependent: present at s1, absent at s2. Codex's "false-positive burden" is the s1 face of a
+     broader blindness.
+   - Its 26% sleeping FP rate (vs my 3.2% at s1) comes from a different reader (FIT-CV λ, a smaller fit panel) and frame panel.
+     The concentration of errors in sleep is the shared, robust part.
+2. **Sleep false positives also exist for Raw** (1.07-1.25% of sleeping negative cells vs ~0.01% awake; 80% of Raw's zombie false
+   positives fall in sleeping frames). This is a property of linear readers on sleep rendering, not of the projector alone.
+3. **Preregistered M1** (B, deployed, zombie FP rate in sleeping frames):
+   - Raw 1.07%; MoP s1 0.77%; MoP s2 0.08%.
+   - MoP − Raw: s1 −0.30 pt [−1.11, +1.43]; s2 −0.99 pt [−1.27, −0.43].
+   - Guard, awake AP MoP − Raw: s1 −0.42 [−0.63, −0.24]; s2 −0.044 [−0.119, −0.001].
+   - So MoP's lower M1 is **traded**, not reduced.
+   - M1 measures misfires only. It does not register the blindness of reading 1. The full-vs-MoP reading is reported as
+     registered, beside the sleeping AP.
+4. **Level 3**, sleep-next rows, certain-empty cells:
+   - Raw's predictors produce *fewer* false positives than the reader on the real sleeping frames (0.03-0.05% vs 1.07%): the
+     predicted states do not carry the sleep rendering.
+   - MoP s2's predictor *adds* them (0.54% vs 0.08% [+0.23, +0.88] pt).
+   - From the Tier B units, reader-relative fidelity: no world reproduces its own reader's view of health on the real next frame.
+     Pearson(predicted, reader-on-real-next): Raw −0.01 / −0.17; MoP +0.14 / −0.14.
+
+**For the full-arm question** (does photometric invariance help?), the informative quantity is the **sleeping-frame AP at the
+deployed stage**, beside the preregistered M1. Both will be reported for the full arm. Only M1 has a pre-declared reading; the
+sleeping AP is descriptive and was named here before any full-arm number.
+
+### R60 — Stage 2 MoP + SIGReg vs Raw, BOTH seeds (corrected): "mixed" by the preregistered rule; the Spatial worlds' imagined mobs are in the wrong cells (R59's level-3 cow reading RETRACTED)
+
+**Verdict (preregistered rule, `stage2_verdict_v2.json`): "mixed (reported as is)."**
+- Seed 1: neither primary improves; guards pass.
+- Seed 2: B3 improves; B1 does not; **both guards fail**.
+
+| Corrected (episode intervals) | seed 1: Spatial / Raw-pred, diff [95% CI] | seed 2: Spatial / Raw-pred, diff [95% CI] |
+|---|---|---|
+| **B1 attack recall** (272 events, 5 episodes) | 0.015 / 0.022, −0.007 [−0.082, +0.041] | 0.022 / 0.007, +0.015 [0.000, +0.045] |
+| **B3 escape AUC, mean per root** (152 roots) | 0.535 / 0.504, +0.030 [−0.048, +0.106] | **0.550 / 0.459, +0.092 [+0.046, +0.140]** |
+| B1 graded health correlation | 0.139 / 0.004, +0.135 [+0.005, +0.293] | **−0.112 / −0.162**, +0.050 [−0.058, +0.165] |
+| B2 calibration MAE (guard) | 0.395 / 0.375: passes | 0.426 / 0.383, +0.043 [+0.016, +0.069]: **fails** |
+| B4 d16 zombie census error vs decoded-real (guard) | 0.63 / 0.47: passes | **2.64** / 0.37, +2.28 [+1.75, +2.84]: **fails** |
+| reader on real next frames, zombie / cow AP | 0.52 / 0.78 vs 0.95 / 0.98 | 0.89 / 0.79 vs 0.95 / 0.98 |
+
+What the seed-2 B3 gain is:
+- It is measured against a **below-chance** Raw world (0.459).
+- Both stay far from D's own rollout on the same roots (0.711).
+- It reads the predicted HUD health, not mob positions.
+
+**Original protocol, preserved (`run_stage2.sh`; defective: leaky probe split, pooled B3, 120 roots).**
+
+| | Spatial s1 | Raw-pred s1 | Spatial s2 | Raw-pred s2 |
+|---|---|---|---|---|
+| B1 attack recall | 0.014 | 0.247 | 0.041 | 0.041 |
+| B3 pooled AUC | 0.503 | 0.523 | 0.548 | 0.491 |
+| B1 Pearson | 0.088 | 0.217 | −0.022 | 0.199 |
+
+The same Raw-predictor s1 world scores attack recall 0.247 here and 0.022 corrected. The worlds are identical; only the readers and
+roots differ. Attack recall on these panels is dominated by which few episodes carry attacks, so the two protocols cannot be
+compared.
+
+**Level 1 (backbone), both seeds** (Tier A, episode-disjoint): the R58 reading replicates.
+
+| | tile acc | macro recall | zombie / cow AP | night drift |
+|---|---|---|---|---|
+| Spatial s1 | 0.970 | 0.727 | 0.986 / 0.967 | 0.097 |
+| Spatial s2 | 0.971 | 0.667 | 0.985 / 0.959 | 0.083 |
+| Raw | 0.977 | 0.777 | 0.987 / 0.988 | 0.154 |
+
+**Level 2 (deployed state): seed-dependent loss.**
+- zombie / cow AP: s1 0.620 / 0.743; s2 0.878 / 0.814 (fit-only CV λ: 0.696 / 0.894 and 0.915 / 0.860);
+- real-next reader zombie AP: s1 0.519; s2 0.886.
+- Both seeds stay below their own backbone (0.985).
+
+**Level 3 (world predictor): where the imagined mobs are** (`census_localization.py`, new, descriptive, evaluation only).
+- Setting: depth 1, the B4 setting (2-frame root context, the recorded first action, 4 router samples, the same probes2 readers
+  and thresholds); 565 (root, future) units.
+- Cells are compared with the exact mob cells of the real next frame. "Copy" = the reader on the root's own state, i.e.
+  "nothing happens".
+
+| per frame (exact: zombie 0.198, cow 0.430) | sample: count · precision · recall | expected state: count | decoded-real: precision · recall | copy: precision · recall |
+|---|---|---|---|---|
+| Spatial s1, cow | 0.41 · **0.028 · 0.027** | 0.00 | 0.63 · 0.78 | 0.21 · 0.25 |
+| Spatial s1, zombie | 0.08 · **0.00 · 0.00** | 0.00 | 0.45 · 0.61 | 0.25 · 0.28 |
+| Spatial s2, cow | 0.04 · **0.00 · 0.00** | 0.02 | 0.55 · 0.81 | 0.19 · 0.27 |
+| Spatial s2, zombie | 0.19 · **0.00 · 0.00** | 0.00 | 1.00 · 0.70 | 0.59 · 0.37 |
+| Raw-pred s1 / s2, cow | 0.34 · 0.32 · 0.25 | 0.35 | 1.00 · 0.96 | 0.33 · 0.32 |
+| Raw-pred s1 / s2, zombie | 0.03-0.05 · 0.46-0.64 · 0.08-0.16 | 0.02-0.04 | 0.87 · 0.91 | 0.47 · 0.48 |
+
+State-space squared error, relative to copying the root's tokens (below 1 = better than copy):
+
+| | expected, mob-free cells | expected, mob cells | samples |
+|---|---|---|---|
+| Spatial s1 | 0.77 | 1.04 | 1.3-1.6 |
+| Spatial s2 | 0.75 | 0.61 | 1.4-1.8 |
+| Raw-pred s1 / s2 | 0.83 | 0.98 | 1.3-1.6 |
+
+Reading:
+- **Spatial worlds put their imagined mobs in the wrong cells.**
+  - Seed 1: 41% of frames carry a sampled cow, but only 2.8% of imagined cow cells hold a real cow.
+  - Seed 2 never places one correctly.
+  - Their expected states show no mobs at all, even where seed 2's expected tokens are closer to the truth than copying is (0.61).
+    This is the conditional-mean blur that MoP was meant to avoid: the router-weighted expectation re-averages the heads.
+- **Raw-predictor's world is a degraded copy.** Its cow localization equals the copy baseline (0.32 vs 0.33); zombies fade.
+- Through recursion, the two kinds of world fail differently:
+  - Raw-predictor erases mobs (cows 0.34 at d1 → ≤ 0.03 at d2 and 0.00 at d4, both seeds).
+  - Spatial worlds hallucinate. At s2 d16: 2.78 zombies and 5.65 cows per frame, vs its reader's real-future 0.25 / 0.55.
+
+**Corrections to R59** (annotated there):
+1. "Spatial's world keeps cows through recursion" compared **counts**. The locations are essentially wrong (2.8% at s1, 0% at
+   s2), and the census does not replicate at s2 (d1-d4: 0.04-0.06 vs decoded-real 0.49-0.64). **Retracted.**
+2. "A small level-3 edge in graded health" (+0.135 at s1) did **not replicate**: at s2, both worlds anti-correlate (−0.11 vs
+   −0.16; diff interval contains 0).
+
+**What Stage 2 (MoP + SIGReg vs Raw) establishes:**
+- At 10k updates, neither a patch-trained encoder's deployed state nor frozen Raw tokens give this 2-frame, 4-layer predictor a
+  decision-competent or location-faithful world.
+- The patch-trained **backbone** is not the weak link (level 1 replicates).
+- The deployed state is seed-dependently fragile (level 2).
+- The predictors fail on both inputs, in different ways (level 3).
+
+**Candidate mechanism — a hypothesis, NOT tested.** The Spatial patch path regresses onto **non-detached** targets
+(`spatial_encoder.py:168`, `tgt = zp[:, 2:4]`). This follows LeWM's own CLS path: `d4mj/lewm.py:284` has no stop-gradient
+anywhere, and SIGReg is the only anti-collapse term.
+- The encoder and projector can therefore lower the prediction loss by making the deployed tokens easier to predict, e.g. by
+  de-emphasizing hard-to-predict mob content in the final compression.
+- Consistent with:
+  - the s1 deployed zombie AP falling from 0.92 at 2k to 0.62 at 10k (R58) while the backbone keeps it;
+  - Codex's localization of the loss to the projector's compression.
+- **Not shown.** Tests that would decide it, evaluation only on existing checkpoints:
+  - deployed mob AP across the saved 500-step checkpoints vs the patch-prediction loss, both seeds;
+  - the matched backbone-state vs projected-state world control (R59).
+- Neither is run until the current comparison (full arm, Amendment 6) is complete.
+
+`census_localization.py` will be applied unchanged to the full arm (both seeds) when its checkpoints exist, so all three arms are
+read the same way. It is descriptive, not a preregistered reading.
+
+### R59 — Codex's projector / BatchNorm audit verified and incorporated; my R58 BN reading CORRECTED; Stage 2 read at three levels; the sleep confound registered for measurement (Amendment 6)
+
+**Source.** `20261016_spatial_bn_audit/BN_AUDIT.md` (Codex; CPU; frozen MoP + SIGReg s1 at 10,000; isolated readers only;
+no checkpoint or production edits).
+
+**What I verified myself** against its raw outputs and the code:
+- `stages.json`, zombie / cow AP:
+  - post-GELU 2048-D hidden state 0.995 / 0.976;
+  - the same state FIT-PCA'd to 192-D 0.873 / 0.937;
+  - the actual deployed 192-D state 0.509 / 0.869.
+- `false_positives.json`, deployed reader at its FIT-derived threshold:
+  - 366 zombie false positives, 312 of them in sleeping frames;
+  - false-positive rate 26.1% on sleeping negative cells vs 0.158% on awake ones.
+- `bn_check_10k.py:25-38` normalizes **each root / future sequence (≤ 17 correlated frames × 81 patches) as its own batch**,
+  separately for fit and test.
+- Collector provenance:
+  - The diagnosis store (`20260926_diagnosis/futures.py:31`) uses `collect_broad_forks.load_policy`, i.e. the legacy BC
+    checkpoints `stage_a_terminalfix/phase1a.pt` and `stage_a_s76_terminal_only/direct-attention.2.pt`.
+  - The training corpus (`collect_support_v2.py`) comes from the PPO expert with ε-noise.
+  - So the evaluation frames come from a different policy than the training frames.
+- Not re-run by me (reported as Codex's): the TRAIN-moment calibration variants, the distribution table, and the nonlinear
+  reader negative.
+
+**Correction of R58** (its BN paragraph is kept and annotated below). R58 said "zombie AP 0.45 with the saved statistics and 0.78
+with the frames' own batch statistics" and that a BN-normalized state "is sensitive to" the shift. That diagnostic is not a
+calibration:
+- It applies a different function: normalization by a frame's own correlated sequence, including its future.
+- It cannot separate stale running statistics from cohort effects.
+- Its "no update" wording is wrong: the copied BN's buffers do update in `.train()`. The original checkpoint is unaffected.
+
+Legitimate, TRAIN-only recalibration barely moves zombie AP:
+- fresh pooled TRAIN moments: paired difference [−0.002, +0.023];
+- mean-only, variance-only and EMA refresh: no change.
+
+The saved statistics match TRAIN: on TRAIN data, BN inputs sit 0.021 running-std from the saved means, std ratio 1.001.
+**This is not a stale-BN problem.** The loss is localized to the learned **nonlinear warp + final 2048→192 compression**:
+- the hidden state still decodes zombies at 0.995;
+- a PCA to the same 192 dimensions keeps 0.873;
+- bypassing GELU keeps 0.994 with CV ridge (0.734 at fixed λ);
+- yet the actual deployed state gives 0.509.
+
+Distribution context changes how much is lost:
+- Early-TRAIN and brightness-conditioned TRAIN moments recover part of the zombie AP, at a cost in cow AP.
+- Neither is selected by fit-only CV, so neither is a validated repair.
+
+**The sleep confound starts in the backbone; the projector amplifies it.** This is my reading of Codex's `false_positives.json`.
+Its backbone_ln reader also puts most of its (few) false positives in sleeping frames. Zombie false-positive rate, sleeping vs
+awake negative cells:
+
+| Stage | Sleeping | Awake | False positives in sleeping frames |
+|---|---|---|---|
+| backbone_ln | 4.4% | 0.032% | 53 / 64 |
+| deployed | 26.1% | 0.158% | 312 / 366 |
+| GELU bypassed | 2.3% | 0.038% | 28 / 41 |
+
+So:
+- the backbone already responds to sleep rendering;
+- the deployed interface multiplies that about 6×;
+- Raw has not been measured this way yet.
+
+**Stage 2, seed 1, read at three levels** (the preregistered verdict "not supported" stands unchanged):
+1. **Backbone (level 1):** at least as good as Raw for rare mobs, where measured.
+   - zombie / cow AP 0.986 / 0.967 vs Raw 0.987 / 0.988 (Tier A);
+   - 0.983-0.993 in Codex's panel;
+   - tile accuracy slightly lower (0.970 vs 0.977); lower night drift (0.097 vs 0.154).
+   - The Stage 2 verdict says nothing against this backbone.
+2. **Deployed projected state (level 2):** a poor and appearance-fragile *linear* substrate for mobs.
+   - zombie AP 0.62 (Tier A) / 0.52 on real next frames, vs Raw 0.95-0.99;
+   - false positives concentrated in sleep.
+   - The evaluation frames are earlier, brighter, less often sleeping, and from a different policy than the training frames
+     (Codex's table, TRAIN vs diagnosis test): mean episode index 528 vs 79; night 33% vs 15%; sleep signature 19% vs 3.2%.
+   - The deployed state's weakness on this store is therefore partly a robustness property, not only a capacity one.
+3. **World predictor (level 3):** read with level-2 readers, so confounded. Three reader-relative readings separate them.
+   > **[Corrected in R60]** The cow reading below compared **counts** only. The imagined cows are in the wrong cells (location
+   > precision 2.8% at s1, 0% at s2), and the census does not replicate at s2. The graded-health edge also does not replicate
+   > at s2. Both claims are retracted.
+
+   - **Health:** the readers are equally good on real next frames (health correlation 0.985 vs 0.983). The predicted graded
+     health change correlates 0.139 vs 0.004 [+0.005, +0.293]: a small level-3 edge for Spatial.
+   - **Cows:** compare each world's imagined census with **its own reader on the real futures** (decoded-real).
+     - Spatial's world keeps 84% / 83% / 60% / 93% of it at d1 / d2 / d4 / d8 (imagined 0.45 / 0.43 / 0.35 / 0.51 vs
+       decoded-real 0.54 / 0.52 / 0.58 / 0.55).
+     - Raw-predictor's world keeps 82% at d1, then **0%** (0.34 → 0.00 vs decoded-real 0.41-0.54), although its reader is
+       near-perfect.
+     - Persistence through recursion is a level-3 difference in Spatial's favour.
+   - **Primaries:** zombies are under-produced by both worlds; at d1, Spatial produces 29% of its reader's real census and
+     Raw-predictor 14%. Attack recall and escape AUC sit at a floor for both. Health readers are strong for both, so that floor is
+     a predictor / design limit (2-frame context, 4 layers, 10k updates), not a reader artefact. Codex's audit does not explain
+     Raw's simultaneous floor either.
+
+**Interpretation of Stage 2 so far.** "Not supported" concerns *this deployed MoP-SIG interface with this predictor*. It is not
+evidence against the patch-trained backbone or against patch-level learning. B2 and B4 mob readings for Spatial are bounded by
+its deployed reader (zombie AP 0.52 on real next frames), not only by its predictor.
+
+**Measure, don't assume — Amendment 6** (commit 88430228, written before any full-arm or seed-2 number;
+`sleep_strat_eval.py`, `sleep_strat_analysis.py`, `run_sleep_strat.sh`):
+- **Scope:** the same deterministic readers (asserted equal to the Tier B readers at the deployed stage), fitted at **both
+  stages** for Raw, MoP s1 / s2 and full s1 / s2.
+- **Populations:**
+  - A: Tier A test frames; 304 sleeping frames in 8 episodes.
+  - B: the Tier B real next frames; 428 sleeping frames in 33 of 40 episodes, mostly after the SLEEP action.
+- **Breakdown:** awake / sleeping / day / night.
+- **Level 3:** predictor false positives on certain-empty cells after transitions into sleep, vs the same reader on the real next
+  frames.
+- **Pre-declared reading:** "the full arm reduces the sleep confound" iff the full − MoP episode-bootstrap interval of M1 lies
+  entirely below 0 at both seeds.
+  - M1 = deployed zombie false-positive rate in sleeping frames of B.
+  - Guard: awake zombie AP of B must not drop (else "traded, not reduced").
+- MoP s1 is not blind (Codex's audit); MoP s2 and the full arm are.
+
+**Not run, candidate after this comparison** (user, 10-16): a matched **backbone-state vs projected-state world-prediction
+control**. Same encoder; the same predictor and budget trained on backbone_ln tokens vs deployed tokens. It would separate level 2
+from level 3 for world prediction directly, and is more informative than first swapping BN for LN. Codex's narrow LN-projector
+arm remains a possible later control. Neither is registered.
+
+### R58 — Stage 2, CORRECTED evaluation, seed 1 (MoP + SIGReg vs Raw-predictor; seed 2 and the full arm pending)
+
+**Registration.** Amendment 5 (15:55, before any Stage 2 result, user-approved) adds the full arm as a third Stage 2
+comparison, with identical evaluation for all three arms. The probe λ is fixed for the Tier B readers; fit-only, episode-grouped
+CV λ is reported in Tier A. A full-arm advantage would not identify which of its two added components is responsible.
+
+**Tier A at step 10,000** (episode-disjoint; λ 1e-2; in brackets: fit-only CV λ):
+
+| | tile acc | macro recall | zombie / cow AP | HUD R² health / food / drink / energy | eff. rank | drift day steady / changing / night | code flips |
+|---|---|---|---|---|---|---|---|
+| Raw (10k) | 0.977 [0.985] | 0.777 [0.887] | 0.987 / 0.988 [0.992 / 0.991] | .994 / .991 / .995 / .985 | 52.9 | 0.035 / 0.033 / 0.154 | 32% |
+| Spatial s1, backbone stage | 0.970 [0.983] | 0.727 [0.868] | 0.986 / 0.967 [0.994 / 0.984] | .993 / .994 / .991 / .989 | 54.5 | 0.062 / 0.064 / **0.097** | **26%** |
+| Spatial s1, deployed | **0.938** [0.963] | **0.426** [0.595] | **0.620 / 0.743** [0.696 / 0.894] | .986 / .994 / .992 / .982 | 50.3 | 0.068 / 0.069 / 0.095 | 27% |
+
+**The deployed Spatial state lost rare-mob decodability between step 2,000 and 10,000** (zombie AP 0.92 → 0.62), while its
+backbone keeps it (0.986).
+
+> **[Corrected in R59]** The paragraph below is kept as originally written. Its 0.45 → 0.78 "batch statistics" result
+> normalizes each root's own correlated sequence (including its future), so it is not a calibration and does not separate stale
+> statistics from cohort effects. Legitimate TRAIN-only recalibration barely changes zombie AP. The loss is localized to the
+> projector's nonlinear warp + final compression (Codex, BN_AUDIT.md).
+
+**BatchNorm check** (`bn_check_10k.py`, `bn_check_train_10k.py`): the cause is partly distribution shift, not stale statistics.
+- On the diagnosis frames, the projector's BN inputs sit 0.22 running-std from the saved means (std ratio 0.95). On real
+  training batches the gap is 0.03-0.055 (std ratio 1.00).
+- On the same episode-disjoint frames, zombie AP is 0.45 with the saved statistics and 0.78 with the frames' own batch
+  statistics.
+- The evaluation store is off-distribution for the training corpus in this feature space. A BN-normalized patch state is
+  sensitive to that; Raw's per-token LN state is not.
+- Eval mode stays the measured behaviour (re-normalizing on evaluation frames would be illegitimate). This is a property of the
+  deployed Spatial interface, not an evaluation bug.
+
+**Tier B, seed 1** (113 test roots from 40 episodes; DV16's 200 roots for B3; CPU; deployed-stage readers, fixed λ):
+
+| | Spatial | Raw-predictor | difference [episode 95% CI] |
+|---|---|---|---|
+| **B1 attack recall** (primary; 272 events from only **5** episodes) | 0.015 | 0.022 | −0.007 [−0.082, +0.041] |
+| **B3 escape AUC, mean per root** (primary; 152 roots, 119 episodes) | 0.535 | 0.504 | +0.030 [−0.048, +0.106] |
+| B1 graded health-change correlation | 0.139 | 0.004 | +0.135 [+0.005, +0.293] |
+| reader control: probes on real next frames, health correlation | 0.985 | 0.983 | |
+| B2 calibration MAE (guard) | 0.395 | 0.375 | +0.020 [−0.010, +0.053]: passes |
+| B2 sampled read rate at branching cells (real 0.427; real-next control) | 0.043 (0.293) | 0.235 (0.396) | |
+| reader quality on real next frames, zombie / cow AP | 0.519 / 0.777 | 0.949 / 0.978 | |
+| B4 d16 zombie-census error vs decoded-real (guard) | 0.63 | 0.47 | +0.16 [−0.11, +0.47]: passes |
+| B4 cow census d1 / d2 / d4 / d8 / d16 (exact 0.43 / 0.43 / 0.46 / 0.56 / 0.56) | 0.45 / 0.43 / 0.35 / 0.51 / 1.20 | 0.34 / **0.00 / 0.00 / 0.00** / 0.12 | |
+| B4 zombie census d1 / d16 (exact 0.20 / 0.32) | 0.08 / 0.33 | 0.03 / 0.25 | |
+
+**Verdict, seed 1 (preregistered rule): "not supported".** Neither primary improves. Guards pass.
+
+**What the seed-1 result can and cannot say:**
+- **Floor on the primaries.** Neither world predicts attacks (recall ~2%), and neither ranks escape moves above chance (D's own
+  rollout: 0.711). A 2-frame-context, 4-layer predictor trained 10k updates is not decision-competent in either representation.
+  The primary readings therefore cannot discriminate encoders here.
+  - This is a property of the Stage 2 design (predictor capacity, context, budget), not evidence that the representations carry
+    no decision information.
+- **The B1 recall interval rests on 5 attack-bearing episodes.** The 40-episode test panel is thin for rare events.
+- **Where the arms do differ:**
+  - Spatial's world keeps cows through recursion (≈ exact through d8; inflated at d16). The Raw-predictor's world erases them
+    after one step.
+  - Spatial predicts graded health changes slightly better (0.14 vs 0.00).
+  - The deployed Spatial state is a worse *linear* substrate for mobs (AP 0.52-0.62 vs 0.95-0.99), and its BN makes it
+    sensitive to the evaluation store's distribution shift.
+- Seed 2 (both arms), the original-protocol numbers (from `run_stage2.sh`) and the full arm follow.
+
+### R57 — Codex's audit of R56 verified; evaluation corrected; corrected Stage 1 SELECTS A DIFFERENT ARM (`spatial_eval_v2.py`, `tierb_eval_v2.py`, `stage2_analysis_v2.py`, Amendments 4 / 4b)
+
+Codex audited R56 while Stage 2 trained (`20261016_spatial_encoder_audit/AUDIT.md`). Every finding was checked against the code
+and data. The original scripts and outputs are kept unchanged. Stage 2 training was not interrupted. The seed-1 preview, which
+would have run the defective evaluation, was stopped before it ran. **No Stage 2 result existed** when the corrections and the
+B2 / B4 guard were registered (Amendment 4, 15:10).
+
+| audit finding | verified? | correction |
+|---|---|---|
+| probe fit / test split by root, not episode | **yes**: 113 / 120 test roots from fit episodes (76 shared seeds of 121 / 82). The R56 text "split by episode seed" was false | split by episode seed: 40 test episodes × ≤ 3 roots (113 roots), 280 fit roots from 88 other episodes, 0 shared (Amendment 4b: whole episodes gave only 15 test episodes) |
+| A2 persistence ignored mobs; source-player admitted | **yes** (`spatial_eval.py:188-189`) | same tile AND same mob layer, neither source nor destination the player. Excluded on the corrected panel: 7,413 mob-change and 12,492 player pairs (of 517,271 kept) |
+| HUD-change label used 4 stats | **yes** (lines 138, 205) | all displayed values (4 stats + inventory) |
+| AUROC not tie-aware | **yes** (line 94) | tie-averaged ranks; AP and precision / recall at the threshold added |
+| unseeded between-content pairs | **yes** (line 210) | one seeded, label-defined pair set shared by all encoders |
+| analyzer cannot import `dv16`; runner never calls it | **yes** (`stage2_analysis.py:17-19`: `parents[1]` = `artifacts/`) | `stage2_analysis_v2.py` imports and was smoke-tested end to end |
+| B3 point estimate (pooled) ≠ bootstrap (per-root mean) | **yes** | one estimand: the mean of per-root AUCs; pooled as a secondary |
+| intervals resample roots, not episodes | **yes** | episode-seed cluster bootstrap everywhere |
+| B2 / B4 guard unimplemented | **yes** | registered: the paired episode interval for calibration MAE and for d16 zombie-census error vs the *decoded-real* census must not lie entirely on the worse side |
+| feature-stage mismatch (Raw LN vs Spatial projector) | **yes, by design** | both stages reported for every encoder; RGB and untrained-ViT references |
+| static probes measure visual decodability | **yes**: confirmed below on the corrected panel | reported as such; Tier B is the predictive test |
+| BatchNorm | no defect (audit) | — |
+
+**Wording corrected:** "the patch tokens get no gradient" → "no direct patch-level prediction / regularization objective". The
+shared weights do receive CLS gradients.
+
+**Corrected Tier A** (episode-disjoint; ridge λ 1e-2 unless stated; Raw's two stages are identical):
+
+| encoder (step), stage | tile acc (λ 1e-3 / 1e-2 / 1e-1) | macro recall (present classes) | zombie / cow AUC, AP | HUD R² health / food / drink / energy | eff. rank | drift day steady / changing / night | code flips (persisting) |
+|---|---|---|---|---|---|---|---|
+| RGB 7×7 pixels | 0.974 / **0.972** / 0.954 | **0.864** | 0.9995, .994 / 0.9997, .996 | .9995 / .9999 / .9999 / .9977 | 18.5 | 0 / 0.005 / 0.083 | 56% |
+| untrained ViT | 0.976 / **0.971** / 0.952 | 0.841 | 0.9992, .991 / 0.9992, .994 | .998 / .998 / .998 / .991 | 52.0 | 0.053 / 0.047 / 0.097 | 35% |
+| Raw (2,000) | 0.983 / **0.976** / 0.968 | 0.791 | 0.9989, .991 / 0.9994, .995 | .995 / .994 / .995 / .981 | 52.7 | 0.041 / 0.036 / 0.141 | 31% |
+| Raw (10,000) | 0.984 / **0.977** / 0.969 | 0.777 | 0.9985, .987 / 0.9969, .988 | .994 / .991 / .995 / .985 | 52.9 | 0.035 / 0.033 / 0.154 | 32% |
+| naive (2,000), backbone | 0.980 / 0.972 / 0.951 | 0.777 | | .990 / .991 / .994 / .982 | 55.1 | 0.195 / 0.209 / 0.258 | 33% |
+| naive, deployed | 0.963 / 0.942 / 0.876 | 0.444 | 0.9945, .941 / 0.9688, .900 | .977 / .981 / .982 / .970 | 49.2 | 0.219 / 0.242 / 0.307 | 34% |
+| MoP + SIGReg (2,000), backbone | 0.980 / 0.976 / 0.957 | 0.825 | | .994 / .993 / .994 / .979 | 50.5 | 0.062 / 0.061 / 0.107 | 29% |
+| MoP + SIGReg, deployed | 0.972 / **0.955** / 0.944 | 0.478 | 0.9914, .923 / 0.9822, .922 | .984 / .987 / .983 / .955 | 43.2 | 0.072 / **0.070** / 0.093 | 31% |
+| MoP + VICReg (2,000), backbone | 0.980 / 0.972 / 0.946 | 0.818 | | .995 / .992 / .994 / .990 | 52.4 | 0.077 / 0.074 / 0.124 | 30% |
+| MoP + VICReg, deployed | 0.960 / **0.893** / 0.861 | 0.375 | 0.9894, .886 / 0.9499, .843 | .970 / .980 / .984 / .980 | 42.1 | 0.088 / **0.084** / 0.097 | 33% |
+| full (2,000), backbone | 0.985 / **0.980** / 0.960 | **0.842** | | .995 / .993 / .995 / .985 | 43.8 | 0.067 / 0.059 / 0.143 | 32% |
+| full, deployed | 0.980 / **0.963** / 0.947 | 0.546 | 0.9981, .941 / 0.9877, .954 | .984 / .969 / .976 / .956 | 33.6 | 0.079 / **0.069** / 0.108 | 33% |
+
+**Stage 1 selection, re-applied on the deployed state as originally defined** (λ 1e-2):
+- Eligibility (tile ≥ Raw@2000 − 0.05 = 0.926, rank ≥ 20): naive, MoP + SIGReg and full are eligible; MoP + VICReg is not
+  (0.893).
+- SIGReg over VICReg: unchanged (drift 0.070 vs 0.084; tile 0.955 vs 0.893).
+- **Full vs MoP + SIGReg: the full arm now PASSES.**
+  - Drift 0.069 vs 0.070.
+  - HUD R² mean 0.971 vs 0.977 (−0.006, within −0.02). The largest per-stat gap is food, −0.018.
+  - The original −0.029 came from the leaky split and the defective evaluation.
+- **The corrected rule selects the full arm (MoP + SIGReg + photometric invariance + inverse dynamics), not MoP + SIGReg.**
+  Stage 2 is training MoP + SIGReg. It is kept (the user's instruction) and evaluated with the corrected protocol, but it is
+  **not the arm the corrected screening selects**. Running the full arm at Stage 2 is a separate decision for the user.
+
+**What survives, what changes:**
+- **Survives:** naive per-patch MSE is the worst arm (its drift is ~3-6× the others' at both stages); SIGReg is preferred over
+  VICReg; Raw's training buys little static decodability.
+- **Changes:**
+  1. **Static probes are visual decodability, not predictive understanding.** RGB pixels and an untrained ViT decode tiles at
+     0.971-0.972 and mobs at AUC ≥ 0.999. Raw adds ≤ 0.6 points of tile accuracy, and is *worse* on rare classes (macro recall
+     0.78-0.79 vs RGB 0.86) and on night drift (0.15 vs untrained 0.10). The R56 Tier A comparisons cannot support claims about
+     learned dynamics.
+  2. **Common stage: the spatial backbones match or beat Raw on content.** Tile 0.976-0.980 vs 0.976 at step 2,000; macro
+     recall 0.82-0.84 vs 0.79.
+     - They are worse by day (drift 0.059-0.074 vs 0.036).
+     - MoP + SIGReg is better at night (0.107 vs 0.141).
+  3. **Deployed stage:** the learned projector makes the state harder for a fixed ridge.
+     - Tiles 0.955-0.963, macro recall 0.48-0.55, AP 0.92-0.95.
+     - Much of the loss is conditioning: at λ 1e-3, MoP + SIGReg recovers 0.955 → 0.972 and VICReg 0.893 → 0.960.
+     - Rare classes remain the weakness of the deployed state.
+  4. **Generic K = 1024 codes do not register displayed HUD changes for any encoder** (HUD salience −0.02 … +0.02). This
+     metric does not discriminate.
+- **Predictive dynamics, rare events and decision information** are measured by Tier B (Stage 2, corrected), pending.
+
+### R56 — USER (10-16): retrain the ENCODER at the patch level. Spatial JEPA encoder study, Stage 1 (`20261016_spatial_encoder/`, SPATIAL_ENCODER_PREREG.md)
+
+**User:** the frozen Raw encoder was trained through CLS only. Train an encoder whose *patch* representations are optimized for
+predictive dynamics and compare it rigorously with frozen Raw, designing the objective against our known failures.
+- Prior history checked: no patch-level encoder was ever trained here. E3 (TC) and E4 (Delta-JEPA LDAD) were CLS-level.
+
+**Design (preregistered; every term tied to a failure and its source):**
+- **New encoder = Raw's objective (CLS + Mamba + SIGReg, line for line) + a patch path.** The comparison isolates "add
+  patch-level training". Same corpus (digest f1c8583a…), batch 128, seed, schedule.
+  - Check: update 1 reproduces Raw's logged CLS prediction / regularization (0.26897 / 37.7834 vs 0.26896 / 37.7834), so
+    initialization and data stream are identical.
+- **Patch path:**
+  - patch state = per-patch projector (Linear-BN-GELU-Linear);
+  - a 4-layer spatial transformer predictor over [z_{t-1}, z_t, action] with K = 4 hard-assigned heads + router (MoP-JEPA;
+    the naive arm uses K = 1);
+  - anti-collapse on patches: SIGReg or VICReg;
+  - optional photometric multi-view invariance (R49's colour-map family + pixel noise, map rows only) and inverse dynamics
+    (AC-MTM / PLDM).
+- **Literature read for the design:** LeJEPA (SIGReg is view-level only), PLDM (spatial latent; variance / covariance
+  essential: removal → 11-29% success; IDM 98.7 → 75.5), AC-MTM 2608.17542 (contrastive inverse dynamics; prescribed
+  Gaussian geometry a bottleneck on multi-object scenes, 80.0 vs 58.0), PSG-JEPA (forward prediction alone does not ground
+  local state), VICReg (γ = 1, λ = μ = 25, ν = 1 verified), H-JEPA (global latents; not applicable).
+- **Facts that motivated screening SIGReg vs VICReg:** 6 tile classes are 97% of map patches; mobs are 1.4%; 40% of
+  transitions have no visible action effect.
+- **Amendments before any result:** SIGReg on patches uses 512 random patches per frame index, weight 0.09 · 128 / 512.
+  Its statistic is the Epps-Pulley test statistic × N (`lewm.py:132`), so this keeps LeWM's per-discrepancy strength; all
+  10,368 patches OOM.
+
+**Tier A protocol** (`spatial_eval.py`; diagnosis store, 400 roots, probes fit on 280, tested on 120; *split by root, NOT by
+episode seed as first written: 113 / 120 test roots came from fit episodes. Corrected in R57*; the patch state of each encoder):
+
+| encoder (step) | tile acc | zombie / cow AUC | HUD R² health / food / drink / energy | eff. rank | drift ratio day steady / changing / night | code flips (persisting) | HUD salience |
+|---|---|---|---|---|---|---|---|
+| Raw (2,000) | 0.968 | 0.997 / 0.998 | 0.992 / 0.991 / 0.994 / 0.949 | 55.0 | 0.045 / 0.044 / 0.173 | 28.3% | +0.017 |
+| Raw (10,000; our encoder) | 0.973 | 0.994 / 0.997 | 0.988 / 0.986 / 0.992 / 0.954 | 56.8 | 0.041 / 0.040 / 0.196 | 30.0% | +0.042 |
+| naive (K 1 + SIGReg, 2,000) | 0.932 | 0.993 / 0.959 | 0.971 / 0.972 / 0.973 / 0.938 | 50.6 | 0.183 / 0.214 / 0.375 | 31.2% | +0.002 |
+| MoP + SIGReg (2,000) | 0.947 | 0.994 / 0.979 | 0.981 / 0.979 / 0.982 / 0.926 | 45.2 | 0.081 / 0.082 / **0.120** | **26.6%** | +0.006 |
+| MoP + VICReg (2,000) | 0.887 | 0.991 / 0.935 | 0.970 / 0.967 / 0.984 / 0.924 | 44.1 | 0.090 / 0.094 / 0.128 | 30.2% | +0.011 |
+
+**Selection (declared rule; ORIGINAL, defective evaluation; superseded by R57):**
+- SIGReg over VICReg: lower day-changing drift (0.082 vs 0.094) and higher tile accuracy.
+- MoP + VICReg also fails eligibility (tile < Raw@2000 − 0.05 = 0.918).
+- **My hypothesis that VICReg would keep nuisance out of the patches is refuted at 2k.**
+- The full arm (MoP + SIGReg + photometric invariance + inverse dynamics) is running.
+
+**Full arm** (MoP + SIGReg + photometric invariance + inverse dynamics, step 2,000):
+- It OOMed deterministically at update ~600, even alone on the GPU. Amendment 3: L_inv on the augmented views of 32 of the 128
+  windows; peak 4.3 → 3.56 GB.
+- One run was lost earlier to a concurrent evaluation on the GPU. Stage 2 now runs strictly one GPU job at a time.
+
+| step 2,000 | tile | cow AUC | HUD R² health / food / drink / energy | eff. rank | drift day changing / night | code flips | HUD salience |
+|---|---|---|---|---|---|---|---|
+| MoP + SIGReg | 0.947 | 0.979 | 0.981 / 0.979 / 0.982 / 0.926 | 45.2 | 0.082 / 0.120 | 26.6% | +0.006 |
+| full | 0.958 | 0.990 | 0.974 / **0.948 / 0.938 / 0.894** | 34.9 | 0.080 / 0.144 | 32.8% | −0.002 |
+
+**Stage 2 arm (declared rule, ORIGINAL evaluation): MoP + SIGReg.** *(R57: under the corrected evaluation the same rule
+selects the full arm.)*
+- The full arm is eligible and its drift (day changing) is within +0.02.
+- But its HUD R² is 0.029 lower on average over the 4 stats, beyond −0.02.
+- Invariance + inverse dynamics help map content slightly and cost HUD consequence information and effective rank.
+
+**Stage 2 launched 13:38** (`run_stage2.sh mop_sig`):
+- the spatial encoder at seeds 20260731 (Raw's own: identical initialization and window stream) and 20260732;
+- the Raw-predictor at the same seeds;
+- 10,000 updates each, sequential, then Tier A / B for every world and `stage2_analysis.py`.
+
+**Tier B readers had a defect, caught by their own control:**
+- Ridge probes on a 1.4%-positive mob label never score above 0.5. On the encoder's own states of *real* next frames,
+  "certain" mob cells read 0%.
+- Fixed with rate-matched thresholds on the fit split. Real next frames then read 82-84% at certain mob cells and 34% at
+  branching cells (real 42%); the health probe tracks real health changes at Pearson 0.94-0.95.
+- **At 2k steps the jointly trained predictors are too weak to judge** (no attack predicted; branching mobs erased; zombies
+  multiply in rollouts). Tier B is judged at Stage 2 (10k, against a Raw-predictor with the same predictor and budget).
+
+### R55 — REPRESENTATION AND OBJECTIVE AUDIT (user, 10-16): what our encoder is, what our loss rewards, whether discrete targets would be stable (`objective_audit.py`, `code_stability.py`)
+
+**Verified from code:**
+- The encoder (`d4mj/lewm.py`, a port of LeWorldModel 2603.19312) is trained by one objective:
+  - z = projector(CLS of the last layer);
+  - a Mamba world predicts the next z; loss = MSE(z) + λ SIGReg(z) (`joint_loss`, lines 271-290).
+- The docstring states it: "Patch tokens are never regularized by SIGReg and never predicted."
+- The final-layer patch tokens that D, IC and PI use as state and targets get **no gradient**. They are side outputs of weights
+  trained for the CLS path.
+
+**1. What the token-regression objective rewards** (240 diagnosis roots, 16,320 one-step transitions, 4 keys × 17 actions;
+exact state used only to label cells). Shares of the squared token change a regression world must explain beyond a scroll-aligned
+copy:
+
+| cell category | share of cells | share of target change | mean per cell | aleatoric part (4-key spread) |
+|---|---|---|---|---|
+| persisting content (rendering / context drift) | 74.0% | **60.6%** | 9.7 | 6% |
+| entering (never seen; epistemic) | 1.7% | **26.7%** | 192 | 0.5% |
+| mob changed | 0.8% | 3.7% | 55 | **25%** |
+| terrain edited | 0.04% | 0.6% | 168 | 0% |
+| player cell | 1.2% | 2.8% | 27 | 0% |
+| HUD, a displayed value changed | 3.1% | 2.2% | **8.4** | 0.9% |
+| HUD, no displayed change (context drift) | 19.1% | 3.4% | 2.1 | 0.3% |
+
+- ~64% of the objective is nuisance, ~27% unpredictable terrain, ~9% consequences.
+- **A health or inventory change moves its HUD token less (8.4) than lighting / context drift moves an unchanged grass tile
+  (9.7):** the consequence channel is less salient than nuisance in this space.
+- **The regression optimum at stochastic mob cells is a non-state.** Where the 4 keys disagree, the frozen reader sees a mob in
+  40% of individual futures but in **67%** of the 4-key mean tokens: smeared ghosts at every candidate position (MoP-JEPA's
+  conditional-mean collapse, in our data).
+
+**2. Would categorical targets on these tokens be stable?** (Raw k-means codebooks K1024 / K4096; the same roots' futures,
+~1.2M cell transitions):
+
+| code change per step | K1024 | K4096 |
+|---|---|---|
+| persisting content, day, steady light | **25%** | 35% |
+| persisting content, day, changing light | 24% | 33% |
+| persisting content, night (random static) | 35% | 46% |
+| persisting content, asleep | 17% | 18% |
+| mob changed / terrain edited (signal) | 91% / 97% | 96% / 98% |
+| HUD, a displayed value changed | **16%** | 21% |
+| HUD, nothing displayed changed | **15%** | 20% |
+
+- Persisting content has no stable discrete identity in the Raw token space. A quarter of unchanged tiles flip code each step
+  even in steady light: position code and context, not only light.
+- Generic codes do not resolve the consequence channel at all: HUD codes change as often without a value change as with one.
+  A linear reader does recover health, so the information is present, but not in the code geometry.
+
+**Literature, verified from the papers:**
+- **LeWM:** CLS-only, goal-reaching continuous control; patch tokens never trained.
+- **When Does LeJEPA Learn a World Model?** (Klindt, LeCun, Balestriero):
+  - LeJEPA's optimum extracts the slowest features;
+  - linear identifiability holds only for Gaussian latents with additive-noise transitions;
+  - it breaks on goal-directed policy data (R² ≤ 0.5 on some dimensions);
+  - with fewer latent dimensions than the world has, which subspace is kept is undetermined.
+- **MoP-JEPA:** proof that a deterministic JEPA predictor converges to the conditional mean under stochastic transitions, and
+  that a gated MoE does too. Hard-assigned mixtures plus a router enumerate modes with probabilities (planning success
+  0.02-0.09 → 0.75-0.85). V-JEPA 2-AC's released predictor is single-head.
+- **Dedieu et al. 2025 (Craftax-Classic, our exact 81 × 7×7 patches):** nearest-neighbour patch codes 67.42 ± 0.55, VQ-VAE
+  patches 60.66, **continuous 7×7 patches 21.20 ± 0.55 (MBRL collapses)**. Their codes are pixel patches (not
+  reconstruction-free).
+- **Dreamer-CDP (Crafter, reconstruction-free):**
+  - full model 16.2 ± 2.1 (DreamerV3 14.5);
+  - without the reward gradient 12.7;
+  - next-embedding prediction alone without the categorical KL 6.3;
+  - without next-embedding prediction 3.2.
+- **DINO-WM:** patch vs CLS state, Wall 0.96 vs 0.58, Reach 0.92 vs 0.60, PushT 0.90 vs 0.44 (the patches come from DINOv2,
+  which is trained at the patch level).
+- **V-JEPA 2-AC (vendored):** frozen patch targets, per-token LN, L1, a single deterministic predictor.
+- **LeVJEPA:** CLS-only supervision *can* yield organized patch tokens (multi-view invariance + SIGReg). So "untrained" is not
+  "useless"; our probes agree that content is linearly present.
+- **Ni et al. (ICLR 2024):** a sufficient abstraction needs next-latent AND reward prediction; ZP alone is trivial;
+  observation-predictive representations degrade faster under distractors.
+- **Hansen & Wang 2026:** world-model hallucination is a data-coverage problem; "action-marginalized" hallucination in
+  low-coverage state-action regions.
+  - That is our sleep failure. It recurred in the CLS world (09-24: SLEEP picked on 513 / 670 risk roots), in PI, and in R54's
+    heads.
+
+**What we learn:**
+- The current target space is not aligned with the objective. It is dominated by nuisance and unpredictable terrain.
+- Consequences are less salient than nuisance.
+- Persisting content has no stable identity in it (continuous or discrete).
+- Continuous regression of its stochastic parts produces non-states.
+- The information *is* there, linearly. The problem is the geometry and the loss, not missing content.
+- Rare counterfactual consequences are additionally a coverage problem that no representation alone fixes.
+
+### R54 — an evolving belief's graded consequences, read directly (MULTIHORIZON_PREREG): the preregistered ridge heads fail; PI's belief holds the immediate consequence its gate discards (`multihorizon.py`)
+
+**Design (preregistered).**
+- Frozen beliefs: D parent; PI s1, s2.
+- From the root's 8-frame context with the first action under test, heads predict the *expected* HUD tokens at k ∈ {1, 2,
+  3, 4, 6, 8, 12, 16}:
+  - L2, so the target is the conditional mean;
+  - label-free targets: the observed HUD tokens of 30,000 training-pool roots.
+- The linear HUD health reader turns predicted tokens into expected health. Risk = max_k expected loss.
+- No rollout and no regenerated observation.
+- Evaluation on DV16's roots; within-root AUC over noop + 4 moves; paired bootstrap.
+
+| head | backbone | AUC5 (k = 1) | AUC5 | − own rollout HL | − D rollout HL (0.727) | expected safe, 17 actions | sleep chosen |
+|---|---|---|---|---|---|---|---|
+| ridge (primary) | D | **0.571** | 0.647 | −0.086 [−0.129, −0.042] | (same) | 0.388 | 45% |
+| ridge | PI s1 / s2 | 0.606 / 0.609 | 0.634 / 0.645 | +0.048 [−0.012, 0.108] / +0.020 [−0.040, 0.078] | −0.104 / −0.087 | 0.446 / 0.458 | 30 / 33% |
+| MLP (secondary) | D | | 0.697 | −0.033 [−0.071, 0.003] | (same) | **0.571** | 11% |
+| MLP | PI s1 / s2 | | 0.655 / 0.688 | **+0.075 [0.018, 0.130] / +0.074 [0.016, 0.132]** | −0.078 / −0.032 | **0.556 / 0.514** | 9 / 20% |
+
+**Verdict (preregistered rules):**
+- **P1 fails:** the k = 1 ridge on D ranks at 0.571 vs D's own first step 0.711.
+- **P2 fails:** −0.086, interval below −0.03.
+- **P3 fails:** the PI ridge intervals include 0.
+
+**Why P1 failed: the anchor (R54b, post-hoc, not preregistered).**
+- D's own read-out is a soft mixture over candidates: copy the cell's current token, a neighbour's, or generate
+  (`paired_model.reference`). Its prediction is anchored on the current token.
+- The preregistered heads had to rebuild the absolute token from the belief.
+- Giving the heads the root's current HUD tokens too (still label-free):
+
+| ridge + current HUD tokens | AUC5 (k = 1) | AUC5 by k (1 → 16) | AUC5 | − own rollout HL | − D rollout HL | expected safe, 17 | sleep chosen |
+|---|---|---|---|---|---|---|---|
+| D | 0.684 | 0.68 → 0.71 (k 6) → 0.70 | 0.704 | −0.016 [−0.052, 0.021] | (same) | 0.431 | 32% |
+| **PI s1** | **0.711** | **0.71 → 0.69** | 0.689 | **+0.110 [0.052, 0.169]** | −0.042 [−0.092, 0.005] | 0.508 | 18% |
+| **PI s2** | **0.697** | 0.70 → 0.69 | 0.691 | **+0.077 [0.019, 0.134]** | −0.030 [−0.070, 0.011] | 0.464 | 27% |
+| MLP + anchor, PI s2 | | | 0.690 | +0.075 [0.020, 0.128] | −0.032 | **0.577** | **3%** |
+
+**What we learn:**
+- **PI's belief knows the immediate consequence as well as D does** (k = 1: 0.70-0.71 vs its rollout's 0.60). The MAP copy/edit
+  gate is what discards it (R51), now confirmed from the belief side.
+- **Read as an expectation, PI's belief ranks the escape moves +0.08 to +0.11 better than PI's own rollouts** (resolved at both
+  seeds). That is near D's rollout (−0.03 to −0.04, not resolved), without imagining a single frame.
+- The ranking information sits at short horizons (PI: k = 1 is best), as R53 found in reality.
+- **The remaining failure is counterfactual consequences of actions the behaviour policy takes only when they are safe.**
+  - Linear heads judge sleep safe (sleep chosen 18-45%). The behaviour data sleeps in safe states, so E[consequence | sleep]
+    learned from it is low.
+  - Nonlinear heads sometimes recover the state × action interaction: 3% sleep at PI s2 with the anchor, 20-22% elsewhere.
+    Seed- and head-dependent.
+- **Answer to the user's coexistence question, so far:** persistence (faithful scene dynamics, PI) and decision-relevant
+  uncertainty (graded consequences) coexist if consequences are *read from the belief as expectations*, not produced as
+  sampled or MAP edits of observation tokens. The open problem is the counterfactual / confounded consequence of rare actions.
+
+### R53 — where action-dependent risk lives, and where each world loses it: PI has the most faithful dynamics and the worst immediate consequence; R51/R52's ranking gap is mostly the read-out (`dv16_trace.py`, `dv16_trace_analysis.py`)
+
+**User direction (10-16).**
+- Pixel-equivalent content codes and the one-shot appearance operator are controls only.
+- Understand why coherent imagined dynamics fail to preserve action-dependent risk.
+- Explore an evolving predictive belief that represents consequences without regenerating every observation token.
+- The question is how persistence, stochastic dynamics and decision-relevant uncertainty coexist. A simpler evolving belief is
+  welcome if it does better.
+
+**Setup.**
+- DV16's 200 roots, the escape choice (noop + 4 moves), recorded continuation, 16 steps.
+- Real: deeppanel's stored key-0 future for every first action (depths 1, 2, 4, 8, 16) and the 32-key P16.
+- Imagined: each world's frames at every depth (M 4 sampled; D deterministic).
+- Frozen readers give zombies on the map and HUD health. Rankings are within-root AUC over the 5 choices against the P16
+  order.
+
+| | first-step damage ranking | later-only damage ranking | 16-step damage ranking | scene: adjacency ranking d1 | dmin fidelity d1 (Spearman vs real) | zombie adjacent d1 → d16 | pursuit | P(hit next \| adjacent) | first-step share of 16-step damage |
+|---|---|---|---|---|---|---|---|---|---|
+| **real** (one key-0 future) | **0.710** | **0.456** | 0.680 | 0.559 | | 0.69 → 0.64 | 0.457 | 0.257 | 22% |
+| D parent | **0.711** | 0.468 | 0.731 | 0.550 | 0.58 | 0.64 → **0.02** | **0.050** | 0.051 | **54%** |
+| IC s1 / s2 | 0.694 / 0.696 | 0.508 / 0.461 | 0.682 / 0.673 | 0.562 / 0.537 | 0.60 / 0.58 | 0.64 → 0.10 | 0.18 / 0.19 | 0.10 / 0.08 | 34 / 45% |
+| **PI s1 / s2** | **0.597 / 0.616** | 0.534 / 0.496 | 0.599 / 0.598 | **0.648 / 0.642** | **0.66 / 0.74** | 0.53 → **0.35 / 0.40** | **0.25 / 0.30** | **0.12 / 0.14** | 16 / 19% |
+
+PI's sampling variance of the 4-future mean health loss is 0.31 against an across-action variance of 0.68-0.78 (IC
+0.06-0.09; D 0).
+
+**What we learn:**
+- **Action-dependent risk lives in the immediate consequence.** One real future's first-step damage ranks the moves at 0.71.
+  Its later damage ranks them at 0.46, i.e. carries nothing: in reality most damage (78%) comes later and is action-independent
+  at this horizon.
+- **The worlds lose it in opposite places:**
+  - **D:** right immediate consequence, wrong future. Zombies vanish (adjacency 0.02 at d16), barely chase (0.05), barely hit
+    (0.05). Its 16-step ranking is good *because* its future is quiet: 54% of its imagined damage is the first step.
+  - **PI:** the most faithful dynamics by every measure (scene ranking and fidelity, persistence, pursuit, hit rate given
+    adjacency), but the worst immediate consequence (0.60 / 0.62). This is R51's MAP gate under-calling the hit.
+  - **IC:** in between on both.
+- **Correction to R51 / R52:**
+  - "Coherent dynamics lose action-dependent risk" is mostly a read-out effect. A realistic future accumulates
+    action-independent later damage, which dilutes a "max health loss over 16 steps" risk estimated from few samples (PI's
+    sampling noise is ~40% of its action signal).
+  - R52's hybrid had D's first step (the first imagined step sees only real context) plus PI's realistic later damage, hence
+    0.62-0.66.
+  - The genuine deficits are PI's immediate consequence call and (for decisions over long horizons) the sample cost of
+    estimating an expectation from rollouts.
+- **Implication for the user's question:**
+  - Coherent persistent dynamics and decision-relevant risk are not in conflict in the scene: PI's scene is the most
+    action-informative.
+  - The conflict is in how consequences are produced (a MAP edit) and read (a few-sample maximum over a noisy future).
+  - A belief that predicts *expected* consequences directly at several horizons would sidestep both. That is R54
+    (`MULTIHORIZON_PREREG.md`).
+
+### R52 — the hybrid (PI's scene + D's consequence readout, lockstep) does not keep both; most of PI's damage-ranking deficit is in its imagined scene (`dv16.py hybrid_s*`, `dv16_paired.py`)
+
+**Setup** (evaluation only, no training). At every imagined step of DV16, PI s1 / s2 draws the map (exact persistence, chance,
+gated edits; M = 4) and the D parent's deterministic readout supplies the 18 HUD cells. Both run on the shared imagined
+history.
+
+**Declared before the run:** "keeps both" if
+- (a) the damage-ranking AUC is within 0.03 of D's or better;
+- (b) the zombie-adjacency ranking is at least PI's;
+- (c) expected safe (HD, all 17 actions) is not below D's.
+
+| | HL AUC, 5-way | ZA AUC, 5-way | expected safe HD: all / sleep excluded / 5-way |
+|---|---|---|---|
+| D parent | 0.727 | 0.550 | 0.555 / 0.577 / 0.592 |
+| PI s1 / s2 | 0.580 / 0.626 | 0.599 / 0.588 | 0.355 / 0.566, 0.476 / 0.575 |
+| **hybrid s1 / s2** | **0.619 / 0.656** (vs D −0.11 [−0.17, −0.06] / −0.08 [−0.13, −0.02]) | 0.591 / 0.585 | **0.479 / 0.580 / 0.592**, **0.469 / 0.574 / 0.592** |
+
+**Verdict:**
+- (a), (b) and (c) all fail: "keeps both" is not supported.
+- **Partial:**
+  - the damage ranking improves over PI by +0.04 / +0.03, and the hybrid's HL decisions beat PI's at s1 (sleep excluded
+    +0.028 [0.006, 0.054]);
+  - zombie adjacency stays at PI's level;
+  - sleep stays wrong, because the map still erases zombies at the onset.
+
+**What we learn:**
+- **The consequence readout explains only about a third of PI's damage-ranking gap to D.** D's own readout, fed PI's imagined
+  scene, ranks escape moves 0.08-0.11 worse than it does on its own regenerated scene.
+- **The rest is in the scene's dynamics.** PI's crisp scene makes damage less action-specific than D's blurred one, for D's own
+  readout too.
+  - Candidate (from R23, not yet tested here): PI's zombies chase too little (pursuit 0.24-0.26 vs real 0.38; IC 0.41-0.44).
+    A mean-blurred zombie mass spread around the player may carry more action-relevant danger than a crisp, under-pursuing
+    sample.
+- **Consequence:** "persist the scene, regenerate the consequences" is not sufficient by itself. The persisted scene must also
+  move consequentially: pursuit, i.e. the chance head's action-conditioned movement. That is the next thing to localize
+  before any model change.
+
+### R51 — what selective persistence costs: graded consequences. PI's hard copy/edit gate under-calls uncertain damage; the regenerating belief ranks actions better (`dv16.py` post-hoc arms, `dv16_paired.py`, `sleep_attack_onestep.py`)
+
+**The decision is an escape choice.** On DV16's roots the 11 non-movement actions equal noop (real P16 0.47-0.48), the four
+moves are slightly safer (0.42-0.44) and sleep is the outlier (0.86). Restricted to noop + 4 moves: uniform 0.558, oracle
+0.687; 152 roots have a real spread.
+
+**Within-root ranking of the 5 choices** (pairwise AUC of imagined risk against the real P16 order; paired bootstrap vs D,
+152 roots; post-hoc):
+
+| world | AUC, imagined health loss (HL) | − D | AUC, any drop (HD) |
+|---|---|---|---|
+| D parent (regenerates every cell; deterministic) | **0.727** | | 0.609 |
+| IC s1 / s2 (soft persistence) | 0.686 / 0.675 | −0.05 [−0.09, −0.004] / −0.06 [−0.10, −0.02] | 0.587 / 0.619 |
+| PI s1 / s2 (hard persistence, sampled, M 4) | 0.580 / 0.626 | **−0.15 [−0.21, −0.10] / −0.11 [−0.16, −0.05]** | 0.585 / 0.621 |
+| PI's deterministic afterstate (no chance) | 0.580 / 0.630 | −0.15 / −0.10 (resolved) | 0.576 / 0.617 |
+| PI deterministic, HUD always regenerated | 0.532 / 0.579 | −0.20 / −0.15 (resolved) | 0.537 / 0.532 |
+
+- PI imagines **more** damage on average than D (HL over moves 1.77 / 2.23 vs 1.35; ZA 0.79 vs 0.67). Its damage is less
+  **action-specific**.
+- **Not sampling noise:** deterministic PI is the same.
+- **Not the HUD gate:** forcing HUD regeneration is worse, because PI's generator is trained only on edited cells.
+- D has the *worst* adjacency ranking (ZA AUC 0.55) and the best damage ranking: its consequence prediction does not run
+  through a coherent imagined scene.
+
+**One step, teacher-forced, the event at window row 9** (the row-14 end-aligned-death cue gave D false drops: at row 14 its
+false alarm on cooldown cases was 0.94 asleep / 0.26 awake, at row 9 0.02 / 0.10; PI's numbers barely change):
+
+| | sleeper attacked: P(predicted drop), mean (real −6.88) | awake attacked: P, mean (real −1.94) | zombie adjacent on cooldown: false alarm, asleep / awake |
+|---|---|---|---|
+| D parent | **1.00, −5.31** | **0.90, −1.87** | 0.02 / 0.10 |
+| PI s1 | 0.97, −4.52 | 0.58, −0.93 | 0.003 / 0.0 |
+| PI s2 | 0.90, −3.99 | 0.81, −1.63 | 0.0 / 0.003 |
+
+**Mechanism (measured):**
+- PI's EM gate makes every change a hard decision: edit iff the generator beats the copy (q > 0.5).
+- A consequence whose occurrence is uncertain (an attack timed by the hidden cooldown) defaults to "copy: nothing happened".
+- PI is therefore conservative. It almost never imagines false damage, but it misses attacks (awake recall 0.58 / 0.81 vs
+  0.90) and shrinks their size.
+- D regenerates every cell, predicting the graded expectation of the consequence. For ranking actions, the graded expectation
+  is what matters.
+- **The MAP decision that makes persistence coherent (no ghosts, no fading) is the same decision that discards graded risk.**
+
+**What we learn (the user's sharpened question):**
+- **Selective persistence sacrifices contextual consequence reasoning.** The more a world persists (D → IC → PI), the less
+  action-specific its imagined damage (AUC 0.73 → 0.68 → 0.58-0.63).
+- **Persistence buys no decision value in return (R50).** Its mob-coherence advantages do not reach the H16 escape choice.
+- **The two needs are different kinds of content:**
+  - the scene (terrain, mobs) benefits from exact persistence;
+  - consequences (the body state on the HUD: damage, hunger) should be predicted as graded expectations from the belief, or
+    sampled from a calibrated distribution. They should not be decided by a copy/edit gate.
+  - This refines §15: "relations / consequences are recomputed by the belief" applies to the HUD consequence channel too.
+- **Not yet shown:** that a world with PI's scene persistence and D's consequence readout keeps both advantages. That is a
+  model change (a hybrid readout), to be preregistered if pursued.
+
+### R50 — the user's sharpened question on decisions: selective persistence gives no measurable advantage over the regenerating belief (`dv16_paired.py`)
+
+The D parent is a Mamba belief on the same spatial scaffold whose readout regenerates every cell each step (no copies, no
+transformations). That is the "ordinary evolving latent belief". DV16 already scored it (deterministic, M = 1). Here the
+paired root-level differences are computed from the saved risks: 200 roots, bootstrap 95% intervals. This is a secondary
+comparison: DV16's preregistered readings were PI vs IC and PI vs uniform.
+
+| PI − D | HD, all actions | **HD, sleep excluded** | HL, sleep excluded | ZA, sleep excluded |
+|---|---|---|---|---|
+| s1 | −0.200 [−0.249, −0.153] | **−0.011 [−0.034, +0.009]** | −0.035 [−0.064, −0.007] | +0.021 [+0.003, +0.039] |
+| s2 | −0.078 [−0.115, −0.042] | **−0.001 [−0.023, +0.018]** | −0.033 [−0.062, −0.006] | +0.013 [−0.001, +0.026] |
+
+IC − D, sleep excluded: HD +0.003 / +0.011, HL +0.009 / +0.004, ZA +0.011 / +0.008 (all intervals include 0).
+
+**What we learn:**
+- **On H16 action choice, persistence does not beat an evolving latent belief that regenerates the scene.**
+  - Primary risk (HD): no difference once sleep is excluded.
+  - Health-loss risk: PI is worse at both seeds (its damage hedge, R48).
+  - Zombie-adjacency risk: PI is slightly better (resolved at s1), consistent with keeping mobs.
+  - With sleep, PI is clearly worse: the onset erasure (R46-R48).
+- **This holds although PI's coherence advantages are large** (R23: mob persistence 0.71-0.73 vs D's fading census 1.09 →
+  0.25, R1; zombie census ×7). Those advantages do not reach this decision test. What limits decisions is the fidelity of
+  consequences (magnitude, appearance events), not the persistence of the scene.
+- **Limits of this answer:**
+  - one decision test (H16 first-action choice, 8-frame context, frozen readers as risk);
+  - a deterministic D vs a sampled PI;
+  - not actor training.
+  - Persistence may matter more at longer horizons or for training an actor on imagined rollouts. That is untested.
+
+### R49 — a reconstruction-free appearance operator works ONCE (IWM-style, on Raw tokens), but it is not compositional
+
+Scripts: `appearance_op.py`, `appearance_op_tiles.py`, `appearance_theta.py`, `appearance_identity.py`; `sleep_onset_sub.py`
+variants `tokop_pihud`, `tokopfit_pihud`.
+
+**Question.** R47's operator lives in pixel-linear coordinates, and the user's constraint is reconstruction-free. Is there a
+latent-space operator?
+
+**Literature (read first).** Image World Models (Garrido et al. 2024, arXiv 2403.00504) learn photometric operators in JEPA latent
+space from **synthetic, parameter-conditioned pairs**:
+- feature conditioning: MRR 0.79-0.85 with an 18-layer predictor, 0.09-0.25 with 12 layers on weak / mixed augmentation, 0 with
+  no conditioning;
+- a predictor that cannot apply the transformation makes the encoder invariant instead.
+
+Synthetic pairs remove exactly the confound that broke R47's real-pair fits (the step's content changes). Related: SIE
+(Garrido et al. ICML 2023, hypernetwork predictor, split invariant / equivariant); symmetric embeddings for equivariant world
+models (Park et al. ICML 2022).
+
+**Setup:**
+- Operator g(tokens [81,192], θ [12]): feature conditioning, transformer of depth 4 or 8 (width 256), residual, LN.
+- Trained on frozen Raw tokens of diagnosis_futures frames (seeds 900000-900143; no overlap with deeppanel DEV) recoloured by
+  random per-pixel colour maps from a generic family (saturation / grayscale, brightness 0.4-1.3, tint −0.1-0.15; map rows
+  only, 8-bit). The family's ranges were chosen to cover the game's documented render maps; the sleep map itself is never
+  targeted.
+- 6,000 updates. Synthetic held-out token error 1.25-1.37 vs copy 10.7.
+- **Declared before running:** feasible if zombie and cow recall vs the oracle are ≥ 0.90 and tile agreement is ≥ 0.98 (R47's
+  200 test roots, source sleep θ).
+
+**Results** (vs the oracle; R47's references: colour map 0.996 / 0.974 / 0.976, free token operator 0.966 / 0.64 / 0.82):
+
+| operator | tile agreement | zombie recall (155) | cow recall (82) | verdict |
+|---|---|---|---|---|
+| depth 4 | 0.953 | 0.961 | 0.963 | not feasible (tile) |
+| depth 8 | 0.951 | 0.955 | 0.963 | not feasible (tile) |
+| depth 4 + exact-identity draws (p 0.2) | 0.957 | 0.929 | 0.963 | not feasible (tile) |
+| depth 4, θ **inferred** label-free from real token pairs through the frozen g (400 fit roots, Adam on 12 numbers) | 0.953 | 0.961 | 0.963 | identical to the given θ |
+
+- **Capacity is not the limit** (unlike IWM): depth 8 = depth 4.
+- **Tile errors:** path → grass (21% of path cells) and grass → tree / water / stone. The reader itself disagrees with the
+  oracle on 2.3% even on the real asleep frame (agreement 0.977).
+- **The inferred θ is not the source's matrix** (g does not identify θ; a negative blue coefficient), but it is functionally
+  equivalent.
+
+**Decision value inside PI's imagination** (DV16 roots, map cells from g at the onset, PI's own HUD; as `app_pihud`):
+
+| (s1 / s2) | zombie adjacent | expected safe | sleep chosen |
+|---|---|---|---|
+| natural PI | 0.10 / 0.15 | 0.356 / 0.478 | 43 / 24% |
+| exact appearance (pixel-equivalent; R48) | 0.75 / 0.69 | 0.492 / 0.522 | 17 / 14% |
+| **token operator, source θ** | 0.68 / 0.64 | **0.485 / 0.531** | 18 / 14% |
+| **token operator, inferred θ** | 0.68 / 0.64 | **0.488 / 0.528** | 18 / 14% |
+
+**Recursion check (declared: stable if zombie recall ≥ 0.90 after 16 identity applications).** Apply g(·, identity)
+repeatedly to the awake roots:
+
+| applications | 1 | 2 | 4 | 8 | 16 |
+|---|---|---|---|---|---|
+| token drift / zombie recall (depth 4) | 1.30 / 0.82 | 2.16 / 0.71 | 4.0 / 0.61 | 8.4 / 0.23 | 15.6 / 0.04 |
+| the same, with identity draws | 0.55 / 1.0 | 1.03 / 1.0 | 2.2 / 1.0 | 5.4 / 0.84 | 11.6 / **0.26** |
+
+After the sleep θ, identity applications degrade faster: zombies 0.67 after 4, 0 after 8.
+
+**What we learn:**
+- **There is a reconstruction-free appearance operator for one event.** Trained only on synthetic recolourings, conditioned on
+  12 numbers that can be inferred label-free from real token pairs, it carries 93-96% of mobs through the sleep onset. In PI's
+  imagination it gives the same decision gain as the exact pixel-equivalent transform.
+- **It is not compositional.** A learned token map is approximate. Applied every step (or at every lighting change) its error
+  compounds, the non-idempotent fading of R21 again.
+  - The pixel-linear colour map composes exactly; its identity is exact by construction.
+- **Design consequence:**
+  - **reconstruction-free:** the operator can only be a *gated, one-shot* event transform (sleep onset, wake-up), not a per-step
+    relighting of copies. The world must decide when appearance changed;
+  - **exact and compositional:** pixel-equivalent copies (content codes). That is the user's decision.
+- **Size of the prize:** fixing the onset moves PI to 0.49-0.53. The sleep-excluded level is 0.566-0.575, the FIT prior is
+  0.561, one real future 0.61. Appearance is necessary but small. The larger decision lever is the consequence hedge (R48: damage
+  magnitude 45-70% of real; a regression blur, not a probability blend).
+
+### R48 — the sleep blind spot, localized: erasure at onset (fixable), then a damage-magnitude hedge; PI already knows the rule and the hidden cooldown
+
+Scripts: `sleep_onset_sub.py` (substitution), `sleep_onset_cond.py`, `sleep_incidence.py`, `sleep_attack_onestep.py`,
+`sleep_cooldown.py`.
+
+**Source facts** (`game_logic.py:815-845, 1238-1247`):
+- An adjacent zombie attacks when its cooldown ≤ 0. An attack resets the cooldown to 5.
+- It deals **7 to a sleeper, 2 to an awake player**, and wakes the sleeper.
+- Sleep starts on SLEEP if energy < 9.
+- The renderer greys only the map rows (the HUD is drawn separately) and draws a sleeping player texture.
+
+**1. Substitution** (DV16's 200 roots, PI s1 / s2, M = 4, first action SLEEP, recorded continuation, the same noise draws for
+every variant). Imagined frame 1 is replaced, then PI imagines frames 2-16 itself.
+
+| (s1 / s2) | zombie adjacent | health drop by 16 (HD) | health at d16 vs root | d16 − d1 | decision, expected safe | sleep chosen |
+|---|---|---|---|---|---|---|
+| natural (as DV16; reproduces its sleep HD 0.275 / 0.62) | 0.10 / 0.15 | 0.28 / 0.62 | +0.07 / −0.94 | −0.27 / −0.38 | 0.356 / 0.478 | 43 / 24% |
+| appearance: root map rendered asleep by the source's function, root HUD | 0.72 / 0.70 | 0.59 / 0.48 | −2.65 / −1.72 | −2.80 / −1.86 | 0.467 / 0.416 | 20 / 33% |
+| **app_pihud**: the same map, PI's **own** sampled HUD at frame 1 (emulates PI + an appearance operator) | **0.75 / 0.69** | **0.67 / 0.74** | −2.62 / −1.98 | −2.95 / −1.41 | **0.492 / 0.522** | **17 / 14%** |
+| real onset: the real depth-1 frame | 0.78 / 0.74 | 0.82 / 0.78 | −3.31 / −2.46 | −2.48 / −1.63 | 0.541 / 0.543 | 6 / 10% |
+| control: first action NOOP, natural | 0.83 / 0.85 | | −1.87 / −2.44 | −1.35 / −1.61 | | |
+| **real sleep / real noop** | 0.92 / 0.92 | 0.98 / 0.94 | **−4.92** / −3.71 | **−4.09** / −2.66 | | |
+
+References: uniform 0.512. Sleep-excluded level (R45): 0.566 / 0.575.
+
+**Decomposition of real onset vs appearance** (real content swapped in at the player cell / the 18 HUD cells / both):
+- **Player sprite:** no effect (decision 0.477 / 0.425; health identical to appearance).
+- **HUD:** decision 0.540 / 0.522, but this is a **leak**. The real depth-1 HUD carries the onset step's real damage (−0.83).
+  PI then adds nothing by d2 (d2 − d1 = −0.02 / 0.00).
+- **What remains:** the zombies' moves during the onset step. Zombie adjacent at d1 is 0.65 (real) vs 0.45 (frozen at root
+  positions). Only real onset imagines early damage (d2 − d1 −0.78 / −0.49 vs −0.12 / −0.13).
+
+**2. Training-data incidence** (all 1.24M pool transitions; frozen readers; an asleep probe on the mean map token, held-out
+accuracy 1.0 on 1,430 deeppanel frames labelled by the pixel rule):
+- Asleep: 19% of transitions.
+- Zombie adjacent: 1.9% of asleep frames vs 11.6% of awake frames.
+- P(health drop next | zombie adjacent): 0.26 asleep vs 0.14 awake (0.009 without a zombie).
+- Attacks on sleepers: 1,159 transitions = 0.09% of transitions, 4% of all health drops, in 1.0% of training windows.
+
+**3. Does PI know the rule and the hidden cooldown?** Teacher-forced, one step, 4 sampled outputs, up to 300 events per cell.
+Cooldown read from history = frames since the last health drop.
+
+| zombie adjacent at t | real P(drop) (pool count) | PI s1 | PI s2 |
+|---|---|---|---|
+| asleep 1-5 frames, hit in the last 5 frames | 0.023 (3,332) | 0.017 | 0.013 |
+| asleep 1-5 frames, no hit for ≥ 6 frames | **0.94 (384)** | **0.93** | **0.82** |
+| awake, recent hit | 0.074 (71,882) | 0.047 | 0.060 |
+| awake, no recent hit | 0.22 (54,873) | 0.21 | 0.26 |
+
+- Sleeper attacks are predicted: P 0.98 / 0.91, against 0.65 / 0.82 for awake attacks. False alarms are ≤ 0.017.
+- **Magnitudes are hedged:**
+  - asleep −4.6 / −4.0 vs real −6.9;
+  - awake −1.05 / −1.66 vs −1.97.
+- **The hedge is a regression blur, not a probability blend:**
+  - the per-event predicted change is unimodal: median −4.36 / −4.31, 10-90% range −6.5 … −3.45 / −5.36 … −2.46;
+  - the real change is tightly −7.0;
+  - the draws are identical, because PI's HUD content is deterministic given the belief;
+  - it sits between the frequent awake hit (−2) and the rare sleeper hit (−7).
+- The behaviour data confounds the counterfactual:
+  - at sleep onset next to a zombie, 97.5% of training cases were just hit (cooldown active, P(attack) 0.02);
+  - 181 of DV16's 200 roots have no drop in the last ≥ 6 context frames, i.e. the rare cell;
+  - PI's belief resolves this from history.
+
+**What we learn:**
+- **The sleep blind spot has three parts, in order of size:**
+  1. **Onset erasure.** PI regenerates the scene because it has no appearance operator (R46).
+     - Preserving content restores imagined zombies (0.10 / 0.15 → 0.69-0.75; real 0.92).
+     - It improves decisions at **both** seeds (0.355 → 0.492, 0.478 → 0.522; sleep chosen 43 → 17%, 24 → 14%).
+     - That recovers ~65% / 45% of the loss sleep causes.
+  2. **Damage magnitude is hedged.** It is generic, not sleep-specific: one step −4.6 vs −6.9; over 16 steps 45-70% of real,
+     and the same for an awake player (−1.35 / −1.61 vs −2.66).
+     - The HUD edit draws the conditional mean of the consequence (R24's "point-predicted content = mean", on the HUD).
+  3. **Early timing** needs the onset step's mob moves (chase), which an appearance operator plus PI's own chance would
+     supply. Untested.
+- **Positive:** PI's Mamba belief already knows the mechanism. It tracks the hidden attack cooldown from history (0.93 / 0.82
+  vs real 0.94 in the rare cell), even though the behaviour data rarely shows that cell at sleep onset. The WHITEBOARD's memory
+  row ("remember what history determines") holds here.
+- **Correction (R45 / R46 reading):** PI s2's natural sleep damage was not spurious. It predicts the onset step's attack from
+  the root's adjacent zombie (d1 −0.56 vs real −0.83), and only then erases the zombie. My appearance substitution fixed the
+  HUD to the root's and deleted that prediction; `app_pihud` repairs the comparison.
+- **Design consequence (R47 addendum):** the operator that keeps content (12 parameters) lives in the pixel-linear content
+  code. On Raw tokens no shared affine works. Building it into PI means holding pixel-equivalent content for copies, which
+  touches the reconstruction-free constraint. That is the user's call.
+
+### R47 — a global appearance change is a SHARED operator: 12 parameters keep content, a free operator erases it (`sleep_transform.py`)
+
+**Question (R46 follow-up):** PI has no operator for appearance, so the sleep onset regenerates the scene and loses its mobs.
+Can a learned appearance operator transform persisted content while keeping it?
+
+**Source facts (Craftax-Classic `renderer.py`):**
+- Asleep, every map pixel becomes 0.5 · luminance + (0, 0, 8): one per-pixel colour map, identical at every pixel.
+- The frozen encoder's content code is a 7×7×3 → 192 convolution of normalized pixels. Its weight has rank 147 (condition 13),
+  so it is injective.
+- Therefore the sleep render is an **exact affine map on content codes**, applied before the frozen upper layers recompute
+  context.
+
+**Data:**
+- 600 deeppanel DEV roots (seeded) that are awake at the root and asleep one step after first action SLEEP. 3,195 eligible.
+- Fit on 400 roots (25,200 map cells, no labels), test on 200.
+- Each variant replaces the asleep frame's map content codes, then is recontextualized (HUD from the real frame).
+- Scored with the frozen readers against the real asleep frame. Also scored against the oracle's own decoded content, which
+  removes the confound of mobs moving during the step.
+
+| asleep-frame map content | token error vs real | tile agreement vs real / oracle | zombie recall vs oracle (155) | cow recall vs oracle (82) |
+|---|---|---|---|---|
+| copy (PI's copy of the awake tokens) | 13.47 | 0.899 / 0.899 | 1.0 (precision 0.71) | 1.0 (precision 0.82) |
+| **oracle**: the source's sleep render of the root pixels | 0.80 | 0.977 / 1 | 1 | 1 |
+| affine fit to the oracle's targets (checks the theory) | 0.83 | 0.977 / **0.998** | **1.0** | **1.0** |
+| free affine operator (192 × 192 + bias), least squares on real pairs, ridge 0 … 1e-3 | 0.72-0.79 | 0.976-0.979 / 0.982-0.985 | **0.51-0.52** | 0.76-0.79 |
+| free operator, label-free trimmed fit (3 rounds, keep the 80% best-fitting cells) | 0.68 | 0.978 / 0.986 | 1.0 | **0.0** |
+| **shared colour map** (3×3 + bias = 12 parameters at every pixel), plain least squares on real pairs | 0.93 | 0.977 / **0.996** | **0.974** | **0.976** |
+
+- Fitted colour map: rows (0.142, 0.283, 0.051) vs the source's (0.150, 0.294, 0.057). Blue offset 0.039 vs 8/255 = 0.031.
+- Against the real frame, every root-derived variant has zombie recall 0.68: that is the ceiling set by zombies that move
+  during the step.
+
+**What we learn:**
+- **Content survives the appearance change if the representation is transformed instead of regenerated.** The exact transform
+  keeps every zombie and cow and agrees on 97.7% of tiles with the real frame. PI's copy agrees on 89.9%; PI's regeneration
+  erased 62% of zombies (R46).
+- **An unconstrained operator learns the conditional mean of the step:**
+  - 31% of fit cells differ from the exact transform: mobs that moved, the player sprite, night static.
+  - The free map is fitted to them too, so it maps zombie content to a blend of "grey zombie" and "grey grass", and loses
+    half the zombies.
+  - This is R46's erasure again, moved into the operator.
+- **Robust fitting does not fix it.** Trimming the worst-fitting cells keeps zombies but drops every cow. Directions spanned
+  only by rare content are underdetermined, fit badly, and are trimmed away: the rarity failure again (E14).
+- **What works is sharing.** One colour map applied identically at every pixel has 12 parameters. The bulk of the scene
+  (terrain) determines them, and they transfer to rare content. Such a map cannot express content-specific dynamics such as
+  "zombie → grass", so mob motion cannot leak into it.
+  - This is the same structural reason the scroll works: one global displacement applied to every cell.
+- **Principle (§15):** appearance is a *global, low-dimensional, shared* transformation of persisted content; content change is a
+  *local, gated* edit; context is *recomputed*. The daylight cycle has the same form in the source:
+  light · pixel + (1 − light) · (desaturate, tint) is also a per-pixel colour map, plus random night static.
+- **Caveat:** the colour map acts in the pixel coordinates that the frozen first layer inverts exactly (pseudo-inverse; no
+  decoder, no reconstruction loss). It works because this encoder's first layer is linear and injective. Whether a world should
+  persist content in that space is a design decision, not established here.
+
+**Addendum (same script, same roots): operators on PI's own Raw tokens instead.** Least squares on the fit roots' map-cell
+token pairs, LN after.
+
+| | token error vs real | tile agreement vs real / oracle | zombie recall vs oracle | cow recall vs oracle |
+|---|---|---|---|---|
+| per-dimension affine shared by every cell (FiLM, 384 parameters) | 9.78 | 0.776 / 0.775 | 0.74 | 1.0 (precision 0.85) |
+| full 192 × 192 affine shared by every cell | 2.52 | 0.964 / 0.966 | **0.64** | 0.82 |
+
+- In the contextual token space, the sleep change is **not** a shared affine map:
+  - FiLM cannot express it;
+  - the full map hedges like the free content-code operator.
+- The 12-parameter operator exists only in the pixel-linear content code.
+- So a world that applies it must hold pixel-equivalent content for its copies. That is the reconstruction-free question, and
+  it is the user's decision (WHITEBOARD §15 addendum).
+
+### R46 — the sleep blind spot is the WORLD erasing content at a global appearance change (`sleep_check.py`, `sleep_onset.py`)
+
+**Readers vs world on the DV16 roots** (real futures are deeppanel's stored key-0 frames; PI s1 imagination, M = 4):
+
+| after the first action | real noop | real sleep | PI imagined noop | PI imagined sleep |
+|---|---|---|---|---|
+| health drop by 16 (frozen HUD reader) | 0.94 | **0.98** | 0.69 | **0.28** |
+| mean health change, d1 → d16 | −1.05 → −3.71 | **−0.83 → −4.92** | −0.52 → −1.94 | **+0.34 → +0.09** |
+| zombie adjacent at some depth | 0.92 | **0.92** | 0.83 | **0.09** |
+| dead by 16 (real label) | 0.48 | **0.84** | | |
+| imagined-vs-real token distance | | | 3.4 | **7.2** |
+
+- The frozen readers see the damage on real sleep frames. **The failure is the world's:** PI's imagined sleep futures lose the
+  zombies (92% → 9%) and the damage.
+- With noop, PI keeps most of the danger (zombies 83%, damage 69%, about half the magnitude).
+
+**One teacher-forced step** (240 training windows containing sleep; PI s1, sampled one-step output, frozen mob reader vs the
+real next frame):
+
+| transition | n | map cells edited | zombie recall | cow recall | token error |
+|---|---|---|---|---|---|
+| sleep onset | 318 | **49%** | **0.38** (102 zombies) | 0.34 | 1.08 |
+| already sleeping | 42 | 5% | 0.92 (12) | 0.48 | 0.31 |
+| other actions | 3,240 | 5% | 0.60 | 0.49 | 0.64 |
+
+- **Mechanism:**
+  - Sleep greys the whole screen, a frame-global *appearance* transformation of unchanged content.
+  - PI can express an appearance change only by regenerating the cell. Regeneration draws the conditional mean, so mobs are
+    erased at onset.
+  - Persistence then faithfully keeps the zombie-free grey world: no attacks, health even rises.
+- Sleep is not rare in training: 2.8% of actions, 23% of windows contain one. What is missing is an operator that transforms
+  appearance while preserving content.
+- **This is the user's principle in its decision-critical form:** persist the information, transform its representation. PI
+  has transformations for position (scroll) and identity (chance swaps), but none for appearance.
+
+### R45 — DV16 RESULT: imagination's decision value is dominated by a SLEEP blind spot; persistence does not help decisions
+
+Preregistered (`DV16_PREREG.md`, `dv16.py`; 200 deeppanel DEV opp16 roots, 8-frame context, 17 first actions, M = 4 futures,
+recorded continuation, 16 steps, frozen readers). **P1 (PI > IC) and P2 (PI > uniform) both fail, at both seeds.**
+
+| expected safe at 16 | HD (primary) | HL | ZA |
+|---|---|---|---|
+| uniform / FIT prior / one real future / oracle31 | 0.512 / 0.561 / 0.610 / 0.715 | | |
+| D parent (deterministic) | **0.555** (+0.042 [0.021, 0.064] vs uniform) | 0.576 | 0.482 |
+| IC s1 / s2 | 0.480 / 0.529 | 0.518 / 0.550 | 0.447 / 0.433 |
+| **PI s1 / s2** | **0.355 / 0.476** | 0.281 / 0.372 | 0.229 / 0.240 |
+
+- PI − IC (HD): **−0.126 [−0.170, −0.082]** (s1), **−0.053 [−0.088, −0.021]** (s2).
+- PI − uniform: −0.158 / −0.036 (intervals exclude 0).
+
+**Cause: sleep.**
+- Real P(dead by 16) after sleeping is **0.86**, against 0.42-0.48 for every other first action.
+- PI imagines sleep as the *safest* action (imagined HD 0.28 at s1 vs 0.58-0.69 for other actions) and picks it at **43% / 24%**
+  of roots. IC picks it at 19%, the D parent at 6%.
+- Sleep greys the whole frame, a global change PI must regenerate. The damage that follows (zombies attack sleepers) is rare in
+  the behaviour data, so the world imagines a quiet grey future.
+
+**Sleep excluded** (diagnostic, not preregistered; references over 16 actions: uniform 0.535, oracle 0.702):
+- **Every world beats uniform:** D 0.577, IC 0.580 / 0.588, PI 0.566 / 0.575. PI − uniform is +0.031 [0.019, 0.044] and
+  +0.040 [0.025, 0.056]. That is ~20-25% of the uniform → oracle margin.
+- **PI − IC:**
+  - HD −0.013 [−0.032, +0.005] and −0.012 [−0.032, +0.005];
+  - HL −0.044 / −0.037 (PI worse, significant);
+  - ZA +0.009 / +0.005 (not significant).
+
+**What we learn (big picture):**
+- **Persistence improves one-step coherence, recursion persistence and the decision *proxies* (R23), but not decisions.** On
+  this H16 action-choice test PI is no better than IC, and slightly worse on health loss.
+- **The decisive failure is a consequence blind spot for a rare, high-stakes action.** A world that misses the consequence of one
+  action is driven to it by argmin. PI, the most "conservative" imaginer, is the most exposed: by default nothing changes, so
+  danger must be *edited in*.
+- This is the WHITEBOARD's rare-consequence / health problem (E14, the health diagnosis) at decision level. It is now the
+  binding constraint on usefulness, ahead of representation staleness.
+- **Not yet separated:**
+  - whether the world fails to imagine the damage;
+  - or the frozen readers fail on imagined grey sleep frames;
+  - or both.
+
+### R44 — PI vs LB (LB_PREREG): mechanically "PI advantage", but LB cannot represent mobs, so the question stays open
+
+**LB:** R2-Dreamer's RSSM imported unchanged (12M configuration), a JEPA-token embedding, a token readout with the summed
+likelihood (v2), two seeds. The declared extension was triggered: training token NLL 25-30k was still 10.3% / 6.1% below
+20-25k. LB was evaluated at 60k (`lb_verdict.json` at 30k, `lb60k_verdict.json` at 60k).
+- **Mechanical verdict at both 30k and 60k:** "selective persistence gives a measurable advantage without sacrificing contextual
+  reasoning". A and B hold at both seeds; LB is better on nothing.
+
+| reading (bright, d16) | PI s1 / s2 | LB 60k s1 / s2 |
+|---|---|---|
+| cow census | 0.62 / 0.46 | **0 / 0** (mobs absent at every depth, including depth 1) |
+| seen-terrain error | 1.6% / 1.4% | 21% / 21% (11% at depth 1) |
+| camera consistency | 63% / 61% | 24% / 26% |
+| zombie-adj / cow-adj AUC16 | 0.72 / 0.89, 0.70 / 0.88 | 0.53 / 0.50, 0.50 / 0.50 |
+| health drops within 16 (real 0.26) | 0.07 / 0.26 | 0.88 / 0.85 (HUD jitter) |
+| one-step conditions | all pass | all fail (mobs 100% absent) |
+
+**Diagnosis** (`lb_posterior_mobs.py`, 320 training windows): LB's readout of its *posterior* states, i.e. frames it has
+observed, has mob recall **0** (zombies 0 / 2,046, cows 0 / 2,895, skeletons 0 / 760; 0-5 predicted in total), with tile
+agreement 0.91.
+- The global latent does not encode mobs at all after 60k updates. This is a representation failure of the baseline, not an
+  imagination or persistence effect.
+- A summed token loss does weight mob cells (~20-30% of per-frame error by a rough count), so this is not obviously the loss
+  scale. It is a known small-object failure of reconstruction-trained global latents, and may also be optimization or budget.
+  Not separated.
+
+**Reading:**
+- The comparison is formally won by PI, but it **does not test** the user's question. A baseline that cannot see mobs cannot
+  show whether selective persistence beats an ordinary evolving belief.
+- The meaningful evidence on the shared spatial scaffold remains the internal ladder: D parent (full regeneration) → IC (soft
+  persistence + chance) → PI (hard selective persistence + chance). PI wins persistence by 2× and food / hazard decision proxies
+  over IC (R23).
+- A fair "evolving latent belief" baseline must at least represent the scene. Candidates:
+  - a spatial latent belief on PI's backbone (per-cell carries, latent inputs in imagination);
+  - or LB with a per-cell latent.
+- DV16 (running) asks whether the D → IC → PI differences matter for action choice.
+
+### R43 — rendering is a deterministic light clock in the source, yet copies cannot be re-rendered from it (`relight_light.py`)
+
+**Primary source** (Craftax-Classic `renderer.py:408-439`, `game_logic.calculate_light_level`):
+- light = 1 − |cos(π((t / 300) mod 1 + 0.3))|³, a deterministic clock of the episode timestep (300-step day);
+- pixels = light · day + (1 − light) · night(day) (desaturate, tint);
+- plus random per-position static when light < 0.5.
+- So rendering is a function of (content, hidden time) by day, and random at night.
+- R15 tested only previous-step and linear-extrapolation predictors, which cannot see the clock.
+
+**Test.** Predict a persisting cell's new Raw token from (old token, old light, new light), using the true light levels as an
+oracle for a global light state a world model could carry. relight_learn's data: 160 fit / 80 test roots, pairs m 1 / 4 / 8.
+
+| relative error vs copying | day (both lights ≥ 0.5; 108k cells) | night (32k) |
+|---|---|---|
+| observed frame mean shift (additive) | 0.59 | 0.89 |
+| MLP(old token, l_old, l_new, Δl) | **1.75** (m1 2.24, m8 1.02) | 0.81 |
+
+- **The scalar light state does not resolve the token change.** By day the changes are 8-bit quantization flips: which pixels
+  round differently. That matches R2 (light label vs rendered change, correlation 0.03). At night the static is random.
+- At the token level, rendering drift is practically nuisance: neither predictable from history (R15) nor re-renderable from
+  the light clock (here). Only *observing* the current frame (the frame shift) captures part of it.
+- **Consequence for §15:** the rendering part cannot be "recomputed" by a renderer on persisted tokens. The remaining options:
+  - invariance of the encoder / readouts to rendering;
+  - a belief that produces every cell's representation from one state, so it is internally consistent (LB);
+  - a persistence model that refreshes rendering globally from what it observes.
+  - In imagination nothing new is observed, so imagined frames would stay internally consistent at a stale light. That differs
+    from R42's mixed frames, where fresh and stale cells meet.
+
+### R42 — corrected (after R41's fix): copied content's stale RENDERING is the harm; a stale position code costs almost nothing
+
+`recontext_stale.py` and `chase_cue.py` rerun with the corrected construction: the vacated cell is fresh, the player cell is
+fresh, and there is a pixel-exact class. Exact transformations, PI u3000, diagnosis futures.
+
+**T vs C by rendering change in the stale span** (scroll windows, pooled over m 4 / 8 / 14; s1 / s2):
+
+| rendering in span | windows | chase: fresh / T / C | content error at edits: fresh / T / C | belief cos, map (T) |
+|---|---|---|---|---|
+| pixel-exact | 131 | (no zombies) | 1.30 / 1.34 / **1.30**; 1.18 / 1.32 / **1.18** | 0.998 |
+| ≤ 2-level drift | 694 | 0.49 / 0.48 / 0.48 (7 zombies) | 0.96 / 1.06 / 1.05; 0.99 / 1.09 / 1.05 | 0.998 |
+| < 5% cells per step | 1,249 | 0.33 / 0.29 / 0.30; 0.39 / 0.35 / 0.36 | 1.06 / 1.14 / 1.11; 1.12 / 1.23 / 1.18 | 0.992 |
+| global rendering events | 805 | 0.17 / 0.15 / 0.15; 0.20 / 0.16 / 0.16 | **2.44 / 5.59 / 5.39; 2.46 / 5.37 / 5.93** | 0.87-0.88 |
+
+**Partial freshness, corrected** (983 scroll windows, m 8):
+- **Total stale cost:** chase 0.26 → 0.23 / 0.30 → 0.27 (−13%); content 1.33 → 1.99 / 1.36 → 2.00 (+50%); health AUC
+  0.99 → 0.96 / 0.98.
+
+| restored | chase recovery (s1 / s2) | content recovery (s1 / s2) |
+|---|---|---|
+| most recent frame | 89% / 87% | 97% / 96% |
+| history only | 12% / 5% | ~0% |
+| zombies + 4 neighbours | 93% / 81% | 11% |
+| map except zombies | 52% / 41% | 100% |
+| player + 4 neighbours | 41% / 53% | 80% / 78% |
+| zombies only | 38% / 45% | — |
+| HUD | 0% | 0% |
+
+**What stands (replacing R39 / R40's scroll-window numbers):**
+- **A stale position code alone is nearly harmless.** In pixel-exact windows, content error rises only 3-12% and belief cosine
+  stays 0.998. Recomputing context from content codes (C) removes even that, exactly.
+- **The harm is the stale rendering of copied content.** Under global lighting events, consequence content error more than
+  doubles (+120-130%) and chase drops 16-18%. Recomputing context does not help, because the lighting is in the content code.
+- **The current frame carries the readings, not the history.** Chase depends on the zombies' local neighbourhood; consequence
+  content depends on the terrain.
+- **R34's larger losses** (chase −30-64% with ≥ 4 scrolls) used PI's *inferred* transformations on training windows. Part of
+  that gap is transformation inference error, not representation staleness (Codex's caveat in ARCHITECTURE_RESEARCH.md was right).
+- **Remedies tested so far** for the rendering part:
+  - additive frame-shift: −34% token error;
+  - learned MLP relight: no better (R41);
+  - global affine relight: harmful (R39).
+  - Rendering is a frame-global, history-unpredictable nuisance whose per-cell effect is content-dependent.
+  - Open options: invariance in the encoder, or a belief that renders every cell from one state (LB).
+
+### R41 — DEFECT in my exact-transformation stale construction (R39, R40); PI itself is unaffected (10-16)
+
+**Found while verifying R40.** In my rebuild (`recontext_stale.transitions`), the cell the player **vacates** after a move (its
+copy source is cell 31) was not marked as changed: its tile class matched. The copy planted the player sprite there, a ghost
+player, while the real frame shows terrain the sprite had occluded.
+- Each move adds one ghost, and the ghosts drift with the camera.
+- Their tokens are almost entirely wrong: difference ~11 vs token norm ~14.
+- Every scroll window of **R39 and R40** is contaminated: T, C, P, G and the partial-freshness table. In particular "player
+  neighbourhood restores ~47%" and "most recent frame restores ~95%".
+- **Fixed:** the vacated cell takes the real content, and the player cell is always fresh (its sprite animates with actions).
+  Verified: in pixel-exact windows, C now reproduces the fresh frames exactly (0 differing cells, token difference 0).
+- Reruns are in progress; R39 / R40 conclusions are suspended until then.
+
+**Two more construction issues found the same way:**
+- "Quiet" / "render-stable" used a 2-intensity-level threshold. Daylight moves pixels by 1-2 levels on most steps, and that
+  accumulates over a chain. A pixel-exact class was added.
+- **Scrolls do not change rendering** (`scroll_render.py`): 81.6% of scroll transitions vs 79.2% of still transitions have zero
+  changed persisting cells, uniform in player distance.
+
+**PI is unaffected** (`vacated_cell.py`, 1,677 scroll transitions per seed, teacher-forced):
+- PI's edit posterior regenerates the vacated cell 100% of the time.
+- Its prior gate fires there 99.9-100% (probability 0.996), vs 0.4-0.5% at other cells.
+- So PI learned label-free that the cell behind the player must be re-generated (memory / uncertainty for occluded content).
+- R34 and R38, built from PI's posterior, handled it.
+
+**Learned relight** (`relight_learn.py`, 140k changed test cells): an MLP from (old token, frame-mean shift) is no better than
+the additive shift overall. Median relative error vs copying 1.0 / shift 0.66 / MLP 0.82; at depth 8, shift 0.57 / MLP 0.45. It
+lowers mob agreement (0.95 vs 0.999).
+
+### R40 — what a stale imagined frame loses: the CURRENT frame's rendering consistency (`chase_cue.py`, `sprite_dynamics.py`)
+
+**Partial-freshness substitution.**
+- Exact transformations (diagnosis futures), 983 windows with ≥ 1 scroll.
+- Stale Raw-token span of 8 frames; the real token is restored in one cell set at a time.
+- PI u3000; recovery is measured relative to the stale → fresh gap (s1 / s2).
+
+| restored | chase recovery | consequence-content recovery | health-drop AUC (stale 0.93 / 0.90, fresh 0.99 / 0.99) |
+|---|---|---|---|
+| **most recent frame only** | **94% / 95%** | **98% / 96%** | 0.96 / 0.99 |
+| all frames except the most recent | −6% / −8% | 19% / 30% | 0.86 / 0.82 |
+| zombie cells + 4 neighbours | 63% / 69% | 1% | 0.93 / 0.89 |
+| every map cell except zombies | 57% / 46% | 100% / 100% | 0.98 / 0.99 |
+| player + 4 neighbours | 46% / 49% | 27% / 51% | 0.96 / 0.98 |
+| zombie cells only | 27% / 39% | 0% | 0.93 / 0.90 |
+| HUD | 0% | 0% | unchanged |
+
+- **The harm is in the current input, not the history.** A fresh current frame behind stale history recovers almost
+  everything; fresh history behind a stale current frame recovers nothing. With R35: the belief is not frozen; PI's one-step
+  heads read a stale current frame.
+- **Chase needs the zombie together with its neighbourhood; consequence content needs the terrain.**
+
+**Sprites are static** (240 roots, no-scroll transitions, exact content unchanged):
+- In transitions without a global rendering event, 0% of stationary zombies (n 1,364), cows (2,993), skeletons (402) and
+  terrain cells (572k) change pixels.
+- With a global event (~20% of steps), 94-98% of all cells change at once.
+
+**Correction to R39:** I wrote that "the chase loss is explained by neither" position nor lighting. Under exact
+transformations, the C variant recomputes position and neighbour context, and stationary content has no appearance dynamics.
+What still differs from the fresh frame is therefore the **rendering of copied cells** (plus rare cross-terrain swaps, R37).
+- Rendering staleness explains the residual: ~88% of the chase gap and ~85% of the content gap remain under C.
+- My global affine relight (G) is an inadequate *model* of Craftax's rendering step, not evidence against rendering.
+- The precise failure: a copied cell keeps the light of the frame where it was last seen; real and generated cells carry the
+  current light; and **PI's relational and consequence readings break on this within-frame inconsistency.**
+
+**For the whiteboard (row 1, nuisance):** rendering is nuisance for *content*, but its *consistency* within the current frame
+is load-bearing for the belief's readouts. Three general remedies, none tested yet:
+1. readouts / encoder robust to lighting (invariance learned in the encoder, e.g. photometric variation in JEPA training);
+2. lighting as a global state re-applied to persisted content by a learned (not affine) renderer;
+3. a latent belief whose readout renders every cell from one state (LB, now training), which cannot be inconsistent in this way.
+
+### R39 — context-free representations do not fix the stale belief; requiring them is the wrong frame (user programme, 10-15 late)
+
+**Setup:**
+- The frozen Raw encoder factors exactly (max |diff| 0.001) as token = LN(Upper(PatchEmbed(pixels) + PosEmbed)).
+- PatchEmbed is a local, position-free linear code of the tile's own pixels (the "content code").
+- Data: diagnosis_futures_v1 (pixels + exact state), so the transformations here are **exact**, not R34's inferred ones.
+
+**1. Audit of persistent content** (`content_audit.py`, `invariant_content.py`). Drift relative to between-cell scale,
+held-out roots:
+
+| representation | day still | day, camera moved | night | tile acc | mob AUC |
+|---|---|---|---|---|---|
+| Raw token | 0.021 | 0.086-0.089 | 0.15-0.22 | 0.961 | 1.0 / 1.0 / 0.99 |
+| content code | 0.018-0.020 | **0.007** | 0.10-0.13 | 0.968 | 1.0 |
+| content code from per-frame-normalized pixels | 0.016 | 0.103 | 0.51-0.56 | 0.977 | 1.0 |
+| learned linear projection of the content code (k 32-128) | 0.036-0.067 | 0.029-0.061 | 0.14-0.32 | 0.93-0.98 | 1.0 |
+| learned VICReg MLP on persistent pairs | 0.027 | 0.020 | 0.136 | 0.959 | 1.0 |
+
+- The content code is spatially equivariant (12× less camera drift) and loses no local information.
+- Lighting is the residual. Neither normalization nor learned invariance (fit on exact persistent pairs, an upper bound)
+  removes it on held-out roots.
+
+**2. R34's causal test redone with exact transformations** (`recontext_stale.py`; 240 roots, 1,175 windows, PI u3000).
+Pooled over m 8 / 14 with ≥ 1 scroll. Rendering is "stable" if < 5% of persisting cells change pixels per step; even
+then, 26% of cells differ after 8 steps, because daylight drifts below the per-step threshold.
+
+| (s1 / s2) | fresh | T: stale Raw tokens | C: content codes, context recomputed by the upper layers | G: C + oracle global relight (12 numbers/frame) |
+|---|---|---|---|---|
+| chase, render-stable | 0.32 / 0.39 | 0.26 / 0.30 | 0.26 / 0.31 (recovers **12%**) | 0.24 / 0.31 (−33% / +5%) |
+| chase, render-changed | 0.23 / 0.26 | 0.18 / 0.21 | 0.18 / 0.20 (~0%) | 0.15 / 0.18 (−46 to −58%) |
+| content error at real edits, render-stable | 1.16 / 1.20 | 3.04 / 3.60 | 2.78 / 3.22 (14-16%) | **1.48 / 1.73 (78-83%)** |
+| content error, render-changed | 2.63 / 2.76 | 5.68 / 4.76 | 5.57 / 5.31 | 3.66 / 3.31 (66-73%) |
+| health-drop AUC, render-stable | 0.996 / 0.997 | 0.968 / 0.950 | 0.966 / 0.949 | 0.931 / 0.928 |
+
+P (pixel copies, embedded and recontextualized) equals C to 3 decimals, as linearity requires.
+
+**What we learn:**
+- **Recomputing context from position-free content recovers little** of the relational loss (≤ 12%). The position part of R34
+  is small.
+- **Consequence content is mostly a lighting problem.** One global relight per frame recovers 66-83% of it.
+- **The chase loss is explained by neither.** Relighting even worsens it: a global colour map blurs sprite identity (zombie
+  belief cosine falls in render-stable windows).
+  - *(Corrected by R40: under exact transformations the C residual is the rendering of copied cells, since sprites are static.
+    The global affine relight is an inadequate model of that rendering, not evidence against it.)*
+- So no candidate representation tested here removes the stale-belief harm while keeping the relational reading.
+- **Requiring a context-free persistent representation is the wrong frame** (user, and ARCHITECTURE_RESEARCH.md, Codex, 10-15).
+  A contextual state can preserve everything if its *transition* keeps it compatible with the readout. Copying it is what
+  fails.
+- **The sharper question (user):** does selective persistence give a measurable advantage over an ordinary evolving latent
+  belief, without sacrificing contextual reasoning? That needs the straightforward recurrent baseline we never built.
+  - Prior art bounds the novelty: Variational Sparse Gating (NeurIPS 2022) already learns binary latent update gates with
+    exact carry; Scope-WM already shows that copying the background hurts.
+- **Open (not tested):** what in a fresh frame drives the chase reading that stale copies lack. Candidate: temporal
+  appearance cues that exact copies freeze.
+
+### R38 — PI_STALE RESULT: learned invariance to stale representations is "not supported"; the belief hedges instead (PI_STALE_PREREG)
+
+Mechanical verdict (`transport_track_verdicts.py stale`): **"not supported"** (P1 fails at both seeds).
+- **Arms:** piplain (PI continued 3,000 → 4,000) vs pistale (identical batches; the backbone reads idealized stale
+  reconstructions for m ~ U{0..14} context frames).
+
+| reading | seed 1 pistale / piplain | seed 2 pistale / piplain |
+|---|---|---|
+| **P1** chase drop, stale vs fresh (m 8/14, ≥ 1 scroll; need ≤ ½ piplain) | 0.18 / 0.24 ✗ | 0.29 / 0.31 ✗ |
+| **P1** map-content error increase | 0.38 / 0.49 ✗ | 0.32 / 0.54 ✗ |
+| fresh chase toward-probability (m 14, ≥ 4 scrolls) | **0.33 / 0.42** | 0.43 / 0.38 |
+| **P2** recursion pursuit, depth 6-16 (real 0.38) | **0.17 / 0.23 ✗** | **0.19 / 0.24 ✗** |
+| recursion pursuit, depth 1 (one step from the real root) | 0.32 / 0.41 | 0.22 / 0.31 |
+| **H** persisting d16 / phantoms max | 0.75 / 0.71, 0.005 ✓ | **0.64 / 0.77, 0.054 ✗** |
+| decision AUC16, zombie-adj / cow-adj / health | 0.70 / 0.70, 0.90 / 0.87, 0.63 / 0.63 | 0.74 / 0.72, 0.87 / 0.86, 0.64 / 0.62 |
+
+**What we learn:**
+- **Augmenting the input with stale representations narrows the stale gap only by 8-41%**, partly by **hedging**:
+  - at seed 1 the belief chases less on fresh inputs too;
+  - in recursion both seeds chase less already at depth 1, from the real root.
+  - The belief learned "relations are uncertain", not "read the content regardless of its encoding's age".
+- **Neither in-architecture repair works:**
+  - re-deriving the representation (R36: an additive position code; rendering cannot be predicted, R15);
+  - learning to ignore its age (R38).
+- **The defect is in what PI persists.** Frozen contextual ViT tokens bind content to rendering, screen position and, for
+  mobs, background (R2, R37). Persisting the token persists all of it.
+- To persist the *information* and let its interpretation evolve, the persisted state must be content-level (context-free),
+  with context re-derived each step: position from the slot, rendering from a global state, relations from the belief.
+  - That is a representation change (the encoder side; WHITEBOARD §5 and the 10-11 per-tile categorical plan, Dedieu et
+    al.'s context-free per-patch codes).
+  - Not started: it is a design decision for the user.
+
+### R37 — literal swap transport across terrain: rare, systematic, and not repaired by PI's gate (`swap_background.py`)
+
+- **Setup:** 400 training windows. True STAY-class mob moves captured by PI u3000's own training-time swaps (1,407 / 1,412).
+  At the vacated cell, the swapped-in token is compared with the background revealed at t+1 (frozen tile reader).
+- **Cross-terrain:** 7 / 8 moves (0.5%). The swapped-in token always reads as the wrong terrain. Neither PI's edit posterior
+  nor its gate regenerates the cell (0 / 7, 0 / 8). The final output reads correct in 4 / 7 and 4 / 8 cases, by the reader's
+  tolerance.
+- **Same terrain:** 1,400 / 1,404 moves, all correct.
+- Our exact-tile measurement (TRANSPORT COST audit, 10-15) counted **5.2%** of real in-view moves crossing terrain classes,
+  with 100% wrong endpoint terrain under token swaps. The frozen reader sees fewer, because it collapses some tile
+  distinctions and only one endpoint is checked here.
+- **Reading:** a swap moves the mob *with its background*, because the token binds content to its context (R2: the sprite
+  occludes non-additively). It is infrequent here but systematic, and nothing in PI repairs it. It is the user's "preserve the
+  information, not the representation" at the level of a single token.
+
+### R36 — re-deriving an additive position code does not help (`stale_context.py`, STALE_REFRESH=1)
+
+- **Test:** each slot's position offset P[x] (mean real token at slot x minus the map mean, 400 windows). The slot where every
+  stale token was last encoded is tracked through copies and swaps, and the world reads token + P[x] − P[origin].
+- **Token level** (91,791 unchanged, unswapped cells on real scrolled transitions): the fresh − copy distance goes 1.347 →
+  1.242 (−8%). The additive part is small.
+- **Belief level:** every reading is unchanged at both seeds. E.g. m 14, ≥ 4 scrolls: chase 0.271 → 0.267 / 0.248 → 0.248;
+  map content error 2.54 → 2.56; zombie belief cosine 0.797 → 0.798.
+- **So the harmful staleness is not an additive slot code.** It is:
+  - stale rendering, which alone (no scroll) already costs chase −17% / −18% and content error +52% / +35% at m 8;
+  - position effects that interact with content.
+- R15 showed rendering steps are not predictable from history, so no refresh operator can re-render a copy. The general
+  treatment is **invariance**: the belief must read persistent content regardless of its representation's age (WHITEBOARD
+  row 1: nuisance → invariance).
+
+### R35 — the Mamba belief keeps temporal context across slot changes on real inputs (`slot_history.py`)
+
+1,600 training windows per seed, real context. At 1,764 frames with a zombie adjacent to the player, PI predicts the next
+health drop (gate probability at the health token, HUD 63):
+
+| zombie has held its slot | frames | drop rate | gate AUC, health token (s1 / s2) | gen health-drop AUC |
+|---|---|---|---|---|
+| 0-1 steps (just moved or scrolled in) | 1,301 | 19.5% | **0.978 / 0.978** | 0.87 / 0.90 |
+| 2-3 steps | 296 | 6.4% | 0.969 / 0.973 | 0.61 / 0.65 |
+| 4+ steps | 167 | 8.4% | 0.916 / 0.917 | 0.70 / 0.69 |
+
+- **No loss after a slot change:** the hit cooldown and its consequence are predicted best for zombies that just arrived.
+  Screen-slot addressing does not freeze or misattribute the zombie's temporal context within the window.
+- So on real inputs **the belief recomputes relations and consequences correctly.** What degrades in imagination is the
+  stale representation it is fed (R34), not the belief's ability to update.
+- The generated health *content* is weaker than the change *detection* (gen AUC 0.61-0.90 vs gate 0.92-0.98): the model
+  knows a drop comes better than it draws its size.
+
+### R33 — R27 corrected: PI's chance head chases MORE than IC's, close to reality; its deficit is decay with depth (`pursuit_onestep.py`)
+
+Teacher-forced, 400 training windows with layouts (diagnostic only). For every zombie in the afterstate layout: the chance
+head's canonical pair probabilities toward / away from the player (cell 31), vs the real next-layout moves.
+
+| zombie distance | toward: PI s1 / s2 | toward: IC s1 / s2 | toward: real | toward share: PI / IC / real |
+|---|---|---|---|---|
+| 1-2 (810) | **0.25 / 0.30** | 0.09 / 0.13 | 0.35 | **0.70-0.72** / 0.57-0.58 / 0.74 |
+| 3-4 (693) | **0.37 / 0.41** | 0.09 / 0.18 | 0.45 | 0.87-0.88 / 0.79-0.80 / 0.83 |
+| 5+ (162) | 0.29 / 0.34 | 0.03 / 0.05 | 0.41 | 1.0 / 1.0 / 0.84 |
+
+- **R27's reading ("PI's chance head learned a weaker direction bias") was wrong.**
+  - PI's chance head carries the chase: 70-90% of the real toward-rate, with the real direction share.
+  - IC's chance head barely chases (0.09-0.18). IC's higher depth-1 pursuit (0.41-0.46) comes from its soft deterministic
+    afterstate moving zombies (R12: 31% of chase lives there), and it *overshoots* reality (0.35).
+  - With exact persistence, chase must be chance, and PI's chance head learned it.
+- **PI's actual pursuit deficit is recursive:** 0.26-0.29 at depth 1 (≈ its one-step pair probabilities, ~80% of real) →
+  0.22 at depth 6-16 vs real 0.38. Its zombies stay crisp (R23), so the decay is not fading.
+  - Candidate (untested): the chance head reads context that degrades in imagination (e.g. the player's relative motion
+    under imagined scrolls).
+- **Decision chain** (R23): fewer imagined adjacencies (0.09 vs 0.18) feed fewer health drops. The upstream causes are this
+  recursive pursuit decay and zombie arrivals below reality (R32).
+
+### R32 — PI_ENTER RESULT: sampling new content only where it is epistemic restores arrivals with no harm (PI_ENTER_PREREG)
+
+Mechanical verdict (`transport_track_verdicts.py enter`): **"sampled innovation restores arrivals": A1, A2, H at both seeds.**
+- **The change:** PI exactly, except that content is drawn from the R29 head only at entering cells never seen before
+  (~1.6 per step, 40k of ~61k entering cells). Gate-fired edits and re-entering cells keep the point token.
+
+| reading (bright, d16) | enter s1 / s2 | PI s1 / s2 | INNOV s1 / s2 (R29) | real |
+|---|---|---|---|---|
+| **A1** cow arrivals per frame | **0.144 / 0.106** ✓ | 0.023 / 0.002 | 0.396 / 0.310 | 0.259 |
+| zombie arrivals per frame | 0.041 / 0.025 | 0.006 / 0 | 0.33 / 0.28 | 0.116 |
+| **A2** cow census | **0.84 / 0.61** ✓ | 0.62 / 0.46 | 1.15 / 0.90 | 1 |
+| present-type cows | 0.77 / 0.56 | 0.66 / 0.50 | 0.84 / 0.66 | 0.82 |
+| persisting-mob score | 0.742 / 0.716 ✓ | 0.726 / 0.706 | 0.835 / 0.837 | |
+| seen terrain (stayed cells) | 1.81% / 1.70% (1.03% / 0.96%) ✓ | 1.61% / 1.38% (1.05% / 0.98%) | 7.3% (3.0%) | |
+| camera | **65.6% / 64.2%** ✓ | 62.9% / 61.2% | 58.8% / 56.4% | |
+| phantoms at d16 (≤ reality's far-mob rate) | 0.137 / 0.093 ✓ | 0.028 / 0.019 | 0.58 / 0.46 | 0.33 |
+| per-step vanish, cow / zombie | 0.028 / 0.024, 0.029 / 0.022 | 0.029 / 0.025 | | 0.019 / 0.036 |
+| cow-adj AUC16 (imagined rate, real 0.212) | 0.90 / 0.88 (**0.213 / 0.185**) | 0.89 / 0.88 (0.192 / 0.168) | 0.85 / 0.84 | |
+| zombie-adj AUC16 | 0.70 / 0.66 | 0.72 / 0.70 | 0.66 / 0.68 | |
+| health-drop AUC16 | 0.61 / 0.58 | 0.62 / 0.60 | 0.55 / 0.55 | |
+| NEW entering tile error | 0.43 / 0.43 | 0.31 / 0.31 | 0.44 | context-mode guess 0.49 |
+
+**Prediction scorecard** (written in the prereg):
+- A1 holds ✓.
+- Stayed-cell terrain returns to PI's level ✓ (1.03% / 0.96% vs 1.05% / 0.98%).
+- **Zombie arrivals overshoot ×1.5-2: wrong.** They undershoot, 0.2-0.35× real.
+
+**What we learn:**
+- **Sample new content where, and only where, the uncertainty is epistemic.** Arrivals return (cows 0.4-0.56× real, from
+  ~0), the census rises, and imagined cow adjacency reaches reality's rate. Nothing that worked degrades.
+- The camera even improves (+2.7 / +3.0pp): sampled entering content no longer biases the faced cell toward the mean.
+- **Attribution of R29's zombie overshoot:**
+  - Sampling at entering cells gives 0.03-0.04 zombies per frame; sampling also at gate-fired edits gave 0.28-0.33.
+  - So the overshoot was zombies drawn *from nothing* at gate-fired edit sites: the content head is p(content | changed),
+    and ~21% of training edits are zombie cells.
+  - **This re-establishes R30's selection-mismatch mechanism for absent-type zombies.** The withdrawal stands only for
+    duplication of present zombies, which R29 did not show.
+- **Root-level decision discrimination does not improve** (AUC16 −0.03 to +0.01). Arrivals independent of the root's real
+  future cannot be ranked from the root. They correct expectations (rates), not discrimination.
+- **Remaining:**
+  - zombie and cow arrivals below reality (0.2-0.56×): interior spawns are not drawn, and zombies arrive mostly at night;
+  - re-entry from memory needs the canvas, with mob volatility (R26);
+  - pursuit (R27) and health (R23).
+
+### R31 — R29's terrain error is sampling at gate-fired edits on cells that never left the view (`seen_split.py`, CPU)
+
+transport_recursion's seen-terrain error, split by the real camera track: cells that **stayed** in view at every depth vs
+cells that **left and re-entered**.
+
+| tile error (all depths / d16) | stayed (~93% of cells) | re-entered (~7%) |
+|---|---|---|
+| PI s1 / s2 | 1.05% / 0.98% (d16 1.37% / 1.09%) | 7.2% / 6.2% (d16 5.0% / 5.4%) |
+| PI_INNOV s1 / s2 | **3.0% / 3.1% (d16 6.7% / 6.7%)** | 13.1% / 11.6% (d16 15.6% / 14.3%) |
+| PI + canvas s1 | 1.05% (d16 1.37%) | **0.34% (d16 0.54%)** |
+
+- **R29's seen-terrain increase is mostly on cells that never left the view.** Only copies and gate-fired edits act there,
+  so it comes from sampled content at gate-fired edits: ×3 over all depths, ×5 at d16.
+- **Re-entry is a pure memory problem,** fixed by the canvas (7% → 0.3%).
+- For terrain this supports what R30 withdrew for zombies: p(content | changed) is broader than the truth at deterministic
+  or absent changes. A gate-fired cell that keeps its class draws another class.
+- **The rule this localizes:**
+  - sample content only where the uncertainty is real (never-seen entering cells, stochastic events);
+  - keep deterministic edits at their point / mode (PI);
+  - read re-entered cells from memory (canvas).
+  - Mob memory still needs volatility (R26).
+
+### R30 — R29 localized: the content head is calibrated on real contexts; the overshoot is where it is applied (`innov_calib.py`)
+
+Teacher-forced, 320 held-out training windows (seed 20261022), at PI's training-time innovation cells. Each K 4096 centroid
+is classed once by the frozen readers. Head expected class mass vs actual class of z_pre (seed 1 / seed 2):
+
+| site | class | actual | expected / actual | argmax draws (mean-like) |
+|---|---|---|---|---|
+| entering (15,539 cells) | main terrain classes | 127-7,086 | 0.94-1.07 | |
+| entering | cow | 125 | **0.91 / 0.96** | **14 / 28** |
+| entering | zombie | 28 | 1.98 / 1.56 | 21 / 12 |
+| entering | skeleton | 55 | 1.19 / 0.69 | 38 / 10 |
+| gate-posterior edits (~11,800) | zombie | 2,568 / 2,458 | 0.99 / 0.99 | ≈ actual |
+| gate-posterior edits | cow | 348 / 351 | 1.05 / 0.99 | ≈ actual |
+| gate-posterior edits | terrain classes | | 0.98-1.06 | |
+
+Cross-entropy: entering 3.54-3.55 nats (entropy 4.18), edits 2.58 (3.45).
+
+- **The content distribution is calibrated at the semantic level on real contexts.** Cows at entering cells are drawn at the
+  right rate by sampling and 4-9× too rarely by the argmax: R24's missing arrivals are the mean / mode, confirmed from the
+  other side. Zombies at entering cells are over-predicted ×1.6-2.0 (n = 28, small).
+- **So R29's overshoot is not the head's calibration on gate-posterior edits.**
+- ~~Most likely a selection mismatch: p(content | posterior change) applied where the prior MAP gate fires → zombie
+  duplicates.~~
+  - **Withdrawn the same night: R29's own numbers contradict it.** With sampled content, present-type counts sit at
+    reality's level (zombies 0.92 / 0.94 vs real 0.94; cows 0.84 / 0.66 vs 0.82). There is no duplication inflation.
+  - **Partly re-established by R32:** absent-type zombie arrivals are 0.03-0.04 per frame with entering-only sampling vs
+    0.28-0.33 with edit-site sampling. The overshoot was zombies drawn from nothing at gate-fired edits, i.e. the selection
+    mismatch, not entering cells.
+- **The overshoot is in arrivals of types absent at the root.** These enter through entering cells, where the head
+  over-predicts zombies ×1.6-2.0 on real contexts (n = 28, small).
+  - Plausibly that is daylight conditioning: the bright roots are day, and zombies arrive mostly at night.
+  - It may be amplified by imagined contexts. Not separated.
+- **Seen-terrain error ×4.5 has two candidate sources:**
+  - re-entering seen terrain is sampled instead of remembered (R26: a memory problem);
+  - gate-fired edits on unchanged-looking terrain (1.7% per step, R22) are now random draws.
+  - Not separated.
+- **Still standing:** R28 (sampled decision, mean content: ghosts) and R29 (MAP decision, sampled content: arrivals with
+  noise) show that a change and its content must be sampled as one calibrated event, where the uncertainty is real.
+
+### R29 — PI_INNOV RESULT: sampled categorical content restores arrivals but injects noise — "not supported" (PI_INNOV_PREREG)
+
+Mechanical verdict (`transport_track_verdicts.py innov`).
+
+- **Head:** head-only K 4096 categorical on frozen PI u3000, trained at its training-time innovation cells. After 1,500
+  updates: cross-entropy 2.93 / 3.11 nats, top-1 32% / 31%, entropy 3.5-3.8 nats.
+- **Recursion:** PI with every innovated cell (gate > 0, or entering; ~4.7 per step) taking a sampled centroid.
+
+| reading (bright, d16) | innov s1 / s2 | PI s1 / s2 | real |
+|---|---|---|---|
+| **A1** cow arrivals per frame, bound [0.065, 0.389] | **0.396 ✗** / 0.310 ✓ | 0.023 / 0.002 | 0.259 |
+| zombie arrivals per frame | 0.33 / 0.28 | 0.006 / 0 | 0.116 |
+| **A2** cow census | **1.15 / 0.90 ✓** | 0.62 / 0.46 | 1 |
+| present-type count, zombie / cow | 0.92 / 0.84, 0.94 / 0.66 | 0.73 / 0.66, 0.69 / 0.50 | 0.94 / 0.82 |
+| persisting-mob score | 0.835 / 0.837 | 0.726 / 0.706 | |
+| **H** seen terrain | **7.3% / 7.3% ✗** | 1.6% / 1.4% | |
+| **H** phantoms at d16 vs reality's far-mob rate | **0.58 / 0.46 ✗** (exceeds from d9 / d9) | | 0.33 |
+| **H** camera | 58.8% / 56.4% ✗ (−4 / −5pp) | 62.9% / 61.2% | |
+| zombie-adj AUC16 (rate, real 0.18) | 0.66 / 0.68 (0.22 / 0.22) | 0.72 / 0.70 (0.09 / 0.08) | |
+| cow-adj AUC16 | 0.85 / 0.84 | 0.89 / 0.88 | |
+| health-drop AUC16 (rate, real 0.26) | 0.55 / 0.55 (0.32 / 0.35) | 0.62 / 0.60 (0.07 / 0.26) | |
+| entering tile error, NEW / REVISIT | 0.44 / 0.22 | 0.31 / 0.14 | context-mode guess 0.49 |
+
+**What we learn:**
+- **Arrivals are restorable by sampling content, and the mean was indeed the cause (R24).** Arrivals go from ~0 to
+  0.31-0.40 cows per frame. Present-type counts reach reality's level at seed 1. Persistence improves further, because
+  sampled mobs are crisp.
+- **But a broad content distribution sampled at every innovated cell is noise.**
+  - Cow arrivals overshoot 1.2-1.5×, zombies 2.4-2.8×.
+  - Re-entering terrain (counted as seen) is now a random draw instead of the mean: seen-terrain error ×4.5.
+  - Sampled content at the faced cell moves the camera decisions (R13), −4 / −5pp.
+  - Decision discrimination falls (AUCs −0.03 to −0.07): imagined futures are less tied to the root's real future.
+- **Two causes, not separated by this design:**
+  1. *Where* to sample. Deterministic, gate-fired edits (84% of changed terrain is predictable, R22) and re-entering seen
+     terrain (a memory problem, R26) are sampled as if epistemic.
+  2. *How sharp* the content is. A linear head on a frozen belief, over contextual codes (several codes per semantic tile),
+     has 3.5 nats of entropy.
+- **Per the protocol, no patching of this variant.** The innovation half of the separation is not solved. What the four
+  evaluation-only variants together show:
+  - persistence: works;
+  - memory: works for static content, needs volatility for mobs;
+  - stochastic content: restores arrivals but must be sampled only where the uncertainty is real, from a sharp
+    distribution.
+
+### R28 — PI variant 2 (sampled edits, evaluation only): "no gain from sampling" (PI_CANVAS_PREREG variant 2)
+
+Mechanical verdict (`transport_track_verdicts.py sampled`). Edits drawn as Bernoulli(σ(gate)) instead of gate > 0; the content
+is still the point-predicted token; same chance stream. Non-entering edits per step: 3.0-3.1 (MAP 2.45).
+
+| reading (bright) | sampled s1 / s2 | PI (MAP) s1 / s2 |
+|---|---|---|
+| **S1** health-drop AUC16 | 0.638 / 0.666 | 0.617 / 0.603 |
+| **S1** health drops within 16 (real 0.26) | 0.090 / **0.293** (overshoots) | 0.072 / 0.261 |
+| S1 | ✓ / **✗** | |
+| **S2** max phantoms (≤ PI + 0.02) | **0.115 / 0.097 ✗** | 0.028 / 0.019 |
+| S2 seen terrain d16 | 1.70% / 1.48% | 1.61% / 1.38% |
+| S2 zombie-adj AUC16 | 0.720 / 0.690 | 0.719 / 0.696 |
+| cow vanish per step | **0.071 / 0.078** | 0.029 / 0.029 |
+| persisting-mob score d16 | 0.594 / 0.657 | 0.726 / 0.706 |
+
+- **Sampling the *decision* while the *content* is the mean makes ghosts.** Persisting mobs carry a gate probability of ~0.2
+  (R22). Each sampled edit replaces the mob with the mean token, so mobs vanish 2.5× more often, faint mob-like blur appears,
+  and phantoms rise 4-5×.
+- Health-drop AUC rises at both seeds, but the drop rate overshoots at seed 2: a sampled HUD edit draws the mean health
+  change wherever the gate is unsure.
+- **Same lesson as R24, from the other side:** stochastic innovation must sample the *content* of a change from its
+  distribution (R25: codes as carrier), and the change decision must be calibrated where it is sampled. Neither half alone
+  works.
+
+### R27 — PI's weaker pursuit is not edits absorbing moves (`ic_posterior.py pi`, CPU, layouts diagnostic only)
+
+- **Setup:** the 400 training windows and true STAY-class mob moves of the IC milestones check, under each PI u3000's
+  training-time inference: copy under the label-free scroll, provisional afterstate with the gate's decisions, IC v3
+  posterior, edit posterior.
+- **Captured by a chance swap** (seed 1 / seed 2):
+  - zombies 93% / 92% (n 725 / 740);
+  - cows 90% / 90%;
+  - skeletons 92% / 92% (IC v3: 89% over all mobs).
+- **Explained by edits instead:** 3-5%. **Missed:** 4-5%.
+- **The R23 hypothesis is refuted:** the gate does not absorb moves, and the chance head receives them.
+- *(Corrected by R33: the one-step comparison below was against IC's soft-afterstate pursuit, which overshoots reality.
+  PI's chance head is the more directional one.)*
+- **The gap is already one-step:** pursuit at depth 1, one step from real context, is 0.29 / 0.26 approach vs IC arms
+  0.40-0.43 and real 0.35. PI's chance head learned a weaker *direction* bias toward the player, with the same targets.
+- **Candidate (untested):** in PI the point loss reaches the backbone only through edited cells, while mob cells are copied.
+  The belief gets less pressure to encode zombie-player relations, and only the chance cross-entropy carries movement
+  direction.
+
+### R26 — PI variant 1 (canvas, evaluation only): "memory recovers terrain but harms the rollout" (PI_CANVAS_PREREG)
+
+Mechanical verdict (`transport_track_verdicts.py canvas`). The same PI checkpoints, roots and noise; one change: entering
+cells whose world position was seen copy the stored token, addressed by PI's own hard scroll. 35% of entering cells were
+read from memory (21,674 / 61,870 and 21,088 / 60,646).
+
+| reading (bright) | canvas s1 / s2 | PI s1 / s2 |
+|---|---|---|
+| **C1** REVISIT entering tile error (≤ 0.5 × PI) | **0.001 / 0.001** ✓ | 0.140 / 0.143 |
+| NEW entering tile error | 0.291 / 0.291 | 0.314 / 0.313 |
+| **C2** seen terrain d16 | 1.32% / 1.08% ✓ | 1.61% / 1.38% |
+| **C2** camera d16 (≥ PI − 2pp) | 61.5% / 60.7% ✓ | 62.9% / 61.2% |
+| **C2** max phantoms (≤ PI + 0.02) | **0.094 / 0.058 ✗** | 0.028 / 0.019 |
+| zombie / cow census d16 | 0.61 / 0.73, 0.59 / 0.54 | 0.50 / 0.62, 0.46 / 0.46 |
+
+- **Addressed world-aligned memory works in recursion.** Revisited terrain error falls 140× (14% → 0.1%), at the R17
+  ceiling. E18's failure is resolved by reading at the world's own next-view address. Never-seen terrain is unaffected, and
+  seen terrain improves.
+- **The harm is the declared limit: the canvas replays mobs.** A mob seen at a revisited position reappears where it stood,
+  with no off-screen dynamics. These are counted as phantoms (far from every root mob), and they raise the census.
+- **What it teaches:** persistence applies off-screen too, but with the content's own volatility.
+  - A terrain token is still there after Δt steps with probability (1 − p_change)^Δt, near 1 (the gate's prior on unchanged
+    terrain is ~0.02, R22).
+  - A mob's (prior ~0.2 per step) is near 0 after ~10 steps.
+  - The label-free principled version replays memory with the persistence probability the gate itself assigns. Not built:
+    one change at a time, and this is a design, not a result.
+
+### R25 — groundwork for stochastic innovation: codes are a usable carrier for NEW content only (`codebook_readers.py`, CPU)
+
+**Our record:**
+- E2's categorical arm failed because codes over contextual ViT tokens flip on 11-15% of *unchanged* cells (`codebook.json`;
+  NOTEBOOK E2).
+- Dedieu et al. (arXiv 2502.01591, our exact frames) predict per-tile categorical tokens, sampled per patch.
+
+**In PI the flip failure cannot occur.** Unchanged cells are exact copies and never quantized; only entering and edited cells
+(~9 per frame) would carry a code.
+
+**The E2 Raw codebooks fit the current pool:** relative error 0.0506 (K 1024) / 0.0316 (K 4096), vs 0.0504 / 0.0329 on their
+own pool. Same token space.
+
+**Reader fidelity of centroids** (300 training windows, map cells replaced by their nearest code, frozen readers):
+
+| K | zombies kept | cows kept | skeletons kept | false mobs per 1,000 cells | tile agreement |
+|---|---|---|---|---|---|
+| 1024 | 92.5% | 92.7% | 69.7% | 0.18 / 0.09 / 0 | 99.1% |
+| 4096 | 94.3% | 96.8% | 85.2% | 0.01 / 0.04 / 0 | 99.4% |
+
+A categorical head over K 4096 codes, *sampled* at entering / edited cells, could draw arrivals at their learned rate (R24).
+Not designed or preregistered yet: the evaluation-only variants come first.
+
+### R24 — PI's census gap has two parts: continuing mobs mostly kept, arrivals never imagined (`census_split.py`)
+
+Per bright root and mob type: the decoded count at depth 16 (all trajectories, as the census), split by whether the root view
+holds that type (panel layout, evaluation only). "Absent" means every decoded mob of that type is an arrival (walked in or
+spawned).
+
+| d16 | zombie, type at root (18 roots) | zombie, type absent (86): arrivals | cow, type at root (50) | cow, type absent (54): arrivals |
+|---|---|---|---|---|
+| real, per frame | 0.94 | **0.116** | 0.82 | **0.259** |
+| no-op | 1.11 | 0 | 1.20 | 0 |
+| IC s1 / s2 | 0.11 / 0.10 (census 0.12 / 0.11) | 0 / 0 | 0.27 / 0.21 (0.33 / 0.25) | 0.056 / 0 |
+| **PI s1 / s2** | **0.73 / 0.69 (0.77 / 0.74)** | **0.006 / 0** | **0.66 / 0.50 (0.80 / 0.61)** | **0.023 / 0.002** |
+
+- **Continuing mobs:** PI keeps 61-80% at d16 (IC 11-33%). The imagined count of present-type mobs falls faster than reality's
+  departures: cow 1.10 → 0.66 / 0.50 vs real 1.12 → 0.82. Some loss of continuing mobs remains, in part the gate's 12-16%
+  edits of persisting mobs (R22).
+- **Arrivals are missing entirely:** reality brings 0.12 zombies and 0.26 cows per frame into views that had none by d16;
+  every model draws ~0. Arrivals are mobs walking in through entering cells, or spawns.
+- **Why, structurally.**
+  - PI's generated token is a point prediction, so an entering or edited cell gets the *mean* of what may be there. A mob that
+    is present with p < 0.5 is never drawn.
+  - The chance operator only moves existing content.
+  - Sampling the edit decision (variant 2) does not help here: the content drawn is still the mean.
+- **This is the fourth part of the user's separation, made concrete.** Stable content (persist), deterministic evolution
+  (gated edits) and chance reassignment (swaps) are now in place. **Stochastic innovation, new content drawn from a prior at
+  entering / edited cells, is not.**
+  - Decision-relevant: arriving zombies are the night hazard.
+  - The hazard part of R10's "hazards vanish in imagination" is now this, not fading.
+- Next question for Track B: how to draw new content (entering cells, spawns) from a learned prior without reintroducing the
+  free arm's incoherence. Free synthesis gave ×3-12 mobs: it lacked exactly the persistence-by-default PI now provides.
+
+### R23 — TRACK B RESULT: "persistence principle supported" (TRANSPORT_PI_PREREG, both seeds; R19 guards pass)
+
+Mechanical verdict (`transport_track_verdicts.py pi`): **P1-P4 and every one-step condition pass at both seeds; failed = [].**
+All three copy-shortcut guards pass at both seeds. PI u3000 vs IC v3 u3000; bright, 8 samples, H16.
+
+| reading | PI s1 / s2 | IC s1 / s2 |
+|---|---|---|
+| **P1** persisting-mob score d16 (need IC + 0.15) | **0.726 / 0.706** | 0.376 / 0.363 |
+| **P2** cow census d16 | **0.62 / 0.46** | 0.30 / 0.19 |
+| **P3** seen-terrain error d16 (≤ IC + 1pp) | 1.61% / 1.38% | 1.51% / 1.27% |
+| **P4** max phantoms per frame (≤ 0.05) | 0.028 / 0.019 | 0.029 / 0.019 |
+| zombie census d16 | **0.50 / 0.46** | 0.07 / 0.07 |
+| camera consistency d16 | 62.9% / 61.2% | 60.7% / 60.1% |
+| guard (a) recursion move rate, cow / zombie (real 0.42 / 0.30) | 0.22 / 0.19, 0.24 / 0.22 ✓ | 0.14 / 0.11 (s1) ✗ |
+| guard (b) zombie-adj AUC16 (no-op 0.58) | 0.72 / 0.70 ✓ | 0.67 / 0.68 |
+| guard (b) cow-adj AUC16 (no-op 0.60) | **0.89 / 0.88** ✓ | 0.79 / 0.79 |
+| health-drop AUC16 | 0.62 / 0.60 | 0.61 / 0.57 |
+| health drops within 16, imagined (real 0.26) | 0.07 / 0.26 | 0.16 / 0.22 |
+| per-step vanish rate, cow / zombie (real 0.019 / 0.036) | 0.029 / 0.025, 0.029 / 0.023 | 0.035 / 0.071 (s1) |
+| zombie pursuit approach, crisp, depth 2-16 (real 0.36-0.38) | 0.26 / 0.24 | 0.41-0.44 (SF ic arms) |
+
+**One-step, u3000** (both readers; preregistered conditions pass):
+- valid 100%, duplicate / absent 0;
+- movement 39% / 41%, cow 34% / 34%;
+- static 0.32% / 0.31%.
+- **Joint ES beats IC and free under both readers:** real 0.0238 / 0.0245 vs IC 0.0263 / 0.0252 vs free 0.0257 / 0.0253;
+  bank 0.0250 / 0.0257 vs IC 0.0280 / 0.0294 vs free 0.0275 / 0.0282. IC failed N on the bank reader because of afterstate
+  ghosts. Exact persistence removes them.
+
+**What we learn:**
+- **The principle holds as preregistered:** keep the state; change it only through explicit inferred transformations (hard
+  scroll, chance swaps, EM-gated edits).
+  - Mob persistence in recursion doubles (0.37 → 0.71-0.73), and the zombie census rises ~7×.
+  - Terrain stays as good, with no phantoms. One-step coherence and joint ES improve.
+- **Fading is solved at the per-step level:** vanish rates are at the real level. The persisting score declines 0.89 →
+  0.71-0.73, no more than the no-op's subset drift (0.91 → 0.57), against IC's 0.92 → 0.38.
+- **Remaining census gap (cow 0.46-0.62): hypothesis, to be tested.** It is not fading. Reality gains mobs walking in from
+  off-screen and spawning (its own "phantom" rate is 0.33 per frame at d16). PI draws almost none (0.02).
+- **Decisions:**
+  - Food (cow adjacency) improves strongly: 0.79 → 0.88-0.89.
+  - Hazard (zombie adjacency) improves slightly: 0.67-0.68 → 0.70-0.72.
+  - **Health drops do not improve at both seeds.** Seed 1 draws fewer than IC; seed 2 matches reality's rate. The R18
+    "consequences" prediction is not supported.
+  - **Pursuit is weaker:** crisp zombies approach at 0.24-0.26 vs real 0.38 (IC's crisp zombies chased at the real rate).
+    Candidate cause (not yet tested): the gate edits "mob at one end" cells at 36%, so some moves are explained as two edits
+    instead of a chance swap, and the chance head sees fewer pursuit targets.
+- Track B's evaluation-only variants (canvas, sampled edits) are running.
+
+### R22 — PI trained (both seeds, 3,000 updates): the label-free EM gate becomes a change detector (`edit_gain.py 640 pi_seed{s}/pi_u3000.pt`)
+
+**Training** (`pi_seed{1,2}_train.log`; ~0.63 s per update, both seeds in parallel, peak 1.24 GiB each):
+- **Scroll accuracy** against the label-free estimate is 0.98-1.00 by update 200-300 (0.57-0.60 at init). It is 0.999 on 640
+  training windows at the end.
+- **The gate does not fire until ~update 500.** It then rises with the posterior: non-entering edits per frame go 0.6 → ~3
+  (posterior) and 0 → 2.5-3.3 (gate), with the gate tracking the posterior closely.
+- **End-of-training losses:** point 0.041-0.045 (IC ~0.035-0.04: the copies keep the rendering drift), chance CE ~0.011-0.012.
+
+**Trained gate on 640 training windows** (seed 1 / seed 2):
+
+| cell class | MAP edits (gate > 0) | posterior edits | gen beats copy (init → trained) |
+|---|---|---|---|
+| unchanged terrain (544k) | 1.7% / 1.7% | 1.7% / 1.7% | 1.8% → 1.8% |
+| changed terrain (1,387) | **84% / 84%** | 87% / 87% | 88% → 88% |
+| HUD changed (5,546) | **78% / 79%** | 88% / 89% | **52% → 94-95%** |
+| HUD unchanged (167k) | 0.01% / 0.02% | 0% | 0% |
+| persisting mob (5,439) | 12% / 16% | 8.6% / 8.4% | 8.6% → 8% |
+| mob at one end only (14,212) | 36% / 36% | 65% / 62% | 79% → 81-83% |
+
+- **Gate AUC** (seed 1 / seed 2): changed vs unchanged terrain 0.926 / 0.931; HUD changed vs unchanged 0.981 / 0.979; posterior
+  edit vs rest 0.997 / 0.996.
+- **The hard-EM trap did not occur.** Gen now beats the copy at 94-95% of real HUD changes (52% at init), while trained only
+  where the gate edits: the R18 foothold was enough.
+- **A label-free gate learns where the world changes,** from the MDL evidence and its own prior alone, and persists the rest.
+  This is the separation CorrT's soft weights never made.
+- **Soft spot:** the gate edits persisting mobs (12-16%) more than the evidence does (8.5%). Its prior at mob cells is ~0.2,
+  i.e. "this mob may change". Each edit regenerates the mob from gen, so some fading may return in recursion (readings
+  pending).
+
+### R21 — TRACK A RESULT: chance-forced self-fed training does not fix fading; the structural account stands (TRANSPORT_SF_PREREG)
+
+Mechanical verdict (`transport_track_verdicts.py sf`): **"partial"**. Under the preregistered interpretation rule, anything
+short of P1 and P2 at both seeds means **"the structural account stands: the soft persistence mechanism must change"**.
+
+The arms: continued IC (ic) vs chance-forced self-fed (icsf), 3,000 → 4,500 updates, bright, 8 samples, H16.
+
+| reading | seed 1 icsf / ic | seed 2 icsf / ic |
+|---|---|---|
+| **P1** persisting-mob score d16 (need +0.05) | 0.391 / 0.386 (**+0.005 ✗**) | 0.452 / 0.394 (**+0.058 ✓**) |
+| **P2** cow census d16 closer to 1 | 0.34 / 0.27 **✓** | 0.33 / 0.37 **✗** |
+| one-step (valid, dup/absent, static, movement) | all pass | all pass |
+| guard (a) recursion move rate, cow / zombie (real 0.42 / 0.30) | 0.19 / 0.20 vs 0.14 / 0.15 ✗ | 0.19 / 0.18 vs 0.16 / 0.14 ✗ |
+| guard (b) zombie-adj / cow-adj AUC16 (no-op 0.58 / 0.60) | 0.72 / 0.80 vs 0.73 / 0.76 | 0.67 / 0.81 vs 0.70 / 0.81 |
+| seen terrain d16 | 2.42% / 1.84% | 1.48% / 1.48% |
+| phantoms max | 0.062 / 0.010 | 0.029 / 0.029 |
+| zombie census d16 | 0.07 / 0.11 | 0.09 / 0.13 |
+| health-drop AUC16 | 0.68 / 0.60 | 0.58 / 0.58 |
+| zombie pursuit, approach at depth 6-16 (real 0.38) | 0.18 / 0.17 | 0.17 / 0.28 |
+| bank-reader one-step joint ES | 0.0325 / 0.0279 | 0.0320 / 0.0321 |
+
+**What we learn:**
+- **Self-exposure does not close the fading gap.** It moves the persisting score by +0.005 / +0.058 against a structural gap
+  of ~0.4 (soft 0.37-0.50 vs exact copies 0.76-0.83, R15). The census effect flips sign between seeds.
+- The one consistent effect is slightly more recursion movement (cow +0.03-0.05, zombie +0.04-0.05). It stays below half the
+  real rate in both arms.
+- No decision proxy improves at both seeds. Zombie census, pursuit at seed 2, and phantoms / terrain at seed 1 get worse.
+- **Training signal:** the self-fed loss by step did not fall over the 1,500 updates. Step 4 went 0.117 → 0.121 → 0.112
+  (seed 1) and 0.142 → 0.115 → 0.128 (seed 2), in blocks of ~500. icsf's teacher-forced loss stayed ~0.0015 above ic's.
+  Exposure does not teach the soft blend to stop regressing toward the mean: the blend is the mean.
+- **More training alone does nothing:** continued ic at 4,500 vs IC v3 at 3,000 has persisting score 0.386 / 0.394 vs
+  0.376 / 0.363.
+- **Track A closes on the structural account.** The persistence mechanism, not the training distribution, must change. That
+  is Track B's PI, which is now training.
+
+Disclosures:
+- Seed 2's recursion OOMed in the first pass (both seeds' recursions ran at once, ~3.9 GB each). Its recursion and readings
+  were re-run unchanged after seed 1 (`run_sf_rest.sh`).
+- Pursuit for both seeds is in `pursuit_sf_s{1,2}.json`.
+
+### R20 — imagined mobs under-move because they fade (`move_by_score.py`, IC, bright, CPU)
+
+Recursion move rate (mob_fading's transition rule, camera-consistent, camera-still steps), binned by the mob's real-reader
+score at k−1. Bin edges are terciles of REAL decoded-mob scores (zombie 0.88 / 0.98; cow 0.97 / 1.01). Cells:
+(n, move rate).
+
+| | faint (bin 0) | middle (bin 1) | crisp (bin 2) |
+|---|---|---|---|
+| real cows | 138, 0.46 | 140, 0.38 | 140, 0.41 |
+| IC s1 / s2 cows | 1,908, 0.12 / 1,710, 0.14 | 136, 0.33 / 118, 0.32 | 64, 0.30 / 64, 0.30 |
+| real zombies | 84, 0.21 | 83, 0.33 | 85, 0.37 |
+| IC s1 / s2 zombies | 648, 0.10 / 665, 0.07 | 48, 0.27 / 48, 0.33 | 39, 0.08 / 37, 0.16 |
+
+- **88-91% of imagined mob-steps are fainter than two thirds of real mobs.** Faint mobs move at about a third of the real rate.
+  Mid-score cows and zombies move at 0.27-0.33, close to real.
+- So IC's low recursion movement (R19 guard (a)) is mostly fading, as R11 found for zombie pursuit.
+- **Prediction for PI:** exact copies keep mobs crisp, so recursion movement should approach the one-step rate. If PI's
+  mobs stay crisp but do not move, the chance operator, not fading, limits movement.
+
+### R19 — the copy shortcut: a no-op world passes PI's four recursion readings (written before PI trains)
+
+**Literature:**
+- ScratchWorld (arXiv 2606.31689): copying the input state reaches 98% state accuracy and 0% changed-field F1.
+- "Modeling What Changes" (arXiv 2609.02046): a per-object change gate with verbatim copies of unflagged objects compounds
+  far less rollout error than a dense model and stays close to the no-motion floor (abstract).
+
+**Measured:** the no-op world (`recursion_samples_noop.pt`: the root frame repeated for 16 steps), through the same readers,
+bright:
+
+| | persisting score d16 | cow census d16 | seen terrain d16 | phantoms max | camera d16 | zombie-adj AUC16 | cow-adj AUC16 | health-drop AUC16 |
+|---|---|---|---|---|---|---|---|---|
+| no-op | 0.573 | 1.09 | 1.0% | 0.000 | 9.6% | 0.58 | 0.60 | 0.50 (never drawn) |
+| IC s1 | 0.376 | 0.30 | 1.5% | 0.029 | 61% | 0.67 | 0.79 | 0.61 |
+
+- **The no-op passes P1-P4 of TRANSPORT_PI_PREREG against IC.** Only the preregistered one-step conditions (valid movement
+  ≥ 15%, cow ≥ 20.5%) exclude it.
+- Recursion readings are taken on camera-consistent trajectories. For the no-op these are the 9.6% where the player stands
+  still, so its persisting score decays (0.91 → 0.57) with identical tokens: **the persisting score is confounded by which
+  trajectories stay camera-consistent.**
+- The decision proxies separate a world with dynamics from the no-op; the recursion persistence readings do not.
+
+**Interpretation guard (added now, before PI results; the preregistered verdict is unchanged and reported as is).** PI's
+recursion advantage counts as persistence *with* dynamics, not the copy shortcut, only if at both seeds:
+- (a) its pooled recursion mob move rate (`mob_fading`, cow and zombie) is ≥ half the real rate (real cow 0.42, zombie 0.30);
+- (b) its zombie-adjacency and cow-adjacency AUC16 exceed the no-op's (0.58, 0.60);
+- (c) its camera consistency at d16 is ≥ IC's − 5pp.
+
+Otherwise the PI verdict is reported with "indistinguishable from copying on <the failed guard>".
+
+The same guard applies to Track A (TRANSPORT_SF_PREREG, icsf vs ic), declared before its results exist: self-feeding could
+raise P1/P2 by making the model copy more. icsf's P1/P2 gains count as dynamics only if (a) its mob move rate is ≥ half the
+real rate, (b) its adjacency AUC16s exceed the no-op's, and (c) its camera consistency at d16 is ≥ ic's − 5pp.
+
+- **Mechanized** in `transport_track_verdicts.py` (`guard_icsf` / `guard_pi`; the verdicts are unchanged).
+- Applied to IC s1 as a check: (b) passes (AUC16 0.67 / 0.79 vs no-op 0.58 / 0.60). **(a) fails:** IC's recursion moves cows
+  at 0.14 and zombies at 0.11 per step vs real 0.42 / 0.30, about a third of the real rate. Its imagined mobs mostly stand
+  still while fading.
+
+### R18 — Track B, before PI trains: the label-free edit evidence already separates persisting from changing content (`edit_gain.py`)
+
+PI's gate trains toward q = σ(gain/s + logit p). The BCE fixed point is p = E[σ(gain/s + logit p)], i.e. **EM for the edit
+prior**, so the gate learns the edit rate that the likelihood ratio exp(gain/s) supports.
+
+Measured at PI's initialization (exact D parent, gen = its proj(belief)), teacher-forced, CPU reference scan:
+- 160 seeded training windows;
+- copy = exact copy under the label-free scroll estimate;
+- chance not applied, so moved mobs count as changed;
+- classes from the frozen readers on real frames.
+
+| cell class | cells | gen beats copy | median gain/s | EM fixed-point edit prior |
+|---|---|---|---|---|
+| unchanged terrain | 135,241 | 1.7% | −7.1 | **0.000** |
+| persisting mob (mob at source and target) | 1,234 | 9.2% | −11.1 | **0.005** |
+| HUD (copied in place) | 43,200 | 1.6% | −6.8 | 0.008 |
+| changed terrain (reader class differs) | 443 | 73.8% | +11.0 | **0.78** |
+| mob at only one of source / target (moves, arrivals) | 3,494 | 80.5% | +1.5 | 0.87 |
+
+- **Prediction for PI (written before PI trains):** the gate persists by default and edits where content changes. This is
+  exactly the separation that CorrT's soft blend fails to make.
+  - In PI, the chance posterior explains most mob moves before the gate sees them, so the last row should shrink.
+- **Risk:** the parent's own hard scroll (argmax of its frame + target_gate logit) agrees with the label-free estimate on
+  only **56.9%** of steps at initialization. PI's scroll cross-entropy must fix this; `scroll_acc` in the training log is the
+  first thing to check. A wrong scroll misaddresses the whole view in recursion.
+  - Breakdown (80 windows, CPU): the hard argmax is "stay" on every step. The parent's move logit is negative on real moves
+    (mean −1.32, 535 steps) and on blocked moves (−1.50, 74 steps): barely separated, never above 0.
+  - CorrT trained this logit as one term in a softmax against a +3 self logit, never against a threshold. Not a convention
+    bug: the SHIFTS / MOVE_SHIFT / candidate orders agree.
+  - PI's scroll training must learn both the calibration and the moved-vs-blocked separation (88% of move actions scroll).
+- **Second prediction (written before PI trains): consequences.**
+  - In PI the generated token is trained only at cells the gate edits (plus entering cells), so its loss is no longer
+    diluted by the ~98% of cells that persist.
+  - E14 diagnosed that dilution as the reason consequences were never learned: rare events are ~0.3% of uniform L1, so the
+    model copies.
+  - **Expected:** PI draws consequences (HUD health drops in `decision_proxies.py`, edits at the faced cell) better than IC.
+    If it does not, rarity was not only dilution: the gate's prior could still refuse rare edits, because their
+    context-level rate is low.
+- **Hard-EM trap check** (`edit_gain.py 640`). Gen learns only where the gate edits, and the gate edits only where gen
+  already wins, so a consequence the parent cannot draw would never be learned.
+  - HUD tokens that really change (|z − copy| > 2.5, E21's valley; 5,546 cells = 3.2% of HUD cells): gen already beats the
+    copy at **52%** (median gain/s ≈ 0, EM prior **0.76**, 23% fire at the initial bias).
+  - Unchanged HUD: gen never wins (0.0%, prior 0.000).
+  - So the gate has a foothold on HUD consequences from the start. Which consequences are in the losing 48% is not
+    identified (no labels).
+  - The 640-window rerun replicates the table: unchanged terrain 1.8% / prior 0.000; persisting mob 8.6% / 0.005; changed
+    terrain 88% / 0.91; mob at one end 79% / 0.85; parent scroll agreement 61.7%.
+
+### R17 — Track B: a memory that follows world position would recover nearly all revisited terrain (`memory_probe.py cache`)
+
+Model-free ceiling, with the same 2,400 training windows, entering cells, label-free scroll track and frozen tile reader as
+R16. For each revisited entering cell: the reader's class of the REAL token last seen at that world position (latest frame
+≤ t showing it outside the player cell).
+
+| entering cell | cells | world-aligned exact cache | D parent / IC output (R16) | majority class |
+|---|---|---|---|---|
+| revisit ≤ 2 scrolls | 12,952 | **0.999** | 0.94 / 0.94 | 0.49 |
+| revisit 3+ scrolls | 5,661 | **0.999** | 0.80 / 0.80 | 0.49 |
+
+- Revisits are 16.6% of entering cells in 16-frame training windows.
+- Terrain almost never changes between visits, and the label-free scroll track is accurate enough to address it. A
+  world-coordinate state whose camera is an explicit transformation would turn the revisit error from 6-20% into ~0.1%.
+  The screen-slot backbone cannot do this: after 3+ scrolls it is at the never-seen level (0.80).
+- Same principle as PI, extended off-screen: the persistent state is world-aligned, the view is a window into it, and the
+  scroll is an explicit transformation. **Not run on a model yet.** Next, as one change at a time: an inference-time canvas
+  (entering cells copy the last token seen at their world position, addressed by the model's own scroll decisions) on PI,
+  after the PI verdict.
+- **Our own record:** E18's `fcanvas` (world-aligned Mamba scan) failed through its READ, not its storage. Slot (r, c) of frame
+  t+1 was predicted from the canvas output under (r, c) at t, so the entering cell's remembered stream was never read
+  (0 / 2,018; 10-04 audit item 4).
+  - PI supplies the missing next-view address: its hard scroll decision says which world position each slot will show.
+  - The canvas test reads at that address. A wrong scroll decision misaddresses the whole view, so PI's scroll accuracy in
+    imagination is the precondition.
+- **Literature (checked 10-15):**
+  - Finn, Goodfellow & Levine 2016 (CDNA/STP, arXiv 1605.07157): advecting the previous frame's pixels with a copy
+    ("background") mask beats generating from scratch. Their compositing is a softmax blend, the soft form R15/R16 show
+    fades under recursion when the target keeps residual uncertainty.
+  - MapNet (Henriques & Vedaldi, CVPR 2018): an allocentric memory written and read through registration of the egocentric
+    view (convolution / deconvolution in map space), the addressed read E18 lacked.
+  - Structured World Belief (Singh et al., ICML 2021): object files persist while invisible; presence is separate from
+    visibility.
+  - WorldMem (Xiao et al., NeurIPS 2025, arXiv 2504.12369): retrieval of past frames by pose and time.
+  - Po et al. 2025 (arXiv 2505.20171): block-wise SSM scans per screen block, still screen-aligned.
+  - None trains a hard persistence decision against a label-free MDL criterion; that part of PI is ours.
+
+### R16 — Track B: persistence must be a trained decision; fading needs residual uncertainty; memory loses storage, not readout
+
+**Confidence-gated persistence fails** (`persistence_variants.py ic_s1 gated`). Exact copy where CorrT's top weight > p, soft
+elsewhere; IC s1, bright, d16:
+
+| p | persisting score | zombie census | seen-terrain error | phantoms |
+|---|---|---|---|---|
+| 0.5 | 0.72 | 0.93 | 5.0% | 0.21 |
+| 0.8 | 0.50 | 4.26 | 4.0% | 1.21 |
+| 0.95 | 0.44 | 3.19 | 3.4% | 1.23 |
+
+- Mixing exact copies with soft blends is unstable: ghosts in neighbouring soft cells grow around exactly-copied mobs.
+- CorrT's weights are regression coefficients, not decisions. Persistence cannot be read off them after the fact; it must be
+  trained as a decision.
+
+**Oracle per-cell decision** (`… oracle`; copy vs soft, whichever is closer to the real next token, while
+camera-consistent):
+- Seen-terrain error 0.83% (soft 1.25%), camera 65% (61%), phantoms 0.06. But cow census 0.29 and persisting score 0.51.
+- **Confounded for mobs:** in deterministic rollouts without chance, reality's own mob moves make the stale copy look wrong at
+  mob cells, so the oracle picks the fading blend. Informative for terrain only.
+
+**Synthetic: soft regeneration vs persistent state + inferred transformations** (`persist_toy.py`). Ring world with scrolls,
+stochastic mob moves (true chance outcome supplied), deterministic edits (`do` places a block) and an unpredictable global
+brightness nuisance; 2 seeds each. Mob count ratio at depth 1 / 8 / 16:
+
+| | chance fully supplied | 30% of moves unexplained in training |
+|---|---|---|
+| REGEN (CorrT principle) | 1.00 / 1.00 / 1.00 (strength 0.97) | 1.00 / 1.00 / **0.06** and 1.00 / 0.95 / **0.001** |
+| PERSIST (exact copy + MDL-gated edits) | 1.00 / 1.00 / 1.00 | 1.00 / 1.00 / **1.01** and 1.00 / 0.99 / **0.88** |
+
+- **Soft regeneration fades exactly when the deterministic target retains unexplained variance.** Mob cells regress toward
+  the mean each step, until the mobs are gone.
+- Persistence-by-default, where an edit must pay its description cost, is robust.
+- This explains the real data: IC's posterior misses ~11% of chance moves, and zombie chase is 75% reliable. It supports the
+  user's "preserve a persistent state, learn the transformations".
+
+**Memory: storage, not readout** (`memory_probe.py`; 2,400 training windows, teacher-forced; entering cells; frozen tile
+reader). D parent / IC:
+
+| entering cell | output accuracy | ridge probe on the model's belief at that slot |
+|---|---|---|
+| revisit ≤ 2 scrolls | 0.94 / 0.94 | 0.93 / 0.93 |
+| revisit 3+ scrolls | 0.80 / 0.80 | 0.80 / 0.81 |
+| never seen | 0.80 / 0.80 | 0.80 / 0.80 |
+
+Previous-token control 0.75-0.77; majority class 0.49-0.50.
+- **Output equals what the belief holds:** the readout is not the bottleneck.
+- After 3+ scrolls the remembered terrain is absent from the belief at the slot where it reappears, even with real context.
+  The screen-slot memory loses it (storage / addressing).
+- Memory must follow content (WHITEBOARD candidate 1: the camera's reassignment applied to the memory state).
+
+### R15 — Track A structural diagnostic + Track B rendering probe (user's two-track framing, 10-15 evening)
+
+**Exact persistence** (`persistence_variants.py`). Deterministic self-fed H16; same backbone pass, four afterstates; bright,
+depth 16:
+
+| model / afterstate | cow census | zombie census | seen-terrain error | camera | phantoms max | persisting-mob score d1 → d16 |
+|---|---|---|---|---|---|---|
+| IC soft | 0.36 | 0.07 | 1.3% | 61% | 0.03 | 0.92 → 0.37 |
+| IC hard (exact copy of CorrT argmax) | 0.53 | 0.48 | 4.7% | 50% | 0.11 | 0.91 → **0.76** |
+| IC hard + label-free global rendering | 1.35 | 1.52 | 3.9% | 41% | 1.08 | 0.91 → 0.61 |
+| IC hard + true global rendering (oracle) | 0.86 | 0.63 | 6.3% | 46% | 0.41 | 0.91 → 0.79 |
+| ES twin soft | 0.69 | 0.44 | 2.8% | 56% | 0.07 | 0.92 → 0.50 |
+| ES twin hard | 0.75 | 0.59 | 7.5% | 54% | 0.16 | 0.91 → **0.83** |
+
+- **Fading is structural:** exact copies keep mob tokens intact (0.76-0.83 vs 0.37-0.50).
+- **CorrT's argmax is not a trustworthy persistence decision:** wrong discrete choices raise terrain error 3-4× and
+  phantoms 3-4×.
+- The label-free rendering estimate (soft − hard common mode) injects ghost directions (phantoms 1.08).
+- **The open problem is deciding what persists**, not whether exact persistence helps.
+
+**Rendering predictability** (`render_predictability.py`, 3,438 day / 763 night camera-still frame pairs):
+- Day: 58% of the drift is frame-common. Explained by the previous step's change: −1.20; by linear extrapolation: −4.71.
+  Per-cell part by the previous step: −1.14.
+- Night: 5% common; −0.34 / −2.70 / −1.93.
+- **Nothing from history beats predicting no change.** Daylight reaches the 8-bit frames as intermittent quantization
+  steps. Treat it as nuisance (invariance), not prediction. WHITEBOARD §12 corrected.
+
+**Track A launched:** TRANSPORT_SF_PREREG.md (194513f7), chance-forced self-fed continuation, both seeds.
+- Smoke: the self-fed point loss compounds over the 4 generated steps, 0.038 → 0.053 → 0.089 → 0.100 (teacher-forced 0.033).
+
+### R14 — IC follow-ups: the posterior converged; fading is deterministic and survives supplied chance
+
+**Posterior quality during training** (`ic_posterior.py milestones`; 400 training windows; vs T*, diagnostic):
+
+| update | genuine chance moves captured | accepted swaps per frame | false swaps per frame (terrain / mob) |
+|---|---|---|---|
+| 0 | 63% | 0.10 | 0.003 / 0.003 |
+| 500 | 77-79% | 0.12 | 0.001 / 0.003 |
+| 1,500 | 88% | 0.17-0.18 | 0.005-0.006 / 0.003 |
+| 3,000 | 89% | 0.18 | 0.006 / 0.003-0.004 |
+
+- About 95% precision. Genuine chance events rise from 841 to 1,090-1,131: the afterstate learns to hold mobs at their source
+  and leaves the move to the chance step.
+- **EM with the model's own prior converged, at both seeds.**
+
+**Pursuit** (`pursuit.py`, IC models, depths 2-16):
+- Crisp zombies approach 43 / 41% (IC s1 / s2) vs real 37% vs ES twin 30 / 31%. Faint zombies 27 / 14%; "lost" 17-20%.
+- **Under IC the deterministic chase is correct when the zombie token is intact.** What remains is fading.
+
+**Decision proxies (bright):**
+- Imagined health drops within 16 steps: IC 0.16-0.22 vs real 0.26 (ES twin 0.12).
+- Zombie adjacency still decays to ≈ 0 by depth 13. Health bias at d16: +0.25 / +0.37.
+
+**Posterior-forced recursion** (`posterior_forced.py`, seed 1). Each step's reassignment is inferred from the REAL next frame;
+the deterministic part reads its own history. Cow census at depth 1 / 8 / 16:
+
+| | IC | ES twin |
+|---|---|---|
+| posterior-forced | 1.02 / 0.77 / 0.36 | 1.03 / 0.80 / 0.69 |
+| sampled | 1.02 / 0.69 / 0.33 | 1.03 / 0.72 / 0.58 |
+| afterstate only | 1.02 / 0.77 / 0.36 | 1.03 / 0.79 / 0.69 |
+
+- **Supplying the chance outcome does not stop fading.** It is a property of the deterministic dynamics iterated on their own
+  outputs.
+- IC's point-loss afterstate fades about 2× faster than the energy-trained one: a mean-seeking map attenuates mobs when
+  iterated. The energy score's sharp samples had partly held mob tokens up.
+
+**Overall reading (TRANSPORT_IC + R1-R14):**
+- Inferred chance fixes the stochastic part: no spurious reassignment, valid outcomes, real movement and dependence, a
+  converged label-free posterior.
+- The recursion bottleneck is now isolated to one deterministic failure: **non-idempotent persistence** (mob tokens attenuate
+  when the model reads its own frames). Fading in turn drives lost pursuit (faint zombies), lost hazards, and some camera
+  divergence (mob missing at the faced cell: 80% divergence).
+- **Most justified next experiment:** chance-forced self-fed training. Roll the deterministic part on its own outputs, with
+  each step's reassignment from the posterior against the real future, and apply the point loss at every depth so attenuation
+  is penalized directly. It is the training counterpart of this diagnostic, possible only because chance is inferred.
+
+### R13 — causal test: the faced cell drives camera divergence (`faced_substitution.py`, op_s1, 200 roots × 8 samples)
+
+Self-fed H16; before each step, on camera-consistent trajectories, ONE cell of the last imagined frame is replaced by the real
+token. Camera consistent at depth 8 / 16:
+
+| | bright | dark |
+|---|---|---|
+| no substitution | 76 / 51% | 69 / 37% |
+| **faced cell** | **88 / 75%** | **88 / 74%** |
+| random other interior cell (control) | 76 / 53% | 70 / 38% |
+
+- Correcting the single cell the player is about to enter recovers most of the lost camera consistency. A random cell does
+  nothing.
+- **Causal:** imagined content at the faced cell decides the scroll, and the scroll addresses everything after it.
+- Recursion fidelity is concentrated in a few action-relevant cells, so a world model should spend precision there.
+
+**IC follow-ups (post-IC queue, seed 1):**
+- **Fading:** IC's persisting-mob score decays faster: 0.92 → 0.50 (d6) → 0.38 (d16), vs ES twin 0.92 → 0.72 → 0.48. Cow
+  vanish rate is 3.5% per step vs 0.6%. This confirms R12's R2 failure: point-loss averaging at blind spots attenuates mobs.
+- **Camera:** divergence 3.4% per step (ES 4.5%), with the same faced-cell pattern (agree 4.0%, mob missing 80%).
+- **Memory:** revisit error 14% (ES 25%); new terrain 31% (ES 57%). Addressing replicates: last seen 8-14 frames ago, error
+  is 8.7% with ≤ 2 scrolls vs 33% / 39% with 3-5 / 6+.
+
+### R10 — decision-relevant imagination: the world stops threatening the player (`decision_proxies.py`)
+
+**Setup:** saved H16 rollouts, frozen readers. 104 bright roots; one real future per root, so AUCs are about ±0.07.
+
+| within 16 steps | real rate | D parent (rate / AUC) | transport operator | free synthesis |
+|---|---|---|---|---|
+| zombie adjacent | 0.18 | 0.04 / 0.61 | 0.08 / 0.66 | 0.13 / 0.72 |
+| cow adjacent | 0.21 | 0.12 / 0.72 | 0.16 / **0.85** | 0.52 / 0.64 |
+| health drop | 0.26 | 0.08 / 0.60 | 0.07 / 0.57 | 0.10 / 0.64 |
+
+- Within 4 steps zombie adjacency is forecast well by all models (AUC 0.90-1.00).
+- **Over depth:**
+
+  | depth | 1 | 4 | 7 | 10 | 13 | 16 |
+  |---|---|---|---|---|---|---|
+  | real zombie adjacency | 0.03 | 0.04 | 0.02 | 0.10 | 0.10 | 0.08 |
+  | transport operator | 0.04 | 0.05 | 0.05 | 0.03 | 0.02 | 0.02 |
+  | free synthesis | 0.05 | 0.05 | 0.05 | 0.06 | 0.04 | 0.04 |
+  | D parent | 0.04 | 0.02 | 0 | 0 | 0 | 0 |
+
+  Real health drops rise to 0.02-0.04 per step. Imagined drops are ≈ 0-0.005 per step after depth 2, for every model.
+  Decoded health is biased +0.5 units at depth 16 (D, operator).
+- **Reading:**
+  - In imagination, zombies stop closing in and damage stops. That is decision-critical, and it leaves an imagination-trained
+    actor overconfident (cf. Phase-3 actors losing to BC; E17-E20 "health never learned").
+  - Transport's coherence gain helps where coherence matters (cow encounters, AUC 0.85 vs 0.64). It does **not** improve
+    hazard forecasting over free synthesis, whose phantom mobs inflate hazard.
+  - The decision bottleneck is not stochastic coherence (row 3). It is multi-step deterministic pursuit (zombie chase is
+    mostly deterministic; imagined zombies move 10% per step vs 43% real; mobs fade, R7) and HUD consequence dynamics
+    (row 2).
+
+### R11 — zombie pursuit decays under self-feeding (`pursuit.py`, bright, camera-consistent)
+
+Per step, a zombie approaches the player:
+
+| | depth 1 | depth 2-5 | depth 6-16 |
+|---|---|---|---|
+| real | 35% | 36% | 38% |
+| transport operator | 41% | 26% | 14% |
+| operator afterstate | 45% | 29% | 10% |
+| free | 45% | 24% | 19% (22% lost) |
+| D parent | 40% | 21% | 0% |
+
+- With true context every model chases correctly; reading its own frames, pursuit fades.
+- By zombie token strength at depths 2-16 (operator / afterstate): crisp (score ≥ 0.6) 25 / 28%, faint 14 / 9%, real 37%.
+- **Token fading (R7) explains part of it.** Even crisp zombies under-chase, so self-generated context also degrades the
+  deterministic dynamics.
+- Together with R4 (camera) and R7 (fading): **recursion degrades the deterministic part** (pursuit, scrolling, persistence)
+  more than the chance part.
+
+### R8 — TRANSPORT_IC: two failed posterior designs, both diagnosed by synthetic tests; v3 running
+
+**v1 (stopped at update 900; `transport/ic_v1_bug_seed{1,2}`)**
+- **Bug:** the soft target was specified and coded as sigmoid(gain/s − logit π) instead of sigmoid(gain/s + logit π). Every
+  accepted swap got q ≈ 0.99.
+- **Design error:** the point loss used ML acceptance (gain > 0).
+- **Trajectory:** posterior 0.3-0.5 → 2.1-3.6 swaps per frame (real ≈ 0.5); sampled swaps 1.9-2.1 vs ES 0.7-1.1.
+- **Synthetic ring test** (`em_toy.py`; soft-copy afterstate, point loss through the inferred reassignment, 2 seeds): gain
+  > 0 accepts 5.0-5.5 swaps per step vs 1.2-1.6 true (precision 0.25-0.31). MAP with a measured scale is 0.99-1.00, the oracle
+  1.00.
+- **Reading:** maximum likelihood has no preference for identity among look-alike cells, and the point loss cannot penalize
+  swapping look-alikes.
+
+**v2 (stopped at update 600; `transport/ic_v2_globalprior_seed{1,2}`)**
+- MAP with a global running prior π, correct sign.
+- **Trajectory:** posterior 0.22 → 0.11 → 0.03 (seed 1) / 0.13 (seed 2) swaps per frame by update 600, π falling to 0.0019,
+  sampled swaps 0.017 / 0.13 vs ≈ 0.3 genuine chance moves.
+- **Synthetic test 2** (`em_toy2.py`, hard regime): the global prior collapses completely (recall 0; head probability at mob
+  pairs 0.0002 vs true 0.19-0.24).
+- **Mechanism:** a self-tightening loop. Fewer acceptances lower π, which raises the threshold.
+- **The model's own context prior** (posterior ∝ p_head(pair) × likelihood): recall 1.00, precision 0.94-1.00, head 0.27-0.31
+  at mob pairs (mild over-dispersion).
+
+**Ghosted start** (`em_toy.py ghost`):
+- Plain regression first teaches ghosts: empty neighbours copy 24% of a mob; mob self-weight 0.50.
+- Inferred-chance training (any rule) then clears them within 250 updates.
+- **EM escapes a ghosted afterstate.**
+
+**v3** (`TRANSPORT_IC_PREREG.md` addendum v3, 676998d8): the posterior under the chance head's own per-pair prior. Declared
+the last posterior variant of this study. Launched 15:27.
+
+### R9 — memory decays with age, inside the model's own context window (`entering_memory.py`, recency split, bright)
+
+| last seen before the root | D parent | operator |
+|---|---|---|
+| 0-2 frames | 7% | 14% |
+| 3-7 frames | 17% | 25% |
+| 8-14 frames | **31%** | **36%** |
+| never seen (NEW) | 29% | 44% |
+
+Dark: 19 / 33 / 48% and 31 / 39 / 49%.
+
+- Terrain seen 8-14 frames before the root is recalled no better than never-seen terrain, although those frames are inside
+  the 15-frame input window.
+- **Scrolls, not only time** (same probe, split by camera scrolls between the last showing and the root). Bright, last
+  seen 8-14 frames ago:
+
+  | scrolls since | D parent | operator |
+  |---|---|---|
+  | ≤ 2 | 10% (n = 39) | 23% (n = 204) |
+  | 3-5 | 35% | 36% |
+  | 6+ | 38% | 41% |
+
+  At age 3-7: 14 / 19% (D) and 24 / 29% (operator). Error grows mainly with the number of scrolls (content moving across
+  screen slots), plus some decay with age for the operator.
+  - **Caveat:** few-scroll windows are periods of standing still, a different activity.
+  - **Reading:** recall is tied to screen slots and lost as the camera translates content. That is an *addressing* failure
+    (WHITEBOARD §4; E17 screen-slot memory).
+  - **Candidate unifying mechanism (untested):** the camera scroll is itself a deterministic global reassignment of cells.
+    Applying the same reassignment to the recurrent memory state, not only to tokens, would carry memory with content. This is
+    the 09-29 motion-aligned carry idea, now motivated by measurement.
+- The effective world-aligned memory is about 5-7 frames. This is row 2 / 4 in numbers. Recurrent capacity is not the binding
+  limit, since the information is in the window; retention or addressing across scrolls is (cf. the E18 read-path and Mamba
+  recall-edge memories).
+
+### R4 — why imagined cameras diverge (`20261015_whiteboard/camera_diag.py`, saved recursion samples)
+
+**The divergence compounds.** First-divergence rate per step at depth 1 (true context) vs later (self-fed):
+
+| model | depth 1 | later | share of divergences at depth 1 |
+|---|---|---|---|
+| D parent | 0.0% | 4.0% | 0% |
+| transport operator | 1.2% | 4.9% | 2% |
+| free synthesis | 1.0% | 4.7% | 2% |
+
+- Kinds: missed scroll 63%, false scroll 36%, wrong direction < 1%.
+- When a real mob blocks the move, the imagined camera scrolls anyway in 57-59% of cases.
+
+**It comes from the faced cell.** Operator, move steps still camera-consistent; the imagined faced cell vs the real one:
+
+| imagined faced cell | steps | divergence rate |
+|---|---|---|
+| agrees | 7,237 | 5.9% |
+| tile differs | 694 | 37% |
+| real mob missing | 193 | 81% |
+| extra mob | 83 | 60% |
+
+- Wrong faced cells are 12% of steps and cause 52% of divergences. The D parent shows the same pattern.
+- **Reading:** the frame-shift gate reads the tile the player faces. Imagined content errors there (mob fading, terrain
+  corruption) flip the scroll decision, and a wrong scroll misaddresses everything after it.
+- Recursive fidelity hinges on a few decision-relevant cells.
+- This is correlational. A substitution test (put the real faced cell into the imagined frame) is queued for when the GPU
+  frees up.
+
+### R5 — rows 2 / 4: entering terrain, memory vs epistemic (`entering_memory.py`)
+
+Each entering cell at depth k on camera-consistent trajectories is classed by the real camera track as REVISIT (inside one
+of the 15 context frames) or NEW. Tile error, bright, D parent / operator:
+
+| entering cell | D parent | operator | prior: most common context tile |
+|---|---|---|---|
+| REVISIT (~30% of entering cells) | 15% | 21% | — |
+| NEW | 29% | 44-46% | 49% |
+
+Dark: REVISIT 28-36%, NEW 33-41%.
+
+- **Memory read failure:** terrain the history contains is still wrong 15-21% of the time when it re-enters (row 2 / 4;
+  consistent with the E18 read-path finding).
+- **The energy-trained operators lost the parent's skill on new terrain** (44-46% vs 29%, near the 49% prior). Their
+  objective scored only the 35 interior tokens. IC trains all 81, so this is a secondary reading for TRANSPORT_IC.
+
+### R6 — row 1: is rendering nuisance a linear subspace of Raw tokens? (`rep_nuisance.py`) — NO
+
+- **Setup:** project out m nuisance dimensions estimated on 80 fit roots; measure on 40 held-out roots.
+- **Labelled within-class directions** (an upper bound): relative persistent drift *rises* (day 0.021 → 0.053, night 0.14 →
+  0.40 at m = 64). Content distances shrink faster than drift.
+- **Label-free change directions:** drift unchanged (day 0.021 → 0.020-0.022, night 0.14 → 0.13).
+- Content decodability is unchanged under the labelled projection (tile 0.96-0.98, mob AUC ≈ 1). The label-free removal
+  at m ≥ 16 erases mob content (cow AUC 0.90 / 0.66 / 0.81 at m = 16 / 32 / 64), because the dominant change directions
+  include mob movement.
+- **Reading:** Craftax's daylight is a content-dependent multiplicative blend, spread over all dimensions. No fixed projection
+  or loss metric discards it. Deterministic daylight must be *predicted* (a function of time: memory); random night static
+  needs *learned* invariance in the encoder (e.g. photometric augmentation during JEPA training). Two treatments, as
+  WHITEBOARD §2 predicts. A linear "content subspace" shortcut is ruled out.
+
+### R7 — why imagined mobs fade (`20261015_whiteboard/mob_fading.py`, saved recursion samples, bright, camera-still steps)
+
+| | cow: stay / move / vanish per step | real-reader score of persisting mobs, depth 1 → 4 → 8 → 16 |
+|---|---|---|
+| real futures | 56 / 42 / 2% | ~0.94, constant |
+| transport operator (sampled) | 82 / 17 / 1% | 0.91 → 0.75 → 0.62 → 0.46 |
+| its afterstate alone (T = I) | 98 / 0 / 2% | 0.92 → 0.78 → 0.62 → 0.52 |
+| D parent | 95 / 0 / 5% | 0.93 → 0.34 → 0.30 → 0.29 |
+
+- Mobs do not vanish abruptly. **The deterministic afterstate attenuates persistent mob tokens geometrically** (operators
+  ~4% per step; D parent almost entirely in 3 steps) until they cross the reader threshold.
+- A soft, mean-trained CorrT blend is a regression coefficient, not an idempotent copy: iterating it decays persistent
+  content. **Recursion needs exact copies of persistent content.**
+- Movement is also under-dispersed in recursion: cows move 17% per step vs 42% real.
+- **Prediction for TRANSPORT_IC:** a point loss given the inferred reassignment removes the incentive to hedge at mob cells,
+  so persisting-score decay should be slower for IC than for the ES replicate. (Diagnostic; not a gate.)
+
+### R3 — inferred-chance design checks (`20261012_oracle/ic_posterior.py`), before TRANSPORT_IC_PREREG.md
+
+- **Labels:** labelling a swap at both endpoints, as in the draft, makes the operator's sampler accept swaps **1.59-1.96×**
+  too often. Canonical one-endpoint labels: 0.92-1.03×.
+- **Training windows** (400 windows, 6,000 transitions, 98% day). True interior mob moves by what the afterstate holds:
+
+  | afterstate | PREDICTED (already moved) | GHOST | STAY (chance) |
+  |---|---|---|---|
+  | trained operator | 31% (500 / 805 zombie moves: chase is deterministic) | 13% | 56% (626 / 630 cow moves) |
+  | D parent | 27% | 22% | 51% |
+
+  Share of STAY events captured:
+
+  | rule | trained afterstate | D-parent initialization |
+  |---|---|---|
+  | gain > 0 (ML) | 92% | 90% (precision 0.60; false swaps mostly same-terrain, 0.09 / frame) |
+  | Bayes MAP (measured Laplace scale + running prior) | 88% | 54% (precision 0.96) |
+
+- **Design:**
+  - The point loss uses the ML assignment: misses teach blur.
+  - The chance head uses Bayesian soft targets on the ML matching.
+  - Canonical labels.
+  - Zombie chase stays with the deterministic part.
+- Preregistered in `TRANSPORT_IC_PREREG.md` (ba1b4117). Both seeds launched 15:1x.
+- **Smoke:** peak 1.34 GiB; initial posterior 0.49 swaps per frame (the census moves 0.5 per step). Resume equivalence is
+  up to 1.5e-6 at 4 updates (GPU reduction nondeterminism amplified by Adam's early sign steps). The earlier two-arm smoke
+  was bit-exact.
+
+## 2026-10-15 — TRANSPORT MANDATE (lead, Opus): does stochastic reassignment of retained content beat free synthesis?
+
+User mandate (10-15): Stage 1 independent assessment of Codex's `PROVENANCE_ASSESSMENT.md` (458dd18), then Stage 2 feasibility
+controls, then at most ONE preregistered matched comparison. No reconstruction, no simulator labels in training, no H16 /
+actor, no architecture search.
+
+### STAGE 1 — independent assessment (`transport_stage1.py`, CPU, evaluation-side layouts only)
+
+**Codex's corrections to my S5-S6 audit, accepted:**
+- All-source valid movement did rise 1.5k → 3k (52 → 113 / 896). I reported cows only.
+- The objective penalizes shuffles +6.2%, not zero. "Nothing in the loss" was too strong; "weak pressure" stands.
+- The two direct runs share initialization and ledgers. Their spread measures numerical divergence, not seed variance, and
+  "within spread" was too categorical.
+- The optimizer weight-decay mismatch is real.
+
+**Measured (3,000 random windows of the exact training ledger, 39,420 steps):**
+
+1. **Locality: the representation holds local, transferable mob content.**
+   - Ridge probe from ONE Raw token to its own tile's zombie / cow / skeleton: AUC **1.000 / 1.000 / 1.000**.
+   - To "a neighbour holds this mob" when its own tile is empty: AUC **0.73 / 0.74 / 0.78** (base rates 2.0 / 3.1 / 0.8%).
+     Neighbour leakage exists but is weak at the linear level. A renderer could still exploit it, so provenance must be tested.
+   - **Real single-cow moves (2,946, stationary camera) are nearly additive transfers:** z'_dst ≈ z_dst + (z_src − z'_src)
+     with median relative error **5.7%**, and cos(Δz_dst, −Δz_src) = 0.886.
+2. **The non-additive tail is the background.**
+
+   | cow moves | n | median error | share > 0.3 |
+   |---|---|---|---|
+   | same tile class at source and destination | 2,679 | 5.2% | 4.4% |
+   | **different tile class** | 267 (9%) | **116%** | 100% |
+   | top 10% static noise | 295 | 27.6% | 46.8% |
+
+   - Among moves with error > 0.3: 69% are terrain mismatches, 36% have high static noise, 6% are dark.
+   - The token binds the mob to its background. A raw-token move drags the source's terrain along, so a content extractor and
+     contextual renderer are justified by measurement, for those 9%.
+3. **Coverage of transport (shares of each type's mob changes):**
+
+   | | in-view move | border in/out | interior birth/death | DO kill |
+   |---|---|---|---|---|
+   | zombie | 79.6% | 15.1% | 3.0% | 2.3% |
+   | cow | 72.4% | 22.3% | 3.0% | 2.3% |
+   | skeleton | 67.2% | 28.4% | 2.9% | 1.5% |
+   | arrow | 58.9% | 14.5% | **26.6%** | 0 |
+
+   - Border crossings sit on unscored edge cells, and kills are deterministic given the action.
+   - Inside the scored interior, transport cannot express about 3% of terrestrial mob changes. Arrows are excluded from any
+     claim.
+   - **The camera moves on 37.6% of steps.**
+
+**Assessment of the proposal:**
+- **(a) Frame. Correction needed.** Codex's c_i = C(z_i, h_i) reads the current frame. Then identity T returns the reference
+  only on stationary steps (62%). Carriers must be read from the deterministic afterstate (the reference, already in
+  next-frame coordinates). That is Stochastic MuZero's afterstate/chance split.
+- **(b) The S5/S6 bypass closes only if noise reaches nothing but T.** If the only stochastic input is the assignment, no tile
+  has a private creation path. A soft T reintroduces split content (blends), so the operator should be an exact matching in
+  the forward pass, used identically in training and evaluation, with a straight-through gradient. That differs from Codex's
+  "continuous operator", which reopens the blend failure S6 measured.
+- **(c) Residual bypasses:**
+  - **The renderer reads context.** D(h_j, ·) sees a belief that knows adjacent mobs, so a moved non-source carrier could be
+    rendered as the mob → payload-substitution test (F2).
+  - **The reference can already be wrong.** It is jointly valid on only 10/14 strict sources at u0, and transport moves
+    whatever the reference holds → report reference validity alongside.
+  - **Collapse.** D may ignore its carrier: everything stays.
+- **(d) Births, deaths, collisions.**
+  - A matching of adjacent swaps excludes collisions and duplication by construction.
+  - It cannot express spawns, despawns, border crossings or arrows. Those stay deterministic (reference), so the operator arm
+    under-samples them. The scored interior loses ~3%.
+  - No stochastic creation path is added, because that reopens S6's bypass.
+- **(e) What a matched comparison could establish:**
+  - That limiting noise to a joint reassignment improves *learned* movement coherence over per-tile synthesis, for one seed,
+    budget and panel.
+  - Validity is partly guaranteed by construction, so the binding readings are learned movement frequency, direction and
+    alternatives (cow valid move vs real 41%).
+  - Remaining confounds: the gradient estimator (straight-through discrete vs continuous), parameter count, run variance, and
+    reader artifacts.
+- **Literature (checked, mechanism-level):**
+  - [ITC](https://arxiv.org/html/2605.16457v3)'s correspondence is a *deterministic* Sinkhorn + greedy decoding step, with no
+    learned or sampled transport. Its stochasticity comes only from "wildcard" token generation, and it hands screen edges to
+    the plain transformer. It reports per-step accuracy and return gains, but no duplication rates.
+  - [Gumbel-Sinkhorn](https://arxiv.org/abs/1802.08665) (Mena et al. 2018) is the precedent for *learned noise-selected
+    permutations*.
+  - No precedent found trains a noise-selected correspondence with a proper score on continuous predictive features, so the
+    question is open, not established.
+
+**Verdict:** credible enough for Stage 2, with the afterstate-frame and hard-matching corrections.
+
+### STAGE 2 / F1a — raw-swap expressibility (`transport_stage2.py rawswap|rawswap3k`; T* from layouts, diagnostic only)
+
+**Setup:**
+- 104 bright DEV roots × 32 real keys.
+- T* = greedy one-to-one adjacent same-type swaps in the afterstate frame (exact camera offsets).
+- Carrier and renderer are identity: ẑ = LN(T*·b), so a destination receives the source's afterstate token exactly.
+- Readouts under both frozen readers: the 14 strict sources (205 move keys, 243 stay keys), and all 1,145 interior moves in the
+  panel.
+
+| afterstate used | strict move keys (real / bank) | strict stay keys | panel moves, both endpoints (real / bank) | RMS to real at endpoints (median) |
+|---|---|---|---|---|
+| **true** (aligned real tokens) | **100% / 100%** | 100% / 100% | **99.7% / 99.7%** | 0.060 (static floor 0.009) |
+| D parent reference (u0) | 75.6% / **24.9%** | 94.2% / 58.0% | 74.7% / 42.5% | 0.207 |
+| paired-3k reference | 62.4% / 63.9% | 92.2% / 91.0% | 72.8% / 73.5% | 0.075 (p90 0.470) |
+| reference with T = I | 0 / 0 | as above | 12.6% / 6.8% | 0.355 / 0.475 |
+
+**Readings:**
+1. **Transport is fully expressible in the frozen JEPA representation.** Swapping real afterstate tokens gives decodable valid
+   moves and stays, with no learned carrier or renderer. The cross-terrain background error (Stage 1) costs token fidelity,
+   not reader-level validity: 3 failures in 1,145.
+2. **Neither available reference is an afterstate.** Swapped tokens are exact copies, and both readers score each token
+   independently, so the failures are in the reference itself:
+   - **D parent:** every failed move key is "multiple" (50 / 205 real, 154 / 205 bank). The uncertain mob is ghosted onto its
+     neighbours. Under the bank reader, the reference alone "detects" it at 635 of 1,145 eventual destinations and clears only
+     98 sources.
+   - **Paired-3k reference:** failures are "absent" (77 / 205 real). On some sources the mob is faded out of the reference.
+   - Both were trained toward the *post-chance* target, so each absorbed part of the chance as a mean. That is Stochastic
+     MuZero's afterstate ≠ E[next state], now measured. Transport cannot remove ghosts on cells it doesn't touch, nor restore
+     a faded source.
+3. **Consequence for the proposal:** the operator needs a pre-chance afterstate. Whether a trainable reference becomes one when
+   the operator owns the chance is the next control (F1b), before any stochastic experiment. Otherwise a Stage 3 negative
+   could not be read.
+
+### STAGE 2 / F1b — can a trainable reference become an afterstate? (`transport_stage2.py fit|fiteval`)
+
+**Setup:**
+- From the exact D parent: 1,500 updates, batch 16, L16, the parent's own D loss, phase AdamW. Decay groups 127 decayed /
+  18 exempt, so the Mamba flags are preserved.
+- Identical seeded windows of the training ledger, restricted to the 320,376 windows with layouts.
+- **assigned:** output LN(T*·b), with T* from layouts plus the token-estimated camera shift (diagnostic only; 0.53 swaps per
+  step, the census rate).
+- **identity:** output LN(b), the parent's objective continued for the same budget.
+- The launch rule (≥ 90% on all three readings under both readers) was fixed in TRANSPORT_PREREG.md (5aa5f562) before this
+  evaluation.
+
+| reference, raw swap on DEV | strict move (real / bank) | strict stay (real / bank) | panel both endpoints (real / bank) | endpoint RMS |
+|---|---|---|---|---|
+| assigned u500 | 100 / 100% | 100 / 100% | 98.2 / 96.9% | 0.074 |
+| **assigned u1500** | **100 / 100%** | **100 / 100%** | **98.4 / 98.9%** | **0.063** (true-swap ceiling 0.060) |
+| identity u500 | 77.1 / 19.0% | 93.0 / 49.8% | 78.3 / 35.5% | 0.215 |
+| identity u1500 | 100 / **30.7%** | 100 / 66.3% | 81.1 / 45.8% | 0.212 |
+
+**Readings:**
+- **Launch rule met: Stage 3 launches.**
+- When the reassignment is owned by the operator, here supplied, the trainable reference becomes a clean pre-chance
+  afterstate within 500 updates, near the representation's ceiling.
+- Trained toward the post-chance target with the same budget, the reference keeps faint neighbour ghosts, the optimum of the
+  mean. All bank-reader failures are "multiple" (142 / 205). The real reader's higher threshold hides them.
+- So whether the deterministic part absorbs the chance is decided by whether the stochastic operator owns it. This is
+  Stochastic MuZero's afterstate decomposition, measured in our continuous JEPA world.
+- **Not shown:** that the operator can *learn* the assignment from the energy objective. That is Stage 3.
+- **Pre-launch execution checks:**
+  - `transport_model_test.py` passes: exact disjoint adjacent swaps; forward = hard permutation; the reference's gradient
+    follows the moved content; ~1 move per frame at initialization.
+  - Smoke: decay groups 143 / 18 identical by name in both arms; completion parameters 578,752 (free) / 530,693
+    (operator); peak memory 1.41 GiB.
+  - A smoke-found bug (no save on `--stop-after`) was fixed. Interrupted 2 → 4 vs uninterrupted 4: weights identical,
+    optimizer state within 8e-12, ledgers identical.
+
+### STAGE 3 — the matched comparison (TRANSPORT_PREREG.md, 5aa5f562): free synthesis vs joint reassignment
+
+**What ran:**
+- Both arms trained in one process for 3,000 updates, with identical windows, Gaussian noise and Gumbel draws (ledger
+  `9dadd2560b5bcd02…`).
+- Same parent, backbone, trainable reference, noise trunk (initialization asserted equal) and energy objective.
+- Decay groups 143 / 18, identical by name.
+- Parameters: 6,960,592 free / 6,912,533 operator; completion 578,752 / 530,693.
+- Median 0.312 / 0.327 s per update; peak 1.48 GiB with both arms resident.
+- Evaluation: 104 DEV roots × 64 samples; 14 strict sources under both frozen readers.
+
+**Primary result at 3,000 updates.** Where the two readers agree, one number is given; otherwise real / bank.
+
+| | free | operator | operator − free, 95% root bootstrap |
+|---|---|---|---|
+| valid | 63.2 / 53.3% | **93.8%** | +30.6 [19.8, 42.0] / +40.4 [26.6, 55.1] pp |
+| all-source valid movement | 8.5 / 4.8% | **29.2%** | +20.8 [12.4, 30.3] / +24.4 [14.7, 34.8] pp |
+| cow valid movement (real 41.0%) | 4.5 / 3.5% | **25.0%** | +20.5 [10.7, 31.8] / +21.5 [11.5, 33.0] pp |
+| duplicate | 19.0 / 31.5% | 4.91% | −14.1 / −26.6 pp |
+| absent | 15.0 / 7.0% | 0% | −15.0 / −7.0 pp |
+| dependence (real 45.8pp) | 0.8 / −0.7pp | **31.6pp** | +30.7 / +32.2 pp |
+| distinct valid outcomes (real 3.64) | 2.43 / 2.14 | 4.07 | |
+| scored joint ES | 0.0257 / 0.0275 | **0.0248 / 0.0256** | |
+| scored static corruption | 0.27% | **0.72%** | |
+
+**Gates (both readers):** G1 movement **pass**; G2 coherence **pass** (duplicate 4.91% ≤ 5%); G3 comparison **pass**; **G4
+static FAIL** (0.72% > max(0.27%, 0.5%)); G5 joint law **pass**.
+
+**Preregistered verdict: "transport better" is NOT established.** Reserved fresh roots stay sealed; no repair or extension.
+
+**Attribution (frozen diagnostics, `transport_diag.py`):**
+1. **Validity:** 13 / 14 operator sources are 100% valid under both readers. The only failure, zombie root 83, comes from
+   its *reference*, which holds a ghost ("multiple"); that root produces all the duplicates.
+   - Validity is partly constructive: swaps cannot duplicate or erase.
+   - It is also partly learned: the operator's reference became a clean afterstate (13 / 14 valid stays under the bank
+     reader vs 10 / 14 for the free arm and 6 / 14 at u0), as F1b predicted.
+   - Payload substitution: in 278 / 278 cases the destination's mob vanishes when the moved content is replaced. Provenance
+     holds.
+2. **The movement law is learned, but under-dispersed:**
+
+   | P(move) by content | u0 | u500 | u1500 | u3000 | real |
+   |---|---|---|---|---|---|
+   | cow | 1.4% | 1.5% | 6.6% | **20.9%** | 36% |
+   | skeleton | 1.5% | 1.9% | 8.4% | **38.6%** | 61% |
+   | zombie | 1.5% | 1.6% | 3.2% | 6.6% | 43% |
+   | no mob | 1.4% | 1.3% | 1.4% | 2.1% | — |
+
+   - Mob moves into solid terrain fell from 21% to 6.9%. 11.9% of strict-source moves go in directions with no real support.
+   - Per-source movement tracks reality, mostly below it. Zombies, which chase the player, are barely learned.
+   - The straight-through push on source moves still favours moving at 3k (diversity +7.5e-4 vs attraction −5.0e-4,
+     8 / 14 roots). The movement curve had not converged.
+3. **G4 is caused entirely by terrain swaps.**
+   - Scored static corruption: operator samples 0.737%, its own reference alone 0.296%, free samples 0.303%.
+   - Swaps per frame at 3k: mob ↔ passable 0.19, mob ↔ solid 0.014, terrain ↔ same terrain 0.94, **terrain ↔ different
+     terrain 0.155**.
+   - The terrain swaps come from the initialization prior (~1 proposal per frame, β), which is never unlearned. P(move | no
+     mob) goes 1.4% → 2.1%.
+   - **Why:** at terrain-only tiles the two halves of the energy objective nearly cancel (attraction −4.4e-5 vs diversity
+     +3.8e-5 per pair, at 1.5k and at 3k). A rare spurious swap raises both terms by almost the same second-order amount
+     under the first-power distance. This is the same per-sample insensitivity S5 found for dependence.
+   - The late rise is probably a side effect of the shared proposal weights learning mob moves. That is inference, not
+     measured.
+4. **The objective itself favours the true law.** Model-free: real-key samples of the true law score ES 0.0365, vs 0.0611 for
+   the same keys with moves undone (+68% on 13 / 14 strict roots; +89% on 56 / 62 roots with moves). Attraction alone
+   prefers stay on 11 / 14, so the diversity term carries all of it. That is why discrete moves are learned slowly, and
+   only where two draws differ.
+
+**Reading:**
+- On every coherence and movement measure, joint reassignment of retained content learned far better than per-tile
+  synthesis under the identical objective, data, noise and budget. Movement grew from 2% (random) to 29% by learning, not
+  by construction.
+- The preregistered static gate fails because the same objective does not price spurious terrain reassignment. Its
+  per-sample signal is nearly zero there.
+- **Remaining confounds:**
+  - one training seed;
+  - the straight-through estimator exists only in the operator arm;
+  - the operator cannot express births, deaths or border crossings;
+  - the zombie law is unlearned.
+- **Not tested:** recursion, decisions, nuisance, memory.
+
+### TRANSPORT COST MANDATE (user, 10-15 afternoon) — pre-launch audits (TRANSPORT_COST_PREREG.md)
+
+**Principle under test:** preserve what persists, learn what changes, sample only what is genuinely unpredictable. The
+transition cost is λ·E[tiles proposing a change]: a general minimum-description-length prior on stochastic change, with
+no labels, no terrain rules, and no new parameter.
+
+**1. Lineage is clean** (`transport_lineage.py`, `transport/lineage.json`):
+- Stage 3's pinned inputs contain no layouts, F1b code or checkpoints, fan or panel.
+- Both Stage 3 arms' u0 weights equal the D parent exactly (145 tensors) and differ from every F1b checkpoint (up to 0.024).
+- The D parent is the oracle study's control arm, with identically zero oracle weights.
+- All snapshots descend from the single training contract.
+- **F1b was strictly an oracle positive control**: evaluated, never loaded for training.
+- Disclosure: β ("~1 proposal / frame") was picked after seeing the census rate of 0.5 moves per step.
+
+**2. The cross-terrain contextual-token problem is measured, and a cost cannot fix it** (`transport_cost_diag.py
+crossterrain`, exact tiles):
+- 5.2% of real in-view mob moves (60 / 1,145) cross terrain classes.
+- Swapping the TRUE tokens decodes 100% of those endpoints with the wrong terrain, against 0% for same-terrain moves and 0%
+  in real successors.
+- The seed-1 operator makes 10.8% of its mob moves across terrain, all with wrong endpoint terrain.
+- With an identity carrier, the token moves the mob together with its background. That is a representation limit
+  (WHITEBOARD §5: content vs context), not a sampling one.
+
+**3. What the score pays per unit of move probability** (`benefit`, 48 stationary training windows, label-free classes;
+seed-1 operator at 500 / 1,500 / 3,000):
+
+| content | value |
+|---|---|
+| static | +4.5e-5 / +9.8e-5 / +2.9e-5 (window SE 5.7-7.4e-5): indistinguishable from 0, the measured cause of never-unlearned terrain swaps |
+| changing, along realized moves | +5.2 to +6.5e-3 |
+| changing, other directions at moving steps | +3.5e-3 |
+| changing, at staying steps | −1.1 to −2.3e-4 |
+| labelled mob tiles, all steps (interpretation) | −4.8e-4 / +2.8e-4 / +2.4e-4 |
+
+- **λ = 1e-4 by a fixed rule**: the smallest one-significant-figure value above the largest mean static value.
+- It keeps a positive incentive for content that changes in more than about 1-2% of steps per direction. Cows are at
+  ~9-12%.
+- The margin over average mob tiles is only 2-3×, so the stay-still risk is real. A preregistered go / no-go probe (matched
+  1,000-update continuations with and without the cost) runs before any cost training. Pass: static P(move) −≥ 30% and cow
+  P(move) −≤ 15%.
+
+**4. Go / no-go probe: PASS** (`transport_cost_diag.py probe 1e-4`):
+- Setup: from seed-1 operator u3000 (model and optimizer restored), two matched 1,000-update continuations (identical fresh
+  windows and noise). Measured on the 48 stationary training windows.
+
+  | P(move) | u3000 start | no-cost end | cost end | cost vs twin |
+  |---|---|---|---|---|
+  | static (label-free) | 0.0131 | 0.0068 | 0.0035 | **−48.5%** (rule: ≥ 30%) |
+  | cow | 0.193 | 0.214 | 0.186 | **−13.1%** (rule: ≤ 15%) |
+  | zombie | 0.048 | 0.050 | 0.043 | −13% |
+  | skeleton | 0.215 | 0.263 | 0.244 | −7.5% |
+
+- Expected changes per frame: about 1.2 without the cost vs 0.85 with it.
+- **Caveats:**
+  - Continued training alone also halves static proposals: the terrain swaps were being slowly unlearned anyway, and the cost
+    roughly doubles that rate.
+  - The cost also costs mob movement (−7% to −13%), close to the allowance. The trade-off is real, not free.
+- Launching the preregistered experiment: seed set 1 {operator, operator_cost}, seed set 2 {free, operator, operator_cost},
+  λ = 1e-4, 3,000 updates (`run_transport_cost.sh`).
+- `transport_eval.py` was generalized (directories, arms, `--free`). A regression check reproduces the Stage 3 analysis
+  exactly: arms, per-source rows, bootstrap intervals.
+
+### TRANSPORT COST + SECOND SEED — results (TRANSPORT_COST_PREREG.md; mechanical verdict `transport_cost_verdict.py`)
+
+**Runs:**
+- Seed set 1: {operator, operator_cost} in one process. The streams are identical to Stage 3: update-1 energy 0.064021 and
+  0.8146 swaps / frame, exactly as Stage 3.
+- Seed set 2: {free, operator, operator_cost}.
+- λ = 1e-4, 3,000 updates. All checkpoints kept under `transport/seed1_cost`, `transport/seed2`.
+
+| at 3,000 updates (real / bank where they differ) | valid | dup | all move | cow move | distinct | dependence | static | swaps / frame | ES |
+|---|---|---|---|---|---|---|---|---|---|
+| seed 1 free (Stage 3) | 63.2 / 53.4% | 19.0 / 31.5% | 8.5 / 4.8% | 4.5 / 3.5% | 2.43 / 2.14 | ~0 | 0.27% | — | 0.0257 / 0.0275 |
+| seed 1 operator (in-process replicate) | 93.8 / 89.4% | 4.5 / 5.7% | 30.4 / 26.9% | 28.1% | 4.07 / 4.00 | 32 / 29pp | 0.80% | 1.67 | 0.0249 / 0.0257 |
+| seed 1 operator + cost | 93.8% | 4.6% | 23.3% | **19.5%** | 4.00 | 27pp | **0.61%** | 0.75 | 0.0253 / 0.0260 |
+| seed 2 free | 65.3 / 55.8% | 15.0 / 30.4% | 7.0 / 5.0% | 7.8 / 6.6% | 2.86 / 2.50 | 3pp | 0.27% | — | 0.0253 / 0.0282 |
+| seed 2 operator | 93.4% | 5.1% | 31.5% | 30.3% | 4.14 | 34pp | 0.68% | 1.15 | 0.0239 / 0.0251 |
+| seed 2 operator + cost | 99.0 / 93.9% | 0 / 4.9% | 31.3 / 25.6% | 23.6% | 4.07 / 4.00 | 33 / 31pp | **0.63%** | 0.75 | 0.0257 / 0.0265 |
+
+**Verdict: "not established"** (preregistered, mechanical).
+- **R, architecture replication: PASS (seed 2, both readers).** Operator − free: valid +28.1 [16.4, 42.0] / +37.6 [22.7, 55.1]
+  pp; all-source valid movement +24.4 [14.1, 35.2] / +26.5 [16.0, 37.6] pp; cow movement +22.5 / +23.6 pp; dependence +31pp.
+  - Across Stage 3, the seed-1 replicate and seed 2, the operator lands at 93-94% valid, 29-31% movement, 25-30% cow
+    movement.
+  - The gain over free synthesis is robust to training variability and to cross-process numerical divergence.
+  - Without the cost, the operator still fails G4 everywhere (static 0.68-0.80%), and G2 narrowly on duplicates
+    (5.1-5.7%, from the reference-ghost zombie root).
+- **C, the cost: FAIL at both seeds.**
+  - Seed 1 fails G1 (cow 19.5%), G4 (0.61%) and N.
+  - Seed 2 fails G4 (0.63%) and N: cow −6.6pp [−13.7, −1.8], bank movement −5.9pp.
+  - It passes coherence (G2) and joint law (G5) at both seeds.
+
+**Mechanism (`transport_diag.py swaps|content` on the new runs):**
+
+| operator → operator + cost | seed 1 | seed 2 |
+|---|---|---|
+| terrain ↔ different terrain swaps / frame (static damage) | 0.185 → 0.095 (−49%) | 0.127 → 0.093 (−27%) |
+| terrain ↔ same terrain swaps / frame | 1.20 → 0.46 (−62%) | 0.73 → 0.43 (−40%) |
+| mob ↔ passable swaps / frame (genuine moves) | 0.195 → 0.146 (−25%) | 0.196 → 0.159 (−19%) |
+| P(move \| no mob) | 2.9 → 1.1% | 1.7 → 1.0% |
+| P(move \| cow), real 36% | 22.7 → 14.9% | 22.8 → 17.7% |
+| P(move \| skeleton), real 61% | 42.5 → 32.2% | 41.8 → 32.0% |
+| P(move \| zombie), real 43% | 10.3 → 6.7% | 9.8 → 6.7% |
+
+- The cost is selective only ~1.4-2×: damaging terrain swaps fall 27-49%, genuine moves fall 19-25%. That is exactly the
+  thin margin the probability-space measurement predicted (static ~0 ± 7e-5 vs mob ~2.4-2.8e-4 per unit probability). A
+  uniform price per change cannot separate them, because the score values them too similarly per sample.
+- Provenance holds in every run (payload substitution 228-300 / 228-300).
+- The static excess over the reference shrinks only ~0.1-0.2pp, while cows move further from the truth.
+
+**Further measured (CorrT calibration, `transport_cost_diag.py corrt`, D parent, 14 strict sources):**
+- The deterministic CorrT's neighbour-copy weights rank real moves correctly: r = 0.70 over 56 source-destination pairs;
+  keep-the-source weight vs real stay r = 0.89.
+- But they are mis-scaled about 13×: mean copy weight 0.0088 vs real move frequency 0.114. The rest of the move mass is
+  hidden in a generator blend. Static neighbour-copy mass is 0.0035.
+- A mean-trained mixture weight is a regression coefficient, not a probability. CorrT already encodes *where* content can
+  go (the ghosts are exactly its small copies), but sampling it directly would under-move about 13×.
+
+### OBJECTIVE INVESTIGATION (user mandate 3, model-free, no training) — `transport_objective.py`
+
+**1. Clean afterstate: oracle control vs unprivileged training** (`afterstate`). Each reference's own deterministic
+afterstate, swapped with the TRUE reassignment of every real key (diagnostic):
+
+| reference | strict move (real / bank) | strict stay | panel moves | static corruption |
+|---|---|---|---|---|
+| true afterstate tokens | 100 / 100% | 100 / 100% | 99.7% | 0.176% (real 0.179%) |
+| **F1b oracle-assigned** (privileged) | 100 / 100% | 100 / 100% | 98.4 / 98.9% | 0.266% |
+| **unprivileged operators** (5 runs) | 92.7 / 92.7% (one 100 / 77%) | 93.0% | 79.7-84.1% | 0.266-0.298% |
+| free arms | 63.9 / 55-68% | 87-91% | 69-75% | 0.266% |
+| D parent | 75.6 / 24.9% | 94.2 / 58.0% | 74.7 / 42.9% | 0.266% |
+
+- The fully clean afterstate was shown only by the oracle control.
+- Unprivileged reassignment training gets most of the way: 13 / 14 strict sources clean, but panel moves 80-84% vs 98%.
+- **With correct reassignment every reference passes the static gate (≤ 0.30%).** The gate excess comes entirely from wrong
+  reassignments, and correct cross-terrain moves never touch it (their endpoints are not stable cells). 0% of the gate is
+  irreducible under whole-token transport.
+
+**2. Exact model-free scoring rules** (`rules`; real fans, mixture ES = p·A − ½pᵀDp, exact derivatives). Held-out 96 roots,
+eval 104 in brackets:
+
+| rule | movement margin (relative) | dependence (shuffle), share of margin | spurious different-terrain penalty at ε = .02, share of genuine-move value |
+|---|---|---|---|
+| E0 (existing) | 0.55 (0.77) | 0.034 (0.071) | 0.077 (0.106) |
+| G (global) | 0.51 (0.73) | 0.040 (0.083) | 0.077 (0.103) |
+| CROSS | 0.41 (0.84) | 0.018 (0.031) | 0.091 (0.122) |
+| DOM | 0.38 (0.83) | 0.008 (0.015) | 0.091 (0.124) |
+| TOK (marginal-only control) | 0.30 (0.82) | **0.000** | 0.091 (0.123) |
+
+- All rules favour the true law over stay (93-96% of roots).
+- The spurious penalty is linear in its probability ε (the score is quadratic in mixture weights) and **negative at ε = 0**
+  for every rule.
+- Locality rescales penalty and movement value together (ratio +18%), and *reduces* dependence detection (also for a break
+  confined to each mover's cross).
+- Dependence is a small part of the score's value under any rule: marginals alone already favour movement.
+- No hybrid weight gives a robust region where false transitions are strongly discouraged.
+
+**3. The learning signal through the actual stochastic head** (`headgrad`; frozen seed-1 and seed-2 operators, 48 stationary
+training windows, training-style two-sample estimator, straight-through):
+- **Global G:** static ≈ 0 (t ≈ 0); labelled mob +2.5 / +7.0e-4; realized moves +7.8e-3.
+- **E0:** static +3 to +5e-5.
+- **CROSS / DOM / TOK:** static **+0.9 to +1.4e-4** (t 1.4-1.7) and labelled mob **−4 to −8e-4**. Locality rewards spurious
+  static swaps and discourages mob movement, the opposite of the hypothesis.
+- **Exact reason:** the operator's two draws are identical outside their swaps. For a one-draw change δ, the score changes by
+  ½(|e+δ| − |e|) − ½|δ| ≤ 0 (triangle inequality, e = the afterstate's error). The score never penalizes it unless the
+  prediction is unbiased. A global norm only dilutes this; locality concentrates it.
+
+**4. Mechanism confirmed by dose-response** (`headgrad … oraclestatic | hard`). Static-tile push as the afterstate's error at
+static tiles goes from 0 (privileged: the real next token substituted) to soft (bias 0.014) to hard-copy (bias 0.028):
+
+| rule | error 0 | soft | hard |
+|---|---|---|---|
+| G | −8.8e-5 (t −3.8) / −7.5e-5 (t −3.1) | ≈ 0 | +7.2e-5 / +9.3e-5 |
+| E0 | −6.3e-5 (−2.9) / −5.5e-5 (−2.4) | +3 to +5e-5 | +1.3 / +1.4e-4 |
+| CROSS | −2.9e-5 (−1.6) / −2.7e-5 (−1.3) | +1e-4 | +1.9 / +2.0e-4 |
+
+- Values are seed 1 / seed 2. Genuine-move value is unchanged with error 0.
+- **Spurious reassignments are a hedge against deterministic error.** Given an accurate afterstate, the energy score
+  penalizes them, so it is not unsuitable in principle.
+
+**5. Where the error comes from** (`biasnoise`, cells with no mob in root or futures):
+
+| | bright eval 104 | darker held-out 96 |
+|---|---|---|
+| real-future spread (nuisance) | 0.0018 | 0.046 |
+| learned afterstates' bias | 0.014-0.026 (operators lowest) | 0.046-0.061 |
+| **exact copy of the current token** | **0.048** | 0.122 |
+| hard CorrT copies | 0.028-0.038 | — |
+
+- **Persistent content does not have a persistent token.** Contextual drift (~0.05 RMS/step) is systematic and
+  predictable, partly modelled by CorrT's soft blend, and makes exact copying worse.
+- "Select instead of blend" is therefore falsified model-free.
+
+**6. The chance outcome is recoverable label-free** (`posterior`). Parameter-free local search (gain > 0, greedy one-to-one)
+against the observed successor, scored vs T*:
+
+| afterstate searched | recall | precision | false swaps per frame |
+|---|---|---|---|
+| unprivileged operator afterstates, bright eval | 0.78-0.80 | 0.95-0.99 | ≈ 0 |
+| D parent, bright eval | 0.79 | 0.71 | — |
+| exact-copy afterstate, bright eval | 0.93 | 0.06 | 3.3 same-terrain (drift again) |
+| operators, darker held-out | 0.53-0.58 | 0.24-0.25 | — (night nuisance) |
+
+**Conclusions:**
+- Localized scoring is rejected in this target space and model.
+- The objective's weakness is conditional: the energy score hedges deterministic error with spurious spread, and the error is
+  contextual token drift.
+- The proposed next comparison is inferred-chance training (Stochastic MuZero split: point loss through a label-free inferred
+  reassignment, likelihood on the chance head), preregistered in `TRANSPORT_INFERRED_PREREG.md` and **not launched**.
+- **Representation limits remain:** cross-terrain backgrounds (5.2% of moves, 100% wrong endpoint terrain), contextual drift
+  of persistent content, and night nuisance (posterior precision 0.25 in dark views).
+
+## 2026-10-15 — S5–S6 reconciliation and optimizer matching correction
+
+- The preregistered direct/paired3k→6k continuation was held before launch. Both
+  checkpoints remain at3k; original negative results and fresh reservation remain.
+- S6's signed destination write is a content-creation bypass: at decoded valid
+  movement destinations, reader-score contributions are own packet0.413 versus
+  source arrival0.070. These are additive readout contributions conditional on
+  final normalization, not physical-content or causal-effect percentages.
+- Qualification to the S6 curve reading:1.5k→3k also added61 valid movements
+  (52→113/896, +6.81pp [2.46,11.16]), alongside absence27→93 and duplication
+  162→85. Coordination improvement is unresolved; convergence is not established.
+- Qualification to “nothing in the loss”: the actual token objective penalizes
+  marginal-preserving endpoint shuffles by0.002270 [0.001341,0.003205], while
+  validity falls100%→52.59%. Score sensitivity does not establish optimization
+  pressure sufficient to learn coherence.
+- **New CPU audit:** saved AdamW groups differ. Direct decays163 parameter tensors
+  at0.01; paired decays149 and exempts18 shared Mamba tensors (72 scalars).
+  Deepcopy removed direct parameters' `_no_weight_decay` attributes. Its outcome
+  effect is unmeasured; architecture-only attribution is therefore incomplete.
+  Both use final LR1e−4, betas(0.9,0.999), eps1e−8. Historical states are preserved.
+  Evidence: `oracle_v1/paired_event/diagnostics/optimizer_group_audit.json`.
+- Full evidence reconciliation and proposed, unimplemented content/operator
+  comparison: `20261012_oracle/PROVENANCE_ASSESSMENT.md`. Original S0–S6 audit
+  entries and historical recommendations below are retained.
+
+## 2026-10-10 — PROGRAM (predeclared 09:10, before any new code): why does the objective fight us? Diagnosis only
+
+**Mandate (user, 10-10):**
+- the purpose this week is to UNDERSTAND what ties the failures together, not to fix them;
+- no intervention is tried until the cause is measured and the literature on that cause is swept;
+- the GPU and CPU are used continuously.
+- The user's frame: a world can fail in its **encoder** (do the tokens hold the needed information, stably?), its
+  **dynamics** (does it learn the conditional distribution of the next state, random parts included?), or in
+  **imagination** (do self-fed rollouts stay consistent?).
+- I add **decisions:** can heads read correct, calibrated signals from imagined states?
+
+**My correction of the record:** D (E21) was chosen from one measurement (the hits' gradient ratio) plus a published loss. Why the
+objective fights us, and what it must achieve, were never established. This program does that.
+
+**Working hypothesis (to be TESTED, not assumed):**
+- a per-element token-space loss is a currency that mixes three kinds of variation:
+  1. variation irreducible from the world's inputs (environment RNG, terrain never seen, hidden timers);
+  2. change in the game state;
+  3. variation that is not state (lighting, sleep rendering, context bleeding between tiles);
+- it allocates gradient by token-distance magnitude, not by learnability or by relevance;
+- each past fix moved that allocation for one fact and away from others.
+
+**Predictions, each of which can refute it:**
+- **P-A (encoder):** a substantial share of a cell token's variance, and of its frame-to-frame change, is not explained by the
+  cell's own visible state.
+  - Refuted if own state explains ≥ 90% of both.
+- **P-B (dynamics):** ≥ 30% of the world's teacher-forced squared error sits on content irreducible from its inputs (RNG floor +
+  entering terrain never seen in the window), and the learnable remainder concentrates on rare state changes.
+  - Refuted if the irreducible share is < 10%.
+- **P-C (gradient):** the backbone gradient from irreducible content dominates the gradient norm but is inconsistent across
+  batches (noise), while the gradient from rare learnable changes is consistent but small.
+  - Refuted if rare-change consistency ≤ irreducible consistency, or if the irreducible norm share < 25%.
+- **P-D (training dynamics):** across matched L1 (M6) and D-loss (D from scratch, stage 1) snapshots, each loss improves the
+  classes it allocates more to, with stalls or regressions elsewhere.
+  - Refuted if one loss improves every class at least as fast as the other.
+
+**Part I — Scoreboard, the user's request (breadth of D / E22MS, not health only).**
+- **Variants:**
+  - M16 (L1), D continued, D from scratch;
+  - E22MS: Δ zeroed (its decoder alone), 4 prior samples, and the posterior's codes of the TRUE transitions (matched-code
+    reference within the SAME decoder; Codex's lineage point).
+- **Data:** the diagnosis futures (1,002 held roots, 143 episodes, 5 real futures per root under the same actions, 17 actions ×
+  4 keys from each root; visible and hidden simulator state at every frame).
+- **`rollout_export.py` (GPU):** saves every variant's self-fed 16-step rollout, its teacher-forced step at every depth, the 17
+  one-step successors and the corrt routing weights.
+  - Teval's protocol: 4 context frames, window min(4 + k, 15).
+  - E22MS samples use e22_imagine's RNG order, so its summaries must reproduce e22_imagine exactly; the deterministic ones must
+    reproduce teval's per-root errors exactly. Either mismatch stops the readouts.
+- **`scoreboard.py` (CPU, on the saved rollouts):**
+  - teval's errors (one-step classes, depths);
+  - the 5-future decomposition (floor / excess, per class; energy score for sampled variants, a proper score against the 5
+    real futures);
+  - facts by depth for EVERY visible fact (17 tile classes, zombie / cow / skeleton / arrows, health / food / drink / energy,
+    facing, sleep, light, 12 inventory items; ridge probes fitted on true TRAIN-seed tokens, read on TEST seeds);
+  - a mob census by type and depth vs the 5 real futures;
+  - scroll fidelity (missed / false scrolls, first wrong step);
+  - terrain persistence on re-entry; HUD dynamics in distribution (event rates vs the real futures, Codex's real-key control);
+  - distance to the real-token manifold by depth.
+- **Decisions:** `check_h16_traj.py` on D from scratch (`--window 15`) and E22MS (`--e16 --window 15`); M16 exists (trajectory
+  0.657; one real future 0.679).
+  - The prior's end head has the terminal-position bias (Codex): its readings are reported, not judged.
+
+**Part II — Diagnostics on the hypothesis:**
+- **Encoder (P-A), CPU, true tokens + simulator state:**
+  - A1 information: probes of every fact from one token / the 3 × 3 neighbourhood / the frame, linear and MLP (the ceiling any
+    world can express);
+  - A2 target composition: per-cell token variance and frame-to-frame change, explained by own visible state / neighbours' /
+    global (light, sleep) / residual (held R², fitted on TRAIN seeds);
+  - A3 currency alignment: token distance between cells with the SAME vs DIFFERENT state, per fact type. How well does
+    token-space error separate state errors from non-state variation?
+- **Dynamics (P-B):**
+  - B1 floors: the RNG floor per class and fact from the 5 futures (depth 1) and the 4 keys × 17 actions; epistemic entering
+    cells = entering cells whose world position never appeared in the input window (true scroll offsets);
+  - B2 error budget of each world's teacher-forced step, per class and fact: RNG floor + unseen terrain + learnable remainder,
+    in L1 and in squared-error currency.
+- **Gradient and training dynamics (P-C, P-D), GPU, held diagnosis windows:**
+  - B3 per-class learning curves (excess over the floor; fact accuracy) for M6 (L1) vs D from scratch stage 1 at 6k / 12k / 18k /
+    24k / 30k / 36k;
+  - B4 per-class backbone gradient: norm ratio, cross-batch consistency ‖Σg‖ / Σ‖g‖, cross-class cosine, at the same snapshots
+    under each world's own loss.
+- **Imagination (axis 3):**
+  - C1 exposure: per-step error from imagined vs true windows, vs the input's distance from the real manifold;
+  - C2 substitution at depth 16 (entering cells, HUD, player, mob cells, the move-target tile) for D from scratch and E22MS.
+- **Order:** Part I exports (GPU) and A1-A3 (CPU) start now; B1-B2 and the scoreboard read the exports; B3-B4 follow on the
+  GPU; H16 last (longest).
+- Every result is recorded against these predictions; the literature sweep follows the measured cause.
+
+## 2026-10-14 — AUDIT (lead, Opus) of everything run 10-12 → 10-14, stage by stage
+
+The user's request: dissect every stage that ran (mostly by the other agent, GPT Sol 6.1), check the raw files rather than
+the summaries, run diagnostics where something does not line up, and commit stage by stage. Each sub-entry gives:
+- what ran;
+- what the raw outputs say;
+- what I re-derived or newly measured;
+- where the original reading holds, needs qualification, or is wrong.
+
+### AUDIT S0 — 10-12 oracle-innovation test (my design and runs; results never recorded as a stage of their own)
+
+**What ran:**
+- four arms, 3,000 updates each, batch 16, E22 long recipe on support-v2 rows (`oracle_world.py`);
+- oracle arms receive the TRUE next-frame mob layout per tile through a zero-initialized Linear(4 → 192);
+- L1 arms start from M16 and D arms from D scratch;
+- evaluation on 200 DEV-split roots (`oracle_eval.py`; `oracle_v1/eval_*.json`).
+
+**Raw results** (cow census / recall / precision / arrival recall / source residue; reader = AllProbes):
+
+| arm | teacher-forced depth 1 | self-fed depths 9-16 (all roots) |
+|---|---|---|
+| TRUE tokens (reader ceiling) | 1.06 / 0.98 / 0.93 / 1.00 / 0.00 | same |
+| control L1 (from M16) | 0.92 / 0.51 / 0.55 / 0.25 / 0.57 | 0.51 / 0.05 / 0.11 / 0.04 / 0.04 |
+| **oracle L1** | **0.57 / 0.54 / 0.95 / 0.25 / 0.02** | 0.06 / 0.03 / 0.60 / 0.04 / 0.00 |
+| control D (from D scratch) | 1.93 / 0.65 / 0.34 / 0.49 / 0.72 | 1.03 / 0.08 / 0.08 / 0.05 / 0.06 |
+| **oracle D** | **1.05 / 0.96 / 0.91 / 0.98 / 0.00** | **1.50 / 0.92 / 0.62 / 0.93 / 0.04** |
+
+**Against the predeclared readings:**
+- **Q1 (conditional completion in BOTH oracle arms): FALSE.**
+  - The D arm passes every criterion; it sits at the reader's own ceiling.
+  - The L1 arm fails: census 0.57, recall 0.54.
+- **Recursion (oracle D self-fed: census within 20% and residue ≤ 2% at every depth on aligned steps): FALSE.** Cow census on
+  aligned steps is 1.20 at depths 2-4 and 1.49 at 9-16; residue is 0.035 at 9-16. Recall is kept (0.94), so the failure is
+  extra detections, not lost mobs.
+
+**New in this audit — why the L1 arm fails** (`audit_s0_arrivals.py`; probe cow score, teacher-forced depths 1-16, 958 arrival /
+964 vacated / 746 stay cells):
+
+| cells | TRUE | oracle L1 | control L1 | oracle D |
+|---|---|---|---|---|
+| arrival (cow now, not before) | 0.85 (98% > threshold) | **0.23 (25%; median ≈ 0)** | 0.20 (23%) | 0.79 (94%) |
+| vacated (cow before, not now) | 0.00 (0%) | **0.04 (5%)** | 0.43 (50%) | 0.02 (2%) |
+
+- With the oracle, L1 learned to ERASE moved cows at their source (vacated-cell detections 50% → 5%) but not to DRAW them at
+  their destination (arrivals unchanged, 23% → 25%). A cow move becomes a disappearance.
+- The training log agrees: zeroing the oracle costs the L1 arm only 6.4% of its loss at update 3,000, against 28% for D.
+- That L1 can HOLD arrivals once learned is shown by the other agent's L1 continuation from the oracle-D world (10-12 D-loss
+  follow-up: 838 / 870 late recursive cow TP).
+- So the L1 failure is in LEARNING to create under L1 from M16 within 3,000 updates. The mechanism is NOT isolated.
+  - A consistent hypothesis: L1's bounded per-element gradient gives the ~1 arrival cell per frame the same weight as any
+    other element, while arrival needs a relational routing decision (which neighbour the cow came from) that clearing does
+    not.
+  - The same allocation pattern as P-C.
+- **Recursion detail** (`recursion.py`, my 10-12 run, aligned steps): oracle-D false cows per true cow 0.09 → 0.25 → 0.46 →
+  0.55 from depth 1 to 9-16.
+  - Their share that persists from the world's OWN earlier false detection rises 0 → 0.30 → 0.40 → 0.55.
+  - False cows score 0.28-0.35 on the probe vs 0.77-0.88 for true ones: faint, self-sustaining residue.
+  - For the control D arm, 87-91% of its late false cows are such persisting false detections.
+- My first token-projection (snap) run OOMed at 12:14 (its script is preserved by the other agent as
+  `snap_eval_failed_20261012_1214.py`); S1 below is its completed version.
+
+### AUDIT S1 — 10-12 token-projection follow-up (other agent; my snap idea, completed)
+
+**What ran:**
+- 200 DEV roots, oracle-D / control-D / TRUE;
+- every fed-back map tile replaced by its L2-nearest token among 60,000 real tiles;
+- four modes: raw, projection at readout only, the output BEFORE projection under projected feedback, and the projected output.
+
+**Verified from `snap_{TRUE,oracle_deltairis,control_deltairis}.json`** (depths 9-16; all reproduce the NOTEBOOK):
+
+| oracle-D mode | cow false / true | cow recall | zombie recall | skeleton recall |
+|---|---|---|---|---|
+| raw | 0.569 | 0.924 | 0.842 | 0.507 |
+| readout only | 0.244 | 0.746 | 0.599 | 0.201 |
+| **output before projection, under projected feedback** | **0.289** | **0.905** | 0.731 | 0.292 |
+
+TRUE tokens projected: cow recall 0.961 → 0.818, zombie 0.902 → 0.643.
+
+**Holds:**
+- Cleaner fed-back history halves the next outputs' false cows at nearly unchanged cow recall (the feedback effect is real).
+- L2 nearest-token projection is not content-preserving: the chosen wrong token is closer than a semantically correct one in
+  64 / 64 sampled losses.
+
+**Added by this audit:**
+- **The metric failure is the target-space problem again.** In Raw token space, L2 distance is dominated by context: own
+  state explains R² 0.59 of a token, and lighting / position / neighbours most of the rest (encoder_diag, 10-10). So "nearest
+  real token" picks the right context with the wrong content. A valid-state projection would need a content-defined metric,
+  which these tokens do not provide.
+- **Completion is copy-driven even with the oracle.** Projection erases some real zombies from the fed-back history, and
+  although the oracle still gives every zombie's position, zombie recall falls 0.84 → 0.73 (skeleton 0.51 → 0.29). The world
+  draws a mob mainly by copying it from its history, not from the occupancy signal. S2's decoder decomposition measures the
+  same copy dependence from the other side.
+
+### AUDIT S2 — 10-12 D-loss causal follow-up, readout controls, decoder decomposition (other agent)
+
+**What ran:**
+- three continuations (D, L1, D without its max term) of the oracle-D world, +3,000 updates each, with identical batches and
+  the oracle still supplied;
+- evaluation on the 200 DEV roots;
+- CPU diagnostics: fresh readout heads, decoder decomposition, model-free conditional optima.
+
+**Verified from `loss_intervention/eval_u*/analysis.json`** (self-fed, depths 9-16, frozen reader; true cows 870):
+
+| update | D: cow FP / TP | L1: cow FP / TP | no-max: cow FP / TP | D zombie FP |
+|---|---|---|---|---|
+| 0 (shared start) | 495 / 804 | 495 / 804 | 495 / 804 | 270 |
+| 500 | 477 / 771 | 387 / 793 | 341 / 786 | 257 |
+| 1,500 | 293 / 789 | 235 / 798 | 368 / 821 | 187 |
+| 3,000 | **227 / 805** | **161 / 838** | 213 / 828 | 70 |
+
+The same reader on the TRUE future tokens gives 86 FP: that is the instrument's own floor.
+
+**What this audit adds:**
+1. **Nothing had converged.** Every arm's recursive false positives were still falling steeply at 3,000 updates. The S0
+   recursion failure was at least partly an adaptation budget: the excess over the reader's floor fell from 409 to 75 under
+   L1 and to 141 under D.
+2. **The frozen reader overstates the residue.** `calibration_u3000_D.json`, 50 TEST episodes, depths 9-16, 215 true cows:
+
+   | reader | TP / FP |
+   |---|---|
+   | original frozen reader | 205 / 44 |
+   | **fresh equal-capacity head fit on REAL tokens only** | **203 / 17** |
+   | head fit on generated tokens | 200 / 10 |
+
+   - A head that never saw a generated token cuts false positives by 61%. The original count-matched thresholds fire on faint
+     residue.
+   - So **given the true outcome and 6,000 total updates, a continuous JEPA world's 16-step recursion is close to coherent
+     for mob occupancy**: 17 false cows per 215 true, with recall 0.94.
+3. **The residue that remains is carried by the copy path.**
+   - Decoder decomposition at 3,000 updates, both-camera-aligned late cells: replacing ONLY the copied candidates with real
+     previous tokens cuts cow FP 192 → 82 (D), 133 → 83 (L1).
+   - Replacing the generator or the routing alone does nothing.
+   - Faint false content in a generated frame is copied into the next one, which matches S0's "self-sustaining" share.
+4. **The model-free conditional optimum confirms the whiteboard's regression condition** (`conditional_stat/dopt.py`). Grouping
+   real futures by exact next mob occupancy, the full-D optimum gives cows 300 / 302 TP with 10 FP (the real futures: 299 / 302
+   and 14 FP). Once the outcome is fixed, a point loss no longer averages incompatible futures.
+
+**Holds:**
+- The other agent's reading that D's maximum term is not the main cause (no-max ≈ D by 3,000; its early benefit faded).
+- L1 vs D is a tradeoff, not a ranking.
+
+**Answer to the user's question 1 (10-12):** supplying the correct stochastic outcome removes the averaging failure in one
+step (S0, at the reader ceiling). With more training and a calibrated reader, it also removes most of the recursive one.
+What remains is the copy path propagating faint residue.
+
+### AUDIT S3 — 10-12/13 generated-prefix completion (other agent)
+
+**What ran:**
+- two continuations of the S2 D world (+3,000 updates), each with 0.5 teacher loss + 0.5 loss at one extra endpoint;
+- the endpoint's context is real (teacher arm) or the world's own detached generated rollout of 1-15 steps (prefix arm);
+- both receive the TRUE oracle;
+- evaluation on the 200 DEV roots.
+
+**Verified:**
+- The other agent's table (late self-fed, frozen reader): cow FP 245 teacher vs 838 prefix.
+- With generated-fitted heads: 6 vs 34 FP on 50 TEST episodes.
+- Drink / energy HUD gains for the prefix arm.
+- Factual frame MSE worse (+12.5%).
+- Its cause of the prefix arm's extra false cows was "not isolated".
+
+**New in this audit (`audit_s3_oracle_reliance.py`, `audit_s3_alignment.py`):**
+1. **The prefix arm learned to trust its history over the oracle.** Teacher-forced on real inputs with the oracle present, both
+   arms are the same (arrival cells: 0.81 vs 0.83 mean cow score). With the oracle ZEROED (which tells the world "no mob
+   next"), the share of cells where the arm still draws the cow copied from its history is:
+
+   | cells | shared start | teacher arm | prefix arm |
+   |---|---|---|---|
+   | stay | 0.29 | 0.17 | **0.40** |
+   | vacated | 0.15 | 0.09 | **0.20** |
+
+2. **Not camera misregistration** (my first hypothesis, refuted). Late self-fed false cows per step:
+   - prefix 0.56 on camera-aligned steps vs 0.40 on misaligned ones;
+   - teacher 0.16 / 0.12.
+
+   The excess is on aligned steps.
+3. **It is neighbour-copy spreading.** At late false-cow cells, corrt's routing weights (self, 4 neighbours, generator):
+   - prefix 0.50 / **0.37 total neighbours** / 0.14;
+   - teacher 0.68 / 0.12 / 0.21.
+
+   68% of the prefix arm's aligned false cows (472 / 690) persist from its own previous detection. The prefix arm pulls mob
+   content from adjacent cells into cells the truth says are empty, without clearing the source: duplication.
+4. **Mechanism of the training-side cause: a hypothesis, not tested.** In a generated context a mob can sit one cell away
+   from where the true oracle says it is next. Copying the neighbour's mob into the oracle-marked cell is then rewarded, and
+   that habit produces duplicates at evaluation.
+
+**Reading:** exposure to generated history did not teach robustness. It taught more copying from history, so it amplifies
+the copy-path residue S2 localized. The drink / energy gains are real but small; the mob coherence cost dominates.
+
+### AUDIT S4 — 10-13 learned innovation (other agent): the posterior is a mean pool; that is why it learns nothing
+
+**Verified from raw files:**
+- **Main study, both arms:**
+  - one joint code over all 200 DEV successors, and one code per root over the 32 RNG keys (`content/codes_*_u3000.pt`);
+  - all six factors pick the same choice: (6,6,6,6,6,6) for capacity, (2,2,2,2,2,2) for rate;
+  - shuffling the current code or using the prior mode changes the output by exactly 0.0;
+  - held NLL 0.000245 / 0.0000617 bits.
+- **Optimization control, final table exact:** MSE/floor 1.0513 (none), 1.0524 (hard), 1.0472 (soft), 0.0152 (assigned IDs);
+  within-root output variance soft 1.05e-5, assigned 0.980.
+- **Not recomputed:** the TEST-episode D deltas. They are deterministic-capacity effects of a constant code, so they don't
+  bear on the mechanism.
+
+**New in this audit (`audit_s4_channel.py`, 26 control cases, 4 FIT roots):**
+1. **The information is there.** A root's futures differ on ~3 tiles: half the within-root target variance sits in 3.35
+   tiles per case on average, and one root has 99% on one tile. A flat linear classifier on the posterior's own input
+   (per-tile LayerNorm of [belief, current, successor − current], flattened) memorizes all 26 IDs: **100% at 500 updates (E).**
+2. **Pooling erases it.** The same linear classifier on the tile MEAN stays at **15-19%** (E).
+   - The posterior's attention pool behaves as that mean pool. Attention mass on the tiles where futures differ is 0.0413,
+     equal to uniform (3.35/81), in 5 fresh posteriors AND in both trained ones (D).
+   - The within-root share of variance is ~1% in the input and in the projected tiles, then **0.02% after pooling** (D).
+   - The six factor slots are near copies: pairwise cosine 0.96-0.998. In the trained arms, all 6 slots share one argmax on
+     every case (D).
+   - The query init (std 0.02) makes the attention logits nearly constant over tiles.
+3. **Training never repairs the pool.**
+   - The final soft and hard posteriors' logits differ by at most 0.012 / 0.0024 within a root (A).
+   - Even under direct cross-entropy at 10× the control's learning rate, the attention posterior reaches 38% at 500 updates
+     and **plateaus at 62-73% from 1,500 to 3,000 updates** on 26 fixed cases (B, B3000).
+   - The joint unsupervised path gives the posterior far less signal than this, so it never escapes.
+4. **The zero-initialized adapter is not the binding cause.**
+   - Joint training as the control's soft arm, with the adapter at PyTorch default init (C1), or with that plus unit-std
+     code values (C2): MSE/floor at 800 updates is **1.0648 / 1.0661**, on the no-channel / soft curves (1.0624 / 1.0598).
+   - Within-root output variance stays 2e-5 throughout.
+   - The assigned-ID arm uses the same zero-init adapter and broke below the floor by update 600 (0.959). The decoder side
+     was never blocked.
+
+**Reading:**
+- The learned-innovation negative is a property of this posterior: a global pool over 81 tiles of a difference that lives
+  on ~3 tiles. It is not evidence against learned innovations, and not about hard vs soft codes.
+- The other agent's "learned-interface / coadaptation problem, upstream cause unidentified" is now localized: the inverse
+  model cannot see where the futures differ.
+- This agrees with LPWM's choice of *per-particle* latent actions: innovations inferred locally, not from a global summary.
+  That is a design fact for next steps, not a tested fix.
+
+### AUDIT S5 — 10-14 direct stochastic completion (other agent): each tile flips its own coin
+
+**What ran:**
+- Two arms from the D parent, both 3,000 updates: point objective vs first-power energy score on the 35 interior tokens.
+- Completion is one attention + FF block over belief + noise (4 local dims per tile, 4 shared per frame). It produces a
+  generated token and offsets to the routing logits.
+- Output = LN(soft mixture of the 5 copy candidates and the generated token).
+- Evaluation: 104 bright DEV roots × 64 samples; strict physics on 14 isolated sources (8 cow, 3 zombie, 3 skeleton).
+
+**Verified with independent code (`audit_s5_direct.py`, my own source selection, decoding and event logic), all exact:**
+- Energy arm: valid 64.62%, absent 15.18%, multiple 20.20%, source+destination duplicate 15.62%; cow stay 59.77% / move
+  8.20%; 3.071 distinct valid outcomes per source; scored joint ES 0.024439.
+- Point arm: ES 0.031417.
+- Real fan: 100% valid, cow move 41.02%, split ES 0.021161.
+- Dependence, against an exact independence baseline (expected validity if the 5 cross cells were independent with the same
+  marginals): 2.46pp, vs their 2.73pp from 128 shuffles; real 45.84pp.
+
+**New in this audit:**
+1. **Not budget-limited on the binding measures.** Milestones the study did not report (energy arm):
+
+   | update | ES | valid | dependence | cow valid move |
+   |---|---|---|---|---|
+   | 500 | 0.02567 | 66.2% | 3.9pp | 2.7% |
+   | 1,500 | 0.02447 | 61.8% | 0.9pp | 6.5% |
+   | 3,000 | 0.02444 | 64.6% | 2.5pp | 8.2% |
+
+   - The distribution score converged by 1,500; coordination never developed. Cow movement is the only measure still slowly
+     rising.
+   - The training objective is flat from ~1,000 updates, within single-batch noise.
+2. **Mechanism: each tile decides from its own noise.** Probe: 14 sources × 256 draws; resample the 4 local noise dims at ONE
+   tile, everything else fixed.
+
+   | resample at | own cell's flag flips | other cross cells flip |
+   |---|---|---|
+   | source | 29.6% | ≤0.06% |
+   | one destination | 9.5-16.1% | source 0.2-0.4%, others ≤0.14% |
+   | a far tile | — | ~0 |
+   | shared noise only | source 12.6% | destinations 4-6%, all together |
+
+   - The shared noise is a common mode: it moves every cell the same way, not the anti-correlation conservation needs.
+   - The one attention layer could carry noise between tiles, but the trained model does not use it.
+3. **Copy bookkeeping (same probe).**
+   - The source's self-copy weight is bimodal: keep has mean 0.65-0.97, sd 0.3-0.46.
+   - Destinations almost never copy the source in: summed move weight has mean 0.002-0.15. When the source lets go, nothing
+     receives the mob.
+   - corr(keep, Σ move) = −0.12, where conservation needs strongly negative.
+   - Destination mobs come from the generator path (weight 0.04-0.23 at the cross), driven by the destination's own noise.
+   - So "absent" = the source clears and no destination draws; "multiple" = the source keeps and a destination draws. These
+     are two independent coin flips.
+   - Their own diagnostic is consistent. Real futures with cells shuffled independently give 55% valid / 24% absent / 21%
+     multiple / 16% duplicate; the model gives 65 / 15 / 20 / 16. The training metric charges only **+5.6%** for that complete
+     loss of dependence (`dependency_sensitivity/result.json`, 104 roots).
+4. **A free replicate.**
+   - The paired study's "direct" control used the identical initialization and window/noise ledger, yet diverged
+     numerically: the update-1 loss differs in the 7th digit, and weights differ by 5.2% relative L2 at 3,000 (cross-process
+     GPU nondeterminism).
+   - It is therefore an independent run of the same configuration, and it reproduces the mechanism: own-tile flips 12-27%,
+     cross-tile ≤0.5%, corr(keep, move) −0.15.
+   - It gives run-to-run spread: valid 64.62 vs 62.50%, cow move 8.20 vs 6.45%, dependence 2.46 vs 2.83pp.
+   - The studies' bootstrap intervals cover root/episode sampling only, not this training-run spread.
+
+**Reading:**
+- The "why" the other agent left open ("does not identify why optimization failed to learn that dependence") is now
+  localized. The trained generator makes its stochastic decisions per tile from per-tile noise, and the objective barely
+  charges for missing joint dependence.
+- Matching marginals through independent per-tile draws is the cheap solution the score accepts. Nothing in the loss pushes
+  the model off it.
+- That the objective's insensitivity *caused* this choice is consistent with all the measurements but has not been tested by
+  intervention.
+
+### AUDIT S6 — 10-14 paired event completion (other agent): moves are created by the destination's own packet
+
+**What ran:**
+- Two arms from the D parent, 3,000 updates each: the direct energy generator (retrained) and a paired editor.
+- The paired editor gives EVERY tile a packet: a gate, soft routes over (self, 4 neighbours), a removal write
+  −g(1−p_self)·R at the tile itself, and arrival writes g·p_j·A at its neighbours. Output = LN(parent reference + writes).
+- R and A are free contextual decoders. Same evaluation as S5; a post-hoc failure localization covers hard routes,
+  gate masking and pre/post-LN variance.
+
+**Verified with independent code (`audit_s5_direct.py paired`), registered table and milestones exact:**
+- At 3,000 updates:
+
+  | | direct | paired |
+  |---|---|---|
+  | valid | 62.50% | 68.42% |
+  | duplicates | 17.19% | 9.49% |
+  | cow valid move | 6.45% | 9.57% |
+  | ES | 0.024295 | 0.024876 |
+  | dependence (exact independence baseline) | 2.85pp | 10.24pp |
+
+  Their shuffle estimates are 2.83 / 10.27pp.
+- Paired milestones (500 / 1,500 / 3,000):
+  - valid 90.18 / 70.42 / 68.42%, cow move 0 / 6.25 / 9.57%;
+  - ES 0.031649 / 0.027167 / 0.024876.
+- The entering-cell numbers are internally consistent: 164 low-reference cells, all entering; 81.28% of post-LN variance; 329×.
+- **Not re-verified:** the single-packet swap counts, the hard-route table and the second-reader figures.
+
+**New in this audit:**
+1. **The gains against run-to-run spread.**
+   - The "direct" arm here is the S5 replicate: identical configuration, numerically diverged run. Two runs of the same
+     direct configuration give valid 64.62 / 62.50% and cow move 8.20 / 6.45%.
+   - Against them, paired is +3.8 / +5.9pp valid and +1.4 / +3.1pp cow move: the size of the replicate spread.
+   - The dependence gain, +7.4 / +7.8pp, is robust.
+   - The study's intervals cover root sampling only, not training-run spread.
+2. **Curves (the 3k question).**
+   - The paired arm learns more slowly: its ES at 3k is about where direct was near 1k, and is still falling
+     (0.0272 → 0.0249).
+   - Duplicates fall (18.1 → 9.5%) and cow movement rises (6.3 → 9.6%).
+   - But **dependence plateaued at 1,500** (11.3 → 10.2pp) and **absence rose** (3.0 → 10.4%). The last 1,500 updates turned
+     duplicates into absences, not into valid moves.
+   - A 3k → 6k continuation would likely finish the ES descent. The coordination measure was no longer moving.
+3. **Mechanism of the interior incoherence: exact score attribution** (`audit_s6_paired.py attrib`).
+   - Method: 14 sources × 256 draws. LN has no affine, so given each token's own LN scale the real reader's score is exactly
+     additive over reference / own packet / the source packet's arrival / other arrivals. Reconstruction is asserted.
+   - Results (mean contributions):
+
+     | event / cell | reference | own packet | source arrival | other |
+     |---|---|---|---|---|
+     | valid move, destination | 0.009 | **0.413** | 0.070 | −0.002 |
+     | multiple, destination | 0.035 | **0.436** | 0.077 | −0.003 |
+     | absent, best destination | 0.028 | 0.044 | 0.044 | −0.001 |
+     | move, source | 0.393 | −0.357 | — | −0.077 |
+     | stay, source | 0.861 | −0.030 | — | −0.006 |
+
+   - **Even valid moves are not transfers.** The destination's mob is created by the destination's OWN packet: its
+     "removal" write is a free decode, used as creation. The source's arrival, the channel the design meant to carry the
+     mob, supplies 14% of the score.
+   - Routes carry no direction: argmax matches the decoded move **24.1% (chance 25%)**, entropy 1.41 (uniform over 4 =
+     1.39). Arrivals are split ~4 ways and too weak to create anything. Absent draws are the source clearing while no
+     destination's own packet fires.
+   - Noise probe (`audit_s5_direct.py noise paired`):
+     - A destination's own noise flips its flag 10-15%; the source's noise flips destination flags only 1.6-3.3%.
+     - Direct, by comparison: ≤0.06%. That coupling is the dependence gain.
+     - Tied weights hold exactly (removal mass = Σ arrival mass, corr −1), but the content they carry is not what draws the
+       mob.
+   - **Reading:** pairing tied one packet's weights, but every tile kept a full-strength per-tile creation path driven by
+     its own noise. That is the same escape route as the direct model (S5).
+4. **Entering-cell fault: exact cause** (`audit_s6_paired.py entering`). The cause is the parent's routing.
+
+   | entering cells | count | weight on scroll candidate | generator | self | reference RMS |
+   |---|---|---|---|---|---|
+   | candidate = **zero padding** outside the 9×9 grid | 164 | **0.979** | 0.009 | 0.011 | 0.023 |
+   | candidate = a HUD token (rows 7-8) | 72 | 0.0005 | 0.385 | 0.540 | 1.19 |
+
+   - The parent learned to avoid copying HUD tokens but copies the zero padding.
+   - Deterministically that is harmless: its final LN discards scale, so the output is just the direction of the small
+     gen/self remainder.
+   - The paired editor's stochastic edits are added outside the mixture at their own scale, so against a ~0 reference LN
+     amplifies them to full scale.
+   - The direct model's noise sits inside the mixture and is scaled down with it, so it is not amplified (edge post/pre
+     ratio 0.52).
+   - This concerns only unscored edge cells, as the other agent said. It is a separate fault from the interior failure in 3
+     (they asked for exactly this separation). For recursion it would feed back.
+
+**Reading across S5-S6:**
+- Both continuous generators fail coherence for one structural reason. Each tile can create or erase content from its own
+  noise, and nothing in the loss (S5: +5.6% for total loss of dependence) makes that path more costly than a coordinated
+  transfer.
+- The pairing constrained bookkeeping weights, not the content path, so the per-tile path stayed open.
+
+### 10-13 LEARNED-INNOVATION FEASIBILITY — predeclared before implementation/training
+
+**Question:** can a compact latent channel learned only from observed transitions improve conditional completion, and can
+an observation-conditioned prior sample the same useful outcomes? This advances the whiteboard's mechanism study beyond
+simulator-provided occupancy. It does not assume four-way uncertainty separation will emerge from a posterior/prior.
+
+- **Shared parent:** the existing unconditioned D control (`oracle_v1/worlds/control_deltairis_...u3000_b16.pt`), whose
+  oracle projection is identically zero and whose training used no occupancy conditioning. Same frozen Raw tokens,
+  corrt/fmamba world, TRAIN 64-frame ledger, 16-frame teacher windows, seeded batches and 3,000 updates at batch 16.
+- **Three arms:** no channel; six learned categorical factors with 8 choices each and no rate penalty; identical channel
+  with a conditional rate penalty 0.001. The hard channel has an **18-bit maximum per transition**, not an established
+  entity interpretation. Cross-attention learns the factors; no object identities, movement masks, tile classes, health
+  events, simulator layouts or keys enter the training objective. Terminal metadata only selects factual windows.
+- **Mechanism:** posterior sees causal backbone state plus current/next observed tokens. Completion receives only hard
+  discrete codes through a zero-initialized adapter, with no continuous future bypass. Prior reads the world's native
+  spatial/Mamba features and predicts factors autoregressively; it avoids E22MS's 192→8 per-tile input bottleneck.
+  Prior CE learns detached posterior assignments. The regularized arm additionally pays the assignments' conditional
+  negative log probability; this is a rate-distortion surrogate, not an ELBO or a measurement of environmental entropy.
+- **Separating readings:** identical initial outputs; future-input isolation in the prior; current-code zero/shuffle controls;
+  posterior completion versus ancestral prior mode/samples; original and generated-fitted held-episode readouts; actual
+  code use and held conditional rate. Evaluate saved milestones 0/500/1,500/3,000, then freeze posterior/world and refit the
+  prior if its moving targets limit fitting. A posterior failure calls for capacity/optimization diagnosis; a posterior
+  gain with a prior failure calls for prior/conditioning diagnosis. No unconditional second seed or actor launch.
+- **Judgment:** existing 200-episode DEV panel is exploratory. Simulator fields are evaluation-only. Initial evaluation
+  establishes paired factual/posterior completion and channel dependence; sampling quality must also be checked against
+  multiple real outcomes rather than against one realized future. H16 is a separate recursive reading, not inferred from
+  one-step success. Atomic model/optimizer/RNG/batch-ledger checkpoints and evaluation batches are required for resume.
+- **Limits:** the frozen state still includes nuisance; 15-frame completion history still omits some timers. The channel
+  may encode missing history, epistemic content or nuisance. Its actual content must be measured, not named by assumption.
+  The unconditioned parent is a continuation reference, not a from-scratch test of the full whiteboard architecture.
+- **Literature:** [Stochastic MuZero](https://openreview.net/forum?id=X6D9bAHhBQ1) motivates hard chance codes and separate
+  afterstate/chance completion; [LPWM §A.4.3](https://arxiv.org/html/2603.04553v1#A1.SS4.SSS3) motivates learned inverse
+  transitions and history-conditioned priors. LPWM also uses pixel reconstruction; we borrow the latent-context principle
+  without claiming a reproduction. This pilot's conditional rate penalty addresses the previously unregularized
+  posterior/code-learning path; whether it allocates capacity to consequential uncertainty remains a measured question.
+
+**Launch and completed controls (10-13):** three matched arms are training to 3,000 updates. Interrupted 2→4 versus
+uninterrupted 4 reproduces model and channel weights exactly; maximum optimizer-state difference is 1.09e−11. Sampler,
+Torch/CUDA RNG and batch-ledger streams are exact. Mutating the last input frame changes earlier native causal features by
+0; zero-initialized channel outputs match the unconditioned world exactly. Hard forward codes are exact one-hots, with a
+live completion gradient after the adapter is activated. Proof: `oracle_v1/learned_innovation/validation.json`.
+- The evaluation-only CPU fan is complete: **200 DEV roots × 32 independent keys**, at each root's recorded action.
+  Every recorded-key replay has pixel maximum difference 0; re-encoding that branch reproduces the panel tokens exactly.
+  This fan conditions on full simulator state; it does not measure uncertainty remaining under partial observation.
+  Files: `learned_innovation/real_futures/fan.pt` and its per-root atomic records.
+- Evaluation fits branch readouts on each arm's **posterior-completed recorded branches**, then freezes them for prior
+  samples. Independently sampled branches are never assigned the recorded branch's label during head fitting.
+
+**Early optimization diagnosis, update 500 (exploratory):** the monitored constant-code behavior is confirmed across all
+200 DEV roots, not just one training batch. The capacity arm has 2 distinct joint codes; the penalized arm has 1. Swapping
+the next frame changes 0.75% versus 0% of factor assignments (initially 35.08% for both).
+- At initialization the completion gradient into posterior logits is **exactly 0**, because the adapter's output weight
+  is zero, while the β=0.001 rate gradient norm is 4.39e−5 on the two-root control. This is an initialization defect in
+  this pilot's learning signal, not a property of continuous JEPA or of the whiteboard hypothesis.
+- At update 500, completion-logit gradient norms are 4.02e−7 (capacity) and 1.15e−9 (rate). The penalized arm's rate gradient
+  is 7.56e−6, **6,548×** its completion gradient. Random hard codes change the predicted tokens by up to 0.0564/0.0518, so
+  the decoder is not literally invariant to all codes; the learned encoder assigns almost constant ones.
+- These measurements establish channel disuse and a badly imbalanced initial/early gradient. They do **not** isolate the
+  full cause of the unpenalized arm's collapse. It starts using more codes on later monitored TRAIN batches, so the fixed
+  comparison is retained through its declared budget. A constant-code negative cannot reject compact innovation.
+- This relates to documented latent-channel collapse with strong decoders
+  ([He et al., ICLR 2019](https://arxiv.org/abs/1901.05534)); our hard-code rate surrogate is not their VAE ELBO.
+  Source/results: `20261012_oracle/innovation_channel_diagnosis.py`,
+  `oracle_v1/learned_innovation/channel_diagnosis_u0500.json`. Any repair must separate channel optimization from prior
+  fitting and preserve these initial results.
+
+**Separating the observed RNG content (CPU):** `innovation_content.py` evaluates the learned posterior on all 32 real
+successors of each identical root history/action, using exported native causal features. CPU/GPU code assignments on the
+original branches agree exactly. Mob occupancy varies across keys in **155/200 roots**. At update 1,500 both arms have
+**0/200 roots with any code variation across keys**, hence 0 empirical code entropy and 0 measured code/mob mutual
+information on this fan. At update 500 the capacity arm has code variation on 1 root, but none of the 155 mob-variable
+roots; the rate arm has none. The low prior CE therefore measures a predictable constant target, not learned chance.
+K=32 under-resolves rare alternatives; the exact constant-code finding applies to these sampled futures.
+
+**Optimization-control follow-up, predeclared before launch:** use four readout-FIT daytime roots and their distinct
+observed successor tokens. The history/action repeats while the successor varies; no readout-TEST episode is trained.
+Match four models: no code, learned hard code, learned soft probabilities, and assigned hard codes identifying each
+distinct observed future. Same parent, initialization, optimizer and seeded case batches; full D loss on the current
+successor. No prior or rate penalty. All models are free to train; no hypothesis about frozen-backbone capacity is added.
+- The assigned-code arm tests whether completion can use a known compact identifier. It is a deliberately supplied
+  positive control, not a learned innovation. The soft arm deliberately permits continuous future information and tests
+  the hard-quantization/gradient path; it is not a deployable 18-bit proposal.
+- Report error versus the exact empirical conditional-mean MSE floor, actual code use and the learning curves. Budget
+  2,000 updates with an initial stop/review at 500. A failure of the assigned-code control prevents an inverse-encoder
+  failure claim; a still-improving curve does not establish a negative. This overfit control provides no generalization,
+  sampled-distribution or actor result. Outputs remain under `learned_innovation/optimization_control/`.
+- The primary queue tests one-step completion/distribution first; it defers H16 if both current codes are constant or
+  shuffling them produces identical output. This is a necessary code-use check, not a new capability gate.
+
+**Completed primary result (10-13): this learning mechanism collapses; the compact-innovation hypothesis is unresolved.**
+All three worlds completed 3,000 updates and 720,000 targets each. The independent CPU sampler reproduction matches the
+final ledger exactly (`38f088d3...f4696cc30`); 12,784/48,000 sampled windows are terminal (26.63%). The 200-root evaluation
+and 32-key content checks are complete.
+- Both final posteriors assign **one joint code across all 200 original successors**, and **one code across all 32 RNG
+  futures within every root**. All 155 mob-variable roots have constant codes. Empirical code entropy and code/mob MI are
+  0 on the fan. Current-code shuffling changes the generated output by exactly 0 for both arms. The prior targets are
+  trivial: held assignment NLL is 0.000245/0.0000617 bits for capacity/rate. These are not estimates of game entropy.
+- On the 50 readout-TEST episodes, capacity posterior D minus control is **−0.000003 [−0.000602, +0.000552]**; its sampled
+  whole-frame energy difference is **+0.000642 [−0.000312, +0.001639]**. Neither resolves. The rate arm improves D by
+  **−0.001042 [−0.002188, −0.000070]** and whole-frame energy by **−0.000741 [−0.001417, −0.000082]**. These small exploratory
+  prediction gains cannot be credited to learned stochastic innovation: its code is constant, posterior/prior output
+  metrics coincide, and the adapter adds deterministic trainable capacity. No actor/decision benefit is established.
+- **Measurement control:** deterministic and sampled methods now use the same repeated-root inference batch shape.
+  Initial point-loss differences are exactly 0; energy differences are below 6e−18. The earlier unmatched-BF16-batch
+  exports (`unmatched_batch_eval_*`) had a spurious initial D difference of 1.54e−5 and are preserved with the exact
+  original evaluator source. They are excluded from the result. FP64 accumulation avoids spurious averaging differences.
+- H16 was deferred by the predeclared necessary code-use check. A recursive run of a constant-code channel would test
+  another deterministic adaptation, not innovation completion. The 26-case, four-FIT-root optimization control is now
+  running toward its initial 500-update review; no inverse-encoder/capacity verdict is available before that control.
+- **Interpretation:** the deployed prior cannot supply chance that its learned inverse encoder never encodes. The
+  initial zero-gradient defect and early rate imbalance are measured, but do not establish the full upstream cause of
+  the unpenalized collapse. The small control separates completion with supplied information from hard/soft inverse
+  learning; it must succeed before a negative is used against the whiteboard hypothesis.
+- Evidence: `learned_innovation/eval_u3000_h01/analysis{,_contract}.json`, `content/*_u3000.json`,
+  `recursive_queue_decision.json`, `sampler_reproduction.json`; original/generated-fitted mob heads remain separate.
+
+**Optimization control's 500-update review:** on 26 distinct futures, MSE divided by the exact conditional-mean floor is
+1.0733 (no code), 1.0722 (hard posterior), 1.0713 (soft posterior), **1.0618 (supplied identifiers)**. None beats the
+deterministic lower bound. The positive control is therefore not established, and a hard/soft encoder failure reading is
+premature. Every curve is still improving from 1.5109 at initialization. Reviewed and resumed the same models/optimizers
+and sampler to the declared 2,000-update budget; no new seed or architectural change. Source/data/scopes stay fixed.
+Proofs: `optimization_control/review_u0500.json`, source-bound resumable `state.pt` and per-milestone outputs.
+
+**Update-800 optimization reading (interim):** the supplied-code model now beats the exact deterministic-mean floor:
+MSE/floor **0.75245**, versus no-code **1.06243**, learned-hard **1.06324**, learned-soft **1.05977**. Supplied codes identify
+26 futures (at most 5 bits of information per case), rather than providing a complete spatial occupancy map. This
+establishes partial future-specific continuous completion on this tiny support, not generalization or coherent H16.
+The categorical completion path is therefore capable of using supplied distinctions; the joint learned interfaces have
+not yet done so. Because soft learning also lags, blaming hard quantization alone is premature. Continue the fixed-budget
+control; distinguish representability from inverse-encoder/decoder coadaptation, rather than declaring a JEPA failure.
+
+**Completed 2,000-update optimization control (10-13): supplied distinctions work; learned hard and soft interfaces fail
+on this tiny support.** The unchanged four-arm control finished its declared budget. Recomputed source hashes, contract,
+exact target bytes and saved outputs agree. The four FIT roots contain 5/16/3/2 distinct futures, weighted uniformly as
+26 training cases; this is deliberately an overfit/optimization diagnostic, not the environment's outcome frequencies.
+
+| arm | final MSE | MSE / exact deterministic conditional-mean floor | own case is nearest real future |
+|---|---:|---:|---:|
+| no channel | 0.00504717 | 1.05126 | 4/26 |
+| learned hard posterior | 0.00505249 | 1.05237 | 4/26 |
+| learned soft posterior | 0.00502762 | 1.04719 | 4/26 |
+| supplied hard outcome IDs | **0.000073114** | **0.015229** | **26/26** |
+
+- The exact FP64 conditional-mean MSE floor is **0.0048010583**. Supplied IDs reduce error 98.48% below that floor and
+  produce 97.98% of the real within-root token variance. The same existing real-fitted reader recovers all **32 skeleton
+  and 15 cow occupancies**, with **zero false positives**, on both the real targets and supplied-ID predictions.
+  These four roots contain **no zombie or arrow occupancy**: this is no new damage/death result.
+- The hard interface has one joint code and exactly zero within-root prediction variance. The soft interface also has
+  one argmax code, but argmax counts do not bound its continuous information. Its *actual output variance* is only
+  **0.001054%** of the target's within-root variance. Thus removing hard quantization did not recover future-specific
+  prediction here. Soft and hard failures localize this implementation's learned-interface/coadaptation problem;
+  they do not identify its entire upstream optimization cause.
+- The supplied IDs identify cases (at most 5 bits across the 26 IDs). They are not learned, physical innovations or a
+  claim about chance entropy. Completion can express these supplied continuous futures; no generalization, calibrated
+  sampling, recursive coherence, four-way uncertainty separation or actor benefit follows from this overfit result.
+- All negative milestones, final model/optimizer/RNG state, source-bound contracts and prediction snapshots are retained.
+  The optimization control is complete. No further posterior-collapse repair or substantial experiment was launched.
+- Evidence: `oracle_v1/learned_innovation/optimization_control/{contract,result,completed_analysis}.json`; CPU saved-output
+  analysis: `20261012_oracle/innovation_overfit_analysis.py`. No new head was fitted for this final analysis.
+
+### 10-14 PAIRED EVENT COMPLETION — stronger coordination; coherent completion fails
+
+**Question:** does a continuous source-associated event that owns both endpoint edits learn coherent stochastic
+movement better than the existing destination-centered direct energy generator? Exactly two arms from the original
+D parent; shared encoder/backbone/trunk initialization, TRAIN windows, Gaussian draws, energy objective and optimizer.
+Budget:3,000 updates, batch16, L16,720,000 next-state targets/arm. No simulator labels or future-event masks in training.
+
+- Preregistered before implementation in commit`108469a`; executable study and documented pre-main correction in
+  `8e0ce47`. Protocol:`20261012_oracle/PAIRED_PREREG.md`; code:`paired_{model,train,eval,analysis,diagnostics,checks}.py`.
+  Criteria:`0270895371fa8356764b7243a7d7789864f569be15828dccd61c6a6546c6033a`.
+- Shared continuous packet/gate/soft routing drives contextual removal and arrival writes; no independent stochastic
+  destination writer, hard assignment or feature-sum conservation. Capacity:direct6,962,134 / paired6,971,350
+  parameters; completion580,294 /589,510 (+9,216:0.132% total,1.588% head). Before semantic evaluation/main training,
+  the initial narrow decoder was replaced to preserve a full192-rank output map; earlier4-update implementation
+  fixtures and their exact sources are archived in `paired_event/preflight_history/v1`.
+- Final execution proof: interrupted2→4 vs uninterrupted4 gives model difference0, optimizer7.05e-12, exact RNG/ledger
+  streams, causal future/replay difference0 and nonzero gradients from both independent noise draws. Actual B16 peak
+  allocation1.590GiB with both models resident. Initialization checkpoints remain byte-identical through resume.
+- **Measured reference limitation:** both initialized arms reproduce the same event-off parent reference. On14 clean
+  sources, real-reader validity is12/14 and bank-reader validity6/14; the other cases are multiple apparent destinations,
+  not absences. Scored static corruption0.2664%. Thus b is not assumed to be a valid afterstate. Final readings separate
+  systematic baseline correction from sampled variation and reference-valid/invalid packet interventions.
+- Physical validity, valid cow movement and joint event-law improvements are binding alongside scored35 joint occupancy
+  ES, original absolute coherence/static/readout caps and alternative coverage. Isolated post-attention packet swaps,
+  untied writes, routing concentration,128-shuffle dependence and stable/uncertain variance/mean fidelity are scheduled
+  diagnostics. Existing14 sources are exploratory; original fresh reservation/20-cow confirmation rules remain unchanged.
+- Scope:local stationary-camera movement coordination. All104 roots retain scroll/static/camera diagnostics. No H16,
+  actor, nuisance invariance, long-memory or persistent-terrain claim. Main training/evaluation are resumable; scripts log
+  to `artifacts/eda/levers_logs/paired_event_20261014.log`. Evidence:`artifacts/eda/oracle_v1/paired_event/`.
+- **Completed endpoint:** both arms3,000 updates. Registered verdict`coherent_completion_not_established`;
+  `allows_confirmation=false`. No reserved fresh data opened. Primary-reader source validity560→613/896
+  (**62.50→68.42%, +5.92pp [0.33,10.72]**); duplication154→85/896 (**17.19→9.49%**), but absent/multiple
+  remain283/896 (**31.58%**). Cow valid movement33→49/512 (**6.45→9.57%**), difference+3.13pp[−1.17,7.23],
+  against real41.02%. Second-reader cow movement35→36/512; source-validity improvement unresolved.
+  Joint occupancy ES0.024295→0.024876, no improvement; second-reader ES worsens+0.002408[0.000937,0.003968].
+  Camera/scored-static/alternative coverage pass; physical coherence, movement, joint law and reader sensitivity fail.
+- **Measured dependency benefit:**128 matched marginal-preserving shuffles give validity dependence2.83pp direct vs
+  10.27pp paired; gain**+7.45pp[1.45,13.23]**, corroborated by the second reader+8.98pp[3.99,13.90].
+  Overall source-count variance0.467/0.461 vs real0; count conservation remains unresolved and reader-sensitive.
+- **Single-event intervention:** one post-attention packet changes source clearing103/896 times, joint clear/create27,
+  and valid stay→move18 under the primary reader. Only**8/896** moves agree under both readers, all on one cow root;
+  either endpoint ablation eliminates them. Real-fan support and eligible terrain match, but generated local features
+  remain outside the real split reference. All8 cow event-off references are valid STAY under both readers.
+- **Frozen route hardening:** source argmax makes validity613→619/896, increases multiple destinations190→204,
+  and lowers second-reader validity568→551. Inference hardening does not repair this frozen model; changed write
+  magnitudes prevent isolating soft splitting's upstream contribution. Source/destination edits still fail to construct
+  reliable semantic counterparts. Loss/optimization/target-geometry attribution is unisolated.
+- **Variance localized numerically:** full81 variance/real fan7.917× paired vs1.705× direct; scored35 only1.369×/1.268×.
+  All**164** reference cells with centered RMS<0.1 are newly entering the view under exact recorded camera offsets.
+  Their pre-LN variance sum**0.257581→84.813538** after final LN (**329.27×**), accounting for**81.28%** of total
+  paired sampled variance. Suppressing unscored-source packets reduces edge variance90.813→17.482 (−80.75%) with
+  interior valid-source/cow-movement counts unchanged. LN compresses scored-domain variance(post/pre0.777): entering
+  normalization and interior movement incoherence are separate. Entering does not imply never observed in history.
+- **Budget/efficiency:** paired training components+12.76%, completion1.881×, +0.132% total parameters; peak1.590GiB.
+  Paired validity90.18% at500 updates came with zero cow movement; final joint ES still improves, so convergence and
+  universal architectural failure are not established. Dense stochastic computation remains; no adaptive-selectivity claim.
+- Final write-up:`20261012_oracle/PAIRED_RESULTS.md`; raw rows/reports under`paired_event/diagnostics/`.
+  All29 source/input pins and3,000-update batch/noise ledger verify exactly. Frozen failure diagnostics were declared
+  before computation in`PAIRED_FAILURE_PREREG.md`. Negative milestones/checkpoints are retained. One-step exploratory
+  evidence only; no new nuisance, long-memory, terrain-persistence, recursive or actor result.
+- **CPU semantic curve audit:** last available interval1,500→3,000, paired all-source movement5.80→12.61%
+  (+6.81pp[2.46,11.16]); duplication18.08→9.49%(−8.59pp[−12.05,−5.36]), but absence3.01→10.38%
+  (+7.37pp[4.13,11.16]). Cow event Brier improves under both readers; primary cow-movement gain unresolved,
+  second-reader gain+3.71pp[0.59,6.45]. Temporal dependence change unresolved; total validity does not improve.
+  Of61 additional movement draws,36 are skeleton/17 cow/8 zombie, so3 skeleton roots dominate the aggregate gain.
+  These are late semantic gains with incomplete coherence, rather than loss-only learning or evidence of convergence.
+- **CPU objective sensitivity:** exact current token energy distance,14 strict roots,disjoint16/16 real-future split,
+  32 independent five-token shuffle repetitions/root. Each full192-D token marginal is preserved; common whole-frame
+  permutation scores bit-identically. Both readers' validity100→52.59%; energy score0.036499→0.038769,
+  penalty+0.002270[0.001341,0.003205]. Cow8 penalty+0.002993[0.001743,0.004078]. Full empirical32 sensitivity
+  agrees. Objective detects this constructed joint incoherence; scalar gaps do not identify parameter-gradient cause.
+  Shuffling includes contextual token changes; finite without-replacement permutations are not iid ensemble draws.
+- **CPU normalization separation:** actual saved-output gradients on all46 unscored tokens are exactly0. Scaling
+  only unscored synthetic pre-LN inputs by1/1,000 changes scored loss/gradients by0. Entering amplification cannot
+  consume gradients through excluded final outputs in teacher-forced training. Earlier packets can still affect scored
+  outputs via attention/writes. CPU FP32 reference recomputation puts93.79–99.16%(mean97.85%) copy weight on
+  exactly zero-padded candidates at all164 GPU-defined low-reference cells; generation weight mean0.937%.
+  This is corroboration, not exact BF16 CUDA replay(low-reference sets agree103/104 roots; max reference difference0.05785).
+  Evidence:`diagnostics/{curve_reassessment,objective_sensitivity,normalization_gradients_cpu,reassessment_preservation}.json`;
+  raw rows and exact executed sources retained beside them. Assessment:`20261012_oracle/PAIRED_REASSESSMENT.md`.
+
+### 10-14 DIRECT STOCHASTIC COMPLETION — preregistered before optimization
+
+**Question:** can direct Gaussian-noise completion learn physically valid alternative successors, rather than a
+future-looking posterior/codebook/prior? This is a controlled one-step feasibility study. It does not establish the
+WHITEBOARD four-way uncertainty separation, recursive fidelity or actor benefit.
+
+- Exactly two arms share the frozen Raw encoder, unconditioned D parent, live corrt/fmamba backbone, new spatial
+  completion head, initialization, batches, independent noise draws and optimizer: **3,000 updates, batch16, L16**,
+  720,000 next-state targets per arm. The sole contrast is first-power point distance versus that same attraction
+  minus the energy score's half pairwise distance. Noise influences both routing and generated content.
+- TRAIN input-only brightness selection retains **367,619 windows / 6,109 episodes**, with all17 actions. There are
+  no simulator labels, future-event masks or terminal oversampling in training. The fixed distance scores35 interior
+  tokens, excluding HUD and entering terrain; unscored corruption and variation remain reported diagnostics.
+- Frozen real-reader controls pass on all **104×32** exploratory real mob layouts. Strict joint source/destination
+  eligibility has only **14 variable roots (8 cow)**, so this panel can establish only an exploratory lead. Samples
+  with missing/multiple destinations, duplicates or wrong camera registration stay in the physical denominator.
+- Final64-sample evaluation requires resolved joint semantic distribution improvement, valid alternative outcomes,
+  physical coherence and paired static/readout fidelity. Frozen criteria ID:
+  `fa9a79d435344a3d4840350c5881c10d9220d90be9152bcb79014c05b994f619`.
+  Source absence/multiplicity, duplication and camera margins are **0.00669643**; paired static corruption margin
+  **0.00328781**; reader disagreement **0.00060969**; valid-alternative coverage minimum **0.88616071**. These are
+  operational real-fan/readout resolution allowances, not population confidence bounds.
+  The earlier preflight ID `003e76aa608a...` is retained separately; the final source pin enforces the already-declared
+  fresh128-root minimum and does not change any numerical criterion.
+- A promising final result triggers unchanged evaluation on reserved fresh seeds **2026101400+**: at least128 bright
+  roots and20 independent variable clean source roots including20 cows, with512-root/1,536-episode caps. Thresholds,
+  readers and checkpoints remain fixed. Insufficient coverage is inconclusive; an incoherent diverse output fails.
+- Milestones0/500/1,500 are optimization diagnostics only. Both arms save model, optimizer and all RNG/ledger state;
+  interrupted-versus-uninterrupted validation precedes the full budget. Measure backbone/head costs, peak memory,
+  marginal sample costs and sampled variation locations. No third arm, larger generator, H16 or actor is scheduled.
+- Protocol/code: `20261012_oracle/DIRECT_PREREG.md`, `direct_{model,data,train,eval,coherence,analysis,fresh,checks}.py`.
+  Evidence: `oracle_v1/direct_generator/{data,criteria.json,validation.json,training,eval_*}`. Negative results from the
+  earlier learned-innovation control above remain unchanged.
+
+  Pre-training numerical validation: both scored noise paths and causal backbone receive nonzero gradients; changing
+  the unused future input changes current predictions by **0.0**. Interrupted2→4 and uninterrupted4 runs give model
+  weight difference **0.0**, optimizer-state difference **1.0e-11**, identical RNG/ledger streams and peak allocated
+  memory **1.40GiB**. These are execution checks, not scientific outcome results.
+
+**Completed result (10-14): `coherent_completion_not_established`.** Both arms finished3,000 updates/720,000 targets;
+all input/source/checkpoint pins match, the entire3,000-step batch/noise ledger reproduces exactly, and TRAIN/eval
+episode overlap is zero. Joint scored35 mob ES improves **0.031417→0.024439** (paired−0.006978[−0.009680,−0.004326]),
+but energy has **317/896** invalid clean-source draws:136 absent,181 multiple, including140 source-retained duplicates.
+Both frozen readers agree307 are invalid. Camera and paired static fidelity pass; physical coherence, alternative
+coverage and the small reader-disagreement guard fail. The failed result correctly blocked fresh confirmation.
+
+- The energy channel learned semantic alternatives:12/14 sources, mean3.071 valid alternatives versus point0.786
+  and real3.643. Cow valid moves remain **8.20% versus41.02% real**; point stays on all512 cow draws. This is partial
+  distribution learning, not calibrated coherent movement or a four-way uncertainty separation result.
+- **Joint coordination diagnostic (CPU):** independently shuffling destinations preserves exact per-cell marginals.
+  Real validity falls100%→54.10%; energy64.62%→61.89%. Learned dependence adds2.73pp[0.39,5.14] of validity, versus
+  45.90pp[39.19,51.31] for real futures. Conservation fraction is5.33% (cow9.58%), versus100% real. Coordination is
+  weak rather than absent. `direct_generator/diagnostics/joint_shuffle/{analysis,paired_intervals}.json`.
+- **Path interventions (GPU, frozen weights):** original forecasts replay exactly. Removing off-source source copies
+  changes317 invalid draws to311; hard per-destination choices leave307. Fixing routing at the first draw leaves242,
+  fixing generation leaves300; both paths contribute. Shared-only noise over four fixed local references leaves
+  37.28% invalid; local-only leaves35.30%. None is a repair or a retrained architecture comparison.
+  `diagnostics/{paths,noise_channels}/analysis.json`.
+- **Objective diagnostic (CPU):** stable-cell variance is53.09× this real fan, but suppressing it at fixed means makes
+  held latent ES worse by+0.001698[0.001194,0.002319]. Attraction improves0.055893→0.051242; lost diversity credit is
+  larger,0.027953→0.021604. The current biased predictions receive a local objective benefit from excess spread;
+  this does not contradict proper scoring or prove the sole training cause. Static terrain corruption remains
+  0.2664% point/0.2724% energy, so contextual variation is not automatically physical corruption.
+  `diagnostics/stable_spread/result.json`.
+- **Metric dependence sensitivity (CPU, model-free):** per-cell real192-D token permutations preserve feature and
+  semantic marginals exactly, but create44.55% invalid source outcomes. On those same14 sources the declared latent
+  ES worsens only5.93% (0.037699→0.039936, paired+0.002237[0.001898,0.002566]); cow-only7.08%. Joint decoded ES also
+  detects the damage, with6.78% increase. The modest score cost of large coherence damage is measured directly;
+  it is not proof of a sole optimization cause. `diagnostics/dependency_sensitivity/result.json`.
+- **Interpretation:** direct proper-score learning activated the stochastic path that the prior/posterior study failed
+  to activate. Its completed samples still lack joint source/destination consistency. Repeated source copying alone,
+  soft-versus-hard destination choice and dropping one noise channel do not explain or fix most failures. Literature
+  agrees that a proper population optimum is distinct from finite-model coherent sampling; ITC's joint matching and
+  FGN's shared-noise precedent require testing in contextual continuous features. No further training or recursion ran.
+  Full results, exact scope and primary sources: `20261012_oracle/DIRECT_RESULTS.md`.
+
+### 10-12 GENERATED-PREFIX COMPLETION — predeclared before training (21:07 AEDT)
+
+**Question:** does exposure to detached generated history improve the oracle-conditioned world's recursive prediction?
+User authorized this separating experiment after the D-loss/readout diagnosis. This tests conditional branch tracking;
+it does not yet learn stochastic innovations or validate an actor.
+
+- **Initial state:** both arms load exactly `oracle_v1/loss_intervention/D_u3000.pt`, including its OracleCond. Frozen Raw
+  encoder/tokens, corrt/fmamba architecture, full D objective, TRAIN support-v2 row pool, optimizer, seed-11 main sampler,
+  BF16/IEEE and 3,000 updates at batch 16 are fixed. World and OracleCond remain trainable in both arms.
+- **Both arms:** retain the original full-L16 teacher loss and add one matched endpoint loss per row, weighted
+  **0.5 teacher + 0.5 endpoint**. The teacher control receives real context at that endpoint; the prefix arm receives its
+  own detached generated context. This preserves the ordinary 15-target training signal and matches added supervision.
+- **Endpoint exposure:** independent sampler seed 20261012; prefix length p chosen equally from {1,2,4,8,15}; main target
+  t chosen uniformly from [30,63], terminal target t=63. Prefix length is independent of target and terminal status.
+  Starting context is real frames [t−p−15,t−p); generate p states without gradient, then predict target t with gradient
+  from the final 15 frames. Control context is real [t−15,t). Both use actions [t−15,t), next-layout oracle [t−14,t+1),
+  target token t and endpoint input position 14. p=15 makes the entire final context generated. These 64-frame slices
+  avoid the earlier short-prefix/history confound. No gradients pass through prefix generation.
+- **Controls before launch:** frame/action/oracle timeline sentinels; p=0 and truth-substituted-prefix equality; p=15 full
+  generated context; first prediction parity with the evaluator; generated tensors detached and final loss gradients live;
+  terminal and nonterminal endpoint labels represented at every p; interrupted/resumed optimizer/RNG/sampler restoration.
+- **Budget/readings:** save full resumable state every 100 updates and snapshots at 0/500/1,500/3,000. Evaluate the same
+  200 DEV episodes through H16 (exploratory reuse), both factual and self-fed. Paired episode comparisons report matched
+  generated-fitted mob readouts, original-reader sensitivity, location/source residue, camera alignment, near-player
+  terrain, health/food and direct token-error components. Readout FIT/DEV/TEST episodes stay separated as in the preceding
+  CPU control. Primary all roots; common alignment is a selected sensitivity. No new binary gate or unconditional seed 2.
+- **Interpretation:** a smaller recursive gap without losing factual capability supports generated-context robustness at
+  this adaptation budget. A negative while learning is still moving is not proof against continuous completion. Full-screen
+  recorded oracle layouts can become inconsistent after a camera/player branch error; diagnose that separately. HUD timer
+  memory and unprivileged innovation remain distinct questions. This intervention differs from JEDI's random switching,
+  while sharing its predicted/encoded-context training principle ([§3.2](https://arxiv.org/html/2605.13013v1#S3.SS2)).
+- **Files:** new `20261012_oracle/prefix_intervention.py` and prefix evaluation/readout helpers; preserve prior source-bound
+  scripts. Outputs `oracle_v1/generated_prefix/`, stdout `artifacts/eda/levers_logs/`. The prefix arm costs extra no-gradient
+  rollout work; record per-arm time and compute instead of claiming equal wall time. No architecture integration follows.
+
+**Launch/verification (21:17 AEDT):** actual model p=0 outputs, first prefix/evaluator outputs and original D teacher loss
+agree exactly (max difference 0). p=15 has 15 no-gradient calls plus one final gradient call; world/oracle gradient norms
+0.5543/0.01661 on the two-row check. B16 smoke peak 1.659 GiB. Interrupted 2→4 versus uninterrupted 4 reproduces sampler,
+exposure stream, Torch/CUDA RNG and batch ledger; GPU parameter endpoints differ up to 1.58e−6, so no bit-exact training
+claim. Serialized model/optimizer restoration is checked exactly. Resume/reference smokes overlapped briefly and are not
+used for throughput. Full 3,000-draw CPU preview has terminal fractions 25.65–27.30% across p and predicts final ledger
+`b6e6519c7ec90fef26e919558158d133c135dadef8012cf0b8ad7032d7b92a5f`.
+- Official run completed a ten-update throughput check, then resumed unchanged as
+  `oracle_generated_prefix_20261012.service`; evaluation/readout queue `oracle_generated_prefix_eval_20261012.service`.
+  No other research GPU job was active at launch. Both arms will receive 720,000 main targets + 48,000 endpoint targets.
+- Proofs: `oracle_v1/generated_prefix_real_checks.json`, `generated_prefix_resume_proof.json`,
+  `generated_prefix_sampler_preview.json`, `generated_prefix/eval_validation.json`; helper sources are retained beside
+  the trainer. Primary source/inputs contract `5ea495dc9bd534f66c7673a2e0095298e47eace83ed740dc8aa9d7279bc43e04`.
+  Initial matched batch (p=4) has equal main teacher loss 0.0296357; endpoint D loss is 0.0279704 on real context versus
+  0.154864 on generated context. This is a training-input difficulty check, not an outcome verdict.
+- **CPU evaluation-chain validation completed (21:29):** four readout CLIs ran on an isolated old-D prediction fixture,
+  with GPU disabled. Prior readings reproduce exactly; 100 identical-arm contrasts and their intervals are exactly zero.
+  Resume reuses ten results, leaving all 21 output hashes and timestamps unchanged. Proof:
+  `generated_prefix/eval_cli_validation.json`. An initial validation-only provenance-hash comparison failed because arm
+  labels correctly differ; preserved in the fixture, with no numerical pipeline defect or source change. The fixture is
+  not a result of the new worlds. Training is active with a durable update-400 checkpoint; no final report exists yet.
+- **Training completed (10-13):** both arms reached 3,000 updates, each with 720,000 main + 48,000 endpoint targets.
+  The final matched batch ledger agrees exactly with the independent CPU preview.
+- **Evaluation control:** the identical starting arms produce exactly equal predictions and accessories on all 200 DEV
+  roots (`generated_prefix/eval_u0000/analysis.json`). This establishes baseline parity for the treatment comparison.
+
+**Completed result (10-13): partial HUD gains; generated-prefix exposure does not close the recursive gap.**
+Primary comparison: 200 reused DEV episodes, all roots, depths 9–16, matched 3,000-update arms. Both receive the true
+next-screen zombie/cow/skeleton/arrow layout; the oracle supplies neither intrinsic timers nor attack cooldowns.
+
+| late self-fed reading | teacher control | generated-prefix arm |
+|---|---:|---:|
+| near-player tile accuracy | 87.52% | 87.00% |
+| camera-aligned root-steps / 1,600 | 1,218 | 1,229 |
+| health MSE, native hearts | 1.384 | 1.529 |
+| food MSE | 0.633 | 0.597 |
+| drink MSE | 0.925 | 0.547 |
+| energy MSE | 0.807 | 0.570 |
+| damage caught / 48 | 28 | 29 |
+| false health drops / 1,523 | 28 | 26 |
+| cow TP / 870; frozen-reader FP | 819; 245 | 852; 838 |
+| zombie TP / 583; frozen-reader FP | 498; 35 | 514; 147 |
+
+- **Resolved benefit:** drink MSE −0.377 [−0.528, −0.238], energy MSE −0.236 [−0.451, −0.039] in paired
+  episode-bootstrap intervals. On the common camera-aligned subset (1,138 late root-steps), drink retains its gain
+  −0.279 [−0.432, −0.140]; energy −0.099 [−0.313, +0.118] is unresolved. Health, food, damage catch, terrain and late
+  camera-alignment contrasts are unresolved. Both arms still catch 0/29 recovery events with the fixed class reader.
+- **Objective tradeoff:** recursive frame L1 rises 0.2124 → 0.2376; difference +0.02519 [+0.01386, +0.03714]. Mean
+  squared error 0.1677 → 0.1723 is unresolved, while mean frame-maximum squared error falls 9.498 → 7.390;
+  difference −2.108 [−2.611, −1.615]. The aggregate D-loss change −0.01393 is composed of **+0.00463 MSE,
+  +0.00252 weighted L1, −0.02108 weighted maximum**; it reflects fewer extreme coordinate errors with worse mean
+  absolute fidelity. Factual frame MSE also rises 0.01184 → 0.01332 (+12.5%; paired difference +0.00148
+  [+0.00116, +0.00183]), so preservation of factual feature fidelity is not established.
+- **Readout control:** on the same 50 TEST episodes, prefix cow TP/FP is 212/131 with the original frozen reader,
+  207/38 after changing only its threshold on DEV, and 207/34 with a generated-fitted equal-capacity head. Teacher
+  generated-fit counts are 200/6. Generated-fit cow F1 is 0.9501 versus 0.9079, difference −0.0422 [−0.0869, +0.0029]
+  (unresolved); its prefix precision cost is resolved, −0.1120 [−0.1763, −0.0531], at the DEV-selected operating points.
+  The DEV-count sensitivity also retains excess prefix FP (28 versus 6). Generated-fit zombie F1 0.8193 versus 0.7865
+  is unresolved. Frozen-reader FP therefore overstates a semantic loss, but refitting does not establish a prefix gain.
+- **Spatial information remains readable:** generated-fit cow top-1 is 184/186 teacher versus 183/186 prefix; zombie
+  93/94 versus 89/94. Prefix local 3×3 AUC is 0.99674 cow / 0.98757 zombie. These presence-conditioned readings show
+  substantial localization under known outcomes; they do not certify calibrated absence, physical state validity or control.
+
+**Post-hoc CPU emission intervention:** ran the existing `decoder_context_shift.py` on both final prediction exports,
+with no model inference/training. Reconstruction and frozen-reader equality checks pass. On the prefix arm's own
+both-current-and-previous-camera-aligned late subset (1,223 root-steps; 673 true cow cells), 580/666 clean cow FP
+(87.1%) have a copied predecessor whose generated features read cow while both the physical source and its true-token
+reader are absent. Replacing only copied candidates with true previous tokens changes **FP 690 → 126; TP 663 → 656**.
+Paired FP/true delta −0.838 [−1.647, −0.332]. Replacing only the generator gives FP 656; routing only gives FP 723.
+The corresponding teacher-arm copy swap is FP 194 → 80 on its own aligned subset. Prefix zombie copy swap is
+FP 113 → 52, TP 400 → 403. These are emission-only substitutions: they isolate propagation of false reader responses
+through copied generated features, without proving literal duplicated objects or a recursively repaired trajectory.
+
+**Generated-fitted HUD control (10-13, CPU):** same 100 FIT / 50 DEV / 50 TEST whole-episode split; FIT-only
+standardization, equal-capacity ridge family, DEV-selected alpha, no depth/position input. TEST late depths 9–16 contain
+11 damage and 8 recovery opportunities.
+- Health MSE on the 50 TEST episodes: teacher original **1.2445**, generated-fitted **1.4598**; prefix original **1.5790**,
+  generated-fitted **1.7038**. Matched heads catch 2/11 teacher versus 4/11 prefix damage events, and 0/8 recovery in both.
+  These fits provide no health rescue. They are not information ceilings or a resolved teacher-versus-prefix comparison.
+- The fresh head's TRUE-token positive control has health MSE **0.04928** and drink **0.03117**, but food **1.3780** and
+  energy **0.29586**. For food, one TEST episode accounts for 55.2% of squared error, and TEST includes food=0 while FIT
+  ranges 1–9. The family therefore cannot support a broad claim that generated HUD facts are absent.
+- A simpler FIT/DEV-trained affine calibration of the existing four-counter reader lowers teacher health MSE
+  **1.2445→1.0719**, and prefix **1.5790→1.3123**. These are descriptive point changes, without a paired uncertainty claim;
+  they retain the teacher/prefix ordering and do not establish repaired dynamics.
+- Source: `20261012_oracle/hud_readout_refit.py`. Outputs: `generated_prefix/hud_readout_refit/`, including
+  `positive_control_calibration.json`; original prediction exports/readers are unchanged.
+
+**Reading:** this matched intervention changes generated-context exposure and reveals a partial benefit. The copy-feedback
+failure survives, and the stronger mob result remains the teacher control with generated-state readouts. The cause of the
+learned prefix arm's increased copied-feature bias is not isolated by this experiment. No evidence here settles full
+backpropagation, from-scratch mixed-context training, learned innovations, persistent timer memory or actor performance.
+One training seed; the readout TEST split is separate from fitting but drawn from the repeatedly inspected world panel.
+Recorded world/conditioner compute totals are 1,630 s teacher / 2,829 s prefix, so this is matched updates/targets rather
+than matched computation. Independent CPU recomputation reproduces the four reported semantic paired intervals.
+
+**Literature:** [JEDI §3.2/§4.4](https://arxiv.org/html/2605.13013v1#S3.SS2) combines mixed predicted/encoded context with
+joint latent learning and bounded activations; its switching ablations support that recipe. [Dreamer 4 §3.2](https://arxiv.org/html/2509.24527v1#S3.SS2)
+uses denoising with noise-level conditioning and imperfect contexts. Neither establishes that the present frozen-token,
+detached-prefix continuation is sufficient. Evidence: `generated_prefix/eval_u3000/{analysis,rows}.json`,
+`readout_refit/{paired_u3000,calibration_u3000_*,spatial_u3000_*}.json`, and
+`eval_u3000/decoder_context_shift_{teacher,prefix}.json`; stdout remains in `eda/levers_logs/`.
+
+### 10-12 MATCHED D-LOSS FOLLOW-UP — completed; readout controls completed (19:21 AEDT)
+
+**Result: D changes completion tradeoffs; the experiment does not support a D-only explanation of recursive failure.**
+`loss_intervention.py` completed the predeclared 3,000 updates per arm from the same oracle-D world/conditioner, with
+identical TRAIN batches. Evaluation uses 200 DEV episodes, 15 observed frames, H16, and the frozen real-token readers.
+The world receives the true next mob occupancy at every step. These are conditional-completion diagnostics.
+
+Primary population below: all episodes, depths 9–16; 870 true cow cells, 583 zombies, 48 alive-after damage events and
+1,523 unchanged-health steps. MSE and event readings use the same fixed health/food readers in every arm.
+
+| matched arm | cow TP / 870 | cow FP | zombie recall | zombie FP | health MSE | food MSE | damage caught / 48 | false health drops / 1,523 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| shared starting model | 804 | 495 | 0.842 | 270 | 2.051 | 0.742 | 28 | 24 |
+| D, +3,000 updates | 805 | 227 | 0.847 | 70 | 1.635 | 0.661 | 32 | 25 |
+| L1, +3,000 updates | 838 | 161 | 0.895 | 40 | 1.240 | 0.465 | 29 | 13 |
+| D without maximum term, +3,000 | 828 | 213 | 0.873 | 43 | 1.321 | 0.520 | 30 | 24 |
+
+- **D continues to improve:** cow FP falls 54.1% and zombie FP 74.1%, with recall essentially unchanged. Paired
+  episode-bootstrap differences in FP/true are −0.308 [−0.458, −0.190] and −0.343 [−0.491, −0.228]. Health MSE improves
+  −0.416 [−0.755, −0.129]. These improvements also hold on the common camera-aligned sensitivity population.
+- **L1 versus concurrent D:** cow recall +0.0379 [0.0152, 0.0636], zombie recall +0.0480 [0.0171, 0.0870]; both survive
+  common alignment. Cow FP reduction is unresolved: −0.0759 [−0.1862, +0.0188] per true cow. Food MSE improves
+  −0.196 [−0.337, −0.062], and false health-drop rate −0.00788 [−0.01593, −0.00130]; both survive common alignment.
+  Health MAE improves overall, but health MSE and damage-catch differences are unresolved. Terrain and facing differences
+  are unresolved. This is a measured tradeoff, not a universal loss winner.
+- **Maximum-term contrast:** final cow-FP difference is −0.0161 [−0.1179, +0.0827] per true cow, unresolved. Its large
+  apparent FP benefit at update 500 does not persist: D/no-max FP = 477/341 at 500, 293/368 at 1,500, 227/213 at 3,000.
+  No-max improves food and drink MSE overall; only drink remains resolved under common alignment. Recall benefits weaken
+  on that selected population. Negligible clipping (D 4/3,000, L1 0, no-max 3) does not account for these contrasts.
+- **Remaining health limitation:** every arm catches 0/29 recovery steps by the fixed class reader, versus 28/29 on true
+  tokens. Late fresh-arrival damage has zero opportunities, so this panel cannot settle that mechanism.
+- **Scope:** one pretrained parent and one training seed; a continuation/loss-switch test, not a from-scratch ranking.
+  Shared alignment retains 1,143 late root-steps and is a selected sensitivity population. Intervals use 2,000 paired
+  episode bootstrap draws. No claim about a learned unprivileged innovation, an actor, or canonical Raw/TC readiness.
+
+**M0–M3 readout control: the counted excess is substantially calibration-sensitive.** `generated_readout_refit.py`,
+`readout_calibration.py`, `readout_spatial.py`: 100 FIT / 50 DEV / 50 TEST whole episodes, split seed 20261012. Fit-only
+normalization, equal-capacity 192-D linear ridge heads, existing alpha family selected by DEV MSE; no depth/position feature.
+DEV-F1 thresholds are primary; DEV-count matching is a separately reported sensitivity. Original readers remain unchanged.
+All depths fit the heads; late depths score them. TEST is separate from head fitting but reuses the inspected world panel.
+
+| +3,000 D, late 50-episode TEST | cow TP / 215 | cow FP |
+|---|---:|---:|
+| original frozen head and threshold | 205 | 44 |
+| same frozen weights, DEV-F1 threshold | 200 | 18 |
+| generated-fitted equal-capacity head, DEV-F1 | 200 | 10 |
+| generated-fitted head, DEV-count sensitivity | 206 | 17 |
+
+- Threshold-only FP/true change is −0.1209 [−0.2591, −0.0259], with recall change −0.0233 [−0.0621, 0]. At the initial
+  model, threshold cleanup has a larger recall cost: 206 TP / 89 FP → 175 TP / 33 FP. Neither is a free precision gain.
+- **Spatial signal survives:** generated-fitted D top-1 is correct on 182/186 cow-present frames and 94/94 zombie-present
+  frames. Local 3×3 AUC is 0.99886 for cows and 0.98999 for zombies. L1 is 184/186 and 93/94; no-max 183/186 and 93/94.
+  This excludes an explanation based solely on easy global background cells. Presence-conditioned top-1 and privileged
+  top-K are diagnostics, not calibrated absence/count estimation. Generated versus real-fitted zombie AUC advantage is
+  unresolved: +0.00298 [−0.00121, +0.00948].
+- **Correction:** earlier ghost/duplication language described frozen-reader false positives. Those counts alone do not
+  establish literal extra objects, irreversible information loss, or categorical-state necessity. The copied-content
+  substitutions below isolate propagation of a false reader response; completed joint-state validity remains unestablished.
+
+**Execution/evidence:** restart at update 2,000; resumed serialized world/conditioner/optimizer state exactly and completed
+at 18:58, evaluation at 19:00:16. Resume smoke preserves sampler/RNG/batch order but CUDA endpoints differ up to 1.34e−6;
+training is not bit-reproducible. Full numerical/source/input contracts, TRAIN pool verification, atomic checkpoints,
+milestone predictions and paired raw rows are under `oracle_v1/loss_intervention/`: `contract.json`, `training.json`,
+`resume_proof.json`, `eval_u{0000,0500,1500,3000}/analysis.json`, and `readout_refit/{u,calibration_u,spatial_u}*.json`.
+Final shared batch ledger: `6e53c1b824a091ca5d49b7b0788cf76d60e852a4f5bdf0b917140ad3da9c5c87`.
+Stdout stays under `artifacts/eda/levers_logs/`. All jobs in this follow-up have completed.
+
+**Literature after diagnosis:** the borrowed D coefficients are reconstruction losses in Delta-IRIS, not a theorem of
+physical validity. [JEDI §3.2](https://arxiv.org/html/2605.13013v1#S3.SS2) mixes predicted and encoded next contexts;
+[Dreamer 4 §3.2/§3.4](https://arxiv.org/html/2509.24527v1) trains on varying context noise and sequences longer than the
+context. These provide precedents for addressing generated-context mismatch, not evidence that it is repaired here.
+Historical E8/E12 failures used short rollouts without the present known-outcome control; E12 also documented a context
+protocol mismatch. They do not rule out such a controlled intervention. No new architecture or training remedy was launched.
+
+### 10-12 DECODER FEEDBACK DIAGNOSIS (CPU; u0/500/1,500/3,000 exports)
+
+**Measured local contribution: propagation of false frozen-reader responses through copied generated features.**
+`decoder_decomposition.py` and
+`decoder_context_shift.py` reconstruct the emitted token from the saved six candidate weights, raw generator and previous
+frame, then apply the actual terminal LayerNorm. Reconstruction differs ≤1.91e−6 and all frozen mob-reader decisions agree.
+- Interpret physical source labels only where **both previous and current generated camera offsets match the recorded
+  trajectory**. Strong false predecessor = generated copied candidate reads present, actual source mob flag is absent,
+  and the corresponding TRUE copied candidate also reads absent. Actual target must also read absent in the TRUE reader.
+- Initial oracle-D, depths 9–16: 1,207 both-aligned root-steps; 340 clean cow-FP cells, 269/340 (79.1%) with a strong false
+  ordinary-map copied predecessor (203 at self). Only 62/340 are also FP under teacher forcing at the same target cell.
+- **Emission-only substitutions** keep the generated hidden-state prediction and target oracle fixed: replacing only
+  copied candidates with real previous-frame tokens reduces cow FP **360 → 147**, TP **628 → 632**; FP/true difference
+  −0.320 [−0.457, −0.209]. Replacing only raw generator with its teacher-forced counterpart gives FP 360 → 319,
+  TP 628 → 621. Replacing only routing weights with teacher-forced weights gives FP 360 → 399.
+- At matched update 1,500, the same both-aligned copied-content substitution gives:
+
+| arm | baseline cow FP | real copied candidates | TF generator only | TF routing only |
+|---|---:|---:|---:|---:|
+| D | 225 | 98 | 222 | 232 |
+| L1 | 171 | 81 | 155 | 245 |
+| no-max | 282 | 123 | 259 | 457 |
+
+- At the final 3,000-update milestone, both-aligned baseline → real copied-candidate cow FP is **D 192 → 82,
+  L1 133 → 83, no-max 175 → 96**. D FP/true difference is −0.160 [−0.284, −0.072], TP 652 → 656. Substituting only the
+  TF generator gives D 192 → 200 FP; only TF routing 192 → 240. These are arm-specific aligned local comparisons;
+  the matched-arm primary comparison above uses all roots, with a shared-alignment sensitivity.
+- These are **local decoder interventions**, not repaired recursive trajectories. They isolate the contribution of copied
+  content at the observed failing emissions; they do not prove its fraction of total control loss or solve the feedback loop.
+  Standalone generated candidates are co-adapted mixture components, so their normalized reader scores are descriptive,
+  not independent valid-state predictions. Player/HUD source removal clears only 2/463 initial all-root clean cow FPs.
+- Decomposition uses source/input-bound resumable per-root CPU caches; small context-substitution controls write atomic
+  complete-arm results. Same frozen reader/thresholds. JSON evidence and raw rows are retained under
+  `oracle_v1/loss_intervention/eval_u{0000,0500,1500,3000}/decoder_{decomposition,context_shift}_{arm}.json`.
+
+### 10-12 D-LOSS CPU DIAGNOSIS (completed through 15:33 AEDT; matched retrain pending)
+
+**Historical finding: recursive fixed-reader errors occur under both losses. Matched optimization and readout controls are now completed above.**
+- `d_existing_compare.py`: fixed TRAIN readers, 200 DEV episodes, 2,000 paired episode-bootstrap draws, original FP16
+  saved predictions. Late (9–16) oracle-D cow recall is 0.926 teacher-forced → 0.924 recursive, while false positives / true
+  cows rise 0.131 → 0.577 (+0.446 [0.284, 0.657]). Oracle-L1 instead loses recall 0.533 → 0.033
+  (−0.500 [−0.542, −0.452]); its small cow census is erasure.
+- **Extra decoded zombie occupancy also occurs under L1:** TF → recursive FP/true rises +0.391 [0.243, 0.579] for L1,
+  +0.348 [0.227, 0.502] for D. Common camera-aligned sensitivity retains both increases. Terrain accuracy loses
+  8.46 points under L1 and 7.69 under D on common-aligned rows. Historical parent weights differ between these arms;
+  these comparisons cannot isolate the loss. TRUE projection damage occurs before either world/loss and remains independent.
+
+**Full objective, model-free conditional completion:** `conditional_stat.py`, `conditional_dopt.py`, `conditional_norm.py`.
+- Five real futures at depth 1, TEST roots only; group futures sharing exact complete next-mob occupancy. 308 groups
+  (2–5 futures each), 269 roots, 1,147 branches. Full D empirical optimum solved as a convex radius problem: 308/308
+  validated, 12 tiny independent epigraph checks within 1.73e−10 objective units, two-start gap ≤9.58e−10.
+- Conditional full-D optimum: cows 300/302 TP and 10 FP versus real 299/302 TP and 14 FP; zombies 171/179 TP and
+  0 FP versus real 172/179 TP and 4 FP. Applying the world's exact per-token FP32 LayerNorm changes neither count.
+- **Nonidentical support:** 239 groups have identical tokens; 69 groups vary (60 roots, 247 branches). On these 69,
+  D optimum and normalized D optimum give 66/68 cow TP, 0 FP and 54/62 zombie TP, 0 FP; real gives 65/68 cow TP,
+  4 FP and 55/62 zombie TP, 4 FP. Variation is night/render/re-encoding in 58 groups and inventory in 11.
+  This tests one-step reconstructability under known occupancy, not the population conditional optimum or recursive inputs.
+  The normalized candidate is feasible; it is not a solved LayerNorm-constrained optimum.
+
+**Fixed-output incentives:** `d_loss_fixed_outputs.py`, `d_loss_ln_tangent.py`.
+- At identical saved oracle-D late predictions, replacing all 502 decoded cow-FP tokens with their actual target tokens
+  lowers D loss by 0.002547 and L1 by 0.001937. Both penalize these token errors. Their differing units are not a ranking of losses.
+- Cow-FP absolute output-gradient shares: L1 0.388%, D-no-max 0.787%, full D 0.854%. The maximum term alone accounts
+  for 47.0% of scalar teacher-forced D loss (34.0% recursive), 9.20%/9.90% of absolute output-gradient mass.
+- Among 470 recursive cow-FP cells with a cow-free TRUE-token reader, descent through terminal LayerNorm raises the
+  cow score in 25 under D, 16 without max, 17 under MSE, 47 under L1. On 89 teacher-forced FP cells: D 13,
+  no-max 1, MSE 0. The max term contributes some locally wrong reader-score directions; it does not explain every false detection.
+- Literal autograd checks pass (max differences 5.82e−11 and 2.24e−8). Failed output re-normalization diagnostic preserved;
+  corrected tangent uses saved emissions unchanged. These output gradients are not parameter-update measurements.
+- Counts above use original FP16 exports (502 cow FP); the later FP32 projection evaluation has 495. Preserve both lineages.
+
+**Source contract:** our coefficients/reductions match Delta-IRIS's tokenizer reconstruction code, but its original decoder
+receives quantized future-conditioned codes and reconstructs pixels; our D objective trains deterministic contextual-token
+prediction. Its separate world learns code cross-entropy. [Tokenizer](https://github.com/vmicheli/delta-iris/blob/main/src/models/tokenizer/tokenizer.py),
+[paper](https://arxiv.org/abs/2406.19320). The original method supplies no guarantee of object conservation here.
+
+### 10-12 D-LOSS CAUSAL FOLLOW-UP — design fixed before training (15:14 AEDT)
+
+**Question:** does D's loss contribute to the remaining oracle-conditioned recursive occupancy errors?
+- Existing L1 and D oracle arms differ in pretrained parent; their comparison cannot isolate the loss.
+  TRUE-token projection damage is independent of either world/loss and remains a separate measured failure.
+- `20261012_oracle/loss_intervention.py`: three arms from the SAME completed oracle-D world and OracleCond checkpoint:
+  **D** = mean squared error + 0.1 mean absolute error + 0.01 frame-wise maximum squared element;
+  **L1** = mean absolute error; **no_max** = D minus the maximum-element term.
+- Train world AND oracle conditioner in every arm, leaving architecture, frozen encoder, exact support-v2 TRAIN rows,
+  seed-11 batch/start draws, terminal share, fresh phase AdamW, warmup, BF16/IEEE and 3,000-update budget fixed.
+  Batch 16, window 16. Save model snapshots at 0/500/1,500/3,000; full optimizer/RNG/order states every 250 updates.
+- Meaningful implementation checks: identical starting world/conditioner weights; D/L1 loss parity against the existing
+  implementation; short interrupted/resumed training versus uninterrupted training; source/input hashes and batch ledger.
+- Evaluate all snapshots on the existing 200 DEV roots, frozen readers/thresholds: teacher-forced versus H16 recursive
+  cow/zombie false-positive occupancy AND recall, terrain/player/HUD fidelity. No token projection. Primary all roots;
+  common scroll-aligned rows are sensitivity. Paired episode intervals; reducing counts by erasure is not a repair.
+- Separating contrasts: no_max minus D isolates the maximum-element term; L1 minus D tests the full loss switch.
+  A reduced excess with preserved completion supports a causal contribution of that loss in this trained world.
+  A negative at 3,000 updates is an adaptation-budget result if learning is still moving; it cannot exonerate D for every
+  from-scratch recipe. No second training seed or new architecture is implied by this mechanism test.
+- CPU complements: exact saved-prediction loss/gradient/correction incentives (`d_loss_fixed_outputs.py`), paired existing
+  world comparisons (`d_existing_compare.py`), and model-free means/medians conditioned on identical true future mob
+  layouts (`conditional_stat.py`). These distinguish semantic erasure, objective incentives and incomplete conditioning.
+- Evidence stays in `artifacts/eda/oracle_v1`; stdout in `artifacts/eda/levers_logs`. Agents record numerical findings here.
+
+### 10-12 PROJECTION FOLLOW-UP — completed (13:29–13:33 AEDT; CPU diagnosis through 13:44)
+
+**Result: projected feedback reduces subsequent cow false positives, but nearest-token projection fails content preservation. Do not integrate it as a repair.**
+- Same checkpoints and 60,000-token dictionary as the aborted attempt; 200 DEV episodes per TRUE/oracle-D/control-D arm,
+  H16, no retraining. Four modes separate immediate reader filtering from changed subsequent model outputs.
+- Primary below: all 200 episodes, depths 9–16 (1,600 root-steps; 870 true cow cells and 583 zombie cells).
+  Intervals are paired episode-bootstrap 95% intervals, 2,000 draws. All modes use the same frozen readers and thresholds.
+
+| oracle-D mode | cow false-positive cells / true cows | cow recall | cow census / truth | zombie recall |
+|---|---:|---:|---:|---:|
+| raw self-fed rollout | 0.569 | 0.924 | 1.493 | 0.842 |
+| project only at readout | 0.244 | 0.746 | 0.990 | 0.599 |
+| projected history, **output before projection** | 0.289 | 0.905 | 1.193 | 0.731 |
+| projected history and output | 0.197 | 0.752 | 0.948 | 0.600 |
+
+- **Feedback effect:** pre-projection cow false positives fall from 495 to 251 (49.3%), a ratio difference
+  −0.280 [−0.494, −0.120]. Cow recall changes −0.020 [−0.053, +0.010]; this is not a noninferiority result.
+  Zombie recall falls −0.111 [−0.193, −0.035]; skeleton recall falls −0.215 [−0.321, −0.120].
+  Depth-1 raw and feedback-pre outputs are byte-identical in every batch, before projected feedback begins.
+- **Readout effect:** projecting the unchanged raw rollout lowers cow false positives by −0.325 [−0.532, −0.171],
+  while erasing recall by −0.178 [−0.246, −0.121]. Final projected feedback does not resolve beyond readout-only projection
+  for cow false positives (−0.047 [−0.147, +0.044]) or recall (+0.006 [−0.056, +0.066]).
+- **Common-aligned sensitivity:** 158 episodes contribute 1,112 late root-steps. The pre-projection cow false-positive
+  benefit remains (−0.249 [−0.406, −0.112]), with a small resolved cow recall loss (−0.034 [−0.074, −0.004]);
+  zombie recall falls −0.145 [−0.230, −0.075]. Primary evidence uses all roots, not arm-specific selected masks.
+
+**TRUE positive control: projection damages genuine tokens.**
+
+| late real-token recall | original | projected | paired change, 95% interval |
+|---|---:|---:|---|
+| cow | 836/870 = 0.961 | 712/870 = 0.818 | −0.143 [−0.201, −0.088] |
+| zombie | 526/583 = 0.902 | 375/583 = 0.643 | −0.259 [−0.352, −0.172] |
+
+- Exact dictionary-source diagnosis distinguishes content replacement from reader errors: 155/158 projected cow
+  false negatives and 208/208 zombie false negatives select bank entries whose original physical source lacked that mob.
+  Actual source-content preservation is 711/870 cows (81.72%) and 372/583 zombies (63.81%).
+- All 201,600 projected TRUE tokens match bank bytes; all 60,000 bank entries match their recorded FIT-cache coordinates;
+  duplicate token bytes have no terrain/mob label ambiguity.
+- **Support versus metric:** suitable nonplayer bank entries with the same terrain and all four mob flags exist for
+  every semantic loss across H16 (300 cow losses, 369 zombie losses). Same-slot suitable entries exist for 260/300 and
+  223/369 respectively. On a fixed sample of 64 losses per type, the selected wrong token is closer in L2 than the nearest
+  suitable token in 64/64 cases for both types; median correct/chosen distance ratio is 1.228 (cow), 1.499 (zombie).
+  Total dictionary absence is excluded for these losses. This diagnoses this L2 selector; it does not isolate context,
+  position, light or sampling density as the sole cause of the metric mismatch.
+- Player-source contamination is a separate limited failure: 71/198,400 nonplayer queries retrieve player-slot entries,
+  accounting for only 5/300 cow and 14/369 zombie semantic losses. Player facing-reader accuracy itself drops
+  0.896 → 0.822; 110/3,200 player queries retrieve nonplayer entries. HUD tokens remain byte-identical under projection.
+  Across all TRUE future frames, terrain-reader accuracy drops 0.960 → 0.945 (near-player 0.970 → 0.947).
+- **Unconditioned control:** late cow recall is 0.079 raw, 0.033 under projected history before projection,
+  and 0.020 after projection. Projection does not recover the missing stochastic outcome.
+
+**Interpretation:** altered fed-back tokens causally reduce later oracle-D cow false positives under the fixed reader,
+but preservation fails on real inputs and on other mobs. Per-token membership in a real dictionary does not ensure a
+valid assembled frame. This result supports feedback sensitivity; it establishes neither categorical-state necessity
+nor a learned stochastic innovation. The prior oracle supplies full future occupancy, so its positive completion result
+is conditional on that privileged information. No actor/control result follows from this test.
+
+**Execution and evidence:**
+- Blocked exhaustive FP64 search completed with 0.659 GiB peak GPU allocation; original OOM script/log preserved.
+  Reference-distance/chunk/duplicate/idempotence/HUD checks and helper syntax checks pass.
+- One-batch interruption/reload check passed. Full re-execution resumed 75 batches, recomputed zero, and left all seven
+  result hashes unchanged (`oracle_v1/snap_resume_proof.json`). No experiment job remains running.
+- Re-evaluated raw oracle-D census is 1.493 versus the earlier rounded 1.500; it is not a byte-exact reproduction of
+  that earlier execution. Every intervention contrast above uses the matched baseline from this run.
+- Source: `20261012_oracle/snap_eval.py`, `snap_analysis.py`, `snap_visible.py`, `snap_bank_diagnose.py`,
+  `snap_bank_support.py`, `run_snap_followup.sh`. Evidence: `oracle_v1/stats_{TRUE,oracle_deltairis,control_deltairis}.json`,
+  `snap_analysis.json`, `snap_bank_diagnose.{json,pt}`, `snap_bank_support.{json,pt}`, saved root batches and exact replay.
+  Stdout: `artifacts/eda/levers_logs/oracle_snap_followup_20261012.log`.
+
+### 10-12 PROJECTION FOLLOW-UP (13:27; post hoc, comparisons fixed before the resumed run)
+
+**Question:** does real-token projection improve subsequent predictions, or merely clean the fixed reader's output?
+- Preserve the original 12:14 CUDA-OOM log and script (`oracle_v1/snap_eval_failed_20261012_1214.py`).
+- Same 200 DEV roots, oracle/control D checkpoints, 15-frame context, H16, and 60,000 real map tokens sampled with seed
+  20261012 from the diagnosis corpus's FIT seeds. No training or threshold changes. This dictionary is diagnostic FIT data,
+  not the world's original training-window pool.
+- `20261012_oracle/snap_eval.py`: exhaustive nearest-neighbour L2, query/bank blocks 256/8,192 and FP64 distances;
+  selected bank values remain FP32. All 63 map tiles (including player slot) project; HUD values are unchanged.
+- Modes: raw rollout; projection at readout only on the same raw rollout; **pre-projection outputs under projected feedback**;
+  projected outputs actually fed back. TRUE raw/projected is the semantics-preservation control.
+- Primary: all roots, depths 9–16, false-positive cow cells / true cows with recall and census; separating contrast is
+  feedback-pre minus raw. Readout minus raw isolates immediate filtering. Shared scroll-aligned subset is sensitivity only.
+- Same frozen readers/thresholds; retain per-root/depth event counts and paired episode-bootstrap intervals (2,000 draws).
+  No passing claim from reducing false positives by erasing true mobs. Bank membership is not joint-frame validity.
+- Exact CPU replay adds terrain/HUD/facing/sleep ground truth for the same 200 roots: mob layouts match at every root;
+  9 sentinel frames match pixels exactly. `snap_visible.py`, `oracle_v1/snap_visible.pt`.
+- Checks: blocked search vs direct exhaustive distances, duplicate tokens, projection idempotence, byte-identical HUD,
+  exported readers vs originals, depth-1 pre-projection identity, saved/reloaded predictions equal. Atomic per-root-batch
+  checkpoint files bind source/input/bank/reader/checkpoint hashes and resume without recomputing completed batches.
+- CPU semantic/paired analysis is `snap_analysis.py`; experiment stdout goes to `artifacts/eda/levers_logs`, never this file.
+
+### 10-12 ORACLE-INNOVATION TEST — predeclared (before any code): can a continuous JEPA world complete a transition coherently when the stochastic outcome is GIVEN?
+
+**User's questions (10-12):**
+1. Does providing the correct stochastic outcome eliminate the continuous-model failures we attributed to averaging?
+2. Can the innovation be learned without privileged labels?
+3. If completion succeeds but recursion fails, what is the minimum structural property that preserves valid transitions?
+
+**Literature read first:**
+- Stochastic MuZero (afterstate + categorical chance code; posterior chance encoder + learned prior σ; value-equivalent).
+- JEDI (whole-latent diffusion, reconstruction-free).
+- Causal-JEPA (arXiv 2602.11389): object-level masking on a frozen slot encoder; reconstruction-free; deterministic predictor;
+  near-deterministic tasks.
+- **LPWM (arXiv 2603.04553, ICLR 2026 oral):**
+  - a per-particle latent action (Gaussian), inferred by a latent inverse-dynamics head from consecutive frames, with a learned
+    latent-policy prior and KL;
+  - patch-anchored particles that keep their identity;
+  - reconstruction-trained;
+  - states that "a global action vector cannot naturally disentangle these local dynamics", which matches our factorization
+    result.
+
+**Q1 design (oracle completion):**
+- **World:** our canonical L16 corrt / fmamba per-tile world on frozen Raw tokens, through the existing per-tile conditioning hook
+  (`TWorld.delta`, as E22).
+- **Oracle:** at input position t, each map tile gets the TRUE mob layout of frame t+1 at that tile, through a zero-initialized
+  Linear(4 → 192). Channels: zombie / cow / skeleton / arrow, from exact replay of the training episodes; target-slot
+  coordinates.
+- **Arms**, 2 losses × {control, oracle}; continuations of the existing worlds; matched sampler (E22's long sampler, support-v2
+  rows only, expert rows excluded in all arms), batch order seed 11, 16 windows, 3,000 updates:
+  - L1: from M16;
+  - D loss: from D scratch.
+- **Evaluation panel:** 200 roots from support-v2 DEV-split episodes (never trained on). Frames t−15..t+16 from the stored
+  observations (exact); oracle layouts by replay.
+  - Decoding: scoreboard.AllProbes (fitted on true TRAIN tokens of the diagnosis panel).
+  - Teacher-forced depth 1 (window 15 true frames) and self-fed 16 steps (true layouts supplied each step).
+- **Metrics per depth:**
+  - decoded mob census / true (cows, zombies);
+  - mob-cell precision / recall vs the true layout;
+  - **ghost rate:** decoded cow where the input frame had a cow and the truth now has none (source residue);
+  - **duplicate share** (cowdiag classes vs the input frame).
+- **Reading Q1:** conditional completion succeeds if both oracle arms at depth 1 have:
+  - cow and zombie census within 10% of the truth;
+  - ghost rate ≤ 2% of true cows;
+  - mob recall ≥ 0.9.
+
+  The controls show their losses' signatures (erasure under L1, superposition under D).
+- **Reading recursion:** recursive coherence succeeds if the oracle arms, self-fed, have the census within 20% and ghost rate
+  ≤ 2% at every depth on scroll-aligned steps.
+- **Next:** only if Q1 succeeds, Q2 (a learned per-tile innovation, no labels) and the recursion analysis follow.
+
+### 10-12 FEASIBILITY RESULT: history resolves the counters; the fresh randomness is ~1.4 bits per visible mob and factorizes; a coherent mode-world carries 75-88% of the decision value and 16 samples add a resolved +0.025
+
+`20261012_feasibility/feasibility.py` (q1-q3), `breakdown.py` and `factorize.py` (both POST HOC). Data in
+`artifacts/eda/feasibility_v1/`. CPU only, about 30 min of compute in total.
+
+**Checks:**
+- 240 roots, one per support-v2 episode, from 240 different shards; replayed renders equal the stored frames (max pixel
+  difference 0).
+- My counter equations reproduce the simulator exactly (max error 0.0) after two bugs in my code, both caught by these checks
+  and fixed:
+  - eating on a threshold-crossing step;
+  - eating while the counter is already 0.
+- The tracker never eliminates the true value (0 violations).
+
+**Q1, history** (fraction of roots whose next-16-step VISIBLE HUD schedule is determined; recover assumes damage events are
+observable):
+
+| counter | L = 1 | 4 | 15 (our window) | 32 | 64 | full prefix |
+|---|---|---|---|---|---|---|
+| hunger | 0.06 | 0.17 | 0.52 | 0.98 | **1.00** | 1.00 |
+| thirst | 0.08 | 0.20 | 0.68 | 0.99 | **1.00** | 1.00 |
+| fatigue | 0.03 | 0.11 | 0.47 | 0.79 | **1.00** | 1.00 |
+| recover | 0.43 | 0.47 | 0.61 | 0.74 | 0.78 | **1.00** |
+
+- The predeclared reading (≥ 90% at L ≤ 64 for every counter) holds for 3 of 4.
+- Recover needs the episode: its resets at full health are invisible, so the phase must be counted from the last visible
+  event. That is still memory, not randomness.
+- At our 15-frame window, 47-68% of schedules are determined. This is the measured size of the timer failure.
+
+**Q2, one-step fresh randomness** (from the full simulator state; 256 keys × 17 actions; visible symbolic observation):
+- Miller-Madow entropy: median 1.68 bits, p90 4.04, p99 6.72.
+- K = 64 gives a median of 1.67 (stable); the tail is under-resolved.
+- Good-Turing missing mass 1.7%.
+- 10% of root-actions are deterministic.
+- ≤ 8 outcomes cover 95% in 75% of root-actions.
+- **The predeclared "compact" reading is FALSE** (p90 4.04 > 4; coverage 75% < 90%).
+- Full world (off-screen mobs included): median ≥ 7.0 bits; saturated, so a lower bound.
+- **Post hoc, where it lives:** entropy grows with the visible mobs: 0 mobs → 0.33 bits, 1 → 1.67, 2 → 2.61, 3 → 3.68, 4-6 →
+  5.5-6.7; about 1.37 bits per visible mob. It barely depends on the action (noop 1.84, move 1.87, DO 2.01).
+- **Post hoc, factorization** (74 roots with ≥ 2 visible mobs, 1,258 root-actions):
+  - the joint entropy of the visible mobs' next (position, alive) is 3.25 bits vs 3.38 for the sum of the marginals;
+  - total correlation 0.13 bits (3.8% of the sum; p90 0.39);
+  - spawns and new arrows add 0.14 bits.
+- **The innovation is compact per entity and near-independent across entities.** Frame-level coverage fails through
+  combinatorics, not through a large innovation.
+
+**Q3, decision value** (horizon 16, recorded continuation; independent 32-key selection / judgment banks; 77 opportunity roots
+of 240; root bootstrap):
+
+| | uniform | coherent mode-world | 1 sample | 4 | 16 | 32 |
+|---|---|---|---|---|---|---|
+| expected safe at 16 (opportunity roots) | 0.790 | 0.867 | 0.830 | 0.878 | 0.893 | 0.893 |
+| native 16-step return (all roots) | 0.160 | 0.447 | 0.420 | 0.458 | 0.483 | 0.486 |
+
+- S16 − mode **+0.025 [+0.009, +0.045]**: the predeclared reading "sampling matters beyond coherence" holds. Return:
+  +0.036 [+0.024, +0.050].
+- The mode-world captures **75%** (survival) and **88%** (return) of the 32-sample margin over uniform.
+- **One sample is WORSE than the mode-world:** −0.038 [−0.071, −0.013] safe; −0.027 return.
+- S32 ≈ S16 (+0.001); S4 already beats the mode-world.
+
+**Reading against the hypothesis:**
+1. **History:** confirmed, quantitatively. The counters are memory problems; 64 frames determine three of them and recover needs
+   the episode.
+2. **Compact innovation:** confirmed **per entity** (~1.4 bits per visible mob, near-independent), refuted as a frame-level
+   joint code. This points the chance variable at entities (mobs). Coherence then means entity identity and correspondence
+   (ITC's per-creature assignment fits this).
+3. **Decisions:** coherence is first-order (75-88% of the value); integrating 4-16 samples is second-order but resolved.
+   - One sample per decision is worse than a coherent deterministic future. This matches E22MS (one sample 0.630 < D 0.670).
+   - Caveat: an actor trained on many imagined trajectories integrates over samples across rollouts, so the one-sample
+     penalty applies to per-decision selection.
+
+**Limits:**
+- Forks condition on the full simulator state. Q1 covers the counters, not off-screen mobs.
+- The mode-world is defined on the visible observation (its mode is "cows stay, zombies chase").
+- The continuation is open-loop (recorded).
+- Roots come from the support-v2 policy mix.
+- Plug-in entropies at K = 256 (tails under-resolved; the joint is biased low, so independence is if anything understated).
+
+### 10-12 FEASIBILITY STUDY — predeclared (before any code): is the whiteboard's hypothesis promising?
+
+**Hypothesis (WHITEBOARD §8, after Codex's corrections):** persistent history resolves the hidden-counter uncertainty; the
+remaining fresh randomness per step is compact; and integrating over it matters for decisions beyond a coherent
+deterministic future.
+
+**Scope:** a feasibility version of Codex's proposed matched experiment (the user judged its execution over-engineered).
+- ~240 roots, one per support-v2 episode, from different shards; root t ∈ [64, len − 17].
+- Exact replay from stored actions and keys (`artifacts/eda/replay.py`); simulator only, no learned model.
+
+**Checks:**
+- replayed renders equal the stored frames;
+- my counter equations reproduce the simulator's counters at every replayed step;
+- the true counter value is never eliminated by the tracker.
+
+**Q1, history.**
+- Method: a source-derived candidate tracker for hunger / thirst / fatigue / recover, started L steps before the root (L = 1,
+  4, 15, 32, 64, full prefix).
+- Treated as observable: HUD values, the sleep flag, eat / drink events (DO on a visible cow / plant / water), damage events.
+- Invisible: threshold resets while the stat is clipped.
+- Reports: fraction of roots whose counter value is identified, and whose next-16-step HUD event schedule is determined.
+- **Reading:** memory suffices if ≥ 90% of schedules are determined at L ≤ 64 for every counter.
+
+**Q2, one-step innovation.**
+- Method: from each root state, 256 keys × 17 actions, one step. Joint outcomes are hashed on the symbolic visible observation
+  (no renderer noise) and on the full world (all mobs incl. off-screen, map, inventory, counters).
+- Reports: Miller-Madow entropy (with K = 64 vs 256 as a bias check), Good-Turing missing mass, outcomes needed for 95 / 99%
+  coverage.
+- **Reading:** compact if the median visible joint entropy is ≤ 2 bits, the 90th percentile ≤ 4 bits, and ≤ 8 outcomes cover
+  95% in ≥ 90% of root-actions.
+
+**Q3, decision value.**
+- Method: horizon 16, recorded continuation (as H16), the same roots, two independent 32-key banks (selection / judgment),
+  common random numbers across actions within a bank.
+- Compared estimators:
+  - uniform;
+  - a coherent deterministic **mode-world**: at each step take the most frequent next visible observation of 64 forks and
+    continue from that state;
+  - 1 / 4 / 16 sampled futures;
+  - 32 sampled futures (high-precision reference).
+- Measures: expected safe at 16 (judged on the judgment bank) on opportunity roots, plus native 16-step return.
+- **Reading:** sampling matters beyond coherence if S = 16 − mode-world is resolved > 0 (paired root bootstrap).
+
+### 10-11 WHITEBOARD (21:50): the formalization lives in `artifacts/experiments/WHITEBOARD.md` (no runs, no plan)
+
+What it adds to the 20:30 review, each item verified at source:
+- **Ni et al. (arXiv 2401.08898).** A sufficient state needs RP + ZP: the next-latent DISTRIBUTION is predictable. Predicting
+  the expected next latent (EZP) is the weak version; this is the third party's V(E[z′]) ≠ E[V(z′)]. Our worlds are below EZP
+  (coordinatewise median / mean).
+  - Their guidance: noisy → self-predictive, sparse reward → observation-predictive, deterministic → ℓ2. Craftax is all three.
+- **Stochastic MuZero (Antonoglou et al., ICLR 2022)** = the formal "innovation, not state" model: a deterministic afterstate, a
+  categorical chance code (one-hot codebook, no decoder), b′ = g(afterstate, c).
+  - Craftax's own `craftax_step` has exactly this order: player action / move (deterministic but a 10% sapling draw) → mob moves
+    + spawns (chance) → plants / counters / health (deterministic) → a fresh `state_rng` for the renderer only.
+  - If c carries all of the randomness, g is deterministic and a point loss on g is correct: the axis is
+    sufficient-chance + coherent g, not categorical vs continuous.
+- **The chance is small:** ≲ 1.3 bits per step (source movement rules × 0.77 visible mobs per frame; an upper bound), with
+  1.71 cells per step differing across keys (20:30).
+- **Our own evidence for the four-row taxonomy (nuisance / forgotten history / aleatoric / epistemic):**
+  - E22FJ's unstructured stochastic channel spent 92% of its gain on never-seen edge terrain (random zombie moves 0-3%);
+  - only the moved-content mask (structure, not weight) got the aleatoric part (86%).
+- **Timers are deterministic counters with observable resets** (source): pure memory, no randomness.
+- **Memory addressing, from our record (E18 / fcanvas):** world-aligned writes failed through the screen-aligned READ (entering
+  cell read 0 / 2,018). Neural Map separates addressed writes and reads.
+  - In imagination the address is the world's own scroll decision, the one discrete instability (chaos test).
+- **Reconstruction:** sided with the user (no reconstruction). The obligation is named: retain fast, sparse-reward content via
+  locality and consequence heads in the loss. Whether that suffices is open and checkable with existing probes.
+- **Papers the third party cited, checked:**
+  - JEDI is reconstruction-free and end-to-end (Atari100k + Craftium, 38 A100-h per run);
+  - Flow-JEPA's tasks are near-deterministic (a robustness gain);
+  - VJEPA's experiment is a toy;
+  - Fast-LeWM is deterministic.
+
+### 10-11 REVIEW (20:30): Codex's and a third party's critiques of the 19:30 synthesis, checked against sources
+
+**Corrections accepted (verified):**
+- **Dreamer-CDP's 6.3 vs 16.2 removes the prior / posterior KL alignment (Ldyn/rep), NOT the categorical latent** (paper l.229).
+  My 19:30 reading was wrong. Its 12.7 (no reward gradient) stands.
+- **"Categorical targets were the load-bearing missing part" overclaims.** What our evidence requires is a distributional
+  transition whose samples are valid, coherent states. Per-tile categorical CE is one route (Dedieu, ITC on our exact
+  frames); continuous latent diffusion / flow is another, already published reconstruction-free:
+  - JEDI (2605.13013): end-to-end JEPA latent diffusion world model, Atari100k, 38 A100-h per run;
+  - Flow-JEPA (2608.29029); VJEPA (2601.14354).
+- **Independent per-tile sampling breaks coherence.** ITC (2605.16457), on Craftax-classic, built on Dedieu's per-tile tokens:
+  - parallel independent readouts duplicate and erase creatures;
+  - a one-to-one copy-or-generate assignment lifts return 67.4 → 72.5% and creature-step accuracy 33.8 → 38.4%.
+  - For an unobstructed cow (Craftax: 50% stay, 4 × 12.5% moves), independent sampling from PERFECT marginals gives the wrong
+    cow count 57% of the time (P(0) 0.29, P(≥2) 0.28).
+- **Per-tile CE bounds each tile's logit gradient, not its share of parameter updates;** "~4% of the gradient" withdrawn.
+- **E22MS's ghost copies:** the cause ("continuous decoding of what the codes leave unresolved") is labelled
+  "Inference (not measured)" at its source; 19:30 promoted it. Measured: source residue + recursive duplication with true codes.
+- **Dedieu's 21.2 vs 67.4:** our statoracle gives a compatible mechanism; it does not isolate their gap (their continuous arm
+  predicts pixels, and its training differs).
+
+**New measurement (third party's question B: how large is the truly random part of a transition?).** 5 futures from the
+same state, visible simulator state, all alive:
+
+| depth | cells whose state differs (of 63) | terrain class differs | mob differs | HUD values differ | inventory differs |
+|---|---|---|---|---|---|
+| 1 | **1.71 (2.7%)** | 0.00 | 1.71 | 0.1% | 4.2% |
+| 2 | 2.48 | 0.22 | 2.28 | 1.4% | 8.8% |
+| 4 | 3.98 | 1.12 | 2.97 | 3.5% | 15.0% |
+
+- Per step, the world's randomness is ~1.7 cells, all mobs.
+- Terrain is deterministic (never-seen terrain is epistemic: fixed but unknown).
+- The HUD is deterministic given the hidden counters.
+- The third party's questions A (memory vs randomness for timers) and C (which content decisions read) were already answered
+  by the 10-10 timer analysis and the region substitution / check_h16_value.
+
+**Not accepted:** a reconstruction decoder for tokenizer pretraining (Codex) conflicts with the project's reconstruction-free
+thesis. In Craftax a stable context-free per-tile vocabulary needs no decoder (Dedieu's NNT is a fixed lookup).
+
+### 10-11 SYNTHESIS (19:30): our results against the literature, and the plan they point to (no new runs)
+
+**The pattern we found on 09-25 and partly dropped:** every Crafter/Craftax world model that works has categorical
+per-position targets, and reward / termination heads inside its loss (readout ladder PROPOSAL.md §3). We kept the per-tile
+state and dropped the categorical target, because over the ViT's contextual tokens a tile's code flips when other tiles change.
+The 10-10 diagnosis shows the dropped part was the load-bearing one.
+
+**Connections:**
+1. **Continuous per-tile regression → non-state statistics.**
+   - statoracle: the median erases uncertain mobs (cows 0.08 vs 0.52 at depth 16); the mean superimposes them.
+   - Dedieu et al. (arXiv 2502.01591, our exact frames): 7×7 continuous per-patch prediction 21.20 vs 67.42 quantized.
+   - Agrees; our measurement is the mechanism behind their ablation.
+2. **E22MS's faint copies are the same failure one level down.**
+   - Its decoder regresses continuous tokens given the codes. What the codes leave unresolved (the posterior gets 86% of
+     random moves) is averaged, which leaves a copy at the source (cowdiag: 10% per step with TRUE codes vs 1% real).
+   - ~~Dreamer-CDP (2603.07083): reconstruction-free needs the categorical latent (6.3 without vs 16.2).~~ WRONG: the 6.3 arm removes the prior/posterior KL alignment (see 20:30 review).
+3. **Allocation.**
+   - Per-tile cross-entropy bounds each tile's gradient regardless of token distance.
+   - Never-seen entering tiles are 761 of ~17,500 map cells at depth 1 (~4%), vs 56-81% of the D loss's update now.
+   - Decision heads in the loss: Dreamer-CDP without the reward gradient 12.7 vs 16.2. Our E21 oracle: a label gradient into
+     the world installed the cooldown phase (1.000) within 500-1,000 updates.
+4. **Why the codes flipped on 09-25:** encoder_why located the context (position embeddings + global attention; HUD tokens move
+   9-12 with identical pixels). Dedieu's codes are per-tile, hence context-free.
+   - V-JEPA 2-AC / DINO-WM's contextual patch targets work there because a patch-level objective trained them, in
+     near-deterministic tasks; neither holds here.
+5. **Correction (to my 10-11 15:2x reply):** sampling IS where the decision headroom is.
+   - D (0.670) sits at one real future (0.663 FIT+DEV / 0.679 DEV-B); 16 faithful futures reach 0.727 (check_h16_value).
+   - E22MS's samples are not faithful enough.
+   - Decisions read the HUD, but the HUD's future depends on the zombie map (true map restores 58.5% of damage, 10-09).
+
+**Nearest prior work (short search):**
+- Discrete-JEPA (2506.14373): quantizes a global semantic token; patches stay continuous; not a world model.
+- DWMR (2603.01748): a global Boolean state, deterministic fully observable puzzles.
+- Dedieu: pixel nearest-neighbour codes (no learned encoder).
+- Nothing found that learns per-tile categorical targets without reconstruction for a stochastic world model. A proper sweep is
+  needed before claiming novelty.
+
+**Plan (pitched to the user 10-11):** a per-tile categorical JEPA world model.
+- A local per-tile encoder (no cross-tile attention), reconstruction-free, SIGReg on its embeddings, a categorical code per tile.
+- Per-slot Mamba (state carried through imagination, windows ≥ 32), corrt routing over code logits, cross-entropy.
+- Reward / termination / health heads in the loss; sampled codes in imagination.
+- First, CPU: Dedieu's NNT on our diagnosis frames as a reference target (codebook size day / night; do codes change only when
+  the tile's state changes?).
+
+### 10-11 RESULT (18:35): D continued H16 — the second D-loss world replicates the snapshot-head gain over L1
+
+`check_h16_traj.py --window 15` (lane183, 14:57-17:26). DEV-B: 1,139 opportunity roots, 149 episodes. Paired
+episode-clustered 95% intervals; seed 20261010.
+
+| | trajectory head | snapshot head | Brier |
+|---|---|---|---|
+| D continued | 0.664 | 0.645 | 0.085 |
+| D continued − M16 s7 | +0.007 [−0.004, +0.018] | **+0.022 [+0.014, +0.032]** | |
+| D continued − M16 s8 | **+0.017 [+0.007, +0.027]** | **+0.025 [+0.012, +0.037]** | |
+| D continued − D scratch | −0.006 [−0.016, +0.005] | +0.001 [−0.011, +0.013] | |
+
+- The snapshot-head gain of the D loss over L1 holds in both D worlds against both L1 seeds: +0.021 to +0.025, all resolved.
+- On the trajectory head, both D worlds resolve against M16 s8 and not against M16 s7.
+- D continued is NOT an independent seed: it continued from M16 s7.
+
+### 10-11 RESULT (15:05): E22MS H16 with sampled futures — averaging 16 samples reaches parity with the deterministic worlds, not more
+
+**Setup:** `check_h16_traj.py --e16 --window 15` (lane171 10-10 10:21-17:09, paused at draw 6; resumed in lane183 10-11
+10:24-14:57).
+- DEV-B: 1,139 opportunity roots, 149 episodes.
+- Heads are fit on one sample's trajectory features to the 32-key P(dead by k | root, first action). DEV-B is re-imagined to 16
+  samples per action, and the predicted risk is averaged over the first M samples.
+- Per-root safe rows are recomputed from the saved draws: M = 1 reproduces the logged 0.6322 exactly.
+- Paired episode-clustered 95% intervals.
+
+| E22MS | expected safe | vs D scratch (0.670) | vs M16 s7 (0.657) | vs M16 s8 (0.647) |
+|---|---|---|---|---|
+| 1 sample | 0.632 | −0.038 [−0.051, −0.024] | −0.025 [−0.040, −0.010] | −0.015 [−0.030, +0.001] |
+| 4 samples | 0.647 | −0.023 [−0.034, −0.011] | −0.010 [−0.024, +0.005] | +0.000 [−0.013, +0.014] |
+| 16 samples | **0.663** | −0.007 [−0.018, +0.005] | +0.006 [−0.008, +0.020] | **+0.016 [+0.004, +0.029]** |
+
+- Within E22MS: 16 − 1 = **+0.031 [+0.021, +0.043]**; 16 − 4 = +0.016 [+0.008, +0.025].
+- Other readings: trajectory arm (1 sample, 3 head seeds) 0.630; snapshot 0.615. The prior's own end head gets worse with more
+  samples (0.570 / 0.551 / 0.536); this is the terminal-position defect, reported, not judged.
+- **Continuation:** Brier of P(dead by k) **0.050**, the best of all worlds (D scratch 0.071; M16 0.093-0.127). AUC 0.904.
+
+**Reading:**
+1. **Averaging sampled futures pays within the sampler (+0.031, monotone in M)**, as the 10-03 analysis predicted for faithful
+   futures.
+2. **But one E22MS sample decides worse than every deterministic world,** and 16 samples only reach parity:
+   - tied with D scratch and M16 s7, ahead of M16 s8;
+   - at 16× the imagination cost.
+3. **The proper-score advantage (whole-frame ES −2.2 at depth 1, −13.8 at 16) does not become a decision advantage over the
+   best deterministic world.**
+4. **Calibration vs choice:** E22MS has the best-calibrated death forecasts ACROSS roots (Brier), but not the best choice AMONG a
+   root's 17 actions. The decision depends on within-root discrimination (cf. the probe-objective rule).
+5. **Not separated yet:** why its single sample is worse.
+   - Candidates: the decoder failures (cowdiag; 5.7× copy error on still cells) or the protocol (heads fit to a ROOT-level
+     target on ONE sample's features).
+   - Decisions are ~90-97% HUD (region relevance), so the candidate that matters is what its samples do to imagined HEALTH.
+     That was not measured for E22MS.
+
+### 10-10 RESULT (20:40, recorded 10-11 09:4x): decision relevance by region, M16 at window 15 — the HUD carries 97-100% of what imagination misses; the map carries none
+
+**Setup:** `check_h16_subst.py --window 15` (lane178; the machine rebooted after 20:44, before the D-scratch arm, which is
+relaunched in lane183).
+- deepeval's DEV split: 3,096 roots; opportunity roots 640 / 1,309 / 2,590 at k = 1 / 4 / 16.
+- Its real-fitted depth-k heads read the imagined state with one region replaced by the real depth-k tokens.
+
+| M16 (w15), expected safe | k = 1 | k = 4 | k = 16 |
+|---|---|---|---|
+| imagined | 0.570 | 0.678 | 0.591 |
+| + real HUD (tokens 63-80) | 0.999 | 0.737 | 0.688 |
+| + real 3 × 3 around the player | 0.576 | 0.679 | 0.596 |
+| + real map (0-62) | 0.622 | 0.642 | 0.572 |
+| + real edge ring / interior | 0.605 / 0.596 | 0.676 / 0.676 | 0.592 / 0.589 |
+| real | 0.999 | 0.738 | 0.691 |
+| HUD share of the gap / map share | **1.00** / 0.12 | **0.98** / −0.59 | **0.97** / −0.19 |
+
+- Imagined health at depth 16: mean 5.98 vs real 2.42. Danger correlation 0.20 vs real 0.54.
+- **This reproduces the 10-03 window-5 result (HUD share 0.94-0.97) on the L16 world at window 15.**
+- **For decisions, what imagination must get right is the drawn outcome in the HUD (damage, death), not the map.**
+  - The edge ring, which holds the largest proper-score gap (61-71% at depth 1; mostly missing information), has ~0 decision
+    relevance.
+  - The decision-relevant subset of the problems is what drives health: the L1 stall on HUD changes (allocation); the hidden
+    zombie cooldown and the timers outside the window (information); and mob movement only through who becomes adjacent.
+- **D-scratch arm (lane183, 10-11 09:35-10:23):**
+
+  | expected safe | k = 1 | k = 4 | k = 16 |
+  |---|---|---|---|
+  | D scratch, imagined | 0.534 | 0.690 | **0.616** |
+  | + real HUD | 0.999 | 0.736 | 0.684 |
+  | + real map / edge / interior | 0.618 / 0.592 / 0.577 | 0.656 / 0.692 / 0.692 | 0.619 / 0.618 / 0.616 |
+  | HUD share / map share | 1.00 / 0.18 | 0.96 / −0.70 | 0.90 / 0.04 |
+
+  - Imagined health at depth 16: 5.46 (M16 5.98; real 2.42). Danger correlation 0.33 (M16 0.20; real 0.54).
+  - **The D loss's decision gain flows through the HUD:**
+    - its depth-16 imagined state is 0.616 vs M16's 0.591, so the gap to real shrinks from 0.100 to 0.076 (−24%);
+    - the HUD still carries 90% of what remains;
+    - its imagined health is lower and better tied to danger.
+  - **Even this world imagines 3.0 more health than reality at depth 16.** Drawn damage in imagination is the decision
+    bottleneck for both worlds.
+  - At k = 1 D scratch's imagined state is worse than M16's (0.534 vs 0.570; 640 roots). The real HUD restores both to 0.999.
+
+### 10-10 RESULT (20:50): H16 decisions, D scratch vs M16 — the D loss's factual gains carry into decisions (single D seed)
+
+**Setup:** `check_h16_traj.py --window 15` (lane170, 17:10-20:44); DEV-B 1,139 opportunity roots, 149 episodes, 3 head seeds.
+Paired, episode-clustered 95% intervals (2,000 draws) on the per-root safe rows saved in each resume store.
+
+| world | trajectory | snapshot | traj − snapshot | Brier, P(dead by k) | AUC dead by 16 (key 0) |
+|---|---|---|---|---|---|
+| D scratch (D loss, seed 7) | **0.670** | **0.644** | +0.026 [+0.015, +0.037] | **0.071** | **0.898** |
+| M16 seed 7 (L1) | 0.657 | 0.623 | +0.035 [+0.022, +0.048] | 0.127 | 0.823 |
+| M16 seed 8 (L1) | 0.647 | 0.621 | +0.026 [+0.013, +0.040] | 0.093 | 0.867 |
+
+References: prior 0.616, one real future 0.679, oracle31 0.766, uniform 0.571.
+
+| paired difference | trajectory | snapshot |
+|---|---|---|
+| D scratch − M16 s7 | +0.013 [−0.000, +0.026] | **+0.021 [+0.008, +0.035]** |
+| D scratch − M16 s8 | **+0.023 [+0.012, +0.035]** | **+0.024 [+0.011, +0.037]** |
+| M16 s7 − M16 s8 (seed noise) | +0.010 [+0.002, +0.019] | +0.002 [−0.008, +0.014] |
+
+- **D scratch decides better than M16.**
+  - Resolved on the snapshot head against both L1 seeds, and on the trajectory head against seed 8.
+  - Borderline against seed 7's trajectory head (lower bound −0.0004).
+  - Its death forecasts are better calibrated (Brier 0.071 vs 0.093-0.127).
+  - It closes 86% of the prior → one-real-future gap on the trajectory head (M16: 65% / 49%).
+- **The link:** the D loss learns HUD changes (−32% vs −1.5%), own-state changes (−46% vs −26%) and zombies (AUC 0.96 vs 0.82)
+  (P-D). Those gains reach the decisions, despite its cow superposition and its 2.5× copy error on still cells.
+- **Caveats:**
+  - a single D seed;
+  - M16's own seed spread is 0.010 (trajectory);
+  - D continued (lane170 next) is the second D-loss world, but not an independent seed.
+- E22MS (1 sample): 0.630 / 0.615, below both. Its 16-sample readout is pending (lane171b).
+
+### 10-10 RESULT (20:05): E22MS cow inflation, mechanism — the decoder leaves faint copies at the source; faint cows persist and duplicate again
+
+**Setup:** `cowdiag.py`, TEST roots, self-fed rollouts.
+- Every decoded cow at step k (probe score > 0.164, calibrated on true tokens) is classified against the same sequence's
+  previous frame, after its own scroll:
+  - persisted: a cow in the same cell;
+  - moved: a cow at a 4-neighbour that vacated;
+  - duplicated: a cow at a 4-neighbour that is STILL there;
+  - created: nothing nearby;
+  - entering.
+- Shares, with mean probe score in parentheses:
+
+| variant | depth | cows / frame | persisted | moved | duplicated | created | entering |
+|---|---|---|---|---|---|---|---|
+| real (future 0) | 1 / 9-16 | 0.44 / 0.49 | 0.54 (0.89) / 0.52 (0.90) | 0.31 / 0.34 | **0.01** / 0.01 | 0.11 / 0.09 | 0.02 / 0.05 |
+| E22MS, TRUE codes | 1 / 9-16 | 0.57 / **2.36** | 0.35 (0.82) / 0.58 (**0.40**) | 0.42 / 0.22 | **0.10** (0.47) / 0.10 (0.40) | 0.10 / 0.08 | 0.02 / 0.02 |
+| E22MS, prior samples 0-3 | 1 / 9-16 | 0.61-0.66 / 2.93-3.02 | 0.26-0.32 / 0.61-0.62 (0.42-0.43) | 0.32-0.47 / 0.19-0.20 | 0.04-0.13 / 0.11-0.12 | 0.15-0.20 / 0.06 | 0.03-0.05 / 0.02 |
+| E22MS, Δ zeroed | 1 / 9-16 | 0.97 / 0.56 | 0.12 (0.33) / 0.77 (0.26) | 0.66 / 0.11 | 0.16 / 0.06 | 0.06 / 0.02 | 0.01 / 0.03 |
+| D scratch | 1 / 9-16 | 0.92 / 0.47 | 0.39 (0.56) / 0.79 (0.21) | 0.01 / 0.05 | **0.58** (0.20) / 0.04 | 0.01 / 0.05 | 0.00 / 0.08 |
+
+- **The method is clean on real sequences:** 1% duplicated, cows decode at 0.9.
+- **E22MS, with the TRUE posterior codes:**
+  - 10% of its cows each step are duplicates: the source was not vacated when the cow moved;
+  - its cows are half-strength (0.40-0.47 vs 0.90 real) from depth 2 on;
+  - those faint cows PERSIST (58-62% of cows) and are duplicated again, so the count grows: 0.57 → 0.86 → 1.34 → 2.36 per frame
+    over depth groups 1 / 2-4 / 5-8 / 9-16.
+  - The prior samples behave the same (2.9-3.0 at 9-16). **The inflation is the decoder plus feedback, not the prior's
+    codes.**
+- **The deterministic decoders show the mean optimum at step 1, then dilution:**
+  - D scratch: 58% of its depth-1 cows are "duplicates", i.e. the cow both stays and moves (statoracle's superposition), at
+    score 0.20;
+  - these ghosts fade toward the threshold (0.21 at 9-16) and the count falls (0.92 → 0.47);
+  - the Δ-zeroed decoder does the same (0.97 → 0.56).
+- **Reading:**
+  - Given a movement code, the E22MS decoder renders the destination but not the vacated source fully.
+  - Its outputs are partial cows that do not fade, so self-feeding compounds them.
+  - **Inference (not measured):** this is the reconstruction loss's conditional mean over what a quantized Δ code leaves
+    unspecified. Codex's open question, which of decoding, correspondence and feedback causes the inflation, now has a
+    measured answer: decoding (source residue, 10% per step vs 1% real) + feedback (faint residue persists and re-duplicates).
+    The prior is not required.
+
+### 10-10 RESULT (19:50): checks prompted by the user's questions and Codex's revision — corrections to Problem 1 and to the currency figures
+
+**1. Is the contextual re-encoding predictable, and predicted?** (`reenc_predicted.py`, depth 1, true context,
+factual future, day only)
+
+Share of the target's own change that each world predicts (1 − world error / copy error):
+
+| | unchanged cells, scroll (change 1.50 / token) | HUD values unchanged (jitter 0.56 / token) | unchanged cells, still (change 0.059) |
+|---|---|---|---|
+| M16 (L1) | **0.88** | **0.95** | world 0.056 ≈ copy |
+| D continued / D scratch | 0.82 / 0.73 | 0.74 / 0.72 | world 0.13 / 0.15 = 2.2-2.5× copy |
+| E22MS sample / Δ zeroed | 0.52 / 0.47 | 0.72 / 0.73 | world 0.34 / 0.33 = 5.7× copy |
+
+- **The deterministic context dependence of the tokens is predictable and largely predicted** (M16: 88% of scroll re-encoding,
+  95% of HUD jitter).
+- **"The target isn't game state" was the wrong headline (the user's objection; Codex agrees).** What the target carries that
+  no world can predict is the night static, ≈ 25% of the L2 change mass. Usefulness of the context is unmeasured.
+- **New:** the D-loss and E22MS worlds damage cells that do not change at all (still unchanged cells: 2.2-5.7× a copy's
+  error).
+
+**2. Where do the wrong facts sit, net of the probes' own errors?** (`wrongfacts_by_cat.py` (+ the same on TRUE tokens); depth 1; TEST roots;
+17,546 map cells)
+- **Probe baseline:** on the TRUE tokens the probes mark 2.04% of cells wrong (2.02% of unchanged cells, 5.6% of own-state-
+  changed).
+- **Correction to the 10:34 currency entry:** its "4-6% of cells carry a wrong fact" includes ~2 points of reader error.
+  - World-attributable: M16 2.1%, D continued 2.2%, D scratch 3.0%, E22MS Δ zeroed 3.4%.
+  - The "62.5% of L1 error on fact-correct cells" is conservative: probe-wrong cells have small world error.
+- **World-attributable wrong facts by category:**
+  - M16: never-seen entering 45%, own-state changes 41%, unchanged 10%.
+  - D scratch: entering 31%, own 26%, unchanged 25%, neighbours 16%.
+  - D continued: 42 / 36 / 12 / 8%.
+  - E22MS Δ zeroed: unchanged 38%, entering 28%, neighbours 19%, own 12%.
+- **Correction to the 19:2x inference** ("D's late wrong facts are largely unseen terrain"): at depth 1 unseen terrain is
+  31-45% of world-attributable wrong facts, the largest single bucket but not "largely". Own-state changes are the other big
+  one.
+
+**3. Damage and movement determinism** (Codex's verification; recomputed from the one-step data, 17,032 root × action pairs
+with all four env keys alive):
+- 471 pairs show damage under ≥ 1 key; 457 (97.0%) under all four. Immediate damage is deterministic given the full
+  (hidden) state. Codex counted 389 / 403 with another definition.
+- Mob layouts differ between keys after ONE step in 51% of pairs. The source matches: cows draw from 8 entries, half of
+  them "stay"; zombies chase with p 0.75 when close; spawns are random.
+
+**4. Codex's citations from this NOTEBOOK, verified:**
+- E17 recall: same-slot window 5 → 15 is 0.369 → 0.616 / 0.365 → 0.643; moved slot is 0.396 → 0.405 / 0.431 → 0.440.
+- Consequences caught: 0.002 → 0.562.
+- rollout2 was not an exact port (E12 correction).
+
+### 10-10 RESULT (19:04): P-C under AdamW and with seen / never-seen entering — the allocation survives the optimizer
+
+**Setup:** `gradanat.py --seen --adam` (lane179). L16 worlds, 1,002 windows, 60 batches.
+- Each run's saved AdamW state (its weights checked equal to the loaded world's; 133 parameters with state) gives
+  P = 1 / (sqrt(v̂) + eps).
+- Entering is split by whether the cell's world position was in an earlier window frame.
+
+Projection share of the update, raw → AdamW-preconditioned, under each world's OWN loss:
+
+| | never-seen entering | seen entering | own state changed | no state change | HUD changed | HUD same |
+|---|---|---|---|---|---|---|
+| M16 / L1 | 0.370 → 0.345 | 0.033 → 0.034 | 0.024 → 0.028 | 0.423 → 0.426 | 0.011 → 0.012 | 0.053 → 0.059 |
+| D scratch / D loss | 0.613 → 0.564 | 0.129 → 0.129 | 0.049 → 0.059 | 0.074 → 0.079 | 0.058 → 0.080 | 0.053 → 0.060 |
+
+Mean update over batches, AdamW (what momentum follows):
+- M16: never-seen 0.15, unchanged 0.63, own state 0.014, HUD changed 0.008.
+- D scratch: never-seen 0.46, seen 0.11, unchanged 0.14, own state 0.060, HUD changed 0.19.
+
+**Reading:**
+- Preconditioning moves no share by more than ~5 points. **The allocation (P-C) holds for the actual update.**
+- Never-seen terrain takes 35% (L1) / 56% (D) of the update. Seen terrain, which memory could recall, takes 3% / 13%.
+- Own-state changes get 3-6%.
+- The 17:20 entry's raw stage-1 figure (89% to entering, D loss at 36k) included seen terrain. On the L16 world, the split is
+  0.61 never-seen + 0.13 seen.
+- **Not interpretable yet:** the cosine of every category's mean update with the run's own saved momentum direction is ≈ 0
+  (−0.11 to +0.07). The momentum is an average over the last ~10 TRAINING batches (corpus windows); these are diagnosis windows.
+  That is noted, not read as a finding.
+- **Stage-1 endpoints (19:16; 63 batches, own loss):**
+  - DS1 @ 36k (D loss): never-seen entering 0.839 → **0.813** under AdamW (mean update 0.822; consistency 0.20 vs 0.126 noise);
+    seen entering 0.05; own state 0.013; no change 0.05; HUD changed 0.025.
+  - M6 @ 36k (L1): never-seen 0.355 → 0.311; no change 0.456 → 0.474; own state 0.048 → 0.052.
+  - **This replaces the withdrawn 17:20 sentence, now measured properly:** at the end of D-loss training, 81% of the AdamW
+    update's projection is on terrain never seen in the window. Its gradient is barely more consistent across batches than
+    noise (0.20 vs 0.126). Own-state changes get 1.3%.
+
+### 10-10 RESULT (18:56): loss currency, GRADIENT side — L1 spends 86% of its averaged update on content whose facts are already right
+
+**Setup:** `gradanat.py --facts` (lane179). The L16 worlds on 283 TEST windows, 60 batches, raw backbone gradients
+(`--adam` pending). The objective was reproduced (relative error ≤ 1.5e-7). Categories are the world's OWN decoded fact errors
+per batch (currency.py's probes).
+- **Projection share:** the per-batch update.
+- **Mean-update share:** the share of the update averaged over batches, which is what momentum follows.
+
+| world / loss | map, fact wrong: proj / mean update / consistency | map, facts right | HUD values wrong | HUD values right |
+|---|---|---|---|---|
+| M16 / L1 (own) | 0.21 / **0.10** / 0.20 | 0.70 / **0.81** / 0.34 | 0.014 / 0.007 / 0.27 | 0.06 / 0.05 / 0.33 |
+| M16 / D loss | 0.73 / 0.59 / 0.20 | 0.25 / 0.40 / 0.36 | 0.013 / 0.004 / 0.66 | 0.002 / 0.001 / 0.53 |
+| D scratch / D loss (own) | 0.57 / **0.37** / 0.30 | 0.30 / 0.21 / 0.39 | 0.06 / 0.09 / 0.41 | 0.06 / **0.33** / 0.48 |
+| D scratch / L1 | 0.10 / 0.04 / 0.34 | 0.73 / 0.69 / 0.43 | 0.025 / 0.031 / 0.37 | 0.14 / 0.23 / 0.66 |
+
+(noise consistency 0.129)
+
+- **Under L1, 81% (map) + 5% (HUD) of the averaged update goes to content whose decoded facts are already right.** Only 10%
+  goes to the ~4% of cells with a wrong fact; 0.7% to wrong HUD values.
+- **The D loss aims at wrong facts:** 37% + 9% of the averaged update. Yet 54% still goes to right content, a third of it to
+  HUD tokens whose values are right (the jitter, `encoder_why` E3).
+- **The allocation follows the loss, not the world:** swap the losses and the pattern swaps.
+- **The fact-wrong gradient is the least consistent across batches** (0.20-0.30 vs 0.34-0.43). Wrong facts are diverse, and
+  their per-batch gradients partly cancel in the average.
+- **This closes the currency chain on both sides:**
+  - prediction: 62.5% of M16's L1 error is on fact-correct cells;
+  - gradient: 86% of L1's averaged update goes to fact-correct content;
+  - outcome (P-D): L1 stalls on HUD changes (−1.5% in 30k updates) and on own-state changes (−26% vs −46% under D).
+- The AdamW version of the state-change split is in the 19:04 entry; preconditioning moves shares by ≤ ~5 points.
+- **Over training** (stage-1 snapshots, 18 TEST batches each; noise consistency 0.24, so coarser), mean-update shares:
+
+  | | map fact wrong | map facts right | HUD values wrong | HUD values right |
+  |---|---|---|---|---|
+  | M6 (L1) @ 6k → 36k | 0.16 → 0.19 | 0.67 → 0.73 | 0.02 → 0.02 | 0.10 → 0.05 |
+  | DS1 (D loss) @ 6k → 36k | 0.06 → **0.70** | 0.66 → 0.28 | 0.02 → 0.01 | 0.26 → 0.01 |
+
+  - Under L1, ~75-80% of the averaged update goes to fact-correct content throughout training.
+  - Under the D loss the update moves to wrong facts as the correct content's errors shrink.
+  - At 36k, D's 70% on wrong-fact cells coincides with 81% of its AdamW update on never-seen terrain (19:04 entry). That the
+    late wrong facts are largely unseen terrain is an INFERENCE: the two splits were not cross-tabulated.
+
+### 10-10 RESULT (18:35; all three worlds 18:51): C3 chaos — the deterministic worlds CONTRACT; depth error is accumulated bias, not input sensitivity
+
+`chaos.py` (lane177; D continued and D scratch still running). The unperturbed rollout equals the saved export bitwise.
+Root-frame tokens perturbed (x + σ N(0, I), then layer-normed); self-fed 16 steps; median growth rate of the divergence per
+step:
+
+| σ (initial / V) | depth 1 | depth 4 | depth 16: divergence / V | scroll differs at 16 | view offset differs at 16 | tiles differ at 16 | median rate per step |
+|---|---|---|---|---|---|---|---|
+| 0.001 (2e-6) | 7e-6 | 6.2e-5 | 0.0018 | 0.1% | 0.6% | 0.2% | +0.15 → +0.06 |
+| 0.01 (2e-4) | 1.7e-4 | 4.2e-4 | 0.0048 | 0.2% | 1.9% | 0.4% | −0.08 to −0.14 |
+| 0.1 (0.020) | 0.016 | 0.013 | 0.021 | 0.8% | 9.4% | 1.2% | −0.08 to −0.15 |
+
+- **Perturbations of 0.01-0.1 shrink.** At depth 16 the divergence is the size of the initial perturbation (0.021 vs 0.020 of
+  V), 25-300× smaller than M16's actual depth-16 error (gen16 / V ≈ 0.53).
+- **M16's long-horizon error is NOT sensitivity to its input:** it is per-step bias accumulated through self-feeding.
+- **The one discrete instability** is the scroll decision: offsets diverge in up to 9.4% of roots by depth 16. This matches
+  E11 (imagined error growth = wrong move decisions).
+- **Replicated on D continued and D scratch (18:51; both unperturbed rollouts equal their exports):**
+
+  | world (gen16 / V) | σ 0.001: div16 / rate d1 → d16 | σ 0.01: div16 / rate | σ 0.1: div16 / offset differs at 16 / rate |
+  |---|---|---|---|
+  | M16 (0.528) | 0.0018 / +0.15 → +0.06 | 0.0048 / −0.08 to −0.12 | 0.021 / 9.4% / −0.08 to −0.13 |
+  | D continued (0.473) | 0.0013 / +0.42 → +0.13 | 0.0016 / −0.17 to −0.07 | 0.021 / 9.1% / −0.19 to −0.10 |
+  | D scratch (0.494) | 0.0036 / +0.30 → +0.12 | 0.0044 / −0.11 to −0.06 | 0.022 / 11.7% / −0.12 to −0.08 |
+
+- **Under both losses**, depth-16 divergence is 0.1-4.6% of the actual depth-16 error. Imagination instability is not the
+  deterministic worlds' problem; their long-horizon error is per-step bias, plus scroll-decision flips.
+
+### 10-10 RESULT (18:30): P-D (training dynamics) — not refuted; allocation predicts improvement only for learnable content; each world converges toward its loss's statistic
+
+**Setup:**
+- 12 stage-1 snapshot exports (lane173, 17:11-18:13) and their CPU readouts (cpu180: budget, currency, entering_memory,
+  scoreboard; 18:14-18:25). `pd_summary.py` reads them.
+- M6 (L1) and DS1 (D loss): same seed, data and architecture, from scratch; 6k-36k updates.
+- Classes: the budget categories in the one-step setting. Measure: excess over the RNG floor per token.
+- Allocation: each run's raw projection share under its own loss, averaged over the six snapshots (gradanat).
+
+| class | M6 (L1): 6k → 36k | DS1 (D): 6k → 36k | allocation L1 / D |
+|---|---|---|---|
+| never-seen entering | 47.3 → 38.1 (−19%) | 43.5 → 41.5 (−5%; 37.6 at 24k, then RISES) | 0.21 / 0.69 |
+| seen entering | 43.3 → 15.3 (−65%) | 36.2 → 11.4 (−69%) | ~0 / ~0 |
+| own state changed | 39.4 → 29.1 (−26%) | 25.9 → 14.1 (−46%) | 0.036 / 0.027 |
+| player sprite left | 23.0 → 0.0 | 18.5 → 1.1 | 0.016 / 0.009 |
+| sleep changed | 28.6 → 1.2 | 6.5 → 2.3 | 0.036 / 0.004 |
+| no state change | 0.46 → 0.07 (−84%) | 0.65 → 0.29 (−56%) | 0.59 / 0.12 |
+| HUD changed | 5.81 → 5.73 (**−1.5%**) | 4.71 → 3.18 (−32%) | 0.011 / 0.046 |
+| HUD same | 0.46 → 0.03 (−94%) | 0.43 → 0.20 (−54%) | 0.060 / 0.092 |
+| player token | 4.87 → 0.32 | 2.66 → 0.73 | 0.013 / 0.002 |
+
+(neighbour_changed: excess ≤ 0 in both runs, so improvement is undefined.)
+
+**Against the predeclared rule** (refuted if one loss improves every class at least as fast as the other): **not refuted.**
+- M6 is faster on 6 classes, DS1 on 3 (seen entering, own state, HUD changed).
+- Rank correlation across classes, allocation difference vs improvement difference: 0.18 over all classes. Post hoc, labelled:
+  0.37 without neighbour_changed, 0.41 also without never-seen entering. **Weak.**
+
+**What the curves show instead:**
+1. **Allocation buys improvement only where the content is learnable.**
+   - The D loss's largest allocation, 69% of its raw projection on never-seen terrain, bought −5%, and regressed after 24k.
+   - L1's largest allocation, 59% on unchanged cells, bought −84% of an excess that was already < 0.5.
+2. **L1 never learns HUD changes:** −1.5% in 30k updates (5.81 → 5.73), the health failure's root, as a training curve. The D
+   loss learns them (−32%), and own-state changes twice as well (14.1 vs 29.1 at 36k).
+3. **Same totals, different winners:** one-step L2 per frame 148 (M6) vs 153 (DS1) at 36k.
+4. **Each world converges toward its loss's optimum's failure** (decoded cows / the five futures' count):
+   - M6 at depth 16: 1.30 → 0.31 → 0.15 → 0.22 → 0.17 → 0.11. Erasure grows with training: the median's signature
+     (statoracle).
+   - DS1 at depth 1: 0.98 → 0.97 → 0.98 → 1.01 → 1.13 → 1.50. Superposition grows: the mean's signature.
+5. **Facts:**
+   - DS1 improves zombie AUC (0.89 → 0.96) and depth-16 inventory R² (0.77 → 0.89), where M6 stays flat (0.81 → 0.82;
+     0.74 → 0.74).
+   - Map fact-wrong share: M6 5.1 → 4.3%; DS1 5.2 → 5.1%.
+   - Depth-16 tile accuracy: M6 0.73 → 0.77; DS1 0.69 → 0.75.
+6. **M6's 24k snapshot is an unstable point** in every reading (one-step L2 239 vs 170 at 18k; gradanat total consistency
+   0.86).
+7. **Seed-8 replication of the L1 side (20:02; lane181 exports + cpu182 readouts; no D-loss seed-8 run exists):**
+
+   | L1, 6k → 36k | seed 7 | seed 8 |
+   |---|---|---|
+   | HUD changed (excess) | 5.81 → 5.73 (−1.5%) | 5.81 → 5.73 (−1.3%) |
+   | cows at depth 16 / five futures | 1.30 → 0.11 | 1.05 → 0.13 |
+   | own state changed | −26% | −22% |
+   | never-seen / seen entering | −19% / −65% | −19% / −60% |
+   | zombie AUC d1 / inventory R² d16 | 0.81 → 0.82 / 0.74 → 0.74 | 0.82 → 0.82 / 0.74 → 0.74 |
+
+   - The HUD-change stall and the growing erasure under L1 replicate across init seeds.
+   - Seed 7's 24k instability does not occur in seed 8: it is seed-specific.
+   - The D-loss side (superposition growing, 0.98 → 1.50) remains single-seed.
+
+### 10-10 RESULT (18:00): proper scores — sampling pays, but it is not where most of the gap is; an energy score on Raw tokens repeats the allocation
+
+Prompted by Codex's proposal: a noise-conditioned generator trained by an energy score on completed successors, replacing the Δ
+posterior, codebook and prior. `properscore.py` tests two of its premises on the exports, before anything is trained.
+
+**Corrections accepted from Codex's review (verified):**
+- **The per-class energy scores in `scoreboard.py` are not proper.** The mob / entering / static masks are chosen from the
+  realized futures (`stochdiag.classes`). Only the HUD and player classes are fixed. The scoreboard's "E22MS better on energy
+  score" by class is withdrawn as a proper-score claim; the fixed-region scores below replace it.
+- **"40% of the L1 change mass is renderer noise" (Part II-A heading) overstates it.**
+  - 40% (L1) / 34% (L2) is the mass of NIGHT cells with NO state change.
+  - Of their squared change, the measured static (2 × the identical-state variance per ring) is ~74%: 58 / 76 / 84 / 86% at
+    rings 1-4 when the view is still, 10 / 39 / 68 / 77% when it scrolls.
+  - The rest is re-encoding and lighting drift.
+  - Night static is therefore ≈ 25% of the L2 change mass.
+  - The noise check matches visible-state descriptors, not full simulator states. By day the variance at identical
+    descriptors is exactly 0 over 2,255 frames, so rendering depends on nothing else by day.
+- **P-C measured RAW backbone gradients, not AdamW's update, and its `entering` includes terrain seen earlier in the window.**
+  "~90% of every update chases never-seen terrain" is withdrawn.
+  - What was measured: under the D loss at 36k, entering cells receive 89% of the raw-gradient projection, with cross-batch
+    consistency 0.18 (vs 0.126 for pure noise).
+  - `gradanat --adam --seen` (preconditioned by the saved AdamW moments; seen / never-seen split) is queued to measure the
+    actual update.
+
+**A. Proper scores** (fair energy score, fixed regions, vs the five real futures; self-fed from the root; paired
+episode-clustered 95% intervals, 143 episodes). Whole frame:
+
+| depth | ideal sampler (4 real futures, leave-one-out) | ideal point (mean / median of 4) | E22MS, 4 samples | M16 | D continued | D scratch | E22MS Δ zeroed | copy root |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 3.36 | 5.60 / 5.56 | 8.67 | 10.85 | 10.77 | 10.85 | 11.32 | 27.2 |
+| 2 | 3.99 | 6.60 / 6.42 | 11.95 | 15.46 | 15.09 | 15.33 | 15.78 | 37.5 |
+| 4 | 5.19 | 8.58 / 8.17 | 18.09 | 24.21 | 23.08 | 23.21 | 24.26 | 51.2 |
+| 8 | 6.74 | 11.12 / 10.55 | 26.33 | 36.60 | 34.59 | 34.47 | 36.66 | 66.8 |
+| 16 | 9.72 | 16.08 / 15.13 | 39.48 | 55.03 | 51.78 | 53.32 | 57.42 | 84.2 |
+
+- **E22MS beats every deterministic world at every depth.**
+  - Depth 1: E22MS − D scratch −2.19 [−2.39, −2.00]; E22MS − M16 −2.19 [−2.52, −1.86].
+  - Depth 16: −13.84 [−15.00, −12.60] and −15.55 [−17.44, −13.64].
+  - Its own decoder with Δ zeroed is the worst: −2.66 at 1, −17.94 at 16.
+- **Depth 1 decomposition:**
+  - E22MS's sampling gain (2.19) is the size of the ideal sampler's gain over the ideal point (2.24 [2.03, 2.43]).
+  - E22MS's gap to the ideal sampler (5.30 [4.96, 5.66]) equals the deterministic worlds' gap to the ideal point (5.26-5.29).
+  - **Sampling removed the point penalty and left the rest untouched.**
+  - Of D scratch's distance to the ideal sampler (7.49), sampling closes 29%. At depth 16, it closes 32% of 43.6.
+  - The other ~70% is information (hidden state, unseen terrain), model error and compounding.
+- **Regions:**
+  - HUD at depth 1: every world is ~10× the ideal (2.0-2.3 vs 0.19), and E22MS ≈ the deterministic worlds (−0.13 vs D scratch).
+  - Map at night, depth 1: E22MS 14.57 ≈ the ideal POINT 14.37, vs the ideal sampler 9.04. It does not sample the static as
+    reality does.
+  - Map by day, depth 1: E22MS 6.50 vs ideal 1.79, ideal point 3.1.
+
+**B. The currency of each loss at the output** (depth 1, ONE observed successor as in training, budget.CATS with seen /
+never-seen entering). Share of the SYSTEMATIC gradient: the part that does not depend on which future happened. Totals:
+systematic fraction 0.72-0.91, vs 0.2 for pure outcome noise.
+
+| loss, at E22MS's samples | unchanged cells | never-seen entering | seen entering | own-state changes | neighbours | HUD, values changed | HUD, values same (jitter) |
+|---|---|---|---|---|---|---|---|
+| L1 | 0.670 | 0.037 | 0.004 | 0.007 | 0.023 | 0.040 | 0.193 |
+| MSE | 0.212 | 0.631 | 0.019 | 0.043 | 0.036 | 0.032 | 0.015 |
+| energy score, whole frame | 0.423 | 0.245 | 0.015 | 0.051 | 0.036 | 0.067 | 0.131 |
+| energy score, map + HUD regions | 0.227 | 0.101 | 0.006 | 0.024 | 0.015 | 0.106 | 0.503 |
+
+- The deterministic worlds give the same pattern (M16 / D scratch under the whole-frame energy score: own-state 7.3 / 5.1%).
+- For a point forecast the whole-frame energy score's gradient is MSE's direction normalized, so its allocation equals MSE's.
+  It differs only through a sampler's repulsion term.
+- **Reading:**
+  - An energy score on frozen Raw tokens sends 5% of its systematic update to own-state changes and 7% to HUD value changes.
+  - The rest goes to unchanged cells (42%), never-seen terrain (25%) and HUD jitter (13%).
+  - Splitting the score into fixed regions (Pic et al.) makes HUD jitter half of it, because the HUD's small norm is
+    normalized up and most of its error is map-context jitter (`encoder_why` E3).
+  - The proposal's premise "a sampler under a proper score beats point forecasts" holds. "That loss would put its pressure on
+    the facts" is false in this target space.
+- At the ideal sampler (pure outcome noise), the score's gradient is on unchanged cells (0.57) and own-state changes (0.22):
+  the stochastic outcomes.
+- Not additive with P-C: this is output space, model-free; P-C is the backbone side.
+
+**C. Where the gap to the ideal lives** (`properscore.py --subst`). One fixed region at a time is replaced by the ideal of the
+predictor's class: the ideal point for the deterministic worlds, the ideal sampler for E22MS. The whole-frame score is
+rescored. Share of the gap removed (not additive; ES is a norm):
+
+| | edge ring (30 cells; where terrain enters) | interior (32) | HUD (18) | player |
+|---|---|---|---|---|
+| depth 1: M16 / D cont. / D scratch / E22MS | 0.65 / 0.71 / 0.69 / 0.61 | 0.05 / 0.04 / 0.06 / 0.17 | 0.18 / 0.09 / 0.08 / 0.08 | ≤ 0.007 |
+| depth 4 | 0.43 / 0.49 / 0.50 / 0.45 | 0.16 / 0.15 / 0.16 / 0.20 | 0.13 / 0.10 / 0.07 / 0.09 | ≤ 0.005 |
+| depth 16 | 0.31 / 0.33 / 0.35 / 0.33 | 0.28 / 0.28 / 0.28 / 0.29 | 0.09 / 0.07 / 0.06 / 0.07 | ≤ 0.004 |
+
+- At one step, about two-thirds of every world's gap is on the edge ring, the sampler included.
+- **The edge content is mostly epistemic, not aleatoric:** the five futures share the map, so the ideal KNOWS the terrain a
+  world never saw. A world can at best sample plausible terrain there.
+- E22MS removes the edge gap no better than the deterministic worlds (0.61 vs 0.65-0.71). Its Δ channel does not sample terrain.
+- With depth, the interior's share grows to ~28%: earlier errors move inward, plus mobs and misregistration.
+- **Open → measured below (`terrainsub.py`):** how much of the edge gap a terrain-SAMPLING world could close.
+
+**D. Can sampling plausible terrain close the edge gap?** (`terrainsub.py`, 17:55-18:10)
+- **Setup:**
+  - 376 TEST+TRAIN roots whose factual future scrolls at depth 1 (76 at night).
+  - The world's prediction on the entering line is replaced by terrain from donor transitions of OTHER episodes: the 17
+    one-step successors of every root; 632-762 donors per direction.
+  - Scored: whole-frame fair ES vs the five futures. For a point forecast, the donors' mean; for E22MS, one donor per sample.
+
+| entering line replaced by | tile agreement with the true entering tiles | gap closed by day: det. worlds / E22MS | at night: det. / E22MS |
+|---|---|---|---|
+| the other real futures (ideal; knows the map) | 1.00 | 1 / 1 | 1 / 1 |
+| 4 donors nearest in the visible edge line's tokens (a conditional terrain sampler) | 0.64 | −0.29 to −0.42 / −0.10 | −0.90 to −1.08 / −0.02 |
+| 4 donors best matching the TRUE entering tiles (control; facts no world has) | 0.88 | +0.13 to +0.22 / **+0.41** | −2.26 to −2.63 / −1.75 |
+| 4 random donors (terrain prior) | 0.35 | −1.50 to −1.80 / −1.19 | −3.55 to −4.10 / −2.23 |
+
+- **The worlds' own entering-line predictions already beat plausible terrain sampled from what they can see.** The conditional
+  sampler is neutral for E22MS and harmful for the point forecasts.
+- **Nearly correct terrain WOULD help a sampler by day** (41% of E22MS's entering gap). That terrain is information the window
+  does not contain: the visible edge line raises tile agreement only from 0.35 to 0.64.
+- **At night, correct tiles under another frame's light and static are far worse than a blurred prediction:**
+  - the token of a cell is not a function of its terrain;
+  - this is the target-space finding (encoder_why) again, and it confounds this substitution at night.
+- **Limits:**
+  - a donor bank of ~700 per direction;
+  - the nearest neighbour uses one line of tokens, while a learned sampler could use the whole window and biome structure.
+  - The bound is therefore "this naive conditional sampler does not help", not "no sampler can".
+- **Reading:**
+  - The largest part of the depth-1 gap (the edge ring, 61-71%) is mostly missing information, not a missing stochastic
+    output.
+  - Memory can recover the seen part: 23% of entering cells in L16 windows; oracle recall 4-10 vs the worlds' 6-26
+    (entering_memory, 10:2x).
+  - No generator samples the unseen part into correctness.
+
+### 10-10 INCIDENT (11:42-17:10): the lane queue was blocked for 5.5 h by one job
+
+- From 11:42 the GPU ran only `h16_e22ms` (2.9 GB); lanes 170 / 173 / 177 / 178 waited.
+- Their declared needs (2,300-3,000 MiB + 256) did not fit beside it: free was 2,497 MiB.
+- Those declarations were never measured. The CPU was idle after `encoder_why` finished (11:27).
+- 17:10: lane171 stopped (resumable: draw files and feature progress are saved; it was in draw 6 of 16). `lane171b` resumes
+  it once 170 / 173 / 177 / 178 are done.
+- 17:10 h16_dscratch started; 17:11 sb_export_snapshots started beside it.
+- Lesson: before queueing, check the declared needs against the longest running job.
+
+### 10-10 RESULT (17:20): P-C (gradient anatomy) — HOLDS; the update becomes noise from unseen terrain as training proceeds
+
+`gradanat.py`, 63 batches per snapshot (stage-1 worlds, bs 16; noise consistency 1/√63 = 0.126), 60 batches for the L16
+worlds (bs 4; 0.129). The objective was reproduced exactly (relative error 0.0) for both losses.
+
+Cells: **projection share** of the update / grad-norm ratio / **cross-batch consistency**, under each world's OWN loss:
+
+| world | entering (77% never seen) | own state changed | no state change | total consistency |
+|---|---|---|---|---|
+| M6 @ 6k (L1) | 0.09 / 0.23 / 0.35 | 0.04 / 0.19 / 0.58 | 0.56 / 0.69 / 0.43 | 0.39 |
+| M6 @ 36k (L1) | 0.37 / 0.55 / 0.19 | 0.05 / 0.24 / 0.58 | 0.46 / 0.62 / 0.48 | 0.33 |
+| M16 (L1) | 0.40 / 0.54 / 0.20 | 0.02 / 0.13 / 0.51 | 0.42 / 0.55 / 0.46 | 0.34 |
+| DS1 @ 6k (D loss) | 0.29 / 0.49 / 0.27 | 0.04 / 0.18 / 0.51 | 0.29 / 0.45 / 0.46 | 0.37 |
+| DS1 @ 36k (D loss) | **0.89 / 0.94 / 0.18** | **0.01** / 0.10 / 0.38 | 0.04 / 0.15 / 0.35 | 0.19 |
+| D scratch L16 (D loss) | 0.74 / 0.85 / 0.16 | 0.05 / 0.24 / 0.44 | 0.07 / 0.23 / 0.39 | 0.18 |
+
+**Against the predeclared rule** (refuted if rare-change consistency ≤ irreducible consistency, or the irreducible norm share
+< 25%): **not refuted.**
+- In every late world, own-state changes are 2-3× more consistent than entering terrain (0.38-0.58 vs 0.16-0.20).
+- Entering terrain has 54-94% of the gradient norm.
+
+**Over training:**
+- Entering's share of the update rises (L1 0.09 → 0.37; D 0.29 → 0.89) while its consistency falls toward noise (0.35 → 0.19;
+  0.27 → 0.18). Its learnable part gets learned; what remains is noise, and it takes over the update.
+- The D loss's whole update is close to noise late: total consistency 0.37 → 0.19, vs 0.126 for pure noise.
+- Own-state changes stay consistent throughout but receive 1-5% of the direction.
+
+**Conflict:** the cosine between the own-state-change and no-change gradients is −0.15 (DS1 @ 36k, D loss) and −0.18 (M6 @ 36k,
+L1). Learning a change pushes against copying the unchanged cells. Entering is ~orthogonal to both (−0.01 to 0.09).
+
+**The allocation is the loss's, not the world's:** scored under the other loss, each world shows that loss's pattern.
+- M16 under the D loss: entering 0.88 of the update.
+- D scratch under L1: no-change 0.43 and entering 0.28.
+
+**Reading:** P-C holds, with the predicted structure.
+- Under L1, about half of every update copies unchanged cells, a consistent pull that includes the night static.
+- Under the D loss, by the end, ~90% of every update chases never-seen terrain, and that gradient is near-random. **[WITHDRAWN 18:00: raw gradient, not AdamW's update; `entering` includes seen terrain; consistency 0.18 vs noise 0.126 is not 'random'. What holds: 89% of the RAW-gradient projection, consistency 0.18. MEASURED 19:16 (`--adam --seen`): 81% of the AdamW update on NEVER-seen terrain (5% on seen), consistency 0.20; see the 19:04 entry.]**
+- Under both, the facts that change get a few percent.
+- **This is the third face of the same cause:** the loss's currency allocates the update by error magnitude, and the largest
+  errors are the unlearnable ones.
+
+### 10-10 RESULT (17:20): encoder interventions across encoders, and E22MS decisions (partial)
+
+`encoder_why.py`, all 1,002 roots per encoder. Raw's checks reproduce encoder_diag: S0 R² 0.5926 vs 0.592; S2 0.888 vs
+0.888. Final tokens match the caches to ≤ 0.002.
+
+| encoder | own-state R² final (day / night) | best layer | day-scroll re-encoding: real / rigid translation / positions matched | HUD jitter, 18 tokens (still day / scroll day) | night static, ring 4: own pixels / context |
+|---|---|---|---|---|---|
+| Raw | 0.59 (0.79 / 0.33) | L6 0.69 | 1.56 / 1.54 / 0.75 | 12.0 / 9.1 | 11.3 / 0.13 |
+| TC | 0.38 (0.49 / 0.41) | L1 0.67 | 6.40 / 6.10 / 1.82 | 54.1 / 36.0 | 20.7 / 1.85 |
+| LDAD λ1 | 0.34 (0.41 / 0.23) | emb 0.62 | 21.5 / 19.5 / 1.50 | 11.6 / 28.6 | 9.9 / 0.18 |
+| LDAD λ10 | 0.28 (0.34 / 0.14) | emb 0.61 | 18.4 / 17.5 / 0.67 | 15.3 / 135.3 | 2.4 / 0.08 |
+
+**Raw:**
+- Re-encoding on scroll is 99% a rigid-translation effect: half position embeddings, half global context.
+- The context part is flat with distance from the entering edge (0.84 → 0.68 → 0.74): global, not local bleeding.
+- A single-patch edit puts only 3-11% of its change on other tokens, flat with distance. On a scroll every patch moves, and
+  those small global effects add up.
+- HUD pixels are identical in 100% of 12,546 unchanged-HUD pairs. Their token change is 0 at the embedding and grows with
+  depth to 9-12: entirely attention to the map.
+- Night static is 99% the cell's own pixels.
+
+**Every encoder:**
+- The patch outputs lose own-state alignment in the deep layers that no loss trains, most of all LDAD's.
+- LDAD's inverse-dynamics objective makes its patch tokens position-coded: 92-96% of their ×12-14 larger re-encoding is
+  position. LDAD λ10's HUD tokens move 135-153 per scroll step.
+- Raw's last layer is the most state-aligned of the four. LDAD's measured gains (move routing, 09-30) did not come through its
+  patch tokens as targets.
+
+**E22MS H16 decisions** (window 15; DEV-B 1,139 opportunity roots; 3 head seeds), before the pause:
+
+| reading | trajectory head | snapshot head |
+|---|---|---|
+| E22MS, 1 sample | 0.630 (0.6317 / 0.6298 / 0.6297) | 0.615 |
+| M16 (`__w15.json`) | 0.657 | 0.623 |
+| references | prior 0.616, one real future 0.679, uniform 0.571, oracle31 0.766 | |
+
+- One E22MS sample decides worse than M16 (−0.027) and only slightly better than the prior.
+- The 16-sample readout (M1 / M4 / M16, averaged P(dead by 16)) is the test of whether sampling pays. It is paused at draw 6
+  and not judged.
+
+### 10-10 RESULT (11:40): the loss vs the network, by substitution — the per-element losses' OPTIMA already fail the mob facts, in opposite directions
+
+**Question:** a deterministic world trained by a per-element loss can at best output that loss's optimal statistic of the
+next-token distribution:
+- the per-element median for L1;
+- the per-element mean for squared error.
+
+**Method:** `statoracle.py` replaces the network by the exact statistic of the five real futures of each root (same actions,
+different env keys), which is better than any world can do since the futures share the full simulator state.
+- It reads the statistic with the same probes every world is judged on (fitted on true TRAIN tokens; 283 TEST roots).
+- Check: the real futures decode to the simulator's counts (cows 0.428 vs 0.416 at depth 1; zombies 0.201 vs 0.204).
+- The floor check holds: mean5's L2 to the futures = 4/5 of the unbiased variance (50.35 vs 62.94), and median5 has the lower L1
+  (188.9 vs 214.4), as each statistic must.
+
+**Mob census, decoded counts per frame** (sim = the simulator's mean over the five futures):
+
+| depth | sim cows | median5 | mean5 | sim zombies | median5 | mean5 | sim skeletons | median5 | mean5 |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 0.416 | 0.286 | 0.979 | 0.204 | 0.191 | 0.290 | 0.105 | 0.071 | 0.201 |
+| 4 | 0.463 | 0.120 | 1.548 | 0.223 | 0.173 | 0.424 | 0.100 | 0.035 | 0.307 |
+| 16 | 0.521 | **0.079** | **2.094** | 0.306 | 0.127 | 0.790 | 0.125 | 0.049 | 0.393 |
+
+**The mechanism, per cell.** Share of cells decoded "cow present", by how many of the five futures have a cow there (depth 1;
+the same at every depth):
+
+| futures with the cow | 1 | 2 | 3 | 4 | 5 |
+|---|---|---|---|---|---|
+| a real future (a sample) | 0.20 | 0.40 | 0.59 | 0.80 | 1.0 |
+| median5 (L1's optimum) | **0.0** | **0.0** | 0.95 | 1.0 | 1.0 |
+| mean5 (MSE's optimum) | **0.82** | 0.96 | 0.95 | 1.0 | 1.0 |
+
+- **The median is a majority vote per element:** any mob with < 50% chance at a cell is erased. Mob positions spread with
+  depth (at depth 16, 612 of 652 cow cells have a cow in only ONE future), so the L1 optimum erases nearly every moving mob.
+  The erasure does not depend on the reader: the median token there IS the background token.
+- **The mean is a superposition:** a faint copy of the mob at every cell any future puts it. It is not a state, and how many
+  mobs it "contains" depends on the reader. Probes calibrated on real states read most faint copies as mobs (×4 cows at 16).
+- **Only a sample is calibrated:** the per-cell presence equals the chance (0.2 / 0.4 / 0.6 / 0.8 / 1.0), and mass is
+  conserved.
+
+**The worlds reproduce their loss's optimum at depth 1** (decoded census, same probes; depth 1 is teacher-forced on the true
+context):
+
+| | zombie | skeleton | cow |
+|---|---|---|---|
+| simulator | 0.204 | 0.105 | 0.416 |
+| median5 (L1 optimum) | 0.191 | 0.071 | 0.286 |
+| M16 (L1) | 0.117 | 0.039 | 0.357 |
+| mean5 (MSE optimum) | 0.290 | 0.201 | **0.979** |
+| D scratch (MSE-dominant) | 0.251 | 0.240 | **0.922** |
+| E22MS decoder, Δ zeroed (MSE-trained, no Δ) | 0.209 | 0.187 | **0.972** |
+| E22MS, prior sample / true codes | 0.212 / 0.209 | 0.170 / 0.156 | 0.611 / 0.569 |
+
+- M16 loses mobs as the median does.
+- The MSE-family decoders multiply cows at depth 1 exactly as the mean does (0.92-0.97 vs 0.98).
+- Given Δ codes, the same decoder is closest to calibrated (0.57-0.61).
+- Self-fed to depth 16, every deterministic world LOSES mobs: cows M16 0.135, D continued 0.039, D scratch 0.359, Δ zeroed 0.399,
+  vs 0.521. Iterating a superposition dilutes it: a faint mob's own next-step mean is fainter.
+- The E22MS samples' ×6-8 cow growth at depth 16 is a separate, Δ-channel mechanism, present with true codes too. Not explained
+  here.
+
+**Which statistic each world learned** (depth 1, the 1.4% of elements where mean5 and median5 differ by > 0.1): share closer to
+the median:
+- M16 0.55 (the highest);
+- D continued 0.38, D scratch 0.36, Δ zeroed 0.36;
+- E22MS samples 0.46-0.47.
+
+The ordering follows the loss: L1 → median-like, squared error → mean-like. The separation is moderate; the census is the strong
+evidence.
+
+**Seed-8 replication (20:03):**
+- M16 seed 8's depth-1 census: zombies 0.124, skeletons 0.039, cows 0.364 (seed 7: 0.117 / 0.039 / 0.357).
+- Depth 16: cows 0.132 (0.135), zombies 0.007 (0.011).
+- Closer to the median on 0.551 of the differing elements (seed 7: 0.550).
+
+**HUD:** the statistics draw the timer decrements at the real rate, because the five futures share the hidden counters, which
+are deterministic given the root's FULL state. The worlds' missing decrements are the information horizon (Part I scoreboard entry, timers), not
+the statistic.
+
+**Reading — the "fighting ourselves" mechanism for anything whose outcome is random:**
+- For every fact whose future is uncertain (mob moves, damage, entering content), the optimum of a per-element point loss is not
+  a state the game can be in.
+- Which non-state it is depends on the loss: L1 erases what is uncertain; squared error superimposes it.
+- Switching or mixing the losses moves the failure between these two non-states. It cannot remove it, because the target is a
+  distribution and the output is one point.
+- This is proven on the optimum itself, with no network involved: no architecture fixes it under these losses.
+- Only an objective whose optimum is the distribution (a proper scoring rule: energy score, likelihood, diffusion / flow) makes
+  samples calibrated. This is the scoreboard's energy-score result seen from the facts' side.
+
+### 10-10 LITERATURE step 1 (11:00-11:20): the target space — what the recipe we copied assumes
+
+Read after P-A / P-B were measured, on the cause they point to. Primary sources were read; arXiv PDFs are in the session scratchpad.
+
+**Sources:**
+- **V-JEPA 2 / 2-AC** (arXiv 2506.09985, `third_party/papers/2506.09985v1.pdf`):
+  - its encoder's patch features are TRAINED by a patch-level objective: mask-denoising in representation space, L1 between the
+    predictor's outputs and EMA-target patch features;
+  - 2-AC then trains an action-conditioned predictor on those FROZEN patch features (L1 teacher forcing + a 2-step rollout loss).
+    This is the recipe our world copies;
+  - planning: CEM with horizon 1, re-planned at every step (Table 3);
+  - §4.3 limitations name autoregressive error accumulation and long horizons;
+  - stochastic outcomes are neither modelled nor discussed; the predictor is deterministic.
+- **DINO-WM** (arXiv 2411.04983):
+  - frozen DINOv2 patch features, teacher forcing, a squared-L2 "latent consistency" loss per frame (Eq. 1);
+  - DINOPatch vs DINO CLS success rates 0.98 / 0.96 / 0.92 / 0.90 vs 0.96 / 0.58 / 0.60 / 0.44 (Table 2); ResNet and R3M spatial
+    features are worse;
+  - environments: PointMaze, Wall, Reach, PushT, Rope, Granular. The word "stochastic" occurs only in a reference title.
+- **DINOv2** (arXiv 2304.07193, §4):
+  - image-level DINO loss + a PATCH-LEVEL iBOT loss: student masked patch tokens predict the EMA teacher's patch tokens, + KoLeo;
+  - Table 3b: the masked-image-modelling term improves patch-level tasks.
+- **Ours, LeWM:** the CLS-only objective + SIGReg. "Patch tokens are never regularized by SIGReg and never predicted"
+  (`d4mj/lewm.py`, `export` docstring). The last block's patch outputs receive no gradient from any loss.
+- **Denoising Vision Transformers** (Yang et al., ECCV 2024, arXiv 2401.02957):
+  - ViT outputs ≈ f(x) + g(E_pos) + h(x, E_pos): position-dependent, input-independent artifacts, traced to the position
+    embeddings;
+  - they "maintain a generally consistent relative position in the images" across video frames. Under a scroll, the content
+    moves and the artifact does not: this predicts re-encoding of unchanged content.
+- **Vision Transformers Need Registers** (Darcet et al., ICLR 2024, arXiv 2309.16588):
+  - CLS-trained ViTs recycle low-information patch tokens to store global information;
+  - Fig. 4c: only in models ≥ ViT-Large. Our encoder has width 192, so this is NOT claimed for it.
+- **Littwin et al. 2024 (JEPA implicit bias):** JEPA objectives bias the representation they TRAIN toward predictive features,
+  away from noisy ones. Our patch tokens are not trained by one.
+
+**Reading:** the recipe we copied, deterministic per-element regression of frozen patch features (V-JEPA 2-AC, DINO-WM), is
+demonstrated under three preconditions:
+1. the target patch features were themselves trained by a patch-level predictive objective (iBOT, V-JEPA);
+2. the next frame is (nearly) determined by the action, since no stochastic outcomes are modelled;
+3. a short horizon with closed-loop replanning.
+
+All three fail here, each measured:
+1. our patch tokens are a by-product of a CLS objective: own state explains R² 0.59 of a token; 40% of the L1 change mass is
+   night static; day scroll re-encodes unchanged cells ×25;
+2. the RNG floor is 44% of the one-step L2, and 66-85% of every world's teacher-forced error is undeterminable;
+3. the actor trains on 16-step open-loop imagination.
+
+The next two runs test the mechanisms this predicts:
+- `encoder_why.py`: are the non-state components position artifacts (DVT), context mixing, or the cell's own pixels?
+- `statoracle.py`: is the loss's optimal statistic itself the failure?
+
+### 10-10 RESULT (10:34): loss currency, prediction side — most of the per-element loss sits on cells whose facts are already right
+
+`currency.py`: each world's teacher-forced predictions (all depths, TEST roots, 280,612 map cells), decoded by probes fitted on true
+tokens. A cell's facts are correct when its tile class and all four mob flags match the simulator.
+
+| world | cells with a wrong fact | L1 error on fact-correct cells | L2 error on fact-correct cells | mean L2: correct / wrong | AUC (error flags a wrong fact) |
+|---|---|---|---|---|---|
+| M16 (L1-trained) | 4.2% | **62.5%** | 25.0% | 0.80 / 54.7 | 0.974 |
+| D continued | 4.5% | 72.7% | 49.2% | 1.49 / 32.4 | 0.952 |
+| D scratch | 5.3% | 73.6% | 50.6% | 1.57 / 27.5 | 0.938 |
+| E22MS zeroed | 5.8% | 67.5% | 38.2% | 1.30 / 34.5 | 0.959 |
+| E22MS sample 0 | 5.4% | 63.6% | 29.2% | 1.20 / 50.7 | 0.967 |
+| E22MS true codes | 3.7% | 78.9% | 57.5% | 1.13 / 21.4 | 0.953 |
+
+- Per cell, the token error DOES flag wrong facts (AUC 0.94-0.97).
+- But wrong facts are 4-6% of cells. In the L1 currency M16 trains on, 62.5% of its error mass is on fact-correct cells: night
+  static, re-encoding, rendering detail (Part II-A).
+- The D-loss worlds have halved their wrong-fact errors (27-32 vs 55), so the rest of their error, half of it even in L2, is on
+  fact-correct cells.
+- HUD (rounded health / food / drink / energy readouts): 17-20% of teacher-forced steps have a wrong value in every world, while
+  41-71% of the HUD-token L2 is on steps whose values are all right. The wrong values are dominated by the timer decrements
+  that no L16 world can predict (above).
+
+### 10-10 RESULT (10:29): Part I scoreboard — M16 / D continued / D from scratch / E22MS (the user's breadth request)
+
+Variants exported by `rollout_export.py` (lanes 170 / 171), read by `scoreboard.py`, `budget.py`, `entering_memory.py`; intervals from
+`scoreboard_compare.py` (paired, episode-clustered, 2,000 draws). E22MS = 4 prior samples scored as one sampled world.
+
+**1. The currency decides the winner.**
+- teval's metric (squared error to the ONE recorded future), self-fed, / V:
+  - M16 0.528 at depth 16; D continued 0.473; D scratch 0.494 (both better, resolved);
+  - E22MS sampled **0.631 (worse, +0.103 [+0.073, +0.133])**; E22MS with the true codes 0.326.
+- The energy score against all five real futures (proper for distributions), depth 16, E22MS sampled vs M16:
+  - static cells **−12.1 [−13.9, −10.3]** (33.8 vs 45.9);
+  - mob cells **−3.2** [−3.8, −2.6]; entering −1.6 [−2.0, −1.2]; HUD −4.8 [−5.4, −4.2];
+  - better at every depth ≥ 4 in every class except the player token.
+- The deterministic worlds tie or lose against M16 on mob / entering cells.
+- **Our standard metric rewards predicting the mean and penalizes correct sampling.**
+- D-loss worlds are worse than M16 at depth 1 on the player token (+0.09 to +0.29) and on static cells (+0.57 to +1.54). That is
+  the copy-precision cost the error budget shows.
+
+**2. Facts at depth 16 (imagined; TEST roots):**
+
+| | M16 | D cont. | D scratch | E22MS zeroed | E22MS sampled | E22MS true codes | true tokens |
+|---|---|---|---|---|---|---|---|
+| tile accuracy | 0.776 | 0.783 | 0.776 | 0.759 | 0.731 | 0.844 | 0.978 |
+| zombie / cow / skeleton count (truth 0.34 / 0.46 / 0.14) | 0.01 / 0.14 / 0.01 | 0.01 / 0.04 / 0.00 | 0.08 / 0.36 / 0.23 | 0.14 / 0.40 / 0.35 | **0.56 / 3.65 / 0.60** | 0.46 / 2.98 / 0.64 | 0.33 / 0.46 / 0.15 |
+| health R² / bias | 0.59 / +0.43 | 0.58 / +0.31 | 0.56 / +0.67 | 0.59 / +0.59 | 0.57 / +0.16 | 0.63 / +0.09 | 0.999 |
+| food R² / bias | 0.88 / +0.41 | **0.58 / −0.92** | 0.88 / +0.09 | 0.84 / −0.06 | 0.83 / +0.06 | 0.85 / +0.02 | 0.999 |
+| inventory R² | **0.74** | 0.92 | 0.92 | 0.92 | 0.92 | 0.93 | 0.986 |
+| facing / sleep accuracy | 0.90 / 0.95 | 0.89 / 0.95 | 0.93 / 0.98 | 0.93 / 0.98 | 0.93 / 0.98 | 0.93 / 0.98 | 0.95 / 1.0 |
+
+- **Mob mass is not conserved in any world.** The deterministic worlds lose their mobs; the Δ-channel worlds MULTIPLY them, cows
+  ×8 when sampled and ×6.5 even with the true codes: decoder-side, as for zombies yesterday, and worse for cows.
+- D's loss gives inventory dynamics (R² 0.74 → 0.92).
+
+**3. Timer-driven HUD changes are not drawn by any world** (decrements per imagined step vs the five real futures on the same steps):
+
+| | health | food | drink | energy |
+|---|---|---|---|---|
+| real futures | 2.10% | 3.10% | 4.11% | 3.04% |
+| M16 | 0.04% | 0 | 0 | 0.01% |
+| D continued | 0.52% | 0.02% | 0.11% | 0.03% |
+| D scratch | 0.23% | 0.10% | 0.23% | 0.66% |
+| E22MS sampled | **1.56%** | 0.07% | 0.17% | 0.61% |
+
+- Food / drink / energy fall on hidden 20-30-step timers (hunger > 25, thirst > 20, fatigue > 30). Every world draws them 5-40×
+  too rarely.
+- The same structure as the health cooldown: a hidden phase that a median / mean-seeking world rounds to "no change".
+- Only health approaches the real rate, and only with sampling.
+- **Why, exactly** (`craftax_classic/game_logic.py` 1256-1325, read; the diagnosis futures' hidden counters):
+  - per step awake, the hunger / thirst / fatigue / recover timers grow by 1 (by 0.5 asleep, fatigue −1), and fire at 25 / 20 /
+    30 / ±25-15;
+  - eating, drinking and killing a cow reset hunger / thirst.
+  - Across all 8,183 intrinsic decrements of the diagnosis futures (food 2,465, drink 3,276, energy 2,442), the timer just before
+    the decrement is food 24.5-25, drink 19.5-20, energy 30 = **100% ≥ 15**.
+  - So the reset that sets each phase is ≥ 20 steps back, ALWAYS outside an L16 world's 15-frame input window.
+  - `teval.step` re-runs the world on its last ≤ 15 frames each imagined step (no state carried), so this is the world's
+    information horizon.
+- **For every L16 world these decrements are unpredictable from its inputs, whatever the loss:** epistemic, not allocation. A
+  deterministic world can never draw them (P < 0.5 everywhere). A sampling world can only match the base rate (≈ 1 / period).
+  Reaching them needs a memory horizon ≥ 31 steps.
+- Contrast with the zombie cooldown (period 6 < 15): inside the window, learnable; its failure was allocation, fixed by D.
+
+
+**4. Scroll fidelity** (depth 16):
+- missed scrolls on true moves: 36% M16, 32% D scratch, 24% E22MS sampled, 17% with the true codes;
+- false scrolls 5-8%; view aligned with the truth: 54-59%, 68% with the true codes.
+- Wrong move decisions remain the main source of misalignment (E11b, 10-01).
+
+**5. Entering terrain** (teacher-forced, `entering_memory.py`):
+- 23% of entering cells were in view earlier in the window; 77% were never seen;
+- on seen cells the deterministic worlds' error is 6-26 vs 4-10 for oracle recall of the last observed token (a memory deficit
+  of 1.5-2.6×);
+- never-seen cells: error 34-37, tile accuracy 78-82% (a deterministic guess of the likely class);
+- E22MS sampled draws never-seen terrain with error 44-47 and tile accuracy 72-75%, as a sampler should against one truth;
+  with the true codes 15.6 / 86%.
+
+### 10-10 RESULT (10:23): Part II-B (dynamics error budget) — P-B holds on the RNG floor alone; the two losses split the budget in opposite ways
+
+**Validations first:**
+- `rollout_export` = teval bitwise for D from scratch (32 roots: gen / tf / one per-root errors identical).
+- The scoreboard reproduces teval's M16 errors exactly at depths 1 and 4 and in every one-step class. At depth 16, 0.52809 vs
+  0.52778: M16's stored teval file came from an earlier run with different batching. Per root, 9 roots differ at depth 1 (mean
+  relative error 7.5e-5) and 986 at depth 16 (mean 0.5%, max 2,107). Self-fed rollouts amplify near-ulp numeric differences into
+  different futures: an imagination-stability fact in its own right (diagnostic C3, below).
+- The scoreboard reproduces e22_imagine's E22MS zeroed and sample-0 readings exactly (to the last rounded digit).
+- `gradanat`'s per-category terms sum to `rollout_losses`' objective exactly (relative error 0 for L1, 6e-8 for D's loss).
+
+**`budget.py`** (each world's ONE-STEP error, split per token by category; the floor = unbiased variance over the real keys from the
+SAME full history = what no deterministic world can remove):
+
+| M16 (L1-trained), one-step over all 17 actions × 4 keys | share of its L2 error | share of its L1 error | floor share within it | mean L2 / floor per token |
+|---|---|---|---|---|
+| unchanged cells, night | 31.4% | **43.3%** | **91%** | 4.11 / 3.73 |
+| entering cells, day + night | 29.9% | 9.5% | 0.8% / 23% | 33.4 / 0.27 (day) |
+| own state changed, day + night | 22.6% | 11.6% | 23-32% | 47.6 / 10.9 (day) |
+| unchanged cells, day | 1.8% | 16.0% | — | 0.059 |
+| HUD tokens, values changed | 9.4% | 4.6% | ~1% | 5.6 |
+| HUD tokens, values same | 0.4% | 4.7% | — | 0.03 |
+| whole frame | 143.7 / frame | 415 / frame | **44.2%** | |
+
+- On the factual first step (5 futures) the floor share is 31.7%; entering cells are 49% of the L2 error there.
+- **P-B** (≥ 30% of the teacher-forced squared error irreducible from the inputs): **holds on the RNG floor alone** (44% / 32%),
+  before the epistemic part of entering terrain is counted.
+- Entering-cell error is NOT random (floor 0.8% by day: the map is the same under every key). It is unseen or unlearned terrain.
+  Seen-before vs never-seen is split next (C4).
+- Of M16's excess over the floor: entering cells 52%, HUD changes 17%, own-state changes 16%, the rest spread.
+- **Combined (budget rerun with entering cells split by whether their world position was in view in a context frame):**
+  - the share of each world's error that its inputs cannot determine = the RNG floor + the excess on NEVER-SEEN entering cells;
+  - the latter is an upper bound on its irreducible part: on those cells the worlds match a local-context predictor's class
+    accuracy, 09-29.
+
+  | world | one-step (17 actions) | factual first step |
+  |---|---|---|
+  | M16 | 0.706 | 0.783 |
+  | D continued | 0.770 | 0.851 |
+  | D scratch | 0.742 | 0.830 |
+  | E22MS decoder alone | 0.662 | 0.767 |
+
+  - Seen-before entering cells are only 1-3% of the L2 error.
+  - In the L1 currency, unchanged cells at night (the static) plus never-seen entering cells are 45-55% of the error mass.
+  - **Only ~15-34% of a world's per-element squared error is learnable from its inputs.**
+
+**The two losses split the budget in opposite directions** (one-step, all 17 actions; mean L2 per token):
+
+| | M16 (L1) | E22MS decoder alone (D's loss; Δ zeroed) | floor |
+|---|---|---|---|
+| own state changed (day) | 47.6 | **15.7** | 10.9 |
+| HUD values changed (day) | 5.60 | **2.40** | 0.06 |
+| unchanged cells (day) | **0.059** | 0.438 (×7.4) | 0.142 |
+| HUD values same (day) | **0.030** | 0.151 (×5) | 0.013 |
+| entering (day) | 33.4 | 31.3 | 0.27 |
+
+- L1 (a median, every error counted at its absolute size) buys copy precision on the millions of small-change tokens.
+- Squared error buys the rare large changes and gives up precision on unchanged content.
+- Neither touches entering terrain. Each objective is good where the other is bad: the "fighting" in exact numbers.
+
+**A sampled world pays twice the floor by construction** (E|X − Y|² = 2σ² for independent draws): E22MS sample 0's own-state error is
+27.5, vs 21.8 for an ideal sampler (2 × 10.9). MSE against one realized outcome cannot judge a sampler. The energy score in the
+scoreboard is the proper comparison.
+
+**Gradient anatomy, 2-batch CPU test** (M6 at 6k; to be read only from the full GPU run, lane174):
+- under L1, unchanged cells carry 46% of the loss and 64% of the gradient direction;
+- under D's loss, entering cells carry 55% of the loss and 84% of the direction; own-state changes get −0.8%.
+
+### 10-10 RESULT (10:14): Part II-A (encoder) — P-A holds: the token target is mostly not game state; 40% of its L1 change mass is renderer noise
+
+**[CORRECTED 18:00: 40% (L1) / 34% (L2) is the mass of night cells with no state change. Measured static is ~74% of their squared change, ≈ 25% of the L2 change mass; the rest is re-encoding and lighting drift. See the 18:00 entry.]**
+
+v2 runs: `encoder_diag.json` (Raw, all five futures, 80,765 frames) and `encoder_diag_{raw,ldad1,ldad10,tc}.json` (root + factual
+future, 17,030 identical frames per encoder).
+
+**A1 information — present** (Raw; held probes on true tokens):
+- HUD health / food / drink / energy R² 0.999 / 0.999 / 0.998 / 0.998; inventory mean R² 0.997;
+- tile class from the own token 97.9% (3 × 3: 98.3%); zombie / skeleton / cow / arrow AUC 0.990 / 1.0 / 1.0 / 1.000;
+- facing 94.6%, sleep 100%, light R² 0.998.
+- The same for the other encoders (tile 96.9-97.7%, zombie AUC 1.0, health 0.998-0.999).
+- The encoder does not lose the state. (The "exact after rounding" HUD numbers are wrong: the targets are fp16 values × 9,
+  not integers. Disregard them.)
+
+**A2 noise floor — measured directly** (Raw; 2,628 of 15,836 all-alive root-depth cases have IDENTICAL simulator states across the
+five futures):
+- day: token variance across the five futures exactly 0 for map, HUD and player tokens;
+- night: map tokens 0.29 / 1.83 / 4.55 / 5.93 at Chebyshev rings 1 / 2 / 3 / 4 around the player; HUD (18 tokens summed) 0.31;
+  player token 0.053.
+- The renderer's night static (source above) is the only randomness in rendering. It is radial as coded and reaches the HUD and
+  player tokens through attention.
+
+**A2 change composition** (Raw full run; L2 / L1 shares of the frame-to-frame target change):
+
+| cause | day | night |
+|---|---|---|
+| own state changed (awake + asleep) | 13.5% / 7.6% | 3.6% / 2.4% |
+| player sprite left the tile | 9.7% / 4.3% | 2.2% / 1.0% |
+| neighbour changed | 1.1% / 1.5% | 2.1% / 2.4% |
+| sleep onset / wake | 22.6% / 7.5% | 2.9% / 0.9% |
+| **no state change** | 8.4% / **32.1%** | **34.2% / 40.3%** |
+
+- Unchanged cells, mean Σ|Δ|² per cell (Raw):
+  - day: still 0.06; scroll 1.4-1.7 (×25: shift re-encoding);
+  - night: still 1.0 / 4.8 / 10.8 / 13.8 at rings 1-4 (= 2 × the measured static variance, as expected for independent noise
+    in consecutive frames); night scroll 5.6-15.5.
+- HUD tokens at unchanged HUD values: about 9-12 per step (18 tokens summed), day or night, still or scroll. Their change when the
+  values change: 79-132.
+
+**Encoder comparison** (identical 17,030 frames; scale-free):
+
+| encoder | own-state R² | + lighting R² | MLP R² | L1 share: state change / day no-change / night no-change / sleep | scroll re-encoding ÷ own change | re-encoding explained by state |
+|---|---|---|---|---|---|---|
+| Raw | **0.592** | 0.888 | 0.865 | 0.19 / 0.32 / 0.40 / 0.09 | 0.028 | 0.13 |
+| TC | 0.380 | 0.742 | 0.733 | 0.20 / 0.43 / 0.31 / 0.06 | 0.027 | 0.09 |
+| LDAD λ1 | 0.335 | 0.759 | 0.753 | 0.13 / 0.57 / 0.27 / 0.03 | **0.271** | 0.50 |
+| LDAD λ10 | 0.277 | 0.536 | 0.485 | 0.12 / 0.62 / 0.23 / 0.02 | **0.350** | 0.31 |
+
+- The MLP R² is on a 5% subsample, lower than the ridge here (undertrained at 17k frames); with all five futures it is 0.902
+  for Raw.
+
+**Reading against P-A** (predeclared: refuted if own state explains ≥ 90% of both):
+- not refuted, by a wide margin: own state explains 59% of a Raw token's variance and 19% of the L1 change mass (7.6% + 2.4%
+  own, plus sprite and neighbours);
+- Raw is the MOST state-aligned of the four encoders;
+- LDAD's inverse-dynamics objective makes patch tokens re-encode ~10× more on scroll (relative to a state change), which fits
+  the 09-30 finding that LDAD worlds do not scroll-copy;
+- the information a world needs is in every encoder (A1). What changes is how much of the per-token target is about it.
+
+### 10-10 interim (10:08): the Raw token target is mostly NOT game state — and part of it is renderer noise (Part II-A, P-A)
+
+**Incident (09:28):**
+- `encoder_diag` v1 (12.3 GB resident) + a scoreboard test + two exporters exhausted the 31 GB RAM;
+- the kernel OOM-killed the diagnostic, and systemd then killed the whole VS Code cgroup, including both export lanes (started
+  with setsid inside it).
+- Relaunched 10:04 as separate `systemd-run --user` units with memory caps. The exports resume: M16, E22MS zeroed and
+  sample 0 were complete; the generator state is restored from the sample-0 meta.
+- v1's full-run results (80,765 frames, 1,002 roots) were printed before the kill; they are recorded here. v2 (day/night split,
+  noise floor) is rerunning.
+
+**Encoder facts:**
+- The Raw encoder is a ViT (12 layers, 3 heads, width 192, patch 7, 9 × 9 patches, absolute positions; d4mj/lewm.py) trained by
+  LeWM on the CLS only.
+- Its patch tokens are "never regularized by SIGReg and never predicted" (lewm.py export docstring). Nothing makes a patch
+  token local, shift-equivariant or stable.
+
+**Static composition** (held R² of a map cell's token, 192 dims pooled; nested one-hot ridge; v1 full run):
+
+| explanatory set | R² |
+|---|---|
+| own state (tile × mob) | 0.593 |
+| + screen position | 0.597 |
+| + global (light × sleep, tile × sleep, tile × light) | **0.888** |
+| + 4 neighbours' states | 0.892 |
+| + diagonal neighbours | 0.893 |
+| MLP on all of the above | 0.903 |
+
+- About 10% of a token's variance is not explained by the visible 3 × 3 state plus lighting. Lighting and sleep rendering
+  account for 0.29 of R² by themselves.
+
+**Frame-to-frame change of the target, by cause** (consecutive true frames, scroll-compensated, entering cells excluded; L2 =
+Σ|Δ|², L1 = Σ|Δ|, the L1 loss's currency):
+
+| cause (exclusive, in this order) | L2 share | L1 share | cells | mean Σ\|Δ\|² |
+|---|---|---|---|---|
+| own state changed | 17.1% | 10.0% | 74k | 55.8 |
+| player sprite left the tile | 11.8% | 5.3% | 28k | 101 |
+| a 4-neighbour's state changed | 3.1% | 3.9% | 185k | 3.7-10.2 |
+| sleep onset / wake | 25.4% | 8.4% | 34k | 180-186 |
+| **no visible state changed** | **42.6%** | **72.4%** | **4.38M** | 2.5 awake, 0.3 asleep |
+
+- In the L1 currency, **72%** of the target's change mass sits on cells whose visible state did not change; all real state
+  changes together are 19%.
+- Unchanged cells move MORE the farther they are from the player: still steps 0.56 → 1.37 → 2.23 → 2.66 at distance 1 → 4;
+  scroll steps 2.4 → 4.0.
+- **Scroll re-encoding:** unchanged map cells on scroll steps move by Σ|Δ|² = 3.0; S4 (state, position, lighting, neighbours)
+  explains only 11% of it.
+- HUD tokens with the same HUD values: 11.3 (still) / 9.1 (scroll), vs 125 / 83 when the values change. Player token with the
+  same facing and sleep: 0.13 still vs 10.8 on scroll.
+
+**The cause of the distance gradient, from the source** (`craftax_classic/renderer.py` 408-423; `constants.py` 395):
+- at night (daylight < 0.5) every map pixel is blended with `jax.random.uniform(state.state_rng) * 95 + 32`;
+- the mask is `2 (0.5 - daylight) x (1 - exp(-0.5 r^2 / 0.5^2))`: zero at the player, near 1 at the edges;
+- `state_rng` is redrawn every step (`game_logic.py` 1707).
+- So 20.1% of the diagnosis frames carry fresh per-pixel random static. It is not game state, no world can predict it, and
+  through the ViT's global attention it can reach every token.
+- v2 measures it directly: the five futures' token variance where their full simulator states are identical. By day this is
+  exactly 0 in the test, so rendering is deterministic.
+
+**Reading so far (v2 numbers pending; not yet against P-A's thresholds):**
+- own visible state explains 0.59 of the static target and real state changes are 19% of the L1 change mass;
+- the rest is lighting and sleep rendering (deterministic), shift re-encoding (deterministic, but only 11% linear in state and
+  position), and night static (random).
+- Every loss we tried spends most of its mass there.
+
+## 2026-10-09 — CPU prior/calibration and real-future controls; E22MP/E22MS endpoint review
+
+**Execution:** CPU only, CUDA hidden, two threads; GPU jobs and numerical training/evaluation sources untouched.
+Opened diagnosis panel: 1,002 roots / 143 episode clusters. Evidence and source/input hashes:
+`20260927_levers/evals/cpu_review_20261009{,_sources}.json`; scripts `review_prior_{input,fit,calibration}.py`
+and `review_real_keys.py`. Runtime logs in `artifacts/eda/levers_logs/cpu_review_*_20261009.log`;
+per-root fit/calibration rows in `artifacts/eda/health_chain_v1/d4mj_prior_*_20261009.pt`.
+
+- **E22MP completed:** canonical held code CE/accuracy 20k **2.3072/0.4698** → 60k **3.5717/0.4047**.
+  CPU reproduces these to ≈0.00021 CE / 0.00014 accuracy. Confidence increases **0.5461→0.6888**.
+  Four-sample hard-interior aligned capture **9.90→11.80%**, localization **48.0→51.8%**;
+  declared halfway thresholds 17.5%/59% unmet. The predeclared “CE does not fall ⇒ capacity convergence”
+  interpretation is unsupported: held generalization worsens.
+- **Calibration intervention:** temperature selected on 20 validation seeds, tested on 43 disjoint seeds.
+  Future-only through first terminal target, excluding context/post-terminal frames: 4,528 test transitions.
+  20k CE **2.229868**, accuracy **0.485038**, selected T=1;
+  60k CE **3.543180→2.587520** with selected T=2, accuracy unchanged at **0.415857**.
+  Calibrated 60k−20k CE **+0.357653 [0.306848,0.408980]**, paired episode bootstrap (2,000 draws).
+  This separates excessive confidence from residual class-order degradation; sampled-rollout benefits untested.
+- **Prior input control:** grouped linear readout of the actual global frame token gives near-cell zombie
+  AUC/AP **0.999526/0.981222** at 20k; **0.999948/0.997950** at 60k. Finite exploratory readouts;
+  adjacent location survives compression, while sufficiency for motion/cooldown is not established.
+- **Real-key event control:** other real futures (keys1–4) versus key0, E22 ordinary-hit/alive masks,
+  no alignment conditioning: capture **38.50% [33.95%,43.00%]** overall and
+  **24.32% [19.85%,29.14%]** at depths9–16; false **1.282%** overall.
+  This is a `caught_all` stochastic reference, not an adjudication of `caught_aligned`.
+- **E22MS endpoints landed:** four-sample soft localization/capture/false **57.57%/13.24%/1.29%**;
+  hard interior **27.67%/10.41%/1.03%**. Hard decoding's earlier benefit does not transfer.
+  Subsequent sampled codes can diverge because changed frames feed the prior; aggregate-only outputs
+  cannot isolate the responsible routing branch or supply paired root intervals.
+- **Stage-B terminal-position census (CPU):** all **7,501 terminal rows** have their only positive death
+  target at position **20**. The **12,288 main rows**, across all **43 allowed window starts**, have zero
+  positive death targets. This verifies positional bias in the prior's end-head supervision; learned
+  shortcut exploitation has not been measured. `e22_imagine` discards this head, so the finding concerns
+  future actor use, not the reported health/localization deficits. Source/protocol:
+  `review_prior_terminal_positions.py`, appended evidence in `cpu_review_20261009.json`.
+- **Reference lineage:** true-code **70.5%/25.2%** is E22M/D-continued/hard-interior;
+  sampled **57.57%/13.24%** is E22MS/D-scratch/soft. No E22MS `postcodes` result exists.
+  Their cross-model difference does not quantify the prior's contribution in the current best pipeline.
+
+**Measurement correction:** historical “hit gradient share” is `||g_hit||/||g_all||`, not an additive
+optimizer-update allocation. D continued ratio 7.557%, cosine −0.0337 ⇒ signed projection −0.2547%;
+scratch D ratio 4.5777%, cosine 0.0104 ⇒ +0.0476%. Adam preconditioning is not measured.
+D's health gains stand; these ratios do not isolate the loss components' causal contributions.
+Zombie-neighborhood substitution closes 75.4% of the whole teacher gap, retaining a 16.91-point residual.
+Detailed protocols, literature and retained leads: [REVIEW_20261009.md](20260927_levers/REVIEW_20261009.md).
+
 ## 2026-10-08 (live) — WHY HEALTH FAILS: link-by-link diagnosis (lead; user mandate: exact cause before any ablation)
 
 **Decisions recorded:** Mamba (fmamba, L16) is permanently canonical. E20 services stopped and disabled 08:20.
+
+### Summary at 19:30 (2026-10-09): the whole chain, measured; where it stands
+
+1. **Teacher-forced health.**
+   - Under uniform L1, zombie hits get ~0.3% of the objective, so no world draws them.
+   - The Delta-IRIS tokenizer loss (D) fixes this generically: row 9 hits 47%, fresh 31, 1 false.
+   - **From scratch D is better still** (test 3): hits 53%, fresh 62, drawn within 0.5 51%; phase +0.024 and adjacency
+     +0.031 over D continued (resolved); no food cost (imagined food R² at depth 16 0.875 vs M16 0.881); teval better
+     than M16; teacher-forced damage caught 81.9%.
+   - Not a continuation artifact.
+2. **Imagination.**
+   - A deterministic world averages the zombie's random moves: D's random-move argmax is 1.1%, its zombie diffuses.
+   - Restoring only the true cells near zombies restores 56% of damage; random cells restore 4.5%.
+   - Imagination needs SAMPLING.
+3. **Stochastic channel (Delta-IRIS posterior + prior on D).**
+   - Warm: the channel stays shut (Park & Lee's mechanism).
+   - Frozen-then-joint: the channel opens, but its encoder never encodes the zombie's move (probe at chance vs a positive
+     control of 0.89; E16 likewise through 36k). Cause: loss share (scroll-entering terrain 49% of D's error, zombie cells
+     1.9%).
+   - **Causal test** (E22Z, label-derived zombie weighting): P2 1.1% → 82%.
+   - **Label-free version** (E22M, moved-content mask whose threshold is the valley of a bimodal ratio): P2 80%.
+4. **Sampled imagination.**
+   - With the prior, zombies stay localized (E22Z: 87% of roots at depth 8 vs truth 93%, D 0%).
+   - Zombie MASS is not conserved: E22Z multiplies (x10 by depth 16), E22M fades (x1/3). Both are decoder-side (they
+     persist with the true codes).
+   - E22Z's extras are fractional generated zombies (copy mass < 1 everywhere; the "copied twice" reading withdrawn).
+   - **Hard (integer) decisions in the interior cure E22M's fade:** census 0.25-0.27 vs true 0.29, hits given adjacency
+     0.20 vs 0.18, false 1.6%.
+   - ITC's region rule fails again (generated HUD: 43% false).
+5. **Where it stands** (label-free E22M + hard interior):
+   - with the TRUE stochastic choices: localization 70.5% (reading 1 passes), caught 25% (30% required), false 1.3%,
+     hits calibrated;
+   - with the prior's samples: 48% / 10%. **The prior is the main remaining gap**; its held code accuracy is 0.470 and
+     its curve was still rising at 20k.
+   - Running: prior 20k → 60k (E22MP) and the same channel recipe on the from-scratch decoder (E22MS).
+
 
 **Setup.** `health_chain.py` fixes a subset of the E20 factual TRAIN pool (seed 20261008), split fit / held by episode:
 - all 1,005 fresh ordinary hits;
@@ -463,6 +6602,20 @@ every past 6-frame run (S.W = 6).
 B2 removed, B1 unchanged: a usable generator alone draws no more hits, and it still drops health inside the cooldown, as the
 diagnosis predicts.
 
+**E21 v2 results, part 1: G and C0** (20:50; `evidence_e21v2_ab.json` via `health_e21_table.py`; row 9 from `__w10` files):
+
+| arm (6k from M16) | generator beats copy | since = 6 / 1..4 in h63 | approach adjacency in h63 | drawable from h63 | emitted hits / false, row 14 | emitted hits / false, row 9 |
+|---|---|---|---|---|---|---|
+| M16 (parent) | 2.4% | 0.888 / 0.909 | 0.778 | 286 | 154 / 126 | 60 / 0 |
+| C0 (control) | 4.1% | 0.897 / 0.898 | 0.761 | 290 | 124 / 107 | 64 / 0 |
+| G (+ gen-loss) | **79.7%** | **0.944 / 0.936** | **0.619** | 186 | 100 / 108 | 64 / 0 |
+
+- Reading 1 (B2 fixed, ≥ 30%): **TRUE** for G (79.7%; C0 4.1%).
+- Control: the plain continuation does not grow the phase (C0 at 2k / 4k / 6k: 0.886 / 0.892 / 0.897). G's phase gain
+  (0.906 / 0.923 / 0.944) is the generator loss.
+- The generator loss trades approach adjacency for the phase at h63 (0.761 → 0.619). Drawable evidence falls (290 → 186), and
+  at row 9 G draws exactly what C0 draws (64). Fixing B2 alone does not draw health; B1 binds.
+
 **E21 arm D, predeclared 17:50, before any E21 v2 result:** M16 s7 continued 6,000 updates exactly as C0, with the teacher L1
 replaced by Delta-IRIS's tokenizer loss in token space: 1.0·mean L2 + 0.1·mean L1 + 0.01·mean over frames of the frame's worst
 element L2 (vmicheli/delta-iris `tokenizer.py`).
@@ -473,6 +6626,1587 @@ element L2 (vmicheli/delta-iris `tokenizer.py`).
 - Readings: the same four as E21. The cost reading is also reported in teval's own currency (MSE / copy), which an L2-trained
   world may favour; one-step L1 is reported beside it.
 - Implementation waits until E21's last arm has started, so every E21 arm runs the same `tworld.py`.
+
+### Summary at 03:02 (2026-10-09): the continuation question, and the first generic objective that draws damage
+
+**Q (21:00): if a result is negative, do we know it is not caused by continuing instead of training from scratch?**
+- *For the representation (B1): yes, now measured.*
+  - Continuing M16 with an objective that asks directly (oracle labels; diagnostic only) installs the cooldown phase (0.888 →
+    1.000) and approach adjacency (0.778 → 0.996) at h63 within 500-1,000 updates.
+  - Plasticity signatures show no gross loss: 0 dormant units; random-target fitting only 10-20% slower than fresh init.
+  - So a continuation arm that fails to install B1 fails because its objective asks too weakly, not because the network is
+    locked in.
+- *What is not yet answered:* whether the same weak ask behaves differently when present from step 0 (critical periods). That
+  is test 3, the from-scratch replications of GE (lane122, ETA ≈ 12:00) and D (lane131, ETA ≈ 21:00). Both are matched to M6 /
+  M16, and `tworld.py` with flags off is bit-identical to M6's and M16's sources (`tworld_equivalence.py`).
+- *Measured limits of the arms' own doses:*
+  - GE's random event head was under-trained (EASimulus trains ~985k updates; our 6k reached token-63 AUC 0.57).
+  - E′ (LP-FT) fixed that: it installs approach adjacency, but the phase only transiently.
+
+**D, the Delta-IRIS tokenizer loss (1.0·L2 + 0.1·L1 + 0.01·worst element), continued from M16 for 6k updates:**
+- At the unbiased row 9 it draws **569 / 1,211 held zombie hits (47%), 31 fresh, 1 false drop in 1,728** (M16: 60 / 0 / 0).
+- It installs B1 without labels (phase 0.952, adjacency 0.964, 790 hits drawable from h63 vs C0's 335) and fixes B2 (generator
+  beats copy 85%).
+- It depicts zombies far better: near-player zombie AUC 0.78 → 0.96 one-step, 0.53 → 0.61 at depth 16.
+- **Limit, measured 03:08:** teacher-forced it catches 73% of real damage on held roots (simulator truth). In its own imagination
+  it draws only 6% of aligned hits (every other world: 0). Health in self-fed rollouts, what H16 decisions use, remains mostly
+  missing.
+  - Localized by substitution at 03:23: feeding back the true HUD restores nothing (4.5% → 5.9%); feeding back the true map
+    restores most (→ 58.5%). D's imagined zombies are beside the player at only 8.9% of real damage steps (truth 73.6%).
+  - Zombie moves are random 25% of the time (Craftax source). A deterministic world averages them away, so imagination needs
+    sampling.
+  - Confirmed 09:05-09:17:
+    - D's one-step zombie is a blend in proportion to the true move probabilities;
+    - self-fed blends diffuse it (peak 0.44 → 0.11, no cell > 0.3 by depth 8);
+    - restoring only the cells around true zombies restores 56.4% of damage (true map 58.5%; size-matched random cells:
+      4.5%, no effect).
+  - Literature (PlaNet, DreamerV2, video prediction) names exactly this failure of deterministic transitions.
+
+**Test 3 for GE (08:47):** from scratch it ends worse than M16 on every ingredient and draws 7.5% of hits at row 9. Its negative is
+not a continuation artifact. Measured cause: the generator loss crowds token-63 hits to 0.043% of the gradient.
+- teval MSE improves (one-step −0.012, depth 16 −0.052).
+- Costs:
+  - L1 +20% (fewer large errors, more small ones).
+  - The imagined food reading drifts down (R² at depth 16 0.88 → 0.58). Diagnosed exactly: D predicts a fractional decrement
+    every step (−0.10 / step) because the intrinsic timers (21-31 steps, verified in the Craftax source) outlast the 16-frame
+    window, and a mean-seeking loss averages an event it cannot time.
+  - The predeclared window-15 health reading fails on the inherited row-14 death cue (8.6% false; the cue comes from the
+    sampler).
+- **Next (to predeclare after the from-scratch runs):** faithful Delta-IRIS pairs this loss with a stochastic Δ channel, which
+  samples, rather than averages, what the window cannot time. E16 built the channel with the wrong loss; D used the loss without
+  the channel.
+
+### Could a negative come from continuing instead of training from scratch? (user question, 21:00; predeclared 21:06, commit b7d58a59)
+
+**Status at 21:06: not known.** Every E21 arm (and E19, E20) continues a trained parent (M16 = 36k 6-frame + 6k L16). No arm has
+been trained from scratch. What is measured so far:
+- The continuation is not frozen. G moved the phase 0.897 → 0.944 (control flat) and the generator 4% → 80% in 6k; E20 B moved the
+  phase to 0.950; E19 C moved the generator 0.952 → 0.659.
+- The endpoints are not converged: G's phase still rose at 6k (0.906 / 0.923 / 0.944).
+- Our own precedent says continuation can produce a false negative: E16 amendment 2 (10-03). A converged deterministic world
+  started Delta-IRIS training in Bowman et al.'s "decoder ignores the latent" equilibrium; the from-scratch recipe was required.
+
+**Literature read (full texts):**
+- Ash & Adams 2020 (arXiv 1910.08475): warm-started networks generalize worse at equal training loss. Mechanism: gradient
+  imbalance between new and already-fitted data. Shrink-and-perturb (λ = 0.6, noise scale 0.01) matches fresh init.
+- Achille et al. 2019 (arXiv 1711.08856, critical periods): connectivity consolidates early; deficits removed late are not fully
+  recovered.
+- Lyle et al. 2022 (arXiv 2204.09560): capacity loss, measured by target-fitting capacity (Def. 1) and feature rank (Def. 2,
+  ε = 0.01). Lyle et al. 2023 (arXiv 2303.01486): plasticity loss tracks loss-landscape curvature, often without saturated
+  units; layer normalization mitigates it (our backbone is pre-norm).
+- Sokar et al. 2023 (arXiv 2302.12902): τ-dormant units (score = normalized mean |activation|; τ = 0 / 0.025 / 0.1).
+- Nikishin et al. 2022 (arXiv 2205.07802): primacy bias, an early-data overfit that resets cure.
+
+**Three measurements, in increasing strength:**
+1. *Signatures* (`health_plasticity.py metrics`, lane117): dormant fractions, feature rank, random-target fitting for fresh init,
+   M6 at 6k / 18k / 36k, M16, C0, G. Descriptive: they show whether capacity loss is present, not that it caused a negative.
+2. *Oracle positive control* (`health_plasticity.py oracle`, lane118): M16 continued 2,000 updates with its own recipe plus
+   λ × (CE of the true `since` class + BCE of the true approach adjacency) read from h63.
+   - Amended 21:50, before its first run, for the same reason as E′: the two oracle heads are first fitted on frozen h63 (LP-FT;
+     60 batches of order 13, 3,000 steps, lr 1e-3).
+   - λ is set on the first fine-tuning batch so that the oracle term equals the teacher term (the original 0.015 assumed random
+     heads), and logged. Labels validated against
+   `strata.pt`: since 99.7%, adjacency 100%. Diagnostic only, never a fix.
+   - Readings at 500 / 1,000 / 2,000 updates, health_chain subset, held episodes, window 15, same probes as every other world:
+     M16 is plastic for the phase if since = 6 and since 1..4 in h63 are both ≥ 0.97 (input ceiling 0.999); plastic for adjacency
+     if adjacency|scroll, zombie ≤ 2 ≥ 0.90 (M16 0.778).
+   - If plastic: a continuation arm that fails to install an ingredient failed because its objective asks too weakly, not
+     because of lock-in. The from-scratch test (3) still decides whether the *same weak ask* works when present from step 0
+     (critical periods).
+   - If not plastic: no continuation negative on B1 can be interpreted, and every conclusion waits for (3).
+3. *From-scratch replication* (decisive): the selected arm trained through the exact canonical recipe from step 0. Stage 1:
+   `tworld.py --head corrt --pool raw --loss teacher --seed 7 --updates 36000 --backbone fmamba --snapshots` + the arm's flags.
+   Stage 2: `--pool rawlong --frames 16 --windows 40 --init <stage 1>`, 6,000 updates.
+   - Same init seed, batch order (11) and update count as M6 → M16; only the loss differs.
+   - Matched controls exist: M6's snapshots (6k … 36k) for stage 1 and M16 for stage 2. ~8.5 h per arm.
+   - Readings: E21's four, at row 9 and at row 14, plus stage-1 snapshot curves of generator fidelity, `since` 1..4 and
+     adjacency against M6 at the same updates.
+   - Interpretation:
+     - from scratch passes where the continuation failed → the continuation caused the negative;
+     - both fail with the same ingredient values → that negative is not a continuation artifact;
+     - from scratch fails differently → reported as such, with the stage-1 curves locating where they diverge.
+   - Selection, fixed now: GE (E21's predeclared main arm) runs first. D runs second if its continuation reading on B1 is
+     positive or ambiguous. If every continuation arm is negative, GE and D both run (D addresses the diagnosed root most
+     directly: 11× hit gradient share).
+   - *Structural note, recorded 23:10 before any stage-1 result:* stage 1 uses 6-frame windows, where a cooldown phase of 6 cannot
+     be represented (it needs ≥ 6 frames of history). In the from-scratch run, as in M16 and the continuation, since = 6 can only
+     be learned in the 6k L16 stage.
+     - What "from scratch" changes is the 36k of shaping before that stage: generator, event head, since 1..4, adjacency, all
+       read on the stage-1 snapshots against M6's.
+     - A from-scratch result on since = 6 is therefore a statement about stage 2 starting from a differently shaped network,
+       not about 42k updates of phase learning.
+
+**Test 1 result, signatures** (21:30; `plasticity_metrics.json`; 1,024 subset events):
+
+| world | dormant units, τ = 0.1 (max over 6 layers) | feature rank, slot 63 / all slots (ε = 0.01) | random-target MSE after 1,000 steps |
+|---|---|---|---|
+| fresh init (seed 7) | 0 | 255 / 255 | 0.102 |
+| M6 at 6k / 18k / 36k | 0 / 0 / 0 | 255 / 255 | 0.112 / 0.117 / 0.120 |
+| M16 | 0.1% | 255 / 255 | 0.122 |
+| C0 / G | 0.1% / 0.3% | 255 / 255 | 0.123 / 0.118 |
+
+- No dormant-unit or rank collapse. Lyle's ε = 0.01 cutoff saturates at our feature scale (singular values 2-14), so feature rank is
+  uninformative here, not a pass.
+- Target-fitting capacity falls modestly and steadily with training (+10% at 6k, +20% at M16 over fresh), the "modest" loss Lyle
+  et al. report for RL checkpoints.
+- Reading: no gross loss of plasticity. This cannot exclude a critical-period effect (information routed early is not
+  redistributed), which is what tests 2 and 3 address. Also exact: the continuations run at the same constant lr 1e-4 as the
+  from-scratch runs (`_phase_lr`: warm-up, then constant), not at a reduced fine-tuning rate.
+- Precondition for test 3 verified (`tworld_equivalence.py`, CPU, reference Mamba backend): current `tworld.py` with flags off
+  trains exactly as M6's (@60b0c22f) and M16's (@ae0868ec) sources. Parameters, loss and every gradient are bit-identical;
+  lane119 re-runs this after the D patch before it starts.
+
+**GE in-flight at 2k (21:38) and a binding caveat on the E / GE arms, recorded before their endpoints:**
+- GE @ 2k: generator beats copy 75.7% (G 73%); since = 6 in h63 0.909 (G 0.906, C0 0.886); the event head's own token-63 logit
+  ranks held hits vs unchanged at **AUC 0.470**. The event term has not yet acted on token 63.
+- Dose, measured against the source:
+  - EASimulus on Craftax (`config/base.yaml`, `benchmark/craftax.yaml`) trains its world model, event head included, at AdamW lr
+    2e-4, 8 sequences × 20 steps, 100 updates per epoch from epoch 150 of 10,000: ≈ 985k updates, ≈ 160M step-targets.
+  - An E21 continuation is 6k updates at lr 1e-4 behind a 1,000-update warm-up, 3.6M step-targets (≈ 2%).
+  - The pre-flight already showed SlotEvent learns token 63 slowly even at lr 1e-3 on frozen h (AUC 0.61 at 600 steps, 0.74 at
+    3,000).
+- Consequence: a negative E or GE *continuation* result on B1 is NOT evidence that EAWM's event prediction fails. It would be an
+  under-dosed test (the half-truth to avoid).
+  - The event head's own token-63 AUC is reported with every E / GE reading. Only where it is high (≥ 0.85) does a B1 null say
+    something about the mechanism.
+  - The from-scratch GE run (lane119: 42k updates, 7× the continuation) is the first test that gives the event head a budget;
+    its event AUC is read at every snapshot.
+
+**Design change before E ran (21:41; lanes launched 21:42): E → E′ = LP-FT, and the D patch moved between trainings.**
+- *Why E as queued would be a half-truth.* Its event head starts random. In GE that head's token-63 AUC was 0.470 at 2k, and the
+  pre-flight shows the head learns token 63 slowly even at 10× the world's learning rate.
+  - Kumar et al. 2022 (arXiv 2202.10054, read): fine-tuning a pretrained network behind a random head distorts its features
+    (proved for two-layer linear networks, measured on 10 shifts). Linear-probe-then-fine-tune (LP-FT) is the remedy.
+- *E′:* LP step (`event_preflight.py lp`, lane120) trains SlotEvent alone on frozen M16 with exactly the E21 event term:
+  10,000 steps, AdamW lr 1e-3, rawlong batches of order seed 13 (not the fine-tuning order 11), fixed steps, no selection.
+  The FT step continues M16 + that head for 6,000 updates with `--event`, everything else as C0.
+  - E′ answers the arm's question (does event prediction install the phase into h63?) without the random-head confound.
+  - Readings unchanged, plus the head's token-63 AUC at 0 / 2k / 4k / 6k.
+- *Provenance bug fixed:* `tworld.py` writes `script_sha256` from the file on disk at save time. lane114 would have patched
+  `tworld.py` for D while E was training, stamping E's checkpoints with the patched file's hash.
+  - lane121 now applies the patch right after GE's training process exits, before any other training starts.
+  - It re-runs `tworld_equivalence.py` on the patched file.
+- Lanes 110 / 114 / 115 / 119 were idle waiters (no job started) and were stopped at 21:40. Their readouts now run on
+  C0 / G / GE / E′ / D in lane121, and the from-scratch GE replication in lane122, gated on lane121.
+- *LP step result* (`event_lp.json`, 21:50): the fitted head's token-63 logit on held subset events.
+  - Hit vs unchanged AUC 0.619 / 0.700 / 0.734 / 0.751 / 0.753 at 1k / 3k / 5k / 8k / 10k steps: converged at **0.753**.
+  - Fresh hits vs unchanged ≈ 0.50 throughout.
+  - So frozen M16 features support this head only to 0.75 on token 63 and not at all on approach hits, consistent with the
+    diagnosis (phase weak at h63; approach adjacency not routed there).
+  - E′ reading: does fine-tuning with this fitted head push the head's AUC, and the phase / adjacency in h63, above the
+    frozen-feature ceiling?
+
+**E21 part 2: GE at 6k, with the noise floor measured** (22:25; `ci_e21_6k.json`, `health_ci.py`: 5 probe seeds; episode-clustered
+paired bootstrap over 1,265 held episodes, 2,000 draws):
+- GE endpoint, row 14: generator beats copy 81.5%; phase (since = 6) 0.908; event head token-63 AUC 0.570 (2k 0.470, 4k 0.540);
+  emitted 73 hits / 37 false.
+- Noise floor: probe-seed std 0.001-0.003 for the phase, 0.007-0.015 for adjacency. Bootstrap 95% half-widths ≈ 0.015 (phase),
+  ≈ 0.055 (adjacency). GE's snapshot swings (0.909 / 0.932 / 0.908) are real model change, not probe noise.
+
+| paired contrast, 6k | since = 6 in h63 | since 1..4 | approach adjacency |
+|---|---|---|---|
+| M16 → C0 (continuation only) | +0.008 [−0.002, +0.017] | −0.006 [−0.017, +0.005] | −0.003 [−0.034, +0.028] |
+| C0 → G (+ generator loss) | **+0.044 [+0.031, +0.058]** | **+0.034 [+0.020, +0.047]** | **−0.154 [−0.213, −0.097]** |
+| C0 → GE | +0.011 [−0.001, +0.024] | +0.011 [−0.003, +0.026] | **−0.081 [−0.142, −0.019]** |
+| G → GE (+ event head) | **−0.033 [−0.042, −0.024]** | **−0.022 [−0.033, −0.013]** | **+0.074 [+0.023, +0.128]** |
+
+- The plain continuation moves nothing (all three unresolved).
+- The generator loss trades approach adjacency for the phase, both resolved.
+- The barely-trained event head pulls G back toward C0 on both, also resolved. Even an under-trained event term reshapes h63.
+  Its direction (more adjacency, less phase) is not what B1 needs: B1 needs both up.
+- Under the binding caveat (event AUC 0.570 < 0.85), GE says nothing about whether a competent event head installs the phase.
+  E′ (LP-FT, head at 0.753 from the start) and the from-scratch GE are the tests.
+
+**EAWM's second component, read in the code (22:55; MarquisDarwin/EAWM @ 49eebbe):** the paper's event-aware observation loss
+ℒ_o = ℒ′_o + Σ ω·g(α)·[𝟙(event) − 1]·ℒ′_o(o_i).
+- *EASimulus* (their Craftax system, `get_next_token_logits_and_labels`): plain per-token CE, **no event-aware reweighting**. Its
+  only EAWM component is the event head (what E21 ports).
+- *EADream* (pixels; `tools.AttentionMSEDist`, `configsc.yaml`):
+  - per-element weight (1 − ω) + ω·event with ω = `attention_weight` 0.5, i.e. an event element counts 2× a non-event one;
+  - applied only while fewer than `event_pred_ratio` = 5% of the frame's elements are events (`dizzy: True`, the GES gate).
+- *Measured in our data:* 31% of map tokens change per frame (τ = 2.5). The 5% gate would be closed on nearly every moving frame,
+  including every fresh hit (all are scroll steps). Even open, ×2 on a 0.27% share is ≈ 0.5%, against Delta-IRIS's measured ×11.
+- *So, exactly why EAWM does not fix health here:* its faithful components are a slowly learned event head plus, in its pixel
+  variant only, a ≤ 2× event reweighting that our scrolling view gates off. Neither addresses the diagnosed allocation root.
+  E14a's "EAWM" (a ×1.7 token reweighting on a frozen backbone) tested neither component.
+
+**Test 2 result: oracle positive control** (23:02; `evidence_oracle.json`; λ set automatically to 0.0613; LP-FT heads):
+
+| oracle continuation of M16 | since = 6 / 1..4 in h63 | approach adjacency in h63 | drawable from h63 (fresh / false) | + oracle ingredients | emitted, row 14 (fresh / false) |
+|---|---|---|---|---|---|
+| M16 (start) | 0.888 / 0.909 | 0.778 | 286 (4 / 5) | 768 | 154 (4 / 126) |
+| @ 500 | 0.997 / 0.999 | 0.967 | 641 (104 / 1) | 771 | 320 (31 / 96) |
+| @ 1,000 | 1.000 / 0.999 | 0.994 | 758 (145 / 1) | 789 | 252 (30 / 58) |
+| @ 2,000 | **1.000 / 1.000** | **0.996** | **823 (184 / 0)** | 837 | 345 (43 / 84) |
+
+- **Reading TRUE on both counts:** M16 is plastic for the phase (≥ 0.97 within 500 updates) and for approach adjacency (≥ 0.90
+  within 500). h63 alone then carries nearly everything the oracle ingredients add (823 vs 837 drawable).
+- **Answer to the continuation question for B1:** a continuation is not what blocks the ingredients. M16's backbone installs both
+  in 500-1,000 updates when the objective asks directly. A continuation arm that fails to install them fails because of its
+  objective. Whether the *same weak ask* behaves differently from step 0 (critical periods) is test 3's question (lane122).
+- **The chain, confirmed in order:** with B1 satisfied, B2 binds. 823 hits are drawable from h63, but the copy-gated generator
+  (beats copy on 1.5%) lets the head emit 345.
+- The cooldown false drops at row 14 fall as the phase is installed (107 → 86 → 33 → 64 across snapshots). The row-14 time cue
+  produces them; the phase is what lets the world veto them. This refines the 19:10 correction; row 9 (lane124) is the clean read.
+- **Sufficiency test, queued (lane125, 23:05):** oracle (B1) + generator loss (B2) together from M16, 2,000 updates, read at
+  rows 14 and 9. If B1 + B2 are jointly sufficient, this world draws most held hits at row 9 with near-zero false drops. That
+  closes the causal chain. The remaining problem would then be one thing only: a label-free objective that installs B1.
+- **Test 2 at the honest row** (23:17; `evidence_oracle_row9.json`; window 10 = output row 9, no time cue):
+
+| world, row 9 | since = 6 / adjacency in h63 | drawable from h63 (fresh / false) | emitted hits (fresh / false) | generator beats copy |
+|---|---|---|---|---|
+| M16 | 0.889 / 0.817 | 334 (4 / 7) | 60 (0 / 0) | 3.6% |
+| oracle @ 500 | 0.999 / 0.973 | 601 (110 / 1) | 66 (0 / 11) | 3.9% |
+| oracle @ 2,000 | **1.000 / 0.997** | **848 (184 / 2)** | **70 (2 / 3)** | 3.1% |
+
+  - At row 9, B1 is fully satisfied (70% of hits drawable, 89% of fresh hits), yet the world emits 70. The row-14 figure of 345
+    was the time cue now gated by the phase, not general health drawing.
+  - Exact statement: **with B1 satisfied, every remaining missed hit is in the 848 → 70 gap, and that gap is B2.** The
+    copy-gated generator can produce a dropped health token only where deaths trained it (row 14 of end-aligned death windows).
+  - The sufficiency test (lane125: oracle + generator loss) now decides whether B1 + B2 are jointly sufficient at row 9.
+- Intervals (`ci_oracle.json`, paired episode bootstrap, row 14):
+  - M16 → oracle @ 500: phase +0.105 [+0.088, +0.124], since 1..4 +0.086 [+0.071, +0.103], adjacency +0.205 [+0.157, +0.259];
+  - 500 → 2,000: +0.003 / +0.001 / +0.027, each resolved but small.
+  - The backbone acquires both ingredients almost entirely within the first 500 updates.
+
+**E′ (LP-FT event head) in flight** (lane126; row 14):
+
+| E′ | event head token-63 AUC | since = 6 in h63 | generator beats copy | emitted hits (fresh / false, cooldown) |
+|---|---|---|---|---|
+| start (LP) | 0.753 | 0.888 (M16) | 2.4% | 154 (4 / 126, 107) |
+| 2k | 0.763 | 0.888 | 3.6% | 121 (0 / 88, 77) |
+| 4k | 0.777 | **0.930** | 4.6% | 183 (**14** / 139, 97) |
+
+- With a competent head from the start, the event term begins installing the phase between 2k and 4k: +0.04, against the
+  oracle's +0.11 within 500 updates.
+- Measured differences between the two asks: the event term's gradient into h63 on hits is 0.38× the teacher's, while the
+  oracle term equals the teacher term. The event target is 1 bit ("token 63 changes next step"); the oracle's is the 16-way phase.
+- **E′ endpoint** (6k; 00:35; `ci_evlp.json`):
+  - event head AUC 0.776; generator beats copy 5.9%;
+  - row 14: 127 hits (2 fresh) / 109 false; **row 9: 79 hits (1 fresh) / 0 false** (M16 60, C0 64, G 64, oracle 70).
+
+| paired contrast | since = 6 in h63 | since 1..4 | approach adjacency |
+|---|---|---|---|
+| C0 → E′ @ 4k | **+0.031 [+0.021, +0.042]** | **+0.028 [+0.018, +0.039]** | **+0.128 [+0.094, +0.165]** |
+| C0 → E′ @ 6k | +0.009 [−0.003, +0.021] | +0.005 [−0.005, +0.015] | **+0.089 [+0.053, +0.127]** |
+| GE → E′ (random vs fitted head, ± generator loss) | −0.002 [−0.015, +0.010] | −0.007 [−0.020, +0.007] | **+0.170 [+0.116, +0.230]** |
+| E′ 4k → 6k | −0.022 [−0.032, −0.012] | −0.023 [−0.033, −0.014] | −0.040 [−0.068, −0.011] |
+
+- **Reading:** with a fitted head from the start, EAWM's event objective installs approach adjacency in h63 (C0 0.763 →
+  0.85-0.89, resolved). That is the "scrolling problem": predicting a token-63 change requires knowing a zombie will be
+  beside the post-move player.
+- Its effect on the phase is small and transient (+0.031 at 4k, gone at 6k). At EAWM's dose (gradient 0.38× teacher on hits) it
+  is a partial, real B1 mechanism, not a complete one. The oracle installs both in 500 updates.
+- Health at row 9 does not follow (79), because B2 binds: E′ has no generator loss.
+- This E′ result is **not** a continuation artifact in the sense of test 2: the same continuation installs both ingredients when
+  asked strongly. What it measures is the strength of EAWM's ask.
+
+**D (Delta-IRIS tokenizer loss) in flight at 2k** (00:58; `health_row9.py`):
+
+| world | row | hits / 1,211 | fresh / 207 | false / 1,728 (cooldown) | generator beats copy |
+|---|---|---|---|---|---|
+| M16 | 9 | 60 | 0 | 0 | 3.6% |
+| D @ 2k | 9 | **421 (34.8%)** | 1 | **2 (1)** | **71.3%** |
+| D @ 2k | 14 | 570 | 4 | 169 (133) | 64.2% |
+
+- At the unbiased row, after 2k updates, D passes the predeclared health reading (≥ 30% of held hits, ≤ 2% false).
+- The change is the loss shape only: 1.0·L2 + 0.1·L1 + 0.01·worst element; no label, no new head.
+- It fixes B2 by itself: the generator beats copy on 71% of hits with no generator loss, because under L2 the large token-63
+  errors carry a large gradient.
+- Not yet known:
+  - approach adjacency (fresh hits 1/207 suggest it is not installed);
+  - the B1 ingredient AUCs;
+  - stability at 4k / 6k;
+  - the world-quality cost of an L2 objective (teval after the endpoint, judged in both MSE and L1 currencies as predeclared);
+  - the from-scratch question for D.
+- Precision of drawn hits against the exact next health (`health_row9.py`, row 9):
+
+| world | hits drawn | mean \|pred − true\| on drawn | within 0.5 | over / under by > 1 | unchanged \|err\| |
+|---|---|---|---|---|---|
+| M16 | 60 | 3.97 | 2% | 0 / 59 | 0.543 |
+| oracle | 70 | 3.60 | 6% | 1 / 61 | 0.553 |
+| E′ | 79 | 2.41 | 9% | 8 / 59 | 0.542 |
+| D @ 2k | **421** | **1.27** | **22%** | 164 / 83 | 0.577 |
+
+  - The few "hits" other worlds draw at row 9 are partial depictions of large drops, under-drawn by > 1 unit.
+  - D's are more numerous and much closer, but not yet precise. Mean predicted drop 3.3 vs true 2.75; the reader's own error on
+    true frames is ≈ 0.4-0.55.
+  - Unchanged-frame error is equal across worlds, so D adds no noise there.
+  - So D learns *when* a hit lands, and roughly its size.
+- **D @ 4k:**
+  - row 9: 478 hits (39.5%), fresh 2, false 2 / 1,728; generator beats copy 82%; drawn |err| 1.19 (27% within 0.5);
+  - row 14: phase 0.931, 612 hits, fresh 16, false 152 (123 in cooldown; the row-14 cue persists).
+  - Rising from 2k on every health reading; approach hits are still not drawn at row 9.
+- **D endpoint (6k; 02:27):**
+
+| D | row 9 hits / 1,211 | fresh / 207 | since = 6 / 157 | false / 1,728 | generator beats copy | drawn \|err\| (within 0.5) |
+|---|---|---|---|---|---|---|
+| 2k | 421 | 1 | 21 | 2 | 71% | 1.27 (22%) |
+| 4k | 478 | 2 | 36 | 2 | 82% | 1.19 (27%) |
+| 6k | **569 (47.0%)** | **31** | **63** | **1** | 85% | **1.02 (34%)** |
+
+  - Row 14 at 6k: phase 0.946 in h63; 711 hits, 69 fresh; 149 false (126 in cooldown: the inherited row-14 cue).
+  - GE at row 9, for contrast: 30 hits, 0 false, all under-drawn large drops, despite its generator beating copy on 79%.
+  - D is the first generic objective (a loss-shape change, no labels, no new head) to draw zombie damage at the unbiased row.
+    It passes the predeclared health reading by a wide margin, with every reading still rising at 6k.
+  - Pending before any "fix" claim:
+    - cost (teval vs C0, both currencies);
+    - B1 ingredient intervals;
+    - the simulator-truth damage panel;
+    - **the continuation question applied to D itself:** D from scratch, the predeclared second from-scratch run.
+
+**Sufficiency test result** (02:34; lane125; oracle B1 + generator loss B2 from M16, 2,000 updates, λ auto):
+
+| world, row 9 | hits / 1,211 | fresh / 207 | false | generator beats copy | drawn \|err\| |
+|---|---|---|---|---|---|
+| oracle (B1 only) | 70 | 2 | 3 | 3% | 3.60 |
+| G (B2 only, 6k) | 64 | 0 | 0 | 75% | 3.22 |
+| **oracle + generator loss (2k)** | **114** | 22 | 6 | 59% | 2.50 |
+| D (6k, no labels) | 569 | 31 | 1 | 85% | 1.02 |
+
+- Row 14: phase 1.000; 346 hits, 89 fresh, 45 false.
+- **Predeclared reading ("draws most held hits at row 9"): NOT met (9.4%).** Qualified honestly: B2 was only partly satisfied in
+  2,000 updates (59% vs G's 80% at 6k), so this is a partially dosed test, not a clean negative on joint sufficiency.
+- What it does establish: under the L1 objective, an h63 that carries both ingredients plus a half-trained generator draws 114.
+  D, with no labels, draws 569. D's success is therefore not "B1 + B2 under L1".
+  - The loss shape is itself a factor. Under L2 the head's optimum moves from the conditional median (draw only if
+    P(hit) > 0.5, at full size) toward the conditional mean.
+  - The worst-element term sends gradient to exactly the rare large errors.
+- Next, deciding: drawable vs emitted at row 9 per world (`evidence_e21v2_row9.json`, `evidence_sufficiency.json`). If D emits
+  close to what its h63 supports, D fixed expression; if its drawable also rose, it fixed information too.
+
+**E21 world cost, teval** (02:40; `compare.json`; window 15; paired walk-seed bootstrap; MSE / copy and imagined error / V):
+
+| vs C0 | one-step, all | moved | idle | depth 1 | depth 4 | depth 16 |
+|---|---|---|---|---|---|---|
+| M16 → C0 (control drift) | −0.000 | −0.001 | +0.030 * | −0.000 | −0.002 | −0.003 |
+| G | −0.000 | −0.000 | −0.029 * | +0.000 | +0.003 * | **+0.045 [+0.033, +0.058]** |
+| GE | −0.001 | +0.000 | −0.032 * | +0.000 | +0.002 | **+0.033 [+0.021, +0.046]** |
+| E′ | −0.001 * | −0.001 | −0.013 * | −0.000 | −0.001 | +0.004 |
+| **D** | **−0.012 [−0.014, −0.009]** | −0.003 * | −0.042 * | −0.003 * | −0.016 * | **−0.052 [−0.076, −0.028]** |
+
+- The generator loss costs imagination (depth 16 +0.03 to +0.05). The fitted event head is neutral.
+- D *improves* one-step and depth-16 error in teval's currency. As predeclared, teval scores squared error, which an
+  L2-trained world may be favoured on. D's L1 cost on the same held roots and teacher-forced path (`health_l1cost.py`,
+  lane132) is required before calling it costless.
+
+**E21 world cost in L1 and in decision-relevant facts** (02:50; `l1cost.json`, teval JSONs):
+- L1 on teval's held roots, teacher-forced, window 15 (mean |err| per element; C0 0.0328):
+
+| vs C0 | all tokens | map tokens |
+|---|---|---|
+| G / GE | +0.0025 / +0.0025 (+7.7%) | +0.0023 / +0.0022 |
+| E′ | −0.00003 (unresolved) | −0.00001 (unresolved) |
+| **D** | **+0.0067 [+0.0064, +0.0071] (+20%)** | **+0.0077 [+0.0073, +0.0081]** |
+
+- The L1 / L2 trade, measured: D has fewer large errors (better squared error) and larger small errors everywhere (worse L1).
+- What can be *read* from the frames (teval's true-fit probes):
+
+| world | one-step moved: tile near / zombie-near AUC / health R² / food R² | imagined d4: tile near / zombie-near / food R² | imagined d16: tile near / zombie-near / health R² / food R² / facing |
+|---|---|---|---|
+| C0 | 0.993 / 0.779 / 0.980 / 0.998 | 0.957 / 0.829 / 0.951 | 0.822 / 0.532 / 0.582 / 0.880 / 0.915 |
+| G | 0.994 / 0.780 / 0.978 / 0.997 | 0.954 / 0.804 / 0.947 | 0.812 / 0.550 / 0.619 / 0.859 / 0.915 |
+| E′ | 0.992 / 0.774 / 0.980 / 0.998 | 0.959 / 0.810 / 0.950 | 0.823 / 0.528 / 0.593 / 0.877 / 0.907 |
+| **D** | 0.993 / **0.961** / 0.984 / 0.987 | **0.973 / 0.955** / 0.929 | 0.829 / **0.609** / 0.582 / **0.582** / 0.893 |
+
+- D's extra L1 error leaves terrain intact (tile accuracy equal or better at every depth). It depicts zombies far better: mobs are
+  rare large changes, the same class as health, and the L1 median was blurring them away too.
+- **D's real cost: the food token degrades in long imagination** (food R² at depth 16 0.880 → 0.582; depth 4 0.951 → 0.929), and
+  facing slips (0.915 → 0.893).
+- D is therefore not adoptable as-is. The food cost has to be diagnosed exactly (the L2 term? the worst-element term? food's slow
+  hunger dynamics under a mean-seeking loss?) before any decision; it is the next item after the from-scratch runs.
+
+**E21 row-9 evidence, all arms** (02:53; `evidence_e21v2_row9.json`; same probes / calibration / held episodes):
+
+| world, row 9 | since = 6 / since 1..4 in h63 | approach adjacency | drawable from h63 (fresh) | emitted (fresh / false) | generator beats copy |
+|---|---|---|---|---|---|
+| M16 | 0.889 / 0.914 | 0.817 | 334 (4) | 60 (0 / 0) | 3.6% |
+| C0 | 0.896 / 0.900 | 0.767 | 335 (3) | 64 (0 / 0) | 5.2% |
+| G | 0.937 / 0.924 | 0.648 | 136 (0) | 64 (0 / 0) | 74.7% |
+| GE | 0.898 / 0.906 | 0.710 | 80 (1) | 30 (0 / 0) | 78.6% |
+| E′ | 0.911 / 0.916 | 0.821 | 367 (13) | 79 (1 / 0) | 6.1% |
+| oracle (labels; diagnostic) | 1.000 / 1.000 | 0.997 | 848 (184) | 70 (2 / 3) | 3.1% |
+| **D** | **0.952 / 0.969** | **0.964** | **790 (122)** | **569 (31 / 1)** | **85.4%** |
+
+**E21 D, predeclared readings:**
+
+| reading | result |
+|---|---|
+| (1) B2 fixed, ≥ 30% | **TRUE** (85%) |
+| (2) B1: since = 6 ≥ 0.95 and drawable ≥ 2× C0 | **TRUE at row 9** (0.952; 790 = 2.4× C0's 335); at row 14 since = 6 is 0.946, just under |
+| (3) health drawn at window 15 (row 14), as predeclared | **FAILS**: 711 hits but 149 false (8.6% > 2%), the inherited row-14 death cue |
+| (3) the same reading at row 9 | **PASSES** (569 = 47%; 1 false) |
+| (4) cost | teval MSE: one-step −0.012, depth 16 −0.052 (better). L1 +20%. Imagined food R² at depth 16 0.880 → 0.582 (worse). |
+
+- **The exact answer the diagnosis asked for:** a generic, label-free change (Delta-IRIS's loss shape) fixes both blockers at once.
+  - Information (B1): it brings the phase and approach adjacency close to the oracle's level.
+  - Expression (B2): its generator emits 72% of what h63 supports.
+  - Mechanism, measured before the run: 11× the hit gradient share, plus the mean-seeking decision rule.
+- Open before any adoption:
+  - food cost (diagnosis running, lane133);
+  - row-14 cue (inherited from the sampler, removable as E20 showed);
+  - seed 8;
+  - the continuation question for D itself (lane131).
+
+**D's food cost, diagnosed exactly** (03:00; `health_food.py`, `food_e21.json`; teval's held roots; window 15; HUD reader ×9):
+
+| world | food: teacher-forced change on steps where true food is unchanged | on true decrements (true −0.845) | self-fed food bias, depth 1 / 4 / 8 / 16 |
+|---|---|---|---|
+| C0 | −0.003 / step | −0.005 (copies, never draws them) | +0.005 / +0.14 / +0.20 / +0.40 (missed decrements) |
+| G | +0.002 / step | +0.001 | +0.01 / +0.17 / +0.25 / +0.47 |
+| **D** | **−0.100 / step** | −0.046 | **−0.10 / −0.24 / −0.51 / −0.88** (compounding drift) |
+
+- D predicts a fractional decrement at every step and self-feeding compounds it. The same per-step drift appears on HUD columns 2
+  and 3 (−0.079, −0.062) and on health's unchanged steps (−0.087).
+- Health *hits* are drawn at the right size (predicted −1.266 vs true −1.246 on changes), because D installed the phase that
+  makes them predictable.
+- Source, verified (Craftax-Classic `game_logic.py` L1256-1290): food −1 when hunger > 25 (hunger +1 per step, +0.5 asleep);
+  drink −1 when thirst > 20; energy −1 when fatigue > 30.
+  - Periods 21-31 exceed the 15 transitions a 16-frame window shows, so the timer phase is often invisible.
+  - From the world's view the decrement's timing is then genuinely uncertain. A mean-seeking loss draws the expectation as a
+    fraction every step. (The measured −0.10 / step is larger than a uniform-ignorance mean of ≈ 1/26; recorded, not explained.)
+- **Exact link to the literature and to E16:** Delta-IRIS pairs its L2 tokenizer loss with a *stochastic* Δ channel sampled from
+  a learned prior, so uncertain changes are sampled at imagination time, not averaged.
+  - E16 had the Δ channel with our L1 loss: it failed on allocation (the posterior saw the answer, hits AUC 0.63-0.70).
+  - D has the loss without the channel: it fixes allocation and pays in averaging drift on unobservable timers.
+  - **Faithful Delta-IRIS (both) is the literature-consistent next arm.** E16's channel code (`dworld.py`) exists; it needs
+    D's loss. Predeclaration follows after the from-scratch runs report.
+
+**Simulator-truth damage panel** (03:08; `check_damage.py --window 15`, held diagnosis futures, 0.5 cut; `e21v2_damage_w15.log`):
+
+| world | teacher caught / 337 | false rate | fresh / 31 | beside, no hit in window: caught / drawn without hit | −2 class accuracy | self-fed caught (aligned) |
+|---|---|---|---|---|---|---|
+| M16 | 0.086 | 0.75% | 0 | 0.127 / 0.134 | 0.085 | 0 / 240 |
+| C0 | 0.050 | 0.47% | 0 | 0.077 / 0.103 | 0.052 | 0 / 243 |
+| G | 0.027 | 0.31% | 0 | 0.041 / 0.076 | 0.029 | 0 / 242 |
+| GE | 0.018 | 0.10% | 0 | 0.027 / 0.004 | 0.013 | 0 / 239 |
+| E′ | 0.033 | 0.49% | 0 | 0.045 / 0.080 | 0.033 | 0 / 239 |
+| **D** | **0.733** | 4.06% | **0.613** | 0.909 / 0.536 | **0.475** | **0.060 (15 / 250)** |
+
+Bayes hit rates per stratum: fresh 0.973, beside without a hit 0.480, hit in window 0.028.
+- Teacher-forced on held roots, D catches 73% of real damage, including 19 of 31 fresh approach hits.
+  - In the genuine coin-flip stratum (zombie beside, no recent hit; Bayes 0.48) it draws drops on 54% of no-hit cases: the
+    expected behaviour of a mean-seeking world on an event it cannot time.
+  - This panel's window spans rows up to 14, so part of the 4% false comes from the inherited row-14 cue.
+- **In its own imagination, D draws 6% of aligned hits (15 / 250); every other world draws 0.** For H16 decisions this is the
+  reading that matters. Health in self-fed rollouts remains mostly missing.
+  - The same mechanism as the food drift is the leading candidate: a deterministic mean-seeking world averages what it cannot
+    time, and imagination compounds it.
+  - Not yet diagnosed: whether imagined hits fail because the imagined zombie / phase state diverges, or because the head
+    averages them away.
+
+**D's imagination gap, localized by substitution** (03:23; `health_imagination.py`, `imagination_*.json`; check_damage's data,
+reader, masks and alignment rule):
+
+| D: frame fed back at each step | caught, all 337 damage steps (aligned) | zombie drawn beside the player on damage steps | caught where a zombie is beside | false |
+|---|---|---|---|---|
+| imagined (= self-fed) | 4.5% (6.0%) | **8.9%** | 30% | 0.43% |
+| imagined + true HUD (health / phase history) | 5.9% (7.5%) | 8.9% | 30% | 1.43% |
+| **imagined + true map** | **58.5%** | **73.6%** | 69% | 2.07% |
+| true (= teacher-forced) | 73.3% | 73.6% | 87% | 4.06% |
+
+C0 for reference: 0 / 0 / 3.0% / 5.0% caught (zombie beside 10.4% imagined, 73.6% true).
+- The HUD / phase history is **not** what fails in imagination: restoring it moves 4.5% → 5.9%.
+- The **map** is: restoring it moves 4.5% → 58.5%. At the moments damage really happens, D's imagination shows a zombie beside the
+  player 8.9% of the time, against 73.6% in truth.
+- Source, verified (Craftax-Classic `game_logic.py` `update_mobs`, L758-845):
+  - a zombie within Manhattan distance 10 moves toward the player with probability 0.75 (axis chosen at random when tied),
+    otherwise takes a uniformly random step;
+  - at distance 1 with cooldown ≤ 0 it attacks (2 damage, 7 asleep), stays put, and resets its cooldown to 5. That is the 6-step
+    period measured in the data (since = 6 → 0.87).
+- **Exact chain in imagination:** hits require adjacency → adjacency depends on random zombie steps → a deterministic world draws
+  the average of the possible positions → the zombie smears out of the imagined frame → no hit can be drawn.
+  - Same root as the food drift (a mean-seeking world on events it cannot time), now in the map.
+  - It matches the 10-03 finding that H16 decisions need sampled futures (one faithful future ≈ 57% of the value, 16 samples
+    ≈ 90%).
+- **Consequence for the fix:** D's loss fixes allocation (the representation and the head learn the mechanism). Imagination
+  additionally needs *sampling* of stochastic events. This is the role of Delta-IRIS's stochastic Δ channel, now motivated twice
+  (food timers, zombie moves).
+
+**What happens to zombies, measured directly** (09:00; `health_zombie.py`, `zombie_{D,C0,M16}.json`; teval's held roots; true
+zombie cells from the simulator's visible state; zombie scores = teval's probe on the predicted frames):
+- True moves, steps with one zombie at relative distance 1..6 (n = 2,529): toward the player 37.9%, stay / attack 51.0%,
+  other (random) 11.1%.
+- One step from true history:
+
+| true move | D: score at true cell / argmax correct | C0 | M16 | probe on the true frame |
+|---|---|---|---|---|
+| toward (959) | 0.309 / **57.8%** | 0.176 / 30.1% | 0.174 / 30.4% | 0.681 |
+| stay (1,290) | 0.484 / 91.1% | 0.581 / 87.9% | 0.570 / 87.1% | 0.653 |
+| other (280) | 0.032 / 1.1% | 0.003 / 0.0% | 0.003 / 0.0% | 0.625 |
+
+  - D learned the rule's deterministic part much better than the L1 worlds (argmax on toward moves 58% vs 30%).
+  - Random moves are unpredictable for every world, as they must be.
+  - Even on toward moves D's one-step zombie is half-intensity (0.31 vs 0.68): a blend of outcomes.
+- Imagination, the 130 roots with exactly one zombie (peak score / positive mass / share with any cell > 0.3):
+
+| depth | D | C0 | M16 | truth |
+|---|---|---|---|---|
+| 1 | 0.44 / 1.27 / 73% | 0.45 / 1.06 / 63% | 0.44 / 1.04 / 62% | 0.65 / 1.34 / 92% |
+| 2 | 0.33 / 1.27 / 55% | 0.40 / 1.01 / 55% | 0.38 / 0.97 / 52% | 0.64 / 1.34 / 89% |
+| 4 | 0.21 / 1.19 / 20% | 0.30 / 0.89 / 36% | 0.27 / 0.83 / 31% | 0.64 / 1.34 / 92% |
+| 8 | 0.13 / 1.12 / **0%** | 0.19 / 0.75 / 20% | 0.17 / 0.68 / 17% | 0.64 / 1.37 / 93% |
+| 16 | 0.11 / 1.16 / **0%** | 0.13 / 0.70 / 8% | 0.12 / 0.64 / 8% | 0.65 / 1.44 / 96% |
+
+  - **Two measured ways to lose a zombie.** D (L2-type) *diffuses* it: total mass is conserved (≈ 1.2) while the peak decays
+    geometrically, the zombie spread over many cells at low intensity. By depth 8 no cell anywhere reads as a zombie.
+  - The L1 worlds *fade* it: peak and mass both decay (mass 1.06 → 0.70).
+  - Either way, by depth 4-8 the imagined world holds no localized zombie, so no zombie can arrive beside the player, and no
+    hit can be drawn. That is the 8.9% vs 73.6% measured at damage steps.
+- **Calibration test** (lane139, 09:05; distance 2..6 with no attack possible, n = 1,211; positive zombie-score share over the
+  5 candidate cells):
+
+| next cell | true frequency | D's predicted share | C0's predicted share |
+|---|---|---|---|
+| toward the player | 62.4% | 47.9% | 38.1% |
+| stay | 25.6% | 35.8% | 36.1% |
+| other direction | 12.0% | 16.4% | 24.0% |
+| zombie mass on the 5 cells (true frame 0.695) | | 0.553 | 0.319 |
+
+  - D is not mode-seeking: a mode-seeking model would put nearly everything on "toward". It spreads its one-step prediction
+    across the possible outcomes in roughly the true proportions, with a bias toward staying. That is the expected
+    distribution of the next frame, which is what a deterministic mean-seeking model predicts.
+  - C0 is flatter and loses mass (fading).
+- **The imagination failure, exact:**
+  1. zombie moves are stochastic (source);
+  2. the one-step prediction is a blend in proportion to the true move probabilities (calibration);
+  3. imagination feeds blends back, so the zombie diffuses (D: mass conserved, peak 0.44 → 0.11) or fades (L1 worlds);
+  4. no localized zombie is beside the player at real damage steps (8.9% vs 73.6%); restoring the true map restores 58.5%;
+  5. hits are not drawn (6%).
+
+- **Localization pinned by a controlled substitution** (09:17; lane140; D):
+
+| D: frame fed back at each step | caught, all 337 damage steps | zombie beside the player on damage steps | false |
+|---|---|---|---|
+| imagined | 4.5% | 8.9% | 0.43% |
+| + true HUD | 5.9% | 8.9% | 1.43% |
+| **+ true tokens on cells within 2 of a true zombie** | **56.4%** | **73.6%** | 1.93% |
+| **+ true tokens on an equal number of random non-zombie cells (control)** | **4.5%** | 8.9% | 0.41% |
+| + true map (all 63 cells) | 58.5% | 73.6% | 2.07% |
+| all true (teacher-forced) | 73.3% | 73.6% | 4.06% |
+
+  - Zombie localization alone accounts for 96% of the full map-substitution effect; the size-matched random control has exactly
+    zero effect.
+  - **The imagination failure is entirely the lost zombie position.** Every link of the chain is measured.
+
+**Literature step on this exact problem** (09:10; full texts read):
+- *PlaNet* (Hafner et al. 2019, arXiv 1811.04551, Fig. 2): "Transitions in a recurrent neural network are purely deterministic.
+  This prevents the model from capturing multiple futures and makes it easy for the planner to exploit inaccuracies."
+  - The RSSM splits the state into stochastic and deterministic parts "allowing the model to robustly learn to predict multiple
+    futures".
+  - Fig. 4: the purely deterministic GRU model underperforms the RSSM.
+- *DreamerV2* (arXiv 2010.02193, ablation §): categorical latents beat Gaussian latents on 42 / 55 Atari tasks. First hypothesis:
+  a Gaussian prior "cannot match a mixture of Gaussian posteriors, which could make it difficult to predict multi-modal changes
+  between one image and the next".
+- Cited video prediction (Babaeizadeh et al. 2017 SV2P; Denton & Fergus 2018 SVG): stochasticity "to capture multiple futures".
+- *Dreamer 4* (read 03:35) and *Delta-IRIS* (read 10-03) both sample: flow / shortcut forcing in continuous token space; discrete
+  stochastic Δ tokens with an autoregressive prior.
+- **Our per-tile world is a purely deterministic regressor.** Tonight's measurements are the failure these papers describe,
+  quantified on our data.
+- The remedy family is unambiguous: a stochastic transition that *samples* the next frame. Combined with the allocation finding
+  (D), the requirement for the fix is:
+  1. a loss that gives rare large changes their gradient (D's L2-type allocation; Dreamer 4's x-space squared loss);
+  2. a stochastic component sampled at imagination time.
+
+### E22 — predeclared (committed 09:18:46, 2026-10-09; labelled "09:35" in error), before any code: faithful Delta-IRIS on the canonical world (D's loss + stochastic Δ)
+
+**Why this design** (diagnosis + literature + our own measured constraints):
+- Diagnosis: D fixes allocation (B1, B2, router: 7.56% gradient share; row-9 hits 47%). Its imagination fails because a
+  deterministic transition blends the stochastic zombie move (blend shares ≈ the true move probabilities) and the blends diffuse
+  the zombie. Restoring only the zombie neighbourhoods restores 56.4% of damage.
+- Literature: stochastic transitions that *sample* (PlaNet RSSM, DreamerV2 categoricals, Delta-IRIS Δ tokens, Dreamer 4 flow).
+- Own constraints:
+  - per-token independent sampling destroys known content (E14, 10-02), so the sample must be a few coherent codes per frame,
+    not per-tile noise;
+  - Delta-IRIS's Δ tokens are exactly that (4 discrete codes per transition, one per 5×5 region), and `dworld.py` implements
+    them (E16, validated: zero-init conditioning reproduces the deterministic world exactly; revival "always" needed, others
+    collapsed to 3-11 codes);
+  - E16 failed for allocation (our L1). D supplies the loss.
+
+**Design:**
+- *Stage A* (`dworld.py` ported to the canonical recipe; every other part as E16):
+  - decoder = D (the E21 D world, continued); posterior E on (frame t, action, frame t+1); 4 codes per transition;
+    revival always; D's loss + commitment 0.02;
+  - L16 rawlong windows, batch order 11, 6,000 updates, M16 / D recipe otherwise.
+- *Stage B:* E16's prior on frozen stage-A codes (3 layers, width 512, 21-step rawlong windows, 20,000 updates, Delta-IRIS
+  crafter.yaml values).
+- *Imagination:* at each step the prior samples the transition's 4 codes from the imagined history; the decoder conditions on
+  them. Past transitions use the codes sampled (or, teacher-forced, the posterior's).
+
+**Bowman risk check first** (E16 amendment 2: under L1 a continued deterministic world ignored Δ). A stage-A smoke of 2,000 updates
+with batch 16 (fits beside the running from-scratch D) must show, before any full run:
+- (P1) the Δ gain (teacher loss with Δ zeroed minus with Δ, same batch) > 0 and rising;
+- (P2) with the posterior's Δ, which sees the true next frame, the one-step zombie on *random* moves becomes localized: score
+  at the true cell ≥ 0.3 (D without Δ 0.032), argmax correct ≥ 50% (D 1.1%).
+
+P2 tests the diagnosed mechanism directly: the channel must carry exactly the stochastic choice D cannot predict. If P1 or P2
+fails, stage A is not run at full length; the failure is diagnosed first.
+
+**Readings of the full E22** (s7; held roots and the health_chain subset; D as the comparator):
+1. Imagination keeps zombies localized: with prior-sampled Δ, one-zombie roots keep a cell > 0.3 at depth 8 in ≥ 50% of
+   roots (D 0%, truth 93%), and the peak at depth 8 is ≥ 0.4 (D 0.13).
+2. Imagined damage: self-fed caught on aligned true-damage steps ≥ 30% (D 6%), false ≤ 2%, mean over 4 prior samples per root.
+3. Teacher-forced health preserved: row 9 hits ≥ 40% of held, false ≤ 1% (D 47% / 0.06%).
+4. Food: imagined food bias at depth 16 within ±0.4 (D −0.88, C0 +0.40).
+5. Cost: teval one-step / depth 16 vs D, both currencies; reported, with no pass threshold beyond "no resolved loss on tile facts".
+
+**Interpretation rules, fixed now:**
+- 1 + 2 pass → the sampled channel fixes the diagnosed imagination failure; a from-scratch E22 then follows (the continuation
+  question, as for D).
+- 1 passes and 2 fails → zombies stay localized but hits are not drawn; diagnose the next link (adjacency at damage steps,
+  phase in imagination).
+- 1 fails with P2 passing → the prior does not sample the moves well; diagnose prior accuracy (code-prediction CE, calibration)
+  before anything else.
+
+### E22 pre-flight result (lane142, 09:20:41-09:55:16): P1 and P2 FAIL — the continued D decoder ignores Δ
+
+- **Smoke:** 2,000 updates of D continued with E16's channel (revival always), batch 16 L16 windows, D's loss.
+- **Logged gain** at 500 / 1,000 / 1,500 / 2,000: −0.00068 / −0.00161 / −0.00059 / −0.00062 (−1.6% / −2.9% / −1.2% / −1.3%).
+  Codes per batch: 72 / 11 / 89 / 54.
+  - This logged gain is biased against Δ: it compares the pre-step loss with Δ to the post-step loss zeroed, on the
+    batch just trained on. E16 amendment 2's "0.4-1.5% higher" was logged the same way.
+  - The logged codebook entropy (8.0-10.4 bits) is not a usage measure: revival resets expired codes' frequencies to
+    1/1024 without renormalizing. Codes per batch is the usage measure.
+- **Clean P1** (`health_zombie.py` `p1_clean_held`, same weights; held 1,002 roots, 16,028 alive one-step teacher-forced
+  predictions):
+  - Delta-IRIS loss 0.037205 with Δ vs 0.037215 zeroed: gain **+0.000009 (+0.03%)**.
+  - MSE 0.012614 vs 0.012615; map MSE 0.014894 vs 0.014891.
+  - **P1 FAILS.**
+- **P2** (posterior Δ sees the true next frame):
+
+  | true zombie move | n | E22A: score at true cell / argmax correct | D: score / argmax |
+  |---|---|---|---|
+  | other (random) | 280 | **0.036 / 1.1%** | 0.032 / 1.1% |
+  | toward | 959 | 0.333 / 58.7% | 0.309 / 57.8% |
+  | stay | 1,290 | 0.502 / 91.1% | 0.484 / 91.1% |
+
+  - Thresholds were 0.3 and 50%. **P2 FAILS.**
+  - Calibration is unchanged: toward share 0.483 (D 0.479; truth 0.624).
+- **Why, measured:** the Δ projection `cond.weight` (zero-init) after 2,000 Adam updates has Frobenius 0.350, RMS 0.0027 per
+  element, max 0.0129.
+  - The lr warms up to 1e-4 by update 1,000. A sign-consistent gradient would move each weight up to ~0.15.
+  - The largest weight moved 9% of that, the RMS 2%: a random walk. The decoder's gradient on the channel has no
+    consistent direction.
+- **Plumbing excluded** (CPU, reference backend, D in the L16 world, 2 rawlong windows):
+  - zero-init Δ: loss identical; the gradient reaches `cond` (norm 0.0024);
+  - with `cond` ~ N(0, 0.02²): Δ changes the loss (0.031585 → 0.031619) and the encoder gradient rises 800×
+    (1.4e-5 → 0.011).
+  - The channel is wired; the decoder does not use it.
+- **Reading:** this is E16 amendment 2 (10-03; L1, 6 frames) reproduced under D's loss at L16. A converged deterministic
+  decoder starts stage A in Bowman's equilibrium, and D's loss does not get it out. Per the rules, no full stage A.
+- **Time labels:** the predeclaration's "09:35" and lane142's "09:55" are wrong. Actual times: predeclaration committed
+  09:18:46 (81d80819), code 09:20:21, lane launched 09:20:41.
+
+**Substitution test of the warm start — predeclared 09:58, before launch (lane143):**
+- `e22s` smoke: the same command without `--init`, i.e. the decoder from scratch (TWorld at seed 7). Recipe, loss, windows,
+  batch order and updates are identical.
+- Readings, on both smoke files:
+  - clean P1 and P2 (`health_zombie.py`);
+  - channel diagnostics (`e22_channel.py`, held 16-frame windows = 4 context + 12 future frames, 62 batches of 16):
+    1. consistency of the `cond` gradient, ‖Σ_b g_b‖ / Σ_b ‖g_b‖ (1 = consistent; ~1/√62 = 0.13 for noise);
+    2. the encoder's gradient from the decoder vs from the commitment term;
+    3. the share of the zeroed-Δ residual variance explained by each region's code, vs permutation chance (E16's
+       measure).
+- Rules:
+  - scratch clean gain ≥ +5% and `cond` RMS ≥ 10× warm's (0.0027) → the warm start is the cause, as in E16 amendment 2.
+    E22 then trains as Delta-IRIS does, posterior and decoder jointly from scratch, on the canonical two-stage recipe
+    (6-frame 36k + L16 6k), matched to D from scratch (lane131).
+  - scratch gain < 1% → the warm start is not the cause; the recipe (loss, L16, quantizer) is diagnosed before any run.
+  - in between → report and diagnose.
+- P2 on the 2k scratch decoder is reported but not a gate (the decoder is immature).
+
+**Substitution result (lane143-146, 09:58-10:35): the warm start shuts the channel; the 09:58 rule came out "in between" on its proxy**
+- Measured on held windows with the same weights (`e22_channel.py`: 1,002 held 16-frame windows, 126 batches; noise-level
+  consistency 0.089; `health_zombie.py` one-step for P1 / P2):
+
+| | warm u0 | scratch u0 | warm u2000 | scratch u2000 |
+|---|---|---|---|---|
+| clean gain (zeroed − with Δ), e22_channel | 0 | 0 | **−0.0000046 (−0.01%)** | **+0.0551 (+46.0%)** |
+| clean gain, health_zombie one-step | — | — | +0.000009 (+0.03%) | +0.0558 (+45.9%) |
+| Δ size: ‖Δ‖ / ‖tile embedding‖ | 0 | 0 | **0.59%** | **16.1%** |
+| cond.weight RMS (zero-init) | 0 | 0 | 0.0027 | 0.0168 (6.1×) |
+| decoder's cond gradient: consistency | **0.146** | **0.380** | 0.326 | 0.623 |
+| encoder gradient from the decoder: norm / consistency | 0 (zero-init) | 0 | 2.1e-4 / 0.29 | 0.0116 / 0.70 |
+| codes used per region (held) | 288-515 | 288-515 | **17-25** | 86-105 |
+| residual variance explained by the region's code (chance) | 4.1-5.8% (1.9-3.4%) | 4.3-6.5% (same) | 0.3-0.7% (0.1-0.16%) | 3.7-5.4% (0.6-0.7%) |
+
+- **Rule outcome, as written:** the scratch clean gain (+46%) passes ≥ +5%; the cond RMS ratio (6.1×) fails ≥ 10×. So the
+  outcome is "in between → report and diagnose".
+- **Diagnosis:** the RMS criterion was a proxy for the size of the channel. Δ's size against the tile embedding it is added
+  to is 27× (0.59% vs 16.1%). That measure was chosen after the rule; it is reported as a diagnosis, not as a pass.
+- **What the warm start does (exact):**
+  - at update 0 the decoder's gradient on the channel is barely above noise (consistency 0.146 vs 0.089; scratch 0.380);
+  - over 2,000 updates the warm encoder DISCARDS what its random initial codes carried: codes per region fall from
+    288-515 to 17-25, and the residual explained above chance falls from ~2% to ~0.3%;
+  - the scratch encoder keeps 86-105 informative codes, and its decoder takes 46% of its loss from Δ.
+  - Changing only the decoder's initialization flips the channel from unused to used.
+- **But the scratch channel at 2k carries deterministic content, not the zombie's choice:**
+  - map MSE 0.067 zeroed → 0.027 with Δ;
+  - P2 one-step: random moves score 0.009, argmax 0.4%; toward moves argmax 1.8%. The immature decoder predicts "stay"
+    (82% share vs 26% true).
+  - This is E16's from-scratch pattern (10-04: at 36k Δ removed 92.8% of map error and 79% of HUD error, yet health stayed
+    0/305).
+- **Correction of my attribution:** E16 amendment 2 and the E22 predeclaration called the warm failure Bowman's
+  equilibrium. Bowman et al. 2016 and He et al. 2019 describe collapse driven by the KL term; stage A has no KL term.
+  The measured failure is the one Park & Lee (below) describe for pretrained decoders.
+
+**Literature on the diagnosed problem (read 10:00-10:35):**
+- **SV2P** (Babaeizadeh et al., ICLR 2018, arXiv 1710.11252, sec. 3.2 and appendix Table 1, read):
+  - "naive training usually results in the model ignoring the latent variables and converging to a suboptimal
+    deterministic solution";
+  - their fix is three phases: (1) generator only, z ~ N(0, I) stacked as a channel on the tiled action, 50k; (2) the
+    inference network with KL 0, 50k, which reaches "very low reconstruction error"; (3) KL annealed to β 0.001, 100k.
+  - A deterministic warm start can work there, but the read path was live (noise fed in phase 1), not zero.
+- **Park & Lee 2021** ("Finetuning Pretrained Transformers into VAEs", arXiv 2108.02446, sec. 4-5.1 and appendix, read):
+  - with a pretrained T5 decoder, "posterior collapse was observed in all training schemes without encoder warmup... The
+    decoder learns to ignore the initially noisy input signal from the encoder";
+  - phase 1 trains with KL 0, and "freezing the decoder and the memory projection layer Wproj while training with an AE
+    objective is crucial in learning meaningful encoder outputs" (5 epochs); phase 2 trains jointly (3 epochs).
+  - Wproj is a new layer that maps z into the decoder (cross-attention keys and values).
+  - This is our case exactly: a converged decoder plus a new, noisy encoder.
+- **He et al. 2019** (arXiv 1901.05534): inference lag plus the KL term; aggressive encoder updates. The mechanism goes through
+  the KL term, so it is not ours.
+- **Delta-IRIS:** the tokenizer is trained jointly from scratch (option A below).
+
+**Decision and predeclaration (10:37, before any E22F code): E22F = Park & Lee phase 1 on D, smoke first**
+- **Why E22F before the from-scratch E22 (A):**
+  - with D frozen, the channel can only reduce D's own residual. D already predicts deterministic content, so its
+    residual is the stochastic part: random zombie moves, hits, and blur. That is exactly what imagination lacks;
+  - A's decoder offloads deterministic content into Δ (measured at 2k; E16 at 36k), which the prior must then predict.
+  - This deviates from the 09:58 rule's action ("E22 then trains jointly from scratch"). The reason is the literature read
+    after that rule plus the scratch P2. A is held, not dropped: it runs if E22F fails, and as E22F's from-scratch
+    confirmation.
+- **E22F design (Park & Lee phase 1, adapted):**
+  - frozen: D (every world parameter) and the projection into D's tile space (`Posterior.cond`) at a new Linear's
+    default initialization (`reset_parameters`; measured Δ/tiles at update 0 = 14.8%, the order of the working scratch
+    channel's 16.1%);
+  - trained: the posterior encoder (conv net, action plane, quantizer pre-projection), the code embedding (quantizer post
+    projection) and the EMA codebook;
+  - D's loss + commitment, revival always, L16 rawlong, batch order 11.
+  - Smoke: 2,000 updates, batch 16 (fits beside D from scratch).
+- **Gate (as E22's):**
+  - P1: clean held gain > 0;
+  - P2: random-move score at the true cell ≥ 0.3 (D 0.032), argmax ≥ 50% (D 1.1%).
+  - Also reported: e22_channel diagnostics, Δ size, codes used, and map vs HUD gain.
+- **Rules:**
+  - P1 + P2 pass → E22F full: phase 1 at D's budget (6,000 updates, batch 40), stage B prior (20k), then E22 readings
+    1-5 with a new evaluator that samples Δ from the prior (D as comparator). Phase 2 (joint) is not run unless the full
+    phase-1 readings show the frozen decoder is the limit.
+  - P1 passes, P2 fails → the channel carries something else; measure what before any run.
+  - P1 fails → frozen-read-path warmup does not open the channel on D; run A (E22 from scratch, dworld `--backbone fmamba`
+    stage 1 36k + `--long` stage 2 6k, matched to D from scratch).
+
+**E22F smoke result (lane147-148, 10:39-11:14): P1 passes (+0.57%), P2 FAILS — the codes carry D's residual, frozen D cannot read it**
+- **Logged gain** (now same-weights, before the step) at 500 / 1,000 / 1,500 / 2,000: −0.3% / −0.6% / +0.01% / +0.13%.
+  Codes per batch 69 / 205 / 113 / 154.
+- **Clean P1** (held one-step): Delta-IRIS loss 0.036737 → 0.036527, **+0.00021 (+0.57%)**; MSE 0.012865 → 0.012756.
+- **P2:** random moves score 0.032 (D 0.032), argmax **1.8%** (D 1.1%); toward 59.0% (D 57.8%); stay 91.0% (D 91.1%).
+  **FAILS.**
+- **Channel** (e22_channel, held): Δ is 15.2% of the tile embedding.
+  - Encoder gradient from the decoder: 0.013 (scratch 0.0116), consistency 0.32 (scratch 0.70).
+  - Codes per region: 88-112.
+  - D's residual explained by the region's code: **2.3-3.5% vs chance 0.6-0.7%**, near the scratch encoder's 3.7-5.4%
+    and unlike warm's 0.3-0.7%.
+  - The encoder became informative; the frozen read path does not use it.
+- **What each channel carries** (`e22_channel` carries, 1,002 held windows, 15,030 transitions; squared error with the
+  posterior's Δ vs zeroed):
+  - **D's own error budget (zeroed):** map cells that change (|Δs| > 2.5) are 11% of tokens and hold **68%** of D's
+    squared error (11.8 per token vs 0.95 unchanged); HUD 6%; zombie cells 1.9%.
+
+  | error removed by Δ | E22F (frozen D) | warm | scratch (2k) |
+  |---|---|---|---|
+  | changed map cells | **0.18%** (13% of its gain) | 0 | 37% (27%) |
+  | unchanged map cells | 3.3% (**87%** of its gain) | −0.06% | 80% (70%) |
+  | true zombie cells | 0.07% | −0.02% | 15% |
+  | player / HUD | −0.4% / 0.05% | −0.3% / 0.2% | 46% / 4.6% |
+
+  - E22F's gain is background drift on unchanged cells: the frozen decoder, read through a frozen random projection,
+    cannot turn the codes' change information into changed outputs.
+  - The scratch decoder at 2k needs Δ even to copy: its unchanged-cell error is 8.25 zeroed (D 0.95). The prior would
+    then have to predict everything, which was E16's pathology.
+- **Reading:** the three smokes separate the two halves of the channel.
+  - warm: the encoder is not informative and the decoder does not read;
+  - E22F: the encoder is informative (4× chance) and the frozen decoder cannot read;
+  - scratch: both are active, but on deterministic content.
+  - This is the situation both sources address with a second, joint phase: SV2P phase 2 (inference network + generator,
+    KL 0) and Park & Lee phase 2 (full fine-tuning after the warmup).
+  - The E22F rule allowed phase 2 "if the frozen decoder is the limit"; the measurements above show that it is.
+
+**E22FJ predeclared (11:14, before launch): Park & Lee / SV2P phase 2 smoke**
+- `dworld --long --init <E22F smoke file>`: world (D) and the whole posterior continue, nothing frozen (cond starts at
+  E22F's default init). D's loss, revival always, batch 16, 2,000 updates.
+- Same gate: P1 (clean held gain > 0) and P2 (random-move score ≥ 0.3, argmax ≥ 50%). Plus carries and channel
+  diagnostics.
+- Specific predictions, read in this order:
+  1. the warm equilibrium does not re-form (codes per region stay ≥ 50; gain does not return to ≤ 0);
+  2. the changed-cell reduction rises above E22F's 0.18%;
+  3. P2.
+- Rules:
+  - P2 passes → E22F/FJ full (phase 1 6k + phase 2 6k at batch 40), prior 20k, readings 1-5 with `e22_imagine.py`.
+  - 1 holds and P2 fails → measure the zombie-cell reduction and per-move-type P2 before anything else.
+  - 1 fails (channel shuts again) → A (from scratch) is the remaining faithful route.
+
+**E22FJ smoke result (lane149, 11:15-11:48): the joint phase opens the channel (+35%); P2 still FAILS (random moves 1.1%)**
+- **Logged gain** (same weights) at 500 / 1,000 / 1,500 / 2,000: +5.0% / +25.8% / +24.3% / +18.5%; codes per batch 272 / 242 /
+  268 / 305.
+  - The batch order restarts, so these are E22F's batches. On them D's own loss (E22F zeroed = D) is 0.04210 / 0.05462 /
+    0.04863 / 0.04780.
+  - E22FJ with the posterior's Δ: 0.04065 / 0.04532 / 0.04083 / 0.04125, i.e. 3-17% below D.
+  - E22FJ zeroed: 0.04278 / 0.06107 / 0.05393 / 0.05063, i.e. 2-12% above D. The decoder now leans on Δ for part of what it
+    predicted alone.
+- **Prediction 1 holds:** the warm equilibrium did not re-form.
+- **Clean P1** (held one-step): Delta-IRIS loss 0.043075 zeroed → 0.028168 with Δ (+34.6%).
+  - MSE 0.013415 → 0.009257, against D's 0.012865: −28% vs D with the posterior.
+  - Worst element 2.57 → 1.53.
+- **P2:** random moves score 0.041, argmax **1.1%** (D 1.1%); toward 0.340 / 61.1% (D 0.309 / 57.8%); stay 0.484 / 91.1%.
+  **FAILS.**
+- **Carries** (held, with Δ vs zeroed):
+  - changed map cells: **36.2%** removed (13.66 → 8.72; 84% of the gain); unchanged 30.6%;
+  - **zombie cells 8.4%** (17.79 → 16.30; 0.46% of the gain); HUD −2.5% (worse);
+  - codes per region 297-364, explaining 7.3-9.3% of the residual (chance 2.0-2.4%).
+- **Reading:**
+  - the channel is open and spent on changing cells, but almost none of it on zombie moves;
+  - zombie cells hold ~2.4% of the changed-cell error;
+  - per the rule (prediction 1 holds and P2 fails), I measure where the capacity goes and P2 by scroll before anything
+    else (lane150).
+- **D from scratch at 12k vs M6 at 12k** (lane141, window 5):
+  - phase 0.977 vs 0.897: **+0.077** [+0.061, +0.093];
+  - adjacency 0.761 vs 0.640: **+0.118** [+0.059, +0.178]; both resolved;
+  - emitted hits 311 (fresh 3), false 181.
+  - Unlike GE from scratch, D from scratch is ahead of its matched deterministic run on both blockers.
+
+**Where the E22 channels fail, localized (lane150-151 + CPU probe, 11:50-12:09): the posterior ENCODER never encodes the zombie's move**
+- **D's error budget** (held, 15,030 transitions, teacher-forced, squared error):
+  - scroll-entering edge cells: 4.8% of map tokens, 32.3 per token, **49% of D's error**;
+  - changes on no-scroll steps: 25%; other changes on scroll steps: 10%; unchanged cells 25%;
+  - zombie cells: **1.9%**.
+- **E22FJ's channel** removes 61% of entering-edge error (**92% of its gain**), 7.6% of no-scroll changes, 8.6% of
+  zombie cells on no-scroll steps.
+- **P2 split by scroll:** random moves, argmax on no-scroll steps (n = 185): E22FJ **0.0%**, D 0.0%; on scroll steps
+  (n = 95): 3.2% both.
+  - Without scroll there is no edge to compete for the region's code, and still nothing.
+  - Capacity competition within a transition is not the cause.
+- **Encoder probe** (`e22_zombiecode.py`, CPU):
+  - cases: no-scroll one-zombie steps (stay 1,088, toward 393, other 173);
+  - probe: grouped-CV logistic regression; the move direction is read from the zombie region's pre-VQ z, its codebook
+    vector q, or all four regions' z;
+  - accuracy on moving cases only (4 classes):
+
+  | features | toward | random ("other") |
+  |---|---|---|
+  | **positive control:** true change norm at the 5 candidate cells | 0.916 | **0.890** |
+  | relative position (the toward rule's inputs) | 0.814 | 0.0 |
+  | E22FJ z / q / all regions | 0.354 / 0.351 / 0.260 | **0.225 / 0.254 / 0.306** |
+  | E22F z / q / all regions | 0.308 / 0.316 / 0.229 | 0.237 / 0.225 / 0.260 |
+  | scratch z / all regions | 0.351 / 0.328 | 0.133 / 0.225 |
+  | warm z / all regions | 0.354 / 0.247 | 0.121 / 0.249 |
+
+  - With stay included (66% of cases) every posterior probe falls back on "stay" (random-move accuracy 0-0.08). That is
+    why the moving-only probe and the positive control were added before reading this.
+- **Exact statement:**
+  - the move is linearly readable from the posterior's own inputs (0.89), yet no stage-A posterior encodes it, before or
+    after quantization: it sits at chance, warm, frozen, joint or from scratch;
+  - the failure is the encoder, not VQ or the decoder's rendering;
+  - the encoder learns what reduces the decoder's loss most: entering terrain is 49% of D's error, while a perfectly
+    encoded zombie move could remove at most 1.9%;
+  - this is the allocation root of the whole health diagnosis (rare events get a tiny share of the objective), now one
+    level down, in the stochastic channel.
+- **Open, not measured yet:** whether a longer run would reach zombie moves once the edge gain saturates (the E22FJ
+  smoke is 2k updates).
+
+**Training length does not reach the move:** E16's from-scratch posterior (L1, 6-frame transformer world, revival crafter),
+probed the same way at its 6k-36k snapshots:
+
+| moving-only probe | 6k | 12k | 18k | 24k | 30k | 36k |
+|---|---|---|---|---|---|---|
+| random moves, z | 0.214 | 0.237 | 0.260 | 0.277 | 0.237 | 0.301 |
+| random moves, q | 0.260 | 0.272 | 0.306 | 0.289 | 0.220 | 0.237 |
+| toward moves, z | 0.514 | 0.557 | 0.519 | 0.511 | 0.560 | 0.539 |
+| codes in the zombie's region | 111 | 177 | 203 | 223 | 240 | 271 |
+
+- E16's warm 6k posterior: random moves z 0.150, q 0.133.
+- In 36k updates of joint training, codebook use grows steadily and the random move stays at chance.
+
+**Literature on the localized problem (read 12:13):**
+- OC-STORM (arXiv 2501.16443): pixel MBRL "auto-encoding with an L2 loss ... is dominated by large areas and often fails to
+  capture decision-relevant details"; their fix is object-centric (segmentation from few annotations).
+- MuDreamer / Make-the-Pertinent-Salient: "object vanishing" of small task objects in Dreamer.
+- DIAMOND (arXiv 2405.12399): "compression into a compact discrete representation may ignore visual details that are
+  important"; a diffusion world model samples the whole frame instead.
+- EAWM (arXiv 2601.19336): event-weighted observation loss.
+- Our measured version: the stochastic channel's encoder allocates by loss share (edges 49%, zombie cells 1.9%).
+
+**E22Z predeclared (12:13, before code): is loss share the CAUSE of the encoder ignoring the move? (diagnostic, label-derived, not a fix)**
+- **Recipe:** the E22FJ smoke exactly (joint phase from the E22F file, the same 2,000 batches) + λ × the mean L1 over cells
+  where teval's zombie probe on the TRUE frame t or t+1 exceeds 0.3 (the move's old and new cells; tworld.rollout_losses'
+  mask path).
+  - The probe's affine map is exported exactly (zombie_probe_export.py, max deviation 3.4e-7).
+  - λ is auto: zombie term = teacher on the first batch, a share comparable to the edges' 49% (as the oracle test, 10-08).
+- **Why it is causal:** the decoder alone cannot predict a random move, so the only way to lower the zombie term on random
+  moves is to encode the move in Δ.
+- **Readings vs E22FJ:**
+  - P2 (all and no-scroll);
+  - the encoder probe on moving cases (z and q, random moves);
+  - carries.
+- **Rules:**
+  - random-move probe ≥ 0.6 or P2 argmax ≥ 50% → loss share is the cause: the channel carries the move when its share is
+    comparable. The fix is then a label-free allocation for the channel (EAWM-type event weighting, per-cell latents, or a
+    generative head; chosen after reading).
+  - probe at chance (≤ 0.35) and P2 < 10% → even weighted, this channel path does not carry the move; the generative route
+    (DIAMOND / Dreamer 4 sampling) is next.
+  - between → report and diagnose.
+
+**E22Z result (lane152, 12:15-12:47): loss share IS the cause — weighted, the channel carries the random move (P2 1.1% → 82%)**
+- λ auto = 0.204 (first batch: 132 zombie-marked cells of 15,120 map cells, 0.87%).
+- **Logged gain** (weighted objective, same weights) at 500 / 1,000 / 1,500 / 2,000: +0.8% / +7.7% / +35.6% / +26.5%; codes
+  per batch 189 / 354 / 280 / 315.
+- **P2** (held one-step, posterior Δ; D in brackets):
+
+  | true zombie move | n | score at true cell (probe ceiling) | argmax correct |
+  |---|---|---|---|
+  | **random (other)** | 280 | **0.599** (0.625) | **82.1%** (1.1%) |
+  | other, no scroll / scroll | 185 / 95 | 0.603 / 0.593 | 83.8% / 78.9% (0.0% / 3.2%) |
+  | toward | 959 | 0.684 (0.681) | 96.2% (57.8%) |
+  | stay | 1,290 | 0.653 (0.653) | 95.7% (91.1%) |
+
+  - Predicted mass over the 5 candidate cells is 0.898 vs 0.695 on true frames (some extra mass).
+- **Clean P1:** +32.4% (0.041661 → 0.028144); zeroed MSE 0.012935 ≈ D's 0.012865, so the decoder alone is intact.
+- **Encoder probe**, moving cases only, random moves vs E22FJ: z **0.486** vs 0.225; q 0.439 vs 0.254; toward z 0.631 vs
+  0.354.
+  - The linear one-region probe understates what P2 (the decision-level reading) shows.
+- **Rule outcome (12:13):** P2 ≥ 50% → loss share is the cause. Given a share comparable to the scroll edges, a 2,000-update
+  joint phase encodes the random move AND the decoder renders it at the probe ceiling. E16 never did in 36k unweighted.
+- **Carries** (unweighted D loss; E22FJ in brackets):
+  - zombie cells **69.9%** removed (8.4%); on no-scroll steps 74.5% (8.6%);
+  - scroll-entering edges 52.2% (61%);
+  - overall gain +34.5% (+35.8%); codes explain 6.6-10.4% of the residual.
+  - The channel had the capacity for both; reweighting moved zombies from 8% to 70% at almost no cost elsewhere. The fix is
+    allocation, not channel size.
+- E22Z's mask is label-derived: a diagnosis, not the fix.
+- **D from scratch at 18k vs M6 at 18k:** phase +0.080 [+0.064, +0.098]; adjacency +0.154 [+0.097, +0.213]; both resolved and
+  growing (6k: +0.054 / −0.036; 12k: +0.077 / +0.118).
+
+**E22Z sufficiency test predeclared (12:49, before launch): does SAMPLING the allocation-corrected channel fix imagined health end to end?**
+- Stage B: E16's prior (dworld `--stage b`, 20k updates, Delta-IRIS crafter.yaml values) on the frozen E22Z posterior.
+- Then `e22_imagine.py` (4 prior samples per root + the zeroed rollout), with E22's predeclared readings:
+  1. at depth 8, ≥ 50% of one-zombie roots keep a cell > 0.3 and the peak is ≥ 0.4 (D 0% / 0.13; truth 93%);
+  2. imagined damage: caught on aligned true-damage steps ≥ 30%, false ≤ 2% (D's self-fed 4.5-6%).
+- Interpretation:
+  - 1 + 2 pass → the mechanism (stochastic channel with the right allocation + prior sampling) fixes imagined health; what
+    remains is making the allocation label-free;
+  - 1 passes, 2 fails → zombies stay localized but hits are not drawn; diagnose phase / adjacency in imagination;
+  - 1 fails → the prior does not sample the moves; diagnose prior code accuracy / calibration first.
+- The zeroed rollout here is E22Z's own decoder (its decoder trained jointly), reported beside D's.
+
+**Literature for a label-free allocation (read 12:50-12:51):**
+- **DyMoDreamer** (arXiv 2509.24804, NeurIPS 2025, sec. 2.1-2.4, read): the closest published mechanism.
+  - Backward frame differencing D = 1[‖o_t − o_t−k‖ > ε], ε = 0.001, k = 1, dilated by a convolution to the
+    surroundings → masked observation o′ = M(o)·o.
+  - A separate dynamic encoder q(d_t | h_t, o′_t) gives 32 × 32 categorical modulators; the decoder reconstructs o_t from
+    (h_t, z_t, d_t).
+  - +9.5% on Crafter at 1M. Label-free, and it forces a latent's capacity onto changing content via its input.
+  - On our data plain differencing marks scroll steps wholesale (entering terrain is the channel's dominant content).
+- **EAWM AttentionMSE:** with the measured composition, upweighting all changed elements leaves zombie cells ≈ 4% of the
+  event term on no-scroll steps, i.e. ≈ 2% of the objective, no better than now. It is not sufficient here (computed, not run).
+- **Dreamer 4** (local PDF, sec. 2-3.2, read): a generative world with no posterior.
+  - Shortcut forcing, flow matching + bootstrap, x-prediction, ramp weight 0.9τ + 0.1, K = 4 sampling steps, τ_ctx 0.1.
+  - Sampling from the learned conditional instead of an encoder discovering the move. It requires restructuring TWorld
+    (each frame predicts its own clean version from its noisy version plus history).
+- **Candidate generic version of E22Z (to predeclare after the sufficiency test): moved content.**
+  - After scroll compensation, a cell whose new token matches a neighbour's old token, or whose old token reappears in a
+    neighbour: mobs translate.
+  - Entering terrain has no source and mined tiles change type, so both are excluded.
+  - Thresholds from the data's own structure; labels only to validate precision / recall.
+
+**Label-free moved-content mask, feasibility (lane154, `e22_motionmask.py`, 12:53-12:57; labels validate only)**
+- Held transitions: 1,009,764 alive map cells, 121,541 changed (scroll-compensated change > EVENT_TAU).
+- **The neighbour-match ratio on changed cells is bimodal:**
+  - a moved mode at 0.00-0.15 (≈ 20k cells; most changed zombie cells: 1,764 of the zombie changes);
+  - a broad mode at 0.6-1.0 (≈ 60k);
+  - valley at 0.25-0.35 (≈ 1,000 per bin). So **ρ = 0.3 is set by the data, not by labels**.
+- **At ρ = 0.3:**
+  - marks 2.4% of map cells; zombie recall 36% of all zombie-occupied cells (staying zombies do not change their cell);
+  - 37% of marked cells hold a mob at t or t+1 (mob channel 0 = zombie 9.3%, channel 1 19.6%, channel 2 4.9%, others
+    < 1%);
+  - holds 9.5% of D's map squared error (zombie cells alone: 3.3%).
+- At ρ = 0.5 / 0.8: marked 2.9% / 6.5%, zombie recall 42% / 49%, mob share 34% / 17%.
+- **Contaminant:** the player's own centre cell (token 31) matches the moved pattern on every move step. It is known by
+  construction and is excluded.
+
+**E22M predeclared (12:57, before code): the generic E22Z — moved content instead of labels**
+- **Recipe:** the E22Z smoke exactly (joint phase from the E22F file, the same 2,000 batches, λ auto), with E22Z's
+  label-derived zombie mask replaced by the moved-content mask on the TRUE frames t, t+1 of each training window.
+  - Ratio < 0.3 from the valley; change > EVENT_TAU; scroll-compensated; token 31 excluded. Token space only, no labels,
+    no probe.
+- **Readings vs E22Z / E22FJ:** P2 (all, no-scroll), clean P1, encoder probe, carries (zombie cells).
+- **Rules:**
+  - P2 random-move argmax ≥ 50% and score ≥ 0.3 → the label-free allocation works; then the same sufficiency test as
+    E22Z (prior + sampled imagination, readings 1-2), then full scale and from scratch.
+  - 10% ≤ P2 < 50% → partial; measure which moves are missed (recall of the mask on those transitions) before anything
+    else.
+  - P2 < 10% → the mask does not carry the allocation; compare its training-window composition to E22Z's before
+    anything else.
+- **Measured before the run** (12:59-13:00; CPU, the first 100 training batches of the seed-11 order, 1.51M map cells):
+  - E22Z's zombie-probe mask covers 1.27% of map cells; the moved-content mask 2.15%;
+  - 40% of the zombie-probe cells lie inside the moved-content mask (the moving zombies; staying ones do not change);
+  - 24% of moved-content cells are zombie-probe cells (the rest: other mobs and other moved content).
+  - Under the same λ rule, moving zombies get roughly a quarter of the mask term, i.e. ~12% of the objective (E22Z: zombie
+    cells ~50%; unweighted: 1.9%).
+
+**E22Z sufficiency result (lane153, 12:49-14:03): reading 1 PASSES — sampled zombies stay localized; reading 2 FAILS (18% caught, 6% false)**
+- **Prior** (20k, on the frozen E22Z posterior): latent accuracy 0.593 at 18.5k (E16's 0.615 at 20k).
+- **`e22_imagine`** (4 prior samples per root, held futures; D and truth in brackets):
+
+  | reading | E22Z sampled (mean of 4; per sample) | E22Z Δ zeroed | D | truth |
+  |---|---|---|---|---|
+  | depth 8: roots with a zombie cell > 0.3 | **87.3%** (84.8-92.0%) | 39.3% | 0% | 92.9% |
+  | depth 8: zombie peak | **0.609** (0.595-0.624) | 0.298 | 0.13 | 0.642 |
+  | depth 16: roots with a cell > 0.3 | 83-90% | 21% | — | 95.9% |
+  | caught on aligned true-damage steps | 18.0% (16.7-20.0%) | 7.7% | 4.5-6% | — |
+  | false drops on true unchanged steps | 6.3% (6.1-6.5%) | 0.5% | — | — |
+  | imagined zombie beside on true damage steps | 47-50% | 22.6% | 8.9% | 73.6% |
+
+- **Readings:**
+  - e22_localized TRUE (≥ 50% and ≥ 0.4): the diagnosed imagination failure is fixed by sampling the
+    allocation-corrected channel. To depth 16 the zombie stays as sharp as in truth.
+  - e22_damage FALSE: caught triples vs D but stays below 30%; false drops are 6.3% (≤ 2% required).
+- **Rule:** "1 passes, 2 fails → diagnose the next link".
+- **Caveat measured next, not assumed:** false is scored against the TRUE trajectory. A sampled future in which a zombie
+  reaches the player and hits is a legitimate outcome of a stochastic world. lane156 reruns with in-distribution
+  readings:
+  - imagined vs true rate of a zombie beside the player;
+  - drawn-hit rate given imagined adjacency vs true hit rate given true adjacency;
+  - caught / false split by imagined adjacency.
+
+**E22Z reading 2 diagnosed in distribution (lane156, 14:03-14:16; the v1 readings reproduce exactly)**
+
+| per rollout | sampled (4 samples) | E22Z Δ zeroed | truth |
+|---|---|---|---|
+| steps with a zombie beside the player | **21.1-22.3%** | 4.2% | **8.7%** |
+| hit rate given a zombie beside | **27.6-28.4%** | 10.7% | **18.1%** |
+| false drops with an imagined zombie beside (n ≈ 3,100-3,300) | 27-28% | 8.8% (570) | — |
+| false drops with no imagined zombie beside (n ≈ 12,100-12,300) | 0.6-0.7% | 0.2% | — |
+| caught on true damage with an imagined zombie beside | 34-39% | 27.6% | — |
+
+- **The false drops are not hallucinated health changes:** ~860 of ~945 per sample occur where the world's own imagined
+  zombie is beside the player.
+- **The sampled world is miscalibrated in two exact ways:**
+  1. adjacency 2.5× reality;
+  2. hits given adjacency 1.5× reality (the cooldown under-enforced).
+- The deterministic decoder errs the other way: zombies fade (4.2%), hits under-drawn (10.7%).
+- **Next (lane157, census):** whether adjacency comes from extra zombies (mass inflation; P2 already showed predicted mass
+  0.90 vs true 0.70 over the 5 candidate cells) or from faster approach (nearest-distance by depth).
+
+**E22M result (lane155, 14:17-14:48): the LABEL-FREE moved-content allocation passes P2 — random moves 80.4% (E22Z 82.1%, D 1.1%)**
+- λ auto = 0.194 (300 moved-content cells in the first batch, 2.0%).
+- **Logged gain** (weighted objective) at 500 / 1,000 / 1,500 / 2,000: +0.6% / +13.4% / +29.3% / +22.9%; codes 120 / 251 /
+  264 / 417.
+- **P2** (held one-step, posterior Δ):
+
+  | true move | n | E22M score / argmax | E22Z argmax | D argmax |
+  |---|---|---|---|---|
+  | **random (other)** | 280 | 0.534 / **80.4%** | 82.1% | 1.1% |
+  | other, no scroll / scroll | 185 / 95 | 0.531 / 82.2%, 0.541 / 76.8% | 83.8% / 78.9% | 0.0% / 3.2% |
+  | toward | 959 | 0.637 / 90.1% | 96.2% | 57.8% |
+  | stay | 1,290 | 0.581 / 89.5% | 95.7% | 91.1% |
+
+- **Calibration:** predicted mass over the 5 candidate cells 0.731 vs true 0.695 (E22Z 0.898: less inflation).
+- **Clean P1:** +39.6%; zeroed MSE 0.01406 vs D's 0.01287 (+9%: the decoder leans on Δ somewhat more).
+- **Encoder probe** (moving-only, random moves): z 0.318, q 0.312 (E22Z 0.486 / 0.439, E22FJ 0.225 / 0.254). The linear
+  probe again understates the decision-level P2.
+- **Carries** (unweighted D loss; E22Z in brackets):
+  - zombie cells 65% removed (70%); on no-scroll steps 70% (75%);
+  - entering edges 55% (52%); other changes on scroll steps 31% (11%);
+  - overall gain +41.4% (+34.5%).
+  - Cost: the decoder alone (Δ zeroed) is worse than D on zombie cells (29.7 vs 18.3; it hands zombies to the channel).
+    With Δ: 10.3 (−44% vs D).
+- **Rule (12:57):** P2 ≥ 50% and score ≥ 0.3 → the label-free allocation works. Next: the same sufficiency test as E22Z
+  (prior 20k + `e22_imagine` with the in-distribution readings and the census), then full scale and from scratch.
+
+**E22Z census (lane157, 14:48-15:01): sampled imagination MULTIPLIES zombies — 10× truth by depth 16; adjacency follows**
+
+| cells with zombie score > 0.3 per frame | depth 1 | 2 | 4 | 8 | 16 |
+|---|---|---|---|---|---|
+| E22Z sampled (4 samples) | 0.27-0.28 | 0.36-0.40 | 0.62-0.66 | 1.19-1.32 | **3.0-3.2** |
+| truth | 0.186 | 0.185 | 0.204 | 0.233 | 0.294 |
+| E22Z Δ zeroed | 0.198 | 0.193 | 0.177 | 0.155 | 0.152 |
+
+- **Not faster approach:** the nearest zombie's distance at depth 8 is 2.37-2.51 vs true 2.46. The within-1 excess (depth 8:
+  21-23% vs 9.8%; depth 16: 42-47% vs 13%) comes from the NUMBER of drawn zombies.
+- **Already visible one step ahead, with the posterior's own codes** (P2):
+  - with exactly one zombie, E22Z draws 1.0-1.5 cells > 0.3 (other 1.48, toward 1.24, stay 1.0; positive mass 1.4-1.8; mass
+    over the 5 candidate cells 0.898 vs true 0.695);
+  - a moved zombie is drawn at the new cell without being fully erased at the old one. Compounded over steps, this is the
+    10× census.
+- **E22M duplicates less in the same one-step test:** 0.86-0.96 cells > 0.3, mass 1.34-1.44, 5-cell mass 0.731. Its
+  sufficiency census (lane158) will show whether sampled imagination stays at the true count.
+
+**E22M sufficiency result (lane158, 15:03-16:17): both readings FAIL — sampled zombies FADE (the opposite of E22Z)**
+- Prior 20k: code accuracy 0.565, CE 1.78 (E22Z's prior: 0.634, CE 1.36; E22M uses more codes, 417 per batch at the end of
+  its smoke).
+
+| reading (4 samples) | E22M sampled | E22M Δ zeroed | E22Z sampled | truth |
+|---|---|---|---|---|
+| depth 8: roots with a cell > 0.3 / peak | **39.5%** (36-44%) / **0.359** | 3.6% / 0.139 | 87.3% / 0.609 | 92.9% / 0.642 |
+| caught on aligned damage / false | **7.6%** / **0.95%** | 2.9% / 0.23% | 18.0% / 6.3% | — |
+| steps with a zombie beside | 4.0-4.5% | 1.4% | 21-22% | 8.7% |
+| hit rate given a zombie beside | **0.157-0.177** | 0.032 | 0.276-0.284 | **0.181** |
+| drawn zombies per frame, depth 1 / 4 / 8 / 16 | 0.15-0.17 / 0.12-0.14 / 0.11-0.12 / 0.09-0.11 | 0.087 → 0.001 | 0.27 → 3.1 | 0.19 / 0.20 / 0.23 / 0.29 |
+
+- **E22M's hit mechanics are calibrated:** given adjacency it draws hits at reality's rate (0.16-0.18 vs 0.18), and false
+  drops pass (0.95%).
+- **But its zombies fade** to about a third of the true count by depth 16, so adjacency halves and localization and
+  caught fall short.
+- Its decoder alone erases zombies (zeroed: 0.087 → 0.001). It relies on the channel to KEEP zombies, not only to move
+  them (carries: decoder alone 29.7 vs D's 18.3 on zombie cells).
+- **E22Z and E22M fail in opposite directions:**
+  - E22Z multiplies: a moved zombie is not fully erased at its old cell;
+  - E22M fades;
+  - neither conserves zombie mass under sampling.
+- **Rule:** reading 1 fails → diagnose the prior first.
+  - Substitution queued (lane159, `--postcodes`): self-fed frames, but each transition conditioned on the posterior's
+    codes of the TRUE transition.
+  - If zombies then persist at the true count, the prior's sampling is the cause; if they still fade or multiply, the
+    decoder's self-fed behaviour is.
+
+**Prior vs decoder in sampled imagination (lane159, `--postcodes`, 16:17-16:31): the chain WORKS with the true stochastic choices; mass conservation is decoder-side**
+
+| rollout (1 sample each) | depth 8: roots > 0.3 / peak | caught / false | beside / hit given beside | drawn zombies at depth 1 / 4 / 8 / 16 |
+|---|---|---|---|---|
+| E22Z prior-sampled | 84.8% / 0.595 | 16.9% / 6.1% | 21.2% / 0.276 | 0.28 / 0.65 / 1.27 / 3.20 |
+| **E22Z true posterior codes** | **92.9% / 0.647** | **48.9% / 3.3%** | 14.6% / 0.256 | 0.27 / 0.59 / 1.09 / 2.52 |
+| E22M prior-sampled | 41.1% / 0.379 | 8.3% / 0.96% | 4.3% / 0.175 | 0.17 / 0.14 / 0.11 / 0.09 |
+| E22M true posterior codes | 57.1% / 0.444 | 19.2% / 0.69% | 4.9% / 0.140 | 0.17 / 0.15 / 0.12 / 0.09 |
+| truth | 92.9% / 0.642 | — | 8.7% / 0.181 | 0.19 / 0.20 / 0.23 / 0.29 |
+
+- **With the posterior's codes of what really happened** (frames still self-fed), E22Z's imagination matches truth on
+  localization and catches **48.9%** of real damage (≥ 30%). The mechanism works end to end when the stochastic choices are
+  right.
+- **The prior's sampling costs:** caught 48.9% → 16.9%; localization 92.9% → 84.8%. E22M: 57% → 41%, 19% → 8%.
+- **Zombie mass is not conserved by either decoder, even with true codes:**
+  - E22Z multiplies (2.5 per frame at depth 16 vs 0.29 true → false drops 3.3%);
+  - E22M fades (0.09).
+  - Both are decoder behaviours under self-feeding, not prior errors.
+- **Next, exact:** the ghost left at a moved zombie's OLD cell, one step ahead with the posterior's codes (health_zombie),
+  for D, E22Z and E22M.
+
+**Ghost at a moved zombie's old cell, one step ahead (lane160, 16:32-16:49; posterior Δ for E22Z / E22M)**
+
+| moved zombie | D: toward / random | E22Z: toward / random | E22M: toward / random |
+|---|---|---|---|
+| score at the old cell | 0.110 / 0.313 | 0.078 / 0.110 | 0.009 / 0.018 |
+| old cell still > 0.3 | 9.6% / 47.4% | 10.2% / 15.4% | 0.2% / 1.9% |
+| cells > 0.3 in the frame (one true zombie) | 0.70 / 0.68 | **1.24 / 1.48** | 0.96 / 0.95 |
+| argmax at the true new cell | 57.8% / 1.1% | 96.2% / 82.1% | 90.1% / 80.4% |
+
+- **E22Z:** the old cell is mostly erased, yet 1.24-1.48 zombie cells are drawn for one moved zombie. The old-cell ghost
+  explains only 0.10-0.15 of the excess, so most extra zombies are drawn ELSEWHERE.
+  - ITC's one-to-one copy constraint (no source copied twice; ITC eq. 3, never ported: our corrt head is an independent
+    per-tile softmax) would not stop generated duplicates.
+  - Where they are is being measured (lane161: new / old / other candidate cells / elsewhere, true-frame reference).
+- **E22M is clean one step ahead** (≈ 1 zombie, no ghost), so its fade is a multi-step phenomenon.
+  - Hypothesis to test (lane162): a zombie ENTERING the view has no source cell, so the moved-content mask never marks it
+    and E22M's channel never learned to render entries. Exits are then uncompensated and the count declines (truth rises
+    ~3% per step).
+  - E22Z's mask (zombie at t or t+1 anywhere) covered entries.
+- **D on random moves** leaves the zombie at its old cell (47% above 0.3): the mean-seeking "stay".
+
+**Where the extra zombies are drawn (lane161, 16:50-17:07): mostly at the old zombie's OTHER NEIGHBOURS — one source copied into several cells**
+
+| cells > 0.3 for a moved zombie, one step (posterior Δ) | new cell | old cell | other candidates (old cell's other neighbours) | elsewhere |
+|---|---|---|---|---|
+| truth (probe on the true frame), toward / random | 0.955 / 0.895 | 0 / 0 | 0 / 0 | 0.001 / 0.004 |
+| D | 0.483 / 0.000 | 0.096 / 0.474 | 0.109 / 0.229 | 0 / 0 |
+| **E22Z** | 0.942 / 0.872 | 0.102 / 0.154 | **0.130 / 0.346** | **0.071 / 0.158** |
+| E22M | 0.868 / 0.771 | 0.002 / 0.019 | 0.062 / 0.147 | 0.027 / 0.049 |
+
+- **E22Z's surplus** (0.30 toward / 0.66 random per moved zombie):
+  - mostly the old cell's other neighbours, plus the old cell itself, all cells that can COPY the old zombie token
+    through the corrt head's neighbour or self candidate;
+  - then "elsewhere" (0.07-0.16).
+  - The neighbour and old-cell surplus is one source copied into several destinations: exactly what ITC's transport
+    constraint (each previous token copied at most once; arXiv 2605.16457 eq. 3, never ported) excludes.
+  - "Elsewhere" is not covered by that mechanism.
+- **E22M:** surplus 0.09 / 0.22, small; its multi-step fade waits on lane162 (entering zombies).
+
+**Zombies entering the view (lane162, 17:07-17:24; one step, posterior Δ; 70 true entering-zombie cells over 5,865 scroll steps)**
+
+| | D | E22Z | E22M |
+|---|---|---|---|
+| true entering zombies drawn (> 0.3) / mean score (true-frame probe 0.588) | 0% / 0.016 | 21.4% / 0.171 | **0% / 0.006** |
+| false entering zombies per scroll step (true entries: 0.0119) | 0 | **0.0102** | 0.0002 |
+
+- **E22M never draws an entering zombie**, as predicted: its moved-content mask cannot mark content without a source cell.
+  - Entries are rare (~0.07 zombies per frame over 16 steps), so this explains at most about a third of E22M's fade (0.09
+    vs true 0.29 at depth 16). The rest is zombies already in view lost under self-feeding.
+- **E22Z invents entering zombies** at almost the true entry rate (0.0102 vs 0.0119 per scroll step) and catches 21% of the
+  real ones: a second, smaller source of its multiplication, beside the neighbour copies.
+
+**Copy mass of the zombie token (lane163, 17:25-17:42): my "one source copied into several cells" reading is REFUTED**
+
+| moved zombie, one step (toward / random) | D | E22Z | E22M |
+|---|---|---|---|
+| zombie token's total outgoing copy weight (ITC row sum) | 0.81 / 0.80 | 0.83 / 0.84 | 0.86 / 0.84 |
+| at the extra zombie cells: copy-from-zombie weight | 0.57 / 0.73 | **0.07 / 0.05** | 0.42 / 0.45 |
+| at the extra zombie cells: generate weight | 0.11 / 0.12 | **0.12 / 0.14** | 0.13 / 0.09 |
+| extra zombie cells (n) | 190 / 187 | 280 / 175 | 84 / 57 |
+
+- **No world copies the zombie token more than once** (total copy weight < 1). ITC's transport row constraint would not
+  bind; ITC's one-to-one decoding would NOT remove E22Z's extra zombies. (The 17:07 reading is withdrawn.)
+- **E22Z's extra zombies are fractional generated zombies:** cells that keep ~80% of their own content and mix in ~12-14%
+  of a strongly zombie-like generated token. The probe reads the blend as a zombie. The region code locates the move
+  ambiguously, and the soft mixture hedges across the candidate cells.
+- D's extras are copies (its mean-seeking spread). E22M's are mixed.
+- **What this points at:** the SOFT per-cell mixture, which lets a cell hold a fraction of a zombie that self-feeding then
+  compounds. ITC's binarized decoding (eq. 4: each cell takes exactly one source, a copy or a generated token) removes
+  fractions by construction.
+  - Our 09-28 hard-decoding failure was entering cells taking the zero pad. ITC's Craftax rule (edges and HUD from the
+    generator) is its answer.
+
+**E22H predeclared (17:43, before code): decoding-only test — do integer (hard) cell decisions conserve zombies in sampled imagination?**
+- **Hypothesis, from the measurements above:** the soft per-cell mixture lets a cell hold a FRACTION of a zombie, and
+  self-feeding compounds the fractions.
+  - E22Z: fractional generated zombies grow into extra zombies (×10 by depth 16).
+  - E22M: a moved zombie is re-mixed with neighbouring content each step and dilutes (×1/3).
+  - ITC's binarized decoding (arXiv 2605.16457 eq. 4; each cell takes exactly one source, a copy or a generated token)
+    allows no fractions: a copy carries the zombie token exactly.
+- **What is already known against it (09-28/29):**
+  - hard decoding of the soft corrt head filled entering cells with the zero pad;
+  - ITC's Craftax rule (ring and HUD from the generator) was harmful with an L1-trained continuous generator (mean
+    regression on never-seen cells).
+  - The E22 worlds differ: their channel carries 52-61% of the entering-edge error, so the generator at the edges is
+    informed by Δ.
+- **Arms** (imagination only; no retraining; `tworld.py` untouched while D from scratch trains, since its script hash is
+  stamped at save):
+  - (a) **itc:** `hard_decode` (per-cell argmax over self / 4 neighbours / generate) + ITC's Craftax regions (map border
+    ring and HUD from the generator);
+  - (b) **interior:** hard decisions in the interior map cells, the soft head kept on the ring and HUD (two forward passes
+    combined per token).
+- **Worlds and rollouts:** E22Z and E22M with their priors, 4 samples, e22_imagine's readings (1-2, in-distribution,
+  census) vs the soft results above.
+- **Rules:**
+  - census at depth 16 within 0.5-2× truth (0.147-0.588) AND readings 1-2 pass → the soft mixture is the cause of the mass
+    failure, and integer decoding is the generic, label-free fix at imagination.
+  - census corrected but a reading fails → diagnose the next link.
+  - census not corrected → the soft mixture is not the (whole) cause; diagnose before anything else.
+
+**E22H result (lane164, 17:44-18:51): integer decisions conserve E22M's zombies (census ≈ truth) but worsen E22Z's; ITC's region rule fails again**
+
+| sampled imagination (4 samples) | drawn zombies at depth 1 / 4 / 8 / 16 (truth 0.19 / 0.20 / 0.23 / 0.29) | depth 8: roots > 0.3 / peak | caught / false | beside (truth 8.7%) / hit given beside (truth 0.181) |
+|---|---|---|---|---|
+| E22Z soft | 0.28 / 0.65 / 1.27 / 3.2 | 87% / 0.61 | 18.0% / 6.3% | 21-22% / 0.28 |
+| E22Z itc (hard + ring and HUD from the generator) | 0.36 / 2.1 / 8.0 / **22.8** | 96% / 0.88 | 47% / **43%** | 48-50% / 0.40 |
+| E22Z interior (hard interior, soft ring and HUD) | 0.28 / 0.85 / 2.5 / **8.2** | 88% / 0.79 | 21.8% / 8.3% | 25-26% / 0.31-0.32 |
+| E22M soft | 0.16 / 0.13 / 0.11 / 0.10 | 39.5% / 0.36 | 7.6% / 0.95% | 4.0-4.5% / 0.16-0.18 |
+| E22M itc | 0.18 / 0.42 / 0.71 / 1.71 | 51% / 0.50 | 45% / **43%** | 10% / 0.39-0.42 |
+| **E22M interior** | **0.16-0.18 / 0.17-0.19 / 0.17-0.22 / 0.25-0.27** | 48.0% / 0.48 | 9.9% / **1.6%** | 5.1-6.0% / 0.20-0.21 |
+
+- **ITC's Craftax region rule fails here, as on 09-29:** the generated HUD wrecks health (43% false drops) and the
+  generated ring floods the view with zombies. Not a fix for continuous tokens.
+- **E22M interior: the fade is cured.**
+  - The census tracks truth (0.25-0.27 vs 0.29 at depth 16; within the predeclared 0.5-2×);
+  - hits given adjacency calibrated (0.20-0.21 vs 0.18); false 1.6% (≤ 2%).
+  - Exact integer copies carry a zombie forward; soft re-mixing diluted it.
+  - Readings: localization 48.0% (< 50%, just), peak 0.48 (≥ 0.4); caught 9.9% (< 30%). Both readings FALSE.
+- **E22Z interior: multiplication WORSE** (8.2 at depth 16 vs soft 3.2). Even its deterministic decoder multiplies under
+  integer decisions (zeroed census 0.61 vs soft 0.15).
+  - E22Z's extra zombies are not just fractions: integer commitments make them whole.
+  - Its label-derived weighting taught it to draw zombies liberally (one-step mass 0.90 vs true 0.70).
+- **Rule:**
+  - E22M: census corrected, readings fail → diagnose the next link;
+  - E22Z: census not corrected → the soft mixture is not its whole cause (it is the label-derived diagnostic arm, not the
+    candidate fix).
+- **E22M interior's remaining gaps, measured:**
+  - zombies beside the player 59-69% of truth; entering zombies never drawn (lane162);
+  - per-step imagined damage rate ≈ 0.055 × 0.21 ≈ 1.15% vs true 0.087 × 0.181 ≈ 1.57% (~73%).
+  - "Caught on the true trajectory" also has a ceiling for a sampled world: with E22Z's TRUE codes it was 48.9%.
+
+**E22M + hard interior with the TRUE codes (lane165, 18:51-19:01): reading 1 passes and reading 2 nearly does — the prior costs half**
+
+| E22M, hard interior decoding | prior-sampled (sample 0) | true posterior codes | truth |
+|---|---|---|---|
+| depth 8: roots > 0.3 / peak | 49.1% / 0.51 | **70.5% / 0.64** | 92.9% / 0.64 |
+| depth 16: roots > 0.3 | 43.9% | 62.2% | 95.9% |
+| caught on aligned damage / false | 11.1% / 1.7% | **25.2% / 1.3%** | — |
+| zombies beside / hit given beside | 5.7% / 0.215 | 6.0% / **0.187** | 8.7% / 0.181 |
+| drawn zombies at depth 1 / 16 | 0.168 / 0.247 | 0.178 / 0.218 | 0.186 / 0.294 |
+
+- **With the right stochastic choices, the label-free pipeline passes reading 1** (70.5% ≥ 50%, peak 0.64 ≥ 0.4) and is
+  close on reading 2: caught 25.2% vs 30%; false 1.3% ≤ 2%; hits given adjacency calibrated (0.187 vs 0.181); census
+  conserved.
+- **The prior's sampling costs about half:** localization 70.5% → 49%, caught 25% → 11%.
+- The remainder (beside 6.0% vs 8.7%) is the channel / decoder, including the entering zombies E22M never draws (lane162).
+- **The prior is under-trained by its own curve** (single training batches, noisy): accuracy 0.21 / 0.35 / 0.41 / 0.36 /
+  0.48 / 0.45 / 0.47 / 0.56 at 2.5k-20k; CE 4.12 → 1.78 and still falling.
+  - The 20k length was E16's adoption of Delta-IRIS crafter.yaml values, not a measured optimum.
+
+**E22MP predeclared (19:02, before launch): is the prior's training length the limit of E22M's sampled imagination?**
+- **Run:** E22M's prior continues from its saved 20k state (same run: optimizer, batch order and RNG restored) to 60k.
+- **Readings:**
+  1. held prior fit (`e22_imagine --prior-held-only`: teacher-forced code CE and accuracy on the held trajectories' true
+     transitions), 20k vs 60k;
+  2. E22M + hard interior decoding with the 60k prior, 4 samples, vs the 20k prior (localization 48.0%, caught 9.9%) and
+     the true-code ceiling (70.5%, 25.2%).
+- **Rules:**
+  - held CE falls AND imagination moves at least halfway to the ceiling (localization ≥ 59%, caught ≥ 17.5%) → prior
+    training length was the limit; then full-scale stage A and the from-scratch E22M.
+  - held CE falls but imagination does not move → the prior's fit is not what limits sampling; diagnose (sampling
+    temperature / calibration of the sampled moves) before anything else.
+  - held CE does not fall → the prior has converged at its capacity; diagnose prior capacity before anything else.
+
+**Test 3 verdict for D: NOT a continuation artifact — D from scratch (36k + 6k, lane131, 09:15-18:39) beats D continued on every reading**
+
+| row 9 (window 10), held | M16 | D continued | **D from scratch** |
+|---|---|---|---|
+| hits drawn / 1,211 | 60 | 569 | **647** |
+| fresh / 207 | 0 | 31 | **62** |
+| since 6 / 157 | 2 | 63 | 60 |
+| false / 1,728 | 0 | 1 | 5 |
+| generator beats copy on hits | 3.6% | 85.4% | **89.5%** |
+| drawn health within 0.5 | 2% | 34% | **51%** |
+
+| h63 information (window 15, 5 probe seeds, clustered bootstrap) | M16 | D continued | D from scratch | scratch − continued | scratch − M16 |
+|---|---|---|---|---|---|
+| phase, since = 6 | 0.892 | 0.947 | **0.971** | +0.024 [+0.016, +0.032] | +0.079 [+0.064, +0.095] |
+| phase, since 1-4 | 0.912 | 0.969 | **0.989** | +0.019 [+0.012, +0.028] | +0.076 [+0.061, +0.092] |
+| approach adjacency | 0.766 | 0.956 | **0.987** | +0.031 [+0.010, +0.054] | +0.221 [+0.168, +0.277] |
+
+- **Every difference is resolved.** The Delta-IRIS loss installs both blockers from step 0, better than continued; it was
+  ahead of M6 at every stage-1 snapshot (6k-30k).
+- This answers the 10-08 question for D: the positive E21 result is not caused by continuing a converged world. GE from
+  scratch had been worse than its continuation; D is better.
+- **Damage panel** (check_damage, simulator truth, 337 damage transitions, window 15):
+  - teacher-forced caught **81.9%** (D continued 73.3%), fresh 27/31 (19/31), false drops 1.8%;
+  - health change ≤ −2 read correctly 61.3%;
+  - self-fed caught 7.2% (D continued 6%).
+  - From scratch it draws damage better from true history. Its deterministic imagination still loses it, the
+    localization failure the stochastic channel addresses.
+- **teval** (/V, D from scratch − M16, seed-clustered CI):
+  - one step: all −0.009*, interact −0.522*, moved / blocked / idle n.s., sleep +0.005*;
+  - imagination at depth 1 / 4 / 8 / 16: −0.003* / −0.017* / −0.051* / −0.034*.
+- **Imagined facts, M16 / D continued / D from scratch:**
+
+  | depth | food R² | health R² | zombie-near AUC |
+  |---|---|---|---|
+  | 1 | 0.997 / 0.992 / 0.995 | 0.981 / 0.985 / 0.985 | 0.842 / 0.976 / 0.998 |
+  | 8 | 0.932 / 0.839 / 0.935 | 0.862 / 0.841 / 0.845 | 0.530 / 0.743 / 0.678 |
+  | 16 | 0.881 / **0.582** / **0.875** | 0.592 / 0.582 / 0.557 | 0.511 / 0.609 / 0.614 |
+
+  - **The food cost of D continued was a continuation artifact:** from scratch, imagined food at depth 16 is 0.875 vs M16's
+    0.881. The zombie gains are kept.
+- **Gradient allocation:** token-63 hits carry 4.58% of the backbone gradient norm (D continued 7.56%, M16 0.16%; 0.20% of
+  the objective). The router discriminates: generate weight 0.60 on hits vs 0.10 on unchanged.
+- **Overall:** D trained from scratch is the best deterministic world on every health reading, with no food cost and a
+  better teval. It is the decoder to build the stochastic channel on.
+
+**E22MS predeclared (19:29, before launch): the label-free channel recipe on the FROM-SCRATCH decoder**
+- **Why:** D from scratch is the best deterministic world on every health reading, with no food cost (above). E22F to E22H
+  were built on D continued.
+- **Recipe, unchanged except the decoder:**
+  - E22F-style frozen phase (2,000 updates, batch 16, `--freeze-world`);
+  - E22M joint phase (`--motion-weight auto`, 2,000 updates);
+  - prior 20k;
+  - `e22_imagine` with soft and hard-interior decoding (4 samples), plus P2 one step.
+- **Comparator:** E22M on D continued (P2 random 80.4%; hard interior: census 0.25-0.27, localization 48.0%, caught 9.9%,
+  false 1.6%).
+- **Readings:** P2, census, readings 1-2, in-distribution rates. Reported side by side; the E22MP prior-length result
+  applies to both.
+- **Rule:** no new threshold. If the from-scratch decoder does better on the predeclared E22 readings, the channel work
+  continues on it.
+
+**E22MP result (lane166, 19:02-21:16): the prior OVERFITS — longer training is not the lever**
+
+| E22M prior | 20k | 60k |
+|---|---|---|
+| training-batch code accuracy | 0.565 | 0.666 (40k) |
+| **held** code CE / accuracy (76,152 codes) | 2.307 / 0.470 | **3.572 / 0.405** |
+| E22M + hard interior: depth 8 roots > 0.3 / peak | 48.0% / 0.48 | 51.8% / 0.52 |
+| caught / false | 9.9% / 1.6% | 11.8% / 1.6% |
+| drawn zombies at depth 16 (truth 0.29) | 0.25-0.27 | 0.27-0.33 |
+
+- Rule (19:02): held CE does not fall → the prior's GENERALIZATION is the limit, not its training length.
+  - 60k × 32 windows ≈ 1.9M windows from a 19,789-episode pool.
+  - The prior's input is a crude per-tile Linear 192 → 8 flattened to 512.
+  - Imagination moved ~1/5 of the way to the true-code ceiling (70.5% / 25.2%), not half.
+
+**E22MS result (lane167, 19:30-21:33): the label-free channel on the FROM-SCRATCH decoder is better at every step; hard decoding HURTS it**
+
+| | E22M (D continued) | **E22MS (D from scratch)** | truth |
+|---|---|---|---|
+| P2 random moves: score / argmax | 0.534 / 80.4% | **0.585 / 86.4%** | — |
+| P2 toward / stay argmax | 90.1% / 89.5% | 94.1% / 88.9% | — |
+| entering zombies drawn | 0% | 0% | — |
+| prior (20k) held accuracy / CE | 0.470 / 2.31 | **0.518 / 2.04** | — |
+| soft: depth 8 roots > 0.3 / peak | 39.5% / 0.36 | **57.6% / 0.45** | 92.9% / 0.64 |
+| soft: drawn zombies at depth 1 / 8 / 16 | 0.16 / 0.11 / 0.10 | **0.17 / 0.17 / 0.19-0.21** | 0.19 / 0.23 / 0.29 |
+| soft: caught / false | 7.6% / 0.95% | 13.2% / 1.3% | — |
+| soft: hit rate given adjacency | 0.16-0.18 | 0.175-0.206 | 0.181 |
+| hard interior: depth 8 roots / caught | 48.0% / 9.9% | 27.7% / 10.4% | — |
+
+- On the from-scratch decoder, soft decoding already conserves zombies; the fade was a property of the decoder built on
+  D continued.
+  - Reading 1 passes with SOFT decoding (57.6%, 0.445). Reading 2 fails (13.2% caught; false 1.3% passes).
+- **Hard decoding is not a general fix:** it compensated E22M's decoder defect and hurts E22MS (57.6% → 27.7%).
+
+**Where the day ends (21:33):**
+- The best pipeline is the label-free channel on D from scratch with soft decoding:
+  - one step, random moves 86%;
+  - sampled imagination: localization 58% (truth 93%), zombie count stable, hits given adjacency calibrated, false 1.3%;
+  - imagined damage caught 13% (30% required).
+- **Measured gaps:**
+  1. **The prior:** the true-code ceiling (70.5% / 25%, on D continued) vs sampled (48-58% / 10-13%). It overfits; its
+     input representation is crude.
+  2. **Entering zombies:** never drawn by the label-free mask (rare: ≤ 1/3 of the count dynamics).
+  3. **Adjacency:** zombies beside the player ~60-70% of truth.
+- **Open evaluation question:** "caught on the true trajectory" has a ceiling for a sampled world. The decision-level test
+  (H16 with N sampled futures; actor vs BC) is the real objective and has not been run on these worlds.
+
+**Gradient allocation of the trained E21 arms** (03:25; `health_gradient.py` on each arm's own objective and batches; D under its
+Delta-IRIS loss):
+
+| world | objective | token-63 hits: share of objective | token-63 hits: share of backbone gradient norm | other terms' backbone share |
+|---|---|---|---|---|
+| M16 | 0.0509 | 0.27% | 0.16% | — |
+| C0 | 0.0500 | 0.27% | 0.30% | — |
+| G | 0.1163 | 0.12% | 0.11% | **generator loss 81%** |
+| GE | 0.1182 | 0.14% | 0.56% | generator 79%, event 0.5% |
+| E′ | 0.0504 | 0.27% | 0.11% | event term 1.0% (at token-63 hits 0.24%) |
+| **D** | 0.0423 | 0.36% | **7.56%** | — |
+
+- D gives token-63 hits 25× C0's share of the backbone gradient (46× M16's): the measured mechanism behind its success,
+  confirming the allocation root of the diagnosis.
+- G's generator loss takes 81% of the backbone's gradient, so the representation is reshaped for token reconstruction. That
+  is the measured cause of G's lost approach adjacency (0.761 → 0.619).
+- E′'s event term is 1% of the gradient: its partial effect matches its partial dose.
+
+**Literature step on the newly diagnosed problem** (03:35; a deterministic world averages stochastic events in imagination):
+- *Dreamer 4* (arXiv 2509.24527, §2 and §3.2, Eq. 6-8, Table 2; vendored PDF, read): the dynamics model is a *generative* model
+  in continuous token space.
+  - Shortcut forcing = diffusion forcing + shortcut models, sampled autoregressively with K = 4 steps per frame; past inputs are
+    corrupted to τ_ctx = 0.1.
+  - Trained in x-space with a squared loss ‖ẑ₁ − z₁‖², ramp weight w(τ) = 0.9τ + 0.1.
+  - Ablations (FVD): shortcut model 875 → 329; x-loss 326 → 151; ramp 151 → 102.
+- *Delta-IRIS* (2406.19320): discrete stochastic Δ tokens with an autoregressive prior; the decoder trained with L2 + L1 +
+  worst-pixel (read 10-03; E16 / D notes above).
+- *Reading against tonight's measurements:* both of our measured failures are departures from these sources' dynamics
+  objectives.
+
+| failure | our world | the sources |
+|---|---|---|
+| allocation | per-element L1 (copies rare events: 0.27% of the objective, 0.16% of the gradient) | squared loss (D: 7.56%) |
+| imagination | deterministic regression (averages stochastic zombie moves and timers; imagined zombie beside at damage 8.9% vs 73.6%) | sample |
+
+- A flow / shortcut head predicts JEPA tokens, not pixels, so it stays reconstruction-free.
+- **Candidate designs, to predeclare after the from-scratch runs report:**
+  - (a) Dreamer 4's shortcut-forcing objective as the per-tile world's prediction head (the project's own foundation);
+  - (b) faithful Delta-IRIS (E16's Δ channel + D's loss).
+  - Either must be judged on self-fed imagination (damage panel, zombie presence at damage steps, food drift), not only
+    teacher-forced.
+
+**Test 3 in flight: GE from scratch** (lane122 started 03:26 after the equivalence gate passed again; stage 1 at 0.42 s / update;
+lane135 reads each stage-1 snapshot against M6 at the same update, window 5 = output row 4, the 6-frame recipe's death-cue row):
+
+| @ 6k | generator beats copy | since 1..4 in h63 | approach adjacency | event head AUC | emitted hits / false (row 4) |
+|---|---|---|---|---|---|
+| M6 | 0.1% | 0.916 | 0.708 | — | 9 / 220 |
+| GE from scratch | **57.5%** | **0.975** | 0.593 | 0.468 | 12 / 310 |
+| paired difference | | **+0.060 [+0.046, +0.073]** | **−0.115 [−0.176, −0.054]** | | |
+
+- The direction matches the continuations (phase up, adjacency down: the generator loss dominating the gradient). The phase
+  gain is larger than in any continuation (GE vs C0 +0.011 unresolved; G +0.034).
+- The event head is still untrained at 6k from scratch (0.468): its budget problem is not specific to continuation.
+- Both worlds' false drops sit at the row-4 death cue of 6-frame training. Stage 2 decides.
+- Stage-1 trajectory (05:30; `ci_scratch_ge_at*.json`; window 5 = row 4):
+
+| update | since 1..4: M6 → GE from scratch (paired diff) | adjacency: M6 → GE from scratch (paired diff) | GE: generator beats copy / event AUC | emitted hits / false (M6 → GE) |
+|---|---|---|---|---|
+| 6k | 0.916 → 0.975 (+0.060 [+0.046, +0.073]) | 0.708 → 0.593 (−0.115 [−0.176, −0.054]) | 57.5% / 0.468 | 9 / 220 → 12 / 310 |
+| 12k | 0.902 → 0.964 (+0.062 [+0.045, +0.080]) | 0.646 → 0.513 (−0.133 [−0.201, −0.062]) | 61.0% / 0.524 | 92 / 153 → 49 / 147 |
+| 18k | 0.898 → 0.943 (+0.046 [+0.030, +0.062]) | 0.688 → **0.432** (−0.255 [−0.316, −0.194]) | 61.0% / 0.573 | 43 / 113 → 105 / 131 |
+| 24k | 0.903 → 0.931 (+0.027 [+0.012, +0.042]) | 0.717 → 0.642 (−0.074 [−0.132, −0.014]) | 78.8% / 0.590 | 100 / 117 → 74 / 105 |
+| 30k | 0.904 → 0.927 (+0.023 [+0.009, +0.039]) | 0.788 → 0.631 (**−0.155 [−0.212, −0.097]**) | 68.6% / 0.587 | 96 / 115 → 161 / 143 |
+
+  - From step 0, GE's objective removes approach adjacency from h63 even more than in the continuation (G 0.619, GE 0.680 at
+    6k). The held AUC at 18k is below 0.5 (the probe's fit-episode rule inverts on held episodes): noted as anomalous, not
+    interpreted.
+  - **GE's adjacency loss is not a continuation artifact.** It is the measured property of an objective whose generator term
+    takes ~80% of the backbone's gradient.
+  - The phase gain is real from scratch too.
+  - The event head learns slowly (0.47 → 0.59 by 24-30k, about where it plateaus).
+  - At 30k the from-scratch trade (phase +0.023, adjacency −0.155) matches the G continuation's against its control (phase
+    +0.044, adjacency −0.154). Trained from step 0 through the canonical recipe, the generator-loss objective converges to the
+    same representation trade as the continuation. Stage 2 (L16, row 9 vs M16) is the deciding reading.
+
+**Test 3 verdict for GE (08:47; stage 2 finished 08:31; `ci_scratch_ge_end_w15.json`, `_w10.json`, `health_row9.py`):**
+
+| world | row-9 hits / 1,211 (fresh / false) | generator beats copy | since = 6 / since 1..4 / adjacency in h63, row 9 | event head AUC |
+|---|---|---|---|---|
+| M16 (from scratch, natural loss, 42k) | 60 (0 / 0) | 3.6% | 0.894 / 0.920 / 0.821 | — |
+| GE as a continuation of M16 (48k) | 30 (0 / 0) | 78.6% | 0.899 / 0.910 / 0.725 | 0.570 |
+| **GE from scratch (42k)** | **91 (1 / 0)** | 79.9% | **0.862 / 0.875 / 0.699** | 0.672 |
+
+| paired contrast, row 9 | since = 6 | since 1..4 | adjacency |
+|---|---|---|---|
+| M16 → GE from scratch | −0.032 [−0.046, −0.018] | −0.045 [−0.064, −0.028] | −0.120 [−0.180, −0.061] |
+| GE continuation → GE from scratch | −0.036 [−0.049, −0.024] | −0.036 [−0.049, −0.022] | −0.025 [−0.069, +0.018] |
+
+(Row 14: M16 → from scratch since = 6 −0.019, adjacency −0.125; continuation → from scratch since = 6 −0.038; all resolved.)
+
+- **By the predeclared rule, GE's negative is not a continuation artifact.** From step 0 the same objective ends worse than M16 on
+  every ingredient and worse than its own continuation on the phase. It draws 7.5% of hits at row 9.
+- The stage-1 gain on in-window phase (since 1..4 +0.06 at 6k-12k) did not survive into the L16 world. As recorded beforehand,
+  the 6-step phase can only be learned in stage 2.
+- **Answer to the 21:00 question, for the arms run tonight:** E21's representation negatives are not caused by continuing.
+  - Test 2 shows the continuation installs B1 within 500 updates when asked directly.
+  - Test 3 shows the GE objective fails the same way from scratch.
+  - What remains open: D's positive result from scratch (lane131, next), and a mechanistic account of *why* from scratch ends
+    worse on the phase (gradient allocation of the from-scratch world: lane122's `health_gradient` job).
+- **Why GE from scratch ends worse on the phase, measured** (lane122 `health_gradient`, 09:14):
+
+| world | token-63 hits' share of backbone gradient | generator-loss term's share |
+|---|---|---|
+| M16 | 0.164% | — |
+| GE as a continuation | 0.560% | 79% |
+| **GE from scratch** | **0.043%** (lowest of any world) | 75% |
+| D | 7.56% | — |
+
+  - Trained from step 0, the generator loss crowds the hits' gradient to a quarter of even M16's share, so the phase is learned
+    less. The continuation started from M16's phase.
+  - Simulator-truth damage panel for GE from scratch: teacher-forced caught 4.2% (C0 5.0%, D 73.3%); fresh 0; self-fed 0.
+- GE from scratch, full evidence (`evidence_scratch_ge.json`): drawable from h63 at row 9 is **317** (M16 334), so the
+  information is no better than M16's, and the head emits 91 of them.
+- **A third measured factor, across all worlds at row 9: emitted / drawable**
+
+| world | drawable from h63 | emitted | emitted / drawable | objective |
+|---|---|---|---|---|
+| M16 | 334 | 60 | 18% | L1 |
+| oracle | 848 | 70 | 8% | L1 + labels |
+| G | 136 | 64 | 47% | L1 + generator loss |
+| E′ | 367 | 79 | 22% | L1 + event head |
+| GE from scratch | 317 | 91 | 29% | L1 + generator + event |
+| **D** | **790** | **569** | **72%** | 1.0 L2 + 0.1 L1 + 0.01 worst element |
+
+  - Under every L1-based objective, the world expresses a small fraction of the hits its own h63 supports, even with the
+    generator fixed (G, GE). Under D's loss it expresses 72%.
+  - So the loss shape matters for *expression*, not only for allocation. The exact mechanism (the router's calibration under L1
+    vs L2) was measured next (09:25, `health_express.py`, `express.json`):
+
+| world, row 9 | drawable hits | emitted | generator beats copy on drawable | generate weight: drawable hits vs unchanged | missed: router (good gen, weight < 0.5) | missed: generator (not better than copy) | missed: good gen, weight ≥ 0.5 (partial blend) |
+|---|---|---|---|---|---|---|---|
+| C0 | 335 | 18.8% | 17.9% | 0.15 vs 0.06 | 1 | 271 | 0 |
+| oracle | 848 | 7.0% | 3.5% | 0.09 vs 0.05 | 1 | 787 | 1 |
+| G | 136 | 47.1% | 91.2% | 0.60 vs 0.32 | **52** | 12 | 8 |
+| GE from scratch | 317 | 28.7% | 94.6% | 0.55 vs 0.43 | **136** | 7 | 83 |
+| D | 790 | 64.9% | 94.1% | **0.57 vs 0.13** | 117 | 38 | 122 |
+
+  (Drawable sets come from each world's own calibrated probe, refitted here, hence D's 64.9% vs the 72% from evidence counts.)
+  - Without a generator loss (C0, oracle), the misses are the generator (B2).
+  - With the generator fixed (G, GE), the misses move to the **router**. The generate weight barely separates hits from unchanged
+    frames (0.55-0.60 vs 0.32-0.43): the generator loss makes the generator a near-copy on unchanged frames, so choosing it
+    costs nothing there, and on hits the router's signal is the rare-event allocation problem again.
+  - D's router separates them (0.57 vs 0.13).
+  - **One root, three starved components:** under L1, rare events get almost no gradient. That starves the representation (B1),
+    then the generator (B2), then (once the generator is fixed) the router. D's loss allocates to all three.
 
 
 ## 2026-10-08 — Audit of the 10-04..10-08 runs after handover (Claude): verified, corrected, completed

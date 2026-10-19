@@ -1,0 +1,6 @@
+source artifacts/experiments/20260927_levers/lib.sh
+# 2026-10-10 10:15: 10-10 PROGRAM B3 (P-D): exports of the matched L1 (M6) and D-loss (D from scratch, stage 1) snapshots, 6k..36k
+# (same seed, data order, architecture; 6-frame worlds, window 5), for per-category learning curves (budget.py, scoreboard.py).
+V=artifacts/eda/levers_tworlds_v1
+job sb_export_snapshots 2300 $PY $L/rollout_export.py  --world M6_6k=$V/corrt_raw_teacher_s7_fmamba_u36000_at6000.pt --world DS1_6k=$V/corrt_raw_teacher_s7_fmamba_di_u36000_at6000.pt --world M6_12k=$V/corrt_raw_teacher_s7_fmamba_u36000_at12000.pt --world DS1_12k=$V/corrt_raw_teacher_s7_fmamba_di_u36000_at12000.pt --world M6_18k=$V/corrt_raw_teacher_s7_fmamba_u36000_at18000.pt --world DS1_18k=$V/corrt_raw_teacher_s7_fmamba_di_u36000_at18000.pt --world M6_24k=$V/corrt_raw_teacher_s7_fmamba_u36000_at24000.pt --world DS1_24k=$V/corrt_raw_teacher_s7_fmamba_di_u36000_at24000.pt --world M6_30k=$V/corrt_raw_teacher_s7_fmamba_u36000_at30000.pt --world DS1_30k=$V/corrt_raw_teacher_s7_fmamba_di_u36000_at30000.pt --world M6_36k=$V/corrt_raw_teacher_s7_fmamba_u36000.pt --world DS1_36k=$V/corrt_raw_teacher_s7_fmamba_di_u36000.pt
+echo "$(date '+%F %T') LANE173_DONE" >> $LOGDIR/lanes.log

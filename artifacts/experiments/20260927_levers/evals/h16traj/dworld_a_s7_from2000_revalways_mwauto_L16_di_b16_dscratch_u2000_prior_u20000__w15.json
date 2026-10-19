@@ -1,0 +1,39 @@
+{
+  "continuation": {
+    "brier_all_k": 0.050189374635616936,
+    "auc_dead16_key0": 0.9042233971711194
+  },
+  "trajectory": 0.6303866505622864,
+  "snapshot": 0.6150223612785339,
+  "traj_minus_snapshot": {
+    "difference": 0.015364289283752441,
+    "interval": [
+      0.005658653564751148,
+      0.025321388617157936
+    ],
+    "excludes_zero": true
+  },
+  "e16_samples": {
+    "M1": {
+      "trajectory_head": 0.6322432160377502,
+      "end_head": 0.5695785880088806
+    },
+    "M4": {
+      "trajectory_head": 0.6472783088684082,
+      "end_head": 0.55100417137146
+    },
+    "M16": {
+      "trajectory_head": 0.663383424282074,
+      "end_head": 0.5361062288284302
+    }
+  },
+  "window": 15,
+  "references": {
+    "roots_devB_opp16": 1139,
+    "uniform": 0.571426510810852,
+    "prior": 0.6160831451416016,
+    "one_real_future": 0.6793657541275024,
+    "oracle31": 0.7664617896080017
+  },
+  "resume_contract": "a7535412a35cb02baa3cb91b789a545dc39c573a49c4c69b7482e715eba4106b"
+}

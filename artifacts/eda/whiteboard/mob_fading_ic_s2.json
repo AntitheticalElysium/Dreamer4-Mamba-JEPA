@@ -1,0 +1,153 @@
+{
+ "REAL": {
+  "zombie": {
+   "transitions": 252,
+   "stay": 0.6627,
+   "move": 0.3016,
+   "vanish": 0.0357,
+   "score_prev_vanishing_mean": 0.762,
+   "score_prev_staying_mean": 0.83
+  },
+  "cow": {
+   "transitions": 418,
+   "stay": 0.5646,
+   "move": 0.4163,
+   "vanish": 0.0191,
+   "score_prev_vanishing_mean": 1.027,
+   "score_prev_staying_mean": 0.945
+  },
+  "skeleton": {
+   "transitions": 112,
+   "stay": 0.3571,
+   "move": 0.6161,
+   "vanish": 0.0268,
+   "score_prev_vanishing_mean": 0.912,
+   "score_prev_staying_mean": 0.823
+  },
+  "vanish_rate_by_depth": []
+ },
+ "ic_s2": {
+  "zombie": {
+   "transitions": 750,
+   "stay": 0.824,
+   "move": 0.0893,
+   "vanish": 0.0867,
+   "score_prev_vanishing_mean": 0.37,
+   "score_prev_staying_mean": 0.508
+  },
+  "cow": {
+   "transitions": 1892,
+   "stay": 0.7949,
+   "move": 0.1538,
+   "vanish": 0.0513,
+   "score_prev_vanishing_mean": 0.436,
+   "score_prev_staying_mean": 0.524
+  },
+  "skeleton": {
+   "transitions": 353,
+   "stay": 0.7365,
+   "move": 0.187,
+   "vanish": 0.0765,
+   "score_prev_vanishing_mean": 0.388,
+   "score_prev_staying_mean": 0.391
+  },
+  "vanish_rate_by_depth": [
+   {
+    "zombie": 0.111,
+    "cow": 0.036,
+    "skeleton": 0.0,
+    "mean_score_of_persisting": 0.919
+   },
+   {
+    "zombie": 0.01,
+    "cow": 0.045,
+    "skeleton": 0.143,
+    "mean_score_of_persisting": 0.762
+   },
+   {
+    "zombie": 0.053,
+    "cow": 0.013,
+    "skeleton": 0.0,
+    "mean_score_of_persisting": 0.589
+   },
+   {
+    "zombie": 0.169,
+    "cow": 0.0,
+    "skeleton": 0.03,
+    "mean_score_of_persisting": 0.494
+   },
+   {
+    "zombie": 0.035,
+    "cow": 0.072,
+    "skeleton": 0.128,
+    "mean_score_of_persisting": 0.463
+   },
+   {
+    "zombie": 0.081,
+    "cow": 0.053,
+    "skeleton": 0.061,
+    "mean_score_of_persisting": 0.451
+   },
+   {
+    "zombie": 0.056,
+    "cow": 0.094,
+    "skeleton": 0.0,
+    "mean_score_of_persisting": 0.406
+   },
+   {
+    "zombie": 0.133,
+    "cow": 0.019,
+    "skeleton": 0.05,
+    "mean_score_of_persisting": 0.392
+   },
+   {
+    "zombie": 0.222,
+    "cow": 0.139,
+    "skeleton": 0.067,
+    "mean_score_of_persisting": 0.379
+   },
+   {
+    "zombie": 0.0,
+    "cow": 0.198,
+    "skeleton": 0.071,
+    "mean_score_of_persisting": 0.357
+   },
+   {
+    "zombie": 0.034,
+    "cow": 0.013,
+    "skeleton": 0.0,
+    "mean_score_of_persisting": 0.358
+   },
+   {
+    "zombie": 0.357,
+    "cow": 0.029,
+    "skeleton": 0.0,
+    "mean_score_of_persisting": 0.345
+   },
+   {
+    "zombie": 0.067,
+    "cow": 0.0,
+    "skeleton": 0.556,
+    "mean_score_of_persisting": 0.351
+   },
+   {
+    "zombie": 0.059,
+    "cow": 0.0,
+    "skeleton": 1.0,
+    "mean_score_of_persisting": 0.337
+   },
+   {
+    "zombie": 0.062,
+    "cow": 0.038,
+    "skeleton": 0.0,
+    "mean_score_of_persisting": 0.34
+   },
+   {
+    "zombie": 0.0,
+    "cow": 0.103,
+    "skeleton": 0.0,
+    "mean_score_of_persisting": 0.363
+   }
+  ]
+ }
+}

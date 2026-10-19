@@ -16,7 +16,18 @@ I-token = per-tile Linear 192 -> 8, flattened 648 -> 512, LayerNorm (Delta-IRIS:
 Targets: codes of the FROZEN stage-A posterior on 21-frame windows of the 64-frame Raw TRAIN ledger (26.4% end-aligned on a
 death, tworld.TERMINAL_SHARE); end_t = the frame after action t is dead. CE, weights 1 / 1. minGPT AdamW (lr 1e-4, wd 0.01 on
 Linear weights only), grad clip 10, no warmup, batch 32 (crafter.yaml). The last block's Delta-tokens are dummies (no loss).
+E22 (2026-10-09, NOTEBOOK "E22", predeclared 09:35): `--long` ports stage A to the canonical recipe -- the decoder is the tworld
+TWorld(corrt, fmamba, 16 frames) continued from a tworld checkpoint (--init, e.g. the E21 D world), batches from tworld.train's rawlong
+sampler (batch order seed 11, --windows L16 windows, TERMINAL_SHARE), the teacher term = tworld.rollout_losses(..., recon=--recon)
+(deltairis = D's loss); the posterior / quantizer / commitment are E16's, conditioning all 15 transitions of each window.
 Usage: dworld.py --stage a --seed 7 --init <corrt_raw_teacher_s7_u36000.pt> --updates 18000
+       dworld.py --stage a --long --recon deltairis --revival always --seed 7 --init <E21 D world.pt> --updates 6000 [--windows 40]
+E22 from scratch (10:18; Delta-IRIS's joint training on the canonical two-stage recipe, matched to D from scratch): stage 1
+  --backbone fmamba (tworld.train's stage-1 world, seed 7: identical parameters and first-batch loss with Delta zero, CPU-tested),
+  stage 2 --long --init <the stage-1 file>: world (time table tiled as tworld.train) AND posterior continue. The logged Delta gain
+  is now taken before the optimizer step (same weights; the post-step value was biased against Delta).
+       dworld.py --stage a --backbone fmamba --recon deltairis --revival always --seed 7 --updates 36000 --state-every 2000
+       dworld.py --stage a --long --recon deltairis --revival always --seed 7 --init <stage-1 file> --updates 6000 --windows 40
        dworld.py --stage b --seed 7 --init <dworld_a_...pt> --updates 20000
 """
 import argparse
@@ -139,28 +150,53 @@ class Posterior(nn.Module):
         return F.pad(cond, (0, 0, 0, 0, 0, 1)), tokens.view(b, t - 1, K), loss
 
 
-def train_a(seed, init, updates, device, log, state_path, max_revival=0):
+def train_a(seed, init, updates, device, log, state_path, max_revival=0, long=False, recon="l1", windows=TW.BATCH, backbone="full",
+            state_every=TW.STATE_EVERY, freeze=False, zombie_weight=None, motion_weight=None):
     from d4mj.config import config_from_dict
     from d4mj.train import _phase_lr, autocast_context, optimizer_step, phase_optimizer
     config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
-    pool = torch.load(TW.POOLS["raw"] / "pool.pt", weights_only=False, mmap=True)
-    main_rows = torch.where(~pool["terminal"])[0]
-    held = main_rows[torch.randperm(len(main_rows), generator=torch.Generator().manual_seed(1))[:2048]]
-    rows = torch.cat([main_rows[~torch.isin(main_rows, held)], torch.where(pool["terminal"])[0]])
+    if long:                                   # E22: tworld.train's rawlong sampler, L = 16
+        import numpy as np
+        pool = torch.load(TW.POOLS["rawlong"] / "labels.pt", weights_only=False, mmap=True)
+        ltok = np.memmap(TW.POOLS["rawlong"] / "tokens.f16", dtype=np.float16, mode="r", shape=(len(pool["terminal"]), 64, 81, 192))
+        main_rows, term_rows = torch.where(~pool["terminal"])[0], torch.where(pool["terminal"])[0]
+    else:
+        pool = torch.load(TW.POOLS["raw"] / "pool.pt", weights_only=False, mmap=True)
+        main_rows = torch.where(~pool["terminal"])[0]
+        held = main_rows[torch.randperm(len(main_rows), generator=torch.Generator().manual_seed(1))[:2048]]
+        rows = torch.cat([main_rows[~torch.isin(main_rows, held)], torch.where(pool["terminal"])[0]])
     with torch.random.fork_rng(devices=[0]):
         torch.manual_seed(seed); torch.cuda.manual_seed_all(seed)
-        world = TW.TWorld("corrt")
+        world = TW.TWorld("corrt", None, "fmamba", "all", 0, False, 16) if long else TW.TWorld("corrt", None, backbone)
         post = Posterior(max_revival=max_revival)
+        if freeze:                             # E22F (Park & Lee 2021 phase 1): the projection into the decoder is a new Linear
+            post.cond.reset_parameters()       # at its default initialization, frozen with the decoder (below)
     if init is not None:                       # None = Delta-IRIS's recipe: decoder from scratch (amendment 2, NOTEBOOK)
-        world.load_state_dict(torch.load(init, map_location="cpu", weights_only=False)["world"])
+        st0 = torch.load(init, map_location="cpu", weights_only=False)
+        w0 = st0["world"]
+        if w0["time"].shape[0] != world.time.shape[0]:       # tworld.train's stage 2: the 6-frame time table tiled to L rows
+            w0["time"] = w0["time"][torch.arange(world.time.shape[0]) % w0["time"].shape[0]]
+        world.load_state_dict(w0)
+        if "post" in st0:                                    # E22 from scratch, stage 2: the stage-1 channel continues
+            post.load_state_dict(st0["post"])
+    if freeze:                                 # only the encoder, the code embedding and the EMA codebook train
+        world.requires_grad_(False); post.cond.requires_grad_(False)
     world, post = world.to(device), post.to(device)
     opt = phase_optimizer([world, post], config)
     params = [p for g in opt.param_groups for p in g["params"]]
     order = torch.Generator().manual_seed(11)
     history, start, started = [], 0, time.time()
+    mask_weight = zombie_weight if zombie_weight is not None else motion_weight
+    lam = None if mask_weight in (None, "auto") else float(mask_weight)
+    if motion_weight is not None:              # E22M: label-free moved content (e22_motionmask.moved_ratio, validated 12:53)
+        import e22_motionmask as MM
+    if zombie_weight is not None:              # E22Z (diagnostic): teval's zombie probe, exported exactly (zombie_probe_export.py)
+        zp = torch.load(TW.ROOT / "artifacts/eda/health_chain_v1/zombie_probe_linear.pt")
+        zW, zb = zp["W"].to(device), zp["b"].to(device)
     if state_path.exists():
         st = torch.load(state_path, map_location="cpu", weights_only=False)
         world.load_state_dict(st["world"]); post.load_state_dict(st["post"]); opt.load_state_dict(st["optimizer"])
+        lam = st.get("zombie_lambda", lam)
         order.set_state(st["order"]); torch.set_rng_state(st["rng_cpu"])
         if st["rng_cuda"] is not None:
             torch.cuda.set_rng_state_all(st["rng_cuda"])
@@ -171,35 +207,63 @@ def train_a(seed, init, updates, device, log, state_path, max_revival=0):
         tmp = state_path.with_suffix(".tmp")
         torch.save({"update": u, "world": world.state_dict(), "post": post.state_dict(), "optimizer": opt.state_dict(),
                     "order": order.get_state(), "rng_cpu": torch.get_rng_state(), "history": history,
-                    "rng_cuda": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None}, tmp)
+                    "rng_cuda": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None, "zombie_lambda": lam}, tmp)
         tmp.replace(state_path)
     for update in range(start, updates):
-        idx = rows[torch.randint(len(rows), (TW.BATCH,), generator=order)]
-        b = S.batch_of(pool, idx, "tokens", device)
-        s, a = b["s"], b["actions"]
+        if long:
+            term = torch.rand(windows, generator=order) < TW.TERMINAL_SHARE
+            r = torch.where(term, term_rows[torch.randint(len(term_rows), (windows,), generator=order)],
+                            main_rows[torch.randint(len(main_rows), (windows,), generator=order)])
+            t0 = torch.where(term, 64 - 16, torch.randint(0, 49, (windows,), generator=order))
+            s = torch.stack([torch.from_numpy(np.array(ltok[int(i), int(j):int(j) + 16])) for i, j in zip(r, t0)]).to(device).float()
+            a = torch.stack([pool["actions"][int(i), int(j):int(j) + 15] for i, j in zip(r, t0)]).to(device)
+        else:
+            idx = rows[torch.randint(len(rows), (TW.BATCH,), generator=order)]
+            b = S.batch_of(pool, idx, "tokens", device)
+            s, a = b["s"], b["actions"]
+        faced = None
+        if motion_weight is not None:          # scroll-compensated change whose content moved from / to a neighbour (ratio < 0.3,
+            with torch.no_grad():              # the valley of its bimodal distribution); the agent's own cell (31) excluded
+                ratio = MM.moved_ratio(s[:, :-1].flatten(0, 1), s[:, 1:].flatten(0, 1))[0].view(s.shape[0], s.shape[1] - 1, 63)
+                faced = torch.zeros(s.shape[0], s.shape[1] - 1, 81, dtype=torch.bool, device=device)
+                faced[..., :63] = ratio < 0.3
+                faced[..., 31] = False
+        if zombie_weight is not None:          # cells where the probe sees a zombie in the true frame t or t+1 (old and new cell)
+            with torch.no_grad():
+                z = (s[:, :, :63].float() @ zW).squeeze(-1) + zb > 0.3                      # [B, T, 63]
+                faced = torch.zeros(s.shape[0], s.shape[1] - 1, 81, dtype=torch.bool, device=device)
+                faced[..., :63] = z[:, :-1] | z[:, 1:]
         with autocast_context(config):
             cond, tokens, commit = post(s, a)
             world.delta = cond
-            teacher = TW.rollout_losses(world, s, a, "teacher")
+            if faced is not None and lam is None:                 # auto: the zombie term equals the teacher on the first batch
+                with torch.no_grad():
+                    base = float(TW.rollout_losses(world, s, a, "teacher", recon=recon))
+                    lam = base / (float(TW.rollout_losses(world, s, a, "teacher", weight="mask1.0", faced=faced, recon=recon)) - base)
+                log(stage="zombie_lambda", value=lam, cells=int(faced.sum()))
+            teacher = TW.rollout_losses(world, s, a, "teacher", recon=recon, weight=f"mask{lam}" if faced is not None else None,
+                                        faced=faced)
             world.delta = None
             objective = teacher + commit
+        if (update + 1) % 500 == 0:                   # the information the decoder takes from Delta: same batch, same weights,
+            with torch.no_grad(), autocast_context(config):    # Delta zeroed (before the step: 10-09, the post-step value was biased)
+                no_delta = float(TW.rollout_losses(world, s, a, "teacher", recon=recon, weight=f"mask{lam}" if faced is not None else None,
+                                               faced=faced))
         norm = optimizer_step(opt, objective, params, learning_rate=_phase_lr(config, update), grad_clip=config.agent.grad_clip,
                               strict=True, zero_grad=True)
         if (update + 1) % 500 == 0:
             used = int(torch.unique(tokens).numel())
-            with torch.no_grad(), autocast_context(config):                           # the information the decoder takes from Delta:
-                no_delta = float(TW.rollout_losses(world, s, a, "teacher"))            # same batch, Delta zeroed (world.delta None)
             row = {"update": update + 1, "teacher": float(teacher), "teacher_no_delta": no_delta, "commitment": float(commit),
                    "gradient_norm": float(norm),
                    "codebook_entropy": round(post.quantizer.entropy(), 3), "codes_in_batch": used,
                    "seconds": round(time.time() - started, 1)}
             history.append(row)
             log(stage="train", **row)
-        if (update + 1) % TW.STATE_EVERY == 0 or update + 1 == updates:
+        if (update + 1) % state_every == 0 or update + 1 == updates:
             save_state(update + 1)
-            if update + 1 < updates:
-                torch.save({"world": world.state_dict(), "post": post.state_dict(), "history": history},
-                           state_path.parent.parent / f"{state_path.name.split('.')[0]}_at{update + 1}.pt")
+        if (update + 1) % TW.STATE_EVERY == 0 and update + 1 < updates:
+            torch.save({"world": world.state_dict(), "post": post.state_dict(), "history": history},
+                       state_path.parent.parent / f"{state_path.name.split('.')[0]}_at{update + 1}.pt")
     return world, post, history
 
 
@@ -256,7 +320,9 @@ def adamw_mingpt(model, lr=1e-4, wd=0.01):
 
 def load_a(path, device):
     st = torch.load(path, map_location="cpu", weights_only=False)
-    world, post = TW.TWorld("corrt"), Posterior()
+    long = st.get("args", {}).get("long") == "True"
+    world = TW.TWorld("corrt", None, "fmamba", "all", 0, False, 16) if long else TW.TWorld("corrt", None, st.get("args", {}).get("backbone", "full"))
+    post = Posterior()
     world.load_state_dict(st["world"]); post.load_state_dict(st["post"])
     return world.to(device).eval(), post.to(device).eval(), st
 
@@ -322,13 +388,23 @@ def main():
     p.add_argument("--seed", type=int, required=True)
     p.add_argument("--init", type=Path, default=None, help="stage a: a world to continue (default: from scratch); stage b: the stage-A file")
     p.add_argument("--updates", type=int, required=True)
+    p.add_argument("--long", action="store_true", help="E22: the canonical L16 fmamba world and rawlong sampler")
+    p.add_argument("--recon", default="l1", choices=("l1", "deltairis"), help="E22: the decoder's teacher loss (tworld --recon)")
+    p.add_argument("--windows", type=int, default=TW.BATCH, help="E22: L16 windows per update")
+    p.add_argument("--backbone", default="full", choices=("full", "fmamba"), help="E22 from scratch, stage 1: the 6-frame world's backbone")
+    p.add_argument("--state-every", type=int, default=TW.STATE_EVERY, help="resume-state cadence (snapshots stay every STATE_EVERY)")
+    p.add_argument("--freeze-world", action="store_true", help="E22F: Park & Lee phase 1 (decoder and Delta projection frozen)")
+    p.add_argument("--zombie-weight", default=None, help="E22Z diagnostic: 'auto' or lambda for the zombie-cell L1 term (probe mask)")
+    p.add_argument("--motion-weight", default=None, help="E22M: 'auto' or lambda for the moved-content L1 term (label-free mask)")
+    p.add_argument("--tag", default="", help="appended to the name (names from a dworld init keep only its '_u' suffix and can clash)")
     p.add_argument("--revival", default="crafter", choices=("crafter", "atari", "always"),
                    help="Delta-IRIS codebook revival: crafter.yaml 0, atari.yaml 400 (steps_first_epoch), the class default None")
     a = p.parse_args()
     started = time.time()
     log = lambda **kw: print(json.dumps({**kw, "seconds_total": round(time.time() - started, 1)}), flush=True)
-    name = (f"dworld_a_s{a.seed}_" + (f"from{a.init.stem.split('_u')[-1]}" if a.init else "scratch") + ("" if a.revival == "crafter" else f"_rev{a.revival}") + f"_u{a.updates}" if a.stage == "a"
-            else f"{a.init.stem}_prior_u{a.updates}")
+    name = (f"dworld_a_s{a.seed}_" + (f"from{a.init.stem.split('_u')[-1]}" if a.init else "scratch") + ("" if a.revival == "crafter" else f"_rev{a.revival}")
+            + ("" if a.backbone == "full" else f"_{a.backbone}") + ("_frozen" if a.freeze_world else "") + ("" if a.zombie_weight is None else f"_zw{a.zombie_weight}") + ("" if a.motion_weight is None else f"_mw{a.motion_weight}") + ("_L16" if a.long else "") + ("_di" if a.recon == "deltairis" else "") + ("" if a.windows == TW.BATCH else f"_b{a.windows}")
+            + (f"_{a.tag}" if a.tag else "") + f"_u{a.updates}" if a.stage == "a" else f"{a.init.stem}_prior_u{a.updates}")
     out = TW.OUT / f"{name}.pt"
     if out.exists():
         log(status="exists", name=name)
@@ -338,7 +414,8 @@ def main():
     meta = {"name": name, "args": {k: str(v) for k, v in vars(a).items()}, "script_sha256": _sha256(Path(__file__))}
     if a.stage == "a":
         world, post, history = train_a(a.seed, a.init, a.updates, torch.device("cuda"), log, TW.OUT / "state" / f"{name}.state.pt",
-                                       {"crafter": 0, "atari": 400, "always": None}[a.revival])
+                                       {"crafter": 0, "atari": 400, "always": None}[a.revival], a.long, a.recon, a.windows, a.backbone,
+                                       a.state_every, a.freeze_world, a.zombie_weight, a.motion_weight)
         torch.save(meta | {"world": world.state_dict(), "post": post.state_dict(), "history": history}, out)
     else:
         prior, history = train_b(a.seed, a.init, a.updates, torch.device("cuda"), log, TW.OUT / "state" / f"{name}.state.pt")

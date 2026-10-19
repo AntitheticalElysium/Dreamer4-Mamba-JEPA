@@ -10,7 +10,12 @@ on h63 where B1 needs it? Frozen M16 s7.
      through a forward hook on the backbone's final norm, so both terms flow through the real head code). Ratio of norms; both
      terms carry the objective's own normalization (event elements over B(T-1)81, L1 over B(T-1)81x192), so the ratio is what
      --event adds relative to what the world already gets.
-Usage: event_preflight.py  -> artifacts/eda/health_chain_v1/event_preflight.json
+Stage `lp` (2026-10-08 21:45, E21 arm E' = LP-FT, Kumar et al. 2022, arXiv 2202.10054): the LP step. SlotEvent alone is trained on
+frozen M16 with exactly the E21 event term, on rawlong-sampler batches of order seed 13 (not the FT order 11), 120 batches cached on CPU,
+AdamW lr 1e-3, 10,000 steps, fixed (no selection); the held-subset token-63 AUC is logged every 1,000 steps (reported only). Saves
+M16's weights + the head in tworld's checkpoint format (args: M16's + event) -> levers_tworlds_v1/corrt_rawlong_teacher_s7_fmamba_evlp_
+L16b40_from36000.pt, the --init of E' (tworld.train loads the head with the world; missing keys none).
+Usage: event_preflight.py [lp]  -> artifacts/eda/health_chain_v1/event_preflight.json | event_lp.json + the init checkpoint
 """
 import json
 import sys
@@ -40,6 +45,93 @@ def event_elements(head, h, s, tau):
     return focal * torch.cat([ges(share(y[..., :63], 0.25)), ges(share(y[..., 63:], 1.0))], -1) * 0.1
 
 
+def rawlong_batches(TW, pool, tokens, n, seed):
+    """tworld.train's rawlong sampler (40 windows of 16 frames, TERMINAL_SHARE end-aligned deaths) with batch order `seed`."""
+    main_rows, term_rows = torch.where(~pool['terminal'])[0], torch.where(pool['terminal'])[0]
+    order = torch.Generator().manual_seed(seed)
+    for _ in range(n):
+        term = torch.rand(40, generator=order) < TW.TERMINAL_SHARE
+        r = torch.where(term, term_rows[torch.randint(len(term_rows), (40,), generator=order)],
+                        main_rows[torch.randint(len(main_rows), (40,), generator=order)])
+        t0 = torch.where(term, 64 - 16, torch.randint(0, 49, (40,), generator=order))
+        s = torch.stack([torch.from_numpy(np.array(tokens[int(i), int(j):int(j) + 16])) for i, j in zip(r, t0)]).float()
+        a = torch.stack([pool['actions'][int(i), int(j):int(j) + 15] for i, j in zip(r, t0)])
+        yield s, F.pad(a, (0, 1))
+
+
+def frozen_setup():
+    """Frozen M16, its config, the rawlong pool, and h at positions 13-14 of every health_chain subset event (window 15)."""
+    import teval as T
+    import tworld as TW
+    from d4mj.config import config_from_dict
+    from d4mj.train import autocast_context
+    import spatial as S
+    dev = torch.device('cuda')
+    config = config_from_dict(torch.load(S.CHECKPOINT, map_location='cpu', weights_only=False)['config'])
+    world, _ = T.load_world(M16, dev)
+    for p in world.parameters():
+        p.requires_grad_(False)
+    pool = torch.load(TW.POOLS['rawlong'] / 'labels.pt', weights_only=False, mmap=True)
+    tokens = np.memmap(TW.POOLS['rawlong'] / 'tokens.f16', dtype=np.float16, mode='r', shape=(len(pool['terminal']), 64, 81, 192))
+    sub = torch.load(OUT / 'subset.pt', weights_only=False)
+    mm = np.memmap(OUT / 'subset.f16', dtype=np.float16, mode='r', shape=tuple(sub['shape']))
+    with torch.no_grad():
+        hsub = []
+        for i in range(0, len(sub['classes']), 8):
+            with autocast_context(config):
+                h = world(torch.from_numpy(np.array(mm[i:i + 8, 0:15])).float().to(dev), sub['actions'][i:i + 8, 0:15].to(dev))[1]
+            hsub.append(h[:, -2:].half().cpu())                          # positions 13, 14 (the head reads t and t-1)
+    return world, config, pool, tokens, sub, torch.cat(hsub), dev
+
+
+def cache_h(world, config, batches, dev):
+    from d4mj.train import autocast_context
+    cache = []
+    with torch.no_grad():
+        for s, a in batches:
+            hs = []
+            for c in range(0, 40, 8):
+                with autocast_context(config):
+                    hs.append(world(s[c:c + 8].to(dev), a[c:c + 8].to(dev))[1].half().cpu())
+            cache.append((torch.cat(hs), s.half()))
+    return cache
+
+
+def subset_auc(head, hsub, sub, dev):
+    import health_evidence as HE
+    hit, unch, held = sub['classes'] == 1, sub['classes'] == 2, ~sub['fit']
+    with torch.no_grad():
+        e = torch.cat([head(hsub[i:i + 512].to(dev).float())[:, -1, 63].float().cpu() for i in range(0, len(hsub), 512)])
+    keep, fk = held & (hit | unch), held & ((hit & sub['fresh']) | unch)
+    return round(HE.auc(e[keep], hit[keep]), 4), round(HE.auc(e[fk], hit[fk]), 4)
+
+
+def lp(steps=10000, n_batches=120):
+    import tworld as TW
+    world, config, pool, tokens, sub, hsub, dev = frozen_setup()
+    cache = cache_h(world, config, rawlong_batches(TW, pool, tokens, n_batches, 13), dev)
+    torch.manual_seed(0)
+    head = TW.SlotEvent().to(dev)
+    opt = torch.optim.AdamW(head.parameters(), lr=1e-3)
+    log = [{'step': 0, 'auc_hit_unch_fresh_unch': subset_auc(head, hsub, sub, dev)}]
+    for step in range(1, steps + 1):
+        h, s = (t.to(dev) for t in cache[(step - 1) % len(cache)])
+        loss = event_elements(head, h, s, TW.EVENT_TAU).mean()
+        opt.zero_grad(); loss.backward(); opt.step()
+        if step % 1000 == 0:
+            log.append({'step': step, 'event_loss': round(float(loss), 6), 'auc_hit_unch_fresh_unch': subset_auc(head, hsub, sub, dev)})
+            print(json.dumps(log[-1]), flush=True)
+    ck = torch.load(M16, map_location='cpu', weights_only=False)
+    weights = dict(ck['world']); weights.update({f'event_head.{k}': v.cpu() for k, v in head.state_dict().items()})
+    name = 'corrt_rawlong_teacher_s7_fmamba_evlp_L16b40_from36000'
+    args = dict(ck['args']); args.update(event='True', lp_from=str(M16), lp_steps=str(steps), lp_order_seed='13')
+    torch.save({'name': name, 'args': args, 'world': weights, 'history': ck['history'], 'lp': log},
+               ROOT / 'artifacts/eda/levers_tworlds_v1' / f'{name}.pt')
+    import teval as T
+    w, _ = T.load_world(ROOT / 'artifacts/eda/levers_tworlds_v1' / f'{name}.pt', dev)     # strict load: every key matches
+    (OUT / 'event_lp.json').write_text(json.dumps({'name': name, 'log': log}, indent=1))
+
+
 class Shared(nn.Module):
     """E21 v1's event head: one Linear(256, 4) -> LayerNorm(4) -> SiLU -> Linear(4, 1) for every slot."""
 
@@ -67,18 +159,7 @@ def main():
     P = T.Probes(T.build_cache('raw', torch.device('cpu')), meta, train_roots, train_seeds)
     pool = torch.load(TW.POOLS['rawlong'] / 'labels.pt', weights_only=False, mmap=True)
     tokens = np.memmap(TW.POOLS['rawlong'] / 'tokens.f16', dtype=np.float16, mode='r', shape=(len(pool['terminal']), 64, 81, 192))
-    main_rows, term_rows = torch.where(~pool['terminal'])[0], torch.where(pool['terminal'])[0]
-
-    def batches(n, seed):
-        order = torch.Generator().manual_seed(seed)
-        for _ in range(n):
-            term = torch.rand(40, generator=order) < TW.TERMINAL_SHARE
-            r = torch.where(term, term_rows[torch.randint(len(term_rows), (40,), generator=order)],
-                            main_rows[torch.randint(len(main_rows), (40,), generator=order)])
-            t0 = torch.where(term, 64 - 16, torch.randint(0, 49, (40,), generator=order))
-            s = torch.stack([torch.from_numpy(np.array(tokens[int(i), int(j):int(j) + 16])) for i, j in zip(r, t0)]).float()
-            a = torch.stack([pool['actions'][int(i), int(j):int(j) + 15] for i, j in zip(r, t0)])
-            yield s, F.pad(a, (0, 1))
+    batches = lambda n, seed: rawlong_batches(TW, pool, tokens, n, seed)
 
     cache = []
     with torch.no_grad():
@@ -147,4 +228,4 @@ def main():
 if __name__ == '__main__':
     sys.path.insert(0, str(ROOT / 'artifacts/experiments/20260926_diagnosis'))
     sys.path.insert(0, str(ROOT / 'artifacts/experiments/20260921_readout_ladder'))
-    main()
+    lp() if sys.argv[1:] == ['lp'] else main()

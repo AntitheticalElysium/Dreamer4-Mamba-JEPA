@@ -80,6 +80,9 @@ from t to t+1 (L2 norm > EVENT_TAU, the empty valley of the bimodal HUD change-n
 sparsity weight GES(p) = 1 / log(0.1 + p + sqrt(1 + p^2)) of its modality (map: 63 tokens, balance 0.25 as token_2d; HUD: 18,
 balance 1 as vector), times the modality weight 0.1; added to the teacher L1 with weight 1. `--gen-loss` now scores all L - 1
 targets (it scored S.W - 1: unchanged for every 6-frame run). `--snapshot-every N` saves the world every N updates (6000 before).
+E21 arm D (predeclared 17:50): `--recon deltairis` replaces the teacher L1 by Delta-IRIS's tokenizer loss in token space
+(vmicheli/delta-iris tokenizer.py): 1.0 x mean L2 + 0.1 x mean L1 + 0.01 x the mean over frames of the frame's worst element L2
+(over its 81 x 192 token elements). Default `l1` is unchanged.
 Training (fixed for every arm): spatial_pool_v1 (Raw tokens) or spatial_pool_tc_v1 (TC tokens), 2,048 main windows
 held out (seed 1, as parameterization.py); batches of 40 windows (seed 11); AdamW lr 1e-4, wd 0.01, 1,000 warmup,
 clip 1 (H2 phase optimizer); bf16; init seed given (default 7). Loss: `suffix` = spatial.losses' dynamics L1
@@ -363,7 +366,7 @@ def quantize(x, codes, chunk=16384):
     return idx.view(x.shape[:-1])
 
 
-def rollout_losses(world, s, a, loss, gen_loss=False, weight=None, faced=None, event=False):
+def rollout_losses(world, s, a, loss, gen_loss=False, weight=None, faced=None, event=False, recon="l1"):
     """spatial.rollout + the dynamics L1 (suffix) or teacher-forced L1 only; gen_loss: + the generate candidate's
     own teacher-forced L1 on every token; event: + EAWM's event loss (E21)."""
     a = F.pad(a, (0, 1))
@@ -375,7 +378,8 @@ def rollout_losses(world, s, a, loss, gen_loss=False, weight=None, faced=None, e
     predicted, history, gen = world(s, a)
     world.level = None
     err = (predicted[:, :s.shape[1] - 1] - clean[:, 1:]).abs()       # S.W - 1 targets for every 6-frame pool
-    teacher = err.mean()
+    teacher = err.mean() if recon == "l1" else \
+        err.pow(2).mean() + 0.1 * err.mean() + 0.01 * err.pow(2).flatten(2).max(-1).values.mean()      # E21 D: Delta-IRIS
     if weight:                                # E14 --weight: + lambda x the mask-normalized mean over a token set
         tok = err.mean(-1)
         if weight.startswith("hard"):         # the batch's top-Q% tokens by current loss (OHEM)
@@ -428,7 +432,7 @@ def rollout_losses(world, s, a, loss, gen_loss=False, weight=None, faced=None, e
 
 def train(head, pool_name, loss, seed, updates, device, log, codebook=None, backbone="full", gen_loss=False,
           regions="all", snapshot=None, weight=None, skip=False, state_path=None, resume=None, frames=None, windows=BATCH,
-          init=None, state_every=STATE_EVERY, event=False, snapshot_every=6000):
+          init=None, state_every=STATE_EVERY, event=False, snapshot_every=6000, recon="l1"):
     from d4mj.config import config_from_dict
     from d4mj.train import _phase_lr, autocast_context, optimizer_step, phase_optimizer
     config = config_from_dict(torch.load(S.CHECKPOINT, map_location="cpu", weights_only=False)["config"])
@@ -502,7 +506,7 @@ def train(head, pool_name, loss, seed, updates, device, log, codebook=None, back
                 _, _, logits = world(codes[idx], F.pad(a, (0, 1)))
                 objective = F.cross_entropy(logits[:, :S.W - 1].flatten(0, 2), idx[:, 1:].flatten())
             else:
-                objective = rollout_losses(world, s, a, loss, gen_loss, weight, faced, event)
+                objective = rollout_losses(world, s, a, loss, gen_loss, weight, faced, event, recon)
         norm = optimizer_step(opt, objective, params, learning_rate=_phase_lr(config, update),
                               grad_clip=config.agent.grad_clip, strict=True, zero_grad=True)
         if snapshot is not None and (update + 1) % snapshot_every == 0 and update + 1 < updates:
@@ -539,6 +543,7 @@ def main(argv=None):
     parser.add_argument("--init", type=Path, default=None, help="E17: start from a trained world (time table tiled to --frames)")
     parser.add_argument("--event", action="store_true", help="E21: + EAWM's event head and focal event loss")
     parser.add_argument("--snapshot-every", type=int, default=6000, help="E21: --snapshots interval (default 6000)")
+    parser.add_argument("--recon", default="l1", choices=("l1", "deltairis"), help="E21 D: teacher-forced reconstruction loss")
     args = parser.parse_args(argv)
     if (args.pool == "rawlong") != (args.frames is not None) or (args.frames and args.loss != "teacher"):
         parser.error("--frames goes with --pool rawlong and --loss teacher")
@@ -547,7 +552,7 @@ def main(argv=None):
     device = torch.device("cuda")
     codebook = torch.load(args.codebook, weights_only=False)["codes"] if args.codebook else None
     name = f"{args.head}_{args.pool}_{args.loss}_s{args.seed}" + (f"_K{len(codebook)}" if codebook is not None else "") \
-        + ("" if args.backbone == "full" else f"_{args.backbone}") + ("_gl" if args.gen_loss else "") + ("_ev" if args.event else "") \
+        + ("" if args.backbone == "full" else f"_{args.backbone}") + ("_gl" if args.gen_loss else "") + ("_ev" if args.event else "") + ("_di" if args.recon == "deltairis" else "") \
         + ("" if args.regions == "all" else f"_{args.regions}") + (f"_{args.weight}" if args.weight else "") \
         + ("_skip" if args.skip else "") + (f"_L{args.frames}b{args.windows}" if args.frames else "") \
         + (f"_from{args.init.stem.split('_u')[-1]}" if args.init else "") \
@@ -565,7 +570,7 @@ def main(argv=None):
     world, history, held = train(args.head, args.pool, args.loss, args.seed, args.updates, device, log, codebook,
                                  args.backbone, args.gen_loss, args.regions, snapshot, args.weight, args.skip,
                                  OUT / "state" / f"{name}.state.pt", args.resume, args.frames, args.windows, args.init, args.state_every,
-                                 args.event, args.snapshot_every)
+                                 args.event, args.snapshot_every, args.recon)
     save(name, world, history)
     log(status="saved", name=name)
     return 0
