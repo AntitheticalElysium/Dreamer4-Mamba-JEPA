@@ -8,7 +8,15 @@ visible changes plus memory of which achievements are already unlocked.
 Evaluator (applied later to model outputs): reward NLL in nats of the recorded value (each recorded value is its own
 bin of the discretised density), unlock-event Brier and ECE (10 equal-mass bins), continuation NLL / Brier / ECE;
 episode-bootstrap SE for the means.
-Information references (fit on train-400 minus 40 held-out episodes for early stopping, read on all dev):
+Common outcome bins (LOSSES G3): 256 uniform bins in symlog space over REWARD_SUPPORT. A learned reward density is
+scored by its mass on the recorded reward's bin (integrate the density over the bin, never compare density values);
+the categorical references below put mass on reward VALUES, which equals bin mass because every observed value has its
+own bin (checked in main).
+Information references (fit on train-400 minus 40 held-out episodes for early stopping, read on all dev). They are
+FINITE-LEARNER references (LightGBM on chosen features), not information limits: R2 is not a memory-free bound
+(review 10-27: adding visible entity / terrain counts of the same frame pair, no older history, lowered its NLL by
+13%), and R2 / R3 read the simulator's neighbouring terrain even under an entity, which a pixel reader cannot see.
+Memory is established by the matched controls and direct probes of TEST_SPEC S1.2, not by beating R2.
   R0 marginal reward / continuation frequencies;
   R1 + the HUD health part (exact) with the marginal unlock rate;
   R2 + visible changes of the percept pair (HUD and inventory at t and t+1, sleep, light, action, facing direction,
@@ -21,6 +29,14 @@ import numpy as np
 from saccade.eval import gates as G
 
 NB = ((2, 4), (4, 4), (3, 3), (3, 5))                               # the 4 neighbours of the player in the 7x9 view
+REWARD_SUPPORT = (-0.9, 1.1)          # the support-v2 train split's reward range: 21 values, -0.9 .. 1.1 in 0.1 steps
+
+
+def reward_bin(r, n=256):
+    """Index of r's LOSSES G3 bin: n uniform bins in symlog space over REWARD_SUPPORT (edges clipped)."""
+    lo, hi = (np.sign(x) * np.log1p(abs(x)) for x in REWARD_SUPPORT)
+    x = np.sign(r) * np.log1p(np.abs(r))
+    return np.clip(np.floor((x - lo) / (hi - lo) * n).astype(int), 0, n - 1)
 
 
 def transitions(L):
@@ -76,6 +92,10 @@ def main():
     c = dv["term"].astype(float); p_c = tr["term"].mean()
     out["continuation"]["R0_marginal"] = score(np.where(c == 1, p_c, 1 - p_c), np.full(len(c), p_c), c, dv["ep"])
     out["continuation"]["R2_hud_health0"] = score(np.ones(len(c)), (dv["health1"] == 0).astype(float), c, dv["ep"])
+    vals = np.unique(np.round(np.r_[tr["reward"], dv["reward"]], 4))
+    out["reward_bins"] = {"n": 256, "support": list(REWARD_SUPPORT), "distinct_values": int(len(vals)),
+                          "values_sharing_a_bin": int(len(vals) - len(np.unique(reward_bin(vals)))),
+                          "values_outside_support": int(((vals < REWARD_SUPPORT[0]) | (vals > REWARD_SUPPORT[1])).sum())}
     print(json.dumps(out, indent=1))
     json.dump(out, open(sys.argv[3], "w"), indent=1)
 

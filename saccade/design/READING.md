@@ -763,3 +763,7 @@ Scripts named below (eda_*.py, ana_*.py, t1_/t2_*) are in artifacts/experiments/
   a non-randomised version). Equal-mass ("adaptive") calibration bins (Nixon et al. 2019, CVPRW). Classifier two-sample
   tests (Lopez-Paz & Oquab, ICLR 2017). Craftax-Classic renderer: night = per-frame random static (state_rng) with an
   intensity texture, desaturation and a night texture (craftax_classic/renderer.py), hence night readability by ring.
+- S0 review (Codex, 10-27; verified): the scene stores evidence of past unlocks (tables, furnaces), so same-frame-pair
+  counts beat the memory-free reward reference R2 by 13% without any history; Craftax map changes are the player's
+  edits, plant ripening after 600 steps (game_logic.py) and arrows destroying tables / furnaces; Craftax entities move
+  cardinally, so a one-cell diagonal step is illegal and now has its own gate.

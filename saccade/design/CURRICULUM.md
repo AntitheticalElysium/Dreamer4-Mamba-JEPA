@@ -20,8 +20,9 @@ own generated percepts (self-feeding), (3) how far imagination runs for the acto
   warm-ups and long training on short contexts hurt.
 - Plan (contract): B parallel episode STREAMS, each played in order in consecutive chunks (64 steps, growing to
   256); the Mamba state is carried across chunks of the SAME episode and reset at true episode boundaries; one
-  optimizer update per chunk, the carried state detached, so it is computed under parameters at most one update old
-  (an approximation, not freshness); no out-of-order chunks, so no burn-in is needed (a short zero-initialised burn-in
+  optimizer update per chunk, the carried state detached: its last chunk was computed under the previous update's
+  parameters and its earlier history under older ones (TBPTT never refreshes the history; a normal approximation, to be
+  measured, not a reason for a state-rebuild subsystem); no out-of-order chunks, so no burn-in is needed (a short zero-initialised burn-in
   could not rebuild facts from an omitted long history anyway). Foreign-state or mid-episode zero starts (Buitrago &
   Gu) are a separately declared robustness intervention, OFF by default: an episodic belief carries achievements,
   health and map facts that another episode's state would contradict. Carrying state extends the history represented
@@ -38,9 +39,12 @@ recorded future is only valid one step after a real history (DaD, Venkatraman et
       denoiser as input (GameNGen; Dreamer 4 uses tau_ctx = 0.1);
   (b) JEDI-style switching, exactly: with probability 0.5 a recorded percept in the conditioning window is replaced by
       the denoiser's RECONSTRUCTION of a noised copy of that same recorded percept (noise level sampled; stop-gradient
-      on the substitute; the real reward and termination accompany it). It contains the recorded transition's
-      information, so the recorded continuation stays a valid target (Codex). An INDEPENDENTLY sampled future is never
-      inserted and then supervised against the recording (scheduled sampling's inconsistency, Huszar 2015).
+      on the substitute; the real reward and termination accompany it). JEDI's Algorithm 1 is the precedent (random
+      switching to its own denoised version of the same recorded latent). A robustness heuristic, tested as such: a
+      lossy reconstruction need not preserve every future conditional, so the recorded continuation is a sound target
+      only to the extent the reconstruction keeps what that continuation depends on (review, 10-27). An INDEPENDENTLY
+      sampled future is never inserted and then supervised against the recording (scheduled sampling's
+      inconsistency, Huszar 2015).
 - After one-step training (fixed update count, not on a result): multi-step post-training on generated histories with
   a JOINT-TRAJECTORY distributional loss: for one real prefix and the recorded exogenous actions, m >= 2 independent
   free-running trajectories X_i and the recorded Y are each flattened to one vector (per-step percept summaries, reward,

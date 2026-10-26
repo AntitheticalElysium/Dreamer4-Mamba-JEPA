@@ -56,6 +56,8 @@ def main():
     man = RP.manifest(); run = scan_fn()
     S, Tr, meta = {}, {"action": [], "reward": [], "terminated": [], "exogenous": []}, []
     for sh in range(len(man["shards"])):
+        if len(meta) >= max_eps:
+            break
         eps_list = RP._shard(sh)["episodes"]
         _, step_keys = RP.round_keys(sh)
         flag_cache = {}

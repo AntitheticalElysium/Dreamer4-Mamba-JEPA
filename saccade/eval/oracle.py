@@ -14,8 +14,11 @@ Power: entity-level corruptions of A (world coordinates, from the simulator reco
 flicker (each entity missing at single steps, p = 0.2), teleport (an entity jumps (+-2, +-2) and stays displaced,
 p = 0.1 per step), phantom drift (a cow appears every 4 steps and stays), vanishing drift (an entity disappears for
 good, p = 0.05 per step), frozen time (positions, HUD and entities fixed; reward and termination kept), delayed
-consequences (HUD 2 steps late). A gate rejects when the difference to B exceeds 3 episode-bootstrap SE (one-sided
-for the energy score, two-sided otherwise).
+consequences (HUD 2 steps late), diagonal steps (an entity's step replaced by a diagonal one, p = 0.2 per step; counts
+kept). A gate rejects when the difference to B exceeds 3 episode-bootstrap SE (one-sided for the energy score,
+two-sided otherwise). Added 10-27 (review): the OPERATIONAL S2 family, the one-step event gates (G.compare) applied
+to the rollouts' transitions with oracle B as the reference, is run on A (null) and on every corruption; the energy
+score stays a diagnostic beside references, never pass / fail.
 Usage (project venv): python -m saccade.eval.oracle LABELS_NPZ OUT_JSON [N_WINDOWS]
 """
 import json, os, sys
@@ -25,12 +28,13 @@ import replay as RP
 from saccade.eval import gates as G
 
 H, M = 16, 16
-CORRUPTIONS = ("flicker", "teleport", "phantom_drift", "vanishing_drift", "frozen_time", "delayed_consequences")
+CORRUPTIONS = ("flicker", "teleport", "phantom_drift", "vanishing_drift", "frozen_time", "delayed_consequences",
+               "diagonal_steps")
 
 
 def sampler():
     env, params, _, _, _ = RP.env_and_render()
-    rec = lambda s: {"pos": s.player_position,
+    rec = lambda s: {"pos": s.player_position, "light": s.light_level,
                      "body": jnp.stack([s.player_health, s.player_food, s.player_drink, s.player_energy]),
                      **{f"{m}_p": getattr(s, m).position for m in G.KINDS}, **{f"{m}_m": getattr(s, m).mask for m in G.KINDS}}
 
@@ -80,6 +84,12 @@ def corrupt_rec(kind, R, rng):
     elif kind == "frozen_time":
         for k in Q:
             Q[k][1:] = Q[k][0]
+    elif kind == "diagonal_steps":
+        for m in G.KINDS:
+            P = Q[f"{m}_p"]
+            for t in range(1, n):
+                step = rng.random(P.shape[1]) < 0.2
+                P[t:, step] += (P[t - 1, step] + rng.choice([-1, 1], (int(step.sum()), 2)) - P[t, step])[None]
     elif kind == "delayed_consequences":
         Q["body"][1:] = R["body"][np.maximum(np.arange(1, n) - 2, 0)]
     return Q
@@ -87,7 +97,8 @@ def corrupt_rec(kind, R, rng):
 
 def traj(R, r, d):
     g, b, p = to_obs(R)
-    return {"grid": g, "body": b, "pos": p, "reward": np.asarray(r, float), "done": np.asarray(d, bool)}
+    return {"grid": g, "body": b, "pos": p, "reward": np.asarray(r, float), "done": np.asarray(d, bool),
+            "light": np.asarray(R["light"], float)}
 
 
 def n_alive(o):
@@ -182,6 +193,19 @@ def main():
     out["null_A_vs_B"] |= {"persistence_diff": d.round(4).tolist(), "persistence_se": se.round(4).tolist()}
     d, se = paired_diff(A0[2], A0[3], B[2], B[3], ep_of, rng)
     out["null_A_vs_B"] |= {"count_diff": float(d), "count_se": float(se)}
+    acts_w = [L["t_action"][t_off[e] + t0:t_off[e] + t0 + H] for e, t0 in picks]
+    since0 = []                                                  # steps since the last health drop before t0
+    for e, t0 in picks:
+        drops = np.flatnonzero(np.diff(eps_list[e]["body"][:t0 + 1, 0]) < 0)
+        since0.append(int(min(t0 - drops[-1], 10)) if len(drops) else 10)
+
+    def event_estimates(trajs):
+        parts = [G.traj_pairs(o["grid"][:n], o["body"][:n], o["pos"][:n], acts_w[w], o["light"][:n], since0[w], ep_of[w])
+                 for w, ts in enumerate(trajs) for o in ts for n in [n_alive(o)]]
+        return G.all_estimates({k: np.concatenate([p[k] for p in parts]) for k in parts[0]})
+    ev_B = event_estimates([s[8:] for s in S])
+    rej, unm = G.compare(ev_B, event_estimates([s[:8] for s in S]))
+    out["null_A_vs_B"] |= {"event_gates_rejecting": rej, "event_gates_unmeasured": unm}
     print("pit", out["pit"], "\nES", out["energy_score"], "\nsanity", out["sanity_recorded_vs_oracle"], "\nnull", out["null_A_vs_B"], flush=True)
     out["power"] = {}
     for c in CORRUPTIONS:
@@ -195,6 +219,8 @@ def main():
                            "persistence_diff": dp.round(4).tolist(), "persistence_se": sep.round(4).tolist(),
                            "persistence_rejects": bool((np.abs(dp) > 3 * sep).any()),
                            "count_diff": float(dc), "count_se": float(sec), "count_rejects": bool(abs(dc) > 3 * sec)}
+        rej, _ = G.compare(ev_B, event_estimates(Ts))
+        out["power"][c] |= {"event_gates_rejecting": rej, "n_event_gates_rejecting": len(rej)}
         print(c, out["power"][c], flush=True)
     json.dump(out, open(sys.argv[2], "w"), indent=1)
 

@@ -8,13 +8,17 @@ decision); probes locate it.
 Rules
 - Readings, budgets (updates, seeds) and probe definitions fixed before each stage; simulator state for EVALUATION
   only; dev split for readings, final split untouched until the end.
+- Gate rule (saccade/eval/gates.compare): reject when |difference| > 3 joint episode-bootstrap SE + 1e-9, so a
+  deterministic difference with zero estimated variance rejects; a gate without exposure is reported as unmeasured,
+  never as passed. Classifier two-sample tests split by physical episode, both domains of an episode on one side.
 - Absolute metrics with uncertainty (episode-bootstrap intervals), not ratios to "floors" or "ceilings": references
   (random features, a pixel probe of the SAME architecture) are reported beside them.
 - One frozen reader (a probe trained on real percepts against simulator labels) reads real and generated percepts
   alike; its own error against simulator labels is reported, and its outputs on generated percepts are diagnostics.
   The reader is fitted to a SPECIFIED encoder checkpoint (the end of P1); the encoder is frozen during P2, otherwise
   representation drift would masquerade as lost information. S0 builds the harness and the pixel references; the
-  reader itself is fitted after P1.
+  reader itself is fitted after P1. A shared reader makes real and generated readings comparable; its errors need not
+  cancel under the shift to generated percepts, and its real-data error does not bound its error on generated ones.
 - Bug fixes are allowed and documented; a scientific miss is kept as a result and leads to a bounded, declared
   revision, never to tuning until the gate passes.
 
@@ -32,6 +36,9 @@ Rules
   its pixel reference (day perfect; night 0.85-1.0 by ring), the outcome evaluator with an information ladder.
   Every reference is recomputed THROUGH the frozen reader on real trajectories at the end of P1 and the power checks
   repeated; the energy score is reported beside the oracle and marginal references, never as pass / fail.
+  Reviewed by Codex 10-27; evaluator defects fixed and pinned by regression tests (saccade/tests): zero-variance
+  rejection, a cardinal-motion gate, revisit ages from the compared sighting, physical-episode classifier splits,
+  power of the operational one-step gates on multi-step rollouts.
 
 ## S1 — M0 one-step (phase P1 of CURRICULUM)
 1. Entity retention in percept tokens: presence, kind and position per cell, by light and ring, beside random-feature
@@ -43,8 +50,8 @@ Rules
 4. TSP: glimpse likelihood vs copy-previous and per-position-mean baselines.
 
 ## S2 — M0 recursion (phase P2; free-running rollouts on dev exogenous windows)
-1. Conditional event probabilities vs S0 references with intervals (arrivals, vanishings, arrow after a shot, damage
-   timing after adjacency); duplicated and missing entities read by the frozen reader.
+1. Conditional event probabilities vs S0 references with intervals (arrivals, vanishings, cardinal motion, arrow
+   after a shot, damage timing after adjacency); duplicated and missing entities read by the frozen reader.
 2. Revisits: returns within the rollout AND to locations seen in the real prefix, stratified by time since observed
    (<= 16, 16-64, 64-256, > 256).
 3. Uncertainty: proper scores (energy score), bias, coverage of real outcomes, and coupled-event checks; spread alone

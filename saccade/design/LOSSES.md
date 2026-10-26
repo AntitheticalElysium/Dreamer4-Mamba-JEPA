@@ -32,11 +32,11 @@ separate (no gradient into the world).
 | G1 next step | next percept (generator v3) | denoising loss on the next percept (lighting latent, periphery, glimpse jointly), EDM noise levels, x-prediction, conditioned on the predicted belief | squared distance; mean per token | harmonised |
 | G2 grounding | change map | BCE against the soft label-free target (A9b) | nats per cell; mean over cells | harmonised |
 | G2 grounding | TSP | discretised logistic NLL; mean from (belief, periphery, v), scale from (v, position) | nats per pixel; mean over the glimpse | harmonised |
-| G3 consequences | reward (observation model) | negative log-likelihood of a discretised mixture of logistics over symlog(r) (support: the symlog range of the data, bin width 1/256 of it; sample, then symexp) | nats; mean over steps | harmonised |
+| G3 consequences | reward (observation model) | negative log-likelihood of a discretised mixture of logistics over symlog(r) (support: the symlog range of the train split, [-0.9, 1.1], 256 uniform bins; sample, then symexp; the same bins score the S1 calibration references, saccade/eval/calib.py) | nats; mean over steps | harmonised |
 | G3 consequences | continuation | BCE, conditioned on (predicted belief, percept, reward) | nats; mean over steps | harmonised |
 | (fixed) | SIGReg | Epps-Pulley statistic over random projections (LeJEPA) on periphery and glimpse tokens | statistic | lambda = 0.1 relative to G1 |
 | G1 (shared) | own-sample unrolls | the G1 term at each unrolled step while the update reads the generator's own percepts (context corruption / random switching), truncated gradients | mean over steps | G1's sigma |
-| G4 sampled rollouts | free-running sampled unrolls on exogenous windows | JOINT-TRAJECTORY energy score (beta = 1, m >= 2 independent trajectories with independent termination draws, each trajectory one vector of per-step percept summaries + reward + termination, components scaled by data std; terminal convention per CURRICULUM); framewise / patched scores supplementary | per trajectory | harmonised |
+| G4 sampled rollouts | free-running sampled unrolls on exogenous windows | JOINT-TRAJECTORY energy score (beta = 1, m >= 2 independent trajectories with independent termination draws, each trajectory one vector of per-step percept summaries + reward + termination, components scaled by data std; terminal convention per CURRICULUM); framewise / patched scores supplementary. The label-free, differentiable PERCEPT SUMMARY used for training is still to be declared before P2; it is not the S0 evaluation summary (simulator labels via the reader), whose count + centroid scope is documented in saccade/eval/gates.py | per trajectory | harmonised |
 
 ## Facts used
 Change-map positives 1.7% (day) / 2.9% (night) of cells (A9b); reward non-zero on 6.7% of steps, termination 0.3%
@@ -46,3 +46,4 @@ Change-map positives 1.7% (day) / 2.9% (night) of cells (A9b); reward non-zero o
 ## Open
 Window size and sample count for the energy scores; sigma initialisation; noise-level weighting for the denoising
 loss; schedule lengths; per-route gradient-norm alarms; how to protect rare entities inside the next-percept group.
+The P2 training summary for G4 and its gradient boundary (declared before P2).

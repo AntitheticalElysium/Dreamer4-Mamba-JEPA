@@ -6,14 +6,21 @@ these for real trajectories; later, a frozen reader supplies them for generated 
 
 Gates (each a conditional event probability, episode-bootstrap standard errors):
   appear_interior / appear_edge / vanish_in_view per kind and light (entity bookkeeping: arrivals, phantoms, losses);
+  diag_move per kind and light: an entity cell diagonally next to a same-kind entity of the previous step and
+  cardinally next to none (Craftax moves are cardinal; added 10-27 after review: the 3x3 neighbourhood used for
+  appearances explains a diagonal step, so no other one-step gate saw it);
   health drop given an adjacent zombie and time since the last drop (consequence timing, hidden cooldown);
   health drop with no zombie adjacent; arrow appearance given a skeleton at Manhattan 4-5 (coupled events);
   camera moved given a movement action, and direction agreement (self-motion);
   mean visible count per kind.
-Power check: references from dev half A; half B (real) must pass; five corruptions of B must be rejected:
-  shuffled histories, mismatched actions, duplicated entities, delayed consequences (+2 steps), frozen time.
-A gate rejects when |B - A| > 3 joint standard errors. Plus a classifier two-sample test (LightGBM) on matched
-(current grid, action, shift, next grid) tuples: A vs B (should be ~0.5) and A vs each corruption.
+Power check: references from dev half A; half B (real) must pass; seven corruptions of B must be rejected:
+  shuffled histories, mismatched actions, reversed actions (deterministic: LEFT<->RIGHT, UP<->DOWN), duplicated
+  entities, diagonal moves, delayed consequences (+2 steps), frozen time.
+Rule (compare): a gate rejects when |B - A| > 3 joint standard errors + 1e-9, so a deterministic difference with zero
+estimated variance rejects (fixed 10-27: a `se > 0` guard had let reversed actions through); a gate without exposure
+on either side is reported as unmeasured, never as passed. Plus a classifier two-sample test (LightGBM) on
+(current grid, action, shift, next grid) tuples, split by PHYSICAL episode so paired real / generated versions of one
+episode never straddle train and test: A vs B (should be ~0.5) and A vs each corruption.
 Usage (scratch venv with numpy + lightgbm): python -m saccade.eval.gates LABELS_NPZ OUT_JSON
 """
 import json, sys
@@ -48,9 +55,10 @@ def build_pairs(L):
             "night": L["s_light"][i0] < 0.5, "a": L["t_action"].astype(int), "since": since, "ep": ep}
 
 
-def _dilate(m):
+def _dilate(m, cardinal=False):
     p = np.pad(m, ((0, 0), (1, 1), (1, 1)))
-    return np.max(np.stack([p[:, 1 + dr:8 + dr, 1 + dc:10 + dc] for dr in (-1, 0, 1) for dc in (-1, 0, 1)]), 0)
+    offs = [(dr, dc) for dr in (-1, 0, 1) for dc in (-1, 0, 1) if not (cardinal and dr and dc)]
+    return np.max(np.stack([p[:, 1 + dr:8 + dr, 1 + dc:10 + dc] for dr, dc in offs]), 0)
 
 
 def _shift(m, d, inner):
@@ -78,6 +86,7 @@ def events(P):
         m0, m1 = g0 == k, g1 == k
         explained = _shift(_dilate(m0), d, 0)                     # t+1 cell has a kind-k entity at t within 1 cell
         new = m1 & ~explained
+        E[f"diag_move_{m}"] = (m1 & explained & ~_shift(_dilate(m0, cardinal=True), d, 0)).any((1, 2))
         E[f"appear_edge_{m}"] = (new & edge).any((1, 2))
         E[f"appear_interior_{m}"] = (new & ~edge).any((1, 2))
         kept = _shift(_dilate(m1), -d, 0)                         # t cell has a kind-k entity at t+1 within 1 cell
@@ -106,7 +115,7 @@ def stats(P, E):
     S = {}
     for m in KINDS:
         for lab, lm in (("day", ~night), ("night", night)):
-            for ev in ("appear_edge", "appear_interior", "vanish"):
+            for ev in ("appear_edge", "appear_interior", "vanish", "diag_move"):
                 S[f"{ev}_{m}_{lab}"] = (E[f"{ev}_{m}"], lm)
             S[f"count_{m}_{lab}"] = (E[f"count_{m}"].astype(float), lm)
     for b in (1, 2, 3, 4, 5, 6):
@@ -153,6 +162,8 @@ def corrupt(P, kind, rng):
         Q["g1"], Q["h1"], Q["d"] = Q["g1"][perm], Q["h1"][perm], Q["d"][perm]
     elif kind == "mismatched_actions":
         Q["a"] = Q["a"][rng.permutation(len(Q["a"]))]
+    elif kind == "reversed_actions":
+        Q["a"] = np.array([{1: 2, 2: 1, 3: 4, 4: 3}.get(int(x), int(x)) for x in Q["a"]])
     elif kind == "duplicated_entities":
         g = Q["g1"]; n, r, c = np.nonzero(g > 0)
         pick = rng.random(len(n)) < 0.3
@@ -160,6 +171,12 @@ def corrupt(P, kind, rng):
         r2, c2 = np.clip(r + dr, 0, 6), np.clip(c + dc, 0, 8)
         ok = pick & (g[n, r2, c2] == 0) & ~((r2 == 3) & (c2 == 4))
         g[n[ok], r2[ok], c2[ok]] = g[n[ok], r[ok], c[ok]]
+    elif kind == "diagonal_moves":
+        g = Q["g1"]; n, r, c = np.nonzero(g > 0)
+        pick = rng.random(len(n)) < 0.3
+        r2, c2 = np.clip(r + rng.choice([-1, 1], len(n)), 0, 6), np.clip(c + rng.choice([-1, 1], len(n)), 0, 8)
+        ok = pick & (g[n, r2, c2] == 0) & ~((r2 == 3) & (c2 == 4))
+        g[n[ok], r2[ok], c2[ok]] = g[n[ok], r[ok], c[ok]]; g[n[ok], r[ok], c[ok]] = 0
     elif kind == "delayed_consequences":
         h0, h1, ep = Q["h0"], Q["h1"], Q["ep"]
         same = np.r_[ep[2:] == ep[:-2], [False, False]]
@@ -169,6 +186,25 @@ def corrupt(P, kind, rng):
     elif kind == "frozen_time":
         Q["g1"], Q["h1"], Q["d"] = Q["g0"].copy(), Q["h0"].copy(), np.zeros_like(Q["d"])
     return Q
+
+
+def compare(ref, est, tol=1e-9):
+    """Gates where est differs from ref by more than 3 joint SE (+ tol); gates unmeasured on either side."""
+    rej, unmeasured = [], []
+    for k, a in ref.items():
+        b = est.get(k)
+        if a is None or b is None:
+            unmeasured.append(k)
+        elif abs(b["est"] - a["est"]) > 3 * np.hypot(a["se"], b["se"]) + tol:
+            rej.append(k)
+    return rej, unmeasured
+
+
+def episode_split(ep_a, ep_b, rng):
+    """Test mask over the concatenated rows of two domains: one third of PHYSICAL episodes go to test, both domains'
+    rows of an episode on the same side (paired real / generated versions never straddle train and test)."""
+    ep = np.r_[ep_a, ep_b]; u = np.unique(ep)
+    return np.isin(ep, rng.choice(u, len(u) // 3, replace=False))
 
 
 def c2st(PA, PB, rng):
@@ -182,8 +218,7 @@ def c2st(PA, PB, rng):
     ia, ib = rng.choice(len(PA["a"]), n, replace=False), rng.choice(len(PB["a"]), n, replace=False)
     X = np.concatenate([feats(subset(PA, np.isin(np.arange(len(PA["a"])), ia))), feats(subset(PB, np.isin(np.arange(len(PB["a"])), ib)))])
     y = np.r_[np.zeros(n), np.ones(n)]
-    epid = np.r_[PA["ep"][np.sort(ia)], PB["ep"][np.sort(ib)] + 10 ** 6]
-    u = np.unique(epid); test_eps = rng.choice(u, len(u) // 3, replace=False); te = np.isin(epid, test_eps)
+    te = episode_split(PA["ep"][np.sort(ia)], PB["ep"][np.sort(ib)], rng)
     m = lgb.train({"objective": "binary", "verbose": -1, "num_threads": 12, "seed": 0, "num_leaves": 31},
                   lgb.Dataset(X[~te], y[~te]), 200)
     acc = float(((m.predict(X[te]) > 0.5) == y[te]).mean())
@@ -209,14 +244,16 @@ def episode_grids(L):
 
 
 def revisit_events(ep_list, drift=0.0, rng=None, marg=None):
-    """Cells entering view that were seen before: (episode, gap, terrain agrees with last sighting). Terrain is only
-    recorded and compared where no entity covers the cell (a reader cannot see under an entity). With drift > 0, the
-    terrain of each revisited cell is redrawn from the terrain marginal `marg` with that probability (a plausible
-    forgetting corruption for the power check; the redraw can coincide with the truth)."""
+    """Cells entering view whose terrain was seen before: (episode, gap, terrain agrees). Terrain is read only where
+    nothing covers the cell (no entity, not the player's own cell: a reader cannot see under either), and the gap is
+    the age of the compared value, i.e. steps since its last CLEAR sighting (fixed 10-27: the age had come from the
+    last in-view sighting even when that one was covered, for 1.4% of comparisons). With drift > 0, the terrain of
+    each revisited cell is redrawn from the terrain marginal `marg` with that probability (a plausible forgetting
+    corruption for the power check; the redraw can coincide with the truth)."""
     rows = []
     rr, cc = np.meshgrid(np.arange(7) - 3, np.arange(9) - 4, indexing="ij")
     for e, ep in enumerate(ep_list):
-        last_t, last_v = {}, {}
+        last = {}                                                   # world cell -> (t, terrain) of its last clear sighting
         prev = set()
         for t in range(len(ep["pos"])):
             wr = ep["pos"][t][0] + rr; wc = ep["pos"][t][1] + cc
@@ -224,15 +261,14 @@ def revisit_events(ep_list, drift=0.0, rng=None, marg=None):
             for i in range(7):
                 for j in range(9):
                     w = (int(wr[i, j]), int(wc[i, j])); cur.add(w)
-                    free = ep["grid"][t, i, j] == 0
+                    if ep["grid"][t, i, j] != 0 or (i, j) == (3, 4):
+                        continue
                     v = int(ep["view"][t, i, j])
-                    if t > 0 and w not in prev and w in last_t and free and w in last_v:
+                    if t > 0 and w not in prev and w in last:
                         if drift > 0 and rng.random() < drift:
                             v = int(rng.choice(len(marg), p=marg))
-                        rows.append((e, t - last_t[w], v == last_v[w]))
-                    last_t[w] = t
-                    if free:
-                        last_v[w] = v
+                        rows.append((e, t - last[w][0], v == last[w][1]))
+                    last[w] = (t, int(ep["view"][t, i, j]))
             prev = cur
     return np.array(rows, dtype=np.int64).reshape(-1, 3)
 
@@ -245,9 +281,23 @@ def revisit_estimates(R):
     return out
 
 
+def traj_pairs(grid, body, pos, actions, light, since0, ep):
+    """One observable trajectory (states 0..n, actions 0..n-1) -> transition pairs as build_pairs makes them, so the
+    one-step gates run on rollouts. since0: steps since the last health drop before the first state (capped at 10)."""
+    n = len(grid) - 1; since = np.zeros(n, int); c = since0
+    drop = body[1:, 0] < body[:-1, 0]
+    for t in range(n):
+        since[t] = c; c = 1 if drop[t] else min(c + 1, 10)
+    return {"g0": grid[:-1], "g1": grid[1:], "d": pos[1:] - pos[:-1], "h0": body[:-1, 0], "h1": body[1:, 0],
+            "night": light[:-1] < 0.5, "a": np.asarray(actions[:n], int), "since": since, "ep": np.full(n, ep)}
+
+
 def summary_vector(grid, body, reward, done, pos):
     """One observable trajectory -> one vector: per step, per kind (count, mean row, mean col), body (4), reward,
-    termination, camera shift (2). Terminal convention: after termination, an absorbing step (zeros, termination 1)."""
+    termination, camera shift (2). Terminal convention: after termination, an absorbing step (zeros, termination 1).
+    Scope (review 10-27): per kind it keeps count and centroid only, so arrangements with equal counts and centroids
+    (e.g. two entities stepping diagonally in opposite directions) map to the same vector; spatial legality is checked
+    by the event gates (diag_move), not by scores on this summary."""
     H = len(reward); feats = []
     rr, cc = np.meshgrid(np.arange(7) - 3, np.arange(9) - 4, indexing="ij")
     ended = False
@@ -305,20 +355,15 @@ def main():
     refA = all_estimates(PA)
     rng = np.random.default_rng(20261027)
     cases = {"real_half_B": PB}
-    for kind in ("shuffled_history", "mismatched_actions", "duplicated_entities", "delayed_consequences", "frozen_time"):
+    for kind in ("shuffled_history", "mismatched_actions", "reversed_actions", "duplicated_entities", "diagonal_moves",
+                 "delayed_consequences", "frozen_time"):
         cases[kind] = corrupt(PB, kind, rng)
     report = {}
     for name, Q in cases.items():
-        est = all_estimates(Q); rej = []
-        for k, a in refA.items():
-            b = est.get(k)
-            if a is None or b is None:
-                continue
-            se = np.hypot(a["se"], b["se"])
-            if se > 0 and abs(b["est"] - a["est"]) > 3 * se:
-                rej.append(k)
-        report[name] = {"rejected_by": rej, "n_rejecting_gates": len(rej), "c2st": c2st(PA, Q, rng)}
-        print(name, len(rej), rej[:8], report[name]["c2st"], flush=True)
+        rej, unmeasured = compare(refA, all_estimates(Q))
+        report[name] = {"rejected_by": rej, "n_rejecting_gates": len(rej), "unmeasured": unmeasured,
+                        "c2st": c2st(PA, Q, rng)}
+        print(name, len(rej), rej[:8], "unmeasured", unmeasured, report[name]["c2st"], flush=True)
     out["power"] = report
     json.dump(out, open(sys.argv[2], "w"), indent=1)
 

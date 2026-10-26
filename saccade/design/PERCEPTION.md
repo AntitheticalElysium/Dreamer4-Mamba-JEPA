@@ -15,9 +15,9 @@ that answers the thesis, not a perfect Craftax model; Craftax-specific structure
   readability a classifier achieved on raw cells; it is neither an upper bound nor what periphery tokens will hold.
 - Fixation chosen for decision-relevant information (consequence-prediction gain offline, value of information in
   imagination).
-- Tokens are CONTINUOUS (user, 10-26). Multimodality lives in the generator's categorical chance codes (DreamerV3's
-  discrete stochastic state is used in continuous-control and 3D domains, so not Craftax-specific) and in the
-  observation stage below. Categorical perception tokens shelved. Precedents for continuous percepts in long
+- Tokens are CONTINUOUS (user, 10-26). Multimodality lives in the generator (since 10-27, generator v3: a denoiser
+  over continuous percepts; the categorical chance codes and the separate observation stage first named here are
+  superseded). Categorical perception tokens shelved. Precedents for continuous percepts in long
   imagination: Dreamer 4 (tanh bottleneck latents, offline Minecraft), GameNGen (noise-augmented continuous latents).
   Dedieu's collapse of continuous patches was MSE reconstruction of raw patches, not a matched comparison.
 - Anti-collapse: SIGReg on the continuous tokens (alternative: R2-Dreamer's Barlow-style term against a detached
@@ -39,7 +39,11 @@ Design: one latent estimated from the whole frame, three uses:
 Global first (Craftax's light is global); a coarse spatial field (shadows, local lights) is the general extension.
 In imagination it comes from the belief's global stream (time of day, sleep).
 
-## Observation stage (agreed in principle, 10-26; specifics v1)
+## Observation stage (agreed in principle, 10-26; specifics v1) — SUPERSEDED 10-27 by generator v3
+Kept for the record. Under v3 the denoiser generates the next percept itself, observation noise included, so there is
+no separate stage, no chance codes and no stage-specific energy-score loss (the next-percept term is LOSSES G1). What
+carries over to the denoiser: one realisation shared by periphery and glimpse (they are generated jointly), and the
+checks at the end of this section (two-sample tests on matched tuples, the noise-belief loop, night overconfidence).
 The generator's final stochastic stage, not a module with its own target.
 - Form (engression-style): percept = O(content, conditions, eps), eps ~ N(0, I) entering the network (pre-additive
   noise), one draw per frame per location, SHARED by the periphery head and the glimpse head (same frame = same

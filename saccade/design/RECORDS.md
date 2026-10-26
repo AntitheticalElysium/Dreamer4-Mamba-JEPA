@@ -1,5 +1,10 @@
 # Records (object beliefs): design v3 (2026-10-26)
 
+Increment I2, not part of M0. Written against generators v1-v2; under generator v3 (10-27, belief-MDP) there is no
+concrete simulated world, no chance codes or sampled parent events, and no separate energy-score observation stage, so
+those mentions below are superseded. The record machinery (association, lifecycle, presence vs visibility,
+revisability) stands and is re-specified against v3 when I2 is built.
+
 History: v1 per-record hypotheses + soft assignment (incoherent identities, Codex) -> v2 scene particles of object
 files (SWB; coherent but M-fold cost) -> v3: ONE coherent association per step, per-object position distributions,
 layered ownership, no dormant state. The user asked whether particles change anything compared with one coherent
@@ -62,20 +67,19 @@ Conclusion: v3 is an approximation chosen for cost; scene particles stay the doc
 - Correction: amortised (the update is a learned network, as differentiable particle filters): it reweights each
   record's own hypotheses (including non-detection where a record was expected but the background owns the location,
   scaled by the viewing-conditions reliability) and updates owned records from their evidence. Trained end to end by
-  the world losses, with calibration checks. No explicit observation likelihood is needed, so the agreed observation
-  stage (energy score) stands unchanged.
+  the world losses, with calibration checks. No explicit observation likelihood is needed.
 - Lifecycle: presence on / off; inactivation is a learned transition (dies, leaves) plus evidence; capacity releases
   the longest-invisible, least-supported record and resets its state; releasing is forgetting, so a later appearance
   is a birth. Births = an inactive record activating (location + appearance in its latent), conditioned on context,
-  action and other records' sampled events (parents). Option: released records leave store entity traces with age
+  action and other records (parents). Option: released records leave store entity traces with age
   and uncertainty (object-trace cells) for returns; they are memory of past observations, not rendered background.
 - Presence: the belief keeps each record's presence probability (tentative entities stay uncertain for the actor).
 - Imagination (updated 10-27, generator v3): no concrete world is sampled. The generator samples the next PERCEPT from
   the predicted belief and the same update absorbs it (belief-MDP simulation; Kaelbling, Littman & Cassandra 1998).
   Records' predicted motion is the update's own deterministic predict step (propagating each hypothesis
-  distribution); the stochastic outcome appears in the generated percept. Superseded wording: "the simulated world is
-  one concrete sample ... the actor still reads its belief, updated by the same network from the generated percepts
-  (Codex; POMCP's separation of hidden world and observation history). Cost per imagined step: one world + one belief.
+  distribution); the stochastic outcome appears in the generated percept. (Superseded v2 wording, for the record:
+  "the simulated world is one concrete sample; the actor still reads its belief, updated by the same network from the
+  generated percepts" (Codex; POMCP), at one world + one belief per imagined step.)
 - Store writes: only where the background owns the location in the (single) association.
 
 ## Checks (evaluation labels only)

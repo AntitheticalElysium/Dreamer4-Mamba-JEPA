@@ -1,8 +1,9 @@
 """S0 step 3 (2026-10-27): revisit references and their power (TEST_SPEC v1.1, S2.2).
 
-A revisit = a cell entering the view that was seen before; its gap = steps since it was last in view. For each gap
-stratum (1-16, 17-64, 65-256, > 256): how often revisits happen (per transition) and how often the terrain agrees with
-the last sighting (entity-covered cells excluded both times), with episode-bootstrap SE; on all of dev and on the
+A revisit = a cell entering the view whose terrain was seen before; its gap = steps since that terrain was last seen
+clear (no entity, not the player's cell; G.revisit_events, aged from the compared sighting since the 10-27 review fix).
+For each gap stratum (1-16, 17-64, 65-256, > 256): how often revisits happen (per transition) and how often the
+terrain agrees with that sighting, with episode-bootstrap SE; on all of dev and on the
 eps = 1.0 episodes the 16-step S2 windows come from. Power: dev half A (even episodes) as reference; half B must pass;
 half B with terrain FORGETTING (revisited terrain redrawn from the terrain marginal with p = 0.05) must be rejected
 (|B - A| > 3 joint SE). The minimal detectable drop (3 joint SE) is reported per stratum.

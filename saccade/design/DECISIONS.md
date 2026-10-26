@@ -5,6 +5,23 @@ SPEC_v0.md is one sketch with unchosen assumptions, not a spec. Moved here 10-27
 superseded drafts (SPEC_v0, LEARNING_SKETCH, OPTION3_NOTES) and T1/T2 protocols named in these files stay in
 artifacts/experiments/20261023_system_design/, the S0 results in artifacts/experiments/20261027_s0_harness/.
 
+## Current contract for the first build, M0 (10-27; this list wins where older entries below disagree)
+- Perception (PERCEPTION v4, except its "Observation stage" section): patch-local continuous tokens (A) conditioned on
+  the viewing-conditions latent v; fovea = higher-capacity 3x3-cell glimpse anywhere, HUD included, its pixels the TSP
+  target (TSP noise model); SIGReg on tokens; change-map target from the A9b detector.
+- Belief (STEP_SPEC §7): the last 4 percepts (glimpses with their fixation coordinates) + one Mamba state reading the
+  pooled percept, action, reward and termination. No store, records or self-location (increments I1 / I2).
+- Generator v3 (GENERATOR v3, STEP_SPEC §2-3): an EDM denoiser (x-prediction, ~3 Euler steps) of the next percept (v,
+  periphery, glimpse jointly) conditioned on (Mamba output, recent percepts, action, fixation). No chance codes, no
+  separate observation stage, no hidden world: imagination is the belief-MDP loop.
+- Outcomes: reward ~ discretised mixture of logistics over symlog(r), 256 bins over the train split's support
+  [-0.9, 1.1], conditioned on (predicted belief, next percept); continuation BCE given (predicted belief, percept,
+  reward); survival-conditioned actor returns, sampled termination for distributional scoring; the critic keeps two-hot.
+- Losses LOSSES v1.1; curriculum CURRICULUM v1 (P1 one-step, P2 multi-step on exogenous windows with the encoder
+  frozen, P3 actor at H = 16); tests TEST_SPEC v1.1 with the harness in saccade/eval.
+- Still to fix before a training run: per-phase budgets (updates, seeds), the two S3 blocker bounds, and the P2
+  training summary with its gradient boundary (LOSSES G4; distinct from the S0 evaluation summary).
+
 ## Agreed
 - Offline only; the actor trains in imagination. (The point of imagination training.)
 - No full-frame pixel reconstruction and no pixel-equivalent persistent state; limited pixel grounding is intended:
@@ -58,12 +75,14 @@ artifacts/experiments/20261023_system_design/, the S0 results in artifacts/exper
 - No special-cased screen regions: the HUD is perceived like any region and read at high fidelity through the dynamic
   fovea (user, reaffirmed 10-26; earlier: a dynamic fovea "avoids hardcoding the HUD"). The fovea is an evidence
   stream, higher-capacity than the bounded-capacity periphery tokens.
-- Perception tokens are continuous; categorical tokens shelved (user, 10-26). Chance codes stay categorical (general).
+- Perception tokens are continuous; categorical tokens shelved (user, 10-26). [Superseded 10-27 by generator v3:
+  "chance codes stay categorical"; v3 has no chance codes.]
 - Viewing-conditions (lighting) latent, CANONICAL (user, 10-26): one latent from the whole frame (a register) with three
   uses: gain on the encoder, constancy (perception discounts it, the generator composes appearance from content +
   conditions), evidence precision (how much the update trusts detections; observation-noise scale). Global first; a
   coarse spatial field is the general extension. Overconfident filling-in is a failure mode to check.
-- Observation stage = the generator's final stochastic stage targeting actual percepts, with per-frame noise shared by
+- [Superseded 10-27 by generator v3, which denoises the percept itself, noise included; the checks listed here
+  carry over to the denoiser.] Observation stage = the generator's final stochastic stage targeting actual percepts, with per-frame noise shared by
   periphery and glimpse (user agreed, 10-26). Specifics (PERCEPTION.md v4): engression-style noise input; time /
   locality / capacity as an inductive bias (not a guarantee); patched + global energy score (beta = 1); joint
   periphery-glimpse scoring; independent chance draws for prior-predictive scoring; noise-belief loop checks.
@@ -83,8 +102,8 @@ artifacts/experiments/20261023_system_design/, the S0 results in artifacts/exper
   activating, amortised correction (observation stage unchanged), imagination samples one world while the actor reads
   its belief. Added: revisability by deferred commitment when the association is split (A14b: 7% of re-entries).
   An approximation chosen for cost; scene particles documented as the upper end. A14 v1 retracted (A14b).
-- Generator v2 (GENERATOR.md): typed tokens (records, locations, global), one transition network, per-token
-  categorical latents decoded JOINTLY by masked iterative decoding (EMERALD / Genie / MaskGIT), S = 3. Awaiting user.
+- [Superseded by v3, next entry] Generator v2 (GENERATOR.md): typed tokens (records, locations, global), one transition network, per-token
+  categorical latents decoded JOINTLY by masked iterative decoding (EMERALD / Genie / MaskGIT), S = 3.
 - Generator v3 APPROVED (user, 10-27): denoise the next percept from the predicted belief (belief-MDP; JEDI recipe:
   EDM, x-prediction, ~3 Euler steps; RAE width / noise-shift rules); no hidden world, no chance codes. Reward and
   termination are observations the update reads (Craftax HUD does not show achievements). Conservation and revisit
@@ -97,25 +116,24 @@ artifacts/experiments/20261023_system_design/, the S0 results in artifacts/exper
   corruption + self-conditioning from the start, multi-step distributional post-training with a horizon schedule,
   imagination H = 16. Outcome models: reward as a samplable density (not two-hot), survival-conditioned termination.
   AGREED (user, 10-27); contracts per Codex recorded (CURRICULUM v1, LOSSES v1.1, STEP_SPEC v1.3, TEST_SPEC v1.1).
-- S0 complete for review (artifacts/experiments/20261027_s0_harness/RESULTS.md): exact dev labels; one-step gates (real half 0 rejections,
-  five corruptions rejected); revisit references (terrain static); multi-step gates against a simulator oracle (six
-  corruptions rejected; the energy score never pass / fail); per-cell probe definition with its pixel reference;
-  outcome evaluator with an information ladder (unlock memory is worth 0.024 -> 0.007 nats per step). References are
-  recomputed through the frozen reader after P1.
-- Losses v1 (LOSSES.md): per-element averaging, natural frequencies, fixed weak-coupling scale and a starting SIGReg
-  lambda, HarmonyDream-style learned scales per unit group (optimum corrected), schedules. Awaiting the user.
-- Step specification v0 (STEP_SPEC.md): persistent state, real step, objective, imagined step, actor inputs, build
-  order. Awaiting user.
+- S0 complete, reviewed by Codex and fixed 10-27 (artifacts/experiments/20261027_s0_harness/RESULTS.md): exact dev
+  labels; 51 one-step gates (real half 0 rejections, seven corruptions rejected; zero-variance rule, cardinal-motion
+  gates); revisit references (terrain almost static), aged from the compared sighting; multi-step power against a
+  simulator oracle with the operational event gates on rollouts (all seven corruptions rejected, delayed consequences
+  narrowly; the energy score never pass / fail); per-cell probe definition with its pixel reference (achieved
+  readability); outcome evaluator with finite-learner references and common reward bins (beating R2 does not show
+  memory; the S1.2 controls and probes do). References are recomputed through the frozen reader after P1.
+- Losses (LOSSES.md) and step specification (STEP_SPEC.md): agreed 10-27 as v1.1 / v1.3 (see the staged-test entry).
 - Self-state supervision (body / inventory) beyond reward / termination / TSP — separate from removing the HUD input
   path (Codex, 10-26). Health enters reward (0.1 x health change).
-- Perception objective: latent next-perception prediction (now an energy score) + soft change map + TSP at fixations +
+- Perception objective (wording pre-v3; under v3 the next-percept term is the denoising loss): latent next-perception prediction + soft change map + TSP at fixations +
   grounded consequences + store revisit prediction; static, unfixated, inconsequential entities rely on appearance
   shared with moving instances (a learning claim).
 - Action confounding: future recorded actions reveal outcomes (multi-step sampled scoring) and the expert saw clean
   symbolic observations. Exogenous data: random-branch steps regenerated exactly from the collector's seeds (A8:
   740,693 / 740,693 match); eps = 1.0 episodes for long windows.
-- Generator: code families, prior inputs, births by source; how real observations enter the state = per-frame
-  perception, one update for both regimes (working proposal, user + me, 10-25).
+- Generator: how real observations enter the state = per-frame perception, one update for both regimes (10-25;
+  settled by v3). Code families / births by source belong to v1-v2 and to I2.
 - Rollout robustness (training on the model's own rollouts) and its link to consequence horizons.
 - Loss units and weights: likelihood units, then a harmoniser; only after the above.
 - Alignment during training before self-location is reliable.
