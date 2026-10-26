@@ -1,0 +1,703 @@
+folder	files_deleted	bytes_deleted	reasons
+.archive/ckpt	81	2091860431	cache / pool / tape x81
+.archive/outputs/crafter_oracle_ladder/stage1_dataset_oracle	9	73773973	cache / pool / tape x1; intermediate checkpoint x8
+.archive/outputs/crafter_oracle_ladder/stage1_dataset_oracle_smoke	1	8184429	cache / pool / tape x1
+.archive/outputs/crafter_oracle_ladder/stage1_full_replay_bc	39	317810571	cache / pool / tape x1; intermediate checkpoint x38
+.archive/outputs/d4_mamba_jepa/cartpole_baseline	2	680630490	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/cartpole_baseline/run_seed20260720	2	9156490	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/cartpole_baseline_v2	2	264805786	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/cartpole_baseline_v2/run_seed20260721	2	9156490	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/cartpole_baseline_v3	4	296806132	cache / pool / tape x4
+.archive/outputs/d4_mamba_jepa/cartpole_baseline_v3/run_seed20260722	2	9156490	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/cartpole_baseline_v3/tokenizer_probe	2	9156490	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/cartpole_jepa_ms_smoke	1	9864687	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_jepa_smoke	1	9864623	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_jepa_v1/run_seed20260722	2	15301426	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/cartpole_jepa_v2/run_seed20260722	1	9864687	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_mamba_actor/run_seed20260722	1	7094801	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_mamba_actor/smoke_v1	1	7094801	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_mamba_actor_m64/run_seed20260722	1	7252241	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_mjepa_d043	1	9990079	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_mjepa_j11	1	9990079	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_mjepa_j8	1	9990079	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_mjepa_v1	2	11154046	intermediate checkpoint x1; cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_sigreg_faithful	1	8404769	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_sigreg_faithful_v2	1	8404769	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_sigreg_id/run_seed20260722	2	17120766	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/cartpole_sigreg_proj_rho03	1	8608257	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_sigreg_rho02	1	8404833	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_sigreg_rho03	1	8404833	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_sigreg_smoke	1	8404705	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_sigreg_v1/run_seed20260722	1	8404705	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_sigreg_v2/run_seed20260722	1	8608193	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_sigreg_v3/run_seed20260722	2	12896038	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/cartpole_sigreg_v4/run_seed20260722	2	12896038	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/cartpole_sigreg_v5/run_seed20260722	1	8608193	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_sigreg_v6/run_seed20260722	1	8608193	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/cartpole_smoke	2	27736410	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/cartpole_smoke/run	2	9156490	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/craftax_capacity/d_bottleneck_32	1	10419887	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/craftax_capacity/d_bottleneck_64	1	11508399	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/craftax_capacity/n_latents_256_d_bottleneck_16	1	17048751	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/craftax_capacity/n_latents_64_d_bottleneck_16	1	11310255	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/craftax_expert_v1/m_jepa	1	10000831	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/craftax_expert_v1/t_jepa	1	9875631	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/craftax_slowenc_v1/m_jepa	1	10001151	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/craftax_slowenc_v1/t_jepa	1	9875951	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/craftax_tbase/t_base	2	9846978	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/craftax_tbase/t_base_n_latents_64	2	9896130	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/crafter_agent_screen_t_p7_oldphase1_1k	1	8162653	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/crafter_agent_screen_t_p7_oldphase1_rms_1k	3	24568843	cache / pool / tape x1; intermediate checkpoint x2
+.archive/outputs/d4_mamba_jepa/crafter_agent_t_p7_oldphase1_rms_10k	9	73706401	cache / pool / tape x1; intermediate checkpoint x8
+.archive/outputs/d4_mamba_jepa/crafter_human_mjepa	3	12360829	cache / pool / tape x3
+.archive/outputs/d4_mamba_jepa/crafter_human_tjepa	3	12235309	cache / pool / tape x3
+.archive/outputs/d4_mamba_jepa/crafter_mjepa_j8	2	11063806	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/crafter_mjepa_v1	8	18021304	cache / pool / tape x8
+.archive/outputs/d4_mamba_jepa/crafter_tjepa_v1	4	13298156	cache / pool / tape x4
+.archive/outputs/d4_mamba_jepa/diagnostic_phase1_aux_ab_seq64_1k	2	18367722	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/diagnostic_phase1_dropout_ab_seq64_1k	2	16955006	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/diagnostic_phase1_target_mode_ab_seq64_1k	1	8477695	cache / pool / tape x1
+.archive/outputs/d4_mamba_jepa/preflight_smoke	2	9179514	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/preflight_smoke_v2	2	9179514	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/preflight_t_base	2	9179514	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/preflight_t_base_5k	2	9179514	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/stage_m1	2	14251242	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/stage_m1_deterministic	2	14252586	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/stage_m1_deterministic_repeat	2	14252586	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/stage_m1_repeat	2	14251242	cache / pool / tape x2
+.archive/outputs/d4_mamba_jepa/stage_m1_smoke	2	14251242	cache / pool / tape x2
+.archive/outputs/upstream/dreamerv3/crafter_random_seed0_100k/replay	43	57475554	cache / pool / tape x43
+.archive/outputs/upstream/dreamerv3/crafter_size1m_seed0_tr32_100k/ckpt/20260720T130043F193298	1	8537912	cache / pool / tape x1
+.archive/outputs/upstream/dreamerv3/crafter_size1m_seed0_tr32_100k/plugins/profile/2026_07_20_12_42_14	1	151846066	cache / pool / tape x1
+.archive/outputs/upstream/dreamerv3/crafter_size1m_seed0_tr32_100k/replay	82	179901310	cache / pool / tape x82
+.archive/outputs/upstream/dreamerv3/crafter_size1m_seed0_tr32_5k/ckpt/20260720T123534F561454	1	8537907	cache / pool / tape x1
+.archive/outputs/upstream/dreamerv3/crafter_size1m_seed0_tr32_5k/plugins/profile/2026_07_20_12_36_57	1	127625079	cache / pool / tape x1
+.archive/outputs/upstream/mmbench2/checkpoints/combined	2	1424830926	cache / pool / tape x2
+.archive/outputs/upstream/mmbench2/data/val	1	1192667	cache / pool / tape x1
+.archive/outputs/upstream/mmbench2/data/val-shards/ms-pick-apple	1	78276398	cache / pool / tape x1
+.archive/outputs/upstream/mmbench2/data/val-shards/og-point-maze	1	304068398	cache / pool / tape x1
+.archive/reviews/artifacts	123	1265398789	cache / pool / tape x80; intermediate checkpoint x43
+.archive/reviews/artifacts/encoder_anchor	9	82801137	cache / pool / tape x9
+.archive/reviews/artifacts/lr_objective_grid	17	166826571	cache / pool / tape x17
+artifacts	1	1316858763	cache / pool / tape x1
+artifacts/action_conditioning_diagnostics/expanded_forks	1	1822306	cache / pool / tape x1
+artifacts/consequence_learnability	2	73963890	intermediate checkpoint x2
+artifacts/craftax_forks_flat_v1	125	15274742211	cache / pool / tape x125
+artifacts/direct_transition_stages/features	4	55918009	cache / pool / tape x4
+artifacts/eda/actionable_latents	8	3992004688	cache / pool / tape x8
+artifacts/eda/actionable_roots	80	1869612976	cache / pool / tape x80
+artifacts/eda/backbone_mechanism_v2	11	2106418807	cache / pool / tape x11
+artifacts/eda/branched_damage	3	3205329	cache / pool / tape x3
+artifacts/eda/broad_forks_v2	1426	11818750738	cache / pool / tape x1426
+artifacts/eda/broad_latents_v2	38	4124188342	cache / pool / tape x38
+artifacts/eda/broad_regime_s2	5	273663525	cache / pool / tape x2; intermediate checkpoint x3
+artifacts/eda/broad_uniform_s0	5	273663909	cache / pool / tape x2; intermediate checkpoint x3
+artifacts/eda/broad_uniform_s2	5	273663525	cache / pool / tape x2; intermediate checkpoint x3
+artifacts/eda/candidate_evaluation_v1	5	79695224	cache / pool / tape x5
+artifacts/eda/capacity/n32d16_s0	2	144219574	intermediate checkpoint x2
+artifacts/eda/capacity/n64d16_s0	2	144285110	intermediate checkpoint x2
+artifacts/eda/capacity6k/n32d16_s0	5	505024439	intermediate checkpoint x4; cache / pool / tape x1
+artifacts/eda/capacity6k/n32d16_s1	5	505024439	intermediate checkpoint x4; cache / pool / tape x1
+artifacts/eda/capacity6k/n64d16_s0	5	505253815	intermediate checkpoint x4; cache / pool / tape x1
+artifacts/eda/capacity6k/n64d16_s1	5	505253815	intermediate checkpoint x4; cache / pool / tape x1
+artifacts/eda/damage_allaction	2	73963890	intermediate checkpoint x2
+artifacts/eda/damage_classifier	2	73963890	intermediate checkpoint x2
+artifacts/eda/damage_frozen80k	2	73963890	intermediate checkpoint x2
+artifacts/eda/damage_miniH2	3	363924661	intermediate checkpoint x2; cache / pool / tape x1
+artifacts/eda/damage_pixels	2	146015594	intermediate checkpoint x2
+artifacts/eda/decision_pricing_v1/clean_s2	1	282091567	cache / pool / tape x1
+artifacts/eda/deepeval_v1	16	25200773698	cache / pool / tape x16
+artifacts/eda/deepeval_v1/h16-resume-v1/corrt_raw_teacher_s8_fmamba_u36000__w5__det__861588baea475c7a	123	4379744906	cache / pool / tape x123
+artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_L16b40_from36000__w15__det__03a8b3e104ebe9ef	123	4379744906	cache / pool / tape x123
+artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__f97b2da4f9e724b4	123	4379744906	cache / pool / tape x123
+artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_di_L16b40_from36000__w15__det__6cb6f1c91c89552a	123	4379744906	cache / pool / tape x123
+artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s7_fmamba_di_L16b40_fromcorrt_rawlong_teacher_s7_fmamba_L16b40_from36000__w15__det__d9d3c30d481bf96b	123	4379744906	cache / pool / tape x123
+artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_L16b40_from36000__w15__det__c2d0e05f779612fe	123	4379744906	cache / pool / tape x123
+artifacts/eda/deepeval_v1/h16-resume-v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__w15__det__cb1596225c7af346	123	4379744906	cache / pool / tape x123
+artifacts/eda/deepeval_v1/h16-resume-v1/dworld_a_s7_from2000_revalways_mwauto_L16_di_b16_dscratch_u2000_prior_u20000__w15__e16__a7535412a35cb02b	138	12940303178	cache / pool / tape x138
+artifacts/eda/deeppanel_dev_v1	344	3768093096	cache / pool / tape x344
+artifacts/eda/deeppanel_fit_v1	692	7924259118	cache / pool / tape x692
+artifacts/eda/deeppanel_judge_v1	395	4392186831	cache / pool / tape x395
+artifacts/eda/diagnosis_dump_v1	28	630256936	cache / pool / tape x28
+artifacts/eda/diagnosis_futures_v1	143	2370743170	cache / pool / tape x143
+artifacts/eda/diagnosis_rollouts_v1	8	2232490835	cache / pool / tape x8
+artifacts/eda/dpanel_v1	13	10541339486	cache / pool / tape x13
+artifacts/eda/feasibility_v1	2	4462426	cache / pool / tape x2
+artifacts/eda/fork_histories	2	941262522	cache / pool / tape x2
+artifacts/eda/fork_successors	14	1098050178	cache / pool / tape x14
+artifacts/eda/forkset_abm0_n64	14	1083060690	cache / pool / tape x14
+artifacts/eda/forkset_abm1_n64	14	1083060690	cache / pool / tape x14
+artifacts/eda/forkset_abn0_n64	14	1083060690	cache / pool / tape x14
+artifacts/eda/forkset_abn1_n64	14	1083060690	cache / pool / tape x14
+artifacts/eda/forkset_abt0_n64	14	1083060690	cache / pool / tape x14
+artifacts/eda/forkset_abt1_n64	14	1083060690	cache / pool / tape x14
+artifacts/eda/forkset_cvr0_n64	14	1083060690	cache / pool / tape x14
+artifacts/eda/forkset_cvs0_n64	14	1083060690	cache / pool / tape x14
+artifacts/eda/forkset_s0_n32	14	544672210	cache / pool / tape x14
+artifacts/eda/forkset_s0_n64	14	1083060690	cache / pool / tape x14
+artifacts/eda/forkset_s1_n32	14	544672210	cache / pool / tape x14
+artifacts/eda/forkset_s1_n64	14	1083060690	cache / pool / tape x14
+artifacts/eda/forkset_s1fix_n64	14	1083060690	cache / pool / tape x14
+artifacts/eda/forkset_s1fixb_n64	14	1083060690	cache / pool / tape x14
+artifacts/eda/frozen_eval_resume_v1/corrt_raw_teacher_s7_fmamba_u36000__damage_w5__6a1f3e907b05f27b	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_raw_teacher_s7_fmamba_u36000__e19_health_positions__18e2751cb9a7fec2	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/corrt_raw_teacher_s7_u36000__damage_w5__8274fe1f42638d0a	16	498752720	cache / pool / tape x16
+artifacts/eda/frozen_eval_resume_v1/corrt_raw_teacher_s7_u36000__e19_health_positions__bfe534474588bff0	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/corrt_raw_teacher_s8_fmamba_u36000__damage_w5__45d43179b357a7b8	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_raw_teacher_s8_fmamba_u36000__e19_health_positions__789f449e920c3e7a	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/corrt_raw_teacher_s8_u36000__damage_w5__038fce51a6333d51	16	498752720	cache / pool / tape x16
+artifacts/eda/frozen_eval_resume_v1/corrt_raw_teacher_s8_u36000__e19_health_positions__26c3745260ca6cbb	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_L16b40_from36000__damage_w15__59561370f5b2a418	16	498752720	cache / pool / tape x16
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_L16b40_from36000__damage_w5__de0337e079b8ce2c	16	498752720	cache / pool / tape x16
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_L16b40_from36000__teval_w15__c789c8829a78b2c0	63	1527271263	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_L16b40_from36000__teval_w5__9561814998993f20	63	1527271263	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__damage_w15__3195cbd745b466db	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__damage_w15__bf460d8ddf7c023c	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__damage_w5__16fc366fdc14ea88	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__e19_health_positions__988cf6d4d3a964ca	1	1872838	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__teval_w15__32eecd4c36b5127b	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000__teval_w5__efde6476d62b4310	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_L16b40_fromcorrt_rawlong_teacher_s7_fmamba_L16b40_from36000__damage_w15__0d6744a50d1abb3f	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_L16b40_fromcorrt_rawlong_teacher_s7_fmamba_L16b40_from36000__teval_w15__0d280896986ca87f	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_di_L16b40_from36000__damage_w15__73a058e8369971fc	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_di_L16b40_from36000__teval_w15__fd7c9c467db52708	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_di_L16b40_fromcorrt_rawlong_teacher_s7_fmamba_L16b40_from36000__damage_w15__e446cac1cb2f2fdc	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_di_L16b40_fromcorrt_rawlong_teacher_s7_fmamba_L16b40_from36000__teval_w15__a4cf4d866411973a	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_ev_L16b40_fromcorrt_rawlong_teacher_s7_fmamba_evlp_L16b40_from36000__damage_w15__3c723b31939a1829	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_ev_L16b40_fromcorrt_rawlong_teacher_s7_fmamba_evlp_L16b40_from36000__teval_w15__8dc58fac1ecad4d2	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_gl_L16b40_fromcorrt_rawlong_teacher_s7_fmamba_L16b40_from36000__damage_w15__4d112d3acb271dde	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_gl_L16b40_fromcorrt_rawlong_teacher_s7_fmamba_L16b40_from36000__teval_w15__25f533d734a30ad3	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_gl_ev_L16b40_from36000__damage_w15__049748e64b426830	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_gl_ev_L16b40_from36000__teval_w15__849a1be552d90d54	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_gl_ev_L16b40_fromcorrt_rawlong_teacher_s7_fmamba_L16b40_from36000__damage_w15__a69f49e8ccbbf2a3	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s7_fmamba_gl_ev_L16b40_fromcorrt_rawlong_teacher_s7_fmamba_L16b40_from36000__teval_w15__84eec4e4a6b8089e	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s8_L16b40_from36000__damage_w15__62c2c19b6025ce8d	16	498752720	cache / pool / tape x16
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s8_L16b40_from36000__damage_w5__daa7bfef03f7ad78	16	498752720	cache / pool / tape x16
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s8_L16b40_from36000__teval_w15__637abdd29bdf7ee2	63	1527271263	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s8_L16b40_from36000__teval_w5__18e58ab2a773c5ba	63	1527271263	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__damage_w15__2cdd449ea98cb9d7	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__damage_w5__e2fb1108aa7de8bb	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__teval_w15__dcbbb611ef92dce6	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/corrt_rawlong_teacher_s8_fmamba_L16b40_from36000__teval_w5__9cecd143f0524519	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/e19_A_s7_fmamba_from36000__damage_w5__fe948fb81494ec3a	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e19_A_s7_fmamba_from36000__e19_health_positions__a800fdff626b8308	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_A_s7_fmamba_from36000__teval_w5__4b0e25ba29eefc07	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/e19_A_s7_full_from36000__damage_w5__d5d31881e4012d09	16	498752720	cache / pool / tape x16
+artifacts/eda/frozen_eval_resume_v1/e19_A_s7_full_from36000__e19_health_positions__2d06ad74689982c7	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_A_s7_full_from36000__teval_w5__e43df2fb2955b330	63	1527271263	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e19_A_s8_fmamba_from36000__damage_w5__ad7336be963f93d0	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e19_A_s8_fmamba_from36000__e19_health_positions__d30a36adf7f670e3	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_A_s8_fmamba_from36000__teval_w5__795976135956e1d4	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/e19_A_s8_full_from36000__damage_w5__7ecc4e6a3a0f09b4	16	498752720	cache / pool / tape x16
+artifacts/eda/frozen_eval_resume_v1/e19_A_s8_full_from36000__e19_health_positions__a37ccff7acd9c87a	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_A_s8_full_from36000__teval_w5__26edd1ea5b0f80fe	63	1527271263	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e19_B_s7_fmamba_from36000__damage_w5__877e38494efcad04	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e19_B_s7_fmamba_from36000__e19_health_positions__3752bc40572f212c	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_B_s7_fmamba_from36000__e19_router_diagnosis__d3490b74c782d035	1	54266154	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_B_s7_fmamba_from36000__teval_w5__9630f769df491c0d	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/e19_B_s7_full_from36000__damage_w5__b7a60ebf278ca60c	16	498752720	cache / pool / tape x16
+artifacts/eda/frozen_eval_resume_v1/e19_B_s7_full_from36000__e19_health_positions__43066683a9773a54	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_B_s7_full_from36000__e19_router_diagnosis__7f98162d8de62dbc	1	54266154	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_B_s7_full_from36000__teval_w5__0063eecbf46eacd1	63	1527271263	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e19_B_s8_fmamba_from36000__damage_w5__667d31330511b7e7	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e19_B_s8_fmamba_from36000__e19_health_positions__38f2efc3be49b1f3	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_B_s8_fmamba_from36000__e19_router_diagnosis__c844122db4077752	1	54266154	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_B_s8_fmamba_from36000__teval_w5__8d860272d6bf0a9c	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__damage_w5__731897b060773b39	16	498752720	cache / pool / tape x16
+artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_health_positions__c41ba5c002a6b024	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__e19_router_diagnosis__26031c412eea2010	1	54266154	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_B_s8_full_from36000__teval_w5__dcb36ad1ef2a5639	63	1527271263	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e19_C_s7_fmamba_from36000__damage_w5__bbcd356274d911ee	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e19_C_s7_fmamba_from36000__e19_health_positions__8915b686a2f0d63b	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_C_s7_fmamba_from36000__e19_router_diagnosis__a99560c1b31480b6	1	54266154	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_C_s7_fmamba_from36000__teval_w5__9bd16f4c07590f9a	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/e19_C_s7_full_from36000__damage_w5__07d82da3efcbf5f5	16	498752720	cache / pool / tape x16
+artifacts/eda/frozen_eval_resume_v1/e19_C_s7_full_from36000__e19_health_positions__1972a13e47e28322	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_C_s7_full_from36000__e19_router_diagnosis__d6dfed8e966a8a2c	1	54266154	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_C_s7_full_from36000__teval_w5__5fc0ac3af66632ab	63	1527271263	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e19_C_s8_fmamba_from36000__damage_w5__ba8f7020bf4c9eae	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e19_C_s8_fmamba_from36000__e19_health_positions__42cabde7f8cfddf9	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_C_s8_fmamba_from36000__e19_router_diagnosis__adcef9db6d04179a	1	54266154	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_C_s8_fmamba_from36000__teval_w5__7c794ced43174fd2	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__damage_w5__6d7519720ce11fbd	16	498752720	cache / pool / tape x16
+artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_health_positions__33ac18a1281eb312	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__e19_router_diagnosis__ac86325bc4fa4805	1	54266154	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e19_C_s8_full_from36000__teval_w5__a401afa334fd15b3	63	1527271263	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e20_A_s7_fmamba_fromM16__damage_w15__a1b2bd186376c04d	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e20_A_s7_fmamba_fromM16__damage_w4__f0fcf2947e77d284	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e20_A_s7_fmamba_fromM16__damage_w5__117f8cfaeffff457	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e20_A_s7_fmamba_fromM16__e19_health_positions__8bbffc6858c772d5	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e20_A_s7_fmamba_fromM16__teval_w15__9acb61fdd323f4a4	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/e20_A_s7_fmamba_fromM16__teval_w5__369222a915afeb02	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/e20_B_s7_fmamba_fromM16__damage_w15__1633485f1313b5d0	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e20_B_s7_fmamba_fromM16__damage_w4__e4d043e096cad5a8	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e20_B_s7_fmamba_fromM16__damage_w5__c8b5271570ead3ee	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e20_B_s7_fmamba_fromM16__e19_health_positions__9409604ecc68f666	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e20_B_s7_fmamba_fromM16__teval_w15__e07b25eb793206b5	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/e20_B_s7_fmamba_fromM16__teval_w5__74922c40e7395d56	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/e20_C_s7_fmamba_fromM16__damage_w15__70a7e82c4406f296	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e20_C_s7_fmamba_fromM16__damage_w4__4c19b8e7ab57bdea	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e20_C_s7_fmamba_fromM16__damage_w5__e110f26b5b0d9df8	63	498838683	cache / pool / tape x63
+artifacts/eda/frozen_eval_resume_v1/e20_C_s7_fmamba_fromM16__e19_health_positions__2c02c5437ed22711	1	1872774	cache / pool / tape x1
+artifacts/eda/frozen_eval_resume_v1/e20_C_s7_fmamba_fromM16__teval_w15__ae4efd2840228752	251	1527650459	cache / pool / tape x251
+artifacts/eda/frozen_eval_resume_v1/e20_C_s7_fmamba_fromM16__teval_w5__9663b7e9e4f3f1b7	251	1527650459	cache / pool / tape x251
+artifacts/eda/harm_pool_v1	1	1930511381	cache / pool / tape x1
+artifacts/eda/harm_worlds_v1	2	34854864	cache / pool / tape x2
+artifacts/eda/headfit_heads_v1	18	70782508	intermediate checkpoint x15; cache / pool / tape x3
+artifacts/eda/headwhite_v1	1	17295808	cache / pool / tape x1
+artifacts/eda/health_chain_v1	76	27437812343	cache / pool / tape x60; intermediate checkpoint x16
+artifacts/eda/interface_pool_v1	1	307071433	cache / pool / tape x1
+artifacts/eda/interface_worlds_long	3	51895051	cache / pool / tape x3
+artifacts/eda/interface_worlds_v1	2	34588550	cache / pool / tape x2
+artifacts/eda/interface_worlds_v2	2	34589062	cache / pool / tape x2
+artifacts/eda/interface_worlds_white	2	34591325	cache / pool / tape x2
+artifacts/eda/interface_worlds_zwhite	1	17294629	cache / pool / tape x1
+artifacts/eda/latent_cache_64	261	12838912997	cache / pool / tape x261
+artifacts/eda/latent_forks	18	358938242	cache / pool / tape x18
+artifacts/eda/levers_codebooks_v1	2	6294759	cache / pool / tape x2
+artifacts/eda/levers_context_v1	18	180963839	cache / pool / tape x18
+artifacts/eda/levers_e20_v1	10	857440802	cache / pool / tape x10
+artifacts/eda/levers_e20_v1/endpoints/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000_w15	1	1742790	cache / pool / tape x1
+artifacts/eda/levers_e20_v1/endpoints/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000_w4	1	1643178	cache / pool / tape x1
+artifacts/eda/levers_e20_v1/endpoints/corrt_rawlong_teacher_s7_fmamba_L16b40_from36000_w5	1	1742790	cache / pool / tape x1
+artifacts/eda/levers_e20_v1/endpoints/e20_A_s7_fmamba_fromM16_w15	1	1742726	cache / pool / tape x1
+artifacts/eda/levers_e20_v1/endpoints/e20_A_s7_fmamba_fromM16_w4	1	1643114	cache / pool / tape x1
+artifacts/eda/levers_e20_v1/endpoints/e20_A_s7_fmamba_fromM16_w5	1	1742726	cache / pool / tape x1
+artifacts/eda/levers_e20_v1/endpoints/e20_B_s7_fmamba_fromM16_w15	1	1742726	cache / pool / tape x1
+artifacts/eda/levers_e20_v1/endpoints/e20_B_s7_fmamba_fromM16_w4	1	1643114	cache / pool / tape x1
+artifacts/eda/levers_e20_v1/endpoints/e20_B_s7_fmamba_fromM16_w5	1	1742726	cache / pool / tape x1
+artifacts/eda/levers_e20_v1/endpoints/e20_C_s7_fmamba_fromM16_w15	1	1742726	cache / pool / tape x1
+artifacts/eda/levers_e20_v1/endpoints/e20_C_s7_fmamba_fromM16_w4	1	1643114	cache / pool / tape x1
+artifacts/eda/levers_e20_v1/endpoints/e20_C_s7_fmamba_fromM16_w5	1	1742726	cache / pool / tape x1
+artifacts/eda/levers_e20_v1/pool	2	35812366789	cache / pool / tape x2
+artifacts/eda/levers_e20_v1/pool_before_terminal_label_correction	1	35790999552	cache / pool / tape x1
+artifacts/eda/levers_e20_v1/source_census	3	43490565	cache / pool / tape x3
+artifacts/eda/levers_e20_v1/source_census_corrected	3	49266245	cache / pool / tape x3
+artifacts/eda/levers_e20_v1/states/e20_A_s7_fmamba_fromM16	12	910017028	cache / pool / tape x12
+artifacts/eda/levers_e20_v1/states/e20_B_s7_fmamba_fromM16	12	910017028	cache / pool / tape x12
+artifacts/eda/levers_e20_v1/states/e20_C_s7_fmamba_fromM16	12	910017028	cache / pool / tape x12
+artifacts/eda/levers_ldad_v1/raw_lam1	1	35073103	intermediate checkpoint x1
+artifacts/eda/levers_ldad_v1/raw_lam10	1	35073103	intermediate checkpoint x1
+artifacts/eda/levers_ldad_v1/raw_lam10_nosig	1	35073103	intermediate checkpoint x1
+artifacts/eda/levers_ldad_v1/tc_lam10	1	35073103	intermediate checkpoint x1
+artifacts/eda/levers_mamba_integration_v1	6	203702975	intermediate checkpoint x6
+artifacts/eda/levers_mamba_long_pools_v1/ldad1	2	39409419731	cache / pool / tape x2
+artifacts/eda/levers_mamba_long_pools_v1/ldad10	2	39409419731	cache / pool / tape x2
+artifacts/eda/levers_mamba_long_pools_v1/raw	2	39409419731	cache / pool / tape x2
+artifacts/eda/levers_mamba_long_pools_v1/raw.failed_resume_tuple_20260930	1	39393091584	cache / pool / tape x1
+artifacts/eda/levers_tworlds_v1	158	3649349142	cache / pool / tape x76; intermediate checkpoint x82
+artifacts/eda/levers_tworlds_v1/e21_v1_aborted	3	395967854	cache / pool / tape x3
+artifacts/eda/levers_tworlds_v1/state	30	2094094377	intermediate checkpoint x10; cache / pool / tape x20
+artifacts/eda/levers_tworlds_v1/state/e19_A_s7_fmamba_from36000	12	917591412	cache / pool / tape x12
+artifacts/eda/levers_tworlds_v1/state/e19_A_s7_full_from36000	12	715668660	cache / pool / tape x12
+artifacts/eda/levers_tworlds_v1/state/e19_A_s8_fmamba_from36000	12	917592180	cache / pool / tape x12
+artifacts/eda/levers_tworlds_v1/state/e19_A_s8_full_from36000	12	715668660	cache / pool / tape x12
+artifacts/eda/levers_tworlds_v1/state/e19_B_s7_fmamba_from36000	12	917591412	cache / pool / tape x12
+artifacts/eda/levers_tworlds_v1/state/e19_B_s7_full_from36000	12	715668660	cache / pool / tape x12
+artifacts/eda/levers_tworlds_v1/state/e19_B_s8_fmamba_from36000	12	917591412	cache / pool / tape x12
+artifacts/eda/levers_tworlds_v1/state/e19_B_s8_full_from36000	12	715668660	cache / pool / tape x12
+artifacts/eda/levers_tworlds_v1/state/e19_C_s7_fmamba_from36000	12	917591412	cache / pool / tape x12
+artifacts/eda/levers_tworlds_v1/state/e19_C_s7_full_from36000	12	715668660	cache / pool / tape x12
+artifacts/eda/levers_tworlds_v1/state/e19_C_s8_fmamba_from36000	12	917591412	cache / pool / tape x12
+artifacts/eda/levers_tworlds_v1/state/e19_C_s8_full_from36000	12	715668660	cache / pool / tape x12
+artifacts/eda/mechanistic_spatial_audit_v1	13	541594470	cache / pool / tape x13
+artifacts/eda/multistep_forks	2	264778848	cache / pool / tape x2
+artifacts/eda/observe_fresh_v1	262	2288022078	cache / pool / tape x262
+artifacts/eda/observe_fresh_v10	408	3440889545	cache / pool / tape x408
+artifacts/eda/observe_fresh_v11	418	3425627006	cache / pool / tape x418
+artifacts/eda/observe_fresh_v12	382	3180417328	cache / pool / tape x382
+artifacts/eda/observe_fresh_v2	393	3409524533	cache / pool / tape x393
+artifacts/eda/observe_fresh_v3	394	3192486140	cache / pool / tape x394
+artifacts/eda/observe_fresh_v4	387	3379777030	cache / pool / tape x387
+artifacts/eda/observe_fresh_v5	376	3264010146	cache / pool / tape x376
+artifacts/eda/observe_fresh_v6	434	3510850308	cache / pool / tape x434
+artifacts/eda/observe_fresh_v7	404	3374165880	cache / pool / tape x404
+artifacts/eda/observe_fresh_v8	416	3647488079	cache / pool / tape x416
+artifacts/eda/observe_fresh_v9	401	3449725885	cache / pool / tape x401
+artifacts/eda/oracle_v1	10	1790513064	cache / pool / tape x10
+artifacts/eda/oracle_v1/direct_generator/data	1	5883433	cache / pool / tape x1
+artifacts/eda/oracle_v1/direct_generator/diagnostics/noise_channels/batches	12	445934396	cache / pool / tape x12
+artifacts/eda/oracle_v1/direct_generator/diagnostics/paths/batches	12	391418316	cache / pool / tape x12
+artifacts/eda/oracle_v1/direct_generator/eval_exploratory_u0000	2	828168018	cache / pool / tape x2
+artifacts/eda/oracle_v1/direct_generator/eval_exploratory_u0000/batches	52	828238164	cache / pool / tape x52
+artifacts/eda/oracle_v1/direct_generator/eval_exploratory_u0500	2	828168018	cache / pool / tape x2
+artifacts/eda/oracle_v1/direct_generator/eval_exploratory_u0500/batches	52	828238164	cache / pool / tape x52
+artifacts/eda/oracle_v1/direct_generator/eval_exploratory_u1500	2	828168018	cache / pool / tape x2
+artifacts/eda/oracle_v1/direct_generator/eval_exploratory_u1500/batches	52	828238164	cache / pool / tape x52
+artifacts/eda/oracle_v1/direct_generator/eval_exploratory_u3000	2	828168018	cache / pool / tape x2
+artifacts/eda/oracle_v1/direct_generator/eval_exploratory_u3000/batches	52	828238164	cache / pool / tape x52
+artifacts/eda/oracle_v1/direct_generator/preflight_003e76aa/smoke	1	165624083	cache / pool / tape x1
+artifacts/eda/oracle_v1/direct_generator/preflight_003e76aa/smoke_reference	1	165623443	cache / pool / tape x1
+artifacts/eda/oracle_v1/direct_generator/smoke	1	165624083	cache / pool / tape x1
+artifacts/eda/oracle_v1/direct_generator/smoke_reference	1	165623443	cache / pool / tape x1
+artifacts/eda/oracle_v1/direct_generator/training	7	333038377	intermediate checkpoint x6; cache / pool / tape x1
+artifacts/eda/oracle_v1/generated_prefix	7	305218281	intermediate checkpoint x6; cache / pool / tape x1
+artifacts/eda/oracle_v1/generated_prefix/eval_u0000	2	1617420322	cache / pool / tape x2
+artifacts/eda/oracle_v1/generated_prefix/eval_u0000/batches/prefix	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/generated_prefix/eval_u0000/batches/teacher	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/generated_prefix/eval_u0000_driver_repair_failed	2	1617420322	cache / pool / tape x2
+artifacts/eda/oracle_v1/generated_prefix/eval_u0000_driver_repair_failed/batches/prefix	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/generated_prefix/eval_u0000_driver_repair_failed/batches/teacher	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/generated_prefix/eval_u0000_driver_repair_failed/second_attempt_no_persistent_tuning	1	808710161	cache / pool / tape x1
+artifacts/eda/oracle_v1/generated_prefix/eval_u0000_driver_repair_failed/second_attempt_no_persistent_tuning/batches/prefix	17	549971233	cache / pool / tape x17
+artifacts/eda/oracle_v1/generated_prefix/eval_u0000_driver_repair_failed/second_attempt_no_persistent_tuning/batches/teacher	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/generated_prefix/eval_u0500	2	1617420322	cache / pool / tape x2
+artifacts/eda/oracle_v1/generated_prefix/eval_u0500/batches/prefix	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/generated_prefix/eval_u0500/batches/teacher	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/generated_prefix/eval_u1500	2	1617420322	cache / pool / tape x2
+artifacts/eda/oracle_v1/generated_prefix/eval_u1500/batches/prefix	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/generated_prefix/eval_u1500/batches/teacher	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/generated_prefix/eval_u3000	2	1617420322	cache / pool / tape x2
+artifacts/eda/oracle_v1/generated_prefix/eval_u3000/batches/prefix	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/generated_prefix/eval_u3000/batches/teacher	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/generated_prefix/runtime_615_71_09	3	97053495	cache / pool / tape x3
+artifacts/eda/oracle_v1/generated_prefix/runtime_615_71_09/usr/lib	2	115433856	cache / pool / tape x2
+artifacts/eda/oracle_v1/generated_prefix_reference_smoke	1	151694611	cache / pool / tape x1
+artifacts/eda/oracle_v1/generated_prefix_resume_smoke	1	151694675	cache / pool / tape x1
+artifacts/eda/oracle_v1/learned_innovation	10	566809556	intermediate checkpoint x9; cache / pool / tape x1
+artifacts/eda/oracle_v1/learned_innovation/analysis_fixture/eval_u0000_h01	11	136875651	cache / pool / tape x11
+artifacts/eda/oracle_v1/learned_innovation/analysis_fixture/eval_u0000_h16	7	1393470687	cache / pool / tape x7
+artifacts/eda/oracle_v1/learned_innovation/content	5	83004345	intermediate checkpoint x5
+artifacts/eda/oracle_v1/learned_innovation/eval_u0000_h01	11	510634707	cache / pool / tape x11
+artifacts/eda/oracle_v1/learned_innovation/eval_u0000_h01/batches	100	398634100	cache / pool / tape x100
+artifacts/eda/oracle_v1/learned_innovation/eval_u0500_h01	11	510634707	cache / pool / tape x11
+artifacts/eda/oracle_v1/learned_innovation/eval_u0500_h01/batches	100	398634100	cache / pool / tape x100
+artifacts/eda/oracle_v1/learned_innovation/eval_u1500_h01	11	510634707	cache / pool / tape x11
+artifacts/eda/oracle_v1/learned_innovation/eval_u1500_h01/batches	100	398634100	cache / pool / tape x100
+artifacts/eda/oracle_v1/learned_innovation/eval_u3000_h01	11	510634707	cache / pool / tape x11
+artifacts/eda/oracle_v1/learned_innovation/eval_u3000_h01/batches	100	398634100	cache / pool / tape x100
+artifacts/eda/oracle_v1/learned_innovation/optimization_control	81	475386338	intermediate checkpoint x80; cache / pool / tape x1
+artifacts/eda/oracle_v1/learned_innovation/optimization_control_initial_smoke	1	345767426	cache / pool / tape x1
+artifacts/eda/oracle_v1/learned_innovation/real_futures	1	200808865	cache / pool / tape x1
+artifacts/eda/oracle_v1/learned_innovation/smoke	1	275240781	cache / pool / tape x1
+artifacts/eda/oracle_v1/learned_innovation/smoke_reference	1	275239949	cache / pool / tape x1
+artifacts/eda/oracle_v1/learned_innovation/unmatched_batch_eval_u0000_h01	11	510634707	cache / pool / tape x11
+artifacts/eda/oracle_v1/learned_innovation/unmatched_batch_eval_u0000_h01/batches	100	398634100	cache / pool / tape x100
+artifacts/eda/oracle_v1/learned_innovation/unmatched_batch_eval_u0500_h01	10	311402478	cache / pool / tape x10
+artifacts/eda/oracle_v1/learned_innovation/unmatched_batch_eval_u0500_h01/batches	65	259112165	cache / pool / tape x65
+artifacts/eda/oracle_v1/loss_intervention	10	457771893	intermediate checkpoint x9; cache / pool / tape x1
+artifacts/eda/oracle_v1/loss_intervention/eval_u0000	1	808710161	cache / pool / tape x1
+artifacts/eda/oracle_v1/loss_intervention/eval_u0000/batches/D	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/loss_intervention/eval_u0500	3	2426130483	cache / pool / tape x3
+artifacts/eda/oracle_v1/loss_intervention/eval_u0500/batches/D	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/loss_intervention/eval_u0500/batches/L1	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/loss_intervention/eval_u0500/batches/no_max	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/loss_intervention/eval_u1500	3	2426130483	cache / pool / tape x3
+artifacts/eda/oracle_v1/loss_intervention/eval_u1500/batches/D	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/loss_intervention/eval_u1500/batches/L1	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/loss_intervention/eval_u1500/batches/no_max	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/loss_intervention/eval_u3000	3	2426130483	cache / pool / tape x3
+artifacts/eda/oracle_v1/loss_intervention/eval_u3000/batches/D	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/loss_intervention/eval_u3000/batches/L1	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/loss_intervention/eval_u3000/batches/no_max	25	808781225	cache / pool / tape x25
+artifacts/eda/oracle_v1/loss_intervention_reference	4	304259935	intermediate checkpoint x3; cache / pool / tape x1
+artifacts/eda/oracle_v1/loss_intervention_smoke	4	304259999	intermediate checkpoint x3; cache / pool / tape x1
+artifacts/eda/oracle_v1/paired_event/diagnostics/failure_localization/batches	52	2084632724	cache / pool / tape x52
+artifacts/eda/oracle_v1/paired_event/diagnostics/u3000/batches	12	337427722	cache / pool / tape x12
+artifacts/eda/oracle_v1/paired_event/eval_exploratory_u0000	2	841108554	cache / pool / tape x2
+artifacts/eda/oracle_v1/paired_event/eval_exploratory_u0000/batches	52	841187204	cache / pool / tape x52
+artifacts/eda/oracle_v1/paired_event/eval_exploratory_u0500	2	841108554	cache / pool / tape x2
+artifacts/eda/oracle_v1/paired_event/eval_exploratory_u0500/batches	52	841187204	cache / pool / tape x52
+artifacts/eda/oracle_v1/paired_event/eval_exploratory_u1500	2	841108554	cache / pool / tape x2
+artifacts/eda/oracle_v1/paired_event/eval_exploratory_u1500/batches	52	841187204	cache / pool / tape x52
+artifacts/eda/oracle_v1/paired_event/eval_exploratory_u3000	2	841108554	cache / pool / tape x2
+artifacts/eda/oracle_v1/paired_event/eval_exploratory_u3000/batches	52	841187204	cache / pool / tape x52
+artifacts/eda/oracle_v1/paired_event/preflight_history/v1/smoke	1	165586555	cache / pool / tape x1
+artifacts/eda/oracle_v1/paired_event/preflight_history/v1/smoke_reference	1	165585915	cache / pool / tape x1
+artifacts/eda/oracle_v1/paired_event/smoke	1	165740035	cache / pool / tape x1
+artifacts/eda/oracle_v1/paired_event/smoke_reference	1	165739075	cache / pool / tape x1
+artifacts/eda/oracle_v1/paired_event/training	7	333288513	intermediate checkpoint x6; cache / pool / tape x1
+artifacts/eda/oracle_v1/snap_resume/TRUE	25	398188025	cache / pool / tape x25
+artifacts/eda/oracle_v1/snap_resume/control_deltairis	25	796338125	cache / pool / tape x25
+artifacts/eda/oracle_v1/snap_resume/oracle_deltairis	25	796338125	cache / pool / tape x25
+artifacts/eda/oracle_v1/transport	60	32006014195	intermediate checkpoint x2; cache / pool / tape x58
+artifacts/eda/oracle_v1/transport/eval_u0000	2	845369484	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/eval_u0500	2	845369484	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/eval_u1500	2	845369484	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/eval_u3000	2	845369484	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/ic_seed1	7	330628049	intermediate checkpoint x6; cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/ic_seed1/eval_u0500	2	849682680	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/ic_seed1/eval_u1500	2	849682680	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/ic_seed1/eval_u3000	2	849682680	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/ic_seed2	7	330628049	intermediate checkpoint x6; cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/ic_seed2/eval_u0500	2	849682680	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/ic_seed2/eval_u1500	2	849682680	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/ic_seed2/eval_u3000	2	849682680	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/ic_v1_bug_seed1	3	219827613	intermediate checkpoint x2; cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/ic_v1_bug_seed2	3	219827613	intermediate checkpoint x2; cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/ic_v2_globalprior_seed1	3	219826717	intermediate checkpoint x2; cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/ic_v2_globalprior_seed2	3	219826717	intermediate checkpoint x2; cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/lb_seed1	12	1793335377	intermediate checkpoint x11; cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/lb_seed1/eval_u10000	1	420527973	cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/lb_seed1/eval_u20000	1	420527973	cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/lb_seed1/eval_u30000	1	420527973	cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/lb_seed1/eval_u60000	1	420527973	cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/lb_seed2	12	1793335377	intermediate checkpoint x11; cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/lb_seed2/eval_u10000	1	420527973	cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/lb_seed2/eval_u20000	1	420527973	cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/lb_seed2/eval_u30000	1	420527973	cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/lb_seed2/eval_u60000	1	420527973	cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/pi_seed1	4	165318318	intermediate checkpoint x3; cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/pi_seed1/eval_u0500	1	424841249	cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/pi_seed1/eval_u1500	1	424841249	cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/pi_seed1/eval_u3000	1	424841249	cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/pi_seed1/eval_u4000	2	849682844	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/pi_seed2	4	165318318	intermediate checkpoint x3; cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/pi_seed2/eval_u0500	1	424841249	cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/pi_seed2/eval_u1500	1	424841249	cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/pi_seed2/eval_u3000	1	424841249	cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/pi_seed2/eval_u4000	2	849682844	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/seed1_cost	7	330627089	intermediate checkpoint x6; cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/seed1_cost/eval_u0500	2	849682907	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/seed1_cost/eval_u1500	2	849682907	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/seed1_cost/eval_u3000	2	849682907	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/seed2	10	497084112	intermediate checkpoint x9; cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/seed2/eval_u0500	3	1270210960	cache / pool / tape x3
+artifacts/eda/oracle_v1/transport/seed2/eval_u1500	3	1270210960	cache / pool / tape x3
+artifacts/eda/oracle_v1/transport/seed2/eval_u3000	3	1270210960	cache / pool / tape x3
+artifacts/eda/oracle_v1/transport/sf_seed1	3	219828701	intermediate checkpoint x2; cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/sf_seed1/eval_u3500	2	849682644	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/sf_seed1/eval_u4500	2	849682644	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/sf_seed2	3	219828701	intermediate checkpoint x2; cache / pool / tape x1
+artifacts/eda/oracle_v1/transport/sf_seed2/eval_u3500	2	849682644	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/sf_seed2/eval_u4500	2	849682644	cache / pool / tape x2
+artifacts/eda/oracle_v1/transport/training	7	331779729	intermediate checkpoint x6; cache / pool / tape x1
+artifacts/eda/phase1b_abm0_n64	3	197138141	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/eda/phase1b_abm1_n64	3	197138141	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/eda/phase1b_abn0_n64	3	182358709	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/eda/phase1b_abn1_n64	3	182358709	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/eda/phase1b_abt0_n64	3	182358709	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/eda/phase1b_abt1_n64	3	182358709	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/eda/phase1b_cvr0_n64	3	195560453	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/eda/phase1b_cvs0_n64	3	195560837	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/eda/phase1b_s0_n32	3	182342069	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/eda/phase1b_s0_n64	5	255272735	cache / pool / tape x1; intermediate checkpoint x4
+artifacts/eda/phase1b_s1_n32	3	182341749	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/eda/phase1b_s1_n64	5	255272735	cache / pool / tape x1; intermediate checkpoint x4
+artifacts/eda/phase1b_s1fix_n64	3	182358709	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/eda/phase1b_s1fixb_n64	3	182358709	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/eda/pi_dynamics_diagnosis_v1	6	304529504	cache / pool / tape x6
+artifacts/eda/pi_failure_localization_v1	25	2277885515	cache / pool / tape x25
+artifacts/eda/pi_memory_v1	3	21711783	cache / pool / tape x3
+artifacts/eda/pi_memory_v1/belief	12	892548146	cache / pool / tape x12
+artifacts/eda/pi_memory_v1/evaluation	150	1525852698	cache / pool / tape x147; intermediate checkpoint x3
+artifacts/eda/pi_memory_v1/rejected_scan_exact_cache	11	49530039	cache / pool / tape x11
+artifacts/eda/pi_memory_v1/rejected_single_exact_cache	124	649796460	cache / pool / tape x124
+artifacts/eda/pi_memory_v1/smoke	1	82209611	cache / pool / tape x1
+artifacts/eda/pi_memory_v1/training/s1_long63	4	165332959	intermediate checkpoint x3; cache / pool / tape x1
+artifacts/eda/pi_memory_v1/training/s1_short15	4	165332959	intermediate checkpoint x3; cache / pool / tape x1
+artifacts/eda/pi_memory_v1/training/s2_long63	4	165332959	intermediate checkpoint x3; cache / pool / tape x1
+artifacts/eda/pi_memory_v1/training/s2_short15	4	165333343	intermediate checkpoint x3; cache / pool / tape x1
+artifacts/eda/pi_outcome_evaluation_v1	39	8601160175	cache / pool / tape x39
+artifacts/eda/pi_stochastic_v1/schema_smoke	3	21225097	cache / pool / tape x3
+artifacts/eda/production_1b	2	156372871	cache / pool / tape x2
+artifacts/eda/production_1b_s2	2	156373255	cache / pool / tape x2
+artifacts/eda/root_frames	7	2052475651	cache / pool / tape x7
+artifacts/eda/scalar_retention_v1	1	1301391480	cache / pool / tape x1
+artifacts/eda/scalar_retention_v1/corrected_followthrough	1	1015649145	cache / pool / tape x1
+artifacts/eda/scalar_retention_v1/corrected_followthrough/evaluation	2	1648417461	cache / pool / tape x2
+artifacts/eda/scalar_retention_v1/corrected_followthrough/features	12	5337306672	cache / pool / tape x12
+artifacts/eda/scalar_retention_v1/corrected_followthrough/training	16	982038486	cache / pool / tape x6; intermediate checkpoint x10
+artifacts/eda/scalar_retention_v1/encoded	712	1840612704	cache / pool / tape x712
+artifacts/eda/scalar_retention_v1/followthrough/evaluation	1	1296552	cache / pool / tape x1
+artifacts/eda/scalar_retention_v1/followthrough/training	6	329230141	cache / pool / tape x3; intermediate checkpoint x3
+artifacts/eda/scalar_retention_v1/gate_diagnosis_02	1	235306368	cache / pool / tape x1
+artifacts/eda/scalar_retention_v1/reference	10	2160001691	cache / pool / tape x3; intermediate checkpoint x7
+artifacts/eda/scaling/k1576	1	109876043	cache / pool / tape x1
+artifacts/eda/scaling/k3152	1	109890187	cache / pool / tape x1
+artifacts/eda/scaling/k394	1	109865803	cache / pool / tape x1
+artifacts/eda/scaling/k788	1	109869259	cache / pool / tape x1
+artifacts/eda/scoreboard_v1/DC	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/DS	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/DS1_12k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/DS1_18k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/DS1_24k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/DS1_30k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/DS1_36k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/DS1_6k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/E22MS_postcodes	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/E22MS_sample0	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/E22MS_sample1	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/E22MS_sample2	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/E22MS_sample3	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/E22MS_zeroed	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/M16	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/M16s8	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/M6_12k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/M6_18k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/M6_24k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/M6_30k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/M6_36k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/M6_6k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/M6s8_12k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/M6s8_18k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/M6s8_24k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/M6s8_30k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/M6s8_36k	5	1558311040	cache / pool / tape x5
+artifacts/eda/scoreboard_v1/M6s8_6k	5	1558311040	cache / pool / tape x5
+artifacts/eda/sigreg_patch_v1	1	20484574	cache / pool / tape x1
+artifacts/eda/spatial_bn_audit_v1	2	333107132	cache / pool / tape x2
+artifacts/eda/spatial_encoder_v1	6	119381174	cache / pool / tape x6
+artifacts/eda/spatial_encoder_v1/erasure	44	1013290255	cache / pool / tape x44
+artifacts/eda/spatial_encoder_v1/erasure_v2	60	73121126	cache / pool / tape x60
+artifacts/eda/spatial_encoder_v1/frozen_fb_s1	9	211015575	intermediate checkpoint x9
+artifacts/eda/spatial_encoder_v1/frozen_fb_s2	9	211015575	intermediate checkpoint x9
+artifacts/eda/spatial_encoder_v1/frozen_fd_s1	9	211015575	intermediate checkpoint x9
+artifacts/eda/spatial_encoder_v1/frozen_fd_s2	9	211015575	intermediate checkpoint x9
+artifacts/eda/spatial_encoder_v1/full_sig_s1	3	411014520	intermediate checkpoint x3
+artifacts/eda/spatial_encoder_v1/mop_sig_s1	3	410155542	intermediate checkpoint x3
+artifacts/eda/spatial_encoder_v1/mop_vic_s1	3	410155542	intermediate checkpoint x3
+artifacts/eda/spatial_encoder_v1/naive_s1	3	406132758	intermediate checkpoint x3
+artifacts/eda/spatial_encoder_v1/stage2_full_sig_s1	19	2603091960	intermediate checkpoint x19
+artifacts/eda/spatial_encoder_v1/stage2_full_sig_s2	19	2603091960	intermediate checkpoint x19
+artifacts/eda/spatial_encoder_v1/stage2_mop_sig_s1	19	2597651766	intermediate checkpoint x19
+artifacts/eda/spatial_encoder_v1/stage2_mop_sig_s2	19	2597651766	intermediate checkpoint x19
+artifacts/eda/spatial_encoder_v1/stage2_rawpred_s1	9	211013847	intermediate checkpoint x9
+artifacts/eda/spatial_encoder_v1/stage2_rawpred_s2	9	211013847	intermediate checkpoint x9
+artifacts/eda/spatial_pool_ldad10_v1	1	6247660695	cache / pool / tape x1
+artifacts/eda/spatial_pool_ldad1_v1	1	6247660695	cache / pool / tape x1
+artifacts/eda/spatial_pool_mop_s1_v1	1	6247660951	cache / pool / tape x1
+artifacts/eda/spatial_pool_tc_v1	1	6247660631	cache / pool / tape x1
+artifacts/eda/spatial_pool_v1	1	6247660387	cache / pool / tape x1
+artifacts/eda/spatial_worlds_v1	4	112573056	cache / pool / tape x4
+artifacts/eda/state_features	4	991909594	cache / pool / tape x4
+artifacts/eda/stochdiag_v1	2	4612598784	cache / pool / tape x2
+artifacts/eda/terminal_balanced_s2	5	273663909	cache / pool / tape x2; intermediate checkpoint x3
+artifacts/eda/terminal_counterfactual	4	156371162	cache / pool / tape x1; intermediate checkpoint x3
+artifacts/eda/terminal_counterfactual_s2	5	273663909	cache / pool / tape x2; intermediate checkpoint x3
+artifacts/eda/terminal_factual	4	156371162	cache / pool / tape x1; intermediate checkpoint x3
+artifacts/eda/terminal_factual_s2	5	273663461	cache / pool / tape x2; intermediate checkpoint x3
+artifacts/eda/terminal_full17_s2	5	273663909	cache / pool / tape x2; intermediate checkpoint x3
+artifacts/eda/u_cache_train_v1	34	1237765974	cache / pool / tape x34
+artifacts/eda/v2_ceiling_control	2	96224334	cache / pool / tape x2
+artifacts/eda/v2_ceiling_paired	2	96224334	cache / pool / tape x2
+artifacts/eda/v2_direct_attention	5	273663525	cache / pool / tape x2; intermediate checkpoint x3
+artifacts/eda/v2_direct_attention_align	1	117292363	cache / pool / tape x1
+artifacts/eda/v2_direct_attention_r16	5	273663973	cache / pool / tape x2; intermediate checkpoint x3
+artifacts/eda/v2_direct_mamba	5	271967673	cache / pool / tape x2; intermediate checkpoint x3
+artifacts/eda/v2_phase2_attention	2	174413902	cache / pool / tape x2
+artifacts/eda/v2_phase2_attention_r16	2	174413966	cache / pool / tape x2
+artifacts/eda/v2_phase2_mamba	2	173444598	cache / pool / tape x2
+artifacts/eda/v2_phase3_attention	1	14382578	cache / pool / tape x1
+artifacts/eda/v2_phase3_attention_10k	1	14382514	cache / pool / tape x1
+artifacts/eda/v2_phase3_mamba	1	14382578	cache / pool / tape x1
+artifacts/eda/v2_phase3_mamba_10k	1	14382578	cache / pool / tape x1
+artifacts/eda/v2_rollout_control	3	142563369	cache / pool / tape x3
+artifacts/eda/v2_rollout_paired	3	142563369	cache / pool / tape x3
+artifacts/eda/whiteboard	10	1142636094	cache / pool / tape x10
+artifacts/eda/world_candidate_assessment_v1	23	377355073	cache / pool / tape x23
+artifacts/equalized_flow_continuation	2	197938862	cache / pool / tape x2
+artifacts/equalized_flow_continuation/matched_flow	1	1822107	cache / pool / tape x1
+artifacts/fatality_identifiability	1	195923280	cache / pool / tape x1
+artifacts/frozen_continuation_ablation	1	43819499	cache / pool / tape x1
+artifacts/generated_latent_outcome_recursive/features	4	46584356	cache / pool / tape x4
+artifacts/generated_latent_outcome_recursive_branched/features	4	227032612	cache / pool / tape x4
+artifacts/generated_latent_outcome_shaping/archive_evaluation/features	6	65467422	cache / pool / tape x6
+artifacts/generated_latent_outcome_shaping/policy_fork_evaluation/features	6	43701798	cache / pool / tape x6
+artifacts/generated_latent_outcome_shaping/training	1	221891933	cache / pool / tape x1
+artifacts/generated_latent_outcome_shaping/training/allowed	6	220329414	cache / pool / tape x6
+artifacts/generated_latent_outcome_shaping/training/stopped	6	220329414	cache / pool / tape x6
+artifacts/hybrid_context_h2	1	289034287	cache / pool / tape x1
+artifacts/identifiability_gate_v2/fork_representations	1	12049221	cache / pool / tape x1
+artifacts/identifiability_gate_v2/fork_representations_centered	1	9247621	cache / pool / tape x1
+artifacts/identifiability_gate_v2/v2_scaling	1	554128528	cache / pool / tape x1
+artifacts/identifiability_gate_v2/v2_scaling/dev_latent_cache	32	606932140	cache / pool / tape x32
+artifacts/identifiability_gate_v2/v2_scaling/fit_latent_cache	227	4545260601	cache / pool / tape x227
+artifacts/identifiability_gate_v2/v2_scaling/tune_latent_cache	25	483903829	cache / pool / tape x25
+artifacts/lewm_gates_20260906	1	14430302208	cache / pool / tape x1
+artifacts/lewm_gates_20260906/gpu_verification/raw/joint	1	34915983	intermediate checkpoint x1
+artifacts/lewm_gates_20260906/gpu_verification/tc/joint	1	34915983	intermediate checkpoint x1
+artifacts/lewm_gates_20260906/m03_bootstrap	1	38080512	cache / pool / tape x1
+artifacts/lewm_gates_20260906/m03_bootstrap/evaluation_v2/sidecar	1	385996445	cache / pool / tape x1
+artifacts/lewm_gates_20260906/m03_bootstrap/smoke/sidecar	1	12071581	cache / pool / tape x1
+artifacts/lewm_gates_20260906/m03_cache_smoke	2	99770368	cache / pool / tape x2
+artifacts/lewm_gates_20260906/m03_cache_smoke/verified/sidecar	1	12071581	cache / pool / tape x1
+artifacts/lewm_gates_20260906/m03_capability_81ee819/features	4	31302420	cache / pool / tape x4
+artifacts/lewm_gates_20260906/m03_capability_81ee819/sidecar	1	151786385	cache / pool / tape x1
+artifacts/lewm_gates_20260906/m03_full/features	8	141421608	cache / pool / tape x8
+artifacts/lewm_gates_20260906/m03_full/historical/features	1356	7593329392	cache / pool / tape x1356
+artifacts/lewm_gates_20260906/m03_full/sidecar	1	385996445	cache / pool / tape x1
+artifacts/lewm_gates_20260906/m03_memory_smoke/features	2	3789620	cache / pool / tape x2
+artifacts/lewm_gates_20260906/m03_memory_smoke_first_pass/features	2	3789620	cache / pool / tape x2
+artifacts/lewm_gates_20260906/m03_smoke_20260908/features	2	2303114	cache / pool / tape x2
+artifacts/lewm_gates_20260906/m03_smoke_20260908/historical/features	1	1939081	cache / pool / tape x1
+artifacts/lewm_gates_20260906/m03_smoke_20260908/sidecar	1	11614487	cache / pool / tape x1
+artifacts/lewm_gates_20260906/m03_smoke_complete_20260908/features	2	2303114	cache / pool / tape x2
+artifacts/lewm_gates_20260906/m03_smoke_complete_20260908/historical/features	1	2015692	cache / pool / tape x1
+artifacts/lewm_gates_20260906/m03_smoke_complete_20260908/sidecar	1	12071581	cache / pool / tape x1
+artifacts/lewm_gates_20260906/m03_v2_basic/features	8	141421608	cache / pool / tape x8
+artifacts/lewm_gates_20260906/m03_v2_basic/sidecar	1	385996445	cache / pool / tape x1
+artifacts/lewm_gates_20260906/paired/G1	2	33300018	cache / pool / tape x2
+artifacts/lewm_gates_20260906/paired/completed_components	2	19128149	cache / pool / tape x2
+artifacts/lewm_gates_20260906/paired/raw/joint	20	2030017292	intermediate checkpoint x20
+artifacts/lewm_gates_20260906/paired/tc/joint	20	2030020108	intermediate checkpoint x20
+artifacts/lewm_gates_20260916/m03_window/sidecar	1	385996445	cache / pool / tape x1
+artifacts/lewm_gates_20260916/paired_stride4/G1	2	33300018	cache / pool / tape x2
+artifacts/lewm_gates_20260916/paired_stride4/raw/joint	20	2041421580	intermediate checkpoint x20
+artifacts/lewm_gates_20260916/paired_stride4/tc/joint	20	2041421580	intermediate checkpoint x20
+artifacts/lewm_gates_20260916/paired_window/G1	2	33300018	cache / pool / tape x2
+artifacts/lewm_gates_20260916/paired_window/raw/joint	20	2030019852	intermediate checkpoint x20
+artifacts/lewm_gates_20260916/paired_window/tc/joint	20	2030019596	intermediate checkpoint x20
+artifacts/lewm_gates_20260916/paired_window_stopped_pair_identity/raw/joint	4	350921116	intermediate checkpoint x4
+artifacts/lewm_gates_20260916/paired_window_stopped_pair_identity/tc/joint	4	350920924	intermediate checkpoint x4
+artifacts/lewm_gates_20260918/m03_matched/sidecar	1	385996445	cache / pool / tape x1
+artifacts/lewm_m4_canonical/G1	2	33300018	cache / pool / tape x2
+artifacts/lewm_m4_canonical/raw/bridge	3	222983529	intermediate checkpoint x3
+artifacts/lewm_m4_canonical/raw/cache	611	1032213055	cache / pool / tape x611
+artifacts/lewm_m4_canonical/raw/joint	20	2030773772	intermediate checkpoint x20
+artifacts/lewm_m4_canonical/tc/joint	20	2030773708	intermediate checkpoint x20
+artifacts/lewm_transformer_comparison/m03/sidecar	1	385996445	cache / pool / tape x1
+artifacts/lewm_transformer_comparison/paired/G1	2	33300018	cache / pool / tape x2
+artifacts/lewm_transformer_comparison/paired/raw/joint	20	4193204826	intermediate checkpoint x20
+artifacts/lewm_transformer_comparison/paired/tc/joint	20	4193204826	intermediate checkpoint x20
+artifacts/matched_context_h2	1	289034287	cache / pool / tape x1
+artifacts/oracle_horizon_h16	1	289034287	cache / pool / tape x1
+artifacts/oracle_horizon_h2	1	289034159	cache / pool / tape x1
+artifacts/oracle_phase3_bccontext_smoke	1	42409455	cache / pool / tape x1
+artifacts/oracle_phase3_h2_bccontexts	1	205954863	cache / pool / tape x1
+artifacts/oracle_phase3_smoke	1	60366125	cache / pool / tape x1
+artifacts/phase1b_archive_geometry/ordinary_evaluation/features	3	18584985	cache / pool / tape x3
+artifacts/phase1b_archive_geometry/preparation	2	191271870	cache / pool / tape x2
+artifacts/phase1b_causal_diagnostics/consequence_gradient	3	312431301	cache / pool / tape x3
+artifacts/phase1b_causal_diagnostics/consequence_gradient_probe/features	2	27961462	cache / pool / tape x2
+artifacts/phase1b_causal_diagnostics/flow_localization	1	38431190	cache / pool / tape x1
+artifacts/phase1b_causal_diagnostics/long_direct	6	291674603	cache / pool / tape x1; intermediate checkpoint x5
+artifacts/phase1b_causal_diagnostics/long_direct_probe/features	6	83885304	cache / pool / tape x6
+artifacts/phase1b_causal_diagnostics/paired_trajectory_actions/probe/features	4	58159069	cache / pool / tape x4
+artifacts/phase1b_geometry_factorial/archive_evaluation/features	8	49568304	cache / pool / tape x8
+artifacts/phase1b_geometry_factorial/policy_trajectory_evaluation/features	8	116322488	cache / pool / tape x8
+artifacts/phase1b_geometry_factorial/training/ordinary_terminal	2	145827477	cache / pool / tape x1; intermediate checkpoint x1
+artifacts/phase1b_geometry_factorial/training/whitened_ordinary	2	145827157	cache / pool / tape x1; intermediate checkpoint x1
+artifacts/phase1b_geometry_factorial/training/whitened_terminal	2	145827477	cache / pool / tape x1; intermediate checkpoint x1
+artifacts/predictor_flow_attribution/archive_evaluation/features	5	76370085	cache / pool / tape x5
+artifacts/predictor_flow_attribution/policy_fork_evaluation/features	5	43660040	cache / pool / tape x5
+artifacts/predictor_flow_attribution/training/direct_deep_mlp	3	247019643	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/predictor_flow_attribution/training/direct_token_transformer	3	245647483	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/predictor_flow_attribution/training/flow_k0300	3	179681235	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/predictor_flow_attribution/training/flow_k7501	3	179747475	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/stage_a	14	1283989111	cache / pool / tape x14
+artifacts/stage_a_s75	3	325346905	cache / pool / tape x3
+artifacts/stage_a_s76_paired	3	325346969	cache / pool / tape x3
+artifacts/stage_a_s76_paired/matched_direct	2	15799990	cache / pool / tape x2
+artifacts/stage_a_s76_paired/matched_flow	1	1822107	cache / pool / tape x1
+artifacts/stage_a_s76_terminal_only	2	199508150	cache / pool / tape x2
+artifacts/stage_a_terminal_dynamics	2	199508214	cache / pool / tape x2
+artifacts/stage_a_terminal_dynamics/expanded_forks	2	15799915	cache / pool / tape x2
+artifacts/stage_a_terminalfix	10	1226429891	cache / pool / tape x10
+artifacts/terminal_diversity_v2/archive_evaluation/features	12	361065780	cache / pool / tape x12
+artifacts/terminal_diversity_v2/policy_trajectory_evaluation/features	4	58158656	cache / pool / tape x4
+artifacts/terminal_diversity_v2/preparation	1	344850031	cache / pool / tape x1
+artifacts/terminal_diversity_v2/preparation/dev_latent_cache	32	606932140	cache / pool / tape x32
+artifacts/terminal_diversity_v2/train_latent_cache	261	6449636197	cache / pool / tape x261
+artifacts/terminal_diversity_v2/training/k0300_r0	3	182290091	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/terminal_diversity_v2/training/k0300_r1	2	145828630	cache / pool / tape x1; intermediate checkpoint x1
+artifacts/terminal_diversity_v2/training/k0900_r0	3	182296171	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/terminal_diversity_v2/training/k3800_r0	3	182323051	cache / pool / tape x1; intermediate checkpoint x2
+artifacts/terminal_diversity_v2/training/k7501_r0	3	182356267	cache / pool / tape x1; intermediate checkpoint x2
+d4_mamba_jepa/artifacts/craftax	1	82175583	cache / pool / tape x1
+d4_mamba_jepa/artifacts/expert	2	8639532805	cache / pool / tape x2
+data	15	1879504909	cache / pool / tape x14; intermediate checkpoint x1
+data/crafter_human_official	6	1513114333	cache / pool / tape x6
+data/crafter_human_official/_peek/dataset	45	101115306	cache / pool / tape x45
+data/crafter_ppo	1	2320433401	cache / pool / tape x1
+data/crafter_ppo/ex	40	10861428772	cache / pool / tape x40
