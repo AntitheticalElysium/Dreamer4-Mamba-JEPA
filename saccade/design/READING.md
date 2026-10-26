@@ -767,3 +767,25 @@ Scripts named below (eda_*.py, ana_*.py, t1_/t2_*) are in artifacts/experiments/
   counts beat the memory-free reward reference R2 by 13% without any history; Craftax map changes are the player's
   edits, plant ripening after 600 steps (game_logic.py) and arrows destroying tables / furnaces; Craftax entities move
   cardinally, so a one-cell diagonal step is illegal and now has its own gate.
+
+## Denoiser backbone and periphery capacity (2026-10-27)
+- Cost at M0 shapes (stand-ins, fwd + bwd, bf16; the full-model check stays the authority): grid conv, 4 residual
+  blocks, 0.22 ms per target frame; transformer, 6 layers width 256, Dreamer-4 sequence form (every frame of a 64-step
+  chunk a target, temporal attention to the past 4 frames every 2nd layer) 0.52 ms, 8 layers 0.69 ms; transformer with
+  a 4-frame context window per target 2.4 ms.
+- Positions: Dreamer 4's paper uses RoPE; both public reimplementations (nicklashansen, edwhu) add absolute sinusoids.
+  Heo et al. (ECCV 2024): on ViT, absolute embeddings added to 2D RoPE helped at the smallest grid tested (112 px,
+  7 x 7 tokens: +2.2 vs +1.1), not at large ones. DiT: adaLN-Zero beat in-context tokens and cross-attention for global
+  conditioning, at the lowest cost. DIAMOND: frame stacking beat its early cross-attention trial; its limitations name
+  a transformer over time for memory and scalability.
+- Craftax cell information (eda_cell_information.py, eda_cell_appearance_residual.py; 300 dev episodes): a map cell's
+  meaning (terrain, entity, player facing) takes 44 values, 2.7 bits on average (player cell 3.3). At full daylight and
+  not sleeping, pixels carry 0.003 bits beyond meaning (arrow direction aside); the 1.5-bit residual over all daylight
+  frames is viewing conditions (light level, sleep darkening). HUD cells: icon + a ~4 x 4 px count glyph; up to 3.3
+  bits per cell, mean 1.6; no night static on the HUD.
+- Pooling each cell to r x r (eda_pooled_separation.py; RMS distance between prototypes of different meaning, 0-255):
+  full res: map median 86 (min 13.9), HUD values median of minima 32.6; 3 x 3: map median 69 (min 4.8), HUD 1.0 (some
+  values identical); 1 x 1: map 61.5, HUD 0. With P1 (10-25): 3 x 3 keeps day entity detection at AP 1.00 for all four
+  kinds; night zombies 0.86, cows 0.85, skeletons 0.64, arrows 0.78 (full res 0.97 / 0.95 / 0.85 / 0.91).
+- A continuous token's width does not bound its information (only noise or quantisation does); Craftax cells carry at
+  most ~5.5 bits of meaning, so any working width holds a cell's meaning by day.
