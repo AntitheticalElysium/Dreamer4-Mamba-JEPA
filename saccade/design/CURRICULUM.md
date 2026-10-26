@@ -23,8 +23,8 @@ own generated percepts (self-feeding), (3) how far imagination runs for the acto
   64 steps for the first half of P1's frames, 256 steps for the second half. At 256 only ~4 streams fit in 6 GB, so
   a 256-step update ACCUMULATES four microbatches of four DISTINCT streams (each with its full 256-step gradient path)
   before one optimizer step; loss normalised by valid (non-padding) frames, gradients clipped after accumulation;
-  SIGReg computed per microbatch on a fixed sample of 4,096 tokens in both halves (same estimator before and after the
-  switch). The Mamba state is carried across chunks of the SAME episode and reset at true episode boundaries; one
+  token normalisation (BatchNorm, no affine) uses each microbatch's statistics, 83k tokens in both halves (16 x 64 x
+  81 and 4 x 256 x 81), so the estimator is the same before and after the switch. The Mamba state is carried across chunks of the SAME episode and reset at true episode boundaries; one
   optimizer update per chunk, the carried state detached: its last chunk was computed under the previous update's
   parameters and its earlier history under older ones (TBPTT never refreshes the history; a normal approximation, to be
   measured, not a reason for a state-rebuild subsystem); no out-of-order chunks, so no burn-in is needed (a short zero-initialised burn-in

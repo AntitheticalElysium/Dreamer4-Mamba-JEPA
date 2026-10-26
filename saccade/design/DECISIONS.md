@@ -81,6 +81,11 @@ The first build, M0, is defined in STEP_SPEC §7; entries below marked [supersed
   M0_CODE.md; weak coupling = JEDI's encoder lr x 0.3 (LOSSES, reconciled); S1.2 probes and the acuity-relative S3
   perception blocker specified before training.
 
+- Collapse prevention decided 10-27 (user asked for a dedicated investigation; my call): SIGReg dropped from M0.
+  Routing (all denoiser inputs and targets stop-gradient; REPA-E, JEDI) + a fixed-target owner per token type (adds
+  the fovea's own reconstruction, the agreed limited pixel grounding) + tanh clamp and BatchNorm without affine for
+  scale (REPA-E). SIGReg kept as a planned comparison and for richer per-patch content later (LOSSES principle 7).
+
 ## Reserve ideas (keep; don't build until a measured need appears)
 - Coarse peripheral target: predict a per-cell colour / contrast summary everywhere ("peripheral vision"). Cheap,
   biology-inspired; risk: zombies are the lowest-contrast sprite (09-26: 2.5 vs 2.6-6.5), so colour alone may miss

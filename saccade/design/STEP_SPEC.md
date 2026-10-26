@@ -32,8 +32,9 @@ There is no separate hidden world: simulation runs on the belief (belief-MDP; GE
    head is NOT a sampler: a deterministic reward of 1 gets mass on bins ~0.88 and ~1.20, Codex), with a categorical
    over the empirical reward values as the alternative for discrete-reward environments; continuation ~ p(c |
    B-_{t+1}, P_{t+1}, r). The critic keeps two-hot. Change map rendered from (B-_{t+1}, B_{t+1}).
-Losses and weights: LOSSES.md v1. Gradient routes into the encoders: the belief path, TSP, SIGReg, the change map; the
-denoiser's targets are stop-gradient. No gradient from the fixation head, actor or critic into the world.
+Losses and weights: LOSSES.md v1. Gradient routes into the encoders: the belief path, TSP, the fovea's own
+reconstruction, the change map; every denoiser input and target is stop-gradient (LOSSES principle 7; SIGReg dropped
+10-27). No gradient from the fixation head, actor or critic into the world.
 
 ## 3. Imagined step (actor training; world frozen)
 Start from a real history: B_0 from the update. Repeat:
@@ -85,7 +86,7 @@ tokens with EDM x-prediction. JEDI adds tanh clamping, a slower encoder and own-
 - Periphery acuity (agreed 10-27): each cell's periphery input is downsampled to 3 x 3 pixels (8-bit); the fovea stays
   full resolution (PERCEPTION, acuity section).
 - Unchanged from the full design: perception (patch-local tokens, lighting latent, fovea + TSP), denoiser and its loss,
-  reward / termination as observations, change map, SIGReg, actor and critic reading the belief, the belief-MDP
+  reward / termination as observations, change map, fovea reconstruction, actor and critic reading the belief, the belief-MDP
   imagination loop. Fixation: a broad random prior (HUD included) while the world model is trained; learned fixation
   once the world model exists (its offline target needs one).
 - Increments, each entering through the SAME two interfaces (the belief's contents and the denoiser's conditioning

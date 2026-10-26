@@ -22,6 +22,7 @@ perception:
     hidden: [256, 256]                        # working; the S0 probe family (MLP, GELU)
     token_dim: 16                             # working; JEDI's 16 channels per latent position
     tanh_clamp: 3.0                           # JEDI encoder tanh clamp factor
+    normalise: batchnorm_no_affine            # REPA-E: unit token scale for sigma_data = 1 as the encoder changes
     film_from_lighting: true                  # PERCEPTION v4: gain control (Carandini & Heeger)
   lighting:
     dim: 8                                    # working; low-dimensional by contract (PERCEPTION v4, Codex)
@@ -30,6 +31,7 @@ perception:
     crop_cells: 3                             # 3 x 3 cells, full resolution (user 10-26, working size)
     token_dim: 64                             # working; per-cell glimpse token, higher capacity than periphery
     tanh_clamp: 3.0                           # JEDI
+    normalise: batchnorm_no_affine            # REPA-E
   fixation_prior: uniform_49_centres          # 3 x 3 window anywhere on the 9 x 9 screen, HUD included (STEP_SPEC 7)
 
 belief:                                       # Mamba-2; LeWM Raw recipe (our past working Mamba world)
@@ -69,6 +71,7 @@ edm:
 
 heads:
   tsp: {likelihood: discretised_logistic, mean_from: [belief, periphery, lighting], scale_from: [lighting, pixel_position]}
+  fovea_reconstruction: {likelihood: discretised_logistic, mean_from: [glimpse, lighting], decoder: shared_with_tsp}  # 10-27
   change_map: {target: a9b_soft_detector, rows: map_only}   # A9b teacher covers map rows only (documented limit)
   reward: {density: discretised_mixture_of_logistics, components: 4, space: symlog, bins: 256, support: [-0.9, 1.1]}
   continuation: {likelihood: bernoulli, conditioned_on: [predicted_belief, percept, reward]}
@@ -76,9 +79,9 @@ heads:
 losses:
   harmoniser: harmonydream                    # L / sigma + log(1 + sigma) per group (LOSSES v1.1)
   harmoniser_init_sigma: 1.0                  # working
-  sigreg: {knots: 17, projections: 1024, samples_per_microbatch: 4096, weight: 0.0028}
-  # weight = LeWM 0.09 x 128 / 4096: LeWM's statistic is the Epps-Pulley distance x N (N = 128 samples there), so
-  # lambda x N is held constant to keep the same strength on the underlying discrepancy (as in R56's amendment).
+  sigreg: null                                # dropped from M0 (10-27, LOSSES principle 7); comparison: LeWM module,
+                                              # lambda x N held at 0.09 x 128 (Epps-Pulley statistic scales with N)
+  stop_gradient: [denoiser_inputs, denoiser_targets]   # REPA-E, JEDI
 
 optimizer:                                    # JEDI / DIAMOND
   name: adamw

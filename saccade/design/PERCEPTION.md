@@ -20,8 +20,11 @@ that answers the thesis, not a perfect Craftax model; Craftax-specific structure
   superseded). Categorical perception tokens shelved. Precedents for continuous percepts in long
   imagination: Dreamer 4 (tanh bottleneck latents, offline Minecraft), GameNGen (noise-augmented continuous latents).
   Dedieu's collapse of continuous patches was MSE reconstruction of raw patches, not a matched comparison.
-- Anti-collapse: SIGReg on the continuous tokens (alternative: R2-Dreamer's Barlow-style term against a detached
-  embedding).
+- Anti-collapse (revised 10-27, LOSSES principle 7): no distribution regulariser on the tokens. Stop-gradient routing
+  plus a fixed-target owner per token type (periphery: TSP and change map; glimpse: its own reconstruction; lighting:
+  the pixel likelihoods); tanh clamp then BatchNorm without affine (REPA-E) for scale. SIGReg (per token, or on a
+  frame-level embedding as in LeWM) is a planned comparison, and a candidate again where per-patch content is rich
+  (natural or 3D images).
 
 ## Viewing-conditions latent (lighting; AGREED, user 10-26)
 Brain: (1) adaptation and gain control at the sensor (divisive normalisation, Carandini & Heeger 2012); (2) constancy:

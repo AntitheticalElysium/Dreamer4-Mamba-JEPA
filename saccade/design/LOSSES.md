@@ -18,9 +18,18 @@ separate (no gradient into the world).
    the encoder alike (grounding and SIGReg included); the mix between routes is set by the group weights. DreamerV3's
    per-route 0.1 does not transfer one-to-one: here the denoising gradient reaches the encoder through conditioning
    paths (past percepts, the belief) that also carry the grounding gradients. A per-route scale stays a documented
-   alternative. SIGReg's lambda: LeWM's statistic is the Epps-Pulley distance x N (N = its 128 samples), so lambda x N
-   is held constant: 0.09 x 128 / 4,096 sampled tokens = 0.0028 (as in R56's amendment); a starting value relative to
-   the harmonised groups, monitored with the token statistic and effective rank.
+   alternative.
+7. Collapse prevention (decided 10-27 after a dedicated investigation; SIGReg dropped from M0, see READING 10-27):
+   collapse is prevented by the ROUTING and by GROUNDING, not by a distribution regulariser. (a) Every denoiser input
+   and target is stop-gradient (noisy frames, context frames, targets): REPA-E measured that a diffusion loss reaching
+   the encoder through the latent collapses it (spatial variance 17.06 -> 0.02; FID 444 without the stop-gradient);
+   JEDI stops its target and its own noisy input. The denoising loss reaches the encoder only through the belief
+   (past percepts -> Mamba -> memory tokens), never through the frame being predicted, and the encoder learns 0.3x
+   slower (Tang et al.: predictor faster than representation). (b) Each token type has a fixed-target owner: periphery
+   tokens by TSP and the change map, glimpse tokens by the fovea's own reconstruction (G2), the lighting latent through
+   both pixel likelihoods, all of them through the outcome heads. (c) Token scale for the diffusion (sigma_data = 1)
+   is kept by JEDI's tanh clamp followed by REPA-E's normalisation (BatchNorm, no affine), not by shaping the encoder.
+   Diagnostics, never gates: token std before normalisation, effective rank, nuisance drift ratio (R56 definition).
 4. Terms in different units are equalised by a learned harmoniser per GROUP: L_g / sigma_g + log(1 + sigma_g)
    (HarmonyDream, ICML 2024). CORRECTION (Codex): with mu = E[L_g] the optimum satisfies sigma^2 = mu (1 + sigma), not
    sigma = mu (that is the unrectified log sigma form); the normalised contribution is sigma / (1 + sigma) < 1, and as mu
@@ -43,7 +52,7 @@ separate (no gradient into the world).
 | G2 grounding | TSP | discretised logistic NLL; mean from (belief, periphery, v), scale from (v, position) | nats per pixel; mean over the glimpse | harmonised |
 | G3 consequences | reward (observation model) | negative log-likelihood of a discretised mixture of logistics over symlog(r) (support: the symlog range of the train split, [-0.9, 1.1], 256 uniform bins; sample, then symexp; the same bins score the S1 calibration references, saccade/eval/calib.py) | nats; mean over steps | harmonised |
 | G3 consequences | continuation | BCE, conditioned on (predicted belief, percept, reward) | nats; mean over steps | harmonised |
-| (fixed) | SIGReg | Epps-Pulley statistic over random projections (LeJEPA) on periphery and glimpse tokens | statistic | m0.yaml (lambda x N held at LeWM's 0.09 x 128) |
+| G2 grounding | fovea reconstruction (10-27) | discretised logistic NLL of the glimpse crop's pixels from its own glimpse tokens and v (TSP's pixel decoder and noise model) | nats per pixel; mean over the crop | harmonised |
 | G1 (shared) | own-sample unrolls | the G1 term at each unrolled step while the update reads the generator's own percepts (context corruption / random switching), truncated gradients | mean over steps | G1's sigma |
 | G4 sampled rollouts | free-running sampled unrolls on exogenous windows | PATCHED + GLOBAL joint-trajectory energy score (agreed 10-27; beta = 1, fair pairwise term, m = 2 independent rollouts with independent noise and termination draws; Y = the recorded window through the frozen encoder). Patched: one zero-padded 3x3 window of periphery tokens CENTRED on each of the 81 tokens (each token covered 9 times, HUD included), stacked over the h steps. Global: the full flattened trajectory (all periphery tokens, lighting latent, glimpse tokens, symlog reward, termination); a pooled global would miss distant dependencies (Codex's corner counterexample). Every component scaled once by its std over 10,000 recorded windows at the start of P2; absorbing terminal convention; weights: the patch sum 1, the global set once at the start of P2 to equal mean magnitude (Pacchiardi et al., E.4.2; their patches are spatial at one lead time, stacking over time is ours). Gradient: CURRICULUM §2 contract. Distinct from the S0 evaluation summary (simulator labels via the reader) | per trajectory | harmonised |
 

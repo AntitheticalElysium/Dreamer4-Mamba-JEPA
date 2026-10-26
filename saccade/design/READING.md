@@ -789,3 +789,29 @@ Scripts named below (eda_*.py, ana_*.py, t1_/t2_*) are in artifacts/experiments/
   kinds; night zombies 0.86, cows 0.85, skeletons 0.64, arrows 0.78 (full res 0.97 / 0.95 / 0.85 / 0.91).
 - A continuous token's width does not bound its information (only noise or quantisation does); Craftax cells carry at
   most ~5.5 bits of meaning, so any working width holds a cell's meaning by day.
+
+## Collapse prevention: SIGReg reviewed for the whole system (2026-10-27)
+- History of the call: I proposed dropping SIGReg on 10-23 ("working systems don't use it"); the user rejected that
+  argument; collapse prevention stayed open ("never agreed", 10-23 evening); SIGReg re-entered in learning sketch v2
+  (10-25) inside a larger approved message, never as its own decision. Investigated on its own 10-27.
+- Precedent: LeJEPA applies SIGReg to the projector output of a global (view-level) embedding and uses the backbone
+  before the projector downstream (vendored MINIMAL.md); LeWM to a frame embedding; LeVLJEPA to pooled embeddings. No
+  per-patch-token use found. Guillotine regularisation (Bordes et al., TMLR 2023): the space the SSL loss shapes is the
+  worse one downstream (up to 30 points). Our percept tokens are used directly (denoiser, belief, actor).
+- Our history (October encoder study, R57 corrected): where patch-level SIGReg acted (the deployed projector output),
+  macro recall fell to 0.48 against 0.83 in the backbone under it, and day nuisance drift was about 2x Raw's (0.062-
+  0.072 vs 0.035-0.041; VICReg similar); the backbone review found patch SIGReg opposing camera-aligned transport at
+  4/4 paired checkpoints. Causes not isolated (warp and compression), so a warning, not proof.
+- Fit to the data: by day a Craftax cell has 44 meanings (2.7 bits on average); an isotropic Gaussian per 16-d cell
+  token can only be filled by continuous variation, i.e. light level, sleep tint or static: exactly what the lighting
+  latent is meant to discount. Reasoning from measured facts, not a measurement of training.
+- What SIGReg does not do: choose which variance survives (SLIM); prevent selective erasure (our R63 history). HamJEPA
+  (arXiv 2605.20107): fixed isotropic marginals carry a "price" for structured geometries and miss the predictive
+  coupling. The free-energy account (arXiv 2607.13612) is theoretical and assumes isotropy is achieved.
+- Joint latent diffusion: REPA-E (ICCV 2025): the diffusion loss back-propagated into the encoder collapses the latent
+  (spatial variance 17.06 -> 0.02; FID 444 without stop-gradient); fixed by stop-gradient plus BatchNorm without
+  affine between encoder and diffusion model (removing BN: gFID 16.3 -> 18.1). JEDI: stop-gradient target and own noisy
+  input, encoder lr 0.3x, tanh clamp; its appendix relates SIGReg to the omitted aggregate prior term of its bottleneck.
+- Whole-system finding: glimpse tokens had no fixed-target owner (TSP predicts glimpse pixels from the PERIPHERY), so
+  the fovea's evidence stream relied on self-referential routes; the fovea's own reconstruction (the limited pixel
+  grounding the user intended: "the point of the fovea is to reconstruct everything perfectly") closes that gap.

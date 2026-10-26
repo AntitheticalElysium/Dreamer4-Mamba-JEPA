@@ -34,11 +34,13 @@ K = 4 memory tokens, W = 256.
 - Heads: `TSP.forward(memory, p_window, v, fix) -> (mean, log_scale)` over the glimpse pixels; `ChangeMap.forward(p_t,
   p_t1, memory) -> logits [.., 7, 9]`; `Reward.log_prob(r, cond)`, `Reward.sample(cond)` (mixture of logistics over
   the 256 symlog bins); `Continuation.forward(cond, r) -> logit`.
-- `sigreg(tokens) -> statistic` (port of LeWM's module; samples 4,096 tokens).
+- Fovea reconstruction: `PixelDecoder` shared by TSP and the fovea (per cell, discretised logistic): TSP feeds it
+  (memory, periphery window, v), the reconstruction feeds it the glimpse tokens and v.
+- Token scale: tanh clamp, then `BatchNorm1d(affine=False)` per token type (REPA-E). No SIGReg in M0.
 
 ## saccade/train.py — phases
 - `p1(cfg, world_seed)`: the one-step loop (streams, accumulation at 256 steps, frame-indexed lr, harmonised groups,
-  SIGReg, checkpoints every 10% of frames, the fixed monitor). `harmonise(losses, log_sigma) -> total`.
+  stop-gradient routing, checkpoints every 10% of frames, the fixed monitor). `harmonise(losses, log_sigma) -> total`.
 - `p2(cfg, world_seed, checkpoint)`, `p3(cfg, world_seed, checkpoint)`: written after S1 / S2, against these interfaces.
 
 ## saccade/eval/s1.py — the S1 readings (written before P1 ends)
@@ -50,7 +52,8 @@ reward / continuation calibration on the common bins (`eval.calib.reward_bin`).
 Streams never cross episodes and are deterministic; the periphery encoder is equivariant to whole-cell shifts; the
 Mamba scan equals step-by-step stepping across chunks and resets; the streaming denoiser equals the chunked one; EDM
 coefficients match the reference formulas; the reward head can put near-all mass on one bin; gradients reach the
-encoder only through the declared routes (targets stop-gradient); a resumed run equals an uninterrupted one;
+encoder only through the declared routes (belief, TSP, fovea reconstruction, change map) and never through any
+denoiser input or target; a resumed run equals an uninterrupted one;
 P2 gradients reach the denoiser and the update, not the encoder or outcome heads.
 
 ## Build order
