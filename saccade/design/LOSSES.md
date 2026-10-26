@@ -36,7 +36,7 @@ separate (no gradient into the world).
 | G3 consequences | continuation | BCE, conditioned on (predicted belief, percept, reward) | nats; mean over steps | harmonised |
 | (fixed) | SIGReg | Epps-Pulley statistic over random projections (LeJEPA) on periphery and glimpse tokens | statistic | lambda = 0.1 relative to G1 |
 | G1 (shared) | own-sample unrolls | the G1 term at each unrolled step while the update reads the generator's own percepts (context corruption / random switching), truncated gradients | mean over steps | G1's sigma |
-| G4 sampled rollouts | free-running sampled unrolls on exogenous windows | JOINT-TRAJECTORY energy score (beta = 1, m >= 2 independent trajectories with independent termination draws, each trajectory one vector of per-step percept summaries + reward + termination, components scaled by data std; terminal convention per CURRICULUM); framewise / patched scores supplementary. The label-free, differentiable PERCEPT SUMMARY used for training is still to be declared before P2; it is not the S0 evaluation summary (simulator labels via the reader), whose count + centroid scope is documented in saccade/eval/gates.py | per trajectory | harmonised |
+| G4 sampled rollouts | free-running sampled unrolls on exogenous windows | PATCHED + GLOBAL joint-trajectory energy score (agreed 10-27; beta = 1, fair pairwise term, m = 2 independent rollouts with independent noise and termination draws; Y = the recorded window through the frozen encoder). Patched: one zero-padded 3x3 window of periphery tokens CENTRED on each of the 81 tokens (each token covered 9 times, HUD included), stacked over the h steps. Global: the full flattened trajectory (all periphery tokens, lighting latent, glimpse tokens, symlog reward, termination); a pooled global would miss distant dependencies (Codex's corner counterexample). Every component scaled once by its std over 10,000 recorded windows at the start of P2; absorbing terminal convention; weights: the patch sum 1, the global set once at the start of P2 to equal mean magnitude (Pacchiardi et al., E.4.2; their patches are spatial at one lead time, stacking over time is ours). Gradient: CURRICULUM §2 contract. Distinct from the S0 evaluation summary (simulator labels via the reader) | per trajectory | harmonised |
 
 ## Facts used
 Change-map positives 1.7% (day) / 2.9% (night) of cells (A9b); reward non-zero on 6.7% of steps, termination 0.3%
@@ -44,6 +44,5 @@ Change-map positives 1.7% (day) / 2.9% (night) of cells (A9b); reward non-zero o
 1.37-bit figure is movement-only and conditioned on full simulator state, Codex.)
 
 ## Open
-Window size and sample count for the energy scores; sigma initialisation; noise-level weighting for the denoising
+Sigma initialisation; noise-level weighting for the denoising
 loss; schedule lengths; per-route gradient-norm alarms; how to protect rare entities inside the next-percept group.
-The P2 training summary for G4 and its gradient boundary (declared before P2).

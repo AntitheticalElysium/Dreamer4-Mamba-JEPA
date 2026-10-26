@@ -60,10 +60,22 @@ Coverage limit: 16-step exogenous windows come almost only from random play.
 
 ## S3 — decisions (phase P3)
 1. Imagination-trained actor vs BC with matched inputs and the SAME fixation controller (fixation learning evaluated
-   separately afterwards); >= 3 independent training seeds, paired environment seeds, intervals across training
-   runs. Its budget is reserved from the start.
-2. What blocks S3 is declared now: an S1.1 retention failure or S2.1 duplicate / missing entities beyond the declared
-   bound; other misses are reported and S3 still runs.
+   separately afterwards); 3 actor and 3 BC seeds per world seed, paired environment seeds (512 DEV), intervals across
+   training runs, reported PER WORLD SEED (two independently learned worlds, not six replications). Its budget is
+   reserved from the start (CURRICULUM, Budgets).
+2. Blockers (agreed 10-27), evaluated ONCE on the declared checkpoints, per world seed, per entity kind (zombie, cow,
+   skeleton, arrow); a pooled check passed the removal of every arrow (-4.2% count, persistence up), so none is pooled:
+   - perception (S1.1): token probe (S0 definition, mean of 2 probe seeds, seed spread reported) on rings 1-2, day and
+     night separately: blocks if a kind's presence recall < 0.90, or its precision < 0.90, or either is lower than an
+     untrained copy of the same encoder by > 0.02 beyond 3 SE (learned erasure). Pixel reference there: 1.00 by day,
+     0.98-1.00 at night.
+   - bookkeeping (S2.1): frozen reader on prior-sampled rollouts (all 2,236 dev exogenous windows, m = 8) vs the same
+     reader on the recorded futures: blocks if a kind's mean visible count differs by > 30% AND by > 3 SE, or if 4-step
+     persistence of zombies, cows or skeletons falls > 0.10 below the recorded (0.996 / 0.978 / 0.906 on labels; arrows,
+     short-lived at 0.32, get the count check only). Support in those windows: 584 / 1,566 / 339 / 244 windows.
+   The S0 corruption checks, including all-arrows-removed, are rerun through the reader before use. Other misses are
+   reported and S3 runs. If both pass, S3 runs at once with its reserved budget; if one fires, the miss goes to
+   diagnosis (below), never to longer training.
 3. Learned fixation afterwards: anticipation vs reaction; night robustness.
 
 ## Increments are candidate comparisons after diagnosis, not automatic responses
@@ -72,5 +84,5 @@ Coverage limit: 16-step exogenous windows come almost only from random play.
   (store + self-location) or I2 (records) the candidate, and its benefit is claimed only by a matched retraining.
 
 ## Open
-Budgets per stage; the belief-content probes (S1.2); the declared bounds for the two S3 blockers. (Fixed in S0: the
-per-cell probe for S1.1, the S2 sample counts.)
+The belief-content probes (S1.2). (Fixed: the per-cell probe for S1.1 and the S2 sample counts in S0; budgets in
+CURRICULUM; the S3 blockers above.)
