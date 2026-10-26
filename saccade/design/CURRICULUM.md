@@ -32,17 +32,28 @@ own generated percepts (self-feeding), (3) how far imagination runs for the acto
   Gu) are a separately declared robustness intervention, OFF by default: an episodic belief carries achievements,
   health and map facts that another episode's state would contradict. Carrying state extends the history represented
   in training, not gradient credit beyond the chunk; long-gap memory is something the probes must show. Streams keep
-  their identity, reset masks, padding masks and the 4-percept window aligned; denoiser evaluations within one
-  environment step never commit Mamba updates.
+  their identity, reset masks, padding masks and the denoiser's context aligned; denoiser evaluations within one
+  environment step never commit Mamba updates. Denoiser context (Codex, 10-27): temporal attention sees the past 4
+  frames at each temporal layer and composes across its 2 temporal layers, so its effective reach is 8 frames; each
+  training chunk is preceded by the previous 8 frames of its stream as context-only frames (no loss), episode
+  boundaries mask attention, and streaming inference with per-layer caches of the last 4 frames must reproduce the
+  chunked computation exactly (an implementation test).
 
 ## 2. Self-feeding (robustness to the world's own outputs)
 Compounding comes from the belief and denoiser reading their own imperfect outputs (exposure bias). Under stochastic
 outcomes a generated history can be correct and still differ from the recorded one, so a pointwise loss against the
 recorded future is only valid one step after a real history (DaD, Venkatraman et al. 2015, assumes it otherwise).
-- From the start, two robustness procedures, neither a solution to stochastic self-feeding:
-  (a) context corruption: Gaussian noise on the conditioning percepts at a level sampled per sequence and given to the
-      denoiser as input (GameNGen; Dreamer 4 uses tau_ctx = 0.1);
-  (b) JEDI-style switching, exactly: with probability 0.5 a recorded percept in the conditioning window is replaced by
+- From the start, one robustness procedure, not a solution to stochastic self-feeding:
+  (a) context corruption, realised by the denoiser's DIFFUSION-FORCING training form (Dreamer 4; agreed 10-27 with the
+      transformer backbone): every frame of a chunk carries its own sampled noise level, given to the denoiser, so the
+      past frames it conditions on are noised copies of the recording; at inference past frames are re-entered at a
+      small context noise level (m0.yaml edm.inference_context_sigma). Scope (Codex): Mamba reads the clean recorded
+      percepts in P1, so the belief update never practises consuming GENERATED percepts there; that is P2's job
+      (rollouts read generated percepts through the same update, gradients through the last 2 steps).
+  (b) DROPPED for M0 (user, 10-27; a defensible simplification, not an equivalent of the recipe: JEDI's ablation finds
+      switching helpful, not critical, and it does not fit a one-pass sequence form). KEPT ON THE DRAWING BOARD as the
+      FIRST ablation if the curriculum proves to need more self-feeding. As specified before: JEDI-style switching,
+      exactly: with probability 0.5 a recorded percept in the conditioning window is replaced by
       the denoiser's RECONSTRUCTION of a noised copy of that same recorded percept (noise level sampled; stop-gradient
       on the substitute; the real reward and termination accompany it). JEDI's Algorithm 1 is the precedent (random
       switching to its own denoised version of the same recorded latent). A robustness heuristic, tested as such: a

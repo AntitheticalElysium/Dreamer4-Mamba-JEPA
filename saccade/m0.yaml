@@ -1,0 +1,119 @@
+# saccade M0: every hyperparameter of the architecture and its training, in one place (user, 10-27).
+# Each value carries its source. "working" = a declared starting value: changed only through a declared reading,
+# never tuned until a gate passes (TEST_SPEC rules). Reasons and contracts live in saccade/design/; numbers live here.
+# Source keys: JEDI = arXiv 2605.13013 (vendored LaTeX, Tables "architecture" / "training"); DIAMOND = config/trainer.yaml
+# (github eloialonso/diamond); D4 = Dreamer 4, arXiv 2509.24527 (vendored); DV3 = DreamerV3 configs.yaml (vendored);
+# LeWM = lucas-maes/le-wm (vendored) and d4mj/recipes/lewm_mamba_raw.json; Heo = RoPE for ViT, ECCV 2024; DiT = Peebles
+# & Xie 2023; GameNGen = arXiv 2408.14837; EDA = artifacts/experiments/20261023_system_design (scripts named there).
+
+seed: {world: [1, 2]}                         # CURRICULUM Budgets: two independently learned worlds
+
+data:
+  corpus: artifacts/craftax_support_v2        # 8,069 train episodes, 2.56 M transitions
+  monitor_fraction: 0.05                      # fixed held-out train episodes, same for every arm (CURRICULUM)
+  streams: 16                                 # episodes per optimizer update (E1 / E1d; DRAMA 16 x 128)
+  chunk_steps: [64, 256]                      # first / second half of P1's frames (CURRICULUM)
+  accumulate_at_256: 4                        # 4 microbatches x 4 distinct streams per update at 256 steps
+  context_prefix: 8                           # = the denoiser's effective temporal reach (denoiser below)
+
+perception:
+  periphery:
+    acuity: 3                                 # cell downsampled to 3 x 3 (8-bit); declared rule, eda_periphery_acuity.py
+    hidden: [256, 256]                        # working; the S0 probe family (MLP, GELU)
+    token_dim: 16                             # working; JEDI's 16 channels per latent position
+    tanh_clamp: 3.0                           # JEDI encoder tanh clamp factor
+    film_from_lighting: true                  # PERCEPTION v4: gain control (Carandini & Heeger)
+  lighting:
+    dim: 8                                    # working; low-dimensional by contract (PERCEPTION v4, Codex)
+    inputs: frame_pooled_statistics           # per-channel mean and std of the frame, nothing spatial
+  fovea:
+    crop_cells: 3                             # 3 x 3 cells, full resolution (user 10-26, working size)
+    token_dim: 64                             # working; per-cell glimpse token, higher capacity than periphery
+    tanh_clamp: 3.0                           # JEDI
+  fixation_prior: uniform_49_centres          # 3 x 3 window anywhere on the 9 x 9 screen, HUD included (STEP_SPEC 7)
+
+belief:                                       # Mamba-2; LeWM Raw recipe (our past working Mamba world)
+  layers: 6
+  width: 256
+  d_state: 64
+  headdim: 64
+  expand: 1
+  d_conv: 4
+  chunk_size: 256
+  A_init_range: [1.0, 16.0]
+  dt_range: [0.001, 0.1]
+  dt_init_floor: 1.0e-4
+  inputs: interleaved                         # [percept + reward + termination]_t, then [action]_t (STEP_SPEC 7)
+  percept_projection: flatten_linear          # flattened periphery + glimpse + fixation + lighting -> width (DRAMA)
+
+denoiser:                                     # D4-style factorised space-time transformer
+  layers: 8                                   # working (cost: eda notes, READING 10-27)
+  width: 256
+  heads: 4
+  mlp_ratio: 4
+  temporal_every: 4                           # D4: temporal attention once every 4 layers (layers 4 and 8)
+  temporal_window: 4                          # past frames per temporal layer -> effective reach 8 frames
+  memory_tokens: 4                            # working; predicted belief -> K tokens per frame
+  positions: {spatial: rope_2d_axial_plus_absolute, temporal: rope_1d}   # D4 (RoPE); Heo (APE + RoPE at 7 x 7)
+  qk_norm: true                               # D4
+  conditioning: adaln_zero                    # DiT: noise level and action
+  type_embeddings: [periphery, glimpse, lighting, memory]   # D4 modality ids
+
+edm:
+  prediction: x                               # JEDI / D4 (x-space)
+  sigma_data: 1.0                             # JEDI
+  train_sigma: {lognormal_loc: -0.4, lognormal_scale: 1.2, min: 0.002, max: 20.0}   # DIAMOND
+  training_form: diffusion_forcing            # D4: each frame its own noise level; noisy past = context corruption
+  sampler: {method: euler, steps: 3, sigma_max: 5.0, sigma_min: 0.002, rho: 7, s_churn: 1.0}  # JEDI / DIAMOND
+  inference_context_sigma: 0.1                # working; D4 "slightly corrupt"; GameNGen: 0 also works
+
+heads:
+  tsp: {likelihood: discretised_logistic, mean_from: [belief, periphery, lighting], scale_from: [lighting, pixel_position]}
+  change_map: {target: a9b_soft_detector, rows: map_only}   # A9b teacher covers map rows only (documented limit)
+  reward: {density: discretised_mixture_of_logistics, components: 4, space: symlog, bins: 256, support: [-0.9, 1.1]}
+  continuation: {likelihood: bernoulli, conditioned_on: [predicted_belief, percept, reward]}
+
+losses:
+  harmoniser: harmonydream                    # L / sigma + log(1 + sigma) per group (LOSSES v1.1)
+  harmoniser_init_sigma: 1.0                  # working
+  sigreg: {knots: 17, projections: 1024, samples_per_microbatch: 4096, weight: 0.0028}
+  # weight = LeWM 0.09 x 128 / 4096: LeWM's statistic is the Epps-Pulley distance x N (N = 128 samples there), so
+  # lambda x N is held constant to keep the same strength on the underlying discrepancy (as in R56's amendment).
+
+optimizer:                                    # JEDI / DIAMOND
+  name: adamw
+  lr: 1.0e-4
+  eps: 1.0e-8
+  weight_decay: 0.01
+  grad_clip: 1.0
+  encoder_lr_scale: 0.3                       # JEDI; Tang et al. 2023: predictor faster than representation
+  warmup_frames: 1024000                      # JEDI's 1,000 warm-up updates at 1,024 frames per update
+  schedule: cosine_by_frames                  # CURRICULUM: follows frames, not updates
+  min_lr_ratio: 0.1                           # LeWM 5e-6 / 5e-5
+
+p1:                                           # CURRICULUM Budgets
+  frames: 25600000
+  checkpoint_every_fraction: 0.1
+  monitor: {windows: 2000, sigma_levels: 8, fixed_noise_seed: 0, fixed_fixation_seed: 0}
+
+p2:
+  updates: 6000
+  horizons: [2, 4, 8, 16]                     # 1,500 updates each
+  windows_per_update: 16
+  rollouts_per_window: 2                      # m = 2: unbiased energy score (Pacchiardi; NeuralGCM)
+  one_step_streams: 8                         # one-step G1 loss continues: 8 streams x 64
+  grad_last_steps: 2
+  summary: {patch: centred_padded_3x3, global: full_trajectory, scale_windows: 10000}
+
+p3:
+  updates: 2500                               # the 09-03 count (the only measured success)
+  batch: 64
+  horizon: 16                                 # D4 / JEDI 15, DV3 15
+  gamma: 0.997                                # D4
+  lambda: 0.95                                # DV3, JEDI
+  policy_objective: {name: pmpo, alpha: 0.5, prior_kl_beta: 0.3, prior_kl: reverse}   # D4
+  value: {output: symexp_twohot, bins: 255, slow_target_rate: 0.02}                  # DV3
+  mlp: {layers: 3, units: 256}                # DV3 size12m units
+  seeds: {actor: 3, bc: 3}                    # per world seed
+  eval_env_seeds: 512                         # paired DEV seeds
+  bc_data: expert_branch_steps                # train-split steps whose collector flag is not exogenous (A8)

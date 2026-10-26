@@ -68,12 +68,22 @@ pretrained representations with velocity prediction, so neither result transfers
 tokens with EDM x-prediction. JEDI adds tanh clamping, a slower encoder and own-output conditioning.
 
 ## 7. Minimal first build M0 (user, 10-27: minimal first, defined components added on measured need)
-- Belief = a short window of recent percepts (k = 4, working; JEDI uses 4) + the Mamba state (a global working state;
-  input per step = an attention-pooled summary of the percept, the action, reward and termination). No records, no
-  store, no self-location.
-- Predict = Mamba step on the action; correct = append the percept and step Mamba on it. The denoiser is conditioned on
-  (Mamba output, recent percepts, action, fixation) and generates the next percept; scrolling is learned from the
-  recent percepts, as in JEDI / Dreamer 4.
+- Belief = the Mamba state + the denoiser's recent frames. Mamba reads an INTERLEAVED sequence: the percept of t with
+  its reward and termination (flattened and linearly projected, as in DRAMA: position-sensitive and lossy; probes show
+  what survives), then the action of t. Its output after the action is the PREDICTED belief, held fixed through the
+  denoising steps; the next percept is the correction. No records, no store, no self-location.
+- Denoiser (agreed 10-27, user; replaces the grid-conv proposal): a Dreamer-4-style space-time transformer. Tokens per
+  frame: 81 periphery tokens, 9 glimpse tokens at their own fixation's cells, 1 lighting token, 4 memory tokens (the
+  predicted belief projected); spatial attention every layer, temporal attention every 4th layer over the past 4
+  frames (effective reach 8 frames through composition); 2D RoPE plus absolute 2D positions (Heo et al.: absolute
+  embeddings helped at a 7 x 7 grid), type embeddings, adaLN-Zero on noise level and action (DiT). Each component keeps
+  its own shape and noise draw (Codex). Trained in the diffusion-forcing form (each frame its own noise level) over
+  chunks preceded by 8 context-only frames; streaming inference with per-layer caches of the last 4 frames must equal
+  the chunked computation (test). In P1 Mamba reads clean recorded percepts; practice on generated percepts is P2's.
+  The memory map of the grid-conv proposal is dropped: memory tokens serve global and position-specific reads alike,
+  and store reads (I1) and records (I2) will enter as tokens. All numbers: saccade/m0.yaml.
+- Periphery acuity (agreed 10-27): each cell's periphery input is downsampled to 3 x 3 pixels (8-bit); the fovea stays
+  full resolution (PERCEPTION, acuity section).
 - Unchanged from the full design: perception (patch-local tokens, lighting latent, fovea + TSP), denoiser and its loss,
   reward / termination as observations, change map, SIGReg, actor and critic reading the belief, the belief-MDP
   imagination loop. Fixation: a broad random prior (HUD included) while the world model is trained; learned fixation

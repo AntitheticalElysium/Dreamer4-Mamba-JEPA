@@ -43,8 +43,19 @@ Rules
 ## S1 — M0 one-step (phase P1 of CURRICULUM)
 1. Entity retention in percept tokens: presence, kind and position per cell, by light and ring, beside random-feature
    and pixel-probe references.
-2. Belief contents: unlocked achievements, HUD values, entities that just left the view. Controls: the current
-   observation INCLUDING reward and termination; the 4-percept window without Mamba (isolates what Mamba adds).
+2. Belief contents (specified 10-27, before any P1 result). Features: the corrected belief b_t (Mamba output after
+   the percept, reward and termination of t: what the actor reads). Probe: the S0 family (MLP 256-256 GELU), fit on
+   train-400, read on all dev, 2 probe seeds, episode-bootstrap intervals; reported, not a gate. Targets:
+   (a) achievements unlocked before t (22 binary): AP and balanced accuracy each;
+   (b) the displayed HUD quantities (health, food, drink, energy; the 12 inventory counts, capped at 9): exact
+       accuracy each; with an acuity-limited periphery the exact values are in the current percept only when a glimpse
+       covers them, so this reads memory of past glimpses;
+   (c) departed entities: per kind, "one was in view within the last k steps and is out of view now", by absence
+       stratum k in {1-4, 5-8, 9-16, 17-64} (beyond 8 the denoiser's own context cannot hold it), plus its exit side
+       (4-way accuracy).
+   Controls with the same probe: (i) the current percept (periphery, glimpse, fixation, lighting) with its reward
+   and termination; (ii) the last 8 percepts with their rewards (the denoiser's effective reach), without Mamba.
+   What Mamba adds = belief minus (ii), read per stratum.
 3. One-step generation: classifier two-sample tests on MATCHED (history, action, fixation, outcome) tuples, with power
    checked on the S0 corruptions; entity counts read by the frozen reader; reward and continuation calibration.
 4. TSP: glimpse likelihood vs copy-previous and per-position-mean baselines.
@@ -66,9 +77,11 @@ Coverage limit: 16-step exogenous windows come almost only from random play.
 2. Blockers (agreed 10-27), evaluated ONCE on the declared checkpoints, per world seed, per entity kind (zombie, cow,
    skeleton, arrow); a pooled check passed the removal of every arrow (-4.2% count, persistence up), so none is pooled:
    - perception (S1.1): token probe (S0 definition, mean of 2 probe seeds, seed spread reported) on rings 1-2, day and
-     night separately: blocks if a kind's presence recall < 0.90, or its precision < 0.90, or either is lower than an
-     untrained copy of the same encoder by > 0.02 beyond 3 SE (learned erasure). Pixel reference there: 1.00 by day,
-     0.98-1.00 at night.
+     night separately: blocks if a kind's presence recall or precision falls more than 0.10 below the pixel reference
+     AT THE PERIPHERY'S ACUITY (3 x 3: by day 1.00 for every kind; at night zombies 0.96, cows 0.96, skeletons 0.90,
+     arrows 0.77; PERCEPTION, acuity section), or below an untrained copy of the same encoder by > 0.02 beyond 3 SE
+     (learned erasure). The same 0.10 tolerance as the earlier absolute 0.90, now measured from what the input allows
+     (10-27: the absolute bound would have fired on night arrows from acuity alone).
    - bookkeeping (S2.1): frozen reader on prior-sampled rollouts (all 2,236 dev exogenous windows, m = 8) vs the same
      reader on the recorded futures: blocks if a kind's mean visible count differs by > 30% AND by > 3 SE, or if 4-step
      persistence of zombies, cows or skeletons falls > 0.10 below the recorded (0.996 / 0.978 / 0.906 on labels; arrows,

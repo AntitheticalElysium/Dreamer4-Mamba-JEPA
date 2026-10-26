@@ -76,6 +76,29 @@ The generator's final stochastic stage, not a module with its own target.
   labels (overconfidence check).
 - Cost: conditional case, m = 2 samples of the final stage; prior-predictive case, m independent chance draws.
 
+## Periphery acuity (decided 10-27; user: lower the resolution so the model has a reason to use the fovea)
+The intended sensing problem (Codex's condition: a declared sensing constraint, not a value tuned to Craftax digits):
+the periphery sees each cell at reduced acuity, the fovea at full resolution, as in peripheral vision and Mnih et
+al.'s multi-resolution glimpse sensor. Chosen by a rule declared before measuring (eda_periphery_acuity.py: the
+coarsest r keeping, by day on rings 1-4, presence recall, kind accuracy and terrain accuracy within 0.01 of full
+resolution and each kind's recall within 0.02): r = 3. S0 pixel-probe definition, 2 probe seeds, dev:
+| r | day presence / kind / terrain | night rings 1-2 recall z / c / s / a | night rings 3-4 | HUD values exact |
+|---|---|---|---|---|
+| 7 (full) | 1.000 / 1.000 / 1.000 | 1.00 / 1.00 / 1.00 / 0.92 | 0.86 / 0.90 / 0.87 / 0.67 | 1.000 |
+| 5 | 0.999 / 0.999 / 1.000 | 0.99 / 0.99 / 0.95 / 0.75 | 0.78 / 0.86 / 0.72 / 0.51 | 1.000 |
+| 4 | fails (day arrows 0.949; a pooling-window artifact) | 0.98 / 0.95 / 0.92 / 0.60 | 0.74 / 0.77 / 0.66 / 0.44 | 1.000 |
+| 3 | 1.000 / 1.000 / 1.000 | 0.96 / 0.96 / 0.90 / 0.77 | 0.73 / 0.79 / 0.65 / 0.54 | 1.000 |
+| 2 | fails (day presence 0.96) | 0.87 / 0.83 / 0.53 / 0.42 | 0.57 / 0.61 / 0.40 / 0.31 | 1.000 |
+| 1 | fails | 0.60 / 0.65 / 0.33 / 0.19 | 0.40 / 0.49 / 0.25 / 0.14 | 0.945 |
+What this means: in Craftax the fovea's added evidence at this acuity is at NIGHT (entities, arrows most). The HUD
+values stay readable from 3 x 3 pooled glyphs by a supervised reader (my earlier "HUD values collapse" used a
+minimum-distance statistic and was wrong; Codex). Whether the learned 16-dimensional periphery keeps them is a
+learning question read in S1; no noise is added to make digits unreadable (that would be tuning to Craftax). The
+rule's second clause (each kind >= 0.95 on night rings 1-2) was unsatisfiable even at full resolution (arrows 0.92):
+a defect of the declared rule, reported, not repaired after the fact; the S3 perception blocker is defined against
+the reference at this acuity instead (TEST_SPEC S3.2). A (full resolution) stays the planned comparison.
+Limit: the probe labels omit arrow direction (Codex), which the sprite shows and dynamics need.
+
 ## TSP noise model
 Pixel likelihood with location from (belief, conditions) — conditions also shift the mean (Craftax tints, desaturates
 and blends at night, not only adds variance) — and scale from conditions and pixel position only.

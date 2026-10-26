@@ -61,6 +61,7 @@ needed; with an exact belief this gives the same distribution over observation s
 - Conditioning: the PREDICTED belief B- (the update's deterministic predict step: self-location from the action,
   records' predicted hypotheses, store reads, Mamba state). B- plays the afterstate's role; the denoiser supplies the
   chance (Codex: continuous innovations keep the afterstate-plus-chance principle).
+- Backbone (10-27): Dreamer-4-style space-time transformer over percept and memory tokens (STEP_SPEC 7, m0.yaml).
 - Sampler: start with JEDI's recipe (EDM noise levels, x-prediction, ~3 Euler steps); shortcut forcing (Dreamer 4) is a
   later speed adaptation, not part of the precedent. Context corruption / own-sample conditioning for robustness
   (Dreamer 4 tau_ctx; JEDI's random switching).

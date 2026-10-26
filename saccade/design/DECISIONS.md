@@ -27,7 +27,7 @@ The first build, M0, is defined in STEP_SPEC §7; entries below marked [supersed
 - The learning objective splits into PERCEPTION (what the state holds) and DYNAMICS (distributional prediction of
   the next perception state). (Every working system separates them; ours merged them into one regression.)
 - Weak coupling from dynamics back into perception (DreamerV3-style), kept flexible. (User, 10-24.)
-- Periphery input stays full resolution initially; a degraded periphery is a planned later ablation (user, Codex, me,
+- [Superseded 10-27: periphery acuity 3 x 3, full resolution the comparison] Periphery input stays full resolution initially; a degraded periphery is a planned later ablation (user, Codex, me,
   10-25). EDA P1 (eda_periphery_degradation.py): entity presence AP day / night from a pooled cell: zombies 1x1
   0.97 / 0.59, 3x3 1.00 / 0.86, full 1.00 / 0.97; skeletons and arrows collapse at night below 3x3. Degradation costs
   most at night, when threats matter most.
@@ -73,6 +73,13 @@ The first build, M0, is defined in STEP_SPEC §7; entries below marked [supersed
   periphery-glimpse scoring; independent chance draws for prior-predictive scoring; noise-belief loop checks.
 - Cross-patch context: A (localisable patch percepts; context in the update and the fovea) LOCKED for the first build
   (user, 10-26); B (global) and C (bounded soft) kept in the spec for a matched comparison on the full model.
+
+- M0 build settled 10-27 (user; Codex reviewed): denoiser = Dreamer-4-style space-time transformer with memory tokens
+  (STEP_SPEC 7; the grid-conv proposal and its memory map dropped); JEDI switching dropped for M0 and kept as the FIRST
+  ablation if self-feeding proves insufficient (CURRICULUM 2b); periphery acuity 3 x 3 by a declared rule (PERCEPTION;
+  the 10-25 full-resolution choice becomes the planned comparison); every number in saccade/m0.yaml; code plan in
+  M0_CODE.md; weak coupling = JEDI's encoder lr x 0.3 (LOSSES, reconciled); S1.2 probes and the acuity-relative S3
+  perception blocker specified before training.
 
 ## Reserve ideas (keep; don't build until a measured need appears)
 - Coarse peripheral target: predict a per-cell colour / contrast summary everywhere ("peripheral vision"). Cheap,
