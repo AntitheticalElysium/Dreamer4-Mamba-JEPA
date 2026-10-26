@@ -16,15 +16,13 @@ p = 0.1 per step), phantom drift (a cow appears every 4 steps and stays), vanish
 good, p = 0.05 per step), frozen time (positions, HUD and entities fixed; reward and termination kept), delayed
 consequences (HUD 2 steps late). A gate rejects when the difference to B exceeds 3 episode-bootstrap SE (one-sided
 for the energy score, two-sided otherwise).
-Usage (project venv): s0_oracle.py LABELS_NPZ OUT_JSON [N_WINDOWS]
+Usage (project venv): python -m saccade.eval.oracle LABELS_NPZ OUT_JSON [N_WINDOWS]
 """
 import json, os, sys
 os.environ.setdefault("JAX_PLATFORMS", "cpu")
 import jax, jax.numpy as jnp, numpy as np
-sys.path.insert(0, "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda")
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import replay as RP
-import s0_gates as G
+from saccade.eval import gates as G
 
 H, M = 16, 16
 CORRUPTIONS = ("flicker", "teleport", "phantom_drift", "vanishing_drift", "frozen_time", "delayed_consequences")

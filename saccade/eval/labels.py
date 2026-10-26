@@ -6,12 +6,11 @@ position / direction / light / sleep / health / food / drink / energy / inventor
 the collector's exogenous flag (uniform-random branch, regenerated from the seed tree as in A8); per state also the
 7x9 block types of the view (the terrain a reader would report). Frames are not copied: they are read from the corpus
 by (shard, slot) when needed.
-Usage (project venv): s0_extract.py OUT_NPZ [SPLIT [MAX_EPISODES]]   (default: dev, all)
+Usage (project venv): python -m saccade.eval.labels OUT_NPZ [SPLIT [MAX_EPISODES]]   (default: dev, all)
 """
 import os, sys
 os.environ.setdefault("JAX_PLATFORMS", "cpu")
 import jax, jax.numpy as jnp, numpy as np
-sys.path.insert(0, "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda")
 import replay as RP
 from craftax.craftax_classic.constants import BlockType
 

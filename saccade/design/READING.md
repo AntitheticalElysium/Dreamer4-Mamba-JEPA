@@ -4,6 +4,8 @@ Context: design discussion with the user (offline imagination training; reconstr
 consequence-driven fovea; jointly trained encoder; grounded targets = reward, termination, fovea pixels). Three open
 questions: (1) state structure, (2) keeping imagined states readable, (3) "the model doesn't know" and dynamic horizons.
 Nothing here is a decision; decisions are recorded only when the user agrees.
+Scripts named below (eda_*.py, ana_*.py, t1_/t2_*) are in artifacts/experiments/20261023_system_design/; dated folders
+(2026MMDD_*) are under artifacts/experiments/.
 
 ## Our measurements (evaluation-only simulator state; TRAIN split; nothing trained)
 

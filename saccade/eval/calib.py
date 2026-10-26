@@ -14,11 +14,11 @@ Information references (fit on train-400 minus 40 held-out episodes for early st
   R2 + visible changes of the percept pair (HUD and inventory at t and t+1, sleep, light, action, facing direction,
        the 4 neighbouring terrain cells and adjacent entity kinds at t and t+1), LightGBM, no memory;
   R3 = R2 + the achievements unlocked before t (perfect memory).
-Usage (scratch venv with numpy + lightgbm): s0_calib.py TRAIN_LABELS_NPZ DEV_LABELS_NPZ OUT_JSON
+Usage (scratch venv with numpy + lightgbm): python -m saccade.eval.calib TRAIN_LABELS_NPZ DEV_LABELS_NPZ OUT_JSON
 """
 import json, sys
 import numpy as np
-import s0_gates as G
+from saccade.eval import gates as G
 
 NB = ((2, 4), (4, 4), (3, 3), (3, 5))                               # the 4 neighbours of the player in the 7x9 view
 

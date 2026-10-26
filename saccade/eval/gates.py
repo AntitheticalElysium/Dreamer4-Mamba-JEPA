@@ -14,7 +14,7 @@ Power check: references from dev half A; half B (real) must pass; five corruptio
   shuffled histories, mismatched actions, duplicated entities, delayed consequences (+2 steps), frozen time.
 A gate rejects when |B - A| > 3 joint standard errors. Plus a classifier two-sample test (LightGBM) on matched
 (current grid, action, shift, next grid) tuples: A vs B (should be ~0.5) and A vs each corruption.
-Usage (scratch venv with numpy + lightgbm): s0_gates.py LABELS_NPZ OUT_JSON
+Usage (scratch venv with numpy + lightgbm): python -m saccade.eval.gates LABELS_NPZ OUT_JSON
 """
 import json, sys
 import numpy as np

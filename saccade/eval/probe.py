@@ -14,13 +14,12 @@ pixels and the lighting latent v in place of the frame mean):
 Reading on ALL dev episodes, by light (day / night at 0.5) and ring (Chebyshev distance to the player, 1-4), with
 episode-bootstrap SE: entity presence recall and precision, kind accuracy on entity cells, per-kind recall, terrain
 accuracy and class-averaged recall (classes with >= 100 dev cells).
-Usage (project venv, GPU): s0_probe.py TRAIN_LABELS_NPZ DEV_LABELS_NPZ OUT_JSON
+Usage (project venv, GPU): python -m saccade.eval.probe TRAIN_LABELS_NPZ DEV_LABELS_NPZ OUT_JSON
 """
 import json, sys
 import numpy as np, torch, torch.nn as nn
-sys.path.insert(0, "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda")
 import replay as RP
-import s0_gates as G
+from saccade.eval import gates as G
 
 DEV = torch.device("cuda")
 RING = np.maximum(np.abs(np.arange(7)[:, None] - 3), np.abs(np.arange(9)[None] - 4)).ravel()

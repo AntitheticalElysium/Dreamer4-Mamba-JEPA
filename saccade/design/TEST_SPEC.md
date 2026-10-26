@@ -26,7 +26,7 @@ Rules
   duplicated entities, misplaced consequences, frozen time. A gate that cannot is not used.
 - Not used as gates: A10 (LightGBM; the new probe architecture needs its own pixel reference) and A3 (its helper lacks
   the attack stop; A14b's corrected helper is the one to reuse).
-- DONE 10-27 (20261027_s0_harness/RESULTS.md): one-step gates (43; real half passes, five corruptions rejected),
+- DONE 10-27 (artifacts/experiments/20261027_s0_harness/RESULTS.md; code in saccade/eval/): one-step gates (43; real half passes, five corruptions rejected),
   revisit references (terrain static: agreement >= 0.9992), multi-step gates with a full-state simulator oracle (six
   corruptions rejected; m = 8 per window, all 2,236 exogenous 16-step dev windows), the per-cell probe definition and
   its pixel reference (day perfect; night 0.85-1.0 by ring), the outcome evaluator with an information ladder.

@@ -2,16 +2,19 @@
 
 TEST_SPEC v1.1, stage S0 (no model). Everything here is measured on simulator labels through the SAME observable
 quantities a percept reader will later output (7x9 entity-kind grid, terrain, HUD, camera shift, action, reward,
-termination), so the same code runs on generated trajectories.
+termination), so the same code runs on generated trajectories. Code moved to the `saccade` package on 10-27
+(`saccade/eval/`, run from the repository root as `python -m saccade.eval.<module>`). Rerun after the move: labels,
+gates, revisits, oracle and probe outputs identical bit for bit; calibration identical up to the last floating-point
+digit (max |diff| 1.1e-17, multithreaded LightGBM summation order).
 
 | step | code | output (`artifacts/eda/s0/`, gitignored) | env |
 |---|---|---|---|
-| 1 labels | `s0_extract.py` | `s0_dev_labels.npz`, `s0_train400_labels.npz` | project `.venv` (JAX CPU) |
-| 2 one-step gates | `s0_gates.py` (also the shared helpers) | `s0_gates.json` | numpy + lightgbm |
-| 3 revisits | `s0_revisit.py` | `s0_revisit.json` | numpy |
-| 4 multi-step oracle | `s0_oracle.py` | `s0_oracle.json` | project `.venv` (JAX CPU) |
-| 5 pixel probe | `s0_probe.py` | `s0_probe.json` | project `.venv` (CUDA) |
-| 6 outcome calibration | `s0_calib.py` | `s0_calib.json` | numpy + lightgbm |
+| 1 labels | `labels.py` | `s0_dev_labels.npz`, `s0_train400_labels.npz` | project `.venv` (JAX CPU) |
+| 2 one-step gates | `gates.py` (also the shared helpers) | `s0_gates.json` | numpy + lightgbm |
+| 3 revisits | `revisit.py` | `s0_revisit.json` | numpy |
+| 4 multi-step oracle | `oracle.py` | `s0_oracle.json` | project `.venv` (JAX CPU) |
+| 5 pixel probe | `probe.py` | `s0_probe.json` | project `.venv` (CUDA) |
+| 6 outcome calibration | `calib.py` | `s0_calib.json` | numpy + lightgbm |
 
 ## Step 1 — labels
 Exact replay of all 1,009 dev episodes (304,898 transitions; eps 0.1 / 0.25 / 0.5 / 1.0: 235 / 253 / 264 / 257) and of
@@ -100,7 +103,7 @@ percept, not of the probe. A belief that tracked the entity from closer can exce
 spread between seeds (~1% at night) exceeds the bootstrap SE: token-vs-pixel comparisons use >= 2 probe seeds and
 report the spread.
 
-## Step 6 — reward and continuation evaluator and references (`s0_calib.py`, `s0_calib.json`)
+## Step 6 — reward and continuation evaluator and references (`calib.py`, `s0_calib.json`)
 Facts (dev): reward = unlocks + 0.1 x health change, with the unlock part 0 or 1 per step (3.45% of steps); termination
 (0.33%) happens exactly when the HUD shows health 0 at t+1, and never otherwise. So given the next percept (the
 outcome models' conditioning, STEP_SPEC 2.5) the health part and continuation are READABLE; the unlock part is not

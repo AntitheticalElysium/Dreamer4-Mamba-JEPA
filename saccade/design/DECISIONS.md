@@ -1,7 +1,9 @@
 # Design decisions (system-design discussion from 2026-10-23)
 
 One line each, with the reason. Literature and data facts live in READING.md; memory exploration in OPTION3_NOTES.md;
-SPEC_v0.md is one sketch with unchosen assumptions, not a spec.
+SPEC_v0.md is one sketch with unchosen assumptions, not a spec. Moved here 10-27 (package `saccade`); the EDA scripts,
+superseded drafts (SPEC_v0, LEARNING_SKETCH, OPTION3_NOTES) and T1/T2 protocols named in these files stay in
+artifacts/experiments/20261023_system_design/, the S0 results in artifacts/experiments/20261027_s0_harness/.
 
 ## Agreed
 - Offline only; the actor trains in imagination. (The point of imagination training.)
@@ -95,7 +97,7 @@ SPEC_v0.md is one sketch with unchosen assumptions, not a spec.
   corruption + self-conditioning from the start, multi-step distributional post-training with a horizon schedule,
   imagination H = 16. Outcome models: reward as a samplable density (not two-hot), survival-conditioned termination.
   AGREED (user, 10-27); contracts per Codex recorded (CURRICULUM v1, LOSSES v1.1, STEP_SPEC v1.3, TEST_SPEC v1.1).
-- S0 complete for review (20261027_s0_harness/RESULTS.md): exact dev labels; one-step gates (real half 0 rejections,
+- S0 complete for review (artifacts/experiments/20261027_s0_harness/RESULTS.md): exact dev labels; one-step gates (real half 0 rejections,
   five corruptions rejected); revisit references (terrain static); multi-step gates against a simulator oracle (six
   corruptions rejected; the energy score never pass / fail); per-cell probe definition with its pixel reference;
   outcome evaluator with an information ladder (unlock memory is worth 0.024 -> 0.007 nats per step). References are
