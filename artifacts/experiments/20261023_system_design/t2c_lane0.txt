@@ -1,0 +1,6 @@
+sg_glimpse sg 16 1 --glimpse 10
+sigreg_glimpse sigreg 16 1 --glimpse 10
+sg_slow sg 16 2 --enc-lr-scale 0.02
+sg_slow_glimpse sg 16 2 --enc-lr-scale 0.02 --glimpse 10
+sg_idm sg 16 1 --idm 1
+sigreg_idm sigreg 16 2 --idm 1
