@@ -48,13 +48,15 @@ Rules
    train-400, read on all dev, 2 probe seeds, episode-bootstrap intervals; reported, not a gate. Targets:
    (a) achievements unlocked before t (22 binary): AP and balanced accuracy each;
    (b) the displayed HUD quantities (health, food, drink, energy; the 12 inventory counts, capped at 9): exact
-       accuracy each; with an acuity-limited periphery the exact values are in the current percept only when a glimpse
-       covers them, so this reads memory of past glimpses;
+       accuracy each; read beside control (i): at 3 x 3 acuity a supervised reader still reads HUD values from the
+       periphery (0.9999), so this is not automatically a memory test (Codex);
    (c) departed entities: per kind, "one was in view within the last k steps and is out of view now", by absence
        stratum k in {1-4, 5-8, 9-16, 17-64} (beyond 8 the denoiser's own context cannot hold it), plus its exit side
        (4-way accuracy).
    Controls with the same probe: (i) the current percept (periphery, glimpse, fixation, lighting) with its reward
-   and termination; (ii) the last 8 percepts with their rewards (the denoiser's effective reach), without Mamba.
+   and termination; (ii) the last 8 steps with everything the belief saw in them (percepts with fixations and
+   lighting, actions, rewards, terminations: the denoiser's effective reach), without Mamba. A gap measures accessible
+   readout, not an information bound (Codex).
    What Mamba adds = belief minus (ii), read per stratum.
 3. One-step generation: classifier two-sample tests on MATCHED (history, action, fixation, outcome) tuples, with power
    checked on the S0 corruptions; entity counts read by the frozen reader; reward and continuation calibration.
@@ -78,8 +80,9 @@ Coverage limit: 16-step exogenous windows come almost only from random play.
    skeleton, arrow); a pooled check passed the removal of every arrow (-4.2% count, persistence up), so none is pooled:
    - perception (S1.1): token probe (S0 definition, mean of 2 probe seeds, seed spread reported) on rings 1-2, day and
      night separately: blocks if a kind's presence recall or precision falls more than 0.10 below the pixel reference
-     AT THE PERIPHERY'S ACUITY (3 x 3: by day 1.00 for every kind; at night zombies 0.96, cows 0.96, skeletons 0.90,
-     arrows 0.77; PERCEPTION, acuity section), or below an untrained copy of the same encoder by > 0.02 beyond 3 SE
+     AT THE PERIPHERY'S ACUITY (3 x 3, rings 1-2, mean of 2 probe seeds; recall by day 1.00 / 1.00 / 0.999 / 0.998,
+     at night 0.965 / 0.959 / 0.901 / 0.767; precision by day 1.000 for every kind, at night 0.999 / 0.994 / 0.993 /
+     0.977, for zombies / cows / skeletons / arrows; acuity_precision.json, PERCEPTION acuity section), or below an untrained copy of the same encoder by > 0.02 beyond 3 SE
      (learned erasure). The same 0.10 tolerance as the earlier absolute 0.90, now measured from what the input allows
      (10-27: the absolute bound would have fired on night arrows from acuity alone).
    - bookkeeping (S2.1): frozen reader on prior-sampled rollouts (all 2,236 dev exogenous windows, m = 8) vs the same

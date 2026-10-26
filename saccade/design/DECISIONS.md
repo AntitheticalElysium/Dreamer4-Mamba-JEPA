@@ -82,9 +82,11 @@ The first build, M0, is defined in STEP_SPEC §7; entries below marked [supersed
   perception blocker specified before training.
 
 - Collapse prevention decided 10-27 (user asked for a dedicated investigation; my call): SIGReg dropped from M0.
-  Routing (all denoiser inputs and targets stop-gradient; REPA-E, JEDI) + a fixed-target owner per token type (adds
-  the fovea's own reconstruction, the agreed limited pixel grounding) + tanh clamp and BatchNorm without affine for
-  scale (REPA-E). SIGReg kept as a planned comparison and for richer per-patch content later (LOSSES principle 7).
+  Routing (every denoiser frame input and target stop-gradient, memory tokens differentiable; REPA-E, JEDI) + a
+  fixed-target owner per token type (adds the fovea's own reconstruction, the agreed limited pixel grounding) + scale
+  by per-token layer norm without affine (I-JEPA, V-JEPA 2-AC) then JEDI's tanh clamp (revised after Codex's audit:
+  BatchNorm over a chunk was not causal and broke the bound). Decision record:
+  COLLAPSE.md. SIGReg kept as a planned comparison and for richer per-patch content later.
 
 ## Reserve ideas (keep; don't build until a measured need appears)
 - Coarse peripheral target: predict a per-cell colour / contrast summary everywhere ("peripheral vision"). Cheap,

@@ -30,13 +30,17 @@ K = 4 memory tokens, W = 256.
   per token slot); RoPE + absolute 2D positions; adaLN-Zero on (sigma, action). `step(...)` = streaming form with
   per-layer caches.
 - EDM: `precondition(sigma) -> (c_skip, c_out, c_in, c_noise)`; `denoise_loss(model, x0, sigma, cond) -> loss per
-  element`; `sample(model, cond, rng) -> Percept` (Euler, 3 steps, churn).
+  frame` (raw-output MSE, mean over the frame's 1,880 scalars); `sample(model, cond, cache, rng) -> (Percept, cache)`
+  (EDM Algorithm 2, order 1, 3 evaluations at sigma_hat, then the context pass that writes the cache; STEP_SPEC 7).
+- Reward decoding: `Reward.sample` draws a bin, then emits the bin's train-split mean reward (a buffer computed once
+  from the train split and saved with the checkpoint).
 - Heads: `TSP.forward(memory, p_window, v, fix) -> (mean, log_scale)` over the glimpse pixels; `ChangeMap.forward(p_t,
   p_t1, memory) -> logits [.., 7, 9]`; `Reward.log_prob(r, cond)`, `Reward.sample(cond)` (mixture of logistics over
   the 256 symlog bins); `Continuation.forward(cond, r) -> logit`.
 - Fovea reconstruction: `PixelDecoder` shared by TSP and the fovea (per cell, discretised logistic): TSP feeds it
   (memory, periphery window, v), the reconstruction feeds it the glimpse tokens and v.
-- Token scale: tanh clamp, then `BatchNorm1d(affine=False)` per token type (REPA-E). No SIGReg in M0.
+- Token scale: `out_map(x) = 3 * tanh(F.layer_norm(x, (x.shape[-1],)) / 3)` per token (I-JEPA / V-JEPA 2-AC, then
+  JEDI), shared by the three encoders and every denoised estimate in the sampler. No SIGReg in M0 (COLLAPSE.md).
 
 ## saccade/train.py — phases
 - `p1(cfg, world_seed)`: the one-step loop (streams, accumulation at 256 steps, frame-indexed lr, harmonised groups,
@@ -49,12 +53,23 @@ pixel reference; belief probes (TEST_SPEC S1.2) with their two controls; frozen 
 reward / continuation calibration on the common bins (`eval.calib.reward_bin`).
 
 ## saccade/tests/test_m0.py — checks before any long run
-Streams never cross episodes and are deterministic; the periphery encoder is equivariant to whole-cell shifts; the
-Mamba scan equals step-by-step stepping across chunks and resets; the streaming denoiser equals the chunked one; EDM
-coefficients match the reference formulas; the reward head can put near-all mass on one bin; gradients reach the
-encoder only through the declared routes (belief, TSP, fovea reconstruction, change map) and never through any
-denoiser input or target; a resumed run equals an uninterrupted one;
-P2 gradients reach the denoiser and the update, not the encoder or outcome heads.
+Streams never cross episodes and are deterministic; the periphery encoder is equivariant to whole-cell shifts.
+Causal perception (Codex D1): replacing future frames, other episodes or padding leaves a percept unchanged, and
+perceiving frame by frame equals perceiving the chunk; every encoded token and every sampled denoised estimate is
+bounded by 3 (D2). Mamba: the scan equals step-by-step stepping across chunks; with a nonzero carried state the
+continuing segment's local sequence index is 0 and each in-chunk episode start increments it; the convolution history
+is zeroed at episode starts; contiguous execution equals chunked execution WITH the 8-frame prefixes, whose memory
+tokens are the cached historical ones and which are never replayed through Mamba; frame / action / reward alignment
+and the episode-start reset as declared (CURRICULUM §1). Denoiser: the streaming form equals the chunked one; the
+whole cached sampler equals a recompute-the-history sampler under identical draws over several generated frames, an
+episode reset, branch duplication and checkpoint resume; the sampler matches the EDM Algorithm 2 equations (sigma_max-
+scaled start, evaluation at sigma_hat). EDM coefficients match the reference formulas, and the raw-output loss equals
+the clean-space loss weighted by 1/c_out^2 on fixed inputs. Reward: a head with all mass on one bin samples exactly 0
+for a deterministic 0 and exactly 1.0 for a deterministic 1; empirical bin frequencies of many samples agree with
+exp(log_prob). Gradients, tested PER LOSS: the denoising loss reaches the encoder only through the memory tokens,
+never through a denoiser frame input or target; TSP, the change map, the fovea reconstruction and the outcome heads
+through their declared routes. A resumed run equals an uninterrupted one. P2: gradients reach the denoiser and the
+update, not the encoder or the G2 heads; the outcome heads train only by the continuing G3 loss.
 
 ## Build order
 1. data.py + tests. 2. A9b teacher retrained label-free on train day pairs, frozen, targets precomputed; checked

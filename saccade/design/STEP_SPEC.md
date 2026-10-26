@@ -32,9 +32,10 @@ There is no separate hidden world: simulation runs on the belief (belief-MDP; GE
    head is NOT a sampler: a deterministic reward of 1 gets mass on bins ~0.88 and ~1.20, Codex), with a categorical
    over the empirical reward values as the alternative for discrete-reward environments; continuation ~ p(c |
    B-_{t+1}, P_{t+1}, r). The critic keeps two-hot. Change map rendered from (B-_{t+1}, B_{t+1}).
-Losses and weights: LOSSES.md v1. Gradient routes into the encoders: the belief path, TSP, the fovea's own
-reconstruction, the change map; every denoiser input and target is stop-gradient (LOSSES principle 7; SIGReg dropped
-10-27). No gradient from the fixation head, actor or critic into the world.
+Losses and weights: LOSSES.md. Gradient routes into the encoders: the belief path (memory tokens stay
+differentiable), TSP, the fovea's own reconstruction, the change map, the outcome heads; every denoiser FRAME input
+and target is stop-gradient (LOSSES principle 7; COLLAPSE.md). No gradient from the fixation head, actor or critic
+into the world.
 
 ## 3. Imagined step (actor training; world frozen)
 Start from a real history: B_0 from the update. Repeat:
@@ -53,8 +54,8 @@ updates; exactly one predict and one correct per environment step. Distributiona
 termination with the terminal convention of CURRICULUM.md, not these survival-weighted branches.
 
 ## 4. Curriculum
-Context length, self-feeding and rollouts: CURRICULUM.md v0 (TBTT / state passing for long beliefs; context corruption
-and one-step self-conditioning from the start; multi-step distributional post-training on exogenous windows with a
+Context length, self-feeding and rollouts: CURRICULUM.md (TBTT with carried state for long beliefs; context corruption
+by diffusion forcing from the start, switching dropped for M0; multi-step distributional post-training on exogenous windows with a
 horizon schedule; imagination H = 16 from variable-depth real beliefs).
 
 ## 5. Actor and critic inputs
@@ -83,6 +84,19 @@ tokens with EDM x-prediction. JEDI adds tanh clamping, a slower encoder and own-
   the chunked computation (test). In P1 Mamba reads clean recorded percepts; practice on generated percepts is P2's.
   The memory map of the grid-conv proposal is dropped: memory tokens serve global and position-specific reads alike,
   and store reads (I1) and records (I2) will enter as tokens. All numbers: saccade/m0.yaml.
+- Sampler and context cache (pinned 10-27 after Codex's audit; NVIDIA EDM's stochastic sampler, Karras et al. 2022
+  Algorithm 2, order 1): noise levels sigma_max = 5 -> sigma_min = 0.002 with rho = 7 over 3 evaluations, then a final
+  step to 0; the first input is sigma_max-scaled noise (the published DIAMOND sampler starts from unit noise); at each
+  step gamma = min(S_churn / 3, sqrt 2 - 1), sigma_hat = (1 + gamma) sigma, fresh noise raises x to sigma_hat, and the
+  network is evaluated AT sigma_hat (DIAMOND passes sigma; equal only without churn). S_churn = 1 is JEDI's setting
+  for stochastic environments. Each denoised estimate passes through the encoder's output map (LOSSES principle 7).
+  These evaluations neither append history nor advance Mamba. A finished frame x^ enters the context ONCE: one fresh
+  draw noises it to the context level, and one extra pass in its context role (its memory tokens and action, noise
+  level 0.1) writes its per-layer keys and values to the cache, so a generated frame costs 4 evaluations (counted in
+  the throughput check). Mamba's correction reads the clean x^. Reference: recompute the whole history with those same
+  stored context copies; the cached sampler must equal it under identical draws over several frames, an episode reset,
+  branch duplication and checkpoint resume. Context level 0.1 reads Dreamer 4's "slightly corrupt" tau_ctx as noise
+  0.1 (signal 0.9, as in the vendored JAX reimplementation; EDM sigma 0.11, M0 uses 0.1): an interpretation, declared.
 - Periphery acuity (agreed 10-27): each cell's periphery input is downsampled to 3 x 3 pixels (8-bit); the fovea stays
   full resolution (PERCEPTION, acuity section).
 - Unchanged from the full design: perception (patch-local tokens, lighting latent, fovea + TSP), denoiser and its loss,

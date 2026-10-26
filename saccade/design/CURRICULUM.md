@@ -23,8 +23,8 @@ own generated percepts (self-feeding), (3) how far imagination runs for the acto
   64 steps for the first half of P1's frames, 256 steps for the second half. At 256 only ~4 streams fit in 6 GB, so
   a 256-step update ACCUMULATES four microbatches of four DISTINCT streams (each with its full 256-step gradient path)
   before one optimizer step; loss normalised by valid (non-padding) frames, gradients clipped after accumulation;
-  token normalisation (BatchNorm, no affine) uses each microbatch's statistics, 83k tokens in both halves (16 x 64 x
-  81 and 4 x 256 x 81), so the estimator is the same before and after the switch. The Mamba state is carried across chunks of the SAME episode and reset at true episode boundaries; one
+  token normalisation is per token (layer norm over channels, no affine), so it uses no batch statistics and nothing
+  crosses time or episodes. The Mamba state is carried across chunks of the SAME episode and reset at true episode boundaries; one
   optimizer update per chunk, the carried state detached: its last chunk was computed under the previous update's
   parameters and its earlier history under older ones (TBPTT never refreshes the history; a normal approximation, to be
   measured, not a reason for a state-rebuild subsystem); no out-of-order chunks, so no burn-in is needed (a short zero-initialised burn-in
@@ -37,7 +37,18 @@ own generated percepts (self-feeding), (3) how far imagination runs for the acto
   frames at each temporal layer and composes across its 2 temporal layers, so its effective reach is 8 frames; each
   training chunk is preceded by the previous 8 frames of its stream as context-only frames (no loss), episode
   boundaries mask attention, and streaming inference with per-layer caches of the last 4 frames must reproduce the
-  chunked computation exactly (an implementation test).
+  chunked computation exactly (an implementation test). Ownership (Codex, 10-27): the prefix feeds ONLY the denoiser's
+  temporal context, with the memory tokens Mamba produced for those frames in the previous chunk (cached, detached);
+  it is never replayed through Mamba, whose carried state already contains it. Mamba kernel convention: the installed
+  Triton scan starts its sequence index at 0, so the segment continuing the carried state gets local index 0 and each
+  episode start inside the chunk increments it (a nonzero first index silently drops the carried state); the
+  convolution history is zeroed at episode starts too (the scan's sequence index does not reset it). Alignment: the
+  percept token of frame t carries the reward and termination that ARRIVED with o_t (those of the transition t-1 ->
+  t); the action token carries a_t; Mamba's output after a_t is the predicted belief of frame t+1, whose memory tokens
+  condition frame t+1 together with a_t. An episode's first frame follows DreamerV3's reset (state and previous action
+  masked to zero): its memory tokens come from the zero belief, its action input is zero, its reward 0 and termination
+  0 are inputs, never targets (G3 masked there). Prefix frames are ordinary diffusion-forcing frames without loss:
+  their noise levels are drawn like every other frame's.
 
 ## 2. Self-feeding (robustness to the world's own outputs)
 Compounding comes from the belief and denoiser reading their own imperfect outputs (exposure bias). Under stochastic
@@ -81,7 +92,10 @@ recorded future is only valid one step after a real history (DaD, Venkatraman et
   Windows: exogenous only (A8): 16-step windows almost all from random play; 4- and 8-step windows also inside
   expert-mixed episodes. A coverage limit (Codex): random-play windows cannot alone establish behaviour in the states a
   competent actor visits.
-- The encoder is frozen during multi-step post-training (stable targets; the S1 reader stays calibrated).
+- The encoder is frozen during multi-step post-training (stable targets; the S1 reader stays calibrated). The
+  one-step losses that CONTINUE on real streams are G1 and G3 (Codex: G4 detaches the reward and termination draws,
+  so the outcome heads would otherwise drift while the belief they read changes); G2's heads stay frozen with the
+  encoder (TSP, the change map and the fovea reconstruction are training-time grounding, never used in imagination).
 - History guidance (Song et al., ICML 2025: diffusion forcing transformer with flexible history) is the reference if
   long free-running rollouts drift despite the above.
 
@@ -95,7 +109,7 @@ recorded future is only valid one step after a real history (DaD, Venkatraman et
 - Fixation: a broad random prior during world training; part of the actor's action during imagination.
 
 ## Phases
-P1 one-step world training (TBTT chunks, state passing, context corruption, self-conditioning) -> S1;
+P1 one-step world training (TBTT chunks, carried state, context corruption by diffusion forcing) -> S1;
 P2 multi-step post-training (horizon schedule, energy score, exogenous windows) -> S2;
 P3 actor in imagination (H = 16, variable-depth starts) -> S3.
 
@@ -112,7 +126,7 @@ a stand-in of M0's shapes measured ~1 ms per frame with activation checkpointing
   2,000 fixed held-out windows, fixed noise draws at 8 fixed noise levels, fixed random fixations. The S1 reading uses
   the final checkpoint, unless the monitor rose at 3 consecutive checkpoints: then the lowest one. ~9 h per seed.
 - P2: 6,000 updates per world seed (the project's continuation dose), 1,500 at each horizon 2, 4, 8, 16; per update
-  16 exogenous windows x m = 2 rollouts, plus the one-step G1 loss on 8 real streams x 64; ~2 h per seed.
+  16 exogenous windows x m = 2 rollouts, plus the one-step G1 and G3 losses on 8 real streams x 64; ~2 h per seed.
 - P3: 2,500 actor updates (the 09-03 count, the only measured success), batch 64 imagined starts, H = 16; BC on the
   same belief features; evaluation on the 512 paired DEV environment seeds per agent; ~8 h in all.
 - S1 / S2 readings ~1 h each. Total ~32 GPU-hours: an ESTIMATE until the full-model throughput check (every loss,

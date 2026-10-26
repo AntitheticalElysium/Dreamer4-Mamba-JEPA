@@ -14,7 +14,8 @@ the coarsest r such that
   (ii) rings 1-2, day AND night: each kind's recall >= 0.95, so the S3 perception blocker (0.90 on rings 1-2) still
        tests learned erasure rather than input acuity.
 HUD value accuracy and night rings 3-4 are REPORTED as the consequences, never used to choose.
-Usage (project venv, GPU): eda_periphery_acuity.py OUT_JSON
+Per-kind precision added 10-27 (Codex: the blocker's precision references were missing); rerun at r = 3 and 7.
+Usage (project venv, GPU): eda_periphery_acuity.py OUT_JSON [R ...]
 """
 import json, sys
 import numpy as np, torch, torch.nn as nn, torch.nn.functional as F
@@ -97,7 +98,7 @@ def main():
     dev = list(episodes(Ldev))
     print("train map cells", len(T[0]), "HUD cells", len(T[6]), flush=True)
     out = {"rule": __doc__.split("DECISION RULE")[1].split("Usage")[0].strip(), "results": {}}
-    for r in RES:
+    for r in ([int(x) for x in sys.argv[2:]] or RES):
         res = {}
         for seed in (0, 1):
             mx = lambda idx, v: torch.cat([pool((V if v else T)[0][idx], r), (V if v else T)[1][idx].float() / 255], 1)
@@ -126,7 +127,8 @@ def main():
                     s[key] = {"presence_recall": G.estimate(pp, pres & c, R["ep"]), "presence_precision": G.estimate(pres, pp & c, R["ep"]),
                               "kind_acc": G.estimate(R["kp"] == R["kind"], pres & c, R["ep"]),
                               "terrain_acc": G.estimate(R["tp"] == R["terr"], valid & c, R["ep"]),
-                              **{f"recall_{kn}": G.estimate(R["kp"] == k, (R["kind"] == k) & c, R["ep"]) for k, kn in enumerate(G.KINDS, 1)}}
+                              **{f"recall_{kn}": G.estimate(R["kp"] == k, (R["kind"] == k) & c, R["ep"]) for k, kn in enumerate(G.KINDS, 1)},
+                              **{f"precision_{kn}": G.estimate(R["kind"] == k, (R["kp"] == k) & c, R["ep"]) for k, kn in enumerate(G.KINDS, 1)}}
             s["hud_value_acc"] = G.estimate(R["vp"] == R["val"], np.ones(len(R["val"]), bool), R["hep"])
             s["hud_value_acc_by_cell"] = {f"{rc[0]},{rc[1]}": float((R["vp"] == R["val"])[R["pos"] == i].mean()) for i, rc in enumerate(HUD)}
             s["hud_value_acc_nonzero"] = G.estimate(R["vp"] == R["val"], R["val"] > 0, R["hep"])

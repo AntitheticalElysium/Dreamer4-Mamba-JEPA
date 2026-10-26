@@ -22,7 +22,8 @@ that answers the thesis, not a perfect Craftax model; Craftax-specific structure
   Dedieu's collapse of continuous patches was MSE reconstruction of raw patches, not a matched comparison.
 - Anti-collapse (revised 10-27, LOSSES principle 7): no distribution regulariser on the tokens. Stop-gradient routing
   plus a fixed-target owner per token type (periphery: TSP and change map; glimpse: its own reconstruction; lighting:
-  the pixel likelihoods); tanh clamp then BatchNorm without affine (REPA-E) for scale. SIGReg (per token, or on a
+  the pixel likelihoods); per-token layer norm without affine (I-JEPA, V-JEPA 2-AC) then JEDI's tanh clamp for
+  scale (COLLAPSE.md). SIGReg (per token, or on a
   frame-level embedding as in LeWM) is a planned comparison, and a candidate again where per-patch content is rich
   (natural or 3D images).
 
@@ -97,9 +98,11 @@ What this means: in Craftax the fovea's added evidence at this acuity is at NIGH
 values stay readable from 3 x 3 pooled glyphs by a supervised reader (my earlier "HUD values collapse" used a
 minimum-distance statistic and was wrong; Codex). Whether the learned 16-dimensional periphery keeps them is a
 learning question read in S1; no noise is added to make digits unreadable (that would be tuning to Craftax). The
-rule's second clause (each kind >= 0.95 on night rings 1-2) was unsatisfiable even at full resolution (arrows 0.92):
-a defect of the declared rule, reported, not repaired after the fact; the S3 perception blocker is defined against
-the reference at this acuity instead (TEST_SPEC S3.2). A (full resolution) stays the planned comparison.
+rule's second clause (each kind >= 0.95 on night rings 1-2) was unsatisfiable even at full resolution (arrows 0.92),
+so NO candidate met the declared rule as written. The rule was AMENDED, after measuring and before any M0 training,
+to clause (i) alone, which selects r = 3 at both seeds; recorded as an amendment (Codex), with the user's approval of
+3 x 3. The S3 perception blocker is defined against the reference at this acuity (TEST_SPEC S3.2). A (full
+resolution) stays the planned comparison.
 Limit: the probe labels omit arrow direction (Codex), which the sprite shows and dynamics need.
 
 ## TSP noise model

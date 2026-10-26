@@ -815,3 +815,34 @@ Scripts named below (eda_*.py, ana_*.py, t1_/t2_*) are in artifacts/experiments/
 - Whole-system finding: glimpse tokens had no fixed-target owner (TSP predicts glimpse pixels from the PERIPHERY), so
   the fovea's evidence stream relied on self-referential routes; the fovea's own reconstruction (the limited pixel
   grounding the user intended: "the point of the fovea is to reconstruct everything perfectly") closes that gap.
+- Second pass (same day): R2-Dreamer's Barlow term is GLOBAL (a projection of the world-model state against a
+  stop-gradient encoder embedding, "this detach is important"), not per token. VICRegL's local terms help detection
+  and segmentation where per-patch content is rich (natural images). TD-MPC2 normalises its latent (SimNorm). LeWM's
+  lambda is forgiving (0.01-0.2 keeps > 80% success). Temporally Centered SIGReg (arXiv 2607.26924): on LeWM, SIGReg
+  spends variance on temporally persistent content and suppresses the residual that carries dynamics. ACPC (arXiv
+  2608.12939): LeWM without SIGReg collapses (median latent distance 17-19 -> 0.006): SIGReg is its ONLY anti-collapse.
+  SLIM (arXiv 2610.03137): plain LeWM stayed collapsed at 3x the SIGReg weight. Record: COLLAPSE.md.
+
+## Final-audit sources (2026-10-27, Codex's pre-build audit; each checked in source)
+- Token scale: I-JEPA (`src/train.py`: `F.layer_norm(h, (h.size(-1),))` on target tokens) and V-JEPA 2-AC
+  (`app/vjepa_droid/train.py`, `notebooks/utils/world_model_wrapper.py`: the same per-token, no-affine layer norm on
+  encoded states AND on predicted states before they are fed back). Replaces chunk-wide BatchNorm (REPA-E's choice
+  sits between a VAE and a diffusion model, not in a causal recurrent encoder; Codex: it leaked future frames and
+  other episodes into a percept and broke the +-3 bound). JEDI applies C(z) = 3 tanh(z/3) to encoder AND denoiser
+  outputs; DIAMOND clamps every denoised estimate to its data range in `denoise()`, never inside the loss.
+- EDM loss: DIAMOND's `denoiser.py` regresses the raw network output on (x0 - c_skip x) / c_out, i.e. EDM's
+  lambda(sigma) = 1 / c_out^2; JEDI's Algorithm 1 writes the clean-space form without a weight; DIAMOND's
+  sigma_offset_noise 0.3 (image brightness) not used.
+- Sampler: NVIDIA EDM `generate.py` (Algorithm 2): sigma_max-scaled start, gamma = min(S_churn / N, sqrt 2 - 1), the
+  network evaluated at sigma_hat. The published DIAMOND sampler starts from unit noise and evaluates at sigma (Codex).
+  JEDI: S_churn = 1 "only for stochastic experiments". Dreamer 4: "slightly corrupt the past inputs ... to signal level
+  tau_ctx = 0.1" with tau = 1 clean; read as noise 0.1, the reading of the vendored JAX reimplementation
+  (`ctx_signal_tau` 0.9 "slightly corrupt"); neither vendored reimplementation uses a cache (they recompute history).
+- Mamba kernel: `ssd_state_passing.py` starts its sequence index at 0 and zeroes the carried state for a chunk whose
+  index differs (Codex's CUDA check: all-7 indices equal a zero initial state); the convolution is not segmented.
+- Episode start: DreamerV3 `rssm.py` masks the carried state and the previous action to zero at a reset.
+- Reward value: the conditional mean minimises squared error within a quantiser cell (Lloyd 1982); PixelCNN++ edge
+  bins absorb the tails.
+- P3: Dreamer 4 initialises the policy from BC, keeps "a frozen copy of the policy head that serves as a behavioral
+  prior", a fresh value head, PMPO with KL[pi_theta || pi_prior]; our 09-03 BC recipe (AdamW 1e-4, wd 0.01, clip 1,
+  warmup 250) is `d4_mamba_jepa/craftax_runners.train_craftax_bc`.
