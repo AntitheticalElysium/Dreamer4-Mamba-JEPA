@@ -5,22 +5,7 @@ SPEC_v0.md is one sketch with unchosen assumptions, not a spec. Moved here 10-27
 superseded drafts (SPEC_v0, LEARNING_SKETCH, OPTION3_NOTES) and T1/T2 protocols named in these files stay in
 artifacts/experiments/20261023_system_design/, the S0 results in artifacts/experiments/20261027_s0_harness/.
 
-## Current contract for the first build, M0 (10-27; this list wins where older entries below disagree)
-- Perception (PERCEPTION v4, except its "Observation stage" section): patch-local continuous tokens (A) conditioned on
-  the viewing-conditions latent v; fovea = higher-capacity 3x3-cell glimpse anywhere, HUD included, its pixels the TSP
-  target (TSP noise model); SIGReg on tokens; change-map target from the A9b detector.
-- Belief (STEP_SPEC §7): the last 4 percepts (glimpses with their fixation coordinates) + one Mamba state reading the
-  pooled percept, action, reward and termination. No store, records or self-location (increments I1 / I2).
-- Generator v3 (GENERATOR v3, STEP_SPEC §2-3): an EDM denoiser (x-prediction, ~3 Euler steps) of the next percept (v,
-  periphery, glimpse jointly) conditioned on (Mamba output, recent percepts, action, fixation). No chance codes, no
-  separate observation stage, no hidden world: imagination is the belief-MDP loop.
-- Outcomes: reward ~ discretised mixture of logistics over symlog(r), 256 bins over the train split's support
-  [-0.9, 1.1], conditioned on (predicted belief, next percept); continuation BCE given (predicted belief, percept,
-  reward); survival-conditioned actor returns, sampled termination for distributional scoring; the critic keeps two-hot.
-- Losses LOSSES v1.1; curriculum CURRICULUM v1 (P1 one-step, P2 multi-step on exogenous windows with the encoder
-  frozen, P3 actor at H = 16); tests TEST_SPEC v1.1 with the harness in saccade/eval.
-- Still to fix before a training run: per-phase budgets (updates, seeds), the two S3 blocker bounds, and the P2
-  training summary with its gradient boundary (LOSSES G4; distinct from the S0 evaluation summary).
+The first build, M0, is defined in STEP_SPEC §7; entries below marked [superseded] are history.
 
 ## Agreed
 - Offline only; the actor trains in imagination. (The point of imagination training.)

@@ -90,5 +90,7 @@ M0 one-step -> M0 rollouts -> M0 actor; then I1 / I2 only on a measured trigger 
 in a trained model measures RELIANCE on it; claiming its BENEFIT needs a matched training comparison (Codex).
 
 ## Open
+Before a training run (proposal under review, 10-27): per-phase budgets and seeds, the two S3 blocker bounds, the P2
+training summary and its gradient boundary. Reward bins: LOSSES G3 (256 symlog bins over the train split's [-0.9, 1.1]).
 N, K, H, denoiser steps, noise weighting, schedule lengths; how U_pred propagates hypothesis distributions (a learned
 deterministic map of the set); probes and predeclared readings per stage.
