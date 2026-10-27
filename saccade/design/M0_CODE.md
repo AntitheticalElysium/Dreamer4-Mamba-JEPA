@@ -75,3 +75,5 @@ update, not the encoder or the G2 heads; the outcome heads train only by the con
 1. data.py + tests. 2. A9b teacher retrained label-free on train day pairs, frozen, targets precomputed; checked
 against A9b's dev precision. 3. model.py + tests. 4. train.p1 + tests; overfit a few episodes; resume test; the
 200-update full-model throughput and memory check. 5. eval/s1.py. 6. P1, world seed 1, then seed 2.
+Status 10-27: steps 1-5 built and checked (artifacts/saccade_m0/checks/CHECKS.md; 17 tests pass); P1 waits for Codex's
+review. `exogenous_windows` (P2, S2) is written with P2.

@@ -47,3 +47,12 @@ Rerun: every term falls, norm 8-10:
 ## Pinned outputs (sha256)
 - artifacts/saccade_m0/targets/change_teacher.txt: `69862f6b98e3ba770395d07bdb516c2cc0e326917c0f848c4a8aedadd109406f`
 - artifacts/saccade_m0/targets/change_targets.npy: `f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97`
+
+## Step 5: S1 readings (saccade/eval/s1.py), smoke test only
+Run end to end on a 20-update checkpoint (15 dev / 30 train-400 episodes; numbers meaningless by design): token probes
+(trained and untrained copy, 2 seeds), the S3.2 perception blocker, belief probes with both controls, one-step sampling
+from real histories, the two-sample classifier with its power on corrupted real tuples (shuffled history 0.77, frozen
+time 0.85, mismatched actions 0.69; the 20-update model's samples 1.00), reader counts, reward / continuation
+calibration, TSP beside copy-previous and position-mean baselines. Definition check: "unlock" equals reward > 0.45 on
+99.98% of dev steps (the reward event used for the model's unlock probability).
+Needs lightgbm on PYTHONPATH (two-sample classifier), as the S0 harness did.
