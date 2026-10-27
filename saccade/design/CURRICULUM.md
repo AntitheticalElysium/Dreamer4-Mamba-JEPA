@@ -126,6 +126,12 @@ a stand-in of M0's shapes measured ~1 ms per frame with activation checkpointing
   arms as the monitor; checkpoints every 10% of the frames; monitor metric fixed now: the one-step denoising loss on
   2,000 fixed held-out windows, fixed noise draws at 8 fixed noise levels, fixed random fixations. The S1 reading uses
   the final checkpoint, unless the monitor rose at 3 consecutive checkpoints: then the lowest one. ~9 h per seed.
+  Execution clarification (10-27, before the run finishes): three successive STRICT increases require four monitor
+  readings; equality breaks the rising streak. If that occurs anywhere in the run, select the global minimum over
+  all ten monitor readings, earliest checkpoint on an exact tie. Otherwise select checkpoint 10. The full frame
+  budget is completed either way. Selection never uses semantic probe scores, dev outcomes or the final split.
+  Retention: keep ckpt_01.pt through ckpt_10.pt (one every 2.56 M frames), plus latest.pt, a full duplicate of the
+  newest checkpoint; no pruning. About 2 GB per world seed at the current checkpoint size.
 - P2: 6,000 updates per world seed (the project's continuation dose), 1,500 at each horizon 2, 4, 8, 16; per update
   16 exogenous windows x m = 2 rollouts, plus the one-step G1 and G3 losses on 8 real streams x 64; ~2 h per seed.
 - P3: 2,500 actor updates (the 09-03 count, the only measured success), batch 64 imagined starts, H = 16; BC on the
@@ -152,3 +158,14 @@ systemd-run --user --unit=saccade-p1-world1 --working-directory="$PWD" -p Memory
 ```
 
 Production P1 remains unstarted during the correction turn; the user requested its launch on the following turn.
+
+## Unattended S1 (user requested 10-27, after world seed 1 launch)
+A runtime `OnSuccess=` hook on `saccade-p1-world1.service` starts `saccade-s1-world1.service` once P1 exits cleanly.
+`saccade.eval.after_p1` checks the original training invocation/exit status, all ten finite monitor readings and
+numbered checkpoints, completed budget and checkpoint/source/data identity, then applies the selection rule above.
+It runs full S1 with no episode limits, storing `p1_world1/s1/selection.json`, `results.json`, `results.reader.pt`
+and `eval.log`. An existing selection prevents automatic repeated attempts. There is no timer, polling process,
+automatic retry or P2/actor launch. Runtime configuration disappears on reboot, as does the running transient P1 job.
+The evaluator has a 24 GB host-memory cap and six CPU threads; it acquires the GPU only after P1 has exited.
+Successful evaluator exit means measurements completed; the scientific readings and blockers remain in results.json.
+Hook proof and installation record: artifacts/saccade_m0/checks/auto_s1/.

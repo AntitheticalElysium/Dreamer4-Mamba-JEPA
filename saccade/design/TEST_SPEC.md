@@ -15,7 +15,8 @@ Rules
   (random features, a pixel probe of the SAME architecture) are reported beside them.
 - One frozen reader (a probe trained on real percepts against simulator labels) reads real and generated percepts
   alike; its own error against simulator labels is reported, and its outputs on generated percepts are diagnostics.
-  The reader is fitted to a SPECIFIED encoder checkpoint (the end of P1); the encoder is frozen during P2, otherwise
+  The reader is fitted to the encoder checkpoint selected at the end of P1 by CURRICULUM's fixed monitor rule;
+  the encoder is frozen during P2, otherwise
   representation drift would masquerade as lost information. S0 builds the harness and the pixel references; the
   reader itself is fitted after P1 and saved with its schema, seed, label hash and encoder-checkpoint hash.
   Real and generated reader inputs use the same FP16 storage precision. A shared reader makes real and generated readings comparable; its errors need not

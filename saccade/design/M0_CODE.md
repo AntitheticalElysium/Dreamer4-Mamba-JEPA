@@ -66,6 +66,13 @@ dependence control prevents a coordinate-wise classifier from silently missing j
 the health-adjusted unlock event. The reader is saved with schema, seed, label identity and encoder-checkpoint hash;
 S2 reloads the exact weights. A missing blocker metric returns unmeasured, never passed.
 
+`eval/after_p1.py`: the one-shot completion handler (user requested after launch). Native systemd OnSuccess provides
+the training exit metadata; the handler requires the bound successful invocation and complete, comparable monitor
+readings, applies CURRICULUM's checkpoint rule, verifies source/data identity and execs full S1. It records the
+selection and refuses an automatic repeated attempt. Its CPU tests cover checkpoint selection, incomplete runs,
+wrong/failed/stopped invocations, full-S1 command and exactly-once guard. Live throwaway service tests verify attaching
+the hook to a running unit without restart, success triggering and failure suppression (checks/auto_s1).
+
 ## saccade/tests/test_m0.py — checks before any long run
 Streams never cross episodes and are deterministic; the periphery encoder is equivariant to whole-cell shifts.
 Causal perception (Codex D1): replacing future frames, other episodes or padding leaves a percept unchanged, and

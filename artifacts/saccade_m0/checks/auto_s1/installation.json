@@ -1,0 +1,22 @@
+{
+  "parent": {
+    "OnSuccess": "saccade-s1-world1.service",
+    "ActiveState": "active",
+    "InvocationID": "a467ea58282948e5883e02590cf03ca2",
+    "MainPID": "30881"
+  },
+  "evaluator": {
+    "LoadState": "loaded",
+    "ActiveState": "inactive",
+    "Restart": "no",
+    "ExecStart": "{ path=/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/bin/python ; argv[]=/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/bin/python -u -m saccade.eval.after_p1 /home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1 1 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+    "MemoryMax": "25769803776",
+    "Environment": "OMP_NUM_THREADS=6 MKL_NUM_THREADS=6 SACCADE_P1_UNIT=saccade-p1-world1.service SACCADE_P1_INVOCATION=a467ea58282948e5883e02590cf03ca2 SACCADE_S1_SHA256=21178b5adca2efa1f505f901a31d83bc16290a1d7a7e2f65d7e3267ff01bbd82"
+  },
+  "unit_file": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/saccade-s1-world1.service",
+  "dropin": "/run/user/1000/systemd/user/saccade-p1-world1.service.d/50-s1.conf",
+  "evaluation_source_sha256": "21178b5adca2efa1f505f901a31d83bc16290a1d7a7e2f65d7e3267ff01bbd82",
+  "results": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/s1/results.json",
+  "reader": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/s1/results.reader.pt",
+  "log": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/s1/eval.log"
+}
