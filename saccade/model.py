@@ -426,10 +426,20 @@ def denoise_loss(den: Denoiser, x0, sigma, prev_action, memory, fix, episode, va
 
 
 def denoised(den: Denoiser, x, sigma, prev_action, memory, fix, cache, s, sd=1.0):
-    """One streaming evaluation at noise level sigma [B, 1] -> the denoised estimate through the encoder's output map."""
+    """One streaming evaluation at sigma [B, 1]; preserve an already valid clean prediction."""
     c_skip, c_out, c_in, c_noise = precondition(sigma, sd)
     Fo, new = den.step(tuple(_bcast(c_in, t) * t for t in x), c_noise, prev_action, memory, fix, cache)
-    return tuple(out_map(_bcast(c_skip, t) * t + _bcast(c_out, t) * f.float(), s) for t, f in zip(x, Fo)), new
+    return clean_estimate(x, Fo, c_skip, c_out, s), new
+
+
+def clean_estimate(x, raw_output, c_skip, c_out, bound):
+    """EDM's trained clean estimate, clipped only to its data range (not normalized again).
+
+    LayerNorm/tanh belongs to the encoder. Applying it again here changes even an exact prediction.
+    Shared with the batched S1 sampler so training and both inference paths use the same coordinates.
+    """
+    return tuple((_bcast(c_skip, t) * t + _bcast(c_out, t) * f.float()).clamp(-bound, bound)
+                 for t, f in zip(x, raw_output))
 
 
 def sample(den: Denoiser, shapes, prev_action, memory, fix, cache, cfg, gen=None):

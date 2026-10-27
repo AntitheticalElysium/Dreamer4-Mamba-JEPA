@@ -89,7 +89,8 @@ tokens with EDM x-prediction. JEDI adds tanh clamping, a slower encoder and own-
   step to 0; the first input is sigma_max-scaled noise (the published DIAMOND sampler starts from unit noise); at each
   step gamma = min(S_churn / 3, sqrt 2 - 1), sigma_hat = (1 + gamma) sigma, fresh noise raises x to sigma_hat, and the
   network is evaluated AT sigma_hat (DIAMOND passes sigma; equal only without churn). S_churn = 1 is JEDI's setting
-  for stochastic environments. Each denoised estimate passes through the encoder's output map (LOSSES principle 7).
+  for stochastic environments. Each denoised estimate uses the shared range clamp to [-3, 3], not another application
+  of the encoder's LayerNorm+tanh map (audit correction, LOSSES principle 7).
   These evaluations neither append history nor advance Mamba. A finished frame x^ enters the context ONCE: one fresh
   draw noises it to the context level, and one extra pass in its context role (its memory tokens and action, noise
   level 0.1) writes its per-layer keys and values to the cache, so a generated frame costs 4 evaluations (counted in

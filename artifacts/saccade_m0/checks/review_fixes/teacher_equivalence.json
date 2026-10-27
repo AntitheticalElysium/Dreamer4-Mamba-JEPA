@@ -1,0 +1,10 @@
+{
+  "original_sha256": "69862f6b98e3ba770395d07bdb516c2cc0e326917c0f848c4a8aedadd109406f",
+  "refit_sha256": "2a2deb02cad7122f2389216fcaaa74c0e79a95f67a8961645f4d92afae7efc0a",
+  "trees": 400,
+  "inference_splits_identical": true,
+  "max_leaf_value_difference": 4.2052472615239367e-13,
+  "prediction_sample_cells": 10000,
+  "max_probability_difference": 2.8727020762175925e-14,
+  "fp16_prediction_mismatches": 0
+}

@@ -30,6 +30,20 @@ KINDS = ("zombies", "cows", "skeletons", "arrows")
 MOVE = {1: (0, -1), 2: (0, 1), 3: (-1, 0), 4: (1, 0)}           # LEFT, RIGHT, UP, DOWN as (row, col) deltas
 
 
+def average_precision(y, scores):
+    """Non-interpolated AP at distinct score thresholds; ties are independent of row order."""
+    y, scores = np.asarray(y, dtype=bool), np.asarray(scores)
+    if y.ndim != 1 or scores.shape != y.shape or not np.isfinite(scores).all():
+        raise ValueError("AP needs matching one-dimensional labels and finite scores")
+    if not y.any():
+        return None
+    order = np.argsort(-scores, kind="stable")
+    y, scores = y[order], scores[order]
+    tp = np.cumsum(y, dtype=np.int64)
+    ends = np.r_[np.flatnonzero(scores[:-1] != scores[1:]), len(scores) - 1]
+    return float(np.sum(tp[ends] / (ends + 1) * np.diff(np.r_[0, tp[ends]])) / tp[-1])
+
+
 def build_pairs(L):
     """Labels -> per-transition observable pairs (vectorised over all episodes)."""
     T = L["ep_T"]; s_off = np.r_[0, np.cumsum(T + 1)]; t_off = np.r_[0, np.cumsum(T)]

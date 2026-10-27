@@ -2,6 +2,11 @@
 
 Implementation checks, not experiments. P1 is NOT launched (Codex reviews first).
 
+**Current correction verification:** [review_fixes/RESULTS.md](review_fixes/RESULTS.md) closes the implementation audit,
+with 33 CUDA tests passing, exact resume, fresh S1/reader artifacts and both training shapes fitting the GPU. Earlier
+checks below are historical; sampler, memory-label, unlock-event and conditional-classifier definitions are corrected
+in the linked report. Production P1 remains unstarted in this correction turn.
+
 ## Step 2: change-map targets (saccade/data.py, `python -m saccade.data targets artifacts/saccade_m0/targets`)
 - The A9b corrupted-day detector refit exactly as `eda_change_night_v2.fit` (same cells, episode split, Otsu threshold,
   LightGBM settings) reproduces A9b's saved held-out scores to every printed digit (`targets/change_teacher.json`):
@@ -29,8 +34,10 @@ routes, the reconstruction through the fovea without Mamba, none into the denois
 First version: TSP and reconstruction stalled (5.58 -> 5.46 nats / pixel) while the gradient norm grew to 750-2,750.
 Per-term gradient norms: the reward term 300-800 on its head (25-50 on Mamba), every other term < 1. Control without
 the reward term: TSP 4.56, reconstruction 4.54 and G1 0.17 at update 200 (vs 5.50 / 5.49 / 0.59), norm ~10.
-Mechanism: a discretised logistic mixture's tail gradients scale as 1 / scale; as components sharpened, global clipping
-shrank every update ~1,000-fold and Adam's second moment (beta2 0.999) kept the earlier, larger gradients.
+Interpretation corrected by the implementation audit: a discretised logistic mixture's tail gradients scale as
+1 / scale; the observed common clip factor was about 0.001. That does not measure Adam parameter deltas: its moment
+normalisation can cancel constant gradient scaling. Time-varying clipping and stored moments remain plausible causes
+of the stall; the historical ablation establishes gradient domination, not a precise update reduction.
 Fix (LOSSES G3): a categorical over the same 256 symlog bins (DIAMOND / JEDI / IRIS predict reward categorically).
 Rerun: every term falls, norm 8-10:
 | update | G1 | change | TSP | recon | reward | cont |
@@ -53,6 +60,6 @@ Run end to end on a 20-update checkpoint (15 dev / 30 train-400 episodes; number
 (trained and untrained copy, 2 seeds), the S3.2 perception blocker, belief probes with both controls, one-step sampling
 from real histories, the two-sample classifier with its power on corrupted real tuples (shuffled history 0.77, frozen
 time 0.85, mismatched actions 0.69; the 20-update model's samples 1.00), reader counts, reward / continuation
-calibration, TSP beside copy-previous and position-mean baselines. Definition check: "unlock" equals reward > 0.45 on
-99.98% of dev steps (the reward event used for the model's unlock probability).
-Needs lightgbm on PYTHONPATH (two-sample classifier), as the S0 harness did.
+calibration, TSP beside copy-previous and position-mean baselines. Audit correction: reward > 0.45 misses 115 of 10,528 dev unlocks when damage coincides. The corrected evaluator
+sums bins for the health-adjusted unlock event instead. LightGBM 4.6.0 is now pinned and installed in .venv.
+The smoke results above describe the historical evaluator; current correction verification is recorded separately.

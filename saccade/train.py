@@ -5,7 +5,7 @@ P2 / P3 are written after the S1 / S2 readings, against these interfaces.
 Usage (project venv, GPU; long runs via systemd-run): python -m saccade.train p1 WORLD_SEED [--updates N] [--steps S]
   [--episodes N] [--out DIR] [--no-checkpoints]
 """
-import argparse, json, math, time
+import argparse, hashlib, json, math, subprocess, time
 from pathlib import Path
 
 import numpy as np
@@ -20,6 +20,55 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def load_cfg() -> dict:
     return yaml.safe_load((ROOT / "saccade/m0.yaml").read_text())
+
+
+def file_sha256(path) -> str:
+    with open(path, "rb") as stream:
+        return hashlib.file_digest(stream, "sha256").hexdigest()
+
+
+def run_provenance(cfg) -> dict:
+    """Small, content-based identity; unrelated repository commits may change without changing a run."""
+    sources = ("saccade/model.py", "saccade/train.py", "saccade/data.py", "saccade/m0.yaml")
+    return {"git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+            "source_sha256": {p: file_sha256(ROOT / p) for p in sources},
+            "manifest_sha256": file_sha256(ROOT / cfg["data"]["corpus"] / "manifest.json"),
+            "targets_sha256": file_sha256(ROOT / cfg["p1"]["out_dir"] / "targets/change_targets.npy"),
+            "torch": str(torch.__version__)}
+
+
+def validate_resume(checkpoint, cfg, world_seed, provenance):
+    """Fail before restoring any state if this is a different recipe, seed, source or corpus."""
+    if checkpoint.get("cfg") != cfg or checkpoint.get("world_seed") != world_seed:
+        raise ValueError("Resume configuration or world seed differs from the checkpoint")
+    saved = checkpoint.get("provenance", {})
+    for key in ("source_sha256", "manifest_sha256", "targets_sha256", "torch"):
+        if saved.get(key) != provenance[key]:
+            raise ValueError(f"Resume identity differs: {key}")
+
+
+def encoder_grad_norms(model, terms):
+    """Raw per-loss encoder gradient norms, without changing .grad or consuming training RNG."""
+    params = tuple(model.perception.parameters())
+    result = {}
+    for name, loss in terms.items():
+        grads = torch.autograd.grad(loss, params, retain_graph=True, allow_unused=True)
+        squares = [g.detach().float().square().sum() for g in grads if g is not None]
+        result[name] = float(torch.stack(squares).sum().sqrt()) if squares else 0.0
+    return result
+
+
+def encoder_diagnostics(model, chunk, carry, cache, targets, cfg):
+    """One stream, at most 64 new frames, after training backward. Preserve RNG and accumulated .grad.
+
+    Reusing the full retained training graph for six extra backwards exceeded the 6 GB device budget.
+    The bounded recomputation uses the same pre-update parameters and incoming history, not a new data draw.
+    """
+    n = cfg["data"]["context_prefix"] + 64
+    bounded = {k: v[:1, :n] for k, v in chunk.items()}
+    with torch.random.fork_rng(devices=[cache.device.index]):
+        terms, _, _ = p1_losses(model, bounded, carry, cache, targets, cfg)
+        return encoder_grad_norms(model, terms)
 
 
 def set_reward_values(model: M.M0, episodes):
@@ -107,13 +156,47 @@ def groups(terms: dict) -> dict:
 
 @torch.no_grad()
 def monitor(model: M.M0, cfg, episodes, n_windows=None) -> dict:
+    """Fixed held-out reading, with temporary raw-token diagnostics and no training-state changes."""
+    stats = {}
+
+    def capture(name):
+        def hook(module, inputs, output):
+            x = output.float()
+            if name == "fovea":
+                x = x.movedim(1, -1)
+            x = x.reshape(-1, x.shape[-1])
+            total, squares = x.sum(0).double(), x.square().sum(0).double()
+            if name not in stats:
+                stats[name] = [0, torch.zeros_like(total), torch.zeros_like(squares)]
+            stats[name][0] += len(x)
+            stats[name][1] += total
+            stats[name][2] += squares
+        return hook
+
+    hooks = [module.register_forward_hook(capture(name)) for name, module in
+             (("periphery", model.perception.p_out), ("fovea", model.perception.fovea), ("lighting", model.perception.light))]
+    was = model.training
+    model.eval()
+    try:
+        result = _monitor(model, cfg, episodes, n_windows)
+    finally:
+        for hook in hooks:
+            hook.remove()
+        model.train(was)
+    result["raw_token_statistics"] = {
+        name: {"tokens": n, "mean_channel_std": float((sq / n - (s / n).square()).clamp(min=0).sqrt().mean()),
+               "rms": float((sq.mean() / n).sqrt())} for name, (n, s, sq) in stats.items()}
+    return result
+
+
+@torch.no_grad()
+def _monitor(model: M.M0, cfg, episodes, n_windows=None) -> dict:
     """The fixed P1 monitor (CURRICULUM, Budgets): the G1 loss of the target frame of fixed held-out windows (8 context
     frames at the inference context level, the target at 8 fixed noise levels = equal-mass quantiles of the training
     distribution), fixed noise draws, fixed fixations; beliefs from Mamba over each whole episode. Also token
     diagnostics (never gates): effective rank of the periphery tokens."""
     m, e = cfg["p1"]["monitor"], cfg["edm"]
-    P, dev, was = cfg["data"]["context_prefix"], next(model.parameters()).device, model.training
-    model.eval()
+    P, dev = cfg["data"]["context_prefix"], next(model.parameters()).device
     lengths = np.array([ep.T for ep in episodes])
     rng = np.random.default_rng(m["fixed_noise_seed"])
     picks = rng.choice(int(lengths.sum()), n_windows or m["windows"], replace=False)
@@ -151,7 +234,6 @@ def monitor(model: M.M0, cfg, episodes, n_windows=None) -> dict:
     L = torch.stack(losses)                                              # [windows, levels]
     tok = torch.cat(toks)
     ev = torch.linalg.eigvalsh(torch.cov(tok.T)).clamp(min=0)
-    model.train(was)
     return {"g1": float(L.mean()), "g1_by_level": L.mean(0).tolist(), "levels": levels.tolist(),
             "periphery_effective_rank": float(ev.sum() ** 2 / (ev ** 2).sum()), "windows": len(L)}
 
@@ -164,6 +246,9 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
     eps = split["train"][:n_episodes] if n_episodes else split["train"]
     targets = np.load(ROOT / cfg["p1"]["out_dir"] / "targets/change_targets.npy", mmap_mode="r")
     offsets = D.frame_offsets(split["train"])
+    if targets.shape != (int(offsets[-1]), 7, D.GRID):
+        raise ValueError("Change targets do not match the configured training split")
+    provenance = run_provenance(cfg)
     d, P = cfg["data"], cfg["data"]["context_prefix"]
     streams = D.Streams(eps, d["streams"], P, seed=world_seed, targets_offsets=offsets)
     model = M.M0(cfg).to(dev)
@@ -178,6 +263,7 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
     latest = out_dir / "latest.pt"
     if latest.exists():
         ck = torch.load(latest, weights_only=False, map_location=dev)
+        validate_resume(ck, cfg, world_seed, provenance)
         model.load_state_dict(ck["model"]), opt.load_state_dict(ck["opt"]), streams.load_state(ck["streams"])
         carry, cache, st = ck["carry"], ck["cache"], ck["state"]
         torch.set_rng_state(ck["rng"]["cpu"].cpu()), torch.cuda.set_rng_state(ck["rng"]["cuda"].cpu())
@@ -189,12 +275,17 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
         S = steps or (d["chunk_steps"][0] if st["frames"] < total / 2 else d["chunk_steps"][1])
         micro = 1 if S == d["chunk_steps"][0] else d["accumulate_at_256"]
         chunk = streams.next(S)
+        at_checkpoint = checkpoints and st["frames"] + int(chunk["valid"][:, P:].sum()) >= st["next_ckpt"] * every
         f = lr_factor(st["frames"], cfg)
         for g in opt.param_groups:
             g["lr"] = o["lr"] * g["lr_scale"] * f
         opt.zero_grad(set_to_none=True)
         rows_all = np.array_split(np.arange(d["streams"]), micro)
         logs = []
+        route_norms = None
+        if at_checkpoint:
+            diagnostic_carry = M.carry_rows(carry, [0])
+            diagnostic_cache = cache[:1].clone()
         for rows in rows_all:
             terms, c_new, cache_new = p1_losses(model, D.select(chunk, rows), M.carry_rows(carry, rows),
                                                 cache[rows], targets, cfg)
@@ -202,6 +293,9 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
             M.carry_put(carry, rows, c_new)
             cache[rows] = cache_new
             logs.append({k: float(v.detach()) for k, v in terms.items()})
+        del terms, c_new, cache_new
+        if at_checkpoint:
+            route_norms = encoder_diagnostics(model, chunk, diagnostic_carry, diagnostic_cache, targets, cfg)
         gn = float(torch.nn.utils.clip_grad_norm_(model.parameters(), o["grad_clip"]))
         opt.step()
         st["frames"] += int(chunk["valid"][:, P:].sum())
@@ -218,12 +312,13 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
         if checkpoints and st["frames"] >= st["next_ckpt"] * every:
             ck = {"model": model.state_dict(), "opt": opt.state_dict(), "streams": streams.state(), "carry": carry,
                   "cache": cache, "state": dict(st, next_ckpt=st["next_ckpt"] + 1), "cfg": cfg, "world_seed": world_seed,
+                  "provenance": provenance,
                   "rng": {"cpu": torch.get_rng_state(), "cuda": torch.cuda.get_rng_state()}}
             torch.save(ck, out_dir / f"ckpt_{st['next_ckpt']:02d}.pt")
             torch.save(ck, latest)
             mon = monitor(model, cfg, split["monitor"])
             log.write(json.dumps({"update": st["update"], "frames": st["frames"], "checkpoint": st["next_ckpt"],
-                                  "monitor": mon}) + "\n"), log.flush()
+                                  "monitor": mon, "encoder_grad_norms": route_norms}) + "\n"), log.flush()
             print("monitor", json.dumps(mon), flush=True)
             st["next_ckpt"] += 1
     return model

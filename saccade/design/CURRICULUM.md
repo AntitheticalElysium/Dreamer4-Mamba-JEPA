@@ -134,3 +134,21 @@ a stand-in of M0's shapes measured ~1 ms per frame with activation checkpointing
   optimizer state, reset path and real gradient routes, before P1) converts frames into wall time; the frame and
   update budgets stay fixed if it is slower.
 Open: context-corruption range.
+
+## P1 execution and identity (implementation audit closure, 10-27)
+Resume requires an exact recipe/world seed and matching source, manifest, target-file hashes and torch version.
+The checkpoint retains the originating git commit as provenance; an unrelated docs-only commit is allowed if those
+identities still match. Checkpoints also log raw per-loss encoder gradient norms on one stream capped at 64 new
+frames after training backward, before the optimizer step and harmonisation/clipping of the diagnostic losses, plus
+raw projection RMS/channel standard deviation and post-map effective rank on the monitor.
+These are diagnostics, not new stopping rules or semantic gates. Nuisance drift is not measured automatically by P1.
+
+The user manager starts commands in the home directory unless told otherwise. From the repository root, the verified
+launch form is:
+
+```sh
+systemd-run --user --unit=saccade-p1-world1 --working-directory="$PWD" -p MemoryMax=16G \
+  "$PWD/.venv/bin/python" -m saccade.train p1 1
+```
+
+Production P1 remains unstarted during the correction turn; the user requested its launch on the following turn.

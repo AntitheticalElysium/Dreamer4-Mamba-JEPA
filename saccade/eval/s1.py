@@ -7,7 +7,7 @@ probe fitting; simulator labels for evaluation only.
    and ring beside the pixel reference at the periphery's acuity (acuity_precision.json, r = 3).
 2. Belief contents (S1.2): features b_t (Mamba after the percept, reward and termination of t); controls (i) the current
    percept with its reward and termination, (ii) the last 8 steps with everything the belief saw in them. Targets:
-   achievements (22), HUD quantities (16, capped at 9), departed entities by absence stratum and exit side.
+   achievements (22), HUD quantities (16, capped at 9), recent sightings by kind-level absence stratum and last-seen nearest edge.
 3. One-step generation (S1.3): next percepts sampled from real histories (8 real context frames at the inference
    context level, the real predicted belief, action and fixation); classifier two-sample test on matched tuples with
    its power on corrupted real tuples; entity counts through the frozen reader (the S1.1 probe, seed 0); reward and
@@ -15,7 +15,7 @@ probe fitting; simulator labels for evaluation only.
 4. TSP (S1.4): glimpse likelihood, nats per pixel, beside copy-previous and per-position-mean baselines.
 Fixations: the random prior with a fixed seed per episode. Probe protocol (all probes): MLP 256-256 GELU, AdamW 1e-3
 (wd 1e-4), batch 4096, held-out 10% of train-400 episodes, stop after 3 epochs without held-out improvement (<= 30).
-Usage (project venv, GPU; lightgbm on PYTHONPATH): python -m saccade.eval.s1 CHECKPOINT OUT_JSON
+Usage (project venv, GPU): python -m saccade.eval.s1 CHECKPOINT OUT_JSON
   [MAX_DEV_EPISODES MAX_TRAIN_EPISODES] (limits for smoke tests only)
 """
 import json, math, sys
@@ -44,9 +44,11 @@ def episodes(L):
 @torch.no_grad()
 def encode(model, L, cfg, untrained=None):
     """Per episode of a labels file: periphery / glimpse / lighting tokens, fixation, corrected and predicted beliefs,
-    the outcome heads on the real next percept (P of the recorded reward bin, P(r > 0.45), P(continue)) and the TSP
+    the outcome heads on the real next percept (P of the recorded reward bin, P(unlock | observed health change),
+    P(continue)) and the TSP
     glimpse NLL per frame. With `untrained`, also that encoder's periphery tokens and lighting latent."""
     out = []
+    offsets = np.r_[0, np.cumsum(L["ep_T"] + 1)]
     for e, ep in enumerate(episodes(L)):
         rng = np.random.default_rng([cfg["p1"]["monitor"]["fixed_fixation_seed"], ep.shard, ep.slot])
         recs = [[(0, 1, t, *D.fixation_prior(rng, ())) for t in range(ep.T + 1)]]
@@ -60,14 +62,16 @@ def encode(model, L, cfg, untrained=None):
             h = model.outcome.features(bp, emb)
             lp = model.outcome.bin_logp(h)
             p_true = lp.gather(-1, model.outcome.bin_of(c["reward"])[..., None])[..., 0].exp()
-            p_big = lp.exp()[..., model.outcome.bin_value > 0.45].sum(-1)
+            health = torch.as_tensor(L["s_body"][offsets[e]:offsets[e + 1], 0], device=DEV).float()
+            dh = torch.cat([health.new_zeros(1), health[1:] - health[:-1]])
+            p_unlock = unlock_probability(lp, model.outcome.bin_value, dh[None])
             p_cont = torch.sigmoid(model.outcome.cont_logit(h, c["reward"]).float())
             cells = M.window(c["fixation"])
             pix = M.cell_pixels(M.crop(c["frames"], c["fixation"]))
             tsp = M.pixel_nll(*model.pixels(model.tsp.predict(bp, P.p, P.v, cells), P.v, cells), pix).mean((-1, -2))
         rec = {"p": P.p[0].half().cpu(), "g": P.g[0].half().cpu(), "v": P.v[0].half().cpu(), "fix": c["fixation"][0].cpu(),
                "b": b[0].float().half().cpu(), "bp": bp[0].float().half().cpu(), "p_true": p_true[0].float().cpu(),
-               "p_big": p_big[0].float().cpu(), "p_cont": p_cont[0].cpu(), "tsp": tsp[0].float().cpu(),
+               "p_unlock": p_unlock[0].float().cpu(), "p_cont": p_cont[0].cpu(), "tsp": tsp[0].float().cpu(),
                "action": c["action"][0].cpu(), "prev_action": c["prev_action"][0].cpu(), "reward": c["reward"][0].cpu(),
                "terminated": c["terminated"][0].cpu()}
         if untrained is not None:
@@ -91,21 +95,22 @@ class MLP(nn.Module):
         return {k: m(h) for k, m in self.heads.items()}
 
 
-def fit(make_x, loss, n, n_val, heads, seed):
+def fit(make_x, loss, n, n_val, heads, seed, device=None):
     """The S0 probe protocol on index sets: make_x(idx, val) -> inputs, loss(out, idx, val) -> scalar."""
+    device = DEV if device is None else torch.device(device)
     torch.manual_seed(seed)
-    model = MLP(make_x(torch.arange(2, device=DEV), False).shape[1], heads).to(DEV)
+    model = MLP(make_x(torch.arange(2, device=device), False).shape[1], heads).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
-    g = torch.Generator(device=DEV).manual_seed(seed)
+    g = torch.Generator(device=device).manual_seed(seed)
     best, state, best_ep, log = 1e9, None, 0, []
     for epoch in range(30):
         model.train()
-        for idx in torch.randperm(n, device=DEV, generator=g).split(4096):
+        for idx in torch.randperm(n, device=device, generator=g).split(4096):
             lo = loss(model(make_x(idx, False)), idx, False)
             opt.zero_grad(), lo.backward(), opt.step()
         model.eval()
         with torch.no_grad():
-            vl = float(np.mean([loss(model(make_x(i, True)), i, True).item() for i in torch.arange(n_val, device=DEV).split(65536)]))
+            vl = float(np.mean([loss(model(make_x(i, True)), i, True).item() for i in torch.arange(n_val, device=device).split(65536)]))
         log.append(vl)
         if vl < best:
             best, state, best_ep = vl, {k: v.clone() for k, v in model.state_dict().items()}, epoch
@@ -115,9 +120,40 @@ def fit(make_x, loss, n, n_val, heads, seed):
     return model.eval(), log
 
 
-def ap(y, s):
-    o = np.argsort(-s, kind="stable"); ys = y[o]; tp = np.cumsum(ys)
-    return float(np.sum(tp[ys == 1] / (np.nonzero(ys == 1)[0] + 1)) / max(ys.sum(), 1)) if ys.sum() else None
+ap = G.average_precision
+
+
+def unlock_probability(log_bin_probability, bin_values, health_change):
+    """Evaluation only: the same unlock event as round(reward - .1 * health change) == 1.
+
+    Health labels define the event; they are never fed into the trained world model.
+    """
+    unlock = (bin_values - 0.1 * health_change[..., None]).round() == 1
+    return (log_bin_probability.exp() * unlock).sum(-1)
+
+
+def save_reader(reader, path, checkpoint, world_seed, cfg):
+    """Persist the exact fitted S1 reader for S2, bound to its encoder checkpoint."""
+    schema = {"token_dim": cfg["perception"]["periphery"]["token_dim"],
+              "lighting_dim": cfg["perception"]["lighting"]["dim"],
+              "hidden": [256, 256], "heads": {"kind": 5, "terr": 17},
+              "kind_labels": ["background", *G.KINDS], "probe_seed": 0, "storage_precision": "float16",
+              "train_labels_sha256": TR.file_sha256(LABELS / "s0_train400_labels.npz")}
+    torch.save({"state_dict": {k: v.detach().cpu() for k, v in reader.state_dict().items()}, "schema": schema,
+                "checkpoint_sha256": TR.file_sha256(checkpoint), "world_seed": world_seed}, path)
+    return {"path": str(path), "sha256": TR.file_sha256(path), "checkpoint_sha256": TR.file_sha256(checkpoint),
+            "schema": schema}
+
+
+def load_reader(path, checkpoint, device):
+    """Load a frozen reader only for the encoder checkpoint on which it was fitted."""
+    saved = torch.load(path, weights_only=False, map_location="cpu")
+    if saved["checkpoint_sha256"] != TR.file_sha256(checkpoint):
+        raise ValueError("Reader belongs to a different encoder checkpoint")
+    schema = saved["schema"]
+    reader = MLP(schema["token_dim"] + schema["lighting_dim"], schema["heads"])
+    reader.load_state_dict(saved["state_dict"])
+    return reader.to(device).eval().requires_grad_(False)
 
 
 # ---- S1.1 token probe ----
@@ -164,57 +200,70 @@ def retention(dv, kp):
     return res
 
 
-def perception_blocker(trained, untrained):
+def perception_blocker(trained, untrained, reference=None):
     """TEST_SPEC S3.2 (perception), per kind on rings 1-2, day and night: a kind's recall or precision more than 0.10
     below the pixel reference at acuity 3, or below the untrained copy by > 0.02 beyond 3 SE (means of the probe seeds)."""
-    ref = json.loads((ROOT / "artifacts/eda/system_design_v1/acuity/acuity_precision.json").read_text())["results"]["3"]
-    fired = []
+    ref = reference if reference is not None else json.loads(
+        (ROOT / "artifacts/eda/system_design_v1/acuity/acuity_precision.json").read_text())["results"]["3"]
+    fired, unmeasured = [], []
     for light in ("day", "night"):
         for kn in G.KINDS:
             for m in ("recall", "precision"):
                 key = f"{light}_r1_2"
-                r = np.mean([ref[s][key][f"{m}_{kn}"]["est"] for s in ref])
-                t = [x[key][f"{m}_{kn}"] for x in trained]; u = [x[key][f"{m}_{kn}"] for x in untrained]
-                if None in t:
+                metric = f"{m}_{kn}"
+                rr = [ref[s][key][metric] for s in ref]
+                t = [x[key][metric] for x in trained]; u = [x[key][metric] for x in untrained]
+                measured = {}
+                for source, values in (("pixel_reference", rr), ("trained", t), ("untrained", u)):
+                    measured[source] = bool(values) and all(v is not None and v["n_cond"] > 0 for v in values)
+                    if not measured[source]:
+                        unmeasured.append({"kind": kn, "light": light, "metric": m, "source": source})
+                if not measured["trained"]:
                     continue
                 te, ts = np.mean([x["est"] for x in t]), np.mean([x["se"] for x in t])
-                if te < r - 0.10:
-                    fired.append({"kind": kn, "light": light, "metric": m, "rule": "pixel_reference", "est": te, "ref": r})
-                if None not in u:
+                if measured["pixel_reference"]:
+                    r = np.mean([x["est"] for x in rr])
+                    if te < r - 0.10:
+                        fired.append({"kind": kn, "light": light, "metric": m, "rule": "pixel_reference", "est": te, "ref": r})
+                if measured["untrained"]:
                     ue, us = np.mean([x["est"] for x in u]), np.mean([x["se"] for x in u])
                     if te < ue - 0.02 - 3 * math.hypot(ts, us):
                         fired.append({"kind": kn, "light": light, "metric": m, "rule": "untrained_copy", "est": te, "ref": ue})
-    return fired
+    return {"status": "blocked" if fired else "unmeasured" if unmeasured else "passed",
+            "fired": fired, "unmeasured": unmeasured}
 
 
 # ---- S1.2 belief contents ----
 
-def departed(L):
-    """Per state, per kind: absence stratum class (0 none, 1-4 = STRATA) of the most recently departed entity that is
-    still active and out of view, and its exit side (0-3; -1 if none)."""
-    s_off = np.r_[0, np.cumsum(L["ep_T"] + 1)]
-    pos = L["s_pos"].astype(int)
-    cls = np.zeros((len(pos), len(G.KINDS)), np.int64); side = np.full((len(pos), len(G.KINDS)), -1, np.int64)
-    for k, m in enumerate(G.KINDS):
-        P, A = L[f"s_{m}_p"].astype(int), L[f"s_{m}_m"]
-        rel = P - pos[:, None, :]
-        vis = A & (np.abs(rel[..., 0]) <= 3) & (np.abs(rel[..., 1]) <= 4)
-        for e in range(len(L["ep_T"])):
-            a, b = s_off[e], s_off[e + 1]
-            last = np.full(P.shape[1], -10 ** 9); exit_side = np.full(P.shape[1], -1)
-            for t in range(a, b):
-                left = A[t] & ~vis[t] & (last >= a)
-                for j in np.nonzero(left & (exit_side < 0))[0]:            # first step out of view after a sighting
-                    r_, c_ = rel[t, j]
-                    exit_side[j] = 0 if r_ < -3 else 1 if r_ > 3 else 2 if c_ < -4 else 3
-                d = np.where(left, t - last, 10 ** 9)
-                j = int(np.argmin(d))
-                if d[j] <= STRATA[-1][1]:
-                    cls[t, k] = 1 + next(i for i, (lo, hi) in enumerate(STRATA) if lo <= d[j] <= hi)
-                    side[t, k] = exit_side[j]
-                last = np.where(vis[t], t, np.where(A[t], last, -10 ** 9))   # a reused slot is a new entity
-                exit_side = np.where(vis[t] | ~A[t], -1, exit_side)
+def departed_episode(grid):
+    """Observable history only: time since a kind was last visible while it is absent now.
+
+    Side means the nearest screen edge at that last sighting, not an unseen exit position.
+    With multiple sightings choose the closest edge, ties by row-major cell then top/bottom/left/right.
+    """
+    cls = np.zeros((len(grid), len(G.KINDS)), np.int64)
+    side = np.full_like(cls, -1)
+    for k in range(len(G.KINDS)):
+        last, seen_side = -10**9, -1
+        for t, frame in enumerate(grid):
+            visible = frame == k + 1
+            visible[frame.shape[0] // 2, frame.shape[1] // 2] = False  # player sprite occludes this cell (S0 KEEP)
+            cells = np.argwhere(visible)
+            if len(cells):
+                r, c = cells.T
+                distances = np.stack([r, frame.shape[0] - 1 - r, c, frame.shape[1] - 1 - c], 1)
+                cell = int(np.argmin(distances.min(1)))
+                last, seen_side = t, int(np.argmin(distances[cell]))
+            elif 1 <= t - last <= STRATA[-1][1]:
+                cls[t, k] = 1 + next(i for i, (lo, hi) in enumerate(STRATA) if lo <= t - last <= hi)
+                side[t, k] = seen_side
     return cls, side
+
+
+def departed(L):
+    """Concatenate per-episode history targets; hidden deaths/identities never clear a sighting."""
+    targets = [departed_episode(ep["grid"]) for ep in G.episode_grids(L)]
+    return tuple(np.concatenate(x) for x in zip(*targets))
 
 
 def frame_features(enc):
@@ -291,7 +340,7 @@ def belief_probe(Xtr, Ytr, ep_tr, Xdv, Ydv, ep_dv, seed, window=None, first_tr=N
     sp = o["side"].reshape(-1, 4, 4).argmax(-1).numpy(); ys = Ydv["side"].numpy()
     res["departed"] = {kn: {"ap_by_stratum": {f"{lo}-{hi}": ap((yd[:, k] == s + 1).astype(int), dp[:, k, s + 1])
                                               for s, (lo, hi) in enumerate(STRATA)},
-                            "exit_side_accuracy": G.estimate(sp[:, k] == ys[:, k], ys[:, k] >= 0, ep_dv)}
+                            "last_seen_side_accuracy": G.estimate(sp[:, k] == ys[:, k], ys[:, k] >= 0, ep_dv)}
                        for k, kn in enumerate(G.KINDS)}
     return res
 
@@ -334,8 +383,7 @@ def one_step(model, enc, cfg, n_tuples, rng):
             seq = [torch.cat([cx, a], 1) for cx, a in zip(ctx, x)]
             with TR.autocast(DEV, cfg):
                 Fo = model.denoiser(tuple(M._bcast(c_in, a) * a for a in seq), c_noise, prev_a, mem, fix, episode, valid)
-            Dn = [M.out_map(M._bcast(c_skip[:, -1:], a) * a + M._bcast(c_out[:, -1:], f[:, -1:].float()) * f[:, -1:].float(), clamp)
-                  for a, f in zip(x, Fo)]
+            Dn = M.clean_estimate(x, tuple(f[:, -1:] for f in Fo), c_skip[:, -1:], c_out[:, -1:], clamp)
             x = [a + (sig[k + 1] - hat) * (a - d) / hat for a, d in zip(x, Dn)]
         Pg = M.Percept(x[0][:, 0], x[1][:, 0], x[2][:, 0], fix[:, -1])
         with TR.autocast(DEV, cfg):
@@ -347,26 +395,104 @@ def one_step(model, enc, cfg, n_tuples, rng):
     return eps_, ts, {k: torch.cat(v) for k, v in out.items()}
 
 
-def tuple_features(enc, eps_, ts, nxt):
-    """Matched tuples: previous percept (periphery, lighting), action, fixation, next percept, outcome."""
-    rows = []
+def conditioning_features(enc, eps_, ts, history):
+    """Full generator conditioning: history percepts/signals/actions/fixations and every predicted belief.
+
+    Keep the common context once in FP16; only classifier training/prediction batches expand to FP32.
+    This covers the memory tokens via their pre-projection beliefs, including the current predicted belief.
+    """
+    features = [torch.cat([frame_features([r]), r["bp"]], 1).numpy() for r in enc]
+    width = features[0].shape[1]
+    rows = np.zeros((len(eps_), history * (width + 1) + enc[0]["bp"].shape[1] + 17 + 49), np.float16)
     for i, (e, t) in enumerate(zip(eps_, ts)):
-        r = enc[e]
-        fix = np.zeros(49, np.float32); fix[(int(r["fix"][t, 0]) - 1) * 7 + int(r["fix"][t, 1]) - 1] = 1
-        act = np.zeros(17, np.float32); act[int(r["action"][t - 1])] = 1
-        rows.append(np.concatenate([r["p"][t - 1].float().numpy().ravel(), r["v"][t - 1].float().numpy(), act, fix,
-                                    nxt["p"][i].numpy().ravel(), nxt["g"][i].numpy().ravel(), nxt["v"][i].numpy(),
-                                    [float(M.SYMLOG(torch.tensor(float(nxt["r"][i])))), float(nxt["term"][i])]]))
-    return np.stack(rows).astype(np.float32)
+        start = max(0, t - history)
+        ctx = np.zeros((history, width + 1), np.float16)
+        n = t - start
+        if n:
+            ctx[-n:, :width], ctx[-n:, -1] = features[e][start:t], 1
+        act, fix = np.zeros(17, np.float16), np.zeros(49, np.float16)
+        previous_action = int(enc[e]["prev_action"][t])
+        if previous_action >= 0:
+            act[previous_action] = 1
+        fix[(int(enc[e]["fix"][t, 0]) - 1) * 7 + int(enc[e]["fix"][t, 1]) - 1] = 1
+        rows[i] = np.concatenate([ctx.ravel(), enc[e]["bp"][t].numpy(), act, fix])
+    return rows
 
 
-def c2st(Xa, Xb, ep, rng):
-    import lightgbm as lgb
-    X, y = np.concatenate([Xa, Xb]), np.r_[np.zeros(len(Xa)), np.ones(len(Xb))]
-    te = G.episode_split(ep, ep, rng)
-    m = lgb.train({"objective": "binary", "verbose": -1, "num_threads": 12, "seed": 0, "num_leaves": 31},
-                  lgb.Dataset(X[~te], y[~te]), 200)
-    return {"accuracy": float(((m.predict(X[te]) > 0.5) == y[te]).mean()), "n_test": int(te.sum())}
+def outcome_features(nxt):
+    """Identical FP16 observation precision for real and generated classifier examples."""
+    return torch.cat([nxt[k].reshape(len(nxt[k]), -1).half() for k in ("p", "g", "v")] +
+                     [M.SYMLOG(nxt["r"]).half()[:, None], nxt["term"].half()[:, None]], 1).numpy()
+
+
+def c2st(context, real, generated, ep, rng, corruption=None, context_blocks=None):
+    """Episode-held-out neural C2ST; same MLP/fit schedule as the other probes.
+
+    Train-only standardisation and equal expected energy per input group avoid scalar-count domination. Inputs
+    are assembled in batches, never as a duplicated full FP32 matrix. Corruption donors stay within train/val/test.
+    Trees on raw coordinates could not detect joint differences with exactly matched empirical marginals.
+    """
+    device = DEV if torch.cuda.is_available() else torch.device("cpu")
+    blocks = list(context_blocks or [context.shape[1]])
+    if sum(blocks) != context.shape[1] or min(blocks) <= 0:
+        raise ValueError("Classifier input groups must cover the conditioning features")
+    blocks += [real.shape[1]]
+    te = G.episode_split(ep, ep, rng)[:len(ep)]
+    train_episodes = np.unique(ep[~te])
+    if len(train_episodes) < 2 or not te.any():
+        raise ValueError("Classifier requires train, validation and test episodes")
+    validation = rng.choice(train_episodes, max(1, len(train_episodes) // 10), replace=False)
+    va = ~te & np.isin(ep, validation)
+    partitions = [np.flatnonzero(~te & ~va), np.flatnonzero(va), np.flatnonzero(te)]
+    donors = np.arange(len(ep))
+    for rows in partitions:
+        donors[rows] = rng.permutation(rows)
+
+    def inputs(rows, synthetic):
+        ctx, outcome = context[rows].copy(), real[rows].copy()
+        if corruption == "shuffled_history":
+            ctx[synthetic] = context[donors[rows[synthetic]]]
+        elif corruption == "mismatched_actions":
+            ctx[synthetic, -66:-49] = context[donors[rows[synthetic]], -66:-49]
+        outcome[synthetic] = generated[rows[synthetic]]
+        return np.concatenate([ctx, outcome], 1).astype(np.float32)
+
+    n, sums = 0, np.zeros(context.shape[1] + real.shape[1])
+    squares = np.zeros_like(sums)
+    for rows in np.array_split(partitions[0], max(1, len(partitions[0]) // 512 + 1)):
+        for synthetic in (False, True):
+            x = inputs(rows, np.full(len(rows), synthetic))
+            sums += x.sum(0, dtype=np.float64)
+            squares += np.square(x).sum(0, dtype=np.float64)
+            n += len(x)
+    mean = torch.as_tensor(sums / n, dtype=torch.float32, device=device)
+    scale = torch.as_tensor(np.maximum(squares / n - (sums / n)**2, 0)**.5,
+                            dtype=torch.float32, device=device).clamp(min=1e-3)
+    offset = 0
+    for width in blocks:
+        scale[offset:offset + width] *= math.sqrt(width * len(blocks) / len(scale))
+        offset += width
+
+    def mx(index, val):
+        rows, idx = partitions[int(val)], index.cpu().numpy()
+        x = inputs(rows[idx % len(rows)], idx >= len(rows))
+        return (torch.as_tensor(x, device=device) - mean) / scale
+
+    def loss(output, index, val):
+        return F.cross_entropy(output["domain"], (index >= len(partitions[int(val)])).long())
+
+    model, log = fit(mx, loss, len(partitions[0]) * 2, len(partitions[1]) * 2, {"domain": 2}, 0, device)
+    correct, count = 0, 0
+    with torch.no_grad():
+        for rows in np.array_split(partitions[2], max(1, len(partitions[2]) // 512 + 1)):
+            for synthetic in (False, True):
+                x = torch.as_tensor(inputs(rows, np.full(len(rows), synthetic)), device=device)
+                prediction = model((x - mean) / scale)["domain"].argmax(1)
+                correct += int((prediction == int(synthetic)).sum())
+                count += len(rows)
+    return {"accuracy": correct / count, "n_test": count, "conditioning_features": context.shape[1],
+            "outcome_features": real.shape[1], "precision": "float16_both_domains", "classifier": "MLP256x2",
+            "feature_group_widths": blocks, "heldout_loss_by_epoch": log}
 
 
 def first_episodes(L, n):
@@ -378,9 +504,10 @@ def first_episodes(L, n):
 
 def main():
     ckpt, out_path = Path(sys.argv[1]), Path(sys.argv[2])
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     max_dev = int(sys.argv[3]) if len(sys.argv) > 3 else None
     max_tr = int(sys.argv[4]) if len(sys.argv) > 4 else None             # smoke tests only
-    ck = torch.load(ckpt, weights_only=False, map_location=DEV)
+    ck = torch.load(ckpt, weights_only=False, map_location="cpu")
     cfg, seed = ck["cfg"], ck["world_seed"]
     model = M.M0(cfg).to(DEV); model.load_state_dict(ck["model"]); model.eval()
     torch.manual_seed(seed)
@@ -388,7 +515,10 @@ def main():
     Ltr = dict(np.load(LABELS / "s0_train400_labels.npz"))
     Ldv = dict(np.load(LABELS / "s0_dev_labels.npz"))
     Ldv, Ltr = first_episodes(Ldv, max_dev), first_episodes(Ltr, max_tr)
-    res = {"checkpoint": str(ckpt), "world_seed": seed, "frames": ck["state"]["frames"]}
+    res = {"checkpoint": str(ckpt), "checkpoint_sha256": TR.file_sha256(ckpt), "world_seed": seed,
+           "frames": ck["state"]["frames"], "evaluation_version": 3,
+           "departed_target": "visible_kind_history_v2", "side_target": "nearest_edge_at_last_visible_sighting"}
+    del ck
     enc_tr, enc_dv = encode(model, Ltr, cfg, untrained), encode(model, Ldv, cfg, untrained)
     ep_tr = np.concatenate([np.full(len(r["p"]), e) for e, r in enumerate(enc_tr)])
     ep_dv = np.concatenate([np.full(len(r["p"]), e) for e, r in enumerate(enc_dv)])
@@ -403,8 +533,9 @@ def main():
             res["s1_1"][name].append({"heldout_loss_by_epoch": log, **retention(dv, kp)})
             if name == "trained" and s == 0:
                 reader = probe
+                res["reader"] = save_reader(reader, out_path.with_suffix(".reader.pt"), ckpt, seed, cfg)
         print("s1.1", name, json.dumps({k: v for k, v in res["s1_1"][name][0].items() if k == "night_r1_2"}), flush=True)
-    res["s3_perception_blocker_fired"] = perception_blocker(res["s1_1"]["trained"], res["s1_1"]["untrained"])
+    res["s3_perception_blocker"] = perception_blocker(res["s1_1"]["trained"], res["s1_1"]["untrained"])
 
     # S1.2
     Ytr, Ydv = belief_targets(Ltr), belief_targets(Ldv)
@@ -427,21 +558,19 @@ def main():
     real = {k: torch.stack([enc_dv[e][kk][t].float() for e, t in zip(eps_, ts)]) for k, kk in (("p", "p"), ("g", "g"), ("v", "v"))}
     real["r"] = torch.tensor([float(enc_dv[e]["reward"][t]) for e, t in zip(eps_, ts)])
     real["term"] = torch.tensor([bool(enc_dv[e]["terminated"][t]) for e, t in zip(eps_, ts)])
-    Xr, Xg = tuple_features(enc_dv, eps_, ts, real), tuple_features(enc_dv, eps_, ts, gen)
-    res["s1_3"] = {"c2st_generated": c2st(Xr, Xg, eps_, np.random.default_rng(1)), "power": {}}
-    perm = np.random.default_rng(2).permutation(len(eps_))
+    context = conditioning_features(enc_dv, eps_, ts, cfg["data"]["context_prefix"])
+    width = cfg["belief"]["width"]
+    blocks = [context.shape[1] - width - 17 - 49, width, 17, 49]
+    Xr, Xg = outcome_features(real), outcome_features(gen)
+    res["s1_3"] = {"c2st_generated": c2st(context, Xr, Xg, eps_, np.random.default_rng(1), context_blocks=blocks), "power": {}}
     prev = {k: torch.stack([enc_dv[e][k][t - 1].float() for e, t in zip(eps_, ts)]) for k in ("p", "g", "v")}
-    for kind, nxt, ts_ in (("shuffled_history", {k: v[perm] for k, v in real.items()}, ts),
-                           ("frozen_time", {**real, **prev}, ts),
-                           ("mismatched_actions", real, None)):
-        Xc = tuple_features(enc_dv, eps_, ts, nxt)
-        if kind == "mismatched_actions":
-            a0 = enc_dv[0]["p"][0].numel() + enc_dv[0]["v"].shape[1]          # the action one-hot follows p and v
-            Xc[:, a0:a0 + 17] = Xc[perm, a0:a0 + 17]
-        res["s1_3"]["power"][kind] = c2st(Xr, Xc, eps_, np.random.default_rng(1))
+    for kind, nxt in (("shuffled_history", real), ("frozen_time", {**real, **prev}), ("mismatched_actions", real)):
+        res["s1_3"]["power"][kind] = c2st(context, Xr, outcome_features(nxt), eps_, np.random.default_rng(1),
+                                          corruption=kind, context_blocks=blocks)
+    del context, Xr, Xg
     with torch.no_grad():
-        read = lambda p, v: torch.cat([reader(torch.cat([p[i][:, :63].reshape(-1, p.shape[-1]).to(DEV),
-                                                         v[i].repeat_interleave(63, 0).to(DEV)], 1))["kind"].argmax(1).reshape(len(i), 63).cpu()
+        read = lambda p, v: torch.cat([reader(torch.cat([p[i][:, :63].reshape(-1, p.shape[-1]).half().to(DEV),
+                                                         v[i].repeat_interleave(63, 0).half().to(DEV)], 1))["kind"].argmax(1).reshape(len(i), 63).cpu()
                                        for i in torch.arange(len(p)).split(2048)])
         kr, kg = read(real["p"], real["v"]).numpy()[:, KEEP[:63]], read(gen["p"], gen["v"]).numpy()[:, KEEP[:63]]
     one = np.ones(len(eps_), bool)
@@ -452,10 +581,10 @@ def main():
     dh = np.concatenate([np.diff(Ldv["s_body"][a:b, 0].astype(float)) for a, b in zip(np.r_[0, np.cumsum(Ldv["ep_T"] + 1)][:-1], np.cumsum(Ldv["ep_T"] + 1))])
     unlock = np.round(y_r - 0.1 * dh).astype(int)
     ept = np.concatenate([np.full(len(r["p"]) - 1, e) for e, r in enumerate(enc_dv)])
-    p_true = np.concatenate([r["p_true"][1:].numpy() for r in enc_dv]); p_big = np.concatenate([r["p_big"][1:].numpy() for r in enc_dv])
+    p_true = np.concatenate([r["p_true"][1:].numpy() for r in enc_dv]); p_unlock = np.concatenate([r["p_unlock"][1:].numpy() for r in enc_dv])
     p_cont = np.concatenate([r["p_cont"][1:].numpy() for r in enc_dv]); term = np.concatenate([r["terminated"][1:].numpy() for r in enc_dv])
-    res["s1_3"]["calibration"] = {"reward": C.score(p_true, p_big, unlock.astype(float), ept),
-                                  "unlock_equals_reward_above_0.45": float(((y_r > 0.45) == (unlock == 1)).mean()),
+    res["s1_3"]["calibration"] = {"reward": C.score(p_true, p_unlock, unlock.astype(float), ept),
+                                  "unlock_event": "round(reward - 0.1 * observed_health_change) == 1",
                                   "continuation": C.score(np.where(term, 1 - p_cont, p_cont), 1 - p_cont, term.astype(float), ept),
                                   "references": json.loads((LABELS / "s0_calib.json").read_text())}
 

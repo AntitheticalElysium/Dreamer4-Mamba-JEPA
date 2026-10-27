@@ -98,16 +98,15 @@ edm:
     s_tmax: .inf
     s_noise: 1.0
     evaluate_at: sigma_hat                    # EDM; DIAMOND passes sigma (differs only with churn)
-    output_map: encoder_output_map            # layer norm + clamp on each denoised estimate (LOSSES principle 7)
+    output_map: range_clamp                   # clip to [-3, 3]; another LN/tanh would change a correct target (audit R1)
   inference_context_sigma: 0.1                # working; D4 "slightly corrupt" tau_ctx read as noise 0.1; GameNGen: 0 works
   context_entry: one_extra_pass_per_frame     # one fresh draw at the context sigma, one pass writes the cache (STEP_SPEC 7)
 
 heads:
   tsp: {likelihood: discretised_logistic, mean_from: [belief, periphery, lighting], scale_from: [lighting, pixel_position]}
   fovea_reconstruction: {likelihood: discretised_logistic, mean_from: [glimpse, lighting], decoder: shared_with_tsp}  # 10-27
-  change_map: {target: a9b_soft_detector, rows: map_only}   # A9b teacher covers map rows only (documented limit)
   pixel_decoder: {hidden: 256, position_dim: 32, belief_dim: 128, log_scale_floor: -7}   # working; floor: PixelCNN++
-  change_map: {hidden: 256, position_dim: 32, belief_dim: 128}   # working
+  change_map: {target: a9b_soft_detector, rows: map_only, hidden: 256, position_dim: 32, belief_dim: 128}   # A9b + working widths
   outcome: {hidden: 256}                      # working; DV3 size12m-like heads
   reward: {density: categorical, space: symlog, bins: 256, support: [-0.9, 1.1], support_space: raw,
            sampled_value: train_bin_mean}     # LOSSES G3 (revised 10-27, overfit check: the discretised logistic

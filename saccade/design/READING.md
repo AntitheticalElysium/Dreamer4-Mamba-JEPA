@@ -846,3 +846,15 @@ Scripts named below (eda_*.py, ana_*.py, t1_/t2_*) are in artifacts/experiments/
 - P3: Dreamer 4 initialises the policy from BC, keeps "a frozen copy of the policy head that serves as a behavioral
   prior", a fresh value head, PMPO with KL[pi_theta || pi_prior]; our 09-03 BC recipe (AdamW 1e-4, wd 0.01, clip 1,
   warmup 250) is `d4_mamba_jepa/craftax_runners.train_craftax_bc`.
+
+### Implementation audit correction, 10-27
+- EDM (Karras et al. 2022), Algorithm 2, Appendix B.3/B.6: sampling uses the estimated noise-conditional mean that the
+  raw-output loss trains. A second LayerNorm+tanh changes that estimate even when it equals a valid target. M0 now
+  uses only a shared range clamp in its two sampler paths; an exact-target regression tests the zero-loss case.
+- V-JEPA 2-AC's vendored train.py normalises predictions BEFORE its losses as well as in rollouts. This is different
+  from normalising only the output of a diffusion sampler trained with an unnormalised clean estimate.
+- C2ST (Lopez-Paz & Oquab) tests the supplied feature distribution, not omitted history. S1's feature schema now
+  includes the full recent conditioning and predicted beliefs; both outcome domains have identical storage rounding.
+- The JEDI PDF at arXiv 2605.13013v1 is *Joint Embedding Diffusion World Model for Online Model-Based Reinforcement
+  Learning*. PAPERS.lock's title typo is corrected; the pinned PDF and its hash are unchanged.
+- Detailed paper sections and prior numerical checks: artifacts/experiments/20261027_m0_implementation_audit/PAPERS_READ.md.

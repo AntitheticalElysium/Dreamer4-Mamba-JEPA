@@ -18,7 +18,7 @@
 2603.18202v2.pdf | R2-Dreamer: Redundancy-Reduced World Models without Decoders or Augmentation | 6d091be6ccfa4592d2b81b3be98198a0378ce76767534282f83a372f4eeddc60
 2603.19312v3.pdf | LeWorldModel: Stable End-to-End Joint-Embedding Predictive Architecture for Reinforcement Learning | 553a01501ac74ec56721cfdb936d3825ac941734133a1fd761f614c01b6887e9
 2605.06732v2.pdf | On Training in Imagination | d5090958c236509a195949febba05be65e00413a54c92dffe616f812f1e02d00
-2605.13013v1.pdf | JEDI: Joint Embedding Diffusion World Model for Multi-Agent Trajectory Modeling and Planning | f78f2d417cbd156a859a204773e0efe010bf35b8174530c4fcacc5d7c1421c81
+2605.13013v1.pdf | JEDI: Joint Embedding Diffusion World Model for Online Model-Based Reinforcement Learning | f78f2d417cbd156a859a204773e0efe010bf35b8174530c4fcacc5d7c1421c81
 2606.27326v1.pdf | Hallucination in World Models is More Common than You Think | 2f10358cff583fc00df6a434c31a01872748bd9ed767c5874ff23eaecf823beb
 2607.05238v1.pdf | MoP-JEPA: Hard-Assigned Predictor Mixtures for Stochastic JEPA World Models | c454b6399693ee2afbc6b261f00b0d66392c71cb9bd698602956bd344f27932e
 2608.27395v1-levjepa.pdf | LeVJEPA: Efficient & Scalable Video Pretraining without the Heuristics | 047a945c5ccc7846269aa077fabce672f2b6c62b1aefba38ffa23004e63bad08

@@ -10,8 +10,9 @@ countered by the training graph and by grounding:
    tokens by the fovea's own reconstruction of its crop; the lighting latent through both pixel likelihoods; all of them
    through the reward and termination heads.
 3. Scale: each token is layer-normalised over its channels without affine (I-JEPA's target convention; V-JEPA 2-AC
-   normalises every world-model state this way, encoded and predicted), then soft-clamped by JEDI's 3 tanh(z/3), so
-   sigma_data = 1 holds while the encoder trains. Per token, so stateless and causal: chunk-wide BatchNorm, the first
+   normalises predictions inside its loss too), then soft-clamped by JEDI's 3 tanh(z/3).
+   sigma_data = 1 is a preconditioning reference; post-tanh variance is not exactly 1. The sampler applies only an
+   idempotent range clamp to [-3, 3] (LOSSES principle 7), preserving valid targets instead of normalising them again. Per token, so stateless and causal: chunk-wide BatchNorm, the first
    choice, made a past percept depend on future frames and broke the bound (Codex's audit, 10-27).
 This is the chosen training mechanism, not a guarantee: entity retention is measured in S1 (token probe against the
 untrained-encoder copy; the S3 perception blocker).

@@ -34,6 +34,8 @@ class Episode:
 def load_split(cfg) -> dict:
     """train / monitor / dev / final episode lists in manifest order. Monitor = a fixed fraction of train episodes chosen
     by the sha256 of the episode id: the same for every arm and seed (CURRICULUM, Budgets)."""
+    if (ROOT / cfg["data"]["corpus"]).resolve() != RP.STORE.resolve():
+        raise ValueError("Configured corpus differs from the replay store")
     frac = cfg["data"]["monitor_fraction"]
     out = {"train": [], "monitor": [], "dev": [], "final": []}
     for sh in range(len(RP.manifest()["shards"])):
@@ -153,6 +155,7 @@ def fit_teacher(out_dir: Path):
     """Refit A9b's corrupted-day detector exactly as eda_change_night_v2.fit does (same cells, episode split, Otsu
     threshold, LightGBM settings) and check it against A9b's saved held-out scores (simulator labels, evaluation only)."""
     import lightgbm as lgb
+    from saccade.eval.gates import average_precision
     A9 = _a9b()
     D = np.load(A9B / "a9b_cells.npz")
     Xr, yr, gr, nr, lfr = D["real_X"], D["real_y"], D["real_g"], D["real_night"], D["real_lf"]
@@ -168,13 +171,15 @@ def fit_teacher(out_dir: Path):
     dt = lgb.Dataset(X[t], y[t]); dv = lgb.Dataset(X[v], y[v], reference=dt)
     model = lgb.train(p, dt, 400, valid_sets=[dv], callbacks=[lgb.early_stopping(30, verbose=False)])
     saved = json.loads((A9B / "a9b_results.json").read_text())
-    report = {"tau": tau, "saved_tau": saved["label_free_day_threshold"], "trees": model.best_iteration}
+    report = {"tau": tau, "saved_tau": saved["label_free_day_threshold"], "trees": model.best_iteration,
+              "ap_definition": "threshold_grouped", "saved_ap_definition": "legacy_item_ranked"}
     for name, night in (("day", False), ("night", True)):
         te = (nr == night) & np.isin(gr, te_e)
         s, yy = model.predict(Xr[te], num_iteration=model.best_iteration), yr[te]
         o = np.argsort(-s, kind="stable"); ys = yy[o]; tp = np.cumsum(ys)
         flag = s > 0.5
-        report[name] = {"ap": float(np.sum(tp[ys == 1] / (np.nonzero(ys == 1)[0] + 1)) / max(ys.sum(), 1)),
+        report[name] = {"ap": average_precision(yy, s),
+                        "legacy_item_rank_ap": float(np.sum(tp[ys == 1] / (np.nonzero(ys == 1)[0] + 1)) / max(ys.sum(), 1)),
                         "precision": float(yy[flag].mean()), "recall": float(flag[yy == 1].mean()),
                         "saved": {k: saved[name]["detector_corrupted_day_labelfree"][k]
                                   for k in ("ap", "labelfree_precision", "labelfree_recall")}}

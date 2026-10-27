@@ -17,7 +17,8 @@ Rules
   alike; its own error against simulator labels is reported, and its outputs on generated percepts are diagnostics.
   The reader is fitted to a SPECIFIED encoder checkpoint (the end of P1); the encoder is frozen during P2, otherwise
   representation drift would masquerade as lost information. S0 builds the harness and the pixel references; the
-  reader itself is fitted after P1. A shared reader makes real and generated readings comparable; its errors need not
+  reader itself is fitted after P1 and saved with its schema, seed, label hash and encoder-checkpoint hash.
+  Real and generated reader inputs use the same FP16 storage precision. A shared reader makes real and generated readings comparable; its errors need not
   cancel under the shift to generated percepts, and its real-data error does not bound its error on generated ones.
 - Bug fixes are allowed and documented; a scientific miss is kept as a result and leads to a bounded, declared
   revision, never to tuning until the gate passes.
@@ -50,9 +51,11 @@ Rules
    (b) the displayed HUD quantities (health, food, drink, energy; the 12 inventory counts, capped at 9): exact
        accuracy each; read beside control (i): at 3 x 3 acuity a supervised reader still reads HUD values from the
        periphery (0.9999), so this is not automatically a memory test (Codex);
-   (c) departed entities: per kind, "one was in view within the last k steps and is out of view now", by absence
-       stratum k in {1-4, 5-8, 9-16, 17-64} (beyond 8 the denoiser's own context cannot hold it), plus its exit side
-       (4-way accuracy).
+   (c) recent sightings: per kind, none currently visible but that kind was visible 1-64 steps ago, by absence
+       stratum {1-4, 5-8, 9-16, 17-64} (beyond 8 the denoiser's own context cannot hold it). No hidden survival or
+       identity condition. Side is the nearest screen edge at the LAST VISIBLE sighting (4-way), not an unseen exit.
+       Multiple same-kind sightings choose the one closest to an edge; ties use row-major cell then top/bottom/left/right.
+       The player-covered centre cell is excluded, as in S0. Reappearance resets the kind-level absence clock.
    Controls with the same probe: (i) the current percept (periphery, glimpse, fixation, lighting) with its reward
    and termination; (ii) the last 8 steps with everything the belief saw in them (percepts with fixations and
    lighting, actions, rewards, terminations: the denoiser's effective reach), without Mamba. A gap measures accessible
@@ -60,6 +63,14 @@ Rules
    What Mamba adds = belief minus (ii), read per stratum.
 3. One-step generation: classifier two-sample tests on MATCHED (history, action, fixation, outcome) tuples, with power
    checked on the S0 corruptions; entity counts read by the frozen reader; reward and continuation calibration.
+   Classifier inputs include every recent periphery/glimpse/lighting percept, fixation, action, reward/termination,
+   predicted belief, validity flag, plus current predicted belief/action/fixation; current target outcomes are excluded
+   from the conditioning side. Both outcome domains are rounded to FP16. Power donors stay within their train/test
+   episode partition (train, validation and test). C2ST reuses the existing MLP 256-256 GELU and probe fitting
+   schedule (seed 0); column means/std use training examples only (std floor 1e-3), then history/current-belief/action/
+   fixation/outcome groups are scaled to equal expected energy. Raw-coordinate trees failed the matched-marginal
+   dependence control; the neural classifier must reject it and the declared power corruptions. Unlock calibration uses the same event as the S0 labels, round(reward - 0.1 * health change) = 1;
+   evaluation-only health change selects the corresponding reward bins, never enters world-model training.
 4. TSP: glimpse likelihood vs copy-previous and per-position-mean baselines.
 
 ## S2 — M0 recursion (phase P2; free-running rollouts on dev exogenous windows)
@@ -91,7 +102,7 @@ Coverage limit: 16-step exogenous windows come almost only from random play.
      short-lived at 0.32, get the count check only). Support in those windows: 584 / 1,566 / 339 / 244 windows.
    The S0 corruption checks, including all-arrows-removed, are rerun through the reader before use. Other misses are
    reported and S3 runs. If both pass, S3 runs at once with its reserved budget; if one fires, the miss goes to
-   diagnosis (below), never to longer training.
+   diagnosis (below), never to longer training. Any missing required exposure returns unmeasured, preventing a false pass.
 3. Learned fixation afterwards: anticipation vs reaction; night robustness.
 
 ## Increments are candidate comparisons after diagnosis, not automatic responses
@@ -100,5 +111,5 @@ Coverage limit: 16-step exogenous windows come almost only from random play.
   (store + self-location) or I2 (records) the candidate, and its benefit is claimed only by a matched retraining.
 
 ## Open
-The belief-content probes (S1.2). (Fixed: the per-cell probe for S1.1 and the S2 sample counts in S0; budgets in
-CURRICULUM; the S3 blockers above.)
+P2/S2 implementation and its gradient checks are deferred until the S1 reading. S1 probe definitions, budgets and
+S3 blocker bounds are fixed above and in CURRICULUM.

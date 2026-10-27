@@ -1,0 +1,29 @@
+{
+ "tau": 6.100513935089111,
+ "saved_tau": 6.100513935089111,
+ "trees": 400,
+ "ap_definition": "threshold_grouped",
+ "saved_ap_definition": "legacy_item_ranked",
+ "day": {
+  "ap": 0.9430835717422393,
+  "legacy_item_rank_ap": 0.943060400146609,
+  "precision": 0.8481790258885477,
+  "recall": 0.9174181300427148,
+  "saved": {
+   "ap": 0.943060400146609,
+   "labelfree_precision": 0.8481790258885477,
+   "labelfree_recall": 0.9174181300427148
+  }
+ },
+ "night": {
+  "ap": 0.6120662290745817,
+  "legacy_item_rank_ap": 0.6120657088385467,
+  "precision": 0.6303630363036303,
+  "recall": 0.5096731154102735,
+  "saved": {
+   "ap": 0.6120657088385467,
+   "labelfree_precision": 0.6303630363036303,
+   "labelfree_recall": 0.5096731154102735
+  }
+ }
+}

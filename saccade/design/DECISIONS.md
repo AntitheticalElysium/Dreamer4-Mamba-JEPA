@@ -141,3 +141,20 @@ The first build, M0, is defined in STEP_SPEC §7; entries below marked [supersed
 - Rollout robustness (training on the model's own rollouts) and its link to consequence horizons.
 - Loss units and weights: likelihood units, then a harmoniser; only after the above.
 - Alignment during training before self-location is reliable.
+
+## Implementation audit closure (2026-10-27)
+User authorised verifying/fixing the audit findings and committing before the next-turn production P1 launch.
+M0's architecture, budgets and held-out split remain as declared. Corrections:
+- Keep the encoder's LayerNorm+tanh; sampled clean estimates use an idempotent range clamp, preserving a valid
+  zero-loss target (LOSSES principle 7). V-JEPA normalises predictions inside its loss and is not evidence for applying
+  this encoder map again after a different diffusion loss.
+- S1 uses threshold-grouped AP, complete recent conditioning plus beliefs, equal outcome precision, observable
+  kind-level sighting history and last-visible side, the health-adjusted unlock event, and a saved checkpoint-bound
+  reader. C2ST uses the existing MLP probe (train-only standardisation, equal input-group energy): raw-coordinate trees
+  failed a matched-marginal dependence control and two smoke power checks. Missing blocker exposures are explicitly
+  unmeasured. These repair measurements, not scientific failures.
+- Merge the duplicate YAML key; pin LightGBM 4.6.0 in the project venv; bind resume to configuration/seed/source/data;
+  record bounded gradient/raw-token diagnostics. Long cache and metric regression tests cover the repaired contracts.
+- Correct the launch working directory and the reward-gradient explanation: clipping factor is not Adam update size.
+- Original audit results remain in artifacts/experiments/20261027_m0_implementation_audit; correction protocol/results
+  are in artifacts/saccade_m0/checks/review_fixes. P2/P3 and their gradient checks remain deferred.

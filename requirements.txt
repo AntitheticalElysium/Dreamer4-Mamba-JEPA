@@ -38,3 +38,4 @@ Pillow==11.3.0
 # --- Probe / analysis ---
 scipy            # Spearman rho, ROC
 matplotlib       # signal-vs-error plots
+lightgbm==4.6.0  # saccade's frozen change teacher and S0 reference classifiers; persistent, reproducible dependency

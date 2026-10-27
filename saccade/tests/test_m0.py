@@ -1,7 +1,7 @@
 """M0 checks before any long run (saccade/design/M0_CODE.md, tests section). GPU tests are skipped without CUDA.
 Run: .venv/bin/python -m pytest saccade/tests -q
 """
-import copy, math
+import copy, io, math
 
 import numpy as np
 import pytest
@@ -219,7 +219,7 @@ def test_cached_sampler_equals_recomputed_history(cfg):
         torch.nn.init.normal_(m.weight, std=0.02)
     e, s = cfg["edm"], cfg["edm"]["sampler"]
     clamp = cfg["perception"]["periphery"]["tanh_clamp"]
-    B, T = 1, 6
+    B, T = 1, 15
     _, mem, _, act, fix, dims = _den_inputs(cfg, B, T)
     n = s["steps"]
     sig = [(s["sigma_max"] ** (1 / s["rho"]) + i / (n - 1) * (s["sigma_min"] ** (1 / s["rho"]) - s["sigma_max"] ** (1 / s["rho"]))) ** s["rho"]
@@ -239,8 +239,7 @@ def test_cached_sampler_equals_recomputed_history(cfg):
             c_skip, c_out, c_in, c_noise = M.precondition(sg)
             Fo = den(tuple(M._bcast(c_in, a) * a for a in seq), c_noise, sl(act), sl(mem), sl(fix),
                      torch.zeros(reps, len(hist) + 1, dtype=torch.long), torch.ones(reps, len(hist) + 1, dtype=torch.bool))
-            Dn = tuple(M.out_map(M._bcast(c_skip[:, -1:], a) * a + M._bcast(c_out[:, -1:], f[:, -1:]) * f[:, -1:], clamp)
-                       for a, f in zip(x, Fo))
+            Dn = M.clean_estimate(x, tuple(f[:, -1:] for f in Fo), c_skip[:, -1:], c_out[:, -1:], clamp)
             x = tuple(a + (sig[k + 1] - hat) * (a - d) / hat for a, d in zip(x, Dn))
         ctx = tuple(a + e["inference_context_sigma"] * torch.randn(a.shape, generator=gen) for a in x)
         return x, ctx
@@ -249,21 +248,26 @@ def test_cached_sampler_equals_recomputed_history(cfg):
         ga, gb = torch.Generator().manual_seed(7), torch.Generator().manual_seed(7)
         cache, hist, reps = den.new_cache(), [], 1
         for t in range(T):
-            if t == 3:                                                  # episode reset
+            if t == 12:                                                 # first exercise a history beyond 8 frames
                 cache, hist = den.new_cache(), []
-            if t == 4:                                                  # branch duplication
+            if t == 7:                                                  # branch duplication
                 cache = {"t": cache["t"], "kv": [(k.repeat_interleave(2, 0), v.repeat_interleave(2, 0)) for k, v in cache["kv"]]}
                 hist, reps = [tuple(a.repeat_interleave(2, 0) for a in h) for h in hist], 2
+            if t == 9:                                                  # cache checkpoint round trip
+                buf = io.BytesIO()
+                torch.save(cache, buf)
+                buf.seek(0)
+                cache = torch.load(buf, weights_only=False)
             sl = lambda a: a[:, t:t + 1].repeat_interleave(reps, 0)
             xa = M.sample(den, dims, sl(act), sl(mem), sl(fix), cache, cfg, ga)
             cache = M.context_pass(den, xa, sl(act), sl(mem), sl(fix), cache, cfg, ga)
             xb, ctx = recompute(hist, t, gb, reps)
-            hist = (hist + [ctx])[-den.window:]
+            hist.append(ctx)                                            # full history, not a four-frame approximation
             for u, v in zip(xa, xb):
                 assert torch.allclose(u, v, atol=1e-4), t
 
 
-def test_edm_coefficients_loss_and_sampler_equations(cfg, monkeypatch):
+def test_edm_coefficients_loss_and_sampler_equations(cfg):
     sd, sigma = 1.0, torch.tensor([0.002, 0.1, 1.0, 20.0])
     c_skip, c_out, c_in, c_noise = M.precondition(sigma, sd)
     assert torch.allclose(c_skip, sd ** 2 / (sigma ** 2 + sd ** 2))
@@ -277,8 +281,7 @@ def test_edm_coefficients_loss_and_sampler_equations(cfg, monkeypatch):
     x = x0 + s * n
     raw = (Fo - (x0 - cs * x) / co) ** 2
     assert torch.allclose(raw, (cs * x + co * Fo - x0) ** 2 * (1 + 1 / s ** 2), rtol=1e-9)
-    # the sampler follows EDM Algorithm 2 (NVIDIA generate.py, order 1): a stub denoiser with D = 0.5 x
-    monkeypatch.setattr(M, "out_map", lambda a, c: a)
+    # An independently specified bounded D makes the range clamp inactive; no output-map monkeypatch.
 
     class Stub:
         window = 4
@@ -286,7 +289,7 @@ def test_edm_coefficients_loss_and_sampler_equations(cfg, monkeypatch):
         def step(self, xc, c_noise, *a):
             sig = (4 * c_noise).exp()
             cs, co, ci, _ = M.precondition(sig)
-            return tuple((0.5 * t / M._bcast(ci, t) - M._bcast(cs, t) * t / M._bcast(ci, t)) / M._bcast(co, t)
+            return tuple((0.5 * (t / M._bcast(ci, t)).tanh() - M._bcast(cs, t) * t / M._bcast(ci, t)) / M._bcast(co, t)
                          for t in xc), []
 
     e = cfg["edm"]["sampler"]
@@ -300,9 +303,51 @@ def test_edm_coefficients_loss_and_sampler_equations(cfg, monkeypatch):
         gam = min(e["s_churn"] / N, math.sqrt(2) - 1)
         t_hat = steps[i] + gam * steps[i]
         x_hat = x + math.sqrt(t_hat ** 2 - steps[i] ** 2) * e["s_noise"] * torch.randn(x.shape, generator=gb)
-        d = (x_hat - 0.5 * x_hat) / t_hat
+        d = (x_hat - 0.5 * x_hat.tanh()) / t_hat
         x = x_hat + (steps[i + 1] - t_hat) * d
     assert torch.allclose(out, x, atol=1e-6)
+
+
+def test_zero_loss_conditional_returns_the_encoder_target(cfg):
+    """A deterministic conditional's exact raw denoiser must return its target in the deployed sampler."""
+    torch.manual_seed(14)
+    with torch.no_grad():
+        target = M.Perception(cfg)(torch.randint(0, 256, (1, 1, 63, 63, 3), dtype=torch.uint8),
+                                   torch.tensor([[[4, 4]]])).parts()
+
+    class Exact:
+        def __call__(self, scaled, c_noise, *unused):
+            sigma = (4 * c_noise).exp()
+            cs, co, ci, _ = M.precondition(sigma)
+            return tuple((z - M._bcast(cs, x) * x / M._bcast(ci, x)) / M._bcast(co, x)
+                         for x, z in zip(scaled, target))
+
+        def step(self, *args):
+            return self(*args), []
+
+    sigma = torch.tensor([[0.1]])
+    loss = M.denoise_loss(Exact(), target, sigma, None, None, None, None, None)
+    assert float(loss.max()) < 1e-10
+    result = M.sample(Exact(), [z.shape[2:] for z in target], None, torch.zeros(1, 1, 1), None, None, cfg,
+                      torch.Generator().manual_seed(7))
+    for value, expected in zip(result, target):
+        assert torch.allclose(value, expected, atol=1e-6)
+
+
+def test_resume_rejects_another_recipe_seed_or_identity(cfg):
+    identity = {"git_commit": "a", "source_sha256": {"model": "a"}, "manifest_sha256": "b",
+                "targets_sha256": "c", "torch": "same"}
+    ck = {"cfg": copy.deepcopy(cfg), "world_seed": 1, "provenance": copy.deepcopy(identity)}
+    TR.validate_resume(ck, cfg, 1, {**identity, "git_commit": "documentation-only-commit"})
+    with pytest.raises(ValueError, match="world seed"):
+        TR.validate_resume(ck, cfg, 2, identity)
+    changed = copy.deepcopy(cfg)
+    changed["optimizer"]["lr"] *= 2
+    with pytest.raises(ValueError, match="configuration"):
+        TR.validate_resume(ck, changed, 1, identity)
+    for key in ("source_sha256", "manifest_sha256", "targets_sha256", "torch"):
+        with pytest.raises(ValueError, match=key):
+            TR.validate_resume(ck, cfg, 1, {**identity, key: "changed"})
 
 
 # ---- outcome heads ----
@@ -387,6 +432,58 @@ def test_gradient_routes_per_loss(cfg, split, monkeypatch):
 # ---- resume ----
 
 @gpu
+def test_periodic_diagnostics_preserve_gradients_rng_and_mode(cfg, split, monkeypatch):
+    torch.manual_seed(9)
+    model = M.M0(cfg).cuda()
+    model.denoiser.checkpoint = True
+    eps = sorted(split["train"], key=lambda e: e.T)[:4]
+    streams = D.Streams(eps, 2, 8, seed=0)
+    chunk = streams.next(8)
+    terms, _, _ = TR.p1_losses(model, chunk, model.belief.initial(2, "cuda"),
+                               torch.zeros(2, 9, cfg["belief"]["width"], device="cuda"), None, cfg)
+    total = model.harmoniser(TR.groups(terms))
+    params = tuple(model.parameters())
+    expected = torch.autograd.grad(total, params, retain_graph=True, allow_unused=True)
+    cpu, cuda = torch.get_rng_state(), torch.cuda.get_rng_state()
+    norms = TR.encoder_grad_norms(model, terms)
+    assert norms.keys() == terms.keys() and all(np.isfinite(v) for v in norms.values())
+    assert all(p.grad is None for p in params)
+    assert torch.equal(cpu, torch.get_rng_state()) and torch.equal(cuda, torch.cuda.get_rng_state())
+    total.backward()
+    for p, g in zip(params, expected):
+        if g is None:
+            assert p.grad is None
+        else:
+            assert torch.equal(p.grad, g)
+
+    accumulated = [None if p.grad is None else p.grad.clone() for p in params]
+    TR.encoder_diagnostics(model, chunk, model.belief.initial(1, "cuda"),
+                           torch.zeros(1, 9, cfg["belief"]["width"], device="cuda"), None, cfg)
+    for p, g in zip(params, accumulated):
+        assert p.grad is None if g is None else torch.equal(p.grad, g)
+    assert torch.equal(cpu, torch.get_rng_state()) and torch.equal(cuda, torch.cuda.get_rng_state())
+
+    modules = (model.perception.p_out, model.perception.fovea, model.perception.light)
+    hooks_before = [len(m._forward_hooks) for m in modules]
+    model.train()
+    result = TR.monitor(model, cfg, eps, n_windows=2)
+    assert model.training and torch.equal(cpu, torch.get_rng_state()) and torch.equal(cuda, torch.cuda.get_rng_state())
+    assert [len(m._forward_hooks) for m in modules] == hooks_before
+    assert result["raw_token_statistics"].keys() == {"periphery", "fovea", "lighting"}
+    assert all(v["tokens"] > 0 and v["mean_channel_std"] > 0 for v in result["raw_token_statistics"].values())
+    model.eval()
+    TR.monitor(model, cfg, eps, n_windows=2)
+    assert not model.training
+
+    def fail(*args):
+        raise RuntimeError("diagnostic failure")
+
+    monkeypatch.setattr(TR, "_monitor", fail)
+    with pytest.raises(RuntimeError, match="diagnostic failure"):
+        TR.monitor(model, cfg, eps, n_windows=2)
+    assert not model.training and [len(m._forward_hooks) for m in modules] == hooks_before
+
+@gpu
 def test_resumed_run_equals_uninterrupted(cfg, tmp_path):
     c = copy.deepcopy(cfg)
     c["p1"]["frames"] = 4 * 256
@@ -398,4 +495,4 @@ def test_resumed_run_equals_uninterrupted(cfg, tmp_path):
     b = TR.p1(c, 3, tmp_path / "b", updates=4, n_episodes=20)
     diff = max(float((u - v).abs().max()) for u, v in zip(a.state_dict().values(), b.state_dict().values())
                if u.is_floating_point())
-    assert diff < 1e-3, diff
+    assert diff == 0, diff

@@ -1,0 +1,7 @@
+{
+  "transitions": 304898,
+  "unlocks": 10528,
+  "old_threshold_misses": 115,
+  "corrected_event_mismatches": 0,
+  "perfect_reward_unlock_brier": 0.0
+}
