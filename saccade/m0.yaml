@@ -15,6 +15,7 @@ data:
   chunk_steps: [64, 256]                      # first / second half of P1's frames (CURRICULUM)
   accumulate_at_256: 4                        # 4 microbatches x 4 distinct streams per update at 256 steps
   context_prefix: 8                           # = the denoiser's effective temporal reach (denoiser below)
+  actions: 17                                 # Craftax-Classic action count
 
 perception:
   periphery:
@@ -26,11 +27,14 @@ perception:
     film_from_lighting: true                  # PERCEPTION v4: gain control (Carandini & Heeger)
   lighting:
     dim: 8                                    # working; low-dimensional by contract (PERCEPTION v4, Codex)
+    hidden: [64]                              # working; MLP on the 6 pooled statistics
     normalise: layernorm_no_affine_per_token  # as the periphery, then the same clamp
     inputs: frame_pooled_statistics           # per-channel mean and std of the frame, nothing spatial
   fovea:
     crop_cells: 3                             # 3 x 3 cells, full resolution (user 10-26, working size)
     token_dim: 64                             # working; per-cell glimpse token, higher capacity than periphery
+    channels: 64                              # working; conv 3x3, conv 3x3, per-cell 7x7 stride 7, conv 3x3 across the
+                                              # crop's cells (the fovea integrates its crop, PERCEPTION)
     tanh_clamp: 3.0                           # JEDI
     normalise: layernorm_no_affine_per_token  # as the periphery
   fixation_prior: uniform_49_centres          # 3 x 3 window anywhere on the 9 x 9 screen, HUD included (STEP_SPEC 7)
@@ -46,18 +50,30 @@ belief:                                       # Mamba-2; LeWM Raw recipe (our pa
   A_init_range: [1.0, 16.0]
   dt_range: [0.001, 0.1]
   dt_init_floor: 1.0e-4
+  ngroups: 1                                  # LeWM Raw recipe (d4mj/recipes/lewm_mamba_raw.json) from here to norm_eps
+  norm_before_gate: false
+  bias: false
+  conv_bias: true
+  norm_eps: 1.0e-5                            # pre-norm RMSNorm residual blocks + final RMSNorm (d4mj LeWM world)
+  backend: triton                             # installed mamba_ssm kernel; "reference" = the pure-torch scan (tests)
   inputs: interleaved                         # [percept + reward + termination]_t, then [action]_t (STEP_SPEC 7)
   percept_projection: flatten_linear          # flattened periphery + glimpse + fixation + lighting -> width (DRAMA)
+  glimpse_placement: canvas_at_fixation_cells # glimpse tokens on a 9 x 9 canvas + mask: per-position weights (the
+                                              # denoiser places them the same way)
 
 denoiser:                                     # D4-style factorised space-time transformer
   layers: 8                                   # working (cost: eda notes, READING 10-27)
   width: 256
   heads: 4
-  mlp_ratio: 4
+  mlp: swiglu                                 # D4 (pre-norm RMSNorm, SwiGLU, QK-norm); logit soft-capping omitted (the
+  mlp_hidden: 688                             # fused SDPA kernels lack it; QK-norm kept); 688 = 4x MLP parameter count
   temporal_every: 4                           # D4: temporal attention once every 4 layers (layers 4 and 8)
   temporal_window: 4                          # past frames per temporal layer -> effective reach 8 frames
   memory_tokens: 4                            # working; predicted belief -> K tokens per frame
   positions: {spatial: rope_2d_axial_plus_absolute, temporal: rope_1d}   # D4 (RoPE); Heo (APE + RoPE at 7 x 7)
+  rope_theta_space: 100.0                     # Heo et al. code, compute_axial_cis default (naver-ai/rope-vit)
+  rope_theta_time: 10000.0                    # RoPE (Su et al.) standard base
+  cond_channels: 256                          # DIAMOND: Fourier features of c_noise + action embedding, projected
   qk_norm: true                               # D4
   conditioning: adaln_zero                    # DiT: noise level and action
   type_embeddings: [periphery, glimpse, lighting, memory]   # D4 modality ids
@@ -90,13 +106,19 @@ heads:
   tsp: {likelihood: discretised_logistic, mean_from: [belief, periphery, lighting], scale_from: [lighting, pixel_position]}
   fovea_reconstruction: {likelihood: discretised_logistic, mean_from: [glimpse, lighting], decoder: shared_with_tsp}  # 10-27
   change_map: {target: a9b_soft_detector, rows: map_only}   # A9b teacher covers map rows only (documented limit)
-  reward: {density: discretised_mixture_of_logistics, components: 4, space: symlog, bins: 256, support: [-0.9, 1.1],
-           support_space: raw, edge_bins: absorb_tails, sampled_value: train_bin_mean}   # LOSSES G3; Lloyd 1982
+  pixel_decoder: {hidden: 256, position_dim: 32, belief_dim: 128, log_scale_floor: -7}   # working; floor: PixelCNN++
+  change_map: {hidden: 256, position_dim: 32, belief_dim: 128}   # working
+  outcome: {hidden: 256}                      # working; DV3 size12m-like heads
+  reward: {density: categorical, space: symlog, bins: 256, support: [-0.9, 1.1], support_space: raw,
+           sampled_value: train_bin_mean}     # LOSSES G3 (revised 10-27, overfit check: the discretised logistic
+                                              # mixture's tail gradients ~1/scale took the clipped update; categorical
+                                              # reward as DIAMOND / JEDI / IRIS); sampled value: Lloyd 1982
   continuation: {likelihood: bernoulli, conditioned_on: [predicted_belief, percept, reward]}
 
 losses:
   harmoniser: harmonydream                    # L / sigma + log(1 + sigma) per group (LOSSES v1.1)
   harmoniser_init_sigma: 1.0                  # working
+  groups: [G1, G2, G3]                        # P1 groups (LOSSES terms table); G2 = change map + TSP + fovea reconstruction
   sigreg: null                                # dropped from M0 (10-27, LOSSES principle 7); comparison: LeWM module,
                                               # lambda x N held at 0.09 x 128 (Epps-Pulley statistic scales with N)
   stop_gradient: [denoiser_frame_inputs, denoiser_targets]   # REPA-E, JEDI; memory tokens stay differentiable
@@ -112,10 +134,15 @@ optimizer:                                    # JEDI / DIAMOND
   warmup_frames: 1024000                      # JEDI's 1,000 warm-up updates at 1,024 frames per update
   schedule: cosine_by_frames                  # CURRICULUM: follows frames, not updates
   min_lr_ratio: 0.1                           # LeWM 5e-6 / 5e-5
+  betas: [0.9, 0.999]                         # torch AdamW default (JEDI / DIAMOND do not change it)
+  weight_decay_on: linear_and_conv_weights    # DIAMOND configure_opt: biases, norms, embeddings excluded
 
 p1:                                           # CURRICULUM Budgets
   frames: 25600000
   checkpoint_every_fraction: 0.1
+  precision: bf16_autocast                    # RTX 3060; losses and the SSM state in fp32
+  activation_checkpointing: true              # per denoiser block (6 GB card)
+  out_dir: artifacts/saccade_m0
   monitor: {windows: 2000, sigma_levels: 8, fixed_noise_seed: 0, fixed_fixation_seed: 0, objective: edm.loss}   # the G1 loss as declared
 
 p2:

@@ -35,8 +35,8 @@ K = 4 memory tokens, W = 256.
 - Reward decoding: `Reward.sample` draws a bin, then emits the bin's train-split mean reward (a buffer computed once
   from the train split and saved with the checkpoint).
 - Heads: `TSP.forward(memory, p_window, v, fix) -> (mean, log_scale)` over the glimpse pixels; `ChangeMap.forward(p_t,
-  p_t1, memory) -> logits [.., 7, 9]`; `Reward.log_prob(r, cond)`, `Reward.sample(cond)` (mixture of logistics over
-  the 256 symlog bins); `Continuation.forward(cond, r) -> logit`.
+  p_t1, memory) -> logits [.., 7, 9]`; `Reward.log_prob(r, cond)`, `Reward.sample(cond)` (categorical over the 256
+  symlog bins; revised at the overfit check, LOSSES G3); `Continuation.forward(cond, r) -> logit`.
 - Fovea reconstruction: `PixelDecoder` shared by TSP and the fovea (per cell, discretised logistic): TSP feeds it
   (memory, periphery window, v), the reconstruction feeds it the glimpse tokens and v.
 - Token scale: `out_map(x) = 3 * tanh(F.layer_norm(x, (x.shape[-1],)) / 3)` per token (I-JEPA / V-JEPA 2-AC, then

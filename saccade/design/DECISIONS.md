@@ -88,6 +88,11 @@ The first build, M0, is defined in STEP_SPEC §7; entries below marked [supersed
   BatchNorm over a chunk was not causal and broke the bound). Decision record:
   COLLAPSE.md. SIGReg kept as a planned comparison and for richer per-patch content later.
 
+- M0 build (10-27): code in saccade/ (data.py, model.py, train.py, tests/test_m0.py); every check in M0_CODE passes
+  (artifacts/saccade_m0/checks/CHECKS.md). One spec change from a measured implementation failure: the reward head is
+  a categorical over the 256 symlog bins, not a discretised logistic mixture (LOSSES G3: its tail gradients took the
+  clipped update and stalled the other terms; removing the term restored them). P1 not launched: Codex reviews first.
+
 ## Reserve ideas (keep; don't build until a measured need appears)
 - Coarse peripheral target: predict a per-cell colour / contrast summary everywhere ("peripheral vision"). Cheap,
   biology-inspired; risk: zombies are the lowest-contrast sprite (09-26: 2.5 vs 2.6-6.5), so colour alone may miss

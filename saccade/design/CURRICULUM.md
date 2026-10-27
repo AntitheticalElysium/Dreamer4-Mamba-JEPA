@@ -38,8 +38,9 @@ own generated percepts (self-feeding), (3) how far imagination runs for the acto
   training chunk is preceded by the previous 8 frames of its stream as context-only frames (no loss), episode
   boundaries mask attention, and streaming inference with per-layer caches of the last 4 frames must reproduce the
   chunked computation exactly (an implementation test). Ownership (Codex, 10-27): the prefix feeds ONLY the denoiser's
-  temporal context, with the memory tokens Mamba produced for those frames in the previous chunk (cached, detached);
-  it is never replayed through Mamba, whose carried state already contains it. Mamba kernel convention: the installed
+  temporal context, with the predicted beliefs Mamba produced for those frames in the previous chunk (cached,
+  detached, projected to memory tokens by the current projection); it is never replayed through Mamba, whose carried
+  state already contains it. Mamba kernel convention: the installed
   Triton scan starts its sequence index at 0, so the segment continuing the carried state gets local index 0 and each
   episode start inside the chunk increments it (a nonzero first index silently drops the carried state); the
   convolution history is zeroed at episode starts too (the scan's sequence index does not reset it). Alignment: the

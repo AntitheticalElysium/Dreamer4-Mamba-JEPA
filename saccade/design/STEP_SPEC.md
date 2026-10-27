@@ -27,10 +27,10 @@ There is no separate hidden world: simulation runs on the belief (belief-MDP; GE
 5. Outcome signals are OBSERVATIONS too (Codex): U_corr reads the real reward and termination along with the percept.
    In Craftax this is needed: the HUD shows health / food / drink / energy / inventory but NOT which achievements are
    unlocked, so reward is evidence of an unlock (combined with the health change), and later rewards depend on it.
-   Outcome models, chained for consistency: reward ~ p(r | B-_{t+1}, P_{t+1}) as a discretised mixture of logistics
-   in symlog space (a proper, samplable density that can be sharp for deterministic rewards; a two-hot regression
-   head is NOT a sampler: a deterministic reward of 1 gets mass on bins ~0.88 and ~1.20, Codex), with a categorical
-   over the empirical reward values as the alternative for discrete-reward environments; continuation ~ p(c |
+   Outcome models, chained for consistency: reward ~ p(r | B-_{t+1}, P_{t+1}) as a categorical over 256 bins uniform
+   in symlog space (a proper, samplable distribution that can be exact for deterministic rewards; a two-hot regression
+   head is NOT a sampler: a deterministic reward of 1 gets mass on bins ~0.88 and ~1.20, Codex; the discretised
+   logistic mixture first chosen was replaced at the build's overfit check, LOSSES G3); continuation ~ p(c |
    B-_{t+1}, P_{t+1}, r). The critic keeps two-hot. Change map rendered from (B-_{t+1}, B_{t+1}).
 Losses and weights: LOSSES.md. Gradient routes into the encoders: the belief path (memory tokens stay
 differentiable), TSP, the fovea's own reconstruction, the change map, the outcome heads; every denoiser FRAME input
