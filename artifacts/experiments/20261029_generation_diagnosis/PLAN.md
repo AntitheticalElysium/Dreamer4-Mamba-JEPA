@@ -1,106 +1,138 @@
-# Where does the generated distribution go wrong? Diagnosis plan (2026-10-29, nothing run yet)
+# Where does the generated distribution go wrong? Diagnosis plan v2 (2026-10-29, before any run)
 
-## What is established
-- One-step generated successors from real histories carry almost no deaths and a third of the negative rewards, while
-  the same heads on recorded successors are calibrated (Codex 10-28; reproduced 10-29 with the production streaming
-  sampler, fresh draws: death 0.367% recorded vs 0.0001% generated; 12.77% vs 0.015% in low-health / adjacent-zombie
-  contexts; `../20261029_consequence_reproduction/RESULTS.md`). In those contexts generated futures show negative reward
-  in 4.1% but death in 0.015%: partial consequences without the rule-implied completion.
-- Generated tokens violate the encoder's output geometry (per-token zero channel mean after inverting the tanh): a
-  summary-statistics classifier separates them at 99.5% (Codex). So the S1 two-sample score (0.76) and reader counts on
-  generated codes mix geometry with semantics.
-- Reader counts depend strongly on the solver (production 3 steps: zombies 0.24 vs real 0.44; 8 deterministic steps
-  0.41; 32 steps 0.53), and readers' support on generated entity codes is poor (Codex). Counts are not established.
+v1 (commit 558ba9ba) was reviewed (REVIEW.md, 67d13ca0). v2 keeps the questions, removes the tests whose outcomes
+could not identify what v1 claimed, adds two tests with an exact null or an exact reference, and narrows every
+outcome-to-cause arrow. Point-by-point responses are at the end.
 
-Not established: whether the bulk of the generated distribution is right (only rare outcomes missing) or broadly
-wrong; at which link the rare outcomes are lost.
+## What is established (narrowed)
+- In the DEPLOYED pipeline (production sampler, native heads), one-step generated successors from real histories
+  carry almost no deaths and about a third of the negative rewards, while the native heads on recorded successors match
+  the recorded death rate (Codex 10-28; reproduced 10-29 with different code and draws: 0.367% recorded vs 0 of 24,000
+  sampled futures on random contexts; 12.77% vs 8 of 60,880 in low-health / adjacent-zombie contexts). Native heads
+  are part of the model: this is a predictive failure of the model as deployed, whatever its location inside it.
+- Matching the mean death rate on recorded successors is a strong recognition control, not complete conditional
+  calibration of the heads.
+- Withdrawn from v1: "negative reward without the rule-implied death" as a partial consequence. A generated negative
+  reward can be an intrinsic health decrement, and the belief may be uncertain about starting health; it is an
+  association to diagnose. The reproduction's predicted-death column used 1 - sigmoid(logit), whose float32
+  resolution distorts values near 1e-6 (the sampled counts are unaffected); new scripts use sigmoid(-logit).
+- Generated tokens violate the encoder's per-token statistics (Codex's summary-statistics classifier 99.5%); entity
+  counts on generated tokens depend on the step count and the readers' support there is poor (Codex). Neither the
+  geometry nor the counts are interpreted causally yet.
 
-## The chain and the competing explanations
-history -> (1) information in the conditioning (predicted belief + 8 context percepts + action)
-        -> (2) the learned conditional p(next percept | conditioning)
-        -> (3) the solver that samples it (3 churned Euler steps from sigma_max 5)
-        -> (4) generated token geometry -> (5) heads / readers that read it -> measured consequence
-A deficit can enter at any link. Our history points two ways: every deterministic world we built copied consequences
-because rare events were ~0.3% of a uniform per-element loss (E14, E17-E20, health diagnosis 10-08) -> link (2); and
-diffusion needs an iterative solver to pick a mode, its single step being the average (DIAMOND 5.2) -> link (3).
-Sources for (2): diffusion denoisers "play favourites" with majority features (Um et al., ICLR 2024); conditional
-diffusion on long-tailed data loses tail classes (Qin et al., CVPR 2023). For (3): EDM assumes p(x; sigma_max) is
-"practically indistinguishable from pure Gaussian noise" for sigma_max >> sigma_data (section 2; EDM uses 80 / 0.5,
-DIAMOND 5 / 0.5, ours 5 / 1, trained only up to sigma 20); a percept's 1,880 scalars give an aggregate SNR of ~75 at
-sigma 5, and Codex measured the start far off the data-mean direction (0.15 vs 30.0).
+## Two candidate links and why both are live (sources read 10-29)
+(a) THE SAMPLING ALGORITHM. Production: EDM Algorithm 2, Euler, N = 3, rho = 7, sigma_max 5, S_churn 1 (sigma
+grid 5, 0.283, 0.002, 0; churn gamma = 1/3). The network is evaluated at sigma_hat 6.67 and 0.377 (the third
+evaluation, at 0.0027, approximately returns its input). Each Euler step to the next grid level lands at the clean estimate plus
+the remaining noise, so a sample is "the clean estimate at 6.67, re-noised to 0.377, re-estimated": the network is not
+evaluated anywhere between 6.67 and 0.377. DIAMOND (2405.12399, sec. 5.2, Fig. 4): "the optimal single-step
+prediction is ... the expectation over possible reconstructions"; "an iterative solver is necessary to drive the
+sampling procedure towards a particular mode"; DIAMOND chose n = 3 on Atari (crispness was the criterion, not branch
+frequencies). Dreamer 4 (2509.24527, Table 2, Fig. 8): plain diffusion forcing degrades from FVD 306 at 64 steps to 875
+at 4 steps; shortcut forcing exists to make 4 steps work. M0 is plain EDM diffusion forcing at 3 steps.
+(b) THE LEARNED FIELD. Tweedie denoisers favour majority features (Um et al., ICLR 2024, sec. 3.1); conditional
+diffusion on long-tailed data loses tail classes (Qin et al., CVPR 2023); EDM's p_train deliberately puts little mass at
+high sigma (sec. 5: "at high levels the training targets are always dissimilar from the correct answer"): our
+lognormal(-0.4, 1.2) puts 4.70% of draws at sigma >= 5, 1.22% at >= 10, 0.23% clamped at 20; the noise schedule can
+cause "mode amplification" (Dennehy et al., 2607.15485, abstract).
+Approximate fields couple (a) and (b) (REVIEW): no test below yields an additive split, and no plateau is "the
+model's distribution".
 
-## Tests (frozen world; each substitutes one link; claim / competing / control / what each outcome rules out)
+## Tests (frozen world; each with claim / competing / control / what each outcome rules out)
 
-T0. Instruments valid on generated geometry (links 4-5), FIRST, because every later readout depends on it.
-- Claim: the heads (and a HUD-health reader) read model-output geometry correctly. Competing: they misread it, so
-  deficits are partly an interface artefact. Control: "denoised real" successors D(x_real + sigma eps) at small sigma
-  (model-output geometry, known content), and the idempotent projection P(y) = 3 tanh(LN(3 atanh(y / 3)) / 3), which
-  leaves every encoder output unchanged and puts any sample on the encoder's output set.
-- Death / damage must be recognised on denoised-real terminal successors at the recorded rate; the projected generated
-  samples must give the same head outputs as unprojected ones (else geometry, not content, drives the heads).
-- Health readout without a learned reader: the HUD health cell (screen cell 63; the HUD is drawn after night shading)
-  as nearest real-glyph cluster with a support radius calibrated on real AND denoised-real tokens; plus the token's
-  change from the previous frame (bimodal on real data: unchanged / changed).
-- Outcomes: valid -> T1-T5 can use heads and the cell reader; invalid -> fix the instrument before reading anything.
+A. Field calibration on context classes (replaces v1 T2; sampler-free, no head, no counterfactual frame).
+- Identity: for the minimum-MSE denoiser, D*(x_sigma, c) = E[x0 | x_sigma, c], so for any class C that is a
+  function of the conditioning c and any fixed linear functional f, E[f(D*(x0 + sigma eps, c)) | C] = E[f(x0) | C] at
+  EVERY sigma (law of total expectation; the loss weighting does not move the minimiser). Outcome-stratified errors
+  have no such null (an exact posterior mean errs more on rare outcomes by definition), which is why classes are
+  defined by the context only.
+- Classes, from the state at t-1 (rendered in the context frame t-1) and the action a_{t-1}, both in c:
+  RISKY (health <= 2, a zombie at L1 1), ADJACENT (health >= 3, a zombie at L1 1, awake), DRINK positive control
+  (awake, facing water, a_{t-1} = DO, drink <= 8: drink + 1 is deterministic, game_logic do_action), SAFE negative
+  control (health 9, awake, no zombie within L1 3, no skeleton or arrow in view, no lava adjacent, food / drink /
+  energy >= 1), RANDOM.
+- Functional: the HUD cell token (health 63, drink 65) projected on the line from the mean real token of the starting
+  value to that of the consequence value (health h -> h - 2, or <= 0 for RISKY; drink d -> d + 1), scaled so that
+  the two means are 0 and 1. Fixed per context before any denoiser output is seen.
+- Readout per class: bias(sigma) = mean f(D(x0 + sigma eps)) - mean f(x0) over sigma in {0.05, 0.2, 0.377, 0.7, 1.2,
+  2, 3.5, 5, 6.67, 10, 20}, 4 noise draws per context, episode-bootstrap SE; beside it, mean f of the PRODUCTION samples
+  (4 per context) in the same unit. Secondary (not conditioning-measurable, descriptive): RISKY split by the
+  simulator's cooldown readiness.
+- Controls pass if |bias| < 0.05 at every sigma <= 6.67 in SAFE and DRINK (declared now).
+- Outcomes: controls pass and RISKY / ADJACENT bias < -0.05 beyond 3 SE at sigma in [2, 6.67] -> the trained field's
+  conditional mean underweights damage there (a property of the network, independent of any sampler). Bias within
+  0.05 at all sigma while the production samples' mean f stays far below the recorded -> the field's conditional mean
+  carries the consequence and the deficit enters during sampling. Controls fail -> the readout is not usable.
+- Does NOT establish: joint correctness of the frame, per-history sharpness, calibrated event odds, or which change
+  would fix anything.
 
-T1. Solver substitution (link 3 vs link 2).
-- Claim: the learned conditional holds the dangerous branches; the production solver loses them. Competing: the learned
-  conditional itself lacks them. Control: the SAME model and histories under a solver ladder: production; deterministic
-  Heun at 8 / 16 / 32 / 64 steps; stochastic (churn) at 32 / 64; sigma_max 5 / 10 / 20 (no extrapolation past the trained
-  20). Read death, negative reward and the T0 health readout per setting; the converged plateau is the learned model's
-  own rate.
-- Outcomes: plateau near recorded -> the solver is the cause and the sampler choice is a measured decision, not a
-  default; plateau near production -> the learned conditional (go to T2-T3); in between -> both, with the split measured.
-- Guard: a proper latent score can favour an under-dispersed solver (Codex: production had the best joint energy score
-  while missing deaths); read event rates, never the bulk score alone.
+B. The production algorithm on an exact field (new; CPU; EDM's own analytical-denoiser method, EDM sec. 4).
+- Claim: the production algorithm, given the EXACT posterior of a two-outcome mixture, returns the rare outcome far
+  less often than its probability. Competing: it returns it at its probability (then the algorithm cannot by itself
+  explain the deficit). Control: the same computation for the many-step stochastic and deterministic algorithms of D,
+  which must return the mixture weight (a check of the code).
+- Construction: the exact posterior mean of a mixture of two real token configurations that differ in k cells (k = 1:
+  the HUD cell only; larger k: a consequence with a larger footprint), real per-cell separations from the same
+  token means as A; probabilities 0.01-0.5; 20,000 runs per setting.
+- Establishes the algorithm's retention of a rare branch as a function of its footprint (sufficiency or not); says
+  nothing about the trained field.
 
-T2. Sampler-free likelihood ratio (link 2, no solver, no head).
-- Claim: the model's conditional assigns the dangerous successor a probability far below its recorded frequency.
-  Competing: it assigns roughly the right probability (then T1's solver explanation holds). Control: for a context,
-  compare the diffusion ELBO of the recorded successor with that of a counterfactual differing ONLY in the HUD health
-  cell (the previous frame's token: "no damage"), same conditioning and common noise draws; the denoising loss is a
-  weighted integral of ELBOs (Kingma & Gao) and ELBO comparisons across alternatives are the diffusion-classifier method
-  (Li et al., ICCV 2023). Average implied log-odds per context class vs recorded log-odds.
-- Positive controls: deterministic visible HUD changes (drinking at water, eating a cow: the recorded change must win
-  by a wide margin); negative control: ordinary frames (an unprovoked health drop must lose). Fixations covering the
-  HUD are excluded (the glimpse would carry the cell too).
-- Outcomes: odds far too low in risky contexts while controls pass -> the learned conditional underweights danger;
-  odds right -> the loss is downstream (solver or interface).
+C. Native-head robustness and external-reader qualification (v1 T0 split as the review asks; no universal gate).
+- Native heads on denoised-real successors (A's outputs at sigma 0.05-0.377, near real tokens): death and negative-
+  reward probabilities vs the same heads on the recorded successors. Robustness near real tokens only; it does not
+  certify fully generated percepts.
+- External HUD reader (nearest real token per value, support radius from held-out real tokens): qualified on held-out
+  real data; on generated tokens it reports abstentions and support coverage, never a forced label.
+- The v1 projection map is dropped (not the identity on real tokens, REVIEW sec. 2; normalisation constraints do not
+  put a frame on the joint observation support).
 
-T3. Information in the conditioning (link 1).
-- Claim: the conditioning contains what predicts damage (adjacency, hidden cooldown phase, health). Competing: it does
-  not, so even a perfect generator could not place the risk. Control: event-probability probes (the probe's objective is
-  the judged quantity: calibrated P(damage at t)) on (a) the predicted belief + action, (b) the 8 raw context percepts +
-  actions, (c) both, beside the simulator-state reference (adjacent at L1 1, cooldown <= 0, health: the attack rule).
-  Report AP, log loss, calibration; positive control: the reference must be near-deterministic.
-- Outcomes: information present but not generated -> link 2 (objective / rarity); absent -> memory / perception.
+D. Inference-settings sensitivity (v1 T1, reworded; runs after A).
+- Claim: the frozen checkpoint's consequence rates depend on the sampling algorithm. Competing: they do not.
+- One common panel (A's classes) and the same native heads, functional and geometry statistic (median per-token
+  inverse-tanh variance; real 0.982). Each algorithm specified in full: Euler N = 3 (production, immutable); Heun
+  (EDM Alg. 1) N = 8 / 16 / 32 (15 / 31 / 63 network evaluations); EDM Alg. 2 with churn at N = 32 with S_tmax set so
+  that sigma_hat <= 20 (the review's 20.625 at sigma_max 20 is otherwise above the training clamp); sigma_max 5 and 10
+  as separate axes. Throughput measured on a pilot before the panel size is fixed.
+- Reading: rates rising toward the recorded with resolution -> inference settings matter for this checkpoint (with
+  A: whether the field's conditional mean already carried them); no change across settings -> the algorithm is not the
+  limit within this range. The geometry statistic per setting answers whether the token-geometry mismatch is a
+  by-product of unresolved sampling (the user's question: a symptom, not a separate defect?). No additive split; a
+  matched marginal rate does not establish conditional or joint correctness. SAFE gives the false-positive rate; the
+  cooldown split shows conditional sharpness.
 
-T4. Consequence catalogue (is it rarity, stochasticity or hidden state?).
-- Event classes by rarity x cause: deterministic and visible (drink, eat, collect, place), rule + hidden state (zombie
-  damage, death), stochastic (zombie spawns, arrows, cow moves), common (scroll, walking). Recorded vs generated rates
-  through T0-valid instruments, under the production and the converged solver, with T2 odds where a cell counterfactual
-  exists.
-- Separates: rare-but-deterministic events also missing -> rarity under the objective; only hidden-state / stochastic
-  missing -> solver or information.
+E. Information in the conditioning (v1 T3; one-sided).
+- Probes for P(damage at t) on the denoiser's full conditioning (current predicted belief, the memory tokens of the
+  cached context frames, the 8 context percepts with fixations, actions, validity: s1.conditioning_features audited
+  and reused), capacity reported; physical-episode splits; log loss and calibration beside AP. Simulator reference
+  with the exact rule: adjacency after the player's own action and movement (craftax_step: do_action, move_player, then
+  update_mobs), cooldown <= 0, sleep (action -> NOOP, damage 7), no realised random draw.
+- A strong probe shows the information is accessible; a failed probe shows nothing (one-sided). Run regardless of A.
 
-T5. Bulk vs tail (is the distribution broadly wrong, or only its tails?).
-- Precision / recall of generated percepts (k-NN manifolds, Kynkaanniemi et al. 2019; density / coverage, Naeem et al.
-  2020) in projected token space; two-sample classifier after projection (geometry removed); rank histograms of scalar
-  summaries (health change, visible counts, reward) over K = 16 futures per history, stratified by context (Hamill 2001:
-  a U shape can be conditional bias, and flat is not proof of calibration).
+F. Consequence catalogue (v1 T4) and bulk / tail summaries (v1 T5): descriptive only, after D. Event definitions with
+opportunities, causal timing, positive controls and sample sizes; real-vs-real references; discrete PIT with random
+tie-breaking for rank histograms (K = 16 resolves 1/16 per history; aggregate rates only).
 
-T6. Replication: P1 world seed 2 (the declared budget, ~9 h), so no conclusion rests on one world (our >= 2 seeds rule).
+Seed 2 (P1 world seed 2) is replication of training, outside this frozen-world diagnosis; it runs in the declared
+budget when the GPU is free.
 
-## Order and cost
-T0 -> T1 and T2 (the decisive pair) -> T3 -> T4 / T5; each is a frozen-world read under 1 GPU hour. T6 can run
-overnight when the GPU is free (one GPU job at a time).
+## Order
+A (+ C's native-head part, same GPU job) and B (CPU) first; D after A; E; F. The deployed-pipeline numbers stay the
+primary record throughout. No sampler, loss or architecture change follows from any of these without a separate
+decision.
 
-## What we will not do
-No loss, sampler or architecture change until the chain is localised; no reweighting dose (generic doses failed for
-measured reasons, E14); no reader result on generated codes without T0 validation; no single-world claim; every probe
-carries a positive control (several 10-28 readers failed theirs).
-
-## Separate S1 items, not in this plan
-The 256-D percept projection and Mamba output read food / drink less exactly than the raw percept (dedicated readers,
-Codex); the auxiliary pixel decoder emits a digit-1 template for HUD fields although the tokens are readable; the
-departed-entity probe failed its own control (the 8-step context, which contains the frames, scored like the belief).
+## Responses to the review (REVIEW.md)
+1. Scope. Agreed that native heads are part of the model and that the deployed score stays the primary record.
+   Disagree that inference-time substitution on a frozen checkpoint is an intervention outside the brief: diagnosis by
+   substitution is the project's standing procedure, and the user approved the solver ladder (10-29). No training,
+   loss or architecture change is made.
+2. T0 map: accepted (verified: LayerNorm epsilon; median inverse-tanh variance 0.982 on real periphery tokens); the
+   map is dropped. Denoised-real is robustness near real tokens only (C).
+3. T1: accepted: algorithm-specific limits, no unique model distribution, no additive split, sigma_hat above 20 with
+   churn (now capped), NFE stated. The SNR sentence in v1 was wrong: per-coordinate SNR at sigma 5 is 0.034; the data
+   mean's norm (~30) is six noise SDs along its direction, and the first clean estimate already recovers it (29.82 vs
+   30.01), so v1's start-offset argument is withdrawn.
+4. T2: accepted as a probability test; removed. The proposed replacement (outcome-stratified denoising errors) has no
+   null for an exact posterior mean, so A uses context classes, where the null is exact.
+5. T3: accepted (full conditioning, post-move rule, one-sided reading).
+6. T4 / T5: accepted as descriptive.
+7. Seed 2: agreed it is replication, not diagnosis.
