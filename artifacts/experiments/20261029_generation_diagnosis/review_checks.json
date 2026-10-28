@@ -1,0 +1,74 @@
+{
+  "p": {
+    "n_tokens": 82944,
+    "real_map_coordinate_rmse": 0.010342455469071865,
+    "real_map_max_abs_change": 0.03983497619628906,
+    "real_map_token_rmse_quantiles": [
+      0.006965835113078356,
+      0.016683798283338547,
+      0.02025078423321247
+    ],
+    "repeat_map_max_abs_change": 7.152557373046875e-07,
+    "inverse_variance_median": 0.9824037551879883,
+    "generated_at_or_outside_inverse_domain": 0
+  },
+  "g": {
+    "n_tokens": 9216,
+    "real_map_coordinate_rmse": 0.005407691467553377,
+    "real_map_max_abs_change": 0.014918923377990723,
+    "real_map_token_rmse_quantiles": [
+      0.0049684494733810425,
+      0.007255444768816233,
+      0.007970870472490788
+    ],
+    "repeat_map_max_abs_change": 7.152557373046875e-07,
+    "inverse_variance_median": 0.987638533115387,
+    "generated_at_or_outside_inverse_domain": 0
+  },
+  "v": {
+    "n_tokens": 1024,
+    "real_map_coordinate_rmse": 0.001996120437979698,
+    "real_map_max_abs_change": 0.003838658332824707,
+    "real_map_token_rmse_quantiles": [
+      0.0020077312365174294,
+      0.002285017166286707,
+      0.002553557278588414
+    ],
+    "repeat_map_max_abs_change": 4.76837158203125e-07,
+    "inverse_variance_median": 0.9951713681221008,
+    "generated_at_or_outside_inverse_domain": 0
+  },
+  "noise": {
+    "dimension": 1880,
+    "per_coordinate_energy_snr_actual": 0.033551466061164915,
+    "total_signal_to_total_noise_energy_snr_actual": 0.033551466061164915,
+    "unit_variance_energy_snr": 0.04,
+    "dimension_over_sigma_squared": 75.2,
+    "mean_direction_signal_to_noise_amplitude_at_sigma_5": 6.001994323730469,
+    "start_mean_shift_gaussian_kl_term_at_sigma_5": 18.011967931046385,
+    "observed_first_clean_mean_projection": 29.819562911987305,
+    "observed_end_mean_projection": 30.00199317932129,
+    "target_mean_projection": 30.00997543334961
+  },
+  "training_sigma_distribution_tail": {
+    "5": 0.04701308529421024,
+    "10": 0.012156263189070848,
+    "20": 0.0023290236856833807
+  },
+  "churn_first_evaluation_at_sigma_max_20": {
+    "3": 26.666666666666664,
+    "32": 20.625,
+    "64": 20.3125
+  },
+  "heun_network_evaluations": {
+    "8": 15,
+    "16": 31,
+    "32": 63,
+    "64": 127
+  },
+  "plan_and_source_sha256_unchanged": {
+    "artifacts/experiments/20261029_generation_diagnosis/PLAN.md": "dfe0d3155c6de701f34e30175fceab2292e5e1c0943df622689011d4f0cb46e9",
+    "saccade/model.py": "7ea04a4957d2915c5dfbfb9a69ed5e44ae275d555bbea8e629edaa00330db148",
+    "saccade/m0.yaml": "be601b79321c3df10e379ea117af64e0fca2fa2cf78fdc39c6134525c33322f5"
+  }
+}
