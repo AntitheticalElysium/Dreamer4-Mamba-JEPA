@@ -1,0 +1,142 @@
+{
+  "split_counts": {
+    "train": {
+      "episodes": 7672,
+      "frames": 2439791
+    },
+    "monitor": {
+      "episodes": 397,
+      "frames": 126718
+    },
+    "dev": {
+      "episodes": 1009,
+      "frames": 305907
+    },
+    "final": {
+      "episodes": 1002,
+      "frames": 316726
+    }
+  },
+  "target_shape": [
+    2439791,
+    7,
+    9
+  ],
+  "teacher": {
+    "tau": 6.100513935089111,
+    "saved_tau": 6.100513935089111,
+    "trees": 400,
+    "day": {
+      "ap": 0.943060400146609,
+      "precision": 0.8481790258885477,
+      "recall": 0.9174181300427148,
+      "saved": {
+        "ap": 0.943060400146609,
+        "labelfree_precision": 0.8481790258885477,
+        "labelfree_recall": 0.9174181300427148
+      }
+    },
+    "night": {
+      "ap": 0.6120657088385467,
+      "precision": 0.6303630363036303,
+      "recall": 0.5096731154102735,
+      "saved": {
+        "ap": 0.6120657088385467,
+        "labelfree_precision": 0.6303630363036303,
+        "labelfree_recall": 0.5096731154102735
+      }
+    }
+  },
+  "feature_checks": [
+    {
+      "shard": 0,
+      "slot": 9,
+      "start": 266,
+      "cells": 228,
+      "feature_max_abs_delta": 0.0
+    },
+    {
+      "shard": 0,
+      "slot": 16,
+      "start": 212,
+      "cells": 230,
+      "feature_max_abs_delta": 0.0
+    },
+    {
+      "shard": 0,
+      "slot": 18,
+      "start": 508,
+      "cells": 222,
+      "feature_max_abs_delta": 0.0
+    },
+    {
+      "shard": 0,
+      "slot": 0,
+      "start": 0,
+      "cells": 238,
+      "feature_max_abs_delta": 0.0
+    },
+    {
+      "shard": 0,
+      "slot": 1,
+      "start": 0,
+      "cells": 240,
+      "feature_max_abs_delta": 0.0
+    },
+    {
+      "shard": 0,
+      "slot": 2,
+      "start": 0,
+      "cells": 248,
+      "feature_max_abs_delta": 0.0
+    }
+  ],
+  "stored_target_checks": [
+    {
+      "train_episode_index": 0,
+      "cells": 17698,
+      "stored_soft_target_max_abs_delta": 0.0
+    },
+    {
+      "train_episode_index": 3836,
+      "cells": 13404,
+      "stored_soft_target_max_abs_delta": 0.0
+    },
+    {
+      "train_episode_index": 7671,
+      "cells": 13484,
+      "stored_soft_target_max_abs_delta": 0.0
+    }
+  ],
+  "unlock_definition": {
+    "transitions": 304898,
+    "unlocks": 10528,
+    "large_rewards": 10413,
+    "false_negative_unlocks": 115,
+    "false_positive_unlocks": 0,
+    "unlock_recall_of_reward_threshold": 0.9890767477203647,
+    "perfect_reward_model_unlock_brier_under_current_evaluator": 0.00037717531764721316
+  },
+  "departed_target_scope": {
+    "zombies": {
+      "observable_recently_seen_now_absent_frames": 80008,
+      "current_target_none_among_those": 48914,
+      "fraction_target_none": 0.6113638636136386
+    },
+    "cows": {
+      "observable_recently_seen_now_absent_frames": 136106,
+      "current_target_none_among_those": 44688,
+      "fraction_target_none": 0.32833232921399497
+    },
+    "skeletons": {
+      "observable_recently_seen_now_absent_frames": 105438,
+      "current_target_none_among_those": 50155,
+      "fraction_target_none": 0.47568239154763936
+    },
+    "arrows": {
+      "observable_recently_seen_now_absent_frames": 104103,
+      "current_target_none_among_those": 93721,
+      "fraction_target_none": 0.9002718461523683
+    }
+  }
+}

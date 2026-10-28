@@ -302,3 +302,6 @@ artifacts/experiments/**/live_status.json
 artifacts/saccade_m0/**/*.npy
 artifacts/saccade_m0/**/*.pt
 artifacts/saccade_m0/**/*.log
+
+# Codex review copies of S0 label archives and prediction dumps (originals live under artifacts/eda, untracked)
+artifacts/experiments/20261026_saccade_review/*.npz

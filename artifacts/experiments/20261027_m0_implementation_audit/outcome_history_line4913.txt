@@ -1,0 +1,53 @@
+class Outcome(nn.Module):
+    """Reward: discretised mixture of logistics over symlog(r) on uniform bins (LOSSES G3); a sampled bin decodes to the
+    train-split mean of its rewards (buffer bin_value). Continuation: Bernoulli given (belief, percept, reward)."""
+
+    def __init__(self, cfg):
+        super().__init__()
+        h, r = cfg["heads"]["outcome"], cfg["heads"]["reward"]
+        W = cfg["belief"]["width"]
+        self.M, self.bins = r["components"], r["bins"]
+        self.trunk = mlp([2 * W, h["hidden"], h["hidden"]])
+        self.trunk.append(nn.GELU())
+        self.reward = nn.Linear(h["hidden"], 3 * self.M)
+        self.cont = mlp([h["hidden"] + 1, h["hidden"], 1])
+        lo, hi = (math.copysign(math.log1p(abs(x)), x) for x in r["support"])
+        self.register_buffer("edges", torch.linspace(lo, hi, self.bins + 1))
+        self.register_buffer("bin_value", torch.sign((self.edges[:-1] + self.edges[1:]) / 2)
+                             * torch.expm1(((self.edges[:-1] + self.edges[1:]) / 2).abs()))
+
+    def features(self, belief, embed):
+        return self.trunk(torch.cat([belief, embed], -1))
+
+    def bin_of(self, r: Tensor) -> Tensor:
+        """The LOSSES G3 bin of a raw reward (as saccade.eval.calib.reward_bin)."""
+        lo, hi = self.edges[0], self.edges[-1]
+        return ((SYMLOG(r.float()) - lo) / (hi - lo) * self.bins).floor().long().clamp(0, self.bins - 1)
+
+    def _params(self, h):
+        logit, mu, log_s = self.reward(h).float().chunk(3, -1)
+        return logit.log_softmax(-1), mu, log_s.clamp(min=-7)
+
+    def bin_logp(self, h: Tensor) -> Tensor:
+        """log P(bin) for every bin [..., bins]."""
+        logw, mu, log_s = self._params(h)
+        e = self.edges.clone()
+        e[0], e[-1] = -math.inf, math.inf
+        lp = log_bin_prob(e[:-1], e[1:], mu[..., None], log_s[..., None])            # [..., M, bins]
+        return torch.logsumexp(logw[..., None] + lp, -2)
+
+    def reward_logp(self, h: Tensor, r: Tensor) -> Tensor:
+        k = self.bin_of(r)
+        logw, mu, log_s = self._params(h)
+        e = self.edges
+        lo = torch.where(k == 0, torch.full_like(r, -math.inf), e[k])[..., None]
+        hi = torch.where(k == self.bins - 1, torch.full_like(r, math.inf), e[(k + 1).clamp(max=self.bins)])[..., None]
+        return torch.logsumexp(logw + log_bin_prob(lo.expand_as(mu), hi.expand_as(mu), mu, log_s), -1)
+
+    def sample_reward(self, h: Tensor, gen=None) -> Tensor:
+        k = torch.multinomial(self.bin_logp(h).exp().reshape(-1, self.bins), 1, generator=gen).reshape(h.shape[:-1])
+        return self.bin_value[k]
+
+    def cont_logit(self, h: Tensor, r: Tensor) -> Tensor:
+        return self.cont(torch.cat([h, SYMLOG(r.float())[..., None].to(h.dtype)], -1))[..., 0]
+

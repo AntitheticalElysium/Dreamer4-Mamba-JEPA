@@ -1,0 +1,7 @@
+{
+  "past_output_max_delta_when_only_future_changes_train_mode": 0.8148053689993892,
+  "past_output_future_input_max_gradient_train_mode": 0.22042330336254,
+  "past_output_max_delta_fixed_stats_eval_mode": 0.0,
+  "post_bn_max_abs_from_inputs_bounded_by3": 9.949734785418153,
+  "scope": "Ordinary BatchNorm over chunk tokens, as newly specified; no saccade implementation exists."
+}

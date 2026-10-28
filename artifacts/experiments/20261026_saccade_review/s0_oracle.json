@@ -1,0 +1,219 @@
+{
+ "n_windows": 2236,
+ "n_candidates": 2236,
+ "n_episodes": 257,
+ "pit": {
+  "health_drops": {
+   "mean": 0.504667519376061,
+   "quartile_shares": [
+    0.2379,
+    0.2433,
+    0.2706,
+    0.2482
+   ]
+  },
+  "visible_at_end": {
+   "mean": 0.5026593347564207,
+   "quartile_shares": [
+    0.2419,
+    0.2491,
+    0.2715,
+    0.2375
+   ]
+  },
+  "displacement": {
+   "mean": 0.493562408052392,
+   "quartile_shares": [
+    0.2451,
+    0.2688,
+    0.2509,
+    0.2352
+   ]
+  }
+ },
+ "energy_score": {
+  "oracle_B": 5.676501135973374,
+  "oracle_A": 5.622771563010454,
+  "marginal": 11.555653401890822
+ },
+ "persistence": {
+  "oracle_B": [
+   0.9872,
+   0.9691,
+   0.9545,
+   0.9423
+  ],
+  "recorded": [
+   0.9869,
+   0.9674,
+   0.9508,
+   0.937
+  ]
+ },
+ "visible_count": {
+  "oracle_B": 1.0554629558299309,
+  "recorded": 1.0526330500894454
+ },
+ "sanity_recorded_vs_oracle": {
+  "persistence_diff": [
+   -0.0003,
+   -0.0017,
+   -0.0037,
+   -0.0053
+  ],
+  "persistence_se": [
+   0.0007,
+   0.0014,
+   0.002,
+   0.0025
+  ],
+  "count_diff": -0.002829905740485472,
+  "count_se": 0.009649257941763835
+ },
+ "null_A_vs_B": {
+  "es_diff": -0.05372957296291858,
+  "es_se": 0.028595437067960076,
+  "persistence_diff": [
+   -0.0001,
+   -0.0007,
+   -0.0015,
+   -0.0022
+  ],
+  "persistence_se": [
+   0.0003,
+   0.0005,
+   0.0008,
+   0.0011
+  ],
+  "count_diff": -0.00044258309998501666,
+  "count_se": 0.004519953364659511
+ },
+ "power": {
+  "flicker": {
+   "es_diff": 0.1084139652234466,
+   "es_se": 0.029228951353945185,
+   "es_rejects": true,
+   "persistence_diff": [
+    -0.1829,
+    -0.311,
+    -0.3993,
+    -0.4615
+   ],
+   "persistence_se": [
+    0.0016,
+    0.0035,
+    0.0054,
+    0.007
+   ],
+   "persistence_rejects": true,
+   "count_diff": -0.21103780285943285,
+   "count_se": 0.00877860816407154,
+   "count_rejects": true
+  },
+  "teleport": {
+   "es_diff": 0.3752473207017042,
+   "es_se": 0.0383079438075994,
+   "es_rejects": true,
+   "persistence_diff": [
+    -0.0919,
+    -0.1254,
+    -0.1479,
+    -0.1662
+   ],
+   "persistence_se": [
+    0.001,
+    0.0016,
+    0.002,
+    0.0025
+   ],
+   "persistence_rejects": true,
+   "count_diff": -0.061088209613937905,
+   "count_se": 0.009535941307211856,
+   "count_rejects": true
+  },
+  "phantom_drift": {
+   "es_diff": 4.651640209891157,
+   "es_se": 0.08748112225656342,
+   "es_rejects": true,
+   "persistence_diff": [
+    0.0061,
+    0.0169,
+    0.0256,
+    0.0326
+   ],
+   "persistence_se": [
+    0.0011,
+    0.0023,
+    0.0031,
+    0.0037
+   ],
+   "persistence_rejects": true,
+   "count_diff": 1.6607470163063354,
+   "count_se": 0.004848555408082722,
+   "count_rejects": true
+  },
+  "vanishing_drift": {
+   "es_diff": 0.40235986994365014,
+   "es_se": 0.03568355285432176,
+   "es_rejects": true,
+   "persistence_diff": [
+    -0.0469,
+    -0.0874,
+    -0.1233,
+    -0.1543
+   ],
+   "persistence_se": [
+    0.0007,
+    0.0015,
+    0.0024,
+    0.0032
+   ],
+   "persistence_rejects": true,
+   "count_diff": -0.3674142573043284,
+   "count_se": 0.012274829304978417,
+   "count_rejects": true
+  },
+  "frozen_time": {
+   "es_diff": 6.767854400518242,
+   "es_se": 0.13142001569644193,
+   "es_rejects": true,
+   "persistence_diff": [
+    0.0128,
+    0.0309,
+    0.0455,
+    0.0577
+   ],
+   "persistence_se": [
+    0.0017,
+    0.0035,
+    0.0048,
+    0.0057
+   ],
+   "persistence_rejects": true,
+   "count_diff": -0.15908384102854745,
+   "count_se": 0.010399718101877925,
+   "count_rejects": true
+  },
+  "delayed_consequences": {
+   "es_diff": 0.25870920587632895,
+   "es_se": 0.03002642460553504,
+   "es_rejects": true,
+   "persistence_diff": [
+    -0.0001,
+    -0.0007,
+    -0.0015,
+    -0.0022
+   ],
+   "persistence_se": [
+    0.0003,
+    0.0005,
+    0.0008,
+    0.0012
+   ],
+   "persistence_rejects": false,
+   "count_diff": -0.00044258309998501666,
+   "count_se": 0.004510709442759575,
+   "count_rejects": false
+  }
+ }
+}

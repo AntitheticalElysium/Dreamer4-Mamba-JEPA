@@ -1,0 +1,19 @@
+{
+  "conditional_on": "fixed central glimpse; lighting, reward and termination constant",
+  "all_49_spatiotemporal_patch_marginals_identical": true,
+  "pooled_trajectory_distributions_identical": true,
+  "patch_score_correct": 4.0,
+  "patch_score_wrong": 4.0,
+  "global_pooled_score_correct": 0.0,
+  "global_pooled_score_wrong": 0.0,
+  "full_grid_score_correct": 2.0,
+  "full_grid_score_wrong": 3.6568542494923806,
+  "Bernoulli_sample_requires_grad": false,
+  "hard_quantization_pathwise_gradient": 0.0,
+  "P1_updates_before_valid_frame_masks": {
+    "64_steps_16_streams": 12500.0,
+    "256_steps_16_streams": 3125.0
+  },
+  "corner_training_patch_memberships": 1,
+  "center_training_patch_memberships": 9
+}

@@ -1,0 +1,12 @@
+{
+  "revisits": 484782,
+  "last_sighting_occluded": 6970,
+  "fraction_affected": 0.014377596527923892,
+  "different_gap_stratum": 544,
+  "extra_value_age_quantiles": [
+    1.0,
+    1.0,
+    8.0,
+    1687.0
+  ]
+}

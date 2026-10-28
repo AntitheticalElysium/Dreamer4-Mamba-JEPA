@@ -1,0 +1,11 @@
+{
+  "scope": "representation and normalisation only; no model training or throughput claim",
+  "compact_percept_dimensions": 1880,
+  "packing_round_trip_passed": true,
+  "glimpse_padding_zero": true,
+  "wrong_independent_grid_noise_after_average_variance": 0.012429643422365189,
+  "correct_shared_vector_noise_after_average_variance": 1.001783847808838,
+  "analytical_independent_to_shared_variance_ratio": 0.012345679012345678,
+  "broadcast_lighting_summed_squared_error_multiplier": 81,
+  "group_norm_far_corner_input_gradient": 0.0010174121108538544
+}

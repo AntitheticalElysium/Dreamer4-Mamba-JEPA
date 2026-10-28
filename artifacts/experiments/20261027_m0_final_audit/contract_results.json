@@ -1,0 +1,239 @@
+{
+  "gradient_routes": {
+    "label_only_encoder_jacobian_loss_by_time": [
+      [
+        -0.14000000000000012,
+        0.0
+      ],
+      [
+        -0.04800000000000004,
+        -0.08400000000000007
+      ]
+    ],
+    "all_noisy_inputs_detached_encoder_gradient": null,
+    "interpretation": "Label detach leaves own-frame gradients; noisy-input detach also removes direct past-input gradients."
+  },
+  "edm": {
+    "sigma": [
+      0.002,
+      0.1,
+      1.0,
+      5.0,
+      20.0
+    ],
+    "clean_x_mse_weights": [
+      250000.9999999999,
+      100.99999999999996,
+      2.0000000000000004,
+      1.0399999999999998,
+      1.0025
+    ],
+    "raw_F_vs_weighted_x_max_abs_error": 4.547473508864641e-13
+  },
+  "reward": {
+    "raw_support": [
+      -0.9,
+      1.1
+    ],
+    "symlog_support": [
+      -0.6418538861723948,
+      0.7419373447293773
+    ],
+    "zero_bin": 118,
+    "zero_bin_symlog_edges": [
+      -0.0040126156786092215,
+      0.0013928188171008493
+    ],
+    "bin_centre_symlog": -0.001309898430754186,
+    "bin_centre_raw_reward": -0.0013107567224210233,
+    "constant_bias_H16_gamma997": -0.020506777403176926,
+    "constant_bias_infinite_survival_gamma997": -0.43691890747367407,
+    "limitation": "Conditional on a bin-centre decoder; no M0 sampler has been implemented."
+  },
+  "patches": {
+    "coverage": [
+      [
+        4,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        4
+      ],
+      [
+        6,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        6
+      ],
+      [
+        6,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        6
+      ],
+      [
+        6,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        6
+      ],
+      [
+        6,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        6
+      ],
+      [
+        6,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        6
+      ],
+      [
+        6,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        6
+      ],
+      [
+        6,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        6
+      ],
+      [
+        4,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        4
+      ]
+    ],
+    "min": 4,
+    "max": 9
+  },
+  "acuity": {
+    "7": {
+      "day_clause_all_seeds": true,
+      "night_mean_kind_recall": {
+        "zombies": 0.998989291958042,
+        "cows": 0.999376137249805,
+        "skeletons": 0.9976387249114522,
+        "arrows": 0.9185661981811739
+      },
+      "night_clause_at_least095_mean": false,
+      "per_kind_precision_saved": false
+    },
+    "5": {
+      "day_clause_all_seeds": false,
+      "night_mean_kind_recall": {
+        "zombies": 0.9883085664335665,
+        "cows": 0.9939433324668574,
+        "skeletons": 0.9521103896103896,
+        "arrows": 0.7467225699775599
+      },
+      "night_clause_at_least095_mean": false,
+      "per_kind_precision_saved": false
+    },
+    "4": {
+      "day_clause_all_seeds": false,
+      "night_mean_kind_recall": {
+        "zombies": 0.9788570804195804,
+        "cows": 0.9543280478294776,
+        "skeletons": 0.9190525383707202,
+        "arrows": 0.6015117515058462
+      },
+      "night_clause_at_least095_mean": false,
+      "per_kind_precision_saved": false
+    },
+    "3": {
+      "day_clause_all_seeds": true,
+      "night_mean_kind_recall": {
+        "zombies": 0.9646252185314685,
+        "cows": 0.9587990642058747,
+        "skeletons": 0.9005312868949233,
+        "arrows": 0.766741466871383
+      },
+      "night_clause_at_least095_mean": false,
+      "per_kind_precision_saved": false
+    },
+    "2": {
+      "day_clause_all_seeds": false,
+      "night_mean_kind_recall": {
+        "zombies": 0.8652890078671329,
+        "cows": 0.826800103977125,
+        "skeletons": 0.5264167650531287,
+        "arrows": 0.4156135585213181
+      },
+      "night_clause_at_least095_mean": false,
+      "per_kind_precision_saved": false
+    },
+    "1": {
+      "day_clause_all_seeds": false,
+      "night_mean_kind_recall": {
+        "zombies": 0.5973557692307692,
+        "cows": 0.6450480894203275,
+        "skeletons": 0.33286599763872493,
+        "arrows": 0.19263021140899966
+      },
+      "night_clause_at_least095_mean": false,
+      "per_kind_precision_saved": false
+    }
+  },
+  "sha256": {
+    "saccade/m0.yaml": "26b46073b8784c85acf03085feaab5eeb535a9a94ba85821039dda2716119e25",
+    "saccade/design/M0_CODE.md": "8c4930039a61b27a58f6543665c2c5c003bbea31603ad1a419f4623c5e0c4d1d",
+    "saccade/design/STEP_SPEC.md": "d41c7abb8e34212142a308dec90e9c9446eb0d019dcb6b115747a39a55323717",
+    "saccade/design/CURRICULUM.md": "7c5dfd8906c5c417aca6ef798382c0f41dad84fedfb058bc7ee81e022a7ebf1d",
+    "saccade/design/LOSSES.md": "7ae440bf454fd27d152e11a92839dcf92adf1aa2558149e348ae8bb7b32f96cf",
+    "saccade/design/TEST_SPEC.md": "d86179725ef465faccbda0f0c38f639db3c6157a7c732b46bb0b7e7f32d1227c",
+    "saccade/design/PERCEPTION.md": "46bcb7b24b16ca754258370f79bd9785eb5cb65713b2055886e624346a9bb812",
+    "saccade/eval/calib.py": "d6106ce13dfd1acb02eeac22f9e4888a2894ce647773f9e98d4379eb67996681",
+    "d4mj/lewm.py": "682117426d0fd84e6babe2185002e0bf50d7fbcdeeb4d458eb06efe893b91256",
+    "artifacts/experiments/20261023_system_design/eda_periphery_acuity.py": "f685ce7d01ecc503db891645b087888c0a1b0b622977f2acf45c761f42d835c6",
+    "artifacts/eda/system_design_v1/acuity/acuity.json": "b906f0c0172a1228d8777b7ab3771ad2802a4a3f997f2efb324af9face8e341e"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "loss_reference": 0.005468554329127073,
+  "loss_chunked": 0.005468554329127073,
+  "gradient_max_abs_error": [
+    2.7284841053187847e-12,
+    2.0463630789890885e-12
+  ],
+  "value_pass": true,
+  "gradient_pass": [
+    true,
+    true
+  ],
+  "peak_allocated_MiB": 224.3173828125,
+  "peak_reserved_MiB": 258.0,
+  "elapsed_forward_backward_s": 0.8924662999997963,
+  "limitation": "Isolated regularizer; timings are one measurement, not steady-state M0 throughput."
+}

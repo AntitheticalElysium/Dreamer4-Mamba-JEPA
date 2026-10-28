@@ -1,0 +1,64 @@
+{
+  "target_projection": {
+    "p": {
+      "rms_delta": 0.029605302959680557,
+      "max_abs_delta": 0.09842896461486816,
+      "target_rms": 0.9262349009513855,
+      "mapped_rms": 0.932052731513977
+    },
+    "g": {
+      "rms_delta": 0.02906155213713646,
+      "max_abs_delta": 0.13572347164154053,
+      "target_rms": 0.9286084771156311,
+      "mapped_rms": 0.9386311769485474
+    },
+    "v": {
+      "rms_delta": 0.021342633292078972,
+      "max_abs_delta": 0.0423508882522583,
+      "target_rms": 0.9309592247009277,
+      "mapped_rms": 0.9336379170417786
+    },
+    "perfect_conditional_denoiser": {
+      "raw_F_training_mse": 0.0,
+      "clean_D_max_error_before_output_map": 0.0,
+      "clean_D_max_error_after_output_map": 0.09339368343353271
+    },
+    "full_zero_error_oracle_sampler": {
+      "max_abs_error_current_output_map": 0.11568629741668701,
+      "max_abs_error_idempotent_range_clamp": 2.9802322387695312e-08,
+      "scope": "Zero-loss contract check only; does not measure learned or actor performance."
+    }
+  },
+  "AP_ties": {
+    "expected_constant_predictor_AP": 0.5,
+    "positives_first": 1.0,
+    "negatives_first": 0.41666666666666663
+  },
+  "C2ST_history": {
+    "C2ST_features": 3252,
+    "max_delta_changing_older_history_glimpses_rewards_belief": 0.0
+  },
+  "duplicate_yaml": [
+    {
+      "path": "heads.change_map",
+      "first_line": 108,
+      "second_line": 110
+    }
+  ],
+  "Adam_scale": {
+    "update_at_gradient1": 9.999999900001111e-05,
+    "update_at_gradient0001": 9.999900001000928e-05,
+    "update_ratio": 0.9999900100998818,
+    "scope": "Constant scaling sanity check, not reproduction of historical drifting gradients."
+  },
+  "sha256": {
+    "saccade/data.py": "9f7c19ba92a626954940bea2dbf03bed8e01983dc0a6584f9f68d8f672258c7e",
+    "saccade/model.py": "e25640bc1c0c51352fcafb480db83ec269494c49a4d677d5d4b7a94076c0d1c5",
+    "saccade/train.py": "106e3d41285dd63b47b0d96491646e21c0064cf628f39102574a287db4e4a883",
+    "saccade/eval/s1.py": "51866c5ba32726af500a06bd1d0a29405a229cc9ddecaed90effe3e852c2d44f",
+    "saccade/tests/test_m0.py": "5f744bde24215aeb5e6fcfd880a8fc0d07bfbb8184aaf4ed5695c239d3b0d021",
+    "saccade/m0.yaml": "e17da04bca011c2730a5412e9aff39d239116761433421f830232ccd1b8d5900",
+    "artifacts/saccade_m0/targets/change_teacher.txt": "69862f6b98e3ba770395d07bdb516c2cc0e326917c0f848c4a8aedadd109406f",
+    "artifacts/saccade_m0/targets/change_targets.npy": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97"
+  }
+}

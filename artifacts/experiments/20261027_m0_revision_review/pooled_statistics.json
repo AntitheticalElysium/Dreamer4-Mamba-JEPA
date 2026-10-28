@@ -1,0 +1,325 @@
+{
+  "scope": "raw prototype separation, not learned encoder or historical readability",
+  "source_sha256": "e3dda3a21aa485a2ceddc35bb9228040313cb23eb84f9e0a5eb9d92740aff5a2",
+  "pooling": {
+    "7": {
+      "map": {
+        "prototypes": 27,
+        "pairs": 351,
+        "minimum": 13.900521278381348,
+        "median_pairwise": 85.97669982910156,
+        "exact_collision_pairs": 0,
+        "prototypes_with_any_collision": 0
+      },
+      "hud_row_7_only": {
+        "0": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 36.42856979370117,
+          "median_pairwise": 86.63882446289062,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "1": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 36.42856979370117,
+          "median_pairwise": 89.23141479492188,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "2": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 28.8214054107666,
+          "median_pairwise": 82.75387573242188,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "3": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 36.42856979370117,
+          "median_pairwise": 89.23141479492188,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "5": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 24.551071166992188,
+          "median_pairwise": 76.08802795410156,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "6": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 16.14285659790039,
+          "median_pairwise": 70.8175277709961,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "7": {
+          "prototypes": 9,
+          "pairs": 36,
+          "minimum": 18.714284896850586,
+          "median_pairwise": 71.89614868164062,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "8": {
+          "prototypes": 6,
+          "pairs": 15,
+          "minimum": 40.954429626464844,
+          "median_pairwise": 79.72550201416016,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        }
+      },
+      "hud_median_of_position_minima": 32.62498760223389,
+      "hud_median_of_position_pairwise_medians": 81.23968887329102
+    },
+    "3": {
+      "map": {
+        "prototypes": 27,
+        "pairs": 351,
+        "minimum": 4.8451948165893555,
+        "median_pairwise": 69.07258605957031,
+        "exact_collision_pairs": 0,
+        "prototypes_with_any_collision": 0
+      },
+      "hud_row_7_only": {
+        "0": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 0.48902034759521484,
+          "median_pairwise": 29.205331802368164,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "1": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 0.0,
+          "median_pairwise": 29.205331802368164,
+          "exact_collision_pairs": 1,
+          "prototypes_with_any_collision": 2
+        },
+        "2": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 6.796203136444092,
+          "median_pairwise": 29.205331802368164,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "3": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 0.0,
+          "median_pairwise": 29.205331802368164,
+          "exact_collision_pairs": 1,
+          "prototypes_with_any_collision": 2
+        },
+        "5": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 0.0,
+          "median_pairwise": 29.039493560791016,
+          "exact_collision_pairs": 1,
+          "prototypes_with_any_collision": 2
+        },
+        "6": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 1.8148142099380493,
+          "median_pairwise": 28.640766143798828,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "7": {
+          "prototypes": 9,
+          "pairs": 36,
+          "minimum": 1.5185190439224243,
+          "median_pairwise": 29.225055694580078,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "8": {
+          "prototypes": 6,
+          "pairs": 15,
+          "minimum": 14.974475860595703,
+          "median_pairwise": 35.41666793823242,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        }
+      },
+      "hud_median_of_position_minima": 1.0037696957588196,
+      "hud_median_of_position_pairwise_medians": 29.205331802368164
+    },
+    "2": {
+      "map": {
+        "prototypes": 27,
+        "pairs": 351,
+        "minimum": 2.088977336883545,
+        "median_pairwise": 63.71192169189453,
+        "exact_collision_pairs": 0,
+        "prototypes_with_any_collision": 0
+      },
+      "hud_row_7_only": {
+        "0": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 10.605770111083984,
+          "median_pairwise": 23.758220672607422,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "1": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 10.625001907348633,
+          "median_pairwise": 23.787975311279297,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "2": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 8.406243324279785,
+          "median_pairwise": 22.852294921875,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "3": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 10.625,
+          "median_pairwise": 23.947057723999023,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "5": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 7.16072940826416,
+          "median_pairwise": 22.394926071166992,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "6": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 4.708335876464844,
+          "median_pairwise": 22.972293853759766,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "7": {
+          "prototypes": 9,
+          "pairs": 36,
+          "minimum": 5.458335876464844,
+          "median_pairwise": 24.415733337402344,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        },
+        "8": {
+          "prototypes": 6,
+          "pairs": 15,
+          "minimum": 8.961135864257812,
+          "median_pairwise": 25.539321899414062,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        }
+      },
+      "hud_median_of_position_minima": 8.683689594268799,
+      "hud_median_of_position_pairwise_medians": 23.77309799194336
+    },
+    "1": {
+      "map": {
+        "prototypes": 27,
+        "pairs": 351,
+        "minimum": 1.4285736083984375,
+        "median_pairwise": 61.5089225769043,
+        "exact_collision_pairs": 0,
+        "prototypes_with_any_collision": 0
+      },
+      "hud_row_7_only": {
+        "0": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 0.0,
+          "median_pairwise": 9.219837188720703,
+          "exact_collision_pairs": 3,
+          "prototypes_with_any_collision": 6
+        },
+        "1": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 0.0,
+          "median_pairwise": 10.408162117004395,
+          "exact_collision_pairs": 5,
+          "prototypes_with_any_collision": 7
+        },
+        "2": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 0.0,
+          "median_pairwise": 8.86508560180664,
+          "exact_collision_pairs": 1,
+          "prototypes_with_any_collision": 2
+        },
+        "3": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 0.0,
+          "median_pairwise": 10.408162117004395,
+          "exact_collision_pairs": 5,
+          "prototypes_with_any_collision": 7
+        },
+        "5": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 0.0,
+          "median_pairwise": 8.758524894714355,
+          "exact_collision_pairs": 2,
+          "prototypes_with_any_collision": 4
+        },
+        "6": {
+          "prototypes": 10,
+          "pairs": 45,
+          "minimum": 0.0,
+          "median_pairwise": 9.673469543457031,
+          "exact_collision_pairs": 1,
+          "prototypes_with_any_collision": 2
+        },
+        "7": {
+          "prototypes": 9,
+          "pairs": 36,
+          "minimum": 0.0,
+          "median_pairwise": 9.989799499511719,
+          "exact_collision_pairs": 1,
+          "prototypes_with_any_collision": 2
+        },
+        "8": {
+          "prototypes": 6,
+          "pairs": 15,
+          "minimum": 1.9250514507293701,
+          "median_pairwise": 14.189931869506836,
+          "exact_collision_pairs": 0,
+          "prototypes_with_any_collision": 0
+        }
+      },
+      "hud_median_of_position_minima": 0.0,
+      "hud_median_of_position_pairwise_medians": 9.831634521484375
+    }
+  },
+  "temporal_mask": {
+    "per_layer_lookback": 4,
+    "temporal_layers": 3,
+    "earliest_frame_reaching_frame_63": 51,
+    "effective_lookback": 12
+  },
+  "seconds": 2.749257579999721
+}

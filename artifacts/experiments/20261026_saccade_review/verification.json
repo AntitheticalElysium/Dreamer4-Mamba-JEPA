@@ -1,0 +1,238 @@
+{
+  "comparisons": {
+    "s0_dev_labels": {
+      "arrays": 32,
+      "unequal_arrays": []
+    },
+    "s0_train400_labels": {
+      "arrays": 32,
+      "unequal_arrays": []
+    },
+    "s0_gates": {
+      "changed_values": 0,
+      "max_abs_diff": 0,
+      "differences": []
+    },
+    "s0_revisit": {
+      "changed_values": 0,
+      "max_abs_diff": 0,
+      "differences": []
+    },
+    "s0_oracle": {
+      "changed_values": 0,
+      "max_abs_diff": 0,
+      "differences": []
+    },
+    "s0_probe": {
+      "changed_values": 0,
+      "max_abs_diff": 0,
+      "differences": []
+    },
+    "s0_calib": {
+      "changed_values": 10,
+      "max_abs_diff": 1.1275702593849246e-17,
+      "differences": [
+        {
+          "path": "/reward/R0_marginal/ece",
+          "original": 0.003063883939869308,
+          "reproduced": 0.00306388393986931,
+          "abs_diff": 1.734723475976807e-18
+        },
+        {
+          "path": "/reward/R1_hud_health/ece",
+          "original": 0.003063883939869308,
+          "reproduced": 0.00306388393986931,
+          "abs_diff": 1.734723475976807e-18
+        },
+        {
+          "path": "/reward/R2_pair_no_memory/nll/est",
+          "original": 0.024341583605383875,
+          "reproduced": 0.02434158360538388,
+          "abs_diff": 3.469446951953614e-18
+        },
+        {
+          "path": "/reward/R2_pair_no_memory/nll/se",
+          "original": 0.0006132677807083196,
+          "reproduced": 0.0006132677807083193,
+          "abs_diff": 3.2526065174565133e-19
+        },
+        {
+          "path": "/reward/R2_pair_no_memory/brier/se",
+          "original": 0.00019131216635387183,
+          "reproduced": 0.0001913121663538718,
+          "abs_diff": 2.710505431213761e-20
+        },
+        {
+          "path": "/reward/R2_pair_no_memory/ece",
+          "original": 0.0014662486613110448,
+          "reproduced": 0.0014662486613110503,
+          "abs_diff": 5.421010862427522e-18
+        },
+        {
+          "path": "/reward/R3_pair_memory/nll/se",
+          "original": 0.00020343134484512426,
+          "reproduced": 0.00020343134484512428,
+          "abs_diff": 2.710505431213761e-20
+        },
+        {
+          "path": "/reward/R3_pair_memory/brier/est",
+          "original": 0.0017516488666249233,
+          "reproduced": 0.0017516488666249237,
+          "abs_diff": 4.336808689942018e-19
+        },
+        {
+          "path": "/reward/R3_pair_memory/ece",
+          "original": 0.0012110093152283574,
+          "reproduced": 0.0012110093152283687,
+          "abs_diff": 1.1275702593849246e-17
+        },
+        {
+          "path": "/continuation/R0_marginal/ece",
+          "original": 0.00040916636313456,
+          "reproduced": 0.00040916636313456005,
+          "abs_diff": 5.421010862427522e-20
+        }
+      ]
+    }
+  },
+  "replay_checks": [
+    {
+      "episode": 311,
+      "shard": 128,
+      "slot": 9,
+      "epsilon": 0.10000000149011612,
+      "transitions": 38,
+      "frames_checked": 5,
+      "max_pixel_difference": 0.0
+    },
+    {
+      "episode": 373,
+      "shard": 152,
+      "slot": 2,
+      "epsilon": 0.10000000149011612,
+      "transitions": 2500,
+      "frames_checked": 5,
+      "max_pixel_difference": 0.0
+    },
+    {
+      "episode": 508,
+      "shard": 204,
+      "slot": 4,
+      "epsilon": 0.10000000149011612,
+      "transitions": 425,
+      "frames_checked": 5,
+      "max_pixel_difference": 0.0
+    },
+    {
+      "episode": 210,
+      "shard": 89,
+      "slot": 21,
+      "epsilon": 0.25,
+      "transitions": 227,
+      "frames_checked": 5,
+      "max_pixel_difference": 0.0
+    },
+    {
+      "episode": 637,
+      "shard": 261,
+      "slot": 5,
+      "epsilon": 0.25,
+      "transitions": 38,
+      "frames_checked": 5,
+      "max_pixel_difference": 0.0
+    },
+    {
+      "episode": 694,
+      "shard": 281,
+      "slot": 23,
+      "epsilon": 0.25,
+      "transitions": 1136,
+      "frames_checked": 5,
+      "max_pixel_difference": 0.0
+    },
+    {
+      "episode": 411,
+      "shard": 166,
+      "slot": 10,
+      "epsilon": 0.5,
+      "transitions": 189,
+      "frames_checked": 5,
+      "max_pixel_difference": 0.0
+    },
+    {
+      "episode": 481,
+      "shard": 194,
+      "slot": 6,
+      "epsilon": 0.5,
+      "transitions": 35,
+      "frames_checked": 5,
+      "max_pixel_difference": 0.0
+    },
+    {
+      "episode": 640,
+      "shard": 262,
+      "slot": 23,
+      "epsilon": 0.5,
+      "transitions": 527,
+      "frames_checked": 5,
+      "max_pixel_difference": 0.0
+    },
+    {
+      "episode": 530,
+      "shard": 211,
+      "slot": 19,
+      "epsilon": 1.0,
+      "transitions": 34,
+      "frames_checked": 5,
+      "max_pixel_difference": 0.0
+    },
+    {
+      "episode": 725,
+      "shard": 299,
+      "slot": 7,
+      "epsilon": 1.0,
+      "transitions": 140,
+      "frames_checked": 5,
+      "max_pixel_difference": 0.0
+    },
+    {
+      "episode": 891,
+      "shard": 371,
+      "slot": 3,
+      "epsilon": 1.0,
+      "transitions": 401,
+      "frames_checked": 5,
+      "max_pixel_difference": 0.0
+    }
+  ],
+  "sha256": {
+    "saccade/__init__.py": "e79adc8fe6b3bc18179009362d5d646cf934f8e5f0db509bf497afd45aa3a465",
+    "saccade/eval/__init__.py": "688400cdd6f2d14b9e1db70b151597c28ad85b372d0546ff839a56366b5243c5",
+    "saccade/eval/calib.py": "eef31bca827ed98dd97684eb14da097de3a6fb5bf8b568cd689c14f00de8ed22",
+    "saccade/eval/gates.py": "10965d7635193c8d3d5533a36b873fdff33990cafd6db6d738fd2b50912f9787",
+    "saccade/eval/labels.py": "7ef6a0623d2cafaf194053b49ce7484a0eb74d5d44582ba4b44227e968568a69",
+    "saccade/eval/oracle.py": "1b0f247f0275863afee6b8f88ec60d3eb04400b3d8a3fb48da5206b94d2211b6",
+    "saccade/eval/probe.py": "30c6e190a936b4ae2836f6b0b310427f5d135e7079195f85d1cf3fa81cd3e151",
+    "saccade/eval/revisit.py": "8758538de4180e60bdb9047cb8b1f3f3174db28082f9e5c0bfd037e5bc1678ea",
+    "saccade/design/CURRICULUM.md": "bf6dc907093490a1d2fddf62c50776e6f0c1c66204f58c00d19ea5eb305179f1",
+    "saccade/design/DECISIONS.md": "ec84518ff3adf1882c4d8a72f14de75fb6f9afa00df4a2a8ab9970102f7dde75",
+    "saccade/design/GENERATOR.md": "d8cf6b7db54e67f4b9d1cb03b11ab635c4e8c45387f51e0bec583484043358ab",
+    "saccade/design/LOSSES.md": "f265c17cda6decf745f39d2be20d3c71d3f0c1ddb71cd23e88081b81961a3c06",
+    "saccade/design/PERCEPTION.md": "e1b7b62ec3136e0de156dc4dddf643e4703a5ff18ee5ee55592069816b17b651",
+    "saccade/design/READING.md": "456c61863ad8a058abaaf6d9e73f99759b5f612b6b8689cb6a14edadd2f7e33d",
+    "saccade/design/RECORDS.md": "3f1e1bcc85b65d592c8ca6aba954691e0891ab7fdd98c0b24f7c1e515dc01e33",
+    "saccade/design/STEP_SPEC.md": "976a5909b2ecb4532565e491f28ef4d23156c9cefe8c1814eb894fbc47bfc053",
+    "saccade/design/TEST_SPEC.md": "df015d3275263ee76246aab22464ae31b743ec42c0a15aae15e1fe14aec84975",
+    "artifacts/eda/replay.py": "bf60aa7b9d21255cf18929f92b23a47cef7678681018880c77f96e89ef9386e0",
+    "artifacts/craftax_support_v2/manifest.json": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574"
+  },
+  "versions": {
+    "torch": "2.13.0",
+    "jax": "0.11.0",
+    "jaxlib": "0.11.0",
+    "numpy": "2.1.0",
+    "lightgbm": "4.6.0",
+    "craftax": "1.6.1"
+  },
+  "git_head": "4c615dc4d4da7b6a7980a7f7674edf09c036f599"
+}

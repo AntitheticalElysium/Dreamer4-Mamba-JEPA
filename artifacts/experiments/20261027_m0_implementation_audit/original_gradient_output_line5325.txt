@@ -1,0 +1,18 @@
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:822.)
+  print(term, round(float(terms[term]), 3), g, flush=True)
+g1 0.705 {'perception': 0.0, 'belief': 0.0, 'denoiser': 0.834, 'tsp': 0.0, 'pixels': 0.0, 'change': 0.0, 'outcome': 0.0}
+change 0.179 {'perception': 0.514, 'belief': 0.144, 'denoiser': 0.0, 'tsp': 0.0, 'pixels': 0.0, 'change': 0.816, 'outcome': 0.0}
+tsp 5.541 {'perception': 0.07, 'belief': 0.042, 'denoiser': 0.0, 'tsp': 0.08, 'pixels': 0.187, 'change': 0.0, 'outcome': 0.0}
+rec 5.556 {'perception': 0.111, 'belief': 0.0, 'denoiser': 0.0, 'tsp': 0.041, 'pixels': 0.173, 'change': 0.0, 'outcome': 0.0}
+reward 5.648 {'perception': 7.367, 'belief': 25.545, 'denoiser': 0.0, 'tsp': 0.0, 'pixels': 0.0, 'change': 0.0, 'outcome': 322.716}
+cont 0.015 {'perception': 0.134, 'belief': 0.046, 'denoiser': 0.0, 'tsp': 0.0, 'pixels': 0.0, 'change': 0.0, 'outcome': 0.302}
+reward log_s bias [0.044911548495292664, 0.06030391529202461, -0.02052302658557892, 0.04173608124256134]
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:822.)
+  print(term, round(float(terms[term]), 3), g, flush=True)
+g1 0.609 {'perception': 0.0, 'belief': 0.0, 'denoiser': 0.567, 'tsp': 0.0, 'pixels': 0.0, 'change': 0.0, 'outcome': 0.0}
+change 0.085 {'perception': 0.097, 'belief': 0.032, 'denoiser': 0.0, 'tsp': 0.0, 'pixels': 0.0, 'change': 0.171, 'outcome': 0.0}
+tsp 5.452 {'perception': 0.133, 'belief': 0.025, 'denoiser': 0.0, 'tsp': 0.044, 'pixels': 0.218, 'change': 0.0, 'outcome': 0.0}
+rec 5.445 {'perception': 0.162, 'belief': 0.0, 'denoiser': 0.0, 'tsp': 0.04, 'pixels': 0.221, 'change': 0.0, 'outcome': 0.0}
+reward 4.37 {'perception': 8.371, 'belief': 47.781, 'denoiser': 0.0, 'tsp': 0.0, 'pixels': 0.0, 'change': 0.0, 'outcome': 787.445}
+cont 0.008 {'perception': 0.081, 'belief': 0.027, 'denoiser': 0.0, 'tsp': 0.0, 'pixels': 0.0, 'change': 0.0, 'outcome': 0.179}
+reward log_s bias [0.04458511993288994, 0.06034097447991371, -0.020554082468152046, 0.04165726527571678]

@@ -1,0 +1,17 @@
+{
+  "max_abs_output_and_final_state_difference": {
+    "id0_vs_no_ids": [
+      0.0,
+      0.0
+    ],
+    "id7_vs_no_ids": [
+      31.686824798583984,
+      3.2888808250427246
+    ],
+    "id7_vs_zero_incoming_state": [
+      0.0,
+      0.0
+    ]
+  },
+  "interpretation": "seq_idx must use the kernel's local carry convention, not arbitrary global episode ids."
+}

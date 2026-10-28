@@ -1,0 +1,6 @@
+{
+  "pixel_distribution_max_mass_error": 1.627206802368164e-05,
+  "all_nll_finite": true,
+  "all_mu_grad_finite": true,
+  "all_scale_grad_finite": true
+}

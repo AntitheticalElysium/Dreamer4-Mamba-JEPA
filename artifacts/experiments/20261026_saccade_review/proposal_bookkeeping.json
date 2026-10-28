@@ -1,0 +1,11 @@
+{
+  "windows": 2236,
+  "corruption": "all arrows removed from generated frames; real start kept",
+  "reference_mean_count": 1.0526330500894454,
+  "corrupt_mean_count": 1.008105992844365,
+  "relative_count_difference": -0.04230064526408028,
+  "reference_persistence_4": 0.9369904995403003,
+  "corrupt_persistence_4": 0.973971889640812,
+  "persistence_difference": 0.03698139010051171,
+  "blocked_by_proposed_aggregate_bookkeeping": false
+}
