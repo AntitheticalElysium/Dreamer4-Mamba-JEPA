@@ -1,0 +1,8 @@
+{
+  "max_absolute_differences": {
+    "p": 0.0,
+    "g": 0.0,
+    "v": 0.0
+  },
+  "same_batch_same_random_draws": true
+}

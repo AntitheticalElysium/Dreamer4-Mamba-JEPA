@@ -1,0 +1,13 @@
+{
+  "rule": "first eligible tuple in fixed S1 tuple sequence; chosen from real labels only",
+  "indices": {
+    "zombie/day": 7,
+    "zombie/night": 1,
+    "arrow/day": 176,
+    "arrow/night": 90,
+    "health": 764,
+    "food": 117,
+    "drink": 0,
+    "energy": 23
+  }
+}

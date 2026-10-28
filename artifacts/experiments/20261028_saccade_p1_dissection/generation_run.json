@@ -1,0 +1,8 @@
+{
+  "seconds": 1297.9691414833069,
+  "panel_histories": 1989,
+  "draws_per_history": 4,
+  "frozen_parameter_hash": "b9cc15d655cdf099a055095f4941fca7697c26d933385dd77a8147c031898940",
+  "checkpoint_and_sources_unchanged": true,
+  "peak_gpu_gib": 0.8290481567382812
+}

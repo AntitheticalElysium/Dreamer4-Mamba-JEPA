@@ -1,0 +1,36 @@
+{
+  "completed_at_utc": "2026-10-27T21:20:01.453688+00:00",
+  "checkpoint_and_canonical_hashes_unchanged": true,
+  "canonical_saccade_git_diff_empty": true,
+  "new_world_training_runs": 0,
+  "new_neural_reader_fits": 66,
+  "world_seeds": 1,
+  "sampler_draws_per_history": 4,
+  "retained_failed_or_insufficient_controls": [
+    "strict unchanged-fixation latent parity",
+    "whole-crop rare-arrow raw-pixel power",
+    "shared-query raw-arrow power for one seed",
+    "pixel reader on real reconstructions"
+  ],
+  "analysis_sources_sha256": {
+    "belief_readers.py": "c71be78e1245c6279ae2de960d6ef8e273e5f7030aa4559123383c0682da8f22",
+    "fovea_readers.py": "6a33752eb1ccdd3cc658bb82cbbe4bfdbcc497f2293f69f71211bdf179bfbfeb",
+    "figures.py": "4963cc123177fa1ec4395c4a68b01da1f35693c75a1dd6c63b9a49829549a90d",
+    "generation_summary.py": "d49f2e954a70118b7c22865a22978d02491ae39270e057a1f06a47f8a66a4c47",
+    "inspect_pixels.py": "d805642ccb6bab483826c2bff39b52fb4b332a80888238c1ffdb06ddc3522975",
+    "crop_readers.py": "79c76245878db23d866181b7e7381d652ea35f0da8822ff8f1c58d76b4a27c43",
+    "crops.py": "96a13359bd4511da4ceb1566dcf83072d01081542e710dc17ab5e304172057eb",
+    "geometry.py": "1aa26b8f3baeb662ba3a2e9cae1fdb2a4b49f75fa737ac9e15444051870f6781",
+    "fixation_branches.py": "7663b46ebbdddbb9fd8a6634d02a55888dadec8ac9e80a519078ce2306682c95",
+    "glyphs.py": "31f0f5cf1cc7aa3f5f02bede56a6d9ee53ca5bfff54c4a22939f2b572b3aa450",
+    "fixations.py": "58d079bda26be79bda2839afd24253de92e4bcc1df091c960bf9281dac01dd78",
+    "generation.py": "be70a5aacea084f5bcbc926f18fa7659fb779a1b5c60326f6d18ddcd5f11282e",
+    "common.py": "4e762aa84449237c8c0aad0d550f4b6bec6e9cd1da7023d1d3890304332801b6",
+    "query_readers.py": "d1e617b8a63139604143a74e8df2dd0e0de34d8240770baec8a4c5f02f1644b9",
+    "fixation_history.py": "2316639cf41de7471545a21cd1dad91d55051a95571d96a50e8561652a8c1c7b",
+    "timecourse.py": "f6f5c0b8d8d323d6eeb986b9793400065d3c4d26e68456bdc8a7f93902daa038",
+    "foundation.py": "e09d051014941a11f864b22e1b2a044e4deb5375bd543edba6c2e2bf0712b4cf",
+    "PROTOCOL.md": "e69c1b0922548d5531533f77fad794fe7e4e5a7d8f57cb764d82e847e9a788e7",
+    "REPORT.md": "78eb967cfca994c6d42f757e856d674f00c91dc2a556d366e4b5aaedf37e545d"
+  }
+}

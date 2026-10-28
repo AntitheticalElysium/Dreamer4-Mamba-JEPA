@@ -1,0 +1,12 @@
+{
+  "episodes": 1009,
+  "states": 305907,
+  "s1_half_cache_max_differences": {
+    "p": 0.0,
+    "g": 0.0,
+    "v": 0.0,
+    "b": 0.0,
+    "bp": 0.0
+  },
+  "shared_decoder_scales_identical": true
+}

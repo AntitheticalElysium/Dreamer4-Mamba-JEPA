@@ -1,0 +1,290 @@
+{
+  "map": {
+    "n_cells": 231429,
+    "endpoint_fraction": 0.008558743633329868,
+    "scale_rgb_quantiles": [
+      0.4058045446872711,
+      1.3305819034576416,
+      3.7317092418670654,
+      14.30510425567627
+    ],
+    "scale_gt_255_fraction": 3.64490779247717e-06,
+    "location_outside_rgb_fraction": 0.0021432351786643267,
+    "zero_location_same_scale_nll": 74.76827239990234,
+    "copy_previous_same_scale_nll": 9.188213348388672,
+    "rec_nll": 2.3516688346862793,
+    "rec_mae": 2.7197961807250977
+  },
+  "HUD": {
+    "n_cells": 38571,
+    "endpoint_fraction": 0.8729264736175537,
+    "scale_rgb_quantiles": [
+      1.6049882173538208,
+      9.381516456604004,
+      257.55706787109375,
+      60136.14453125
+    ],
+    "scale_gt_255_fraction": 0.10049423575401306,
+    "location_outside_rgb_fraction": 0.8463619351387024,
+    "zero_location_same_scale_nll": 25.988510131835938,
+    "copy_previous_same_scale_nll": 1.128583312034607,
+    "rec_nll": 0.6530584096908569,
+    "rec_mae": 16.800390243530273
+  },
+  "health": {
+    "n_cells": 1192,
+    "endpoint_fraction": 0.7295575737953186,
+    "scale_rgb_quantiles": [
+      6.971750259399414,
+      36.81586456298828,
+      4288.71044921875,
+      27532.333984375
+    ],
+    "scale_gt_255_fraction": 0.29089051485061646,
+    "location_outside_rgb_fraction": 0.5815241932868958,
+    "zero_location_same_scale_nll": 7.397360801696777,
+    "copy_previous_same_scale_nll": 1.8385052680969238,
+    "rec_nll": 1.7056941986083984,
+    "rec_mae": 57.16525650024414
+  },
+  "food": {
+    "n_cells": 2439,
+    "endpoint_fraction": 0.7804470062255859,
+    "scale_rgb_quantiles": [
+      3.616896390914917,
+      33.78413391113281,
+      14736.99609375,
+      488022.28125
+    ],
+    "scale_gt_255_fraction": 0.3753322660923004,
+    "location_outside_rgb_fraction": 0.5627989768981934,
+    "zero_location_same_scale_nll": 10.57536792755127,
+    "copy_previous_same_scale_nll": 1.4582064151763916,
+    "rec_nll": 1.3014516830444336,
+    "rec_mae": 54.2266960144043
+  },
+  "drink": {
+    "n_cells": 3605,
+    "endpoint_fraction": 0.834758996963501,
+    "scale_rgb_quantiles": [
+      2.0608456134796143,
+      11.675485610961914,
+      1602.5740966796875,
+      77216.3359375
+    ],
+    "scale_gt_255_fraction": 0.20670081675052643,
+    "location_outside_rgb_fraction": 0.8481926918029785,
+    "zero_location_same_scale_nll": 21.833660125732422,
+    "copy_previous_same_scale_nll": 1.485106110572815,
+    "rec_nll": 1.2099114656448364,
+    "rec_mae": 42.09113311767578
+  },
+  "energy": {
+    "n_cells": 3590,
+    "endpoint_fraction": 0.9200670719146729,
+    "scale_rgb_quantiles": [
+      3.1424143314361572,
+      18.657373428344727,
+      6747.0888671875,
+      123391.359375
+    ],
+    "scale_gt_255_fraction": 0.25779661536216736,
+    "location_outside_rgb_fraction": 0.8944972157478333,
+    "zero_location_same_scale_nll": 15.802231788635254,
+    "copy_previous_same_scale_nll": 1.01115882396698,
+    "rec_nll": 0.6447506546974182,
+    "rec_mae": 36.30227279663086
+  },
+  "wood": {
+    "n_cells": 3708,
+    "endpoint_fraction": 0.7383814454078674,
+    "scale_rgb_quantiles": [
+      0.8326568603515625,
+      3.045732259750366,
+      130.87457275390625,
+      3668.32861328125
+    ],
+    "scale_gt_255_fraction": 0.07150562852621078,
+    "location_outside_rgb_fraction": 0.7224075198173523,
+    "zero_location_same_scale_nll": 48.10206985473633,
+    "copy_previous_same_scale_nll": 1.4851428270339966,
+    "rec_nll": 0.8233579993247986,
+    "rec_mae": 7.383089065551758
+  },
+  "stone": {
+    "n_cells": 3735,
+    "endpoint_fraction": 0.7345244884490967,
+    "scale_rgb_quantiles": [
+      0.9144946932792664,
+      4.295170783996582,
+      229.9725799560547,
+      4710.2265625
+    ],
+    "scale_gt_255_fraction": 0.0934550017118454,
+    "location_outside_rgb_fraction": 0.703913152217865,
+    "zero_location_same_scale_nll": 34.92413330078125,
+    "copy_previous_same_scale_nll": 1.543844223022461,
+    "rec_nll": 0.9038518071174622,
+    "rec_mae": 13.303543090820312
+  },
+  "coal": {
+    "n_cells": 2470,
+    "endpoint_fraction": 0.8193919062614441,
+    "scale_rgb_quantiles": [
+      3.045732259750366,
+      17.664443969726562,
+      141.54371643066406,
+      1287.704345703125
+    ],
+    "scale_gt_255_fraction": 0.07149742543697357,
+    "location_outside_rgb_fraction": 0.7896527051925659,
+    "zero_location_same_scale_nll": 14.631972312927246,
+    "copy_previous_same_scale_nll": 1.3503897190093994,
+    "rec_nll": 1.0212305784225464,
+    "rec_mae": 13.207648277282715
+  },
+  "iron": {
+    "n_cells": 1204,
+    "endpoint_fraction": 0.8671096563339233,
+    "scale_rgb_quantiles": [
+      4.431514739990234,
+      16.465072631835938,
+      66.66492462158203,
+      275.24114990234375
+    ],
+    "scale_gt_255_fraction": 0.01378624513745308,
+    "location_outside_rgb_fraction": 0.8581711649894714,
+    "zero_location_same_scale_nll": 11.78178882598877,
+    "copy_previous_same_scale_nll": 1.156056523323059,
+    "rec_nll": 0.7316527366638184,
+    "rec_mae": 6.079383850097656
+  },
+  "diamond": {
+    "n_cells": 606,
+    "endpoint_fraction": 0.9937136769294739,
+    "scale_rgb_quantiles": [
+      4.228580474853516,
+      11.675485610961914,
+      26.311113357543945,
+      42.37480163574219
+    ],
+    "scale_gt_255_fraction": 0.0,
+    "location_outside_rgb_fraction": 0.9926697015762329,
+    "zero_location_same_scale_nll": 14.7923583984375,
+    "copy_previous_same_scale_nll": 0.6853655576705933,
+    "rec_nll": 0.04592350497841835,
+    "rec_mae": 0.3231639266014099
+  },
+  "sapling": {
+    "n_cells": 3608,
+    "endpoint_fraction": 0.9972755312919617,
+    "scale_rgb_quantiles": [
+      2.3352439403533936,
+      8.951905250549316,
+      26.935062408447266,
+      51.313819885253906
+    ],
+    "scale_gt_255_fraction": 0.0,
+    "location_outside_rgb_fraction": 0.9932878017425537,
+    "zero_location_same_scale_nll": 23.73478126525879,
+    "copy_previous_same_scale_nll": 0.6843040585517883,
+    "rec_nll": 0.042618170380592346,
+    "rec_mae": 0.39893868565559387
+  },
+  "wood_pickaxe": {
+    "n_cells": 1242,
+    "endpoint_fraction": 0.9239212870597839,
+    "scale_rgb_quantiles": [
+      1.8186898231506348,
+      8.951905250549316,
+      97.56689453125,
+      662.8533935546875
+    ],
+    "scale_gt_255_fraction": 0.03557461500167847,
+    "location_outside_rgb_fraction": 0.9078674912452698,
+    "zero_location_same_scale_nll": 25.13426399230957,
+    "copy_previous_same_scale_nll": 0.8683620095252991,
+    "rec_nll": 0.3898499608039856,
+    "rec_mae": 6.1266584396362305
+  },
+  "stone_pickaxe": {
+    "n_cells": 1861,
+    "endpoint_fraction": 0.9520775675773621,
+    "scale_rgb_quantiles": [
+      2.8168418407440186,
+      9.236069679260254,
+      61.654972076416016,
+      277.39990234375
+    ],
+    "scale_gt_255_fraction": 0.014987187460064888,
+    "location_outside_rgb_fraction": 0.9423688054084778,
+    "zero_location_same_scale_nll": 18.900768280029297,
+    "copy_previous_same_scale_nll": 0.8091953992843628,
+    "rec_nll": 0.2764416038990021,
+    "rec_mae": 4.42596435546875
+  },
+  "iron_pickaxe": {
+    "n_cells": 1840,
+    "endpoint_fraction": 0.9793145656585693,
+    "scale_rgb_quantiles": [
+      2.485854148864746,
+      8.813118934631348,
+      56.13749313354492,
+      148.77174377441406
+    ],
+    "scale_gt_255_fraction": 3.3274180168518797e-05,
+    "location_outside_rgb_fraction": 0.9747486114501953,
+    "zero_location_same_scale_nll": 21.642526626586914,
+    "copy_previous_same_scale_nll": 0.7268235087394714,
+    "rec_nll": 0.15198272466659546,
+    "rec_mae": 2.474043607711792
+  },
+  "wood_sword": {
+    "n_cells": 1859,
+    "endpoint_fraction": 0.9127026796340942,
+    "scale_rgb_quantiles": [
+      1.416396975517273,
+      5.10064172744751,
+      46.90462875366211,
+      207.76292419433594
+    ],
+    "scale_gt_255_fraction": 0.00236027711071074,
+    "location_outside_rgb_fraction": 0.9230952262878418,
+    "zero_location_same_scale_nll": 36.35771942138672,
+    "copy_previous_same_scale_nll": 0.9183936715126038,
+    "rec_nll": 0.4108104705810547,
+    "rec_mae": 4.07489013671875
+  },
+  "stone_sword": {
+    "n_cells": 1876,
+    "endpoint_fraction": 0.9288542866706848,
+    "scale_rgb_quantiles": [
+      2.7731707096099854,
+      8.676484107971191,
+      66.66492462158203,
+      368.9334716796875
+    ],
+    "scale_gt_255_fraction": 0.03159493952989578,
+    "location_outside_rgb_fraction": 0.938608705997467,
+    "zero_location_same_scale_nll": 19.664403915405273,
+    "copy_previous_same_scale_nll": 0.9122921824455261,
+    "rec_nll": 0.40922266244888306,
+    "rec_mae": 5.66450834274292
+  },
+  "iron_sword": {
+    "n_cells": 1894,
+    "endpoint_fraction": 0.9672757983207703,
+    "scale_rgb_quantiles": [
+      2.447314739227295,
+      11.859347343444824,
+      55.26715850830078,
+      150.23171997070312
+    ],
+    "scale_gt_255_fraction": 7.901788194430992e-05,
+    "location_outside_rgb_fraction": 0.9713093042373657,
+    "zero_location_same_scale_nll": 20.614831924438477,
+    "copy_previous_same_scale_nll": 0.8031914830207825,
+    "rec_nll": 0.25420427322387695,
+    "rec_mae": 4.382891654968262
+  }
+}
