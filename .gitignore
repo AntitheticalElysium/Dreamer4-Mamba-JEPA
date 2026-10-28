@@ -305,3 +305,4 @@ artifacts/saccade_m0/**/*.log
 
 # Codex review copies of S0 label archives and prediction dumps (originals live under artifacts/eda, untracked)
 artifacts/experiments/20261026_saccade_review/*.npz
+artifacts/experiments/20261029_generation_diagnosis/**/*.npz
