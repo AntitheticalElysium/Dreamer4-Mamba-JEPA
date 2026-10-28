@@ -1,0 +1,7 @@
+{
+  "seconds": 26.70989227294922,
+  "n_reference": 300000,
+  "n_calibration": 100000,
+  "n_population_tuples": 4096,
+  "source_hashes_unchanged": true
+}

@@ -1,0 +1,747 @@
+{
+  "p": {
+    "scale": {
+      "p": 2.779621124267578
+    },
+    "calibration_thresholds": [
+      0.07141319486931753,
+      0.10196583375225328,
+      0.09337501292722084,
+      0.10607009595651297,
+      0.10398702923799023
+    ],
+    "calibration_predicted_counts": [
+      98148,
+      841,
+      664,
+      232,
+      115
+    ],
+    "calibration": {
+      "n": 100000,
+      "support_fraction": 0.94851,
+      "distance_quantiles": [
+        0.0025105342291256998,
+        0.005768923292413106,
+        0.054358562257758536,
+        0.10014404176284565
+      ],
+      "class": {
+        "background": {
+          "n_predicted": 98148,
+          "n_supported": 93223,
+          "mean_distance": 0.01681556259845275,
+          "precision": {
+            "est": 0.9985532053633288,
+            "se": 0.0002136208899543164,
+            "n_cond": 98148
+          },
+          "recall": {
+            "est": 0.998929783612439,
+            "se": 0.00012996360258195772,
+            "n_cond": 98111
+          },
+          "supported_precision": {
+            "est": 0.9996245561717602,
+            "se": 0.00012404968714727296,
+            "n_cond": 93223
+          },
+          "supported_recall": {
+            "est": 0.9498221402289244,
+            "se": 0.005158439366357055,
+            "n_cond": 98111
+          }
+        },
+        "zombies": {
+          "n_predicted": 841,
+          "n_supported": 751,
+          "mean_distance": 0.033036811366516705,
+          "precision": {
+            "est": 0.9405469678953626,
+            "se": 0.009636158427708668,
+            "n_cond": 841
+          },
+          "recall": {
+            "est": 0.9165701042873696,
+            "se": 0.017113460222491717,
+            "n_cond": 863
+          },
+          "supported_precision": {
+            "est": 1.0,
+            "se": 0.0,
+            "n_cond": 751
+          },
+          "supported_recall": {
+            "est": 0.8702201622247973,
+            "se": 0.02525808385423925,
+            "n_cond": 863
+          }
+        },
+        "cows": {
+          "n_predicted": 664,
+          "n_supported": 599,
+          "mean_distance": 0.027693067621296114,
+          "precision": {
+            "est": 0.9623493975903614,
+            "se": 0.009105872526448048,
+            "n_cond": 664
+          },
+          "recall": {
+            "est": 0.9711246200607903,
+            "se": 0.00835084841475038,
+            "n_cond": 658
+          },
+          "supported_precision": {
+            "est": 1.0,
+            "se": 0.0,
+            "n_cond": 599
+          },
+          "supported_recall": {
+            "est": 0.9103343465045592,
+            "se": 0.02180735528133898,
+            "n_cond": 658
+          }
+        },
+        "skeletons": {
+          "n_predicted": 232,
+          "n_supported": 187,
+          "mean_distance": 0.041703900207114994,
+          "precision": {
+            "est": 0.8836206896551724,
+            "se": 0.024701768665508803,
+            "n_cond": 232
+          },
+          "recall": {
+            "est": 0.8686440677966102,
+            "se": 0.037284159505781754,
+            "n_cond": 236
+          },
+          "supported_precision": {
+            "est": 1.0,
+            "se": 0.0,
+            "n_cond": 187
+          },
+          "supported_recall": {
+            "est": 0.7923728813559322,
+            "se": 0.05372182517097907,
+            "n_cond": 236
+          }
+        },
+        "arrows": {
+          "n_predicted": 115,
+          "n_supported": 91,
+          "mean_distance": 0.051137733062695465,
+          "precision": {
+            "est": 0.9391304347826087,
+            "se": 0.02235262712149597,
+            "n_cond": 115
+          },
+          "recall": {
+            "est": 0.8181818181818182,
+            "se": 0.04502041208172058,
+            "n_cond": 132
+          },
+          "supported_precision": {
+            "est": 1.0,
+            "se": 0.0,
+            "n_cond": 91
+          },
+          "supported_recall": {
+            "est": 0.6893939393939394,
+            "se": 0.048032860867922474,
+            "n_cond": 132
+          }
+        }
+      }
+    },
+    "real": {
+      "n": 253952,
+      "support_fraction": 0.9430876701108871,
+      "distance_quantiles": [
+        0.0025399406882567,
+        0.006031492821884074,
+        0.057399060891167704,
+        0.10213983230423969
+      ],
+      "class": {
+        "background": {
+          "n_predicted": 249017,
+          "n_supported": 235223,
+          "mean_distance": 0.018035612425463084,
+          "precision": {
+            "est": 0.998401715545525,
+            "se": 0.00010194793473865393,
+            "n_cond": 249017
+          },
+          "recall": {
+            "est": 0.9986904737994337,
+            "se": 8.801810056303095e-05,
+            "n_cond": 248945
+          },
+          "supported_precision": {
+            "est": 0.9995451125102562,
+            "se": 4.7730451783529355e-05,
+            "n_cond": 235223
+          },
+          "supported_recall": {
+            "est": 0.9444495772158509,
+            "se": 0.0025481966648634342,
+            "n_cond": 248945
+          }
+        },
+        "zombies": {
+          "n_predicted": 1776,
+          "n_supported": 1541,
+          "mean_distance": 0.03807684971903555,
+          "precision": {
+            "est": 0.9132882882882883,
+            "se": 0.00764704241777959,
+            "n_cond": 1776
+          },
+          "recall": {
+            "est": 0.9138028169014084,
+            "se": 0.008569508965210854,
+            "n_cond": 1775
+          },
+          "supported_precision": {
+            "est": 1.0,
+            "se": 0.0,
+            "n_cond": 1541
+          },
+          "supported_recall": {
+            "est": 0.8681690140845071,
+            "se": 0.009741877839582618,
+            "n_cond": 1775
+          }
+        },
+        "cows": {
+          "n_predicted": 2074,
+          "n_supported": 1842,
+          "mean_distance": 0.030468232596454384,
+          "precision": {
+            "est": 0.950337512054002,
+            "se": 0.006020979971861618,
+            "n_cond": 2074
+          },
+          "recall": {
+            "est": 0.9412607449856734,
+            "se": 0.005692265291511753,
+            "n_cond": 2094
+          },
+          "supported_precision": {
+            "est": 1.0,
+            "se": 0.0,
+            "n_cond": 1842
+          },
+          "supported_recall": {
+            "est": 0.8796561604584527,
+            "se": 0.00828051017696075,
+            "n_cond": 2094
+          }
+        },
+        "skeletons": {
+          "n_predicted": 675,
+          "n_supported": 577,
+          "mean_distance": 0.039671573551447833,
+          "precision": {
+            "est": 0.9185185185185185,
+            "se": 0.011969231573556189,
+            "n_cond": 675
+          },
+          "recall": {
+            "est": 0.8806818181818182,
+            "se": 0.012575255366873107,
+            "n_cond": 704
+          },
+          "supported_precision": {
+            "est": 1.0,
+            "se": 0.0,
+            "n_cond": 577
+          },
+          "supported_recall": {
+            "est": 0.8196022727272727,
+            "se": 0.014712632786938355,
+            "n_cond": 704
+          }
+        },
+        "arrows": {
+          "n_predicted": 410,
+          "n_supported": 316,
+          "mean_distance": 0.05329111202452364,
+          "precision": {
+            "est": 0.9341463414634147,
+            "se": 0.01261529909400847,
+            "n_cond": 410
+          },
+          "recall": {
+            "est": 0.8824884792626728,
+            "se": 0.01767379846376022,
+            "n_cond": 434
+          },
+          "supported_precision": {
+            "est": 1.0,
+            "se": 0.0,
+            "n_cond": 316
+          },
+          "supported_recall": {
+            "est": 0.728110599078341,
+            "se": 0.02384722729037925,
+            "n_cond": 434
+          }
+        }
+      },
+      "counts_per_frame": {
+        "zombies": {
+          "all_nn": 0.43359375,
+          "supported_nn": 0.376220703125
+        },
+        "cows": {
+          "all_nn": 0.50634765625,
+          "supported_nn": 0.44970703125
+        },
+        "skeletons": {
+          "all_nn": 0.164794921875,
+          "supported_nn": 0.140869140625
+        },
+        "arrows": {
+          "all_nn": 0.10009765625,
+          "supported_nn": 0.0771484375
+        }
+      },
+      "neural_nn_agreement": 0.9978854271673387,
+      "supported_neural_nn_agreement": 0.9999331938755486,
+      "neural_entity_nn_supported_background_fraction": 5.9066280241935486e-05
+    },
+    "generated": {
+      "n": 253952,
+      "support_fraction": 0.914582283266129,
+      "distance_quantiles": [
+        0.010074833359768727,
+        0.019173423432296617,
+        0.06730133727732267,
+        0.21387631684122313
+      ],
+      "class": {
+        "background": {
+          "n_predicted": 250448,
+          "n_supported": 231124,
+          "mean_distance": 0.03142724948842201
+        },
+        "zombies": {
+          "n_predicted": 999,
+          "n_supported": 540,
+          "mean_distance": 0.11436886584863386
+        },
+        "cows": {
+          "n_predicted": 1172,
+          "n_supported": 545,
+          "mean_distance": 0.1295887192454331
+        },
+        "skeletons": {
+          "n_predicted": 504,
+          "n_supported": 51,
+          "mean_distance": 0.22647680080971325
+        },
+        "arrows": {
+          "n_predicted": 829,
+          "n_supported": 0,
+          "mean_distance": 0.247795132779866
+        }
+      },
+      "counts_per_frame": {
+        "zombies": {
+          "all_nn": 0.243896484375,
+          "supported_nn": 0.1318359375
+        },
+        "cows": {
+          "all_nn": 0.2861328125,
+          "supported_nn": 0.133056640625
+        },
+        "skeletons": {
+          "all_nn": 0.123046875,
+          "supported_nn": 0.012451171875
+        },
+        "arrows": {
+          "all_nn": 0.202392578125,
+          "supported_nn": 0.0
+        }
+      },
+      "neural_nn_agreement": 0.9950935609879032,
+      "supported_neural_nn_agreement": 0.9999870834409713,
+      "neural_entity_nn_supported_background_fraction": 7.875504032258064e-06
+    }
+  },
+  "pv": {
+    "scale": {
+      "p": 2.779621124267578,
+      "v": 0.9326589284467809
+    },
+    "calibration_thresholds": [
+      0.1045085707823987,
+      0.1601316142564856,
+      0.17133937660427695,
+      0.186840048876534,
+      0.248489116688582
+    ],
+    "calibration_predicted_counts": [
+      98194,
+      819,
+      665,
+      217,
+      105
+    ],
+    "calibration": {
+      "n": 100000,
+      "support_fraction": 0.94757,
+      "distance_quantiles": [
+        0.013539398989609661,
+        0.03409200370268536,
+        0.08861218028300169,
+        0.14184676010454134
+      ],
+      "class": {
+        "background": {
+          "n_predicted": 98194,
+          "n_supported": 93256,
+          "mean_distance": 0.042641163481890544,
+          "precision": {
+            "est": 0.9982076297940811,
+            "se": 0.00022881265432413817,
+            "n_cond": 98194
+          },
+          "recall": {
+            "est": 0.9990520940567317,
+            "se": 0.00014154664636739222,
+            "n_cond": 98111
+          },
+          "supported_precision": {
+            "est": 0.9994531182980183,
+            "se": 0.00015236577295269784,
+            "n_cond": 93256
+          },
+          "supported_recall": {
+            "est": 0.949995413358339,
+            "se": 0.005206640902200293,
+            "n_cond": 98111
+          }
+        },
+        "zombies": {
+          "n_predicted": 819,
+          "n_supported": 728,
+          "mean_distance": 0.08401377042109343,
+          "precision": {
+            "est": 0.9548229548229549,
+            "se": 0.010656149363867244,
+            "n_cond": 819
+          },
+          "recall": {
+            "est": 0.9061413673232909,
+            "se": 0.020472205538758108,
+            "n_cond": 863
+          },
+          "supported_precision": {
+            "est": 1.0,
+            "se": 0.0,
+            "n_cond": 728
+          },
+          "supported_recall": {
+            "est": 0.8435689455388181,
+            "se": 0.021052177013949236,
+            "n_cond": 863
+          }
+        },
+        "cows": {
+          "n_predicted": 665,
+          "n_supported": 564,
+          "mean_distance": 0.07819998259337699,
+          "precision": {
+            "est": 0.9488721804511279,
+            "se": 0.014211291981582011,
+            "n_cond": 665
+          },
+          "recall": {
+            "est": 0.958966565349544,
+            "se": 0.009115938614453267,
+            "n_cond": 658
+          },
+          "supported_precision": {
+            "est": 1.0,
+            "se": 0.0,
+            "n_cond": 564
+          },
+          "supported_recall": {
+            "est": 0.8571428571428571,
+            "se": 0.020392542074878617,
+            "n_cond": 658
+          }
+        },
+        "skeletons": {
+          "n_predicted": 217,
+          "n_supported": 172,
+          "mean_distance": 0.10156806781535974,
+          "precision": {
+            "est": 0.9216589861751152,
+            "se": 0.016921702425116578,
+            "n_cond": 217
+          },
+          "recall": {
+            "est": 0.847457627118644,
+            "se": 0.044862247684681326,
+            "n_cond": 236
+          },
+          "supported_precision": {
+            "est": 1.0,
+            "se": 0.0,
+            "n_cond": 172
+          },
+          "supported_recall": {
+            "est": 0.7288135593220338,
+            "se": 0.05920633886437764,
+            "n_cond": 236
+          }
+        },
+        "arrows": {
+          "n_predicted": 105,
+          "n_supported": 37,
+          "mean_distance": 0.1485510878927855,
+          "precision": {
+            "est": 0.8952380952380953,
+            "se": 0.028996388703422863,
+            "n_cond": 105
+          },
+          "recall": {
+            "est": 0.7121212121212122,
+            "se": 0.04272244341473941,
+            "n_cond": 132
+          },
+          "supported_precision": {
+            "est": 1.0,
+            "se": 0.0,
+            "n_cond": 37
+          },
+          "supported_recall": {
+            "est": 0.2803030303030303,
+            "se": 0.0452893132396184,
+            "n_cond": 132
+          }
+        }
+      }
+    },
+    "real": {
+      "n": 253952,
+      "support_fraction": 0.9394098097278226,
+      "distance_quantiles": [
+        0.014168375901622014,
+        0.03556008898677416,
+        0.09188338846005698,
+        0.14565637419512711
+      ],
+      "class": {
+        "background": {
+          "n_predicted": 249163,
+          "n_supported": 234757,
+          "mean_distance": 0.04443320375000333,
+          "precision": {
+            "est": 0.9979692008845615,
+            "se": 0.0001139960571736937,
+            "n_cond": 249163
+          },
+          "recall": {
+            "est": 0.9988431179577818,
+            "se": 0.00010061570739461844,
+            "n_cond": 248945
+          },
+          "supported_precision": {
+            "est": 0.999352521969526,
+            "se": 7.099547746383341e-05,
+            "n_cond": 234757
+          },
+          "supported_recall": {
+            "est": 0.9423969149812208,
+            "se": 0.0023731807588884195,
+            "n_cond": 248945
+          }
+        },
+        "zombies": {
+          "n_predicted": 1719,
+          "n_supported": 1416,
+          "mean_distance": 0.09261615550792154,
+          "precision": {
+            "est": 0.9313554392088423,
+            "se": 0.007629947976313973,
+            "n_cond": 1719
+          },
+          "recall": {
+            "est": 0.9019718309859155,
+            "se": 0.009041346446285214,
+            "n_cond": 1775
+          },
+          "supported_precision": {
+            "est": 1.0,
+            "se": 0.0,
+            "n_cond": 1416
+          },
+          "supported_recall": {
+            "est": 0.7977464788732395,
+            "se": 0.012862303626301577,
+            "n_cond": 1775
+          }
+        },
+        "cows": {
+          "n_predicted": 2028,
+          "n_supported": 1769,
+          "mean_distance": 0.07889360085492468,
+          "precision": {
+            "est": 0.9541420118343196,
+            "se": 0.00533983815664753,
+            "n_cond": 2028
+          },
+          "recall": {
+            "est": 0.9240687679083095,
+            "se": 0.00670219188019343,
+            "n_cond": 2094
+          },
+          "supported_precision": {
+            "est": 1.0,
+            "se": 0.0,
+            "n_cond": 1769
+          },
+          "supported_recall": {
+            "est": 0.8447946513849093,
+            "se": 0.00933825075651507,
+            "n_cond": 2094
+          }
+        },
+        "skeletons": {
+          "n_predicted": 687,
+          "n_supported": 497,
+          "mean_distance": 0.10850909163066053,
+          "precision": {
+            "est": 0.893740902474527,
+            "se": 0.012662009656758434,
+            "n_cond": 687
+          },
+          "recall": {
+            "est": 0.8721590909090909,
+            "se": 0.012846877535421375,
+            "n_cond": 704
+          },
+          "supported_precision": {
+            "est": 1.0,
+            "se": 0.0,
+            "n_cond": 497
+          },
+          "supported_recall": {
+            "est": 0.7059659090909091,
+            "se": 0.01994201411365956,
+            "n_cond": 704
+          }
+        },
+        "arrows": {
+          "n_predicted": 355,
+          "n_supported": 126,
+          "mean_distance": 0.14769838808678293,
+          "precision": {
+            "est": 0.9464788732394366,
+            "se": 0.012640483838118038,
+            "n_cond": 355
+          },
+          "recall": {
+            "est": 0.7741935483870968,
+            "se": 0.021532028588580235,
+            "n_cond": 434
+          },
+          "supported_precision": {
+            "est": 1.0,
+            "se": 0.0,
+            "n_cond": 126
+          },
+          "supported_recall": {
+            "est": 0.2903225806451613,
+            "se": 0.02517825073975008,
+            "n_cond": 434
+          }
+        }
+      },
+      "counts_per_frame": {
+        "zombies": {
+          "all_nn": 0.419677734375,
+          "supported_nn": 0.345703125
+        },
+        "cows": {
+          "all_nn": 0.4951171875,
+          "supported_nn": 0.431884765625
+        },
+        "skeletons": {
+          "all_nn": 0.167724609375,
+          "supported_nn": 0.121337890625
+        },
+        "arrows": {
+          "all_nn": 0.086669921875,
+          "supported_nn": 0.03076171875
+        }
+      },
+      "neural_nn_agreement": 0.9976373487903226,
+      "supported_neural_nn_agreement": 0.9998700563787647,
+      "neural_entity_nn_supported_background_fraction": 0.0001220703125
+    },
+    "generated": {
+      "n": 253952,
+      "support_fraction": 0.872468025453629,
+      "distance_quantiles": [
+        0.035089629817098775,
+        0.059524020169303964,
+        0.11336682855375839,
+        0.26843710138745835
+      ],
+      "class": {
+        "background": {
+          "n_predicted": 250661,
+          "n_supported": 220286,
+          "mean_distance": 0.06965652492422816
+        },
+        "zombies": {
+          "n_predicted": 1033,
+          "n_supported": 526,
+          "mean_distance": 0.1693832107741114
+        },
+        "cows": {
+          "n_predicted": 1142,
+          "n_supported": 641,
+          "mean_distance": 0.17206683298258887
+        },
+        "skeletons": {
+          "n_predicted": 563,
+          "n_supported": 73,
+          "mean_distance": 0.2907913366200818
+        },
+        "arrows": {
+          "n_predicted": 553,
+          "n_supported": 39,
+          "mean_distance": 0.30045092501209947
+        }
+      },
+      "counts_per_frame": {
+        "zombies": {
+          "all_nn": 0.252197265625,
+          "supported_nn": 0.12841796875
+        },
+        "cows": {
+          "all_nn": 0.27880859375,
+          "supported_nn": 0.156494140625
+        },
+        "skeletons": {
+          "all_nn": 0.137451171875,
+          "supported_nn": 0.017822265625
+        },
+        "arrows": {
+          "all_nn": 0.135009765625,
+          "supported_nn": 0.009521484375
+        }
+      },
+      "neural_nn_agreement": 0.995329826108871,
+      "supported_neural_nn_agreement": 0.9998781395978606,
+      "neural_entity_nn_supported_background_fraction": 2.7564264112903225e-05
+    }
+  }
+}

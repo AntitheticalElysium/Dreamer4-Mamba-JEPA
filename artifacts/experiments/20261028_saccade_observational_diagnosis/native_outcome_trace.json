@@ -1,0 +1,516 @@
+{
+  "all": {
+    "n": 30000,
+    "recorded_termination": {
+      "est": 0.0028,
+      "se": 0.00033309784227138954,
+      "n_cond": 30000
+    },
+    "real": {
+      "native_dead_probability": {
+        "est": 0.002798739363934573,
+        "se": 0.0003329231183328838,
+        "n_cond": 30000
+      },
+      "native_negative_reward_probability": {
+        "est": 0.01868984730477812,
+        "se": 0.0007715821331720242,
+        "n_cond": 30000
+      },
+      "hud_reader_zero_fraction": {
+        "est": 0.0028,
+        "se": 0.00033309784227138954,
+        "n_cond": 30000
+      },
+      "hud_reader_p_zero": {
+        "est": 0.0027999831027672333,
+        "se": 0.00033309585999615734,
+        "n_cond": 30000
+      },
+      "hud_nn_zero_fraction": {
+        "est": 0.0028,
+        "se": 0.00033309784227138954,
+        "n_cond": 30000
+      },
+      "hud_nn_supported_fraction": {
+        "est": 0.9454,
+        "se": 0.0019820578514342844,
+        "n_cond": 30000
+      },
+      "hud_nn_supported_zero_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 30000
+      }
+    },
+    "generated": {
+      "native_dead_probability": {
+        "est": 3.3501013697641684e-05,
+        "se": 3.3353245098403335e-05,
+        "n_cond": 30000
+      },
+      "native_negative_reward_probability": {
+        "est": 0.006293666308581089,
+        "se": 0.00040539585887853987,
+        "n_cond": 30000
+      },
+      "hud_reader_zero_fraction": {
+        "est": 0.0001,
+        "se": 5.431051069023751e-05,
+        "n_cond": 30000
+      },
+      "hud_reader_p_zero": {
+        "est": 9.832572352275608e-05,
+        "se": 5.3437814450994165e-05,
+        "n_cond": 30000
+      },
+      "hud_nn_zero_fraction": {
+        "est": 0.0001,
+        "se": 5.431051069023751e-05,
+        "n_cond": 30000
+      },
+      "hud_nn_supported_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 30000
+      },
+      "hud_nn_supported_zero_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 30000
+      }
+    }
+  },
+  "past_low_health": {
+    "n": 1276,
+    "recorded_termination": {
+      "est": 0.039968652037617555,
+      "se": 0.005873230102989825,
+      "n_cond": 1276
+    },
+    "real": {
+      "native_dead_probability": {
+        "est": 0.039937261100187624,
+        "se": 0.005867537505538549,
+        "n_cond": 1276
+      },
+      "native_negative_reward_probability": {
+        "est": 0.04348875956560006,
+        "se": 0.005948099080636453,
+        "n_cond": 1276
+      },
+      "hud_reader_zero_fraction": {
+        "est": 0.039968652037617555,
+        "se": 0.005873230102989825,
+        "n_cond": 1276
+      },
+      "hud_reader_p_zero": {
+        "est": 0.03996839729308776,
+        "se": 0.00587319387771031,
+        "n_cond": 1276
+      },
+      "hud_nn_zero_fraction": {
+        "est": 0.039968652037617555,
+        "se": 0.005873230102989825,
+        "n_cond": 1276
+      },
+      "hud_nn_supported_fraction": {
+        "est": 0.6849529780564263,
+        "se": 0.014868620507434366,
+        "n_cond": 1276
+      },
+      "hud_nn_supported_zero_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1276
+      }
+    },
+    "generated": {
+      "native_dead_probability": {
+        "est": 9.275223742575933e-08,
+        "se": 8.220395668240792e-08,
+        "n_cond": 1276
+      },
+      "native_negative_reward_probability": {
+        "est": 0.014625496766710596,
+        "se": 0.00258179787539232,
+        "n_cond": 1276
+      },
+      "hud_reader_zero_fraction": {
+        "est": 0.0007836990595611285,
+        "se": 0.0007085920576836774,
+        "n_cond": 1276
+      },
+      "hud_reader_p_zero": {
+        "est": 0.0007773258335506176,
+        "se": 0.000702824135800156,
+        "n_cond": 1276
+      },
+      "hud_nn_zero_fraction": {
+        "est": 0.0007836990595611285,
+        "se": 0.0007085920576836774,
+        "n_cond": 1276
+      },
+      "hud_nn_supported_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1276
+      },
+      "hud_nn_supported_zero_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1276
+      }
+    }
+  },
+  "past_zombie_adjacent": {
+    "n": 2336,
+    "recorded_termination": {
+      "est": 0.031678082191780824,
+      "se": 0.003935405634068422,
+      "n_cond": 2336
+    },
+    "real": {
+      "native_dead_probability": {
+        "est": 0.03167546798895841,
+        "se": 0.003933821508011844,
+        "n_cond": 2336
+      },
+      "native_negative_reward_probability": {
+        "est": 0.17871325867994128,
+        "se": 0.007590669871330262,
+        "n_cond": 2336
+      },
+      "hud_reader_zero_fraction": {
+        "est": 0.031678082191780824,
+        "se": 0.003935405634068422,
+        "n_cond": 2336
+      },
+      "hud_reader_p_zero": {
+        "est": 0.031677893015507386,
+        "se": 0.003935381779837321,
+        "n_cond": 2336
+      },
+      "hud_nn_zero_fraction": {
+        "est": 0.031678082191780824,
+        "se": 0.003935405634068422,
+        "n_cond": 2336
+      },
+      "hud_nn_supported_fraction": {
+        "est": 0.8608732876712328,
+        "se": 0.00844613463957547,
+        "n_cond": 2336
+      },
+      "hud_nn_supported_zero_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 2336
+      }
+    },
+    "generated": {
+      "native_dead_probability": {
+        "est": 2.1306980575651936e-06,
+        "se": 1.6118799297931093e-06,
+        "n_cond": 2336
+      },
+      "native_negative_reward_probability": {
+        "est": 0.04261220894734955,
+        "se": 0.0034647645233736022,
+        "n_cond": 2336
+      },
+      "hud_reader_zero_fraction": {
+        "est": 0.0004280821917808219,
+        "se": 0.00039040932650453346,
+        "n_cond": 2336
+      },
+      "hud_reader_p_zero": {
+        "est": 0.00042459982878773056,
+        "se": 0.0003872313991906663,
+        "n_cond": 2336
+      },
+      "hud_nn_zero_fraction": {
+        "est": 0.0004280821917808219,
+        "se": 0.00039040932650453346,
+        "n_cond": 2336
+      },
+      "hud_nn_supported_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 2336
+      },
+      "hud_nn_supported_zero_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 2336
+      }
+    }
+  },
+  "past_low_health_zombie_adjacent": {
+    "n": 373,
+    "recorded_termination": {
+      "est": 0.1126005361930295,
+      "se": 0.016269040893583043,
+      "n_cond": 373
+    },
+    "real": {
+      "native_dead_probability": {
+        "est": 0.11257528433237886,
+        "se": 0.016264523595445324,
+        "n_cond": 373
+      },
+      "native_negative_reward_probability": {
+        "est": 0.11508681620707996,
+        "se": 0.016130648332642303,
+        "n_cond": 373
+      },
+      "hud_reader_zero_fraction": {
+        "est": 0.1126005361930295,
+        "se": 0.016269040893583043,
+        "n_cond": 373
+      },
+      "hud_reader_p_zero": {
+        "est": 0.11259980283540937,
+        "se": 0.016268933560045804,
+        "n_cond": 373
+      },
+      "hud_nn_zero_fraction": {
+        "est": 0.1126005361930295,
+        "se": 0.016269040893583043,
+        "n_cond": 373
+      },
+      "hud_nn_supported_fraction": {
+        "est": 0.6219839142091153,
+        "se": 0.027971384821782037,
+        "n_cond": 373
+      },
+      "hud_nn_supported_zero_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 373
+      }
+    },
+    "generated": {
+      "native_dead_probability": {
+        "est": 3.1729303391155187e-07,
+        "se": 2.825227572953339e-07,
+        "n_cond": 373
+      },
+      "native_negative_reward_probability": {
+        "est": 0.03505876764318627,
+        "se": 0.006735945431988904,
+        "n_cond": 373
+      },
+      "hud_reader_zero_fraction": {
+        "est": 0.002680965147453083,
+        "se": 0.0024349388275658247,
+        "n_cond": 373
+      },
+      "hud_reader_p_zero": {
+        "est": 0.002659151281469615,
+        "se": 0.0024151180851798796,
+        "n_cond": 373
+      },
+      "hud_nn_zero_fraction": {
+        "est": 0.002680965147453083,
+        "se": 0.0024349388275658247,
+        "n_cond": 373
+      },
+      "hud_nn_supported_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 373
+      },
+      "hud_nn_supported_zero_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 373
+      }
+    }
+  },
+  "recorded_fatal": {
+    "n": 84,
+    "recorded_termination": {
+      "est": 1.0,
+      "se": 0.0,
+      "n_cond": 84
+    },
+    "real": {
+      "native_dead_probability": {
+        "est": 0.9994401257662546,
+        "se": 0.00030472432630908336,
+        "n_cond": 84
+      },
+      "native_negative_reward_probability": {
+        "est": 0.9159777146719751,
+        "se": 0.020675515995512622,
+        "n_cond": 84
+      },
+      "hud_reader_zero_fraction": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 84
+      },
+      "hud_reader_p_zero": {
+        "est": 0.9999939572243464,
+        "se": 4.812492627755506e-07,
+        "n_cond": 84
+      },
+      "hud_nn_zero_fraction": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 84
+      },
+      "hud_nn_supported_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 84
+      },
+      "hud_nn_supported_zero_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 84
+      }
+    },
+    "generated": {
+      "native_dead_probability": {
+        "est": 8.265985486553531e-08,
+        "se": 4.890363288639963e-08,
+        "n_cond": 84
+      },
+      "native_negative_reward_probability": {
+        "est": 0.03004168150760444,
+        "se": 0.008663445023867716,
+        "n_cond": 84
+      },
+      "hud_reader_zero_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 84
+      },
+      "hud_reader_p_zero": {
+        "est": 1.9429863644720336e-10,
+        "se": 7.85408022924978e-11,
+        "n_cond": 84
+      },
+      "hud_nn_zero_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 84
+      },
+      "hud_nn_supported_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 84
+      },
+      "hud_nn_supported_zero_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 84
+      }
+    }
+  },
+  "recorded_alive": {
+    "n": 29916,
+    "recorded_termination": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 29916
+    },
+    "real": {
+      "native_dead_probability": {
+        "est": 3.0787383580052497e-07,
+        "se": 2.5475933134406324e-07,
+        "n_cond": 29916
+      },
+      "native_negative_reward_probability": {
+        "est": 0.016170386786699346,
+        "se": 0.0007042502742881202,
+        "n_cond": 29916
+      },
+      "hud_reader_zero_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 29916
+      },
+      "hud_reader_p_zero": {
+        "est": 2.26023502698307e-11,
+        "se": 6.645949070023754e-13,
+        "n_cond": 29916
+      },
+      "hud_nn_zero_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 29916
+      },
+      "hud_nn_supported_fraction": {
+        "est": 0.9480545527476936,
+        "se": 0.0019533407860380676,
+        "n_cond": 29916
+      },
+      "hud_nn_supported_zero_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 29916
+      }
+    },
+    "generated": {
+      "native_dead_probability": {
+        "est": 3.3594847823955136e-05,
+        "se": 3.345176744099123e-05,
+        "n_cond": 29916
+      },
+      "native_negative_reward_probability": {
+        "est": 0.00622698515880445,
+        "se": 0.0004028454094546494,
+        "n_cond": 29916
+      },
+      "hud_reader_zero_fraction": {
+        "est": 0.00010028078620136381,
+        "se": 5.446674368157653e-05,
+        "n_cond": 29916
+      },
+      "hud_reader_p_zero": {
+        "est": 9.860180804123535e-05,
+        "se": 5.359168750248755e-05,
+        "n_cond": 29916
+      },
+      "hud_nn_zero_fraction": {
+        "est": 0.00010028078620136381,
+        "se": 5.446674368157653e-05,
+        "n_cond": 29916
+      },
+      "hud_nn_supported_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 29916
+      },
+      "hud_nn_supported_zero_fraction": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 29916
+      }
+    }
+  },
+  "reference_calibration": {
+    "health": {
+      "threshold": 0.05582088191971863,
+      "calibration_exact": 1.0,
+      "calibration_zero_recall": 1.0
+    },
+    "food": {
+      "threshold": 0.052693534546856984,
+      "calibration_exact": 1.0,
+      "calibration_zero_recall": 1.0
+    },
+    "drink": {
+      "threshold": 0.04229704914331716,
+      "calibration_exact": 1.0,
+      "calibration_zero_recall": 1.0
+    },
+    "energy": {
+      "threshold": 0.0568117223768267,
+      "calibration_exact": 1.0,
+      "calibration_zero_recall": 1.0
+    }
+  }
+}
