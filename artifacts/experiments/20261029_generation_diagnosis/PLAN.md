@@ -65,6 +65,14 @@ A. Field calibration on context classes (replaces v1 T2; sampler-free, no head, 
   carries the consequence and the deficit enters during sampling. Controls fail -> the readout is not usable.
 - Does NOT establish: joint correctness of the frame, per-history sharpness, calibrated event odds, or which change
   would fix anything.
+- AMENDMENT (10-29, made AFTER a 60-episode pilot showed DRINK bias -0.82 at sigma 6.67 and SAFE within 0.023): the
+  control rule above was mis-specified. The identity is exact, so a class can fail it only through a code defect, a
+  class that is not a function of the conditioning, or a field that is wrong; DRINK therefore tests the MODEL on a
+  deterministic visible consequence, it cannot certify the instrument. Instrument checks that do not depend on the
+  model being right, used instead: (i) |bias| < 0.01 at sigma 0.05 in every class (the field is trivially right
+  there); (ii) recorded values as defined (DRINK reaches d + 1 and SAFE keeps 9 in >= 99% of rows); (iii) SAFE, whose
+  outcome a copying field would also get right, within 0.05 at every sigma <= 6.67; (iv) the exact-field computation
+  of B returns zero bias. DRINK is reported as a model result. The outcome rows above otherwise stand.
 
 B. The production algorithm on an exact field (new; CPU; EDM's own analytical-denoiser method, EDM sec. 4).
 - Claim: the production algorithm, given the EXACT posterior of a two-outcome mixture, returns the rare outcome far
