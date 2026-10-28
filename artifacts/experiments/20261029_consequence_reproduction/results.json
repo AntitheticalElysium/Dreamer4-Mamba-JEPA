@@ -1,0 +1,150 @@
+{
+ "checkpoint_sha256": "74eccc433bf5a785edd6d565edc1a970f8b468510abf2c0b07e24d28b547ebe5",
+ "sampler": {
+  "method": "euler",
+  "steps": 3,
+  "sigma_max": 5.0,
+  "sigma_min": 0.002,
+  "rho": 7,
+  "initial_noise": "sigma_max_scaled",
+  "s_churn": 1.0,
+  "s_tmin": 0.0,
+  "s_tmax": Infinity,
+  "s_noise": 1.0,
+  "evaluate_at": "sigma_hat",
+  "output_map": "range_clamp"
+ },
+ "context_frames": 8,
+ "random": {
+  "futures": 24000,
+  "histories": 6000,
+  "recorded_death_rate": {
+   "est": 0.0036666666666666666,
+   "se": 0.0007507846675129126,
+   "n_cond": 24000
+  },
+  "head_on_recorded_death_p": {
+   "est": 0.0036647663315137226,
+   "se": 0.0007503304945156464,
+   "n_cond": 24000
+  },
+  "generated_death_p": {
+   "est": 9.897053241729737e-07,
+   "se": 8.811975126132904e-07,
+   "n_cond": 24000
+  },
+  "generated_death_sampled": {
+   "est": 0.0,
+   "se": 0.0,
+   "n_cond": 24000
+  },
+  "recorded_negative_reward_rate": {
+   "est": 0.0215,
+   "se": 0.0018457257416014626,
+   "n_cond": 24000
+  },
+  "head_on_recorded_negative_p": {
+   "est": 0.022549467134042652,
+   "se": 0.0017950832177112059,
+   "n_cond": 24000
+  },
+  "generated_negative_p": {
+   "est": 0.006744383004044837,
+   "se": 0.0005668717906191189,
+   "n_cond": 24000
+  },
+  "generated_negative_sampled": {
+   "est": 0.006375,
+   "se": 0.0006144289926384442,
+   "n_cond": 24000
+  }
+ },
+ "random_behaviour_subset": {
+  "futures": 2888,
+  "histories": 722,
+  "recorded_death_rate": {
+   "est": 0.009695290858725761,
+   "se": 0.003623602934684784,
+   "n_cond": 2888
+  },
+  "head_on_recorded_death_p": {
+   "est": 0.009694804527752947,
+   "se": 0.0036233819444601405,
+   "n_cond": 2888
+  },
+  "generated_death_p": {
+   "est": 3.302196386448234e-10,
+   "se": 2.192424315236059e-10,
+   "n_cond": 2888
+  },
+  "generated_death_sampled": {
+   "est": 0.0,
+   "se": 0.0,
+   "n_cond": 2888
+  },
+  "recorded_negative_reward_rate": {
+   "est": 0.03185595567867036,
+   "se": 0.006306719698050275,
+   "n_cond": 2888
+  },
+  "head_on_recorded_negative_p": {
+   "est": 0.03246420944524584,
+   "se": 0.006312858196546353,
+   "n_cond": 2888
+  },
+  "generated_negative_p": {
+   "est": 0.007630885114040492,
+   "se": 0.0020118614655132054,
+   "n_cond": 2888
+  },
+  "generated_negative_sampled": {
+   "est": 0.007617728531855956,
+   "se": 0.002309437115474304,
+   "n_cond": 2888
+  }
+ },
+ "risky_low_health_adjacent_zombie": {
+  "futures": 60880,
+  "histories": 3805,
+  "recorded_death_rate": {
+   "est": 0.12772667542706964,
+   "se": 0.004022217568580243,
+   "n_cond": 60880
+  },
+  "head_on_recorded_death_p": {
+   "est": 0.12770502916616774,
+   "se": 0.0040216061773704044,
+   "n_cond": 60880
+  },
+  "generated_death_p": {
+   "est": 0.00014578106368888223,
+   "se": 5.367423456225762e-05,
+   "n_cond": 60880
+  },
+  "generated_death_sampled": {
+   "est": 0.00013140604467805518,
+   "se": 5.1272348370137296e-05,
+   "n_cond": 60880
+  },
+  "recorded_negative_reward_rate": {
+   "est": 0.12746386333771353,
+   "se": 0.004026027478595905,
+   "n_cond": 60880
+  },
+  "head_on_recorded_negative_p": {
+   "est": 0.13695577475014065,
+   "se": 0.004146183255952593,
+   "n_cond": 60880
+  },
+  "generated_negative_p": {
+   "est": 0.041370454409406794,
+   "se": 0.002074011859645381,
+   "n_cond": 60880
+  },
+  "generated_negative_sampled": {
+   "est": 0.04206636005256242,
+   "se": 0.0022383306579883467,
+   "n_cond": 60880
+  }
+ }
+}
