@@ -858,3 +858,7 @@ Scripts named below (eda_*.py, ana_*.py, t1_/t2_*) are in artifacts/experiments/
 - The JEDI PDF at arXiv 2605.13013v1 is *Joint Embedding Diffusion World Model for Online Model-Based Reinforcement
   Learning*. PAPERS.lock's title typo is corrected; the pinned PDF and its hash are unchanged.
 - Detailed paper sections and prior numerical checks: artifacts/experiments/20261027_m0_implementation_audit/PAPERS_READ.md.
+- Metadata note (10-29): third_party/PAPERS.lock gives 2605.13013v1 the title "...Multi-Agent Trajectory Modeling and
+  Planning"; the pinned PDF (sha256 f78f2d41...) is JEDI: Joint Embedding Diffusion World Model for Online Model-Based
+  Reinforcement Learning (Codex, 10-27). The lock is NOT edited: d4mj hashes it into every LeWM checkpoint identity, and
+  the corrected title made canonical loads fail ("drift in [references]", checked 10-29).
