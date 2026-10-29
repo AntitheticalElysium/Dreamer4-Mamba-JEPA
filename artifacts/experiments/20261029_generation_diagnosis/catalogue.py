@@ -150,10 +150,12 @@ def recorded_ok(kind, rows, L, s_off):
 
 
 @torch.no_grad()
-def run(model, enc, L, rows, kind, hm, tm, cfg, gen, heun=True):
+def run(model, enc, L, rows, kind, hm, tm, cfg, gen, heun=True, keep=False):
+    """keep (added 10-30, fovea fine-tune evaluation): also return the production samples (gen_p, gen_g, gen_v), same
+    draws."""
     den, clamp, sd = model.denoiser, cfg["perception"]["periphery"]["tanh_clamp"], cfg["edm"]["sigma_data"]
     s_off = np.r_[0, np.cumsum(L["ep_T"] + 1)]
-    out = {k: [] for k in ("f_real", "f_den", "f_gen", "f_heun", "row_ctx", "valid")}
+    out = {k: [] for k in ("f_real", "f_den", "f_gen", "f_heun", "row_ctx", "valid", "gen_p", "gen_g", "gen_v")}
     n_ctx = 256 // R
     for start in range(0, len(rows), n_ctx):
         batch = rows[start:start + n_ctx]
@@ -182,7 +184,11 @@ def run(model, enc, L, rows, kind, hm, tm, cfg, gen, heun=True):
                 fd.append(f(D[0][:, 0]))
             out["f_den"].append(torch.stack(fd, 1))
             shapes = [tuple(enc[0][k].shape[1:]) for k in ("p", "g", "v")]
-            out["f_gen"].append(f(M.sample(den, shapes, pa, mem, fx, cache, cfg, gen)[0][:, 0]))
+            xg = M.sample(den, shapes, pa, mem, fx, cache, cfg, gen)
+            out["f_gen"].append(f(xg[0][:, 0]))
+            if keep:
+                for k_, t_ in zip(("gen_p", "gen_g", "gen_v"), xg):
+                    out[k_].append(t_[:, 0].half().cpu())
             if heun:
                 out["f_heun"].append(f(SS.sample(den, shapes, pa, mem, fx, cache, SS.ALGORITHMS["heun_32"], cfg, gen)[0]))
         out["row_ctx"].append(torch.tensor([start + i for i in idx]))

@@ -1,0 +1,3284 @@
+{
+ "labels": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/s0/s0_train_labels.npz",
+ "targets": [
+  "drink_up",
+  "wood_up",
+  "sapling_up",
+  "table_placed",
+  "zombie_hit"
+ ],
+ "n_min": 100,
+ "q": 0.5,
+ "coin_seed": 2030,
+ "train_frames_t_ge_1": 2432119,
+ "base_rate_target_frames": 0.06640957946547846,
+ "attempt_contexts": 129,
+ "frames_in_attempt_contexts": 0.13130278576007176,
+ "frames_placed": 0.06568880881239775,
+ "target_frames_in_attempt_contexts": 0.9517385274523886,
+ "predicted_coverage": {
+  "all_targets": {
+   "prior": 0.11191536720188458,
+   "guided": 0.5318840592528647
+  },
+  "drink_up": {
+   "frames": 39435,
+   "in_attempt_contexts": 1.0,
+   "covered_prior": 0.12244897959183672,
+   "covered_guided": 0.5612244897959184
+  },
+  "wood_up": {
+   "frames": 64952,
+   "in_attempt_contexts": 1.0,
+   "covered_prior": 0.12257780313751312,
+   "covered_guided": 0.5612889015687567
+  },
+  "sapling_up": {
+   "frames": 6110,
+   "in_attempt_contexts": 1.0,
+   "covered_prior": 0.12294331808009619,
+   "covered_guided": 0.5535338521660711
+  },
+  "table_placed": {
+   "frames": 17084,
+   "in_attempt_contexts": 0.9998829313977992,
+   "covered_prior": 0.184347211139197,
+   "covered_guided": 0.5861845909049643
+  },
+  "zombie_hit": {
+   "frames": 34572,
+   "in_attempt_contexts": 0.7745863704732153,
+   "covered_prior": 0.04348216204218586,
+   "covered_guided": 0.4136345444113083
+  }
+ },
+ "rule": {
+  "10": [
+   7,
+   1
+  ],
+  "11": [
+   7,
+   1
+  ],
+  "14": [
+   7,
+   1
+  ],
+  "18": [
+   7,
+   1
+  ],
+  "22": [
+   7,
+   1
+  ],
+  "30": [
+   7,
+   1
+  ],
+  "54": [
+   7,
+   1
+  ],
+  "139": [
+   7,
+   1
+  ],
+  "142": [
+   7,
+   1
+  ],
+  "146": [
+   7,
+   1
+  ],
+  "159": [
+   7,
+   1
+  ],
+  "174": [
+   7,
+   1
+  ],
+  "178": [
+   7,
+   1
+  ],
+  "183": [
+   7,
+   1
+  ],
+  "190": [
+   7,
+   1
+  ],
+  "267": [
+   7,
+   1
+  ],
+  "270": [
+   7,
+   1
+  ],
+  "274": [
+   7,
+   1
+  ],
+  "287": [
+   7,
+   1
+  ],
+  "311": [
+   7,
+   1
+  ],
+  "318": [
+   7,
+   1
+  ],
+  "395": [
+   7,
+   1
+  ],
+  "398": [
+   7,
+   1
+  ],
+  "402": [
+   7,
+   1
+  ],
+  "403": [
+   7,
+   1
+  ],
+  "406": [
+   7,
+   1
+  ],
+  "414": [
+   7,
+   1
+  ],
+  "415": [
+   7,
+   1
+  ],
+  "430": [
+   7,
+   1
+  ],
+  "434": [
+   7,
+   1
+  ],
+  "439": [
+   7,
+   1
+  ],
+  "446": [
+   7,
+   1
+  ],
+  "523": [
+   7,
+   1
+  ],
+  "526": [
+   7,
+   1
+  ],
+  "530": [
+   7,
+   1
+  ],
+  "534": [
+   7,
+   1
+  ],
+  "542": [
+   7,
+   1
+  ],
+  "543": [
+   7,
+   1
+  ],
+  "558": [
+   7,
+   1
+  ],
+  "562": [
+   7,
+   1
+  ],
+  "567": [
+   7,
+   1
+  ],
+  "574": [
+   7,
+   1
+  ],
+  "648": [
+   7,
+   4
+  ],
+  "650": [
+   7,
+   1
+  ],
+  "651": [
+   7,
+   1
+  ],
+  "652": [
+   7,
+   2
+  ],
+  "654": [
+   7,
+   1
+  ],
+  "658": [
+   7,
+   1
+  ],
+  "660": [
+   7,
+   5
+  ],
+  "662": [
+   7,
+   4
+  ],
+  "670": [
+   7,
+   1
+  ],
+  "671": [
+   7,
+   1
+  ],
+  "694": [
+   7,
+   1
+  ],
+  "695": [
+   7,
+   1
+  ],
+  "778": [
+   7,
+   1
+  ],
+  "779": [
+   7,
+   1
+  ],
+  "786": [
+   7,
+   1
+  ],
+  "790": [
+   7,
+   1
+  ],
+  "798": [
+   7,
+   1
+  ],
+  "822": [
+   7,
+   1
+  ],
+  "906": [
+   7,
+   1
+  ],
+  "907": [
+   7,
+   1
+  ],
+  "910": [
+   7,
+   1
+  ],
+  "914": [
+   7,
+   1
+  ],
+  "918": [
+   7,
+   1
+  ],
+  "926": [
+   7,
+   1
+  ],
+  "950": [
+   7,
+   1
+  ],
+  "1032": [
+   3,
+   4
+  ],
+  "1034": [
+   6,
+   1
+  ],
+  "1035": [
+   7,
+   1
+  ],
+  "1042": [
+   7,
+   1
+  ],
+  "1046": [
+   7,
+   1
+  ],
+  "1052": [
+   3,
+   4
+  ],
+  "1054": [
+   6,
+   1
+  ],
+  "1076": [
+   3,
+   4
+  ],
+  "1078": [
+   6,
+   1
+  ],
+  "1162": [
+   7,
+   1
+  ],
+  "1163": [
+   7,
+   1
+  ],
+  "1170": [
+   7,
+   1
+  ],
+  "1174": [
+   7,
+   1
+  ],
+  "1182": [
+   7,
+   1
+  ],
+  "1206": [
+   7,
+   1
+  ],
+  "1290": [
+   7,
+   1
+  ],
+  "1291": [
+   7,
+   1
+  ],
+  "1294": [
+   7,
+   1
+  ],
+  "1298": [
+   7,
+   1
+  ],
+  "1302": [
+   7,
+   1
+  ],
+  "1310": [
+   7,
+   1
+  ],
+  "1334": [
+   7,
+   1
+  ],
+  "1418": [
+   7,
+   1
+  ],
+  "1419": [
+   7,
+   1
+  ],
+  "1426": [
+   7,
+   1
+  ],
+  "1430": [
+   7,
+   1
+  ],
+  "1438": [
+   7,
+   1
+  ],
+  "1454": [
+   7,
+   1
+  ],
+  "1462": [
+   7,
+   1
+  ],
+  "1546": [
+   7,
+   1
+  ],
+  "1547": [
+   7,
+   1
+  ],
+  "1554": [
+   7,
+   1
+  ],
+  "1558": [
+   7,
+   1
+  ],
+  "1566": [
+   7,
+   1
+  ],
+  "1590": [
+   7,
+   1
+  ],
+  "1674": [
+   7,
+   1
+  ],
+  "1675": [
+   7,
+   1
+  ],
+  "1682": [
+   7,
+   1
+  ],
+  "1686": [
+   7,
+   1
+  ],
+  "1694": [
+   7,
+   1
+  ],
+  "1718": [
+   7,
+   1
+  ],
+  "1802": [
+   7,
+   1
+  ],
+  "1803": [
+   7,
+   1
+  ],
+  "1806": [
+   7,
+   1
+  ],
+  "1810": [
+   7,
+   1
+  ],
+  "1814": [
+   7,
+   1
+  ],
+  "1822": [
+   7,
+   1
+  ],
+  "1846": [
+   7,
+   1
+  ],
+  "1930": [
+   7,
+   1
+  ],
+  "1931": [
+   7,
+   1
+  ],
+  "1934": [
+   7,
+   1
+  ],
+  "1938": [
+   7,
+   1
+  ],
+  "1942": [
+   7,
+   1
+  ],
+  "1950": [
+   7,
+   1
+  ],
+  "1974": [
+   7,
+   1
+  ],
+  "2058": [
+   7,
+   1
+  ],
+  "2059": [
+   7,
+   1
+  ],
+  "2062": [
+   7,
+   1
+  ],
+  "2066": [
+   7,
+   1
+  ],
+  "2070": [
+   7,
+   1
+  ],
+  "2078": [
+   7,
+   1
+  ],
+  "2102": [
+   7,
+   1
+  ]
+ },
+ "contexts": [
+  {
+   "context": 648,
+   "action": 5,
+   "faced_block": 2,
+   "zombie_adjacent": false,
+   "sleeping": false,
+   "frames": 79860,
+   "covered_rate": 0.07436764337590784,
+   "window": [
+    7,
+    4
+   ],
+   "ties": 6,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 5939,
+    "table_placed": 0,
+    "zombie_hit": 0
+   }
+  },
+  {
+   "context": 660,
+   "action": 5,
+   "faced_block": 5,
+   "zombie_adjacent": false,
+   "sleeping": false,
+   "frames": 64484,
+   "covered_rate": 0.9993486756404689,
+   "window": [
+    7,
+    5
+   ],
+   "ties": 6,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 64442,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 0
+   }
+  },
+  {
+   "context": 652,
+   "action": 5,
+   "faced_block": 3,
+   "zombie_adjacent": false,
+   "sleeping": false,
+   "frames": 40486,
+   "covered_rate": 0.9689769302968928,
+   "window": [
+    7,
+    2
+   ],
+   "ties": 6,
+   "target_frames_by_class": {
+    "drink_up": 39230,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 0
+   }
+  },
+  {
+   "context": 1032,
+   "action": 8,
+   "faced_block": 2,
+   "zombie_adjacent": false,
+   "sleeping": false,
+   "frames": 29244,
+   "covered_rate": 0.49764054164956917,
+   "window": [
+    3,
+    4
+   ],
+   "ties": 1,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 14553,
+    "zombie_hit": 0
+   }
+  },
+  {
+   "context": 650,
+   "action": 5,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 21690,
+   "covered_rate": 0.1730751498386353,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 171,
+    "table_placed": 0,
+    "zombie_hit": 3754
+   }
+  },
+  {
+   "context": 670,
+   "action": 5,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 7122,
+   "covered_rate": 0.16119067677618645,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 1148
+   }
+  },
+  {
+   "context": 1052,
+   "action": 8,
+   "faced_block": 7,
+   "zombie_adjacent": false,
+   "sleeping": false,
+   "frames": 3718,
+   "covered_rate": 0.4018289402904788,
+   "window": [
+    3,
+    4
+   ],
+   "ties": 1,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 1494,
+    "zombie_hit": 0
+   }
+  },
+  {
+   "context": 694,
+   "action": 5,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 3166,
+   "covered_rate": 0.14971572962728996,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 474
+   }
+  },
+  {
+   "context": 542,
+   "action": 4,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 2909,
+   "covered_rate": 0.07493984187005844,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 218
+   }
+  },
+  {
+   "context": 414,
+   "action": 3,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 2485,
+   "covered_rate": 0.07122736418511066,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 177
+   }
+  },
+  {
+   "context": 1930,
+   "action": 15,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 2373,
+   "covered_rate": 0.3750526759376317,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 890
+   }
+  },
+  {
+   "context": 1034,
+   "action": 8,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 2328,
+   "covered_rate": 0.3436426116838488,
+   "window": [
+    6,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 381,
+    "zombie_hit": 800
+   }
+  },
+  {
+   "context": 778,
+   "action": 6,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 2321,
+   "covered_rate": 0.34726411029728566,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 806
+   }
+  },
+  {
+   "context": 906,
+   "action": 7,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 2311,
+   "covered_rate": 0.36477715274772826,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 843
+   }
+  },
+  {
+   "context": 1162,
+   "action": 9,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 2287,
+   "covered_rate": 0.3445561871447311,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 788
+   }
+  },
+  {
+   "context": 1546,
+   "action": 12,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 2279,
+   "covered_rate": 0.36024572180781045,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 821
+   }
+  },
+  {
+   "context": 1418,
+   "action": 11,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 2272,
+   "covered_rate": 0.3617957746478873,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 822
+   }
+  },
+  {
+   "context": 10,
+   "action": 0,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 2251,
+   "covered_rate": 0.3696135051088405,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 832
+   }
+  },
+  {
+   "context": 2058,
+   "action": 16,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 2248,
+   "covered_rate": 0.3798932384341637,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 854
+   }
+  },
+  {
+   "context": 1674,
+   "action": 13,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 2222,
+   "covered_rate": 0.3631863186318632,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 807
+   }
+  },
+  {
+   "context": 1290,
+   "action": 10,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 2211,
+   "covered_rate": 0.34328358208955223,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 759
+   }
+  },
+  {
+   "context": 1802,
+   "action": 14,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 2179,
+   "covered_rate": 0.3611748508490133,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 787
+   }
+  },
+  {
+   "context": 1076,
+   "action": 8,
+   "faced_block": 13,
+   "zombie_adjacent": false,
+   "sleeping": false,
+   "frames": 2083,
+   "covered_rate": 0.2640422467594815,
+   "window": [
+    3,
+    4
+   ],
+   "ties": 1,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 550,
+    "zombie_hit": 0
+   }
+  },
+  {
+   "context": 530,
+   "action": 4,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 1455,
+   "covered_rate": 0.15601374570446735,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 227
+   }
+  },
+  {
+   "context": 402,
+   "action": 3,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 1314,
+   "covered_rate": 0.1963470319634703,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 258
+   }
+  },
+  {
+   "context": 534,
+   "action": 4,
+   "faced_block": 5,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 1135,
+   "covered_rate": 0.0881057268722467,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 100
+   }
+  },
+  {
+   "context": 146,
+   "action": 1,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 1113,
+   "covered_rate": 0.15723270440251572,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 175
+   }
+  },
+  {
+   "context": 526,
+   "action": 4,
+   "faced_block": 3,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 1112,
+   "covered_rate": 0.09532374100719425,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 106
+   }
+  },
+  {
+   "context": 406,
+   "action": 3,
+   "faced_block": 5,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 1085,
+   "covered_rate": 0.07649769585253456,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 83
+   }
+  },
+  {
+   "context": 274,
+   "action": 2,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 1056,
+   "covered_rate": 0.09375,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 99
+   }
+  },
+  {
+   "context": 267,
+   "action": 2,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 934,
+   "covered_rate": 0.49785867237687365,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 465
+   }
+  },
+  {
+   "context": 651,
+   "action": 5,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 868,
+   "covered_rate": 0.4838709677419355,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 420
+   }
+  },
+  {
+   "context": 142,
+   "action": 1,
+   "faced_block": 3,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 831,
+   "covered_rate": 0.08664259927797834,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 72
+   }
+  },
+  {
+   "context": 398,
+   "action": 3,
+   "faced_block": 3,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 807,
+   "covered_rate": 0.13011152416356878,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 105
+   }
+  },
+  {
+   "context": 395,
+   "action": 3,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 806,
+   "covered_rate": 0.5620347394540943,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 453
+   }
+  },
+  {
+   "context": 270,
+   "action": 2,
+   "faced_block": 3,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 803,
+   "covered_rate": 0.10336239103362391,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 83
+   }
+  },
+  {
+   "context": 658,
+   "action": 5,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 792,
+   "covered_rate": 0.380050505050505,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 301
+   }
+  },
+  {
+   "context": 139,
+   "action": 1,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 750,
+   "covered_rate": 0.532,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 399
+   }
+  },
+  {
+   "context": 523,
+   "action": 4,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 579,
+   "covered_rate": 0.4939550949913644,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 286
+   }
+  },
+  {
+   "context": 662,
+   "action": 5,
+   "faced_block": 5,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 510,
+   "covered_rate": 1.0,
+   "window": [
+    7,
+    4
+   ],
+   "ties": 6,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 510,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 205
+   }
+  },
+  {
+   "context": 562,
+   "action": 4,
+   "faced_block": 12,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 484,
+   "covered_rate": 0.11570247933884298,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 56
+   }
+  },
+  {
+   "context": 434,
+   "action": 3,
+   "faced_block": 12,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 431,
+   "covered_rate": 0.0765661252900232,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 33
+   }
+  },
+  {
+   "context": 430,
+   "action": 3,
+   "faced_block": 11,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 401,
+   "covered_rate": 0.11471321695760599,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 46
+   }
+  },
+  {
+   "context": 558,
+   "action": 4,
+   "faced_block": 11,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 397,
+   "covered_rate": 0.14357682619647355,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 57
+   }
+  },
+  {
+   "context": 11,
+   "action": 0,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 343,
+   "covered_rate": 0.46938775510204084,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 161
+   }
+  },
+  {
+   "context": 178,
+   "action": 1,
+   "faced_block": 12,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 342,
+   "covered_rate": 0.10818713450292397,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 37
+   }
+  },
+  {
+   "context": 1334,
+   "action": 10,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 333,
+   "covered_rate": 0.4864864864864865,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 162
+   }
+  },
+  {
+   "context": 822,
+   "action": 6,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 322,
+   "covered_rate": 0.4472049689440994,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 144
+   }
+  },
+  {
+   "context": 950,
+   "action": 7,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 318,
+   "covered_rate": 0.42452830188679247,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 135
+   }
+  },
+  {
+   "context": 1590,
+   "action": 12,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 318,
+   "covered_rate": 0.4559748427672956,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 145
+   }
+  },
+  {
+   "context": 2059,
+   "action": 16,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 311,
+   "covered_rate": 0.4180064308681672,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 130
+   }
+  },
+  {
+   "context": 1206,
+   "action": 9,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 306,
+   "covered_rate": 0.4869281045751634,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 149
+   }
+  },
+  {
+   "context": 907,
+   "action": 7,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 304,
+   "covered_rate": 0.5032894736842105,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 153
+   }
+  },
+  {
+   "context": 1078,
+   "action": 8,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 303,
+   "covered_rate": 0.43564356435643564,
+   "window": [
+    6,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 65,
+    "zombie_hit": 132
+   }
+  },
+  {
+   "context": 1974,
+   "action": 15,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 302,
+   "covered_rate": 0.44039735099337746,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 133
+   }
+  },
+  {
+   "context": 1462,
+   "action": 11,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 301,
+   "covered_rate": 0.4119601328903654,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 124
+   }
+  },
+  {
+   "context": 1718,
+   "action": 13,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 297,
+   "covered_rate": 0.4511784511784512,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 134
+   }
+  },
+  {
+   "context": 2102,
+   "action": 16,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 297,
+   "covered_rate": 0.4713804713804714,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 140
+   }
+  },
+  {
+   "context": 54,
+   "action": 0,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 296,
+   "covered_rate": 0.4560810810810811,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 135
+   }
+  },
+  {
+   "context": 1846,
+   "action": 14,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 288,
+   "covered_rate": 0.3923611111111111,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 113
+   }
+  },
+  {
+   "context": 926,
+   "action": 7,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 286,
+   "covered_rate": 0.4405594405594406,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 126
+   }
+  },
+  {
+   "context": 1035,
+   "action": 8,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 279,
+   "covered_rate": 0.4731182795698925,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 132
+   }
+  },
+  {
+   "context": 1547,
+   "action": 12,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 277,
+   "covered_rate": 0.4584837545126354,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 127
+   }
+  },
+  {
+   "context": 1675,
+   "action": 13,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 272,
+   "covered_rate": 0.4632352941176471,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 126
+   }
+  },
+  {
+   "context": 1931,
+   "action": 15,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 271,
+   "covered_rate": 0.3763837638376384,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 102
+   }
+  },
+  {
+   "context": 1803,
+   "action": 14,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 264,
+   "covered_rate": 0.3977272727272727,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 105
+   }
+  },
+  {
+   "context": 174,
+   "action": 1,
+   "faced_block": 11,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 263,
+   "covered_rate": 0.11406844106463879,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 30
+   }
+  },
+  {
+   "context": 1163,
+   "action": 9,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 260,
+   "covered_rate": 0.5115384615384615,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 133
+   }
+  },
+  {
+   "context": 1291,
+   "action": 10,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 257,
+   "covered_rate": 0.48249027237354086,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 124
+   }
+  },
+  {
+   "context": 1182,
+   "action": 9,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 256,
+   "covered_rate": 0.4609375,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 118
+   }
+  },
+  {
+   "context": 30,
+   "action": 0,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 244,
+   "covered_rate": 0.4426229508196721,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 108
+   }
+  },
+  {
+   "context": 1419,
+   "action": 11,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 241,
+   "covered_rate": 0.4066390041493776,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 98
+   }
+  },
+  {
+   "context": 671,
+   "action": 5,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 230,
+   "covered_rate": 0.5347826086956522,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 123
+   }
+  },
+  {
+   "context": 1310,
+   "action": 10,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 228,
+   "covered_rate": 0.5131578947368421,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 117
+   }
+  },
+  {
+   "context": 1438,
+   "action": 11,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 223,
+   "covered_rate": 0.40358744394618834,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 90
+   }
+  },
+  {
+   "context": 798,
+   "action": 6,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 221,
+   "covered_rate": 0.45701357466063347,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 101
+   }
+  },
+  {
+   "context": 654,
+   "action": 5,
+   "faced_block": 3,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 213,
+   "covered_rate": 0.9765258215962441,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 205,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 79
+   }
+  },
+  {
+   "context": 2078,
+   "action": 16,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 211,
+   "covered_rate": 0.44075829383886256,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 93
+   }
+  },
+  {
+   "context": 1694,
+   "action": 13,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 209,
+   "covered_rate": 0.45454545454545453,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 95
+   }
+  },
+  {
+   "context": 779,
+   "action": 6,
+   "faced_block": 2,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 208,
+   "covered_rate": 0.4855769230769231,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 101
+   }
+  },
+  {
+   "context": 1566,
+   "action": 12,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 203,
+   "covered_rate": 0.47783251231527096,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 97
+   }
+  },
+  {
+   "context": 1950,
+   "action": 15,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 202,
+   "covered_rate": 0.4801980198019802,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 97
+   }
+  },
+  {
+   "context": 1822,
+   "action": 14,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 194,
+   "covered_rate": 0.4587628865979381,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 89
+   }
+  },
+  {
+   "context": 1054,
+   "action": 8,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 193,
+   "covered_rate": 0.44041450777202074,
+   "window": [
+    6,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 39,
+    "zombie_hit": 85
+   }
+  },
+  {
+   "context": 1046,
+   "action": 8,
+   "faced_block": 5,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 182,
+   "covered_rate": 0.3021978021978022,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 55
+   }
+  },
+  {
+   "context": 311,
+   "action": 2,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 180,
+   "covered_rate": 0.5555555555555556,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 100
+   }
+  },
+  {
+   "context": 790,
+   "action": 6,
+   "faced_block": 5,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 178,
+   "covered_rate": 0.37640449438202245,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 67
+   }
+  },
+  {
+   "context": 1558,
+   "action": 12,
+   "faced_block": 5,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 178,
+   "covered_rate": 0.34831460674157305,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 62
+   }
+  },
+  {
+   "context": 22,
+   "action": 0,
+   "faced_block": 5,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 176,
+   "covered_rate": 0.38636363636363635,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 68
+   }
+  },
+  {
+   "context": 918,
+   "action": 7,
+   "faced_block": 5,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 175,
+   "covered_rate": 0.38285714285714284,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 67
+   }
+  },
+  {
+   "context": 2070,
+   "action": 16,
+   "faced_block": 5,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 174,
+   "covered_rate": 0.3735632183908046,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 65
+   }
+  },
+  {
+   "context": 439,
+   "action": 3,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 172,
+   "covered_rate": 0.5872093023255814,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 101
+   }
+  },
+  {
+   "context": 695,
+   "action": 5,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 172,
+   "covered_rate": 0.48255813953488375,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 83
+   }
+  },
+  {
+   "context": 1814,
+   "action": 14,
+   "faced_block": 5,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 170,
+   "covered_rate": 0.3352941176470588,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 57
+   }
+  },
+  {
+   "context": 1430,
+   "action": 11,
+   "faced_block": 5,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 166,
+   "covered_rate": 0.40963855421686746,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 68
+   }
+  },
+  {
+   "context": 1174,
+   "action": 9,
+   "faced_block": 5,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 165,
+   "covered_rate": 0.4666666666666667,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 77
+   }
+  },
+  {
+   "context": 1942,
+   "action": 15,
+   "faced_block": 5,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 165,
+   "covered_rate": 0.3515151515151515,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 58
+   }
+  },
+  {
+   "context": 287,
+   "action": 2,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 163,
+   "covered_rate": 0.6380368098159509,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 104
+   }
+  },
+  {
+   "context": 786,
+   "action": 6,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 163,
+   "covered_rate": 0.25766871165644173,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 42
+   }
+  },
+  {
+   "context": 1302,
+   "action": 10,
+   "faced_block": 5,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 162,
+   "covered_rate": 0.36419753086419754,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 59
+   }
+  },
+  {
+   "context": 1298,
+   "action": 10,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 160,
+   "covered_rate": 0.33125,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 53
+   }
+  },
+  {
+   "context": 1554,
+   "action": 12,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 159,
+   "covered_rate": 0.34591194968553457,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 55
+   }
+  },
+  {
+   "context": 1682,
+   "action": 13,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 159,
+   "covered_rate": 0.2893081761006289,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 46
+   }
+  },
+  {
+   "context": 1810,
+   "action": 14,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 152,
+   "covered_rate": 0.3684210526315789,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 56
+   }
+  },
+  {
+   "context": 415,
+   "action": 3,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 150,
+   "covered_rate": 0.7066666666666667,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 106
+   }
+  },
+  {
+   "context": 18,
+   "action": 0,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 149,
+   "covered_rate": 0.4228187919463087,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 63
+   }
+  },
+  {
+   "context": 1170,
+   "action": 9,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 147,
+   "covered_rate": 0.32653061224489793,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 48
+   }
+  },
+  {
+   "context": 1686,
+   "action": 13,
+   "faced_block": 5,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 145,
+   "covered_rate": 0.3448275862068966,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 50
+   }
+  },
+  {
+   "context": 1938,
+   "action": 15,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 141,
+   "covered_rate": 0.3262411347517731,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 46
+   }
+  },
+  {
+   "context": 2066,
+   "action": 16,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 140,
+   "covered_rate": 0.36428571428571427,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 51
+   }
+  },
+  {
+   "context": 914,
+   "action": 7,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 138,
+   "covered_rate": 0.3115942028985507,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 43
+   }
+  },
+  {
+   "context": 1426,
+   "action": 11,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 137,
+   "covered_rate": 0.43795620437956206,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 60
+   }
+  },
+  {
+   "context": 1042,
+   "action": 8,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 136,
+   "covered_rate": 0.35294117647058826,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 48
+   }
+  },
+  {
+   "context": 183,
+   "action": 1,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 126,
+   "covered_rate": 0.5714285714285714,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 72
+   }
+  },
+  {
+   "context": 574,
+   "action": 4,
+   "faced_block": 15,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 126,
+   "covered_rate": 0.12698412698412698,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 16
+   }
+  },
+  {
+   "context": 14,
+   "action": 0,
+   "faced_block": 3,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 123,
+   "covered_rate": 0.42276422764227645,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 52
+   }
+  },
+  {
+   "context": 318,
+   "action": 2,
+   "faced_block": 15,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 121,
+   "covered_rate": 0.08264462809917356,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 10
+   }
+  },
+  {
+   "context": 446,
+   "action": 3,
+   "faced_block": 15,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 120,
+   "covered_rate": 0.08333333333333333,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 10
+   }
+  },
+  {
+   "context": 1294,
+   "action": 10,
+   "faced_block": 3,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 115,
+   "covered_rate": 0.40869565217391307,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 47
+   }
+  },
+  {
+   "context": 543,
+   "action": 4,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 113,
+   "covered_rate": 0.6814159292035398,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 77
+   }
+  },
+  {
+   "context": 1454,
+   "action": 11,
+   "faced_block": 11,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 113,
+   "covered_rate": 0.3805309734513274,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 43
+   }
+  },
+  {
+   "context": 190,
+   "action": 1,
+   "faced_block": 15,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 111,
+   "covered_rate": 0.10810810810810811,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 12
+   }
+  },
+  {
+   "context": 567,
+   "action": 4,
+   "faced_block": 13,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 110,
+   "covered_rate": 0.5818181818181818,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 64
+   }
+  },
+  {
+   "context": 1934,
+   "action": 15,
+   "faced_block": 3,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 109,
+   "covered_rate": 0.25688073394495414,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 28
+   }
+  },
+  {
+   "context": 159,
+   "action": 1,
+   "faced_block": 7,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 107,
+   "covered_rate": 0.6542056074766355,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 70
+   }
+  },
+  {
+   "context": 403,
+   "action": 3,
+   "faced_block": 4,
+   "zombie_adjacent": true,
+   "sleeping": true,
+   "frames": 107,
+   "covered_rate": 0.6635514018691588,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 71
+   }
+  },
+  {
+   "context": 910,
+   "action": 7,
+   "faced_block": 3,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 106,
+   "covered_rate": 0.3867924528301887,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 41
+   }
+  },
+  {
+   "context": 1806,
+   "action": 14,
+   "faced_block": 3,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 103,
+   "covered_rate": 0.3300970873786408,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 34
+   }
+  },
+  {
+   "context": 2062,
+   "action": 16,
+   "faced_block": 3,
+   "zombie_adjacent": true,
+   "sleeping": false,
+   "frames": 102,
+   "covered_rate": 0.4117647058823529,
+   "window": [
+    7,
+    1
+   ],
+   "ties": 2,
+   "target_frames_by_class": {
+    "drink_up": 0,
+    "wood_up": 0,
+    "sapling_up": 0,
+    "table_placed": 0,
+    "zombie_hit": 42
+   }
+  }
+ ]
+}

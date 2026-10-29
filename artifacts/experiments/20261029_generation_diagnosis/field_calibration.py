@@ -89,11 +89,13 @@ def geometry(p):
 
 
 @torch.no_grad()
-def run(model, enc, ctx, means, cfg, gen):
+def run(model, enc, ctx, means, cfg, gen, keep=False):
+    """keep (added 10-30, fovea fine-tune evaluation): also return the production samples (gen_p, gen_g, gen_v), same
+    draws."""
     den, clamp, sd = model.denoiser, cfg["perception"]["periphery"]["tanh_clamp"], cfg["edm"]["sigma_data"]
     neg_bins = model.outcome.bin_value < -0.05
     keys = ("f_real", "geo_real", "death_rec", "death_real", "neg_real", "f_gen", "geo_gen", "death_gen", "neg_gen",
-            "f_den", "f_den_raw", "geo_den", "death_den", "neg_den", "row_ctx")
+            "f_den", "f_den_raw", "geo_den", "death_den", "neg_den", "row_ctx") + (("gen_p", "gen_g", "gen_v") if keep else ())
     out = {k: [] for k in keys}
     n_ctx = 256 // R
     for start in range(0, len(ctx), n_ctx):
@@ -143,6 +145,9 @@ def run(model, enc, ctx, means, cfg, gen):
             shapes = [tuple(enc[0][k].shape[1:]) for k in ("p", "g", "v")]
             xg = tuple(t[:, 0] for t in M.sample(den, shapes, pa, mem, fx, cache, cfg, gen))
             out["f_gen"].append(f(xg[0])); out["geo_gen"].append(geometry(xg[0]).cpu())
+            if keep:
+                for k_, t_ in zip(("gen_p", "gen_g", "gen_v"), xg):
+                    out[k_].append(t_.half().cpu())
             dg, ng = heads(xg); out["death_gen"].append(dg); out["neg_gen"].append(ng)
         out["row_ctx"].append(torch.tensor([start + i for i in rows]))
     return {k: torch.cat(v).numpy() for k, v in out.items()}
