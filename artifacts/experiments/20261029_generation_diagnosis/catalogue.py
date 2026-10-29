@@ -150,7 +150,7 @@ def recorded_ok(kind, rows, L, s_off):
 
 
 @torch.no_grad()
-def run(model, enc, L, rows, kind, hm, tm, cfg, gen):
+def run(model, enc, L, rows, kind, hm, tm, cfg, gen, heun=True):
     den, clamp, sd = model.denoiser, cfg["perception"]["periphery"]["tanh_clamp"], cfg["edm"]["sigma_data"]
     s_off = np.r_[0, np.cumsum(L["ep_T"] + 1)]
     out = {k: [] for k in ("f_real", "f_den", "f_gen", "f_heun", "row_ctx", "valid")}
@@ -183,9 +183,10 @@ def run(model, enc, L, rows, kind, hm, tm, cfg, gen):
             out["f_den"].append(torch.stack(fd, 1))
             shapes = [tuple(enc[0][k].shape[1:]) for k in ("p", "g", "v")]
             out["f_gen"].append(f(M.sample(den, shapes, pa, mem, fx, cache, cfg, gen)[0][:, 0]))
-            out["f_heun"].append(f(SS.sample(den, shapes, pa, mem, fx, cache, SS.ALGORITHMS["heun_32"], cfg, gen)[0]))
+            if heun:
+                out["f_heun"].append(f(SS.sample(den, shapes, pa, mem, fx, cache, SS.ALGORITHMS["heun_32"], cfg, gen)[0]))
         out["row_ctx"].append(torch.tensor([start + i for i in idx]))
-    return {k: torch.cat(v).numpy() for k, v in out.items()}
+    return {k: torch.cat(v).numpy() for k, v in out.items() if v}
 
 
 def main():

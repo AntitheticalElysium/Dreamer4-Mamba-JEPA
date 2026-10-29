@@ -144,3 +144,10 @@ decision.
 5. T3: accepted (full conditioning, post-move rule, one-sided reading).
 6. T4 / T5: accepted as descriptive.
 7. Seed 2: agreed it is replication, not diagnosis.
+
+## Addendum after the results and Codex's review (10-29)
+G. Checkpoint trajectory (user, 10-29; `checkpoint_trajectory.py`). Question, competing readings and controls in the
+script: matched rows, matched noise draws, each checkpoint's own references; this run's trajectory only, no claim about
+longer training or about capacity / weighting / coverage.
+E revised (Codex review point 2-3): the cooldown readout is isolated among rows with a zombie adjacent after the move;
+a drink probe asks whether the drink consequence is accessible from the conditioning (one-sided, as E).

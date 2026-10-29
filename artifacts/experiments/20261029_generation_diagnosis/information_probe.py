@@ -10,6 +10,9 @@ action + fixation only, (c) the last context frame + action (no history), and (d
 position, cooldown <= 0, mask, sleeping; no realised random draw), which must be near-deterministic.
 Event: a zombie's cooldown resets to 5 during t-1 -> t (an attack). Population: zombie within L1 2 at t-1.
 Reading: a strong probe on (a) shows the information is accessible to this reader; a weak one shows nothing.
+Revised 10-29 after Codex's review: the cooldown readout is isolated among rows with a zombie adjacent after the move
+(ready vs not ready; the first version compared ready-and-adjacent with everything else), and a drink probe asks
+whether the drink consequence is accessible from the conditioning.
 Context frames' reward / termination columns are zeroed (the denoiser does not see them directly).
 Frozen P1 world seed 1, checkpoint 10; dev split, one third of physical episodes held out.
 Usage (project venv, GPU): python -m artifacts.experiments.20261029_generation_diagnosis.information_probe OUT_JSON
@@ -43,8 +46,32 @@ def population(L, enc):
             attack = bool((zm[g] & (cd[g] <= 0) & (cd[g + 1] == 5)).any())
             post = np.abs(zp[g] - pos[g + 1]).sum(-1) == 1                 # player's post-move position
             rule = np.r_[post & zm[g], (cd[g] <= 0) & zm[g], zm[g], L["s_sleep"][g]].astype(np.float32)
-            rows.append((e, t, attack, rule, bool((post & zm[g] & (cd[g] <= 0)).any())))
+            rows.append((e, t, attack, rule, bool((post & zm[g] & (cd[g] <= 0)).any()), bool((post & zm[g]).any())))
     return rows
+
+
+def drink_population(L, enc):
+    """Added 10-29 (Codex review point 3): is the drink consequence accessible from the conditioning? Rows: awake,
+    a_{t-1} = DO, drink <= 8, facing anything; label: drink + 1 at t (do_action: facing water)."""
+    s_off, a_off = np.r_[0, np.cumsum(L["ep_T"] + 1)], np.r_[0, np.cumsum(L["ep_T"])]
+    rows = []
+    for e in range(len(enc)):
+        for t in range(HISTORY, len(enc[e]["p"])):
+            g = s_off[e] + t - 1
+            if L["s_sleep"][g] or int(L["t_action"][a_off[e] + t - 1]) != 5 or L["s_body"][g, 2] > 8:
+                continue
+            rows.append((e, t, bool(L["s_body"][g + 1, 2] == L["s_body"][g, 2] + 1)))
+    return rows
+
+
+def auc(score, positive):
+    """Mann-Whitney AUC of score for positive vs negative rows (ties averaged)."""
+    r = np.argsort(np.argsort(score, kind="stable"), kind="stable").astype(float)
+    for v in np.unique(score):
+        m = score == v
+        r[m] = r[m].mean()
+    n1, n0 = positive.sum(), (~positive).sum()
+    return float((r[positive].sum() - n1 * (n1 - 1) / 2) / (n1 * n0)) if n1 and n0 else None
 
 
 def features(enc, rows):
@@ -88,6 +115,7 @@ def main():
     enc = S.encode(model, L, cfg)
     rows = population(L, enc)
     y = np.array([r[2] for r in rows]); ep = np.array([r[0] for r in rows]); ready = np.array([r[4] for r in rows])
+    adj = np.array([r[5] for r in rows])
     X = features(enc, rows)
     n_last = X.shape[1] - (256 + 17 + 49)
     inputs = {"a_full_conditioning": X, "b_belief_action_fixation": X[:, n_last:],
@@ -95,12 +123,27 @@ def main():
               "d_rule_causal_inputs": np.stack([r[3] for r in rows])}
     res = {"checkpoint_sha256": TR.file_sha256(FC.CKPT), "rows": len(rows), "attack_rate": float(y.mean()),
            "rule_ready_and_adjacent_rate": float(ready.mean()),
-           "attack_given_ready_adjacent": float(y[ready].mean()), "attack_given_not": float(y[~ready].mean())}
+           "attack_given_ready_adjacent": float(y[ready].mean()), "attack_given_not": float(y[~ready].mean()),
+           "adjacent_after_move_rows": int(adj.sum()), "attack_given_adjacent_ready": float(y[adj & ready].mean()),
+           "attack_given_adjacent_not_ready": float(y[adj & ~ready].mean())}
     for name, Xi in inputs.items():
         r, te_rows, p = probe(Xi, y, ep, np.random.default_rng(2029))
         r["mean_p_ready_adjacent"] = float(p[ready[te_rows]].mean()); r["mean_p_not"] = float(p[~ready[te_rows]].mean())
+        a_te, r_te = adj[te_rows], ready[te_rows]                        # cooldown isolated: adjacent after the move
+        r["adjacent_after_move"] = {"rows": int(a_te.sum()), "mean_p_ready": float(p[a_te & r_te].mean()),
+                                    "mean_p_not_ready": float(p[a_te & ~r_te].mean()),
+                                    "auc_ready_vs_not": auc(p[a_te], r_te[a_te])}
         res[name] = r
         print(name, {k: (round(v, 4) if isinstance(v, float) else v) for k, v in r.items()}, flush=True)
+        out.write_text(json.dumps(res, indent=1))
+    drows = drink_population(L, enc)
+    yd, ed = np.array([r[2] for r in drows]), np.array([r[0] for r in drows])
+    Xd = features(enc, [(r[0], r[1]) for r in drows])
+    res["drink"] = {"rows": len(drows), "rate": float(yd.mean())}
+    for name, Xi in {"a_full_conditioning": Xd, "b_belief_action_fixation": Xd[:, n_last:],
+                     "c_last_frame_action": np.concatenate([Xd[:, (HISTORY - 1) * FRAME:HISTORY * FRAME], Xd[:, n_last + 256:]], 1)}.items():
+        res["drink"][name] = probe(Xi, yd, ed, np.random.default_rng(2029))[0]
+        print("drink", name, res["drink"][name], flush=True)
         out.write_text(json.dumps(res, indent=1))
 
 
