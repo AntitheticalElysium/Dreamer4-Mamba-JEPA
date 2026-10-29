@@ -106,7 +106,7 @@ def f2(run, L):
     val = tot.mean(-1, keepdims=True) - tot                                   # value: better than the average fixation
     ep, night, nset = d["e"], L["s_light"][g] < 0.5, d["night_set"].astype(bool)
     pos = L["s_pos"][g].astype(int)
-    wk = np.stack([np.stack([pos[:, 0] + CENTRES[None, :, 0] + dr - 3, pos[:, 1] + CENTRES[None, :, 1] + dc - 4], -1)
+    wk = np.stack([np.stack([pos[:, None, 0] + CENTRES[None, :, 0] + dr - 3, pos[:, None, 1] + CENTRES[None, :, 1] + dc - 4], -1)
                    for dr, dc in D3], 2)                                      # [n, 49, 9, 2] world keys of each window
     scr = (CENTRES[:, None, 0] + D3[None, :, 0]) * 9 + CENTRES[:, None, 1] + D3[None, :, 1]   # [49, 9]
     hud_cover = (scr >= 63).any(-1)
