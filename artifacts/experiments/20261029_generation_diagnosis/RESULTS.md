@@ -94,10 +94,29 @@ Native death head (recorded RISKY 12.77%, SAFE 0%, RANDOM 0.20%): production 0.0
 - B's warning about the production start (overshoot from sigma_max * eps) is not visible here beyond small excesses
   over the field mean (ADJACENT 0.104 vs 0.086, DRINK 0.23 vs 0.18); sigma_max 10 sits slightly lower.
 
+## E. Information in the conditioning (`information_probe.py`, `information_probe/results.json`)
+Event: a zombie attack during t-1 -> t (cooldown reset to 5). Population: a zombie within L1 2 at t-1, 37,491 rows,
+attack rate 11.0%; one third of physical episodes held out (13,685 test rows). S1 probe protocol (MLP 256-256).
+
+| Probe input | AP | Log loss (base 0.346) | ECE | Mean P: ready + adjacent after the move / other |
+|---|---|---|---|---|
+| (d) rule's causal inputs (positive control) | 0.933 | 0.046 | 0.005 | 0.886 / 0.0004 |
+| (b) predicted belief + a_{t-1} + fixation | 0.592 | 0.226 | 0.023 | 0.448 / 0.071 |
+| (a) full conditioning (8 context frames + their beliefs + the above) | 0.448 | 0.269 | 0.022 | 0.337 / 0.086 |
+| (c) last context frame + a_{t-1} | 0.410 | 0.297 | 0.028 | 0.282 / 0.080 |
+
+- One-sided reading: the denoiser's conditioning carries at least the belief probe's information: it separates
+  ready from non-ready adjacent zombies (0.45 vs 0.07), i.e. part of the hidden cooldown. The field does not use it
+  (A: RISKY ready 0.027 vs not ready 0.024; ADJACENT reversed). So the field's underweighting is not only missing
+  information; it ignores information present in its own conditioning.
+- (a) below (b) is a probe limitation (18k inputs, 24k training rows), not less information: (a) contains (b). The
+  belief stays below the rule (0.59 vs 0.93): whether the rest is absent or unextracted is not established.
+
 ## Reading so far
 The deployed one-step deficit has two measured components: (1) the trained field's conditional mean underweights
 consequences, including a deterministic visible one (drink), and ignores the hidden cooldown; this bounds every tested
 sampler; (2) the 3-step production algorithm suppresses most of what the field still carries for a rare branch
 (RISKY 0.025 -> 0.002, as B predicts for an exact field). Of the two, (1) is binding: no inference setting recovers
 the recorded rates. Neither is "only a rare-event symptom" of the other, and the geometry mismatch is a separate,
-integration-dependent property. E (information probes) is running; F follows PLAN v2.
+integration-dependent property. E: the conditioning carries part of the hidden cooldown that the field ignores.
+F (catalogue, bulk / tail) follows PLAN v2.
