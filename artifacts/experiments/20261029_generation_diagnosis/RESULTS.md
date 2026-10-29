@@ -113,6 +113,29 @@ one third of physical episodes held out (13,685 test rows). S1 probe protocol (M
 - (a) below (b) is a probe limitation (18k inputs, 24k training rows), not less information: (a) contains (b). The
   belief stays below the rule (0.59 vs 0.93): whether the rest is absent or unextracted is not established.
 
+## F. Consequence catalogue (`catalogue.py`, `catalogue/results.json`; descriptive)
+A's instrument on six classes (rules in the script), 2,000 contexts each, 2 rows per context; opportunity rate = share
+of the 297,835 dev frames with t >= 8. Instrument check: |bias| at sigma 0.05 <= 0.002 in every class; recorded
+outcomes as defined in 100% (MOVE, BLOCKED, WOOD, DRINK), 96.9% (TABLE), 9.75% (SAPLING, rule p = 0.10).
+
+| Class | Opportunity | Consequence | Recorded f | Field mean at sigma 0.7 / 2 / 6.67 / 20 | Production | Heun 32 |
+|---|---|---|---|---|---|---|
+| MOVE | 35.3% | view shift, ~60 cells, deterministic | 0.930 | 0.921 / 0.918 / 0.910 / 0.896 | 0.909 | 0.872 |
+| BLOCKED | 3.6% | no shift, deterministic | 0.038 | 0.052 / 0.065 / 0.099 / 0.136 | 0.082 | 0.143 |
+| WOOD | 2.7% | HUD wood + 1, deterministic | 0.994 | 0.720 / 0.385 / 0.238 / 0.128 | 0.148 | 0.204 |
+| SAPLING | 1.6% | HUD sapling + 1 with p 0.10 | 0.072 | 0.059 / -0.004 / -0.018 / -0.024 | -0.025 | 0.018 |
+| DRINK | 1.6% | HUD drink + 1, deterministic | 1.001 | 0.634 / 0.317 / 0.182 / 0.146 | 0.140 | 0.227 |
+| TABLE | 0.76% | faced map cell -> table, deterministic | 0.918 | 0.818 / 0.621 / 0.404 / 0.151 | 0.310 | 0.377 |
+
+SE 0.001-0.008. Reading (descriptive; frequency, footprint, location and separation vary together):
+- The common, large-footprint consequence is carried (MOVE within 0.02 at every sigma <= 6.67; BLOCKED drifts
+  toward a shift that does not happen, 0.10 at 6.67). Single-cell consequences are not, deterministic or not: HUD
+  increments are carried at 0.18-0.24 of their size at sigma 6.67, the 10% sapling at ~0.
+- Frequency alone does not order them: TABLE (0.76%) is carried better (0.40) than WOOD (2.7%, 0.24) and DRINK (1.6%,
+  0.18). A per-element loss's share of an event is its frequency times its token change (larger for a new table than
+  for a changed digit); this is a candidate, not a measured cause.
+- DRINK replicates A on fresh rows (field 0.182 vs A's 0.178 at sigma 6.67).
+
 ## Reading so far
 The deployed one-step deficit has two measured components: (1) the trained field's conditional mean underweights
 consequences, including a deterministic visible one (drink), and ignores the hidden cooldown; this bounds every tested
@@ -120,4 +143,5 @@ sampler; (2) the 3-step production algorithm suppresses most of what the field s
 (RISKY 0.025 -> 0.002, as B predicts for an exact field). Of the two, (1) is binding: no inference setting recovers
 the recorded rates. Neither is "only a rare-event symptom" of the other, and the geometry mismatch is a separate,
 integration-dependent property. E: the conditioning carries part of the hidden cooldown that the field ignores.
-F (catalogue, bulk / tail) follows PLAN v2.
+F: the field carries the common large-footprint consequence (movement) and misses single-cell consequences,
+deterministic or stochastic, HUD most; frequency alone does not order them. Bulk / tail summaries (rest of F) not run.
