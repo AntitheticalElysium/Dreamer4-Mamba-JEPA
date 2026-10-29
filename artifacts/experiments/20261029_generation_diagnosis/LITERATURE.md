@@ -76,8 +76,8 @@ the papers do not say themselves. Codex's earlier source audit: `../20261029_gen
   exposure did.
 
 ## Reading for our case, with the accounting (RESULTS H)
-- Saxe et al.'s picture fits the measured drives: the consequences' OWN preconditioned drive is weak (2-30x below the
-  bulk's own at checkpoints 2 and 5), so in that theory they are learned last; early they ride on the bulk's update
+- Saxe et al.'s picture fits the measured drives: the consequences' OWN preconditioned drive is weak (one to two orders of
+  magnitude below the bulk's own at checkpoints 2 and 5; e.g. drink -2.5 vs -494 to -1515 at checkpoint 2), so in that theory they are learned last; early they ride on the bulk's update
   (transfer), and that ride ends when the bulk converges. EDM2's observation that per-sigma losses evolve unevenly
   applies within a noise level as well: the uniform per-element weight is static while the bulk converges.
 - Late or stage-like acquisition (E14f's table jump; grokking) needs continued drive. In P1 the learning rate decays

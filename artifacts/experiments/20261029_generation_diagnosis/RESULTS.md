@@ -240,8 +240,8 @@ same sign of drive for every consequence at checkpoints 5 and 10 (table +139 / +
   element is 4-20x the bulk's, so their gradient-norm shares (0.3-1.9% each) exceed their loss shares (Codex: a small
   share of dimensions is not a small gradient).
 - Direction: their gradients are nearly orthogonal to the total (cos -0.04 to 0.03; bulk 0.42-0.68).
-- Over training: at checkpoints 2 and 5 their losses fell mostly by transfer from the bulk's update (drive 2-30x
-  their own); by checkpoint 10 (bulk converged, learning rate at its floor) the drive is ~0 (zombie), 4-20x below the
+- Over training: at checkpoints 2 and 5 their losses fell mostly by transfer from the bulk's update (drive 2-100x
+  their own); by checkpoint 10 (bulk converged, learning rate at its floor) the drive is ~0 (zombie), 3-20x below the
   bulk's (drink, wood) or REVERSED (table, sapling): the bulk-dominated update now raises their loss although their own
   gradient would lower it.
 - Noise levels: the drink error per element rises from 0.04 (sigma < 0.17) to 0.27 (sigma > 2.67); its loss mass sits
