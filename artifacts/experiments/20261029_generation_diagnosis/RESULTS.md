@@ -39,9 +39,9 @@ C (native heads on denoised-real successors, sigma 0.05 / 0.2 / 0.377): RISKY de
 samples: death 0.0001 (RISKY).
 
 Geometry (median per-token inverse-tanh variance): recorded 0.982 (RISKY); denoised-real falls with sigma (0.981 at
-0.05, 0.970 at 5, 0.967 at 6.67, 0.956 at 20); production samples 0.970: the production samples' statistic equals
-that of the field's clean estimate at sigma 5-6.67, as expected if the sample is essentially that estimate (PLAN v2
-section on the algorithm). Tested directly in D.
+0.05, 0.970 at 5, 0.967 at 6.67, 0.956 at 20); production samples 0.970. I first read the match with the clean
+estimate at sigma 5-6.67 as "the sample is essentially that estimate"; D does not support it (more steps move the
+statistic further from the real value, see D).
 
 Not established: which property of training produces the underweighting (capacity, optimisation length, noise-level
 coverage, loss weighting or the consequence's share of the per-element loss: the drink cell is 16 of 1,880 scalars
@@ -68,9 +68,36 @@ churn 32 0.152, Heun 64 at sigma_max 19 0.151); the exact field's tower bias <= 
 - Consistency with A: the field carries RISKY damage at ~0.025; B's production algorithm turns p 0.03 into
   0.0007-0.005 (k = 1-2); the production samples show 0.0018. Descriptive agreement, not an additive split.
 
+## D. Inference settings on the trained field (`solver_sensitivity.py`, `solver_sensitivity/results.json`)
+A's contexts (first rows per class), 2 futures per context per algorithm, native heads, A's unit and geometry.
+
+| Class (contexts) | Recorded f / field mean (A) | Production | Heun 8 / 16 / 32 | Heun 32 + EDM churn | Heun 32, sigma_max 10 |
+|---|---|---|---|---|---|
+| RISKY (1,500) | 0.127 / 0.025 | 0.002 (0.001) | 0.024 / 0.019 / 0.022 (0.003) | 0.008 | 0.015 |
+| ADJACENT (1,000) | 0.189 / 0.086 | 0.066 (0.005) | 0.102 / 0.102 / 0.104 (0.008) | 0.077 | 0.091 |
+| DRINK (1,000) | 1.002 / 0.178 | 0.143 (0.007) | 0.226 / 0.227 / 0.234 (0.009) | 0.202 | 0.209 |
+| SAFE (1,000) | 0.004 / 0.025 | 0.011 | 0.015 / 0.013 / 0.019 | 0.003 | 0.011 |
+| RANDOM (1,500) | 0.022 / 0.033 | 0.019 | 0.036 / 0.035 / 0.029 | 0.018 | 0.026 |
+
+Native death head (recorded RISKY 12.77%, SAFE 0%, RANDOM 0.20%): production 0.000% in every class; Heun 32: RISKY
+1.57%, SAFE 0.37%, RANDOM 0.41%; churn: 0.56% / 0% / 0.07%. Geometry statistic (real 0.982-0.991): production
+0.973-0.980; Heun 0.958-0.969; churn 0.981-0.985; sigma_max 10 0.972-0.977.
+
+- Inference settings matter for this checkpoint: resolved deterministic sampling raises RISKY damage ~10x over
+  production, to about the field's own conditional mean (0.022 vs 0.025), and no setting exceeds it. The field bounds
+  every tested sampler: RISKY stays 6x below the recorded and DRINK 4x below with the best one.
+- Resolution also creates deaths where none occur (SAFE 0.37% under Heun 32) and separates RISKY from SAFE only
+  ~4x (recorded: 12.8% vs 0): what the extra samples carry is not the rule.
+- The token-geometry mismatch is NOT a by-product of unresolved sampling: more steps move it further from the real
+  value; only stochastic churn (EDM's Langevin correction) restores it, and churn lowers the consequences again. The
+  geometry is a property of how this field is integrated, not a symptom of the missing rare events.
+- B's warning about the production start (overshoot from sigma_max * eps) is not visible here beyond small excesses
+  over the field mean (ADJACENT 0.104 vs 0.086, DRINK 0.23 vs 0.18); sigma_max 10 sits slightly lower.
+
 ## Reading so far
-The deployed one-step deficit has two measured components, both present: (1) the trained field's conditional mean
-underweights consequences, including a deterministic visible one, and ignores the hidden cooldown; (2) the 3-step
-sampling algorithm suppresses whatever minority branch the field still carries. Neither is "only a rare-event
-symptom" of the other. D (inference-settings sensitivity on the trained field) is running; E (information probes)
-and F follow PLAN v2.
+The deployed one-step deficit has two measured components: (1) the trained field's conditional mean underweights
+consequences, including a deterministic visible one (drink), and ignores the hidden cooldown; this bounds every tested
+sampler; (2) the 3-step production algorithm suppresses most of what the field still carries for a rare branch
+(RISKY 0.025 -> 0.002, as B predicts for an exact field). Of the two, (1) is binding: no inference setting recovers
+the recorded rates. Neither is "only a rare-event symptom" of the other, and the geometry mismatch is a separate,
+integration-dependent property. E (information probes) is running; F follows PLAN v2.
