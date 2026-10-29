@@ -165,3 +165,15 @@ deterministic or stochastic, HUD most; frequency alone does not order them. Bulk
 6. Geometry: that it behaves differently across samplers shows it is not explained as a by-product of the 3-step
    blend; it does not show that geometry and consequence errors have independent causes. "Separate" is withdrawn.
 7. Scope: F's bulk / tail summaries were not run, and C's external HUD-reader qualification was not run either.
+
+## E revised (10-29, after the review; `information_probe/results.json` overwritten, first version in git history)
+Same probes, seeds and splits (attack AP unchanged: 0.448 / 0.592 / 0.410 / 0.933).
+- Cooldown isolated, rows with a zombie adjacent after the player's move (4,454 test rows; rule: attack 88.6% if
+  ready, 0.15% if not): mean P(attack) ready vs not ready: belief + action 0.448 vs 0.167 (AUC 0.77); full
+  conditioning 0.345 vs 0.153 (AUC 0.72); last frame 0.281 vs 0.157 (AUC 0.64); rule 0.886 vs 0.002 (AUC 1.00). The
+  conditioning carries PART of the cooldown (AUC 0.77, well short of the rule); the field's flat readiness split (A)
+  uses less than that.
+- Drink accessible (DO actions, awake, drink <= 8, any facing; drink + 1 in 12.1%; 13,835 test rows): AP 0.860 full
+  conditioning, 0.901 belief + action + fixation, 0.904 last frame + action; log loss 0.11-0.13 vs base 0.37. A reader
+  recovers most of the drink consequence from the conditioning (not exactly: the rule is deterministic); the field
+  carries 0.18 of it in the DRINK class. One-sided, as before.
