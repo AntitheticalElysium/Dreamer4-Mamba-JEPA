@@ -177,3 +177,35 @@ Same probes, seeds and splits (attack AP unchanged: 0.448 / 0.592 / 0.410 / 0.93
   conditioning, 0.901 belief + action + fixation, 0.904 last frame + action; log loss 0.11-0.13 vs base 0.37. A reader
   recovers most of the drink consequence from the conditioning (not exactly: the rule is deterministic); the field
   carries 0.18 of it in the DRINK class. One-sided, as before.
+
+## G. Checkpoint trajectory, P1 world seed 1 (`checkpoint_trajectory.py`, `checkpoint_trajectory/results.json`)
+Matched rows (first 1,000 per class of A / F), matched noise, each checkpoint's own references. Declared checks per
+checkpoint: checkpoints 1-4 FAIL (|bias| at sigma 0.05 up to 0.028 on HUD classes: early denoisers do not yet
+reproduce a HUD cell even at sigma 0.05; SAFE up to 0.072 at checkpoint 1) and are not read; 5-10 pass (|bias| at
+0.05 <= 0.0044, SAFE <= 0.036). Checkpoint 10 reproduces A / F (wood 0.242 vs 0.238, drink 0.190 vs 0.182, table
+0.406 vs 0.404, risky 0.026 vs 0.025 at sigma 6.67).
+
+Field projection at sigma 6.67 (sigma 2 in brackets), checkpoints 5 -> 10 (12.8 M -> 25.6 M frames); SE <= 0.01:
+
+| Class | Recorded | ckpt 5 | 6 | 7 | 8 | 9 | 10 | Production 5 -> 10 |
+|---|---|---|---|---|---|---|---|---|
+| MOVE | 0.932 | 0.906 (0.913) | 0.893 | 0.917 | 0.911 | 0.913 | 0.911 (0.919) | 0.904 -> 0.908 |
+| BLOCKED | 0.039 | 0.176 (0.096) | 0.123 | 0.147 | 0.115 | 0.111 | 0.100 (0.064) | 0.167 -> 0.081 |
+| WOOD | 0.994 | 0.096 (0.306) | 0.198 | 0.225 | 0.241 | 0.275 | 0.242 (0.383) | 0.043 -> 0.140 |
+| DRINK | 1.002 | 0.142 (0.268) | 0.171 | 0.172 | 0.187 | 0.179 | 0.190 (0.313) | 0.095 -> 0.152 |
+| TABLE | 0.920 | 0.184 (0.558) | 0.239 | 0.272 | 0.275 | 0.322 | 0.406 (0.623) | 0.070 -> 0.318 |
+| SAPLING (p 0.1) | 0.070 | -0.025 (-0.024) | -0.019 | -0.016 | -0.017 | -0.018 | -0.019 (-0.004) | -0.036 -> -0.025 |
+| RISKY damage | 0.140 | 0.027 (0.058) | 0.027 | 0.030 | 0.025 | 0.029 | 0.026 (0.075) | 0.008 -> 0.003 |
+| ADJACENT damage | 0.166 | 0.109 (0.096) | 0.108 | 0.099 | 0.099 | 0.097 | 0.092 (0.083) | 0.078 -> 0.061 |
+
+Unread checkpoints 1-4 (descriptive only): MOVE rises 0.26 -> 0.86 and BLOCKED is first predicted to shift like a
+move (0.72-0.81 at checkpoints 2-4) before the distinction appears at checkpoint 5.
+Reading (this run only; the learning rate decays by cosine over the same frames, so plateaus cannot be attributed):
+- Over the second half, movement is flat near the recorded value and the blocked distinction keeps sharpening.
+- The single-cell deterministic consequences improve slowly and unevenly: TABLE still rises at checkpoint 10 (0.32
+  -> 0.41), WOOD rises to checkpoint 9 and stops near 0.24-0.28, DRINK is nearly flat (0.14 -> 0.19); all remain far
+  below the recorded values.
+- The stochastic branch (SAPLING) and the hidden-state damage (RISKY, ADJACENT) show no approach in the second half.
+- Production samples follow the field's trend at lower values (WOOD 0.04 -> 0.14, TABLE 0.07 -> 0.32).
+Not established: what longer training, a different schedule or more capacity would do (Codex review), or why WOOD
+and TABLE move while DRINK hardly does.
