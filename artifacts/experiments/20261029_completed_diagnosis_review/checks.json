@@ -1,0 +1,72 @@
+{
+  "post_hoc": true,
+  "world_model_calls": 0,
+  "episodes": 250,
+  "F1": {
+    "all_day": {
+      "original_lag1_vs_not_seen8_gain": -0.07139018331672,
+      "units": 461196,
+      "exposed": 64141,
+      "HT_gain": 0.014586364148626461,
+      "HT_se": 0.02273259170852413,
+      "normalized_weight_gain": 0.009126594347232508,
+      "normalized_weight_se": 0.01795522310436717
+    },
+    "all_night": {
+      "original_lag1_vs_not_seen8_gain": -0.021381922051118295,
+      "units": 226344,
+      "exposed": 30707,
+      "HT_gain": 0.08482784811167253,
+      "HT_se": 0.03801071917193565,
+      "normalized_weight_gain": -0.006639393190553289,
+      "normalized_weight_se": 0.015799120850057028
+    },
+    "static_terrain_day": {
+      "original_lag1_vs_not_seen8_gain": -0.06817909099606725,
+      "units": 265450,
+      "exposed": 39291,
+      "HT_gain": -0.007179754349279585,
+      "HT_se": 0.0298023218896164,
+      "normalized_weight_gain": -0.014836269308492689,
+      "normalized_weight_se": 0.017804837142300863
+    },
+    "strict_static_terrain_day": {
+      "original_lag1_vs_not_seen8_gain": -0.06852449838176837,
+      "units": 258017,
+      "exposed": 37900,
+      "HT_gain": -0.003571859490370618,
+      "HT_se": 0.0303490592658237,
+      "normalized_weight_gain": -0.012459597046730497,
+      "normalized_weight_se": 0.018430635649977847
+    },
+    "strict_static_terrain_night": {
+      "original_lag1_vs_not_seen8_gain": -0.014265872714275282,
+      "units": 111503,
+      "exposed": 15959,
+      "HT_gain": 0.08113830870670631,
+      "HT_se": 0.05457251827009583,
+      "normalized_weight_gain": -0.01818947616440436,
+      "normalized_weight_se": 0.011682592124310566
+    }
+  },
+  "F2": {
+    "random_day": {
+      "frames": 782,
+      "loss": 9.216403007507324,
+      "reported_relative_gain_percent": 0.612064536424223,
+      "position_centered_HUD_excess_forced_zero": -2.558840361821524e-10
+    },
+    "random_night": {
+      "frames": 218,
+      "loss": 43.31539535522461,
+      "reported_relative_gain_percent": 0.25824129316311606,
+      "position_centered_HUD_excess_forced_zero": -3.5153460697934236e-10
+    },
+    "night_with_mob": {
+      "frames": 339,
+      "loss": 48.47081756591797,
+      "reported_relative_gain_percent": 0.2536844610113455,
+      "position_centered_HUD_excess_forced_zero": -1.50707071822076e-10
+    }
+  }
+}
