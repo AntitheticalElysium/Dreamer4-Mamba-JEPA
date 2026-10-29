@@ -17,6 +17,9 @@ harmoniser weight 1 / sigma_G1 and clipping scale every class alike). The expect
 Adam state: dtheta = -lr * c * E[g] / (sqrt(v_hat) + eps) with E[g] = (1 / sigma_G1) * the accumulated G1 gradient and
 c the mean clip factor of the logged final gradient norms; first-order change of class c's loss per step = G_c .
 dtheta; also under the stored momentum and under AdamW's decay. Loss by equal-mass p_train sigma bins.
+Split halves (added 10-29 after the first runs): gradients are accumulated separately on alternating windows (A, B);
+for rare classes sampling noise inflates |G_c| and the own-gradient term and shrinks cosines, so the cross-half
+products G_c^A . G_c^B (unbiased for |G_c|^2) and G_c^A . dtheta(G^B) are the reported "_cross" quantities.
 Not established by this: that allocation causes the deficit (plausible, not proof); per-batch noise is ignored.
 Usage (project venv, GPU): python -m artifacts.experiments.20261029_generation_diagnosis.loss_accounting CKPT OUT_JSON [WINDOWS]
 """
@@ -93,6 +96,7 @@ def main():
     params = [p for p in den.parameters() if p.requires_grad]
     names = [n for n, p in den.named_parameters() if p.requires_grad]
     G = {c: [torch.zeros_like(p, dtype=torch.float32) for p in params] for c in CLASSES}
+    GH = {c: [[torch.zeros_like(p, dtype=torch.float32) for p in params] for _ in range(2)] for c in CLASSES}
     nC = len(CLASSES)
     edges = torch.distributions.Normal(0, 1).icdf(torch.arange(1, 8) / 8.0)
     s_cfg = cfg["edm"]["train_sigma"]
@@ -144,14 +148,18 @@ def main():
         frames += int(T * len(batch))
         for k, name in enumerate(CLASSES):
             g = torch.autograd.grad(per_cls[k], params, retain_graph=k < nC - 1, allow_unused=True)
-            for acc, gi in zip(G[name], g):
+            half = (start // B) % 2
+            for acc, acc_h, gi in zip(G[name], GH[name][half], g):
                 if gi is not None:
                     acc += gi.float() * len(batch)
+                    acc_h += gi.float() * len(batch)
         if start % (B * 50) == 0:
             print(f"window {start}/{len(wins)}", flush=True)
     nb = len(wins)
+    n_half = [sum(len(wins[s0:s0 + B]) for s0 in range(h * B, len(wins), 2 * B)) for h in range(2)]
     for name in CLASSES:
         G[name] = [g / nb for g in G[name]]                              # gradient of the per-window mean G1
+        GH[name] = [[g / n_half[h] for g in GH[name][h]] for h in range(2)]
     Gt = [sum(G[c][i] for c in CLASSES) for i in range(len(params))]
     # Adam state for the denoiser parameters
     w_g1 = 1.0 / float(ck["model"]["harmoniser.log_sigma"][0].exp())
@@ -201,6 +209,22 @@ def main():
         res["classes"][name]["grad_sq_by_block"] = blocks
         r = res["classes"][name]
         print(name, {k: (round(v, 6) if isinstance(v, float) else v) for k, v in r.items() if not isinstance(v, (list, dict))}, flush=True)
+    GtH = [[sum(GH[c][h][i] for c in CLASSES) for i in range(len(params))] for h in range(2)]
+    step = lambda Gv: [-lr_ * clip * w_g1 * g * q for g, q, lr_ in zip(Gv, pre, lr_of)]
+    dA, dB = step(GtH[0]), step(GtH[1])
+    tt = dot(GtH[0], GtH[1])
+    for name in CLASSES:
+        A_, B_ = GH[name]
+        cc_ = dot(A_, B_)
+        Lc = res["classes"][name]["loss"]
+        res["classes"][name]["cross"] = {
+            "reliability_cos_A_B": cc_ / (gnorm(A_) * gnorm(B_) + 1e-30),
+            "grad_norm_corrected": math.sqrt(max(cc_, 0.0)), "grad_norm_share_corrected": math.sqrt(max(cc_, 0.0) / max(tt, 1e-30)),
+            "cos_with_total_corrected": 0.5 * (dot(A_, GtH[1]) + dot(B_, GtH[0])) / (math.sqrt(max(cc_, 1e-30)) * math.sqrt(max(tt, 1e-30))),
+            "relative_dL_per_1000_steps_expected": 1000 * 0.5 * (dot(A_, dB) + dot(B_, dA)) / max(Lc, 1e-30),
+            "relative_dL_per_1000_steps_expected_halves": [1000 * dot(A_, dB) / max(Lc, 1e-30), 1000 * dot(B_, dA) / max(Lc, 1e-30)],
+            "relative_dL_per_1000_steps_own_gradient_only": 1000 * dot(A_, step(B_)) / max(Lc, 1e-30)}
+        print(name, "cross", {k: (round(v, 4) if isinstance(v, float) else [round(x, 3) for x in v]) for k, v in res["classes"][name]["cross"].items()}, flush=True)
     res["sigma_bin_edges"] = sig_edges.tolist()
     out.write_text(json.dumps(res, indent=1))
 
