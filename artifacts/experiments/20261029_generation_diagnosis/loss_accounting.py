@@ -95,8 +95,7 @@ def main():
     den = model.denoiser
     params = [p for p in den.parameters() if p.requires_grad]
     names = [n for n, p in den.named_parameters() if p.requires_grad]
-    G = {c: [torch.zeros_like(p, dtype=torch.float32) for p in params] for c in CLASSES}
-    GH = {c: [[torch.zeros_like(p, dtype=torch.float32) for p in params] for _ in range(2)] for c in CLASSES}
+    GH = {c: [[torch.zeros(p.shape) for p in params] for _ in range(2)] for c in CLASSES}   # CPU: 6 GB card
     nC = len(CLASSES)
     edges = torch.distributions.Normal(0, 1).icdf(torch.arange(1, 8) / 8.0)
     s_cfg = cfg["edm"]["train_sigma"]
@@ -149,16 +148,16 @@ def main():
         for k, name in enumerate(CLASSES):
             g = torch.autograd.grad(per_cls[k], params, retain_graph=k < nC - 1, allow_unused=True)
             half = (start // B) % 2
-            for acc, acc_h, gi in zip(G[name], GH[name][half], g):
+            for acc_h, gi in zip(GH[name][half], g):
                 if gi is not None:
-                    acc += gi.float() * len(batch)
-                    acc_h += gi.float() * len(batch)
+                    acc_h += gi.float().cpu() * len(batch)
         if start % (B * 50) == 0:
             print(f"window {start}/{len(wins)}", flush=True)
     nb = len(wins)
     n_half = [sum(len(wins[s0:s0 + B]) for s0 in range(h * B, len(wins), 2 * B)) for h in range(2)]
+    G = {}
     for name in CLASSES:
-        G[name] = [g / nb for g in G[name]]                              # gradient of the per-window mean G1
+        G[name] = [(a + b) / nb for a, b in zip(*GH[name])]              # gradient of the per-window mean G1
         GH[name] = [[g / n_half[h] for g in GH[name][h]] for h in range(2)]
     Gt = [sum(G[c][i] for c in CLASSES) for i in range(len(params))]
     # Adam state for the denoiser parameters
@@ -172,12 +171,12 @@ def main():
     for p, gt in zip(params, Gt):
         st, grp = opt.state[p], group_of[id(p)]
         step = float(st["step"])
-        vhat = st["exp_avg_sq"].float() / (1 - b2 ** step)
-        mhat = st["exp_avg"].float() / (1 - b1 ** step)
+        vhat = st["exp_avg_sq"].float().cpu() / (1 - b2 ** step)
+        mhat = st["exp_avg"].float().cpu() / (1 - b1 ** step)
         q = 1.0 / (vhat.sqrt() + cfg["optimizer"]["eps"])
         lr = grp["lr"]
         pre.append(q); lr_of.append(lr)
-        dth_e.append(-lr * clip * w_g1 * gt * q); dth_m.append(-lr * mhat * q); dth_d.append(-lr * grp["weight_decay"] * p.detach().float())
+        dth_e.append(-lr * clip * w_g1 * gt * q); dth_m.append(-lr * mhat * q); dth_d.append(-lr * grp["weight_decay"] * p.detach().float().cpu())
     res = {"checkpoint": str(ckpt), "update": ck["state"]["update"], "windows": nb, "target_frames": frames,
            "harmoniser_sigma": ck["model"]["harmoniser.log_sigma"].exp().tolist(), "g1_weight": w_g1, "mean_clip": clip,
            "lr": [g["lr"] for g in opt.param_groups], "classes": {}}
@@ -220,11 +219,12 @@ def main():
         res["classes"][name]["cross"] = {
             "reliability_cos_A_B": cc_ / (gnorm(A_) * gnorm(B_) + 1e-30),
             "grad_norm_corrected": math.sqrt(max(cc_, 0.0)), "grad_norm_share_corrected": math.sqrt(max(cc_, 0.0) / max(tt, 1e-30)),
-            "cos_with_total_corrected": 0.5 * (dot(A_, GtH[1]) + dot(B_, GtH[0])) / (math.sqrt(max(cc_, 1e-30)) * math.sqrt(max(tt, 1e-30))),
+            "cos_with_total_corrected": (0.5 * (dot(A_, GtH[1]) + dot(B_, GtH[0])) / (math.sqrt(cc_) * math.sqrt(tt))
+                                         if cc_ > 0 and tt > 0 else None),
             "relative_dL_per_1000_steps_expected": 1000 * 0.5 * (dot(A_, dB) + dot(B_, dA)) / max(Lc, 1e-30),
             "relative_dL_per_1000_steps_expected_halves": [1000 * dot(A_, dB) / max(Lc, 1e-30), 1000 * dot(B_, dA) / max(Lc, 1e-30)],
             "relative_dL_per_1000_steps_own_gradient_only": 1000 * dot(A_, step(B_)) / max(Lc, 1e-30)}
-        print(name, "cross", {k: (round(v, 4) if isinstance(v, float) else [round(x, 3) for x in v]) for k, v in res["classes"][name]["cross"].items()}, flush=True)
+        print(name, "cross", {k: (round(v, 4) if isinstance(v, float) else v) for k, v in res["classes"][name]["cross"].items()}, flush=True)
     res["sigma_bin_edges"] = sig_edges.tolist()
     out.write_text(json.dumps(res, indent=1))
 
