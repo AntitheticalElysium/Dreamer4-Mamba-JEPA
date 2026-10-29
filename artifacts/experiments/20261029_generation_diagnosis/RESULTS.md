@@ -145,3 +145,23 @@ the recorded rates. Neither is "only a rare-event symptom" of the other, and the
 integration-dependent property. E: the conditioning carries part of the hidden cooldown that the field ignores.
 F: the field carries the common large-footprint consequence (movement) and misses single-cell consequences,
 deterministic or stochastic, HUD most; frequency alone does not order them. Bulk / tail summaries (rest of F) not run.
+
+## Corrections after Codex's review (10-29, `../20261029_completed_diagnosis_review/REVIEW.md`; verified, conceded)
+1. The "field mean" columns are projections of the conditional mean at one noise level, not branch probabilities
+   (they equal the event rate on recorded data because the recorded tokens sit at the two reference values). Read
+   "no TESTED sampler exceeded the field's high-sigma projection", not "the field bounds every sampler". A and B
+   cannot be chained into an independent tenfold sampler factor: B shows the production algorithm distorts exact
+   mixture weights; in RISKY the production samples sit ~10x below A's high-sigma projection; that is all.
+2. E's 0.45 vs 0.07 compared ready-AND-adjacent rows with everything else, so it mixed adjacency with readiness; the
+   isolated readout (adjacent after the move: ready vs not ready) is in the revised E below.
+3. DRINK measurability: the facing direction is decodable from the player-cell token, which supports one
+   prerequisite; the full information pathway through the denoiser's noised conditioning is not certified by it. The
+   revised E adds a direct drink probe.
+4. The sigma 0.05 check involves the network (its output is scaled by c_out = 0.05): nearly, not fully,
+   model-independent.
+5. TABLE reached its outcome in 96.9% of rows, below the >= 99% declared in catalogue.py: in 70 failed placements a
+   zombie or cow stood on the faced cell in almost every case (my class did not exclude mobs). TABLE is not
+   deterministic as defined; the WOOD / DRINK readings do not depend on it.
+6. Geometry: that it behaves differently across samplers shows it is not explained as a by-product of the 3-step
+   blend; it does not show that geometry and consequence errors have independent causes. "Separate" is withdrawn.
+7. Scope: F's bulk / tail summaries were not run, and C's external HUD-reader qualification was not run either.

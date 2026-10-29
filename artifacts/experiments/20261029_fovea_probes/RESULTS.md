@@ -54,3 +54,20 @@ the periphery already carries almost everything the fovea sees (input ceiling), 
 single-cell consequences a decision-relevant fovea would look for (generation diagnosis A / F: drink, wood, damage
 carried at 0.18-0.24 of their size). Not established: value for decisions over longer horizons (one-step periphery
 loss only), or what a learned controller would do.
+
+## Corrections after Codex's review (10-29, `../20261029_completed_diagnosis_review/`; verified, conceded)
+1. F1's "cost of looking" is WITHDRAWN. My comparator (glimpsed at lag k vs not glimpsed in any of 8 frames)
+   conditions on the camera's path, which is not randomised. The one-step contrast (glimpsed vs not glimpsed at t - 1,
+   inverse-probability weighted by the known coverage of the 49 crops; Codex, checks.json): day +0.009 (0.018), night
+   -0.007 (0.016), static camera / same terrain code / player excluded, day -0.012 (0.018). No detectable effect
+   either way. The addendum used the same comparator, and its "unchanged" meant no entity, not equal terrain.
+2. "The belief keeps nothing" overstates F1: the TSP head shows no benefit from previous glimpses; information could
+   remain in the belief unused by that head, and the denoiser's 8-frame context route is not tested by F1.
+3. The TSP-minus-reconstruction gap is not a ceiling on the glimpse's information (both pixel heads have a
+   content-independent scale). What 3 x 3 allows is better measured by the acuity EDA's supervised probes.
+4. F2's per-frame best fixation is chosen with the realised next frame: a hindsight upper bound for the one-step
+   periphery loss, not a deployable policy, and not decision value.
+5. R3's HUD excess is zero by construction (position-centred, and HUD coverage is fixed by position); withdrawn.
+   R1's uncentred map (HUD windows below average at night) is the interpretable HUD result.
+6. R5: no positive correlation in this proxy; it does not certify the absence of noisy-TV behaviour (no learned
+   fixation exists).
