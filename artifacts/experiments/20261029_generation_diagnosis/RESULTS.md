@@ -209,3 +209,44 @@ Reading (this run only; the learning rate decays by cosine over the same frames,
 - Production samples follow the field's trend at lower values (WOOD 0.04 -> 0.14, TABLE 0.07 -> 0.32).
 Not established: what longer training, a different schedule or more capacity would do (Codex review), or why WOOD
 and TABLE move while DRINK hardly does.
+
+## H. Loss and gradient accounting of the G1 objective (`loss_accounting.py`, `loss_accounting/`)
+P1's exact G1 objective on train-400 (1,760 windows of 8 + 64 frames, 112,640 target frames, diffusion forcing with
+sigma ~ p_train), every element in one class; gradients w.r.t. the denoiser (the only parameters G1 alone trains);
+Adam preconditioning from each checkpoint's own optimizer state; split halves (A / B, alternating windows) for
+noise-free norms, cosines and drives (`halves_ckpt_05/10.json`; checkpoint 2 single-sample, `ckpt_02.json`). Every step
+in this run was clipped (mean clip factor 0.012 / 0.017 / 0.059 at checkpoints 2 / 5 / 10); learning rate 9.4e-5 /
+5.8e-5 / 1.0e-5; harmoniser sigma_G1 0.413 at checkpoint 10 (G1 weight 2.42).
+
+"Drive" = first-order change of the class's loss under the expected Adam update (E[g] / (sqrt(v_hat) + eps)),
+relative to its loss, per 1,000 steps (linearised: compare classes, not absolute values); "own" = the same if the step
+followed only that class's gradient. Checkpoint 10 for the first five columns:
+
+| Class | Frames with it | Elements | G1 loss share | Error per element | Gradient-norm share (A x B) | Cos with total | Drive ckpt 2 / 5 / 10 | Own 2 / 5 / 10 |
+|---|---|---|---|---|---|---|---|---|
+| drink + 1 | 1.75% | 0.015% | 0.092% | 0.156 | 0.87% | 0.034 | -77 / -162 / -7.5 | -2.5 / -11 / -8.5 |
+| wood + 1 | 2.73% | 0.023% | 0.121% | 0.132 | 1.86% | 0.016 | -148 / -221 / -9.3 | -7.6 / -31 / -31 |
+| sapling + 1 | 0.13% | 0.001% | 0.016% | 0.365 | 0.30% | -0.000 | -23 / -144 / **+16.5** | -1.7 / -2.3 / -5.4 |
+| table placed | 0.74% | 0.006% | 0.034% | 0.137 | 1.01% | -0.042 | -292 / -55 / **+128** | -3.8 / -26 / -32 |
+| zombie hit | 0.82% | 0.007% | 0.049% | 0.178 | 0.52% | 0.020 | -325 / -56 / 0.2 | -3.1 / -6.4 / -5.2 |
+| map, moved frames | | 19.4% | 24.4% | 0.032 | 31.6% | 0.604 | -1169 / -257 / -27 | -494 / -111 / -20 |
+| map, still frames | | 34.2% | 28.6% | 0.021 | 48.6% | 0.678 | -1525 / -438 / -38 | -988 / -296 / -32 |
+| HUD, unchanged | | 15.1% | 4.8% | 0.008 | 42.4% | 0.419 | -1520 / -1510 / -164 | -1515 / -1320 / -173 |
+| glimpse | | 30.6% | 40.5% | 0.034 | 53.2% | 0.560 | -724 / -1407 / -39 | -715 / -1387 / -37 |
+
+Split-half reliability of every class gradient: cos(G_A, G_B) 0.92-0.99 at both checkpoints; the two halves give the
+same sign of drive for every consequence at checkpoints 5 and 10 (table +139 / +116, sapling +8 / +25 at 10).
+- Allocation: the five single-cell consequences hold ~0.31% of the G1 loss on 0.05% of its elements; their error per
+  element is 4-20x the bulk's, so their gradient-norm shares (0.3-1.9% each) exceed their loss shares (Codex: a small
+  share of dimensions is not a small gradient).
+- Direction: their gradients are nearly orthogonal to the total (cos -0.04 to 0.03; bulk 0.42-0.68).
+- Over training: at checkpoints 2 and 5 their losses fell mostly by transfer from the bulk's update (drive 2-30x
+  their own); by checkpoint 10 (bulk converged, learning rate at its floor) the drive is ~0 (zombie), 4-20x below the
+  bulk's (drink, wood) or REVERSED (table, sapling): the bulk-dominated update now raises their loss although their own
+  gradient would lower it.
+- Noise levels: the drink error per element rises from 0.04 (sigma < 0.17) to 0.27 (sigma > 2.67); its loss mass sits
+  above sigma ~0.5, where the context must decide.
+Limits: first-order at each checkpoint, noise-induced (second-order) effects ignored; the realised TABLE projection
+still rose from checkpoint 9 to 10 while the endpoint drift is positive (different quantities: outcome-defined cells
+over p_train vs the context class at sigma 6.67). The accounting makes loss allocation and interference plausible
+mechanisms for the slow, uneven learning; it does not establish them as the cause, nor what another recipe would do.

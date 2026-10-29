@@ -74,3 +74,17 @@ the papers do not say themselves. Codex's earlier source audit: `../20261029_gen
   effective strength of each consequence's signal under the actual optimiser (the accounting) and on the learning
   rate, which decays ~6x over P1's second half. E14f / E20 also say budget alone did not buy the hidden-state damage;
   exposure did.
+
+## Reading for our case, with the accounting (RESULTS H)
+- Saxe et al.'s picture fits the measured drives: the consequences' OWN preconditioned drive is weak (2-30x below the
+  bulk's own at checkpoints 2 and 5), so in that theory they are learned last; early they ride on the bulk's update
+  (transfer), and that ride ends when the bulk converges. EDM2's observation that per-sigma losses evolve unevenly
+  applies within a noise level as well: the uniform per-element weight is static while the bulk converges.
+- Late or stage-like acquisition (E14f's table jump; grokking) needs continued drive. In P1 the learning rate decays
+  ~6x over the second half and the net drive at the end is ~0 or reversed, so a late jump within this budget is not
+  expected; with a sustained learning rate the deterministic consequences might still be acquired (E14f), the hidden-
+  state damage was not in E14f / E20 (exposure moved it). Not tested here.
+- The remedies in the literature (motion- or event-weighted objectives, object-centric or delta representations,
+  per-level adaptive weighting, action tokens) each target one of: allocation (weights), interference (separate
+  pathways / representations of change), or conditioning routing (tokens vs global adaLN). The accounting points at
+  allocation and interference; nothing here tests conditioning routing.
