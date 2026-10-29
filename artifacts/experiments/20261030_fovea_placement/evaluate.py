@@ -1,18 +1,24 @@
-"""Evaluation of the fovea fine-tune (PLAN.md, readouts 1-5). One GPU pass over several checkpoints.
+"""Evaluation of the fovea fine-tune (PLAN.md, readouts 1-6). One GPU pass over several checkpoints.
 
 Every checkpoint is read on the same dev rows, the same noise draws (one generator per route and class, fixed seed)
 and one shared encoding: only the denoiser differs, which is asserted (every non-denoiser tensor equals the base's).
-Routes: PERIPHERY = the S1-seeded random fixations of tests A / F / G; GLIMPSE = the same frames with every attempt
-frame's fixation set by the rule (placement_map; all attempt frames, not half), other frames unchanged.
+Routes: PERIPHERY = the S1-seeded random fixations of tests A / F / G; GUIDED = the same frames with every attempt
+frame's fixation set by the rule (placement_map; all attempt frames, not half), other frames unchanged. Both routes'
+field and production projections read PERIPHERY tokens; only the glimpse instruments read the glimpse output.
 Rows: the first 1,000 per class of tests F (move, blocked, wood, sapling, table, drink) and A (adjacent, risky, safe,
-random), as test G. Per row: the field projection at sigma 0.05 / 0.7 / 2 / 6.67 and the production projection
-(catalogue / field_calibration functionals), and the production sample read by qualified readers: HUD values by
-the nearest value mean of real train-400 periphery tokens (glimpse route: of real glimpse tokens at the same cell and
-window), the faced-cell table by the S1 reader's terrain head. "Eye elsewhere": the target frame's glimpse does not
-cover the consequence cell. Hallucination: the random rows, a generated change where the recorded cell did not change.
+random), as test G, plus failed-attempt strata (drink / wood / table attempts whose cell did not change).
+Instruments, all qualified on REAL dev tokens before any model is read, and enforced row by row (a reading exists only
+where its instrument is qualified and the row's values are in its support; excluded counts are reported):
+- periphery HUD values (health, drink, sapling, wood): nearest value mean of real train-400 tokens, accuracy >= 0.99;
+- faced-cell table: the S1 reader's terrain head, table recall and non-table specificity >= 0.99;
+- glimpse HUD values per (cell, window): multinomial logistic reader on real train-400 guided glimpse tokens, accuracy
+  >= 0.99; glimpse value projection: a ridge regression of the value on the token, (v_hat - start) / (end - start),
+  qualified per class if its mean on the class's real eye-on rows is within 0.05 of the recorded rate;
+- no glimpse instrument exists for the table (unmeasured).
 Costs: dev G1 loss by accounting class (forward only) and generated entity counts (S1.3 one-step, S1 reader).
 Usage (project venv, GPU): python -m artifacts.experiments.20261030_fovea_placement.evaluate OUT_DIR LABEL=CKPT ...
-  (LABEL=base for P1's checkpoint 10; fine-tune checkpoints are finetune/ARM/ft_UUUU.pt)
+  (LABEL=base for P1's checkpoint 10; fine-tune checkpoints are finetune/ARM/ft_UUUU.pt; labels random_UUUU /
+  guided_UUUU are paired at equal UUUU)
 """
 import importlib, json, sys
 from pathlib import Path
@@ -34,9 +40,13 @@ BASE = ROOT / "artifacts/saccade_m0/p1_world1/ckpt_10.pt"
 READER = ROOT / "artifacts/saccade_m0/p1_world1/s1/results.reader.pt"
 DEV, P = FC.DEV, FC.P
 N, READ_SIGMAS = 1000, ("0.05", "0.7", "2.0", "6.67")
+ACC_MIN, PROJ_TOL = 0.99, 0.05                                           # declared in PLAN.md before any run
 HUD_CELLS = {"health": (63, "s_body", 0), "drink": (65, "s_body", 2), "sapling": (67, "s_inv", 5), "wood": (68, "s_inv", 0)}
 CAT_KINDS, FC_KINDS = ("move", "blocked", "wood", "sapling", "table", "drink"), ("adjacent", "risky", "safe", "random")
-SEEDS = {k: 2040 + i for i, k in enumerate(CAT_KINDS + FC_KINDS)}
+FAIL_KINDS = ("drink_fail", "wood_fail", "table_fail")
+SEEDS = {k: 2040 + i for i, k in enumerate(CAT_KINDS + FC_KINDS + FAIL_KINDS)}
+READS = {"wood": "wood", "sapling": "sapling", "drink": "drink", "table": "table", "adjacent": "health", "risky": "health",
+         "safe": "health", "drink_fail": "drink", "wood_fail": "wood", "table_fail": "table"}
 
 
 @torch.no_grad()
@@ -103,20 +113,21 @@ def read_linear(rd, tok):
     return rd["classes"][(tok.float().to(DEV) @ rd["W"] + rd["b"]).argmax(1).cpu().numpy()]
 
 
-def projection(means, tok, start, end):
-    """Linear functional per row, as the catalogue's: (y - mu_start) . (mu_end - mu_start) / |mu_end - mu_start|^2;
-    NaN where a value has no mean."""
-    out = np.full(len(tok), np.nan)
-    for i, (s, e) in enumerate(zip(start, end)):
-        if s in means and e in means:
-            w = means[e] - means[s]
-            out[i] = float(((tok[i].float() - means[s]) * w).sum() / w.square().sum().clamp(min=1e-9))
-    return out
+def fit_ridge(tok, val, lam=1e-2):
+    """Least-squares value readout v_hat = [tok, 1] . w (ridge lam on the token weights), linear in the token."""
+    X = torch.cat([tok.float(), torch.ones(len(tok), 1)], 1).double()
+    R = lam * torch.eye(X.shape[1], dtype=torch.float64); R[-1, -1] = 0
+    return torch.linalg.solve(X.T @ X + R, X.T @ torch.as_tensor(val, dtype=torch.float64)).float()
 
 
-def readers(enc_tr, L_tr, enc_dv, L_dv, enc_tr_g, enc_dv_g):
-    """Periphery HUD readers (train-400 means, dev qualification); glimpse HUD readers per (cell, window) from frames
-    whose glimpse covers the cell at that window (train-400 under the rule; dev under the rule for qualification)."""
+def ridge_projection(w, tok, start, end):
+    v_hat = (torch.cat([tok.float(), torch.ones(len(tok), 1)], 1) @ w).numpy()
+    return (v_hat - start) / np.where(end != start, end - start, np.nan)
+
+
+def readers(enc_tr, L_tr, enc_dv, L_dv, enc_tr_g, enc_dv_g, s1_reader):
+    """Fitted on train-400, qualified on dev (real tokens). Periphery HUD readers; the table reader's dev rates; glimpse
+    readers and ridge readouts per (cell, window) from frames whose guided glimpse covers the cell at that window."""
     out, qual = {"p": {}, "g": {}}, {"p": {}, "g": {}}
     stack = lambda enc, key: torch.cat([r[key] for r in enc])
     s_tr, s_dv = (np.concatenate([np.arange(len(r["p"])) + o for r, o in zip(enc, np.r_[0, np.cumsum(L["ep_T"] + 1)][:-1])])
@@ -125,11 +136,12 @@ def readers(enc_tr, L_tr, enc_dv, L_dv, enc_tr_g, enc_dv_g):
     gl = {key: (stack(enc, "fix"), stack(enc, "g")) for enc, key in ((enc_tr_g, "fit"), (enc_dv_g, "qual"))}
     for name, (cell, arr, col) in HUD_CELLS.items():
         means = nearest_means(p_tr[:, cell], hud_value(L_tr, name, s_tr))
-        out["p"][name] = means
         v_dv = hud_value(L_dv, name, s_dv)
         known = np.isin(v_dv, list(means))
-        qual["p"][name] = {"accuracy": float((read(means, p_dv[:, cell][known]) == v_dv[known]).mean()),
-                           "rows": int(known.sum()), "unknown_values": int((~known).sum())}
+        acc = float((read(means, p_dv[:, cell][known]) == v_dv[known]).mean())
+        out["p"][name] = {"means": means, "support": set(means), "qualified": acc >= ACC_MIN}
+        qual["p"][name] = {"accuracy": acc, "rows": int(known.sum()), "unknown_values": int((~known).sum()),
+                           "qualified": acc >= ACC_MIN}
         for (L, s, key) in ((L_tr, s_tr, "fit"), (L_dv, s_dv, "qual")):
             fix, g = gl[key]
             win = M.window(fix)
@@ -142,87 +154,160 @@ def readers(enc_tr, L_tr, enc_dv, L_dv, enc_tr_g, enc_dv_g):
                 vals = hud_value(L, name, s[m])
                 if key == "fit":
                     if m.sum() >= 200:
-                        out["g"][(name, int(wc))] = {"means": nearest_means(tok, vals), "linear": fit_linear(tok, vals)}
+                        out["g"][(name, int(wc))] = {"linear": fit_linear(tok, vals), "ridge": fit_ridge(tok, vals),
+                                                     "support": set(int(v) for v in np.unique(vals)), "qualified": False}
                 elif (name, int(wc)) in out["g"]:
                     rd = out["g"][(name, int(wc))]
-                    ok = np.isin(vals, rd["linear"]["classes"])
+                    ok = np.isin(vals, list(rd["support"]))
                     acc = float((read_linear(rd["linear"], tok[ok]) == vals[ok]).mean())
-                    rd["qualified"] = acc >= 0.99
+                    rd["qualified"] = acc >= ACC_MIN
                     qual["g"][f"{name}@{int(wc)}"] = {"accuracy": acc, "rows": int(ok.sum()), "qualified": rd["qualified"]}
+    # table reader on real faced cells
+    d = FC.DIRS[L_dv["s_dir"][s_dv]]
+    cell = (3 + d[:, 0]) * 9 + 4 + d[:, 1]
+    is_table = L_dv["s_view"][s_dv, 3 + d[:, 0], 4 + d[:, 1]] == CAT.TABLE
+    v_dv = stack(enc_dv, "v")
+    with torch.no_grad():
+        pred = np.concatenate([s1_reader(torch.cat([p_dv[i, cell[i]], v_dv[i]], 1).half().to(DEV))["terr"].argmax(1).cpu().numpy()
+                               for i in np.array_split(np.arange(len(cell)), max(1, len(cell) // 65536))]) == CAT.TABLE
+    rec, spec = float(pred[is_table].mean()), float((~pred[~is_table]).mean())
+    out["table"] = {"qualified": rec >= ACC_MIN and spec >= ACC_MIN}
+    qual["table"] = {"table_recall": rec, "non_table_specificity": spec, "table_rows": int(is_table.sum()),
+                     "qualified": out["table"]["qualified"]}
     return out, qual
 
 
+def fail_contexts(L, enc, rng, n):
+    """Failed attempts, as FC-style rows (e, t, cell, start, start, False): awake, a_{t-1} = DO facing water (drink) or
+    a tree (wood) with the counter unchanged at t; PLACE_TABLE with no table on the faced cell at t - 1 or t."""
+    s_off, a_off = np.r_[0, np.cumsum(L["ep_T"] + 1)], np.r_[0, np.cumsum(L["ep_T"])]
+    d = FC.DIRS[L["s_dir"]]
+    face = L["s_view"][np.arange(len(d)), 3 + d[:, 0], 4 + d[:, 1]]
+    out = {k: [] for k in FAIL_KINDS}
+    for e in range(len(enc)):
+        for t in range(P, len(enc[e]["p"])):
+            g, a = s_off[e] + t - 1, int(L["t_action"][a_off[e] + t - 1])
+            if L["s_sleep"][g]:
+                continue
+            for kind, name, block in (("drink_fail", "drink", CAT.WATER), ("wood_fail", "wood", CAT.TREE)):
+                v0 = int(hud_value(L, name, g))
+                if a == CAT.DO and face[g] == block and int(hud_value(L, name, g + 1)) == v0:
+                    out[kind].append((e, t, HUD_CELLS[name][0], v0, v0, False))
+            if a == CAT.PLACE_TABLE and face[g] != CAT.TABLE and L["s_view"][g + 1, 3 + d[g, 0], 4 + d[g, 1]] != CAT.TABLE:
+                out["table_fail"].append((e, t, (3 + d[g, 0]) * 9 + 4 + d[g, 1], 0, 0, False))
+    counts = {k: len(v) for k, v in out.items()}
+    for k in out:
+        if len(out[k]) > n:
+            out[k] = [out[k][i] for i in rng.choice(len(out[k]), n, replace=False)]
+    return out, counts
+
+
 def row_info(kind, rows, L):
-    """Per context: (consequence cell or -1, reader name or None, start value, end value, recorded end-reached)."""
+    """Per context: (consequence cell or -1, start value, end value, recorded end reached). Failed attempts: start =
+    end (their recorded outcome is "unchanged")."""
     s_off = np.r_[0, np.cumsum(L["ep_T"] + 1)]
     info = []
     for r in rows:
         e, t = r[0], r[1]
         g0, g1 = s_off[e] + t - 1, s_off[e] + t
         if kind in ("wood", "sapling", "drink"):
-            cell = HUD_CELLS[kind][0]
             a = int(hud_value(L, kind, g0))
-            info.append((cell, kind, a, a + 1, int(hud_value(L, kind, g1)) == a + 1))
+            info.append((HUD_CELLS[kind][0], a, a + 1, int(hud_value(L, kind, g1)) == a + 1))
         elif kind == "table":
             dd = FC.DIRS[L["s_dir"][g0]]
-            info.append(((3 + dd[0]) * 9 + 4 + dd[1], "table", 0, 1, L["s_view"][g1, 3 + dd[0], 4 + dd[1]] == CAT.TABLE))
+            info.append(((3 + dd[0]) * 9 + 4 + dd[1], 0, 1, L["s_view"][g1, 3 + dd[0], 4 + dd[1]] == CAT.TABLE))
         elif kind in ("adjacent", "risky", "safe"):
-            info.append((63, "health", r[3], r[4], int(hud_value(L, "health", g1)) == r[4]))
+            info.append((63, r[3], r[4], int(hud_value(L, "health", g1)) == r[4]))
+        elif kind in FAIL_KINDS:
+            info.append((r[2], r[3], r[4], True))
         else:
-            info.append((-1, None, 0, 0, False))
+            info.append((-1, 0, 0, False))
     return info
 
 
-def reader_outcomes(o, rows, info, enc, rdr, s1_reader, route):
-    """Per evaluated row (R per context): generated / real outcome by the readers; eye elsewhere; glimpse readout."""
+def real_glimpse_check(rows, info, enc_g, rdr, kind):
+    """Qualification of the glimpse ridge readout for a class: on its real eye-on rows (guided route), the mean readout
+    vs the recorded rate (one row per context)."""
+    name = READS.get(kind)
+    if name not in HUD_CELLS or kind in FAIL_KINDS:
+        return None
+    cell = HUD_CELLS[name][0]
+    f, rec = [], []
+    for i, r in enumerate(rows):
+        fix = enc_g[r[0]]["fix"][r[1]]
+        win = M.window(fix).numpy()
+        rd = rdr["g"].get((name, int(fix[0] * 9 + fix[1])))
+        if cell not in win or rd is None or not {info[i][1], info[i][2]} <= rd["support"]:
+            continue
+        tok = enc_g[r[0]]["g"][r[1]][int(np.nonzero(win == cell)[0][0])][None]
+        f.append(float(ridge_projection(rd["ridge"], tok, np.array([info[i][1]]), np.array([info[i][2]]))[0]))
+        rec.append(float(info[i][3]))
+    if not f:
+        return {"rows": 0, "qualified": False}
+    return {"rows": len(f), "f_real": float(np.mean(f)), "recorded": float(np.mean(rec)),
+            "qualified": abs(np.mean(f) - np.mean(rec)) <= PROJ_TOL}
+
+
+def reader_outcomes(o, rows, info, enc, rdr, gq, s1_reader, kind, route):
+    """Per evaluated row (R per context): eye elsewhere / on; generated and real outcomes by qualified readers, with
+    row masks read_ok (periphery or table instrument qualified and values supported) and, on the guided route,
+    glimpse_read_ok / glimpse_proj_ok."""
     idx = o["row_ctx"]
+    n = len(idx)
     cells = np.array([info[i][0] for i in idx])
     fix = torch.stack([enc[rows[i][0]]["fix"][rows[i][1]] for i in idx])
     win = M.window(fix).numpy()
     covered = (win == cells[:, None]).any(1)
     res = {"eye_elsewhere": ~covered, "covered": covered}
-    name = info[idx[0]][1] if len(idx) else None
+    name = READS.get(kind)
     if name is None:
         return res
     gp = torch.as_tensor(o["gen_p"]).float()
     rp = torch.stack([enc[rows[i][0]]["p"][rows[i][1]] for i in idx]).float()
-    ar = np.arange(len(idx))
-    start, end = np.array([info[i][2] for i in idx]), np.array([info[i][3] for i in idx])
+    ar = np.arange(n)
+    start, end = np.array([info[i][1] for i in idx]), np.array([info[i][2] for i in idx])
     if name == "table":
         v_gen = torch.as_tensor(o["gen_v"]).float()
         v_real = torch.stack([enc[rows[i][0]]["v"][rows[i][1]] for i in idx]).float()
         with torch.no_grad():
-            t_gen = s1_reader(torch.cat([gp[ar, cells], v_gen], 1).half().to(DEV))["terr"].argmax(1).cpu().numpy() == CAT.TABLE
-            t_real = s1_reader(torch.cat([rp[ar, cells], v_real], 1).half().to(DEV))["terr"].argmax(1).cpu().numpy() == CAT.TABLE
-        res.update(gen_end=t_gen, gen_start=~t_gen, real_end=t_real)
-        return res
-    means = rdr["p"][name]
-    vg, vr = read(means, gp[ar, cells]), read(means, rp[ar, cells])
-    res.update(gen_end=vg == end, gen_start=vg == start, real_end=vr == end)
-    if route == "glimpse":
+            vg = s1_reader(torch.cat([gp[ar, cells], v_gen], 1).half().to(DEV))["terr"].argmax(1).cpu().numpy() == CAT.TABLE
+            vr = s1_reader(torch.cat([rp[ar, cells], v_real], 1).half().to(DEV))["terr"].argmax(1).cpu().numpy() == CAT.TABLE
+        vg, vr = vg.astype(int), vr.astype(int)
+        res["read_ok"] = np.full(n, rdr["table"]["qualified"])
+    else:
+        rd = rdr["p"][name]
+        vg, vr = read(rd["means"], gp[ar, cells]), read(rd["means"], rp[ar, cells])
+        supported = np.array([s in rd["support"] and e in rd["support"] for s, e in zip(start, end)])
+        res["read_ok"] = supported & rd["qualified"]
+    res.update(gen_end=vg == end, gen_start=vg == start, gen_change=vg != start, real_end=vr == end)
+    res["glimpse_read_ok"] = np.zeros(n, bool)
+    res["glimpse_proj_ok"] = np.zeros(n, bool)
+    if route == "guided" and name in HUD_CELLS:
         gg = torch.as_tensor(o["gen_g"]).float()
-        rg = torch.stack([enc[rows[i][0]]["g"][rows[i][1]] for i in idx]).float()
         slot = (torch.as_tensor(win) == torch.as_tensor(cells)[:, None]).float().argmax(1)
         centre = (fix[:, 0] * 9 + fix[:, 1]).numpy()
-        g_end = np.zeros(len(idx), bool); g_ok = np.zeros(len(idx), bool)
-        fg_gen, fg_real = np.full(len(idx), np.nan), np.full(len(idx), np.nan)
+        g_end, g_change, f_gen = np.zeros(n, bool), np.zeros(n, bool), np.full(n, np.nan)
         for wc in np.unique(centre[covered]):
-            rd = rdr["g"].get((name, int(wc)))
-            if rd is None:
+            rdg = rdr["g"].get((name, int(wc)))
+            if rdg is None:
                 continue
             m = covered & (centre == wc)
             mt = torch.as_tensor(m)
-            yg, yr = gg[mt][torch.arange(int(m.sum())), slot[mt]], rg[mt][torch.arange(int(m.sum())), slot[mt]]
-            fg_gen[m], fg_real[m] = projection(rd["means"], yg, start[m], end[m]), projection(rd["means"], yr, start[m], end[m])
-            if rd.get("qualified"):
-                g_end[m] = read_linear(rd["linear"], yg) == end[m]
-                g_ok[m] = True
-        res.update(glimpse_gen_end=g_end, glimpse_read=g_ok, glimpse_f_gen=fg_gen, glimpse_f_real=fg_real)
+            yg = gg[mt][torch.arange(int(m.sum())), slot[mt]]
+            sup = np.array([s in rdg["support"] and e in rdg["support"] for s, e in zip(start[m], end[m])])
+            vgg = read_linear(rdg["linear"], yg)
+            g_end[m], g_change[m] = vgg == end[m], vgg != start[m]
+            res["glimpse_read_ok"][m] = sup & rdg["qualified"]
+            if gq is not None and gq.get("qualified"):
+                f_gen[m] = ridge_projection(rdg["ridge"], yg, start[m], end[m])
+                res["glimpse_proj_ok"][m] = sup & np.isfinite(f_gen[m])
+        res.update(glimpse_gen_end=g_end, glimpse_gen_change=g_change, glimpse_f_gen=f_gen)
     return res
 
 
 def hallucination(o, rows, enc, L, rdr, s1_reader):
-    """Random rows: per HUD cell and the faced cell, generated change rate where the recorded cell did not change."""
+    """Random rows (a population diagnostic, not the failed-attempt test): per HUD cell and the faced cell, the
+    generated change rate where the recorded cell did not change; qualified readers and supported values only."""
     s_off = np.r_[0, np.cumsum(L["ep_T"] + 1)]
     idx = o["row_ctx"]
     g0 = np.array([s_off[rows[i][0]] + rows[i][1] - 1 for i in idx]); g1 = g0 + 1
@@ -230,21 +315,26 @@ def hallucination(o, rows, enc, L, rdr, s1_reader):
     ep = np.array([rows[i][0] for i in idx])
     out = {}
     for name, (cell, arr, col) in HUD_CELLS.items():
+        rd = rdr["p"][name]
+        if not rd["qualified"]:
+            out[name] = "unmeasured: reader not qualified"
+            continue
         before, after = hud_value(L, name, g0), hud_value(L, name, g1)
-        vg = read(rdr["p"][name], gp[:, cell])
-        same = before == after
+        vg = read(rd["means"], gp[:, cell])
+        same = (before == after) & np.isin(before, list(rd["support"]))
         out[name] = {"recorded_unchanged_rows": int(same.sum()),
-                     "false_change": G.estimate((vg != before).astype(float), same, ep),
-                     "recorded_changed_rows": int((~same).sum()),
-                     "change_generated_when_recorded": G.estimate((vg == after).astype(float), ~same, ep) if (~same).any() else None}
-    dd = FC.DIRS[L["s_dir"][g0]]
-    fc_ = (3 + dd[:, 0]) * 9 + 4 + dd[:, 1]
-    before = L["s_view"][g0, 3 + dd[:, 0], 4 + dd[:, 1]] == CAT.TABLE
-    after = L["s_view"][g1, 3 + dd[:, 0], 4 + dd[:, 1]] == CAT.TABLE
-    with torch.no_grad():
-        tg = s1_reader(torch.cat([gp[np.arange(len(idx)), fc_], torch.as_tensor(o["gen_v"]).float()], 1).half().to(DEV))["terr"].argmax(1).cpu().numpy() == CAT.TABLE
-    same = before == after
-    out["table_faced"] = {"recorded_unchanged_rows": int(same.sum()), "false_change": G.estimate((tg != before).astype(float), same, ep)}
+                     "false_change": G.estimate((vg != before).astype(float), same, ep) if same.any() else None}
+    if rdr["table"]["qualified"]:
+        dd = FC.DIRS[L["s_dir"][g0]]
+        fc_ = (3 + dd[:, 0]) * 9 + 4 + dd[:, 1]
+        before = L["s_view"][g0, 3 + dd[:, 0], 4 + dd[:, 1]] == CAT.TABLE
+        after = L["s_view"][g1, 3 + dd[:, 0], 4 + dd[:, 1]] == CAT.TABLE
+        with torch.no_grad():
+            tg = s1_reader(torch.cat([gp[np.arange(len(idx)), fc_], torch.as_tensor(o["gen_v"]).float()], 1).half().to(DEV))["terr"].argmax(1).cpu().numpy() == CAT.TABLE
+        same = before == after
+        out["table_faced"] = {"recorded_unchanged_rows": int(same.sum()), "false_change": G.estimate((tg != before).astype(float), same, ep)}
+    else:
+        out["table_faced"] = "unmeasured: reader not qualified"
     return out
 
 
@@ -298,45 +388,83 @@ def entity_counts(model, enc, cfg, s1_reader, n=5000):
             for k, kn in enumerate(G.KINDS, 1)}
 
 
-def summarise(o, rows, info, ro):
+SUBSETS = ("all", "eye_elsewhere", "eye_on")
+
+
+def subset_mask(ro, valid, subset):
+    return valid if subset == "all" else valid & (ro["eye_elsewhere"] if subset == "eye_elsewhere" else ro["covered"])
+
+
+def summarise(o, rows, info, ro, kind):
     ep = np.array([rows[i][0] for i in o["row_ctx"]])
     valid = o["valid"] if "valid" in o else np.ones(len(ep), bool)
+    est = lambda v, m: G.estimate(np.where(m, np.asarray(v, float), 0.0), m, ep) if m.any() else None
     res = {}
-    for subset in ("all", "eye_elsewhere", "eye_on"):
-        m = valid if subset == "all" else valid & ro["eye_elsewhere"] if subset == "eye_elsewhere" else valid & ro["covered"]
+    for subset in SUBSETS:
+        m = subset_mask(ro, valid, subset)
         if not m.any():
             res[subset] = None
             continue
-        est = lambda v: G.estimate(np.asarray(v, float), m, ep)
-        r = {"rows": int(m.sum()), "f_recorded": est(o["f_real"]), "f_production": est(o["f_gen"]),
-             "field": {s: est(o["f_den"][:, FC.SIGMAS.index(float(s))]) for s in READ_SIGMAS}}
-        if "gen_end" in ro:
-            rec = np.array([info[i][4] for i in o["row_ctx"]])
-            r.update(recorded_end=est(rec), reader_real_end=est(ro["real_end"]), reader_production_end=est(ro["gen_end"]),
-                     reader_production_start=est(ro["gen_start"]))
+        r = {"rows": int(m.sum())}
+        if kind not in FAIL_KINDS:
+            r.update(f_recorded=est(o["f_real"], m), f_production=est(o["f_gen"], m),
+                     field={s: est(o["f_den"][:, FC.SIGMAS.index(float(s))], m) for s in READ_SIGMAS})
+        if "read_ok" in ro:
+            mr = m & ro["read_ok"]
+            rec = np.array([info[i][3] for i in o["row_ctx"]], float)
+            r.update(rows_read=int(mr.sum()), rows_excluded=int((m & ~ro["read_ok"]).sum()),
+                     recorded_end=est(rec, mr), reader_real_end=est(ro["real_end"], mr))
+            if kind in FAIL_KINDS:
+                r["reader_production_false_change"] = est(ro["gen_change"], mr)
+            else:
+                r.update(reader_production_end=est(ro["gen_end"], mr), reader_production_start=est(ro["gen_start"], mr))
+            if "glimpse_gen_end" in ro:
+                mg, mp = m & ro["glimpse_read_ok"], m & ro["glimpse_proj_ok"]
+                r["glimpse_reader_rows"] = int(mg.sum())
+                r["glimpse_reader_production"] = est(ro["glimpse_gen_change" if kind in FAIL_KINDS else "glimpse_gen_end"], mg)
+                r["glimpse_projection_rows"] = int(mp.sum())
+                r["glimpse_projection_production"] = est(ro["glimpse_f_gen"], mp) if kind not in FAIL_KINDS else None
         res[subset] = r
-    if "glimpse_gen_end" in ro and ro["glimpse_read"].any():
-        m = valid & ro["glimpse_read"]
-        res["glimpse_reader_production_end"] = G.estimate(ro["glimpse_gen_end"].astype(float), m, ep)
-        res["glimpse_rows"] = int(m.sum())
-    if "glimpse_f_gen" in ro:
-        m = valid & np.isfinite(ro["glimpse_f_gen"])
-        if m.any():
-            res["glimpse_projection"] = {"rows": int(m.sum()),
-                                         "f_real": G.estimate(np.where(m, ro["glimpse_f_real"], 0.0), m, ep),
-                                         "f_production": G.estimate(np.where(m, ro["glimpse_f_gen"], 0.0), m, ep)}
     res["covered_share"] = float(ro["covered"][valid].mean())
     return res
 
 
-def paired(a, b, rows, key, subset_mask):
-    """Paired difference b - a of a per-row array (same rows and noise) with an episode-bootstrap SE; rows where
-    either value is undefined (NaN) leave the subset."""
+def paired(a, b, rows, key, mask):
+    """Paired difference b - a of a per-row array (same rows and noise), episode-bootstrap SE and a 95% interval;
+    rows where either value is undefined leave the mask."""
     ep = np.array([rows[i][0] for i in a["row_ctx"]])
     assert (a["row_ctx"] == b["row_ctx"]).all()
     d = np.asarray(b[key], float) - np.asarray(a[key], float)
-    m = subset_mask & np.isfinite(d)
-    return G.estimate(np.where(m, d, 0.0), m, ep) if m.any() else None
+    m = mask & np.isfinite(d)
+    if not m.any():
+        return None
+    r = G.estimate(np.where(m, d, 0.0), m, ep)
+    r["ci95"] = [r["est"] - 1.96 * r["se"], r["est"] + 1.96 * r["se"]]
+    return r
+
+
+def differences(A, B, rows, kind):
+    out = {}
+    for subset in SUBSETS:
+        m = subset_mask(A, A["valid"], subset)
+        if not m.any():
+            out[subset] = None
+            continue
+        r = {}
+        if kind not in FAIL_KINDS:
+            r["field_6.67"] = paired({"row_ctx": A["row_ctx"], "x": A["f_den"][:, FC.SIGMAS.index(6.67)]},
+                                     {"row_ctx": B["row_ctx"], "x": B["f_den"][:, FC.SIGMAS.index(6.67)]}, rows, "x", m)
+            r["f_production"] = paired(A, B, rows, "f_gen", m)
+        if "read_ok" in A:
+            key = "gen_change" if kind in FAIL_KINDS else "gen_end"
+            r["reader_production"] = paired(A, B, rows, key, m & A["read_ok"])
+            if "glimpse_gen_end" in A:
+                gkey = "glimpse_gen_change" if kind in FAIL_KINDS else "glimpse_gen_end"
+                r["glimpse_reader_production"] = paired(A, B, rows, gkey, m & A["glimpse_read_ok"])
+                if kind not in FAIL_KINDS:
+                    r["glimpse_projection_production"] = paired(A, B, rows, "glimpse_f_gen", m & A["glimpse_proj_ok"])
+        out[subset] = r
+    return out
 
 
 def main():
@@ -353,17 +481,17 @@ def main():
     rule = {int(k): tuple(v) for k, v in json.loads((HERE / "map.json").read_text())["rule"].items()}
     L = S.first_episodes(dict(np.load(ROOT / "artifacts/eda/s0/s0_dev_labels.npz")), n_ep)
     Ltr = S.first_episodes(dict(np.load(ROOT / "artifacts/eda/s0/s0_train400_labels.npz")), n_ep)
-    enc = {"periphery": encode_with(model, L, cfg), "glimpse": encode_with(model, L, cfg, PM.window_of_state(L, rule))}
+    enc = {"periphery": encode_with(model, L, cfg), "guided": encode_with(model, L, cfg, PM.window_of_state(L, rule))}
     ref = S.encode(model, S.first_episodes(L, 3), cfg)                   # encode_with reproduces S.encode
     for e in range(3):
         for k in ("fix", "prev_action"):
             assert torch.equal(ref[e][k], enc["periphery"][e][k]), k
         for k in ("p", "g", "v", "bp"):
             assert (ref[e][k].float() - enc["periphery"][e][k].float()).abs().max() <= 1e-3, k
-    enc_tr, enc_tr_g = encode_with(model, Ltr, cfg), encode_with(model, Ltr, cfg, PM.window_of_state(Ltr, rule))
-    rdr, qual = readers(enc_tr, Ltr, enc["periphery"], L, enc_tr_g, enc["glimpse"])
-    del enc_tr, enc_tr_g
     s1_reader = S.load_reader(READER, BASE, DEV)
+    enc_tr, enc_tr_g = encode_with(model, Ltr, cfg), encode_with(model, Ltr, cfg, PM.window_of_state(Ltr, rule))
+    rdr, qual = readers(enc_tr, Ltr, enc["periphery"], L, enc_tr_g, enc["guided"], s1_reader)
+    del enc_tr, enc_tr_g
     s_off = np.r_[0, np.cumsum(L["ep_T"] + 1)]
     e0 = enc["periphery"]
     hm, tm, means = CAT.hud_means(L, e0), CAT.table_means(L, e0), FC.value_means(L, e0)
@@ -373,10 +501,20 @@ def main():
         ctx[kind] = [r for r in ctx[kind] if {int(x[s_off[r[0]] + r[1] - 1, col]), int(x[s_off[r[0]] + r[1] - 1, col]) + 1} <= set(hm[kind])]
     fc = FC.contexts(L, e0, np.random.default_rng(2029))                 # its own "drink" class is A's, not F's
     ctx.update({k: fc[k] for k in FC_KINDS})
-    rows = {k: ctx[k][:n_rows] for k in CAT_KINDS + FC_KINDS if ctx[k]}
+    fails, fail_counts = fail_contexts(L, e0, np.random.default_rng(2035), n_rows)
+    ctx.update(fails)
+    # value means for FC.run on the failed attempts (its projection is undefined there: start = end; only the
+    # production samples are read)
+    means_all = {**means, 68: hm["wood"], **{c: {0: v} for c, v in tm.items()}}
+    rows = {k: ctx[k][:n_rows] for k in CAT_KINDS + FC_KINDS + FAIL_KINDS if ctx[k]}
     info = {k: row_info(k, rows[k], L) for k in rows}
+    gq = {k: real_glimpse_check(rows[k], info[k], enc["guided"], rdr, k) for k in rows}
+    qual["glimpse_projection"] = gq
     res = {"base": str(BASE), "rows_per_class": n_rows, "dev_episodes": int(len(L["ep_T"])),
-           "rows": {k: len(v) for k, v in rows.items()}, "reader_qualification": qual, "checkpoints": {}, "differences": {}}
+           "rows": {k: len(v) for k, v in rows.items()}, "failed_attempts_available": fail_counts,
+           "instrument_qualification": qual, "unmeasured": {"table_glimpse": "no glimpse instrument for the table"},
+           "checkpoints": {}, "differences": {}}
+    print("qualification", json.dumps(qual, default=str)[:3000], flush=True)
     per_row = {}
     for label, path in pairs:
         full = (ROOT / path).resolve()
@@ -386,57 +524,37 @@ def main():
         model.denoiser.load_state_dict({k[len("denoiser."):]: v for k, v in state.items() if k.startswith("denoiser.")})
         del state
         row = {"path": path, "sha256": TR.file_sha256(full)}
-        for route in ("periphery", "glimpse"):
+        for route in ("periphery", "guided"):
             row[route] = {}
             for kind in rows:
                 gen = torch.Generator(device=DEV).manual_seed(SEEDS[kind] + (0 if route == "periphery" else 100))
                 if kind in CAT_KINDS:
                     o = CAT.run(model, enc[route], L, rows[kind], kind, hm, tm, cfg, gen, heun=False, keep=True)
                 else:
-                    o = FC.run(model, enc[route], rows[kind], means, cfg, gen, keep=True)
-                ro = reader_outcomes(o, rows[kind], info[kind], enc[route], rdr, s1_reader, route)
-                row[route][kind] = summarise(o, rows[kind], info[kind], ro)
+                    o = FC.run(model, enc[route], rows[kind], means_all, cfg, gen, keep=True)
+                ro = reader_outcomes(o, rows[kind], info[kind], enc[route], rdr, gq.get(kind), s1_reader, kind, route)
+                row[route][kind] = summarise(o, rows[kind], info[kind], ro, kind)
                 if kind == "random":
-                    row[route][kind]["hallucination"] = hallucination(o, rows[kind], enc[route], L, rdr, s1_reader)
+                    row[route][kind]["hallucination_population"] = hallucination(o, rows[kind], enc[route], L, rdr, s1_reader)
                 keep = {k: o[k] for k in ("row_ctx", "f_real", "f_gen", "f_den") if k in o}
                 keep.update({k: v for k, v in ro.items()}, valid=o.get("valid", np.ones(len(o["row_ctx"]), bool)))
                 per_row[(label, route, kind)] = keep
                 np.savez_compressed(out_dir / f"{label}_{route}_{kind}.npz", **keep)
             sub = "eye_elsewhere" if route == "periphery" else "eye_on"
             print(label, route, sub, {k: (round(v[sub]["field"]["6.67"]["est"], 3), round(v[sub]["f_production"]["est"], 3))
-                                      for k, v in row[route].items() if v[sub]}, flush=True)
+                                      for k, v in row[route].items() if v[sub] and "field" in v[sub]}, flush=True)
         row["costs"] = {"class_losses": class_losses(model, enc["periphery"], L, cfg),
                         "entity_counts": entity_counts(model, enc["periphery"], cfg, s1_reader)}
         res["checkpoints"][label] = row
-        (out_dir / "results.json").write_text(json.dumps(res, indent=1))
-    # paired differences guided - random at each fine-tune checkpoint, and each fine-tune checkpoint - base
+        (out_dir / "results.json").write_text(json.dumps(res, indent=1, default=str))
     labels = [l for l, _ in pairs]
     combos = [(f"random_{u}", f"guided_{u}") for u in sorted({l.split("_")[1] for l in labels if "_" in l})]
     combos += [("base", l) for l in labels if l != "base"]
     for a, b in combos:
-        if a not in labels or b not in labels:
-            continue
-        d = res["differences"][f"{b}-{a}"] = {}
-        for route in ("periphery", "glimpse"):
-            d[route] = {}
-            for kind in rows:
-                A, B = per_row[(a, route, kind)], per_row[(b, route, kind)]
-                m_all = A["valid"]
-                d[route][kind] = {}
-                for subset, m in (("all", m_all), ("eye_elsewhere", m_all & A["eye_elsewhere"]), ("eye_on", m_all & A["covered"])):
-                    if not m.any():
-                        d[route][kind][subset] = None
-                        continue
-                    r = {"field_6.67": paired({"row_ctx": A["row_ctx"], "x": A["f_den"][:, FC.SIGMAS.index(6.67)]},
-                                              {"row_ctx": B["row_ctx"], "x": B["f_den"][:, FC.SIGMAS.index(6.67)]}, rows[kind], "x", m),
-                         "f_production": paired(A, B, rows[kind], "f_gen", m)}
-                    if "gen_end" in A:
-                        r["reader_production_end"] = paired(A, B, rows[kind], "gen_end", m)
-                    if "glimpse_f_gen" in A:
-                        r["glimpse_f_production"] = paired(A, B, rows[kind], "glimpse_f_gen", m)
-                        r["glimpse_reader_production_end"] = paired(A, B, rows[kind], "glimpse_gen_end", m & A["glimpse_read"])
-                    d[route][kind][subset] = r
-    (out_dir / "results.json").write_text(json.dumps(res, indent=1))
+        if a in labels and b in labels:
+            res["differences"][f"{b}-{a}"] = {route: {k: differences(per_row[(a, route, k)], per_row[(b, route, k)], rows[k], k)
+                                                      for k in rows} for route in ("periphery", "guided")}
+    (out_dir / "results.json").write_text(json.dumps(res, indent=1, default=str))
     print("saved", out_dir / "results.json", flush=True)
 
 

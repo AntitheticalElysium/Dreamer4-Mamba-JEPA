@@ -130,10 +130,14 @@ def main():
     rule_cover = (tg & COVER[widx]).any(1) & attempt
     guided = np.where(attempt, Q * rule_cover + (1 - Q) * prior_cover, prior_cover)
     by_class = {}
-    for c in TARGETS:
-        m = (cls[g] == LA.CLASSES.index(c)).any(1)
+    for c in TARGETS:                                                    # this class's own cells (Codex, 10-30: the
+        own = cls[g] == LA.CLASSES.index(c)                              # union credited another simultaneous one)
+        m = own.any(1)
+        prior_c = (own[m].astype(np.int32) @ COVER.T.astype(np.int32) > 0).mean(1)
+        rule_c = (own[m] & COVER[widx[m]]).any(1) & attempt[m]
+        guided_c = np.where(attempt[m], Q * rule_c + (1 - Q) * prior_c, prior_c)
         by_class[c] = {"frames": int(m.sum()), "in_attempt_contexts": float(attempt[m].mean()),
-                       "covered_prior": float(prior_cover[m].mean()), "covered_guided": float(guided[m].mean())}
+                       "covered_prior": float(prior_c.mean()), "covered_guided": float(guided_c.mean())}
     res = {"labels": str(LABELS), "targets": TARGETS, "n_min": N_MIN, "q": Q, "coin_seed": COIN_SEED,
            "train_frames_t_ge_1": int(len(g)), "base_rate_target_frames": base_rate,
            "attempt_contexts": len(rule), "frames_in_attempt_contexts": float(attempt.mean()),
