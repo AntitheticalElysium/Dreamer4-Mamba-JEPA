@@ -95,8 +95,9 @@ Native death head (recorded RISKY 12.77%, SAFE 0%, RANDOM 0.20%): production 0.0
   over the field mean (ADJACENT 0.104 vs 0.086, DRINK 0.23 vs 0.18); sigma_max 10 sits slightly lower.
 
 ## E. Information in the conditioning (`information_probe.py`, `information_probe/results.json`)
-Event: a zombie attack during t-1 -> t (cooldown reset to 5). Population: a zombie within L1 2 at t-1, 37,491 rows,
-attack rate 11.0%; one third of physical episodes held out (13,685 test rows). S1 probe protocol (MLP 256-256).
+Event: a zombie attack during t-1 -> t (cooldown reset to 5). Population: a zombie within L1 2 at t-1, 40,056 rows,
+attack rate 11.3% (test 11.0%; the rule gives 89.0% when a ready zombie is adjacent after the move, 0.0% otherwise);
+one third of physical episodes held out (13,685 test rows). S1 probe protocol (MLP 256-256).
 
 | Probe input | AP | Log loss (base 0.346) | ECE | Mean P: ready + adjacent after the move / other |
 |---|---|---|---|---|
