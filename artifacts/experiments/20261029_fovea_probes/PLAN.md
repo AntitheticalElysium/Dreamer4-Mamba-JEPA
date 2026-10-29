@@ -60,3 +60,10 @@ night (PERCEPTION, acuity table); 99.8% of immediate consequence cells are the p
   windows -> value tracks pixel noise (the noisy-TV failure).
 - Not established: that a learned controller would find it, or that the world's value matches value in the
   environment (it is the world's own, the quantity imagination-trained fixation would optimise).
+
+## Addendum (10-29, after a smoke test of analyse.py on the first 50 episodes, before the full run ended)
+The smoke test showed a NEGATIVE lag-1 retention gain (TSP worse on cells fixated one frame earlier: day -0.10 (0.05),
+night -0.06 (0.02) nats per pixel). Before reading the full data, a descriptive split is added: static camera between
+t - 1 and t with the cell's content unchanged (no entity at that world cell at t - 1 or t; HUD values unchanged), and
+camera moved. A negative gain on static unchanged cells cannot be stale memory of changed content; a negative gain
+only when content changed or the camera moved can. Neither split changes the declared F1 readouts.

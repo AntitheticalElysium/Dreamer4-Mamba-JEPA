@@ -83,9 +83,24 @@ def f1(run, L):
         return boot(fn, rows["ep"])
 
     res = {"cells": int(len(rows["ep"])), "seen_share_by_lag": {str(l): float((rows["last"] == l).mean()) for l in range(9)}}
+    # Added after the 50-episode smoke test showed a negative lag-1 gain (PLAN addendum): static camera between t - 1
+    # and t, and an unchanged cell (no entity at that world cell at t - 1 or t; HUD cells: health / food / drink /
+    # energy unchanged). Separates stale memory of changed content from a cost on unchanged content.
+    s_ep = np.r_[0, np.cumsum(T + 1)]
+    prev = np.maximum(np.arange(n) - 1, 0)
+    static = (pos == pos[prev]).all(-1) & (np.arange(n) != s_ep[ep])
+    cont_prev = content(L, prev, k)
+    hud_same = (L["s_body"][:n] == L["s_body"][prev]).all(-1) & (L["s_inv"][:n] == L["s_inv"][prev]).all(-1)
+    unchanged = np.where(cont == 5, hud_same[:, None], (cont == 0) & (cont_prev == 0)) & static[:, None]
+    rows["unchanged"] = unchanged.ravel()[first]
+    rows["static"] = np.repeat(static[:, None], 9, 1).ravel()[first]
     for name, sel in (("all_day", ~rows["night"]), ("all_night", rows["night"]),
                       *((f"{c}_{dn}", (rows["cont"] == i) & (rows["night"] == (dn == "night")))
-                        for i, c in enumerate(("terrain", *KINDS, "hud")) for dn in ("day", "night"))):
+                        for i, c in enumerate(("terrain", *KINDS, "hud")) for dn in ("day", "night")),
+                      ("addendum_static_unchanged_day", rows["unchanged"] & ~rows["night"]),
+                      ("addendum_static_unchanged_night", rows["unchanged"] & rows["night"]),
+                      ("addendum_camera_moved_day", ~rows["static"] & ~rows["night"]),
+                      ("addendum_camera_moved_night", ~rows["static"] & rows["night"])):
         if (sel & (rows["last"] == 1)).sum() < 50:
             continue
         res[name] = {"n_seen_lag1": int((sel & (rows["last"] == 1)).sum()),
