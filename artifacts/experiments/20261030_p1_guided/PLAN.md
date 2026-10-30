@@ -74,6 +74,14 @@ Checkpoint by P1's own selection rule, against P1 world 1 checkpoint 10, both re
    digits / icons, blocks, mobs, day / night.
 5. P1's monitor curve and per-loss encoder gradient norms at every checkpoint, against world 1's.
 
+Order, by hand after a clean exit (one GPU job at a time; ~1.5 h). Checkpoint 10 by the rule: the monitor fell at
+every checkpoint to 8, so no three successive increases are possible. ck = run/ckpt_10.pt, w1 =
+artifacts/saccade_m0/p1_world1/ckpt_10.pt:
+`interface results_p1f_random.json --policy=random w1=.. p1f=..`, the same with `--policy=guided`;
+`saccade.eval.s1 ck run/s1/results.json` (after_p1 applies the same rule but validates against m0.yaml's recipe);
+M0.5's `evaluate eval_m05 base=w1 p1f=ck`, then its `readings`; decoder `refit render_p1f.json --ckpt=ck
+--trained-only` (world 1's row: `refit_results.json` "trained").
+
 ## Limits
 One seed per arm. The faithful decoder was demonstrated on frozen checkpoint-10 inputs only (one seed per arm); its
 noise model's calibration is not established (Codex), though night likelihood matched the NLL arms (3.03-3.14

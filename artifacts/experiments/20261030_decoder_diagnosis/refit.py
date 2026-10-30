@@ -21,6 +21,7 @@ D. (--tsp, user 10-31) TSP's own path: a fresh TSP adapter (tsp, belief projecti
    lighting), read on TSP's path: does TSP prefer an uncertainty-weighted loss (its target is genuinely uncertain
    before the glimpse)?
 Usage (project venv, GPU): python -m artifacts.experiments.20261030_decoder_diagnosis.refit OUT_JSON [--smoke] [--tsp]
+  [--ckpt=PATH --trained-only]   (P1-F reading 4, 10-31: A / B on another trained world's own decoder, no refit)
 """
 import importlib, json, os, sys
 from pathlib import Path
@@ -207,8 +208,9 @@ def refit(arm, F, cfg, path="rec"):
 
 
 def main():
-    global N_EVAL_EP, STEPS
+    global N_EVAL_EP, STEPS, CKPT
     out_path = Path(sys.argv[1])
+    CKPT = next((ROOT / a.split("=", 1)[1] for a in sys.argv if a.startswith("--ckpt=")), CKPT)
     smoke = "--smoke" in sys.argv
     if smoke:
         N_EVAL_EP, STEPS = 8, 50
@@ -238,6 +240,8 @@ def main():
         res["trained"][path]["probe"] = probe_digit(model.tsp, model.pixels, E, path, cfg)
         print("trained", path, json.dumps({k: v for k, v in res["trained"][path].items() if k.startswith(("hud", "grad", "probe", "log"))}), flush=True)
     out_path.write_text(json.dumps(res, indent=1, default=str))
+    if "--trained-only" in sys.argv:
+        return
     F = collect(model, cfg, Ltr, 20 if smoke else 0, False)
     F = {k: (v.to(DEV) if k in ("g", "v", "cells", "pix") else v) for k, v in F.items()}
     del model
