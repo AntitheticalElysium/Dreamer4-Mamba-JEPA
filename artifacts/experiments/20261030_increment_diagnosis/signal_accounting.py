@@ -4,6 +4,9 @@ and the glimpse elements of every glimpse token on a consequence cell attributed
 Fixations: 'random' (the S1-seeded prior, as P1 and the 10-29 run) or 'guided' (every attempt frame fixated by the
 placement rule, Q = 1; the fine-tune's Q = 1/2 is their midpoint in expectation: loss and gradient sums are linear in
 the mixture). Split halves as the 10-29 run (alternating windows), for noise-free norms, cosines and drives.
+Runs (user, 10-30): P1 checkpoint 10 'random' (P1's condition; reproduces the 10-29 run's unchanged classes, same
+windows and noise), checkpoint 10 'guided' (the fine-tune's start) and the fine-tune's ft_1500 'guided' (its end; the
+loss change between the two on the same windows and noise is what the extra share achieved).
 Usage (project venv, GPU): python -m artifacts.experiments.20261030_increment_diagnosis.signal_accounting CKPT FIX OUT_JSON
   [WINDOWS]
 """
@@ -52,7 +55,11 @@ def main():
     ckpt, fix, out = Path(sys.argv[1]), sys.argv[2], Path(sys.argv[3]); out.parent.mkdir(parents=True, exist_ok=True)
     n_win = int(sys.argv[4]) if len(sys.argv) > 4 else 1200
     ck = torch.load(ckpt, weights_only=False, map_location="cpu")
-    cfg = ck["cfg"]
+    if "cfg" in ck:
+        cfg = ck["cfg"]
+    else:                                                                # fine-tune checkpoints keep their base's cfg
+        assert ck["identity"]["base_sha256"] == TR.file_sha256(EV.BASE)
+        cfg = torch.load(EV.BASE, weights_only=False, map_location="cpu")["cfg"]
     model = M.M0(cfg).to(DEV); model.load_state_dict(ck["model"]); model.eval()
     o = cfg["optimizer"]
     opt = torch.optim.AdamW(model.param_groups(), lr=o["lr"], betas=tuple(o["betas"]), eps=o["eps"])
@@ -70,6 +77,10 @@ def main():
     GH = {c: [[torch.zeros(p.shape) for p in params] for _ in range(2)] for c in CLASSES}
     nC = len(CLASSES)
     loss = np.zeros(nC); elems = np.zeros(nC); events = np.zeros(nC); frames = 0
+    s_cfg = cfg["edm"]["train_sigma"]                                    # loss_accounting's equal-mass p_train bins
+    edges = torch.distributions.Normal(0, 1).icdf(torch.arange(1, 8) / 8.0)
+    sig_edges = (s_cfg["lognormal_loc"] + s_cfg["lognormal_scale"] * edges).exp().to(DEV)
+    loss_bin, elems_bin = np.zeros((nC, 8)), np.zeros((nC, 8))
     gen = torch.Generator(device=DEV).manual_seed(2033)
     den.train()
     for start in range(0, len(wins), B):
@@ -93,6 +104,7 @@ def main():
         keep = ~first[:, P:]
         sp, sg, sv = se[0].sum(-1), se[1].sum(-1), se[2].sum(-1)          # [b, T, 81], [b, T, 9], [b, T]
         norm = 1880.0 * T * len(batch)
+        sb = torch.bucketize(sigma[:, P:], sig_edges)
         per = []
         for k, name in enumerate(CLASSES):
             if name == "lighting":
@@ -106,6 +118,8 @@ def main():
             per.append(v.sum() / norm)
             loss[k] += float(v.detach().sum()); elems[k] += float(cnt.sum())
             events[k] += 0 if ev is None else int(ev.sum())
+            for b_ in range(8):
+                loss_bin[k, b_] += float(v.detach()[sb == b_].sum()); elems_bin[k, b_] += float(cnt[sb == b_].sum())
         frames += T * len(batch)
         half = (start // B) % 2
         for k, name in enumerate(CLASSES):
@@ -143,6 +157,8 @@ def main():
         res["classes"][name] = {
             "events": int(events[k]), "elements": float(elems[k]), "loss": Lc, "loss_share": float(loss[k] / loss.sum()),
             "se_per_element": float(loss[k] / max(elems[k], 1)),
+            "se_per_element_by_sigma_bin": (loss_bin[k] / np.maximum(elems_bin[k], 1)).tolist(),
+            "loss_share_by_sigma_bin": (loss_bin[k] / np.maximum(loss_bin.sum(0), 1e-30)).tolist(),
             "reliability_cos_A_B": cc_ / (math.sqrt(dot(A_, A_) * dot(B_, B_)) + 1e-30),
             "grad_norm_share": math.sqrt(max(cc_, 0.0) / max(tt, 1e-30)),
             "cos_with_total": (0.5 * (dot(A_, GtH[1]) + dot(B_, GtH[0])) / math.sqrt(cc_ * tt)) if cc_ > 0 and tt > 0 else None,
@@ -150,6 +166,7 @@ def main():
             "own_drive_per_1000": 1000 * dot(A_, step(B_)) / max(Lc, 1e-30)}
         r = res["classes"][name]
         print(name, {a: (round(b, 5) if isinstance(b, float) else b) for a, b in r.items()}, flush=True)
+    res["sigma_bin_edges"] = sig_edges.tolist()
     out.write_text(json.dumps(res, indent=1))
 
 

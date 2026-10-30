@@ -7,7 +7,7 @@ matched training frequency and at comparable token step sizes; the glimpse outpu
 
 Status (10-30): Part 1 ran (13:11-13:18, `increment_probe.py` as committed with it) WITHOUT prior review by the
 user or Codex and before this plan was committed (procedure breach, reported to the user). Parts 2 and 3 are written
-for review only: not approved, not run.
+for review only: not approved, not run. User (10-30): Part 2 to run; Part 3 dropped (not worth the compute).
 
 All tests on frozen checkpoints; dev rows of test F (the evaluation's rows), S1-seeded fixations, eye elsewhere at the
 target frame, 2 draws per context, the same draws in every variant. Read value = nearest dev value mean of the base
@@ -33,7 +33,11 @@ encoder's real tokens (read at accuracy 1.0 on real tokens).
 ## Part 2: the learning signal by transition (`signal_accounting.py`)
 The 10-29 accounting with drink and wood split into appearance (0 -> 1) and increment (v -> v + 1), and the glimpse
 elements at consequence cells attributed to their class: loss share, gradient-norm share, cosine with the total, and
-drive under the checkpoint's Adam update, at checkpoints 5 and 10. Claim (the user's question, 10-30): increments get
+drive under the checkpoint's Adam update, and loss by equal-mass noise bin. Runs: checkpoint 10 with random
+fixations (P1's condition; must reproduce the 10-29 run's unchanged classes: same windows and noise), checkpoint 10
+with guided fixations on every attempt frame (the fine-tune's start; its Q = 1/2 is the midpoint in expectation), and
+the fine-tune's ft_1500 with guided fixations (its end: the per-class loss change between the two, same windows and
+noise, is what the extra share achieved over 1,500 updates). Claim (the user's question, 10-30): increments get
 too small or too opposed a share of the update. Competing: their share is comparable to appearances', so the signal
 is there and the denoiser fails to use it.
 
