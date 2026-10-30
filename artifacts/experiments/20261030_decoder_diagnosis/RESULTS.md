@@ -44,3 +44,15 @@ learned noise model; beta_nll is partial. The trained decoder's rare-block failu
 recovered by refitting under any loss (a joint-training / budget effect, not the loss form); diamond, plant, mobs are
 not recovered by any arm at this budget. Limits: frozen checkpoint-10 tokens (in joint training the decoder's loss also
 shapes the encoder), one seed per arm, real tokens only.
+
+## TSP's own path (`refit.py --tsp`, `refit_tsp_results.json`; user 10-31: would TSP prefer an uncertainty-weighted
+loss?) A fresh TSP adapter + PixelDecoder trained through TSP only on frozen checkpoint-10 inputs (predicted belief,
+periphery, lighting), same seed / data / budget as above, read on TSP's path:
+  | body-stat digits | icons | wood / stone digits | table / furnace / iron / coal | zombies / skeletons | grass / stone |
+  nll       0.014-0.165 | ~0  | 0.67 / 0.42 | 19.1 / 22.0 / 20.3 / 17.0 | 22.8 / 27.5 | 1.85 / 1.22
+  beta_nll  0.78-0.94   | 1.0 | 0.98 / 0.88 | 19.1 / 20.1 / 19.1 / 12.7 | 11.7 / 28.0 | 0.99 / 0.98
+  faithful  1.000       | 1.0 | 1.00 / 1.00 |  7.7 /  5.2 /  9.1 /  3.6 |  5.8 / 18.6 | 1.24 / 1.71
+Night map NLL 3.03-3.14 in every arm. Reading: TSP under faithful renders every HUD value and the rare content best
+(TSP's periphery features carry the digit prominently); beta_nll is only sharper on common blocks (~0.3-0.7 grey
+level). One loss serves both paths: no second decoder is needed for the loss's sake. Limits as above (frozen inputs,
+one seed per arm, no joint training).

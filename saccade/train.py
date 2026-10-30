@@ -130,8 +130,16 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg):
                             t["episode"], t["valid"], cfg["edm"]["sigma_data"])[:, P:].mean()
         bp, cells = b_pred[:, P:], M.window(fix[:, P:])
         pix = M.cell_pixels(M.crop(t["frames"][:, P:], fix[:, P:]))
-        tsp = M.pixel_nll(*model.pixels(model.tsp.predict(bp, Pc.p, Pc.v, cells), Pc.v, cells), pix).mean()
-        rec = M.pixel_nll(*model.pixels(model.tsp.reconstruct(Pc.g, Pc.v, cells), Pc.v, cells), pix).mean()
+        faithful = cfg["heads"]["pixel_decoder"].get("mean_loss", "nll") == "faithful"
+        vs = Pc.v.detach() if faithful else Pc.v                         # the scale's lighting input (the mean never reads it)
+        mt, st = model.pixels(model.tsp.predict(bp, Pc.p, Pc.v, cells), vs, cells)
+        mr, sr = model.pixels(model.tsp.reconstruct(Pc.g, Pc.v, cells), vs, cells)
+        if faithful:                                                     # LOSSES G2 (10-31): Stirn et al. 2023
+            y = pix.float() / 127.5 - 1
+            tsp, rec = (mt.float() - y).square().mean(), (mr.float() - y).square().mean()
+            noise = M.pixel_nll(mt.detach(), st, pix).mean() + M.pixel_nll(mr.detach(), sr, pix).mean()
+        else:
+            tsp, rec = M.pixel_nll(mt, st, pix).mean(), M.pixel_nll(mr, sr, pix).mean()
         logit = model.change(torch.cat([Pp.p, Pc.p], 1)[:, P - 1:L - 1], Pc.p, bp)
         idx = chunk["target"][:, P:]
         tgt = np.full((*idx.shape, 7, D.GRID), np.nan, np.float32)
@@ -146,6 +154,8 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg):
         cont = F.binary_cross_entropy_with_logits(model.outcome.cont_logit(h, r).float(),
                                                   (~t["terminated"][:, P:][nf]).float())
     terms = {"g1": g1, "change": change, "tsp": tsp, "rec": rec, "reward": reward, "cont": cont}
+    if faithful:
+        terms["noise"] = noise                                           # reaches only the scale network: outside the groups
     return {k: v.float() for k, v in terms.items()}, carry, new_cache
 
 
@@ -289,7 +299,7 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
         for rows in rows_all:
             terms, c_new, cache_new = p1_losses(model, D.select(chunk, rows), M.carry_rows(carry, rows),
                                                 cache[rows], targets, cfg)
-            (model.harmoniser(groups(terms)) / micro).backward()
+            ((model.harmoniser(groups(terms)) + terms.get("noise", 0)) / micro).backward()
             M.carry_put(carry, rows, c_new)
             cache[rows] = cache_new
             logs.append({k: float(v.detach()) for k, v in terms.items()})

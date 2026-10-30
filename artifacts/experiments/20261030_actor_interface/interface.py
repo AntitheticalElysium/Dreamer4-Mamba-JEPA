@@ -11,11 +11,17 @@ Classes (dev; reproduce.py's production path: streaming sampler after 8 real con
   sapling, eat cow, defeat zombie / skeleton, wake up, are read with the context classes below).
 - SAPLING context: DO facing grass, awake, sapling not yet unlocked (context-defined, recorded rate ~0.07).
 - RISKY (health <= 2, zombie adjacent) and ADJACENT (health >= 3, zombie adjacent, awake): context-defined damage.
-Per class also the head's P(unlock) split by whether the recorded transition unlocked anything (false unlocks).
+Corrections (Codex, 10-31): the recorded event is reward > 0.5, the same event as the head's P(unlock) (the achievement
+label differed on 123 dev transitions; kept beside it); calibration is read per history (mean generated P over the K
+futures, binned, against the recorded frequency: valid for stochastic events); the split by the recorded outcome is
+kept as `outcome_split_descriptive` only (independent draws put a calibrated world's generated mass on histories whose
+recorded draw missed: it does NOT count false rewards). --policy=random (S1-seeded fixations) or guided (M0.5's rule on
+attempt frames): both worlds under both policies.
 Per future: P(unlock) = head mass on reward bins decoding above 0.5; expected reward, its positive and negative parts;
 P(reward < -0.05); P(termination). Recorded: reward, unlock, termination.
 Usage (project venv, GPU): python -m artifacts.experiments.20261030_actor_interface.interface OUT_JSON [--episodes=K]
-  [--classes=a,b] LABEL=CKPT ...   (--classes keeps the class lists and seeds of the full run, generating only those)
+  [--classes=a,b] [--policy=random|guided] LABEL=CKPT ...   (--classes keeps the class lists and seeds of the full run,
+  generating only those)
 """
 import importlib, json, os, sys
 from pathlib import Path
@@ -82,7 +88,7 @@ def futures(model, enc, L, tuples, K, cfg, gen):
     v = ob.bin_value
     s_off = np.r_[0, np.cumsum(L["ep_T"] + 1)]
     keys = [f"{w}_{q}" for w in ("gen", "rec_head") for q in ("unlock_p", "exp_reward", "pos", "neg", "neg_p", "term_p")]
-    out = {k: [] for k in keys + ["rec_reward", "rec_unlock", "rec_term", "tuple"]}
+    out = {k: [] for k in keys + ["rec_reward", "rec_unlock", "rec_event", "rec_term", "tuple"]}
     step = max(1, 256 // K)
     for start in range(0, len(tuples), step):
         batch = tuples[start:start + step]
@@ -111,9 +117,39 @@ def futures(model, enc, L, tuples, K, cfg, gen):
         g = np.array([s_off[batch[i][0]] + batch[i][1] for i in rows])
         out["rec_reward"].append(take("reward", 0).float().cpu())
         out["rec_unlock"].append(torch.as_tensor(((L["s_ach"][g] > 0) & (L["s_ach"][g - 1] == 0)).any(1)))
+        out["rec_event"].append(take("reward", 0).float().cpu() > 0.5)          # the head's event (Codex, 10-31)
         out["rec_term"].append(take("terminated", 0).float().cpu())
         out["tuple"].append(torch.tensor([start + i for i in rows]))
     return {k: torch.cat(v).numpy() for k, v in out.items()}
+
+
+BINS = (0.0, 0.01, 0.05, 0.2, 0.5, 0.8, 1.0001)
+
+
+def reliability(o, q, label):
+    """Per history: histories binned by the world's mean P(event) over half of its K generated futures, the mean over the
+    OTHER half read beside the recorded frequency of the same event (futures are independent given the history, so
+    the held-out mean is unbiased within a bin; binning and reading the same noisy mean is not: a perfect world read
+    0.0 vs 0.12 and 1.0 vs 0.60 in its extreme bins). Valid for stochastic events, unlike the outcome split."""
+    u, inv = np.unique(o["tuple"], return_inverse=True)
+    n = np.bincount(inv)
+    lab = np.bincount(inv, weights=np.asarray(o[label], float)) / n             # identical across a history's futures
+    rank = np.zeros(len(inv), int)                                       # a future's index within its history
+    order = np.argsort(inv, kind="stable")
+    rank[order] = np.arange(len(inv)) - np.repeat(np.r_[0, np.cumsum(n)[:-1]], n)
+    first = rank < n[inv] // 2                                           # bin on these futures, read the others:
+    out = {}                                                             # binning on a noisy mean selects on its noise
+    for w in ("gen", "rec_head"):
+        x = np.asarray(o[f"{w}_{q}"], float)
+        n1, n2 = np.bincount(inv, weights=first), np.bincount(inv, weights=~first)
+        pm1 = np.bincount(inv, weights=x * first) / np.maximum(n1, 1)
+        pm2 = np.bincount(inv, weights=x * ~first) / np.maximum(n2, 1)
+        b = np.digitize(pm1, BINS) - 1
+        out[w] = [{"bin": [BINS[k], min(BINS[k + 1], 1.0)], "histories": int((b == k).sum()),
+                   "mean_predicted_heldout": float(pm2[b == k].mean()), "recorded": float(lab[b == k].mean()),
+                   "recorded_se": float(np.sqrt(lab[b == k].mean() * (1 - lab[b == k].mean()) / max((b == k).sum(), 1)))}
+                  for k in range(len(BINS) - 1) if (b == k).any()]
+    return out
 
 
 def summary(o, ep):
@@ -121,30 +157,39 @@ def summary(o, ep):
     est = lambda x: G.estimate(np.asarray(x, float), one, ep)
     r = o["rec_reward"]
     return {"futures": int(len(ep)), "histories": int(len(np.unique(o["tuple"]))),
-            "recorded": {"unlock": est(o["rec_unlock"]), "exp_reward": est(r), "pos": est(np.clip(r, 0, None)),
-                         "neg": est(np.clip(r, None, 0)), "neg_p": est(r < -0.05), "term_p": est(o["rec_term"])},
+            "recorded": {"event": est(o["rec_event"]), "achievement_unlock": est(o["rec_unlock"]), "exp_reward": est(r),
+                         "pos": est(np.clip(r, 0, None)), "neg": est(np.clip(r, None, 0)), "neg_p": est(r < -0.05),
+                         "term_p": est(o["rec_term"])},
             **{w: {q: est(o[f"{w}_{q}"]) for q in ("unlock_p", "exp_reward", "pos", "neg", "neg_p", "term_p")}
                for w in ("rec_head", "gen")},
-            "split_by_recorded_unlock": {k: {w: G.estimate(np.asarray(o[f"{w}_unlock_p"], float), m, ep) for w in ("rec_head", "gen")}
-                                         for k, m in (("unlocked", o["rec_unlock"].astype(bool)), ("not_unlocked", ~o["rec_unlock"].astype(bool)))
-                                         if m.any()}}
+            "reliability": {"unlock": reliability(o, "unlock_p", "rec_event"), "death": reliability(o, "term_p", "rec_term"),
+                            "damage": reliability({**o, "rec_neg": r < -0.05}, "neg_p", "rec_neg")},
+            "outcome_split_descriptive": {k: {w: G.estimate(np.asarray(o[f"{w}_unlock_p"], float), m, ep) for w in ("rec_head", "gen")}
+                                          for k, m in (("event", o["rec_event"].astype(bool)), ("no_event", ~o["rec_event"].astype(bool)))
+                                          if m.any()}}
 
 
 def main():
     out_path = Path(sys.argv[1]); out_path.parent.mkdir(parents=True, exist_ok=True)
-    args = sys.argv[2:]
-    n_ep = int(args.pop(0).split("=")[1]) if args and args[0].startswith("--episodes=") else 0
-    only = args.pop(0).split("=")[1].split(",") if args and args[0].startswith("--classes=") else None
-    pairs = [a.split("=", 1) for a in args]
+    flags = {a.split("=", 1)[0]: a.split("=", 1)[1] for a in sys.argv[2:] if a.startswith("--")}
+    n_ep = int(flags.get("--episodes", 0))
+    only = flags["--classes"].split(",") if "--classes" in flags else None
+    policy = flags.get("--policy", "random")
+    pairs = [a.split("=", 1) for a in sys.argv[2:] if not a.startswith("--")]
     L = S.first_episodes(dict(np.load(ROOT / "artifacts/eda/s0/s0_dev_labels.npz")), n_ep)
     cls = classes(L, np.random.default_rng(2031))
     if only:
         cls = {k: (v if k in only else []) for k, v in cls.items()}
-    res = {"classes": {k: len(v) for k, v in cls.items()}, "checkpoints": {}, "differences": {}}
+    res = {"classes": {k: len(v) for k, v in cls.items()}, "policy": policy, "checkpoints": {}, "differences": {}}
     per = {}
     for label, path in pairs:
         model, cfg = load(path)
-        enc = S.encode(model, L, cfg)
+        if policy == "random":
+            enc = S.encode(model, L, cfg)
+        else:                                                            # M0.5's rule on attempt frames, prior elsewhere
+            EV = importlib.import_module("artifacts.experiments.20261030_fovea_placement.evaluate")
+            rule = {int(k): tuple(v) for k, v in json.loads((EV.PM.HERE / "map.json").read_text())["rule"].items()}
+            enc = EV.encode_with(model, L, cfg, EV.PM.window_of_state(L, rule))
         res["checkpoints"][label] = {"path": path, "sha256": TR.file_sha256(ROOT / path), "classes": {}}
         for i, (name, tuples) in enumerate(cls.items()):
             if not tuples:
@@ -156,7 +201,7 @@ def main():
             per[(label, name)] = (o, ep)
             res["checkpoints"][label]["classes"][name] = summary(o, ep)
             s = res["checkpoints"][label]["classes"][name]
-            print(label, name, "rec unlock", round(s["recorded"]["unlock"]["est"], 3), "head-rec", round(s["rec_head"]["unlock_p"]["est"], 3),
+            print(label, name, "rec event", round(s["recorded"]["event"]["est"], 3), "head-rec", round(s["rec_head"]["unlock_p"]["est"], 3),
                   "gen", round(s["gen"]["unlock_p"]["est"], 3), "| term rec", round(s["recorded"]["term_p"]["est"], 4),
                   "gen", round(s["gen"]["term_p"]["est"], 5), "| neg_p rec", round(s["recorded"]["neg_p"]["est"], 3),
                   "gen", round(s["gen"]["neg_p"]["est"], 3), flush=True)

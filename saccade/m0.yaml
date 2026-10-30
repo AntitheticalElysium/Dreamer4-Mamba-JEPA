@@ -105,7 +105,10 @@ edm:
 heads:
   tsp: {likelihood: discretised_logistic, mean_from: [belief, periphery, lighting], scale_from: [lighting, pixel_position]}
   fovea_reconstruction: {likelihood: discretised_logistic, mean_from: [glimpse, lighting], decoder: shared_with_tsp}  # 10-27
-  pixel_decoder: {hidden: 256, position_dim: 32, belief_dim: 128, log_scale_floor: -7}   # working; floor: PixelCNN++
+  pixel_decoder: {hidden: 256, position_dim: 32, belief_dim: 128, log_scale_floor: -7,   # working; floor: PixelCNN++
+                  mean_loss: nll}   # nll: P1 world 1's recipe. faithful (10-31): mean by squared error in [-1, 1], scale by
+                                    # NLL on the detached mean and detached lighting latent (Stirn et al. 2023; Seitzer et al.
+                                    # 2022; decoder diagnosis 10-30: the NLL's per-position scale starved HUD cells)
   change_map: {target: a9b_soft_detector, rows: map_only, hidden: 256, position_dim: 32, belief_dim: 128}   # A9b + working widths
   outcome: {hidden: 256}                      # working; DV3 size12m-like heads
   reward: {density: categorical, space: symlog, bins: 256, support: [-0.9, 1.1], support_space: raw,
