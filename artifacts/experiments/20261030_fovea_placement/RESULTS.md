@@ -60,6 +60,29 @@ checkpoint 10), not separated from placement without R. Guided route (eye on) th
    table +9%; the bulk -4% to -12% (glimpse -10%, HUD static -12%). Wood's loss fell 10% with no change in its
    generation.
 
+7. **The direct effect, split by transition (post hoc, user 10-30: measure the glimpse, where the manipulation
+   acted).** Drink, paired G1500 - base, 95% intervals (evaluation rows only; one run, so training noise is not in
+   them):
+
+   | | glimpse output, eye on (qualified reader) | periphery, eye elsewhere |
+   |---|---|---|
+   | 0 -> 1 | 0.088 -> 0.186, +0.098 [+0.044, +0.152] (204 rows) | 0.31 -> 0.27, -0.033 [-0.089, +0.023] (182) |
+   | v -> v + 1 | -0.018 [-0.026, -0.011] (1,582 rows) | -0.001 [-0.005, +0.002] (1,384) |
+
+   The glimpse output learned part of the appearance and none of the increments; the periphery received neither.
+   The aggregate glimpse figure (0.043 -> 0.038) hid both. Wood and table: no adequate glimpse instrument (22
+   qualified wood rows; none for the table).
+
+## Design limits raised by the user (10-30)
+- The primary readout was the transfer (periphery, eye elsewhere), not the direct effect (glimpse output), which
+  is measurable only for drink.
+- Placement on 6.6% of frames: attempt contexts (13.1% of frames, 95% of target events) times a coin of 1/2. The
+  1/2 came from the chooser's random floor (10-24), which has no role in a substitution test, and from keeping the
+  periphery readout in distribution. All attempt frames would have covered ~95% of target events instead of 53%.
+  Events themselves occur on 6.6% of frames.
+- Encoder, belief and heads frozen (targets fixed, readers valid, deficit localised in the denoiser by A / E): this
+  tests only the denoiser's share of what looking provides, not perception or memory learning from the glimpses.
+
 ## Reading
 "Drink" and "wood" were never one problem each: the world generates the appearance of a counter (0 -> 1) on ~30% of
 events and its increment (v -> v + 1) almost never, whatever the training frequency, and the guided arm changed none of
