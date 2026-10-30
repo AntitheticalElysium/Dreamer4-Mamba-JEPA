@@ -18,3 +18,29 @@ Reading: the position x lighting scale (TSP's noise model, designed for real nig
 cells not fitted early (body stats: varied values) kept the initial scale, so their mean's pull stayed ~100x weaker,
 a state stable from the first 10% of P1 (Seitzer et al. 2022's premature convergence; Lucas et al. 2019). Not
 established: which alternative renders digits (matched refit on frozen tokens, not run).
+
+## Check 4, TSP, beyond increments (`refit.py`, `refit_results.json`; dev first 300 episodes, 92,191 frames,
+random-prior fixations; refit on train-400, 128,964 frames, 6,000 steps x 512 frames, one seed per arm)
+- TSP IS AFFECTED, measured: its features carry the digit (probe drink 1.000, wood 0.997, health 1.000; reconstruction
+  features 0.993 / 0.983 / 0.999) yet its decoded mean draws the same wrong cells: body-stat digits correct 0.014-0.165
+  and icons 0.000 (health, food, drink; energy 0.000-0.005), identical to the reconstruction path; digit-pixel gradient
+  0.94 vs map 42.7. The two paths share the mean head and the scale (log-scale identical by construction).
+- BEYOND INCREMENTS (trained decoder, day MAE 0-255): body-stat ICONS are never drawn (icon correct 0.000); rare map
+  content is badly rendered: crafting table 9.1, furnace 17.0, coal 6.4, iron 19.1, diamond 36.0, plant 13.5, zombies
+  23.8, skeletons 26.5, arrows 10.4, cows 7.2, against grass 1.4, tree 1.0, stone 0.8, water 0.9.
+- MATCHED REFIT (same init, data, budget, optimizer) on frozen good tokens:
+  | body-stat digits correct (health / food / drink / energy) | wood | stone | icons | table / furnace / iron | zombies |
+  nll (current)  0.035 / 0.033 / 0.165 / 0.025 | 0.50 | 0.40 | food 0.0, others ~1.0 | 3.0 / 3.5 / 3.3 | 22.6
+  beta_nll       0.71 / 0.57 / 0.59 / 0.66     | 0.87 | 0.60 | 1.0 | 4.5 / 3.2 / 2.7 | 19.6
+  faithful       0.985 / 0.954 / 0.976 / 0.983 | 0.93 | 0.82 | 1.0 | 5.0 / 4.3 / 3.9 | 10.6
+  mse            identical mean to faithful (faithful's mean is trained by squared error); no noise model
+  Day map MAE: nll 1.82, beta_nll 1.22, faithful / mse 1.94 (common blocks ~0.5-1 grey level blurrier: grass 1.46 vs
+  1.60, stone 1.50 vs 0.68); night 4.1-4.5 in every arm (static). Not fixed by any arm: diamond (~35), plant (~13.5),
+  skeletons (~27), arrows (~11), cows (~8).
+Reading: the current loss reproduces the digit-blindness from a fresh start on tokens that carry the digit, so the
+loss form (learned per-position scale in the NLL) causes it, not the joint training's dynamics; protecting the mean
+(faithful: mean by squared error, scale by NLL on the detached mean) renders body-stat digits at 95-98% and keeps a
+learned noise model; beta_nll is partial. The trained decoder's rare-block failures (table, furnace, iron, coal) are
+recovered by refitting under any loss (a joint-training / budget effect, not the loss form); diamond, plant, mobs are
+not recovered by any arm at this budget. Limits: frozen checkpoint-10 tokens (in joint training the decoder's loss also
+shapes the encoder), one seed per arm, real tokens only.
