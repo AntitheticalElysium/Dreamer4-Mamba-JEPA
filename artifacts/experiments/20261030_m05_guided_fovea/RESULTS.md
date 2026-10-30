@@ -38,8 +38,8 @@ far jumps, not off-by-one. Drink 0->1 is read as 4, 5 or 8 (base 43 of 182 reada
 failed drink attempts (start 9 in all 564 samples) the glimpse is read as 2 or 3 in 278 of 558 at base and 228 at
 1500; on risky damage rows (health 1-2) it is read as 8-9 in 1,652 of 2,208 at base and 377 of 2,205 at 1500. The
 periphery route on the same classes has little of this (drink appearance other 0.03-0.12, failed drink false change
-0.09-0.12). Two readings fit and the evaluation cannot separate them: the glimpse generates the wrong digit, or a
-degraded generated token falls inside a wrong value's support and the reader misreads it.
+0.09-0.12). Superseded by DISSECTION.md: neighbouring digit values' supports overlap completely in the glimpse token
+space, so the digit of a generated glimpse token is the MLP reader's verdict alone (not verified); icon presence is.
 
 **Not changed by placement.** Increments stay at copy (drink 0.64-0.66, wood 0.74-0.76). The glimpse almost never
 generates a placed table (copy 0.99), although the periphery route's generated cell (faced cell outside the window)
