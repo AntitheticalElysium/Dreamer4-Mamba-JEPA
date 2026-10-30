@@ -77,3 +77,24 @@ norm), so this is open.
   0.69 -> 0.65): checkpoint noise at a constant learning rate or a reversal; nothing here separates them.
 - Whether placement caused the appearance gain (arm R).
 - Why the glimpse does not render tables; why drink's action is not bound to its digit.
+
+## Against P1's failure list (user, 10-30: did we help them; what is left; what regressed)
+P1's failures: generation diagnosis A-H (`../20261029_generation_diagnosis/RESULTS.md`) and S1.3 (`saccade_m0/p1_world1/
+s1/results.json`). guided_1500 vs base, M0.5's own instruments; not attributed to placement (arm R not run).
+P1 measured drink and wood as aggregates; first units are 10.6% of drink and 25.1% of wood events on dev (DO facing
+water / a tree with +1: 497 of 4,689, 2,088 of 8,314; train-400 11.4% / 24.5%), increments the rest.
+- Helped (2, partial): drink first unit (glimpse 0.06 -> 0.19, 0.42 at 750; periphery 0.13 -> 0.18), wood first unit
+  (glimpse 0.12 -> 0.37; periphery 0.16 -> 0.24).
+- Unchanged (6): drink increments (field flat 0.35, action unused), wood increments (glimpse 0.083 -> 0.101, field
+  0.34 -> 0.46: below the sampling threshold), sapling (0 vs 0.09 recorded), damage on low health (0.000-0.001 vs
+  0.14-0.21), damage beside a zombie (periphery 0.002; glimpse verdicts 0.072 -> 0.035, digits unverifiable),
+  zombies / cows under-generated (generated - real -0.19 -> -0.16, z 2.1; -0.22 -> -0.20, z 1.4; independent SEs).
+- Worse (2): placed tables in the periphery (0.242 -> 0.224, NEGATIVE; 0.119 at 750; glimpse 0.001 -> 0.009), arrows
+  over-generated (0.13 -> 0.17 vs 0.09 real, z 3.8). Outside the list: P1's held-out next-frame loss +3.6% at every
+  noise level; skeletons 0.136 -> 0.120 vs 0.157 (z -2.0).
+- Not measured by M0.5 (5): blocked moves predicted to shift, the hidden zombie cooldown, deaths in generated
+  successors (their precursor, damage on low health, is still ~0), the production sampler's suppression (unchanged by
+  construction), C2ST (0.76 at P1).
+Module displacement (|ft_1500 - ckpt_10| / |ckpt_10|), beside P1's own checkpoints 5 -> 10: fovea encoder 0.012
+(0.023), periphery layers 0.004 (0.009), belief 0.013 (0.026), denoiser 0.017 (0.036), pixel decoder 0.020 (0.037):
+M0.5 moved every module about half as far as P1's second half did; the glimpse digit geometry did not move.
