@@ -34,7 +34,8 @@ encoder's real tokens (read at accuracy 1.0 on real tokens).
 The 10-29 accounting with drink and wood split into appearance (0 -> 1) and increment (v -> v + 1), and the glimpse
 elements at consequence cells attributed to their class: loss share, gradient-norm share, cosine with the total, and
 drive under the checkpoint's Adam update, and loss by equal-mass noise bin. Runs: checkpoint 10 with random
-fixations (P1's condition; must reproduce the 10-29 run's unchanged classes: same windows and noise), checkpoint 10
+fixations (P1's condition; must reproduce the 10-29 run's unchanged classes. CORRECTED after the run: the 10-29 split-half
+run used 1,760 windows, this one 1,200, so it is a replication on another sample, not the same windows), checkpoint 10
 with guided fixations on every attempt frame (the fine-tune's start; its Q = 1/2 is the midpoint in expectation), and
 the fine-tune's ft_1500 with guided fixations (its end: the per-class loss change between the two, same windows and
 noise, is what the extra share achieved over 1,500 updates). Claim (the user's question, 10-30): increments get
