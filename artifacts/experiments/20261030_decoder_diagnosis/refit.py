@@ -16,7 +16,11 @@ C. MATCHED REFIT (Codex's control): a fresh reconstruction adapter (TSP.rec + it
    per-position scale causes the digit-blindness; competing: the decoder cannot render digits from these tokens at
    this budget whatever the loss (then every arm fails), or the trap needs the joint training's early dynamics
    (then nll renders digits here too).
-Usage (project venv, GPU): python -m artifacts.experiments.20261030_decoder_diagnosis.refit OUT_JSON [--smoke]
+D. (--tsp, user 10-31) TSP's own path: a fresh TSP adapter (tsp, belief projection, cell embedding) + PixelDecoder
+   trained through TSP only under nll / beta_nll / faithful on frozen checkpoint-10 inputs (predicted belief, periphery,
+   lighting), read on TSP's path: does TSP prefer an uncertainty-weighted loss (its target is genuinely uncertain
+   before the glimpse)?
+Usage (project venv, GPU): python -m artifacts.experiments.20261030_decoder_diagnosis.refit OUT_JSON [--smoke] [--tsp]
 """
 import importlib, json, os, sys
 from pathlib import Path
@@ -165,11 +169,13 @@ def probe_digit(tsp, pixd, E, path, cfg):
     return out
 
 
-def refit(arm, F, cfg):
-    """A fresh reconstruction adapter + PixelDecoder (seeded identically for every arm) on frozen tokens."""
+def refit(arm, F, cfg, path="rec"):
+    """A fresh adapter (reconstruction, or TSP's own) + PixelDecoder, seeded identically for every arm, on frozen
+    inputs; trained through one path only."""
     torch.manual_seed(SEED)
     tsp, pixd = M.TSP(cfg).to(DEV), M.PixelDecoder(cfg).to(DEV)
-    params = list(tsp.rec.parameters()) + list(tsp.cell.parameters()) + list(pixd.parameters())
+    adapter = [tsp.rec] if path == "rec" else [tsp.tsp, tsp.belief]
+    params = [p for m in adapter + [tsp.cell, pixd] for p in m.parameters()]
     o = cfg["optimizer"]
     opt = torch.optim.AdamW(params, lr=o["lr"], betas=tuple(o["betas"]), eps=o["eps"])
     gen = torch.Generator(device="cpu").manual_seed(SEED)
@@ -179,7 +185,7 @@ def refit(arm, F, cfg):
             gp["lr"] = o["lr"] * min(1.0, (step + 1) / WARMUP)
         idx = torch.randint(0, len(F["g"]), (BATCH,), generator=gen)
         with TR.autocast(DEV, cfg):
-            mean, ls, _ = decode(tsp, pixd, F, idx, "rec")
+            mean, ls, _ = decode(tsp, pixd, F, idx, path)
         pix = F["pix"][idx].to(DEV)
         y = pix.float() / 127.5 - 1
         if arm == "nll":
@@ -214,6 +220,18 @@ def main():
     tpl = CH.templates(L)
     E = collect(model, cfg, L, N_EVAL_EP, True)
     print("eval frames", len(E["g"]), flush=True)
+    if "--tsp" in sys.argv:                                              # TSP's own path (user, 10-31), its own output file
+        F = collect(model, cfg, Ltr, 20 if smoke else 0, True)
+        F = {k: (v.to(DEV) if k in ("g", "v", "cells", "pix", "p", "bp") else v) for k, v in F.items()}
+        del model
+        torch.cuda.empty_cache()
+        res = {"checkpoint": str(CKPT), "eval_frames": int(len(E["g"])), "fit_frames": int(len(F["g"])), "refit_tsp": {}}
+        for arm in ("nll", "beta_nll", "faithful"):
+            tsp, pixd, log = refit(arm, F, cfg, "tsp")
+            res["refit_tsp"][arm] = {"log": log, **evaluate(tsp, pixd, E, "tsp", tpl, cfg)}
+            print("refit_tsp", arm, json.dumps({k: v for k, v in res["refit_tsp"][arm].items() if k.startswith(("hud", "log_scale", "map", "mob"))}), flush=True)
+            out_path.write_text(json.dumps(res, indent=1, default=str))
+        return
     res = {"checkpoint": str(CKPT), "eval_frames": int(len(E["g"])), "trained": {}, "refit": {}}
     for path in ("rec", "tsp"):
         res["trained"][path] = evaluate(model.tsp, model.pixels, E, path, tpl, cfg)
