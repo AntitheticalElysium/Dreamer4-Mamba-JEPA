@@ -53,9 +53,10 @@ checkpoint 10), not separated from placement without R. Guided route (eye on) th
 4. **Not churn:** per-context success is stable (correlation base vs G1500 0.80 drink, 0.87 wood, 0.85 table; 93% of
    drink contexts never succeed in either); rows gained and lost: drink 12 / 20, wood 26 / 22, table 30 / 79.
 5. **Glimpse output (eye on):** the qualified glimpse reader gives drink 0.043 (base) / 0.053 / 0.045 / 0.038
-   (300 / 750 / 1,500): the glimpse output did not learn drink either. Wood: 22 qualified rows only. The ridge glimpse
-   projection on GENERATED tokens swings 0.40 / 0.95 / 0.49 / 0.08 across checkpoints while the reader is flat: it
-   qualified on real tokens but is not valid on generated ones, and is not read.
+   (300 / 750 / 1,500). CORRECTED (10-30): first read here as "the glimpse output did not learn drink either"; the
+   aggregate hides a 0 -> 1 gain and an increment loss (item 7). Wood: 22 qualified rows only. The ridge glimpse
+   projection on GENERATED tokens swings 0.40 / 0.95 / 0.49 / 0.08 across checkpoints while the reader is flat; it
+   qualified on real tokens as declared, and is excluded post hoc on that inconsistency (not a declared rule).
 6. **Loss vs generation:** dev G1 loss per element, base -> G1500: drink -3%, wood -10%, sapling -8%, zombie -5%,
    table +9%; the bulk -4% to -12% (glimpse -10%, HUD static -12%). Wood's loss fell 10% with no change in its
    generation.
@@ -85,8 +86,9 @@ checkpoint 10), not separated from placement without R. Guided route (eye on) th
 
 ## Reading
 "Drink" and "wood" were never one problem each: the world generates the appearance of a counter (0 -> 1) on ~30% of
-events and its increment (v -> v + 1) almost never, whatever the training frequency, and the guided arm changed none of
-it, in the periphery or in the glimpse output. Step size is not the separating variable (3 -> 4 fails at a 0 -> 1-like
+events and its increment (v -> v + 1) almost never, whatever the training frequency. The guided arm changed none of it
+in the periphery; in the glimpse output it roughly doubled drink's appearance and not its increments (post hoc, item
+7; CORRECTED 10-30: this line first said it changed nothing in the glimpse output either, as did commit df802e63). Step size is not the separating variable (3 -> 4 fails at a 0 -> 1-like
 step). Candidates, not established: the increment's target depends on the current value (a value-to-value mapping
 read from history), the appearance's does not (one fixed output, like the table); or something specific to the
 empty-cell state. Limits: one seed, one base checkpoint, privileged placement, no arm R.
